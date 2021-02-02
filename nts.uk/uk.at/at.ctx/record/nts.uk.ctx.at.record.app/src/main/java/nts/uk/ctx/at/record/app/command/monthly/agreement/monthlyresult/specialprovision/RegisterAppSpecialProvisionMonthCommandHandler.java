@@ -24,6 +24,7 @@ import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.SpecialProvisionsOfAgreement;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.SpecialProvisionsOfAgreementRepo;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
+import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreMaxAverageTimeMulti;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod;
@@ -69,6 +70,8 @@ public class RegisterAppSpecialProvisionMonthCommandHandler
     private AffWorkplaceAdapter affWorkplaceAdapter;
     @Inject
     private PersonEmpBasicInfoAdapter personEmpBasicInfoAdapter;
+    @Inject
+    private AgreementOperationSettingRepository agreementOperationSettingRepository;
 
     @Override
     protected List<ErrorResultDto> handle(CommandHandlerContext<List<RegisterAppSpecialProvisionMonthCommand>> context) {
@@ -77,7 +80,7 @@ public class RegisterAppSpecialProvisionMonthCommandHandler
         RequireImpl require = new RequireImpl(cid, requireService.createRequire(),
                 specialProvisionsOfAgreementRepo, approver36AgrByCompanyRepo,
                 unitOfApproverRepo, syWorkplaceAdapter, approver36AgrByWorkplaceRepo,
-                affWorkplaceAdapter);
+                affWorkplaceAdapter,agreementOperationSettingRepository);
         List<RegisterAppSpecialProvisionMonthCommand> commands = context.getCommand();
         List<ErrorResultDto> errorResults = new ArrayList<>();
         List<AppCreationResult> results = new ArrayList<>();
@@ -128,6 +131,7 @@ public class RegisterAppSpecialProvisionMonthCommandHandler
         private SyWorkplaceAdapter syWorkplaceAdapter;
         private Approver36AgrByWorkplaceRepo approver36AgrByWorkplaceRepo;
         private AffWorkplaceAdapter affWorkplaceAdapter;
+        private AgreementOperationSettingRepository agreementOperationSettingRepository;
 
 
         @Override
@@ -251,6 +255,11 @@ public class RegisterAppSpecialProvisionMonthCommandHandler
                     return require.agreementTimeOfManagePeriod(sid, ym);
                 }
             };
+        }
+
+        @Override
+        public Optional<AgreementOperationSetting> find() {
+            return agreementOperationSettingRepository.find(AppContexts.user().companyId());
         }
     }
 }

@@ -12,5 +12,5 @@ public interface SyEmployeeAdapter {
 	
 	List<SyEmployeeImport> getPersonInfor(List<String> employeeIds);
 	
-	public Map<String, String> getListEmpInfo(String companyID , GeneralDate referenceDate, List<String> workplaceID);
+	public Map<String, List<String>> getListEmpInfo(String companyID , GeneralDate referenceDate, List<String> workplaceID);
 }

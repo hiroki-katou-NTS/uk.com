@@ -357,6 +357,7 @@ interface JQueryPromise<T> extends JQueryGenericPromise<T> {
  * Interface for the JQuery deferred, part of callbacks
  */
 interface JQueryDeferred<T> extends JQueryGenericPromise<T> {
+	[x: string]: any;
     /**
      * Determine the current state of a Deferred object.
      */

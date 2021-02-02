@@ -41,23 +41,25 @@ module nts.uk.com.view.ccg008.a.screenModel {
 
     created() {
       const vm = this;
-      var transferData = __viewContext.transferred.value;
-      var code = transferData && transferData.topPageCode ? transferData.topPageCode : "";
-      var fromScreen = transferData && transferData.screen ? transferData.screen : "other";
+      const transferData = __viewContext.transferred.value;
+      let code = transferData && transferData.topPageCode ? transferData.topPageCode : "";
+      const fromScreen = transferData && transferData.screen ? transferData.screen : "other";
+      const itemsUrl = nts.uk.request.QueryString.parseUrl(location.href).items
+      const toppageCode = (itemsUrl as any).toppagecode ? (itemsUrl as any).toppagecode : "";
       vm.$blockui('grayout');
       vm.$ajax("com", API.getLoginUser).then((user) => {
         vm.$ajax("com", API.getSetting).then((res) => {
           if (res.reloadInterval) {
             vm.reloadInterval(res.reloadInterval);
           }
-          if (user || res) {
+          if (user && res) {
             vm.isShowButtonSetting(true);
           }
           vm.topPageSetting = res;
           //var fromScreen = "login";
           vm.$ajax("com", API.getCache).then((data: any) => {
             character.save("cache", data).then(() => {
-              vm.topPageCode(code);
+              vm.topPageCode(toppageCode);
               character.restore("cache").then((obj: any) => {
                 if (obj) {
                   let endDate = moment.utc(obj.endDate, "YYYY/MM/DD").add(vm.topPageSetting.switchingDate, 'days').format("YYYY/MM/DD");
@@ -86,9 +88,6 @@ module nts.uk.com.view.ccg008.a.screenModel {
       service.getClosure().done((data: any) => {
         vm.lstClosure(data);
       });
-      $('#content-top').resizable({
-        grid: [10000, 1]
-    });
       _.extend(window, { vm: self });
     }
 
@@ -120,8 +119,13 @@ module nts.uk.com.view.ccg008.a.screenModel {
 
     callApiTopPage(vm: any) {
       const transferData = __viewContext.transferred.value;
-      const code = transferData && transferData.topPageCode ? transferData.topPageCode : "";
+      let code = transferData && transferData.topPageCode ? transferData.topPageCode : "";
       const fromScreen = transferData && transferData.screen ? transferData.screen : "other";
+      const itemsUrl = nts.uk.request.QueryString.parseUrl(location.href).items
+      const toppageCode = (itemsUrl as any).toppagecode ? (itemsUrl as any).toppagecode : "";
+      if(code === "" && toppageCode !== "") {
+        code = toppageCode
+      }
       let topPageSetting: any;
       vm.$blockui('grayout');
       vm.$ajax("com", API.getSetting).then((res: any) => {
@@ -149,13 +153,13 @@ module nts.uk.com.view.ccg008.a.screenModel {
 
     getToppage(data: DataTopPage) {
       const vm = this;
-      if (data.displayTopPage && data.displayTopPage.layoutDisplayType !== 0 && data.displayTopPage.layout2) {
+      if (data.displayTopPage && data.displayTopPage.layoutDisplayType !== 0 && data.displayTopPage.layout2.length > 0) {
         vm.isShowButtonRefresh(true);
       }
       const transferData = __viewContext.transferred.value;
       const fromScreen = transferData && transferData.screen ? transferData.screen : "other";
       if(fromScreen === 'login'){
-        if (vm.topPageSetting.menuClassification !== MenuClassification.TopPage) {
+        if (vm.topPageSetting.menuClassification !== MenuClassification.TopPage && vm.topPageSetting.loginMenuCode !== '0000') {
           if (data.standardMenu.url) {
             if (!!data.standardMenu.url.split("web/")[1]) {
                // show standardmenu

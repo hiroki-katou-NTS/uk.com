@@ -11,7 +11,6 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -43,20 +42,19 @@ public class KscdtScheExeTarget extends UkJpaEntity implements Serializable {
      * The exe status.
      */
     @Basic(optional = false)
-    @NotNull
     @Column(name = "EXE_STATUS")
     private int exeStatus;
 
     /**
      * 契約コード
      */
-    @NotNull
+    @Basic(optional = false)
     @Column(name = "CONTRACT_CD")
     private String contractCd;
     /**
      * The cid.
      */
-    @NotNull
+    @Basic(optional = false)
     @Column(name = "CID")
     private String cid;
 

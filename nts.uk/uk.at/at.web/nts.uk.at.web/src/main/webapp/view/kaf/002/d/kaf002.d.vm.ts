@@ -66,13 +66,14 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
                         value: selectedCode,
                         optionsText: 'name',
                         required: true,
+						name: $i18n('KAF002_79'),
                         enable: mode
                     }"></div>
     </div>
 
     <div class="blockSecond">
         <input class="inputBlockSecond" id="inputTimeKAF002"
-            data-bind=" css: selectedCode() == 3 ? 'adjustWidth' : '', ntsTimeEditor: { enable: mode, value: time, required: true, inputFormat: 'time', constraint: 'AttendanceClock', mode: 'time'
+            data-bind=" css: selectedCode() == 3 ? 'adjustWidth' : '', ntsTimeEditor: {name: $i18n('KAF002_79'), enable: mode, value: time, required: true, inputFormat: 'time', constraint: 'AttendanceClock', mode: 'time'
                                                     }" />
 
         <div class="dropListBlockSecond"

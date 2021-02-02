@@ -260,7 +260,6 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.Ver
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.reservation.ReservationOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.workform.flex.MonthlyAggrSetOfFlex;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.workform.flex.MonthlyAggrSetOfFlexRepository;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSetting;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSettingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.SuperHD60HConMed;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.SuperHD60HConMedRepository;
@@ -333,16 +332,12 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmplo
 import nts.uk.ctx.at.shared.dom.workrule.weekmanage.WeekRuleManagement;
 import nts.uk.ctx.at.shared.dom.workrule.weekmanage.WeekRuleManagementRepo;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeIsFluidWork;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
@@ -686,15 +681,6 @@ public class RecordDomRequireService {
 
 	}
 	
-	Optional<OutsideOTSetting> outsideOTSettingCache = Optional.empty();
-	HashMap<String, Optional<FlowWorkSetting>>  flowWorkSetMap = new HashMap<String, Optional<FlowWorkSetting>>();
-	HashMap<String, Optional<FlexWorkSetting>>  flexWorkSetMap = new HashMap<String, Optional<FlexWorkSetting>>();
-	HashMap<String, Optional<FixedWorkSetting>>  fixedWorkSetMap = new HashMap<String, Optional<FixedWorkSetting>>();
-	HashMap<String, Optional<WorkTimeSetting>>  workTimeSetMap = new HashMap<String, Optional<WorkTimeSetting>>();
-	Optional<WeekRuleManagement> weekRuleManagementCache = Optional.empty();
-	HashMap<String, Optional<WorkType>>  workTypeMap = new HashMap<String, Optional<WorkType>>();
-	HashMap<Integer, Optional<Closure>> closureMap = new HashMap<Integer, Optional<Closure>>(); 
-	
 	public Require createRequire() {
 		return new RequireImpl(comSubstVacationRepo, compensLeaveComSetRepo,
 				specialLeaveGrantRepo, empEmployeeAdapter, grantDateTblRepo,
@@ -764,13 +750,11 @@ public class RecordDomRequireService {
 				lockStatusService, verticalTotalMethodOfMonthlyRepo, stampCardRepo,
 				bentoReservationRepo, bentoMenuRepo, integrationOfDailyGetter,
 				weekRuleManagementRepo, sharedAffWorkPlaceHisAdapter, getProcessingDate,
-				roleOfOpenPeriodRepo,
-				ElapseYearRepository, syCompanyRecordAdapter, outsideOTSettingCache, flowWorkSetMap, flexWorkSetMap, fixedWorkSetMap,
-				workTimeSetMap, weekRuleManagementCache, workTypeMap, closureMap,
-				snapshotAdapter, superHD60HConMedRepo, monthlyAggregationRemainingNumber);
+				roleOfOpenPeriodRepo, ElapseYearRepository, syCompanyRecordAdapter, 
+				snapshotAdapter, superHD60HConMedRepo);
 	}
-
-	public class RequireImpl extends RemainNumberTempRequireService.RequireImp implements Require {
+	
+	public  class RequireImpl extends nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RequireImp implements Require {
 		private Optional<WeekRuleManagement> weekRuleManagementCache = Optional.empty();
 
 		public RequireImpl(ComSubstVacationRepository comSubstVacationRepo,
@@ -888,29 +872,18 @@ public class RecordDomRequireService {
 				WeekRuleManagementRepo weekRuleManagementRepo, SharedAffWorkPlaceHisAdapter sharedAffWorkPlaceHisAdapter,
 				GetProcessingDate getProcessingDate, RoleOfOpenPeriodRepository roleOfOpenPeriodRepo,
 				ElapseYearRepository elapseYearRepo,SyCompanyRecordAdapter syCompanyRecordAdapter,
-				Optional<OutsideOTSetting> outsideOTSettingCache,
-				HashMap<String, Optional<FlowWorkSetting>>  flowWorkSetMap,
-				HashMap<String, Optional<FlexWorkSetting>>  flexWorkSetMap,
-				HashMap<String, Optional<FixedWorkSetting>>  fixedWorkSetMap,
-				HashMap<String, Optional<WorkTimeSetting>>  workTimeSetMap,
-				Optional<WeekRuleManagement> weekRuleManagementCache,
-				HashMap<String, Optional<WorkType>>  workTypeMap,
-				HashMap<Integer, Optional<Closure>> closureMap,
-				DailySnapshotWorkAdapter snapshotAdapter, SuperHD60HConMedRepository superHD60HConMedRepo, MonthlyAggregationRemainingNumber monthlyAggregationRemainingNumber) {
+				DailySnapshotWorkAdapter snapshotAdapter, SuperHD60HConMedRepository superHD60HConMedRepo) {
 			
-			super(comSubstVacationRepo, compensLeaveComSetRepo, specialLeaveGrantRepo, empEmployeeAdapter,
-					grantDateTblRepo, elapseYearRepo, annLeaEmpBasicInfoRepo, specialHolidayRepo, interimSpecialHolidayMngRepo,
-					specialLeaveBasicInfoRepo, interimRecAbasMngRepo, empSubstVacationRepo, interimRemainRepo,
-					substitutionOfHDManaDataRepo, payoutManagementDataRepo, interimBreakDayOffMngRepo,
-					comDayOffManaDataRepo, companyAdapter, shareEmploymentAdapter, leaveManaDataRepo,
-					workingConditionItemRepo, workingConditionRepo, workTimeSettingRepo, fixedWorkSettingRepo,
-					flowWorkSettingRepo, diffTimeWorkSettingRepo, flexWorkSettingRepo, predetemineTimeSettingRepo,
-					closureRepo, closureEmploymentRepo, workTypeRepo, remainCreateInforByApplicationData,
-					compensLeaveEmSetRepo, employmentSettingRepo, retentionYearlySettingRepo,
-					annualPaidLeaveSettingRepo, outsideOTSettingRepo, workdayoffFrameRepo,
-					yearHolidayRepo, usageUnitSettingRepo, regularLaborTimeComRepo,
-					deforLaborTimeComRepo, regularLaborTimeWkpRepo, deforLaborTimeWkpRepo,
-					regularLaborTimeEmpRepo, deforLaborTimeEmpRepo, regularLaborTimeShaRepo,
+			super(comSubstVacationRepo, compensLeaveComSetRepo, specialLeaveGrantRepo2,
+					empEmployeeAdapter, grantDateTblRepo, annLeaEmpBasicInfoRepo, specialHolidayRepo2, 
+					interimSpecialHolidayMngRepo2, specialLeaveBasicInfoRepo, interimRecAbasMngRepo2, empSubstVacationRepo, 
+					interimRemainRepo2, substitutionOfHDManaDataRepo2, payoutManagementDataRepo2, interimBreakDayOffMngRepo2, 
+					comDayOffManaDataRepo2, companyAdapter2, shareEmploymentAdapter, leaveManaDataRepo2, workingConditionItemRepo,
+					workingConditionRepo, workTimeSettingRepo, fixedWorkSettingRepo, flowWorkSettingRepo, diffTimeWorkSettingRepo,
+					flexWorkSettingRepo, predetemineTimeSettingRepo2, closureRepo, closureEmploymentRepo, workTypeRepo,
+					remainCreateInforByApplicationData2, compensLeaveEmSetRepo, employmentSettingRepo, retentionYearlySettingRepo,
+					annualPaidLeaveSettingRepo, outsideOTSettingRepo, workdayoffFrameRepo, yearHolidayRepo, usageUnitSettingRepo, regularLaborTimeComRepo,
+					deforLaborTimeComRepo, regularLaborTimeWkpRepo, deforLaborTimeWkpRepo, regularLaborTimeEmpRepo, deforLaborTimeEmpRepo, regularLaborTimeShaRepo,
 					deforLaborTimeShaRepo, sharedAffWorkPlaceHisAdapter);
 			
 			this.tmpResereLeaveMngRepo = tmpResereLeaveMngRepo;
@@ -1034,7 +1007,6 @@ public class RecordDomRequireService {
 			this.integrationOfDailyGetter = integrationOfDailyGetter;
 			this.getProcessingDate = getProcessingDate;
 			this.roleOfOpenPeriodRepo = roleOfOpenPeriodRepo;
-			this.weekRuleManagementCache = weekRuleManagementCache;
 			this.snapshotAdapter = snapshotAdapter;
 			this.superHD60HConMedRepo = superHD60HConMedRepo;
 			this.syCompanyRecordAdapter = syCompanyRecordAdapter;

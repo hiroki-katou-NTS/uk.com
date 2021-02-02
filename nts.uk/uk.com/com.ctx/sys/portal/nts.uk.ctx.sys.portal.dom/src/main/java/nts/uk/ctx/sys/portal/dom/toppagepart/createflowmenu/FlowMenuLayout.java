@@ -2,7 +2,8 @@ package nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu;
 
 import java.util.List;
 
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.CreateFlowMenu.MementoGetter;
 import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.CreateFlowMenu.MementoSetter;
@@ -10,7 +11,8 @@ import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.CreateFlowMenu.Memen
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.ポータル.トップページの部品.フローメニュー作成.フローメニューレイアウト
  */
-@Getter
+@Data
+@EqualsAndHashCode(callSuper = false)
 public class FlowMenuLayout extends DomainObject {
 	
 	/**

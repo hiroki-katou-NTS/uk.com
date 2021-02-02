@@ -37,4 +37,8 @@ public class TimeLeaveAppReflectConditionDto {
      * 時間特別休暇
      */
     private int specialVacationTime;
+
+    public int checkTypeCombination(){
+        return (this.superHoliday60H + this.nursing + this.childNursing + this.substituteLeaveTime + this.annualVacationTime + this.specialVacationTime);
+    }
 }

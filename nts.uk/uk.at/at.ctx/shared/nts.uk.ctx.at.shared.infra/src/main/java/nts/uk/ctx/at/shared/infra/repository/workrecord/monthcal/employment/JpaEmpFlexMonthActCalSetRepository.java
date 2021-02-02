@@ -4,7 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.workrecord.monthcal.employment;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -21,6 +23,9 @@ import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.employment.KrcstEmp
 @Stateless
 public class JpaEmpFlexMonthActCalSetRepository extends JpaRepository implements EmpFlexMonthActCalSetRepo {
 
+	private static final String SELECT_BY_CID = "SELECT c FROM KrcstEmpFlexMCalSet c"
+			+ " WHERE c.krcstEmpFlexMCalSetPK.cid = :cid";
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -103,6 +108,16 @@ public class JpaEmpFlexMonthActCalSetRepository extends JpaRepository implements
 										e.aggregateTimeSetting(), 
 										e.flexTimeHandle(), 
 										new EmploymentCode(e.getKrcstEmpFlexMCalSetPK().getEmpCd()));
+	}
+
+	@Override
+	public List<EmpFlexMonthActCalSet> findEmpFlexMonthByCid(String cid) {
+		List<KrcstEmpFlexMCalSet> entitys = this.queryProxy().query(SELECT_BY_CID, KrcstEmpFlexMCalSet.class)
+				.setParameter("cid", cid).getList();
+		
+		return entitys.stream().map(m -> {
+			return toDomain(m);
+		}).collect(Collectors.toList());
 	}
 
 }

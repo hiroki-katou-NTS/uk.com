@@ -5,11 +5,17 @@ package nts.uk.ctx.at.request.app.find.application.holidayshipment.dto;
  *
  */
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.UnUseOfRec;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.StatutoryAtr;
 @Getter
 @Setter
 @AllArgsConstructor
@@ -56,5 +62,15 @@ public class UnUseOfRecDto {
 		this.startDate = unUseOfRec.getStartDate().map(x -> x.toString("yyyy/MM/dd")).orElse(null);
 	}
 	
-	
+	public UnUseOfRec toDomain() {
+	    return new UnUseOfRec(
+	            GeneralDate.fromString(expirationDate, "yyyy/MM/dd"), 
+	            recMngId, 
+	            occurrenceDays, 
+	            EnumAdaptor.valueOf(statutoryAtr, StatutoryAtr.class), 
+	            unUseDays, 
+	            EnumAdaptor.valueOf(digestionAtr, DigestionAtr.class), 
+	            disappearanceDate == null ? Optional.empty() : Optional.of(GeneralDate.fromString(disappearanceDate, "yyyy/MM/dd")), 
+	            startDate == null ? Optional.empty() : Optional.of(GeneralDate.fromString(startDate, "yyyy/MM/dd")));
+	}
 }

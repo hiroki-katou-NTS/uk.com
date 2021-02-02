@@ -133,9 +133,9 @@ module nts.uk.time.secondsBased {
         }
         
         function createText(duration: DurationSecondsBasedTime): string {
-            const { isNegative, asHoursInt, asMinutes, asSeconds } = duration;
+            const { isNegative, asHoursInt, minutePartText, secondPartText } = duration;
 
-            return `${isNegative ? '-' : ''}${asHoursInt}:${_.padStart(`${asMinutes}`, 2, '0')}:${_.padStart(`${asSeconds}`, 2, '0')}`.replace(/^\-{1,}/g, '-');
+            return `${isNegative ? '-' : ''}${asHoursInt}:${minutePartText}:${secondPartText}`.replace(/^\-{1,}/g, '-');
         }
         
     }

@@ -9,14 +9,14 @@ module nts.uk.at.view.ktg027.a.Ktg027ComponentViewModel {
   };
 
   const KTG_027_Style = `
-  #contents-area {
+  #ktg027-contents-area {
     padding-top: 5px;
     padding-left: 5px;
     width: 445x;
     height: 450px;
     border: 1px solid #B1B1B1;
   }
-  #contents-area::before {
+  #ktg027-contents-area::before {
     display: inline-block;
     height: 450px;
   }
@@ -180,7 +180,7 @@ module nts.uk.at.view.ktg027.a.Ktg027ComponentViewModel {
 
   @component({
     name: "ktg027-component",
-    template: `<div id="contents-area">
+    template: `<div id="ktg027-contents-area">
     <div class="title-border">
       <!-- A1_1 -->
       <label class="big-text" data-bind="i18n: 'KTG027_5'"></label>
