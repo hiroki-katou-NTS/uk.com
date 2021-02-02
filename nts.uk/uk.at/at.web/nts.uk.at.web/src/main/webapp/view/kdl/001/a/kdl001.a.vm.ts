@@ -360,6 +360,7 @@ module nts.uk.at.view.kdl001.a {
                 self.selectAbleItemList(_.cloneDeep(self.isCheckAllStatus() ? self.workingHoursItemLists() : self.selectableWorkingHours()));
                 self.resetConditionSelected();
                 $('#inputStartTime').focus();
+                nts.uk.ui.errors.clearAll();
                 dfd.resolve();
                 return dfd.promise();
             }
