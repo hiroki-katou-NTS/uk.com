@@ -22,22 +22,22 @@ public class NumberOfEmployeesByAttributeCountingService {
 	/**
 	 * 集計する
 	 * @param require Require
-	 * @param unit 集計単位リスト
-	 * @param values 勤務情報リスト
+	 * @param unit 集計単位
+	 * @param infoList 勤務情報リスト
 	 * @return
 	 */
 	public static Map<String, BigDecimal> count(
 				Require require
 			,	AggregationUnitOfEmployeeAttribute unit
-			,	List<WorkInfoWithAffiliationInfo> values
+			,	List<WorkInfoWithAffiliationInfo> infoList
 	) {
 
 		// 属性別の勤務状況を取得する
-		List<AttributeToBeCounted<String>> workingStatusList = values.stream()
-				.map( affInfo -> {
+		List<AttributeToBeCounted<String>> workingStatusList = infoList.stream()
+				.map( info -> {
 					return new AttributeToBeCounted<String>(
-								unit.getAttribute( affInfo.getAffiliationInfo() )
-							,	affInfo.getWorkInfo().isAttendanceRate( require )
+								unit.getAttribute( info.getAffiliationInfo() )
+							,	info.getWorkInfo().isAttendanceRate( require )
 						);
 				} ).collect(Collectors.toList());
 
