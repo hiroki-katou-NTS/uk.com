@@ -112,7 +112,7 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 		createIggrid(useSet: any) {
 			const vm = this;
 			$("#bGrid").igGrid({
-				width: window.innerWidth - 24 < 1000 ? 1000 : window.innerWidth - 24,
+				// width: window.innerWidth - 24 < 1000 ? 1000 : window.innerWidth - 24,
 				height: window.innerHeight - 150,
 				dataSource: vm.dataSource,
 				primaryKey: 'wkpID',
@@ -175,12 +175,14 @@ module nts.uk.at.view.kaf018.b.viewmodel {
 						headerText: '', 
 						key: 'wkpID', 
 						dataType: 'string',
+						width: '50px',
 						hidden: true
 					},
 					{ 
 						headerText: vm.$i18n('KAF018_331'), 
 						key: 'wkpID',
 						dataType: 'string',
+						width: '550px',
 						headerCssClass: 'kaf018-b-header-wkpName',
 						columnCssClass: 'kaf018-b-column-wkpName',
 						formatter: (key: string) => vm.getWkpInfo(key),
