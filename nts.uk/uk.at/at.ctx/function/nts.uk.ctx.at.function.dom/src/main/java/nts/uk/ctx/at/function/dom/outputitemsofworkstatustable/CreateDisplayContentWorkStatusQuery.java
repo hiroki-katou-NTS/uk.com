@@ -49,6 +49,11 @@ public class CreateDisplayContentWorkStatusQuery {
         if (outputItems.isEmpty()) {
             throw new BusinessException("Msg_1816");
         }
+        val listIds = outputItems.stream()
+                .flatMap(x -> x.getSelectedAttendanceItemList().stream()
+                        .map(OutputItemDetailAttItem::getAttendanceItemId))
+                .distinct().collect(Collectors.toCollection(ArrayList::new));
+
         listEmployeeStatus.parallelStream().forEach(e -> {
             val item = new DisplayContentWorkStatus();
             val eplInfo = mapSids.get(e.getEmployeeId());
@@ -61,11 +66,6 @@ public class CreateDisplayContentWorkStatusQuery {
                     item.setWorkPlaceName(wplInfo.getWorkPlaceName());
                 } else return;
             } else return;
-            val listIds = outputItems.stream()
-                    .flatMap(x -> x.getSelectedAttendanceItemList().stream()
-                            .map(OutputItemDetailAttItem::getAttendanceItemId))
-                    .distinct().collect(Collectors.toCollection(ArrayList::new));
-
             List<AttendanceResultDto> listAttendants = new ArrayList<>();
             for (val date : e.getListPeriod()) {
                 List<AttendanceResultDto> listValue = null;
@@ -120,8 +120,6 @@ public class CreateDisplayContentWorkStatusQuery {
                                 key
                         ));
                     }
-
-
                 });
                 val total = itemValue.stream().filter(q -> q.getActualValue() != null)
                         .mapToDouble(DailyValue::getActualValue).sum();
