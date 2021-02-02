@@ -793,8 +793,10 @@ export class KafS11AComponent extends KafS00ShrComponent {
             }    
         } else {
             // ※4-3
-            if (!vm.displayInforWhenStarting.rec) {
-                onlyAbs = true;
+            if (vm.displayInforWhenStarting) {
+                if (!vm.displayInforWhenStarting.rec) {
+                    onlyAbs = true;
+                }
             }
         }
 
