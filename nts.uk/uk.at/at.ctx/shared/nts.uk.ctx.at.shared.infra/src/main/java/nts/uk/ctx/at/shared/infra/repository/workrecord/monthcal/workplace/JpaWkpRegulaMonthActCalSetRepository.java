@@ -22,7 +22,7 @@ import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.workplace.KrcstWkpR
 @Stateless
 public class JpaWkpRegulaMonthActCalSetRepository extends JpaRepository implements WkpRegulaMonthActCalSetRepo {
 
-	private static final String SELECT_BY_CID = "SELECT c FROM KrcstWkpRegMCalSet c"
+	private static final String SELECT_BY_CID = "SELECT c FROM KrcmtCalcMSetRegWkp c"
 			+ " WHERE c.krcstWkpRegMCalSetPK.cid = :cid";
 	
 	/*
@@ -110,7 +110,7 @@ public class JpaWkpRegulaMonthActCalSetRepository extends JpaRepository implemen
 
 	@Override
 	public List<WkpRegulaMonthActCalSet> findWkpRegulaMonthAll(String cid) {
-		List<KrcstWkpRegMCalSet> entitys = this.queryProxy().query(SELECT_BY_CID, KrcstWkpRegMCalSet.class)
+		List<KrcmtCalcMSetRegWkp> entitys = this.queryProxy().query(SELECT_BY_CID, KrcmtCalcMSetRegWkp.class)
 				.setParameter("cid", cid).getList();
 		
 		return entitys.stream().map(m -> {

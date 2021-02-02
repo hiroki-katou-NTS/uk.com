@@ -24,7 +24,7 @@ public class JpaShaDeforLaborMonthActCalSetRepository extends JpaRepository
 		implements ShaDeforLaborMonthActCalSetRepo {
 
 	
-	private static final String SELECT_BY_CID = "SELECT c FROM KrcstShaDeforMCalSet c"
+	private static final String SELECT_BY_CID = "SELECT c FROM KrcmtCalcMSetDefSya c"
 			+ " WHERE c.krcstShaDeforMCalSetPK.cid = :cid";
 	
 	/*
@@ -113,7 +113,7 @@ public class JpaShaDeforLaborMonthActCalSetRepository extends JpaRepository
 
 	@Override
 	public List<ShaDeforLaborMonthActCalSet> findByCid(String cid) {
-		List<KrcstShaDeforMCalSet> entitys = this.queryProxy().query(SELECT_BY_CID, KrcstShaDeforMCalSet.class)
+		List<KrcmtCalcMSetDefSya> entitys = this.queryProxy().query(SELECT_BY_CID, KrcmtCalcMSetDefSya.class)
 				.setParameter("cid", cid).getList();
 		return entitys.stream().map(m -> {
 			return toDomain(m);

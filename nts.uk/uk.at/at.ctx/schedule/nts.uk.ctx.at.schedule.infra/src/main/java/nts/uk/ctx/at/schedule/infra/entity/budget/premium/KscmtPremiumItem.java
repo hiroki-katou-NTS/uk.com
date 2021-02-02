@@ -37,7 +37,7 @@ public class KscmtPremiumItem extends ContractUkJpaEntity {
 //		@PrimaryKeyJoinColumn(name="CID",referencedColumnName="CID"),
 //		@PrimaryKeyJoinColumn(name="PREMIUM_NO",referencedColumnName="PREMIUM_NO")
 //    })
-//	public KmlstPremiumSet kmlstPremiumSet;
+//	public KscmtPerCostPremiRate kmlstPremiumSet;
 
 	@Override
 	protected Object getKey() {

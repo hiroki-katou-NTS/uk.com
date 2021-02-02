@@ -19,10 +19,10 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @Entity
-@Table(name = "KMLST_PREMIUM_SET")
+@Table(name = "KSCMT_PER_COST_PREMI_RATE")
 @AllArgsConstructor
 @NoArgsConstructor
-public class KmlstPremiumSet extends ContractUkJpaEntity implements Serializable {
+public class KscmtPerCostPremiRate extends ContractUkJpaEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -41,9 +41,9 @@ public class KmlstPremiumSet extends ContractUkJpaEntity implements Serializable
         return pk;
     }
 
-    public static List<KmlstPremiumSet> toEntity(PersonCostCalculation domain, String histId) {
+    public static List<KscmtPerCostPremiRate> toEntity(PersonCostCalculation domain, String histId) {
         return domain.getPremiumSettings().stream().map(e ->
-                new KmlstPremiumSet(
+                new KscmtPerCostPremiRate(
                         new KmlspPremiumSetPK(domain.getCompanyID(), histId, e.getID().value),
                         e.getRate().v(),
                         e.getUnitPrice().value

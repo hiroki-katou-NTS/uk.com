@@ -22,7 +22,7 @@ import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.employee.KrcstShaRe
 @Stateless
 public class JpaShaRegulaMonthActCalSetRepository extends JpaRepository implements ShaRegulaMonthActCalSetRepo {
 
-	private static final String SELECT_BY_CID = "SELECT c FROM KrcstShaRegMCalSet c"
+	private static final String SELECT_BY_CID = "SELECT c FROM KrcmtCalcMSetRegSya c"
 			+ " WHERE c.krcstShaRegMCalSetPK.cid = :cid";
 	
 	/*
@@ -109,7 +109,7 @@ public class JpaShaRegulaMonthActCalSetRepository extends JpaRepository implemen
 
 	@Override
 	public List<ShaRegulaMonthActCalSet> findRegulaMonthActCalSetByCid(String cid) {
-		List<KrcstShaRegMCalSet> entitys = this.queryProxy().query(SELECT_BY_CID, KrcstShaRegMCalSet.class)
+		List<KrcmtCalcMSetRegSya> entitys = this.queryProxy().query(SELECT_BY_CID, KrcmtCalcMSetRegSya.class)
 				.setParameter("cid", cid).getList();
 		return entitys.stream().map(m -> {
 			return toDomain(m);

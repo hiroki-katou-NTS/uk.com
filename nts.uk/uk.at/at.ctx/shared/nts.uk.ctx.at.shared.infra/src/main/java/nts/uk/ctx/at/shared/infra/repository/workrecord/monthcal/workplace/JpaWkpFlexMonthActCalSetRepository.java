@@ -22,7 +22,7 @@ import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.workplace.KrcstWkpF
 @Stateless
 public class JpaWkpFlexMonthActCalSetRepository extends JpaRepository implements WkpFlexMonthActCalSetRepo {
 
-	private static final String SELECT_BY_CID = "SELECT c FROM KrcstWkpFlexMCalSet c"
+	private static final String SELECT_BY_CID = "SELECT c FROM KrcmtCalcMSetFleWkp c"
 			+ " WHERE c.krcstWkpFlexMCalSetPK.cid = :cid";
 	
 	/*
@@ -110,7 +110,7 @@ public class JpaWkpFlexMonthActCalSetRepository extends JpaRepository implements
 
 	@Override
 	public List<WkpFlexMonthActCalSet> findByCid(String cid) {
-		List<KrcstWkpFlexMCalSet> entitys = this.queryProxy().query(SELECT_BY_CID, KrcstWkpFlexMCalSet.class)
+		List<KrcmtCalcMSetFleWkp> entitys = this.queryProxy().query(SELECT_BY_CID, KrcmtCalcMSetFleWkp.class)
 				.setParameter("cid", cid).getList();
 		
 		return entitys.stream().map(m -> {

@@ -23,7 +23,7 @@ import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.workplace.KrcstWkpD
 public class JpaWkpDeforLaborMonthActCalSetRepository extends JpaRepository
 		implements WkpDeforLaborMonthActCalSetRepo {
 
-	private static final String SELECT_BY_CID = "SELECT c FROM KrcstWkpDeforMCalSet c"
+	private static final String SELECT_BY_CID = "SELECT c FROM KrcmtCalcMSetDefWkp c"
 			+ " WHERE c.krcstWkpDeforMCalSetPK.cid = :cid";
 	
 	/*
@@ -111,7 +111,7 @@ public class JpaWkpDeforLaborMonthActCalSetRepository extends JpaRepository
 
 	@Override
 	public List<WkpDeforLaborMonthActCalSet> findAllByCid(String cid) {
-		List<KrcstWkpDeforMCalSet> entitys = this.queryProxy().query(SELECT_BY_CID, KrcstWkpDeforMCalSet.class)
+		List<KrcmtCalcMSetDefWkp> entitys = this.queryProxy().query(SELECT_BY_CID, KrcmtCalcMSetDefWkp.class)
 				.setParameter("cid", cid).getList();
 		
 		return entitys.stream().map(m -> {

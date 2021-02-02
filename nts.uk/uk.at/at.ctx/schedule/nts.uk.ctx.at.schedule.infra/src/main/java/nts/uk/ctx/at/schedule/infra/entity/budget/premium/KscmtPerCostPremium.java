@@ -18,8 +18,8 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @Setter
 @Entity
-@Table(name = "KMLDT_PREMIUM_ATTENDANCE")
-public class KmldtPremiumAttendance extends ContractUkJpaEntity {
+@Table(name = "KSCMT_PER_COST_PREMIUM")
+public class KscmtPerCostPremium extends ContractUkJpaEntity {
     @EmbeddedId
     public KmldpPremiumAttendancePK kmldpPremiumAttendancePK;
     @Override
@@ -27,11 +27,11 @@ public class KmldtPremiumAttendance extends ContractUkJpaEntity {
         return kmldpPremiumAttendancePK;
     }
 
-    public static List<KmldtPremiumAttendance> toEntity(List<PremiumSetting> premiumSettings, String histId) {
-        List<KmldtPremiumAttendance> rs = new ArrayList<>();
+    public static List<KscmtPerCostPremium> toEntity(List<PremiumSetting> premiumSettings, String histId) {
+        List<KscmtPerCostPremium> rs = new ArrayList<>();
         premiumSettings.forEach(
                 e -> {
-                    rs.addAll(e.getAttendanceItems().stream().map(i -> new KmldtPremiumAttendance(
+                    rs.addAll(e.getAttendanceItems().stream().map(i -> new KscmtPerCostPremium(
                             new KmldpPremiumAttendancePK(
                                     e.getCompanyID(),
                                     histId,

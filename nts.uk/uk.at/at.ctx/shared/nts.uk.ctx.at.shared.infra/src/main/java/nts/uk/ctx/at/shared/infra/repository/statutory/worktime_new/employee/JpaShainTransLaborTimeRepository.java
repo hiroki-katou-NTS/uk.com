@@ -26,7 +26,7 @@ import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstSh
 @Stateless
 public class JpaShainTransLaborTimeRepository extends JpaRepository implements DeforLaborTimeShaRepo {
 
-	private static final String SELECT_BY_CID = "SELECT c FROM KshstShaTransLabTime c"
+	private static final String SELECT_BY_CID = "SELECT c FROM KshmtLegaltimeDDefSya c"
 			+ " WHERE c.kshstShaTransLabTimePK.cid = :cid";
 	
 	/* 
@@ -99,7 +99,7 @@ public class JpaShainTransLaborTimeRepository extends JpaRepository implements D
 
 	@Override
 	public List<DeforLaborTimeSha> findDeforLaborTimeShaByCid(String cid) {
-		List<KshstShaTransLabTime> entitys = this.queryProxy().query(SELECT_BY_CID, KshstShaTransLabTime.class)
+		List<KshmtLegaltimeDDefSya> entitys = this.queryProxy().query(SELECT_BY_CID, KshmtLegaltimeDDefSya.class)
 				.setParameter("cid", cid).getList();
 		return entitys.stream().map(m -> {
 			return toDomain(m);

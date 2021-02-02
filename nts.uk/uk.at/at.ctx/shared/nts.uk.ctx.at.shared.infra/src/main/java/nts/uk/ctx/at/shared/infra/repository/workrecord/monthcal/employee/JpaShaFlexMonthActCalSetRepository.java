@@ -22,7 +22,7 @@ import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.employee.KrcstShaFl
 @Stateless
 public class JpaShaFlexMonthActCalSetRepository extends JpaRepository implements ShaFlexMonthActCalSetRepo {
 	
-	private static final String SELECT_BY_CID = "SELECT c FROM KrcstShaFlexMCalSet c"
+	private static final String SELECT_BY_CID = "SELECT c FROM KrcmtCalcMSetFleSya c"
 			+ " WHERE c.krcstShaFlexMCalSetPK.cid = :cid";
 
 	/*
@@ -110,7 +110,7 @@ public class JpaShaFlexMonthActCalSetRepository extends JpaRepository implements
 
 	@Override
 	public List<ShaFlexMonthActCalSet> findAllShaByCid(String cid) {
-		List<KrcstShaFlexMCalSet> entitys = this.queryProxy().query(SELECT_BY_CID, KrcstShaFlexMCalSet.class)
+		List<KrcmtCalcMSetFleSya> entitys = this.queryProxy().query(SELECT_BY_CID, KrcmtCalcMSetFleSya.class)
 				.setParameter("cid", cid).getList();
 		return entitys.stream().map(m -> {
 			return toDomain(m);
