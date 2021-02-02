@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.shared.dom.common.time;
 
-import nts.uk.ctx.at.shared.dom.common.RangeDuplication;
+import nts.gul.util.range.RangeDuplication;
 
 /**
  * 時間帯の重複状態
@@ -32,16 +32,16 @@ public enum TimeSpanDuplication {
 			throw new RuntimeException("unknown value: " + range);
 			
 		//同じ期間
-		case SAME_SPAN:
+		case SAME_COMPLETE:
 			return SAME_SPAN;
 			
 		//比較期間の開始が基準期間の間にある		
-		case COMPARED_START_BETWEEN_BASE:
+		case START_SANDWITCHED_BETWEEN_BASE:
 			//thisが比較(range)のstartを含んでいる
 			return CONNOTATE_BEGINTIME;
 			
 		//比較期間の終了が基準期間の間にある
-		case COMPARED_END_BETWEEN_BASE:
+		case END_SANDWITCHED_BETWEEN_BASE:
 			//thisが比較(range)のendを含んでいる
 			return CONNOTATE_ENDTIME;
 			
