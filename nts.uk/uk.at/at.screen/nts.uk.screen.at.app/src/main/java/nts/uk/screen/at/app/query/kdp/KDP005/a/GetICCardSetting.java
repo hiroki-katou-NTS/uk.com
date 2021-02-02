@@ -1,4 +1,4 @@
-package nts.uk.screen.at.app.query.kdp.kdp004.a;
+package nts.uk.screen.at.app.query.kdp.KDP005.a;
 
 import java.util.Optional;
 
@@ -9,52 +9,46 @@ import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.Stam
 import nts.uk.ctx.at.record.dom.stamp.application.StampResultDisplayRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunalRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.stampsettingfunction.NoticeSetRepository;
+import nts.uk.screen.at.app.query.kdp.kdp004.a.NoticeSetDto;
+import nts.uk.screen.at.app.query.kdp.kdp004.a.StampSetCommunalDto;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * UKDesign.UniversalK.就業.KDP_打刻.KDP004_打刻入力(指静脈).A:打刻入力(指静脈).メニュー別OCD.打刻入力(指静脈)を起動する
+ * UKDesign.UniversalK.就業.KDP_打刻.KDP005_打刻入力(ICカード).A:打刻入力(ICカード).メニュー別OCD.打刻入力(ICカード)を起動する
  * 
- * @author sonnlb
+ * @author tutt
  *
  */
 @Stateless
-public class GetFingerStampSetting {
-
+public class GetICCardSetting {
+	
 	@Inject
 	private StampSetCommunalRepository stampSetCommunalRepo;
 
 	@Inject
 	private StampResultDisplayRepository stampResulRepo;
-
-	// @Inject
-	// private StampSetPerRepository stampSetPerRepo;
 	
 	@Inject
 	private NoticeSetRepository noticeSetRepo;
-
-	public GetFingerStampSettingDto getFingerStampSetting() {
+	
+	public GetICCardSettingDto  getICCardSetting() {
 		String companyId = AppContexts.user().companyId();
-		return getFingerStampSetting(companyId);
+		return getICCardSetting(companyId);
 	}
-
+	
 	/**
 	 * Get stamp setting with companyId
 	 * @param companyId
 	 * @return
 	 */
-	public GetFingerStampSettingDto getFingerStampSetting(String companyId) {
-		GetFingerStampSettingDto result = new GetFingerStampSettingDto();
+	public GetICCardSettingDto getICCardSetting(String companyId) {
+		GetICCardSettingDto result = new GetICCardSettingDto();
 		
 		// 1:get 会社ID
 		this.stampSetCommunalRepo.gets(companyId)
 			.ifPresent(setComu -> {
 				result.setStampSetting(new StampSetCommunalDto(setComu));
 				
-				// fix shit code
-				// stampSetPerRepo.getStampSetting(companyId)
-				//	.ifPresent(c -> {
-				//		result.getStampSetting().setButtonEmphasisArt(c.isButtonEmphasisArt());
-				//	});
 			});
 		
 		// 2:get 会社ID
@@ -71,4 +65,5 @@ public class GetFingerStampSetting {
 
 		return result;
 	}	
+
 }
