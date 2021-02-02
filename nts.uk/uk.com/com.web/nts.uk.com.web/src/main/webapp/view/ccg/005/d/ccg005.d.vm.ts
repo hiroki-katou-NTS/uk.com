@@ -53,12 +53,20 @@ module nts.uk.at.view.ccg005.d.screenModel {
           vm.selectedFavoriteOrder(firstOrder);
           vm.bindingData(firstOrder);
         }
-        vm.selectedFavoriteOrder.subscribe((order: number) => {
-          vm.bindingData(order);
-        });
         vm.$blockui("clear");
       })
       .always(() => vm.$blockui("clear"));
+
+      vm.selectedFavoriteOrder.subscribe((order: number) => {
+        vm.mode(Mode.UPDATE);
+        vm.bindingData(order);
+      });
+
+      vm.selectedRuleCode.subscribe((selectRule: number) => {
+        if(selectRule === TargetSelection.AFFILIATION_WORKPLACE) {
+          vm.$errors("clear");
+        }
+      });
     }
 
     private bindingData(order: number) {
