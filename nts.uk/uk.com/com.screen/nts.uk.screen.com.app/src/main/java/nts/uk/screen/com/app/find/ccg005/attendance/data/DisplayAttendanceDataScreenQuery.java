@@ -86,15 +86,16 @@ public class DisplayAttendanceDataScreenQuery {
 
 		// 6: <call>() [No.675]メニューの表示名を取得する
 		List<StandardMenuNameQueryImport> listMenuName = new ArrayList<>();
-		listMenuName.add(this.createMenu("KAF005", "A"));
-		listMenuName.add(this.createMenu("KAF006", "A"));
-		listMenuName.add(this.createMenu("KAF007", "A"));
+		listMenuName.add(this.createMenu("KAF005", "A", "overworkatr=0"));
+		listMenuName.add(this.createMenu("KAF005", "A", "overworkatr=1"));
+		listMenuName.add(this.createMenu("KAF005", "A", "overworkatr=2"));
 		listMenuName.add(this.createMenu("KAF008", "A"));
 		listMenuName.add(this.createMenu("KAF009", "A"));
 		listMenuName.add(this.createMenu("KAF010", "A"));
 		listMenuName.add(this.createMenu("KAF012", "A"));
 		listMenuName.add(this.createMenu("KAF014", "A"));
-		listMenuName.add(this.createMenu("KAF002", "A"));
+		listMenuName.add(this.createMenu("KAF002", "A", "overworkatr=0"));
+		listMenuName.add(this.createMenu("KAF002", "B", "overworkatr=1"));
 		listMenuName.add(this.createMenu("KAF011", "A"));
 		listMenuName.add(this.createMenu("KAF020", "A"));
 		List<StandardMenuNameImport> menu = menuAdapter.getMenuDisplayName(loginCid, listMenuName); //・メニュー分類　＝　標準　＝　0
@@ -115,8 +116,8 @@ public class DisplayAttendanceDataScreenQuery {
 				.build();
 	}
 	
-	private StandardMenuNameQueryImport createMenu(String programId, String screenId) {
-		return new StandardMenuNameQueryImport(programId, screenId, Optional.empty());
+	private StandardMenuNameQueryImport createMenu(String programId, String screenId, String... queryString) {
+		return new StandardMenuNameQueryImport(programId, screenId, Optional.ofNullable(queryString[0]));
 	}
 	
 	private Integer getAppType(String programId, String screenId) {
@@ -139,6 +140,7 @@ public class DisplayAttendanceDataScreenQuery {
 		case "KAF004A":
 			return 9;
 		case "KAF002A":
+		case "KAF002B":
 			return 7;
 		case "KAF011A":
 			return 10;
