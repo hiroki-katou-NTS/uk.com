@@ -55,6 +55,7 @@ module nts.uk.at.view.kmk003.a {
             backupOptions: EnumConstantDto[];
             
             screenMode: KnockoutObservable<number>;
+            otsukaMode: KnockoutObservable<boolean>
             isNewMode: KnockoutComputed<boolean>;
             isCopyMode: KnockoutComputed<boolean>;
             isNewOrCopyMode: KnockoutComputed<boolean>;
@@ -80,6 +81,9 @@ module nts.uk.at.view.kmk003.a {
 
                 // initial screen mode
                 self.screenMode = ko.observable(ScreenMode.NEW);
+
+                //initial otsuka mode
+                self.otsukaMode = ko.observable(false);
 
                 self.initComputedValue();
 
@@ -209,7 +213,7 @@ module nts.uk.at.view.kmk003.a {
                     new TabItem(TabID.TAB14, nts.uk.resource.getText("KMK003_28"), '.tab-a14', true, true),
                     new TabItem(TabID.TAB15, nts.uk.resource.getText("KMK003_29"), '.tab-a15', true, true),
                     new TabItem(TabID.TAB16, nts.uk.resource.getText("KMK003_30"), '.tab-a16', true, true),
-                    new TabItem(TabID.TAB17, nts.uk.resource.getText("KMK003_219"), '.tab-a17', true, true)
+                    new TabItem(TabID.TAB17, nts.uk.resource.getText("KMK003_219"), '.tab-a17', true, self.otsukaMode())
                 ]);
             }
             
@@ -481,6 +485,9 @@ module nts.uk.at.view.kmk003.a {
                     _.defer(() => nts.uk.ui.block.invisible());
 
                     service.findWorktimeSetingInfoByCode(worktimeCode).done(worktimeSettingInfo => {
+                        //check ootsuka mode
+                        self.otsukaMode(worktimeSettingInfo.modeOtsuka);
+                        _.find(self.tabs(),['id', TabID.TAB17]).setVisible(self.otsukaMode());
                         // search workTimeLanguage
                         let workTimeLanguage = _.find(self.lstWorkTimeLanguage(), ["workTimeCode", self.selectedWorkTimeCode()]); 
                         // update mainSettingModel data
@@ -518,6 +525,8 @@ module nts.uk.at.view.kmk003.a {
                         }                        
                     });
                 }
+                // set visible tab 17 by otsuka mode
+                _.find(_self.tabs(),['id', TabID.TAB17]).setVisible(_self.otsukaMode());
             }
 
             /**
