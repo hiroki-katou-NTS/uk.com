@@ -14,6 +14,10 @@ module a5 {
     class ScreenModel {
         mainSettingModel: MainSettingModel;
 
+        //use half day
+        useHalfDayOptions: KnockoutObservableArray<any>;
+        useHalfDay: KnockoutObservable<boolean>;
+
         // flex timezones
         oneDayFlexTimezones: KnockoutObservableArray<any>;
         morningFlexTimezones: KnockoutObservableArray<any>;
@@ -77,7 +81,7 @@ module a5 {
         isFixed: KnockoutComputed<boolean>;
         isDiffTime: KnockoutComputed<boolean>;
         isDetailMode: KnockoutComputed<boolean>;
-        useHalfDay: KnockoutObservable<boolean>;
+        isNewMode: KnockoutObservable<boolean>;
 
         // show/hide
         //isFlexOrFlow: KnockoutComputed<boolean>; // a5_2 flex or a5_4 flow *19
@@ -99,7 +103,15 @@ module a5 {
             // load data from main setting model
             self.mainSettingModel = valueAccessor.mainSettingModel;
             self.isDetailMode = valueAccessor.isDetailMode;
-            self.useHalfDay = valueAccessor.useHalfDay;
+            self.isNewMode = valueAccessor.isNewMode;
+
+            //use halfDay
+            self.useHalfDay = ko.observable(false); //A19_2_2 initial false
+            self.useHalfDayOptions = ko.observableArray([
+                { code: true, name: nts.uk.resource.getText("KMK003_49") },
+                { code: false, name: nts.uk.resource.getText("KMK003_50") }
+            ]);
+
             self.loadData();
 
             // fix table option

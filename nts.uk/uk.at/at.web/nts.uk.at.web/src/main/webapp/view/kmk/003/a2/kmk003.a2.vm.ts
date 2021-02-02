@@ -19,6 +19,10 @@ module a2 {
      */
     class ScreenModel {
 
+        //use half day
+        useHalfDayOptions: KnockoutObservableArray<any>;
+        useHalfDay: KnockoutObservable<boolean>;
+
         // Defined parameter binding
         parentModel: MainSettingModel;
         settingEnum: WorkTimeSettingEnumDto;
@@ -64,10 +68,11 @@ module a2 {
         // Defined variable Screen model
         isSimpleMode: KnockoutComputed<boolean>;
         isFlowMode: KnockoutComputed<boolean>;
+        isNewMode: KnockoutObservable<boolean>;
         isFlexMode: KnockoutComputed<boolean>;
         isFixedMode: KnockoutComputed<boolean>;
         isDiffTimeMode: KnockoutComputed<boolean>;
-        isUseHalfDay: KnockoutObservable<boolean>;
+       // isUseHalfDay: KnockoutObservable<boolean>;
 
         /**
         * Constructor.
@@ -80,11 +85,22 @@ module a2 {
             self.settingEnum = input.enum;
             
             self.isSimpleMode = input.isSimpleMode;
+            self.isNewMode = input.isNewMode;
             self.isFlowMode = self.parentModel.workTimeSetting.isFlow;
             self.isFlexMode = self.parentModel.workTimeSetting.isFlex;
             self.isFixedMode = self.parentModel.workTimeSetting.isFixed;
             self.isDiffTimeMode = self.parentModel.workTimeSetting.isDiffTime;
-            self.isUseHalfDay = input.useHalfDay; 
+
+            self.isNewMode.subscribe(function (v){
+                if (v) self.useHalfDay(false);// initial value in new mode
+            })
+
+            //use halfDay
+            self.useHalfDay = ko.observable(false); //A19_2_2 initial false
+            self.useHalfDayOptions = ko.observableArray([
+                { code: true, name: nts.uk.resource.getText("KMK003_49") },
+                { code: false, name: nts.uk.resource.getText("KMK003_50") }
+            ]);
 
             // ====================================== Defined Variable Flow Mode ======================================
             

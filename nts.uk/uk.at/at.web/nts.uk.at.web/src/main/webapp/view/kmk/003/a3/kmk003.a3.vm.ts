@@ -13,6 +13,10 @@ module a3 {
     import SettingMethod = nts.uk.at.view.kmk003.a.viewmodel.SettingMethod;
     class ScreenModel {
 
+        //use half day
+        useHalfDayOptions: KnockoutObservableArray<any>;
+        useHalfDay: KnockoutObservable<boolean>;
+
         // fixed table options Fixed Detail
         fixTableOptionOnedayFixed: any;
         fixTableOptionMorningFixed: any;
@@ -81,19 +85,24 @@ module a3 {
         /**
         * Constructor.
         */
-        constructor(settingEnum: WorkTimeSettingEnumDto, mainSettingModel: MainSettingModel, isDetailMode: KnockoutComputed<boolean>,
-            isUseHalfDay: KnockoutObservable<boolean>, isNewMode: KnockoutComputed<boolean>,lstOvertimeWorkFrame : any) {
+        constructor(settingEnum: WorkTimeSettingEnumDto, mainSettingModel: MainSettingModel, isDetailMode: KnockoutComputed<boolean>, isNewMode: KnockoutComputed<boolean>,lstOvertimeWorkFrame : any) {
             let self = this;
             self.isNewMode = isNewMode;
             self.screenSettingMode = ko.observable(0);
             self.settingEnum = settingEnum;
             self.mainSettingModel = mainSettingModel;
             self.isDetailMode = isDetailMode;
-            self.isUseHalfDay = isUseHalfDay;
             self.isFlexMode = self.mainSettingModel.workTimeSetting.isFlex;
             self.isFlowMode = self.mainSettingModel.workTimeSetting.isFlow;
             self.isFixedMode = self.mainSettingModel.workTimeSetting.isFixed;
             self.isDiffTimeMode = self.mainSettingModel.workTimeSetting.isDiffTime;
+
+            //use halfDay
+            self.useHalfDay = ko.observable(false); //A19_2_2 initial false
+            self.useHalfDayOptions = ko.observableArray([
+                { code: true, name: nts.uk.resource.getText("KMK003_49") },
+                { code: false, name: nts.uk.resource.getText("KMK003_50") }
+            ]);
             
             self.autoCalUseAttrs = ko.observableArray([
                 { code: 1, name: nts.uk.resource.getText("KMK003_142") },
@@ -118,6 +127,7 @@ module a3 {
 
             self.isNewMode.subscribe((v) => {
                 if (v) {
+                    self.useHalfDay(false); // initial false in new mode
                     self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeMethodSet.valueHasMutated();
                 }
             });
@@ -584,9 +594,8 @@ module a3 {
             var settingEnum: WorkTimeSettingEnumDto = input.enum;
             var mainSettingModel: MainSettingModel = input.mainModel;
             var isDetailMode:  KnockoutComputed<boolean> = input.isDetailMode;
-            var useHalfDay:  KnockoutObservable<boolean> = input.useHalfDay;
             var isNewMode: KnockoutComputed<boolean> = input.isNewMode;
-            let screenModel = new ScreenModel(settingEnum, mainSettingModel, isDetailMode, useHalfDay,isNewMode,input.overTimeWorkFrameOptions());
+            let screenModel = new ScreenModel(settingEnum, mainSettingModel, isDetailMode, isNewMode,input.overTimeWorkFrameOptions());
             screenModel.startPage().done(() => {
                 $(element).load(webserviceLocator, function() {
                     ko.cleanNode($(element)[0]);

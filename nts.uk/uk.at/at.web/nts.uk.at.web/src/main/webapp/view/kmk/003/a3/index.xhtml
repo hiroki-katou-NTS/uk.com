@@ -8,7 +8,29 @@
 		nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameNo
 		nts.uk.ctx.at.shared.dom.common.time.AttendanceTime
    	</com:ValidatorScript>
-   	
+
+	<!--	use halfDay-->
+	<div class="use-halfday">
+		<com:ko tag="if" bind ="isDetailMode">
+			<com:ko tag="ifnot" bind="isFlowMode">
+				<td class="td-cell" width="100px">
+					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_48')}</div>
+				</td>
+				<td class="td-cell">
+					<div class="cf" tabindex="55"
+						 data-bind="ntsSwitchButton: {
+											name: '#[KMK003_165]',
+											options: useHalfDayOptions,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: useHalfDay,
+											enable: true }">
+					</div>
+				</td>
+			</com:ko>
+		</com:ko>
+	</div>
+
 	<com:ko tag="ifnot" bind="isFlexMode">
 		<com:ko tag="ifnot" bind="isFlowMode">
 			<com:ko tag="if" bind="isFixedMode">
@@ -29,7 +51,7 @@
 				<div class="tab-seperator">	
 					<com:ko tag="if" bind="isDetailMode">						
 						<div tabindex="-1" class="accordion"
-							data-bind="ntsAccordion: {enable: true} ">
+							data-bind="ntsAccordion: {enable: true, collapsible:true, active: 0} ">
 							<h3>
 								<label>#{i18n.getText('KMK003_51')}</label>
 							</h3>
@@ -50,9 +72,9 @@
 							data-bind="ntsFixTableCustom: {option: fixTableOptionOnedayFixedSimple}"></div>
 					</com:ko>
 					<com:ko tag="if" bind="isDetailMode">
-					<com:ko tag="if" bind="isUseHalfDay">
+					<com:ko tag="if" bind="useHalfDay">
 						<div tabindex="-1" class="accordion"
-							data-bind="ntsAccordion: {enable: true}">
+							data-bind="ntsAccordion: {enable: true, collapsible:true, active: 0}">
 							<h3>
 								<label>#{i18n.getText('KMK003_60')}</label>
 							</h3>
@@ -68,7 +90,7 @@
 							</div>
 						</div>
 						<div tabindex="-1" class="accordion"
-							data-bind="ntsAccordion: {enable: true}">
+							data-bind="ntsAccordion: {enable: true, collapsible:true, active: 0}">
 							<h3>
 								<label>#{i18n.getText('KMK003_61')}</label>
 							</h3>
@@ -106,7 +128,7 @@
 				<div class="tab-seperator">	
 					<com:ko tag="if" bind="isDetailMode">						
 						<div tabindex="-1" class="accordion"
-							data-bind="ntsAccordion: {enable: true} ">
+							data-bind="ntsAccordion: {enable: true, collapsible:true, active: 0} ">
 							<h3>
 								<label>#{i18n.getText('KMK003_51')}</label>
 							</h3>
@@ -127,9 +149,9 @@
 							data-bind="ntsFixTableCustom: {option: fixTableOptionOnedayDiffTimeSimple}"></div>
 					</com:ko>
 					<com:ko tag="if" bind="isDetailMode">
-					<com:ko tag="if" bind="isUseHalfDay">
+					<com:ko tag="if" bind="useHalfDay">
 						<div tabindex="-1" class="accordion"
-							data-bind="ntsAccordion: {enable: true}">
+							data-bind="ntsAccordion: {enable: true, collapsible:true, active: 0}">
 							<h3>
 								<label>#{i18n.getText('KMK003_60')}</label>
 							</h3>
@@ -145,7 +167,7 @@
 							</div>
 						</div>
 						<div tabindex="-1" class="accordion"
-							data-bind="ntsAccordion: {enable: true}">
+							data-bind="ntsAccordion: {enable: true, collapsible:true, active: 0}">
 							<h3>
 								<label>#{i18n.getText('KMK003_61')}</label>
 							</h3>
@@ -193,7 +215,7 @@
 				</com:ko>
 				<com:ko tag="if" bind="isDetailMode">
 					<div tabindex="-1" class="accordion"
-						data-bind="ntsAccordion: {enable: true} ">
+						data-bind="ntsAccordion: {enable: true, collapsible:true, active: 0} ">
 						<h3>
 							<label>#{i18n.getText('KMK003_51')}</label>
 						</h3>
@@ -202,9 +224,9 @@
 								data-bind="ntsFixTableCustom: {option: fixTableOptionOnedayFlex}"></div>
 						</div>
 					</div>
-					<com:ko tag="if" bind="isUseHalfDay">
+					<com:ko tag="if" bind="useHalfDay">
 						<div tabindex="-1" class="accordion"
-							data-bind="ntsAccordion: {enable: true}">
+							data-bind="ntsAccordion: {enable: true, collapsible:true, active: 0}">
 							<h3>
 								<label>#{i18n.getText('KMK003_60')}</label>
 							</h3>
@@ -214,7 +236,7 @@
 							</div>
 						</div>
 						<div tabindex="-1" class="accordion"
-							data-bind="ntsAccordion: {enable: true}">
+							data-bind="ntsAccordion: {enable: true, collapsible:true, active: 0}">
 							<h3>
 								<label>#{i18n.getText('KMK003_61')}</label>
 							</h3>

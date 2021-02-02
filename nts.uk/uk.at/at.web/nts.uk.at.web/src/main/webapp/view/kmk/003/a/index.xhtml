@@ -300,24 +300,7 @@
 											enable: isJapanese() }">
 										</div>
 									</td>
-									<com:ko tag="if" bind ="isDetailMode">
-									<com:ko tag="ifnot" bind="mainSettingModel.workTimeSetting.isFlow">
-									<td class="td-cell" width="100px">
-										<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_48')}</div>
-									</td>
-									<td class="td-cell">
-										<div class="cf" tabindex="22"
-											data-bind="ntsSwitchButton: {
-											name: '#[KMK003_165]',
-											options: useHalfDayOptions,
-											optionsValue: 'code',
-											optionsText: 'name',
-											value: useHalfDay,
-											enable: isJapanese() }">
-										</div>
-									</td>
-									</com:ko>
-									</com:ko>
+
 								</tr>
 								<!-- panels -->
 								<tr>
@@ -329,7 +312,6 @@
 												<div data-bind="ntsKMK003A1: {
 													selectedTab: selectedTab,
 													isDetailMode: isDetailMode,
-													useHalfDay: useHalfDay,
 													enum: settingEnum,
 													mainSettingModel: mainSettingModel,
 													isNewMode: isNewMode 
@@ -339,7 +321,7 @@
 											<div tabindex="45" class="tab-a2">
 												<div class="tab-outline" data-bind="ntsKMK003A2: {
 													isSimpleMode: isSimpleMode,
-													useHalfDay: useHalfDay,
+													isNewMode: isNewMode,
 													enum: settingEnum,
 													mainModel: mainSettingModel }">
 												</div>
@@ -350,7 +332,6 @@
 													overTimeWorkFrameOptions: overTimeWorkFrameOptions,
 													isDetailMode: isDetailMode,
 													isNewMode: isNewMode,
-													useHalfDay: useHalfDay,
 													mainModel: mainSettingModel }">
 												</div>
 											</div>
@@ -365,7 +346,7 @@
 											<div tabindex="68" class="tab-a5">
 												<div class="tab-outline" data-bind="ntsKMK003A5: {
 													isDetailMode: isDetailMode,
-													useHalfDay: useHalfDay,
+													isNewMode: isNewMode,
 													mainSettingModel: mainSettingModel,
 													enum: settingEnum }">
 												</div>

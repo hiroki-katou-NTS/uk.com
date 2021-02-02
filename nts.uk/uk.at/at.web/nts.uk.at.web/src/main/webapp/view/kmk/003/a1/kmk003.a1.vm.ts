@@ -27,7 +27,7 @@ module a1 {
         isTimezoneTwoEnabled: KnockoutObservable<boolean>;
         isFlexMode: KnockoutObservable<boolean>;
         isFlowMode: KnockoutObservable<boolean>
-        useHalfDay: KnockoutObservable<boolean>;
+        //useHalfDay: KnockoutObservable<boolean>;
         //A7_17 condition
         isDetailAndNotFlexOrFlow: any;
 
@@ -143,7 +143,7 @@ module a1 {
             self.isFlowMode = self.mainSettingModel.workTimeSetting.isFlow;
             self.isDiffTimeMode = self.mainSettingModel.workTimeSetting.isDiffTime;
             self.settingEnum = settingEnum;
-            self.useHalfDay = data.useHalfDay;
+            //self.useHalfDay = data.useHalfDay;
 
             //A7_17 display condition
             self.isDetailAndNotFlexOrFlow = ko.computed(function (){
