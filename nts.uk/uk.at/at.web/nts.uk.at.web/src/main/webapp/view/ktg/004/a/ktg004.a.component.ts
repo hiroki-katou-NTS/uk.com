@@ -97,6 +97,8 @@ module nts.uk.ui.ktg004.a {
             vm.$blockui('grayout')
                 .then(() => vm.$ajax("at", KTG004_API.GET_DATA, { topPageYearMonthEnum: topPageYearMonthEnum }))
                 .then(function (data: ResponseData) {
+                    vm.itemsDisplay([]);
+                    
                     const {
                         name,
                         detailedWorkStatusSettings,
@@ -203,7 +205,7 @@ module nts.uk.ui.ktg004.a {
         public openKDW003() {
             const vm = this;
 
-            vm.$jump('/nts.uk.at.web/view/kdw/003/a/index.xhtml');
+            window.top.location = window.location.origin + '/nts.uk.at.web/view/kdw/003/a/index.xhtml';
         }
 
     }
