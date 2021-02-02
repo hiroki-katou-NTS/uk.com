@@ -652,11 +652,11 @@ public class OutsideOTSettingExportImpl implements MasterListData {
     public List<MasterHeaderColumn> getHeaderColumnThrees(MasterListExportQuery query) {
         List<MasterHeaderColumn> columns = new ArrayList<>();
         columns.add(new MasterHeaderColumn(NUMBER_COLS_START, "", ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn(NUMBER_COLS_1, "KMK010_87", ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn(NUMBER_COLS_2, "KMK010_87", ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn(NUMBER_COLS_3, "KMK010_87", ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn(NUMBER_COLS_4, "KMK010_87", ColumnTextAlign.LEFT, "", true));
-        columns.add(new MasterHeaderColumn(NUMBER_COLS_5, "KMK010_87", ColumnTextAlign.LEFT, "", true));
+        columns.add(new MasterHeaderColumn(NUMBER_COLS_1, TextResource.localize("KMK010_87"), ColumnTextAlign.LEFT, "", true));
+        columns.add(new MasterHeaderColumn(NUMBER_COLS_2, TextResource.localize("KMK010_87"), ColumnTextAlign.LEFT, "", true));
+        columns.add(new MasterHeaderColumn(NUMBER_COLS_3, TextResource.localize("KMK010_87"), ColumnTextAlign.LEFT, "", true));
+        columns.add(new MasterHeaderColumn(NUMBER_COLS_4, TextResource.localize("KMK010_87"), ColumnTextAlign.LEFT, "", true));
+        columns.add(new MasterHeaderColumn(NUMBER_COLS_5, TextResource.localize("KMK010_87"), ColumnTextAlign.LEFT, "", true));
 
         return columns;
     }
