@@ -13,4 +13,6 @@ public class ApplicationNameDto {
 	private String appName;
 	// 申請種類
 	private Integer appType;
+	//他の種類
+	private Integer otherType;
 }

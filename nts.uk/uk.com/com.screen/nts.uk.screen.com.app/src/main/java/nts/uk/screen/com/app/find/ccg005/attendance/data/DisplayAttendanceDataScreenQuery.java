@@ -94,8 +94,8 @@ public class DisplayAttendanceDataScreenQuery {
 		listMenuName.add(this.createMenu("KAF010", "A", null));
 		listMenuName.add(this.createMenu("KAF012", "A", null));
 		listMenuName.add(this.createMenu("KAF014", "A", null));
-		listMenuName.add(this.createMenu("KAF002", "A", "overworkatr=0"));
-		listMenuName.add(this.createMenu("KAF002", "B", "overworkatr=1"));
+		listMenuName.add(this.createMenu("KAF002", "A", null));
+		listMenuName.add(this.createMenu("KAF002", "B", null));
 		listMenuName.add(this.createMenu("KAF011", "A", null));
 		listMenuName.add(this.createMenu("KAF020", "A", null));
 		List<StandardMenuNameImport> menu = menuAdapter.getMenuDisplayName(loginCid, listMenuName); //・メニュー分類　＝　標準　＝　0
@@ -103,6 +103,7 @@ public class DisplayAttendanceDataScreenQuery {
 			return ApplicationNameDto.builder()
 					.appName(item.getDisplayName())
 					.appType(this.getAppType(item.getProgramId(), item.getScreenId()))
+					.otherType(this.getOtherType(item.getProgramId(), item.getScreenId(), item.getQueryString()))
 					.build();
 		}).collect(Collectors.toList());
 		
@@ -121,7 +122,7 @@ public class DisplayAttendanceDataScreenQuery {
 	}
 	
 	private Integer getAppType(String programId, String screenId) {
-		String key = programId+screenId;
+		String key = (programId+screenId).trim();
 		switch (key) {
 		case "KAF005A":
 			return 0;
@@ -146,6 +147,22 @@ public class DisplayAttendanceDataScreenQuery {
 			return 10;
 		case "KAF020A":
 			return 15;
+		default:
+			return -1;
+		}
+	}
+	
+	private Integer getOtherType(String programId, String screenId, String queryString) {
+		String key = (programId+screenId+queryString).trim();
+		switch (key) {
+		case "KAF005Aoverworkatr=0":
+		case "KAF002A":
+			return 0;
+		case "KAF005Aoverworkatr=1":
+		case "KAF002B":
+			return 1;
+		case "KAF005Aoverworkatr=2":
+			return 2;
 		default:
 			return -1;
 		}
