@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworkt
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -57,6 +58,23 @@ public class ShortWorkingTimeSheet {
 		this.childCareAttr = childCareAttr;
 		this.startTime = startTime;
 		this.endTime = endTime;
+	}
+	
+	/**
+	 * 計算用時間帯に変換する
+	 * @return
+	 */
+	public TimeSpanForCalc convertToTimeSpanForCalc() {
+		return new TimeSpanForCalc(this.startTime, this.endTime);
+	}
+	
+	/**
+	 * 対象時間帯と重複するか
+	 * @param target 対象時間帯
+	 * @return
+	 */
+	public boolean isDuplicatedWithTimeSpan(TimeSpanForCalc target) {
+		return this.convertToTimeSpanForCalc().checkDuplication(target).isDuplicated();
 	}
 	
 }
