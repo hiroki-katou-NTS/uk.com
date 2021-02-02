@@ -9,7 +9,7 @@ import nts.uk.ctx.sys.shared.dom.company.CompanyInforImport;
  */
 public class CheckIfCanLogin {
 
-	public static Result check(Require require, IdentifiedEmployeeInfo identified) {
+	public static void check(Require require, IdentifiedEmployeeInfo identified) {
 
 		String tenantCode = identified.getTenantCode();
 		String companyId = identified.getCompanyId();
@@ -28,17 +28,8 @@ public class CheckIfCanLogin {
 		}
 		
 		// 社員がログインできるかチェックする
-//		val empStatus = CheckEmployeeUserAvailability.check(require, identified);
-//		if (empStatus) {
-//			
-//		}
+		CheckEmployeeUserAvailability.check(require, identified);
 
-		
-		return null;
-	}
-	
-	public static class Result {
-		
 	}
 	
 	public static interface Require extends
