@@ -103,17 +103,6 @@ public class GetYearFromYearMonthPeriodTest {
 	@Test
 	public void getDataWhenYMEmpty() {
 
-		new Expectations() {
-			{
-				require.find(CID);
-				result = Arrays.asList(
-						new Company(new CompanyCode(""), null, MonthStr.ONE, null, null, null, null, null, new ContractCd(""), null, null),
-						new Company(new CompanyCode(""), null, MonthStr.TWO, null, null, null, null, null, new ContractCd(""), null, null),
-						new Company(new CompanyCode(""), null, MonthStr.THREE, null, null, null, null, null, new ContractCd(""), null, null));
-
-			}
-		};
-
 		List<YearMonth> yearMonths = Collections.emptyList();
 		List<Year> years = GetYearFromYearMonthPeriod.getYearFromYearMonthPeriod(require, CID, yearMonths);
 
