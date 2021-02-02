@@ -33,7 +33,10 @@ public class OiomtChrDataFormatSet extends UkJpaEntity implements Serializable {
 	 */
 	@EmbeddedId
 	public OiomtChrDataFormatSetPk chrDataFormatSetPk;
-
+	/**	契約コード */
+	@Basic(optional = false)
+	@Column(name = "CONTRACT_CD")
+	public String contractCd;
 	/**
 	 * コード編集
 	 */

@@ -33,7 +33,10 @@ public class OiomtDateDataFormSet extends UkJpaEntity implements Serializable {
 	 */
 	@EmbeddedId
 	public OiomtDateDataFormSetPk dateDataFormSetPk;
-
+	/**	契約コード */
+	@Basic(optional = false)
+	@Column(name = "CONTRACT_CD")
+	public String contractCd;
 	/**
 	 * 固定値
 	 */

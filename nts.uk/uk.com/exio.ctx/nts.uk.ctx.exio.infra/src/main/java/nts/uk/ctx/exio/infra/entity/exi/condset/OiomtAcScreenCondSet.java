@@ -20,6 +20,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.exio.dom.exi.condset.AcScreenCondSet;
 import nts.uk.ctx.exio.dom.exi.item.StdAcceptItem;
 import nts.uk.ctx.exio.infra.entity.exi.item.OiomtStdAcceptItem;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -40,7 +41,10 @@ public class OiomtAcScreenCondSet extends UkJpaEntity implements Serializable {
 	 */
 	@EmbeddedId
 	public OiomtAcScreenCondSetPk acScreenCondSetPk;
-
+	/**	契約コード */
+	@Basic(optional = false)
+	@Column(name = "CONTRACT_CD")
+	public String contractCd;
 	/**
 	 * 比較条件選択
 	 */
@@ -135,6 +139,7 @@ public class OiomtAcScreenCondSet extends UkJpaEntity implements Serializable {
 			String charCondVal2, BigDecimal numCondVal1, BigDecimal numCondVal2) {
 		super();
 		this.acScreenCondSetPk = new OiomtAcScreenCondSetPk(cid, conditionCode, acceptItemNum);
+		this.contractCd = AppContexts.user().contractCode();
 		this.selCompareCond = selCompareCond;
 		this.timeCondVal2 = timeCondVal2;
 		this.timeCondVal1 = timeCondVal1;

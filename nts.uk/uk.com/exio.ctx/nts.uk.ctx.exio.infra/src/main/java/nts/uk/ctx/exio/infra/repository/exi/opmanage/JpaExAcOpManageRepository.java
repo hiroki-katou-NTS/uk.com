@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 
 import nts.uk.ctx.exio.infra.entity.exi.opmanage.OiomtExAcOpManage;
 import nts.uk.ctx.exio.infra.entity.exi.opmanage.OiomtExAcOpManagePk;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.ctx.exio.dom.exi.opmanage.ExAcOpManageRepository;
 import nts.uk.ctx.exio.dom.exi.opmanage.ExAcOpManage;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -63,7 +64,14 @@ public class JpaExAcOpManageRepository extends JpaRepository implements ExAcOpMa
     }
 
     private OiomtExAcOpManage toEntity(ExAcOpManage domain) {
-        return new OiomtExAcOpManage(domain.getVersion(), new OiomtExAcOpManagePk(domain.getCid(), domain.getProcessId()), domain.getErrorCount(), domain.getInterruption(), domain.getProcessCount(), domain.getProcessTotalCount(), domain.getStateBehavior());
+        return new OiomtExAcOpManage(domain.getVersion(),
+        		new OiomtExAcOpManagePk(domain.getCid(), domain.getProcessId()),
+        		AppContexts.user().contractCode(),
+        		domain.getErrorCount(),
+        		domain.getInterruption(),
+        		domain.getProcessCount(),
+        		domain.getProcessTotalCount(), 
+        		domain.getStateBehavior());
     }
 
 }

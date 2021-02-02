@@ -13,7 +13,10 @@ module nts.uk.com.view.cmf001.q {
             
             // 外部受入処理ＩＤを新規採番する. index at server
             processId: KnockoutObservable<string> = ko.observable('');
-            
+            //ファイルID
+            csvFileId: KnockoutObservable<string> = ko.observable('');
+            //文字コード
+            endcoding: KnockoutObservable<number> =  ko.observable(0);
             // 外部受入実行結果ログ
             exacExeResultLog : IExacExeResultLog;
             
@@ -68,11 +71,23 @@ module nts.uk.com.view.cmf001.q {
                     resultStatus: null,/* 結果状態  ＝空白 */
                     processEndDatetime: null,/*処理終了日時＝空白 */
                     processAtr: 0, /* 処理区分 ＝受入チェック処理*/
+                    csvFileId: self.params.fileId,
+                    endcoding: self.params.endcoding
+                    
                 }
 
+                
+
+            }
+            //開始
+            start(): JQueryPromise<any> {
+                let self = this,
+                    dfd = $.Deferred();
                 self.codCode = ko.observable(self.params.conditionCd);
                 self.codName = ko.observable(self.params.conditionName);
                 self.timeOver = ko.observable('00:00:00');
+                self.csvFileId = ko.observable(self.params.fileId);
+                self.endcoding = ko.observable(self.params.endcoding);
 
                 //init
                 //self.totalRecord(self.params.totalRecord);
@@ -80,13 +95,6 @@ module nts.uk.com.view.cmf001.q {
                 self.currentRecord(0);
                 self.numberFail(0);
                 self.executionState('準備中');
-
-            }
-            //開始
-            start(): JQueryPromise<any> {
-                let self = this,
-                    dfd = $.Deferred();
-
                 // ドメインモデル「外部受入実行結果ログ」に登録する
                 let command: IExacExeResultLog = self.exacExeResultLog;
                 service.addErrorLog(command).done(function(data){
@@ -129,7 +137,11 @@ module nts.uk.com.view.cmf001.q {
                     self.currentRecord(),
                     self.numberFail(),
                     self.stopMode(),
-                    self.stateBehavior());
+                    self.stateBehavior(),
+                    self.codCode(),
+                    self.csvFileId(),
+                    self.endcoding()
+                    );
                 // find task id
                 service.check(command).done(function(res: any) {
                     self.taskId(res.taskInfor.id);
@@ -158,8 +170,10 @@ module nts.uk.com.view.cmf001.q {
                     self.currentRecord(),
                     self.numberFail(),
                     self.stopMode(),
-                    self.stateBehavior());
-
+                    self.stateBehavior(),
+                    self.codCode(),
+                    self.csvFileId(),
+                    self.endcoding());
                 // find task id
                 service.executionImportCsvData(command).done(function(res: any) {
                     self.taskId(res.taskInfor.id);
@@ -272,7 +286,14 @@ module nts.uk.com.view.cmf001.q {
         errorCount: number;
         stopMode: number;
         stateBehavior: number;
-        constructor(processId: string, csvLine: number, currentLine: number, errorCount: number, stopMode: number, stateBehavior: number) {
+        /* 条件設定コード*/
+        conditionSetCode: string;
+        //ファイルID   
+        csvFileId: string;
+        //文字コード
+        endcoding: number;
+        constructor(processId: string, csvLine: number, currentLine: number, errorCount: number, stopMode: number, stateBehavior: number,
+            conditionSetCd: string, csvFileId: string, endcoding: number) {
             let self = this;
             self.processId = processId;
             self.csvLine = csvLine;
@@ -280,6 +301,9 @@ module nts.uk.com.view.cmf001.q {
             self.errorCount = errorCount;
             self.stopMode = stopMode;
             self.stateBehavior = stateBehavior;
+            self.conditionSetCode = conditionSetCd;
+            self.csvFileId = csvFileId;
+            self.endcoding = endcoding;
         }
     }
 
@@ -314,6 +338,10 @@ module nts.uk.com.view.cmf001.q {
         processEndDatetime: string;
         /* 処理区分 */
         processAtr: number;
+        //ファイルID   
+        csvFileId: string;
+        //文字コード
+        endcoding: number;
     }
 
     export function getListProcessing(): Array<ItemModel> {

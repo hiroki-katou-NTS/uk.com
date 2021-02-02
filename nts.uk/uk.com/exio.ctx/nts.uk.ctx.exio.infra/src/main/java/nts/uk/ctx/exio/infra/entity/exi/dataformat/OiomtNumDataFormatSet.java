@@ -34,7 +34,10 @@ public class OiomtNumDataFormatSet extends UkJpaEntity implements Serializable {
 	 */
 	@EmbeddedId
 	public OiomtNumDataFormatSetPk numDataFormatSetPk;
-
+	/**	契約コード */
+	@Basic(optional = false)
+	@Column(name = "CONTRACT_CD")
+	public String contractCd;
 	/**
 	 * 固定値
 	 */

@@ -145,6 +145,7 @@ public class SyncCsvCheckImportDataCommandHandler extends AsyncCommandHandler<Cs
 						chkLineData = condEditAndCheck.isResultCheck();
 					}
 					
+					
 					//②　TODO Check primitive value
 					//③　TODO アルゴリズム「特殊区分項目の編集」を実行
 					//④　TODO　履歴区分

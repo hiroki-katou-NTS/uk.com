@@ -399,7 +399,8 @@ module nts.uk.com.view.cmf001.o.viewmodel {
                 conditionName: self.selectedConditionName(),
                 fileName: self.fileName(),
                 fileId: self.fileId(),
-                totalRecord: self.totalRecord()
+                totalRecord: self.totalRecord(),
+                endcoding :self.selectedEncoding()
             });
             nts.uk.ui.windows.sub.modal("/view/cmf/001/q/index.xhtml");
         }

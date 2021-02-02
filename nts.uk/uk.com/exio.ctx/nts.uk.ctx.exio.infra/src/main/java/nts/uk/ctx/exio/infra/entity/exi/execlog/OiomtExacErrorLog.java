@@ -33,7 +33,10 @@ public class OiomtExacErrorLog extends UkJpaEntity implements Serializable {
 	 */
 	@EmbeddedId
 	public OiomtExacErrorLogPk exacErrorLogPk;
-
+	/**	契約コード */
+	@Basic(optional = false)
+	@Column(name = "CONTRACT_CD")
+	public String contractCd;
 	/**
 	 * CSVエラー項目名
 	 */

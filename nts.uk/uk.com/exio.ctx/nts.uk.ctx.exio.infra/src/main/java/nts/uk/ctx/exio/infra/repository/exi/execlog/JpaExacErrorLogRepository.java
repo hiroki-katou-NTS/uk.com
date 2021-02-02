@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 
 import nts.uk.ctx.exio.infra.entity.exi.execlog.OiomtExacErrorLog;
 import nts.uk.ctx.exio.infra.entity.exi.execlog.OiomtExacErrorLogPk;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.ctx.exio.dom.exi.execlog.ExacErrorLogRepository;
 import nts.uk.ctx.exio.dom.exi.condset.AcceptanceLineNumber;
 import nts.uk.ctx.exio.dom.exi.execlog.ErrorOccurrenceIndicator;
@@ -83,6 +84,7 @@ public class JpaExacErrorLogRepository extends JpaRepository implements ExacErro
 	private OiomtExacErrorLog toEntity(ExacErrorLog domain) {
 		return new OiomtExacErrorLog(domain.getVersion(),
 				new OiomtExacErrorLogPk(domain.getLogSeqNumber(), domain.getCid(), domain.getExternalProcessId()),
+				AppContexts.user().contractCode(),
 				domain.getCsvErrorItemName().get(), domain.getCsvAcceptedValue().get(), domain.getErrorContents().get(),
 				domain.getRecordNumber().v(), domain.getLogRegDateTime(), domain.getItemName().get(), domain.getErrorAtr().value);
 	}

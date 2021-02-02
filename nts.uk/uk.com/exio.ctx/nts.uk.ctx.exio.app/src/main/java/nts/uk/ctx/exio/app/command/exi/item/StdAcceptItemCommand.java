@@ -90,7 +90,7 @@ public class StdAcceptItemCommand {
 				Optional.ofNullable(this.csvItemName),
 				EnumAdaptor.valueOf(this.itemType, ItemType.class),
 				this.categoryItemNo,
-				Optional.ofNullable(this.screenConditionSetting.toDomain()),
+				Optional.ofNullable(this.screenConditionSetting == null ? null : this.screenConditionSetting.toDomain()),
 				Optional.ofNullable(dataFormatSet));
 		return domain;
 	}

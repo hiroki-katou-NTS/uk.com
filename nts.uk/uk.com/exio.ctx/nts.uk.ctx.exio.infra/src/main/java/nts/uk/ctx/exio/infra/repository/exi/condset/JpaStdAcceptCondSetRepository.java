@@ -13,6 +13,7 @@ import nts.uk.ctx.exio.dom.exi.condset.SystemType;
 import nts.uk.ctx.exio.dom.exi.csvimport.ExiCharset;
 import nts.uk.ctx.exio.infra.entity.exi.condset.OiomtStdAcceptCondSet;
 import nts.uk.ctx.exio.infra.entity.exi.condset.OiomtStdAcceptCondSetPk;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 import javax.ejb.Stateless;
@@ -116,7 +117,9 @@ public class JpaStdAcceptCondSetRepository extends JpaRepository implements StdA
 
 	private OiomtStdAcceptCondSet toEntity(StdAcceptCondSet domain) {
 		OiomtStdAcceptCondSetPk pk = new OiomtStdAcceptCondSetPk(domain.getCompanyId(), domain.getConditionSetCode().v());
+		String contractCd = AppContexts.user().contractCode();
 		OiomtStdAcceptCondSet entity = new OiomtStdAcceptCondSet(pk,
+				contractCd,
 				domain.getSystemType().isPresent() ? domain.getSystemType().get().value : null,
 				domain.getCategoryId().isPresent() ? domain.getCategoryId().get() : null,
 				domain.getCsvDataItemLineNumber().isPresent() ? domain.getCsvDataItemLineNumber().get().v() : null,

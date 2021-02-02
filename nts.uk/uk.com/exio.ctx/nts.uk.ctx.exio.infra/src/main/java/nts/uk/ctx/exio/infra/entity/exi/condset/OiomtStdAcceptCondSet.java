@@ -32,6 +32,10 @@ public class OiomtStdAcceptCondSet extends UkJpaEntity implements Serializable {
 	 */
 	@EmbeddedId
 	private OiomtStdAcceptCondSetPk stdAcceptCondSetPk;
+	/**	契約コード */
+	@Basic(optional = false)
+	@Column(name = "CONTRACT_CD")
+	public String contractCd;
 	/**
 	 * システム種類
 	 */

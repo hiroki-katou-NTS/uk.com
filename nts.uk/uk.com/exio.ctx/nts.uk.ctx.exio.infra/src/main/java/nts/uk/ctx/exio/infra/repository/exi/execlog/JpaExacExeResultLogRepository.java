@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 
 import nts.uk.ctx.exio.infra.entity.exi.execlog.OiomtExacExeResultLog;
 import nts.uk.ctx.exio.infra.entity.exi.execlog.OiomtExacExeResultLogPk;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.ctx.exio.dom.exi.execlog.ExacExeResultLogRepository;
 import nts.uk.ctx.exio.dom.exi.execlog.ExacExeResultLog;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -68,11 +69,40 @@ public class JpaExacExeResultLogRepository extends JpaRepository implements Exac
     }
 
     private static ExacExeResultLog toDomain(OiomtExacExeResultLog entity) {
-        return ExacExeResultLog.createFromJavaType(entity.version, entity.exacExeResultLogPk.cid, entity.exacExeResultLogPk.conditionSetCd, entity.exacExeResultLogPk.externalProcessId, entity.executorId, entity.userId, entity.processStartDatetime, entity.standardAtr, entity.executeForm, entity.targetCount, entity.errorCount, entity.fileName, entity.systemType, entity.resultStatus, entity.processEndDatetime, entity.processAtr);
+        return ExacExeResultLog.createFromJavaType(entity.version,
+        		entity.exacExeResultLogPk.cid,
+        		entity.exacExeResultLogPk.conditionSetCd,
+        		entity.exacExeResultLogPk.externalProcessId, 
+        		entity.executorId,
+        		entity.userId,
+        		entity.processStartDatetime,
+        		entity.standardAtr,
+        		entity.executeForm,
+        		entity.targetCount,
+        		entity.errorCount,
+        		entity.fileName,
+        		entity.systemType,
+        		entity.resultStatus,
+        		entity.processEndDatetime,
+        		entity.processAtr);
     }
 
     private OiomtExacExeResultLog toEntity(ExacExeResultLog domain) {
-        return new OiomtExacExeResultLog(domain.getVersion(), new OiomtExacExeResultLogPk(domain.getCid(), domain.getConditionSetCd(), domain.getExternalProcessId()), domain.getExecutorId(), domain.getUserId(), domain.getProcessStartDatetime(), domain.getStandardAtr(), domain.getExecuteForm(), domain.getTargetCount(), domain.getErrorCount(), domain.getFileName(), domain.getSystemType(), domain.getResultStatus(), domain.getProcessEndDatetime(), domain.getProcessAtr());
+        return new OiomtExacExeResultLog(domain.getVersion(),
+        		new OiomtExacExeResultLogPk(domain.getCid(), domain.getConditionSetCd(), domain.getExternalProcessId()), 
+        		AppContexts.user().contractCode(),
+        		domain.getExecutorId(), 
+        		domain.getUserId(),
+        		domain.getProcessStartDatetime(),
+        		domain.getStandardAtr(),
+        		domain.getExecuteForm(),
+        		domain.getTargetCount(),
+        		domain.getErrorCount(),
+        		domain.getFileName(),
+        		domain.getSystemType(),
+        		domain.getResultStatus(),
+        		domain.getProcessEndDatetime(),
+        		domain.getProcessAtr());
     }
 
 	/* (non-Javadoc)

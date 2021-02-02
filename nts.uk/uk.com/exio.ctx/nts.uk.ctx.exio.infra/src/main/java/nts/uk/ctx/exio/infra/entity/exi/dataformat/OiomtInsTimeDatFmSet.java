@@ -33,7 +33,10 @@ public class OiomtInsTimeDatFmSet extends UkJpaEntity implements Serializable {
 	 */
 	@EmbeddedId
 	public OiomtInsTimeDatFmSetPk insTimeDatFmSetPk;
-
+	/**	契約コード */
+	@Basic(optional = false)
+	@Column(name = "CONTRACT_CD")
+	public String contractCd;
 	/**
 	 * 区切り文字設定
 	 */

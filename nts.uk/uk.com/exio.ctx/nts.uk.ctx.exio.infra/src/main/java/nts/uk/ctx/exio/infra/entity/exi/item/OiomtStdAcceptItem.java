@@ -31,6 +31,7 @@ import nts.uk.ctx.exio.infra.entity.exi.dataformat.OiomtDateDataFormSet;
 import nts.uk.ctx.exio.infra.entity.exi.dataformat.OiomtInsTimeDatFmSet;
 import nts.uk.ctx.exio.infra.entity.exi.dataformat.OiomtNumDataFormatSet;
 import nts.uk.ctx.exio.infra.entity.exi.dataformat.OiomtTimeDataFmSet;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -50,7 +51,10 @@ public class OiomtStdAcceptItem extends UkJpaEntity implements Serializable {
 	 */
 	@EmbeddedId
 	public OiomtStdAcceptItemPk stdAcceptItemPk;
-
+	/**	契約コード */
+	@Basic(optional = false)
+	@Column(name = "CONTRACT_CD")
+	public String contractCd;
 	/**
 	 * カテゴリ項目NO
 	 */
@@ -128,6 +132,7 @@ public class OiomtStdAcceptItem extends UkJpaEntity implements Serializable {
 				: null;
 		OiomtStdAcceptItemPk pk = new OiomtStdAcceptItemPk(domain.getCid(), domain.getConditionSetCd().v(), domain.getAcceptItemNumber());
 		OiomtStdAcceptItem entity = new OiomtStdAcceptItem(pk,
+				AppContexts.user().contractCode(),
 				domain.getCategoryItemNo(),
 				domain.getCsvItemNumber().isPresent() ? domain.getCsvItemNumber().get() : null,
 				domain.getCsvItemName().isPresent() ? domain.getCsvItemName().get() : null,

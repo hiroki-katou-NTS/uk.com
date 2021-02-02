@@ -32,7 +32,10 @@ public class OiomtExAcOpManage extends UkJpaEntity implements Serializable {
 	 */
 	@EmbeddedId
 	public OiomtExAcOpManagePk exAcOpManagePk;
-
+	/**	契約コード */
+	@Basic(optional = false)
+	@Column(name = "CONTRACT_CD")
+	public String contractCd;
 	/**
 	 * エラー件数
 	 */

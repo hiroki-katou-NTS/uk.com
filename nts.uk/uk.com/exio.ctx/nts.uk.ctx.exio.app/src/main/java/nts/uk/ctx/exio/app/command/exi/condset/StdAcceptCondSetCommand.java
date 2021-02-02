@@ -95,10 +95,8 @@ public class StdAcceptCondSetCommand {
 				Optional.ofNullable(this.getSystemType() == null ? null : EnumAdaptor.valueOf(this.getSystemType(), SystemType.class)),
 				Optional.ofNullable(this.getCategoryId()),
 				EnumAdaptor.valueOf(this.getDeleteExistData(), NotUseAtr.class),
-				Optional.ofNullable(this.getCsvDataItemLineNumber() == null ? null 
-						: EnumAdaptor.valueOf(this.getCsvDataItemLineNumber(), AcceptanceLineNumber.class)),
-				Optional.ofNullable(this.getCsvDataStartLine() == null ? null 
-						: EnumAdaptor.valueOf(this.getCsvDataStartLine(),AcceptanceLineNumber.class)),
+				Optional.ofNullable(this.getCsvDataItemLineNumber() == null ? null : new AcceptanceLineNumber(this.getCsvDataItemLineNumber())),
+				Optional.ofNullable(this.getCsvDataStartLine() == null ? null : new AcceptanceLineNumber(this.getCsvDataStartLine())),
 				Optional.ofNullable(this.getCharacterCode() == null ? null 
 						: EnumAdaptor.valueOf(this.getCharacterCode(),ExiCharset.class)),
 				NotUseAtr.NOT_USE,

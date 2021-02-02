@@ -33,7 +33,10 @@ public class OiomtExacExeResultLog extends UkJpaEntity implements Serializable {
 	 */
 	@EmbeddedId
 	public OiomtExacExeResultLogPk exacExeResultLogPk;
-
+	/**	契約コード */
+	@Basic(optional = false)
+	@Column(name = "CONTRACT_CD")
+	public String contractCd;
 	/**
 	 * 実行者ID
 	 */
