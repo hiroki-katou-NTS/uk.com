@@ -110,7 +110,7 @@ public class DeductionTotalTimeForFluidCalc {
 					.map(tl -> breakTimeSheet.getIncludeAttendanceOrLeaveDuplicateTimeSheet(
 																				tl, workTime.getCommonRestSetting().getCalculateMethod(),
 																				deductionAtr, breakTimeSheet.getTimeSheet()))
-					.get());	
+					.orElse(new ArrayList<>()));	
 		} else {
 			newTimeSpan.add(breakTimeSheet);
 		}
