@@ -29,7 +29,7 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
         needRegenerateHierarchyCode: boolean = false;
         backupCode: string = null;
         dateSelected: KnockoutObservable<string> = ko.observable('20200101');
-
+         enable: KnockoutObservable<boolean> = ko.observable(true);
         constructor() {
             let self = this;
             if (!_.isEmpty(queryString.items)) {
@@ -136,7 +136,7 @@ module nts.uk.com.view.cmm011.v2.a.viewmodel {
 
             let param = {
                 dateSelected: moment(self.dateSelected()).format('YYYY/MM/DD'), 
-                workplace: self.selectedId != undefined ? 
+                workplace: self.enable() == true ? 
                         { workPlaceID: self.selectedId(), targetOrgWorkplaceName: self.selectedName()} : null
                 }
             nts.uk.ui.windows.setShared('KDL049', param);

@@ -40,7 +40,7 @@ public class AddComAndWorkplaceEventCommandHandler extends CommandHandler<AddCom
 		GeneralDate targetDate = GeneralDate.fromString(command.targetDate, "yyyy/MM/dd");
 		CompanyEventCommand comCommand = new CompanyEventCommand(targetDate, command.eventComName, "ADD");	
 		WorkplaceEventCommand workCommand = new WorkplaceEventCommand(command.getWorkPlaceID(), targetDate, command.eventWorkplaceName, "ADD");
-		if(command.eventComName != null){
+		if(command.eventComName != null && command.eventComName != ""){
 			command.setState("ADD");
 			
 			if (this.companyEventRepository.findByPK(AppContexts.user().companyId(), targetDate).isPresent()) {

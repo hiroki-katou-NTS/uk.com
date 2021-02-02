@@ -13,6 +13,13 @@ module nts.uk.at.view.kdl049.a {
         var screenModel = new viewmodel.ScreenModel();
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
+             if(__viewContext.user.role.isInCharge.attendance == true){
+                
+                 $("#A22").focus();
+                }else{
+                  $("#A24").focus();
+                }
         });
+       
     });
 }
