@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.ReferencePredTim
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
- * エンティティ：フレックス勤務所定労働時間取得
+ * エンティティ：会社別フレックス勤務集計方法
  * @author shuichu_ishida
  */
 @Entity
@@ -26,7 +26,7 @@ public class KshmtLegaltimeFlexCom extends ContractUkJpaEntity implements Serial
 
 	/** プライマリキー */
 	@EmbeddedId
-	public KshstFlxGetPrwkTimePK PK;
+	public KrcmtCalcMSetFleComPK PK;
 	
 	/** 所定時間参照 */
 	@Column(name = "REFERENCE_PRED_TIME")
@@ -42,7 +42,7 @@ public class KshmtLegaltimeFlexCom extends ContractUkJpaEntity implements Serial
 	
 	/**
 	 * ドメインに変換
-	 * @return フレックス勤務所定労働時間取得
+	 * @return 会社別フレックス勤務集計方法
 	 */
 	public GetFlexPredWorkTime toDomain(){
 
@@ -53,17 +53,17 @@ public class KshmtLegaltimeFlexCom extends ContractUkJpaEntity implements Serial
 	
 	/**
 	 * ドメインから変換　（for Insert）
-	 * @param domain フレックス勤務所定労働時間取得
+	 * @param domain 会社別フレックス勤務集計方法
 	 */
 	public void fromDomainForPersist(GetFlexPredWorkTime domain){
 		
-		this.PK = new KshstFlxGetPrwkTimePK(domain.getCompanyId());
+		this.PK = new KrcmtCalcMSetFleComPK(domain.getCompanyId());
 		this.fromDomainForUpdate(domain);
 	}
 	
 	/**
 	 * ドメインから変換　(for Update)
-	 * @param domain フレックス勤務所定労働時間取得
+	 * @param domain 会社別フレックス勤務集計方法
 	 */
 	public void fromDomainForUpdate(GetFlexPredWorkTime domain){
 		

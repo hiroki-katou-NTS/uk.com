@@ -93,9 +93,9 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 
 	// private static final String LANGUAGE = "【選択言語】 ";
 
-	private static final String SHEET_NAME = "FND_MASLST_SHEET";
+	private static final String SHEET_NAME = "【シート名】";
 
-	private static final String FISCAL_YEAR = "FND_MASLST_PERIOD";
+	private static final String FISCAL_YEAR = "【年度範囲】";
 
 	private static final String BASE_DATE_LABEL = "FND_MASLST_BASEDATE";
 
@@ -285,7 +285,7 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 				query.getDomainType());
 		processHeaderInfo(cells, columnSize, HEADER_INFOR_START_ROW + 2, isCsv, TextResource.localize(DATETIME),
 				now.toString(YYYY_MM_DD_HH_MM_SS));
-		processHeaderInfo(cells, columnSize, HEADER_INFOR_START_ROW + 3, isCsv, TextResource.localize(SHEET_NAME),
+		processHeaderInfo(cells, columnSize, HEADER_INFOR_START_ROW + 3, isCsv, SHEET_NAME,
 				EMPTY_STRING);
 
 		checkModeAndSetHeader(cells, query.getMode(), columnSize, isCsv, query.getBaseDate(), query.getStartDate(),
@@ -326,7 +326,7 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 					+ checkAndformatDate(toProcessEndDate, dateFormat);
 
 			processHeaderInfo(cells, columnSize, HEADER_INFOR_START_ROW + positonToPlus, isCsv,
-					TextResource.localize(FISCAL_YEAR), range);
+					FISCAL_YEAR, range);
 		}
 		if (mode != MasterListMode.ALL) {
 			clearHeaderPathAt(cells, HEADER_INFOR_START_ROW + 5, columnSize, isCsv);

@@ -4,7 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.statutory.worktime_new.employee;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -24,6 +26,9 @@ import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstSh
 @Stateless
 public class JpaShainTransLaborTimeRepository extends JpaRepository implements DeforLaborTimeShaRepo {
 
+	private static final String SELECT_BY_CID = "SELECT c FROM KshstShaTransLabTime c"
+			+ " WHERE c.kshstShaTransLabTimePK.cid = :cid";
+	
 	/* 
 	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainSpeDeforLaborTimeRepository#add(nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainSpeDeforLaborTime)
 	 */
@@ -92,4 +97,12 @@ public class JpaShainTransLaborTimeRepository extends JpaRepository implements D
 				new DailyUnit(new TimeOfDay(entity.getDailyTime())));
 	}
 
+	@Override
+	public List<DeforLaborTimeSha> findDeforLaborTimeShaByCid(String cid) {
+		List<KshstShaTransLabTime> entitys = this.queryProxy().query(SELECT_BY_CID, KshstShaTransLabTime.class)
+				.setParameter("cid", cid).getList();
+		return entitys.stream().map(m -> {
+			return toDomain(m);
+		}).collect(Collectors.toList());
+	}
 }

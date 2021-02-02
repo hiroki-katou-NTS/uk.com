@@ -56,6 +56,8 @@ public abstract class KrcstRegMCalSet extends ContractUkJpaEntity {
 	public void transfer(RegularWorkTimeAggrSet domain) {
 		
 		setAggregateTimeSet(domain.getAggregateTimeSet());
+		
+		setExcessOutsideTimeSet(domain.getExcessOutsideTimeSet());
 	}
 	
 	private void setAggregateTimeSet(ExcessOutsideTimeSetReg aggregateTimeSet) {

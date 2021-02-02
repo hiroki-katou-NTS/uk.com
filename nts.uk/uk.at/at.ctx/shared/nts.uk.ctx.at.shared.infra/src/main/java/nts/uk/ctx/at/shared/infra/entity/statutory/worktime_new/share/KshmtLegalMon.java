@@ -38,13 +38,10 @@ public abstract class KshmtLegalMon extends ContractUkJpaEntity {
 	
 	public void transfer(MonthlyLaborTime domain) {
 		this.legalTime = domain.getLegalLaborTime().valueAsMinutes();
-		
-		domain.getWithinLaborTime().ifPresent(v -> {
-			this.withinTime = v.valueAsMinutes();
-		});
-		
-		domain.getWeekAvgTime().ifPresent(v -> {
-			this.weekAvgTime = v.valueAsMinutes();
-		});
+
+		this.withinTime = domain.getWithinLaborTime().map(x -> x.valueAsMinutes()).orElse(null);
+
+		this.weekAvgTime = domain.getWeekAvgTime().map(x -> x.valueAsMinutes()).orElse(null);
+
 	}
 }

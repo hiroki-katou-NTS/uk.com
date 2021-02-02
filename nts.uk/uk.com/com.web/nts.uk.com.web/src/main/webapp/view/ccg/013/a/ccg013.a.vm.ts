@@ -546,7 +546,8 @@ module ccg013.a.viewmodel {
                                     name: x.name,
                                     displayOrder: x.order,
                                     classification: x.menu_cls,
-                                    system: x.system
+                                    system: x.system,
+                                    menu_cls: x.menu_cls
                                 }));
                             });
                         }
@@ -778,6 +779,7 @@ module ccg013.a.viewmodel {
         displayOrder: number;
         classification: number;
         system: number;
+        menu_cls: number;
     }
 
     export class TreeMenu {

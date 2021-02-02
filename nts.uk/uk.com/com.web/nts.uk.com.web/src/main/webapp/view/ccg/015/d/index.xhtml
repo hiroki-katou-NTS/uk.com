@@ -104,6 +104,7 @@
                         <textarea id="D5_2" class="fix_width_text_area" data-bind="ntsMultilineEditor: {
                           value: url,
                           required: true,
+                          name: '#{i18n.getText('CCG015_71')}',
                           constraint: 'URL'}"></textarea>
                       </div>
                       <div class="mt-5 fix_button_url">
@@ -126,7 +127,7 @@
                     <iframe  id="frameF2" style="width: 100%; height: 100%;" data-bind="attr: {src: filePath}"/>
                   </com:ko-if>
                   <com:ko-if bind="contentUrl()">
-                    <iframe class="iframe_fix" id="preview-iframe" data-bind="attr: { src: urlIframe3 }"></iframe>
+                    <iframe class="iframe_fix" id="preview-iframe" style="float: left;" data-bind="attr: { src: urlIframe3 }"></iframe>
                   </com:ko-if>
                 </div>
               </td>

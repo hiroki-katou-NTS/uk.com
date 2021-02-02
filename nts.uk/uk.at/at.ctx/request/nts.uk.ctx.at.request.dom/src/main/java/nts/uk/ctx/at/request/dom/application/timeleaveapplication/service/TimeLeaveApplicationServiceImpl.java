@@ -508,7 +508,7 @@ public class TimeLeaveApplicationServiceImpl implements TimeLeaveApplicationServ
 
                         //INPUT「時間消化申請」とINPUT「時間代休残数」を確認する
                         if (totalTimeAnnualLeave > 0 && timeOfTimeOff > 0 && (timeOfTimeOff - totalTimeOff) > 0) {
-                            throw new BusinessException("Msg_1687", "Com_ExsessHoliday", "Com_PaidHoliday", "Com_ExsessHoliday");
+                            throw new BusinessException("Msg_1687", "Com_CompensationHoliday", "Com_PaidHoliday", "Com_CompensationHoliday");
                         }
                     }
                 }

@@ -8,11 +8,11 @@ import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.GetFlexPredWorkTime;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.GetFlexPredWorkTimeRepository;
-import nts.uk.ctx.at.shared.infra.entity.workrule.statutoryworktime.flex.KshmtLegaltimeFlexCom;
-import nts.uk.ctx.at.shared.infra.entity.workrule.statutoryworktime.flex.KshstFlxGetPrwkTimePK;
+import nts.uk.ctx.at.shared.infra.entity.workrule.statutoryworktime.flex.KrcmtCalcMSetFleCom;
+import nts.uk.ctx.at.shared.infra.entity.workrule.statutoryworktime.flex.KrcmtCalcMSetFleComPK;
 
 /**
- * リポジトリ実装：フレックス勤務所定労働時間取得
+ * リポジトリ実装：会社別フレックス勤務集計方法
  * @author shuichu_ishida
  */
 @Stateless
@@ -23,7 +23,7 @@ public class JpaGetFlexPredWorkTime extends JpaRepository implements GetFlexPred
 	public Optional<GetFlexPredWorkTime> find(String companyId) {
 		
 		return this.queryProxy()
-				.find(new KshstFlxGetPrwkTimePK(companyId), KshmtLegaltimeFlexCom.class)
+				.find(new KrcmtCalcMSetFleComPK(companyId), KrcmtCalcMSetFleCom.class)
 				.map(c -> c.toDomain());
 	}
 	
@@ -32,12 +32,12 @@ public class JpaGetFlexPredWorkTime extends JpaRepository implements GetFlexPred
 	public void persistAndUpdate(GetFlexPredWorkTime domain) {
 
 		// キー
-		val key = new KshstFlxGetPrwkTimePK(domain.getCompanyId());
+		val key = new KrcmtCalcMSetFleComPK(domain.getCompanyId());
 		
 		// 登録・更新
-		KshmtLegaltimeFlexCom entity = this.getEntityManager().find(KshmtLegaltimeFlexCom.class, key);
+		KrcmtCalcMSetFleCom entity = this.getEntityManager().find(KrcmtCalcMSetFleCom.class, key);
 		if (entity == null){
-			entity = new KshmtLegaltimeFlexCom();
+			entity = new KrcmtCalcMSetFleCom();
 			entity.fromDomainForPersist(domain);
 			this.getEntityManager().persist(entity);
 		}
@@ -50,6 +50,6 @@ public class JpaGetFlexPredWorkTime extends JpaRepository implements GetFlexPred
 	@Override
 	public void remove(String companyId) {
 
-		this.commandProxy().remove(KshmtLegaltimeFlexCom.class, new KshstFlxGetPrwkTimePK(companyId));
+		this.commandProxy().remove(KrcmtCalcMSetFleCom.class, new KrcmtCalcMSetFleComPK(companyId));
 	}
 }

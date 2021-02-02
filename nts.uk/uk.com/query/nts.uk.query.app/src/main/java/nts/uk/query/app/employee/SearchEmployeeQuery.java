@@ -35,6 +35,9 @@ public class SearchEmployeeQuery {
 
 	/** The reference date. */
 	private GeneralDate referenceDate;
+	
+	/** スケジュール管理しない社員を取り除く */
+	private boolean employeesDoNotManageSchedules;
 
 	/**
 	 * Checks if is all closure.
