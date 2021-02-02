@@ -219,7 +219,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       <!-- A1_7 & A4_7 Popup -->
       <div id="ccg005-status-popup">
         <table>
-          <tr data-bind="click: $component.openScreenCCG005E">
+          <tr>
             <td>
               <i data-bind="visible: $component.visibleNotPresent(), ntsIcon: {no: 78, width: 15, height: 25}"></i>
             </td>
@@ -229,7 +229,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
             </td>
             <td data-bind="i18n: 'CCG005_43'"></td>
           </tr>
-          <tr data-bind="click: $component.openScreenCCG005E">
+          <tr>
             <td>
               <i data-bind="visible: $component.visiblePresent(), ntsIcon: {no: 78, width: 15, height: 25}"></i>
             </td>
@@ -237,7 +237,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
             <td>
             <i data-bind="ntsIcon: {no: 195, width: 20, height: 20}"></i>
             </td>
-            <td data-bind="i18n: 'CCG005_44'"></td>
+            <td data-bind="i18n: 'CCG005_22'"></td>
           </tr>
           <tr data-bind="click: $component.openScreenCCG005E">
             <td>
@@ -249,7 +249,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
             </td>
             <td data-bind="i18n: 'CCG005_39'"></td>
           </tr>
-          <tr data-bind="click: $component.openScreenCCG005E">
+          <tr>
             <td>
               <i data-bind="visible: $component.visibleGoHome(), ntsIcon: {no: 78, width: 15, height: 25}"></i>
             </td>
@@ -259,7 +259,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
             </td>
             <td data-bind="i18n: 'CCG005_44'"></td>
           </tr>
-          <tr data-bind="click: $component.openScreenCCG005E">
+          <tr>
             <td>
               <i data-bind="visible: $component.visibleHoliday(), ntsIcon: {no: 78, width: 15, height: 25}"></i>
             </td>
@@ -393,6 +393,9 @@ module nts.uk.at.view.ccg005.a.screenModel {
     favoriteSpecifyData: KnockoutObservableArray<any> = ko.observableArray([]);
     emojiUsage: KnockoutObservable<boolean> = ko.observable(false)
 
+    //data for screen E
+    goOutParams: KnockoutObservable<goOutParam> = ko.observable();
+
     created() {
       const vm = this;
       vm.selectedDate(moment.utc().format('YYYYMMDD'));
@@ -510,6 +513,11 @@ module nts.uk.at.view.ccg005.a.screenModel {
         });
       });
       $('.ccg005-status-img-A1_7').click(() => {
+        vm.goOutParams(new goOutParam({
+          sid: __viewContext.user.employeeId,
+          businessName: vm.businessName(),
+          goOutDate: moment.utc().format("YYYY/MM/DD")
+        }));
         vm.activatedStatus(vm.activityStatus());
         $('#ccg005-status-popup').ntsPopup({
           position: { my: 'right top', at: 'left top', of: $('.ccg005-status-img-A1_7') },
@@ -548,14 +556,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
 
     openScreenCCG005E() {
       const vm = this;
-      vm.$window.modal('/view/ccg/005/e/index.xhtml', {
-      //社員ID				
-      sid: "213",				
-      //ビジネスネーム		
-      businessName: "haha",			
-      //年月日		
-      goOutDate: moment.utc()						
-      });
+      vm.$window.modal('/view/ccg/005/e/index.xhtml', vm.goOutParams());
     }
 
     private toStartScreen() {
@@ -783,6 +784,21 @@ module nts.uk.at.view.ccg005.a.screenModel {
     emojiUsage: boolean;
 
     constructor(init?: DisplayInfoAfterSelectParam) {
+      $.extend(this, init);
+    }
+  }
+
+  export class goOutParam {
+    //社員ID	
+    sid: string;
+
+    //ビジネスネーム		
+    businessName: string;
+
+    //年月日		
+    goOutDate: string;
+
+    constructor(init?: Partial<goOutParam>) {
       $.extend(this, init);
     }
   }
