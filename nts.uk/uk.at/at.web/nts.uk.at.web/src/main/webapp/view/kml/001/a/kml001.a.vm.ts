@@ -275,13 +275,13 @@ module nts.uk.at.view.kml001.a {
               // PersonCostCalculationSelect: Done
               if (!dfdPersonCostCalculationSelectData.length) {
                 self.currentPersonCost().premiumSets.removeAll();
-                self.premiumItems().forEach(function (item) {
-                  if (item.useAtr()) {
+                self.premiumItems().forEach(function (item, i) {                  
+                  if (item.useAtr()) {           
                     let findItem: any = _.find(oldPremiumSets, (x) => x.displayNumber() == item.displayNumber());
-                    if (!_.isNil(findItem)) {
+                    if (!_.isNil(findItem)) {               
                       self.currentPersonCost().premiumSets.push(findItem);
-                    } else {
-                      findItem = _.find(beforeChangeData, (x) => x.id === item.displayNumber());
+                    } else {                      
+                      findItem = _.find(beforeChangeData, (x) => parseInt(x.id) === item.displayNumber());
                       if (!_.isNil(findItem)) {
                         let attendanceNames = [];
                         _.forEach(findItem.attendanceNames, (o) => {
@@ -290,7 +290,7 @@ module nts.uk.at.view.kml001.a {
                         self.currentPersonCost().premiumSets.push( 
                           new vmbase.PremiumSetting(
                             '', '', findItem.id, findItem.rate, findItem.name, 
-                            findItem.useAtr, attendanceNames, findItem.unitPrice
+                            item.useAtr(), attendanceNames, findItem.unitPrice
                           )
                         );
                       } else {
@@ -298,14 +298,15 @@ module nts.uk.at.view.kml001.a {
                           new vmbase.PremiumSetting("", "", item.displayNumber(), 100, item.name(), item.useAtr(), [], item.unitPrice())
                         );
                       }
+                      
                     }
                   }
                 });
-
+                
                 self.currentPersonCost().premiumSets().forEach((item, index) => {
                   self.createViewAttendanceItems(item.attendanceItems(), index);
                 });
-
+                
                 $("#A4_10").focus();
 
               } else {
