@@ -521,7 +521,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.bindingEventClickFlower();
                 if (viewMode == 'time') {
                     self.diseableCellsTime();
-                    console.log(self.listTimeDisable);
+                    console.log(self.listTimeDisable.length);
                 }
                 
                 self.flag = false;
@@ -2756,12 +2756,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     // nều bị disable thì remove disable đi
                     let checkDisable = _.find(self.listTimeDisable, function(cell: TimeDisable) { return cell.rowId == rowIdx && cell.columnId == key; });
                     if (checkDisable) {
-                        self.enableCellStartEndTime(rowIdx, key);
+                        self.enableCellStartEndTime(rowIdx+'', key);
                     }
                     
                     // case coppy từ cell là ngày lễ, ngày nghỉ nên phải disable cell starttime, endtime đi.
                     if (data.achievements == false && data.workHolidayCls == AttendanceHolidayAttr.HOLIDAY) {
-                        self.diseableCellStartEndTime(rowIdx, key);
+                        self.diseableCellStartEndTime(rowIdx+'', key);
                     }
                     
                     // set Deco text color
@@ -3357,9 +3357,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 $("#extable").exTable('disableCell', 'detail', rowIdx + '', key + '', '3');
                 // them cell vừa bị disable vào list
                 self.listTimeDisable.push(new TimeDisable(rowIdx, key));
+                console.log(self.listTimeDisable.length);
             }
         }
-        
+
         // eanble những cell mà không có worktime.
         enableCellStartEndTime(rowIdx, key) {
             let self = this;
@@ -3369,6 +3370,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             _.remove(self.listTimeDisable, function(cell: TimeDisable) {
                 return cell.rowId == rowIdx && cell.columnId == key;
             });
+            console.log(self.listTimeDisable.length);
         }
 
         /**
@@ -3436,6 +3438,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     if (!_.isNil(obj)) {
                         return;
                     }
+                    
+                    let cellDisableTime = _.find(self.listTimeDisable, function(o) { return o.rowId == rowIdx + '' && o.columnId == key; });
 
                     let workType = self.dataCell.objWorkType;
                     let workTime = self.dataCell.objWorkTime;
@@ -3482,7 +3486,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                     workHolidayCls: data.workHolidayCls
                                 });
                                 __viewContext.viewModel.viewAB.isRedColor = false;
-                                self.enableCellStartEndTime(rowIdx, key);
+                               
+                                // trường hợp cell này nằm trong list cell bị disable starttime, endtime 
+                                // thì enable cell đó lên, xóa cell đó khỏi danh sach cell bị disable starttime, endtime .
+                                if (!_.isNil(cellDisableTime)) {
+                                   self.enableCellStartEndTime(rowIdx+'', key);
+                                }
+                                
                                 dfd.resolve(true);
                                 nts.uk.ui.block.clear();
                             }).fail(function() {
@@ -3494,11 +3504,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         // enable | disable cell startTime,endtime
                         if (userInfor.disPlayFormat == 'time') {
                             if (data.workHolidayCls == 0) {
-                                self.diseableCellStartEndTime(rowIdx, key);
+                                self.diseableCellStartEndTime(rowIdx+'', key);
                             } else {
-                                self.enableCellStartEndTime(rowIdx, key);
+                                self.enableCellStartEndTime(rowIdx+'', key);
                             }
-                            console.log(self.listTimeDisable);
                         }
                         dfd.resolve(true);
                     }
@@ -3578,12 +3587,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             
             self.setCoppyStyler();
             
-            $("#extable").exTable("pasteValidate", function(data) {
+            $("#extable").exTable("pasteValidate", function(rowIdx, key, data) {
                 let dfd = $.Deferred();
                 let item = uk.localStorage.getItem(self.KEY);
                 let userInfor: IUserInfor = JSON.parse(item.get());
                 let param = [];
                 nts.uk.ui.block.grayout();
+                if (_.isNil(data))
+                    data = rowIdx;
                 _.forEach(data, d => {
                     let shiftCode = d.shiftCode;
                     let shiftMasterWithWorkStyleLst = userInfor.shiftMasterWithWorkStyleLst;
@@ -3611,8 +3622,22 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     }
                     nts.uk.ui.block.clear();
                 });
+
                 return dfd.promise();
             });
+
+            $("#extable").exTable("afterPaste", function(rowIdx, key, data) {
+                let item = uk.localStorage.getItem(self.KEY);
+                let userInfor: IUserInfor = JSON.parse(item.get());
+                if (userInfor.disPlayFormat == 'time') {
+                    if (data.workHolidayCls == 0) {
+                        self.diseableCellStartEndTime(rowIdx + '', key);
+                    } else {
+                        self.enableCellStartEndTime(rowIdx + '', key);
+                    }
+                }
+            });
+            
             nts.uk.ui.block.clear();
         }
 
@@ -3659,7 +3684,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let item = uk.localStorage.getItem(self.KEY);
             let userInfor = JSON.parse(item.get());
             if (userInfor.updateMode == 'stick') {
-                $("#extable").exTable("stickUndo");
+                $("#extable").exTable("stickUndo", function(rowIdx, columnKey, innerIdx, cellData) {
+                    if (userInfor.disPlayFormat == 'time') {
+                        if ((cellData.workHolidayCls === 0) || (cellData.workTimeCode == null && cellData.workTimeName == null && cellData.workTypeCode == null && cellData.workTypeName == null)) {
+                            self.diseableCellStartEndTime(rowIdx+ '', columnKey);
+                        } else {
+                            self.enableCellStartEndTime(rowIdx + '', columnKey);
+                        }
+                    }
+                });
             } else if (userInfor.updateMode == 'copyPaste') {
                 $("#extable").exTable("copyUndo");
             } else if (userInfor.updateMode == 'edit') {
@@ -3674,7 +3707,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let item = uk.localStorage.getItem(self.KEY);
             let userInfor = JSON.parse(item.get());
             if (userInfor.updateMode == 'stick') {
-                $("#extable").exTable("stickRedo");
+                $("#extable").exTable("stickRedo", function(rowIdx, columnKey, innerIdx, cellData) {
+                    if (userInfor.disPlayFormat == 'time') {
+                        if ((cellData.workHolidayCls === 0) || (cellData.startTime === '' && cellData.endTime === '')) {
+                            self.diseableCellStartEndTime(rowIdx + '', columnKey);
+                        } else {
+                            self.enableCellStartEndTime(rowIdx + '', columnKey);
+                        }
+                    }
+                });
             } else if (userInfor.updateMode == 'copyPaste') {
                 $("#extable").exTable("copyRedo");
             } else if (userInfor.updateMode == 'edit') {

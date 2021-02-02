@@ -11442,10 +11442,10 @@ var nts;
                                 //                    self.cut();   
                             }
                             else if (evt.ctrlKey && helper.isUndoKey(evt)) {
-                                self.undo();
+                                //                    self.undo();
                             }
                             else if (evt.ctrlKey && helper.isRedoKey(evt)) {
-                                self.redo();
+                                //                    self.redo();
                             }
                         };
                         /**
@@ -11571,36 +11571,41 @@ var nts;
                          * Paste single cell.
                          */
                         Printer.prototype.pasteSingleCell = function (evt) {
-                            var _this = this;
                             var self = this;
                             var cbData = this.getClipboardContent(evt);
                             cbData = self.getContents(cbData);
                             if (_.isNil(cbData))
                                 return;
                             cbData = helper.getCellData(cbData);
-                            var validate = $.data(self.$grid, internal.PASTE_VALIDATE);
+                            var validate = $.data(self.$grid, internal.PASTE_VALIDATE), afterPaste = $.data(self.$grid, internal.AFTER_PASTE);
                             if (_.isFunction(validate)) {
-                                var result = validate([cbData]);
-                                if (_.has(result, "done")) {
-                                    result.done(function (res) {
-                                        if (res === true) {
-                                            var selectedCells_1 = selection.getSelectedCells(_this.$grid);
-                                            var txId_1 = uk.util.randomId();
-                                            _.forEach(selectedCells_1, function (cell, index) {
+                                var selectedCells_1 = selection.getSelectedCells(this.$grid);
+                                var txId_1 = uk.util.randomId();
+                                _.forEach(selectedCells_1, function (cell, index) {
+                                    var result = validate(cell.rowIndex, cell.columnKey, [cbData]);
+                                    if (_.has(result, "done")) {
+                                        result.done(function (res) {
+                                            if (res === true) {
                                                 update.gridCellOw(self.$grid, cell.rowIndex, cell.columnKey, -1, cbData, txId_1);
-                                            });
-                                        }
-                                        else if (_.isFunction(res)) {
-                                            res();
-                                        }
-                                    });
-                                }
+                                                if (_.isFunction(afterPaste)) {
+                                                    afterPaste(cell.rowIndex, cell.columnKey, cbData);
+                                                }
+                                            }
+                                            else if (_.isFunction(res)) {
+                                                res();
+                                            }
+                                        });
+                                    }
+                                });
                                 return;
                             }
                             var selectedCells = selection.getSelectedCells(this.$grid);
                             var txId = uk.util.randomId();
                             _.forEach(selectedCells, function (cell, index) {
                                 update.gridCellOw(self.$grid, cell.rowIndex, cell.columnKey, -1, cbData, txId);
+                                if (_.isFunction(afterPaste)) {
+                                    afterPaste(cell.rowIndex, cell.columnKey, cbData);
+                                }
                             });
                         };
                         /**
@@ -11666,6 +11671,7 @@ var nts;
                             var txId = uk.util.randomId();
                             var ds = internal.getDataSource(self.$grid);
                             var size = ds ? ds.length : 0;
+                            var afterPaste = $.data(self.$grid, internal.AFTER_PASTE);
                             _.forEach(data, function (row, idx) {
                                 var rowData = {};
                                 var columnKey = selectedCell.columnKey;
@@ -11685,13 +11691,18 @@ var nts;
                                 if (rowIndex >= size)
                                     return false;
                                 update.gridRowOw(self.$grid, rowIndex, rowData, txId);
+                                if (_.isFunction(afterPaste)) {
+                                    _.keys(rowData).forEach(function (k) {
+                                        afterPaste(rowIndex, k, rowData[k]);
+                                    });
+                                }
                                 rowIndex++;
                             });
                         };
                         /**
                          * Undo.
                          */
-                        Printer.prototype.undo = function () {
+                        Printer.prototype.undo = function (action) {
                             var self = this;
                             var histories = $.data(self.$grid, internal.COPY_HISTORY);
                             if (!histories || histories.length === 0)
@@ -11725,6 +11736,9 @@ var nts;
                                 currentItem.value = data[item.columnKey];
                                 currentItems.push(currentItem);
                                 update.gridCell(self.$grid, item.rowIndex, item.columnKey, -1, item.value, true);
+                                if (_.isFunction(action)) {
+                                    action(item.rowIndex, item.columnKey, item.value);
+                                }
                                 internal.removeChange(self.$grid, item);
                             });
                             var redoTx = { txId: tx.txId, items: currentItems };
@@ -11739,13 +11753,16 @@ var nts;
                         /**
                          * Redo.
                          */
-                        Printer.prototype.redo = function () {
+                        Printer.prototype.redo = function (action) {
                             var self = this, redoStack = $.data(self.$grid, internal.REDO_STACK);
                             if (!redoStack || redoStack.length === 0)
                                 return;
                             var tx = redoStack.pop();
                             _.forEach(tx.items, function (item) {
                                 update.gridCellOw(self.$grid, item.rowIndex, item.columnKey, -1, item.value, tx.txId);
+                                if (_.isFunction(action)) {
+                                    action(item.rowIndex, item.columnKey, item.value);
+                                }
                             });
                         };
                         /**
@@ -14771,16 +14788,16 @@ var nts;
                                 setStickStyler(self, params[0]);
                                 break;
                             case "stickUndo":
-                                undoStick(self);
+                                undoStick(self, params[0]);
                                 break;
                             case "stickRedo":
-                                redoStick(self);
+                                redoStick(self, params[0]);
                                 break;
                             case "copyUndo":
-                                undoCopy(self);
+                                undoCopy(self, params[0]);
                                 break;
                             case "copyRedo":
-                                redoCopy(self);
+                                redoCopy(self, params[0]);
                                 break;
                             case "editUndo":
                                 undoEdit(self);
@@ -14790,6 +14807,9 @@ var nts;
                                 break;
                             case "pasteValidate":
                                 setPasteValidate(self, params[0]);
+                                break;
+                            case "afterPaste":
+                                setAfterPaste(self, params[0]);
                                 break;
                             case "clearHistories":
                                 clearHistories(self, params[0]);
@@ -15445,7 +15465,7 @@ var nts;
                     /**
                      * Undo stick.
                      */
-                    function undoStick($container) {
+                    function undoStick($container, action) {
                         var exTable = $container.data(NAMESPACE);
                         if (!exTable || exTable.updateMode !== STICK)
                             return;
@@ -15467,6 +15487,9 @@ var nts;
                                 currentItems.push({ rowIndex: i.rowIndex, columnKey: i.columnKey, innerIdx: innerIdx, value: value, stickFields: i.stickFields });
                             }
                             update.gridCell($grid[0], i.rowIndex, i.columnKey, innerIdx, i.value, true);
+                            if (_.isFunction(action)) {
+                                action(i.rowIndex, i.columnKey, innerIdx, i.value);
+                            }
                             internal.removeChange($grid[0], i);
                         });
                         var redoStack = $grid.data(internal.STICK_REDO_STACK);
@@ -15480,7 +15503,7 @@ var nts;
                     /**
                      * Redo stick.
                      */
-                    function redoStick($container) {
+                    function redoStick($container, action) {
                         var exTable = $container.data(NAMESPACE);
                         if (!exTable || exTable.updateMode !== STICK)
                             return;
@@ -15494,6 +15517,9 @@ var nts;
                         if (items.length == 1) {
                             var item = items[0];
                             update.stickGridCellOw($grid[0], item.rowIndex, item.columnKey, item.innerIdx, item.value, sticker.styleMaker, item.stickFields);
+                            if (_.isFunction(action)) {
+                                action(item.rowIndex, item.columnKey, item.innerIdx, item.value);
+                            }
                         }
                         else {
                             var data_1 = {};
@@ -15506,7 +15532,7 @@ var nts;
                     /**
                      * Undo copy.
                      */
-                    function undoCopy($container) {
+                    function undoCopy($container, action) {
                         var exTable = $container.data(NAMESPACE);
                         if (!exTable || exTable.updateMode !== COPY_PASTE)
                             return;
@@ -15514,12 +15540,12 @@ var nts;
                         var printer = $grid.data(internal.PRINTER_INST);
                         if (!printer)
                             return;
-                        printer.undo();
+                        printer.undo(action);
                     }
                     /**
                      * Redo copy.
                      */
-                    function redoCopy($container) {
+                    function redoCopy($container, action) {
                         var exTable = $container.data(NAMESPACE);
                         if (!exTable || exTable.updateMode !== COPY_PASTE)
                             return;
@@ -15527,7 +15553,7 @@ var nts;
                         var printer = $grid.data(internal.PRINTER_INST);
                         if (!printer)
                             return;
-                        printer.redo();
+                        printer.redo(action);
                     }
                     /**
                      * Undo edit.
@@ -15578,6 +15604,13 @@ var nts;
                     function setPasteValidate($container, validate) {
                         var $grid = $container.find("." + (BODY_PRF + DETAIL));
                         $grid.data(internal.PASTE_VALIDATE, validate);
+                    }
+                    /**
+                     * After paste.
+                     */
+                    function setAfterPaste($container, afterPaste) {
+                        var $grid = $container.find("." + (BODY_PRF + DETAIL));
+                        $grid.data(internal.AFTER_PASTE, afterPaste);
                     }
                     /**
                      * Clear histories.
@@ -16072,6 +16105,7 @@ var nts;
                     internal.STICK_HISTORY = "stick-history";
                     internal.STICK_REDO_STACK = "stick-redo-stack";
                     internal.PASTE_VALIDATE = "paste-validate";
+                    internal.AFTER_PASTE = "after-paste";
                     internal.TOOLTIP = "tooltip";
                     internal.CONTEXT_MENU = "context-menu";
                     internal.POPUP = "popup";
