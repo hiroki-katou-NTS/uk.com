@@ -1,427 +1,618 @@
+/// <reference path='../../../../lib/nittsu/viewcontext.d.ts' />
+
 module nts.uk.at.view.kbt002.f {
-    export module viewmodel {
-        import alert = nts.uk.ui.dialog.alert;
-        import modal = nts.uk.ui.windows.sub.modal;
-        import setShared = nts.uk.ui.windows.setShared;
-        import getShared = nts.uk.ui.windows.getShared;
-        import block = nts.uk.ui.block;
-        import dialog = nts.uk.ui.dialog;
-        import getText = nts.uk.resource.getText;
-        
-        export class ScreenModel {
-            execLogList: KnockoutObservableArray<any> = ko.observableArray([]);
-            gridListColumns: KnockoutObservableArray<any>;
-            selectedExecCd: KnockoutObservable<string> = ko.observable('');
-            currentExecLog : KnockoutObservable<any> = ko.observable({});
-            taskId: KnockoutObservable<string> = ko.observable("");
-            isOnceMessage101: KnockoutObservable<boolean> = ko.observable(true);
-            isOnceExecType: KnockoutObservable<boolean> = ko.observable(true);
-            isOnceCurrentStatus: KnockoutObservable<boolean> = ko.observable(true);
-            isOnceInterupt: KnockoutObservable<boolean> = ko.observable(true);
-            isCreateSchedule: KnockoutObservable<boolean> = ko.observable(true);
-            taskTerminate: KnockoutObservable<any> = ko.observable("");
-            constructor() {
-                var self = this;
-                self.execLogList([]);
-                
-                self.gridListColumns = ko.observableArray([
-                    { headerText: getText("KBT002_127"), key: 'execItemCd', width: 50 },
-                    { headerText: getText("KBT002_128"), key: 'execItemName', width: 180, formatter: _.escape },
-                    { headerText: '', key: 'currentStatusCd', width: 1, hidden: true},
-                    { headerText: getText("KBT002_129"), key: 'currentStatus', width: 70, formatter: _.escape },
-                    { headerText: getText("KBT002_208"), key: 'lastExecDateTime', width: 180, formatter: _.escape },
-                    { headerText: getText("KBT002_209"), key: 'lastEndExecDateTime', width: 180, formatter: _.escape },
-                    { headerText: getText("KBT002_210"), key: 'rangeDateTime', width: 80, formatter: _.escape },
-                    { headerText: '', key: 'overallStatusCd', width: 1, hidden: true},
-                    { headerText: getText("KBT002_211"), key: 'overallStatus', width: 68, formatter: _.escape },
-                    { headerText: getText("KBT002_212"), key: 'errorSystemText', width: 90, formatter: _.escape },
-                    { headerText: getText("KBT002_213"), key: 'errorBusinessText', width: 70, formatter: _.escape }, 
-                    
-                    {
-                        headerText: "", key: 'execItemCd', width: 45, unbound: true, dataType: "string",
-                        formatter: function(execItemCd, record) {
-                        	let disable = true;                            
-//                        	if ((record.overallStatusCd != '') && (record.overallStatusCd == 3) &&(record.currentStatus != 0)){
-                            if((record.overallStatusCd != '') &&(record.currentStatus != 0) && (record.overallStatusCd != 3 && (record.overallStatusCd != 0))){
-                        		disable = false;
-                        	}
-                        	
-                         	let $button = $("<button>", { "class": "setting small button1", "tabindex": -1, "disabled": disable, "text" : getText("KBT002_144")  });
-                            $button.attr("data-value", record["execItemCd"]);
-                         	return $button[0].outerHTML;
-                        	//return "<button tabindex='-1' class='setting small' id='A${execItemCd}' data-bind='click: function(data, event) { openDialogG(data, event)}, enable: {{if ((${overallStatusCd} != '') && (${overallStatusCd} == 3)) && (${currentStatus} !=0)  }}true{{else}} false {{/if}}' data-code='${execItemCd}' style='margin-left: 7px;'>" + getText("KBT002_144") + "</button>";
-                    	} 
-                        //template: '<button tabindex="-1" class="setting small" id="A${execItemCd}" data-bind="click: function(data, event) { openDialogG(data, event)}, enable: {{if ((${overallStatusCd} != "") && (${overallStatusCd} == 3)) && (${currentStatus} !=0)  }}true{{else}} false {{/if}}" data-code="${execItemCd}" style="margin-left: 7px;">' + getText("KBT002_144") + '</button>',
-                    },
-                    { headerText: getText("KBT002_131"), key: 'nextExecDateTime', width: 180, formatter: _.escape },
-                    {
-                        headerText: "", key: 'execItemCd', width: 85, unbound: true, dataType: "string",
-                        formatter: function(nextExecDateTime, record) {
-                        	let disable = true;
-                        	if ((record.currentStatusCd != '') && (record.currentStatusCd != 0)){
-                        		disable = false;
-                        	}
-                        	
-                         	let $button = $("<button>", { "class": "setting small button2", "tabindex": -1, "disabled": disable, "text" : getText("KBT002_132")  });
-                            $button.attr("data-value", record["execItemCd"]);
-                            return $button[0].outerHTML;	                    
-                        } 
-                        //template: '<button tabindex="-1" class="setting small" data-bind="click: function(data, event) { execute(data, event, ${execItemCd})}, enable: {{if ((${currentStatusCd} != "") && (${currentStatusCd} != 0)) }}true{{else}} false {{/if}}" data-code="${execItemCd}" style="margin-left: 7px;">' + getText("KBT002_132") + '</button>',
-                    },
-                    {
-                        headerText: "", key: 'execItemCd', width: 55, unbound: true, dataType: "string",
-                        formatter: function(execItemCd, record) {
-                        	let disable = true;
-                        	if ((record.currentStatusCd != '') && (record.currentStatusCd == 0)){
-                        		disable = false;
-                        	}
-                        	
-                         	let $button = $("<button>", { "class": "setting small button3", "tabindex": -1, "disabled": disable, "text" : getText("KBT002_133") });
-                            $button.attr("data-value", record["execItemCd"]);
-                         	//"onclick" : function(data, event) { self.terminate(data, event)}
-                            //, 'onclick': 'function() { kbt002FModel.terminate() }'
-                         	return $button[0].outerHTML;
-	                    } 
-                        //template: '<button tabindex="-1" class="setting small" data-bind="click: function(data, event) { terminate(data, event)}, enable: {{if ((${currentStatusCd} != "") && (${currentStatusCd} == 0)) }}true{{else}} false {{/if}}" data-code="${execItemCd}" style="margin-left: 7px;">' + getText("KBT002_133") + '</button>',
-                    },
-                    {
-                        headerText: "", key: 'execItemCd', width: 55, unbound: true, dataType: "string",
-                        formatter: function(execItemCd, record) {
-                        	
-                         	let $button = $("<button>", { "class": "setting small button4", "tabindex": -1, "text" : getText("KBT002_147")  });
-                            $button.attr("data-value", record["execItemCd"]);
-                         	//"onclick" : function(data, event) { self.terminate(data, event)}
-                         	return $button[0].outerHTML;
-	                    } 
-                        //template: '<button tabindex="-1" class="setting small" onclick="kbt002FModel.openDialogH(${execItemCd})" data-code="${execItemCd}" style="margin-left: 7px;">' + getText("KBT002_147") + '</button>',
-                    },
-                ]);
-                
-                self.selectedExecCd.subscribe(execItemCd => {
-                    if (!nts.uk.text.isNullOrEmpty(execItemCd)) {
-                        let data = _.filter(self.execLogList(), function(o) { return o.execItemCd == execItemCd; });
-                        if (data[0]) {
-                            self.currentExecLog(new ExecutionLog(data[0]));
-                        }
-                    }
-                });
-            }
-            
-            // Start page
-            start() {
-                let self = this;
-                var dfd = $.Deferred();
-                
-                $.when(self.getProcExecLogList()).done(()=>{
-                    dfd.resolve();
-                });
-                return dfd.promise();
-            }
-            
-            private getProcExecLogList(savedExecItemCd? : string) : JQueryPromise<void> {
-                let self = this;
-                let dfd = $.Deferred<void>();
-                self.execLogList([]); 
-                service.getProcExecLogList().done(function(execLogList) {  
-                    if (execLogList && execLogList.length > 0) {
-                        self.execLogList(execLogList);
-                        if (nts.uk.text.isNullOrEmpty(savedExecItemCd)) {
-                            self.selectedExecCd(execLogList[0].execItemCd);
-                        } else {
-                            self.selectedExecCd(savedExecItemCd);
-                        }
-                        
-                    } else {
-                        alert({ messageId: "Msg_851" });
-                    }
-                    dfd.resolve();
-                });
-                return dfd.promise();
-            }
-            
-            openDialogG(execItemCd){
-                let self = this;
-                block.grayout();
-                var execLog = _.find(self.execLogList(), function(o) { return o.execItemCd == execItemCd; });
-                setShared('inputDialogG', {execLog: execLog});
-                modal("/view/kbt/002/g/index.xhtml").onClosed(function(){
-                    block.clear();
-                });    
-            }
-            openDialogH(execItemCd){
-                let self = this;
-                block.grayout();
-//                let cd = execItemCd;
-//                if(execItemCd<10)
-//                    cd = "0"+cd;
-                    
-                setShared('inputDialogH', {execItemCd: execItemCd});
-                modal("/view/kbt/002/h/index.xhtml").onClosed(function(){
-                    block.clear();
-                });    
-            }
-            
-            updateInfo(){
-                let self = this;
-                 ko.cleanNode(igrid);
-                  $.when(self.getProcExecLogList()).done(()=>{
-                     ko.applyBindings(self,igrid);
-                });
-            }
-            
-             execute(idd){
-                let self = this;
-//                var dfd = $.Deferred();
-                 let cd =""+idd;
-                 if(idd<10)
-                    cd = "0"+cd;
-                //$("#A"+cd).prop('disabled',true);
-                block.grayout();
-                let command: any = self.toJsonObject();
-                service.execute(command).done(function(x) {
-                    self.taskId(x.id);
-                    self.repeatCheckAsyncResult();
-                     /* ko.cleanNode(igrid);
-                        $.when(self.getProcExecLogList()).done(()=>{
-                             ko.applyBindings(self,igrid);
-                             block.clear();
-                        }); 
-                    */
-                    block.clear();
-                }).fail(function(res) {
-                         nts.uk.ui.dialog.alertError({ messageId: res.messageId });
-                        self.getProcExecLogList();
-                    });
-                 
-                 let newExecLogList = [];
-                 _.forEach(self.execLogList(),function(x) {
-                       if(x.execItemCd==command.execItemCd){
-                            newExecLogList.push( {execItemCd : x.execItemCd, 
-                            companyId:           x.companyId,
-                            execItemName:        x.execItemName,
-                            currentStatusCd:     0,
-                            currentStatus:       "実行中",
-                            overallStatusCd:     x.overallStatusCd,
-                            overallStatus:       " ",
-                            overallError:        x.overallError,
-                            prevExecDateTime:    x.prevExecDateTime,
-                            schCreateStart:      x.schCreateStart,
-                            schCreateEnd:        x.schCreateEnd,
-                            dailyCreateStart:    x.dailyCreateStart,
-                            dailyCreateEnd:      x.dailyCreateEnd,
-                            dailyCalcStart:      x.dailyCalcStart,
-                            dailyCalcEnd:        x.dailyCalcEnd,
-                            execId:              x.execId,
-                            prevExecDateTimeEx:  x.prevExecDateTimeEx,
-                            taskLogList:         x.taskLogList,
-//                            lastEndExecDateTime: x.lastEndExecDateTime,
-//                            errorSystem:         x.errorSystem,
-//                            errorBusiness:       x.errorBusiness
-                        });
-                     }else{
-                        newExecLogList.push(x);     
-                        }
-  
-                });
-                 
-                ko.cleanNode(igrid);
-                self.execLogList(newExecLogList);
-                ko.applyBindings(self,igrid);
-                $("#A"+cd).prop('disabled',true);
 
-//                return dfd.promise();
-            }
-            
-            private repeatCheckAsyncResult(): void{
-                var self = this;
-                nts.uk.deferred.repeat(conf => conf
-                .task(() => {
-                 return nts.uk.request.asyncTask.getInfo(self.taskId()).done(info => {
-                        //ExecuteProcessExecCommandHandler
-                     var message101 = self.getAsyncData(info.taskDatas, "message101").valueAsString;
-                    if(message101 =="Msg_1101" && self.isOnceMessage101()){
-                        self.isOnceMessage101(false);
-                       nts.uk.ui.dialog.alertError({ messageId: m });
-                       ko.cleanNode(igrid);
-                        $.when(self.getProcExecLogList()).done(()=>{
-                             ko.applyBindings(self,igrid);
-                        });
-                    }
-                    
-                     //TerminateProcessExecutionCommandHandler
-                     var currentStatusIsOneOrTwo = self.getAsyncData(info.taskDatas, "currentStatusIsOneOrTwo").valueAsString;
-                     if(currentStatusIsOneOrTwo=="Msg_1102"&& self.isOnceCurrentStatus()){
-                        self.isOnceCurrentStatus(false);
-                        nts.uk.ui.dialog.alertError({ messageId: currentStatusIsOneOrTwo }); 
-                        ko.cleanNode(igrid);
-                        $.when(self.getProcExecLogList()).done(()=>{
-                             ko.applyBindings(self,igrid);
-                        });  
-                     }
-                     var interupt = self.getAsyncData(info.taskDatas, "interupt").valueAsString;
-                     if(interupt=="true" && self.isOnceInterupt()){
-                        self.isOnceInterupt(false);
-                        ko.cleanNode(igrid);
-                        $.when(self.getProcExecLogList()).done(()=>{
-                             ko.applyBindings(self,igrid);
-                        });
-                     }
-                     var createSchedule = self.getAsyncData(info.taskDatas, "createSchedule").valueAsString;
-                     if(createSchedule=="done" && self.isCreateSchedule()){
-                        self.isCreateSchedule(false);
-                        ko.cleanNode(igrid);
-                        $.when(self.getProcExecLogList()).done(()=>{
-                             ko.applyBindings(self,igrid);
-                        });
-                     }
-                     var task = self.getAsyncData(info.taskDatas, "taskId").valueAsString;
-                     if(!nts.uk.text.isNullOrEmpty(task)){
-                         self.taskTerminate(task);
-                     }
-                 });   
-                }) .while(info => info.pending || info.running)
-                .pause(1000)
-            );    
-            }
-            
-            private getAsyncData(data: Array<any>, key: string): any {
-            var result = _.find(data, (item) => {
-                return item.key == key;
-            });
-            return result || { valueAsString: "", valueAsNumber: 0, valueAsBoolean: false };
-        }
-            
-            terminate(){
-                let self = this;
-                block.grayout();
-//                var dfd = $.Deferred();
-                let command: any = self.toJsonObject();
-                service.terminate(command);
-                ko.cleanNode(igrid);
-                $.when(self.getProcExecLogList()).done(()=>{
-                     ko.applyBindings(self,igrid);
-                     block.clear();
-                });  
-//                return dfd.promise();
-            }
-            
-            /**
-             * toJsonObject
-             */
-            private toJsonObject(): any {
-                let self = this;
+  const API = {
+    getExecItemInfoList: "at/function/processexec/getExecItemInfoList",
+    getExecItemInfo: "at/function/processexec/getExecItemInfo/{0}",
+    execute: 'at/function/processexec/execute',
+    terminate: 'at/function/processexec/terminate',
+    changeSetting: 'at/function/processexec/changeSetting',
+  };
 
-                // to JsObject
-                let command: any = {};
-                command.execType = 1;
-                command.companyId = self.currentExecLog().companyId();
-                command.execItemCd = self.currentExecLog().execItemCd();
-                command.execItemName = self.currentExecLog().execItemName();
-                command.currentStatusCd = self.currentExecLog().currentStatusCd();
-                command.currentStatus = self.currentExecLog().currentStatus();
-                command.overallStatusCd = self.currentExecLog().overallStatusCd();
-                command.overallStatus = self.currentExecLog().overallStatus();
-                command.overallError = self.currentExecLog().overallError();
-                command.prevExecDateTime = self.currentExecLog().prevExecDateTime();
-                command.schCreateStart = self.currentExecLog().schCreateStart();
-                command.schCreateEnd = self.currentExecLog().schCreateEnd();
-                command.dailyCreateStart = self.currentExecLog().dailyCreateStart();
-                command.dailyCreateEnd = self.currentExecLog().dailyCreateEnd();
-                command.dailyCalcStart = self.currentExecLog().dailyCalcStart();
-                command.dailyCalcEnd = self.currentExecLog().dailyCalcEnd();
-                command.execId = self.currentExecLog().execId();
-                command.taskTerminate = self.taskTerminate();
-                return command;
-            }
-        }
-        
-        export interface ITaskLog {
-            taskId: string;
-            status: number;
-        }
-        
-        export class TaskLog {
-            taskId: KnockoutObservable<string> = ko.observable('');
-            status: KnockoutObservable<number> = ko.observable(null);
-            constructor(param: ITaskLog) {
-                let self = this;
-                self.taskId(param.taskId || '');
-                self.status(param.status);
-            }
-        }
-        
-        export interface IExecutionLog {
-            execItemCd:          string;
-            companyId:           string;
-            execItemName:        string;
-            currentStatusCd:     number;
-            currentStatus:       string;
-            overallStatusCd:     number;
-            overallStatus:       string;
-            overallError:        number;
-            prevExecDateTime:    string;
-            schCreateStart:      string;
-            schCreateEnd:        string;
-            dailyCreateStart:    string;
-            dailyCreateEnd:      string;
-            dailyCalcStart:      string;
-            dailyCalcEnd:        string;
-            execId:              string;
-            prevExecDateTimeEx:  string;
-            taskLogList:         Array<TaskLog>;
-            taskLogExecId:        string;   
-            
-            
-        }
-        
-        export class ExecutionLog {
-            execItemCd:          KnockoutObservable<string> = ko.observable('');
-            companyId:           KnockoutObservable<string> = ko.observable('');
-            execItemName:        KnockoutObservable<string> = ko.observable('');
-            currentStatusCd:     KnockoutObservable<number> = ko.observable(null);
-            currentStatus:       KnockoutObservable<string> = ko.observable('');
-            overallStatusCd:     KnockoutObservable<number> = ko.observable(null);
-            overallStatus:       KnockoutObservable<string> = ko.observable('');
-            overallError:        KnockoutObservable<number> = ko.observable(null);
-            prevExecDateTime:    KnockoutObservable<string> = ko.observable('');
-            schCreateStart:      KnockoutObservable<string> = ko.observable('');
-            schCreateEnd:        KnockoutObservable<string> = ko.observable('');
-            dailyCreateStart:    KnockoutObservable<string> = ko.observable('');
-            dailyCreateEnd:      KnockoutObservable<string> = ko.observable('');
-            dailyCalcStart:      KnockoutObservable<string> = ko.observable('');
-            dailyCalcEnd:        KnockoutObservable<string> = ko.observable('');
-            execId:              KnockoutObservable<string> = ko.observable('');
-            prevExecDateTimeEx:  KnockoutObservable<string> = ko.observable('');
-            taskLogList:         KnockoutObservableArray<TaskLog> = ko.observableArray([]);
-            taskLogExecId:  string;
-            constructor(param: IExecutionLog) {
-                let self = this;
-                self.execItemCd(param.execItemCd || '');
-                self.companyId(param.companyId || '');
-                self.execItemName(param.execItemName || '');
-                self.currentStatusCd(param.currentStatusCd);
-                self.currentStatus(param.currentStatus || '');
-                self.overallStatusCd(param.overallStatusCd);
-                self.overallStatus(param.overallStatus || '');
-                self.overallError(param.overallError);
-                self.prevExecDateTime(param.prevExecDateTime || '');
-                self.schCreateStart(param.schCreateStart || '');
-                self.schCreateEnd(param.schCreateEnd || '');
-                self.dailyCreateStart(param.dailyCreateStart || '');
-                self.dailyCreateEnd(param.dailyCreateEnd || '');
-                self.dailyCalcStart(param.dailyCalcStart || '');
-                self.dailyCalcEnd(param.dailyCalcEnd || '');
-                self.execId(param.execId || '');
-                self.prevExecDateTimeEx(param.prevExecDateTimeEx || '');
-                self.taskLogList(param.taskLogList || []);
-                self.taskLogExecId = param.taskLogExecId||'';
-            }
-        }
-        
-        export interface EnumConstantDto {
-            value: number;
-            fieldName: string;
-            localizedName: string;
-        }
+  const DATETIME_FORMAT = 'YYYY/MM/DD HH:mm:ss';
+  const DOM_DATA_VALUE = 'data-value';
+  const SELECTED_CLASS = "selected";
+
+  @bean()
+  export class KBT002FViewModel extends ko.ViewModel {
+    $grid!: JQuery;
+
+    dataSource: KnockoutObservableArray<any> = ko.observableArray([]);
+    dataSourceModel: KnockoutObservableArray<ExecutionItemInfomationModel> = ko.observableArray([]);
+    selectedExecCd: KnockoutObservable<string> = ko.observable('');
+    isOnceMessage101: KnockoutObservable<boolean> = ko.observable(true);
+    isOnceExecType: KnockoutObservable<boolean> = ko.observable(true);
+    isOnceCurrentStatus: KnockoutObservable<boolean> = ko.observable(true);
+    isOnceInterupt: KnockoutObservable<boolean> = ko.observable(true);
+    isCreateSchedule: KnockoutObservable<boolean> = ko.observable(true);
+    taskTerminate: KnockoutObservable<any> = ko.observable("");
+
+    mounted() {
+      const vm = this;
+      vm.$grid = $("#F2_1");
+      vm.getExecItemInfoList();
+      // data binding
+      $(document).on("click", ".button-process-start", function () {
+        const key = $(this).attr(DOM_DATA_VALUE);
+        vm.executeUpdateProcess(key);
+      });
+      $(document).on("click", ".button-process-stop", function () {
+        const key = $(this).attr(DOM_DATA_VALUE);
+        vm.stopUpdateProcess(key);
+      });
+      $(document).on("click", ".button-open-g", function () {
+        const key = $(this).attr(DOM_DATA_VALUE);
+        vm.openDialogG(key);
+      });
+      $(document).on("click", ".button-open-h", function () {
+        const key = $(this).attr(DOM_DATA_VALUE);
+        vm.openDialogH(key);
+      });
+      $(document).on("click", "div[class^='nts-grid-control-isTaskExecution']", function () {
+        const className = $(this).attr("class");
+        const regex = /.*-([0-9]+)/;
+        const key = regex.exec(className)[1];
+        vm.changeSetting(key, $(this));
+      });
     }
+
+    /**
+     * アルゴリズム「起動時処理」を実行する
+     */
+    private getExecItemInfoList(): JQueryPromise<any> {
+      const vm = this;
+      vm.$blockui('grayout');
+      return vm.$ajax(API.getExecItemInfoList)
+        .then((response) => {
+          vm.$blockui('clear');
+          vm.dataSource(response);
+          const dataSourceModel = _.map(response, (item) => new ExecutionItemInfomationModel(vm, item));
+          vm.dataSourceModel(dataSourceModel);
+        })
+        .fail(err => vm.$dialog.error({ messageId: err.messageId }))
+        .always(() => {
+          vm.$blockui("clear");
+          // Render grid list
+          vm.initGridList();
+        });
+    }
+
+    private getExecItemInfo(execItemCd: string): JQueryPromise<any> {
+      const vm = this;
+      return vm.$ajax(nts.uk.text.format(API.getExecItemInfo, execItemCd))
+        .then(res => {
+          const data = _.find(vm.dataSourceModel(), { execItemCd: res.execItemCd });
+          const index = vm.dataSourceModel().indexOf(data);
+          vm.dataSourceModel().splice(index, 1, new ExecutionItemInfomationModel(vm, res));
+          vm.dataSource().splice(_.findIndex(vm.dataSource(), { execItemCd: res.execItemCd }), 1, res);
+          vm.initGridList(index);
+        });
+    }
+
+    private initGridList(index: number = null) {
+      const vm = this;
+      if (vm.$grid.data("igGrid")) {
+        vm.$grid.ntsGrid("destroy");
+      }
+      vm.$nextTick(() => {
+        vm.$grid.ntsGrid({
+          name: '#[KBT002_126]',
+          width: "1200px",
+          height: "490px",
+          dataSource: vm.dataSourceModel(),
+          primaryKey: 'execItemCd',
+          columns: [
+            { headerText: '', key: 'execItemCd', hidden: true },
+            {
+              headerText: vm.$i18n("KBT002_201"),
+              key: 'execItem',
+              width: 150,
+              formatter: (value: string, record: ExecutionItemInfomationModel) => {
+                return `<span style="white-space: nowrap;">${_.escape(value)}</span>`;
+              }
+            },
+            {
+              headerText: "",
+              key: 'showWarningIcon',
+              width: 30,
+              formatter: (value: number, record: ExecutionItemInfomationModel) => {
+                if (value === 0) {
+                  return `<div class="cell-center"><i class="img-icon icon-warning" title="${vm.$i18n("KBT002_314")}" tabindex="4"></i></div>`;
+                } else if (value === 1) {
+                  return `<div class="cell-center"><i class="img-icon icon-warning" title="${vm.$i18n("KBT002_315")}" tabindex="4"></i></div>`;
+                } else {
+                  return '';
+                }
+              }
+            },
+            {
+              headerText: vm.$i18n("KBT002_121"),
+              key: 'execStatus',
+              width: 80,
+              formatter: (value: number, record: ExecutionItemInfomationModel) => {
+                if (value === 0) {
+                  // 現在の実行状態 = 実行中
+                  return `<div class="color-holiday">${vm.$i18n('KBT002_265')}</div>`;
+                } else if (value === 1) {
+                  // 現在の実行状態 = 待機中
+                  return `<div class="color-daily-extra-holiday">${vm.$i18n('KBT002_266')}</div>`;
+                } else if (value === 2) {
+                  // 現在の実行状態 = 無効
+                  return `<div class="color-weekdays">${vm.$i18n('KBT002_124')}</div>`;
+                } else {
+                  // 現在の実行状態 = empty
+                  return "";
+                }
+              }
+            },
+            {
+              headerText: vm.$i18n("KBT002_257"),
+              key: 'execItemCd',
+              width: 70,
+              formatter: (value: number, record: ExecutionItemInfomationModel) => {
+                const enabled: boolean = (record.execStatus === 1 || record.execStatus === 2);
+                const $button = $("<button>", { "class": "btn-center setting small button-process-start", "tabindex": 5, "disabled": !enabled });
+                $button.attr(DOM_DATA_VALUE, record["execItemCd"]);
+                $button.append(`<i class="img-icon icon-start"></i>${vm.$i18n('KBT002_262')}`);
+                return $button[0].outerHTML;
+              }
+            },
+            {
+              headerText: vm.$i18n("KBT002_258"),
+              key: 'execItemCd',
+              width: 70,
+              formatter: (value: number, record: ExecutionItemInfomationModel) => {
+                const enabled: boolean = (record.execStatus === 0);
+                const $button = $("<button>", { "class": "btn-center setting small button-process-stop", "tabindex": 6, "disabled": !enabled });
+                $button.attr(DOM_DATA_VALUE, record["execItemCd"]);
+                $button.append(`<i class="img-icon icon-stop"></i>${vm.$i18n('KBT002_133')}`);
+                return $button[0].outerHTML;
+              }
+            },
+            { headerText: vm.$i18n("KBT002_131"), key: 'nextExecDate', width: 180, formatter: _.escape },
+            { headerText: vm.$i18n("KBT002_259"), key: 'isTaskExecution', width: 100, ntsControl: 'Switch' },
+            { headerText: vm.$i18n("KBT002_260"), key: 'lastStartDateTime', width: 180, formatter: _.escape },
+            { headerText: vm.$i18n("KBT002_261"), key: 'lastEndDateTime', width: 180, formatter: _.escape },
+            { headerText: vm.$i18n("KBT002_204"), key: 'processingTime', width: 80, formatter: _.escape },
+            {
+              headerText: vm.$i18n("KBT002_143"),
+              key: 'overallStatus',
+              width: 80,
+              formatter: (value: number, record: ExecutionItemInfomationModel) => {
+                if (value === 0) {
+                  // 全体の終了状態 = 未実施
+                  return `<div class="color-daily-extra-holiday">${vm.$i18n('KBT002_267')}</div>`;
+                } else if (value === 1) {
+                  // 全体の終了状態 = 完了
+                  return `<div class="color-working-schedule">${vm.$i18n('KBT002_268')}</div>`;
+                } else if (value === 2) {
+                  // 全体の終了状態 =強制終了
+                  return `<div class="color-holiday">${vm.$i18n('KBT002_258')}</div>`;
+                } else if (value === 3) {
+                  // 全体の終了状態 = 終了中
+                  return `<div class="color-holiday">${vm.$i18n('KBT002_269')}</div>`;
+                } else {
+                  // 全体の終了状態 = empty
+                  return "";
+                }
+              }
+            },
+            { headerText: vm.$i18n("KBT002_206"), key: 'systemError', width: 80, formatter: _.escape },
+            { headerText: vm.$i18n("KBT002_207"), key: 'businessError', width: 80, formatter: _.escape },
+            {
+              headerText: vm.$i18n("KBT002_144"),
+              key: 'execItemCd',
+              width: 50,
+              formatter: (value: any, record: ExecutionItemInfomationModel) => {
+                const enabled = (record.execStatus === 1 || record.execStatus === 2) && (record.overallStatus !== 0 && record.overallStatus !== 3);
+                const $button = $("<button>", { "class": "setting small button-open-g", "tabindex": 8, "disabled": !enabled, "text": vm.$i18n("KBT002_144") });
+                $button.attr(DOM_DATA_VALUE, record["execItemCd"]);
+                return $button[0].outerHTML;
+              }
+            },
+            {
+              headerText: vm.$i18n("KBT002_147"),
+              key: 'execItemCd',
+              width: 70,
+              formatter: (value: any, record: ExecutionItemInfomationModel) => {
+                const enabled = !!(record.lastStartDateTime);
+                const $button = $("<button>", { "class": "setting small button-open-h", "tabindex": 9, "disabled": !enabled, "text": vm.$i18n("KBT002_147") });
+                $button.attr(DOM_DATA_VALUE, record["execItemCd"]);
+                return $button[0].outerHTML;
+              }
+            },
+          ],
+          features: [
+            {
+              name: "Selection",
+              mode: "row",
+              multipleSelection: false,
+              activation: false,
+              rowSelectionChanged: (event: any, ui: any) => vm.selectedExecCd(ui.row.id),
+            },
+          ],
+          ntsControls: [
+            {
+              name: 'Switch',
+              options: [
+                { value: true, text: vm.$i18n('KBT002_123') },
+                { value: false, text: vm.$i18n('KBT002_124') }
+              ],
+              optionsValue: 'value',
+              optionsText: 'text',
+              controlType: 'SwitchButtons'
+            },
+          ],
+          virtualization: true,
+          virtualizationMode: 'continuous',
+        });
+
+        vm.$grid.ready(function () {
+          _.forEach(vm.dataSource(), item => {
+            const $switch = $(`.nts-grid-control-isTaskExecution-${nts.uk.text.padLeft(item.execItemCd, '0', 2)}`);
+            // Add tabindex for switch
+            $switch.attr("tabindex", "7");
+            // Disable F3_7
+            if (!item.executionTaskSetting) {
+              $switch.find("button").attr("disabled", "disabled");
+              $switch.attr("tabindex", "-1");
+            }
+          });
+          vm.$grid.igGrid("virtualScrollTo", index);
+        });
+      });
+    }
+
+    /**
+     * 更新処理を即時実行する
+     */
+    private executeUpdateProcess(execItemCd: string) {
+      const vm = this;
+      const selectedItem: any = _.find(vm.dataSource(), (item) => item.execItemCd === execItemCd);
+      // if (selectedItem && selectedItem.updateProcessAutoExecLog) {
+        vm.$blockui("grayout");
+        const command: ExecuteProcessExecutionCommand = new ExecuteProcessExecutionCommand({
+          companyId: selectedItem.updateProcessAutoExec.companyId,
+          execItemCd: selectedItem.updateProcessAutoExec.execItemCode,
+          execId: selectedItem.updateProcessAutoExecLog ? selectedItem.updateProcessAutoExecLog.execId : null,
+          execType: 1,
+        });
+        vm.$ajax(API.execute, command)
+          .then(res => vm.repeatCheckAsyncResult(res.id, selectedItem))
+          .then(() => vm.getExecItemInfo(execItemCd))
+          .fail((err) => {
+            vm.$dialog.error({ messageId: err.messageId });
+            return vm.getExecItemInfoList();
+          })
+          .always(() => vm.$blockui("clear"));
+      // }
+    }
+
+    private repeatCheckAsyncResult(taskId: any, selectedItem: any) {
+      const vm = this;
+      return nts.uk.deferred.repeat(conf => conf
+        .task(() => {
+          return (nts.uk.request as any).asyncTask.getInfo(taskId)
+            .done((res: any) => {
+              //ExecuteProcessExecCommandHandler
+              const message101 = vm.getAsyncData(res.taskDatas, "message1101").valueAsString;
+              if (message101 === "Msg_1101" && vm.isOnceMessage101()) {
+                vm.isOnceMessage101(false);
+                vm.$dialog.alert({ messageId: message101 });
+              }
+              //TerminateProcessExecutionCommandHandler
+              const currentStatusIsOneOrTwo = vm.getAsyncData(res.taskDatas, "currentStatusIsOneOrTwo").valueAsString;
+              if (currentStatusIsOneOrTwo === "Msg_1102" && vm.isOnceCurrentStatus()) {
+                vm.isOnceCurrentStatus(false);
+                vm.$dialog.alert({ messageId: currentStatusIsOneOrTwo });
+              }
+              const interupt = vm.getAsyncData(res.taskDatas, "interupt").valueAsString;
+              if (interupt === "true" && vm.isOnceInterupt()) {
+                vm.isOnceInterupt(false);
+              }
+              const createSchedule = vm.getAsyncData(res.taskDatas, "createSchedule").valueAsString;
+              if (createSchedule === "done" && vm.isCreateSchedule()) {
+                vm.isCreateSchedule(false);
+
+              }
+              const task = vm.getAsyncData(res.taskDatas, "taskId").valueAsString;
+              if (!nts.uk.text.isNullOrEmpty(task)) {
+                vm.taskTerminate(task);
+              }
+            })
+            .fail((err: any) => vm.$dialog.error({ messageId: err.messageId }));
+        })
+        .while(infor => infor.pending || infor.running)
+        .pause(1000));
+    }
+
+    private getAsyncData(data: any[], key: string): any {
+      const result = _.find(data, (item) => {
+        return item.key === key;
+      });
+      return result || { valueAsString: "", valueAsNumber: 0, valueAsBoolean: false };
+    }
+
+    /**
+     * 実行中の更新処理を終了する
+     */
+    private stopUpdateProcess(execItemCd: string) {
+      const vm = this;
+      const selectedItem: any = _.find(vm.dataSource(), (item) => item.execItemCd === execItemCd);
+      if (selectedItem && selectedItem.updateProcessAutoExecLog) {
+        vm.$blockui("grayout");
+        const command: TerminateProcessExecutionCommand = new TerminateProcessExecutionCommand({
+          companyId: selectedItem.updateProcessAutoExecLog.companyId,
+          execItemCd: selectedItem.updateProcessAutoExecLog.execItemCd,
+          execId: selectedItem.updateProcessAutoExecLog.execId,
+          execType: 1,
+          taskTerminate: vm.taskTerminate(),
+        });
+        vm.$ajax(API.terminate, command)
+          .then(res => vm.repeatCheckAsyncResult(res.id, selectedItem))
+          .then(() => vm.getExecItemInfo(execItemCd))
+          .fail((err) => {
+            vm.$dialog.error({ messageId: err.messageId });
+            return vm.getExecItemInfoList();
+          })
+          .always(() => vm.$blockui("clear"));
+      }
+    }
+
+    /**
+     * 各処理の前回終了状態を見る
+     */
+    private openDialogG(execItemCd: string) {
+      const vm = this;
+      const selectedDto = _.find(vm.dataSource(), (o) => o.execItemCd === execItemCd);
+      if (selectedDto) {
+        const params = {
+          taskLogList: selectedDto.updateProcessAutoExecLog         // 各処理の終了状態
+            ? _.filter(selectedDto.updateProcessAutoExecLog.taskLogList, (item: any) => item.execId === selectedDto.updateProcessAutoExecLog.execId)
+            : [], 
+          overallStatus: selectedDto.updateProcessAutoExecManage ? selectedDto.updateProcessAutoExecManage.overallStatus : null, // 全体の終了状態
+          overallError: selectedDto.updateProcessAutoExecManage ? selectedDto.updateProcessAutoExecManage.overallError : null, // 全体のエラー詳細
+          execId: selectedDto.updateProcessAutoExecLog ? selectedDto.updateProcessAutoExecLog.execId : null, // 実行ID
+          execItemCd: selectedDto.execItemCd, // 更新処理自動実行項目コード
+        };
+        // 画面G「前回終了状態詳細」を起動する
+        vm.$blockui('grayout');
+        vm.$window.modal('/view/kbt/002/g/index.xhtml', params)
+          .then((result: any) => {
+            // bussiness logic after modal closed
+            vm.$blockui('clear');
+          });
+      }
+    }
+
+    /**
+     * 実行履歴を見る
+     */
+    private openDialogH(execItemCd: string) {
+      const vm = this;
+      const params = { execItemCd: execItemCd };
+      // H画面「実行履歴」を起動する
+      vm.$blockui('grayout');
+      nts.uk.ui.windows.setShared('inputDialogH', params);
+      vm.$window.modal('/view/kbt/002/h/index.xhtml', params)
+        .then((result: any) => {
+          // bussiness logic after modal closed
+          vm.$blockui('clear');
+        });
+    }
+
+    /**
+     * 実行タスクの設定変更する
+     */
+    private changeSetting(execItemCd: string, $item: JQuery) {
+      const vm = this;
+      const selectedItem = _.find(vm.dataSource(), { execItemCd: execItemCd });
+      if ($item.find("button").filter(`.${SELECTED_CLASS}`)[0].getAttribute("data-swbtn") !== String(selectedItem.executionTaskSetting.enabledSetting)) {
+        vm.$dialog.confirm({ messageId: "Msg_1846" })
+        .then((result: 'no' | 'yes' | 'cancel') => {
+          if (result === 'yes') {
+            // logic for yes case
+            if (selectedItem) {
+              const command: ChangeExecutionTaskSettingCommand = new ChangeExecutionTaskSettingCommand(selectedItem.executionTaskSetting);
+              command.enabledSetting = !command.enabledSetting;
+              // Update date format
+              if (command.startDate) {
+                command.startDate = moment.utc(command.startDate, "YYYY/MM/DD");
+              }
+              if (command.endDate) {
+                command.endDate = moment.utc(command.endDate, "YYYY/MM/DD");
+              }
+              vm.$ajax(API.changeSetting, command)
+                .then((res) => {
+                  selectedItem.executionTaskSetting = res;
+                  vm.rebind(selectedItem);
+                })
+                .fail((err) => {
+                  vm.revertSwitch($item, selectedItem);
+                  vm.$dialog.alert({ messageId: err.messageId });
+                });
+            }
+          } else {
+            vm.revertSwitch($item, selectedItem);
+          }
+        });
+      }
+    }
+
+    private revertSwitch($item: JQuery, selectedItem: any) {
+      const onButton = $item.find("button").filter(`.${SELECTED_CLASS}`);
+      const offButton = $item.find("button").filter(`:not(.${SELECTED_CLASS})`);
+      if (onButton[0].getAttribute("data-swbtn") !== String(selectedItem.executionTaskSetting.enabledSetting)) {
+        onButton.removeClass(SELECTED_CLASS);
+        offButton.addClass(SELECTED_CLASS);
+      }
+    }
+
+    /**
+     * 最新の情報に更新する
+     */
+    public updateLastestInfo() {
+      const vm = this;
+      vm.getExecItemInfoList();
+    }
+
+    /**
+     * 実行履歴ログを出力する
+     */
+    public exportHistoryLog() {
+      const vm = this;
+      // 「K：実行履歴の出力」ダイアログを起動する
+      vm.$blockui('grayout');
+      vm.$window.modal('/view/kbt/002/k/index.xhtml')
+        .then((result: any) => {
+          // bussiness logic after modal closed
+          vm.$blockui('clear');
+        });
+    }
+
+    private rebind(dataToReplace: any) {
+      const vm = this;
+      const data = _.find(vm.dataSourceModel(), { execItemCd: dataToReplace.execItemCd });
+      const index = vm.dataSourceModel().indexOf(data);
+      data.isTaskExecution = dataToReplace.executionTaskSetting.enabledSetting;
+      data.nextExecDate = dataToReplace.executionTaskSetting.nextExecDateTime ? 
+                          moment.utc(dataToReplace.executionTaskSetting.nextExecDateTime).format(DATETIME_FORMAT) : 
+                          vm.$i18n('KBT002_165');
+      vm.initGridList(index);
+    }
+  }
+
+  export class ExecutionItemInfomationModel {
+    execItemCd: string;
+    execItem: string;
+    showWarningIcon: number;
+    execStatus: number;
+    nextExecDate: string;
+    isTaskExecution: string;
+    lastStartDateTime: string;
+    lastEndDateTime: string;
+    processingTime: string;
+    overallStatus: number;
+    systemError: string;
+    businessError: string;
+
+    constructor(vm: any, dto: any) {
+      // PK
+      this.execItemCd = dto.execItemCd;
+      // 警告アイコン
+      if (dto.isOverAverageExecTime) {
+        this.showWarningIcon = 0;
+      } else {
+        if (dto.isPastNextExecDate) {
+          this.showWarningIcon = 1;
+        }
+      }
+
+      if (dto.updateProcessAutoExec) {
+        // 実行項目
+        this.execItem = `${dto.execItemCd} ${dto.updateProcessAutoExec.execItemName}`;
+      }
+      if (dto.updateProcessAutoExecManage) {
+        // 実行状態
+        this.execStatus = dto.updateProcessAutoExecManage.currentStatus;
+        // 終了状態
+        this.overallStatus = dto.updateProcessAutoExecManage.overallStatus;
+        // 前回開始日時
+        this.lastStartDateTime = dto.updateProcessAutoExecManage.lastExecDateTime
+          ? moment.utc(dto.updateProcessAutoExecManage.lastExecDateTime).format(DATETIME_FORMAT)
+          : "";
+        // 前回終了日時
+        this.lastEndDateTime = dto.updateProcessAutoExecManage.lastEndExecDateTime
+          ? moment.utc(dto.updateProcessAutoExecManage.lastEndExecDateTime).format(DATETIME_FORMAT)
+          : "";
+        // 処理時間
+        if (dto.updateProcessAutoExecManage.lastExecDateTime && dto.updateProcessAutoExecManage.lastEndExecDateTime) {
+          const end = moment.utc(dto.updateProcessAutoExecManage.lastEndExecDateTime);
+          const start = moment.utc(dto.updateProcessAutoExecManage.lastExecDateTime);
+          this.processingTime = moment.utc(moment.duration(end.diff(start)).as('milliseconds')).format("HH:mm:ss");
+        }
+      }
+      // タスク実行
+      this.isTaskExecution = (dto.executionTaskSetting) ? dto.executionTaskSetting.enabledSetting : false;
+      // 次回実行日時
+      this.nextExecDate = dto.nextExecDate
+        ? moment.utc(dto.nextExecDate).format(DATETIME_FORMAT)
+        : vm.$i18n('KBT002_165');
+      // ｼｽﾃﾑｴﾗｰ
+      this.systemError = (dto.updateProcessAutoExecManage && dto.updateProcessAutoExecManage.errorSystem)
+        ? vm.$i18n('KBT002_61')
+        : vm.$i18n('KBT002_62');
+      // 業務エラー
+      this.businessError = (dto.updateProcessAutoExecManage && dto.updateProcessAutoExecManage.errorBusiness)
+        ? vm.$i18n('KBT002_61')
+        : vm.$i18n('KBT002_62');
+    }
+  }
+
+  export class ChangeExecutionTaskSettingCommand {
+    companyId: string;
+    execItemCd: string;
+    enabledSetting: boolean;
+    oneDayRepInterval: number;
+    oneDayRepClassification: number;
+    nextExecDateTime: string;
+    endDate: any;
+    endDateCls: number;
+    endTime: number;
+    endTimeCls: number;
+    repeatContent: number;
+    startDate: any;
+    startTime: number;
+    scheduleId: string;
+    endScheduleId: string;
+    monday: boolean;
+    tuesday: boolean;
+    wednesday: boolean;
+    thursday: boolean;
+    friday: boolean;
+    saturday: boolean;
+    sunday: boolean;
+    january: boolean;
+    february: boolean;
+    march: boolean;
+    april: boolean;
+    may: boolean;
+    june: boolean;
+    july: boolean;
+    august: boolean;
+    september: boolean;
+    october: boolean;
+    november: boolean;
+    december: boolean;
+    repeatMonthDateList: number[];
+    newMode = false;
+
+    constructor(init?: Partial<ChangeExecutionTaskSettingCommand>) {
+      $.extend(this, init);
+    }
+  }
+
+  export class ExecuteProcessExecutionCommand {
+    companyId: string;
+    execItemCd: string;
+    execId: string;
+    execType: number;
+
+    constructor(init?: Partial<ExecuteProcessExecutionCommand>) {
+      $.extend(this, init);
+    }
+  }
+
+  export class TerminateProcessExecutionCommand {
+    companyId: string;
+    execItemCd: string;
+    execId: string;
+    execType: number;
+    taskTerminate: string;
+
+    constructor(init?: Partial<TerminateProcessExecutionCommand>) {
+      $.extend(this, init);
+    }
+  }
 }

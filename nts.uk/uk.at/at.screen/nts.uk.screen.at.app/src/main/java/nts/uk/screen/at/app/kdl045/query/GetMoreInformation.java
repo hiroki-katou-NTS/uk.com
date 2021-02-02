@@ -12,6 +12,7 @@ import nts.uk.ctx.at.shared.app.find.worktime.common.dto.WorkTimezoneCommonSetDt
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.workrule.BreakTimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.getcommonset.GetCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -74,30 +75,41 @@ public class GetMoreInformation {
 		WorkInformation.Require requireWorkInfo = new WorkInformationImpl(workTypeRepo, workTimeSettingRepository,
 				workTimeSettingService, basicScheduleService,fixedWorkSettingRepository,flowWorkSettingRepository,flexWorkSettingRepository,predetemineTimeSettingRepository);
 		
-		//1 : 共通設定の取得
-		Optional<WorkTimezoneCommonSet> optWorktimezone = GetCommonSet.workTimezoneCommonSet(require, companyId, workTimeCode);
-		WorkTimezoneCommonSetDto workTimezoneCommonSetDto = new WorkTimezoneCommonSetDto(); 
-		if(!optWorktimezone.isPresent()) {
-			data.setWorkTimezoneCommonSet(null);
-		}else {
-			optWorktimezone.get().saveToMemento(workTimezoneCommonSetDto);
-			data.setWorkTimezoneCommonSet(workTimezoneCommonSetDto);
-		}
-		
-		//2 :休憩時間帯を取得する (require: Require): Optional<休憩時間>
 		WorkInformation wi = new WorkInformation(workType, workTimeCode);
-		Optional<BreakTimeZone> optBreakTimeZone = wi.getBreakTimeZone(requireWorkInfo);
-		if(optBreakTimeZone.isPresent()) {
-			data.setBreakTime(BreakTimeKdl045Dto.convertToBreakTimeZone(optBreakTimeZone.get()));
+		//1 
+		Optional<WorkStyle> workStyle =  wi.getWorkStyle(requireWorkInfo);
+		Integer style = workStyle.isPresent()?workStyle.get().value: null;
+		if(workStyle.isPresent() && workStyle.get() != WorkStyle.ONE_DAY_REST) {
+			//2 :休憩時間帯を取得する (require: Require): Optional<休憩時間>
+			
+			Optional<BreakTimeZone> optBreakTimeZone = wi.getBreakTimeZone(requireWorkInfo);
+			if(optBreakTimeZone.isPresent()) {
+				data.setBreakTime(BreakTimeKdl045Dto.convertToBreakTimeZone(optBreakTimeZone.get()));
+			}else {
+				data.setBreakTime(null);
+			}
+			
+			//3 : 共通設定の取得
+			Optional<WorkTimezoneCommonSet> optWorktimezone = GetCommonSet.workTimezoneCommonSet(require, companyId, workTimeCode);
+			WorkTimezoneCommonSetDto workTimezoneCommonSetDto = new WorkTimezoneCommonSetDto(); 
+			if(!optWorktimezone.isPresent()) {
+				data.setWorkTimezoneCommonSet(null);
+			}else {
+				optWorktimezone.get().saveToMemento(workTimezoneCommonSetDto);
+				data.setWorkTimezoneCommonSet(workTimezoneCommonSetDto);
+			}
 		}else {
 			data.setBreakTime(null);
+			data.setWorkTimezoneCommonSet(null);
 		}
+		data.setWorkStyle(style);
+		
 
-		//3:就業時間帯の設定を取得する
+		//4:就業時間帯の設定を取得する
 		//emptyの運用はあり得ないため - QA : 112354
 		Optional<WorkTimeSetting> workTimeSetting = workTimeSettingRepository.findByCode(companyId, workTimeCode);
+		//5:call()
 		data.setWorkTimeForm(workTimeSetting.get().getWorkTimeDivision().getWorkTimeForm().value);
-		
 		return data;
 		
 	}

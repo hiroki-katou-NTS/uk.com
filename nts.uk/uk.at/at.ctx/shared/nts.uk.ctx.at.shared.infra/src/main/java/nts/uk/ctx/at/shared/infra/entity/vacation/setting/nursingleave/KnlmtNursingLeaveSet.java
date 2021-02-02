@@ -85,6 +85,8 @@ public class KnlmtNursingLeaveSet extends UkJpaEntity implements Serializable {
      */
     public KnlmtNursingLeaveSet() {
     	super();
+    	this.nursingNumPerson = 1;
+    	this.nursingNumPerson2 = 2;
     }
 
     /* (non-Javadoc)

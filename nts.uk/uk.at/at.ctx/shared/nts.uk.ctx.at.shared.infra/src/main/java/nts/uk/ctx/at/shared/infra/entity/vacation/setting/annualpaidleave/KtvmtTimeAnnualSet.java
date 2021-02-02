@@ -46,6 +46,7 @@ public class KtvmtTimeAnnualSet extends UkJpaEntity implements Serializable {
     @Column(name = "TIME_MAX_DAY_MANAGE_ATR")
     private Integer timeMaxDayManageAtr;
     
+    
     /** The time max day reference. */
     @Column(name = "TIME_MAX_DAY_REFERENCE")
     private Integer timeMaxDayReference;
@@ -54,14 +55,23 @@ public class KtvmtTimeAnnualSet extends UkJpaEntity implements Serializable {
     @Column(name = "TIME_MAX_DAY_UNIF_COMP")
     private Integer timeMaxDayUnifComp;
     
-    /** The is enough time one day. */
-    @Column(name = "IS_ENOUGH_TIME_ONE_DAY")
-    private Integer isEnoughTimeOneDay;
-    
     /** The Round Processing Classification. */
-    @Column(name = "ROUND_PRO_CLA")
+    @Column(name = "ROUND_PROC_CLA")
     private Integer roundProcessCla;
-
+     
+    /** 1日の時間年休時間参照先**/
+    @Column(name = "TIME_OF_DAY_REFERENCE")
+    private int timeOfDayRef;
+    
+    /** 全社一律の時間 **/
+    @Column (name = "UNIFORM_TIME")
+    private Integer unifromTime;
+    
+    /** 契約時間丸め **/
+    @Column(name = "CONTRACT_TIME_ROUND")
+    private Integer contractTimeRound;
+    
+    
     /**
      * Instantiates a new ktvmt time vacation set.
      */

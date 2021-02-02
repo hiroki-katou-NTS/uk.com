@@ -14,5 +14,5 @@ public class SortEmployeeParam {
 
 	private String ymd;
 	
-	private List<String> lstEmpId;
+	private List<EmpIdCodeDto> lstEmpId;
 }

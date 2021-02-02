@@ -1,142 +1,129 @@
 package nts.uk.ctx.at.function.infra.entity.processexecution;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
-import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.EndStatus;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ExecutionTaskLog;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionTask;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
+
+/**
+ *  Entity UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.就業機能.更新処理自動実行.更新処理自動実行ログ.更新処理自動実行タスクログ
+ */
 @Entity
 @Table(name="KFNMT_EXEC_TASK_LOG")
+@Builder
+@Data
 @NoArgsConstructor
-@Getter
-@Setter
-public class KfnmtExecutionTaskLog extends UkJpaEntity implements Serializable{
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+public class KfnmtExecutionTaskLog extends UkJpaEntity implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 	/* 主キー */
 	@EmbeddedId
     public KfnmtExecutionTaskLogPK kfnmtExecTaskLogPK;
-	
+
+	/** The exclus ver. */
+	@Version
+	@Column(name = "EXCLUS_VER")
+	private Long exclusVer;
+
+	/** The Contract Code. */
+	@Column(name = "CONTRACT_CD")
+	public String contractCode;
+
 	/* 終了状態 */
 	@Column(name = "STATUS")
 	public Integer status;
-	
+
 	@Column(name = "LAST_EXEC_DATETIME")
 	public GeneralDateTime lastExecDateTime;
-	
+
 	@Column(name = "LAST_END_EXEC_DATETIME")
 	public GeneralDateTime lastEndExecDateTime;
 
 	@Column(name = "ERROR_SYSTEM")
 	public Integer errorSystem;
-	
+
 	@Column(name = "ERROR_BUSINESS")
 	public Integer errorBusiness;
-	
-	@ManyToOne(optional = false)
+
+	/**
+	 * The error system detail.
+	 * システムエラー内容
+	 **/
+	@Column(name = "ERROR_SYSTEM_CONT")
+	public String errorSystemDetail;
+
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumns({
 		@JoinColumn(name="CID", referencedColumnName="CID", insertable = false, updatable = false),
-		@JoinColumn(name="EXEC_ITEM_CD", referencedColumnName="EXEC_ITEM_CD", insertable = false, updatable = false),
-		@JoinColumn(name="EXEC_ID", referencedColumnName="EXEC_ID", insertable = false, updatable = false)})
+		@JoinColumn(name="EXEC_ITEM_CD", referencedColumnName="EXEC_ITEM_CD", insertable = false, updatable = false)})
 	public KfnmtProcessExecutionLog procExecLogItem;
-	
-	@ManyToOne(optional = false)
+
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumns({
 		@JoinColumn(name="CID", referencedColumnName="CID", insertable = false, updatable = false),
 		@JoinColumn(name="EXEC_ITEM_CD", referencedColumnName="EXEC_ITEM_CD", insertable = false, updatable = false),
 		@JoinColumn(name="EXEC_ID", referencedColumnName="EXEC_ID", insertable = false, updatable = false)})
 	public KfnmtProcessExecutionLogHistory procExecLogHistItem;
-	
+
 	@Override
 	protected Object getKey() {
 		return this.kfnmtExecTaskLogPK;
 	}
-	public KfnmtExecutionTaskLog(KfnmtExecutionTaskLogPK kfnmtExecTaskLogPK, Integer status,
-			GeneralDateTime lastExecDateTime, GeneralDateTime lastEndExecDateTime, Integer errorSystem,
-			Integer errorBusiness) {
-		super();
-		this.kfnmtExecTaskLogPK = kfnmtExecTaskLogPK;
-		this.status = status;
-		this.lastExecDateTime = lastExecDateTime;
-		this.lastEndExecDateTime = lastEndExecDateTime;
-		this.errorSystem = errorSystem;
-		this.errorBusiness = errorBusiness;
-	}
-	
-	public static KfnmtExecutionTaskLog toEntity(String companyId, String execItemCd, String execId, ExecutionTaskLog domain) {
-		
-		Integer status = null;
-		if(domain.getStatus()!=null){
-			if(domain.getStatus().isPresent()){
-				status =domain.getStatus().get().value;
-			}
-		}
-		
-		return new KfnmtExecutionTaskLog(
-				new KfnmtExecutionTaskLogPK(companyId, execItemCd, execId, domain.getProcExecTask().value),
-				status,
-				domain.getLastExecDateTime(),
-				domain.getLastEndExecDateTime(),
-				domain.getErrorSystem()==null?null:(domain.getErrorSystem()?1:0),
-				domain.getErrorBusiness()==null?null:(domain.getErrorBusiness()?1:0));
-	}
-	
-	
-public static List<KfnmtExecutionTaskLog> toEntity(String companyId, String execItemCd, String execId, List<ExecutionTaskLog> domains) {
-	List<KfnmtExecutionTaskLog> datas = new ArrayList<>();
-		for(ExecutionTaskLog executionTaskLog : domains) {
-			Integer status = null;
-			if(executionTaskLog.getStatus()!=null){
-				if(executionTaskLog.getStatus().isPresent()){
-					status =executionTaskLog.getStatus().get().value;
-				}
-			}
-			KfnmtExecutionTaskLog kfnmtExecutionTaskLog = new KfnmtExecutionTaskLog(
-					new KfnmtExecutionTaskLogPK(companyId, execItemCd, execId, executionTaskLog.getProcExecTask().value),
-					status,executionTaskLog.getLastExecDateTime(),
-					executionTaskLog.getLastEndExecDateTime(),
-					executionTaskLog.getErrorSystem()==null?null:(executionTaskLog.getErrorSystem()?1:0),
-					executionTaskLog.getErrorBusiness()==null?null:(executionTaskLog.getErrorBusiness()?1:0));
-			datas.add(kfnmtExecutionTaskLog);
-		}
-		
-		return datas;
-	}
-	
-	public ExecutionTaskLog toDomain() {
-		
-		return new ExecutionTaskLog(EnumAdaptor.valueOf(this.kfnmtExecTaskLogPK.taskId, ProcessExecutionTask.class),
-				(this.status!=null)?Optional.ofNullable(EnumAdaptor.valueOf(this.status.intValue(), EndStatus.class)):Optional.empty());
-		
-	}
-	
-	public ExecutionTaskLog toNewDomain() {
-		
-		return new ExecutionTaskLog(EnumAdaptor.valueOf(this.kfnmtExecTaskLogPK.taskId, ProcessExecutionTask.class),
-				(this.status!=null)?Optional.ofNullable(EnumAdaptor.valueOf(this.status.intValue(), EndStatus.class)):Optional.empty(),this.kfnmtExecTaskLogPK.execId,
-				this.lastExecDateTime,
-				this.lastEndExecDateTime,
-				this.errorSystem ==null?null:(this.errorSystem == 1?true:false),
-				this.errorBusiness ==null?null:(this.errorBusiness == 1?true:false));
-		
-	}
-	
 
-	
+	public static KfnmtExecutionTaskLog toEntity(String companyId, String execItemCd, String execId, ExecutionTaskLog domain) {
+		return KfnmtExecutionTaskLog.builder()
+				.kfnmtExecTaskLogPK(new KfnmtExecutionTaskLogPK(companyId, execItemCd, execId, domain.getProcExecTask().value))
+				.contractCode(AppContexts.user().contractCode())
+				.errorBusiness(domain.getErrorBusiness().map(value -> value ? 1 : 0).orElse(null))
+				.errorSystem(domain.getErrorSystem().map(value -> value ? 1 : 0).orElse(null))
+				.errorSystemDetail(domain.getSystemErrorDetails().orElse(null))
+				.lastEndExecDateTime(domain.getLastEndExecDateTime().orElse(null))
+				.lastExecDateTime(domain.getLastExecDateTime().orElse(null))
+				.status(domain.getStatus().map(status -> status.value).orElse(null))
+				.build();
+	}
+
+	public static List<KfnmtExecutionTaskLog> toListEntity(String companyId, String execItemCd, String execId, List<ExecutionTaskLog> domains) {
+		return domains.stream()
+				.map(domain -> KfnmtExecutionTaskLog.toEntity(companyId, execItemCd, execId, domain))
+				.collect(Collectors.toList());
+	}
+
+	public ExecutionTaskLog toDomain() {
+		return ExecutionTaskLog.builder()
+				.execId(this.kfnmtExecTaskLogPK.execId)
+				.procExecTask(EnumAdaptor.valueOf(kfnmtExecTaskLogPK.taskId, ProcessExecutionTask.class))
+				.status(Optional.ofNullable(status).map(endStatus -> EnumAdaptor.valueOf(endStatus, EndStatus.class)))
+				.lastExecDateTime(Optional.ofNullable(lastExecDateTime))
+				.lastEndExecDateTime(Optional.ofNullable(lastEndExecDateTime))
+				.errorSystem(Optional.ofNullable(errorSystem).map(data -> data == 1))
+				.errorBusiness(Optional.ofNullable(errorBusiness).map(data -> data == 1))
+				.systemErrorDetails(Optional.ofNullable(errorSystemDetail))
+				.build();
+	}
 }

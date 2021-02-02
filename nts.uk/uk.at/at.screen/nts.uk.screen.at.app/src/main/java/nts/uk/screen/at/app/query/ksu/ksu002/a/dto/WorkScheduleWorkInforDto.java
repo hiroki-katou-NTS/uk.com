@@ -74,6 +74,11 @@ public class WorkScheduleWorkInforDto {
 	
 	@Builder
 	public static class Achievement {
+		
+		public String employeeId;
+		
+		// 年月日
+		public GeneralDate date;
 
 		// Khu vực Optional
 		// 勤務種類コード

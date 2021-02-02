@@ -14,6 +14,10 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 @NoArgsConstructor
 @Getter
 public class BeforeOtWorkAppReflect {
+	
+	/**
+	 * 休憩・外出を申請反映する
+	 */
     private BreakApplication breakLeaveApplication;
     /**
      * 勤務情報、出退勤を反映する

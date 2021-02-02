@@ -17,7 +17,7 @@ import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsett
 import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSetCommand;
 import nts.uk.ctx.at.request.app.command.setting.company.emailset.AppEmailSetCommand;
 import nts.uk.ctx.at.request.app.command.setting.request.application.businesstrip.BusinessTripSetCommand;
-import nts.uk.ctx.at.shared.app.command.workcheduleworkrecord.appreflectprocess.appreflectcondition.othdwork.hdworkapply.HdWorkAppReflectCommand;
+import nts.uk.ctx.at.shared.app.command.workcheduleworkrecord.appreflectprocess.appreflectcondition.othdwork.hdworkapply.HdWorkAppReflectCommand_Old;
 import nts.uk.ctx.at.shared.app.command.workcheduleworkrecord.appreflectprocess.appreflectcondition.othdwork.otworkapply.OtWorkAppReflectCommand;
 import nts.uk.ctx.at.shared.app.command.workcheduleworkrecord.appreflectprocess.appreflectcondition.stampapplication.StampAppReflectCommand;
 import nts.uk.ctx.at.shared.app.command.workcheduleworkrecord.appreflectprocess.appreflectcondition.substituteworkapplication.SubstituteWorkAppReflectCommand;
@@ -52,7 +52,7 @@ public class Kaf022AddCommand {
 	private int goBackReflectAtr;
 
 	private HolidayWorkAppSetCommand holidayWorkApplicationSetting;
-	private HdWorkAppReflectCommand holidayWorkApplicationReflect;
+	private HdWorkAppReflectCommand_Old holidayWorkApplicationReflect;
 
 	private TimeLeaveAppReflectCommand timeLeaveApplicationReflect;
 

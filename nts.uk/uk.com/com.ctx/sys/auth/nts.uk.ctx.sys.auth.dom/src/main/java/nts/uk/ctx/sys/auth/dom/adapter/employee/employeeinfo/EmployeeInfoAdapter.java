@@ -11,5 +11,7 @@ public interface EmployeeInfoAdapter {
 	Optional<EmpInfoByCidSidImport> getEmpInfoBySidCid(String pid, String cid);
 	
 	Optional<EmpInfoImport> getByComnyIDAndEmployeeCD (String companyID , String employeeCD);
+
+	EmployeeInformationImport findEmployeeInformation(String employeeId, GeneralDate baseDate);
 	
 }

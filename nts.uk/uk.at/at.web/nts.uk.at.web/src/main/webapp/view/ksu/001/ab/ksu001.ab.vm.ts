@@ -175,6 +175,20 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                         workHolidayCls: objWorkType[0].workStyle
                     });
                     self.isRedColor = true;
+                } else if (objWorkType[0].workTimeSetting != 2 && objWorkType[0].workStyle == 0) { // HOLIDAY
+                    $("#extable").exTable("stickFields", ["workTypeName", "workTimeName", "startTime", "endTime"]);
+                    // 貼り付けのパターン3
+                    $("#extable").exTable("stickData", {
+                        workTypeCode: objWorkType[0].workTypeCode,
+                        workTypeName: objWorkType[0].abbName,
+                        workTimeCode: (objWorkTime != null) ? (objWorkTime.code) : null,
+                        workTimeName: (objWorkTime != null && objWorkTime.code != '') ? (objWorkTime.nameAb) : null,
+                        startTime: '',
+                        endTime: '',
+                        achievements: false,
+                        workHolidayCls: objWorkType[0].workStyle
+                    });
+                    self.isRedColor = true;
                 } else {
                     $("#extable").exTable("stickFields", ["workTypeName","workTimeName", "startTime", "endTime"]);
 
@@ -254,58 +268,65 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
             // set style text 貼り付けのパターン1 
             if (self.disabled() == true || self.isRedColor) {
                 $("#extable").exTable("stickStyler", function(rowIdx, key, innerIdx, data) {
-                    if (__viewContext.viewModel.viewA.selectedModeDisplayInBody() == 'time') {
-                        if (innerIdx === 0 || innerIdx === 1) return { textColor: "red" };
-                        else if (innerIdx === 2 || innerIdx === 3) return { textColor: "black" };
-                    } else if (__viewContext.viewModel.viewA.selectedModeDisplayInBody() == 'shortName') {
-                        if (innerIdx === 0 || innerIdx === 1) return { textColor: "red" };
+                    let obj = _.find(__viewContext.viewModel.viewA.arrListCellLock, function(o) { return o.rowId == rowIdx + '' && o.columnId == key; });
+                    if (_.isNil(obj)) {
+                        if (__viewContext.viewModel.viewA.selectedModeDisplayInBody() == 'time') {
+                            if (innerIdx === 0 || innerIdx === 1) return { textColor: "red" };
+                            else if (innerIdx === 2 || innerIdx === 3) return { textColor: "black" };
+                        } else if (__viewContext.viewModel.viewA.selectedModeDisplayInBody() == 'shortName') {
+                            if (innerIdx === 0 || innerIdx === 1) return { textColor: "red" };
+                        }
                     }
+
                 });
             } else {
                 $("#extable").exTable("stickStyler", function(rowIdx, key, innerIdx, data) {
-                    let workInfo = _.filter(self.listWorkType(), function(o) { return o.workTypeCode == self.selectedWorkTypeCode(); });
-                    if (__viewContext.viewModel.viewA.selectedModeDisplayInBody() == 'time') {
-                        if (workInfo.length > 0) {
-                            let workStyle = workInfo[0].workStyle;
-                            if (workStyle == AttendanceHolidayAttr.FULL_TIME) {
-                                if (innerIdx === 0 || innerIdx === 1) return { textColor: "#0000ff" }; // color-attendance
-                                else if (innerIdx === 2 || innerIdx === 3) return { textColor: "black" };
+                    let obj = _.find(__viewContext.viewModel.viewA.arrListCellLock, function(o) { return o.rowId == rowIdx + '' && o.columnId == key; });
+                    if (_.isNil(obj)) {
+                        let workInfo = _.filter(self.listWorkType(), function(o) { return o.workTypeCode == self.selectedWorkTypeCode(); });
+                        if (__viewContext.viewModel.viewA.selectedModeDisplayInBody() == 'time') {
+                            if (workInfo.length > 0) {
+                                let workStyle = workInfo[0].workStyle;
+                                if (workStyle == AttendanceHolidayAttr.FULL_TIME) {
+                                    if (innerIdx === 0 || innerIdx === 1) return { textColor: "#0000ff" }; // color-attendance
+                                    else if (innerIdx === 2 || innerIdx === 3) return { textColor: "black" };
+                                }
+                                if (workStyle == AttendanceHolidayAttr.MORNING) {
+                                    if (innerIdx === 0 || innerIdx === 1) return { textColor: "#FF7F27" }; // color-half-day-work
+                                    else if (innerIdx === 2 || innerIdx === 3) return { textColor: "black" };
+                                }
+                                if (workStyle == AttendanceHolidayAttr.AFTERNOON) {
+                                    if (innerIdx === 0 || innerIdx === 1) return { textColor: "#FF7F27" }; // color-half-day-work
+                                    else if (innerIdx === 2 || innerIdx === 3) return { textColor: "black" };
+                                }
+                                if (workStyle == AttendanceHolidayAttr.HOLIDAY) {
+                                    if (innerIdx === 0 || innerIdx === 1) return { textColor: "#ff0000" }; // color-holiday
+                                    else if (innerIdx === 2 || innerIdx === 3) return { textColor: "black" };
+                                }
+                                if (nts.uk.util.isNullOrUndefined(workStyle) || nts.uk.util.isNullOrEmpty(workStyle)) {
+                                    // デフォルト（黒）  Default (black)
+                                    if (innerIdx === 0 || innerIdx === 1) return { textColor: "#000000" }; // デフォルト（黒）  Default (black)
+                                    else if (innerIdx === 2 || innerIdx === 3) return { textColor: "#000000" };
+                                }
                             }
-                            if (workStyle == AttendanceHolidayAttr.MORNING) {
-                                if (innerIdx === 0 || innerIdx === 1) return { textColor: "#FF7F27" }; // color-half-day-work
-                                else if (innerIdx === 2 || innerIdx === 3) return { textColor: "black" };
-                            }
-                            if (workStyle == AttendanceHolidayAttr.AFTERNOON) {
-                                if (innerIdx === 0 || innerIdx === 1) return { textColor: "#FF7F27" }; // color-half-day-work
-                                else if (innerIdx === 2 || innerIdx === 3) return { textColor: "black" };
-                            }
-                            if (workStyle == AttendanceHolidayAttr.HOLIDAY) {
-                                if (innerIdx === 0 || innerIdx === 1) return { textColor: "#ff0000" }; // color-holiday
-                                else if (innerIdx === 2 || innerIdx === 3) return { textColor: "black" };
-                            }
-                            if (nts.uk.util.isNullOrUndefined(workStyle) || nts.uk.util.isNullOrEmpty(workStyle)) {
-                                // デフォルト（黒）  Default (black)
-                                if (innerIdx === 0 || innerIdx === 1) return { textColor: "#000000" }; // デフォルト（黒）  Default (black)
-                                else if (innerIdx === 2 || innerIdx === 3) return { textColor: "#000000" };
-                            }
-                        }
-                    } else if (__viewContext.viewModel.viewA.selectedModeDisplayInBody() == 'shortName') {
-                        if (workInfo.length > 0) {
-                            let workStyle = workInfo[0].workStyle;
-                            if (workStyle == AttendanceHolidayAttr.FULL_TIME) {
-                                if (innerIdx === 0 || innerIdx === 1) return { textColor: "#0000ff" }; // color-attendance
-                            }
-                            if (workStyle == AttendanceHolidayAttr.MORNING) {
-                                if (innerIdx === 0 || innerIdx === 1) return { textColor: "#FF7F27" }; // color-half-day-work
-                            }
-                            if (workStyle == AttendanceHolidayAttr.AFTERNOON) {
-                                if (innerIdx === 0 || innerIdx === 1) return { textColor: "#FF7F27" }; // color-half-day-work
-                            }
-                            if (workStyle == AttendanceHolidayAttr.HOLIDAY) {
-                                if (innerIdx === 0 || innerIdx === 1) return { textColor: "#ff0000" }; // color-holiday
-                            }
-                            if (nts.uk.util.isNullOrUndefined(workStyle) || nts.uk.util.isNullOrEmpty(workStyle)) {
-                                if (innerIdx === 0 || innerIdx === 1) return { textColor: "#000000" }; // デフォルト（黒）  Default (black)
+                        } else if (__viewContext.viewModel.viewA.selectedModeDisplayInBody() == 'shortName') {
+                            if (workInfo.length > 0) {
+                                let workStyle = workInfo[0].workStyle;
+                                if (workStyle == AttendanceHolidayAttr.FULL_TIME) {
+                                    if (innerIdx === 0 || innerIdx === 1) return { textColor: "#0000ff" }; // color-attendance
+                                }
+                                if (workStyle == AttendanceHolidayAttr.MORNING) {
+                                    if (innerIdx === 0 || innerIdx === 1) return { textColor: "#FF7F27" }; // color-half-day-work
+                                }
+                                if (workStyle == AttendanceHolidayAttr.AFTERNOON) {
+                                    if (innerIdx === 0 || innerIdx === 1) return { textColor: "#FF7F27" }; // color-half-day-work
+                                }
+                                if (workStyle == AttendanceHolidayAttr.HOLIDAY) {
+                                    if (innerIdx === 0 || innerIdx === 1) return { textColor: "#ff0000" }; // color-holiday
+                                }
+                                if (nts.uk.util.isNullOrUndefined(workStyle) || nts.uk.util.isNullOrEmpty(workStyle)) {
+                                    if (innerIdx === 0 || innerIdx === 1) return { textColor: "#000000" }; // デフォルト（黒）  Default (black)
+                                }
                             }
                         }
                     }

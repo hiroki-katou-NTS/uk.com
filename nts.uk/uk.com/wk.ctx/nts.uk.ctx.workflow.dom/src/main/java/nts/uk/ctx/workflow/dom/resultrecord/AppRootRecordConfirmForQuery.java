@@ -9,9 +9,9 @@ import java.util.stream.Collectors;
 import lombok.Value;
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.DailyConfirmAtr;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRootStateStatus;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 実績確認状態
@@ -86,7 +86,8 @@ public class AppRootRecordConfirmForQuery {
 			
 			// 該当社員の実績データが1つも無い
 			if (mapForOneEmployee == null) {
-				return allUnapproved(period, employeeId);
+				// return allUnapproved(period, employeeId);
+				return new AggregateResult(Collections.emptyList(), false);
 			}
 			
 			val results = new ArrayList<ApprovalRootStateStatus>();
@@ -98,7 +99,7 @@ public class AppRootRecordConfirmForQuery {
 				
 				// 実績データが無い
 				if (confirm == null) {
-					results.add(new ApprovalRootStateStatus(date, employeeId, DailyConfirmAtr.UNAPPROVED));
+					// results.add(new ApprovalRootStateStatus(date, employeeId, DailyConfirmAtr.UNAPPROVED));
 					continue;
 				}
 				

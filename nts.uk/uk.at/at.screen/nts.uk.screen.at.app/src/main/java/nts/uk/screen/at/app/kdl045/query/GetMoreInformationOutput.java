@@ -22,12 +22,20 @@ public class GetMoreInformationOutput {
 	 * return Enum WorkTimeForm 
 	 */
 	private Integer workTimeForm;
+	
+	/**
+	 * 　Optional<出勤休日区分>
+	 * return Enum : WorkStyle
+	 */
+	private Integer workStyle;
+	
 	public GetMoreInformationOutput(WorkTimezoneCommonSetDto workTimezoneCommonSet, BreakTimeKdl045Dto breakTime,
-			int workTimeForm) {
+			Integer workTimeForm,Integer workStyle) {
 		super();
 		this.workTimezoneCommonSet = workTimezoneCommonSet;
 		this.breakTime = breakTime;
 		this.workTimeForm = workTimeForm;
+		this.workStyle = workStyle;
 	}
 	
 	

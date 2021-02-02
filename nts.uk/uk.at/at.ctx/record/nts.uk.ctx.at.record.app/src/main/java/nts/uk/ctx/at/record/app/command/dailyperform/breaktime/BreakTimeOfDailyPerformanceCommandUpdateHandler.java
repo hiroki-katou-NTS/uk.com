@@ -25,7 +25,7 @@ public class BreakTimeOfDailyPerformanceCommandUpdateHandler extends CommandFaca
 			repo.delete(command.getEmployeeId(), command.getWorkDate());
 			return;
 		}
-		adUpRepo.adUpBreakTime(command.getData());
+		adUpRepo.adUpBreakTime(command.getData().get());
 	}
 
 }

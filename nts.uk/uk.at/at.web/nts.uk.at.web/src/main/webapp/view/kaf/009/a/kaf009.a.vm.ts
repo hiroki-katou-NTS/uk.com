@@ -46,9 +46,14 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
         dataFetch: KnockoutObservable<ModelDto> = ko.observable(null);
         mode: KnockoutObservable<String> = ko.observable('edit');
         isSendMail: KnockoutObservable<Boolean>;
+		isFromOther: boolean = false;
 
         created(params: AppInitParam) {
             const vm = this;
+			if(!_.isNil(__viewContext.transferred.value)) {
+				vm.isFromOther = true;
+			}
+			sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');
 			let empLst: Array<string> = [],
 				dateLst: Array<string> = [];
             vm.isSendMail = ko.observable(false);
