@@ -81,6 +81,7 @@ module nts.uk.com.view.ccg015.d {
                 vm.$nextTick(() => {
                   _.each((document.getElementById("frameF2") as any ).contentDocument.getElementsByTagName("a"), link => {
                     link.removeAttribute('onclick');
+                    link.removeAttribute('href')
                   })
                 });
               });
@@ -121,6 +122,7 @@ module nts.uk.com.view.ccg015.d {
           vm.$nextTick(() => {
             _.each((document.getElementById("frameF2") as any ).contentDocument.getElementsByTagName("a"), link => {
               link.removeAttribute('onclick');
+              link.removeAttribute('href')
             })
           });
         });
