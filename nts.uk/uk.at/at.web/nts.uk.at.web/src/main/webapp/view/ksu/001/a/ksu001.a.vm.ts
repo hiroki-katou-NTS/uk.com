@@ -3694,7 +3694,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     }
                 });
             } else if (userInfor.updateMode == 'copyPaste') {
-                $("#extable").exTable("copyUndo");
+                $("#extable").exTable("copyUndo", function(rowIdx, columnKey, cellData) {
+                    if (userInfor.disPlayFormat == 'time') {
+                        if ((cellData.workHolidayCls === 0) || (cellData.workTimeCode == null && cellData.workTimeName == null && cellData.workTypeCode == null && cellData.workTypeName == null)) {
+                            self.diseableCellStartEndTime(rowIdx + '', columnKey);
+                        } else {
+                            self.enableCellStartEndTime(rowIdx + '', columnKey);
+                        }
+                    }
+                });
             } else if (userInfor.updateMode == 'edit') {
                 $("#extable").exTable("editUndo");
             }
@@ -3717,7 +3725,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     }
                 });
             } else if (userInfor.updateMode == 'copyPaste') {
-                $("#extable").exTable("copyRedo");
+                $("#extable").exTable("copyRedo", function(rowIdx, columnKey, cellData) {
+                    if (userInfor.disPlayFormat == 'time') {
+                        if ((cellData.workHolidayCls === 0) || (cellData.startTime === '' && cellData.endTime === '')) {
+                            self.diseableCellStartEndTime(rowIdx + '', columnKey);
+                        } else {
+                            self.enableCellStartEndTime(rowIdx + '', columnKey);
+                        }
+                    }
+                });
             } else if (userInfor.updateMode == 'edit') {
                 $("#extable").exTable("editRedo");
             }
