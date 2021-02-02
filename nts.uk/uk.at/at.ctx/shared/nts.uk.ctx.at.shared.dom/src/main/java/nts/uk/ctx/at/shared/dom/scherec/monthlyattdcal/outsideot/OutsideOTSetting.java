@@ -102,6 +102,7 @@ public class OutsideOTSetting extends AggregateRoot implements Serializable{
 		this.breakdownItems = breakdownItems;
 		this.calculationMethod = calculationMethod;
 		this.overtimes = overtimes;
+		this.timeRoundingOfExcessOutsideTime = timeRoundingOfExcessOutsideTime;
 
 		// validate domain
 		if(CollectionUtil.isEmpty(this.breakdownItems)){
