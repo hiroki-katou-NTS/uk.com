@@ -80,7 +80,7 @@ module nts.uk.com.view.ccg034.c {
           newFlowMenu = result.createFlowMenuDto;
           return vm.$ajax(API.generateHtml, { flowMenuCode: vm.flowMenuCode(), htmlContent: result.htmlContent });
         })
-        // Generate a new layout file
+        // 4. Input内容のファイルIDを別のファイルIDで作成する
         .then(res => nts.uk.deferred.repeat(conf => conf
           .task(() => (nts.uk.request as any).asyncTask.getInfo(res.taskId)
             .done((taskResult: any) => {

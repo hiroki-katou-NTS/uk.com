@@ -1340,6 +1340,9 @@ module nts.uk.com.view.ccg034.d {
       htmlContent += ` xmlns:com="http://xmlns.jcp.org/jsf/component"`;
       htmlContent += ` xmlns:com="http://xmlns.jcp.org/jsf/html"`;
       htmlContent += `<head>`;
+      htmlContent += `<style>`;
+      htmlContent += `.ccg034-component-container { word-break: break-all; word-break: break-word; word-wrap: break-word }`;
+      htmlContent += `</style>`;
       htmlContent += `<link rel="stylesheet" type="text/css" href="/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/base.css">`;
       htmlContent += `</head>`;
       htmlContent += `<body>`;
@@ -1873,7 +1876,7 @@ module nts.uk.com.view.ccg034.d {
               'cursor': 'pointer',
             });
           $partHTML = $("<div>")
-            .attr('style', '-ms-word-break: break-all')
+            .addClass("ccg034-component-container")
             .css({
               'position': 'absolute',
               'top': `${partDataMenuModel.positionTop}px`,
@@ -1885,7 +1888,6 @@ module nts.uk.com.view.ccg034.d {
               'justify-content': LayoutUtils.getHorizontalClass(partDataMenuModel.alignHorizontal),
               'overflow': 'hidden',
               'text-overflow': 'ellipsis',
-              'word-break': 'break-word',
             })
             .append($partMenuHTML);
           break;
@@ -1900,7 +1902,7 @@ module nts.uk.com.view.ccg034.d {
               'white-space': 'pre-wrap',
             });
           $partHTML = $("<div>")
-            .attr('style', '-ms-word-break: break-all')
+            .addClass("ccg034-component-container")
             .css({
               'position': 'absolute',
               'top': `${partDataLabelModel.positionTop}px`,
@@ -1912,7 +1914,6 @@ module nts.uk.com.view.ccg034.d {
               'justify-content': LayoutUtils.getHorizontalClass(partDataLabelModel.alignHorizontal),
               'overflow': 'hidden',
               'text-overflow': 'ellipsis',
-              'word-break': 'break-word',
               'background-color': partDataLabelModel.backgroundColor,
             })
             .append($partLabelHTML);
@@ -1930,7 +1931,7 @@ module nts.uk.com.view.ccg034.d {
               'cursor': 'pointer',
             });
           $partHTML = $("<div>")
-            .attr('style', '-ms-word-break: break-all')
+            .addClass("ccg034-component-container")
             .css({
               'position': 'absolute',
               'top': `${partDataLinkModel.positionTop}px`,
@@ -1942,7 +1943,6 @@ module nts.uk.com.view.ccg034.d {
               'justify-content': LayoutUtils.getHorizontalClass(partDataLinkModel.alignHorizontal),
               'overflow': 'hidden',
               'text-overflow': 'ellipsis',
-              'word-break': 'break-word',
             })
             .append($partLinkHTML);
           break;
@@ -1960,7 +1960,7 @@ module nts.uk.com.view.ccg034.d {
               'cursor': 'pointer',
             });
           $partHTML = $("<div>")
-            .attr('style', '-ms-word-break: break-all')
+            .addClass("ccg034-component-container")
             .css({
               'position': 'absolute',
               'top': `${partDataAttachmentModel.positionTop}px`,
@@ -1972,7 +1972,6 @@ module nts.uk.com.view.ccg034.d {
               'justify-content': LayoutUtils.getHorizontalClass(partDataAttachmentModel.alignHorizontal),
               'overflow': 'hidden',
               'text-overflow': 'ellipsis',
-              'word-break': 'break-word',
             })
             .append($partAttachmentHTML);
           break;
