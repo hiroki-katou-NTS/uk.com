@@ -77,7 +77,7 @@ module nts.uk.at.view.kaf018.c.viewmodel {
 				dataRendered: () => {
 					vm.$nextTick(() => {
 						vm.$blockui('hide');
-						$("#cGrid").focus();
+						$(".ui-iggrid").focus();
 					});
 				},
 				rendered: () => {
@@ -137,11 +137,13 @@ module nts.uk.at.view.kaf018.c.viewmodel {
 			let mailType = vm.mailType,
 				closureId = params.closureItem.closureId,
 				processingYm = params.closureItem.processingYm,
+				closureDay = params.closureItem.closureDay,
+				lastDayOfMonth = params.closureItem.lastDayOfMonth,
 				startDate = params.startDate,
 				endDate = params.endDate,
 				wkpInfoLst = params.selectWorkplaceInfo,
 				employmentCDLst = params.employmentCDLst,
-				wsParam = { mailType, closureId, processingYm, startDate, endDate, wkpInfoLst, employmentCDLst };
+				wsParam = { mailType, closureId, processingYm, closureDay, lastDayOfMonth, startDate, endDate, wkpInfoLst, employmentCDLst };
 			vm.$blockui('show');	
 			vm.$ajax('at', API.getEmpSendMailInfo, wsParam).then((data: any) => {
 				vm.urlApprovalEmbed(data.approvalStatusMailTempDto.urlApprovalEmbed == 1 ? true: false);

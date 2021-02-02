@@ -1,0 +1,107 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+  <ui:composition template="../../../../master/dialog.xhtml">
+    <ui:define name="htmlHead">
+      <com:ValidatorScript>
+        nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.primitivevalue.AnyAggrFrameCode
+        nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.primitivevalue.AnyAggrName
+      </com:ValidatorScript>
+      <script>
+        var dialogSize = {
+          width: 760,
+          height: 500
+        };
+      </script>
+      <com:scriptfile set="IGNITE" />
+      <com:stylefile path="kbt002.j.style.css" />
+      <com:scriptfile path="kbt002.j.vm.js" />
+    </ui:define>
+
+    <ui:define name="content">
+      <div id="functions-area">
+        <button id="J1_1" class="add" data-bind="click: initProcExec, disable: isNewMode" tabindex="1">#{i18n.getText('KBT002_2')}</button>
+        <button id="J1_2" class="proceed" data-bind="click: save, enable: isNewMode"
+          tabindex="2">#{i18n.getText('KBT002_3')}</button>
+        <button id="J1_3" class="danger" data-bind="click: remove, disable: isNewMode"
+          tabindex="3">#{i18n.getText('KBT002_4')}</button>
+        <button id="J1_4" class="add" data-bind="click: closeDialog, enable: true"
+          tabindex="4">#{i18n.getText('KBT002_134')}</button>
+      </div>
+      <div id="contents-area">
+        <div id="left-content" style="float: left; width: 290px;">
+          <div id="left-content-top" class="caret-right caret-background bg-green">
+            <table id="single-list" tabindex="5"
+                data-bind="ntsGridList: {
+                  height: 350,
+                  width: 240,
+                  options: aggrPeriodList,
+                  primaryKey: 'aggrFrameCode',
+                  showNumbering: false,
+                  columns: aggrColumns,
+                  multiple: false,
+                  value: selectedAggrFrameCd }"
+            >
+            </table>
+          </div>
+        </div>
+        <div id="right-content">
+            <div class="row">
+              <!-- J3_1 -->
+              <div class="title-width" data-bind="ntsFormLabel: {required: true,constraint: 'AnyAggrFrameCode' }">
+                #{i18n.getText('KBT002_7')}</div>
+              <!-- J3_2 -->
+              <input id="J3_2" tabindex="6" data-bind="ntsTextEditor:{
+                name: '#[KBT002_7]',
+                value: aggrFrameCode,
+                required: true,
+                enable: isNewMode,
+                constraint: 'AnyAggrFrameCode',
+                option: { width: '30px' }
+              }" />
+            </div>
+            <div class="row">
+              <!-- J4_1 -->
+              <div class="title-width" data-bind="ntsFormLabel: {required: true,constraint: 'AnyAggrName' }">
+                #{i18n.getText('KBT002_8')}</div>
+              <!-- J4_2 -->
+              <input tabindex="7" style="width: 160px" id="J4_2" data-bind="ntsTextEditor:{
+                name: '#[KBT002_8]',
+                width: 150,
+                value: aggrName,
+                required: true,
+                enable: isNewMode,
+                option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+                  textmode: 'text',
+                  width: '190px',
+                  textalign: 'left'
+                })),
+                constraint: 'AnyAggrName'
+              }" />
+            </div>
+            <div class="row">
+              <!-- J5_1 -->
+              <div class="title-width" data-bind="ntsFormLabel: {required: true }">
+                #{i18n.getText('KBT002_272')}</div>
+              <!-- J5_2 対象期間 -->
+              <div id="J5_2" data-bind="ntsDateRangePicker: {
+                required: true,
+                enable: isNewMode,
+                showNextPrevious: false,
+                value: dateValue,
+                jumpUnit: 'month',
+                name: '#[KBT002_272]',
+                startName: '#[KBT002_152]',
+                endName: '#[KBT002_153]'
+              }" tabindex="8"></div>
+            </div>
+        </div>
+      </div>
+    </ui:define>
+  </ui:composition>
+</body>
+
+</html>

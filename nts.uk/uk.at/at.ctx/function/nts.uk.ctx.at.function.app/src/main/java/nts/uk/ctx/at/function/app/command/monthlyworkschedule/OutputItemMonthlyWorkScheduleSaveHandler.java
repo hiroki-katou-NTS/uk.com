@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.function.app.command.monthlyworkschedule;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -22,19 +24,28 @@ public class OutputItemMonthlyWorkScheduleSaveHandler extends CommandHandler<Out
 	
 	@Override
 	protected void handle(CommandHandlerContext<OutputItemMonthlyWorkScheduleCommand> context) {
-
 		OutputItemMonthlyWorkScheduleCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
 		OutputItemMonthlyWorkSchedule domain = new OutputItemMonthlyWorkSchedule(command);
+		domain.setCompanyID(companyId);
+		domain.setEmployeeID(AppContexts.user().employeeId());
 
 		if (command.isNewMode()) {
-			if (repository.findByCidAndCode(companyId, domain.getItemCode().v()).isPresent()) {
+			Optional<OutputItemMonthlyWorkSchedule> oDomain = repository.findBySelectionAndCidAndSidAndCode(
+					  command.getItemSelectionEnum()
+					, companyId
+					, command.getItemCode().v()
+					, AppContexts.user().employeeId());
+			if (oDomain.isPresent()) {
 				throw new BusinessException("Msg_3");
 			}
-			repository.add(domain);
+			//新規モードの場合
+			this.repository.add(domain);
 		} else {
-			repository.update(domain);
+			//更新モードの場合
+			this.repository.update(domain);
 		}
+		
 	}
 
 }

@@ -239,7 +239,6 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
 		}
 
-
 		// fix bug 113211
 //		@Override
 //		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd, Integer workNo) {

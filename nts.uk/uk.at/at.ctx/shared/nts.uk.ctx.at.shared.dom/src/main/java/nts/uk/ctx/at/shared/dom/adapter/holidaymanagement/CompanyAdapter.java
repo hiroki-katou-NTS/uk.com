@@ -30,4 +30,12 @@ public interface CompanyAdapter {
 	
 	
 	Optional<CompanyImport622> getCompanyNotAbolitionByCid(String cid);
+	
+	/**
+	 * Gets the company info by id.
+	 *
+	 * @param companyId the company id
+	 * @return the company info by id
+	 */
+	CompanyInfo getCompanyInfoById(String companyId);
 }
