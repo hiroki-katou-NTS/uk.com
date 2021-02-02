@@ -5,7 +5,7 @@ module nts.uk.at.view.ccg005.e.screenModel {
   const API = {
     getGoOutInformation: "screen/com/ccg005/get-go-out-information",
     delete: "ctx/office/goout/employee/information/delete",
-    saveOrUpdate: "ctx/office/goout/employee/information/delete",
+    saveOrUpdate: "ctx/office/goout/employee/information/save",
   };
 
   interface createProps {
@@ -44,13 +44,14 @@ module nts.uk.at.view.ccg005.e.screenModel {
 
     created(props: createProps) {
       const vm = this;
+      console.log(props)
       vm.sid(props.sid);
       vm.businessName(props.businessName);
-      vm.goOutDate(moment(props.goOutDate).format("YYYY/MM/DD"));
+      vm.goOutDate(props.goOutDate);
       vm.$blockui('grayout');
       vm.$ajax(API.getGoOutInformation, {
         sid: props.sid,
-        date: props.goOutDate,
+        date: moment(props.goOutDate),
       }).then((data: GoOutEmployeeInformationDto) => {
         if(data) {
           vm.goOutReason(data.goOutReason);
@@ -72,13 +73,16 @@ module nts.uk.at.view.ccg005.e.screenModel {
       vm.$dialog.confirm({ messageId: "Msg_18" }).then((result) => {
         if (result === "yes") {
           const gouOutInfo = new GoOutEmployeeInformationDel({
-            gouOutDate: vm.goOutDate(),
+            goOutDate: moment(vm.goOutDate()),
             sid: vm.sid(),
           });
           vm.$blockui('grayout');
           vm.$ajax(API.delete, gouOutInfo)
             .then(() => {
               vm.$blockui('clear');
+              vm.goOutReason("");
+              vm.goOutTime(undefined);
+              vm.comebackTime(undefined);
               return vm.$dialog.info({ messageId: "Msg_16" });
             })
             .always(() => {
@@ -95,7 +99,7 @@ module nts.uk.at.view.ccg005.e.screenModel {
           const gouOutInfo = new GoOutEmployeeInformation({
             goOutTime: vm.goOutTime(),
             goOutReason: vm.goOutReason(),
-            gouOutDate: vm.goOutDate(),
+            goOutDate: moment(vm.goOutDate()),
             comebackTime: vm.comebackTime(),
             sid: vm.sid(),
           });
@@ -122,7 +126,7 @@ module nts.uk.at.view.ccg005.e.screenModel {
     goOutReason: string;
 
     // 年月日
-    gouOutDate: string;
+    goOutDate: moment.Moment;
 
     // 戻り時刻
     comebackTime: number;
@@ -138,7 +142,7 @@ module nts.uk.at.view.ccg005.e.screenModel {
   //社員の外出情報 Delete
   class GoOutEmployeeInformationDel {
     // 年月日
-    gouOutDate: string;
+    goOutDate: moment.Moment;
 
     // 社員ID
     sid: string;
