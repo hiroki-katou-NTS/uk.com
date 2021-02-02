@@ -409,7 +409,9 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 				.setParameter("companyId", companyId)
 				.setParameter("programId", programId)
 				.setParameter("queryString", queryString)
-				.setParameter("screenID", screenId).getSingle(x-> toDomain(x));
+				.setParameter("screenID", screenId)
+				.getList(x-> toDomain(x)) // #114113
+				.stream().findFirst(); 
 	}
 
 	@Override
@@ -417,7 +419,9 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 		return this.queryProxy().query(GET_NAME_NO_QUERY, CcgstStandardMenu.class)
 				.setParameter("companyId", companyId)
 				.setParameter("programId", programId)
-				.setParameter("screenID", screenId).getSingle(x-> toDomain(x));
+				.setParameter("screenID", screenId)
+				.getList(x-> toDomain(x)) // #114113
+				.stream().findFirst();
 	}
 
 	@Override

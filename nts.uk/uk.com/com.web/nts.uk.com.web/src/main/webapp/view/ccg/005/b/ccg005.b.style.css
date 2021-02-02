@@ -36,16 +36,23 @@
   display: inline-flex;
 }
 .button-head {
-  height: 60px;
+  height: 40px;
 }
 .text {
-  margin-left: 10px;
+  margin-left: 15px;
 }
+.table-ccg005-b {
+  display: inline-block;
+}
+
 .table-left {
-  float: left;
-  margin-left: 10px;
+  margin-left: 15px;
 }
+
 .table-right {
-  float: left;
-  margin-left: 60px;
+  margin-left: 15px;
 }
+
+/* .table-ccg005-b .nts-grid-control-flag {
+  text-align: center;
+} */
