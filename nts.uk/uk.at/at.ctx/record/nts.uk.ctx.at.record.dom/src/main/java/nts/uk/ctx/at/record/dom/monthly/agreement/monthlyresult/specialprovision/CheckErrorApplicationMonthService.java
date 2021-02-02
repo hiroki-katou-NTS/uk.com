@@ -9,7 +9,7 @@ import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.MonthlyAppContent;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.AgreementExcessInfo;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetAgreementTimeOfMngPeriod;
-import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
+import nts.uk.ctx.at.record.dom.standardtime.AgreementDomainService;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreMaxAverageTimeMulti;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreMaxTimeStatusOfMonthly;

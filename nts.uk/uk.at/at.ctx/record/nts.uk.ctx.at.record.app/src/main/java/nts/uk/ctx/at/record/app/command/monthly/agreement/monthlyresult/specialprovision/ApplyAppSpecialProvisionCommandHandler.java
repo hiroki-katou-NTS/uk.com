@@ -1,5 +1,16 @@
 package nts.uk.ctx.at.record.app.command.monthly.agreement.monthlyresult.specialprovision;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
+
 import lombok.AllArgsConstructor;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
@@ -14,14 +25,24 @@ import nts.uk.ctx.at.record.dom.adapter.personempbasic.PersonEmpBasicInfoAdapter
 import nts.uk.ctx.at.record.dom.adapter.workplace.SWkpHistRcImported;
 import nts.uk.ctx.at.record.dom.adapter.workplace.SyWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
-import nts.uk.ctx.at.record.dom.monthly.agreement.approver.*;
+import nts.uk.ctx.at.record.dom.monthly.agreement.approver.AnnualAppUpdate;
+import nts.uk.ctx.at.record.dom.monthly.agreement.approver.AppCreationResult;
+import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByCompany;
+import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByCompanyRepo;
+import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByWorkplace;
+import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByWorkplaceRepo;
+import nts.uk.ctx.at.record.dom.monthly.agreement.approver.OneMonthAppUpdate;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.AggregateAgreementTimeByYM;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.AggregateAgreementTimeByYear;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.AgreementExcessInfo;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetExcessTimesYear;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.approveregister.UnitOfApprover;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.approveregister.UnitOfApproverRepo;
-import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.*;
+import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.CheckErrorApplicationMonthService;
+import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.ReasonsForAgreement;
+import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.SpecialProvisionsOfAgreement;
+import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.SpecialProvisionsOfAgreementRepo;
+import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.TypeAgreementApplication;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
@@ -37,19 +58,9 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onem
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.AgreementOneYearTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementOperationSetting;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementUnitSetting;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSettingForCalc;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.shr.com.context.AppContexts;
-
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * 36協定特別条項の適用申請を更新登録する
@@ -262,7 +273,7 @@ public class ApplyAppSpecialProvisionCommandHandler
                 }
 
                 @Override
-                public BasicAgreementSetting basicAgreementSetting(String cid, String sid, GeneralDate baseDate, Year year) {
+                public BasicAgreementSettingForCalc basicAgreementSetting(String cid, String sid, GeneralDate baseDate, Year year) {
                     return require.basicAgreementSetting(cid, sid, baseDate, year);
                 }
 

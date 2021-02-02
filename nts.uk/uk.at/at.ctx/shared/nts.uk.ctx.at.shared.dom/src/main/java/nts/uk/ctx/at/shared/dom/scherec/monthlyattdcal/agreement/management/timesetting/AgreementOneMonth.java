@@ -1,16 +1,15 @@
 package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.val;
-import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.ExcessState;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthErrorAlarmTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthTime;
-import org.apache.commons.lang3.tuple.Pair;
 
 /** 36協定1ヶ月 */
 @AllArgsConstructor
@@ -29,7 +28,7 @@ public class AgreementOneMonth {
 	
 	/** エラーチェック */
 	public AgreementTimeStatusOfMonthly check(AttendanceTimeMonth agreementTarget,
-			AttendanceTimeMonth legalLimitTarget) {
+			AttendanceTimeMonth legalLimitTarget, boolean isEmployeeSet) {
 		/** エラーチェック */
 		val legalState = this.specConditionLimit.check(legalLimitTarget);
 		
@@ -53,15 +52,18 @@ public class AgreementOneMonth {
 		/** 月別実績の36協定時間状態を判断 */
 		if (agreementState == ExcessState.ALARM_OVER) {
 			
-			return AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM;
+			return isEmployeeSet ? AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM_SP
+					: AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM;
 		}
 		if (agreementState == ExcessState.ERROR_OVER 
 				|| agreementState == ExcessState.UPPER_LIMIT_OVER) {
 			
-			return AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR;
+			return isEmployeeSet ? AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP
+					: AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR;
 		}
 		
-		return AgreementTimeStatusOfMonthly.NORMAL;
+		return isEmployeeSet ? AgreementTimeStatusOfMonthly.NORMAL_SPECIAL
+				: AgreementTimeStatusOfMonthly.NORMAL;
 	}
 
 

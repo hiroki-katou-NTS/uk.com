@@ -27,8 +27,7 @@ public class AgreementOneYear {
 	
 	/** エラーチェック */
 	public AgreementTimeStatusOfMonthly check(AgreementOneYearTime agreementTarget,
-			AgreementOneYearTime legalUpperTarget) {
-		/** TODO: 要確認　*/
+			AgreementOneYearTime legalUpperTarget, boolean isEmployeeSet) {
 		/** エラーチェック */
 		val legalState = this.specConditionLimit.check(legalUpperTarget);
 		
@@ -46,15 +45,21 @@ public class AgreementOneYear {
 			return AgreementTimeStatusOfMonthly.EXCESS_BG_GRAY;
 		}
 		
-		if (agreementTarget.greaterThanOrEqualTo(this.basic.getError())) {
-			return AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR;
+		/** エラーチェック */
+		val agreementState = this.specConditionLimit.check(agreementTarget);
+		
+		if (agreementState == ExcessState.ERROR_OVER) {
+			return isEmployeeSet ? AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP
+					: AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR;
 		}
 		
-		if (agreementTarget.greaterThanOrEqualTo(this.basic.getAlarm())) {
-			return AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM;
+		if (agreementState == ExcessState.ALARM_OVER) {
+			return isEmployeeSet ? AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM_SP
+					: AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM;
 		}
 		
-		return AgreementTimeStatusOfMonthly.NORMAL;
+		return isEmployeeSet ? AgreementTimeStatusOfMonthly.NORMAL_SPECIAL
+				: AgreementTimeStatusOfMonthly.NORMAL;
 	}
 
 	// 	[2] 特例条項による上限のエラー時間を超えているか
