@@ -89,15 +89,15 @@ public class DisplayAttendanceDataScreenQuery {
 		listMenuName.add(this.createMenu("KAF005", "A", "overworkatr=0"));
 		listMenuName.add(this.createMenu("KAF005", "A", "overworkatr=1"));
 		listMenuName.add(this.createMenu("KAF005", "A", "overworkatr=2"));
-		listMenuName.add(this.createMenu("KAF008", "A"));
-		listMenuName.add(this.createMenu("KAF009", "A"));
-		listMenuName.add(this.createMenu("KAF010", "A"));
-		listMenuName.add(this.createMenu("KAF012", "A"));
-		listMenuName.add(this.createMenu("KAF014", "A"));
+		listMenuName.add(this.createMenu("KAF008", "A", null));
+		listMenuName.add(this.createMenu("KAF009", "A", null));
+		listMenuName.add(this.createMenu("KAF010", "A", null));
+		listMenuName.add(this.createMenu("KAF012", "A", null));
+		listMenuName.add(this.createMenu("KAF014", "A", null));
 		listMenuName.add(this.createMenu("KAF002", "A", "overworkatr=0"));
 		listMenuName.add(this.createMenu("KAF002", "B", "overworkatr=1"));
-		listMenuName.add(this.createMenu("KAF011", "A"));
-		listMenuName.add(this.createMenu("KAF020", "A"));
+		listMenuName.add(this.createMenu("KAF011", "A", null));
+		listMenuName.add(this.createMenu("KAF020", "A", null));
 		List<StandardMenuNameImport> menu = menuAdapter.getMenuDisplayName(loginCid, listMenuName); //・メニュー分類　＝　標準　＝　0
 		List<ApplicationNameDto> applicationNameDtos =  menu.stream().map(item -> {
 			return ApplicationNameDto.builder()
@@ -116,8 +116,8 @@ public class DisplayAttendanceDataScreenQuery {
 				.build();
 	}
 	
-	private StandardMenuNameQueryImport createMenu(String programId, String screenId, String... queryString) {
-		return new StandardMenuNameQueryImport(programId, screenId, Optional.ofNullable(queryString[0]));
+	private StandardMenuNameQueryImport createMenu(String programId, String screenId, String queryString) {
+		return new StandardMenuNameQueryImport(programId, screenId, Optional.ofNullable(queryString));
 	}
 	
 	private Integer getAppType(String programId, String screenId) {
