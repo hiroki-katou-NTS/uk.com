@@ -44,7 +44,7 @@
 					class="bg-green caret-right caret-background fixed-flex-layout-left">
 					<div class="cf">
 						<div style="float: left">
-							<table tabindex="3" id="single-list-dataSource"
+						 	<table tabindex="3" id="single-list-dataSource"
 								data-bind="ntsGridList:{
 									name: '#[KMK009_3]',
 									width: 330,
@@ -93,11 +93,11 @@
 								<!-- A3_6: Total Time Name --> <input tabindex="5"
 								class="nts-input" id="itemname" style="width: 100px"
 								data-bind="ntsTextEditor:{
-										 name: '#[KMK009_6]',
-                                         value: itemTotalTimesDetail.totalTimesName,
-                                         required: true,
-                                         constraint: 'TotalTimesName',
-                                         enable: enableName}" />
+										name: '#[KMK009_6]',
+										value: itemTotalTimesDetail.totalTimesName,
+										required: true,
+										constraint: 'TotalTimesName',
+										enable: enableName}" />
 							</td>
 						</tr>
 
@@ -196,7 +196,7 @@
 											<div class="cell">
 												<!-- A3_28 Open dialog KDL002-->
 												<button tabindex="14"
-													data-bind="click: openKDL002Dialog_A3_28, enable: enableAtdBtn">#{i18n.getText('KMK009_15')}</button>											
+													data-bind="click: openKDL002Dialog_A3_28, enable: enableAtdBtn ">#{i18n.getText('KMK009_15')}</button>		<!-- enableAtdBtn -->									
 											</div>
 											<div class="cell">
 												<div>

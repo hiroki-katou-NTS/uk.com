@@ -281,7 +281,7 @@ public class CreateExOutTextService extends ExportService<Object> {
 		GeneralDateTime processEndDateTime = null;
 		GeneralDateTime processStartDateTime = GeneralDateTime.now();
 		int standardClass = StandardClassification.STANDARD.value;
-		int executeForm = ExecutionForm.MANUAL_EXECUTION.value;
+		int executeForm = exOutSetting.getExecuteForm().value;
 		String executeId = sid;
 		GeneralDate designatedReferenceDate = exOutSetting.getReferenceDate();
 		GeneralDate specifiedEndDate = exOutSetting.getEndDate();

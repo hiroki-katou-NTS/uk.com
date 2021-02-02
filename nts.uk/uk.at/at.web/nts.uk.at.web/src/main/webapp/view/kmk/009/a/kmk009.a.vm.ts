@@ -20,7 +20,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
         totalClsEnums: Array<Enum>;
         totalClsEnumsUse: Array<EnumUse>;
         valueEnum: KnockoutObservable<number>;
-        currentCode: KnockoutObservable<string>;
+        currentCode: KnockoutObservable<number>;
         columns: KnockoutObservableArray<any>;
         useSet: KnockoutObservableArray<any>;
         selectUse: KnockoutObservable<number>;
@@ -40,6 +40,8 @@ module nts.uk.at.view.kmk009.a.viewmodel {
         checkedCountAtr: KnockoutObservable<boolean>;
         langId: KnockoutObservable<string> = ko.observable('ja');
         totalTimesNameEn: KnockoutObservable<string> = ko.observable(null);
+
+        selectedCode: KnockoutObservable<string> = ko.observable(null);
 
         constructor() {
             var self = this;
@@ -83,24 +85,25 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             self.enableAtdBtn = ko.observable(true);
 
             //subscribe currentCode
-            self.currentCode.subscribe(function(codeChanged) {
+            self.currentCode.subscribe(function(codeChanged) {                
                 if (!codeChanged || codeChanged < 1) {
                     self.enableSave(false);
                     self.enableSwitch(false);
                     self.resetData();
-                    self.enableAtdBtn(false);
+                    //self.enableAtdBtn(false);
                     self.attendanceModel.attendanceItemName('');
                     return;
                 }
                 self.enableSave(true);
                 self.enableSwitch(true);
-                self.enableAtdBtn(true);
+                //self.enableAtdBtn(true);
                 self.clearError();
-                if (codeChanged == 0) { return; }
+                if (codeChanged === 0) { return; }
                 self.selectUse(null);
                 self.loadAllTotalTimesDetail(codeChanged);
+
                 $('#switch-use').focus();
-                if(self.langId() == 'en'){
+                if(self.langId() === 'en'){
                  $("#itemname").focus();
                 }
             });
@@ -137,7 +140,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             self.langId.subscribe(() => {
                 self.changeLanguage();
             });
-        }
+        }   
 
         /**
          * set required text editor
@@ -167,12 +170,12 @@ module nts.uk.at.view.kmk009.a.viewmodel {
         private loadBySelectUse(isUse: boolean, isUnder: boolean, isUpper: boolean): void {
             var self = this;
             if (isUse) {
-                self.enableUse(true);
+                //self.enableUse(true);
                 self.enableName(true);
                 self.itemTotalTimesDetail.useAtr(1);
             }
             else {
-                self.enableUse(false);
+                //self.enableUse(false);
                 self.enableName(false);
                 self.itemTotalTimesDetail.useAtr(0);
             }
@@ -190,13 +193,17 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                 self.enableUpper(false);
                 self.itemTotalTimesDetail.totalCondition.upperLimitSettingAtr(0);
             }
-
-            if (isUse == true && (isUnder == true || isUpper == true)) {
+                        
+            /* if (isUse == true)  && (isUnder == true || isUpper == true)) {
                 // enable btn
                 self.enableAtdBtn(true);
             } else {
                 self.enableAtdBtn(false);
-            }
+            } */
+            //condition 6, ver7
+            self.enableAtdBtn(isUse); //ver 7
+            //A3_17 && A3_20                                 
+            self.enableUse(isUse && !_.isNull(self.attendanceModel.attendanceItemName()));            
         }
 
         /**
@@ -668,17 +675,21 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                     nts.uk.ui.windows.setShared('SelectedAttendanceId', [self.attendanceModel.attendanceItemId()], true);
                 }
 
-                nts.uk.ui.windows.sub.modal('/view/kdl/021/a/index.xhtml', { title: nts.uk.resource.getText('KDL021') }).onClosed(function(): any {
-                    nts.uk.ui.block.clear();
+                nts.uk.ui.windows.sub.modal('/view/kdl/021/a/index.xhtml', { title: nts.uk.resource.getText('KDL021') }).onClosed(function(): any {                    
                     let atdSelected: Array<any> = nts.uk.ui.windows.getShared('selectedChildAttendace');
                     if (!_.isNil(atdSelected)) {
+                        nts.uk.ui.block.invisible();
                         $.when(service.findAllDailyAttendanceItem()).done(function(dataRes: Array<DailyAttendanceItemDto>) {
                             let dailyAttendanceItem: Array<DailyAttendanceItemDto> = _.filter(dataRes, function(obj) { return obj.attendanceItemId == atdSelected });
                             if (_.isUndefined(atdSelected) || _.isEmpty(atdSelected) || _.isUndefined(dailyAttendanceItem)) {
                                 self.attendanceModel.update(null, null);
                             } else {
-                                self.attendanceModel.update(dailyAttendanceItem[0].attendanceItemId, dailyAttendanceItem[0].attendanceItemName);
+                                self.attendanceModel.update(dailyAttendanceItem[0].attendanceItemId, dailyAttendanceItem[0].attendanceItemName);                                
                             }
+                            self.enableUse(parseInt(self.selectUse()) && !_.isNull(self.attendanceModel.attendanceItemName())); 
+                            nts.uk.ui.block.clear();
+                        }).fail(() => {
+                            nts.uk.ui.block.clear();
                         });
                     }
                 });

@@ -97,7 +97,7 @@ public interface DailyRecordToAttendanceItemConverter {
 
 	Optional<OutingTimeOfDailyAttd> outingTime();
 
-	Optional<BreakTimeOfDailyAttd> breakTime();
+	BreakTimeOfDailyAttd breakTime();
 
 	Optional<AttendanceTimeOfDailyAttendance> attendanceTime();
 

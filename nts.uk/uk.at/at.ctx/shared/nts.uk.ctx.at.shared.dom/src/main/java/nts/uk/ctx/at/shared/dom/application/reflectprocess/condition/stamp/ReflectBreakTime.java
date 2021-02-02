@@ -26,9 +26,9 @@ public class ReflectBreakTime {
 
 		listTimeStampAppOther.stream().forEach(data -> {
 
-			if (dailyApp.getBreakTime().isPresent()) {
+//			if (dailyApp.getBreakTime().isPresent()) {
 
-					Optional<BreakTimeSheet> brs = dailyApp.getBreakTime().get()
+					Optional<BreakTimeSheet> brs = dailyApp.getBreakTime()
 							.getBreakTimeSheets().stream().filter(y ->
 								y.getBreakFrameNo().v() == data.getDestinationTimeZoneApp().getEngraveFrameNo())
 							.findFirst();
@@ -36,14 +36,14 @@ public class ReflectBreakTime {
 						brs.get().setStartTime(data.getTimeZone().getStartTime());
 						brs.get().setEndTime(data.getTimeZone().getEndTime());
 					} else {
-						dailyApp.getBreakTime().get().getBreakTimeSheets().add(create(data));
+						dailyApp.getBreakTime().getBreakTimeSheets().add(create(data));
 					}
 
-			} else {
-				List<BreakTimeSheet> lstBreak = new ArrayList<>();
-				lstBreak.add(create(data));
-				dailyApp.setBreakTime(Optional.of(new BreakTimeOfDailyAttd(lstBreak)));
-			}
+//			} else {
+//				List<BreakTimeSheet> lstBreak = new ArrayList<>();
+//				lstBreak.add(create(data));
+//				dailyApp.setBreakTime(Optional.of(new BreakTimeOfDailyAttd(lstBreak)));
+//			}
 			lstItemId.addAll(createId(data.getDestinationTimeZoneApp().getEngraveFrameNo()));
 		});
 

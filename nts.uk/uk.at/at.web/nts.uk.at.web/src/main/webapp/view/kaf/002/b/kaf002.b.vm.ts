@@ -18,6 +18,8 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
         data: any;
         comment1: KnockoutObservable<Comment> = ko.observable(new Comment('', true, ''));
         comment2: KnockoutObservable<Comment> = ko.observable(new Comment('', true, ''));
+		isFromOther: boolean = false;
+
         bindComment(data: any) {
             const self = this;
             _.forEach(self.data.appStampSetting.settingForEachTypeLst, i => {
@@ -32,6 +34,10 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
         created(params: AppInitParam) {
             
             const self = this;
+			if(!_.isNil(__viewContext.transferred.value)) {
+				self.isFromOther = true;
+			}
+			sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');
             let empLst: Array<string> = [],
 				dateLst: Array<string> = [];
             let itemModelList = [];

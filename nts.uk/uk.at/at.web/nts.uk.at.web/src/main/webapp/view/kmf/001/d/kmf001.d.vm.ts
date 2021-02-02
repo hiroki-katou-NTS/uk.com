@@ -149,14 +149,12 @@ module nts.uk.pr.view.kmf001.d {
                 var self = this;
                 self.clearEmptErrors();
                 if (data == undefined) {
-                    self.yearsAmountByEmp(0);
-                    self.maxDaysCumulationByEmp(0);
+                  
                     self.selectedManagement(1);
                 }
                 else {
                     // Set EmploymentSetting Data
-                    self.yearsAmountByEmp(data.upperLimitSetting.retentionYearsAmount);
-                    self.maxDaysCumulationByEmp(data.upperLimitSetting.maxDaysCumulation);
+                  
                     self.selectedManagement(data.managementCategory);
                 }
                 self.checkDeleteAvailability();
@@ -165,10 +163,10 @@ module nts.uk.pr.view.kmf001.d {
             // Initialize wholeCompany Data
             initializeWholeCompanyData(data: RetentionYearlyFindDto): void {
                 var self = this;
+                self.selectedComManagement(data.managementCategory);
                 self.retentionYearsAmount(data.upperLimitSetting.retentionYearsAmount);
                 self.maxDaysCumulation(data.upperLimitSetting.maxDaysCumulation);
                 self.leaveAsWorkDays(data.leaveAsWorkDays);
-                self.selectedComManagement(data.managementCategory);
             }
             
             // Collect wholeCompany Data
