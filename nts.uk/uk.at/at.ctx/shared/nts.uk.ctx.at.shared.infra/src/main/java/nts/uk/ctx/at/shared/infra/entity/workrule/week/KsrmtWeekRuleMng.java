@@ -51,7 +51,7 @@ public class KsrmtWeekRuleMng extends UkJpaEntity implements Serializable {
 	
 	public void from(WeekRuleManagement domain){
 		
-		this.startOfWeek = domain.getWeekStart().value;
+		this.startOfWeek = domain.getDayOfWeek().value;
 		this.closingStartDate = domain.isCalcWeekPremFromClosureStart() ? 1 : 0;
 	}
 	
