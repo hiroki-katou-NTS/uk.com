@@ -253,6 +253,123 @@ public class TimeLeavingOfDailyAttdTest {
 		assertThat(target.getTimeLeavingWorks()).containsExactly( timeLeavingWork1, timeLeavingWork2 );
 	}
 	
+	@Test
+	public void testIsIncludeInWorkTimeSpan_notDuplicatedTime1() {
+		TimeSpanForCalc target = new TimeSpanForCalc( 
+				TimeWithDayAttr.hourMinute(6, 0), 
+				TimeWithDayAttr.hourMinute(7, 0));
+		
+		List<TimeSpanForCalc> timeOfTimeLeavingList = Arrays.asList(
+				new TimeSpanForCalc( 
+					TimeWithDayAttr.hourMinute(8, 0), 
+					TimeWithDayAttr.hourMinute(12, 0)));
+		
+		TimeLeavingOfDailyAttd timeLeavingOfDailyAttd = new TimeLeavingOfDailyAttd();
+		
+		new Expectations(timeLeavingOfDailyAttd) {{
+			timeLeavingOfDailyAttd.getTimeOfTimeLeavingAtt();
+			result = timeOfTimeLeavingList;
+		}};
+		
+		boolean result = timeLeavingOfDailyAttd.isIncludeInWorkTimeSpan(target);
+		assertThat( result ).isFalse();
+	}
+	
+	@Test
+	public void testIsIncludeInWorkTimeSpan_connotateBeginTime1() {
+		TimeSpanForCalc target = new TimeSpanForCalc( 
+				TimeWithDayAttr.hourMinute(7, 0), 
+				TimeWithDayAttr.hourMinute(9, 0));
+		
+		List<TimeSpanForCalc> timeOfTimeLeavingList = Arrays.asList(
+				new TimeSpanForCalc( 
+					TimeWithDayAttr.hourMinute(8, 0), 
+					TimeWithDayAttr.hourMinute(12, 0)));
+		
+		TimeLeavingOfDailyAttd timeLeavingOfDailyAttd = new TimeLeavingOfDailyAttd();
+		
+		new Expectations(timeLeavingOfDailyAttd) {{
+			timeLeavingOfDailyAttd.getTimeOfTimeLeavingAtt();
+			result = timeOfTimeLeavingList;
+		}};
+		
+		boolean result = timeLeavingOfDailyAttd.isIncludeInWorkTimeSpan(target);
+		assertThat( result ).isFalse();
+	}
+	
+	@Test
+	public void testIsIncludeInWorkTimeSpan_connotateEndTime1() {
+		TimeSpanForCalc target = new TimeSpanForCalc( 
+				TimeWithDayAttr.hourMinute(9, 0), 
+				TimeWithDayAttr.hourMinute(12, 30));
+		
+		List<TimeSpanForCalc> timeOfTimeLeavingList = Arrays.asList(
+				new TimeSpanForCalc( 
+					TimeWithDayAttr.hourMinute(8, 0), 
+					TimeWithDayAttr.hourMinute(12, 0)));
+		
+		TimeLeavingOfDailyAttd timeLeavingOfDailyAttd = new TimeLeavingOfDailyAttd();
+		
+		new Expectations(timeLeavingOfDailyAttd) {{
+			timeLeavingOfDailyAttd.getTimeOfTimeLeavingAtt();
+			result = timeOfTimeLeavingList;
+		}};
+		
+		boolean result = timeLeavingOfDailyAttd.isIncludeInWorkTimeSpan(target);
+		assertThat( result ).isFalse();
+	}
+	
+	@Test
+	public void testIsIncludeInWorkTimeSpan_includedInWorkTime1() {
+		TimeSpanForCalc target = new TimeSpanForCalc( 
+				TimeWithDayAttr.hourMinute(8, 0), 
+				TimeWithDayAttr.hourMinute(10, 0));
+		
+		List<TimeSpanForCalc> timeOfTimeLeavingList = Arrays.asList(
+				new TimeSpanForCalc( 
+					TimeWithDayAttr.hourMinute(8, 0), 
+					TimeWithDayAttr.hourMinute(12, 0)),
+				new TimeSpanForCalc( 
+					TimeWithDayAttr.hourMinute(13, 0), 
+					TimeWithDayAttr.hourMinute(17, 0)) );
+		
+		TimeLeavingOfDailyAttd timeLeavingOfDailyAttd = new TimeLeavingOfDailyAttd();
+		
+		new Expectations(timeLeavingOfDailyAttd) {{
+			timeLeavingOfDailyAttd.getTimeOfTimeLeavingAtt();
+			result = timeOfTimeLeavingList;
+		}};
+		
+		boolean result = timeLeavingOfDailyAttd.isIncludeInWorkTimeSpan(target);
+		assertThat( result ).isTrue();
+		
+	}
+	
+	@Test
+	public void testIsIncludeInWorkTimeSpan_includedInWorkTime2() {
+		TimeSpanForCalc target = new TimeSpanForCalc( 
+				TimeWithDayAttr.hourMinute(14, 0), 
+				TimeWithDayAttr.hourMinute(15, 0));
+		
+		List<TimeSpanForCalc> timeOfTimeLeavingList = Arrays.asList(
+				new TimeSpanForCalc( 
+					TimeWithDayAttr.hourMinute(8, 0), 
+					TimeWithDayAttr.hourMinute(12, 0)),
+				new TimeSpanForCalc( 
+					TimeWithDayAttr.hourMinute(13, 0), 
+					TimeWithDayAttr.hourMinute(17, 0)) );
+		
+		TimeLeavingOfDailyAttd timeLeavingOfDailyAttd = new TimeLeavingOfDailyAttd();
+		
+		new Expectations(timeLeavingOfDailyAttd) {{
+			timeLeavingOfDailyAttd.getTimeOfTimeLeavingAtt();
+			result = timeOfTimeLeavingList;
+		}};
+		
+		boolean result = timeLeavingOfDailyAttd.isIncludeInWorkTimeSpan(target);
+		assertThat( result ).isTrue();
+		
+	}
 	
 	static class Helper {
 		
