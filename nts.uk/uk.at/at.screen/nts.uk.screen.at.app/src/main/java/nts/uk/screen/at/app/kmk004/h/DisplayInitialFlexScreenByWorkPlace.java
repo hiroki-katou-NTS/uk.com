@@ -20,8 +20,9 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class DisplayInitialFlexScreenByWorkPlace {
 
-	@Inject
-	private GetFlexPredWorkTimeRepository getFlexPredWorkTimeRepo;
+	/*
+	 * @Inject private GetFlexPredWorkTimeRepository getFlexPredWorkTimeRepo;
+	 */
 
 	@Inject
 	private WorkplaceList workplaceList;
@@ -35,9 +36,10 @@ public class DisplayInitialFlexScreenByWorkPlace {
 		String comId = AppContexts.user().companyId();
 		// 1.ログイン会社ID
 
-		this.getFlexPredWorkTimeRepo.find(comId).ifPresent(x -> {
-			result.setFlexPredWorkTime(GetFlexPredWorkTimeDto.fromDomain(x));
-		});
+		/*
+		 * this.getFlexPredWorkTimeRepo.find(comId).ifPresent(x -> {
+		 * result.setFlexPredWorkTime(GetFlexPredWorkTimeDto.fromDomain(x)); });
+		 */
 		// 2.職場リストを表示する
 		result.setAlreadySettings(this.workplaceList.get(LaborWorkTypeAttr.FLEX).stream().map(x -> x.workplaceId)
 				.collect(Collectors.toList()));

@@ -29,16 +29,19 @@ module nts.uk.at.view.kmk004.b {
                             <div class="content-tab" data-bind="i18n: 'KMK004_214'"></div>
                         </th>
                     </tr>
-                    <tr class= "label-row">
+                    <tr>
                         <td class="label-column">
                             <div class="content-tab" data-bind="i18n: tabSetting.daily"></div>
                         </td>
                         <td class="label-column">
                             <div class="content-tab" data-bind="i18n: tabSetting.weekly"></div>
-                        </td>
+						</td>
+
+						<td style="visibility: hidden; border:none"  ></td>
                     </tr>
                     <tr class= "label-row">
-                        <th colspan="3">
+						<th colspan="3" style="border: 1px solid gray;">
+						
                             <div data-bind="i18n: 'KMK004_215'"></div>
                         </th>
                     </tr>
@@ -90,11 +93,14 @@ module nts.uk.at.view.kmk004.b {
                 background: #E0F59E;
             }
 
-            .table-view .label-row, th {
+            .table-view , th {
+                border: 1px solid gray;
+			}
+			.table-view , td {
                 border: 1px solid gray;
             }
 
-            .table-view .label-row .label-column {
+            .table-view .label-column {
 				border: 1px solid gray;
 				width: 151px;
 				max-width: 151px;
