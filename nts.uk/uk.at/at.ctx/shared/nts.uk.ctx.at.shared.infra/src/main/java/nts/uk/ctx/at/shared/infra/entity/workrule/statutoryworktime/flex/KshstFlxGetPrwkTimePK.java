@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-public class KrcmtCalcMSetFleComPK implements Serializable {
+public class KshstFlxGetPrwkTimePK implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
