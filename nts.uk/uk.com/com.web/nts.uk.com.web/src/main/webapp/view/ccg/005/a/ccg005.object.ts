@@ -3,7 +3,7 @@ module nts.uk.at.view.ccg005.a.object {
     favoriteSpecifyDto: FavoriteSpecifyDto[];               //お気に入りの指定
     attendanceInformationDtos: AttendanceInformationDto[];  //在席情報DTO
     emojiUsage: number;                                     //感情状態を利用する
-    isInCharge: boolean;                                    //担当者か
+    inCharge: boolean;                                      //担当者か
     applicationNameDtos: ApplicationNameDto[];              //申請名
     bussinessName: string;                                  //自分のビジネスネーム
   }

@@ -2,10 +2,12 @@
 module nts.uk.at.view.ccg005.a.screenModel {
   import object = nts.uk.at.view.ccg005.a.object;
   import setShared = nts.uk.ui.windows.setShared;
+  import getShared = nts.uk.ui.windows.getShared;
 
   const API = {
     getDisplayAttendanceData: 'screen/com/ccg005/get-display-attendance-data',
     getDisplayInfoAfterSelect: 'screen/com/ccg005/get-information-after-select',
+    getAttendanceInformation: 'screen/com/ccg005/get-attendance-information',
     saveFavorite: 'ctx/office/favorite/save',
     registerComment: 'ctx/office/comment/register',
     deleteComment: 'ctx/office/comment/delete'
@@ -21,7 +23,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
           <!-- A0 -->
           <span data-bind="i18n: 'CCG005_1'" class="ccg005-bold"></span>
           <!-- A1_5 -->
-          <i data-bind="ntsIcon: {no: 5, width: 25, height: 25}, click: $component.openScreenCCG005B"></i>
+          <i data-bind="visible: $component.inCharge, ntsIcon: {no: 5, width: 25, height: 25}, click: $component.openScreenCCG005B"></i>
           &#160;
           <!-- A1_6 -->
           <i data-bind="ntsIcon: {no: 194, width: 25, height: 25}"></i>
@@ -44,12 +46,13 @@ module nts.uk.at.view.ccg005.a.screenModel {
                     <input id="CCG005-A1_4" style="border: none !important; padding-right: 30px; background: none !important;" data-bind="ntsTextEditor: {
                       enterkey: $component.registerComment,
                       value: $component.comment,
+                      enable: $component.isBaseDate,
                       option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                         textmode: 'text',
                         width: '250px',
                         placeholder: $component.$i18n('CCG005_35')
                       }))
-                    }"/>
+                    }, visible: $component.isSameOrBeforeBaseDate"/>
                     <i class="ccg005-clearbtn" style="position: absolute; right: 5px; visibility: hidden;" data-bind="click: $component.deleteComment, ntsIcon: {no: $component.emoji(), width: 20, height: 28}"></i>
                   </div>
                 </div>
@@ -71,7 +74,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
             showJumpButtons: true
           }"></div>
           <!-- A2_1 -->
-          <button id="ccg005-legends" style="margin-left: 5px;" data-bind="ntsLegendButton: legendOptions"></button>
+          <button id="ccg005-legends" style="margin-left: 5px;" data-bind="visible: $component.isBaseDate, ntsLegendButton: legendOptions"></button>
           <div style="right: 0; position: absolute; display: flex; align-items: center;">
             <!-- A3_2 -->
             <i id="ccg005-star-img" style="margin-right: 5px;" data-bind="ntsIcon: {no: 184, width: 20, height: 20}"></i>
@@ -363,7 +366,6 @@ module nts.uk.at.view.ccg005.a.screenModel {
     searchValue: KnockoutObservable<string> = ko.observable('');
     label3_2: KnockoutObservable<string> = ko.observable('label3_2');
 
-    height: KnockoutObservable<number> = ko.observable(465);
     // Pagination
     currentPage: KnockoutObservable<number> = ko.observable(1);
     perPage: KnockoutObservable<number> = ko.observable(5);
@@ -391,7 +393,15 @@ module nts.uk.at.view.ccg005.a.screenModel {
     visibleGoHome: KnockoutComputed<boolean> = ko.computed(() => this.activatedStatus() === StatusClassfication.GO_HOME);
     visibleHoliday: KnockoutComputed<boolean> = ko.computed(() => this.activatedStatus() === StatusClassfication.HOLIDAY);
     favoriteSpecifyData: KnockoutObservableArray<any> = ko.observableArray([]);
-    emojiUsage: KnockoutObservable<boolean> = ko.observable(false)
+    emojiUsage: KnockoutObservable<boolean> = ko.observable(false);
+    isBaseDate: KnockoutObservable<boolean> = ko.observable(true);
+    isSameOrBeforeBaseDate: KnockoutObservable<boolean> = ko.observable(true);
+    inCharge: KnockoutObservable<boolean> = ko.observable(true);
+    workplaceFromCDL008: KnockoutObservableArray<string> = ko.observableArray([]);
+    employeeIdList: KnockoutObservableArray<string> = ko.observableArray([]);
+    personalIdList: KnockoutObservableArray<string> = ko.observableArray([]);
+    attendanceInformationDtos: KnockoutObservableArray<any> = ko.observableArray([]);
+    listPersonalInfo: KnockoutObservableArray<any> = ko.observableArray([]);
 
     created() {
       const vm = this;
@@ -409,18 +419,38 @@ module nts.uk.at.view.ccg005.a.screenModel {
       vm.initPopupStatus();
       vm.initChangeFavorite();
       vm.initFocusA1_4();
+      vm.initChangeSelectedDate();
       vm.perPage.subscribe(() => vm.currentPage(1));
     }
 
-    condition3: KnockoutObservable<boolean> = ko.observable(true);
-    condition4: KnockoutObservable<boolean> = ko.observable(true);
+    /**
+     * 日付を更新する時
+     */
     initChangeSelectedDate() {
       const vm = this;
       vm.selectedDate.subscribe(() => {
-        const selectedDate = moment.utc(vm.selectedDate());
-        const baseDate = moment.utc();
-        vm.condition4(selectedDate.isSameOrBefore(baseDate));
-        vm.condition3(selectedDate.isSame(baseDate));
+        const selectedDate = moment.utc(moment.utc(vm.selectedDate()).format('YYYY/MM/DD'));
+        const baseDate = moment.utc(moment.utc().format('YYYY/MM/DD'));
+        vm.isSameOrBeforeBaseDate(selectedDate.isSameOrBefore(baseDate));
+        vm.isBaseDate(selectedDate.isSame(baseDate));
+        // パラメータ「在席情報を取得」
+        const listSid = _.map(vm.attendanceInformationDtos(), item => item.sid);
+        const listPid = _.map(vm.listPersonalInfo(), item => item.personalId);
+        const empIds = _.map(vm.attendanceInformationDtos(), atd => {
+          return {
+            sid: atd.sid,
+            pid: _.find(vm.listPersonalInfo(), item => item.employeeId === atd.sid).personalId
+          };
+        });
+        const param = {
+          empIds: empIds,
+          baseDate: vm.selectedDate(),
+          emojiUsage: vm.emojiUsage()
+        }
+        vm.$blockui('show');
+        vm.$ajax('com', API.getAttendanceInformation, param).then((res: object.AttendanceInformationDto) => {
+          
+        }).always(() => vm.$blockui('hide'));
       });
     }
 
@@ -436,17 +466,13 @@ module nts.uk.at.view.ccg005.a.screenModel {
           emojiUsage: vm.emojiUsage(),
           wkspIds: selectedFavorite ? selectedFavorite.workplaceId : []
         });
+        vm.$blockui('show');
         vm.$ajax('com', API.getDisplayInfoAfterSelect, param).then((res: object.DisplayInformationDto) => {
-          // TODO
+          vm.attendanceInformationDtos(res.attendanceInformationDtos);
+          vm.listPersonalInfo(res.listPersonalInfo);
         })
+        .always(() => vm.$blockui('clear'));
       });
-    }
-
-    /**
-     * 職場を選択する時
-     */
-    private initChooseWorkplace() {
-
     }
 
     private initResizeable(vm: any) {
@@ -567,6 +593,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
         vm.businessName(response.bussinessName);
         vm.favoriteSpecifyData(response.favoriteSpecifyDto);
         vm.emojiUsage(!!response.emojiUsage);
+        vm.inCharge(response.inCharge);
         if (response && response.attendanceInformationDtos) {
           // 条件：在席情報DTO.社員ID＝ログイン社員ID
           const atdInfo = _.find(response.attendanceInformationDtos, item => item.sid === loginSid);
@@ -714,13 +741,30 @@ module nts.uk.at.view.ccg005.a.screenModel {
         startMode: object.StartMode.WORKPLACE,
         isMultiple: true,
         showNoSelection: false,
-        selectedCodes: vm.workPlaceIdList(),
+        selectedCodes: vm.workplaceFromCDL008(),
         isShowBaseDate: true,
         baseDate: moment.utc().toISOString(),
         selectedSystemType: object.SystemType.EMPLOYMENT,
         isrestrictionOfReferenceRange: false
       };
       setShared('inputCDL008', inputCDL008);
+      
+      vm.$window.modal('com', '/view/cdl/008/a/index.xhtml').then(() => {
+        if (getShared('CDL008Cancel')) {
+          setShared('CDL008Cancel', null);
+          return;
+        }
+        // 職場を選択する時
+        vm.workplaceFromCDL008(getShared('outputCDL008'));
+        const param: DisplayInfoAfterSelectParam = new DisplayInfoAfterSelectParam({
+          baseDate: vm.selectedDate(),
+          emojiUsage: vm.emojiUsage(),
+          wkspIds: vm.workplaceFromCDL008()
+        });
+        vm.$ajax('com', API.getDisplayInfoAfterSelect, param).then((res: object.DisplayInformationDto) => {
+
+        });
+      });
     }
 
     /**
