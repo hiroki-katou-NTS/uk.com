@@ -10,23 +10,27 @@ module nts.uk.com.view.ccg034.i {
   @bean()
   export class ScreenModel extends ko.ViewModel {
     partData: CCG034D.PartDataImageModel = null;
+    originalFileId: string = null;
     //Choose file
     imageOption: ItemModel[] = [
       { code: 0, name: getText('CCG034_121') },
       { code: 1, name: getText('CCG034_123') }
     ];
     imageType: KnockoutObservable<number> = ko.observable(0);
-    imageSrc: KnockoutObservable<string> = ko.observable('');
+    imageSrc: KnockoutObservable<string> = ko.observable(null);
     imageList: ItemModel[] = [];
     // Upload file
-    uploadedFileName: KnockoutObservable<string> = ko.observable('');
+    uploadedFileName: KnockoutObservable<string> = ko.observable(null);
     fileSize: KnockoutObservable<number> = ko.observable(0);
     displayFileSize: KnockoutObservable<string> = ko.computed(() => {
       const vm = this;
+      if (vm.fileSize() >= 1024) {
+        return nts.uk.text.format(getText("CCG034_125"), vm.fileSize() / 1024) + "MB";
+      }
       return nts.uk.text.format(getText("CCG034_125"), vm.fileSize()) + "KB";
     });
-    fileId: KnockoutObservable<string> = ko.observable('');
-    uploadSrc: KnockoutObservable<string> = ko.observable('');
+    fileId: KnockoutObservable<string> = ko.observable(null);
+    uploadSrc: KnockoutObservable<string> = ko.observable(null);
 
     created(params: any) {
       const vm = this;
@@ -35,6 +39,14 @@ module nts.uk.com.view.ccg034.i {
 
     mounted() {
       const vm = this;
+      vm.imageType.subscribe(value => {
+        if (value === 1 && vm.fileId()) {
+          vm.$ajax("/shr/infra/file/storage/infor/" + vm.fileId()).then((res: any) => {
+            vm.fileSize(Math.round(Number(res.originalSize) / 1024));
+            vm.updatePreview();
+          });
+        }
+      });
       // Binding part data
       vm.fileId(vm.partData.fileId);
       vm.imageSrc(vm.partData.fileName);
@@ -42,18 +54,24 @@ module nts.uk.com.view.ccg034.i {
       vm.fileId(vm.partData.fileId);
       vm.fileSize(vm.partData.uploadedFileSize ? vm.partData.uploadedFileSize : 0);
       vm.imageType(vm.partData.isFixed);
+      vm.originalFileId = vm.fileId();
 
-      if (vm.imageType() === 1) {
-        nts.uk.request.ajax("/shr/infra/file/storage/infor/" + vm.fileId()).then((res: any) => vm.uploadFinished(res));
-      }
       vm.createPopUp();
       $("#I2").focus();
     }
 
     uploadFinished(data: any) {
       const vm = this;
+      if (vm.fileId() !== vm.originalFileId) {
+        (nts.uk.request as any).file.remove(vm.fileId());
+      }
       vm.fileId(data.id);
       vm.fileSize(Math.round(Number(data.originalSize) / 1024));
+      vm.updatePreview();
+    }
+
+    private updatePreview() {
+      const vm = this;
       const container = $("#I2_2_2");
       container.html("");
       container.append($("<img class='pic-preview'/>").attr("src", (nts.uk.request as any).liveView(vm.fileId())));
@@ -104,7 +122,11 @@ module nts.uk.com.view.ccg034.i {
     */
     public closeDialog() {
       const vm = this;
-      vm.$window.close();
+      if (vm.fileId() !== vm.partData.originalFileId) {
+        vm.$window.close({ isSaving: false, fileId: vm.fileId() });
+      } else {
+        vm.$window.close({ isSaving: false });
+      }
     }
 
     /**
@@ -124,7 +146,7 @@ module nts.uk.com.view.ccg034.i {
               vm.partData.fileId = vm.fileId();
               vm.partData.uploadedFileName = vm.uploadedFileName();
               vm.partData.uploadedFileSize = vm.fileSize();
-              image.src = vm.fileId() ? (nts.uk.request as any).liveView(vm.fileId()) : '';
+              image.src = vm.fileId() ? (nts.uk.request as any).liveView(vm.fileId()) : null;
             } else {
               vm.$dialog.error({ messageId: 'Msg_70', messageParams: [String(MAX_FILE_SIZE_MB)] });
             }
@@ -133,7 +155,7 @@ module nts.uk.com.view.ccg034.i {
           vm.partData.isFixed = vm.imageType();
 
           // Return data
-          vm.$window.close(vm.partData);
+          vm.$window.close({ isSaving: true, partData: vm.partData });
         }
       });
     }

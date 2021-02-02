@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import lombok.AllArgsConstructor;
 import lombok.val;
-import nts.uk.ctx.at.shared.dom.common.RangeDuplication;
+import nts.gul.util.range.RangeDuplication;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -104,7 +104,7 @@ public class TimeSpanForCalcTest {
 	public void rangeDuplication_case1()
 	{
 		Arrays.asList(
-				new TestCaseForCompare("同じ期間", timeSpan(0,720), timeSpan(0,720), RangeDuplication.SAME_SPAN),
+				new TestCaseForCompare("同じ期間", timeSpan(0,720), timeSpan(0,720), RangeDuplication.SAME_COMPLETE),
 				new TestCaseForCompare("基準期間が完全に内包する", timeSpan(0,540), timeSpan(180,360), RangeDuplication.BASE_CONTAINS_COMPLETE),
 				new TestCaseForCompare("基準期間が内包し、開始が同じ", timeSpan(0,720), timeSpan(0,540), RangeDuplication.BASE_CONTAINS_SAME_START),
 				new TestCaseForCompare("基準期間が内包し、終了が同じ", timeSpan(0,720), timeSpan(360,720), RangeDuplication.BASE_CONTAINS_SAME_END),
@@ -115,15 +115,15 @@ public class TimeSpanForCalcTest {
 				new TestCaseForCompare("基準期間の前に連続する", timeSpan(360,720), timeSpan(0,360), RangeDuplication.CONTINUOUS_BEFORE_BASE),
 				new TestCaseForCompare("基準期間が比較期間より前", timeSpan(0,180), timeSpan(540,720), RangeDuplication.BASE_BEFORE_COMPARED),
 				new TestCaseForCompare("基準期間が比較期間より後", timeSpan(540,720), timeSpan(0,180), RangeDuplication.BASE_AFTER_COMPARED),
-				new TestCaseForCompare("比較期間の開始が基準期間の間にある", timeSpan(0,540), timeSpan(180,720), RangeDuplication.COMPARED_START_BETWEEN_BASE),
-				new TestCaseForCompare("比較期間の終了が基準期間の間にある", timeSpan(360,720), timeSpan(180,540), RangeDuplication.COMPARED_END_BETWEEN_BASE)				)
+				new TestCaseForCompare("比較期間の開始が基準期間の間にある", timeSpan(0,540), timeSpan(180,720), RangeDuplication.START_SANDWITCHED_BETWEEN_BASE),
+				new TestCaseForCompare("比較期間の終了が基準期間の間にある", timeSpan(360,720), timeSpan(180,540), RangeDuplication.END_SANDWITCHED_BETWEEN_BASE)				)
 			.forEach(tc -> tc.test());
 	}
 	
 	@Test
 	public void rangeDuplication_case2(){
 		val actual1 = timeSpan(1,180).compare(timeSpan(1,180));
-		val expected1 = RangeDuplication.SAME_SPAN;
+		val expected1 = RangeDuplication.SAME_COMPLETE;
 		assertThat("SAME_SPAN",actual1,is(expected1));
 		val actual2 = timeSpan(0,180).compare(timeSpan(1,180));
 		val expected2 = RangeDuplication.BASE_CONTAINS_SAME_END;
@@ -133,7 +133,7 @@ public class TimeSpanForCalcTest {
 		assertThat("BASE_CONTAINED_SAME_END",actual3,is(expected3));
 		
 		val actual4 = timeSpan(180,540).compare(timeSpan(180,540));
-		val expected4 = RangeDuplication.SAME_SPAN;
+		val expected4 = RangeDuplication.SAME_COMPLETE;
 		assertThat("SAME_SPAN",actual4,is(expected4));
 		val actual5 = timeSpan(180,539).compare(timeSpan(180,540));
 		val expected5 = RangeDuplication.BASE_CONTAINED_SAME_START;

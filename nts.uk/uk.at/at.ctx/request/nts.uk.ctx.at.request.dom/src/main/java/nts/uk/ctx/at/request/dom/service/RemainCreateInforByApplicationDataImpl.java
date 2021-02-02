@@ -70,12 +70,14 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 	
 	@Override
 	public List<AppRemainCreateInfor> lstRemainDataFromApp(CacheCarrier cacheCarrier, String cid, String sid, DatePeriod dateData) {
-		
 		List<Integer> lstReflect = new ArrayList<>();
 		lstReflect.add(ReflectedState_New.NOTREFLECTED.value);
 		lstReflect.add(ReflectedState_New.WAITREFLECTION.value);
 		List<Integer> lstAppType = this.lstAppType();
-		List<Application> lstAppData = appRepository.getByPeriodReflectType(sid, dateData, lstReflect, lstAppType);
+		List<Application> lstAppData = new ArrayList<>();
+		if(lstAppType.isEmpty()) {
+			lstAppData = appRepository.getByPeriodReflectType(sid, dateData, lstReflect, lstAppType);
+		}
 		return this.lstResult(cid, sid, lstAppData);
 	}
 	@Override
@@ -84,20 +86,25 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 		lstReflect.add(ReflectedState_New.NOTREFLECTED.value);
 		lstReflect.add(ReflectedState_New.WAITREFLECTION.value);
 		List<Integer> lstAppType = this.lstAppType();
-		List<Application> lstAppData = appRepository.getByListDateReflectType(sid, dates, lstReflect, lstAppType);
+		List<Application> lstAppData = new ArrayList<>();
+		if(lstAppType.isEmpty()) {
+			lstAppData = appRepository.getByListDateReflectType(sid, dates, lstReflect, lstAppType);
+		}
 		return this.lstResult(cid, sid, lstAppData);
 	}
 
 	private List<Integer> lstAppType(){
 		List<Integer> lstAppType = new ArrayList<>();
-		lstAppType.add(ApplicationType.ABSENCE_APPLICATION.value);
-		lstAppType.add(ApplicationType.WORK_CHANGE_APPLICATION.value);
-		lstAppType.add(ApplicationType.ANNUAL_HOLIDAY_APPLICATION.value);
-		lstAppType.add(ApplicationType.COMPLEMENT_LEAVE_APPLICATION.value);
-		lstAppType.add(ApplicationType.GO_RETURN_DIRECTLY_APPLICATION.value);
-		lstAppType.add(ApplicationType.LONG_BUSINESS_TRIP_APPLICATION.value);
-		lstAppType.add(ApplicationType.OVER_TIME_APPLICATION.value);
-		lstAppType.add(ApplicationType.BREAK_TIME_APPLICATION.value);
+		//HoaTT　2021/01/29
+		//反映する時、エラーが発生してるので、とりあえずコメントする（暫定データ処理は申請の新ドメインをまだ対応しない）
+//		lstAppType.add(ApplicationType.ABSENCE_APPLICATION.value);
+//		lstAppType.add(ApplicationType.WORK_CHANGE_APPLICATION.value);
+//		lstAppType.add(ApplicationType.ANNUAL_HOLIDAY_APPLICATION.value);
+//		lstAppType.add(ApplicationType.COMPLEMENT_LEAVE_APPLICATION.value);
+//		lstAppType.add(ApplicationType.GO_RETURN_DIRECTLY_APPLICATION.value);
+//		lstAppType.add(ApplicationType.LONG_BUSINESS_TRIP_APPLICATION.value);
+//		lstAppType.add(ApplicationType.OVER_TIME_APPLICATION.value);
+//		lstAppType.add(ApplicationType.BREAK_TIME_APPLICATION.value);
 		return lstAppType;
 	}
 	private List<AppRemainCreateInfor> lstResult(String cid, String sid, List<Application> lstAppData){
