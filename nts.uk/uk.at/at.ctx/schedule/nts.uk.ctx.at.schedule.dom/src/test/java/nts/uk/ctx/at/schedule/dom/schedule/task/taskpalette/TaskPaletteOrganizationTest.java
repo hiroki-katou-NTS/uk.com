@@ -30,7 +30,9 @@ public class TaskPaletteOrganizationTest {
 	TaskPaletteOrganization.Require require;
 	
 	@Test
-	public void testCreate_page0() {
+	public void testCreate_pageNotTrue() {
+		
+		TargetOrgIdenInfor targetOrg = TargetOrgIdenInfor.creatIdentifiWorkplace("workplace-id");
 		
 		Map<Integer, TaskCode> tasks = new HashMap<>();
 		tasks.put(1, new TaskCode("code3"));
@@ -40,42 +42,19 @@ public class TaskPaletteOrganizationTest {
 		tasks.put(5, new TaskCode("code2"));
 		tasks.put(6, new TaskCode("code4"));
 		
+		TaskPaletteDisplayInfo displayInfo = new TaskPaletteDisplayInfo(
+				new TaskPaletteName("task-palette-name"), 
+				Optional.of(new TaskPaletteRemark("task-palette-remark")));
+		
 		NtsAssert.businessException("Msg_2062", () -> {
-			
-			TaskPaletteOrganization.create(
-					TargetOrgIdenInfor.creatIdentifiWorkplace("workplace-id"), 
-					0, 
-					new TaskPaletteDisplayInfo(
-							new TaskPaletteName("task-palette-name"), 
-							Optional.of(new TaskPaletteRemark("task-palette-remark"))), 
-					tasks);
+			TaskPaletteOrganization.create( targetOrg, 0, displayInfo, tasks);
+		}); 
+		
+		NtsAssert.businessException("Msg_2062", () -> {			
+			TaskPaletteOrganization.create( targetOrg, 6, displayInfo, tasks);
 		}); 
 		
 	}
-	
-	@Test
-	public void testCreate_page6() {
-		
-		Map<Integer, TaskCode> tasks = new HashMap<>();
-		tasks.put(1, new TaskCode("code3"));
-		tasks.put(2, new TaskCode("code1"));
-		tasks.put(3, new TaskCode("code5"));
-		tasks.put(4, new TaskCode("code6"));
-		tasks.put(5, new TaskCode("code2"));
-		tasks.put(6, new TaskCode("code4"));
-		
-		NtsAssert.businessException("Msg_2062", () -> {
-			
-			TaskPaletteOrganization.create(
-					TargetOrgIdenInfor.creatIdentifiWorkplace("workplace-id"), 
-					0, 
-					new TaskPaletteDisplayInfo(
-							new TaskPaletteName("task-palette-name"), 
-							Optional.of(new TaskPaletteRemark("task-palette-remark"))), 
-					tasks);
-		}); 
-		
-	} 
 	
 	@Test
 	public void testCreate_taskSize0() {
@@ -208,15 +187,14 @@ public class TaskPaletteOrganizationTest {
 		assertThat( result.getRemark().get().v() ).isEqualTo( "task-palette-remark" );
 		assertThat( result.getTasks().entrySet() ).extracting( 
 				d -> d.getKey(),
-				d -> d.getValue().getTaskCode().v(),
-				d -> d.getValue().getTaskStatus(),
-				d -> d.getValue().getTaskName(),
-				d -> d.getValue().getTaskAbName()
-				)
+				d -> d.getValue() )
 			.containsExactly(
-				tuple( 1, "code1", TaskStatus.NotYetRegistered, Optional.empty(), Optional.empty() ),
-				tuple( 2, "code2", TaskStatus.Expired, Optional.empty(), Optional.empty() ),
-				tuple( 3, "code3", TaskStatus.CanUse, Optional.of(new TaskName("task-name3")), Optional.of(new TaskAbName("task-abName3")) )
+				tuple( 1, TaskPaletteOneFrameDisplayInfo.createWithNotYetRegisteredType( new TaskCode("code1" ))),
+				tuple( 2, TaskPaletteOneFrameDisplayInfo.createWithExpiredType( new TaskCode("code2" ))),
+				tuple( 3, TaskPaletteOneFrameDisplayInfo.createWithCanUseType( 
+						new TaskCode("code3" ), 
+						new TaskName("task-name3"), 
+						new TaskAbName("task-abName3")))
 				);
 		
 		

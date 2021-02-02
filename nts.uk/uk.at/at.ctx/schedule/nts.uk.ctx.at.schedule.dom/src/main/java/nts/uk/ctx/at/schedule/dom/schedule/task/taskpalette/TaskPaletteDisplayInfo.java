@@ -17,11 +17,11 @@ public class TaskPaletteDisplayInfo implements DomainValue{
 	/**
 	 * 名称
 	 */
-	private TaskPaletteName name;
+	private final TaskPaletteName name;
 	
 	/**
 	 * 備考
 	 */
-	private Optional<TaskPaletteRemark> remark;
+	private final Optional<TaskPaletteRemark> remark;
 
 }

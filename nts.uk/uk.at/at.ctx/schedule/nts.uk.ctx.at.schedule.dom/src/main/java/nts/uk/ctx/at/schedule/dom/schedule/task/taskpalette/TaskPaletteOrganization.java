@@ -83,7 +83,7 @@ public class TaskPaletteOrganization implements DomainAggregate {
 		
 		this.tasks.forEach( (position, taskCode) -> {
 			
-			Optional<Task> task = require.getTask(new TaskFrameNo(1), taskCode );
+			Optional<Task> task = require.getTask( this.getTaskFrameNo(), taskCode );
 			
 			if ( !task.isPresent() ) {
 				displayTasks.put( position, TaskPaletteOneFrameDisplayInfo.createWithNotYetRegisteredType( taskCode )); return;
@@ -102,6 +102,10 @@ public class TaskPaletteOrganization implements DomainAggregate {
 		});
 		
 		return new TaskPalette(this.page, this.displayInfo.getName(), displayTasks, this.displayInfo.getRemark());
+	}
+	
+	public TaskFrameNo getTaskFrameNo() {
+		return new TaskFrameNo(1);
 	}
 	
 	public static interface Require {
