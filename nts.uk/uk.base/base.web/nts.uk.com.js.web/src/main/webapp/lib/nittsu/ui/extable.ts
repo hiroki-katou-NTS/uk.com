@@ -3934,7 +3934,8 @@ module nts.uk.ui.exTable {
                 cbData = self.getContents(cbData);
                 if (_.isNil(cbData)) return;
                 cbData = helper.getCellData(cbData);
-                let validate = $.data(self.$grid, internal.PASTE_VALIDATE);
+                let validate = $.data(self.$grid, internal.PASTE_VALIDATE),
+                    afterPaste = $.data(self.$grid, internal.AFTER_PASTE);
                 if (_.isFunction(validate)) {
                     let selectedCells = selection.getSelectedCells(this.$grid);
                     let txId = util.randomId();
@@ -3944,6 +3945,9 @@ module nts.uk.ui.exTable {
                             result.done(res => {
                                 if (res === true) {
                                     update.gridCellOw(self.$grid, cell.rowIndex, cell.columnKey, -1, cbData, txId);
+                                    if (_.isFunction(afterPaste)) {
+                                        afterPaste(cell.rowIndex, cell.columnKey, cbData);
+                                    }
                                 } else if (_.isFunction(res)) {
                                     res();
                                 }
@@ -3958,6 +3962,9 @@ module nts.uk.ui.exTable {
                 let txId = util.randomId();
                 _.forEach(selectedCells, function(cell: any, index: number) {
                     update.gridCellOw(self.$grid, cell.rowIndex, cell.columnKey, -1, cbData, txId);
+                    if (_.isFunction(afterPaste)) {
+                        afterPaste(cell.rowIndex, cell.columnKey, cbData);
+                    }
                 });
             }
                 
@@ -4027,6 +4034,7 @@ module nts.uk.ui.exTable {
                 let txId = util.randomId();
                 let ds = internal.getDataSource(self.$grid);
                 let size = ds ? ds.length : 0;
+                let afterPaste = $.data(self.$grid, internal.AFTER_PASTE);
                 _.forEach(data, function(row: any, idx: number) {
                     let rowData = {};
                     let columnKey = selectedCell.columnKey;
@@ -4041,8 +4049,15 @@ module nts.uk.ui.exTable {
                         columnKey = helper.nextKeyOf(columnIndex++, visibleColumns);
                         if (!columnKey) break;
                     }
+                    
                     if (rowIndex >= size) return false; 
                     update.gridRowOw(self.$grid, rowIndex, rowData, txId);
+                    if (_.isFunction(afterPaste)) {
+                        _.keys(rowData).forEach(k => {
+                            afterPaste(rowIndex, k, rowData[k]);
+                        });
+                    }
+                    
                     rowIndex++;
                 });
             }
@@ -7128,6 +7143,9 @@ module nts.uk.ui.exTable {
                 case "pasteValidate":
                     setPasteValidate(self, params[0]);
                     break;
+                case "afterPaste":
+                    setAfterPaste(self, params[0]);
+                    break;
                 case "clearHistories":
                     clearHistories(self, params[0]);
                     break;
@@ -7938,6 +7956,14 @@ module nts.uk.ui.exTable {
         }
         
         /**
+         * After paste.
+         */
+        function setAfterPaste($container: JQuery, afterPaste: any) {
+            let $grid = $container.find(`.${BODY_PRF + DETAIL}`);
+            $grid.data(internal.AFTER_PASTE, afterPaste);
+        }
+        
+        /**
          * Clear histories.
          */
         function clearHistories($container: JQuery, type: string) {
@@ -8424,6 +8450,7 @@ module nts.uk.ui.exTable {
         export let STICK_HISTORY: string = "stick-history";
         export let STICK_REDO_STACK: string = "stick-redo-stack";
         export let PASTE_VALIDATE: string = "paste-validate";
+        export let AFTER_PASTE: string = "after-paste";
         export let TOOLTIP: string = "tooltip";
         export let CONTEXT_MENU: string = "context-menu";
         export let POPUP: string = "popup";
