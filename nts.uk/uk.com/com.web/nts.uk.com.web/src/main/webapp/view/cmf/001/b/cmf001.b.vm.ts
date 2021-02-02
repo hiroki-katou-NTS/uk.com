@@ -242,8 +242,8 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 
             confirm({ messageId: "Msg_18" }).ifYes(() => {
                 block.invisible();
-                let indexItemDelete = _.findIndex(self.listStandardImportSetting(), (item: model.StandardAcceptanceConditionSetting) => { return item.conditionSetCode() == data.conditionSettingCode(); });
-                self.listStandardImportSetting.remove(function(item) { return item.conditionSetCode() == data.conditionSettingCode(); });
+                let indexItemDelete = _.findIndex(self.listStandardImportSetting(), (item: model.StandardAcceptanceConditionSetting) => { return item.conditionSetCode() == data.conditionSetCode(); });
+                self.listStandardImportSetting.remove(function(item) { return item.conditionSetCode() == data.conditionSetCode(); });
                 service.deleteStdData(command).done(function() {
                     if (self.listStandardImportSetting().length == 0) {
                         self.selectedStandardImportSettingCode(null);
