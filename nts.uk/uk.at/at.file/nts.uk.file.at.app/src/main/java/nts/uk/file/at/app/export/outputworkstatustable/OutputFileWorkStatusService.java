@@ -22,6 +22,7 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeBasicInfoImport;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceConfigInfoAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceInfor;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsImport;
@@ -70,22 +71,31 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
         OutputFileWorkStatusFileQuery query = context.getQuery();
         YearMonth targetDate = new YearMonth(query.getTargetDate());
         List<String> lstEmpIds = query.getLstEmpIds();
-        // 1:find(会社ID、ClosureId)
-        val cl = closureRepository.findById(AppContexts.user().companyId(), query.getClosureId());
-        val basedateNow = GeneralDate.today();
+        val closureId = query.getClosureId()== 0 ?1 : query.getClosureId();
+        val cid = AppContexts.user().companyId();
+        // 1 ⑨:find(会社ID、ClosureId)
+        Optional<Closure> closureOptional = closureRepository.findById(cid, query.getClosureId());
+        val baseDateNow = GeneralDate.today();
 
-        if (!cl.isPresent() || cl.get().getHistoryByBaseDate(basedateNow) == null) {
-            throw new BusinessException("");
+        if (!closureOptional.isPresent() || closureOptional.get().getHistoryByBaseDate(baseDateNow) == null) {
+            throw new RuntimeException(" CAN NOT FIND DATA IN TABLE KCLMT_CLOSURE WITH CID = "
+                    + cid + "AND CLOSURE_ID = " + closureId);
         }
-        // 1.1 :⑨．基準日で締め変更履歴を取得する(日付)
-        val closureDate = cl.get().getHistoryByBaseDate(basedateNow).getClosureDate();
+
+        val closure = closureOptional.get();
+        // todo update theo tai lieu
+        // 1.1 :．基準日で締め変更履歴を取得する(日付)
+        val closureDate = closure.getHistoryByBaseDate(baseDateNow).getClosureDate();
 
         DatePeriod datePeriod = this.getFromClosureDate(targetDate, closureDate);
+        // todo >>>>>>>>
         // [No.600]社員ID（List）から社員コードと表示名を取得（削除社員考慮）
         List<EmployeeBasicInfoImport> lstEmployeeInfo = empEmployeeAdapter.getEmpInfoLstBySids(lstEmpIds, datePeriod, true, true);
+
         // 2 Call 会社を取得する
-        String companyId = AppContexts.user().companyId();
-        CompanyBsImport companyInfo = companyBsAdapter.getCompanyByCid(companyId);
+
+        CompanyBsImport companyInfo = companyBsAdapter.getCompanyByCid(cid);
+
         // 3 Call 社員ID（List）と基準日から所属職場IDを取得
         GeneralDate baseDate = datePeriod.end();
         List<AffAtWorkplaceImport> lstAffAtWorkplaceImport = affWorkplaceAdapter
@@ -102,8 +112,9 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
         });
         List<String> listWorkplaceId = lstAffAtWorkplaceImport.stream()
                 .map(AffAtWorkplaceImport::getWorkplaceId).collect(Collectors.toList());
+
         // 3.1 Call [No.560]職場IDから職場の情報をすべて取得する
-        List<WorkplaceInfor> lstWorkplaceInfo = workplaceConfigInfoAdapter.getWorkplaceInforByWkpIds(companyId, listWorkplaceId, baseDate);
+        List<WorkplaceInfor> lstWorkplaceInfo = workplaceConfigInfoAdapter.getWorkplaceInforByWkpIds(cid, listWorkplaceId, baseDate);
 
         List<WorkPlaceInfo> placeInfoList = lstWorkplaceInfo.stream()
                 .map(e -> new WorkPlaceInfo(e.getWorkplaceId(), e.getWorkplaceCode(), e.getWorkplaceName()))
