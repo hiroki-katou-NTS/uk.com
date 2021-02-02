@@ -10,7 +10,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremain
 public class ReserveLeaveNumberInfo {
 	
 	/**
-	 * 付与日数
+	 * 付与数
 	 */
 	private ReserveLeaveGrantDayNumber grantNumber;
 	
@@ -20,7 +20,7 @@ public class ReserveLeaveNumberInfo {
 	private ReserveLeaveUsedNumber usedNumber;
 	
 	/**
-	 * 残日数
+	 * 残数
 	 */
 	@Setter
 	private ReserveLeaveRemainingDayNumber remainingNumber;

@@ -26,16 +26,16 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class GetYearHolidayInfo {
-	
-	@Inject 
+
+	@Inject
 	private WorkingConditionItemRepository workingConditionItemRepository;
-	
+
 	@Inject
 	private EmpEmployeeAdapter empEmployeeAdapter;
-	
-	@Inject 
+
+	@Inject
 	private RecordDomRequireService requireService;
-	
+
 	@Inject
 	private GetCalcStartForNextLeaveGrant getCalcStartForNextLeaveGrant;
 	/**
@@ -72,19 +72,19 @@ public class GetYearHolidayInfo {
 					baseDate);
 
 			entryDate = affComHist.getEntryDate().orElse(null);
-			
+
 			// ドメインモデル「所属会社履歴（社員別）」を取得し直し、入社年月日を取得する
 			if (entryDate == null){
 				AffCompanyHistSharedImport defaultValue = empEmployeeAdapter.GetAffComHisBySid(AppContexts.user().companyId(),annLea.getSid());
 				entryDate = defaultValue.getEntryDate().orElse(null);
 			}
-						
+
 		}
-		
+
 		if (entryDate == null){
 			return result;
 		}
-		
+
 		// Set contract time
 		if (annLea.getPeriodCond() != null && annLea.getContractTime() != null && annLea.getPeriodCond().start() != null
 				&& annLea.getPeriodCond().end() != null && baseDate.afterOrEquals(annLea.getPeriodCond().start())
@@ -94,7 +94,7 @@ public class GetYearHolidayInfo {
 			// アルゴリズム「社員の労働条件を取得する」を実行し、契約時間を取得する
 			Optional<WorkingConditionItem> workCond = workingConditionItemRepository
 					.getBySidAndStandardDate(annLea.getSid(), baseDate);
-	
+
 			if (workCond.isPresent()) {
 				contractTime = workCond.get().getContractTime().v() == null ? Optional.empty()
 						: Optional.ofNullable(new LimitedTimeHdTime(workCond.get().getContractTime().v()));
@@ -106,14 +106,14 @@ public class GetYearHolidayInfo {
 				AppContexts.user().companyId(), baseDate, entryDate, annLea.getGrantDate(), annLea.getGrantTable(),
 				contractTime);
 
-		if (nextAnnualLeave.isPresent()) {
+		if (nextAnnualLeave.isPresent() && nextAnnualLeave.get().getGrantDays().isPresent()) {
 			result = new YearHolidayInfoResult(nextAnnualLeave.get().getGrantDate(),
-					nextAnnualLeave.get().getGrantDays().v(),
+					nextAnnualLeave.get().getGrantDays().get().v(),
 					nextAnnualLeave.get().getTimeAnnualLeaveMaxTime().map(i -> i.v()));
 		}
 		return result;
 	}
-	
+
 	/**
 	 * đối ứng reponse cps003
 	 * アルゴリズム「次回年休情報を取得する」
@@ -150,19 +150,19 @@ public class GetYearHolidayInfo {
 						baseDate);
 
 				entryDate = affComHist.getEntryDate().orElse(null);
-				
+
 				// ドメインモデル「所属会社履歴（社員別）」を取得し直し、入社年月日を取得する
 				if (entryDate == null){
 					AffCompanyHistSharedImport defaultValue = empEmployeeAdapter.GetAffComHisBySid(AppContexts.user().companyId(), c.getSid());
 					entryDate = defaultValue.getEntryDate().orElse(null);
 				}
 			}
-			
+
 			if (entryDate == null){
 				result.put(c.getSid(),  NextTimeEventDto.fromDomain(new YearHolidayInfoResult(null, null, Optional.empty())));
 				return;
 			}
-			
+
 			// Set contract time
 			if (c.getPeriodCond() != null && c.getContractTime() != null && c.getPeriodCond().start() != null
 					&& c.getPeriodCond().end() != null && baseDate.afterOrEquals(c.getPeriodCond().start())
@@ -172,23 +172,23 @@ public class GetYearHolidayInfo {
 				// アルゴリズム「社員の労働条件を取得する」を実行し、契約時間を取得する
 				Optional<WorkingConditionItem> workCond = workingConditionItemRepository
 						.getBySidAndStandardDate(c.getSid(), baseDate);
-		
+
 				if (workCond.isPresent()) {
 					contractTime = workCond.get().getContractTime().v() == null ? Optional.empty()
 							: Optional.ofNullable(new LimitedTimeHdTime(workCond.get().getContractTime().v()));
 				}
 			}
-			
+
 			// 次回年休付与情報を取得する
 			Optional<NextAnnualLeaveGrant> nextAnnualLeave = CalcNextAnnLeaGrantInfo.algorithm(
 					requireService.createRequire(), new CacheCarrier(),
 					AppContexts.user().companyId(), baseDate, entryDate, c.getGrantDate(), c.getGrantTable(),
 					contractTime);
-			
-			if (nextAnnualLeave.isPresent()) {
-				result.put(c.getSid(),  
+
+			if (nextAnnualLeave.isPresent() && nextAnnualLeave.get().getGrantDays().isPresent()) {
+				result.put(c.getSid(),
 						NextTimeEventDto.fromDomain(new YearHolidayInfoResult(nextAnnualLeave.get().getGrantDate(),
-								nextAnnualLeave.get().getGrantDays().v(),
+								nextAnnualLeave.get().getGrantDays().get().v(),
 								nextAnnualLeave.get().getTimeAnnualLeaveMaxTime().map(i -> i.v())))
 						);
 				return;

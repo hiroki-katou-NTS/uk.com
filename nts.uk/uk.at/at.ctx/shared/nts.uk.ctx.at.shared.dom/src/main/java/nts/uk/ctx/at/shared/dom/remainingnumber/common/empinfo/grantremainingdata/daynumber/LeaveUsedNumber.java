@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 休暇使用数  
+ * 休暇使用数
  * @author masaaki_jinno
  *
  */
@@ -28,7 +28,34 @@ public class LeaveUsedNumber{
 	 * 積み崩し日数
 	 */
 	protected Optional<LeaveUsedDayNumber> stowageDays;
-	
+
+	/**
+	 * 上限超過消滅日数
+	 */
+	public Optional<LeaveOverNumber> leaveOverLimitNumber;
+
+	/**
+	 * ファクトリー
+	 * @param days 日数
+	 * @param minutes　時間
+	 * @param stowageDays 積み崩し日数
+	 * @param leaveOverLimitNumber 上限超過消滅日数
+	 * @return LeaveUsedNumber 休暇使用数
+	*/
+	public static LeaveUsedNumber of(
+			LeaveUsedDayNumber days,
+			Optional<LeaveUsedTime> minutes,
+			Optional<LeaveUsedDayNumber> stowageDays,
+			Optional<LeaveOverNumber> leaveOverLimitNumber) {
+
+		LeaveUsedNumber domain = new LeaveUsedNumber();
+		domain.days = days;
+		domain.minutes = minutes;
+		domain.stowageDays = stowageDays;
+		domain.leaveOverLimitNumber = leaveOverLimitNumber;
+		return domain;
+	}
+
 	/**
 	 * 日数、時間ともに０のときはTrue,それ以外はfalseを返す
 	 * @return
@@ -47,15 +74,106 @@ public class LeaveUsedNumber{
 		}
 	}
 
-//	public LeaveUsedNumber(double days, Integer minutes, Double stowageDays) {
-//		this.days = new LeaveUsedDayNumber(days);
-//		this.minutes = minutes != null ? Optional.of(new LeaveUsedTime(minutes)) : Optional.empty();
-//		this.stowageDays = stowageDays != null ? Optional.of(new LeaveUsedDayNumber(stowageDays))
-//				: Optional.empty();
-//	}
-//
-//	public static LeaveUsedNumber createFromJavaType(double days, Integer minutes, Double stowageDays) {
-//		return new LeaveUsedNumber(days, minutes, stowageDays);
-//	}
+	/**
+	 * 日数＞０または時間＞０のときはTrue,それ以外はfalseを返す
+	 * @return
+	 */
+	public boolean isLargerThanZero(){
+		if ( days.v() > 0.0 ){
+			return true;
+		}
+		if ( !minutes.isPresent() ){
+			return false;
+		}
+		if ( minutes.get().v() > 0 ){
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * コンストラクタ
+	 */
+	public LeaveUsedNumber(){
+		days = new LeaveUsedDayNumber(0.0);
+		minutes = Optional.empty();
+		stowageDays = Optional.empty();
+		leaveOverLimitNumber = Optional.empty();
+	}
+
+	/**
+	 * コンストラクタ
+	 * @param days
+	 * @param minutes
+	 * @param stowageDays
+	 */
+	public LeaveUsedNumber(double days, Integer minutes, Double stowageDays) {
+		this.days = new LeaveUsedDayNumber(days);
+		this.minutes = minutes != null ? Optional.of(new LeaveUsedTime(minutes)) : Optional.empty();
+		this.stowageDays = stowageDays != null ? Optional.of(new LeaveUsedDayNumber(stowageDays))
+				: Optional.empty();
+		this.leaveOverLimitNumber=Optional.empty();
+	}
+
+
+	/**
+	 * コンストラクタ
+	 */
+	public LeaveUsedNumber(double days, Integer minutes){
+		this.days = new LeaveUsedDayNumber(days);
+		this.minutes = minutes != null ? Optional.of(new LeaveUsedTime(minutes)) : Optional.empty();
+		this.stowageDays=Optional.empty();
+		this.leaveOverLimitNumber=Optional.empty();
+	}
+
+
+	public static LeaveUsedNumber createFromJavaType(double days, Integer minutes, Double stowageDays) {
+		return new LeaveUsedNumber(days, minutes, stowageDays);
+	}
+
+
+	public LeaveUsedTime getMinutesOrZero() {
+		if(!this.minutes.isPresent())return new LeaveUsedTime(0);
+		return this.minutes.get();
+	}
+
+	/**
+	 * 使用数を加算
+	 * @param aLeaveRemainingNumber
+	 */
+	public void add(LeaveUsedNumber leaveUsedNumber){
+
+		// 日付加算
+		days = new LeaveUsedDayNumber(this.getDays().v() + leaveUsedNumber.getDays().v());
+
+		// 時間加算
+		if ( leaveUsedNumber.getMinutes().isPresent() ){
+			if ( this.getMinutes().isPresent() ){
+				this.setMinutes(
+					Optional.of(new LeaveUsedTime(
+							this.getMinutes().get().v() +
+							leaveUsedNumber.getMinutes().get().v())));
+			}
+			else
+			{
+				this.setMinutes(
+					Optional.of(new LeaveUsedTime(
+						leaveUsedNumber.getMinutes().get().v())));
+			}
+		}
+	}
+
+	@Override
+	public LeaveUsedNumber clone() {
+		LeaveUsedNumber cloned = new LeaveUsedNumber();
+
+		cloned.days = new LeaveUsedDayNumber(days.v());
+		cloned.minutes = minutes.map(c -> new LeaveUsedTime(c.v()));
+		cloned.stowageDays = stowageDays.map(c -> new LeaveUsedDayNumber(c.v()));
+		cloned.leaveOverLimitNumber = leaveOverLimitNumber.map(c -> c.clone());
+
+		return cloned;
+	}
 
 }

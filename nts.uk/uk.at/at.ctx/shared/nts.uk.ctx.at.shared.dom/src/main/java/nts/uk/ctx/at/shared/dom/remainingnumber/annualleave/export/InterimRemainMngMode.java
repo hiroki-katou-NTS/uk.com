@@ -14,4 +14,12 @@ public enum InterimRemainMngMode {
 	OTHER(1);
 
 	public final int value;
+
+	static public InterimRemainMngMode of(boolean mode) {
+		if (mode ) {
+			return MONTHLY;
+		} else {
+			return OTHER;
+		}
+	}
 }

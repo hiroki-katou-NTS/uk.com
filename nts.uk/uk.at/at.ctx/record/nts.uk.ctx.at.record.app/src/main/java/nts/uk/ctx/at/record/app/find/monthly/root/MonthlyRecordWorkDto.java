@@ -5,13 +5,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
+import nts.uk.ctx.at.record.app.find.monthly.root.dto.SpecialHolidayRemainDataDtoWrap;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate.PropType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemRoot;
@@ -73,7 +76,7 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 
 	/** 特別休暇月別残数データ: 特別休暇残数月別データ */
 	@AttendanceItemLayout(jpPropertyName = MONTHLY_SPECIAL_HOLIDAY_REMAIN_NAME, layout = MONTHLY_SPECIAL_HOLIDAY_REMAIN_CODE)
-	private SpecialHolidayRemainDataDto specialHoliday;
+	private SpecialHolidayRemainDataDtoWrap specialHoliday;
 
 	/** 代休月別残数データ: 代休月別残数データ */
 	@AttendanceItemLayout(jpPropertyName = MONTHLY_OFF_REMAIN_NAME, layout = MONTHLY_OFF_REMAIN_CODE)
@@ -158,7 +161,7 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 		return this;
 	}
 	
-	public MonthlyRecordWorkDto withSpecialHoliday(SpecialHolidayRemainDataDto specialHoliday){
+	public MonthlyRecordWorkDto withSpecialHoliday(SpecialHolidayRemainDataDtoWrap specialHoliday){
 		this.specialHoliday = specialHoliday;
 		return this;
 	}
@@ -240,6 +243,8 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 	public MonChildHdRemain toMonChildCare(){
 		return this.childCare == null ? null :  this.childCare.toDomain(getEmployeeId(), getYearMonth(), getClosureID(), getClosureDate());
 	}
+	
+	
 
 	@Override
 	public IntegrationOfMonthly toDomain(String employeeId, YearMonth ym, int closureID, ClosureDateDto closureDate) {
@@ -253,7 +258,8 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 				Optional.ofNullable(this.rsvLeave == null ? null : this.rsvLeave.toDomain(employeeId, ym, closureID, closureDate)),
 				Optional.ofNullable(this.absenceLeave == null ? null : this.absenceLeave.toDomain(employeeId, ym, closureID, closureDate)),
 				Optional.ofNullable(this.dayOff == null ? null : this.dayOff.toDomain(employeeId, ym, closureID, closureDate)),
-				this.specialHoliday == null ? new ArrayList<>() : this.specialHoliday.toDomain(employeeId, ym, closureID, closureDate),
+				this.specialHoliday == null ? new ArrayList<>()
+						: this.specialHoliday.toDomain(employeeId, ym, closureID, closureDate),
 				this.remarks == null ? new ArrayList<>(): this.remarks.toDomain(employeeId, ym, closureID, closureDate),
 				Optional.ofNullable(this.care == null ? null : this.care.toDomain(employeeId, ym, closureID, closureDate)),
 				Optional.ofNullable(this.childCare == null ? null : this.childCare.toDomain(employeeId, ym, closureID, closureDate)));
@@ -281,7 +287,7 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 			dto.setDayOff(MonthlyDayoffRemainDataDto.from(domain.getMonthlyDayoffRemain().orElse(null)));
 			dto.setRemarks(MonthlyRemarksDto.from(domain.getRemarks()));
 			dto.setRsvLeave(RsvLeaRemNumEachMonthDto.from(domain.getReserveLeaveRemain().orElse(null)));
-			dto.setSpecialHoliday(SpecialHolidayRemainDataDto.from(domain.getSpecialLeaveRemainList()));
+			dto.setSpecialHoliday(SpecialHolidayRemainDataDtoWrap.from(domain.getSpecialLeaveRemainList()));
 			domain.getAffiliationInfo().ifPresent(aff -> {
 				dto.setAffiliation(AffiliationInfoOfMonthlyDto.from(aff));
 				dto.setYearMonth(aff.getYearMonth());
@@ -325,7 +331,8 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 			return Optional.empty();
 		}
 	}
-
+	
+	
 	@Override
 	public void set(String path, AttendanceItemDataGate value) {
 		switch (path) {
@@ -345,7 +352,7 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 			this.rsvLeave = (RsvLeaRemNumEachMonthDto) value;
 			break;
 		case MONTHLY_SPECIAL_HOLIDAY_REMAIN_NAME:
-			this.specialHoliday = (SpecialHolidayRemainDataDto) value;
+			this.specialHoliday = (SpecialHolidayRemainDataDtoWrap) value;
 			break;
 		case MONTHLY_OFF_REMAIN_NAME:
 			this.dayOff = (MonthlyDayoffRemainDataDto) value;
@@ -384,7 +391,7 @@ public class MonthlyRecordWorkDto extends MonthlyItemCommon {
 		case MONTHLY_RESERVE_LEAVING_REMAIN_NAME:
 			return new RsvLeaRemNumEachMonthDto();
 		case MONTHLY_SPECIAL_HOLIDAY_REMAIN_NAME:
-			return new SpecialHolidayRemainDataDto();
+			return new SpecialHolidayRemainDataDtoWrap();
 		case MONTHLY_OFF_REMAIN_NAME:
 			return new MonthlyDayoffRemainDataDto();
 		case MONTHLY_ABSENCE_LEAVE_REMAIN_NAME:

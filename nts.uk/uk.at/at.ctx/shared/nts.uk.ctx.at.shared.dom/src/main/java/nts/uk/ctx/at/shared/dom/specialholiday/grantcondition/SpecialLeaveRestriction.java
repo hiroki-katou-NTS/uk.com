@@ -24,6 +24,7 @@ import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode;
 @Getter
 @Setter
 public class SpecialLeaveRestriction extends DomainObject {
+	
 	/** 会社ID */
 	private String companyId;
 
@@ -43,7 +44,7 @@ public class SpecialLeaveRestriction extends DomainObject {
 	private UseAtr restEmp;
 
 	/** 分類一覧 */
-	private List<String> listCls;
+	private List<String> listCls = new ArrayList<>();
 
 	/** 年齢基準 */
 	private AgeStandard ageStandard;
@@ -55,7 +56,7 @@ public class SpecialLeaveRestriction extends DomainObject {
 	private GenderCls gender;
 
 	/** 雇用一覧 */
-	private List<String> listEmp;
+	private List<String> listEmp = new ArrayList<>();
 
 	@Override
 	public void validate() {

@@ -14,8 +14,8 @@ public class HolidayOver60hGrantRemainingExport extends HolidayOver60hGrantRemai
 
 	public static HolidayOver60hGrantRemainingExport fromDomain(HolidayOver60hGrantRemaining domain) {
 		HolidayOver60hGrantRemainingExport export = new HolidayOver60hGrantRemainingExport();
-		export.setAnnLeavID(domain.getAnnLeavID());
-		export.setCid(domain.getCid());
+		export.setLeaveID(domain.getLeaveID());
+//		export.setCid(domain.getCid());
 		export.setEmployeeId(domain.getEmployeeId());
 		export.setGrantDate(domain.getGrantDate());
 		export.setDeadline(domain.getDeadline());

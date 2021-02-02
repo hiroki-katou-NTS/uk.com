@@ -9,13 +9,13 @@ import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnualLeave;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveRemainingHistory;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveTimeRemainingHistory;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.AnnualLeaveMaxData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.AnnualLeaveMaxHistoryData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.AnnualLeaveInfo;
-import nts.uk.ctx.at.shared.dom.remainingnumber.export.param.AggrResultOfAnnualLeave;
 
 /**
  * 
@@ -33,11 +33,11 @@ public class RemainAnnualLeaveUpdating {
 	 * @param period
 	 * @param empId
 	 */
-	public static AtomTask updateRemainAnnualLeave(RequireM5 require, AggrResultOfAnnualLeave output, AggrPeriodEachActualClosure period,
+	public static AtomTask updateRemainAnnualLeave(RequireM5 require, String cid, AggrResultOfAnnualLeave output, AggrPeriodEachActualClosure period,
 			String empId) {
 //		deleteDataAfterCurrentMonth(period, empId);
 //		if (output != null) {
-			return updateRemainAnnualLeaveNumber(require, output, period, empId)
+			return updateRemainAnnualLeaveNumber(require, cid, output, period, empId)
 					.then(updateMaxAnnualLeaveNumber(require, output, period, empId));
 //		} else {
 //			return;
@@ -51,14 +51,14 @@ public class RemainAnnualLeaveUpdating {
 	 * @param period
 	 * @param empId
 	 */
-	private static AtomTask updateRemainAnnualLeaveNumber(RequireM4 require, 
+	private static AtomTask updateRemainAnnualLeaveNumber(RequireM4 require, String cid, 
 			AggrResultOfAnnualLeave output, AggrPeriodEachActualClosure period, String empId) {
 		
 		List<AtomTask> atomTasks = new ArrayList<>();
 		
 		List<AnnualLeaveGrantRemainingData> listRemainData = require.annualLeaveGrantRemainingData(empId);
 		for (AnnualLeaveGrantRemainingData data : listRemainData) {
-			AnnualLeaveRemainingHistory hist = new AnnualLeaveRemainingHistory(data, period.getYearMonth(),
+			AnnualLeaveRemainingHistory hist = new AnnualLeaveRemainingHistory(cid, data, period.getYearMonth(),
 					period.getClosureId(), period.getClosureDate());
 
 			atomTasks.add(AtomTask.of(() -> require.addOrUpdateAnnualLeaveRemainingHistory(hist)));
@@ -66,7 +66,7 @@ public class RemainAnnualLeaveUpdating {
 		
 		return AtomTask.bundle(atomTasks)
 				.then(updateAnnualLeaveRemainProcess(require, output.getAsOfPeriodEnd()))
-				.then(updateAnnualLeaveTimeRemainProcess(require, output.getAsOfGrant().orElse(Collections.emptyList())));
+				.then(updateAnnualLeaveTimeRemainProcess(require, cid, output.getAsOfGrant().orElse(Collections.emptyList())));
 	}
 
 	/**
@@ -144,9 +144,8 @@ public class RemainAnnualLeaveUpdating {
 			if (!found) {
 				// insert
 				AnnualLeaveGrantRemainingData addDomain = AnnualLeaveGrantRemainingData.createFromJavaType(
-						(data.getAnnLeavID() != null && !data.getAnnLeavID().isEmpty()) ? data.getAnnLeavID()
-								: IdentifierUtil.randomUniqueId(),
-						data.getCid(), data.getEmployeeId(), data.getGrantDate(), data.getDeadline(),
+						(data.getLeaveID() != null && !data.getLeaveID().isEmpty()) ? data.getLeaveID()
+								: IdentifierUtil.randomUniqueId(), data.getEmployeeId(), data.getGrantDate(), data.getDeadline(),
 						data.getExpirationStatus().value, data.getRegisterType().value,
 						data.getDetails().getGrantNumber().getDays().v(),
 						data.getDetails().getGrantNumber().getMinutes().isPresent()
@@ -176,13 +175,13 @@ public class RemainAnnualLeaveUpdating {
 	/**
 	 * 年休付与時点残数履歴データ更新処理
 	 */
-	private static AtomTask updateAnnualLeaveTimeRemainProcess(RequireM1 require, 
+	private static AtomTask updateAnnualLeaveTimeRemainProcess(RequireM1 require, String cid, 
 			List<AnnualLeaveInfo> listInfor) {
 		AtomTask atomTask = AtomTask.of(() -> {});
 		
 		for (AnnualLeaveInfo infor : listInfor) {
 			for (AnnualLeaveGrantRemainingData data : infor.getGrantRemainingNumberList()) {
-				AnnualLeaveTimeRemainingHistory hist = new AnnualLeaveTimeRemainingHistory(data, infor.getYmd());
+				AnnualLeaveTimeRemainingHistory hist = new AnnualLeaveTimeRemainingHistory(cid, data, infor.getYmd());
 				atomTask = atomTask.then(() -> require.addOrUpdateAnnualLeaveTimeRemainingHistory(hist));
 			}
 		}

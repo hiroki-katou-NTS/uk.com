@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.app.find.monthly;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.app.find.monthly.root.AbsenceLeaveRemainDataDto;
@@ -19,12 +20,10 @@ import nts.uk.ctx.at.record.app.find.monthly.root.RsvLeaRemNumEachMonthDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.SpecialHolidayRemainDataDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
+import nts.uk.ctx.at.record.app.find.monthly.root.dto.SpecialHolidayRemainDataDtoWrap;
 import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConverterCommonService;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ConvertibleAttendanceItem;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.converter.MonthlyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
@@ -39,7 +38,6 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualle
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.dayoff.MonthlyDayoffRemainData;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialHolidayRemainData;
-import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
@@ -364,7 +362,7 @@ public class MonthlyRecordToAttendanceItemConverterImpl  extends AttendanceItemC
 			processOnDomain(type, c -> RsvLeaRemNumEachMonthDto.from((RsvLeaRemNumEachMonth) c));
 			break;
 		case ItemConst.MONTHLY_SPECIAL_HOLIDAY_REMAIN_NAME:
-			processOnDomain(type, c -> SpecialHolidayRemainDataDto.from((List<SpecialHolidayRemainData>) c));
+			processOnDomain(type, c -> SpecialHolidayRemainDataDtoWrap.from((List<SpecialHolidayRemainData>) c));
 			break;
 		case ItemConst.MONTHLY_OFF_REMAIN_NAME:
 			processOnDomain(type, c -> MonthlyDayoffRemainDataDto.from((MonthlyDayoffRemainData) c));

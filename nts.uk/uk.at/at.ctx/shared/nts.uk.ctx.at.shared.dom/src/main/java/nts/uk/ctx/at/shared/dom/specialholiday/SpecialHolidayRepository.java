@@ -31,7 +31,7 @@ public interface SpecialHolidayRepository {
 	 * @param specialHolidayCodes
 	 * @return
 	 */
-	List<SpecialHoliday> findByListCode(String companyId, List<Integer> specialHolidayCodes);
+	List<SpecialHoliday> findSimpleByListCode(String companyId, List<Integer> specialHolidayCodes);
 	
 	/**
 	 * Add Special Holiday
@@ -80,5 +80,5 @@ public interface SpecialHolidayRepository {
 	 * @param companyId
 	 * @return
 	 */
-	List<SpecialHoliday> findByCompanyIdNoMaster(String companyId, List<Integer> specialHolidayCodes);
+	List<SpecialHoliday> findSimpleByCompanyIdNoMaster(String companyId, List<Integer> specialHolidayCodes);
 }

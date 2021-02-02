@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.app.find.monthly.root;
 
-import java.util.List;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
@@ -9,17 +8,23 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
+import nts.uk.ctx.at.record.app.find.monthly.root.common.DatePeriodDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
-import nts.uk.ctx.at.record.app.find.monthly.root.dto.wrapper.SpecialHolidayRemainDto;
-import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil.AttendanceItemType;
+import nts.uk.ctx.at.record.app.find.monthly.root.dto.specialleave.SpecialLeaveDto;
+import nts.uk.ctx.at.record.app.find.monthly.root.dto.specialleave.SpecialLeaveUnDigestionDataDto;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemRoot;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.ClosureStatus;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialHolidayRemainData;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeave;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveGrantUseDay;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveUnDigestion;
 
 @Data
 @NoArgsConstructor
@@ -31,7 +36,7 @@ public class SpecialHolidayRemainDataDto extends MonthlyItemCommon {
 
 	/***/
 	private static final long serialVersionUID = 1L;
-	
+
 	/** 社員ID: 社員ID */
 	private String employeeId;
 
@@ -48,43 +53,73 @@ public class SpecialHolidayRemainDataDto extends MonthlyItemCommon {
 	private ClosureDateDto closureDate;
 
 	/** 締め期間: 期間 */
-	@AttendanceItemLayout(jpPropertyName = FAKED, layout = LAYOUT_A, 
-			listMaxLength = 20, indexField = DEFAULT_INDEX_FIELD_NAME)
-	private List<SpecialHolidayRemainDto> specialHoliday;
-	
-	@Override
-	public String employeeId() {
-		return employeeId;
-	}
-	
-	public static SpecialHolidayRemainDataDto from(List<SpecialHolidayRemainData> domain){
+	@AttendanceItemLayout(jpPropertyName = PERIOD, layout = LAYOUT_A)
+	private DatePeriodDto datePeriod;
+
+	/** 締め処理状態 */
+	@AttendanceItemLayout(jpPropertyName = CLOSURE_STATE, layout = LAYOUT_B)
+	@AttendanceItemValue(type = ValueType.ATTR)
+	private int closureStatus;
+
+	/** 特別休暇コード */
+	@AttendanceItemLayout(jpPropertyName = SPECIAL_HOLIDAY + CODE, layout = LAYOUT_C)
+	@AttendanceItemValue(type = ValueType.CODE)
+	private int no;
+
+	/** 実特別休暇 */
+	@AttendanceItemLayout(jpPropertyName = REAL + SPECIAL_HOLIDAY, layout = LAYOUT_D)
+	private SpecialLeaveDto actualSpecial;
+
+	/** 特別休暇 */
+	@AttendanceItemLayout(jpPropertyName = SPECIAL_HOLIDAY, layout = LAYOUT_E)
+	private SpecialLeaveDto specialLeave;
+
+	/** 付与区分 */
+	@AttendanceItemLayout(jpPropertyName = GRANT + ATTRIBUTE, layout = LAYOUT_F)
+	@AttendanceItemValue(type = ValueType.FLAG)
+	private boolean grantAtr;
+
+	/** 特別休暇付与情報: 付与日数 */
+	@AttendanceItemLayout(jpPropertyName = GRANT + DAYS, layout = LAYOUT_G)
+	@AttendanceItemValue(type = ValueType.DAYS)
+	private Double grantDays;
+
+	/** 未消化数 */
+	@AttendanceItemLayout(jpPropertyName = NOT_DIGESTION, layout = LAYOUT_H)
+	private SpecialLeaveUnDigestionDataDto unDigestionData;
+
+	public static SpecialHolidayRemainDataDto from(SpecialHolidayRemainData domain) {
 		SpecialHolidayRemainDataDto dto = new SpecialHolidayRemainDataDto();
-		if (domain != null && !domain.isEmpty()) {
-			dto.setEmployeeId(domain.get(0).getSid());
-			dto.setYm(domain.get(0).getYm());
-			dto.setClosureID(domain.get(0).getClosureId());
-			dto.setClosureDate(domain.get(0).getClosureDate() == null ? null : ClosureDateDto.from(domain.get(0).getClosureDate()));
-			dto.setSpecialHoliday(ConvertHelper.mapTo(domain, c -> SpecialHolidayRemainDto.from(c)));
+		if (domain != null) {
+			dto.setEmployeeId(domain.getSid());
+			dto.setYm(domain.getYm());
+			dto.setClosureID(domain.getClosureId());
+			dto.setClosureDate(domain.getClosureDate() == null ? null : ClosureDateDto.from(domain.getClosureDate()));
+			dto.setDatePeriod(DatePeriodDto.from(domain.getClosurePeriod()));
+			dto.setClosureStatus(domain.getClosureStatus().value);
+			dto.setNo(domain.getSpecialHolidayCd());
+			dto.setActualSpecial(SpecialLeaveDto.from(domain.getActualSpecial()));
+			dto.setSpecialLeave(SpecialLeaveDto.from(domain.getSpecialLeave()));
+			dto.setGrantAtr(domain.isGrantAtr());
+			dto.setGrantDays(domain.getGrantDays().isPresent() ? domain.getGrantDays().get().v() : null);
+			dto.setUnDigestionData(SpecialLeaveUnDigestionDataDto.from(domain.getUnDegestionNumber()));
 			dto.exsistData();
 		}
 		return dto;
 	}
-	
+
 	@Override
-	public List<SpecialHolidayRemainData> toDomain(String employeeId, YearMonth ym, int closureID, ClosureDateDto closureDate) {
-		return ConvertHelper.mapTo(specialHoliday, c -> new SpecialHolidayRemainData(
-				employeeId,
-				ym,
-				closureID, 
-				c.getDatePeriod() == null ? null : c.getDatePeriod().toDomain(), 
-				c.getClosureStatus() == ClosureStatus.PROCESSED.value ? ClosureStatus.PROCESSED : ClosureStatus.UNTREATED,
-				closureDate == null ? null : closureDate.toDomain(),
-				c.getNo(), 
-				c.getActualSpecial() == null ? null : c.getActualSpecial().toActualDomain(), 
-				c.getSpecialLeave() == null ? null : c.getSpecialLeave().toDomain(),
-				c.isGrantAtr(),
-				Optional.ofNullable(c.getGrantDays() == null ? null : new SpecialLeaveGrantUseDay(c.getGrantDays()))));
+	public SpecialHolidayRemainData toDomain(String employeeId, YearMonth ym, int closureID,
+			ClosureDateDto closureDate) {
+		return new SpecialHolidayRemainData(employeeId, ym, closureID,
+				closureDate == null ? null : closureDate.toDomain(), datePeriod == null ? null : datePeriod.toDomain(),
+				closureStatus == ClosureStatus.PROCESSED.value ? ClosureStatus.PROCESSED : ClosureStatus.UNTREATED, no,
+				actualSpecial == null ? new SpecialLeave() : actualSpecial.toDomain(), 
+				specialLeave == null ? new SpecialLeave() : specialLeave.toDomain(),
+				Optional.ofNullable(grantDays == null ? null : new SpecialLeaveGrantUseDay(grantDays)), grantAtr,
+				unDigestionData == null ? new SpecialLeaveUnDigestion() : unDigestionData.toDomain());
 	}
+
 	@Override
 	public YearMonth yearMonth() {
 		return ym;
@@ -92,54 +127,83 @@ public class SpecialHolidayRemainDataDto extends MonthlyItemCommon {
 
 	@Override
 	public AttendanceItemDataGate newInstanceOf(String path) {
-		if (FAKED.equals(path)) {
-			return new SpecialHolidayRemainDto();
+		if ((REAL + SPECIAL_HOLIDAY).equals(path) || SPECIAL_HOLIDAY.equals(path)) {
+			return new SpecialLeaveDto();
+		} else if (NOT_DIGESTION.equals(path)) {
+			return new SpecialLeaveUnDigestionDataDto();
 		}
 		return super.newInstanceOf(path);
 	}
 
 	@Override
-	public int size(String path) {
-		if (FAKED.equals(path)) {
-			return 20;
+	public Optional<AttendanceItemDataGate> get(String path) {
+
+		if ((REAL + SPECIAL_HOLIDAY).equals(path)) {
+			return Optional.ofNullable(this.actualSpecial);
+		} else if (SPECIAL_HOLIDAY.equals(path)) {
+			return Optional.ofNullable(this.specialLeave);
+		} else if (NOT_DIGESTION.equals(path)) {
+			return Optional.ofNullable(this.unDigestionData);
 		}
-		return super.size(path);
+		return super.get(path);
+	}
+
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		if ((REAL + SPECIAL_HOLIDAY).equals(path)) {
+			this.actualSpecial = (SpecialLeaveDto) value;
+		} else if (SPECIAL_HOLIDAY.equals(path)) {
+			this.specialLeave = (SpecialLeaveDto) value;
+		} else if (NOT_DIGESTION.equals(path)) {
+			this.unDigestionData = (SpecialLeaveUnDigestionDataDto) value;
+		}
+	}
+
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case GRANT + ATTRIBUTE:
+			return Optional.of(ItemValue.builder().value(grantAtr).valueType(ValueType.FLAG));
+		case GRANT + DAYS:
+			return Optional.of(ItemValue.builder().value(grantDays).valueType(ValueType.DAYS));
+		default:
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case GRANT + ATTRIBUTE:
+			grantAtr = value.valueOrDefault(false);
+			break;
+		case GRANT + DAYS:
+			grantDays = value.valueOrDefault(0.0);
+			break;
+		default:
+			break;
+		}
 	}
 
 	@Override
 	public PropType typeOf(String path) {
-		if (FAKED.equals(path)) {
-			return PropType.IDX_LIST;
-		}
-		return super.typeOf(path);
-	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public <T extends AttendanceItemDataGate> List<T> gets(String path) {
-		if (FAKED.equals(path)) {
-			return (List<T>) specialHoliday;
-		}
-		return super.gets(path);
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public <T extends AttendanceItemDataGate> void set(String path, List<T> value) {
-		if (FAKED.equals(path)) {
-			specialHoliday = (List<SpecialHolidayRemainDto>) value;
+		switch (path) {
+		case GRANT + ATTRIBUTE:
+		case GRANT + DAYS:
+			return PropType.VALUE;
+		case REAL + SPECIAL_HOLIDAY:
+		case SPECIAL_HOLIDAY:
+		case NOT_DIGESTION:
+			return PropType.OBJECT;
+		default:
+			return super.typeOf(path);
 		}
 	}
 
 	@Override
-	public boolean isRoot() {
-		return true;
+	public String employeeId() {
+		return employeeId;
 	}
 
-	@Override
-	public String rootName() {
-		return MONTHLY_SPECIAL_HOLIDAY_REMAIN_NAME;
-	}
-
-	
 }

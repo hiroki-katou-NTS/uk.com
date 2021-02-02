@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber;
 
 /** 
- * 
+ * 休暇使用率
  */
 import java.math.BigDecimal;
 

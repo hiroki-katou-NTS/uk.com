@@ -41,11 +41,11 @@ public class AddAnnLeaCommandHandler extends CommandHandlerWithResult<AnnLeaGran
 		
 		String annLeavId = IdentifierUtil.randomUniqueId();
 		
-		AnnualLeaveGrantRemainingData data = AnnualLeaveGrantRemainingData.createFromJavaType(annLeavId, cid, command.getEmployeeId(), 
+		AnnualLeaveGrantRemainingData data = AnnualLeaveGrantRemainingData.createFromJavaType(annLeavId,  command.getEmployeeId(), 
 				command.getGrantDate(), command.getDeadline(), command.getExpirationStatus(), GrantRemainRegisterType.MANUAL.value,
 				command.getGrantDays(), command.getGrantMinutes(), command.getUsedDays(), command.getUsedMinutes(), 
 				null, command.getRemainingDays(), command.getRemainingMinutes(), 0d, null, null, null);
-		annLeaRepo.add(data);
+		annLeaRepo.add(AppContexts.user().companyId(), data);
 		return new PeregAddCommandResult(annLeavId);
 	}
 

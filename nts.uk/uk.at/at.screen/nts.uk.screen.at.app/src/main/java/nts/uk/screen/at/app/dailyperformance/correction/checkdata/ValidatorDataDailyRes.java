@@ -519,7 +519,7 @@ public class ValidatorDataDailyRes {
 					.filter(x -> x.getErrorType().value != ErrorType.FLEX.value && x.getErrorType().value != ErrorType.FLEX_SUPP.value).collect(Collectors.toList());
 			val listNo = lstEmpError.stream().filter(x -> x.getErrorType().value == ErrorType.SPECIAL_REMAIN_HOLIDAY_NUMBER.value).map(x -> x.getNo()).collect(Collectors.toList());
 			
-			Map<Integer, SpecialHoliday> sHolidayMap = listNo.isEmpty() ? new HashMap<>() : specialHolidayRepository.findByCompanyIdNoMaster(companyId, listNo)
+			Map<Integer, SpecialHoliday> sHolidayMap = listNo.isEmpty() ? new HashMap<>() : specialHolidayRepository.findSimpleByCompanyIdNoMaster(companyId, listNo)
 					.stream().filter(x -> x.getSpecialHolidayCode() != null)
 					.collect(Collectors.toMap(x -> x.getSpecialHolidayCode().v(), x -> x));
 			
@@ -565,7 +565,7 @@ public class ValidatorDataDailyRes {
 				.filter(x -> x.getErrorType().value != ErrorType.FLEX.value).collect(Collectors.toList());
 		val listNo = lstEmpError.stream().filter(x -> x.getErrorType().value == ErrorType.SPECIAL_REMAIN_HOLIDAY_NUMBER.value).map(x -> x.getNo()).collect(Collectors.toList());
 		
-		Map<Integer, SpecialHoliday> sHolidayMap = listNo.isEmpty() ? new HashMap<>() : specialHolidayRepository.findByCompanyIdNoMaster(companyId, listNo)
+		Map<Integer, SpecialHoliday> sHolidayMap = listNo.isEmpty() ? new HashMap<>() : specialHolidayRepository.findSimpleByCompanyIdNoMaster(companyId, listNo)
 				.stream().filter(x -> x.getSpecialHolidayCode() != null)
 				.collect(Collectors.toMap(x -> x.getSpecialHolidayCode().v(), x -> x));
 		

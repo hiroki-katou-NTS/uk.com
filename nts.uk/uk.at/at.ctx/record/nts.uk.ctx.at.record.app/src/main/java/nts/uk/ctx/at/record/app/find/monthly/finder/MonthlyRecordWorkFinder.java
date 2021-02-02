@@ -13,6 +13,8 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.record.app.find.monthly.root.AbsenceLeaveRemainDataDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.AffiliationInfoOfMonthlyDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.AgreementTimeOfManagePeriodDto;
@@ -25,9 +27,9 @@ import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyDayoffRemainDataDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRecordWorkDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRemarksDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.RsvLeaRemNumEachMonthDto;
-import nts.uk.ctx.at.record.app.find.monthly.root.SpecialHolidayRemainDataDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
+import nts.uk.ctx.at.record.app.find.monthly.root.dto.SpecialHolidayRemainDataDtoWrap;
 import nts.uk.ctx.at.record.dom.monthly.TimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.TimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.mergetable.MonthMergeKey;
@@ -39,8 +41,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.affiliation.AffiliationInfoOfMonthly;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
-import nts.arc.time.calendar.period.DatePeriod;
-import nts.arc.time.calendar.period.YearMonthPeriod;
 
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
@@ -106,7 +106,7 @@ public class MonthlyRecordWorkFinder extends MonthlyFinderFacade {
 				dto.setRsvLeave(RsvLeaRemNumEachMonthDto.from(r.getRsvLeaRemNumEachMonth()));
 				dto.setDayOff(MonthlyDayoffRemainDataDto.from(r.getMonthlyDayoffRemainData()));
 				dto.setAbsenceLeave(AbsenceLeaveRemainDataDto.from(r.getAbsenceLeaveRemainData()));
-				dto.setSpecialHoliday(SpecialHolidayRemainDataDto.from(r.getSpecialHolidayRemainData()));
+				dto.setSpecialHoliday(SpecialHolidayRemainDataDtoWrap.from(r.getSpecialHolidayRemainData()));
 				dto.setCare(MonthlyCareHdRemainDto.from(r.getMonCareHdRemain()));
 				dto.setChildCare(MonthlyChildCareHdRemainDto.from(r.getMonChildHdRemain()));
 			});
@@ -170,7 +170,7 @@ public class MonthlyRecordWorkFinder extends MonthlyFinderFacade {
 				dto.setRsvLeave(RsvLeaRemNumEachMonthDto.from(r.getRsvLeaRemNumEachMonth()));
 				dto.setDayOff(MonthlyDayoffRemainDataDto.from(r.getMonthlyDayoffRemainData()));
 				dto.setAbsenceLeave(AbsenceLeaveRemainDataDto.from(r.getAbsenceLeaveRemainData()));
-				dto.setSpecialHoliday(SpecialHolidayRemainDataDto.from(r.getSpecialHolidayRemainData()));
+				dto.setSpecialHoliday(SpecialHolidayRemainDataDtoWrap.from(r.getSpecialHolidayRemainData()));
 				dto.setCare(MonthlyCareHdRemainDto.from(r.getMonCareHdRemain()));
 				dto.setChildCare(MonthlyChildCareHdRemainDto.from(r.getMonChildHdRemain()));
 			});

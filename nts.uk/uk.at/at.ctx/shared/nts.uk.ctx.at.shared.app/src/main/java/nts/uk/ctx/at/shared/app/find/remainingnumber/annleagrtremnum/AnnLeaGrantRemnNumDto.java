@@ -94,7 +94,7 @@ public class AnnLeaGrantRemnNumDto extends PeregDomainDto {
 
 	public static AnnLeaGrantRemnNumDto createFromDomain(AnnualLeaveGrantRemainingData domain) {
 		AnnLeaGrantRemnNumDto dto = new AnnLeaGrantRemnNumDto();
-		dto.annLeavID = domain.getAnnLeavID();
+		dto.annLeavID = domain.getLeaveID();
 		dto.grantDate = domain.getGrantDate();
 		dto.deadline = domain.getDeadline();
 		dto.expirationStatus = domain.getExpirationStatus().value;

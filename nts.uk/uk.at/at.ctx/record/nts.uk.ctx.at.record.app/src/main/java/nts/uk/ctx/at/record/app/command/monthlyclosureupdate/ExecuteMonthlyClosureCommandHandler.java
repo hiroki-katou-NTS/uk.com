@@ -46,7 +46,7 @@ public class ExecuteMonthlyClosureCommandHandler extends AsyncCommandHandler<Mon
 		int count = 0;
 		dataSetter.setData("processed", count);
 		for (String empId : params.getListEmployeeId()) {
-			val atomTask = MonthlyUpdateMgr.processEmployee(require, cacheCarrier,
+			val atomTask = MonthlyUpdateMgr.processEmployee(require, cacheCarrier, companyId, 
 					params.getMonthlyClosureUpdateLogId(), empId, params.getClosureId(),
 					new YearMonth(params.getCurrentMonth()),
 					new ClosureDate(params.getClosureDay(), params.getIsLastDayOfMonth()),

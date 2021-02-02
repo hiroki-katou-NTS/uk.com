@@ -87,10 +87,10 @@ public class AnnualPaidLeaveSaveCommand {
 
     /** The is enough time one day. */
     private Integer roundProcessClassific;
-    
+
     /** The yearly of date. */
     private Double yearlyOfDays;
-    
+
     /** The round processing classification. */
     private Integer roundProcessCla;
     
@@ -134,7 +134,7 @@ public class AnnualPaidLeaveSaveCommand {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
          * AnnualPaidLeaveSettingGetMemento#getCompanyId()
          */
@@ -145,7 +145,7 @@ public class AnnualPaidLeaveSaveCommand {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
          * AnnualPaidLeaveSettingGetMemento#getYearManageType()
          */
@@ -156,7 +156,7 @@ public class AnnualPaidLeaveSaveCommand {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
          * AnnualPaidLeaveSettingGetMemento#getAcquisitionSetting()
          */
@@ -170,7 +170,7 @@ public class AnnualPaidLeaveSaveCommand {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
          * AnnualPaidLeaveSettingGetMemento#getManageAnnualSetting()
          */
@@ -181,7 +181,7 @@ public class AnnualPaidLeaveSaveCommand {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
          * AnnualPaidLeaveSettingGetMemento#getTimeSetting()
          */
@@ -195,10 +195,10 @@ public class AnnualPaidLeaveSaveCommand {
      * The Class ManageAnnualSettingGetMementoImpl.
      */
     private class ManageAnnualSettingGetMementoImpl implements ManageAnnualSettingGetMemento {
-        
+
         /** The company id. */
         private String companyId;
-        
+
         /** The command. */
         private AnnualPaidLeaveSaveCommand command;
 
@@ -212,10 +212,10 @@ public class AnnualPaidLeaveSaveCommand {
             this.companyId = companyId;
             this.command = command;
         }
-        
+
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
          * ManageAnnualSettingGetMemento#getCompanyId()
          */
@@ -237,7 +237,7 @@ public class AnnualPaidLeaveSaveCommand {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
          * ManageAnnualSettingGetMemento#getIsWorkDayCalculate()
          */
@@ -248,7 +248,7 @@ public class AnnualPaidLeaveSaveCommand {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
          * ManageAnnualSettingGetMemento#getRemainingNumberSetting()
          */
@@ -256,10 +256,25 @@ public class AnnualPaidLeaveSaveCommand {
         public RemainingNumberSetting getRemainingNumberSetting() {
             RemainingNumberSetting remain = RemainingNumberSetting.builder()
                     .retentionYear(new RetentionYear(this.command.numberYearRetain))
+//                    .remainingDayMaxNumber(this.command.maxRemainingDay != null ? new MaxRemainingDay(
+//                            this.command.maxRemainingDay) : null)
                     .build();
             return remain;
         }
-
+        /*
+         * (non-Javadoc)
+         *
+         * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
+         * ManageAnnualSettingGetMemento#getDisplaySetting()
+         */
+//        @Override
+//        public DisplaySetting getDisplaySetting() {
+//            DisplaySetting display = DisplaySetting.builder()
+//                    .nextGrantDayDisplay(DisplayDivision.valueOf(this.command.nextGrantDayDisplay))
+//                    .remainingNumberDisplay(DisplayDivision.valueOf(this.command.remainingNumberDisplay))
+//                    .build();
+//            return display;
+//        }
 
 		@Override
 		public YearLyOfNumberDays getYearLyOfDays() {
@@ -271,10 +286,10 @@ public class AnnualPaidLeaveSaveCommand {
      * The Class TimeVacationSettingGetMementoIpml.
      */
     private class TimeVacationSettingGetMementoIpml implements TimeAnnualSettingGetMemento {
-        
+
         /** The company id. */
         private String companyId;
-        
+
         /** The command. */
         private AnnualPaidLeaveSaveCommand command;
 
@@ -288,10 +303,10 @@ public class AnnualPaidLeaveSaveCommand {
             this.companyId = companyId;
             this.command = command;
         }
-        
+
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
          * TimeVacationSettingGetMemento#getCompanyId()
          */
@@ -302,7 +317,7 @@ public class AnnualPaidLeaveSaveCommand {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
          * TimeVacationSettingGetMemento#getTimeManageType()
          */
@@ -313,7 +328,7 @@ public class AnnualPaidLeaveSaveCommand {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
          * TimeVacationSettingGetMemento#getTimeUnit()
          */
@@ -324,7 +339,7 @@ public class AnnualPaidLeaveSaveCommand {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
          * TimeVacationSettingGetMemento#getMaxYearDayLeave()
          */
@@ -348,6 +363,16 @@ public class AnnualPaidLeaveSaveCommand {
 			return TimeAnnualRoundProcesCla.valueOf(this.command.roundProcessClassific);
 		}
 
+//        /*
+//         * (non-Javadoc)
+//         *
+//         * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
+//         * TimeVacationSettingGetMemento#isEnoughTimeOneDay()
+//         */
+//        @Override
+//        public boolean isEnoughTimeOneDay() {
+//            return false;
+//        }
         /*
          * (non-Javadoc)
          * 

@@ -48,7 +48,7 @@ implements PeregAddCommandHandler<AddAnnLeaGrantRemnNumPeregCommand>{
 		boolean check = AnnualLeaveGrantRemainingData.validate(command.getGrantDate(), command.getDeadline(), command.getGrantDays(), command.getUsedDays(),
 				command.getRemainingDays(), command.grantDateItemName , command.deadlineDateItemName);
 		if (check) {
-			AnnualLeaveGrantRemainingData data = AnnualLeaveGrantRemainingData.createFromJavaType(annLeavId, cid,
+			AnnualLeaveGrantRemainingData data = AnnualLeaveGrantRemainingData.createFromJavaType(annLeavId,
 					command.getEmployeeId(), command.getGrantDate(), command.getDeadline(),
 					command.getExpirationStatus() == null ? 1 : command.getExpirationStatus().intValue(),
 					GrantRemainRegisterType.MANUAL.value,
@@ -61,7 +61,7 @@ implements PeregAddCommandHandler<AddAnnLeaGrantRemnNumPeregCommand>{
 					command.getRemainingMinutes() == null ? null : command.getRemainingMinutes().intValue(),
 					0d, null,
 					null, null);
-			annLeaRepo.add(data);
+			annLeaRepo.add(AppContexts.user().companyId(), data);
 		}
 		return new PeregAddCommandResult(annLeavId);
 	}

@@ -25,7 +25,7 @@ public enum PrimitiveValueMonthly {
 	
 	YearlyDays(27, "年間日数", "YearlyDays"),
 	
-	YearlyGrantDays(28, "年休付与日数", "GrantDays"),
+	LeaveGrantDayNumber2(28, "休暇付与日数", "LeaveGrantDayNumber"),
 	
 	AnnualLeaveUsedDayNumber(29, "年休使用日数", "AnnualLeaveUsedDayNumber"),
 	
@@ -43,7 +43,7 @@ public enum PrimitiveValueMonthly {
 	
 	HourHolidayRemainingMinutes(36, "時間年休残時間", "RemainingMinutes"),
 	
-	YearlyReservedGrantDays(37, "積立年休付与日数", "GrantDays"),
+	LeaveGrantDayNumber3(37, "休暇付与日数", "LeaveGrantDayNumber"),
 	
 	ReserveLeaveUsedDayNumber(38, "積立年休使用日数", "ReserveLeaveUsedDayNumber"),
 	
@@ -53,7 +53,7 @@ public enum PrimitiveValueMonthly {
 	
 	SpecialDayNumberOfRemain(41, "特別休暇残数", "DayNumberOfRemain"),
 	
-	DayNumberOfGrant(42, "特別休暇残数用付与日数", "DayNumberOfGrant"),
+	LeaveGrantDayNumber(42, "休暇付与日数", "LeaveGrantDayNumber"),
 	
 	SPECIAL_HOLIDAY_USE_NUM(43, "特別休暇使用回数", "UsedTimes"),// not found
 	

@@ -40,13 +40,13 @@ public class EmployeeInfoFinder {
 
 	@Inject
 	private UserSettingRepository userSettingRepo;
-	
+
 	@Inject
 	private StampCardEditingRepo stamCardEditRepo;
-	
+
 	@Inject
 	private IEmployeeCESettingRepository empCESettingRepo;
-	
+
 	private static final String JP_SPACE = "　";
 
 	public String generateEmplCode(String startLetters) {
@@ -59,7 +59,7 @@ public class EmployeeInfoFinder {
 		int employeeCodeLength = _employeeCESetting.get().getDigitNumb().v();
 
 		Optional<String> lastEmployeeCode = employeeRepository.findLastEml(companyId, startLetters, employeeCodeLength);
-		
+
 		if (!lastEmployeeCode.isPresent()) {
 			throw new BusinessException("Msg_505");
 		}
@@ -91,17 +91,17 @@ public class EmployeeInfoFinder {
 		}
 		return result;
 	}
-	
+
 	public String initEmplCode() {
 		String employeeId = AppContexts.user().employeeId();
-		
+
 		Optional<UserSetting> _userSetting = userSettingRepo.getUserSetting(employeeId);
-		
+
 		if (!_userSetting.isPresent()) {
 			return "";
 		}
 		UserSetting userSetting = _userSetting.get();
-		
+
 		switch (userSetting.getEmpCodeValType()) {
 		case INIT_DESIGNATION:
 			return generateEmplCode(userSetting.getEmpCodeLetter().v());
@@ -110,7 +110,7 @@ public class EmployeeInfoFinder {
 		case BLANK:
 			return "";
 		}
-		
+
 		return "";
 	}
 
@@ -136,7 +136,7 @@ public class EmployeeInfoFinder {
 		}
 		return "";
 	}
-	
+
 	/**
 	 * validate EmpInfo EA修正履歴 - No1159 EA修正履歴 - No1160 EA修正履歴 - No1161 EA修正履歴 -
 	 * No1162
@@ -171,7 +171,7 @@ public class EmployeeInfoFinder {
 		}
 
 	}
-	
+
 	private String generateCode(String value) {
 		int mixLength = value.length();
 		boolean spaceAtBefore = checkSpaceAtBefore(value);
@@ -180,28 +180,28 @@ public class EmployeeInfoFinder {
 		value = value.trim();
 		if (StringUtils.isNumeric(value)) {
 			returnValue = doWithNumeric(value);
-			
+
 		} else {
 			returnValue = doWithCharacter(value);
 		}
 		return restoreSpace(returnValue, mixLength, spaceAtBefore, spaceAtAfter);
-		
+
 	}
-	
+
 	private boolean checkSpaceAtBefore(String value) {
 		if(value.charAt(0) == ' ') {
 			return true;
 		}
 		return false;
 	}
-	
+
 	private boolean checkSpaceAtAfter(String value) {
 		if(value.charAt(value.length() -1) == ' ') {
 			return true;
 		}
 		return false;
 	}
-	
+
 	private String restoreSpace(String value, int mixLengt, boolean spaceAtBefore, boolean spaceAtAfter) {
 		if (value.length() >= mixLengt) {
 			return value;
@@ -217,7 +217,7 @@ public class EmployeeInfoFinder {
 		}
 		return value;
 	}
-	
+
 	private String doWithNumeric(String value) {
 		int length = value.length();
 		// value is all 999...
@@ -228,26 +228,26 @@ public class EmployeeInfoFinder {
 			}
 			standard += "1";
 			return standard;
-		} 
-			
+		}
+
 		BigDecimal numbericValue = new BigDecimal(value);
 		numbericValue = numbericValue.add(new BigDecimal(1));
-	
+
 		String upperValue = numbericValue.toString();
-		
+
 		while (upperValue.length() < value.length()) {
 			upperValue = "0" + upperValue;
 		}
 		return upperValue;
-		
+
 	}
-	
+
 	private String doWithCharacter(String value) {
 		// value is all z or Z
 		if (value.matches("[zZ]+")) {
 			throw new BusinessException("Msg_505");
-		} 
-		
+		}
+
 		char increaseLetter = ' ';
 		char[] valueAsArray = value.toCharArray();
 		char[] resultArr = new char[valueAsArray.length];
@@ -283,7 +283,7 @@ public class EmployeeInfoFinder {
 					increaseLetter = (char) ((int) currentChar + 1);
 					break;
 				}
-				
+
 				if (i != 0) {
 					if (beforeLast && increaseLetter == ' ') {
 						increaseLetter = '1';

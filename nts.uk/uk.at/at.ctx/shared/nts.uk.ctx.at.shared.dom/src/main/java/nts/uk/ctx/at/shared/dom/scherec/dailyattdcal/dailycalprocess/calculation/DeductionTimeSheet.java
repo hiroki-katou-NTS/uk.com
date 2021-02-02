@@ -563,6 +563,9 @@ public class DeductionTimeSheet {
 			List<LateTimeSheet> lateTimeSheet,
 			CalculationRangeOfOneDay calcRange, boolean correctWithEndTime) {
 
+		if(todayWorkType.getAttendanceHolidayAttr().isHoliday())
+			return new ArrayList<>();
+		
 		// 固定休憩か流動休憩か確認する
 		if (integrationOfWorkTime.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeForm() == WorkTimeForm.FIXED
 				|| integrationOfWorkTime.getFlowWorkRestTimezone(todayWorkType).get().isFixRestTime()) {// 固定休憩の場合

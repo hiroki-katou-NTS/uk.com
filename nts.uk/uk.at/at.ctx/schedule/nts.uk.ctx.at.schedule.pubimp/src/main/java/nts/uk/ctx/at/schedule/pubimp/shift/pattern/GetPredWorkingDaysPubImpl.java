@@ -18,9 +18,9 @@ import nts.uk.ctx.at.schedule.dom.shift.pattern.export.GetPredWorkingDaysImpl;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySetting;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySettingRepository;
 import nts.uk.ctx.at.schedule.pub.shift.pattern.GetPredWorkindDaysPub;
+import nts.uk.ctx.at.shared.app.cache.worktype.WorkTypeCache;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
-
 
 /**
  * 実装：所定労働日数を取得する
@@ -57,7 +57,7 @@ public class GetPredWorkingDaysPubImpl implements GetPredWorkindDaysPub {
 	}
 	
 	@RequiredArgsConstructor
-	class RequireImpl implements GetPredWorkingDaysImpl.Require{
+	class RequireImpl implements GetPredWorkingDaysImpl.Require {
 		
 		private final CacheCarrier cacheCarrier;
 

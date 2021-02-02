@@ -309,51 +309,6 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 		this.deforLaborTimeShaRepo = deforLaborTimeShaRepo;
 		this.sharedAffWorkPlaceHisAdapter = sharedAffWorkPlaceHisAdapter;
 	}
-	
-	@Override
-	public Optional<GrantDateTbl> grantDateTbl(String companyId, int specialHolidayCode) {
-		return grantDateTblRepo.findByCodeAndIsSpecified(companyId, specialHolidayCode);
-	}
-
-	@Override
-	public List<ElapseYear> elapseYear(String companyId, int specialHolidayCode, String grantDateCode) {
-		return grantDateTblRepo.findElapseByGrantDateCd(companyId, specialHolidayCode, grantDateCode);
-	}
-
-	@Override
-	public Optional<AnnualLeaveEmpBasicInfo> employeeAnnualLeaveBasicInfo(String employeeId) {
-		return annLeaEmpBasicInfoRepo.get(employeeId);
-	}
-	
-	@Override
-	public Optional<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String specialId) {
-		return specialLeaveGrantRepo.getBySpecialId(specialId);
-	}
-
-	@Override
-	public List<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String sid, int speCode,
-			DatePeriod datePriod, GeneralDate startDate, LeaveExpirationStatus expirationStatus) {
-
-		return specialLeaveGrantRepo.getByNextDate(sid, speCode, datePriod, startDate, expirationStatus);
-	}
-
-	@Override
-	public List<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String sid, int specialLeaveCode,
-			LeaveExpirationStatus expirationStatus, GeneralDate grantDate, GeneralDate deadlineDate) {
-
-		return specialLeaveGrantRepo.getByPeriodStatus(sid, specialLeaveCode, expirationStatus, grantDate,
-				deadlineDate);
-	}
-
-	@Override
-	public List<InterimSpecialHolidayMng> interimSpecialHolidayMng(String mngId) {
-		return interimSpecialHolidayMngRepo.findById(mngId);
-	}
-
-	@Override
-	public Optional<SpecialLeaveBasicInfo> specialLeaveBasicInfo(String sid, int spLeaveCD, UseAtr use) {
-		return specialLeaveBasicInfoRepo.getBySidLeaveCdUser(sid, spLeaveCD, use);
-	}
 
 	@Override
 	public Optional<ComSubstVacation> comSubstVacation(String companyId) {
@@ -505,11 +460,6 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	}
 
 	@Override
-	public Optional<SpecialHoliday> specialHoliday(String companyID, int specialHolidayCD) {
-		return specialHolidayRepo.findByCode(companyID, specialHolidayCD);
-	}
-
-	@Override
 	public List<Integer> getSpecialHolidayNumber(String cid, int sphdSpecLeaveNo) {
 		return specialHolidayRepo.findBySphdSpecLeave(cid, sphdSpecLeaveNo);
 	}
@@ -562,23 +512,6 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	@Override
 	public EmployeeImport employee(CacheCarrier cacheCarrier, String empId) {
 		return empEmployeeAdapter.findByEmpIdRequire(cacheCarrier, empId);
-	}
-	
-	@Override
-	public EmployeeRecordImport employeeFullInfo(CacheCarrier cacheCarrier, String empId) {
-		return empEmployeeAdapter.findByAllInforEmpId(cacheCarrier, empId);
-	}
-
-	@Override
-	public List<SClsHistImport> employeeClassificationHistoires(CacheCarrier cacheCarrier, String companyId,
-			List<String> employeeIds, DatePeriod datePeriod) {
-		return empEmployeeAdapter.lstClassByEmployeeId(cacheCarrier, companyId, employeeIds, datePeriod);
-	}
-
-	@Override
-	public List<AffCompanyHistSharedImport> employeeAffiliatedCompanyHistories(CacheCarrier cacheCarrier,
-			List<String> sids, DatePeriod datePeriod) {
-		return empEmployeeAdapter.getAffCompanyHistByEmployee(cacheCarrier, sids, datePeriod);
 	}
 
 	@Override
