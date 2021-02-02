@@ -20,6 +20,7 @@
 			<com:stylefile path="kdl003.a.style.css" />
 			<com:ValidatorScript>
 				nts.uk.shr.com.time.TimeWithDayAttr
+				nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeName
 			</com:ValidatorScript>
 		</ui:define>
 
@@ -62,20 +63,50 @@
 							<td style="vertical-align: top; border-left: solid grey 1px;"
 								colspan="2">
 								<div id="search-div" class="control-group valign-center">
-									<input id="inputStartTime" tabindex="5" style="margin-right:  10px;"
-										data-bind="ntsTimeWithDayEditor: {name: '#[KDL003_12]', constraint:'TimeWithDayAttr', value: startTime, enable: true, 
-											readonly: false, required: false, option: { width: '100px', timeWithDay: true}}" />
-									<span>#{i18n.getText('KDL003_13')}</span> 
-									<input id="inputEndTime" tabindex="7"
-										data-bind="ntsTimeWithDayEditor: {name: '#[KDL003_15]', constraint:'TimeWithDayAttr', value: endTime, enable: true, 
-										readonly: false, required: false, option: { width: '100px', timeWithDay: true}}" />
-									<button tabindex="8" class="caret-bottom"
-										data-bind="click: search">#{i18n.getText('KDL003_16')}</button>
-									<button tabindex="9" class="pull-right"
-										data-bind="click: clearSearchCondition">#{i18n.getText('KDL003_17')}</button>
+									<div class="table">
+										<div class="cell valign-center">
+											<div class="text-vcener" data-bind="ntsFormLabel: {}, text: '#{i18n.getText('KDL003_46')}'"></div>
+										</div>
+										<div class="cell valign-center">
+											<input id="inputStartTime" tabindex="5"
+												data-bind="ntsTimeWithDayEditor: {name: '#[KDL003_12]', 
+													constraint:'TimeWithDayAttr', 
+													option: { timeWithDay: true },
+													value: startTime, enable: true, 
+													readonly: false, required: false, option: { width: '70px', timeWithDay: true}}" />
+											<span>#{i18n.getText('KDL003_13')}</span> 
+											<input id="inputEndTime" tabindex="6"
+												data-bind="ntsTimeWithDayEditor: {name: '#[KDL003_15]', 
+												constraint:'TimeWithDayAttr', 
+												option: { timeWithDay: true },
+												value: endTime, enable: true, 
+												readonly: false, required: false, option: { width: '70px', timeWithDay: true}}" />
+											<button tabindex="7" class="caret-bottom"
+												data-bind="click: searchByTime">#{i18n.getText('KDL003_16')}</button>
+										</div>
+										<div class="cell valign-center">
+											<input id="A4_20" tabindex="8"  
+											data-bind="ntsTextEditor: { 
+												value: searchCode, 
+												name: '#[KMK002_2]',								
+												constraint: 'WorkTimeName',
+												option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+												placeholder: '#{i18n.getText('KMK002_4')}',													
+												textmode: 'text',								
+												}))}" />
+											<button tabindex="9" class="caret-bottom"
+												data-bind="click: searchByCodeName">#{i18n.getText('KDL003_16')}</button>												
+											<div class="check-all-cases" tabindex="10"  data-bind="ntsCheckBox: { checked: isCheckStatus, 
+												enable: isAllCheckStatus, text: '#{i18n.getText('KDL001_24')}' }"></div>
+										</div>
+										<div class="cell valign-center">											
+											<button tabindex="11" class="pull-right"
+												data-bind="click: clearSearchCondition">#{i18n.getText('KDL003_17')}</button>
+										</div>
+									</div>
 								</div>
 								<div id="day-list-div">
-									<table id="day-list-tbl" tabindex="10"
+									<table id="day-list-tbl" tabindex="12"
 										data-bind="ntsGridList: {
 											name: '#[KDL003_18]',
 											width: 810,
@@ -91,96 +122,12 @@
 							</td>
 						</tr>
 					</table>
-				</div>
-
-				<!-- </div>
-					<div style="margin-left: 10px; margin-top: 30px;">
-						<table style="margin-bottom: 10px;">
-							 <tr>
-								<td><div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL003_24')}</div></td>
-								<td><div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL003_32')}</div></td>
-								<td><div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL003_35')}</div></td>
-							</tr> 
-							<tr>
-								<td style="padding-right: 20px"><hr/></td>
-								<td><hr/></td>
-								<td style="padding-left: 20px"><hr/></td>
-							</tr>
-							<tr>
-								<td style="vertical-align: top; padding-right: 20px;">
-									<div id="search-div" class="control-group valign-center">
-										<span>#{i18n.getText('KDL003_25')}</span>
-										<input id="inputStartBTime" tabindex="11" style="text-align: center !important;"
-											data-bind="ntsTimeWithDayEditor: {name: '#[KDL003_26]', constraint:'TimeWithDayAttr', value: startBTime, 
-												inputFormat: 'time', mode: 'time', option: { width: '50px' }, enable: enable1, readonly: readonly}" />
-										<span>#{i18n.getText('KDL003_27')}</span>
-										<input id="inputEndBTime" tabindex="12"
-											data-bind="ntsTimeWithDayEditor: {name: '#[KDL003_28]', constraint:'TimeWithDayAttr', value: endBTime,
-												 inputFormat: 'time', mode: 'time', option: { width: '50px' }, enable: enable1, readonly: readonly}" />
-									</div>
-									<div id="search-div" class="control-group valign-center">
-										<span>#{i18n.getText('KDL003_29')}</span>
-										<input id="inputStartBBTime" tabindex="13"
-											data-bind="ntsTimeWithDayEditor: {name: '#[KDL003_30]', constraint:'TimeWithDayAttr', value: startBBTime, 
-												inputFormat: 'time', mode: 'time', option: { width: '50px' }, enable: enable2, readonly: readonly}" />
-										<span>#{i18n.getText('KDL003_27')}</span>
-										<input id="inputEndBBTime" tabindex="14"
-											data-bind="ntsTimeWithDayEditor: {name: '#[KDL003_31]', constraint:'TimeWithDayAttr', value: endBBTime,
-												 inputFormat: 'time', mode: 'time', option: { width: '50px' }, enable: enable2, readonly: readonly}" />
-									</div>
-								</td>
-								<td style="vertical-align: top; border-left: solid grey 1px;">
-									<div id="day-list-div" style="display: flex; padding-left: 0px !important;">
-										<table id="list-worktype"
-										data-bind="ntsGridList: {
-											height: 180,
-											options: listTimeBreak1,
-											optionsValue: 'code',
-											columns: breakColumns1,
-											multiple: false,
-											value: currentCode}">
-										</table>
-										<table id="list-worktype"
-										data-bind="ntsGridList: {
-											height: 180,
-											options: listTimeBreak2,
-											optionsValue: 'code',
-											columns: breakColumns2,
-											multiple: false,
-											value: currentCode3}">
-										</table>
-									</div>
-								</td>
-								<td style="vertical-align: top; border-left: solid grey 1px;">
-									<div id="day-list-div" style="display: flex;">
-										<table id="list-worktype"
-										data-bind="ntsGridList: {
-											height: 180,
-											options: listTimeBreakBreak1,
-											optionsValue: 'code',
-											columns: breakBreakColumns1,
-											multiple: false,
-											value: currentCode2}">
-										</table>
-										<table id="list-worktype"
-										data-bind="ntsGridList: {
-											height: 180,
-											options: listTimeBreakBreak2,
-											optionsValue: 'code',
-											columns: breakBreakColumns2,
-											multiple: false,
-											value: currentCode4}">
-										</table>
-									</div>
-								</td> 
-							</tr>
-						</table>
-					</div>-->
+				</div>				
 			</div>
 			<div id="functions-area-bottom">
-				<button class="x-large proceed" tabindex="11"
-					data-bind="click: submit">#{i18n.getText('KDL003_22')}</button>
-				<button tabindex="12" data-bind="click: closeDialog">#{i18n.getText('KDL003_23')}</button>
+				<button class="x-large proceed" tabindex="15"
+					data-bind="click: submit, enable: $root.errors.isEmpty">#{i18n.getText('KDL003_22')}</button>
+				<button tabindex="16" data-bind="click: closeDialog">#{i18n.getText('KDL003_23')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

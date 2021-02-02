@@ -35,6 +35,7 @@ module nts.uk.com.view.ccg001.a {
             closed: KnockoutObservable<boolean>; // 休業区分
             retirement: KnockoutObservable<boolean>; // 退職区分
             systemType: KnockoutObservable<number>;
+			employeesDoNotManageSchedules: KnockoutObservable<boolean>;
             showClosure: KnockoutObservable<boolean>; // 就業締め日利用
             showBaseDate: KnockoutObservable<boolean>; // 基準日利用
             showAllClosure: KnockoutObservable<boolean>; // 全締め表示
@@ -103,6 +104,7 @@ module nts.uk.com.view.ccg001.a {
                 self.closed = ko.observable(true); // 休業区分
                 self.retirement = ko.observable(true); // 退職区分
                 self.systemType = ko.observable(1);
+				self.employeesDoNotManageSchedules = ko.observable(true);
                 self.showClosure = ko.observable(true); // 就業締め日利用
                 self.showBaseDate = ko.observable(true); // 基準日利用
                 self.showAllClosure = ko.observable(true); // 全締め表示
@@ -139,6 +141,7 @@ module nts.uk.com.view.ccg001.a {
                 self.ccg001ComponentOption = {
                     /** Common properties */
                     systemType: self.systemType(), // システム区分
+					employeesDoNotManageSchedules: self.employeesDoNotManageSchedules,
                     showEmployeeSelection: self.isSelectAllEmployee(), // 検索タイプ
                     showQuickSearchTab: self.isQuickSearchTab(), // クイック検索
                     showAdvancedSearchTab: self.isAdvancedSearchTab(), // 詳細検索

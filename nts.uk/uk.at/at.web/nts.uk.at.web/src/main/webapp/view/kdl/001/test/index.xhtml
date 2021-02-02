@@ -20,7 +20,21 @@
 					<div data-bind="ntsCheckBox: { checked: isSelection, enable: true, text: 'selection'}"></div>
 				</div>
 				<div id="contents-area">
-					<div>
+					<div class="table">
+						<div class="cell">
+							<label>WorkplaceID / 職場ID</label>
+						</div>
+						<div class="cell">							
+							<div class="cell"><input data-bind="ntsTextEditor: {value: workPlaceId}" /></div>
+						</div>							
+					</div>
+					<div class="table">
+						<div class="cell">
+							<label>Base Date/基準日</label>								
+							<div class="cell" data-bind="ntsDatePicker: { value: baseDate }"></div>
+						</div>	
+					</div>
+					<div>						
 						<div>
 							<span>Selected Code</span>
 							<textarea class="inputValue" data-bind="ntsMultilineEditor: { value: selectedCodeList }" />

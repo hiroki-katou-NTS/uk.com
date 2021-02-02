@@ -8,13 +8,13 @@ import java.util.List;
  */
 public interface PremiumItemRepository {
 	
-	public void update(PremiumItem premiumItem);
+	 void update(PremiumItem premiumItem);
 	
-	public List<PremiumItem> findByCompanyID(String companyID);
+	 List<PremiumItem> findByCompanyID(String companyID);
 	
-	public List<PremiumItem> findByCompanyIDAndDisplayNumber(String companyID, List<Integer> displayNumbers);
+	 List<PremiumItem> findByCompanyIDAndDisplayNumber(String companyID, List<Integer> displayNumbers);
 	
-	public List<PremiumItem> findByCompanyIDAndListPremiumNo (String companyID, List<Integer> premiumNos);
+	 List<PremiumItem> findByCompanyIDAndListPremiumNo (String companyID, List<Integer> premiumNos);
 	
-	public List<PremiumItem> findAllIsUse (String companyID);
+	 List<PremiumItem> findAllIsUse (String companyID);
 }

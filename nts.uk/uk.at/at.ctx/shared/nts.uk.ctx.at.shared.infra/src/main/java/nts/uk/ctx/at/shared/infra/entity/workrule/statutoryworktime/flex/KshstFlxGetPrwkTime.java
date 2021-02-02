@@ -14,19 +14,19 @@ import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.flex.ReferencePredTim
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * エンティティ：会社別フレックス勤務集計方法
+ * エンティティ：フレックス勤務所定労働時間取得
  * @author shuichu_ishida
  */
 @Entity
-@Table(name = "KRCMT_CALC_M_SET_FLE_COM")
+@Table(name = "KSHST_FLX_GET_PRWK_TIME")
 @NoArgsConstructor
-public class KrcmtCalcMSetFleCom extends UkJpaEntity implements Serializable {
+public class KshstFlxGetPrwkTime extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	/** プライマリキー */
 	@EmbeddedId
-	public KrcmtCalcMSetFleComPK PK;
+	public KshstFlxGetPrwkTimePK PK;
 	
 	/** 所定時間参照 */
 	@Column(name = "REFERENCE_PRED_TIME")
@@ -42,7 +42,7 @@ public class KrcmtCalcMSetFleCom extends UkJpaEntity implements Serializable {
 	
 	/**
 	 * ドメインに変換
-	 * @return 会社別フレックス勤務集計方法
+	 * @return フレックス勤務所定労働時間取得
 	 */
 	public GetFlexPredWorkTime toDomain(){
 
@@ -53,17 +53,17 @@ public class KrcmtCalcMSetFleCom extends UkJpaEntity implements Serializable {
 	
 	/**
 	 * ドメインから変換　（for Insert）
-	 * @param domain 会社別フレックス勤務集計方法
+	 * @param domain フレックス勤務所定労働時間取得
 	 */
 	public void fromDomainForPersist(GetFlexPredWorkTime domain){
 		
-		this.PK = new KrcmtCalcMSetFleComPK(domain.getCompanyId());
+		this.PK = new KshstFlxGetPrwkTimePK(domain.getCompanyId());
 		this.fromDomainForUpdate(domain);
 	}
 	
 	/**
 	 * ドメインから変換　(for Update)
-	 * @param domain 会社別フレックス勤務集計方法
+	 * @param domain フレックス勤務所定労働時間取得
 	 */
 	public void fromDomainForUpdate(GetFlexPredWorkTime domain){
 		

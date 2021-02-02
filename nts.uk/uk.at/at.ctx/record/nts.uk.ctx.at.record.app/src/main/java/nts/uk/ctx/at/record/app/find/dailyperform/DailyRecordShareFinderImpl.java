@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.find.dailyperform;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -14,8 +16,9 @@ public class DailyRecordShareFinderImpl implements DailyRecordShareFinder {
 	private DailyRecordWorkFinder finder;
 
 	@Override
-	public IntegrationOfDaily find(String employeeId, GeneralDate date) {
-		return finder.find(employeeId, date).toDomain(employeeId, date);
+	public Optional<IntegrationOfDaily> find(String employeeId, GeneralDate date) {
+		DailyRecordDto dto = finder.find(employeeId, date);
+		return dto == null ? Optional.empty() : Optional.of(dto.toDomain(employeeId, date));
 	}
 
 }
