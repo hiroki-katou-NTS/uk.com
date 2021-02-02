@@ -18,6 +18,7 @@ import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.WorkplaceEvent;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.event.WorkplaceEventRepository;
 import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.event.KsmmtWorkplaceEvent;
 import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.event.KsmmtWorkplaceEventPK;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * @author hungnm
@@ -79,8 +80,9 @@ public class JpaWorkplaceEventRepository extends JpaRepository implements Workpl
 	}
 
 	private KsmmtWorkplaceEvent fromDomain(WorkplaceEvent domain) {
+		String cid = AppContexts.user().companyId();
 		return new KsmmtWorkplaceEvent(new KsmmtWorkplaceEventPK(domain.getWorkplaceId(), domain.getDate()),
-				domain.getEventName().v());
+				domain.getEventName().v(),cid);
 	}
 
 }

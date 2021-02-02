@@ -38,6 +38,9 @@ public class KsmmtWorkplaceEvent extends ContractUkJpaEntity implements Serializ
 	@Column(name = "EVENT_NAME")
 	public String eventName;
 
+	@Basic(optional = false)
+	@Column(name = "CID")
+	public String cid;
 	
 	@Override
 	protected Object getKey() {

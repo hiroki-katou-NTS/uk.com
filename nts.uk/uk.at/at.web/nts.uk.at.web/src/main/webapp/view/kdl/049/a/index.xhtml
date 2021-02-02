@@ -71,7 +71,7 @@
 					</table>
 				</div>
 				<div id= "functions-area-bottom">
-				<button class="proceed x-large" id="save" data-bind = " click : submit">#{i18n.getText('KDL049_6')}</button>
+				<button class="proceed x-large" id="save" data-bind = " click : submit,enable: $root.errors.isEmpty" >#{i18n.getText('KDL049_6')}</button>
 				<button id="cancel" data-bind="click: closeDialog">#{i18n.getText('KDL049_7')}</button>
 			</div>
 			</ui:define>
