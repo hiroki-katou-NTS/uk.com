@@ -4,7 +4,7 @@ import { StepwizardComponent } from '@app/components';
 import { KafS20A1Component } from '../a1';
 import { KafS20A2Component } from '../a2';
 import { KafS20CComponent } from '../c';
-import { IOptionalItemAppSet,IParams} from './define';
+import { IOptionalItemAppSet, IParams } from './define';
 import { IRes } from '../../s04/a/define';
 
 @component({
@@ -28,10 +28,10 @@ export class KafS20AComponent extends Vue {
     public settingItems: IOptionalItemAppSet = null;
     public mode: boolean = true;
     public response: IRes = null;
-    public params: IParams = {
-        appDetail: null,
-        appDispInfoStartupOutput: null,
-    };
+    public _params: any = null;
+    
+    @Prop()
+    public readonly params: IParams;
 
     public beforeCreate() {
         const vm = this;
@@ -40,7 +40,18 @@ export class KafS20AComponent extends Vue {
 
     public created() {
         const vm = this;
-
+        if (vm.params) {
+            vm.$mask('show');
+            vm.$http
+            .post('at',API.getItemSetting, vm.params.appDetail.application.code)
+            .then((res: {data: IOptionalItemAppSet}) => {
+                vm.handleNextToStep2(res.data);
+            }).catch((err) => {
+                vm.$modal.error(err);
+            });
+            vm.mode = false;
+            vm._params = vm.params;
+        }
     }
 
     public handleNextToStep2(item: IOptionalItemAppSet) {
@@ -66,8 +77,12 @@ export class KafS20AComponent extends Vue {
     public handleBackToStepTwo(res) {
         const vm = this;
 
+        vm._params = res;
         vm.mode = false;
-        vm.params = res;
         vm.step = 'KAFS20_11';
     }
 }
+
+const API = {
+    getItemSetting: 'at/request/setting/company/applicationapproval/optionalitem/findone'
+};

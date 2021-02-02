@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.layer.app.cache.CacheCarrier;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 
 public interface ICompanyPub {
 
@@ -81,4 +82,6 @@ public interface ICompanyPub {
 	 * @return
 	 */
 	List<CompanyExportForKDP003> get(String contractCd, Optional<String> cid,Boolean isAbolition);
+	
+	YearMonthPeriod getyearMonth(String cid, int year);
 }
