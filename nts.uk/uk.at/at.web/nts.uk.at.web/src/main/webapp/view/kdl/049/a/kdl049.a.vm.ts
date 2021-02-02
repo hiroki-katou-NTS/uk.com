@@ -33,6 +33,7 @@ module nts.uk.at.view.kdl049.a.viewmodel {
             }
             if(__viewContext.user.role.isInCharge.attendance == true){
                 self.isSuperior(true);
+                 $("#A22").focus();
                 }
             // self.targetWorkplace("dea95de1-a462-4028-ad3a-d68b8f180412");
             let dfd = $.Deferred();
@@ -57,6 +58,7 @@ module nts.uk.at.view.kdl049.a.viewmodel {
             return dfd.promise();
         }
 
+        
         submit() {
             var self = this;
             //            var selectWorkLocation = _.find(self.workLocationList(), ['workLocationCD', self.selectCode()]);
