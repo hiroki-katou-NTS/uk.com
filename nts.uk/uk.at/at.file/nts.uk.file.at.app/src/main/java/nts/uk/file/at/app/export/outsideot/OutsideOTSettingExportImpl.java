@@ -421,7 +421,7 @@ public class OutsideOTSettingExportImpl implements MasterListData {
             }
             MasterData masterData = new MasterData(dataA71, null, "");
             Map<String, MasterCellData> rowData = masterData.getRowData();
-            rowData.get(NUMBER_COLS_END).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+            rowData.get(NUMBER_COLS_5).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
             masterDatas.add(masterData);
         });
 
