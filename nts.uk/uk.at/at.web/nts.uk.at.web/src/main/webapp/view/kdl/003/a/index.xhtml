@@ -96,9 +96,10 @@
 												}))}" />
 											<button tabindex="9" class="caret-bottom"
 												data-bind="click: searchByCodeName">#{i18n.getText('KDL003_16')}</button>												
+											<div class="check-all-cases" tabindex="10"  data-bind="ntsCheckBox: { checked: isCheckStatus, 
+												enable: isAllCheckStatus, text: '#{i18n.getText('KDL001_24')}' }"></div>
 										</div>
-										<div class="cell valign-center">
-											<div class="check-all-cases" tabindex="10"  data-bind="ntsCheckBox: { checked: isCheckStatus, enable: isAllCheckStatus, text: '#{i18n.getText('KDL001_24')}' }"></div>
+										<div class="cell valign-center">											
 											<button tabindex="11" class="pull-right"
 												data-bind="click: clearSearchCondition">#{i18n.getText('KDL003_17')}</button>
 										</div>
