@@ -37,15 +37,17 @@ public class SpecifyAuthInquiryRepositoryImpl extends JpaRepository implements S
 	@Override
 	public void update(SpecifyAuthInquiry domain) {
 		this.delete(domain);
+		this.getEntityManager().flush();
 		this.insert(domain);
 	}
 
 	private void delete(SpecifyAuthInquiry domain) {
-		List<SpecifyAuthInquiryEntity> entities = this.toEntity(domain);
-		List<SpecifyAuthInquiryEntityPK> primaryKeys = entities.stream()
-				.map(mapper -> mapper.getPk())
-				.collect(Collectors.toList());
-		this.commandProxy().removeAll(SpecifyAuthInquiryEntity.class, primaryKeys);
+		List<SpecifyAuthInquiryEntity> entities = this.queryProxy()
+				.query(FIND_BY_CID_ROLEID, SpecifyAuthInquiryEntity.class)
+				.setParameter("cid", domain.getCid())
+				.setParameter("roleId", domain.getEmploymentRoleId())
+				.getList();
+		this.commandProxy().removeAll(entities);
 	}
 
 	@Override
@@ -72,7 +74,7 @@ public class SpecifyAuthInquiryRepositoryImpl extends JpaRepository implements S
 			SpecifyAuthInquiryEntityPK pk = new SpecifyAuthInquiryEntityPK();
 			pk.setCid(AppContexts.user().companyId());
 			pk.setEmploymentRoleId(domain.getEmploymentRoleId());
-			pk.setPositionIdSeen(domain.getPositionIdSeen().get(0));
+			pk.setPositionIdSeen(mapper);
 			entity.setContractCd(AppContexts.user().contractCode());
 			entity.setPk(pk);
 			return entity;

@@ -33,7 +33,7 @@ public class SpecifyAuthInquiryCommandHandler extends CommandHandler<SpecifyAuth
 				.build();
 		Optional<SpecifyAuthInquiry> checkDomainExists = specifyAuthInquiryRepository
 				.getByCidAndRoleId(cid, command.getEmploymentRoleId());
-		if (checkDomainExists.isPresent()) {
+		if (!checkDomainExists.isPresent()) {
 			specifyAuthInquiryRepository.insert(domain);
 		} else {
 			specifyAuthInquiryRepository.update(domain);

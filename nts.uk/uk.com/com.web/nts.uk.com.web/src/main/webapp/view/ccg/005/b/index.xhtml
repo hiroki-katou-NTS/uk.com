@@ -8,7 +8,7 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<script>var dialogSize = { width: 380, height: 400 };</script>
+			<script>var dialogSize = { width: 380, height: 380 };</script>
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 			<com:ValidatorScript>
 				nts.uk.ctx.at.function.dom.attendancerecord.item.ItemName
@@ -27,18 +27,20 @@
           <span style="font-size: larger;">#{i18n.getText('CCG005_4')}</span>
         </div>
         <div style="margin-top: 15px;">
-          <div class="table-left">
+          <div class="table-ccg005-b table-left">
             <table id="single-list" data-bind="ntsGridList: {
+              width: 150,
               height: 200,
               options: lstRole,
               optionsValue: 'name',
+              primaryKey: 'roleId',
               columns: columns,
               multiple: false,
-              value: selectedValue
+              value: selectedRole
             }"></table>
           </div>
   
-          <div class="table-right">
+          <div class="table-ccg005-b table-right">
             <table id="grid"></table>
           </div>
         </div>
