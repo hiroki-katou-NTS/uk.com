@@ -7,7 +7,7 @@ module nts.uk.at.view.kml001.a {
             if(screenModel.isInsert()){
                 $("#startDateInput").focus();    
             } else {
-                $("#memo").focus();    
+                $("#A4_10").focus();    
             }    
             screenModel.setTabindex();
         });

@@ -2023,63 +2023,63 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 						val overTimeSheet = totalWork.getExcessOfStatutoryTimeOfDaily().getOverTimeWork().get().getOverTimeWorkFrameTimeSheet();
 						span = getTimeSpan(overTimeSheet, 1);
 						span.ifPresent( tc -> {
-							this.overTime1StrClc = tc == null ? 0 : tc.startValue();
-							this.overTime1EndClc = tc == null ? 0 : tc.endValue();
+							this.overTime1StrClc = tc == null ? 0 : tc.start();
+							this.overTime1EndClc = tc == null ? 0 : tc.end();
 						});
 
 						
 						span = getTimeSpan(overTimeSheet, 2);
 						span.ifPresent( tc -> {
-							this.overTime2StrClc = tc == null ? 0 : tc.startValue();
-							this.overTime2EndClc = tc == null ? 0 : tc.endValue();
+							this.overTime2StrClc = tc == null ? 0 : tc.start();
+							this.overTime2EndClc = tc == null ? 0 : tc.end();
 						});
 
 						span = getTimeSpan(overTimeSheet, 3);
 						span.ifPresent( tc -> {
-							this.overTime3StrClc = tc == null ? 0 : tc.startValue();
-							this.overTime3EndClc = tc == null ? 0 : tc.endValue();
+							this.overTime3StrClc = tc == null ? 0 : tc.start();
+							this.overTime3EndClc = tc == null ? 0 : tc.end();
 						});
 				 
 						span = getTimeSpan(overTimeSheet, 4);
 						span.ifPresent( tc -> {
-							this.overTime4StrClc = tc == null ? 0 : tc.startValue();
-							this.overTime4EndClc = tc == null ? 0 : tc.endValue();
+							this.overTime4StrClc = tc == null ? 0 : tc.start();
+							this.overTime4EndClc = tc == null ? 0 : tc.end();
 						});
 				 
 						span = getTimeSpan(overTimeSheet, 5);
 						span.ifPresent( tc -> {
-							this.overTime5StrClc = tc == null ? 0 : tc.startValue();
-							this.overTime5EndClc = tc == null ? 0 : tc.endValue();
+							this.overTime5StrClc = tc == null ? 0 : tc.start();
+							this.overTime5EndClc = tc == null ? 0 : tc.end();
 						});
 				 
 						span = getTimeSpan(overTimeSheet, 6);
 						span.ifPresent( tc -> {
-							this.overTime6StrClc = tc == null ? 0 : tc.startValue();
-							this.overTime6EndClc = tc == null ? 0 : tc.endValue();
+							this.overTime6StrClc = tc == null ? 0 : tc.start();
+							this.overTime6EndClc = tc == null ? 0 : tc.end();
 						});
 				 
 						span = getTimeSpan(overTimeSheet, 7);
 						span.ifPresent( tc -> {
-							this.overTime7StrClc = tc == null ? 0 : tc.startValue();
-							this.overTime7EndClc = tc == null ? 0 : tc.endValue();
+							this.overTime7StrClc = tc == null ? 0 : tc.start();
+							this.overTime7EndClc = tc == null ? 0 : tc.end();
 						});
 				 
 						span = getTimeSpan(overTimeSheet, 8);
 						span.ifPresent( tc -> {
-							this.overTime8StrClc = tc == null ? 0 : tc.startValue();
-							this.overTime8EndClc = tc == null ? 0 : tc.endValue();
+							this.overTime8StrClc = tc == null ? 0 : tc.start();
+							this.overTime8EndClc = tc == null ? 0 : tc.end();
 						});
 				 
 						span = getTimeSpan(overTimeSheet, 9);
 						span.ifPresent( tc -> {
-							this.overTime9StrClc = tc == null ? 0 : tc.startValue();
-							this.overTime9EndClc = tc == null ? 0 : tc.endValue();
+							this.overTime9StrClc = tc == null ? 0 : tc.start();
+							this.overTime9EndClc = tc == null ? 0 : tc.end();
 						});
 				 
 						span = getTimeSpan(overTimeSheet, 10);
 						span.ifPresent( tc -> {
-							this.overTime10StrClc = tc == null ? 0 : tc.startValue();
-							this.overTime10EndClc = tc == null ? 0 : tc.endValue();
+							this.overTime10StrClc = tc == null ? 0 : tc.start();
+							this.overTime10EndClc = tc == null ? 0 : tc.end();
 						});
 					}
 					/*----------------------日別実績の残業時間帯------------------------------*/
@@ -2299,7 +2299,7 @@ public class KrcdtDayTime extends UkJpaEntity implements Serializable{
 	public TimeSpanForCalc createConnectSpan(List<TimeSpanForCalc> collect) {
 		TimeSpanForCalc connectSpan = collect.get(0);
 		for(TimeSpanForCalc nowTimeSpan : collect) {
-			if(!connectSpan.equals(nowTimeSpan) && connectSpan.endValue().intValue() == nowTimeSpan.getStart().valueAsMinutes()) {
+			if(!connectSpan.equals(nowTimeSpan) && connectSpan.end().intValue() == nowTimeSpan.getStart().valueAsMinutes()) {
 				connectSpan = new TimeSpanForCalc(connectSpan.getStart(), nowTimeSpan.getEnd());
 			}
 		}

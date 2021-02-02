@@ -60,10 +60,12 @@ module nts.uk.com.view.ccg008.a.Layout2ComponentViewModel {
                   const wg0 = $(`#WG2-${i}`)[0];
                   if(wg0) {
                     const wg0Child = wg0.firstElementChild.firstElementChild as any;
-                  let dataWg = data.widget.filter(e => e.widgetName === wg0Child.id);
-                  if(dataWg.length > 0) {
-                    wg0Child.style.height = dataWg[0].height + "px";
-                  }
+                    if(wg0Child) {
+                      let dataWg = data.widget.filter(e => e.widgetName === wg0Child.id);
+                      if(dataWg.length > 0) {
+                        wg0Child.style.height = dataWg[0].height + "px";
+                      }
+                    }
                 }
               }
               if ($(`#WG3-${i}`)) {

@@ -4,9 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.ws.worktype;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -16,6 +14,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import lombok.Value;
+import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.ws.WebService;
 import nts.gul.collection.CollectionUtil;
@@ -275,7 +274,8 @@ public class WorkTypeWebService extends WebService {
 	@POST
 	@Path("getpossiblewktypeKDL002")
 	public List<WorkTypeInfor> getPossibleWkTypeKDL002(List<String> lstPossible) {
-		return this.find.getPossibleWorkTypeKDL002(lstPossible);
+		List<String> lst = lstPossible!= null? lstPossible : Collections.emptyList();
+		return this.find.getPossibleWorkTypeKDL002(lst);
 	}
 	
 	@POST

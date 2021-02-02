@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.sha;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -15,6 +16,13 @@ public interface ShaDeforLaborMonthActCalSetRepo {
 	 * @return the optional
 	 */
 	Optional<ShaDeforLaborMonthActCalSet> find(String cId, String sId);
+	
+	/**
+	 * Find by Cid
+	 * @param cid
+	 * @return
+	 */
+	List<ShaDeforLaborMonthActCalSet> findByCid(String cid);
 
 	/**
 	 * Adds the.

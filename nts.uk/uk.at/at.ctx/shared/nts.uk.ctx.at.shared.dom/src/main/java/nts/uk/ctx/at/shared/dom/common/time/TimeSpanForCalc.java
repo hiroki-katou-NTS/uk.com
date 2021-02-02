@@ -16,7 +16,7 @@ import lombok.Getter;
 import lombok.val;
 import nts.arc.layer.dom.DomainObject;
 import nts.arc.time.clock.ClockHourMinuteSpan;
-import nts.uk.ctx.at.shared.dom.common.ComparableRange;
+import nts.gul.util.range.ComparableRange;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 /**
  * Calculate time from start to end. 計算時間帯
@@ -27,7 +27,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 @Getter
 @EqualsAndHashCode(callSuper = false)
-public class TimeSpanForCalc extends DomainObject implements ComparableRange<Integer> {
+public class TimeSpanForCalc extends DomainObject implements ComparableRange<TimeSpanForCalc, Integer> {
 	private final TimeWithDayAttr start;
 	private final TimeWithDayAttr end;
 
@@ -194,7 +194,7 @@ public class TimeSpanForCalc extends DomainObject implements ComparableRange<Int
 	 */
 	public boolean isContinus(TimeSpanForCalc other) {
 		val result = this.compare(other);
-		return result.isContinuousAfterBase() || result.isContinuousBeforeBase();
+		return result.isContinuous();
 	}
 	/**
 	 * 開始時刻のみ指定した時刻に移動する
@@ -294,23 +294,23 @@ public class TimeSpanForCalc extends DomainObject implements ComparableRange<Int
 	}
 
 	@Override
-	public Integer startValue() {
+	public Integer start() {
 		return this.start.v();
 	}
 
 	@Override
-	public Integer endValue() {
+	public Integer end() {
 		return this.end.v();
 	}
 
 	@Override
 	public Integer startNext(boolean isIncrement) {
-		return isIncrement ? this.startValue() + 1 : this.startValue() - 1;
+		return isIncrement ? this.start() + 1 : this.start() - 1;
 	}
 
 	@Override
 	public Integer endNext(boolean isIncrement) {
-		return isIncrement ? this.endValue() + 1 : this.endValue() - 1;
+		return isIncrement ? this.end() + 1 : this.end() - 1;
 	}
 	
 	/**
@@ -326,6 +326,11 @@ public class TimeSpanForCalc extends DomainObject implements ComparableRange<Int
 		val start = sources.stream().map(s -> s.getStart()).min(Comparator.naturalOrder()).get();
 		val end = sources.stream().map(s -> s.getEnd()).max(Comparator.naturalOrder()).get();
 		return Optional.of(new TimeSpanForCalc(start, end));
+	}
+
+	@Override
+	public TimeSpanForCalc newSpan(Integer newStart, Integer newEnd) {
+		return new TimeSpanForCalc(new TimeWithDayAttr(newStart), new TimeWithDayAttr(newEnd));
 	}
 
 	
