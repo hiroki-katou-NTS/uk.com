@@ -44,17 +44,19 @@ module nts.uk.at.view.ccg005.e.screenModel {
 
     created(props: createProps) {
       const vm = this;
-      vm.sid("ae7fe82e-a7bd-4ce3-adeb-5cd403a9d570"); //TODO props.sid
-      vm.businessName("大塚　太郎B"); //props.businessName
+      vm.sid(props.sid);
+      vm.businessName(props.businessName);
       vm.goOutDate(moment(props.goOutDate).format("YYYY/MM/DD"));
       vm.$blockui('grayout');
       vm.$ajax(API.getGoOutInformation, {
         sid: props.sid,
         date: props.goOutDate,
       }).then((data: GoOutEmployeeInformationDto) => {
-        vm.goOutReason(data.goOutReason);
-        vm.goOutTime(data.goOutTime);
-        vm.comebackTime(data.comebackTime);
+        if(data) {
+          vm.goOutReason(data.goOutReason);
+          vm.goOutTime(data.goOutTime);
+          vm.comebackTime(data.comebackTime);
+        }
       }).always(() => {
         vm.$blockui('clear');
       });
