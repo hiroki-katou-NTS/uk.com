@@ -64,6 +64,12 @@ module nts.uk.at.view.ccg005.a.object {
     employeeCode: string                                    //社員コード
   }
 
+  export interface EmployeeCommentInformationDto {
+    comment: string;                                        // コメント
+    date: any;                                              // 年月日
+    sid: string;                                            // 社員ID
+  }
+
   export enum StartMode {
     WORKPLACE = 0,
     DEPARTMENT = 1
