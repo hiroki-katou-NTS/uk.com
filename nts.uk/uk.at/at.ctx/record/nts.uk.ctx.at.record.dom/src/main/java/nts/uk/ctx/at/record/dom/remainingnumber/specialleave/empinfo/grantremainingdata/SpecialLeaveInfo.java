@@ -432,7 +432,6 @@ public class SpecialLeaveInfo implements Cloneable {
 			val newRemainData = SpecialLeaveGrantRemaining.of(
 					SpecialLeaveGrantRemainingData.createFromJavaType(
 					"",
-					companyId,
 					employeeId,
 					aggregatePeriodWork.getPeriod().start(),
 					deadline,

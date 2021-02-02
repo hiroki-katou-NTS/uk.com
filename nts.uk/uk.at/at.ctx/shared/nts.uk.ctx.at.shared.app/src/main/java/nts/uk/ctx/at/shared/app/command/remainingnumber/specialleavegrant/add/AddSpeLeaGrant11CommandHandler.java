@@ -41,7 +41,6 @@ public class AddSpeLeaGrant11CommandHandler
 		String cid = AppContexts.user().companyId();
 		SpecialLeaveGrantRemainingData domain = SpecialLeaveGrantRemainingData.createFromJavaType(
 				specialId,
-				cid,
 				command.getSid(),
 				command.getGrantDate(),
 				command.getDeadlineDate(),

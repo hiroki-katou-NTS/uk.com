@@ -40,7 +40,6 @@ public class AddSpeLeaGrant1CommandHandler
 
 		SpecialLeaveGrantRemainingData domain = SpecialLeaveGrantRemainingData.createFromJavaType(
 				specialId,
-				cid,
 				command.getSid(),
 				command.getGrantDate(),
 				command.getDeadlineDate(),

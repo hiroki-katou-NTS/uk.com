@@ -48,7 +48,6 @@ public class AddSpeLeaGrant13ListCommandHandler
 			String specialId = IdentifierUtil.randomUniqueId();
 			SpecialLeaveGrantRemainingData domain = SpecialLeaveGrantRemainingData.createFromJavaType(
 					specialId,
-					cid,
 					c.getSid(),
 					c.getGrantDate(),
 					c.getDeadlineDate(),

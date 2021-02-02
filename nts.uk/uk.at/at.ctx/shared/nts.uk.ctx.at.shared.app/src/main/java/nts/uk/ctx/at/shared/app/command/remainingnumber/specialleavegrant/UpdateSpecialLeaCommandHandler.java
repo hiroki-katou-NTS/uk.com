@@ -34,21 +34,9 @@ public class UpdateSpecialLeaCommandHandler extends CommandHandler<SpecialLeaveR
 			throw new BusinessException("Msg_1456");
 		}
 
-//		SpecialLeaveGrantRemainingData data = SpecialLeaveGrantRemainingData.createFromJavaType(
-//				command.getSpecialid(),AppContexts.user().companyId() ,command.getSid(), command.getSpecialLeaCode(),
-//				grantDate,
-//				GeneralDate.fromString(command.getDeadlineDate(), "yyyy/MM/dd"),
-//				command.getExpStatus(), GrantRemainRegisterType.MANUAL.value,
-//				command.getNumberDayGrant(),command.getTimeGrant(),
-//				command.getNumberDayUse(), command.getTimeUse(),
-//				null,
-//				command.getNumberDaysOver(), command.getTimeOver(),
-//				command.getNumberDayRemain(),command.getTimeRemain(),
-//				command.grantDateItemName, command.deadlineDateItemName);
 
 		SpecialLeaveGrantRemainingData data = SpecialLeaveGrantRemainingData.createFromJavaType(
 				command.getSpecialid(),
-				AppContexts.user().companyId(),
 				command.getSid(),
 				grantDate,
 				GeneralDate.fromString(command.getDeadlineDate(), "yyyy/MM/dd"),

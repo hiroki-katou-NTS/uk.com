@@ -11,19 +11,16 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemainingData;
 
 @Getter
-//@NoArgsConstructor
-//@AllArgsConstructor
-// 特休付与残数
+/** 特別休暇付与残数データ */
 public class SpecialLeaveGrantRemainingData extends LeaveGrantRemainingData {
 
 	/**
 	 * 特別休暇コード
 	 */
-	private int specialLeaveCode;
+	protected int specialLeaveCode;
 
 	public static SpecialLeaveGrantRemainingData createFromJavaType(
 			String leavID,
-			String cID,
 			String employeeId,
 			GeneralDate grantDate,
 			GeneralDate deadline,
@@ -39,25 +36,20 @@ public class SpecialLeaveGrantRemainingData extends LeaveGrantRemainingData {
 			double usedPercent,
 			int specialLeaveCode) {
 
-//		boolean check = validate(grantDate, deadline, grantDays, grantMinutes, numberOverdays,
-//				remainDays , grantDateItemName , deadlineDateItemName);
-//		if (check) {
-			SpecialLeaveGrantRemainingData domain = new SpecialLeaveGrantRemainingData();
-			domain.leaveID = leavID;
-			domain.employeeId = employeeId;
-			domain.grantDate = grantDate;
-			domain.deadline = deadline;
-			domain.expirationStatus = EnumAdaptor.valueOf(expirationStatus, LeaveExpirationStatus.class);
-			domain.registerType = EnumAdaptor.valueOf(registerType, GrantRemainRegisterType.class);
-			domain.details = new SpecialLeaveNumberInfo(
-					grantDays, grantMinutes, usedDays, usedMinutes,
-					stowageDays, remainDays, remainMinutes, usedPercent);
+		SpecialLeaveGrantRemainingData domain = new SpecialLeaveGrantRemainingData();
+		domain.leaveID = leavID;
+		domain.employeeId = employeeId;
+		domain.grantDate = grantDate;
+		domain.deadline = deadline;
+		domain.expirationStatus = EnumAdaptor.valueOf(expirationStatus, LeaveExpirationStatus.class);
+		domain.registerType = EnumAdaptor.valueOf(registerType, GrantRemainRegisterType.class);
+		domain.details = new SpecialLeaveNumberInfo(
+				grantDays, grantMinutes, usedDays, usedMinutes,
+				stowageDays, remainDays, remainMinutes, usedPercent);
 
-			domain.specialLeaveCode = specialLeaveCode;
+		domain.specialLeaveCode = specialLeaveCode;
 
-			return domain;
-//		}
-//		return null;
+		return domain;
 	}
 
 	public static boolean validate(GeneralDate grantDate, GeneralDate deadlineDate,

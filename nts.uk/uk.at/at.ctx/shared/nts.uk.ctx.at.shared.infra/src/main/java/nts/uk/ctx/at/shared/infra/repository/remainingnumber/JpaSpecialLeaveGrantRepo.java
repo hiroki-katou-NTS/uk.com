@@ -52,7 +52,6 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 			SpecialLeaveGrantRemainingData specialLeaveGrantRemainingData
 				= SpecialLeaveGrantRemainingData.createFromJavaType(
 						x.specialLeaID,
-						x.cId,
 						x.employeeId,
 						x.grantDate,
 						x.deadlineDate,
@@ -122,7 +121,6 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 	private SpecialLeaveGrantRemainingData toDomain(NtsResultRecord  record) {
 		return SpecialLeaveGrantRemainingData.createFromJavaType(
 				record.getString("SPECIAL_LEAVE_ID"),
-				record.getString("CID"),
 				record.getString("SID"),
 				record.getGeneralDate("GRANT_DATE"),
 				record.getGeneralDate("DEADLINE_DATE"),
@@ -259,7 +257,6 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 			SpecialLeaveGrantRemainingData specialLeaveGrantRemainingData
 				= SpecialLeaveGrantRemainingData.createFromJavaType(
 						x.specialLeaID,
-						x.cId,
 						x.employeeId,
 						x.grantDate,
 						x.deadlineDate,
@@ -400,7 +397,6 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 			SpecialLeaveGrantRemainingData specialLeaveGrantRemainingData
 				= SpecialLeaveGrantRemainingData.createFromJavaType(
 						x.specialLeaID,
-						x.cId,
 						x.employeeId,
 						x.grantDate,
 						x.deadlineDate,
@@ -477,7 +473,6 @@ public class JpaSpecialLeaveGrantRepo extends JpaRepository implements SpecialLe
 			SpecialLeaveGrantRemainingData specialLeaveGrantRemainingData
 				= SpecialLeaveGrantRemainingData.createFromJavaType(
 						x.specialLeaID,
-						x.cId,
 						x.employeeId,
 						x.grantDate,
 						x.deadlineDate,

@@ -87,7 +87,6 @@ public class RemainSpecialHolidayUpdating {
 
 			SpecialLeaveGrantRemainingData updateData = SpecialLeaveGrantRemainingData.createFromJavaType(
 					specialId,
-					companyId,
 					empId,
 					detail.getGrantDate(),
 					detail.getDeadline(),

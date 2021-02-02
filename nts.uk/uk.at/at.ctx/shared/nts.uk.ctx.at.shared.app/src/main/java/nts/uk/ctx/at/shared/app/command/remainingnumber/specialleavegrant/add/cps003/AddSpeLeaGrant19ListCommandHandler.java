@@ -48,7 +48,6 @@ implements PeregAddListCommandHandler<AddSpecialLeaveGrant19Command> {
 			String specialId = IdentifierUtil.randomUniqueId();
 			SpecialLeaveGrantRemainingData domain = SpecialLeaveGrantRemainingData.createFromJavaType(
 					specialId,
-					cid,
 					c.getSid(),
 					c.getGrantDate(),
 					c.getDeadlineDate(),
