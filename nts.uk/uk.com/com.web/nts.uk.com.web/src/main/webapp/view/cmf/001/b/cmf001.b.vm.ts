@@ -32,7 +32,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
         constructor(data?: any) {
             var self = this;
             if (data) self.transitData = data;
-            self.systemType = ko.observable(-1);
+            self.systemType = ko.observable(1);
             self.screenMode = ko.observable(model.SCREEN_MODE.NEW);
             self.listStandardImportSetting = ko.observableArray([]);
             self.selectedStandardImportSettingCode = ko.observable('');
