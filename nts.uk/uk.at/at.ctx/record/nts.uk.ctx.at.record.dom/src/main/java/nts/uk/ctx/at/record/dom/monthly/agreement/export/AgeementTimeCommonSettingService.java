@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
+import nts.uk.ctx.at.record.dom.standardtime.AgreementDomainService;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 
 public class AgeementTimeCommonSettingService {

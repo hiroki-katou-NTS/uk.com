@@ -16,7 +16,7 @@ import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetAgreementTime;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetAgreementTimeOfMngPeriod;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.*;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
-import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
+import nts.uk.ctx.at.record.dom.standardtime.AgreementDomainService;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.*;
@@ -386,7 +386,7 @@ public class SpecialProvisionOfAgreementQuery {
         this.parallel.forEach(employees, employee -> {
             // 年度指定して36協定基本設定を取得する
             BasicAgreementSetting basicSetting = AgreementDomainService.getBasicSet(requireService.createRequire(), cid,
-                    employee.getEmployeeId(), GeneralDate.today(), fiscalYear);
+                    employee.getEmployeeId(), GeneralDate.today(), fiscalYear).getBasicSetting();
             if (basicSetting != null) {
                 basicSettingAll.put(employee.getEmployeeId(), basicSetting);
             }
