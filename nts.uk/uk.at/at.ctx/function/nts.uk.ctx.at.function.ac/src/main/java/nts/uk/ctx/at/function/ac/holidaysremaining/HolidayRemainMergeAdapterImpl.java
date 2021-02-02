@@ -147,19 +147,16 @@ public class HolidayRemainMergeAdapterImpl implements HolidayRemainMergeAdapter{
 		List<AnnLeaveUsageStatusOfThisMonthImported> result363 = lst363.stream().map(c ->
 			new AnnLeaveUsageStatusOfThisMonthImported(c.getYearMonth(),
 					c.getAggrResultOfAnnualLeave().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
-							.getUsedNumber().getUsedDays().getUsedDays().v(),
+							.getUsedNumberInfo().getUsedNumber().getUsedDays().map(x -> x.v()).orElse(0d),
 					c.getAggrResultOfAnnualLeave().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
-							.getUsedNumber().getUsedTime().isPresent()
+							.getUsedNumberInfo().getUsedNumber().getUsedTime().map(x -> x.valueAsMinutes()),
+					c.getAggrResultOfAnnualLeave().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
+							.getRemainingNumberInfo().getRemainingNumber().getTotalRemainingDays().v(),
+					c.getAggrResultOfAnnualLeave().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
+							.getRemainingNumberInfo().getRemainingNumber().getTotalRemainingTime().isPresent()
 									? Optional.of(c.getAggrResultOfAnnualLeave().getAsOfPeriodEnd()
-											.getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumber()
-											.getUsedTime().get().getUsedTime().v())
-									: Optional.empty(),
-					c.getAggrResultOfAnnualLeave().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
-							.getRemainingNumber().getTotalRemainingDays().v(),
-					c.getAggrResultOfAnnualLeave().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
-							.getRemainingNumber().getTotalRemainingTime().isPresent()
-									? Optional.of(c.getAggrResultOfAnnualLeave().getAsOfPeriodEnd()
-											.getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumber()
+											.getRemainingNumber().getAnnualLeaveWithMinus()
+											.getRemainingNumberInfo().getRemainingNumber()
 											.getTotalRemainingTime().get().v())
 									: Optional.empty())
 		).collect(Collectors.toList());

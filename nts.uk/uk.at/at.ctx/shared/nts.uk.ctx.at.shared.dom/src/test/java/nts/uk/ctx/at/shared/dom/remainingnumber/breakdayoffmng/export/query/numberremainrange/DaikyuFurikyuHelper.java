@@ -237,7 +237,7 @@ public class DaikyuFurikyuHelper {
 	}
 
 	public static InterimRemain createRemain(String id, GeneralDate date, CreateAtr createBy, RemainType type) {
-		return new InterimRemain(id, SID, date, createBy, type, RemainAtr.SINGLE);
+		return new InterimRemain(id, SID, date, createBy, type);
 	}
 	
 	public static InterimAbsMng createAbsMng(String id, double requireDay) {

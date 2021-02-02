@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.specialholiday.event.SpecialHolidayDomainEvent;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * 
+ *
  * @author tanlv
  *
  */
@@ -25,37 +25,40 @@ import nts.uk.shr.com.context.AppContexts;
 public class CreateSpecialHolidayCommandHandler extends CommandHandlerWithResult<SpecialHolidayCommand, List<String>> {
 	@Inject
 	private SpecialHolidayRepository sphdRepo;
-	
+
 	@Override
 	protected List<String> handle(CommandHandlerContext<SpecialHolidayCommand> context) {
 		SpecialHolidayCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
 		List<String> errList = new ArrayList<String>();
-		
+
 		// check exists code
 		Optional<SpecialHoliday> specialHoliday = sphdRepo.findByCode(companyId, command.getSpecialHolidayCode());
 		if (specialHoliday.isPresent()) {
 			addMessage(errList, "Msg_3");
 		}
-		
+
 		SpecialHoliday domain = command.toDomain(companyId);
-		errList.addAll(domain.getGrantPeriodic().validateInput());
+		if ( domain.getGrantRegular().getGrantPeriodic().isPresent() ) {
+			errList.addAll(domain.getGrantRegular().getGrantPeriodic().get().validateInput());
+		}
+
 		errList.addAll(domain.getSpecialLeaveRestriction().validateInput());
-		
+
 		if (errList.isEmpty()) {
 			// call event
 			SpecialHolidayDomainEvent sHC = SpecialHolidayDomainEvent.createFromDomain(true,domain);
 			sHC.toBePublished();
-			// add to db		
+			// add to db
 			sphdRepo.add(domain);
 		}
-		
+
 		return errList;
 	}
-	
+
 	/**
 	 * Add exception message
-	 * 
+	 *
 	 * @param exceptions
 	 * @param messageId
 	 */

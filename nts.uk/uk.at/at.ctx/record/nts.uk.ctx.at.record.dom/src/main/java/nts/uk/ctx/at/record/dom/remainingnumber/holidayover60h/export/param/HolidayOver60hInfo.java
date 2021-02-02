@@ -8,7 +8,7 @@ import lombok.Setter;
 import nts.arc.time.GeneralDate;
 
 /**
- * ６０H超休情報 
+ * ６０H超休情報
  * @author masaaki_jinno
  *
  */
@@ -16,13 +16,19 @@ import nts.arc.time.GeneralDate;
 @Setter
 public class HolidayOver60hInfo implements Cloneable {
 
-	/** 年月日 */
+	/**
+	 * 年月日
+	 *  */
 	private GeneralDate ymd;
-	
-	/** 残数 */
+
+	/**
+	 * 残数
+	*/
 	private HolidayOver60hRemainingNumber remainingNumber;
-	
-	/** 付与残数データ */
+
+	/**
+	 付与残数データ
+	*/
 	private List<HolidayOver60hGrantRemaining> grantRemainingList;
 
 	/**

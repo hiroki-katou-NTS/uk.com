@@ -4,6 +4,7 @@ import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.PrimitiveValue;
 import nts.arc.primitive.constraint.IntegerRange;
 
+/** 特別休暇コード */
 @IntegerRange(min = 1, max = 20)
 public class SpecialHolidayCode extends IntegerPrimitiveValue<PrimitiveValue<Integer>> {
 	/** serialVersionUID */

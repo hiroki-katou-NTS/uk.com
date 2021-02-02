@@ -6,6 +6,7 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
@@ -18,7 +19,6 @@ public class AddSpeLeaGrant10CommandHandler
 		extends CommandHandlerWithResult<AddSpecialLeaveGrant10Command, PeregAddCommandResult>
 		implements PeregAddCommandHandler<AddSpecialLeaveGrant10Command> {
 
-		
 	@Inject
 	private SpeLeaveGrantCommandHandler addSpeLeaveGrantCommandHandler;
 
@@ -37,21 +37,23 @@ public class AddSpeLeaGrant10CommandHandler
 		val command = context.getCommand();
 		String specialId = IdentifierUtil.randomUniqueId();
 		String cid = AppContexts.user().companyId();
-		SpecialLeaveGrantRemainingData domain = SpecialLeaveGrantRemainingData.createFromJavaType(specialId, cid,
-				command.getSid(), 10,
-				command.getGrantDate(),command.getDeadlineDate(), 
+		SpecialLeaveGrantRemainingData domain = SpecialLeaveGrantRemainingData.createFromJavaType(
+				specialId,
+				command.getSid(),
+				command.getGrantDate(),
+				command.getDeadlineDate(),
 				command.getExpStatus().intValue(),
-				GrantRemainRegisterType.MANUAL.value, 
-				command.getNumberDayGrant(), 
+				GrantRemainRegisterType.MANUAL.value,
+				command.getNumberDayGrant().doubleValue(),
 				command.getTimeGrant() != null ? command.getTimeGrant().intValue() : null ,
-				command.getNumberDayUse(), 
-				command.getTimeUse() != null ? command.getTimeUse().intValue() : null, 
+				command.getNumberDayUse().doubleValue(),
+				command.getTimeUse() != null ? command.getTimeUse().intValue() : null,
 				null,
-				command.getNumberDaysOver(),
-				command.getTimeOver() != null ? command.getTimeOver().intValue() : null,
-				command.getNumberDayRemain(),
+				command.getNumberDayRemain().doubleValue(),
 				command.getTimeRemain() != null ? command.getTimeRemain().intValue() : null,
-				command.grantDateItemName, command.deadlineDateItemName);
+				0.0,
+				10);
+
 
 		return new PeregAddCommandResult(addSpeLeaveGrantCommandHandler.addHandler(domain));
 	}

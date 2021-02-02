@@ -17,11 +17,11 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class AnnualPaidLeaveFinder {
-    
+
     /** The paid leave repo. */
     @Inject
     private AnnualPaidLeaveSettingRepository paidLeaveRepo;
-    
+
     /**
      * Find by company id.
      *
@@ -35,7 +35,7 @@ public class AnnualPaidLeaveFinder {
         }
         return this.converetToDto(paidLeaveSetting);
     }
-    
+
     /**
      * Converet to dto.
      *
@@ -44,12 +44,12 @@ public class AnnualPaidLeaveFinder {
      */
     private AnnualPaidLeaveSettingFindDto converetToDto(AnnualPaidLeaveSetting setting) {
         AnnualPaidLeaveSettingFindDto dto = new AnnualPaidLeaveSettingFindDto();
-        
+
         dto.setAnnualManage(setting.getYearManageType().value);
-        
+
         // AcquisitionSetting
         dto.setAnnualPriority(setting.getAcquisitionSetting().annualPriority.value);
-        
+
         // Manage Annual
         dto.setAddAttendanceDay(setting.getManageAnnualSetting().isWorkDayCalculate() == true ? 1 : 0);
         dto.setMaxManageSemiVacation(setting.getManageAnnualSetting().getHalfDayManage().manageType.value);
@@ -57,12 +57,11 @@ public class AnnualPaidLeaveFinder {
         dto.setMaxNumberCompany(setting.getManageAnnualSetting().getHalfDayManage().maxNumberUniformCompany.v());
       /*  dto.setMaxGrantDay(setting.getManageAnnualSetting().getMaxGrantDay().v());
         dto.setMaxRemainingDay(setting.getManageAnnualSetting().getRemainingNumberSetting().remainingDayMaxNumber.v());*/
-        dto.setNumberYearRetain(setting.getManageAnnualSetting().getRemainingNumberSetting().retentionYear.v());
         /*dto.setRemainingNumberDisplay(setting.getManageAnnualSetting().getDisplaySetting().remainingNumberDisplay.value);
         dto.setNextGrantDayDisplay(setting.getManageAnnualSetting().getDisplaySetting().nextGrantDayDisplay.value);*/
         dto.setYearlyOfDays(setting.getManageAnnualSetting().getYearlyOfNumberDays().v());        
         dto.setRoundProcessCla(setting.getManageAnnualSetting().getHalfDayManage().roundProcesCla.value);
-        
+
         // Time Manage
         dto.setTimeManageType(setting.getTimeSetting().getTimeManageType().value);
         dto.setTimeUnit(setting.getTimeSetting().getTimeUnit().value);

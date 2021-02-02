@@ -6,10 +6,11 @@ import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.ClosureStatus;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
+import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 積立年休月別残数データ
@@ -34,12 +35,15 @@ public class RsvLeaRemNumEachMonth extends AggregateRoot {
 	/** 積立年休 */
 	private ReserveLeave reserveLeave;
 	/** 実積立年休 */
-	private RealReserveLeave realReserveLeave;
+	private ReserveLeave realReserveLeave;
 	/** 積立年休付与情報 */
 	private Optional<ReserveLeaveGrant> reserveLeaveGrant;
 	/** 付与区分 */
 	private boolean grantAtr;
-	
+
+	/** 未消化数 */
+	private ReserveLeaveUndigestedNumber undigestedNumber;
+
 	/**
 	 * コンストラクタ
 	 * @param employeeId 社員ID
@@ -52,21 +56,22 @@ public class RsvLeaRemNumEachMonth extends AggregateRoot {
 			YearMonth yearMonth,
 			ClosureId closureId,
 			ClosureDate closureDate){
-		
+
 		super();
 		this.employeeId = employeeId;
 		this.yearMonth = yearMonth;
 		this.closureId = closureId;
 		this.closureDate = closureDate;
-		
+
 		this.closurePeriod = new DatePeriod(GeneralDate.today(), GeneralDate.today());
 		this.closureStatus = ClosureStatus.UNTREATED;
 		this.reserveLeave = new ReserveLeave();
-		this.realReserveLeave = new RealReserveLeave();
+		this.realReserveLeave = new ReserveLeave();
 		this.reserveLeaveGrant = Optional.empty();
 		this.grantAtr = false;
+		undigestedNumber = new ReserveLeaveUndigestedNumber();
 	}
-	
+
 	/**
 	 * ファクトリー
 	 * @param employeeId 社員ID
@@ -79,6 +84,7 @@ public class RsvLeaRemNumEachMonth extends AggregateRoot {
 	 * @param realReserveLeave 実積立年休
 	 * @param reserveLeaveGrant 積立年休付与情報
 	 * @param grantAtr 付与区分
+	 * @param undigestedNumber 未消化数
 	 * @return 積立年休月別残数データ
 	 */
 	public static RsvLeaRemNumEachMonth of(
@@ -89,10 +95,11 @@ public class RsvLeaRemNumEachMonth extends AggregateRoot {
 			DatePeriod closurePeriod,
 			ClosureStatus closureStatus,
 			ReserveLeave reserveLeave,
-			RealReserveLeave realReserveLeave,
+			ReserveLeave realReserveLeave,
 			Optional<ReserveLeaveGrant> reserveLeaveGrant,
-			boolean grantAtr){
-		
+			boolean grantAtr,
+			double undigestedNumber){
+
 		RsvLeaRemNumEachMonth domain = new RsvLeaRemNumEachMonth(
 				employeeId, yearMonth, closureId, closureDate);
 		domain.closurePeriod = closurePeriod;
@@ -101,6 +108,7 @@ public class RsvLeaRemNumEachMonth extends AggregateRoot {
 		domain.realReserveLeave = realReserveLeave;
 		domain.reserveLeaveGrant = reserveLeaveGrant;
 		domain.grantAtr = grantAtr;
+		domain.undigestedNumber = ReserveLeaveUndigestedNumber.of(new ReserveLeaveRemainingDayNumber(undigestedNumber));
 		return domain;
 	}
 }

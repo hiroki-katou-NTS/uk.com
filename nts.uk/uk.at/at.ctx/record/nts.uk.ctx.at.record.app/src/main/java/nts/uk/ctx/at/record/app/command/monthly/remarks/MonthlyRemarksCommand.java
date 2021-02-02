@@ -13,12 +13,12 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remarks.RemarksMo
 public class MonthlyRemarksCommand extends MonthlyWorkCommonCommand{
 
 	@Getter
-	private List<MonthlyRemarksDto> data = new ArrayList<>();
+	private MonthlyRemarksDto data;
 	
 	@Override
 	public void setRecords(ConvertibleAttendanceItem item) {
 		if(item != null && item.isHaveData()){
-			this.data.add((MonthlyRemarksDto) item);
+			this.data = (MonthlyRemarksDto) item;
 		}
 	}
 
@@ -30,7 +30,7 @@ public class MonthlyRemarksCommand extends MonthlyWorkCommonCommand{
 
 	@Override
 	public List<RemarksMonthlyRecord> toDomain() {
-		return data.stream().map(d -> d.toDomain(getEmployeeId(), getYearMonth(), getClosureId(), getClosureDate())).collect(Collectors.toList());
+		return this.data == null ? new ArrayList<>() : this.data.toDomain(getEmployeeId(), getYearMonth(), getClosureId(), getClosureDate());
 	}
 	
 

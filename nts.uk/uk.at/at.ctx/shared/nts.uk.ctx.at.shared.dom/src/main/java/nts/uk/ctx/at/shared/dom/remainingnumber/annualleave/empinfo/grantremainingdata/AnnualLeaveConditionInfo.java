@@ -1,10 +1,22 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata;
 
+import java.io.Serializable;
+
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.YearDayNumber;
 
+/**
+ * 年休付与条件情報
+ */
 @Getter
-public class AnnualLeaveConditionInfo {
+@Setter
+public class AnnualLeaveConditionInfo implements Serializable{
+
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * 所定日数
@@ -26,6 +38,24 @@ public class AnnualLeaveConditionInfo {
 		domain.prescribedDays = new YearDayNumber(prescribedDays);
 		domain.deductedDays = new YearDayNumber(deductedDays);
 		domain.workingDays = new YearDayNumber(workingDays);
+		return domain;
+	}
+	/**
+	 * ファクトリー
+	 * @param prescribedDays　所定日数
+	 * @param deductedDays　控除日数
+	 * @param workingDays 労働日数
+	 * @return AnnualLeaveConditionInfo
+	*/
+	public static AnnualLeaveConditionInfo of(
+			YearDayNumber prescribedDays,
+			YearDayNumber deductedDays,
+			YearDayNumber workingDays) {
+
+		AnnualLeaveConditionInfo domain = new AnnualLeaveConditionInfo();
+		domain.prescribedDays = prescribedDays;
+		domain.deductedDays = deductedDays;
+		domain.workingDays = workingDays;
 		return domain;
 	}
 

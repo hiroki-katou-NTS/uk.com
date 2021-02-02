@@ -24,6 +24,8 @@ public class AddEditStatusList {
 
 			if (!itemEdit.isPresent()) {
 				result.add(edit);
+			}else {
+				itemEdit.get().setEditStateSetting(edit.getEditStateSetting());
 			}
 		}
 		return result;

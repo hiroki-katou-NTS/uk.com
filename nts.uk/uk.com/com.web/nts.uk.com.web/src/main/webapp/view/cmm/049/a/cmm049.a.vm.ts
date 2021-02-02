@@ -12,13 +12,13 @@ module nts.uk.com.view.cmm049.a {
     public selectedTab: KnockoutObservable<string>;
 
     public profileCheckList: KnockoutObservableArray<CheckboxModel> = ko.observableArray([]);
-    public profileSelectedId: KnockoutObservable<number> = ko.observable(1);
+    public profileSelectedId: KnockoutObservable<number> = ko.observable(2); //#114200
 
     public passwordCheckList: KnockoutObservableArray<CheckboxModel> = ko.observableArray([]);
-    public passwordSelectedId: KnockoutObservable<number> = ko.observable(1);
+    public passwordSelectedId: KnockoutObservable<number> = ko.observable(2); //#114200
 
     public noticeCheckList: KnockoutObservableArray<CheckboxModel> = ko.observableArray([]);
-    public noticeSelectedId: KnockoutObservable<number> = ko.observable(1);
+    public noticeSelectedId: KnockoutObservable<number> = ko.observable(2); //#114200
 
     public speechCheckList: KnockoutObservableArray<CheckboxModel> = ko.observableArray([]);
     public speechSelectedId: KnockoutObservable<number> = ko.observable(2); //#113760
@@ -259,6 +259,17 @@ module nts.uk.com.view.cmm049.a {
        * ユーザ情報の設定を起動する
        */
       vm.getData();
+
+      //fix bug #112907
+      vm.profileSelectedId.subscribe(newVal => {
+        if(newVal === 2) {
+          $('#A4_4_33').ntsError('clear');
+          $('#A4_4_36').ntsError('clear');
+          $('#A4_4_39').ntsError('clear');
+          $('#A4_4_42').ntsError('clear');
+          $('#A4_4_45').ntsError('clear');
+        }
+      });
     }
 
     public setCheckboxLine1(response: UserInformationSettingDto): void {
@@ -1020,19 +1031,6 @@ module nts.uk.com.view.cmm049.a {
             .map((item) => item.functionId)
             .value();
           const userInformationUseMethodDto: UserInformationUseMethodDto = vm.getUserInformationUseMethodDto(vm.getOtherContactDtos());
-
-          /**
-           * 登録する時利用のチェック処理
-           * すべて機能が利用してない場合
-           */
-          if (
-            vm.profileSelectedId() === 2 &&
-            vm.passwordSelectedId() === 2 &&
-            vm.noticeSelectedId() === 2 &&
-            vm.speechSelectedId() === 2
-          ) {
-            vm.$dialog.error({ messageId: "Msg_1778" });
-          } else {
             const command = new UserInformationUseMethodSaveCommand({
               userInformationUseMethodDto: userInformationUseMethodDto,
             });
@@ -1042,10 +1040,8 @@ module nts.uk.com.view.cmm049.a {
                 vm.$blockui("clear");
                 this.closeDialog();
               });
-          }
         }
       });
-
     }
   }
 

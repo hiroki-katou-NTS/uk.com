@@ -60,7 +60,7 @@ public class EventCorrectResult {
 	}
 	
 	public void removeEditStatesForCorrectedItem() {
-		List<Integer> canbeCorrected = getCorrectedItemsWithStrict().stream().map(bc -> bc.getItemId()).collect(Collectors.toList());
+		List<Integer> canbeCorrected = getCorrectedItemsWithStrict().stream().map(bc -> bc.itemId()).collect(Collectors.toList());
 		
 		this.corrected.getEditStates().removeIf(es -> canbeCorrected.contains(es.getAttendanceItemId()));
 	}

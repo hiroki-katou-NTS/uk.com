@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.yearholidaygrant;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +20,13 @@ import nts.arc.time.GeneralDate;
 @Setter
 @Getter
 @AllArgsConstructor
-public class LengthServiceTbl extends AggregateRoot{
+public class LengthServiceTbl extends AggregateRoot implements Serializable{
+	
+	/**
+	 * Serializable
+	 */
+	private static final long serialVersionUID = 1L;
+
 	/* 会社ID */
 	private String companyId;
 

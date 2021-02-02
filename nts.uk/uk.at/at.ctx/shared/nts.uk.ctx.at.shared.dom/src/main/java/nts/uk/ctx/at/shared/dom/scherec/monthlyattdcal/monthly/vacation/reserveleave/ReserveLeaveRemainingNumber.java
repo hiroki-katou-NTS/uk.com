@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserve
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -20,6 +21,7 @@ public class ReserveLeaveRemainingNumber implements Cloneable {
 	/** 合計残日数 */
 	@Setter
 	private ReserveLeaveRemainingDayNumber totalRemainingDays;
+	
 	/** 明細 */
 	private List<ReserveLeaveRemainingDetail> details;
 	
@@ -46,6 +48,15 @@ public class ReserveLeaveRemainingNumber implements Cloneable {
 		domain.totalRemainingDays = totalRemainingDays;
 		domain.details = details;
 		return domain;
+	}
+	
+	public void clear(){
+		this.totalRemainingDays = new ReserveLeaveRemainingDayNumber(0.0);
+		this.details = new ArrayList<>();
+	}
+	
+	public void clearDetails(){
+		this.details = new ArrayList<>();
 	}
 	
 	@Override
@@ -100,4 +111,5 @@ public class ReserveLeaveRemainingNumber implements Cloneable {
 	public void setDaysOfAllDetail(Double days){
 		for (val detail : this.details) detail.setDays(new ReserveLeaveRemainingDayNumber(days));
 	}
+	
 }

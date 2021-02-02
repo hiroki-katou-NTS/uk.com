@@ -4,6 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
 
+import java.io.Serializable;
+import java.util.Optional;
+
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
@@ -11,13 +14,20 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.TimeAnnualRoundProcesCla;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 
 /**
- * The Class TimeVacationSetting.
+ * 　時間年休管理設定
+ * The Class TimeAnnualSetting.
  */
 /** 時間年休管理設定 **/
 @Getter
-public class TimeAnnualSetting extends DomainObject {
+public class TimeAnnualSetting extends DomainObject implements Serializable {
 
-    /** The time manage type. */
+    /**
+     * 時間年休管理設定
+	 * Serializable
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/** The time manage type. */
     // 時間年休管理区分
     private ManageDistinct timeManageType;
 
@@ -29,15 +39,20 @@ public class TimeAnnualSetting extends DomainObject {
     // 上限日数:時間年休の上限日数
     private TimeAnnualMaxDay maxYearDayLeave;
 
-    /** The is enough time one day. */
-    // 1日の時間未満の時間年休を積立年休とする
-    private boolean isEnoughTimeOneDay;
-    
-    //端数処理区分
+//    /** The is enough time one day. */
+//    // 1日の時間未満の時間年休を積立年休とする
+//    private boolean isEnoughTimeOneDay;
+
+    /** 端数処理区分 */
+    // 端数処理区分
     private TimeAnnualRoundProcesCla roundProcessClassific;
+
+    /** 1日の時間 */
+    // 1日の時間
+    private Optional<AnnualTimePerDay> annualTimePerDay;
+
     // 時間年休一日の時間
     private TimeAnnualLeaveTimeDay timeAnnualLeaveTimeDay; 
-    
     
     /**
      * Instantiates a new time vacation setting.
@@ -51,7 +66,7 @@ public class TimeAnnualSetting extends DomainObject {
         this.roundProcessClassific = memento.GetRoundProcessClassific();
         this.timeAnnualLeaveTimeDay = memento.getTimeAnnualLeaveTimeDay();
     }
-    
+
     /**
      * Save to memento.
      *

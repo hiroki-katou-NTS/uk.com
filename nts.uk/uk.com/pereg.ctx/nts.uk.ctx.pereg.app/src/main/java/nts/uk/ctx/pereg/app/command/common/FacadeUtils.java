@@ -43,19 +43,19 @@ import nts.uk.shr.pereg.app.ItemValueType;
 
 @Stateless
 public class FacadeUtils {
-	
-	@Inject 
+
+	@Inject
 	private AffCompanyHistRepository affCompanyHistRepository;
-	
+
 	@Inject
 	private PerInfoItemDefRepositoty perInfoItemRepo;
-	
+
 	@Inject
 	private ComboBoxRetrieveFactory combox;
 
 	@Inject
 	private SocialInsuranceOfficeRepository socialInsuranceOfficeRepository;
-	
+
 	private static final List<String> historyCategoryCodeList = Arrays.asList("CS00003", "CS00004", "CS00014",
 			"CS00016", "CS00017", "CS00018", "CS00019", "CS00020", "CS00021", "CS00070", "CS00082", "CS00075", "CS00092");
 
@@ -124,18 +124,18 @@ public class FacadeUtils {
 
 		endDateItemCodes = Collections.unmodifiableMap(aMap);
 	}
-	
 
-	
+
+
 	private static final String FUNCTION_NAME = "getListDefault";
-	
+
 	// CS00020
 	public List<ItemValue> getListDefaultCS00020(List<ItemBasicInfo> listItemIfo) {
 		String numberType = String.valueOf(ItemValueType.NUMERIC.value);
 		List<PersonInfoItemDefinition> itemdfLst = this.perInfoItemRepo.getItemsByCtgCdItemCdsCid("CS00020",
 				Arrays.asList("IS00253", "IS00248", "IS00247", "IS00258", "IS00259", "IS00121"),
 				AppContexts.user().companyId(), AppContexts.user().contractCode());
-		
+
 		String[][] cs00020Item = new String[6][4];
 		if (!CollectionUtil.isEmpty(itemdfLst)) {
 			for (PersonInfoItemDefinition c : itemdfLst) {
@@ -212,7 +212,7 @@ public class FacadeUtils {
 			return FacadeUtils.createListItems(cs00020ItemInter, listItemIfo);
 		}
 	}
-	
+
 	// CS00025
 	public List<ItemValue> getListDefaultCS00025(List<ItemBasicInfo> listItemIfo) {
 		String numberType = String.valueOf(ItemValueType.NUMERIC.value);
@@ -235,7 +235,7 @@ public class FacadeUtils {
 			return FacadeUtils.createListItems(cs00025Item, listItemIfo);
 		}
 	}
-	
+
 	// CS00025
 	public List<ItemValue> getListDefaultEnum(List<ItemBasicInfo> listItemIfo) {
 		List<String> itemEnum = Arrays.asList("IS00297","IS00304","IS00311","IS00318", "IS00325","IS00332","IS00339","IS00346","IS00353","IS00360","IS00561","IS00568","IS00575",
@@ -253,10 +253,10 @@ public class FacadeUtils {
 					result.addAll(FacadeUtils.createListItems(cs00025Item, listItemIfo));
 				}
 			});
-		} 
+		}
 		return result;
 	}
-	
+
 	// CS00026
 	public List<ItemValue> getListDefaultCS00026(List<ItemBasicInfo> listItemIfo) {
 		String numberType = String.valueOf(ItemValueType.NUMERIC.value);
@@ -279,7 +279,7 @@ public class FacadeUtils {
 			return FacadeUtils.createListItems(cs00026Item, listItemIfo);
 		}
 	}
-	
+
 	// CS00027
 	public List<ItemValue> getListDefaultCS00027(List<ItemBasicInfo> listItemIfo) {
 		String numberType = String.valueOf(ItemValueType.NUMERIC.value);
@@ -325,7 +325,7 @@ public class FacadeUtils {
 		}
 	}
 
-	public List<ItemValue> getListDefaultCS00029(List<ItemBasicInfo> listItemIfo) {		
+	public List<ItemValue> getListDefaultCS00029(List<ItemBasicInfo> listItemIfo) {
 		String numberType = String.valueOf(ItemValueType.NUMERIC.value);
 		String notUse = String.valueOf(UseAtr.NOT_USE.value);
 		Optional<PersonInfoItemDefinition> itemdfOpt = this.perInfoItemRepo.getPerInfoItemDefByCtgCdItemCdCid("CS00029",
@@ -418,7 +418,7 @@ public class FacadeUtils {
 		}
 	}
 
-	public List<ItemValue> getListDefaultCS00033(List<ItemBasicInfo> listItemIfo) {		
+	public List<ItemValue> getListDefaultCS00033(List<ItemBasicInfo> listItemIfo) {
 		String numberType = String.valueOf(ItemValueType.NUMERIC.value);
 		String notUse = String.valueOf(UseAtr.NOT_USE.value);
 		Optional<PersonInfoItemDefinition> itemdfOpt = this.perInfoItemRepo.getPerInfoItemDefByCtgCdItemCdCid("CS00033",
@@ -465,7 +465,7 @@ public class FacadeUtils {
 			return FacadeUtils.createListItems(cs00034Item, listItemIfo);
 		}
 	}
-	
+
 	public List<ItemValue> getListDefaultCS00035(List<ItemBasicInfo> listItemIfo) {
 		String numberType = String.valueOf(ItemValueType.NUMERIC.value);
 		List<PersonInfoItemDefinition> itemdfLst = this.perInfoItemRepo.getItemsByCtgCdItemCdsCid("CS00035",
@@ -515,9 +515,9 @@ public class FacadeUtils {
 				}
 
 			}
-			
+
 			return FacadeUtils.createListItems(cs00035Item, listItemIfo);
-			
+
 		} else {
 			String[][] cs00035Item = { { "IS00369", numberType, "0", "0" },
 					{ "IS00370", numberType, String.valueOf(NotUseAtr.NOT_USE.value), "しない" },
@@ -526,7 +526,7 @@ public class FacadeUtils {
 			return FacadeUtils.createListItems(cs00035Item, listItemIfo);
 		}
 	}
-	
+
 	public List<ItemValue> getListDefaultCS00036(List<ItemBasicInfo> listItemIfo) {
 		String numberType = String.valueOf(ItemValueType.NUMERIC.value);
 		List<PersonInfoItemDefinition> itemdfLst = this.perInfoItemRepo.getItemsByCtgCdItemCdsCid("CS00036",
@@ -588,9 +588,9 @@ public class FacadeUtils {
 					break;
 				}
 			}
-			
+
 			return FacadeUtils.createListItems(cs00036Item, listItemIfo);
-			
+
 		} else {
 			String[][] cs00036Item = { { "IS00375", numberType, String.valueOf(NotUseAtr.NOT_USE.value), "しない" },
 					{ "IS00376", numberType, String.valueOf(UpperLimitSetting.FAMILY_INFO.value), "家族情報を参照" },
@@ -599,7 +599,7 @@ public class FacadeUtils {
 			return FacadeUtils.createListItems(cs00036Item, listItemIfo);
 		}
 	}
-	
+
 	public List<ItemValue> getListDefaultCS00037(List<ItemBasicInfo> listItemIfo) {
 		String numberType = String.valueOf(ItemValueType.NUMERIC.value);
 		Optional<PersonInfoItemDefinition> itemdfOpt = this.perInfoItemRepo.getPerInfoItemDefByCtgCdItemCdCid("CS00037",
@@ -616,7 +616,7 @@ public class FacadeUtils {
 			return FacadeUtils.createListItems(cs00037Item, listItemIfo);
 		}
 	}
-	
+
 	public List<ItemValue> getListDefaultCS00038(List<ItemBasicInfo> listItemIfo) {
 		String numberType = String.valueOf(ItemValueType.NUMERIC.value);
 		Optional<PersonInfoItemDefinition> itemdfOpt = this.perInfoItemRepo.getPerInfoItemDefByCtgCdItemCdCid("CS00038",
@@ -631,7 +631,7 @@ public class FacadeUtils {
 		} else {
 			String[][] cs00038Item = { { "IS00400", numberType, AVAILABLE, "使用可能" }};
 			return FacadeUtils.createListItems(cs00038Item, listItemIfo);
-		}		
+		}
 	}
 
 	public List<ItemValue> getListDefaultCS00039(List<ItemBasicInfo> listItemIfo) {
@@ -651,7 +651,7 @@ public class FacadeUtils {
 		}
 
 	}
-	
+
 	public List<ItemValue> getListDefaultCS00040(List<ItemBasicInfo> listItemIfo) {
 		String numberType = String.valueOf(ItemValueType.NUMERIC.value);
 		Optional<PersonInfoItemDefinition> itemdfOpt = this.perInfoItemRepo.getPerInfoItemDefByCtgCdItemCdCid("CS00040",
@@ -666,9 +666,9 @@ public class FacadeUtils {
 		} else {
 			String[][] cs00040Item = { { "IS00426", numberType, AVAILABLE, "使用可能" }};
 			return FacadeUtils.createListItems(cs00040Item, listItemIfo);
-		}	
+		}
 	}
-	
+
 	public List<ItemValue> getListDefaultCS00041(List<ItemBasicInfo> listItemIfo) {
 		String numberType = String.valueOf(ItemValueType.NUMERIC.value);
 		Optional<PersonInfoItemDefinition> itemdfOpt = this.perInfoItemRepo.getPerInfoItemDefByCtgCdItemCdCid("CS00041",
@@ -683,9 +683,9 @@ public class FacadeUtils {
 		} else {
 			String[][] cs00041Item = { { "IS00441", numberType, AVAILABLE, "使用可能" }};
 			return FacadeUtils.createListItems(cs00041Item, listItemIfo);
-		}	
+		}
 	}
-	
+
 	public List<ItemValue> getListDefaultCS00042(List<ItemBasicInfo> listItemIfo) {
 		String numberType = String.valueOf(ItemValueType.NUMERIC.value);
 		Optional<PersonInfoItemDefinition> itemdfOpt = this.perInfoItemRepo.getPerInfoItemDefByCtgCdItemCdCid("CS00042",
@@ -700,9 +700,9 @@ public class FacadeUtils {
 		} else {
 			String[][] cs00042Item = { { "IS00456", numberType, AVAILABLE, "使用可能" }};
 			return FacadeUtils.createListItems(cs00042Item, listItemIfo);
-		}	
+		}
 	}
-	
+
 	public List<ItemValue> getListDefaultCS00043(List<ItemBasicInfo> listItemIfo) {
 		String numberType = String.valueOf(ItemValueType.NUMERIC.value);
 		Optional<PersonInfoItemDefinition> itemdfOpt = this.perInfoItemRepo.getPerInfoItemDefByCtgCdItemCdCid("CS00043",
@@ -717,9 +717,9 @@ public class FacadeUtils {
 		} else {
 			String[][] cs00043Item = { { "IS00471", numberType, AVAILABLE, "使用可能" }};
 			return FacadeUtils.createListItems(cs00043Item, listItemIfo);
-		}			
+		}
 	}
-	
+
 	public List<ItemValue> getListDefaultCS00044(List<ItemBasicInfo> listItemIfo) {
 		String numberType = String.valueOf(ItemValueType.NUMERIC.value);
 		Optional<PersonInfoItemDefinition> itemdfOpt = this.perInfoItemRepo.getPerInfoItemDefByCtgCdItemCdCid("CS00044",
@@ -734,9 +734,9 @@ public class FacadeUtils {
 		} else {
 			String[][] cs00044Item = { { "IS00486", numberType, AVAILABLE, "使用可能" }};
 			return FacadeUtils.createListItems(cs00044Item, listItemIfo);
-		}	
+		}
 	}
-	
+
 	public List<ItemValue> getListDefaultCS00045(List<ItemBasicInfo> listItemIfo) {
 		String numberType = String.valueOf(ItemValueType.NUMERIC.value);
 		Optional<PersonInfoItemDefinition> itemdfOpt = this.perInfoItemRepo.getPerInfoItemDefByCtgCdItemCdCid("CS00045",
@@ -751,10 +751,10 @@ public class FacadeUtils {
 		} else {
 			String[][] cs00045Item = { { "IS00501", numberType, AVAILABLE, "使用可能" }};
 			return FacadeUtils.createListItems(cs00045Item, listItemIfo);
-		}	
+		}
 	}
 
-	
+
 	public List<ItemValue> getListDefaultCS00046(List<ItemBasicInfo> listItemIfo) {
 		String numberType = String.valueOf(ItemValueType.NUMERIC.value);
 		Optional<PersonInfoItemDefinition> itemdfOpt = this.perInfoItemRepo.getPerInfoItemDefByCtgCdItemCdCid("CS00046",
@@ -769,7 +769,7 @@ public class FacadeUtils {
 		} else {
 			String[][] cs00046Item = { { "IS00516", numberType, AVAILABLE,"使用可能" }};
 			return FacadeUtils.createListItems(cs00046Item, listItemIfo);
-		}	
+		}
 	}
 
 	public List<ItemValue> getListDefaultCS00047(List<ItemBasicInfo> listItemIfo) {
@@ -786,9 +786,9 @@ public class FacadeUtils {
 		} else {
 			String[][] cs00047Item = { { "IS00531", numberType, AVAILABLE, "使用可能" }};
 			return FacadeUtils.createListItems(cs00047Item, listItemIfo);
-		}	
+		}
 	}
-	
+
 	public List<ItemValue> getListDefaultCS00048(List<ItemBasicInfo> listItemIfo) {
 		String numberType = String.valueOf(ItemValueType.NUMERIC.value);
 		Optional<PersonInfoItemDefinition> itemdfOpt = this.perInfoItemRepo.getPerInfoItemDefByCtgCdItemCdCid("CS00048",
@@ -803,7 +803,7 @@ public class FacadeUtils {
 		} else {
 			String[][] cs00048Item = { { "IS00546", numberType, AVAILABLE, "使用可能" }};
 			return FacadeUtils.createListItems(cs00048Item, listItemIfo);
-		}			
+		}
 	}
 
 	public List<ItemValue> getListDefaultCS00049(List<ItemBasicInfo> listItemIfo) {
@@ -812,7 +812,7 @@ public class FacadeUtils {
 				"IS00560", AppContexts.user().companyId(), AppContexts.user().contractCode());
 		String NOT_USE = String.valueOf(UseAtr.NOT_USE.value);
 		if (itemdfOpt.isPresent()) {
-			
+
 			Optional<InitValue> initValueOpt = itemdfOpt.get().getInitValue();
 			String value = initValueOpt.isPresent() == true? initValueOpt.get().v(): NOT_USE;
 			String[][] cs00049Item = {
@@ -823,9 +823,9 @@ public class FacadeUtils {
 			return FacadeUtils.createListItems(cs00049Item, listItemIfo);
 		}
 	}
-	
+
 	public List<ItemValue> getListDefaultCS00050(List<ItemBasicInfo> listItemIfo) {
-		String numberType = String.valueOf(ItemValueType.NUMERIC.value);		
+		String numberType = String.valueOf(ItemValueType.NUMERIC.value);
 		Optional<PersonInfoItemDefinition> itemdfOpt = this.perInfoItemRepo.getPerInfoItemDefByCtgCdItemCdCid("CS00050",
 				"IS00567", AppContexts.user().companyId(), AppContexts.user().contractCode());
 		String NOT_USE = String.valueOf(UseAtr.NOT_USE.value);
@@ -840,9 +840,9 @@ public class FacadeUtils {
 			return FacadeUtils.createListItems(cs00050Item, listItemIfo);
 		}
 	}
-	
-	public List<ItemValue> getListDefaultCS00051(List<ItemBasicInfo> listItemIfo) {		
-		String numberType = String.valueOf(ItemValueType.NUMERIC.value);	
+
+	public List<ItemValue> getListDefaultCS00051(List<ItemBasicInfo> listItemIfo) {
+		String numberType = String.valueOf(ItemValueType.NUMERIC.value);
 		Optional<PersonInfoItemDefinition> itemdfOpt = this.perInfoItemRepo.getPerInfoItemDefByCtgCdItemCdCid("CS00051",
 				"IS00574", AppContexts.user().companyId(), AppContexts.user().contractCode());
 		String NOT_USE = String.valueOf(UseAtr.NOT_USE.value);
@@ -857,9 +857,9 @@ public class FacadeUtils {
 			return FacadeUtils.createListItems(cs00051Item, listItemIfo);
 		}
 	}
-	
+
 	public List<ItemValue> getListDefaultCS00052(List<ItemBasicInfo> listItemIfo) {
-		String numberType = String.valueOf(ItemValueType.NUMERIC.value);		
+		String numberType = String.valueOf(ItemValueType.NUMERIC.value);
 		Optional<PersonInfoItemDefinition> itemdfOpt = this.perInfoItemRepo.getPerInfoItemDefByCtgCdItemCdCid("CS00052",
 				"IS00581", AppContexts.user().companyId(), AppContexts.user().contractCode());
 		String NOT_USE = String.valueOf(UseAtr.NOT_USE.value);
@@ -874,9 +874,9 @@ public class FacadeUtils {
 			return FacadeUtils.createListItems(cs00052Item, listItemIfo);
 		}
 	}
-	
+
 	public List<ItemValue> getListDefaultCS00053(List<ItemBasicInfo> listItemIfo) {
-		String numberType = String.valueOf(ItemValueType.NUMERIC.value);		
+		String numberType = String.valueOf(ItemValueType.NUMERIC.value);
 		Optional<PersonInfoItemDefinition> itemdfOpt = this.perInfoItemRepo.getPerInfoItemDefByCtgCdItemCdCid("CS00053",
 				"IS00588", AppContexts.user().companyId(), AppContexts.user().contractCode());
 		String NOT_USE = String.valueOf(UseAtr.NOT_USE.value);
@@ -891,9 +891,9 @@ public class FacadeUtils {
 			return FacadeUtils.createListItems(cs00053Item, listItemIfo);
 		}
 	}
-	
-	public List<ItemValue> getListDefaultCS00054(List<ItemBasicInfo> listItemIfo) {		
-		String numberType = String.valueOf(ItemValueType.NUMERIC.value);		
+
+	public List<ItemValue> getListDefaultCS00054(List<ItemBasicInfo> listItemIfo) {
+		String numberType = String.valueOf(ItemValueType.NUMERIC.value);
 		Optional<PersonInfoItemDefinition> itemdfOpt = this.perInfoItemRepo.getPerInfoItemDefByCtgCdItemCdCid("CS00054",
 				"IS00595", AppContexts.user().companyId(), AppContexts.user().contractCode());
 		String NOT_USE = String.valueOf(UseAtr.NOT_USE.value);
@@ -908,9 +908,9 @@ public class FacadeUtils {
 			return FacadeUtils.createListItems(cs00054Item, listItemIfo);
 		}
 	}
-	
+
 	public List<ItemValue> getListDefaultCS00055(List<ItemBasicInfo> listItemIfo) {
-		String numberType = String.valueOf(ItemValueType.NUMERIC.value);		
+		String numberType = String.valueOf(ItemValueType.NUMERIC.value);
 		Optional<PersonInfoItemDefinition> itemdfOpt = this.perInfoItemRepo.getPerInfoItemDefByCtgCdItemCdCid("CS00055",
 				"IS00602", AppContexts.user().companyId(), AppContexts.user().contractCode());
 		String NOT_USE = String.valueOf(UseAtr.NOT_USE.value);
@@ -925,9 +925,9 @@ public class FacadeUtils {
 			return FacadeUtils.createListItems(cs00055Item, listItemIfo);
 		}
 	}
-	
+
 	public List<ItemValue> getListDefaultCS00056(List<ItemBasicInfo> listItemIfo) {
-		String numberType = String.valueOf(ItemValueType.NUMERIC.value);		
+		String numberType = String.valueOf(ItemValueType.NUMERIC.value);
 		Optional<PersonInfoItemDefinition> itemdfOpt = this.perInfoItemRepo.getPerInfoItemDefByCtgCdItemCdCid("CS00056",
 				"IS00609", AppContexts.user().companyId(), AppContexts.user().contractCode());
 		String NOT_USE = String.valueOf(UseAtr.NOT_USE.value);
@@ -943,9 +943,9 @@ public class FacadeUtils {
 			return FacadeUtils.createListItems(cs00056Item, listItemIfo);
 		}
 	}
-	
+
 	public List<ItemValue> getListDefaultCS00057(List<ItemBasicInfo> listItemIfo) {
-		String numberType = String.valueOf(ItemValueType.NUMERIC.value);		
+		String numberType = String.valueOf(ItemValueType.NUMERIC.value);
 		Optional<PersonInfoItemDefinition> itemdfOpt = this.perInfoItemRepo.getPerInfoItemDefByCtgCdItemCdCid("CS00057",
 				"IS00616", AppContexts.user().companyId(), AppContexts.user().contractCode());
 		String NOT_USE = String.valueOf(UseAtr.NOT_USE.value);
@@ -960,9 +960,9 @@ public class FacadeUtils {
 			return FacadeUtils.createListItems(cs00057Item, listItemIfo);
 		}
 	}
-	
+
 	public List<ItemValue> getListDefaultCS00058(List<ItemBasicInfo> listItemIfo) {
-		String numberType = String.valueOf(ItemValueType.NUMERIC.value);		
+		String numberType = String.valueOf(ItemValueType.NUMERIC.value);
 		Optional<PersonInfoItemDefinition> itemdfOpt = this.perInfoItemRepo.getPerInfoItemDefByCtgCdItemCdCid("CS00058",
 				"IS00623", AppContexts.user().companyId(), AppContexts.user().contractCode());
 		String NOT_USE = String.valueOf(UseAtr.NOT_USE.value);
@@ -977,7 +977,7 @@ public class FacadeUtils {
 			return FacadeUtils.createListItems(cs00058Item, listItemIfo);
 		}
 	}
-	
+
 	/**
 	 * Create item
 	 * @param itemCode
@@ -986,14 +986,14 @@ public class FacadeUtils {
 	 * @return
 	 */
 	public static ItemValue createItem(String itemCode, int type, String itemValue,String contentValue, List<ItemBasicInfo> listItemIfo ){
-		
+
 		Optional<ItemBasicInfo> itemInfo = listItemIfo.stream().filter(i -> itemCode.equals(i.getItemCode()))
 				.findFirst();
 
 		return new ItemValue(itemInfo.map(i -> i.getItemId()).orElse(null), itemCode,
 				itemInfo.map(i -> i.getItemName()).orElse(null), itemValue, contentValue, null, null, type, type);
 	}
-	
+
 	/**
 	 * Create list items
 	 * @param listItem
@@ -1058,7 +1058,7 @@ public class FacadeUtils {
 	 */
 	public List<ItemValue> getListDefaultItem(String categoryCode,
 			List<String> listItemCodeInScreen, String sid, List<ItemBasicInfo> listItemIfo) {
-		
+
 		List<ItemValue> listItemResult = new ArrayList<>();
 		try {
 			Method method = FacadeUtils.class.getMethod(FUNCTION_NAME + categoryCode, List.class);
@@ -1068,9 +1068,9 @@ public class FacadeUtils {
 		} catch (Exception e){
 			System.out.println(e.getMessage());
 		}
-		
-		listItemResult.addAll(processHistoryPeriod(categoryCode,listItemCodeInScreen,sid, listItemIfo));		
-		
+
+		listItemResult.addAll(processHistoryPeriod(categoryCode,listItemCodeInScreen,sid, listItemIfo));
+
 		return listItemResult.stream().filter(i-> !listItemCodeInScreen.contains(i.itemCode())).collect(Collectors.toList());
 	}
 
@@ -1102,7 +1102,7 @@ public class FacadeUtils {
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
-		
+
 		itemsBySid.putAll(processHistoryPeriod(categoryCode, listItemCodeInScreen, employees, listItemIfo));
 
 		itemsBySid.forEach((k, v) -> {
@@ -1112,7 +1112,7 @@ public class FacadeUtils {
 
 		return result;
 	}
-	
+
 	/**
 	 * Get history item for CPS007
 	 * @param categoryCode
@@ -1126,7 +1126,7 @@ public class FacadeUtils {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * Set default item for history category
 	 * @param categoryCode
@@ -1137,13 +1137,13 @@ public class FacadeUtils {
 	public List<ItemValue> processHistoryPeriod(String categoryCode,List<String> listItemCodeInScreen, String sid, List<ItemBasicInfo> listItemIfo) {
 		List<ItemValue> listItemResult = new ArrayList<>();
 		int dataType = DataTypeValue.DATE.value;
-		
+
 		Optional<GeneralDate> hireDate = getHireDate(sid);
-		
+
 		if (!hireDate.isPresent()){
 			return listItemResult;
 		}
-		
+
 		if (historyCategoryCodeList.contains(categoryCode)) {
 			String startDateItemCode = startDateItemCodes.get(categoryCode);
 			String endDateItemCode = endDateItemCodes.get(categoryCode);
@@ -1160,7 +1160,7 @@ public class FacadeUtils {
 		}
 		return listItemResult;
 	}
-	
+
 	/**
 	 * Get hire date
 	 * @param sid
@@ -1174,7 +1174,7 @@ public class FacadeUtils {
 		}
 		return Optional.empty();
 	}
-	
+
 	/**
 	 * dùng cho màn cps003, tối ưu time
 	 * Map<String, String> employees Map<pid, sid>
@@ -1188,7 +1188,7 @@ public class FacadeUtils {
 			Map<String, String> employees, List<ItemBasicInfo> listItemIfo) {
 
 		Map<String, List<ItemValue>> result = new HashMap<>();
-		
+
 		int dataType = DataTypeValue.DATE.value;
 
 		Map<String, Optional<GeneralDate>> hireDate = getHireDate(employees);
@@ -1213,8 +1213,8 @@ public class FacadeUtils {
 		});
 		return result;
 	}
-	
-	
+
+
 	/**
 	 * dùng cho màn cps003
 	 * Get hire date
@@ -1239,7 +1239,7 @@ public class FacadeUtils {
 		});
 		return result;
 	}
-	
+
 	/**
 	 * Get list Default item for CPS007
 	 * @param listCategoryCode
@@ -1251,7 +1251,7 @@ public class FacadeUtils {
 	 * @throws InvocationTargetException
 	 */
 	public List<String> getListDefaultItem(List<String> listCategoryCode) {
-		
+
 		List<String> listItemResult = new ArrayList<>();
 		listCategoryCode.forEach(category -> {
 			try {
@@ -1262,10 +1262,10 @@ public class FacadeUtils {
 			} catch (Exception e){
 				System.out.println(e.getMessage());
 			}
-			
-			listItemResult.addAll(getListHistoryItem(category));		
+
+			listItemResult.addAll(getListHistoryItem(category));
 		});
 		return listItemResult;
 	}
-	
+
 }

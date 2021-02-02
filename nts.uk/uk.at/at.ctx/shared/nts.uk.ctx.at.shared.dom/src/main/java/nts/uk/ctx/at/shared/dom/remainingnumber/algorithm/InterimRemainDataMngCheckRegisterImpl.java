@@ -37,9 +37,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnOffset
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpReserveLeaveMngWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.ComplileInPeriodOfSpecialLeaveParam;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InPeriodOfSpecialLeave;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveManagementService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.CompanyHolidayMngSetting;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.AnnualLeaveErrorSharedImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.GetAnnLeaRemNumWithinPeriodSharedImport;
@@ -48,6 +45,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveC
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
+//import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.ComplileInPeriodOfSpecialLeaveParam;
 
 @Stateless
 public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataMngCheckRegister {
@@ -58,7 +56,10 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 	private CompensLeaveComSetRepository leaveSetRepos;
 	@Inject
 	private GetAnnLeaRemNumWithinPeriodSharedImport annualService;
-	
+//	@Inject
+//	private ComplileInPeriodOfSpecialLeaveSharedImport specialLeaveService;
+
+
 	/** REQUIRE対応 */
 	@Inject
 	private RemainNumberTempRequireService requireService;
@@ -95,7 +96,7 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 				if (data.getRecAbsData().isEmpty()) {
 					String mngId = IdentifierUtil.randomUniqueId();
 					InterimRemain furikyu = new InterimRemain(mngId, inputParam.getSid(), x.getAppDate(),
-							CreateAtr.APPBEFORE, RemainType.PAUSE, RemainAtr.SINGLE);
+							CreateAtr.APPBEFORE, RemainType.PAUSE);
 					InterimAbsMng furikyuSinsei = new InterimAbsMng(mngId, new RequiredDay(0.0), new UnOffsetDay(0.0));
 					data.getRecAbsData().add(furikyu);
 					data.setInterimAbsData(Optional.of(furikyuSinsei));
@@ -157,25 +158,25 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 			for (InterimSpecialHolidayMng a : specialHolidayData) {
 				List<InterimRemain> interimSpecialChk = interimSpecial.stream()
 						.filter(c -> c.getRemainManaID().equals(a.getSpecialHolidayId())).collect(Collectors.toList());
-				ComplileInPeriodOfSpecialLeaveParam speParam = new ComplileInPeriodOfSpecialLeaveParam(
-						inputParam.getCid(), inputParam.getSid(), inputParam.getDatePeriod(), inputParam.isMode(),
-						!interimSpecialChk.isEmpty() ? interimSpecialChk.get(0).getYmd() : inputParam.getBaseDate(),
-						a.getSpecialHolidayCode(), false, true, interimSpecial, specialHolidayData, Optional.empty());
-				InPeriodOfSpecialLeave speOutCheck = SpecialLeaveManagementService
-						.complileInPeriodOfSpecialLeave(require, cacheCarrier, speParam).getAggSpecialLeaveResult();
-				if (!speOutCheck.getLstError().isEmpty()) {
-					outputData.setChkSpecial(true);
-					break;
-				}
+
+//				List<SpecialLeaveError> specialErros = specialLeaveService.complileInPeriodOfSpecialLeave(
+//						require, cacheCarrier, inputParam.getCid(), inputParam.getSid(), inputParam.getDatePeriod(), inputParam.isMode(),
+//						!interimSpecialChk.isEmpty() ? interimSpecialChk.get(0).getYmd() : inputParam.getBaseDate(),
+//						a.getSpecialHolidayCode(), false, true, interimSpecial, specialHolidayData);
+//
+//				if (!specialErros.isEmpty()) {
+//					outputData.setChkSpecial(true);
+//					break;
+//				}
 			}
 		}
 		// 年休チェック区分をチェックする
 		List<TmpAnnualLeaveMngWork> mngWork = new ArrayList<>();
 		if (inputParam.isChkAnnual()) {
 			mngWork = annualHolidayData.stream().map(o -> {
-				InterimRemain annualInterim = annualMng.stream().filter(a -> a.getRemainManaID() == o.getAnnualId())
-						.collect(Collectors.toList()).get(0);
-				return TmpAnnualLeaveMngWork.of(annualInterim, o);
+//				InterimRemain annualInterim = annualMng.stream().filter(a -> a.getRemainManaID() == o.getAnnualId())
+//						.collect(Collectors.toList()).get(0);
+				return TmpAnnualLeaveMngWork.of(o);
 			}).collect(Collectors.toList());
 			List<AnnualLeaveErrorSharedImport> lstError = annualService.annualLeaveErrors(inputParam.getCid(),
 					inputParam.getSid(), inputParam.getDatePeriod(), inputParam.isMode(), inputParam.getBaseDate(),
@@ -257,7 +258,7 @@ public class InterimRemainDataMngCheckRegisterImpl implements InterimRemainDataM
 			y.getAnnualHolidayData().ifPresent(z -> {
 				annualHolidayData.add(z);
 				List<InterimRemain> lstTmp = y.getRecAbsData().stream()
-						.filter(w -> w.getRemainManaID().equals(z.getAnnualId())).collect(Collectors.toList());
+						.filter(w -> w.getRemainManaID().equals(z.getRemainManaID())).collect(Collectors.toList());
 				for (InterimRemain mngData : lstTmp) {
 					annualMng.add(mngData);
 				}

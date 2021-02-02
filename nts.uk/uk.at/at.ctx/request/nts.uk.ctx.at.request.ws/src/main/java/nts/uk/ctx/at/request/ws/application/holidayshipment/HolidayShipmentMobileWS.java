@@ -12,6 +12,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
@@ -22,9 +24,13 @@ import nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.P
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.PreUpdateErrorCheck;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.SaveHolidayShipmentCommandHandlerRef5;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.UpdateHolidayShipmentCommandHandlerRef5;
+import nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.command.HdShipmentMBTimeZoneParam;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.HolidayShipmentScreenAFinder;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.DisplayInforWhenStarting;
+import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.HdShipmentMBTimeZoneDto;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
+import nts.uk.ctx.at.request.dom.application.appabsence.service.AbsenceServiceProcess;
+import nts.uk.ctx.at.request.dom.application.appabsence.service.output.VacationCheckOutput;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
@@ -33,7 +39,11 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.Process
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
+import nts.uk.ctx.at.shared.app.find.common.TimeZoneWithWorkNoDto;
+import nts.uk.ctx.at.shared.app.find.worktime.predset.dto.TimeZone_NewDto;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.shr.com.context.AppContexts;
 
 @Path("at/request/application/holidayshipment/mobile")
@@ -60,6 +70,9 @@ public class HolidayShipmentMobileWS extends WebService {
 	
 	@Inject
 	private UpdateHolidayShipmentCommandHandlerRef5 updateHolidayShipmentCommandHandlerRef5;
+	
+	@Inject
+	private AbsenceServiceProcess absenceServiceProcess;
 	
 	@POST
 	@Path("start")
@@ -178,9 +191,9 @@ public class HolidayShipmentMobileWS extends WebService {
 				appDispInfoStartup.getAppDispInfoWithDateOutput().getBaseDate(),
 				appDispInfoStartup.getAppDispInfoNoDateOutput().isMailServerSet(),
 				appDispInfoStartup.getAppDispInfoWithDateOutput().getOpListApprovalPhaseState().get(),
-				CollectionUtil.isEmpty(command.getRecHolidayMngLst()) ? Collections.emptyList() : command.getRecHolidayMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()),
-				CollectionUtil.isEmpty(command.getAbsHolidayMngLst()) ? Collections.emptyList() : command.getAbsHolidayMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()),
-				CollectionUtil.isEmpty(command.getAbsWorkMngLst()) ? Collections.emptyList() : command.getAbsWorkMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()),
+				CollectionUtil.isEmpty(command.getRecHolidayMngLst()) ? new ArrayList<>() : command.getRecHolidayMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()),
+				CollectionUtil.isEmpty(command.getAbsHolidayMngLst()) ? new ArrayList<>() : command.getAbsHolidayMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()),
+				CollectionUtil.isEmpty(command.getAbsWorkMngLst()) ? new ArrayList<>() : command.getAbsWorkMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()),
 				EnumAdaptor.valueOf(displayInforWhenStarting.holidayManage, ManageDistinct.class),
 				appDispInfoStartup.getAppDispInfoNoDateOutput().getApplicationSetting());
 			if(abs.isPresent()) {
@@ -203,12 +216,12 @@ public class HolidayShipmentMobileWS extends WebService {
 					companyID,
 					rec, 
 					abs, 
-					CollectionUtil.isEmpty(command.getRecOldHolidayMngLst()) ? Collections.emptyList() : command.getRecHolidayMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
-					CollectionUtil.isEmpty(command.getRecHolidayMngLst()) ? Collections.emptyList() : command.getRecHolidayMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
-					CollectionUtil.isEmpty(command.getAbsOldHolidayMngLst()) ? Collections.emptyList() : command.getAbsHolidayMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
-					CollectionUtil.isEmpty(command.getAbsOldWorkMngLst()) ? Collections.emptyList() : command.getAbsWorkMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
-					CollectionUtil.isEmpty(command.getAbsHolidayMngLst()) ? Collections.emptyList() : command.getAbsHolidayMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
-					CollectionUtil.isEmpty(command.getAbsWorkMngLst()) ? Collections.emptyList() : command.getAbsWorkMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+					CollectionUtil.isEmpty(command.getRecOldHolidayMngLst()) ? new ArrayList<>() : command.getRecOldHolidayMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+					CollectionUtil.isEmpty(command.getRecHolidayMngLst()) ? new ArrayList<>() : command.getRecHolidayMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+					CollectionUtil.isEmpty(command.getAbsOldHolidayMngLst()) ? new ArrayList<>() : command.getAbsOldHolidayMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+					CollectionUtil.isEmpty(command.getAbsOldWorkMngLst()) ? new ArrayList<>() : command.getAbsOldWorkMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+					CollectionUtil.isEmpty(command.getAbsHolidayMngLst()) ? new ArrayList<>() : command.getAbsHolidayMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+					CollectionUtil.isEmpty(command.getAbsWorkMngLst()) ? new ArrayList<>() : command.getAbsWorkMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
 					appDispInfoStartup);
 			if(abs.isPresent()) {
 				processResult.setAppID(abs.get().getAppID());
@@ -218,5 +231,34 @@ public class HolidayShipmentMobileWS extends WebService {
 			}
 		}
 		return processResult;
+	}
+	
+	@POST
+	@Path("getTimeZoneValue")
+	public HdShipmentMBTimeZoneDto getTimeZoneValue(HdShipmentMBTimeZoneParam command) {
+		String companyID = AppContexts.user().companyId();
+		List<TimeZoneWithWorkNoDto> timeZoneLst = new ArrayList<>();
+		if(Strings.isNotBlank(command.getWorkTimeCD())) {
+			// 勤務時間初期値の取得
+			PredetermineTimeSetForCalc predetermineTimeSetForCalc = absenceServiceProcess.initWorktimeCode(
+					companyID, 
+					command.getWorkTypeNew().getWorkTypeCode(), 
+					command.getWorkTimeCD());
+			for(TimezoneUse timezoneUse : predetermineTimeSetForCalc.getTimezones()) {
+				if(timezoneUse.isUsed()) {
+					timeZoneLst.add(new TimeZoneWithWorkNoDto(timezoneUse.getWorkNo(), new TimeZone_NewDto(timezoneUse.getStart().v(), timezoneUse.getEnd().v())));
+				}
+			}
+		}
+		VacationCheckOutput vacationCheckOutput = null;
+		if(command.isChangeWorkType()) {
+			// 休暇紐付管理をチェックする
+			vacationCheckOutput = absenceServiceProcess.checkVacationTyingManage(
+					command.getWorkTypeOld() != null ? command.getWorkTypeOld().toDomain(): null, 
+					command.getWorkTypeNew().toDomain(), 
+					command.getLeaveComDayOffMana().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+					command.getPayoutSubofHDManagements().stream().map(x -> x.toDomain()).collect(Collectors.toList()));
+		}
+		return new HdShipmentMBTimeZoneDto(timeZoneLst, vacationCheckOutput);
 	}
 }

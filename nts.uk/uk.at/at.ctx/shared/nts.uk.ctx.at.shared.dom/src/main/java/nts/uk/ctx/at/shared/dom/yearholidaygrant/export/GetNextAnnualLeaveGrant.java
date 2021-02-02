@@ -44,15 +44,25 @@ public class GetNextAnnualLeaveGrant {
 	 * @param isSingleDay 単一日フラグ
 	 * @param grantHdTblSet 年休付与テーブル設定
 	 * @param lengthServiceTbls 勤続年数テーブルリスト
+	 * @param closureStartDate 締め開始日
 	 * @return 次回年休付与リスト
 	 */
 	public static List<NextAnnualLeaveGrant> algorithm(RequireM1 require, CacheCarrier cacheCarrier, String companyId,
 			String grantTableCode, GeneralDate entryDate, GeneralDate criteriaDate, DatePeriod period, 
 			boolean isSingleDay, Optional<GrantHdTblSet> grantHdTblSet, Optional<List<LengthServiceTbl>> lengthServiceTbls) {
 		
+		return algorithm(require, cacheCarrier, companyId, grantTableCode, entryDate, criteriaDate, period, 
+						isSingleDay,grantHdTblSet, lengthServiceTbls, Optional.empty());
+	}
+
+	public static List<NextAnnualLeaveGrant> algorithm(RequireM1 require, CacheCarrier cacheCarrier, String companyId,
+		String grantTableCode, GeneralDate entryDate, GeneralDate criteriaDate, DatePeriod period, 
+		boolean isSingleDay, Optional<GrantHdTblSet> grantHdTblSet, Optional<List<LengthServiceTbl>> lengthServiceTbls,
+		Optional<GeneralDate> closureStartDate) {
+	
 		return GetNextAnnualLeaveGrantProc.algorithm(require, cacheCarrier, 
-															companyId, grantTableCode, entryDate, criteriaDate, period, 
-															isSingleDay,grantHdTblSet, lengthServiceTbls);
+														companyId, grantTableCode, entryDate, criteriaDate, period, 
+														isSingleDay,grantHdTblSet, lengthServiceTbls, closureStartDate);
 	}
 	
 	public static interface RequireM1 extends GetNextAnnualLeaveGrantProc.RequireM1{

@@ -18,12 +18,26 @@ public enum ContractTimeRound {
 	/** The Constant values. */
 	private final static ContractTimeRound[] values = ContractTimeRound.values();
 
+	/**
+	 * Instantiates a new display division.
+	 *
+	 * @param value the value
+	 * @param nameId the name id
+	 * @param description the description
+	 */
+
 	private ContractTimeRound(int value, String nameId, String description) {
 		this.value = value;
 		this.nameId = nameId;
 		this.description = description;
 	}
 
+	/**
+	 * Value of.
+	 *
+	 * @param value the value
+	 * @return the display division
+	 */
 	public static ContractTimeRound valueOf(Integer value) {
 		// Invalid object.
 		if (value == null) {
@@ -36,7 +50,6 @@ public enum ContractTimeRound {
 				return val;
 			}
 		}
-
 		// Not found.
 		return null;
 	}

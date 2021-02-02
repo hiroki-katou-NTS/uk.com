@@ -4,22 +4,24 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveGrantNumber;
 
 @Getter
 @Setter
-public class AnnualLeaveGrantNumber {
+public class AnnualLeaveGrantNumber extends LeaveGrantNumber {
 
-	/**
-	 * 日数
-	 */
-	private AnnualLeaveGrantDayNumber days;
+//	/**
+//	 * 日数
+//	 */
+//	private AnnualLeaveGrantDayNumber days;
+//
+//	/**
+//	 * 時間
+//	 */
+//	private Optional<AnnualLeaveGrantTime> minutes;
 
-	/**
-	 * 時間
-	 */
-	private Optional<AnnualLeaveGrantTime> minutes;
-
-	private AnnualLeaveGrantNumber(double days, Integer minutes) {
+	protected AnnualLeaveGrantNumber(double days, Integer minutes) {
+		//super(days, minutes);
 		this.days = new AnnualLeaveGrantDayNumber(days);
 		this.minutes = minutes != null ? Optional.of(new AnnualLeaveGrantTime(minutes)) : Optional.empty();
 	}

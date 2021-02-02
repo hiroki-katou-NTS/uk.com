@@ -51,10 +51,6 @@ public class KrcdtInterimCareData  extends UkJpaEntity implements Serializable {
 	@Column(name = "CREATOR_ATR")
 	public int createAtr;
 
-	/**	残数分類 */
-	@Column(name = "REMAIN_ATR")
-	public int remainAtr;
-
 	/** 使用日数 */
 	@Column(name = "USED_DAYS")
 	public double usedDays;
@@ -78,7 +74,6 @@ public class KrcdtInterimCareData  extends UkJpaEntity implements Serializable {
 	public TempCareManagement toDomain() {
 		return TempCareManagement.of(remainMngID, sID, ymd,
 					EnumAdaptor.valueOf(createAtr, CreateAtr.class),
-					EnumAdaptor.valueOf(remainAtr, RemainAtr.class),
 					ChildCareNurseUsedNumber.of(
 								new DayNumberOfUse(usedDays),
 								Optional.ofNullable(usedTime == null ? null : new TimeOfUse(usedTime))),
@@ -113,7 +108,7 @@ public class KrcdtInterimCareData  extends UkJpaEntity implements Serializable {
 		this.sID = domain.getSID();
 		this.ymd = domain.getYmd();
 		this.createAtr  = domain.getCreatorAtr().value;
-		this.remainAtr = domain.getRemainAtr().value;
+//		this.remainAtr = domain.getRemainAtr().value;
 		this.usedDays = domain.getUsedNumber().getUsedDay().v();
 		this.usedTime = domain.getUsedNumber().getUsedTimes().map(c -> c.v()).orElse(null);
 		this.timeDigestiveAtr = domain.getAppTimeType().map(c -> c.isHourlyTimeType() ? 1 : 0).orElse(null);

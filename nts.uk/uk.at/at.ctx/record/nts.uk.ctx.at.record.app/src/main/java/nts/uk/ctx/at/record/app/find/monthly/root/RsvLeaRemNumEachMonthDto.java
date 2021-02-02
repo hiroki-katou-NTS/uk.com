@@ -13,15 +13,16 @@ import nts.uk.ctx.at.record.app.find.monthly.root.common.DatePeriodDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.ReserveLeaveDto;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveGrantDayNumber;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.ClosureStatus;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.RealReserveLeave;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeave;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeaveGrant;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
@@ -37,7 +38,7 @@ public class RsvLeaRemNumEachMonthDto extends MonthlyItemCommon {
 
 	/***/
 	private static final long serialVersionUID = 1L;
-	
+
 	/** 会社ID */
 	private String companyId;
 
@@ -65,11 +66,11 @@ public class RsvLeaRemNumEachMonthDto extends MonthlyItemCommon {
 	/** 積立年休 */
 	@AttendanceItemLayout(jpPropertyName = RETENTION, layout = LAYOUT_C)
 	private ReserveLeaveDto reserveLeave;
-	
+
 	/** 実積立年休 */
 	@AttendanceItemLayout(jpPropertyName = REAL + RETENTION, layout = LAYOUT_D)
 	private ReserveLeaveDto realReserveLeave;
-	
+
 	/** 積立年休付与情報 */
 	@AttendanceItemValue(type = ValueType.DAYS)
 	@AttendanceItemLayout(jpPropertyName = GRANT + INFO, layout = LAYOUT_E)
@@ -79,6 +80,11 @@ public class RsvLeaRemNumEachMonthDto extends MonthlyItemCommon {
 	@AttendanceItemLayout(jpPropertyName = GRANT + ATTRIBUTE, layout = LAYOUT_F)
 	@AttendanceItemValue(type = ValueType.FLAG)
 	private boolean grantAtr;
+
+	/** 未消化数 */
+	@AttendanceItemLayout(jpPropertyName = NOT_DIGESTION, layout = LAYOUT_G)
+	@AttendanceItemValue(type = ValueType.DAYS)
+	private double undigestedNumber;
 
 	@Override
 	public String employeeId() {
@@ -117,24 +123,131 @@ public class RsvLeaRemNumEachMonthDto extends MonthlyItemCommon {
 			ym = this.ym;
 		}else {
 			if(datePeriod == null){
-				datePeriod = new DatePeriodDto(GeneralDate.ymd(ym.year(), ym.month(), 1), 
+				datePeriod = new DatePeriodDto(GeneralDate.ymd(ym.year(), ym.month(), 1),
 						GeneralDate.ymd(ym.year(), ym.month(), ym.lastDateInMonth()));
 			}
 		}
 		if(closureDate == null){
 			closureDate = this.closureDate;
 		}
+
 		return RsvLeaRemNumEachMonth.of(employeeId, ym, ConvertHelper.getEnum(closureID, ClosureId.class),
 				closureDate == null ? null : closureDate.toDomain(), datePeriod == null ? null : datePeriod.toDomain(),
 				closureStatus == ClosureStatus.PROCESSED.value ? ClosureStatus.PROCESSED : ClosureStatus.UNTREATED,
-				reserveLeave == null ? new ReserveLeave() : reserveLeave.toDomain(), 
-				realReserveLeave == null ? new RealReserveLeave() : realReserveLeave.toRealDomain(),
+				reserveLeave == null ? new ReserveLeave() : reserveLeave.toDomain(),
+				realReserveLeave == null ? new ReserveLeave() : realReserveLeave.toDomain(),
 				Optional.of(ReserveLeaveGrant.of(new ReserveLeaveGrantDayNumber(reserveLeaveGrant))),
-				grantAtr);
+				grantAtr, undigestedNumber);
 	}
 
 	@Override
 	public YearMonth yearMonth() {
 		return this.ym;
 	}
+
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case CLOSURE_STATE:
+			return Optional.of(ItemValue.builder().value(closureStatus).valueType(ValueType.ATTR));
+		case (GRANT + INFO):
+			return Optional.of(ItemValue.builder().value(reserveLeaveGrant).valueType(ValueType.DAYS));
+		case (GRANT + ATTRIBUTE):
+			return Optional.of(ItemValue.builder().value(grantAtr).valueType(ValueType.FLAG));
+		case NOT_DIGESTION:
+			return Optional.of(ItemValue.builder().value(undigestedNumber).valueType(ValueType.DAYS));
+		default:
+			break;
+		}
+		return super.valueOf(path);
+	}
+
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+		case PERIOD:
+			return new DatePeriodDto();
+		case RETENTION:
+		case (REAL + RETENTION):
+			return new ReserveLeaveDto();
+		default:
+			break;
+		}
+		return super.newInstanceOf(path);
+	}
+
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		switch (path) {
+		case PERIOD:
+			return Optional.ofNullable(datePeriod);
+		case RETENTION:
+			return Optional.ofNullable(reserveLeave);
+		case (REAL + RETENTION):
+			return Optional.ofNullable(realReserveLeave);
+		default:
+			break;
+		}
+		return super.get(path);
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case CLOSURE_STATE:
+		case (GRANT + INFO):
+		case (GRANT + ATTRIBUTE):
+		case NOT_DIGESTION:
+			return PropType.VALUE;
+		case PERIOD:
+		case RETENTION:
+		case (REAL + RETENTION):
+			return PropType.OBJECT;
+		default:
+			break;
+		}
+		return super.typeOf(path);
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case CLOSURE_STATE:
+			closureStatus = value.valueOrDefault(0); break;
+		case (GRANT + INFO):
+			(reserveLeaveGrant) = value.valueOrDefault(0d); break;
+		case (GRANT + ATTRIBUTE):
+			(grantAtr) = value.valueOrDefault(false); break;
+		case NOT_DIGESTION:
+			(undigestedNumber) = value.valueOrDefault(0d); break;
+		default:
+			break;
+		}
+	}
+
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		switch (path) {
+		case PERIOD:
+			datePeriod = (DatePeriodDto) value; break;
+		case RETENTION:
+			reserveLeave = (ReserveLeaveDto) value; break;
+		case (REAL + RETENTION):
+			realReserveLeave = (ReserveLeaveDto) value; break;
+		default:
+			break;
+		}
+	}
+
+	@Override
+	public boolean isRoot() {
+		return true;
+	}
+
+	@Override
+	public String rootName() {
+		return MONTHLY_RESERVE_LEAVING_REMAIN_NAME;
+	}
+
+	
 }

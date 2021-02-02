@@ -1,8 +1,11 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.common;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.OvertimeDeclaration;
@@ -15,7 +18,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 /** 勤怠打刻(実打刻付き) */
 @AllArgsConstructor
 @NoArgsConstructor
-public class WithActualTimeStampDto implements ItemConst {
+public class WithActualTimeStampDto implements ItemConst, AttendanceItemDataGate {
 
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = STAMP)
 	private TimeStampDto time;
@@ -37,6 +40,43 @@ public class WithActualTimeStampDto implements ItemConst {
 	// @AttendanceItemLayout(layout = "C")
 	// @AttendanceItemValue(itemId = -1, type = ValueType.INTEGER)
 	private Integer numberOfReflectionStamp;
+	
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		switch (path) {
+		case STAMP:
+			return Optional.ofNullable(time);
+		case ACTUAL:
+			return Optional.ofNullable(actualTime);
+		default:
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		switch (path) {
+		case STAMP:
+			time = (TimeStampDto) value;
+			break;
+		case ACTUAL:
+			actualTime = (TimeStampDto) value;
+			break;
+		default:
+			break;
+		}
+	}
+	
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+		case STAMP:
+		case ACTUAL:
+			return new TimeStampDto();
+		default:
+			return null;
+		}
+	}
 	
 	public static WithActualTimeStampDto toWithActualTimeStamp(TimeActualStamp stamp){
 		return stamp == null ? null : new WithActualTimeStampDto(
