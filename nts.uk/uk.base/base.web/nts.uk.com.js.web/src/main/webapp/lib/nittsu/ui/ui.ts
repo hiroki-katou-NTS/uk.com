@@ -125,7 +125,7 @@ module nts.uk.ui {
     export module block {
         export function clear() {
             const fadeOut = 200;
-            
+
             $(document.body).unblock({ fadeOut });
         }
 
@@ -265,34 +265,77 @@ module nts.uk.ui {
         // ボタンの上部分をクリックすると、ボタンの範囲からマウスカーソルが外れてしまい、
         // clickイベントが発生しなくなる不具合がある。
         // ダミーのdivを生成し、そこでmouseupイベントを拾うことで不具合を回避。
-        $(() => {
-            $("body").on("mousedown", "button", e => {
-                var $button = $(e.target);
-                var $dammy = $("<div>")
-                    .css({
-                        background: "transparent",
-                        position: "absolute",
-                        width: $button.outerWidth(),
-                        height: parseInt($button.css("top"), 10),
-                        cursor: "pointer",
-                        opacity: 100
-                    })
-                    .appendTo("body")
-                    .position({
-                        my: "left bottom",
-                        at: "left top",
-                        of: e.target
-                    })
-                    .on("mouseup", eup => {
-                        $dammy.remove();
-                        $button.click();
-                    });
 
-                $(window).on("mouseup.dammyevent", () => {
-                    $dammy.remove();
-                    $(window).off("mouseup.dammyevent");
+        // Emulate click event by cache & trigger
+        $(() => {
+            const cache: {
+                button: Element | null;
+                position: {
+                    x: number;
+                    y: number;
+                } | null;
+            } = {
+                button: null,
+                position: null
+            };
+
+            $(document)
+                .on('mouseup', (evt: JQueryEventObject) => {
+                    const { button, position } = cache;
+                    const { target, pageX, pageY } = evt;
+
+                    if (target.tagName !== 'BUTTON') {
+                        if (button && position) {
+                            const { x, y } = position;
+
+                            if (x === pageX && y === pageY) {
+                                // trigger click event of button if mouseup outside
+                                $(button).trigger('click');
+                            }
+                        }
+                    }
+
+                    cache.button = null;
+                    cache.position = null;
+                })
+                .on('mousedown', 'button', (evt: JQueryEventObject) => {
+                    cache.button = evt.target;
+                    cache.position = {
+                        x: evt.pageX,
+                        y: evt.pageY
+                    };
                 });
-            });
         });
+
+        /*$(() => {
+            $("body")
+                .on("mousedown", "button", e => {
+                    var $button = $(e.target);
+                    var $dammy = $("<div>")
+                        .css({
+                            background: "transparent",
+                            position: "absolute",
+                            width: $button.outerWidth(),
+                            height: parseInt($button.css("top"), 10),
+                            cursor: "pointer",
+                            opacity: 100
+                        })
+                        .appendTo("body")
+                        .position({
+                            my: "left bottom",
+                            at: "left top",
+                            of: e.target
+                        })
+                        .on("mouseup", eup => {
+                            $dammy.remove();
+                            $button.click();
+                        });
+
+                    $(window).on("mouseup.dammyevent", () => {
+                        $dammy.remove();
+                        $(window).off("mouseup.dammyevent");
+                    });
+                });
+        });*/
     }
 }
