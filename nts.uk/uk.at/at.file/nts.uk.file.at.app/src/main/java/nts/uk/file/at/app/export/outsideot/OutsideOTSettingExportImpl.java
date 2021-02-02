@@ -23,10 +23,7 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
-import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
-import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
-import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
-import nts.uk.shr.infra.file.report.masterlist.data.MasterListData;
+import nts.uk.shr.infra.file.report.masterlist.data.*;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
 
 import javax.ejb.Stateless;
@@ -358,7 +355,12 @@ public class OutsideOTSettingExportImpl implements MasterListData {
             }
 
 
-            masterDatas.add(new MasterData(dataA61, null, ""));
+
+            MasterData masterData = new MasterData(dataA61, null, "");
+            Map<String, MasterCellData> rowData = masterData.getRowData();
+            rowData.get(NUMBER_COLS_1).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+            rowData.get(NUMBER_COLS_2).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+            masterDatas.add(masterData);
         }
         return masterDatas;
     }
@@ -417,7 +419,10 @@ public class OutsideOTSettingExportImpl implements MasterListData {
             if (overtimeLanguage.getIsUse() && !this.isLanugeJapan(query.getLanguageId())) {
                 dataA71.put(NUMBER_COLS_END, overtimeLanguage.getLanguageOther());
             }
-            masterDatas.add(new MasterData(dataA71, null, ""));
+            MasterData masterData = new MasterData(dataA71, null, "");
+            Map<String, MasterCellData> rowData = masterData.getRowData();
+            rowData.get(NUMBER_COLS_END).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+            masterDatas.add(masterData);
         });
 
         return masterDatas;
