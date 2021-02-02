@@ -2,7 +2,6 @@ package nts.uk.file.at.app.export.outputworkstatustable;
 
 import lombok.AllArgsConstructor;
 import lombok.val;
-import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDate;
@@ -18,6 +17,7 @@ import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.WorkStatusOutputS
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.*;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffAtWorkplaceImport;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
+import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.closure.GetSpecifyPeriod;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeBasicInfoImport;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceConfigInfoAdapter;
@@ -27,7 +27,6 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsImport;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -66,37 +65,34 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
     @Inject
     private GetDetailOutputSettingWorkStatusQuery getDetailOutputSettingWorkStatusQuery;
 
+    @Inject
+    private GetSpecifyPeriod getSpecifyPeriod;
+
     @Override
     protected void handle(ExportServiceContext<OutputFileWorkStatusFileQuery> context) {
         OutputFileWorkStatusFileQuery query = context.getQuery();
-        YearMonth targetDate = new YearMonth(query.getTargetDate());
+        YearMonth yearMonth = new YearMonth(query.getTargetDate());
         List<String> lstEmpIds = query.getLstEmpIds();
-        val closureId = query.getClosureId()== 0 ?1 : query.getClosureId();
+        val closureId = query.getClosureId() == 0 ? 1 : query.getClosureId();
         val cid = AppContexts.user().companyId();
         // 1 ⑨:find(会社ID、ClosureId)
         Optional<Closure> closureOptional = closureRepository.findById(cid, query.getClosureId());
-        val baseDateNow = GeneralDate.today();
 
-        if (!closureOptional.isPresent() || closureOptional.get().getHistoryByBaseDate(baseDateNow) == null) {
-            throw new RuntimeException(" CAN NOT FIND DATA IN TABLE KCLMT_CLOSURE WITH CID = "
+        // 1.1 ⑩ = ⑨.指定した年月の締め期間を取得する(締め, 年月)
+        val periodOptional = this.getSpecifyPeriod.getSpecifyPeriod(yearMonth)
+                .stream().filter(x -> x.getClosureId().value == closureId).findFirst();
+
+        if (!periodOptional.isPresent()) {
+            throw new RuntimeException(" CAN NOT FIND DATE PERIOD WITH CID = "
                     + cid + "AND CLOSURE_ID = " + closureId);
         }
-
-        val closure = closureOptional.get();
-        // todo update theo tai lieu
-        // 1.1 :．基準日で締め変更履歴を取得する(日付)
-        val closureDate = closure.getHistoryByBaseDate(baseDateNow).getClosureDate();
-
-        DatePeriod datePeriod = this.getFromClosureDate(targetDate, closureDate);
-        // todo >>>>>>>>
-        // [No.600]社員ID（List）から社員コードと表示名を取得（削除社員考慮）
-        List<EmployeeBasicInfoImport> lstEmployeeInfo = empEmployeeAdapter.getEmpInfoLstBySids(lstEmpIds, datePeriod, true, true);
-
-        // 2 Call 会社を取得する
-
+        DatePeriod datePeriod = periodOptional.get().getPeriod();
+        // 2.①[No.600]社員ID（List）から社員コードと表示名を取得（削除社員考慮）
+        List<EmployeeBasicInfoImport> lstEmployeeInfo = empEmployeeAdapter
+                .getEmpInfoLstBySids(lstEmpIds, datePeriod, true, true);
+        // 3.② Call 会社を取得する
         CompanyBsImport companyInfo = companyBsAdapter.getCompanyByCid(cid);
-
-        // 3 Call 社員ID（List）と基準日から所属職場IDを取得
+        // 4.③ 社員ID（List）と基準日から所属職場IDを取得
         GeneralDate baseDate = datePeriod.end();
         List<AffAtWorkplaceImport> lstAffAtWorkplaceImport = affWorkplaceAdapter
                 .findBySIdAndBaseDate(lstEmpIds, baseDate);
@@ -111,24 +107,23 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
             ));
         });
         List<String> listWorkplaceId = lstAffAtWorkplaceImport.stream()
-                .map(AffAtWorkplaceImport::getWorkplaceId).collect(Collectors.toList());
-
-        // 3.1 Call [No.560]職場IDから職場の情報をすべて取得する
-        List<WorkplaceInfor> lstWorkplaceInfo = workplaceConfigInfoAdapter.getWorkplaceInforByWkpIds(cid, listWorkplaceId, baseDate);
-
+                .map(AffAtWorkplaceImport::getWorkplaceId).distinct().collect(Collectors.toList());
+        // 4.1 ④ Call [No.560]職場IDから職場の情報をすべて取得する
+        List<WorkplaceInfor> lstWorkplaceInfo = workplaceConfigInfoAdapter
+                .getWorkplaceInforByWkpIds(cid, listWorkplaceId, baseDate);
         List<WorkPlaceInfo> placeInfoList = lstWorkplaceInfo.stream()
                 .map(e -> new WorkPlaceInfo(e.getWorkplaceId(), e.getWorkplaceCode(), e.getWorkplaceName()))
                 .collect(Collectors.toList());
-
         RequireImpl require = new RequireImpl(itemServiceAdapter, affComHistAdapter);
-        // 4. 勤務状況表の出力設定の詳細を取得する.
-        WorkStatusOutputSettings workStatusOutputSetting = getDetailOutputSettingWorkStatusQuery.getDetail(query.getSettingId());
-        // 5 Call 勤務状況表の表示内容を作成する:
+        // 5 ⑤ <call>. 勤務状況表の出力設定の詳細を取得する.
+        WorkStatusOutputSettings workStatusOutputSetting = getDetailOutputSettingWorkStatusQuery
+                .getDetail(query.getSettingId());
+        // 6 ⑥ Call 勤務状況表の表示内容を作成する:
         val listData = CreateDisplayContentWorkStatusQuery.displayContentsOfWorkStatus(require, datePeriod,
                 employeeInfoList, workStatusOutputSetting, placeInfoList);
-        val wplaceSort = listData.stream().filter(Objects::nonNull).map(DisplayContentWorkStatus::getWorkPlaceCode).distinct().collect(Collectors.toCollection(TreeSet::new));
+        val wplaceSort = listData.stream().filter(Objects::nonNull).map(DisplayContentWorkStatus::getWorkPlaceCode)
+                .distinct().collect(Collectors.toCollection(TreeSet::new));
         val listRs = new ArrayList<ExportExcelDto>();
-
         wplaceSort.forEach(e -> {
             val item = listData.stream().filter(i -> i.getWorkPlaceCode().equals(e))
                     .sorted(Comparator.comparing(DisplayContentWorkStatus::getEmployeeCode))
@@ -149,7 +144,6 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
         val result = new OutPutWorkStatusContent(
                 listRs,
                 datePeriod,
-                closureDate,
                 query.getMode(),
                 workStatusOutputSetting.getSettingName().v(),
                 companyInfo.getCompanyName(),
@@ -157,16 +151,6 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
                 query.isZeroDisplay()
         );
         this.displayGenerator.generate(context.getGeneratorContext(), result);
-    }
-
-    private DatePeriod getFromClosureDate(YearMonth yearMonth, ClosureDate closureDate) {
-        Integer closureDay = closureDate.getClosureDay().v();
-        val baseDate = GeneralDate.ymd(yearMonth.year(), yearMonth.month(), closureDay);
-        val date = GeneralDate.ymd(yearMonth.year(), yearMonth.month(), baseDate.lastDateInMonth());
-        if (closureDate.getLastDayOfMonth()) {
-            return new DatePeriod(baseDate, date);
-        }
-        return new DatePeriod(baseDate.addMonths(-1).addDays(1), baseDate);
     }
 
     @AllArgsConstructor

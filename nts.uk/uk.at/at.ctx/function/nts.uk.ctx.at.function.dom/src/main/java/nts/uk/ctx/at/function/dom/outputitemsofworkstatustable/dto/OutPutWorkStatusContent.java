@@ -13,15 +13,11 @@ import java.util.List;
 @Getter
 @Setter
 public class OutPutWorkStatusContent {
-    // 日付
     private List<ExportExcelDto> excelDtoList;
-
     private DatePeriod period;
-    private ClosureDate closureDate;
     private int mode;
     private String title;
     private String companyName;
     private boolean pageBreak;
-    //「６」ゼロ表示区分
     private boolean isZeroDisplay;
 }

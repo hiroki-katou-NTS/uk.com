@@ -103,7 +103,7 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
         cells.get(0, 0).setValue(TextResource.localize("KWR003_401") + date);
 
         if (content.getExcelDtoList().size() > 0) {
-            printDayOfWeekHeader(worksheet, content.getPeriod(), countRow, content.getClosureDate());
+            printDayOfWeekHeader(worksheet, content.getPeriod(), countRow);
             printData(worksheet, content);
         }
     }
@@ -305,10 +305,9 @@ public class AsposeDisplayWorkStatusReportGenerator extends AsposeCellsReportGen
         return null;
     }
 
-    private void printDayOfWeekHeader(Worksheet worksheet, DatePeriod datePeriod, int countRow, ClosureDate closureDate) {
+    private void printDayOfWeekHeader(Worksheet worksheet, DatePeriod datePeriod, int countRow) {
         Cells cells = worksheet.getCells();
         GeneralDate startDate = datePeriod.start();
-        val dateLastMonth = startDate.lastDateInMonth();
         cells.merge(countRow + 1, 0, 2, 3, true, true);
         val maxColumnData = MAX_COL_IN_PAGE;
         cells.get(countRow + 1, 0).setValue(TextResource.localize("KWR003_402"));
