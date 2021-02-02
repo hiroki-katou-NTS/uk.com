@@ -25,7 +25,7 @@ public class GoOutEmployeeInformationDeleteCommandHandler extends CommandHandler
 	@Override
 	protected void handle(CommandHandlerContext<GoOutEmployeeInformationDelCommand> context) {
 		GoOutEmployeeInformationDelCommand command = context.getCommand();
-		Optional<GoOutEmployeeInformation> domain = goOutEmployeeInformationRepository.getBySidAndDate(command.getSid(), command.getGouOutDate());
+		Optional<GoOutEmployeeInformation> domain = goOutEmployeeInformationRepository.getBySidAndDate(command.getSid(), command.getGoOutDate());
 		domain.ifPresent(dom -> goOutEmployeeInformationRepository.delete(dom));
 	}
 }

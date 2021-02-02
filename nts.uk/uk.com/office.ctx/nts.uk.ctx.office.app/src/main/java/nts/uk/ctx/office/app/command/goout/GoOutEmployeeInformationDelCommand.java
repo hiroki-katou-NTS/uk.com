@@ -9,7 +9,7 @@ import nts.arc.time.GeneralDate;
 @Data
 public class GoOutEmployeeInformationDelCommand {
 	// 年月日
-	private GeneralDate gouOutDate;
+	private GeneralDate goOutDate;
 
 	// 社員ID
 	private String sid;

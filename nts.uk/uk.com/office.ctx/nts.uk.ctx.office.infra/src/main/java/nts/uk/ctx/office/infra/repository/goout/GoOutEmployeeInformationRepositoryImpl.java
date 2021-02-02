@@ -53,7 +53,7 @@ public class GoOutEmployeeInformationRepositoryImpl extends JpaRepository
 	@Override
 	public void delete(GoOutEmployeeInformation domain) {
 		GoOutEmployeeInformationEntity entity = GoOutEmployeeInformationRepositoryImpl.toEntity(domain);
-		this.commandProxy().remove(entity.getPk());
+		this.commandProxy().remove(GoOutEmployeeInformationEntity.class, entity.getPk());
 	}
 
 	@Override
