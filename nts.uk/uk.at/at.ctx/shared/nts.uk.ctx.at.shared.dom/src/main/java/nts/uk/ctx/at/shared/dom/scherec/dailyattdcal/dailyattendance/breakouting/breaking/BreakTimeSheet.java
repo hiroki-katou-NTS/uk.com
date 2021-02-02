@@ -108,4 +108,21 @@ public class BreakTimeSheet extends DomainObject {
 		}
 		return returnList;
 	}
+	
+	/**
+	 * 計算用時間帯に変換する
+	 * @return
+	 */
+	public TimeSpanForCalc convertToTimeSpanForCalc() {
+		return new TimeSpanForCalc( this.startTime, this.endTime);
+	}
+	
+	/**
+	 * 対象時間帯と重複するか
+	 * @param target 対象時間帯
+	 * @return
+	 */
+	public boolean isDuplicatedWithTimeSpan(TimeSpanForCalc target) {
+		return this.convertToTimeSpanForCalc().checkDuplication(target).isDuplicated();
+	}
 }
