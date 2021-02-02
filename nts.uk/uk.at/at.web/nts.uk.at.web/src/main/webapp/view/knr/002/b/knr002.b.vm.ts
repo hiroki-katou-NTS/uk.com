@@ -168,8 +168,7 @@ module knr002.b {
                 var self = this;
                 self.clearErrors();
                 //period time
-                $('#B4_2').ntsEditor("validate");
-                return $('.nts-input').ntsError('hasError');
+                return $("#B4_2").ntsError("hasError");
             }
             /**
              * clear Errors
@@ -177,7 +176,7 @@ module knr002.b {
             private clearErrors(): void{     
                 $('#B4_2').ntsError('clear');
                 $('.nts-input').ntsError('clear');
-                nts.uk.ui.errors.clearAll();
+               // nts.uk.ui.errors.clearAll();
             }
 
             /**

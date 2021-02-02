@@ -53,8 +53,8 @@
 /* popup show unstable position --> override css */
 
 #func-notifier-errors {
-    top: 10px !important;
-    left: 50px !important;
+    top: 3px !important;
+    left: 23px !important;
 }
 .terminalInfo table, tr, td{
 	vertical-align: top;
