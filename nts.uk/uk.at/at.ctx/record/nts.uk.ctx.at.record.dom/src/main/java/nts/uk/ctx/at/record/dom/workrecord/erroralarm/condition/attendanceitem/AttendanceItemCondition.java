@@ -1,7 +1,7 @@
 /**
  * 11:39:17 AM Nov 2, 2017
  */
-package nts.uk.ctx.at.shared.dom.alarmList.extractionResult.attendanceitem;
+package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem;
 
 import java.util.List;
 import java.util.function.Function;
@@ -10,7 +10,7 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.enums.WorkCheckResult;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.primitivevalue.LogicalOperator;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.LogicalOperator;
 
 /**
  * @author hungnm

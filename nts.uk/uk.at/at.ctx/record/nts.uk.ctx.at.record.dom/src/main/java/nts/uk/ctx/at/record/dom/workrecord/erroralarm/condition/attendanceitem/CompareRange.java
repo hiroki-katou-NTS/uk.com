@@ -1,13 +1,13 @@
 /**
  * 11:18:22 AM Nov 9, 2017
  */
-package nts.uk.ctx.at.shared.dom.alarmList.extractionResult.attendanceitem;
+package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem;
 
 import java.util.function.Function;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.primitivevalue.RangeCompareType;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.RangeCompareType;
 
 /**
  * @author hungnm

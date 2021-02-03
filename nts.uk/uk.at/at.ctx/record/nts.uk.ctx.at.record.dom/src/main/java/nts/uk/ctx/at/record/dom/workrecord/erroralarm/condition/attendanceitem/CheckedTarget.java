@@ -1,7 +1,7 @@
 /**
  * 6:10:16 PM Nov 10, 2017
  */
-package nts.uk.ctx.at.shared.dom.alarmList.extractionResult.attendanceitem;
+package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem;
 
 import nts.arc.layer.dom.DomainObject;
 

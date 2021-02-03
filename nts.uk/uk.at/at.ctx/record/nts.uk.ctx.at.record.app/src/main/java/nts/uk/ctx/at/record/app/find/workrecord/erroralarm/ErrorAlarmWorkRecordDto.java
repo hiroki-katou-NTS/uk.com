@@ -16,20 +16,20 @@ import nts.uk.ctx.at.record.app.find.workrecord.erroralarm.condition.WorkTimeCon
 import nts.uk.ctx.at.record.app.find.workrecord.erroralarm.condition.WorkTypeConditionDto;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.attendanceitem.ErAlAttendanceItemCondition;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.ErAlAttendanceItemCondition;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.worktime.PlanActualWorkTime;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.worktime.SingleWorkTime;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.worktype.PlanActualWorkType;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.worktype.SingleWorkType;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.enums.ConditionAtr;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.enums.ConditionType;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.enums.ErrorAlarmConditionType;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionAtr;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionType;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ErrorAlarmConditionType;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.enums.FilterByCompare;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.primitivevalue.AttendanceItemId;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.primitivevalue.CheckedAmountValue;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.primitivevalue.CheckedTimeDuration;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.primitivevalue.CheckedTimesValue;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.primitivevalue.CheckedTimesValueDay;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.AttendanceItemId;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedAmountValue;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimeDuration;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimesValue;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimesValueDay;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**

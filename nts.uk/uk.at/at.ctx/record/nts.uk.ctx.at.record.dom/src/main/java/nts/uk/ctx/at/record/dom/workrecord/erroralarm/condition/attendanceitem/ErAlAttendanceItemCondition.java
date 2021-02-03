@@ -1,7 +1,7 @@
 /**
  * 4:47:15 PM Nov 8, 2017
  */
-package nts.uk.ctx.at.shared.dom.alarmList.extractionResult.attendanceitem;
+package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem;
 
 import java.util.Arrays;
 import java.util.List;
@@ -10,10 +10,14 @@ import java.util.function.Function;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.enums.ConditionAtr;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.enums.ErrorAlarmConditionType;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.enums.InputCheckCondition;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.primitivevalue.*;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionAtr;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ErrorAlarmConditionType;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.InputCheckCondition;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.AttendanceItemId;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedAmountValue;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimeDuration;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimesValue;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimesValueDay;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 

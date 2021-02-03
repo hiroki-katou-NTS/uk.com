@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.alarmList.extractionResult.attendanceitem;
+package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem;
 
 import static org.junit.Assert.*;
 
@@ -6,42 +6,41 @@ import java.util.Arrays;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.enums.ConditionAtr;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.enums.ConditionType;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.enums.SingleValueCompareType;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.primitivevalue.CheckedAmountValue;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.primitivevalue.CheckedTimeDuration;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.primitivevalue.LogicalOperator;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.primitivevalue.RangeCompareType;
-import org.junit.Assert;
 import org.junit.Test;
 
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.enums.WorkCheckResult;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionAtr;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionType;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.LogicalOperator;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.RangeCompareType;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.SingleValueCompareType;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedAmountValue;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimeDuration;
 
 public class AttendanceItemConditionTest {
 
 	@Test
 	public void test() {
 		AttendanceItemCondition condition = createAttendanceItemCondition(LogicalOperator.AND, false);
-		Assert.assertTrue(condition.check(c -> c.stream().map(x -> Double.valueOf(x)).collect(Collectors.toList())) != WorkCheckResult.ERROR);
+		assertTrue(condition.check(c -> c.stream().map(x -> Double.valueOf(x)).collect(Collectors.toList())) != WorkCheckResult.ERROR);
 	}
 	
 	@Test
 	public void test1() {
 		AttendanceItemCondition condition = createAttendanceItemCondition(LogicalOperator.OR, false);
-		Assert.assertTrue(condition.check(c -> c.stream().map(x -> Double.valueOf(x)).collect(Collectors.toList())) == WorkCheckResult.ERROR);
+		assertTrue(condition.check(c -> c.stream().map(x -> Double.valueOf(x)).collect(Collectors.toList())) == WorkCheckResult.ERROR);
 	}
 
 	@Test
 	public void test2() {
 		AttendanceItemCondition condition = createAttendanceItemCondition(LogicalOperator.AND, true);
-		Assert.assertTrue(condition.check(c -> c.stream().map(x -> Double.valueOf(x)).collect(Collectors.toList())) != WorkCheckResult.ERROR);
+		assertTrue(condition.check(c -> c.stream().map(x -> Double.valueOf(x)).collect(Collectors.toList())) != WorkCheckResult.ERROR);
 	}
 	
 	@Test
 	public void test3() {
 		AttendanceItemCondition condition = createAttendanceItemCondition(LogicalOperator.OR, true);
-		Assert.assertTrue(condition.check(c -> c.stream().map(x -> Double.valueOf(x)).collect(Collectors.toList())) == WorkCheckResult.ERROR);
+		assertTrue(condition.check(c -> c.stream().map(x -> Double.valueOf(x)).collect(Collectors.toList())) == WorkCheckResult.ERROR);
 	}
 
 	private AttendanceItemCondition createAttendanceItemCondition(LogicalOperator logic, boolean isUseGroup2){
