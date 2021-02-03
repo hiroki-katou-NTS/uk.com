@@ -844,6 +844,11 @@ export class KafS11AComponent extends KafS00ShrComponent {
         return false;
     }
 
+    // ※A15, ※A16
+    public isSelectMngLst(mngLst: Array<any>) {
+        return !_.isEmpty(mngLst);
+    }
+
     public kaf000CChangeReasonCD(opAppStandardReasonCD) {
         const vm = this;
         vm.opAppStandardReasonCD = opAppStandardReasonCD;
