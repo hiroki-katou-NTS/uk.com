@@ -78,16 +78,16 @@ public class BreakTimeSheetGetter {
 		
 		switch (workTimeSet.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeForm()) {
 		case FIXED: /** 固定勤務 */
+			
 			deductionTimeSheet = oneDayCalcRange.getDeductionTimeSheetOnFixed(workType, workTimeSet, domainDaily);
 			break;
 		case FLEX: /** フレックス勤務 */
-			val wts = workTimeSet.getWorkTimeSetting();
 			
-			if(wts.getWorkTimeDivision().getWorkTimeMethodSet() == WorkTimeMethodSet.FIXED_WORK) {
+			if(workTimeSet.isFixBreak(workType)) {
 				/** 固定休憩 */
 				deductionTimeSheet = oneDayCalcRange.getDeductionTimeSheetOnFixed(workType, workTimeSet, domainDaily);
 				
-			} else if(wts.getWorkTimeDivision().getWorkTimeMethodSet() == WorkTimeMethodSet.FLOW_WORK) {
+			} else  {
 				
 				/** 流動休憩 */
 				deductionTimeSheet = getDeductionTimeSheetOnFlexFlow(require, workType, workTimeSet, 
@@ -139,7 +139,7 @@ public class BreakTimeSheetGetter {
 		val attendanceLeaveWorks = integrationOfDaily.getAttendanceLeave().map(c -> c.getTimeLeavingWorks()).orElse(new ArrayList<>());
 		
 		val withinWorkTimeSheet = new WithinWorkTimeSheet(new ArrayList<>(), new ArrayList<>(), Optional.empty(), Optional.empty());
-		
+		/** TODO: error on this */
 		List<TimeLeavingWork> calcLateTimeLeavingWorksWorks = new ArrayList<>();
 		for(TimeLeavingWork timeLeavingWork : attendanceLeaveWorks) {
 			calcLateTimeLeavingWorksWorks.add(
