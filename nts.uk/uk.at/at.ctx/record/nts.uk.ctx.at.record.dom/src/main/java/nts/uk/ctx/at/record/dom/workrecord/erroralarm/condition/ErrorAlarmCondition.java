@@ -300,9 +300,7 @@ public class ErrorAlarmCondition extends AggregateRoot {
 		// !condition.getWorkTypeCondition().checkWorkType(workInfo)) {
 		WorkCheckResult workTypeCheck = WorkCheckResult.NOT_CHECK;
 		if (this.workTypeCondition != null) {
-			// Todo Hop.NT
-//			workTypeCheck = this.workTypeCondition.checkWorkType(workInfo, snapshot);
-			workTypeCheck = this.workTypeCondition.checkWorkType();
+			workTypeCheck = this.workTypeCondition.checkWorkType(workInfo, snapshot);
 		}
 		/** 就業時間帯をチェックする */
 		// TODO: uncomment
