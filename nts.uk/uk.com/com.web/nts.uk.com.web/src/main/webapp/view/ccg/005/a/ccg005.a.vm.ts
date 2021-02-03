@@ -122,7 +122,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
             <tr style="background-color: yellow; height: 45px;">
               <td style="padding-right: 5px; width: 30px; background-color: white;">
                 <!-- A4_1 -->
-                <img tabindex=10 style="border-radius: 50%; border: 1px groove;" width="30px" height="30px" src="${__viewContext.rootPath}/view/ccg/005/a/header.png"/>
+                <div tabindex=10 data-bind="attr:{ id: 'ccg005-avatar-change-'+sid }" />
               </td>
               <td class="ccg005-w100 ccg005-pl-5 ccg005-border-groove ccg005-right-unset">
                 <!-- A4_8 -->
@@ -342,6 +342,13 @@ module nts.uk.at.view.ccg005.a.screenModel {
       min-width: 40px;
       border-radius: 50%;
     }
+    #CCG005_A1_1_small {
+      max-height: 30px;
+      max-width: 30px;
+      min-height: 30px;
+      min-width: 30px;
+      border-radius: 50%;
+    }
     #CCG005_no_avatar {
       display: flex;
       align-items: center;
@@ -351,6 +358,16 @@ module nts.uk.at.view.ccg005.a.screenModel {
       border-radius: 50%;
       width: 40px;
       height: 40px;
+    }
+    #CCG005_no_avatar_small {
+      display: flex;
+      align-items: center;
+      background-color: #eeeeee;
+      color: blue;
+      border: 1px solid #333688;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
     }
     .ccg005-switch > .nts-switch-button {
       width: 80px;
@@ -491,12 +508,39 @@ module nts.uk.at.view.ccg005.a.screenModel {
         vm.$ajax('com', API.getDisplayInfoAfterSelect, param).then((res: object.DisplayInformationDto) => {
           vm.attendanceInformationDtos(res.attendanceInformationDtos);
           vm.listPersonalInfo(res.listPersonalInfo);
+
+          //set data view model to set data on screen
           const display = vm.getAttendanceInformationDtosDisplay(res);
           vm.attendanceInformationDtosDisplay(display);
           vm.attendanceInformationDtosDisplayClone(display);
           vm.resetPagination();
+
+          //set avatar for all employee except current user
+          vm.setAvatarInLoop(display);
         })
         .always(() => vm.$blockui('clear'));
+      });
+    }
+
+    private setAvatarInLoop(listAttendances: AttendanceInformationViewModel[]){
+      _.map(listAttendances, (item) => {
+        if (item.avatarDto && item.avatarDto.fileId) {
+          $(`#ccg005-avatar-change-${item.sid}`)
+            .append($("<img/>")
+              .attr("id", 'CCG005_A1_1_small')
+              .attr("src", (nts.uk.request as any).liveView(item.avatarDto.fileId))
+            );
+        } else {
+          $(`#ccg005-avatar-change-${item.sid}`).ready(() => {
+            $(`#ccg005-avatar-change-${item.sid}`).append(
+              `<div id='CCG005_no_avatar_small'>
+                <p style="text-align: center; margin: 0 auto; font-size: 12px">
+                  ${item.businessName.replace(/\s/g, '').substring(0, 2)}
+                </p>
+              </div>`
+            );
+          });
+        }
       });
     }
 
