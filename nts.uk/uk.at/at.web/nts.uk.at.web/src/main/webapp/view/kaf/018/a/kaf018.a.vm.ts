@@ -237,6 +237,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 			}
 			// Ｂ画面(承認・確認状況の照会)を実行する
 			character.save('InitDisplayOfApprovalStatus', vm.initDisplayOfApprovalStatus).then(() => {
+				vm.fullWorkplaceInfo = vm.flattenWkpTree(_.cloneDeep($('#tree-grid').getDataList()));
 				let closureItem = _.find(vm.closureLst(), o => o.closureId == vm.selectedClosureId()),
 					startDate = vm.dateValue().startDate,
 					endDate = vm.dateValue().endDate,
