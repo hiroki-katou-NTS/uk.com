@@ -32,7 +32,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		selectOperationUnit: KnockoutObservable<string> = ko.observable('0');
 
 		sortList: KnockoutObservableArray<ItemModel>; /*A3_4*/
-		checked: KnockoutObservable<string> = ko.observable();
+		checked: KnockoutObservable<string> = ko.observable('1');
 
 		checkedName: KnockoutObservable<boolean> = ko.observable(false); // A3_3
 
@@ -203,6 +203,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				name: "",
 				id: 0
 			}
+			
 			// tính tổng thời gian khi thay đổi start và end time
 			$("#extable-ksu003").on("extablecellupdated", (dataCell: any) => {
 				let index: number = dataCell.originalEvent.detail.rowIndex, color = "";
@@ -1086,7 +1087,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					// ver 2
 					/*self.enableSave(false);
 					self.checkEnableWork = false;*/
-
+					block.invisible();
 					ruler.replaceAt(index, [{ // xóa chart khi là ngày nghỉ
 						type: "Flex",
 						options: {
@@ -1097,7 +1098,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						}
 					}]);
 					
-					if(error.messageId != "Msg_591" && error.messageId != "Msg_590"){
+					if(error.messageId == "Msg_591" || error.messageId == "Msg_590"){
 						self.checkOpenDialog = false;
 					}
 
@@ -1118,6 +1119,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							
 						}
 						errorDialog({ messageId: error.messageId }).then(() => {
+							block.clear();
 							let cssWorkType: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(1)",
 								cssWorkTime: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(3)";
 
@@ -2508,6 +2510,15 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							start1 = self.checkTimeOfChart(timeChart.startTime, timeRangeLimit);
 							end1 = self.checkTimeOfChart(timeChart.endTime, timeRangeLimit);
 						}
+						
+						if (changeable.length > 1 && changeable[1].startTime != null && changeable[1].endTime != null && changeable[1].startTime != 0 && changeable[1].endTime != 0) {
+							timeChart2 = self.convertTimeToChart(changeable[1].startTime, changeable[1].endTime);
+							if (timeMinus[0].startTime < timeMinus[0].endTime && (self.timeRange === 24 && changeable[1].startTime < 1440 && changeable[1].startTime != null ||
+								self.timeRange === 48 && changeable[1].startTime < 2880 && changeable[1].startTime != null)) {
+								start2 = self.checkTimeOfChart(timeChart2.startTime, timeRangeLimit);
+								end2 = self.checkTimeOfChart(timeChart2.endTime, timeRangeLimit);
+							}
+						}
 
 						if (timeMinus[0].startTime < timeMinus[0].endTime && (self.timeRange === 24 && timeMinus[0].startTime < 1440 && timeMinus[0].startTime != null ||
 							self.timeRange === 48 && timeMinus[0].startTime < 2880 && timeMinus[0].startTime != null)) {
@@ -2538,7 +2549,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						}
 
 						if (changeable.length > 1 && changeable[1].startTime != null && changeable[1].endTime != null && changeable[1].startTime != 0 && changeable[1].endTime != 0) {
-							timeChart2 = self.convertTimeToChart(changeable[1].startTime, changeable[1].endTime);
+							//timeChart2 = self.convertTimeToChart(changeable[1].startTime, changeable[1].endTime);
 							timeMinus2.push({
 								startTime: changeable[1].startTime,
 								endTime: changeable[1].endTime
@@ -2557,7 +2568,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									lineNo: i,
 									start: start2 - dispStart,
 									end: end2 - dispStart,
-									limitStartMin: isConfirmed == 1 ? start2 : end1 - dispStart,
+									limitStartMin: isConfirmed == 1 ? start2 : limitTime.limitStartMin - dispStart,
 									limitStartMax: isConfirmed == 1 ? start2 : limitTime.limitStartMax - dispStart,
 									limitEndMin: isConfirmed == 1 ? end2 : limitTime.limitEndMin - dispStart,
 									limitEndMax: isConfirmed == 1 ? end2 : limitTime.limitEndMax - dispStart,
@@ -2945,8 +2956,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				if (self.checkDisByDate == false || self.dataScreen003A().employeeInfo[i].workInfoDto.isConfirmed == 1)
 					return;
 				self.enableSave(true);
-				let param = e.detail;
-				let startMinute, endMinute;
+				let param = e.detail, startMinute = 0, endMinute = 0;
 				startMinute = duration.create(param[0] * 5 + self.dispStart * 5).text;
 				endMinute = duration.create(param[1] * 5 + self.dispStart * 5).text;
 				self.checkDragDrog = true;
@@ -3006,6 +3016,9 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		checkChartHide(lstGcShow: any, index: any, param: any, type: string) {
 			let self = this;
 			let timeMinus = duration.create(param[0] * 5 + self.dispStart * 5).asMinutes - self.dataScreen003A().employeeInfo[index].workScheduleDto.startTime1;
+			if(type == "rgc"){
+				timeMinus = duration.create(param[0] * 5 + self.dispStart * 5).asMinutes - self.dataScreen003A().employeeInfo[index].workScheduleDto.startTime2;
+			}
 			if (self.dataScreen003A().employeeInfo[index].workScheduleDto.listBreakTimeZoneDto.length > 0) {
 				_.forEach(self.dataScreen003A().employeeInfo[index].workScheduleDto.listBreakTimeZoneDto, (brk: any, idx) => {
 					self.dataScreen003A().employeeInfo[index].workScheduleDto.listBreakTimeZoneDto[idx].start += timeMinus;
@@ -4295,7 +4308,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		public openKdl045Dialog(empId: string) {
 			let self = this, lineNo = _.findIndex(self.lstEmpId, (x) => { return x.empId === empId; });
 			
-			//if(self.checkOpenDialog == false) return;
+			if(self.checkOpenDialog == false) return;
 			
 			let cssWorkType: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (lineNo + 2).toString() + ")" + " > td:nth-child(1)",
 						cssWorkTypeName: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (lineNo + 2).toString() + ")" + " > td:nth-child(2)",
@@ -4493,7 +4506,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 		public openKdl003Dialog(workTypeCode: string, workTimeCode: string, empId: string, type: string) {
 			let self = this;
-			//if(self.checkOpenDialog == false) return;
+			if(self.checkOpenDialog == false) return;
 			block.grayout();
 			let lineNo = _.findIndex(self.dataScreen003A().employeeInfo, (x) => { return x.empId === empId; });
 			let workTimeName = $("#extable-ksu003").exTable('dataSource', 'middle').body[lineNo].worktimeName;
@@ -4704,7 +4717,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		/** A1_4 - Close modal */
 		public closeDialog(): void {
 			let self = this;
-			//if(self.checkOpenDialog == false) return;
+			if(self.checkOpenDialog == false) return;
 			nts.uk.ui.windows.close();
 		}
 

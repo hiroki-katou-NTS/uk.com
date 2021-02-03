@@ -51,7 +51,7 @@
 							<!-- C2_1 -->
 							<div class="panel" data-bind="ntsPanel:{width: '260px', height: '360px', direction: 'right', showIcon: true, visible: true}">
 								<!-- C2_2 -->
-								<div style="width: 250px" data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'code', comId: 'multi-list', 
+								<div style="width: 250px" tabindex="-1" data-bind="ntsSearchBox: {searchMode: 'highlight',targetKey: 'code', comId: 'multi-list', 
 											items: outputItemList, selected: currentCodeList, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />																																														
 								<!-- C2_3 -->
 								<table tabindex="6" id="multi-list" data-bind="ntsGridList: {
@@ -152,7 +152,7 @@
 											<!-- C7_1 -->
 											<div tabindex="13" id="swap-list" data-bind="ntsSwapList: {
 												showSearchBox: { showLeft : true, showRight: true},
-												height: 350,
+												height: 334,
 												dataSource: items,
 												disableMoveButton: false,
 												primaryKey: 'code',
