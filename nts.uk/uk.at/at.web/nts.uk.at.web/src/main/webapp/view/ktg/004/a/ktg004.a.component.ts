@@ -7,51 +7,54 @@ module nts.uk.ui.ktg004.a {
 
     @component({
         name: 'ktg-004-a',
-        template: `<div id="contents" style="display: none">
-        <div  class="parent">
-            <div class="header">
-                <div data-bind="ntsFormLabel: {text: name}"></div>
-                <!-- ko if: detailedWorkStatusSettings -->
-                    <button id= "setting-kdp004" data-bind="click: setting" class="setting">
-                        <i data-bind="ntsIcon: { no: 5 }"></i>
-                    </button>
-                <!-- /ko -->
-            </div>
-            <div id="scrollTable">
-                <table class="widget-table">
-                    <tbody data-bind="foreach: { data: $component.itemsDisplay, as: 'row' }">
-                        <tr>
-                            <td>
-                                <span class="row-name" data-bind="i18n: row.name"></span>
-                                <div class="row-data">
-                                    <!-- ko if: row.btn -->
-                                        <span class="go-button">
-                                            <button data-bind="click: $component.openKDW003">
-                                                <i data-bind="ntsIcon: { no: 145 }"></i>
-                                            </button>
-                                        </span>
-                                    <!-- /ko -->
-                                    <span class="data" data-bind="i18n: row.text"></span>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>                    
-                </table>
-                <table class="widget-table">
-                    <tbody data-bind="foreach: specialHolidaysRemainings()">
-                        <!-- ko if: _.find($parent.itemsSetting(), { 'item': code}).displayType -->
+        template: `
+        <div class="ktg-004-a"> 
+            <div id="contents" style="display: none">
+            <div  class="parent">
+                <div class="header">
+                    <div data-bind="ntsFormLabel: {text: name}"></div>
+                    <!-- ko if: detailedWorkStatusSettings -->
+                        <button id= "setting-kdp004" data-bind="click: setting" class="setting">
+                            <i data-bind="ntsIcon: { no: 5 }"></i>
+                        </button>
+                    <!-- /ko -->
+                </div>
+                <div id="scrollTable">
+                    <table class="widget-table">
+                        <tbody data-bind="foreach: { data: $component.itemsDisplay, as: 'row' }">
                             <tr>
                                 <td>
-                                    <span data-bind="text: name" class="row-name"></span>
-                                    <div class="row-data"><span data-bind="text: specialResidualNumber" class="data"></span></div>
+                                    <span class="row-name" data-bind="i18n: row.name"></span>
+                                    <div class="row-data">
+                                        <!-- ko if: row.btn -->
+                                            <span class="go-button">
+                                                <button data-bind="click: $component.openKDW003">
+                                                    <i data-bind="ntsIcon: { no: 145 }"></i>
+                                                </button>
+                                            </span>
+                                        <!-- /ko -->
+                                        <span class="data" data-bind="i18n: row.text"></span>
+                                    </div>
                                 </td>
                             </tr>
-                        <!-- /ko -->
-                    </tbody>
-                </table>	
+                        </tbody>                    
+                    </table>
+                    <table class="widget-table">
+                        <tbody data-bind="foreach: specialHolidaysRemainings()">
+                            <!-- ko if: _.find($parent.itemsSetting(), { 'item': code}).displayType -->
+                                <tr>
+                                    <td>
+                                        <span data-bind="text: name" class="row-name"></span>
+                                        <div class="row-data"><span data-bind="text: specialResidualNumber" class="data"></span></div>
+                                    </td>
+                                </tr>
+                            <!-- /ko -->
+                        </tbody>
+                    </table>	
+                </div>
+            </div>
             </div>
         </div>
-    </div>
             `
     })
     export class KTG004AComponent extends ko.ViewModel {
@@ -76,8 +79,6 @@ module nts.uk.ui.ktg004.a {
 
         mounted() {
             const vm = this;
-
-            vm.$el.classList.add('ktg-004-a');
         }
 
         loadData() {
