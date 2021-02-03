@@ -12,7 +12,6 @@ import lombok.Data;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplaceInforExport;
 import nts.uk.ctx.sys.portal.app.command.notice.DeleteMessageNoticeCommand;
 import nts.uk.ctx.sys.portal.app.command.notice.DeleteMessageNoticeCommandHandler;
 import nts.uk.ctx.sys.portal.app.command.notice.RegisterMessageNoticeCommand;
@@ -29,8 +28,6 @@ import nts.uk.ctx.sys.portal.app.query.notice.NotificationCreated;
 import nts.uk.ctx.sys.portal.dom.notice.adapter.DatePeriodDto;
 import nts.uk.ctx.sys.portal.dom.notice.adapter.EmployeeInfoImport;
 import nts.uk.ctx.sys.portal.dom.notice.adapter.WorkplaceInfoImport;
-import nts.uk.screen.at.app.query.kdp.kdp003.q.DisplayNoticeRegisterScreenDto;
-import nts.uk.screen.at.app.query.kdp.kdp003.r.MsgNoticeDto;
 import nts.uk.shr.com.context.AppContexts;
 
 @Path("sys/portal/notice")
@@ -52,18 +49,6 @@ public class MessageNoticeWebService extends WebService {
 
 	@Inject
 	private UpdateMessageNoticeCommandHandler updateHandler;
-	
-	@Inject
-	private GetNoticeByStamping noticeByStamping;
-	
-	@Inject
-	private GetWorkplaceByStampNotice wkpByStampNotice;
-	
-	@Inject
-	private DisplayNoticeRegisterScreen noticeRegisterScreen;
-	
-	@Inject
-	private DisplayNoticeMessage noticeMessage;
 
 	@POST
 	@Path("/getEmployeeNotification")
@@ -135,46 +120,6 @@ public class MessageNoticeWebService extends WebService {
 	public boolean isNewNotice() {
 		return this.screenQuery.isNewMsg();
 	}
-	
-	// KDP003.P
-	// 打刻入力で作成したお知らせを取得する
-	@POST
-	@Path("/getNoticeByStamping")
-	public List<MessageNoticeDto> getNoticeByStamping(DatePeriodDto param) {
-		String sid = AppContexts.user().employeeId();
-		
-		DatePeriod period = param == null ? new DatePeriod(GeneralDate.today(), GeneralDate.today())
-				: new DatePeriod(param.getStartDate(), param.getEndDate());
-		return noticeByStamping.getNoticeByStamping(period);
-	}
-	
-	// KDP003.Q
-	// 打刻入力のお知らせの職場を取得する
-	@POST
-	@Path("/getWkpByStampNotice")
-	public List<WorkplaceInforExport> getWkpNameByWkpId(List<String> wkpIds) {
-		return wkpByStampNotice.getWkpNameByWkpId(wkpIds);
-	}
-	
-	// KDP003.Q
-	// 打刻入力の作成するお知らせ登録の画面を表示する
-	@POST
-	@Path("/displayNoticeRegisterScreen")
-	public DisplayNoticeRegisterScreenDto displayNoticeRegisterScreen(MessageNoticeDto param) {
-		return noticeRegisterScreen.displayNoticeRegisterScreen(AppContexts.user().employeeId(), param);	
-	}
-	
-	// KDP003.R
-	// 打刻入力(共有)でお知らせメッセージを表示する
-	@POST
-	@Path("/displayNoticeMessage")
-	public List<MsgNoticeDto> displayNoticeMsg(DatePeriodDto param, List<String> wkpIds) {
-		DatePeriod period = param == null ? new DatePeriod(GeneralDate.today(), GeneralDate.today())
-				: new DatePeriod(param.getStartDate(), param.getEndDate());
-		
-		return noticeMessage.displayNoticeMessage(period, wkpIds);	
-	}
-		
 }
 
 @Data
