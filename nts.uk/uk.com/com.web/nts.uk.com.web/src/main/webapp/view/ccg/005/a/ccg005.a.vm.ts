@@ -460,6 +460,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       vm.perPage.subscribe(() => vm.resetPagination());
       vm.paginationText.subscribe(() => {
         vm.attendanceInformationDtosDisplay(_.slice(vm.attendanceInformationDtosDisplayClone(), vm.startPage() - 1, vm.endPage()));
+        vm.setAvatarInLoop();
       });
     }
 
@@ -514,16 +515,17 @@ module nts.uk.at.view.ccg005.a.screenModel {
           vm.attendanceInformationDtosDisplay(display);
           vm.attendanceInformationDtosDisplayClone(display);
           vm.resetPagination();
-
-          //set avatar for all employee except current user
-          vm.setAvatarInLoop(display);
         })
         .always(() => vm.$blockui('clear'));
       });
     }
 
-    private setAvatarInLoop(listAttendances: AttendanceInformationViewModel[]){
-      _.map(listAttendances, (item) => {
+    private setAvatarInLoop() {
+      const vm = this;
+      _.map(vm.attendanceInformationDtosDisplay(), (item) => {
+        if ($(`#ccg005-avatar-change-${item.sid}`).children().length > 0) {
+          return;
+        }
         if (item.avatarDto && item.avatarDto.fileId) {
           $(`#ccg005-avatar-change-${item.sid}`)
             .append($("<img/>")
