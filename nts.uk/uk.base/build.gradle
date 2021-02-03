@@ -32,47 +32,27 @@ project (':base.web:nts.uk.com.js.web') {
 		includeEmptyDirs false
 	}
 	
-	task tsc(type: Exec) {		
-		if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
-			commandLine 'cmd', '/c', 'tsc'
-		} else {
-			commandLine 'tsc'
-		}
-
+	task tsc(type: Exec) {
+		commandLine 'cmd', '/c', 'tsc'
 		args '--sourceMap', '--declaration'
+		ignoreExitValue true
 	}
 	
-	task tscw(type: Exec) {		
-		if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
-			commandLine 'cmd', '/c', 'tsc'
-		} else {
-			commandLine 'tsc'
-		}
-		
+	task tscw(type: Exec) {
+		commandLine 'cmd', '/c', 'tsc'
 		args '--watch', '--sourceMap', '--declaration'
+		ignoreExitValue true
 	}
 	
 	task csc(type: Exec) {
-		workingDir 'src/main/webapp/lib/nittsu/ui/style'
-		
-		if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
-			commandLine 'cmd', '/c', 'node-sass'
-		} else {
-			commandLine 'node-sass'
-		}
-		
+		workingDir 'src/main/webapp/lib/nittsu/ui/style'		
+		commandLine 'cmd', '/c', 'node-sass'
 		args 'sass/base.scss', 'stylesheets/base.css', '--output-style', 'compressed', '--source-comments', 'false'
 	}
 	
 	task cscw(type: Exec) {
-		workingDir 'src/main/webapp/lib/nittsu/ui/style'
-		
-		if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
-			commandLine 'cmd', '/c', 'node-sass'
-		} else {
-			commandLine 'node-sass'
-		}
-
+		workingDir 'src/main/webapp/lib/nittsu/ui/style'		
+		commandLine 'cmd', '/c', 'node-sass'
 		args 'sass/base.scss', 'stylesheets/base.css', '--output-style', 'compressed', '--source-comments', 'false', '--watch'
 	}
 }
