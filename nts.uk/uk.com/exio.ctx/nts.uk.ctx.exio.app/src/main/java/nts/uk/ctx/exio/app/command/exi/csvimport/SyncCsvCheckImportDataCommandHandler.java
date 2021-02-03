@@ -104,13 +104,13 @@ public class SyncCsvCheckImportDataCommandHandler extends AsyncCommandHandler<Cs
 				if(i < startLine) continue;
 				List<List<String>> lstLineData = FileUtil.getRecordByIndex(inputStream, dataLineNum, i, command.getEndcoding());
 				if(lstLineData.isEmpty()) continue;
-				boolean chkLineData = true;
-				int j = 0;
-				for(List<String> lineDatas : lstLineData) {
+				boolean isLineError = false;
+				for(int lines = 0; lines < lstLineData.size(); lines ++){
+					List<String> lineDatas = lstLineData.get(lines);
 					String csvItemName = lineDatas.get(0);
-					int csvItemNumber = j++;
+					int count = lines + 1;
 					List<StdAcceptItem> lstAcceptSetItem = lstAccSetItem.stream()
-							.filter(x -> x.getCsvItemName().get().equals(csvItemName) && x.getCsvItemNumber().get() == csvItemNumber)
+							.filter(x -> x.getCsvItemName().get().equals(csvItemName) && x.getCsvItemNumber().get() == count)
 							.collect(Collectors.toList());
 					if(lstAcceptSetItem.isEmpty()) continue;
 					StdAcceptItem accSetItem = lstAcceptSetItem.get(0);
@@ -141,17 +141,18 @@ public class SyncCsvCheckImportDataCommandHandler extends AsyncCommandHandler<Cs
 						lstExacErrorLog.add(exLog);
 					}
 					
-					if(!condEditAndCheck.isResultCheck()) {
-						chkLineData = condEditAndCheck.isResultCheck();
-					}
-					
+					if(condEditAndCheck.isResultCheck()) {
+						isLineError = condEditAndCheck.isResultCheck();
+						continue;
+					}				
 					
 					//②　TODO Check primitive value
 					//③　TODO アルゴリズム「特殊区分項目の編集」を実行
+					
 					//④　TODO　履歴区分
 					
 				}
-				if(!chkLineData) {
+				if(!isLineError) {
 					//TODO insert vao db
 					numberOfError += 1; 
 					setter.updateData(NUMBER_OF_ERROR, numberOfError);

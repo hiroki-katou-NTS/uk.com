@@ -4,11 +4,14 @@ import java.io.Serializable;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -23,7 +26,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "OIOMT_EX_ACP_CATEGORY_ITEM")
 public class OiomtExAcpCategoryItem  extends UkJpaEntity implements Serializable {
-	@Id
+	@EmbeddedId
 	public OiomtExAcpCategoryItemPk pk;
 	/**	契約コード */
 	@Basic(optional = false)
@@ -62,7 +65,7 @@ public class OiomtExAcpCategoryItem  extends UkJpaEntity implements Serializable
 	
 	/**primitiveValue名	 */
 	@Basic(optional = false)
-	@Column(name = "PRIMITIVE_NAME")
+	@Column(name = "PRIMITIVE_VALUE_NAME")
 	public String primitiveName;
 	
 	/**小数部桁数	 */
@@ -126,7 +129,7 @@ public class OiomtExAcpCategoryItem  extends UkJpaEntity implements Serializable
 	public Integer historyContiFlg;
 		
 	@ManyToOne
-	@JoinColumns({@JoinColumn(name = "CATEGORY_ID", referencedColumnName = "CATEGORY_ID", insertable = false, updatable = false)})
+	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CATEGORY_ID", referencedColumnName = "CATEGORY_ID") })
 	public OiomtExAcpCategory acpCategory;
 
 	/**
