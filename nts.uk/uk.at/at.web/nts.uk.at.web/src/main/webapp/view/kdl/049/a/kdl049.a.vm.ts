@@ -76,7 +76,7 @@ module nts.uk.at.view.kdl049.a.viewmodel {
             }
             service.addEvent(param).done(() => {
 
-                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+               
                 let dataShare = {
                     targetDate: self.targetDate(),
                     workPlaceID: self.workPlaceID(),
@@ -84,7 +84,9 @@ module nts.uk.at.view.kdl049.a.viewmodel {
                     eventWorkplaceName: self.wplEventName()
                 }
                 nts.uk.ui.windows.setShared('DataKDL049', dataShare);
-                nts.uk.ui.windows.close();
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                    nts.uk.ui.windows.close();
+                });
             }).fail((res) => {
 
             });

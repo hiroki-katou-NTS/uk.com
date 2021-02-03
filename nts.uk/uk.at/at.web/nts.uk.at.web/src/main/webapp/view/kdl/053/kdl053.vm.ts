@@ -35,31 +35,29 @@ module nts.uk.at.view.kdl053 {
                 errorRegistrationList = _.union(errorRegistrationList, _.sortBy(temp, item => item.date));
             });
 
-            self.hasError(data.isRegistered == 1); 
-            let b = self.getDayfromDate("2020/12/07");
-            let a = moment.weekdaysShort(1);
+            self.hasError(data.isRegistered == 1);            
             _.each(errorRegistrationList, errorLog => {
                 switch (self.getDayfromDate(errorLog.date)) {
                     case 0:
-                        errorLog.dateCss = '<span style="color:red">' + errorLog.date + "(" + moment.weekdaysShort(0) + ')</span>';
+                        errorLog.dateCss = '<span>' + errorLog.date + '<span style="color:red">' + " (" + moment.weekdaysShort(0) + ')</span></span>';
                         break;
                     case 1:
-                        errorLog.dateCss = '<span>' + errorLog.date + "(" + moment.weekdaysShort(1) + ')</span>';
+                        errorLog.dateCss = '<span>' + errorLog.date + " (" + moment.weekdaysShort(1) + ')</span>';
                         break;
                     case 2:
-                        errorLog.dateCss = '<span>' + errorLog.date + "(" + moment.weekdaysShort(2) + ')</span>';
+                        errorLog.dateCss = '<span>' + errorLog.date + " (" + moment.weekdaysShort(2) + ')</span>';
                         break;
                     case 3:
-                        errorLog.dateCss = '<span>' + errorLog.date + "(" + moment.weekdaysShort(3) + ')</span>';
+                        errorLog.dateCss = '<span>' + errorLog.date + " (" + moment.weekdaysShort(3) + ')</span>';
                         break;
                     case 4:
-                        errorLog.dateCss = '<span>' + errorLog.date + "(" + moment.weekdaysShort(4) + ')</span>';
+                        errorLog.dateCss = '<span>' + errorLog.date + " (" + moment.weekdaysShort(4) + ')</span>';
                         break;
                     case 5:
-                        errorLog.dateCss = '<span>' + errorLog.date + "(" + moment.weekdaysShort(5) + ')</span>';
+                        errorLog.dateCss = '<span>' + errorLog.date + " (" + moment.weekdaysShort(5) + ')</span>';
                         break;
                     case 6:
-                        errorLog.dateCss = '<span style="color:blue">' + errorLog.date + "(" + moment.weekdaysShort(6) + ')</span>';
+                        errorLog.dateCss = '<span>' + errorLog.date + '<span style="color:blue">'+ " (" + moment.weekdaysShort(6) + ')</span></span>';
                         break;
                 }
             })
