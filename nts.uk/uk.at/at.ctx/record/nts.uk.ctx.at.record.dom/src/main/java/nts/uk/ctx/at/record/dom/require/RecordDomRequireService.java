@@ -760,7 +760,7 @@ public class RecordDomRequireService {
 				bentoReservationRepo, bentoMenuRepo, integrationOfDailyGetter,
 				weekRuleManagementRepo, sharedAffWorkPlaceHisAdapter, getProcessingDate,
 				roleOfOpenPeriodRepo, ElapseYearRepository, syCompanyRecordAdapter, 
-				snapshotAdapter, superHD60HConMedRepo);
+				snapshotAdapter, superHD60HConMedRepo, monthlyAggregationRemainingNumber);
 	}
 	
 	public  class RequireImpl extends nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RequireImp implements Require {
@@ -881,7 +881,8 @@ public class RecordDomRequireService {
 				WeekRuleManagementRepo weekRuleManagementRepo, SharedAffWorkPlaceHisAdapter sharedAffWorkPlaceHisAdapter,
 				GetProcessingDate getProcessingDate, RoleOfOpenPeriodRepository roleOfOpenPeriodRepo,
 				ElapseYearRepository elapseYearRepo,SyCompanyRecordAdapter syCompanyRecordAdapter,
-				DailySnapshotWorkAdapter snapshotAdapter, SuperHD60HConMedRepository superHD60HConMedRepo) {
+				DailySnapshotWorkAdapter snapshotAdapter, SuperHD60HConMedRepository superHD60HConMedRepo,
+				MonthlyAggregationRemainingNumber monthlyAggregationRemainingNumber) {
 			
 			super(comSubstVacationRepo, compensLeaveComSetRepo, specialLeaveGrantRepo2,
 					empEmployeeAdapter, grantDateTblRepo, annLeaEmpBasicInfoRepo, specialHolidayRepo2, 
@@ -1019,7 +1020,7 @@ public class RecordDomRequireService {
 			this.snapshotAdapter = snapshotAdapter;
 			this.superHD60HConMedRepo = superHD60HConMedRepo;
 			this.syCompanyRecordAdapter = syCompanyRecordAdapter;
-//			this.monthlyAggregationRemainingNumber = monthlyAggregationRemainingNumber;
+			this.monthlyAggregationRemainingNumber = monthlyAggregationRemainingNumber;
 			this.elapseYearRepository = elapseYearRepo;
 		}
 
