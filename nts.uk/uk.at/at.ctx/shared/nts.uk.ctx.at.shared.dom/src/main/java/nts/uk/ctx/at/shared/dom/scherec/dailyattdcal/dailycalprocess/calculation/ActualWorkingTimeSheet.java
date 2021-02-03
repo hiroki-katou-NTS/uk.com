@@ -24,6 +24,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.Bon
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.SpecificDateAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.SpecificDateItemNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.MidNightTimeSheetForCalcList;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.someitems.BonusPayTimeSheetForCalc;
@@ -49,7 +50,7 @@ public abstract class ActualWorkingTimeSheet extends CalculationTimeSheet{
 	//特定日加給
 	protected List<SpecBonusPayTimeSheetForCalc> specBonusPayTimesheet = new ArrayList<>();
 	//深夜
-	protected Optional<MidNightTimeSheetForCalc> midNightTimeSheet = Optional.empty();
+	protected MidNightTimeSheetForCalcList midNightTimeSheet;
 	
 	public ActualWorkingTimeSheet(TimeSpanForDailyCalc timeSheet, TimeRoundingSetting rounding) {
 		super(timeSheet, rounding);
@@ -62,7 +63,7 @@ public abstract class ActualWorkingTimeSheet extends CalculationTimeSheet{
 			List<TimeSheetOfDeductionItem> deductionTimeSheets,
 			List<BonusPayTimeSheetForCalc> bonusPayTimeSheet,
 			List<SpecBonusPayTimeSheetForCalc> specifiedBonusPayTimeSheet,
-			Optional<MidNightTimeSheetForCalc> midNighttimeSheet) {
+			MidNightTimeSheetForCalcList midNighttimeSheet) {
 		
 		super(timeSheet, rounding, recorddeductionTimeSheets,deductionTimeSheets);
 		this.bonusPayTimeSheet = bonusPayTimeSheet;
@@ -122,50 +123,10 @@ public abstract class ActualWorkingTimeSheet extends CalculationTimeSheet{
 	 * 深夜時間帯のリストを作り直す
 	 * @param baseTime 基準時間
 	 * @param isDateBefore 基準時間より早い時間を切り出す
-	 * @return 切り出した深夜時間帯
+	 * @return 切り出した深夜時間帯一覧
 	 */
-	public Optional<MidNightTimeSheetForCalc> recreateMidNightTimeSheetBeforeBase(TimeWithDayAttr baseTime,boolean isDateBefore){
-		if(this.midNightTimeSheet.isPresent()) {
-			if(midNightTimeSheet.get().getTimeSheet().getTimeSpan().contains(baseTime)) {
-				return midNightTimeSheet.get().reCreateOwn(baseTime,isDateBefore);
-				//return midNightTimeSheet;
-			}
-			else if(midNightTimeSheet.get().getTimeSheet().getTimeSpan().getEnd().lessThan(baseTime) && isDateBefore) {
-				return midNightTimeSheet;
-			}
-			else if(midNightTimeSheet.get().getTimeSheet().getTimeSpan().getStart().greaterThan(baseTime) && !isDateBefore) {
-				return midNightTimeSheet;
-			}
-		}
-		return Optional.empty();
-	}
-	
-	/**
-	 * 深夜時間帯の作成(再帰)
-	 * @param timeSpan
-	 * @return
-	 */
-	public List<TimeSheetOfDeductionItem> duplicateTimeSpan(TimeSpanForDailyCalc timeSpan) {
-		List<TimeSheetOfDeductionItem> returnList = new ArrayList<>();
-		for(TimeSheetOfDeductionItem deductionTimeSheet : deductionTimeSheet) {
-			if(midNightTimeSheet.isPresent()) {
-				Optional<TimeSpanForDailyCalc> duplicateSpan = midNightTimeSheet.get().getTimeSheet().getDuplicatedWith(deductionTimeSheet.getTimeSheet());
-				if(duplicateSpan.isPresent()) {
-					returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(
-																								deductionTimeSheet.getTimeSheet()
-																							   ,deductionTimeSheet.getRounding()
-																							   ,deductionTimeSheet.getRecordedTimeSheet()
-																							   ,deductionTimeSheet.getDeductionTimeSheet()
-																							   ,deductionTimeSheet.getWorkingBreakAtr()
-																							   ,deductionTimeSheet.getGoOutReason()
-																							   ,deductionTimeSheet.getBreakAtr()
-																							   ,deductionTimeSheet.getShortTimeSheetAtr()
-																							   ,deductionTimeSheet.getDeductionAtr()
-																							   ,deductionTimeSheet.getChildCareAtr()));
-				}
-			}
-		}
-		return returnList;
+	public MidNightTimeSheetForCalcList recreateMidNightTimeSheetBeforeBase(TimeWithDayAttr baseTime,boolean isDateBefore){
+		return this.midNightTimeSheet.recreateMidNightTimeSheetBeforeBase(baseTime, isDateBefore);
 	}
 	
 	/**
@@ -237,7 +198,6 @@ public abstract class ActualWorkingTimeSheet extends CalculationTimeSheet{
 		return bonusPayTimeList;
 	}
 	
-	//---------------------------実働時間帯へ持っていきたい-------------------------------↓
 	/**
 	 * 指定された時間帯と重複している加給時間帯を取得
 	 * @param bonusPayTimeSheet
@@ -287,34 +247,6 @@ public abstract class ActualWorkingTimeSheet extends CalculationTimeSheet{
 								.filter(tc -> tc.getTimeSheet().getTimeSpan().checkDuplication(timeSpan.getTimeSpan()).isDuplicated())
 								.map(tc -> tc.convertForCalcCorrectRange(tc.getTimeSheet().getDuplicatedWith(timeSpan).get()))
 								.collect(Collectors.toList());
-	}
-	
-	/**
-	 * 指定された時間帯と重複している深夜時間帯を取得
-	 * @param midNightTimeSheet
-	 * @param duplicateTimeSheet
-	 * @return
-	 */
-	public static Optional<MidNightTimeSheetForCalc> getDuplicateMidNight(MidNightTimeSheetForCalc midNightTimeSheet, TimeSpanForDailyCalc timeSpan){ 
-		val duplicateMidNightSpan = timeSpan.getDuplicatedWith(midNightTimeSheet.getTimeSheet());
-		if(duplicateMidNightSpan.isPresent()) {
-			return Optional.of(midNightTimeSheet.replaceTime(duplicateMidNightSpan.get().getTimeSpan()));
-		}
-		return Optional.empty();
-	}
-	
-	/**
-	 * 指定された時間帯と重複している深夜時間帯を取得
-	 * @param midNightTimeSheet
-	 * @param duplicateTimeSheet
-	 * @return
-	 */
-	public Optional<MidNightTimeSheetForCalc> getDuplicateMidNightNotStatic(MidNightTimeSheetForCalc midNightTimeSheet, TimeSpanForDailyCalc timeSpan){ 
-		val duplicateMidNightSpan = timeSpan.getDuplicatedWith(midNightTimeSheet.getTimeSheet());
-		if(duplicateMidNightSpan.isPresent()) {
-			return Optional.of(midNightTimeSheet.replaceTime(duplicateMidNightSpan.get().getTimeSpan()));
-		}
-		return Optional.empty();
 	}
 	
 	/*実働時間帯へジェネリクスに変えて飛ばしたい*/
@@ -389,6 +321,7 @@ public abstract class ActualWorkingTimeSheet extends CalculationTimeSheet{
 	}
 	
 	/**
+	 * 深夜時間帯の作成
 	 * @param midNightTimeSheet 深夜時間帯
 	 * @param commonSetting 就業時間帯の共通設定
 	 */
@@ -402,20 +335,27 @@ public abstract class ActualWorkingTimeSheet extends CalculationTimeSheet{
 	}
 	
 	/**
-	 * 深夜時間帯と重複している控除項目時間帯を深夜時間帯へ保持させる 
-	 * (実働時間帯へ持っていきたい)
+	 * 深夜時間帯と重複している控除項目時間帯を深夜時間帯へ保持させる
+	 * アルゴリズム：深夜時間帯の作成
+	 * @param midNightTimeSheet 深夜時間帯
+	 * @param duplicateTimeSheet 計算範囲
+	 * @param dedTimeSheet 控除時間帯
+	 * @param recordTimeSheet 計上用控除時間帯
+	 * @param commonSetting 共通設定
+	 * @return 計算用深夜時間帯一覧
 	 */
-	@SuppressWarnings("static-access")
-	public static Optional<MidNightTimeSheetForCalc> getMidNightTimeSheetIncludeDedTimeSheet(MidNightTimeSheet midNightTimeSheet,TimeSpanForDailyCalc duplicateTimeSheet,
-															   List<TimeSheetOfDeductionItem> dedTimeSheet,
-															   List<TimeSheetOfDeductionItem> recordTimeSheet,Optional<WorkTimezoneCommonSet> commonSetting){
-		val midNightTimeForCalc = MidNightTimeSheetForCalc.convertForCalc(midNightTimeSheet,commonSetting);
-		val duplicatedMidNight = getDuplicateMidNight(midNightTimeForCalc,duplicateTimeSheet);
-		if(duplicatedMidNight.isPresent()) {
-			duplicatedMidNight.get().addDuplicatedDeductionTimeSheet(dedTimeSheet, DeductionAtr.Deduction,Optional.of(new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN)));
-			duplicatedMidNight.get().addDuplicatedDeductionTimeSheet(recordTimeSheet, DeductionAtr.Appropriate,Optional.of(new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN)));
-		}
-		return duplicatedMidNight;
+	public static MidNightTimeSheetForCalcList getMidNightTimeSheetIncludeDedTimeSheet(
+			MidNightTimeSheet midNightTimeSheet,
+			TimeSpanForDailyCalc duplicateTimeSheet,
+			List<TimeSheetOfDeductionItem> dedTimeSheet,
+			List<TimeSheetOfDeductionItem> recordTimeSheet,
+			Optional<WorkTimezoneCommonSet> commonSetting){
+		//共通設定から深夜丸め設定を取得
+		TimeRoundingSetting timeRoundingSetting = commonSetting.isPresent()
+				? commonSetting.get().getLateNightTimeSet().getRoundingSetting()
+				: new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN);
+		//深夜時間帯一覧を作成する
+		return MidNightTimeSheetForCalcList.create(duplicateTimeSheet, midNightTimeSheet, dedTimeSheet, recordTimeSheet, timeRoundingSetting);
 	}
 	
 	/**
