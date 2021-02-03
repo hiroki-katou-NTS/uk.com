@@ -15,7 +15,7 @@ import nts.uk.ctx.at.record.app.find.workrecord.erroralarm.condition.ErAlAtdItem
 import nts.uk.ctx.at.record.app.find.workrecord.erroralarm.condition.WorkTimeConditionDto;
 import nts.uk.ctx.at.record.app.find.workrecord.erroralarm.condition.WorkTypeConditionDto;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
+import nts.uk.ctx.at.shared.dom.alarmList.periodcond.ErrorAlarmCondition;
 import nts.uk.ctx.at.shared.dom.alarmList.attendanceitem.ErAlAttendanceItemCondition;
 import nts.uk.ctx.at.shared.dom.alarmList.worktime.PlanActualWorkTime;
 import nts.uk.ctx.at.shared.dom.alarmList.worktime.SingleWorkTime;

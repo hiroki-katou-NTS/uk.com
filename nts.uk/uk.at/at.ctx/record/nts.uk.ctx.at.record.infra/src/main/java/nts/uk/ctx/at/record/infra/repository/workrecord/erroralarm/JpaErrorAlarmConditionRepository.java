@@ -11,8 +11,8 @@ import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcmtErAlCondition;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmConditionRepository;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
+import nts.uk.ctx.at.shared.dom.alarmList.periodcond.ErrorAlarmConditionRepository;
+import nts.uk.ctx.at.shared.dom.alarmList.periodcond.ErrorAlarmCondition;
 import nts.uk.shr.com.context.AppContexts;
 
 /**

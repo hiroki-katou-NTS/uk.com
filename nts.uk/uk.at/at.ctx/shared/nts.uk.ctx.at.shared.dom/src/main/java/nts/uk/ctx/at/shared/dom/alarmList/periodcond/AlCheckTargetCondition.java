@@ -1,7 +1,7 @@
 /**
  * 11:37:58 AM Nov 2, 2017
  */
-package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition;
+package nts.uk.ctx.at.shared.dom.alarmList.periodcond;
 
 import java.util.List;
 import java.util.stream.Collectors;

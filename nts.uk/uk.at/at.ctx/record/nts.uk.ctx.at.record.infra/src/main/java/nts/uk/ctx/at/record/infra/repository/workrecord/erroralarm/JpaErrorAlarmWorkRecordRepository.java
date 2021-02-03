@@ -30,7 +30,7 @@ import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
+import nts.uk.ctx.at.shared.dom.alarmList.periodcond.ErrorAlarmCondition;
 import nts.uk.ctx.at.shared.dom.alarmList.attendanceitem.ErAlAttendanceItemCondition;
 import nts.uk.ctx.at.shared.dom.alarmList.attendanceitem.ErAlConditionsAttendanceItem;
 import nts.uk.ctx.at.shared.dom.alarmList.enums.ConditionAtr;
