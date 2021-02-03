@@ -816,7 +816,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					self.dispStartHours = self.dataInitStartKsu003Dto().byDateDto.dispStart;
 					self.dataScreen003A().targetInfor = self.dataInitStartKsu003Dto().manageMultiDto.useATR;
 					self.dataScreen003A().scheCorrection = self.dataInitStartKsu003Dto().functionControlDto != null
-						? self.dataInitStartKsu003Dto().functionControlDto.changeableWorks : [];
+						? self.dataInitStartKsu003Dto().functionControlDto.changeableWorks : [0,1,2];
 				}).fail(function(error) {
 					errorDialog({ messageId: error.messageId });
 					dfd.reject();
