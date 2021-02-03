@@ -23,7 +23,7 @@ import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 // 勤務種類
 @Getter
 @NoArgsConstructor
-public class WorkType extends AggregateRoot implements Cloneable, Serializable{
+public class  WorkType extends AggregateRoot implements Cloneable, Serializable{
 
 	/** Serializable */
 	private static final long serialVersionUID = 1L;

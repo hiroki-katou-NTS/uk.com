@@ -5,6 +5,7 @@
 package nts.uk.ctx.sys.env.dom.mailnoticeset.adapter;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.uk.ctx.sys.env.dom.mailnoticeset.dto.EmployeeInfoContactImport;
 
@@ -27,4 +28,11 @@ public interface EmployeeInfoContactAdapter {
 	 * @param employee the employee
 	 */
 	void register(EmployeeInfoContactImport employee);
+	
+	/**
+	 * 取得する
+	 * @param employeeId
+	 * @return the employee info contact
+	 */
+	Optional<EmployeeInfoContactImport> get(String employeeId);
 }

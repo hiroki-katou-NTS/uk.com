@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.emp;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -15,6 +16,13 @@ public interface EmpRegulaMonthActCalSetRepo {
 	 * @return the optional
 	 */
 	Optional<EmpRegulaMonthActCalSet> find(String cid, String empCode);
+	
+	/**
+	 * Find by Cid
+	 * @param cid : 会社ID
+	 * @return
+	 */
+	List<EmpRegulaMonthActCalSet> findByCid(String cid);
 
 	/**
 	 * Adds the.

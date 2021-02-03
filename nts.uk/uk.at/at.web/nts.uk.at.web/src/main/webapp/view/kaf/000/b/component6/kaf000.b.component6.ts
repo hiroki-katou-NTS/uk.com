@@ -28,7 +28,7 @@ module nts.uk.at.view.kaf000.b.component6.viewmodel {
             params.application().opAppStartDate(vm.appDispInfoStartupOutput().appDetailScreenInfo.application.opAppStartDate);
 		    params.application().opAppEndDate(vm.appDispInfoStartupOutput().appDetailScreenInfo.application.opAppEndDate);
 
-			let inputDate = moment(vm.appDispInfoStartupOutput().appDetailScreenInfo.application.inputDate).format("YYYY/MM/DD hh:mm");
+			let inputDate = moment(vm.appDispInfoStartupOutput().appDetailScreenInfo.application.inputDate).format("YYYY/MM/DD HH:mm");
 			let appDateString = "";
 			if(params.application().opAppStartDate()==params.application().opAppEndDate()) {
 				appDateString = params.application().appDate();
@@ -42,7 +42,7 @@ module nts.uk.at.view.kaf000.b.component6.viewmodel {
 	            params.application().opAppStartDate(value.appDetailScreenInfo.application.opAppStartDate);
 			    params.application().opAppEndDate(value.appDetailScreenInfo.application.opAppEndDate);
 
-				let inputDate = moment(value.appDetailScreenInfo.application.inputDate).format("YYYY/MM/DD hh:mm");
+				let inputDate = moment(value.appDetailScreenInfo.application.inputDate).format("YYYY/MM/DD HH:mm");
 				let appDateString = "";
 				if(params.application().opAppStartDate()==params.application().opAppEndDate()) {
 					appDateString = params.application().appDate();

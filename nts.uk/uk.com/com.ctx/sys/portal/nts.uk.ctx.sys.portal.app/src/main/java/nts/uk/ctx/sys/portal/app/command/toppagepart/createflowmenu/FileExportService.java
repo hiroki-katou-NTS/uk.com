@@ -39,7 +39,7 @@ public class FileExportService extends ExportService<FileExportCommand> {
 	@Inject
 	private StoredFileStreamService fileStreamService;
 
-	private static final String DATA_STORE_PATH = ServerSystemProperties.fileStoragePath();
+	public static final String DATA_STORE_PATH = ServerSystemProperties.fileStoragePath();
 
 	@Override
 	protected void handle(ExportServiceContext<FileExportCommand> context) {
@@ -63,11 +63,12 @@ public class FileExportService extends ExportService<FileExportCommand> {
 		if (!status.equals(ExtractStatus.SUCCESS)) {
 			return null;
 		}
-		
+
 		File file = destinationDirectory.toFile().listFiles()[0];
-		return new ExtractionResponseDto(FileUtils.readFileToString(file, StandardCharsets.UTF_8), file.getAbsolutePath());
+		return new ExtractionResponseDto(FileUtils.readFileToString(file, StandardCharsets.UTF_8),
+				file.getAbsolutePath());
 	}
-	
+
 	public List<ExtractionResponseDto> extractByListFileId(List<String> lstFileId) throws IOException {
 		List<ExtractionResponseDto> result = new ArrayList<>();
 		for (String fileId : lstFileId) {
@@ -78,12 +79,13 @@ public class FileExportService extends ExportService<FileExportCommand> {
 				return new ArrayList<>();
 			}
 			File file = destinationDirectory.toFile().listFiles()[0];
-			ExtractionResponseDto item =  new ExtractionResponseDto(FileUtils.readFileToString(file, StandardCharsets.UTF_8), file.getAbsolutePath());
+			ExtractionResponseDto item = new ExtractionResponseDto(
+					FileUtils.readFileToString(file, StandardCharsets.UTF_8), file.getAbsolutePath());
 			result.add(item);
 		}
 		return result;
 	}
-	
+
 	public ExtractionResponseDto extractFlowMenu(String fileId) throws IOException {
 		InputStream inputStream = this.fileStreamService.takeOutFromFileId(fileId);
 		Path destinationDirectory = Paths.get(DATA_STORE_PATH + "//packs" + "//" + fileId);
@@ -91,9 +93,10 @@ public class FileExportService extends ExportService<FileExportCommand> {
 		if (!status.equals(ExtractStatus.SUCCESS)) {
 			return null;
 		}
-		
+
 		File file = destinationDirectory.toFile().listFiles()[0];
-		return new ExtractionResponseDto(FileUtils.readFileToString(file, StandardCharsets.UTF_8), destinationDirectory.toString());
+		return new ExtractionResponseDto(FileUtils.readFileToString(file, StandardCharsets.UTF_8),
+				destinationDirectory.toString());
 	}
-	
+
 }

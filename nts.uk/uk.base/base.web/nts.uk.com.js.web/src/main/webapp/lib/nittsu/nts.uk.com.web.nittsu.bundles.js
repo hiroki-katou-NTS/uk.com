@@ -2,7 +2,7 @@ var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
     return function (d, b) {
@@ -3187,8 +3187,8 @@ var nts;
                     }
                     duration_1.create = create;
                     function createText(duration) {
-                        var isNegative = duration.isNegative, asHoursInt = duration.asHoursInt, minutePart = duration.minutePart;
-                        return ("" + (isNegative ? '-' : '') + asHoursInt + ":" + _.padStart("" + minutePart, 2, '0')).replace(/^\-{1,}/g, '-');
+                        var isNegative = duration.isNegative, asHoursInt = duration.asHoursInt, minutePartText = duration.minutePartText;
+                        return ("" + (isNegative ? '-' : '') + asHoursInt + ":" + minutePartText).replace(/^\-{1,}/g, '-');
                     }
                 })(duration = minutesBased.duration || (minutesBased.duration = {}));
             })(minutesBased = time.minutesBased || (time.minutesBased = {}));
@@ -3624,8 +3624,8 @@ var nts;
                     }
                     duration_2.create = create;
                     function createText(duration) {
-                        var isNegative = duration.isNegative, asHoursInt = duration.asHoursInt, asMinutes = duration.asMinutes, asSeconds = duration.asSeconds;
-                        return ("" + (isNegative ? '-' : '') + asHoursInt + ":" + _.padStart("" + asMinutes, 2, '0') + ":" + _.padStart("" + asSeconds, 2, '0')).replace(/^\-{1,}/g, '-');
+                        var isNegative = duration.isNegative, asHoursInt = duration.asHoursInt, minutePartText = duration.minutePartText, secondPartText = duration.secondPartText;
+                        return ("" + (isNegative ? '-' : '') + asHoursInt + ":" + minutePartText + ":" + secondPartText).replace(/^\-{1,}/g, '-');
                     }
                 })(duration = secondsBased.duration || (secondsBased.duration = {}));
             })(secondsBased = time.secondsBased || (time.secondsBased = {}));
@@ -4893,9 +4893,6 @@ var nts;
                                     userOptions = [new MenuItem(getText('CCG020_5')), new MenuItem(getText('CCG020_4')), new MenuItem(getText('CCG020_3'))];
                                 else
                                     userOptions = [new MenuItem(getText('CCG020_5')), new MenuItem(getText('CCG020_3'))];
-                                if (!__viewContext.user.isEmployee) {
-                                    userOptions.shift();
-                                }
                                 var $userOptions = $("<ul class='menu-items user-options'/>").appendTo($userSettings);
                                 _.forEach(userOptions, function (option, i) {
                                     var $li = $("<li class='menu-item'/>").text(option.name);
@@ -4932,6 +4929,11 @@ var nts;
                                             });
                                         }
                                     });
+                                });
+                                nts.uk.request.ajax(constants.APP_ID, constants.canOpenInfor).done(function (canOpenInfor) {
+                                    if (!__viewContext.user.isEmployee || !canOpenInfor) {
+                                        $userOptions.find(':first-child').remove();
+                                    }
                                 });
                                 $companyList.css("right", $user.outerWidth() + 30);
                                 $userSettings.on(constants.CLICK, function () {
@@ -5171,6 +5173,7 @@ var nts;
                     constants.ShowManual = "sys/portal/webmenu/showmanual";
                     constants.Logout = "sys/portal/webmenu/logout";
                     constants.PG = "sys/portal/webmenu/program";
+                    constants.canOpenInfor = "sys/env/userinformationusermethod/canOpenInfor";
                 })(constants || (constants = {}));
             })(menu = ui.menu || (ui.menu = {}));
         })(ui = uk.ui || (uk.ui = {}));
@@ -38596,8 +38599,7 @@ var nts;
                         var currentColumns = $grid.igGrid("option", "columns");
                         currentColumns.push({
                             dataType: "bool", columnCssClass: "delete-column", headerText: "test", key: param.deleteField,
-                            width: 60,
-                            formatter: function createButton(deleteField, row) {
+                            width: 60, formatter: function createButton(deleteField, row) {
                                 var primaryKey = $grid.igGrid("option", "primaryKey");
                                 var result = $('<button tabindex="-1" class="small delete-button">Delete</button>');
                                 result.attr("data-value", row[primaryKey]);

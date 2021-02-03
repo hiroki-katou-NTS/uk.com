@@ -13,6 +13,7 @@ module nts.uk.com.view.ccg015.e {
     $menuCreationLayout: JQuery = null;
     isMouseInsideLayout: KnockoutObservable<boolean> = ko.observable(false);
     itemList: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
+    isRender: KnockoutObservable<boolean> = ko.observable(true);
     sortedIds: string[] = [];
 
     created(params: any) {
@@ -118,13 +119,24 @@ module nts.uk.com.view.ccg015.e {
 
     public onClickSetting(itemType: String) {
       const vm = this;
+      const StandardWidgetTypeKTG004 = "0003";
+      const StandardWidgetTypeKTG005 = "0001";
+      const StandardWidgetTypeKTG001 = "0002";
+      vm.isRender(false);
       if (itemType === MenuPartType.PART_KTG_004) {
-         vm.$window.modal('at', '/view/ktg/004/b/index.xhtml')
+         vm.$window.modal('at', '/view/ktg/004/b/index.xhtml', StandardWidgetTypeKTG004)
             .then((result: any) => {
+              vm.isRender(true);
+        });
+      } else if (itemType === MenuPartType.PART_KTG_005){
+        vm.$window.modal('at', '/view/ktg/005/b/index.xhtml', StandardWidgetTypeKTG005)
+            .then((result: any) => {
+              vm.isRender(true);
         });
       } else {
-        vm.$window.modal('at', '/view/ktg/005/b/index.xhtml')
+        vm.$window.modal('at', '/view/ktg/001/b/index.xhtml', StandardWidgetTypeKTG001)
             .then((result: any) => {
+              vm.isRender(true);
         });
       }
     }
@@ -318,7 +330,9 @@ module nts.uk.com.view.ccg015.e {
 
     constructor(init?: Partial<ItemModel>) {
       $.extend(this, init);
-      this.isShowSetting = (init.itemType === MenuPartType.PART_KTG_004 || init.itemType === MenuPartType.PART_KTG_005);
+      this.isShowSetting = (init.itemType === MenuPartType.PART_KTG_004 
+        || init.itemType === MenuPartType.PART_KTG_005 
+        || init.itemType === MenuPartType.PART_KTG_001);
     }
 
     public isComponent() {
