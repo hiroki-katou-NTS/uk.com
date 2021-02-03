@@ -750,7 +750,8 @@ public class JpaOutsideOTSettingRepository extends JpaRepository
                 break;
             case CREATE:
                 sqlJdbc = " INSERT INTO KRCST_MON_EXCOUT_ROUND  "
-                        + " ( ROUND_UNIT = ?,ROUND_PROC = ?,CID = ?)";
+                        + " (ROUND_UNIT, ROUND_PROC, CID)"
+                        + " VALUES (?,?,?);";
                 break;
             default:
                 break;

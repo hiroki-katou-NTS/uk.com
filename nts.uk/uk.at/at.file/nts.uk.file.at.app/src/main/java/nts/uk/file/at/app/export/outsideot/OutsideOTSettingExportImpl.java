@@ -7,7 +7,6 @@ package nts.uk.file.at.app.export.outsideot;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemRepository;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roundingset.RoundingProcessOfExcessOutsideTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSetting;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSettingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.BreakdownItemNo;
@@ -355,7 +354,6 @@ public class OutsideOTSettingExportImpl implements MasterListData {
             }
 
 
-
             MasterData masterData = new MasterData(dataA61, null, "");
             Map<String, MasterCellData> rowData = masterData.getRowData();
             rowData.get(NUMBER_COLS_1).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
@@ -531,8 +529,13 @@ public class OutsideOTSettingExportImpl implements MasterListData {
         lstOvertime.forEach(overtime -> {
             dataA121.put(NUMBER_COLS + (overtime.getOvertimeNo().value), overtime.getName().v());
         });
+        MasterData masterData = new MasterData(dataA121, null, "");
+        Map<String, MasterCellData> rowData = masterData.getRowData();
+        lstOvertime.forEach(overtime -> {
+            rowData.get(NUMBER_COLS + (overtime.getOvertimeNo().value)).setStyle(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT));
+        });
+        masterDatas.add(masterData);
 
-        masterDatas.add(new MasterData(dataA121, null, ""));
 //		List<PremiumExtra60HRate> lstExtra60Rate = this.outsideOTSettingRepository.fin(companyId);
         this.outsideOTSettingRepository.findAllBRDItem(companyId).forEach(breakdownItem -> {
             Map<String, Object> dataA141 = new HashMap<>();
@@ -695,18 +698,18 @@ public class OutsideOTSettingExportImpl implements MasterListData {
 
     private String toEnumRouding(Integer rouding) {
         String rs = "";
-        if(rouding != null)
-        switch (rouding) {
-            case 0:
-                rs = "Enum_ROUNDING_DOWN";
-                break;
-            case 1:
-                rs = "Enum_ROUNDING_UP";
-                break;
-            case 2:
-                rs = "Enum_FOLLOW_ELEMENTS";
-                break;
-        }
+        if (rouding != null)
+            switch (rouding) {
+                case 0:
+                    rs = "Enum_ROUNDING_DOWN";
+                    break;
+                case 1:
+                    rs = "Enum_ROUNDING_UP";
+                    break;
+                case 2:
+                    rs = "Enum_FOLLOW_ELEMENTS";
+                    break;
+            }
         return rs;
     }
 
