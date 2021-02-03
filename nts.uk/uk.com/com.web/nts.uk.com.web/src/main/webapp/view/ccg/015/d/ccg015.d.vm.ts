@@ -34,6 +34,8 @@ module nts.uk.com.view.ccg015.d {
       const vm = this;
       vm.params = params;
       vm.topPageCode(params.topPageModel.topPageCode);
+      vm.getFlowmenuUpload();
+      vm.getFlowmenu();
       vm.itemList([
         new ItemModel(LayoutType.FLOW_MENU, vm.$i18n('Enum_LayoutType_FLOW_MENU')),
         new ItemModel(LayoutType.FLOW_MENU_UPLOAD, vm.$i18n('Enum_LayoutType_FLOW_MENU_UPLOAD')),
@@ -64,7 +66,7 @@ module nts.uk.com.view.ccg015.d {
                 vm.renderHTML(item.htmlContent, 'frame1');
                 $(window.frames['frameF1'].contentDocument).find('a').attr('href', 'javascript: void()').removeAttr('target');
               }
-        }).always(() => vm.$blockui('clear'));
+              }).always(() => vm.$blockui('clear'));
             } else if (value === LayoutType.FLOW_MENU_UPLOAD) {
               vm.contentFlowMenu(false);
               vm.contentTopPagePart(true);
@@ -113,8 +115,8 @@ module nts.uk.com.view.ccg015.d {
 
     mounted() {
       const vm = this;
-      vm.checkDataLayout(vm.params);
       $('#D2_2').focus();
+      vm.checkDataLayout(vm.params)
     }
 
     private changeLayout(layoutType: number): JQueryPromise<any> {
@@ -127,15 +129,47 @@ module nts.uk.com.view.ccg015.d {
         .then((result: any) => {
           if (result && layoutType === LayoutType.FLOW_MENU) {
             vm.listFlowMenu(_.orderBy(result,['flowCode'],['asc']));
-            vm.flowMenuSelectedCode(vm.listFlowMenu()[0].flowCode);
+            if(vm.flowMenuSelectedCode() === ''){
+             vm.flowMenuSelectedCode(vm.listFlowMenu()[0].flowCode);
+            }
           } else if (result && layoutType === LayoutType.FLOW_MENU_UPLOAD) {
             if(result.length > 0){
               vm.listTopPagePart(_.orderBy(result,['flowCode'],['asc']));
-              vm.toppageSelectedCode(vm.listTopPagePart()[0].flowCode);
+              if(vm.toppageSelectedCode() === ''){
+                vm.toppageSelectedCode(vm.listTopPagePart()[0].flowCode);
+              }
             }
           } else {
             // Do nothing
           }
+        });
+    }
+
+    private getFlowmenuUpload() {
+      const vm = this;
+      const data = {
+        topPageCd: vm.topPageCode(),
+        layoutType: 1,
+      };
+      return vm.$ajax('/toppage/changeFlowMenu', data)
+        .then((result: any) => {
+          if (result) {
+              vm.listTopPagePart(_.orderBy(result,['flowCode'],['asc']));
+            }
+        });
+    }
+
+    private getFlowmenu() {
+      const vm = this;
+      const data = {
+        topPageCd: vm.topPageCode(),
+        layoutType: 0,
+      };
+      return vm.$ajax('/toppage/changeFlowMenu', data)
+        .then((result: any) => {
+          if (result) {
+              vm.listFlowMenu(_.orderBy(result,['flowCode'],['asc']));
+            }
         });
     }
 
@@ -159,7 +193,7 @@ module nts.uk.com.view.ccg015.d {
               vm.flowMenuSelectedCode(vm.listFlowMenu()[flowMenuChoose].flowCode);
             }
             if (result.flowMenuUpCd && vm.layoutType() === 1) {
-              const topPagePartChoose = _.findIndex(vm.listTopPagePart(), (item: TopPagePartItem) => { return item.flowCode === result.flowMenuCd });
+              const topPagePartChoose = _.findIndex(vm.listTopPagePart(), (item: TopPagePartItem) => { return item.flowCode === result.flowMenuUpCd });
               vm.toppageSelectedCode(vm.listTopPagePart()[topPagePartChoose].flowCode);
             }
             if(result.url && result.url !== '') {

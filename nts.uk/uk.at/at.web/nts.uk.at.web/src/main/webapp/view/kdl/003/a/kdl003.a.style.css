@@ -11,10 +11,15 @@ body {
 #search-div {
 	padding-bottom: 10px;
 }
-#search-div span:NTH-CHILD(3) {
-/* 	font-size: x-large; */
-	margin-left: 10px;
+
+#search-div .table .cell:last-child .checkbox-wrapper {
+	margin-top: 5px;
 	margin-right: 10px;
+}
+.text-vcener {
+	display: flex;
+	align-items: center;
+	line-height: 37px;
 }
 .ui-igcombo-wrapper {
 	width: 90px;
@@ -70,4 +75,19 @@ table.bottom_tbl td {
     margin-top: 3px;
     margin-left: 10px;
     margin-right: 10px;
+}
+
+#search-div .check-all-cases {
+	margin-left: 20px;
+}
+#search-div .check-all-cases span {
+	margin: 0;
+}
+
+#search-div div.table {
+	width: 100%;
+}
+
+#A4_20 {
+	width: 140px !important;
 }

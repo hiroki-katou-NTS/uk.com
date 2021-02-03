@@ -175,6 +175,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 closureId?: number;
                 period?: any;
                 referenceDate: any;
+				employeesDoNotManageSchedules: boolean;
             }
 
             export class EmployeeSearchDto {
@@ -191,6 +192,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 /** Common properties */
                 showEmployeeSelection?: boolean; // 検索タイプ
                 systemType: number; // システム区分
+				employeesDoNotManageSchedules?: KnockoutObservable<boolean>; // スケジュール管理しない社員を取り除く
                 showQuickSearchTab?: boolean; // クイック検索
                 showAdvancedSearchTab?: boolean; // 詳細検索
                 showBaseDate?: boolean; // 基準日利用
@@ -290,6 +292,7 @@ module nts.uk.com.view.ccg.share.ccg {
                 sortOrderNo: number;
                 nameType: number;
                 systemType: number;
+				employeesDoNotManageSchedules: boolean;
             }
 
             export interface DatePeriodDto {
