@@ -47,8 +47,8 @@ public class KscdtAvailabilityTs extends ContractCompanyUkJpaEntity {
 							new KscdtAvailabilityTsPk(
 									expectation.getEmployeeId(), 
 									expectation.getWorkAvailabilityDate(), 
-									t.startValue().intValue(), 
-									t.endValue().intValue()) 
+									t.start().intValue(), 
+									t.end().intValue()) 
 							))
 			.collect(Collectors.toList());
 	}

@@ -3,13 +3,15 @@ package nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu;
 import java.util.Optional;
 
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import nts.arc.layer.dom.DomainObject;
 
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.ポータル.トップページの部品.フローメニュー作成.添付ファイル設定
  */
-@Getter
+@Data
+@EqualsAndHashCode(callSuper = false)
 @Builder
 public class FileAttachmentSetting extends DomainObject {
 

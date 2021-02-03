@@ -24,37 +24,36 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "KTVMT_TIME_ANNUAL_SET")
 public class KtvmtTimeAnnualSet extends UkJpaEntity implements Serializable {
-    
+
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
-    
+
     /** The cid. */
     @Id
     @Basic(optional = false)
     @Column(name = "CID")
     private String cid;
-    
+
     /** The time manage atr. */
     @Column(name = "TIME_MANAGE_ATR")
     private Integer timeManageAtr;
-    
+
     /** The time unit. */
     @Column(name = "TIME_UNIT")
     private Integer timeUnit;
-    
+
     /** The time max day manage atr. */
     @Column(name = "TIME_MAX_DAY_MANAGE_ATR")
     private Integer timeMaxDayManageAtr;
-    
-    
+
     /** The time max day reference. */
     @Column(name = "TIME_MAX_DAY_REFERENCE")
     private Integer timeMaxDayReference;
-    
+
     /** The time max day unif comp. */
     @Column(name = "TIME_MAX_DAY_UNIF_COMP")
     private Integer timeMaxDayUnifComp;
-    
+
     /** The Round Processing Classification. */
     @Column(name = "ROUND_PROC_CLA")
     private Integer roundProcessCla;
@@ -65,13 +64,12 @@ public class KtvmtTimeAnnualSet extends UkJpaEntity implements Serializable {
     
     /** 全社一律の時間 **/
     @Column (name = "UNIFORM_TIME")
-    private Integer unifromTime;
+    private Integer uniformTime;
     
     /** 契約時間丸め **/
     @Column(name = "CONTRACT_TIME_ROUND")
     private Integer contractTimeRound;
-    
-    
+   
     /**
      * Instantiates a new ktvmt time vacation set.
      */

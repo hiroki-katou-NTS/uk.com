@@ -12,7 +12,7 @@ import nts.uk.ctx.at.shared.infra.entity.workrule.statutoryworktime.flex.KshstFl
 import nts.uk.ctx.at.shared.infra.entity.workrule.statutoryworktime.flex.KshstFlxGetPrwkTimePK;
 
 /**
- * リポジトリ実装：フレックス勤務所定労働時間取得
+ * リポジトリ実装：会社別フレックス勤務集計方法
  * @author shuichu_ishida
  */
 @Stateless

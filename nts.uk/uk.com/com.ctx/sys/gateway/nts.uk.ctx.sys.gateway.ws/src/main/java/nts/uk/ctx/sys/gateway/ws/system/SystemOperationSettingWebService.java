@@ -7,6 +7,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.shr.com.operation.SystemOperationSetting;
 import nts.uk.shr.com.operation.SystemOperationSettingAdapter;
 
 @Path("ctx/sys/gateway/system")
@@ -19,7 +20,11 @@ public class SystemOperationSettingWebService extends WebService {
 	
 	@POST
 	@Path("is-display-warning")
-	public boolean isDisplayWarningMsg() {
-		return this.finder.getSetting().isDisplay();
+	public WarningMessageDto isDisplayWarningMsg() {
+		SystemOperationSetting systemOperationSetting = this.finder.getSetting();
+		return WarningMessageDto.builder()
+				.display(systemOperationSetting.isDisplay())
+				.message(systemOperationSetting.getMessage())
+				.build();
 	}
 }

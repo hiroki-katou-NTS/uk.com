@@ -107,7 +107,7 @@ public class SixtyHourHolidayFinder {
 //						, RemainType.SIXTY_OVER_BREAK.value);
 
 		// Step. 60超過時間表示情報詳細を作成
-		List<RemainNumberDetailDto> remainNumberDetailDtos = aggrResultOfHolidayOver60h.getAsOfPeriodEnd().getGrantRemainingList().stream()
+		List<RemainNumberDetailDto> remainNumberDetailDtos = aggrResultOfHolidayOver60h.getAsOfPeriodEnd().get().getGrantRemainingList().stream()
 			.map(item -> {
 				RemainNumberDetailDto remainNumberDetailDto = new RemainNumberDetailDto();
 				// 残数情報．発生月　＝　取得した60H超休の集計結果．60H超休情報(期間終了日時点)．付与残数データ．60H超休付与残数データ．付与日の年月
@@ -144,16 +144,16 @@ public class SixtyHourHolidayFinder {
 		result.setRemainNumberDetailDtos(remainNumberDetailDtos);
 
 		// 繰越数　＝　60H超休．残数．繰越数
-		result.setCarryoverNumber(aggrResultOfHolidayOver60h.getAsOfPeriodEnd().getRemainingNumber().getCarryForwardTimes().v());
+		result.setCarryoverNumber(aggrResultOfHolidayOver60h.getAsOfPeriodEnd().get().getRemainingNumber().getCarryForwardTimes().v());
 
 		// 使用数　＝　60H超休．残数．60H超休(マイナスあり)．使用時間
-		result.setUsageNumber(aggrResultOfHolidayOver60h.getAsOfPeriodEnd()
+		result.setUsageNumber(aggrResultOfHolidayOver60h.getAsOfPeriodEnd().get()
 									.getRemainingNumber()
 									.getHolidayOver60hWithMinus()
 									.getUsedTime().v());
 
 		// 残数　＝　60H超休．残数．60H超休(マイナスあり)．残時間
-		result.setResidual(aggrResultOfHolidayOver60h.getAsOfPeriodEnd()
+		result.setResidual(aggrResultOfHolidayOver60h.getAsOfPeriodEnd().get()
 									.getRemainingNumber()
 									.getHolidayOver60hWithMinus()
 									.getRemainingTime().v());

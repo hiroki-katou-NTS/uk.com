@@ -139,7 +139,7 @@ public class TimeSpanForDailyCalc implements Cloneable {
 	 */
 	public boolean isContinus(TimeSpanForDailyCalc other) {
 		val result = this.timeSpan.compare(other.getTimeSpan());
-		return result.isContinuousAfterBase() || result.isContinuousBeforeBase();
+		return result.isContinuous();
 	}
 	
 	/**

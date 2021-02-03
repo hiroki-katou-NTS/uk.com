@@ -153,6 +153,7 @@
       <app3 v-if="appType==3" v-bind:params="appTransferData" @loading-complete='loadingComplete'/>
       <app4 v-if="appType==4" v-bind:params="appTransferData" @loading-complete='loadingComplete'/>
       <app7 v-if="appType==7" v-bind:params="appTransferData" @loading-complete='loadingComplete'/>
+      <app8 v-if="appType==8" v-bind:params="appTransferData" @loading-complete='loadingComplete'/>
       <app9 v-if="appType==9" v-bind:params="appTransferData" @loading-complete='loadingComplete'/>
       <app15 v-if="appType==15" v-bind:params="appTransferData" @loading-complete='loadingComplete'/>
       <app0 v-if="appType==0" v-bind:params="appTransferData" @loading-complete='loadingComplete'/>

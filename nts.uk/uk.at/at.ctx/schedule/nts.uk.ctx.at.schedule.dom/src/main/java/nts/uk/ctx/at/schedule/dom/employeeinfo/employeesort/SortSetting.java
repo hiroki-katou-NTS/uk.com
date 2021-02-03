@@ -13,11 +13,11 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.adapter.jobtitle.PositionImport;
-import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.EmpLicenseClassification;
-import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.GetEmpLicenseClassificationService;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.EmployeeRank;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.RankPriority;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.BelongScheduleTeam;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.EmpLicenseClassification;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.GetEmpLicenseClassificationService;
 
 /**
  * 並び替え設定

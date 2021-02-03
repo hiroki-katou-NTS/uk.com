@@ -8,6 +8,11 @@ import javax.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
+/**
+ * 特別休暇付与経過年数テーブル PK
+ * @author masaaki_jinno
+ *
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
@@ -22,11 +27,4 @@ public class KshstElapseYearsPK implements Serializable {
 	@Column(name = "SPHD_CD")
 	public int specialHolidayCode;
 
-	/* 付与テーブルコード */
-	@Column(name = "GD_CD")
-	public String grantDateCd;
-	
-	/* No */
-	@Column(name = "NO")
-	public int elapseNo;
 }

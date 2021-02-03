@@ -43,7 +43,7 @@ export class CmmS45AComponent extends Vue {
     public appListExtractCondition: AppListExtractCondition;
     public data: ApplicationListDtoMobile = new ApplicationListDtoMobile();
 
-    public arrayAppType = [2, 3, 4, 7, 9, 15, 0, 6, 1, 10];
+    public arrayAppType = [2, 3, 4, 7, 9, 15, 0, 6, 1, 10, 8];
 
     public mounted() {
         const self = this;

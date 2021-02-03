@@ -13,10 +13,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveUsedDays;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeaveUsedNumber;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveRemainDay;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveUseDays;
 
 @Data
 @NoArgsConstructor
@@ -28,51 +25,37 @@ public class DayUsedNumberDto implements ItemConst, AttendanceItemDataGate {
 	@AttendanceItemValue(type = ValueType.DAYS)
 	@AttendanceItemLayout(jpPropertyName = DAYS, layout = LAYOUT_A)
 	private double usedDays;
-	
+
 	/** 使用日数付与前 */
 	@AttendanceItemValue(type = ValueType.DAYS)
 	@AttendanceItemLayout(jpPropertyName = GRANT + BEFORE, layout = LAYOUT_B)
 	private double usedDaysBeforeGrant;
-	
+
 	/** 使用日数付与後 */
 	@AttendanceItemValue(type = ValueType.DAYS)
 	@AttendanceItemLayout(jpPropertyName = GRANT + AFTER, layout = LAYOUT_C)
 	private Double usedDaysAfterGrant;
-	
-	public static DayUsedNumberDto from(ReserveLeaveUsedNumber domain){
-		return domain == null ? null : new DayUsedNumberDto(domain.getUsedDays().v(), 
-											domain.getUsedDaysBeforeGrant().v(), 
-											domain.getUsedDaysAfterGrant().isPresent() ? domain.getUsedDaysAfterGrant().get().v() : null);
+
+	public static DayUsedNumberDto from(AnnualLeaveUsedDayNumber domain) {
+		return domain == null ? null : new DayUsedNumberDto(domain.v(), 0.0, 0.0);
 	}
-	
+
 	public ReserveLeaveUsedNumber toDomain(){
-		return ReserveLeaveUsedNumber.of(new ReserveLeaveUsedDayNumber(usedDays), new ReserveLeaveUsedDayNumber(usedDaysBeforeGrant), 
+		return ReserveLeaveUsedNumber.of(
+				new ReserveLeaveUsedDayNumber(usedDays), 
+				new ReserveLeaveUsedDayNumber(usedDaysBeforeGrant),
 				Optional.ofNullable(usedDaysAfterGrant == null ? null : new ReserveLeaveUsedDayNumber(usedDaysAfterGrant)));
 	}
 	
-	public static DayUsedNumberDto from(SpecialLeaveUseDays domain){
-		return domain == null ? null : new DayUsedNumberDto(domain.getUseDays().v(), domain.getBeforeUseGrantDays().v(), 
-				domain.getAfterUseGrantDays().isPresent() ? domain.getAfterUseGrantDays().get().v() : null);
-	}
-	
-	public SpecialLeaveUseDays toSpecial(){
-		return new SpecialLeaveUseDays(new SpecialLeaveRemainDay(usedDays), new SpecialLeaveRemainDay(usedDaysBeforeGrant), 
-				Optional.ofNullable(usedDaysAfterGrant == null ? null : new SpecialLeaveRemainDay(usedDaysAfterGrant)));
-	}
-	
-	public static DayUsedNumberDto from(AnnualLeaveUsedDays domain) {
+	public static DayUsedNumberDto from( ReserveLeaveUsedNumber domain) {
 		return domain == null ? null : new DayUsedNumberDto(
 									domain.getUsedDays().v(), 
 									domain.getUsedDaysBeforeGrant().v(),
 									domain.getUsedDaysAfterGrant().isPresent() ? domain.getUsedDaysAfterGrant().get().v() : null);
 	}
 	
-	public AnnualLeaveUsedDays toAnnual() {
-		return AnnualLeaveUsedDays.of(
-								new AnnualLeaveUsedDayNumber(usedDays), 
-								new AnnualLeaveUsedDayNumber(usedDaysBeforeGrant), 
-								Optional.ofNullable(usedDaysAfterGrant == null 
-										? null : new AnnualLeaveUsedDayNumber(usedDaysAfterGrant)));
+	public AnnualLeaveUsedDayNumber toAnnual() {
+		return new AnnualLeaveUsedDayNumber(usedDays);
 	}
 	
 	@Override

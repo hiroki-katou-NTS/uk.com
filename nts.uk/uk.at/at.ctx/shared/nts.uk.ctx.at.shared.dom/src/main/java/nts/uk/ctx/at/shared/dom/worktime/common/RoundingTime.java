@@ -147,8 +147,7 @@ public class RoundingTime {
 					newAttendance,
 					newLeaveStamp,
 					timeLeavingWork.isCanceledLate(),
-					timeLeavingWork.isCanceledEarlyLeave(),
-					timeLeavingWork.getTimespan()));
+					timeLeavingWork.isCanceledEarlyLeave()));
 		}
 
 		return newTimeLeavingWork;

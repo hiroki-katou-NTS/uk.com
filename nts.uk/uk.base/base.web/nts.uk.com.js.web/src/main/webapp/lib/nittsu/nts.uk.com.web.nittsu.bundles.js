@@ -2,7 +2,7 @@ var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
     return function (d, b) {
@@ -37,14 +37,14 @@ var nts;
                     get: function () {
                         return !this.landscapse;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "landscapse", {
                     get: function () {
                         return window.innerWidth > window.innerHeight;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "mobile", {
@@ -57,7 +57,7 @@ var nts;
                         })(navigator.userAgent || navigator.vendor || window.opera);
                         return check;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "tablet", {
@@ -70,7 +70,7 @@ var nts;
                         })(navigator.userAgent || navigator.vendor || window.opera);
                         return check;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "mp", {
@@ -80,7 +80,7 @@ var nts;
                     get: function () {
                         return this.mobile && this.portrait;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "ml", {
@@ -90,28 +90,28 @@ var nts;
                     get: function () {
                         return this.mobile && this.landscapse;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "ios", {
                     get: function () {
                         return /iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "width", {
                     get: function () {
                         return window.innerWidth;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "height", {
                     get: function () {
                         return window.innerHeight;
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "version", {
@@ -134,7 +134,7 @@ var nts;
                         }
                         return M.join(' ');
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 Object.defineProperty(browser, "private", {
@@ -203,7 +203,7 @@ var nts;
                         not();
                         return d.promise();
                     },
-                    enumerable: false,
+                    enumerable: true,
                     configurable: true
                 });
                 return browser;
@@ -3187,8 +3187,8 @@ var nts;
                     }
                     duration_1.create = create;
                     function createText(duration) {
-                        var isNegative = duration.isNegative, asHoursInt = duration.asHoursInt, minutePart = duration.minutePart;
-                        return ("" + (isNegative ? '-' : '') + asHoursInt + ":" + _.padStart("" + minutePart, 2, '0')).replace(/^\-{1,}/g, '-');
+                        var isNegative = duration.isNegative, asHoursInt = duration.asHoursInt, minutePartText = duration.minutePartText;
+                        return ("" + (isNegative ? '-' : '') + asHoursInt + ":" + minutePartText).replace(/^\-{1,}/g, '-');
                     }
                 })(duration = minutesBased.duration || (minutesBased.duration = {}));
             })(minutesBased = time.minutesBased || (time.minutesBased = {}));
@@ -3624,8 +3624,8 @@ var nts;
                     }
                     duration_2.create = create;
                     function createText(duration) {
-                        var isNegative = duration.isNegative, asHoursInt = duration.asHoursInt, asMinutes = duration.asMinutes, asSeconds = duration.asSeconds;
-                        return ("" + (isNegative ? '-' : '') + asHoursInt + ":" + _.padStart("" + asMinutes, 2, '0') + ":" + _.padStart("" + asSeconds, 2, '0')).replace(/^\-{1,}/g, '-');
+                        var isNegative = duration.isNegative, asHoursInt = duration.asHoursInt, minutePartText = duration.minutePartText, secondPartText = duration.secondPartText;
+                        return ("" + (isNegative ? '-' : '') + asHoursInt + ":" + minutePartText + ":" + secondPartText).replace(/^\-{1,}/g, '-');
                     }
                 })(duration = secondsBased.duration || (secondsBased.duration = {}));
             })(secondsBased = time.secondsBased || (time.secondsBased = {}));
@@ -4893,9 +4893,6 @@ var nts;
                                     userOptions = [new MenuItem(getText('CCG020_5')), new MenuItem(getText('CCG020_4')), new MenuItem(getText('CCG020_3'))];
                                 else
                                     userOptions = [new MenuItem(getText('CCG020_5')), new MenuItem(getText('CCG020_3'))];
-                                if (!__viewContext.user.isEmployee) {
-                                    userOptions.shift();
-                                }
                                 var $userOptions = $("<ul class='menu-items user-options'/>").appendTo($userSettings);
                                 _.forEach(userOptions, function (option, i) {
                                     var $li = $("<li class='menu-item'/>").text(option.name);
@@ -4932,6 +4929,11 @@ var nts;
                                             });
                                         }
                                     });
+                                });
+                                nts.uk.request.ajax(constants.APP_ID, constants.canOpenInfor).done(function (canOpenInfor) {
+                                    if (!__viewContext.user.isEmployee || !canOpenInfor) {
+                                        $userOptions.find(':first-child').remove();
+                                    }
                                 });
                                 $companyList.css("right", $user.outerWidth() + 30);
                                 $userSettings.on(constants.CLICK, function () {
@@ -5171,6 +5173,7 @@ var nts;
                     constants.ShowManual = "sys/portal/webmenu/showmanual";
                     constants.Logout = "sys/portal/webmenu/logout";
                     constants.PG = "sys/portal/webmenu/program";
+                    constants.canOpenInfor = "sys/env/userinformationusermethod/canOpenInfor";
                 })(constants || (constants = {}));
             })(menu = ui.menu || (ui.menu = {}));
         })(ui = uk.ui || (uk.ui = {}));
@@ -7893,7 +7896,8 @@ var nts;
                         self.$container.tabIndex = -1;
                         $.data(self.$container, NAMESPACE, self);
                         var pTable = $.data(self.$container, NAMESPACE);
-                        pTable.owner = { headers: [], bodies: [], find: function (name, where) {
+                        pTable.owner = { headers: [], bodies: [],
+                            find: function (name, where) {
                                 var o = this;
                                 var elm = o[where].filter(function (e, i) { return e.classList.contains(name); });
                                 if (!elm || elm.length === 0)
@@ -21767,7 +21771,7 @@ var nts;
                         get: function () {
                             return this.model;
                         },
-                        enumerable: false,
+                        enumerable: true,
                         configurable: true
                     });
                     SwapHandler.prototype.handle = function (value) {
@@ -23223,7 +23227,7 @@ var nts;
                         get: function () {
                             return this.model;
                         },
-                        enumerable: false,
+                        enumerable: true,
                         configurable: true
                     });
                     SwapHandler.prototype.handle = function (parts, value) {
@@ -24344,7 +24348,8 @@ var nts;
                             $treegrid.addClass("row-limited");
                         }
                         if (isFilter) {
-                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100, dataFiltered: function (evt, ui) {
+                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100,
+                                dataFiltered: function (evt, ui) {
                                     var disabled = $treegrid.data("rowDisabled");
                                     if (!_.isEmpty(disabled)) {
                                         $treegrid.ntsTreeView("disableRows", disabled);
@@ -34425,7 +34430,8 @@ var nts;
                                 var txt = td.querySelector(".mgrid-refer-text");
                                 if (!txt)
                                     return;
-                                var args = { value: $.data(td, v.DATA), rowId: data.rowId, rowValue: data.rowObj, itemList: data.controlDef.pattern[data.controlDef.list[data.rowId]], relatedItemList: function (nama) {
+                                var args = { value: $.data(td, v.DATA), rowId: data.rowId, rowValue: data.rowObj, itemList: data.controlDef.pattern[data.controlDef.list[data.rowId]],
+                                    relatedItemList: function (nama) {
                                         var ctrl = _mafollicle[SheetDef][_currentSheet].controlMap && _mafollicle[SheetDef][_currentSheet].controlMap[nama];
                                         if (ctrl && ctrl.pattern && ctrl.list) {
                                             return ctrl.pattern[ctrl.list[data.rowId]];
@@ -38596,8 +38602,7 @@ var nts;
                         var currentColumns = $grid.igGrid("option", "columns");
                         currentColumns.push({
                             dataType: "bool", columnCssClass: "delete-column", headerText: "test", key: param.deleteField,
-                            width: 60,
-                            formatter: function createButton(deleteField, row) {
+                            width: 60, formatter: function createButton(deleteField, row) {
                                 var primaryKey = $grid.igGrid("option", "primaryKey");
                                 var result = $('<button tabindex="-1" class="small delete-button">Delete</button>');
                                 result.attr("data-value", row[primaryKey]);
@@ -46245,7 +46250,8 @@ var nts;
                             $treegrid.addClass("row-limited");
                         }
                         if (isFilter) {
-                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100, dataFiltered: function (evt, ui) {
+                            features.push({ name: "Filtering", filterDelay: 100, filterDropDownAnimationDuration: 100,
+                                dataFiltered: function (evt, ui) {
                                     var disabled = $treegrid.data("rowDisabled");
                                     if (!_.isEmpty(disabled)) {
                                         $treegrid.ntsTreeView("disableRows", disabled);
@@ -46640,8 +46646,7 @@ var nts;
                                             if ($tree.data("igTreeGrid") !== null) {
                                                 $tree.data("igTreeGridUpdating").deleteRow(rowId);
                                             }
-                                        },
-                                        initValue: value,
+                                        }, initValue: value,
                                         rowObj: rowObj,
                                         showHeaderCheckbox: col.showHeaderCheckbox,
                                         enable: isRowEnable,
