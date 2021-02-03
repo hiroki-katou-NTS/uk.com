@@ -10,6 +10,7 @@ module nts.uk.com.view.ccg034.i {
   @bean()
   export class ScreenModel extends ko.ViewModel {
     partData: CCG034D.PartDataImageModel = null;
+    originalFileId: string = null;
     //Choose file
     imageOption: ItemModel[] = [
       { code: 0, name: getText('CCG034_121') },
@@ -53,6 +54,7 @@ module nts.uk.com.view.ccg034.i {
       vm.fileId(vm.partData.fileId);
       vm.fileSize(vm.partData.uploadedFileSize ? vm.partData.uploadedFileSize : 0);
       vm.imageType(vm.partData.isFixed);
+      vm.originalFileId = vm.fileId();
 
       vm.createPopUp();
       $("#I2").focus();
@@ -60,7 +62,7 @@ module nts.uk.com.view.ccg034.i {
 
     uploadFinished(data: any) {
       const vm = this;
-      if (vm.fileId() !== vm.partData.originalFileId) {
+      if (vm.fileId() !== vm.originalFileId) {
         (nts.uk.request as any).file.remove(vm.fileId());
       }
       vm.fileId(data.id);
@@ -121,9 +123,10 @@ module nts.uk.com.view.ccg034.i {
     public closeDialog() {
       const vm = this;
       if (vm.fileId() !== vm.partData.originalFileId) {
-        (nts.uk.request as any).file.remove(vm.fileId());
+        vm.$window.close({ isSaving: false, fileId: vm.fileId() });
+      } else {
+        vm.$window.close({ isSaving: false });
       }
-      vm.$window.close();
     }
 
     /**
@@ -152,7 +155,7 @@ module nts.uk.com.view.ccg034.i {
           vm.partData.isFixed = vm.imageType();
 
           // Return data
-          vm.$window.close(vm.partData);
+          vm.$window.close({ isSaving: true, partData: vm.partData });
         }
       });
     }

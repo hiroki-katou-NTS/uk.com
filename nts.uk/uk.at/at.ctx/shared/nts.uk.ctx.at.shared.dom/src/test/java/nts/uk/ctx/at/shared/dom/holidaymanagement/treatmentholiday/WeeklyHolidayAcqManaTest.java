@@ -37,7 +37,7 @@ public class WeeklyHolidayAcqManaTest {
 	@Test
 	public void test_getManagementPeriod() {
 		WeeklyHolidayAcqMana weeklyHolidayAcqMana = new WeeklyHolidayAcqMana( new WeeklyDays(4.0));
-		WeekRuleManagement weekRuleManagement = WeekRuleManagement.of("companyId", DayOfWeek.MONDAY,true);
+		WeekRuleManagement weekRuleManagement = WeekRuleManagement.of("companyId", DayOfWeek.MONDAY);
 		new Expectations() {{
 			require.find();
 			result = weekRuleManagement;

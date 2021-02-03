@@ -42,8 +42,8 @@ public class TreatmentHolidayTest {
 	public void test_getNumberHoliday_1() {
 		WeeklyHolidayAcqMana weeklyHolidayAcqMana = new WeeklyHolidayAcqMana(new WeeklyDays(1.0));
 		TreatmentHoliday treatmentHoliday = new TreatmentHoliday("companyId", NotUseAtr.NOT_USE, weeklyHolidayAcqMana);
-		
-		WeekRuleManagement weekRuleManagement = WeekRuleManagement.of("companyId", DayOfWeek.MONDAY,true);
+
+		WeekRuleManagement weekRuleManagement = WeekRuleManagement.of("companyId", DayOfWeek.MONDAY);
 		new Expectations() {{
 			require.find();
 			result = weekRuleManagement;

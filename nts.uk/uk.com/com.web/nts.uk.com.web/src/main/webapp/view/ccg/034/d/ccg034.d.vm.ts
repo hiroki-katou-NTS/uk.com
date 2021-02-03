@@ -100,6 +100,7 @@ module nts.uk.com.view.ccg034.d {
         .mouseenter(() => vm.isMouseInsideLayout(true))
         .mouseleave(() => vm.isMouseInsideLayout(false))
         .mousedown((event) => {
+          $(".part-setting").filter((index, e) => $(e).css('display') === ('block')).removeAttr("style");
           // If layout in copy mode and mouse cursor is stay inside layout
           if (vm.isCopying() && vm.isMouseInsideLayout()) {
             // Stop copy mode
@@ -229,6 +230,7 @@ module nts.uk.com.view.ccg034.d {
     private createDOMFromData(partData: PartDataModel): JQuery {
       const vm = this;
       let $newPartTemplate = null;
+      let isInside = false;
       switch (partData.partType) {
         case MenuPartType.PART_MENU:
           $newPartTemplate = $("<div>", { "class": CSS_CLASS_MENU_CREATION_ITEM_CONTAINER }).append($('<div>', { 'class': `${CSS_CLASS_MENU_CREATION_ITEM} part-menu` }));
@@ -252,17 +254,24 @@ module nts.uk.com.view.ccg034.d {
           $newPartTemplate = $("<div>", { "class": CSS_CLASS_MENU_CREATION_ITEM_CONTAINER }).append($('<div>', { 'class': `${CSS_CLASS_MENU_CREATION_ITEM} part-menu` }));
           break;
       }
-      const $newPart: JQuery = LayoutUtils.renderPartDOM($newPartTemplate, partData);
+      const $newPart: JQuery = LayoutUtils.renderPartDOM($newPartTemplate, partData)
+        .hover(
+          handlerIn => LayoutUtils.onPartHover($newPart, true),
+          handlerOut => LayoutUtils.onPartHover($newPart, false))
+        .on("mousedown", event => LayoutUtils.onPartClickSetting($newPart, isInside));
       // Render div setting
-      let isInside = false;
       const $partSetting: JQuery = $("<div>", { "class": 'part-setting' })
         .hover(
-          (handlerIn) => {
-            isInside = true;
-            console.log(isInside);
-          },
+          (handlerIn) => isInside = true,
           (handlerOut) => isInside = false)
-        .on("click", event => LayoutUtils.onPartClickSetting($newPart, isInside));
+        .on("click", event => {
+          event.stopPropagation();
+          // Ignore when clicked inside the popup option
+          if (event.target.classList.contains("part-setting-popup-option")) {
+            isInside = false;
+          }
+          LayoutUtils.onPartClickSetting($newPart, isInside);
+        });
       const $partSettingPopup: JQuery = $("<div>", { "class": 'part-setting-popup' })
         .css({ 'display': 'none' })
         .append($("<div>", { "class": CSS_CLASS_PART_SETTING_POPUP_OPTION, text: vm.$i18n('CCG034_150') })
@@ -692,7 +701,6 @@ module nts.uk.com.view.ccg034.d {
       }
       // Set part data to map
       vm.mapPartData[vm.partClientId] = newPartData;
-      vm.modifiedPartList.added.push(vm.partClientId);
       vm.partClientId++;
       // Re-calculate resolution
       vm.calculateResolution();
@@ -899,7 +907,8 @@ module nts.uk.com.view.ccg034.d {
           vm.$ajax(nts.uk.text.format(API.copyFile, (originPartData as PartDataAttachmentModel).fileId))
             .then(res => {
               (newPartData as PartDataAttachmentModel).fileId = res.fileId;
-              (newPartData as PartDataAttachmentModel).originalFileId = res.fileId;
+              (newPartData as PartDataAttachmentModel).originalFileId = null;
+              vm.modifiedPartList.added.push(res.fileId);
             });
           break;
         case MenuPartType.PART_IMAGE:
@@ -908,9 +917,10 @@ module nts.uk.com.view.ccg034.d {
             vm.$ajax(nts.uk.text.format(API.copyFile, (originPartData as PartDataImageModel).fileId))
               .then(res => {
                 (newPartData as PartDataImageModel).fileId = res.fileId;
-                (newPartData as PartDataImageModel).originalFileId = res.fileId;
+                (newPartData as PartDataImageModel).originalFileId = null;
+                vm.modifiedPartList.added.push(res.fileId);
               });
-            }
+          }
           break;
         case MenuPartType.PART_ARROW:
           newPartData = new PartDataArrowModel(originPartData);
@@ -924,7 +934,6 @@ module nts.uk.com.view.ccg034.d {
       newPartData.positionTop = positionTop;
       newPartData.positionLeft = positionLeft;
       vm.mapPartData[vm.partClientId] = newPartData;
-      vm.modifiedPartList.added.push(vm.partClientId);
       vm.partClientId++;
       return newPartData;
     }
@@ -985,51 +994,57 @@ module nts.uk.com.view.ccg034.d {
           break;
         case MenuPartType.PART_ATTACHMENT:
           vm.$window.modal('/view/ccg/034/h/index.xhtml', selectedPartData)
-            .then((result: PartDataModel) => {
-              if (result) {
-                const partAttachment = (result as PartDataAttachmentModel);
+            .then((result: any) => {
+              if (result.isSaving) {
+                const partAttachment = (result.partData as PartDataAttachmentModel);
                 // Only prepare for delete if has changes
-                if (!_.find(vm.modifiedPartList.added, partClientId) && partAttachment.fileId !== partAttachment.originalFileId) {
-                  vm.modifiedPartList.added.push(partClientId);
+                if (!_.find(vm.modifiedPartList.added, partAttachment.fileId) && partAttachment.fileId !== partAttachment.originalFileId) {
+                  vm.modifiedPartList.added.push(partAttachment.fileId);
                 }
-                if (!_.find(vm.modifiedPartList.deleted, ['clientId', partClientId]) && partAttachment.fileId !== partAttachment.originalFileId) {
-                  const tempPart = _.cloneDeep(partAttachment);
-                  tempPart.fileId = tempPart.originalFileId;
-                  vm.modifiedPartList.deleted.push(tempPart);
+                if (!_.find(vm.modifiedPartList.deleted, partAttachment.originalFileId) && partAttachment.fileId !== partAttachment.originalFileId) {
+                  vm.modifiedPartList.deleted.push(partAttachment.originalFileId);
                 }
                 // Update part data
-                vm.mapPartData[partClientId] = result;
+                vm.mapPartData[partClientId] = result.partData;
                 // Update part DOM
-                LayoutUtils.renderPartDOMAttachment($part, result as PartDataAttachmentModel);
+                LayoutUtils.renderPartDOMAttachment($part, result.partData as PartDataAttachmentModel);
               } else if (isCreateDialog) {
                 // If this is dialog setitng when create => remove part
                 vm.removePart($part);
+                if (result.fileId) {
+                  vm.removeFile(result.fileId);
+                }
+              } else if (result.fileId) {
+                vm.modifiedPartList.added.push(result.fileId);
               }
             });
           break;
         case MenuPartType.PART_IMAGE:
           vm.$window.modal('/view/ccg/034/i/index.xhtml', selectedPartData)
-            .then((result: PartDataModel) => {
-              if (result) {
-                const partImage = (result as PartDataImageModel);
+            .then((result: any) => {
+              if (result.isSaving) {
+                const partImage = (result.partData as PartDataImageModel);
                 if (partImage.isFixed === 1 && partImage.fileId) {
                   // Only prepare for delete if has changes
-                  if (!_.find(vm.modifiedPartList.added, partClientId) && partImage.fileId !== partImage.originalFileId) {
-                    vm.modifiedPartList.added.push(partClientId);
+                  if (!_.find(vm.modifiedPartList.added, partImage.fileId) && partImage.fileId !== partImage.originalFileId) {
+                    vm.modifiedPartList.added.push(partImage.fileId);
                   }
-                  if (!_.find(vm.modifiedPartList.deleted, ['clientId', partClientId]) && partImage.fileId !== partImage.originalFileId) {
-                    const tempPart = _.cloneDeep(partImage);
-                    tempPart.fileId = tempPart.originalFileId;
-                    vm.modifiedPartList.deleted.push(tempPart);
+                  if (!_.find(vm.modifiedPartList.deleted, partImage.originalFileId) && partImage.fileId !== partImage.originalFileId) {
+                    vm.modifiedPartList.deleted.push(partImage.originalFileId);
                   }
                 }
                 // Update part data
-                vm.mapPartData[partClientId] = result;
+                vm.mapPartData[partClientId] = result.partData;
                 // Update part DOM
-                LayoutUtils.renderPartDOMImage($part, result as PartDataImageModel);
+                LayoutUtils.renderPartDOMImage($part, result.partData as PartDataImageModel);
               } else if (isCreateDialog) {
                 // If this is dialog setitng when create => remove part
                 vm.removePart($part);
+                if (result.fileId) {
+                  vm.removeFile(result.fileId);
+                }
+              } else if (result.fileId) {
+                vm.modifiedPartList.added.push(result.fileId);
               }
             });
           break;
@@ -1120,12 +1135,21 @@ module nts.uk.com.view.ccg034.d {
     private removePart($part: JQuery) {
       const vm = this;
       const partClientId = Number($part.attr(KEY_DATA_ITEM_CLIENT_ID));
-      _.forEach(vm.modifiedPartList.added, clientId => {
-        if (clientId === partClientId) {
-          vm.removeFile(vm.mapPartData[partClientId]);
-        }
-      });
-      vm.modifiedPartList.deleted.push(vm.mapPartData[partClientId]);
+      const partData: PartDataModel = vm.mapPartData[partClientId];
+      switch (partData.partType) {
+        case MenuPartType.PART_ATTACHMENT:
+        case MenuPartType.PART_IMAGE:
+          const part = partData as any;
+          // If newly added component -> delete immediately
+          // Or else will put to remove list
+          if (!part.originalFileId) {
+            vm.removeFile(part.fileId);
+          } else {
+            vm.modifiedPartList.deleted.push(part.fileId);
+            vm.modifiedPartList.deleted.push(part.originalFileId);
+          }
+          break;
+      }
       delete vm.mapPartData[partClientId];
       vm.$listPart = _.filter(vm.$listPart, ($item) => Number($item.attr(KEY_DATA_ITEM_CLIENT_ID)) !== partClientId);
       $part.remove();
@@ -1138,7 +1162,7 @@ module nts.uk.com.view.ccg034.d {
      */
     public closeDialog() {
       const vm = this;
-      _.forEach(vm.modifiedPartList.added, partClientId => vm.removeFile(vm.mapPartData[partClientId]));
+      _.forEach(_.uniq(vm.modifiedPartList.added), fileId => vm.removeFile(fileId));
       vm.$window.close();
     }
 
@@ -1172,7 +1196,7 @@ module nts.uk.com.view.ccg034.d {
       const listPartData: PartDataModel[] = [];
       const $layout: JQuery = $('<div>')
         .css({ 'width': CREATION_LAYOUT_WIDTH, 'height': CREATION_LAYOUT_HEIGHT });
-      _.forEach(vm.modifiedPartList.deleted, item => vm.removeFile(item));
+      _.forEach(_.uniq(vm.modifiedPartList.deleted), fileId => vm.removeFile(fileId));
       for (const partClientId in vm.mapPartData) {
         listPartData.push(vm.mapPartData[partClientId]);
         $layout.append(LayoutUtils.buildPartHTML(vm.mapPartData[partClientId]));
@@ -1375,23 +1399,8 @@ module nts.uk.com.view.ccg034.d {
     /**
      * 変更前のファイルは削除
      */
-    private removeFile(partData: PartDataModel) {
-      if (partData) {
-        switch (partData.partType) {
-          case MenuPartType.PART_ATTACHMENT:
-            const attachmentPartData = partData as PartDataAttachmentModel;
-            if (attachmentPartData.fileId) {
-              (nts.uk.request as any).file.remove(attachmentPartData.fileId);
-            }
-            break;
-          case MenuPartType.PART_IMAGE:
-            const imagePartData = partData as PartDataImageModel;
-            if (imagePartData.isFixed === 1 && imagePartData.fileId) {
-              (nts.uk.request as any).file.remove(imagePartData.fileId);
-            }
-            break;
-        }
-      }
+    private removeFile(fileId: string) {
+      (nts.uk.request as any).file.remove(fileId);
     }
 
     private updateOriginalFileId() {
@@ -1430,12 +1439,28 @@ module nts.uk.com.view.ccg034.d {
      * @param partClientId
      */
     static onPartClickSetting($part: JQuery, visible: boolean) {
+      const $partSetting: JQuery = $part.find('.part-setting');
       const $partSettingPopup: JQuery = $part.find('.part-setting-popup');
       if ($partSettingPopup) {
         if (visible) {
           $partSettingPopup.css('display', 'block');
+          $partSetting.css('display', 'block');
         } else {
           $partSettingPopup.css('display', 'none');
+        }
+      }
+    }
+
+    static onPartHover($part: JQuery, isHoverIn: boolean) {
+      const $partSetting: JQuery = $part.find('.part-setting');
+      const $partSettingPopup: JQuery = $part.find('.part-setting-popup');
+      if ($partSettingPopup.css("display") !== "none") {
+        $partSetting.css('style');
+      } else {
+        if (isHoverIn) {
+          $partSetting.css('display', 'block');
+        } else {
+          $partSetting.css('display', 'none');
         }
       }
     }
@@ -2283,7 +2308,7 @@ module nts.uk.com.view.ccg034.d {
   }
 
   export class ModifiedPartList {
-    added?: number[] = [];
-    deleted?: PartDataModel[] = [];
+    added?: string[] = [];
+    deleted?: string[] = [];
   }
 }

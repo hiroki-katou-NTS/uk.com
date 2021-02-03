@@ -295,21 +295,19 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
         handleConfirmMessage(listMes: any, vmParam: any): any {
             const vm = this;
 
-            return new Promise((resolve: any) => {
-                if (_.isEmpty(listMes)) {
-                    resolve(true);
-                }
-                let msg = listMes[0].value;
+            if (_.isEmpty(listMes)) {
+                return $.Deferred().resolve(true);
+            }
+            let msg = listMes[0].value;
 
-                return vm.$dialog.confirm({ messageId: msg.msgID, messageParams: msg.paramLst })
-                    .then((value) => {
-                        if (value === 'yes') {
-                            return vm.handleConfirmMessage(listMes, vmParam);
-                        } else {
-                            resolve(false);
-                        }
-                    })
-            });
+            return vm.$dialog.confirm({messageId: msg.msgID, messageParams: msg.paramLst})
+                .then((value) => {
+                    if (value === 'yes') {
+                        return vm.handleConfirmMessage(listMes, vmParam);
+                    } else {
+                        return $.Deferred().resolve(false);
+                    }
+                })
         }
 
         registerData(params: any) {
