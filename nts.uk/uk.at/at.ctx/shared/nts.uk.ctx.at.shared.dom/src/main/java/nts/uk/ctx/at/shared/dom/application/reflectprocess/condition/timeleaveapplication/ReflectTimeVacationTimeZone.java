@@ -69,7 +69,7 @@ public class ReflectTimeVacationTimeZone {
 				dailyApp.getOutingTime().get().getOutingTimeSheets().stream()
 						.filter(x -> x.getOutingFrameNo().v() == workNo.getWorkNo().v()).map(x -> {
 							x.getGoOut().ifPresent(y -> y.getStamp().map(st -> {
-								st.getTimeDay().setTimeWithDay(Optional.of(workNo.getTimeZone().getEndTime()));
+								st.getTimeDay().setTimeWithDay(Optional.of(workNo.getTimeZone().getStartTime()));
 								st.getTimeDay().getReasonTimeChange().setTimeChangeMeans(TimeChangeMeans.APPLICATION);
 								lstItemId.add(CancelAppStamp.createItemId(88, workNo.getWorkNo().v(), 7));
 								return st;
