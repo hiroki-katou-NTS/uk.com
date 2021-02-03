@@ -6,14 +6,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate.PropType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveUsedDays;
 
 @Data
 /** 年休使用日数 */
@@ -36,30 +34,24 @@ public class AnnualLeaveUsedDaysDto implements ItemConst, AttendanceItemDataGate
 	@AttendanceItemLayout(jpPropertyName = GRANT + AFTER, layout = LAYOUT_C)
 	private Double usedDaysAfterGrant;
 
-	public static AnnualLeaveUsedDaysDto from(AnnualLeaveUsedDays domain) {
-		return domain == null ? null : new AnnualLeaveUsedDaysDto(
-									domain.getUsedDays().v(), 
-									domain.getUsedDaysBeforeGrant().v(),
-									domain.getUsedDaysAfterGrant().isPresent() ? domain.getUsedDaysAfterGrant().get().v() : null);
+	public static AnnualLeaveUsedDaysDto from(AnnualLeaveUsedDayNumber domain) {
+		/** NULL POINT*/
+		return domain == null ? null : new AnnualLeaveUsedDaysDto(domain.v(), 0, null);
 	}
 	
-	public AnnualLeaveUsedDays toDomain() {
-		return AnnualLeaveUsedDays.of(
-								new AnnualLeaveUsedDayNumber(usedDays), 
-								new AnnualLeaveUsedDayNumber(usedDaysBeforeGrant), 
-								Optional.ofNullable(usedDaysAfterGrant == null 
-										? null : new AnnualLeaveUsedDayNumber(usedDaysAfterGrant)));
+	public AnnualLeaveUsedDayNumber toDomain() {
+		return new AnnualLeaveUsedDayNumber(usedDays);
 	}
 	
 	@Override
 	public Optional<ItemValue> valueOf(String path) {
 		switch (path) {
 		case DAYS:
-			return Optional.of(ItemValue.builder().value(usedDays).valueType(ValueType.TIME));
+			return Optional.of(ItemValue.builder().value(usedDays).valueType(ValueType.DAYS));
 		case GRANT + BEFORE:
-			return Optional.of(ItemValue.builder().value(usedDaysBeforeGrant).valueType(ValueType.TIME));
+			return Optional.of(ItemValue.builder().value(usedDaysBeforeGrant).valueType(ValueType.DAYS));
 		case GRANT + AFTER:
-			return Optional.of(ItemValue.builder().value(usedDaysAfterGrant).valueType(ValueType.TIME));
+			return Optional.of(ItemValue.builder().value(usedDaysAfterGrant).valueType(ValueType.DAYS));
 		default:
 			return Optional.empty();
 		}

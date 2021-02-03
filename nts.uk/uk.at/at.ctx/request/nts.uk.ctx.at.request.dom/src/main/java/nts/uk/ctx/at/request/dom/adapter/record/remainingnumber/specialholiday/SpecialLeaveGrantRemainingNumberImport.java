@@ -14,15 +14,15 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremain
 public class SpecialLeaveGrantRemainingNumberImport extends SpecialLeaveGrantRemainingData {
     // 特別休暇不足ダミーフラグ
     private boolean shortageDummyFlag = false;
-
+    
     public SpecialLeaveGrantRemainingNumberImport(SpecialLeaveGrantRemainingData data, boolean dummyFlag) {
         super();
-        this.setSpecialId(data.getSpecialId());
-        this.setCId(data.getCId());
+        this.setLeaveID(data.getLeaveID());
+//        this.setCId(data.getCId());
         this.setEmployeeId(data.getEmployeeId());
-        this.setSpecialLeaveCode(data.getSpecialLeaveCode());
+        this.specialLeaveCode = (data.getSpecialLeaveCode());
         this.setGrantDate(data.getGrantDate());
-        this.setDeadlineDate(data.getDeadlineDate());
+        this.setDeadline(data.getDeadline());
         this.setExpirationStatus(data.getExpirationStatus());
         this.setRegisterType(data.getRegisterType());
         this.setDetails(data.getDetails());

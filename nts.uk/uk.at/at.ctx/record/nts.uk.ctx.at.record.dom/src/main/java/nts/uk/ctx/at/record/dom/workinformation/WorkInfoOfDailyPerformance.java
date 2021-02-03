@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.workinformation;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,7 +27,12 @@ import nts.uk.ctx.at.shared.dom.workinformation.WorkInfoChangeEvent;
 @Getter
 @Setter
 @NoArgsConstructor
-public class WorkInfoOfDailyPerformance extends AggregateRoot {
+public class WorkInfoOfDailyPerformance extends AggregateRoot implements Serializable{
+
+	/**
+	 * Serializable
+	 */
+	private static final long serialVersionUID = 1L;
 
 	//社員ID
 	private String employeeId;

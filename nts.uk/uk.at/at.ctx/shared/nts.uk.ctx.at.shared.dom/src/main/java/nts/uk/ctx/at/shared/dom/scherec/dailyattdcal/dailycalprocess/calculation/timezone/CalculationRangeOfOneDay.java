@@ -872,6 +872,9 @@ public class CalculationRangeOfOneDay {
 	public List<TimeSheetOfDeductionItem> getDeductionTimeSheetOnFixed(WorkType workType,
 			IntegrationOfWorkTime workTime, IntegrationOfDaily integrationOfDaily) {
 		
+		if(workType.getAttendanceHolidayAttr().isHoliday())
+			return new ArrayList<>();
+		
 		/** 控除時間帯の取得 */
 		if (!integrationOfDaily.getAttendanceLeave().isPresent()) return new ArrayList<>();
 		val deductionTimeSheet = provisionalDeterminationOfDeductionTimeSheet(

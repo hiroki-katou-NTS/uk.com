@@ -51,19 +51,15 @@ public class AnnLeaveRemainingFinder implements AnnLeaveRemainingAdapter {
 
 			return new AnnLeaveUsageStatusOfThisMonthImported(item.getYearMonth(),
 					item.getAggrResultOfAnnualLeave().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
-							.getUsedNumber().getUsedDays().getUsedDays().v(),
+							.getUsedNumberInfo().getUsedNumber().getUsedDays().map(c -> c.v()).orElse(0d),
 					item.getAggrResultOfAnnualLeave().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
-							.getUsedNumber().getUsedTime().isPresent()
+							.getUsedNumberInfo().getUsedNumber().getUsedTime().map(c -> c.valueAsMinutes()),
+					item.getAggrResultOfAnnualLeave().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
+							.getRemainingNumberInfo().getRemainingNumber().getTotalRemainingDays().v(),
+					item.getAggrResultOfAnnualLeave().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
+							.getRemainingNumberInfo().getRemainingNumber().getTotalRemainingTime().isPresent()
 									? Optional.of(item.getAggrResultOfAnnualLeave().getAsOfPeriodEnd()
-											.getRemainingNumber().getAnnualLeaveWithMinus().getUsedNumber()
-											.getUsedTime().get().getUsedTime().v())
-									: Optional.empty(),
-					item.getAggrResultOfAnnualLeave().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
-							.getRemainingNumber().getTotalRemainingDays().v(),
-					item.getAggrResultOfAnnualLeave().getAsOfPeriodEnd().getRemainingNumber().getAnnualLeaveWithMinus()
-							.getRemainingNumber().getTotalRemainingTime().isPresent()
-									? Optional.of(item.getAggrResultOfAnnualLeave().getAsOfPeriodEnd()
-											.getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumber()
+											.getRemainingNumber().getAnnualLeaveWithMinus().getRemainingNumberInfo().getRemainingNumber()
 											.getTotalRemainingTime().get().v())
 									: Optional.empty());
 		}).collect(Collectors.toList());

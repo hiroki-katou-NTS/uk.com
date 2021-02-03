@@ -20,7 +20,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualle
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.ReserveLeaveRemainingDetail;
 
 @Data
-/** 年休残明細 */
+/** 休暇残明細 */
 @NoArgsConstructor
 @AllArgsConstructor
 public class CommonlLeaveRemainingDetailDto implements ItemConst, AttendanceItemDataGate {

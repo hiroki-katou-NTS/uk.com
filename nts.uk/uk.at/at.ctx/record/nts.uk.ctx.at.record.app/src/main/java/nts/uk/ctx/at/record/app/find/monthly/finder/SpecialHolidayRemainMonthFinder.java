@@ -31,10 +31,7 @@ public class SpecialHolidayRemainMonthFinder extends MonthlyFinderFacade {
 	@SuppressWarnings("unchecked")
 	public SpecialHolidayRemainDataDto find(String employeeId, YearMonth yearMonth, ClosureId closureId,
 			ClosureDate closureDate) {
-		return SpecialHolidayRemainDataDto.from(findD(Arrays.asList(employeeId), Arrays.asList(yearMonth)).stream()
-				.filter(c -> c.getClosureId() == closureId.value && c.getClosureDate().getLastDayOfMonth().equals(closureDate.getLastDayOfMonth())
-				&& c.getClosureDate().getClosureDay().v() == closureDate.getClosureDay().v())
-			.collect(Collectors.toList()));
+		return new SpecialHolidayRemainDataDto();
 	}
 	
 	@Override
@@ -65,7 +62,7 @@ public class SpecialHolidayRemainMonthFinder extends MonthlyFinderFacade {
 			es.getValue().entrySet().forEach(ves -> {
 				ves.getValue().entrySet().forEach(ves1 -> {
 					ves1.getValue().entrySet().forEach(ves2 -> {
-						dto.add(SpecialHolidayRemainDataDto.from(ves2.getValue()));
+						dto.addAll(ves2.getValue().stream().map(x -> SpecialHolidayRemainDataDto.from(x)).collect(Collectors.toList()));
 					});
 				});
 			});
