@@ -19,22 +19,22 @@ public class TaskPaletteOneFrameDisplayInfo {
 	/**
 	 * 作業コード
 	 */
-	private TaskCode taskCode;
+	private final TaskCode taskCode;
 	
 	/**
 	 * 作業状態
 	 */
-	private TaskStatus taskStatus;
+	private final TaskStatus taskStatus;
 	
 	/**
 	 * 作業名称
 	 */
-	private Optional<TaskName> taskName;
+	private final Optional<TaskName> taskName;
 
 	/**
 	 * 作業略名
 	 */
-	private Optional<TaskAbName> taskAbName;
+	private final Optional<TaskAbName> taskAbName;
 	
 	
 	/**

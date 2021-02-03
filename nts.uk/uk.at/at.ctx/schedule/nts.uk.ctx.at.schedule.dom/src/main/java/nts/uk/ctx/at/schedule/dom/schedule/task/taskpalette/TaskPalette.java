@@ -17,21 +17,21 @@ public class TaskPalette {
 	/**
 	 * ページ
 	 */
-	private int page;
+	private final int page;
 	
 	/**
 	 * 名称
 	 */
-	private TaskPaletteName name;
+	private final TaskPaletteName name;
 	
 	/**
 	 * 作業パレットの作業
 	 */
-	private Map<Integer, TaskPaletteOneFrameDisplayInfo> tasks;
+	private final Map<Integer, TaskPaletteOneFrameDisplayInfo> tasks;
 	
 	/**
 	 * 備考
 	 */
-	private Optional<TaskPaletteRemark> remark;
+	private final Optional<TaskPaletteRemark> remark;
 	
 }
