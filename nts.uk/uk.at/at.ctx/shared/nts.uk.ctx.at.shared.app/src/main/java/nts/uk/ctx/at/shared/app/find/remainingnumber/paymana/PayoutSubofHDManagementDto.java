@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.app.find.remainingnumber.paymana;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
 
@@ -17,6 +18,7 @@ public class PayoutSubofHDManagementDto {
     private GeneralDate outbreakDay;
 
     // 逐次休暇の紐付け情報 . 使用日
+    @Setter
     private GeneralDate dateOfUse;
 
     // 逐次休暇の紐付け情報 . 使用日数

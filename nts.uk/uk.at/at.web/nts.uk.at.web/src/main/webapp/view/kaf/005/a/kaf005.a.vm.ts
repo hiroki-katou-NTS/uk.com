@@ -45,6 +45,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		created(params: AppInitParam) {
 			// new 
 			const vm = this;
+			vm.$blockui("show");
 			vm.urlParam = $(location).attr('search').split("=")[1];
 			let dataTransfer: DataTransfer;
 			if (_.isNil(params)) {
@@ -96,7 +97,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				}
 			}
 			
-			vm.$blockui("show");
 			// load setting common KAF000
 			vm.loadData(empLst, dateLst, vm.appType(), null, Number(vm.getOverTimeAtrByUrl()))
 				.then((loadDataFlag: any) => {
@@ -170,7 +170,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						}
 					});
 				}).always(() => {
-					vm.$blockui("hide");
+					vm.$blockui("hide");						
 					$('#kaf000-a-component4-singleDate').focus();
 				});
 		}
@@ -662,7 +662,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			}
 
 			// validate chung KAF000
-			vm.$validate('#kaf000-a-component4 .nts-input', 
+			vm.$validate(
+			'#kaf000-a-component4 .nts-input',
+			'#kaf000-a-component5 .nts-input', 
 			'#kaf000-a-component3-prePost', 
 			'#kaf000-a-component5-comboReason',
 			'#inpStartTime1',

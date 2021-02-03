@@ -199,6 +199,7 @@ __viewContext.ready(function() {
                 horizontalSumHeaderHeight: "75px", horizontalSumBodyHeight: "140px",
                 horizontalSumBodyRowHeight: "20px",
                 areaResize: true,
+                errorMessagePopup: true,
                 manipulatorId: "6",
                 manipulatorKey: "empId",
                 bodyHeightMode: "dynamic",
@@ -272,7 +273,8 @@ __viewContext.ready(function() {
                 pin: true,
                 rollup: true,
                 roundEdge: true,
-                fixed: "Both"
+                fixed: "Both",
+                bePassedThrough: false
             });
             
             this.ruler.addType({
@@ -525,6 +527,17 @@ __viewContext.ready(function() {
                         lineNo: i,
                         start: 144,
                         end: 156,
+                        limitStartMin: 102,
+                        limitStartMax: 210,
+                        limitEndMax: 210
+                    });
+                    
+                    this.ruler.addChartWithType("BreakTime", {
+                        id: `rgc${i}_4`,
+                        parent: `rgc${i}`,
+                        lineNo: i,
+                        start: 168,
+                        end: 180,
                         limitStartMin: 102,
                         limitStartMax: 210,
                         limitEndMax: 210

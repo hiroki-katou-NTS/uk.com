@@ -221,4 +221,38 @@ public interface AppContentDetailCMM045 {
 	public AppHolidayWorkDataOutput createHolidayWorkContent(Application application, List<WorkType> workTypeLst, List<WorkTimeSetting> workTimeSettingLst, 
 			List<AttendanceNameItem> attendanceNameItemLst, ApplicationListAtr applicationListAtr, ApprovalListDisplaySetting approvalListDisplaySetting,
 			String companyID, Map<String, Pair<Integer, Integer>> cache);
+	
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面ver4.アルゴリズム.各申請データを作成.振休振出申請データを作成.振休振出申請データを作成
+	 * @param application 申請
+	 * @param companyID 会社ID
+	 * @param workTypeLst 勤務種類リスト
+	 * @param appReasonDisAtr 申請理由表示区分
+	 * @param screenAtr ScreenID
+	 * @return
+	 */
+	public CompLeaveAppDataOutput getContentComplementLeave(Application application, String companyID, List<WorkType> workTypeLst, DisplayAtr appReasonDisAtr,
+			ScreenAtr screenAtr);
+	
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面ver4.アルゴリズム.各申請データを作成.振休振出申請データを作成.振休振出申請紐付けを取得.振休振出申請紐付けを取得
+	 * @param appID
+	 * @param workTypeLst
+	 * @param companyID
+	 * @return
+	 */
+	public LinkComplementLeaveOutput getLinkComplementLeave(String appID, List<WorkType> workTypeLst, String companyID);
+	
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面ver4.アルゴリズム.各申請データを作成.申請一覧リスト取得休暇.申請一覧リスト取得休暇
+	 * @param application 申請
+	 * @param companyID 会社ID
+	 * @param workTypeLst 勤務種類リスト
+	 * @param appReasonDisAtr 申請理由表示区分
+	 * @param screenAtr ScreenID
+	 * @return
+	 */
+	public String getContentApplyForLeave(Application application, String companyID, List<WorkType> workTypeLst, DisplayAtr appReasonDisAtr,
+			ScreenAtr screenAtr);
+	
 }

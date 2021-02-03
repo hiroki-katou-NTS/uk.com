@@ -1,7 +1,6 @@
 package nts.uk.ctx.sys.portal.ac.notice;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,13 +12,12 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
+import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplaceInforExport;
 import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
 import nts.uk.ctx.bs.person.pub.anniversary.AnniversaryNoticeExport;
 import nts.uk.ctx.bs.person.pub.anniversary.AnniversaryNoticePub;
@@ -125,18 +123,17 @@ public class MessageNoticeAdapterImpl implements MessageNoticeAdapter {
 	@Override
 	public List<WorkplaceInfoImport> getWorkplaceMapCodeBaseDateName(String companyId, List<String> wpkIds) {
 		GeneralDate baseDate = GeneralDate.today();
-		List<WorkplaceInfoImport> result = new ArrayList<WorkplaceInfoImport>();
-		Map<String, Pair<String, String>> mapData = workplacePub.getWorkplaceMapCodeBaseDateName(companyId, wpkIds, Arrays.asList(baseDate));
-		if (mapData.isEmpty()) {
-			return result;
+		List<WorkplaceInforExport> dataExport = workplacePub.getWorkplaceInforByWkpIds(companyId, wpkIds, baseDate);
+		if (dataExport.isEmpty()) {
+			return new ArrayList<WorkplaceInfoImport>();
 		}
-		
-		mapData.forEach((key, value) -> {
-			WorkplaceInfoImport wkp = WorkplaceInfoImport.builder().workplaceId(key).workplaceCode(value.getKey()).workplaceName(value.getValue()).build();
-			result.add(wkp);
-		});
-		
-		return result;
+
+		return dataExport.stream().map(mapper -> WorkplaceInfoImport.builder()
+				.workplaceId(mapper.getWorkplaceId())
+				.workplaceCode(mapper.getWorkplaceCode())
+				.workplaceName(mapper.getWorkplaceName())
+				.build())
+				.collect(Collectors.toList());
 	}
 
 	@Override

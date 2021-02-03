@@ -106,7 +106,7 @@ public class SaveUpdateProcessAutoExecutionCommandHandler
 				// Update 実行タスク設定
 				this.updateExecutionTaskSetting(cid, execItemCd, enabledSetting, execTaskSetting);
 				// ドメインモデル「更新処理自動実行管理」を更新する
-				logManage.setCurrentStatus(execTaskSetting.isEnabledSetting() ? CurrentExecutionStatus.WAITING
+				logManage.setCurrentStatus(enabledSetting ? CurrentExecutionStatus.WAITING
 						: CurrentExecutionStatus.INVALID);
 				this.processExecutionLogManageRepository.update(logManage);
 			});
@@ -157,6 +157,7 @@ public class SaveUpdateProcessAutoExecutionCommandHandler
 				.repeatMonthDateList(execTaskSetting.getDetailSetting().getMonthly()
 						.map(data -> data.getDays().stream().map(date -> date.value).collect(Collectors.toList()))
 						.orElse(Collections.emptyList()))
+				.repeatScheduleId(execTaskSetting.getRepeatScheduleId().orElse(null))
 				.saturday(execTaskSetting.getDetailSetting().getWeekly()
 						.map(data -> data.getWeekdaySetting().getSaturday().equals(NotUseAtr.USE)).orElse(false))
 				.scheduleId(execTaskSetting.getScheduleId())

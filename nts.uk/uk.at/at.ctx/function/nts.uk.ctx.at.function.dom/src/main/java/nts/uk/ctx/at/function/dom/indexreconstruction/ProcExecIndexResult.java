@@ -2,9 +2,11 @@ package nts.uk.ctx.at.function.dom.indexreconstruction;
 
 import java.math.BigDecimal;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 
@@ -17,6 +19,7 @@ import nts.arc.layer.dom.DomainObject;
 @Setter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ProcExecIndexResult extends DomainObject {
 
 	/** 
@@ -38,8 +41,6 @@ public class ProcExecIndexResult extends DomainObject {
 	 * 処理後の断片化率 
 	 **/
 	private FragmentationRate fragmentationRateAfterProcessing;
-	
-	private ProcExecIndexResult() {}
 
 	public static ProcExecIndexResult createFromMemento(MementoGetter memento) {
 		ProcExecIndexResult domain = new ProcExecIndexResult();

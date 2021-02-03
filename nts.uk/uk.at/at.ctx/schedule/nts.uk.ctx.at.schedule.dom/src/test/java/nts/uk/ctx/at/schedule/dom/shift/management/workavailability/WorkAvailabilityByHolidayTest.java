@@ -39,7 +39,7 @@ public class WorkAvailabilityByHolidayTest {
 	
 	@Test
 	public void testIsHolidayAvailability() {
-		assertThat(new WorkAvailabilityByHoliday().isHolidayAvailability()).isTrue();
+		assertThat(new WorkAvailabilityByHoliday().isHolidayAvailability(require)).isTrue();
 	}
 	
 	@Test
@@ -99,7 +99,7 @@ public class WorkAvailabilityByHolidayTest {
 		WorkAvailabilityDisplayInfo displayInfo = new WorkAvailabilityByHoliday().getDisplayInformation(require);
 		
 		assertThat(displayInfo.getMethod()).isEqualTo(AssignmentMethod.HOLIDAY);
-		assertThat(displayInfo.getNameList()).isEmpty();
+		assertThat(displayInfo.getShiftList()).isEmpty();
 		assertThat(displayInfo.getTimeZoneList()).isEmpty();
 	}
 

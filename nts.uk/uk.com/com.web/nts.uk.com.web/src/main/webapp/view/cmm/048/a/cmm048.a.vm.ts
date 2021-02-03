@@ -153,6 +153,22 @@ module nts.uk.com.view.cmm048.a {
     employeeId: KnockoutObservable<string> = ko.observable('');
     personId: KnockoutObservable<string> = ko.observable('');
 
+    //#113902
+     isUseOfProfile: KnockoutObservable<boolean> = ko.observable(false);
+     isUseOfPassword: KnockoutObservable<boolean> = ko.observable(false);
+     isUseOfNotice: KnockoutObservable<boolean> = ko.observable(false);
+     isUseOfLanguage: KnockoutObservable<boolean> = ko.observable(false);
+
+     //#113841
+     passwordPolicyVisible: KnockoutObservable<boolean> = ko.observable(false);
+     passPolicyLowestDigitsVisible: KnockoutObservable<boolean> = ko.observable(false);
+     passPolicyDigitVisible: KnockoutObservable<boolean> = ko.observable(false);
+     passPolicyAlphabetDigitVisible: KnockoutObservable<boolean> = ko.observable(false);
+     passPolicyNumberOfDigitsVisible: KnockoutObservable<boolean> = ko.observable(false);
+     passPolicySymbolCharactersVisible: KnockoutObservable<boolean> = ko.observable(true);
+     passPolicyHistoryCountVisible: KnockoutObservable<boolean> = ko.observable(false);
+     passPolicyValidityPeriodVisible: KnockoutObservable<boolean> = ko.observable(false);
+
     mounted() {
       const vm = this;
       vm.init();
@@ -262,12 +278,29 @@ module nts.uk.com.view.cmm048.a {
         vm.passChangeLog(vm.$i18n('CMM048_98'));
       }
       //validityPeriod
-      vm.passPolicyLowestDigits(vm.$i18n('CMM048_13', [String(data.passwordPolicy.lowestDigits)]));
-      vm.passPolicyAlphabetDigit(vm.$i18n('CMM048_15', [String(data.passwordPolicy.alphabetDigit)]));
-      vm.passPolicyNumberOfDigits(vm.$i18n('CMM048_16', [String(data.passwordPolicy.numberOfDigits)]));
-      vm.passPolicySymbolCharacters(vm.$i18n('CMM048_17', [String(data.passwordPolicy.symbolCharacters)]));
-      vm.passPolicyHistoryCount(vm.$i18n('CMM048_19', [String(data.passwordPolicy.historyCount)]));
-      vm.passPolicyValidityPeriod(vm.$i18n('CMM048_21', [String(data.passwordPolicy.validityPeriod)]));
+      const lowestDigits = data.passwordPolicy.lowestDigits;
+      const alphabetDigit = data.passwordPolicy.alphabetDigit;
+      const numberOfDigits = data.passwordPolicy.numberOfDigits;
+      const symbolCharacters = data.passwordPolicy.symbolCharacters;
+      const historyCount = data.passwordPolicy.historyCount;
+      const validityPeriod = data.passwordPolicy.validityPeriod;
+
+      vm.passPolicyLowestDigits(vm.$i18n('CMM048_13', [String(lowestDigits)]));
+      vm.passPolicyAlphabetDigit(vm.$i18n('CMM048_15', [String(alphabetDigit)]));
+      vm.passPolicyNumberOfDigits(vm.$i18n('CMM048_16', [String(numberOfDigits)]));
+      vm.passPolicySymbolCharacters(vm.$i18n('CMM048_17', [String(symbolCharacters)]));
+      vm.passPolicyHistoryCount(vm.$i18n('CMM048_19', [String(historyCount)]));
+      vm.passPolicyValidityPeriod(vm.$i18n('CMM048_21', [String(validityPeriod)]));
+
+       //#113841
+       vm.passwordPolicyVisible(data.passwordPolicy.isUse);
+       vm.passPolicyLowestDigitsVisible(lowestDigits > 0);
+       vm.passPolicyDigitVisible((alphabetDigit > 0) || (numberOfDigits > 0) || (symbolCharacters > 0));
+       vm.passPolicyAlphabetDigitVisible(alphabetDigit > 0);
+       vm.passPolicyNumberOfDigitsVisible(numberOfDigits > 0);
+       vm.passPolicySymbolCharactersVisible(symbolCharacters > 0);
+       vm.passPolicyHistoryCountVisible(historyCount > 0);
+       vm.passPolicyValidityPeriodVisible(validityPeriod > 0);
     }
 
     private setDataTabC(data: UserInformationDto) {
@@ -299,10 +332,10 @@ module nts.uk.com.view.cmm048.a {
       const vm = this;
       vm.isInCharge(data.isInCharge);
 
-      const isUseOfProfile: boolean = data.settingInformation.useOfProfile === IS_USE.USE;
-      const isUseOfPassword: boolean = data.settingInformation.useOfPassword === IS_USE.USE;
-      const isUseOfNotice: boolean = data.settingInformation.useOfNotice === IS_USE.USE;
-      const isUseOfLanguage: boolean = data.settingInformation.useOfLanguage === IS_USE.USE;
+      vm.isUseOfProfile(data.settingInformation.useOfProfile === IS_USE.USE);
+      vm.isUseOfPassword(data.settingInformation.useOfPassword === IS_USE.USE);
+      vm.isUseOfNotice(data.settingInformation.useOfNotice === IS_USE.USE);
+      vm.isUseOfLanguage(data.settingInformation.useOfLanguage === IS_USE.USE);
 
       const displaySetting = data.settingInformation.settingContactInformationDto;
       vm.cPhoneUseable(displaySetting.companyMobilePhone.contactUsageSetting !== CONTACT_USAGE.DO_NOT_USE);
@@ -340,20 +373,20 @@ module nts.uk.com.view.cmm048.a {
       _.map(vm.tabs(), (tab: any) => {
         switch (tab.id) {
           case 'tab-1':
-            tab.enable(isUseOfProfile);
-            tab.visible(isUseOfProfile);
+            tab.enable(vm.isUseOfProfile());
+            tab.visible(vm.isUseOfProfile());
             break;
           case 'tab-2':
-            tab.enable(isUseOfPassword);
-            tab.visible(isUseOfPassword);
+            tab.enable(vm.isUseOfPassword());
+            tab.visible(vm.isUseOfPassword());
             break;
           case 'tab-3':
-            tab.enable(isUseOfNotice);
-            tab.visible(isUseOfNotice);
+            tab.enable(vm.isUseOfNotice());
+            tab.visible(vm.isUseOfNotice());
             break;
           case 'tab-4':
-            tab.enable(isUseOfLanguage);
-            tab.visible(isUseOfLanguage);
+            tab.enable(vm.isUseOfLanguage());
+            tab.visible(vm.isUseOfLanguage());
             break;
           default: break;
         }
@@ -392,7 +425,6 @@ module nts.uk.com.view.cmm048.a {
 
         //condition to show off
         vm.setCondition(data);
-
       })
         .fail((error: any) => {
           vm.$blockui('clear');
@@ -556,15 +588,18 @@ module nts.uk.com.view.cmm048.a {
           const personalCommand = new PersonalCommand({
             avatar: avatar,
             anniversaryNotices: listAnniversary,
-            personalContact: personalContact
+            personalContact: personalContact,
+            useOfProfile: vm.isUseOfProfile(),
+            useOfNotice: vm.isUseOfNotice()
           });
-
           const contactCommand = new ContactCommand({
-            employeeContact: employeeContact
+            employeeContact: employeeContact,
+            useOfProfile: vm.isUseOfProfile()
           });
-
           const userChangeCommand = new UserChangeCommand({
-            userChange: userChange
+            userChange: userChange,
+            useOfPassword: vm.isUseOfPassword(),
+            useOfLanguage: vm.isUseOfLanguage(),
           });
           vm.$blockui('grayout');
           $.when(
@@ -789,6 +824,13 @@ module nts.uk.com.view.cmm048.a {
      * ユーザを変更する
      */
     userChange: UserCommand;
+
+    //fix bug #113902
+    useOfPassword: boolean;
+
+    //fix bug #113902
+    useOfLanguage: boolean;
+
     constructor(init?: Partial<UserChangeCommand>) {
       $.extend(this, init);
     }
@@ -802,6 +844,9 @@ module nts.uk.com.view.cmm048.a {
      * 社員連絡先を登録する
      */
     employeeContact: EmployeeContactCommand;
+
+    //fix bug #113902
+    useOfProfile: boolean;
 
     constructor(init?: Partial<ContactCommand>) {
       $.extend(this, init);
@@ -826,6 +871,12 @@ module nts.uk.com.view.cmm048.a {
      * 個人連絡先を登録する
      */
     personalContact: PersonalContactCommand;
+
+    //fix bug #113902
+    useOfProfile: boolean;
+
+    //fix bug #113902
+    useOfNotice: boolean
 
     constructor(init?: Partial<PersonalCommand>) {
       $.extend(this, init);

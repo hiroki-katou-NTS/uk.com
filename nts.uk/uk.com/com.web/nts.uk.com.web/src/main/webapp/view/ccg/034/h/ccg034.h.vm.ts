@@ -34,6 +34,7 @@ module nts.uk.com.view.ccg034.h {
       { code: VerticalAlign.CENTER, name: getText('CCG034_115') },
       { code: VerticalAlign.BOTTOM, name: getText('CCG034_116') }
     ];
+    isNewMode = true;
 
     created(params: any) {
       const vm = this;
@@ -53,20 +54,26 @@ module nts.uk.com.view.ccg034.h {
       vm.fileSize(vm.partData.fileSize);
 
       if (vm.fileId()) {
-        nts.uk.request.ajax("/shr/infra/file/storage/infor/" + vm.fileId())
-          .done((res: any) => {
-          $("#H2_2 .filenamelabel").text(res.originalName);
-          vm.fileSize(Math.round(Number(res.originalSize) / 1024));
-         }).fail(() => {
-          vm.$dialog.error({ messageId: 'Msg_70', messageParams: [ String(MAX_FILE_SIZE_MB) ] });
-         });
+        vm.isNewMode = false;
+        vm.$ajax("/shr/infra/file/storage/infor/" + vm.fileId())
+          .then((res: any) => {
+            $("#H2_2 .filenamelabel").text(res.originalName);
+            vm.fileSize(Math.round(Number(res.originalSize) / 1024));
+          }).fail(() => {
+            vm.$dialog.error({ messageId: 'Msg_70', messageParams: [String(MAX_FILE_SIZE_MB)] });
+          });
       }
       $("#H1_2").focus();
     }
 
-
     public uploadFinished(data: any) {
       const vm = this;
+      if (!vm.partData.originalFileId) {
+        vm.partData.originalFileId = data.id;
+      }
+      if (vm.fileId() !== vm.partData.originalFileId) {
+        (nts.uk.request as any).file.remove(vm.fileId());
+      }
       vm.fileId(data.id);
       vm.fileSize(Math.round(Number(data.originalSize) / 1024));
       if (!vm.fileName()) {
@@ -79,34 +86,36 @@ module nts.uk.com.view.ccg034.h {
      */
     public closeDialog() {
       const vm = this;
+      if (vm.fileId() !== vm.partData.originalFileId) {
+        (nts.uk.request as any).file.remove(vm.fileId());
+      }
       vm.$window.close();
     }
 
-     /**
-     * Update part data and close dialog
-     */
+    /**
+    * Update part data and close dialog
+    */
     public updatePartDataAndCloseDialog() {
       const vm = this;
-      vm.$validate("#H2_2").then((hasUpload: boolean) => {
-        if (hasUpload || vm.fileId()) {
+      vm.$validate("#H1_2", "#H2_2").then((validUpload: boolean) => {
+        if (validUpload || vm.fileId()) {
           vm.$validate().then((valid: boolean) => {
             if (valid) {
               if (vm.fileSize() / 1024 <= MAX_FILE_SIZE_MB) {
-                 // Update part data
+                // Update part data
                 vm.partData.alignHorizontal = vm.horizontalAlign();
                 vm.partData.alignVertical = vm.verticalAlign();
-                vm.partData.linkContent = vm.fileName();
+                vm.partData.linkContent = vm.fileName().trim();
                 vm.partData.fontSize = Number(vm.fontSize());
                 vm.partData.isBold = vm.isBold();
                 vm.partData.fileId = vm.fileId();
                 vm.partData.fileName = vm.uploadedFileName();
                 vm.partData.fileSize = vm.fileSize();
                 vm.partData.fileLink = (nts.uk.request as any).liveView(vm.fileId());
-
                 // Return data
                 vm.$window.close(vm.partData);
               } else {
-                vm.$dialog.error({ messageId: 'Msg_70', messageParams: [ String(MAX_FILE_SIZE_MB) ] });
+                vm.$dialog.error({ messageId: 'Msg_70', messageParams: [String(MAX_FILE_SIZE_MB)] });
               }
             }
           });

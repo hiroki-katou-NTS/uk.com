@@ -28,4 +28,11 @@ public class UnOffsetOfAbsDto {
 		this.requestDays = unOffsetOfAbs.getRequestDays();
 		this.unOffSetDays = unOffsetOfAbs.getUnOffSetDays();
 	}
+	
+	public UnOffsetOfAbs toDomain() {
+	    return new UnOffsetOfAbs(
+	            absMngId, 
+	            requestDays, 
+	            unOffSetDays);
+	}
 }

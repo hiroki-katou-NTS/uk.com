@@ -172,7 +172,7 @@ public class PersonalContactDto implements PersonalContact.MementoSetter, Person
 		return this.otherContacts.stream()
 				.map(item -> OtherContact.builder()
 						.otherContactNo(item.getOtherContactNo())
-						.isDisplay(Optional.of(item.getIsDisplay()))
+						.isDisplay(Optional.ofNullable(item.getIsDisplay()))
 						.address(new OtherContactAddress(item.getAddress()))
 						.build())
 				.collect(Collectors.toList());
