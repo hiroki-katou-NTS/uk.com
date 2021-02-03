@@ -36,6 +36,7 @@ public class PerformRecovery {
 	@Inject
 	private TimeRecordSetFormatListRepository timeRecordSetFormatListRepository;
 	/**
+	 * 復旧する
 	 * @param empInfoTerCode
 	 * @param terminalCodeList
 	 * @return

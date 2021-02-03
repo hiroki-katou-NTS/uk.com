@@ -32,8 +32,9 @@ public class ExtractRecoveryTargetTerminal {
 	private TimeRecordSetFormatListRepository timeRecordSetFormatListRepository;
 
 	/**
+	 * 復旧先の一覧を取得する
 	 * @param modelEmpInfoTer
-	 * @return
+	 * @return NRLマシン情報が存在する就業情報端末で、かつ機種が同一の端末が表示されること
 	 */
 	public List<ExtractRecoveryTargetTerminalDto> getRecoveryTargetList(int modelEmpInfoTer) {
 		ContractCode contractCode = new ContractCode(AppContexts.user().contractCode());
