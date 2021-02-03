@@ -126,14 +126,14 @@ module nts.uk.at.view.ccg005.a.screenModel {
               </td>
               <td class="ccg005-w100 ccg005-pl-5 ccg005-border-groove ccg005-right-unset">
                 <!-- A4_8 -->
-                <label style="display: inline-block;" data-bind="text: businessName"/>
+                <label class="ccg005-w100" style="display: inline-block;" data-bind="text: businessName"/>
                 <!-- A4_5 -->
                 <div>
                   <i data-bind="ntsIcon: {no: $component.emoji(), width: 20, height: 15}"></i>
                 </div>
               </td>
               <td class="ccg005-w100 ccg005-pl-5 ccg005-border-groove ccg005-right-unset ccg005-left-unset">
-                <div>
+                <div class="ccg005-w100">
                   <!-- A4_2 -->
                   <label data-bind="text: attendanceDetailDto.workName"/>
                   <!-- A4_4 -->
@@ -152,9 +152,9 @@ module nts.uk.at.view.ccg005.a.screenModel {
               </td>
               <td class="ccg005-pl-5 ccg005-border-groove ccg005-left-unset">
                 <!-- A4_6 time -->
-                <p data-bind="text: goOutDto.goOutPeriod"/>
+                <p style="max-width: 125px;" data-bind="text: goOutDto.goOutPeriod"/>
                 <!-- A4_6 text -->
-                <p class="limited-label" data-bind="text: goOutDto.goOutReason"/>
+                <p style="max-width: 125px;" class="limited-label" data-bind="text: goOutDto.goOutReason"/>
               </td>
             </tr>
 
@@ -219,7 +219,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
               <!-- A3_2.3 -->
               <button data-bind="i18n: 'CCG005_32', click: $component.openCDL008"></button>
               <!-- A3_2.4 -->
-              <span data-bind="text: label3_2"></span>
+              <label class="limited-label" style="max-width: 125px;" data-bind="text: $component.workplaceNameFromCDL008"></label>
             </td>
           </tr>
         </table>
@@ -372,7 +372,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
     contentSelected: KnockoutObservable<any> = ko.observable(1);
     favoriteInputDate: KnockoutObservable<any> = ko.observable('');
     searchValue: KnockoutObservable<string> = ko.observable('');
-    label3_2: KnockoutObservable<string> = ko.observable('label3_2');
+    workplaceNameFromCDL008: KnockoutObservable<string> = ko.observable('');
 
     // Pagination
     currentPage: KnockoutObservable<number> = ko.observable(1);
@@ -826,6 +826,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
           return;
         }
         const workplaceInfor = getShared('workplaceInfor');
+        vm.workplaceNameFromCDL008(_.map(workplaceInfor, (wkp: any) => wkp.displayName).join('、'));
         // 職場を選択する時
         vm.workplaceFromCDL008(getShared('outputCDL008'));
         const param: DisplayInfoAfterSelectParam = new DisplayInfoAfterSelectParam({
