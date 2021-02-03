@@ -15,7 +15,7 @@ public class EmployeeBasicImport {
 
 	/** The BusinessName. */
 	// ビジネスネーム
-	private String BusinessName;
+	private String businessName;
 	
 	/** The employee code. */
 	// 社員コード

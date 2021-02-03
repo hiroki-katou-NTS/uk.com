@@ -41,11 +41,12 @@ module nts.uk.at.view.ccg005.e.screenModel {
     goOutReason: KnockoutObservable<string> = ko.observable();
     businessName: KnockoutObservable<string> = ko.observable();
     sid: KnockoutObservable<string> = ko.observable();
+    disableBusinessName: KnockoutObservable<boolean> = ko.observable(true);
 
     created(props: createProps) {
       const vm = this;
-      console.log(props)
       vm.sid(props.sid);
+      vm.disableBusinessName(!(props.sid === __viewContext.user.employeeId));
       vm.businessName(props.businessName);
       vm.goOutDate(props.goOutDate);
       vm.$blockui('grayout');
