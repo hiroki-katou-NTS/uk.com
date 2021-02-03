@@ -60,7 +60,7 @@ module nts.uk.at.view.ccg005.a.object {
   export interface EmployeeBasicImport {
     employeeId: string,                                     //社員ID
     personalId: string,                                     //個人ID
-    BusinessName: string,                                   //ビジネスネーム
+    businessName: string,                                   //ビジネスネーム
     employeeCode: string                                    //社員コード
   }
 

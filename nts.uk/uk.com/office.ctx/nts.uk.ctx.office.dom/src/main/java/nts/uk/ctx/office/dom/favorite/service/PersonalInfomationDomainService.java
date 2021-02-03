@@ -82,6 +82,7 @@ public class PersonalInfomationDomainService {
 			Map<String, EmployeeJobHistImport> positionId,
 			List<SequenceMasterImport> positionOrder, 
 			Map<String, EmployeeBasicImport> personalInfo) {
+		
 		// create ソート情報：｛社員ID、階層コード、Optional<並び順>、職位コード、社員コード｝
 		List<PersonalInfomationObj> sortInfomation = sIds.stream().map(v -> {
 			return PersonalInfomationObj.builder()
@@ -94,19 +95,21 @@ public class PersonalInfomationDomainService {
 		}).collect(Collectors.toList());
 
 		// ソート実行
-//		Comparator<PersonalInfomationObj> compare = Comparator.nullsFirst(Comparator.comparing(PersonalInfomationObj::getOrderOptional))
-//				.thenComparing(PersonalInfomationObj::getPositionCode)
-//				.thenComparing(PersonalInfomationObj::getEmployeeCode);
-//		List<WorkplaceInforImport> workplaceInfoList = workplaceInfo.values().stream()
-//				.filter(item -> item != null)
-//				.collect(Collectors.toList());
-//		if (!workplaceInfoList.isEmpty()) {
-//			compare = Comparator.comparing(PersonalInfomationObj::getHierarchyCode)
-//					.thenComparing(Comparator.nullsFirst(Comparator.comparing(PersonalInfomationObj::getOrderOptional)))
-//					.thenComparing(PersonalInfomationObj::getPositionCode)
-//					.thenComparing(PersonalInfomationObj::getEmployeeCode);
-//		}
-//		sortInfomation.sort(compare);
+		List<WorkplaceInforImport> workplaceInfoList = workplaceInfo.values().stream()
+				.filter(item -> item != null)
+				.collect(Collectors.toList());
+		
+		if (!workplaceInfoList.isEmpty()) {
+			sortInfomation.sort(Comparator.nullsLast(Comparator.comparing(PersonalInfomationObj::getHierarchyCode, Comparator.nullsLast(Comparator.naturalOrder()))));
+			sortInfomation.sort(Comparator.nullsLast(Comparator.comparing(PersonalInfomationObj::getOrderOptional, Comparator.nullsLast(Comparator.naturalOrder()))));
+			sortInfomation.sort(Comparator.nullsLast(Comparator.comparing(PersonalInfomationObj::getPositionCode, Comparator.nullsLast(Comparator.naturalOrder()))));
+			sortInfomation.sort(Comparator.nullsLast(Comparator.comparing(PersonalInfomationObj::getEmployeeCode, Comparator.nullsLast(Comparator.naturalOrder()))));
+		} else {
+			sortInfomation.sort(Comparator.nullsLast(Comparator.comparing(PersonalInfomationObj::getOrderOptional, Comparator.nullsLast(Comparator.naturalOrder()))));
+			sortInfomation.sort(Comparator.nullsLast(Comparator.comparing(PersonalInfomationObj::getPositionCode, Comparator.nullsLast(Comparator.naturalOrder()))));
+			sortInfomation.sort(Comparator.nullsLast(Comparator.comparing(PersonalInfomationObj::getEmployeeCode, Comparator.nullsLast(Comparator.naturalOrder()))));
+		}
+
 		return sortInfomation.stream()
 				.map(item -> personalInfo.get(item.getSid()))
 				.collect(Collectors.toList());
