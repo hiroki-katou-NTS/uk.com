@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AdditionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
@@ -17,6 +18,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  *
  */
 @Getter
+@Setter
 public class TimevacationUseTimeOfDaily {
 	
 	//時間年休使用時間

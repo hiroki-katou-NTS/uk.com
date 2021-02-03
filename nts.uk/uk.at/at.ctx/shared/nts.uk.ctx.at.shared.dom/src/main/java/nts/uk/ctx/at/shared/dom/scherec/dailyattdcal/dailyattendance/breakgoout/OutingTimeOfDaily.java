@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 //import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
@@ -40,6 +41,7 @@ import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexCalcSetting;
  *
  */
 @Getter
+@Setter
 public class OutingTimeOfDaily {
 	
 	//回数：休憩外出回数

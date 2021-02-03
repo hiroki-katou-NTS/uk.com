@@ -13,6 +13,7 @@ import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImage;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
 import nts.uk.ctx.at.request.dom.application.stamp.DestinationTimeApp;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
+import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplication;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 import nts.uk.ctx.at.shared.dom.application.bussinesstrip.BusinessTripInfoShare;
 import nts.uk.ctx.at.shared.dom.application.bussinesstrip.BusinessTripShare;
@@ -45,6 +46,9 @@ import nts.uk.ctx.at.shared.dom.application.stamp.TimeStampAppEnumShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.TimeStampAppOtherShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.TimeStampAppShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.TimeZoneStampClassificationShare;
+import nts.uk.ctx.at.shared.dom.application.timeleaveapplication.TimeDigestApplicationShare;
+import nts.uk.ctx.at.shared.dom.application.timeleaveapplication.TimeLeaveApplicationDetailShare;
+import nts.uk.ctx.at.shared.dom.application.timeleaveapplication.TimeLeaveApplicationShare;
 import nts.uk.ctx.at.shared.dom.application.workchange.AppWorkChangeShare;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 
@@ -168,8 +172,17 @@ public class ConvertApplicationToShare {
 			}
 
 		case ANNUAL_HOLIDAY_APPLICATION:
-			// TODO: wait new domain
-			return appShare;
+			TimeLeaveApplication appTimeLeav = (TimeLeaveApplication) application;
+
+			return new TimeLeaveApplicationShare(appShare, appTimeLeav.getLeaveApplicationDetails().stream().map(x -> {
+				return new TimeLeaveApplicationDetailShare(x.getAppTimeType(), x.getTimeZoneWithWorkNoLst(),
+						new TimeDigestApplicationShare(x.getTimeDigestApplication().getOvertime60H(),
+								x.getTimeDigestApplication().getNursingTime(),
+								x.getTimeDigestApplication().getChildTime(), x.getTimeDigestApplication().getTimeOff(),
+								x.getTimeDigestApplication().getTimeSpecialVacation(),
+								x.getTimeDigestApplication().getTimeAnnualLeave(),
+								x.getTimeDigestApplication().getSpecialVacationFrameNO()));
+			}).collect(Collectors.toList()));
 
 		case EARLY_LEAVE_CANCEL_APPLICATION:
 			ArrivedLateLeaveEarly early = (ArrivedLateLeaveEarly) application;
