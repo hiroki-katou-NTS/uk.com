@@ -2179,6 +2179,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	@Override
 	public List<String> getApprSttUnapprovedAppTarget(List<ApprovalPhaseStateImport_New> phaseLst, GeneralDate appDate) {
 		List<String> result = new ArrayList<>();
+		phaseLst.sort(Comparator.comparing(ApprovalPhaseStateImport_New::getPhaseOrder).reversed());
 		for(ApprovalPhaseStateImport_New phase : phaseLst) {
 			if(phase.getApprovalAtr()==ApprovalBehaviorAtrImport_New.APPROVED || phase.getApprovalAtr()==ApprovalBehaviorAtrImport_New.DENIAL) {
 				continue;
@@ -2189,15 +2190,14 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 					if(state.getApprovalAtr()==ApprovalBehaviorAtrImport_New.APPROVED || state.getApprovalAtr()==ApprovalBehaviorAtrImport_New.DENIAL) {
 						continue;
 					}
-					List<String> targetLst = this.getApprSttUnapprovedAppPerson(Arrays.asList(state.getApproverID()), appDate);
-					if(!CollectionUtil.isEmpty(targetLst)) {
-						result = targetLst;
+					result.addAll(this.getApprSttUnapprovedAppPerson(Arrays.asList(state.getApproverID()), appDate));
+					if(!CollectionUtil.isEmpty(result)) {
 						isBreak = true;
 					}
 				}
-				if(isBreak) {
-					break;
-				}
+			}
+			if(isBreak) {
+				break;
 			}
 		}
 		return result;
