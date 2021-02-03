@@ -169,6 +169,7 @@ module nts.uk.ui.ktg001.a {
         mounted() {
             let vm = this;
             vm.loadData();
+            vm.$el.classList.add('ktg-001-a');
         }
 
         loadData(): void {

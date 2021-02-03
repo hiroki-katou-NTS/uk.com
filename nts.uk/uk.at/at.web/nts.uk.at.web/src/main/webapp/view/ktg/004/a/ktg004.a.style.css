@@ -25,11 +25,6 @@
     top: 6px;
 }
 
-.ktg-004-a .scroll {
-    overflow-y: scroll;
-    height: 545px;
-}
-
 .ktg-004-a .widget-table {
 	width: 225px;
 	margin: 0 auto;
