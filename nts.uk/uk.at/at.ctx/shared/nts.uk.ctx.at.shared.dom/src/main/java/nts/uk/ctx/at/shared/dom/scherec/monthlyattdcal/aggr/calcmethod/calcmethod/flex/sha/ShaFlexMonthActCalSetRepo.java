@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.sha;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -15,6 +16,13 @@ public interface ShaFlexMonthActCalSetRepo {
 	 * @return the optional
 	 */
   Optional<ShaFlexMonthActCalSet> find(String cid, String sId);
+  
+	  /**
+	   * Find By Cid
+	   * @param cid
+	   * @return
+	   */
+  List<ShaFlexMonthActCalSet> findAllShaByCid(String cid);
 
 	/**
 	 * Adds the.
