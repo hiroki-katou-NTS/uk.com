@@ -26,6 +26,7 @@ import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.EmployeeInfor
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.StatusOfEmployee;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffAtWorkplaceImport;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
+import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.closure.GetSpecifyPeriod;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeBasicInfoImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
@@ -90,6 +91,9 @@ public class AnnualWorkLedgerExportService extends ExportService<AnnualWorkLedge
     @Inject
     private DisplayAnnualWorkLedgerReportGenerator displayGenerator;
 
+    @Inject
+    private GetSpecifyPeriod getSpecifyPeriod;
+
     /**
      * 勤務状況表の対象ファイルを出力する :: ファイルの出力
      *
@@ -101,31 +105,43 @@ public class AnnualWorkLedgerExportService extends ExportService<AnnualWorkLedge
         YearMonth yearMonthStart = new YearMonth(query.getStartMonth());
         YearMonth yearMonthEnd = new YearMonth(query.getEndMonth());
         YearMonthPeriod yearMonthPeriod = new YearMonthPeriod(yearMonthStart, yearMonthEnd);
-
-        val cl = closureRepository.findById(AppContexts.user().companyId(), query.getClosureId());
-        val basedateNow = GeneralDate.today();
-        if (!cl.isPresent() || cl.get().getHistoryByBaseDate(basedateNow) == null) {
-            throw new BusinessException("");
-        }
-        val closureDate = cl.get().getHistoryByBaseDate(basedateNow).getClosureDate();
-        List<String> lstEmpIds = query.getLstEmpIds();
-        DatePeriod datePeriod = this.getFromClosureDate(yearMonthStart, yearMonthEnd, closureDate.getClosureDay().v());
-        GeneralDate baseDate = datePeriod.end();
+        val closureId = query.getClosureId() == 0 ? 1 : query.getClosureId();
         String companyId = AppContexts.user().companyId();
+        // 1 ⑨:find(会社ID、ClosureId)
+        Optional<Closure> closureOptional  = closureRepository.findById(AppContexts.user().companyId(), query.getClosureId());
+        // 1.1
+        val periodOptionalStart = this.getSpecifyPeriod.getSpecifyPeriod(yearMonthStart)
+                .stream().filter(x -> x.getClosureId().value == closureId).findFirst();
+        // 1.2
+        val periodOptionalEnd = this.getSpecifyPeriod.getSpecifyPeriod(yearMonthEnd)
+                .stream().filter(x -> x.getClosureId().value == closureId).findFirst();
 
-        // 1 Call [No.600]社員ID（List）から社員コードと表示名を取得（削除社員考慮）
+        if (!periodOptionalStart.isPresent() ||!periodOptionalEnd.isPresent()) {
+            throw new RuntimeException(" CAN NOT FIND DATE PERIOD WITH CID = "
+                    + companyId + "AND CLOSURE_ID = " + closureId);
+        }
+        List<String> lstEmpIds = query.getLstEmpIds();
+        // ⑩
+        DatePeriod datePeriodStart = periodOptionalStart.get().getPeriod();
+        // ⑪
+        DatePeriod datePeriodEnd = periodOptionalEnd.get().getPeriod();
+        // 2 ⑫
+        DatePeriod datePeriod =  new DatePeriod(datePeriodStart.start(),datePeriodEnd.end());
+        GeneralDate baseDate = datePeriod.end();
+
+        // 3 ① Call [No.600]社員ID（List）から社員コードと表示名を取得（削除社員考慮）
         List<EmployeeBasicInfoImport> lstEmployeeInfo = empEmployeeAdapter.getEmpInfoLstBySids(lstEmpIds, datePeriod, true, false);
         Map<String, EmployeeBasicInfoImport> mapEmployeeInfo = lstEmployeeInfo.stream().filter(distinctByKey(EmployeeBasicInfoImport::getSid))
                 .collect(Collectors.toMap(EmployeeBasicInfoImport::getSid, i -> i));
 
-        // 2 Call 会社を取得する
+        // 4 ② Call 会社を取得する
         CompanyBsImport companyInfo = companyBsAdapter.getCompanyByCid(companyId);
 
-        // 3 Call 社員ID（List）と基準日から所属職場IDを取得
+        // 5 ③ Call 社員ID（List）と基準日から所属職場IDを取得
         List<AffAtWorkplaceImport> lstAffAtWorkplaceImport = affWorkplaceAdapter.findBySIdAndBaseDate(lstEmpIds, baseDate);
         List<String> listWorkplaceId = lstAffAtWorkplaceImport.stream().map(AffAtWorkplaceImport::getWorkplaceId).distinct()
                 .collect(Collectors.toList());
-        // 3.1 Call [No.560]職場IDから職場の情報をすべて取得する
+        // 5.1 ④ Call [No.560]職場IDから職場の情報をすべて取得する
         List<WorkplaceInfor> lstWorkplaceInfo = workplaceConfigInfoAdapter.getWorkplaceInforByWkpIds(companyId, listWorkplaceId, baseDate);
         Map<String, WorkplaceInfor> mapWorkplaceInfo = lstWorkplaceInfo.stream().filter(distinctByKey(WorkplaceInfor::getWorkplaceId))
                 .collect(Collectors.toMap(WorkplaceInfor::getWorkplaceId, i -> i));
