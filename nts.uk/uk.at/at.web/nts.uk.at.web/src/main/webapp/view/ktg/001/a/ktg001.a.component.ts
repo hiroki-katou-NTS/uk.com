@@ -57,76 +57,116 @@ module nts.uk.ui.ktg001.a {
 
     @component({
         name: 'kgt-001-a',
-        template: `<div class="parent">
-        <table>
-            <tr>
-                <td>
-                    <table class="widget-table">
-                        <tr>
-                            <td id="title">
-                                <div data-bind="ntsFormLabel: {text: title}"></div>
-                            </td>
-                            <td class="go-button">
-                                <button data-bind=" click : setting, visible: settingIconVisible">
-                                    <i data-bind="ntsIcon: { no: 5 }"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    </table>
-
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <table class="widget-table row">
-                        <tr data-bind="visible: appRowVisible">
-                            <td class="child-row" data-bind="text: $i18n('KTG001_1')"></td>
-                            <td class="go-button">
-                                <button
-                                    data-bind=" click : applicationList, visible: appIconVisible">
-                                    <i data-bind="ntsIcon: { no: 145 }"></i>
-                                </button>
-                            </td>
-                            <td data-bind="text: appText"></td>
-                        </tr>
-                        <tr data-bind="visible: dayRowVisible">
-                            <td class="child-row" data-bind="text: $i18n('KTG001_2')"></td>
-                            <td class="go-button">
-                                <button
-                                    data-bind=" click : dayPerformanceConfirm, visible: dayIconVisible">
-                                    <i data-bind="ntsIcon: { no: 145 }"></i>
-                                </button>
-                            </td>
-                            <td data-bind="text: dayText"></td>
-                        </tr>
-                        <tr data-bind="visible: monRowVisible">
-                            <td class="child-row" data-bind="text: $i18n('KTG001_3')"></td>
-                            <td class="go-button">
-                                <button
-                                    data-bind=" click : monPerformanceConfirm, visible: monIconVisible">
-                                    <i data-bind="ntsIcon: { no: 145 }"></i>
-                                </button>
-                            </td>
-                            <td data-bind="text: monText"></td>
-                        </tr>
-                        <tr data-bind="visible: aggrRowVisible">
-                            <td class="child-row" data-bind="text: $i18n('KTG001_4')"></td>
-                            <td class="go-button">
-                                <button
-                                    data-bind=" click : aggrementApproval, visible: aggrIconVisible">
-                                    <i data-bind="ntsIcon: { no: 145 }"></i>
-                                </button>
-                            </td>
-                            <td data-bind="text: aggrText"></td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
+        template: `<table>
+            <colgroup>
+                <col width="auto" />
+                <col width="auto" />
+                <col width="27px" />
+            </colgroup>
+            <thead>
+                <tr>
+                    <th id="title" colspan="2" data-bind="i18n: title"></th>
+                    <th>
+                        <button class="icon" data-bind="
+                                click : $component.setting,
+                                timeClick: -1,
+                                visible: $component.settingIconVisible
+                            ">
+                            <i data-bind="ntsIcon: { no: 5 }"></i>
+                        </button>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr data-bind="visible: $component.appRowVisible">
+                    <td data-bind="text: $i18n('KTG001_1')"></td>
+                    <td>
+                        <button class="icon" data-bind="
+                                click: $component.applicationList,
+                                visible: $component.appIconVisible
+                            ">
+                            <i data-bind="ntsIcon: { no: 145 }"></i>
+                        </button>
+                    </td>
+                    <td data-bind="text: $component.appText"></td>
+                </tr>
+                <tr data-bind="visible: $component.dayRowVisible">
+                    <td data-bind="i18n: 'KTG001_2'"></td>
+                    <td>
+                        <button class="icon" data-bind="
+                                click: $component.dayPerformanceConfirm,
+                                visible: $component.dayIconVisible
+                            ">
+                            <i data-bind="ntsIcon: { no: 145 }"></i>
+                        </button>
+                    </td>
+                    <td data-bind="text: $component.dayText"></td>
+                </tr>
+                <tr data-bind="visible: $component.monRowVisible">
+                    <td data-bind="i18n: 'KTG001_3'"></td>
+                    <td>
+                        <button class="icon" data-bind="
+                                click: $component.monPerformanceConfirm,
+                                visible: monIconVisible
+                            ">
+                            <i data-bind="ntsIcon: { no: 145 }"></i>
+                        </button>
+                    </td>
+                    <td data-bind="text: $component.monText"></td>
+                </tr>
+                <tr data-bind="visible: $component.aggrRowVisible">
+                    <td data-bind="i18n: 'KTG001_4'"></td>
+                    <td>
+                        <button class="icon" data-bind="
+                                click: $component.aggrementApproval,
+                                visible: $component.aggrIconVisible
+                            ">
+                            <i data-bind="ntsIcon: { no: 145 }"></i>
+                        </button>
+                    </td>
+                    <td data-bind="text: $component.aggrText"></td>
+                </tr>
+            </tbody>
         </table>
-    </div>`
+        <style>
+            .ktg-001-a {
+                width: 305px;
+                margin: auto;
+                padding: 3px 10px;
+                box-sizing: border-box;
+                border: 1px solid #B1B1B1;
+                border-top: none;
+            }
+            
+            .ktg-001-a table {
+                width: 100%;
+            }
+            
+            .ktg-001-a tr {
+                height: 41px;
+            }
+
+            .ktg-001-a th,
+            .ktg-001-a tr:not(:last-child) td {
+                border-bottom: 1px solid #ccc;
+            }
+            
+            .ktg-001-a th:first-child {
+                border-left: 5px solid #0096F2;
+                padding-left: 3px;
+            }
+
+            .ktg-001-a button.icon {
+                border: 0;
+                box-sizing: border-box;
+                box-shadow: none;
+                padding: 0;
+                width: 30px;
+                margin: 0;
+            }
+        </style>`
     })
     export class KTG001AComponent extends ko.ViewModel {
-
         title: KnockoutObservable<string> = ko.observable('');
         appText: KnockoutObservable<string> = ko.observable('');
         dayText: KnockoutObservable<string> = ko.observable('');
@@ -168,8 +208,12 @@ module nts.uk.ui.ktg001.a {
 
         mounted() {
             let vm = this;
+
             vm.loadData();
+
+            vm.$el.classList.add('hidden');
             vm.$el.classList.add('ktg-001-a');
+            vm.$el.removeAttribute('data-bind');
         }
 
         loadData(): void {
@@ -180,12 +224,12 @@ module nts.uk.ui.ktg001.a {
                 'nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.NotUseAtr'
             ];
 
-
-            vm.$blockui("grayout");
-
             const { GET_APPROVED_DATA_EXCECUTION } = KTG001_API;
+            const enums = vm.$ajax('com', '/enums/map', query);
+            const aprov = vm.$ajax('at', GET_APPROVED_DATA_EXCECUTION, param);
 
-            $.when(vm.$ajax('com', '/enums/map', query), vm.$ajax('at', GET_APPROVED_DATA_EXCECUTION, param))
+            vm.$blockui("grayout")
+                .then(() => $.when(enums, aprov))
                 .done((enumerable: EnumResponse, data: IResponse) => {
                     const { NotUseAtr, ApprovedApplicationStatusItem } = enumerable;
                     const [APPVV, APPNV] = NotUseAtr;
@@ -234,11 +278,18 @@ module nts.uk.ui.ktg001.a {
 
                             })
                         }
-
-
                     }
+                })
+                .then(() => {
+                    vm.$el.classList.remove('hidden');
 
-                }).always(() => vm.$blockui("clear"));
+                    vm.$nextTick(() => {
+                        $(vm.$el)
+                            .find('[data-bind]')
+                            .removeAttr('data-bind');
+                    });
+                })
+                .always(() => vm.$blockui("clear"));
         }
 
         applicationList() {
@@ -279,3 +330,69 @@ module nts.uk.ui.ktg001.a {
         }[];
     }
 }
+
+/**<table>
+            <tr>
+                <td>
+                    <table class="widget-table">
+                        <tr>
+                            <td id="title">
+                                <div data-bind="ntsFormLabel: {text: title}"></div>
+                            </td>
+                            <td>
+                                <button data-bind=" click : setting, visible: settingIconVisible">
+                                    <i data-bind="ntsIcon: { no: 5 }"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </table>
+
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <table class="widget-table row">
+                        <tr data-bind="visible: appRowVisible">
+                            <td data-bind="text: $i18n('KTG001_1')"></td>
+                            <td>
+                                <button
+                                    data-bind=" click : applicationList, visible: appIconVisible">
+                                    <i data-bind="ntsIcon: { no: 145 }"></i>
+                                </button>
+                            </td>
+                            <td data-bind="text: appText"></td>
+                        </tr>
+                        <tr data-bind="visible: dayRowVisible">
+                            <td data-bind="text: $i18n('KTG001_2')"></td>
+                            <td>
+                                <button
+                                    data-bind=" click : dayPerformanceConfirm, visible: dayIconVisible">
+                                    <i data-bind="ntsIcon: { no: 145 }"></i>
+                                </button>
+                            </td>
+                            <td data-bind="text: dayText"></td>
+                        </tr>
+                        <tr data-bind="visible: monRowVisible">
+                            <td data-bind="text: $i18n('KTG001_3')"></td>
+                            <td>
+                                <button
+                                    data-bind=" click : monPerformanceConfirm, visible: monIconVisible">
+                                    <i data-bind="ntsIcon: { no: 145 }"></i>
+                                </button>
+                            </td>
+                            <td data-bind="text: monText"></td>
+                        </tr>
+                        <tr data-bind="visible: aggrRowVisible">
+                            <td data-bind="text: $i18n('KTG001_4')"></td>
+                            <td>
+                                <button
+                                    data-bind=" click : aggrementApproval, visible: aggrIconVisible">
+                                    <i data-bind="ntsIcon: { no: 145 }"></i>
+                                </button>
+                            </td>
+                            <td data-bind="text: aggrText"></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table> */
