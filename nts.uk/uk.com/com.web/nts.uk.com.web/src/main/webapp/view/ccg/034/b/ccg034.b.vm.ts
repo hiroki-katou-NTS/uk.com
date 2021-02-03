@@ -61,7 +61,7 @@ module nts.uk.com.view.ccg034.b {
         $("#B1_1").height($("#B1_1").contents().find(".content-container").height());
         _.each(iframedoc.getElementsByClassName("ccg034-hyperlink"), link => {
           link.addEventListener('click', (event: Event) => event.preventDefault());
-        })
+        });
       });
     }
 
