@@ -44,6 +44,10 @@ public class TaskPaletteOrganization implements DomainAggregate {
 	 */
 	private Map<Integer, TaskCode> tasks;
 	
+	/**
+	 * 作業枠NO
+	 * @return
+	 */
 	private TaskFrameNo getTaskFrameNo() {
 		return new TaskFrameNo(1);
 	}
