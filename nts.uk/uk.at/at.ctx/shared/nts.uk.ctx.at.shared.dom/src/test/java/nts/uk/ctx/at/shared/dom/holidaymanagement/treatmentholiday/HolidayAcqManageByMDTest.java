@@ -114,5 +114,15 @@ public class HolidayAcqManageByMDTest {
 		
 		assertThat(result).isEqualTo(StartDateClassification.SPECIFY_MD);
 	}
+	
+	@Test
+	public void test_get28days() {
+		HolidayAcqManageByMD holidayAcqManageByMD = new HolidayAcqManageByMD(new MonthDay(1, 1), new FourWeekDays(28.0), new WeeklyDays(7.0));
+		DatePeriod result = holidayAcqManageByMD.get28Days(require, GeneralDate.ymd(2020, 12, 1));
+		
+		assertThat(result.start()).isEqualTo(GeneralDate.ymd(2020, 11, 4));
+		assertThat(result.end()).isEqualTo(GeneralDate.ymd(2020, 12, 1));
+		
+	}
 
 }

@@ -54,4 +54,14 @@ public class HolidayAcqManageByYMDTest {
 				.isEqualTo(new DatePeriod(GeneralDate.ymd(2020, 11, 12), GeneralDate.ymd(2020, 12, 9)));
 	}
 
+	@Test
+	public void test_get28days() {
+		HolidayAcqManageByYMD holidayAcqManageByYMD = new HolidayAcqManageByYMD(GeneralDate.ymd(2020, 11, 12), new FourWeekDays(4.0));
+		DatePeriod result = holidayAcqManageByYMD.get28Days(require, GeneralDate.ymd(2020, 11, 11));
+		
+		assertThat(result.start()).isEqualTo(GeneralDate.ymd(2020, 11, 12));
+		assertThat(result.end()).isEqualTo(GeneralDate.ymd(2020, 12, 9));
+		
+	}
+	
 }
