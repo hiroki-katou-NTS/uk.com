@@ -145,17 +145,19 @@ public class LaborCostsTotalizationServiceTest {
 
 		// Exceptations
 		// 値対応リスト
-		val dummyValueMap = new HashMap<AttendanceTimeOfDailyAttendance, Integer>() {{
-			put( dlyAtd1, 1 );
-			put( dlyAtd2, 5 );
-			put( dlyAtd3, 2 );
-		}};
+		val dummyValueMap = new HashMap<AttendanceTimeOfDailyAttendance, Integer>();
+		{
+			dummyValueMap.put( dlyAtd1, 1 );
+			dummyValueMap.put( dlyAtd2, 5 );
+			dummyValueMap.put( dlyAtd3, 2 );
+		};
 		// 係数
-		val coefficients = new HashMap<AggregationUnitOfLaborCosts, Double>() {{
-			put( AggregationUnitOfLaborCosts.WITHIN, 1.0 );
-			put( AggregationUnitOfLaborCosts.EXTRA, 0.25);
-			put( AggregationUnitOfLaborCosts.TOTAL, 1.5 );
-		}};
+		val coefficients = new HashMap<AggregationUnitOfLaborCosts, Double>();
+		{
+			coefficients.put( AggregationUnitOfLaborCosts.WITHIN, 1.0 );
+			coefficients.put( AggregationUnitOfLaborCosts.EXTRA, 0.25);
+			coefficients.put( AggregationUnitOfLaborCosts.TOTAL, 1.5 );
+		};
 
 		// Mock: 値取得処理定義
 		val getValueFunction = new BiFunction<AggregationUnitOfLaborCosts, AttendanceTimeOfDailyAttendance, BigDecimal>() {

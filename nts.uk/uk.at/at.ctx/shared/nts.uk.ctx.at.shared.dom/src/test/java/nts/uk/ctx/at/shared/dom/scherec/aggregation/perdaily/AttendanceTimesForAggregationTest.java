@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -32,15 +31,17 @@ public class AttendanceTimesForAggregationTest {
 	public void test_getTime() {
 
 		// 期待値
-		val expected = new HashMap<AttendanceTimesForAggregation, Integer>() {{
-			put( AttendanceTimesForAggregation.WORKING_WITHIN,	450 );
-			put( AttendanceTimesForAggregation.WORKING_EXTRA,	131 );
-			put( AttendanceTimesForAggregation.WORKING_TOTAL
-					, get(AttendanceTimesForAggregation.WORKING_WITHIN) + get(AttendanceTimesForAggregation.WORKING_EXTRA) );
-
-//			put( AttendanceTimesForAggregation.NIGHTSHIFT, 		960 );	// TODO 日別勤怠の医療項目決定待ち
-		}}.entrySet().stream()
-		.collect(Collectors.toMap(Map.Entry::getKey, e -> BigDecimal.valueOf( e.getValue() ) ));
+		val expected = new HashMap<AttendanceTimesForAggregation, BigDecimal>();
+		{
+			expected.put( AttendanceTimesForAggregation.WORKING_WITHIN,	BigDecimal.valueOf(	450	) );
+			expected.put( AttendanceTimesForAggregation.WORKING_EXTRA,	BigDecimal.valueOf(	131	) );
+			expected.put( AttendanceTimesForAggregation.WORKING_TOTAL,	BigDecimal.ZERO
+							.add( expected.get(AttendanceTimesForAggregation.WORKING_WITHIN) )
+							.add( expected.get(AttendanceTimesForAggregation.WORKING_EXTRA) )
+					);
+			// TODO 日別勤怠の医療項目決定待ち
+//			expected.put( AttendanceTimesForAggregation.NIGHTSHIFT, 	BigDecimal.valueOf(	960	) );
+		}
 
 
 		// 日別勤怠の勤怠時間

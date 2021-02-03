@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -32,13 +31,15 @@ public class AggregationUnitOfLaborCostsTest {
 	public void test_getAmount() {
 
 		// 期待値
-		val expected = new HashMap<AggregationUnitOfLaborCosts, Integer>() {{
-			put( AggregationUnitOfLaborCosts.WITHIN,	619270 );
-			put( AggregationUnitOfLaborCosts.EXTRA,		  3497 );
-			put( AggregationUnitOfLaborCosts.TOTAL
-					, get(AggregationUnitOfLaborCosts.WITHIN) + get(AggregationUnitOfLaborCosts.EXTRA) );
-		}}.entrySet().stream()
-		.collect(Collectors.toMap(Map.Entry::getKey, e -> BigDecimal.valueOf( e.getValue() ) ));
+		val expected = new HashMap<AggregationUnitOfLaborCosts, BigDecimal>();
+		{
+			expected.put( AggregationUnitOfLaborCosts.WITHIN,	BigDecimal.valueOf(	619270	) );
+			expected.put( AggregationUnitOfLaborCosts.EXTRA,	BigDecimal.valueOf(	  3497	) );
+			expected.put( AggregationUnitOfLaborCosts.TOTAL,	BigDecimal.ZERO
+							.add( expected.get(AggregationUnitOfLaborCosts.WITHIN) )
+							.add( expected.get(AggregationUnitOfLaborCosts.EXTRA) )
+					);
+		}
 
 
 		// 日別勤怠の勤怠時間
