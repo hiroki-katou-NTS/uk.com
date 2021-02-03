@@ -204,7 +204,7 @@
 													<span class="label" style="width: 350px"
 													data-bind="text: attendanceModel.attendanceItemName"></span>
 												</div>
-												<div>
+												<div data-bind="if: isAllowShowAttendance">
 													<span class="color-danger">#{i18n.getText('KMK009_30')}</span>
 												</div>
 											</div>

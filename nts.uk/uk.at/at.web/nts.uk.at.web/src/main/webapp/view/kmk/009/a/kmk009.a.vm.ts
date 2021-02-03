@@ -42,7 +42,8 @@ module nts.uk.at.view.kmk009.a.viewmodel {
         totalTimesNameEn: KnockoutObservable<string> = ko.observable(null);
 
         selectedCode: KnockoutObservable<string> = ko.observable(null);
-
+        isAllowShowAttendance: KnockoutObservable<boolean>= ko.observable(false);
+        
         constructor() {
             var self = this;
             self.itemTotalTimesEng = ko.observableArray([]);
@@ -356,7 +357,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                     }
 
                     self.attendanceModel.attendanceItemId(data.totalCondition.attendanceItemId);
-
+                    self.isAllowShowAttendance( data.totalCondition.attendanceItemId >= 193 && data.totalCondition.attendanceItemId <= 202);
                     self.switchCheckbox(data.countAtr);
 
                     self.loadListWorkType().done(function() {
@@ -377,6 +378,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                                     if (!_.isEmpty(selectID)) {
                                         self.attendanceModel.update(selectID[0].attendanceItemId, selectID[0].attendanceItemName);
                                         nts.uk.ui.windows.setShared('SelectedAttendanceId', selectID[0].attendanceItemId, true);
+                                        self.isAllowShowAttendance( selectID[0].attendanceItemId >= 193 && selectID[0].attendanceItemId <= 202);
                                     }
                                 }
                             });
@@ -385,6 +387,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                         });
                     });
                 }
+
                 if (self.langId() == 'en') {
                     $("#itemname").focus();
                     if ($('.nts-validate').ntsError("hasError") == true) {
@@ -685,6 +688,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                                 self.attendanceModel.update(null, null);
                             } else {
                                 self.attendanceModel.update(dailyAttendanceItem[0].attendanceItemId, dailyAttendanceItem[0].attendanceItemName);                                
+                                self.isAllowShowAttendance( dailyAttendanceItem[0].attendanceItemId >= 193 && dailyAttendanceItem[0].attendanceItemId <= 202);
                             }
                             self.enableUse(parseInt(self.selectUse()) && !_.isNull(self.attendanceModel.attendanceItemName())); 
                             nts.uk.ui.block.clear();
