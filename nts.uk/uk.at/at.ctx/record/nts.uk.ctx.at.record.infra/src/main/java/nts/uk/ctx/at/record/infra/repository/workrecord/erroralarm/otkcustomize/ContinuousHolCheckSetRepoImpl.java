@@ -22,7 +22,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.otkcustomize.ContinuousHolCheckSet;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.otkcustomize.repo.ContinuousHolCheckSetRepo;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ContinuousVacationDays;
-import nts.uk.ctx.at.shared.dom.alarmList.primitivevalue.DisplayMessage;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.DisplayMessage;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.otkcustomize.KrcctOtkVacationCk;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.otkcustomize.KrcctOtkWtNonTarget;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.otkcustomize.KrcctOtkWtTarget;

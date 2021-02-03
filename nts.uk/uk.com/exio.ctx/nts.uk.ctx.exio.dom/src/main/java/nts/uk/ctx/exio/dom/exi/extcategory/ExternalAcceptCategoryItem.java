@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.exio.dom.exi.condset.AcceptMode;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.DataType;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 /**
@@ -63,4 +64,39 @@ public class ExternalAcceptCategoryItem extends AggregateRoot {
 	private Optional<NotUseAtr> historyFlg;
 	/**	履歴継続区分 */
 	private Optional<ExternalHistoryContiFlg> historyContiFlg;
+	/**
+	 * 特殊区分項目の編集
+	 * @param itemValue
+	 * @param accMode
+	 * @return
+	 */
+	public SpecialEditValue editSpecial(Object itemValue, AcceptMode accMode) {
+		SpecialEditValue result = new SpecialEditValue(itemValue, false, "");
+		//特殊区分の判別
+		switch (this.specialFlg) {
+		case 0: //０：特殊項目ではない
+			return result;
+		case 1: //会社CD
+			
+			break;
+		case 2: //社員CD
+			break;
+		default:
+			break;
+		}
+		
+		return result;
+	}
+	/**
+	 * 【１】会社CD⇒会社ID（CID）
+	 * @param itemValue
+	 * @param accMode
+	 * @param result
+	 */
+	private void editCompanyID(Object itemValue, AcceptMode accMode, SpecialEditValue result) {
+		if(itemValue == null || itemValue == "") {
+			String columnName = "CID";
+			
+		}
+	}
 }

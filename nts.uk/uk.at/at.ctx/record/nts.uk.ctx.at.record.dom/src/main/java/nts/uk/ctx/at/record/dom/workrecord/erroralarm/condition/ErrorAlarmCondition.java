@@ -15,23 +15,22 @@ import javax.management.RuntimeErrorException;
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.shared.dom.alarmList.attendanceitem.AttendanceItemCondition;
-import nts.uk.ctx.at.shared.dom.alarmList.attendanceitem.CompareRange;
-import nts.uk.ctx.at.shared.dom.alarmList.attendanceitem.ErAlAttendanceItemCondition;
-import nts.uk.ctx.at.shared.dom.alarmList.attendanceitem.ErAlConditionsAttendanceItem;
-import nts.uk.ctx.at.shared.dom.alarmList.enums.TypeCheckWorkRecord;
-import nts.uk.ctx.at.shared.dom.alarmList.primitivevalue.ContinuousPeriod;
-import nts.uk.ctx.at.shared.dom.alarmList.primitivevalue.DisplayMessage;
-import nts.uk.ctx.at.shared.dom.alarmList.worktime.PlanActualWorkTime;
-import nts.uk.ctx.at.shared.dom.alarmList.worktime.SingleWorkTime;
-import nts.uk.ctx.at.shared.dom.alarmList.worktime.WorkTimeCondition;
-import nts.uk.ctx.at.shared.dom.alarmList.enums.WorkCheckResult;
-import nts.uk.ctx.at.shared.dom.alarmList.worktype.PlanActualWorkType;
-import nts.uk.ctx.at.shared.dom.alarmList.worktype.SingleWorkType;
-import nts.uk.ctx.at.shared.dom.alarmList.worktype.WorkTypeCondition;
-import nts.uk.ctx.at.shared.dom.alarmList.enums.FilterByCompare;
+import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.AttendanceItemCondition;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareRange;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.ErAlAttendanceItemCondition;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.ErAlConditionsAttendanceItem;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktime.PlanActualWorkTime;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktime.SingleWorkTime;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktime.WorkTimeCondition;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktype.PlanActualWorkType;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktype.SingleWorkType;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktype.WorkTypeCondition;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.FilterByCompare;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.TypeCheckWorkRecord;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ContinuousPeriod;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.DisplayMessage;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.snapshot.SnapShot;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**
@@ -292,13 +291,13 @@ public class ErrorAlarmCondition extends AggregateRoot {
 		this.continuousPeriod = new ContinuousPeriod(continuousPeriod);
 	}
 	
-	public boolean checkWith(WorkInfoOfDailyAttendance workInfo, Optional<SnapShot> snapshot,
-							 Function<List<Integer>, List<Double>> getValueFromItemIds){
+	public boolean checkWith(WorkInfoOfDailyPerformance workInfo, Optional<SnapShot> snapshot, 
+			Function<List<Integer>, List<Double>> getValueFromItemIds){
 		/** 勤務種類をチェックする */
 		// TODO: uncomment
 		// if (condition.getWorkTypeCondition().isUse() &&
 		// !condition.getWorkTypeCondition().checkWorkType(workInfo)) {
-		WorkCheckResult workTypeCheck = WorkCheckResult.NOT_CHECK;
+		WorkCheckResult  workTypeCheck = WorkCheckResult.NOT_CHECK;
 		if (this.workTypeCondition != null) {
 			workTypeCheck = this.workTypeCondition.checkWorkType(workInfo, snapshot);
 		}

@@ -7,7 +7,9 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -73,7 +75,8 @@ public class OiomtExAcpCategory extends UkJpaEntity implements Serializable {
 	@Column(name = "DELETE_FLG")
 	public int deleteFlg;
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "acpCategory", orphanRemoval = true)
+	@OneToMany(targetEntity = OiomtExAcpCategoryItem.class, cascade = CascadeType.ALL, mappedBy = "acpCategory", orphanRemoval = true, fetch = FetchType.LAZY)
+	@JoinTable(name = "OIOMT_EX_ACP_CATEGORY_ITEM")
 	public List<OiomtExAcpCategoryItem> acpCategoryItem;
 	
 	@Override

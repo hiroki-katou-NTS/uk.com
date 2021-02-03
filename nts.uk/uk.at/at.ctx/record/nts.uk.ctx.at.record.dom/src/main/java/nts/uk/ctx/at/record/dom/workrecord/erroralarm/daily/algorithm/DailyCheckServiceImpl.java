@@ -19,7 +19,8 @@ import nts.uk.ctx.at.record.dom.adapter.approvalrootstate.Request113Import;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck.DailyRecordCreateErrorAlermService;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmConditionRepository;
+import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmConditionRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.FixedConditionData;
@@ -27,11 +28,11 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.FixedConditionDataReposito
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.FixedConditionWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.FixedConditionWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
-import nts.uk.ctx.at.shared.dom.alarmList.enums.WorkCheckResult;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkCheckResult;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkRecordExtraConRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkRecordExtractingCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.daily.DailyCheckService;
-import nts.uk.ctx.at.shared.dom.alarmList.enums.TypeCheckWorkRecord;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.TypeCheckWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.StatusOfEmployeeAdapterAl;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.WorkPlaceHistImportAl;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.WorkPlaceIdAndPeriodImportAl;
@@ -235,6 +236,7 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 	 * 日次の固定抽出条件のデータを取得する
 	 * @param lstSid
 	 * @param dPeriod
+	 * @param fixedExtractConditionWorkRecord
 	 */
 	private DataFixExtracCon getDataForDailyFix(List<String> lstSid, DatePeriod dPeriod,  String errorDailyCheckId) {
 		
@@ -431,9 +433,10 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 				Optional<ErrorAlarmWorkRecord> errAlarmWk = listError.stream().filter(x -> x.getErrorAlarmCheckID()
 						.equals(alarmCon.getErrorAlarmCheckID())).findFirst();
 				
-				 // 勤務種類をチェックする
-				WorkCheckResult checkResult = alarmCon.getWorkTypeCondition().checkWorkType(integra.getWorkInformation(),
+				// 勤務種類をチェックする
+				WorkCheckResult checkResult = alarmCon.getWorkTypeCondition().checkWorkType(new WorkInfoOfDailyPerformance(integra.getEmployeeId(), integra.getYmd(), integra.getWorkInformation()), 
 																Optional.ofNullable(SnapShot.of(integra.getWorkInformation().getRecordInfo(), new AttendanceTime(0))));
+				
 				if(checkResult != WorkCheckResult.ERROR) {
 					
 					// 勤怠項目をチェックする
