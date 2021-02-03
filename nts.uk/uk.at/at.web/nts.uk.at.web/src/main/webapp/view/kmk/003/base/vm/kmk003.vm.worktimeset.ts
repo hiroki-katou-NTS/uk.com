@@ -151,7 +151,7 @@ module nts.uk.at.view.kmk003.a {
                         width: "30"
                     }));
                     self.siftNameOption = ko.observable(new nts.uk.ui.option.TextEditorOption({
-                        width: "100"
+                        width: "120"
                     }));
                     self.siftShortNameOption = ko.observable(new nts.uk.ui.option.TextEditorOption({
                         width: "60"
@@ -160,7 +160,7 @@ module nts.uk.at.view.kmk003.a {
                         width: "30"
                     }));
                     self.siftRemarkOption = ko.observable(new nts.uk.ui.option.TextEditorOption({
-                        width: "300"
+                        width: "272"
                     }));
                     self.memoOption = ko.observable(new nts.uk.ui.option.TextEditorOption({
                         width: "300"

@@ -83,7 +83,7 @@ module a3 {
         /**
         * Constructor.
         */
-        constructor(settingEnum: WorkTimeSettingEnumDto, mainSettingModel: MainSettingModel, isDetailMode: KnockoutComputed<boolean>,isNewMode: KnockoutComputed<boolean>, useHalfDayOverTime: KnockoutComputed<boolean>,lstOvertimeWorkFrame : any) {
+        constructor(settingEnum: WorkTimeSettingEnumDto, mainSettingModel: MainSettingModel, isDetailMode: KnockoutComputed<boolean>,isNewMode: KnockoutComputed<boolean>, useHalfDayOverTime: KnockoutObservable<boolean>,lstOvertimeWorkFrame : any) {
             let self = this;
             self.isNewMode = isNewMode;
             self.screenSettingMode = ko.observable(0);
@@ -588,7 +588,8 @@ module a3 {
             var mainSettingModel: MainSettingModel = input.mainModel;
             var isDetailMode:  KnockoutComputed<boolean> = input.isDetailMode;
             var isNewMode: KnockoutComputed<boolean> = input.isNewMode;
-            let screenModel = new ScreenModel(settingEnum, mainSettingModel, isDetailMode, isNewMode,input.overTimeWorkFrameOptions());
+            var useHalfDay: KnockoutObservable<boolean> = input.useHalfDayOvertime;
+            let screenModel = new ScreenModel(settingEnum, mainSettingModel, isDetailMode, isNewMode, useHalfDay,input.overTimeWorkFrameOptions());
             screenModel.startPage().done(() => {
                 $(element).load(webserviceLocator, function() {
                     ko.cleanNode($(element)[0]);

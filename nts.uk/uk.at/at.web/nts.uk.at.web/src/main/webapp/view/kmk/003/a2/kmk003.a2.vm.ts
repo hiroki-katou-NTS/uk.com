@@ -70,7 +70,6 @@ module a2 {
         isFlexMode: KnockoutComputed<boolean>;
         isFixedMode: KnockoutComputed<boolean>;
         isDiffTimeMode: KnockoutComputed<boolean>;
-       // isUseHalfDay: KnockoutObservable<boolean>;
 
         /**
         * Constructor.

@@ -204,9 +204,9 @@
 									enable: true
 									}">
 								</input>
-								<div class="label_header" data-bind="ntsFormLabel: {constraint: 'WorkTimeAbName'}">#{i18n.getText('KMK003_14')}
+								<div class="label_header workTimeAbName-label" data-bind="ntsFormLabel: {constraint: 'WorkTimeAbName'}">#{i18n.getText('KMK003_14')}
 								</div>
-								<input class="main-input" tabindex="13" data-bind="ntsTextEditor: {
+								<input class="main-input workTimeAbName-input" tabindex="13" data-bind="ntsTextEditor: {
 									name: '#[KMK003_14]',
 									value: workTimeDisplayName.workTimeAbName,
 									constraint: 'WorkTimeAbName',
@@ -235,7 +235,7 @@
 									columns: [
 									{ prop: 'localizedName', length: 10 }]}">
 								</div>
-								<div class="label_header" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_8')}
+								<div class="label_header label-worktime-method" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_8')}
 								</div>
 								<div id="cbb-worktime-method" tabindex="18"
 									data-bind="ntsComboBox: {
@@ -263,7 +263,7 @@
 									required: false,
 									enable: $parent.isJapanese()
 									}" />
-								<div class="label_memo label_header" data-bind="ntsFormLabel: {constraint: 'Memo'}">#{i18n.getText('KMK003_183')}
+								<div class="label_memo label_header label-memo-option" data-bind="ntsFormLabel: {constraint: 'Memo'}">#{i18n.getText('KMK003_183')}
 								</div>
 								<textarea tabindex="20" class="memo-field"
 									data-bind="ntsMultilineEditor: {
@@ -279,8 +279,8 @@
 							<table style="width: 885px;">
 								
 								<tr style="height: 50px;">
-									<td class="td-cell" width="300px">
-										<div tabindex="21" class="cf"
+									<td class="td-cell">
+										<div tabindex="21" class="cf" id="switch-tab-mode"
 											data-bind="ntsSwitchButton: {
 											name: '#[KMK003_207]',
 											options: tabModeOptions,
@@ -289,7 +289,10 @@
 											value: tabMode,
 											enable: isJapanese() }">
 										</div>
+
+										<button style="margin-left: 33px;" data-bind="ntsHelpButton: {textParams: ['KMK003_315', 'KMK003_316'], position: 'right center' }">?</button>
 									</td>
+
 
 								</tr>
 								<!-- panels -->
