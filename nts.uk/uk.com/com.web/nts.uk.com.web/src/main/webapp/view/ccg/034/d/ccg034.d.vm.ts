@@ -2,13 +2,12 @@
 
 module nts.uk.com.view.ccg034.d {
 
-  import copyFile = nts.uk.com.view.ccg034.share.model.copyFile;
-
   // URL API backend
   const API = {
     generateHtml: "sys/portal/createflowmenu/generateHtml",
     updateLayout: "sys/portal/createflowmenu/updateLayout",
-    getMenuList: "sys/portal/standardmenu/findByMenuAndWebMenu"
+    getMenuList: "sys/portal/standardmenu/findByMenuAndWebMenu",
+    copyFile: "sys/portal/createflowmenu/copyFile/{0}"
   };
 
   const KEY_DATA_PART_TYPE = 'data-part-type';
@@ -101,6 +100,7 @@ module nts.uk.com.view.ccg034.d {
         .mouseenter(() => vm.isMouseInsideLayout(true))
         .mouseleave(() => vm.isMouseInsideLayout(false))
         .mousedown((event) => {
+          $(".part-setting").filter((index, e) => $(e).css('display') === ('block')).removeAttr("style");
           // If layout in copy mode and mouse cursor is stay inside layout
           if (vm.isCopying() && vm.isMouseInsideLayout()) {
             // Stop copy mode
@@ -172,8 +172,12 @@ module nts.uk.com.view.ccg034.d {
       // FileAttachmentSettingDto
       for (const partDataDto of flowData.fileAttachmentData) {
         const newPartData = vm.createPartDataFromDtoFileAttachment(partDataDto);
-        // Set part data to layout
-        $partDOMs.push(vm.createDOMFromData(newPartData));
+        vm.$ajax("/shr/infra/file/storage/infor/" + newPartData.fileId)
+          .then(res => {
+            newPartData.fileName = res.originalName;
+            // Set part data to layout
+            $partDOMs.push(vm.createDOMFromData(newPartData));
+          })
       }
       // ImageSettingDto
       for (const partDataDto of flowData.imageData) {
@@ -226,6 +230,7 @@ module nts.uk.com.view.ccg034.d {
     private createDOMFromData(partData: PartDataModel): JQuery {
       const vm = this;
       let $newPartTemplate = null;
+      let isInside = false;
       switch (partData.partType) {
         case MenuPartType.PART_MENU:
           $newPartTemplate = $("<div>", { "class": CSS_CLASS_MENU_CREATION_ITEM_CONTAINER }).append($('<div>', { 'class': `${CSS_CLASS_MENU_CREATION_ITEM} part-menu` }));
@@ -249,17 +254,24 @@ module nts.uk.com.view.ccg034.d {
           $newPartTemplate = $("<div>", { "class": CSS_CLASS_MENU_CREATION_ITEM_CONTAINER }).append($('<div>', { 'class': `${CSS_CLASS_MENU_CREATION_ITEM} part-menu` }));
           break;
       }
-      const $newPart: JQuery = LayoutUtils.renderPartDOM($newPartTemplate, partData);
+      const $newPart: JQuery = LayoutUtils.renderPartDOM($newPartTemplate, partData)
+        .hover(
+          handlerIn => LayoutUtils.onPartHover($newPart, true),
+          handlerOut => LayoutUtils.onPartHover($newPart, false))
+        .on("mousedown", event => LayoutUtils.onPartClickSetting($newPart, isInside));
       // Render div setting
-      let isInside = false;
       const $partSetting: JQuery = $("<div>", { "class": 'part-setting' })
         .hover(
-          (handlerIn) => {
-            isInside = true;
-            console.log(isInside);
-          },
+          (handlerIn) => isInside = true,
           (handlerOut) => isInside = false)
-        .on("click", event => LayoutUtils.onPartClickSetting($newPart, isInside));
+        .on("click", event => {
+          event.stopPropagation();
+          // Ignore when clicked inside the popup option
+          if (event.target.classList.contains("part-setting-popup-option")) {
+            isInside = false;
+          }
+          LayoutUtils.onPartClickSetting($newPart, isInside);
+        });
       const $partSettingPopup: JQuery = $("<div>", { "class": 'part-setting-popup' })
         .css({ 'display': 'none' })
         .append($("<div>", { "class": CSS_CLASS_PART_SETTING_POPUP_OPTION, text: vm.$i18n('CCG034_150') })
@@ -689,7 +701,6 @@ module nts.uk.com.view.ccg034.d {
       }
       // Set part data to map
       vm.mapPartData[vm.partClientId] = newPartData;
-      vm.modifiedPartList.added.push(vm.partClientId);
       vm.partClientId++;
       // Re-calculate resolution
       vm.calculateResolution();
@@ -812,6 +823,7 @@ module nts.uk.com.view.ccg034.d {
         linkContent: dto.linkContent,
         fontSize: dto.fontSize,
         isBold: dto.bold === 1,
+        originalFileId: dto.fileId
       });
       // Set part data to map
       vm.mapPartData[vm.partClientId] = newPartData;
@@ -841,6 +853,7 @@ module nts.uk.com.view.ccg034.d {
         uploadedFileSize: null,
         isFixed: dto.isFixed,
         ratio: dto.ratio,
+        originalFileId: dto.fileId
       });
       // Set part data to map
       vm.mapPartData[vm.partClientId] = newPartData;
@@ -891,11 +904,23 @@ module nts.uk.com.view.ccg034.d {
           break;
         case MenuPartType.PART_ATTACHMENT:
           newPartData = new PartDataAttachmentModel(originPartData);
-          (newPartData as PartDataAttachmentModel).fileId = copyFile((originPartData as PartDataAttachmentModel).fileId);
+          vm.$ajax(nts.uk.text.format(API.copyFile, (originPartData as PartDataAttachmentModel).fileId))
+            .then(res => {
+              (newPartData as PartDataAttachmentModel).fileId = res.fileId;
+              (newPartData as PartDataAttachmentModel).originalFileId = null;
+              vm.modifiedPartList.added.push(res.fileId);
+            });
           break;
         case MenuPartType.PART_IMAGE:
           newPartData = new PartDataImageModel(originPartData);
-          (newPartData as PartDataImageModel).fileId = copyFile((originPartData as PartDataImageModel).fileId);
+          if ((originPartData as PartDataImageModel).isFixed === 1 && (originPartData as PartDataImageModel).fileId) {
+            vm.$ajax(nts.uk.text.format(API.copyFile, (originPartData as PartDataImageModel).fileId))
+              .then(res => {
+                (newPartData as PartDataImageModel).fileId = res.fileId;
+                (newPartData as PartDataImageModel).originalFileId = null;
+                vm.modifiedPartList.added.push(res.fileId);
+              });
+          }
           break;
         case MenuPartType.PART_ARROW:
           newPartData = new PartDataArrowModel(originPartData);
@@ -909,7 +934,6 @@ module nts.uk.com.view.ccg034.d {
       newPartData.positionTop = positionTop;
       newPartData.positionLeft = positionLeft;
       vm.mapPartData[vm.partClientId] = newPartData;
-      vm.modifiedPartList.added.push(vm.partClientId);
       vm.partClientId++;
       return newPartData;
     }
@@ -970,29 +994,51 @@ module nts.uk.com.view.ccg034.d {
           break;
         case MenuPartType.PART_ATTACHMENT:
           vm.$window.modal('/view/ccg/034/h/index.xhtml', selectedPartData)
-            .then((result: PartDataModel) => {
-              if (result) {
+            .then((result: any) => {
+              if (result.isSaving) {
+                const partAttachment = (result.partData as PartDataAttachmentModel);
+                // Only prepare for delete if has changes
+                if (!_.find(vm.modifiedPartList.added, partAttachment.fileId) && partAttachment.fileId !== partAttachment.originalFileId) {
+                  vm.modifiedPartList.added.push(partAttachment.fileId);
+                }
+                if (!_.find(vm.modifiedPartList.deleted, partAttachment.originalFileId) && partAttachment.fileId !== partAttachment.originalFileId) {
+                  vm.modifiedPartList.deleted.push(partAttachment.originalFileId);
+                }
                 // Update part data
-                vm.mapPartData[partClientId] = result;
+                vm.mapPartData[partClientId] = result.partData;
                 // Update part DOM
-                LayoutUtils.renderPartDOMAttachment($part, result as PartDataAttachmentModel);
-              } else if (isCreateDialog) {
-                // If this is dialog setitng when create => remove part
-                vm.removePart($part);
+                LayoutUtils.renderPartDOMAttachment($part, result.partData as PartDataAttachmentModel);
+              } else {
+                if (isCreateDialog) {
+                  // If this is dialog setitng when create => remove part
+                  vm.removePart($part);
+                }
+                vm.removeFile(result.fileId);
               }
             });
           break;
         case MenuPartType.PART_IMAGE:
           vm.$window.modal('/view/ccg/034/i/index.xhtml', selectedPartData)
-            .then((result: PartDataModel) => {
-              if (result) {
+            .then((result: any) => {
+              if (result.isSaving) {
+                const partImage = (result.partData as PartDataImageModel);
+                // Only prepare for delete if has changes
+                if (!_.find(vm.modifiedPartList.added, partImage.fileId) && partImage.fileId !== partImage.originalFileId) {
+                  vm.modifiedPartList.added.push(partImage.fileId);
+                }
+                if (!_.find(vm.modifiedPartList.deleted, partImage.originalFileId) && partImage.fileId !== partImage.originalFileId) {
+                  vm.modifiedPartList.deleted.push(partImage.originalFileId);
+                }
                 // Update part data
-                vm.mapPartData[partClientId] = result;
+                vm.mapPartData[partClientId] = result.partData;
                 // Update part DOM
-                LayoutUtils.renderPartDOMImage($part, result as PartDataImageModel);
-              } else if (isCreateDialog) {
-                // If this is dialog setitng when create => remove part
-                vm.removePart($part);
+                LayoutUtils.renderPartDOMImage($part, result.partData as PartDataImageModel);
+              } else {
+                if (isCreateDialog) {
+                  // If this is dialog setitng when create => remove part
+                  vm.removePart($part);
+                }
+                vm.removeFile(result.fileId);
               }
             });
           break;
@@ -1083,7 +1129,21 @@ module nts.uk.com.view.ccg034.d {
     private removePart($part: JQuery) {
       const vm = this;
       const partClientId = Number($part.attr(KEY_DATA_ITEM_CLIENT_ID));
-      vm.modifiedPartList.deleted.push(vm.mapPartData[partClientId]);
+      const partData: PartDataModel = vm.mapPartData[partClientId];
+      switch (partData.partType) {
+        case MenuPartType.PART_ATTACHMENT:
+        case MenuPartType.PART_IMAGE:
+          const part = partData as any;
+          // If newly added component -> delete immediately
+          // Or else will put to remove list
+          if (!part.originalFileId) {
+            vm.removeFile(part.fileId);
+          } else {
+            vm.modifiedPartList.deleted.push(part.fileId);
+            vm.modifiedPartList.deleted.push(part.originalFileId);
+          }
+          break;
+      }
       delete vm.mapPartData[partClientId];
       vm.$listPart = _.filter(vm.$listPart, ($item) => Number($item.attr(KEY_DATA_ITEM_CLIENT_ID)) !== partClientId);
       $part.remove();
@@ -1096,7 +1156,7 @@ module nts.uk.com.view.ccg034.d {
      */
     public closeDialog() {
       const vm = this;
-      _.forEach(vm.modifiedPartList.added, partClientId => vm.removeFile(vm.mapPartData[partClientId]));
+      _.forEach(_.uniq(vm.modifiedPartList.added), fileId => vm.removeFile(fileId));
       vm.$window.close();
     }
 
@@ -1130,7 +1190,7 @@ module nts.uk.com.view.ccg034.d {
       const listPartData: PartDataModel[] = [];
       const $layout: JQuery = $('<div>')
         .css({ 'width': CREATION_LAYOUT_WIDTH, 'height': CREATION_LAYOUT_HEIGHT });
-      _.forEach(vm.modifiedPartList.deleted, item => vm.removeFile(item));
+      _.forEach(_.uniq(vm.modifiedPartList.deleted), fileId => vm.removeFile(fileId));
       for (const partClientId in vm.mapPartData) {
         listPartData.push(vm.mapPartData[partClientId]);
         $layout.append(LayoutUtils.buildPartHTML(vm.mapPartData[partClientId]));
@@ -1256,6 +1316,7 @@ module nts.uk.com.view.ccg034.d {
         .then(() => {
           vm.$blockui('clear');
           vm.modifiedPartList = new ModifiedPartList();
+          vm.updateOriginalFileId();
           vm.$dialog.info({ messageId: 'Msg_15' });
         })
         .fail((err) => vm.$dialog.error({ messageId: err.messageId }))
@@ -1273,6 +1334,9 @@ module nts.uk.com.view.ccg034.d {
       htmlContent += ` xmlns:com="http://xmlns.jcp.org/jsf/component"`;
       htmlContent += ` xmlns:com="http://xmlns.jcp.org/jsf/html"`;
       htmlContent += `<head>`;
+      htmlContent += `<style>`;
+      htmlContent += `.ccg034-component-container { word-break: break-all; word-break: break-word; word-wrap: break-word }`;
+      htmlContent += `</style>`;
       htmlContent += `<link rel="stylesheet" type="text/css" href="/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/base.css">`;
       htmlContent += `</head>`;
       htmlContent += `<body>`;
@@ -1332,18 +1396,24 @@ module nts.uk.com.view.ccg034.d {
     /**
      * 変更前のファイルは削除
      */
-    private removeFile(partData: PartDataModel) {
-      if (partData) {
-        switch (partData.partType) {
+    private removeFile(fileId: string) {
+      if (!nts.uk.text.isNullOrEmpty(fileId)) {
+        (nts.uk.request as any).file.remove(fileId);
+      }
+    }
+
+    private updateOriginalFileId() {
+      const vm = this;
+      for (const partClientId in vm.mapPartData) {
+        const part: PartDataModel = vm.mapPartData[partClientId];
+        switch (part.partType) {
           case MenuPartType.PART_ATTACHMENT:
-            const attachmentPartData = partData as PartDataAttachmentModel;
-            (nts.uk.request as any).file.remove(attachmentPartData.fileId);
+            const attachmentPartData = part as PartDataAttachmentModel;
+            attachmentPartData.originalFileId = attachmentPartData.fileId;
             break;
           case MenuPartType.PART_IMAGE:
-            const imagePartData = partData as PartDataImageModel;
-            if (imagePartData.isFixed === 1) {
-              (nts.uk.request as any).file.remove(imagePartData.fileId);
-            }
+            const imagePartData = part as PartDataImageModel;
+            imagePartData.originalFileId = imagePartData.fileId;
             break;
         }
       }
@@ -1368,12 +1438,28 @@ module nts.uk.com.view.ccg034.d {
      * @param partClientId
      */
     static onPartClickSetting($part: JQuery, visible: boolean) {
+      const $partSetting: JQuery = $part.find('.part-setting');
       const $partSettingPopup: JQuery = $part.find('.part-setting-popup');
       if ($partSettingPopup) {
         if (visible) {
           $partSettingPopup.css('display', 'block');
+          $partSetting.css('display', 'block');
         } else {
           $partSettingPopup.css('display', 'none');
+        }
+      }
+    }
+
+    static onPartHover($part: JQuery, isHoverIn: boolean) {
+      const $partSetting: JQuery = $part.find('.part-setting');
+      const $partSettingPopup: JQuery = $part.find('.part-setting-popup');
+      if ($partSettingPopup.css("display") !== "none") {
+        $partSetting.css('style');
+      } else {
+        if (isHoverIn) {
+          $partSetting.css('display', 'block');
+        } else {
+          $partSetting.css('display', 'none');
         }
       }
     }
@@ -1530,6 +1616,7 @@ module nts.uk.com.view.ccg034.d {
      */
     static renderPartDOMAttachment($partContainer: JQuery, partData: PartDataAttachmentModel): JQuery {
       const vm = this;
+
       $partContainer
         // Set PartData attr
         .outerWidth(partData.width)
@@ -1554,7 +1641,7 @@ module nts.uk.com.view.ccg034.d {
         $fileContent = $("<span>", { 'class': 'part-file-content' });
       }
       $fileContent
-        .text(partData.linkContent)
+        .text(partData.linkContent || partData.fileName)
         .css({
           'font-size': partData.fontSize,
           'font-weight': partData.isBold ? 'bold' : 'normal',
@@ -1785,7 +1872,7 @@ module nts.uk.com.view.ccg034.d {
               'cursor': 'pointer',
             });
           $partHTML = $("<div>")
-            .attr('style', '-ms-word-break: break-all')
+            .addClass("ccg034-component-container")
             .css({
               'position': 'absolute',
               'top': `${partDataMenuModel.positionTop}px`,
@@ -1797,7 +1884,6 @@ module nts.uk.com.view.ccg034.d {
               'justify-content': LayoutUtils.getHorizontalClass(partDataMenuModel.alignHorizontal),
               'overflow': 'hidden',
               'text-overflow': 'ellipsis',
-              'word-break': 'break-word',
             })
             .append($partMenuHTML);
           break;
@@ -1812,7 +1898,7 @@ module nts.uk.com.view.ccg034.d {
               'white-space': 'pre-wrap',
             });
           $partHTML = $("<div>")
-            .attr('style', '-ms-word-break: break-all')
+            .addClass("ccg034-component-container")
             .css({
               'position': 'absolute',
               'top': `${partDataLabelModel.positionTop}px`,
@@ -1824,7 +1910,6 @@ module nts.uk.com.view.ccg034.d {
               'justify-content': LayoutUtils.getHorizontalClass(partDataLabelModel.alignHorizontal),
               'overflow': 'hidden',
               'text-overflow': 'ellipsis',
-              'word-break': 'break-word',
               'background-color': partDataLabelModel.backgroundColor,
             })
             .append($partLabelHTML);
@@ -1842,7 +1927,7 @@ module nts.uk.com.view.ccg034.d {
               'cursor': 'pointer',
             });
           $partHTML = $("<div>")
-            .attr('style', '-ms-word-break: break-all')
+            .addClass("ccg034-component-container")
             .css({
               'position': 'absolute',
               'top': `${partDataLinkModel.positionTop}px`,
@@ -1854,7 +1939,6 @@ module nts.uk.com.view.ccg034.d {
               'justify-content': LayoutUtils.getHorizontalClass(partDataLinkModel.alignHorizontal),
               'overflow': 'hidden',
               'text-overflow': 'ellipsis',
-              'word-break': 'break-word',
             })
             .append($partLinkHTML);
           break;
@@ -1872,7 +1956,7 @@ module nts.uk.com.view.ccg034.d {
               'cursor': 'pointer',
             });
           $partHTML = $("<div>")
-            .attr('style', '-ms-word-break: break-all')
+            .addClass("ccg034-component-container")
             .css({
               'position': 'absolute',
               'top': `${partDataAttachmentModel.positionTop}px`,
@@ -1884,7 +1968,6 @@ module nts.uk.com.view.ccg034.d {
               'justify-content': LayoutUtils.getHorizontalClass(partDataAttachmentModel.alignHorizontal),
               'overflow': 'hidden',
               'text-overflow': 'ellipsis',
-              'word-break': 'break-word',
             })
             .append($partAttachmentHTML);
           break;
@@ -1893,7 +1976,9 @@ module nts.uk.com.view.ccg034.d {
           const $partImageHTML: JQuery = $('<img>', {
             'src': partDataImageModel.isFixed === 0
               ? partDataImageModel.fileName
-              : (nts.uk.request as any).liveView(partDataImageModel.fileId)
+              : partDataImageModel.fileId
+                ? (nts.uk.request as any).liveView(partDataImageModel.fileId)
+                : null
           })
             .css({
               'width': (partDataImageModel.width > partDataImageModel.height) ? 'auto' : '100%',
@@ -2053,6 +2138,7 @@ module nts.uk.com.view.ccg034.d {
     fileLink: string = null;
     fontSize = 11;
     isBold: boolean = true;
+    originalFileId: string = null;
 
     constructor(init?: Partial<PartDataAttachmentModel>) {
       super(init);
@@ -2062,12 +2148,13 @@ module nts.uk.com.view.ccg034.d {
 
   export class PartDataImageModel extends PartDataModel {
     // Default data
-    fileId: string = '';
-    fileName: string = '';
-    uploadedFileName: string = '';
+    fileId: string = null;
+    fileName: string = null;
+    uploadedFileName: string = null;
     uploadedFileSize = 0;
     isFixed = 0;
     ratio = 1;
+    originalFileId: string = null;
 
     constructor(init?: Partial<PartDataImageModel>) {
       super(init);
@@ -2216,7 +2303,7 @@ module nts.uk.com.view.ccg034.d {
   }
 
   export class ModifiedPartList {
-    added?: number[] = [];
-    deleted?: PartDataModel[] = [];
+    added?: string[] = [];
+    deleted?: string[] = [];
   }
 }

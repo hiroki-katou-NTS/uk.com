@@ -56,6 +56,14 @@ module nts.uk.com.view.ccg008.a.Layout1ComponentViewModel {
             vm.lstHtml(mappedList);
             if (!_.isEmpty(res)) {
               vm.renderHTML(res[0].htmlContent);
+              // ddaay la voi void()
+              vm.$nextTick(() => {
+                if($('.contents_layout_ccg015')[0]) {
+                  _.each((document.getElementById("frameF1") as any ).contentDocument.getElementsByTagName("a"), link => {
+                    link.addEventListener('click', (event: Event) => event.preventDefault());
+                  })
+                }
+              });
             }
           });
         } else {
@@ -63,19 +71,42 @@ module nts.uk.com.view.ccg008.a.Layout1ComponentViewModel {
           vm.filePath(ntsFile.liveViewUrl(layout1[0].fileId, 'index.htm'));
           const ifr = document.getElementById('F2-frame');
           const width = ifr.scrollWidth;
-          const ifrParent = $('.contents_layout');
-          const height = ifrParent.innerHeight();
-          (ifr as any).width = `${width.toString()}px`;
-          (ifr as any).height = `${height.toString()}px`;
+          if($('.contents_layout_ccg015')[0]) {
+            const ifrParent = $('.contents_layout_ccg015');
+            const height = ifrParent.innerHeight();
+            (ifr as any).width = `${width.toString()}px`;
+            (ifr as any).height = `${height.toString()}px`;
+            $('#F2-frame').on('load', function(){
+              vm.$nextTick(() => {
+                _.each((document.getElementById("F2-frame") as any ).contentDocument.getElementsByTagName("a"), link => {
+                  link.removeAttribute('onclick');
+                  link.removeAttribute('href')
+                })
+              });
+            });
+          } else {
+            const ifrParent = $('.contents_layout');
+            const height = ifrParent.innerHeight();
+            (ifr as any).width = `${width.toString()}px`;
+            (ifr as any).height = `${height.toString()}px`;
+          }
         }
       }
     }
 
     mounted() {
+      const vm = this;
       const ifr = document.getElementById('preview-iframe1');
-      const ifrParent = $('.contents_layout');
+      let ifrParent: any;
+      if($('.contents_layout_ccg015')[0]) {
+        ifrParent = $('.contents_layout_ccg015');
+      } else {
+        ifrParent = $('.contents_layout');
+      }
       const height = ifrParent.innerHeight() - 10;
       (ifr as any).height = `${height.toString()}px`;
+
+      
     }
 
     private renderHTML(htmlSrc: string) {

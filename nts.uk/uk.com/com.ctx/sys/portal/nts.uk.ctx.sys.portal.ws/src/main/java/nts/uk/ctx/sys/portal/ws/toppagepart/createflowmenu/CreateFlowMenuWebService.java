@@ -27,10 +27,12 @@ import nts.uk.ctx.sys.portal.app.command.toppagepart.createflowmenu.UpdateCreate
 import nts.uk.ctx.sys.portal.app.command.toppagepart.createflowmenu.UpdateFlowMenuCommand;
 import nts.uk.ctx.sys.portal.app.command.toppagepart.createflowmenu.UpdateFlowMenuLayoutCommand;
 import nts.uk.ctx.sys.portal.app.command.toppagepart.createflowmenu.UpdateFlowMenuLayoutCommandHandler;
+import nts.uk.ctx.sys.portal.app.screenquery.topppagepart.createflowmenu.CopyFileResponseDto;
 import nts.uk.ctx.sys.portal.app.screenquery.topppagepart.createflowmenu.CreateFlowMenuDto;
 import nts.uk.ctx.sys.portal.app.screenquery.topppagepart.createflowmenu.ExtractionResponseDto;
 import nts.uk.ctx.sys.portal.app.screenquery.topppagepart.createflowmenu.GetFlowMenuListScreenQuery;
 import nts.uk.ctx.sys.portal.app.screenquery.topppagepart.createflowmenu.GetFlowMenuScreenQuery;
+import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.CreateFlowMenuFileService;
 
 @Path("sys/portal/createflowmenu")
 @Produces("application/json")
@@ -62,6 +64,9 @@ public class CreateFlowMenuWebService extends WebService {
 	
 	@Inject
 	private FileExportService exportService;
+	
+	@Inject
+	private CreateFlowMenuFileService createFlowMenuFileService;
 	
 	@POST
 	@Path("/getFlowMenu/{flowMenuCode}")
@@ -133,6 +138,12 @@ public class CreateFlowMenuWebService extends WebService {
 	@Path("/copyFile")
 	public CopyFileResultDto copyFile(CopyFileCommand command) {
 		return this.copyFileCommandHandler.handle(command);
+	}
+	
+	@POST
+	@Path("/copyFile/{fileId}")
+	public CopyFileResponseDto copyFile(@PathParam("fileId") String fileId) throws IOException {
+		return new CopyFileResponseDto(this.createFlowMenuFileService.copyFile(fileId));
 	}
 }
 

@@ -10,6 +10,9 @@
 .table {
 	margin: 10px;
 }
+#premium-set-tbl .table {
+	margin: auto;
+}
 
 .short-button {
 	width: 70px;
@@ -28,7 +31,7 @@ input, textarea {
 
 .caret-background {
 	width: 240px; 
-	height: 315px;
+	height: 325px;
 	margin-left: 10px;
 	margin-top: 10px;
 	padding: 15px;
@@ -54,60 +57,18 @@ input, textarea {
 }
 
 #memo {
-	width: 390px;
-	height: 100px;
+	width: 100%;
+	height: 85px;
+	margin-top: 10px;
 }
-#premium-set-div {
-	outline-style: solid;
-	outline-color: #999999;
-	outline-width: 1px;
-	width: 860px;
-	height: 360px;
-}
-#premium-set-tbl {
-	outline-style: solid;
-	outline-color: #999999;
-	outline-width: 1px;
-}
-#premium-set-tbl th:NTH-CHILD(2),
-#premium-set-tbl td:NTH-CHILD(2) {
-	border-left: 1px solid #999999;
-	border-right: 1px solid #999999;
-}
-#premium-set-tbl thead tr {
-	height: 30px;
-}
-#premium-set-tbl tbody tr {
-	height: 33px;
-	border-top: 1px solid #999999;
-}
-#premium-set-tbl td,
-#premium-set-tbl th { 
-	padding-left: 5px;
-	padding-right: 5px;
-}
-#premium-set-tbl td:NTH-CHILD(2) {
-	padding-left: 10px;
-	padding-right: 0px;
-}
-#premium-set-tbl th { 
-	background-color: #C7F391;
-}
+
 #premium-set-tbl tbody tr td:FIRST-CHILD { 
 	background-color: #EDFAC2;
 }
-#premium-set-tbl th:FIRST-CHILD, 
-#premium-set-tbl td:FIRST-CHILD {
-	min-width: 270px;
-	max-width: 270px;
-}
-#premium-set-tbl th:NTH-CHILD(2), 
-#premium-set-tbl td:NTH-CHILD(2) {
-	width: 100px;
-}
-#premium-set-tbl th:LAST-CHILD, 
-#premium-set-tbl td:LAST-CHILD {
-	width: 480px;
+
+#premium-set-tbl td.percent-100 span {
+	margin-right: 10px;
+	display: inline-block;
 }
 .notUse {
 	display: none;
@@ -164,5 +125,87 @@ input, textarea {
 	padding-left: 10px;
 } 
 #combo-box {
-	width: 132px;
+	width: 100px;
+}
+
+.cell-help-button {
+	padding-left: 15px;
+}
+#premium-set-div {
+	padding-bottom: 30px;
+}
+.two-columns {
+	max-width: 900px;
+	width: 100%;
+}
+.two-columns .cell {
+	vertical-align: top;
+}
+.two-columns .cell-column-1 {
+	width: 70%;
+}
+.two-columns .table {
+	margin-left: 0;
+	width: 100%;
+}
+.two-columns .cell-column-2 .nts-editor-wrapped {	
+	width: calc(100% - 20px);
+}
+.three-columns .cell {
+	width: auto;
+	vertical-align: top;
+	padding-right: 15px;
+}
+.three-columns .cell.column1 {
+	width: 18%;
+	max-width: 160px;
+}
+.three-columns .cell.column2 {
+	width: 22%;
+}
+.three-columns .column3 {
+	width: 37%;
+	text-align: left;
+}
+.three-columns .column3 .cell:first-child {
+	width: 45%;
+	padding-right: 15px;
+}
+.three-columns .column2 .radio-wrapper {
+	margin-top: 7px;
+}
+.three-columns .column2 .radio-wrapper .ntsRadioBox {
+	margin-bottom: 5px;
+}
+
+.d-flex {
+	display: flex;
+	align-items: center;
+}
+.d-flex .combo-box {
+	margin-left: 15px;
+	width: 110px;
+}
+.d-flex .combo-box1 {
+	margin-left: 15px;
+	width: 170px;
+}
+
+.d-flex.control-group {
+	margin-top: 10px;
+}
+.control-group .d-flex {
+	margin-right: 15px;
+}
+.combo-box-a5-10 {
+	width: 94px;
+	margin-top: 3px;
+}
+td.valign-right {
+	text-align: right;
+	padding-right: 5px;
+}
+
+td input.premiumInput {
+	margin-left: 5px;
 }

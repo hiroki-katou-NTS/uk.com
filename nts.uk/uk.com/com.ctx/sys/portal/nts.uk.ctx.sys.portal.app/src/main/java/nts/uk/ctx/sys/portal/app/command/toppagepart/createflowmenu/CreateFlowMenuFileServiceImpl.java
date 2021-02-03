@@ -43,7 +43,7 @@ public class CreateFlowMenuFileServiceImpl implements CreateFlowMenuFileService 
 			File file = Paths.get(DATA_STORE_PATH + "//" + fileId).toFile();
 			File newFile = new File(DATA_STORE_PATH + "//" + newFileId);
 			newFile.createNewFile();
-			FileUtils.copyFile(file, newFile, true);
+			FileUtils.copyFile(file, newFile, false);
 			// Persist
 			this.storedFileInfoRepository.add(newFileInfo);
 			return newFileId;

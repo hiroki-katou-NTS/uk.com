@@ -14,38 +14,15 @@ module nts.uk.at.view.ktg027.a.Ktg027ComponentViewModel {
     padding-left: 5px;
     width: 445x;
     height: 450px;
-    border: 1px solid #B1B1B1;
+    border: 1px groove;
+    overflow: auto;
   }
   #ktg027-contents-area::before {
     display: inline-block;
     height: 450px;
   }
-  .addSign {
-    background: url("../image/addSign.png");
-    margin: -8px 10px;
-    border-radius: 5px;
-    height: 125px;
-    text-align: center;
-    padding-bottom: 5px;
-    background-position: center;
-    background-repeat: no-repeat;
-  }
-  .sub {
-    margin: 10px;
-    border-radius: 5px;
-    height: 28px;
-    text-align: center;
-    word-wrap: break-word;
-  }
   .row-inline{
     display: inline-flex;
-  }
-  .custom-panel {
-    width: 115px;
-    height: 115px;
-    margin: 5px;
-    text-align: center;
-    word-wrap: break-word;
   }
   .grid {
     display: flex;
@@ -57,7 +34,7 @@ module nts.uk.at.view.ktg027.a.Ktg027ComponentViewModel {
     font-size: 1.5rem;
     font-weight: bold;
   }
-  .title-border {
+  .ktg027-title-border {
     padding: 10px;
     border-left: 5px solid #48b5cb;
     border-top: 1px groove;
@@ -97,7 +74,7 @@ module nts.uk.at.view.ktg027.a.Ktg027ComponentViewModel {
     height: 270px;
     margin-bottom: 20px;
   }
-  .scroll thead th {
+  .ktg027scroll thead th {
     position: sticky;
     top: 0;
     background: white;
@@ -108,11 +85,11 @@ module nts.uk.at.view.ktg027.a.Ktg027ComponentViewModel {
   .right {
     float: right;
   }
-  .flex100 {
+  .ktg027-flex100 {
     display: flex;
     width: 100%;
   }
-  .flex {
+  .ktg027-flex {
     display: flex;
     height: 60px;
   }
@@ -176,45 +153,52 @@ module nts.uk.at.view.ktg027.a.Ktg027ComponentViewModel {
   }
   a:hover, a:active {
    color:forestgreen;
-  }`;
+  }
+  .width133 {
+    width: 133px;
+  }
+  .width50 {
+    width: 50%;
+  }
+  `;
 
   @component({
     name: "ktg027-component",
-    template: `<div id="ktg027-contents-area">
-    <div class="title-border">
-      <!-- A1_1 -->
-      <label class="big-text" data-bind="i18n: 'KTG027_5'"></label>
-    </div>
-    <table class="flex">
-      <tbody class="flex100">
-        <tr class="flex100">
-          <td class="p-10 left40">
-            <!-- A1_2 -->
-            <div data-bind="ntsDatePicker: {
-              value: year,
-              dateFormat: 'yearmonth',
-              valueFormat: 'YYYYMM',
-              showJumpButtons: true
-            }"></div>
-          </td>
-          <td class="block p-10" style="width: 50%">
-            <div class="right">
-              <!-- A1_3 -->
-              <label class="grid non-statutory-color" data-bind="i18n: 'KTG027_2'"></label>
-              <!-- A1_4 -->
-              <label class="grid time-outside-color" data-bind="i18n: 'KTG027_3'"></label>
-            </div>
-          </td>
-        </tr>
-    </tbody>
-    </table>
-    <div id="table" style="height: 290px;">
+    template: `
+    <div id="ktg027-contents-area">
+      <div class="ktg027-title-border">
+        <!-- A1_1 -->
+        <label class="big-text" data-bind="i18n: 'KTG027_5'"></label>
+      </div>
+      <table class="ktg027-flex">
+        <tbody class="ktg027-flex100">
+          <tr class="ktg027-flex100">
+            <td class="p-10 left40">
+              <!-- A1_2 -->
+              <div data-bind="ntsDatePicker: {
+                value: year,
+                dateFormat: 'yearmonth',
+                valueFormat: 'YYYYMM',
+                showJumpButtons: true
+              }"></div>
+            </td>
+            <td class="block p-10 width50">
+              <div class="right">
+                <!-- A1_3 -->
+                <label class="grid non-statutory-color" data-bind="i18n: 'KTG027_2'"></label>
+                <!-- A1_4 -->
+                <label class="grid time-outside-color" data-bind="i18n: 'KTG027_3'"></label>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
       <!-- A3 -->
       <table class="block pl-10 scroll">
         <thead>
           <tr>
             <!-- A2_1 -->
-            <th style="width: 133px;" data-bind="i18n: 'Com_Person'">}/th>
+            <th class="width133" data-bind="i18n: 'Com_Person'">}/th>
             <!-- A2_2 -->
             <th data-bind="i18n: 'KTG027_4'"></th>
             <th class="w-200">
@@ -247,7 +231,6 @@ module nts.uk.at.view.ktg027.a.Ktg027ComponentViewModel {
           </tr>
         </tbody>
       </table>  
-    </div>
   </div>
   <style>${KTG_027_Style}</style>`
   })
