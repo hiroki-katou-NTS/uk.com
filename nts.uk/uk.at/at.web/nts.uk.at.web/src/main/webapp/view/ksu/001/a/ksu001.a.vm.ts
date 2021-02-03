@@ -1560,7 +1560,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xdet", 3));
                         } else {
                             // ver1.8
-                            if (_.isNil(cell.workTimeName) || cell.workTimeName == '' || cell.workHolidayCls == 0) {
+                            if (cell.workHolidayCls == 0 || _.isNil(cell.workTimeCode) || cell.workTimeCode == '' ) {
                                 let obj = new TimeDisable(rowId, '_' + ymd);
                                 self.listTimeDisable.push(obj);
                             }
