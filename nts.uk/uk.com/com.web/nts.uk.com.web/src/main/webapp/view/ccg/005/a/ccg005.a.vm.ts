@@ -125,7 +125,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
               </td>
               <td class="ccg005-w100 ccg005-pl-5 ccg005-border-groove ccg005-right-unset">
                 <!-- A4_8 -->
-                <label style="display: inline-block;" data-bind="text: businessName"/>
+                <label class="limited-label" data-bind="text: businessName"/>
                 <!-- A4_5 -->
                 <div>
                   <i data-bind="ntsIcon: {no: $component.emoji(), width: 20, height: 15}"></i>
@@ -134,7 +134,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
               <td class="ccg005-w100 ccg005-pl-5 ccg005-border-groove ccg005-right-unset ccg005-left-unset">
                 <div>
                   <!-- A4_2 -->
-                  <label data-bind="text: attendanceDetailDto.workName"/>
+                  <label class="limited-label" data-bind="text: attendanceDetailDto.workName"/>
                   <!-- A4_4 -->
                   <i data-bind="ntsIcon: {no: 190, width: 13, height: 13}"></i>
                 </div>
@@ -151,9 +151,11 @@ module nts.uk.at.view.ccg005.a.screenModel {
               </td>
               <td class="ccg005-pl-5 ccg005-border-groove ccg005-left-unset">
                 <!-- A4_6 time -->
-                <p data-bind="text: goOutDto.goOutPeriod"/>
-                <!-- A4_6 text -->
-                <p class="limited-label" data-bind="text: goOutDto.goOutReason"/>
+                <p data-bind="text: goOutDto.goOutPeriod, visible: $component.goOutDisplay()"/>
+                <!-- A4_6 text go out reason -->
+                <p class="limited-label" data-bind="text: goOutDto.goOutReason, visible: $component.goOutDisplay()"/>
+                <!-- A4_6 text comment -->
+                <p class="limited-label" data-bind="text: commentDto.comment, visible: $component.commentDisplay()"/>
               </td>
             </tr>
 
@@ -362,10 +364,12 @@ module nts.uk.at.view.ccg005.a.screenModel {
       ]
     };
     contentSelections: KnockoutObservableArray<any> = ko.observableArray([
-      { code: '1', name: this.$i18n('CCG005_37') },
-      { code: '2', name: this.$i18n('CCG005_38') }
+      { code: 0, name: this.$i18n('CCG005_37') },
+      { code: 1, name: this.$i18n('CCG005_38') }
     ]);
-    contentSelected: KnockoutObservable<any> = ko.observable(1);
+    contentSelected: KnockoutObservable<number> = ko.observable(0);
+    commentDisplay: KnockoutObservable<boolean> = ko.computed(() => this.contentSelected() === 0);
+    goOutDisplay: KnockoutObservable<boolean> = ko.computed(() => this.contentSelected() === 1);
     favoriteInputDate: KnockoutObservable<any> = ko.observable('');
     searchValue: KnockoutObservable<string> = ko.observable('');
     label3_2: KnockoutObservable<string> = ko.observable('label3_2');
@@ -507,6 +511,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
     }
 
     private getAttendanceDetailViewModel(attendanceDetailDto: any): AttendanceDetailViewModel {
+      const vm = this;
       let checkInCheckOutTime = "";
       if (attendanceDetailDto.checkInTime === null && attendanceDetailDto.checkOutTime === null) {
         checkInCheckOutTime = (attendanceDetailDto.checkInTime + " - " + attendanceDetailDto.checkOutTime);
@@ -528,20 +533,25 @@ module nts.uk.at.view.ccg005.a.screenModel {
     }
 
     private getGoOutViewModel(goOutDto: object.GoOutEmployeeInformationDto): GoOutEmployeeInformationViewModel {
+      const vm = this;
       let period = "";
       if (goOutDto.goOutTime && goOutDto.comebackTime) {
-        period = String(goOutDto.goOutTime + " - " + goOutDto.comebackTime);
+        period = vm.covertNumberToTime(goOutDto.goOutTime) + " - " + vm.covertNumberToTime(goOutDto.comebackTime);
       }
       if (goOutDto.goOutTime && !goOutDto.comebackTime) {
-        period = String(goOutDto.goOutTime);
+        period = vm.covertNumberToTime(goOutDto.goOutTime);
       } 
       if (!goOutDto.goOutTime && goOutDto.comebackTime) {
-        period = String(goOutDto.comebackTime);
+        period = vm.covertNumberToTime(goOutDto.comebackTime);
       } 
       return new GoOutEmployeeInformationViewModel({
         goOutReason: goOutDto.goOutReason,
         goOutPeriod: period
       });
+    }
+
+    private covertNumberToTime(time: number): string {
+      return moment.utc(moment.duration(time, "m").asMilliseconds()).format("HH:mm");
     }
 
     private initResizeable(vm: any) {
@@ -914,14 +924,14 @@ module nts.uk.at.view.ccg005.a.screenModel {
   }
 
   class AttendanceInformationViewModel {
-    applicationDtos: any[];                                 //申請
-    sid: string;                                            //社員ID
-    attendanceDetailDto: AttendanceDetailViewModel;                               //詳細出退勤
-    avatarDto: object.UserAvatarDto;                               //個人の顔写真
-    activityStatusDto: number;                              //在席のステータス
-    commentDto: any;                                        //社員のコメント情報
-    goOutDto: GoOutEmployeeInformationViewModel;                  //社員の外出情報
-    emojiDto: object.EmployeeEmojiStateDto;                    //社員の感情状態
+    applicationDtos: any[];          
+    sid: string;                  
+    attendanceDetailDto: AttendanceDetailViewModel;      
+    avatarDto: object.UserAvatarDto;              
+    activityStatusDto: number;                     
+    commentDto: any;                                  
+    goOutDto: GoOutEmployeeInformationViewModel;       
+    emojiDto: object.EmployeeEmojiStateDto;               
     businessName: string;
 
     constructor(init?: Partial<AttendanceInformationViewModel>) {
