@@ -16,7 +16,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
 
   @component({
     name: 'ccg005-component',
-    template: `<div style="display: flex; position: relative; overflow-x: hidden; overflow-y: auto; height: 460px" id="ccg005-watching">
+    template: `<div style="display: flex; position: relative; overflow-x: hidden; overflow-y: auto; height: 440px" id="ccg005-watching">
     <div id="ccg005-content">
       <div style="margin: 0 10px;">
         <div class="grade-header-top">
@@ -59,7 +59,8 @@ module nts.uk.at.view.ccg005.a.screenModel {
               </td>
               <td>
                 <!-- A1_7 -->
-                <i class="ccg005-status-img-A1_7" data-bind="ntsIcon: {no: $component.activityStatusIcon(), width: 20, height: 20}"></i>
+                <i class="ccg005-status-img-A1_7" data-bind="ntsIcon: { no: $component.activityStatusIcon(), width: 20, height: 20 }, visible: $component.isBaseDate"></i>
+                <i data-bind="ntsIcon: { no: 191, width: 20, height: 20 }, visible: $component.isDiffBaseDate"></i>
               </td>
             </tr>
           </table>
@@ -111,12 +112,12 @@ module nts.uk.at.view.ccg005.a.screenModel {
           </table>
         </div>
         <!-- A5 -->
-        <div class="grade-body-bottom" style="min-height: 55px; height: 275px;">
+        <div class="grade-body-bottom" style="min-height: 55px; height: 255px;">
           <table style="width: 100%; border-collapse: separate; border-spacing: 0 5px">
             
 
 
-            <tr style="background-color: yellow; height: 50px;">
+            <tr style="background-color: yellow; height: 45px;">
               <td style="padding-right: 5px; width: 30px; background-color: white;">
                 <!-- A4_1 -->
                 <img style="border-radius: 50%; border: 1px groove;" width="30px" height="30px" src="${__viewContext.rootPath}/view/ccg/005/a/header.png"/>
@@ -158,11 +159,11 @@ module nts.uk.at.view.ccg005.a.screenModel {
 
           </table>
         </div>
-        <div class="grade-bottom ccg005-flex" style="width: 100%; align-items: center; position: relative; margin-top: 10px; margin-bottom: 10px;">
+        <div class="grade-bottom ccg005-flex" style="width: 100%; align-items: center; position: relative; margin-top: 5px; margin-bottom: 10px;">
           <table style="width: 100%;">
             <tr>
               <td>
-                <div class="ccg005-pagination ccg005-flex" style="align-items: center;">
+                <div class="ccg005-pagination ccg005-flex">
                   <!-- A5_1 -->
                   <i class="ccg005-pagination-btn" data-bind="ntsIcon: {no: 193, width: 15, height: 20}, click: $component.previousPage"></i>
                   <!-- A5_2 -->
@@ -174,7 +175,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
               <td style="width: 100%">
                 <div class="ccg005-switch-btn" style="float: right;">
                   <!-- A5_4 -->
-                  <div class="cf" data-bind="ntsSwitchButton: {
+                  <div class="cf ccg005-switch" data-bind="ntsSwitchButton: {
                     options: contentSelections,
                     optionsValue: 'code',
                     optionsText: 'name',
@@ -212,7 +213,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
           <tr>
             <td style="padding-top: 10px;">
               <!-- A3_2.3 -->
-              <button data-bind="i18n: 'CCG005_32'"></button>
+              <button data-bind="i18n: 'CCG005_32', click: $component.openCDL008"></button>
               <!-- A3_2.4 -->
               <span data-bind="text: label3_2"></span>
             </td>
@@ -222,7 +223,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       <!-- A1_7 & A4_7 Popup -->
       <div id="ccg005-status-popup">
         <table>
-          <tr>
+          <tr data-bind="click: $component.registerAttendanceStatus">
             <td>
               <i data-bind="visible: $component.visibleNotPresent(), ntsIcon: {no: 78, width: 15, height: 25}"></i>
             </td>
@@ -345,6 +346,9 @@ module nts.uk.at.view.ccg005.a.screenModel {
       width: 40px;
       height: 40px;
     }
+    .ccg005-switch > .nts-switch-button {
+      width: 80px;
+    }
   </style>`
   })
   export class ViewModel extends ko.ViewModel {
@@ -404,7 +408,8 @@ module nts.uk.at.view.ccg005.a.screenModel {
     listPersonalInfo: KnockoutObservableArray<any> = ko.observableArray([]);
 
     //data for screen E
-    goOutParams: KnockoutObservable<goOutParam> = ko.observable();
+    goOutParams: KnockoutObservable<GoOutParam> = ko.observable();
+    isDiffBaseDate: KnockoutComputed<boolean> = ko.computed(() => !this.isBaseDate());
 
     created() {
       const vm = this;
@@ -415,7 +420,9 @@ module nts.uk.at.view.ccg005.a.screenModel {
     mounted() {
       const vm = this;
       $('#ccg005-legends').click(() => {
+        $('.nts-legendbutton-panel').css('padding', '5px 10px');
         $('.legend-item-symbol').first().css('border', '1px groove');
+        $('.legend-item').css('margin-bottom', '5px');
       });
       vm.initResizeable(vm);
       vm.initPopupArea();
@@ -437,8 +444,6 @@ module nts.uk.at.view.ccg005.a.screenModel {
         vm.isSameOrBeforeBaseDate(selectedDate.isSameOrBefore(baseDate));
         vm.isBaseDate(selectedDate.isSame(baseDate));
         // パラメータ「在席情報を取得」
-        const listSid = _.map(vm.attendanceInformationDtos(), item => item.sid);
-        const listPid = _.map(vm.listPersonalInfo(), item => item.personalId);
         const empIds = _.map(vm.attendanceInformationDtos(), atd => {
           return {
             sid: atd.sid,
@@ -488,7 +493,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
           - $('.grade-bottom').height()
           - 40;
         if (subHeight >= 53) {
-          vm.perPage(_.floor(subHeight/53));
+          vm.perPage(_.floor(subHeight/48));
         }
         $('.grade-body-bottom').height(subHeight);
       });
@@ -511,7 +516,6 @@ module nts.uk.at.view.ccg005.a.screenModel {
     }
 
     initFocusA1_4() {
-      const vm = this;
       $('.CCG005-A1_4-border')
         .focusin(() => $('.ccg005-clearbtn').css('visibility', 'visible'))
         .focusout(() => $('.ccg005-clearbtn').css('visibility', 'hidden'));
@@ -529,6 +533,9 @@ module nts.uk.at.view.ccg005.a.screenModel {
       });
       _.forEach($('.ccg005-status-img'), (element, index) => {
         $(element).click(() => {
+          if (!vm.isBaseDate()) {
+            return;
+          }
           $('#ccg005-status-popup').ntsPopup({
             position: { my: 'left top', at: 'right top', of: $(element) },
             showOnStart: false,
@@ -539,7 +546,10 @@ module nts.uk.at.view.ccg005.a.screenModel {
         });
       });
       $('.ccg005-status-img-A1_7').click(() => {
-        vm.goOutParams(new goOutParam({
+        if (!vm.isBaseDate()) {
+          return;
+        }
+        vm.goOutParams(new GoOutParam({
           sid: __viewContext.user.employeeId,
           businessName: vm.businessName(),
           goOutDate: moment.utc().format("YYYY/MM/DD")
@@ -572,14 +582,20 @@ module nts.uk.at.view.ccg005.a.screenModel {
 
     openScreenCCG005B() {
       const vm = this;
-      vm.$window.modal('/view/ccg/005/b/index.xhtml', {});
+      vm.$window.modal('/view/ccg/005/b/index.xhtml');
     }
 
+    /**
+     * A3_2.1をクリックする（お気に入りダイアログを起動する）
+     */
     openScreenCCG005D() {
       const vm = this;
-      vm.$window.modal('/view/ccg/005/d/index.xhtml', {});
+      vm.$window.modal('/view/ccg/005/d/index.xhtml');
     }
 
+    /**
+     * A1_7.3をクリックする　OR　外出アイコンをクリックする（外出入力ダイアログを起動する）
+     */
     openScreenCCG005E() {
       const vm = this;
       vm.$window.modal('/view/ccg/005/e/index.xhtml', vm.goOutParams());
@@ -720,41 +736,29 @@ module nts.uk.at.view.ccg005.a.screenModel {
     }
 
     /**
-     * A3_2.1をクリックする（お気に入りダイアログを起動する）
-     */
-    openFavoriteDialog() {
-
-    }
-
-    /**
-     * A1_7.3をクリックする　OR　外出アイコンをクリックする（外出入力ダイアログを起動する）
-     */
-    startOutingDialog() {
-
-    }
-
-    /**
      * A3_2.3職場選択ボタンをクリックする　（職場：CDL008へ）
      */
     openCDL008() {
       const vm = this;
       const inputCDL008: any = {
-        startMode: object.StartMode.WORKPLACE,
+        startMode: StartMode.WORKPLACE,
         isMultiple: true,
         showNoSelection: false,
         selectedCodes: vm.workplaceFromCDL008(),
         isShowBaseDate: true,
         baseDate: moment.utc().toISOString(),
-        selectedSystemType: object.SystemType.EMPLOYMENT,
+        selectedSystemType: SystemType.EMPLOYMENT,
         isrestrictionOfReferenceRange: false
       };
       setShared('inputCDL008', inputCDL008);
       
-      vm.$window.modal('com', '/view/cdl/008/a/index.xhtml').then(() => {
+      vm.$window.modal('/view/cdl/008/a/index.xhtml').then(() => {
         if (getShared('CDL008Cancel')) {
           setShared('CDL008Cancel', null);
           return;
         }
+        、
+        const workplaceInfor = getShared('workplaceInfor');
         // 職場を選択する時
         vm.workplaceFromCDL008(getShared('outputCDL008'));
         const param: DisplayInfoAfterSelectParam = new DisplayInfoAfterSelectParam({
@@ -762,18 +766,40 @@ module nts.uk.at.view.ccg005.a.screenModel {
           emojiUsage: vm.emojiUsage(),
           wkspIds: vm.workplaceFromCDL008()
         });
+        vm.$blockui('show');
         vm.$ajax('com', API.getDisplayInfoAfterSelect, param).then((res: object.DisplayInformationDto) => {
-
-        });
+          if (!res) {
+            return;
+          }
+          vm.attendanceInformationDtos(res.attendanceInformationDtos);
+          vm.listPersonalInfo(res.listPersonalInfo);
+        }).always(() => vm.$blockui('clear'));
       });
     }
 
     /**
      * 在席のステータスを登録する
      */
-    registerAttendanceStatus() {
+    registerAttendanceStatus(selectedStatus: number, sid?: string) {
+      if (!!sid) {
+        sid = __viewContext.user.employeeId;
+      }
+
 
     }
+  }
+
+  enum StartMode {
+    WORKPLACE = 0,
+    DEPARTMENT = 1
+  }
+
+  enum SystemType {
+    PERSONAL_INFORMATION = 1,
+    EMPLOYMENT = 2,
+    SALARY = 3,
+    HUMAN_RESOURCES = 4,
+    ADMINISTRATOR = 5
   }
 
   enum EmojiType {
@@ -832,17 +858,12 @@ module nts.uk.at.view.ccg005.a.screenModel {
     }
   }
 
-  export class goOutParam {
-    //社員ID	
+  class GoOutParam {
     sid: string;
-
-    //ビジネスネーム		
     businessName: string;
-
-    //年月日		
     goOutDate: string;
 
-    constructor(init?: Partial<goOutParam>) {
+    constructor(init?: Partial<GoOutParam>) {
       $.extend(this, init);
     }
   }

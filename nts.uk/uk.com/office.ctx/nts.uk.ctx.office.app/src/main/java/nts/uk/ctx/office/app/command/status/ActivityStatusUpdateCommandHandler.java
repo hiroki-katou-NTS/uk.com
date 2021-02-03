@@ -20,7 +20,7 @@ import nts.uk.ctx.office.dom.status.ActivityStatusRepository;
 public class ActivityStatusUpdateCommandHandler extends CommandHandler<ActivityStatusCommand> {
 
 	@Inject
-	ActivityStatusRepository activityStatusRepository;
+	private ActivityStatusRepository activityStatusRepository;
 
 	@Override
 	protected void handle(CommandHandlerContext<ActivityStatusCommand> context) {
