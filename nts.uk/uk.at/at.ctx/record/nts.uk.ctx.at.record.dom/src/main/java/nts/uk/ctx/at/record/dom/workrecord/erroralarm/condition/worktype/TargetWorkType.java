@@ -1,7 +1,7 @@
 /**
  * 4:08:38 PM Nov 3, 2017
  */
-package nts.uk.ctx.at.shared.dom.alarmList.extractionResult.worktype;
+package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktype;
 
 import java.util.List;
 import java.util.stream.Collectors;

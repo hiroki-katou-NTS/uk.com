@@ -12,7 +12,7 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.enums.WorkCheckResult;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkCheckResult;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.LogicalOperator;
 
 /**

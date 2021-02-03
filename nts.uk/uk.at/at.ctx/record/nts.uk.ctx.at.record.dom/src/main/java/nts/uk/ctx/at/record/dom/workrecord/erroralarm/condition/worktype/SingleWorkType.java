@@ -1,7 +1,7 @@
 /**
  * 6:48:51 PM Nov 6, 2017
  */
-package nts.uk.ctx.at.shared.dom.alarmList.extractionResult.worktype;
+package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktype;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -9,8 +9,8 @@ import java.util.Optional;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.enums.WorkCheckResult;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.enums.FilterByCompare;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkCheckResult;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.FilterByCompare;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.snapshot.SnapShot;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 

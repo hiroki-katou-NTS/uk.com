@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.alarmList.extractionResult.enums;
+package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition;
 
 public enum WorkCheckResult {
 
