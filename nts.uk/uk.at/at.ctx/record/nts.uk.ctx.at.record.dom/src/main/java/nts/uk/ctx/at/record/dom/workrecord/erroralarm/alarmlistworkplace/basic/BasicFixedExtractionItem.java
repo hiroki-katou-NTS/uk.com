@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ColorCode;
-import nts.uk.ctx.at.shared.dom.alarmList.primitivevalue.DisplayMessage;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.DisplayMessage;
 
 import java.util.Optional;
 

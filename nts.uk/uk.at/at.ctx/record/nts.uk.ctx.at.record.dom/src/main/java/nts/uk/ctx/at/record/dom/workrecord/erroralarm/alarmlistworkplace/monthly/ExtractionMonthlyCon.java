@@ -9,11 +9,11 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.primitivevalue.AverageNumberDays;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.primitivevalue.AverageNumberTimes;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.primitivevalue.AverageTime;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.AddSubAttendanceItems;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CheckedTarget;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CountableTarget;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.NameAlarmExtractionCondition;
-import nts.uk.ctx.at.shared.dom.alarmList.attendanceitem.AddSubAttendanceItems;
-import nts.uk.ctx.at.shared.dom.alarmList.attendanceitem.CheckedTarget;
-import nts.uk.ctx.at.shared.dom.alarmList.attendanceitem.CountableTarget;
-import nts.uk.ctx.at.shared.dom.alarmList.primitivevalue.DisplayMessage;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.DisplayMessage;
 import nts.uk.ctx.at.shared.dom.workrecord.alarm.attendanceitemconditions.CheckConditions;
 
 import java.util.List;
