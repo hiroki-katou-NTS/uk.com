@@ -28,10 +28,10 @@ import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQue
 import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQueryR;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.periodcond.ErrorAlarmConditionRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmConditionRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.periodcond.AlCheckTargetCondition;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.periodcond.ErrorAlarmCondition;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.AlCheckTargetCondition;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ResultCheckWith;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkRecordExtraConRepository;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.worktype.PlanActualWorkType;
@@ -486,7 +486,7 @@ public class ErAlWorkRecordCheckService {
 		}
 		WorkInfoOfDailyPerformance workInfo = new WorkInfoOfDailyPerformance(record.employeeId(), record.getDate(), record.getWorkInfo().toDomain(record.employeeId(), record.getDate()));
 		
-		return condition.checkWith(workInfo.getWorkInformation(), record.getSnapshot().map(c -> c.toDomain(null, null)), item -> {
+		return condition.checkWith(workInfo, record.getSnapshot().map(c -> c.toDomain(null, null)), item -> {
 			if (item.isEmpty()) {
 				return new ArrayList<>();
 			}
@@ -511,7 +511,7 @@ public class ErAlWorkRecordCheckService {
 					.collect(Collectors.toList());
 		})).filter(v -> v != null).collect(Collectors.toList());
 		
-		return new ResultCheckWith(condition.checkWith(workInfo.getWorkInformation(), record.getSnapshot().map(c -> c.toDomain(null, null)), item -> {
+		return new ResultCheckWith(condition.checkWith(workInfo, record.getSnapshot().map(c -> c.toDomain(null, null)), item -> {
 			if (item.isEmpty()) {
 				return new ArrayList<>();
 			}

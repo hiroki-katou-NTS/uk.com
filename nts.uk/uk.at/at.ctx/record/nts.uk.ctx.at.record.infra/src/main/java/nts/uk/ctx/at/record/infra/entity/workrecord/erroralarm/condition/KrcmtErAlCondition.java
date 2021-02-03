@@ -22,7 +22,7 @@ import javax.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 //import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.periodcond.ErrorAlarmCondition;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.attendanceitem.ErAlAttendanceItemCondition;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.worktime.PlanActualWorkTime;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.worktime.SingleWorkTime;

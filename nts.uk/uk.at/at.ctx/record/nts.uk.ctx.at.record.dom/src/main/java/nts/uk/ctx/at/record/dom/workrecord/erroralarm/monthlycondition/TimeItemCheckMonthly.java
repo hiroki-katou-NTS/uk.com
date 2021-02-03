@@ -11,7 +11,7 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.attendanceitem.AttendanceItemCondition;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.attendanceitem.ErAlAttendanceItemCondition;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.attendanceitem.ErAlConditionsAttendanceItem;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.primitivevalue.DisplayMessage;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.DisplayMessage;
 
 /**
  * @author hungnm 月別実績の勤怠項目チェック

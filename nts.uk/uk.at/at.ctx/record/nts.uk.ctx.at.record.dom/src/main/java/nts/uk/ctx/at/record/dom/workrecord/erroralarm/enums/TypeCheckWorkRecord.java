@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.alarmList.extractionResult.enums;
+package nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums;
 
 /**
  * 勤務実績のチェック項目の種類

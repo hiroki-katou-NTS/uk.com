@@ -13,7 +13,7 @@ import nts.uk.ctx.at.record.app.find.workrecord.erroralarm.condition.ErAlAtdItem
 import nts.uk.ctx.at.record.app.find.workrecord.erroralarm.condition.WorkTimeConditionDto;
 import nts.uk.ctx.at.record.app.find.workrecord.erroralarm.condition.WorkTypeConditionDto;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.periodcond.ErrorAlarmCondition;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.attendanceitem.ErAlAttendanceItemCondition;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.enums.ConditionAtr;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.enums.ConditionType;
