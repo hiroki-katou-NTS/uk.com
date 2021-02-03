@@ -6,13 +6,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
-import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.excessoutside.ExcessOutsideWorkOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.excessoutside.SuperHD60HConTime;
 
 @Data
 @NoArgsConstructor
@@ -39,12 +40,31 @@ public class ExcessOutsideWorkOfMonthlyDto implements ItemConst {
 	@AttendanceItemLayout(jpPropertyName = IRREGULAR + CARRY_FORWARD, layout = LAYOUT_D)
 	private int deformationCarryforwardTime;
 	
+	/** 付与時間: 勤怠月間時間 */
+	@AttendanceItemValue(type = ValueType.TIME)
+	@AttendanceItemLayout(jpPropertyName = SUPER_60 + GRANT, layout = LAYOUT_E)
+	private int superHD60GrantTime;
+	
+	/** 精算時間: 勤怠月間時間 */
+	@AttendanceItemValue(type = ValueType.TIME)
+	@AttendanceItemLayout(jpPropertyName = SUPER_60 + CALC, layout = LAYOUT_F)
+	private int superHD60PayoffTime;
+	
+	/** 換算時間: 勤怠月間時間 */
+	@AttendanceItemValue(type = ValueType.TIME)
+	@AttendanceItemLayout(jpPropertyName = SUPER_60 + TRANSFER, layout = LAYOUT_G)
+	private int superHD60ConversionTime;
+	
+	
 	public ExcessOutsideWorkOfMonthly toDomain() {
 		return ExcessOutsideWorkOfMonthly.of(
 						new AttendanceTimeMonth(weeklyTotalPremiumTime), 
 						new AttendanceTimeMonth(monthlyTotalPremiumTime), 
 						new AttendanceTimeMonthWithMinus(deformationCarryforwardTime), 
-						ConvertHelper.mapTo(time, c -> c.toDomain()));
+						ConvertHelper.mapTo(time, c -> c.toDomain()),
+						SuperHD60HConTime.of(new AttendanceTimeMonth(superHD60GrantTime), 
+											new AttendanceTimeMonth(superHD60PayoffTime), 
+											new AttendanceTimeMonth(superHD60ConversionTime)));
 	}
 	
 	public static ExcessOutsideWorkOfMonthlyDto from(ExcessOutsideWorkOfMonthly domain) {
@@ -57,6 +77,9 @@ public class ExcessOutsideWorkOfMonthlyDto implements ItemConst {
 			dto.setWeeklyTotalPremiumTime(domain.getWeeklyTotalPremiumTime() == null 
 					? 0 : domain.getWeeklyTotalPremiumTime().valueAsMinutes());
 			dto.setTime(ExcessOutsideWorkDto.from(domain.getTime()));
+			dto.superHD60PayoffTime = domain.getSuperHD60Time().getPayoffTime().valueAsMinutes();
+			dto.superHD60GrantTime = domain.getSuperHD60Time().getGrantTime().valueAsMinutes();
+			dto.superHD60ConversionTime = domain.getSuperHD60Time().getConversionTime().valueAsMinutes();
 		}
 		return dto;
 	}

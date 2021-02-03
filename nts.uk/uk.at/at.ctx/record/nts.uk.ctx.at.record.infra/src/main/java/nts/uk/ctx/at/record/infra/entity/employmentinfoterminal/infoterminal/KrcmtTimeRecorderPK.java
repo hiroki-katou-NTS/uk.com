@@ -25,6 +25,6 @@ public class KrcmtTimeRecorderPK implements Serializable {
 	 * コード
 	 */
 	@Column(name = "CD")
-	public int timeRecordCode;
+	public String timeRecordCode;
 
 }

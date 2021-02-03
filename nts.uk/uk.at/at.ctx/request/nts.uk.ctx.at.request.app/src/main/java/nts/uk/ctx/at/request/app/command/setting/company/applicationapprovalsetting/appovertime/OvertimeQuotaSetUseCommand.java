@@ -19,16 +19,12 @@ public class OvertimeQuotaSetUseCommand {
     private Integer flexAtr;
     private Integer overTimeFrame;
 
-    public static List<OvertimeQuotaSetUse> toDomains(List<OvertimeQuotaSetUseCommand> commands) {
-        List<OvertimeQuotaSetUse> domains = new ArrayList<>();
-        Map<Object, List<OvertimeQuotaSetUseCommand>> group = commands.stream().collect(Collectors.groupingBy(e -> new HashMap() {{
-            put(e.getOvertimeAtr(), e.getFlexAtr());
-        }}));
-        group.forEach((key, value) -> {
-            OvertimeQuotaSetUse quota = OvertimeQuotaSetUse.create((Integer) ((Map)key).keySet().toArray()[0], (Integer) ((Map)key).values().toArray()[0], value.stream().map(OvertimeQuotaSetUseCommand::getOverTimeFrame).collect(Collectors.toList()));
-            domains.add(quota);
-        });
-        return domains;
+    public static OvertimeQuotaSetUse toDomains(List<OvertimeQuotaSetUseCommand> commands) {
+        return OvertimeQuotaSetUse.create(
+                commands.get(0).overtimeAtr,
+                commands.get(0).flexAtr,
+                commands.stream().map(OvertimeQuotaSetUseCommand::getOverTimeFrame).collect(Collectors.toList())
+        );
     }
 
 }

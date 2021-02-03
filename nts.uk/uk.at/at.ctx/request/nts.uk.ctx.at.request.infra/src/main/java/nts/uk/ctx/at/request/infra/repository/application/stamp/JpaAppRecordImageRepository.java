@@ -8,12 +8,13 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImage;
 import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImageRepository;
 import nts.uk.ctx.at.request.dom.application.stamp.EngraveAtr;
 import nts.uk.ctx.at.request.infra.entity.application.stamp.KrqdtAppSampNR;
 import nts.uk.ctx.at.request.infra.entity.application.stamp.KrqdtAppSampNRPk;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.AttendanceClock;
 
@@ -82,6 +83,15 @@ public class JpaAppRecordImageRepository extends JpaRepository implements AppRec
 				EnumAdaptor.valueOf(res.getInt("STAMP_ATR"), EngraveAtr.class),
 				new AttendanceClock(res.getInt("APP_TIME")),
 				appStampGoOutAtr);
+	}
+
+	@Override
+	public Optional<AppRecordImage> findByAppID(String companyID, String appID, Application app) {
+		return this.findByAppID(companyID, appID).map(c -> {
+			AppRecordImage appStamp = new AppRecordImage(c.getAppStampCombinationAtr(), c.getAttendanceTime(),
+					c.getAppStampGoOutAtr(), app);
+			return appStamp;
+		});
 	}
 
 }

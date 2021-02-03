@@ -314,8 +314,8 @@ public class OutputScreenListOfStampFinder {
 		} else {
 			try {
 				URL url = new URL("http://geoapi.heartrails.com/api/xml?method=searchByGeoLocation"
-						+ "&x=" + String.format("%.6f", stampLocationInfor.getPositionInfor().getLatitude()) 
-						+ "&y=" + String.format("%.6f", stampLocationInfor.getPositionInfor().getLongitude()));
+						+ "&x=" + String.format("%.6f", stampLocationInfor.getPositionInfor().getLongitude()) 
+						+ "&y=" + String.format("%.6f", stampLocationInfor.getPositionInfor().getLatitude()));
 				DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 				DocumentBuilder db = dbf.newDocumentBuilder();
 				Document doc = db.parse(url.openStream());
@@ -325,23 +325,24 @@ public class OutputScreenListOfStampFinder {
 					result.put(element.getElementsByTagName("prefecture").item(0).getTextContent() + element.getElementsByTagName("city").item(0).getTextContent() + element.getElementsByTagName("town").item(0).getTextContent(), true);		
 					return result;
 				}else {
-					result.put(String.format("%.6f", stampLocationInfor.getPositionInfor().getLatitude()) + " " + String.format("%.6f", stampLocationInfor.getPositionInfor().getLongitude()), false);
+					result.put(String.format("%.6f", stampLocationInfor.getPositionInfor().getLongitude()) + " " + String.format("%.6f", stampLocationInfor.getPositionInfor().getLatitude()), false);
 					return result;
 				}
 			} catch (Exception e) {
-				result.put(String.format("%.6f", stampLocationInfor.getPositionInfor().getLatitude()) + " " + String.format("%.6f", stampLocationInfor.getPositionInfor().getLongitude()), false);
+				result.put(String.format("%.6f", stampLocationInfor.getPositionInfor().getLongitude()) + " " + String.format("%.6f", stampLocationInfor.getPositionInfor().getLatitude()), false);
 				return result;
 			}
 		}
 	}
 
 	public List<CardNoStampInfo> createCardNoStampQuery(DatePeriod datePerriod) {
+		String contractCode = AppContexts.user().contractCode();
 		// RetrieveNoStampCardRegisteredService
 		// 1取得する(@Require, 期間): 打刻情報リスト
 		// 打刻カード未登録の打刻データを取得する
 		RetrieveNoStampCardRegisteredService.Require requireCardNo = new RequireCardNoIml(stampRecordRepository,
 				stampDakokuRepository);
-		List<StampInfoDisp> listStampInfoDisp = RetrieveNoStampCardRegisteredService.get(requireCardNo, datePerriod);
+		List<StampInfoDisp> listStampInfoDisp = RetrieveNoStampCardRegisteredService.get(requireCardNo, datePerriod, contractCode);
 		List<RefectActualResult> listRefectActual = listStampInfoDisp.stream().map(c -> c.getStamp())
 				.filter(t -> !t.isEmpty()).distinct().map(g -> g.get(0).getRefActualResults())
 				.collect(Collectors.toList());
@@ -508,7 +509,7 @@ public class OutputScreenListOfStampFinder {
 		@Override
 		public List<Stamp> getStempRcNotResgistNumberStamp(String contractCode, DatePeriod period) {
 			// TODO Auto-generated method stub
-			return stampDakokuRepo.getStempRcNotResgistNumberStamp(AppContexts.user().contractCode(),period);
+			return stampDakokuRepo.getStempRcNotResgistNumberStamp(contractCode, period);
 		}	
 	}
 

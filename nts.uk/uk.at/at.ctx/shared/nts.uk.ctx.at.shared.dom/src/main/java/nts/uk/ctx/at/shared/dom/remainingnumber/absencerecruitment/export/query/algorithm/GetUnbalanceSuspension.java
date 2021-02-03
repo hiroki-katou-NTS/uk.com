@@ -7,13 +7,12 @@ import java.util.Optional;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.MngDataStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataRemainUnit;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail.AccuVacationBuilder;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail.NumberConsecuVacation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.FixedManagementDataMonth;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataManagementAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManagementData;
 
 /**
@@ -58,13 +57,15 @@ public class GetUnbalanceSuspension {
 			SubstitutionOfHDManagementData data) {
 
 		// ドメインモデル「暫定振出振休紐付け管理」を取得する REPONSE 対応
-		List<InterimRecAbsMng> lstInterim = require.getBySidMng(DataManagementAtr.INTERIM, DataManagementAtr.CONFIRM,
-				data.getSubOfHDID());
-
+		List<PayoutSubofHDManagement> lstInterim  = new ArrayList<>();
+		if (!data.getHolidayDate().isUnknownDate() && data.getHolidayDate().getDayoffDate().isPresent()) {
+			lstInterim.addAll(require.getBySubId(data.getSID(), data.getHolidayDate().getDayoffDate().get()));
+		}
+		 
 		double unUseDays = data.getRemainDays().v();
 
-		for (InterimRecAbsMng interimRecAbsMng : lstInterim) {
-			unUseDays -= interimRecAbsMng.getUseDays().v();
+		for (PayoutSubofHDManagement interimRecAbsMng : lstInterim) {
+			unUseDays -= interimRecAbsMng.getAssocialInfo().getDayNumberUsed().v();
 		}
 
 		if (unUseDays <= 0) {
@@ -98,7 +99,8 @@ public class GetUnbalanceSuspension {
 		List<SubstitutionOfHDManagementData> getByYmdUnOffset(String cid, String sid, GeneralDate ymd,
 				double unOffseDays);
 
-		List<InterimRecAbsMng> getBySidMng(DataManagementAtr recAtr, DataManagementAtr absAtr, String absId);
+		//PayoutSubofHDManaRepository
+		List<PayoutSubofHDManagement> getBySubId(String sid, GeneralDate digestDate);
 
 	}
 }

@@ -13,6 +13,14 @@ import nts.uk.ctx.at.function.app.find.attendancerecord.export.AttendanceIdItemD
 import nts.uk.ctx.at.function.app.find.attendancerecord.export.AttendanceIdItemFinder;
 import nts.uk.ctx.at.function.app.find.attendancerecord.export.AttendanceRecordExportDto;
 import nts.uk.ctx.at.function.app.find.attendancerecord.export.AttendanceRecordExportFinder;
+import nts.uk.ctx.at.function.app.find.attendancerecord.item.ApprovalProcessingUseSettingDto;
+import nts.uk.ctx.at.function.app.find.attendancerecord.item.ApprovalProcessingUseSettingFinder;
+import nts.uk.ctx.at.function.app.find.attendancerecord.item.AttendanceRecordKeyDto;
+import nts.uk.ctx.at.function.app.find.attendancerecord.item.CalculateAttendanceRecordDto;
+import nts.uk.ctx.at.function.app.find.attendancerecord.item.CalculateAttendanceRecordFinder;
+import nts.uk.ctx.at.function.app.find.attendancerecord.item.SingleAttendanceRecordDto;
+import nts.uk.ctx.at.function.app.find.attendancerecord.item.SingleAttendanceRecordFinder;
+import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemDto;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -29,6 +37,18 @@ public class AttendanceRecordExportWebService {
 	/** The attendance item finder. */
 	@Inject
 	AttendanceIdItemFinder attendanceItemFinder;
+	
+	/** The approval processing use setting repository */
+	@Inject
+	private ApprovalProcessingUseSettingFinder approvalProcessingUseSettingFinder;
+	
+	/** The single attendance record finder. */
+	@Inject
+	SingleAttendanceRecordFinder singleAttendanceRecordFinder;
+
+	/** The calculate attendance record finder */
+	@Inject
+	CalculateAttendanceRecordFinder calculateAttendanceRecordFinder;
 
 	/**
 	 * Gets the all attendance record export daily.
@@ -38,10 +58,9 @@ public class AttendanceRecordExportWebService {
 	 * @return the all attendance record export daily
 	 */
 	@POST
-	@Path("getAllAttendanceRecordDailyExport/{code}")
-	public List<AttendanceRecordExportDto> getAllAttendanceRecordExportDaily(@PathParam("code") long code) {
-		String companyId = AppContexts.user().companyId();
-		return this.attendanceRecExpFinder.getAllAttendanceRecordExportDaily(companyId, code);
+	@Path("getAllAttendanceRecordDailyExport/{layoutId}")
+	public List<AttendanceRecordExportDto> getAllAttendanceRecordExportDaily(@PathParam("layoutId") String layoutId) {
+		return this.attendanceRecExpFinder.getAllAttendanceRecordExportDaily(layoutId);
 	}
 
 	/**
@@ -52,10 +71,9 @@ public class AttendanceRecordExportWebService {
 	 * @return the all attendance record export monthly
 	 */
 	@POST
-	@Path("getAllAttendanceRecordExportMonthly/{code}")
-	public List<AttendanceRecordExportDto> getAllAttendanceRecordExportMonthly(@PathParam("code") long code) {
-		String companyId = AppContexts.user().companyId();
-		return this.attendanceRecExpFinder.getAllAttendanceRecordExportMonthly(companyId, code);
+	@Path("getAllAttendanceRecordExportMonthly/{layoutId}")
+	public List<AttendanceRecordExportDto> getAllAttendanceRecordExportMonthly(@PathParam("layoutId") String layoutId) {
+		return this.attendanceRecExpFinder.getAllAttendanceRecordExportMonthly(layoutId);
 	}
 
 	/**
@@ -90,5 +108,65 @@ public class AttendanceRecordExportWebService {
 
 		return attendanceItemFinder.getAttendanceItem(screenUse, attendanceType);
 
+	}
+	
+	/**
+	 * #3803 アルゴリズム「承認処理の利用設定を取得する」を実行する Xử lý thuật toán "Nhận cài đặt sử dụng của quy trình phê duyệt"
+	 *
+	 * @return 承認処理の利用設定
+	 */
+	@POST
+	@Path("getApprovalProcessingUseSetting")
+	public ApprovalProcessingUseSettingDto getApprovalProcessingUseSetting() {
+		String companyId = AppContexts.user().companyId();
+		return this.approvalProcessingUseSettingFinder.getApprovalProcessingUseSettingDto(companyId);
+	}
+
+	/**
+	 * Gets the single attendance record info.
+	 *
+	 * @param attendanceRecordKey
+	 *            the attendance record key
+	 * @return the single attendance record info
+	 */
+	@POST
+	@Path("getSingleAttendanceRecord")
+	public SingleAttendanceRecordDto getSingleAttendanceRecordInfo(AttendanceRecordKeyDto attendanceRecordKey) {
+		return this.singleAttendanceRecordFinder.getSingleAttendanceRecord(attendanceRecordKey);
+	}
+	
+	/**
+	 * Gets the calculate attendance record dto.
+	 *
+	 * @param attendanceRecordKey
+	 *            the attendance record key
+	 * @return the calculate attendance record dto
+	 */
+	@POST
+	@Path("getCalculateAttendanceRecordDto")
+	public CalculateAttendanceRecordDto getCalculateAttendanceRecordDto(AttendanceRecordKeyDto attendanceRecordKey) {
+		return this.calculateAttendanceRecordFinder.getCalculateAttendanceRecordDto(attendanceRecordKey);
+	}
+	
+	/**
+	 * #3803 get daily attendance items
+	 * 
+	 * @return List＜勤怠項目ID、名称、属性、マスタの種類、表示番号＞
+	 */
+	@POST
+	@Path("getDailyAttendanceItems")
+	public List<AttendanceItemDto> getDailyAttendanceItems() {
+		return this.attendanceItemFinder.getDailyAttendanceItemAtrs();
+	}
+	
+	/**
+	 * #3803 get monthly attendance items
+	 * 
+	 * @return List＜勤怠項目ID、名称、属性、表示番号＞
+	 */
+	@POST
+	@Path("getMonthlyAttendanceItems")
+	public List<AttendanceItemDto> getMonthlyAttendanceItems() {
+		return this.attendanceItemFinder.getMonthlyAttendanceItemAtrs();
 	}
 }

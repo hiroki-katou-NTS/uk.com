@@ -6,10 +6,12 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.assist.dom.storage.LoginInfo;
-import nts.uk.ctx.sys.assist.dom.system.SystemTypeEnum;
+import nts.uk.ctx.sys.assist.dom.storage.PatternCode;
+import nts.uk.ctx.sys.assist.dom.storage.StorageForm;
 
 @Getter
 @Setter
@@ -33,7 +35,7 @@ public class ResultDeletion extends AggregateRoot {
 
 	// 削除形態
 	/** The deletion type. */
-	private DelType delType;
+	private StorageForm delType;
 
 	// 削除済みファイル
 	/** The deletion files flag. */
@@ -41,7 +43,7 @@ public class ResultDeletion extends AggregateRoot {
 
 	// 削除セットコード
 	/** The deletion code. */
-	private DelCode delCode;
+	private PatternCode delCode;
 
 	// 対象人数
 	/** The number employees. */
@@ -64,7 +66,7 @@ public class ResultDeletion extends AggregateRoot {
 
 	// 削除終了日時
 	/** The end date time deletion. */
-	private GeneralDateTime endDateTimeDel;
+	private Optional<GeneralDateTime> endDateTimeDel;
 
 	// ファイルID
 	/** The file id. */
@@ -110,15 +112,15 @@ public class ResultDeletion extends AggregateRoot {
 				delId, 
 				companyId, 
 				new DelName(delName), 
-				DelType.valueOf(delType), 
+				EnumAdaptor.valueOf(delType, StorageForm.class),
 				isDeletedFilesFlg,
-				new DelCode(delCode), 
+				new PatternCode(delCode), 
 				numberEmployees, 
 				listResultLogDeletions,
 				sId,
 				SaveStatus.valueOf(status), 
 				startDateTimeDel, 
-				endDateTimeDel, 
+				Optional.ofNullable(endDateTimeDel), 
 				fileId, 
 				new FileName(fileName), 
 				fileSize,

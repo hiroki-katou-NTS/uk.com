@@ -2,6 +2,7 @@ package nts.uk.ctx.sys.assist.dom.deletedata;
 
 import java.util.List;
 import java.util.Optional;
+
 import nts.arc.time.GeneralDateTime;
 
 /**
@@ -18,6 +19,8 @@ public interface ResultDeletionRepository
    		 GeneralDateTime endDateOperator,
    		 List<String>  listOperatorEmployeeId
    	);
+    List<ResultDeletion> getByStartDatetimeDel(GeneralDateTime from, GeneralDateTime to);
+    List<ResultDeletion> getByListCodes(List<String> delCodes);
     Optional<ResultDeletion> getResultDeletionById(String delId);
     void add(ResultDeletion data);
     /**
@@ -25,6 +28,6 @@ public interface ResultDeletionRepository
 	 * @param data
 	 */
 	void update(ResultDeletion data);
-	
+	void update(String fileId);
 	void update(ResultDeletion resultDel, ManualSetDeletion manualSetDel);
 }

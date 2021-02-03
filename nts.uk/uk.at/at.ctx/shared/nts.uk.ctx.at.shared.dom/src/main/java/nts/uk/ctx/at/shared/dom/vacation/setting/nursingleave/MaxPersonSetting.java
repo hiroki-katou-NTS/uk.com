@@ -21,7 +21,7 @@ public class MaxPersonSetting extends DomainObject {
     /** The nursing number person.
      * 要介護看護人数: 看護休暇日数
      * */
-    private NumberDayNursing nursingNumberPerson;
+    private NumberDayNursing nursingNumberLeaveDay2;
     
     /**
      * Instantiates a new max person setting.
@@ -30,7 +30,7 @@ public class MaxPersonSetting extends DomainObject {
      */
     public MaxPersonSetting(MaxPersonSettingGetMemento memento) {
         this.nursingNumberLeaveDay = memento.getNursingNumberLeaveDay();
-        this.nursingNumberPerson = memento.getNursingNumberPerson();
+        this.nursingNumberLeaveDay2 = memento.getNursingNumberLeaveDay2();
     }
     
     /**
@@ -40,6 +40,6 @@ public class MaxPersonSetting extends DomainObject {
      */
     public void saveToMemento(MaxPersonSettingSetMemento memento) {
         memento.setNursingNumberLeaveDay(this.nursingNumberLeaveDay);
-        memento.setNursingNumberPerson(this.nursingNumberPerson);
+        memento.setNursingNumberLeaveDay2(this.nursingNumberLeaveDay2);
     }
 }

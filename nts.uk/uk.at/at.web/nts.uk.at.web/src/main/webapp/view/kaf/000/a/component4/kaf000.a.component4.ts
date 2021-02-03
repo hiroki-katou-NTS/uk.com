@@ -59,8 +59,11 @@ module nts.uk.at.view.kaf000.a.component4.viewmodel {
 
             vm.application = params.application;
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
+			if (!_.isEmpty(vm.application().appDate())) {
+				vm.appDate(vm.application().appDate());
+			}
 
-            vm.appDispInfoStartupOutput.subscribe(value => {
+            vm.appDispInfoStartupOutput.subscribe((value: any) => {
                 if(!vm.appType){
                     vm.appType = value.appDispInfoNoDateOutput.applicationSetting.appTypeSetting[0].appType;
                     if (vm.appType == AppType.ABSENCE_APPLICATION || vm.appType == AppType.WORK_CHANGE_APPLICATION || vm.appType == AppType.BUSINESS_TRIP_APPLICATION) {
@@ -75,15 +78,24 @@ module nts.uk.at.view.kaf000.a.component4.viewmodel {
                                 vm.dispSingleDate(true);
                                 nts.uk.ui.errors.clearAll();
                                 // vm.$errors("clear", ['#kaf000-a-component4-rangeDate']);
-                                vm.application().opAppStartDate(moment(vm.appDate()).format("YYYY/MM/DD"));
-                                vm.application().opAppEndDate(moment(vm.appDate()).format("YYYY/MM/DD"));
+                                if(_.isEmpty(vm.appDate())) {
+                                    vm.application().opAppStartDate('');
+                                    vm.application().opAppEndDate('');
+                                } else {
+                                    vm.application().opAppStartDate(moment(vm.appDate()).format("YYYY/MM/DD"));
+                                    vm.application().opAppEndDate(moment(vm.appDate()).format("YYYY/MM/DD"));
+                                }
+                                
                             }
                         });
                     }
                 }
             });
+        }
 
-            vm.appDate.subscribe(value => {
+		mounted() {
+			const vm = this;
+			vm.appDate.subscribe(value => {
             	if(vm.checkBoxValue()) {
             		return;
             	}
@@ -145,6 +157,15 @@ module nts.uk.at.view.kaf000.a.component4.viewmodel {
                     endDate = moment(value.endDate).format('YYYY/MM/DD');
 	       		vm.$validate(element).then((valid: boolean) => {
                     if(valid) {
+						if(vm.appType==AppType.BUSINESS_TRIP_APPLICATION) {
+							if(moment(endDate).diff(startDate, 'days') > 30) {
+								vm.application().appDate(startDate);
+		                        vm.application().opAppStartDate(startDate);
+		                        vm.application().opAppEndDate(endDate);
+		                        vm.application.valueHasMutated();
+								return false;
+							}
+						}
                     	return vm.$validate('#kaf000-a-component4-rangeDate');
                     }
                 }).then((valid: any) => {
@@ -187,7 +208,7 @@ module nts.uk.at.view.kaf000.a.component4.viewmodel {
 	                }
                 }).always(() => vm.$blockui("hide"));
             });
-        }
+		}
     }
 
     const API = {

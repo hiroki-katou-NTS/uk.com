@@ -13,31 +13,36 @@ import nts.uk.ctx.at.request.app.find.application.businesstrip.BusinessTripMobil
 import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.*;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.ParamUpdate;
 import nts.uk.ctx.at.request.dom.application.*;
-import nts.uk.ctx.at.request.dom.application.businesstrip.*;
+import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
+import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripInfoOutput;
+import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripWorkTypes;
 import nts.uk.ctx.at.request.dom.application.businesstrip.service.BusinessTripService;
 import nts.uk.ctx.at.request.dom.application.businesstrip.service.DetailScreenB;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
+import nts.uk.ctx.at.request.dom.application.businesstrip.service.ResultCheckInputCode;
+import nts.uk.ctx.at.request.dom.application.businesstrip.service.ScreenWorkInfoName;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.DetailAppCommonSetService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.*;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.smartphone.CommonAlgorithmMobile;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.BusinessTripAppWorkType;
-import nts.uk.ctx.at.request.dom.setting.request.application.businesstrip.AppTripRequestSetRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.businesstrip.AppTripRequestSet;
+import nts.uk.ctx.at.request.dom.setting.request.application.businesstrip.AppTripRequestSetRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktype.*;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import org.apache.logging.log4j.util.Strings;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -77,21 +82,17 @@ public class BusinessTripFinder {
         BusinessTripInfoOutputDto businessTripInfoOutputDto = this.businessScreenInit_New(cid, paramStart.getApplicantList(), dateList, appDispInfoStartupOutput);
         // 申請対象日リスト全ての日付に対し「表示する実績内容」が存在する
         // Check xem có ngày nào không có content không, nếu có add Error msg 1695 + date
-        this.checkDateWithContent(businessTripInfoOutputDto.getBusinessTripActualContent());
-        result.setResult(true);
+        Optional<BusinessTripActualContentDto> itemNotHaveConent = businessTripInfoOutputDto.getBusinessTripActualContent()
+                .stream()
+                .filter(i -> i.getOpAchievementDetail() == null).findFirst();
+        if (itemNotHaveConent.isPresent()) {
+            result.setConfirmMsgOutputs(Arrays.asList(new ConfirmMsgOutput("Msg_1695", Arrays.asList(itemNotHaveConent.get().getDate()))));
+            result.setResult(false);
+        } else {
+            result.setResult(true);
+        }
         result.setBusinessTripInfoOutputDto(businessTripInfoOutputDto);
         return result;
-    }
-
-    private void checkDateWithContent(List<BusinessTripActualContentDto> contents) {
-        if (!contents.isEmpty()) {
-            Optional<BusinessTripActualContentDto> itemNotHaveConent = contents
-                    .stream()
-                    .filter(i -> i.getOpAchievementDetail() == null).findFirst();
-            if (!itemNotHaveConent.isPresent()) {
-                throw new BusinessException("Msg_1695", itemNotHaveConent.get().getDate().toString());
-            }
-        }
     }
 
     /**
@@ -141,7 +142,7 @@ public class BusinessTripFinder {
         }
         // 取得した情報をOUTPUT「出張申請の表示情報」にセットしてを返す
         BusinessTripInfoOutput output = new BusinessTripInfoOutput(
-                tripRequestSet.isPresent() ? tripRequestSet.get() : null,
+                tripRequestSet.orElse(null),
                 appDispInfoStartupOutput,
                 Optional.of(holidayWorkType),
                 Optional.of(workDays),
@@ -170,18 +171,15 @@ public class BusinessTripFinder {
                 sid,
                 Optional.empty(),
                 Optional.empty(),
-                Optional.ofNullable(new ApplicationDate(GeneralDate.fromString(applicationDto.getOpAppStartDate(), "yyyy/MM/dd"))),
-                Optional.ofNullable(new ApplicationDate(GeneralDate.fromString(applicationDto.getOpAppEndDate(), "yyyy/MM/dd"))),
+                applicationDto.getOpAppStartDate() == null ?
+                        Optional.empty() : Optional.ofNullable(new ApplicationDate(GeneralDate.fromString(applicationDto.getOpAppStartDate(), "yyyy/MM/dd"))),
+                applicationDto.getOpAppEndDate() == null ?
+                        Optional.empty() : Optional.ofNullable(new ApplicationDate(GeneralDate.fromString(applicationDto.getOpAppEndDate(), "yyyy/MM/dd"))),
                 applicationDto.getOpAppReason() == null ? Optional.empty() : Optional.of(new AppReason(applicationDto.getOpAppReason())),
                 applicationDto.getOpAppStandardReasonCD() == null ? Optional.empty() : Optional.of(new AppStandardReasonCode(applicationDto.getOpAppStandardReasonCD())
                 ));
 
         BusinessTripInfoOutput output = param.getBusinessTripInfoOutput().toDomain();
-
-        Optional<ApplicationDate> appStartDate = application.getOpAppStartDate();
-        Optional<ApplicationDate> appEndDate = application.getOpAppEndDate();
-        DatePeriod period = new DatePeriod(appStartDate.get().getApplicationDate(), appEndDate.get().getApplicationDate());
-        List<GeneralDate> lstDate = period.datesBetween();
 
         // アルゴリズム「2-1.新規画面登録前の処理」を実行する
         confirmMsgOutputs = processBeforeRegister.processBeforeRegister_New(
@@ -204,8 +202,13 @@ public class BusinessTripFinder {
             }
             businessTripService.businessTripIndividualCheck(
                     businessTrip.getInfos(),
-                    output.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get()
-            );
+                    output,
+                    param.getScreenDetails()
+                            .stream()
+                            .collect(Collectors.toMap(
+                                    i -> GeneralDate.fromString(i.getDate(), "yyyy/MM/dd"),
+                                    i -> new ScreenWorkInfoName(i.getWorkTypeName(), i.getWorkTimeName()))
+                            ));
         }
         return confirmMsgOutputs;
     }
@@ -228,6 +231,10 @@ public class BusinessTripFinder {
         GeneralDate appEndDate = GeneralDate.fromString(applicationDto.getOpAppEndDate(), "yyyy/MM/dd");
         DatePeriod dates = new DatePeriod(appStartDate, appEndDate);
         List<GeneralDate> inputDates = dates.datesBetween();
+
+        if ((ChronoUnit.DAYS.between(appStartDate.localDate(), appEndDate.localDate()) + 1)  > 31){
+            throw new BusinessException("Msg_277");
+        }
 
         // 申請対象日リスト全ての日付に対し「表示する実績内容」が存在する
         // エラーメッセージとして「#Msg_1695」を返す({0}＝年月日)
@@ -270,59 +277,12 @@ public class BusinessTripFinder {
      * @return
      */
     public BusinessTripInfoOutputDto changeWorkTypeCode(ChangeWorkCodeParam changeWorkCodeParam) {
-        String cid = AppContexts.user().companyId();
-        // コードが未入力
-        if (Strings.isBlank(changeWorkCodeParam.getTypeCode())) {
-            throw new BusinessException("Msg_1329");
-        }
-
-        BusinessTripInfoOutput businessTripInfoOutput = changeWorkCodeParam.getBusinessTripInfoOutputDto().toDomain();
-        GeneralDate inputDate = GeneralDate.fromString(changeWorkCodeParam.getDate(), "yyyy/MM/dd");
-        String inputCode = changeWorkCodeParam.getTypeCode();
-        List<WorkType> workTypesBeforeChange = new ArrayList<>();
-        Optional<BusinessTripWorkTypes> currentDateWorkType = businessTripInfoOutput.getWorkTypeBeforeChange().get().stream().filter(i -> i.getDate().equals(inputDate)).findFirst();
-
-        if (currentDateWorkType.isPresent()) {
-            workTypesBeforeChange = getBusinessTripWorkChangeInfo(businessTripInfoOutput, currentDateWorkType.get().getWorkType());
-        }
-
-        // 取得した勤務種類リストの中に、INPUT.勤務種類コードが存在する
-        Optional<WorkType> inputWorkType = workTypesBeforeChange.stream().filter(i -> i.getWorkTypeCode().v().equals(inputCode)).findFirst();
-        if (inputWorkType.isPresent()) {
-            // ドメインモデル「勤務種類」を取得する
-            Optional<WorkType> getWorkTypeInfo = wkTypeRepo.findByPK(cid, inputCode);
-            if (businessTripInfoOutput.getWorkTypeAfterChange().isPresent()) {
-                // 変更後勤務種類にセット
-                BusinessTripWorkTypes itemAfterChange = new BusinessTripWorkTypes(inputDate, getWorkTypeInfo.get());
-                if (businessTripInfoOutput.getWorkTypeAfterChange().get().contains(itemAfterChange)) {
-                    int index = businessTripInfoOutput.getWorkTypeAfterChange().get().indexOf(itemAfterChange);
-                    businessTripInfoOutput.getWorkTypeAfterChange().get().set(index, itemAfterChange);
-                } else {
-                    businessTripInfoOutput.getWorkTypeAfterChange().get().add(itemAfterChange);
-                }
-            }
-        } else {
-            // #Msg_457(利用できる勤怠項目がありません。)を表示する
-            throw new BusinessException("Msg_457");
-        }
-        return BusinessTripInfoOutputDto.convertToDto(businessTripInfoOutput);
-    }
-
-    /**
-     * アルゴリズム「出張申請勤務種類分類内容取得」を実行する
-     * @param businessTripInfoOutput
-     * @param workType
-     * @return
-     */
-    private List<WorkType> getBusinessTripWorkChangeInfo(BusinessTripInfoOutput businessTripInfoOutput, WorkType workType) {
-        Boolean businessTripWorkCls = businessTripService.getBusinessTripClsContent(workType);
-        if (businessTripWorkCls) {
-            // 勤務種類リスト＝出張申請の表示情報.出勤日勤務種類リスト
-            return businessTripInfoOutput.getWorkDayCds().get();
-        } else {
-            // 勤務種類リスト＝出張申請の表示情報.休日勤務種類リスト
-            return businessTripInfoOutput.getHolidayCds().get();
-        }
+        BusinessTripInfoOutput output = businessTripService.checkChangeWorkTypeCode(
+                GeneralDate.fromString(changeWorkCodeParam.getDate(), "yyyy/MM/dd"),
+                changeWorkCodeParam.getBusinessTripInfoOutputDto().toDomain(),
+                changeWorkCodeParam.getTypeCode()
+        );
+        return BusinessTripInfoOutputDto.convertToDto(output);
     }
 
     /**
@@ -340,7 +300,16 @@ public class BusinessTripFinder {
 
         BusinessTripInfoOutput businessTripInfoOutput = changeWorkCodeParam.getBusinessTripInfoOutputDto().toDomain();
         GeneralDate inputDate = GeneralDate.fromString(changeWorkCodeParam.getDate(), "yyyy/MM/dd");
-        businessTripService.checkInputWorkCode(typeCode, timeCode, inputDate, startWorkTime, endWorkTime);
+
+        ResultCheckInputCode checkRequiredCode = businessTripService.checkRequireWorkTimeCode(typeCode, timeCode, startWorkTime, endWorkTime, true);
+        if (!checkRequiredCode.isResult()) {
+            if (checkRequiredCode.getMsg().equals("Msg_1912") || checkRequiredCode.getMsg().equals("Msg_1913")) {
+                result.setMsg(checkRequiredCode.getMsg());
+            } else {
+                throw new BusinessException(checkRequiredCode.getMsg(), inputDate.toString());
+            }
+        }
+
         // アルゴリズム「出張申請就業時間帯チェック」を実行する
         if (Strings.isBlank(timeCode)) {
             return result;
@@ -351,7 +320,7 @@ public class BusinessTripFinder {
             if (existWorkTimeSet.isPresent()) {
                 result.setName(existWorkTimeSet.get().getWorkTimeDisplayName().getWorkTimeName().v());
             } else {
-                throw new BusinessException("Msg_1685");
+                throw new BusinessException("Msg_1685", inputDate.toString());
             }
         }
         return result;
@@ -368,8 +337,7 @@ public class BusinessTripFinder {
                 appCommonSetService.getCommonSetBeforeDetail(param.getCompanyId(), param.getApplicationId());
         // アルゴリズム「出張申請画面初期（更新）」を実行する
         DetailScreenB detailScreen = businessTripService.getDataDetail(param.getCompanyId(), param.getApplicationId(), appDispInfoStartupOutput);
-        DetailScreenDto detailScreenDto = DetailScreenDto.fromDomain(detailScreen);
-        return detailScreenDto;
+        return DetailScreenDto.fromDomain(detailScreen);
     }
 
     /**
@@ -425,8 +393,7 @@ public class BusinessTripFinder {
         String cid = AppContexts.user().companyId();
         AppDispInfoStartupOutput appDispInfoStartupOutput = param.getAppDispInfoStartup().toDomain();
         DetailScreenB detailScreen = businessTripService.getDataDetail(cid, param.getAppId(), appDispInfoStartupOutput);
-        DetailScreenDto detailScreenDto = DetailScreenDto.fromDomain(detailScreen);
-        return detailScreenDto;
+        return DetailScreenDto.fromDomain(detailScreen);
     }
 
     /**
@@ -479,7 +446,14 @@ public class BusinessTripFinder {
 
         businessTripService.businessTripIndividualCheck(
                 businessTrip.getInfos(),
-                businessTripInfoOutput.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get());
+                businessTripInfoOutput,
+                param.getScreenDetails()
+                        .stream()
+                        .collect(Collectors.toMap(
+                                i -> GeneralDate.fromString(i.getDate(), "yyyy/MM/dd"),
+                                i -> new ScreenWorkInfoName(i.getWorkTypeName(), i.getWorkTimeName()))
+                        )
+        );
     }
 
     /**
@@ -504,8 +478,10 @@ public class BusinessTripFinder {
                     sid,
                     Optional.empty(),
                     Optional.empty(),
-                    Optional.ofNullable(new ApplicationDate(GeneralDate.fromString(applicationDto.getOpAppStartDate(), "yyyy/MM/dd"))),
-                    Optional.ofNullable(new ApplicationDate(GeneralDate.fromString(applicationDto.getOpAppEndDate(), "yyyy/MM/dd"))),
+                    applicationDto.getOpAppStartDate() == null ?
+                            Optional.empty() : Optional.ofNullable(new ApplicationDate(GeneralDate.fromString(applicationDto.getOpAppStartDate(), "yyyy/MM/dd"))),
+                    applicationDto.getOpAppEndDate() == null ?
+                            Optional.empty() : Optional.ofNullable(new ApplicationDate(GeneralDate.fromString(applicationDto.getOpAppEndDate(), "yyyy/MM/dd"))),
                     applicationDto.getOpAppReason() == null ? Optional.empty() : Optional.of(new AppReason(applicationDto.getOpAppReason())),
                     applicationDto.getOpAppStandardReasonCD() == null ? Optional.empty() : Optional.of(new AppStandardReasonCode(applicationDto.getOpAppStandardReasonCD())
                     ));

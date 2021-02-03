@@ -5,7 +5,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import nts.uk.ctx.workflow.app.command.approvermanagement.setting.ApprovalSettingCommand;
+import nts.uk.ctx.workflow.app.command.approvermanagement.setting.ApprovalSettingCommand_Old;
 import nts.uk.ctx.workflow.app.command.approvermanagement.setting.UpdateApprovalSettingCommandHandler;
 import nts.uk.ctx.workflow.app.find.approvermanagement.setting.ApprovalSettingDto;
 import nts.uk.ctx.workflow.app.find.approvermanagement.setting.ApprovalSettingFinder;
@@ -26,7 +26,7 @@ public class ApprovalSettingWebService {
 	
 	@POST
 	@Path("update")
-	public void update(ApprovalSettingCommand command){
+	public void update(ApprovalSettingCommand_Old command){
 		this.update.handle(command);
 	}
 }

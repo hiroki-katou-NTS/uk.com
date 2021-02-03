@@ -1,0 +1,115 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="/master/base.xhtml">
+    <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE"/>
+        <com:stylefile path="kaf021.d.main.css"/>
+        <com:scriptfile path="../common/kaf021.common.js"/>
+        <com:scriptfile path="kaf021.d.vm.js"/>
+        <com:ValidatorScript>
+            nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.AgreementApprovalComments
+        </com:ValidatorScript>
+    </ui:define>
+    <ui:define name="content">
+        <div id="functions-area">
+            <!-- D1_1 -->
+            <button tabindex="1" data-bind="click: approval, text: vm.$i18n('KAF021_47')"></button>
+            <!-- D1_2 -->
+            <button tabindex="2" data-bind="click: bulkApproval, text: vm.$i18n('KAF021_48')"></button>
+            <!-- D1_3 -->
+            <button tabindex="3" data-bind="click: denial, text: vm.$i18n('KAF021_38')"></button>
+        </div>
+        <div id="content-area">
+            <div class="kaf021d-content">
+                <div id="tbl-control" class="table">
+                    <div class="cell valign-center">
+                        <div class="table tbl-left">
+                            <div class="cell valign-center">
+                                <!-- D1_4 -->
+                                <div class="label" data-bind="text: vm.$i18n('KAF021_31')"></div>
+                            </div>
+                            <div class="cell valign-center right-align">
+                                <!-- D1_5 -->
+                                <div class="label" data-bind="text: unapproveCountStr()"></div>
+                            </div>
+                        </div>
+                        <div class="table tbl-left">
+                            <div class="cell valign-center">
+                                <!-- D1_6 -->
+                                <div class="label" data-bind="text: vm.$i18n('KAF021_32')"></div>
+                            </div>
+                            <div class="cell valign-center right-align">
+                                <!-- D1_7 -->
+                                <div class="label" data-bind="text: approveCountStr()"></div>
+                            </div>
+                        </div>
+                        <div class="table tbl-left">
+                            <div class="cell valign-center">
+                                <!-- D1_8 -->
+                                <div class="label" data-bind="text: vm.$i18n('KAF021_33')"></div>
+                            </div>
+                            <div class="cell valign-center right-align">
+                                <!-- D1_9 -->
+                                <div class="label" data-bind="text: denialCountStr()"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cell valign-center">
+                        <!-- D1_10 -->
+                        <div id="D1_10" class="panel panel-frame">
+                            <div class="table tbl-right">
+                                <div class="cell valign-center">
+                                    <!-- D1_11 -->
+                                    <div class="label" data-bind="text: vm.$i18n('KAF021_34')"></div>
+                                </div>
+                                <div class="cell valign-center">
+                                    <!-- D1_12 -->
+                                    <div tabindex="4" data-bind="ntsCheckBox: { checked: unapproveChecked, text: vm.$i18n('KAF021_36') }"></div>
+                                    <!-- D1_13 -->
+                                    <div tabindex="5" data-bind="ntsCheckBox: { checked: approveChecked, text: vm.$i18n('KAF021_37') }"></div>
+                                    <!-- D1_14 -->
+                                    <div tabindex="6" data-bind="ntsCheckBox: { checked: denialChecked, text: vm.$i18n('KAF021_38') }"></div>
+                                </div>
+                            </div>
+                            <div class="table tbl-right">
+                                <div class="cell valign-center">
+                                    <!-- D1_21 -->
+                                    <div class="label" data-bind="text: vm.$i18n('KAF021_50')"></div>
+                                </div>
+                                <div class="cell valign-center">
+                                    <!-- D1_15 -->
+                                    <div tabindex="7" data-bind="ntsDateRangePicker: { name: vm.$i18n('KAF021_39'), required: false, enable: true, showNextPrevious: true, value: datePeriod}"></div>
+                                </div>
+                                <div class="cell valign-center">
+                                    <!-- D1_18 -->
+                                    <button tabindex="9" class="small" data-bind="text: vm.$i18n('KAF021_40'), click: search"></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="tbl-label" class="table">
+                    <div class="cell valign-center">
+                    </div>
+                    <div class="cell valign-center">
+                        <!--D1_19-->
+                        <span class="label" data-bind="text: vm.$i18n('KAF021_22')"></span>
+                    </div>
+                    <div class="cell valign-center">
+                        <!--D1_20-->
+                        <span class="label" data-bind="text: vm.$i18n('KAF021_23')"></span>
+                    </div>
+                </div>
+                 <!--D3_24-->
+                 <div id="grid"></div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

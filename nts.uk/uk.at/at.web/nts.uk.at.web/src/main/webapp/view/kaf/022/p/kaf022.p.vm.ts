@@ -18,8 +18,8 @@ module nts.uk.at.view.kaf022.p.viewmodel {
         constructor() {
             let self = this;
             self.columns = ko.observableArray([
-                {headerText: getText("KAF022_681"), key: 'code', width: 30, columnCssClass: "grid-col-text-right", formatter: _.escape},
-                {headerText: getText("KAF022_629"), key: 'name', width: 200, formatter: _.escape},
+                {headerText: getText("KAF022_681"), key: 'code', width: 50, formatter: _.escape},
+                {headerText: getText("KAF022_629"), key: 'name', width: 180, formatter: _.escape},
                 {headerText: getText("KAF022_99"), key: 'useAtr', width: 70, formatter: makeIcon}
             ]);
 
@@ -66,17 +66,17 @@ module nts.uk.at.view.kaf022.p.viewmodel {
                             }
                         });
                     });
-                    self.settings(_.sortBy(lstData, [function(o) { return parseInt(o.code); }]));
+                    self.settings(_.sortBy(lstData, ['code']));
                     if (!isNullOrEmpty(currentCode)) {
                         if (currentCode == self.selectedCode())
                             self.selectedCode.valueHasMutated();
                         else
                             self.selectedCode(currentCode);
                     } else {
-                        if (lstData[0].code == self.selectedCode())
+                        if (self.settings()[0].code == self.selectedCode())
                             self.selectedCode.valueHasMutated();
                         else
-                            self.selectedCode(lstData[0].code);
+                            self.selectedCode(self.settings()[0].code);
                     }
                     self.isUpdate(true);
                 } else {
@@ -103,7 +103,7 @@ module nts.uk.at.view.kaf022.p.viewmodel {
             block.invisible();
             service.getOptionalItems().done((data: Array<any>) => {
                 const items = data || [];
-                self.optionalItemsBak = items.map(i => ({no: i.itemNo, name: i.itemName}));
+                self.optionalItemsBak = items.filter(i => i.usageAtr == 1).map(i => ({no: i.itemNo, name: i.itemName}));
                 self.optionalItems(_.cloneDeep(self.optionalItemsBak));
                 self.getData().done(() => {
                     dfd.resolve();
@@ -181,6 +181,11 @@ module nts.uk.at.view.kaf022.p.viewmodel {
                 });
             }).ifNo(function () {
             });
+        }
+
+        afterMoveLeft() {
+            const self = this;
+            self.optionalItems(_.cloneDeep(self.optionalItemsBak));
         }
 
     }

@@ -11,6 +11,7 @@ import nts.uk.ctx.sys.assist.dom.storage.BusinessName;
 import nts.uk.ctx.sys.assist.dom.storage.EmployeeCode;
 import nts.uk.ctx.sys.assist.dom.storage.SysEmployeeStorageAdapter;
 import nts.uk.ctx.sys.assist.dom.storage.TargetEmployees;
+
 @Stateless
 public class SysEmployeeStorageAdapterImpl implements SysEmployeeStorageAdapter{
 	
@@ -25,4 +26,10 @@ public class SysEmployeeStorageAdapterImpl implements SysEmployeeStorageAdapter{
 		}).collect(Collectors.toList());
 	}
 
+	@Override
+	public List<TargetEmployees> getByListSid(List<String> sIds) {
+		return syEmployeePub.getByListSid(sIds).stream()
+				.map(e -> new TargetEmployees(e.getSid(), new BusinessName(e.getBussinessName()), new EmployeeCode(e.getScd())))
+				.collect(Collectors.toList());
+	}
 }

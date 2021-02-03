@@ -123,7 +123,11 @@ module nts.uk.ui {
             "/view/spr/index.xhtml",
             "/view/ccg/007/",
             "/view/kdw/003/a/index.xhtml",
-            "/view/ccg/033/index.xhtml"
+            "/view/ccg/033/index.xhtml",
+            "/view/kdp/003/a/index.xhtml",
+            "/view/kdp/003/f/index.xhtml",
+            "/view/kdp/004/a/index.xhtml",
+            "/view/kdp/005/a/index.xhtml"
         ];
         
         let cantCall = function() {

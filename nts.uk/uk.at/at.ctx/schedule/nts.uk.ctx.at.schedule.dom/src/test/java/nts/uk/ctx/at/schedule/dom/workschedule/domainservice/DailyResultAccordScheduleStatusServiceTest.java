@@ -22,6 +22,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatus;
 import nts.uk.ctx.at.schedule.dom.workschedule.domainservice.DailyResultAccordScheduleStatusService.Require;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 
 @RunWith(JMockit.class)
@@ -105,9 +106,10 @@ public class DailyResultAccordScheduleStatusServiceTest {
 	public void testGet_2() {
 		List<String> lstEmployeeID = Arrays.asList("emp1");
 		DatePeriod period = new DatePeriod(GeneralDate.today(), GeneralDate.today());
-		IntegrationOfDaily integrationOfDaily = new IntegrationOfDaily("emp1", GeneralDate.today(), null, null, null, Optional.empty(), new ArrayList<>(), Optional.empty(), new ArrayList<>(),
+		IntegrationOfDaily integrationOfDaily = new IntegrationOfDaily("emp1", GeneralDate.today(), null, null, null, 
+				Optional.empty(), new ArrayList<>(), Optional.empty(), new BreakTimeOfDailyAttd(),
 				Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), 
-				Optional.empty(), new ArrayList<>(), Optional.empty(), new ArrayList<>()) ;
+				Optional.empty(), new ArrayList<>(), Optional.empty(), new ArrayList<>(), Optional.empty()) ;
 		
 		ScheManaStatuTempo scheManaStatuTempo = new ScheManaStatuTempo("emp1", GeneralDate.today(),
 				ScheManaStatus.DO_NOT_MANAGE_SCHEDULE, Optional.empty(), Optional.empty());

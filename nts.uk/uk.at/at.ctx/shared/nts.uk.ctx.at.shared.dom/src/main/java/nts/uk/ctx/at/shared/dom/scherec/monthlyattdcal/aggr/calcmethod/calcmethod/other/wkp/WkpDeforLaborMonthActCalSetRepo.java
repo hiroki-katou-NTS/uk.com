@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.wkp;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -15,6 +16,13 @@ public interface WkpDeforLaborMonthActCalSetRepo {
 	 * @return the optional
 	 */
 	Optional<WkpDeforLaborMonthActCalSet> find(String cid, String wkpId);
+	
+	/**
+	 * Find by cid
+	 * @param cid
+	 * @return
+	 */
+	List<WkpDeforLaborMonthActCalSet> findAllByCid(String cid);
 
 	/**
 	 * Adds the.

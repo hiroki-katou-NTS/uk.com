@@ -243,5 +243,4 @@ public class JpaCategoryForDeleteRepository extends JpaRepository implements Cat
 				.setParameter("selectionTargetForRes", selectionTargetForRes)
 				.getList(c -> c.toDomain());
 	}
-
 }

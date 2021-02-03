@@ -66,11 +66,11 @@ public class PayoutManagementDataWebService extends WebService{
 		return finder.getBysiDRemCod(employeeId, state);
 	}
 	
-	@POST
-	@Path("getBySidDatePeriod/{empId}/{subOfHDID}")
-	public List<PayoutManagementDataDto> getBySidDatePeriod(@PathParam("empId")String sid,@PathParam("subOfHDID")String subOfHDID) {
-		return finder.getBySidDatePeriod(sid, subOfHDID);
-	}
+//	@POST
+//	@Path("getBySidDatePeriod/{empId}/{subOfHDID}")
+//	public List<PayoutManagementDataDto> getBySidDatePeriod(@PathParam("empId")String sid,@PathParam("subOfHDID")String subOfHDID) {
+//		return finder.getBySidDatePeriod(sid, subOfHDID);
+//	}
 	
 	@POST
 	@Path("insertpayoutMan")
@@ -78,4 +78,9 @@ public class PayoutManagementDataWebService extends WebService{
 		subOfHDPayoutManaDataCommandHandler.handle(command);
 	}
 	
+	@POST
+	@Path("getByIdAndUnUse")
+	public List<PayoutManagementDataDto> findPayoutManaDataBySid(String sid) {
+		return this.finder.findPayoutManaDataBySid(sid);
+	}
 }

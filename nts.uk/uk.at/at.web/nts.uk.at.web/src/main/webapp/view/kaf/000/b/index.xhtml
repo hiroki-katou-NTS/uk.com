@@ -12,9 +12,19 @@
 				nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode
 				nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode
 				nts.uk.shr.com.time.AttendanceClock
+				nts.uk.ctx.at.shared.dom.common.time.AttendanceTime
 				nts.uk.shr.com.time.TimeWithDayAttr
+				nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.DivergenceReason
+				nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTime
+				nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTimes
+				nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemAmount
+				nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReasonContent
+				nts.uk.ctx.at.request.dom.application.overtime.primitivevalue.OvertimeAppPrimitiveTime
+                nts.uk.ctx.at.request.dom.application.appabsence.apptimedigest.TimeOffPrimitive
+                nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.RelationshipReasonPrimitive
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
+			
 			<com:stylefile path="/view/kaf/000/b/component1/kaf000.b.component1.css" />
 			<com:stylefile path="/view/kaf/000/b/component2/kaf000.b.component2.css" />
 			<com:stylefile path="/view/kaf/000/b/component3/kaf000.b.component3.css" />
@@ -30,10 +40,15 @@
 			<com:stylefile path="/view/kaf/002/d/kaf002.d.main.css" />
 			<com:scriptfile path="/view/kaf/004/shr/common/kaf004.shr.vm.js" />
             <com:scriptfile path="/view/kaf/004/shr/b/kaf004.shr.vm.js" />
-            <com:stylefile path="/view/kaf/004/b/kaf004.b.css" />
+			<com:stylefile path="/view/kaf/004/b/kaf004.b.css" />
+            <com:stylefile path="/view/kaf/006/shr/kaf006.shr.css" />
 			<com:stylefile path="/view/kaf/000/b/kaf000.b.css" />
 			<com:stylefile path="/view/kaf/008/shr/kaf008.share.style.css" />
+			<com:stylefile path="/view/kaf/020/shr/kaf020.shr.css" />
 			<com:scriptfile path="/view/kaf/000/shr/kaf000.shr.vm.js" />
+			<com:stylefile path="/view/kaf/005/shr/kaf005.share.style.css" />
+			<com:stylefile path="/view/kaf/010/shr/kaf010.share.style.css" />
+			<com:stylefile path="/view/kaf/012/shr/kaf012.share.style.css" />
 			<com:scriptfile path="/view/kaf/000/b/component1/kaf000.b.component1.js" />
 			<com:scriptfile path="/view/kaf/000/b/component2/kaf000.b.component2.js" />
 			<com:scriptfile path="/view/kaf/000/b/component3/kaf000.b.component3.js" />
@@ -43,17 +58,50 @@
 			<com:scriptfile path="/view/kaf/000/b/component7/kaf000.b.component7.js" />
 			<com:scriptfile path="/view/kaf/000/b/component8/kaf000.b.component8.js" />
 			<com:scriptfile path="/view/kaf/000/b/component9/kaf000.b.component9.js" />
+			<com:scriptfile path="/view/kaf/sample/shr/kafsample.shr.vm.js" />
+			<com:scriptfile path="/view/kaf/sample/b/kafsample.b.vm.js" />
 			<com:scriptfile path="/view/kaf/007/shr/kaf007.shr.vm.js" />
 			<com:scriptfile path="/view/kaf/008/shr/kaf008.shr.vm.js" />
 			<com:scriptfile path="/view/kaf/009/shr/kaf009.shr.vm.js" />
+			<com:scriptfile path="/view/kaf/005/shr/kaf005.shr.vm.js" />
 			<com:scriptfile path="/view/kaf/007/b/kaf007.b.vm.js" />
 			<com:scriptfile path="/view/kaf/008/b/kaf008.b.vm.js" />
+			<com:scriptfile path="/view/kaf/020/c/kaf020.c.vm.js" />
+			<com:scriptfile path="/view/kaf/020/shr/kaf020.shr.vm.js" />
 			<com:scriptfile path="/view/kaf/002/m/kaf002.m.vm.js" />
 			<com:scriptfile path="/view/kaf/002/c/kaf002.c.vm.js" />
 			<com:scriptfile path="/view/kaf/002/d/kaf002.d.vm.js" />
 			<com:scriptfile path="/view/kaf/009/b/kaf009.b.vm.js" />
 			<com:scriptfile path="/view/kaf/004/b/kaf004.b.vm.js" />
+            <com:scriptfile path="/view/kaf/006/shr/kaf006.shr.vm.js" />
+            <com:scriptfile path="/view/kaf/006/shr/component1/kaf006.shr.component1.js" />
+            <com:scriptfile path="/view/kaf/006/shr/component2/kaf006.shr.component2.js" />
+            <com:scriptfile path="/view/kaf/006/shr/tab1/kaf006.shr.tab1.js" />
+            <com:scriptfile path="/view/kaf/006/shr/tab2/kaf006.shr.tab2.js" />
+            <com:scriptfile path="/view/kaf/006/shr/tab3/kaf006.shr.tab3.js" />
+            <com:scriptfile path="/view/kaf/006/shr/tab4/kaf006.shr.tab4.js" />
+			<com:scriptfile path="/view/kaf/006/b/kaf006.b.vm.js" />
+			<com:scriptfile path="/view/kaf/005/shr/footer/kaf005.shr.footer.vm.js" />
+			<com:scriptfile path="/view/kaf/005/shr/header/kaf005.shr.header.vm.js" />
+			<com:scriptfile path="/view/kaf/005/shr/work_info/kaf005.shr.work_info.vm.js" />
+			<com:scriptfile path="/view/kaf/005/shr/kaf005.shr.vm.js" />
+			<com:scriptfile path="/view/kaf/005/b/kaf005.b.vm.js" />
+			<com:scriptfile path="/view/kaf/010/shr/footer/kaf010.shr.footer.vm.js" />
+			<com:scriptfile path="/view/kaf/010/shr/header/kaf010.shr.header.vm.js" />
+			<com:scriptfile path="/view/kaf/010/shr/work_info/kaf010.shr.work_info.vm.js" />
+			<com:scriptfile path="/view/kaf/010/shr/time/kaf010.shr.time.vm.js" />
+			<com:scriptfile path="/view/kaf/010/b/kaf010.b.vm.js" />
+			<com:scriptfile path="/view/kaf/012/shr/kaf012.shr1.vm.js" />
+			<com:scriptfile path="/view/kaf/012/shr/kaf012.shr2.vm.js" />
+			<com:scriptfile path="/view/kaf/012/b/kaf012.b.vm.js" />
+			
+			<!-- KAF011 -->
+			<com:stylefile path="/view/kaf/011/shr/kaf011.shr.css" />
+			<com:scriptfile path="/view/kaf/011/shr/kaf011.shr.vm.js" />
+			<com:scriptfile path="/view/kaf/011/b/kaf011.b.vm.js" />
+			
 			<com:scriptfile path="/view/kaf/000/b/kaf000.b.vm.js" />
+			
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
@@ -162,37 +210,52 @@
 				</div>
 			</div>
 			<div id="contents-area">
-				<div data-bind="if: ko.unwrap(appType) === 0">
-					APP TYPE = 0
+				<div data-bind="if: currentApp()=='sample'">
+					<div data-bind="if: ko.unwrap(appType) != null">
+						<div data-bind="component: {
+							name: 'kafsample-b',
+							params: childParam
+						}"></div>
+					</div>
 				</div>
-				<div data-bind="if: ko.unwrap(appType) === 1">
-					APP TYPE = 1
+				<div data-bind="if: currentApp()!='sample'">
+				<div data-bind="if: ko.unwrap(appType) === getAppType('OVER_TIME_APPLICATION')">
+					<div data-bind="component: {
+							name: 'kaf005-b',
+							params: childParam
+						}"></div>
 				</div>
-				<div data-bind="if: ko.unwrap(appType) === 2">
+				<div data-bind="if: ko.unwrap(appType) === getAppType('ABSENCE_APPLICATION')">
+					<div data-bind="component: {
+						name: 'kaf006-b', 
+						params: childParam
+					}"></div>
+				</div>
+				<div data-bind="if: ko.unwrap(appType) === getAppType('WORK_CHANGE_APPLICATION')">
 					<div data-bind="component: {
 							name: 'kaf007-b',
 							params: childParam
 						}"></div>
 				</div>
-				<div data-bind="if: ko.unwrap(appType) === 3">
+				<div data-bind="if: ko.unwrap(appType) === getAppType('BUSINESS_TRIP_APPLICATION')">
 					<div data-bind="component: {
 							name: 'kaf008-b',
 							params: childParam
 						}"></div>
 				</div>
-				<div data-bind="if: ko.unwrap(appType) === 4">
+				<div data-bind="if: ko.unwrap(appType) === getAppType('GO_RETURN_DIRECTLY_APPLICATION')">
 					<div data-bind="component: {
 							name: 'kaf009-b',
 							params: childParam
 						}"></div>
 				</div>
-				<div data-bind="if: ko.unwrap(appType) === 9">
+				<div data-bind="if: ko.unwrap(appType) === getAppType('HOLIDAY_WORK_APPLICATION')">
 					<div data-bind="component: {
-							name: 'kaf004-b',
-							params: childParam
-						}"></div>
+						name: 'kaf010-b',
+						params: childParam
+					}"></div>
 				</div>
-				<div data-bind="if: ko.unwrap(appType) === 7">
+				<div data-bind="if: ko.unwrap(appType) === getAppType('STAMP_APPLICATION')">
 					<div data-bind="if: ko.toJS(application).opStampRequestMode == 0">
 						<div data-bind="component: {
 							name: 'kaf002-c',
@@ -205,6 +268,30 @@
 							params: childParam
 						}"></div>
 					</div>
+				</div>
+				<div data-bind="if: ko.unwrap(appType) === getAppType('ANNUAL_HOLIDAY_APPLICATION')">
+                    <div data-bind="component: {
+							name: 'kaf012-b',
+							params: childParam
+						}"></div>
+				</div>
+				<div data-bind="if: ko.unwrap(appType) === getAppType('EARLY_LEAVE_CANCEL_APPLICATION')">
+					<div data-bind="component: {
+							name: 'kaf004-b',
+							params: childParam
+						}"></div>
+				</div>
+				<div data-bind="if: ko.unwrap(appType) === getAppType('COMPLEMENT_LEAVE_APPLICATION') ">
+					<div class="kaf011" data-bind="with: kaf011BViewModel">
+						<ui:include src="../../011/b/index.xhtml" />
+					</div>
+				</div>
+				<div data-bind="if: ko.unwrap(appType) === getAppType('OPTIONAL_ITEM_APPLICATION')">
+					<div data-bind="component: {
+							name: 'kaf020-c',
+							params: childParam
+						}"></div>
+				</div>
 				</div>
 			</div>
 		</ui:define>

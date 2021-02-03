@@ -4,7 +4,7 @@ module nts.uk.com.view.cmm018.shr {
             updateHistory: "workflow/approvermanagement/workroot/updateHistory",
             getAllDataCom: "workflow/approvermanagement/workroot/getbycom",
             getAllDataPr: "workflow/approvermanagement/workroot/getbyprivate",
-            getNameAppType: "at/request/application/screen/applist/getAppNameInAppList",
+            getNameAppType: "workflow/approvermanagement/workroot/find/applicationType",
             updateRoot: "workflow/approvermanagement/workroot/updateRoot",
             getInfoEmployee: "workflow/approvermanagement/workroot/getInforPerson",
             getInfoEmLogin: "workflow/approvermanagement/workroot/getInforPsLogin",
@@ -13,7 +13,7 @@ module nts.uk.com.view.cmm018.shr {
             getWpLogin: "workflow/approvermanagement/workroot/find/wkpInfo-login",
             getDepLogin: "workflow/approvermanagement/workroot/find/depInfo-login",
             settingCas005: "at/auth/workplace/employmentrole/getemproleSet",
-            settingKaf022: "at/request/application/approval/appSet",
+            settingKaf022: "workflow/approvermanagement/workroot/appSet",
             setAppUseKaf022: "at/request/application/approval/app-useAtr",
             setDisHR: "hrdev/approvalSet/appRootSet",
             settingJnh011: "hr/notice/report/findByAbol",
@@ -30,7 +30,7 @@ module nts.uk.com.view.cmm018.shr {
             return nts.uk.request.ajax("com", paths.getAllDataPr, param);
         }
         export function getNameAppType(): JQueryPromise<any> {
-            return nts.uk.request.ajax("at", paths.getNameAppType);
+            return nts.uk.request.ajax("com", paths.getNameAppType);
         }
         export function updateRoot(data): JQueryPromise<any> {
             return nts.uk.request.ajax("com", paths.updateRoot, data);
@@ -57,8 +57,9 @@ module nts.uk.com.view.cmm018.shr {
         export function settingCas005(): JQueryPromise<any> {
             return nts.uk.request.ajax("at", paths.settingCas005);
         }
+		// move webservice to com refactor5
         export function settingKaf022(): JQueryPromise<any> {
-            return nts.uk.request.ajax("at", paths.settingKaf022);
+            return nts.uk.request.ajax("com", paths.settingKaf022);
         }
         //ApprovalInfoWebsevice
         export function setAppUseKaf022(param): JQueryPromise<any> {
@@ -70,7 +71,7 @@ module nts.uk.com.view.cmm018.shr {
         }
         //HrApprovalRooteSetWs
         export function setDisHR(): JQueryPromise<any> {
-            return nts.uk.request.ajax("hr", paths.setDisHR);
+            return nts.uk.request.ajax("com", paths.setDisHR);
         }
         //EventManageWebservice
         export function settingJmm018(): JQueryPromise<any> {

@@ -5,78 +5,69 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
-import nts.uk.ctx.bs.employee.dom.employee.contact.EmployeeInfoContact;
-import nts.uk.ctx.bs.employee.dom.employee.contact.EmployeeInfoContactRepository;
+import nts.uk.ctx.bs.employee.app.command.employee.data.management.EmployeeContactDto;
+import nts.uk.ctx.bs.employee.dom.employee.data.management.contact.EmployeeContact;
+import nts.uk.ctx.bs.employee.dom.employee.data.management.contact.EmployeeContactRepository;
 import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.pub.contact.EmployeeContactObject;
 import nts.uk.ctx.bs.employee.pub.contact.EmployeeContactPub;
 import nts.uk.ctx.bs.employee.pub.contact.PersonContactObjectOfEmployee;
-import nts.uk.ctx.bs.person.dom.person.contact.EmergencyContact;
-import nts.uk.ctx.bs.person.dom.person.contact.PersonContact;
-import nts.uk.ctx.bs.person.dom.person.contact.PersonContactRepository;
-import nts.uk.shr.com.context.AppContexts;
+import nts.uk.ctx.bs.person.dom.person.personal.contact.PersonalContact;
+import nts.uk.ctx.bs.person.dom.person.personal.contact.PersonalContactRepository;
 
 @Stateless
 public class EmployeeContactPubImpl implements EmployeeContactPub {
 
 	@Inject
-	private EmployeeInfoContactRepository empContactRepo;
+	private EmployeeContactRepository empContactRepo;
 	
 	@Inject
 	private EmployeeDataMngInfoRepository empDataMngInfoRepo;
 	
 	@Inject
-	private PersonContactRepository personContactRepo;
+	private PersonalContactRepository personalContactRepository;
 
 	@Override
 	public List<EmployeeContactObject> getList(List<String> employeeIds) {
-		List<EmployeeInfoContact> empContact = empContactRepo.findByListEmpId(employeeIds);
-		return empContact.stream().map(c -> convert(c)).collect(Collectors.toList());
+		return empContactRepo.getByEmployeeIds(employeeIds).stream()
+		.map(item -> convert(item))
+		.collect(Collectors.toList());
 	}
 
-	private EmployeeContactObject convert(EmployeeInfoContact ec) {
-		EmployeeContactObject ecDto = new EmployeeContactObject();
-		ecDto.setSid(ec.getSid());
-
-		if (ec.getMailAddress().isPresent()) {
-			ecDto.setMailAddress(ec.getMailAddress().get().v());
-		}
-
-		if (ec.getSeatDialIn().isPresent()) {
-			ecDto.setSeatDialIn(ec.getSeatDialIn().get().v());
-		}
-
-		if (ec.getSeatExtensionNo().isPresent()) {
-			ecDto.setSeatExtensionNo(ec.getSeatExtensionNo().get().v());
-		}
-
-		if (ec.getPhoneMailAddress().isPresent()) {
-			ecDto.setPhoneMailAddress(ec.getPhoneMailAddress().get().v());
-		}
-
-		if (ec.getCellPhoneNo().isPresent()) {
-			ecDto.setCellPhoneNo(ec.getCellPhoneNo().get().v());
-		}
-		return ecDto;
-
+	private EmployeeContactObject convert(EmployeeContact item) {
+		return new EmployeeContactObject(
+				item.getEmployeeId(),
+				item.getMailAddress().map(m -> m.v()).orElse(null),
+				item.getIsMailAddressDisplay().map(m -> m.booleanValue()).orElse(false),
+				item.getSeatDialIn().map(m -> m.v()).orElse(null),
+				item.getIsSeatDialInDisplay().map(m -> m.booleanValue()).orElse(false),
+				item.getSeatExtensionNumber().map(m -> m.v()).orElse(null),
+				item.getIsSeatExtensionNumberDisplay().map(m -> m.booleanValue()).orElse(false),
+				item.getMobileMailAddress().map(m -> m.v()).orElse(null),
+				item.getIsMobileMailAddressDisplay().map(m -> m.booleanValue()).orElse(false),
+				item.getCellPhoneNumber().map(m -> m.v()).orElse(null),
+				item.getIsCellPhoneNumberDisplay().map(m -> m.booleanValue()).orElse(false)
+				);
 	}
 
 	@Override
 	public void register(String employeeId, String mailAddress, String phoneMailAddress, String cellPhoneNo) {
 		
-		Optional<EmployeeInfoContact> existContact = empContactRepo.findByEmpId(employeeId);
-		
-		EmployeeInfoContact domain = EmployeeInfoContact.createFromJavaType(AppContexts.user().companyId(), employeeId,
-				mailAddress, null, null, phoneMailAddress, cellPhoneNo);
-		
+		Optional<EmployeeContact> existContact = empContactRepo.getByEmployeeId(employeeId);
+		EmployeeContactDto dto = EmployeeContactDto.builder()
+				.employeeId(employeeId)
+				.mailAddress(mailAddress)
+				.mobileMailAddress(phoneMailAddress)
+				.cellPhoneNumber(cellPhoneNo)
+				.build();
+
+		EmployeeContact domain = EmployeeContact.createFromMemento(dto);
 		if (existContact.isPresent()) {
 			empContactRepo.update(domain);
 		} else {
-			empContactRepo.add(domain);
+			empContactRepo.insert(domain);
 		}
 	}
 
@@ -85,42 +76,50 @@ public class EmployeeContactPubImpl implements EmployeeContactPub {
 		Map<String, String> employeeIdPersonIdMap = empDataMngInfoRepo.findByListEmployeeId(employeeIds).stream()
 				.collect(Collectors.toMap(x -> x.getEmployeeId(), x -> x.getPersonId()));
 
-		Map<String, PersonContact> personContacts = personContactRepo
-				.getByPersonIdList(new ArrayList<>(employeeIdPersonIdMap.values())).stream()
-				.collect(Collectors.toMap(x -> x.getPersonId(), x -> x));
+		Map<String, PersonalContact> personContacts = personalContactRepository.getByPersonalIds(employeeIdPersonIdMap.values()
+				.stream().collect(Collectors.toList())).stream()
+				.collect(Collectors.toMap(p -> p.getPersonalId(), p -> p));
+		
 		List<PersonContactObjectOfEmployee> resultList = new ArrayList<>();
 		employeeIdPersonIdMap.forEach((empId, perId) -> {
-			PersonContact personContact = personContacts.get(perId);
-			if(personContact != null) {
-				PersonContactObjectOfEmployee personContactOfEmp = convert(empId, personContact);
+			PersonalContact personalContact = personContacts.get(perId);
+			if(personalContact != null) {
+				PersonContactObjectOfEmployee personContactOfEmp = convert(empId, personalContact);
 				resultList.add(personContactOfEmp);
 			}
 		});
 		return resultList;
 	}
 	
-	private PersonContactObjectOfEmployee convert(String employeeId, PersonContact p) {
-		PersonContactObjectOfEmployee pcObject = new PersonContactObjectOfEmployee();
-		pcObject.setEmployeeId(employeeId);
-		pcObject.setPersonId(p.getPersonId());
-		pcObject.setCellPhoneNumber(p.getCellPhoneNumber().isPresent() ? p.getCellPhoneNumber().get().v() : null);
-		pcObject.setMailAdress(p.getMailAdress().isPresent() ? p.getMailAdress().get().v() : null);
-		pcObject.setMobileMailAdress(p.getMobileMailAdress().isPresent() ? p.getMobileMailAdress().get().v() : null);
-
-		Optional<EmergencyContact> emerContact1 = p.getEmergencyContact1();
-		if (emerContact1.isPresent()) {
-			pcObject.setMemo1(emerContact1.get().getMemo().map(i->i.v()).orElse(null));
-			pcObject.setContactName1(emerContact1.get().getContactName().map(i->i.v()).orElse(null));
-			pcObject.setPhoneNumber1(emerContact1.get().getPhoneNumber().map(i->i.v()).orElse(null));
+	private PersonContactObjectOfEmployee convert(String employeeId, PersonalContact p) {
+		return PersonContactObjectOfEmployee.builder()
+				.employeeId(employeeId)
+				.personId(p.getPersonalId())
+				.cellPhoneNumber(p.getPhoneNumber().map(m -> m.v()).orElse(null))
+				.isPhoneNumberDisplay(p.getIsPhoneNumberDisplay().map(m -> m.booleanValue()).orElse(false))
+				.mailAdress(p.getMailAddress().map(m -> m.v()).orElse(null))
+				.isMailAddressDisplay(p.getIsMailAddressDisplay().map(m -> m.booleanValue()).orElse(false))
+				.mobileMailAdress(p.getMobileEmailAddress().map(m -> m.v()).orElse(null))
+				.isMobileEmailAddressDisplay(p.getIsMobileEmailAddressDisplay().map(m -> m.booleanValue()).orElse(false))
+				.memo1(p.getEmergencyContact1().map(item -> item.getRemark().v()).orElse(null))
+				.contactName1(p.getEmergencyContact1().map(item -> item.getContactName().v()).orElse(null))
+				.phoneNumber1(p.getEmergencyContact1().map(item -> item.getPhoneNumber().v()).orElse(null))
+				.isEmergencyContact1Display(p.getIsEmergencyContact1Display().map(m -> m.booleanValue()).orElse(false))
+				.memo2(p.getEmergencyContact2().map(item -> item.getRemark().v()).orElse(null))
+				.contactName2(p.getEmergencyContact2().map(item -> item.getContactName().v()).orElse(null))
+				.phoneNumber2(p.getEmergencyContact2().map(item -> item.getPhoneNumber().v()).orElse(null))
+				.isEmergencyContact2Display(p.getIsEmergencyContact2Display().map(m -> m.booleanValue()).orElse(false))
+				.build();
+	}
+	
+	@Override
+	public EmployeeContactObject get(String employeeId) {
+		Optional<EmployeeContact> employeeContactOpt = this.empContactRepo.getByEmployeeId(employeeId);
+		EmployeeContactObject employeeContactObject = null;
+		if (employeeContactOpt.isPresent()) {
+			employeeContactObject = this.convert(employeeContactOpt.get());
 		}
-		Optional<EmergencyContact> emerContact2 = p.getEmergencyContact2();
-		if (emerContact2.isPresent()) {
-			pcObject.setMemo2(emerContact2.get().getMemo().map(i->i.v()).orElse(null));
-			pcObject.setContactName2(emerContact2.get().getContactName().map(i->i.v()).orElse(null));
-			pcObject.setPhoneNumber2(emerContact2.get().getPhoneNumber().map(i->i.v()).orElse(null));
-		}
-		return pcObject;
-
+		return employeeContactObject;
 	}
 
 }

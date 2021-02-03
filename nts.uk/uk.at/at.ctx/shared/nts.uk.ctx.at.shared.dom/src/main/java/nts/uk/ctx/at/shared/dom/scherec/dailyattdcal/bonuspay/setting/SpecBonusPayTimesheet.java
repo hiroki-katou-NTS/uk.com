@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.addition.additionsetting.paytimeframe.SpecBonusPayNumber;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.SpecBonusPayNumber;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.enums.RoundingAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.enums.UnitAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.enums.UseAtr;

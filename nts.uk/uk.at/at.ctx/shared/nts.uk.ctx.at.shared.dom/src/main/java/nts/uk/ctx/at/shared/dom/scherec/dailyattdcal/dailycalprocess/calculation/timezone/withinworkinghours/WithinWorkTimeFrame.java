@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.uk.ctx.at.shared.dom.PremiumAtr;
@@ -25,6 +26,7 @@ import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkRegularAddition
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkTimeCalcMethodDetailOfHoliday;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.ActualWorkTimeSheetAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalcOfLeaveEarlySetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.ConditionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
@@ -32,16 +34,15 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.DeductionOffSetTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.DeductionTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerPersonDailySet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.PredetermineTimeSetForCalc;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.SpecBonusPayTimeSheetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.other.ManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.CalculationTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.someitems.BonusPayTimeSheetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.midnighttimezone.MidNightTimeSheetForCalc;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.PredetermineTimeSetForCalc;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.SpecBonusPayTimeSheetForCalc;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayAdditionAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
@@ -991,37 +992,11 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 			Optional<LateDecisionClock> lateDecisionClock,
 			WorkTimezoneCommonSet commonSetting,
 			FlowWorkRestTimezone flowRestTime){
-			
-		if(!lateDecisionClock.isPresent()) return Optional.empty();
 		
-		//出勤時刻 > 遅刻判断時刻 の場合
-		if(timeLeavingWork.getTimespan().getSpan().getStart().greaterThan(lateDecisionClock.get().getLateDecisionClock().getDayTime())) {
-			
-			LateTimeSheet creatingLateTimeSheet = new LateTimeSheet(Optional.empty(), Optional.empty(), timeLeavingWork.getWorkNo().v(), Optional.empty());
-			
-			//遅刻控除時間帯の作成
-			creatingLateTimeSheet.createLateTimeSheetForFlow(
-					DeductionAtr.Deduction,
-					timeLeavingWork,
-					predetermineTimeSet,
-					commonSetting,
-					flowRestTime,
-					forDeductionTimeZones);
-			
-			//遅刻時間帯の作成
-			creatingLateTimeSheet.createLateTimeSheetForFlow(
-					DeductionAtr.Appropriate,
-					timeLeavingWork,
-					predetermineTimeSet,
-					commonSetting,
-					flowRestTime,
-					forDeductionTimeZones);
-			
-			this.lateTimeSheet = Optional.of(creatingLateTimeSheet);
-			
-			return Optional.of(creatingLateTimeSheet);
-		}
-		return Optional.empty();
+		this.lateTimeSheet = LateTimeSheet.createLateTimeSheet(timeLeavingWork, predetermineTimeSet, forDeductionTimeZones,
+													lateDecisionClock, commonSetting, flowRestTime);
+		
+		return this.lateTimeSheet;
 	}
 	
 	 /**
@@ -1042,36 +1017,11 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 			WorkTimezoneCommonSet commonSetting,
 			FlowWorkRestTimezone flowRestTime){
 			
-		if(!leaveEarlyDecisionClock.isPresent()) return Optional.empty();
+
+		this.leaveEarlyTimeSheet = LeaveEarlyTimeSheet.createLeaveEarlyTimeSheet(timeLeavingWork, predetermineTimeSet, 
+									forDeductionTimeZones, leaveEarlyDecisionClock, commonSetting, flowRestTime);
 		
-		//早退判断時刻 > 退勤時刻 の場合
-		if(leaveEarlyDecisionClock.get().getLeaveEarlyDecisionClock().greaterThan(timeLeavingWork.getTimespan().getSpan().getEnd().getDayTime())) {
-			
-			LeaveEarlyTimeSheet creatingLeaveEarlyTimeSheet = new LeaveEarlyTimeSheet(Optional.empty(), Optional.empty(), timeLeavingWork.getWorkNo().v(), Optional.empty());
-			
-			//早退控除時間帯の作成
-			creatingLeaveEarlyTimeSheet.createLeaveEaryTimeSheetForFlow(
-					DeductionAtr.Deduction,
-					timeLeavingWork,
-					predetermineTimeSet,
-					commonSetting,
-					flowRestTime,
-					forDeductionTimeZones);
-			
-			//早退時間帯の作成
-			creatingLeaveEarlyTimeSheet.createLeaveEaryTimeSheetForFlow(
-					DeductionAtr.Appropriate,
-					timeLeavingWork,
-					predetermineTimeSet,
-					commonSetting,
-					flowRestTime,
-					forDeductionTimeZones);
-			
-			this.leaveEarlyTimeSheet = Optional.of(creatingLeaveEarlyTimeSheet);
-			
-			return Optional.of(creatingLeaveEarlyTimeSheet);
-		}
-		return Optional.empty();
+		return this.leaveEarlyTimeSheet;
 	}
 	
 	/**

@@ -10,8 +10,9 @@ public interface AuthorityFormatDailyRepository {
 
 	List<AuthorityFomatDaily> getAuthorityFormatDaily(String companyId, DailyPerformanceFormatCode dailyPerformanceFormatCode);
 
-	List<AuthorityFomatDaily> getAuthorityFormatDailyDetail(String companyId, DailyPerformanceFormatCode dailyPerformanceFormatCode,
-			BigDecimal sheetNo);
+	List<AuthorityFomatDaily> getAuthorityFormatDailyDetail(String companyId, DailyPerformanceFormatCode dailyPerformanceFormatCode);
+
+	List<AuthorityFomatDaily> getAuthorityFormatDailyDetail(String companyId, DailyPerformanceFormatCode dailyPerformanceFormatCode, BigDecimal sheetNo);
 
 	void update(AuthorityFomatDaily authorityFomatDaily);
 

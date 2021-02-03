@@ -439,26 +439,27 @@ module nts.uk.com.view.cli003.g.viewmodel {
                     self.logItemsFull(logItemsTemp);
 
                     //check selected code
-                    if (self.currentLogDisplaySet() &&
-                        self.currentLogDisplaySet().recordType == recordType) {
-                        const logSetOutputs = self.currentLogDisplaySet().logSetOutputs;
-                        if (logSetOutputs) {
-                            const lengthItemSwap = logItemsTemp.length;
-                            const logItemSetted = [];
-                            _.forEach(logSetOutputs, function(logSetOutput) {
-                                let itemNo = logSetOutput.itemNo;
-                                let itemName;
-                                for (var k = 0; k < lengthItemSwap; k++) {
-                                    if (logItemsTemp[k].code == itemNo) {
-                                        itemName = logItemsTemp[k].name;
-                                        logItemSetted.push(
-                                            new ItemLogSetRecordTypeModel(logSetOutput.itemNo, itemName, logSetOutput.isUseFlag,
-                                                logSetOutput.logSetItemDetails));
-                                        break;
+                    if(self.mode() !== MODE.INSERT) {
+                        if (self.currentLogDisplaySet() && self.currentLogDisplaySet().recordType == recordType) {
+                            const logSetOutputs = self.currentLogDisplaySet().logSetOutputs;
+                            if (logSetOutputs) {
+                                const lengthItemSwap = logItemsTemp.length;
+                                const logItemSetted = [];
+                                _.forEach(logSetOutputs, function(logSetOutput) {
+                                    let itemNo = logSetOutput.itemNo;
+                                    let itemName;
+                                    for (var k = 0; k < lengthItemSwap; k++) {
+                                        if (logItemsTemp[k].code == itemNo) {
+                                            itemName = logItemsTemp[k].name;
+                                            logItemSetted.push(
+                                                new ItemLogSetRecordTypeModel(logSetOutput.itemNo, itemName, logSetOutput.isUseFlag,
+                                                    logSetOutput.logSetItemDetails));
+                                            break;
+                                        }
                                     }
-                                }
-                            });
-                            self.selectedCodeList(logItemSetted);
+                                });
+                                self.selectedCodeList(logItemSetted);
+                            }
                         }
                     }
                 } else {
@@ -568,15 +569,21 @@ module nts.uk.com.view.cli003.g.viewmodel {
         //Call server api
         registerLogSetNew() {
             let self = this;
-            if (self.mode() == MODE.INSERT
+            if(!(self.selectedCodeList().length === 0)) {
+                if (self.mode() == MODE.INSERT
                 || self.mode() == MODE.COPY) {
-                if (self.validateForm() && self.validateCode() && self.validateLogSetOutputItem()) {
-                    self.saveLogDisplaySet();
+                    if (self.validateForm() && self.validateCode() && self.validateLogSetOutputItem()) {
+                        self.saveLogDisplaySet();
+                    }
+                } else {
+                    if (self.validateForm() && self.validateLogSetOutputItem()) {
+                        self.updateLogDisplaySet();
+                    }
                 }
             } else {
-                if (self.validateForm() && self.validateLogSetOutputItem()) {
-                    self.updateLogDisplaySet();
-                }
+                alertError({ messageId: "Msg_2037" }).then(() => {
+                    self.setFocus();
+               });
             }
         }
 
@@ -701,11 +708,7 @@ module nts.uk.com.view.cli003.g.viewmodel {
             const listSelectedLogOutputItems = [];
             for (let i = 0; i < self.selectedCodeList().length; i++) {
                 const item = self.selectedCodeList()[i];
-//                if (item.isShow == 1) {
                 listSelectedLogOutputItems.push(new LogSetOutputItemModal(self.logSetId(), item.code, i, item.isShow, item.detail));
-//                } else {
-//                    listSelectedLogOutputItems.push(new LogSetOutputItemModal(self.logSetId(), item.code, i, item.isShow, []));
-//                }
             }
             return listSelectedLogOutputItems;
         }
@@ -713,16 +716,6 @@ module nts.uk.com.view.cli003.g.viewmodel {
         validateLogSetOutputItem(): boolean {
             const self = this;
             self.logSetOutputItems(self.getListSetOutputItems());
-
-//            for (var i = 0; i < self.logSetOutputItems().length; i++) {
-//                const logSetOutputItem = self.logSetOutputItems()[i];
-//                if (logSetOutputItem.isUseFlag == 1) {
-//                    if (!self.validateLogSetOutputItemDetail(logSetOutputItem.logSetItemDetails)) {
-//                        alertError({ messageId: "Msg_1203", messageParams: [getText('CLI003_49')]});
-//                        return false;
-//                    }
-//                }
-//            }
             return true;
         }
 

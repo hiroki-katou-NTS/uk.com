@@ -15,7 +15,7 @@ import nts.uk.ctx.at.record.app.command.workrecord.goout.OutManageCommand;
 import nts.uk.ctx.at.record.app.command.workrecord.goout.OutManageCommandHandler;
 import nts.uk.ctx.at.record.app.find.workrecord.goout.OutManageDto;
 import nts.uk.ctx.at.record.app.find.workrecord.goout.OutManageFinder;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 
 /**
  * The Class OutManageWS.

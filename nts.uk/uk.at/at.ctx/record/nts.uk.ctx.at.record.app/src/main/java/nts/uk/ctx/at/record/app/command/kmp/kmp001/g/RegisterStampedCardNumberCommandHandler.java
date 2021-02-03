@@ -29,8 +29,8 @@ public class RegisterStampedCardNumberCommandHandler {
 		if (!param.sid.isEmpty()) {
 
 			for (int i = 0; i < param.cardGeneration.size(); i++) {
-				Optional<StampCard> stampCard = this.stampCardRepo.getStampCardByEmployeeCardNumber(param.sid.get(i),
-						param.cardGeneration.get(i).getCardNumber());
+				Optional<StampCard> stampCard = this.stampCardRepo.getByCardNoAndContractCode(
+						param.cardGeneration.get(i).getCardNumber(), AppContexts.user().contractCode());
 
 				if (stampCard.isPresent()) {
 					continue;

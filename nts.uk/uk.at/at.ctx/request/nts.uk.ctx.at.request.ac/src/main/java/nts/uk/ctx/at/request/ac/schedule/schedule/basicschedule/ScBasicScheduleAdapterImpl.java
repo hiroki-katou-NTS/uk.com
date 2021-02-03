@@ -11,6 +11,8 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.BasicScheduleConfirmImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.BasicScheduleConfirmImport.ConfirmedAtrImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport_Old;
@@ -59,11 +61,12 @@ public class ScBasicScheduleAdapterImpl implements ScBasicScheduleAdapter {
 
 	@Override
 	public ScBasicScheduleImport findByIDRefactor(String employeeID, GeneralDate date) {
-		ScWorkScheduleExport_New scWorkScheduleExport = scBasicSchedulePub.findByIdNewV2(employeeID, date);
+		ScWorkScheduleExport_New scWorkScheduleExport = scBasicSchedulePub.findByIdNewV2(employeeID, date).orElse(null);
 		return fromExport(scWorkScheduleExport);
 	}
 	
 	private ScBasicScheduleImport fromExport(ScWorkScheduleExport_New scWorkScheduleExport) {
+		if (scWorkScheduleExport == null) return null;
 		return new ScBasicScheduleImport(
 				scWorkScheduleExport.getEmployeeId(), 
 				scWorkScheduleExport.getDate(), 
@@ -78,9 +81,15 @@ public class ScBasicScheduleAdapterImpl implements ScBasicScheduleAdapter {
 						x.getShortWorkTimeFrameNo(), 
 						x.getChildCareAttr(), 
 						x.getStartTime(), 
-						x.getEndTime(), 
-						x.getDeductionTime(), 
-						x.getShortTime())).collect(Collectors.toList()));
+						x.getEndTime())).collect(Collectors.toList()));
+	}
+
+	@Override
+	public List<BasicScheduleConfirmImport> findConfirmById(List<String> employeeID, DatePeriod date) {
+		return scBasicSchedulePub
+				.findConfirmById(employeeID, date).stream().map(x -> new BasicScheduleConfirmImport(x.getEmployeeId(),
+						x.getDate(), ConfirmedAtrImport.valueOf(x.getConfirmedAtr().value)))
+				.collect(Collectors.toList());
 	}
 
 }

@@ -5,6 +5,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+
+import nts.arc.layer.ws.WebService;
 import nts.uk.screen.at.app.shiftmanagement.shifttable.Ksu001uRequest;
 import nts.uk.screen.at.app.shiftmanagement.shifttable.Ksu001uScreenQuery;
 import nts.uk.screen.at.app.shiftmanagement.shifttable.PublicInfoOganizationDto;
@@ -16,7 +18,7 @@ import nts.uk.screen.at.app.shiftmanagement.shifttable.PublicInfoOganizationDto;
  */
 @Path("screen/at/shiftmanagement/shifttable")
 @Produces(MediaType.APPLICATION_JSON)
-public class Ksu001uWs {
+public class Ksu001uWs extends WebService {
 	@Inject
 	private Ksu001uScreenQuery ksu001uScreenQuery;
 

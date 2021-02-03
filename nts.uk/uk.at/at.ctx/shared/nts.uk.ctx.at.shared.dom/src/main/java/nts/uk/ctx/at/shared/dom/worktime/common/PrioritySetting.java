@@ -93,4 +93,12 @@ public class PrioritySetting extends WorkTimeDomainObject implements Cloneable{
 		}
 		return cloned;
 	}
+
+	public PrioritySetting(MultiStampTimePiorityAtr multiStampTimePiorityAtr, StampPiorityAtr superiority) {
+		this.priorityAtr = multiStampTimePiorityAtr;
+		this.stampAtr = superiority;		
+	}
+	
+	
+	
 }

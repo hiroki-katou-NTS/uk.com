@@ -21,6 +21,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.MailRes
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidayService;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidayService_Old;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
 import nts.uk.shr.com.context.AppContexts;
@@ -90,7 +91,7 @@ public class DeleteAppHandler extends CommandHandlerWithResult<AppDetailBehavior
 		
 		// アルゴリズム「11.休出申請（振休変更）削除」を実行する
 		if(application.getAppType()==ApplicationType.HOLIDAY_WORK_APPLICATION){
-			holidayService.delHdWorkByAbsLeaveChange(appID);
+			holidayService.deleteHdChange(appID);
 		}
 		processResult.setAppID(appID);
 		return processResult;

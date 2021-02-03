@@ -14,6 +14,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.DeductLeaveEarly;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.PersonnelCostSettingImport;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
@@ -26,16 +27,16 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationti
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DivergenceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DivergenceTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.SystemFixedErrorAlarm;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime.PremiumTimeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.VacationClass;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workingstyle.flex.SettingOfFlexWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workschedule.WorkScheduleTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManageReGetClass;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.PredetermineTimeSetForCalc;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareTimezoneResult;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.CheckExcessAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.ManageReGetClass;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.PersonnelCostSettingImport;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.PredetermineTimeSetForCalc;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.enums.CheckExcessAtr;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.enums.SystemFixedErrorAlarm;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
@@ -130,15 +131,21 @@ public class ActualWorkingTimeOfDaily {
     
 	/**
 	 * 日別実績の実働時間の計算
+	 * @param recordClass 
+	 * @param vacationClass 
+	 * @param workType 
+	 * @param workTimeDailyAtr 
+	 * @param flexCalcMethod 
+	 * @param bonusPayAutoCalcSet 
+	 * @param eachCompanyTimeSet 
+	 * @param forCalcDivergenceDto 
+	 * @param divergenceTimeList 
+	 * @param conditionItem 
+	 * @param predetermineTimeSetByPersonInfo 
+	 * @param leaveLateSet 
 	 * @param workScheduleTime 
-	 * @param breakTimeCount 
-	 * @param schePreTimeSet 
-	 * @param schePreTimeSet 
-	 * @param ootsukaFixedCalcSet 
-	 * @param integrationOfDaily 
-	 * @param dailyUnit 
-	 * @param workScheduleTime 
-	 * @param flexSetting 
+	 * @param recordWorkTimeCode 
+	 * @param declareResult 申告時間帯作成結果
 	 */
 	public static ActualWorkingTimeOfDaily calcRecordTime(ManageReGetClass recordClass,
 			   VacationClass vacationClass,
@@ -151,8 +158,10 @@ public class ActualWorkingTimeOfDaily {
 			   List<DivergenceTimeRoot> divergenceTimeList, 
 			   WorkingConditionItem conditionItem,
 			   Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo,
-			   DeductLeaveEarly leaveLateSet, WorkScheduleTimeOfDaily workScheduleTime,Optional<WorkTimeCode> recordWorkTimeCode) {
-
+			   DeductLeaveEarly leaveLateSet,
+			   WorkScheduleTimeOfDaily workScheduleTime,
+			   Optional<WorkTimeCode> recordWorkTimeCode,
+			   DeclareTimezoneResult declareResult) {
 		
 		/* 総労働時間の計算 */
 		val totalWorkingTime = TotalWorkingTime.calcAllDailyRecord(recordClass,
@@ -165,8 +174,8 @@ public class ActualWorkingTimeOfDaily {
 					conditionItem,
 					predetermineTimeSetByPersonInfo,
 					leaveLateSet,
-					recordWorkTimeCode
-					);
+					recordWorkTimeCode,
+					declareResult);
 		
 		TotalWorkingTime calcResultOotsuka;
 		if(workType.getDailyWork().decisionMatchWorkType(WorkTypeClassification.SpecialHoliday).isFullTime()) {
@@ -700,15 +709,12 @@ public class ActualWorkingTimeOfDaily {
 		}
 		//休憩終了 <= 退勤
 		if(attendanceLeave.getEnd().greaterThan(breakTimeSheet.get().getEndTime())) {
-			Optional<BreakTimeSheet> equalTimeSheet = Optional.empty();
-			for(BreakTimeOfDailyAttd masterBreakTimeSheet: integrationOfDailyInDto.getBreakTime()) {
-				if(masterBreakTimeSheet.getBreakType().isReferWorkTime()) {
-					equalTimeSheet = masterBreakTimeSheet.getBreakTimeSheets().stream()
-																			  .filter(ts -> ts.getStartTime() != null && ts.getEndTime() != null)
-																			  .filter(tc -> new TimeSpanForCalc(tc.getStartTime(),tc.getEndTime())
-																					  					.contains(new TimeSpanForCalc(breakTimeSheet.get().getStartTime(),breakTimeSheet.get().getEndTime()))).findFirst();
-				}
-			}
+			Optional<BreakTimeSheet> equalTimeSheet = integrationOfDailyInDto.getBreakTime().getBreakTimeSheets().stream()
+						  .filter(ts -> ts.getStartTime() != null && ts.getEndTime() != null)
+						  .filter(tc -> new TimeSpanForCalc(tc.getStartTime(),tc.getEndTime())
+								  			.contains(new TimeSpanForCalc(breakTimeSheet.get().getStartTime(),
+				  															breakTimeSheet.get().getEndTime())))
+						  .findFirst();
 			if(equalTimeSheet.isPresent()) {
 				//取得した休憩と予定休憩の時間帯が同じ
 				return 0;

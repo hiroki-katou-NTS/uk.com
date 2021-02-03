@@ -11,6 +11,8 @@ import nts.arc.time.GeneralDateTime;
 public interface DataRecoveryResultRepository {
 
 	Optional<DataRecoveryResult> getDataRecoverResultById(String dataRecoveryProcessId);
+	
+	List<DataRecoveryResult> getDataRecoveryResultByStartDatetime(GeneralDateTime from, GeneralDateTime to);
 
 	List<DataRecoveryResult> getResultOfRestoration(
 			 String cid,
@@ -26,4 +28,8 @@ public interface DataRecoveryResultRepository {
 	void remove(String dataRecoveryProcessId);
 	
 	void updateEndDateTimeExecutionResult(String dataRecoveryProcessId, DataRecoveryOperatingCondition dataRecoveryOperatingCondition);
+	
+	List<DataRecoveryResult> getDataRecoveryResultsByIds(List<String> dataRecoveryProcessIds);
+	
+	List<DataRecoveryResult> getDataRecoveryResultsBySaveNames(List<String> saveNames);
 }

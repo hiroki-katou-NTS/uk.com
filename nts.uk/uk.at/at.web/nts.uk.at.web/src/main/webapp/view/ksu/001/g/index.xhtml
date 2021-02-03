@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+    <ui:composition template="../../../../master/dialog.xhtml">
+        <ui:define name="htmlHead">
+            <script>var dialogSize = { width: 820, height: 620 };</script>
+
+            <com:scriptfile set="IGNITE" />
+            <com:scriptfile path="ksu001.g.vm.js" />
+            <com:stylefile path="ksu001.g.style.css" />
+        </ui:define>
+
+        <ui:define name="content">            
+            <div id="content-area" style="overflow:hidden">
+                <div class="container-custom">
+                    <!--G2-1-->
+                    <div data-bind="ntsFormLabel:{}">#{i18n.getText('KSU001_4030')} </div>    
+
+                    <!--G2-2-->             
+                    <label style="margin-left: 20px; margin-top: 10px;"  data-bind="text: period"></label>   
+
+                    <!--G2-3-->
+                    <button style="margin-left: 430px;" tabindex="2" data-bind="click: clearFilter">#{i18n.getText('KSU001_4031')}</button>                    
+                </div>
+
+                <div tabindex="3" class="container-custom">                     
+                    <!--G3-1-->
+                    <table id="grid"></table>
+                </div>                             
+            </div>
+            <div id="functions-area-bottom" >
+                <!--G1-1-->
+                <button tabindex="1" data-bind="click: closeDialog">#{i18n.getText('KSU001_4029')}</button>
+            </div>
+        </ui:define>
+    </ui:composition>
+</body>
+</html>

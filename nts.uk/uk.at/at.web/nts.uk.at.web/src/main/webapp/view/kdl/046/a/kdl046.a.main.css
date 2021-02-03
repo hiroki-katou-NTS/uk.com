@@ -14,3 +14,28 @@ button.nts-switch-button {
 #workplace-group-pannel{
 	margin-top: 10px;
 }
+.nts-searchbbox-wrapper input.ntsSearchBox{
+	width: 198px !important;
+}
+#single-tree-grid-tree-grid_scrollContainer{
+	height: 289px !important;
+}
+#single-tree-grid-tree-grid_displayContainer{
+	height: 289px !important;
+}
+
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active),
+@supports (-ms-accelerator:true) or (-ms-ime-align:auto) {
+   #single-tree-grid-tree-grid_scrollContainer{
+	height: 294px !important;
+}
+}
+
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active),
+@supports (-ms-accelerator:true) or (-ms-ime-align:auto) {
+   #single-tree-grid-tree-grid_displayContainer{
+	height: 294px !important;
+}
+
+}
+

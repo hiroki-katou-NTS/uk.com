@@ -19,6 +19,8 @@ import nts.uk.ctx.sys.assist.dom.deletedata.EmployeeDeletion;
 import nts.uk.ctx.sys.assist.dom.deletedata.ManualSetDeletion;
 import nts.uk.ctx.sys.assist.dom.deletedata.PasswordCompressFileEncrypt;
 import nts.uk.ctx.sys.assist.dom.deletedata.SupplementExplanation;
+import nts.uk.ctx.sys.assist.dom.storage.PatternCode;
+import nts.uk.ctx.sys.assist.dom.storage.StorageClassification;
 
 /**
  * @author hiep.th
@@ -44,6 +46,7 @@ public class ManualSetDelCommand {
 	private int isExistCompressPasswordFlg;
 	private String passwordForCompressFile;
 	private int haveEmployeeSpecifiedFlg;
+	private String delPattern;
 	private List<EmployeesDeletionCommand> employees;
 	private List<CategoryDeletionCommand> categories;
 	
@@ -58,7 +61,8 @@ public class ManualSetDelCommand {
 				Optional.ofNullable(referenceDate), executionDateAndTime, 
 				Optional.ofNullable(dayStartDate), Optional.ofNullable(dayEndDate), 
 				Optional.ofNullable(monthStartDate), Optional.ofNullable(monthEndDate), 
-				Optional.ofNullable(startYear), Optional.ofNullable(endYear), null);			
+				Optional.ofNullable(startYear), Optional.ofNullable(endYear),
+				StorageClassification.MANUAL, new PatternCode(delPattern), null);			
 	}
 	
 	public List<EmployeeDeletion> getEmployees(String delId) {
@@ -70,9 +74,8 @@ public class ManualSetDelCommand {
 	
 	
 	public List<CategoryDeletion> getCategories(String delId) {
-		//TODO-CMF005: Thêm systemType thay vì null
 		return categories.stream().map(x -> {
-			return new CategoryDeletion(delId, x.getCategoryId(), x.getPeriodDeletion(), 1);
+			return new CategoryDeletion(delId, x.getCategoryId(), x.getPeriodDeletion(), x.getSystemType());
 		}).collect(Collectors.toList());
 	}
 }

@@ -10,6 +10,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.assist.dom.deletedata.FileName;
 import nts.uk.ctx.sys.assist.dom.deletedata.ManualSetDeletion;
@@ -38,7 +39,7 @@ public class SaveErrorLogDeleteResult {
 	/**
 	 * ドメインモデル「データ削除の結果ログ」を追加する
 	 */
-	public void saveErrorWhenDelData(ManualSetDeletion domain, String msgError) {
+	public void saveErrorWhenDelData(ManualSetDeletion domain, String msgError, String sid) {
 		String msgId = MSG_DEL_ERROR_LOG;
 		String errorContent = "";
 		if(msgError.length() > 1995){
@@ -49,7 +50,7 @@ public class SaveErrorLogDeleteResult {
 		GeneralDateTime logTime = GeneralDateTime.now();
 		int seqId = repoResultLogDel.getMaxSeqId(domain.getDelId()) + 1;
 		ResultLogDeletion resultLogDomain = ResultLogDeletion.createFromJavatype(seqId, domain.getDelId(),
-				domain.getCompanyId(), logTime, TextResource.localize(msgId), errorContent, null, null);
+				domain.getCompanyId(), logTime, TextResource.localize(msgId), errorContent, sid, GeneralDate.today());
 		repoResultLogDel.add(resultLogDomain);
 	}
 	
@@ -91,7 +92,7 @@ public class SaveErrorLogDeleteResult {
 			GeneralDateTime endDateTimeDel = GeneralDateTime.now();
 			ResultDeletion resultDel = optResultDel.get();
 			resultDel.setStatus(SaveStatus.INTERRUPTION);
-			resultDel.setEndDateTimeDel(endDateTimeDel);
+			resultDel.setEndDateTimeDel(Optional.ofNullable(endDateTimeDel));
 			resultDel.setFileName(new FileName(""));
 			resultDel.setFileSize(0);
 			resultDel.setFileId("");

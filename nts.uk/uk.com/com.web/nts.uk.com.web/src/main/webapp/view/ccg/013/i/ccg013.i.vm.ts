@@ -3,6 +3,7 @@
         textColor: KnockoutObservable<string>;
         bgColor: KnockoutObservable<string>;
         nameMenuBar: KnockoutObservable<string>;
+        menuBarId: any;
         textOption:KnockoutObservable<nts.uk.ui.option.TextEditorOption>;
         
         constructor() {
@@ -20,7 +21,8 @@
             if(menuBar != undefined){
                 self.nameMenuBar(menuBar.menuBarName);
                 self.textColor(menuBar.textColor);
-                self.bgColor(menuBar.backgroundColor);                
+                self.bgColor(menuBar.backgroundColor);    
+                self.menuBarId = menuBar.menuBarId;
             }
         }
         
@@ -54,6 +56,13 @@
             }
             
             nts.uk.ui.windows.setShared("CCG013I_MENU_BAR", menuBar);            
+            self.closeDialog();
+        }
+
+        removeMenuBar() {
+            var self = this;
+            var menuBarId = self.menuBarId;
+            nts.uk.ui.windows.setShared("CCG013I_MENU_BAR_ID", menuBarId);
             self.closeDialog();
         }
         

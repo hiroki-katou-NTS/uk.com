@@ -37,6 +37,7 @@ public class CreateDailyResultsStampsTest {
 	public void test_date_null() {
 		CreateDailyResultsStamps createDailyResultsStamps = new CreateDailyResultsStamps();
 		createDailyResultsStamps.create(require, "DUMMY", "DUMMY", Optional.empty());
+		
 	}
 	
 	/**

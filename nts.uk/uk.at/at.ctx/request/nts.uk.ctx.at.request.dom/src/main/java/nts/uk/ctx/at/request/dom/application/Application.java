@@ -226,4 +226,7 @@ public class Application implements DomainAggregate {
 		
 	}
 	
+	public Application getApplication() {
+		return this;
+	}
 }

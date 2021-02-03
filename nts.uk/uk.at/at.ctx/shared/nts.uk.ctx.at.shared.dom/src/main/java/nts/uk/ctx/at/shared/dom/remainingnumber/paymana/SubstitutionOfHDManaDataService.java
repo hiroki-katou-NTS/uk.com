@@ -11,8 +11,6 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DayOffManagement;
-import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.base.TargetSelectionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.AddSubHdManagementService;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -41,43 +39,43 @@ public class SubstitutionOfHDManaDataService {
 	 */
 	public void insertSubOfHDMan(String sid, String payoutId, Double remainNumber, List<DayOffManagement> subOfHDId) {
 
-		List<PayoutSubofHDManagement> listPayoutSub = payoutSubofHDManaRepository.getByPayoutId(payoutId);
-		if (!listPayoutSub.isEmpty()) {
-			payoutSubofHDManaRepository.delete(payoutId);
-		}
-
-		// Set all item to free
-		listPayoutSub.forEach(item -> {
-			// Update remain days 振休管理データ
-			Optional<SubstitutionOfHDManagementData> subMana = substitutionOfHDManaDataRepository
-					.findByID(item.getSubOfHDID());
-			if (subMana.isPresent()) {
-				subMana.get().setRemainsDayToFree(item.getUsedDays().v());
-				substitutionOfHDManaDataRepository.update(subMana.get());
-			}
-		});
-
-		subOfHDId.forEach(i -> {
-			payoutSubofHDManaRepository.add(new PayoutSubofHDManagement(payoutId, i.getSubOfHDID(),
-					i.getRemainDays(), TargetSelectionAtr.MANUAL.value));
-			// Update remain days 振休管理データ
-			Optional<SubstitutionOfHDManagementData> subMana = substitutionOfHDManaDataRepository
-					.findByID(i.getSubOfHDID());
-			if (subMana.isPresent()) {
-				subMana.get().setRemainsDay(0d);
-				substitutionOfHDManaDataRepository.update(subMana.get());
-			}
-		});
-		// Update 振出管理データ 残数
-		Optional<PayoutManagementData> payoutData = payoutManagementDataRepository.findByID(payoutId);
-		if (payoutData.isPresent()) {
-			payoutData.get().setRemainNumber(remainNumber);
-			payoutData.get().setStateAtr(DigestionAtr.UNUSED.value);
-			if (remainNumber.equals(0d)){
-				payoutData.get().setStateAtr(DigestionAtr.USED.value);
-			}
-			payoutManagementDataRepository.update(payoutData.get());
-		}
+//		List<PayoutSubofHDManagement> listPayoutSub = payoutSubofHDManaRepository.getByPayoutId(payoutId);
+//		if (!listPayoutSub.isEmpty()) {
+//			payoutSubofHDManaRepository.delete(payoutId);
+//		}
+//
+//		// Set all item to free
+//		listPayoutSub.forEach(item -> {
+//			// Update remain days 振休管理データ
+//			Optional<SubstitutionOfHDManagementData> subMana = substitutionOfHDManaDataRepository
+//					.findByID(item.getSubOfHDID());
+//			if (subMana.isPresent()) {
+//				subMana.get().setRemainsDayToFree(item.getUsedDays().v());
+//				substitutionOfHDManaDataRepository.update(subMana.get());
+//			}
+//		});
+//
+//		subOfHDId.forEach(i -> {
+//			payoutSubofHDManaRepository.add(new PayoutSubofHDManagement(payoutId, i.getSubOfHDID(),
+//					i.getRemainDays(), TargetSelectionAtr.MANUAL.value));
+//			// Update remain days 振休管理データ
+//			Optional<SubstitutionOfHDManagementData> subMana = substitutionOfHDManaDataRepository
+//					.findByID(i.getSubOfHDID());
+//			if (subMana.isPresent()) {
+//				subMana.get().setRemainsDay(0d);
+//				substitutionOfHDManaDataRepository.update(subMana.get());
+//			}
+//		});
+//		// Update 振出管理データ 残数
+//		Optional<PayoutManagementData> payoutData = payoutManagementDataRepository.findByID(payoutId);
+//		if (payoutData.isPresent()) {
+//			payoutData.get().setRemainNumber(remainNumber);
+//			payoutData.get().setStateAtr(DigestionAtr.UNUSED.value);
+//			if (remainNumber.equals(0d)){
+//				payoutData.get().setStateAtr(DigestionAtr.USED.value);
+//			}
+//			payoutManagementDataRepository.update(payoutData.get());
+//		}
 
 	}
 
@@ -127,17 +125,17 @@ public class SubstitutionOfHDManaDataService {
 
 	// setToFree when delete payoutId
 	public void setToFree(String payoutId) {
-		List<PayoutSubofHDManagement> listPayoutSub = payoutSubofHDManaRepository.getByPayoutId(payoutId);
-		if (!listPayoutSub.isEmpty()) {
-			payoutSubofHDManaRepository.delete(payoutId);
-		}
-		listPayoutSub.forEach(item -> {
-			Optional<SubstitutionOfHDManagementData> subMana = substitutionOfHDManaDataRepository
-					.findByID(item.getSubOfHDID());
-			if (subMana.isPresent()) {
-				subMana.get().setRemainsDay(Double.valueOf(item.getUsedDays().v().intValue()));
-				substitutionOfHDManaDataRepository.update(subMana.get());
-			}
-		});
+//		List<PayoutSubofHDManagement> listPayoutSub = payoutSubofHDManaRepository.getByPayoutId(payoutId);
+//		if (!listPayoutSub.isEmpty()) {
+//			payoutSubofHDManaRepository.delete(payoutId);
+//		}
+//		listPayoutSub.forEach(item -> {
+//			Optional<SubstitutionOfHDManagementData> subMana = substitutionOfHDManaDataRepository
+//					.findByID(item.getSubOfHDID());
+//			if (subMana.isPresent()) {
+//				subMana.get().setRemainsDay(Double.valueOf(item.getUsedDays().v().intValue()));
+//				substitutionOfHDManaDataRepository.update(subMana.get());
+//			}
+//		});
 	}
 }

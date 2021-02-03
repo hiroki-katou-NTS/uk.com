@@ -13,12 +13,12 @@ import nts.uk.shr.com.context.AppContexts;
  * 
  * @author tutk
  *
- */
+ */ 
 public class RetrieveNoStampCardRegisteredService {
 
-	public static List<StampInfoDisp> get(Require require, DatePeriod period) {
+	public static List<StampInfoDisp> get(Require require, DatePeriod period, String contractCode) {
 		List<StampRecord> listStampRecord = require.getStempRcNotResgistNumber(period);
-		List<Stamp> listStamp = require.getStempRcNotResgistNumberStamp(AppContexts.user().contractCode(),period);
+		List<Stamp> listStamp = require.getStempRcNotResgistNumberStamp(contractCode, period);
 		return createStampInfoDisplay(listStampRecord, listStamp);
 	}
 

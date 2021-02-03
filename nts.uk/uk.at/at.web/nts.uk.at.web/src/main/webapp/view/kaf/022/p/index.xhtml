@@ -7,7 +7,7 @@
 <body>
 <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
-        <script>var dialogSize = { width: 1115, height: 617 };</script>
+        <script>var dialogSize = { width: 1120, height: 617 };</script>
 
         <com:scriptfile set="IGNITE" />
 
@@ -103,7 +103,8 @@
                                                 primaryKey: 'no',
                                                 columns: $parent.swapColumns,
                                                 value: settingItems,
-                                                beforeMoveRight: beforeMoveRight
+                                                beforeMoveRight: beforeMoveRight,
+                                                afterMoveLeft: $parent.afterMoveLeft.bind($parent)
                                             }"/>
                         </div>
                         <div id="swap-up-down"

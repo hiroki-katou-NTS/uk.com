@@ -23,6 +23,11 @@
 	overflow: visible;
 }
 
+.box-list {
+  width: 70%;
+  margin-left: 20px;
+}
+
 .title-right {
 	float: right;
 	margin-right: 20px;
@@ -56,7 +61,8 @@
 	display: inline;
 }
 .fixed-flex-layout-right{
-	float: right;
+  float: right;
+  margin-left: 40px;
 }
 
 .fixed-flex-layout-right-screenD{
@@ -93,7 +99,11 @@
 }
 
 #B4_35 {
-	width: 398px !important;
+	width: 318px !important;
+}
+
+#B5_2 {
+  margin-left: 180px;
 }
 
 #D4_8 {
@@ -261,8 +271,8 @@
 }
 
 #B4_32 {
-	width: 230px !important;
+	width: 150px !important;
 }
 #B4_41 {
-	width: 230px !important;
+	width: 150px !important;
 }

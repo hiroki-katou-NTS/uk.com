@@ -2,6 +2,7 @@ package nts.uk.ctx.sys.auth.pubimp.employee;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.stream.Collectors;
@@ -9,6 +10,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+
+import lombok.AllArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.auth.dom.adapter.employee.EmployeeAdapter;
 import nts.uk.ctx.sys.auth.dom.adapter.employee.JobTitleAdapter;
@@ -42,12 +45,15 @@ import nts.uk.ctx.sys.auth.dom.roleset.RoleSetRepository;
 import nts.uk.ctx.sys.auth.dom.user.User;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
 import nts.uk.ctx.sys.auth.dom.wkpmanager.EmpInfoAdapter;
+import nts.uk.ctx.sys.auth.dom.wkpmanager.WorkplaceManager;
 import nts.uk.ctx.sys.auth.dom.wkpmanager.WorkplaceManagerRepository;
 import nts.uk.ctx.sys.auth.dom.wplmanagementauthority.WorkPlaceAuthority;
 import nts.uk.ctx.sys.auth.dom.wplmanagementauthority.WorkPlaceAuthorityRepository;
 import nts.uk.ctx.sys.auth.pub.employee.EmpWithRangeLogin;
 import nts.uk.ctx.sys.auth.pub.employee.EmployeePublisher;
 import nts.uk.ctx.sys.auth.pub.employee.NarrowEmpByReferenceRange;
+import nts.uk.ctx.sys.auth.pub.employee.WorkPlaceAuthorityDto;
+import nts.uk.ctx.sys.auth.pub.employee.WorkplaceManagerDto;
 import nts.uk.ctx.sys.auth.pub.role.RoleExportRepo;
 import nts.uk.ctx.sys.auth.pub.user.UserExport;
 import nts.uk.ctx.sys.auth.pub.user.UserPublisher;
@@ -125,7 +131,19 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 	
 	@Inject
 	private WorkplaceListPub workplaceListPub;
-
+	
+	@Inject 
+	private GetEmfromWkpidAndBDate getEmfromWkpidAndBDate;
+	
+	@Inject
+	private ObtainWkpListAndWkpManager obtainWkpListAndWkpManager;
+	
+	@Inject
+	private WorkPlaceAuthorityRepository workPlaceAuthRepo;
+	
+	@Inject
+	private WorkplaceManagerRepository workplaceManagerRepo;
+	
 	@Override
 	public Optional<NarrowEmpByReferenceRange> findByEmpId(List<String> sID, int roleType, GeneralDate referenceDate) {
 		// imported（権限管理）「社員」を取得する Request No1
@@ -405,6 +423,60 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 		}
 
 		return listEmpID;
+	}
+
+	@Override
+	public Map<String, List<String>> getListEmpInfo(String companyID, GeneralDate referenceDate, List<String> workplaceIds) {
+		
+		RequireRQ653Impl requireRQ653Impl = new RequireRQ653Impl(workPlaceAuthRepo, workplaceManagerRepo);
+		
+		// 職場リスト、基準日から就業確定できるロールを持っている社員を取得する
+		Map<String, List<String>> mapWkpIdAndSid1 = getEmfromWkpidAndBDate.getData(requireRQ653Impl, companyID, referenceDate, workplaceIds);
+		
+		// 職場リスト、基準日から就業確定できる職場管理者を取得する
+		Map<String, List<String>> mapWkpIdAndSid2 = obtainWkpListAndWkpManager.getData(requireRQ653Impl, companyID, referenceDate, workplaceIds);
+		
+		// 取得した2つの「Map<職場ID、社員ID>」から重複するものを排除する
+		for (Map.Entry map2 : mapWkpIdAndSid2.entrySet()) {
+			List<String> value = mapWkpIdAndSid1.get(map2.getKey());
+			if(!value.isEmpty()){
+				mapWkpIdAndSid1.put(map2.getKey().toString(), value);
+				
+			}
+		}
+		// 重複するものを排除した「Map<職場ID、社員ID>」を返す
+		return mapWkpIdAndSid1;
+	}
+	
+	@AllArgsConstructor
+	private static class RequireRQ653Impl implements EmployeePublisher.RequireRQ653 {
+		
+		private WorkPlaceAuthorityRepository workPlaceAuthRepo;
+		
+		private WorkplaceManagerRepository workplaceManagerRepo;
+		
+		@Override
+		public List<WorkplaceManagerDto> getWorkplaceManager(List<String> workPlaceIds, GeneralDate baseDate) {
+			List<WorkplaceManager> workplaceManagerLst = workplaceManagerRepo.findListWkpManagerByWkpIdsAndBaseDate(workPlaceIds, baseDate);
+			if(workplaceManagerLst.isEmpty())
+				return new ArrayList<>();
+			List<WorkplaceManagerDto> rs = workplaceManagerLst.stream().map(m -> {
+				return  new WorkplaceManagerDto(m.getWorkplaceManagerId(), m.getEmployeeId(), m.getWorkplaceId(), m.getHistoryPeriod());
+			}).collect(Collectors.toList());
+			return rs;
+		}
+
+		@Override
+		public Optional<WorkPlaceAuthorityDto> getWorkAuthority(String companyId, String roleId, Integer functionNo) {
+			Optional<WorkPlaceAuthority> result = workPlaceAuthRepo.getWorkPlaceAuthorityById(companyId, roleId, functionNo);
+			if(result.isPresent()) {
+				return Optional.of(new WorkPlaceAuthorityDto(result.get().getRoleId(), result.get().getCompanyId(), result.get().getFunctionNo().v(), result.get().isAvailability()));
+			}
+			return Optional.empty();
+			
+		}
+		
+		
 	}
 
 }

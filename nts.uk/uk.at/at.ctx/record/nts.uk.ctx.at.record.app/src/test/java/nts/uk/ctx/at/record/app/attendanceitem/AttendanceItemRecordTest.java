@@ -4,21 +4,18 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
-import nts.uk.ctx.at.record.app.find.dailyperform.workinfo.dto.WorkInfoDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.workinfo.dto.WorkInformationOfDailyDto;
-import nts.uk.ctx.at.record.app.find.monthly.root.AttendanceTimeOfMonthlyDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRecordWorkDto;
-import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
-import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil.AttendanceItemType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 
 public class AttendanceItemRecordTest {
 
@@ -97,7 +94,6 @@ public class AttendanceItemRecordTest {
 			 			dto3 = new DailyRecordDto();
 		dto1.employeeId("1");
 		dto1.setWorkInfo(new WorkInformationOfDailyDto());
-		dto1.getWorkInfo().setPlanWorkInfo(new WorkInfoDto("test1", "test2"));
 		dto2.employeeId("2");
 		dto3.employeeId("3");
 		Map<DailyRecordDto, List<ItemValue>> items = AttendanceItemUtil.toItemValues(Arrays.asList(dto1, dto2, dto3), itemIds);

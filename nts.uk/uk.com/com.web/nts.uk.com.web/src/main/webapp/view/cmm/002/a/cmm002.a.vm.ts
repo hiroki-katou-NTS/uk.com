@@ -52,7 +52,7 @@ module nts.uk.com.view.cmm002.a {
 				_.forEach(data.allowedIPaddress, (item) => {
 					tg.push(new AllowedIPAddressDto(item));
 				});
-				self.allowedIPAddressList(_.orderBy(tg, ['id'], ['asc']));
+				self.allowedIPAddressList(_.orderBy(tg, ['startAddress.ip1','startAddress.ip2','startAddress.ip3','startAddress.ip4','endAddress.ip1','endAddress.ip2','endAddress.ip3','endAddress.ip4'], ['asc','asc','asc','asc','asc','asc','asc','asc']));
                 dfd.resolve();
             }).fail(function(error: any) {
                 dfd.reject();

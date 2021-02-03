@@ -1,13 +1,17 @@
 package nts.uk.ctx.at.schedule.dom.shift.workcycle;
 
-import lombok.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.workrule.ErrorStatusWorkInfo;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 /*
     勤務サイクル
@@ -46,17 +50,12 @@ public class WorkCycle extends AggregateRoot {
         return new WorkCycle(cid, new WorkCycleCode(code), new WorkCycleName(name), infos );
     }
 
-
     /**
      * 	[1] 勤務情報を取得する
      * @return 勤務情報
      */
     public WorkCycleInfo getWorkInfo(int position, int slideDays) {
-        position = position - slideDays;
-        if (position < 1) {
-            position += this.calculateTotalDays();
-        }
-        return this.getWorkInfoByPosition(position);
+        return this.getWorkInfoByPosition(position - slideDays);
     }
 
     /**
@@ -75,8 +74,19 @@ public class WorkCycle extends AggregateRoot {
      * @return 	勤務情報
      */
     private WorkCycleInfo getWorkInfoByPosition(int position) {
+    	if (this.infos == null || this.infos.size() == 0) {
+    		throw new RuntimeException("Work cycle information doesn't exist.");
+		}
+
+        val cloneListInfo = new ArrayList<WorkCycleInfo>(this.infos);
+
+		if (position <= 0) {
+            position = Math.abs(position) + 1;
+            Collections.reverse(cloneListInfo);
+        }
+
         while (true) {
-            for (WorkCycleInfo info : this.getInfos()) {
+            for (WorkCycleInfo info : cloneListInfo) {
                 if (position <= info.getDays().v()) {
                     return info;
                 }
@@ -84,13 +94,4 @@ public class WorkCycle extends AggregateRoot {
             }
         }
     }
-
-    /**
-     * [prv-2] 総日数を計算する
-     * @return 勤務情報リスト：sum $.日数
-     */
-    private int calculateTotalDays() {
-            return this.infos.stream().mapToInt(i -> i.getDays().v()).sum();
-    }
-
 }

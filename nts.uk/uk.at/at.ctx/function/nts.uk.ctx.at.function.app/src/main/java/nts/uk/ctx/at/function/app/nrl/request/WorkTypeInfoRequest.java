@@ -37,7 +37,7 @@ public class WorkTypeInfoRequest extends NRLRequest<Frame> {
 		// Get worktype info from DB, count records
 		String nrlNo = context.getEntity().pickItem(Element.NRL_NO);
 		// TODO: default ContractCode "000000000000"
-		List<SendWorkTypeNameImport> lstWTInfo = sendNRDataAdapter.sendWorkType(Integer.parseInt(nrlNo.trim()),
+		List<SendWorkTypeNameImport> lstWTInfo = sendNRDataAdapter.sendWorkType(nrlNo.trim(),
 				"000000000000");
 		StringBuilder builder = new StringBuilder();
 		for (SendWorkTypeNameImport infoName : lstWTInfo) {

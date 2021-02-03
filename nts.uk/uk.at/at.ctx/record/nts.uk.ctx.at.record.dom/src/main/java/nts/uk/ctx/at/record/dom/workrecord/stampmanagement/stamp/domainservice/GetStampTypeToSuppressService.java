@@ -14,7 +14,6 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettings;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingsSmartphoneStamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSettingPerson;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * DS : 抑制する打刻種類を取得する
@@ -63,7 +62,7 @@ public class GetStampTypeToSuppressService {
 		// if 打刻手段 = 個人打刻
 		if (stampMeans.equals(StampMeans.INDIVITION)) {
 			// $個人利用の打刻設定 = require.個人利用の打刻設定()
-			Optional<StampSettingPerson> optStampSettingPerson = require.getStampSet(AppContexts.user().companyId());
+			Optional<StampSettingPerson> optStampSettingPerson = require.getStampSet();
 			// if $個人利用の打刻設定.isEmpty
 			if (!optStampSettingPerson.isPresent()) {
 				return false;
@@ -75,7 +74,7 @@ public class GetStampTypeToSuppressService {
 		if (stampMeans.equals(StampMeans.SMART_PHONE)) {
 			// $スマホ打刻の打刻設定 = require.スマホ打刻の打刻設定()
 			Optional<SettingsSmartphoneStamp> optSettingsSmartphoneStamp = require
-					.getSettingsSmartphone(AppContexts.user().companyId());
+					.getSettingsSmartphone();
 			// if $スマホ打刻の打刻設定.isEmpty
 
 			if (!optSettingsSmartphoneStamp.isPresent()) {
@@ -87,7 +86,7 @@ public class GetStampTypeToSuppressService {
 		// if 打刻手段 = ポータル打刻
 		if (stampMeans.equals(StampMeans.PORTAL)) {
 			// $ポータルの打刻設定 = require.ポータルの打刻設定()
-			Optional<PortalStampSettings> optPotalSetting = require.getPotalSettings(AppContexts.user().companyId());
+			Optional<PortalStampSettings> optPotalSetting = require.getPotalSettings();
 			// if $ポータルの打刻設定.isEmpty
 			if (!optPotalSetting.isPresent()) {
 				return false;
@@ -174,7 +173,7 @@ public class GetStampTypeToSuppressService {
 		 * @param companyId
 		 * @return
 		 */
-		Optional<StampSettingPerson> getStampSet(String companyId);
+		Optional<StampSettingPerson> getStampSet();
 
 		/**
 		 * [R-2] スマホ打刻の打刻設定
@@ -184,7 +183,7 @@ public class GetStampTypeToSuppressService {
 		 * @param companyId
 		 * @return
 		 */
-		Optional<SettingsSmartphoneStamp> getSettingsSmartphone(String companyId);
+		Optional<SettingsSmartphoneStamp> getSettingsSmartphone();
 
 		/**
 		 * [R-3] ポータルの打刻設定
@@ -195,7 +194,7 @@ public class GetStampTypeToSuppressService {
 		 * @param criteriaDate
 		 * @return
 		 */
-		Optional<PortalStampSettings> getPotalSettings(String comppanyID);
+		Optional<PortalStampSettings> getPotalSettings();
 	}
 
 }

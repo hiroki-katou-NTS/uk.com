@@ -51,26 +51,26 @@ public class GetListStampEmployeeServiceTest {
 	 * require.getStamp((List<StampNumber>) any, (GeneralDate) any) is empty
 	 * 
 	 */
-	@SuppressWarnings("unchecked")
-	@Test
-	public void testGetListStampEmployeeService_2() {
-		String employeeId = "employeeId";
-		GeneralDate date = GeneralDate.today();
-		new Expectations() {
-			{
-				require.getListStampCard(anyString);
-				result = Arrays
-						.asList(StampHelper.getStampCardByInput("stampCardId1", "stampNumber1", GeneralDate.today()));
-				require.getStampRecord((List<StampNumber>) any, (GeneralDate) any);
-				result = Arrays.asList(StampRecordHelper.getStampRecord());
-				
-				require.getStamp((List<StampNumber>) any, (GeneralDate) any);
-				result = StampHelper.getListStampDefault();
-				
-			}
-		};
-		assertThat(GetListStampEmployeeService.get(require, employeeId, date)).isPresent();
-	}
+//	@SuppressWarnings("unchecked")
+//	@Test
+//	public void testGetListStampEmployeeService_2() {
+//		String employeeId = "employeeId";
+//		GeneralDate date = GeneralDate.today();
+//		new Expectations() {
+//			{
+//				require.getListStampCard(anyString);
+//				result = Arrays
+//						.asList(StampHelper.getStampCardByInput("stampCardId1", "stampNumber1", GeneralDate.today()));
+//				require.getStampRecord((List<StampNumber>) any, (GeneralDate) any);
+//				result = Arrays.asList(StampRecordHelper.getStampRecord());
+//				
+//				require.getStamp((List<StampNumber>) any, (GeneralDate) any);
+//				result = StampHelper.getListStampDefault();
+//				
+//			}
+//		};
+//		assertThat(GetListStampEmployeeService.get(require, employeeId, date)).isPresent();
+//	}
 	/**
 	 * GetEmpStampDataService.get(require, employeeId, date) not empty
 	 * require.getStampRecord((List<StampNumber>) any, (GeneralDate) any) not empty

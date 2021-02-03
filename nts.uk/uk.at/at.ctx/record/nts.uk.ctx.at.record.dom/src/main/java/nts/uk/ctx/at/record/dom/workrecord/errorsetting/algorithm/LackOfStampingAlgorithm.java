@@ -27,7 +27,7 @@ public class LackOfStampingAlgorithm {
 	@Inject
 	private BasicScheduleService basicScheduleService;
 
-	public EmployeeDailyPerError lackOfStamping(String companyID, String employeeID, GeneralDate processingDate,
+	public Optional<EmployeeDailyPerError> lackOfStamping(String companyID, String employeeID, GeneralDate processingDate,
 			WorkInfoOfDailyPerformance workInfoOfDailyPerformance,
 			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance) {
 
@@ -117,7 +117,7 @@ public class LackOfStampingAlgorithm {
 			}
 		}
 
-		return employeeDailyPerError;
+		return Optional.ofNullable(employeeDailyPerError);
 	}
 
 }

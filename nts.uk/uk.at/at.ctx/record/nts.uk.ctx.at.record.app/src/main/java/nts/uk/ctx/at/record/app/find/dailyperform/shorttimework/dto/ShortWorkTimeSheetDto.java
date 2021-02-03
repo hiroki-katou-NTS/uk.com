@@ -3,10 +3,10 @@ package nts.uk.ctx.at.record.app.find.dailyperform.shorttimework.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 
 /** 短時間勤務時間帯 */
 @Data
@@ -38,16 +38,16 @@ public class ShortWorkTimeSheetDto implements ItemConst {
 	/** 控除時間: 勤怠時間 */
 	// @AttendanceItemLayout(layout = "E", jpPropertyName = "")
 	// @AttendanceItemValue(type = ValueType.INTEGER)
-	private Integer deductionTime;
+//	private Integer deductionTime;
 
 	/** 時間: 勤怠時間 */
 	// @AttendanceItemLayout(layout = "F", jpPropertyName = "")
 	// @AttendanceItemValue(type = ValueType.INTEGER)
-	private Integer shortTime;
+//	private Integer shortTime;
 
 	@Override
 	public ShortWorkTimeSheetDto clone(){
-		return new ShortWorkTimeSheetDto(no, attr, startTime, endTime, deductionTime, shortTime);
+		return new ShortWorkTimeSheetDto(no, attr, startTime, endTime);
 	}
 	
 	public String enumText() {

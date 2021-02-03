@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.request.dom.application.common.adapter.bs;
 
 import java.util.List;
+import java.util.Map;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SyEmployeeImport;
 
 public interface SyEmployeeAdapter {
@@ -10,4 +12,5 @@ public interface SyEmployeeAdapter {
 	
 	List<SyEmployeeImport> getPersonInfor(List<String> employeeIds);
 	
+	public Map<String, List<String>> getListEmpInfo(String companyID , GeneralDate referenceDate, List<String> workplaceID);
 }

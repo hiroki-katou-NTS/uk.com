@@ -1,7 +1,7 @@
 package nts.uk.ctx.sys.assist.dom.deletedata;
 
-import java.util.Optional;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 対象カテゴリ

@@ -71,7 +71,6 @@ module nts.uk.com.view.cmf004.i.viewmodel {
                 recoveryMethodOptions: self.recoveryMethodOptions(),
                 store_del_ProcessingId: self.store_del_ProcessingId()
             };
-            console.log(command);
             service.performDataRecover(command).done(() => {
             });
             return dfd.promise();

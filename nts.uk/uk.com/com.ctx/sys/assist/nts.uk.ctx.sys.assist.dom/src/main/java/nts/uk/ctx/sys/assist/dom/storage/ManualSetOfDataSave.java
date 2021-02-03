@@ -3,19 +3,22 @@ package nts.uk.ctx.sys.assist.dom.storage;
 import java.util.List;
 import java.util.Optional;
 
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.security.crypt.commonkey.CommonKeyCrypt;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * データ保存の手動設定
  */
 @NoArgsConstructor
-@Getter
+@Data
+@EqualsAndHashCode(callSuper = false)
 public class ManualSetOfDataSave extends AggregateRoot {
 
 	/**
@@ -27,11 +30,6 @@ public class ManualSetOfDataSave extends AggregateRoot {
 	 * データ保存処理ID
 	 */
 	private String storeProcessingId;
-
-	/**
-	 * システム種類
-	 */
-	private SystemType systemType;
 
 	/**
 	 * パスワード有無
@@ -71,12 +69,12 @@ public class ManualSetOfDataSave extends AggregateRoot {
 	/**
 	 * 月次保存終了日
 	 */
-	private GeneralDate monthSaveEndDate;
+	private String monthSaveEndDate;
 
 	/**
 	 * 月次保存開始日
 	 */
-	private GeneralDate monthSaveStartDate;
+	private String monthSaveStartDate;
 
 	/**
 	 * 補足説明
@@ -97,11 +95,11 @@ public class ManualSetOfDataSave extends AggregateRoot {
 	 * 社員指定の有無
 	 */
 	private NotUseAtr presenceOfEmployee;
-
+	
 	/**
-	 * 調査用保存の識別
+	 * 実行区分
 	 */
-	private NotUseAtr identOfSurveyPre;
+	private StorageClassification saveType;
 
 	/**
 	 * 実行者
@@ -110,21 +108,22 @@ public class ManualSetOfDataSave extends AggregateRoot {
 	private List<TargetEmployees> employees;
 	private List<TargetCategory> category;
 
-	public ManualSetOfDataSave(String cid, String storeProcessingId, int systemType, int passwordAvailability,
+	public ManualSetOfDataSave(String cid, String storeProcessingId, int passwordAvailability,
 			String saveSetName, GeneralDate referenceDate, String compressedPassword,
 			GeneralDateTime executionDateAndTime, GeneralDate daySaveEndDate, GeneralDate daySaveStartDate,
-			GeneralDate monthSaveEndDate, GeneralDate monthSaveStartDate, String suppleExplanation,
-			Integer endYear, Integer startYear, int presenceOfEmployee, int identOfSurveyPre,
-			String practitioner) {
+			String monthSaveEndDate, String monthSaveStartDate, String suppleExplanation,
+			Integer endYear, Integer startYear, int presenceOfEmployee,
+			String practitioner, int saveType) {
 
 		super();
 		this.cid = cid;
 		this.storeProcessingId = storeProcessingId;
-		this.systemType = EnumAdaptor.valueOf(systemType, SystemType.class);
 		this.passwordAvailability = EnumAdaptor.valueOf(passwordAvailability, NotUseAtr.class);
 		this.saveSetName = new SaveSetName(saveSetName);
 		this.referenceDate = referenceDate;
-		this.compressedPassword = new FileCompressionPassword(compressedPassword);
+		this.compressedPassword = compressedPassword != null 
+				? new FileCompressionPassword(compressedPassword)
+				: null;
 		this.executionDateAndTime = executionDateAndTime;
 		this.daySaveEndDate = daySaveEndDate;
 		this.daySaveStartDate = daySaveStartDate;
@@ -134,25 +133,26 @@ public class ManualSetOfDataSave extends AggregateRoot {
 		this.endYear = endYear != null ? Optional.of(new Year(endYear)) : Optional.empty();
 		this.startYear = startYear != null ? Optional.of(new Year(startYear)) : Optional.empty();
 		this.presenceOfEmployee = EnumAdaptor.valueOf(presenceOfEmployee, NotUseAtr.class);
-		this.identOfSurveyPre = EnumAdaptor.valueOf(identOfSurveyPre, NotUseAtr.class);
 		this.practitioner = practitioner;
+		this.saveType = EnumAdaptor.valueOf(saveType, StorageClassification.class);
 	}
 
-	public ManualSetOfDataSave(String cid, String storeProcessingId, int systemType, int passwordAvailability,
+	public ManualSetOfDataSave(String cid, String storeProcessingId, int passwordAvailability,
 			String saveSetName, GeneralDate referenceDate, String compressedPassword,
 			GeneralDateTime executionDateAndTime, GeneralDate daySaveEndDate, GeneralDate daySaveStartDate,
-			GeneralDate monthSaveEndDate, GeneralDate monthSaveStartDate, String suppleExplanation,
-			Integer endYear, Integer startYear, int presenceOfEmployee, int identOfSurveyPre,
-			String practitioner, List<TargetEmployees> employees, List<TargetCategory> category) {
+			String monthSaveEndDate, String monthSaveStartDate, String suppleExplanation,
+			Integer endYear, Integer startYear, int presenceOfEmployee, String practitioner,
+			int saveType, List<TargetEmployees> employees, List<TargetCategory> category) {
 
 		super();
 		this.cid = cid;
 		this.storeProcessingId = storeProcessingId;
-		this.systemType = EnumAdaptor.valueOf(systemType, SystemType.class);
 		this.passwordAvailability = EnumAdaptor.valueOf(passwordAvailability, NotUseAtr.class);
 		this.saveSetName = new SaveSetName(saveSetName);
 		this.referenceDate = referenceDate;
-		this.compressedPassword = new FileCompressionPassword(compressedPassword);
+		this.compressedPassword = compressedPassword != null 
+				? new FileCompressionPassword(compressedPassword)
+				: null;
 		this.executionDateAndTime = executionDateAndTime;
 		this.daySaveEndDate = daySaveEndDate;
 		this.daySaveStartDate = daySaveStartDate;
@@ -162,8 +162,8 @@ public class ManualSetOfDataSave extends AggregateRoot {
 		this.endYear = endYear != null ? Optional.of(new Year(endYear)) : Optional.empty();
 		this.startYear = startYear != null ? Optional.of(new Year(startYear)) : Optional.empty();
 		this.presenceOfEmployee = EnumAdaptor.valueOf(presenceOfEmployee, NotUseAtr.class);
-		this.identOfSurveyPre = EnumAdaptor.valueOf(identOfSurveyPre, NotUseAtr.class);
 		this.practitioner = practitioner;
+		this.saveType = EnumAdaptor.valueOf(saveType, StorageClassification.class);
 		this.employees = employees;
 		this.category = category;
 	}

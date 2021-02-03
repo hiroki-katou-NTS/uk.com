@@ -1,0 +1,33 @@
+.settingButton {
+    float: right;
+    margin-top: 22px;
+    margin-right: 23px;
+}
+
+.container-right {
+    margin-left: 50px;
+    float: left;
+}
+
+#component-items-list {
+    float: left;
+    margin-left: 90px;
+}
+
+.tab-data {
+    height: 260px;
+    margin-top: 44px;
+}
+
+#main {
+    margin-top: 10px;
+}
+
+#tab-panel-year-month{
+    margin-top: 30px;
+    width: 293px;
+}
+
+.lbl-title-employeer-name span {
+    margin-left: 20px;
+}

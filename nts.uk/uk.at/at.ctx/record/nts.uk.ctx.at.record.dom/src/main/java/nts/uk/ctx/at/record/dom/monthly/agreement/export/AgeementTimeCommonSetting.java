@@ -11,6 +11,9 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.time
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 
+/**
+ * 36協定基本設定を取得する
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 public class AgeementTimeCommonSetting {

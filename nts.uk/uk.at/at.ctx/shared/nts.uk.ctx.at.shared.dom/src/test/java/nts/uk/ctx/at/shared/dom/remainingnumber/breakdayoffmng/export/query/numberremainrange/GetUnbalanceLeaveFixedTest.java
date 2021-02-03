@@ -22,11 +22,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.FixedManagementDataMonth;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMng;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataManagementAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.SelectedAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
 
 @RunWith(JMockit.class)
@@ -105,19 +100,25 @@ public class GetUnbalanceLeaveFixedTest {
 				require.getBySidYmd(anyString, anyString, (GeneralDate) any);
 				result = lstComMock;
 
-				//暫定休出代休紐付け管理
-				require.getDayOffByIdAndDataAtr(DataManagementAtr.INTERIM, DataManagementAtr.CONFIRM,
-						"d2");
-				result = Arrays.asList(
-						new InterimBreakDayOffMng("", DataManagementAtr.INTERIM, "d2",
-								DataManagementAtr.CONFIRM, new UseTime(240), new UseDay(1.0), SelectedAtr.AUTOMATIC));
-
-				//暫定休出代休紐付け管理
-				require.getDayOffByIdAndDataAtr(DataManagementAtr.INTERIM, DataManagementAtr.CONFIRM,
-						"d1");
-				result = Arrays.asList(
-						new InterimBreakDayOffMng("", DataManagementAtr.INTERIM, "d1",
-								DataManagementAtr.CONFIRM, new UseTime(120), new UseDay(0.5), SelectedAtr.AUTOMATIC));
+//				//暫定休出代休紐付け管理
+//				require.getDayOffByIdAndDataAtr(DataManagementAtr.INTERIM, DataManagementAtr.CONFIRM,
+//						"d2");
+//				result = Arrays.asList(
+//						new InterimBreakDayOffMng("", DataManagementAtr.INTERIM, "d2",
+//								DataManagementAtr.CONFIRM, new UseTime(240), new UseDay(1.0), SelectedAtr.AUTOMATIC));
+//
+//				//暫定休出代休紐付け管理
+//				require.getDayOffByIdAndDataAtr(DataManagementAtr.INTERIM, DataManagementAtr.CONFIRM,
+//						"d1");
+//				result = Arrays.asList(
+//						new InterimBreakDayOffMng("", DataManagementAtr.INTERIM, "d1",
+//								DataManagementAtr.CONFIRM, new UseTime(120), new UseDay(0.5), SelectedAtr.AUTOMATIC));
+				
+				require.getBycomDayOffID(SID, GeneralDate.ymd(2019, 11, 12));
+				result = Arrays.asList(DaikyuFurikyuHelper.createLeavComDayOff(GeneralDate.ymd(2019, 11, 12), GeneralDate.ymd(2019, 11, 19), 1.0));
+				
+				require.getBycomDayOffID(SID, GeneralDate.ymd(2019, 11, 10));
+				result = Arrays.asList(DaikyuFurikyuHelper.createLeavComDayOff(GeneralDate.ymd(2019, 11, 10), GeneralDate.ymd(2019, 11, 19), 0.5));
 
 			}
 		};
@@ -140,7 +141,10 @@ public class GetUnbalanceLeaveFixedTest {
 				.containsExactly(
 						Tuple.tuple("d1", MngDataStatus.CONFIRMED, false,
 								Optional.of(GeneralDate.ymd(2019, 11, 10)), 1.0, Optional.of(new AttendanceTime(240)),
-								OccurrenceDigClass.DIGESTION, 0.5, Optional.of(new AttendanceTime(120))),
+								OccurrenceDigClass.DIGESTION, 0.5, Optional.of(new AttendanceTime(240))),
+						Tuple.tuple("d2", MngDataStatus.CONFIRMED, false,
+								Optional.of(GeneralDate.ymd(2019, 11, 12)), 1.0, Optional.of(new AttendanceTime(240)),
+								OccurrenceDigClass.DIGESTION, 0.0, Optional.of(new AttendanceTime(240))),
 						Tuple.tuple("d4", MngDataStatus.CONFIRMED, false,
 								Optional.of(GeneralDate.ymd(2019, 11, 14)), 1.0, Optional.of(new AttendanceTime(240)),
 								OccurrenceDigClass.DIGESTION, 1.0, Optional.of(new AttendanceTime(240))),

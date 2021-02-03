@@ -7,8 +7,8 @@ package nts.uk.ctx.at.shared.dom.worktype;
 import java.io.Serializable;
 
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 
@@ -46,13 +46,13 @@ public class DailyWork extends DomainObject implements Cloneable, Serializable{ 
 		}
 		return isAnnualOrSpecialHoliday(afternoon) || isAnnualOrSpecialHoliday(morning);
 	}
-	
+
 	private boolean isAnnualOrSpecialHoliday(WorkTypeClassification halfDay) {
 		return halfDay.isAnnualLeave() || halfDay.isSpecialHoliday();
 	}
 	/**
 	 * check leave for a a morning
-	 * 
+	 *
 	 * @return true leave for morning else false
 	 */
 	public boolean IsLeaveForMorning() {
@@ -61,7 +61,7 @@ public class DailyWork extends DomainObject implements Cloneable, Serializable{ 
 
 	/**
 	 * check leave for a afternoon
-	 * 
+	 *
 	 * @return true leave for a afternoon else false
 	 */
 	public boolean IsLeaveForAfternoon() {
@@ -70,7 +70,7 @@ public class DailyWork extends DomainObject implements Cloneable, Serializable{ 
 
 	/**
 	 * check leave for a day
-	 * 
+	 *
 	 * @return true leave for a day else false
 	 */
 	public boolean IsLeaveForADay() {
@@ -79,7 +79,7 @@ public class DailyWork extends DomainObject implements Cloneable, Serializable{ 
 
 	/**
 	 * check leave by
-	 * 
+	 *
 	 * @param attribute
 	 *            勤務種類の分類
 	 * @return
@@ -97,7 +97,7 @@ public class DailyWork extends DomainObject implements Cloneable, Serializable{ 
 
 	/**
 	 * 出勤区分区分の取得
-	 * 
+	 *
 	 * @return 出勤休日区分
 	 */
 	public AttendanceHolidayAttr getAttendanceHolidayAttr() {
@@ -119,7 +119,7 @@ public class DailyWork extends DomainObject implements Cloneable, Serializable{ 
 			}
 		}
 	}
-	
+
 	public boolean isHolidayType() {
 		if (this.workTypeUnit == WorkTypeUnit.OneDay) {
 			if (this.oneDay.isHolidayType()) {
@@ -136,7 +136,7 @@ public class DailyWork extends DomainObject implements Cloneable, Serializable{ 
 			}
 		}
 	}
-	
+
 	/**
 	 * 所定時間の取得先を判定する
 	 * @return　出勤休出区分
@@ -163,11 +163,11 @@ public class DailyWork extends DomainObject implements Cloneable, Serializable{ 
 			}
 		}
 	}
-	
+
 
 	/**
 	 * 平日出勤か判定
-	 * 
+	 *
 	 * @return 平日出勤である
 	 */
 	public boolean isWeekDayAttendance() {
@@ -181,7 +181,7 @@ public class DailyWork extends DomainObject implements Cloneable, Serializable{ 
 
 	/**
 	 * 休日出勤か判定
-	 * 
+	 *
 	 * @return true：休日出勤である false：休日出勤ではない
 	 */
 	public boolean isHolidayWork() {
@@ -192,10 +192,10 @@ public class DailyWork extends DomainObject implements Cloneable, Serializable{ 
 		}
 		return false;
 	}
-	
+
 	/**
 	 * 連続勤務か判定
-	 * 
+	 *
 	 * @return true：連続勤務である false：連続勤務ではない
 	 */
 	public boolean isContinueWork() {
@@ -206,7 +206,7 @@ public class DailyWork extends DomainObject implements Cloneable, Serializable{ 
 		}
 		return false;
 	}
-	
+
 	/**
 	 * 平日出勤or休出であるか判定する
 	 * @return 平日出勤or休出である
@@ -214,7 +214,7 @@ public class DailyWork extends DomainObject implements Cloneable, Serializable{ 
 	public boolean isWeekDayOrHolidayWork() {
 		return isWeekDayAttendance() || isHolidayWork();
 	}
-	
+
 	/**
 	 * 1日振休か判定する
 	 * @return　1日振休である
@@ -231,7 +231,7 @@ public class DailyWork extends DomainObject implements Cloneable, Serializable{ 
 
 	/**
 	 * 受け取った勤務種類の分類に一致しているか判定する
-	 * 
+	 *
 	 * @param workTypeClassification
 	 *            勤務種類の分類
 	 * @return 何時一致しているか
@@ -255,16 +255,16 @@ public class DailyWork extends DomainObject implements Cloneable, Serializable{ 
 	public boolean isClosure() {
 		return WorkTypeClassification.Closure.equals(this.oneDay);
 	}
-	
+
 	public boolean isOneDay() {
-		return this.workTypeUnit == WorkTypeUnit.OneDay; 
+		return this.workTypeUnit == WorkTypeUnit.OneDay;
 	}
 
 	public boolean isOneDayHoliday() {
 		return this.oneDay == WorkTypeClassification.Holiday;
 	}
-	
-	
+
+
 	/**
 	 * 1日年休の場合であるか
 	 * @return 1日年休である
@@ -277,8 +277,8 @@ public class DailyWork extends DomainObject implements Cloneable, Serializable{ 
 			return this.getMorning().isAnnualLeave() && this.getAfternoon().isAnnualLeave();
 		}
 	}
-	
-	
+
+
 	/**
 	 * 特別休暇の場合であるか
 	 * @return 特別休暇である
@@ -291,7 +291,7 @@ public class DailyWork extends DomainObject implements Cloneable, Serializable{ 
 			return this.getMorning().isSpecialHoliday() && this.getAfternoon().isSpecialHoliday();
 		}
 	}
-	
+
 	/**
 	 * 積立年休の場合であるか
 	 * @return 積立年休である
@@ -304,7 +304,7 @@ public class DailyWork extends DomainObject implements Cloneable, Serializable{ 
 			return this.getMorning().isYearlyReserved() && this.getAfternoon().isYearlyReserved();
 		}
 	}
-	
+
 //	public WorkTypeRangeForPred decisionWorkTypeRange() {
 //		if(oneDay.isWeekDayAttendance()) {
 //			return WorkTypeRangeForPred.ONEDAY;
@@ -319,8 +319,8 @@ public class DailyWork extends DomainObject implements Cloneable, Serializable{ 
 //			return WorkTypeRangeForPred.ONEDAY;
 //		}
 //		else if(morning.isVacation() && afternoon.isVacation()) {
-//			return WorkTypeRangeForPred.ONEDAY; 
-//		} 
+//			return WorkTypeRangeForPred.ONEDAY;
+//		}
 //		else if(morning.isVacation() &&(afternoon.isHoliday()||afternoon.isShooting())) {
 //			return WorkTypeRangeForPred.MORNING;
 //		}
@@ -329,8 +329,8 @@ public class DailyWork extends DomainObject implements Cloneable, Serializable{ 
 //		}
 //		return WorkTypeRangeForPred.NOTHING;
 //	}
-	
-	public WorkTypeRangeForPred decisionWorkTypeRange() {	
+
+	public WorkTypeRangeForPred decisionWorkTypeRange() {
 		if (this.workTypeUnit == WorkTypeUnit.OneDay) {
 			//1日かつ出勤系or休暇系の場合
 			if(oneDay.isWeekDayAttendance()||oneDay.isVacation()) {
@@ -356,8 +356,8 @@ public class DailyWork extends DomainObject implements Cloneable, Serializable{ 
 			return WorkTypeRangeForPred.NOTHING;
 		}
 	}
-	
-	
+
+
 	/**
 	 * 1日休日系か判定する
 	 * @return
@@ -373,7 +373,7 @@ public class DailyWork extends DomainObject implements Cloneable, Serializable{ 
 			return false;
 		}
 	}
-	
+
 	/**
 	 * 振休or休日であるか判定する
 	 * @return振休or休日である
@@ -382,14 +382,14 @@ public class DailyWork extends DomainObject implements Cloneable, Serializable{ 
 		if(this.getWorkTypeUnit().isOneDay() && (this.getOneDay().isHoliday() || this.getOneDay().isPause())) {
 			return true;
 		}
-		if(this.getWorkTypeUnit().isMonringAndAfternoon() 
+		if(this.getWorkTypeUnit().isMonringAndAfternoon()
 		&&(this.getMorning().isHoliday() || this.getMorning().isPause())
 		&&(this.getAfternoon().isPause() || this.getAfternoon().isPause())) {
 			return true;
 		}
 		return false;
 	}
-	
+
 	@Override
 	public DailyWork clone() {
 		DailyWork cloned = new DailyWork();
@@ -404,31 +404,46 @@ public class DailyWork extends DomainObject implements Cloneable, Serializable{ 
 		}
 		return cloned;
 	}
-	
+
 	/**
 	 * 1日半日出勤・1日休日系の判定（休出判定あり）
 	 * @return 出勤日区分
 	 */
 	public AttendanceDayAttr chechAttendanceDay() {
+
 		if (this.workTypeUnit == WorkTypeUnit.OneDay) {
+			// 勤務の単位→1日
 			if (this.oneDay.isHolidayType()) {
+				// 勤務の分類(1日)＝休日系
+				// 出勤日区分→1日休日系
 				return AttendanceDayAttr.HOLIDAY;
-			}
-			else {
-				if (this.oneDay.isHolidayWork()) {
-					return AttendanceDayAttr.HOLIDAY_WORK;
-				}
+			} else if (this.oneDay.isHolidayWork()) {
+				// 勤務の分類(1日)＝休日出勤
+				// 出勤日区分→休出
+				return AttendanceDayAttr.HOLIDAY_WORK;
+			} else {
+				// 勤務の分類(1日)＝休日・休日出勤以外
+				// 出勤日区分→1日出勤系
 				return AttendanceDayAttr.FULL_TIME;
 			}
 		} else {
-			if (!this.morning.isHolidayType() && !this.afternoon.isHolidayType()) {
-				return AttendanceDayAttr.FULL_TIME;
-			}
-			else if (this.morning.isHolidayType() && this.afternoon.isHolidayType()) {
+			// 勤務の単位→半日(午前と午後)
+			if (this.morning.isHolidayType() && this.afternoon.isHolidayType()) {
+				// 勤務の分類(午前)＝休日系 && 勤務の分類(午後)＝休日系
+				// 出勤日区分→1日休日系
 				return AttendanceDayAttr.HOLIDAY;
-			}
-			else {
-				return AttendanceDayAttr.HALF_TIME;
+			} else if (!this.morning.isHolidayType() && !this.afternoon.isHolidayType()) {
+				// 勤務の分類(午前)≠休日系 && 勤務の分類(午後)≠休日系
+				// 出勤日区分→1日出勤系
+				return AttendanceDayAttr.FULL_TIME;
+			} else if (!this.morning.isHolidayType()) {
+				// 勤務の分類(午前)≠休日系 && 勤務の分類(午後)＝休日系
+				// 出勤日区分→半日出勤系(午前)
+				return AttendanceDayAttr.HALF_TIME_AM;
+			} else {
+				// 勤務の分類(午前)＝休日系 && 勤務の分類(午後)≠休日系
+				// 出勤日区分→半日出勤系(午後)
+				return AttendanceDayAttr.HALF_TIME_PM;
 			}
 		}
 	}
@@ -438,7 +453,7 @@ public class DailyWork extends DomainObject implements Cloneable, Serializable{ 
 			return this.oneDay;
 		}
 
-		if (this.workTypeUnit == WorkTypeUnit.MonringAndAfternoon && this.morning != null) {
+		if (this.workTypeUnit == WorkTypeUnit.MonringAndAfternoon && !this.morning.isHolidayType()) {
 			return this.morning;
 		}
 

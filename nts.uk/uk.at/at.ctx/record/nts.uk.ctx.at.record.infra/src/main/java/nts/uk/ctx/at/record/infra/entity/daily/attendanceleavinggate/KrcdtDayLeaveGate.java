@@ -108,9 +108,9 @@ public class KrcdtDayLeaveGate extends UkJpaEntity implements Serializable {
 
 	public AttendanceLeavingGate toDomain() {
 		return new AttendanceLeavingGate(new WorkNo(id.alNo),
-				new WorkStamp(toTimeWithDay(attendanceTime), toTimeWithDay(attendanceTime),
+				new WorkStamp(toTimeWithDay(attendanceTime),
 						toWorkLocationCD(attendancePlaceCode), toWorkLocationCD(attendanceStampSource)),
-				new WorkStamp(toTimeWithDay(leaveTime), toTimeWithDay(leaveTime), toWorkLocationCD(leavePlaceCode),
+				new WorkStamp(toTimeWithDay(leaveTime), toWorkLocationCD(leavePlaceCode),
 						toWorkLocationCD(leaveStampSource)));
 	}
 

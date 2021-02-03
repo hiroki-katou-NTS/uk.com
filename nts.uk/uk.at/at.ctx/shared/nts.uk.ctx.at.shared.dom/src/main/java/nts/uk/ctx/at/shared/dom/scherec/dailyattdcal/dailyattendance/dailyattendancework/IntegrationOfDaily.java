@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TemporaryTimeOfDailyAttd;
@@ -15,20 +16,27 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.AttendanceLeavingGateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.LogOnInfo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.PCLogOnInfoOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.SystemFixedErrorAlarm;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemValueOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.SpecificDateAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.remarks.RemarksOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.snapshot.SnapShot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.enums.CheckExcessAtr;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.enums.SystemFixedErrorAlarm;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareCalcRange;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.declare.DeclareSet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.declare.DeclareTimeFrameError;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.CheckExcessAtr;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 日別勤怠(Work)
@@ -79,7 +87,7 @@ public class IntegrationOfDaily {
 //	private List<BreakTimeOfDailyPerformance> breakTime;
 	//休憩時間帯: 日別勤怠の休憩時間帯
 	@Setter
-	private List<BreakTimeOfDailyAttd> breakTime;
+	private BreakTimeOfDailyAttd breakTime;
 	
 	//日別実績の外出時間帯 (old)
 //	private Optional<OutingTimeOfDailyPerformance> outingTime;
@@ -162,7 +170,15 @@ public class IntegrationOfDaily {
 	/**日別勤怠の応援作業時間帯 */
 	private List<OuenWorkTimeSheetOfDailyAttendance> ouenTimeSheet = new ArrayList<>();
 
+	/** 申告計算範囲 */
+	@Setter
+	private Optional<DeclareCalcRange> declareCalcRange = Optional.empty();
 	
+	private Optional<SnapShot> snapshot;
+	
+	public void setSnapshot(SnapShot snapshot) {
+		this.snapshot = Optional.ofNullable(snapshot);
+	}
 	
 	/**
 	 * Constructor
@@ -189,7 +205,7 @@ public class IntegrationOfDaily {
 			Optional<PCLogOnInfoOfDailyAttd> pcLogOnInfo,
 			List<EmployeeDailyPerError> employeeError,
 			Optional<OutingTimeOfDailyAttd> outingTime,
-			List<BreakTimeOfDailyAttd> breakTime,
+			BreakTimeOfDailyAttd breakTime,
 			Optional<AttendanceTimeOfDailyAttendance> attendanceTimeOfDailyPerformance,
 			Optional<TimeLeavingOfDailyAttd> attendanceLeave, 
 			Optional<ShortTimeOfDailyAttd> shortTime,
@@ -198,7 +214,8 @@ public class IntegrationOfDaily {
 			Optional<AnyItemValueOfDailyAttd> anyItemValue,
 			List<EditStateOfDailyAttd> editState, 
 			Optional<TemporaryTimeOfDailyAttd> tempTime,
-			List<RemarksOfDailyAttd> remarks) {
+			List<RemarksOfDailyAttd> remarks,
+			Optional<SnapShot> snapshot) {
 		super();
 		this.workInformation = workInformation;
 		this.calAttr = calAttr;
@@ -221,6 +238,7 @@ public class IntegrationOfDaily {
 		this.editState = editState;
 		this.tempTime = tempTime;
 		this.remarks = remarks;
+		this.snapshot = snapshot;
 	}
 
 	/**
@@ -246,6 +264,141 @@ public class IntegrationOfDaily {
 		}
 	}
 	
+	/**
+	 * 申告（システム固定エラーチェック）
+	 * @param fixedErrorAlarmCode エラーコード
+	 * @return 社員の日別実績エラー一覧(List)
+	 */
+	public List<EmployeeDailyPerError> getDeclareErrorList(
+			SystemFixedErrorAlarm fixedErrorAlarmCode) {
+	
+		List<EmployeeDailyPerError> result = new ArrayList<>();
+//		AttendanceItemDictionaryForCalc attdIdDic = AttendanceItemDictionaryForCalc.setDictionaryValue();
+		String employeeId = this.employeeId;
+		GeneralDate date = this.ymd;
+		
+		// 申告設定を取得する
+		if (!this.declareCalcRange.isPresent()) return result;
+		DeclareCalcRange calcRange = this.declareCalcRange.get();
+		DeclareSet declareSet = calcRange.getDeclareSet();
+		// 申告設定残業枠エラーチェック
+		if (declareSet.getOvertimeFrame().checkErrorOvertimeFrame()){
+			// システムエラーとする
+			throw new BusinessException("Msg_2053");
+		}
+		// 申告設定休出枠エラーチェック
+		if (declareSet.getHolidayWorkFrame().checkErrorHolidayWorkFrame()){
+			// システムエラーとする
+			throw new BusinessException("Msg_2054");
+		}
+		// 申告設定深夜枠エラーチェック
+		if (declareSet.checkErrorMidnightFrame()){
+			// システムエラーとする
+			throw new BusinessException("Msg_2055");
+		}
+		// 申告時間枠エラーチェック
+		List<DeclareTimeFrameError> frameErrors = declareSet.checkErrorFrame(
+				calcRange.isHolidayWork(), calcRange.getAttdLeave());
+		if (frameErrors.size() > 0){
+			result.add(new EmployeeDailyPerError(
+					AppContexts.user().companyCode(), employeeId, date,
+					new ErrorAlarmWorkRecordCode(fixedErrorAlarmCode.value), new ArrayList<>()));
+		}
+		// 【参考】　勤怠項目IDを設定する場合
+//		boolean outOvertime = false;
+//		boolean outOvertimeMn = false;
+//		for (DeclareTimeFrameError frameError : frameErrors){
+//			// 社員の日別実績のエラーを作成する
+//			switch(frameError){
+//			case EARLY_OT:
+//			case OVERTIME:
+//				if (outOvertime) break;
+//				outOvertime = true;
+//				if (this.attendanceTimeOfDailyPerformance.isPresent()){
+//					AttendanceTimeOfDailyAttendance attdTime = this.attendanceTimeOfDailyPerformance.get();
+//					TotalWorkingTime totalWorkTime = attdTime.getActualWorkingTimeOfDaily().getTotalWorkingTime();
+//					ExcessOfStatutoryTimeOfDaily notStatTime = totalWorkTime.getExcessOfStatutoryTimeOfDaily();
+//					if (notStatTime.getOverTimeWork().isPresent()){
+//						OverTimeOfDaily overTime = notStatTime.getOverTimeWork().get();
+//						for (OverTimeFrameTime frameTime : overTime.getOverTimeWorkFrameTime()){
+//							attdIdDic.findId("残業時間" + frameTime.getOverWorkFrameNo().v())
+//								.ifPresent(itemId -> result.add(new EmployeeDailyPerError(
+//									AppContexts.user().companyCode(), employeeId, date,
+//									new ErrorAlarmWorkRecordCode(fixedErrorAlarmCode.value), itemId)));
+//							attdIdDic.findId("振替残業時間" + frameTime.getOverWorkFrameNo().v())
+//								.ifPresent(itemId -> result.add(new EmployeeDailyPerError(
+//									AppContexts.user().companyCode(), employeeId, date,
+//									new ErrorAlarmWorkRecordCode(fixedErrorAlarmCode.value), itemId)));
+//						}
+//					}
+//				}
+//				break;
+//				
+//			case EARLY_OT_MN:
+//			case OVERTIME_MN:
+//				if (outOvertimeMn) break;
+//				outOvertimeMn = true;
+//				attdIdDic.findId("就外残業深夜時間").ifPresent(itemId -> result.add(new EmployeeDailyPerError(
+//						AppContexts.user().companyCode(), employeeId, date,
+//						new ErrorAlarmWorkRecordCode(fixedErrorAlarmCode.value), itemId)));
+//				break;
+//				
+//			case HOLIDAYWORK:
+//				if (this.attendanceTimeOfDailyPerformance.isPresent()){
+//					AttendanceTimeOfDailyAttendance attdTime = this.attendanceTimeOfDailyPerformance.get();
+//					TotalWorkingTime totalWorkTime = attdTime.getActualWorkingTimeOfDaily().getTotalWorkingTime();
+//					ExcessOfStatutoryTimeOfDaily notStatTime = totalWorkTime.getExcessOfStatutoryTimeOfDaily();
+//					if (notStatTime.getWorkHolidayTime().isPresent()){
+//						HolidayWorkTimeOfDaily holidayWork = notStatTime.getWorkHolidayTime().get();
+//						for (HolidayWorkFrameTime frameTime : holidayWork.getHolidayWorkFrameTime()){
+//							attdIdDic.findId("休出時間" + frameTime.getHolidayFrameNo().v())
+//								.ifPresent(itemId -> result.add(new EmployeeDailyPerError(
+//									AppContexts.user().companyCode(), employeeId, date,
+//									new ErrorAlarmWorkRecordCode(fixedErrorAlarmCode.value), itemId)));
+//							attdIdDic.findId("振替時間" + frameTime.getHolidayFrameNo().v())
+//								.ifPresent(itemId -> result.add(new EmployeeDailyPerError(
+//									AppContexts.user().companyCode(), employeeId, date,
+//									new ErrorAlarmWorkRecordCode(fixedErrorAlarmCode.value), itemId)));
+//						}
+//					}
+//				}
+//				break;
+//				
+//			case HOLIDAYWORK_MN:
+//				attdIdDic.findId("法内休出外深夜").ifPresent(itemId -> result.add(new EmployeeDailyPerError(
+//						AppContexts.user().companyCode(), employeeId, date,
+//						new ErrorAlarmWorkRecordCode(fixedErrorAlarmCode.value), itemId)));
+//				attdIdDic.findId("法外休出外深夜").ifPresent(itemId -> result.add(new EmployeeDailyPerError(
+//						AppContexts.user().companyCode(), employeeId, date,
+//						new ErrorAlarmWorkRecordCode(fixedErrorAlarmCode.value), itemId)));
+//				attdIdDic.findId("就外法外祝日深夜").ifPresent(itemId -> result.add(new EmployeeDailyPerError(
+//						AppContexts.user().companyCode(), employeeId, date,
+//						new ErrorAlarmWorkRecordCode(fixedErrorAlarmCode.value), itemId)));
+//				break;
+//			}
+//		}
+		return result;
+	}
+	
+	/**
+	 * 編集状態から「申告反映」のデータを削除する
+	 */
+	public void removeEditStateForDeclare(){
+		this.editState.removeIf(c -> c.getEditStateSetting() == EditStateSetting.DECLARE_APPLICATION);
+	}
+	
+	/**
+	 * 申告用編集状態を追加する
+	 * @param itemId 勤怠項目ID
+	 */
+	public void addEditStateForDeclare(Integer itemId){
+		// 日別勤怠の編集状態に勤怠項目IDが存在するか確認する
+		if(!this.editState.stream().filter(c -> c.getAttendanceItemId() == itemId.intValue()).findFirst().isPresent()){
+			// 日別勤怠の編集状態を追加する
+			this.editState.add(new EditStateOfDailyAttd(itemId.intValue(), EditStateSetting.DECLARE_APPLICATION));
+		}
+	}
+	
 	public IntegrationOfDaily(
 			String employeeId,
 			GeneralDate ymd,
@@ -255,7 +408,7 @@ public class IntegrationOfDaily {
 			Optional<PCLogOnInfoOfDailyAttd> pcLogOnInfo,
 			List<EmployeeDailyPerError> employeeError,
 			Optional<OutingTimeOfDailyAttd> outingTime,
-			List<BreakTimeOfDailyAttd> breakTime,
+			BreakTimeOfDailyAttd breakTime,
 			Optional<AttendanceTimeOfDailyAttendance> attendanceTimeOfDailyPerformance,
 			Optional<TimeLeavingOfDailyAttd> attendanceLeave, 
 			Optional<ShortTimeOfDailyAttd> shortTime,
@@ -264,7 +417,8 @@ public class IntegrationOfDaily {
 			Optional<AnyItemValueOfDailyAttd> anyItemValue,
 			List<EditStateOfDailyAttd> editState, 
 			Optional<TemporaryTimeOfDailyAttd> tempTime,
-			List<RemarksOfDailyAttd> remarks) {
+			List<RemarksOfDailyAttd> remarks,
+			Optional<SnapShot> snapshot) {
 		super();
 		this.employeeId = employeeId;
 		this.ymd = ymd;
@@ -289,7 +443,64 @@ public class IntegrationOfDaily {
 		this.editState = editState;
 		this.tempTime = tempTime;
 		this.remarks = remarks;
+		this.snapshot = snapshot;
 	}
 
+	public IntegrationOfDaily(IntegrationOfDaily daily) {
+		this.employeeId = daily.getEmployeeId();
+		this.ymd = daily.getYmd();
+		this.workInformation = daily.getWorkInformation();
+		this.calAttr = daily.getCalAttr();
+		this.affiliationInfor = daily.getAffiliationInfor();
+		this.pcLogOnInfo = daily.getPcLogOnInfo();
+		if (daily.getEmployeeError() != null) {
+			this.employeeError = new ArrayList<>(daily.getEmployeeError());
+		} else {
+			this.employeeError = Collections.emptyList();
+		}
+		this.outingTime = daily.getOutingTime();
+		this.breakTime = daily.getBreakTime();
+		this.attendanceTimeOfDailyPerformance = daily.getAttendanceTimeOfDailyPerformance();
+		this.attendanceLeave = daily.getAttendanceLeave();
+		this.shortTime = daily.getShortTime();
+		this.specDateAttr = daily.getSpecDateAttr();
+		this.attendanceLeavingGate = daily.getAttendanceLeavingGate();
+		this.anyItemValue = daily.getAnyItemValue();
+		this.editState = daily.getEditState();
+		this.tempTime = daily.getTempTime();
+		this.remarks = daily.getRemarks();
+		this.ouenTimeSheet = daily.getOuenTimeSheet();
+		this.ouenTime = daily.getOuenTime();
+		this.snapshot = daily.getSnapshot();
+	}
 	
+	public IntegrationOfDaily getDomain() {
+		return this;
+	}
+	
+	public void setDomain(IntegrationOfDaily daily) {
+		this.employeeId = daily.getEmployeeId();
+		this.ymd = daily.getYmd();
+		this.workInformation = daily.getWorkInformation();
+		this.calAttr = daily.getCalAttr();
+		this.affiliationInfor = daily.getAffiliationInfor();
+		this.pcLogOnInfo = daily.getPcLogOnInfo();
+		if (daily.getEmployeeError() != null) {
+			this.employeeError = new ArrayList<>(daily.getEmployeeError());
+		} else {
+			this.employeeError = Collections.emptyList();
+		}
+		this.outingTime = daily.getOutingTime();
+		this.breakTime = daily.getBreakTime();
+		this.attendanceTimeOfDailyPerformance = daily.getAttendanceTimeOfDailyPerformance();
+		this.attendanceLeave = daily.getAttendanceLeave();
+		this.shortTime = daily.getShortTime();
+		this.specDateAttr = daily.getSpecDateAttr();
+		this.attendanceLeavingGate = daily.getAttendanceLeavingGate();
+		this.anyItemValue = daily.getAnyItemValue();
+		this.editState = daily.getEditState();
+		this.tempTime = daily.getTempTime();
+		this.remarks = daily.getRemarks();
+		this.snapshot = daily.getSnapshot();
+	}
 }

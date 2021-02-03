@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**
- * 直行直帰申請
+ * 古い直行直帰申請　「古いクラス → 削除予定 → 使わないでください (Old Class → Delete plan → Please don't use it)」
  * 
  * @author ducpm
  *

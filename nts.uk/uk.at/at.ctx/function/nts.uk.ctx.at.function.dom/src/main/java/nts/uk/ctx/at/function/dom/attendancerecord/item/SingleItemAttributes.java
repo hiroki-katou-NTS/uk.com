@@ -7,13 +7,13 @@ package nts.uk.ctx.at.function.dom.attendancerecord.item;
 public enum SingleItemAttributes {
 
 	//勤務種類
-	DUTY_TYPE(13,"勤務種類"),
+	DUTY_TYPE(1,"勤務種類"),
 	
 	//就業時間帯
-	WORKING_HOUR(14,"就業時間帯"),
+	WORKING_HOUR(2,"就業時間帯"),
 	
 	//時刻
-	DAY_TIME(15,"時刻");
+	DAY_TIME(3,"時刻");
 	
 	/** The value. */
 	public final int value;

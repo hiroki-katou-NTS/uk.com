@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 /**
  * 承認枠 : 承認者

@@ -15,16 +15,14 @@
 				of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/kcp/011/kcp.011.vm.js"
 				of="/nts.uk.com.web" />
-			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="ksu001.test.main.css" />
-			<com:scriptfile path="ksu001.test.service.js" />
+			<com:scriptfile set="IGNITE" />			
 			<com:scriptfile path="ksu001.test.vm.js" />
 			<com:scriptfile path="ksu001.test.start.js" />
 
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
-				<button data-bind="click: openDialog">Open U</button>				
+				<button data-bind="click: openDialog">Open KDL046</button>				
 			</div>
 			<div id="content-area">
 				<div id="left-content">
@@ -51,7 +49,7 @@
 								params="options: options"> </workplace-group></td>
 					</tr>
 				</table>
-				<div id="right-content"></div>
+				<div id="right-content" data-bind="text: result" style="padding-left: 20px;"></div>
 			</div>
 		</ui:define>
 	</ui:composition>

@@ -4,11 +4,11 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.OvertimeDeclaration;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
-import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -36,18 +36,15 @@ public class TimeActualStamp {
 	
 	//時間休暇時間帯
 	@Setter
-	private Optional<TimeZone> timeVacation = Optional.empty();
+	private Optional<TimeSpanForCalc> timeVacation = Optional.empty();
 	
 	/**
 	 * 打刻時間を指定時間分経過させた勤怠打刻を返す
-	 * @param moveTime　指定時間
-	 * @return　勤怠打刻
+	 * @param moveTime 指定時間
+	 * @return 勤怠打刻
 	 */
 	public TimeActualStamp moveAheadStampTime(int moveTime) {
 		WorkStamp actualWorkStamp = new WorkStamp(
-				this.actualStamp.isPresent() && this.actualStamp.get().getAfterRoundingTime() != null
-						? this.actualStamp.get().getAfterRoundingTime().forwardByMinutes(moveTime)
-						: null,
 				this.actualStamp.isPresent() && this.actualStamp.get().getTimeDay().getTimeWithDay() != null
 						? (this.actualStamp.get().getTimeDay().getTimeWithDay().isPresent()
 								? this.actualStamp.get().getTimeDay().getTimeWithDay().get().forwardByMinutes(moveTime)
@@ -60,9 +57,6 @@ public class TimeActualStamp {
 						: TimeChangeMeans.AUTOMATIC_SET);
 
 		WorkStamp stamp = new WorkStamp(
-				this.stamp.isPresent() && this.stamp.get().getAfterRoundingTime() != null
-						? this.stamp.get().getAfterRoundingTime().forwardByMinutes(moveTime)
-						: null,
 				this.stamp.isPresent() && this.stamp.get().getTimeDay().getTimeWithDay() != null
 						? (this.stamp.get().getTimeDay().getTimeWithDay().isPresent()?this.stamp.get().getTimeDay().getTimeWithDay().get().forwardByMinutes(moveTime):null)
 						: null,
@@ -78,13 +72,10 @@ public class TimeActualStamp {
 	/**
 	 * 打刻時間を指定時間分戻した勤怠打刻を返す
 	 * @param moveTime 指定時間
-	 * @return　勤怠打刻
+	 * @return 勤怠打刻
 	 */
 	public TimeActualStamp moveBackStampTime(int moveTime) {
 		WorkStamp actualWorkStamp = new WorkStamp(
-				this.actualStamp.isPresent() && this.actualStamp.get().getAfterRoundingTime() != null
-						? this.actualStamp.get().getAfterRoundingTime().backByMinutes(moveTime)
-						: null,
 				this.actualStamp.isPresent() && this.actualStamp.get().getTimeDay().getTimeWithDay() != null
 						? (this.actualStamp.get().getTimeDay().getTimeWithDay().isPresent()?this.actualStamp.get().getTimeDay().getTimeWithDay().get().backByMinutes(moveTime):null)
 						: null,
@@ -96,9 +87,6 @@ public class TimeActualStamp {
 						: TimeChangeMeans.AUTOMATIC_SET);
 
 		WorkStamp stamp = new WorkStamp(
-				this.stamp.isPresent() && this.stamp.get().getAfterRoundingTime() != null
-						? this.stamp.get().getAfterRoundingTime().forwardByMinutes(moveTime)
-						: null,
 				this.stamp.isPresent() && this.stamp.get().getTimeDay().getTimeWithDay() != null
 						? (this.stamp.get().getTimeDay().getTimeWithDay().isPresent()
 								? this.stamp.get().getTimeDay().getTimeWithDay().get().forwardByMinutes(moveTime)
@@ -167,7 +155,7 @@ public class TimeActualStamp {
 		return false;
 	}
 	public TimeActualStamp(WorkStamp actualStamp,WorkStamp stamp, Integer numberOfReflectionStamp,
-			OvertimeDeclaration overtimeDeclaration, TimeZone timeVacation) {
+			OvertimeDeclaration overtimeDeclaration, TimeSpanForCalc timeVacation) {
 		super();
 		this.actualStamp =  Optional.ofNullable(actualStamp);
 		this.stamp = Optional.ofNullable(stamp);
@@ -175,14 +163,39 @@ public class TimeActualStamp {
 		this.overtimeDeclaration = Optional.ofNullable(overtimeDeclaration);
 		this.timeVacation = Optional.ofNullable(timeVacation);
 	}
+	
+	
+	
+	/**
+	 * @param actualStamp 実打刻
+	 * @param stamp 打刻
+	 * @param numberOfReflectionStamp 打刻反映回数
+	 * @param overtimeDeclaration 時間外の申告
+	 * @param timeVacation 時間休暇時間帯
+	 */
 	public TimeActualStamp(Optional<WorkStamp> actualStamp, Optional<WorkStamp> stamp, Integer numberOfReflectionStamp,
-			Optional<OvertimeDeclaration> overtimeDeclaration, Optional<TimeZone> timeVacation) {
+			Optional<OvertimeDeclaration> overtimeDeclaration, Optional<TimeSpanForCalc> timeVacation) {
 		super();
 		this.actualStamp = actualStamp;
 		this.stamp = stamp;
 		this.numberOfReflectionStamp = numberOfReflectionStamp;
 		this.overtimeDeclaration = overtimeDeclaration;
 		this.timeVacation = timeVacation;
+	}
+	
+	/**
+	 * 	[C-1] 自動セットで作る
+	 * @param time 	時刻
+	 * @return
+	 */
+	public static TimeActualStamp createByAutomaticSet(TimeWithDayAttr time) {
+		
+		return new TimeActualStamp(
+				Optional.empty(), 
+				Optional.of(WorkStamp.createByAutomaticSet(time)), 
+				Integer.valueOf(1), 
+				Optional.empty(), 
+				Optional.empty());
 	}
 	
 }

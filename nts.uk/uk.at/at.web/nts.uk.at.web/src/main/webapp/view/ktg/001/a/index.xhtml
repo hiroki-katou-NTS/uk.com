@@ -7,37 +7,82 @@
 <body>
 	<ui:composition template="../../../../master/freelayout.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 300, height: 200 };</script>
-			<com:ValidatorScript>
-					nts.uk.shr.com.primitive.PersonId
-				</com:ValidatorScript>
+		<com:EnumScript>
+				nts.uk.ctx.sys.portal.dom.toppagepart.standardwidget.ApprovedApplicationStatusItem
+				nts.uk.ctx.at.schedule.dom.plannedyearholiday.frame.NotUseAtr
+			</com:EnumScript>
 			<com:stylefile path="ktg001.a.style.css" />
-			<com:scriptfile path="ktg001.a.service.js" />
 			<com:scriptfile path="ktg001.a.vm.js" />
-			<com:scriptfile path="ktg001.a.start.js" />
 		</ui:define>
-
 		<ui:define name="content">
-			<div id="contents-area" class="ktg002">
-				<table class="widget-table">     
-					<tr>
-						<td>#{i18n.getText('KTG001_3')}</td>
-					</tr>
-					<tr>
-						<td>
-							<table class="widget-table">
-								<tr>
-									<td data-bind="text: text"></td>
-									<td class="go-button" data-bind="visible: visible">
-										<button data-bind = " click : dailyPerformanceConfirm">
-											<i data-bind="ntsIcon: { no: 145 }"></i>
-										</button>
-									</td>
-								</tr>
-							</table>
-						</td>
-					</tr>
-				</table>
+			<div id="contents-area">
+				<div class="parent">
+					<table>
+						<tr>
+							<td>
+								<table class="widget-table">
+									<tr>
+										<td id="title">
+											<div data-bind="ntsFormLabel: {text: title}"></div>
+										</td>
+										<td class="go-button">
+											<button data-bind=" click : setting, visible: settingIconVisible">
+												<i data-bind="ntsIcon: { no: 5 }"></i>
+											</button>
+										</td>
+									</tr>
+								</table>
+
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<table class="widget-table row">
+									<tr data-bind="visible: appRowVisible">
+										<td class="child-row" data-bind="text: $i18n('KTG001_1')"></td>
+										<td class="go-button">
+											<button
+												data-bind=" click : applicationList, visible: appIconVisible">
+												<i data-bind="ntsIcon: { no: 145 }"></i>
+											</button>
+										</td>
+										<td data-bind="text: appText"></td>
+									</tr>
+									<tr data-bind="visible: dayRowVisible">
+										<td class="child-row" data-bind="text: $i18n('KTG001_2')"></td>
+										<td class="go-button">
+											<button
+												data-bind=" click : dayPerformanceConfirm, visible: dayIconVisible">
+												<i data-bind="ntsIcon: { no: 145 }"></i>
+											</button>
+										</td>
+										<td data-bind="text: dayText"></td>
+									</tr>
+									<tr data-bind="visible: monRowVisible">
+										<td class="child-row" data-bind="text: $i18n('KTG001_3')"></td>
+										<td class="go-button">
+											<button
+												data-bind=" click : monPerformanceConfirm, visible: monIconVisible">
+												<i data-bind="ntsIcon: { no: 145 }"></i>
+											</button>
+										</td>
+										<td data-bind="text: monText"></td>
+									</tr>
+									<tr data-bind="visible: aggrRowVisible">
+										<td class="child-row" data-bind="text: $i18n('KTG001_4')"></td>
+										<td class="go-button">
+											<button
+												data-bind=" click : aggrementApproval, visible: aggrIconVisible">
+												<i data-bind="ntsIcon: { no: 145 }"></i>
+											</button>
+										</td>
+										<td data-bind="text: aggrText"></td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+					</table>
+				</div>
 			</div>
 		</ui:define>
 	</ui:composition>

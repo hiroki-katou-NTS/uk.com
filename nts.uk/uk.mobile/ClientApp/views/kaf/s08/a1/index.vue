@@ -4,14 +4,16 @@
         <kafs00-a v-if="kaf000_A_Params != null" v-bind:params="kaf000_A_Params" />
       </div>
       <!-- A2_1 -->
-      <div v-if="hidden" class="card bg-danger top-alert uk-text-danger topError">
+      <div v-if="!$valid || !isValidateAll" class="card bg-danger top-alert uk-text-danger topError">
         <button class="btn btn-link uk-text-danger">
           <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
           {{ 'KAFS08_13' | i18n }}
         </button>
       </div>
       <div>
-        <kafs00-b v-if="kaf000_B_Params != null" v-bind:params="kaf000_B_Params" />
+        <kafs00-b v-if="kaf000_B_Params != null" v-bind:params="kaf000_B_Params" 
+        v-on:kaf000BChangeDate="kaf000BChangeDate"
+        v-on:kaf000BChangePrePost="kaf000BChangePrePost"/>
       </div>
       <!-- A5 -->
       <div class="field-set">
@@ -40,7 +42,8 @@
         <div>
           <kafs00-c v-if="kaf000_C_Params != null"
           v-bind:params="kaf000_C_Params"
-           />
+          v-on:kaf000CChangeReasonCD="kaf000CChangeReasonCD"
+          v-on:kaf000CChangeAppReason="kaf000CChangeAppReason" />
         </div>
         <!-- A50_F1 -->
         <div class="process-button">

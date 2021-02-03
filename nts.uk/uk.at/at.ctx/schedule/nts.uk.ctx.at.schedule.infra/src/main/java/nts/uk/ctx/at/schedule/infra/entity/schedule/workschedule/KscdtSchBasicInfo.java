@@ -56,8 +56,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workschedul
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.ActualWorkingTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.StayingTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
+import nts.uk.ctx.at.shared.dom.workrule.businesstype.BusinessTypeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
@@ -171,11 +171,9 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 		}
 		// 勤務予定．休憩時間帯
 		List<KscdtSchBreakTs> kscdtSchBreakTs = new ArrayList<>();
-		workSchedule.getLstBreakTime().stream().forEach(x -> {
-			List<KscdtSchBreakTs> kscdtSchBreakT = x.getBreakTimeSheets().stream()
-					.map(mapper -> KscdtSchBreakTs.toEntity(mapper, sID, yMD, cID)).collect(Collectors.toList());
-			kscdtSchBreakTs.addAll(kscdtSchBreakT);
-		});
+		List<KscdtSchBreakTs> kscdtSchBreakT = workSchedule.getLstBreakTime().getBreakTimeSheets().stream()
+				.map(mapper -> KscdtSchBreakTs.toEntity(mapper, sID, yMD, cID)).collect(Collectors.toList());
+		kscdtSchBreakTs.addAll(kscdtSchBreakT);
 
 		KscdtSchBasicInfoPK basicInfoPK = new KscdtSchBasicInfoPK(workSchedule.getEmployeeID(), workSchedule.getYmd());
 		// null - QA 110800
@@ -193,24 +191,22 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 		
 		// create WorkInfoOfDailyAttendance
 		WorkInformation recordInfo = new WorkInformation(wktpCd, wktmCd);
-		WorkInfoOfDailyAttendance workInfo = new WorkInfoOfDailyAttendance(recordInfo, null, CalculationState.No_Calculated, EnumAdaptor.valueOf(goStraightAtr ? 1 : 0, NotUseAttribute.class), 
+		WorkInfoOfDailyAttendance workInfo = new WorkInfoOfDailyAttendance(recordInfo, CalculationState.No_Calculated, EnumAdaptor.valueOf(goStraightAtr ? 1 : 0, NotUseAttribute.class), 
 				EnumAdaptor.valueOf(backStraightAtr ? 1 : 0, NotUseAttribute.class), EnumAdaptor.valueOf(GeneralDate.today().dayOfWeek() - 1, DayOfWeek.class), new ArrayList<>());
 		
 		// create AffiliationInforOfDailyAttd
 		AffiliationInforOfDailyAttd affInfo = new AffiliationInforOfDailyAttd(new EmploymentCode(empCd), jobId, wkpId, new ClassificationCode(clsCd),
-				busTypeCd==null?null:new BusinessTypeCode(busTypeCd),
-				null);
+				Optional.ofNullable(new BusinessTypeCode(busTypeCd)),
+				Optional.empty());
 		
 		// create List<BreakTimeOfDailyAttd> 
-		List<BreakTimeOfDailyAttd> lstBreakTime = new ArrayList<>();
 		List<BreakTimeSheet> breakTimeSheets = new ArrayList<>();
 		breakTs.stream().forEach(x->{
 			BreakTimeSheet timeSheet = new BreakTimeSheet(new BreakFrameNo(x.getPk().getFrameNo()), new TimeWithDayAttr(x.getBreakTsStart()), new TimeWithDayAttr(x.getBreakTsEnd()));
 			breakTimeSheets.add(timeSheet);
 			
-			BreakTimeOfDailyAttd dailyAttd = new BreakTimeOfDailyAttd(null, breakTimeSheets);
-			lstBreakTime.add(dailyAttd);
 		});
+		BreakTimeOfDailyAttd dailyAttd = new BreakTimeOfDailyAttd(breakTimeSheets);
 		
 		// create List<EditStateOfDailyAttd>
 		List<EditStateOfDailyAttd> lstEditState = editStates.stream().map(mapper-> new EditStateOfDailyAttd(mapper.getPk().getAtdItemId(),EnumAdaptor.valueOf(mapper.getSditState(), EditStateSetting.class))).collect(Collectors.toList());
@@ -221,8 +217,8 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 		@SuppressWarnings("unused")
 		TimeWithDayAttr timeWithDayAttr = null;
 		atdLvwTimes.stream().forEach(mapper-> {
-			WorkStamp workStamp = new WorkStamp(new TimeWithDayAttr(mapper.getAtdClock()), new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET,null), new TimeWithDayAttr(mapper.getAtdClock())), Optional.empty());
-			WorkStamp workStamp2 = new WorkStamp(new TimeWithDayAttr(mapper.getLwkClock()), new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET,null), new TimeWithDayAttr(mapper.getLwkClock())), Optional.empty());
+			WorkStamp workStamp = new WorkStamp(new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET,Optional.empty()), new TimeWithDayAttr(mapper.getAtdClock())), Optional.empty());
+			WorkStamp workStamp2 = new WorkStamp(new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET,Optional.empty()), new TimeWithDayAttr(mapper.getLwkClock())), Optional.empty());
 			TimeActualStamp timeActualStamp = new TimeActualStamp(null, workStamp, 0);
 			TimeActualStamp timeActualStamp2 = new TimeActualStamp(null, workStamp2, 0);
 			TimeLeavingWork timeLeavingWork = new TimeLeavingWork(new WorkNo(mapper.getPk().getWorkNo()), timeActualStamp, timeActualStamp2);
@@ -240,8 +236,7 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 		});
 		
 		ActualWorkingTimeOfDaily actualWorkingTimeOfDaily = kscdtSchTime != null ? kscdtSchTime.toDomain(sID, yMD) : null;
-		WorkScheduleTimeOfDaily scheduleTimeOfDaily = new WorkScheduleTimeOfDaily(new WorkScheduleTime(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0)), 
-				new AttendanceTime(0), new AttendanceTime(0));
+		WorkScheduleTimeOfDaily scheduleTimeOfDaily = new WorkScheduleTimeOfDaily(new WorkScheduleTime(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0)), new AttendanceTime(0));
 		AttendanceTimeOfDailyAttendance attendance = null;
 		StayingTimeOfDaily stayingTime = new StayingTimeOfDaily(new AttendanceTimeOfExistMinus(0), new AttendanceTimeOfExistMinus(0), new AttendanceTimeOfExistMinus(0), new AttendanceTime(0), new AttendanceTimeOfExistMinus(0));
 		MedicalCareTimeOfDaily medicalCareTime = new MedicalCareTimeOfDaily(WorkTimeNightShift.DAY_SHIFT, new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0));
@@ -252,7 +247,7 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 		}
 		optSortTimeWork = new ShortTimeOfDailyAttd(shortWorkingTimeSheets);
 		return new WorkSchedule(sID, yMD, EnumAdaptor.valueOf(confirmedATR ? 1 : 0, ConfirmedATR.class), 
-				workInfo, affInfo, lstBreakTime, lstEditState, Optional.ofNullable(optTimeLeaving), Optional.ofNullable(attendance), Optional.ofNullable(optSortTimeWork));
+				workInfo, affInfo, dailyAttd, lstEditState, Optional.ofNullable(optTimeLeaving), Optional.ofNullable(attendance), Optional.ofNullable(optSortTimeWork));
 	}
 
 	@Override

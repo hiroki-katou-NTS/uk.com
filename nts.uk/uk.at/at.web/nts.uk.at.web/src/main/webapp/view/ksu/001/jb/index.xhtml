@@ -9,11 +9,10 @@
 		<ui:define name="htmlHead">
 			<script>var dialogSize = { width: 1030, height:360 };</script>
 			<com:ValidatorScript>
-				nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletName
+				nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteName
+				nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftRemarks
 				nts.uk.ctx.at.schedule.dom.shift.workpairpattern.WorkPairPatternName
 				nts.uk.ctx.at.schedule.dom.shift.workpairpattern.WorkPairPatternGroupName
-				nts.uk.ctx.at.schedule.dom.shift.management.ShiftRemarks
-
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			
@@ -47,7 +46,7 @@
 						data-bind="click: $parent.clickLinkButton.bind($parent, $element, $index), text: name()"></a>
 				</div>
 				<div class="mt-10">
-					<div id="name" data-bind="ntsFormLabel: {required: true, constraint: 'ShiftPalletName'}">#{i18n.getText('KSU001_904')}</div>
+					<div id="name" data-bind="ntsFormLabel: {required: true, constraint: 'ShiftPaletteName'}">#{i18n.getText('KSU001_904')}</div>
 					<input id="textName" data-bind="ntsTextEditor: {value: groupName, required: true, constraint: 'ShiftPalletName', name: '#[KSU001_904]'}" />
 					<div id="classification" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU001_109')}</div>
 					<div class="cf"

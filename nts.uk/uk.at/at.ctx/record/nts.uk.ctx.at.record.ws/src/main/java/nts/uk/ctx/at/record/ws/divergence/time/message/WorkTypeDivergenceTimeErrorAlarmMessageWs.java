@@ -14,7 +14,7 @@ import nts.uk.ctx.at.record.app.find.divergence.time.DivergenceTimeDto;
 import nts.uk.ctx.at.record.app.find.divergence.time.DivergenceTimeSettingFinder;
 import nts.uk.ctx.at.record.app.find.divergence.time.message.WorkTypeDivergenceTimeErrorAlarmMessageDto;
 import nts.uk.ctx.at.record.app.find.divergence.time.message.WorkTypeDivergenceTimeErrorAlarmMessageFinder;
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
+import nts.uk.ctx.at.shared.dom.workrule.businesstype.BusinessTypeCode;
 
 /**
  * The Class WorkTypeDivergenceTimeErrorAlarmMessageWs.
