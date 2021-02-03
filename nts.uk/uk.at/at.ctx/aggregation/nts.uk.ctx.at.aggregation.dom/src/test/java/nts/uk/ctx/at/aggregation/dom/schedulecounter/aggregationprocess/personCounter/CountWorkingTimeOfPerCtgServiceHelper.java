@@ -99,8 +99,7 @@ public class CountWorkingTimeOfPerCtgServiceHelper {
 
 	@Mocked
 	static Optional<SnapShot> snapshot;
-
-	// Optional<AttendanceTimeOfDailyAttendance> attendance
+	
 	public static IntegrationOfDaily createDailyWorks(String sid, GeneralDate date, int workTime, Integer premiumTimeNo,
 			int premitumTime) {
 		return new IntegrationOfDaily(sid, date, workInformation, calAttr, affiliationInfor, pcLogOnInfo, employeeError
