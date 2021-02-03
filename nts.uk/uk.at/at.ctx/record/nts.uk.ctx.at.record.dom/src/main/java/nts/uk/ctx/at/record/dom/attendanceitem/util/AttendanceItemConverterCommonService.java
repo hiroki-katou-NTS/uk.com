@@ -60,8 +60,8 @@ public abstract class AttendanceItemConverterCommonService implements Attendance
 		if (domain != null) {
 			this.dtoSource.put(type, converter.apply(domain));
 			this.domainSource.remove(type);
-		} else if(!this.dtoSource.containsKey(type)) {
-			this.dtoSource.put(type, converter.apply(null));
+		} else {
+			this.dtoSource.putIfAbsent(type, converter.apply(null));
 		}
 	}
 	
