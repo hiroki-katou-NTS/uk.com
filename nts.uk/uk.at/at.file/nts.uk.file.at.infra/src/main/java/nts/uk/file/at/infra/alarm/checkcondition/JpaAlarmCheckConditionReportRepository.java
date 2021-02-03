@@ -10,7 +10,7 @@ import javax.ejb.Stateless;
 import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
-import nts.uk.ctx.at.shared.dom.alarmList.primitivevalue.RangeCompareType;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.RangeCompareType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.TypeCheckVacation;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.TypeMonCheckItem;
 import nts.uk.file.at.app.export.alarm.checkcondition.Agree36ReportData;

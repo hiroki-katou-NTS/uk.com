@@ -21,6 +21,7 @@ import nts.uk.ctx.at.function.app.command.alarm.checkcondition.agree36.AgreeCond
 import nts.uk.ctx.at.function.app.command.alarm.checkcondition.agree36.AgreeConditionErrorCommand;
 import nts.uk.ctx.at.function.app.find.alarm.checkcondition.AlarmCheckConditionByCategoryFinder;
 import nts.uk.ctx.at.function.app.find.alarm.checkcondition.AppApprovalFixedExtractConditionDto;
+import nts.uk.ctx.at.function.app.find.alarm.checkcondition.AppFixedConditionWorkRecordDto;
 import nts.uk.ctx.at.function.app.find.alarm.mastercheck.MasterCheckFixedExtractConditionDto;
 import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapter;
 import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapterDto;
@@ -29,7 +30,7 @@ import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraMonFun
 import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraMonFunImport;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
-import nts.uk.ctx.at.shared.dom.alarmList.extractiontarget.AlarmCheckTargetCondition;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckTargetCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.ExtractionCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AgreeCondOt;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AgreeConditionError;

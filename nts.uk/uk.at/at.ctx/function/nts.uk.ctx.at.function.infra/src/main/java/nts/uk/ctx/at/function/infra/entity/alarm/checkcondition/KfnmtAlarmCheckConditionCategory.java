@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionCode;
-import nts.uk.ctx.at.shared.dom.alarmList.extractiontarget.AlarmCheckTargetCondition;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckTargetCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.ExtractionCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AgreeCondOt;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AgreeConditionError;
