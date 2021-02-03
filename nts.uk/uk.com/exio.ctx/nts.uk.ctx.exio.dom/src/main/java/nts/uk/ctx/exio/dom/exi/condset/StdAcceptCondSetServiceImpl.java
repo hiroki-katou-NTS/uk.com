@@ -1,5 +1,6 @@
 package nts.uk.ctx.exio.dom.exi.condset;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -7,7 +8,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.exio.dom.exi.item.StdAcceptItem;
@@ -28,9 +28,9 @@ public class StdAcceptCondSetServiceImpl implements StdAcceptCondSetService {
 	@Override
 	public void copyConditionSetting(StdAcceptCondSetCopyParam param) {
 		//Destination AcceptItem data
-		List<StdAcceptItem> destAcceptItemList = null;
+		List<StdAcceptItem> destAcceptItemList = new ArrayList<>();
 		//Destination Condition setting data
-		StdAcceptCondSet desCondSet = null;
+		StdAcceptCondSet desCondSet = new StdAcceptCondSet();
 		
 		// Get source condition setting
 		Optional<StdAcceptCondSet> sourceCondSetOp = repository.getById(param.getCId(), param.getSourceCondSetCode());
@@ -62,6 +62,7 @@ public class StdAcceptCondSetServiceImpl implements StdAcceptCondSetService {
 		Optional<StdAcceptCondSet> existCondSet = repository.getById(param.getCId(), param.getDestCondSetCode());
 		//Override 
 		if (param.isOverride() && existCondSet.isPresent()) {
+			desCondSet.setConditionSetName(new AcceptanceConditionName(param.getDestCondSetName()));
 			//ドメインモデル「受入条件設定（定型）」へ更新する
 			repository.update(desCondSet);
 			//ドメインモデル「受入項目（定型）」へのデリートインサート
@@ -75,10 +76,11 @@ public class StdAcceptCondSetServiceImpl implements StdAcceptCondSetService {
 			}
 			
 		}else{
+			desCondSet.setConditionSetCode(new AcceptanceConditionCode(param.getDestCondSetCode()));
 			//ドメインモデル「受入条件設定（定型）」へ登録する
 			repository.add(desCondSet);
 			
-			if(CollectionUtil.isEmpty(destAcceptItemList)){ return;}			
+			if(destAcceptItemList.isEmpty()){ return;}			
 			//Register 受入項目（定型）
 			for (StdAcceptItem stdAcceptItem : destAcceptItemList) {
 				acceptItemRepository.add(stdAcceptItem);
