@@ -8,10 +8,10 @@ import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.shared.dom.alarmList.attendanceitem.AttendanceItemCondition;
-import nts.uk.ctx.at.shared.dom.alarmList.attendanceitem.ErAlAttendanceItemCondition;
-import nts.uk.ctx.at.shared.dom.alarmList.attendanceitem.ErAlConditionsAttendanceItem;
-import nts.uk.ctx.at.shared.dom.alarmList.primitivevalue.DisplayMessage;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.attendanceitem.AttendanceItemCondition;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.attendanceitem.ErAlAttendanceItemCondition;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.attendanceitem.ErAlConditionsAttendanceItem;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.primitivevalue.DisplayMessage;
 
 /**
  * @author hungnm 月別実績の勤怠項目チェック

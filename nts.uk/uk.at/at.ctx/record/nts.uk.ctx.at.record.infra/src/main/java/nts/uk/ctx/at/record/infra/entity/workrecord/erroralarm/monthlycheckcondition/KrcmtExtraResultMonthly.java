@@ -13,8 +13,8 @@ import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.shared.dom.alarmList.attendanceitem.AttendanceItemCondition;
-import nts.uk.ctx.at.shared.dom.alarmList.primitivevalue.LogicalOperator;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.attendanceitem.AttendanceItemCondition;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.primitivevalue.LogicalOperator;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.ExtraResultMonthly;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.HowDisplayMessage;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.MessageDisplay;

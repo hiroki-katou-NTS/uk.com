@@ -30,13 +30,13 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.export.DayoffCurrentMont
 import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.export.MonthlyDayoffRemainExport;
 import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.export.SpecialHolidayRemainDataOutput;
 import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.export.SpecialHolidayRemainDataSevice;
-import nts.uk.ctx.at.shared.dom.alarmList.attendanceitem.AttendanceItemCondition;
-import nts.uk.ctx.at.shared.dom.alarmList.attendanceitem.ErAlAttendanceItemCondition;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.attendanceitem.AttendanceItemCondition;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.attendanceitem.ErAlAttendanceItemCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.CompareOperatorText;
-import nts.uk.ctx.at.shared.dom.alarmList.enums.ConditionAtr;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.enums.ConditionAtr;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConvertCompareTypeToText;
-import nts.uk.ctx.at.shared.dom.alarmList.enums.ErrorAlarmConditionType;
-import nts.uk.ctx.at.shared.dom.alarmList.primitivevalue.LogicalOperator;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.enums.ErrorAlarmConditionType;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.primitivevalue.LogicalOperator;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.WorkPlaceHistImportAl;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.ExtraResultMonthly;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.ExtraResultMonthlyRepository;
@@ -53,7 +53,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.chec
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.checkremainnumber.CheckRemainNumberMonRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycondition.MonthlyCorrectConditionRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycondition.TimeItemCheckMonthly;
-import nts.uk.ctx.at.shared.dom.alarmList.primitivevalue.CheckedTimeDuration;
+import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.primitivevalue.CheckedTimeDuration;
 import nts.uk.ctx.at.record.dom.workrecord.export.WorkRecordExport;
 import nts.uk.ctx.at.record.dom.workrecord.export.dto.EmpAffInfoExport;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.ConfirmationMonth;
