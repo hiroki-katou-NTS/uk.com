@@ -1,5 +1,6 @@
 package nts.uk.query.app.ccg005.query.comment;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,10 +25,8 @@ public class DisplayCommentQuery {
 		// 1. get(社員IDリスト、年月日): Map<社員ID、社員のコメント情報>
 		Map<String, EmployeeCommentInformationDto> returnMap = new HashMap<>();
 		Map<String, EmployeeCommentInformation> map = repo.getByListSidAndDate(sids, date);
-		sids.forEach(sid -> {
-			
-		});
-		List<String> noCommentSids = sids;
+		List<String> noCommentSids = new ArrayList<>();
+		noCommentSids.addAll(sids);
 		// remove employee id that have comment
 		map.forEach((key, value) -> {
 			if (noCommentSids.contains(key)) {
