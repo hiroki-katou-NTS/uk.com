@@ -17,7 +17,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  */
 public class ReflectTimeVacationOffsetDeductTime {
 
-	public static List<Integer> process(String companyId, List<TimeLeaveApplicationDetailShare> appTimeLeavDetail,
+	public static List<Integer> process(List<TimeLeaveApplicationDetailShare> appTimeLeavDetail,
 			DailyRecordOfApplication dailyApp, TimeLeaveAppReflectCondition condition,
 			NotUseAtr reflectActualTimeZone) {
 
@@ -29,7 +29,7 @@ public class ReflectTimeVacationOffsetDeductTime {
 			TimeDigestApplicationShare timeDigest = CheckConditionReflectAppTimeLeave
 					.check(detail.getTimeDigestApplication(), condition);
 
-			// TODO: 時間休暇の時間消化の反映 processing
+			// 時間休暇の時間消化の反映 
 			lstItemId.addAll(ReflectTimeDigestTimeVacation.process(dailyApp, detail.getAppTimeType(), timeDigest));
 
 			// [日別勤怠(work）.予定実績区分]をチェックする

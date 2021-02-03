@@ -18,7 +18,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  */
 public class SCRCReflectTimeLeaveApp {
 
-	public static List<Integer> reflect(String companyId, TimeLeaveApplicationShare appTimeLeav,
+	public static List<Integer> reflect(TimeLeaveApplicationShare appTimeLeav,
 			DailyRecordOfApplication dailyApp, TimeLeaveApplicationReflect reflectTimeLeav) {
 
 		List<Integer> lstItemId = new ArrayList<Integer>();
@@ -29,7 +29,7 @@ public class SCRCReflectTimeLeaveApp {
 				}).collect(Collectors.toList());
 
 		// 控除時間と相殺する時間休暇を反映
-		lstItemId.addAll(ReflectTimeVacationOffsetDeductTime.process(companyId, leaveApplicationDetails, dailyApp,
+		lstItemId.addAll(ReflectTimeVacationOffsetDeductTime.process(leaveApplicationDetails, dailyApp,
 				reflectTimeLeav.getCondition(), reflectTimeLeav.getReflectActualTimeZone()));
 
 		return lstItemId;

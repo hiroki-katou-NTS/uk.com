@@ -16,6 +16,7 @@ import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 /**
  * @author thanh_nx
  *
+ *         時間休暇の時間消化の反映
  */
 public class ReflectTimeDigestTimeVacation {
 

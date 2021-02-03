@@ -77,7 +77,7 @@ public class RCCreateDailyAfterApplicationeReflect {
 			break;
 		case ANNUAL_HOLIDAY_APPLICATION:
 			// 8：時間休暇申請を反映する
-			itemIds.addAll(SCRCReflectTimeLeaveApp.reflect(companyId, (TimeLeaveApplicationShare) application, dailyApp,
+			itemIds.addAll(SCRCReflectTimeLeaveApp.reflect((TimeLeaveApplicationShare) application, dailyApp,
 					(TimeLeaveApplicationReflect) domainSetReflect));
 			break;
 		case EARLY_LEAVE_CANCEL_APPLICATION:
