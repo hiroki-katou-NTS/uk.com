@@ -11,7 +11,6 @@ import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.enums.FilterByCompare;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.enums.WorkCheckResult;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.snapshot.SnapShot;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 /**
@@ -41,9 +40,9 @@ public class WorkTypeCondition extends DomainObject {
 	}
 
 	/** 勤務種類をチェックする */
-	public WorkCheckResult checkWorkType(WorkInfoOfDailyAttendance workInfo, Optional<SnapShot> snapshot) {
-		return WorkCheckResult.NOT_CHECK;
-	}
+//	public WorkCheckResult checkWorkType(WorkInfoOfDailyPerformance workInfo, Optional<SnapShot> snapshot) {
+//		return WorkCheckResult.NOT_CHECK;
+//	}
 	public boolean isUse() {
 		return this.useAtr;
 	}

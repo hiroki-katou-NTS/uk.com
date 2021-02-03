@@ -20,9 +20,9 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.A
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareRange;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.ErAlAttendanceItemCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.ErAlConditionsAttendanceItem;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.worktime.PlanActualWorkTime;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.worktime.SingleWorkTime;
-import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.worktime.WorkTimeCondition;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktime.PlanActualWorkTime;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktime.SingleWorkTime;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktime.WorkTimeCondition;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.enums.WorkCheckResult;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.worktype.PlanActualWorkType;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.worktype.SingleWorkType;
@@ -292,7 +292,7 @@ public class ErrorAlarmCondition extends AggregateRoot {
 		this.continuousPeriod = new ContinuousPeriod(continuousPeriod);
 	}
 	
-	public boolean checkWith(WorkInfoOfDailyPerformance workInfo, Optional<SnapShot> snapshot,
+	public boolean checkWith(WorkInfoOfDailyPerformance workInfo, Optional<SnapShot> snapshot, 
 			Function<List<Integer>, List<Double>> getValueFromItemIds){
 		/** 勤務種類をチェックする */
 		// TODO: uncomment
@@ -300,7 +300,9 @@ public class ErrorAlarmCondition extends AggregateRoot {
 		// !condition.getWorkTypeCondition().checkWorkType(workInfo)) {
 		WorkCheckResult workTypeCheck = WorkCheckResult.NOT_CHECK;
 		if (this.workTypeCondition != null) {
-			workTypeCheck = this.workTypeCondition.checkWorkType(workInfo.getWorkInformation(), snapshot);
+			// Todo Hop.NT
+//			workTypeCheck = this.workTypeCondition.checkWorkType(workInfo, snapshot);
+			workTypeCheck = this.workTypeCondition.checkWorkType();
 		}
 		/** 就業時間帯をチェックする */
 		// TODO: uncomment
@@ -308,7 +310,7 @@ public class ErrorAlarmCondition extends AggregateRoot {
 		// !condition.getWorkTimeCondition().checkWorkTime(workInfo)) {
 		WorkCheckResult workTimeCheck = WorkCheckResult.NOT_CHECK;
 		if (this.workTimeCondition != null) {
-			workTimeCheck = this.workTimeCondition.checkWorkTime(workInfo.getWorkInformation(), snapshot);
+			workTimeCheck = this.workTimeCondition.checkWorkTime(workInfo, snapshot);
 		}
 		/** 勤怠項目をチェックする */
 		WorkCheckResult atdCheck = WorkCheckResult.NOT_CHECK;
