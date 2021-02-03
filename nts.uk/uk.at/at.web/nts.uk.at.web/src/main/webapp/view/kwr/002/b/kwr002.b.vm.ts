@@ -77,6 +77,7 @@ module nts.uk.com.view.kwr002.b {
             setShared('attendanceRecItemList', null, true);
             setShared('sealStamp', null, true);
             setShared('useSeal', null, true);
+            setShared('monthlyConfirmedDisplay', null, true);
         };
 
         onClose() {
@@ -485,7 +486,7 @@ module nts.uk.com.view.kwr002.b {
             setShared('exportFontSize', self.exportFontSize());
             setShared('selectionType', self.itemSelType);
             setShared('layoutId', self.layoutId);
-
+            setShared('monthlyConfirmedDisplay', self.monthlyDisplay(),true);
             modal('../c/index.xhtml', {});
         }
 
