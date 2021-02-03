@@ -14,7 +14,6 @@ module a3 {
     class ScreenModel {
 
         //use half day
-        useHalfDayOptions: KnockoutObservableArray<any>;
         useHalfDay: KnockoutObservable<boolean>;
 
         // fixed table options Fixed Detail
@@ -52,7 +51,6 @@ module a3 {
         isFixedMode: KnockoutComputed<boolean>;
         isDiffTimeMode: KnockoutComputed<boolean>;
         isDetailMode: KnockoutComputed<boolean>;
-        isUseHalfDay: KnockoutObservable<boolean>;
         showSimpleFixed: KnockoutComputed<boolean>;
         showSimpleDifftime: KnockoutComputed<boolean>;
 
@@ -85,7 +83,7 @@ module a3 {
         /**
         * Constructor.
         */
-        constructor(settingEnum: WorkTimeSettingEnumDto, mainSettingModel: MainSettingModel, isDetailMode: KnockoutComputed<boolean>, isNewMode: KnockoutComputed<boolean>,lstOvertimeWorkFrame : any) {
+        constructor(settingEnum: WorkTimeSettingEnumDto, mainSettingModel: MainSettingModel, isDetailMode: KnockoutComputed<boolean>,isNewMode: KnockoutComputed<boolean>, useHalfDayOverTime: KnockoutComputed<boolean>,lstOvertimeWorkFrame : any) {
             let self = this;
             self.isNewMode = isNewMode;
             self.screenSettingMode = ko.observable(0);
@@ -98,11 +96,7 @@ module a3 {
             self.isDiffTimeMode = self.mainSettingModel.workTimeSetting.isDiffTime;
 
             //use halfDay
-            self.useHalfDay = ko.observable(false); //A19_2_2 initial false
-            self.useHalfDayOptions = ko.observableArray([
-                { code: true, name: nts.uk.resource.getText("KMK003_49") },
-                { code: false, name: nts.uk.resource.getText("KMK003_50") }
-            ]);
+            self.useHalfDay = useHalfDayOverTime;
             
             self.autoCalUseAttrs = ko.observableArray([
                 { code: 1, name: nts.uk.resource.getText("KMK003_142") },
@@ -127,7 +121,6 @@ module a3 {
 
             self.isNewMode.subscribe((v) => {
                 if (v) {
-                    self.useHalfDay(false); // initial false in new mode
                     self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeMethodSet.valueHasMutated();
                 }
             });

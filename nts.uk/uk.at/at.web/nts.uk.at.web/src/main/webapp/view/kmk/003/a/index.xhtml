@@ -214,16 +214,6 @@
 									required: false,
 									enable: true
 									}" />
-<!--								<div class="label_header" data-bind="ntsFormLabel: {constraint: 'WorkTimeSymbol'}">#{i18n.getText('KMK003_15')}-->
-<!--								</div>-->
-<!--								<input class="main-input" tabindex="14" data-bind="ntsTextEditor: {-->
-<!--									name: '#[KMK003_15]',-->
-<!--									value: workTimeDisplayName.workTimeSymbol,-->
-<!--									constraint: 'WorkTimeSymbol',-->
-<!--									option: siftSymbolNameOption,-->
-<!--									required: false,-->
-<!--									enable: $parent.isJapanese()-->
-<!--									}" />-->
 								<div tabindex="15" class="label_header" style="padding-top: 5px;" 
 									data-bind="ntsCheckBox: { checked: isAbolish, enable: $parent.isJapanese() }">#{i18n.getText('KMK003_16')}
 								</div>
@@ -323,6 +313,7 @@
 													isSimpleMode: isSimpleMode,
 													isNewMode: isNewMode,
 													enum: settingEnum,
+													useHalfDayWorking: useHalfDayWorking,
 													mainModel: mainSettingModel }">
 												</div>
 											</div>
@@ -332,6 +323,7 @@
 													overTimeWorkFrameOptions: overTimeWorkFrameOptions,
 													isDetailMode: isDetailMode,
 													isNewMode: isNewMode,
+													useHalfDayOvertime: useHalfDayOvertime,
 													mainModel: mainSettingModel }">
 												</div>
 											</div>
@@ -348,6 +340,7 @@
 													isDetailMode: isDetailMode,
 													isNewMode: isNewMode,
 													mainSettingModel: mainSettingModel,
+													useHalfDayBreak: useHalfDayBreak,
 													enum: settingEnum }">
 												</div>
 											</div>

@@ -7,13 +7,13 @@
 			<com:ko tag="if" bind ="isDetailMode">
 				<com:ko tag="ifnot" bind="isFlow">
 					<td class="td-cell" width="100px">
-						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_48')}</div>
+						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK003_319')}</div>
 					</td>
 					<td class="td-cell">
 						<div class="cf" tabindex="70"
 							 data-bind="ntsSwitchButton: {
-											name: '#[KMK003_165]',
-											options: useHalfDayOptions,
+											name: '#[KMK003_320]',
+											options: mainSettingModel.useHalfDayOptions,
 											optionsValue: 'code',
 											optionsText: 'name',
 											value: useHalfDay,

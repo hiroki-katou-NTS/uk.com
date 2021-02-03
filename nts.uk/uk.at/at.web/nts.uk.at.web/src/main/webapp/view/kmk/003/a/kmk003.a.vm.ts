@@ -36,12 +36,18 @@ module nts.uk.at.view.kmk003.a {
             workTimeSettings: KnockoutObservableArray<SimpleWorkTimeSettingDto>;
             columnWorktimeSettings: KnockoutObservable<any>;
             selectedWorkTimeCode: KnockoutObservable<string>;
+
             //tab mode
             tabModeOptions: KnockoutObservableArray<any>;
             tabMode: KnockoutObservable<number>;
+
             //use half day
             useHalfDayOptions: KnockoutObservableArray<any>;
             useHalfDay: KnockoutObservable<boolean>;
+            useHalfDayWorking: KnockoutObservable<boolean>;
+            useHalfDayOvertime: KnockoutObservable<boolean>;
+            useHalfDayBreak: KnockoutObservable<boolean>;
+
             //tabs
             tabs: KnockoutObservableArray<TabItem>;
             selectedTab: KnockoutObservable<string>;
@@ -87,8 +93,18 @@ module nts.uk.at.view.kmk003.a {
 
                 self.initComputedValue();
 
-                self.useHalfDay = ko.observable(false); // A5_19 initial value = false
-                self.mainSettingModel = new MainSettingModel(self.tabMode, self.isNewOrCopyMode, self.useHalfDay);
+                // init useHalfDay
+                self.useHalfDayOptions = ko.observableArray([
+                    { code: true, name: nts.uk.resource.getText("KMK003_321") },
+                    { code: false, name: nts.uk.resource.getText("KMK003_322") }
+                ]);
+                self.useHalfDay = ko.observable(false); // initial value = false
+                self.useHalfDayWorking = ko.observable(false); // A19_1_2 initial value = false
+                self.useHalfDayOvertime = ko.observable(false); // A19_2_2 initial value = false
+                self.useHalfDayBreak = ko.observable(false); // A19_3_2 initial value = false
+
+
+                self.mainSettingModel = new MainSettingModel(self.tabMode, self.isNewOrCopyMode, self.useHalfDayOptions);
                 self.selectedWorkTimeCode = ko.observable('');
                 self.workTimeSettingLoader = new WorkTimeSettingLoader(self.mainSettingModel.workTimeSetting.worktimeCode);
                 self.workTimeSettings = ko.observableArray([]);
@@ -223,9 +239,13 @@ module nts.uk.at.view.kmk003.a {
             private initSubscribe(): void {
                 let self = this;
 
-                self.useHalfDay.subscribe(() => {
-                    self.clearAllError();
-                });
+                self.isNewMode.subscribe((v) => {
+                    if (v){
+                        self.useHalfDayWorking(false);
+                        self.useHalfDayOvertime(false);
+                        self.useHalfDayBreak(false);
+                    }
+                })
 
                 self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeDailyAtr.subscribe(() => {
                     if (self.isNewMode()) {
@@ -944,6 +964,7 @@ module nts.uk.at.view.kmk003.a {
             flexWorkSetting: FlexWorkSettingModel;
             
             isChangeItemTable: KnockoutObservable<boolean>;
+            useHalfDayOptions: KnockoutObservable<any>
             useHalfDay: KnockoutObservable<boolean>;
             tabMode: KnockoutObservable<number>;
             addMode: KnockoutComputed<boolean>;
@@ -951,10 +972,11 @@ module nts.uk.at.view.kmk003.a {
             // Interlock dialog J
             isInterlockDialogJ: KnockoutObservable<boolean>;
             
-            constructor(tabMode: KnockoutObservable<number>, isNewOrCopyMode: KnockoutComputed<boolean>, useHalfDay: KnockoutObservable<boolean>) {
+            constructor(tabMode: KnockoutObservable<number>, isNewOrCopyMode: KnockoutComputed<boolean>, useHalfDayOptions: KnockoutObservable<any>) {
                 let self = this;
                 self.isChangeItemTable = ko.observable(false);
-                self.useHalfDay = useHalfDay; // bind to useHalfDay of main screen
+                self.useHalfDayOptions = useHalfDayOptions;
+                self.useHalfDay = ko.observable(true); // bind to useHalfDay of main screen
                 self.isInterlockDialogJ = ko.observable(true);
                 self.tabMode = tabMode;
                 
