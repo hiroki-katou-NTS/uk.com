@@ -35,7 +35,9 @@
             </tr>
             <tr>
               <td colspan="4">
-                <label id="E3" data-bind="text: businessName" />
+                <com:ko-if bind="disableBusinessName()">
+                  <label id="E3" data-bind="text: businessName" />
+                </com:ko-if>
               </td>
             </tr>
             <tr>
@@ -94,6 +96,7 @@
                                 name: '#[CCG005_20]',
                                 constraint: 'GoOutReason',
                                 value: goOutReason,
+                                required: true,
                                 option: {
                                   textmode: 'text',
                                   placeholder: '#{i18n.getText('CCG005_21')}',

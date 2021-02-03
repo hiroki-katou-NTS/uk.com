@@ -308,7 +308,7 @@ public class AttendanceInformationScreenQuery {
 				
 			// UserAvatarDto
 			UserAvatarDto avatarDto = UserAvatarDto.builder().build();
-			avatarList.stream().filter(ava -> ava.getPersonalId() == empId.getPid()).findAny()
+			avatarList.stream().filter(ava -> ava.getPersonalId() == empId.getPid()).findFirst()
 			.ifPresent(ava -> ava.setMemento(avatarDto));
 			
 			// commentDto
@@ -321,14 +321,14 @@ public class AttendanceInformationScreenQuery {
 			}
 
 			// goOutDto
-			Optional<GoOutEmployeeInformation> goOutDomain = goOutList.stream().filter(goOut -> goOut.getSid() == empId.getSid())
-					.findAny();
+			Optional<GoOutEmployeeInformation> goOutDomain = goOutList.stream().filter(goOut -> goOut.getSid().equalsIgnoreCase(empId.getSid()))
+					.findFirst();
 			GoOutEmployeeInformationDto goOutDto = GoOutEmployeeInformationDto.builder().build();
 			goOutDomain.ifPresent(item -> item.setMemento(goOutDto));
 
 			// emojiDto
-			Optional<EmployeeEmojiState> emojiDomain = emojiList.stream().filter(emoji -> emoji.getSid() == empId.getSid())
-					.findAny();
+			Optional<EmployeeEmojiState> emojiDomain = emojiList.stream().filter(emoji -> emoji.getSid().equalsIgnoreCase(empId.getSid()))
+					.findFirst();
 			EmployeeEmojiStateDto emojiDto = EmployeeEmojiStateDto.builder().build();
 			emojiDomain.ifPresent(consumer -> consumer.setMemento(emojiDto));
 			

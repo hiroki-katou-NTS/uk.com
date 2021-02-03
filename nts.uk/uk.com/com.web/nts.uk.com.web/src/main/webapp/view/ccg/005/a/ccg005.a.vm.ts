@@ -113,7 +113,9 @@ module nts.uk.at.view.ccg005.a.screenModel {
         <!-- A5 -->
         <div class="grade-body-bottom" style="min-height: 55px; height: 275px;">
           <table style="width: 100%; border-collapse: separate; border-spacing: 0 5px">
-            
+          <tbody data-bind="foreach: attendanceInformationDtosDisplay">
+
+
 
 
             <tr style="background-color: yellow; height: 50px;">
@@ -123,7 +125,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
               </td>
               <td class="ccg005-w100 ccg005-pl-5 ccg005-border-groove ccg005-right-unset">
                 <!-- A4_8 -->
-                <div>text 1</div>
+                <label style="display: inline-block;" data-bind="text: businessName"/>
                 <!-- A4_5 -->
                 <div>
                   <i data-bind="ntsIcon: {no: $component.emoji(), width: 20, height: 15}"></i>
@@ -132,12 +134,14 @@ module nts.uk.at.view.ccg005.a.screenModel {
               <td class="ccg005-w100 ccg005-pl-5 ccg005-border-groove ccg005-right-unset ccg005-left-unset">
                 <div>
                   <!-- A4_2 -->
-                  <span>text 2</span>
+                  <label data-bind="text: attendanceDetailDto.workName"/>
                   <!-- A4_4 -->
                   <i data-bind="ntsIcon: {no: 190, width: 13, height: 13}"></i>
                 </div>
+                <div>
                 <!-- A4_3 -->
-                <div>texxt 1</div>
+                  <label data-bind="text: attendanceDetailDto.checkInCheckOutTime"/>
+                </div>
               </td>
               <td class="ccg005-pl-5 ccg005-border-groove ccg005-right-unset ccg005-left-unset">
                 <!-- A4_7 -->
@@ -147,15 +151,15 @@ module nts.uk.at.view.ccg005.a.screenModel {
               </td>
               <td class="ccg005-pl-5 ccg005-border-groove ccg005-left-unset">
                 <!-- A4_6 time -->
-                <div>10:25 - 15:45</div>
+                <p data-bind="text: goOutDto.goOutPeriod"/>
                 <!-- A4_6 text -->
-                <div>急に用事があるの</div>
+                <p class="limited-label" data-bind="text: goOutDto.goOutReason"/>
               </td>
             </tr>
 
 
 
-
+            </tbody>
           </table>
         </div>
         <div class="grade-bottom ccg005-flex" style="width: 100%; align-items: center; position: relative; margin-top: 10px; margin-bottom: 10px;">
@@ -378,7 +382,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
     endPage: KnockoutComputed<number> = ko.computed(() => this.startPage() + this.totalRow() - 1);
     paginationText: KnockoutComputed<string> = ko.computed(() => `${this.startPage()}-${this.endPage()}/${this.totalElement()}`);
     // End pagination
-  
+
     activityStatus: KnockoutObservable<number> = ko.observable(0);
     activatedStatus: KnockoutObservable<number> = ko.observable(0);
     activityStatusIcon: KnockoutComputed<number> = ko.computed(() => this.initActivityStatus(this.activityStatus()));
@@ -400,7 +404,8 @@ module nts.uk.at.view.ccg005.a.screenModel {
     workplaceFromCDL008: KnockoutObservableArray<string> = ko.observableArray([]);
     employeeIdList: KnockoutObservableArray<string> = ko.observableArray([]);
     personalIdList: KnockoutObservableArray<string> = ko.observableArray([]);
-    attendanceInformationDtos: KnockoutObservableArray<any> = ko.observableArray([]);
+    attendanceInformationDtos: KnockoutObservableArray<object.AttendanceInformationDto> = ko.observableArray([]);
+    attendanceInformationDtosDisplay: KnockoutObservableArray<AttendanceInformationViewModel> = ko.observableArray([]);
     listPersonalInfo: KnockoutObservableArray<any> = ko.observableArray([]);
 
     //data for screen E
@@ -437,8 +442,6 @@ module nts.uk.at.view.ccg005.a.screenModel {
         vm.isSameOrBeforeBaseDate(selectedDate.isSameOrBefore(baseDate));
         vm.isBaseDate(selectedDate.isSame(baseDate));
         // パラメータ「在席情報を取得」
-        const listSid = _.map(vm.attendanceInformationDtos(), item => item.sid);
-        const listPid = _.map(vm.listPersonalInfo(), item => item.personalId);
         const empIds = _.map(vm.attendanceInformationDtos(), atd => {
           return {
             sid: atd.sid,
@@ -452,7 +455,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
         }
         vm.$blockui('show');
         vm.$ajax('com', API.getAttendanceInformation, param).then((res: object.AttendanceInformationDto) => {
-          
+
         }).always(() => vm.$blockui('hide'));
       });
     }
@@ -473,8 +476,71 @@ module nts.uk.at.view.ccg005.a.screenModel {
         vm.$ajax('com', API.getDisplayInfoAfterSelect, param).then((res: object.DisplayInformationDto) => {
           vm.attendanceInformationDtos(res.attendanceInformationDtos);
           vm.listPersonalInfo(res.listPersonalInfo);
+          const display = vm.getAttendanceInformationDtosDisplay(res);
+          vm.attendanceInformationDtosDisplay(display);
         })
-        .always(() => vm.$blockui('clear'));
+          .always(() => vm.$blockui('clear'));
+      });
+    }
+
+    private getAttendanceInformationDtosDisplay(res: object.DisplayInformationDto): AttendanceInformationViewModel[] {
+      const vm = this;
+      return _.map(res.attendanceInformationDtos, (item => {
+        let businessName = "";
+        const personalInfo = _.find(res.listPersonalInfo, (emp => emp.employeeId === item.sid));
+        if (personalInfo) {
+          businessName = personalInfo.businessName;
+        }
+        console.log(vm.getGoOutViewModel(item.goOutDto));
+        return new AttendanceInformationViewModel({
+          applicationDtos: item.applicationDtos,
+          sid: item.sid,
+          attendanceDetailDto: vm.getAttendanceDetailViewModel(item.attendanceDetailDto),
+          avatarDto: item.avatarDto,
+          activityStatusDto: item.activityStatusDto,
+          commentDto: item.commentDto,
+          goOutDto: vm.getGoOutViewModel(item.goOutDto),
+          emojiDto: item.emojiDto,
+          businessName: businessName
+        });
+      }));
+    }
+
+    private getAttendanceDetailViewModel(attendanceDetailDto: any): AttendanceDetailViewModel {
+      let checkInCheckOutTime = "";
+      if (attendanceDetailDto.checkInTime === null && attendanceDetailDto.checkOutTime === null) {
+        checkInCheckOutTime = (attendanceDetailDto.checkInTime + " - " + attendanceDetailDto.checkOutTime);
+      }
+      if (!attendanceDetailDto.checkInTime === null && attendanceDetailDto.checkOutTime === null) {
+        checkInCheckOutTime = attendanceDetailDto.checkOutTime;
+      }
+      if (attendanceDetailDto.checkInTime === null && !attendanceDetailDto.checkOutTime === null) {
+        checkInCheckOutTime = attendanceDetailDto.checkInTime;
+      }
+      return new AttendanceDetailViewModel({
+        workColor: attendanceDetailDto.workColor,
+        workName: attendanceDetailDto.workName,
+        checkOutColor: attendanceDetailDto.checkOutColor,
+        checkInCheckOutTime: checkInCheckOutTime,
+        checkInColor: attendanceDetailDto.checkInColor,
+        workDivision: attendanceDetailDto.workDivision,
+      });
+    }
+
+    private getGoOutViewModel(goOutDto: object.GoOutEmployeeInformationDto): GoOutEmployeeInformationViewModel {
+      let period = "";
+      if (goOutDto.goOutTime && goOutDto.comebackTime) {
+        period = String(goOutDto.goOutTime + " - " + goOutDto.comebackTime);
+      }
+      if (goOutDto.goOutTime && !goOutDto.comebackTime) {
+        period = String(goOutDto.goOutTime);
+      } 
+      if (!goOutDto.goOutTime && goOutDto.comebackTime) {
+        period = String(goOutDto.comebackTime);
+      } 
+      return new GoOutEmployeeInformationViewModel({
+        goOutReason: goOutDto.goOutReason,
+        goOutPeriod: period
       });
     }
 
@@ -488,7 +554,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
           - $('.grade-bottom').height()
           - 40;
         if (subHeight >= 53) {
-          vm.perPage(_.floor(subHeight/53));
+          vm.perPage(_.floor(subHeight / 53));
         }
         $('.grade-body-bottom').height(subHeight);
       });
@@ -500,9 +566,9 @@ module nts.uk.at.view.ccg005.a.screenModel {
     private initPopupArea() {
       $('#ccg005-star-popup').ntsPopup({
         position: {
-            my: 'left top',
-            at: 'left-100 bottom',
-            of: $('#ccg005-star-img')
+          my: 'left top',
+          at: 'left-100 bottom',
+          of: $('#ccg005-star-img')
         },
         showOnStart: false,
         dismissible: true
@@ -568,7 +634,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       }
     }
 
-    submit() {}
+    submit() { }
 
     openScreenCCG005B() {
       const vm = this;
@@ -640,7 +706,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
     }
 
     private initEmojiType(emojiType: number): number {
-      switch(emojiType) {
+      switch (emojiType) {
         case EmojiType.WEARY: return Emoji.WEARY;
         case EmojiType.SAD: return Emoji.SAD;
         case EmojiType.AVERAGE: return Emoji.AVERAGE;
@@ -651,7 +717,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
     }
 
     private initActivityStatus(status: number): number {
-      switch(status) {
+      switch (status) {
         case StatusClassfication.NOT_PRESENT: return StatusClassficationIcon.NOT_PRESENT;
         case StatusClassfication.PRESENT: return StatusClassficationIcon.PRESENT;
         case StatusClassfication.GO_OUT: return StatusClassficationIcon.GO_OUT;
@@ -749,7 +815,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
         isrestrictionOfReferenceRange: false
       };
       setShared('inputCDL008', inputCDL008);
-      
+
       vm.$window.modal('com', '/view/cdl/008/a/index.xhtml').then(() => {
         if (getShared('CDL008Cancel')) {
           setShared('CDL008Cancel', null);
@@ -843,6 +909,54 @@ module nts.uk.at.view.ccg005.a.screenModel {
     goOutDate: string;
 
     constructor(init?: Partial<goOutParam>) {
+      $.extend(this, init);
+    }
+  }
+
+  class AttendanceInformationViewModel {
+    applicationDtos: any[];                                 //申請
+    sid: string;                                            //社員ID
+    attendanceDetailDto: AttendanceDetailViewModel;                               //詳細出退勤
+    avatarDto: object.UserAvatarDto;                               //個人の顔写真
+    activityStatusDto: number;                              //在席のステータス
+    commentDto: any;                                        //社員のコメント情報
+    goOutDto: GoOutEmployeeInformationViewModel;                  //社員の外出情報
+    emojiDto: object.EmployeeEmojiStateDto;                    //社員の感情状態
+    businessName: string;
+
+    constructor(init?: Partial<AttendanceInformationViewModel>) {
+      $.extend(this, init);
+    }
+  }
+
+  class GoOutEmployeeInformationViewModel {
+    goOutPeriod: string;
+    goOutReason: string;
+    constructor(init?: Partial<GoOutEmployeeInformationViewModel>) {
+      $.extend(this, init);
+    }
+  }
+
+  class AttendanceDetailViewModel {
+    // 勤務の色
+    workColor: number;
+
+    // 勤務名
+    workName: string;
+
+    // 終了の色
+    checkOutColor: number;
+
+    // 終了時刻 + 開始時刻
+    checkInCheckOutTime: string;
+
+    // 開始の色
+    checkInColor: number;
+
+    // 勤務区分
+    workDivision: number;
+
+    constructor(init?: Partial<AttendanceDetailViewModel>) {
       $.extend(this, init);
     }
   }
