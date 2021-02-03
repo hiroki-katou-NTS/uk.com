@@ -2750,41 +2750,56 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             }
                         }
                     }
-                } else {
-                    
-                    // check xem cell được paste giá trị coppy có bị disable 2 cell starttime, endtime hay không
-                    // nều bị disable thì remove disable đi
-                    let checkDisable = _.find(self.listTimeDisable, function(cell: TimeDisable) { return cell.rowId == rowIdx && cell.columnId == key; });
-                    if (checkDisable) {
-                        self.enableCellStartEndTime(rowIdx+'', key);
-                    }
-                    
+                } else if (userInfor.disPlayFormat == 'time') {
+
                     // case coppy từ cell là ngày lễ, ngày nghỉ nên phải disable cell starttime, endtime đi.
-                    if (data.achievements == false && data.workHolidayCls == AttendanceHolidayAttr.HOLIDAY) {
-                        self.diseableCellStartEndTime(rowIdx+'', key);
-                    }
-                    
-                    // set Deco text color
-                    // A10_color⑥ スケジュール明細の文字色  (Màu chữ của "Schedule detail")
-                    if (data.achievements == true) {
-                        if (innerIdx == 0 || innerIdx == 1 || innerIdx == 2 || innerIdx == 3) {
-                            return { textColor: "#008000" };
-                        }
+                    if (data.workHolidayCls == AttendanceHolidayAttr.HOLIDAY) {
+                        self.diseableCellStartEndTime(rowIdx + '', key);
                     } else {
-                        if (data.workHolidayCls == AttendanceHolidayAttr.FULL_TIME) {
-                            if (innerIdx == 0 || innerIdx == 1) {
-                                return { textColor: "#0000ff" };
-                            }
+                        self.enableCellStartEndTime(rowIdx + '', key);
+                    }
+
+                    if (!_.isNil(data)) {
+                        let workStyle = data.workHolidayCls;
+                        if (workStyle == AttendanceHolidayAttr.FULL_TIME) {
+                            if (innerIdx === 0 || innerIdx === 1) return { textColor: "#0000ff" }; // color-attendance
+                            else if (innerIdx === 2 || innerIdx === 3) return { textColor: "black" };
                         }
-                        if (data.workHolidayCls == AttendanceHolidayAttr.MORNING || data.workHolidayCls == AttendanceHolidayAttr.AFTERNOON) {
-                            if (innerIdx == 0 || innerIdx == 1) {
-                                return { textColor: "#FF7F27" };
-                            }
+                        if (workStyle == AttendanceHolidayAttr.MORNING) {
+                            if (innerIdx === 0 || innerIdx === 1) return { textColor: "#FF7F27" }; // color-half-day-work
+                            else if (innerIdx === 2 || innerIdx === 3) return { textColor: "black" };
                         }
-                        if (data.workHolidayCls == AttendanceHolidayAttr.HOLIDAY) {
-                            if (innerIdx == 0 || innerIdx == 1) {
-                                return { textColor: "#ff0000" };
-                            }
+                        if (workStyle == AttendanceHolidayAttr.AFTERNOON) {
+                            if (innerIdx === 0 || innerIdx === 1) return { textColor: "#FF7F27" }; // color-half-day-work
+                            else if (innerIdx === 2 || innerIdx === 3) return { textColor: "black" };
+                        }
+                        if (workStyle == AttendanceHolidayAttr.HOLIDAY) {
+                            if (innerIdx === 0 || innerIdx === 1) return { textColor: "#ff0000" }; // color-holiday
+                            else if (innerIdx === 2 || innerIdx === 3) return { textColor: "black" };
+                        }
+                        if (nts.uk.util.isNullOrUndefined(workStyle) || nts.uk.util.isNullOrEmpty(workStyle)) {
+                            // デフォルト（黒）  Default (black)
+                            if (innerIdx === 0 || innerIdx === 1) return { textColor: "#000000" }; // デフォルト（黒）  Default (black)
+                            else if (innerIdx === 2 || innerIdx === 3) return { textColor: "#000000" };
+                        }
+                    }
+                } else if (userInfor.disPlayFormat == 'shortName') {
+                    if (!_.isNil(data)) {
+                        let workStyle = data.workHolidayCls;
+                        if (workStyle == AttendanceHolidayAttr.FULL_TIME) {
+                            if (innerIdx === 0 || innerIdx === 1) return { textColor: "#0000ff" }; // color-attendance
+                        }
+                        if (workStyle == AttendanceHolidayAttr.MORNING) {
+                            if (innerIdx === 0 || innerIdx === 1) return { textColor: "#FF7F27" }; // color-half-day-work
+                        }
+                        if (workStyle == AttendanceHolidayAttr.AFTERNOON) {
+                            if (innerIdx === 0 || innerIdx === 1) return { textColor: "#FF7F27" }; // color-half-day-work
+                        }
+                        if (workStyle == AttendanceHolidayAttr.HOLIDAY) {
+                            if (innerIdx === 0 || innerIdx === 1) return { textColor: "#ff0000" }; // color-holiday
+                        }
+                        if (nts.uk.util.isNullOrUndefined(workStyle) || nts.uk.util.isNullOrEmpty(workStyle)) {
+                            if (innerIdx === 0 || innerIdx === 1) return { textColor: "#000000" }; // デフォルト（黒）  Default (black)
                         }
                     }
                 }
