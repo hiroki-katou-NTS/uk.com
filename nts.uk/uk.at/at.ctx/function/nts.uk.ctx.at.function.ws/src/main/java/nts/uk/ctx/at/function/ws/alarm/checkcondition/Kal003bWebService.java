@@ -11,11 +11,11 @@ import nts.arc.enums.EnumConstant;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.TargetSelectionRange;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.TargetServiceType;
-import nts.uk.ctx.at.shared.dom.alarmList.enums.TypeCheckWorkRecord;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.TypeCheckWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.TypeCheckWorkRecordMultipleMonth;
-import nts.uk.ctx.at.shared.dom.alarmList.primitivevalue.LogicalOperator;
-import nts.uk.ctx.at.shared.dom.alarmList.primitivevalue.RangeCompareType;
-import nts.uk.ctx.at.shared.dom.alarmList.enums.SingleValueCompareType;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.LogicalOperator;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.RangeCompareType;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.SingleValueCompareType;
 /**
  * Class Kal003bWebService
  * @author HieuNV

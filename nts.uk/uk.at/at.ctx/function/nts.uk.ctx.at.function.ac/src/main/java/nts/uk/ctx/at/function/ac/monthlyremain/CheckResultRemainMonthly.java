@@ -10,8 +10,8 @@ import nts.uk.ctx.at.function.dom.adapter.monthlyremain.CheckResultRemainMonthly
 import nts.uk.ctx.at.function.dom.adapter.monthlyremain.DayoffCurrentMonthOfEmployeeImport;
 import nts.uk.ctx.at.function.dom.adapter.monthlyremain.ReserveLeaveUsageImport;
 import nts.uk.ctx.at.function.dom.adapter.periodofspecialleave.SpecialHolidayImported;
-import nts.uk.ctx.at.shared.dom.alarmList.primitivevalue.RangeCompareType;
-import nts.uk.ctx.at.shared.dom.alarmList.enums.SingleValueCompareType;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.RangeCompareType;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.SingleValueCompareType;
 
 @Stateless
 public class CheckResultRemainMonthly implements CheckResultRemainMonthlyAdapter{

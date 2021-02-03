@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.alarmList.extractiontarget.AlarmCheckTargetCondition;
+import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckTargetCondition;
 import nts.arc.time.calendar.period.DatePeriod;
 
 public interface ErAlWorkRecordCheckAdapter {
