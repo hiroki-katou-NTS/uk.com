@@ -94,19 +94,19 @@ public class PersonalInfomationDomainService {
 		}).collect(Collectors.toList());
 
 		// ソート実行
-		Comparator<PersonalInfomationObj> compare = Comparator.comparing(PersonalInfomationObj::getOrderOptional)
-				.thenComparing(PersonalInfomationObj::getPositionCode)
-				.thenComparing(PersonalInfomationObj::getEmployeeCode);
-		List<WorkplaceInforImport> workplaceInfoList = workplaceInfo.values().stream()
-				.filter(item -> item != null)
-				.collect(Collectors.toList());
-		if (!workplaceInfoList.isEmpty()) {
-			compare = Comparator.comparing(PersonalInfomationObj::getHierarchyCode)
-					.thenComparing(PersonalInfomationObj::getOrderOptional)
-					.thenComparing(PersonalInfomationObj::getPositionCode)
-					.thenComparing(PersonalInfomationObj::getEmployeeCode);
-		}
-		sortInfomation.sort(compare);
+//		Comparator<PersonalInfomationObj> compare = Comparator.nullsFirst(Comparator.comparing(PersonalInfomationObj::getOrderOptional))
+//				.thenComparing(PersonalInfomationObj::getPositionCode)
+//				.thenComparing(PersonalInfomationObj::getEmployeeCode);
+//		List<WorkplaceInforImport> workplaceInfoList = workplaceInfo.values().stream()
+//				.filter(item -> item != null)
+//				.collect(Collectors.toList());
+//		if (!workplaceInfoList.isEmpty()) {
+//			compare = Comparator.comparing(PersonalInfomationObj::getHierarchyCode)
+//					.thenComparing(Comparator.nullsFirst(Comparator.comparing(PersonalInfomationObj::getOrderOptional)))
+//					.thenComparing(PersonalInfomationObj::getPositionCode)
+//					.thenComparing(PersonalInfomationObj::getEmployeeCode);
+//		}
+//		sortInfomation.sort(compare);
 		return sortInfomation.stream()
 				.map(item -> personalInfo.get(item.getSid()))
 				.collect(Collectors.toList());
