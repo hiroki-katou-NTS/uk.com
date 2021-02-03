@@ -64,7 +64,9 @@ module nts.uk.com.view.ccg015.d {
               vm.$ajax('sys/portal/createflowmenu/extract/' + fileIdChoose).then((item: any) => {
               if (!_.isEmpty(item)) {
                 vm.renderHTML(item.htmlContent, 'frame1');
-                $(window.frames['frameF1'].contentDocument).find('a').attr('href', 'javascript: void()').removeAttr('target');
+                _.each((document.getElementById("frameF1") as any ).contentDocument.getElementsByTagName("a"), link => {
+                  link.addEventListener('click', (event: Event) => event.preventDefault());
+                })
               }
               }).always(() => vm.$blockui('clear'));
             } else if (value === LayoutType.FLOW_MENU_UPLOAD) {
@@ -75,9 +77,14 @@ module nts.uk.com.view.ccg015.d {
               const fileIdChoose: string = vm.listTopPagePart()[topPagePartChoose].fileId;
               vm.fileID(fileIdChoose);
               vm.filePath(ntsFile.liveViewUrl(fileIdChoose, 'index.htm'));
-              setTimeout(function(){    
-                $(window.frames['frameF2'].contentDocument).find('a').attr('onclick', null).off("click");
-             }, 2000);
+              $('#frameF2').on('load', function(){
+                vm.$nextTick(() => {
+                  _.each((document.getElementById("frameF2") as any ).contentDocument.getElementsByTagName("a"), link => {
+                    link.removeAttribute('onclick');
+                    link.removeAttribute('href')
+                  })
+                });
+              });
               
             } else {
               vm.contentFlowMenu(false);
@@ -96,7 +103,10 @@ module nts.uk.com.view.ccg015.d {
         vm.$ajax('sys/portal/createflowmenu/extract/' + fileIdChoose).then((item: any) => {
           if (!_.isEmpty(item)) {
             vm.renderHTML(item.htmlContent, 'frame1');
-            $(window.frames['frameF1'].contentDocument).find('a').attr('href', 'javascript: void()').removeAttr('target');
+
+            _.each((document.getElementById("frameF1") as any ).contentDocument.getElementsByTagName("a"), link => {
+              link.addEventListener('click', (event: Event) => event.preventDefault());
+            })
           }
         }).always(() => vm.$blockui('clear'));
       })
@@ -107,9 +117,15 @@ module nts.uk.com.view.ccg015.d {
         const fileIdChoose: string = vm.listTopPagePart()[topPagePartChoose].fileId;
         vm.fileID(fileIdChoose);
         vm.filePath(ntsFile.liveViewUrl(fileIdChoose, 'index.htm'));
-        setTimeout(function(){    
-          $(window.frames['frameF2'].contentDocument).find('a').attr('onclick', null).off("click");
-       }, 2000);
+
+        $('#frameF2').on('load', function(){
+          vm.$nextTick(() => {
+            _.each((document.getElementById("frameF2") as any ).contentDocument.getElementsByTagName("a"), link => {
+              link.removeAttribute('onclick');
+              link.removeAttribute('href')
+            })
+          });
+        });
       })
     }
 

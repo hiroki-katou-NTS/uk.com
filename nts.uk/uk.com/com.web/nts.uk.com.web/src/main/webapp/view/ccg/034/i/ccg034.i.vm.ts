@@ -5,7 +5,6 @@ module nts.uk.com.view.ccg034.i {
   import getText = nts.uk.resource.getText;
 
   const MAXIMUM_IMAGE_COUNT = 4;
-  const MAX_FILE_SIZE_MB = 1;
 
   @bean()
   export class ScreenModel extends ko.ViewModel {
@@ -40,7 +39,7 @@ module nts.uk.com.view.ccg034.i {
     mounted() {
       const vm = this;
       vm.imageType.subscribe(value => {
-        if (value === 1 && vm.fileId()) {
+        if (value === 1 && !nts.uk.text.isNullOrEmpty(vm.fileId())) {
           vm.$ajax("/shr/infra/file/storage/infor/" + vm.fileId()).then((res: any) => {
             vm.fileSize(Math.round(Number(res.originalSize) / 1024));
             vm.updatePreview();
@@ -89,9 +88,7 @@ module nts.uk.com.view.ccg034.i {
         for (let imageCol = imageRow; imageCol < imageRow + MAXIMUM_IMAGE_COUNT; imageCol++) {
           toAppend += `<img id="I2_2_1_${imageCol}" src="${vm.imageList[imageCol].name}" class="pic-choose" data-bind="click: chooseImage" />`;
         }
-        const template = `<div>
-                            ${toAppend}
-                          </div>`;
+        const template = `<div>${toAppend}</div>`;
         $("#I2_4").append(template);
         // Rebind Knockout for the newly added div
         ko.applyBindings(vm, $("#I2_4 > div:last-child")[0]);
@@ -138,22 +135,18 @@ module nts.uk.com.view.ccg034.i {
         if (valid) {
           // Update part data
           const image = new Image();
-          if (vm.imageType() === 0) {
-            vm.partData.fileName = vm.imageSrc();
-            image.src = vm.imageSrc();
-          } else {
-            if (vm.fileSize() / 1024 <= MAX_FILE_SIZE_MB) {
-              vm.partData.fileId = vm.fileId();
-              vm.partData.uploadedFileName = vm.uploadedFileName();
-              vm.partData.uploadedFileSize = vm.fileSize();
-              image.src = vm.fileId() ? (nts.uk.request as any).liveView(vm.fileId()) : null;
-            } else {
-              vm.$dialog.error({ messageId: 'Msg_70', messageParams: [String(MAX_FILE_SIZE_MB)] });
-            }
-          }
+          // ImageType === 0
+          vm.partData.fileName = vm.imageSrc();
+          image.src = vm.imageSrc();
+          // ImageType === 1
+          vm.partData.fileId = vm.fileId();
+          vm.partData.uploadedFileName = vm.uploadedFileName();
+          vm.partData.uploadedFileSize = vm.fileSize();
+          image.src = vm.fileId() ? (nts.uk.request as any).liveView(vm.fileId()) : null;
+          vm.partData.originalFileId = vm.originalFileId;
+          // Common
           vm.partData.ratio = image.naturalHeight / image.naturalWidth;
           vm.partData.isFixed = vm.imageType();
-
           // Return data
           vm.$window.close({ isSaving: true, partData: vm.partData });
         }
