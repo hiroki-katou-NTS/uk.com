@@ -3,11 +3,13 @@ package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmeth
 import java.io.Serializable;
 
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 割増集計方法
  */
 @Getter
+@Setter
 public class ExcessOutsideTimeSetReg implements Serializable{
 
 	/** Serializable */

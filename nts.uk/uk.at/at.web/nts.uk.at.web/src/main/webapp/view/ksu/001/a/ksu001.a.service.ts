@@ -27,6 +27,8 @@ module nts.uk.at.view.ksu001.a.service {
         changeWokPlace: "screen/at/schedule/change-workplace",
         getEvent: "screen/at/schedule/get-event",
         regWorkSchedule: "screen/at/schedule/reg-workschedule",
+        checkCorrectHalfday: "screen/at/schedule/correct-worktime-halfday",
+        checkTimeIsIncorrect: "ctx/at/shared/workrule/workinghours/checkTimeIsIncorrect",
     }
 
     export function getDataStartScreen(param): JQueryPromise<any> {
@@ -79,5 +81,13 @@ module nts.uk.at.view.ksu001.a.service {
     
     export function regWorkSchedule(obj): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.regWorkSchedule, obj);
+    }
+    
+    export function checkCorrectHalfday(obj): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.checkCorrectHalfday, obj);
+    }
+    
+    export function checkTimeIsIncorrect(obj: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.checkTimeIsIncorrect, obj);
     }
 }

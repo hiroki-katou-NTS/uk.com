@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.defor;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -19,6 +20,13 @@ public interface DeforLaborTimeShaRepo {
 	 * @return the optional
 	 */
 	Optional<DeforLaborTimeSha> find(String cid, String empId);
+	
+	/**
+	 * Find by Cid
+	 * @param cid
+	 * @return
+	 */
+	List<DeforLaborTimeSha> findDeforLaborTimeShaByCid(String cid);
 
 	/**
 	 * Adds the.
