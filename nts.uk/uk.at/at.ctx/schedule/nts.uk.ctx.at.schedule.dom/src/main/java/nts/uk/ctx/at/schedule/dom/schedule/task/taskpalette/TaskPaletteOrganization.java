@@ -44,6 +44,10 @@ public class TaskPaletteOrganization implements DomainAggregate {
 	 */
 	private Map<Integer, TaskCode> tasks;
 	
+	private TaskFrameNo getTaskFrameNo() {
+		return new TaskFrameNo(1);
+	}
+	
 	/**
 	 * 作る
 	 * @param targetOrg 対象組織
@@ -102,10 +106,6 @@ public class TaskPaletteOrganization implements DomainAggregate {
 		});
 		
 		return new TaskPalette(this.page, this.displayInfo.getName(), displayTasks, this.displayInfo.getRemark());
-	}
-	
-	public TaskFrameNo getTaskFrameNo() {
-		return new TaskFrameNo(1);
 	}
 	
 	public static interface Require {
