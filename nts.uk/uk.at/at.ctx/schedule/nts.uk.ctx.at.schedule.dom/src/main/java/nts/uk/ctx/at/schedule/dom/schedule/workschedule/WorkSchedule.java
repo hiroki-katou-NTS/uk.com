@@ -24,7 +24,6 @@ import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.TimezoneToUseHourlyHoliday;
-import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkNo;
@@ -566,8 +565,7 @@ public class WorkSchedule implements DomainAggregate {
 	 */
 	private List<TimeSpanForCalc> getWorkingTimeSpan(Require require) {
 		
-		val workStyle = this.workInfo.getWorkStyle(require);
-		if( !workStyle.isPresent() || workStyle.get() == WorkStyle.ONE_DAY_REST ) {
+		if( !this.workInfo.isAttendanceRate(require) ) {
 			return new ArrayList<>();
 		}
 		
@@ -618,8 +616,7 @@ public class WorkSchedule implements DomainAggregate {
 	 */
 	private boolean checkWhetherTaskScheduleIsCorrect(Require require, TaskSchedule targetTaskSchedule) {
 		
-		val workStyle = this.workInfo.getWorkStyle(require);
-		if( !workStyle.isPresent() || workStyle.get() == WorkStyle.ONE_DAY_REST ) {
+		if( !this.workInfo.isAttendanceRate(require) ) {
 			throw new BusinessException( "Msg_2103" );
 		}
 		
