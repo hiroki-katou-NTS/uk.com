@@ -135,19 +135,19 @@ module nts.uk.at.view.ccg005.a.screenModel {
               <td class="ccg005-w100 ccg005-pl-5 ccg005-border-groove ccg005-right-unset ccg005-left-unset">
                 <div class="ccg005-w100">
                   <!-- A4_2 -->
-                  <label class="limited-label" data-bind="text: attendanceDetailDto.workName"/>
+                  <label class="limited-label" style="max-width: 80px; width: auto !important;" data-bind="text: attendanceDetailDto.workName"/>
                   <!-- A4_4 -->
                   <i data-bind="ntsIcon: {no: 190, width: 13, height: 13}"></i>
                 </div>
-                <div>
+                <div style="height: 20px;">
                 <!-- A4_3 -->
-                  <label data-bind="text: attendanceDetailDto.checkInCheckOutTime"/>
+                  <label class="limited-label" style="max-width: 80px;" data-bind="text: attendanceDetailDto.checkInCheckOutTime"/>
                 </div>
               </td>
               <td class="ccg005-pl-5 ccg005-border-groove ccg005-right-unset ccg005-left-unset">
                 <!-- A4_7 -->
                 <span class="ccg005-flex">
-                  <i class="ccg005-status-img" data-bind="ntsIcon: {no: 191, width: 20, height: 20}"></i>
+                  <i class="ccg005-status-img" data-bind="click: $component.initPopupInList.bind($component, $index),ntsIcon: {no: 191, width: 20, height: 20}"></i>
                 </span>
               </td>
               <td class="ccg005-pl-5 ccg005-border-groove ccg005-left-unset">
@@ -199,7 +199,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
         <table>
           <tr>
             <td style="text-align: right;">
-              <a style="color: blue; text-decoration: underline;" data-bind="i18n: 'CCG005_34', click: $component.openScreenCCG005D"></a>
+              <a style="color: blue; text-decoration: underline; cursor: pointer;" data-bind="i18n: 'CCG005_34', click: $component.openScreenCCG005D"></a>
             </td>
           </tr>
           <tr>
@@ -600,28 +600,14 @@ module nts.uk.at.view.ccg005.a.screenModel {
     }
 
     /**
-     * Popup A1_7 & A4_7
+     * Popup A1_7
      */
     private initPopupStatus() {
       const vm = this;
       $('#ccg005-status-popup').ntsPopup({
-        position: { my: 'right top', at: 'left top', of: $('.ccg005-status-img-A1_7') },
+        position: {},
         showOnStart: false,
         dismissible: true
-      });
-      _.forEach($('.ccg005-status-img'), (element, index) => {
-        $(element).click(() => {
-          if (!vm.isBaseDate()) {
-            return;
-          }
-          $('#ccg005-status-popup').ntsPopup({
-            position: { my: 'left top', at: 'right top', of: $(element) },
-            showOnStart: false,
-            dismissible: true
-          });
-          // vm.activatedStatus();
-          $('#ccg005-status-popup').ntsPopup('toggle');
-        });
       });
       $('.ccg005-status-img-A1_7').click(() => {
         if (!vm.isBaseDate()) {
@@ -640,6 +626,23 @@ module nts.uk.at.view.ccg005.a.screenModel {
         });
         $('#ccg005-status-popup').ntsPopup('toggle');
       });
+    }
+
+    /**
+     * Popup A4_7
+     */
+    initPopupInList(index: any) {
+      const vm = this;
+      const element = $('.ccg005-status-img')[index()];
+        if (!vm.isBaseDate()) {
+          return;
+        }
+        $('#ccg005-status-popup').ntsPopup({
+          position: { my: 'left top', at: 'right top', of: element },
+          showOnStart: false,
+          dismissible: true
+        });
+        $('#ccg005-status-popup').ntsPopup('toggle');
     }
 
     nextPage() {
@@ -668,6 +671,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
      */
     openScreenCCG005D() {
       const vm = this;
+      $('#ccg005-star-popup').ntsPopup('hide');
       vm.$window.modal('/view/ccg/005/d/index.xhtml');
     }
 
@@ -676,6 +680,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
      */
     openScreenCCG005E() {
       const vm = this;
+      $('#ccg005-status-popup').ntsPopup('hide');
       vm.$window.modal('/view/ccg/005/e/index.xhtml', vm.goOutParams());
     }
 
@@ -829,7 +834,6 @@ module nts.uk.at.view.ccg005.a.screenModel {
         isrestrictionOfReferenceRange: false
       };
       setShared('inputCDL008', inputCDL008);
-      
       vm.$window.modal('/view/cdl/008/a/index.xhtml').then(() => {
         if (getShared('CDL008Cancel')) {
           setShared('CDL008Cancel', null);
