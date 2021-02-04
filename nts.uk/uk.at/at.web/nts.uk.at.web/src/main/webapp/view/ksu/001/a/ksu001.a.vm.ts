@@ -2896,7 +2896,51 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             nts.uk.ui.dialog.alertError({ messageId: 'Msg_435' });
                             dfd.resolve(false);
                         } else {
-                            dfd.resolve(true);
+                            if (data.workHolidayCls != 0) {
+                                let wtimeCd = cellData.workTimeCode;
+                                let objWTime = _.find(__viewContext.viewModel.viewAB.listWorkTime, function(o) { return o.code === wtimeCd; });
+
+                                if (userInfor.disPlayFormat == 'time') {
+                                    let startTime = _.isNil(objWTime) ? '' : formatById("Clock_Short_HM", objWTime.tzStart1);
+                                    let endTime = _.isNil(objWTime) ? '' : formatById("Clock_Short_HM", objWTime.tzEnd1);
+
+                                    $("#extable").exTable("stickFields", ["workTypeName", "workTimeName", "startTime", "endTime"]);
+                                    $("#extable").exTable("stickData", {
+                                        workTypeCode: data.workTypeCode,
+                                        workTypeName: data.workTypeName,
+                                        workTimeCode: objWTime.code,
+                                        workTimeName: objWTime.nameAb,
+                                        startTime: startTime,
+                                        endTime: endTime,
+                                        achievements: false,
+                                        workHolidayCls: data.workHolidayCls
+                                    });
+
+                                    // trường hợp cell này nằm trong list cell bị disable starttime, endtime 
+                                    // thì enable cell đó lên, xóa cell đó khỏi danh sach cell bị disable starttime, endtime .
+                                    if (!_.isNil(cellDisableTime)) {
+                                        self.enableCellStartEndTime(rowIdx + '', key);
+                                    }
+
+                                    __viewContext.viewModel.viewAB.isRedColor = false;
+                                    dfd.resolve(true);
+
+                                } else {
+                                    $("#extable").exTable("stickFields", ["workTypeName", "workTimeName"]);
+                                    $("#extable").exTable("stickData", {
+                                        workTypeCode: data.workTypeCode,
+                                        workTypeName: data.workTypeName,
+                                        workTimeCode: objWTime.code,
+                                        workTimeName: objWTime.nameAb,
+                                        startTime: '',
+                                        endTime: '',
+                                        achievements: false,
+                                        workHolidayCls: data.workHolidayCls
+                                    });
+                                    __viewContext.viewModel.viewAB.isRedColor = false;
+                                    dfd.resolve(true);
+                                }
+                            }
                         }
                     } else {
                         dfd.resolve(true);
