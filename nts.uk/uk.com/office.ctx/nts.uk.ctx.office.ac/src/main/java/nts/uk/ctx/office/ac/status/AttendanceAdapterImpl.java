@@ -24,6 +24,7 @@ public class AttendanceAdapterImpl implements AttendanceAdapter {
 		AttendanceStateExport data = pub.getAttendanceState(sid);
 		return AttendanceStateImport.builder()
 				.attendanceState(EnumAdaptor.valueOf(data.getAttendanceState().value,StatusClassfication.class))
+				.workingNow(data.isWorkingNow())
 				.build();
 	}
 

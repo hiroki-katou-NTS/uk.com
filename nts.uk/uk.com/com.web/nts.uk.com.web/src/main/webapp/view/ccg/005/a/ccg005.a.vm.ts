@@ -119,6 +119,8 @@ module nts.uk.at.view.ccg005.a.screenModel {
 
 
 
+          
+
             <tr style="background-color: yellow; height: 45px;">
               <td style="padding-right: 5px; width: 30px; background-color: white;">
                 <!-- A4_1 -->
@@ -141,7 +143,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
                 </div>
                 <div style="height: 20px;">
                 <!-- A4_3 -->
-                  <label class="limited-label" style="max-width: 80px;" data-bind="text: attendanceDetailDto.checkInCheckOutTime"/>
+                  <label class="limited-label check-in-out" style="max-width: 120px;" data-bind="text: attendanceDetailDto.checkInCheckOutTime"/>
                 </div>
               </td>
               <td class="ccg005-pl-5 ccg005-border-groove ccg005-right-unset ccg005-left-unset">
@@ -159,6 +161,11 @@ module nts.uk.at.view.ccg005.a.screenModel {
                 <p style="max-width: 125px;" class="limited-label" data-bind="text: commentDto.comment, visible: $component.commentDisplay()"/>
               </td>
             </tr>
+
+
+
+
+
 
 
 
@@ -372,6 +379,9 @@ module nts.uk.at.view.ccg005.a.screenModel {
     .ccg005-switch > .nts-switch-button {
       width: 80px;
     }
+    .check-in-out {
+      font-size: 80%;
+    }
   </style>`
   })
   export class ViewModel extends ko.ViewModel {
@@ -571,17 +581,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
     }
 
     private getAttendanceDetailViewModel(attendanceDetailDto: any): AttendanceDetailViewModel {
-      const vm = this;
-      let checkInCheckOutTime = "";
-      if (attendanceDetailDto.checkInTime === null && attendanceDetailDto.checkOutTime === null) {
-        checkInCheckOutTime = (attendanceDetailDto.checkInTime + " - " + attendanceDetailDto.checkOutTime);
-      }
-      if (!attendanceDetailDto.checkInTime === null && attendanceDetailDto.checkOutTime === null) {
-        checkInCheckOutTime = attendanceDetailDto.checkOutTime;
-      }
-      if (attendanceDetailDto.checkInTime === null && !attendanceDetailDto.checkOutTime === null) {
-        checkInCheckOutTime = attendanceDetailDto.checkInTime;
-      }
+      const checkInCheckOutTime = (attendanceDetailDto.checkInTime + " - " + attendanceDetailDto.checkOutTime);
       return new AttendanceDetailViewModel({
         workColor: attendanceDetailDto.workColor,
         workName: attendanceDetailDto.workName,
@@ -594,16 +594,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
 
     private getGoOutViewModel(goOutDto: object.GoOutEmployeeInformationDto): GoOutEmployeeInformationViewModel {
       const vm = this;
-      let period = "";
-      if (goOutDto.goOutTime && goOutDto.comebackTime) {
-        period = vm.covertNumberToTime(goOutDto.goOutTime) + " - " + vm.covertNumberToTime(goOutDto.comebackTime);
-      }
-      if (goOutDto.goOutTime && !goOutDto.comebackTime) {
-        period = vm.covertNumberToTime(goOutDto.goOutTime);
-      } 
-      if (!goOutDto.goOutTime && goOutDto.comebackTime) {
-        period = vm.covertNumberToTime(goOutDto.comebackTime);
-      } 
+      const period = vm.covertNumberToTime(goOutDto.goOutTime) + " - " + vm.covertNumberToTime(goOutDto.comebackTime);
       return new GoOutEmployeeInformationViewModel({
         goOutReason: goOutDto.goOutReason,
         goOutPeriod: period
@@ -611,7 +602,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
     }
 
     private covertNumberToTime(time: number): string {
-      return moment.utc(moment.duration(time, "m").asMilliseconds()).format("HH:mm");
+      return moment.utc(moment.duration(time, "m").asMilliseconds()).format("H:mm");
     }
 
     private initResizeable(vm: any) {
