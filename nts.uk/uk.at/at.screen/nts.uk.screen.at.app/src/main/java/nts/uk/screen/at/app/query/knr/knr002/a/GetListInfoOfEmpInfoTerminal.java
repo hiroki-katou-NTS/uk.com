@@ -81,7 +81,8 @@ public class GetListInfoOfEmpInfoTerminal {
 					e.getEmpInfoTerCode().v(),
 					e.getEmpInfoTerName().v(),
 					e.getModelEmpInfoTer().value,
-					e.getCreateStampInfo().getWorkLocationCd().get().v(),
+					e.getCreateStampInfo().getWorkLocationCd().isPresent() ?
+										  e.getCreateStampInfo().getWorkLocationCd().get().v() : "",
 					e.getCreateStampInfo().getWorkLocationCd().isPresent() ? mapWorkLocationCodeAndName.get(e.getCreateStampInfo().getWorkLocationCd().get().v()) : "",
 					mapByCode.get(e.getEmpInfoTerCode())
 											.getSignalLastTime()
