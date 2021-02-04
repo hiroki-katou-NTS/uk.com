@@ -115,10 +115,13 @@ public class SnapshotDto extends AttendanceItemCommon {
 		switch(path) {
 		case WORK_TYPE:
 			this.workType = value.valueOrDefault(null);
+			break;
 		case WORK_TIME:
 			this.workTime = value.valueOrDefault(null);
+			break;
 		case TIME:
 			this.predetermineTime = value.valueOrDefault(0);
+			break;
 		default:
 		}
 	}
