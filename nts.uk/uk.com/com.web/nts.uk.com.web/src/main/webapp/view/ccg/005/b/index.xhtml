@@ -8,7 +8,7 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<script>var dialogSize = { width: 380, height: 380 };</script>
+			<script>var dialogSize = { width: 380, height: 370 };</script>
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 			<com:ValidatorScript>
 				nts.uk.ctx.at.function.dom.attendancerecord.item.ItemName
@@ -30,7 +30,7 @@
           <div class="table-ccg005-b table-left">
             <table id="single-list" data-bind="ntsGridList: {
               width: 150,
-              height: 200,
+              rows: 8,
               options: lstRole,
               optionsValue: 'name',
               primaryKey: 'roleId',

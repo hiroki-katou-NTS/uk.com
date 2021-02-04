@@ -1,5 +1,8 @@
 package nts.uk.screen.com.app.find.ccg005.attendance.information;
 
+import java.time.Duration;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -249,12 +252,12 @@ public class AttendanceInformationScreenQuery {
 					: false;
 
 			if (actualAttendance != null) {
-				checkInTime = actualStraight ? TextResource.localize("CCG005_25") + actualAttendance
-						: String.valueOf(actualAttendance);
+				checkInTime = actualStraight ? TextResource.localize("CCG005_25") + this.covertNumberToTime(actualAttendance)
+						: this.covertNumberToTime(actualAttendance);
 				checkInColor = DisplayColor.ACHIEVEMENT.value;
 			} else {
-				checkInTime = futureStraight ? TextResource.localize("CCG005_25") + futureAttendance
-						: String.valueOf(futureAttendance);
+				checkInTime = futureStraight ? TextResource.localize("CCG005_25") + this.covertNumberToTime(futureAttendance)
+						: this.covertNumberToTime(futureAttendance);
 				checkInColor = DisplayColor.SCHEDULED.value;
 			}
 
@@ -275,12 +278,12 @@ public class AttendanceInformationScreenQuery {
 					: false;
 
 			if (actualLeave != null) {
-				checkOutTime = actualLeaveStraight ? TextResource.localize("CCG005_25") + actualLeave
-						: String.valueOf(actualLeave);
+				checkOutTime = actualLeaveStraight ? TextResource.localize("CCG005_25") + this.covertNumberToTime(actualLeave)
+						: this.covertNumberToTime(actualLeave);
 				checkOutColor = DisplayColor.ACHIEVEMENT.value;
 			} else {
-				checkOutTime = futureLeaveStraight ? TextResource.localize("CCG005_25") + futureLeave
-						: String.valueOf(futureLeave);
+				checkOutTime = futureLeaveStraight ? TextResource.localize("CCG005_25") + this.covertNumberToTime(futureLeave)
+						: this.covertNumberToTime(futureLeave);
 				checkOutColor = DisplayColor.SCHEDULED.value;
 			}
 
@@ -307,9 +310,9 @@ public class AttendanceInformationScreenQuery {
 			.build();
 				
 			// UserAvatarDto
+			Optional<UserAvatar> avatarDomain = avatarList.stream().filter(ava -> ava.getPersonalId().equalsIgnoreCase(empId.getPid())).findFirst();
 			UserAvatarDto avatarDto = UserAvatarDto.builder().build();
-			avatarList.stream().filter(ava -> ava.getPersonalId() == empId.getPid()).findFirst()
-			.ifPresent(ava -> ava.setMemento(avatarDto));
+			avatarDomain.ifPresent(ava -> ava.setMemento(avatarDto));
 			
 			// commentDto
 			CommentQueryExport commentExp = commentData.get(empId.getSid());
@@ -343,6 +346,13 @@ public class AttendanceInformationScreenQuery {
 					.emojiDto(emojiDto)
 					.build();
 		}).collect(Collectors.toList());
+	}
+	
+	private String covertNumberToTime(Integer minutes) {
+		if(minutes == null) {
+			return "";
+		}
+		return LocalTime.MIN.plus(Duration.ofMinutes(minutes)).format(DateTimeFormatter.ofPattern("H:mm"));
 	}
 	
 	// 勤務区分

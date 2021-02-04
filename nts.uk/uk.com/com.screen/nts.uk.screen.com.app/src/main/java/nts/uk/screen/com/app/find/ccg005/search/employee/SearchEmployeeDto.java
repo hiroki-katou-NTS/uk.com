@@ -12,7 +12,7 @@ import nts.uk.screen.com.app.find.ccg005.attendance.information.AttendanceInform
 public class SearchEmployeeDto {
 
 	// 個人基本情報（List）
-	private List<EmployeeBasicImport> personalInfomation;
+	private List<EmployeeBasicImport> listPersonalInfo;
 
 	// 在席情報DTO（List）
 	private List<AttendanceInformationDto> attendanceInformationDtos;
