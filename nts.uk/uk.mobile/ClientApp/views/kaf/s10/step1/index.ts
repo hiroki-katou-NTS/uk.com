@@ -59,6 +59,14 @@ export class KafS10Step1Component extends Vue {
 
     public workHours2?: ValueTime = null;
 
+    public goWorkAtr?: boolean = false;
+
+    public backHomeAtr?: boolean = false;
+
+    public isGoWorkResource?: Array<Object> = [];
+
+    public isBackHomeResource?: Array<Object> = [];
+
     public breakTimes: Array<BreakTime> = [];
 
     public displayNumberBreakTime = 3;
@@ -73,6 +81,20 @@ export class KafS10Step1Component extends Vue {
 
     public created() {
         const self = this;  
+        self.isGoWorkResource = [{
+            code: true,
+            text: 'KAFS07_11'
+        }, {
+            code: false,
+            text: 'KAFS07_12'
+        }];
+        self.isBackHomeResource = [{
+            code: true,
+            text: 'KAFS07_13'
+        }, {
+            code: false,
+            text: 'KAFS07_14'
+        }];
         self.loadData();
     }
 
@@ -94,7 +116,7 @@ export class KafS10Step1Component extends Vue {
                 let appHolidayWork = self.$appContext.model.appHolidayWork;
                 let nameType = _.get(appHdWorkDispInfo, 'hdWorkDispInfoWithDateOutput.initWorkTypeName');
                 let nameTime = _.get(appHdWorkDispInfo, 'hdWorkDispInfoWithDateOutput.initWorkTimeName');
-                self.createWorkInfo(_.get(appHolidayWork, 'workInformation.workType'), _.get(appHolidayWork, 'workInformation.workTime'), nameType, nameTime);
+                self.createWorkInfo(_.get(appHolidayWork, 'workInformation.workType'), _.get(appHolidayWork, 'workInformation.workTime'));
                 self.createBreakTime(_.map(_.get(appHolidayWork, 'breakTimeList'), (x: any) => {
                     
                     return {
@@ -103,14 +125,17 @@ export class KafS10Step1Component extends Vue {
                     };
                 }));
                 self.createWorkHours(false);
-
+                self.goWorkAtr = appHolidayWork.goWorkAtr;
+                self.backHomeAtr = appHolidayWork.backHomeAtr;
+                self.createHoursWorkTime();
+                
                 return;
             }
             let codeType = _.get(appHdWorkDispInfo, 'hdWorkDispInfoWithDateOutput.initWorkType');
             let codeTime = _.get(appHdWorkDispInfo, 'hdWorkDispInfoWithDateOutput.initWorkTime');
             let nameType = _.get(appHdWorkDispInfo, 'hdWorkDispInfoWithDateOutput.initWorkTypeName');
             let nameTime = _.get(appHdWorkDispInfo, 'hdWorkDispInfoWithDateOutput.initWorkTimeName');
-            self.createWorkInfo(codeType, codeTime, nameType, nameTime);
+            self.createWorkInfo(codeType, codeTime);
             self.createBreakTime(_.get(appHdWorkDispInfo, 'hdWorkDispInfoWithDateOutput.breakTimeZoneSettingList.timeZones'));
 
             // load work hours
@@ -177,7 +202,6 @@ export class KafS10Step1Component extends Vue {
             _.sortBy(self.$appContext.model.appHolidayWork.workingTimeList, (i: TimeZoneWithWorkNo) => i.workNo);
             let workHoursOp1 = _.get(self.$appContext.model.appHolidayWork, 'workingTimeList[0].timeZone') as TimeZoneNew;
             let workHoursOp2 = _.get(self.$appContext.model.appHolidayWork, 'workingTimeList[1].timeZone') as TimeZoneNew;
-
             workHours1.start = workHoursOp1 ? workHoursOp1.startTime : null;
             workHours1.end = workHoursOp1 ? workHoursOp1.endTime : null;
 
@@ -185,8 +209,8 @@ export class KafS10Step1Component extends Vue {
             workHours2.end = workHoursOp2 ? workHoursOp2.endTime : null;
 
         }
-        self.workHours1 = workHours1.start ?  workHours1 : null;
-        self.workHours2 = workHours2.start ?  workHours2 : null;
+        self.workHours1 = _.isNumber(workHours1.start) ?  workHours1 : null;
+        self.workHours2 = _.isNumber(workHours1.start) ?  workHours2 : null;
 
     }
 
@@ -206,7 +230,7 @@ export class KafS10Step1Component extends Vue {
                 let workTypes = appHdWorkDispInfo.hdWorkDispInfoWithDateOutput.workTypeList;
                 let resultWorkType = 
                     _.find(workTypes, (i: any) => i.workTypeCode == workType.code);
-                workType.name = resultWorkType ? (resultWorkType.name || '')  : self.$i18n('KAFS05_55');
+                workType.name = resultWorkType ? (resultWorkType.name || '')  : self.$i18n('KAFS10_28');
             }
             if (nameTime) {
                 workTime.name = nameTime;
@@ -214,7 +238,7 @@ export class KafS10Step1Component extends Vue {
                 let workTimes = appHdWorkDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst;
                 let resultWorkTime = 
                         _.find(workTimes, (i: any) => i.worktimeCode == workTime.code);
-                workTime.name = resultWorkTime ? (_.get(resultWorkTime, 'workTimeDisplayName.workTimeName') || '') : self.$i18n('KAFS05_55');
+                workTime.name = resultWorkTime ? (_.get(resultWorkTime, 'workTimeDisplayName.workTimeName') || '') : self.$i18n('KAFS10_28');
             }
         }
         let workInfo = {} as WorkInfo;

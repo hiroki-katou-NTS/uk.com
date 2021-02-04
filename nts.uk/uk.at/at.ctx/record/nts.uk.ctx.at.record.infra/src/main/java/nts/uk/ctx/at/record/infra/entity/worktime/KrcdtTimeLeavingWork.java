@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.infra.entity.worktime;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.Column;
@@ -19,6 +18,7 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.OvertimeDeclaration;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
@@ -26,7 +26,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.time
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
-import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -134,7 +133,7 @@ public class KrcdtTimeLeavingWork extends UkJpaEntity implements Serializable {
 						new OvertimeDeclaration(new AttendanceTime(this.atdOvertime),
 								new AttendanceTime(this.atdLateNightOvertime)) ,
 						(this.atdBreakStart==null || this.atdBreakEnd==null)?null:
-						new TimeZone(new TimeWithDayAttr(this.atdBreakStart),
+						new TimeSpanForCalc(new TimeWithDayAttr(this.atdBreakStart),
 								new TimeWithDayAttr(this.atdBreakEnd))
 						),
 				new TimeActualStamp(
@@ -147,7 +146,7 @@ public class KrcdtTimeLeavingWork extends UkJpaEntity implements Serializable {
 						new OvertimeDeclaration(new AttendanceTime(this.lwkOvertime),
 								new AttendanceTime(this.lwkLateNightOvertime)),
 						(this.lwkBreakStart==null || this.lwkBreakEnd==null)?null:
-						new TimeZone(new TimeWithDayAttr(this.lwkBreakStart),
+						new TimeSpanForCalc(new TimeWithDayAttr(this.lwkBreakStart),
 								new TimeWithDayAttr(this.lwkBreakEnd))
 						));
 		return domain;

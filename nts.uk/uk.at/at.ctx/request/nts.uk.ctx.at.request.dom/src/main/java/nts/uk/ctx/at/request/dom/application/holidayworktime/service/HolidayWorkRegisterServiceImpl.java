@@ -19,6 +19,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.D
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHdWorkDispInfoOutput;
@@ -110,7 +111,7 @@ public class HolidayWorkRegisterServiceImpl implements HolidayWorkRegisterServic
 	}
 	
 	@Override
-	public ProcessResult update(String companyId, AppHolidayWork appHolidayWork) {
+	public ProcessResult update(String companyId, AppHolidayWork appHolidayWork, AppDispInfoStartupOutput appDispInfoStartupOutput) {
 		Application application = (Application) appHolidayWork;
 		//	ドメインモデル「申請」を更新する
 		applicationRepository.update(application);
@@ -123,7 +124,7 @@ public class HolidayWorkRegisterServiceImpl implements HolidayWorkRegisterServic
 		return detailAfterUpdate.processAfterDetailScreenRegistration(
 				companyId,
 				application.getAppID(),
-				null);
+				appDispInfoStartupOutput);
 	}
 
 	@Override
@@ -132,7 +133,7 @@ public class HolidayWorkRegisterServiceImpl implements HolidayWorkRegisterServic
 		if(mode) {
 			return this.register(companyId, appHolidayWork, appTypeSetting, appHdWorkDispInfo);
 		} else {
-			return this.update(companyId, appHolidayWork);
+			return this.update(companyId, appHolidayWork, appHdWorkDispInfo.getAppDispInfoStartupOutput());
 		}
 	}
 }

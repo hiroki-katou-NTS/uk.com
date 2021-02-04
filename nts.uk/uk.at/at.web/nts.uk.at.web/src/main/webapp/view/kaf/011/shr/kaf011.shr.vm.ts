@@ -129,6 +129,9 @@ module nts.uk.at.view.kaf011 {
 			self.application.update(param.application);
 			self.workTypeList(workTypeList);
 			self.workInformation.update(param.workInformation);
+			self.leaveComDayOffMana(_.map(param.leaveComDayOffMana, (c) =>new SubWorkSubHolidayLinkingMng(c)));
+			self.leaveComDayOffManaOld(self.leaveComDayOffMana());
+			
 			self.displayInforWhenStarting = displayInforWhenStarting;
 			
 			let w1 = _.find(self.workingHours(), {'workNo': 1});
@@ -323,6 +326,8 @@ module nts.uk.at.view.kaf011 {
 		bindingScreenBAbs(param: any, workTypeList: [], displayInforWhenStarting: any){
 			let self = this;
 			super.bindingScreenB(param, workTypeList, displayInforWhenStarting);
+			self.payoutSubofHDManagements(_.map(param.payoutSubofHDManagements, (c) =>new SubWorkSubHolidayLinkingMng(c)));
+			self.payoutSubofHDManagementsOld(self.payoutSubofHDManagements());
 			self.workChangeUse(param.workChangeUse);
 			self.changeSourceHoliday(param.changeSourceHoliday);
 		}
@@ -360,8 +365,16 @@ module nts.uk.at.view.kaf011 {
 			windows.setShared('KAF011C',self.displayInforWhenStarting);
 			windows.sub.modal( '/view/kaf/011/c/index.xhtml').onClosed(() => {
 				let data = windows.getShared('KAF011C_RESLUT');
+				let viewModelParent: any = nts.uk.ui._viewModel.content;
 				if(data){
-					self.application.appDate(data);
+					let cacheLst = __viewContext.transferred.value.listAppMeta,
+						index = _.indexOf(cacheLst, viewModelParent.currentApp()) + 1,
+					 	preLst = _.slice(cacheLst, 0, index),
+						afterLst = _.slice(cacheLst, index);
+					__viewContext.transferred.value.listAppMeta = _.concat(_.concat(preLst, [data.appID]), afterLst);
+					viewModelParent.listApp(__viewContext.transferred.value.listAppMeta);
+					viewModelParent.currentApp(data.appID);
+					viewModelParent.loadData();
 				}
 				console.log(data);
 			});
@@ -535,11 +548,31 @@ module nts.uk.at.view.kaf011 {
 		//振出申請の反映
 		substituteWorkAppReflect: any;
 		//振休申請
-		absApp: any;
+		abs: any;
 		//振出申請
-		recApp: any;
-		constructor(){
-			
+		rec: any;
+		represent: boolean;
+		constructor(param: any){
+			let self = this;
+			self.applicationForWorkingDay = param.applicationForWorkingDay;
+			self.appDispInfoStartup = param.appDispInfoStartup;
+			self.applicationForHoliday = param.applicationForHoliday;
+			self.remainingHolidayInfor = param.remainingHolidayInfor;
+			self.substituteHdWorkAppSet = param.substituteHdWorkAppSet;
+			self.holidayManage = param.holidayManage;
+			self.substituteManagement = param.substituteManagement;
+			self.workInfoAttendanceReflect = param.workInfoAttendanceReflect;
+			self.substituteWorkAppReflect = param.substituteWorkAppReflect;
+			self.abs = param.abs;
+			self.rec = param.rec;
+			self.represent = param.represent;
+			if(param.abs){
+				self.abs.leaveComDayOffMana = _.map(param.abs.leaveComDayOffMana, (c) => new SubWorkSubHolidayLinkingMng(c));
+				self.abs.payoutSubofHDManagements = _.map(param.abs.payoutSubofHDManagements, (c) => new SubWorkSubHolidayLinkingMng(c));	
+			}
+			if(param.rec){
+				self.rec.leaveComDayOffMana = _.map(param.rec.leaveComDayOffMana, (c) =>new SubWorkSubHolidayLinkingMng(c));
+			}
 		}
 	}
 

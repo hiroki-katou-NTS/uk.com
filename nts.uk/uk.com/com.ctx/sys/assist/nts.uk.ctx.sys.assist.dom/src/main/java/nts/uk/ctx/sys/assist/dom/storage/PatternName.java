@@ -6,7 +6,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
 /**
  * パターン名
  */
-@StringMaxLength(40)
+@StringMaxLength(20)
 public class PatternName extends StringPrimitiveValue<PatternName> {
 	
 	private static final long serialVersionUID = 1L;

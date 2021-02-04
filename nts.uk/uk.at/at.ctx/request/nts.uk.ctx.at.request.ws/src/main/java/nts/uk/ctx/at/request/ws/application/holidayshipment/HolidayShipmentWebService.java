@@ -10,12 +10,15 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import lombok.Value;
+import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.RegisterWhenChangeDateHolidayShipmentCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.SaveHolidayShipmentCommandHandlerRef5;
 import nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.UpdateHolidayShipmentCommandHandlerRef5;
-import nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.dto.HolidayShipmentRefactor5Command;
+import nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.command.HolidayShipmentRefactor5Command;
+import nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.command.RegisterWhenChangeDateCommand;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.ChangeValueItemsOnHolidayShipment;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.HolidayShipmentScreenAFinder;
@@ -24,6 +27,7 @@ import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.ChangeWokTypeParam;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.ChangeWorkTypeResultDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.DisplayInforWhenStarting;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.shr.com.context.AppContexts;
 
 @Path("at/request/application/holidayshipment")
@@ -44,6 +48,9 @@ public class HolidayShipmentWebService extends WebService {
 	
 	@Inject
 	private UpdateHolidayShipmentCommandHandlerRef5 updateHolidayShipment;
+	
+	@Inject
+	private RegisterWhenChangeDateHolidayShipmentCommandHandler registerWhenChangeDateHolidayShipmentCommandHandler;
 	
 
 	@POST
@@ -71,8 +78,8 @@ public class HolidayShipmentWebService extends WebService {
 	
 	@POST
 	@Path("save")
-	public void save(DisplayInforWhenStarting command) {
-		saveCommandHandler.register(command);
+	public List<ProcessResult> save(DisplayInforWhenStarting command) {
+		return saveCommandHandler.register(command);
 	}
 	
 	@POST
@@ -92,7 +99,19 @@ public class HolidayShipmentWebService extends WebService {
 	public void update(HolidayShipmentRefactor5Command command) {
 		updateHolidayShipment.update(command);
 	}
-
+	
+	@POST
+	@Path("changeDateScreenC")
+	public DisplayInforWhenStarting changeDateScreenC(RegisterWhenChangeDateCommand command) {
+		return changeValueItemsOnHolidayShipment.changeDateCScreen(command.appDateNew, command.displayInforWhenStarting);
+	}
+	
+	@POST
+	@Path("saveChangeDateScreenC")
+	public JavaTypeResult<String> update(RegisterWhenChangeDateCommand command) {
+		return new JavaTypeResult<String>(registerWhenChangeDateHolidayShipmentCommandHandler.register(command.displayInforWhenStarting, command.appDateNew, command.appReason, command.appStandardReasonCD));
+	}
+	
 }
 
 @Value

@@ -231,7 +231,7 @@ public interface AppContentDetailCMM045 {
 	 * @param screenAtr ScreenID
 	 * @return
 	 */
-	public String getContentComplementLeave(Application application, String companyID, List<WorkType> workTypeLst, DisplayAtr appReasonDisAtr,
+	public CompLeaveAppDataOutput getContentComplementLeave(Application application, String companyID, List<WorkType> workTypeLst, DisplayAtr appReasonDisAtr,
 			ScreenAtr screenAtr);
 	
 	/**

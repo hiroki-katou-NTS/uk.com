@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+//import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.dto.HolidayShipmentRefactor5Command;
+import nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5.command.HolidayShipmentRefactor5Command;
 import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
@@ -20,7 +20,7 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.Abs
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
+//import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -50,8 +50,8 @@ public class UpdateHolidayShipmentCommandHandlerRef5 {
 	@Inject
 	private AbsenceLeaveAppRepository absenceLeaveAppRepository;
 	
-	@Inject
-	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
+//	@Inject
+//	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
 	
 	@Inject
 	private DetailAfterUpdate detailAfterUpdate;
@@ -124,7 +124,8 @@ public class UpdateHolidayShipmentCommandHandlerRef5 {
 			//休暇紐付け管理を更新する 
 			absenceServiceProcess.updateVacationLinkManage(leaveComDayOffMana_Rec_Old, new ArrayList<>(), leaveComDayOffMana_Rec, new ArrayList<>());
 			//暫定データの登録(đăng ký data tạm thời)
-			interimRemainDataMngRegisterDateChange.registerDateChange(companyId, rec.get().getEmployeeID(), Arrays.asList(rec.get().getAppDate().getApplicationDate()));
+			//anh phượng bảo comment lại. chờ đội team B đối ứng xong 
+			//interimRemainDataMngRegisterDateChange.registerDateChange(companyId, rec.get().getEmployeeID(), Arrays.asList(rec.get().getAppDate().getApplicationDate()));
 			//アルゴリズム「詳細画面登録後の処理」を実行する
 			detailAfterUpdate.processAfterDetailScreenRegistration(companyId, rec.get().getAppID(), appDispInfoStartup);
 			
@@ -143,7 +144,8 @@ public class UpdateHolidayShipmentCommandHandlerRef5 {
 				absenceServiceProcess.updateVacationLinkManage(leaveComDayOffMana_Abs_Old, payoutSubofHDManagement_Abs_Old, leaveComDayOffMana_Abs, payoutSubofHDManagement_Abs_New);
 			}
 			//暫定データの登録(đăng ký data tạm thời)
-			interimRemainDataMngRegisterDateChange.registerDateChange(companyId, abs.get().getEmployeeID(), Arrays.asList(abs.get().getAppDate().getApplicationDate()));
+			//anh phượng bảo comment lại. chờ đội team B đối ứng xong 
+			//interimRemainDataMngRegisterDateChange.registerDateChange(companyId, abs.get().getEmployeeID(), Arrays.asList(abs.get().getAppDate().getApplicationDate()));
 			//アルゴリズム「詳細画面登録後の処理」を実行する
 			detailAfterUpdate.processAfterDetailScreenRegistration(companyId, abs.get().getAppID(), appDispInfoStartup);
 			

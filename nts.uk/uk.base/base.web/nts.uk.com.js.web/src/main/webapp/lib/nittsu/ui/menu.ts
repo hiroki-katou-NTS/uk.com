@@ -215,12 +215,9 @@ module nts.uk.ui.menu {
                 nts.uk.request.ajax(constants.APP_ID, constants.ShowManual).done(function(show: any) {
                     let $userSettings = $("<div/>").addClass("user-settings cf").appendTo($user);
                     $("<div class='ui-icon ui-icon-caret-1-s'/>").appendTo($userSettings);
-                    let userOptions;
+                    let userOptions: any[];
                     if (show) userOptions = [ new MenuItem(getText('CCG020_5')), new MenuItem(getText('CCG020_4')), new MenuItem(getText('CCG020_3')) ];
                     else userOptions = [ new MenuItem(getText('CCG020_5')), new MenuItem(getText('CCG020_3')) ];
-                    if (!__viewContext.user.isEmployee) {
-                        userOptions.shift();
-                    }
                     let $userOptions = $("<ul class='menu-items user-options'/>").appendTo($userSettings);
                     _.forEach(userOptions, function(option: any, i: number) {
                         let $li = $("<li class='menu-item'/>").text(option.name);
@@ -257,6 +254,11 @@ module nts.uk.ui.menu {
                                 });
                             }
                         });
+                    });
+                    nts.uk.request.ajax(constants.APP_ID, constants.canOpenInfor).done((canOpenInfor: boolean) => {
+                        if (!__viewContext.user.isEmployee || !canOpenInfor) {
+                            $userOptions.find(':first-child').remove();
+                        }
                     });
                     $companyList.css("right", $user.outerWidth() + 30);
                     
@@ -510,6 +512,7 @@ module nts.uk.ui.menu {
         export let ShowManual = "sys/portal/webmenu/showmanual";
         export let Logout = "sys/portal/webmenu/logout";
         export let PG = "sys/portal/webmenu/program";
+        export let canOpenInfor = "sys/env/userinformationusermethod/canOpenInfor";
     }
     
 }

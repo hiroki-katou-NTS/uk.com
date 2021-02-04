@@ -140,6 +140,8 @@ public class ProgramIdConsts {
 	
     public static final String KMK015C = "KMK015C";
 
+    public static final String KMK017A = "KMK017A";
+
 	public static final String KML001A = "KML001A";
 
 	public static final String KML001B = "KML001B";
@@ -388,6 +390,28 @@ public class ProgramIdConsts {
 	public static final String KMK004G = "KMK004G";
 
 	public static final String KMK004H = "KMK004H";
+	
+	public static final String KMK004I = "KMK004I";
+	
+	public static final String KMK004J = "KMK004J";
+	
+	public static final String KMK004K = "KMK004K";
+	
+	public static final String KMK004Q = "KMK004Q";
+	
+	public static final String KMK004R = "KMK004R";
+	
+	public static final String KMK004S = "KMK004S";
+	
+	public static final String KMK004L = "KMK004L";
+	
+	public static final String KMK004M = "KMK004M";
+	
+	public static final String KMK004N = "KMK004N";
+	
+	public static final String KMK004O = "KMK004O";
+	
+	public static final String KMK004P = "KMK004P";
 
 	public static final String KMK012A = "KMK012A";
 
@@ -1105,7 +1129,18 @@ public class ProgramIdConsts {
 	public static final String KAF018G = "KAF018G";
 	public static final String KAF018H = "KAF018H";
 	public static final String KAF018I = "KAF018I";
-	
+
+	/**
+	 * KAF012
+	 */
+	public static final String KAF012A = "KAF012A";
+	public static final String KAF012B = "KAF012B";
+
+	/**
+	 * KAFS12
+	 */
+	public static final String KAFS12B = "KAFS12B";
+
 	/**
 	 * KFP001
 	 */
@@ -1240,6 +1275,7 @@ public class ProgramIdConsts {
 	public static final String CMMS45E = "CMMS45E";
 	public static final String CCGS33 = "CCGS33";
 	public static final String KDWS03A = "KDWS03A";
+	public static final String KAFS11A = "KAFS11A";
 	
 	public static final String KDPS01A = "KDPS01A";
 	public static final String KDPS01B = "KDPS01B";
@@ -1508,4 +1544,7 @@ public class ProgramIdConsts {
 	public static final String KNR002G = "KNR002G";
 	public static final String KNR002H = "KNR002H";
 	public static final String KNR002K = "KNR002K";
+
+	public static final String CDL010A = "CDL010A";
+
 }

@@ -37,19 +37,6 @@ public class KfnctIndexReorgTable extends UkJpaEntity implements IndexReorgTable
 	private long version;
 
 	/**
-	 * The Contract Code.
-	 */
-	@Column(name = "CONTRACT_CD")
-	private String contractCode;
-
-	/**
-	 * The company id.
-	 * 会社ID
-	 */
-	@Column(name = "CID")
-	private String companyId;
-
-	/**
 	 * The table jp name.
 	 */
 	@Column(name = "TABLE_JP_NAME")

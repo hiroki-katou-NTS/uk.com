@@ -44,60 +44,58 @@ public class PreUpdateErrorCheck {
 	 * @param displayInforWhenStarting 振休振出申請起動時の表示情報
 	 */
 	public void errorCheck(String companyId, Optional<AbsenceLeaveApp> abs, Optional<RecruitmentApp> rec, DisplayInforWhenStarting displayInforWhenStarting) {
-		if(!rec.isPresent() && !abs.isPresent()) {
-			//アルゴリズム「登録前エラーチェック（更新）」を実行する
-			this.preRegistrationErrorCheck.preconditionCheck(abs, rec);
-			
-			//終日半日矛盾チェック
-			this.preRegistrationErrorCheck.allDayAndHalfDayContradictionCheck(companyId, abs, rec);
-			
-			List<GeneralDate> dateLst = new ArrayList<>();
-			List<String> workTypeLst = new ArrayList<>();
-			if(abs.isPresent()) {
-				dateLst.add(abs.get().getAppDate().getApplicationDate());
-				workTypeLst.add(abs.get().getWorkInformation().getWorkTypeCode().v());
-			}
-			if(rec.isPresent()) {
-				dateLst.add(rec.get().getAppDate().getApplicationDate());
-				workTypeLst.add(rec.get().getWorkInformation().getWorkTypeCode().v());
-			}
-			//申請の矛盾チェック
-			this.commonAlgorithm.appConflictCheck(companyId,
-					displayInforWhenStarting.appDispInfoStartup.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0),
-					dateLst, workTypeLst,
-					displayInforWhenStarting.appDispInfoStartup.toDomain().getAppDispInfoWithDateOutput()
-							.getOpActualContentDisplayLst().orElse(new ArrayList<ActualContentDisplay>()));
-
-			//振休残数不足チェック
-			 this.errorCheckBeforeRegistrationKAF011.checkForInsufficientNumberOfHolidays(companyId, rec.isPresent()?rec.get().getEmployeeID():abs.get().getEmployeeID(), abs, rec);
-		 
-			 if(rec.isPresent()) {
-				 //アルゴリズム「登録前共通処理（更新）」を実行する
-				 this.detailBeforeUpdate.processBeforeDetailScreenRegistration(companyId, 
-						 rec.get().getEmployeeID(), 
-						 rec.get().getAppDate().getApplicationDate(), 
-						 EmploymentRootAtr.APPLICATION.value, 
-						 rec.get().getAppID(), 
-						 rec.get().getPrePostAtr(), 
-						 displayInforWhenStarting.appDispInfoStartup.getAppDetailScreenInfo().getApplication().getVersion(), 
-						 rec.get().getWorkInformation().getWorkTypeCode().v(), 
-						 rec.get().getWorkInformation().getWorkTimeCode().v(), 
-						 displayInforWhenStarting.appDispInfoStartup.toDomain());
-			 }
-			 if(abs.isPresent()) {
-				 //アルゴリズム「登録前共通処理（更新）」を実行する
-				 this.detailBeforeUpdate.processBeforeDetailScreenRegistration(companyId, 
-						 abs.get().getEmployeeID(), 
-						 abs.get().getAppDate().getApplicationDate(), 
-						 EmploymentRootAtr.APPLICATION.value, 
-						 abs.get().getAppID(), 
-						 abs.get().getPrePostAtr(), 
-						 displayInforWhenStarting.appDispInfoStartup.getAppDetailScreenInfo().getApplication().getVersion(), 
-						 abs.get().getWorkInformation().getWorkTypeCode().v(), 
-						 abs.get().getWorkInformation().getWorkTimeCode().v(), 
-						 displayInforWhenStarting.appDispInfoStartup.toDomain());
-			 }
+		//アルゴリズム「登録前エラーチェック（更新）」を実行する
+		this.preRegistrationErrorCheck.preconditionCheck(abs, rec);
+		
+		//終日半日矛盾チェック
+		this.preRegistrationErrorCheck.allDayAndHalfDayContradictionCheck(companyId, abs, rec);
+		
+		List<GeneralDate> dateLst = new ArrayList<>();
+		List<String> workTypeLst = new ArrayList<>();
+		if(abs.isPresent()) {
+			dateLst.add(abs.get().getAppDate().getApplicationDate());
+			workTypeLst.add(abs.get().getWorkInformation().getWorkTypeCode().v());
 		}
+		if(rec.isPresent()) {
+			dateLst.add(rec.get().getAppDate().getApplicationDate());
+			workTypeLst.add(rec.get().getWorkInformation().getWorkTypeCode().v());
+		}
+		//申請の矛盾チェック
+		this.commonAlgorithm.appConflictCheck(companyId,
+				displayInforWhenStarting.appDispInfoStartup.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0),
+				dateLst, workTypeLst,
+				displayInforWhenStarting.appDispInfoStartup.toDomain().getAppDispInfoWithDateOutput()
+						.getOpActualContentDisplayLst().orElse(new ArrayList<ActualContentDisplay>()));
+
+		//振休残数不足チェック
+		 this.errorCheckBeforeRegistrationKAF011.checkForInsufficientNumberOfHolidays(companyId, rec.isPresent()?rec.get().getEmployeeID():abs.get().getEmployeeID(), abs, rec);
+	 
+		 if(rec.isPresent()) {
+			 //アルゴリズム「登録前共通処理（更新）」を実行する
+			 this.detailBeforeUpdate.processBeforeDetailScreenRegistration(companyId, 
+					 rec.get().getEmployeeID(), 
+					 rec.get().getAppDate().getApplicationDate(), 
+					 EmploymentRootAtr.APPLICATION.value, 
+					 rec.get().getAppID(), 
+					 rec.get().getPrePostAtr(), 
+					 displayInforWhenStarting.appDispInfoStartup.getAppDetailScreenInfo().getApplication().getVersion(), 
+					 rec.get().getWorkInformation().getWorkTypeCode().v(), 
+					 rec.get().getWorkInformation().getWorkTimeCode().v(), 
+					 displayInforWhenStarting.appDispInfoStartup.toDomain());
+		 }
+		 if(abs.isPresent()) {
+			 //アルゴリズム「登録前共通処理（更新）」を実行する
+			 this.detailBeforeUpdate.processBeforeDetailScreenRegistration(companyId, 
+					 abs.get().getEmployeeID(), 
+					 abs.get().getAppDate().getApplicationDate(), 
+					 EmploymentRootAtr.APPLICATION.value, 
+					 abs.get().getAppID(), 
+					 abs.get().getPrePostAtr(), 
+					 displayInforWhenStarting.appDispInfoStartup.getAppDetailScreenInfo().getApplication().getVersion(), 
+					 abs.get().getWorkInformation().getWorkTypeCode().v(), 
+					 abs.get().getWorkInformation().getWorkTimeCode() == null ? null : abs.get().getWorkInformation().getWorkTimeCode().v(), 
+					 displayInforWhenStarting.appDispInfoStartup.toDomain());
+		 }
 		
 	}
 	

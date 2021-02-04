@@ -689,8 +689,15 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 
 			vm.$blockui("show");
 			// validate chung KAF000
-			vm.$validate('#kaf000-a-component4 .nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason', '#kaf000-a-component5-textReason', '#work-type-combobox')
-			.then((valid) => {
+            vm.$validate('#kaf000-a-component4 .nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason', '#kaf000-a-component5-textReason', '#work-type-combobox')
+            .then((valid) => {
+                if (valid) {
+                    if (vm.selectedType() === 3 && vm.condition6()) {
+                        return vm.$validate('#relation-list');
+                    }
+                    return true;
+                }
+            }).then((valid) => {
 				if (valid) {
 					if (vm.selectedType() === 6) {
 						return 	vm.$validate('#over60H', '#timeOff', '#annualTime', '#childNursing', '#nursing');

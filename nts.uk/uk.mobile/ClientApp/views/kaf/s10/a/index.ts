@@ -237,6 +237,9 @@ export class KafS10Component extends KafS00ShrComponent {
                 });
             });
         } else if (vm.numb == 2 && value == 1) { // step 2 -> step 1
+            let step2 = vm.$refs.step2 as KafS10Step2Component;
+            step2.holidayTimes = [];
+            step2.overTimes = [];
             vm.numb = value;
         } else if (vm.numb == 2 && value == 3) {
             let step3 = vm.$refs.step3 as KafS10Step3Component;
@@ -267,8 +270,8 @@ export class KafS10Component extends KafS00ShrComponent {
                 appHolidayWork.workInformation.workType = step1.getWorkType();
                 appHolidayWork.workInformation.workTime = step1.getWorkTime();
             }
-            appHolidayWork.goWorkAtr = false;
-            appHolidayWork.backHomeAtr = false;
+            appHolidayWork.goWorkAtr = step1.goWorkAtr;
+            appHolidayWork.backHomeAtr = step1.backHomeAtr;
             appHolidayWork.workingTimeList = [] as Array<TimeZoneWithWorkNo>;
             {   
                 let start = _.get(step1.getWorkHours1(), 'start');
@@ -785,11 +788,15 @@ export class KafS10Component extends KafS00ShrComponent {
         let model = self.model as Model;
         //  「休日出勤申請起動時の表示情報．申請表示情報．申請表示情報(基準日関係なし)．申請承認設定．申請設定．申請表示設定」．事前事後区分表示＝表示する
         let displayAtr = _.get(model, 'appHdWorkDispInfo.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr');
-        if (displayAtr == NotUseAtr.USE) {
-            //「事後」を選択
-            return self.application.prePostAtr == PrePostAtr.POST;
+        if (self.modeNew) {
+            if (displayAtr == NotUseAtr.USE) {
+                //「事後」を選択
+                return self.application.prePostAtr == PrePostAtr.POST;
+            } else {
+                //「休日出勤申請起動時の表示情報．申請表示情報．申請設定（基準日関係あり）」．事前事後区分＝事後
+                return _.get(model, 'appHdWorkDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.prePostAtr') == PrePostAtr.POST;
+            }
         } else {
-            //「休日出勤申請起動時の表示情報．申請表示情報．申請設定（基準日関係あり）」．事前事後区分＝事後
             return _.get(model, 'appHdWorkDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.prePostAtr') == PrePostAtr.POST;
         }
     }
@@ -844,25 +851,42 @@ export class KafS10Component extends KafS00ShrComponent {
         return false;
     }
 
+    //  「休日出勤の計算結果(従業員)」．申請時間．申請時間．申請時間（type = 残業時間）に項目がある
+    public get c9_appHolidayWork() {
+        const self = this;
+        let model = self.model as Model;
+        if (!_.isNil(_.get(model, 'appHolidayWork'))) {
+            if (!_.isNil(_.get(model, 'appHolidayWork.applicationTime'))) {
+                let applicationTimes = _.get(model, 'appHolidayWork.applicationTime.applicationTime');
+                if (!_.isEmpty(applicationTimes)
+                 && applicationTimes.filter((applicationTime) => applicationTime.attendanceType == AttendanceType.NORMALOVERTIME && applicationTime.applicationTime > 0).length > 0) {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
+    }
+
     //  ※7 = ○　AND　※9 = ○
     public get c9_1() {
         const self = this;
 
-        return self.c7 && self.c9;
+        return self.c7 && (self.c9 || self.c9_appHolidayWork);
     }
 
     //  ※6 = ○　AND　※7 = ○　AND　※9 = ○
     public get c9_2() {
         const self = this;
 
-        return self.c6 && self.c7 && self.c9;
+        return self.c6 && self.c7 && (self.c9 || self.c9_appHolidayWork);
     }
 
     //  ※6 = ○　AND　※9 = ○
     public get c9_3() {
         const self = this;
 
-        return self.c6 && self.c9;
+        return self.c6 && (self.c9 || self.c9_appHolidayWork);
     }
 
     //  ＄：休日出勤申請起動時の表示情報
@@ -958,6 +982,17 @@ export class KafS10Component extends KafS00ShrComponent {
         const self = this;
 
         return self.c7 && self.c12 && self.c13;
+    }
+
+    //  「休日出勤申請起動時の表示情報．申請表示情報．申請表示情報(基準日関係なし)．申請承認設定のOutputを利用
+    //  「休出申請設定」．直行直帰の機能の利用設定 == true AND 「申請詳細設定．時刻計算利用区分」が利用する
+    public get c14() {
+        const self = this;
+        let model = self.model as Model;
+        let useDirectBounceFunction = _.get(model, 'appHdWorkDispInfo.holidayWorkAppSet.useDirectBounceFunction');
+        let timeCalUse = _.get(model, 'appHdWorkDispInfo.holidayWorkAppSet.applicationDetailSetting.timeCalUse');
+
+        return useDirectBounceFunction == NotUseAtr.USE && timeCalUse == NotUseAtr.USE;
     }
 }
 

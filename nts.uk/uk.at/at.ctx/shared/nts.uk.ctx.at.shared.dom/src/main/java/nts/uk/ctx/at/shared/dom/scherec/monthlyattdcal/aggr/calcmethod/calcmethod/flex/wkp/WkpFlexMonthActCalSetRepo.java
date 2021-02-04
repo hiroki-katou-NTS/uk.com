@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.wkp;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -15,6 +16,13 @@ public interface WkpFlexMonthActCalSetRepo {
 	 * @return the optional
 	 */
 	Optional<WkpFlexMonthActCalSet> find(String cid, String wkpId);
+	
+	/**
+	 * Find by Cid
+	 * @param cid
+	 * @return
+	 */
+	List<WkpFlexMonthActCalSet> findByCid(String cid);
 
 	/**
 	 * Adds the.

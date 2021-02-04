@@ -777,7 +777,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		if (!this.isValidAttendanceTime(timeDigestApplication.getChildTime()) && 
 		        !this.isValidAttendanceTime(timeDigestApplication.getNursingTime()) && 
 		        !this.isValidAttendanceTime(timeDigestApplication.getOvertime60H()) && 
-		        !this.isValidAttendanceTime(timeDigestApplication.getTimeAnualLeave()) && 
+		        !this.isValidAttendanceTime(timeDigestApplication.getTimeAnnualLeave()) &&
 		        !this.isValidAttendanceTime(timeDigestApplication.getTimeOff()) &&
 		        !this.isValidAttendanceTime(timeDigestApplication.getTimeSpecialVacation())) {
             throw new BusinessException("Msg_511");
@@ -841,24 +841,24 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		    }
 		}
 		
-		if (timeDigestApplication.getTimeAnualLeave() != null && timeDigestApplication.getTimeAnualLeave().v() > 0) {
+		if (timeDigestApplication.getTimeAnnualLeave() != null && timeDigestApplication.getTimeAnnualLeave().v() > 0) {
 		    int remainAnnual = 0;
 		    if (annualLeaveUnit.isPresent()) {
-		        switch (substituteHoliday.get()) {
+		        switch (annualLeaveUnit.get()) {
                 case OneMinute:
-                    remainAnnual = timeDigestApplication.getTimeAnualLeave().v() % 1;
+                    remainAnnual = timeDigestApplication.getTimeAnnualLeave().v() % 1;
                     break;
                 case FifteenMinute:
-                    remainAnnual = timeDigestApplication.getTimeAnualLeave().v() % 15;
+                    remainAnnual = timeDigestApplication.getTimeAnnualLeave().v() % 15;
                     break;
                 case ThirtyMinute:
-                    remainAnnual = timeDigestApplication.getTimeAnualLeave().v() % 30;
+                    remainAnnual = timeDigestApplication.getTimeAnnualLeave().v() % 30;
                     break;
                 case OneHour:
-                    remainAnnual = timeDigestApplication.getTimeAnualLeave().v() % 60;
+                    remainAnnual = timeDigestApplication.getTimeAnnualLeave().v() % 60;
                     break;
                 case TwoHour:
-                    remainAnnual = timeDigestApplication.getTimeAnualLeave().v() % 120;
+                    remainAnnual = timeDigestApplication.getTimeAnnualLeave().v() % 120;
                     break;
                 default:
                     break;
@@ -873,7 +873,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		if (timeDigestApplication.getChildTime() != null && timeDigestApplication.getChildTime().v() > 0) {
 		    int childTimeRemain = 0;
 		    if (childNursingUnit.isPresent()) {
-		        switch (substituteHoliday.get()) {
+		        switch (childNursingUnit.get()) {
                 case OneMinute:
                     childTimeRemain = timeDigestApplication.getChildTime().v() % 1;
                     break;
@@ -902,7 +902,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		if (timeDigestApplication.getNursingTime() != null && timeDigestApplication.getNursingTime().v() > 0) {
 		    int nursingRemain = 0;
 		    if (nursingUnit.isPresent()) {
-		        switch (substituteHoliday.get()) {
+		        switch (nursingUnit.get()) {
                 case OneMinute:
                     nursingRemain = timeDigestApplication.getNursingTime().v() % 1;
                     break;
@@ -931,7 +931,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		if (timeDigestApplication.getTimeSpecialVacation() != null && timeDigestApplication.getTimeSpecialVacation().v() > 0) {
 		    int timeSpecialRemain = 0;
 		    if (pendingUnit.isPresent()) {
-		        switch (substituteHoliday.get()) {
+		        switch (pendingUnit.get()) {
 		        case OneMinute:
 		            timeSpecialRemain = timeDigestApplication.getTimeSpecialVacation().v() % 1;
 		            break;
@@ -952,7 +952,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		        }
 		        
 		        if (timeSpecialRemain != 0) {
-		            throw new BusinessException("Msg_1686", "#KAFS12_46", pendingUnit.get().description);
+		            throw new BusinessException("Msg_1686", "KAFS12_46", pendingUnit.get().description);
 		        }
 		    }
 		}
