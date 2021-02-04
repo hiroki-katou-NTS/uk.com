@@ -324,8 +324,18 @@ module nts.uk.at.view.kal013.b {
                 setShared('KDL007_PARAM', param, true);
                 nts.uk.ui.windows.sub.modal('/view/kdl/007/a/index.xhtml').onClosed(() => {
                     let listResult = getShared('KDL007_VALUES');
+                    vm.pattern().updateCheckCond("");
+                    if (listResult.selecteds[0].length > 0 ) {
+                        vm.$ajax(PATH_API.GET_BONUS_PAY_SET).done((data: Array<any>) => {
+                            if (data) {
+                                let item = _.find(data, i => i.code == vm.pattern().checkCond());
+                                vm.pattern().updateCheckCondDis(_.isNil(item) ? "" : item.name)
+                            }
+                        });
+                        vm.pattern().updateCheckCond(listResult.selecteds[0]);
+                    }
 
-                    vm.pattern().updateCheckCond(listResult.selecteds[0].length > 0 ? listResult.selecteds[0]: "");
+
                 });
             } else {
                 //Open dialog KDW007C
@@ -482,7 +492,6 @@ module nts.uk.at.view.kal013.b {
 
         updateCheckCond(checkCondItem: string){
             this.checkCond(checkCondItem);
-            this.checkCondDis(checkCondItem);
         }
 
         updateCheckCondDis(itemName: string){
