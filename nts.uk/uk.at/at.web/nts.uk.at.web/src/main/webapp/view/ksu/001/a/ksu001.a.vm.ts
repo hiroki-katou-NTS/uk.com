@@ -3472,7 +3472,90 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             nts.uk.ui.dialog.alertError({ messageId: 'Msg_435' });
                             dfd.resolve(false);
                         } else {
-                            resolve = true;
+                            if (data.workHolidayCls != 0) {
+                                let wtimeCd = cellData.workTimeCode;
+                                let objWTime = _.find(__viewContext.viewModel.viewAB.listWorkTime, function(o) { return o.code === wtimeCd; });
+                                
+                                if (userInfor.disPlayFormat == 'time') {
+                                    if (data.workHolidayCls === 3) { // đi làm fulltime
+                                        let startTime = _.isNil(objWTime) ? '' : formatById("Clock_Short_HM", objWTime.tzStart1);
+                                        let endTime = _.isNil(objWTime) ? '' : formatById("Clock_Short_HM", objWTime.tzEnd1);
+
+                                        $("#extable").exTable("stickFields", ["workTypeName", "workTimeName", "startTime", "endTime"]);
+                                        $("#extable").exTable("stickData", {
+                                            workTypeCode: data.workTypeCode,
+                                            workTypeName: data.workTypeName,
+                                            workTimeCode: objWTime.code,
+                                            workTimeName: objWTime.nameAb,
+                                            startTime: startTime,
+                                            endTime: endTime,
+                                            achievements: false,
+                                            workHolidayCls: data.workHolidayCls
+                                        });
+                                        
+                                        // trường hợp cell này nằm trong list cell bị disable starttime, endtime 
+                                        // thì enable cell đó lên, xóa cell đó khỏi danh sach cell bị disable starttime, endtime .
+                                        if (!_.isNil(cellDisableTime)) {
+                                            self.enableCellStartEndTime(rowIdx + '', key);
+                                        }
+
+                                        __viewContext.viewModel.viewAB.isRedColor = false;
+                                        dfd.resolve(true);
+                                    } else if (data.workHolidayCls == 1 || data.workHolidayCls == 2) { // làm nủa ngay
+                                        nts.uk.ui.block.grayout();
+                                        let param = {
+                                            worktypeCode: data.workTypeCode,
+                                            worktimeCode: objWTime.code
+                                        }
+                                        service.checkCorrectHalfday(param).done((rs) => {
+                                            // set lai starttime, endtime cua object stick
+                                            $("#extable").exTable("stickFields", ["workTypeName", "workTimeName", "startTime", "endTime"]);
+
+                                            let startTime = rs.startTime == null ? '' : formatById("Clock_Short_HM", rs.startTime);
+                                            let endTime   = rs.endTime == null ? '' : formatById("Clock_Short_HM", rs.endTime);
+                                            console.log('startTime: ' + startTime + ';  ' + 'endTime: ' + endTime);
+                                            $("#extable").exTable("stickData", {
+                                                workTypeCode: data.workTypeCode,
+                                                workTypeName: data.workTypeName,
+                                                workTimeCode: objWTime.code,
+                                                workTimeName: objWTime.nameAb,
+                                                startTime: startTime,
+                                                endTime: endTime,
+                                                achievements: false,
+                                                workHolidayCls: data.workHolidayCls
+                                            });
+                                            __viewContext.viewModel.viewAB.isRedColor = false;
+
+                                            // trường hợp cell này nằm trong list cell bị disable starttime, endtime 
+                                            // thì enable cell đó lên, xóa cell đó khỏi danh sach cell bị disable starttime, endtime .
+                                            if (!_.isNil(cellDisableTime)) {
+                                                self.enableCellStartEndTime(rowIdx + '', key);
+                                            }
+
+                                            dfd.resolve(true);
+                                            nts.uk.ui.block.clear();
+                                        }).fail(function() {
+                                            nts.uk.ui.block.clear();
+                                            dfd.reject();
+                                        });
+                                    }
+                                } else {
+                                    $("#extable").exTable("stickFields", ["workTypeName", "workTimeName"]);
+                                    $("#extable").exTable("stickData", {
+                                        workTypeCode: data.workTypeCode,
+                                        workTypeName: data.workTypeName,
+                                        workTimeCode: objWTime.code,
+                                        workTimeName: objWTime.nameAb,
+                                        startTime: '',
+                                        endTime: '',
+                                        achievements: false,
+                                        workHolidayCls: data.workHolidayCls
+                                    });
+                                    __viewContext.viewModel.viewAB.isRedColor = false;
+                                    dfd.resolve(true);
+                                }
+                                
+                            }
                         }
                     } else if ((userInfor.disPlayFormat == 'time') && (data.workHolidayCls == 1 || data.workHolidayCls == 2)) {
                         // 午前出勤系 MORNING(1, "午前出勤系") 
