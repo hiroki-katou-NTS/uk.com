@@ -119,7 +119,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
 
 
 
-          
+
 
             <tr style="background-color: yellow; height: 45px;">
               <td style="padding-right: 5px; width: 30px; background-color: white;">
@@ -137,13 +137,17 @@ module nts.uk.at.view.ccg005.a.screenModel {
               <td class="ccg005-w100 ccg005-pl-5 ccg005-border-groove ccg005-right-unset ccg005-left-unset">
                 <div class="ccg005-w100">
                   <!-- A4_2 -->
-                  <label class="limited-label" style="max-width: 80px; width: auto !important;" data-bind="text: attendanceDetailDto.workName"/>
+                  <label data-bind="text: attendanceDetailDto.workName, attr:{ class: 'limited-label work-name-class-'+sid }" style="max-width: 80px; width: auto !important;" />
                   <!-- A4_4 -->
                   <i tabindex=14 data-bind="ntsIcon: {no: 190, width: 13, height: 13}"></i>
                 </div>
                 <div style="height: 20px;">
                 <!-- A4_3 -->
-                  <label class="limited-label check-in-out" style="max-width: 120px;" data-bind="text: attendanceDetailDto.checkInCheckOutTime"/>
+                  <span class="limited-label" style="max-width: 120px;">
+                    <label id="check-in-out" data-bind="text: attendanceDetailDto.checkInTime, attr:{ class: 'check-in-class-'+sid }"/>
+                    <label id="check-in-out" data-bind="text:' - ', attr:{ class: 'check-in-out-class-'+sid }"/>
+                    <label id="check-in-out" data-bind="text: attendanceDetailDto.checkOutTime, attr:{ class: 'check-out-class-'+sid }"/>
+                  </span>
                 </div>
               </td>
               <td class="ccg005-pl-5 ccg005-border-groove ccg005-right-unset ccg005-left-unset">
@@ -158,7 +162,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
                 <!-- A4_6 text go out reason -->
                 <p style="max-width: 125px;" class="limited-label" data-bind="text: goOutDto.goOutReason, visible: $component.goOutDisplay()"/>
                 <!-- A4_6 text comment -->
-                <p style="max-width: 125px;" class="limited-label" data-bind="text: commentDto.comment, visible: $component.commentDisplay()"/>
+                <p style="max-width: 125px;" class="limited-label" data-bind="text: comment, visible: $component.commentDisplay()"/>
               </td>
             </tr>
 
@@ -379,8 +383,20 @@ module nts.uk.at.view.ccg005.a.screenModel {
     .ccg005-switch > .nts-switch-button {
       width: 80px;
     }
-    .check-in-out {
+    #check-in-out {
       font-size: 80%;
+    }
+
+    .display-color-scheduled {
+      font-color: #00CC00;
+    }
+
+    .display-color-alarm {
+      font-color: red;
+    }
+
+    .pd-left-35 {
+      padding-left: 35px;
     }
   </style>`
   })
@@ -526,6 +542,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       });
     }
 
+    //handle avatar in loop by jquery
     private setAvatarInLoop() {
       const vm = this;
       _.map(vm.attendanceInformationDtosDisplay(), (item) => {
@@ -552,6 +569,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       });
     }
 
+    //handle attendance data for all employee in loop
     private getAttendanceInformationDtosDisplay(res: object.DisplayInformationDto): AttendanceInformationViewModel[] {
       const vm = this;
       return _.map(res.attendanceInformationDtos, (item => {
@@ -563,10 +581,10 @@ module nts.uk.at.view.ccg005.a.screenModel {
         return new AttendanceInformationViewModel({
           applicationDtos: item.applicationDtos,
           sid: item.sid,
-          attendanceDetailDto: vm.getAttendanceDetailViewModel(item.attendanceDetailDto),
+          attendanceDetailDto: vm.getAttendanceDetailViewModel(item.sid, item.attendanceDetailDto),
           avatarDto: item.avatarDto,
           activityStatusIconNo: vm.initActivityStatus(item.activityStatusDto),
-          commentDto: item.commentDto,
+          comment: item.commentDto.comment,
           goOutDto: vm.getGoOutViewModel(item.goOutDto),
           emojiIconNo: vm.initEmojiType(item.emojiDto.emojiType),
           businessName: businessName
@@ -580,29 +598,67 @@ module nts.uk.at.view.ccg005.a.screenModel {
       vm.totalElement(vm.attendanceInformationDtosDisplayClone().length);
     }
 
-    private getAttendanceDetailViewModel(attendanceDetailDto: any): AttendanceDetailViewModel {
-      const checkInCheckOutTime = (attendanceDetailDto.checkInTime + " - " + attendanceDetailDto.checkOutTime);
+    //handle check-in check-out display
+    private getAttendanceDetailViewModel(sid: string, attendanceDetailDto: any): AttendanceDetailViewModel {
+      const vm = this;
+      const workColorClass = vm.getClassNameColor(attendanceDetailDto.workColor);
+      const checkOutColorClass = vm.getClassNameColor(attendanceDetailDto.checkOutColor);
+      const checkInColorClass = vm.getClassNameColor(attendanceDetailDto.checkInColor);
+
+      $(`.work-name-class-${sid}`).ready(() => {
+        $(`.work-name-class-${sid}`).addClass(workColorClass);
+      });
+      $(`.check-out-class-${sid}`).ready(() => {
+        $(`.check-out-class-${sid}`).addClass(checkOutColorClass);
+      });
+      $(`.check-in-class-${sid}`).ready(() => {
+        $(`.check-in-class-${sid}`).addClass(checkInColorClass);
+        if(!attendanceDetailDto.checkInTime) {
+          $(`.check-in-class-${sid}`).addClass("pd-left-35");
+        }
+      });
+      //hidden ' - ' when both check-in and check-out are empty
+      if(!attendanceDetailDto.checkInTime && !attendanceDetailDto.checkOutTime) {
+        $(`.check-in-out-class-${sid}`).ready(() => {
+          $(`.check-in-out-class-${sid}`).css("visibility", "hidden");
+        });
+      }
       return new AttendanceDetailViewModel({
-        workColor: attendanceDetailDto.workColor,
         workName: attendanceDetailDto.workName,
-        checkOutColor: attendanceDetailDto.checkOutColor,
-        checkInCheckOutTime: checkInCheckOutTime,
-        checkInColor: attendanceDetailDto.checkInColor,
+        checkOutTime: attendanceDetailDto.checkOutTime,
+        checkInTime: attendanceDetailDto.checkInTime,
         workDivision: attendanceDetailDto.workDivision,
       });
     }
 
+    //handle go-out display
     private getGoOutViewModel(goOutDto: object.GoOutEmployeeInformationDto): GoOutEmployeeInformationViewModel {
       const vm = this;
-      const period = vm.covertNumberToTime(goOutDto.goOutTime) + " - " + vm.covertNumberToTime(goOutDto.comebackTime);
+      let period = "";
+      if (goOutDto.goOutTime && goOutDto.comebackTime) {
+        period = vm.covertNumberToTime(goOutDto.goOutTime) + " - " + vm.covertNumberToTime(goOutDto.comebackTime);
+      }
       return new GoOutEmployeeInformationViewModel({
         goOutReason: goOutDto.goOutReason,
         goOutPeriod: period
       });
     }
 
+    //convert time(minutes) to H:mm
     private covertNumberToTime(time: number): string {
       return moment.utc(moment.duration(time, "m").asMilliseconds()).format("H:mm");
+    }
+
+    //handle color for workName, checkIn, checkOut
+    private getClassNameColor(color: number): string {
+      switch(color){
+        case DisplayColor.SCHEDULED:
+          return "display-color-scheduled"; //Color = green
+        case DisplayColor.ALARM:
+          return "display-color-alarm";  //Color = red
+        default:
+            return "display-color-achievement";  //Color = default
+      }
     }
 
     private initResizeable(vm: any) {
@@ -962,6 +1018,18 @@ module nts.uk.at.view.ccg005.a.screenModel {
     HOLIDAY = 197 // 休み: アイコン#197
   }
 
+  	// 表示色区分
+	enum DisplayColor {
+		// 実績色
+		ACHIEVEMENT = 0,
+
+		// 予定色
+		SCHEDULED = 1,
+
+		// アラーム色
+		ALARM = 2
+	}
+
   class FavoriteSpecifyData {
     favoriteName: string;
     creatorId: string;
@@ -1002,7 +1070,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
     attendanceDetailDto: AttendanceDetailViewModel;      
     avatarDto: object.UserAvatarDto;              
     activityStatusIconNo: number;                     
-    commentDto: any;                                  
+    comment: string;                                  
     goOutDto: GoOutEmployeeInformationViewModel;       
     emojiIconNo: number;               
     businessName: string;
@@ -1021,20 +1089,14 @@ module nts.uk.at.view.ccg005.a.screenModel {
   }
 
   class AttendanceDetailViewModel {
-    // 勤務の色
-    workColor: number;
-
     // 勤務名
     workName: string;
 
-    // 終了の色
-    checkOutColor: number;
+    // 終了時刻
+    checkOutTime: string;
 
-    // 終了時刻 + 開始時刻
-    checkInCheckOutTime: string;
-
-    // 開始の色
-    checkInColor: number;
+    // 開始時刻
+    checkInTime: string;
 
     // 勤務区分
     workDivision: number;
