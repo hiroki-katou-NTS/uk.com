@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.tim
 
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,6 +17,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class WorkTimeInformation implements DomainObject {
 	
 	//時刻変更理由
