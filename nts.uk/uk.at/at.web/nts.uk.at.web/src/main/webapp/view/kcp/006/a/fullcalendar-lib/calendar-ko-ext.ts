@@ -476,7 +476,7 @@ module nts.uk.at.view.kcp006.a {
                          targetOrgWorkplaceName: workplaceName
                          }
                      });
-                    nts.uk.ui.windows.sub.modal("at", "/view/kdl/049/a/index.xhtml", { title: '行事設定', height: 330, width: 425 }).onClosed(function(): any {
+                    nts.uk.ui.windows.sub.modal("at", "/view/kdl/049/a/index.xhtml").onClosed(function(): any {
                         let fullCalendarRender = new nts.uk.at.view.kcp006.a.FullCalendarRender();
                         _lstHoliday = [];
                         _lstEvent = [];
