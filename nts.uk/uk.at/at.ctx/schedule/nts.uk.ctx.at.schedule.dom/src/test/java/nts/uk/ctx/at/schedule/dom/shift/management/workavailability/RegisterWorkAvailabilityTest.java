@@ -61,7 +61,7 @@ public class RegisterWorkAvailabilityTest {
 			}
 		};
 
-		this.workOneDays = Helper.createWorkAvaiOfOneDays(workRequire, shiftMasterCode);
+		this.workOneDays = Helper.createWorkAvaiOfOneDays(workRequire, GeneralDate.ymd(2021, 02, 04), shiftMasterCode);
 		
 	}
 	/**
@@ -250,16 +250,19 @@ public class RegisterWorkAvailabilityTest {
 	public static class Helper {
 		/**
 		 * 希望＝シフト
+		 * @param require
+		 * @param ymd 希望日
+		 * @param shiftMasterCode　シフトコード
 		 * @return
 		 */
-		public static List<WorkAvailabilityOfOneDay> createWorkAvaiOfOneDays(@Injectable WorkAvailability.Require require, ShiftMasterCode shiftMasterCode) {
+		public static List<WorkAvailabilityOfOneDay> createWorkAvaiOfOneDays(@Injectable WorkAvailability.Require require, GeneralDate ymd, ShiftMasterCode shiftMasterCode) {
 			return Arrays.asList(
-					WorkAvailabilityOfOneDay.create(require, "sid", GeneralDate.ymd(2021, 02, 04), new WorkAvailabilityMemo("memo"),
+					WorkAvailabilityOfOneDay.create(require, "sid", ymd, new WorkAvailabilityMemo("memo"),
 							AssignmentMethod.SHIFT, Arrays.asList(shiftMasterCode), Collections.emptyList()));
 		}
 		
 		/**
-		 *  希望＝休日
+		 * 希望＝休日
 		 * @return
 		 */
 		public static List<WorkAvailabilityOfOneDay> createWorkAvaiHolidays(@Injectable WorkAvailability.Require require) {
