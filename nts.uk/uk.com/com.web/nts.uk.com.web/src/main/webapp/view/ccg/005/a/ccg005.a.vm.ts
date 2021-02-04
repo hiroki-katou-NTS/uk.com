@@ -26,7 +26,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
           <i tabindex=3 data-bind="visible: $component.inCharge, ntsIcon: {no: 5, width: 25, height: 25}, click: $component.openScreenCCG005B"></i>
           &#160;
           <!-- A1_6 -->
-          <i tabindex=4 data-bind="ntsIcon: {no: 194, width: 25, height: 25}"></i>
+          <i tabindex=4 data-bind="click: $component.toStartScreen, ntsIcon: {no: 194, width: 25, height: 25}"></i>
         </div>
         <div class="grade-header-center" style="padding-bottom: 5px;">
           <table>
@@ -754,6 +754,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
             return;
           }
           // A1_1 表示初期の在席データDTO.在席情報DTO.個人の顔写真.顔写真ファイルID
+          $(`#${ID_AVATAR_CHANGE}`).empty();
           if (atdInfo.avatarDto && atdInfo.avatarDto.fileId) {
             $(`#${ID_AVATAR_CHANGE}`)
               .append($("<img/>")
@@ -788,6 +789,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
             vm.createdDefaultFavorite();
           }
         }
+        vm.currentPage(1);
       }).always(() => vm.$blockui('clear'));
     }
 
