@@ -70,7 +70,7 @@ public class JpaAvatarRepository extends JpaRepository implements AvatarReposito
 		CollectionUtil.split(pids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subPids -> {
 			List<UserAvatar> subList = this.queryProxy()
 					.query(SELECT_BY_PERSONAL_IDS, BpsdtPsAvatar.class)
-					.setParameter("personalIds", pids)
+					.setParameter("personalIds", subPids)
 					.getList(UserAvatar::createFromMemento);
 			list.addAll(subList);
 		});

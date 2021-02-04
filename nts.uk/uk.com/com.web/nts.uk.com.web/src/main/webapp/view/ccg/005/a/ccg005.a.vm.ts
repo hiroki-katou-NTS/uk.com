@@ -129,7 +129,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
                 <label class="limited-label ccg005-w100" style="display: inline-block;" data-bind="text: businessName"/>
                 <!-- A4_5 -->
                 <div>
-                  <i tabindex=13 data-bind="ntsIcon: {no: $component.emoji(), width: 20, height: 15}"></i>
+                  <i tabindex=13 data-bind="ntsIcon: {no: emojiIconNo, width: 20, height: 15}"></i>
                 </div>
               </td>
               <td class="ccg005-w100 ccg005-pl-5 ccg005-border-groove ccg005-right-unset ccg005-left-unset">
@@ -147,7 +147,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
               <td class="ccg005-pl-5 ccg005-border-groove ccg005-right-unset ccg005-left-unset">
                 <!-- A4_7 -->
                 <span class="ccg005-flex">
-                  <i tabindex=15 class="ccg005-status-img" data-bind="click: $component.initPopupInList.bind($component, $index),ntsIcon: {no: 191, width: 20, height: 20}"></i>
+                  <i tabindex=15 class="ccg005-status-img" data-bind="click: $component.initPopupInList.bind($component, $index),ntsIcon: {no: activityStatusIconNo, width: 20, height: 20}"></i>
                 </span>
               </td>
               <td class="ccg005-pl-5 ccg005-border-groove ccg005-left-unset">
@@ -438,12 +438,6 @@ module nts.uk.at.view.ccg005.a.screenModel {
     goOutParams: KnockoutObservable<GoOutParam> = ko.observable();
     isDiffBaseDate: KnockoutComputed<boolean> = ko.computed(() => !this.isBaseDate());
 
-    created() {
-      const vm = this;
-      vm.selectedDate(moment.utc().format('YYYYMMDD'));
-      vm.toStartScreen();
-    }
-
     mounted() {
       const vm = this;
       $('#ccg005-legends').click(() => {
@@ -451,6 +445,8 @@ module nts.uk.at.view.ccg005.a.screenModel {
         $('.legend-item-symbol').first().css('border', '1px groove');
         $('.legend-item').css('margin-bottom', '5px');
       });
+      vm.selectedDate(moment.utc().format('YYYYMMDD'));
+      vm.toStartScreen();
       vm.initResizeable(vm);
       vm.initPopupArea();
       vm.initPopupStatus();
@@ -559,10 +555,10 @@ module nts.uk.at.view.ccg005.a.screenModel {
           sid: item.sid,
           attendanceDetailDto: vm.getAttendanceDetailViewModel(item.attendanceDetailDto),
           avatarDto: item.avatarDto,
-          activityStatusDto: item.activityStatusDto,
+          activityStatusIconNo: vm.initActivityStatus(item.activityStatusDto),
           commentDto: item.commentDto,
           goOutDto: vm.getGoOutViewModel(item.goOutDto),
-          emojiDto: item.emojiDto,
+          emojiIconNo: vm.initEmojiType(item.emojiDto.emojiType),
           businessName: businessName
         });
       }));
@@ -746,10 +742,10 @@ module nts.uk.at.view.ccg005.a.screenModel {
       const loginSid = __viewContext.user.employeeId;
       vm.$blockui('show');
       vm.$ajax('com', API.getDisplayAttendanceData).then((response: object.DisplayAttendanceDataDto) => {
+        vm.emojiUsage(!!response.emojiUsage);
         // A1_2 表示初期の在席データDTO.自分のビジネスネーム
         vm.businessName(response.bussinessName);
         vm.favoriteSpecifyData(response.favoriteSpecifyDto);
-        vm.emojiUsage(!!response.emojiUsage);
         vm.inCharge(response.inCharge);
         if (response && response.attendanceInformationDtos) {
           // 条件：在席情報DTO.社員ID＝ログイン社員ID
@@ -1014,10 +1010,10 @@ module nts.uk.at.view.ccg005.a.screenModel {
     sid: string;                  
     attendanceDetailDto: AttendanceDetailViewModel;      
     avatarDto: object.UserAvatarDto;              
-    activityStatusDto: number;                     
+    activityStatusIconNo: number;                     
     commentDto: any;                                  
     goOutDto: GoOutEmployeeInformationViewModel;       
-    emojiDto: object.EmployeeEmojiStateDto;               
+    emojiIconNo: number;               
     businessName: string;
 
     constructor(init?: Partial<AttendanceInformationViewModel>) {

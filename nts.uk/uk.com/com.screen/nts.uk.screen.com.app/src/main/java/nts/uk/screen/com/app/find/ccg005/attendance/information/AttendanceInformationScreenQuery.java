@@ -307,9 +307,9 @@ public class AttendanceInformationScreenQuery {
 			.build();
 				
 			// UserAvatarDto
+			Optional<UserAvatar> avatarDomain = avatarList.stream().filter(ava -> ava.getPersonalId().equalsIgnoreCase(empId.getPid())).findFirst();
 			UserAvatarDto avatarDto = UserAvatarDto.builder().build();
-			avatarList.stream().filter(ava -> ava.getPersonalId() == empId.getPid()).findFirst()
-			.ifPresent(ava -> ava.setMemento(avatarDto));
+			avatarDomain.ifPresent(ava -> ava.setMemento(avatarDto));
 			
 			// commentDto
 			CommentQueryExport commentExp = commentData.get(empId.getSid());
