@@ -8,6 +8,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
     getDisplayAttendanceData: 'screen/com/ccg005/get-display-attendance-data',
     getDisplayInfoAfterSelect: 'screen/com/ccg005/get-information-after-select',
     getAttendanceInformation: 'screen/com/ccg005/get-attendance-information',
+    searchForEmployee: 'screen/com/ccg005/get-employee-search',
     saveFavorite: 'ctx/office/favorite/save',
     registerComment: 'ctx/office/comment/register',
     deleteComment: 'ctx/office/comment/delete'
@@ -26,7 +27,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
           <i tabindex=3 data-bind="visible: $component.inCharge, ntsIcon: {no: 5, width: 25, height: 25}, click: $component.openScreenCCG005B"></i>
           &#160;
           <!-- A1_6 -->
-          <i tabindex=4 data-bind="click: $component.toStartScreen, ntsIcon: {no: 194, width: 25, height: 25}"></i>
+          <i tabindex=4 data-bind="click: $component.resetLastestData, ntsIcon: {no: 194, width: 25, height: 25}"></i>
         </div>
         <div class="grade-header-center" style="padding-bottom: 5px;">
           <table>
@@ -40,7 +41,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
                 <span class="ccg005-bold" data-bind="text: $component.businessName()"></span>
                 <div class="ccg005-flex none-enter-icon">
                   <!-- A1_3 -->
-                  <i data-bind="ntsIcon: {no: $component.emoji(), width: 20, height: 30}"></i>
+                  <i class="ccg005-currentEmoji"></i>
                   <div style="position: relative;" class="CCG005-A1_4-border">
                     <!-- A1_4 -->
                     <input tabindex=2 id="CCG005-A1_4" style="border: none !important; padding-right: 30px; background: none !important;" data-bind="ntsTextEditor: {
@@ -53,7 +54,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
                         placeholder: $component.$i18n('CCG005_35')
                       }))
                     }, visible: $component.isSameOrBeforeBaseDate"/>
-                    <i class="ccg005-clearbtn" style="position: absolute; right: 5px; visibility: hidden;" data-bind="click: $component.deleteComment, ntsIcon: {no: $component.emoji(), width: 20, height: 28}"></i>
+                    <i class="ccg005-clearbtn" style="position: absolute; right: 5px; visibility: hidden;" data-bind="ntsIcon: {no: 198, width: 20, height: 28}"></i>
                   </div>
                 </div>
               </td>
@@ -86,6 +87,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
               editable: true,
               visibleItemsCount: 5,
               value: favoriteInputDate,
+              selectFirstIfNull: true,
               optionsValue: 'inputDate',
               optionsText: 'favoriteName',
               required: true,
@@ -207,7 +209,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
               <!-- A3_2.2 -->
               <input data-bind="ntsTextEditor: {
                 value: searchValue,
-                enterkey: $component.registerComment,
+                enterkey: $component.onSearchEmployee,
                 option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                   textmode: 'text',
                   width: '190px',
@@ -391,7 +393,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
     contentSelected: KnockoutObservable<number> = ko.observable(0);
     commentDisplay: KnockoutObservable<boolean> = ko.computed(() => this.contentSelected() === 0);
     goOutDisplay: KnockoutObservable<boolean> = ko.computed(() => this.contentSelected() === 1);
-    favoriteInputDate: KnockoutObservable<any> = ko.observable('');
+    favoriteInputDate: KnockoutObservable<any> = ko.observable(null);
     searchValue: KnockoutObservable<string> = ko.observable('');
     workplaceNameFromCDL008: KnockoutObservable<string> = ko.observable('');
 
@@ -412,7 +414,6 @@ module nts.uk.at.view.ccg005.a.screenModel {
     activatedStatus: KnockoutObservable<number> = ko.observable(0);
     activityStatusIcon: KnockoutComputed<number> = ko.computed(() => this.initActivityStatus(this.activityStatus()));
     businessName: KnockoutObservable<string> = ko.observable('');
-    emoji: KnockoutObservable<number> = ko.observable(187);
     comment: KnockoutObservable<string> = ko.observable('');
     commentDate: KnockoutObservable<any> = ko.observable('');
     avatarPath: KnockoutObservable<string> = ko.observable('');
@@ -472,10 +473,12 @@ module nts.uk.at.view.ccg005.a.screenModel {
         vm.isBaseDate(selectedDate.isSame(baseDate));
         // パラメータ「在席情報を取得」
         const empIds = _.map(vm.attendanceInformationDtos(), atd => {
-          return {
-            sid: atd.sid,
-            pid: _.find(vm.listPersonalInfo(), item => item.employeeId === atd.sid).personalId
-          };
+          if (_.find(vm.listPersonalInfo(), item => item.employeeId === atd.sid)) {
+            return {
+              sid: atd.sid,
+              pid: _.find(vm.listPersonalInfo(), item => item.employeeId === atd.sid).personalId
+            };
+          }
         });
         const param = {
           empIds: empIds,
@@ -483,8 +486,14 @@ module nts.uk.at.view.ccg005.a.screenModel {
           emojiUsage: vm.emojiUsage()
         }
         vm.$blockui('show');
-        vm.$ajax('com', API.getAttendanceInformation, param).then((res: object.AttendanceInformationDto) => {
-
+        vm.clearDataDisplay();
+        vm.$ajax('com', API.getAttendanceInformation, param).then((res: object.AttendanceInformationDto[]) => {
+          vm.updateLoginData(res);
+          res = _.filter(res, item => item.sid !== __viewContext.user.employeeId);
+          vm.dataToDisplay({
+            attendanceInformationDtos: res,
+            listPersonalInfo: vm.listPersonalInfo()
+          });
         }).always(() => vm.$blockui('hide'));
       });
     }
@@ -495,25 +504,24 @@ module nts.uk.at.view.ccg005.a.screenModel {
     private initChangeFavorite() {
       const vm = this;
       vm.favoriteInputDate.subscribe(() => {
-        const selectedFavorite = _.find(vm.favoriteSpecifyData(), item => item.inputDate === vm.favoriteInputDate());
+        vm.subscribeFavorite();
+      });
+    }
+
+    private subscribeFavorite() {
+      const vm = this;
+      const selectedFavorite = _.find(vm.favoriteSpecifyData(), item => item.inputDate === vm.favoriteInputDate());
         const param: DisplayInfoAfterSelectParam = new DisplayInfoAfterSelectParam({
           baseDate: vm.selectedDate(),
           emojiUsage: vm.emojiUsage(),
           wkspIds: selectedFavorite ? selectedFavorite.workplaceId : []
         });
         vm.$blockui('show');
+        vm.clearDataDisplay();
         vm.$ajax('com', API.getDisplayInfoAfterSelect, param).then((res: object.DisplayInformationDto) => {
-          vm.attendanceInformationDtos(res.attendanceInformationDtos);
-          vm.listPersonalInfo(res.listPersonalInfo);
-
-          //set data view model to set data on screen
-          const display = vm.getAttendanceInformationDtosDisplay(res);
-          vm.attendanceInformationDtosDisplay(display);
-          vm.attendanceInformationDtosDisplayClone(display);
-          vm.resetPagination();
+          vm.dataToDisplay(res);
         })
         .always(() => vm.$blockui('clear'));
-      });
     }
 
     private setAvatarInLoop() {
@@ -647,6 +655,8 @@ module nts.uk.at.view.ccg005.a.screenModel {
     }
 
     initFocusA1_4() {
+      const vm = this;
+      $('.ccg005-clearbtn').click(() => vm.deleteComment());
       $('.CCG005-A1_4-border')
         .focusin(() => $('.ccg005-clearbtn').css('visibility', 'visible'))
         .focusout(() => $('.ccg005-clearbtn').css('visibility', 'hidden'));
@@ -737,9 +747,20 @@ module nts.uk.at.view.ccg005.a.screenModel {
       vm.$window.modal('/view/ccg/005/e/index.xhtml', vm.goOutParams());
     }
 
+    resetLastestData() {
+      const vm = this;
+      vm.attendanceInformationDtos([]);
+      vm.attendanceInformationDtosDisplay([]);
+      vm.attendanceInformationDtosDisplayClone([]);
+      vm.selectedDate(moment.utc().format('YYYYMMDD'));
+      vm.currentPage(0);
+      vm.totalElement(0);
+      vm.toStartScreen();
+      vm.subscribeFavorite();
+    }
+
     private toStartScreen() {
       const vm = this;
-      const loginSid = __viewContext.user.employeeId;
       vm.$blockui('show');
       vm.$ajax('com', API.getDisplayAttendanceData).then((response: object.DisplayAttendanceDataDto) => {
         vm.emojiUsage(!!response.emojiUsage);
@@ -748,42 +769,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
         vm.favoriteSpecifyData(response.favoriteSpecifyDto);
         vm.inCharge(response.inCharge);
         if (response && response.attendanceInformationDtos) {
-          // 条件：在席情報DTO.社員ID＝ログイン社員ID
-          const atdInfo = _.find(response.attendanceInformationDtos, item => item.sid === loginSid);
-          if (!atdInfo) {
-            return;
-          }
-          // A1_1 表示初期の在席データDTO.在席情報DTO.個人の顔写真.顔写真ファイルID
-          $(`#${ID_AVATAR_CHANGE}`).empty();
-          if (atdInfo.avatarDto && atdInfo.avatarDto.fileId) {
-            $(`#${ID_AVATAR_CHANGE}`)
-              .append($("<img/>")
-                .attr("id", 'CCG005_A1_1')
-                .attr("src", (nts.uk.request as any).liveView(atdInfo.avatarDto.fileId))
-              );
-          } else {
-            $(`#${ID_AVATAR_CHANGE}`).ready(() => {
-              $(`#${ID_AVATAR_CHANGE}`).append(
-                `<div id='CCG005_no_avatar'>
-                  <p style="text-align: center; margin: 0 auto; font-size: 15px">
-                    ${vm.businessName().replace(/\s/g, '').substring(0, 2)}
-                  </p>
-                </div>`
-              );
-            });
-          }
-          // 表示初期の在席データDTO.在席情報DTO.在席のステータス
-          vm.activityStatus(atdInfo.activityStatusDto);
-          // A1_3
-          if (atdInfo.emojiDto) {
-            // 表示初期の在席データDTO.在席情報DTO.社員の外出情報.感情種類
-            vm.emoji(vm.initEmojiType(atdInfo.emojiDto.emojiType));
-          }
-          // A1_4
-          if (atdInfo.commentDto) {
-            vm.comment(atdInfo.commentDto.comment);
-            vm.commentDate(atdInfo.commentDto.date);
-          }
+          vm.updateLoginData(response.attendanceInformationDtos);
 
           if (_.isEmpty(vm.favoriteSpecifyData())) {
             vm.createdDefaultFavorite();
@@ -791,6 +777,45 @@ module nts.uk.at.view.ccg005.a.screenModel {
         }
         vm.currentPage(1);
       }).always(() => vm.$blockui('clear'));
+    }
+
+    updateLoginData(atds: any) {
+      const vm = this;
+      // 条件：在席情報DTO.社員ID＝ログイン社員ID
+      const atdInfo = _.find(atds, (item: any) => item.sid === __viewContext.user.employeeId);
+      if (!atdInfo) {
+        return;
+      }
+      // A1_1 表示初期の在席データDTO.在席情報DTO.個人の顔写真.顔写真ファイルID
+      $(`#${ID_AVATAR_CHANGE}`).empty();
+      if (atdInfo.avatarDto && atdInfo.avatarDto.fileId) {
+        $(`#${ID_AVATAR_CHANGE}`)
+          .append($("<img/>")
+            .attr("id", 'CCG005_A1_1')
+            .attr("src", (nts.uk.request as any).liveView(atdInfo.avatarDto.fileId))
+          );
+      } else {
+        $(`#${ID_AVATAR_CHANGE}`).ready(() => {
+          $(`#${ID_AVATAR_CHANGE}`).append(
+            `<div id='CCG005_no_avatar'>
+              <p style="text-align: center; margin: 0 auto; font-size: 15px">
+                ${vm.businessName().replace(/\s/g, '').substring(0, 2)}
+              </p>
+            </div>`
+          );
+        });
+      }
+      // 表示初期の在席データDTO.在席情報DTO.在席のステータス
+      vm.activityStatus(atdInfo.activityStatusDto);
+      // A1_3 表示初期の在席データDTO.在席情報DTO.社員の外出情報.感情種類
+      if (atdInfo.emojiDto && atdInfo.emojiDto.emojiType) {
+        ko.bindingHandlers.ntsIcon.init($('.ccg005-currentEmoji')[0], () => ({ no: vm.initEmojiType(atdInfo.emojiDto.emojiType), width: 20, height: 30 }));
+      }
+      // A1_4
+      if (atdInfo.commentDto) {
+        vm.comment(atdInfo.commentDto.comment);
+        vm.commentDate(atdInfo.commentDto.date);
+      }
     }
 
     private initEmojiType(emojiType: number): number {
@@ -846,7 +871,10 @@ module nts.uk.at.view.ccg005.a.screenModel {
       };
       vm.$blockui('show');
       vm.$ajax('com', API.registerComment, command)
-        .then(() => vm.$dialog.info({ messageId: 'Msg_15' }))
+        .then(() => {
+          vm.$dialog.info({ messageId: 'Msg_15' });
+          $('#CCG005-A1_4').blur();
+        })
         .always(() => vm.$blockui('clear'));
     }
 
@@ -855,15 +883,20 @@ module nts.uk.at.view.ccg005.a.screenModel {
      */
     deleteComment() {
       const vm = this;
-      $('.ccg005-clearbtn').css('visibility', 'hidden');
-      $('#CCG005-A1_4').focusout();
+      if (_.isEmpty(vm.comment())) {
+        return;
+      }
       vm.comment('');
       const command = {
         date: moment.utc(vm.commentDate()).toISOString(),
         sid: __viewContext.user.employeeId
       };
       vm.$blockui('show');
-      vm.$ajax('com', API.deleteComment, command).always(() => vm.$blockui('clear'));
+      vm.$ajax('com', API.deleteComment, command)
+        .then(() => {
+          $('.ccg005-clearbtn').css('visibility', 'hidden');
+        })  
+        .always(() => vm.$blockui('clear'));
     }
 
     /**
@@ -894,6 +927,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
           setShared('CDL008Cancel', null);
           return;
         }
+        $('#ccg005-star-popup').ntsPopup('hide');
         const workplaceInfor = getShared('workplaceInfor');
         vm.workplaceNameFromCDL008(_.map(workplaceInfor, (wkp: any) => wkp.displayName).join('、'));
         // 職場を選択する時
@@ -904,14 +938,56 @@ module nts.uk.at.view.ccg005.a.screenModel {
           wkspIds: vm.workplaceFromCDL008()
         });
         vm.$blockui('show');
+        vm.clearDataDisplay();
         vm.$ajax('com', API.getDisplayInfoAfterSelect, param).then((res: object.DisplayInformationDto) => {
-          if (!res) {
-            return;
-          }
-          vm.attendanceInformationDtos(res.attendanceInformationDtos);
-          vm.listPersonalInfo(res.listPersonalInfo);
+          vm.dataToDisplay(res);
         }).always(() => vm.$blockui('clear'));
       });
+    }
+    
+    /**
+     * 検索する時
+     */
+    onSearchEmployee() {
+      const vm = this;
+      const param = {
+        keyWorks: vm.searchValue(),
+        baseDate: vm.selectedDate(),
+        emojiUsage: vm.emojiUsage()
+      };
+      vm.$blockui('show');
+      vm.$ajax('com', API.searchForEmployee, param)
+        .then((res: object.DisplayInformationDto) => {
+          vm.dataToDisplay(res);
+        })
+        .always(() => vm.$blockui('clear'))
+    }
+
+    clearDataDisplay() {
+      const vm = this;
+      vm.totalElement(0);
+      vm.attendanceInformationDtos([]);
+      vm.attendanceInformationDtosDisplay([]);
+      vm.attendanceInformationDtosDisplayClone([]);
+    }
+
+    dataToDisplay(res: any) {
+      const vm = this;
+      if (!res) {
+        return;
+      }
+      vm.attendanceInformationDtos(res.attendanceInformationDtos);
+      vm.listPersonalInfo(res.listPersonalInfo);
+
+      //set data view model to set data on screen
+      const display = vm.getAttendanceInformationDtosDisplay(res);
+      if (display.length > vm.perPage()) {
+        vm.attendanceInformationDtosDisplay(_.slice(display, 0, vm.perPage()));
+      } else {
+        vm.attendanceInformationDtosDisplay(display);
+      }
+      vm.attendanceInformationDtosDisplayClone(display);
+      vm.resetPagination();
     }
 
     /**
