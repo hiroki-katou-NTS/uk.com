@@ -21,6 +21,7 @@ import javax.ejb.TransactionAttributeType;
 import org.apache.logging.log4j.util.Strings;
 
 import lombok.SneakyThrows;
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -499,15 +500,21 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 				+ " join KRQDT_APP_REFLECT_STATE b"
 				+ "  on a.APP_ID = b.APP_ID and  a.CID = b.CID"
 				+ " WHERE  a.APPLICANTS_SID =  @sid "
-				+ " AND a.APP_START_DATE <= @strData " + " AND a.APP_END_DATE >= @endData " + " AND a.APP_TYPE IN @appType " 
-				+ " AND b.REFLECT_PER_STATE IN @recordStatus" + " ORDER BY a.INPUT_DATE ASC";
-		List<Map<String, Object>> mapLst = new NtsStatement(sql, this.jdbcProxy())
+				+ " AND a.APP_START_DATE <= @strData " 
+				+ " AND a.APP_END_DATE >= @endData " 
+				+ (appType.isEmpty() ? "" : " AND a.APP_TYPE IN @appType ")
+				+ (reflect.isEmpty() ? "" : " AND b.REFLECT_PER_STATE IN @recordStatus") 
+				+ " ORDER BY a.INPUT_DATE ASC";
+		val query = new NtsStatement(sql, this.jdbcProxy())
 				.paramString("sid", sid)
 				.paramDate("strData", dateData.start())
-				.paramDate("endData", dateData.end())
-				.paramInt("recordStatus", reflect)
-				.paramInt("appType", appType)
-				.getList(rec -> toObject(rec));
+				.paramDate("endData", dateData.end());
+		if (!reflect.isEmpty()) 
+			query.paramInt("recordStatus", reflect);
+		if (!appType.isEmpty()) 
+			query.paramInt("appType", appType);
+		
+		List<Map<String, Object>> mapLst = query.getList(rec -> toObject(rec));
 		List<KrqdtApplication> krqdtApplicationLst = convertToEntity(mapLst);
 		return krqdtApplicationLst.stream().map(c -> c.toDomain()).collect(Collectors.toList());
 		
