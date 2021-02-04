@@ -49,7 +49,7 @@ public class WorkAvailabilityRuleWeekSetting implements WorkAvailabilityRule, Do
 	}
 
 	@Override
-	public boolean isOverHolidayMaxDays(List<WorkAvailabilityOfOneDay> workAvailabilityList) {
+	public boolean isOverHolidayMaxDays(WorkAvailabilityRule.Require require, List<WorkAvailabilityOfOneDay> workAvailabilityList) {
 		
 		return false;
 	}
@@ -79,5 +79,5 @@ public class WorkAvailabilityRuleWeekSetting implements WorkAvailabilityRule, Do
 		GeneralDate startDate = availabilityDate.previous(DateSeek.dayOfWeek(this.firstDayOfWeek));
 		return new DatePeriod(startDate, startDate.addDays(6));
 	}
-
+	
 }

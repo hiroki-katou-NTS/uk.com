@@ -131,7 +131,7 @@ public class SCReflectApplicationHelper {
 		List<BreakTimeSheet> breakTimeSheets = new ArrayList<>();
 		breakTimeSheets
 				.add(new BreakTimeSheet(new BreakFrameNo(1), new TimeWithDayAttr(480), new TimeWithDayAttr(1020)));
-		Optional<BreakTimeOfDailyAttd> breakTime = Optional.of(new BreakTimeOfDailyAttd(breakTimeSheets));
+		BreakTimeOfDailyAttd breakTime = new BreakTimeOfDailyAttd(breakTimeSheets);
 
 		Optional<AttendanceTimeOfDailyAttendance> attTimeOpt = Optional.of(new AttendanceTimeOfDailyAttendance(
 				WorkScheduleTimeOfDaily.defaultValue(), ActualWorkingTimeOfDaily.defaultValue(),

@@ -13,8 +13,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSet;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSetRepository;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.util.Strings;
 
@@ -69,11 +67,14 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchieve
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 //import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository_Old;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp_Old;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode_Old;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationcommonsetting.AppCommonSetRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSet;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.CalcStampMiss;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.OverrideSet;
@@ -243,18 +244,25 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				if(appType==ApplicationType.STAMP_APPLICATION) {
 					continue;
 				}
+				if(appType==ApplicationType.OVER_TIME_APPLICATION) {
+					continue;
+				}
 				allAppTypeLst.add(appType);
 			} 
 			List<StampRequestMode> stampRequestModeLst = new ArrayList<>();
 			for(StampRequestMode stampRequestMode : StampRequestMode.values()) {
 				stampRequestModeLst.add(stampRequestMode);
 			}
+			List<OvertimeAppAtr> overtimeAppAtrLst = new ArrayList<>();
+			for(OvertimeAppAtr overtimeAppAtr : OvertimeAppAtr.values()) {
+				overtimeAppAtrLst.add(overtimeAppAtr);
+			}
 			appLst = repoApp.getByAppTypeList(checkMySelf.getLstSID(), param.getPeriodStartDate(), param.getPeriodEndDate(), 
-					allAppTypeLst, prePostAtrLst, stampRequestModeLst);
+					allAppTypeLst, prePostAtrLst, stampRequestModeLst, overtimeAppAtrLst);
 		} else {
 			// ドメインモデル「申請」を取得する
 			List<ApplicationType> appTypeLst = param.getOpListOfAppTypes().map(x -> {
-				return x.stream().filter(y -> y.isChoice() && y.getAppType()!=ApplicationType.STAMP_APPLICATION)
+				return x.stream().filter(y -> y.isChoice() && y.getAppType()!=ApplicationType.STAMP_APPLICATION && y.getAppType()!=ApplicationType.OVER_TIME_APPLICATION)
 						.map(y -> y.getAppType()).collect(Collectors.toList());
 			}).orElse(Collections.emptyList());
 			List<StampRequestMode> stampRequestModeLst = param.getOpListOfAppTypes().map(x -> {
@@ -267,9 +275,20 @@ public class AppListInitialImpl implements AppListInitialRepository{
 							}
 						}).collect(Collectors.toList());
 			}).orElse(Collections.emptyList());
-			
+			List<OvertimeAppAtr> overtimeAppAtrLst = param.getOpListOfAppTypes().map(x -> {
+				return x.stream().filter(y -> y.isChoice() && y.getAppType()==ApplicationType.OVER_TIME_APPLICATION)
+						.map(y -> {
+							if(y.getOpApplicationTypeDisplay().get()==ApplicationTypeDisplay.EARLY_OVERTIME) {
+								return OvertimeAppAtr.EARLY_OVERTIME;
+							} else if(y.getOpApplicationTypeDisplay().get()==ApplicationTypeDisplay.NORMAL_OVERTIME) {
+								return OvertimeAppAtr.NORMAL_OVERTIME;
+							} else {
+								return OvertimeAppAtr.EARLY_NORMAL_OVERTIME;
+							}
+						}).collect(Collectors.toList());
+			}).orElse(Collections.emptyList());
 			appLst = repoApp.getByAppTypeList(checkMySelf.getLstSID(), param.getPeriodStartDate(), param.getPeriodEndDate(), 
-					appTypeLst, prePostAtrLst, stampRequestModeLst);
+					appTypeLst, prePostAtrLst, stampRequestModeLst, overtimeAppAtrLst);
 		}
 		// 承認ルートの内容取得
 		Map<String,List<ApprovalPhaseStateImport_New>> mapResult = approvalRootStateAdapter
@@ -498,7 +517,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			prePostAtrLst.add(PrePostAtr.POSTERIOR);
 		}
 		List<Integer> appTypeLst = param.getOpListOfAppTypes().map(x -> {
-			return x.stream().filter(y -> y.isChoice() && y.getAppType()!=ApplicationType.STAMP_APPLICATION)
+			return x.stream().filter(y -> y.isChoice() && y.getAppType()!=ApplicationType.STAMP_APPLICATION && y.getAppType()!=ApplicationType.OVER_TIME_APPLICATION)
 					.map(y -> y.getAppType().value).collect(Collectors.toList());
 		}).orElse(Collections.emptyList());
 		List<StampRequestMode> stampRequestModeLst = param.getOpListOfAppTypes().map(x -> {
@@ -508,6 +527,18 @@ public class AppListInitialImpl implements AppListInitialRepository{
 							return StampRequestMode.STAMP_ADDITIONAL;
 						} else {
 							return StampRequestMode.STAMP_ONLINE_RECORD;
+						}
+					}).collect(Collectors.toList());
+		}).orElse(Collections.emptyList());
+		List<OvertimeAppAtr> overtimeAppAtrLst = param.getOpListOfAppTypes().map(x -> {
+			return x.stream().filter(y -> y.isChoice() && y.getAppType()==ApplicationType.OVER_TIME_APPLICATION)
+					.map(y -> {
+						if(y.getOpApplicationTypeDisplay().get()==ApplicationTypeDisplay.EARLY_OVERTIME) {
+							return OvertimeAppAtr.EARLY_OVERTIME;
+						} else if(y.getOpApplicationTypeDisplay().get()==ApplicationTypeDisplay.NORMAL_OVERTIME) {
+							return OvertimeAppAtr.NORMAL_OVERTIME;
+						} else {
+							return OvertimeAppAtr.EARLY_NORMAL_OVERTIME;
 						}
 					}).collect(Collectors.toList());
 		}).orElse(Collections.emptyList());
@@ -524,7 +555,8 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				appTypeLst,
 				prePostAtrLst,
 				param.getOpListEmployeeID().isPresent() ? param.getOpListEmployeeID().get() : Collections.emptyList(),
-				stampRequestModeLst);
+				stampRequestModeLst,
+				overtimeAppAtrLst);
 		// 申請一覧リストのデータを作成
 		appListInfo = appDataCreation.createAppLstData(
 				companyID, 

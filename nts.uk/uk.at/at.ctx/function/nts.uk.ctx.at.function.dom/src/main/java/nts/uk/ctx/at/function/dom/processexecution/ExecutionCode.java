@@ -7,7 +7,7 @@ import nts.uk.shr.com.primitive.CodePrimitiveValue;
 import nts.uk.shr.com.primitive.ZeroPaddedCode;
 
 /**
- * 更新処理自動実行項目コード
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.就業機能.更新処理自動実行.更新処理自動実行ログ.更新処理自動実行項目コード
  */
 @StringCharType(CharType.NUMERIC)
 @StringMaxLength(2)

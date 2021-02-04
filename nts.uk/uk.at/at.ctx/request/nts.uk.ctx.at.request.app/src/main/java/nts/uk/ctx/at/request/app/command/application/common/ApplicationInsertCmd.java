@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.app.command.application.common;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +28,7 @@ import nts.uk.shr.com.context.AppContexts;
 @AllArgsConstructor
 @Getter
 public class ApplicationInsertCmd {
+	
 	private int prePostAtr;
 	
 	private List<String> employeeIDLst;
@@ -60,5 +62,19 @@ public class ApplicationInsertCmd {
 				Strings.isBlank(opAppReason) ? Optional.empty() : Optional.of(new AppReason(opAppReason)), 
 				opAppStandardReasonCD == null ? Optional.empty() : Optional.of(new AppStandardReasonCode(opAppStandardReasonCD)));
 	}
-	   
+
+	public ApplicationInsertCmd(Application domain) {
+		super();
+		this.prePostAtr = domain.getPrePostAtr().value;
+		this.employeeIDLst = Arrays.asList(domain.getEmployeeID());
+		this.appType = domain.getAppType().value;
+		this.appDate = domain.getAppDate().getApplicationDate().toString();
+		this.opAppReason = domain.getOpAppReason().map(c->c.v()).orElse(null);
+		this.opAppStandardReasonCD = domain.getOpAppStandardReasonCD().map(c->c.v()).orElse(null);
+		this.opAppStartDate = domain.getOpAppStartDate().map(c->c.getApplicationDate().toString()).orElse(null);
+		this.opAppEndDate = domain.getOpAppEndDate().map(c->c.getApplicationDate().toString()).orElse(null);
+		this.opStampRequestMode = domain.getOpStampRequestMode().map(c->c.value).orElse(null);
+	}
+	
+	
 }

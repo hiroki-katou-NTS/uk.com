@@ -1,9 +1,7 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -13,7 +11,6 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  *
  */
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
 public class ShortWorkingTimeSheet {
 
@@ -29,14 +26,14 @@ public class ShortWorkingTimeSheet {
 	/** 終了: 時刻(日区分付き) */
 	private TimeWithDayAttr endTime;
 	
-	/** 控除時間: 勤怠時間 */
-	private AttendanceTime deductionTime;
+//	/** 控除時間: 勤怠時間 */
+//	private AttendanceTime deductionTime;
+//	
+//	/** 時間: 勤怠時間 */
+//	private AttendanceTime shortTime;
 	
-	/** 時間: 勤怠時間 */
-	private AttendanceTime shortTime;
 	
 	
-
 	public void setShortWorkTimeFrameNo(ShortWorkTimFrameNo shortWorkTimeFrameNo) {
 		this.shortWorkTimeFrameNo = shortWorkTimeFrameNo;
 	}

@@ -14,6 +14,7 @@ import nts.arc.layer.dom.objecttype.DomainObject;
 @Getter
 @NoArgsConstructor
 public class EditStateOfDailyAttd implements DomainObject {
+	
 	/** 勤怠項目ID: 勤怠項目ID */
 	private int attendanceItemId;
 	
@@ -27,8 +28,34 @@ public class EditStateOfDailyAttd implements DomainObject {
 		this.editStateSetting = editStateSetting;
 	}
 	
+	/**
+	 * 	[C-1] 手修正で作る
+	 * @param require
+	 * @param attendanceItemId 	勤怠項目ID
+	 * @param targetEmployeeId 	対象社員ID
+	 * @return
+	 */
+	public static EditStateOfDailyAttd createByHandCorrection(
+			Require require, 
+			int attendanceItemId, 
+			String targetEmployeeId) {
+		
+		String loginEmployeeId = require.getLoginEmployeeId();
+		EditStateSetting editStateSetting = loginEmployeeId.equals(targetEmployeeId) ? 
+				EditStateSetting.HAND_CORRECTION_MYSELF : EditStateSetting.HAND_CORRECTION_OTHER;
+		
+		return new EditStateOfDailyAttd(attendanceItemId, editStateSetting);
+	}
+	
 	public boolean isHandCorrect() {
 		return this.editStateSetting == EditStateSetting.HAND_CORRECTION_MYSELF
 				|| this.editStateSetting == EditStateSetting.HAND_CORRECTION_OTHER;
+	}
+	
+	public static interface Require {
+		
+		/** [R-1] ログイン社員IDを取得する */
+		String getLoginEmployeeId();
+		
 	}
 }

@@ -12,7 +12,7 @@ import nts.uk.ctx.at.function.app.command.alarm.extractionrange.ExtractionRangeY
 @Data
 public class CheckConditionCommand {
 	private int alarmCategory;
-	private List<String> checkConditionCodes;	
+	private List<String> checkConditionCodes;
 	private ExtractionPeriodDailyCommand extractionPeriodDaily;
 	private ExtractionPeriodUnitCommand extractionPeriodUnit;
 	private List<ExtractionPeriodMonthlyCommand> listExtractionMonthly;

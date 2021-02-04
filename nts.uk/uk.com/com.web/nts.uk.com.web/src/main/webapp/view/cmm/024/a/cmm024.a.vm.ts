@@ -377,7 +377,7 @@ module nts.uk.com.view.cmm024.a {
 						if (!nts.uk.util.isNullOrEmpty(data)) {
 							vm.companyScheduleHistoryObjSelected(null);
 							vm.companyScheduleHistoryListing();
-							vm.resetSettingsScreenA(true, true, true, true, ScreenModel.EDIT);
+							//vm.resetSettingsScreenA(true, true, true, true, ScreenModel.EDIT);
 						} else {
 							vm.resetSettingsScreenA(
 								vm.enableRegisterA(),
@@ -427,7 +427,7 @@ module nts.uk.com.view.cmm024.a {
 						if (!nts.uk.util.isNullOrEmpty(data)) {
 							vm.workplaceScheduleHistoryObjSelected(null);
 							vm.workplaceScheduleHistoryListing();
-							vm.resetSettingsScreenB(true, true, true, true, ScreenModel.EDIT);
+							//vm.resetSettingsScreenB(true, true, true, true, ScreenModel.EDIT);
 						} else {
 							vm.resetSettingsScreenB(
 								vm.enableRegisterB(),
@@ -539,12 +539,14 @@ module nts.uk.com.view.cmm024.a {
 							vm.companyScheduleHistoryObjSelected(selectedHistory);
 							vm.companyScheduleHistorySelected(selectedHistory.code);
 							vm.companyScheduleHistorySelected.valueHasMutated();
+							vm.resetSettingsScreenA(true, true, true, true, ScreenModel.EDIT);
 						} else {
 							vm.companyScheduleHistorySelected(null);
 							vm.companyScheduleHistoryObjSelected(null);
 							vm.enableRegisterA(false);
 							vm.modelB().approverPanel([]);
 							vm.modelB().employeesRepresentative([]);
+							vm.resetSettingsScreenA(true, true, false, true, ScreenModel.ADDNEW);
 							//vm.displayInfoOnScreenA(null);
 						}
 					}
@@ -724,6 +726,7 @@ module nts.uk.com.view.cmm024.a {
 								vm.workplaceScheduleHistorySelected('reload');
 								vm.workplaceScheduleHistoryObjSelected(null);
 								vm.workplaceScheduleHistoryListing();
+								vm.screenBModeAddNew(true);
 							}
 						}
 					});
@@ -870,11 +873,13 @@ module nts.uk.com.view.cmm024.a {
 							vm.workplaceScheduleHistorySelected(selectedHistory.code);
 							vm.workplaceScheduleHistoryObjSelected(selectedHistory);
 							vm.workplaceScheduleHistorySelected.valueHasMutated();
+							vm.resetSettingsScreenB(true, true, true, true, ScreenModel.EDIT);
 						} else {
 							vm.workplaceScheduleHistorySelected(null);
 							vm.workplaceScheduleHistoryObjSelected(null);
 							vm.modelB().approverPanel([]);
 							vm.modelB().employeesRepresentative([]);
+							vm.resetSettingsScreenB(true, true, false, true, ScreenModel.ADDNEW);
 						}
 					}
 
@@ -984,6 +989,7 @@ module nts.uk.com.view.cmm024.a {
 				vm.companyScheduleHistoryObjSelected(null);
 				vm.companyScheduleHistoryListing();
 				vm.isReloadScreen(true);
+				vm.screenAModeAddNew(true);
 			}
 		}
 	}

@@ -15,7 +15,7 @@ public class AppTimeFrameData {
 	/**
 	 * 開始時間
 	 */
-	private int startTime;
+	private Integer startTime;
 	
 	/**
 	 * 勤怠項目NO
@@ -35,7 +35,7 @@ public class AppTimeFrameData {
 	/**
 	 * 終了時間
 	 */
-	private int endTime;
+	private Integer endTime;
 	
 	/**
 	 * 申請時間

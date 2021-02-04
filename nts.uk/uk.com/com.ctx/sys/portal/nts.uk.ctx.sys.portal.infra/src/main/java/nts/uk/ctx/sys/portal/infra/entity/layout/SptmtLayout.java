@@ -82,7 +82,7 @@ public class SptmtLayout extends UkJpaEntity implements Serializable, Layout.Mem
 		this.widgetSettings = widgetSettings.stream().map(t -> {
 			SptmtLayoutWidget result = new SptmtLayoutWidget();
 			result.setWidgetDisp(t.getOrder());
-			result.setContractCd(AppContexts.user().companyCode());
+			result.setContractCd(AppContexts.user().contractCode());
 			SptmtLayoutWidgetPK pk = new SptmtLayoutWidgetPK();
 			pk.cid = this.id.cid;
 			pk.layoutNo = this.id.layoutNo;

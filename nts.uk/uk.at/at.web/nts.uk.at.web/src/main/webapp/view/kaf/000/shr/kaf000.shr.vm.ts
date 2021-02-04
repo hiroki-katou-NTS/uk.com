@@ -90,6 +90,7 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
 		/**
 		 * 休暇申請の印刷内容
 		 */
+        opPrintContentApplyForLeave: any;
         
          /**
          * 休日出勤の印刷内容
@@ -104,6 +105,7 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
 		/**
 		 * 時間休暇申請の印刷内容
 		 */
+		opPrintContentOfTimeLeave: any;
 		
 		/**
 		 * 打刻申請の印刷内容
@@ -128,6 +130,11 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
 		opDetailOutput: any;
 
         opOptionalItemOutput: any;
+
+        /**
+         * 振休振出申請の印刷内容
+         */
+        optHolidayShipment: any;
 	}
 	
 	export interface AppInitParam {
@@ -242,7 +249,7 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
                 } 
                 // ・申請表示情報(基準日関係なし)．事前受付時分がNullじゃない
                 else {
-                    prePart = vm.$i18n('KAF000_41', [value.appDispInfoNoDateOutput.opAdvanceReceptionHours]);  
+                    prePart = vm.$i18n('KAF000_41', [nts.uk.time.format.byId("Time_Short_HM", value.appDispInfoNoDateOutput.opAdvanceReceptionHours)]);  
                 }             
             }
             // {2}事後受付日

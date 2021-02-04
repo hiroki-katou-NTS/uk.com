@@ -9,7 +9,7 @@ import nts.arc.layer.dom.DomainObject;
 import nts.arc.time.calendar.period.DatePeriod;
 
 /**
- * 各処理の期間
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.就業機能.更新処理自動実行.更新処理自動実行ログ.各処理の期間
  */
 @Getter
 public class EachProcessPeriod extends DomainObject {

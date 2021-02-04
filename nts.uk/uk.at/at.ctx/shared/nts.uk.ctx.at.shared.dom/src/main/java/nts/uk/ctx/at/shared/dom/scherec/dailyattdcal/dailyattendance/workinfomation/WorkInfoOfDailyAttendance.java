@@ -52,16 +52,55 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 	@Setter
 	@Getter
 	private long ver;
-	public WorkInfoOfDailyAttendance(WorkInformation recordInfo,
+	
+	public WorkInfoOfDailyAttendance(WorkInformation workInfo,
 			CalculationState calculationState, NotUseAttribute goStraightAtr, NotUseAttribute backStraightAtr,
 			DayOfWeek dayOfWeek, List<ScheduleTimeSheet> scheduleTimeSheets) {
 		super();
-		this.recordInfo = recordInfo;
+		this.recordInfo = workInfo;
 		this.calculationState = calculationState;
 		this.goStraightAtr = goStraightAtr;
 		this.backStraightAtr = backStraightAtr;
 		this.dayOfWeek = dayOfWeek;
 		this.scheduleTimeSheets = scheduleTimeSheets;
+	}
+	
+	/**
+	 * [C-1] 作る
+	 * @param require
+	 * @param workInfo 勤務情報
+	 * @param calculationState 計算状態
+	 * @param backStraightAtr 直帰区分
+	 * @param goStraightAtr 直行区分
+	 * @param dayOfWeek 曜日
+	 * @return
+	 */
+	public static WorkInfoOfDailyAttendance create(
+			Require require,
+			WorkInformation workInfo,
+			CalculationState calculationState,
+			NotUseAttribute backStraightAtr,
+			NotUseAttribute goStraightAtr,
+			DayOfWeek dayOfWeek
+			) {
+		
+		List<TimeZone> timeZoneList = workInfo.getWorkInfoAndTimeZone(require).get().getTimeZones();
+		List<ScheduleTimeSheet> scheduleTimeSheets = new ArrayList<>();
+		for ( int index = 0; index < timeZoneList.size(); index++) {
+			scheduleTimeSheets.add(
+					new ScheduleTimeSheet( 
+							index + 1, 
+							timeZoneList.get(index).getStart().v(), 
+							timeZoneList.get(index).getEnd().v()));
+		}
+		
+		return new WorkInfoOfDailyAttendance(
+				workInfo, 
+				calculationState, 
+				goStraightAtr, 
+				backStraightAtr, 
+				dayOfWeek, 
+				scheduleTimeSheets);
 	}
 	
 	/**
@@ -76,7 +115,7 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 	 * 指定された勤務回数の予定時間帯を取得する
 	 * 
 	 * @param workNo
-	 * @return　予定時間帯
+	 * @return 予定時間帯
 	 */
 	public Optional<ScheduleTimeSheet> getScheduleTimeSheet(WorkNo workNo) {
 		return this.scheduleTimeSheets.stream()
@@ -142,7 +181,15 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 			});
 		});
 	}
-
+	
+	/**
+	 * 出勤系か
+	 * @param require
+	 * @return
+	 */
+	public boolean isAttendanceRate(Require require) {
+		return this.recordInfo.isAttendanceRate(require);
+	}
 	public static interface Require extends WorkInformation.Require {
 		
 	}

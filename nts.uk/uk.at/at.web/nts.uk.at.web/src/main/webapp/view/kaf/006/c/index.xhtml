@@ -1,0 +1,100 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+    <ui:composition template="../../../../master/dialog.xhtml">
+        <ui:define name="htmlHead">
+            <script>var dialogSize = { width: 520, height: 585 };</script>
+            <com:scriptfile set="IGNITE" />
+            <com:ValidatorScript>
+                nts.uk.ctx.at.request.dom.application.AppReason
+            </com:ValidatorScript>
+            <com:scriptfile path="/view/kaf/000/a/component6/kaf000.a.component6.js" />
+            <com:scriptfile path="kaf006.c.service.js" />
+            <com:scriptfile path="kaf006.c.vm.js" />
+            <com:scriptfile path="kaf006.c.start.js" />
+            <com:stylefile path="kaf006.c.css" />
+            <com:stylefile path="/view/kaf/000/a/component6/kaf000.a.component6.css" />
+        </ui:define>
+        
+        <ui:define name="content">
+            <div id="functions-area-bottom">
+				<button tabindex="2" class="x-large proceed" data-bind="click: register">#{i18n.getText('KAF006_1')}</button>
+				<button tabindex="3" data-bind="click: closeDialog">#{i18n.getText('KAF006_84')}</button>
+            </div>
+            <div id="contents-area" style="margin: 0 10px">
+                <div class="control-group valign-center">
+                    <!-- C1_1 -->
+                    <div class="label">#{i18n.getText('KAF006_81')}</div>
+                    <div class="table" style="margin: 5px 0">
+                        <!-- C2_1 -->
+                        <div class="cell col-1" style="vertical-align: middle; width: 110px;" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF006_8')}</div>
+                        <div class="cell valign-center">
+                            <!-- C2_2 -->
+                            <div class="inline" data-bind="ntsCheckBox: { 
+                                checked: dispMultDate, 
+                                text: '#{i18n.getText('KAF006_12')}' }"></div>
+                            <!-- C2_3 -->
+                            <div class="inline" data-bind="visible: !dispMultDate()">
+                                <div id="appDate" data-bind="ntsDatePicker: {name: '#{i18n.getText('KAF006_8')}',
+                                                            required:true,
+                                                            value: appDate }">
+                                    </div>
+                            </div>
+                            <div class="inline" data-bind="visible: dispMultDate">
+                                <div id="dateRange" data-bind="ntsDateRangePicker: { 
+                                    required: true, 
+                                    enable: true,
+                                    showNextPrevious: false, 
+                                    value: dateRange, 
+                                    name: '#{i18n.getText('KAF006_8')}' }"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table" style="margin: 5px 0" data-bind="visible: dispListReasons">
+                        <!-- C3_1 -->
+                        <div class="cell col-1" style="vertical-align: middle; width: 110px;" data-bind="ntsFormLabel: { required: requireLabel1 }">#{i18n.getText('KAF006_24')}</div>
+                        <!-- C3_2 -->
+                        <div id="reasonLst" class="cell valign-center" data-bind="ntsComboBox: { 
+                            required: requireLabel1, 
+                            enable: true, 
+                            visibleItemsCount: 5, 
+                            options: reasonLst, 
+                            optionsValue: 'appStandardReasonCD', 
+                            value: selectedReason, 
+                            optionsText: 'reasonForFixedForm', 
+                            name: '#{i18n.getText('KAF006_24')}'
+                         }"></div>
+                    </div>
+                    <div class="table" style="margin: 5px 0" data-bind="visible: dispReason">
+                        <!-- C4_1 -->
+                        <div class="cell col-1" style="vertical-align: top; width: 110px;">
+                            <div data-bind="ntsFormLabel: { 
+                                required: requireLabel2, 
+                                constraint: 'AppReason' }">#{i18n.getText('KAF006_26')}</div>
+                        </div>
+                        <!-- C4_2 -->
+                        <div class="cell valign-center">
+                            <textarea id="reasonTxt" style="height: 120px;" data-bind="ntsMultilineEditor: { 
+                                required: requireLabel2,
+                                constraint: 'AppReason', 
+                                name: '#{i18n.getText('KAF006_26')}', 
+                                value: appReason,
+                                option: { width: '350' } }" ></textarea>
+                        </div>
+                    </div>
+                    <div  style="margin: 5px 0" data-bind="component: { name: 'kaf000-a-component6', 
+                                                                        params: {
+                                                                            appType: appType,
+                                                                            application: application,
+                                                                            appDispInfoStartupOutput: appDispInfoStartupOutput
+                                                                        } }"></div>
+                </div>
+            </div>
+        </ui:define>
+    </ui:composition>
+</body>
+</html>

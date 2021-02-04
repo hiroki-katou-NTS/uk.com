@@ -31,12 +31,14 @@ public interface  GetRemainingNumberChildCareNurse {
 		 * @return 子の看護介護休暇集計結果
 		 */
 		 // RequestList206
-		ChildCareNursePeriodExport getChildCareNurseRemNumWithinPeriod(String employeeId,DatePeriod period,
+		ChildCareNursePeriodExport getChildCareNurseRemNumWithinPeriod(
+				String employeeId,
+				DatePeriod period,
 				InterimRemainMngMode performReferenceAtr,
 				GeneralDate criteriaDate,
 				Optional<Boolean> isOverWrite,
-				Optional<List<TmpChildCareNurseMngWork>> tempChildCareDataforOverWriteList,
-				Optional<AggrResultOfChildCareNurse> prevChildCareLeave,
+				Optional<List<TmpChildCareNurseMngWorkExport>> tempChildCareDataforOverWriteList,
+				Optional<ChildCareNursePeriodExport> prevChildCareLeave,
 				Optional<CreateAtr> createAtr,
 				Optional<GeneralDate> periodOverWrite);
 }

@@ -67,7 +67,7 @@ public class RegisterOptionalItemApplicationCommandHandler extends CommandHandle
         ApplicationDto applicationDto = command.getApplication();
         AppDispInfoStartupOutput appDispInfoStartup = command.getAppDispInfoStartup().toDomain();
         Application application = Application.createFromNew(EnumAdaptor.valueOf(applicationDto.getPrePostAtr(), PrePostAtr.class),
-                sid,
+                applicationDto.getEmployeeID(),
                 EnumAdaptor.valueOf(applicationDto.getAppType(), ApplicationType.class),
                 new ApplicationDate(GeneralDate.fromString(applicationDto.getAppDate(), "yyyy/MM/dd")),
                 sid,

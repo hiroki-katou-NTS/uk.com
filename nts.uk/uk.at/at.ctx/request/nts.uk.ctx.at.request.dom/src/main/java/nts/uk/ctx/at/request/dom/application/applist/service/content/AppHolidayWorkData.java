@@ -17,17 +17,27 @@ public class AppHolidayWorkData {
 	/**
 	 * 勤務開始時間
 	 */
-	private int startTime;
+	private Integer startTime;
 	
 	/**
 	 * 勤務終了時間
 	 */
-	private int endTime;
+	private Integer endTime;
 	
 	/**
 	 * 申請ID
 	 */
 	private String appID;
+	
+	/**
+	 * 超過回数
+	 */
+	private Integer excessTimeNumber;
+	
+	/**
+	 * 超過時間
+	 */
+	private Integer excessTime;
 	
 	/**
 	 * 休出申請時間
@@ -67,5 +77,5 @@ public class AppHolidayWorkData {
 	/**
 	 * 背景色
 	 */
-	private Optional<Integer> opBackgroundColor;
+	private Optional<String> opBackgroundColor;
 }

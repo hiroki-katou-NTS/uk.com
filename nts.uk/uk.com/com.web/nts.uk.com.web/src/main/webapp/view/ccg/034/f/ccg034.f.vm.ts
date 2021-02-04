@@ -79,7 +79,12 @@ module nts.uk.com.view.ccg034.f {
           vm.menuName(item.name);
           vm.menuCode(item.code);
           vm.menuClassification(item.menuClassification);
-          vm.menuUrl(item.url);
+          vm.menuSystemType(item.systemType);
+          if (nts.uk.text.isNullOrEmpty(item.queryString)) {
+            vm.menuUrl(item.url);
+          } else {
+            vm.menuUrl(`${item.url}?${item.queryString}`);
+          }
           //Revalidate
           vm.$validate("#F6_2");
         }
@@ -107,7 +112,8 @@ module nts.uk.com.view.ccg034.f {
             name: menu.displayName,
             systemType: menu.system,
             menuClassification: menu.classification,
-            url: menu.url
+            url: menu.url,
+            queryString: menu.queryString
           })));
           vm.filteredMenuList(vm.menuList());
         })
@@ -164,6 +170,7 @@ module nts.uk.com.view.ccg034.f {
     systemType: number;
     menuClassification: number;
     url: string;
+    queryString: string;
   }
 
   enum HorizontalAlign {

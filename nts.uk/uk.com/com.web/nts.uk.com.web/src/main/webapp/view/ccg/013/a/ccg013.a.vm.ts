@@ -7,7 +7,11 @@ module ccg013.a.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import errors = nts.uk.ui.errors;
 
-    const menuBarHTML: string = '<li class="context-menu-bar" data-bind="attr: {\'id\': menuBarId}"><a class="tab-item" data-bind="attr: {href: targetContent}, style: {color: textColor, \'background-color\': backgroundColor}"><span class="tab-item-content" data-bind=" text: menuBarName" /><i data-bind="ntsIcon: { no: 3, width: 20, height: 20 }, click: function() { $vm.openIdialog(menuBarId()); }" /></a></li>';
+    const menuBarHTML: string = `<li class="context-menu-bar" data-bind="attr: {\'id\': menuBarId}">
+        <a class="tab-item" data-bind="attr: {href: targetContent}, style: {color: textColor, \'background-color\': backgroundColor}">
+            <span class="tab-item-content" data-bind=" text: menuBarName" />
+            <img style="width: 20px; height: 20px;" src="../resource/CCG013_1.png" data-bind="click: function() { $vm.openIdialog(menuBarId()); }" />
+        </a></li>`;
     const treeMenuHTML: string = '<li class="context-menu-tree" data-bind="attr:{id: treeMenuId}"><span class="limited-label" data-bind="text: name"></span></li>';
 
     export class ScreenModel {
@@ -516,15 +520,14 @@ module ccg013.a.viewmodel {
             }).onClosed(function () {
                 var titleBar = getShared("CCG013C_TitleBar");
                 if (titleBar) {
-                    let id = randomId(),
-                        displayOrder = titleMenu.titleMenu().length + 1;
+                    let id = randomId();
                     titleMenu.titleMenu.push(new TitleMenu({
                         menuBarId: titleMenu.menuBarId(),
                         titleMenuId: id,
                         titleMenuName: titleBar.nameTitleBar,
                         backgroundColor: titleBar.backgroundColor,
                         textColor: titleBar.letterColor,
-                        displayOrder: displayOrder,
+                        displayOrder: titleMenu.displayOrder,
                         treeMenu: titleBar.treeMenu
                     }));
                     self.setupTitleMenu();
@@ -540,9 +543,10 @@ module ccg013.a.viewmodel {
                                     titleMenuId: titleMenu.titleMenuId(),
                                     code: x.code,
                                     name: x.name,
-                                    displayOrder: x.order,
+                                    displayOrder: x.displayOrder,
                                     classification: x.menu_cls,
-                                    system: x.system
+                                    system: x.system,
+                                    menu_cls: x.menu_cls
                                 }));
                             });
                         }
@@ -754,12 +758,11 @@ module ccg013.a.viewmodel {
             // this.titleMenuAtr = ko.observable(param.titleMenuAtr);
             // this.titleMenuCode = ko.observable(param.titleMenuCode);
             this.displayOrder = ko.observable(param.displayOrder);
-            this.treeMenu = ko.observableArray(_.orderBy(param.treeMenu, 'displayOrder', 'asc').map((x, index) => {
+            this.treeMenu = ko.observableArray(_.orderBy(param.treeMenu, ['system', 'displayOrder', 'code'], ['asc', 'asc', 'asc']).map((x, index) => {
                 if (!x.name) {
                     const name = _.find(param.menuNames, c => c.code === x.code && c.system === x.system && c.classification === x.classification);
                     x.name = name && name.displayName;
                 }
-                x.displayOrder = index;
                 return new TreeMenu(x);
             }));
             // this.imageName = ko.observable(param.imageName);
@@ -774,6 +777,7 @@ module ccg013.a.viewmodel {
         displayOrder: number;
         classification: number;
         system: number;
+        menu_cls: number;
     }
 
     export class TreeMenu {

@@ -1,84 +1,149 @@
 package nts.uk.ctx.exio.infra.entity.exo.condset;
 
-import java.io.Serializable;
-
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NonNull;
+import nts.uk.ctx.exio.dom.exo.condset.StdOutputCondSet;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
+
+import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * 外部出力出力条件設定（定型）
  */
-@AllArgsConstructor
-@NoArgsConstructor
+@Data
 @Entity
 @Table(name = "OIOMT_EX_OUT_CND")
-public class OiomtStdOutputCondSet extends UkJpaEntity implements Serializable {
+@EqualsAndHashCode(callSuper = true)
+public class OiomtStdOutputCondSet extends UkJpaEntity
+		implements StdOutputCondSet.MementoGetter, StdOutputCondSet.MementoSetter, Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * ID
 	 */
 	@EmbeddedId
-	public OiomtStdOutputCondSetPk stdOutputCondSetPk;
+	private OiomtStdOutputCondSetPk stdOutputCondSetPk;
 
 	/**
 	 * 外部出力条件名称
 	 */
 	@Basic(optional = false)
 	@Column(name = "CND_SET_NAME")
-	public String conditionSetName;
-	
+	private String conditionSetName;
+
 	/**
 	 * カテゴリID
 	 */
 	@Basic(optional = false)
 	@Column(name = "CTG_ID")
-	public int categoryId;
+	private int categoryId;
 
 	/**
 	 * するしない区分
 	 */
 	@Basic(optional = false)
 	@Column(name = "CND_OUT_NAME")
-	public int conditionOutputName;
+	private int conditionOutputName;
 
 	/**
 	 * するしない区分
 	 */
 	@Basic(optional = false)
 	@Column(name = "ITEM_OUTPUT_NAME")
-	public int itemOutputName;
+	private int itemOutputName;
 
 	/**
 	 * 区切り文字
 	 */
 	@Basic(optional = false)
 	@Column(name = "DELIMITER")
-	public int delimiter;
+	private int delimiter;
 
 	/**
 	 * 文字列形式
 	 */
 	@Basic(optional = false)
 	@Column(name = "STRING_FORMAT")
-	public int stringFormat;
+	private int stringFormat;
 
 	/**
 	 * するしない区分
 	 */
 	@Basic(optional = false)
 	@Column(name = "AUTO_EXECUTION")
-	public int autoExecution;
+	private int autoExecution;
 
+	/**
+	 * Gets primary key of entity.
+	 *
+	 * @return the primary key
+	 */
 	@Override
 	protected Object getKey() {
-		return stdOutputCondSetPk;
+		return this.stdOutputCondSetPk;
 	}
+
+	/**
+	 * No args constructor.
+	 */
+	protected OiomtStdOutputCondSet() {
+	}
+
+	/**
+	 * Creates new entity from domain and memento.
+	 *
+	 * @param domain the domain require <code>not null</code>
+	 */
+	public OiomtStdOutputCondSet(@NonNull StdOutputCondSet domain) {
+		domain.setMemento(this);
+	}
+
+	/**
+	 * Sets company id.
+	 *
+	 * @param companyId the company id
+	 */
+	@Override
+	public void setCompanyId(String companyId) {
+		if (this.stdOutputCondSetPk == null) {
+			this.stdOutputCondSetPk = new OiomtStdOutputCondSetPk();
+		}
+		this.stdOutputCondSetPk.cid = companyId;
+	}
+
+	/**
+	 * Sets condition set code.
+	 *
+	 * @param conditionSetCode the condition set code
+	 */
+	@Override
+	public void setConditionSetCode(String conditionSetCode) {
+		if (this.stdOutputCondSetPk == null) {
+			this.stdOutputCondSetPk = new OiomtStdOutputCondSetPk();
+		}
+		this.stdOutputCondSetPk.conditionSetCd = conditionSetCode;
+	}
+
+	/**
+	 * Gets company id.
+	 *
+	 * @return the company id
+	 */
+	@Override
+	public String getCompanyId() {
+		return this.stdOutputCondSetPk.cid;
+	}
+
+	/**
+	 * Gets condition set code.
+	 *
+	 * @return the condition set code
+	 */
+	@Override
+	public String getConditionSetCode() {
+		return this.stdOutputCondSetPk.conditionSetCd;
+	}
+
 }

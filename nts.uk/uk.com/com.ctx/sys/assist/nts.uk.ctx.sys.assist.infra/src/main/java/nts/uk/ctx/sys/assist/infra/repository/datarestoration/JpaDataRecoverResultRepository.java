@@ -8,7 +8,6 @@ import javax.ejb.Stateless;
 import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
@@ -16,14 +15,15 @@ import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryOperatingCondition;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryResult;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryResultRepository;
 import nts.uk.ctx.sys.assist.dom.storage.SaveStatus;
+import nts.uk.ctx.sys.assist.dom.storage.StorageClassification;
 import nts.uk.ctx.sys.assist.infra.entity.datarestoration.SspmtDataRecoverResult;
 
 @Stateless
 public class JpaDataRecoverResultRepository extends JpaRepository implements DataRecoveryResultRepository {
 
 	private static final String FIND_RESULTS_BY_STARTDATETIME = "SELECT r FROM SspmtDataRecoverResult r "
-			+ "WHERE r.startDateTime >= :start AND r.startDateTime <= :end ";
-//			+ "AND r.saveForm = " + StorageForm.AUTOMATIC.value;
+			+ "WHERE r.startDateTime >= :start AND r.startDateTime <= :end "
+			+ "AND r.saveForm = " + StorageClassification.AUTO.value;
 	private static final String UPDATE_BY_DATARECOVERYPROCESSID = "UPDATE SspmtDataRecoverResult t SET t.executionResult =:executionResult, t.endDateTime =:endDateTime WHERE t.dataRecoveryProcessId =:dataRecoveryProcessId";
 	private static final String SELECT_WITH_NULL_LIST_EMPLOYEE = " SELECT f FROM SspmtDataRecoverResult f "
 			+ " WHERE f.cid =:cid " + " AND f.startDateTime >=:startDateOperator "

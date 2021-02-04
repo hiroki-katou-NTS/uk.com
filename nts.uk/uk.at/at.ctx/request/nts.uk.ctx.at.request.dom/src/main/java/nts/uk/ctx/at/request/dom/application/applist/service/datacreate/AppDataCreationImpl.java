@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.applist.service.datacreate;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +12,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -25,6 +25,7 @@ import nts.uk.ctx.at.request.dom.application.applist.service.AppListInitialRepos
 import nts.uk.ctx.at.request.dom.application.applist.service.ApplicationStatus;
 import nts.uk.ctx.at.request.dom.application.applist.service.content.AppContentService;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInfo;
+import nts.uk.ctx.at.request.dom.application.applist.service.param.AttendanceNameItem;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.ListOfApplication;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SyEmployeeImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentAdapter;
@@ -78,16 +79,20 @@ public class AppDataCreationImpl implements AppDataCreation {
 		}
 		List<WorkType> workTypeLst = new ArrayList<>();
 		List<WorkTimeSetting> workTimeSettingLst = new ArrayList<>();
+		List<AttendanceNameItem> attendanceNameItemLst = new ArrayList<>();
 		if(device==ApprovalDevice.PC.value) {
 			// ドメインモデル「就業時間帯」を取得
 			workTypeLst = workTypeRepository.findByCompanyId(companyID);
 			// ドメインモデル「勤務種類」を取得
 			workTimeSettingLst = workTimeSettingRepository.findByCId(companyID);
 			// 勤怠名称を取得 ( Lấy tên working time)
+			attendanceNameItemLst = appContentService.getAttendanceNameItemLst(companyID);
 		}
 		
 		Map<String, SyEmployeeImport> mapEmpInfo = new HashMap<>();
 		Map<Pair<String, DatePeriod>, WkpInfo> mapWkpInfo = new HashMap<>();
+		Map<String, Pair<Integer, Integer>> cacheTime36 = new HashMap<>();
+		List<String> complementLeaveAppLinkID = new ArrayList<String>();
 		GeneralDate sysDate = GeneralDate.today();
 		List<String> agentLst = agentAdapter.lstAgentData(companyID, AppContexts.user().employeeId(), sysDate, sysDate).stream().map(x -> x.getEmployeeId()).collect(Collectors.toList());
 		List<ListOfApplication> appOutputLst = new ArrayList<>();
@@ -95,6 +100,10 @@ public class AppDataCreationImpl implements AppDataCreation {
 //		final List<WorkType> workTypeLstFinal = workTypeLst;
 		// this.parallel.forEach(appLst, app -> {
 		for(Application app : appLst) {
+			// 紐付け申請IDListに申請IDが存在しているか
+			if(complementLeaveAppLinkID.contains(app.getAppID())) {
+				continue;
+			}
 			// 申請一覧リスト取得マスタ情報 ( Thông tin master lấy applicationLisst)
 			AppInfoMasterOutput appInfoMasterOutput = appListInitialRepository.getListAppMasterInfo(
 					app, 
@@ -111,14 +120,15 @@ public class AppDataCreationImpl implements AppDataCreation {
 					companyID, 
 					workTimeSettingLst, 
 					workTypeLst, 
-					Collections.emptyList(), 
+					attendanceNameItemLst, 
 					mode, 
 					opApprovalListDisplaySetting.get(), 
 					appInfoMasterOutput.getListOfApplication(), 
 					mapApproval, 
 					device, 
 					appListExtractCondition,
-					agentLst);
+					agentLst,
+					cacheTime36);
 			// 申請内容＝-1(Nội dung đơn xin＝-1 )
 			if(listOfApp.getAppContent()=="-1") {
 				// パラメータ：申請一覧情報.申請一覧から削除する(xóa từ list đơn xin)
@@ -126,6 +136,12 @@ public class AppDataCreationImpl implements AppDataCreation {
 			} else {
 				// 取得した申請一覧を申請一覧情報．申請リストにセット(Set AppList đã lấy thành AppListInformation.AppList)
 				appOutputLst.add(listOfApp);
+			}
+			// 振休振出申請紐付け.紐付け申請IDがあれば紐付け申請IDListに追加する
+			if(listOfApp.getOpComplementLeaveApp().isPresent()) {
+				if(Strings.isNotBlank(listOfApp.getOpComplementLeaveApp().get().getLinkAppID())) {
+					complementLeaveAppLinkID.add(listOfApp.getOpComplementLeaveApp().get().getLinkAppID());
+				}
 			}
 			if(mode == ApplicationListAtr.APPROVER && !listOfApp.getOpApprovalFrameStatus().isPresent()) {
 				// パラメータ：申請一覧情報.申請一覧から削除する(xóa từ list đơn xin)

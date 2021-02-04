@@ -21,7 +21,12 @@ public class WorkAvailabilityByHoliday implements WorkAvailability, DomainValue 
 	public AssignmentMethod getAssignmentMethod() {
 		return AssignmentMethod.HOLIDAY;
 	}
-
+	
+	@Override
+	public boolean isHolidayAvailability(WorkAvailability.Require require) {
+		return true;
+	}
+	
 	@Override
 	public boolean isMatchingWorkAvailability(WorkAvailability.Require require, WorkInformation workInformation,
 			List<TimeSpanForCalc> timeZoneList) {
@@ -38,11 +43,12 @@ public class WorkAvailabilityByHoliday implements WorkAvailability, DomainValue 
 	@Override
 	public WorkAvailabilityDisplayInfo getDisplayInformation(WorkAvailability.Require require) {
 		AssignmentMethod asignmentMethod = this.getAssignmentMethod();
-		return new WorkAvailabilityDisplayInfo(asignmentMethod, Collections.emptyList(), Collections.emptyList());
+		return new WorkAvailabilityDisplayInfo(asignmentMethod, Collections.emptyMap(), Collections.emptyList());
 	}
-	
+
 	public static interface Require extends WorkInformation.Require {
 		
 	}
+
 
 }

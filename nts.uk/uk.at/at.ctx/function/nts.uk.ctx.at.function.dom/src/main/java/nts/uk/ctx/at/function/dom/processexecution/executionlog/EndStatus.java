@@ -3,7 +3,7 @@ package nts.uk.ctx.at.function.dom.processexecution.executionlog;
 import lombok.AllArgsConstructor;
 
 /**
- * 更新処理自動実行タスクの状態
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.就業機能.更新処理自動実行.更新処理自動実行ログ.更新処理自動実行タスクの状態
  */
 @AllArgsConstructor
 public enum EndStatus {

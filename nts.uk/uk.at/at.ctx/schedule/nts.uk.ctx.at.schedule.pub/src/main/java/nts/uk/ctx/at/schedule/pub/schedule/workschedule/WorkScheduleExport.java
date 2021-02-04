@@ -1,11 +1,8 @@
 package nts.uk.ctx.at.schedule.pub.schedule.workschedule;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -15,7 +12,6 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-@NoArgsConstructor
 public class WorkScheduleExport  {
 	
 	private String workTyle;
@@ -29,10 +25,10 @@ public class WorkScheduleExport  {
 	
 	private Optional<TimeLeavingOfDailyAttdExport> timeLeavingOfDailyAttd = Optional.empty();
 	
-	private Optional<BreakTimeOfDailyAttdExport> listBreakTimeOfDaily = Optional.empty();
+	private BreakTimeOfDailyAttdExport listBreakTimeOfDaily;
 
 	public WorkScheduleExport(String workTyle, String workTime, int goStraightAtr, int backStraightAtr,
-			TimeLeavingOfDailyAttdExport timeLeavingOfDailyAttd,Optional<BreakTimeOfDailyAttdExport> listBreakTimeOfDaily) {
+			TimeLeavingOfDailyAttdExport timeLeavingOfDailyAttd, BreakTimeOfDailyAttdExport listBreakTimeOfDaily) {
 		super();
 		this.workTyle = workTyle;
 		this.workTime = workTime;
