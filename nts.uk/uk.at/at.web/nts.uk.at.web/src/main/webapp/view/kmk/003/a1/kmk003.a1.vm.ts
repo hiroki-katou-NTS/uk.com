@@ -29,7 +29,7 @@ module a1 {
         isFlowMode: KnockoutObservable<boolean>
         //useHalfDay: KnockoutObservable<boolean>;
         //A7_17 condition
-        isDetailAndNotFlexOrFlow: any;
+        isDetailAndNotFlexOrFlow: KnockoutComputed<boolean>;
 
         mainSettingModel: MainSettingModel;
         predseting: PredetemineTimeSettingModel;

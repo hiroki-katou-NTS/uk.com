@@ -123,6 +123,9 @@ module a4 {
                 isUseTime2: isUseTime2,
                 isFixedAndUseTime2: isFixedAndUseTime2,
                 listRoundingTimeUnit: _self.enumSetting.roundingTimeUnit,
+
+                leaveEarlyStampExactlyTimeIsLateEarly: _self.mainSettingModel.commonSetting.lateEarlySet.getLeaveEarlySet().stampExactlyTimeIsLateEarly(),
+                lateStampExactlyTimeIsLateEarly: _self.mainSettingModel.commonSetting.lateEarlySet.getLateSet().stampExactlyTimeIsLateEarly(),
                 
                 prioritySettingEntering: _self.mainSettingModel.commonSetting.stampSet.getPrioritySetsEnter().priorityAtr(),
                 prioritySettingExit: _self.mainSettingModel.commonSetting.stampSet.getPrioritySetsExit().priorityAtr(),
@@ -247,7 +250,11 @@ module a4 {
                 _self.mainSettingModel.commonSetting.stampSet.getRoundingSetsGoOut().roundingSet.fontRearSection(outputDataObject.goOutFontRearSection);
                 _self.mainSettingModel.commonSetting.stampSet.getRoundingSetsTurnBack().roundingSet.roundingTimeUnit(outputDataObject.turnBackRoundingUnit);
                 _self.mainSettingModel.commonSetting.stampSet.getRoundingSetsTurnBack().roundingSet.fontRearSection(outputDataObject.turnBackFontRearSection);
-                // Update worktime mode data 
+
+                _self.mainSettingModel.commonSetting.lateEarlySet.getLateSet().stampExactlyTimeIsLateEarly(outputDataObject.lateStampExactlyTimeIsLateEarly);
+                _self.mainSettingModel.commonSetting.lateEarlySet.getLeaveEarlySet().stampExactlyTimeIsLateEarly(outputDataObject.leaveEarlyStampExactlyTimeIsLateEarly);
+
+                // Update worktime mode data
                 if (_self.mainSettingModel.workTimeSetting.isFlow()) {
                     _self.mainSettingModel.flowWorkSetting.stampReflectTimezone.getGoWorkFlowStamp().startTime(outputDataObject.stampGoWorkFlowStart);
                     _self.mainSettingModel.flowWorkSetting.stampReflectTimezone.getGoWorkFlowStamp().endTime(outputDataObject.stampGoWorkFlowEnd);
