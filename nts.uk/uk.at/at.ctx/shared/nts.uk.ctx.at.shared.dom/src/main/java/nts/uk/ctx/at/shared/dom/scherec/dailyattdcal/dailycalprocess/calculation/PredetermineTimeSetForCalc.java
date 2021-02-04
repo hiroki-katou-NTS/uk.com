@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -250,12 +251,12 @@ public class PredetermineTimeSetForCalc implements Cloneable{
 		PredetermineTimeSetForCalc cloned;
 		try {
 			cloned = new PredetermineTimeSetForCalc(
-				this.timeSheets,
-				this.AMEndTime,
-				this.PMStartTime,
-				this.additionSet,
-				this.oneDayRange,
-				this.startOneDayTime);
+				this.timeSheets.stream().map(t -> t.clone()).collect(Collectors.toList()),
+				new TimeWithDayAttr(this.AMEndTime.getDayTime()),
+				new TimeWithDayAttr(this.PMStartTime.getDayTime()),
+				this.additionSet.clone(),
+				new AttendanceTime(this.oneDayRange.valueAsMinutes()),
+				new TimeWithDayAttr(this.startOneDayTime.getDayTime()));
 		}	
 		catch (Exception e){
 			throw new RuntimeException("PredetermineTimeSetForCalc clone error.");

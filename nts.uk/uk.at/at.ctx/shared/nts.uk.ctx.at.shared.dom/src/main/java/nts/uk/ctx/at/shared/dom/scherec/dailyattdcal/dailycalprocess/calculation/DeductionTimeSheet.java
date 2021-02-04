@@ -16,6 +16,7 @@ import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
@@ -562,6 +563,11 @@ public class DeductionTimeSheet {
 			PredetermineTimeSetForCalc predetermineTimeSetForCalc, 
 			List<LateTimeSheet> lateTimeSheet,
 			CalculationRangeOfOneDay calcRange, boolean correctWithEndTime) {
+		
+		// 1日半日出勤・1日休日系の判定
+		if(todayWorkType.checkWorkDay() == WorkStyle.ONE_DAY_REST) {
+			return new ArrayList<>();
+		}
 
 		if(todayWorkType.getAttendanceHolidayAttr().isHoliday())
 			return new ArrayList<>();
