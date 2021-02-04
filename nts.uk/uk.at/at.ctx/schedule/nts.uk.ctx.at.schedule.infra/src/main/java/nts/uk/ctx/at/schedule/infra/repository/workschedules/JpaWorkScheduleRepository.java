@@ -242,6 +242,10 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 						}
 					});
 				}
+			} else {
+				for (KscdtSchEditState y : newData.editStates) {
+					oldData.get().editStates.add(y);
+				}
 			}
 
 			// List<KscdtSchAtdLvwTime> atdLvwTimes;
