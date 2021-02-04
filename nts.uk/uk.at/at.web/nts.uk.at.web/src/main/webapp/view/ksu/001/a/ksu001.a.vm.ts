@@ -2916,12 +2916,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                         workHolidayCls: data.workHolidayCls
                                     });
 
-                                    // trường hợp cell này nằm trong list cell bị disable starttime, endtime 
-                                    // thì enable cell đó lên, xóa cell đó khỏi danh sach cell bị disable starttime, endtime .
-                                    if (!_.isNil(cellDisableTime)) {
-                                        self.enableCellStartEndTime(rowIdx + '', key);
-                                    }
-
                                     __viewContext.viewModel.viewAB.isRedColor = false;
                                     dfd.resolve(true);
 
