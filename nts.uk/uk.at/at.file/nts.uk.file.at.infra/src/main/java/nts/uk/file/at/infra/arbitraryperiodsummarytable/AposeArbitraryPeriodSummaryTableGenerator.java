@@ -51,13 +51,13 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
 
             settingPage(worksheet, dataSource, title);
             printContents(worksheetTemplate, worksheet, dataSource);
-
+            worksheets.removeAt(0);
             worksheets.setActiveSheetIndex(0);
             reportContext.processDesigner();
 
             String fileName = title + "_" + GeneralDateTime.now().toString("yyyyMMddHHmmss");
             reportContext.saveAsExcel(this.createNewFile(generatorContext, fileName + EXCEL_EXT));
-            worksheets.removeAt(0);
+
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -106,7 +106,7 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
                 if (i >= 1) {
                     itemOnePage = 0;
                     pageBreaks.add(count);
-                    cells.copyRow(cellsTemplate, 0, count);
+                    cells.copyRows(cellsTemplate, 0, count,4);
                     cells.copyRow(cells, 1, count + 1);
                     cells.copyRow(cells, 2, count + 2);
                     cells.clearContents(count, 0, cells.getMaxRow(), 16);
