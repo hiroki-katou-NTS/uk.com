@@ -30,10 +30,11 @@ public class MessageNoticeRWebService {
 	// 打刻入力(共有)でお知らせメッセージを表示する
 	@POST
 	@Path("/displayNoticeMessage")
-	public List<MsgNoticeDto> displayNoticeMsg(DatePeriodDto param, List<String> wkpIds) {
-		DatePeriod period = param == null ? new DatePeriod(GeneralDate.today(), GeneralDate.today())
-				: new DatePeriod(param.getStartDate(), param.getEndDate());
+	public List<MsgNoticeDto> displayNoticeMsg(DisplayNoticeMsgParam param) {
+		DatePeriodDto periodDto = param.getPeriodDto();
+		DatePeriod period = periodDto == null ? new DatePeriod(GeneralDate.today(), GeneralDate.today())
+				: new DatePeriod(periodDto.getStartDate(), periodDto.getEndDate());
 
-		return noticeMessage.displayNoticeMessage(period, wkpIds);
+		return noticeMessage.displayNoticeMessage(period, param.getWkpIds());
 	}
 }
