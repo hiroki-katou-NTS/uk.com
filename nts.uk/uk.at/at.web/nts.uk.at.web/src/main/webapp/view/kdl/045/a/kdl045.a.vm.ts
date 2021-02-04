@@ -815,16 +815,25 @@ module nts.uk.at.view.kdl045.a {
                     self.isEnableA5_5(false);
                     self.isEnableA5_9(false);
                     self.isEnableAllControl(false);
-                    let timeRange1ScreenModel = $("#a5-5").data("screenModel");
-                                        if (timeRange1ScreenModel) {
-                                            timeRange1ScreenModel.startTime(null);
-                                            timeRange1ScreenModel.endTime(null);
-                                        } 
-                    let timeRange2ScreenModel = $("#a5-9").data("screenModel");
-                    if (timeRange2ScreenModel) {
-                        timeRange2ScreenModel.startTime(null);
-                        timeRange2ScreenModel.endTime(null);
-                    } 
+//                    let timeRange1ScreenModel = $("#a5-5").data("screenModel");
+//                                        if (timeRange1ScreenModel) {
+//                                            timeRange1ScreenModel.startTime(null);
+//                                            timeRange1ScreenModel.endTime(null);
+//                                        } 
+//                    let timeRange2ScreenModel = $("#a5-9").data("screenModel");
+//                    if (timeRange2ScreenModel) {
+//                        timeRange2ScreenModel.startTime(null);
+//                        timeRange2ScreenModel.endTime(null);
+//                    } 
+                   if((self.timeRange2Value().startTime == 0 && self.timeRange2Value().endTime == 0)
+                            || (self.timeRange2Value().startTime == "" && self.timeRange2Value().endTime == "") || self.workTimeForm() == 1){
+                            self.isEnableA5_9(false); //disenable A5_10,A5_11
+                            let timeRange2ScreenModel = $("#a5-9").data("screenModel");
+                            if (timeRange2ScreenModel) {
+                                timeRange2ScreenModel.startTime(null);
+                                timeRange2ScreenModel.endTime(null);
+                            } 
+                        }
                 }
                 
             }
