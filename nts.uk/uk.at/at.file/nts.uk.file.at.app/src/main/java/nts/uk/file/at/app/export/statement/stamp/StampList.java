@@ -24,8 +24,8 @@ public class StampList {
 	
 	private static final int maxCharLocation = 36; //số ký tự tối đa trên cell 打刻位置
 	private static final int maxCharClassification = 24; //số ký tự tối đa trên cell 出退勤区分
-	private static final int heightDefault = 49; //chiều cao mặc định của một dòng dữ liệu 
-	private static final int heightAddRow = 33; //chiều cao khi thêm một dòng dữ liệu 
+	private static final int heightDefault = 48; //chiều cao mặc định của một dòng dữ liệu 
+	private static final int heightAddRow = 34; //chiều cao khi thêm một dòng dữ liệu 
 
 	public void setDate(String datetime) {
 		this.date = datetime.split(" ")[0];
