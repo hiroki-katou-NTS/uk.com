@@ -4,30 +4,30 @@ module nts.uk.com.view.ccg008.a.Layout2ComponentViewModel {
   @component({
     name: "layout2-component",
     template: `
-      <span data-bind="if: $component.isLayout == 2">
+      <!-- ko if: $component.isLayout == 2 -->
         <div class="widget_contents" data-bind="foreach: $component.lstWidgetLayout">
-          <span data-bind="if: url.indexOf('.xhtml') > -1">
+          <!-- ko if: url.indexOf('.xhtml') > -1 -->
             <iframe style="width:450px" data-bind="attr: { src: url }" />
-          </span>
-          <span data-bind="if: url.indexOf('.js') > -1">
+          <!-- /ko -->  
+          <!-- ko if: url.indexOf('.js') > -1 -->
             <div data-bind="attr:{ id: 'WG2-' + $index() }">
               <div data-bind="component: { name: name }" style="margin-bottom: 10px; height:100%;" ></div>
             </div>
-          </span>
+          <!-- /ko -->  
         </div>
-      </span>
-      <span data-bind="if: $component.isLayout == 3">
+      <!-- /ko -->  
+      <!-- ko if: $component.isLayout == 3 -->
         <div class="widget_contents" data-bind="foreach: $component.lstWidgetLayout">
-          <span data-bind="if: url.indexOf('.xhtml') > -1">
+          <!-- ko if: url.indexOf('.xhtml') > -1 -->
             <iframe style="width:450px" data-bind="attr: { src: url }" />
-          </span>
-          <span data-bind="if: url.indexOf('.js') > -1">
+          <!-- /ko -->  
+          <!-- ko if: url.indexOf('.js') > -1 -->
             <div data-bind="attr:{ id: 'WG3-' + $index() }">
               <div data-bind="component: { name: name }" style="margin-bottom: 10px; height:100%;" ></div>
             </div>
-          </span>
+          <!-- /ko -->
         </div>
-      </span>
+      <!-- /ko -->  
     `,
   })
   export class Layout2ComponentViewModel extends ko.ViewModel {
