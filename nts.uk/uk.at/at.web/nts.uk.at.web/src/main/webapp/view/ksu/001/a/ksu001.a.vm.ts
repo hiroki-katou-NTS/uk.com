@@ -3464,140 +3464,22 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         nts.uk.ui.dialog.alertError({ messageId: 'Msg_435' });
                         dfd.resolve(false);
                     } else if ((workType.workTimeSetting == 0 && workTime.code == ' ')) {
-                        // truong hop chon workType = required va workTime = 据え置き 
-                        // neu cell dc stick ma khong co workTime se alertError 435
-                        let dataSource = $("#extable").exTable('dataSource', 'detail').body;
-                        let cellData = dataSource[rowIdx][key];
-                        if (_.isNil(cellData.workTimeName)) {
-                            nts.uk.ui.dialog.alertError({ messageId: 'Msg_435' });
-                            dfd.resolve(false);
+                        let dfSelected = self.stickValDeferred(rowIdx, key, data, userInfor, cellDisableTime);  
+                        if (dfSelected) {
+                            dfd.resolve(true);
                         } else {
-                            if (data.workHolidayCls != 0) {
-                                let wtimeCd = cellData.workTimeCode;
-                                let objWTime = _.find(__viewContext.viewModel.viewAB.listWorkTime, function(o) { return o.code === wtimeCd; });
-                                
-                                if (userInfor.disPlayFormat == 'time') {
-                                    if (data.workHolidayCls === 3) { // đi làm fulltime
-                                        let startTime = _.isNil(objWTime) ? '' : formatById("Clock_Short_HM", objWTime.tzStart1);
-                                        let endTime = _.isNil(objWTime) ? '' : formatById("Clock_Short_HM", objWTime.tzEnd1);
-
-                                        $("#extable").exTable("stickFields", ["workTypeName", "workTimeName", "startTime", "endTime"]);
-                                        $("#extable").exTable("stickData", {
-                                            workTypeCode: data.workTypeCode,
-                                            workTypeName: data.workTypeName,
-                                            workTimeCode: objWTime.code,
-                                            workTimeName: objWTime.nameAb,
-                                            startTime: startTime,
-                                            endTime: endTime,
-                                            achievements: false,
-                                            workHolidayCls: data.workHolidayCls
-                                        });
-                                        
-                                        // trường hợp cell này nằm trong list cell bị disable starttime, endtime 
-                                        // thì enable cell đó lên, xóa cell đó khỏi danh sach cell bị disable starttime, endtime .
-                                        if (!_.isNil(cellDisableTime)) {
-                                            self.enableCellStartEndTime(rowIdx + '', key);
-                                        }
-
-                                        __viewContext.viewModel.viewAB.isRedColor = false;
-                                        dfd.resolve(true);
-                                    } else if (data.workHolidayCls == 1 || data.workHolidayCls == 2) { // làm nủa ngay
-                                        nts.uk.ui.block.grayout();
-                                        let param = {
-                                            worktypeCode: data.workTypeCode,
-                                            worktimeCode: objWTime.code
-                                        }
-                                        service.checkCorrectHalfday(param).done((rs) => {
-                                            // set lai starttime, endtime cua object stick
-                                            $("#extable").exTable("stickFields", ["workTypeName", "workTimeName", "startTime", "endTime"]);
-
-                                            let startTime = rs.startTime == null ? '' : formatById("Clock_Short_HM", rs.startTime);
-                                            let endTime   = rs.endTime == null ? '' : formatById("Clock_Short_HM", rs.endTime);
-                                            console.log('startTime: ' + startTime + ';  ' + 'endTime: ' + endTime);
-                                            $("#extable").exTable("stickData", {
-                                                workTypeCode: data.workTypeCode,
-                                                workTypeName: data.workTypeName,
-                                                workTimeCode: objWTime.code,
-                                                workTimeName: objWTime.nameAb,
-                                                startTime: startTime,
-                                                endTime: endTime,
-                                                achievements: false,
-                                                workHolidayCls: data.workHolidayCls
-                                            });
-                                            __viewContext.viewModel.viewAB.isRedColor = false;
-
-                                            // trường hợp cell này nằm trong list cell bị disable starttime, endtime 
-                                            // thì enable cell đó lên, xóa cell đó khỏi danh sach cell bị disable starttime, endtime .
-                                            if (!_.isNil(cellDisableTime)) {
-                                                self.enableCellStartEndTime(rowIdx + '', key);
-                                            }
-
-                                            dfd.resolve(true);
-                                            nts.uk.ui.block.clear();
-                                        }).fail(function() {
-                                            nts.uk.ui.block.clear();
-                                            dfd.reject();
-                                        });
-                                    }
-                                } else {
-                                    $("#extable").exTable("stickFields", ["workTypeName", "workTimeName"]);
-                                    $("#extable").exTable("stickData", {
-                                        workTypeCode: data.workTypeCode,
-                                        workTypeName: data.workTypeName,
-                                        workTimeCode: objWTime.code,
-                                        workTimeName: objWTime.nameAb,
-                                        startTime: '',
-                                        endTime: '',
-                                        achievements: false,
-                                        workHolidayCls: data.workHolidayCls
-                                    });
-                                    __viewContext.viewModel.viewAB.isRedColor = false;
-                                    dfd.resolve(true);
-                                }
-                                
-                            }
+                            dfd.reject();
                         }
+                        
                     } else if ((userInfor.disPlayFormat == 'time') && (data.workHolidayCls == 1 || data.workHolidayCls == 2)) {
-                        // 午前出勤系 MORNING(1, "午前出勤系") 
-                        // 午後出勤系 AFTERNOON(2, "午後 
-                        if (userInfor.disPlayFormat == 'time') {
-                            nts.uk.ui.block.grayout();
-                            let param = {
-                                worktypeCode: data.workTypeCode,
-                                worktimeCode: data.workTimeCode
-                            }
-                            service.checkCorrectHalfday(param).done((rs) => {
-                                // set lai starttime, endtime cua object stick
-                                $("#extable").exTable("stickFields", ["workTypeName", "workTimeName", "startTime", "endTime"]);
-
-                                let startTime = rs.startTime == null ? '' : formatById("Clock_Short_HM", rs.startTime);
-                                let endTime = rs.endTime == null ? '' : formatById("Clock_Short_HM", rs.endTime);
-                                console.log('startTime: ' + startTime + ';  ' + 'endTime: ' + endTime );
-                                $("#extable").exTable("stickData", {
-                                    workTypeCode: data.workTypeCode,
-                                    workTypeName: data.workTypeName,
-                                    workTimeCode: data.workTimeCode,
-                                    workTimeName: data.workTimeName,
-                                    startTime: startTime,
-                                    endTime: endTime,
-                                    achievements: data.achievements,
-                                    workHolidayCls: data.workHolidayCls
-                                });
-                                __viewContext.viewModel.viewAB.isRedColor = false;
-                               
-                                // trường hợp cell này nằm trong list cell bị disable starttime, endtime 
-                                // thì enable cell đó lên, xóa cell đó khỏi danh sach cell bị disable starttime, endtime .
-                                if (!_.isNil(cellDisableTime)) {
-                                   self.enableCellStartEndTime(rowIdx+'', key);
-                                }
-                                
-                                dfd.resolve(true);
-                                nts.uk.ui.block.clear();
-                            }).fail(function() {
-                                nts.uk.ui.block.clear();
-                                dfd.reject();
-                            });
+                        // trương hơp là đi làm nửa ngày
+                        let halfDaySelected = self.stickValHalfDaySelected(rowIdx, key, data, userInfor, cellDisableTime);
+                        if (halfDaySelected) {
+                            dfd.resolve(true);
+                        } else {
+                            dfd.reject();
                         }
+                        
                     } else {
                         // enable | disable cell startTime,endtime
                         if (userInfor.disPlayFormat == 'time') {
@@ -3611,54 +3493,283 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     }
 
                 } else if (userInfor.disPlayFormat == 'shift') {
-                    // truong hop listPage empty thi khong can validate
-                    if ((__viewContext.viewModel.viewAC.selectedpalletUnit()) == 1 && (__viewContext.viewModel.viewAC.listPageComIsEmpty == true)) {
-                            dfd.reject();
-                            return;
-                    }
-
-                    if ((__viewContext.viewModel.viewAC.selectedpalletUnit()) == 2 && (__viewContext.viewModel.viewAC.listPageWkpIsEmpty == true)) {
+                    // trương hơp là đi làm nửa ngày
+                    let stickValShift= self.stickValShiftMode(rowIdx, key, data);
+                    if (stickValShift) {
+                        dfd.resolve(true);
+                    } else {
                         dfd.reject();
-                        return;
-                    } 
-                    
-                    // neu data = {} thi la co  shiftmaster đa bị xóa
-                    // => stick show mess 1728
-                    let isRemove = Object.keys(data).length === 0 && data.constructor === Object;
-                    if(isRemove){
-                         nts.uk.ui.dialog.alertError({ messageId: 'Msg_1727' });   
                     }
-                    
-                    nts.uk.ui.block.grayout();
-                    // khoi tao param ddeer truyen leen server check xem shiftmaster đã bị xóa đi hay chưa
-                    let param = [];
-                    for (item in data) {
-                        let x = {
-                            shiftmastercd: data[item].shiftCode,
-                            workTypeCode: data[item].workTypeCode,
-                            workTimeCode: data[item].workTimeCode
-                        };
-                        param.push(x);
-                    }
-                    service.validWhenPaste(param).done((data) => {
-                        if (data == true) {
-                            dfd.resolve(true);
-                        } 
-                        nts.uk.ui.block.clear();
-                    }).fail(function() {
-                        nts.uk.ui.block.clear();
-                        dfd.reject();
-                    }).always((data) => {
-                        if (data.messageId == "Msg_1728") {
-                            nts.uk.ui.dialog.alertError({ messageId: 'Msg_1728' });
-                        }
-                        nts.uk.ui.block.clear();
-                    });
                 }
                 return dfd.promise();
             });
-            
             nts.uk.ui.block.clear();
+        }
+        
+        // valid data trong mode shift khi stick
+        stickValShiftMode(rowIdx, key, data) {
+            let self = this;
+            // truong hop listPage empty thi khong can validate
+            if ((__viewContext.viewModel.viewAC.selectedpalletUnit()) == 1 && (__viewContext.viewModel.viewAC.listPageComIsEmpty == true)) {
+                dfd.reject();
+                return;
+            }
+
+            if ((__viewContext.viewModel.viewAC.selectedpalletUnit()) == 2 && (__viewContext.viewModel.viewAC.listPageWkpIsEmpty == true)) {
+                dfd.reject();
+                return;
+            }
+
+            // neu data = {} thi la co  shiftmaster đa bị xóa
+            // => stick show mess 1728
+            let isRemove = Object.keys(data).length === 0 && data.constructor === Object;
+            if (isRemove) {
+                nts.uk.ui.dialog.alertError({ messageId: 'Msg_1727' });
+            }
+
+            nts.uk.ui.block.grayout();
+            // khoi tao param ddeer truyen leen server check xem shiftmaster đã bị xóa đi hay chưa
+            let param = [];
+            for (item in data) {
+                let x = {
+                    shiftmastercd: data[item].shiftCode,
+                    workTypeCode: data[item].workTypeCode,
+                    workTimeCode: data[item].workTimeCode
+                };
+                param.push(x);
+            }
+            service.validWhenPaste(param).done((data) => {
+                if (data == true) {
+                    return true;
+                }
+                nts.uk.ui.block.clear();
+            }).fail(function() {
+                nts.uk.ui.block.clear();
+                return false;
+            }).always((data) => {
+                if (data.messageId == "Msg_1728") {
+                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_1728' });
+                }
+                nts.uk.ui.block.clear();
+            });
+        }
+        
+        // stick validate khi là đi làm nửa ngày
+        stickValHalfDaySelected(rowIdx, key, data, userInfor, cellDisableTime) {
+            let self = this;
+            // 午前出勤系 MORNING(1, "午前出勤系") 
+            // 午後出勤系 AFTERNOON(2, "午後 
+            nts.uk.ui.block.grayout();
+            let param = {
+                worktypeCode: data.workTypeCode,
+                worktimeCode: data.workTimeCode
+            }
+            service.checkCorrectHalfday(param).done((rs) => {
+                // set lai starttime, endtime cua object stick
+                $("#extable").exTable("stickFields", ["workTypeName", "workTimeName", "startTime", "endTime"]);
+
+                let startTime = rs.startTime == null ? '' : formatById("Clock_Short_HM", rs.startTime);
+                let endTime = rs.endTime == null ? '' : formatById("Clock_Short_HM", rs.endTime);
+                console.log('startTime: ' + startTime + ';  ' + 'endTime: ' + endTime);
+                $("#extable").exTable("stickData", {
+                    workTypeCode: data.workTypeCode,
+                    workTypeName: data.workTypeName,
+                    workTimeCode: data.workTimeCode,
+                    workTimeName: data.workTimeName,
+                    startTime: startTime,
+                    endTime: endTime,
+                    achievements: data.achievements,
+                    workHolidayCls: data.workHolidayCls
+                });
+                __viewContext.viewModel.viewAB.isRedColor = false;
+
+                // trường hợp cell này nằm trong list cell bị disable starttime, endtime 
+                // thì enable cell đó lên, xóa cell đó khỏi danh sach cell bị disable starttime, endtime .
+                if (!_.isNil(cellDisableTime)) {
+                    self.enableCellStartEndTime(rowIdx + '', key);
+                }
+
+                nts.uk.ui.block.clear();
+                return true;
+            }).fail(function() {
+                nts.uk.ui.block.clear();
+                return false;
+            });
+        }
+        
+        // stick validate when selec deferred
+        stickValDeferred(rowIdx, key, data, userInfor, cellDisableTime) {
+            let self = this;
+            // truong hop chon workType = required va workTime = 据え置き 
+            // neu cell dc stick ma khong co workTime se alertError 435
+            let dataSource = $("#extable").exTable('dataSource', 'detail').body;
+            let cellData = dataSource[rowIdx][key];
+            if (_.isNil(cellData.workTimeName)) {
+                nts.uk.ui.dialog.alertError({ messageId: 'Msg_435' });
+                dfd.resolve(false);
+            } else {
+                //xử lý cho ver1.9
+                if (data.workHolidayCls != 0) {
+                    let wtimeCd = cellData.workTimeCode;
+                    let objWTime = _.find(__viewContext.viewModel.viewAB.listWorkTime, function(o) { return o.code === wtimeCd; });
+                    if (!_.isNil(objWTime)) {
+                        if (userInfor.disPlayFormat == 'time') {
+                            if (data.workHolidayCls === 3) { // đi làm fulltime
+                                let startTime = _.isNil(objWTime) ? '' : formatById("Clock_Short_HM", objWTime.tzStart1);
+                                let endTime = _.isNil(objWTime) ? '' : formatById("Clock_Short_HM", objWTime.tzEnd1);
+
+                                $("#extable").exTable("stickFields", ["workTypeName", "workTimeName", "startTime", "endTime"]);
+                                $("#extable").exTable("stickData", {
+                                    workTypeCode: data.workTypeCode,
+                                    workTypeName: data.workTypeName,
+                                    workTimeCode: objWTime.code,
+                                    workTimeName: objWTime.nameAb,
+                                    startTime: startTime,
+                                    endTime: endTime,
+                                    achievements: false,
+                                    workHolidayCls: data.workHolidayCls
+                                });
+
+                                // trường hợp cell này nằm trong list cell bị disable starttime, endtime 
+                                // thì enable cell đó lên, xóa cell đó khỏi danh sach cell bị disable starttime, endtime .
+                                if (!_.isNil(cellDisableTime)) {
+                                    self.enableCellStartEndTime(rowIdx + '', key);
+                                }
+
+                                __viewContext.viewModel.viewAB.isRedColor = false;
+                                return true;
+                            } else if (data.workHolidayCls == 1 || data.workHolidayCls == 2) { // làm nủa ngay
+                                nts.uk.ui.block.grayout();
+                                let param = {
+                                    worktypeCode: data.workTypeCode,
+                                    worktimeCode: objWTime.code
+                                }
+                                service.checkCorrectHalfday(param).done((rs) => {
+                                    // set lai starttime, endtime cua object stick
+                                    $("#extable").exTable("stickFields", ["workTypeName", "workTimeName", "startTime", "endTime"]);
+
+                                    let startTime = rs.startTime == null ? '' : formatById("Clock_Short_HM", rs.startTime);
+                                    let endTime = rs.endTime == null ? '' : formatById("Clock_Short_HM", rs.endTime);
+                                    console.log('startTime: ' + startTime + ';  ' + 'endTime: ' + endTime);
+                                    $("#extable").exTable("stickData", {
+                                        workTypeCode: data.workTypeCode,
+                                        workTypeName: data.workTypeName,
+                                        workTimeCode: objWTime.code,
+                                        workTimeName: objWTime.nameAb,
+                                        startTime: startTime,
+                                        endTime: endTime,
+                                        achievements: false,
+                                        workHolidayCls: data.workHolidayCls
+                                    });
+                                    __viewContext.viewModel.viewAB.isRedColor = false;
+
+                                    // trường hợp cell này nằm trong list cell bị disable starttime, endtime 
+                                    // thì enable cell đó lên, xóa cell đó khỏi danh sach cell bị disable starttime, endtime .
+                                    if (!_.isNil(cellDisableTime)) {
+                                        self.enableCellStartEndTime(rowIdx + '', key);
+                                    }
+                                    
+                                    nts.uk.ui.block.clear();
+                                    return true;
+                                }).fail(function() {
+                                    nts.uk.ui.block.clear();
+                                    return false;
+                                });
+                            }
+                        } else {
+                            $("#extable").exTable("stickFields", ["workTypeName", "workTimeName"]);
+                            $("#extable").exTable("stickData", {
+                                workTypeCode: data.workTypeCode,
+                                workTypeName: data.workTypeName,
+                                workTimeCode: objWTime.code,
+                                workTimeName: objWTime.nameAb,
+                                startTime: '',
+                                endTime: '',
+                                achievements: false,
+                                workHolidayCls: data.workHolidayCls
+                            });
+                            __viewContext.viewModel.viewAB.isRedColor = false;
+                            return true;
+                        }
+                    } else { // truong hop worktime không tồn tại trong list worktime => lấy trong datasource
+                        if (userInfor.disPlayFormat == 'time') {
+                            if (data.workHolidayCls === 3) { // đi làm fulltime
+                                $("#extable").exTable("stickFields", ["workTypeName", "workTimeName", "startTime", "endTime"]);
+                                $("#extable").exTable("stickData", {
+                                    workTypeCode: data.workTypeCode,
+                                    workTypeName: data.workTypeName,
+                                    workTimeCode: cellData.workTimeCode,
+                                    workTimeName: cellData.workTimeName,
+                                    startTime: cellData.startTime,
+                                    endTime: cellData.endTime,
+                                    achievements: false,
+                                    workHolidayCls: data.workHolidayCls
+                                });
+
+                                // trường hợp cell này nằm trong list cell bị disable starttime, endtime 
+                                // thì enable cell đó lên, xóa cell đó khỏi danh sach cell bị disable starttime, endtime .
+                                if (!_.isNil(cellDisableTime)) {
+                                    self.enableCellStartEndTime(rowIdx + '', key);
+                                }
+
+                                __viewContext.viewModel.viewAB.isRedColor = false;
+                                return true;
+                            } else if (data.workHolidayCls == 1 || data.workHolidayCls == 2) { // làm nủa ngay
+                                nts.uk.ui.block.grayout();
+                                let param = {
+                                    worktypeCode: data.workTypeCode,
+                                    worktimeCode: cellData.workTimeCode
+                                }
+                                service.checkCorrectHalfday(param).done((rs) => {
+                                    // set lai starttime, endtime cua object stick
+                                    $("#extable").exTable("stickFields", ["workTypeName", "workTimeName", "startTime", "endTime"]);
+
+                                    let startTime = rs.startTime == null ? '' : formatById("Clock_Short_HM", rs.startTime);
+                                    let endTime = rs.endTime == null ? '' : formatById("Clock_Short_HM", rs.endTime);
+                                    console.log('startTime: ' + startTime + ';  ' + 'endTime: ' + endTime);
+                                    $("#extable").exTable("stickData", {
+                                        workTypeCode: data.workTypeCode,
+                                        workTypeName: data.workTypeName,
+                                        workTimeCode: cellData.workTimeCode,
+                                        workTimeName: cellData.workTimeName,
+                                        startTime: startTime,
+                                        endTime: endTime,
+                                        achievements: false,
+                                        workHolidayCls: data.workHolidayCls
+                                    });
+                                    __viewContext.viewModel.viewAB.isRedColor = false;
+
+                                    // trường hợp cell này nằm trong list cell bị disable starttime, endtime 
+                                    // thì enable cell đó lên, xóa cell đó khỏi danh sach cell bị disable starttime, endtime .
+                                    if (!_.isNil(cellDisableTime)) {
+                                        self.enableCellStartEndTime(rowIdx + '', key);
+                                    }
+
+                                    nts.uk.ui.block.clear();
+                                    return true;
+                                }).fail(function() {
+                                    nts.uk.ui.block.clear();
+                                    return false;
+                                });
+                            }
+                        } else {
+                            $("#extable").exTable("stickFields", ["workTypeName", "workTimeName"]);
+                            $("#extable").exTable("stickData", {
+                                workTypeCode: data.workTypeCode,
+                                workTypeName: data.workTypeName,
+                                workTimeCode: cellData.workTimeCode,
+                                workTimeName: cellData.workTimeName,
+                                startTime: '',
+                                endTime: '',
+                                achievements: false,
+                                workHolidayCls: data.workHolidayCls
+                            });
+                            __viewContext.viewModel.viewAB.isRedColor = false;
+                            return true;
+                        }
+                    }
+                }
+            }
         }
 
         /**
