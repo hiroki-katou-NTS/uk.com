@@ -45,7 +45,7 @@ public class KrcdtEmpDivErAl extends KrcdtEmpErAlCommon implements Serializable 
 				er.getCompanyID(),
 				er.getErrorAlarmMessage().map(c -> c.v()).orElse(null), ccd, 
 				er.getAttendanceItemList().stream().filter(Objects::nonNull)
-						.map(item -> KrcdtErAttendanceItem.toEntity(id, item, 
+						.map(item -> new KrcdtErDivAtd(id, item, 
 									er.getCompanyID(), er.getEmployeeID(), ccd, er.getDate()))
 						.collect(Collectors.toList())
 				);

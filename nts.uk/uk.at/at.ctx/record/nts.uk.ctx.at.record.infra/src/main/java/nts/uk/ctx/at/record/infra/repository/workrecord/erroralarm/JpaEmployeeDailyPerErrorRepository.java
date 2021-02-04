@@ -393,25 +393,6 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 		removePramXC(con, sid, date, "D***");
 		removePramXC(con, sid, date, "S***");
 		removePramXC(con, sid, date, "OTK*");
-//		
-//		String sqlQuery1 = "Delete From KRCDT_DAY_DG_ERAL Where [SID] = " + "'" + sid + "'" + " and PROCESSING_DATE = " + "'" + date + "'" ;
-//		try (val st = con.createStatement()) {
-//			st.executeUpdate(sqlQuery1);
-//		} catch (SQLException e) {
-//			throw new RuntimeException(e);
-//		}
-//		String sqlQuery2 = "Delete From KRCDT_DAY_ERAL Where [SID] = " + "'" + sid + "'" + " and PROCESSING_DATE = " + "'" + date + "'" ;
-//		try (val st = con.createStatement()) {
-//			st.executeUpdate(sqlQuery2);
-//		} catch (SQLException e) {
-//			throw new RuntimeException(e);
-//		}
-//		String sqlQuery4 = "Delete From KRCDT_DAY_ERAL_ATD Where [SID] = " + "'" + sid + "'" + " and PROCESSING_DATE = " + "'" + date + "'" ;
-//		try (val st = con.createStatement()) {
-//			st.executeUpdate(sqlQuery4);
-//		} catch (SQLException e) {
-//			throw new RuntimeException(e);
-//		}
 	}
 	
 	private void removePramX(Connection con, String sid, GeneralDate date, String type) {
@@ -704,11 +685,8 @@ public class JpaEmployeeDailyPerErrorRepository extends JpaRepository implements
 
 	@Override
 	public void update(List<EmployeeDailyPerError> employeeDailyPerformanceError) {
-		if (employeeDailyPerformanceError.isEmpty()) {
-			return;
-		}
-		this.commandProxy().insertAll(employeeDailyPerformanceError.stream().map(e -> convertToEntity(e))
-				.collect(Collectors.toList()));
+		
+		this.insert(employeeDailyPerformanceError);
 	}
 
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
