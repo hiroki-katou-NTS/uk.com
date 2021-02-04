@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+
+            <com:scriptfile set="IGNITE" />
+            <com:scriptfile path="/lib/generic/igniteui/js/extensions/infragistics.datasource.knockoutjs.js"  of="/nts.uk.com.js.web"/>
+			<com:scriptfile path="/lib/generic/igniteui/js/extensions/infragistics.ui.grid.knockout-extensions.js"  of="/nts.uk.com.js.web"/>
+			<com:scriptfile path="knr002.a.service.js" />
+			<com:scriptfile path="knr002.a.vm.js" />
+			<com:scriptfile path="knr002.a.start.js" />
+			<com:stylefile path="knr002.a.style.css" />
+
+		</ui:define>
+		<ui:define name="content">
+			<div id="contents-area">
+				<div class="top-container">
+					<div class="first">
+						<p>#{i18n.getText('KNR002_20')}</p>
+						<div class="cf" data-bind="ntsSwitchButton: {
+							name: 'Something',
+							options: filterButton,
+							optionsValue: 'code',
+							optionsText: 'name',
+							value: selectedFilter,
+							required: false,
+							enable: true }"></div>
+					</div>
+					<div class="second">
+						<div class="d-flex">
+							<div class="name">
+								<span>#{i18n.getText('KNR002_25')}</span>
+							</div>
+							<div class="d-flex content">
+								<span data-bind="text: numOfRegTerminals"></span>
+								<span>#{i18n.getText('KNR002_26')}</span>
+							</div>
+						</div>
+						<div class="d-flex">
+							<div class="name">
+								<span>#{i18n.getText('KNR002_27')}</span>
+							</div>
+							<div class="d-flex content">
+								<span data-bind="text: numNormalState"></span>
+								<span>#{i18n.getText('KNR002_28')}</span>
+							</div>
+							<div class="name" style="margin-left: 40px;">
+								<span>#{i18n.getText('KNR002_29')}</span>
+							</div>
+							<div class="d-flex content">
+								<span data-bind="text: numAbnormalState"></span>
+								<span>#{i18n.getText('KNR002_30')}</span>
+							</div>
+						</div>
+						<div class="d-flex">
+							<div class="name">
+								<span>#{i18n.getText('KNR002_31')}</span>
+							</div>
+							<div class="d-flex content">
+								<span data-bind="text: numUntransmitted"></span>
+								<span>#{i18n.getText('KNR002_32')}</span>
+							</div>		
+						</div>
+					</div>
+					<div class="third">
+						<button class="x-large" data-bind="click: openKNR002EDialog">#{i18n.getText('KNR002_33')}</button>
+						<button class="x-large refresh" data-bind="click: refresh">#{i18n.getText('KNR002_34')}</button>
+					</div>
+				</div>
+				<table id="grid"></table>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
