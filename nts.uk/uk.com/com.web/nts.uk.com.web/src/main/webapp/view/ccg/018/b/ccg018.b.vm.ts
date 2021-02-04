@@ -283,11 +283,12 @@ module ccg018.b.viewmodel {
           if (!employee.code) {
             return;
           }
+          const dataSetting = vm.items().filter(x => x.isAlreadySetting === true);
           const object: any = {
             code: employee.code,
             name: employee.name,
             targetType: 6, // 職場個人
-            itemListSetting: vm.listSid,
+            itemListSetting: dataSetting,
             employeeId: employee.employeeId,
             baseDate: vm.baseDate().toISOString()
           };

@@ -6,9 +6,9 @@ module nts.uk.com.view.ccg008.a.Layout1ComponentViewModel {
     template: 
     `
         <div>
-          <span data-bind="if: $component.isShowUrlLayout1()">
+          <div data-bind="if: $component.isShowUrlLayout1()">
             <iframe class="iframe_fix" id="preview-iframe1" data-bind="attr:{src: $component.urlIframe1}"></iframe>
-          </span>
+          </div>
           <!-- ko if: $component.isFlowmenu() -->
             <div data-bind="foreach: $component.lstHtml">
               <div data-bind="html: html" id="F1-frame" ></div>

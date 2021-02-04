@@ -8,7 +8,7 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
     export class ScreenModel {
 
         listWorkType: KnockoutObservableArray<ksu001.a.viewmodel.IWorkTypeDto> = ko.observableArray([]);
-        listWorkTime: KnockoutObservableArray<any> = ko.observableArray([]);
+        listWorkTime : any;
         selectedWorkTypeCode: KnockoutObservable<string>;
         objWorkTime: any;
         input: any
@@ -97,6 +97,7 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                 uk.localStorage.setItemAsJson(self.KEY, userInfor);
                 
                 let ds = ko.unwrap(self.dataSources);
+                self.listWorkTime = ds;
 
                 let itemSelected;
                 if(wkpTimeCd === 'none'){
@@ -147,7 +148,7 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                         workHolidayCls: objWorkType[0].workStyle
                     });
                     self.isRedColor = true;
-                } else if (objWorkType[0].workTimeSetting != 2 && self.dataCell.objWorkTime.code == '') {
+                } else if (objWorkType[0].workTimeSetting != 2 && self.dataCell.objWorkTime.id === "none") {
                     //貼り付けのパターン2
                     $("#extable").exTable("stickFields", ["workTypeName","workTimeName", "startTime", "endTime"]);
                     $("#extable").exTable("stickData", {
@@ -161,7 +162,7 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                         workHolidayCls: objWorkType[0].workStyle
                     });
                     self.isRedColor = true;
-                } else if (objWorkType[0].workTimeSetting != 2 && self.dataCell.objWorkTime.code == ' ') {
+                } else if (objWorkType[0].workTimeSetting != 2 && self.dataCell.objWorkTime.id === "deferred") {
                     if (objWorkType[0].workStyle == 0) {
                         // HOLIDAY
                         $("#extable").exTable("stickFields", ["workTypeName", "startTime", "endTime"]);
