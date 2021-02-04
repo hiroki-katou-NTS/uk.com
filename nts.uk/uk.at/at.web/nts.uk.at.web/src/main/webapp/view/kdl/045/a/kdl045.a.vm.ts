@@ -701,7 +701,7 @@ module nts.uk.at.view.kdl045.a {
                                 $(itemSelect).ntsError('set',{ messageId: 'Msg_439', messageParams: [getText('KDL045_12')] });    
                             }else{
                                 if(result[i].timeSpan.startTime == result[i].timeSpan.endTime){
-                                    $(itemSelect).ntsError('set',{ messageId: 'Msg_2058', messageParams: [result[i].nameError,result[i].timeInput] });
+                                    $(itemSelect).ntsError('set',{ messageId: 'Msg_2058', messageParams: [result[i].nameError,formatById("Clock_Short_HM", result[i].timeSpan.startTime)] });
                                 }else{
                                     $(itemSelect).ntsError('set',{ messageId: 'Msg_1772', messageParams: [result[i].nameError,formatById("Clock_Short_HM", result[i].timeSpan.startTime),formatById("Clock_Short_HM", result[i].timeSpan.endTime)] });    
                                 }
