@@ -1020,7 +1020,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 			+ " JOIN KrqdtAppReflectState ref ON a.pk.companyID = ref.pk.companyID  AND a.pk.appID = ref.pk.appID"
 			+ " WHERE a.employeeID = :sid "
 			+ " AND a.appDate >= :startDate AND a.appDate <= :endDate"
-			+ " AND ref.actualReflectStatus IN :listReflecInfor" 
+			+ " AND ref.actualReflectStatus NOT IN :listReflecInfor" 
 			+ " ORDER BY a.appDate ASC," 
 			+ " a.prePostAtr DESC";
 

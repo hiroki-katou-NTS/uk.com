@@ -140,7 +140,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
                   <!-- A4_2 -->
                   <label data-bind="text: attendanceDetailDto.workName, attr:{ class: 'limited-label work-name-class-'+sid }" style="max-width: 80px; width: auto !important;" />
                   <!-- A4_4 -->
-                  <i tabindex=14 data-bind="ntsIcon: {no: 190, width: 13, height: 13}"></i>
+                  <i tabindex=14 id="A4-4-application-icon" data-bind="ntsIcon: {no: 190, width: 13, height: 13}"></i>
                 </div>
                 <div style="height: 20px;">
                 <!-- A4_3 -->
@@ -293,6 +293,10 @@ module nts.uk.at.view.ccg005.a.screenModel {
           </tr>
         </table>
       </div>
+    </div>
+    <!-- A4_4 popup -->
+    <div id="ccg005-A4-4-popup">
+      Dong Den
     </div>
   </div>
   <style>
@@ -476,6 +480,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       vm.toStartScreen();
       vm.initResizeable(vm);
       vm.initPopupArea();
+      vm.initPopupA4_4();
       vm.initPopupStatus();
       vm.initChangeFavorite();
       vm.initFocusA1_4();
@@ -692,6 +697,19 @@ module nts.uk.at.view.ccg005.a.screenModel {
         dismissible: true
       });
       $('#ccg005-star-img').click(() => $('#ccg005-star-popup').ntsPopup('toggle'));
+    }
+
+    private initPopupA4_4() {
+      $('#ccg005-A4-4-popup').ntsPopup({
+        position: {
+          my: 'left top',
+          at: 'left-100 bottom',
+          of: $('A4-4-application-icon')
+        },
+        showOnStart: false,
+        dismissible: true
+      });
+      $('#A4-4-application-icon').click(() => $('#ccg005-A4-4-popup').ntsPopup('toggle'));
     }
 
     initFocusA1_4() {
@@ -1033,8 +1051,65 @@ module nts.uk.at.view.ccg005.a.screenModel {
 
 		// アラーム色
 		ALARM = 2
-	}
-
+  }
+  
+  enum ApplicationType {
+	
+    /**
+     * 0: 残業申請
+     */
+    OVER_TIME_APPLICATION = 0,
+    
+    /**
+     * 1: 休暇申請
+     */
+    ABSENCE_APPLICATION = 1,
+    
+    /**
+     * 2: 勤務変更申請
+     */
+    WORK_CHANGE_APPLICATION = 2,
+    
+    /**
+     * 3: 出張申請
+     */
+    BUSINESS_TRIP_APPLICATION = 3,
+    
+    /**
+     * 4: 直行直帰申請
+     */
+    GO_RETURN_DIRECTLY_APPLICATION = 4,
+    
+    /**
+     * 6: 休出時間申請
+     */
+    HOLIDAY_WORK_APPLICATION = 6,
+    
+    /**
+     * 7: 打刻申請
+     */
+    STAMP_APPLICATION = 7,
+    
+    /**
+     * 8: 時間休暇申請
+     */
+    ANNUAL_HOLIDAY_APPLICATION = 8,
+    
+    /**
+     * 9: 遅刻早退取消申請
+     */
+    EARLY_LEAVE_CANCEL_APPLICATION = 9,
+    
+    /**
+     * 10: 振休振出申請
+     */
+    COMPLEMENT_LEAVE_APPLICATION = 10,
+    
+    /**
+     * 15: 任意項目申請
+     */
+    OPTIONAL_ITEM_APPLICATION = 15,
+  }
   class FavoriteSpecifyData {
     favoriteName: string;
     creatorId: string;
