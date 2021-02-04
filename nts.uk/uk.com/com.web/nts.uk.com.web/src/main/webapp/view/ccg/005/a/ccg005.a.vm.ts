@@ -10,7 +10,8 @@ module nts.uk.at.view.ccg005.a.screenModel {
     getAttendanceInformation: 'screen/com/ccg005/get-attendance-information',
     saveFavorite: 'ctx/office/favorite/save',
     registerComment: 'ctx/office/comment/register',
-    deleteComment: 'ctx/office/comment/delete'
+    deleteComment: 'ctx/office/comment/delete',
+    saveStatus: 'ctx/office/status/save'
   };
   const ID_AVATAR_CHANGE = 'ccg005-avatar-change';
 
@@ -964,12 +965,16 @@ module nts.uk.at.view.ccg005.a.screenModel {
     /**
      * 在席のステータスを登録する
      */
-    registerAttendanceStatus(selectedStatus: number, sid?: string) {
-      if (!!sid) {
-        sid = __viewContext.user.employeeId;
+    registerAttendanceStatus(selectedStatus: number, sid: string) {
+      const vm = this;
+      const params: ActivityStatusParam = {
+        activity: selectedStatus,
+        sid: sid,
+        date: (new Date).toString()
       }
-
-
+      vm.$ajax(API.saveStatus, params).then(() => {
+        // 
+      })
     }
   }
 
@@ -1076,6 +1081,20 @@ module nts.uk.at.view.ccg005.a.screenModel {
     businessName: string;
 
     constructor(init?: Partial<AttendanceInformationViewModel>) {
+      $.extend(this, init);
+    }
+  }
+
+  class ActivityStatusParam {
+    // ステータス分類
+	  activity: number;
+
+    // 年月日
+    date: string;
+
+    // 社員ID
+    sid: string;
+    constructor(init?: Partial<GoOutEmployeeInformationViewModel>) {
       $.extend(this, init);
     }
   }
