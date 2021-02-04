@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.tim
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.ExcessState;
@@ -16,6 +17,7 @@ import org.apache.commons.lang3.tuple.Pair;
 public class AgreementOneYear {
 
 	/** 基本設定 */
+	@Setter
 	private OneYearErrorAlarmTime basic;
 	/** 特例条項による上限 */
 	private OneYearTime specConditionLimit;
