@@ -605,7 +605,7 @@ public class ProgramsManager {
     public static final Program KDL048 = new Program(WebAppId.AT, ProgramIdConsts.KDL048, "KDL048_1",
             "/view/kdl/048/index.xhtml");
     
-    public static final Program KDL049 = new Program(WebAppId.AT, ProgramIdConsts.KDL049, "KDL049_1",
+    public static final Program KDL049A = new Program(WebAppId.AT, ProgramIdConsts.KDL049A, "KDL049_1",
             "/view/kdl/049/a/index.xhtml");
 
     public static final Program KDL035A = new Program(WebAppId.AT, ProgramIdConsts.KDL035A, "KDL035_13",
