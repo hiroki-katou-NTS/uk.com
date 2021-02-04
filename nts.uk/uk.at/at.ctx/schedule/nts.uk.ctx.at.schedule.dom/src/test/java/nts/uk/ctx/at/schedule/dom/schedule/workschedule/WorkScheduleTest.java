@@ -109,7 +109,7 @@ public class WorkScheduleTest {
 			
 		}};
 		
-		NtsAssert.businessException("Msg_430", 
+		NtsAssert.businessException("Msg_2119", 
 				() -> WorkSchedule.create(require, "empId", GeneralDate.ymd(2020, 11, 1), workInformation));
 		
 	}

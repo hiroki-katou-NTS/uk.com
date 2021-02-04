@@ -18,7 +18,7 @@ module nts.uk.at.view.kml001.c {
         super();
         const self = this;
         self.latestHistory(nts.uk.ui.windows.getShared('PERSONAL_HISTORY'));     
-        console.log(self.latestHistory());
+        
         self.copyDataFlag = ko.observable(true);
         self.lastStartDate = ko.observable(self.latestHistory().latestHistory.startDate);        
         self.newStartDate = ko.observable(null);
@@ -64,19 +64,22 @@ module nts.uk.at.view.kml001.c {
         self.currentPersonCost(self.latestPersonalData());
         let premiumSettingList: Array<any> = [];
         
-        _.forEach(self.currentPersonCost().premiumSets, (item) => {
-          premiumSettingList.push({
-            iD: item.id,
-            name: item.name,
-            rate: item.rate,
-            unitPrice: item.unitPrice,
-            useAtr: item.useAtr,
-            attendanceItems: item.attendanceItems
+        if( !_.isNil(self.currentPersonCost().premiumSets)) {
+          _.forEach(self.currentPersonCost().premiumSets, (item) => {
+            premiumSettingList.push({
+              iD: item.id,
+              name: item.name,
+              rate: item.rate,
+              unitPrice: item.unitPrice,
+              useAtr: item.useAtr,
+              attendanceItems: item.attendanceItems
+            });
           });
-        });
+        } else 
+          premiumSettingList = self.defaultPremiumSettings();
 
         let personCostRoundingSetting: any = null;
-        if( self.copyDataFlag() ) {
+        if( self.copyDataFlag() && !_.isNil(self.currentPersonCost().personCostRoundingSetting)) {
           personCostRoundingSetting = self.currentPersonCost().personCostRoundingSetting;
         } else {
           personCostRoundingSetting = {
@@ -107,12 +110,9 @@ module nts.uk.at.view.kml001.c {
             nts.uk.ui.windows.close();            
           });          
         })
-        .fail((error) => {
-          //self.$dialog.error({ messageId: error.messageId}).then( () => {   
-            //$('#startDateInput').focus();
-            $('#startDateInput').ntsError('set', {messageId: error.messageId});
-            self.$blockui('hide');
-          //});
+        .fail((error) => {         
+          $('#startDateInput').ntsError('set', {messageId: error.messageId});
+          self.$blockui('hide');
         });
 
       }
@@ -143,8 +143,7 @@ module nts.uk.at.view.kml001.c {
         const self = this;        
         let historyId = !_.isNil(self.latestHistory().latestHistory.historyId) 
                             ? self.latestHistory().latestHistory.historyId 
-                            : '';
-        console.log(historyId);
+                            : '';        
         servicebase.findByHistoryID({ historyID: historyId }).done((data) => {
           self.latestPersonalData(data);
         }).fail(res => { return null });

@@ -520,15 +520,14 @@ module ccg013.a.viewmodel {
             }).onClosed(function () {
                 var titleBar = getShared("CCG013C_TitleBar");
                 if (titleBar) {
-                    let id = randomId(),
-                        displayOrder = titleMenu.titleMenu().length + 1;
+                    let id = randomId();
                     titleMenu.titleMenu.push(new TitleMenu({
                         menuBarId: titleMenu.menuBarId(),
                         titleMenuId: id,
                         titleMenuName: titleBar.nameTitleBar,
                         backgroundColor: titleBar.backgroundColor,
                         textColor: titleBar.letterColor,
-                        displayOrder: displayOrder,
+                        displayOrder: titleMenu.displayOrder,
                         treeMenu: titleBar.treeMenu
                     }));
                     self.setupTitleMenu();
@@ -544,7 +543,7 @@ module ccg013.a.viewmodel {
                                     titleMenuId: titleMenu.titleMenuId(),
                                     code: x.code,
                                     name: x.name,
-                                    displayOrder: x.order,
+                                    displayOrder: x.displayOrder,
                                     classification: x.menu_cls,
                                     system: x.system,
                                     menu_cls: x.menu_cls
@@ -764,7 +763,6 @@ module ccg013.a.viewmodel {
                     const name = _.find(param.menuNames, c => c.code === x.code && c.system === x.system && c.classification === x.classification);
                     x.name = name && name.displayName;
                 }
-                x.displayOrder = index;
                 return new TreeMenu(x);
             }));
             // this.imageName = ko.observable(param.imageName);

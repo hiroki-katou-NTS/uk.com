@@ -131,7 +131,7 @@ public class WorkSchedule implements DomainAggregate {
 			){
 		
 		if (! workInformation.checkNormalCondition(require) ) {
-			throw new BusinessException("Msg_430");
+			throw new BusinessException("Msg_2119");
 		}
 		
 		return new WorkSchedule(
