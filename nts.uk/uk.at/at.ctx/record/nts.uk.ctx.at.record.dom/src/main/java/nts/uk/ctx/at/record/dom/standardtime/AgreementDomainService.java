@@ -60,7 +60,7 @@ public class AgreementDomainService {
 		personYearSetting.ifPresent(pys -> {
 			
 			/** 取得した「36協定基本設定」。1年間を上書きする */
-			basicSetting.getOneYear().getSpecConditionLimit().setErAlTime(pys.getOneYearTime());
+			basicSetting.getOneYear().setBasic(pys.getOneYearTime());
 			basicSetForCalc.setHaveEmployeeSetting(true);
 		});
 		
@@ -89,7 +89,7 @@ public class AgreementDomainService {
 		personYMSetting.ifPresent(pys -> {
 			
 			/** 取得した36協定基本設定。１ヶ月を上書きする */
-			basicSetting.getOneMonth().getSpecConditionLimit().setErAlTime(pys.getOneMonthTime());
+			basicSetting.getOneMonth().getBasic().setErAlTime(pys.getOneMonthTime());
 			
 			basicSetForCalc.setHaveEmployeeSetting(true);
 		});
