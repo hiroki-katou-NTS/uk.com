@@ -5,9 +5,9 @@ module nts.uk.at.view.kdl049.a {
        	targetWorkplace = dataShare.workplace.targetOrgWorkplaceName;
         }
             if (targetWorkplace != null) {
-                $('head').append("<script>var dialogSize = { width: 350, height: 390 };<\/script>");
+                $('head').append("<script>var dialogSize = { width: 350, height: 370 };<\/script>");
             } else {
-                $('head').append("<script>var dialogSize = { width: 350, height: 250 };<\/script>");
+                $('head').append("<script>var dialogSize = { width: 350, height: 300 };<\/script>");
             }
     __viewContext.ready(function() {
         var screenModel = new viewmodel.ScreenModel();
