@@ -10,6 +10,7 @@ module nts.uk.at.view.kal013.b {
        GET_ENUM_OPERATOR: "at/record/alarmwrkp/screen/getEnumCompareType",
         GET_ATTENDANCEITEM: "at/record/businesstype/attendanceItem/getListMonthlyByAttendanceAtr/",
         GET_ATTENDANCEITEMNAME_BYCODE: "at/record/divergencetime/setting/AttendanceDivergenceName",
+        GET_BONUS_PAY_SET: "at/share/bonusPaySetting/getAllBonusPaySetting"
 
     };
 
@@ -125,6 +126,17 @@ module nts.uk.at.view.kal013.b {
                         vm.pattern().updateTextDis(nameAdd,nameSub);
                     }).fail((error)=>{
                         vm.$dialog.error({ messageId: error.messageId });
+                    });
+
+                } else if (!_.isNil(vm.pattern().checkCond())){
+                    vm.$ajax(PATH_API.GET_BONUS_PAY_SET).done((data: Array<any>)=>{
+                        if (data) {
+                            let item  = _.find(data, i=>i.code == vm.pattern().checkCond());
+                            vm.pattern().updateCheckCondDis(_.isNil(item) ? "" : item.name)
+                        }else{
+                            vm.pattern().updateCheckCondDis(vm.pattern().checkCond());
+                        }
+
                     });
                 }
             });
@@ -471,6 +483,10 @@ module nts.uk.at.view.kal013.b {
         updateCheckCond(checkCondItem: string){
             this.checkCond(checkCondItem);
             this.checkCondDis(checkCondItem);
+        }
+
+        updateCheckCondDis(itemName: string){
+            this.checkCondDis(itemName);
         }
 
         updateCheckCondKdw007(addItems: Array<number>, subItems: Array<number>){
