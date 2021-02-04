@@ -124,8 +124,8 @@ module a4 {
                 isFixedAndUseTime2: isFixedAndUseTime2,
                 listRoundingTimeUnit: _self.enumSetting.roundingTimeUnit,
 
-                leaveEarlyStampExactlyTimeIsLateEarly: _self.mainSettingModel.commonSetting.lateEarlySet.getLeaveEarlySet().stampExactlyTimeIsLateEarly(),
-                lateStampExactlyTimeIsLateEarly: _self.mainSettingModel.commonSetting.lateEarlySet.getLateSet().stampExactlyTimeIsLateEarly(),
+                leaveEarlyStampExactlyTimeIsLateEarly: _self.mainSettingModel.commonSetting.stampSet.roundingTime.leaveWorkMinuteAgoCalculate(),
+                lateStampExactlyTimeIsLateEarly: _self.mainSettingModel.commonSetting.stampSet.roundingTime.attendanceMinuteLaterCalculate(),
                 
                 prioritySettingEntering: _self.mainSettingModel.commonSetting.stampSet.getPrioritySetsEnter().priorityAtr(),
                 prioritySettingExit: _self.mainSettingModel.commonSetting.stampSet.getPrioritySetsExit().priorityAtr(),
@@ -251,8 +251,8 @@ module a4 {
                 _self.mainSettingModel.commonSetting.stampSet.getRoundingSetsTurnBack().roundingSet.roundingTimeUnit(outputDataObject.turnBackRoundingUnit);
                 _self.mainSettingModel.commonSetting.stampSet.getRoundingSetsTurnBack().roundingSet.fontRearSection(outputDataObject.turnBackFontRearSection);
 
-                _self.mainSettingModel.commonSetting.lateEarlySet.getLateSet().stampExactlyTimeIsLateEarly(outputDataObject.lateStampExactlyTimeIsLateEarly);
-                _self.mainSettingModel.commonSetting.lateEarlySet.getLeaveEarlySet().stampExactlyTimeIsLateEarly(outputDataObject.leaveEarlyStampExactlyTimeIsLateEarly);
+                _self.mainSettingModel.commonSetting.stampSet.roundingTime.attendanceMinuteLaterCalculate(outputDataObject.lateStampExactlyTimeIsLateEarly);
+                _self.mainSettingModel.commonSetting.stampSet.roundingTime.leaveWorkMinuteAgoCalculate(outputDataObject.leaveEarlyStampExactlyTimeIsLateEarly);
 
                 // Update worktime mode data
                 if (_self.mainSettingModel.workTimeSetting.isFlow()) {

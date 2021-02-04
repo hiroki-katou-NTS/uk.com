@@ -224,8 +224,14 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 export interface WorkTimezoneStampSetDto {
-                    roundingSets: RoundingSetDto[];
+                    roundingTime: RoundingTimeDto;
                     prioritySets: PrioritySettingDto[];
+                }
+
+                export interface RoundingTimeDto {
+                    attendanceMinuteLaterCalculate: any;
+                    leaveWorkMinuteAgoCalculate: any;
+                    roundingSets: RoundingSetDto[];
                 }
 
                 export interface WorkTimezoneLateNightTimeSetDto {

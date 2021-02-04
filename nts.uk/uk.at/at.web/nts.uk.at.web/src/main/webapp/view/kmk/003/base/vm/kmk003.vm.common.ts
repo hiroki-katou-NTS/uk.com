@@ -57,6 +57,7 @@ module nts.uk.at.view.kmk003.a {
     import StampPiorityAtr = service.model.common.StampPiorityAtr;
     import Superiority = service.model.common.Superiority;
     import TimezoneModel = nts.uk.at.view.kmk003.a.viewmodel.predset.TimezoneModel;
+    import RoundingTimeDto = nts.uk.at.view.kmk003.a.service.model.common.RoundingTimeDto;
 
     export module viewmodel {
         export module common {
@@ -1500,14 +1501,13 @@ module nts.uk.at.view.kmk003.a {
             }
 
             export class WorkTimezoneStampSetModel {
-                roundingSets: RoundingSetModel[];
+                roundingTime: RoundingTimeModel;
                 prioritySets: PrioritySettingModel[];
 
                 constructor() {
-                    this.roundingSets = [];
+                    this.roundingTime = new RoundingTimeModel();
                     this.prioritySets = [];
                     this.initPrioritySets();
-                    this.initRoundingSets();
                 }
 
                 initPrioritySets() {
@@ -1519,19 +1519,10 @@ module nts.uk.at.view.kmk003.a {
                     }
                 }
 
-                initRoundingSets() {
-                    for (let item in Superiority) {
-                        if (!isNaN(Number(item))) {
-                            let dataRoundingModel: RoundingSetModel = new RoundingSetModel(Number(item));
-                            this.roundingSets.push(dataRoundingModel);
-                        }
-                    }
-                }
-
                 updateData(data: WorkTimezoneStampSetDto) {
-                    var self = this;
+                    let self = this;
                     data.roundingTime.roundingSets.forEach((dataRoundingDTO, index) => {
-                        let currentItem: RoundingSetModel = _.find(self.roundingSets, p => p.section() == dataRoundingDTO.section);
+                        let currentItem: RoundingSetModel = _.find(self.roundingTime.roundingSets, p => p.section() == dataRoundingDTO.section);
                         if (!nts.uk.util.isNullOrUndefined(currentItem)) {
                             currentItem.updateData(dataRoundingDTO);
                         }
@@ -1546,24 +1537,20 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 toDto(): WorkTimezoneStampSetDto {
-                    var roundingSets: RoundingSetDto[] = [];
-                    for (var dataRoundingModel of this.roundingSets) {
-                        roundingSets.push(dataRoundingModel.toDto());
-                    }
-                    var prioritySets: PrioritySettingDto[] = [];
-                    for (var dataPriorityModel of this.prioritySets) {
+                    let self = this;
+                    let prioritySets: PrioritySettingDto[] = [];
+                    for (let dataPriorityModel of self.prioritySets) {
                         prioritySets.push(dataPriorityModel.toDto());
                     }
-                    var dataDTO: WorkTimezoneStampSetDto = {
-                        roundingSets: roundingSets,
+
+                    return {
+                        roundingTime: this.roundingTime.toDto(),
                         prioritySets: prioritySets
                     };
-
-                    return dataDTO;
                 }
 
                 resetData() {
-                    this.roundingSets.forEach(function(item, index) {
+                    this.roundingTime.roundingSets.forEach(function(item, index) {
                         item.resetData();
                     });
 
@@ -1579,10 +1566,56 @@ module nts.uk.at.view.kmk003.a {
                 getPrioritySetsPcLogin(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.stampAtr() == StampPiorityAtr.PCLOGIN) }
                 getPrioritySetsPcLogout(): PrioritySettingModel { let self = this; return _.find(self.prioritySets, p => p.stampAtr() == StampPiorityAtr.PC_LOGOUT) }
 
-                getRoundingSetsAttendance(): RoundingSetModel { let self = this; return _.find(self.roundingSets, p => p.section() == Superiority.ATTENDANCE) }
-                getRoundingSetsOfficeWork(): RoundingSetModel { let self = this; return _.find(self.roundingSets, p => p.section() == Superiority.OFFICE_WORK) }
-                getRoundingSetsGoOut(): RoundingSetModel { let self = this; return _.find(self.roundingSets, p => p.section() == Superiority.GO_OUT) }
-                getRoundingSetsTurnBack(): RoundingSetModel { let self = this; return _.find(self.roundingSets, p => p.section() == Superiority.TURN_BACK) }
+                getRoundingSetsAttendance(): RoundingSetModel { let self = this; return _.find(self.roundingTime.roundingSets, p => p.section() == Superiority.ATTENDANCE) }
+                getRoundingSetsOfficeWork(): RoundingSetModel { let self = this; return _.find(self.roundingTime.roundingSets, p => p.section() == Superiority.OFFICE_WORK) }
+                getRoundingSetsGoOut(): RoundingSetModel { let self = this; return _.find(self.roundingTime.roundingSets, p => p.section() == Superiority.GO_OUT) }
+                getRoundingSetsTurnBack(): RoundingSetModel { let self = this; return _.find(self.roundingTime.roundingSets, p => p.section() == Superiority.TURN_BACK) }
+            }
+
+            //update in ver 16.8
+            export class RoundingTimeModel {
+                attendanceMinuteLaterCalculate: KnockoutObservable<boolean>;
+                leaveWorkMinuteAgoCalculate: KnockoutObservable<boolean>;
+                roundingSets: RoundingSetModel[];
+                
+                constructor() {
+                    this.attendanceMinuteLaterCalculate = ko.observable(false);
+                    this.leaveWorkMinuteAgoCalculate = ko.observable(false);
+                    this.roundingSets = [];
+                    this.initRoundingSets();
+                }
+
+                initRoundingSets() {
+                    for (let item in Superiority) {
+                        if (!isNaN(Number(item))) {
+                            let dataRoundingModel: RoundingSetModel = new RoundingSetModel(Number(item));
+                            this.roundingSets.push(dataRoundingModel);
+                        }
+                    }
+                }
+
+                toDto(): RoundingTimeDto {
+                    let roundingSets: RoundingSetDto[] = [];
+                    for (let roundingModel of this.roundingSets) {
+                        roundingSets.push(roundingModel.toDto());
+                    }
+                    let use = {
+                        value: 1,
+                        nameId: "利用する"
+                    }
+
+                    let notUse = {
+                        value: 0,
+                        nameId: "利用しない"
+                    }
+
+                    let dto: RoundingTimeDto = {
+                        attendanceMinuteLaterCalculate: this.attendanceMinuteLaterCalculate() ? use : notUse,
+                        leaveWorkMinuteAgoCalculate: this.leaveWorkMinuteAgoCalculate() ? use : notUse,
+                        roundingSets: roundingSets
+                    }
+                    return dto;
+                }
             }
 
             export class WorkTimezoneLateNightTimeSetModel {
