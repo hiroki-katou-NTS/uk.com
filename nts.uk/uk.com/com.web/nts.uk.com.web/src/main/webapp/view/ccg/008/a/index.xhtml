@@ -17,11 +17,10 @@
       <com:scriptfile path="/view/ktg/027/a/ktg027.a.vm.js"  of="nts.uk.at.web"/>
       <com:scriptfile path="/view/ktg/026/a/ktg026component.a.vm.js"  of="nts.uk.at.web"/>
       <com:scriptfile path="/view/ktg/031/a/ktg031.a.vm.js" />
-      <com:scriptfile path="/view/ccg/005/a/ccg005.a.vm.js" />
 		</ui:define>
 		<ui:define name="content">
-			<div id="contents-area" style="padding: 7px;">
-				<div id="ver4">
+      <div id="functions-area">
+        <div id="ver4">
 					<div style="width: 390px; height:30px; float: right; margin-left: -265px;">
             <com:ko-if bind="isShowSwitch()">
 							<div id="closure" tabindex="2"
@@ -67,28 +66,26 @@
             </div>
           </com:ko-if>
 				</div>
+      </div>
+			<div id="ccg008-contents-area">
 						<!-- トップページ (top page) -->
 				<div class="content">
           <div class="content-top" id="content-top" tabindex="-1">
             <div class="contents_layout" id="resizable">
               <com:ko-if bind="layoutDisplayType() === 2 || layoutDisplayType() === 3">
-                <div class="contents_2" id="F2">
-                  <layout2-component params= "{item:paramWidgetLayout2(), isLayout: 2}"></layout2-component>
+                <div class="contents_2" id="F2" data-bind="component: { name: 'layout2-component', params: {item: paramWidgetLayout2, isLayout: 2}}">
                 </div>
               </com:ko-if>
               <com:ko-if bind="visible()">
-                <div class="contents_1" id="F1">
-                  <layout1-component params= "item: paramIframe1()"></layout1-component>
+                <div class="contents_1" id="F1" data-bind="component: { name: 'layout1-component', params: {item: paramIframe1}}">
                 </div>
               </com:ko-if>
               <com:ko-if bind="layoutDisplayType() === 1">
-                <div class="contents_2" id="F4">
-                  <layout2-component params= "{item:paramWidgetLayout2(), isLayout: 2}"></layout2-component>
+                <div class="contents_2" id="F4" data-bind="component: { name: 'layout2-component', params: {item: paramWidgetLayout2, isLayout: 2}}">
                 </div>
               </com:ko-if>
               <com:ko-if bind="layoutDisplayType() === 3">
-                <div class="contents_3" id="F3">
-                  <layout2-component params= "{item:paramWidgetLayout3(), isLayout: 3}"></layout2-component>
+                <div class="contents_3" id="F3" data-bind="component: { name: 'layout2-component', params: {item: paramWidgetLayout3, isLayout: 3}}">
                 </div>
               </com:ko-if>
             </div>

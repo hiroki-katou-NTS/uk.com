@@ -478,3 +478,12 @@ export enum CalculatedFlag {
     // 未計算
     UNCALCULATED 
 }
+export enum TrackRecordAtr {
+    DAILY_RESULTS, // 日別実績
+    SCHEDULE // スケジュール
+}
+export enum AppDateContradictionAtr {
+    NOTCHECK, // チェックしない
+    CHECKREGISTER, // チェックする（登録可）
+    CHECKNOTREGISTER // チェックする（登録不可）
+}

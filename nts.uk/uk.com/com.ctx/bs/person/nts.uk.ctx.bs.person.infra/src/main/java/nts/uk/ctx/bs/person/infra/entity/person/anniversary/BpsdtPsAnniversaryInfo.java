@@ -17,7 +17,7 @@ import java.time.MonthDay;
  */
 @Data
 @Entity
-@Table(name = "BPSDT_PS_ANNIVERSARY_INFO")
+@Table(name = "BPSMT_ANNIVERSARY")
 @EqualsAndHashCode(callSuper = true)
 public class BpsdtPsAnniversaryInfo extends UkJpaEntity implements AnniversaryNotice.MementoGetter, AnniversaryNotice.MementoSetter, Serializable {
 

@@ -17,9 +17,10 @@ public class DeleteDataForTable {
 	
 	/**
 	 * アルゴリズム「サーバデータ削除実行カテゴリ」を実行する
+	 * @throws Exception 
 	 */
 	public void deleteDataForTable(TableDeletionDataCsv tableDataDel,
-			List<EmployeeDeletion> employeeDeletions) {
+			List<EmployeeDeletion> employeeDeletions) throws Exception {
 		try {
 			repoCsv.deleteData(tableDataDel, employeeDeletions);
 		} catch (Exception e) {

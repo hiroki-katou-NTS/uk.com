@@ -103,7 +103,8 @@
                                                 primaryKey: 'no',
                                                 columns: $parent.swapColumns,
                                                 value: settingItems,
-                                                beforeMoveRight: beforeMoveRight
+                                                beforeMoveRight: beforeMoveRight,
+                                                afterMoveLeft: $parent.afterMoveLeft.bind($parent)
                                             }"/>
                         </div>
                         <div id="swap-up-down"

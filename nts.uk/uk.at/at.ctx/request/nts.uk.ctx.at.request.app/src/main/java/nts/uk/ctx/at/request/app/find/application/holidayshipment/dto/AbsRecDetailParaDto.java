@@ -1,10 +1,15 @@
 package nts.uk.ctx.at.request.app.find.application.holidayshipment.dto;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecDetailPara;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.MngDataStatus;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
 
 /**
  * 振出振休明細
@@ -51,5 +56,13 @@ public class AbsRecDetailParaDto {
 		this.unUseOfRec = absRecDetailPara.getUnUseOfRec().isPresent()?new UnUseOfRecDto(absRecDetailPara.getUnUseOfRec().get()):null;
 	}
 	
-	
+	public AbsRecDetailPara toDomain() {
+	    return new AbsRecDetailPara(
+	            sid, 
+	            EnumAdaptor.valueOf(dataAtr, MngDataStatus.class), 
+	            ymdData.toDomain(), 
+	            EnumAdaptor.valueOf(occurrentClass, OccurrenceDigClass.class), 
+	            unOffsetOfAb == null ? Optional.empty() : Optional.of(unOffsetOfAb.toDomain()), 
+	            unUseOfRec == null ? Optional.empty() : Optional.of(unUseOfRec.toDomain()));
+	}
 }

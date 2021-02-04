@@ -98,13 +98,13 @@ module nts.uk.at.view.ccg005.d.screenModel {
 
     public createNewFavorite() {
       const vm = this;
-      vm.mode(Mode.INSERT);
       vm.selectedFavoriteOrder(-1);
       vm.favoriteName("");
       vm.choosenWkspNames([]);
       vm.workPlaceIdList([]);
       vm.selectedRuleCode(TargetSelection.WORKPLACE);
       $("#D5_1").focus();
+      vm.mode(Mode.INSERT);
     }
 
     public saveFavorite() {

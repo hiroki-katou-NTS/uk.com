@@ -1,7 +1,3 @@
-
-
-
-
 import '@views/ccg';
 import '@views/cdl';
 import '@views/cmm';

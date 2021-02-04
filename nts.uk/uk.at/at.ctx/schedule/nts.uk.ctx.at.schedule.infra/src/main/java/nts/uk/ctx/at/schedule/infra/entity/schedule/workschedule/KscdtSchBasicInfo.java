@@ -171,11 +171,9 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 		}
 		// 勤務予定．休憩時間帯
 		List<KscdtSchBreakTs> kscdtSchBreakTs = new ArrayList<>();
-		workSchedule.getLstBreakTime().ifPresent(x -> {
-			List<KscdtSchBreakTs> kscdtSchBreakT = x.getBreakTimeSheets().stream()
-					.map(mapper -> KscdtSchBreakTs.toEntity(mapper, sID, yMD, cID)).collect(Collectors.toList());
-			kscdtSchBreakTs.addAll(kscdtSchBreakT);
-		});
+		List<KscdtSchBreakTs> kscdtSchBreakT = workSchedule.getLstBreakTime().getBreakTimeSheets().stream()
+				.map(mapper -> KscdtSchBreakTs.toEntity(mapper, sID, yMD, cID)).collect(Collectors.toList());
+		kscdtSchBreakTs.addAll(kscdtSchBreakT);
 
 		KscdtSchBasicInfoPK basicInfoPK = new KscdtSchBasicInfoPK(workSchedule.getEmployeeID(), workSchedule.getYmd());
 		// null - QA 110800
@@ -249,7 +247,7 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 		}
 		optSortTimeWork = new ShortTimeOfDailyAttd(shortWorkingTimeSheets);
 		return new WorkSchedule(sID, yMD, EnumAdaptor.valueOf(confirmedATR ? 1 : 0, ConfirmedATR.class), 
-				workInfo, affInfo, Optional.of(dailyAttd), lstEditState, Optional.ofNullable(optTimeLeaving), Optional.ofNullable(attendance), Optional.ofNullable(optSortTimeWork));
+				workInfo, affInfo, dailyAttd, lstEditState, Optional.ofNullable(optTimeLeaving), Optional.ofNullable(attendance), Optional.ofNullable(optSortTimeWork));
 	}
 
 	@Override

@@ -77,11 +77,6 @@ module nts.uk.at.view.kaf010.shr.header.viewmodel {
 		created(params: any) {
 			const self = this;
 			self.overTimeWork = params.overTimeWork;
-			self.overTimeWork.subscribe(value => {
-				if (value) {
-					console.log(value);
-				}
-			});
 		}
 		
 		

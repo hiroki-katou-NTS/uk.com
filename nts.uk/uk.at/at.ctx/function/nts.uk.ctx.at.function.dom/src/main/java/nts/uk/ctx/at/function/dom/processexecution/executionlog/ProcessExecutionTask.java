@@ -3,7 +3,7 @@ package nts.uk.ctx.at.function.dom.processexecution.executionlog;
 import lombok.AllArgsConstructor;
 
 /**
- * 更新処理自動実行項目
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.就業機能.更新処理自動実行.更新処理自動実行ログ.更新処理自動実行項目
  */
 @AllArgsConstructor
 public enum ProcessExecutionTask {
@@ -49,12 +49,6 @@ public enum ProcessExecutionTask {
 	
 	/* インデックス再構成*/
 	INDEX_RECUNSTRUCTION(13, "インデックス再構成");
-	
-//	/* アラーム抽出（個人別） */
-//	INDV_ALARM(5, "アラーム抽出（個人別）"),
-//	
-//	/* アラーム抽出（職場別） */
-//	WKP_ALARM(6, "アラーム抽出（職場別）");
 	
 	/** The value. */
 	public final int value;

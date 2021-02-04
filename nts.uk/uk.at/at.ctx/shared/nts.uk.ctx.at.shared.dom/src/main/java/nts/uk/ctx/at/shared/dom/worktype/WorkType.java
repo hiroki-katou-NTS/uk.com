@@ -141,6 +141,7 @@ public class WorkType extends AggregateRoot implements Cloneable, Serializable{
 		this.dailyWork = dailyWork;
 		this.deprecate = deprecate;
 		this.calculateMethod = calculateMethod;
+		this.workTypeSetList = new ArrayList<>();
 	}
 	
 	public WorkType(WorkTypeCode workTypeCode, WorkTypeSymbolicName symbolicName, WorkTypeName name,
@@ -152,6 +153,7 @@ public class WorkType extends AggregateRoot implements Cloneable, Serializable{
 		this.abbreviationName = abbreviationName;
 		this.memo = memo;
 		this.dailyWork = dailyWork;
+		this.workTypeSetList = new ArrayList<>();
 	}
 
 	/**

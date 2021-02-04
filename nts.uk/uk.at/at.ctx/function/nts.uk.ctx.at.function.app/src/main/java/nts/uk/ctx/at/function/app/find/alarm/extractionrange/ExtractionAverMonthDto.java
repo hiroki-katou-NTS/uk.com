@@ -1,8 +1,13 @@
 package nts.uk.ctx.at.function.app.find.alarm.extractionrange;
 
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.mutilmonth.AverageMonth;
-@Value
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class ExtractionAverMonthDto {
 	private String extractionId;
 

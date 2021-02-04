@@ -20,6 +20,7 @@ import nts.uk.screen.at.app.query.kcp013.AcquireWorkHours;
 import nts.uk.screen.at.app.query.kcp013.AcquireWorkingHoursDto;
 import nts.uk.screen.at.app.query.kcp013.AcquireWorkingHoursRequest;
 import nts.uk.screen.at.app.query.kcp013.GetAllWorkingHoursQuery;
+import nts.uk.screen.at.app.query.kcp013.KCP013Result;
 
 /**
  * 
@@ -35,7 +36,9 @@ public class GetWorkHoursWs {
 
 	@POST
 	@Path("workhours")
-	public List<AcquireWorkHours> getWorkHours(AcquireWorkingHoursRequest request) {
+	public KCP013Result getWorkHours(AcquireWorkingHoursRequest request) {
+		
+		KCP013Result rs = new KCP013Result();
 
 		Optional<WorkManagementMultiple> optional = getAllWorkingHours.getUseDistinction();
 
@@ -70,14 +73,19 @@ public class GetWorkHoursWs {
 		} else {
 			throw new BusinessException("");
 		}
-
-		return workHours;
+		
+		rs.setListWorkTime(workHours);
+		rs.setHasWorkTimeInModeWorkPlace(acquireWorkingHoursDto.isHasWorkTimeInModeWorkPlace());
+		rs.setModeCompany(acquireWorkingHoursDto.isModeCompany());
+		return rs;
 	}
 
 	@POST
 	@Path("getallworkhours")
-	public List<AcquireWorkHours> getAllWorkHours() {
+	public KCP013Result getAllWorkHours() {
 
+		KCP013Result rs = new KCP013Result();
+		
 		Optional<WorkManagementMultiple> optional = getAllWorkingHours.getUseDistinction();
 
 		AcquireWorkingHoursDto acquireWorkingHoursDto = getAllWorkingHours.getAllWorkingHoursDtos();
@@ -119,7 +127,10 @@ public class GetWorkHoursWs {
 			throw new BusinessException("");
 		}
 
-		return workHours;
+		rs.setListWorkTime(workHours);
+		rs.setHasWorkTimeInModeWorkPlace(acquireWorkingHoursDto.isHasWorkTimeInModeWorkPlace());
+		rs.setModeCompany(acquireWorkingHoursDto.isModeCompany());
+		return rs;
 	}
 
 }

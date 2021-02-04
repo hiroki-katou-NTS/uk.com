@@ -219,7 +219,7 @@ module nts.uk.com.view.ccg003.c {
     openCDL009Dialog(): void {
       const vm = this;
       const cdl009Params: any = {
-        isMultiSelect: true,
+        isMultiple: true,
         baseDate: moment.utc().toISOString(),
         target: DestinationClassification.WORKPLACE
       };
@@ -229,7 +229,7 @@ module nts.uk.com.view.ccg003.c {
         if (isCancel) {
           return;
         }
-        vm.employeeInfoId().push(getShared('CDL009Output'));
+        vm.employeeInfoId(getShared('CDL009Output'));
         vm.$blockui('show');
         vm.$ajax('com', API.acquireNameOfDestinationEmployee, vm.employeeInfoId())
           .then((response: EmployeeInfo[]) => {

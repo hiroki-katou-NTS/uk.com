@@ -1345,6 +1345,13 @@ project (':com.web:nts.uk.com.web') {
 		runtime group: 'at.schedulealarm', name: 'nts.uk.ctx.at.schedulealarm.pub', version: version
 		runtime group: 'at.schedulealarm', name: 'nts.uk.ctx.at.schedulealarm.pubimp', version: version
 		
+		runtime group: 'at.aggregation', name: 'nts.uk.ctx.at.aggregation.ac', version: version
+		runtime group: 'at.aggregation', name: 'nts.uk.ctx.at.aggregation.app', version: version
+		runtime group: 'at.aggregation', name: 'nts.uk.ctx.at.aggregation.dom', version: version
+		runtime group: 'at.aggregation', name: 'nts.uk.ctx.at.aggregation.infra', version: version
+		runtime group: 'at.aggregation', name: 'nts.uk.ctx.at.aggregation.pub', version: version
+		runtime group: 'at.aggregation', name: 'nts.uk.ctx.at.aggregation.pubimp', version: version
+		
 		// shr find implement
 		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.ws', version: version
 		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.app', version: version
@@ -1534,6 +1541,8 @@ project (':pereg.ctx:nts.uk.ctx.pereg.app') {
 		compile group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.dom', version: version
 		compile group: 'at.shared', name: 'nts.uk.ctx.at.shared.app', version: version
 		compile group: 'at.shared', name: 'nts.uk.ctx.at.shared.dom', version: version
+		compile group: 'at.aggregation', name: 'nts.uk.ctx.at.aggregation.app', version: version
+		compile group: 'at.aggregation', name: 'nts.uk.ctx.at.aggregation.dom', version: version
 
 		compile group: 'pr.core', name: 'nts.uk.ctx.pr.core.app', version: version
 		compile group: 'pr.core', name: 'nts.uk.ctx.pr.core.dom', version: version
@@ -1581,6 +1590,7 @@ project (':exio.ctx:nts.uk.ctx.exio.ac') {
 		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pub')
 		compile project (':exio.ctx:nts.uk.ctx.exio.dom')
 		compile project (':exio.ctx:nts.uk.ctx.exio.app')
+		compile project(':query:nts.uk.query.pub')
 		compile(group: 'at.shared', name: 'nts.uk.ctx.at.shared.pub', version: version)
 	}
 }
@@ -1629,12 +1639,27 @@ project (':exio.ctx:nts.uk.ctx.exio.app') {
 		compile group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.dom', version: version
 		compile group: 'at.shared', name: 'nts.uk.ctx.at.shared.app', version: version
 		compile group: 'at.shared', name: 'nts.uk.ctx.at.shared.dom', version: version
+		compile group: 'at.aggregation', name: 'nts.uk.ctx.at.aggregation.app', version: version
+		compile group: 'at.aggregation', name: 'nts.uk.ctx.at.aggregation.dom', version: version
 	}
 }
 
 project (':exio.ctx:nts.uk.ctx.exio.dom') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
+	}
+}
+
+project (':exio.ctx:nts.uk.ctx.exio.pub') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+	}
+}
+
+project (':exio.ctx:nts.uk.ctx.exio.pubimp') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':exio.ctx:nts.uk.ctx.exio.dom')
 	}
 }
 
@@ -1688,6 +1713,7 @@ project (':query:nts.uk.query.app') {
 		compile group: 'at.request', name: 'nts.uk.ctx.at.request.dom', version: version
 		compile group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.dom', version: version
 		compile group: 'at.shared', name: 'nts.uk.ctx.at.shared.dom', version: version
+		compile group: 'at.aggregation', name: 'nts.uk.ctx.at.aggregation.dom', version: version
 	}
 }
 
@@ -1723,6 +1749,7 @@ project (':query:nts.uk.query.infra') {
 		compile group: 'at.request', name: 'nts.uk.ctx.at.request.infra', version: version
 		compile group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.infra', version: version
 		compile group: 'at.shared', name: 'nts.uk.ctx.at.shared.infra', version: version
+		compile group: 'at.aggregation', name: 'nts.uk.ctx.at.aggregation.infra', version: version
 		
 		//compile group: 'pr.core', name: 'nts.uk.ctx.pr.core.infra', version: version
 		//compile group: 'pr.formula', name: 'nts.uk.ctx.pr.formula.infra', version: version

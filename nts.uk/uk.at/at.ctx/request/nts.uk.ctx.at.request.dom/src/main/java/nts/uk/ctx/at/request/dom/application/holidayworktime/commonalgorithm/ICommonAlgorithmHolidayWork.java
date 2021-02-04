@@ -172,4 +172,15 @@ public interface ICommonAlgorithmHolidayWork {
 	 */
 	public void checkBeforeMoveToAppTime(String companyId, AppHdWorkDispInfoOutput appHdWorkDispInfo,
 			AppHolidayWork appHolidayWork);
+	
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.KAFS10_休日出勤時間申請（スマホ）.A：休日出勤申請（新規・編集）.アルゴリズム.遷移する後のエラーチェック.遷移する後のエラーチェック
+	 * @param require
+	 * @param companyId
+	 * @param appHdWorkDispInfo
+	 * @param appHolidayWork
+	 * @return 
+	 */
+	public List<ConfirmMsgOutput> checkAfterMoveToAppTime(boolean require, String companyId, AppHdWorkDispInfoOutput appHdWorkDispInfo,
+			AppHolidayWork appHolidayWork);
 }

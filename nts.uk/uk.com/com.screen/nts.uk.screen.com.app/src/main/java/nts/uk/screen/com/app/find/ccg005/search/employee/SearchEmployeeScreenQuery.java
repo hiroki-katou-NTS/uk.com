@@ -104,7 +104,7 @@ public class SearchEmployeeScreenQuery {
 		 List<AttendanceInformationDto> attendanceInformationDtos = attendanceScreenQuery.getAttendanceInformation(empIds, baseDate, emojiUsage);
 		 
 		return SearchEmployeeDto.builder()
-				.personalInfomation(personalInfomation)
+				.listPersonalInfo(personalInfomation)
 				.attendanceInformationDtos(attendanceInformationDtos)
 				.build();
 	}

@@ -38,6 +38,7 @@ module nts.uk.at.view.kaf020.a {
                 } else if (data.length == 1 && (!params || !params.fromB)) {
                     vm.detail(data[0]);
                 } else {
+                    data = _.sortBy(data, ["code"]);
                     vm.optionalItemAppSet(data);
                     $('#fixed-table').focus();
                 }

@@ -20,8 +20,10 @@ import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType_Update;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeShiftNight;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeApplicationSetting;
 import nts.uk.ctx.at.request.dom.application.overtime.ReasonDivergence;
+import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.DivergenceReasonInputMethod;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
@@ -63,17 +65,19 @@ public class AsposeAppHolidayWork {
 							.filter(appTime -> appTime.getAttendanceType().equals(AttendanceType_Update.NORMALOVERTIME))
 							.collect(Collectors.toList())
 							.isEmpty();
+		DivergenceReasonInputMethod divergenceReasonInputMethod= !printContentOfHolidayWork.getDivergenceReasonInputMethod().isEmpty() ? 
+				printContentOfHolidayWork.getDivergenceReasonInputMethod().get(0) : null;
 		//	休日出勤申請の印刷内容．乖離理由を反映するが反映する AND (休日出勤申請の印刷内容．乖離理由の選択肢を利用する」がtrue OR 休日出勤申請の印刷内容．乖離理由の入力を利用する」がtrue)
 		Boolean c5 = printContentOfHolidayWork.getDivergenceReasonReflect().equals(NotUseAtr.USE)
-						&& (printContentOfHolidayWork.isUseComboDivergenceReason() || printContentOfHolidayWork.isUseInputDivergenceReason());
+						&& (divergenceReasonInputMethod != null && (divergenceReasonInputMethod.isDivergenceReasonSelected() || divergenceReasonInputMethod.isDivergenceReasonInputed()));
 		
 		//	休日出勤申請の印刷内容．乖離理由を反映するが反映する AND 休日出勤申請の印刷内容．乖離理由の選択肢を利用する」がtrue
 		Boolean c6 = printContentOfHolidayWork.getDivergenceReasonReflect().equals(NotUseAtr.USE)
-						&& printContentOfHolidayWork.isUseComboDivergenceReason();
+						&& (divergenceReasonInputMethod != null && divergenceReasonInputMethod.isDivergenceReasonSelected());
 		
 		//	休日出勤申請の印刷内容．乖離理由を反映するが反映する AND 休日出勤申請の印刷内容．乖離理由の入力を利用する」がtrue
 		Boolean c7 = printContentOfHolidayWork.getDivergenceReasonReflect().equals(NotUseAtr.USE)
-						&& printContentOfHolidayWork.isUseInputDivergenceReason();
+						&& (divergenceReasonInputMethod != null && divergenceReasonInputMethod.isDivergenceReasonInputed());
 		
 		Cells cells = worksheet.getCells();
 		Cell cellB8 = cells.get("B8");
@@ -157,7 +161,7 @@ public class AsposeAppHolidayWork {
 			Optional<OvertimeApplicationSetting> applicationTimeOp = workdayoffApplicationTimeListFinal.stream()
 								.filter(applicationTime -> applicationTime.getFrameNo().v() == workdayoffFrame.getWorkdayoffFrNo().v().intValue())
 								.findFirst();
-			if(applicationTimeOp.isPresent()) {
+			if(applicationTimeOp.isPresent() && applicationTimeOp.get().getApplicationTime().v() != 0) {
 				cells.get(workdayoffCountRow.get(), workdayoffCountColumn.getAndIncrement()).setValue(workdayoffFrame.getWorkdayoffFrName().v());
 				workdayoffCountColumn.getAndIncrement();
 				cells.get(workdayoffCountRow.get(), workdayoffCountColumn.getAndIncrement()).setValue(applicationTimeOp.get().getApplicationTime().getInDayTimeWithFormat());
@@ -189,7 +193,7 @@ public class AsposeAppHolidayWork {
 			Optional<Integer> withinPrescribedHolidayWorkTime = overTimeShiftNight.isPresent() ? overTimeShiftNight.get().getMidNightHolidayTimes().stream()
 						.filter(midNightHolidayTime -> midNightHolidayTime.getLegalClf().equals(StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork))
 						.map(midNightHolidayTime -> midNightHolidayTime.getAttendanceTime().v()).findFirst() : Optional.empty();
-			String withinPrescribedHolidayWorkTimeText = withinPrescribedHolidayWorkTime.isPresent() ? 
+			String withinPrescribedHolidayWorkTimeText = withinPrescribedHolidayWorkTime.isPresent() && (new TimeWithDayAttr(withinPrescribedHolidayWorkTime.get())).v() != 0 ? 
 					(new TimeWithDayAttr(withinPrescribedHolidayWorkTime.get())).getInDayTimeWithFormat() : "";
 			cellF18.setValue(withinPrescribedHolidayWorkTimeText);
 			
@@ -197,7 +201,7 @@ public class AsposeAppHolidayWork {
 			Optional<Integer> excessOfStatutoryHolidayWorkTime = overTimeShiftNight.isPresent() ? overTimeShiftNight.get().getMidNightHolidayTimes().stream()
 					.filter(midNightHolidayTime -> midNightHolidayTime.getLegalClf().equals(StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork))
 					.map(midNightHolidayTime -> midNightHolidayTime.getAttendanceTime().v()).findFirst() : Optional.empty();
-			String excessOfStatutoryHolidayWorkTimeText = excessOfStatutoryHolidayWorkTime.isPresent() ? 
+			String excessOfStatutoryHolidayWorkTimeText = excessOfStatutoryHolidayWorkTime.isPresent() && (new TimeWithDayAttr(excessOfStatutoryHolidayWorkTime.get())).v() != 0 ? 
 					(new TimeWithDayAttr(excessOfStatutoryHolidayWorkTime.get())).getInDayTimeWithFormat() : "";
 			cellF19.setValue(excessOfStatutoryHolidayWorkTimeText);
 			
@@ -205,7 +209,7 @@ public class AsposeAppHolidayWork {
 			Optional<Integer> publicHolidayWorkTime = overTimeShiftNight.isPresent() ? overTimeShiftNight.get().getMidNightHolidayTimes().stream()
 					.filter(midNightHolidayTime -> midNightHolidayTime.getLegalClf().equals(StaturoryAtrOfHolidayWork.PublicHolidayWork))
 					.map(midNightHolidayTime -> midNightHolidayTime.getAttendanceTime().v()).findFirst() : Optional.empty();
-			String publicHolidayWorkTimeText = publicHolidayWorkTime.isPresent() ? 
+			String publicHolidayWorkTimeText = publicHolidayWorkTime.isPresent() && (new TimeWithDayAttr(publicHolidayWorkTime.get())).v() != 0? 
 					(new TimeWithDayAttr(publicHolidayWorkTime.get())).getInDayTimeWithFormat() : "";
 			cellJ18.setValue(publicHolidayWorkTimeText);
 		} else {
@@ -230,7 +234,7 @@ public class AsposeAppHolidayWork {
 				Optional<OvertimeApplicationSetting> applicationTimeOp = overtimeWorkApplicationTimeListFinal.stream()
 									.filter(applicationTime -> applicationTime.getFrameNo().v() == overtimeFrame.getOvertimeWorkFrNo().v().intValue())
 									.findFirst();
-				if(applicationTimeOp.isPresent()) {
+				if(applicationTimeOp.isPresent() && applicationTimeOp.get().getApplicationTime().v() != 0) {
 					cells.get(overtimeWorkCountRow.get(), overtimeWorkCountColumn.getAndIncrement()).setValue(overtimeFrame.getOvertimeWorkFrName().v());
 					overtimeWorkCountColumn.getAndIncrement();
 					cells.get(overtimeWorkCountRow.get(), overtimeWorkCountColumn.getAndIncrement()).setValue(applicationTimeOp.get().getApplicationTime().getInDayTimeWithFormat());
@@ -260,7 +264,7 @@ public class AsposeAppHolidayWork {
 			if(overTimeShiftNight.isPresent()) {
 				Integer overTimeMidNightTime = overTimeShiftNight.get().getOverTimeMidNight() != null ? 
 						overTimeShiftNight.get().getOverTimeMidNight().v() : null;
-				String overTimeMidNightText = overTimeMidNightTime != null ? (new TimeWithDayAttr(overTimeMidNightTime)).getInDayTimeWithFormat() : "";
+				String overTimeMidNightText = overTimeMidNightTime != null && overTimeMidNightTime != 0 ? (new TimeWithDayAttr(overTimeMidNightTime)).getInDayTimeWithFormat() : "";
 				cellF24.setValue(overTimeMidNightText);
 			}
 		} else {
@@ -269,7 +273,12 @@ public class AsposeAppHolidayWork {
 		
 		if(c5) {
 			Cell cellB30 = cells.get("B30");
-			cellB30.setValue(I18NText.getText("KAF010_86"));
+			Optional<DivergenceTimeRoot> divergenceTimeRoot = 
+					printContentOfHolidayWork.getDivergenceTimeRoots().stream().filter(root -> root.getDivergenceTimeNo() == 3).findFirst();
+			String cellB30Text = divergenceTimeRoot.isPresent() ? 
+					I18NText.getText("KAF005_93", divergenceTimeRoot.get().getDivTimeName().v()) : 
+						I18NText.getText("KAF005_93");
+			cellB30.setValue(cellB30Text);
 		}
 		if(c6 || c7) {
 			Cell cellD30 = cells.get("D30");
@@ -295,8 +304,22 @@ public class AsposeAppHolidayWork {
 			deleteRows += deleteOvertimeNight;
 		}
 		if(deleteOvertime > 0) {
-			cells.deleteRows(24 - deleteOvertime, deleteOvertime);
-			deleteRows += deleteOvertime;
+			if(deleteOvertime < 5) {
+				cells.deleteRows(24 - deleteOvertime, deleteOvertime);
+				deleteRows += deleteOvertime;
+			} else {
+				if(deleteOvertimeNight > 0) {
+					cells.deleteRows(24 - deleteOvertime, deleteOvertime);
+					deleteRows += deleteOvertime;
+				} else {
+					cells.deleteRows(24 - deleteOvertime + 1, deleteOvertime - 1);
+					deleteRows += deleteOvertime -1;
+					cells.get("B21").copy(cells.get("B20"));
+					cells.get("C21").copy(cells.get("C20"));
+					cells.deleteRow(19);
+					deleteRows += 1;
+				}
+			}
 		}
 		if(deleteWorkdayoffNight > 0) {
 			cells.deleteRows(17, deleteWorkdayoffNight);
