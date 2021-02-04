@@ -8,7 +8,7 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<script>var dialogSize = { width: 530, height: 350 };</script>
+			<script>var dialogSize = { width: 530, height: 340 };</script>
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 			<com:ValidatorScript>
         nts.uk.ctx.at.function.dom.attendancerecord.item.ItemName
@@ -33,7 +33,7 @@
           <!-- D2_1 -->
           <span style="font-size: unset;" data-bind="i18n: 'CCG005_10'" />
         </div>
-        <div style="margin-top: 15px;">
+        <div style="margin-top: 5px;">
           <div class="table-left">
             <div style="display: inline-block;">
               <!-- D3 -->
@@ -76,13 +76,15 @@
               }" />
             </div>
             <!-- D5_2 -->
-            <div class="cf" style="margin-top: 20px;" data-bind="ntsSwitchButton: {
-              name: 'Sample Switch',
-              options: roundingRules,
-              optionsValue: 'code',
-              optionsText: 'name',
-              value: selectedRuleCode,
-              enable: true }" />
+            <div class="D5_2_switch_btn">
+              <div class="cf" style="margin-top: 20px;" data-bind="ntsSwitchButton: {
+                name: 'Sample Switch',
+                options: roundingRules,
+                optionsValue: 'code',
+                optionsText: 'name',
+                value: selectedRuleCode,
+                enable: true }" />
+            </div>
               <com:ko-if bind="buttonSelectWkspDisable()">
                 <div style="margin-top: 20px;">
                   <!-- D5_3 -->

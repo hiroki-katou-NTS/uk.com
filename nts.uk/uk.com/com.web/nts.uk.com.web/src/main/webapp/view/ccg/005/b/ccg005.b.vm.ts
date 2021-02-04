@@ -68,7 +68,7 @@ module nts.uk.at.view.ccg005.b.screenModel {
 
       $("#grid").ntsGrid({
         width: "175px",
-        height: "200px",
+        height: "209px",
         dataSource: vm.listJobDataSource(),
         primaryKey: "jobTitleId",
         virtualization: true,
@@ -82,6 +82,7 @@ module nts.uk.at.view.ccg005.b.screenModel {
             dataType: "boolean",
             width: "65px",
             ntsControl: "Checkbox",
+            columnCssClass: "center-align-for-ccg005-b"
           },
           {
             headerText: vm.$i18n("CCG005_6"),
