@@ -163,7 +163,7 @@ public class AsposeOutputConditionListOfStampGenerator extends AsposeCellsReport
 		int height = 0;
 		for (StampList data : employeeInfor.getStampList()) {
 			height = height + data.rowHeigth();
-			if(height >= heightContentPage) {
+			if(height > heightContentPage) {
 				reportContext.getWorkbook().getWorksheets().get(0).getHorizontalPageBreaks().add(rows.get());
 				if (rows.get() > 4) {
 					cell.copyRow(cell, 0, rows.get());
@@ -206,7 +206,7 @@ public class AsposeOutputConditionListOfStampGenerator extends AsposeCellsReport
 			this.pageBreaks(rows, cell, employeeInfor, v.get(0));
 			for (StampList data : v) {
 				height = height + data.rowHeigth();
-				if(height >= heightContentPage) {
+				if(height > heightContentPage) {
 					reportContext.getWorkbook().getWorksheets().get(0).getHorizontalPageBreaks().add(rows.get());
 					this.pageBreaks(rows, cell, employeeInfor, data);
 					height = 0;
