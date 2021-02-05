@@ -35,7 +35,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
             <tr>
               <td>
                 <!-- A1_1 -->
-                <div id="ccg005-avatar-change" tabindex=1></div>
+                <div id="ccg005-avatar-change" tabindex=1 data-bind="click: $component.onClickAvatar.bind($component, loginSid)"></div>
               </td>
               <td style="padding-left: 5px; width: 370px;">
                 <!-- A1_2 -->
@@ -125,9 +125,9 @@ module nts.uk.at.view.ccg005.a.screenModel {
 
 
             <tr style="background-color: yellow; height: 45px;">
-              <td style="padding-right: 5px; width: 30px; background-color: white;">
+              <td style="padding-right: 5px; width: 30px; background-color: white;" class="ccg005-apply-binding-avatar">
                 <!-- A4_1 -->
-                <div tabindex=10 data-bind="attr:{ id: 'ccg005-avatar-change-'+sid }" />
+                <div tabindex=10 data-bind="attr:{ id: 'ccg005-avatar-change-'+sid }, click: $component.onClickAvatar.bind($component, sid)" />
               </td>
               <td class="ccg005-w100 ccg005-pl-5 ccg005-border-groove ccg005-right-unset">
                 <!-- A4_8 -->
@@ -429,7 +429,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
 
     // Pagination
     currentPage: KnockoutObservable<number> = ko.observable(1);
-    perPage: KnockoutObservable<number> = ko.observable(5);
+    perPage: KnockoutObservable<number> = ko.observable(0);
     totalElement: KnockoutObservable<number> = ko.observable(0);
     totalRow: KnockoutComputed<number> = ko.computed(() =>
       this.perPage() * this.currentPage() > this.totalElement()
@@ -476,6 +476,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
     applicationNameInfo: KnockoutObservableArray<object.ApplicationNameDto> = ko.observableArray([]);
     applicationNameDisplay: KnockoutObservableArray<ApplicationNameViewModel> = ko.observableArray([]);
     applicationNameDisplayBySid: KnockoutObservableArray<string> = ko.observableArray([]);
+    loginSid: string = __viewContext.user.employeeId;
 
     mounted() {
       const vm = this;
@@ -527,7 +528,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
         vm.clearDataDisplay();
         vm.$ajax('com', API.getAttendanceInformation, param).then((res: object.AttendanceInformationDto[]) => {
           vm.updateLoginData(res);
-          res = _.filter(res, item => item.sid !== __viewContext.user.employeeId);
+          res = _.filter(res, item => item.sid !== vm.loginSid);
           vm.dataToDisplay({
             attendanceInformationDtos: res,
             listPersonalInfo: vm.listPersonalInfo()
@@ -565,26 +566,25 @@ module nts.uk.at.view.ccg005.a.screenModel {
     //handle avatar in loop by jquery
     private setAvatarInLoop() {
       const vm = this;
-      _.map(vm.attendanceInformationDtosDisplay(), (item) => {
-        if ($(`#ccg005-avatar-change-${item.sid}`).children().length > 0) {
-          return;
-        }
-        if (item.avatarDto && item.avatarDto.fileId) {
-          $(`#ccg005-avatar-change-${item.sid}`)
-            .append($("<img/>")
-              .attr("id", 'CCG005_A1_1_small')
-              .attr("src", (nts.uk.request as any).liveView(item.avatarDto.fileId))
-            );
-        } else {
-          $(`#ccg005-avatar-change-${item.sid}`).ready(() => {
-            $(`#ccg005-avatar-change-${item.sid}`).append(
-              `<div id='CCG005_no_avatar_small'>
-                <p style="text-align: center; margin: 0 auto; font-size: 12px">
-                  ${item.businessName.replace(/\s/g, '').substring(0, 2)}
-                </p>
-              </div>`
-            );
-          });
+      _.forEach(vm.attendanceInformationDtosDisplay(), item => {
+        if (_.isEmpty($(`#ccg005-avatar-change-${item.sid}`).children())) {
+          if (item.avatarDto && item.avatarDto.fileId) {
+            $(`#ccg005-avatar-change-${item.sid}`)
+              .append($("<img/>")
+                .attr("id", 'CCG005_A1_1_small')
+                .attr("src", (nts.uk.request as any).liveView(item.avatarDto.fileId))
+              );
+          } else {
+            $(`#ccg005-avatar-change-${item.sid}`).ready(() => {
+              $(`#ccg005-avatar-change-${item.sid}`).append(
+                `<div id='CCG005_no_avatar_small'>
+                  <p style="text-align: center; margin: 0 auto; font-size: 12px">
+                    ${item.businessName.replace(/\s/g, '').substring(0, 2)}
+                  </p>
+                </div>`
+              );
+            });
+          }
         }
       });
     }
@@ -684,18 +684,22 @@ module nts.uk.at.view.ccg005.a.screenModel {
 
     private initResizeable(vm: any) {
       $(window).on('ccg005.resize', () => {
-        const subHeight = $('#ccg005-content').height()
+        vm.onResizeable(vm);
+      });
+    }
+
+    private onResizeable(vm: any) {
+      const subHeight = $('#ccg005-content').height()
           - $('.grade-header-top').height()
           - $('.grade-header-center').height()
           - $('.grade-header-bottom').height()
           - $('.grade-body-top').height()
           - $('.grade-bottom').height()
           - 40;
-        if (subHeight >= 48) {
-          vm.perPage(_.floor(subHeight / 48));
+        if (subHeight >= 50) {
+          vm.perPage(_.floor(subHeight / 50));
         }
         $('.grade-body-bottom').height(subHeight);
-      });
     }
 
     /**
@@ -757,12 +761,12 @@ module nts.uk.at.view.ccg005.a.screenModel {
         dismissible: true
       });
       $('.ccg005-status-img-A1_7').click(() => {
-        vm.sIdUpdateStatus(__viewContext.user.employeeId);
+        vm.sIdUpdateStatus(vm.loginSid);
         if (!vm.isBaseDate()) {
           return;
         }
         vm.goOutParams(new GoOutParam({
-          sid: __viewContext.user.employeeId,
+          sid: vm.loginSid,
           businessName: vm.businessName(),
           goOutDate: moment.utc().format("YYYY/MM/DD")
         }));
@@ -878,7 +882,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
     updateLoginData(atds: any) {
       const vm = this;
       // 条件：在席情報DTO.社員ID＝ログイン社員ID
-      const atdInfo = _.find(atds, (item: any) => item.sid === __viewContext.user.employeeId);
+      const atdInfo = _.find(atds, (item: any) => item.sid === vm.loginSid);
       if (!atdInfo) {
         return;
       }
@@ -942,7 +946,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       const inputDate = moment.utc().toISOString();
       const favoriteSpecify = new FavoriteSpecifyData({
         favoriteName: vm.$i18n('CCG005_27'),
-        creatorId: __viewContext.user.employeeId,
+        creatorId: vm.loginSid,
         inputDate: inputDate,
         targetSelection: 1,
         workplaceId: [],
@@ -964,7 +968,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       const command = {
         comment: vm.comment(),
         date: moment.utc().toISOString(),
-        sid: __viewContext.user.employeeId
+        sid: vm.loginSid
       };
       vm.$blockui('show');
       vm.$ajax('com', API.registerComment, command)
@@ -986,7 +990,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       vm.comment('');
       const command = {
         date: moment.utc(vm.commentDate()).toISOString(),
-        sid: __viewContext.user.employeeId
+        sid: vm.loginSid
       };
       vm.$blockui('show');
       vm.$ajax('com', API.deleteComment, command)
@@ -999,8 +1003,13 @@ module nts.uk.at.view.ccg005.a.screenModel {
     /**
      * 顔写真をクリックする（CDL010を起動する）
      */
-    onClickAvatar() {
-
+    onClickAvatar(sid?: string) {
+      const vm = this;
+      const data = {
+        employeeId: !!sid ? sid : vm.loginSid,
+        referenceDate: new Date(),
+      };
+      vm.$window.modal('com', '/view/cdl/010/a/index.xhtml', data);
     }
 
     /**
@@ -1098,6 +1107,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
         });
       }))
       vm.applicationNameDisplay(appModel);
+      vm.onResizeable(vm);
     }
 
     /**

@@ -173,7 +173,7 @@ module nts.uk.com.view.ccg008.a.Layout2ComponentViewModel {
               } 
             });
             wg0Child.style.height = '100%';
-            if (_.indexOf(wg0Child, 'ccg005') >= 0) {
+            if (wg0Child.getAttribute('id').indexOf('ccg005') >= 0) {
               $(window).trigger('ccg005.resize');
             }
           })
