@@ -35,7 +35,7 @@ public class WorkTimezoneCommonSet extends WorkTimeDomainObject implements Clone
 
 	/** The interval set. */
 	// インターバル時間設定
-	private IntervalTimeSetting intervalSet;
+//	private IntervalTimeSetting intervalSet;
 
 	/** The sub hol time set. */
 	// 代休時間設定
@@ -85,7 +85,7 @@ public class WorkTimezoneCommonSet extends WorkTimeDomainObject implements Clone
 	 */
 	public WorkTimezoneCommonSet(WorkTimezoneCommonSetGetMemento memento) {
 		this.zeroHStraddCalculateSet = memento.getZeroHStraddCalculateSet();
-		this.intervalSet = memento.getIntervalSet();
+//		this.intervalSet = memento.getIntervalSet();
 		this.subHolTimeSet = memento.getSubHolTimeSet();
 		this.medicalSets = memento.getMedicalSet();
 		this.goOutSet = memento.getGoOutSet();
@@ -106,7 +106,7 @@ public class WorkTimezoneCommonSet extends WorkTimeDomainObject implements Clone
 	 */
 	public void saveToMemento(WorkTimezoneCommonSetSetMemento memento) {
 		memento.setZeroHStraddCalculateSet(this.zeroHStraddCalculateSet);
-		memento.setIntervalSet(this.intervalSet);
+//		memento.setIntervalSet(this.intervalSet);
 		memento.setSubHolTimeSet(this.subHolTimeSet);
 		memento.setMedicalSet(this.medicalSets);
 		memento.setGoOutSet(this.goOutSet);
@@ -174,7 +174,7 @@ public class WorkTimezoneCommonSet extends WorkTimeDomainObject implements Clone
 	 */
 	public WorkTimezoneCommonSet changeWorkTimezoneLateEarlySet() {
 		return new WorkTimezoneCommonSet(this.zeroHStraddCalculateSet,
-										 this.intervalSet,
+//										 this.intervalSet,
 										 this.subHolTimeSet,
 										 this.medicalSets,
 										 this.goOutSet,
@@ -193,7 +193,7 @@ public class WorkTimezoneCommonSet extends WorkTimeDomainObject implements Clone
 	 */
 	public WorkTimezoneCommonSet reverceTimeZoneLateEarlySet() {
 		return new WorkTimezoneCommonSet(this.zeroHStraddCalculateSet,
-				 this.intervalSet,
+//				 this.intervalSet,
 				 this.subHolTimeSet,
 				 this.medicalSets,
 				 this.goOutSet,
@@ -211,7 +211,7 @@ public class WorkTimezoneCommonSet extends WorkTimeDomainObject implements Clone
 		WorkTimezoneCommonSet cloned = new WorkTimezoneCommonSet();
 		try {
 			cloned.zeroHStraddCalculateSet = this.zeroHStraddCalculateSet ? true : false;
-			cloned.intervalSet = this.intervalSet.clone();
+//			cloned.intervalSet = this.intervalSet.clone();
 			cloned.subHolTimeSet = this.subHolTimeSet.stream().map(c -> c.clone()).collect(Collectors.toList());
 			cloned.medicalSets = this.medicalSets.stream().map(c -> c.clone()).collect(Collectors.toList());
 			cloned.goOutSet = this.goOutSet.clone();
@@ -243,7 +243,7 @@ public class WorkTimezoneCommonSet extends WorkTimeDomainObject implements Clone
 		
 		WorkTimezoneCommonSet domain = new WorkTimezoneCommonSet();
 		domain.zeroHStraddCalculateSet = false;
-		domain.intervalSet = IntervalTimeSetting.generateDefault();
+//		domain.intervalSet = IntervalTimeSetting.generateDefault();
 		domain.subHolTimeSet = new ArrayList<>();
 		domain.subHolTimeSet.add(WorkTimezoneOtherSubHolTimeSet.generateDefault(
 				new WorkTimeCode("000"), CompensatoryOccurrenceDivision.FromOverTime));

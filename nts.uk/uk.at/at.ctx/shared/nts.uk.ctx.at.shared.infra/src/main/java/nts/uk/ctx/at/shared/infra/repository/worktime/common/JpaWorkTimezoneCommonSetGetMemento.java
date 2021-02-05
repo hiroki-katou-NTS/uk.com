@@ -65,10 +65,10 @@ public class JpaWorkTimezoneCommonSetGetMemento implements WorkTimezoneCommonSet
 	 * nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSetGetMemento#
 	 * getIntervalSet()
 	 */
-	@Override
-	public IntervalTimeSetting getIntervalSet() {
-		return new IntervalTimeSetting(new JpaIntervalTimeSettingGetMemento(entity));
-	}
+//	@Override
+//	public IntervalTimeSetting getIntervalSet() {
+//		return new IntervalTimeSetting(new JpaIntervalTimeSettingGetMemento(entity));
+//	}
 
 	/*
 	 * (non-Javadoc)

@@ -676,11 +676,11 @@ public class FlexWorkSettingHelper {
 			return false;
 		}
 
-		@Override
-		public IntervalTimeSetting getIntervalSet() {
-		    val intervalTimeSetting = new IntervalTimeSettingOImpl();
-			return new IntervalTimeSetting(intervalTimeSetting);
-		}
+//		@Override
+//		public IntervalTimeSetting getIntervalSet() {
+//		    val intervalTimeSetting = new IntervalTimeSettingOImpl();
+//			return new IntervalTimeSetting(intervalTimeSetting);
+//		}
 
 		@Override
 		public List<WorkTimezoneOtherSubHolTimeSet> getSubHolTimeSet() {

@@ -85,10 +85,10 @@ public class WorkTimezoneCommonSetDto implements WorkTimezoneCommonSetGetMemento
 	 * nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSetGetMemento#
 	 * getIntervalSet()
 	 */
-	@Override
-	public IntervalTimeSetting getIntervalSet() {
-		return new IntervalTimeSetting(this.intervalSet);
-	}
+//	@Override
+//	public IntervalTimeSetting getIntervalSet() {
+//		return new IntervalTimeSetting(this.intervalSet);
+//	}
 
 	/*
 	 * (non-Javadoc)
