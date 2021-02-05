@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 
 /**
  * The Interface CompanyAdapter.
@@ -38,4 +39,8 @@ public interface CompanyAdapter {
 	 * @return the company info by id
 	 */
 	CompanyInfo getCompanyInfoById(String companyId);
+
+	// 年度の期間を取得
+	YearMonthPeriod get(String cid, int year);
+
 }

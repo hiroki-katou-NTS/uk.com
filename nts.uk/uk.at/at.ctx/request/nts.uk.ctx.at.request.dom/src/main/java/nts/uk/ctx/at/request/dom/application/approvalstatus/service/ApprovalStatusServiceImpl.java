@@ -39,13 +39,20 @@ import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeave_Old;
+import nts.uk.ctx.at.request.dom.application.applist.extractcondition.ApplicationListAtr;
 import nts.uk.ctx.at.request.dom.application.applist.service.AppCompltLeaveSync;
+import nts.uk.ctx.at.request.dom.application.applist.service.ApplicationTypeDisplay;
 import nts.uk.ctx.at.request.dom.application.applist.service.CheckExitSync;
+import nts.uk.ctx.at.request.dom.application.applist.service.content.AppContentService;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppCompltLeaveFull;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppContentDetailCMM045;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppDetailInfoRepository;
+import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppHolidayWorkDataOutput;
+import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppOvertimeDataOutput;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppStampDataOutput;
+import nts.uk.ctx.at.request.dom.application.applist.service.detail.CompLeaveAppDataOutput;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.ScreenAtr;
+import nts.uk.ctx.at.request.dom.application.applist.service.param.AttendanceNameItem;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTemp;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTempRepository;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailType;
@@ -129,6 +136,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppComp
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository_Old;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp_Old;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode_Old;
+import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDispSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSetting;
@@ -249,6 +257,9 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	
 	@Inject
 	private SyEmployeeAdapter syEmployeeAdapter;
+	
+	@Inject
+	private AppContentService appContentService;
 	
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
@@ -1633,70 +1644,117 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 			ReflectedState reflectedState = application.getAppReflectedState();
 			// アルゴリズム「承認状況申請承認者取得」を実行する
 			List<PhaseApproverStt> phaseApproverSttLst = this.getApplicationApproverStt(appPair);
+			Optional<ApplicationTypeDisplay> opAppTypeDisplay = Optional.empty();
 			// ドメインモデル「申請」．申請種類をチェック
 			String content = "";
 			switch (application.getAppType()) {
 			case COMPLEMENT_LEAVE_APPLICATION:
+				// 振休振出申請データを作成( Tạo data application nghỉ bù làm bù)
+				CompLeaveAppDataOutput compLeaveAppDataOutput = appContentDetailCMM045.getContentComplementLeave(
+						application, 
+						companyID, 
+						apprSttContentPrepareOutput.getWorkTypeLst(), 
+						DisplayAtr.NOT_DISPLAY, 
+						ScreenAtr.KAF018);
+				content = compLeaveAppDataOutput.getContent();
 				break;
 			case ABSENCE_APPLICATION:
+				// 申請一覧リスト取得休暇 (Ngày nghỉ lấy  Application list)
+				content = appContentDetailCMM045.getContentApplyForLeave(
+						application, 
+						companyID, 
+						apprSttContentPrepareOutput.getWorkTypeLst(), 
+						DisplayAtr.NOT_DISPLAY,
+						ScreenAtr.KAF018);
 				break;
 			case GO_RETURN_DIRECTLY_APPLICATION:
 				// 直行直帰申請データを作成 ( Tạo dữ liệu đơn xin đi làm, về nhà thẳng)
 				content = appContentDetailCMM045.getContentGoBack(
 						application, 
-						apprSttContentPrepareOutput.getApprovalListDisplaySetting().getAppReasonDisAtr(), 
+						DisplayAtr.NOT_DISPLAY, 
 						apprSttContentPrepareOutput.getWorkTimeSettingLst(), 
 						apprSttContentPrepareOutput.getWorkTypeLst(), 
-						ScreenAtr.CMM045);
+						ScreenAtr.KAF018);
 				break;
 			case WORK_CHANGE_APPLICATION:
 				// 勤務変更申請データを作成
 				content = appContentDetailCMM045.getContentWorkChange(
 						application, 
-						apprSttContentPrepareOutput.getApprovalListDisplaySetting().getAppReasonDisAtr(), 
+						DisplayAtr.NOT_DISPLAY, 
 						apprSttContentPrepareOutput.getWorkTimeSettingLst(), 
 						apprSttContentPrepareOutput.getWorkTypeLst(), 
 						companyID);
 				break;
 			case OVER_TIME_APPLICATION: 
+				// 残業申請データを作成
+				AppOvertimeDataOutput appOvertimeDataOutput = appContentDetailCMM045.createOvertimeContent(
+						application, 
+						apprSttContentPrepareOutput.getWorkTypeLst(), 
+						apprSttContentPrepareOutput.getWorkTimeSettingLst(), 
+						apprSttContentPrepareOutput.getAttendanceNameItemLst(), 
+						ApplicationListAtr.APPLICATION, 
+						apprSttContentPrepareOutput.getApprovalListDisplaySetting(), 
+						companyID, 
+						Collections.emptyMap());
+				content = appOvertimeDataOutput.getAppContent();
+				opAppTypeDisplay = appOvertimeDataOutput.getOpAppTypeDisplay();
 				break;
 			case HOLIDAY_WORK_APPLICATION:
+				// 休出時間申請データを作成
+				AppHolidayWorkDataOutput appHolidayWorkDataOutput = appContentDetailCMM045.createHolidayWorkContent(
+						application, 
+						apprSttContentPrepareOutput.getWorkTypeLst(), 
+						apprSttContentPrepareOutput.getWorkTimeSettingLst(), 
+						apprSttContentPrepareOutput.getAttendanceNameItemLst(), 
+						ApplicationListAtr.APPLICATION, 
+						apprSttContentPrepareOutput.getApprovalListDisplaySetting(), 
+						companyID,
+						Collections.emptyMap());
+				content = appHolidayWorkDataOutput.getAppContent();
 				break;
 			case BUSINESS_TRIP_APPLICATION:
 				// 出張申請データを作成
 				content = appContentDetailCMM045.createBusinessTripData(
 						application, 
-						apprSttContentPrepareOutput.getApprovalListDisplaySetting().getAppReasonDisAtr(), 
-						ScreenAtr.CMM045, 
+						DisplayAtr.NOT_DISPLAY, 
+						ScreenAtr.KAF018, 
 						companyID);
 				break;
 			case OPTIONAL_ITEM_APPLICATION:
+				// 任意申請データを作成
+				content = appContentDetailCMM045.createOptionalItemApp(
+						application, 
+						DisplayAtr.NOT_DISPLAY, 
+						ScreenAtr.KAF018, 
+						companyID);
 				break;
 			case STAMP_APPLICATION:
 				// 打刻申請データを作成
 				AppStampDataOutput appStampDataOutput = appContentDetailCMM045.createAppStampData(
 						application, 
-						apprSttContentPrepareOutput.getApprovalListDisplaySetting().getAppReasonDisAtr(), 
-						ScreenAtr.CMM045, 
+						DisplayAtr.NOT_DISPLAY, 
+						ScreenAtr.KAF018, 
 						companyID, 
 						null);
 				content = appStampDataOutput.getAppContent();
+				opAppTypeDisplay = appStampDataOutput.getOpAppTypeDisplay();
 				break;
 			case ANNUAL_HOLIDAY_APPLICATION:
+				// 時間休暇申請データを作成
 				break;
 			case EARLY_LEAVE_CANCEL_APPLICATION:
 				// 遅刻早退取消申請データを作成
 				content = appContentDetailCMM045.createArrivedLateLeaveEarlyData(
 						application, 
-						apprSttContentPrepareOutput.getApprovalListDisplaySetting().getAppReasonDisAtr(), 
-						ScreenAtr.CMM045, 
+						DisplayAtr.NOT_DISPLAY, 
+						ScreenAtr.KAF018, 
 						companyID);
 				break;
 			default:
 				break;
 			}
 			
-			result.add(new ApprSttEmpDateContent(application, content, reflectedState, phaseApproverSttLst));
+			result.add(new ApprSttEmpDateContent(application, content, reflectedState, phaseApproverSttLst, opAppTypeDisplay));
 		}
 		return result.stream().sorted(Comparator.comparing((ApprSttEmpDateContent x) -> {
 			return x.getApplication().getAppDate().getApplicationDate().toString() + x.getApplication().getAppType().value;
@@ -1712,8 +1770,8 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 		// ドメインモデル「勤務種類」を取得(Lấy WorkType)
 		List<WorkType> workTypeLst = workTypeRepository.findByCompanyId(companyID);
 		// 勤怠名称を取得 ( Lấy tên working time)
-		// chưa đối ứng
-		return new ApprSttContentPrepareOutput(approvalListDisplaySetting, workTypeLst, workTimeSettingLst);
+		List<AttendanceNameItem> attendanceNameItemLst = appContentService.getAttendanceNameItemLst(companyID);
+		return new ApprSttContentPrepareOutput(approvalListDisplaySetting, workTypeLst, workTimeSettingLst, attendanceNameItemLst);
 	}
 
 	@Override
@@ -2121,6 +2179,7 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 	@Override
 	public List<String> getApprSttUnapprovedAppTarget(List<ApprovalPhaseStateImport_New> phaseLst, GeneralDate appDate) {
 		List<String> result = new ArrayList<>();
+		phaseLst.sort(Comparator.comparing(ApprovalPhaseStateImport_New::getPhaseOrder).reversed());
 		for(ApprovalPhaseStateImport_New phase : phaseLst) {
 			if(phase.getApprovalAtr()==ApprovalBehaviorAtrImport_New.APPROVED || phase.getApprovalAtr()==ApprovalBehaviorAtrImport_New.DENIAL) {
 				continue;
@@ -2131,15 +2190,14 @@ public class ApprovalStatusServiceImpl implements ApprovalStatusService {
 					if(state.getApprovalAtr()==ApprovalBehaviorAtrImport_New.APPROVED || state.getApprovalAtr()==ApprovalBehaviorAtrImport_New.DENIAL) {
 						continue;
 					}
-					List<String> targetLst = this.getApprSttUnapprovedAppPerson(Arrays.asList(state.getApproverID()), appDate);
-					if(!CollectionUtil.isEmpty(targetLst)) {
-						result = targetLst;
+					result.addAll(this.getApprSttUnapprovedAppPerson(Arrays.asList(state.getApproverID()), appDate));
+					if(!CollectionUtil.isEmpty(result)) {
 						isBreak = true;
 					}
 				}
-				if(isBreak) {
-					break;
-				}
+			}
+			if(isBreak) {
+				break;
 			}
 		}
 		return result;

@@ -7,7 +7,9 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarly;
+import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImage;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
+import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 
 public class GetApplicationForReflect {
@@ -36,7 +38,14 @@ public class GetApplicationForReflect {
 			return null;
 		case STAMP_APPLICATION:
 			// 7：打刻申請
-			return require.findAppStamp(companyId, appID, app).orElse(null);
+			if(app.getOpStampRequestMode().get().equals(StampRequestMode.STAMP_ADDITIONAL)) {
+				//打刻申請
+				return require.findAppStamp(companyId, appID, app).orElse(null);
+			}else {
+				//レコーダイメージ申請
+				return require.findAppRecordImage(companyId, appID, app).orElse(null);
+			}
+			
 		case ANNUAL_HOLIDAY_APPLICATION:
 			// TODO: 8：時間休暇申請
 			return null;
@@ -61,11 +70,13 @@ public class GetApplicationForReflect {
 		public Optional<AppWorkChange> findAppWorkCg(String companyId, String appID, Application app);
 
 		public Optional<GoBackDirectly> findGoBack(String companyId, String appID, Application app);
-
+		
 		public Optional<AppStamp> findAppStamp(String companyId, String appID, Application app);
 
 		public Optional<ArrivedLateLeaveEarly> findArrivedLateLeaveEarly(String companyId, String appID, Application application);
 
 		public Optional<BusinessTrip> findBusinessTripApp(String companyId, String appID, Application app);
+		
+		public Optional<AppRecordImage> findAppRecordImage(String companyId, String appID, Application app);
 	}
 }

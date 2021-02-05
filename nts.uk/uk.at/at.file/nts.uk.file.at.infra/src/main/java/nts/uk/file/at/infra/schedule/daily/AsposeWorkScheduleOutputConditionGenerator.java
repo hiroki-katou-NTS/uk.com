@@ -459,6 +459,8 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			dateRow = 0;
 			
 			WorksheetCollection sheetCollection = workbook.getWorksheets();
+			// set work sheet name 
+			String sheetName = optOutputItemDailyWork.isPresent() ? optOutputItemDailyWork.get().getItemName().v() : WorkScheOutputConstants.SHEET_NAME;
 			
 			// Write header data
 			writeHeaderData(query, outputItemDailyWork, sheet, reportData, dateRow);
@@ -488,8 +490,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 
 			// Get index of temp sheet
 			int indexTempSheet = sheet.getIndex();
-			WorkSheetInfo sheetInfo = new WorkSheetInfo(sheet, currentRow, indexTempSheet);
-
+			WorkSheetInfo sheetInfo = new WorkSheetInfo(sheet, currentRow, indexTempSheet, sheetName);
 			// Copy sheet
 			sheet = this.copySheet(sheetCollection, sheetInfo);
 			sheetInfo.setSheet(sheet);
@@ -2145,7 +2146,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		Cells cells = sheet.getCells();
 		Cell periodCell = cells.get(dateRow,0);
 		
-		DateTimeFormatter jpFormatter = DateTimeFormatter.ofPattern("yyyy/M/d (E)", Locale.JAPAN);
+		DateTimeFormatter jpFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd (E)", Locale.JAPAN);
 		String periodStr = TextResource.localize("KWR001_112") + " "
 							+ query.getStartDate().toLocalDate().format(jpFormatter) + " "
 							+ WorkScheOutputConstants.PERIOD_SYMBOL + " "
@@ -3871,7 +3872,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		Worksheet ws = wsc.get(wsc.getCount() - 1);
 		// sheet name
 		sheetInfo.plusNewSheetIndex();
-		String sheetName = WorkScheOutputConstants.SHEET_NAME + sheetInfo.getNewSheetIndex();
+		String sheetName = sheetInfo.getSheetName();
 		ws.setName(sheetName);
 		return ws;
 	}

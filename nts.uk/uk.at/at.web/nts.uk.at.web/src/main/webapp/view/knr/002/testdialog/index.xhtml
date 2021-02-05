@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="knr002.test.style.css" />
+			<com:scriptfile path="knr002.test.service.js" />
+			<com:scriptfile path="knr002.test.vm.js" />
+			<com:scriptfile path="knr002.test.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+
+			<!-- Function: New, Save, Delete, MasterList  -->
+			<div id="functions-area">
+				<!-- -->
+				<button id="test_B_Dialog"
+					data-bind="click : test_B_Dialog">B_Log Display</button>
+				<!-- -->
+				<button id="test_D_Dialog"
+					data-bind="click : test_D_Dialog">D_Remote Settings</button>
+					<!-- -->
+				<button id="test_F_Dialog"
+					data-bind="click : test_F_Dialog">F_Recovery target</button>
+				<!-- -->
+				<button id="test_G_Dialog"
+					data-bind="click : test_G_Dialog">G_Tranfer content</button>
+					<!-- -->
+				<button id="test_H_Dialog"
+					data-bind="click : test_H_Dialog">H_Personal Info</button>
+				<!-- -->
+				<button id="test_K_Dialog"
+					data-bind="click : test_K_Dialog">K_Reservation menu</button>
+			</div>
+			<!-- Content -->
+			<div class="fixed-flex-layout" id="contents-area">
+				<TEXTAREA rows="7" cols="77" data-bind="value: sharedContent"></TEXTAREA>
+			</div>
+
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
