@@ -1,55 +1,69 @@
 module nts.uk.ui.ktg005.a {
 
-    const requestUrl = {
+	const REST_API = {
 		startScreenA: 'screen/at/ktg/ktg005/start_screen_a',
 		getOptionalWidgetDisplay: "screen/at/OptionalWidget/getOptionalWidgetDisplay"
-	}
-    @component({
-        name: 'ktg-005-a',
-        template: `
-		<div class="ktg-005">
-			<div id="top_title">
-			<!-- A1_1 -->
+	};
 
-				<div class="limited-label"
-					style="display: inline-block; margin-left: 7px; vertical-align: middle; line-height: 45px; width: 135px;"
-					data-bind="text:executionAppResult().topPagePartName"></div>
-
-
-				<div class="col_line_2">
-					<!-- A1_2 -->
-					<button style="margin: 8px 10px 0px 0px;" class="button-group"
-						data-bind="icon: 85 ,click:jumpToCmm045"></button>
-					<!-- A1_3 -->
-					<div
-						style="display: inline-block; margin-right: 15px; vertical-align: middle; line-height: 45px;" data-bind="text: $i18n('KTG005_1')"></div>
-					<!-- A1_4 -->
-
-					<button style="margin-top: 8px" class="button-group"
-						data-bind="icon: 5, click:openScreenB ,visible:executionAppResult().employeeCharge == true"></button>
-				</div>
-			</div>
-			<div id="content" data-bind="with:executionAppResult"
-				style="padding: 0px 10px">
-				<!-- ko foreach: appSettings -->
-					<div class="div_line border">
-						<div class="col_line_1">
-							<!-- A2_1 -->
-							<div class="label" data-bind="text: $component.getLabel(item)"></div>
-						</div>
-						<div class="col_line_2">
-							<!-- A2_2 -->
-							<div class="label" data-bind="text: $component.getText(item)"></div>
-						</div>
-					</div>
-				<!-- /ko -->
+	@component({
+		name: 'ktg-005-a',
+		template: `
+		<div class="widget-title">
+			<table>
+				<colgroup>
+					<col width="auto" />
+					<col width="auto" />
+					<col width="auto" />
+					<col width="41px" />
+				</colgroup>
+				<thead>
+					<tr data-bind="with: $component.executionAppResult">
+						<th data-bind="i18n: topPagePartName"></th>
+						<th>
+							<button class="icon" data-bind="click: function() { $component.jumpToCmm045() }">
+								<i data-bind="ntsIcon: { no: 85 }"></i>
+							</button>
+						</th>
+						<th data-bind="i18n: 'KTG005_1'"></th>
+						<th>
+							<button class="icon" data-bind="
+									click: function() { $component.openScreenB() },
+									visible: employeeCharge
+								">
+								<i data-bind="ntsIcon: { no: 5 }"></i>
+							</button>
+						</th>
+					</tr>
+				</thead>
+			</table>
+		</div>
+		<div class="ktg-005-a" data-bind="widget-content: 100">
+			<div data-bind="with: $component.executionAppResult">
+				<table>
+					<colgroup>
+						<col width="auto" />
+						<col width="180px" />
+					</colgroup>
+					<tbody data-bind="foreach: { data: appSettings, as: 'row' }">
+						<tr>
+							<td data-bind="i18n: $component.getLabel(item)"></td>
+							<td class="text-right" data-bind="i18n: $component.getText(item)"></td>
+						</tr>
+					</tbody>
+				</table>
 			</div>
 		</div>
+		<style rel="stylesheet">
+			.ktg-005-a .text-right {
+				text-align: right;
+			}
+		</style>
 		`
 	})
-    export class KTG005AComponent extends ko.ViewModel {
+	export class KTG005AComponent extends ko.ViewModel {
+		widget: string = 'KTG005A';
 
-        executionAppResult: KnockoutObservable<IExecutionAppResult> = ko.observable({
+		executionAppResult: KnockoutObservable<IExecutionAppResult> = ko.observable({
 			topPagePartName: '',
 			numberApprovals: 0,
 			numberNotApprovals: 0,
@@ -61,112 +75,116 @@ module nts.uk.ui.ktg005.a {
 			employeeCharge: false
 		});
 
+		created() {
+			const vm = this;
+			const { employeeId, companyId } = vm.$user;
+			const cache = nts.uk.ui.windows.getShared('cache');
+			const topPagePartCode = $(location).attr('search').split('=')[1];
 
-		constructor() {
-			super();
-		}
+			vm.$blockui('invisibleView')
+				.then(() => vm.$ajax('at', REST_API.getOptionalWidgetDisplay, topPagePartCode))
+				.then((widDisplay: IOptionalWidgetDisplay) => {
+					const { datePeriodDto } = widDisplay;
+					const { currentOrNextMonth } = cache || { currentOrNextMonth: '1' };
+					const startDate = currentOrNextMonth == "1" ? datePeriodDto.strCurrentMonth : datePeriodDto.strNextMonth;
+					const endDate = currentOrNextMonth == "1" ? datePeriodDto.endCurrentMonth : datePeriodDto.endNextMonth;
 
-		created(params: any) {
+					return vm.$ajax('at', REST_API.startScreenA, { companyId, employeeId, startDate, endDate });
+				})
+				.then((setting: IExecutionAppResult) => {
+					setting.appSettings = _
+						.chain(setting.appSettings)
+						.sortBy(['item'])
+						.filter(['displayType', 1])
+						.value();
 
-			let vm = this;
-
-			vm.loadData();
-        }
-        
-        mounted() {
-            const vm = this;
-        }
-
-		loadData() {
-
-			let vm = this,
-				cache = nts.uk.ui.windows.getShared('cache'),
-                topPagePartCode = $(location).attr('search').split('=')[1];
-
-			vm.$ajax('at', requestUrl.getOptionalWidgetDisplay, topPagePartCode).done((widDisplay: IOptionalWidgetDisplay) => {
-				let
-					query = cache ? {
-						companyId: vm.$user.companyId,
-						startDate: cache.currentOrNextMonth == "1" ? widDisplay.datePeriodDto.strCurrentMonth : widDisplay.datePeriodDto.strNextMonth,
-						endDate: cache.currentOrNextMonth == "1" ? widDisplay.datePeriodDto.endCurrentMonth : widDisplay.datePeriodDto.endNextMonth,
-						employeeId: vm.$user.employeeId
-					} :
-						{
-							companyId: vm.$user.companyId,
-							startDate: widDisplay.datePeriodDto.strCurrentMonth,
-							endDate: widDisplay.datePeriodDto.endCurrentMonth,
-							employeeId: vm.$user.employeeId
-						}
-					;
-				vm.$blockui("invisible");
-				vm.$ajax('at',requestUrl.startScreenA, query).done((setting: IExecutionAppResult) => {
-					setting.appSettings = _.chain(setting.appSettings).sortBy(['item']).filter(['displayType', 1]).value();
 					vm.executionAppResult(setting);
-				}).fail((error) => {
-					this.$dialog.alert({ messageId: error.messageId });
-				}).always(() => {
-					this.$blockui("clear");
-				});
-			});
+				})
+				.fail((error) => this.$dialog.alert({ messageId: error.messageId }))
+				.always(() => this.$blockui("clearView"));
 		}
 
-		getText(item: ApplicationStatusWidgetItem) {
-			let vm = this,
+		getText(itemType: ApplicationStatusWidgetItem) {
+			const vm = this;
+			const {
+				deadlineSetting,
+				dueDate,
+				numberApprovals,
+				numberNotApprovals,
+				numberDenials,
+				numberRemand
+			} = vm.executionAppResult();
+			const {
+				ApplicationDeadlineForThisMonth,
+				NumberOfApprovedCases,
+				NumberOfDenial,
+				NumberOfRemand,
+				NumberOfUnApprovedCases
+			} = ApplicationStatusWidgetItem;
 
-				result = "";
-			if (item === ApplicationStatusWidgetItem.ApplicationDeadlineForThisMonth) {
-				if (vm.executionAppResult().deadlineSetting === true) {
-					result = moment(vm.executionAppResult().dueDate, 'yyyy/MM/DD HH:mm:ss').format('MM/DD(dd)')
-				} else {
-					result = vm.$i18n.text("KTG005_8");
-				}
-			} else {
-				if (item === ApplicationStatusWidgetItem.NumberOfApprovedCases) {
-					result = vm.$i18n.text("KTG005_7", [vm.executionAppResult().numberApprovals.toString()]);
-				}
-				if (item === ApplicationStatusWidgetItem.NumberOfUnApprovedCases) {
-					result = vm.$i18n.text("KTG005_7", [vm.executionAppResult().numberNotApprovals.toString()]);
-				}
-				if (item === ApplicationStatusWidgetItem.NumberOfDenial) {
-					result = vm.$i18n.text("KTG005_7", [vm.executionAppResult().numberDenials.toString()]);
-				}
-				if (item === ApplicationStatusWidgetItem.NumberOfRemand) {
-					result = vm.$i18n.text("KTG005_7", [vm.executionAppResult().numberRemand.toString()]);
-				}
 
+			switch (itemType) {
+				case NumberOfApprovedCases:
+					return vm.$i18n.text("KTG005_7", [`${numberApprovals}`]);
+				case NumberOfUnApprovedCases:
+					return vm.$i18n.text("KTG005_7", [`${numberNotApprovals}`]);
+				case NumberOfDenial:
+					return vm.$i18n.text("KTG005_7", [`${numberDenials}`]);
+				case NumberOfRemand:
+					return vm.$i18n.text("KTG005_7", [`${numberRemand}`]);
+				case ApplicationDeadlineForThisMonth:
+					if (deadlineSetting === true) {
+						return moment(dueDate, 'yyyy/MM/DD HH:mm:ss').format('MM/DD(dd)')
+					}
+
+					return vm.$i18n('KTG005_8');
+				default:
+					return '';
 			}
-			return result;
 		}
 
-		getLabel(itemType: number) {
-			const itemText = [
-				{ itemType: ApplicationStatusWidgetItem.NumberOfApprovedCases, text: 'KTG005_3' }
-				, { itemType: ApplicationStatusWidgetItem.NumberOfUnApprovedCases, text: 'KTG005_4' }
-				, { itemType: ApplicationStatusWidgetItem.NumberOfDenial, text: 'KTG005_5' }
-				, { itemType: ApplicationStatusWidgetItem.NumberOfRemand, text: 'KTG005_2' }
-				, { itemType: ApplicationStatusWidgetItem.ApplicationDeadlineForThisMonth, text: 'KTG005_6' }];
-			let item = _.find(itemText, ['itemType', itemType]),
-				vm = new ko.ViewModel();
+		getLabel(itemType: ApplicationStatusWidgetItem) {
+			const vm = this;
+			const {
+				ApplicationDeadlineForThisMonth,
+				NumberOfApprovedCases,
+				NumberOfDenial,
+				NumberOfRemand,
+				NumberOfUnApprovedCases
+			} = ApplicationStatusWidgetItem;
 
-			return item ? vm.$i18n.text(item.text) : "";
+			switch (itemType) {
+				case NumberOfApprovedCases:
+					return vm.$i18n('KTG005_3');
+				case NumberOfUnApprovedCases:
+					return vm.$i18n('KTG005_4');
+				case NumberOfDenial:
+					return vm.$i18n('KTG005_5');
+				case NumberOfRemand:
+					return vm.$i18n('KTG005_2');
+				case ApplicationDeadlineForThisMonth:
+					return vm.$i18n('KTG005_6');
+				default:
+					return '';
+			}
 		}
 
 		jumpToCmm045() {
 			let vm = this;
 
-			vm.$jump.self("/view/cmm/045/a/index.xhtml?a=0");
+			vm.$jump('at', '/view/cmm/045/a/index.xhtml?a=0');
 		}
 
 		openScreenB() {
 			let vm = this;
 
-			vm.$window.modal("/view/ktg/005/b/index.xhtml").then(() => {
-				vm.loadData();
-			});
+			vm.$window
+				.modal('at', '/view/ktg/005/b/index.xhtml')
+				.then(() => vm.created());
 		}
-    }
+	}
 
-    export interface IOptionalWidgetDisplay {
+	export interface IOptionalWidgetDisplay {
 		datePeriodDto: IDatePeriodDto;
 		optionalWidgetImport: IOptionalWidgetImport;
 	}
@@ -191,8 +209,6 @@ module nts.uk.ui.ktg005.a {
 		displayItemType: number;
 		notUseAtr: number;
 	}
-
-
 
 	export interface IExecutionAppResult {
 		//名称
@@ -234,6 +250,5 @@ module nts.uk.ui.ktg005.a {
 		NumberOfRemand = 3,
 		//今月の申請締め切り日
 		ApplicationDeadlineForThisMonth = 4
-
 	}
 }

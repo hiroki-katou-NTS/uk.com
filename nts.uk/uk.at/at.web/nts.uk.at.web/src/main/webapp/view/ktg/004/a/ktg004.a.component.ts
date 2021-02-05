@@ -56,12 +56,10 @@ module nts.uk.ui.ktg004.a {
                         <tbody data-bind="foreach: { data: $component.itemsDisplay, as: 'row' }">
                             <tr>
                                 <td data-bind="i18n: row.name"></td>
-                                <td>
-                                    <!-- ko if: row.btn --> 
-                                    <button data-bind="click: $component.openKDW003">
+                                <td data-bind="if: row.btn">
+                                    <button class="icon" data-bind="click: function() { $component.openKDW003() }">
                                         <i data-bind="ntsIcon: { no: 145 }"></i>
                                     </button>
-                                    <!-- /ko -->
                                 </td>
                                 <td class="text-right" data-bind="i18n: row.text"></td>
                             </tr>
