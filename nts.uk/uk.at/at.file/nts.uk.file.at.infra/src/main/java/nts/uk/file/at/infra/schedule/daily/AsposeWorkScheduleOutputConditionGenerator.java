@@ -1577,7 +1577,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 						totalGrossVal.setValueType(valueType);
 						
 						if (aVal.value() == null) return;
-						
+
 						if (valueTypeEnum.isIntegerCountable()) {
 							int currentValue = (int) aVal.value();
 							int personalTotalValue = totalValueTypeEnum.isInteger()
@@ -1587,8 +1587,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 							totalVal.setValue(String.valueOf(personalTotalValue + currentValue));
 							totalGrossVal.setValue(String.valueOf(personalTotalValue + currentValue));
 							employeeData.mapPersonalTotal.put(attdId, personalTotal);
-						}
-						if (valueTypeEnum.isDoubleCountable()) {
+						} else if (valueTypeEnum.isDoubleCountable()) {
 							double currentValueDouble = (double) aVal.value();
 							double personalTotalValue = totalValueTypeEnum.isDouble()
 									? Double.parseDouble(personalTotal.getValue()) : 0d;
@@ -1597,6 +1596,12 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 							totalVal.setValue(String.valueOf(personalTotalValue + currentValueDouble));
 							totalGrossVal.setValue(String.valueOf(personalTotalValue + currentValueDouble));
 							employeeData.mapPersonalTotal.put(attdId, personalTotal);
+						} else {
+							personalTotal.setValue("");
+							employeeData.mapPersonalTotal.put(attdId, personalTotal);
+							totalVal.setValue("");
+							totalGrossVal.setValue("");
+ 							employeeData.mapPersonalTotal.put(attdId, personalTotal);
 						}
 					});
 				});
@@ -1611,7 +1616,6 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			// Sum of all workplace total and workplace hierarchy total
 			workplaceData.lstChildWorkplaceReportData.forEach((k,child) -> {
 				child.getGrossTotal().forEach(item -> {
-					if (item.value() == null) return;
 					Optional<TotalValue> optTotalVal = lstTotalVal.stream().filter(x -> x.getAttendanceId() == item.getAttendanceId()).findFirst();
 					if (optTotalVal.isPresent()) {
 						TotalValue totalVal = optTotalVal.get();
@@ -1620,12 +1624,12 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 						ValueType valueTypeEnum = EnumAdaptor.valueOf(valueType, ValueType.class);
 						if (valueTypeEnum.isIntegerCountable()) {
 							totalVal.setValue(String.valueOf((int) totalVal.value() + Integer.parseInt(item.getValue())));
-						}
-						if (valueTypeEnum.isDoubleCountable()) {
+						} else if (valueTypeEnum.isDoubleCountable()) {
 							totalVal.setValue(String.valueOf((double) totalVal.value() + Double.parseDouble(item.getValue())));
+						} else {
+							totalVal.setValue("");
 						}
-					}
-					else {
+					} else {
 						TotalValue totalVal = new TotalValue();
 						totalVal.setAttendanceId(item.getAttendanceId());
 						totalVal.setValue(item.getValue());
