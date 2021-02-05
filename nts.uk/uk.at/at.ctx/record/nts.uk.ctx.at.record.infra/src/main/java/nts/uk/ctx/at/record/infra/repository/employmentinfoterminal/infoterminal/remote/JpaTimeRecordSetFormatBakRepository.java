@@ -89,7 +89,7 @@ public class JpaTimeRecordSetFormatBakRepository extends JpaRepository implement
 	public List<TimeRecordSetFormat> getTimeRecordSetFormat(ContractCode contractCode, EmpInfoTerminalCode code) {
 		List<KrcdtTrRemoteBackup> listEntity = this.queryProxy().query(FIND_CONTRACTCD_CODE, KrcdtTrRemoteBackup.class)
 				.setParameter("contractCode", contractCode.v())
-				.setParameter("code", Integer.parseInt(code.v()))
+				.setParameter("code", code.v())
 				.getList();
 		TimeRecordSetFormatBak timeRecordSetFormatBak = toDomain(listEntity);
 		if (timeRecordSetFormatBak == null) {
@@ -102,7 +102,7 @@ public class JpaTimeRecordSetFormatBakRepository extends JpaRepository implement
 	public Optional<TimeRecordSetFormatBak> get(ContractCode contractCode, EmpInfoTerminalCode code) {
 		List<KrcdtTrRemoteBackup> listEntity = this.queryProxy().query(FIND_CONTRACTCD_CODE, KrcdtTrRemoteBackup.class)
 				.setParameter("contractCode", contractCode.v())
-				.setParameter("code", Integer.parseInt(code.v()))
+				.setParameter("code", code.v())
 				.getList();
 		return Optional.ofNullable(toDomain(listEntity));
 	}

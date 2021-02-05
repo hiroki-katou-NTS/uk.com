@@ -43,7 +43,7 @@ public class JpaEmpInfoTerComAbPeriodRepository extends JpaRepository implements
 			GeneralDateTime start, GeneralDateTime end) {
 		return this.queryProxy().query(FIND_IN_PERIOD, KfndtTrSignalAbNormal.class)
 				.setParameter("contractCode", contractCode.v())
-				.setParameter("code", Integer.parseInt(code.v()))
+				.setParameter("code", code.v())
 				.setParameter("start", start)
 				.setParameter("end", end)
 				.getList().stream().map(e -> e.toDomain()).collect(Collectors.toList());
