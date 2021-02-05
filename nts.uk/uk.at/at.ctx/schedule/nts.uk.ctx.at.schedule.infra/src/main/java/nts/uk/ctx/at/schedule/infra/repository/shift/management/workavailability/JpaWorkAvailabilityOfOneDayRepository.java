@@ -55,10 +55,19 @@ public class JpaWorkAvailabilityOfOneDayRepository extends JpaRepository impleme
 			" AND YMD between @startDate and @endDate" + 
 			" ORDER BY YMD ASC";
 	
-	private static final String DELETE_ALL = " DELETE FROM KscdtAvailability a " +
+	private static final String DELETE_ALL = " DELETE FROM KscdtAvailability c " +
 											 " WHERE c.pk.employeeID = :empID " +	
 											 " AND c.pk.expectingDate >= :startDate " +
 											 " AND c.pk.expectingDate <= :endDate";
+	private static final String DELETE_ALL_SHIFT = " DELETE FROM KscdtAvailabilityShift c " +
+			 " WHERE c.pk.employeeID = :empID " +	
+			 " AND c.pk.expectingDate >= :startDate " +
+			 " AND c.pk.expectingDate <= :endDate";
+	
+	private static final String DELETE_ALL_TIMEZONE = " DELETE FROM KscdtAvailabilityTs c " +
+			 " WHERE c.pk.employeeID = :empID " +	
+			 " AND c.pk.expectingDate >= :startDate " +
+			 " AND c.pk.expectingDate <= :endDate";
 	
 	@Override
 	public Optional<WorkAvailabilityOfOneDay> get(String employeeID, GeneralDate expectingDate) {
@@ -177,6 +186,14 @@ public class JpaWorkAvailabilityOfOneDayRepository extends JpaRepository impleme
 	@Override
 	public void deleteAll(String empID, DatePeriod datePeriod) {
 		this.getEntityManager().createQuery(DELETE_ALL)
+								.setParameter("empID", empID)
+								.setParameter("startDate", datePeriod.start())
+								.setParameter("endDate", datePeriod.end()).executeUpdate();
+		this.getEntityManager().createQuery(DELETE_ALL_SHIFT)
+								.setParameter("empID", empID)
+								.setParameter("startDate", datePeriod.start())
+								.setParameter("endDate", datePeriod.end()).executeUpdate();
+		this.getEntityManager().createQuery(DELETE_ALL_TIMEZONE)
 								.setParameter("empID", empID)
 								.setParameter("startDate", datePeriod.start())
 								.setParameter("endDate", datePeriod.end()).executeUpdate();
