@@ -38,11 +38,16 @@ module nts.uk.com.view.cmf001.d.viewmodel {
         
         selectedEncoding: KnockoutObservable<number> = ko.observable(3);
         encodingList: KnockoutObservableArray<model.EncodingModel> = ko.observableArray(model.getEncodingList());
+        
+        // B2_7
+        systemTypes: KnockoutObservableArray<model.ItemModel> = ko.observableArray([]);
+        system: KnockoutObservable<number> = ko.observable(1);
 
         constructor(data: any) {
             var self = this;
             let item = _.find(model.getSystemTypes(), x => { return x.code == data.systemType; });
             self.systemType = item;
+            self.system(data.systemType);
 
             self.stdCondSetCd(data.conditionCode);
 
@@ -62,7 +67,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
 
             self.selectedCategoryItem = ko.observable(1);
             $("#fixed-table").ntsFixedTable({ height: 315 });
-
+            
             this.fileId = ko.observable(null);
             this.filename = ko.observable(null);
             this.fileInfo = ko.observable(null);
@@ -428,6 +433,32 @@ module nts.uk.com.view.cmf001.d.viewmodel {
             let self = this,
                 dfd = $.Deferred();
             block.invisible();
+            
+            service.getSysTypes().done(function(data: Array<any>) {
+                if (data && data.length) {
+                    let _rsList: Array<model.ItemModel> = _.map(data, rs => {
+                        return new model.ItemModel(rs.type, rs.name);
+                    });
+                    _rsList = _.sortBy(_rsList, ['code']);
+                    self.systemTypes(_rsList);
+                    self.system(self.systemTypes()[0].code);
+                } else {
+                    nts.uk.request.jump("/view/cmf/001/a/index.xhtml");
+                }
+                dfd.resolve();
+            }).fail(function(error) {
+                alertError(error);
+                dfd.reject();
+            }).always(() => {
+                block.clear();
+            });
+            
+            
+            
+            
+            
+            
+            
             service.getOneStdData(self.stdCondSetCd()).done((cond) => {
                 if (cond) {
                     self.stdCondSet(new model.StandardAcceptanceConditionSetting(cond.systemType, 

@@ -79,7 +79,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
             let self = this;
             nts.uk.request.jump("/view/cmf/001/d/index.xhtml", {
                 systemType: self.systemType(),
-                conditionCode: self.selectedStandardImportSetting().conditionSetCode()
+                conditionCode: self.selectedStandardImportSetting().conditionSetCode(),
             });
         }
         
@@ -118,33 +118,33 @@ module nts.uk.com.view.cmf001.b.viewmodel {
             });
         }
         
-        startPage(): JQueryPromise<any> {
-            let self = this,
-                dfd = $.Deferred();
-            block.invisible();
-            service.getSysTypes().done(function(data: Array<any>) {
-                if (data && data.length) {
-                    let _rsList: Array<model.ItemModel> = _.map(data, rs => {
-                        return new model.ItemModel(rs.type, rs.name);
-                    });
-                    _rsList = _.sortBy(_rsList, ['code']);
-                    self.systemTypes(_rsList);
-                    if (self.init() && !nts.uk.util.isNullOrUndefined(self.transitData) && !nts.uk.util.isNullOrUndefined(self.transitData.sysType))
-                        self.systemType(self.transitData.sysType);
-                    else
-                        self.systemType(self.systemTypes()[0].code);
-                } else {
-                    nts.uk.request.jump("/view/cmf/001/a/index.xhtml");
-                }
-                dfd.resolve();
-            }).fail(function(error) {
-                alertError(error);
-                dfd.reject();
-            }).always(() => {
-                block.clear();
-            });
-            return dfd.promise();
-        }
+//        startPage(): JQueryPromise<any> {
+//            let self = this,
+//                dfd = $.Deferred();
+//            block.invisible();
+//            service.getSysTypes().done(function(data: Array<any>) {
+//                if (data && data.length) {
+//                    let _rsList: Array<model.ItemModel> = _.map(data, rs => {
+//                        return new model.ItemModel(rs.type, rs.name);
+//                    });
+//                    _rsList = _.sortBy(_rsList, ['code']);
+//                    self.systemTypes(_rsList);
+//                    if (self.init() && !nts.uk.util.isNullOrUndefined(self.transitData) && !nts.uk.util.isNullOrUndefined(self.transitData.sysType))
+//                        self.systemType(self.transitData.sysType);
+//                    else
+//                        self.systemType(self.systemTypes()[0].code);
+//                } else {
+//                    nts.uk.request.jump("/view/cmf/001/a/index.xhtml");
+//                }
+//                dfd.resolve();
+//            }).fail(function(error) {
+//                alertError(error);
+//                dfd.reject();
+//            }).always(() => {
+//                block.clear();
+//            });
+//            return dfd.promise();
+//        }
 
         getAllData(code?: string): JQueryPromise<any> {
             let self = this,
