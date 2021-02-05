@@ -50106,6 +50106,127 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var knockout;
+        (function (knockout) {
+            var binding;
+            (function (binding) {
+                var widget;
+                (function (widget_1) {
+                    var WidgetBindingHandler = /** @class */ (function () {
+                        function WidgetBindingHandler() {
+                        }
+                        WidgetBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                            if (element.tagName !== 'DIV') {
+                                element.innerText = 'Please use [div] tag as container of widget';
+                                return;
+                            }
+                            var accessor = valueAccessor();
+                            ko.computed({
+                                read: function () {
+                                    element.innerHTML = '';
+                                    ko.cleanNode(element);
+                                    var component = ko.unwrap(accessor);
+                                    ko.applyBindingsToNode(element, { component: component }, bindingContext);
+                                },
+                                disposeWhenNodeIsRemoved: element
+                            });
+                            element.removeAttribute('data-bind');
+                            element.classList.add('widget-container');
+                            return { controlsDescendantBindings: true };
+                        };
+                        WidgetBindingHandler = __decorate([
+                            handler({
+                                bindingName: 'widget',
+                                validatable: true,
+                                virtual: false
+                            })
+                        ], WidgetBindingHandler);
+                        return WidgetBindingHandler;
+                    }());
+                    widget_1.WidgetBindingHandler = WidgetBindingHandler;
+                    var WidgetResizeContentBindingHandler = /** @class */ (function () {
+                        function WidgetResizeContentBindingHandler() {
+                        }
+                        WidgetResizeContentBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                            var widget = viewModel.widget;
+                            var WG_SIZE = 'WIDGET_SIZE';
+                            var mkv = new ko.ViewModel();
+                            var minHeight = valueAccessor();
+                            var src = allBindingsAccessor.get('src');
+                            if (element.tagName !== 'DIV') {
+                                element.innerText = 'Please use [div] tag with [widget-content] binding';
+                                return { controlsDescendantBindings: false };
+                            }
+                            if (minHeight) {
+                                element.style.minHeight = minHeight + "px";
+                            }
+                            if (src) {
+                                element.innerHTML = '';
+                                var frame_1 = document.createElement('iframe');
+                                frame_1.src = src;
+                                element.appendChild(frame_1);
+                                frame_1
+                                    .contentWindow
+                                    .addEventListener('DOMContentLoaded', function () {
+                                    var wgd = frame_1.contentWindow;
+                                    var event = frame_1.contentDocument.createEvent('Event');
+                                    console.log('dispatching');
+                                    event.initEvent('wg.resize', true, false);
+                                    wgd.dispatchEvent(event);
+                                });
+                            }
+                            $(element)
+                                .removeAttr('data-bind')
+                                .addClass('widget-content')
+                                .resizable({
+                                handles: 's',
+                                resize: function () {
+                                    var offsetHeight = element.offsetHeight;
+                                    if (widget) {
+                                        mkv
+                                            .$window
+                                            .storage(WG_SIZE)
+                                            .then(function (size) { return size || {}; })
+                                            .then(function (size) {
+                                            size[widget] = offsetHeight + 'px';
+                                            mkv.$window.storage(WG_SIZE, size);
+                                        });
+                                    }
+                                }
+                            });
+                            if (widget) {
+                                mkv
+                                    .$window
+                                    .storage(WG_SIZE)
+                                    .then(function (size) {
+                                    if (size) {
+                                        $(element).css({
+                                            height: size[widget]
+                                        });
+                                    }
+                                });
+                            }
+                            return { controlsDescendantBindings: false };
+                        };
+                        WidgetResizeContentBindingHandler = __decorate([
+                            handler({
+                                bindingName: 'widget-content',
+                                validatable: true,
+                                virtual: false
+                            })
+                        ], WidgetResizeContentBindingHandler);
+                        return WidgetResizeContentBindingHandler;
+                    }());
+                    widget_1.WidgetResizeContentBindingHandler = WidgetResizeContentBindingHandler;
+                })(widget = binding.widget || (binding.widget = {}));
+            })(binding = knockout.binding || (knockout.binding = {}));
+        })(knockout = uk.knockout || (uk.knockout = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
 /// <reference path="../reference.ts"/>
 var nts;
 (function (nts) {
