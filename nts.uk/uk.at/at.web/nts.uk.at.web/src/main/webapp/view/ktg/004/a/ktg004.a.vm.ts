@@ -9,6 +9,7 @@ module nts.uk.at.view.ktg004.a.viewmodel {
 	const KTG004_API = {
 		GET_DATA: 'screen/at/ktg004/getData'
 	};
+	
     export class ScreenModel {
         name = ko.observable(''); 
 		selectedSwitch = ko.observable(1);
@@ -17,6 +18,8 @@ module nts.uk.at.view.ktg004.a.viewmodel {
 		remainingNumberInfor = new RemainingNumberInfor();
 		detailedWorkStatusSettings = ko.observable(false);
 		specialHolidaysRemainings: KnockoutObservableArray<SpecialHolidaysRemainings> = ko.observableArray([]);
+
+		show: KnockoutObservable<boolean> = ko.observable(false);
 
         public startPage(): JQueryPromise<any> {
             var self = this;
@@ -53,6 +56,8 @@ module nts.uk.at.view.ktg004.a.viewmodel {
 					$('#setting').css("top", "6px");
 				}
 				$("#contents").css("display", "");
+
+				self.show(true);
 				dfd.resolve();
             }).always(() => {
 				block.clear();
