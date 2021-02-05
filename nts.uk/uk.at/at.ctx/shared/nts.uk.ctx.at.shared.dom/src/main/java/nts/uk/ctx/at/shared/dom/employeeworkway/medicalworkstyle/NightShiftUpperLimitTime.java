@@ -16,12 +16,12 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 public class NightShiftUpperLimitTime implements DomainAggregate{
 	
 	/** 契約コード　**/
-	private ContractCode contractCode;
+	private final String contractCode;
 	
 	/** 夜勤専従者　**/
-	private AttendanceTimeMonth fullTimeWorker;
+	private AttendanceTimeMonth nightShiftWorker;
 	
 	/** 夜勤専従者以外**/
-	private AttendanceTimeMonth otherFullTimeWorker;
+	private AttendanceTimeMonth regularWorker;
 	
 }
