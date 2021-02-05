@@ -174,8 +174,7 @@ module nts.uk.com.view.ccg008.a.Layout2ComponentViewModel {
             });
             wg0Child.style.height = '100%';
             if (_.indexOf(wg0Child, 'ccg005') >= 0) {
-              clearTimeout(resizeTimer);
-              resizeTimer = setTimeout(() => $(window).trigger('ccg005.resize'), 100);
+              $(window).trigger('ccg005.resize');
             }
           })
         }
@@ -227,8 +226,7 @@ module nts.uk.com.view.ccg008.a.Layout2ComponentViewModel {
             });
             wg0Child.style.height = '100%';
             if (wg0Child.getAttribute('id').indexOf('ccg005') >= 0) {
-              clearTimeout(resizeTimer);
-              resizeTimer = setTimeout(() => $(window).trigger('ccg005.resize'), 100);
+              $(window).trigger('ccg005.resize');
             }
           })
         }

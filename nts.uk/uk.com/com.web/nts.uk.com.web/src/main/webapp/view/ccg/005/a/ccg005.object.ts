@@ -18,7 +18,7 @@ module nts.uk.at.view.ccg005.a.object {
   }
 
   export interface AttendanceInformationDto {
-    applicationDtos: any[];                                 //申請
+    applicationDtos: ApplicationDto[];                                 //申請
     sid: string;                                            //社員ID
     attendanceDetailDto: any;                               //詳細出退勤
     avatarDto: UserAvatarDto;                               //個人の顔写真
@@ -28,9 +28,22 @@ module nts.uk.at.view.ccg005.a.object {
     emojiDto: EmployeeEmojiStateDto;                        //社員の感情状態
   }
 
+  export interface ApplicationDto {
+    //申請者
+    sid: string;
+    //申請種類
+    appType: number;
+    //他の種類
+    otherType: number;
+  }
+
   export interface ApplicationNameDto {
-    appName: string;                                        //申請名
-    appType: number;                                        //申請種類
+    //申請名
+    appName: string;
+    //申請種類
+    appType: number;
+    //他の種類
+    otherType: number;
   }
 
   export interface UserAvatarDto {
