@@ -12,7 +12,7 @@ module nts.uk.ui.ktg005.a {
 			<table>
 				<colgroup>
 					<col width="auto" />
-					<col width="auto" />
+					<col width="41px" />
 					<col width="auto" />
 					<col width="41px" />
 				</colgroup>
