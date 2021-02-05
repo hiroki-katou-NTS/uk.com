@@ -124,7 +124,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
 
 
 
-            <tr style="background-color: yellow; height: 45px;">
+            <tr style="height: 45px;"  data-bind="attr:{ class: backgroundColor }">
               <td style="padding-right: 5px; width: 30px; background-color: white;" class="ccg005-apply-binding-avatar">
                 <!-- A4_1 -->
                 <div tabindex=10 data-bind="attr:{ id: 'ccg005-avatar-change-'+sid }, click: $component.onClickAvatar.bind($component, sid)" />
@@ -156,7 +156,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
               <td class="ccg005-pl-5 ccg005-border-groove ccg005-right-unset ccg005-left-unset">
                 <!-- A4_7 -->
                 <span class="ccg005-flex">
-                  <i tabindex=15 class="ccg005-status-img" data-bind="click: $component.initPopupInList.bind($component, $index),ntsIcon: {no: activityStatusIconNo, width: 20, height: 20}"></i>
+                  <i tabindex=15 class="ccg005-status-img" data-bind="click: $component.initPopupInList.bind($component, $index, sid, businessName), ntsIcon: {no: activityStatusIconNo, width: 20, height: 20}"></i>
                 </span>
               </td>
               <td class="ccg005-pl-5 ccg005-border-groove ccg005-left-unset">
@@ -407,8 +407,21 @@ module nts.uk.at.view.ccg005.a.screenModel {
     .pd-left-35 {
       padding-left: 35px;
     }
+
+    .background-color-present {
+      background-color: #99FF99;
+    }
+
+    .background-color-go-out {
+      background-color: #FFFF00;
+    }
+
+    .background-color-holiday {
+      background-color: #D9D9D9;
+    }
   </style>`
   })
+
   export class ViewModel extends ko.ViewModel {
     selectedDate: KnockoutObservable<string> = ko.observable('');
     legendOptions: any = {
@@ -556,7 +569,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
     private subscribeFavorite() {
       const vm = this;
       const selectedFavorite = _.find(vm.favoriteSpecifyData(), item => item.inputDate === vm.favoriteInputDate());
-      if(!selectedFavorite) {
+      if (!selectedFavorite) {
         vm.favoriteInputDate(vm.favoriteSpecifyData()[0].inputDate);
         return;
       }
@@ -618,7 +631,8 @@ module nts.uk.at.view.ccg005.a.screenModel {
           goOutDto: vm.getGoOutViewModel(item.goOutDto),
           emojiIconNo: vm.initEmojiType(item.emojiDto.emojiType),
           businessName: businessName,
-          displayAppIcon: (item.applicationDtos.length > 0)
+          displayAppIcon: (item.applicationDtos.length > 0),
+          backgroundColor: vm.getBackgroundColorClass(item.activityStatusDto)
         });
       }));
     }
@@ -632,6 +646,8 @@ module nts.uk.at.view.ccg005.a.screenModel {
     //handle check-in check-out display
     private getAttendanceDetailViewModel(sid: string, attendanceDetailDto: any): AttendanceDetailViewModel {
       const vm = this;
+
+      //set color for text
       const workColorClass = vm.getClassNameColor(attendanceDetailDto.workColor);
       const checkOutColorClass = vm.getClassNameColor(attendanceDetailDto.checkOutColor);
       const checkInColorClass = vm.getClassNameColor(attendanceDetailDto.checkInColor);
@@ -692,6 +708,22 @@ module nts.uk.at.view.ccg005.a.screenModel {
       }
     }
 
+    //handle background color by activity status
+    private getBackgroundColorClass(status: number): string {
+      switch (status) {
+        case StatusClassfication.PRESENT:
+          return "background-color-present";  //グリーン（#99FF99）
+        case StatusClassfication.GO_OUT:
+          return "background-color-go-out";  //黄色（#FFFF00）
+        case StatusClassfication.HOLIDAY:
+          return "background-color-holiday";  //グレー（#D9D9D9）
+        case StatusClassfication.NOT_PRESENT:
+        case StatusClassfication.GO_HOME:
+        default:
+          return "background-color-default";  //白 (none)
+      }
+    }
+
     private initResizeable(vm: any) {
       $(window).on('ccg005.resize', () => {
         vm.onResizeable(vm);
@@ -700,16 +732,16 @@ module nts.uk.at.view.ccg005.a.screenModel {
 
     private onResizeable(vm: any) {
       const subHeight = $('#ccg005-content').height()
-          - $('.grade-header-top').height()
-          - $('.grade-header-center').height()
-          - $('.grade-header-bottom').height()
-          - $('.grade-body-top').height()
-          - $('.grade-bottom').height()
-          - 40;
-        if (subHeight >= 50) {
-          vm.perPage(_.floor(subHeight / 50));
-        }
-        $('.grade-body-bottom').height(subHeight);
+        - $('.grade-header-top').height()
+        - $('.grade-header-center').height()
+        - $('.grade-header-bottom').height()
+        - $('.grade-body-top').height()
+        - $('.grade-bottom').height()
+        - 40;
+      if (subHeight >= 50) {
+        vm.perPage(_.floor(subHeight / 50));
+      }
+      $('.grade-body-bottom').height(subHeight);
     }
 
     /**
@@ -794,11 +826,11 @@ module nts.uk.at.view.ccg005.a.screenModel {
     /**
      * Popup A4_7
      */
-    initPopupInList(index: any) {
+    initPopupInList(index: any, sid: string, businessName: string) {
       const vm = this;
       const element = $('.ccg005-status-img')[index()];
       vm.indexUpdateItem(index());
-      vm.sIdUpdateStatus(vm.attendanceInformationDtosDisplay()[index()].sid);
+      vm.sIdUpdateStatus(sid);
       if (!vm.isBaseDate()) {
         return;
       }
@@ -809,6 +841,12 @@ module nts.uk.at.view.ccg005.a.screenModel {
       });
       $('#ccg005-status-popup').ntsPopup('toggle')
 
+      //reset goOutParams to screen E
+      vm.goOutParams(new GoOutParam({
+        sid: sid,
+        businessName: businessName,
+        goOutDate: moment.utc().format("YYYY/MM/DD")
+      }));
     }
 
     nextPage() {
@@ -929,6 +967,10 @@ module nts.uk.at.view.ccg005.a.screenModel {
         (ko.bindingHandlers.ntsIcon as any)
           .init($('.ccg005-currentEmoji')[0], () => ({ no: vm.initEmojiType(atdInfo.emojiDto.emojiType), width: 20, height: 30 }));
       }
+      //binding activity
+      const element = $('.ccg005-status-img-A1_7');
+      (ko.bindingHandlers.ntsIcon as any).init(element, () => ({ no: vm.initActivityStatus(atdInfo.activityStatusDto), width: 20, height: 20 }));
+
       // A1_4
       if (atdInfo.commentDto) {
         vm.comment(atdInfo.commentDto.comment);
@@ -1328,6 +1370,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
     emojiIconNo: number;
     businessName: string;
     displayAppIcon: boolean;
+    backgroundColor: string;
     constructor(init?: Partial<AttendanceInformationViewModel>) {
       $.extend(this, init);
     }
