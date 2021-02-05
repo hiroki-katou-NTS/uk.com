@@ -14,7 +14,6 @@ import lombok.Setter;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.HolidayCalculation;
-import nts.uk.ctx.at.shared.dom.worktime.common.IntervalTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSetSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneExtraordTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSet;
@@ -34,9 +33,6 @@ public class WorkTimezoneCommonSetDto implements WorkTimezoneCommonSetSetMemento
 
 	/** The zero H stradd calculate set. */
 	private boolean zeroHStraddCalculateSet;
-
-	/** The interval set. */
-//	private IntervalTimeSettingDto intervalSet;
 
 	/** The sub hol time set. */
 	private List<WorkTimezoneOtherSubHolTimeSetDto> subHolTimeSet;

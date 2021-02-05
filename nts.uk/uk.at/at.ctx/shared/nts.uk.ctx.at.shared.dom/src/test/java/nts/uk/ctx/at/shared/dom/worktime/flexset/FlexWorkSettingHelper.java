@@ -34,10 +34,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTimezoneRoundingSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.HolidayCalculation;
-import nts.uk.ctx.at.shared.dom.worktime.common.IntervalTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.IntervalTimeGetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.common.IntervalTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktime.common.IntervalTimeSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.OTFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.OneDayTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
@@ -545,33 +542,6 @@ public class FlexWorkSettingHelper {
 			return new TimeRoundingSetting(Unit.ROUNDING_TIME_15MIN, Rounding.ROUNDING_DOWN);
 		}
 		
-	}
-	
-	
-	@AllArgsConstructor
-	public static class IntervalTimeSettingOImpl implements IntervalTimeSettingGetMemento{
-
-		@Override
-		public boolean getuseIntervalExemptionTime() {
-			return false;
-		}
-
-		@Override
-		public TimeRoundingSetting getIntervalExemptionTimeRound() {
-			
-			return new TimeRoundingSetting(Unit.ROUNDING_TIME_15MIN, Rounding.ROUNDING_DOWN);
-		}
-
-		@Override
-		public IntervalTime getIntervalTime() {
-			val intervalTimeMemento = new IntervalTimeImpl();
-			return new IntervalTime(intervalTimeMemento);
-		}
-
-		@Override
-		public boolean getuseIntervalTime() {
-			return false;
-		}
 	}
 	
 	@AllArgsConstructor

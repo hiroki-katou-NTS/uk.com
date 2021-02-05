@@ -48,26 +48,6 @@ public class KshmtWorktimeCommonSet extends UkJpaEntity implements Serializable 
 	@Column(name = "OVER_DAY_CALC_SET")
 	private int overDayCalcSet;
 
-	/** The use interval exemp time. */
-	@Column(name = "USE_INTERVAL_EXEMP_TIME")
-	private int useIntervalExempTime;
-
-	/** The interval exemp unit. */
-	@Column(name = "INTERVAL_EXEMP_UNIT")
-	private int intervalExempUnit;
-
-	/** The interval exemp rounding. */
-	@Column(name = "INTERVAL_EXEMP_ROUNDING")
-	private int intervalExempRounding;
-
-	/** The interval time. */
-	@Column(name = "INTERVAL_TIME")
-	private int intervalTime;
-
-	/** The use interval time. */
-	@Column(name = "USE_INTERVAL_TIME")
-	private int useIntervalTime;
-
 	/** The raising salary set. */
 	@Column(name = "RAISING_SALARY_SET")
 	private String raisingSalarySet;
