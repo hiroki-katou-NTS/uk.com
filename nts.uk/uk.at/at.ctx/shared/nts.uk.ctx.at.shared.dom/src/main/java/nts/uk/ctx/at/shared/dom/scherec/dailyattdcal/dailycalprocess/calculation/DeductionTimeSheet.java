@@ -301,7 +301,14 @@ public class DeductionTimeSheet {
 		
 		List<TimeSheetOfDeductionItem> sheetList = new ArrayList<TimeSheetOfDeductionItem>();
 		/* 休憩時間帯取得 */
-		sheetList.addAll(getBreakTimeDeductionForCorrect(todayWorkType, integrationOfWorkTime));
+		sheetList.addAll(getDeductTimeSheetForCalc(
+				dedAtr,
+				todayWorkType,
+				integrationOfWorkTime,
+				integrationOfDaily,
+				oneDayOfRange,
+				attendanceLeaveWork,
+				Optional.empty()));
 		
 		/* 外出時間帯取得 */
 		if(integrationOfDaily.getOutingTime().isPresent()) {
