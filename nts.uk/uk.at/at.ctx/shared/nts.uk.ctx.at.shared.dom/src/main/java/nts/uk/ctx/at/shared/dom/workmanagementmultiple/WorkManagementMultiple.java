@@ -4,7 +4,6 @@ package nts.uk.ctx.at.shared.dom.workmanagementmultiple;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.dom.objecttype.DomainAggregate;
 
 /**
  *  複数回勤務管理
@@ -13,7 +12,7 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
  */
 @Getter
 @AllArgsConstructor
-public class WorkManagementMultiple implements DomainAggregate {
+public class WorkManagementMultiple {
 			
 	/** 会社ID */
 	String companyID;
