@@ -1,13 +1,16 @@
 package nts.uk.file.at.infra.arbitraryperiodsummarytable;
 
 import com.aspose.cells.*;
+import lombok.Data;
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.app.query.arbitraryperiodsummarytable.*;
 import nts.uk.ctx.at.function.dom.arbitraryperiodsummarytable.OutputSettingOfArbitrary;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.CommonAttributesOfForms;
+import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceInfor;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.PrimitiveValueOfAttendanceItem;
 import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsImport;
 import nts.uk.file.at.app.export.arbitraryperiodsummarytable.ArbitraryPeriodSummaryDto;
@@ -25,6 +28,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Stateless
@@ -33,6 +38,8 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
     private static final String TEMPLATE_FILE_ADD = "report/KWR007.xlsx";
     private static final String EXCEL_EXT = ".xlsx";
     private static final String PRINT_AREA = "";
+    private static final int MAX_ITEM_ONE_PAGE = 50;
+    private static final String FORMAT_DATE = "yyyy/MM/dd";
 
 
     @Override
@@ -83,46 +90,82 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
         pageSetup.setZoom(100);
     }
 
-    private void printContents(Worksheet worksheetTemplate, Worksheet worksheet, ArbitraryPeriodSummaryDto dataSource) throws Exception {
-        HorizontalPageBreakCollection pageBreaks = worksheet.getHorizontalPageBreaks();
-        DetailOfArbitrarySchedule data = dataSource.getContent();
-        if (data != null) {
-            List<AttendanceItemDisplayContents> contentsList = data.getContentsList();
-            List<AttendanceDetailDisplayContents> detailDisplayContents = data.getDetailDisplayContents();
+    private void printContents(Worksheet worksheetTemplate, Worksheet worksheet, ArbitraryPeriodSummaryDto dataSource) {
+        try {
+            HorizontalPageBreakCollection pageBreaks = worksheet.getHorizontalPageBreaks();
+            DetailOfArbitrarySchedule data = dataSource.getContent();
+            if (data != null) {
+                val query = dataSource.getQuery();
+                List<AttendanceItemDisplayContents> contentsList = data.getContentsList();
+                List<AttendanceDetailDisplayContents> detailDisplayContents = data.getDetailDisplayContents();
 
-            List<WorkplaceTotalDisplayContent> totalDisplayContents = data.getTotalDisplayContents();
+                List<WorkplaceTotalDisplayContent> totalDisplayContents = data.getTotalDisplayContents();
 
-            List<DisplayContent> totalAll = data.getTotalAll();
+                List<DisplayContent> totalAll = data.getTotalAll();
 
-            List<CumulativeWorkplaceDisplayContent> cumulativeWorkplaceDisplayContents =
-                    data.getCumulativeWorkplaceDisplayContents();
-            int count = 0;
-            int itemOnePage = 0;
-            Cells cellsTemplate = worksheet.getCells();
-            Cells cells = worksheet.getCells();
-            printInfor(worksheetTemplate, worksheet, 2, contentsList);
-            for (int i = 0; i < detailDisplayContents.size(); i++) {
-                val content = detailDisplayContents.get(i);
-                if (i >= 1) {
-                    itemOnePage = 0;
-                    pageBreaks.add(count);
-                    cells.copyRows(cellsTemplate, 0, count,4);
-                    cells.copyRow(cells, 1, count + 1);
-                    cells.copyRow(cells, 2, count + 2);
-                    cells.clearContents(count, 0, cells.getMaxRow(), 16);
+                List<CumulativeWorkplaceDisplayContent> cumulativeWorkplaceDisplayContents =
+                        data.getCumulativeWorkplaceDisplayContents();
+                DatePeriod period = dataSource.getPeriod();
+
+                int count = 0;
+                int itemOnePage = 0;
+                Cells cellsTemplate = worksheet.getCells();
+                Cells cells = worksheet.getCells();
+                int page = 1;
+                boolean pageNew = false;
+                for (int i = 0; i < detailDisplayContents.size(); i++) {
+                    if (i == 0) {
+                        cells.copyRow(cellsTemplate, 0, 0);
+                        cells.clearContents(0,0,1,21);
+
+                        cells.get(0,0).setValue(TextResource.localize("KWR007_301")
+                                + period.start().toString(FORMAT_DATE)+ TextResource.localize("KWR007_307")
+                                + period.end().toString(FORMAT_DATE));
+                        printInfo(worksheetTemplate, worksheet, 2, contentsList, 1);
+                        count += 4;
+                    }
+                    if (pageNew) {
+                        cells.copyRows(cells, 1, count, 4);
+                        pageNew = false;
+                        count += 4;
+                    }
+                    val content = detailDisplayContents.get(i);
+                    int wplHierarchy = Integer.parseInt(content.getHierarchyCode());
+                    int pageBreakWplHierarchy = query.getPageBreakWplHierarchy();
+                    boolean isPageBreakByWpl = query.isPageBreakByWpl();
+
+                    if ((isPageBreakByWpl && i >= 1) || (wplHierarchy > pageBreakWplHierarchy)) {
+                        pageBreaks.add(count);
+                        pageNew = true;
+                    }
+                    List<DisplayedEmployee> listDisplayedEmployees = content.getListDisplayedEmployees();
+                        cells.copyRow(cells, 1, count + 1);
+                        cells.copyRow(cells, 2, count + 2);
+                        cells.clearContents(count, 0, cells.getMaxRow(), 16);
+
+                    cells.get(count, 0).setValue(TextResource.localize("")
+                            + "　" + content.getWorkplaceCd() + "KWR007_302" + content.getWorkplaceName());
+                    //cells.get(count + 1, 0).setValue(TextResource.localize("") + "　" + content.getEmployeeCode() + "　" + content.getEmployeeName());
                 }
-                cells.get(count, 0).setValue(TextResource.localize("")
-                        + "　" + content.getWorkplaceCd() + "　" + content.getWorkplaceName());
-                //cells.get(count + 1, 0).setValue(TextResource.localize("") + "　" + content.getEmployeeCode() + "　" + content.getEmployeeName());
+                PageSetup pageSetup = worksheet.getPageSetup();
+                pageSetup.setPrintArea(PRINT_AREA + count);
             }
-            PageSetup pageSetup = worksheet.getPageSetup();
-            pageSetup.setPrintArea(PRINT_AREA + count);
+        } catch (Exception e) {
+            System.out.println(e.toString());
         }
+
 
     }
 
-    private void printInfor(Worksheet worksheetTemplate, Worksheet worksheet, int rowCount, List<AttendanceItemDisplayContents> contentsList) {
+    private void printInfo(Worksheet worksheetTemplate, Worksheet worksheet, int rowCount,
+                           List<AttendanceItemDisplayContents> contentsList, int destinationRowIndex) throws Exception {
+
+        Cells cellsTemplate = worksheetTemplate.getCells();
         Cells cells = worksheet.getCells();
+        cells.copyRows(cellsTemplate, 0, destinationRowIndex, 4);
+        cells.clearContents(0,0,cells.getMaxRow(),cells.getMaxColumn());
+        cells.merge(1,1,4,1,true);
+        cells.get(1,1).setValue(TextResource.localize(""));
         cells.get(rowCount, 2).setValue("");
         cells.get(rowCount, 14).setValue(TextResource.localize(""));
     }

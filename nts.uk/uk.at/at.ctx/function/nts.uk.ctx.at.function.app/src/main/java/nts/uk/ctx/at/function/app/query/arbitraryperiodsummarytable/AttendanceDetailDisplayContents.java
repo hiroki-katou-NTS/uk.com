@@ -19,6 +19,8 @@ public class AttendanceDetailDisplayContents {
     private String workplaceCd;
     // 職場名称
     private String workplaceName;
+    //
+    private String hierarchyCode;
     // 表示社員一覧
     private List<DisplayedEmployee> listDisplayedEmployees;
 }

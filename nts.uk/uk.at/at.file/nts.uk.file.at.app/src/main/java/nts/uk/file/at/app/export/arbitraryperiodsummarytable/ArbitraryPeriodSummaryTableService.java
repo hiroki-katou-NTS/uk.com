@@ -103,11 +103,13 @@ public class ArbitraryPeriodSummaryTableService extends ExportService<ArbitraryP
                 query.isTotal(),
                 query.isCumulativeWorkplace(),
                 query.getWorkplacePrintTargetList());
+
         ArbitraryPeriodSummaryDto data = new ArbitraryPeriodSummaryDto(
                 rs,
                 ofArbitrary,
                 datePeriod,
-                companyInfo
+                companyInfo,
+                query
         );
         periodSummaryTableGenerator.generate(generatorContext, data);
     }

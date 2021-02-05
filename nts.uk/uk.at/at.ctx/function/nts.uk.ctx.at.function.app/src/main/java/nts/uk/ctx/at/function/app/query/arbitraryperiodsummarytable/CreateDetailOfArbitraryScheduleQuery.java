@@ -136,6 +136,7 @@ public class CreateDetailOfArbitraryScheduleQuery {
                             e.getWorkplaceId(),
                             e.getWorkplaceCode(),
                             e.getWorkplaceName(),
+                            e.getHierarchyCode(),
                             epls.stream().map(i -> new DisplayedEmployee(
                                     getListContent(mapEplIdAndDisplayContent.getOrDefault(i, Collections.emptyList()),
                                             outputItemList, getAggregableMonthlyAttId),
