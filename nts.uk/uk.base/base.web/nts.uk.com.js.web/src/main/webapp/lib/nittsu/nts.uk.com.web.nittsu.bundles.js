@@ -4893,9 +4893,6 @@ var nts;
                                     userOptions = [new MenuItem(getText('CCG020_5')), new MenuItem(getText('CCG020_4')), new MenuItem(getText('CCG020_3'))];
                                 else
                                     userOptions = [new MenuItem(getText('CCG020_5')), new MenuItem(getText('CCG020_3'))];
-                                if (!__viewContext.user.isEmployee) {
-                                    userOptions.shift();
-                                }
                                 var $userOptions = $("<ul class='menu-items user-options'/>").appendTo($userSettings);
                                 _.forEach(userOptions, function (option, i) {
                                     var $li = $("<li class='menu-item'/>").text(option.name);
@@ -4932,6 +4929,11 @@ var nts;
                                             });
                                         }
                                     });
+                                });
+                                nts.uk.request.ajax(constants.APP_ID, constants.canOpenInfor).done(function (canOpenInfor) {
+                                    if (!__viewContext.user.isEmployee || !canOpenInfor) {
+                                        $userOptions.find(':first-child').remove();
+                                    }
                                 });
                                 $companyList.css("right", $user.outerWidth() + 30);
                                 $userSettings.on(constants.CLICK, function () {
@@ -5171,6 +5173,7 @@ var nts;
                     constants.ShowManual = "sys/portal/webmenu/showmanual";
                     constants.Logout = "sys/portal/webmenu/logout";
                     constants.PG = "sys/portal/webmenu/program";
+                    constants.canOpenInfor = "sys/env/userinformationusermethod/canOpenInfor";
                 })(constants || (constants = {}));
             })(menu = ui.menu || (ui.menu = {}));
         })(ui = uk.ui || (uk.ui = {}));

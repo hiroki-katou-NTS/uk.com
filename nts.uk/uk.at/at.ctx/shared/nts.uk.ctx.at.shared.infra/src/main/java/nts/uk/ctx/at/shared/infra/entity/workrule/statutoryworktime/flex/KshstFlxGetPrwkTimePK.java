@@ -10,7 +10,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
- * プライマリキー：フレックス勤務所定労働時間取得
+ * プライマリキー：会社別フレックス勤務集計方法
  * @author shuichu_ishida
  */
 @Embeddable

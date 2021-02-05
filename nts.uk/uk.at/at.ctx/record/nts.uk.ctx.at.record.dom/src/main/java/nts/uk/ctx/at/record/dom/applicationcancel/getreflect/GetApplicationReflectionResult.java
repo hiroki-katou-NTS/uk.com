@@ -28,8 +28,7 @@ public class GetApplicationReflectionResult {
 
 		// input.実績=emptyの場合は、実績を取得
 		if (!dailyData.isPresent()) {
-			dailyData = Optional.ofNullable(
-					require.findDaily(application.getEmployeeID(), application.getAppDate().getApplicationDate()));
+			dailyData = require.findDaily(application.getEmployeeID(), application.getAppDate().getApplicationDate());
 		}
 
 		if (!dailyData.isPresent())
@@ -54,7 +53,7 @@ public class GetApplicationReflectionResult {
 	public static interface Require extends RCCreateDailyAfterApplicationeReflect.Require {
 
 		// DailyRecordShareFinder
-		public IntegrationOfDaily findDaily(String employeeId, GeneralDate date);
+		public Optional<IntegrationOfDaily> findDaily(String employeeId, GeneralDate date);
 
 		// CorrectionAfterTimeChange
 		IntegrationOfDaily correction(String companyId, IntegrationOfDaily domainDaily);

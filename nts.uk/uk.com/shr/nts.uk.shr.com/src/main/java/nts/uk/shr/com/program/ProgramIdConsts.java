@@ -140,6 +140,8 @@ public class ProgramIdConsts {
 	
     public static final String KMK015C = "KMK015C";
 
+    public static final String KMK017A = "KMK017A";
+
 	public static final String KML001A = "KML001A";
 
 	public static final String KML001B = "KML001B";
@@ -388,6 +390,28 @@ public class ProgramIdConsts {
 	public static final String KMK004G = "KMK004G";
 
 	public static final String KMK004H = "KMK004H";
+	
+	public static final String KMK004I = "KMK004I";
+	
+	public static final String KMK004J = "KMK004J";
+	
+	public static final String KMK004K = "KMK004K";
+	
+	public static final String KMK004Q = "KMK004Q";
+	
+	public static final String KMK004R = "KMK004R";
+	
+	public static final String KMK004S = "KMK004S";
+	
+	public static final String KMK004L = "KMK004L";
+	
+	public static final String KMK004M = "KMK004M";
+	
+	public static final String KMK004N = "KMK004N";
+	
+	public static final String KMK004O = "KMK004O";
+	
+	public static final String KMK004P = "KMK004P";
 
 	public static final String KMK012A = "KMK012A";
 
@@ -1507,5 +1531,20 @@ public class ProgramIdConsts {
 	 * KNR001
 	 */
 	public static final String KNR001A = "KNR001A";
+	
+	/**
+	 * KNR002
+	 */
+	public static final String KNR002A = "KNR002A";
+	public static final String KNR002B = "KNR002B";
+	public static final String KNR002C = "KNR002C";
+	public static final String KNR002D = "KNR002D";
+	public static final String KNR002E = "KNR002E";
+	public static final String KNR002F = "KNR002F";
+	public static final String KNR002G = "KNR002G";
+	public static final String KNR002H = "KNR002H";
+	public static final String KNR002K = "KNR002K";
+
 	public static final String CDL010A = "CDL010A";
+
 }
