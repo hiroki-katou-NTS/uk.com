@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>    
+    <ui:composition template="../../../../master/dialog.xhtml">
+        <ui:define name="htmlHead">	
+            <script>var dialogSize = { width: 1100, height: 620 };</script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="ksu005.a.style.css" />		
+			<com:scriptfile path="ksu005.a.vm.js" />
+		</ui:define>
+
+		<!-- PAGE CONTENT -->
+		<ui:define name="content">
+			<div id="functions-area">
+                <!--A1-1-->
+                <button tabindex="1" id="A1_1">#{i18n.getText('KSU005_4')}</button>
+                <!--A1-2-->
+                <button tabindex="1" id="A1_2">#{i18n.getText('KSU005_5')}</button>
+                <!--A1-3-->
+                <button tabindex="1" id="A1_3" data-bind="click: closeDialog">#{i18n.getText('KSU005_6')}</button>	
+            </div>	
+            
+			<div id="contents-area">
+                <div class="container-custom">
+                <!--A2-1-->
+                <div data-bind="ntsFormLabel:{required: true}">#{i18n.getText('KSU005_7')} </div>                
+
+                <!--A2-2-->
+                <div style="margin-left: 35px;" id="combo-box" data-bind="ntsComboBox: {options: itemList,
+                        width: 230,
+                        optionsValue: 'code',
+                        visibleItemsCount: 5,
+                        value: selectedCode,
+                        optionsText: 'name',
+                        columns: [
+                        { prop: 'code', length: 4 },
+                        { prop: 'name', length: 10 },
+                            ]}">
+                </div>
+
+                <!--A2-3-->
+                <button style="margin: 0px 35px 0px 10px;" tabindex="1" id="A2_3" data-bind="click: openDialog">#{i18n.getText('KSU005_9')}</button>
+
+                <!--A3-1-->
+                <div data-bind="ntsFormLabel:{required: false}">#{i18n.getText('KSU005_11')} </div> 
+
+                <!--A3-2-->
+                <div>
+					<textarea class="inputValue" rows="3" cols="60"
+						data-bind="ntsMultilineEditor: { value: comments }" />
+				</div>
+            </div>
+        </div>
+            
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
