@@ -2914,8 +2914,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                         $("#extable").exTable("stickData", {
                                             workTypeCode: data.workTypeCode,
                                             workTypeName: data.workTypeName,
-                                            workTimeCode: objWTime.code,
-                                            workTimeName: objWTime.nameAb,
+                                            workTimeCode: cellData.workTimeCode,
+                                            workTimeName: cellData.workTimeName,
                                             startTime: startTime,
                                             endTime: endTime,
                                             achievements: false,
@@ -2930,8 +2930,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                         $("#extable").exTable("stickData", {
                                             workTypeCode: data.workTypeCode,
                                             workTypeName: data.workTypeName,
-                                            workTimeCode: objWTime.code,
-                                            workTimeName: objWTime.nameAb,
+                                            workTimeCode: cellData.workTimeCode,
+                                            workTimeName: cellData.workTimeName,
                                             startTime: '',
                                             endTime: '',
                                             achievements: false,
