@@ -42,6 +42,9 @@ module a1 {
 
         linkedWithDialogF: KnockoutObservable<boolean>;
         isNewMode: KnockoutObservable<boolean>;
+
+        condition30: KnockoutComputed<boolean>;
+        condition31: KnockoutComputed<boolean>;
         /**
         * Constructor.
         */
@@ -49,6 +52,7 @@ module a1 {
             let self = this;
             self.selectedTab = input.selectedTab;
             self.isNewMode = input.isNewMode;
+
             self.loadDataFromMainScreen(input);
             self.isTimezoneTwoEnabled = ko.computed(() => {
                 return !self.isFlexMode() && !self.isDiffTimeMode();
@@ -149,6 +153,15 @@ module a1 {
             self.isDetailAndNotFlexOrFlow = ko.computed(function (){
                 return self.isDetailMode() && !self.isFlowMode() && !self.isFlexMode();
             }, this);
+            //A7_13, A7_14, A7_16 display condition
+            //TODO missing 複数回勤務管理.使用区分
+            self.condition30 = ko.computed(() => {
+                return ( self.isFlexMode() || self.isDiffTimeMode() )
+            },this);
+
+            self.condition31 = ko.computed(() => {
+                return !(!self.timeZoneModelTwo.useAtr || self.isFlexMode() || self.isDiffTimeMode());
+            })
                                                    
             // Subscribe event update dialog J interlock for A7_4, A7_6, A7_12, A7_13, A7_14
             self.predseting.startDateClock.subscribe(() => { self.mainSettingModel.updateStampValue(); self.mainSettingModel.updateInterlockDialogJ(); });
