@@ -13,7 +13,6 @@ module nts.uk.knockout.binding.widget {
                 return;
             }
 
-
             const accessor = valueAccessor();
 
             ko.computed({
@@ -42,7 +41,7 @@ module nts.uk.knockout.binding.widget {
         virtual: false
     })
     export class WidgetResizeContentBindingHandler implements KnockoutBindingHandler {
-        init(element: HTMLDivElement, valueAccessor: () => number | undefined, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: { widget: string; }, bindingContext: KnockoutBindingContext): { controlsDescendantBindings: boolean; } {
+        init(element: HTMLDivElement, valueAccessor: () => number | undefined | KnockoutObservable<number | undefined>, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: { widget: string; }, bindingContext: KnockoutBindingContext): { controlsDescendantBindings: boolean; } {
             const { widget } = viewModel;
             const WG_SIZE = 'WIDGET_SIZE';
             const mkv = new ko.ViewModel();
@@ -56,9 +55,18 @@ module nts.uk.knockout.binding.widget {
                 return { controlsDescendantBindings: false };
             }
 
-            if (minHeight) {
-                element.style.minHeight = `${minHeight}px`;
-            }
+            ko.computed({
+                read: () => {
+                    const mh = ko.unwrap<number | undefined>(minHeight);
+
+                    if (!mh) {
+                        element.style.minHeight = '';
+                    } else {
+                        element.style.minHeight = `${ko.unwrap(mh)}px`;
+                    }
+                },
+                disposeWhenNodeIsRemoved: element
+            });
 
             if (src) {
                 element.innerHTML = '';
@@ -68,20 +76,6 @@ module nts.uk.knockout.binding.widget {
                 frame.src = src;
 
                 element.appendChild(frame);
-
-
-                frame
-                    .contentWindow
-                    .addEventListener('DOMContentLoaded', () => {
-                        const wgd = frame.contentWindow;
-                        const event = frame.contentDocument.createEvent('Event');
-
-                        console.log('dispatching');
-
-                        event.initEvent('wg.resize', true, false);
-
-                        wgd.dispatchEvent(event);
-                    });
             }
 
             $(element)
