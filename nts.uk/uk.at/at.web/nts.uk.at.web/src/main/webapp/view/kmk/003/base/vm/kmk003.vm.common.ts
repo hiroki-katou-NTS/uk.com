@@ -1599,19 +1599,10 @@ module nts.uk.at.view.kmk003.a {
                     for (let roundingModel of this.roundingSets) {
                         roundingSets.push(roundingModel.toDto());
                     }
-                    let use = {
-                        value: 1,
-                        nameId: "利用する"
-                    }
-
-                    let notUse = {
-                        value: 0,
-                        nameId: "利用しない"
-                    }
 
                     let dto: RoundingTimeDto = {
-                        attendanceMinuteLaterCalculate: this.attendanceMinuteLaterCalculate() ? use : notUse,
-                        leaveWorkMinuteAgoCalculate: this.leaveWorkMinuteAgoCalculate() ? use : notUse,
+                        attendanceMinuteLaterCalculate: this.attendanceMinuteLaterCalculate() ? 1 : 0,
+                        leaveWorkMinuteAgoCalculate: this.leaveWorkMinuteAgoCalculate() ? 1 : 0,
                         roundingSets: roundingSets
                     }
                     return dto;

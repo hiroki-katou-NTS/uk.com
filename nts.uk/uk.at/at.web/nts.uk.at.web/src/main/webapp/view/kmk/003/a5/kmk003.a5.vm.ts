@@ -278,10 +278,10 @@ module a5 {
                 return self.isFlow() && !self.flowFixedRestTime();
             });
             self.isFlexTimezone = ko.computed(() => {
-                return self.isFlex() && self.flexFixedRestTime() == true;
+                return self.isFlex() && self.flexFixedRestTime();
             });
             self.isFlexRestTime = ko.computed(() => {
-                return self.isFlex() && self.flexFixedRestTime() == false;
+                return self.isFlex() && !self.flexFixedRestTime();
             });
         }
 
