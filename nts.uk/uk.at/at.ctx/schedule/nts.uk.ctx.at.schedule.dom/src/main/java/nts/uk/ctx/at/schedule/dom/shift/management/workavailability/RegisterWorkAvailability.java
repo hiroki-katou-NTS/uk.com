@@ -42,14 +42,14 @@ public class RegisterWorkAvailability {
 
 		// 勤務希望運用区分 == する場合は、必ず「シフト表の設定」emptyではないため。
 		val shiftTableSetting = shiftRule.getShiftTableSetting().get();
-		val deadlineAndPeriod = shiftTableSetting.getCorrespondingDeadlineAndPeriod(GeneralDate.today());
+		val deadline = shiftTableSetting.getCorrespondingDeadlineAndPeriod(GeneralDate.today()).getDeadline();
 		
-		if (deadlineAndPeriod.getDeadline().before(datePeriod.start())) {
+		if (deadline.before(datePeriod.start())) {
 			throw new BusinessException("Msg_2050");
 		}
 		
-		List<WorkAvailabilityOfOneDay> outDeadlines = workOneDays.stream()
-				.filter(c -> c.getWorkAvailabilityDate().after(deadlineAndPeriod.getDeadline()))
+		val outDeadlines = workOneDays.stream()
+				.filter(c -> c.getWorkAvailabilityDate().after(deadline))
 				.collect(Collectors.toList());
 
 		if(!CollectionUtil.isEmpty(outDeadlines)) {
@@ -60,8 +60,7 @@ public class RegisterWorkAvailability {
 			throw new BusinessException("Msg_2051");
 		}
 		
-		val datePeriodEnd = datePeriod.end().before(deadlineAndPeriod.getDeadline()) ? datePeriod.end()
-				: deadlineAndPeriod.getDeadline();
+		val datePeriodEnd = datePeriod.end().before(deadline) ? datePeriod.end(): deadline;
 		
 		val targetPeriodRegister = new DatePeriod(datePeriod.start(), datePeriodEnd);
 		
