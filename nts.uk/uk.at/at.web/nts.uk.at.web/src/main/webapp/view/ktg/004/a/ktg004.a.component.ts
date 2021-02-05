@@ -69,7 +69,7 @@ module nts.uk.ui.ktg004.a {
                         <tbody data-bind="foreach: { data: $component.specialHolidaysRemainings, as: 'row'}"> 
                             <tr>
                                 <td data-bind="i18n: row.name" colspan="2"></td>
-                                <td classs="text-right" data-bind="i18n: row.specialResidualNumber"></td>
+                                <td class="text-right" data-bind="i18n: row.specialResidualNumber"></td>
                             </tr>
                         </tbody>
                     </table>	
@@ -87,7 +87,7 @@ module nts.uk.ui.ktg004.a {
 
         name: KnockoutObservable<string> = ko.observable('');
 
-        detailedWorkStatusSettings = ko.observable(true);
+        detailedWorkStatusSettings = ko.observable(false);
 
         itemsDisplay: KnockoutObservableArray<ItemDisplay> = ko.observableArray([]);
         specialHolidaysRemainings: KnockoutObservableArray<SpecialHolidaysRemaining> = ko.observableArray([]);
@@ -253,6 +253,12 @@ module nts.uk.ui.ktg004.a {
 
                     vm.itemsDisplay(itemsDisplay);
                     vm.specialHolidaysRemainings(itemsHolidaysRemainings);
+
+                    vm.$nextTick(() => {
+                        $(vm.$el)
+                            .find('[data-bind]')
+                            .removeAttr('data-bind');
+                    });
                 })
                 .always(() => vm.$blockui('clearView'));
         }
