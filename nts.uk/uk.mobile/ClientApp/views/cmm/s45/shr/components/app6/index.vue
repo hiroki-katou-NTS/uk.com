@@ -109,6 +109,29 @@
         </div>
     </div>
 
+    <!-- B8_1 -->
+    <div class="card card-label" v-if="c14">
+        <div class="card-header uk-bg-accordion mt-2 headerDiv">
+            <span class="textPosition">{{ "KAFS07_5" | i18n }}</span>
+        </div>
+    </div>
+    <!-- B8_2 -->
+    <div v-if="c14">
+        <div class="row mt-1 mb-1">
+            <div class="col-1.5 pl-3 pr-1 text-left">
+                {{ (goWorkAtr ? "KAFS07_11" : "KAFS07_12") | i18n }}
+            </div>
+        </div>
+    </div>
+    <!-- B8_3 -->
+    <div v-if="c14">
+        <div class="row mt-1 mb-1">
+            <div class="col-1.5 pl-3 pr-1 text-left">
+                {{ (backHomeAtr ? "KAFS07_13" : "KAFS07_14") | i18n }}
+            </div>
+        </div>
+    </div>
+
     <!-- B5_1 -->
     <div class="card card-label">
         <div class="card-header uk-bg-accordion mt-2 headerDiv">

@@ -9,6 +9,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import nts.arc.system.ServerSystemProperties;
 import nts.arc.task.AsyncTaskInfo;
 import nts.arc.task.AsyncTaskInfoRepository;
 import nts.arc.task.AsyncTaskStatus;
@@ -164,7 +165,14 @@ public class AutoExecutionPreparationPubImpl implements AutoExecutionPreparation
 		if (!taskStatus.equals(AsyncTaskStatus.COMPLETED)) {
 			Optional<AsyncTaskInfo> optInfo = this.asyncTaskInfoRepository.find(taskId);
 			if (optInfo.isPresent()) {
-				return Optional.ofNullable(optInfo.get().getError().getMessage());
+				// Since ManualSetDeletionService will return an error in format of NoSuchFileException
+				// even when deletion is successful
+				// so check if this is truly error or not
+				String storePath = String.format("%s\\%s", ServerSystemProperties.fileStoragePath(), taskId);
+				String msg = optInfo.get().getError().getMessage();
+				if (!storePath.equals(msg)) {
+					return Optional.of(msg);
+				}
 			}
 		}
 		return Optional.empty();

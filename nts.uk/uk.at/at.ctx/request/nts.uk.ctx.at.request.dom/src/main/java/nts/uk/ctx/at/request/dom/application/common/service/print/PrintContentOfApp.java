@@ -13,6 +13,7 @@ import nts.uk.ctx.at.request.dom.application.lateorleaveearly.ArrivedLateLeaveEa
 import nts.uk.ctx.at.request.dom.application.overtime.service.DetailOutput;
 import nts.uk.ctx.at.request.dom.application.optional.OptionalItemPrintContent;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampOutput;
+import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplicationDetail;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppReasonStandard;
 
 import java.util.Collections;
@@ -107,6 +108,7 @@ public class PrintContentOfApp {
 	/**
 	 * 時間休暇申請の印刷内容
 	 */
+	private Optional<List<TimeLeaveApplicationDetail>> opPrintContentOfTimeLeave;
 
 	/**
 	 * 出張申請の印刷内容

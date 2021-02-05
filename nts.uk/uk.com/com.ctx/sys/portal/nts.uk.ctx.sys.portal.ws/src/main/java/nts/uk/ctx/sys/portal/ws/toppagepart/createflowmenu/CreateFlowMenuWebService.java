@@ -12,6 +12,9 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.sys.portal.app.command.toppagepart.createflowmenu.CopyFileCommand;
+import nts.uk.ctx.sys.portal.app.command.toppagepart.createflowmenu.CopyFileCommandHandler;
+import nts.uk.ctx.sys.portal.app.command.toppagepart.createflowmenu.CopyFileResultDto;
 import nts.uk.ctx.sys.portal.app.command.toppagepart.createflowmenu.CopyFlowMenuCommand;
 import nts.uk.ctx.sys.portal.app.command.toppagepart.createflowmenu.CopyFlowMenuCommandHandler;
 import nts.uk.ctx.sys.portal.app.command.toppagepart.createflowmenu.DeleteCreateFlowMenuCommandHandler;
@@ -24,10 +27,12 @@ import nts.uk.ctx.sys.portal.app.command.toppagepart.createflowmenu.UpdateCreate
 import nts.uk.ctx.sys.portal.app.command.toppagepart.createflowmenu.UpdateFlowMenuCommand;
 import nts.uk.ctx.sys.portal.app.command.toppagepart.createflowmenu.UpdateFlowMenuLayoutCommand;
 import nts.uk.ctx.sys.portal.app.command.toppagepart.createflowmenu.UpdateFlowMenuLayoutCommandHandler;
+import nts.uk.ctx.sys.portal.app.screenquery.topppagepart.createflowmenu.CopyFileResponseDto;
 import nts.uk.ctx.sys.portal.app.screenquery.topppagepart.createflowmenu.CreateFlowMenuDto;
 import nts.uk.ctx.sys.portal.app.screenquery.topppagepart.createflowmenu.ExtractionResponseDto;
 import nts.uk.ctx.sys.portal.app.screenquery.topppagepart.createflowmenu.GetFlowMenuListScreenQuery;
 import nts.uk.ctx.sys.portal.app.screenquery.topppagepart.createflowmenu.GetFlowMenuScreenQuery;
+import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.CreateFlowMenuFileService;
 
 @Path("sys/portal/createflowmenu")
 @Produces("application/json")
@@ -55,7 +60,13 @@ public class CreateFlowMenuWebService extends WebService {
 	private CopyFlowMenuCommandHandler copyFlowMenuCommandHandler;
 	
 	@Inject
+	private CopyFileCommandHandler copyFileCommandHandler;
+	
+	@Inject
 	private FileExportService exportService;
+	
+	@Inject
+	private CreateFlowMenuFileService createFlowMenuFileService;
 	
 	@POST
 	@Path("/getFlowMenu/{flowMenuCode}")
@@ -121,6 +132,18 @@ public class CreateFlowMenuWebService extends WebService {
 	@Path("/extractListFileId")
 	public List<ExtractionResponseDto> extractListData(ParamListFileId param) throws IOException {
 		return this.exportService.extractByListFileId(param.getLstFileId());
+	}
+	
+	@POST
+	@Path("/copyFile")
+	public CopyFileResultDto copyFile(CopyFileCommand command) {
+		return this.copyFileCommandHandler.handle(command);
+	}
+	
+	@POST
+	@Path("/copyFile/{fileId}")
+	public CopyFileResponseDto copyFile(@PathParam("fileId") String fileId) throws IOException {
+		return new CopyFileResponseDto(this.createFlowMenuFileService.copyFile(fileId));
 	}
 }
 

@@ -2,7 +2,7 @@ var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
     return function (d, b) {
@@ -3187,8 +3187,8 @@ var nts;
                     }
                     duration_1.create = create;
                     function createText(duration) {
-                        var isNegative = duration.isNegative, asHoursInt = duration.asHoursInt, minutePart = duration.minutePart;
-                        return ("" + (isNegative ? '-' : '') + asHoursInt + ":" + _.padStart("" + minutePart, 2, '0')).replace(/^\-{1,}/g, '-');
+                        var isNegative = duration.isNegative, asHoursInt = duration.asHoursInt, minutePartText = duration.minutePartText;
+                        return ("" + (isNegative ? '-' : '') + asHoursInt + ":" + minutePartText).replace(/^\-{1,}/g, '-');
                     }
                 })(duration = minutesBased.duration || (minutesBased.duration = {}));
             })(minutesBased = time.minutesBased || (time.minutesBased = {}));
@@ -3624,8 +3624,8 @@ var nts;
                     }
                     duration_2.create = create;
                     function createText(duration) {
-                        var isNegative = duration.isNegative, asHoursInt = duration.asHoursInt, asMinutes = duration.asMinutes, asSeconds = duration.asSeconds;
-                        return ("" + (isNegative ? '-' : '') + asHoursInt + ":" + _.padStart("" + asMinutes, 2, '0') + ":" + _.padStart("" + asSeconds, 2, '0')).replace(/^\-{1,}/g, '-');
+                        var isNegative = duration.isNegative, asHoursInt = duration.asHoursInt, minutePartText = duration.minutePartText, secondPartText = duration.secondPartText;
+                        return ("" + (isNegative ? '-' : '') + asHoursInt + ":" + minutePartText + ":" + secondPartText).replace(/^\-{1,}/g, '-');
                     }
                 })(duration = secondsBased.duration || (secondsBased.duration = {}));
             })(secondsBased = time.secondsBased || (time.secondsBased = {}));
@@ -4893,9 +4893,6 @@ var nts;
                                     userOptions = [new MenuItem(getText('CCG020_5')), new MenuItem(getText('CCG020_4')), new MenuItem(getText('CCG020_3'))];
                                 else
                                     userOptions = [new MenuItem(getText('CCG020_5')), new MenuItem(getText('CCG020_3'))];
-                                if (!__viewContext.user.isEmployee) {
-                                    userOptions.shift();
-                                }
                                 var $userOptions = $("<ul class='menu-items user-options'/>").appendTo($userSettings);
                                 _.forEach(userOptions, function (option, i) {
                                     var $li = $("<li class='menu-item'/>").text(option.name);
@@ -4932,6 +4929,11 @@ var nts;
                                             });
                                         }
                                     });
+                                });
+                                nts.uk.request.ajax(constants.APP_ID, constants.canOpenInfor).done(function (canOpenInfor) {
+                                    if (!__viewContext.user.isEmployee || !canOpenInfor) {
+                                        $userOptions.find(':first-child').remove();
+                                    }
                                 });
                                 $companyList.css("right", $user.outerWidth() + 30);
                                 $userSettings.on(constants.CLICK, function () {
@@ -5171,6 +5173,7 @@ var nts;
                     constants.ShowManual = "sys/portal/webmenu/showmanual";
                     constants.Logout = "sys/portal/webmenu/logout";
                     constants.PG = "sys/portal/webmenu/program";
+                    constants.canOpenInfor = "sys/env/userinformationusermethod/canOpenInfor";
                 })(constants || (constants = {}));
             })(menu = ui.menu || (ui.menu = {}));
         })(ui = uk.ui || (uk.ui = {}));
@@ -6260,44 +6263,27 @@ var nts;
              */
             var block;
             (function (block) {
-                function invisible() {
-                    var rect = calcRect();
-                    $.blockUI({
-                        message: null,
-                        overlayCSS: { opacity: 0 },
-                        css: {
-                            width: rect.width,
-                            left: rect.left
-                        }
-                    });
-                }
-                block.invisible = invisible;
-                function grayout() {
-                    var rect = calcRect();
-                    $.blockUI({
-                        message: '<div class="block-ui-message">' + toBeResource.plzWait + '</div>',
-                        fadeIn: 200,
-                        css: {
-                            width: rect.width,
-                            left: rect.left
-                        }
-                    });
-                }
-                block.grayout = grayout;
-                function clear() {
-                    $.unblockUI({
-                        fadeOut: 200
-                    });
+                function clear(el) {
+                    if (el === void 0) { el = document.body; }
+                    var fadeOut = 200;
+                    $(el).unblock({ fadeOut: fadeOut });
                 }
                 block.clear = clear;
-                function calcRect() {
-                    var width = 220;
-                    var left = ($(window).width() - width) / 2;
-                    return {
-                        width: width,
-                        left: left
-                    };
+                function grayout(el) {
+                    if (el === void 0) { el = document.body; }
+                    var fadeIn = 200;
+                    var message = toBeResource.plzWait;
+                    var css = { width: '220px', 'line-height': '32px' };
+                    $(el).block({ message: message, fadeIn: fadeIn, css: css });
                 }
+                block.grayout = grayout;
+                function invisible(el) {
+                    if (el === void 0) { el = document.body; }
+                    var message = null;
+                    var overlayCSS = { opacity: 0 };
+                    $(el).block({ message: message, overlayCSS: overlayCSS });
+                }
+                block.invisible = invisible;
             })(block = ui.block || (ui.block = {}));
             var DirtyChecker = /** @class */ (function () {
                 function DirtyChecker(targetViewModelObservable) {
@@ -38596,8 +38582,7 @@ var nts;
                         var currentColumns = $grid.igGrid("option", "columns");
                         currentColumns.push({
                             dataType: "bool", columnCssClass: "delete-column", headerText: "test", key: param.deleteField,
-                            width: 60,
-                            formatter: function createButton(deleteField, row) {
+                            width: 60, formatter: function createButton(deleteField, row) {
                                 var primaryKey = $grid.igGrid("option", "primaryKey");
                                 var result = $('<button tabindex="-1" class="small delete-button">Delete</button>');
                                 result.attr("data-value", row[primaryKey]);
@@ -49444,6 +49429,7 @@ var nts;
             var bindings;
             (function (bindings) {
                 var P_URL = 'https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js';
+                var M_URL = 'https://cdnjs.cloudflare.com/ajax/libs/markdown-it/12.0.4/markdown-it.min.js';
                 var PrettyPrintBindingHandler = /** @class */ (function () {
                     function PrettyPrintBindingHandler() {
                     }
@@ -49482,6 +49468,7 @@ var nts;
                             element.innerHTML = prettyPrintOne(_.escape(html), lang, false);
                             element.classList.add('prettyprint');
                         });
+                        element.removeAttribute('data-bind');
                         return { controlsDescendantBindings: true };
                     };
                     PrettyPrintBindingHandler = __decorate([
@@ -49492,6 +49479,69 @@ var nts;
                     return PrettyPrintBindingHandler;
                 }());
                 bindings.PrettyPrintBindingHandler = PrettyPrintBindingHandler;
+                var MarkdownBindingHandler = /** @class */ (function () {
+                    function MarkdownBindingHandler() {
+                    }
+                    MarkdownBindingHandler.prototype.init = function (element, valueAccessor, allValueAccessor) {
+                        var contents = valueAccessor() || element.innerHTML;
+                        $.Deferred()
+                            .resolve()
+                            .then(function () {
+                            var PR = _.get(window, 'PR');
+                            if (!PR) {
+                                var st = $('<style>', {
+                                    type: 'text/css',
+                                    rel: 'stylesheet',
+                                    html: "\n                            .prettyprint {\n                                box-sizing: border-box;\n                                background: #f5f5f5;\n                                max-width: 100%;\n                                padding: 5px !important;\n                                margin: 10px 0;\n                                border: none !important;\n                                overflow: auto;\n                                border-radius: 5px;\n                            }\n                            .prettyprint,\n                            .prettyprint * {\n                                font-family: Consolas;\n                            }".trim().replace(/\s{1,}/g, ' ')
+                                });
+                                st.appendTo(document.head);
+                                return $.getScript(P_URL);
+                            }
+                            return PR;
+                        })
+                            .then(function () {
+                            var markdownit = _.get(window, 'markdownit');
+                            if (!markdownit) {
+                                return $.getScript(M_URL);
+                            }
+                            return markdownit;
+                        })
+                            .then(function () {
+                            var prettyPrintOne = PR.prettyPrintOne;
+                            return markdownit({
+                                highlight: function (str, lng) {
+                                    return prettyPrintOne(_.escape(str), lng, false);
+                                }
+                            });
+                        })
+                            .then(function (md) {
+                            if (!contents.match(/\.md$/)) {
+                                return md.render(contents);
+                            }
+                            else {
+                                return $.get(contents).then(function (ctx) { return md.render(ctx); });
+                            }
+                        })
+                            .then(function (html) {
+                            element.innerHTML = html;
+                            element.classList.add('markdown-content');
+                            element
+                                .querySelectorAll('pre')
+                                .forEach(function (e) { return e.classList.add('prettyprint'); });
+                        });
+                        element.removeAttribute('data-bind');
+                        return { controlsDescendantBindings: true };
+                    };
+                    MarkdownBindingHandler = __decorate([
+                        handler({
+                            bindingName: 'markdown',
+                            validatable: true,
+                            virtual: false
+                        })
+                    ], MarkdownBindingHandler);
+                    return MarkdownBindingHandler;
+                }());
+                bindings.MarkdownBindingHandler = MarkdownBindingHandler;
             })(bindings = ui.bindings || (ui.bindings = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -50720,7 +50770,9 @@ var nts;
                 });
                 // Hàm blockui được wrapper lại để gọi cho thống nhất
                 BaseViewModel.prototype.$blockui = function $blockui(act) {
-                    return $.Deferred().resolve()
+                    var vm = this;
+                    return $.Deferred()
+                        .resolve(true)
                         .then(function () {
                         switch (act) {
                             default:
@@ -50734,6 +50786,15 @@ var nts;
                                 break;
                             case 'grayout':
                                 block.grayout();
+                                break;
+                            case 'clearView':
+                                block.clear(vm.$el);
+                                break;
+                            case 'grayoutView':
+                                block.grayout(vm.$el);
+                                break;
+                            case 'invisibleView':
+                                block.invisible(vm.$el);
                                 break;
                         }
                     });

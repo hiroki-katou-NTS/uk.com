@@ -37,6 +37,7 @@ import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppDetailInf
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppHolidayWorkDataOutput;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppOvertimeDataOutput;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppStampDataOutput;
+import nts.uk.ctx.at.request.dom.application.applist.service.detail.CompLeaveAppDataOutput;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.ScreenAtr;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.AttendanceNameItem;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.ListOfApplication;
@@ -403,13 +404,14 @@ public class AppContentServiceImpl implements AppContentService {
 			switch (application.getAppType()) {
 			case COMPLEMENT_LEAVE_APPLICATION:
 				// 振休振出申請データを作成( Tạo data application nghỉ bù làm bù)
-				String contentComplementLeave = appContentDetailCMM045.getContentComplementLeave(
+				CompLeaveAppDataOutput compLeaveAppDataOutput = appContentDetailCMM045.getContentComplementLeave(
 						application, 
 						companyID, 
 						lstWkType, 
 						approvalListDisplaySetting.getAppReasonDisAtr(), 
 						ScreenAtr.CMM045);
-				listOfApp.setAppContent(contentComplementLeave);
+				listOfApp.setAppContent(compLeaveAppDataOutput.getContent());
+				listOfApp.setOpComplementLeaveApp(Optional.of(compLeaveAppDataOutput.getComplementLeaveAppLink()));
 				break;
 			case ABSENCE_APPLICATION:
 				// 申請一覧リスト取得休暇 (Ngày nghỉ lấy  Application list)
@@ -1295,7 +1297,7 @@ public class AppContentServiceImpl implements AppContentService {
 			// 振休申請.変更元の振休日=empty(Đơn xin nghỉ bù. ngày nghỉ bù của nguồn thay đổi)
 			if(absenceLeaveApp.getChangeSourceHoliday().isPresent()) {
 				// 申請内容　＋＝"　"＋「値」(Nội dung đơn xin ＋＝"　"＋「value」)
-				result += " " + I18NText.getText("CMM045_304", absenceLeaveApp.getChangeSourceHoliday().get().toString("YYYY/MM/DD"));
+				result += " " + I18NText.getText("CMM045_304", absenceLeaveApp.getChangeSourceHoliday().get().toString("yyyy/MM/dd"));
 			}
 		} else {
 			if(absenceLeaveApp!=null) {
@@ -1309,7 +1311,7 @@ public class AppContentServiceImpl implements AppContentService {
 				// 振休申請.変更元の振休日=empty(đơn xin nghỉ bù. Ngày nghỉ bù của nguồn thay đổi)
 				if(absenceLeaveApp.getChangeSourceHoliday().isPresent()) {
 					// 申請内容　＋＝"　"＋「値」(Nội dung đơn xin ＋＝"　"＋「value」)
-					result += " " + I18NText.getText("CMM045_304", absenceLeaveApp.getChangeSourceHoliday().get().toString("YYYY/MM/DD"));
+					result += " " + I18NText.getText("CMM045_304", absenceLeaveApp.getChangeSourceHoliday().get().toString("yyyy/MM/dd"));
 				}
 			} if(recruitmentApp != null) {
 				// 申請内容　＝　#CMM045_262　+　”　”　+　振出申請データ．勤務種類名称

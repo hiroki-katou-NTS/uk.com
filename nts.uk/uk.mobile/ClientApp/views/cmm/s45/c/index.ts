@@ -15,6 +15,7 @@ import {
     CmmS45ShrComponentsApp15Component,
     CmmS45ShrComponentsAppsampleComponent,
     CmmS45ShrComponentsApp0Component,
+    CmmS45ShrComponentsApp8Component,
     CmmS45ShrComponentsApp10Component,
     CmmS45ShrComponentsApp6Component,
     Reason
@@ -41,6 +42,7 @@ import { CmmS45ShrComponentsApp1Component } from 'views/cmm/s45/shr/components/a
         'app7': CmmS45ShrComponentsApp7Component,
         'app15': CmmS45ShrComponentsApp15Component,
         'app0': CmmS45ShrComponentsApp0Component,
+        'app8': CmmS45ShrComponentsApp8Component,
         'app1': CmmS45ShrComponentsApp1Component,
         'app10': CmmS45ShrComponentsApp10Component,
         'app6': CmmS45ShrComponentsApp6Component,
@@ -212,6 +214,7 @@ export class CmmS45CComponent extends Vue {
         self.showApproval = false;
         self.appCount++;
         self.currentApp = self.listAppMeta[self.appCount];
+        self.reasons = null;
         self.isLoadingComplete = false;
         self.$mask('show');
         self.initData();
@@ -224,6 +227,7 @@ export class CmmS45CComponent extends Vue {
         self.showApproval = false;
         self.appCount--;
         self.currentApp = self.listAppMeta[self.appCount];
+        self.reasons = null;
         self.isLoadingComplete = false;
         self.$mask('show');
         self.initData();
@@ -352,6 +356,13 @@ export class CmmS45CComponent extends Vue {
                 }
                 if (self.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.opStampRequestMode == 1) {
                     self.$goto('kafs02c', self.appTransferData.appDetail);
+                }
+                break;
+            case 8:
+                if (self.$router.currentRoute.name == 'kafs12a') {
+                    self.$close(self.appTransferData);
+                } else {
+                    self.$goto('kafs12a', self.appTransferData);
                 }
                 break;
             case 9:
@@ -515,7 +526,7 @@ export class CmmS45CComponent extends Vue {
         }
         let appDate = vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.inputDate;
 
-        return vm.$dt(new Date(appDate), 'YYYY/MM/DD hh:mm');
+        return vm.$dt(new Date(appDate), 'YYYY/MM/DD HH:mm');
     }
 
     get comboReasonDisp() {

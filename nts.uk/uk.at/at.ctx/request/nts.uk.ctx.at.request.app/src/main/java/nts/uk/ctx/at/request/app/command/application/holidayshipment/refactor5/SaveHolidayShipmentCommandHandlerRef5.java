@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.request.app.command.application.holidayshipment.refactor5;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+//import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -20,6 +20,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFl
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
@@ -30,7 +31,7 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.Recr
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
+//import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.TargetSelectionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManaRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
@@ -63,8 +64,8 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 	@Inject
 	private AbsenceServiceProcess absenceServiceProcess;
 	
-	@Inject
-	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
+//	@Inject
+//	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
 	
 	@Inject
 	private AppHdsubRecRepository compltLeaveSimMngRepository;
@@ -84,7 +85,7 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 	/**
 	 * @name 登録する
 	 */
-	public void register(DisplayInforWhenStarting command){
+	public List<ProcessResult> register(DisplayInforWhenStarting command){
 		String companyId = AppContexts.user().companyId();
 		Optional<AbsenceLeaveApp> abs = Optional.ofNullable(command.existAbs() ? command.abs.toDomainInsertAbs() : null);
 		Optional<RecruitmentApp> rec = Optional.ofNullable(command.existRec() ? command.rec.toDomainInsertRec(): null);
@@ -105,7 +106,7 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 		//振休振出申請（新規）登録処理 (Xử lý đăng ký application nghỉ bù làm bù (New))
 		//QA: http://192.168.50.4:3000/issues/113451 -> done
 		//QA: http://192.168.50.4:3000/issues/113650
-		this.registrationApplicationProcess(
+		return this.registrationApplicationProcess(
 				companyId, 
 				abs, 
 				rec, 
@@ -133,7 +134,7 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 	 * @param holidayManage 振休紐付け管理区分
 	 * @param applicationSetting 申請表示情報
 	 */
-	public void registrationApplicationProcess(String companyId, Optional<AbsenceLeaveApp> abs,
+	public List<ProcessResult> registrationApplicationProcess(String companyId, Optional<AbsenceLeaveApp> abs,
 			Optional<RecruitmentApp> rec, GeneralDate baseDate, boolean mailServerSet,
 			List<ApprovalPhaseStateImport_New> approvalLst, List<LeaveComDayOffManagement> leaveComDayOffMana_Rec,
 			List<LeaveComDayOffManagement> leaveComDayOffMana_Abs,
@@ -142,14 +143,15 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 		if(rec.isPresent() && abs.isPresent()) {
 			//振休申請・振出申請の同時登録(đăng ký đồng thời đơn xin nghỉ bù/ đơn xin làm bù)
 			leaveComDayOffMana_Rec.addAll(leaveComDayOffMana_Abs);
-			this.registerRecAndAbs(companyId, baseDate, rec, abs, mailServerSet, approvalLst, leaveComDayOffMana_Rec, holidayManage, applicationSetting);
+			return this.registerRecAndAbs(companyId, baseDate, rec, abs, mailServerSet, approvalLst, leaveComDayOffMana_Rec, holidayManage, applicationSetting);
 		}else if(rec.isPresent()){
 			//振出申請の登録(đăng ký đơn xin làm bù)
-			this.registerRec(companyId, baseDate, rec, mailServerSet, approvalLst, leaveComDayOffMana_Rec, holidayManage, applicationSetting);
+			return this.registerRec(companyId, baseDate, rec, mailServerSet, approvalLst, leaveComDayOffMana_Rec, holidayManage, applicationSetting);
 		}else if(abs.isPresent()){
 			//振休申請の登録(đăng ký đơn xin nghỉ bù)
-			this.registerAbs(companyId, baseDate, abs, mailServerSet, approvalLst, leaveComDayOffMana_Abs, payoutSubofHDManagement_Abs, applicationSetting);
+			return this.registerAbs(companyId, baseDate, abs, mailServerSet, approvalLst, leaveComDayOffMana_Abs, payoutSubofHDManagement_Abs, applicationSetting);
 		}
+		return new ArrayList<>();
 	}
 	
 	/**
@@ -170,7 +172,7 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 	 * @param holidayManage 振休紐付け管理区分
 	 * @param applicationSetting 申請表示情報
 	 */
-	public void registerRecAndAbs(String companyId, GeneralDate baseDate, Optional<RecruitmentApp> rec,
+	public List<ProcessResult> registerRecAndAbs(String companyId, GeneralDate baseDate, Optional<RecruitmentApp> rec,
 			Optional<AbsenceLeaveApp> abs, boolean mailServerSet,
 			List<ApprovalPhaseStateImport_New> approvalLst, List<LeaveComDayOffManagement> leaveComDayOffMana_Rec,
 			ManageDistinct holidayManage, ApplicationSetting applicationSetting) {
@@ -182,7 +184,8 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 		//休暇紐付け管理を登録する
 		absenceServiceProcess.registerVacationLinkManage(leaveComDayOffMana_Rec, new ArrayList<>());
 		//暫定データの登録(đăng ký data tạm thời)
-		interimRemainDataMngRegisterDateChange.registerDateChange(companyId, rec.get().getEmployeeID(), Arrays.asList(rec.get().getAppDate().getApplicationDate()));
+		//anh phượng bảo comment lại. chờ đội team B đối ứng xong 
+		//interimRemainDataMngRegisterDateChange.registerDateChange(companyId, rec.get().getEmployeeID(), Arrays.asList(rec.get().getAppDate().getApplicationDate()));
 		
 		//ドメイン「振休申請」を1件登録する
 		appRepository.insertApp(abs.get(), approvalLst);
@@ -190,7 +193,8 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 		//アルゴリズム「登録前共通処理（新規）」を実行する(Thực hiện thuật toán [xử lý chung trước khi đăng ký(new)])
 		registerAtApproveReflectionInfoService.newScreenRegisterAtApproveInfoReflect(abs.get().getEmployeeID(), abs.get());
 		//暫定データの登録(đăng ký data tạm thời)
-		interimRemainDataMngRegisterDateChange.registerDateChange(companyId, abs.get().getEmployeeID(), Arrays.asList(abs.get().getAppDate().getApplicationDate()));
+		//anh phượng bảo comment lại. chờ đội team B đối ứng xong 
+		//interimRemainDataMngRegisterDateChange.registerDateChange(companyId, abs.get().getEmployeeID(), Arrays.asList(abs.get().getAppDate().getApplicationDate()));
 		
 		//ドメイン「振休振出同時申請管理」を1件登録する
 		//QA: http://192.168.50.4:3000/issues/113413 => done
@@ -201,10 +205,12 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 		//アルゴリズム「新規画面登録後の処理」を実行する(thực hiện thuật toán [xử lý sau khi đăng ký màn hình new])
 		//QA: http://192.168.50.4:3000/issues/113416 => done
 		Optional<AppTypeSetting> appTypeSetting = applicationSetting.getAppTypeSettings().stream().filter(x -> x.getAppType() == ApplicationType.COMPLEMENT_LEAVE_APPLICATION).findAny();
+		List<ProcessResult> result = new ArrayList<>();
 		if(appTypeSetting.isPresent()) {
-			newAfterRegister.processAfterRegister(rec.get().getAppID(), appTypeSetting.get(), mailServerSet);
-			newAfterRegister.processAfterRegister(abs.get().getAppID(), appTypeSetting.get(), mailServerSet);
+			result.add(newAfterRegister.processAfterRegister(rec.get().getAppID(), appTypeSetting.get(), mailServerSet));
+			result.add(newAfterRegister.processAfterRegister(abs.get().getAppID(), appTypeSetting.get(), mailServerSet));
 		}
+		return result; 
 	}
 	
 	/**
@@ -219,7 +225,7 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 	 * @param holidayManage 振休紐付け管理区分
 	 * @param applicationSetting 申請表示情報
 	 */
-	public void registerRec(String companyId, GeneralDate baseDate, Optional<RecruitmentApp> rec,
+	public List<ProcessResult> registerRec(String companyId, GeneralDate baseDate, Optional<RecruitmentApp> rec,
 			boolean mailServerSet, List<ApprovalPhaseStateImport_New> approvalLst,
 			List<LeaveComDayOffManagement> leaveComDayOffMana_Rec, ManageDistinct holidayManage,
 			ApplicationSetting applicationSetting) {
@@ -231,14 +237,17 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 		//休暇紐付け管理を登録する
 		absenceServiceProcess.registerVacationLinkManage(leaveComDayOffMana_Rec, new ArrayList<>());
 		//暫定データの登録(đăng ký data tạm thời)
-		interimRemainDataMngRegisterDateChange.registerDateChange(companyId, rec.get().getEmployeeID(), Arrays.asList(rec.get().getAppDate().getApplicationDate()));
+		//anh phượng bảo comment lại. chờ đội team B đối ứng xong 
+		//interimRemainDataMngRegisterDateChange.registerDateChange(companyId, rec.get().getEmployeeID(), Arrays.asList(rec.get().getAppDate().getApplicationDate()));
 		
 		//アルゴリズム「新規画面登録後の処理」を実行する(thực hiện thuật toán [xử lý sau khi đăng ký màn hình new])
 		//QA: http://192.168.50.4:3000/issues/113442 => done
 		Optional<AppTypeSetting> appTypeSetting = applicationSetting.getAppTypeSettings().stream().filter(x -> x.getAppType() == ApplicationType.COMPLEMENT_LEAVE_APPLICATION).findAny();
+		List<ProcessResult> result = new ArrayList<>();
 		if(appTypeSetting.isPresent()) {
-			newAfterRegister.processAfterRegister(rec.get().getAppID(), appTypeSetting.get(), mailServerSet);
+			result.add(newAfterRegister.processAfterRegister(rec.get().getAppID(), appTypeSetting.get(), mailServerSet));
 		}
+		return result;
 	}
 	
 	/**
@@ -253,7 +262,7 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 	 * @param payoutSubofHDManagement_Abs 振出振休紐付け管理
 	 * @param applicationSetting 申請表示情報
 	 */
-	public void registerAbs(String companyId, GeneralDate baseDate, Optional<AbsenceLeaveApp> abs,
+	public List<ProcessResult> registerAbs(String companyId, GeneralDate baseDate, Optional<AbsenceLeaveApp> abs,
 			boolean mailServerSet, List<ApprovalPhaseStateImport_New> approvalLst,
 			List<LeaveComDayOffManagement> leaveComDayOffMana_Abs, List<PayoutSubofHDManagement> payoutSubofHDManagement_Abs,
 			ApplicationSetting applicationSetting) {
@@ -265,14 +274,17 @@ public class SaveHolidayShipmentCommandHandlerRef5 {
 		//休暇紐付け管理を登録する
 		absenceServiceProcess.registerVacationLinkManage(leaveComDayOffMana_Abs, payoutSubofHDManagement_Abs);
 		//暫定データの登録(đăng ký data tạm thời)
-		interimRemainDataMngRegisterDateChange.registerDateChange(companyId, abs.get().getEmployeeID(), Arrays.asList(abs.get().getAppDate().getApplicationDate()));
+		//anh phượng bảo comment lại. chờ đội team B đối ứng xong 
+		//interimRemainDataMngRegisterDateChange.registerDateChange(companyId, abs.get().getEmployeeID(), Arrays.asList(abs.get().getAppDate().getApplicationDate()));
 		
 		//アルゴリズム「新規画面登録後の処理」を実行する(thực hiện thuật toán [xử lý sau khi đăng ký màn hình new])
 		//QA: http://192.168.50.4:3000/issues/113442 => done
 		Optional<AppTypeSetting> appTypeSetting = applicationSetting.getAppTypeSettings().stream().filter(x -> x.getAppType() == ApplicationType.COMPLEMENT_LEAVE_APPLICATION).findAny();
+		List<ProcessResult> result = new ArrayList<>();
 		if(appTypeSetting.isPresent()) {
-			newAfterRegister.processAfterRegister(abs.get().getAppID(), appTypeSetting.get(), mailServerSet);
+			result.add(newAfterRegister.processAfterRegister(abs.get().getAppID(), appTypeSetting.get(), mailServerSet));
 		}
+		return result;
 	}
 	
 	/**

@@ -43,6 +43,8 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 	private static final String SELECT_CHECK_UPDATE = "SELECT count (c) FROM KscdtSchBasicInfo c WHERE c.pk.sid = :employeeID AND c.pk.ymd = :ymd";
 
 	private static final String WHERE_PK = "WHERE a.pk.sid = :sid AND a.pk.ymd >= :ymdStart AND a.pk.ymd <= :ymdEnd";
+	
+	private static final String DELETE_BY_LIST_DATE = "WHERE a.pk.sid = :sid AND a.pk.ymd IN :ymds";
 
 	private static final List<String> DELETE_TABLES = Arrays.asList(
 			"DELETE FROM KscdtSchTime a ",
@@ -376,6 +378,18 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 			KscdtSchBasicInfoPK pk = new KscdtSchBasicInfoPK(optWorkSchedule.get().getEmployeeID(),
 					optWorkSchedule.get().getYmd());
 			this.commandProxy().remove(KscdtSchBasicInfo.class, pk);
+		}
+	}
+	
+	@Override
+	public void deleteListDate(String sid, List<GeneralDate> ymds) {
+		if(ymds.isEmpty())
+			return;
+		for (val deleteTable : DELETE_TABLES){	
+		this.getEntityManager().createQuery(deleteTable + DELETE_BY_LIST_DATE)
+		.setParameter("sid", sid)
+		.setParameter("ymds",ymds)
+		.executeUpdate();
 		}
 	}
 

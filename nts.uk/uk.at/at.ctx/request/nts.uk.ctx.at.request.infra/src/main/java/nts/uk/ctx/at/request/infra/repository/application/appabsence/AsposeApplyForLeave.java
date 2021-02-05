@@ -132,7 +132,7 @@ public class AsposeApplyForLeave {
             }
             
             // 時間年休
-            AttendanceTime timeAnualLeave = timeDegestion.get().getTimeAnualLeave();
+            AttendanceTime timeAnualLeave = timeDegestion.get().getTimeAnnualLeave();
             if (timeAnualLeave != null && timeAnualLeave.v() > 0) {
                 timeString += new StringBuilder(I18NText.getText("KAF006_29"))
                         .append(HALF_WIDTH_SPACE)

@@ -4,7 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.statutory.worktime_new.employment;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 //import javax.persistence.EntityManager;
@@ -32,6 +34,9 @@ import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.Kshst
 @Stateless
 public class JpaEmpTransLaborTimeRepository extends JpaRepository implements DeforLaborTimeEmpRepo {
 
+	private static final String SELECT_BY_CID = "SELECT c FROM KshstEmpTransLabTime c"
+			+ " WHERE c.kshstEmpTransLabTimePK.cid = :cid";
+	
 	/* 
 	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTimeRepository#add(nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTime)
 	 */
@@ -98,6 +103,15 @@ public class JpaEmpTransLaborTimeRepository extends JpaRepository implements Def
 				new EmploymentCode(entity.getKshstEmpTransLabTimePK().getEmpCd()),
 				new WeeklyUnit(new WeeklyTime(entity.getWeeklyTime())), 
 				new DailyUnit(new TimeOfDay(entity.getDailyTime())));
+	}
+
+	@Override
+	public List<DeforLaborTimeEmp> findDeforLaborByCid(String cid) {
+		List<KshstEmpTransLabTime> entitys = this.queryProxy().query(SELECT_BY_CID, KshstEmpTransLabTime.class)
+				.setParameter("cid", cid).getList();
+		return entitys.stream().map(m -> {
+			return toDomain(m);
+		}).collect(Collectors.toList());
 	}
 
 }
