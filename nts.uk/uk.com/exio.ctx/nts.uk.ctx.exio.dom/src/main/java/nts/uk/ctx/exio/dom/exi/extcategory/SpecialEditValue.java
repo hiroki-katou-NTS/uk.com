@@ -2,6 +2,7 @@ package nts.uk.ctx.exio.dom.exi.extcategory;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 特殊区分項目の編集の返す値
@@ -9,6 +10,7 @@ import lombok.Data;
  *
  */
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
 public class SpecialEditValue {
 	/**
@@ -23,5 +25,8 @@ public class SpecialEditValue {
 	 * エラーメッセージ
 	 */
 	private String errorContent;
-
+	/**
+	 * 社員ID
+	 */
+	private String sid;
 }

@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.exio.dom.exi.condset.AcScreenCondSet;
 import nts.uk.ctx.exio.dom.exi.condset.AcceptanceConditionCode;
 import nts.uk.ctx.exio.dom.exi.dataformat.ChrDataFormatSet;
@@ -132,7 +133,18 @@ public class StdAcceptItem extends AggregateRoot {
 			}	
 		}
 		result.setEditValue(toItemValue);
+		//受入条件の判定
 		if(this.acceptScreenConditionSetting.isPresent()) {
+			if(this.itemType == ItemType.DATE && !this.getDataFormatSetting().isPresent()) {
+				try {
+					toItemValue = GeneralDate.fromString(toItemValue.toString(), "yyyy/MM/dd");	
+				}catch (Exception e) {
+					result.setEditError("Msg_1019");
+					result.setResultCheck(true);
+					return result;
+				}
+				
+			}
 			resultCheck = this.getAcceptScreenConditionSetting().get().checkCondNumber(toItemValue, this.itemType);
 			result.setResultCheck(resultCheck);
 		}

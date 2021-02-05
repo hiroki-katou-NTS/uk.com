@@ -108,7 +108,12 @@ public class AcScreenCondSet extends DomainObject {
 		this.numberConditionValue1 = Optional.ofNullable(numberConditionValue1 == null ? null 
 				: new AcceptanceConditionValue(numberConditionValue1));		
 	}
-
+	/**
+	 * 受入条件の判定
+	 * @param itemValue
+	 * @param itemType
+	 * @return
+	 */
 	public boolean checkCondNumber(Object itemValue, ItemType itemType) {
 		Object condValue1 = null;
 		Object condValue2 = null;

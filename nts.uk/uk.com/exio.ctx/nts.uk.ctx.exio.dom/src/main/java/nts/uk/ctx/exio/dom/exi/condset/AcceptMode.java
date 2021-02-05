@@ -12,11 +12,11 @@ public enum AcceptMode {
 	 */
 	INSERT_ONLY(0, "Enum_AcceptMode_INSERT_ONLY"),
 	/**
-	 * 新規受入と上書き受入を行う（INSERT・UPDATE）
+	 * 上書き受入のみを行う（UPDATEのみ）
 	 */
 	UPDATE_ONLY(1, "Enum_AcceptMode_INSERT_UPDATE_ONLY"),
 	/**
-	 * 上書き受入のみを行う（UPDATEのみ）
+	 * 新規受入と上書き受入を行う（INSERT・UPDATE）
 	 */
 	INSERT_AND_UPDATE(2, "Enum_AcceptMode_INSERT_INSERT_AND_UPDATE");
 

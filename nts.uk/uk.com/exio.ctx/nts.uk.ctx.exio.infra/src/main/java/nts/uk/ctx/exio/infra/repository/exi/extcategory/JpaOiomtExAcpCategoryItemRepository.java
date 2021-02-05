@@ -12,6 +12,7 @@ import nts.uk.ctx.exio.dom.exi.extcategory.ExiDecimalUnit;
 import nts.uk.ctx.exio.dom.exi.extcategory.ExternalAcceptCategoryItem;
 import nts.uk.ctx.exio.dom.exi.extcategory.ExternalHistoryContiFlg;
 import nts.uk.ctx.exio.dom.exi.extcategory.OiomtExAcpCategoryItemRepository;
+import nts.uk.ctx.exio.dom.exi.extcategory.SpecialExternalItem;
 import nts.uk.ctx.exio.dom.exo.categoryitemdata.DataType;
 import nts.uk.ctx.exio.infra.entity.exi.extcategory.OiomtExAcpCategoryItem;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -46,7 +47,7 @@ public class JpaOiomtExAcpCategoryItemRepository extends JpaRepository implement
 					Optional.ofNullable(entity.getNumberRangeEnd()),
 					Optional.ofNullable(entity.getNumberRangeStart2()),
 					Optional.ofNullable(entity.getNumberRangeEnd2()),
-					entity.getSpecialFlg(),
+					EnumAdaptor.valueOf(entity.getSpecialFlg(), SpecialExternalItem.class),
 					Optional.ofNullable(entity.getRequiredNumber()),
 					EnumAdaptor.valueOf(entity.getDisplayFlg(), NotUseAtr.class),
 					Optional.ofNullable(entity.getHistoryFlg() == null ? null : EnumAdaptor.valueOf(entity.getHistoryFlg(), NotUseAtr.class)),
