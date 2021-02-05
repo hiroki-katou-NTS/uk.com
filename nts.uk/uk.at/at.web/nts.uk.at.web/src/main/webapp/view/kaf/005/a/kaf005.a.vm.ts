@@ -2393,9 +2393,11 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			// ※15-3 = ×　AND　
 			// 「残業申請の表示情報．基準日に関係しない情報．残業休日出勤申請の反映．残業申請．事前．休憩・外出を申請反映する」= する
 			let c18_1_1 = res.infoNoBaseDate.overTimeReflect.overtimeWorkAppReflect.reflectBeforeBreak == NotUseAtr.USE;
+			visibleModel.c18_1_1(c18_1_1);
 			// ※15-3 = ○　AND
 			// 「残業申請の表示情報．基準日に関係しない情報．残業休日出勤申請の反映．残業申請．事後．休憩・外出を申請反映する」= する
 			let c18_1_2 = res.infoNoBaseDate.overTimeReflect.overtimeWorkAppReflect.reflectBreakOuting == NotUseAtr.USE;
+			visibleModel.c18_1_2(c18_1_2);
 			let c18_1 = (!c15_3 && c18_1_1) || (c15_3 && c18_1_2);
 			visibleModel.c18_1(c18_1);
 
@@ -2416,8 +2418,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 
 
 			// ※7 = ○　AND 「残業申請の表示情報．申請表示情報．申請表示情報(基準日関係なし)．複数回勤務の管理」= true
-			let c29 = c7 && res.appDispInfoStartup.appDispInfoNoDateOutput.managementMultipleWorkCycles;
-			visibleModel.c29(c29);
+			let c29_1 = res.appDispInfoStartup.appDispInfoNoDateOutput.managementMultipleWorkCycles;
+			visibleModel.c29_1(c29_1);
+			// let c29 = c7 && c29_1;
+			// visibleModel.c29(c29);
 
 			// 「残業申請の表示情報．計算結果．申請時間．申請時間．type」= 休出時間 があるの場合
 			let c30_1 = false;
@@ -2690,37 +2694,69 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		public c26: KnockoutObservable<Boolean>;
 		public c28: KnockoutObservable<Boolean>;
 		public c29: KnockoutObservable<Boolean>;
+		public c29_1: KnockoutObservable<Boolean>;
 		public c30_1: KnockoutObservable<Boolean>;
 		public c30_2: KnockoutObservable<Boolean>;
 		public c30_3: KnockoutObservable<Boolean>;
 		public c30_4: KnockoutObservable<Boolean>;
 		public c30: KnockoutObservable<Boolean>;
-
+		public c31: KnockoutObservable<Boolean>;
+		public c31_1: KnockoutObservable<Boolean>;
+		public c32: KnockoutObservable<Boolean>;
+		public c32_1: KnockoutObservable<Boolean>;
+		public c18_1_1: KnockoutObservable<Boolean>;
+		public c18_1_2: KnockoutObservable<Boolean>;
 
 		constructor() {
 			const self = this;
-			this.c2 = ko.observable(true);
-			this.c6 = ko.observable(true);
-			this.c7 = ko.observable(true);
-			this.c11_1 = ko.observable(true);
-			this.c11_2 = ko.observable(true);
-			this.c12_1 = ko.observable(true);
-			this.c12_2 = ko.observable(true);
-			this.c15_3 = ko.observable(null);
-			this.c16 = ko.observable(true);
-			this.c17 = ko.observable(true);
-			this.c18 = ko.observable(true);
-			this.c18_1 = ko.observable(true);
-			this.c26 = ko.observable(true);
-			this.c28 = ko.observable(true);
-			this.c29 = ko.observable(true);
-			this.c30_1 = ko.observable(true);
-			this.c30_2 = ko.observable(true);
-			this.c30_3 = ko.observable(true);
-			this.c30_4 = ko.observable(true);
-			this.c30 = ko.computed(() => {
-				return this.c30_1() || this.c30_2() || this.c30_3() || this.c30_4();
-			}, this)
+			
+			self.c2 = ko.observable(true);
+			self.c6 = ko.observable(true);
+			self.c7 = ko.observable(true);
+			self.c11_1 = ko.observable(true);
+			self.c11_2 = ko.observable(true);
+			self.c12_1 = ko.observable(true);
+			self.c12_2 = ko.observable(true);
+			self.c15_3 = ko.observable(null);
+			self.c16 = ko.observable(true);
+			self.c17 = ko.observable(true);
+			self.c18 = ko.observable(true);
+			self.c18_1 = ko.observable(true);
+			self.c18_1_1 = ko.observable(true);
+			self.c18_1_2 = ko.observable(true);
+			self.c26 = ko.observable(true);
+			self.c28 = ko.observable(true);
+				
+			self.c29_1 = ko.observable(true);
+			self.c30_1 = ko.observable(true);
+			self.c30_2 = ko.observable(true);
+			self.c30_3 = ko.observable(true);
+			self.c30_4 = ko.observable(true);
+			self.c30 = ko.computed(() => {
+				return self.c30_1() || self.c30_2() || self.c30_3() || self.c30_4();
+			}, self);
+			self.c31_1 = ko.computed(() => {
+				
+				return !self.c15_3() && self.c18_1_1();
+			}, self);
+			self.c32_1 = ko.computed(() => {
+				
+				return self.c31_1() || (self.c15_3() && self.c18_1_2());
+			}, self);
+			
+			self.c31 = ko.computed(() => {
+				
+				return self.c7() || self.c26() || self.c31_1();
+			}, self);
+			
+			self.c32 = ko.computed(() => {
+				
+				return self.c7() || self.c32_1();
+			}, self);
+			self.c29 = ko.computed(() => {
+				
+				return self.c32() && self.c29_1();
+			})
 		}
 	}
 	enum NotUseAtr {
