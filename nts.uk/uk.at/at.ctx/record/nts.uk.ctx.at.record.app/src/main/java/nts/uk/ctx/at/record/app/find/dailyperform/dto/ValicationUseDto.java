@@ -2,12 +2,10 @@ package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
 import java.util.Optional;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate.PropType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
@@ -46,6 +44,8 @@ public class ValicationUseDto implements ItemConst, AttendanceItemDataGate {
 	private Integer timeCompensatoryLeaveUseTime;
 
 	/*特別休暇枠NO*/
+	@AttendanceItemLayout(layout = LAYOUT_G, jpPropertyName = SPECIAL+FRAME)
+	@AttendanceItemValue(type = ValueType.COUNT)
 	public Integer specialHdFrameNo;
 	
 	/**子の看護休暇使用時間*/
@@ -67,6 +67,8 @@ public class ValicationUseDto implements ItemConst, AttendanceItemDataGate {
 			return Optional.of(ItemValue.builder().value(excessHolidayUseTime).valueType(ValueType.TIME));
 		case SPECIAL:
 			return Optional.of(ItemValue.builder().value(timeSpecialHolidayUseTime).valueType(ValueType.TIME));
+		case SPECIAL+FRAME:
+			return Optional.of(ItemValue.builder().value(specialHdFrameNo).valueType(ValueType.COUNT));
 		case COMPENSATORY:
 			return Optional.of(ItemValue.builder().value(timeCompensatoryLeaveUseTime).valueType(ValueType.TIME));
 		case CHILD_CARE:
@@ -84,6 +86,7 @@ public class ValicationUseDto implements ItemConst, AttendanceItemDataGate {
 		case ANNUNAL_LEAVE:
 		case EXCESS:
 		case SPECIAL:
+		case SPECIAL+FRAME:
 		case COMPENSATORY:
 		case CHILD_CARE:
 		case CARE:
@@ -104,6 +107,9 @@ public class ValicationUseDto implements ItemConst, AttendanceItemDataGate {
 			break;
 		case SPECIAL:
 			this.timeSpecialHolidayUseTime = value.valueOrDefault(null);
+			break;
+		case SPECIAL+FRAME:
+			this.specialHdFrameNo = value.valueOrDefault(null);
 			break;
 		case COMPENSATORY:
 			this.timeCompensatoryLeaveUseTime = value.valueOrDefault(null);

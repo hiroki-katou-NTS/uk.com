@@ -35,6 +35,7 @@ public class CheckConditionReflectAppTimeLeave {
 		// [時間特別休暇]をチェック
 		if (condition.getSpecialVacationTime() == NotUseAtr.USE) {
 			timeDigestInit.setTimeSpecialVacation(timeDigestApplication.getTimeSpecialVacation());
+			timeDigestInit.setSpecialVacationFrameNO(timeDigestApplication.getSpecialVacationFrameNO());
 		}
 
 		// [60H超休]をチェック

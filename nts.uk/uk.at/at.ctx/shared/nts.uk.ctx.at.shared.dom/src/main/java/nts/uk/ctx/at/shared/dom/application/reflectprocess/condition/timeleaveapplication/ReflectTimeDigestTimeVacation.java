@@ -7,11 +7,18 @@ import java.util.List;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.UpdateEditSttCreateBeforeAppReflect;
 import nts.uk.ctx.at.shared.dom.application.timeleaveapplication.TimeDigestApplicationShare;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.AppTimeType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakTimeGoOutTimes;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTotalTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.LateTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.WithinOutingTotalTime;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
+import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHdFrameNo;
 
 /**
  * @author thanh_nx
@@ -33,6 +40,8 @@ public class ReflectTimeDigestTimeVacation {
 						data.getTimePaidUseTime().setTimeAnnualLeaveUseTime(timeDigest.getTimeAnnualLeave());
 						data.getTimePaidUseTime().setTimeCompensatoryLeaveUseTime(timeDigest.getTimeOff());
 						data.getTimePaidUseTime().setTimeSpecialHolidayUseTime(timeDigest.getTimeSpecialVacation());
+						data.getTimePaidUseTime().setSpecialHolidayFrameNo(
+								timeDigest.getSpecialVacationFrameNO().map(y -> new SpecialHdFrameNo(y)));
 						data.getTimePaidUseTime().setSixtyHourExcessHolidayUseTime(timeDigest.getOvertime60H());
 						lstItemId.addAll(Arrays.asList(595, 596, 597, 1123, 1124));
 					}
@@ -41,6 +50,8 @@ public class ReflectTimeDigestTimeVacation {
 						data.getTimePaidUseTime().setTimeAnnualLeaveUseTime(timeDigest.getTimeAnnualLeave());
 						data.getTimePaidUseTime().setTimeCompensatoryLeaveUseTime(timeDigest.getTimeOff());
 						data.getTimePaidUseTime().setTimeSpecialHolidayUseTime(timeDigest.getTimeSpecialVacation());
+						data.getTimePaidUseTime().setSpecialHolidayFrameNo(
+								timeDigest.getSpecialVacationFrameNO().map(y -> new SpecialHdFrameNo(y)));
 						data.getTimePaidUseTime().setSixtyHourExcessHolidayUseTime(timeDigest.getOvertime60H());
 						lstItemId.addAll(Arrays.asList(601, 602, 603, 1127, 1128));
 					}
@@ -54,6 +65,8 @@ public class ReflectTimeDigestTimeVacation {
 						data.getTimePaidUseTime().setTimeAnnualLeaveUseTime(timeDigest.getTimeAnnualLeave());
 						data.getTimePaidUseTime().setTimeCompensatoryLeaveUseTime(timeDigest.getTimeOff());
 						data.getTimePaidUseTime().setTimeSpecialHolidayUseTime(timeDigest.getTimeSpecialVacation());
+						data.getTimePaidUseTime().setSpecialHolidayFrameNo(
+								timeDigest.getSpecialVacationFrameNO().map(y -> new SpecialHdFrameNo(y)));
 						data.getTimePaidUseTime().setSixtyHourExcessHolidayUseTime(timeDigest.getOvertime60H());
 						lstItemId.addAll(Arrays.asList(607, 608, 609, 1131, 1132));
 					}
@@ -62,6 +75,8 @@ public class ReflectTimeDigestTimeVacation {
 						data.getTimePaidUseTime().setTimeAnnualLeaveUseTime(timeDigest.getTimeAnnualLeave());
 						data.getTimePaidUseTime().setTimeCompensatoryLeaveUseTime(timeDigest.getTimeOff());
 						data.getTimePaidUseTime().setTimeSpecialHolidayUseTime(timeDigest.getTimeSpecialVacation());
+						data.getTimePaidUseTime().setSpecialHolidayFrameNo(
+								timeDigest.getSpecialVacationFrameNO().map(y -> new SpecialHdFrameNo(y)));
 						data.getTimePaidUseTime().setSixtyHourExcessHolidayUseTime(timeDigest.getOvertime60H());
 						lstItemId.addAll(Arrays.asList(613, 614, 615, 1135, 1136));
 					}
@@ -70,6 +85,19 @@ public class ReflectTimeDigestTimeVacation {
 		} else {
 			dailyApp.getAttendanceTimeOfDailyPerformance().ifPresent(x -> {
 				// [input.時間消化申請(work）を日別勤怠(work）の外出時間]へセット
+				if (x.getOutingTimeOfDaily().isEmpty()) {
+					x.getOutingTimeOfDaily().add(new OutingTimeOfDaily(new BreakTimeGoOutTimes(0),
+							appTimeType == AppTimeType.PRIVATE ? GoingOutReason.PRIVATE : GoingOutReason.PUBLIC,
+							TimevacationUseTimeOfDaily.defaultValue(),
+							OutingTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
+									WithinOutingTotalTime.sameTime(TimeWithCalculation.sameTime(new AttendanceTime(0))),
+									TimeWithCalculation.sameTime(new AttendanceTime(0))),
+							OutingTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
+									WithinOutingTotalTime.sameTime(TimeWithCalculation.sameTime(new AttendanceTime(0))),
+									TimeWithCalculation.sameTime(new AttendanceTime(0))),
+							new ArrayList<>()));
+				}
+				
 				for (OutingTimeOfDaily data : x.getOutingTimeOfDaily()) {
 					if (appTimeType == AppTimeType.PRIVATE) {
 						data.setReason(GoingOutReason.PRIVATE);
@@ -77,6 +105,8 @@ public class ReflectTimeDigestTimeVacation {
 						data.getTimeVacationUseOfDaily().setTimeCompensatoryLeaveUseTime(timeDigest.getTimeOff());
 						data.getTimeVacationUseOfDaily()
 								.setTimeSpecialHolidayUseTime(timeDigest.getTimeSpecialVacation());
+						data.getTimeVacationUseOfDaily().setSpecialHolidayFrameNo(
+								timeDigest.getSpecialVacationFrameNO().map(y -> new SpecialHdFrameNo(y)));
 						data.getTimeVacationUseOfDaily().setSixtyHourExcessHolidayUseTime(timeDigest.getOvertime60H());
 						lstItemId.addAll(Arrays.asList(502, 503, 504, 1145, 505));
 					}
@@ -87,6 +117,8 @@ public class ReflectTimeDigestTimeVacation {
 						data.getTimeVacationUseOfDaily().setTimeCompensatoryLeaveUseTime(timeDigest.getTimeOff());
 						data.getTimeVacationUseOfDaily()
 								.setTimeSpecialHolidayUseTime(timeDigest.getTimeSpecialVacation());
+						data.getTimeVacationUseOfDaily().setSpecialHolidayFrameNo(
+								timeDigest.getSpecialVacationFrameNO().map(y -> new SpecialHdFrameNo(y)));
 						data.getTimeVacationUseOfDaily().setSixtyHourExcessHolidayUseTime(timeDigest.getOvertime60H());
 						lstItemId.addAll(Arrays.asList(514, 515, 516, 1146, 517));
 					}

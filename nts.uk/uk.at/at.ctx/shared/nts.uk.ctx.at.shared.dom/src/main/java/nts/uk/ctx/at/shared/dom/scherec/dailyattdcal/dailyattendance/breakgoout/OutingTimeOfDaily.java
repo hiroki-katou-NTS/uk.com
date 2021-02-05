@@ -161,7 +161,7 @@ public class OutingTimeOfDaily {
 		}
 		return new OutingTimeOfDaily(
 				goOutTimes,
-				GoingOutReason.UNION, 
+				outingOfDaily.getReasonForGoOut(), 
 				useVacationTime, 
 				recordTotalTime, 
 				dedTotalTime,

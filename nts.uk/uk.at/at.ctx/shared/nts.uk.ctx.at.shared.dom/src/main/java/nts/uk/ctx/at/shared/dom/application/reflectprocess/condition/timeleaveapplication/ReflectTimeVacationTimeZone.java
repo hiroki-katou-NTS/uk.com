@@ -81,6 +81,7 @@ public class ReflectTimeVacationTimeZone {
 								lstItemId.add(CancelAppStamp.createItemId(91, workNo.getWorkNo().v(), 7));
 								return st;
 							}));
+							x.setReasonForGoOut(appTimeType == AppTimeType.PRIVATE ? GoingOutReason.PRIVATE : GoingOutReason.UNION);
 							lstItemId.add(CancelAppStamp.createItemId(86, workNo.getWorkNo().v(), 7));
 							return x;
 						}).collect(Collectors.toList());
