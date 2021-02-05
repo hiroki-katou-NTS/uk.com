@@ -20,7 +20,10 @@ import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.DailyAttendanceTimeP
 import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.DailyAttendanceTimePubExport;
 import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.DailyAttendanceTimePubImport;
 import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.DailyAttendanceTimePubLateLeaveExport;
+import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.importparam.ChildCareTimeZoneImport;
+import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.importparam.OutingTimeZoneImport;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingFrameNo;
@@ -36,6 +39,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattend
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkMidNightTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.LateTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ChildCareAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
@@ -100,19 +104,30 @@ public class DailyAttendanceTimePubImpl implements DailyAttendanceTimePub{
 		
 		//休憩時間帯の作成
 		List<BreakTimeSheet> breakTimeSheets = new ArrayList<>();
-		//-----------
-		for(int frameNo = 1 ; frameNo <= imp.getBreakStartTime().size() ; frameNo++) {
-			if(imp.getBreakStartTime() != null && imp.getBreakEndTime() != null) {
+		List<AttendanceTime> impBreakStart = imp.getBreakStartTime().stream()
+				.sorted((f, s) -> f.compareTo(s))
+				.collect(Collectors.toList());
+		List<AttendanceTime> impBreakEnd = imp.getBreakEndTime().stream()
+				.sorted((f, s) -> f.compareTo(s))
+				.collect(Collectors.toList());
+		
+		for(int frameNo = 1 ; frameNo <= impBreakStart.size() ; frameNo++) {
+			if(impBreakStart != null && impBreakEnd != null) {
 				breakTimeSheets.add(new BreakTimeSheet(new BreakFrameNo(frameNo),
-							new TimeWithDayAttr(imp.getBreakStartTime().get(frameNo - 1).valueAsMinutes()),
-							new TimeWithDayAttr(imp.getBreakEndTime().get(frameNo - 1).valueAsMinutes()),
-							imp.getBreakEndTime().get(frameNo - 1).minusMinutes(imp.getBreakStartTime().get(frameNo - 1).valueAsMinutes())));
+							new TimeWithDayAttr(impBreakStart.get(frameNo - 1).valueAsMinutes()),
+							new TimeWithDayAttr(impBreakEnd.get(frameNo - 1).valueAsMinutes()),
+							impBreakEnd.get(frameNo - 1).minusMinutes(impBreakStart.get(frameNo - 1).valueAsMinutes())));
 			}
 		}
 		
-		//外出時間帯を作成 仮実装_属性が勤怠打刻に変わる為、要修正
+		//外出時間帯を作成
+		//ToDo:属性が勤怠打刻に変わる為、要修正
 		List<OutingTimeSheet> outingTimeSheets = new ArrayList<>();
-		for(int frameNo = 1; frameNo <= imp.getOutingTimeSheets().size(); frameNo++) {
+		List<OutingTimeZoneImport> impOutingTimeSheets = imp.getOutingTimeSheets().stream()
+				.sorted((f, s) -> f.getTimeZone().getStart().compareTo(s.getTimeZone().getStart()))
+				.collect(Collectors.toList());
+		
+		for(int frameNo = 1; frameNo <= impOutingTimeSheets.size(); frameNo++) {
 			outingTimeSheets.add(new OutingTimeSheet(
 					new OutingFrameNo(frameNo),
 					Optional.of(new TimeActualStamp(
@@ -120,35 +135,39 @@ public class DailyAttendanceTimePubImpl implements DailyAttendanceTimePub{
 							Optional.of(new WorkStamp(
 									new WorkTimeInformation(
 											new ReasonTimeChange(TimeChangeMeans.REAL_STAMP, Optional.empty()),
-											Optional.of(imp.getOutingTimeSheets().get(frameNo-1).getTimeZone().getStart())),
+											impOutingTimeSheets.get(frameNo - 1).getTimeZone().getStart()),
 									Optional.empty())),
 							0,
 							Optional.empty(),
 							Optional.empty())),
 					AttendanceTime.ZERO,
 					AttendanceTime.ZERO,
-					imp.getOutingTimeSheets().get(frameNo-1).getGoingOutReason(),
+					impOutingTimeSheets.get(frameNo-1).getGoingOutReason(),
 					Optional.of(new TimeActualStamp(
 							Optional.empty(),
 							Optional.of(new WorkStamp(
 									new WorkTimeInformation(
 											new ReasonTimeChange(TimeChangeMeans.REAL_STAMP, Optional.empty()),
-											Optional.of(imp.getOutingTimeSheets().get(frameNo-1).getTimeZone().getEnd())),
+											impOutingTimeSheets.get(frameNo -1 ).getTimeZone().getEnd()),
 									Optional.empty())),
 							0,
 							Optional.empty(),
 							Optional.empty()))
-					));
+			));
 		}
 		
 		//短時間勤務時間帯を作成
 		List<ShortWorkingTimeSheet> shortWorkingTimeSheets = new ArrayList<>();
-		for(int frameNo = 1; frameNo <= imp.getShortWorkingTimeSheets().size(); frameNo++) {
+		List<ChildCareTimeZoneImport> impShortWorkingTimeSheets = imp.getShortWorkingTimeSheets().stream()
+				.sorted((f, s) -> f.getTimeZone().getStart().compareTo(s.getTimeZone().getStart()))
+				.collect(Collectors.toList());
+		
+		for(int frameNo = 1; frameNo <= impShortWorkingTimeSheets.size(); frameNo++) {
 			shortWorkingTimeSheets.add(new ShortWorkingTimeSheet(
 					new ShortWorkTimFrameNo(frameNo),
-					imp.getShortWorkingTimeSheets().get(frameNo -1).getGoingOutReason(),
-					imp.getShortWorkingTimeSheets().get(frameNo - 1).getTimeZone().getStart(),
-					imp.getShortWorkingTimeSheets().get(frameNo - 1).getTimeZone().getEnd()));
+					impShortWorkingTimeSheets.get(frameNo -1).getGoingOutReason(),
+					impShortWorkingTimeSheets.get(frameNo - 1).getTimeZone().getStart(),
+					impShortWorkingTimeSheets.get(frameNo - 1).getTimeZone().getEnd()));
 		}
 
         return provisionalCalculationService.calculation(Arrays.asList(

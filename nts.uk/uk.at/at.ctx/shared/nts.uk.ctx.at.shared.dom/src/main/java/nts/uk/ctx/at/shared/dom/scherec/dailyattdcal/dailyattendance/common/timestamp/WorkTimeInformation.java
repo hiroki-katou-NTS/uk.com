@@ -17,7 +17,6 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 public class WorkTimeInformation implements DomainObject {
 	
 	//時刻変更理由
