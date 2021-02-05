@@ -25,4 +25,10 @@ public class AnnualHolidayGrant {
 	private GeneralDate deadline;
 	/**年休残数	 */
 	private double remainDays;
+	/**時間付与数 */
+	private int grantMinute;
+	/**時間使用数 */
+	private int usedMinute;
+	/**時間残数 */
+	private int remainMinutes;
 }

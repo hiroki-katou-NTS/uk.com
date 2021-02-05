@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.AllArgsConstructor;
 import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
@@ -23,14 +24,11 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.An
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.CalcNextAnnualLeaveGrantDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnLeaGrantRemDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveNumberInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveRemainHistRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveRemainingHistory;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveTimeRemainHistRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveTimeRemainingHistory;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveGrantNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.CreateInterimAnnualMngData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.AnnualHolidayGrant;
@@ -41,11 +39,18 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHol
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLeaveMngWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemainingData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveGrantTime;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingTime;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordService;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthlyRepository;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
@@ -83,6 +88,10 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 	private RecordDomRequireService requireService;
 	@Inject
 	private AnnLeaEmpBasicInfoRepository annLeaEmpBasicInfoRepository;
+	@Inject
+	private WorkingConditionItemRepository workingConditionItemRepository;
+	@Inject
+	private AnnualPaidLeaveSettingRepository annualPaidLeaveSettingRepository;
 
 	/**
 	 * 処理概要： 指定した年月の付与残数情報と、指定年月を含む前回付与日～次回付与日までの使用数を含めた残数を取得
@@ -190,8 +199,10 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 						a.getDetails().getGrantNumber().getDays().v(),
 						a.getDetails().getUsedNumber().getDays().v(),
 						a.getDeadline(),
-						a.getDetails().getRemainingNumber().getDays().v());
-				lstAnnHolidayGrant.add(grantData);
+						a.getDetails().getRemainingNumber().getDays().v(),
+						a.getDetails().getGrantNumber().getMinutes().map(LeaveGrantTime::valueAsMinutes).orElse(0),
+						a.getDetails().getUsedNumber().getMinutes().map(LeaveUsedTime::valueAsMinutes).orElse(0),
+						a.getDetails().getRemainingNumber().getMinutes().map(LeaveRemainingTime::valueAsMinutes).orElse(0));				lstAnnHolidayGrant.add(grantData);
 			}
 			output.setLstGrantInfor(lstAnnHolidayGrant);
 		}
@@ -398,33 +409,22 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 	@Override
 	public List<AnnualLeaveGrantRemainingData> lstRemainHistory(String sid,
 			List<AnnualLeaveGrantRemainingData> lstAnnRemainHis, GeneralDate ymd) {
-		//付与時点の残数履歴データを取得
+//		//付与時点の残数履歴データを取得
 		List<AnnualLeaveTimeRemainingHistory> annTimeData = annTimeRemainHisRepo.findBySid(sid, ymd);
 		if(annTimeData.isEmpty()) {
 			return lstAnnRemainHis;
 		}
 		
-		List<AnnualLeaveTimeRemainingHistory> maxDateAnnRemainHis = annTimeData
-				.stream().filter(x -> x.getGrantProcessDate().equals(annTimeData.get(0).getGrantProcessDate())).collect(Collectors.toList());
-		
-		lstAnnRemainHis.stream().forEach(y -> {
-			// INPUT．年休付与残数データ(i)．付与日と同じ年休付与時点残数履歴データ．付与日の使用数を取得する
-			maxDateAnnRemainHis.stream().forEach(z -> {
-				if(y.getGrantDate().equals(z.getGrantDate())) {
-					//年休付与残数履歴データ．使用数から、付与時点の使用数を減算
-					double useDay = y.getDetails().getUsedNumber().getDays().v() - z.getDetails().getUsedNumber().getDays().v();
-					y.getDetails().setUsedNumber(new AnnualLeaveUsedNumber(useDay, null, null));
-					//付与数から計算した使用数を減算
-					double grantDays = y.getDetails().getGrantNumber().getDays().v() - z.getDetails().getUsedNumber().getDays().v();
-					((AnnualLeaveNumberInfo) y.getDetails()).setGrantNumber(AnnualLeaveGrantNumber.createFromJavaType(grantDays, 0));
-				}
-				
-//				// INPUT．年休付与残数データ(i)．付与日と同じ年休付与時点残数履歴データ．付与日の使用数を取得する
-//				double useDay = y.getDetails().getUsedNumber().getDays().v();
-			});
-
-		});
-		return lstAnnRemainHis;
+		return annTimeData.stream()
+				.map(hist -> GetAnnualLeaveUsedNumberFromRemDataService
+				.getAnnualLeaveGrantRemainingData(
+						AppContexts.user().companyId(), sid, 
+						lstAnnRemainHis.stream().map(data -> (LeaveGrantRemainingData) data).collect(Collectors.toList()), 
+						hist.getDetails().getUsedNumber(), 
+						new RequireImpl(workingConditionItemRepository, annualPaidLeaveSettingRepository)))
+				.flatMap(List::stream)
+				.map(data -> (AnnualLeaveGrantRemainingData) data)
+				.collect(Collectors.toList());
 	}
 
 	//前回付与日～INPUT．指定年月の間で期限が切れた付与情報を取得 - 7 
@@ -442,7 +442,10 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 						x.getDetails().getGrantNumber().getDays().v(),
 						x.getDetails().getUsedNumber().getDays().v(),
 						x.getDeadline(),
-						x.getDetails().getRemainingNumber().getDays().v());
+						x.getDetails().getRemainingNumber().getDays().v(),
+						x.getDetails().getGrantNumber().getMinutes().map(LeaveGrantTime::valueAsMinutes).orElse(0),
+						x.getDetails().getUsedNumber().getMinutes().map(LeaveUsedTime::valueAsMinutes).orElse(0),
+						x.getDetails().getRemainingNumber().getMinutes().map(LeaveRemainingTime::valueAsMinutes).orElse(0));
 				lstOutput.add(data);
 			});
 
@@ -454,7 +457,10 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 						x.getDetails().getGrantNumber().getDays().v(),
 						x.getDetails().getUsedNumber().getDays().v(),
 						x.getDeadline(),
-						x.getDetails().getRemainingNumber().getDays().v());
+						x.getDetails().getRemainingNumber().getDays().v(),
+						x.getDetails().getGrantNumber().getMinutes().map(LeaveGrantTime::valueAsMinutes).orElse(0),
+						x.getDetails().getUsedNumber().getMinutes().map(LeaveUsedTime::valueAsMinutes).orElse(0),
+						x.getDetails().getRemainingNumber().getMinutes().map(LeaveRemainingTime::valueAsMinutes).orElse(0));
 				lstOutput.add(data);
 			});
 			
@@ -466,7 +472,10 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 						x.getDetails().getGrantNumber().getDays().v(),
 						x.getDetails().getUsedNumber().getDays().v(),
 						x.getDeadline(),
-						x.getDetails().getRemainingNumber().getDays().v());
+						x.getDetails().getRemainingNumber().getDays().v(),
+						x.getDetails().getGrantNumber().getMinutes().map(LeaveGrantTime::valueAsMinutes).orElse(0),
+						x.getDetails().getUsedNumber().getMinutes().map(LeaveUsedTime::valueAsMinutes).orElse(0),
+						x.getDetails().getRemainingNumber().getMinutes().map(LeaveRemainingTime::valueAsMinutes).orElse(0));
 				lstOutput.add(data);
 			});
 			
@@ -574,4 +583,22 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 		return false;
 	}
 
+	@AllArgsConstructor
+	public class RequireImpl implements GetAnnualLeaveUsedNumberFromRemDataService.RequireM3 {
+
+		private final WorkingConditionItemRepository workingConditionItemRepository;
+
+		private final AnnualPaidLeaveSettingRepository annualPaidLeaveSettingRepository;
+
+		@Override
+		public AnnualPaidLeaveSetting annualPaidLeaveSetting(String companyId) {
+			return annualPaidLeaveSettingRepository.findByCompanyId(companyId);
+		}
+
+		@Override
+		public Optional<WorkingConditionItem> workingConditionItem(String employeeId, GeneralDate baseDate) {
+			return workingConditionItemRepository.getBySidAndStandardDate(employeeId, baseDate);
+		}
+
+	}
 }

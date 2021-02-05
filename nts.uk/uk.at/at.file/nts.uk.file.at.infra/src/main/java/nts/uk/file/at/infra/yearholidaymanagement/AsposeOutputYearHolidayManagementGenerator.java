@@ -57,6 +57,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.AnnualH
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.AnnualHolidayGrantDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.AnnualHolidayGrantInfor;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.ReferenceAtr;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSettingRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
@@ -170,6 +173,8 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 	private ShareEmploymentAdapter shareEmploymentAdapter;
 	@Inject
 	private SyCompanyRecordAdapter syCompanyRecordAdapter;
+	@Inject
+	private AnnualPaidLeaveSettingRepository annualPaidLeaveSettingRepository;
 
 	@Override
 	public void generate(FileGeneratorContext generatorContext, OutputYearHolidayManagementQuery query) {
@@ -518,7 +523,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 						: null;
 				List<AnnualHolidayGrantDetail> holidayDetails = emp.getHolidayDetails();
 				// tính tổng số dòng để xác định phân trang nếu data quá quy định
-				int dataLine = this.getTotalLineOfEmp(holidayInfo, holidayDetails, query);
+				int dataLine = this.getTotalLineOfEmp(holidayInfo, holidayDetails);
 				String wpName = WORKPLACE_TITLE + emp.getWorkplace().getWorkplaceCode() + " "
 						+ emp.getWorkplace().getWorkplaceName();
 				String lastWpName = cells.get(lastWPRow, 0).getStringValue();
@@ -601,11 +606,11 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 					AnnualHolidayGrantDetail detail = holidayDetails.get(j);
 					// case date  年休取得日の印字方法  = 年月日
 					if(query.getPrintAnnualLeaveDate() == AnnualLeaveAcquisitionDate.DATE) {
-						cells.get(holidayDetailRow, holidayDetailCol).setValue(this.genHolidayText(detail));
+						cells.get(holidayDetailRow, holidayDetailCol).setValue(this.genHolidayText(detail, query.getPrintAnnualLeaveDate()));
 					}
 					// case time 年休取得日の印字方法  = 月日
 					if(query.getPrintAnnualLeaveDate() == AnnualLeaveAcquisitionDate.TIME) {
-						cells.get(holidayDetailRow, holidayDetailCol).setValue(this.genHolidayText(detail));
+						cells.get(holidayDetailRow, holidayDetailCol).setValue(this.genHolidayText(detail, query.getPrintAnnualLeaveDate()));
 //						cells.get(holidayDetailRow + 1, holidayDetailCol).setValue(this.generateTimeText(detail));
 					}
 					
@@ -618,7 +623,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 				}
 
 				currentRow = currentRow + dataLine;
-				isBlueBackground = this.setRowStyle(cells, currentRow, dataLine, isBlueBackground, query);
+				isBlueBackground = this.setRowStyle(cells, currentRow, dataLine, isBlueBackground);
 			}
 
 		} catch (Exception e) {
@@ -633,9 +638,12 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 	 * @param holidayDetails
 	 * @return số dòng cần để in
 	 */
-	private int getTotalLineOfEmp(AnnualHolidayGrantInfor holidayInfo, List<AnnualHolidayGrantDetail> holidayDetails, OutputYearHolidayManagementQuery query) {
+	private int getTotalLineOfEmp(AnnualHolidayGrantInfor holidayInfo, List<AnnualHolidayGrantDetail> holidayDetails) {
+		AnnualPaidLeaveSetting annualPaidLeaveSetting = this.annualPaidLeaveSettingRepository
+				.findByCompanyId(AppContexts.user().companyId());
+		boolean isManageTime = annualPaidLeaveSetting.getTimeSetting().getTimeManageType().equals(ManageDistinct.NO);
 		// mặc định là 2 dòng với date, 4 dòng với time 
-		int result = query.getPrintAnnualLeaveDate() == AnnualLeaveAcquisitionDate.DATE ? 2 : 4;
+		int result = isManageTime ? 2 : 4;
 		// dòng của lineOfDetails = tổng data /15 + 1 dòng nếu /15 có dư ra
 		int lineOfDetails = holidayDetails.size() / 15 + (holidayDetails.size() % 15 > 0 ? 1 : 0);
 
@@ -662,10 +670,12 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 	 * @param isBlueBackground
 	 * @return trạng thái màu của dòng kế được in ra (xanh hay trắng)
 	 */
-	private boolean setRowStyle(Cells cells, int newRow, int totalLine, boolean isBlueBackground, OutputYearHolidayManagementQuery query) {
+	private boolean setRowStyle(Cells cells, int newRow, int totalLine, boolean isBlueBackground) {
 		Style style = new Style();
 
-		if (query.getPrintAnnualLeaveDate() == AnnualLeaveAcquisitionDate.DATE) {
+		AnnualPaidLeaveSetting annualPaidLeaveSetting = this.annualPaidLeaveSettingRepository
+				.findByCompanyId(AppContexts.user().companyId());
+		if (annualPaidLeaveSetting.getTimeSetting().getTimeManageType().equals(ManageDistinct.NO)) {
 			for (int i = totalLine; i > 0; i--) {
 				for (int j = 0; j < MAX_COL; j++) {
 					Cell cell = cells.get(newRow - i, j);
@@ -686,9 +696,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 				}
 				isBlueBackground = !isBlueBackground;
 			}
-		}
-		
-		if (query.getPrintAnnualLeaveDate() == AnnualLeaveAcquisitionDate.TIME) { 
+		} else { 
 			for (int i = totalLine; i > 0; i--) {
 				for (int j = 0; j < MAX_COL; j++) {
 					Cell cell = cells.get(newRow - i, j);
@@ -782,8 +790,9 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 	 * @param detail
 	 * @return text của ngày nghỉ
 	 */
-	private String genHolidayText(AnnualHolidayGrantDetail detail) {
-		String result = detail.getYmd().toString("yy/MM/dd");
+	private String genHolidayText(AnnualHolidayGrantDetail detail, AnnualLeaveAcquisitionDate dateType) {
+		String format = dateType.equals(AnnualLeaveAcquisitionDate.DATE) ? "yy/MM/dd" : "MM/dd";
+		String result = detail.getYmd().toString(format);
 		if (detail.getAmPmAtr() == AmPmAtr.AM) {
 			result += "A";
 		}

@@ -402,7 +402,7 @@ module nts.uk.at.view.kdr002.a.viewmodel {
         }
 
         public doPrint(printQuery: any) {
-            block.invisible();
+            block.grayout();
             service.exportExcel(printQuery).done((res) => {
                 block.clear();
             }).fail((res) =>{
