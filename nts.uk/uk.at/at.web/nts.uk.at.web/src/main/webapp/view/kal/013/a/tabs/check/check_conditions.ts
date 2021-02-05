@@ -112,7 +112,9 @@ module nts.uk.at.view.kal013.a.tab {
             _.forEach(selectedItems, function (i: any) {
                 $('#' + i.no()).ntsError('clear');
             });
-            vm.checkConditionsList(afterRemoveLst);
+            vm.$dialog.info({ messageId: "Msg_16" }).then(() => {
+                vm.checkConditionsList(afterRemoveLst);
+            });
             // vm.isEnableRemove(false);
         }
 

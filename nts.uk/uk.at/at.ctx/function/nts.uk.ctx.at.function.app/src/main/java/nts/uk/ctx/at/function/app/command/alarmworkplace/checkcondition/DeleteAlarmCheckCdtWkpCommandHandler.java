@@ -98,6 +98,7 @@ public class DeleteAlarmCheckCdtWkpCommandHandler extends CommandHandler<DeleteA
                 case MASTER_CHECK_WORKPLACE: {
                     List<String> ids = ((AlarmMasterWkpCheckCdt) domain.get().getCondition()).getAlarmCheckWkpID();
                     alarmFixedExtractionConditionRepo.delete(ids);
+                    break;
                 }
                 // マスタチェック(日次)
                 case MASTER_CHECK_DAILY: {
