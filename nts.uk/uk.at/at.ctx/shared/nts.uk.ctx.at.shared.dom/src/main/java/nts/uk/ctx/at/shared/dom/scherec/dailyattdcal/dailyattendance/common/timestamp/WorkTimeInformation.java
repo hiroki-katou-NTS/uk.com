@@ -2,7 +2,6 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.tim
 
 import java.util.Optional;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
