@@ -148,7 +148,7 @@ public class DisplayAttendanceDataScreenQuery {
 		case "KAF020A":
 			return 15;
 		default:
-			return -1;
+			return null;
 		}
 	}
 	
@@ -164,7 +164,7 @@ public class DisplayAttendanceDataScreenQuery {
 		case "KAF005Aoverworkatr=2":
 			return 2;
 		default:
-			return -1;
+			return null;
 		}
 	}
 }

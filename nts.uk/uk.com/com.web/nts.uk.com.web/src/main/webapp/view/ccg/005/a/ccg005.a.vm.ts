@@ -88,7 +88,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
               editable: true,
               visibleItemsCount: 5,
               value: favoriteInputDate,
-              selectFirstIfNull: true,
+              selectFirstIfNull: false,
               optionsValue: 'inputDate',
               optionsText: 'favoriteName',
               required: true,
@@ -297,7 +297,10 @@ module nts.uk.at.view.ccg005.a.screenModel {
       </div>
     </div>
     <!-- A4_4 popup -->
-    <div id="ccg005-A4-4-popup" data-bind="text: $component.applicationNameDisplayBySid">
+    <div id="ccg005-A4-4-popup">
+      <div data-bind="foreach: $component.applicationNameDisplayBySid">
+        <p data-bind="text: $data" />
+      </div>
     </div>
   </div>
   <style>
@@ -394,11 +397,11 @@ module nts.uk.at.view.ccg005.a.screenModel {
     }
 
     .display-color-scheduled {
-      font-color: #00CC00;
+      color: #00CC00;
     }
 
     .display-color-alarm {
-      font-color: red;
+      color: red;
     }
 
     .pd-left-35 {
@@ -424,6 +427,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
     commentDisplay: KnockoutObservable<boolean> = ko.computed(() => this.contentSelected() === 0);
     goOutDisplay: KnockoutObservable<boolean> = ko.computed(() => this.contentSelected() === 1);
     favoriteInputDate: KnockoutObservable<any> = ko.observable(null);
+    favoriteInputDateCharacter: KnockoutObservable<any> = ko.observable(null);
     searchValue: KnockoutObservable<string> = ko.observable('');
     workplaceNameFromCDL008: KnockoutObservable<string> = ko.observable('');
 
@@ -497,6 +501,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
         vm.attendanceInformationDtosDisplay(_.slice(vm.attendanceInformationDtosDisplayClone(), vm.startPage() - 1, vm.endPage()));
         vm.setAvatarInLoop();
       });
+      (ko.bindingHandlers.ntsIcon as any).init($('.ccg005-status-img-A1_7'), () => ({ no: vm.activityStatusIcon(), width: 20, height: 20 }));
     }
 
     /**
@@ -541,7 +546,8 @@ module nts.uk.at.view.ccg005.a.screenModel {
      */
     private initChangeFavorite() {
       const vm = this;
-      vm.favoriteInputDate.subscribe(() => {
+      vm.favoriteInputDate.subscribe((newVal) => {
+        vm.saveCharacteristic(newVal);
         vm.subscribeFavorite();
       });
     }
@@ -549,6 +555,10 @@ module nts.uk.at.view.ccg005.a.screenModel {
     private subscribeFavorite() {
       const vm = this;
       const selectedFavorite = _.find(vm.favoriteSpecifyData(), item => item.inputDate === vm.favoriteInputDate());
+      if(!selectedFavorite) {
+        vm.favoriteInputDate(vm.favoriteSpecifyData()[0].inputDate);
+        return;
+      }
       const param: DisplayInfoAfterSelectParam = new DisplayInfoAfterSelectParam({
         baseDate: vm.selectedDate(),
         emojiUsage: vm.emojiUsage(),
@@ -733,7 +743,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       $('#ccg005-A4-4-popup').ntsPopup('toggle');
       const a = vm.applicationNameDisplay();
       const appName = _.find(vm.applicationNameDisplay(), (item => item.sid === sid));
-      if(appName) {
+      if (appName) {
         vm.applicationNameDisplayBySid(appName.appName);
       }
     }
@@ -785,15 +795,15 @@ module nts.uk.at.view.ccg005.a.screenModel {
       const element = $('.ccg005-status-img')[index()];
       vm.indexUpdateItem(index());
       vm.sIdUpdateStatus(vm.attendanceInformationDtosDisplay()[index()].sid);
-        if (!vm.isBaseDate()) {
-          return;
-        }
-        $('#ccg005-status-popup').ntsPopup({
-          position: { my: 'left top', at: 'right top', of: element },
-          showOnStart: false,
-          dismissible: true
-        });
-        $('#ccg005-status-popup').ntsPopup('toggle')
+      if (!vm.isBaseDate()) {
+        return;
+      }
+      $('#ccg005-status-popup').ntsPopup({
+        position: { my: 'left top', at: 'right top', of: element },
+        showOnStart: false,
+        dismissible: true
+      });
+      $('#ccg005-status-popup').ntsPopup('toggle')
 
     }
 
@@ -834,7 +844,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       const vm = this;
       $('#ccg005-status-popup').ntsPopup('hide');
       vm.$window.modal('/view/ccg/005/e/index.xhtml', vm.goOutParams()).then((x: Boolean) => {
-        if(x) {
+        if (x) {
           vm.registerAttendanceStatus(2, 191);
         }
       });
@@ -854,6 +864,10 @@ module nts.uk.at.view.ccg005.a.screenModel {
 
     private toStartScreen() {
       const vm = this;
+      //set characteristic
+      vm.restoreCharacteristic().then((inputDate: any) => {
+        vm.favoriteInputDateCharacter(inputDate);
+      });
       vm.$blockui('show');
       vm.$ajax('com', API.getDisplayAttendanceData).then((response: object.DisplayAttendanceDataDto) => {
         vm.emojiUsage(!!response.emojiUsage);
@@ -869,9 +883,12 @@ module nts.uk.at.view.ccg005.a.screenModel {
           }
         }
         vm.currentPage(1);
-
         //get application name info
         vm.applicationNameInfo(response.applicationNameDtos);
+        //set characteristic
+        if (vm.favoriteInputDateCharacter()) {
+          vm.favoriteInputDate(vm.favoriteInputDateCharacter());
+        }
       }).always(() => vm.$blockui('clear'));
     }
 
@@ -951,6 +968,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       });
       vm.favoriteSpecifyData([favoriteSpecify]);
       vm.favoriteInputDate(inputDate);
+      vm.saveCharacteristic(inputDate);
       vm.$blockui('show');
       vm.$ajax(API.saveFavorite, [favoriteSpecify])
         .always(() => vm.$blockui('clear'));
@@ -1088,15 +1106,21 @@ module nts.uk.at.view.ccg005.a.screenModel {
 
       //handle application display
       const data = res.attendanceInformationDtos;
-      const applicationDtos: object.ApplicationDto[] = data.applicationDtos;
       const appNames: object.ApplicationNameDto[] = vm.applicationNameInfo();
-      const appModel = _.map(applicationDtos, (appDto => {
-        const app = _.filter(appNames, (appName => (appDto.appType === appName.appType && appDto.otherType === appName.otherType)));
+      const appModel = _.map(data, ((attendanceInfo: object.AttendanceInformationDto) => {
+        const applicationDtos: object.ApplicationDto[] = attendanceInfo.applicationDtos;
+        const appName1 = _.map(applicationDtos, (appDto => {
+          const app = _.find(appNames, (appName => (appDto.appType === appName.appType && appDto.otherType === appName.otherType)));
+          if (app) {
+            return app.appName;
+          }
+          return undefined;
+        }));
         return new ApplicationNameViewModel({
-          sid: appDto.sid,
-          appName: _.map(app, (item => item.appName))
+          sid: attendanceInfo.sid,
+          appName: _.filter(appName1, (item => item !== undefined))
         });
-      }))
+      }));
       vm.applicationNameDisplay(appModel);
     }
 
@@ -1112,15 +1136,26 @@ module nts.uk.at.view.ccg005.a.screenModel {
       }
       vm.$ajax(API.saveStatus, params).then(() => {
         $('#ccg005-status-popup').ntsPopup('hide');
-        vm.activityStatusIcon(activityStatusIcon);
-        if(vm.indexUpdateItem() > -1){
+        if (vm.indexUpdateItem() > -1) {
           const element = $('.ccg005-status-img')[vm.indexUpdateItem()];
-          ko.bindingHandlers.ntsIcon.init(element, () => ({ no: vm.activityStatusIcon(), width: 20, height: 20 }));
-        }  else {
-          ko.bindingHandlers.ntsIcon.init($('.ccg005-status-img-A1_7'), () => ({ no: vm.activityStatusIcon(), width: 20, height: 20 }));
+          (ko.bindingHandlers.ntsIcon as any).init(element, () => ({ no: activityStatusIcon, width: 20, height: 20 }));
+        } else {
+          (ko.bindingHandlers.ntsIcon as any).init($('.ccg005-status-img-A1_7'), () => ({ no: activityStatusIcon, width: 20, height: 20 }));
         }
 
       })
+    }
+
+    private saveCharacteristic(inputDateTime: any): void {
+      (nts.uk as any).characteristics.save("ccg005Favorite"
+        + "_companyId_" + __viewContext.user.companyId
+        + "_userId_" + __viewContext.user.employeeId, inputDateTime);
+    }
+
+    private restoreCharacteristic(): JQueryPromise<any> {
+      return (nts.uk as any).characteristics.restore("ccg005Favorite"
+        + "_companyId_" + __viewContext.user.companyId
+        + "_userId_" + __viewContext.user.employeeId);
     }
   }
 
