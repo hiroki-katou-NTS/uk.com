@@ -26,7 +26,7 @@ public class JpaEmpInfoTerComAbPeriodRepository extends JpaRepository implements
 
 	@Override
 	public void update(EmpInfoTerComAbPeriod empInfoTerComAbPeriod) {
-		KfndtTrSignalAbNormalPK key = new KfndtTrSignalAbNormalPK(empInfoTerComAbPeriod.getContractCode().v(),Integer.parseInt(empInfoTerComAbPeriod.getEmpInfoTerCode().v()), empInfoTerComAbPeriod.getLastComSuccess());
+		KfndtTrSignalAbNormalPK key = new KfndtTrSignalAbNormalPK(empInfoTerComAbPeriod.getContractCode().v(), empInfoTerComAbPeriod.getEmpInfoTerCode().v(), empInfoTerComAbPeriod.getLastComSuccess());
 		KfndtTrSignalAbNormal entity = this.queryProxy().find(key, KfndtTrSignalAbNormal.class).get();
 		entity.lastestTimeSuccDate = empInfoTerComAbPeriod.getLastestComSuccess();
 		this.commandProxy().update(entity);
@@ -34,7 +34,7 @@ public class JpaEmpInfoTerComAbPeriodRepository extends JpaRepository implements
 
 	@Override
 	public void delete(EmpInfoTerComAbPeriod empInfoTerComAbPeriod) {
-		KfndtTrSignalAbNormalPK key = new KfndtTrSignalAbNormalPK(empInfoTerComAbPeriod.getContractCode().v(),Integer.parseInt(empInfoTerComAbPeriod.getEmpInfoTerCode().v()), empInfoTerComAbPeriod.getLastComSuccess());
+		KfndtTrSignalAbNormalPK key = new KfndtTrSignalAbNormalPK(empInfoTerComAbPeriod.getContractCode().v(), empInfoTerComAbPeriod.getEmpInfoTerCode().v(), empInfoTerComAbPeriod.getLastComSuccess());
 		this.commandProxy().remove(KfndtTrSignalAbNormal.class, key);;
 	}
 
