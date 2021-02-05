@@ -6263,44 +6263,27 @@ var nts;
              */
             var block;
             (function (block) {
-                function invisible() {
-                    var rect = calcRect();
-                    $.blockUI({
-                        message: null,
-                        overlayCSS: { opacity: 0 },
-                        css: {
-                            width: rect.width,
-                            left: rect.left
-                        }
-                    });
-                }
-                block.invisible = invisible;
-                function grayout() {
-                    var rect = calcRect();
-                    $.blockUI({
-                        message: '<div class="block-ui-message">' + toBeResource.plzWait + '</div>',
-                        fadeIn: 200,
-                        css: {
-                            width: rect.width,
-                            left: rect.left
-                        }
-                    });
-                }
-                block.grayout = grayout;
-                function clear() {
-                    $.unblockUI({
-                        fadeOut: 200
-                    });
+                function clear(el) {
+                    if (el === void 0) { el = document.body; }
+                    var fadeOut = 200;
+                    $(el).unblock({ fadeOut: fadeOut });
                 }
                 block.clear = clear;
-                function calcRect() {
-                    var width = 220;
-                    var left = ($(window).width() - width) / 2;
-                    return {
-                        width: width,
-                        left: left
-                    };
+                function grayout(el) {
+                    if (el === void 0) { el = document.body; }
+                    var fadeIn = 200;
+                    var message = toBeResource.plzWait;
+                    var css = { width: '220px', 'line-height': '32px' };
+                    $(el).block({ message: message, fadeIn: fadeIn, css: css });
                 }
+                block.grayout = grayout;
+                function invisible(el) {
+                    if (el === void 0) { el = document.body; }
+                    var message = null;
+                    var overlayCSS = { opacity: 0 };
+                    $(el).block({ message: message, overlayCSS: overlayCSS });
+                }
+                block.invisible = invisible;
             })(block = ui.block || (ui.block = {}));
             var DirtyChecker = /** @class */ (function () {
                 function DirtyChecker(targetViewModelObservable) {
@@ -50722,7 +50705,9 @@ var nts;
                 });
                 // Hàm blockui được wrapper lại để gọi cho thống nhất
                 BaseViewModel.prototype.$blockui = function $blockui(act) {
-                    return $.Deferred().resolve()
+                    var vm = this;
+                    return $.Deferred()
+                        .resolve(true)
                         .then(function () {
                         switch (act) {
                             default:
@@ -50736,6 +50721,15 @@ var nts;
                                 break;
                             case 'grayout':
                                 block.grayout();
+                                break;
+                            case 'clearView':
+                                block.clear(vm.$el);
+                                break;
+                            case 'grayoutView':
+                                block.grayout(vm.$el);
+                                break;
+                            case 'invisibleView':
+                                block.invisible(vm.$el);
                                 break;
                         }
                     });
