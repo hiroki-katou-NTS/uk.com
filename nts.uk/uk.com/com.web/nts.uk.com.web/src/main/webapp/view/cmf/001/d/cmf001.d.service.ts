@@ -10,7 +10,8 @@ module nts.uk.com.view.cmf001.d.service {
         getCategoryItem: "exio/exi/condset/getCategoryItemData/{0}",
         getOneStdSettingData: "exio/exi/condset/getOneStdCondSet/{0}",
         getNumberOfLine: "exio/exi/csvimport/getNumberOfLine/{0}/{1}",
-        getRecord: "exio/exi/csvimport/getRecord/{0}/{1}/{2}/{3}"
+        getRecord: "exio/exi/csvimport/getRecord/{0}/{1}/{2}/{3}",
+        getSystemType: "exio/exi/condset/getSysType",
     }
 
     export function getAllData(condCode: string): JQueryPromise<any> {
@@ -50,4 +51,7 @@ module nts.uk.com.view.cmf001.d.service {
         return ajax('com', _path);
     };
     
+    export function getSysTypes(): JQueryPromise<any> {
+        return ajax("com", paths.getSystemType);
+    }
 }
