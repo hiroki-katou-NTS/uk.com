@@ -107,7 +107,7 @@ module nts.uk.com.view.ccg008.a.screenModel {
         let minutes = vm.getMinutes(data);
         let miliSeconds = minutes * MINUTESTOMILISECONDS;
           clearInterval(vm.reload);
-          if (data !== 0) {
+          if (data !== 0 && vm.paramWidgetLayout2().length > 0 ||  vm.paramWidgetLayout3().length > 0) {
             vm.reload =  setInterval(() => {
               vm.callApiTopPage(vm);
             }, miliSeconds);
