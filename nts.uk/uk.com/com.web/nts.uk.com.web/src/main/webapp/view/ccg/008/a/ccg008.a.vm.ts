@@ -64,7 +64,7 @@ module nts.uk.com.view.ccg008.a.screenModel {
                 if (obj) {
                   let endDate = moment.utc(obj.endDate, "YYYY/MM/DD").add(vm.topPageSetting.switchingDate, 'days').format("YYYY/MM/DD");
                   if (moment.utc(endDate, "YYYY/MM/DD")
-                      .isSameOrAfter(moment.utc(new Date(), "YYYY/MM/DD"))
+                      .isBefore(moment.utc(new Date(), "YYYY/MM/DD"))
                   ) {
                     vm.selectedSwitch(2);
                     obj.currentOrNextMonth = 2;
