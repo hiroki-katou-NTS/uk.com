@@ -948,7 +948,6 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				queryData.getQuery().setEmployeeId(empStatus.getEmployees());
 				queryData.setDatePeriod(range.toListDate());
 				//アルゴリズム「日付別の日別勤務表を作成する」を実行する
-				collectEmployeePerformanceDataByDate(reportData, queryData, dataRowCount);
 			});
 			
 			// Calculate workplace total
@@ -2140,7 +2139,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		pageSetup.setHeader(1, "&16&\"MS ゴシック\"" + outputItem.getItemName().v());
 		
 		// Set header date
-		DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  H:mm", Locale.JAPAN);
+		DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd  HH:mm", Locale.JAPAN);
 		pageSetup.setHeader(2, "&8&\"MS ゴシック\" " + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P ");
 		
 		Cells cells = sheet.getCells();
