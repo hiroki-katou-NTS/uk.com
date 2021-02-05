@@ -144,14 +144,13 @@ module nts.uk.com.view.ccg013.c.viewmodel {
                             return standardMenuItem.code == item.code && standardMenuItem.system == item.system && standardMenuItem.menu_cls == item.classification;
                         });
                         if (standardMenu) {
-                            var order = self.newItems().length + 1;
                             var primaryKey = nts.uk.util.randomId();
-                            var data = new ItemModel(index + 1, primaryKey, standardMenu.code, standardMenu.targetItem, standardMenu.name, order, standardMenu.menu_cls, standardMenu.system, item.displayOrder, item.webMenuSetting, item.menu_cls);
+                            var data = new ItemModel(index + 1, primaryKey, standardMenu.code, standardMenu.targetItem, standardMenu.name, index + 1, standardMenu.menu_cls, standardMenu.system, standardMenu.displayOrder, item.webMenuSetting, item.menu_cls);
                             newData.push(data);
                             self.tempItems.push(data);
                         }
                     });
-                    self.newItems(_.orderBy(newData, ['system', 'displayOrder', 'code'], ['asc', 'asc', 'asc']));
+                    self.newItems(_.orderBy(newData, ['order'], ['asc']));
                 }
                 self.disableSwapButton();
                 dfd.resolve();
@@ -291,14 +290,13 @@ module nts.uk.com.view.ccg013.c.viewmodel {
                 if (_.indexOf(_.map(self.newItems(), 'primaryKey'), selected) == -1) {
                     var item = _.find(self.items(), function (c) { return c.primaryKey == selected; });
                     item.order = self.newItems().length + 1;
-                    //item.primaryKey = nts.uk.util.randomId();
-                    self.newItems.push(new ItemModel(self.newItems().length + 1, nts.uk.util.randomId(), item.code, item.targetItem, item.name, item.order, item.menu_cls, item.system, item.displayOrder, item.webMenuSetting, item.menu_cls));
+                    self.newItems.push(new ItemModel(item.order, nts.uk.util.randomId(), item.code, item.targetItem, item.name, item.order, item.menu_cls, item.system, item.displayOrder, item.webMenuSetting, item.menu_cls));
                 }
             });
             _.forEach(self.newItems(), (x, index) => {
                 x.index = index + 1;
             });
-            self.newItems(_.orderBy(self.newItems(), ['system', 'displayOrder', 'code'], ['asc', 'asc', 'asc']));
+            self.newItems(_.orderBy(self.newItems(), ['order'], ['asc']));
             self.currentCodeList([]);
             self.disableSwapButton();
         }
@@ -319,7 +317,7 @@ module nts.uk.com.view.ccg013.c.viewmodel {
                 item.order = self.newItems().length + 1;
                 self.newItems.push(item);
             });
-            self.newItems(_.orderBy(self.newItems(), ['system', 'displayOrder', 'code'], ['asc', 'asc', 'asc']));
+            self.newItems(_.orderBy(self.newItems(), ['order'], ['asc']));
             _.forEach(self.newItems(), (x, index) => {
                 x.index = index + 1;
             });
@@ -344,12 +342,13 @@ module nts.uk.com.view.ccg013.c.viewmodel {
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
+            _.each(self.newItems(), (item) => {
+                item.order = index;
+                item.displayOrder = index;
+                index++;
+            });
 
             if (self.titleMenuId()) {
-                _.each(self.newItems(), (item) => {
-                    item.order = index;
-                    index++;
-                });
                 nts.uk.ui.windows.setShared("CCG013C_TEXT_COLOR", self.letterColor());
                 nts.uk.ui.windows.setShared("CCG013C_BACKGROUND_COLOR", self.backgroundColor());
                 nts.uk.ui.windows.setShared("CCG013C_TITLE_MENU_NAME", self.nameTitleBar());
