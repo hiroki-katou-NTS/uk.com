@@ -34,7 +34,7 @@ button.nts-switch-button {
     padding: 5px;
 }
 
-tr> th, tr> td {
+#kaf006-b tr> th, #kaf006-b tr> td {
     text-align: center !important;
     border: 1px solid black !important;
 }

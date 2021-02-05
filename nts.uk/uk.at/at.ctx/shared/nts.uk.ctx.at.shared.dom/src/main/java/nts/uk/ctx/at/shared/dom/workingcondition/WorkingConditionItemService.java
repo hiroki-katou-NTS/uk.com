@@ -4,9 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.workingcondition;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.schedule.WorkingDayCategory;
 
@@ -38,5 +40,13 @@ public interface WorkingConditionItemService {
 	 */
 	Optional<WorkInformation> getHolidayWorkScheduleNew(String companyId, String employeeId, GeneralDate baseDate, String workTypeCode,
 			WorkingDayCategory workingDayCategory);
+	
+	/**
+	 * @name <<Public>> 社員（List）の労働条件を期間で取得する
+	 * @param sIds ・対象社員一覧：Input「社員一覧」
+	 * @param datePeriod ・対象期間：Input「基準日」
+	 * @return ・労働条件項目
+	 */
+	List<WorkingConditionItem> getEmployeesIdListByPeriod(List<String> sIds, DatePeriod datePeriod);
 
 }

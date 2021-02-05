@@ -65,7 +65,7 @@ module nts.uk.com.view.ktg031.a {
           display: flex;
           flex-direction: column;
           border: 1px groove;
-          box-sizing: border-box;
+          over-flow-y: auto;
         }
 
         #ktg031-container::before {
@@ -82,7 +82,7 @@ module nts.uk.com.view.ktg031.a {
           padding: 5px;
           box-sizing: border-box;
           width: 100%;
-          height: calc(100% - 5px);
+          height: 245px;
           display: flex;
           flex-direction: column;
         }

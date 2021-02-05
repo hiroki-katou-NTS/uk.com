@@ -10,7 +10,7 @@ module nts.uk.at.view.kdl003.a {
             checkPairWorkTypeWorkTime: "at/schedule/basicschedule/checkPairWorkTypeWorkTime",
             checkPairWorkTypeWorkTime2: "at/schedule/basicschedule/checkPairWorkTypeWorkTime2",
             findBreakByCodes: "at/shared/worktimesetting/findBreakByCodes",
-
+            findAllWorkTimeNew: '/at/shared/worktimesetting/findAllNew'
         }
 
         /**
@@ -40,7 +40,13 @@ module nts.uk.at.view.kdl003.a {
         export function findAllWorkTime(): JQueryPromise<Array<WorkTimeSet>> {
             return nts.uk.request.ajax(paths.findAllWorkTime);
         }
-
+        
+        /**
+         * Find all work time. ver13
+         */
+        export function findAllWorkTimeNew(command: any): JQueryPromise<Array<WorkTimeSet>> {
+            return nts.uk.request.ajax(paths.findAllWorkTimeNew, command);
+        }
         /**
          * Search work time.
          */

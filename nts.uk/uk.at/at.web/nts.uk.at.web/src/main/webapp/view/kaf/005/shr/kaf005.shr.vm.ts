@@ -98,7 +98,9 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 				<tbody data-bind="foreach: overTime">
 					<tr data-bind="if: visible()">
 						<!--A6_7 残業時間名称-->
-						<td class="header" data-bind="text: displayNo"></td>
+						<td class="header">
+							<span data-bind="text: displayNo" class="limited-label" style="width: 110px"></span>
+						</td>
 						<!--A6_8 残業申請時間入力-->
 						<td data-bind="style: {'background-color': backgroundColor()}"><input
 							class="right-content overtimeHoursCheck"
@@ -142,7 +144,9 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 				<tbody data-bind="foreach: overTime">
 					<tr data-bind="if: visible()">
 						<!--A6_7 残業時間名称-->
-						<td class="header" data-bind="text: displayNo"></td>
+						<td class="header">
+							<span data-bind="text: displayNo" class="limited-label" style="width: 110px"></span>
+						</td>
 						<!--A6_8 残業申請時間入力-->
 						<td data-bind="style: {'background-color': backgroundColor()}"><input
 							class="right-content overtimeHoursCheck"
@@ -201,7 +205,9 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 				<tbody data-bind="foreach: holidayTime">
 					<tr data-bind="if: visible()">
 						<!--A5_5 休憩時間順序-->
-						<td class="header" data-bind="text: displayNo"></td>
+						<td class="header">
+							<span data-bind="text: displayNo" class="limited-label" style="width: 110px"></span>
+						</td>
 						<!--A5_6 開始時刻-->
 						<td data-bind="style: {'background-color': backgroundColor()}">
 						<input class="right-content"
@@ -242,7 +248,9 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 				<tbody data-bind="foreach: holidayTime">
 					<tr data-bind="if: visible()">
 						<!--A5_5 休憩時間順序-->
-						<td class="header" data-bind="text: displayNo"></td>
+						<td class="header">
+							<span data-bind="text: displayNo" class="limited-label" style="width: 110px"></span>
+						</td>
 						<!--A5_6 開始時刻-->
 						<td data-bind="style: {'background-color': backgroundColor()}">
 						<input class="right-content"
@@ -272,6 +280,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 
 
 </div>
+
 
 
 

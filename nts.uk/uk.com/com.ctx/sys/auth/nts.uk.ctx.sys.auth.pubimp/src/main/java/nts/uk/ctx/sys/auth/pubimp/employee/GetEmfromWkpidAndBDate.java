@@ -3,13 +3,17 @@
  */
 package nts.uk.ctx.sys.auth.pubimp.employee;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceHistoryItemExport3;
@@ -44,32 +48,36 @@ public class GetEmfromWkpidAndBDate {
 	 * 
 	 * 【OUTPUT】 Map＜職場ID、社員ID＞
 	 */
-	public Map<String, String> getData(EmployeePublisher.RequireRQ653 requireRQ653, String companyID,
+	public Map<String, List<String>> getData(EmployeePublisher.RequireRQ653 requireRQ653, String companyID,
 			GeneralDate referenceDate, List<String> workplaceIDs) {
 
 		// 職場（List）と基準日から所属職場履歴項目を取得する
 		List<AffWorkplaceHistoryItemExport3> affWorkplaceHisItems = workplacePub.getWorkHisItemfromWkpIdsAndBaseDate(workplaceIDs,  referenceDate);
-		
+		Map<String, List<AffWorkplaceHistoryItemExport3>> results = affWorkplaceHisItems.stream().collect(Collectors.groupingBy(AffWorkplaceHistoryItemExport3::getWorkplaceId));
 		if(affWorkplaceHisItems.isEmpty())
 			return new HashMap<>();
 		
 		// OUTPUT「Map＜職場ID、社員ID＞」を返す
-		Map<String, String> result = new HashMap<>();
-		
-		for (AffWorkplaceHistoryItemExport3 item : affWorkplaceHisItems) {
-			Optional<UserInforEx> userInfor = userPublish.getByEmpID(item.getEmployeeId());
-			if (userInfor.isPresent()) {
-				String roleId = roleFromUserIdPub.getRoleFromUserId(userInfor.get().getUserID(), RoleType.EMPLOYMENT.value, referenceDate, companyID);
-				if (roleId != null && roleId != "") {
-					Optional<WorkPlaceAuthorityDto> workPlaceAuthority = requireRQ653.getWorkAuthority(companyID, roleId, 2);
-					if(workPlaceAuthority.isPresent()){
-						if(workPlaceAuthority.get().isAvailability() == true){
-							result.put(item.getWorkplaceId(), item.getEmployeeId());
+		Map<String, List<String>> result = new HashMap<>();
+		results.forEach((k,v) -> {
+			List<String> empID = new ArrayList<>();
+			for (AffWorkplaceHistoryItemExport3 item : v) {
+				Optional<UserInforEx> userInfor = userPublish.getByEmpID(item.getEmployeeId());
+				if (userInfor.isPresent()) {
+					String roleId = roleFromUserIdPub.getRoleFromUserId(userInfor.get().getUserID(), RoleType.EMPLOYMENT.value, referenceDate, companyID);
+					if (roleId != null && roleId != "") {
+						Optional<WorkPlaceAuthorityDto> workPlaceAuthority = requireRQ653.getWorkAuthority(companyID, roleId, 2);
+						if(workPlaceAuthority.isPresent()){
+							if(workPlaceAuthority.get().isAvailability() == true){
+									empID.add(item.getEmployeeId());
+							}
 						}
 					}
 				}
 			}
-		}
+			if(!empID.isEmpty())
+			result.put(k, empID);
+		});
 		return result;
 	}
 }
