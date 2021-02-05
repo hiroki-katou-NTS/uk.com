@@ -56,8 +56,8 @@ module nts.uk.at.view.kmk004.b {
 					/** Quick search tab options */
 					showAllReferableEmployee: true,
 					showOnlyMe: true,
-					showSameDepartment: true,
-					showSameDepartmentAndChild: true,
+					showSameDepartment: false,
+					showSameDepartmentAndChild: false,
 					showSameWorkplace: true,
 					showSameWorkplaceAndChild: true,
 
