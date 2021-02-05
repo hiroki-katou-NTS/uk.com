@@ -1880,8 +1880,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 } else {
                     let $grid = $('div.ex-body-detail');
                     self.updateAfterSaveData($grid[0]);
-
-                    self.openKDL053(rs);
+                    if(rs.listErrorInfo.length > 0){
+                        self.openKDL053(rs);    
+                    }
                 }
                 self.hasChangeModeBg = false;
                 self.listCellUpdatedWhenChangeModeBg = [];
