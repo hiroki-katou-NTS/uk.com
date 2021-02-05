@@ -948,6 +948,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				queryData.getQuery().setEmployeeId(empStatus.getEmployees());
 				queryData.setDatePeriod(range.toListDate());
 				//アルゴリズム「日付別の日別勤務表を作成する」を実行する
+				this.collectEmployeePerformanceDataByDate(reportData, queryData, dataRowCount);
 			});
 			
 			// Calculate workplace total
