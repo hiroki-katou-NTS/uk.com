@@ -1447,6 +1447,7 @@ project (':exio.ctx:nts.uk.ctx.exio.ac') {
 		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pub')
 		compile project (':exio.ctx:nts.uk.ctx.exio.dom')
 		compile project (':exio.ctx:nts.uk.ctx.exio.app')
+		compile project(':query:nts.uk.query.pub')
 		compile(group: 'at.shared', name: 'nts.uk.ctx.at.shared.pub', version: version)
 	}
 }

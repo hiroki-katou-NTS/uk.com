@@ -832,11 +832,11 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 				let item = new OvertimeWork();
 				item.yearMonth = ko.observable(otWorkHoursForApplication.nextMonth);
 				if (otWorkHoursForApplication.isNextMonth) {
-					item.limitTime = ko.observable(otWorkHoursForApplication.currentTimeMonth.legalMaxTime.threshold.erAlTime.error);
-					item.actualTime = ko.observable(otWorkHoursForApplication.currentTimeMonth.legalMaxTime.agreementTime);
+					item.limitTime = ko.observable(otWorkHoursForApplication.nextTimeMonth.legalMaxTime.threshold.erAlTime.error);
+					item.actualTime = ko.observable(otWorkHoursForApplication.nextTimeMonth.legalMaxTime.agreementTime);
 				} else {
-					item.limitTime = ko.observable(otWorkHoursForApplication.currentTimeMonth.agreementTime.threshold.erAlTime.error);
-					item.actualTime = ko.observable(otWorkHoursForApplication.currentTimeMonth.agreementTime.agreementTime);
+					item.limitTime = ko.observable(otWorkHoursForApplication.nextTimeMonth.agreementTime.threshold.erAlTime.error);
+					item.actualTime = ko.observable(otWorkHoursForApplication.nextTimeMonth.agreementTime.agreementTime);
 				}
 				
 				overTimeWorks.push(item);

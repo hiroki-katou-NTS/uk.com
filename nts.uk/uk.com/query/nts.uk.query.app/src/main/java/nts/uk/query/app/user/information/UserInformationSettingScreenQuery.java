@@ -57,70 +57,70 @@ public class UserInformationSettingScreenQuery {
 			List<OtherContactDto> otherContacts = new ArrayList<>();
 			otherContacts.add(OtherContactDto.builder()
 					.no(1)
-					.contactUsageSetting(2)
+					.contactUsageSetting(0)
 					.contactName("")
 					.build());
 			otherContacts.add(OtherContactDto.builder()
 					.no(2)
-					.contactUsageSetting(2)
+					.contactUsageSetting(0)
 					.contactName("")
 					.build());
 			otherContacts.add(OtherContactDto.builder()
 					.no(3)
-					.contactUsageSetting(2)
+					.contactUsageSetting(0)
 					.contactName("")
 					.build());
 			otherContacts.add(OtherContactDto.builder()
 					.no(4)
-					.contactUsageSetting(2)
+					.contactUsageSetting(0)
 					.contactName("")
 					.build());
 			otherContacts.add(OtherContactDto.builder()
 					.no(5)
-					.contactUsageSetting(2)
+					.contactUsageSetting(0)
 					.contactName("")
 					.build());
 			
 			SettingContactInformationDto settingContactInformation = SettingContactInformationDto.builder()
 					.dialInNumber(ContactSettingDto.builder()
-							.contactUsageSetting(2)
-							.updatable(1)
+							.contactUsageSetting(0)
+							.updatable(0)
 							.build())
 					.companyEmailAddress(ContactSettingDto.builder()
-							.contactUsageSetting(2)
-							.updatable(1)
+							.contactUsageSetting(0)
+							.updatable(0)
 							.build())
 					.companyMobileEmailAddress(ContactSettingDto.builder()
-							.contactUsageSetting(2)
-							.updatable(1)
+							.contactUsageSetting(0)
+							.updatable(0)
 							.build())
 					.companyMobilePhone(ContactSettingDto.builder()
-							.contactUsageSetting(2)
-							.updatable(1)
+							.contactUsageSetting(0)
+							.updatable(0)
 							.build())
 					.personalEmailAddress(ContactSettingDto.builder()
-							.contactUsageSetting(2)
-							.updatable(1)
+							.contactUsageSetting(0)
+							.updatable(0)
 							.build())
 					.personalMobileEmailAddress(ContactSettingDto.builder()
-							.contactUsageSetting(2)
-							.updatable(1)
+							.contactUsageSetting(0)
+							.updatable(0)
 							.build())
 					.personalMobilePhone(ContactSettingDto.builder()
-							.contactUsageSetting(2)
-							.updatable(1)
+							.contactUsageSetting(0)
+							.updatable(0)
 							.build())
 					.extensionNumber(ContactSettingDto.builder()
-							.contactUsageSetting(2)
-							.updatable(1)
+							.contactUsageSetting(0)
+							.updatable(0)
 							.build())
 					.emergencyNumber1(ContactSettingDto.builder()
-							.contactUsageSetting(2)
-							.updatable(1)
+							.contactUsageSetting(0)
+							.updatable(0)
 							.build())
 					.emergencyNumber2(ContactSettingDto.builder()
-							.contactUsageSetting(2)
-							.updatable(1)
+							.contactUsageSetting(0)
+							.updatable(0)
 							.build())
 					.otherContacts(otherContacts)
 					.build();
@@ -128,10 +128,10 @@ public class UserInformationSettingScreenQuery {
 			userInformationUseMethodDto.setCompanyId(loginCid);
 			userInformationUseMethodDto.setEmailDestinationFunctionDtos(emailDestinationFunctionDtos);
 			userInformationUseMethodDto.setSettingContactInformationDto(settingContactInformation);
-			userInformationUseMethodDto.setUseOfLanguage(1);
-			userInformationUseMethodDto.setUseOfNotice(1);
-			userInformationUseMethodDto.setUseOfPassword(1);
-			userInformationUseMethodDto.setUseOfProfile(1);
+			userInformationUseMethodDto.setUseOfLanguage(0); //#114200
+			userInformationUseMethodDto.setUseOfNotice(0); //#114200
+			userInformationUseMethodDto.setUseOfPassword(0); //#114200
+			userInformationUseMethodDto.setUseOfProfile(0); //#114200
 		}
 		userInformationUseMethod.ifPresent(method -> method.setMemento(userInformationUseMethodDto));
 		

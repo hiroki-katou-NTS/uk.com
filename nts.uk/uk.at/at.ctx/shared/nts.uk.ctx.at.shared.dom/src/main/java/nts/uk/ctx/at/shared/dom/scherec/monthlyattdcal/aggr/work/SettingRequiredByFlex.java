@@ -28,7 +28,7 @@ public class SettingRequiredByFlex {
 	/** フレックス勤務の月別集計設定 */
 	@Setter
 	private Optional<MonthlyAggrSetOfFlex> monthlyAggrSetOfFlexOpt;
-	/** フレックス勤務所定労働時間取得 */
+	/** 会社別フレックス勤務集計方法 */
 	@Setter
 	private Optional<GetFlexPredWorkTime> getFlexPredWorkTimeOpt;
 	/** フレックス不足の年休補填管理 */

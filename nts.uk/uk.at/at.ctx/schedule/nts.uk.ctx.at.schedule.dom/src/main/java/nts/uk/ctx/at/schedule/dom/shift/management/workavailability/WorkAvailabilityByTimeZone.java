@@ -42,6 +42,11 @@ public class WorkAvailabilityByTimeZone implements WorkAvailability, DomainValue
 	}
 
 	@Override
+	public boolean isHolidayAvailability(Require require) {
+		return false;
+	}
+	
+	@Override
 	public boolean isMatchingWorkAvailability(Require require, WorkInformation workInformation,
 			List<TimeSpanForCalc> timeZoneList) {
 		
@@ -61,7 +66,7 @@ public class WorkAvailabilityByTimeZone implements WorkAvailability, DomainValue
 	public WorkAvailabilityDisplayInfo getDisplayInformation(Require require) {
 		
 		AssignmentMethod asignmentMethod = this.getAssignmentMethod();
-		return new WorkAvailabilityDisplayInfo(asignmentMethod, Collections.emptyList(), this.workableTimeZoneList);
+		return new WorkAvailabilityDisplayInfo(asignmentMethod, Collections.emptyMap(), this.workableTimeZoneList);
 	}
 	
 	private boolean isScheduleTimeZoneInsideAvailabilityTimeZone(TimeSpanForCalc availabilityTimeZone , TimeSpanForCalc scheduleTimeZone) {

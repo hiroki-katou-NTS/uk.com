@@ -247,7 +247,6 @@ module nts.uk.com.view.ccg015.b {
           if (result === 'yes') {
             const removeCode = vm.toppageSelectedCode();
             const removeIndex = vm.getIndexOfRemoveItem(removeCode);
-            const listLength = vm.listTopPage().length;
             vm.$blockui("grayout");
             vm.$ajax(API.removeTopPage, { topPageCode: vm.toppageSelectedCode() })
               .then(() => {
@@ -256,16 +255,15 @@ module nts.uk.com.view.ccg015.b {
                 vm.$dialog.info({ messageId: "Msg_16" })
                   .then(() => {
                     //remove follow
-                    vm.loadTopPageList().then(() => {
                       const lst = vm.listTopPage();
                       if (lst.length > 0) {
-                        if (removeIndex < listLength - 1) {
-                          vm.toppageSelectedCode(lst[removeIndex].code);
+                        if (removeIndex === 0) {
+                          vm.toppageSelectedCode(lst[removeIndex + 1].code);
                         } else {
                           vm.toppageSelectedCode(lst[removeIndex - 1].code);
                         }
+                        vm.loadTopPageList(vm.toppageSelectedCode());
                       }
-                    });
                   });
               })
               .always(() => vm.$blockui("clear"));
@@ -275,12 +273,13 @@ module nts.uk.com.view.ccg015.b {
 
     private getIndexOfRemoveItem(code: string): number {
       const vm = this;
-      _.forEach(vm.listTopPage(), (item, index) => {
+      let itemIndex:any;
+      _.forEach(vm.listTopPage(), (item) => {
         if (item.code === code) {
-          return index;
+          itemIndex =  item
         }
       });
-      return 0;
+      return vm.listTopPage().indexOf(itemIndex);
     }
 
     // レイアウト設定を起動する

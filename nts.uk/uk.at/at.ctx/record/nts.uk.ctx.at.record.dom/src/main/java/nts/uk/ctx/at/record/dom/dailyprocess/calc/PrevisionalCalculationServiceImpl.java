@@ -194,7 +194,7 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 				Optional.empty(), //pcLogOnInfo
 				Collections.emptyList(), //employeeError
 				goOutTimeSheet.map(c -> c.getOutingTime()), //outingTime
-				breakTimeSheet.map(c -> c.getTimeZone()).get(), //breakTime
+				breakTimeSheet.map(c -> c.getTimeZone()).orElse(new BreakTimeOfDailyAttd()), //breakTime
 				attendanceTime.map(c -> c.getTime()), //attendanceTimeOfDailyPerformance
 				Optional.of(timeAttendance.getAttendance()),// attendanceLeave
 				Optional.empty(), //shortTime

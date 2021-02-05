@@ -103,7 +103,7 @@ public class DailyCorrectEventServiceCenter {
 		List<EditStateOfDailyPerformance> editState = domain.getEditState().stream()
 				.map(c -> new EditStateOfDailyPerformance(updated.getEmployeeId(), updated.getDate(), c))
 				.collect(Collectors.toList());	
-		TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance = new TimeLeavingOfDailyPerformance(updated.getEmployeeId(), updated.getDate(), domain.getAttendanceLeave().isPresent()?domain.getAttendanceLeave().get():null);
+		TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance = new TimeLeavingOfDailyPerformance(updated.getEmployeeId(), updated.getDate(), domain.getAttendanceLeave().orElse(null));
 		triggerTimeLeave(companyId, workType, workCondition, 
 				eventBus, triggerBus, wi, editState,
 				timeLeavingOfDailyPerformance!=null?Optional.of(timeLeavingOfDailyPerformance):Optional.empty(), e -> {
@@ -300,7 +300,7 @@ public class DailyCorrectEventServiceCenter {
 					});
 			
 			triggerBreakTime(companyId, workTypes.get(wi.getWorkInformation().getRecordInfo().getWorkTypeCode()), eventTriggerBus, c.getValue(), wi,
-					dailyRecord.getEditState().getData(), dailyRecord.getBreakTime().getData().get(), dailyRecord.getTimeLeaving().getData(), e -> {
+					dailyRecord.getEditState().getData(), dailyRecord.getBreakTime().getData(), dailyRecord.getTimeLeaving().getData(), e -> {
 						if(e.getAction() == EventHandleAction.DELETE){
 							dailyRecord.getBreakTime().updateDataO(Optional.empty());
 							dailyRecord.getBreakTime().shouldDeleteIfNull();

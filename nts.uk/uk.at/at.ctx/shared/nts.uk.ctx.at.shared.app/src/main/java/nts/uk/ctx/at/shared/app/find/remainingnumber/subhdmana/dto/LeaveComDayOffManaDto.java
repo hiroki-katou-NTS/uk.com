@@ -30,4 +30,8 @@ public class LeaveComDayOffManaDto {
 	public LeaveComDayOffManagement toDomain() {
 		return new LeaveComDayOffManagement(sid, outbreakDay, dateOfUse, dayNumberUsed, targetSelectionAtr);
 	}
+	
+	public static LeaveComDayOffManaDto fromDomain(LeaveComDayOffManagement domain) {
+	    return new LeaveComDayOffManaDto(domain.getSid(), domain.getAssocialInfo().getOutbreakDay(), domain.getAssocialInfo().getDateOfUse(), domain.getAssocialInfo().getDayNumberUsed().v(), domain.getAssocialInfo().getTargetSelectionAtr().value);
+	}
 }

@@ -6,19 +6,21 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.TimeZoneUseDto;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.applicationsetting.DisplayReasonDto;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSettingDto;
-import nts.uk.ctx.at.request.dom.application.appabsence.service.RemainVacationInfo;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AppAbsenceStartInfoOutput;
 import nts.uk.ctx.at.shared.app.command.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.HolidayApplicationReflectCommand;
+import nts.uk.ctx.at.shared.app.find.remainingnumber.paymana.PayoutSubofHDManagementDto;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.dto.LeaveComDayOffManaDto;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class AppAbsenceStartInfoDto {
@@ -26,6 +28,11 @@ public class AppAbsenceStartInfoDto {
      * 休出代休紐付け管理
      */
     public List<LeaveComDayOffManaDto> leaveComDayOffManas; 
+    
+    /**
+         * 振出振休紐付け管理
+     */
+    public List<PayoutSubofHDManagementDto> payoutSubofHDManas;
     
     /**
      * 休暇申請の反映
@@ -50,7 +57,7 @@ public class AppAbsenceStartInfoDto {
 	/**
 	 * 休暇残数情報
 	 */
-	public RemainVacationInfo remainVacationInfo;
+	public RemainVacationInfoDto remainVacationInfo;
 	
 	/**
 	 * 就業時間帯表示フラグ
@@ -96,10 +103,12 @@ public class AppAbsenceStartInfoDto {
 	
 	public static AppAbsenceStartInfoDto fromDomain(AppAbsenceStartInfoOutput absenceStartInfoOutput) {
 		AppAbsenceStartInfoDto result = new AppAbsenceStartInfoDto();
+		result.leaveComDayOffManas = absenceStartInfoOutput.getLeaveComDayOffManas().stream().map(x -> LeaveComDayOffManaDto.fromDomain(x)).collect(Collectors.toList());
+		result.payoutSubofHDManas = absenceStartInfoOutput.getPayoutSubofHDManagements().stream().map(x -> PayoutSubofHDManagementDto.fromDomain(x)).collect(Collectors.toList());
 		result.appDispInfoStartupOutput = AppDispInfoStartupDto.fromDomain(absenceStartInfoOutput.getAppDispInfoStartupOutput());
 		result.hdAppSet = HolidayApplicationSettingDto.fromDomain(absenceStartInfoOutput.getHdAppSet());
 		result.displayReason = absenceStartInfoOutput.getDisplayReason() == null ? null : DisplayReasonDto.fromDomain(absenceStartInfoOutput.getDisplayReason());
-		result.remainVacationInfo = absenceStartInfoOutput.getRemainVacationInfo();
+		result.remainVacationInfo = RemainVacationInfoDto.fromDomain(absenceStartInfoOutput.getRemainVacationInfo());
 		result.workHoursDisp = absenceStartInfoOutput.isWorkHoursDisp();
 		result.workTypeLst = CollectionUtil.isEmpty(absenceStartInfoOutput.getWorkTypeLst()) ? Collections.emptyList() : absenceStartInfoOutput.getWorkTypeLst().stream().map(x -> WorkTypeDto.fromDomain(x)).collect(Collectors.toList());
 		result.workTimeLst = absenceStartInfoOutput.getWorkTimeLst().stream().map(x -> TimeZoneUseDto.fromDomain(x)).collect(Collectors.toList());
@@ -114,11 +123,13 @@ public class AppAbsenceStartInfoDto {
 	
 	public AppAbsenceStartInfoOutput toDomain(String companyId) {
 		return new AppAbsenceStartInfoOutput(
+		        leaveComDayOffManas.stream().map(x -> x.toDomain()).collect(Collectors.toList()),
+		        payoutSubofHDManas.stream().map(x -> x.toDomain()).collect(Collectors.toList()),
 				appDispInfoStartupOutput.toDomain(), 
 				vacationApplicationReflect.toDomain(companyId),
 				hdAppSet.toDomain(companyId), 
-				displayReason.toDomain(), 
-				remainVacationInfo, 
+				displayReason == null ? null : displayReason.toDomain(), 
+				remainVacationInfo.toDomain(), 
 				workHoursDisp, 
 				CollectionUtil.isEmpty(workTypeLst) ? Collections.emptyList() : workTypeLst.stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
 				CollectionUtil.isEmpty(workTimeLst) ? Collections.emptyList() : workTimeLst.stream().map(x -> x.toDomain()).collect(Collectors.toList()), 

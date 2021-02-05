@@ -5,6 +5,7 @@ import java.util.Map;
 
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHdWorkDispInfoOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
@@ -52,9 +53,10 @@ public interface HolidayWorkRegisterService {
 	 * UKDesign.UniversalK.就業.KAF_申請.KAF010_休日出勤時間申請.アルゴリズム.8.休出申請（詳細）登録処理.8.休出申請（詳細）登録処理
 	 * @param companyId
 	 * @param appHolidayWork
+	 * @param appDispInfoStartupOutput
 	 * @return
 	 */
-	public ProcessResult update(String companyId, AppHolidayWork appHolidayWork);
+	public ProcessResult update(String companyId, AppHolidayWork appHolidayWork, AppDispInfoStartupOutput appDispInfoStartupOutput);
 
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.KAFS10_休日出勤時間申請（スマホ）.A：休日出勤申請（新規・編集）.アルゴリズム.休日出勤申請の登録処理.休日出勤申請の登録処理

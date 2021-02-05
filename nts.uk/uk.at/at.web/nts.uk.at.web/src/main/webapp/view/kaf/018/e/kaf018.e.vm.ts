@@ -230,29 +230,16 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 								vm.$i18n('KAF018_394') + 
 								moment(apprSttEmpDateContentDto.application.opAppEndDate,'YYYY/MM/DD').format('M/D(ddd)');
 			}
-			switch(apprSttEmpDateContentDto.application.appType) {
-				case AppType.OVER_TIME_APPLICATION:
-					break;
-	            case AppType.STAMP_APPLICATION:
-					let appStampNameInfo = _.find(vm.appNameLst, (o: any) => {
-						let condition1 = o.appType == apprSttEmpDateContentDto.application.appType;
-						let condition2 = false;
-						if(apprSttEmpDateContentDto.application.opStampRequestMode==0) {
-							condition2 = o.opApplicationTypeDisplay==3;
-						} else {
-							condition2 = o.opApplicationTypeDisplay==4;
-						}
-						return condition1 && condition2;
-					});
-					if(appStampNameInfo) {
-						this.appType = appStampNameInfo.appName;
-					}
-					break;
-				default:
-					let appNameInfo = _.find(vm.appNameLst, (o: any) => o.appType == apprSttEmpDateContentDto.application.appType);
-					if(appNameInfo) {
-						this.appType = appNameInfo.appName;
-					}
+			if(apprSttEmpDateContentDto.opAppTypeDisplay) {
+				let appNameInfo = _.find(vm.appNameLst, (o: any) => o.opApplicationTypeDisplay==apprSttEmpDateContentDto.opAppTypeDisplay);
+				if(appNameInfo) {
+					this.appType = appNameInfo.appName;	
+				}
+			} else {
+				let appNameInfo = _.find(vm.appNameLst, (o: any) => o.appType == apprSttEmpDateContentDto.application.appType);
+				if(appNameInfo) {
+					this.appType = appNameInfo.appName;
+				}
 			}
 			if(apprSttEmpDateContentDto.application.prePostAtr==0) {
             	this.prePostAtr = vm.$i18n('KAF000_47');
@@ -287,7 +274,6 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 				if(phase1.countRemainApprover) {
 					this.phase1 += vm.$i18n('KAF018_531', [phase1.countRemainApprover]);
 				}
-				
 			} else {
 				this.approvalStatus += " ";
 			}
@@ -411,6 +397,7 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 		content: string;
 		reflectedState: ReflectedState;
 		phaseApproverSttLst: Array<PhaseApproverStt>;
+		opAppTypeDisplay: number;
 	}
 	
 	interface PhaseApproverStt {

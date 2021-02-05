@@ -87,6 +87,7 @@
         </div>
     </div>
     <div v-if="c3_1">
+        <div v-if="isEmptyBreakTime">{{'KAFS05_54' | i18n}}</div>
         <div 
         v-for="(item, index) in breakTimes"
         v-bind:key="index"

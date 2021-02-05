@@ -20,9 +20,9 @@ public class WeekRuleManagementRegisterCommandHandler extends CommandHandler<Wee
         String companyId = AppContexts.user().companyId();
         Optional<WeekRuleManagement> domain = repo.find(companyId);
         if (domain.isPresent()) {
-            repo.update(WeekRuleManagement.of(companyId, commandHandlerContext.getCommand().getDayOfWeek(), domain.get().isCalcWeekPremFromClosureStart()));
+            repo.update(WeekRuleManagement.of(companyId, commandHandlerContext.getCommand().getDayOfWeek()));
         } else {
-            repo.add(WeekRuleManagement.of(companyId, commandHandlerContext.getCommand().getDayOfWeek(), false));
+            repo.add(WeekRuleManagement.of(companyId, commandHandlerContext.getCommand().getDayOfWeek()));
         }
     }
 }

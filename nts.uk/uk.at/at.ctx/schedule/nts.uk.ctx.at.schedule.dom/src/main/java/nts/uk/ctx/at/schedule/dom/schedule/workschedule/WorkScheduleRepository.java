@@ -68,5 +68,7 @@ public interface WorkScheduleRepository {
 	void insertAtdLvwTimes(TimeLeavingWork leavingWork, String sID, GeneralDate yMD, String cID);
 
 	void deleteSchAtdLvwTime(String sid, GeneralDate ymd, int workNo);
+
+	void deleteListDate(String sid, List<GeneralDate> ymds);
 }
 

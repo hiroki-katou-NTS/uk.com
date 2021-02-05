@@ -29,4 +29,11 @@ public interface EmployeeContactPub {
 	 */
 	List<PersonContactObjectOfEmployee> getListOfEmployees(List<String> employeeIds);
 	
+	/**
+	 * 取得する
+	 * @param employeeId
+	 * @return the employee info contact
+	 */
+	EmployeeContactObject get(String employeeId);
+	
 }

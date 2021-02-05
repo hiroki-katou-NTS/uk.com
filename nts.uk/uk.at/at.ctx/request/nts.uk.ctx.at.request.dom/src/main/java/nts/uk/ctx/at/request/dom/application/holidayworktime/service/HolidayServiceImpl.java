@@ -66,6 +66,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.over
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.Time36AgreeCheckRegister;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
 import nts.uk.ctx.at.request.dom.workrecord.dailyrecordprocess.dailycreationwork.BreakTimeZoneSetting;
+import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWork;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWorkRepository;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.NotUseAtr;
@@ -596,7 +597,30 @@ public class HolidayServiceImpl implements HolidayService {
 				mode);
 		//	休日出勤申請起動時の表示情報．休出申請設定．申請詳細設定．時刻計算利用区分をチェックする
 		if(appHdWorkDispInfo.getHolidayWorkAppSet().getApplicationDetailSetting().getTimeCalUse().equals(nts.uk.shr.com.enumcommon.NotUseAtr.USE)) {
+			BreakTimeZoneSetting breakTimeZoneSettingList = new BreakTimeZoneSetting();
+			List<DeductionTime> timeZones = appHolidayWork.getBreakTimeList().isPresent() ? appHolidayWork.getBreakTimeList().get().stream()
+												.map(breakTime -> new DeductionTime(breakTime.getTimeZone().getStartTime(), breakTime.getTimeZone().getEndTime()))
+												.collect(Collectors.toList())
+												: Collections.emptyList();
+			breakTimeZoneSettingList.setTimeZones(timeZones);
+			appHdWorkDispInfo.getHdWorkDispInfoWithDateOutput().setBreakTimeZoneSettingList(Optional.ofNullable(breakTimeZoneSettingList));
+			WorkHours workHours = new WorkHours();
+			if(appHolidayWork.getWorkingTimeList().isPresent()) {
+				List<TimeZoneWithWorkNo> workingTimeList = appHolidayWork.getWorkingTimeList().get();
+				workingTimeList.stream().forEach(workingTime -> {
+					if(workingTime.getWorkNo().v() == 1) {
+						workHours.setStartTimeOp1(Optional.ofNullable(workingTime.getTimeZone().getStartTime()));
+						workHours.setEndTimeOp1(Optional.ofNullable(workingTime.getTimeZone().getEndTime()));
+					}
+					if(workingTime.getWorkNo().v() == 2) {
+						workHours.setStartTimeOp2(Optional.ofNullable(workingTime.getTimeZone().getStartTime()));
+						workHours.setEndTimeOp2(Optional.ofNullable(workingTime.getTimeZone().getEndTime()));
+					}
+				});
+			}
+			appHdWorkDispInfo.getHdWorkDispInfoWithDateOutput().setWorkHours(workHours);
 			WorkContent workContent = commonHolidayWorkAlgorithm.getWorkContent(appHdWorkDispInfo.getHdWorkDispInfoWithDateOutput());
+			
 			List<PreAppContentDisplay> preAppContentDisplayList = appHdWorkDispInfo.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput()
 					.getOpPreAppContentDisplayLst().orElse(Collections.emptyList());
 			Optional<AppHolidayWork> appHolidayWorkPre = !preAppContentDisplayList.isEmpty() ? preAppContentDisplayList.get(0).getAppHolidayWork() : Optional.empty();

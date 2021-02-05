@@ -62,7 +62,7 @@ module nts.uk.at.view.kmk013.g {
 
                 self.startOfWeek = ko.observable(1);
 
-                self.goOutUsage = ko.observable(0);
+                self.goOutUsage = ko.observable(1);
                 self.goOutMaxUsage = ko.observable(null);
                 self.initValueReasonGoOut = ko.observable(0);
 

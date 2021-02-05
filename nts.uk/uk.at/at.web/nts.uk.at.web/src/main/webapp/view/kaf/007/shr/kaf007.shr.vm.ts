@@ -51,7 +51,7 @@ module nts.uk.at.view.kaf007_ref.shr.viewmodel {
                     <!-- A7 -->
                     <div class="cell valign-center" data-bind="ntsFormLabel: {required:true}, text: $i18n('KAF007_13')"></div>
                 </div>
-                <div class="cell valign-center col-3">
+                <div class="cell valign-center">
                     <!-- A7_1 -->
                     <input id="time1Start" class="inputTime" data-bind="ntsTimeWithDayEditor: { 
                                                     constraint:'TimeWithDayAttr',
@@ -61,8 +61,8 @@ module nts.uk.at.view.kaf007_ref.shr.viewmodel {
                                                     name: $i18n('KAF007_62'),
                                                     enable: (isEdit() && model() !== null && model().setupType() !== null && model().setupType() === 0 && model().reflectWorkChangeAppDto().whetherReflectAttendance === 1) }" />
                 </div>
-                <!-- A7_2 -->
-                <div class="cell" style="padding-right: 5px;" data-bind="text: $i18n('KAF007_14')"></div>
+                <!-- A7_2 --> 
+                <div class="cell" style="padding-right: 5px;padding-left: 5px; vertical-align: middle" data-bind="text:'～'"></div>
                 <div class="cell valign-center">
                     <!-- A7_3 -->
                     <input id="time1End" class="inputTime" data-bind="ntsTimeWithDayEditor: { 
@@ -76,12 +76,12 @@ module nts.uk.at.view.kaf007_ref.shr.viewmodel {
                     <span class="label comment2" data-bind="text: $vm.comment2"></span>
                 </div>
             </div>
-            <div class="table" style="margin-top: 5px;" data-bind="visible: $vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.managementMultipleWorkCycles">
+            <div class="table" style="margin-top: 5px;" data-bind="visible: $vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.managementMultipleWorkCycles && reflectWorkChange.whetherReflectAttendance() == 1">
                 <div class="cell col-1">
                     <!-- A8 -->
                     <div class="cell valign-center" data-bind="ntsFormLabel: {required:false}, text: $i18n('KAF007_20')"></div>
                 </div>
-                <div class="cell valign-center col-3">
+                <div class="cell valign-center">
                     <!-- A8_1 -->
                     <input id="time2Start" class="inputTime" data-bind="ntsTimeWithDayEditor: { 
                                                     constraint:'TimeWithDayAttr',
@@ -92,7 +92,7 @@ module nts.uk.at.view.kaf007_ref.shr.viewmodel {
                                                     enable: (isEdit() && model() !== null && model().setupType() !== null && model().setupType() === 0 && model().reflectWorkChangeAppDto().whetherReflectAttendance === 1) }" />
                 </div>
                 <!-- A8_2 -->
-                <div class="cell" style="padding-right: 5px;" data-bind="text: $i18n('KAF007_14')"></div>
+                <div class="cell" style="padding-right: 5px;padding-left: 5px; vertical-align: middle" data-bind="text:'～' "></div>
                 <div class="cell valign-center">
                     <!-- A8_3 -->
                     <input id="time2End" class="inputTime" data-bind="ntsTimeWithDayEditor: { 

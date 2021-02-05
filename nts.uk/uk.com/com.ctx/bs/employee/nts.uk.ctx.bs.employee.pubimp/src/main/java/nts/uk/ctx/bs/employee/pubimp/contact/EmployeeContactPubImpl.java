@@ -14,7 +14,6 @@ import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository
 import nts.uk.ctx.bs.employee.pub.contact.EmployeeContactObject;
 import nts.uk.ctx.bs.employee.pub.contact.EmployeeContactPub;
 import nts.uk.ctx.bs.employee.pub.contact.PersonContactObjectOfEmployee;
-import nts.uk.ctx.bs.person.dom.person.personal.contact.EmergencyContact;
 import nts.uk.ctx.bs.person.dom.person.personal.contact.PersonalContact;
 import nts.uk.ctx.bs.person.dom.person.personal.contact.PersonalContactRepository;
 
@@ -41,10 +40,15 @@ public class EmployeeContactPubImpl implements EmployeeContactPub {
 		return new EmployeeContactObject(
 				item.getEmployeeId(),
 				item.getMailAddress().map(m -> m.v()).orElse(null),
+				item.getIsMailAddressDisplay().map(m -> m.booleanValue()).orElse(false),
 				item.getSeatDialIn().map(m -> m.v()).orElse(null),
+				item.getIsSeatDialInDisplay().map(m -> m.booleanValue()).orElse(false),
 				item.getSeatExtensionNumber().map(m -> m.v()).orElse(null),
+				item.getIsSeatExtensionNumberDisplay().map(m -> m.booleanValue()).orElse(false),
 				item.getMobileMailAddress().map(m -> m.v()).orElse(null),
-				item.getCellPhoneNumber().map(m -> m.v()).orElse(null)
+				item.getIsMobileMailAddressDisplay().map(m -> m.booleanValue()).orElse(false),
+				item.getCellPhoneNumber().map(m -> m.v()).orElse(null),
+				item.getIsCellPhoneNumberDisplay().map(m -> m.booleanValue()).orElse(false)
 				);
 	}
 
@@ -88,24 +92,34 @@ public class EmployeeContactPubImpl implements EmployeeContactPub {
 	}
 	
 	private PersonContactObjectOfEmployee convert(String employeeId, PersonalContact p) {
-		PersonContactObjectOfEmployee pcObject = new PersonContactObjectOfEmployee();
-		pcObject.setEmployeeId(employeeId);
-		pcObject.setPersonId(p.getPersonalId());
-		pcObject.setCellPhoneNumber(p.getPhoneNumber().isPresent() ? p.getPhoneNumber().get().v() : null);
-		pcObject.setMailAdress(p.getMailAddress().isPresent() ? p.getMailAddress().get().v() : null);
-		pcObject.setMobileMailAdress(p.getMobileEmailAddress().isPresent() ? p.getMobileEmailAddress().get().v() : null);
-
-		Optional<EmergencyContact> emerContact1 = p.getEmergencyContact1();
-		pcObject.setMemo1(emerContact1.map(item -> item.getRemark().v()).orElse(null));
-		pcObject.setContactName1(emerContact1.map(item -> item.getContactName().v()).orElse(null));
-		pcObject.setPhoneNumber1(emerContact1.map(item -> item.getPhoneNumber().v()).orElse(null));
-		
-		Optional<EmergencyContact> emerContact2 = p.getEmergencyContact2();
-		pcObject.setMemo2(emerContact2.map(item -> item.getRemark().v()).orElse(null));
-		pcObject.setContactName2(emerContact2.map(item -> item.getContactName().v()).orElse(null));
-		pcObject.setPhoneNumber2(emerContact2.map(item -> item.getPhoneNumber().v()).orElse(null));
-		return pcObject;
-
+		return PersonContactObjectOfEmployee.builder()
+				.employeeId(employeeId)
+				.personId(p.getPersonalId())
+				.cellPhoneNumber(p.getPhoneNumber().map(m -> m.v()).orElse(null))
+				.isPhoneNumberDisplay(p.getIsPhoneNumberDisplay().map(m -> m.booleanValue()).orElse(false))
+				.mailAdress(p.getMailAddress().map(m -> m.v()).orElse(null))
+				.isMailAddressDisplay(p.getIsMailAddressDisplay().map(m -> m.booleanValue()).orElse(false))
+				.mobileMailAdress(p.getMobileEmailAddress().map(m -> m.v()).orElse(null))
+				.isMobileEmailAddressDisplay(p.getIsMobileEmailAddressDisplay().map(m -> m.booleanValue()).orElse(false))
+				.memo1(p.getEmergencyContact1().map(item -> item.getRemark().v()).orElse(null))
+				.contactName1(p.getEmergencyContact1().map(item -> item.getContactName().v()).orElse(null))
+				.phoneNumber1(p.getEmergencyContact1().map(item -> item.getPhoneNumber().v()).orElse(null))
+				.isEmergencyContact1Display(p.getIsEmergencyContact1Display().map(m -> m.booleanValue()).orElse(false))
+				.memo2(p.getEmergencyContact2().map(item -> item.getRemark().v()).orElse(null))
+				.contactName2(p.getEmergencyContact2().map(item -> item.getContactName().v()).orElse(null))
+				.phoneNumber2(p.getEmergencyContact2().map(item -> item.getPhoneNumber().v()).orElse(null))
+				.isEmergencyContact2Display(p.getIsEmergencyContact2Display().map(m -> m.booleanValue()).orElse(false))
+				.build();
+	}
+	
+	@Override
+	public EmployeeContactObject get(String employeeId) {
+		Optional<EmployeeContact> employeeContactOpt = this.empContactRepo.getByEmployeeId(employeeId);
+		EmployeeContactObject employeeContactObject = null;
+		if (employeeContactOpt.isPresent()) {
+			employeeContactObject = this.convert(employeeContactOpt.get());
+		}
+		return employeeContactObject;
 	}
 
 }

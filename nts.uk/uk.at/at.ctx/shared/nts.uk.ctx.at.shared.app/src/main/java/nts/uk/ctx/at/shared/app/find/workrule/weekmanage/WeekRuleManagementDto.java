@@ -11,7 +11,4 @@ import nts.arc.time.calendar.DayOfWeek;
 public class WeekRuleManagementDto {
     /** 週開始 */
     private int dayOfWeek;
-
-    /** 週割増時間を締め開始日から計算する */
-    private boolean calcWeekPremFromClosureStart;
 }
