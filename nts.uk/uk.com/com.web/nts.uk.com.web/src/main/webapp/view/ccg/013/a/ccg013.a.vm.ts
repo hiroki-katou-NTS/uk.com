@@ -758,7 +758,7 @@ module ccg013.a.viewmodel {
             // this.titleMenuAtr = ko.observable(param.titleMenuAtr);
             // this.titleMenuCode = ko.observable(param.titleMenuCode);
             this.displayOrder = ko.observable(param.displayOrder);
-            this.treeMenu = ko.observableArray(_.orderBy(param.treeMenu, 'displayOrder', 'asc').map((x, index) => {
+            this.treeMenu = ko.observableArray(_.orderBy(param.treeMenu, ['system', 'displayOrder', 'code'], ['asc', 'asc', 'asc']).map((x, index) => {
                 if (!x.name) {
                     const name = _.find(param.menuNames, c => c.code === x.code && c.system === x.system && c.classification === x.classification);
                     x.name = name && name.displayName;
