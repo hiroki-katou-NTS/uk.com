@@ -3464,22 +3464,24 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         nts.uk.ui.dialog.alertError({ messageId: 'Msg_435' });
                         dfd.resolve(false);
                     } else if ((workType.workTimeSetting == 0 && workTime.code == ' ')) {
-                        let dfSelected = self.stickValDeferred(rowIdx, key, data, userInfor, cellDisableTime);  
-                        if (dfSelected) {
+                        self.stickValDeferred(rowIdx, key, data, userInfor, cellDisableTime).done((data) => {
                             dfd.resolve(true);
-                        } else {
+                        }).fail(function() {
                             dfd.reject();
-                        }
-                        
+                        }).always((data) => {
+                            dfd.reject();
+                        });
+
                     } else if ((userInfor.disPlayFormat == 'time') && (data.workHolidayCls == 1 || data.workHolidayCls == 2)) {
                         // trương hơp là đi làm nửa ngày
-                        let halfDaySelected = self.stickValHalfDaySelected(rowIdx, key, data, userInfor, cellDisableTime);
-                        if (halfDaySelected) {
+                        self.stickValHalfDaySelected(rowIdx, key, data, userInfor, cellDisableTime).done((data) => {
                             dfd.resolve(true);
-                        } else {
+                        }).fail(function() {
                             dfd.reject();
-                        }
-                        
+                        }).always((data) => {
+                            dfd.reject();
+                        });
+
                     } else {
                         // enable | disable cell startTime,endtime
                         if (userInfor.disPlayFormat == 'time') {
@@ -3494,12 +3496,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                 } else if (userInfor.disPlayFormat == 'shift') {
                     // trương hơp là đi làm nửa ngày
-                    let stickValShift= self.stickValShiftMode(rowIdx, key, data);
-                    if (stickValShift) {
+                    self.stickValShiftMode(rowIdx, key, data).done((data) => {
                         dfd.resolve(true);
-                    } else {
+                    }).fail(function() {
                         dfd.reject();
-                    }
+                    }).always((data) => {
+                        dfd.reject();
+                    });
                 }
                 return dfd.promise();
             });
@@ -3507,8 +3510,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         }
         
         // valid data trong mode shift khi stick
-        stickValShiftMode(rowIdx, key, data) {
+        stickValShiftMode(rowIdx, key, data) : JQueryPromise<void>{
             let self = this;
+            let dfd = $.Deferred<void>();
             // truong hop listPage empty thi khong can validate
             if ((__viewContext.viewModel.viewAC.selectedpalletUnit()) == 1 && (__viewContext.viewModel.viewAC.listPageComIsEmpty == true)) {
                 dfd.reject();
@@ -3539,24 +3543,29 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 param.push(x);
             }
             service.validWhenPaste(param).done((data) => {
-                if (data == true) {
-                    return true;
-                }
                 nts.uk.ui.block.clear();
+                if (data == true) {
+                    dfd.resolve(true);
+                } else {
+                    dfd.reject();
+                }
             }).fail(function() {
                 nts.uk.ui.block.clear();
-                return false;
+                dfd.reject();
             }).always((data) => {
                 if (data.messageId == "Msg_1728") {
                     nts.uk.ui.dialog.alertError({ messageId: 'Msg_1728' });
                 }
                 nts.uk.ui.block.clear();
+                dfd.reject();
             });
+            return dfd.promise();
         }
         
         // stick validate khi là đi làm nửa ngày
-        stickValHalfDaySelected(rowIdx, key, data, userInfor, cellDisableTime) {
+        stickValHalfDaySelected(rowIdx, key, data, userInfor, cellDisableTime) : JQueryPromise<void>{
             let self = this;
+            let dfd = $.Deferred<void>();
             // 午前出勤系 MORNING(1, "午前出勤系") 
             // 午後出勤系 AFTERNOON(2, "午後 
             nts.uk.ui.block.grayout();
@@ -3590,23 +3599,28 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
 
                 nts.uk.ui.block.clear();
-                return true;
+                dfd.resolve(true);
             }).fail(function() {
                 nts.uk.ui.block.clear();
-                return false;
+                dfd.reject();
+            }).always((data) => {
+                nts.uk.ui.block.clear();
+                dfd.reject();
             });
+            return dfd.promise();
         }
         
         // stick validate when selec deferred
-        stickValDeferred(rowIdx, key, data, userInfor, cellDisableTime) {
+        stickValDeferred(rowIdx, key, data, userInfor, cellDisableTime) : JQueryPromise<void>{
             let self = this;
+            let dfd = $.Deferred<void>();
             // truong hop chon workType = required va workTime = 据え置き 
             // neu cell dc stick ma khong co workTime se alertError 435
             let dataSource = $("#extable").exTable('dataSource', 'detail').body;
             let cellData = dataSource[rowIdx][key];
             if (_.isNil(cellData.workTimeName)) {
                 nts.uk.ui.dialog.alertError({ messageId: 'Msg_435' });
-                dfd.resolve(false);
+                dfd.reject();
             } else {
                 //xử lý cho ver1.9
                 if (data.workHolidayCls != 0) {
@@ -3637,7 +3651,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                 }
 
                                 __viewContext.viewModel.viewAB.isRedColor = false;
-                                return true;
+                                dfd.resolve(true);
                             } else if (data.workHolidayCls == 1 || data.workHolidayCls == 2) { // làm nủa ngay
                                 nts.uk.ui.block.grayout();
                                 let param = {
@@ -3670,10 +3684,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                     }
                                     
                                     nts.uk.ui.block.clear();
-                                    return true;
+                                    dfd.resolve(true);
                                 }).fail(function() {
                                     nts.uk.ui.block.clear();
-                                    return false;
+                                    dfd.reject();
+                                }).always((data) => {
+                                    nts.uk.ui.block.clear();
+                                    dfd.reject();
                                 });
                             }
                         } else {
@@ -3689,7 +3706,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                 workHolidayCls: data.workHolidayCls
                             });
                             __viewContext.viewModel.viewAB.isRedColor = false;
-                            return true;
+                            dfd.resolve(true);
                         }
                     } else { // truong hop worktime không tồn tại trong list worktime => lấy trong datasource
                         if (userInfor.disPlayFormat == 'time') {
@@ -3713,7 +3730,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                 }
 
                                 __viewContext.viewModel.viewAB.isRedColor = false;
-                                return true;
+                                dfd.resolve(true);
                             } else if (data.workHolidayCls == 1 || data.workHolidayCls == 2) { // làm nủa ngay
                                 nts.uk.ui.block.grayout();
                                 let param = {
@@ -3746,10 +3763,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                     }
 
                                     nts.uk.ui.block.clear();
-                                    return true;
+                                    dfd.resolve(true);
                                 }).fail(function() {
                                     nts.uk.ui.block.clear();
-                                    return false;
+                                    dfd.reject();
+                                }).always((data) => {
+                                    nts.uk.ui.block.clear();
+                                    dfd.reject();
                                 });
                             }
                         } else {
@@ -3765,11 +3785,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                 workHolidayCls: data.workHolidayCls
                             });
                             __viewContext.viewModel.viewAB.isRedColor = false;
-                            return true;
+                            dfd.resolve(true);
                         }
                     }
                 }
             }
+            return dfd.promise();
         }
 
         /**
