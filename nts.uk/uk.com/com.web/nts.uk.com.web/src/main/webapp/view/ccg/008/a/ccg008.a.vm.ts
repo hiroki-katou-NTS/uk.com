@@ -191,6 +191,7 @@ module nts.uk.com.view.ccg008.a.screenModel {
               if (item.widgetType === 1) {
                 vm.isShowClosure(true);
               }
+              
             });
             vm.paramWidgetLayout2(layout2);
           }
@@ -222,7 +223,7 @@ module nts.uk.com.view.ccg008.a.screenModel {
             }
             if (item.widgetType === 1) {
               vm.isShowClosure(true);
-            }
+            } 
           });
           vm.paramWidgetLayout2(layout2);
         }
@@ -234,10 +235,16 @@ module nts.uk.com.view.ccg008.a.screenModel {
           
             if (item.widgetType === 1) {
               vm.isShowClosure(true);
-            }
+            } 
           });
+
+          
           vm.paramWidgetLayout3(layout3);
         }
+        
+      }
+      if(!vm.isShowClosure()) {
+        $('#dateSwitch').css("margin-left", "calc(100vw - 275px)");
       }
     }
 

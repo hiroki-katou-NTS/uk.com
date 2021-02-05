@@ -51,7 +51,6 @@
 
 #ver4 {
     z-index: 1;
-    margin-left: calc(100vw - 510px);
     position: sticky;
 }
 
@@ -68,7 +67,8 @@
 }
 
 #closure{
-  margin-right: 30px;
+  margin-right: 10px;
+  margin-left: calc(100vw - 485px);
   height: 30px;
   outline: none;
 }
