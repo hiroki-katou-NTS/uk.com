@@ -237,7 +237,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       <!-- A1_7 & A4_7 Popup -->
       <div id="ccg005-status-popup">
         <table>
-          <tr data-bind="click: $component.registerAttendanceStatus">
+          <tr data-bind="click: $component.registerAttendanceStatus.bind($component, 0, 196)">
             <td>
               <i data-bind="visible: $component.visibleNotPresent(), ntsIcon: {no: 78, width: 15, height: 25}"></i>
             </td>
@@ -247,7 +247,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
             </td>
             <td data-bind="i18n: 'CCG005_43'"></td>
           </tr>
-          <tr>
+          <tr data-bind="click: $component.registerAttendanceStatus.bind($component, 1, 195)">
             <td>
               <i data-bind="visible: $component.visiblePresent(), ntsIcon: {no: 78, width: 15, height: 25}"></i>
             </td>
@@ -267,7 +267,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
             </td>
             <td data-bind="i18n: 'CCG005_39'"></td>
           </tr>
-          <tr>
+          <tr data-bind="click: $component.registerAttendanceStatus.bind($component,3, 196)">
             <td>
               <i data-bind="visible: $component.visibleGoHome(), ntsIcon: {no: 78, width: 15, height: 25}"></i>
             </td>
@@ -277,7 +277,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
             </td>
             <td data-bind="i18n: 'CCG005_44'"></td>
           </tr>
-          <tr>
+          <tr data-bind="click: $component.registerAttendanceStatus.bind($component, 4, 197)">
             <td>
               <i data-bind="visible: $component.visibleHoliday(), ntsIcon: {no: 78, width: 15, height: 25}"></i>
             </td>
@@ -419,8 +419,8 @@ module nts.uk.at.view.ccg005.a.screenModel {
     paginationText: KnockoutComputed<string> = ko.computed(() => `${this.startPage()}-${this.endPage()}/${this.totalElement()}`);
     // End pagination
 
-    activityStatus: KnockoutObservable<number> = ko.observable(0);
-    activatedStatus: KnockoutObservable<number> = ko.observable(0);
+    activityStatus: KnockoutObservable<number> = ko.observable();
+    activatedStatus: KnockoutObservable<number> = ko.observable();
     activityStatusIcon: KnockoutComputed<number> = ko.computed(() => this.initActivityStatus(this.activityStatus()));
     businessName: KnockoutObservable<string> = ko.observable('');
     emoji: KnockoutObservable<number> = ko.observable(187);
@@ -448,6 +448,9 @@ module nts.uk.at.view.ccg005.a.screenModel {
     //data for screen E
     goOutParams: KnockoutObservable<GoOutParam> = ko.observable();
     isDiffBaseDate: KnockoutComputed<boolean> = ko.computed(() => !this.isBaseDate());
+
+    sIdUpdateStatus: KnockoutObservable<string> = ko.observable('');
+    indexUpdateItem: KnockoutObservable<number> = ko.observable();
 
     mounted() {
       const vm = this;
@@ -626,6 +629,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
      * Popup A3_2
      */
     private initPopupArea() {
+      const vm = this;
       $('#ccg005-star-popup').ntsPopup({
         position: {
           my: 'left top',
@@ -637,7 +641,6 @@ module nts.uk.at.view.ccg005.a.screenModel {
       });
       $('#ccg005-star-img').click(() => $('#ccg005-star-popup').ntsPopup('toggle'));
     }
-
     initFocusA1_4() {
       $('.CCG005-A1_4-border')
         .focusin(() => $('.ccg005-clearbtn').css('visibility', 'visible'))
@@ -655,6 +658,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
         dismissible: true
       });
       $('.ccg005-status-img-A1_7').click(() => {
+        vm.sIdUpdateStatus(__viewContext.user.employeeId);
         if (!vm.isBaseDate()) {
           return;
         }
@@ -669,7 +673,8 @@ module nts.uk.at.view.ccg005.a.screenModel {
           showOnStart: false,
           dismissible: true
         });
-        $('#ccg005-status-popup').ntsPopup('toggle');
+        $('#ccg005-status-popup').ntsPopup('toggle')
+        vm.indexUpdateItem(-1);
       });
     }
 
@@ -679,6 +684,8 @@ module nts.uk.at.view.ccg005.a.screenModel {
     initPopupInList(index: any) {
       const vm = this;
       const element = $('.ccg005-status-img')[index()];
+      vm.indexUpdateItem(index());
+      vm.sIdUpdateStatus(vm.attendanceInformationDtosDisplay()[index()].sid);
         if (!vm.isBaseDate()) {
           return;
         }
@@ -687,7 +694,8 @@ module nts.uk.at.view.ccg005.a.screenModel {
           showOnStart: false,
           dismissible: true
         });
-        $('#ccg005-status-popup').ntsPopup('toggle');
+        $('#ccg005-status-popup').ntsPopup('toggle')
+
     }
 
     nextPage() {
@@ -726,7 +734,11 @@ module nts.uk.at.view.ccg005.a.screenModel {
     openScreenCCG005E() {
       const vm = this;
       $('#ccg005-status-popup').ntsPopup('hide');
-      vm.$window.modal('/view/ccg/005/e/index.xhtml', vm.goOutParams());
+      vm.$window.modal('/view/ccg/005/e/index.xhtml', vm.goOutParams()).then((x: Boolean) => {
+        if(x) {
+          vm.registerAttendanceStatus(2, 191);
+        }
+      });
     }
 
     private toStartScreen() {
@@ -909,15 +921,23 @@ module nts.uk.at.view.ccg005.a.screenModel {
     /**
      * 在席のステータスを登録する
      */
-    registerAttendanceStatus(selectedStatus: number, sid: string) {
+    registerAttendanceStatus(selectedStatus: number, activityStatusIcon: number) {
       const vm = this;
       const params: ActivityStatusParam = {
         activity: selectedStatus,
-        sid: sid,
-        date: (new Date).toString()
+        sid: vm.sIdUpdateStatus(),
+        date: moment(moment(new Date()).format("YYYY/MM/DD"))
       }
       vm.$ajax(API.saveStatus, params).then(() => {
-        // 
+        $('#ccg005-status-popup').ntsPopup('hide');
+        vm.activityStatusIcon(activityStatusIcon);
+        if(vm.indexUpdateItem() > -1){
+          const element = $('.ccg005-status-img')[vm.indexUpdateItem()];
+          ko.bindingHandlers.ntsIcon.init(element, () => ({ no: vm.activityStatusIcon(), width: 20, height: 20 }));
+        }  else {
+          ko.bindingHandlers.ntsIcon.init($('.ccg005-status-img-A1_7'), () => ({ no: vm.activityStatusIcon(), width: 20, height: 20 }));
+        }
+
       })
     }
   }
@@ -1022,7 +1042,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
 	  activity: number;
 
     // 年月日
-    date: string;
+    date: any;
 
     // 社員ID
     sid: string;
