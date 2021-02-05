@@ -139,7 +139,7 @@ public class RegisterWorkAvailabilityTest {
 		    shiftRule.getShiftTableSetting();
 			result = Optional.of(setting);
 		
-			setting.isOverHolidayMaxDays(workOneDays);
+			setting.isOverHolidayMaxDays(require, workOneDays);
 			result = true;
 				
 		}};
@@ -160,7 +160,7 @@ public class RegisterWorkAvailabilityTest {
 				shiftRule.getShiftTableSetting();
 				result = Optional.of(setting);
 				
-				setting.isOverHolidayMaxDays(workOneDays);
+				setting.isOverHolidayMaxDays(require, workOneDays);
 				result = false;
 				
 			}

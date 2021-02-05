@@ -44,9 +44,12 @@ module nts.uk.com.view.ccg020.a {
   </div>
   <div id="message" class="cf">
     <i class="img-ccg020" id="warning-msg" data-bind="ntsIcon: { no: 163, width: 20, height: 20 }, click: addEventClickWarningBtn, visible: isDisplayWarningMsg"></i>
-    <i class="img-ccg020" id="notice-msg" data-bind="ntsIcon: { no: 164, width: 20, height: 20 }"></i>
+    <i class="img-ccg020" id="notice-msg" data-bind="ntsIcon: { no: 164, width: 20, height: 20 }, visible: isEmployee"></i>
     <i class="img-ccg020" id="new-notice-msg" data-bind="ntsIcon: { no: 165, width: 10, height: 10 }, visible: isDisplayNewNotice"></i>
-  </div></div>`
+  </div></div>
+  <div style="max-width: 700px; min-width: 350px; max-height: 600px; overflow-y: auto;" class="ccg020-warning">
+    <label class="ccg020-warning-label" style="display: inline-flex; white-space: pre-wrap; word-break: break-all;" data-bind="html: warningMsg()"></label>
+  </div>`
   })
   export class CCG020Screen extends ko.ViewModel {
     treeMenu: KnockoutObservableArray<TreeMenu> = ko.observableArray([]);
@@ -60,6 +63,8 @@ module nts.uk.com.view.ccg020.a {
     isDisplayWarningMsg: KnockoutObservable<boolean> = ko.observable(false);
     isDisplayNewNotice: KnockoutObservable<boolean> = ko.observable(false);
     avatarInfo: KnockoutObservable<AvatarDto> = ko.observable(null);
+    isEmployee: KnockoutComputed<boolean> = ko.computed(() => __viewContext.user.isEmployee);
+    warningMsg: KnockoutObservable<string> = ko.observable('');
 
     created() {
       const vm = this;
@@ -73,6 +78,7 @@ module nts.uk.com.view.ccg020.a {
       vm.getListMenu();
       vm.isDisplayWarning();
       vm.isDisplayNewNoticeFunc();
+      vm.initWarningMsg();
       $('#user-image').ready(() => {
         $('#user-image').removeClass('ui-icon ui-icon-person');
         vm.$nextTick(() => vm.getAvatar());
@@ -92,7 +98,6 @@ module nts.uk.com.view.ccg020.a {
     private getAvatar() {
       const vm = this;
       const $userImage = $('#user-image');
-      vm.$blockui('grayout');
       vm.$ajax('com', API.getAvatar)
         .then((data) => {
           vm.avatarInfo(data);
@@ -111,11 +116,26 @@ module nts.uk.com.view.ccg020.a {
             });
           }
         })
-        .always(() => vm.$blockui('clear'));
     }
 
-    private addEventClickWarningBtn() {
-      nts.uk.ui.dialog.alertError(__viewContext.program.operationSetting.message);
+    initWarningMsg() {
+      $('.ccg020-warning').ntsPopup({
+        showOnStart: false,
+        dismissible: true,
+        position: { of: $('#master-wrapper') }
+      });
+    }
+
+    public addEventClickWarningBtn() {
+      const vm = this;
+      vm.$ajax('com', 'ctx/sys/gateway/system/is-display-warning').then((response: WarningMessageDto) => {
+        if (!response || !response.display) {
+          $('.ccg020-warning').ntsPopup('hide');
+          return;
+        }
+        vm.warningMsg(response.message);
+        $('.ccg020-warning').ntsPopup('toggle');
+      })
     }
 
     /* Screen CCG002 */
@@ -187,7 +207,7 @@ module nts.uk.com.view.ccg020.a {
       $('#list-box').remove();
       $('#popup-search').ntsPopup('hide');
       vm.treeMenuResult([]);
-      vm.$validate()
+      vm.$validate('#search-input')
         .then((valid) => {
           if (!valid) {
             return;
@@ -224,34 +244,28 @@ module nts.uk.com.view.ccg020.a {
 
     private addHistoryResult() {
       const vm = this;
-      vm.$blockui('grayout');
       const command: GeneralSearchHistoryCommand = new GeneralSearchHistoryCommand({
         searchCategory: vm.searchCategory(),
         contents: vm.valueSearch()
       });
       vm.$ajax('com', API.saveHistorySearch, command)
         .then(() => vm.get10LastResults())
-        .always(() => vm.$blockui('clear'));
     }
 
     private removeHistoryResult(command: GeneralSearchHistoryCommand) {
       const vm = this;
-      vm.$blockui('grayout');
       vm.$ajax('com', API.removeHistorySearch, command)
         .then(() => vm.get10LastResults())
-        .always(() => vm.$blockui('clear'));
     }
 
     private get10LastResults() {
       const vm = this;
       $('#list-box-search').remove();
-      vm.$blockui('grayout');
       vm.$ajax('com', `${API.get10LastResults}/${vm.searchCategory()}`)
         .then((response) => {
           vm.dataDisplay(response);
           vm.displayResultSearchHistory();
         })
-        .always(() => vm.$blockui('clear'));
     }
 
     private displayResultSearchHistory() {
@@ -306,32 +320,33 @@ module nts.uk.com.view.ccg020.a {
 
     private isDisplayWarning() {
       const vm = this;
-      vm.$blockui('grayout');
       vm.$ajax('com', API.isDisplayWarning)
-        .then((response) => {
-          vm.$blockui('clear');
-          vm.isDisplayWarningMsg(response);
+        .then((response: WarningMessageDto) => {
+          if (!response || !response.display) {
+            const ccg020w = $('#ccg020').width();
+            $('#ccg020').width(ccg020w - 50);
+          }
+          vm.isDisplayWarningMsg(response.display);
         })
-        .always(() => vm.$blockui('clear'));
     }
 
     private isDisplayNewNoticeFunc() {
       const vm = this;
-      vm.$blockui('grayout');
+      if (!vm.isEmployee()) {
+        const ccg020w = $('#ccg020').width();
+        $('#ccg020').width(ccg020w - 50);
+        return;
+      }
       vm.$ajax('com', API.isDisplayNewNotice)
         .then((response) => {
-          vm.$blockui('clear');
           vm.isDisplayNewNotice(response);
         })
-        .always(() => vm.$blockui('clear'));
     }
 
     private checkCanSearchManual() {
       const vm = this;
-      vm.$blockui('grayout');
       vm.$ajax('com', API.checkSearchManual)
         .then((response) => {
-          vm.$blockui('clear');
           if (response) {
             vm.searchCategoryList([
               { id: 0, name: vm.$i18n('CCG002_2') },
@@ -341,8 +356,12 @@ module nts.uk.com.view.ccg020.a {
             vm.searchCategoryList([{ id: 0, name: vm.$i18n('CCG002_2') }]);
           }
         })
-        .always(() => vm.$blockui('clear'));
     }
+  }
+
+  export interface WarningMessageDto {
+    display: boolean;
+	  message: string;
   }
 
   export class MenuSet {

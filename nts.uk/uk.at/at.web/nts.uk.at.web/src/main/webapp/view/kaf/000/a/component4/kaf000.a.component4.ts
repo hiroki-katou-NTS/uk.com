@@ -78,8 +78,14 @@ module nts.uk.at.view.kaf000.a.component4.viewmodel {
                                 vm.dispSingleDate(true);
                                 nts.uk.ui.errors.clearAll();
                                 // vm.$errors("clear", ['#kaf000-a-component4-rangeDate']);
-                                vm.application().opAppStartDate(moment(vm.appDate()).format("YYYY/MM/DD"));
-                                vm.application().opAppEndDate(moment(vm.appDate()).format("YYYY/MM/DD"));
+                                if(_.isEmpty(vm.appDate())) {
+                                    vm.application().opAppStartDate('');
+                                    vm.application().opAppEndDate('');
+                                } else {
+                                    vm.application().opAppStartDate(moment(vm.appDate()).format("YYYY/MM/DD"));
+                                    vm.application().opAppEndDate(moment(vm.appDate()).format("YYYY/MM/DD"));
+                                }
+                                
                             }
                         });
                     }

@@ -2,7 +2,7 @@ var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
     return function (d, b) {
@@ -216,7 +216,7 @@ var b = nts.uk.util.browser;
 b.private.then(function (v) {
     if (v) {
         if (b.ios && b.version === 'Safari 10') {
-            document.body.innerHTML = '<div style="text-align: center; font-size: 2em; padding: 2em 1em;">現在ご利用の端末は、プライベートモードでは正常に動作しない可能性があります。\n通常モードで起動してください。</div>';
+            document.body.innerHTML = '<div style="text-align: center; font-size: 2em; padding: 2em 1em;">現在ご利用の端末は、�ライベ�トモードでは正常に動作しなく�能性があります�n通常モードで起動してください�/div>';
         }
     }
 });
@@ -493,7 +493,7 @@ var nts;
             }
             util.compare = compare;
             /**
-             * 常にtrueを返す関数が必要になったらこれ
+             * 常にtrueを返す関数が忦�になったらこれ
              */
             function alwaysTrue() {
                 return true;
@@ -646,8 +646,8 @@ var nts;
             }
             util.isInFrame = isInFrame;
             /**
-             * valueMaybeEmptyがnullまたはundefinedの場合、defaultValueを返す。
-             * そうでなければ、valueMaybeEmptyを返す。
+             * valueMaybeEmptyがnullまた�undefinedの場合、defaultValueを返す�
+             * そうでなければ、valueMaybeEmptyを返す�
              */
             function orDefault(valueMaybeEmpty, defaultValue) {
                 return isNullOrUndefined(valueMaybeEmpty) ? defaultValue : valueMaybeEmpty;
@@ -672,10 +672,10 @@ var nts;
                         case 'Date':
                         case 'Time':
                         case 'Clock':
-                        case 'Duration': // ValidatorScriptではない。DynamicConstraintで使う？
-                        case 'TimePoint': // ValidatorScriptではない。DynamicConstraintで使う？
+                        case 'Duration': // ValidatorScriptではな぀ynamicConstraintで使ぼ
+                        case 'TimePoint': // ValidatorScriptではな぀ynamicConstraintで使ぼ
                             constraintText += (constraintText.length > 0) ? "/" : "";
-                            constraintText += constraint.min + "～" + constraint.max;
+                            constraintText += constraint.min + " + constraint.max;
                             break;
                         default:
                             constraintText += 'ERROR';
@@ -1334,22 +1334,22 @@ var nts;
                 allHalfNumeric: /^\d*$/,
                 allHalfAlphabet: /^[a-zA-Z]*$/,
                 allHalfAlphanumeric: /^[a-zA-Z0-9]*$/,
-                allHalfKatakanaReg: /^[ｱ-ﾝｧ-ｫｬ-ｮｯｦ ﾞﾟ｡.ｰ､･'-]*$/,
-                allFullKatakanaReg: /^[ァ-ー　。．ー、・’－ヴヽヾ]*$/,
-                allHiragana: /^[ぁ-ん　ー ]*$/,
+                allHalfKatakanaReg: /^[�-�ｧ-��-��� �ﾟ｡.���'-]*$/,
+                allFullKatakanaReg: /^[ァ-ー　。．�、�’－ヴヽヾ]*$/,
+                allHiragana: /^[�ん　ー ]*$/,
                 workplaceCode: /^[a-zA-Z0-9_-]{1,10}$/,
                 employeeCode: /^[a-zA-Z0-9 ]*$/
             };
             /**
-             * 文字列の半角文字数を数える（Unicode用）
-             * @param text 解析対象の文字列
+             * 断��の半角文字数を数えるnicode用
+             * @param text 解析対象の断��
              */
             function countHalf(text) {
                 var count = 0;
                 for (var i = 0; i < (text || "").length; i++) {
                     var c = text.charCodeAt(i);
-                    // 0x20 ～ 0x80: 半角記号と半角英数字
-                    // 0xff61 ～ 0xff9f: 半角カタカナ
+                    // 0x20 0x80: 半角記号と半角英数�
+                    // 0xff61 0xff9f: 半角カタカ�
                     if ((0x20 <= c && c <= 0x7e) || (0xff61 <= c && c <= 0xff9f)) {
                         count += 1;
                     }
@@ -1370,8 +1370,8 @@ var nts;
                 for (var i = index; i < text.length; i++) {
                     var c = text.charCodeAt(i);
                     var charLength = 2;
-                    // 0x20 ～ 0x80: 半角記号と半角英数字
-                    // 0xff61 ～ 0xff9f: 半角カタカナ
+                    // 0x20 0x80: 半角記号と半角英数�
+                    // 0xff61 0xff9f: 半角カタカ�
                     if ((0x20 <= c && c <= 0x7e) || (0xff61 <= c && c <= 0xff9f)) {
                         charLength = 1;
                     }
@@ -1385,7 +1385,7 @@ var nts;
                 return text.length - index;
             }
             function toOneByteAlphaNumberic(text) {
-                return text.replace(/[！-～　]/g, function (s) {
+                return text.replace(/[�　]/g, function (s) {
                     if (s === "　") {
                         return String.fromCharCode(s.charCodeAt(0) - 12256);
                     }
@@ -1405,24 +1405,24 @@ var nts;
             function katakanaToHiragana(text) {
                 text = text.replace(/[ァ-ヴ]/g, function (s) {
                     return String.fromCharCode(s.charCodeAt(0) - 0x60);
-                }).replace(/ﾞ/g, '゛').replace(/ﾟ/g, '゜')
-                    .replace(/(う゛)/g, 'ゔ').replace(/ヷ/g, 'わ゛')
-                    .replace(/ヸ/g, 'ゐ゛').replace(/ヹ/g, 'ゑ゛')
-                    .replace(/ヺ/g, 'を゛').replace(/(ヽ゛)/g, 'ゞ')
-                    .replace(/ヽ/g, 'ゝ').replace(/ヾ/g, 'ゞ');
+                }).replace(/g, '�).replace(/g, '�)
+                    .replace(/(�)/g, '�).replace(/ヷ/g, 'わ�')
+                    .replace(/ヸ/g, 'ゐ�').replace(/ヹ/g, 'ゑ�')
+                    .replace(/ヺ/g, 'を�').replace(/(ヽ�/g, '�)
+                    .replace(/ヽ/g, '�).replace(/ヾ/g, '�);
                 return text;
             }
             text_3.katakanaToHiragana = katakanaToHiragana;
             function hiraganaToKatakana(text, opt) {
-                text = text.replace(/[ぁ-ゔ]/g, function (s) {
+                text = text.replace(/[�ゔ]/g, function (s) {
                     return String.fromCharCode(s.charCodeAt(0) + 0x60);
-                }).replace(/ﾞ/g, '゛').replace(/ﾟ/g, '゜')
-                    .replace(/(ウ゛)/g, 'ヴ').replace(/(ワ゛)/g, 'ヷ')
-                    .replace(/(ヰ゛)/g, 'ヸ').replace(/(ヱ゛)/g, 'ヹ')
-                    .replace(/(ヲ゛)/g, 'ヺ').replace(/(ゝ゛)/g, 'ヾ')
-                    .replace(/ゝ/g, 'ヽ').replace(/ゞ/g, 'ヾ');
+                }).replace(/g, '�).replace(/g, '�)
+                    .replace(/(ウ�/g, 'ヴ').replace(/(ワ�/g, 'ヷ')
+                    .replace(/(ヰ�/g, 'ヸ').replace(/(ヱ�/g, 'ヹ')
+                    .replace(/(ヲ�/g, 'ヺ').replace(/(ゝ�)/g, 'ヾ')
+                    .replace(/�g, 'ヽ').replace(/�g, 'ヾ');
                 if (opt !== false) {
-                    text = text.replace(/ゕ/g, 'ヵ').replace(/ゖ/g, 'ヶ');
+                    text = text.replace(/�g, 'ヵ').replace(/�g, 'ヶ');
                 }
                 return text;
             }
@@ -1430,34 +1430,34 @@ var nts;
             /**
              * 半角カタカナを全角カタカナに変換
              *
-             * @param {String} str 変換したい文字列
+             * @param {String} str 変換したざ�字�
              */
             function oneByteKatakanaToTwoByte(text) {
                 var katakanaMap = {
-                    'ｶﾞ': 'ガ', 'ｷﾞ': 'ギ', 'ｸﾞ': 'グ', 'ｹﾞ': 'ゲ', 'ｺﾞ': 'ゴ',
-                    'ｻﾞ': 'ザ', 'ｼﾞ': 'ジ', 'ｽﾞ': 'ズ', 'ｾﾞ': 'ゼ', 'ｿﾞ': 'ゾ',
-                    'ﾀﾞ': 'ダ', 'ﾁﾞ': 'ヂ', 'ﾂﾞ': 'ヅ', 'ﾃﾞ': 'デ', 'ﾄﾞ': 'ド',
-                    'ﾊﾞ': 'バ', 'ﾋﾞ': 'ビ', 'ﾌﾞ': 'ブ', 'ﾍﾞ': 'ベ', 'ﾎﾞ': 'ボ',
-                    'ﾊﾟ': 'パ', 'ﾋﾟ': 'ピ', 'ﾌﾟ': 'プ', 'ﾍﾟ': 'ペ', 'ﾎﾟ': 'ポ',
-                    'ｳﾞ': 'ヴ', 'ﾜﾞ': 'ヷ', 'ｦﾞ': 'ヺ',
-                    'ｱ': 'ア', 'ｲ': 'イ', 'ｳ': 'ウ', 'ｴ': 'エ', 'ｵ': 'オ',
-                    'ｶ': 'カ', 'ｷ': 'キ', 'ｸ': 'ク', 'ｹ': 'ケ', 'ｺ': 'コ',
-                    'ｻ': 'サ', 'ｼ': 'シ', 'ｽ': 'ス', 'ｾ': 'セ', 'ｿ': 'ソ',
-                    'ﾀ': 'タ', 'ﾁ': 'チ', 'ﾂ': 'ツ', 'ﾃ': 'テ', 'ﾄ': 'ト',
-                    'ﾅ': 'ナ', 'ﾆ': 'ニ', 'ﾇ': 'ヌ', 'ﾈ': 'ネ', 'ﾉ': 'ノ',
-                    'ﾊ': 'ハ', 'ﾋ': 'ヒ', 'ﾌ': 'フ', 'ﾍ': 'ヘ', 'ﾎ': 'ホ',
-                    'ﾏ': 'マ', 'ﾐ': 'ミ', 'ﾑ': 'ム', 'ﾒ': 'メ', 'ﾓ': 'モ',
-                    'ﾔ': 'ヤ', 'ﾕ': 'ユ', 'ﾖ': 'ヨ',
-                    'ﾗ': 'ラ', 'ﾘ': 'リ', 'ﾙ': 'ル', 'ﾚ': 'レ', 'ﾛ': 'ロ',
-                    'ﾜ': 'ワ', 'ｦ': 'ヲ', 'ﾝ': 'ン',
-                    'ｧ': 'ァ', 'ｨ': 'ィ', 'ｩ': 'ゥ', 'ｪ': 'ェ', 'ｫ': 'ォ',
-                    'ｯ': 'ッ', 'ｬ': 'ャ', 'ｭ': 'ュ', 'ｮ': 'ョ',
-                    '｡': '。', '､': '、', 'ｰ': 'ー', '｢': '「', '｣': '」', '･': '・'
+                    '�: 'ガ', '�: 'ギ', '�: 'グ', '�: 'ゲ', '�: 'ゴ',
+                    '�: 'ザ', '�: 'ジ', '�: 'ズ', '�: 'ゼ', '�: 'ゾ',
+                    '�: 'ダ', '�: '�, '��: '�, '�: '�, '�: '�,
+                    '��: '�, '��: '�, '��: '�, '��: '�, '��: '�,
+                    '��: '�, '��: '�, '��: '�, '��: '�, '��: '�,
+                    '�: 'ヴ', '��: 'ヷ', '�: 'ヺ',
+                    '�': 'ア', '�': 'イ', '�': 'ウ', '�': 'エ', '�': 'オ',
+                    '�': 'カ', '�': 'キ', '�': 'ク', '�': 'ケ', '�': 'コ',
+                    '�': 'サ', '�': 'シ', '�': 'ス', '�': 'セ', '�': 'ソ',
+                    '�': 'タ', ': '�, ': '�, ': '�, ': '�,
+                    ': '�, ': '�, ': '�, ': '�, ': '�,
+                    ': '�, ': '�, ': '�, ': '�, ': '�,
+                    ': '�, ': '�, ': '�', ': 'メ', ': 'モ',
+                    ': 'ヤ', ': 'ユ', ': 'ヨ',
+                    ': 'ラ', ': 'リ', ': 'ル', ': 'レ', ': 'ロ',
+                    ': 'ワ', '�': 'ヲ', ': 'ン',
+                    '�': 'ァ', '�': 'ィ', '�': 'ゥ', '�': 'ェ', '�': 'ォ',
+                    '�': '�, '�': 'ャ', '�': 'ュ', '�': 'ョ',
+                    '�': '�, '�': '�, '�': 'ー', '�': '�, '�': '�, '�': '・'
                 };
                 var expression = new RegExp('(' + Object.keys(katakanaMap).join('|') + ')', 'g');
                 return text.replace(expression, function (match) {
                     return katakanaMap[match];
-                }).replace(/ﾞ/g, '゛').replace(/ﾟ/g, '゜');
+                }).replace(/g, '�).replace(/g, '�);
             }
             text_3.oneByteKatakanaToTwoByte = oneByteKatakanaToTwoByte;
             function anyChar(text) {
@@ -1468,8 +1468,8 @@ var nts;
             }
             text_3.anyChar = anyChar;
             /**
-             * 文字列が半角数字のみで構成された1文字以上の文字列かどうか判断する
-             * @param text 解析対象の文字列
+             * 断��が半角数字�みで構�され�断�以上�断��かどぁ�判断する
+             * @param text 解析対象の断��
              */
             function allHalfNumeric(text) {
                 return {
@@ -1479,8 +1479,8 @@ var nts;
             }
             text_3.allHalfNumeric = allHalfNumeric;
             /**
-             * 文字列が半角英字のみで構成された1文字以上の文字列かどうか判断する
-             * @param text 解析対象の文字列
+             * 断��が半角英字�みで構�され�断�以上�断��かどぁ�判断する
+             * @param text 解析対象の断��
              */
             function allHalfAlphabet(text) {
                 return {
@@ -1490,8 +1490,8 @@ var nts;
             }
             text_3.allHalfAlphabet = allHalfAlphabet;
             /**
-             * 文字列が半角英数字のみで構成された1文字以上の文字列かどうか判断する
-             * @param text 解析対象の文字列
+             * 断��が半角英数字�みで構�され�断�以上�断��かどぁ�判断する
+             * @param text 解析対象の断��
              */
             function allHalfAlphanumeric(text) {
                 return {
@@ -1501,8 +1501,8 @@ var nts;
             }
             text_3.allHalfAlphanumeric = allHalfAlphanumeric;
             /**
-             * 文字列が半角カナのみで構成された1文字以上の文字列かどうか判断する
-             * @param text 解析対象の文字列
+             * 断��が半角カナ�みで構�され�断�以上�断��かどぁ�判断する
+             * @param text 解析対象の断��
              */
             function allHalfKatakana(text) {
                 return {
@@ -1512,8 +1512,8 @@ var nts;
             }
             text_3.allHalfKatakana = allHalfKatakana;
             /**
-             * 文字列が全角カナのみで構成された1文字以上の文字列かどうか判断する
-             * @param text 解析対象の文字列
+             * 断��が�角カナ�みで構�され�断�以上�断��かどぁ�判断する
+             * @param text 解析対象の断��
              */
             function allFullKatakana(text) {
                 return {
@@ -1523,8 +1523,8 @@ var nts;
             }
             text_3.allFullKatakana = allFullKatakana;
             /**
-             * 文字列が半角文字のみで構成された1文字以上の文字列かどうか判断する
-             * @param text 解析対象の文字列
+             * 断��が半角文字�みで構�され�断�以上�断��かどぁ�判断する
+             * @param text 解析対象の断��
              */
             function allHalf(text) {
                 return {
@@ -1534,8 +1534,8 @@ var nts;
             }
             text_3.allHalf = allHalf;
             /**
-             * 文字列が平仮名のみで構成された1文字以上の文字列かどうか判断する
-             * @param text 解析対象の文字列
+             * 断��が平仮名�みで構�され�断�以上�断��かどぁ�判断する
+             * @param text 解析対象の断��
              */
             function allHiragana(text) {
                 return {
@@ -1545,8 +1545,8 @@ var nts;
             }
             text_3.allHiragana = allHiragana;
             /**
-             * 文字列がカタカナのみで構成された1文字以上の文字列かどうか判断する
-             * @param text 解析対象の文字列
+             * 断��がカタカナ�みで構�され�断�以上�断��かどぁ�判断する
+             * @param text 解析対象の断��
              */
             function allKatakana(text) {
                 return {
@@ -1589,8 +1589,8 @@ var nts;
             }
             text_3.employeeCode = employeeCode;
             /**
-             * 文字列中のHTML記号をサニタイズする
-             * @param text 変換対象の文字列
+             * 断��中のHTML記号をサニタイズする
+             * @param text 変換対象の断��
              */
             function htmlEncode(text) {
                 var element = document.createElement('pre');
@@ -1604,8 +1604,8 @@ var nts;
             }
             text_3.htmlEncode = htmlEncode;
             /**
-             * 1文字目のみ小文字に変換する
-             * @param text 変換対象の文字列
+             * 1断�目のみ小文字に変換する
+             * @param text 変換対象の断��
              */
             function toLowerCaseFirst(text) {
                 return text.charAt(0).toLowerCase() + text.slice(1);
@@ -1613,8 +1613,8 @@ var nts;
             text_3.toLowerCaseFirst = toLowerCaseFirst;
             ;
             /**
-             * 1文字目のみ大文字に変換する
-             * @param text 変換対象の文字列
+             * 1断�目のみ大断�に変換する
+             * @param text 変換対象の断��
              */
             function toUpperCaseFirst(text) {
                 return text.charAt(0).toUpperCase() + text.slice(1);
@@ -1631,8 +1631,8 @@ var nts;
             }
             text_3.toUpperCase = toUpperCase;
             /**
-            * 指定された文字列が、null、undefined、Emptyか判定する
-            * @param text 判定対象の文字列
+            * 挮�された断��が、null、undefined、Emptyか判定す�
+            * @param text 判定対象の断��
             */
             function isNullOrEmpty(text) {
                 var result = true;
@@ -1644,9 +1644,9 @@ var nts;
             }
             text_3.isNullOrEmpty = isNullOrEmpty;
             /**
-            * 指定した文字列の各書式項目を、対応するオブジェクトの値と等価のテキストに置換する
-            * @param text 書式文字列
-            * @param args 置換の文字列（配列可）
+            * 挮�した文字�の君�式雮を、対応するオブジェクト�値と等価のヂ�ストに置換す�
+            * @param text 書式文字�
+            * @param args 置換�断���列可
             */
             function format(format) {
                 var args = [];
@@ -1665,31 +1665,31 @@ var nts;
             }
             text_3.format = format;
             /**
-            * 変換文字列の先頭に、文字数分の指定文字列を追加する
-            * @param text 変換対象の文字列
-            * @param paddingChar 指定文字列
-            * @param length 文字数
+            * 変換断��の先�に、文字数�挮�文字�を追�する
+            * @param text 変換対象の断��
+            * @param paddingChar 挮�文字�
+            * @param length 断�数
             */
             function padLeft(text, paddingChar, length) {
                 return _.padStart(text, length, paddingChar);
             }
             text_3.padLeft = padLeft;
             /**
-            * 変換文字列の末尾に、文字数分の指定文字列を追加する
-            * @param text 変換対象の文字列
-            * @param paddingChar 指定文字列
-            * @param length 文字数
+            * 変換断��の末尾に、文字数�挮�文字�を追�する
+            * @param text 変換対象の断��
+            * @param paddingChar 挮�文字�
+            * @param length 断�数
             */
             function padRight(text, paddingChar, length) {
                 return _.padEnd(text, length, paddingChar);
             }
             text_3.padRight = padRight;
             /**
-            * 指定した文字列に、指定した文字列数分、指定文字列を追加する
-            * @param text 変換対象の文字列
-            * @param paddingChar 埋める文字列
-            * @param isPadLeft 左埋めフラグ（false：右埋め）
-            * @param length 文字数
+            * 挮�した文字�に、指定した文字�数刀�指定文字�を追�する
+            * @param text 変換対象の断��
+            * @param paddingChar 埋める文字�
+            * @param isPadLeft 左埋めフラグalse�右埋め
+            * @param length 断�数
             */
             function charPadding(text, paddingChar, isPadLeft, length) {
                 return isPadLeft ? _.padStart(text, length, paddingChar) : _.padEnd(text, length, paddingChar);
@@ -1746,7 +1746,7 @@ var nts;
                     return result;
                 };
                 CharType.prototype.buildConstraintText = function (maxLength) {
-                    return this.viewName + this.getViewLength(maxLength) + '文字';
+                    return this.viewName + this.getViewLength(maxLength) + '断;
                 };
                 CharType.prototype.getViewLength = function (length) {
                     return Math.floor(length / (this.width * 2));
@@ -1755,15 +1755,15 @@ var nts;
             }());
             text_3.CharType = CharType;
             var charTypes = {
-                AnyHalfWidth: new CharType('半角', 0.5, nts.uk.text.allHalf),
-                AlphaNumeric: new CharType('半角英数字', 0.5, nts.uk.text.allHalfAlphanumeric),
-                Alphabet: new CharType('半角英字', 0.5, nts.uk.text.allHalfAlphabet),
-                Numeric: new CharType('半角数字', 0.5, nts.uk.text.allHalfNumeric),
-                Any: new CharType('全角', 1, nts.uk.text.anyChar),
-                Kana: new CharType('カナ', 1, nts.uk.text.allFullKatakana),
+                AnyHalfWidth: new CharType('半�, 0.5, nts.uk.text.allHalf),
+                AlphaNumeric: new CharType('半角英数�, 0.5, nts.uk.text.allHalfAlphanumeric),
+                Alphabet: new CharType('半角英�, 0.5, nts.uk.text.allHalfAlphabet),
+                Numeric: new CharType('半角数�, 0.5, nts.uk.text.allHalfNumeric),
+                Any: new CharType('全�, 1, nts.uk.text.anyChar),
+                Kana: new CharType('カ�, 1, nts.uk.text.allFullKatakana),
                 HalfInt: new CharType('半整数', 0.5, nts.uk.text.halfInt),
-                WorkplaceCode: new CharType('半角英数字', 0.5, nts.uk.text.workplaceCode),
-                EmployeeCode: new CharType('半角英数字', 0.5, nts.uk.text.employeeCode)
+                WorkplaceCode: new CharType('半角英数�, 0.5, nts.uk.text.workplaceCode),
+                EmployeeCode: new CharType('半角英数�, 0.5, nts.uk.text.employeeCode)
             };
             function getCharType(primitiveValueName) {
                 var constraint = __viewContext.primitiveValueConstraints[primitiveValueName];
@@ -1831,8 +1831,8 @@ var nts;
             function formatCurrency(amount, locale) {
                 var result = addSeperation("" + amount);
                 if (locale == 'en' || locale == 'EN')
-                    return "￥" + result;
-                return result + "円";
+                    return "�" + result;
+                return result + "�;
             }
             text_3.formatCurrency = formatCurrency;
             function reverseDirection(direction) {
@@ -1958,7 +1958,7 @@ var nts;
             text_3.NumberUnit = NumberUnit;
             var units = {
                 "JPY": {
-                    "ja": new NumberUnit("JPY", "円", "right", "ja"),
+                    "ja": new NumberUnit("JPY", "�, "right", "ja"),
                     "en": new NumberUnit("JPY", "\u00A5", "left", "en")
                 },
                 "PERCENT": {
@@ -1969,7 +1969,7 @@ var nts;
                     "ja": new NumberUnit("DAYS", "日", "right", "ja")
                 },
                 "MONTHS": {
-                    "ja": new NumberUnit("MONTHS", "ヶ月", "right", "ja")
+                    "ja": new NumberUnit("MONTHS", "ヶ�, "right", "ja")
                 },
                 "YEARS": {
                     "ja": new NumberUnit("YEARS", "年", "right", "ja")
@@ -1981,7 +1981,7 @@ var nts;
                     "ja": new NumberUnit("FIS_YEAR", "年度", "right", "ja")
                 },
                 "TIMES": {
-                    "ja": new NumberUnit("TIMES", "回", "right", "ja")
+                    "ja": new NumberUnit("TIMES", "�, "right", "ja")
                 },
                 "AGE": {
                     "ja": new NumberUnit("AGE", "歳", "right", "ja")
@@ -2018,7 +2018,7 @@ var nts;
             var dotW = ["日曜日", "月曜日", "火曜日", "水曜日", "木曜日", "金曜日", "土曜日"];
             function getYearMonthJapan(year, month) {
                 if (month)
-                    return year + "年 " + month + " 月";
+                    return year + "年 " + month + " �;
                 return year;
             }
             function today() {
@@ -2801,15 +2801,15 @@ var nts;
                     this.shortYmdwPattern = /^\d{4}\/\d{1,2}\/\d{1,2}\(\w+\)$/;
                     this.shortYmPattern = /^\d{4}\/\d{1,2}$/;
                     this.shortMdPattern = /^\d{1,2}\/\d{1,2}$/;
-                    this.longYmdPattern = /^\d{4}年\d{1,2}月d{1,2}日$/;
-                    this.longYmdwPattern = /^\d{4}年\d{1,2}月d{1,2}日\(\w+\)$/;
+                    this.longYmdPattern = /^\d{4}年\d{1,2}�{1,2}日$/;
+                    this.longYmdwPattern = /^\d{4}年\d{1,2}�{1,2}日\(\w+\)$/;
                     this.longFPattern = /^\d{4}年度$/;
-                    this.longJmdPattern = /^\w{2}\d{1,3}年\d{1,2}月d{1,2}日$/;
-                    this.longJmPattern = /^\w{2}\d{1,3}年\d{1,2}月$/;
+                    this.longJmdPattern = /^\w{2}\d{1,3}年\d{1,2}�{1,2}日$/;
+                    this.longJmPattern = /^\w{2}\d{1,3}年\d{1,2}�/;
                     this.fullDateTimeShortPattern = /^\d{4}\/\d{1,2}\/\d{1,2} \d+:\d{2}:\d{2}$/;
                     this.timeShortHmsPattern = /^\d+:\d{2}:\d{2}$/;
                     this.timeShortHmPattern = /^\d+:\d{2}$/;
-                    this.days = ['日', '月', '火', '水', '木', '金', '土'];
+                    this.days = ['日', '�, '火', '水', '木', '�, '�];
                 }
                 DateTimeFormatter.prototype.shortYmd = function (date) {
                     var d = this.dateOf(date);
@@ -2864,7 +2864,7 @@ var nts;
                     }
                 };
                 DateTimeFormatter.prototype.toLongJpDate = function (d) {
-                    return d.getFullYear() + '年' + (d.getMonth() + 1) + '月' + d.getDate() + '日';
+                    return d.getFullYear() + '年' + (d.getMonth() + 1) + '� + d.getDate() + '日';
                 };
                 DateTimeFormatter.prototype.longF = function (date) {
                     var d = this.dateOf(date);
@@ -2886,7 +2886,7 @@ var nts;
                     if (this.longJmPattern.test(d))
                         return d;
                     var jpDate = this.fullJapaneseDateOf(d);
-                    var start = jpDate.indexOf("月");
+                    var start = jpDate.indexOf("�);
                     if (start !== -1) {
                         return jpDate.substring(0, start + 1);
                     }
@@ -3041,10 +3041,10 @@ var nts;
                     Short_D: "d",
                     Short_W: "D",
                     Short_MDW: "M/d(D)",
-                    Long_YMD: "yyyy年M月d日",
-                    Long_YMDW: "yyyy年M月d日(D)",
-                    Long_YM: "yyyy年M月",
-                    Long_MD: "M月d日",
+                    Long_YMD: "yyyy年M�日",
+                    Long_YMDW: "yyyy年M�日(D)",
+                    Long_YM: "yyyy年M�,
+                    Long_MD: "M�日",
                     Long_F: "yyyy年度"
                 };
                 function byId(formatId, value) {
@@ -3187,8 +3187,8 @@ var nts;
                     }
                     duration_1.create = create;
                     function createText(duration) {
-                        var isNegative = duration.isNegative, asHoursInt = duration.asHoursInt, minutePart = duration.minutePart;
-                        return ("" + (isNegative ? '-' : '') + asHoursInt + ":" + _.padStart("" + minutePart, 2, '0')).replace(/^\-{1,}/g, '-');
+                        var isNegative = duration.isNegative, asHoursInt = duration.asHoursInt, minutePartText = duration.minutePartText;
+                        return ("" + (isNegative ? '-' : '') + asHoursInt + ":" + minutePartText).replace(/^\-{1,}/g, '-');
                     }
                 })(duration = minutesBased.duration || (minutesBased.duration = {}));
             })(minutesBased = time.minutesBased || (time.minutesBased = {}));
@@ -3249,7 +3249,7 @@ var nts;
                                 case DayAttr.THE_PREVIOUS_DAY: return "前日";
                                 case DayAttr.THE_PRESENT_DAY: return "当日";
                                 case DayAttr.THE_NEXT_DAY: return "翌日";
-                                case DayAttr.TWO_DAY_LATER: return "翌々日";
+                                case DayAttr.TWO_DAY_LATER: return "翌〗�";
                                 default: new Error("invalid dayAttr: " + dayAttr);
                             }
                         }
@@ -3358,7 +3358,7 @@ var nts;
             (function (minutesBased) {
                 var clock;
                 (function (clock) {
-                    // このファイルはminutesbased_clockに統合したい
+                    // こ�ファイルはminutesbased_clockに統合したい
                     var dayattr;
                     (function (dayattr) {
                         dayattr.MAX_VALUE = create(4319);
@@ -3375,7 +3375,7 @@ var nts;
                                 case DayAttr.THE_PREVIOUS_DAY: return "前日";
                                 case DayAttr.THE_PRESENT_DAY: return "当日";
                                 case DayAttr.THE_NEXT_DAY: return "翌日";
-                                case DayAttr.TWO_DAY_LATER: return "翌々日";
+                                case DayAttr.TWO_DAY_LATER: return "翌〗�";
                                 default: throw new Error("invalid value: " + dayAttr);
                             }
                         }
@@ -3624,8 +3624,8 @@ var nts;
                     }
                     duration_2.create = create;
                     function createText(duration) {
-                        var isNegative = duration.isNegative, asHoursInt = duration.asHoursInt, asMinutes = duration.asMinutes, asSeconds = duration.asSeconds;
-                        return ("" + (isNegative ? '-' : '') + asHoursInt + ":" + _.padStart("" + asMinutes, 2, '0') + ":" + _.padStart("" + asSeconds, 2, '0')).replace(/^\-{1,}/g, '-');
+                        var isNegative = duration.isNegative, asHoursInt = duration.asHoursInt, minutePartText = duration.minutePartText, secondPartText = duration.secondPartText;
+                        return ("" + (isNegative ? '-' : '') + asHoursInt + ":" + minutePartText + ":" + secondPartText).replace(/^\-{1,}/g, '-');
                     }
                 })(duration = secondsBased.duration || (secondsBased.duration = {}));
             })(secondsBased = time.secondsBased || (time.secondsBased = {}));
@@ -3835,10 +3835,10 @@ var nts;
                     var stack = this.rawUrl.split('/');
                     var parts = relativePath.split('?')[0].split('/');
                     var queryStringToAdd = QueryString.parseUrl(relativePath);
-                    // 最後のファイル名は除外
-                    // (最後がフォルダ名でしかも / で終わっていない場合は考慮しない)
+                    // 最後�ファイル名�除�
+                    // (最後がフォルダ名でしか�/ で終わってぁ�ぴ合��しな�
                     stack.pop();
-                    // relativePathの先頭が '/' の場合、それを取り除く
+                    // relativePathの先��'/' の場合、それを取り除�
                     if (parts[0] === '') {
                         parts.shift();
                     }
@@ -3957,7 +3957,7 @@ var nts;
                             dfd.resolve(res);
                         }
                     }).fail(function (jqXHR, textStatus, errorThrown) {
-                        // デッドロックの場合、待機時間を少しずつ増やしながらリトライ（とりあえず10回までとする）
+                        // ッ�ドロヂ�の場合、復�時間を少しずつ増やしながらリトライ�とりあえず10回までとする
                         if (jqXHR.responseJSON && jqXHR.responseJSON.deadLock === true && countRetryByDeadLock < 10) {
                             countRetryByDeadLock++;
                             setTimeout(ajaxFunc, 300 + countRetryByDeadLock * 100);
@@ -4546,7 +4546,7 @@ var nts;
                     else if (!uk.util.isInFrame() && !__viewContext.noHeader) {
                         var header = "<div id='header'><div id='menu-header'>"
                             + "<div id='logo-area' class='cf'>"
-                            + "<div id='logo'>勤次郎</div>"
+                            + "<div id='logo'>勤次�/div>"
                             + "<div id='user-info' class='cf'>"
                             + "<div id='company' class='cf' />"
                             + "<div id='user' class='cf' />"
@@ -4685,6 +4685,7 @@ var nts;
         (function (ui) {
             var menu;
             (function (menu) {
+                var getText = nts.uk.resource.getText;
                 var DATA_TITLEITEM_PGID = "pgid";
                 var DATA_TITLEITEM_PGNAME = "pgname";
                 var MENU_SET_KEY = "nts.uk.session.MENU_SET";
@@ -4709,7 +4710,7 @@ var nts;
                     var $cate = $("<li class='category'/>").addClass("menu-select").appendTo($menuNav);
                     var $cateName = $("<div class='category-name'/>").html("&#9776;").appendTo($cate);
                     var $menuItems = $("<ul class='menu-items'/>").appendTo($cate);
-                    $menuItems.append($("<li class='menu-item'/>").text(ui.toBeResource.selectMenu));
+                    $menuItems.append($("<li class='menu-item'/>").text(getText('CCG020_1')));
                     $menuItems.append($("<hr/>").css({ margin: "5px 0px" }));
                     _.forEach(menuSet, function (item, i) {
                         $menuItems.append($("<li class='menu-item'/>")
@@ -4889,9 +4890,12 @@ var nts;
                                 $("<div class='ui-icon ui-icon-caret-1-s'/>").appendTo($userSettings);
                                 var userOptions;
                                 if (show)
-                                    userOptions = [new MenuItem(ui.toBeResource.settingPersonal), new MenuItem(ui.toBeResource.manual), new MenuItem(ui.toBeResource.logout)];
+                                    userOptions = [new MenuItem(getText('CCG020_5')), new MenuItem(getText('CCG020_4')), new MenuItem(getText('CCG020_3'))];
                                 else
-                                    userOptions = [new MenuItem(ui.toBeResource.settingPersonal), new MenuItem(ui.toBeResource.logout)];
+                                    userOptions = [new MenuItem(getText('CCG020_5')), new MenuItem(getText('CCG020_3'))];
+                                if (!__viewContext.user.isEmployee) {
+                                    userOptions.shift();
+                                }
                                 var $userOptions = $("<ul class='menu-items user-options'/>").appendTo($userSettings);
                                 _.forEach(userOptions, function (option, i) {
                                     var $li = $("<li class='menu-item'/>").text(option.name);
@@ -6141,49 +6145,49 @@ var nts;
         (function (ui) {
             var toBeResource;
             (function (toBeResource) {
-                toBeResource.yes = "はい";
-                toBeResource.no = "いいえ";
+                toBeResource.yes = "は�;
+                toBeResource.no = "ぁ��;
                 toBeResource.cancel = "キャンセル";
-                toBeResource.close = "閉じる";
-                toBeResource.info = "情報";
-                toBeResource.warn = "警告";
+                toBeResource.close = "閉じ�;
+                toBeResource.info = "惱";
+                toBeResource.warn = "警�;
                 toBeResource.error = "エラー";
-                toBeResource.confirm = "確認";
-                toBeResource.unset = "未設定";
-                toBeResource.errorContent = "エラー内容";
-                toBeResource.errorCode = "エラーコード";
+                toBeResource.confirm = "確�;
+                toBeResource.unset = "未設�;
+                toBeResource.errorContent = "エラー冮�";
+                toBeResource.errorCode = "エラーコー�;
                 toBeResource.errorList = "エラー一覧";
-                toBeResource.errorPoint = "エラー箇所";
+                toBeResource.errorPoint = "エラー箉�";
                 toBeResource.errorDetail = "エラー詳細";
-                toBeResource.tab = "タブ";
-                toBeResource.plzWait = "お待ちください";
-                toBeResource.targetNotFound = "対象データがありません"; // FND_E_SEARCH_NOHITと統合したい
+                toBeResource.tab = "タ�;
+                toBeResource.plzWait = "お征�ください";
+                toBeResource.targetNotFound = "対象�タがありません"; // FND_E_SEARCH_NOHITと統合したい
                 toBeResource.clear = "解除";
-                toBeResource.searchBox = "検索テキストボックス";
-                toBeResource.addNewRow = "新規行の追加";
-                toBeResource.deleteRow = "行の削除";
-                toBeResource.selectMenu = "メニュー選択";
+                toBeResource.searchBox = "検索ヂ�スト�ヂ�ス";
+                toBeResource.addNewRow = "新規行�追�";
+                toBeResource.deleteRow = "行�削除";
+                toBeResource.selectMenu = "メニュー選�;
                 toBeResource.manual = "マニュアル";
-                toBeResource.logout = "ログアウト";
-                toBeResource.settingPersonal = "個人情報の設定";
-                toBeResource.weekDaysShort = ["日", "月", "火", "水", "木", "金", "土"];
-                toBeResource.searchByCodeName = "コード・名称で検索・・・";
+                toBeResource.logout = "ログアウ�;
+                toBeResource.settingPersonal = "個人惱の設�;
+                toBeResource.weekDaysShort = ["日", "�, "火", "水", "木", "�, "�];
+                toBeResource.searchByCodeName = "コード�名称で検索・・・";
                 toBeResource.search = "検索";
                 toBeResource.filter = "絞り込み";
-                toBeResource.code = "コード";
+                toBeResource.code = "コー�;
                 toBeResource.codeAndName = "コード／名称";
-                toBeResource.alphaNumeric = "半角英数字";
-                toBeResource.katakana = "カタカナ";
-                toBeResource.kana = "カナ";
-                toBeResource.otherColors = "その他の色";
-                toBeResource.hide = "隠す";
-                toBeResource.decide = "確定";
-                toBeResource.refer = "参照";
-                toBeResource.selectViewArea = "表示エリアを選択する";
-                toBeResource.showInsideAreaToMain = "のエリア内をメイン画面に表示します。";
-                toBeResource.dragAndDropToChangeArea = "マウスのドラッグ＆ドロップでエリアを変更できます。";
-                toBeResource.invalidImageData = "不正な画像データです。";
-                toBeResource.legendExample = "凡例";
+                toBeResource.alphaNumeric = "半角英数�;
+                toBeResource.katakana = "カタカ�;
+                toBeResource.kana = "カ�;
+                toBeResource.otherColors = "そ�他�色";
+                toBeResource.hide = "��;
+                toBeResource.decide = "確�;
+                toBeResource.refer = "参�";
+                toBeResource.selectViewArea = "表示エリアを選択す�;
+                toBeResource.showInsideAreaToMain = "のエリア冂�メイン画面に表示します�;
+                toBeResource.dragAndDropToChangeArea = "マウスのドラヂ���ロ�でエリアを変更できます�;
+                toBeResource.invalidImageData = "不正な画像データです�;
+                toBeResource.legendExample = "凡�;
             })(toBeResource = ui.toBeResource || (ui.toBeResource = {}));
             function localize(textId) {
                 return textId;
@@ -6393,9 +6397,9 @@ var nts;
             })(keyboardStream = ui.keyboardStream || (ui.keyboardStream = {}));
             var buttonExtension;
             (function (buttonExtension) {
-                // ボタンの上部分をクリックすると、ボタンの範囲からマウスカーソルが外れてしまい、
-                // clickイベントが発生しなくなる不具合がある。
-                // ダミーのdivを生成し、そこでmouseupイベントを拾うことで不具合を回避。
+                // ボタンの上部刂�クリヂ�すると、�タンの篛�からマウスカーソルが外れてしま぀
+                // clickイベントが発生しなくなる不�合がある�
+                // ダミ�のdivを生成し、そこでmouseupイベントを拾ぁ�とで不�合を回避�
                 $(function () {
                     $("body").on("mousedown", "button", function (e) {
                         var $button = $(e.target);
@@ -8589,7 +8593,7 @@ var nts;
                                 }
                                 else if (!column.control) {
                                     tdStyle += " text-overflow: ellipsis; -ms-text-overflow: ellipsis;";
-                                    td.innerText = data;
+                                    td.innerText = _.isNil(data) ? "" : data;
                                 }
                                 controls.check(td, column, data, helper.call(column.handler, rData, rowIdx, key));
                                 //                    cellHandler.rClick(td, column, helper.call(column.rightClick, rData, rowIdx, key));
@@ -9223,11 +9227,12 @@ var nts;
                                             $c.style.backgroundColor = null;
                                         }
                                     }
-                                    if (fieldArr_1) {
-                                        fields = [fieldArr_1[i]];
-                                    }
+                                    // Compare each inner separately to color
+                                    //                        if (fieldArr) {
+                                    //                            fields = [ fieldArr[i] ];
+                                    //                        }
                                     var cellObj = new selection.Cell(rowIdx, columnKey, valueObj, i);
-                                    var mTouch = trace(origDs, $c, cellObj, fields, x.manipulatorId, x.manipulatorKey);
+                                    var mTouch = trace(origDs, $c, cellObj, fieldArr_1, x.manipulatorId, x.manipulatorKey);
                                     //                        if (innerIdx === - 1 || _.isNil(innerIdx)) {
                                     if ((!touched || (touched && !touched.dirty)) && mTouch && mTouch.dirty) {
                                         touched = mTouch;
@@ -9405,11 +9410,12 @@ var nts;
                                                 if (updateMode === EDIT) {
                                                     validation.validate($exTable, $grid, $c, rowIdx, key, i, d);
                                                 }
-                                                if (fieldArr_2) {
-                                                    fields = [fieldArr_2[i]];
-                                                }
+                                                // Compare each inner separately to color
+                                                //                                    if (fieldArr) {
+                                                //                                        fields = [ fieldArr[i] ];
+                                                //                                    }
                                                 cellObj_1 = new selection.Cell(rowIdx, key, data[key], i);
-                                                var mTouch = trace(origDs, $c, cellObj_1, fields, x.manipulatorId, x.manipulatorKey);
+                                                var mTouch = trace(origDs, $c, cellObj_1, fieldArr_2, x.manipulatorId, x.manipulatorKey);
                                                 if ((!touched || (touched && !touched.dirty)) && mTouch && mTouch.dirty) {
                                                     touched = mTouch;
                                                 }
@@ -10036,7 +10042,7 @@ var nts;
                                         errPopup.innerHTML = errMsg;
                                         var offset = selector.offset($cell);
                                         var bodyRowHeight = parseFloat($.data($exTable, NAMESPACE).bodyRowHeight);
-                                        var offsetHeight = !_.isNil($cell.style.height) ? parseFloat($cell.style.height)
+                                        var offsetHeight = !_.isNil($cell.style.height) && $cell.style.height !== "" ? parseFloat($cell.style.height)
                                             : (isNaN(bodyRowHeight) ? 50 : bodyRowHeight);
                                         errPopup.style.top = offset.top + offsetHeight + 2 + "px";
                                         errPopup.style.left = offset.left + "px";
@@ -10047,14 +10053,23 @@ var nts;
                             //                if (evt.ctrlKey && $.data($exTable, NAMESPACE).determination) return;
                             update.edit($exTable, $cell, options.containerClass);
                         });
-                        $cell.addXEventListener(events.KEY_UP, function () {
+                        $cell.addXEventListener(events.KEY_DOWN, function (evt) {
                             var $exTable = helper.closest($cell, "." + NAMESPACE);
                             var $grid = helper.getTable($exTable, options.containerClass);
                             var inputSelecting = $.data($grid, internal.INPUT_SELECTING);
                             if (!inputSelecting)
                                 return;
-                            if (event.keyCode === $.ui.keyCode.ENTER) {
-                                var cell_1 = helper.nextCellOf($grid, new selection.Cell(inputSelecting.rowIdx, inputSelecting.columnKey, null, inputSelecting.innerIdx));
+                            var moveDir = "prevCellOf";
+                            if (event.keyCode === $.ui.keyCode.ENTER || event.keyCode === $.ui.keyCode.TAB
+                                || event.keyCode === $.ui.keyCode.RIGHT || event.keyCode === $.ui.keyCode.LEFT) {
+                                if ($cell.querySelector("." + update.EDITOR_CLS) && event.keyCode !== $.ui.keyCode.ENTER)
+                                    return;
+                                event.preventDefault();
+                                var cell_1;
+                                if (event.keyCode !== $.ui.keyCode.LEFT && !event.shiftKey) {
+                                    moveDir = "nextCellOf";
+                                }
+                                cell_1 = helper[moveDir]($grid, new selection.Cell(inputSelecting.rowIdx, inputSelecting.columnKey, null, inputSelecting.innerIdx));
                                 selection.clearInnerCell($grid, inputSelecting.rowIdx, inputSelecting.columnKey, inputSelecting.innerIdx);
                                 $.data($grid, internal.INPUT_SELECTING, null);
                                 internal.getGem($grid).rollTo(cell_1);
@@ -10069,6 +10084,20 @@ var nts;
                                     }
                                     $.data($grid, internal.INPUT_SELECTING, { rowIdx: cell_1.rowIndex, columnKey: cell_1.columnKey, innerIdx: cell_1.innerIdx });
                                 });
+                            }
+                            else if (selector.is(evt.target, "." + selection.CELL_SELECTED_CLS)) {
+                                var cellTxt = $cell.innerText;
+                                if (evt.keyCode === 113) {
+                                    update.edit($exTable, $cell, options.containerClass);
+                                    var $input = $cell.querySelector("input");
+                                    if ($input) {
+                                        $input.value = cellTxt;
+                                    }
+                                }
+                                else if (helper.isAlphaNumeric(evt) || helper.isMinusSymbol(evt)
+                                    || (helper.isSemicolon(evt) && evt.shiftKey)) {
+                                    update.edit($exTable, $cell, options.containerClass);
+                                }
                             }
                         });
                     }
@@ -10307,8 +10336,8 @@ var nts;
                      */
                     function editing($exTable, $editor, land) {
                         var $input = $editor.querySelector("input");
-                        $input.removeXEventListener(events.KEY_UP);
-                        $input.addXEventListener(events.KEY_UP, function (evt) {
+                        $input.removeXEventListener(events.KEY_DOWN);
+                        $input.addXEventListener(events.KEY_DOWN, function (evt) {
                             var value = $input.value;
                             if (evt.keyCode === $.ui.keyCode.ENTER) {
                                 var $grid_1;
@@ -10397,14 +10426,14 @@ var nts;
                                     });
                                 }
                             }
-                            else {
-                                var editor = $.data($exTable, update.EDITOR);
-                                if (uk.util.isNullOrUndefined(editor))
-                                    return;
-                                editor.value = value;
-                                var $grid = !editor.land ? helper.getMainTable($exTable) : helper.getTable($exTable, editor.land);
-                                validation.validate($grid, helper.closest(editor.$editor, "." + update.EDIT_CELL_CLS), editor.rowIdx, editor.columnKey, editor.innerIdx, editor.value);
-                            }
+                        });
+                        $input.addXEventListener(events.KEY_UP, function (evt) {
+                            var editor = $.data($exTable, update.EDITOR);
+                            if (uk.util.isNullOrUndefined(editor))
+                                return;
+                            editor.value = $input.value;
+                            var $grid = !editor.land ? helper.getMainTable($exTable) : helper.getTable($exTable, editor.land);
+                            validation.validate($grid, helper.closest(editor.$editor, "." + update.EDIT_CELL_CLS), editor.rowIdx, editor.columnKey, editor.innerIdx, editor.value);
                         });
                     }
                     /**
@@ -16561,6 +16590,28 @@ var nts;
                     }
                     helper.isRedoKey = isRedoKey;
                     /**
+                     * Is alphanumeric.
+                     */
+                    function isAlphaNumeric(evt) {
+                        return (evt.keyCode >= 48 && evt.keyCode <= 90)
+                            || (evt.keyCode >= 96 && evt.keyCode <= 105);
+                    }
+                    helper.isAlphaNumeric = isAlphaNumeric;
+                    /**
+                     * Is minus symbol.
+                     */
+                    function isMinusSymbol(evt) {
+                        return evt.keyCode === 189 || evt.keyCode === 109;
+                    }
+                    helper.isMinusSymbol = isMinusSymbol;
+                    /**
+                     * Is semicolon.
+                     */
+                    function isSemicolon(evt) {
+                        return evt.keyCode === 186;
+                    }
+                    helper.isSemicolon = isSemicolon;
+                    /**
                      * Is Html.
                      */
                     function isHtml(str) {
@@ -16823,6 +16874,85 @@ var nts;
                         return new selection.Cell(rowIndex, key, undefined, innerIdx);
                     }
                     helper.nextCellOf = nextCellOf;
+                    /**
+                     * Prev key.
+                     */
+                    function prevKeyOf(columnIndex, visibleColumns) {
+                        if (columnIndex == 0)
+                            return;
+                        return visibleColumns[columnIndex - 1].key;
+                    }
+                    helper.prevKeyOf = prevKeyOf;
+                    /**
+                     * Prev cell.
+                     */
+                    function prevCellOf($grid, cell) {
+                        var key, rowIndex, innerIdx;
+                        var gen = $.data($grid, internal.TANGI) || $.data($grid, internal.CANON);
+                        if (!gen)
+                            return;
+                        var visibleColumns = gen.painter.visibleColumns;
+                        var innerTypes = [];
+                        _(gen.painter.options.columns).forEach(function (c) {
+                            if (c.dataType) {
+                                innerTypes = c.dataType.split('/');
+                                return false;
+                            }
+                        });
+                        var firstTextIndex = _.findIndex(innerTypes, function (t) { return t !== controls.LABEL.toLowerCase(); });
+                        var prevInnerIdx = function (idx) {
+                            if (idx === firstTextIndex || idx === -1)
+                                return;
+                            for (var i = idx - 1; i >= 0; i--) {
+                                if (innerTypes[i] !== controls.LABEL.toLowerCase()) {
+                                    return i;
+                                }
+                            }
+                        };
+                        innerIdx = prevInnerIdx(cell.innerIdx);
+                        if (!_.isNil(innerIdx)) {
+                            return new selection.Cell(cell.rowIndex, cell.columnKey, null, innerIdx);
+                        }
+                        key = prevKeyOf(indexOf(cell.columnKey, visibleColumns), visibleColumns);
+                        if (key) {
+                            if (innerTypes.length === 1) {
+                                innerIdx = -1;
+                            }
+                            else {
+                                innerIdx = _.findLastIndex(innerTypes, function (t) { return t !== controls.LABEL.toLowerCase(); });
+                            }
+                            return new selection.Cell(cell.rowIndex, key, null, innerIdx);
+                        }
+                        key = visibleColumns[visibleColumns.length - 1].key;
+                        if (cell.rowIndex === 0) {
+                            if (cell.innerIdx === -1) {
+                                rowIndex = gen.dataSource.length - 1;
+                                innerIdx = -1;
+                            }
+                            else if (!_.isNil(innerIdx = prevInnerIdx(cell.innerIdx))) {
+                                rowIndex = Number(cell.rowIndex);
+                            }
+                            else {
+                                rowIndex = gen.dataSource.length - 1;
+                                innerIdx = _.findLastIndex(innerTypes, function (t) { return t !== controls.LABEL.toLowerCase(); });
+                            }
+                        }
+                        else {
+                            if (cell.innerIdx === -1) {
+                                rowIndex = Number(cell.rowIndex) - 1;
+                                innerIdx = -1;
+                            }
+                            else if (!_.isNil(innerIdx = prevInnerIdx(cell.innerIdx))) {
+                                rowIndex = Number(cell.rowIndex);
+                            }
+                            else {
+                                rowIndex = Number(cell.rowIndex) - 1;
+                                innerIdx = _.findLastIndex(innerTypes, function (t) { return t !== controls.LABEL.toLowerCase(); });
+                            }
+                        }
+                        return new selection.Cell(rowIndex, key, null, innerIdx);
+                    }
+                    helper.prevCellOf = prevCellOf;
                     /**
                      * Call.
                      */
@@ -17602,6 +17732,8 @@ var nts;
                     function textOverflow($cell) {
                         $cell.addXEventListener(events.MOUSE_ENTER + ".celloverflow", function (evt) {
                             var $target = $(evt.target);
+                            if ($target.find("." + update.EDITOR_CLS).length > 0)
+                                return;
                             if (!displayFullText($target)) {
                                 var $link = $target.find("a");
                                 if ($link.length > 0) {
@@ -18927,7 +19059,7 @@ var nts;
                         this.MONTH = "month";
                         this.DAY = "day";
                         this.YEAR_TEXT = "年";
-                        this.MONTH_TEXT = "月";
+                        this.MONTH_TEXT = "�;
                         this.PERIOD_TEXT = "度";
                         this.structure = { 0: this.YEARS, 1: this.MONTHS, 2: this.DAYS };
                         this.EVENT_SHOW = "show." + this.NAMESPACE;
@@ -20254,7 +20386,7 @@ var nts;
                         if (setWidthByConstraint) {
                             self.setWidthByConstraint(constraintName, $input);
                         }
-                        // このif文は何のため？ ユーザが入力操作をしたときしかtrueにならないか？
+                        // こ�if�何�ためユーザが�力操作をしたときしかtrueにならなぁ�
                         if (!$input.ntsError('hasError') && data.value() !== $input.val()) {
                             valueChanging.markUserChange($input);
                             data.value($input.val());
@@ -20436,18 +20568,18 @@ var nts;
                         $input.on('input', function (evt) {
                             var rd = ko.toJS(data), constraint = rd.constraint, orgi = evt.originalEvent, targ = evt.target, srg = $input.data(_rg), devt = $input.data(_kc), dorgi = devt.originalEvent, ival = evt.target.value, dval = $input.data(_val);
                             ival = ival
-                                .replace(/。/, '.')
+                                .replace(/�, '.')
                                 .replace(/ー/, '-')
-                                .replace(/０/, '0')
-                                .replace(/１/, '1')
-                                .replace(/２/, '2')
-                                .replace(/３/, '3')
-                                .replace(/４/, '4')
-                                .replace(/５/, '5')
-                                .replace(/６/, '6')
-                                .replace(/７/, '7')
-                                .replace(/８/, '8')
-                                .replace(/９/, '9')
+                                .replace(/, '0')
+                                .replace(/, '1')
+                                .replace(/, '2')
+                                .replace(/, '3')
+                                .replace(/, '4')
+                                .replace(/, '5')
+                                .replace(/, '6')
+                                .replace(/, '7')
+                                .replace(/, '8')
+                                .replace(/, '9')
                                 .replace(/./g, function (k) {
                                 if (['.', '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].indexOf(k) == -1) {
                                     return '';
@@ -22838,7 +22970,7 @@ var nts;
                         var afterRight = nts.uk.util.isNullOrUndefined(data.afterMoveRight) ? $.noop : data.afterMoveRight;
                         var afterAllL = nts.uk.util.isNullOrUndefined(data.afterAllLeft) ? $.noop : data.afterAllLeft;
                         var afterAllR = nts.uk.util.isNullOrUndefined(data.afterAllRight) ? $.noop : data.afterAllRight;
-                        // 動作が不安定なので、使わないようにする
+                        // 動作が不安定なので、使わなあ�ぁ�する
                         data.draggable = false;
                         $swap.wrap("<div class= 'ntsComponent ntsSwapList' id='" + elementId + "_container' tabindex='-1'/>");
                         if (totalWidth !== undefined) {
@@ -22865,7 +22997,7 @@ var nts;
                         var gridHeight = (height - 20);
                         var grid1Id = "#" + elementId + "-grid1";
                         var grid2Id = "#" + elementId + "-grid2";
-                        //var defaultSearchText = "コード・名称で検索・・・"; // nts.uk.resource.getText("");
+                        //var defaultSearchText = "コード�名称で検索・・・"; // nts.uk.resource.getText("");
                         if (!uk.util.isNullOrUndefined(showSearchBox) && (showSearchBox.showLeft || showSearchBox.showRight)) {
                             var initSearchArea = function ($SearchArea, searchMode, searchText) {
                                 $SearchArea.append("<div class='ntsSearchTextContainer'/>")
@@ -23944,7 +24076,7 @@ var nts;
                         });
                         container.bind("change-tab", function (e, newTabId) {
                             data.active(newTabId);
-                            // nested tabの場合にpropagationすると困る。tabIdは別なので。
+                            // nested tabの場合にpropagationすると困る。tabIdは別なので�
                             e.stopPropagation();
                         });
                         container.tabs({
@@ -24961,7 +25093,7 @@ var nts;
                     NtsLegentButtonBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var $container = $(element);
-                        $container.text("■ " + ui.toBeResource.legendExample);
+                        $container.text("� " + ui.toBeResource.legendExample);
                         $container.click(function () {
                             showLegendPanel($container, data);
                         });
@@ -32999,7 +33131,7 @@ var nts;
                         $container.appendChild($pageArea);
                         var $recDesc = document.createElement("span");
                         $recDesc.classList.add("mgrid-pagerecordlabel");
-                        $recDesc.textContent = _pageSize + " レコード";
+                        $recDesc.textContent = _pageSize + " レコー�;
                         $pageArea.appendChild($recDesc);
                         var $gridPaging = _prtDiv.cloneNode();
                         $gridPaging.classList.add("mgrid-paging-nav");
@@ -33500,7 +33632,7 @@ var nts;
                     dkn.PICKER_PANEL = "datepicker-panel";
                     dkn.MUTED = "muted";
                     dkn.PICKED = "picked";
-                    dkn.YM = "YYYY年MM月";
+                    dkn.YM = "YYYY年MM�;
                     dkn.Y = "YYYY年";
                     dkn.WEEK_DAYS = ui_18.toBeResource.weekDaysShort;
                     /**
@@ -34058,7 +34190,7 @@ var nts;
                             var _loop_9 = function (i) {
                                 var $month = li.cloneNode();
                                 $month.setAttribute("data-view", "month");
-                                $month.innerHTML = i + "月";
+                                $month.innerHTML = i + "�;
                                 $month.addXEventListener(ssk.MOUSE_DOWN, function (evt) {
                                     var value = $.data($month, "value"), $input = dkn.controlType[dkn.TEXTBOX].my.querySelector("input.medit");
                                     evt.stopPropagation();
@@ -36572,6 +36704,11 @@ var nts;
                                     return;
                                 if (parentChart && ((diff > 0 && pDec_1.end > parentChart.end) || (diff < 0 && pDec_1.start < parentChart.start)))
                                     return;
+                                if (parentChart && _.find(parentChart.children, function (child) {
+                                    return child.id !== chart.id && !child.bePassedThrough
+                                        && ((chart.start >= child.end && pDec_1.start < child.end) || (chart.end <= child.start && pDec_1.end > child.start));
+                                }))
+                                    return;
                                 _.forEach(chart.children, function (child) {
                                     var childSlide;
                                     if (child.followParent) {
@@ -36620,7 +36757,7 @@ var nts;
                                                 if (!self.chartArea.contains(child.html)) {
                                                     self.chartArea.appendChild(child.html);
                                                 }
-                                                if (!self.slideTrigger.edgeCharts.find(function (c) { return c.id === child.id; })) {
+                                                if (!_.find(self.slideTrigger.edgeCharts, function (c) { return c.id === child.id; })) {
                                                     self.slideTrigger.edgeCharts.push(child);
                                                 }
                                             }
@@ -36675,7 +36812,7 @@ var nts;
                                                 if (!self.chartArea.contains(child.html)) {
                                                     self.chartArea.appendChild(child.html);
                                                 }
-                                                if (!self.slideTrigger.edgeCharts.find(function (c) { return c.id === child.id; })) {
+                                                if (!_.find(self.slideTrigger.edgeCharts, function (c) { return c.id === child.id; })) {
                                                     self.slideTrigger.edgeCharts.push(child);
                                                 }
                                             }
@@ -37090,6 +37227,7 @@ var nts;
                         this.lineWidth = options.lineWidth;
                         this.snatchInterval = options.snatchInterval;
                         this.drawerSize = options.drawerSize;
+                        this.bePassedThrough = options.bePassedThrough;
                         this.pin = options.pin;
                         this.rollup = options.rollup;
                         this.roundEdge = options.roundEdge;
@@ -37115,6 +37253,7 @@ var nts;
                         this.followParent = false;
                         this.fixed = CHART_FIXED.NONE;
                         this.drawerSize = 3;
+                        this.bePassedThrough = true;
                         this.locked = false;
                         this.rollup = false;
                         this.pin = false;
@@ -38063,7 +38202,7 @@ var nts;
                                     }
                                 }).fail(function (jqXHR, textStatus, errorThrown) {
                                     // 413はnginxが返す
-                                    // ただ、Wildflyにも最大値が設定されているので注意（こちらはオーバーすると500が返る）
+                                    // ただ、Wildflyにも最大値が設定されてあ�ので注意（こちら�オーバ�すると500が返る
                                     if (jqXHR.status === 413) {
                                         dfd.reject(uk.resource.getMessageObj("Msg_1494"));
                                     }
@@ -38457,8 +38596,7 @@ var nts;
                         var currentColumns = $grid.igGrid("option", "columns");
                         currentColumns.push({
                             dataType: "bool", columnCssClass: "delete-column", headerText: "test", key: param.deleteField,
-                            width: 60,
-                            formatter: function createButton(deleteField, row) {
+                            width: 60, formatter: function createButton(deleteField, row) {
                                 var primaryKey = $grid.igGrid("option", "primaryKey");
                                 var result = $('<button tabindex="-1" class="small delete-button">Delete</button>');
                                 result.attr("data-value", row[primaryKey]);
@@ -38504,7 +38642,7 @@ var nts;
                         // used to auto scrolling when dragged above/below grid)
                         var mousePos = null;
                         $grid.bind('pointerdown', function (e) {
-                            // グリッド内がマウスダウンされていない場合は処理なしで終了
+                            // グリッ�冁�マウスダウンされてぁ�ぴ合�処琁�しで終�
                             var $container = $grid.closest('.ui-iggrid-scrolldiv');
                             if ($(e.target).closest('.ui-iggrid-table').length === 0) {
                                 return;
@@ -38564,7 +38702,7 @@ var nts;
                             if (isNaN(mousePos.rowIndex)) {
                                 return;
                             }
-                            // 以前のドラッグ範囲の選択を一旦解除する
+                            // 以前�ドラヂ�篛�の選択を一旦解除する
                             // TODO: probably this code has problem of perfomance when select many rows
                             // should process only "differences" instead of "all"
                             for (var i = 0, i_len = dragSelectRange.length; i < i_len; i++) {
@@ -41227,7 +41365,7 @@ var nts;
                         ntsControls.PICKER_PANEL_CLASS = "datepicker-panel";
                         ntsControls.MUTED_CLASS = "muted";
                         ntsControls.PICKED_CLASS = "picked";
-                        ntsControls.YM = "YYYY年MM月";
+                        ntsControls.YM = "YYYY年MM�;
                         ntsControls.Y = "YYYY年";
                         ntsControls.WEEK_DAYS = ui_24.toBeResource.weekDaysShort;
                         /**
@@ -42060,7 +42198,7 @@ var nts;
                                     var _loop_12 = function (i) {
                                         var $month = li.cloneNode();
                                         $month.setAttribute("data-view", "month");
-                                        $month.innerHTML = i + "月";
+                                        $month.innerHTML = i + "�;
                                         $($month).on(events.Handler.MOUSE_DOWN, function (evt) {
                                             var value = $.data($month, "value"), $input = $.data(internal._datePickerBoard[format], internal.JQUERY_INPUT_PICKER_ATTACH);
                                             evt.stopPropagation();
@@ -47679,7 +47817,7 @@ var nts;
                         self.$container.append("<div class='ntsDateRange_Container' id='" + id + "' />");
                         self.$datePickerArea = self.$container.find(".ntsDateRange_Container");
                         self.$datePickerArea.append("<div class='ntsDateRangeComponent ntsControl ntsDateRange'>" +
-                            "<div class='ntsDateRangeComponent ntsStartDate ntsControl nts-datepicker-wrapper'/><div class='ntsDateRangeComponent ntsRangeLabel'><label>～</label></div>" +
+                            "<div class='ntsDateRangeComponent ntsStartDate ntsControl nts-datepicker-wrapper'/><div class='ntsDateRangeComponent ntsRangeLabel'><label>/label></div>" +
                             "<div class='ntsDateRangeComponent ntsEndDate ntsControl nts-datepicker-wrapper' /></div>");
                         self.$datePickerArea.data("required", required);
                         if (dateType === 'year') {
@@ -47710,9 +47848,9 @@ var nts;
                         //                autoHide: true,
                         //                weekStart: 0
                         //            });
-                        self.rangeName = nts.uk.util.isNullOrUndefined(rangeName) ? "期間入力フォーム" : nts.uk.resource.getControlName(rangeName);
-                        self.startName = nts.uk.util.isNullOrUndefined(startName) ? self.rangeName + "開始" : nts.uk.resource.getControlName(startName);
-                        self.endName = nts.uk.util.isNullOrUndefined(endName) ? self.rangeName + "終了" : nts.uk.resource.getControlName(endName);
+                        self.rangeName = nts.uk.util.isNullOrUndefined(rangeName) ? "期間入力フォー�" : nts.uk.resource.getControlName(rangeName);
+                        self.startName = nts.uk.util.isNullOrUndefined(startName) ? self.rangeName + "開� : nts.uk.resource.getControlName(startName);
+                        self.endName = nts.uk.util.isNullOrUndefined(endName) ? self.rangeName + "終� : nts.uk.resource.getControlName(endName);
                         self.getMessage = nts.uk.resource.getMessage;
                         ko.bindingHandlers["ntsDatePicker"].init(self.$start[0], function () {
                             return self.createStartBinding(data);
@@ -49200,7 +49338,7 @@ var nts;
                                 optionsText: 'text',
                                 width: '60px',
                                 enable: data.enable,
-                                name: _.size(source) == 13 ? (nts.uk.resource.getControlName(ko.toJS(data.name) || "") + "の月") : (nts.uk.resource.getControlName(ko.toJS(data.name) || "") + "の日"),
+                                name: _.size(source) == 13 ? (nts.uk.resource.getControlName(ko.toJS(data.name) || "") + "の�) : (nts.uk.resource.getControlName(ko.toJS(data.name) || "") + "の日"),
                                 required: _.size(source) == 13 ? data.required : ko.computed(function () { return !!ko.toJS(data.required) || !!ko.toJS(monthValueAccessor.value); })
                             });
                         }, getMonths = function () { return _.range(0, 13).map(function (m) { return ({ text: m === 0 ? "" : m, value: m === 0 ? "" : m }); }); }, getDaysInMonth = function (month) { return _.range(0, moment(month, "MM").daysInMonth() + 1).map(function (m) { return ({ text: m === 0 ? "" : m, value: m === 0 ? "" : m }); }); }, monthValueAccessor = getComboBinding(data, ko.observable(""), getMonths()), dayOfMonthValueAccessor = getComboBinding(data, ko.observable(""), [{ text: "", value: "" }]);
@@ -50579,7 +50717,7 @@ var nts;
                         }
                     }
                 });
-                // Hàm blockui được wrapper lại để gọi cho thống nhất
+                // H�m blockui được wrapper lại đ�gọi cho thống nhất
                 BaseViewModel.prototype.$blockui = function $blockui(act) {
                     return $.Deferred().resolve()
                         .then(function () {
@@ -50666,11 +50804,11 @@ var nts;
                     }
                     return $.Deferred()
                         .resolve(true)
-                        /** Nếu có lỗi thì trả về false, không thì true */
+                        /** Nếu có lỗi thì trả v�false, không thì true */
                         .then(function () { return !$('.nts-input').ntsError('hasError'); });
                     ;
                 };
-                // Hàm validate được wrapper lại để có thể thực hiện promisse
+                // H�m validate được wrapper lại đ�có th�thực hiện promisse
                 var $validate = function $validate(act) {
                     var args = Array.prototype.slice.apply(arguments);
                     if (args.length === 0) {
@@ -50678,7 +50816,7 @@ var nts;
                             .resolve(true)
                             /** Gọi xử lý validate của kiban */
                             .then(function () { return $('.nts-input').trigger("validate"); })
-                            /** Nếu có lỗi thì trả về false, không thì true */
+                            /** Nếu có lỗi thì trả v�false, không thì true */
                             .then(function () { return !$('.nts-input').ntsError('hasError'); });
                     }
                     else if (args.length === 1) {
@@ -50693,7 +50831,7 @@ var nts;
                             .resolve(true)
                             /** Gọi xử lý validate của kiban */
                             .then(function () { return $(selectors_1).trigger("validate"); })
-                            /** Nếu có lỗi thì trả về false, không thì true */
+                            /** Nếu có lỗi thì trả v�false, không thì true */
                             .then(function () { return !$(selectors_1).ntsError('hasError'); });
                     }
                     else {
@@ -50702,7 +50840,7 @@ var nts;
                             .resolve(true)
                             /** Gọi xử lý validate của kiban */
                             .then(function () { return $(selectors_2).trigger("validate"); })
-                            /** Nếu có lỗi thì trả về false, không thì true */
+                            /** Nếu có lỗi thì trả v�false, không thì true */
                             .then(function () { return !$(selectors_2).ntsError('hasError'); });
                     }
                 };

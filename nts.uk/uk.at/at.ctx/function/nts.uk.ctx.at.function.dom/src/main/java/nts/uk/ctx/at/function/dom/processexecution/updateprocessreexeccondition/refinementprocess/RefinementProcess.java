@@ -12,10 +12,11 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.adapter.AffWorkplaceHistoryImport;
 import nts.uk.ctx.at.function.dom.adapter.WorkplaceWorkRecordAdapter;
-import nts.uk.ctx.at.function.dom.processexecution.ProcessExecution;
+import nts.uk.ctx.at.function.dom.processexecution.UpdateProcessAutoExecution;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeHistory;
 import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.repository.BusinessTypeEmpOfHistoryRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.history.DateHistoryItem;
 
 /**
@@ -33,8 +34,8 @@ public class RefinementProcess {
 	@Inject
 	private BusinessTypeEmpOfHistoryRepository businessTypeEmpOfHistAdapter;
 	
-	public void refinementProcess(String companyId, List<String> empIds,Set<String> setEmpIds,List<String> newEmpIdList, GeneralDate startDate, ProcessExecution procExec) {
-		if (procExec.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTransfer()) {
+	public void refinementProcess(String companyId, List<String> empIds,Set<String> setEmpIds,List<String> newEmpIdList, GeneralDate startDate, UpdateProcessAutoExecution procExec) {
+		if (procExec.getReExecCondition().getRecreateTransfer().equals(NotUseAtr.USE)) {
 			// 異動者の絞り込み todo request list 189
 			List<AffWorkplaceHistoryImport> list = workplaceWorkRecordAdapter.getWorkplaceBySidsAndBaseDate(empIds,
 					startDate);
@@ -47,7 +48,7 @@ public class RefinementProcess {
 				});
 			});
 		}
-		if (procExec.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTypeChangePerson()) {
+		if (procExec.getReExecCondition().getRecreatePersonChangeWkt().equals(NotUseAtr.USE)) {
 			// 勤務種別の絞り込み
 			this.refineWorkType(companyId, empIds, startDate, newEmpIdList);
 		}

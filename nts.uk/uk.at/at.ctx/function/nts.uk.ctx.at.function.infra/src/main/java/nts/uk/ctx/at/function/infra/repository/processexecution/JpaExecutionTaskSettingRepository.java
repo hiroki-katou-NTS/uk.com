@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.infra.repository.processexecution;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -21,7 +22,11 @@ public class JpaExecutionTaskSettingRepository extends JpaRepository
 			+ "WHERE ets.kfnmtExecTaskSettingPK.companyId = :companyId AND ets.kfnmtExecTaskSettingPK.execItemCd = :execItemCd "
 			+ "ORDER BY ets.kfnmtExecTaskSettingPK.execItemCd";
 	
-
+	private static final String SELECT_All_BY_CID_AND_EXEC = SELECT_ALL
+			+ " WHERE ets.kfnmtExecTaskSettingPK.companyId = :companyId"
+			+ " AND ets.kfnmtExecTaskSettingPK.execItemCd IN :execItemCds"
+			+ " ORDER BY ets.kfnmtExecTaskSettingPK.execItemCd ASC";
+	
 	/**
 	 * get by key
 	 */
@@ -30,6 +35,14 @@ public class JpaExecutionTaskSettingRepository extends JpaRepository
 		return this.queryProxy().query(SELECT_All_BY_CID_AND_EXECCD, KfnmtExecutionTaskSetting.class)
 				.setParameter("companyId", companyId)
 				.setParameter("execItemCd", execItemCd).getSingle(c -> c.toDomain());
+	}
+	
+	@Override
+	public List<ExecutionTaskSetting> getByCidAndExecItemCd(String companyId, List<String> execItemCds) {
+		return this.queryProxy().query(SELECT_All_BY_CID_AND_EXEC, KfnmtExecutionTaskSetting.class)
+				.setParameter("companyId", companyId)
+				.setParameter("execItemCds", execItemCds)
+				.getList(c -> c.toDomain());
 	}
 
 	/**
@@ -54,7 +67,6 @@ public class JpaExecutionTaskSettingRepository extends JpaRepository
 		oldData.endTime = updateData.endTime;
 		oldData.oneDayRepCls = updateData.oneDayRepCls;
 		oldData.oneDayRepInterval = updateData.oneDayRepInterval;
-		oldData.repeatCls = updateData.repeatCls;
 		oldData.repeatContent = updateData.repeatContent;
 		oldData.endDateCls = updateData.endDateCls;
 		oldData.endDate = updateData.endDate;
@@ -98,6 +110,16 @@ public class JpaExecutionTaskSettingRepository extends JpaRepository
 			KfnmtExecutionTaskSettingPK kfnmtProcExecPK = new KfnmtExecutionTaskSettingPK(companyId, execItemCd);
 			this.commandProxy().remove(KfnmtExecutionTaskSetting.class, kfnmtProcExecPK);
 		}
+	}
+
+	@Override
+	public void update(String companyId, String execItemCd, boolean enabledSetting) {
+		Optional<KfnmtExecutionTaskSetting> optEntity = this.queryProxy()
+				.find(new KfnmtExecutionTaskSettingPK(companyId, execItemCd), KfnmtExecutionTaskSetting.class);
+		optEntity.ifPresent(entity -> {
+			entity.enabledSetting = enabledSetting ? 1 : 0;
+			this.commandProxy().update(entity);
+		});
 	}
 
 }

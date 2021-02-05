@@ -3,6 +3,7 @@
  */
 package nts.uk.ctx.sys.auth.pubimp.employee;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,19 +32,21 @@ public class ObtainWkpListAndWkpManager {
 	 * 
 	 * 【OUTPUT】 Map＜職場ID、社員ID＞
 	 */
-	public Map<String, String> getData(EmployeePublisher.RequireRQ653 requireRQ653, String companyID,
+	public Map<String, List<String>> getData(EmployeePublisher.RequireRQ653 requireRQ653, String companyID,
 			GeneralDate referenceDate, List<String> workplaceIDs) {
 		
 		List<WorkplaceManagerDto> workplaceManagers = requireRQ653.getWorkplaceManager( workplaceIDs,  referenceDate );
 		if(workplaceManagers.isEmpty())
-			return new HashMap<String, String>();
+			return new HashMap<String, List<String>>();
 		
-		Map<String, String> result = new HashMap<>();
+		Map<String, List<String>> result = new HashMap<>();
 		for (WorkplaceManagerDto workplaceManager : workplaceManagers) {
 			Optional<WorkPlaceAuthorityDto> workPlaceAuthority = requireRQ653.getWorkAuthority(companyID, workplaceManager.getWorkplaceManagerId(), 2);
 			if(workPlaceAuthority.isPresent()){
 				if(workPlaceAuthority.get().isAvailability() == true){
-					result.put(workplaceManager.getWorkplaceId(), workplaceManager.getEmployeeId());
+					List<String> value = new ArrayList<String>();
+					value.add( workplaceManager.getEmployeeId());
+					result.put(workplaceManager.getWorkplaceId(), value);
 				}
 			}
 		}

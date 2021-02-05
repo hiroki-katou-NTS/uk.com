@@ -78,7 +78,8 @@ public class AppHolidayWorkInsertCmd {
 	}
 	
 	public AppHolidayWork toDomain() {
-		return new AppHolidayWork(this.workInformation.toDomain(), this.applicationTime.toDomain(), 
+		return new AppHolidayWork(this.workInformation.toDomain(), 
+				this.applicationTime != null ? this.applicationTime.toDomain() : null, 
 				this.backHomeAtr ? NotUseAtr.USE : NotUseAtr.NOT_USE, this.goWorkAtr ? NotUseAtr.USE : NotUseAtr.NOT_USE, 
 				this.breakTimeList != null ?
 						Optional.ofNullable(this.breakTimeList.stream().map(breakTime -> breakTime.toDomain()).collect(Collectors.toList())) : Optional.empty(), 

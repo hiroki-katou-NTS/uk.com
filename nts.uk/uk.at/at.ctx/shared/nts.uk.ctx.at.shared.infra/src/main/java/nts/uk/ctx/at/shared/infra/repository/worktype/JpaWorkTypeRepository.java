@@ -814,10 +814,7 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 		KshmtWorkType entity = (KshmtWorkType) object[0];
 		Integer order = object[1] != null ? Integer.valueOf(object[1].toString()) : null;
 		
-		WorkType domain = WorkType.createSimpleFromJavaType(entity.kshmtWorkTypePK.companyId,
-				entity.kshmtWorkTypePK.workTypeCode, entity.symbolicName, entity.name, entity.abbreviationName,
-				entity.memo, entity.worktypeAtr, entity.oneDayAtr, entity.morningAtr, entity.afternoonAtr,
-				entity.deprecateAtr, entity.calculatorMethod);
+		WorkType domain = toDomain(entity);
 		if (order != null) {
 			domain.setDisplayOrder(order);
 		}

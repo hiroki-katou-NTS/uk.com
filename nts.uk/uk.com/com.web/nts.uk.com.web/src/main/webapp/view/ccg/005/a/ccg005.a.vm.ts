@@ -8,6 +8,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
     getDisplayAttendanceData: 'screen/com/ccg005/get-display-attendance-data',
     getDisplayInfoAfterSelect: 'screen/com/ccg005/get-information-after-select',
     getAttendanceInformation: 'screen/com/ccg005/get-attendance-information',
+    searchForEmployee: 'screen/com/ccg005/get-employee-search',
     saveFavorite: 'ctx/office/favorite/save',
     registerComment: 'ctx/office/comment/register',
     deleteComment: 'ctx/office/comment/delete',
@@ -27,7 +28,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
           <i tabindex=3 data-bind="visible: $component.inCharge, ntsIcon: {no: 5, width: 25, height: 25}, click: $component.openScreenCCG005B"></i>
           &#160;
           <!-- A1_6 -->
-          <i tabindex=4 data-bind="click: $component.toStartScreen, ntsIcon: {no: 194, width: 25, height: 25}"></i>
+          <i tabindex=4 data-bind="click: $component.resetLastestData, ntsIcon: {no: 194, width: 25, height: 25}"></i>
         </div>
         <div class="grade-header-center" style="padding-bottom: 5px;">
           <table>
@@ -41,7 +42,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
                 <span class="ccg005-bold" data-bind="text: $component.businessName()"></span>
                 <div class="ccg005-flex none-enter-icon">
                   <!-- A1_3 -->
-                  <i data-bind="ntsIcon: {no: $component.emoji(), width: 20, height: 30}"></i>
+                  <i class="ccg005-currentEmoji"></i>
                   <div style="position: relative;" class="CCG005-A1_4-border">
                     <!-- A1_4 -->
                     <input tabindex=2 id="CCG005-A1_4" style="border: none !important; padding-right: 30px; background: none !important;" data-bind="ntsTextEditor: {
@@ -54,7 +55,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
                         placeholder: $component.$i18n('CCG005_35')
                       }))
                     }, visible: $component.isSameOrBeforeBaseDate"/>
-                    <i class="ccg005-clearbtn" style="position: absolute; right: 5px; visibility: hidden;" data-bind="click: $component.deleteComment, ntsIcon: {no: $component.emoji(), width: 20, height: 28}"></i>
+                    <i class="ccg005-clearbtn" style="position: absolute; right: 5px; visibility: hidden;" data-bind="ntsIcon: {no: 198, width: 20, height: 28}"></i>
                   </div>
                 </div>
               </td>
@@ -87,6 +88,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
               editable: true,
               visibleItemsCount: 5,
               value: favoriteInputDate,
+              selectFirstIfNull: true,
               optionsValue: 'inputDate',
               optionsText: 'favoriteName',
               required: true,
@@ -120,7 +122,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
 
 
 
-          
+
 
             <tr style="background-color: yellow; height: 45px;">
               <td style="padding-right: 5px; width: 30px; background-color: white;">
@@ -138,13 +140,17 @@ module nts.uk.at.view.ccg005.a.screenModel {
               <td class="ccg005-w100 ccg005-pl-5 ccg005-border-groove ccg005-right-unset ccg005-left-unset">
                 <div class="ccg005-w100">
                   <!-- A4_2 -->
-                  <label class="limited-label" style="max-width: 80px; width: auto !important;" data-bind="text: attendanceDetailDto.workName"/>
+                  <label data-bind="text: attendanceDetailDto.workName, attr:{ class: 'limited-label work-name-class-'+sid }" style="max-width: 80px; width: auto !important;" />
                   <!-- A4_4 -->
-                  <i tabindex=14 data-bind="ntsIcon: {no: 190, width: 13, height: 13}"></i>
+                  <i tabindex=14 id="A4-4-application-icon" data-bind="ntsIcon: {no: 190, width: 13, height: 13}"></i>
                 </div>
                 <div style="height: 20px;">
                 <!-- A4_3 -->
-                  <label class="limited-label check-in-out" style="max-width: 120px;" data-bind="text: attendanceDetailDto.checkInCheckOutTime"/>
+                  <span class="limited-label" style="max-width: 120px;">
+                    <label id="check-in-out" data-bind="text: attendanceDetailDto.checkInTime, attr:{ class: 'check-in-class-'+sid }"/>
+                    <label id="check-in-out" data-bind="text:' - ', attr:{ class: 'check-in-out-class-'+sid }"/>
+                    <label id="check-in-out" data-bind="text: attendanceDetailDto.checkOutTime, attr:{ class: 'check-out-class-'+sid }"/>
+                  </span>
                 </div>
               </td>
               <td class="ccg005-pl-5 ccg005-border-groove ccg005-right-unset ccg005-left-unset">
@@ -159,7 +165,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
                 <!-- A4_6 text go out reason -->
                 <p style="max-width: 125px;" class="limited-label" data-bind="text: goOutDto.goOutReason, visible: $component.goOutDisplay()"/>
                 <!-- A4_6 text comment -->
-                <p style="max-width: 125px;" class="limited-label" data-bind="text: commentDto.comment, visible: $component.commentDisplay()"/>
+                <p style="max-width: 125px;" class="limited-label" data-bind="text: comment, visible: $component.commentDisplay()"/>
               </td>
             </tr>
 
@@ -215,7 +221,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
               <!-- A3_2.2 -->
               <input data-bind="ntsTextEditor: {
                 value: searchValue,
-                enterkey: $component.registerComment,
+                enterkey: $component.onSearchEmployee,
                 option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                   textmode: 'text',
                   width: '190px',
@@ -289,6 +295,10 @@ module nts.uk.at.view.ccg005.a.screenModel {
           </tr>
         </table>
       </div>
+    </div>
+    <!-- A4_4 popup -->
+    <div id="ccg005-A4-4-popup">
+      Dong Den
     </div>
   </div>
   <style>
@@ -380,8 +390,20 @@ module nts.uk.at.view.ccg005.a.screenModel {
     .ccg005-switch > .nts-switch-button {
       width: 80px;
     }
-    .check-in-out {
+    #check-in-out {
       font-size: 80%;
+    }
+
+    .display-color-scheduled {
+      font-color: #00CC00;
+    }
+
+    .display-color-alarm {
+      font-color: red;
+    }
+
+    .pd-left-35 {
+      padding-left: 35px;
     }
   </style>`
   })
@@ -402,7 +424,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
     contentSelected: KnockoutObservable<number> = ko.observable(0);
     commentDisplay: KnockoutObservable<boolean> = ko.computed(() => this.contentSelected() === 0);
     goOutDisplay: KnockoutObservable<boolean> = ko.computed(() => this.contentSelected() === 1);
-    favoriteInputDate: KnockoutObservable<any> = ko.observable('');
+    favoriteInputDate: KnockoutObservable<any> = ko.observable(null);
     searchValue: KnockoutObservable<string> = ko.observable('');
     workplaceNameFromCDL008: KnockoutObservable<string> = ko.observable('');
 
@@ -423,7 +445,6 @@ module nts.uk.at.view.ccg005.a.screenModel {
     activatedStatus: KnockoutObservable<number> = ko.observable();
     activityStatusIcon: KnockoutComputed<number> = ko.computed(() => this.initActivityStatus(this.activityStatus()));
     businessName: KnockoutObservable<string> = ko.observable('');
-    emoji: KnockoutObservable<number> = ko.observable(187);
     comment: KnockoutObservable<string> = ko.observable('');
     commentDate: KnockoutObservable<any> = ko.observable('');
     avatarPath: KnockoutObservable<string> = ko.observable('');
@@ -463,6 +484,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       vm.toStartScreen();
       vm.initResizeable(vm);
       vm.initPopupArea();
+      vm.initPopupA4_4();
       vm.initPopupStatus();
       vm.initChangeFavorite();
       vm.initFocusA1_4();
@@ -486,10 +508,12 @@ module nts.uk.at.view.ccg005.a.screenModel {
         vm.isBaseDate(selectedDate.isSame(baseDate));
         // パラメータ「在席情報を取得」
         const empIds = _.map(vm.attendanceInformationDtos(), atd => {
-          return {
-            sid: atd.sid,
-            pid: _.find(vm.listPersonalInfo(), item => item.employeeId === atd.sid).personalId
-          };
+          if (_.find(vm.listPersonalInfo(), item => item.employeeId === atd.sid)) {
+            return {
+              sid: atd.sid,
+              pid: _.find(vm.listPersonalInfo(), item => item.employeeId === atd.sid).personalId
+            };
+          }
         });
         const param = {
           empIds: empIds,
@@ -497,8 +521,14 @@ module nts.uk.at.view.ccg005.a.screenModel {
           emojiUsage: vm.emojiUsage()
         }
         vm.$blockui('show');
-        vm.$ajax('com', API.getAttendanceInformation, param).then((res: object.AttendanceInformationDto) => {
-
+        vm.clearDataDisplay();
+        vm.$ajax('com', API.getAttendanceInformation, param).then((res: object.AttendanceInformationDto[]) => {
+          vm.updateLoginData(res);
+          res = _.filter(res, item => item.sid !== __viewContext.user.employeeId);
+          vm.dataToDisplay({
+            attendanceInformationDtos: res,
+            listPersonalInfo: vm.listPersonalInfo()
+          });
         }).always(() => vm.$blockui('hide'));
       });
     }
@@ -509,27 +539,27 @@ module nts.uk.at.view.ccg005.a.screenModel {
     private initChangeFavorite() {
       const vm = this;
       vm.favoriteInputDate.subscribe(() => {
-        const selectedFavorite = _.find(vm.favoriteSpecifyData(), item => item.inputDate === vm.favoriteInputDate());
+        vm.subscribeFavorite();
+      });
+    }
+
+    private subscribeFavorite() {
+      const vm = this;
+      const selectedFavorite = _.find(vm.favoriteSpecifyData(), item => item.inputDate === vm.favoriteInputDate());
         const param: DisplayInfoAfterSelectParam = new DisplayInfoAfterSelectParam({
           baseDate: vm.selectedDate(),
           emojiUsage: vm.emojiUsage(),
           wkspIds: selectedFavorite ? selectedFavorite.workplaceId : []
         });
         vm.$blockui('show');
+        vm.clearDataDisplay();
         vm.$ajax('com', API.getDisplayInfoAfterSelect, param).then((res: object.DisplayInformationDto) => {
-          vm.attendanceInformationDtos(res.attendanceInformationDtos);
-          vm.listPersonalInfo(res.listPersonalInfo);
-
-          //set data view model to set data on screen
-          const display = vm.getAttendanceInformationDtosDisplay(res);
-          vm.attendanceInformationDtosDisplay(display);
-          vm.attendanceInformationDtosDisplayClone(display);
-          vm.resetPagination();
+          vm.dataToDisplay(res);
         })
         .always(() => vm.$blockui('clear'));
-      });
     }
 
+    //handle avatar in loop by jquery
     private setAvatarInLoop() {
       const vm = this;
       _.map(vm.attendanceInformationDtosDisplay(), (item) => {
@@ -556,6 +586,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       });
     }
 
+    //handle attendance data for all employee in loop
     private getAttendanceInformationDtosDisplay(res: object.DisplayInformationDto): AttendanceInformationViewModel[] {
       const vm = this;
       return _.map(res.attendanceInformationDtos, (item => {
@@ -567,10 +598,10 @@ module nts.uk.at.view.ccg005.a.screenModel {
         return new AttendanceInformationViewModel({
           applicationDtos: item.applicationDtos,
           sid: item.sid,
-          attendanceDetailDto: vm.getAttendanceDetailViewModel(item.attendanceDetailDto),
+          attendanceDetailDto: vm.getAttendanceDetailViewModel(item.sid, item.attendanceDetailDto),
           avatarDto: item.avatarDto,
           activityStatusIconNo: vm.initActivityStatus(item.activityStatusDto),
-          commentDto: item.commentDto,
+          comment: item.commentDto.comment,
           goOutDto: vm.getGoOutViewModel(item.goOutDto),
           emojiIconNo: vm.initEmojiType(item.emojiDto.emojiType),
           businessName: businessName
@@ -584,29 +615,67 @@ module nts.uk.at.view.ccg005.a.screenModel {
       vm.totalElement(vm.attendanceInformationDtosDisplayClone().length);
     }
 
-    private getAttendanceDetailViewModel(attendanceDetailDto: any): AttendanceDetailViewModel {
-      const checkInCheckOutTime = (attendanceDetailDto.checkInTime + " - " + attendanceDetailDto.checkOutTime);
+    //handle check-in check-out display
+    private getAttendanceDetailViewModel(sid: string, attendanceDetailDto: any): AttendanceDetailViewModel {
+      const vm = this;
+      const workColorClass = vm.getClassNameColor(attendanceDetailDto.workColor);
+      const checkOutColorClass = vm.getClassNameColor(attendanceDetailDto.checkOutColor);
+      const checkInColorClass = vm.getClassNameColor(attendanceDetailDto.checkInColor);
+
+      $(`.work-name-class-${sid}`).ready(() => {
+        $(`.work-name-class-${sid}`).addClass(workColorClass);
+      });
+      $(`.check-out-class-${sid}`).ready(() => {
+        $(`.check-out-class-${sid}`).addClass(checkOutColorClass);
+      });
+      $(`.check-in-class-${sid}`).ready(() => {
+        $(`.check-in-class-${sid}`).addClass(checkInColorClass);
+        if(!attendanceDetailDto.checkInTime) {
+          $(`.check-in-class-${sid}`).addClass("pd-left-35");
+        }
+      });
+      //hidden ' - ' when both check-in and check-out are empty
+      if(!attendanceDetailDto.checkInTime && !attendanceDetailDto.checkOutTime) {
+        $(`.check-in-out-class-${sid}`).ready(() => {
+          $(`.check-in-out-class-${sid}`).css("visibility", "hidden");
+        });
+      }
       return new AttendanceDetailViewModel({
-        workColor: attendanceDetailDto.workColor,
         workName: attendanceDetailDto.workName,
-        checkOutColor: attendanceDetailDto.checkOutColor,
-        checkInCheckOutTime: checkInCheckOutTime,
-        checkInColor: attendanceDetailDto.checkInColor,
+        checkOutTime: attendanceDetailDto.checkOutTime,
+        checkInTime: attendanceDetailDto.checkInTime,
         workDivision: attendanceDetailDto.workDivision,
       });
     }
 
+    //handle go-out display
     private getGoOutViewModel(goOutDto: object.GoOutEmployeeInformationDto): GoOutEmployeeInformationViewModel {
       const vm = this;
-      const period = vm.covertNumberToTime(goOutDto.goOutTime) + " - " + vm.covertNumberToTime(goOutDto.comebackTime);
+      let period = "";
+      if (goOutDto.goOutTime && goOutDto.comebackTime) {
+        period = vm.covertNumberToTime(goOutDto.goOutTime) + " - " + vm.covertNumberToTime(goOutDto.comebackTime);
+      }
       return new GoOutEmployeeInformationViewModel({
         goOutReason: goOutDto.goOutReason,
         goOutPeriod: period
       });
     }
 
+    //convert time(minutes) to H:mm
     private covertNumberToTime(time: number): string {
       return moment.utc(moment.duration(time, "m").asMilliseconds()).format("H:mm");
+    }
+
+    //handle color for workName, checkIn, checkOut
+    private getClassNameColor(color: number): string {
+      switch(color){
+        case DisplayColor.SCHEDULED:
+          return "display-color-scheduled"; //Color = green
+        case DisplayColor.ALARM:
+          return "display-color-alarm";  //Color = red
+        default:
+            return "display-color-achievement";  //Color = default
+      }
     }
 
     private initResizeable(vm: any) {
@@ -641,7 +710,23 @@ module nts.uk.at.view.ccg005.a.screenModel {
       });
       $('#ccg005-star-img').click(() => $('#ccg005-star-popup').ntsPopup('toggle'));
     }
+
+    private initPopupA4_4() {
+      $('#ccg005-A4-4-popup').ntsPopup({
+        position: {
+          my: 'left top',
+          at: 'left-100 bottom',
+          of: $('A4-4-application-icon')
+        },
+        showOnStart: false,
+        dismissible: true
+      });
+      $('#A4-4-application-icon').click(() => $('#ccg005-A4-4-popup').ntsPopup('toggle'));
+    }
+
     initFocusA1_4() {
+      const vm = this;
+      $('.ccg005-clearbtn').click(() => vm.deleteComment());
       $('.CCG005-A1_4-border')
         .focusin(() => $('.ccg005-clearbtn').css('visibility', 'visible'))
         .focusout(() => $('.ccg005-clearbtn').css('visibility', 'hidden'));
@@ -741,9 +826,20 @@ module nts.uk.at.view.ccg005.a.screenModel {
       });
     }
 
+    resetLastestData() {
+      const vm = this;
+      vm.attendanceInformationDtos([]);
+      vm.attendanceInformationDtosDisplay([]);
+      vm.attendanceInformationDtosDisplayClone([]);
+      vm.selectedDate(moment.utc().format('YYYYMMDD'));
+      vm.currentPage(0);
+      vm.totalElement(0);
+      vm.toStartScreen();
+      vm.subscribeFavorite();
+    }
+
     private toStartScreen() {
       const vm = this;
-      const loginSid = __viewContext.user.employeeId;
       vm.$blockui('show');
       vm.$ajax('com', API.getDisplayAttendanceData).then((response: object.DisplayAttendanceDataDto) => {
         vm.emojiUsage(!!response.emojiUsage);
@@ -752,42 +848,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
         vm.favoriteSpecifyData(response.favoriteSpecifyDto);
         vm.inCharge(response.inCharge);
         if (response && response.attendanceInformationDtos) {
-          // 条件：在席情報DTO.社員ID＝ログイン社員ID
-          const atdInfo = _.find(response.attendanceInformationDtos, item => item.sid === loginSid);
-          if (!atdInfo) {
-            return;
-          }
-          // A1_1 表示初期の在席データDTO.在席情報DTO.個人の顔写真.顔写真ファイルID
-          $(`#${ID_AVATAR_CHANGE}`).empty();
-          if (atdInfo.avatarDto && atdInfo.avatarDto.fileId) {
-            $(`#${ID_AVATAR_CHANGE}`)
-              .append($("<img/>")
-                .attr("id", 'CCG005_A1_1')
-                .attr("src", (nts.uk.request as any).liveView(atdInfo.avatarDto.fileId))
-              );
-          } else {
-            $(`#${ID_AVATAR_CHANGE}`).ready(() => {
-              $(`#${ID_AVATAR_CHANGE}`).append(
-                `<div id='CCG005_no_avatar'>
-                  <p style="text-align: center; margin: 0 auto; font-size: 15px">
-                    ${vm.businessName().replace(/\s/g, '').substring(0, 2)}
-                  </p>
-                </div>`
-              );
-            });
-          }
-          // 表示初期の在席データDTO.在席情報DTO.在席のステータス
-          vm.activityStatus(atdInfo.activityStatusDto);
-          // A1_3
-          if (atdInfo.emojiDto) {
-            // 表示初期の在席データDTO.在席情報DTO.社員の外出情報.感情種類
-            vm.emoji(vm.initEmojiType(atdInfo.emojiDto.emojiType));
-          }
-          // A1_4
-          if (atdInfo.commentDto) {
-            vm.comment(atdInfo.commentDto.comment);
-            vm.commentDate(atdInfo.commentDto.date);
-          }
+          vm.updateLoginData(response.attendanceInformationDtos);
 
           if (_.isEmpty(vm.favoriteSpecifyData())) {
             vm.createdDefaultFavorite();
@@ -795,6 +856,45 @@ module nts.uk.at.view.ccg005.a.screenModel {
         }
         vm.currentPage(1);
       }).always(() => vm.$blockui('clear'));
+    }
+
+    updateLoginData(atds: any) {
+      const vm = this;
+      // 条件：在席情報DTO.社員ID＝ログイン社員ID
+      const atdInfo = _.find(atds, (item: any) => item.sid === __viewContext.user.employeeId);
+      if (!atdInfo) {
+        return;
+      }
+      // A1_1 表示初期の在席データDTO.在席情報DTO.個人の顔写真.顔写真ファイルID
+      $(`#${ID_AVATAR_CHANGE}`).empty();
+      if (atdInfo.avatarDto && atdInfo.avatarDto.fileId) {
+        $(`#${ID_AVATAR_CHANGE}`)
+          .append($("<img/>")
+            .attr("id", 'CCG005_A1_1')
+            .attr("src", (nts.uk.request as any).liveView(atdInfo.avatarDto.fileId))
+          );
+      } else {
+        $(`#${ID_AVATAR_CHANGE}`).ready(() => {
+          $(`#${ID_AVATAR_CHANGE}`).append(
+            `<div id='CCG005_no_avatar'>
+              <p style="text-align: center; margin: 0 auto; font-size: 15px">
+                ${vm.businessName().replace(/\s/g, '').substring(0, 2)}
+              </p>
+            </div>`
+          );
+        });
+      }
+      // 表示初期の在席データDTO.在席情報DTO.在席のステータス
+      vm.activityStatus(atdInfo.activityStatusDto);
+      // A1_3 表示初期の在席データDTO.在席情報DTO.社員の外出情報.感情種類
+      if (atdInfo.emojiDto && atdInfo.emojiDto.emojiType) {
+        ko.bindingHandlers.ntsIcon.init($('.ccg005-currentEmoji')[0], () => ({ no: vm.initEmojiType(atdInfo.emojiDto.emojiType), width: 20, height: 30 }));
+      }
+      // A1_4
+      if (atdInfo.commentDto) {
+        vm.comment(atdInfo.commentDto.comment);
+        vm.commentDate(atdInfo.commentDto.date);
+      }
     }
 
     private initEmojiType(emojiType: number): number {
@@ -850,7 +950,10 @@ module nts.uk.at.view.ccg005.a.screenModel {
       };
       vm.$blockui('show');
       vm.$ajax('com', API.registerComment, command)
-        .then(() => vm.$dialog.info({ messageId: 'Msg_15' }))
+        .then(() => {
+          vm.$dialog.info({ messageId: 'Msg_15' });
+          $('#CCG005-A1_4').blur();
+        })
         .always(() => vm.$blockui('clear'));
     }
 
@@ -859,15 +962,20 @@ module nts.uk.at.view.ccg005.a.screenModel {
      */
     deleteComment() {
       const vm = this;
-      $('.ccg005-clearbtn').css('visibility', 'hidden');
-      $('#CCG005-A1_4').focusout();
+      if (_.isEmpty(vm.comment())) {
+        return;
+      }
       vm.comment('');
       const command = {
         date: moment.utc(vm.commentDate()).toISOString(),
         sid: __viewContext.user.employeeId
       };
       vm.$blockui('show');
-      vm.$ajax('com', API.deleteComment, command).always(() => vm.$blockui('clear'));
+      vm.$ajax('com', API.deleteComment, command)
+        .then(() => {
+          $('.ccg005-clearbtn').css('visibility', 'hidden');
+        })  
+        .always(() => vm.$blockui('clear'));
     }
 
     /**
@@ -898,6 +1006,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
           setShared('CDL008Cancel', null);
           return;
         }
+        $('#ccg005-star-popup').ntsPopup('hide');
         const workplaceInfor = getShared('workplaceInfor');
         vm.workplaceNameFromCDL008(_.map(workplaceInfor, (wkp: any) => wkp.displayName).join('、'));
         // 職場を選択する時
@@ -908,14 +1017,56 @@ module nts.uk.at.view.ccg005.a.screenModel {
           wkspIds: vm.workplaceFromCDL008()
         });
         vm.$blockui('show');
+        vm.clearDataDisplay();
         vm.$ajax('com', API.getDisplayInfoAfterSelect, param).then((res: object.DisplayInformationDto) => {
-          if (!res) {
-            return;
-          }
-          vm.attendanceInformationDtos(res.attendanceInformationDtos);
-          vm.listPersonalInfo(res.listPersonalInfo);
+          vm.dataToDisplay(res);
         }).always(() => vm.$blockui('clear'));
       });
+    }
+    
+    /**
+     * 検索する時
+     */
+    onSearchEmployee() {
+      const vm = this;
+      const param = {
+        keyWorks: vm.searchValue(),
+        baseDate: vm.selectedDate(),
+        emojiUsage: vm.emojiUsage()
+      };
+      vm.$blockui('show');
+      vm.$ajax('com', API.searchForEmployee, param)
+        .then((res: object.DisplayInformationDto) => {
+          vm.dataToDisplay(res);
+        })
+        .always(() => vm.$blockui('clear'))
+    }
+
+    clearDataDisplay() {
+      const vm = this;
+      vm.totalElement(0);
+      vm.attendanceInformationDtos([]);
+      vm.attendanceInformationDtosDisplay([]);
+      vm.attendanceInformationDtosDisplayClone([]);
+    }
+
+    dataToDisplay(res: any) {
+      const vm = this;
+      if (!res) {
+        return;
+      }
+      vm.attendanceInformationDtos(res.attendanceInformationDtos);
+      vm.listPersonalInfo(res.listPersonalInfo);
+
+      //set data view model to set data on screen
+      const display = vm.getAttendanceInformationDtosDisplay(res);
+      if (display.length > vm.perPage()) {
+        vm.attendanceInformationDtosDisplay(_.slice(display, 0, vm.perPage()));
+      } else {
+        vm.attendanceInformationDtosDisplay(display);
+      }
+      vm.attendanceInformationDtosDisplayClone(display);
+      vm.resetPagination();
     }
 
     /**
@@ -987,6 +1138,75 @@ module nts.uk.at.view.ccg005.a.screenModel {
     HOLIDAY = 197 // 休み: アイコン#197
   }
 
+  	// 表示色区分
+	enum DisplayColor {
+		// 実績色
+		ACHIEVEMENT = 0,
+
+		// 予定色
+		SCHEDULED = 1,
+
+		// アラーム色
+		ALARM = 2
+  }
+  
+  enum ApplicationType {
+	
+    /**
+     * 0: 残業申請
+     */
+    OVER_TIME_APPLICATION = 0,
+    
+    /**
+     * 1: 休暇申請
+     */
+    ABSENCE_APPLICATION = 1,
+    
+    /**
+     * 2: 勤務変更申請
+     */
+    WORK_CHANGE_APPLICATION = 2,
+    
+    /**
+     * 3: 出張申請
+     */
+    BUSINESS_TRIP_APPLICATION = 3,
+    
+    /**
+     * 4: 直行直帰申請
+     */
+    GO_RETURN_DIRECTLY_APPLICATION = 4,
+    
+    /**
+     * 6: 休出時間申請
+     */
+    HOLIDAY_WORK_APPLICATION = 6,
+    
+    /**
+     * 7: 打刻申請
+     */
+    STAMP_APPLICATION = 7,
+    
+    /**
+     * 8: 時間休暇申請
+     */
+    ANNUAL_HOLIDAY_APPLICATION = 8,
+    
+    /**
+     * 9: 遅刻早退取消申請
+     */
+    EARLY_LEAVE_CANCEL_APPLICATION = 9,
+    
+    /**
+     * 10: 振休振出申請
+     */
+    COMPLEMENT_LEAVE_APPLICATION = 10,
+    
+    /**
+     * 15: 任意項目申請
+     */
+    OPTIONAL_ITEM_APPLICATION = 15,
+  }
   class FavoriteSpecifyData {
     favoriteName: string;
     creatorId: string;
@@ -1027,7 +1247,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
     attendanceDetailDto: AttendanceDetailViewModel;      
     avatarDto: object.UserAvatarDto;              
     activityStatusIconNo: number;                     
-    commentDto: any;                                  
+    comment: string;                                  
     goOutDto: GoOutEmployeeInformationViewModel;       
     emojiIconNo: number;               
     businessName: string;
@@ -1060,20 +1280,14 @@ module nts.uk.at.view.ccg005.a.screenModel {
   }
 
   class AttendanceDetailViewModel {
-    // 勤務の色
-    workColor: number;
-
     // 勤務名
     workName: string;
 
-    // 終了の色
-    checkOutColor: number;
+    // 終了時刻
+    checkOutTime: string;
 
-    // 終了時刻 + 開始時刻
-    checkInCheckOutTime: string;
-
-    // 開始の色
-    checkInColor: number;
+    // 開始時刻
+    checkInTime: string;
 
     // 勤務区分
     workDivision: number;

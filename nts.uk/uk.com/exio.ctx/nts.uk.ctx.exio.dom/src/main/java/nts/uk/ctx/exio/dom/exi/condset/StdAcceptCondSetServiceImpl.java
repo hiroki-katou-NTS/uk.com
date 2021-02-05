@@ -37,24 +37,11 @@ public class StdAcceptCondSetServiceImpl implements StdAcceptCondSetService {
 				param.getSystemType(), param.getSourceCondSetCode());
 		if (!sourceCondSetOp.isPresent())
 			return;
-		StdAcceptCondSet sourceCondSet = sourceCondSetOp.get();
-		//get source  accept item list data		
+		//get source  accept item list data
 		List<StdAcceptItem> sourceAcceptItemList = acceptItemRepository.getListStdAcceptItems(param.getCId(), param.getSystemType(), param.getSourceCondSetCode());
 		
 		// make destination condition setting data.
-		desCondSet = new StdAcceptCondSet(
-				sourceCondSet.getCid(),
-				new AcceptanceConditionCode(param.getDestCondSetCode()), 
-				sourceCondSet.getCategoryId(),
-				sourceCondSet.getCsvDataLineNumber(), 
-				sourceCondSet.getSystemType(), 
-				sourceCondSet.getDeleteExistData(),
-				sourceCondSet.getCsvDataStartLine(), 
-				sourceCondSet.getCharacterCode(),
-				sourceCondSet.getAcceptMode(),
-				new AcceptanceConditionName(param.getDestCondSetName()), 
-				sourceCondSet.getCheckCompleted(),
-				sourceCondSet.getDeleteExtDataMethod());
+		desCondSet = sourceCondSetOp.get();
 		// make destination AcceptItem data.
 		if(!CollectionUtil.isEmpty(sourceAcceptItemList)){
 			destAcceptItemList = sourceAcceptItemList.stream().map(item -> {
@@ -128,7 +115,7 @@ public class StdAcceptCondSetServiceImpl implements StdAcceptCondSetService {
 		//(Determine the sidebar selection status)
 		
 		//1件（同一キーのデータがある）
-		if (this.repository.isSettingCodeExist(domain.getCid(), domain.getSystemType().value, domain.getConditionSetCd().v())){
+		if (this.repository.isSettingCodeExist(domain.getCompanyId(), domain.getSystemType().value, domain.getConditionSetCode().v())){
 			//エラーメッセージ表示　Msg_3	
 			throw new BusinessException("Msg_3");
 		}

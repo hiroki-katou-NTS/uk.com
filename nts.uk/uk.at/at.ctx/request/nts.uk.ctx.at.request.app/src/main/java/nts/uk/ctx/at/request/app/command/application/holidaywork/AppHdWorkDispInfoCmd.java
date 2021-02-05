@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.app.command.application.holidaywork;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -9,7 +10,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.app.command.application.common.AppDispInfoStartupCmd;
 import nts.uk.ctx.at.request.app.command.application.overtime.AppReflectOtHdWorkCommand;
-import nts.uk.ctx.at.request.app.command.application.overtime.DivergenceReasonSelectCommand;
+import nts.uk.ctx.at.request.app.command.application.overtime.DivergenceReasonInputMethodCommand;
+import nts.uk.ctx.at.request.app.command.application.overtime.DivergenceTimeRootCommand;
 import nts.uk.ctx.at.request.app.command.application.overtime.OverTimeWorkHoursCommand;
 import nts.uk.ctx.at.request.app.command.application.overtime.OvertimeWorkFrameCommand;
 import nts.uk.ctx.at.request.app.command.application.overtime.WorkdayoffFrameCommand;
@@ -33,15 +35,20 @@ public class AppHdWorkDispInfoCmd {
 	 */
 	public boolean dispFlexTime;
 	
-	/**
-	 * 乖離理由の入力を利用する
-	 */
-	private boolean useInputDivergenceReason;
+//	/**
+//	 * 乖離理由の入力を利用する
+//	 */
+//	private boolean useInputDivergenceReason;
+//	
+//	/**
+//	 * 乖離理由の選択肢を利用する
+//	 */
+//	private boolean useComboDivergenceReason;
 	
 	/**
-	 * 乖離理由の選択肢を利用する
+	 * 乖離時間枠
 	 */
-	private boolean useComboDivergenceReason;
+	private List<DivergenceTimeRootCommand> divergenceTimeRoots = Collections.emptyList();
 	
 	/**
 	 * 休出時間枠
@@ -73,10 +80,15 @@ public class AppHdWorkDispInfoCmd {
 	 */
 	private AppDispInfoStartupCmd appDispInfoStartupOutput;
 	
+//	/**
+//	 * 乖離理由の選択肢
+//	 */
+//	private List<DivergenceReasonSelectCommand> comboDivergenceReason;
+	
 	/**
-	 * 乖離理由の選択肢
+	 * 利用する乖離理由
 	 */
-	private List<DivergenceReasonSelectCommand> comboDivergenceReason;
+	private List<DivergenceReasonInputMethodCommand> divergenceReasonInputMethod = Collections.emptyList();
 	
 	/**
 	 * 申請用時間外労働時間
@@ -92,15 +104,14 @@ public class AppHdWorkDispInfoCmd {
 		String companyId = AppContexts.user().companyId();
 		
 		return new AppHdWorkDispInfoOutput(this.dispFlexTime ? NotUseAtr.USE : NotUseAtr.NOT_USE, 
-				this.useInputDivergenceReason, this.useComboDivergenceReason, 
+				this.divergenceTimeRoots.stream().map(root -> root.toDomain()).collect(Collectors.toList()), 
 				this.workdayoffFrameList.stream().map(workdayoffFrame -> workdayoffFrame.toDomain()).collect(Collectors.toList()), 
 				this.holidayWorkAppSet.toDomain(companyId), 
 				this.hdWorkDispInfoWithDateOutput.toDomain(), 
 				this.hdWorkOvertimeReflect.toDomain(), 
 				this.overtimeFrameList.stream().map(overtimeFrame -> overtimeFrame.toDomain()).collect(Collectors.toList()), 
 				this.appDispInfoStartupOutput.toDomain(), 
-				this.comboDivergenceReason != null && !this.comboDivergenceReason.isEmpty()? 
-						Optional.of(this.comboDivergenceReason.stream().map(reason -> reason.toDomain()).collect(Collectors.toList())) : Optional.empty(), 
+				this.divergenceReasonInputMethod.stream().map(inputMethod -> inputMethod.toDomain()).collect(Collectors.toList()), 
 				Optional.ofNullable(this.otWorkHoursForApplication != null ? this.otWorkHoursForApplication.toDomain() : null), 
 				Optional.ofNullable(this.calculationResult != null ? this.calculationResult.toDomain() : null));
 	}

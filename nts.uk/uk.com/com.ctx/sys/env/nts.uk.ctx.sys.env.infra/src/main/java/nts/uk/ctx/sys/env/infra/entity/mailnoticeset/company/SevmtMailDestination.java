@@ -2,7 +2,6 @@ package nts.uk.ctx.sys.env.infra.entity.mailnoticeset.company;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import nts.uk.ctx.sys.env.dom.mailnoticeset.FunctionId;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.company.EmailDestinationFunction;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -45,11 +44,10 @@ public class SevmtMailDestination extends UkJpaEntity {
 
 	public static List<SevmtMailDestination> toListEntity(EmailDestinationFunction domain, String cid) {
 		List<SevmtMailDestination> sevmtMailDestinations = new ArrayList<>();
-		if (domain.getFunctionIds() == null) {
-			domain.setFunctionIds(new ArrayList<FunctionId>());
+		if (domain.getFunctionIds() != null) {
+			domain.getFunctionIds().forEach(item -> sevmtMailDestinations
+					.add(new SevmtMailDestination(domain.getEmailClassification().value, item.v(), cid)));
 		}
-		domain.getFunctionIds().forEach(item -> sevmtMailDestinations
-				.add(new SevmtMailDestination(domain.getEmailClassification().value, item.v(), cid)));
 		return sevmtMailDestinations;
 	}
 

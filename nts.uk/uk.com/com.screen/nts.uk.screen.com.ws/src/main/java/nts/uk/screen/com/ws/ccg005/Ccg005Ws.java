@@ -16,6 +16,7 @@ import nts.uk.screen.com.app.find.ccg005.attendance.data.DisplayAttendanceDataDt
 import nts.uk.screen.com.app.find.ccg005.attendance.data.DisplayAttendanceDataScreenQuery;
 import nts.uk.screen.com.app.find.ccg005.attendance.information.AttendanceInformationDto;
 import nts.uk.screen.com.app.find.ccg005.attendance.information.AttendanceInformationScreenQuery;
+import nts.uk.screen.com.app.find.ccg005.attendance.information.EmpIdParam;
 import nts.uk.screen.com.app.find.ccg005.display.information.DisplayInformationDto;
 import nts.uk.screen.com.app.find.ccg005.display.information.DisplayInformationScreenQuery;
 import nts.uk.screen.com.app.find.ccg005.favorite.information.FavoriteInformationScreenQuery;
@@ -27,6 +28,7 @@ import nts.uk.screen.com.app.find.ccg005.search.employee.SearchEmployeeScreenQue
 import nts.uk.screen.com.ws.ccg005.attendance.AttendanceInformationParam;
 import nts.uk.screen.com.ws.ccg005.display.information.DisplayInfoAfterSelectParam;
 import nts.uk.screen.com.ws.ccg005.goout.GoOutInformationParam;
+import nts.uk.shr.com.context.AppContexts;
 
 
 @Path("screen/com/ccg005")
@@ -63,6 +65,13 @@ public class Ccg005Ws {
 	@POST
 	@Path("get-attendance-information")
 	public List<AttendanceInformationDto> getAttendanceInformation(AttendanceInformationParam params) {
+		EmpIdParam loginEmp = EmpIdParam.builder()
+				.sid(AppContexts.user().employeeId())
+				.pid(AppContexts.user().personId())
+				.build();
+		if (!params.getEmpIds().contains(loginEmp)) {
+			params.getEmpIds().add(loginEmp);
+		}
 	 	return attendaceInfoSq.getAttendanceInformation(
 	 			params.getEmpIds(),
 	 			params.getBaseDate(),

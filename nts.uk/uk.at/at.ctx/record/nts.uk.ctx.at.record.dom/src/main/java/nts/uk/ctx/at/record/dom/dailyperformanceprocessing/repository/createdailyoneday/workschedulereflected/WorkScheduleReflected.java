@@ -129,19 +129,16 @@ public class WorkScheduleReflected {
 		workInformation.setScheduleTimeSheets(listScheduleTimeSheet);
 		
 		//予定休憩時間をコピーする
-		Optional<BreakTimeOfDailyAttdImport> breakTimeWorkSchedule = scheduleWorkInfor.get().getBreakTime();
+		BreakTimeOfDailyAttdImport breakTimeWorkSchedule = scheduleWorkInfor.get().getBreakTime();
 		
-		Optional<BreakTimeOfDailyAttd> breakTime = breakTimeWorkSchedule.map(c -> 
-						new BreakTimeOfDailyAttd(
-							c.getBreakTimeSheets().stream().map(
+		BreakTimeOfDailyAttd breakTime = new BreakTimeOfDailyAttd(
+								breakTimeWorkSchedule.getBreakTimeSheets().stream().map(
 									x -> new BreakTimeSheet(
 										new BreakFrameNo(x.getBreakFrameNo()), 
 										new TimeWithDayAttr(x.getStartTime()),
 										new TimeWithDayAttr(x.getEndTime())
 									)
-							).collect(Collectors.toList())
-						)
-					);
+							).collect(Collectors.toList()));
 		integrationOfDaily.setBreakTime(breakTime);
 
 		return listErrorMessageInfo;

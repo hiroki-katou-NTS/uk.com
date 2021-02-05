@@ -13,4 +13,7 @@ public interface ExecutionTaskLogRepository {
 	
 	// update
 	public void updateAll(String companyId, String execItemCd, String execId, List<ExecutionTaskLog> taskLogList);
+	
+	// remove
+	public void removeAll(String companyId, String execItemCd, String execId, List<ExecutionTaskLog> taskLogList);
 }

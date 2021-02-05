@@ -1,32 +1,32 @@
 package nts.uk.ctx.at.request.app.command.application.holidayshipment;
 
-import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
-
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
-import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.app.command.application.common.ApplicationInsertCmd;
+import nts.uk.ctx.at.request.app.find.application.gobackdirectly.WorkInformationDto;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.TypeApplicationHolidays;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
+import nts.uk.ctx.at.shared.app.find.common.TimeZoneWithWorkNoDto;
 
 @Getter
-@Setter
+@AllArgsConstructor
 public class RecruitmentAppCommand {
 
-	private String appDate;
-	private String wkTypeCD;
-	private WkTimeCommand wkTime1;
-	//private WkTimeCommand wkTime2;
-	private String appID;
-	private String wkTimeCD;
-	private List<SubTargetDigestionCmd> subTargetDigestions;
+	public ApplicationInsertCmd application;
+	
+	public List<TimeZoneWithWorkNoDto> workingHours;
+	
+	public WorkInformationDto workInformation;
 
-	public GeneralDate getAppDate() {
-		return !StringUtils.isEmpty(appDate) ? GeneralDate.fromString(appDate, "yyyy/MM/dd") : null;
-	}
-
-	public List<SubTargetDigestionCmd> getSubTargetDigestions() {
-		return this.subTargetDigestions == null ? Collections.emptyList() : this.subTargetDigestions;
+	public RecruitmentApp toDomain() {
+		return new RecruitmentApp(
+				this.workInformation.toDomain(),
+				this.workingHours.stream().map(c-> c.toDomain()).collect(Collectors.toList()),
+				TypeApplicationHolidays.Rec, 
+				this.application.toDomain());
 	}
 
 }
