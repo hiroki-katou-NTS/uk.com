@@ -3616,14 +3616,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         if (userInfor.disPlayFormat == 'time') {
                             if (data.workHolidayCls === 3) { // đi làm fulltime
                                 let startTime = _.isNil(objWTime) ? '' : formatById("Clock_Short_HM", objWTime.tzStart1);
-                                let endTime = _.isNil(objWTime) ? '' : formatById("Clock_Short_HM", objWTime.tzEnd1);
+                                let endTime   = _.isNil(objWTime) ? '' : formatById("Clock_Short_HM", objWTime.tzEnd1);
 
                                 $("#extable").exTable("stickFields", ["workTypeName", "workTimeName", "startTime", "endTime"]);
                                 $("#extable").exTable("stickData", {
                                     workTypeCode: data.workTypeCode,
                                     workTypeName: data.workTypeName,
-                                    workTimeCode: objWTime.code,
-                                    workTimeName: objWTime.nameAb,
+                                    workTimeCode: cellData.workTimeCode,
+                                    workTimeName: cellData.workTimeName,
                                     startTime: startTime,
                                     endTime: endTime,
                                     achievements: false,
@@ -3654,8 +3654,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                     $("#extable").exTable("stickData", {
                                         workTypeCode: data.workTypeCode,
                                         workTypeName: data.workTypeName,
-                                        workTimeCode: objWTime.code,
-                                        workTimeName: objWTime.nameAb,
+                                        workTimeCode: cellData.workTimeCode,
+                                        workTimeName: cellData.workTimeName,
                                         startTime: startTime,
                                         endTime: endTime,
                                         achievements: false,
@@ -3681,8 +3681,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             $("#extable").exTable("stickData", {
                                 workTypeCode: data.workTypeCode,
                                 workTypeName: data.workTypeName,
-                                workTimeCode: objWTime.code,
-                                workTimeName: objWTime.nameAb,
+                                workTimeCode: cellData.workTimeCode,
+                                workTimeName: cellData.workTimeName,
                                 startTime: '',
                                 endTime: '',
                                 achievements: false,
