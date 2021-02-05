@@ -3611,7 +3611,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 //xử lý cho ver1.9
                 if (data.workHolidayCls != 0) {
                     let wtimeCd = cellData.workTimeCode;
-                    let objWTime = _.find(__viewContext.viewModel.viewAB.listWorkTime, function(o) { return o.code === wtimeCd; });
+                    let objWTime = _.find(__viewContext.viewModel.viewAB.listWorkTime2, function(o) { return o.code === wtimeCd; });
                     if (!_.isNil(objWTime)) {
                         if (userInfor.disPlayFormat == 'time') {
                             if (data.workHolidayCls === 3) { // đi làm fulltime
