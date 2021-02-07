@@ -53,7 +53,7 @@ public class WeeklyHolidayAcqManaTest {
 	@Test
 	public void test_get28Days() {
 		WeeklyHolidayAcqMana weeklyHolidayAcqMana = new WeeklyHolidayAcqMana( new WeeklyDays(4.0));
-		WeekRuleManagement weekRuleManagement = WeekRuleManagement.of("companyId", DayOfWeek.SUNDAY,true);
+		WeekRuleManagement weekRuleManagement = WeekRuleManagement.of("companyId", DayOfWeek.SUNDAY);
 		
 		new Expectations() {
 			{
