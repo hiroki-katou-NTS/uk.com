@@ -90,6 +90,7 @@ module nts.uk.at.view.kmk003.a {
                 designatedTime: DesignatedTimeModel;
                 subHolTransferSetAtr: KnockoutObservable<number>;
 
+                //it's not a code
                 constructor() {
                     this.certainTime = ko.observable(0);
                     this.useDivision = ko.observable(false);
