@@ -464,7 +464,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                             self.selectedEncoding(3);
                         else
                             self.selectedEncoding(cond.characterCode);
-                        service.getAllCategory().done((rs: Array<any>) => {
+                        service.getAllCategoryBystem(self.system()).done((rs: Array<any>) => {
                             if (rs && rs.length) {
                                 let _rsList: Array<model.ExternalAcceptanceCategory> = _.map(rs, x => {
                                     return new model.ExternalAcceptanceCategory(x.categoryId, x.categoryName);

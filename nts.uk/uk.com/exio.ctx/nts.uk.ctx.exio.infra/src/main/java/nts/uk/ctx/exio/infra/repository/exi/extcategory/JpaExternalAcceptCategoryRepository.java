@@ -19,23 +19,21 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 public class JpaExternalAcceptCategoryRepository extends JpaRepository implements ExternalAcceptCategoryRepository{
 	@Inject
 	private OiomtExAcpCategoryItemRepository itemReposi;
-	private static final String SELECT_ATSYS = "SELET c FROM OiomtExAcpCategory c "
+	private static final String SELECT_ATSYS = "SELECT c FROM OiomtExAcpCategory c "
 			+ " WHERE c.atSysFlg = :useFlg"
 			+ " ORDER BY c.categoryId";
 	
-	private static final String SELECT_PERSYS = "SELET c FROM OiomtExAcpCategory c "
+	private static final String SELECT_PERSYS = "SELECT c FROM OiomtExAcpCategory c "
 			+ " WHERE c.persSysFlg = :useFlg"
 			+ " ORDER BY c.categoryId";
 	
-	private static final String SELECT_SALARYSYS = "SELET c FROM OiomtExAcpCategory c "
+	private static final String SELECT_SALARYSYS = "SELECT c FROM OiomtExAcpCategory c "
 			+ " WHERE c.salarySysFlg = :useFlg"
 			+ " ORDER BY c.categoryId";
 	
-	private static final String SELECT_OFFICESYS = "SELET c FROM OiomtExAcpCategory c "
+	private static final String SELECT_OFFICESYS = "SELECT c FROM OiomtExAcpCategory c "
 			+ " WHERE c.officeSysFlg = :useFlg"
 			+ " ORDER BY c.categoryId";
-	
-	private static final String SELECT_ALL = "SELET c FROM OiomtExAcpCategory c ";
 	
 	@Override
 	public Optional<ExternalAcceptCategory> getByCategoryId(int categoryId) {
@@ -84,12 +82,6 @@ public class JpaExternalAcceptCategoryRepository extends JpaRepository implement
 				.setParameter("useFlg", useAtr.value)
 				.getList(x -> toDomain(x));
 		return lstResult;
-	}
-
-	@Override
-	public List<ExternalAcceptCategory> getByCategory() {
-        return this.queryProxy().query(SELECT_ALL, OiomtExAcpCategory.class)
-        .getList(c->toDomain(c));
 	}
 
 }

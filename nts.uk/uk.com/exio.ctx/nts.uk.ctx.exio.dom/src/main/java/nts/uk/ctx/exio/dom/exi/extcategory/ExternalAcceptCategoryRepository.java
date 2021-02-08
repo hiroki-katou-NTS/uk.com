@@ -21,11 +21,4 @@ public interface ExternalAcceptCategoryRepository {
 	 * @return
 	 */
 	List<ExternalAcceptCategory> getBySystem(SystemType systemType, NotUseAtr useAtr);
-	
-	/**
-	 * 全て外部受入カテゴリを取得
-	 * @param categoryId
-	 * @return
-	 */
-	List<ExternalAcceptCategory> getByCategory();
 }
