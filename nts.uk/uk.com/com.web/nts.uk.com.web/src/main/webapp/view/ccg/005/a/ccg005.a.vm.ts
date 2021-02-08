@@ -500,6 +500,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
 
     mounted() {
       const vm = this;
+      let reloadAvatar: any;
       $('#ccg005-legends').click(() => {
         $('.nts-legendbutton-panel').css('padding', '5px 10px');
         $('.legend-item-symbol').first().css('border', '1px groove');
@@ -516,7 +517,8 @@ module nts.uk.at.view.ccg005.a.screenModel {
       vm.perPage.subscribe(() => vm.resetPagination());
       vm.paginationText.subscribe(() => {
         vm.attendanceInformationDtosDisplay(_.slice(vm.attendanceInformationDtosDisplayClone(), vm.startPage() - 1, vm.endPage()));
-        vm.setAvatarInLoop();
+        clearTimeout(reloadAvatar);
+        reloadAvatar = setTimeout(() => { vm.setAvatarInLoop(); }, 1);
       });
       (ko.bindingHandlers.ntsIcon as any).init($('.ccg005-status-img-A1_7'), () => ({ no: vm.activityStatusIcon(), width: 20, height: 20 }));
     }
@@ -796,7 +798,9 @@ module nts.uk.at.view.ccg005.a.screenModel {
       $('.ccg005-clearbtn').click(() => vm.deleteComment());
       $('.CCG005-A1_4-border')
         .focusin(() => $('.ccg005-clearbtn').css('visibility', 'visible'))
-        .focusout(() => $('.ccg005-clearbtn').css('visibility', 'hidden'));
+        .focusout(() => {
+          $('.ccg005-clearbtn').css('visibility', 'hidden');
+        });
     }
 
     /**
@@ -1027,10 +1031,12 @@ module nts.uk.at.view.ccg005.a.screenModel {
         wkspNames: []
       });
       vm.favoriteSpecifyData([favoriteSpecify]);
-      vm.favoriteInputDate(inputDate);
-      vm.saveCharacteristic(inputDate);
       vm.$blockui('show');
       vm.$ajax(API.saveFavorite, [favoriteSpecify])
+        .then(() => {
+          vm.favoriteInputDate(inputDate);
+          vm.saveCharacteristic(inputDate);
+        })
         .always(() => vm.$blockui('clear'));
     }
 
