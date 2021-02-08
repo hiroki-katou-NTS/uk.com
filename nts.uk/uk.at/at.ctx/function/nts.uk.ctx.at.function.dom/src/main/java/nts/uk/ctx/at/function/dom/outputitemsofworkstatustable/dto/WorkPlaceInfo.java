@@ -15,4 +15,6 @@ public class WorkPlaceInfo {
     private String workPlaceCode;
 
     private String workPlaceName;
+    // 階層コード
+    private String hierarchyCd;
 }

@@ -7,11 +7,13 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.dom.adapter.outputitemsofworkstatustable.AttendanceItemDtoValue;
 import nts.uk.ctx.at.function.dom.adapter.outputitemsofworkstatustable.AttendanceResultDto;
+import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.CodeNameInfoDto;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.EmployeeInfor;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.StatusOfEmployee;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.WorkPlaceInfo;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.CommonAttributesOfForms;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.OperatorsCommonToForms;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import java.util.*;
@@ -27,6 +29,10 @@ import java.util.stream.Collectors;
  */
 @Stateless
 public class CreateDisplayContentWorkStatusQuery {
+    private static final int WORK_TYPE = 1;
+
+    private static final int WORKING_HOURS = 2;
+
     public static List<DisplayContentWorkStatus> displayContentsOfWorkStatus(Require require,
                                                                              DatePeriod datePeriod,
                                                                              List<EmployeeInfor> employeeInfoList,
@@ -36,11 +42,11 @@ public class CreateDisplayContentWorkStatusQuery {
             throw new BusinessException("Msg_1816");
         }
         val listSid = employeeInfoList.stream().map(EmployeeInfor::getEmployeeId).distinct().collect(Collectors.toList());
-        val listEmployeeStatus = require.getListAffComHistByListSidAndPeriod(listSid, datePeriod);
-
+        val listEmployeeStatus = require.getListAffComHistByListSidAndPeriod(listSid, datePeriod)
+                .stream().filter(distinctByKey(StatusOfEmployee::getEmployeeId)).collect(Collectors.toList());
         val mapSids = employeeInfoList.stream().filter(distinctByKey(EmployeeInfor::getEmployeeId)).collect(Collectors.toMap(EmployeeInfor::getEmployeeId, e -> e));
 
-        val mapWrps =  workPlaceInfo.stream().filter(distinctByKey(WorkPlaceInfo::getWorkPlaceId)).collect(Collectors.toMap(WorkPlaceInfo::getWorkPlaceId, e -> e));
+        val mapWrps = workPlaceInfo.stream().filter(distinctByKey(WorkPlaceInfo::getWorkPlaceId)).collect(Collectors.toMap(WorkPlaceInfo::getWorkPlaceId, e -> e));
 
         val rs = new ArrayList<DisplayContentWorkStatus>();
 
@@ -49,78 +55,96 @@ public class CreateDisplayContentWorkStatusQuery {
         if (outputItems.isEmpty()) {
             throw new BusinessException("Msg_1816");
         }
+        val cid = AppContexts.user().companyId();
         val listIds = outputItems.stream()
                 .flatMap(x -> x.getSelectedAttendanceItemList().stream()
                         .map(OutputItemDetailAttItem::getAttendanceItemId))
                 .distinct().collect(Collectors.toCollection(ArrayList::new));
+        val listEmployee = listEmployeeStatus.stream()
+                .map(StatusOfEmployee::getEmployeeId).collect(Collectors.toList());
+        Map<Integer, Map<String, CodeNameInfoDto>> allDataMaster = require.getAllDataMaster(cid, datePeriod.end(), listIds);
 
-        listEmployeeStatus.parallelStream().forEach(e -> {
+        List<AttendanceResultDto> listItemValue = require.getValueOf(listEmployee, datePeriod, listIds)
+                .stream().filter(distinctByKey(AttendanceResultDto::getEmployeeId)).collect(Collectors.toList());
+        Map<String, Map<GeneralDate, Map<Integer, AttendanceItemDtoValue>>> mapValue = new HashMap<>();
+        for (AttendanceResultDto attendanceResultDto : listItemValue) {
+            Map<Integer, AttendanceItemDtoValue> allValue = attendanceResultDto.getAttendanceItems().stream()
+                    .filter(distinctByKey(AttendanceItemDtoValue::getItemId))
+                    .collect(Collectors.toMap(AttendanceItemDtoValue::getItemId, l -> l));
+            Map<GeneralDate, Map<Integer, AttendanceItemDtoValue>> mapDateAndItem = new HashMap<>();
+            mapDateAndItem.put(attendanceResultDto.getWorkingDate(), allValue);
+            mapValue.put(attendanceResultDto.getEmployeeId(), mapDateAndItem);
+        }
+        for (StatusOfEmployee e : listEmployeeStatus) {
             val item = new DisplayContentWorkStatus();
             val eplInfo = mapSids.get(e.getEmployeeId());
-            if (eplInfo != null) {
+            if (eplInfo == null) {
+                continue;
+            } else {
                 item.setEmployeeCode(eplInfo.getEmployeeCode());
                 item.setEmployeeName(eplInfo.getEmployeeName());
                 val wplInfo = mapWrps.get(eplInfo.getWorkPlaceId());
-                if (wplInfo != null) {
+                if (wplInfo == null) {
+                    continue;
+                } else {
                     item.setWorkPlaceCode(wplInfo.getWorkPlaceCode());
                     item.setWorkPlaceName(wplInfo.getWorkPlaceName());
-                } else return;
-            } else return;
-            List<AttendanceResultDto> listAttendants = new ArrayList<>();
-            for (val date : e.getListPeriod()) {
-                List<AttendanceResultDto> listValue = null;
-                try {
-                    listValue = require.getValueOf(Collections.singletonList(e.getEmployeeId()), date, listIds);
-                } catch (Exception e1) {
-                    continue;
                 }
-                if (listValue == null) continue;
-                listAttendants.addAll(listValue);
             }
-            Map<GeneralDate, Map<Integer, AttendanceItemDtoValue>> allValue = listAttendants.stream()
-                    .collect(Collectors.toMap(AttendanceResultDto::getWorkingDate,
-                            k -> k.getAttendanceItems().stream().filter(distinctByKey(AttendanceItemDtoValue::getItemId))
-                                    .collect(Collectors.toMap(AttendanceItemDtoValue::getItemId, l -> l))));
+            List<GeneralDate> listDate = e.getListPeriod()
+                    .stream()
+                    .flatMap(y -> y.datesBetween().stream().map(q -> GeneralDate.legacyDate(q.date())))
+                    .collect(Collectors.toList());
+            Map<GeneralDate, Map<Integer, AttendanceItemDtoValue>> allValue = mapValue
+                    .getOrDefault(e.getEmployeeId(), null);
             val itemOneLines = new ArrayList<OutputItemOneLine>();
-            for (val j : outputItems) {
+            for (OutputItem j : outputItems) {
                 val itemValue = new ArrayList<DailyValue>();
-                allValue.forEach((key, value1) -> {
+                for (GeneralDate l : listDate) {
+                    val vl = allValue.getOrDefault(l, null);
+                    if (vl == null) continue;
                     val listAtId = j.getSelectedAttendanceItemList();
                     StringBuilder character = new StringBuilder();
                     Double actualValue = 0D;
-                    boolean alwayNull = true;
+                    boolean alwaysNull = true;
                     if (j.getItemDetailAttributes() == CommonAttributesOfForms.WORK_TYPE ||
                             j.getItemDetailAttributes() == CommonAttributesOfForms.WORKING_HOURS
-                            ||j.getItemDetailAttributes() == CommonAttributesOfForms.OTHER_CHARACTER_NUMBER
-                             || j.getItemDetailAttributes() == CommonAttributesOfForms.OTHER_CHARACTERS) {
+                            || j.getItemDetailAttributes() == CommonAttributesOfForms.OTHER_CHARACTER_NUMBER
+                            || j.getItemDetailAttributes() == CommonAttributesOfForms.OTHER_CHARACTERS) {
                         for (val d : listAtId) {
-                            val sub = value1.getOrDefault(d.getAttendanceItemId(), null);
+                            val sub = vl.getOrDefault(d.getAttendanceItemId(), null);
                             if (sub == null || sub.getValue() == null) continue;
-                            character.append(sub.getValue());
+                            val master = j.getItemDetailAttributes() == CommonAttributesOfForms.WORK_TYPE ?
+                                    allDataMaster.getOrDefault(WORK_TYPE, null)
+                                    : allDataMaster.getOrDefault(WORKING_HOURS, null);
+
+                            val name = master != null ? master.getOrDefault(sub.getValue(), null) : null;
+                            if (name == null) continue;
+                            character.append("").append(name);
                         }
                         itemValue.add(
                                 new DailyValue(
                                         null,
                                         j.getItemDetailAttributes(),
                                         character.toString(),
-                                        key
+                                        l
                                 ));
                     } else {
-                        for (val d : listAtId) {
-                            val sub = value1.getOrDefault(d.getAttendanceItemId(), null);
+                        for (OutputItemDetailAttItem d : listAtId) {
+                            val sub = vl.getOrDefault(d.getAttendanceItemId(), null);
                             if (sub == null || sub.getValue() == null) continue;
-                             alwayNull = false;
+                            alwaysNull = false;
                             actualValue = actualValue + ((d.getOperator() == OperatorsCommonToForms.ADDITION ? 1 : -1) *
                                     Double.parseDouble(sub.getValue()));
                         }
                         itemValue.add(new DailyValue(
-                                alwayNull?null: actualValue,
+                                alwaysNull ? null : actualValue,
                                 j.getItemDetailAttributes(),
                                 character.toString(),
-                                key
+                                l
                         ));
                     }
-                });
+                }
                 val total = itemValue.stream().filter(q -> q.getActualValue() != null)
                         .mapToDouble(DailyValue::getActualValue).sum();
                 itemOneLines.add(
@@ -132,7 +156,7 @@ public class CreateDisplayContentWorkStatusQuery {
                 item.setOutputItemOneLines(itemOneLines);
             }
             rs.add(item);
-        });
+        }
 
         if (rs.isEmpty()) {
             throw new BusinessException("Msg_1816");
@@ -146,7 +170,11 @@ public class CreateDisplayContentWorkStatusQuery {
         List<StatusOfEmployee> getListAffComHistByListSidAndPeriod(List<String> sid, DatePeriod datePeriod);
 
         List<AttendanceResultDto> getValueOf(List<String> employeeIds, DatePeriod workingDatePeriod, Collection<Integer> itemIds);
+
+        Map<Integer, Map<String, CodeNameInfoDto>> getAllDataMaster(String companyId, GeneralDate dateReference,
+                                                                    List<Integer> lstDivNO);
     }
+
     public static <T> Predicate<T> distinctByKey(
             Function<? super T, ?> keyExtractor) {
 

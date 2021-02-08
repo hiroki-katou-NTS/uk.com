@@ -33,4 +33,7 @@ public class WorkLedgerDisplayContent {
 
     // 職場名称
     private String workplaceName;
+
+    // 階層コード
+    private String hierarchyCd;
 }

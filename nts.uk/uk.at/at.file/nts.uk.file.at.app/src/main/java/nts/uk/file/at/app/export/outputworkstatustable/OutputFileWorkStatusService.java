@@ -11,12 +11,15 @@ import nts.uk.ctx.at.function.app.query.outputworkstatustable.GetDetailOutputSet
 import nts.uk.ctx.at.function.dom.adapter.outputitemsofworkstatustable.AffComHistAdapter;
 import nts.uk.ctx.at.function.dom.adapter.outputitemsofworkstatustable.AttendanceItemServiceAdapter;
 import nts.uk.ctx.at.function.dom.adapter.outputitemsofworkstatustable.AttendanceResultDto;
+import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.CodeNameInfoDto;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.CreateDisplayContentWorkStatusQuery;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.DisplayContentWorkStatus;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.WorkStatusOutputSettings;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.*;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffAtWorkplaceImport;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
+import nts.uk.ctx.at.record.dom.algorithm.masterinfo.CodeNameInfo;
+import nts.uk.ctx.at.record.dom.algorithm.masterinfo.GetMaterData;
 import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.closure.GetSpecifyPeriod;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeBasicInfoImport;
@@ -68,6 +71,13 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
     @Inject
     private GetSpecifyPeriod getSpecifyPeriod;
 
+    @Inject
+    private GetMaterData getMaterData;
+
+    private static final int WORK_TYPE = 1;
+
+    private static final int WORKING_HOURS = 2;
+
     @Override
     protected void handle(ExportServiceContext<OutputFileWorkStatusFileQuery> context) {
         OutputFileWorkStatusFileQuery query = context.getQuery();
@@ -114,7 +124,7 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
         List<WorkPlaceInfo> placeInfoList = lstWorkplaceInfo.stream()
                 .map(e -> new WorkPlaceInfo(e.getWorkplaceId(), e.getWorkplaceCode(), e.getWorkplaceName()))
                 .collect(Collectors.toList());
-        RequireImpl require = new RequireImpl(itemServiceAdapter, affComHistAdapter);
+        RequireImpl require = new RequireImpl(itemServiceAdapter, affComHistAdapter, getMaterData);
         // 5 ⑤ <call>. 勤務状況表の出力設定の詳細を取得する.
         WorkStatusOutputSettings workStatusOutputSetting = getDetailOutputSettingWorkStatusQuery
                 .getDetail(query.getSettingId());
@@ -157,6 +167,7 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
     public class RequireImpl implements CreateDisplayContentWorkStatusQuery.Require {
         private AttendanceItemServiceAdapter itemServiceAdapter;
         private AffComHistAdapter affComHistAdapter;
+        private GetMaterData getMaterData;
 
         @Override
         public List<StatusOfEmployee> getListAffComHistByListSidAndPeriod(List<String> sid, DatePeriod datePeriod) {
@@ -167,5 +178,23 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
         public List<AttendanceResultDto> getValueOf(List<String> employeeIds, DatePeriod workingDatePeriod, Collection<Integer> itemIds) {
             return itemServiceAdapter.getValueOf(employeeIds, workingDatePeriod, itemIds);
         }
+
+        @Override
+        public Map<Integer, Map<String, CodeNameInfoDto>> getAllDataMaster(String companyId, GeneralDate dateReference, List<Integer> lstDivNO) {
+            val data = getMaterData.getAllDataMaster(companyId, dateReference, lstDivNO);
+            Map<Integer, Map<String, CodeNameInfo>> listItem = new HashMap<>();
+            listItem.put(WORK_TYPE, data.getOrDefault(WORK_TYPE, null));
+            listItem.put(WORKING_HOURS, data.getOrDefault(WORKING_HOURS, null));
+            Map<Integer, Map<String, CodeNameInfoDto>> rs = new HashMap<>();
+            listItem.forEach((Integer k, Map<String, CodeNameInfo> e) -> {
+                Map<String, CodeNameInfoDto> item = new HashMap<>();
+                e.forEach((key, value) -> {
+                    item.put(key, new CodeNameInfoDto(value.getCode(), value.getName(), value.getId()));
+                });
+                rs.put(k, item);
+            });
+            return rs;
+        }
+
     }
 }

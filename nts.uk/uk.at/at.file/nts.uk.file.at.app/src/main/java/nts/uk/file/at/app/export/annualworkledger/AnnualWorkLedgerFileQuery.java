@@ -1,12 +1,15 @@
 package nts.uk.file.at.app.export.annualworkledger;
 
-import lombok.Data;
+import lombok.*;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureDateDto;
 
 import java.util.List;
 
-@Data
+@AllArgsConstructor
+@Setter
+@Getter
+@NoArgsConstructor
 public class AnnualWorkLedgerFileQuery {
     // ExcelPdf区分: 1 - PDF, 2 - EXCEL
     private int mode;
