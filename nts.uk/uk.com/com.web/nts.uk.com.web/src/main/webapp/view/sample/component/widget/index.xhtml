@@ -27,10 +27,8 @@
                     <h2>Overview</h2>
                     <!--<div data-bind="widget: 'ccg-widget-1'"></div>-->
                     <!--<div data-bind="widget: 'ccg-widget-frame'"></div>-->
-                    <div data-bind="widget: { name: 'kdp-001-a', params: 'a' }"></div>
-                    <div data-bind="widget: { name: 'kdp-001-a', params: 'b' }"></div>
-                    <div data-bind="widget: { name: 'kdp-001-a', params: 'c' }"></div>
-                    <div data-bind="widget: { name: 'kdp-001-a', params: 'd' }"></div>
+                    <button data-bind="click: $vm.changeMode">Switch Mode</button>
+                    <div data-bind="widget: { name: 'kdp-001-a', params: $vm.kmode }"></div>
                     <div data-bind="widget: 'ktg-001-a'"></div>
                     <div data-bind="widget: 'ktg-004-a'"></div>
                     <div data-bind="widget: 'ktg-005-a'"></div>
