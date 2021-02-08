@@ -579,7 +579,7 @@ public class AsposeAppOverTime {
 		}
 		if (!c1) {
 			result.setStartReasonCommon(result.getStartReasonCommon() + 3);
-			cells.deleteRows(8, 3);
+			cells.deleteRows(7, 3);
 		}
 		return result;
 		
