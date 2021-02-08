@@ -917,7 +917,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     let strTime = dataCell.originalEvent.detail.value.startTime;
                     let endTime = dataCell.originalEvent.detail.value.endTime;
                     let startTimeCal = nts.uk.time.minutesBased.duration.parseString(strTime).toValue();
-                    let endTimeCal = nts.uk.time.minutesBased.duration.parseString(endTime).toValue();
+                    let endTimeCal   = nts.uk.time.minutesBased.duration.parseString(endTime).toValue();
 
                     if (startTimeCal < 0 && endTimeCal < 0) {
                         startTimeCal = startTimeCal * -1;
@@ -989,7 +989,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         nts.uk.ui.dialog.alertError(error);
                         dfd.reject();
                     });
-                    self.checkExitCellUpdated();
+                    self.checkExitCellUpdated((strTime == '' || endTime == '') ? true : false);
                 } else {
                     self.checkExitCellUpdated();
                 }
@@ -1880,8 +1880,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 } else {
                     let $grid = $('div.ex-body-detail');
                     self.updateAfterSaveData($grid[0]);
-
-                    self.openKDL053(rs);
+                    if(rs.listErrorInfo.length > 0){
+                        self.openKDL053(rs);    
+                    }
                 }
                 self.hasChangeModeBg = false;
                 self.listCellUpdatedWhenChangeModeBg = [];
@@ -1897,28 +1898,27 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this;
             let dataReg = [];
             if (viewMode == 'time') {
+                let dataSource = $("#extable").exTable('dataSource', 'detail').body;
                 _.forEach(cellsGroup, function(cells) {
                     if (cells.length > 0) {
                         let cell = cells[0];
                         let sid = self.listSid()[cell.rowIndex];
                         let ymd = moment(cell.columnKey.slice(1)).format('YYYY/MM/DD');
 
-                        let cellStartTime = _.find(cells, function(cell) { return cell.innerIdx == 2; });
-                        let cellEndTime   = _.find(cells, function(cell) { return cell.innerIdx == 3; });
+                        let cellData = dataSource[cell.rowIndex][cell.columnKey];
+
+                        let cellStartTime = cellData.startTime;
+                        let cellEndTime   = cellData.endTime;
 
                         let startTime = null, endTime = null;
                         let isChangeTime = false;
-                        if (!_.isNil(cellStartTime)) {
-                            if (!_.isNil(cell.value.startTime) && cell.value.startTime != "") {
-                                startTime = duration.parseString(cell.value.startTime).toValue();
-                                isChangeTime = true;
-                            }
+                        if (!_.isEmpty(cellStartTime) && !_.isNil(cellStartTime)) {
+                            startTime = duration.parseString(cellStartTime).toValue();
+                            isChangeTime = true;
                         }
-                        if (!_.isNil(cellEndTime)) {
-                            if (!_.isNil(cell.value.endTime) && cell.value.endTime != "") {
-                                endTime = duration.parseString(cell.value.endTime).toValue();
-                                isChangeTime = true;
-                            }
+                        if (!_.isEmpty(cellEndTime) && !_.isNil(cellEndTime)) {
+                            endTime = duration.parseString(cellEndTime).toValue();
+                            isChangeTime = true;
                         }
                         let dataCell = {
                             sid: sid,
@@ -3970,7 +3970,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.checkExitCellUpdated();
         }
         
-        checkExitCellUpdated() {
+        checkExitCellUpdated(disBtnSave? : boolean) {
             let self = this;
             let item = uk.localStorage.getItem(self.KEY);
             let userInfor = JSON.parse(item.get());
@@ -3980,6 +3980,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 if (_.size(updatedCells) > 0) {
                     self.enableBtnReg(true);
                 } else {
+                    self.enableBtnReg(false);
+                }
+                
+                if(!_.isNil(disBtnSave) && disBtnSave == true) {
                     self.enableBtnReg(false);
                 }
 
