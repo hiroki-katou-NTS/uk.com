@@ -24,13 +24,13 @@ public class JpaAlarmPatternSettingRepository extends JpaRepository implements A
 //			+ " JOIN KfnmtCheckCondition c ON a.pk.companyID = c.pk.companyID AND a.pk.alarmPatternCD = c.pk.alarmPatternCD"
 //			+ " JOIN KfnmtCheckConItem c1 ON c.pk.companyID = c1.pk.companyID AND c.pk.alarmPatternCD = c1.pk.alarmPatternCD AND c.pk.alarmCategory = c1.pk.alarmCategory"
 //			+ " JOIN KfnmtExtractionPeriodDaily d ON c.extractionId = d.kfnmtExtractionPeriodDailyPK.extractionId AND c.extractionRange = d.kfnmtExtractionPeriodDailyPK.extractionRange";
-//	
-	
+//
+
 	private static final String SELECT_BY_COMPANY = "SELECT a FROM KfnmtAlarmPatternSet a WHERE a.pk.companyID = :companyId";
-	
+
 	private static final String SELECT_BY_ALARM_PATTERN_CD = "SELECT a FROM KfnmtAlarmPatternSet a WHERE  a.pk.companyID = :companyId  AND a.pk.alarmPatternCD = :alarmPatternCode";
-	
-	
+
+
 	@Override
 	public List<AlarmPatternSetting> findByCompanyId(String companyId) {
 		return this.queryProxy().query(SELECT_BY_COMPANY, KfnmtAlarmPatternSet.class).setParameter("companyId", companyId).getList(c -> c.toDomain());
@@ -43,8 +43,8 @@ public class JpaAlarmPatternSettingRepository extends JpaRepository implements A
 	}
 
 	@Override
-	public void create(AlarmPatternSetting domain) {		
-		this.commandProxy().insert(KfnmtAlarmPatternSet.toEntity(domain));		
+	public void create(AlarmPatternSetting domain) {
+		this.commandProxy().insert(KfnmtAlarmPatternSet.toEntity(domain));
 	}
 
 	@Override
@@ -53,19 +53,19 @@ public class JpaAlarmPatternSettingRepository extends JpaRepository implements A
 		KfnmtAlarmPatternSet updateEntity = this.queryProxy().query(SELECT_BY_ALARM_PATTERN_CD, KfnmtAlarmPatternSet.class)
 				.setParameter("companyId", domain.getCompanyID())
 				.setParameter("alarmPatternCode", domain.getAlarmPatternCD().v()).getSingle().get();
-		
+
 		updateEntity.fromEntity(newEntity);
-		this.commandProxy().update(updateEntity);		
+		this.commandProxy().update(updateEntity);
 	}
 
 	@Override
 	public void delete(String companyId, String alarmPatternCode) {
 		KfnmtAlarmPatternSetPK pk = new KfnmtAlarmPatternSetPK(companyId, alarmPatternCode);
-		this.commandProxy().remove(KfnmtAlarmPatternSet.class, pk);		
+		this.commandProxy().remove(KfnmtAlarmPatternSet.class, pk);
 	}
 
 	@Override
-	public List<AlarmPatternSettingSimple> findByCompanyIdAndUser(String companyId) {		
+	public List<AlarmPatternSettingSimple> findByCompanyIdAndUser(String companyId) {
 		return this.queryProxy().query(SELECT_BY_COMPANY, KfnmtAlarmPatternSet.class).setParameter("companyId", companyId).getList( c ->c.toSimpleDomain());
 	}
 
@@ -82,11 +82,11 @@ public class JpaAlarmPatternSettingRepository extends JpaRepository implements A
 		return this.queryProxy().query(SELECT_AVER, KfnmtAlstPtnDeftmbsmon.class)
 				.setParameter("extractionId", extractionId).getSingle(c ->c.toDomain());
 	}
-	
+
 	@Override
-	public void createAver(AverageMonth domain) {		
+	public void createAver(AverageMonth domain) {
 		this.commandProxy().insert(KfnmtAlstPtnDeftmbsmon.toEntity(domain));
 	}
 
-	
+
 }

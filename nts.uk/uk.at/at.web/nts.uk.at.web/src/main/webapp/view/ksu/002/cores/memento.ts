@@ -4,7 +4,7 @@ module nts.uk.ui.memento {
 	export interface MementoObservableArray<T> extends KnockoutObservableArray<T> {
 		undo(): void;
 		redo(): void;
-		reset(hard?: boolean): void;
+		reset(): void;
 		memento(state: StateMemento): void;
 		undoAble: KnockoutComputed<boolean>;
 		redoAble: KnockoutComputed<boolean>;
@@ -14,6 +14,7 @@ module nts.uk.ui.memento {
 	export interface Options {
 		size: number;
 		replace: (sources: any, preview: any) => void;
+		hasChange: (sources: any) => boolean;
 	}
 
 	export interface StateMemento<T = any> {
@@ -30,7 +31,8 @@ module nts.uk.ui.memento {
 		if (!options) {
 			options = {
 				size: 9999,
-				replace: function () { return true; }
+				replace: function () { return true; },
+				hasChange: function () { return false; }
 			};
 		}
 
@@ -40,6 +42,10 @@ module nts.uk.ui.memento {
 
 		if (!options.replace) {
 			options.replace = function () { return true; };
+		}
+
+		if (!options.hasChange) {
+			options.hasChange = function () { return false; };
 		}
 
 		const hasChange = ko.observable(false);
@@ -62,13 +68,11 @@ module nts.uk.ui.memento {
 
 		// extends memento methods to observable
 		_.extend(target, {
-			reset: function $$reset(hard?: boolean) {
+			reset: function $$reset() {
 				$memento.undo([]);
 				$memento.redo([]);
 
-				if (hard !== false) {
-					hasChange(false);
-				}
+				hasChange(options.hasChange.apply(target, [ko.unwrap(target)]));
 			},
 			memento: function $$memento(state: StateMemento) {
 				hasChange(true);
@@ -80,6 +84,8 @@ module nts.uk.ui.memento {
 
 				// remove old record when memory size has large than config
 				stripMemory();
+
+				hasChange(options.hasChange.apply(target, [ko.unwrap(target)]));
 			},
 			undo: function $$undo() {
 				if (ko.unwrap($memento.undo).length) {
@@ -93,12 +99,14 @@ module nts.uk.ui.memento {
 
 					options.replace.apply(target, [ko.unwrap(target), state.preview]);
 				}
+
+				hasChange(options.hasChange.apply(target, [ko.unwrap(target)]));
 			},
 			undoAble: ko.computed(() => !!ko.unwrap($memento.undo).length),
 			redo: function $$redo() {
 				if (ko.unwrap($memento.redo).length) {
 					const state = $memento.redo.shift();
-					
+
 					// add state to undo
 					$memento.undo.unshift({ current: state.preview, preview: state.current });
 
@@ -107,6 +115,8 @@ module nts.uk.ui.memento {
 
 					options.replace.apply(target, [ko.unwrap(target), state.preview]);
 				}
+
+				hasChange(options.hasChange.apply(target, [ko.unwrap(target)]));
 			},
 			redoAble: ko.computed(() => !!ko.unwrap($memento.redo).length),
 			hasChange

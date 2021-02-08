@@ -28,7 +28,7 @@ import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyReposi
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.service.GoBackDirectAppSetService;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.service.GoBackDirectService;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.service.GoBackDirectlyRegisterService;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidayService;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidayService_Old;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeService;
 import nts.uk.ctx.at.request.dom.application.workchange.output.WorkTypeWorkTimeSelect;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
@@ -51,7 +51,7 @@ public class GoBackDirectlyFinder {
 	@Inject
 	private CommonAlgorithm commonAlgorithm;
 	@Inject
-	private HolidayService holidayServiceDomain;
+	private HolidayService_Old holidayServiceDomain;
 	@Inject
 	private AppWorkChangeService appWorkChangeService;
 

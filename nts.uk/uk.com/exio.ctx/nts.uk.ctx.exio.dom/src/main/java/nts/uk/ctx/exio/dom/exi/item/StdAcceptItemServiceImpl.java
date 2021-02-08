@@ -1,25 +1,22 @@
 package nts.uk.ctx.exio.dom.exi.item;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
-import org.apache.commons.lang3.tuple.Pair;
-
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSet;
 import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSetRepository;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.i18n.TextResource;
+import org.apache.commons.lang3.tuple.Pair;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
- * 
  * @author HungTT
- *
  */
 @Stateless
 public class StdAcceptItemServiceImpl implements StdAcceptItemService {
@@ -32,43 +29,34 @@ public class StdAcceptItemServiceImpl implements StdAcceptItemService {
 
 	@Override
 	public void register(List<StdAcceptItem> listItem, StdAcceptCondSet conditionSetting) {
-		acceptCondRepo.getStdAcceptCondSetById(conditionSetting.getCid(), conditionSetting.getSystemType().value,
-				conditionSetting.getConditionSetCd().v()).ifPresent(condSet -> {
-					Integer lineNumber [] = {null}, startLine [] = {null}, characterCode [] = {null};
-					conditionSetting.getCsvDataLineNumber().ifPresent(savedlineNumber -> {
-						lineNumber[0] = savedlineNumber.v();
-					});
-					conditionSetting.getCsvDataStartLine().ifPresent(savedStartLine ->{
-						startLine[0] = savedStartLine.v();
-					});
-					conditionSetting.getCharacterCode().ifPresent(savedCharacterCode ->{
-						characterCode[0] = savedCharacterCode.value;
-					});
-					condSet.updateWhenSettingItems(conditionSetting.getCategoryId().orElse(null),
-							lineNumber[0],
-							startLine[0],
-							characterCode[0]);
-					acceptItemRepo.removeAll(conditionSetting.getCid(), conditionSetting.getSystemType().value,
-							conditionSetting.getConditionSetCd().v());
-					acceptItemRepo.addList(listItem);
-					condSet.updateCheckComplete(NotUseAtr.NOT_USE.value);
-					acceptCondRepo.updateFromD(condSet);
-				});
+		Optional<StdAcceptCondSet> currentDomain = this.acceptCondRepo.getStdAcceptCondSetById(conditionSetting.getCompanyId(),
+																							   conditionSetting.getSystemType().value,
+																							   conditionSetting.getConditionSetCode().v());
+		if (currentDomain.isPresent()) {
+			StdAcceptCondSet updateDomain = currentDomain.get().updateDomain(conditionSetting);
+			this.acceptItemRepo.removeAll(conditionSetting.getCompanyId(),
+										  conditionSetting.getSystemType().value,
+										  conditionSetting.getConditionSetCode().v());
+			this.acceptItemRepo.addList(listItem);
+			updateDomain.setCheckCompleted(NotUseAtr.NOT_USE);
+			this.acceptCondRepo.updateFromD(updateDomain);
+		}
 	}
 
 	@Override
 	public void registerAndReturn(List<Pair<StdAcceptItem, String>> listItem, StdAcceptCondSet conditionSetting) {
-		StdAcceptCondSet condSet = acceptCondRepo.getStdAcceptCondSetById(conditionSetting.getCid(),
-				conditionSetting.getSystemType().value, conditionSetting.getConditionSetCd().v()).get();
-		condSet.updateWhenSettingItems(conditionSetting.getCategoryId().get(),
-				conditionSetting.getCsvDataLineNumber().get().v(), 
-				conditionSetting.getCsvDataStartLine().get().v(),
-				conditionSetting.getCharacterCode().get().value);
-		acceptCondRepo.updateFromD(condSet);
-		acceptItemRepo.removeAll(conditionSetting.getCid(), conditionSetting.getSystemType().value,
-				conditionSetting.getConditionSetCd().v());
-		acceptItemRepo.addList(listItem.stream().map(i -> i.getLeft()).collect(Collectors.toList()));
-		inputCheck(listItem, condSet);
+		Optional<StdAcceptCondSet> currentDomain = this.acceptCondRepo.getStdAcceptCondSetById(conditionSetting.getCompanyId(),
+																							   conditionSetting.getSystemType().value,
+																							   conditionSetting.getConditionSetCode().v());
+		if (currentDomain.isPresent()) {
+			StdAcceptCondSet updateDomain = currentDomain.get().updateDomain(conditionSetting);
+			this.acceptCondRepo.updateFromD(updateDomain);
+			this.acceptItemRepo.removeAll(conditionSetting.getCompanyId(),
+										  conditionSetting.getSystemType().value,
+										  conditionSetting.getConditionSetCode().v());
+			this.acceptItemRepo.addList(listItem.stream().map(Pair::getLeft).collect(Collectors.toList()));
+			inputCheck(listItem, updateDomain);
+		}
 	}
 
 	private void inputCheck(List<Pair<StdAcceptItem, String>> listItem, StdAcceptCondSet condSet) {
@@ -84,11 +72,11 @@ public class StdAcceptItemServiceImpl implements StdAcceptItemService {
 			}
 		}
 		if (errorList.isEmpty()) {
-			condSet.updateCheckComplete(NotUseAtr.USE.value);
-			acceptCondRepo.updateFromD(condSet);
+			condSet.setCheckCompleted(NotUseAtr.USE);
+			this.acceptCondRepo.updateFromD(condSet);
 		} else {
 			String msg = TextResource.localize("Msg_904");
-			for (String s: errorList) {
+			for (String s : errorList) {
 				msg = msg + "\n\t" + s;
 			}
 			RawErrorMessage errorMsg = new RawErrorMessage(msg);

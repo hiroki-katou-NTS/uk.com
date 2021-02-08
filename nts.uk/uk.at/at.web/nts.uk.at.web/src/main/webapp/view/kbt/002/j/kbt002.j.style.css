@@ -1,0 +1,26 @@
+#left-content-top {
+  width: 260px;
+  padding-top: 15px;
+  padding-left: 15px;
+  border-radius: 5px;
+  padding-bottom: 15px;
+  float: left;
+}
+#right-content {
+	width: 400px;
+	float: left;
+	margin-left: 20px;
+}
+.row {
+  display: flex;
+  padding-bottom: 15px;
+}
+.input-date {
+  width: 110px;
+}
+.title-width {
+  width: 150px;
+}
+.contents-area {
+  padding-top: 20px;
+}

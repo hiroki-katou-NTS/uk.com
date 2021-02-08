@@ -104,12 +104,11 @@
 }
 
 .fixed-flex-layout-left {
-	width: 350px;
+	float: left;
 }
 
 .fixed-flex-layout-right{
-  float: right;
-  margin-left: 150px;
+  margin-left: 25px;
 }
 
 .functional-button {

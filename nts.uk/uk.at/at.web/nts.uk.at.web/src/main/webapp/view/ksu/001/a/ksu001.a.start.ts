@@ -85,7 +85,7 @@ module nts.uk.at.view.ksu001.a {
             $('#A1_12_1').ntsPopup("toggle");
         });
 
-        $('#A4_1').ntsPopup("init", {
+        $('#A4_1_popup').ntsPopup("init", {
             position: {
                 my: 'left top',
                 at: 'left bottom+3',
@@ -95,7 +95,7 @@ module nts.uk.at.view.ksu001.a {
         });
         
         $(window).on("mousedown.popup", function(e) {
-            let control = $('#A4_1');
+            let control = $('#A4_1_popup');
             let combo = $('.nts-combo-column-0');
 
             if ($(e.target).is(combo[1]) || $(e.target).is(combo[2])) {
@@ -116,7 +116,7 @@ module nts.uk.at.view.ksu001.a {
         }
         
         $('#A4').click(function() {
-            $('#A4_1').ntsPopup("toggle");
+            $('#A4_1_popup').ntsPopup("toggle");
         });
         
         

@@ -124,6 +124,8 @@ module nts.uk.com.view.ktg031.a {
         }
         #ktg031-container .body .table-container #ktg031-grid .column-date {
           width: 80px;
+          text-align: right;
+          padding-right: 5px;
         }
         #ktg031-container .body .table-container #ktg031-grid .column-action {
           width: 50px;
@@ -150,7 +152,7 @@ module nts.uk.com.view.ktg031.a {
       ]);
       vm.selectedAlarmType.subscribe(value => vm.loadAlarmData(value));
       vm.selectedAlarmType(0);
-      vm.isEmployee(__viewContext.user.isEmployee);
+      vm.isEmployee(__viewContext.user.role.isInCharge.attendance);
     }
 
     loadAlarmData(displayType: number) {
@@ -173,11 +175,14 @@ module nts.uk.com.view.ktg031.a {
       vm.$blockui('grayout');
       vm.$ajax(API.changeToRead, command)
         .then((res) => vm.$ajax(`${API.findAlarmData}/${vm.selectedAlarmType()}`))
-        .then((res: any[]) => vm.setListAlarm(res))
+        .then((res: any[]) => vm.setListAlarm(res, true))
         .always(() => vm.$blockui('clear'));
     }
 
-    setListAlarm(res: any[]) {
+    setListAlarm(res: any[], stopReload?: boolean) {
+      if (stopReload) {
+        return;
+      }
       const vm = this;
       vm.listAlarm(_.map(res, (item) => new AlarmDisplayDataDto(vm, item)));
       // Render row backgournd color
@@ -264,7 +269,7 @@ module nts.uk.com.view.ktg031.a {
       $.extend(this, init);
       const model = this;
       const occurrenceDateTime = moment.utc(model.occurrenceDateTime);
-      model.dateMonth = occurrenceDateTime.format('MM/DD');
+      model.dateMonth = occurrenceDateTime.format('M/D');
       let isReaded = false;
       if (model.alreadyDatetime) {
         const alreadyDatetime = moment.utc(model.alreadyDatetime);

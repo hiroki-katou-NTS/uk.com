@@ -121,6 +121,8 @@ include 'exio.ctx:nts.uk.ctx.exio.dom'
 include 'exio.ctx:nts.uk.ctx.exio.infra'
 include 'exio.ctx:nts.uk.ctx.exio.ws'
 include 'exio.ctx:nts.uk.ctx.exio.ac'
+include 'exio.ctx:nts.uk.ctx.exio.pub'
+include 'exio.ctx:nts.uk.ctx.exio.pubimp'
 
 include 'query:nts.uk.query.app'
 include 'query:nts.uk.query.model'

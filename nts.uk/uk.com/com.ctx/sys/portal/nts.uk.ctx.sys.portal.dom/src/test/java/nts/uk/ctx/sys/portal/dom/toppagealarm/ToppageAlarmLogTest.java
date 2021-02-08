@@ -2,6 +2,8 @@ package nts.uk.ctx.sys.portal.dom.toppagealarm;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Optional;
+
 import org.junit.Test;
 
 import nts.arc.testing.assertion.NtsAssert;
@@ -42,6 +44,24 @@ public class ToppageAlarmLogTest {
 		GeneralDateTime currentTime = GeneralDateTime.now();
 		domain.changeToUnread(currentTime);
 		assertThat(domain.getAlreadyDatetime()).isEqualTo(currentTime.addMinutes(-1));
+	}
+	
+	@Test
+	public void testChangeToUnreadWithToppageData() {
+		ToppageAlarmData toppageAlarmData = ToppageAlarmData.builder()
+				.cid("000000000000-0001")
+				.alarmClassification(AlarmClassification.ALARM_LIST)
+				.identificationKey(new IdentificationKey("01"))
+				.displaySId("ae7fe82e-a7bd-4ce3-adeb-5cd403a9d570")
+				.displayAtr(DisplayAtr.PIC)
+				.isResolved(false)
+				.occurrenceDateTime(GeneralDateTime.now())
+				.displayMessage(new DisplayMessage("test message"))
+				.linkUrl(Optional.of(new LinkURL("http://google.com.vn")))
+				.build();
+		
+		domain.changeToUnread(toppageAlarmData.getOccurrenceDateTime());
+		assertThat(domain.getAlreadyDatetime()).isEqualTo(toppageAlarmData.getOccurrenceDateTime().addMinutes(-1));
 	}
 	
 }

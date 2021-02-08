@@ -85,4 +85,23 @@ public enum DayOfWeek {
 		// Not found.
 		return null;
 	}
+	
+	/**
+	 * 共通の曜日を変換する
+	 * @param commonDayOfWeek nts.arc.time.calendar.DayOfWeek
+	 * @return
+	 */
+	public static DayOfWeek convertFromCommonClass(nts.arc.time.calendar.DayOfWeek commonDayOfWeek) {
+		switch ( commonDayOfWeek ) {
+			case MONDAY: return DayOfWeek.MONDAY;
+			case TUESDAY: return DayOfWeek.TUESDAY;
+			case WEDNESDAY: return DayOfWeek.WEDNESDAY;
+			case THURSDAY: return DayOfWeek.THURSDAY;
+			case FRIDAY: return DayOfWeek.FRIDAY;
+			case SATURDAY: return DayOfWeek.SATURDAY;
+			case SUNDAY: return DayOfWeek.SUNDAY;
+		default:
+			return DayOfWeek.SUNDAY;
+		}
+	}
 }
