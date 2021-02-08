@@ -20,11 +20,15 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 		selectedWorkType: KnockoutObservable<any> = ko.observable();
 		dateSpecHdRelationLst: KnockoutObservableArray<any> = ko.observableArray([]);
 		selectedDateSpec: KnockoutObservable<any> = ko.observable();
+		isFromOther: boolean = false;
 
 
         created(params: AppInitParam) {
             const vm = this;
-
+			if(!_.isNil(__viewContext.transferred.value)) {
+				vm.isFromOther = true;
+			}
+			sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');
 			let empLst: Array<string> = [],
 				dateLst: Array<string> = [];
 			if (!_.isEmpty(params)) {

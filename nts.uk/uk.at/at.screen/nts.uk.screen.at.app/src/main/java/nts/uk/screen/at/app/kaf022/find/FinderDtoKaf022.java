@@ -38,7 +38,7 @@ import nts.uk.ctx.at.request.dom.setting.request.application.businesstrip.AppTri
 import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.substituteworkapplication.SubstituteWorkAppReflectDto;
 import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.subleaveapp.SubLeaveAppReflectDto;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.directgoback.GoBackReflectRepository;
-import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.othdwork.hdworkapply.HdWorkAppReflectDto;
+import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.othdwork.hdworkapply.HdWorkAppReflectDto_Old;
 import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.othdwork.otworkapply.OtWorkAppReflectDto;
 import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.stampapplication.StampAppReflectDto;
 import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectDto;
@@ -244,7 +244,7 @@ public class FinderDtoKaf022 {
 
 		// G
 		result.setHolidayWorkApplicationSetting(holidayWorkAppSet);
-		result.setHolidayWorkApplicationReflect(hdWorkReflectRepo.findReflectByCompany(companyId).map(HdWorkAppReflectDto::fromDomain).orElse(null));
+		result.setHolidayWorkApplicationReflect(hdWorkReflectRepo.findReflectByCompany(companyId).map(HdWorkAppReflectDto_Old::fromDomain).orElse(null));
 
 		// H
 		result.setTimeLeaveApplicationReflect(timeLeaveAppReflectDto);

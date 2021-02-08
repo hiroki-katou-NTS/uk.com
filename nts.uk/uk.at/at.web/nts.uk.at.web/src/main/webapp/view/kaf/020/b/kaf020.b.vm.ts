@@ -22,9 +22,16 @@ module nts.uk.at.view.kaf020.b {
             name: "",
             appDispInfoStartupOutput: ko.observable(null)
         });
-        empLst: Array<string> = [];
+        allOptional: any = [];
+		isFromOther: boolean = false;
+		empLst: Array<string> = [];
         dateLst: Array<string> = [];
         baseDate: string;
+
+        constructor(props: any) {
+            super();
+        }
+        
 
         created(params: any) {
             const vm = this;
@@ -40,6 +47,10 @@ module nts.uk.at.view.kaf020.b {
                     }
                 })
             }
+			if(!_.isNil(__viewContext.transferred.value)) {
+				vm.isFromOther = true;
+			}
+			sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');
             if (params && params.empLst) vm.empLst = params.empLst;
             if (params && params.dateLst) vm.dateLst = params.dateLst;
             if (params && params.baseDate) vm.baseDate = params.baseDate;

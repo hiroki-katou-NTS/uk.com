@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+    <ui:composition template="../../../../master/dialog.xhtml">
+        <ui:define name="htmlHead">
+          <script>
+              var dialogSize = {
+                  width : 425,
+                  height : 350
+              };
+          </script>
+          <com:stylefile path="kbt002.k.main.css" />
+          <com:scriptfile set="IGNITE" />
+          <com:scriptfile path="kbt002.k.vm.js" />
+        </ui:define>
+         <!-- content -->
+      <ui:define name="content">
+        <div class="alignment_ui">
+          <table>
+            <tr class="row padding-table">
+              <td>
+                <div id="K1_1" data-bind="ntsFormLabel: { required: true }" style="padding-right: 60px;">
+                  <span>#{i18n.getText('KBT002_272')}</span>
+                </div>
+              </td>
+              <td>
+                <div id="K1_2" tabindex="1" data-bind="ntsDateRangePicker: { 
+                  name : '#[KBT002_272]',
+                  required: true,
+                  enable: true, 
+                  showNextPrevious: false, 
+                  value: dateValue }"/>
+              </td>
+            </tr>
+            <tr class="row padding-table">
+              <td>
+                <div id="K2_1" data-bind="ntsFormLabel: { required: true }" style="padding-right: 40px;">
+                  <span>#{i18n.getText('KBT002_274')}</span>
+                </div>
+              </td>
+              <td>
+                <!-- K2_2 -->
+                <div id="K2_2" tabindex="3" class="radio-group-emp-name" data-bind="ntsRadioBoxGroup: {
+                  name: '#[KBT002_274]',
+                  required: true,
+                  options: empNames,
+                  optionsValue: 'code',
+                  optionsText: 'name',
+                  value: selectEmpName
+                }"></div>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div id="functions-area-bottom">
+          <div class="padding-bottom">
+            <button id="K3_1" tabindex="4" class="proceed large" data-bind="click: getDataExportCsv">#{i18n.getText('KBT002_277')}</button>
+            <button id="K3_2" tabindex="5" data-bind="click: closeDialog">#{i18n.getText('KBT002_75')}</button>
+          </div>
+        </div>
+      </ui:define>
+    </ui:composition>  
+   	</body>
+</html>

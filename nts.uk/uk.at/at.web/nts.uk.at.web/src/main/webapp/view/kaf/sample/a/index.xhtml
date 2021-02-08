@@ -26,12 +26,14 @@
 			<com:scriptfile path="/view/kaf/000/a/component6/kaf000.a.component6.js" />
 			<com:scriptfile path="/view/kaf/000/a/component7/kaf000.a.component7.js" />
 			<com:scriptfile path="/view/kaf/000/a/component8/kaf000.a.component8.js" />
+			<com:scriptfile path="/view/kaf/000/a/component9/kaf000.a.component9.js" />
 			<com:scriptfile path="/view/kaf/000/a/kaf000.a.vm.js" />
 			<com:scriptfile path="/view/kaf/sample/shr/kafsample.shr.vm.js" />
 			<com:scriptfile path="/view/kaf/sample/a/kafsample.a.vm.js" />
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
+				<div style="display: inline-block;" data-bind="component: { name: 'kaf000-a-component9', params: isFromOther }"></div>
 				<!-- A1_1 -->
 				<button class="proceed" data-bind="click: register, enable: $root.errors.isEmpty" tabindex="1">#{i18n.getText('KAF007_54')}</button>
 				<div data-bind="component: { name: 'kaf000-a-component7', 

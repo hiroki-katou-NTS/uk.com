@@ -36,12 +36,11 @@ public class TimeLeavingWork extends DomainObject{
 	/** 退勤 */
 	private Optional<TimeActualStamp> leaveStamp;
 	/** 遅刻を取り消した */
-	private boolean canceledLate;
+	private boolean canceledLate = false;
 	/** 早退を取り消した */
-	private boolean CanceledEarlyLeave;
+	private boolean CanceledEarlyLeave = false;
 	
 	private TimeSpanForCalc timespan;
-	
 	
 	public TimeSpanForCalc getTimespan() {
 		return this.craeteTimeSpan();
@@ -54,6 +53,22 @@ public class TimeLeavingWork extends DomainObject{
 		this.leaveStamp = Optional.ofNullable(leaveStamp);
 		
 		this.timespan = this.craeteTimeSpan();
+	}
+	
+	/**
+	 * 時間帯から作る
+	 * @param workNo 勤務NO
+	 * @param timeSpan 時間帯
+	 * @return
+	 */
+	public static TimeLeavingWork createFromTimeSpan(WorkNo workNo, TimeSpanForCalc timeSpan) {
+		
+		return new TimeLeavingWork(
+				workNo, 
+				Optional.of(TimeActualStamp.createByAutomaticSet(timeSpan.getStart())), 
+				Optional.of(TimeActualStamp.createByAutomaticSet(timeSpan.getEnd())), 
+				false, 
+				false);
 	}
 	
 	/**
@@ -79,7 +94,7 @@ public class TimeLeavingWork extends DomainObject{
 
 	/**
 	 * 出勤時刻と退勤時刻から計算用時間帯クラス作成
-	 * @return　計算用時間帯クラス
+	 * @return 計算用時間帯クラス
 	 */
 	private TimeSpanForCalc craeteTimeSpan() {
 		
@@ -101,9 +116,9 @@ public class TimeLeavingWork extends DomainObject{
 	
 	/**
 	 * ジャスト遅刻・早退の設定を見て時刻を調整する
-	 * @param isJustTimeLateAttendance　ジャスト遅刻とする
-	 * @param isJustEarlyLeave　ジャスト早退とする
-	 * @return　調整後の処理
+	 * @param isJustTimeLateAttendance ジャスト遅刻とする
+	 * @param isJustEarlyLeave ジャスト早退とする
+	 * @return 調整後の処理
 	 */
 	public TimeLeavingWork correctJustTime(boolean isJustTimeLateAttendance,boolean isJustEarlyLeave) {
 		
@@ -142,7 +157,7 @@ public class TimeLeavingWork extends DomainObject{
 	
 	/**
 	 * 打刻順序不正であるかチェックする
-	 * @return　順序不正である
+	 * @return 順序不正である
 	 */
 	public boolean isReverseOrder() {
 		if(this.getTimespan().getStart().greaterThan(this.getTimespan().getEnd())) {
@@ -150,7 +165,14 @@ public class TimeLeavingWork extends DomainObject{
 		}
 		return false;
 	}
-
+	
+	/**
+	 * @param workNo 勤務NO
+	 * @param attendanceStamp 出勤
+	 * @param leaveStamp 退勤
+	 * @param canceledLate 遅刻を取り消した
+	 * @param canceledEarlyLeave 早退を取り消した
+	 */
 	public TimeLeavingWork(WorkNo workNo, Optional<TimeActualStamp> attendanceStamp,
 			Optional<TimeActualStamp> leaveStamp, boolean canceledLate, boolean canceledEarlyLeave) {
 		super();

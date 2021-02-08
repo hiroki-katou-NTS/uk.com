@@ -63,6 +63,11 @@ public class GetExcessTimesYearPubImpl implements GetExcessTimesYearPub {
 		return AgreementExcessInfoExport.copy(GetExcessTimesYear.getWithRemainTimes(requireService.createRequire(), employeeId, year, baseDate));
 	}
 	
+	@Override
+	public AgreementExcessInfoExport getDataRq605(String employeeID, YearMonth ym) {
+		return AgreementExcessInfoExport.copy(GetExcessTimesYear.get(requireService.createRequire(), employeeID, ym));
+	}
+	
 	private GetExcessTimesYear.RequireM1 createRequire() {
 		
 		return new GetExcessTimesYear.RequireM1() {
@@ -81,5 +86,4 @@ public class GetExcessTimesYearPubImpl implements GetExcessTimesYearPub {
 			}
 		};
 	}
-	
 }

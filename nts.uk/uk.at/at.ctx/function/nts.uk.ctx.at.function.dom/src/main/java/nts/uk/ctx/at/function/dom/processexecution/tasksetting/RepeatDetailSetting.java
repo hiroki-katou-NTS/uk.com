@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.function.dom.processexecution.tasksetting;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
@@ -15,8 +17,8 @@ import nts.uk.ctx.at.function.dom.processexecution.tasksetting.detail.RepeatDeta
 public class RepeatDetailSetting extends DomainObject {
 	
 	/* 繰り返し詳細設定(毎週) */
-	private RepeatDetailSettingWeekly weekly;
+	private Optional<RepeatDetailSettingWeekly> weekly;
 	
 	/* 繰り返し詳細設定(毎月) */
-	private RepeatDetailSettingMonthly monthly;
+	private Optional<RepeatDetailSettingMonthly> monthly;
 }

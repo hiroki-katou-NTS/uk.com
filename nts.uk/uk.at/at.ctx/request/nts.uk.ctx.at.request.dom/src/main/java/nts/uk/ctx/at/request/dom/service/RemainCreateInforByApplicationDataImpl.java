@@ -30,11 +30,12 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.Abs
 //import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMngRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork_Old;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository_Old;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
+import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType_Update;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
@@ -63,7 +64,7 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 	@Inject
 	private OvertimeRepository overtimeRepo;
 	@Inject
-	private AppHolidayWorkRepository holidayWorkRepo; 
+	private AppHolidayWorkRepository_Old holidayWorkRepo; 
 	@Inject
 	private IAppWorkChangeRepository workChangeRepos;
 	
@@ -154,23 +155,23 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 				
 				break;
 			case OVER_TIME_APPLICATION:
-				Optional<AppOverTime> overTimeData = overtimeRepo.getAppOvertimeFrame(cid, appData.getAppID());
+				Optional<AppOverTime_Old> overTimeData = overtimeRepo.getAppOvertimeFrame(cid, appData.getAppID());
 				Integer appBreakTimeTotal = 0;
 				Integer appOvertimeTimeTotal = 0;
 				if(overTimeData.isPresent()){
-					AppOverTime x = overTimeData.get();
+					AppOverTime_Old x = overTimeData.get();
 					outData.setWorkTimeCode(x.getSiftCode() == null ? Optional.empty() : Optional.of(x.getSiftCode().v()));
 					outData.setWorkTypeCode(x.getWorkTypeCode() == null ? Optional.empty() : Optional.of(x.getWorkTypeCode().v()));
 					//申請休出時間合計を設定する
 					List<OverTimeInput> lstInput = x.getOverTimeInput().stream()
-							.filter(y -> y.getAttendanceType() == AttendanceType.BREAKTIME)
+							.filter(y -> y.getAttendanceType() == AttendanceType_Update.BREAKTIME)
 							.collect(Collectors.toList());
 					for (OverTimeInput inputData : lstInput) {
 						appBreakTimeTotal += inputData.getApplicationTime().v();
 					}
 					//申請残業時間合計を設定する
 					lstInput = x.getOverTimeInput().stream()
-							.filter(y -> y.getAttendanceType() == AttendanceType.NORMALOVERTIME)
+							.filter(y -> y.getAttendanceType() == AttendanceType_Update.NORMALOVERTIME)
 							.collect(Collectors.toList());
 					for (OverTimeInput inputData : lstInput) {
 						appOvertimeTimeTotal += inputData.getApplicationTime().v();
@@ -180,11 +181,11 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 				outData.setAppOvertimeTimeTotal(Optional.of(appOvertimeTimeTotal));
 				break;
 			case BREAK_TIME_APPLICATION:
-				Optional<AppHolidayWork> holidayWork = holidayWorkRepo.getAppHolidayWorkFrame(cid, appData.getAppID());
+				Optional<AppHolidayWork_Old> holidayWork = holidayWorkRepo.getAppHolidayWorkFrame(cid, appData.getAppID());
 				Integer breakTimeTotal = 0;
 				Integer overtimeTimeTotal = 0;
 				if(holidayWork.isPresent()) {
-					AppHolidayWork holidayWorkData = holidayWork.get();
+					AppHolidayWork_Old holidayWorkData = holidayWork.get();
 					outData.setWorkTimeCode(holidayWorkData.getWorkTimeCode() == null ? Optional.empty() : Optional.of(holidayWorkData.getWorkTimeCode().v()));
 					outData.setWorkTypeCode(holidayWorkData.getWorkTypeCode() == null ? Optional.empty() : Optional.of(holidayWorkData.getWorkTypeCode().v()));
 					//申請休出時間合計を設定する

@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.applist.service.datacreate;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +24,7 @@ import nts.uk.ctx.at.request.dom.application.applist.service.AppListInitialRepos
 import nts.uk.ctx.at.request.dom.application.applist.service.ApplicationStatus;
 import nts.uk.ctx.at.request.dom.application.applist.service.content.AppContentService;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInfo;
+import nts.uk.ctx.at.request.dom.application.applist.service.param.AttendanceNameItem;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.ListOfApplication;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SyEmployeeImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentAdapter;
@@ -78,16 +78,19 @@ public class AppDataCreationImpl implements AppDataCreation {
 		}
 		List<WorkType> workTypeLst = new ArrayList<>();
 		List<WorkTimeSetting> workTimeSettingLst = new ArrayList<>();
+		List<AttendanceNameItem> attendanceNameItemLst = new ArrayList<>();
 		if(device==ApprovalDevice.PC.value) {
 			// ドメインモデル「就業時間帯」を取得
 			workTypeLst = workTypeRepository.findByCompanyId(companyID);
 			// ドメインモデル「勤務種類」を取得
 			workTimeSettingLst = workTimeSettingRepository.findByCId(companyID);
 			// 勤怠名称を取得 ( Lấy tên working time)
+			attendanceNameItemLst = appContentService.getAttendanceNameItemLst(companyID);
 		}
 		
 		Map<String, SyEmployeeImport> mapEmpInfo = new HashMap<>();
 		Map<Pair<String, DatePeriod>, WkpInfo> mapWkpInfo = new HashMap<>();
+		Map<String, Pair<Integer, Integer>> cacheTime36 = new HashMap<>();
 		GeneralDate sysDate = GeneralDate.today();
 		List<String> agentLst = agentAdapter.lstAgentData(companyID, AppContexts.user().employeeId(), sysDate, sysDate).stream().map(x -> x.getEmployeeId()).collect(Collectors.toList());
 		List<ListOfApplication> appOutputLst = new ArrayList<>();
@@ -111,14 +114,15 @@ public class AppDataCreationImpl implements AppDataCreation {
 					companyID, 
 					workTimeSettingLst, 
 					workTypeLst, 
-					Collections.emptyList(), 
+					attendanceNameItemLst, 
 					mode, 
 					opApprovalListDisplaySetting.get(), 
 					appInfoMasterOutput.getListOfApplication(), 
 					mapApproval, 
 					device, 
 					appListExtractCondition,
-					agentLst);
+					agentLst,
+					cacheTime36);
 			// 申請内容＝-1(Nội dung đơn xin＝-1 )
 			if(listOfApp.getAppContent()=="-1") {
 				// パラメータ：申請一覧情報.申請一覧から削除する(xóa từ list đơn xin)

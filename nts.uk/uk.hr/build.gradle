@@ -595,6 +595,10 @@ project (':hr.web:nts.uk.hr.web') {
 		runtime(group: 'com.query', name: 'nts.uk.query.pub', version: version)
 		runtime(group: 'com.query', name: 'nts.uk.query.pubimp', version: version)
 		
+		runtime(group: 'exio.ctx', name: 'nts.uk.ctx.exio.ac', version: version)
+		runtime(group: 'exio.ctx', name: 'nts.uk.ctx.exio.dom', version: version)
+		runtime(group: 'exio.ctx', name: 'nts.uk.ctx.exio.infra', version: version)
+		
 		// implement eraAdapter
 		runtime group: 'com.basic.company', name: 'nts.uk.ctx.basic.app', version: version
 		runtime group: 'com.basic.company', name: 'nts.uk.ctx.basic.dom', version: version
@@ -658,6 +662,13 @@ project (':hr.web:nts.uk.hr.web') {
 		runtime group: 'at.schedulealarm', name: 'nts.uk.ctx.at.schedulealarm.infra', version: version
 		runtime group: 'at.schedulealarm', name: 'nts.uk.ctx.at.schedulealarm.pub', version: version
 		runtime group: 'at.schedulealarm', name: 'nts.uk.ctx.at.schedulealarm.pubimp', version: version
+		
+		runtime group: 'at.aggregation', name: 'nts.uk.ctx.at.aggregation.ac', version: version
+		runtime group: 'at.aggregation', name: 'nts.uk.ctx.at.aggregation.app', version: version
+		runtime group: 'at.aggregation', name: 'nts.uk.ctx.at.aggregation.dom', version: version
+		runtime group: 'at.aggregation', name: 'nts.uk.ctx.at.aggregation.infra', version: version
+		runtime group: 'at.aggregation', name: 'nts.uk.ctx.at.aggregation.pub', version: version
+		runtime group: 'at.aggregation', name: 'nts.uk.ctx.at.aggregation.pubimp', version: version
 	}	
 	
 	task tsc(type: de.richsource.gradle.plugins.typescript.CompileTypeScript) {

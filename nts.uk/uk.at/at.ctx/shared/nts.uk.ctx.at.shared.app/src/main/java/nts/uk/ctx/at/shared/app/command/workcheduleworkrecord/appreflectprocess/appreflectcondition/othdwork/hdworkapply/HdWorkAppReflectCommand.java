@@ -5,25 +5,29 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.hdworkapply.HdWorkAppReflect;
 
-@Data
-@NoArgsConstructor
+/**
+ * Refactor5
+ * @author huylq
+ *
+ */
 @AllArgsConstructor
+@NoArgsConstructor
+@Data
 public class HdWorkAppReflectCommand {
-    private int reflectActualHolidayWorkAtr;
-    private int workReflect;
-    private int reflectPaytime;
-//    private int reflectOptional;
-    private int reflectDivergence;
-    private int reflectBreakOuting;
-
+	/**
+     * 事前
+     */
+    private BeforeHdWorkAppReflectCommand before;
+    
+    /**
+     * 事後
+     */
+    private AfterHdWorkAppReflectCommand after;
+    
     public HdWorkAppReflect toDomain() {
-        return HdWorkAppReflect.create(
-                reflectActualHolidayWorkAtr,
-                workReflect,
-                reflectPaytime,
-//                reflectOptional,
-                reflectDivergence,
-                reflectBreakOuting
-        );
+        return new HdWorkAppReflect(
+        		this.before.toDomain(),
+        		this.after.toDomain()
+        		);
     }
 }

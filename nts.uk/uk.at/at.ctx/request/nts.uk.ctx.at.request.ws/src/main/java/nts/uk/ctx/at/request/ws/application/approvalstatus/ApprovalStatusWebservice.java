@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.ws.application.approvalstatus;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -10,13 +11,19 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import org.apache.commons.lang3.tuple.Pair;
+
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
+import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.app.command.application.approvalstatus.ApprovalStatusMailTempCommand;
 import nts.uk.ctx.at.request.app.command.application.approvalstatus.RegisterApprovalStatusMailTempCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApplicationListDto;
+import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprSttConfirmEmpMonthDayDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprSttEmpDateContentDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprSttEmpParam;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprSttExecutionDto;
@@ -32,16 +39,22 @@ import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusF
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusMailTempDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalStatusPeriorDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprovalSttRequestContentDis;
+import nts.uk.ctx.at.request.app.find.application.approvalstatus.ConfirmSttEmpMonthDayParam;
+import nts.uk.ctx.at.request.app.find.application.approvalstatus.ConfirmSttEmpParam;
+import nts.uk.ctx.at.request.app.find.application.approvalstatus.EmpConfirmAfterParam;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.UnAppMailTransmisDto;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.ApprSttEmpDateParam;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.ApprovalStatusService;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttConfirmEmp;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttEmp;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttByEmpListOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.SendMailResultOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnApprovalSendMail;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnConfrSendMailParam;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeEmailImport;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ApprovalComfirmDto;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
 @Path("at/request/application/approvalstatus")
 @Produces("application/json")
@@ -188,5 +201,38 @@ public class ApprovalStatusWebservice extends WebService {
 	@Path("sendMailToDestination")
 	public SendMailResultOutput sendMailToDestination(ApprSttMailDestParam param) {
 		return approvalMailFinder.sendMailToDestination(param);
+	}
+	
+	@POST
+	@Path("getConfirmApprSttByEmp")
+	public List<ApprSttConfirmEmp> getConfirmApprSttByEmp(ConfirmSttEmpParam param) {
+		return finder.getConfirmApprSttByEmp(param);
+	}
+	
+	@POST
+	@Path("getConfirmApprSttByEmpMonthDay")
+	public ApprSttConfirmEmpMonthDayDto getConfirmApprSttByEmpMonthDay(ConfirmSttEmpMonthDayParam param) {
+		return finder.getConfirmApprSttByEmpMonthDay(param);
+	}
+	
+	@POST
+	@Path("getEmploymentConfirmInfo/{wkpID}")
+	public List<EmployeeEmailImport> getEmploymentConfirmInfo(@PathParam("wkpID") String wkpID) {
+		return finder.getEmploymentConfirmInfo(wkpID);
+	}
+	
+	@POST
+	@Path("getEmploymentConfirmInfoAfter")
+	public Pair<String, String> getEmploymentConfirmInfoAfter(EmpConfirmAfterParam param) {
+		Map<String, Pair<String, GeneralDateTime>> result = approvalStatusService.getStatusEmploymentConfirm(
+				EnumAdaptor.valueOf(param.getClosureId(), ClosureId.class), 
+				new YearMonth(param.getProcessingYm()), 
+				param.getWkpInfoLst());
+		if(result.isEmpty()) {
+			return null;
+		}
+		return result.entrySet().stream().filter(x -> x.getKey().equals(param.getWkpInfoLst().get(0).getId())).findAny().map(x -> {
+			return Pair.of(x.getValue().getLeft(), x.getValue().getRight().toString());
+		}).orElse(null);
 	}
 }

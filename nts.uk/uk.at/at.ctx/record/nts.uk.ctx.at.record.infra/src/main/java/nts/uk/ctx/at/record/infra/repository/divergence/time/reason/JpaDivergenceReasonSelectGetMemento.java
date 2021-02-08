@@ -17,7 +17,7 @@ public class JpaDivergenceReasonSelectGetMemento implements DivergenceReasonSele
 	/**
 	 * Instantiates a new jpa divergence reason select repository get memento.
 	 */
-	JpaDivergenceReasonSelectGetMemento() {
+	public JpaDivergenceReasonSelectGetMemento() {
 
 	}
 
@@ -27,7 +27,7 @@ public class JpaDivergenceReasonSelectGetMemento implements DivergenceReasonSele
 	 * @param entity
 	 *            the entity
 	 */
-	JpaDivergenceReasonSelectGetMemento(KrcstDvgcReason entity) {
+	public JpaDivergenceReasonSelectGetMemento(KrcstDvgcReason entity) {
 		this.entity = entity;
 	}
 

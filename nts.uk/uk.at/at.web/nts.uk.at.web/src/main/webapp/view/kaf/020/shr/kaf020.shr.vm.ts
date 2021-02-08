@@ -2,10 +2,11 @@ module nts.uk.at.view.kaf020.shr.viewmodel {
     @component({
         name: 'kaf020-share',
         template: `<!--B2_3-->
-            <div class="label m1" data-bind="text: name"></div>
+            <div id="kaf020-component">
+             <div class="label m1" data-bind="text: name"></div>
             <!--B2_4-->
             <div id="ruredLine"></div>
-            <table id="fixed-table">
+            <table id="kaf020-fixed-table">
                 <colgroup>
                     <col width="200px"/>
                     <col width="150px"/>
@@ -98,7 +99,9 @@ module nts.uk.at.view.kaf020.shr.viewmodel {
                     </td>
                 </tr>
                 </tbody>
-            </table>`,
+            </table>
+            </div>
+           `,
     })
 
     class Kaf020ShareViewModel extends ko.ViewModel {
@@ -119,7 +122,7 @@ module nts.uk.at.view.kaf020.shr.viewmodel {
                     value.appDispInfoStartupOutput().appDetailScreenInfo.outputMode == 1 ? vm.enableEdit(true) : vm.enableEdit(false);
                 }
             });
-            $('#fixed-table').ntsFixedTable({width: 740});
+            $('#kaf020-fixed-table').ntsFixedTable({width: 740});
         }
     }
 

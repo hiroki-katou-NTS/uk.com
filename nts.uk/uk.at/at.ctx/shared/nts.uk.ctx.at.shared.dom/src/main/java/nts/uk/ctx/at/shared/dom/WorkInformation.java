@@ -354,7 +354,19 @@ public class WorkInformation {
 
 	}
 
-
+	/**
+	 * 同一か
+	 * @param otherObject 比較対象
+	 * @return true if they are same workType and same workTime
+	 */
+	public boolean isSame(WorkInformation otherObject) {
+		
+		if ( ! this.workTypeCode.v().equals(otherObject.getWorkTypeCode().v()) ) {
+			return false;
+		}
+		
+		return this.workTimeCode.equals( otherObject.getWorkTimeCodeNotNull());
+	}
 
 	public static interface Require
 		extends	WorkTimeSetting.Require

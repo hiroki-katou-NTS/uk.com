@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -71,7 +72,7 @@ public class JpaScheduleErrorLogRepository extends JpaRepository
 		List<KscdtScheErrLog> lstKscmtScheduleErrLog = em.createQuery(cq).getResultList();
 		// check empty
 		if (CollectionUtil.isEmpty(lstKscmtScheduleErrLog)) {
-			return null;
+			return Collections.emptyList();
 		}
 		return lstKscmtScheduleErrLog.stream().map(item -> {
 			return new ScheduleErrorLog(new JpaScheduleErrorLogGetMemento(item));
