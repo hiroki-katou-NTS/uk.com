@@ -31,7 +31,6 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeAbName;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDisplayName;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeName;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSymbol;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -113,23 +112,23 @@ public class SendWorkTimeNameServiceTest {
 
 				require.findByCodeList(anyString, (List<String>) any);
 				result = Arrays.asList(
-						new PredetemineTimeSetting("1", null, new WorkTimeCode("A"), null, true,
+						new PredetemineTimeSetting("1", null, new WorkTimeCode("A"), null,
 								new PrescribedTimezoneSetting(new TimeWithDayAttr(720), new TimeWithDayAttr(780),
 										Arrays.asList(new TimezoneUse(new TimeWithDayAttr(480),
 												new TimeWithDayAttr(1020), UseSetting.USE, 1))),
 								null, false),
 
-						new PredetemineTimeSetting("1", null, new WorkTimeCode("B"), null, true,
+						new PredetemineTimeSetting("1", null, new WorkTimeCode("B"), null,
 								new PrescribedTimezoneSetting(new TimeWithDayAttr(720), new TimeWithDayAttr(780),
 										Arrays.asList(new TimezoneUse(new TimeWithDayAttr(480),
 												new TimeWithDayAttr(1020), UseSetting.USE, 1))),
 								null, false),
-						new PredetemineTimeSetting("1", null, new WorkTimeCode("B"), null, true,
+						new PredetemineTimeSetting("1", null, new WorkTimeCode("B"), null,
 								new PrescribedTimezoneSetting(new TimeWithDayAttr(720), new TimeWithDayAttr(780),
 										Arrays.asList(new TimezoneUse(new TimeWithDayAttr(480),
 												new TimeWithDayAttr(1020), UseSetting.USE, 1))),
 								null, false),
-						new PredetemineTimeSetting("1", null, new WorkTimeCode("D"), null, true,
+						new PredetemineTimeSetting("1", null, new WorkTimeCode("D"), null,
 								new PrescribedTimezoneSetting(new TimeWithDayAttr(720), new TimeWithDayAttr(780),
 										Collections.emptyList()),
 								null, false));

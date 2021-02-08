@@ -48,8 +48,8 @@ public class KshmtPredTimeSet extends UkJpaEntity implements Serializable {
 	private int rangeTimeDay;
 
 	/** The night shift atr. */
-	@Column(name = "NIGHT_SHIFT_ATR")
-	private int nightShiftAtr;
+//	@Column(name = "NIGHT_SHIFT_ATR")
+//	private int nightShiftAtr;
 
 	/** The start date clock. */
 	@Column(name = "START_DATE_CLOCK")

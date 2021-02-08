@@ -326,20 +326,20 @@ public class FlexWorkSettingHelper {
 		public static PredetemineTimeSetting create(String code, TimeWithDayAttr startClock, AttendanceTime rangeOfDay
 				, PrescribedTimezoneSetting prscTzStg) {
 			return new PredetemineTimeSetting("CID", rangeOfDay, new WorkTimeCode(code)
-						, PredTimeStg.createDummyPredTime(), false, prscTzStg, startClock, false
+						, PredTimeStg.createDummyPredTime(), prscTzStg, startClock, false
 					);
 		}
 		
 		public static PredetemineTimeSetting create(List<TimezoneUse> lstTimezone) {
 			return new PredetemineTimeSetting("CID", new AttendanceTime(2300), new WorkTimeCode("01")
-					, PredTimeStg.createDummyPredTime(), false
+					, PredTimeStg.createDummyPredTime()
 					, createPrscTzStg(lstTimezone),  TimeWithDayAttr.hourMinute( 5, 0 ), false
 				);
 		}
 		
 		public static PredetemineTimeSetting create(TimeWithDayAttr morningEndTime, TimeWithDayAttr afternoonStartTime) {
 			return new PredetemineTimeSetting("CID", new AttendanceTime(2300), new WorkTimeCode("01")
-					, PredTimeStg.createDummyPredTime(), false
+					, PredTimeStg.createDummyPredTime()
 					, createPrscTzStg(morningEndTime, afternoonStartTime),  TimeWithDayAttr.hourMinute( 5, 0 ), false
 				);
 		}

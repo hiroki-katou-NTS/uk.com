@@ -35,7 +35,6 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
-import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
@@ -168,7 +167,7 @@ public class WorkTimeSettingServiceImpl implements WorkTimeSettingService {
 		rs.setPredTime(predTime.getPredTime());
 		rs.setMorningEndTime(presTime.getMorningEndTime());
 		rs.setAfternoonStartTime(presTime.getAfternoonStartTime());
-		rs.setNightShift(predTime.isNightShift());
+//		rs.setNightShift(predTime.isNightShift());
 		rs.setPredTimeIncludeOvertime(predTime.isPredetermine());
 		rs.setStartDateClock(predTime.getStartDateClock());
 		rs.setOneDayCalRange(predTime.getRangeTimeDay());

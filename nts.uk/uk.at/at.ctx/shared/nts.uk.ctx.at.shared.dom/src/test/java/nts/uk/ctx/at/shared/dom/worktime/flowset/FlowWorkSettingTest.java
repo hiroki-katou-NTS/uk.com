@@ -495,7 +495,7 @@ public class FlowWorkSettingTest {
 			public static PredetemineTimeSetting create(String code, TimeWithDayAttr startClock
 					, AttendanceTime rangeOfDay, PrescribedTimezoneSetting prscTzStg
 					, @Injectable PredetermineTime preTime) {
-				return new PredetemineTimeSetting("CID", rangeOfDay, new WorkTimeCode(code), preTime, false, prscTzStg, startClock, false);
+				return new PredetemineTimeSetting("CID", rangeOfDay, new WorkTimeCode(code), preTime, prscTzStg, startClock, false);
 			}
 		}
 		

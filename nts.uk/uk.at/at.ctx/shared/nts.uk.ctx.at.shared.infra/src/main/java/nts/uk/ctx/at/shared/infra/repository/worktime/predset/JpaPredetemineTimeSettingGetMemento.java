@@ -82,10 +82,10 @@ public class JpaPredetemineTimeSettingGetMemento implements PredetemineTimeSetti
 	 * @see
 	 * nts.uk.ctx.at.shared.dom.predset.PredetemineTimeGetMemento#isNightShift()
 	 */
-	@Override
-	public boolean isNightShift() {
-		return BooleanGetAtr.getAtrByInteger(this.entity.getNightShiftAtr());
-	}
+//	@Override
+//	public boolean isNightShift() {
+//		return BooleanGetAtr.getAtrByInteger(this.entity.getNightShiftAtr());
+//	}
 
 	/*
 	 * (non-Javadoc)

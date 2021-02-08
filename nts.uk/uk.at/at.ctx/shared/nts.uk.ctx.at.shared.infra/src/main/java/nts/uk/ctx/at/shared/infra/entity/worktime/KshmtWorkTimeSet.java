@@ -46,8 +46,8 @@ public class KshmtWorkTimeSet extends UkJpaEntity implements Serializable {
 	private String abname;
 
 	/** The symbol. */
-	@Column(name = "SYMBOL")
-	private String symbol;
+//	@Column(name = "SYMBOL")
+//	private String symbol;
 
 	/** The daily work atr. */
 	@Column(name = "DAILY_WORK_ATR")
@@ -62,8 +62,8 @@ public class KshmtWorkTimeSet extends UkJpaEntity implements Serializable {
 	private int abolitionAtr;
 
 	/** The color. */
-	@Column(name = "COLOR")
-	private String color;
+//	@Column(name = "COLOR")
+//	private String color;
 
 	/** The memo. */
 	@Column(name = "MEMO")
