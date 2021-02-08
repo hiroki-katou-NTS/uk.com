@@ -121,7 +121,7 @@ public class EmployeeWorkInformationDto {
 	}
 	
 	private static Integer getAttendanceTime(List<TimeLeavingWork> list) {
-		Optional<TimeLeavingWork> timeLeaveWork = list.stream().filter(item -> item.getWorkNo().v() == 1).findAny();
+		Optional<TimeLeavingWork> timeLeaveWork = list.stream().filter(item -> item.getWorkNo().v() == 1).findFirst();
 		if (timeLeaveWork.isPresent()) {
 			Optional<TimeActualStamp> attendanceStamp = timeLeaveWork.get().getAttendanceStamp();
 			if (attendanceStamp.isPresent()) {
@@ -136,7 +136,7 @@ public class EmployeeWorkInformationDto {
 	}
 	
 	private static Integer getLeaveTime(List<TimeLeavingWork> list) {
-		Optional<TimeLeavingWork> timeLeaveWork = list.stream().filter(item -> item.getWorkNo().v() == 1).findAny();
+		Optional<TimeLeavingWork> timeLeaveWork = list.stream().filter(item -> item.getWorkNo().v() == 1).findFirst();
 		if (timeLeaveWork.isPresent()) {
 			Optional<TimeActualStamp> leaveStamp = timeLeaveWork.get().getLeaveStamp();
 			if (leaveStamp.isPresent()) {

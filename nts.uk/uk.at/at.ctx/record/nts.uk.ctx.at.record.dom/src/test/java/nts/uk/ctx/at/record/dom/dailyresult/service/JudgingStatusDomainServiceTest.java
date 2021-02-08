@@ -122,7 +122,7 @@ public class JudgingStatusDomainServiceTest {
 		// given
 		String sid = "sid";
 		GeneralDate baseDate = GeneralDate.today();
-		Integer now = GeneralDateTime.now().hours() * 100 + GeneralDateTime.now().minutes();
+		Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 
 		// [R-2]
 		Optional<TimeLeavingOfDailyPerformance> r2Result = this.getR2Result(0, now, 1);
@@ -155,7 +155,7 @@ public class JudgingStatusDomainServiceTest {
 		String sid = "sid";
 		String code = "001";
 		GeneralDate baseDate = GeneralDate.today();
-		Integer now = GeneralDateTime.now().hours() * 100 + GeneralDateTime.now().minutes();
+		Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 		
 		//[R-1]
 		Optional<WorkInfoOfDailyPerformance> r1Result = this.getR1Result(NotUseAttribute.Not_use);
@@ -208,7 +208,7 @@ public class JudgingStatusDomainServiceTest {
 		// given
 		String sid = "sid";
 		GeneralDate baseDate = GeneralDate.today();
-		Integer now = GeneralDateTime.now().hours() * 100 + GeneralDateTime.now().minutes();
+		Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 
 		// [R-1]
 		Optional<WorkInfoOfDailyPerformance> r1Result = this.getR1Result(NotUseAttribute.Use);
@@ -250,7 +250,7 @@ public class JudgingStatusDomainServiceTest {
 		String sid = "sid";
 		String code = "001";
 		GeneralDate baseDate = GeneralDate.today();
-		Integer now = GeneralDateTime.now().hours() * 100 + GeneralDateTime.now().minutes();
+		Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 
 		// [R-1]
 		Optional<WorkInfoOfDailyPerformance> r1Result = this.getR1Result(NotUseAttribute.Use);
@@ -302,7 +302,7 @@ public class JudgingStatusDomainServiceTest {
 		// given
 		String sid = "sid";
 		GeneralDate baseDate = GeneralDate.today();
-		Integer now = GeneralDateTime.now().hours() * 100 + GeneralDateTime.now().minutes();
+		Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 
 		// [R-1]
 		Optional<WorkInfoOfDailyPerformance> r1Result = this.getR1Result(NotUseAttribute.Use);
@@ -342,7 +342,7 @@ public class JudgingStatusDomainServiceTest {
 		// given
 		String sid = "sid";
 		GeneralDate baseDate = GeneralDate.today();
-		Integer now = GeneralDateTime.now().hours() * 100 + GeneralDateTime.now().minutes();
+		Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 
 		// [R-2]
 		Optional<TimeLeavingOfDailyPerformance> r2Result = this.getR2Result(now + 1000, now + 1000, 1);
@@ -376,7 +376,7 @@ public class JudgingStatusDomainServiceTest {
 		// given
 		String sid = "sid";
 		GeneralDate baseDate = GeneralDate.today();
-		Integer now = GeneralDateTime.now().hours() * 100 + GeneralDateTime.now().minutes();
+		Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 
 		// [R-1]
 		Optional<WorkInfoOfDailyPerformance> r1Result = this.getR1Result(NotUseAttribute.Not_use);
@@ -417,7 +417,7 @@ public class JudgingStatusDomainServiceTest {
 		String sid = "sid";
 		String code = "001";
 		GeneralDate baseDate = GeneralDate.today();
-		Integer now = GeneralDateTime.now().hours() * 100 + GeneralDateTime.now().minutes();
+		Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 
 		// [R-1]
 		Optional<WorkInfoOfDailyPerformance> r1Result = this.getR1Result(NotUseAttribute.Not_use);
@@ -468,7 +468,7 @@ public class JudgingStatusDomainServiceTest {
 		// given
 		String sid = "sid";
 		GeneralDate baseDate = GeneralDate.today();
-		Integer now = GeneralDateTime.now().hours() * 100 + GeneralDateTime.now().minutes();
+		Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 
 		// [R-1]
 		Optional<WorkInfoOfDailyPerformance> r1Result = this.getR1Result(NotUseAttribute.Not_use);
@@ -506,7 +506,7 @@ public class JudgingStatusDomainServiceTest {
 		// given
 		String sid = "sid";
 		GeneralDate baseDate = GeneralDate.today();
-		Integer now = GeneralDateTime.now().hours() * 100 + GeneralDateTime.now().minutes();
+		Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 
 		// [R-2]
 		Optional<TimeLeavingOfDailyPerformance> r2Result = this.getR2Result(now - 1000, now + 1000, 1);
@@ -538,7 +538,7 @@ public class JudgingStatusDomainServiceTest {
 		String sid = "sid";
 		String code = "001";
 		GeneralDate baseDate = GeneralDate.today();
-		Integer now = GeneralDateTime.now().hours() * 100 + GeneralDateTime.now().minutes();
+		Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 
 		//[R-1]
 		Optional<WorkInfoOfDailyPerformance> r1Result = this.getR1Result(NotUseAttribute.Not_use);
@@ -588,7 +588,7 @@ public class JudgingStatusDomainServiceTest {
 		// given
 		String sid = "sid";
 		GeneralDate baseDate = GeneralDate.today();
-		Integer now = GeneralDateTime.now().hours() * 100 + GeneralDateTime.now().minutes();
+		Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 
 		// [R-2]
 		Optional<TimeLeavingOfDailyPerformance> r2Result = this.getR2Result(null, now + 1000, 1);
@@ -620,7 +620,7 @@ public class JudgingStatusDomainServiceTest {
 		String sid = "sid";
 		String code = "001";
 		GeneralDate baseDate = GeneralDate.today();
-		Integer now = GeneralDateTime.now().hours() * 100 + GeneralDateTime.now().minutes();
+		Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 
 		//[R-1]
 		Optional<WorkInfoOfDailyPerformance> r1Result = this.getR1Result(NotUseAttribute.Not_use);
@@ -673,7 +673,7 @@ public class JudgingStatusDomainServiceTest {
 		// given
 		String sid = "sid";
 		GeneralDate baseDate = GeneralDate.today();
-		Integer now = GeneralDateTime.now().hours() * 100 + GeneralDateTime.now().minutes();
+		Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 
 		// [R-1]
 		Optional<WorkInfoOfDailyPerformance> r1Result = this.getR1Result(NotUseAttribute.Use);
@@ -714,7 +714,7 @@ public class JudgingStatusDomainServiceTest {
 		String sid = "sid";
 		String code = "001";
 		GeneralDate baseDate = GeneralDate.today();
-		Integer now = GeneralDateTime.now().hours() * 100 + GeneralDateTime.now().minutes();
+		Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 
 		// [R-1]
 		Optional<WorkInfoOfDailyPerformance> r1Result = this.getR1Result(NotUseAttribute.Use);
@@ -766,7 +766,7 @@ public class JudgingStatusDomainServiceTest {
 		// given
 		String sid = "sid";
 		GeneralDate baseDate = GeneralDate.today();
-		Integer now = GeneralDateTime.now().hours() * 100 + GeneralDateTime.now().minutes();
+		Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 
 		// [R-1]
 		Optional<WorkInfoOfDailyPerformance> r1Result = this.getR1Result(NotUseAttribute.Use);
@@ -805,7 +805,7 @@ public class JudgingStatusDomainServiceTest {
 		// given
 		String sid = "sid";
 		GeneralDate baseDate = GeneralDate.today();
-		Integer now = GeneralDateTime.now().hours() * 100 + GeneralDateTime.now().minutes();
+		Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 
 		// [R-2]
 		Optional<TimeLeavingOfDailyPerformance> r2Result = this.getR2Result(now + 1000, null, 1);
@@ -837,7 +837,7 @@ public class JudgingStatusDomainServiceTest {
 		// given
 		String sid = "sid";
 		GeneralDate baseDate = GeneralDate.today();
-		Integer now = GeneralDateTime.now().hours() * 100 + GeneralDateTime.now().minutes();
+		Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 
 		// [R-1]
 		Optional<WorkInfoOfDailyPerformance> r1Result = this.getR1Result(NotUseAttribute.Not_use);
@@ -877,7 +877,7 @@ public class JudgingStatusDomainServiceTest {
 		String sid = "sid";
 		String code = "001";
 		GeneralDate baseDate = GeneralDate.today();
-		Integer now = GeneralDateTime.now().hours() * 100 + GeneralDateTime.now().minutes();
+		Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 
 		// [R-1]
 		Optional<WorkInfoOfDailyPerformance> r1Result = this.getR1Result(NotUseAttribute.Not_use);
@@ -927,7 +927,7 @@ public class JudgingStatusDomainServiceTest {
 		// given
 		String sid = "sid";
 		GeneralDate baseDate = GeneralDate.today();
-		Integer now = GeneralDateTime.now().hours() * 100 + GeneralDateTime.now().minutes();
+		Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 
 		// [R-1]
 		Optional<WorkInfoOfDailyPerformance> r1Result = this.getR1Result(NotUseAttribute.Not_use);
@@ -965,7 +965,7 @@ public class JudgingStatusDomainServiceTest {
 		// given
 		String sid = "sid";
 		GeneralDate baseDate = GeneralDate.today();
-		Integer now = GeneralDateTime.now().hours() * 100 + GeneralDateTime.now().minutes();
+		Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 
 		// [R-2]
 		Optional<TimeLeavingOfDailyPerformance> r2Result = this.getR2Result(now - 1000, null, 1);
@@ -997,7 +997,7 @@ public class JudgingStatusDomainServiceTest {
 		String sid = "sid";
 		String code = "001";
 		GeneralDate baseDate = GeneralDate.today();
-		Integer now = GeneralDateTime.now().hours() * 100 + GeneralDateTime.now().minutes();
+		Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 
 		//[R-1]
 		Optional<WorkInfoOfDailyPerformance> r1Result = this.getR1Result(NotUseAttribute.Not_use);

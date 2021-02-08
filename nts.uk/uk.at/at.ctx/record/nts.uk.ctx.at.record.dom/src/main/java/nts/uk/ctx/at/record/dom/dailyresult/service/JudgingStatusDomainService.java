@@ -89,7 +89,7 @@ public class JudgingStatusDomainService {
 				directDivision = Optional.ofNullable(consumer.getWorkInformation().getGoStraightAtr().value == 1);
 			});
 		}
-		Integer now = GeneralDateTime.now().hours() * 100 + GeneralDateTime.now().minutes();
+		Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 		
 		// case 1
 		if (leaveTime.isPresent() && leaveTime.get() <= now) {

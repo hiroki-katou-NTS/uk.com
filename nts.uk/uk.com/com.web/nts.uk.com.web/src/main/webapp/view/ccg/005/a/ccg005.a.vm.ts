@@ -156,7 +156,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
               <td class="ccg005-pl-5 ccg005-border-groove ccg005-right-unset ccg005-left-unset">
                 <!-- A4_7 -->
                 <span class="ccg005-flex">
-                  <i tabindex=15 class="ccg005-status-img" data-bind="click: $component.initPopupInList.bind($component, $index, sid, businessName), ntsIcon: {no: activityStatusIconNo, width: 20, height: 20}"></i>
+                  <i tabindex=15 class="ccg005-status-img" data-bind="click: $component.initPopupInList.bind($component, $index, sid, businessName, activityStatus), ntsIcon: {no: activityStatusIconNo, width: 20, height: 20}"></i>
                 </span>
               </td>
               <td class="ccg005-pl-5 ccg005-border-groove ccg005-left-unset">
@@ -187,7 +187,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
                   <!-- A5_1 -->
                   <i tabindex=16 class="ccg005-pagination-btn" data-bind="ntsIcon: {no: 193, width: 15, height: 20}, click: $component.previousPage"></i>
                   <!-- A5_2 -->
-                  <span style="white-space: nowrap;" data-bind="text: $component.paginationText()"></span>
+                  <span style="white-space: nowrap; width: 70px; text-align: center;" data-bind="text: $component.paginationText()"></span>
                   <!-- A5_3 -->
                   <i tabindex=17 class="ccg005-pagination-btn" data-bind="ntsIcon: {no: 192, width: 15, height: 20}, click: $component.nextPage"></i>
                 </div>
@@ -627,6 +627,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
           attendanceDetailDto: vm.getAttendanceDetailViewModel(item.sid, item.attendanceDetailDto),
           avatarDto: item.avatarDto,
           activityStatusIconNo: vm.initActivityStatus(item.activityStatusDto),
+          activityStatus: item.activityStatusDto,
           comment: item.commentDto.comment,
           goOutDto: vm.getGoOutViewModel(item.goOutDto),
           emojiIconNo: vm.initEmojiType(item.emojiDto.emojiType),
@@ -826,7 +827,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
     /**
      * Popup A4_7
      */
-    initPopupInList(index: any, sid: string, businessName: string) {
+    initPopupInList(index: any, sid: string, businessName: string, activityStatus: number) {
       const vm = this;
       const element = $('.ccg005-status-img')[index()];
       vm.indexUpdateItem(index());
@@ -847,6 +848,10 @@ module nts.uk.at.view.ccg005.a.screenModel {
         businessName: businessName,
         goOutDate: moment.utc().format("YYYY/MM/DD")
       }));
+
+      //update current status
+      vm.activatedStatus(activityStatus);
+      vm.attendanceInformationDtosDisplay()[index].activityStatus = activityStatus;
     }
 
     nextPage() {
@@ -996,7 +1001,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
         case StatusClassfication.GO_OUT: return StatusClassficationIcon.GO_OUT;
         case StatusClassfication.GO_HOME: return StatusClassficationIcon.GO_HOME;
         case StatusClassfication.HOLIDAY: return StatusClassficationIcon.HOLIDAY;
-        default: return StatusClassficationIcon.NOT_PRESENT;
+        default: return StatusClassficationIcon.GO_OUT;
       }
     }
 
@@ -1116,17 +1121,19 @@ module nts.uk.at.view.ccg005.a.screenModel {
      */
     onSearchEmployee() {
       const vm = this;
-      const param = {
-        keyWorks: vm.searchValue(),
-        baseDate: vm.selectedDate(),
-        emojiUsage: vm.emojiUsage()
-      };
-      vm.$blockui('show');
-      vm.$ajax('com', API.searchForEmployee, param)
-        .then((res: object.DisplayInformationDto) => {
-          vm.dataToDisplay(res);
-        })
-        .always(() => vm.$blockui('clear'))
+      if(vm.searchValue().trim().length > 0) {
+        const param = {
+          keyWorks: vm.searchValue(),
+          baseDate: vm.selectedDate(),
+          emojiUsage: vm.emojiUsage()
+        };
+        vm.$blockui('show');
+        vm.$ajax('com', API.searchForEmployee, param)
+          .then((res: object.DisplayInformationDto) => {
+            vm.dataToDisplay(res);
+          })
+          .always(() => vm.$blockui('clear'));
+      }
     }
 
     clearDataDisplay() {
@@ -1181,6 +1188,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
      */
     registerAttendanceStatus(selectedStatus: number, activityStatusIcon: number) {
       const vm = this;
+      vm.activatedStatus(selectedStatus); //TODO
       const params: ActivityStatusParam = {
         activity: selectedStatus,
         sid: vm.sIdUpdateStatus(),
@@ -1268,63 +1276,6 @@ module nts.uk.at.view.ccg005.a.screenModel {
     ALARM = 2
   }
 
-  enum ApplicationType {
-
-    /**
-     * 0: 残業申請
-     */
-    OVER_TIME_APPLICATION = 0,
-
-    /**
-     * 1: 休暇申請
-     */
-    ABSENCE_APPLICATION = 1,
-
-    /**
-     * 2: 勤務変更申請
-     */
-    WORK_CHANGE_APPLICATION = 2,
-
-    /**
-     * 3: 出張申請
-     */
-    BUSINESS_TRIP_APPLICATION = 3,
-
-    /**
-     * 4: 直行直帰申請
-     */
-    GO_RETURN_DIRECTLY_APPLICATION = 4,
-
-    /**
-     * 6: 休出時間申請
-     */
-    HOLIDAY_WORK_APPLICATION = 6,
-
-    /**
-     * 7: 打刻申請
-     */
-    STAMP_APPLICATION = 7,
-
-    /**
-     * 8: 時間休暇申請
-     */
-    ANNUAL_HOLIDAY_APPLICATION = 8,
-
-    /**
-     * 9: 遅刻早退取消申請
-     */
-    EARLY_LEAVE_CANCEL_APPLICATION = 9,
-
-    /**
-     * 10: 振休振出申請
-     */
-    COMPLEMENT_LEAVE_APPLICATION = 10,
-
-    /**
-     * 15: 任意項目申請
-     */
-    OPTIONAL_ITEM_APPLICATION = 15,
-  }
   class FavoriteSpecifyData {
     favoriteName: string;
     creatorId: string;
@@ -1365,6 +1316,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
     attendanceDetailDto: AttendanceDetailViewModel;
     avatarDto: object.UserAvatarDto;
     activityStatusIconNo: number;
+    activityStatus: number;
     comment: string;
     goOutDto: GoOutEmployeeInformationViewModel;
     emojiIconNo: number;
