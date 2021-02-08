@@ -67,8 +67,8 @@ public class KfnmtRptWkMonOut extends UkJpaEntity
 	private int itemType;
 
 	// column 社員ID
-	@Column(name = "EMPLOYEE_ID")
-	private String employeeID;
+	@Column(name = "SID")
+	private String sid;
 
 	// column 文字の大きさ
 	@Column(name = "TEXT_SIZE")

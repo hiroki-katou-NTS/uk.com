@@ -27,7 +27,7 @@ public class JpaOutputItemMonthlyWorkScheduleRepository extends JpaRepository
 	/** The Constant FIND_BY_SELECTION_CID_SID. */
 	private static final String FIND_BY_SELECTION_CID_SID = "SELECT c FROM KfnmtRptWkMonOut c"
 			+ " WHERE c.companyID = :companyID"
-			+ " AND c.employeeID = :employeeID"
+			+ " AND c.sid = :employeeID"
 			+ " AND c.itemType = :itemType";
 
 	/** The Constant FIND_BY_SELECTION_CID_CODE. */
@@ -40,7 +40,7 @@ public class JpaOutputItemMonthlyWorkScheduleRepository extends JpaRepository
 	private static final String FIND_BY_SELECTION_CID_CODE_SID = "SELECT c FROM KfnmtRptWkMonOut c"
 			+ " WHERE c.companyID = :companyID"
 			+ " AND c.itemCode = :itemCode"
-			+ " AND c.employeeID = :employeeID"
+			+ " AND c.sid = :employeeID"
 			+ " AND c.itemType = :itemType";
 	
 	/** The Constant FIND_BY_LAYOUTID. */
