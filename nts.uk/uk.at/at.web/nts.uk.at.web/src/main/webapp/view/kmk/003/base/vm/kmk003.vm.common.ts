@@ -12,7 +12,6 @@ module nts.uk.at.view.kmk003.a {
     import FlowRestSettingDto = service.model.common.FlowRestSettingDto;
     import FlowRestTimezoneDto = service.model.common.FlowRestTimezoneDto;
     import IntervalTimeDto = service.model.common.IntervalTimeDto;
-    import IntervalTimeSettingDto = service.model.common.IntervalTimeSettingDto;
     import DesignatedTimeDto = service.model.common.DesignatedTimeDto;
     import SubHolTransferSetDto = service.model.common.SubHolTransferSetDto;
     import WorkTimezoneOtherSubHolTimeSetDto = service.model.common.WorkTimezoneOtherSubHolTimeSetDto;
@@ -227,7 +226,6 @@ module nts.uk.at.view.kmk003.a {
 
             export class WorkTimezoneCommonSetModel {
                 zeroHStraddCalculateSet: KnockoutObservable<boolean>;
-                intervalSet: IntervalTimeSettingModel;
                 subHolTimeSet: WorkTimezoneOtherSubHolTimeSetModel[];
                 raisingSalarySet: KnockoutObservable<string>;
                 medicalSet: WorkTimezoneMedicalSetModel[];
@@ -241,7 +239,6 @@ module nts.uk.at.view.kmk003.a {
 
                 constructor() {
                     this.zeroHStraddCalculateSet = ko.observable(false);
-                    this.intervalSet = new IntervalTimeSettingModel();
                     this.subHolTimeSet = WorkTimezoneOtherSubHolTimeSetModel.getDefaultData();
                     this.raisingSalarySet = ko.observable('');
                     this.medicalSet = WorkTimezoneMedicalSetModel.getDefaultData();
@@ -257,8 +254,6 @@ module nts.uk.at.view.kmk003.a {
                 updateData(data: WorkTimezoneCommonSetDto) {
                     if (data) {
                         this.zeroHStraddCalculateSet(data.zeroHStraddCalculateSet);
-                        this.intervalSet.updateData(data.intervalSet);
-
                         let newSubHolTimeSet: WorkTimezoneOtherSubHolTimeSetModel[] = _.map(data.subHolTimeSet, (dataDTO) => {
                             let dataModel: WorkTimezoneOtherSubHolTimeSetModel = new WorkTimezoneOtherSubHolTimeSetModel();
                             dataModel.updateData(dataDTO);
@@ -316,7 +311,6 @@ module nts.uk.at.view.kmk003.a {
                     let medicalSet: WorkTimezoneMedicalSetDto[] = _.map(this.medicalSet, (dataModel) => dataModel.toDto());
                     var dataDTO: WorkTimezoneCommonSetDto = {
                         zeroHStraddCalculateSet: this.zeroHStraddCalculateSet(),
-                        intervalSet: this.intervalSet.toDto(),
                         subHolTimeSet: subHolTimeSet,
                         raisingSalarySet: this.raisingSalarySet(),
                         medicalSet: medicalSet,
@@ -333,8 +327,6 @@ module nts.uk.at.view.kmk003.a {
 
                 resetData() {
                     this.zeroHStraddCalculateSet(false);
-                    this.intervalSet.resetData();
-
                     let workDayOffTimeSet = _.find(this.subHolTimeSet, o => o.originAtr() == SubHolidayOriginAtr.WORK_DAY_OFF_TIME);
                     workDayOffTimeSet.updateData(WorkTimezoneCommonSetModel.getDefaultSubHol(SubHolidayOriginAtr.WORK_DAY_OFF_TIME).toDto());
                     let overTimeSet = _.find(this.subHolTimeSet, o => o.originAtr() == SubHolidayOriginAtr.FROM_OVER_TIME);
@@ -1227,42 +1219,6 @@ module nts.uk.at.view.kmk003.a {
                         rounding: this.rounding.toDto()
                     };
                     return dataDTO;
-                }
-            }
-
-            export class IntervalTimeSettingModel {
-                useIntervalExemptionTime: KnockoutObservable<boolean>;
-                intervalExemptionTimeRound: TimeRoundingSettingModel;
-                intervalTime: IntervalTimeModel;
-                useIntervalTime: KnockoutObservable<boolean>;
-
-                constructor() {
-                    this.useIntervalExemptionTime = ko.observable(false);
-                    this.intervalExemptionTimeRound = new TimeRoundingSettingModel();
-                    this.intervalTime = new IntervalTimeModel();
-                    this.useIntervalTime = ko.observable(false);
-                }
-
-                updateData(data: IntervalTimeSettingDto) {
-                    this.useIntervalExemptionTime(data.useIntervalExemptionTime);
-                    this.intervalExemptionTimeRound.updateData(data.intervalExemptionTimeRound);
-                    this.intervalTime.updateData(data.intervalTime);
-                    this.useIntervalTime(data.useIntervalTime);
-                }
-
-                toDto(): IntervalTimeSettingDto {
-                    var dataDTO: IntervalTimeSettingDto = {
-                        useIntervalExemptionTime: this.useIntervalExemptionTime(),
-                        intervalExemptionTimeRound: this.intervalExemptionTimeRound.toDto(),
-                        intervalTime: this.intervalTime.toDto(),
-                        useIntervalTime: this.useIntervalTime()
-                    };
-                    return dataDTO;
-                }
-
-                resetData() {
-                    this.useIntervalExemptionTime(false);
-
                 }
             }
 

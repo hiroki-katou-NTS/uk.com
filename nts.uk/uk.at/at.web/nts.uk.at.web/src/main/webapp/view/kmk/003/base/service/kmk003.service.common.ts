@@ -152,13 +152,6 @@ module nts.uk.at.view.kmk003.a {
                     rounding: TimeRoundingSettingDto;
                 }
 
-                export interface IntervalTimeSettingDto {
-                    useIntervalExemptionTime: boolean;
-                    intervalExemptionTimeRound: TimeRoundingSettingDto;
-                    intervalTime: IntervalTimeDto;
-                    useIntervalTime: boolean;
-                }
-
                 export interface OtherEmTimezoneLateEarlySetDto {
                     delTimeRoundingSet: TimeRoundingSettingDto;
                     stampExactlyTimeIsLateEarly: boolean;
@@ -258,7 +251,6 @@ module nts.uk.at.view.kmk003.a {
 
                 export interface WorkTimezoneCommonSetDto {
                     zeroHStraddCalculateSet: boolean;
-                    intervalSet: IntervalTimeSettingDto;
                     subHolTimeSet: WorkTimezoneOtherSubHolTimeSetDto[];
                     raisingSalarySet: string;
                     medicalSet: WorkTimezoneMedicalSetDto[];
