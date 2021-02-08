@@ -545,6 +545,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 		output.setCalculatedFlag(CalculatedFlag.UNCALCULATED);
 		output.setIsProxy(isProxy);
 		output.setOvertimeAppAtr(overtimeAppAtr);
+		// 勤務種類リストと就業時間帯リストがない場合エラーを返す UI
 		return output;
 	}
 
@@ -956,7 +957,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 	}
 
 	@Override
-	public DisplayInfoOverTime startA(
+	public DisplayInfoOverTime startA( // output is not needed to add error list parameter, because just check error msg on UI // 114330
 			String companyId,
 			String employeeId,
 			Optional<GeneralDate> dateOp,
