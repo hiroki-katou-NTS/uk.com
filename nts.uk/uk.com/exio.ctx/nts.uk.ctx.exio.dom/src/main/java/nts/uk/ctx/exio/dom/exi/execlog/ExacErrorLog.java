@@ -4,10 +4,8 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDateTime;
-import nts.gul.text.StringUtil;
 import nts.uk.ctx.exio.dom.exi.condset.AcceptanceLineNumber;
 
 /**

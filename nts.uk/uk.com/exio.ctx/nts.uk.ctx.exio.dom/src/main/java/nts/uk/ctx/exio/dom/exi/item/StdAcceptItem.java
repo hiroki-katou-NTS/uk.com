@@ -78,7 +78,7 @@ public class StdAcceptItem extends AggregateRoot {
 	 * @return
 	 */
 	public AcceptItemEditValueDto checkCondition(String itemValue) {
-		boolean resultCheck = false;
+		boolean resultCheck = true;
 		Object toItemValue = itemValue;
 		AcceptItemEditValueDto result = new AcceptItemEditValueDto(toItemValue, resultCheck, "");
 		if(this.getDataFormatSetting().isPresent()) {
@@ -95,7 +95,7 @@ public class StdAcceptItem extends AggregateRoot {
 				toItemValue = dateFormatSet.editDateValue(itemValue);
 				if(toItemValue == null) {
 					result.setEditError("Msg_1019");
-					result.setResultCheck(true);
+					result.setResultCheck(false);
 					return result;
 				}
 				break;
@@ -104,7 +104,7 @@ public class StdAcceptItem extends AggregateRoot {
 				toItemValue = insFormatSet.editTimeValue(itemValue);
 				if(toItemValue == null) {
 					result.setEditError("Msg_1021");
-					result.setResultCheck(true);
+					result.setResultCheck(false);
 					return result;
 				}
 				break;
@@ -113,7 +113,7 @@ public class StdAcceptItem extends AggregateRoot {
 				toItemValue = numFormatSet.editNumber(itemValue);
 				if(toItemValue == null) {
 					result.setEditError("Msg_1018");
-					result.setResultCheck(true);
+					result.setResultCheck(false);
 					return result;
 				}
 				break;
@@ -123,7 +123,7 @@ public class StdAcceptItem extends AggregateRoot {
 				
 				if(toItemValue == null) {
 					result.setEditError("Msg_1021");
-					result.setResultCheck(true);
+					result.setResultCheck(false);
 					return result;
 				}
 				
@@ -140,7 +140,7 @@ public class StdAcceptItem extends AggregateRoot {
 					toItemValue = GeneralDate.fromString(toItemValue.toString(), "yyyy/MM/dd");	
 				}catch (Exception e) {
 					result.setEditError("Msg_1019");
-					result.setResultCheck(true);
+					result.setResultCheck(false);
 					return result;
 				}
 				

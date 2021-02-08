@@ -103,7 +103,7 @@ public class JpaExacErrorLogRepository extends JpaRepository implements ExacErro
 	public void addList(List<ExacErrorLog> domain) {
 		if(domain.isEmpty()) return;
 		this.commandProxy().insertAll(domain.stream().map(x -> toEntity(x)).collect(Collectors.toList())); 
-		
+		this.getEntityManager().flush();
 	}
 
 }

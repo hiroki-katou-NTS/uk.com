@@ -38,7 +38,7 @@ public class ExternalAcceptCategoryItem extends AggregateRoot {
 	/**主キー区分	 */
 	private NotUseAtr primatyKeyFlg;
 	/**primitiveValue名	 */
-	private String primitiveName;
+	private Optional<String> primitiveName;
 	/**小数部桁数	 */
 	private Optional<Integer> decimalDigit;
 	/**	小数部単位区分 */

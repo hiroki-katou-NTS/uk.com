@@ -39,7 +39,7 @@ public class JpaOiomtExAcpCategoryItemRepository extends JpaRepository implement
 					EnumAdaptor.valueOf(entity.getDataType(), DataType.class),
 					Optional.ofNullable(entity.getAlphaUseFlg() == null ? null : EnumAdaptor.valueOf(entity.getAlphaUseFlg(), AlphaUseFlg.class)),
 					EnumAdaptor.valueOf(entity.getPrimatyKeyFlg(), NotUseAtr.class),
-					entity.getPrimitiveName(),
+					Optional.ofNullable(entity.getPrimitiveName()),
 					Optional.ofNullable(entity.getDecimalDigit()),
 					Optional.ofNullable(entity.getDecimalUnit() == null ? null : EnumAdaptor.valueOf(entity.getDecimalUnit(), ExiDecimalUnit.class)),
 					EnumAdaptor.valueOf(entity.getRequiredFlg(), NotUseAtr.class),
