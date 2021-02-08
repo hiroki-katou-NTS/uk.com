@@ -338,22 +338,26 @@ module knr002.g {
                             return;
                         }
                         
-                        if(((isNullOrUndefined(self.selectableEmployees) || self.selectableEmployees.length == 0) && self.sendEmployeeId())
+                        let selectedEmployees = self.selectableEmployees();
+                        if(((isNullOrUndefined(selectedEmployees) || selectedEmployees.length == 0) && self.sendEmployeeId())
                         /*|| ((!isNullOrUndefined(self.selectableEmployees) && self.selectableEmployees > 0) && !self.sendEmployeeId())*/){
                             $('#G6_1').ntsError('set', { messageId:'Msg_2023' });
                         }
 
-                        if(((isNullOrUndefined(self.selectableWorkTypes) || self.selectableWorkTypes.length == 0) && self.sendWorkType())
+                        let selectedWorkTypes = self.selectableWorkTypes(); 
+                        if(((isNullOrUndefined(selectedWorkTypes) || selectedWorkTypes.length == 0) && self.sendWorkType())
                         /*|| ((!isNullOrUndefined(self.selectableWorkTypes) && self.selectableWorkTypes.length > 0) && !self.sendWorkType())*/){
                             $('#G6_2').ntsError('set', { messageId:'Msg_2024' });
                         }
 
-                        if(((isNullOrUndefined(self.selectableWorkTimes) || self.selectableWorkTimes.length == 0) && self.sendWorkTime())
+                        let selectedWorkTimes = self.selectableWorkTimes();
+                        if(((isNullOrUndefined(selectedWorkTimes) || selectedWorkTimes.length == 0) && self.sendWorkTime())
                         /*|| ((!isNullOrUndefined(self.selectableWorkTimes) && self.selectableWorkTimes.length > 0) && !self.sendWorkTime())*/){
                             $('#G6_3').ntsError('set', { messageId:'Msg_2025' });
                         }
 
-                        if(((isNullOrUndefined(self.selectableBentos) || self.selectableBentos.length == 0) && self.sendBentoMenu())
+                        let selectedBentos = self.selectableBentos();
+                        if(((isNullOrUndefined(selectedBentos) || selectedBentos.length == 0) && self.sendBentoMenu())
                         /*|| ((!isNullOrUndefined(self.selectableBentos) && self.selectableBentos.length > 0) && !self.sendBentoMenu())*/){
                             $('#G6_6').ntsError('set', { messageId:'Msg_2026' });
                         }
