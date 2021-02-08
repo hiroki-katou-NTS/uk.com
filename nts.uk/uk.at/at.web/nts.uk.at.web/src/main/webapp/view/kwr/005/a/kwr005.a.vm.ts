@@ -256,6 +256,7 @@ module nts.uk.at.view.kwr005.a {
           nts.uk.ui.errors.clearAll();
           vm.getSettingListWorkStatus(vm.rdgSelectedId(), data);
         }
+        //$('.yearmonth-picker').trigger('validate');
         $('#btnExportExcel').focus();
       });
 
@@ -358,7 +359,8 @@ module nts.uk.at.view.kwr005.a {
     exportExcelPDF(mode: number = 1) {
       let vm = this,
         validateError: any = {}; //not error
-
+      
+      $('.ntsDatepicker').trigger('validate');
       validateError = vm.checkErrorConditions();
 
       if (validateError.error) {
