@@ -315,12 +315,12 @@ module knr002.g {
             private enter(): void{
                 var self = this;
                 self.clearErrors();
-                service.confirm(self.empInfoTerCode()).done((data) => {
-                    console.log("data: ", data);
-                    if(!data){
-                        // do something
-                        console.log("no data");
-                    } else {
+//                service.confirm(self.empInfoTerCode()).done((data) => {
+//                    console.log("data: ", data);
+//                    if(!data){
+//                        // do something
+//                        console.log("no data");
+//                    } else {
                         if(!self.sendEmployeeId() && 
                             !self.sendWorkType() && 
                             !self.sendWorkTime() && 
@@ -338,23 +338,23 @@ module knr002.g {
                             return;
                         }
                         
-                        if(((isNullOrUndefined(data.employeeIds) || data.employeeIds.length == 0) && self.sendEmployeeId())
-                        || ((!isNullOrUndefined(data.employeeIds) && data.employeeIds.length > 0) && !self.sendEmployeeId())){
+                        if(((isNullOrUndefined(self.selectableEmployees) || self.selectableEmployees.length == 0) && self.sendEmployeeId())
+                        /*|| ((!isNullOrUndefined(self.selectableEmployees) && self.selectableEmployees > 0) && !self.sendEmployeeId())*/){
                             $('#G6_1').ntsError('set', { messageId:'Msg_2023' });
                         }
 
-                        if(((isNullOrUndefined(data.workTypeCodes) || data.workTypeCodes.length == 0) && self.sendWorkType())
-                        || ((!isNullOrUndefined(data.workTypeCodes) && data.workTypeCodes.length > 0) && !self.sendWorkType())){
+                        if(((isNullOrUndefined(self.selectableWorkTypes) || self.selectableWorkTypes.length == 0) && self.sendWorkType())
+                        /*|| ((!isNullOrUndefined(self.selectableWorkTypes) && self.selectableWorkTypes.length > 0) && !self.sendWorkType())*/){
                             $('#G6_2').ntsError('set', { messageId:'Msg_2024' });
                         }
 
-                        if(((isNullOrUndefined(data.workTimeCodes) || data.workTimeCodes.length == 0) && self.sendWorkTime())
-                        || ((!isNullOrUndefined(data.workTimeCodes) && data.workTimeCodes.length > 0) && !self.sendWorkTime())){
+                        if(((isNullOrUndefined(self.selectableWorkTimes) || self.selectableWorkTimes.length == 0) && self.sendWorkTime())
+                        /*|| ((!isNullOrUndefined(self.selectableWorkTimes) && self.selectableWorkTimes.length > 0) && !self.sendWorkTime())*/){
                             $('#G6_3').ntsError('set', { messageId:'Msg_2025' });
                         }
 
-                        if(((isNullOrUndefined(data.bentoMenuFrameNumbers) || data.bentoMenuFrameNumbers.length == 0) && self.sendBentoMenu())
-                        || ((!isNullOrUndefined(data.bentoMenuFrameNumbers) && data.bentoMenuFrameNumbers.length > 0) && !self.sendBentoMenu())){
+                        if(((isNullOrUndefined(self.selectableBentos) || self.selectableBentos.length == 0) && self.sendBentoMenu())
+                        /*|| ((!isNullOrUndefined(self.selectableBentos) && self.selectableBentos.length > 0) && !self.sendBentoMenu())*/){
                             $('#G6_6').ntsError('set', { messageId:'Msg_2026' });
                         }
                         if(self.hasError()){
@@ -384,8 +384,8 @@ module knr002.g {
                                 }).always(() => {
                                     blockUI.clear();
                                 });
-                    }
-                });
+//                    }
+//                });
             }
             
             /**
