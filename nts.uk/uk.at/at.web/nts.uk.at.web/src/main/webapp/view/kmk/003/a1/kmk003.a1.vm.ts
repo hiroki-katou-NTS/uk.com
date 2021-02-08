@@ -154,13 +154,12 @@ module a1 {
                 return self.isDetailMode() && !self.isFlowMode() && !self.isFlexMode();
             }, this);
             //A7_13, A7_14, A7_16 display condition
-            //TODO missing 複数回勤務管理.使用区分
             self.condition30 = ko.computed(() => {
-                return ( self.isFlexMode() || self.isDiffTimeMode() )
+                return (!self.timeZoneModelTwo.useAtr || self.isFlexMode() || self.isDiffTimeMode())
             },this);
 
             self.condition31 = ko.computed(() => {
-                return !(!self.timeZoneModelTwo.useAtr || self.isFlexMode() || self.isDiffTimeMode());
+                return (!self.timeZoneModelTwo.useAtr && self.isFlexMode() && self.isDiffTimeMode());
             })
                                                    
             // Subscribe event update dialog J interlock for A7_4, A7_6, A7_12, A7_13, A7_14

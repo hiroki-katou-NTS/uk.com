@@ -15,10 +15,8 @@ module nts.uk.at.view.kmk003.g {
 
             lstRest: KnockoutObservableArray<any>;
             specialLstRest: KnockoutObservableArray<any>;
-            actualList: KnockoutObservableArray<any>;
 
             selectedRest: KnockoutObservable<number>;
-            selectedActual: KnockoutObservable<number>;
             dataObject: KnockoutObservable<any>;
             updateRounding : KnockoutObservable<boolean>;
             isFlow: KnockoutObservable<boolean>;
@@ -46,13 +44,8 @@ module nts.uk.at.view.kmk003.g {
                     new RadioBoxModel(0, nts.uk.resource.getText('KMK003_235')),
                     new RadioBoxModel(1, nts.uk.resource.getText('KMK003_236'))
                 ]);
-                self.actualList = ko.observableArray([
-                    new RadioBoxModel(0, nts.uk.resource.getText('KMK003_239')),
-                    new RadioBoxModel(1, nts.uk.resource.getText('KMK003_240'))
-                ]);
 
                 self.selectedRest = ko.observable(0);
-                self.selectedActual = ko.observable(0);
                 self.dataObject = ko.observable(null);
                 
                 self.updateRounding = ko.observable(true);
@@ -116,7 +109,6 @@ module nts.uk.at.view.kmk003.g {
                     _self.selectedRest(dataObject.calcMethod);
                 }
                 else {
-                    _self.selectedActual(dataObject.actualRest);
                     _self.selectedRest(dataObject.restTimeCalcMethod);
                 }
             }
@@ -171,7 +163,6 @@ module nts.uk.at.view.kmk003.g {
                 }
                 else {
                     returnData = {
-                        actualRest: _self.selectedActual(),
                         restTimeCalcMethod: _self.selectedRest()
                     };
                 }

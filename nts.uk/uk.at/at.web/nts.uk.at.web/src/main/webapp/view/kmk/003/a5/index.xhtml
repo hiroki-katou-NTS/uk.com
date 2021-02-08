@@ -26,7 +26,7 @@
 
 		<div class="pull-right">
 			<com:ko tag="ifnot" bind="isFlow() || isFlex()">
-				<button tabindex="69"  data-bind="click: openFixedBreakSetting, visible: isDetailMode">#{i18n.getText('KMK003_192')}</button>
+				<button tabindex="69"  data-bind="click: openDialogG, visible: isDetailMode">#{i18n.getText('KMK003_192')}</button>
 			</com:ko>
 			<com:ko tag="if" bind="isFlow() || isFlex()">
 				<button tabindex="69" data-bind="click: openFixedBreakSetting,
@@ -55,7 +55,7 @@
 					optionsText: 'name',
 					value: flexFixedRestTime,
 					enable: true }"></div>
-		</div>	
+		</div>
 	</com:ko>
 	<com:ko tag="if" bind="isFlow">
 		<div class="pull-left">
@@ -70,13 +70,13 @@
 					optionsText: 'name',
 					value: flowFixedRestTime,
 					enable: true }"></div>
-		</div>	
+		</div>
 	</com:ko>
 	<div class="cf"></div>
 	<!-- End of Fixed rest time switch button -->
-	
-	<div class="tab-seperator">	
-	
+
+	<div class="tab-seperator">
+
 		<!-- Begin Fixed timezones -->
 		<com:ko tag="if" bind="isFixed">
 			<!-- Begin Simple mode -->
@@ -92,7 +92,7 @@
 						<label>#{i18n.getText('KMK003_51')}</label>
 					</h3>
 					<div class ="accordion-content">
-						<div id="fixedOneDay" data-bind="ntsFixTableCustom: {option: oneDayFixedTimezoneOption}"></div>
+						<div id="fixedOneDay2" data-bind="ntsFixTableCustom: {option: oneDayFixedTimezoneOption}"></div>
 					</div>
 				</div>
 				<!-- One day -->
@@ -122,7 +122,7 @@
 			<!-- End of Detail mode -->
 		</com:ko>
 		<!-- End of Fixed timezones -->
-		
+
 		<!-- Begin Flex timezones -->
 		<com:ko tag="if" bind="isFlexTimezone">
 			<!-- Simple mode -->
@@ -137,7 +137,7 @@
 						<label>#{i18n.getText('KMK003_51')}</label>
 					</h3>
 					<div class ="accordion-content">
-						<div id="flexOneDay" data-bind="ntsFixTableCustom: {option: oneDayFlexTimezoneOption}"></div>
+						<div id="flexOneDay2" data-bind="ntsFixTableCustom: {option: oneDayFlexTimezoneOption}"></div>
 					</div>
 				</div>
 				<!-- One day -->
@@ -166,7 +166,7 @@
 			</com:ko>
 		</com:ko>
 		<!-- End of Flex timezones -->
-		
+
 		<!-- Begin Flex rest set -->
 		<com:ko tag="if" bind="isFlexRestTime">
 			<!-- Simple mode -->
@@ -213,7 +213,7 @@
 					</div>
 			</com:ko>
 			<!-- End of Simple mode -->
-			
+
 			<!-- Begin Detail mode -->
 			<com:ko tag="if" bind="isDetailMode">
 				<!-- One day -->
@@ -222,7 +222,7 @@
 						<label>#{i18n.getText('KMK003_51')}</label>
 					</h3>
 					<div class="accordion-content">
-						<div id="flexRestOneDay" class="default-input-width"
+						<div id="flexRestOneDay2" class="default-input-width"
 							data-bind="ntsFixTableCustom: {option: oneDayFlexRestSetOption}"></div>
 						<com:ko tag="with" bind="oneDayFlexRestSet">
 							<div tabindex="1" class="tab_5_checkbox" data-bind="ntsCheckBox: {
@@ -360,23 +360,23 @@
 			<!-- End of Detail mode -->
 		</com:ko>
 		<!-- End of Flex rest set -->
-		
+
 		<!-- Begin flow timezones -->
 		<com:ko tag="if" bind="isFlowTimezone">
 			<div id="flowTz" data-bind="ntsFixTableCustom: {option: flowTimezoneOption}"></div>
 		</com:ko>
 		<!-- End of flow timezones -->
-		
+
 		<!-- Begin flow rest set -->
 		<com:ko tag="if" bind="isFlowRestTime">
 			<div id="flowRt" data-bind="ntsFixTableCustom: {option: flowRestSetOption}"></div>
-				
+
 			<com:ko tag="with" bind="flowRestSet">
 				<div tabindex="86" class="tab_5_checkbox" data-bind="ntsCheckBox: {
 					checked: useHereAfterRestSet,
 					enable: true,
 					text: nts.uk.resource.getText('KMK003_144') }"></div>
-					
+
 				<table class="tbl-after-restset default-input-width">
 					<tr>
 						<th>#{i18n.getText('KMK003_174')}</th>
@@ -408,10 +408,10 @@
 					</tr>
 				</table>
 			</com:ko>
-				
+
 		</com:ko>
 		<!-- End of flow rest set -->
-		
+
 		<!-- Begin Diff timezones -->
 		<com:ko tag="if" bind="isDiffTime">
 			<!-- Begin Simple mode -->
@@ -427,10 +427,10 @@
 						<label>#{i18n.getText('KMK003_51')}</label>
 					</h3>
 					<div class ="accordion-content">
-						<div id="diffOneDay" data-bind="ntsFixTableCustom: {option: oneDayDiffTimezoneOption}"></div>
+						<div id="diffOneDay2" data-bind="ntsFixTableCustom: {option: oneDayDiffTimezoneOption}"></div>
 					</div>
 				</div><!-- One day -->
-				
+
 				<com:ko tag="if" bind="useHalfDay">
 					<!-- Morning -->
 					<div tabindex="-1" class="accordion" data-bind="ntsAccordion: {enable: true, collapsible:true, active: 0} ">
@@ -441,7 +441,7 @@
 							<div id="diffMorning" data-bind="ntsFixTableCustom: {option: morningDiffTimezoneOption}"></div>
 						</div>
 					</div><!-- Morning -->
-					
+
 					<!-- Afternoon -->
 					<div tabindex="-1" class="accordion" data-bind="ntsAccordion: {enable: true, collapsible:true, active: 0} ">
 						<h3>
@@ -456,7 +456,7 @@
 			<!-- End of Detail mode -->
 		</com:ko>
 		<!-- End Diff timezones -->
-		
+
 	</div>
-	
+
 </ui:composition>
