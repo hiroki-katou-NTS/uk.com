@@ -128,7 +128,7 @@ public class CreateWorkLedgerDisplayContentQuery {
                         boolean isCharacter = attribute == CommonAttributesOfForms.WORK_TYPE
                                 || attribute == CommonAttributesOfForms.WORKING_HOURS;
                         val primitiveValue = attributeMonthly.getPrimitiveValue().isPresent() ? attributeMonthly.getPrimitiveValue().get() : null;
-                        val nameDisplay = "";
+                        String nameDisplay = "";
                         if (valueSub != null) {
                             if (primitiveValue != null) {
                                 val key = valueSub.value().toString();
