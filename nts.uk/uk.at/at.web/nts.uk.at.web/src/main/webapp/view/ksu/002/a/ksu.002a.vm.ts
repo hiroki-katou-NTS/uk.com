@@ -11,7 +11,8 @@ module nts.uk.ui.at.ksu002.a {
 
 	const API = {
 		UNAME: '/sys/portal/webmenu/username',
-		GSCHE: '/screen/ksu/ksu002/displayInWorkInformation'
+		GSCHE: '/screen/ksu/ksu002/displayInWorkInformation',
+		GSCHER: '/screen/ksu/ksu002/getDataDaily'
 	};
 
 	const memento: m.Options = {
@@ -40,6 +41,32 @@ module nts.uk.ui.at.ksu002.a {
 				data.state.value.begin(state.value.begin);
 				data.state.value.finish(state.value.finish);
 			}
+		},
+		hasChange: function (dayDatas: DayDataRawObsv[]) {
+			const changeds = dayDatas
+				.map(({ data }) => {
+					const {
+						$raw,
+						wtime,
+						wtype,
+						value,
+						achievement
+					} = data;
+					const {
+						workTypeCode,
+						workTimeCode,
+						startTime,
+						endTime
+					} = ko.unwrap(achievement) ? $raw.achievements : $raw;
+
+					return ko.unwrap(wtype.code) !== workTypeCode
+						|| ko.unwrap(wtime.code) !== workTimeCode
+						|| ko.unwrap(value.begin) !== startTime
+						|| ko.unwrap(value.finish) !== endTime;
+				})
+				.filter((f) => !!f);
+
+			return changeds.length !== 0;
 		}
 	};
 
@@ -279,56 +306,95 @@ module nts.uk.ui.at.ksu002.a {
 				.subscribe((arch) => {
 					const { NO } = ACHIEVEMENT;
 					const { IMPRINT } = EDIT_STATE;
-					const undo = vm.schedules.undoAble();
-					const redo = vm.schedules.redoAble();
+					const { begin, finish } = vm.baseDate();
+
+					const command = {
+						listSid: [vm.$user.employeeId],
+						startDate: moment(begin).toISOString(),
+						endDate: moment(finish).toISOString()
+					};
 
 					const schedules: DayDataMementoObsv[] = ko.unwrap(vm.schedules);
 
-					// soft reset (only undo, redo)
-					vm.schedules.reset(!(undo || redo) || arch === NO);
+					$.Deferred()
+						.resolve(true)
+						.then(() => vm.$blockui('show'))
+						// fc
+						.then(() => arch === ACHIEVEMENT.YES ? vm.$ajax('at', API.GSCHER, command) : [])
+						.then((response: Achievement[]) => {
+							if (response.length === 0) {
+								return;
+							}
 
-					// reset data
-					_.each(schedules, (sc) => {
-						const { data } = sc;
-						const { $raw, wtype, wtime, value } = data;
-						const { endTimeEditState, startTimeEditState, workTimeEditStatus, workTypeEditStatus } = $raw;
+							_.each(schedules, (sc) => {
+								const { data } = sc;
+								const { $raw } = data;
+								const exist = _.find(response, (d: Achievement & { date: string; }) => moment(d.date, 'YYYY/MM/DD').isSame(sc.date, 'date'));
 
-						// UI-4-1 実績表示を「する」に選択する
-						// UI-4-2 実績表示を「しない」に選択する
-						if (!!$raw.achievements || arch === NO) {
-							const {
-								workTypeCode,
-								workTypeName,
-								workTimeCode,
-								workTimeName,
-								startTime,
-								endTime
-							} = arch === NO ? $raw : ($raw.achievements || $raw);
+								if (!exist) {
+									$raw.achievements = null;
+								} else {
+									const { endTime, startTime, workTimeCode, workTimeName, workTypeCode, workTypeName } = exist;
 
-							wtype.code(workTypeCode || null);
-							wtype.name(workTypeName || null);
+									$raw.achievements = {
+										endTime,
+										startTime,
+										workTimeCode,
+										workTimeName,
+										workTypeCode,
+										workTypeName
+									};
+								}
+							});
+						})
+						.then(() => {
+							// reset data
+							_.each(schedules, (sc) => {
+								const { data } = sc;
+								const { $raw, wtype, wtime, value } = data;
+								const { endTimeEditState, startTimeEditState, workTimeEditStatus, workTypeEditStatus } = $raw;
 
-							wtime.code(workTimeCode || null);
-							wtime.name(workTimeName || null);
+								// UI-4-1 実績表示を「する」に選択する
+								// UI-4-2 実績表示を「しない」に選択する
+								if (!!$raw.achievements || arch === NO) {
+									const {
+										workTypeCode,
+										workTypeName,
+										workTimeCode,
+										workTimeName,
+										startTime,
+										endTime
+									} = arch === NO ? $raw : ($raw.achievements || $raw);
 
-							value.begin(startTime);
-							value.finish(endTime);
+									wtype.code(workTypeCode || null);
+									wtype.name(workTypeName || null);
 
-							data.confirmed($raw.confirmed);
-							data.achievement(null);
-							data.classification($raw.workHolidayCls);
-							data.need2Work($raw.needToWork);
+									wtime.code(workTimeCode || null);
+									wtime.name(workTimeName || null);
 
-							data.state.wtype(workTypeEditStatus ? workTypeEditStatus.editStateSetting : IMPRINT);
-							data.state.wtime(workTimeEditStatus ? workTimeEditStatus.editStateSetting : IMPRINT);
+									value.begin(startTime);
+									value.finish(endTime);
 
-							data.state.value.begin(startTimeEditState ? startTimeEditState.editStateSetting : IMPRINT);
-							data.state.value.finish(endTimeEditState ? endTimeEditState.editStateSetting : IMPRINT);
-						}
+									data.confirmed($raw.confirmed);
+									data.achievement(null);
+									data.classification($raw.workHolidayCls);
+									data.need2Work($raw.needToWork);
 
-						// state of achievement (both data & switch select)
-						data.achievement(arch === NO ? null : !!$raw.achievements);
-					});
+									data.state.wtype(workTypeEditStatus ? workTypeEditStatus.editStateSetting : IMPRINT);
+									data.state.wtime(workTimeEditStatus ? workTimeEditStatus.editStateSetting : IMPRINT);
+
+									data.state.value.begin(startTimeEditState ? startTimeEditState.editStateSetting : IMPRINT);
+									data.state.value.finish(endTimeEditState ? endTimeEditState.editStateSetting : IMPRINT);
+								}
+
+								// state of achievement (both data & switch select)
+								data.achievement(arch === NO ? null : !!$raw.achievements);
+							});
+
+							// reset state of memento
+							vm.schedules.reset();
+						})
+						.always(() => vm.$blockui('clear'));
 				});
 		}
 
@@ -462,6 +528,9 @@ module nts.uk.ui.at.ksu002.a {
 
 			if (changed.data.wtime.code !== cloned.data.wtime.code) {
 				state.wtime(EDIT_STATE.HAND_CORRECTION_MYSELF);
+				// if change time code, change time value state
+				state.value.begin(EDIT_STATE.HAND_CORRECTION_MYSELF);
+				state.value.finish(EDIT_STATE.HAND_CORRECTION_MYSELF);
 			}
 
 			if (changed.data.value.begin !== cloned.data.value.begin) {
@@ -474,22 +543,24 @@ module nts.uk.ui.at.ksu002.a {
 		}
 	}
 
+	interface Achievement {
+		// 勤務種類コード
+		workTypeCode: string;
+		// 勤務種類名
+		workTypeName: string;
+		// 就業時間帯コード
+		workTimeCode: string;
+		// 就業時間帯名
+		workTimeName: string;
+		// 開始時刻
+		startTime: null | number;
+		// 終了時刻
+		endTime: null | number;
+	}
+
 	interface WorkSchedule<D = Date> {
 		// 実績か
-		achievements: {
-			// 勤務種類コード
-			workTypeCode: string;
-			// 勤務種類名
-			workTypeName: string;
-			// 就業時間帯コード
-			workTimeCode: string;
-			// 就業時間帯名
-			workTimeName: string;
-			// 開始時刻
-			startTime: null | number;
-			// 終了時刻
-			endTime: null | number;
-		};
+		achievements: Achievement;
 		// 確定済みか
 		confirmed: boolean;
 		// 年月日

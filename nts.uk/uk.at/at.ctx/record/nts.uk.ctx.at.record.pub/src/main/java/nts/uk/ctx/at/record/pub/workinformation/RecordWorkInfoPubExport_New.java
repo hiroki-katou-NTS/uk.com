@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.pub.workinformation;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
@@ -83,13 +84,13 @@ public class RecordWorkInfoPubExport_New {
 	private AttendanceTimeOfExistMinus calculateFlex;
 	
 //	計算残業	
-	private List<AttendanceTime> overTimeLst;
+	private Map<Integer, AttendanceTime> overTimeLst;
 	
 //	計算振替残業
 	private List<AttendanceTime> calculateTransferOverTimeLst;
 	
 //	計算休日出勤
-	private List<AttendanceTime> calculateHolidayLst;
+	private Map<Integer, AttendanceTime> calculateHolidayLst;
 	
 //	計算振替
 	private List<AttendanceTime> calculateTransferLst;

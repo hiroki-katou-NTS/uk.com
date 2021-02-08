@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.dom.alarm.extractionrange.month.singlemonth;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.PreviousClassification;
 
 /**
@@ -9,6 +10,7 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.PreviousClassification;
  *
  */
 @Getter
+@Setter
 public class SingleMonth {
 
 	/** 前・先区分  */

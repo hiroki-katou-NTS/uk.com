@@ -107,10 +107,10 @@ public class DailyRecordCreateErrorAlarmServiceImpl implements DailyRecordCreate
 		returnList.addAll(goingOutStampLeakageChecking.goingOutStampLeakageChecking(companyId, empId, targetDate,
 				outingTime));
 		// 休憩系打刻漏れをチェックする
-		integrationOfDaily.getBreakTime().ifPresent(tc -> {
-			breakTimeStampLeakageChecking.breakTimeStampLeakageChecking(companyId, empId, targetDate, new BreakTimeOfDailyPerformance(empId, targetDate, tc)).ifPresent(c -> {
-				returnList.add(c);
-			});
+		
+		breakTimeStampLeakageChecking.breakTimeStampLeakageChecking(companyId, empId, targetDate, new BreakTimeOfDailyPerformance(empId, targetDate, integrationOfDaily.getBreakTime()))
+			.ifPresent(c -> {
+			returnList.add(c);
 		});
 		// 臨時系打刻漏れをチェックする
 		TemporaryTimeOfDailyPerformance temporaryTime = integrationOfDaily.getTempTime().map(c -> new TemporaryTimeOfDailyPerformance(empId, targetDate, c)).orElse(null);
@@ -227,10 +227,9 @@ public class DailyRecordCreateErrorAlarmServiceImpl implements DailyRecordCreate
 				timeLeavingOfDailyPerformance, 
 				temporaryTimeOfDailyPerformance));
 		// 休憩系打刻順序不正をチェックする
-		integrationOfDaily.getBreakTime().ifPresent(tc ->{
-				returnList.addAll(breakTimeStampIncorrectOrderChecking.breakTimeStampIncorrectOrderChecking(
-						companyId, empId, targetDate,new BreakTimeOfDailyPerformance(empId, targetDate, tc)));
-		});
+		
+		returnList.addAll(breakTimeStampIncorrectOrderChecking.breakTimeStampIncorrectOrderChecking(
+				companyId, empId, targetDate,new BreakTimeOfDailyPerformance(empId, targetDate, integrationOfDaily.getBreakTime())));
 		// 臨時系打刻順序不正をチェックする
 		returnList.add(temporaryStampOrderChecking.temporaryStampOrderChecking(empId, companyId, targetDate,
 				temporaryTimeOfDailyPerformance));

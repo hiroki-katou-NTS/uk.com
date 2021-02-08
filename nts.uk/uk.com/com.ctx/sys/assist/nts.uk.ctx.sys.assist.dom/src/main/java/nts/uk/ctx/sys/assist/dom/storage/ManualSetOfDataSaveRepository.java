@@ -24,4 +24,6 @@ public interface ManualSetOfDataSaveRepository {
 	Optional<ManualSetOfDataSave> getManualSetOfDataSaveById(String storeProcessingId);
 
 	void addManualSetting(ManualSetOfDataSave domain);
+	
+	void update(ManualSetOfDataSave domain);
 }

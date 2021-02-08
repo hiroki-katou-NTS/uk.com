@@ -30,4 +30,13 @@ public class EmpBasicInfoAdapterImpl implements EmpBasicInfoAdapter {
 							item.getRetirementDate());
 				}).collect(Collectors.toList());
 	}
+
+	@Override
+	public List<EmpBasicInfoImport> getEmpBasicInfo(String companyId, List<String> employeeIds) {
+		return this.personEmpBasicInfoPub.getEmpBasicInfo(companyId, employeeIds).stream().map(item -> {
+			return new EmpBasicInfoImport(item.getPersonId(), item.getEmployeeId(), item.getBusinessName(),
+					item.getGender(), item.getBirthday(), item.getEmployeeCode(), item.getJobEntryDate(),
+					item.getRetirementDate());
+		}).collect(Collectors.toList());
+	}
 }

@@ -456,8 +456,8 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 				asyncTask.finishedAsCancelled();
 			}
 			ScheduleExecutionLog scheExeLog = this.scheduleExecutionLogRepository
-					.findById(command.getCompanyId(), scheduleExecutionLog.getExecutionId()).get();
-			if (scheExeLog.getCompletionStatus() != CompletionStatus.INTERRUPTION) {
+					.findById(command.getCompanyId(), scheduleExecutionLog.getExecutionId()).orElse(null);
+			if (scheExeLog != null && scheExeLog.getCompletionStatus() != CompletionStatus.INTERRUPTION) {
 				System.out.println("not hasBeenRequestedToCancel: " + asyncTask.hasBeenRequestedToCancel() + "&exeid="
 						+ scheduleExecutionLog.getExecutionId());
 				this.updateStatusScheduleExecutionLog(scheduleExecutionLog);

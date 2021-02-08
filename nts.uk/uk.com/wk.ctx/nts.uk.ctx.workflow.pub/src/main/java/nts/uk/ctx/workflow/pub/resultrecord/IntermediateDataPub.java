@@ -10,6 +10,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.workflow.pub.resultrecord.export.AppEmpStatusExport;
 import nts.uk.ctx.workflow.pub.resultrecord.export.AppEmpSttMonthExport;
 import nts.uk.ctx.workflow.pub.resultrecord.export.AppRootInsContentExport;
+import nts.uk.ctx.workflow.pub.resultrecord.export.AppRootInsPeriodExport;
 import nts.uk.ctx.workflow.pub.resultrecord.export.AppRootSttMonthExport;
 import nts.uk.ctx.workflow.pub.resultrecord.export.Request113Export;
 import nts.uk.ctx.workflow.pub.resultrecord.export.Request533Export;
@@ -301,7 +302,7 @@ public interface IntermediateDataPub {
 	 * @param rootType
 	 * @return
 	 */
-	public List<ApprovalRootStateExport> getAppRootInstanceByEmpPeriod(List<String> employeeIDLst, DatePeriod period, Integer rootType);
+	public List<ApprovalRootStateExport> getAppRootInstanceDayByEmpPeriod(List<String> employeeIDLst, DatePeriod period, Integer rootType);
 	
 	/**
 	 * RequestList 673
@@ -310,5 +311,15 @@ public interface IntermediateDataPub {
 	 * @param period
 	 * @return
 	 */
-	public ApprovalRootStateExport getAppRootInstanceMonthByEmpPeriod(String employeeID, DatePeriod period);
+	public ApprovalRootStateExport getAppRootInstanceMonthByEmpPeriod(String employeeID, DatePeriod period, YearMonth yearMonth, Integer closureID,
+			ClosureDate closureDate, GeneralDate baseDate);
+	
+	/**
+	 * RequestList 709
+	 * @param employeeIDLst
+	 * @param period
+	 * @param rootType
+	 * @return
+	 */
+	public List<AppRootInsPeriodExport> getAppRootInstanceByEmpPeriod(List<String> employeeIDLst, DatePeriod period, Integer rootType);
 }

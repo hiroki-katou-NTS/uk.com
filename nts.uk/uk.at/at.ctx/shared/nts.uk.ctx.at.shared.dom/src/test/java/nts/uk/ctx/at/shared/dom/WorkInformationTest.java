@@ -1067,6 +1067,51 @@ public class WorkInformationTest {
 		assertThat( result.get() ).isEqualTo( workSetting );
 
 	}
+	
+	@Test
+	public void testEquals_differentWorkType() {
+		
+		WorkInformation target = new WorkInformation(new WorkTypeCode("k01"), new WorkTimeCode("s01"));
+		WorkInformation otherObject = new WorkInformation(new WorkTypeCode("k02"), new WorkTimeCode("s01"));
+		
+		assertThat( target.isSame(otherObject) ).isFalse();
+	}
+	
+	@Test
+	public void testEquals_sameWorkType_workTimesAllEmpty() {
+		
+		WorkInformation target = new WorkInformation(new WorkTypeCode("k01"), null );
+		WorkInformation otherObject = new WorkInformation(new WorkTypeCode("k01"), null );
+		
+		assertThat( target.isSame(otherObject) ).isTrue();
+	}
+	
+	@Test
+	public void testEquals_sameWorkType_workTimeNotMatch_case1() {
+		
+		WorkInformation target = new WorkInformation(new WorkTypeCode("k01"), new WorkTimeCode("s01") );
+		WorkInformation otherObject = new WorkInformation(new WorkTypeCode("k01"), null );
+		
+		assertThat( target.isSame(otherObject) ).isFalse();
+	}
+	
+	@Test
+	public void testEquals_sameWorkType_workTimeNotMatch_case2() {
+		
+		WorkInformation target = new WorkInformation(new WorkTypeCode("k01"), null );
+		WorkInformation otherObject = new WorkInformation(new WorkTypeCode("k01"), new WorkTimeCode("s01") );
+		
+		assertThat( target.isSame(otherObject) ).isFalse();
+	}
+	
+	@Test
+	public void testEquals_sameWorkType_sameWorkTime() {
+		
+		WorkInformation target = new WorkInformation(new WorkTypeCode("k01"), new WorkTimeCode("s01") );
+		WorkInformation otherObject = new WorkInformation(new WorkTypeCode("k01"), new WorkTimeCode("s01") );
+		
+		assertThat( target.isSame(otherObject) ).isTrue();
+	}
 
 
 }

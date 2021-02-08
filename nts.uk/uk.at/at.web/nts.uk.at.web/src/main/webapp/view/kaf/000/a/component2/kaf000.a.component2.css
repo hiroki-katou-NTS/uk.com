@@ -6,3 +6,12 @@
 #kaf000-a-component2 .col-1 {
 	width: 120px;
 }
+
+#kaf000-a-component2-table {
+	border-collapse: separate;
+	border-spacing: 0px 0.2em;
+}
+
+#kaf000-a-component2-table td {
+	padding-left: 3px;
+}
