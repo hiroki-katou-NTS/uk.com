@@ -1008,14 +1008,12 @@ module nts.uk.com.view.ccg034.d {
                 vm.mapPartData[partClientId] = result.partData;
                 // Update part DOM
                 LayoutUtils.renderPartDOMAttachment($part, result.partData as PartDataAttachmentModel);
-              } else if (isCreateDialog) {
-                // If this is dialog setitng when create => remove part
-                vm.removePart($part);
-                if (result.fileId) {
-                  vm.removeFile(result.fileId);
+              } else {
+                if (isCreateDialog) {
+                  // If this is dialog setitng when create => remove part
+                  vm.removePart($part);
                 }
-              } else if (result.fileId) {
-                vm.modifiedPartList.added.push(result.fileId);
+                vm.removeFile(result.fileId);
               }
             });
           break;
@@ -1024,27 +1022,23 @@ module nts.uk.com.view.ccg034.d {
             .then((result: any) => {
               if (result.isSaving) {
                 const partImage = (result.partData as PartDataImageModel);
-                if (partImage.isFixed === 1 && partImage.fileId) {
-                  // Only prepare for delete if has changes
-                  if (!_.find(vm.modifiedPartList.added, partImage.fileId) && partImage.fileId !== partImage.originalFileId) {
-                    vm.modifiedPartList.added.push(partImage.fileId);
-                  }
-                  if (!_.find(vm.modifiedPartList.deleted, partImage.originalFileId) && partImage.fileId !== partImage.originalFileId) {
-                    vm.modifiedPartList.deleted.push(partImage.originalFileId);
-                  }
+                // Only prepare for delete if has changes
+                if (!_.find(vm.modifiedPartList.added, partImage.fileId) && partImage.fileId !== partImage.originalFileId) {
+                  vm.modifiedPartList.added.push(partImage.fileId);
+                }
+                if (!_.find(vm.modifiedPartList.deleted, partImage.originalFileId) && partImage.fileId !== partImage.originalFileId) {
+                  vm.modifiedPartList.deleted.push(partImage.originalFileId);
                 }
                 // Update part data
                 vm.mapPartData[partClientId] = result.partData;
                 // Update part DOM
                 LayoutUtils.renderPartDOMImage($part, result.partData as PartDataImageModel);
-              } else if (isCreateDialog) {
-                // If this is dialog setitng when create => remove part
-                vm.removePart($part);
-                if (result.fileId) {
-                  vm.removeFile(result.fileId);
+              } else {
+                if (isCreateDialog) {
+                  // If this is dialog setitng when create => remove part
+                  vm.removePart($part);
                 }
-              } else if (result.fileId) {
-                vm.modifiedPartList.added.push(result.fileId);
+                vm.removeFile(result.fileId);
               }
             });
           break;
@@ -1403,7 +1397,9 @@ module nts.uk.com.view.ccg034.d {
      * 変更前のファイルは削除
      */
     private removeFile(fileId: string) {
-      (nts.uk.request as any).file.remove(fileId);
+      if (!nts.uk.text.isNullOrEmpty(fileId)) {
+        (nts.uk.request as any).file.remove(fileId);
+      }
     }
 
     private updateOriginalFileId() {

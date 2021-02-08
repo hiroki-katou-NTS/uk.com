@@ -114,6 +114,21 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 								} else {
 									vm.visibleModel.c15_3(false);									
 								}
+								if (vm.dataSource) {
+									// 「残業申請の表示情報．基準日に関係しない情報．残業休日出勤申請の反映．残業申請．事前．休憩・外出を申請反映する」= する
+									let c18_1_1 = vm.dataSource.infoNoBaseDate.overTimeReflect.overtimeWorkAppReflect.reflectBeforeBreak == NotUseAtr.USE;
+									// ※15-3 = ○　AND
+									// 「残業申請の表示情報．基準日に関係しない情報．残業休日出勤申請の反映．残業申請．事後．休憩・外出を申請反映する」= する
+									let c18_1_2 = vm.dataSource.infoNoBaseDate.overTimeReflect.overtimeWorkAppReflect.reflectBreakOuting == NotUseAtr.USE;
+									let c18_1 = (!vm.visibleModel.c15_3() && c18_1_1) || (vm.visibleModel.c15_3() && c18_1_2);
+									vm.visibleModel.c18_1(c18_1);
+						
+									// ※7 = ○　OR　※18-1 = ○
+									let c18 = vm.visibleModel.c7() || c18_1;
+									vm.visibleModel.c18(c18);
+									
+								}
+												
 							}
 						}
 					});
@@ -2346,17 +2361,17 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			// （「事前事後区分」が表示しない　AND　「残業申請の表示情報．申請表示情報．申請表示情報(基準日関係あり)．事前事後区分」= 「事後」）
 			let c15_3 = false;
 			// visibleModel.c15_3(c15_3);
-			if (res.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr == 0) {
-				
-				let prePost = res.appDispInfoStartup.appDispInfoWithDateOutput.prePostAtr;
+			if (res.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr != 0) {
+				let prePost = self.application().prePostAtr();
 				if (prePost == 1) {
 					c15_3 = true;					
 				} else {
 					c15_3 = false;
 				}
 				visibleModel.c15_3(c15_3);
+				
 			} else {
-				let prePost = self.application().prePostAtr();
+				let prePost = res.appDispInfoStartup.appDispInfoWithDateOutput.prePostAtr;
 				if (prePost == 1) {
 					c15_3 = true;					
 				} else {
