@@ -906,14 +906,13 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				workTime.code = infoWithDateApplication.workTimeCD;
 				if (!_.isNil(workTime.code)) {
 					let workTimeList = res.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst as Array<WorkTime>;
-					if (!_.isEmpty(workTimeList)) {
-						let item = _.find(workTimeList, (item: WorkTime) => item.worktimeCode == workTime.code);
-						if (!_.isNil(item)) {
-							workTime.name = item.workTimeDisplayName.workTimeName;
-						} else {
-							workTime.name = self.$i18n('KAF005_345');
-						}
+					let item = _.find(workTimeList, (item: WorkTime) => item.worktimeCode == workTime.code)
+					if (!_.isNil(item)) {
+						workTime.name = item.workTimeDisplayName.workTimeName;
+					} else {
+						workTime.name = self.$i18n('KAF005_345');
 					}
+					
 				} else {
 					workTime.name = self.$i18n('KAF005_345');
 				}
