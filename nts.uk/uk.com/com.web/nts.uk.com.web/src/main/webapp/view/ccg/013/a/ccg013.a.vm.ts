@@ -527,7 +527,7 @@ module ccg013.a.viewmodel {
                         titleMenuName: titleBar.nameTitleBar,
                         backgroundColor: titleBar.backgroundColor,
                         textColor: titleBar.letterColor,
-                        displayOrder: titleMenu.displayOrder,
+                        displayOrder: titleMenu.titleMenu().length + 1,
                         treeMenu: titleBar.treeMenu
                     }));
                     self.setupTitleMenu();
