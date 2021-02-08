@@ -42,7 +42,7 @@ public class FlowRestSet extends WorkTimeDomainObject implements Cloneable{
 		this.useStamp = memento.getUseStamp();
 		this.useStampCalcMethod = memento.getUseStampCalcMethod();
 		this.timeManagerSetAtr = memento.getTimeManagerSetAtr();
-		this.calculateMethod = memento.getCalculateMethod();
+//		this.calculateMethod = memento.getCalculateMethod();
 	}
 
 	/**
@@ -54,7 +54,7 @@ public class FlowRestSet extends WorkTimeDomainObject implements Cloneable{
 		memento.setUseStamp(this.useStamp);
 		memento.setUseStampCalcMethod(this.useStampCalcMethod);
 		memento.setTimeManagerSetAtr(this.timeManagerSetAtr);
-		memento.setCalculateMethod(this.calculateMethod);
+//		memento.setCalculateMethod(this.calculateMethod);
 	}
 	
 	@Override

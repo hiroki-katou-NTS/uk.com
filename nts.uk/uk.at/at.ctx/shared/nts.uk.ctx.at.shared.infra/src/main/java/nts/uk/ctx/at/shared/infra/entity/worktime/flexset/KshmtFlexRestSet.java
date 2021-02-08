@@ -68,8 +68,8 @@ public class KshmtFlexRestSet extends UkJpaEntity implements Serializable {
 	private int timeManagerSetAtr;
 
 	/** The calculate method. */
-	@Column(name = "CALCULATE_METHOD")
-	private int calculateMethod;
+//	@Column(name = "CALCULATE_METHOD")
+//	private int calculateMethod;
 
 	/** The use plural work rest time. */
 	@Column(name = "USE_PLURAL_WORK_REST_TIME")

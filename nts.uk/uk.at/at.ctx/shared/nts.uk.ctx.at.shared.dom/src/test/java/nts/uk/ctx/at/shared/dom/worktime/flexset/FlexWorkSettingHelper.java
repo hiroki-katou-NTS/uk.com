@@ -69,7 +69,6 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSetGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestSet;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestClockCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSetGetMemento;
@@ -412,10 +411,10 @@ public class FlexWorkSettingHelper {
 			return RestClockManageAtr.IS_CLOCK_MANAGE;
 		}
 
-		@Override
-		public FlowRestCalcMethod getCalculateMethod() {
-			return FlowRestCalcMethod.REFER_MASTER;
-		}
+//		@Override
+//		public FlowRestCalcMethod getCalculateMethod() {
+//			return FlowRestCalcMethod.REFER_MASTER;
+//		}
 		
 		
 	}
