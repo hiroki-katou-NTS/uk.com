@@ -12,7 +12,7 @@ import nts.uk.ctx.at.function.dom.monthlyworkschedule.ItemSelectionEnum;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.OutputItemMonthlyWorkSchedule;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.OutputItemMonthlyWorkScheduleRepository;
 import nts.uk.ctx.at.function.infra.entity.monthlyworkschedule.KfnmtRptWkMonOut;
-import nts.uk.ctx.at.function.infra.entity.monthlyworkschedule.KfnmtRptWkMonOuttd;
+import nts.uk.ctx.at.function.infra.entity.monthlyworkschedule.KfnmtRptWkMonOutAtd;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -69,7 +69,7 @@ public class JpaOutputItemMonthlyWorkScheduleRepository extends JpaRepository
 	 */
 	@Override
 	public void update(OutputItemMonthlyWorkSchedule domain) {
-		List<KfnmtRptWkMonOuttd> otdList = this.queryProxy().query(FIND_BY_LAYOUTID, KfnmtRptWkMonOuttd.class)
+		List<KfnmtRptWkMonOutAtd> otdList = this.queryProxy().query(FIND_BY_LAYOUTID, KfnmtRptWkMonOutAtd.class)
 											.setParameter("layoutID", domain.getLayoutID())
 											.getList();
 		

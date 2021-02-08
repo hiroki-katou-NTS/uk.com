@@ -85,7 +85,7 @@ public class KfnmtRptWkMonOut extends UkJpaEntity
 	/** The lst kfnmt rpt mon outtd . */
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "LAYOUT_ID", referencedColumnName = "LAYOUT_ID")
-	private List<KfnmtRptWkMonOuttd> lstKfnmtRptWkMonOuttds;
+	private List<KfnmtRptWkMonOutAtd> lstKfnmtRptWkMonOuttds;
 	
 	@Override
 	protected Object getKey() {
@@ -105,16 +105,16 @@ public class KfnmtRptWkMonOut extends UkJpaEntity
 	@Override
 	public void setLstDisplayedAttendance(List<MonthlyAttendanceItemsDisplay> lstDisplayAttendance) {
 		this.lstKfnmtRptWkMonOuttds = lstDisplayAttendance.stream().map(item -> {
-			KfnmtRptWkMonOuttdPK kfnmtRptWkMonOuttdPK = new KfnmtRptWkMonOuttdPK();
-			kfnmtRptWkMonOuttdPK.setOrderNo(item.getOrderNo());
-			kfnmtRptWkMonOuttdPK.setLayoutID(this.layoutID);
-			KfnmtRptWkMonOuttd kfnmtRptWkMonOuttd = new KfnmtRptWkMonOuttd();
-			kfnmtRptWkMonOuttd.setAtdDisplay(item.getAttendanceDisplay());
-			kfnmtRptWkMonOuttd.setPk(kfnmtRptWkMonOuttdPK);
-			kfnmtRptWkMonOuttd.setCompanyID(this.companyID);
-			kfnmtRptWkMonOuttd.setContractCd(this.contractCd);
-			kfnmtRptWkMonOuttd.setVersion(0);
-			return kfnmtRptWkMonOuttd;
+			KfnmtRptWkMonOutAtdPK kfnmtRptWkMonOutAtdPK = new KfnmtRptWkMonOutAtdPK();
+			kfnmtRptWkMonOutAtdPK.setOrderNo(item.getOrderNo());
+			kfnmtRptWkMonOutAtdPK.setLayoutID(this.layoutID);
+			KfnmtRptWkMonOutAtd kfnmtRptWkMonOutAtd = new KfnmtRptWkMonOutAtd();
+			kfnmtRptWkMonOutAtd.setAtdDisplay(item.getAttendanceDisplay());
+			kfnmtRptWkMonOutAtd.setPk(kfnmtRptWkMonOutAtdPK);
+			kfnmtRptWkMonOutAtd.setCompanyID(this.companyID);
+			kfnmtRptWkMonOutAtd.setContractCd(this.contractCd);
+			kfnmtRptWkMonOutAtd.setVersion(0);
+			return kfnmtRptWkMonOutAtd;
 		}).collect(Collectors.toList());
 	}
 
