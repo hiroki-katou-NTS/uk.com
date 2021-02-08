@@ -56,16 +56,16 @@ public class KshmtFixedWorkSet extends UkJpaEntity implements Serializable {
 	private int legalOtSet;
 
 	/** The calc method. */
-	@Column(name = "CALC_METHOD")
-	private int calcMethod;
+//	@Column(name = "CALC_METHOD")
+//	private int calcMethod;
 
 	/** The lev rest calc type. */
 	@Column(name = "LEV_REST_CALC_TYPE")
 	private int levRestCalcType;
 	
 	/** The is plan actual not match master refe. */
-	@Column(name = "PLAN_NOT_MATCH")
-	private int isPlanActualNotMatchMasterRefe;
+//	@Column(name = "PLAN_NOT_MATCH")
+//	private int isPlanActualNotMatchMasterRefe;
 	
 	/** The ot calc method. */
 	@Column(name = "OT_CALC_METHOD")

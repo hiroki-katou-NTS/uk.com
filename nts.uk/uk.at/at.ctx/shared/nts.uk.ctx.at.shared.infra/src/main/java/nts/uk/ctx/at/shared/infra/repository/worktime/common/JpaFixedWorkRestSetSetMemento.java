@@ -4,9 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 
-import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSetting;
-import nts.uk.ctx.at.shared.dom.worktime.common.FixedRestCalculateMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkRestSetSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDiffTimeWorkSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSet;
@@ -59,20 +57,20 @@ public class JpaFixedWorkRestSetSetMemento<T extends UkJpaEntity> implements Fix
 	 * @see nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkRestSetSetMemento#
 	 * setIsPlanActualNotMatchMasterRefer(boolean)
 	 */
-	@Override
-	public void setIsPlanActualNotMatchMasterRefer(boolean isPlanActualNotMatchMasterRefer) {
-		if (this.entity instanceof KshmtFixedWorkSet) {
-			((KshmtFixedWorkSet) this.entity)
-					.setIsPlanActualNotMatchMasterRefe(BooleanGetAtr.getAtrByBoolean(isPlanActualNotMatchMasterRefer));
-			return;
-		}
-		if (this.entity instanceof KshmtDiffTimeWorkSet) {
-			((KshmtDiffTimeWorkSet) this.entity)
-					.setDtIsPlanActualNotMatchMasterRefe(BooleanGetAtr.getAtrByBoolean(isPlanActualNotMatchMasterRefer));
-			return;
-		}
-		throw new IllegalStateException("entity type is not valid");
-	}
+//	@Override
+//	public void setIsPlanActualNotMatchMasterRefer(boolean isPlanActualNotMatchMasterRefer) {
+//		if (this.entity instanceof KshmtFixedWorkSet) {
+//			((KshmtFixedWorkSet) this.entity)
+//					.setIsPlanActualNotMatchMasterRefe(BooleanGetAtr.getAtrByBoolean(isPlanActualNotMatchMasterRefer));
+//			return;
+//		}
+//		if (this.entity instanceof KshmtDiffTimeWorkSet) {
+//			((KshmtDiffTimeWorkSet) this.entity)
+//					.setDtIsPlanActualNotMatchMasterRefe(BooleanGetAtr.getAtrByBoolean(isPlanActualNotMatchMasterRefer));
+//			return;
+//		}
+//		throw new IllegalStateException("entity type is not valid");
+//	}
 
 	/*
 	 * (non-Javadoc)
@@ -81,17 +79,17 @@ public class JpaFixedWorkRestSetSetMemento<T extends UkJpaEntity> implements Fix
 	 * #setCalculateMethod(nts.uk.ctx.at.shared.dom.worktime.common.
 	 * FixedRestCalculateMethod)
 	 */
-	@Override
-	public void setCalculateMethod(FixedRestCalculateMethod method) {
-		if (this.entity instanceof KshmtFixedWorkSet) {
-			((KshmtFixedWorkSet) this.entity).setCalcMethod(method.value);
-			return;
-		}
-		if (this.entity instanceof KshmtDiffTimeWorkSet) {
-			((KshmtDiffTimeWorkSet) this.entity).setDtCalcMethod(method.value);
-			return;
-		}
-		throw new IllegalStateException("entity type is not valid");
-	}
+//	@Override
+//	public void setCalculateMethod(FixedRestCalculateMethod method) {
+//		if (this.entity instanceof KshmtFixedWorkSet) {
+//			((KshmtFixedWorkSet) this.entity).setCalcMethod(method.value);
+//			return;
+//		}
+//		if (this.entity instanceof KshmtDiffTimeWorkSet) {
+//			((KshmtDiffTimeWorkSet) this.entity).setDtCalcMethod(method.value);
+//			return;
+//		}
+//		throw new IllegalStateException("entity type is not valid");
+//	}
 
 }
