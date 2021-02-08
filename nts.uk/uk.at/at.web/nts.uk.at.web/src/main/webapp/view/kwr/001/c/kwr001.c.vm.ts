@@ -573,14 +573,16 @@ module nts.uk.at.view.kwr001.c {
                     case -2:
                         // 「その他」④の場合は、「全体」⓪から時間①、回数②、計算項目③を除いたものを表示する。
                         lstResult = _.filter(lstTemp, (item: any) => item.attendanceItemAtt !== NUMBEROFTIME
-                                                                                  || item.attendanceItemAtt !== TIME 
-                                                                                  || item.attendanceItemAtt !== CODE);
+                                                                    && item.attendanceItemAtt !== TIME 
+                                                                    && (item.attendanceItemAtt !== CODE
+                                                                        && item.masterType
+                                                                        && item.masterType !== NOT_USE_ATR));
                         break;
                     case CODE:
                         //「計算項目」③の場合は、日次勤怠項目の属性=0:コード　かつ　日次の勤怠項目に関連するマスタの種類=9:するしない区分
                         lstResult = _.filter(lstTemp, (item: any) => item.attendanceItemAtt === CODE
-                                                                                  && item.masterType
-                                                                                  && item.masterType === NOT_USE_ATR);
+                                                                    && item.masterType
+                                                                    && item.masterType === NOT_USE_ATR);
                     default:
                         //「時間」①の場合は、日次勤怠項目の属性=5:時間
                         //「回数」②の場合は、日次勤怠項目の属性=2:回数
