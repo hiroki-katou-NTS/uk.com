@@ -1,3 +1,5 @@
+/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
+
 module nts.uk.at.view.kal003.a.viewmodel {
     import block = nts.uk.ui.block;
     import getText = nts.uk.resource.getText;
@@ -11,7 +13,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
     import tab = nts.uk.at.view.kal003.a.tab;
     import shareutils = nts.uk.at.view.kal003.share.kal003utils;
 
-    export class ScreenModel {
+    export class ScreenModel extends ko.ViewModel {
         tabs: KnockoutObservableArray<any>;
         selectedTab: KnockoutObservable<string>;
 
@@ -48,17 +50,22 @@ module nts.uk.at.view.kal003.a.viewmodel {
         tabAnnualHolidayCon: tab.AnnualHolidayCon;
         tabMasterCheckFixedCon: tab.MasterCheckFixedConTab;
 
+        tabScheduleCheckConditions: KnockoutObservable<any> = ko.observable(null);
+        tabScheduleFixedCheckConditions: KnockoutObservable<any> = ko.observable(null);
+
         selectCategoryFromDialog: KnockoutObservable<boolean> = ko.observable(false);
         afterDelete: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor() {
+            super();
+
             var self = this;
 
             self.tabs = ko.observableArray([
                 { id: 'tab-1', title: getText('KAL003_15'), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
                 { id: 'tab-2', title: getText('KAL003_51'), content: '.tab-content-2', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY }, this) },
-                { id: 'tab-3', title: getText('KAL003_16'), content: '.tab-content-3', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY || self.selectedCategory() == model.CATEGORY.SCHEDULE_4_WEEK || self.selectedCategory() == model.CATEGORY.MULTIPLE_MONTHS}, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY || self.selectedCategory() == model.CATEGORY.SCHEDULE_4_WEEK || self.selectedCategory() == model.CATEGORY.MULTIPLE_MONTHS }, this) },
-                { id: 'tab-4', title: getText('KAL003_67'), content: '.tab-content-4', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY}, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY}, this) },
+                { id: 'tab-3', title: getText('KAL003_16'), content: '.tab-content-3', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY || self.selectedCategory() == model.CATEGORY.SCHEDULE_4_WEEK || self.selectedCategory() == model.CATEGORY.MULTIPLE_MONTHS }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY || self.selectedCategory() == model.CATEGORY.SCHEDULE_4_WEEK || self.selectedCategory() == model.CATEGORY.MULTIPLE_MONTHS }, this) },
+                { id: 'tab-4', title: getText('KAL003_67'), content: '.tab-content-4', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY }, this) },
                 { id: 'tab-5', title: getText('KAL003_67'), content: '.tab-content-5', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.MONTHLY }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.MONTHLY }, this) },
                 { id: 'tab-6', title: 'アラームリストのチェック条件', content: '.tab-content-6', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.MONTHLY }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.MONTHLY }, this) },
                 { id: 'tab-7', title: getText('KAL003_210'), content: '.tab-content-7', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY._36_AGREEMENT }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY._36_AGREEMENT }, this) },
@@ -66,7 +73,26 @@ module nts.uk.at.view.kal003.a.viewmodel {
                 { id: 'tab-9', title: getText('KAL003_212'), content: '.tab-content-9', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS }, this) },
                 { id: 'tab-10', title: getText('KAL003_213'), content: '.tab-content-10', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.ATTENDANCE_RATE_FOR_ANNUAL_HOLIDAYS }, this) },
                 { id: 'tab-11', title: getText('KAL003_67'), content: '.tab-content-11', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.MASTER_CHECK }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.MASTER_CHECK }, this) },
-                { id: 'tab-12', title: getText('KAL003_67'), content: '.tab-content-12', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.APPLICATION_APPROVAL}, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.APPLICATION_APPROVAL}, this) }
+                { id: 'tab-12', title: getText('KAL003_67'), content: '.tab-content-12', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.APPLICATION_APPROVAL }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.APPLICATION_APPROVAL }, this) },
+
+                //-----------------
+                //02 スケジュール月次 - 3 tabs
+                { id: 'tab-13', title: getText('KAL003_16'), content: '.tab-content-13', enable: ko.computed(() => { 
+                    return  self.selectedCategory() == model.CATEGORY.SCHEDULE_DAILY 
+                            || self.selectedCategory() == model.CATEGORY.SCHEDULE_MONTHLY
+                            || self.selectedCategory() == model.CATEGORY.SCHEDULE_YEAR
+                            || self.selectedCategory() == model.CATEGORY.WEEKLY
+                }, this), visible: ko.computed(() => { 
+                    return  self.selectedCategory() == model.CATEGORY.SCHEDULE_DAILY 
+                            || self.selectedCategory() == model.CATEGORY.SCHEDULE_MONTHLY
+                            || self.selectedCategory() == model.CATEGORY.SCHEDULE_YEAR
+                            || self.selectedCategory() == model.CATEGORY.WEEKLY
+                }, this) },
+                { id: 'tab-14', title: getText('KAL003_67'), content: '.tab-content-14', enable: ko.computed(() => { 
+                    return self.selectedCategory() == model.CATEGORY.SCHEDULE_MONTHLY
+                }, this), visible: ko.computed(() => { 
+                    return self.selectedCategory() == model.CATEGORY.SCHEDULE_MONTHLY 
+                }, this) },
             ]);
             self.selectedTab = ko.observable('tab-1');
 
@@ -82,6 +108,11 @@ module nts.uk.at.view.kal003.a.viewmodel {
             self.tabAnnualHolidaySubCon = new tab.AnnualHolidaySubCon();
             self.tabAnnualHolidayCon = new tab.AnnualHolidayCon();
             self.tabMasterCheckFixedCon = new tab.MasterCheckFixedConTab();
+
+            self.tabScheduleCheckConditions({
+                categoryId: model.CATEGORY.SCHEDULE_DAILY,
+                dataToSave: ko.observable(null)
+            });
 
             self.selectedCategory.subscribe((data) => {
                 self.switchCategory(data);
@@ -250,6 +281,37 @@ module nts.uk.at.view.kal003.a.viewmodel {
                 });
             }
 
+            //ver 2
+
+            /*
+            SCHEDULE_DAILY = 0,//スケジュール日次
+            SCHEDULE_WEEKLY = 1, //週次            
+            SCHEDULE_MONTHLY = 3,//スケジュール月次                        
+            SCHEDULE_YEAR = 4, //スケジュール年間 */
+            /* switch (self.selectedCategory()) {
+                //スケジュール日次
+                case model.CATEGORY.SCHEDULE_DAILY:
+                    self.tabScheduleCheckConditions({
+                        categoryId: model.CATEGORY.SCHEDULE_DAILY,
+                        dataToSave: ko.observable(111)
+                    });
+
+                    break;
+                //週次
+                case model.CATEGORY.SCHEDULE_WEEKLY:
+                    //self.tabScheduleWeekly;
+                    break;
+                //スケジュール月次   
+                case model.CATEGORY.SCHEDULE_MONTHLY:
+                    //self.tabScheduleMonthly;
+                    break;
+                //スケジュール年間
+                case model.CATEGORY.SCHEDULE_YEAR:
+                    //self.tabScheduleYear;
+                    break;
+            } */
+
+
             self.screenMode(model.SCREEN_MODE.NEW);
             if (self.afterDelete()) {
                 self.afterDelete(false);
@@ -285,7 +347,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
             $('#A3_2').focus();
         }
 
-    
+
 
 
         registerAlarmCheckCondition() {
@@ -439,7 +501,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
                 data.annualHolidayAlCon().alarmCheckConAgr(self.tabAnnualHolidayCon == null ? null : self.tabAnnualHolidayCon);
             }
 
-            if(self.selectedCategory() == model.CATEGORY.MASTER_CHECK){
+            if (self.selectedCategory() == model.CATEGORY.MASTER_CHECK) {
                 data.masterCheckAlarmCheckCondition().listFixedMasterCheckCondition(self.tabMasterCheckFixedCon.listFixedMasterCheckCondition());
             }
 
@@ -567,6 +629,17 @@ module nts.uk.at.view.kal003.a.viewmodel {
         private switchCategory(category: number) {
             let self = this;
             self.tabCheckCondition.category(category);
+      
+            self.tabScheduleCheckConditions({
+                categoryId: category,
+                dataToSave: ko.observable(null)
+            });
+
+            self.tabScheduleFixedCheckConditions({
+                categoryId: category,
+                dataToSave: ko.observable(null)
+            });
+
             self.startPage().done(() => {
                 self.selectCategoryFromDialog(false);
             });
@@ -595,7 +668,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
                                 result.targetCondition.targetJobTitle,
                                 result.targetCondition.targetBusinessType));
                         let _fixedList: Array<model.FixedConditionWorkRecord> = _.map(result.dailyAlarmCheckCondition.listFixedExtractConditionWorkRecord, (fix: model.IFixedConditionWorkRecord) => { return new model.FixedConditionWorkRecord(fix); });
-                        let _appFixedList: Array<model.ApprovalFixedConditionWorkRecord> = _.map(result.approvalAlarmCheckConDto.listFixedExtractConditionWorkRecord, (fix: model.IAppFixedConditionWorkRecord) => { return new model.ApprovalFixedConditionWorkRecord(fix)});
+                        let _appFixedList: Array<model.ApprovalFixedConditionWorkRecord> = _.map(result.approvalAlarmCheckConDto.listFixedExtractConditionWorkRecord, (fix: model.IAppFixedConditionWorkRecord) => { return new model.ApprovalFixedConditionWorkRecord(fix) });
                         let _checkList: Array<model.WorkRecordExtractingCondition> = _.map(result.dailyAlarmCheckCondition.listExtractConditionWorkRecork, (c: model.IWorkRecordExtractingCondition) => { return shareutils.convertTransferDataToWorkRecordExtractingCondition(c); });
                         item.dailyAlarmCheckCondition(
                             new model.DailyAlarmCheckCondition(
@@ -718,18 +791,21 @@ module nts.uk.at.view.kal003.a.viewmodel {
             });
         }
 
-    }
+        checkParentValueFromSub() {
+            const vm = this;
 
+            console.log(vm.tabScheduleCheckConditions());
+        }
 }
 
 
 
- 
- 
- 
- 
- 
- 
- 
- 
- 
+
+
+
+
+
+
+
+
+
