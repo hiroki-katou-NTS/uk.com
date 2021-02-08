@@ -2904,41 +2904,72 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         } else {
                             if (data.workHolidayCls != 0) {
                                 let wtimeCd = cellData.workTimeCode;
-                                let objWTime = _.find(__viewContext.viewModel.viewAB.listWorkTime, function(o) { return o.code === wtimeCd; });
+                                let objWTime = _.find(__viewContext.viewModel.viewAB.listWorkTime2, function(o) { return o.code === wtimeCd; });
+                                if (!_.isNil(objWTime)) { // truong hop worktime tồn tại trong list worktime
+                                    if (userInfor.disPlayFormat == 'time') {
+                                        let startTime = _.isNil(objWTime) ? '' : formatById("Clock_Short_HM", objWTime.tzStart1);
+                                        let endTime = _.isNil(objWTime) ? '' : formatById("Clock_Short_HM", objWTime.tzEnd1);
 
-                                if (userInfor.disPlayFormat == 'time') {
-                                    let startTime = _.isNil(objWTime) ? '' : formatById("Clock_Short_HM", objWTime.tzStart1);
-                                    let endTime = _.isNil(objWTime) ? '' : formatById("Clock_Short_HM", objWTime.tzEnd1);
+                                        $("#extable").exTable("stickFields", ["workTypeName", "workTimeName", "startTime", "endTime"]);
+                                        $("#extable").exTable("stickData", {
+                                            workTypeCode: data.workTypeCode,
+                                            workTypeName: data.workTypeName,
+                                            workTimeCode: cellData.workTimeCode,
+                                            workTimeName: cellData.workTimeName,
+                                            startTime: startTime,
+                                            endTime: endTime,
+                                            achievements: false,
+                                            workHolidayCls: data.workHolidayCls
+                                        });
 
-                                    $("#extable").exTable("stickFields", ["workTypeName", "workTimeName", "startTime", "endTime"]);
-                                    $("#extable").exTable("stickData", {
-                                        workTypeCode: data.workTypeCode,
-                                        workTypeName: data.workTypeName,
-                                        workTimeCode: objWTime.code,
-                                        workTimeName: objWTime.nameAb,
-                                        startTime: startTime,
-                                        endTime: endTime,
-                                        achievements: false,
-                                        workHolidayCls: data.workHolidayCls
-                                    });
+                                        __viewContext.viewModel.viewAB.isRedColor = false;
+                                        dfd.resolve(true);
 
-                                    __viewContext.viewModel.viewAB.isRedColor = false;
-                                    dfd.resolve(true);
-
-                                } else {
-                                    $("#extable").exTable("stickFields", ["workTypeName", "workTimeName"]);
-                                    $("#extable").exTable("stickData", {
-                                        workTypeCode: data.workTypeCode,
-                                        workTypeName: data.workTypeName,
-                                        workTimeCode: objWTime.code,
-                                        workTimeName: objWTime.nameAb,
-                                        startTime: '',
-                                        endTime: '',
-                                        achievements: false,
-                                        workHolidayCls: data.workHolidayCls
-                                    });
-                                    __viewContext.viewModel.viewAB.isRedColor = false;
-                                    dfd.resolve(true);
+                                    } else {
+                                        $("#extable").exTable("stickFields", ["workTypeName", "workTimeName"]);
+                                        $("#extable").exTable("stickData", {
+                                            workTypeCode: data.workTypeCode,
+                                            workTypeName: data.workTypeName,
+                                            workTimeCode: cellData.workTimeCode,
+                                            workTimeName: cellData.workTimeName,
+                                            startTime: '',
+                                            endTime: '',
+                                            achievements: false,
+                                            workHolidayCls: data.workHolidayCls
+                                        });
+                                        __viewContext.viewModel.viewAB.isRedColor = false;
+                                        dfd.resolve(true);
+                                    }
+                                } else { // truong hop worktime không tồn tại trong list worktime => lấy trong datasource
+                                    if (userInfor.disPlayFormat == 'time') {
+                                        $("#extable").exTable("stickFields", ["workTypeName", "workTimeName", "startTime", "endTime"]);
+                                        $("#extable").exTable("stickData", {
+                                            workTypeCode: data.workTypeCode,
+                                            workTypeName: data.workTypeName,
+                                            workTimeCode: cellData.workTimeCode,
+                                            workTimeName: cellData.workTimeName,
+                                            startTime: cellData.startTime,
+                                            endTime: cellData.endTime,
+                                            achievements: false,
+                                            workHolidayCls: data.workHolidayCls
+                                        });
+                                        __viewContext.viewModel.viewAB.isRedColor = false;
+                                        dfd.resolve(true);
+                                    } else {
+                                        $("#extable").exTable("stickFields", ["workTypeName", "workTimeName"]);
+                                        $("#extable").exTable("stickData", {
+                                            workTypeCode: data.workTypeCode,
+                                            workTypeName: data.workTypeName,
+                                            workTimeCode: cellData.workTimeCode,
+                                            workTimeName: cellData.workTimeName,
+                                            startTime: '',
+                                            endTime: '',
+                                            achievements: false,
+                                            workHolidayCls: data.workHolidayCls
+                                        });
+                                        __viewContext.viewModel.viewAB.isRedColor = false;
+                                        dfd.resolve(true);
+                                    }
                                 }
                             }
                         }
