@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily;
 
+import lombok.AllArgsConstructor;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CheckedCondition;
 
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.List;
 /**
  * 時間のチェック条件
  */
+@AllArgsConstructor
 public class CondTime implements  ScheduleCheckCond{
     //チェック条件
     private CheckedCondition checkedCondition;
