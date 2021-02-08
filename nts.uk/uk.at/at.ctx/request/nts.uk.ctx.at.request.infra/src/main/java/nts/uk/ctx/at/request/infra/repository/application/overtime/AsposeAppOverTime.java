@@ -96,20 +96,6 @@ public class AsposeAppOverTime {
 		AppOverTime appOverTime = opDetailOutput.get().getAppOverTime();
 		// 「申請の印刷内容．残業申請の印刷内容．残業申請の表示情報．基準日に関係しない情報．残業申請設定．申請詳細設定．時刻計算利用区分」= する
 		Boolean c1 = displayInfoOverTime.getInfoNoBaseDate().getOverTimeAppSet().getApplicationDetailSetting().getTimeCalUse() == NotUseAtr.USE;
-		// ドメインモデル「申請の印刷内容．残業申請の印刷内容．残業申請．申請．事前事後区分」= 事後
-		Boolean c8 = displayInfoOverTime.getAppDispInfoStartup().getAppDetailScreenInfo().get().getApplication().getPrePostAtr() == PrePostAtr.POSTERIOR;
-		// 「残業申請の表示情報．基準日に関係しない情報．残業休日出勤申請の反映．残業申請．実績の勤務情報へ反映する」= する
-		Boolean c9_1 = displayInfoOverTime.getInfoNoBaseDate().getOverTimeReflect().getOvertimeWorkAppReflect().getReflectActualWorkAtr() == NotUseAtr.USE;
-		// ※8 = ×　AND「残業申請の表示情報．基準日に関係しない情報．残業休日出勤申請の反映．残業申請．事前．勤務情報、始業終業を反映する」= する
-		Boolean c9_2 = !c8 && displayInfoOverTime.getInfoNoBaseDate().getOverTimeReflect().getOvertimeWorkAppReflect().getBefore().getReflectWorkInfoAtr() == NotUseAtr.USE;
-		// ※1 = ○　OR　※9-1 = ○　OR　※9-2 = ○
-		Boolean c9 = c1 || c9_1 || c9_2;
-		// ※9-2 = ○　AND「残業申請の表示情報．基準日に関係しない情報．残業休日出勤申請の反映．残業申請．事前．勤務情報、始業終業を反映する」= する
-		// ※8 = ○　AND「残業申請の表示情報．基準日に関係しない情報．残業休日出勤申請の反映．残業申請．事後．出退勤を反映する」= する
-		Boolean c10_1 = (c9_2 && displayInfoOverTime.getInfoNoBaseDate().getOverTimeReflect().getOvertimeWorkAppReflect().getBefore().getReflectWorkInfoAtr() == NotUseAtr.USE)
-				|| (c8 && displayInfoOverTime.getInfoNoBaseDate().getOverTimeReflect().getOvertimeWorkAppReflect().getAfter().getWorkReflect() == NotUseAtr.USE)
-				;
-		Boolean c10 = c1 || c10_1;
 		
 		// ※1 = ○　AND
 		// 「申請の印刷内容．残業申請の印刷内容．残業申請の表示情報．申請表示情報．申請表示情報(基準日関係なし)．複数回勤務の管理」= true
@@ -591,13 +577,9 @@ public class AsposeAppOverTime {
 			result.setStartReasonCommon(result.getStartReasonCommon() + 1);
 			cells.deleteRow(10);
 		}
-		if (!c10) {
-			result.setStartReasonCommon(result.getStartReasonCommon() + 2);
-			cells.deleteRows(7, 2);
-		}
-		if (!c9) {
-			result.setStartReasonCommon(result.getStartReasonCommon() + 4);
-			cells.deleteRows(5, 4);
+		if (!c1) {
+			result.setStartReasonCommon(result.getStartReasonCommon() + 3);
+			cells.deleteRows(7, 3);
 		}
 		return result;
 		
