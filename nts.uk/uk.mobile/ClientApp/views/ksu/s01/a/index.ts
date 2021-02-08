@@ -44,7 +44,7 @@ export class KSUS01AComponent extends Vue {
         let self = this;
         self.bindDateCellList();
         console.log(self.yearMonth);
-        console.log(moment(self.yearMonth).format('YYYYMMDD'), moment(self.yearMonth).day());
+        console.log(moment(self.yearMonth, 'YYYYMM').format('YYYYMMDD'));
     }
 
     public created() {
@@ -177,8 +177,8 @@ export class KSUS01AComponent extends Vue {
         let isActive = false;
         // let startDate = '20210201';
         // let endDate = '20210305';
-        let startDate = moment(self.yearMonth).format('YYYYMMDD');
-        let endDate = moment(self.yearMonth).add(1, 'months').add(-1, 'days').format('YYYYMMDD');
+        let startDate = moment(self.yearMonth, 'YYYYMM').format('YYYYMMDD');
+        let endDate = moment(self.yearMonth, 'YYYYMM').add(1, 'months').add(-1, 'days').format('YYYYMMDD');
         let count = 0;
         self.dateCellList = self.dateCellList.map((el, index) => {
             el = {
@@ -230,7 +230,7 @@ export class KSUS01AComponent extends Vue {
     //■next/backボタンをクリックする
     public changeYearMonth(isNext: boolean) {
         let self = this;
-        self.yearMonth = isNext ? moment(self.yearMonth).add(1, 'months').format('YYYYMM') : moment(self.yearMonth).add(-1, 'months').format('YYYYMM');
+        self.yearMonth = isNext ? moment(self.yearMonth, 'YYYYMM').add(1, 'months').format('YYYYMM') : moment(self.yearMonth, 'YYYYMM').add(-1, 'months').format('YYYYMM');
     }
 
     //3: 年月を変更する方法
