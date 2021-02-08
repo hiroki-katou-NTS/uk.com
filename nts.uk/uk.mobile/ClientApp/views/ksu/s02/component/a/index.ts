@@ -800,7 +800,7 @@ export class CalendarAComponent extends Vue {
             }
         } else { //mode week
             startD = moment(startDate).add(monthChange, 'M').format('YYYY/MM/DD').toString();
-            startE = moment(startD).add(7, 'days').format('YYYY/MM/DD').toString();
+            startE = moment(startD).add(6, 'days').format('YYYY/MM/DD').toString();
             
         }
         

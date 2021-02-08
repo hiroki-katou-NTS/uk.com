@@ -143,8 +143,16 @@ public class GetInforInitialStartup {
 			//8:
 			listShiftMasterDto = shiftMasterOrgFinder.optainShiftMastersByWorkPlace(targetOrgIdenInfor.getTargetId(), targetOrgIdenInfor.getUnit().value);
 			listShiftMasterDto.forEach(shiftMaster -> {
+				shiftMaster.setWorkTime1(shiftMaster.getWorkTime1().replaceAll("前日", ""));
+				shiftMaster.setWorkTime2(shiftMaster.getWorkTime2().replaceAll("前日", ""));
 				shiftMaster.setWorkTime1(shiftMaster.getWorkTime1().replaceAll("当日", ""));
 				shiftMaster.setWorkTime2(shiftMaster.getWorkTime2().replaceAll("当日", ""));
+				shiftMaster.setWorkTime1(shiftMaster.getWorkTime1().replaceAll("翌日", ""));
+				shiftMaster.setWorkTime2(shiftMaster.getWorkTime2().replaceAll("翌日", ""));
+				shiftMaster.setWorkTime1(shiftMaster.getWorkTime1().replaceAll("翌々日", ""));
+				shiftMaster.setWorkTime2(shiftMaster.getWorkTime2().replaceAll("翌々日", ""));
+				shiftMaster.setWorkTime1(shiftMaster.getWorkTime1().replaceAll("前々日", ""));
+				shiftMaster.setWorkTime2(shiftMaster.getWorkTime2().replaceAll("前々日", ""));
 				shiftMaster.setColor("#"+shiftMaster.getColor());
 				shiftMaster.setColorSmartphone("#"+shiftMaster.getColorSmartphone());
 			});

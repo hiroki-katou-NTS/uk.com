@@ -17,6 +17,7 @@ import {
     name: 'ksus02',
     route: '/ksu/s02',
     template: require('./index.vue'),
+    resource: require('./resources.json'),
     constraints: [],
     components: {
         'calendar': CalendarComponent

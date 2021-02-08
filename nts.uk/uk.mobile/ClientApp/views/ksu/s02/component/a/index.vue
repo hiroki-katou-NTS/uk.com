@@ -118,7 +118,7 @@
                                     height: 16px;
                                   "
                                   >{{shift.shiftMasterName}}</span>
-                              <span>。。。</span>
+                              <span>{{'KSUS02_24' | i18n}}</span>
                             </div>
                           </div>
                       </div>
@@ -168,7 +168,7 @@
                                   height: 16px;
                                 "
                                 >{{shift.shiftMasterName}}</span>
-                            <span>。。。</span>
+                            <span>{{'KSUS02_24' | i18n}}</span>
                           </div>
                         </div>
                       </div>
@@ -218,7 +218,7 @@
                                     height: 16px;
                                   "
                                   >{{shift.shiftMasterName}}</span>
-                              <span>。。。</span>
+                              <span>{{'KSUS02_24' | i18n}}</span>
                             </div>
                           </div>
                         </div>
@@ -269,7 +269,7 @@
                                     height: 16px;
                                   "
                                   >{{shift.shiftMasterName}}</span>
-                              <span>。。。</span>
+                              <span>{{'KSUS02_24' | i18n}}</span>
                             </div>
                           </div>
                         </div>
@@ -320,7 +320,7 @@
                                   height: 16px;
                                 "
                                 >{{shift.shiftMasterName}}</span>
-                            <span>。。。</span>
+                            <span>{{'KSUS02_24' | i18n}}</span>
                           </div>
                         </div>
                       </div>
@@ -371,7 +371,7 @@
                                     height: 16px;
                                   "
                                   >{{shift.shiftMasterName}}</span>
-                              <span>。。。</span>
+                              <span>{{'KSUS02_24' | i18n}}</span>
                             </div>
                           </div>
                         </div>

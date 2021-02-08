@@ -289,50 +289,6 @@
         ></div>
       </div>
 
-      <!-- <div
-        id="detailPopup"
-        class="card hidden-popup"
-        style="
-          width: 375px;
-          height: 165px;
-          left: 0px;
-          top: 500px;
-        "
-      >
-        <h5
-          class="card-header"
-          style="padding: 5px; background-color: rgb(117 202 235 / 33%)"
-        >
-          <span id="monthday" style="font-weight: bold; margin-left: 6px"
-            ></span>
-        </h5>
-        <div
-          class="card-body"
-          style="padding-top: 1px; background-color: #75caeb14"
-        >
-          <div style="margin-left: -8px">
-            <i class="far fa-sticky-note"></i
-            ><span class="small-header" style="margin-left: 9px">{{'KSUS02_11' | i18n}}</span>
-            <div class="form-group row" style="/* margin-top: 4px; */">
-              <div class="col-md-12">
-                <div
-                  class="input-group input-group-transparent"
-                  style="width: 346px"
-                >
-                  <textarea
-                    type=""
-                    rows="2"
-                    placeholder=""
-                    class="form-control"
-                    style="margin-top: 0px; margin-bottom: 0px"
-                  ></textarea>
-                  <div class="invalid-feedback mt-1"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div> -->
     </div>
 
     <div class="hidden-popup" style="position: absolute; top: 0">
