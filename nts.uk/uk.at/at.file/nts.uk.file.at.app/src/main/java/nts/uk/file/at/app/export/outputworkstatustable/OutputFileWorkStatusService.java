@@ -122,7 +122,7 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
         List<WorkplaceInfor> lstWorkplaceInfo = workplaceConfigInfoAdapter
                 .getWorkplaceInforByWkpIds(cid, listWorkplaceId, baseDate);
         List<WorkPlaceInfo> placeInfoList = lstWorkplaceInfo.stream()
-                .map(e -> new WorkPlaceInfo(e.getWorkplaceId(), e.getWorkplaceCode(), e.getWorkplaceName()))
+                .map(e -> new WorkPlaceInfo(e.getWorkplaceId(), e.getWorkplaceCode(), e.getWorkplaceName(),e.getHierarchyCode()))
                 .collect(Collectors.toList());
         RequireImpl require = new RequireImpl(itemServiceAdapter, affComHistAdapter, getMaterData);
         // 5 ⑤ <call>. 勤務状況表の出力設定の詳細を取得する.
