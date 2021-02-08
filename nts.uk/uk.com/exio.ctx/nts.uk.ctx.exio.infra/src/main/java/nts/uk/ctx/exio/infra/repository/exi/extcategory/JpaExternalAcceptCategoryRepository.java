@@ -1,9 +1,7 @@
 package nts.uk.ctx.exio.infra.repository.exi.extcategory;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -11,36 +9,32 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.exio.dom.exi.condset.SystemType;
-import nts.uk.ctx.exio.dom.exi.extcategory.AlphaUseFlg;
-import nts.uk.ctx.exio.dom.exi.extcategory.ExiDecimalUnit;
 import nts.uk.ctx.exio.dom.exi.extcategory.ExternalAcceptCategory;
 import nts.uk.ctx.exio.dom.exi.extcategory.ExternalAcceptCategoryItem;
 import nts.uk.ctx.exio.dom.exi.extcategory.ExternalAcceptCategoryRepository;
-import nts.uk.ctx.exio.dom.exi.extcategory.ExternalHistoryContiFlg;
 import nts.uk.ctx.exio.dom.exi.extcategory.OiomtExAcpCategoryItemRepository;
-import nts.uk.ctx.exio.dom.exo.categoryitemdata.DataType;
 import nts.uk.ctx.exio.infra.entity.exi.extcategory.OiomtExAcpCategory;
-import nts.uk.ctx.exio.infra.entity.exi.extcategory.OiomtExAcpCategoryItem;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 @Stateless
 public class JpaExternalAcceptCategoryRepository extends JpaRepository implements ExternalAcceptCategoryRepository{
 	@Inject
 	private OiomtExAcpCategoryItemRepository itemReposi;
-	private static final String SELECT_ATSYS = "SELET c FROM OiomtExAcpCategory c "
+	private static final String SELECT_ATSYS = "SELECT c FROM OiomtExAcpCategory c "
 			+ " WHERE c.atSysFlg = :useFlg"
 			+ " ORDER BY c.categoryId";
 	
-	private static final String SELECT_PERSYS = "SELET c FROM OiomtExAcpCategory c "
+	private static final String SELECT_PERSYS = "SELECT c FROM OiomtExAcpCategory c "
 			+ " WHERE c.persSysFlg = :useFlg"
 			+ " ORDER BY c.categoryId";
 	
-	private static final String SELECT_SALARYSYS = "SELET c FROM OiomtExAcpCategory c "
+	private static final String SELECT_SALARYSYS = "SELECT c FROM OiomtExAcpCategory c "
 			+ " WHERE c.salarySysFlg = :useFlg"
 			+ " ORDER BY c.categoryId";
 	
-	private static final String SELECT_OFFICESYS = "SELET c FROM OiomtExAcpCategory c "
+	private static final String SELECT_OFFICESYS = "SELECT c FROM OiomtExAcpCategory c "
 			+ " WHERE c.officeSysFlg = :useFlg"
 			+ " ORDER BY c.categoryId";
+	
 	@Override
 	public Optional<ExternalAcceptCategory> getByCategoryId(int categoryId) {
 		String sql = "SELECT c FROM OiomtExAcpCategory c WHERE c.categoryId = :categoryId";

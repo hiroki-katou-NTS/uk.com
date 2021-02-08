@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.exio.app.find.exi.category.ExAcpCategoryDto;
 import nts.uk.ctx.exio.app.find.exi.category.ExAcpCtgItemDatDto;
 import nts.uk.ctx.exio.dom.exi.adapter.role.ExRoleAdapter;
@@ -15,7 +16,10 @@ import nts.uk.ctx.exio.dom.exi.adapter.role.OperableSystemImport;
 import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSet;
 import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSetRepository;
 import nts.uk.ctx.exio.dom.exi.condset.SystemType;
+import nts.uk.ctx.exio.dom.exi.extcategory.ExternalAcceptCategory;
+import nts.uk.ctx.exio.dom.exi.extcategory.ExternalAcceptCategoryRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.i18n.TextResource;
 
 @Stateless
@@ -29,6 +33,9 @@ public class StdAcceptCondSetFinder {
 
 	@Inject
 	private ExRoleAdapter roleAdapter;
+	
+	@Inject
+	private ExternalAcceptCategoryRepository categoryRep;
 
 	public List<SystemTypeDto> getSystemTypes() {
 		List<SystemTypeDto> result = new ArrayList<>();
@@ -85,14 +92,21 @@ public class StdAcceptCondSetFinder {
 	 * TODO: Dummies Data category => update after domain of category complete.
 	 * @return
 	 */
-	public List<ExAcpCategoryDto> getAllCategory() {
+	public List<ExAcpCategoryDto> getCategoryBySystem(int sysType) {
 
-		List<ExAcpCategoryDto> lstDataCategory = new ArrayList<ExAcpCategoryDto>();
-		for (int i = 1; i <= 4; i++) {
-			lstDataCategory.add(new ExAcpCategoryDto("1" + i, "カテゴリ名　" + i));
-		}
-		return lstDataCategory;
+//		List<ExAcpCategoryDto> lstDataCategory = new ArrayList<ExAcpCategoryDto>();
+//		for (int i = 1; i <= 4; i++) {
+//			lstDataCategory.add(new ExAcpCategoryDto("1" + i, "カテゴリ名　" + i));
+//		}
+//		return lstDataCategory;
+		List<ExternalAcceptCategory> listCategory = categoryRep.getBySystem(EnumAdaptor.valueOf(sysType, SystemType.class),
+				EnumAdaptor.valueOf(1, NotUseAtr.class));
+		List<ExAcpCategoryDto> listCategoryDto = listCategory.stream().map(x -> new ExAcpCategoryDto(x.getCategoryId(), 
+				x.getCategoryName(), x.getAtSysFlg().value, x.getPersSysFlg().value, x.getSalarySysFlg().value, x.getOfficeSysFlg().value))
+				.collect(Collectors.toList());
+		return listCategoryDto;
 	}
+	
 	/**
 	 * TODO: Dummies Data category => update after domain of category complete.
 	 * @return

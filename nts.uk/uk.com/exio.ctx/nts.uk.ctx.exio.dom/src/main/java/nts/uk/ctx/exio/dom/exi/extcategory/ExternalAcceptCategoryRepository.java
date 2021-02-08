@@ -13,6 +13,7 @@ public interface ExternalAcceptCategoryRepository {
 	 * @return
 	 */
 	Optional<ExternalAcceptCategory> getByCategoryId(int categoryId);
+	
 	/**
 	 * システムと使用するしないか外部受入カテゴリを取得
 	 * @param systemType

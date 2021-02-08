@@ -110,8 +110,8 @@ public class StdAcceptCondSetWebService extends WebService {
 	 * @return
 	 */
 	@POST
-	@Path("getAllCategory")
-	public List<ExAcpCategoryDto> getAllCategory() {
-		return stdAcceptCondSetFind.getAllCategory();
+	@Path("getAllCategoryBystem/{systemType}")
+	public List<ExAcpCategoryDto> getAllCategoryBystem(@PathParam("systemType") int systemType) {
+		return stdAcceptCondSetFind.getCategoryBySystem(systemType);
 	}
 }

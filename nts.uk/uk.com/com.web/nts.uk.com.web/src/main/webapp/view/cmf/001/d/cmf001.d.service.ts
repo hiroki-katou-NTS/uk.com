@@ -6,7 +6,7 @@ module nts.uk.com.view.cmf001.d.service {
         getAllData: "exio/exi/item/getAllStdAcceptItem/{0}",
         registerData: "exio/exi/item/register",
         registerDataAndReturn: "exio/exi/item/registerReturn",
-        getAllCategory: "exio/exi/condset/getAllCategory",
+        getAllCategoryBystem: "exio/exi/condset/getAllCategoryBystem/{0}",
         getCategoryItem: "exio/exi/condset/getCategoryItemData/{0}",
         getOneStdSettingData: "exio/exi/condset/getOneStdCondSet/{0}",
         getNumberOfLine: "exio/exi/csvimport/getNumberOfLine/{0}/{1}",
@@ -27,8 +27,9 @@ module nts.uk.com.view.cmf001.d.service {
         return ajax("com", paths.registerDataAndReturn, data);
     };
     
-    export function getAllCategory(): JQueryPromise<any> {
-        return ajax("com", paths.getAllCategory);
+    export function getAllCategoryBystem(system: number): JQueryPromise<any> {
+        let _path = format(paths.getAllCategoryBystem, system);
+        return ajax("com", _path);
     }
     
     export function getCategoryItem(categoryId: any): JQueryPromise<any> {
