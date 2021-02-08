@@ -62,7 +62,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
               <td>
                 <!-- A1_7 -->
                 <i tabindex=5 class="ccg005-status-img-A1_7" data-bind="ntsIcon: { no: $component.activityStatusIcon(), width: 20, height: 20 }, visible: $component.isBaseDate"></i>
-                <i data-bind="ntsIcon: { no: 191, width: 20, height: 20 }, visible: $component.isDiffBaseDate"></i>
+                <i data-bind="click: $component.openFutureScreenCCG005E.bind($component, true, '', '') ,ntsIcon: { no: 191, width: 20, height: 20 }, visible: $component.isAfter"></i>
               </td>
             </tr>
           </table>
@@ -156,7 +156,8 @@ module nts.uk.at.view.ccg005.a.screenModel {
               <td class="ccg005-pl-5 ccg005-border-groove ccg005-right-unset ccg005-left-unset">
                 <!-- A4_7 -->
                 <span class="ccg005-flex">
-                  <i tabindex=15 class="ccg005-status-img" data-bind="click: $component.initPopupInList.bind($component, $index, sid, businessName), ntsIcon: {no: activityStatusIconNo, width: 20, height: 20}"></i>
+                  <i tabindex=15 class="ccg005-status-img" data-bind="click: $component.initPopupInList.bind($component, $index, sid, businessName), ntsIcon: {no: activityStatusIconNo, width: 20, height: 20}, visible: $component.isBaseDate"></i>
+                  <i data-bind="click: $component.openFutureScreenCCG005E.bind($component, false, sid, businessName) ,ntsIcon: { no: 191, width: 20, height: 20 }, visible: $component.isAfter"></i>
                 </span>
               </td>
               <td class="ccg005-pl-5 ccg005-border-groove ccg005-left-unset">
@@ -473,6 +474,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
     emojiUsage: KnockoutObservable<boolean> = ko.observable(false);
     isBaseDate: KnockoutObservable<boolean> = ko.observable(true);
     isSameOrBeforeBaseDate: KnockoutObservable<boolean> = ko.observable(true);
+    isAfter: KnockoutObservable<boolean> = ko.observable(false);
     inCharge: KnockoutObservable<boolean> = ko.observable(true);
     workplaceFromCDL008: KnockoutObservableArray<string> = ko.observableArray([]);
     employeeIdList: KnockoutObservableArray<string> = ko.observableArray([]);
@@ -484,7 +486,6 @@ module nts.uk.at.view.ccg005.a.screenModel {
 
     //data for screen E
     goOutParams: KnockoutObservable<GoOutParam> = ko.observable();
-    isDiffBaseDate: KnockoutComputed<boolean> = ko.computed(() => !this.isBaseDate());
 
     sIdUpdateStatus: KnockoutObservable<string> = ko.observable('');
     indexUpdateItem: KnockoutObservable<number> = ko.observable();
@@ -532,6 +533,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
         const selectedDate = moment.utc(moment.utc(vm.selectedDate()).format('YYYY/MM/DD'));
         const baseDate = moment.utc(moment.utc().format('YYYY/MM/DD'));
         vm.isSameOrBeforeBaseDate(selectedDate.isSameOrBefore(baseDate));
+        vm.isAfter(selectedDate.isAfter(baseDate));
         vm.isBaseDate(selectedDate.isSame(baseDate));
         // パラメータ「在席情報を取得」
         const empIds = _.map(vm.attendanceInformationDtos(), atd => {
@@ -881,8 +883,6 @@ module nts.uk.at.view.ccg005.a.screenModel {
       }
     }
 
-    submit() { }
-
     openScreenCCG005B() {
       const vm = this;
       vm.$window.modal('/view/ccg/005/b/index.xhtml');
@@ -903,6 +903,31 @@ module nts.uk.at.view.ccg005.a.screenModel {
     openScreenCCG005E() {
       const vm = this;
       $('#ccg005-status-popup').ntsPopup('hide');
+      vm.$window.modal('/view/ccg/005/e/index.xhtml', vm.goOutParams()).then((x: Boolean) => {
+        if (x) {
+          vm.registerAttendanceStatus(2, 191);
+        }
+      });
+    }
+
+    /**
+     * A1_7 or A4_7  をクリックする
+     */
+    public openFutureScreenCCG005E(isLoginUser: boolean, sid: string, businessName: string) {
+      const vm = this;
+      if(isLoginUser) {
+        vm.goOutParams(new GoOutParam({
+          sid: __viewContext.user.employeeId,
+          businessName: vm.businessName(),
+          goOutDate: moment(vm.selectedDate()).format("YYYY/MM/DD")
+        }));
+      } else {
+        vm.goOutParams(new GoOutParam({
+          sid: sid,
+          businessName: businessName,
+          goOutDate: moment(vm.selectedDate()).format("YYYY/MM/DD")
+        }));
+      }
       vm.$window.modal('/view/ccg/005/e/index.xhtml', vm.goOutParams()).then((x: Boolean) => {
         if (x) {
           vm.registerAttendanceStatus(2, 191);
