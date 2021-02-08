@@ -1946,12 +1946,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			detailHeaderDs = [{ empId: "" }];
 			// A8_2 TQP
 			detailColumns = [{ key: "empId", width: "0px", headerText: "ABC", visible: false }];
-			for (let y = startHours; y < range; y++) {
-				//detailColumns.push({ key: (y).toString() + "_", width: width });
-				detailColumns[index++] = { key: (y).toString() + "_", width: width, headerText: "", visible: true  };
-				detailHeaderDs[0][y + "_"] = y.toString();
-				detailHeaders[y + "_"] = "";
-			}
 			
 			if (self.dataScreen003A().targetInfor == 1) {
 				middleColumns = [
@@ -2061,12 +2055,11 @@ module nts.uk.at.view.ksu003.a.viewmodel {
         }]
 			};
 
-			if(detailColumns.length < 25 ){
-				setTimeout(function() {
-				for (let y = startHours; y < range; y++) {
-					detailColumns[index++] = { key: (y).toString() + "_", width: width, headerText: "", visible: true  };
-				}
-				}, 50);
+			for (let y = startHours; y < range; y++) {
+				//detailColumns.push({ key: (y).toString() + "_", width: width });
+				detailColumns[index++] = { key: (y).toString() + "_", width: width, headerText: "", visible: true  };
+				detailHeaderDs[0][y + "_"] = y.toString();
+				detailHeaders[y + "_"] = "";
 			}
 
 			detailHeader = {
@@ -3515,7 +3508,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				} else {
 					$(".toLeft").css("margin-left", 592 + 'px');
 					if (self.dataScreen003A().targetInfor == 0) {
-						$(".toLeft").css("margin-left", 505 + 'px');
+						$(".toLeft").css("margin-left", 509 + 'px');
 					}
 				}
 				if (window.innerHeight < 700) {
@@ -3589,7 +3582,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				} else {
 					$(".toLeft").css("margin-left", 592 + 'px');
 					if (self.dataScreen003A().targetInfor == 0) {
-						$(".toLeft").css("margin-left", 505 + 'px');
+						$(".toLeft").css("margin-left", 509 + 'px');
 					}
 				}
 			} else {
