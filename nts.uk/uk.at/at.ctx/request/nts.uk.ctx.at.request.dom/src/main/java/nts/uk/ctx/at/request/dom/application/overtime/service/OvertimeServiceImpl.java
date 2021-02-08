@@ -11,6 +11,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
@@ -713,7 +714,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 					}
 				}
 			}
-			throw new BusinessException(errorMessage);
+			if(Strings.isNotBlank(errorMessage)) {
+				throw new BusinessException(errorMessage);
+			}
 		}
 	}
 	
