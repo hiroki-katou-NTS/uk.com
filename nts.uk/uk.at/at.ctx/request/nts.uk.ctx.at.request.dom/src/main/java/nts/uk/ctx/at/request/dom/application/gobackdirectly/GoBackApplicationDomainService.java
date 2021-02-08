@@ -12,7 +12,7 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidayService;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.service.HolidayService_Old;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeService;
 import nts.uk.ctx.at.request.dom.application.workchange.output.WorkTypeWorkTimeSelect;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
@@ -27,7 +27,7 @@ public class GoBackApplicationDomainService {
 //	@Inject
 //	private GoBackApplicationRepo goBackApplicationRepo;
 	@Inject 
-	private HolidayService holidayService;
+	private HolidayService_Old holidayService;
 	@Inject
 	private AppWorkChangeService appWorkChangeService;
 	@Inject

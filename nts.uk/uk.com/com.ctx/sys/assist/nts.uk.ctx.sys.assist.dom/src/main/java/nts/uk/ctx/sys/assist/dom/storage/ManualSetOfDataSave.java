@@ -3,19 +3,22 @@ package nts.uk.ctx.sys.assist.dom.storage;
 import java.util.List;
 import java.util.Optional;
 
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.security.crypt.commonkey.CommonKeyCrypt;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * データ保存の手動設定
  */
 @NoArgsConstructor
-@Getter
+@Data
+@EqualsAndHashCode(callSuper = false)
 public class ManualSetOfDataSave extends AggregateRoot {
 
 	/**
@@ -118,7 +121,9 @@ public class ManualSetOfDataSave extends AggregateRoot {
 		this.passwordAvailability = EnumAdaptor.valueOf(passwordAvailability, NotUseAtr.class);
 		this.saveSetName = new SaveSetName(saveSetName);
 		this.referenceDate = referenceDate;
-		this.compressedPassword = new FileCompressionPassword(compressedPassword);
+		this.compressedPassword = compressedPassword != null 
+				? new FileCompressionPassword(compressedPassword)
+				: null;
 		this.executionDateAndTime = executionDateAndTime;
 		this.daySaveEndDate = daySaveEndDate;
 		this.daySaveStartDate = daySaveStartDate;
@@ -145,7 +150,9 @@ public class ManualSetOfDataSave extends AggregateRoot {
 		this.passwordAvailability = EnumAdaptor.valueOf(passwordAvailability, NotUseAtr.class);
 		this.saveSetName = new SaveSetName(saveSetName);
 		this.referenceDate = referenceDate;
-		this.compressedPassword = new FileCompressionPassword(compressedPassword);
+		this.compressedPassword = compressedPassword != null 
+				? new FileCompressionPassword(compressedPassword)
+				: null;
 		this.executionDateAndTime = executionDateAndTime;
 		this.daySaveEndDate = daySaveEndDate;
 		this.daySaveStartDate = daySaveStartDate;

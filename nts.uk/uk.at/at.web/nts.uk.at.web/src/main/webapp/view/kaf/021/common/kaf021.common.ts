@@ -72,12 +72,12 @@ module nts.uk.at.kaf021.common {
         EXCESS_BG_GRAY = 8
     }
 
-    export enum AgreTimeYearStatusOfMonthly {
-        /** 正常 */
-        NORMAL = 0,
-        /** 限度超過 */
-        EXCESS_LIMIT = 1
-    }
+    // export enum AgreTimeYearStatusOfMonthly {
+    //     /** 正常 */
+    //     NORMAL = 0,
+    //     /** 限度超過 */
+    //     EXCESS_LIMIT = 1
+    // }
 
     /**
      * 月別実績の36協定上限時間状態
@@ -85,8 +85,10 @@ module nts.uk.at.kaf021.common {
     export enum AgreMaxTimeStatusOfMonthly {
         /** 正常 */
         NORMAL = 0,
-        /** 上限時間超過 */
-        EXCESS_MAXTIME = 1
+        /** アラーム時間超過 */
+        ALARM_OVER = 1,
+        /** エラー時間超過 */
+        ERROR_OVER = 2
     }
 
     export interface ErrorResultDto {

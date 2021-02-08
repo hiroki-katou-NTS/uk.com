@@ -45,7 +45,7 @@ public interface DailyRecordAdUpService {
 	public void adUpTimeLeaving(Optional<TimeLeavingOfDailyPerformance> attendanceLeave);
 
 	// ドメインモデル「日別実績の休憩時間帯」を更新する
-	public void adUpBreakTime(Optional<BreakTimeOfDailyPerformance> breakTime);
+	public void adUpBreakTime(BreakTimeOfDailyPerformance breakTime);
 
 	// ドメインモデル「日別実績の外出時間帯」を更新する
 	public void adUpOutTime(Optional<OutingTimeOfDailyPerformance> outingTime);
@@ -117,8 +117,7 @@ public interface DailyRecordAdUpService {
 				Optional.of(new TimeLeavingOfDailyPerformance(domain.getEmployeeId(), domain.getYmd(), x))));
 
 		// ドメインモデル「日別実績の休憩時間帯」を更新する
-		adUpBreakTime(domain.getBreakTime()
-				.map(x -> new BreakTimeOfDailyPerformance(domain.getEmployeeId(), domain.getYmd(), x)));
+		adUpBreakTime(new BreakTimeOfDailyPerformance(domain.getEmployeeId(), domain.getYmd(), domain.getBreakTime()));
 
 		// ドメインモデル「日別実績の外出時間帯」を更新する
 		adUpOutTime(domain.getOutingTime()

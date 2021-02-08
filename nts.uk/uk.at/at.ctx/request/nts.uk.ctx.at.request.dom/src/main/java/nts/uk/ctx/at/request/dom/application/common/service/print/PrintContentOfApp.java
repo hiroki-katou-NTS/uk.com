@@ -9,6 +9,7 @@ import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripPrintConte
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforGoBackCommonDirectOutput;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.ArrivedLateLeaveEarlyInfoOutput;
+import nts.uk.ctx.at.request.dom.application.overtime.service.DetailOutput;
 import nts.uk.ctx.at.request.dom.application.optional.OptionalItemPrintContent;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampOutput;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppReasonStandard;
@@ -94,7 +95,8 @@ public class PrintContentOfApp {
 	/**
 	 * 休日出勤の印刷内容
 	 */
-
+	private Optional<PrintContentOfHolidayWork> opPrintContentOfHolidayWork;
+	
 	/**
 	 * 勤務変更申請の印刷内容
 	 */
@@ -135,7 +137,9 @@ public class PrintContentOfApp {
 	 */
 	private Optional<InforGoBackCommonDirectOutput> opInforGoBackCommonDirectOutput;
 
-
+	
+	private Optional<DetailOutput> opDetailOutput;
+	
 	/**
 	 * 任意項目申請の印刷内容
 	 */
@@ -146,6 +150,7 @@ public class PrintContentOfApp {
 		this.opArrivedLateLeaveEarlyInfo = Optional.empty();
 		this.opAppStampOutput = Optional.empty();
 		this.opBusinessTripPrintContent = Optional.empty();
+		this.opDetailOutput = Optional.empty();
 		this.optionalItemPrintContent = Optional.empty();
 	}
 }

@@ -27,9 +27,14 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
         });
 
         appDate: KnockoutObservable<any> = ko.observable(null);
+		isFromOther: boolean = false;
 
         created(params: AppInitParam) {
             const vm = this;
+			if(!_.isNil(__viewContext.transferred.value)) {
+				vm.isFromOther = true;
+			}
+			sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');
 			let empLst: Array<string> = [],
 				dateLst: Array<string> = [];
             vm.isSendMail = ko.observable(false);

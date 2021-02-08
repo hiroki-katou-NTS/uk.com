@@ -17,55 +17,60 @@ import nts.uk.ctx.at.function.dom.processexecution.tasksetting.ExecutionTaskSett
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.task.schedule.UkJobScheduler;
 
+/**
+ * UKDesign.UniversalK.就業.KBT_更新処理自動実行.KBT002_更新処理自動実行.B:実行設定.アルゴリズム.削除処理.削除処理
+ */
 @Stateless
 public class RemoveProcessExecutionCommandHandler extends CommandHandler<RemoveProcessExecutionCommand> {
 
 	@Inject
 	private ProcessExecutionRepository procExecRepo;
-	
+
 	@Inject
 	private ExecutionTaskSettingRepository execSetRepo;
-	
+
 	@Inject
 	private ProcessExecutionLogRepository procExecLogRepo;
-	
+
 	@Inject
 	private LastExecDateTimeRepository lastExecRepo;
-	
+
 	@Inject
 	private ProcessExecutionLogManageRepository processExecLogManRepo;
-	
+
 	@Inject
 	private ProcessExecutionLogHistRepository processExecLogHistRepo;
-	
+
 	@Inject
 	private UkJobScheduler scheduler;
+
 	@Override
 	protected void handle(CommandHandlerContext<RemoveProcessExecutionCommand> context) {
 		String companyId = AppContexts.user().companyId();
 		RemoveProcessExecutionCommand command = context.getCommand();
-		//ドメインモデル「実行タスク設定」を取得する
-		Optional<ExecutionTaskSetting> executionTaskSettingOpt = execSetRepo.getByCidAndExecCd(companyId, command.getExecItemCd());
-		if(executionTaskSettingOpt.isPresent()){
-			ExecutionTaskSetting execTaskSetting = executionTaskSettingOpt.get();
+		// ドメインモデル「実行タスク設定」を取得する
+		Optional<ExecutionTaskSetting> executionTaskSettingOpt = execSetRepo.getByCidAndExecCd(companyId,
+				command.getExecItemCd());
+		executionTaskSettingOpt.ifPresent(execTaskSetting -> {
 			String scheduleId = execTaskSetting.getScheduleId();
-			this.scheduler.unscheduleOnCurrentCompany(SortingProcessScheduleJob.class,scheduleId);
+			// アルゴリズム「バッチのスケジュールを削除する」を実行する
+			this.scheduler.unscheduleOnCurrentCompany(SortingProcessScheduleJob.class, scheduleId);
 			Optional<String> endScheduleId = execTaskSetting.getEndScheduleId();
-			if(endScheduleId.isPresent()){
-				this.scheduler.unscheduleOnCurrentCompany(SortingProcessEndScheduleJob.class,endScheduleId.get());
+			if (endScheduleId.isPresent()) {
+				this.scheduler.unscheduleOnCurrentCompany(SortingProcessEndScheduleJob.class, endScheduleId.get());
 			}
-		}
-		//ドメインモデル「実行タスク設定」を削除する
+		});
+		// ドメインモデル「実行タスク設定」を削除する
 		this.execSetRepo.remove(companyId, command.getExecItemCd());
-		//ドメインモデル「更新処理自動実行ログ」を削除する
+		// ドメインモデル「更新処理自動実行ログ」を削除する
 		this.procExecLogRepo.removeList(companyId, command.getExecItemCd());
-		//ドメインモデル「更新処理自動実行」を削除する
+		// ドメインモデル「更新処理自動実行」を削除する
 		this.procExecRepo.remove(companyId, command.getExecItemCd());
-		//ドメインモデル「更新処理前回実行日時」を削除する
+		// ドメインモデル「更新処理前回実行日時」を削除する
 		this.lastExecRepo.remove(companyId, command.getExecItemCd());
-		//ドメインモデル「更新処理自動実行管理」を削除する
+		// ドメインモデル「更新処理自動実行管理」を削除する
 		this.processExecLogManRepo.remove(companyId, command.getExecItemCd());
-		//ドメインモデル「更新処理自動実行ログ履歴」を削除する
+		// ドメインモデル「更新処理自動実行ログ履歴」を削除する
 		this.processExecLogHistRepo.remove(companyId, command.getExecItemCd());
 	}
 }

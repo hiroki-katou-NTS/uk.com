@@ -8,6 +8,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.CheckBeforeRegisMultiEmpOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
@@ -84,4 +85,16 @@ public interface NewBeforeRegister {
 	public List<ConfirmMsgOutput> processBeforeRegister_New(String companyID, EmploymentRootAtr employmentRootAtr, boolean agentAtr,
 			Application application, OvertimeAppAtr overtimeAppAtr, ErrorFlagImport errorFlg, List<GeneralDate> lstDateHd,
 			AppDispInfoStartupOutput appDispInfoStartupOutput);
+	
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム."2-1.新規画面登録前の処理(複数人)".2-1.新規画面登録前の処理(複数人)
+	 * @param companyID 会社ID
+	 * @param employeeIDLst 申請者リスト
+	 * @param application 申請
+	 * @param overtimeAppAtr 残業区分
+	 * @param appDispInfoStartupOutput 申請表示情報
+	 * @return
+	 */
+	public CheckBeforeRegisMultiEmpOutput processBeforeRegisterMultiEmp(String companyID, List<String> employeeIDLst, Application application,
+			OvertimeAppAtr overtimeAppAtr, AppDispInfoStartupOutput appDispInfoStartupOutput);
 }

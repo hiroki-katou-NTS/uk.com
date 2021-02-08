@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.application.overtime.time36;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 /**
@@ -11,6 +12,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
  */
 @AllArgsConstructor
 @Getter
+@Setter
 public class Time36Agree extends DomainObject {
 	
 	/*

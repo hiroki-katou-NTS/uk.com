@@ -19,7 +19,6 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Setter
 @NoArgsConstructor
 public class WorkStamp extends DomainObject{
-	
 
 	/*
 	 * 時刻
@@ -30,6 +29,18 @@ public class WorkStamp extends DomainObject{
 	 * 場所コード
 	 */
 	private Optional<WorkLocationCD> locationCode;
+	
+	/**
+	 * 自動セットで作る
+	 * @param time 	時刻
+	 * @return
+	 */
+	public static WorkStamp createByAutomaticSet(TimeWithDayAttr time) {
+		
+		return new WorkStamp(
+				WorkTimeInformation.createByAutomaticSet(time),
+				Optional.empty());
+	}
 	
 
 	public WorkStamp(TimeWithDayAttr timeWithDay, WorkLocationCD locationCode,
@@ -71,7 +82,7 @@ public class WorkStamp extends DomainObject{
 	
 	/**
 	 * ＜
-	 * @param compareValue　比較値
+	 * @param compareValue 比較値
 	 * @return
 	 */
 	public boolean lessThan(WorkStamp compareValue) {

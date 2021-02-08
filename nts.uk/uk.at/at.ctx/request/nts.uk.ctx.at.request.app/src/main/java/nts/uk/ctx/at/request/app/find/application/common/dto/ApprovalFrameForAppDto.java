@@ -24,7 +24,7 @@ public class ApprovalFrameForAppDto {
 				approvalFrameImport.getFrameOrder(), 
 				approvalFrameImport.getListApprover().stream().map(x -> ApproverStateForAppDto.fromDomain(x)).collect(Collectors.toList()),
 				approvalFrameImport.getConfirmAtr(),
-				approvalFrameImport.getAppDate().toString("yyyy/MM/dd"));
+				approvalFrameImport.getAppDate()==null ? null : approvalFrameImport.getAppDate().toString("yyyy/MM/dd"));
 	}
 	
 	public ApprovalFrameImport_New toDomain() {

@@ -18,6 +18,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.command.application.common.ApproveAppHandler;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -70,6 +71,9 @@ public class AppListApproveCommandHandler extends CommandHandlerWithResult<AppLi
 		AppListApproveResult result = new AppListApproveResult(new HashMap<String, String>(), new HashMap<String, String>());
 		AppListApproveCommand command = context.getCommand();
 		List<ListOfApplicationCmd> listOfApplicationCmds = command.getListOfApplicationCmds();
+		if(CollectionUtil.isEmpty(listOfApplicationCmds)) {
+			return result;
+		}
 //		List<ListOfAppTypes> listOfAppTypes =  command.getListOfAppTypes().stream().map(x -> x.toDomain()).collect(Collectors.toList());
 		// ドメインモデル「承認一覧表示設定」を取得する (Lấy domain Approval List display Setting)
 		ApprovalListDisplaySetting approvalListDisplaySetting = approvalListDispSetRepository.findByCID(companyID).get();
@@ -150,6 +154,9 @@ public class AppListApproveCommandHandler extends CommandHandlerWithResult<AppLi
 	public AppListApproveResult approverAfterConfirm(List<ListOfApplicationCmd> listOfApplicationCmds, List<ListOfAppTypes> listOfAppTypes) {
 		String companyID = AppContexts.user().companyId();
 		AppListApproveResult result = new AppListApproveResult(new HashMap<String, String>(), new HashMap<String, String>());
+		if(CollectionUtil.isEmpty(listOfApplicationCmds)) {
+			return result;
+		}
 		this.parallel.forEach(listOfApplicationCmds, listOfApplicationCmd -> {
 			Pair<Boolean, String> pair = this.approveSingleApp(companyID, listOfApplicationCmd, listOfAppTypes);
 			if(pair.getLeft()) {
