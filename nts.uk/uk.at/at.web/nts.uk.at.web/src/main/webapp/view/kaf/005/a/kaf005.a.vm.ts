@@ -175,6 +175,19 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						vm.bindOverTime(vm.dataSource, 1);
 						vm.bindMessageInfo(vm.dataSource);
 						vm.assginTimeTemp();
+						// 勤務種類リストと就業時間帯リストがない場合エラーを返す
+						if (_.isEmpty(vm.dataSource.infoBaseDateOutput.worktypes)) {
+							// msg_1567
+							vm.$dialog.error({ messageId: 'Msg_1567'});	
+						}
+						if (vm.dataSource.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst) {
+							
+							if (_.isEmpty(vm.dataSource.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst)) {
+								vm.$dialog.error({ messageId: 'Msg_1568'});	
+							}
+						} else {
+							vm.$dialog.error({ messageId: 'Msg_1568'});	
+						}
 					}
 				}).fail((failData: any) => {
 					// xử lý lỗi nghiệp vụ riêng

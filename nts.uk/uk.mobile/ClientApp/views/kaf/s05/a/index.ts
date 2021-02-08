@@ -417,6 +417,22 @@ export class KafS05Component extends KafS00ShrComponent {
                 }
                 let step1 = vm.$refs.step1 as KafS05Step1Component;
                 step1.loadData(vm.model.displayInfoOverTime);
+                // 勤務種類リストと就業時間帯リストがない場合エラーを返す
+                if (vm.model.displayInfoOverTime) {
+                    
+                    if (_.isEmpty(vm.model.displayInfoOverTime.infoBaseDateOutput.worktypes)) {
+                        // msg_1567
+                        vm.$modal.error({ messageId: 'Msg_1567'});	
+                    }
+                    if (vm.model.displayInfoOverTime.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst) {
+                        
+                        if (_.isEmpty(vm.model.displayInfoOverTime.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst)) {
+                            vm.$modal.error({ messageId: 'Msg_1568'});	
+                        }
+                    } else {
+                        vm.$modal.error({ messageId: 'Msg_1568'});	
+                    }
+                }
             }
         }).catch((error: any) => {
             vm.handleErrorCustom(error).then((result) => {
