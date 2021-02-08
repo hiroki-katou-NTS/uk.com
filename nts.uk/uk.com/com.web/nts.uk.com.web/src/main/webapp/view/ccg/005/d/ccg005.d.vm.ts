@@ -73,6 +73,7 @@ module nts.uk.at.view.ccg005.d.screenModel {
       const vm = this;
       vm.$errors("clear");
       const currentFavor = _.find(vm.favoriteList(), (item => Number(item.order) === Number(order)));
+      vm.favoriteName('');
       if (currentFavor) {
         vm.selectedFavorite(currentFavor);
         vm.favoriteName(currentFavor.favoriteName);
@@ -171,6 +172,7 @@ module nts.uk.at.view.ccg005.d.screenModel {
       vm.$dialog.confirm({ messageId: "Msg_18" }).then((result) => {
         if (result === "yes") {
           const currentFavor = _.find(vm.favoriteList(), (item => Number(item.order) === Number(vm.selectedFavoriteOrder())));
+          const index = _.findIndex(vm.favoriteList(), (item => Number(item.order) === Number(vm.selectedFavoriteOrder())));
           if (currentFavor) {
             const favoriteSpecify = new FavoriteSpecifyDelCommand({
               creatorId: currentFavor.creatorId,
@@ -178,13 +180,15 @@ module nts.uk.at.view.ccg005.d.screenModel {
             });
             vm.$blockui("grayout");
             vm.$ajax(API.delete, favoriteSpecify).then(() => {
-              //set selected to 0 when delete
-              if (vm.favoriteList()) {
-                vm.selectedFavoriteOrder(0);
-              }
               vm.callData();
               vm.$blockui("clear");
-              return vm.$dialog.info({ messageId: "Msg_16" });
+              vm.$dialog.info({ messageId: "Msg_16" }).then(() => {
+                if (index >= vm.favoriteList().length) {
+                  vm.selectedFavoriteOrder(vm.favoriteList()[index - 1].order);
+                } else {
+                  vm.selectedFavoriteOrder(vm.favoriteList()[index].order);
+                }
+              });
             })
             .always(() => vm.$blockui("clear"));
           }
