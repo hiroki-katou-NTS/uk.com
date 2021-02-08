@@ -157,7 +157,7 @@
             <span class="badge badge-info" style="height: 30%">任意</span>
         </div>
         <div class="card-body">
-            <table class="table table-sm mb-0">
+            <table class="table table-sm mb-0" v-if="isSelectMngLst(recHolidayMngLst)">
                 <thead class="thead-light">
                     <tr class="table-light">
                         <td>{{'KAFS11_20' | i18n}}</td>
@@ -262,7 +262,7 @@
             <span class="badge badge-info" style="height: 30%">任意</span>
         </div>
         <div class="card-body">
-            <table class="table table-sm mb-0">
+            <table class="table table-sm mb-0" v-if="isSelectMngLst(absHolidayMngLst)">
                 <thead class="thead-light">
                     <tr class="table-light">
                         <td>{{'KAFS11_20' | i18n}}</td>
@@ -292,7 +292,7 @@
             <span class="badge badge-info" style="height: 30%">任意</span>
         </div>
         <div class="card-body">
-            <table class="table table-sm mb-0">
+            <table class="table table-sm mb-0" v-if="isSelectMngLst(absWorkMngLst)">
                 <thead class="thead-light">
                     <tr class="table-light">
                         <td>{{'KAFS11_24' | i18n}}</td>
