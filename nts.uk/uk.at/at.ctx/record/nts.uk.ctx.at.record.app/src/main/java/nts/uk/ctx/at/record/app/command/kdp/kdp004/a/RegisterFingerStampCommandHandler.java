@@ -18,6 +18,11 @@ import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ExecutionTypeDaily;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.EmbossingExecutionFlag;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.createdailyresults.CreateDailyResults;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.OutputCreateDailyOneDay;
+import nts.uk.ctx.at.record.dom.dailyresultcreationprocess.creationprocess.creationclass.dailywork.TemporarilyReflectStampDailyAttd;
 import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditing;
 import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditingRepo;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
@@ -35,8 +40,17 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.T
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunal;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunalRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
+import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInfoImport;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyImport622;
+import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output.PeriodInMasterList;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.OutputTimeReflectForWorkinfo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.StampReflectRangeOutput;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.TimeReflectFromWorkinfo;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrorMessageInfo;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -71,6 +85,15 @@ public class RegisterFingerStampCommandHandler extends CommandHandlerWithResult<
 
 	@Inject
 	private CreateDailyResultDomainService createDailyResultDomainSv;
+	
+	@Inject
+	private CreateDailyResults createDailyResults;
+	
+	@Inject
+	private TimeReflectFromWorkinfo timeReflectFromWorkinfo;
+	
+	@Inject
+	private TemporarilyReflectStampDailyAttd temporarilyReflectStampDailyAttd;
 
 	@Override
 	protected GeneralDate handle(CommandHandlerContext<RegisterFingerStampCommand> context) {
@@ -85,7 +108,10 @@ public class RegisterFingerStampCommandHandler extends CommandHandlerWithResult<
 																												, sysEmpPub
 																												, stampRecordRepo
 																												, stampDakokuRepo
-																												, createDailyResultDomainSv);
+																												, createDailyResultDomainSv
+																												, createDailyResults
+																												, timeReflectFromWorkinfo
+																												, temporarilyReflectStampDailyAttd);
 
 		//require, 契約コード, 社員ID, なし, 打刻する方法, 打刻日時, 打刻ボタン, 実績への反映内容
 		TimeStampInputResult inputResult = EnterStampForSharedStampService.create(
@@ -143,6 +169,12 @@ public class RegisterFingerStampCommandHandler extends CommandHandlerWithResult<
 		@Inject
 		private CreateDailyResultDomainService createDailyResultDomainSv;
 
+		private CreateDailyResults createDailyResults;
+
+		private TimeReflectFromWorkinfo timeReflectFromWorkinfo;
+
+		private TemporarilyReflectStampDailyAttd temporarilyReflectStampDailyAttd;
+
 		@Override
 		public List<StampCard> getLstStampCardBySidAndContractCd(String sid) {
 			return this.stampCardRepo.getLstStampCardBySidAndContractCd(AppContexts.user().contractCode(), sid);
@@ -196,6 +228,26 @@ public class RegisterFingerStampCommandHandler extends CommandHandlerWithResult<
 		@Override
 		public Optional<StampSetCommunal> gets() {
 			return this.stampSetCommunalRepository.gets(AppContexts.user().companyId());
+		}
+
+		@Override
+		public OutputCreateDailyOneDay createDailyResult(String companyId, String employeeId, GeneralDate ymd,
+				ExecutionTypeDaily executionType, EmbossingExecutionFlag flag,
+				EmployeeGeneralInfoImport employeeGeneralInfoImport, PeriodInMasterList periodInMasterList,
+				IntegrationOfDaily integrationOfDaily) {
+			return this.createDailyResults.createDailyResult(companyId, employeeId, ymd, executionType, flag, employeeGeneralInfoImport, periodInMasterList, integrationOfDaily);
+		}
+
+		@Override
+		public OutputTimeReflectForWorkinfo get(String companyId, String employeeId, GeneralDate ymd,
+				WorkInfoOfDailyAttendance workInformation) {
+			return this.timeReflectFromWorkinfo.get(companyId, employeeId, ymd, workInformation);
+		}
+
+		@Override
+		public List<ErrorMessageInfo> reflectStamp(Stamp stamp, StampReflectRangeOutput stampReflectRangeOutput,
+				IntegrationOfDaily integrationOfDaily, ChangeDailyAttendance changeDailyAtt) {
+			return this.temporarilyReflectStampDailyAttd.reflectStamp(stamp, stampReflectRangeOutput, integrationOfDaily, changeDailyAtt);
 		}
 
 	}
