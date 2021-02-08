@@ -44,6 +44,11 @@ module knr002.g {
 
             //  employee
             selectableEmployees: KnockoutObservableArray<any>;
+            initialSendStates: any;
+            selectEmployee: KnockoutObservable<boolean>;
+            selectWorkType: KnockoutObservable<boolean>;
+            selectWorkTime: KnockoutObservable<boolean>;
+            selectReservation: KnockoutObservable<boolean>;
 
             constructor(){
                 var self = this;
@@ -72,6 +77,11 @@ module knr002.g {
                 self.posibleWorkTimes = ko.observableArray([]);
                 self.workTimeCodes = ko.observableArray([]);
                 self.selectableWorkTimes = ko.observableArray([]);
+                self.initialSendStates = {};
+                self.selectEmployee = ko.observable(false);
+                self.selectWorkType = ko.observable(false);
+                self.selectWorkTime = ko.observable(false);
+                self.selectReservation = ko.observable(false);
 
                 //  bento menu
                 self.selectableBentos = ko.observableArray([]);
@@ -121,6 +131,7 @@ module knr002.g {
                             self.empInfoTerCode('');
                             self.empInfoTerName('');
                         }else{
+                            self.initialSendStates = _.cloneDeep(data);
                             self.sendEmployeeId(data.sendEmployeeId);
                             self.sendWorkType(data.sendWorkType);
                             self.sendWorkTime(data.sendWorkTime);
@@ -154,6 +165,7 @@ module knr002.g {
                     let selectable = getShared("KNR002H_selectedList");
                     let isCancel = getShared("KNR002H_isCancel");
                     if(isCancel !== undefined && isCancel === false){
+                        self.selectEmployee(true);
                         self.selectableEmployees(selectable !== undefined? selectable : []);
                         if(self.selectableEmployees().length <= 0){
                             dialog.error({ messageId: "Msg_2023" }).then(() => {
@@ -174,7 +186,7 @@ module knr002.g {
                                 blockUI.clear();
                             });              
                         }
-                    }
+                    } else self.selectEmployee(false);
                 });
             }
 
@@ -199,6 +211,7 @@ module knr002.g {
                             let isCancel = getShared("KDL002_IsCancel");
                             self.selectableWorkTypes(selectable !== undefined? selectable : []);
                             if(isCancel !== undefined && isCancel === false){
+                                self.selectWorkType(true);
                                 if(self.selectableWorkTypes().length <= 0){
                                     dialog.error({ messageId: "Msg_2024" }).then(() => {
                                         // do something
@@ -218,7 +231,7 @@ module knr002.g {
                                         blockUI.clear();
                                     });              
                                 }
-                            }
+                            } else self.selectWorkType(false);
                             blockUI.clear();
                         });
                     }	
@@ -244,6 +257,7 @@ module knr002.g {
                             let selectable : Array<any> = getShared("kml001selectedCodeList");
                             let isCancel = getShared("KDL001_IsCancel");
                             if(isCancel !== undefined && isCancel === false){
+                                self.selectWorkTime(true);
                                 self.selectableWorkTimes(selectable !== undefined? selectable.filter(e => e != '') : []);
                                 if(self.selectableWorkTimes().length <= 0 ){
                                     dialog.error({ messageId: "Msg_2025" }).then(() => {
@@ -264,7 +278,7 @@ module knr002.g {
                                         blockUI.clear();
                                     });              
                                 }
-                            }
+                            } else self.selectWorkTime(false);
                             blockUI.clear();
                         });       
                     }	
@@ -284,6 +298,7 @@ module knr002.g {
                     let selectable = getShared("KNR002K_selectedList");
                     let isCancel = getShared("KNR002K_isCancel");
                     if(isCancel !== undefined && isCancel === false){
+                        self.selectReservation(true);
                         self.selectableBentos(selectable !== undefined? selectable : []);
                         if(self.selectableBentos().length <= 0){
                             dialog.error({ messageId: "Msg_2026" }).then(() => {
@@ -305,7 +320,7 @@ module knr002.g {
                                 blockUI.clear();
                             });              
                         }
-                    }
+                    } else self.selectReservation(false);
                 });
             }
             /**
@@ -339,26 +354,26 @@ module knr002.g {
                         }
                         
                         let selectedEmployees = self.selectableEmployees();
-                        if(((isNullOrUndefined(selectedEmployees) || selectedEmployees.length == 0) && self.sendEmployeeId())
-                        /*|| ((!isNullOrUndefined(self.selectableEmployees) && self.selectableEmployees > 0) && !self.sendEmployeeId())*/){
+                        if((!self.initialSendStates.sendEmployeeId && (isNullOrUndefined(selectedEmployees) || selectedEmployees.length == 0) && self.sendEmployeeId())
+                            || (self.initialSendStates.sendEmployeeId && self.selectEmployee() && selectedEmployees.length == 0 && self.sendEmployeeId())) {
                             $('#G6_1').ntsError('set', { messageId:'Msg_2023' });
                         }
 
                         let selectedWorkTypes = self.selectableWorkTypes(); 
-                        if(((isNullOrUndefined(selectedWorkTypes) || selectedWorkTypes.length == 0) && self.sendWorkType())
-                        /*|| ((!isNullOrUndefined(self.selectableWorkTypes) && self.selectableWorkTypes.length > 0) && !self.sendWorkType())*/){
+                        if((!self.initialSendStates.sendWorkType && (isNullOrUndefined(selectedWorkTypes) || selectedWorkTypes.length == 0) && self.sendWorkType())
+                            || (self.initialSendStates.sendWorkType && self.selectWorkType() && selectedWorkTypes.length == 0 && self.sendWorkType())) {
                             $('#G6_2').ntsError('set', { messageId:'Msg_2024' });
                         }
 
                         let selectedWorkTimes = self.selectableWorkTimes();
-                        if(((isNullOrUndefined(selectedWorkTimes) || selectedWorkTimes.length == 0) && self.sendWorkTime())
-                        /*|| ((!isNullOrUndefined(self.selectableWorkTimes) && self.selectableWorkTimes.length > 0) && !self.sendWorkTime())*/){
+                        if((!self.initialSendStates.sendWorkTime && (isNullOrUndefined(selectedWorkTimes) || selectedWorkTimes.length == 0) && self.sendWorkTime())
+                            || (self.initialSendStates.sendWorkTime && self.selectWorkTime() && selectedWorkTimes.length == 0 && self.sendWorkTime())){
                             $('#G6_3').ntsError('set', { messageId:'Msg_2025' });
                         }
 
                         let selectedBentos = self.selectableBentos();
-                        if(((isNullOrUndefined(selectedBentos) || selectedBentos.length == 0) && self.sendBentoMenu())
-                        /*|| ((!isNullOrUndefined(self.selectableBentos) && self.selectableBentos.length > 0) && !self.sendBentoMenu())*/){
+                        if((!self.initialSendStates.sendBentoMenu && (isNullOrUndefined(selectedBentos) || selectedBentos.length == 0) && self.sendBentoMenu())
+                            || (self.initialSendStates.sendBentoMenu && self.selectReservation() && selectedBentos.length == 0 && self.sendBentoMenu())) {
                             $('#G6_6').ntsError('set', { messageId:'Msg_2026' });
                         }
                         if(self.hasError()){
