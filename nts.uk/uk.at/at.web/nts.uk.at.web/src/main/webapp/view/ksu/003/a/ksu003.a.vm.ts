@@ -3510,7 +3510,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				if (window.innerWidth >= 1320) {
 					$(".toLeft").css('margin-left', 587 + 'px');
 					if (self.dataScreen003A().targetInfor == 0) {
-						$(".toLeft").css("margin-left", 500 + 'px');
+						$(".toLeft").css("margin-left", 504 + 'px');
 					}
 				} else {
 					$(".toLeft").css("margin-left", 592 + 'px');
@@ -3584,7 +3584,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				if (window.innerWidth >= 1320) {
 					$(".toLeft").css('margin-left', 587 + 'px');
 					if (self.dataScreen003A().targetInfor == 0) {
-						$(".toLeft").css("margin-left", 500 + 'px');
+						$(".toLeft").css("margin-left", 504 + 'px');
 					}
 				} else {
 					$(".toLeft").css("margin-left", 592 + 'px');
