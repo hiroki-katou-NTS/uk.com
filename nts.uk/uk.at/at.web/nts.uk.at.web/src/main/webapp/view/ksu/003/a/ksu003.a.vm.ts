@@ -844,9 +844,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					const dataFirt = data;
 					if (self.checked() === "0") {
 						let dataSort = self.sortEmpByTime(data);
-						dataSort = dataSort.sort(function(a, b) {
-							return (a.startTime != null ? a.startTime : Infinity) - (b.startTime != null ? b.startTime : Infinity);
-						});
+						dataSort = _.sortBy(dataSort, ['startTime' ,'empCode']);
 						self.lstEmpId = self.lstEmpId.sort(function(a: any, b: any) {
 							return _.findIndex(dataSort, x => { return x.empId == a.empId }) - _.findIndex(dataSort, x => { return x.empId == b.empId });
 						});
@@ -1189,8 +1187,10 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		// 勤務種類を変更する
 
 		public sortEmpByTime(employeeInfo: Array<model.DisplayWorkInfoByDateDto>) {
+			let self = this;
 			let dataSort = _.map(employeeInfo, (x: model.DisplayWorkInfoByDateDto) => ({
 				empId: x.empId,
+				empCode : _.filter(self.lstEmpId, y => {return y.empId == x.empId})[0].code,
 				startTime: (x.workScheduleDto != null && (x.workScheduleDto.startTime1 != null && x.workScheduleDto.startTime1 != 0)) ? x.workScheduleDto.startTime1 : null
 			}))
 
@@ -1207,9 +1207,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				lstEmpId: _.map(self.lstEmpId, (x: IEmpidName) => { return { empId: x.empId, code: x.code } })
 			}
 			if (value === '0') {
-				dataSort = dataSort.sort(function(a: any, b: any) {
-					return (a.startTime != null ? a.startTime : Infinity) - (b.startTime != null ? b.startTime : Infinity);
-				});
+				dataSort = _.sortBy(dataSort, ['startTime' ,'empCode']);
 				self.lstEmpId = self.lstEmpId.sort(function(a: any, b: any) {
 					return _.findIndex(dataSort, x => { return x.empId == a.empId }) - _.findIndex(dataSort, x => { return x.empId == b.empId });
 				});
@@ -1977,19 +1975,19 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					},
 					{
 						headerText: getText('KSU003_27'), group: [
-							{ headerText: "", key: "startTime1", width: "39px", handlerType: "input", dataType: "duration", primitiveValue: "TimeWithDayAttr", required: true }]
+							{ headerText: "", key: "startTime1", width: "41px", handlerType: "input", dataType: "duration", primitiveValue: "TimeWithDayAttr", required: true }]
 					},
 					{
 						headerText: getText('KSU003_28'), group: [
-							{ headerText: "", key: "endTime1", width: "39px", handlerType: "input", dataType: "duration", primitiveValue: "TimeWithDayAttr", required: true }]
+							{ headerText: "", key: "endTime1", width: "41px", handlerType: "input", dataType: "duration", primitiveValue: "TimeWithDayAttr", required: true }]
 					},
 					{
 						headerText: getText('KSU003_29'), group: [
-							{ headerText: "", key: "startTime2", width: "39px", handlerType: "input", dataType: "duration", primitiveValue: "TimeWithDayAttr", required: true }]
+							{ headerText: "", key: "startTime2", width: "41px", handlerType: "input", dataType: "duration", primitiveValue: "TimeWithDayAttr", required: true }]
 					},
 					{
 						headerText: getText('KSU003_30'), group: [
-							{ headerText: "", key: "endTime2", width: "39px", handlerType: "input", dataType: "duration", primitiveValue: "TimeWithDayAttr", required: true }]
+							{ headerText: "", key: "endTime2", width: "41px", handlerType: "input", dataType: "duration", primitiveValue: "TimeWithDayAttr", required: true }]
 					},
 					{
 						headerText: getText('KSU003_31'), group: [
@@ -2022,11 +2020,11 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					},
 					{
 						headerText: getText('KSU003_27'), group: [
-							{ headerText: "", key: "startTime1", width: "39px", handlerType: "input", dataType: "duration", primitiveValue: "TimeWithDayAttr", required: true }]
+							{ headerText: "", key: "startTime1", width: "41px", handlerType: "input", dataType: "duration", primitiveValue: "TimeWithDayAttr", required: true }]
 					},
 					{
 						headerText: getText('KSU003_28'), group: [
-							{ headerText: "", key: "endTime1", width: "39px", handlerType: "input", dataType: "duration", primitiveValue: "TimeWithDayAttr", required: true }]
+							{ headerText: "", key: "endTime1", width: "41px", handlerType: "input", dataType: "duration", primitiveValue: "TimeWithDayAttr", required: true }]
 					},
 
 					{
@@ -2042,7 +2040,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			
 			middleHeader = {
 				columns: middleColumns,
-				width: self.dataScreen003A().targetInfor == 1 ? "391px" : "312px",
+				width: self.dataScreen003A().targetInfor == 1 ? "399px" : "316px",
 				rowHeight: "33px"
 			};
 			middleContent = {
@@ -3510,12 +3508,12 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				}
 				$(".ex-header-middle").css("width", 560 + 'px' + '!important')
 				if (window.innerWidth >= 1320) {
-					$(".toLeft").css('margin-left', 580 + 'px');
+					$(".toLeft").css('margin-left', 587 + 'px');
 					if (self.dataScreen003A().targetInfor == 0) {
 						$(".toLeft").css("margin-left", 500 + 'px');
 					}
 				} else {
-					$(".toLeft").css("margin-left", 585 + 'px');
+					$(".toLeft").css("margin-left", 592 + 'px');
 					if (self.dataScreen003A().targetInfor == 0) {
 						$(".toLeft").css("margin-left", 505 + 'px');
 					}
@@ -3584,12 +3582,12 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					$("#extable-ksu003").exTable("showMiddle");
 				}
 				if (window.innerWidth >= 1320) {
-					$(".toLeft").css('margin-left', 580 + 'px');
+					$(".toLeft").css('margin-left', 587 + 'px');
 					if (self.dataScreen003A().targetInfor == 0) {
 						$(".toLeft").css("margin-left", 500 + 'px');
 					}
 				} else {
-					$(".toLeft").css("margin-left", 585 + 'px');
+					$(".toLeft").css("margin-left", 592 + 'px');
 					if (self.dataScreen003A().targetInfor == 0) {
 						$(".toLeft").css("margin-left", 505 + 'px');
 					}
