@@ -1,0 +1,83 @@
+.ksus01a {
+    margin-top: -1rem;
+
+    #year-month-component {
+        width: 14em;
+    }
+
+    #year-month-component input {
+        background-color: #E0F59E;
+        box-shadow: none;
+        border: none;   
+        border-radius: 0;
+        font-weight: bold;
+    }
+
+    #year-month-component .form-group {
+        margin: 0;
+    }
+
+    #detail-component {
+        position: fixed;
+        bottom: 0;
+        height: 73vh;
+        width: 100vw;
+    }
+
+    #detail-component .card-header {
+        padding-right: 3rem;
+    }
+
+    #detail-component .card-body {
+        overflow-y: auto;
+        margin-left: -1rem;
+        padding: 1rem 2rem 1rem 1rem;
+        background-color: #F4FBFD;
+    }
+
+    #detail-component span {
+        margin-right: 1em
+    }
+
+    .date-header-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .date-header {
+        height: 3vh;
+        width: calc(100vw/7);
+        border: 1px solid #D9D9D9;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .date-cell-container {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .date-cell {
+        height: 13vh;
+        width: calc(100vw/7);
+        padding: 0.5rem;
+        border: 1px solid #D9D9D9;
+        display: inline-block;
+    }
+
+    .flex-center-vert {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
+    .detail-spacing {
+        margin-bottom: 1em;
+    }
+
+    .detail-indent {
+        padding-left: 2em;
+    }
+}
