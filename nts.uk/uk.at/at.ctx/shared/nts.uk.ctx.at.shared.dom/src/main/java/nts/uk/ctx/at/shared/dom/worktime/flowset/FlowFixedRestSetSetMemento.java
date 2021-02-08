@@ -14,7 +14,7 @@ public interface FlowFixedRestSetSetMemento {
 	 *
 	 * @param val the new calculate method
 	 */
-	void setCalculateMethod(FlowFixedRestCalcMethod val);
+//	void setCalculateMethod(FlowFixedRestCalcMethod val);
 
 	/**
 	 * Sets the calculate from stamp.

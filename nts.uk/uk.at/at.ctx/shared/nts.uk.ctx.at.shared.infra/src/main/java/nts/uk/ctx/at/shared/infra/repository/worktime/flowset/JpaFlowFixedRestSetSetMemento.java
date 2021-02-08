@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.flowset;
 
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestSetSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.StampBreakCalculation;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowRestSet;
@@ -36,10 +35,10 @@ public class JpaFlowFixedRestSetSetMemento implements FlowFixedRestSetSetMemento
 	 * setCalculateMethod(nts.uk.ctx.at.shared.dom.worktime.common.
 	 * FlowFixedRestCalcMethod)
 	 */
-	@Override
-	public void setCalculateMethod(FlowFixedRestCalcMethod method) {
-		this.entity.setFixedRestCalcMethod(method.value);
-	}
+//	@Override
+//	public void setCalculateMethod(FlowFixedRestCalcMethod method) {
+//		this.entity.setFixedRestCalcMethod(method.value);
+//	}
 
 	/*
 	 * (non-Javadoc)

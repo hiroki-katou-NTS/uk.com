@@ -52,8 +52,8 @@ public class KshmtFlowRestSet extends UkJpaEntity implements Serializable {
 	private int userAssoGoOutRest;
 
 	/** The fixed rest calc method. */
-	@Column(name = "FIXED_REST_CALC_METHOD")
-	private int fixedRestCalcMethod;
+//	@Column(name = "FIXED_REST_CALC_METHOD")
+//	private int fixedRestCalcMethod;
 
 	/** The use stamp. */
 	@Column(name = "USE_STAMP")

@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestSetGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.StampBreakCalculation;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexRestSet;
@@ -38,10 +37,10 @@ public class JpaFlexFlowFixedRestSetGetMemento implements FlowFixedRestSetGetMem
 	 * @see nts.uk.ctx.at.shared.dom.worktime.common.FlowFixedRestSetGetMemento#
 	 * getCalculateMethod()
 	 */
-	@Override
-	public FlowFixedRestCalcMethod getCalculateMethod() {
-		return FlowFixedRestCalcMethod.valueOf(this.entity.getFixedRestCalcMethod());
-	}
+//	@Override
+//	public FlowFixedRestCalcMethod getCalculateMethod() {
+//		return FlowFixedRestCalcMethod.valueOf(this.entity.getFixedRestCalcMethod());
+//	}
 
 	/*
 	 * (non-Javadoc)

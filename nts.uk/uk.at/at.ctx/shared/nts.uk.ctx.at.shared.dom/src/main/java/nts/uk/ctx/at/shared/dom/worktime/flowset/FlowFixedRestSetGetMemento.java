@@ -14,7 +14,7 @@ public interface FlowFixedRestSetGetMemento {
 	 *
 	 * @return the calculate method
 	 */
-	FlowFixedRestCalcMethod getCalculateMethod();
+//	FlowFixedRestCalcMethod getCalculateMethod();
 
 	/**
 	 * Gets the calculate from stamp.
