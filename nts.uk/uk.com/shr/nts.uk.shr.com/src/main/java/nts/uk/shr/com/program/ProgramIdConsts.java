@@ -1536,5 +1536,20 @@ public class ProgramIdConsts {
 	 * KNR001
 	 */
 	public static final String KNR001A = "KNR001A";
+	
+	/**
+	 * KNR002
+	 */
+	public static final String KNR002A = "KNR002A";
+	public static final String KNR002B = "KNR002B";
+	public static final String KNR002C = "KNR002C";
+	public static final String KNR002D = "KNR002D";
+	public static final String KNR002E = "KNR002E";
+	public static final String KNR002F = "KNR002F";
+	public static final String KNR002G = "KNR002G";
+	public static final String KNR002H = "KNR002H";
+	public static final String KNR002K = "KNR002K";
+
 	public static final String CDL010A = "CDL010A";
+
 }

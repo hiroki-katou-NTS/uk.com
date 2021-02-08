@@ -121,46 +121,25 @@ module nts.uk.ui {
      * Using for blocking UI when action in progress
      */
     export module block {
-        
-        export function invisible() {
-            let rect = calcRect();
+        export function clear(el: HTMLElement = document.body) {
+            const fadeOut = 200;
 
-            (<any>$).blockUI({
-                message: null,
-                overlayCSS: { opacity: 0 },
-                css: {
-                    width: rect.width,
-                    left: rect.left
-                }
-            });
+            $(el).unblock({ fadeOut });
         }
 
-        export function grayout() {
-            let rect = calcRect();
+        export function grayout(el: HTMLElement = document.body) {
+            const fadeIn = 200;
+            const message: string = toBeResource.plzWait;
+            const css = { width: '220px', 'line-height': '32px' };
 
-            (<any>$).blockUI({
-                message: '<div class="block-ui-message">' + toBeResource.plzWait + '</div>',
-                fadeIn: 200,
-                css: {
-                    width: rect.width,
-                    left: rect.left
-                }
-            });
+            $(el).block({ message, fadeIn, css });
         }
 
-        export function clear() {
-            (<any>$).unblockUI({
-                fadeOut: 200
-            });
-        }
+        export function invisible(el: HTMLElement = document.body) {
+            const message: null = null;
+            const overlayCSS = { opacity: 0 };
 
-        function calcRect() {
-            let width = 220;
-            let left = ($(window).width() - width) / 2;
-            return {
-                width: width,
-                left: left
-            };
+            $(el).block({ message, overlayCSS });
         }
     }
 

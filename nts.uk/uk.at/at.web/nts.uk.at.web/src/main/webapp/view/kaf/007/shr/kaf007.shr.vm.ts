@@ -110,7 +110,7 @@ module nts.uk.at.view.kaf007_ref.shr.viewmodel {
             <div class="table" style="margin-top: 5px;">
                 <div class="cell col-1"></div>
                 <!-- A8_4 -->
-                <div class="cell valign-center col-3" style="display: block;" data-bind="ntsCheckBox: {
+                <div class="cell valign-center col-2-5" style="display: block;" data-bind="ntsCheckBox: {
                     text: $i18n('KAF007_16'),
                     checked: isStraightGo, 
                     enable: (model() !== null && model().setupType() === 0 && isEdit)
