@@ -154,6 +154,7 @@ public class MessageNoticeScreenQuery {
 	 */
 	public List<WorkplaceInfoImport> getNameOfDestinationWkp(List<String> wkIds) {
 		String cid = AppContexts.user().companyId();
+		// Call [No.560]職場IDから職場の情報をすべて取得する Pub
 		return messageNoticeAdapter.getWorkplaceMapCodeBaseDateName(cid, wkIds);
 	}
 	
@@ -177,6 +178,7 @@ public class MessageNoticeScreenQuery {
 		
 		// 2. [お知らせメッセージ　Not　Null　AND　お知らせメッセージ.対象情報.宛先区分＝職場選択]:get*(ログイン会社ID、お知らせメッセージ.職場ID):職場ID、職場コード、職場名称
 		if (msg != null && msg.getTargetInformation().getDestination() == DestinationClassification.WORKPLACE.value) {
+			// Call [No.560]職場IDから職場の情報をすべて取得する Pub
 			targetWkps = messageNoticeAdapter.getWorkplaceMapCodeBaseDateName(AppContexts.user().companyId(),
 					msg.getTargetInformation().getTargetWpids());
 		}

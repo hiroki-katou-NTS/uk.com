@@ -116,7 +116,7 @@ public class CheckTimeIsIncorrect {
 	private ContainsResultDto convertToContainsResult(ContainsResult containsResult,String nameError,String timeInput,boolean isWorkNo1) {
 		return new ContainsResultDto(containsResult.isContains(), 
 				containsResult.getTimeSpan().isPresent()? 
-						new TimeSpanForCalcSharedDto(containsResult.getTimeSpan().get().startValue(), containsResult.getTimeSpan().get().endValue()):null,
+						new TimeSpanForCalcSharedDto(containsResult.getTimeSpan().get().start(), containsResult.getTimeSpan().get().end()):null,
 						nameError,timeInput,isWorkNo1
 				);
 	}

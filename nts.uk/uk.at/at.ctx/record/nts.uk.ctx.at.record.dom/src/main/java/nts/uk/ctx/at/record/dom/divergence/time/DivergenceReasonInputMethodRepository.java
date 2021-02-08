@@ -33,4 +33,6 @@ public interface DivergenceReasonInputMethodRepository {
 	void update(DivergenceReasonInputMethod domain);
 	
 	List<DivergenceReasonInputMethod> getByCidAndLstTimeInfo(String companyId, List<Integer> divTimeNos, int useClassification); 
+	
+	List<DivergenceReasonInputMethod> getByCidAndLstTimeInfo(String companyId, List<Integer> divTimeNos); 
 }

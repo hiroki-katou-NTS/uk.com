@@ -157,7 +157,7 @@ module nts.uk.at.kaf021.a {
             return dfd.promise();
         }
 
-        reloadAppTypes(){
+        reloadAppTypes() {
             const vm = this;
 
             let date = common.getProcessingDate(vm.processingMonth);
@@ -172,7 +172,7 @@ module nts.uk.at.kaf021.a {
                 appTypes.push(new AppType(common.AppTypeEnum.YEARLY, vm.$i18n("KAF021_4")));
             }
             vm.appTypes(appTypes);
-            if (vm.appTypeSubscription){
+            if (vm.appTypeSubscription) {
                 vm.appTypeSubscription.dispose();
             }
             vm.appTypeSubscription = vm.appTypeSelected.subscribe((value: common.AppTypeEnum) => {
@@ -573,7 +573,7 @@ module nts.uk.at.kaf021.a {
         month1UpperLimitStr: any;
         month1Status: common.AgreementTimeStatusOfMonthly;
         month1Error: any;
-        month1Alarm: any;
+        //month1Alarm: any;
 
         month2Str: any;
         month2Time: any;
@@ -584,7 +584,7 @@ module nts.uk.at.kaf021.a {
         month2UpperLimitStr: any;
         month2Status: common.AgreementTimeStatusOfMonthly;
         month2Error: any;
-        month2Alarm: any;
+        //month2Alarm: any;
 
         month3Str: any;
         month3Time: any;
@@ -595,7 +595,7 @@ module nts.uk.at.kaf021.a {
         month3UpperLimitStr: any;
         month3Status: common.AgreementTimeStatusOfMonthly;
         month3Error: any;
-        month3Alarm: any;
+        //month3Alarm: any;
 
         month4Str: any;
         month4Time: any;
@@ -606,7 +606,7 @@ module nts.uk.at.kaf021.a {
         month4UpperLimitStr: any;
         month4Status: common.AgreementTimeStatusOfMonthly;
         month4Error: any;
-        month4Alarm: any;
+        //month4Alarm: any;
 
         month5Str: any;
         month5Time: any;
@@ -617,7 +617,7 @@ module nts.uk.at.kaf021.a {
         month5UpperLimitStr: any;
         month5Status: common.AgreementTimeStatusOfMonthly;
         month5Error: any;
-        month5Alarm: any;
+        //month5Alarm: any;
 
         month6Str: any;
         month6Time: any;
@@ -628,7 +628,7 @@ module nts.uk.at.kaf021.a {
         month6UpperLimitStr: any;
         month6Status: common.AgreementTimeStatusOfMonthly;
         month6Error: any;
-        month6Alarm: any;
+        //month6Alarm: any;
 
         month7Str: any;
         month7Time: any;
@@ -639,7 +639,7 @@ module nts.uk.at.kaf021.a {
         month7UpperLimitStr: any;
         month7Status: common.AgreementTimeStatusOfMonthly;
         month7Error: any;
-        month7Alarm: any;
+        //month7Alarm: any;
 
         month8Str: any;
         month8Time: any;
@@ -650,7 +650,7 @@ module nts.uk.at.kaf021.a {
         month8UpperLimitStr: any;
         month8Status: common.AgreementTimeStatusOfMonthly;
         month8Error: any;
-        month8Alarm: any;
+        //month8Alarm: any;
 
         month9Str: any;
         month9Time: any;
@@ -661,7 +661,7 @@ module nts.uk.at.kaf021.a {
         month9UpperLimitStr: any;
         month9Status: common.AgreementTimeStatusOfMonthly;
         month9Error: any;
-        month9Alarm: any;
+        //month9Alarm: any;
 
         month10Str: any;
         month10Time: any;
@@ -672,7 +672,7 @@ module nts.uk.at.kaf021.a {
         month10UpperLimitStr: any;
         month10Status: common.AgreementTimeStatusOfMonthly;
         month10Error: any;
-        month10Alarm: any;
+        //month10Alarm: any;
 
         month11Str: any;
         month11Time: any;
@@ -683,7 +683,7 @@ module nts.uk.at.kaf021.a {
         month11UpperLimitStr: any;
         month11Status: common.AgreementTimeStatusOfMonthly;
         month11Error: any;
-        month11Alarm: any;
+        //month11Alarm: any;
 
         month12Str: any;
         month12Time: any;
@@ -694,7 +694,7 @@ module nts.uk.at.kaf021.a {
         month12UpperLimitStr: any;
         month12Status: common.AgreementTimeStatusOfMonthly;
         month12Error: any;
-        month12Alarm: any;
+        //month12Alarm: any;
 
         year: any;
         yearStr: any;
@@ -704,9 +704,9 @@ module nts.uk.at.kaf021.a {
         yearTimeStr: any;
         yearMaxTimeStr: any;
         yearUpperLimitStr: any;
-        yearStatus: common.AgreTimeYearStatusOfMonthly
+        yearStatus: common.AgreementTimeStatusOfMonthly
         yearError: any;
-        yearAlarm: any;
+        //yearAlarm: any;
 
         monthAverage2: any;
         monthAverage2Str: any;
@@ -747,8 +747,9 @@ module nts.uk.at.kaf021.a {
             this.month1UpperLimitStr = parseTime(this.month1UpperLimit, true).format();
             this.month1Str = EmployeeAgreementTime.getCellTime(this.month1Time, this.month1MaxTime);
             this.month1Status = data.month1?.status;
+            this.month1Error = EmployeeAgreementTime.getMonthTimeError(data.month1);
             this.month1Error = data.month1?.time?.error;
-            this.month1Alarm = data.month1?.time?.alarm;
+            //this.month1Alarm = data.month1?.time?.alarm;
 
             this.month2Time = data.month2?.time?.time;
             this.month2MaxTime = data.month2?.maxTime?.time;
@@ -758,8 +759,9 @@ module nts.uk.at.kaf021.a {
             this.month2UpperLimitStr = parseTime(this.month2UpperLimit, true).format();
             this.month2Str = EmployeeAgreementTime.getCellTime(this.month2Time, this.month2MaxTime);
             this.month2Status = data.month2?.status;
-            this.month2Error = data.month2?.time?.error;
-            this.month2Alarm = data.month2?.time?.alarm;
+            this.month2Error = EmployeeAgreementTime.getMonthTimeError(data.month2);
+            //this.month2Error = data.month2?.time?.error;
+            //this.month2Alarm = data.month2?.time?.alarm;
 
             this.month3Time = data.month3?.time?.time;
             this.month3MaxTime = data.month3?.maxTime?.time;
@@ -769,8 +771,9 @@ module nts.uk.at.kaf021.a {
             this.month3UpperLimitStr = parseTime(this.month3UpperLimit, true).format();
             this.month3Str = EmployeeAgreementTime.getCellTime(this.month3Time, this.month3MaxTime);
             this.month3Status = data.month3?.status;
-            this.month3Error = data.month3?.time?.error;
-            this.month3Alarm = data.month3?.time?.alarm;
+            this.month3Error = EmployeeAgreementTime.getMonthTimeError(data.month3);
+            //this.month3Error = data.month3?.time?.error;
+            //this.month3Alarm = data.month3?.time?.alarm;
 
             this.month4Time = data.month4?.time?.time;
             this.month4MaxTime = data.month4?.maxTime?.time;
@@ -780,8 +783,9 @@ module nts.uk.at.kaf021.a {
             this.month4UpperLimitStr = parseTime(this.month4UpperLimit, true).format();
             this.month4Str = EmployeeAgreementTime.getCellTime(this.month4Time, this.month4MaxTime);
             this.month4Status = data.month4?.status;
-            this.month4Error = data.month4?.time?.error;
-            this.month4Alarm = data.month4?.time?.alarm;
+            this.month4Error = EmployeeAgreementTime.getMonthTimeError(data.month4);
+            //this.month4Error = data.month4?.time?.error;
+            //this.month4Alarm = data.month4?.time?.alarm;
 
             this.month5Time = data.month5?.time?.time;
             this.month5MaxTime = data.month5?.maxTime?.time;
@@ -791,8 +795,9 @@ module nts.uk.at.kaf021.a {
             this.month5UpperLimitStr = parseTime(this.month5UpperLimit, true).format();
             this.month5Str = EmployeeAgreementTime.getCellTime(this.month5Time, this.month5MaxTime);
             this.month5Status = data.month5?.status;
-            this.month5Error = data.month5?.time?.error;
-            this.month5Alarm = data.month5?.time?.alarm;
+            this.month5Error = EmployeeAgreementTime.getMonthTimeError(data.month5);
+            //this.month5Error = data.month5?.time?.error;
+            //this.month5Alarm = data.month5?.time?.alarm;
 
             this.month6Time = data.month6?.time?.time;
             this.month6MaxTime = data.month6?.maxTime?.time;
@@ -802,8 +807,9 @@ module nts.uk.at.kaf021.a {
             this.month6UpperLimitStr = parseTime(this.month6UpperLimit, true).format();
             this.month6Str = EmployeeAgreementTime.getCellTime(this.month6Time, this.month6MaxTime);
             this.month6Status = data.month6?.status;
-            this.month6Error = data.month6?.time?.error;
-            this.month6Alarm = data.month6?.time?.alarm;
+            this.month6Error = EmployeeAgreementTime.getMonthTimeError(data.month6);
+            //this.month6Error = data.month6?.time?.error;
+            //this.month6Alarm = data.month6?.time?.alarm;
 
             this.month7Time = data.month7?.time?.time;
             this.month7MaxTime = data.month7?.maxTime?.time;
@@ -813,8 +819,9 @@ module nts.uk.at.kaf021.a {
             this.month7UpperLimitStr = parseTime(this.month7UpperLimit, true).format();
             this.month7Str = EmployeeAgreementTime.getCellTime(this.month7Time, this.month7MaxTime);
             this.month7Status = data.month7?.status;
-            this.month7Error = data.month7?.time?.error;
-            this.month7Alarm = data.month7?.time?.alarm;
+            this.month7Error = EmployeeAgreementTime.getMonthTimeError(data.month7);
+            //this.month7Error = data.month7?.time?.error;
+            //this.month7Alarm = data.month7?.time?.alarm;
 
             this.month8Time = data.month8?.time?.time;
             this.month8MaxTime = data.month8?.maxTime?.time;
@@ -824,8 +831,9 @@ module nts.uk.at.kaf021.a {
             this.month8UpperLimitStr = parseTime(this.month8UpperLimit, true).format();
             this.month8Str = EmployeeAgreementTime.getCellTime(this.month8Time, this.month8MaxTime);
             this.month8Status = data.month8?.status;
-            this.month8Error = data.month8?.time?.error;
-            this.month8Alarm = data.month8?.time?.alarm;
+            this.month8Error = EmployeeAgreementTime.getMonthTimeError(data.month8);
+            //this.month8Error = data.month8?.time?.error;
+            //this.month8Alarm = data.month8?.time?.alarm;
 
             this.month9Time = data.month9?.time?.time;
             this.month9MaxTime = data.month9?.maxTime?.time;
@@ -835,8 +843,9 @@ module nts.uk.at.kaf021.a {
             this.month9UpperLimitStr = parseTime(this.month9UpperLimit, true).format();
             this.month9Str = EmployeeAgreementTime.getCellTime(this.month9Time, this.month9MaxTime);
             this.month9Status = data.month9?.status;
-            this.month9Error = data.month9?.time?.error;
-            this.month9Alarm = data.month9?.time?.alarm;
+            this.month9Error = EmployeeAgreementTime.getMonthTimeError(data.month9);
+            //this.month9Error = data.month9?.time?.error;
+            //this.month9Alarm = data.month9?.time?.alarm;
 
             this.month10Time = data.month10?.time?.time;
             this.month10MaxTime = data.month10?.maxTime?.time;
@@ -846,8 +855,9 @@ module nts.uk.at.kaf021.a {
             this.month10UpperLimitStr = parseTime(this.month10UpperLimit, true).format();
             this.month10Str = EmployeeAgreementTime.getCellTime(this.month10Time, this.month10MaxTime);
             this.month10Status = data.month10?.status;
-            this.month10Error = data.month10?.time?.error;
-            this.month10Alarm = data.month10?.time?.alarm;
+            this.month10Error = EmployeeAgreementTime.getMonthTimeError(data.month10);
+            //this.month10Error = data.month10?.time?.error;
+            //this.month10Alarm = data.month10?.time?.alarm;
 
             this.month11Time = data.month11?.time?.time;
             this.month11MaxTime = data.month11?.maxTime?.time;
@@ -857,8 +867,9 @@ module nts.uk.at.kaf021.a {
             this.month11UpperLimitStr = parseTime(this.month11UpperLimit, true).format();
             this.month11Str = EmployeeAgreementTime.getCellTime(this.month11Time, this.month11MaxTime);
             this.month11Status = data.month11?.status;
-            this.month11Error = data.month11?.time?.error;
-            this.month11Alarm = data.month11?.time?.alarm;
+            this.month11Error = EmployeeAgreementTime.getMonthTimeError(data.month11);
+            //this.month11Error = data.month11?.time?.error;
+            //this.month11Alarm = data.month11?.time?.alarm;
 
             this.month12Time = data.month12?.time?.time;
             this.month12MaxTime = data.month12?.maxTime?.time;
@@ -868,8 +879,9 @@ module nts.uk.at.kaf021.a {
             this.month12UpperLimitStr = parseTime(this.month12UpperLimit, true).format();
             this.month12Str = EmployeeAgreementTime.getCellTime(this.month12Time, this.month12MaxTime);
             this.month12Status = data.month12?.status;
-            this.month12Error = data.month12?.time?.error;
-            this.month12Alarm = data.month12?.time?.alarm;
+            this.month12Error = EmployeeAgreementTime.getMonthTimeError(data.month12);
+            //this.month12Error = data.month12?.time?.error;
+            //this.month12Alarm = data.month12?.time?.alarm;
 
             this.year = data.year?.year;
             this.yearTime = data.year?.time?.time;
@@ -880,8 +892,9 @@ module nts.uk.at.kaf021.a {
             this.yearUpperLimitStr = parseTime(this.yearUpperLimit, true).format();
             this.yearStr = EmployeeAgreementTime.getCellTime(this.yearTime, this.yearMaxTime);
             this.yearStatus = data.year?.status;
-            this.yearError = data.year?.time?.error;
-            this.yearAlarm = data.year?.time?.alarm;
+            this.yearError = EmployeeAgreementTime.getYearTimeError(data.year);
+            //this.yearError = data.year?.time?.error;
+            //this.yearAlarm = data.year?.time?.alarm;
 
             if (typeAgreement == common.TypeAgreementApplicationEnum.ONE_MONTH) {
                 this.monthAverage2 = data.monthAverage2?.time;
@@ -914,6 +927,38 @@ module nts.uk.at.kaf021.a {
                 result += "<br>(" + parseTime(maxTime, true).format() + ")";
             }
             return result;
+        }
+
+        static getMonthTimeError(month: IAgreementTimeMonth) {
+            switch (month?.status) {
+                case common.AgreementTimeStatusOfMonthly.NORMAL:
+                case common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR:
+                case common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM:
+                    return month?.time?.error;
+                case common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR:
+                case common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM:
+                case common.AgreementTimeStatusOfMonthly.NORMAL_SPECIAL:
+                case common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP:
+                case common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM_SP:
+                case common.AgreementTimeStatusOfMonthly.EXCESS_BG_GRAY:
+                    return month?.maxTime?.error;
+            }
+        }
+
+        static getYearTimeError(year: IAgreementTimeYear) {
+            switch (year?.status) {
+                case common.AgreementTimeStatusOfMonthly.NORMAL:
+                case common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR:
+                case common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM:
+                    return year?.time?.error;
+                case common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR:
+                case common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM:
+                case common.AgreementTimeStatusOfMonthly.NORMAL_SPECIAL:
+                case common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP:
+                case common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM_SP:
+                case common.AgreementTimeStatusOfMonthly.EXCESS_BG_GRAY:
+                    return year?.maxTime?.error;
+            }
         }
     }
 
@@ -1059,7 +1104,7 @@ module nts.uk.at.kaf021.a {
         /**
          * 状態
          */
-        status: common.AgreTimeYearStatusOfMonthly;
+        status: common.AgreementTimeStatusOfMonthly;
     }
 
     interface IAggreementTime {

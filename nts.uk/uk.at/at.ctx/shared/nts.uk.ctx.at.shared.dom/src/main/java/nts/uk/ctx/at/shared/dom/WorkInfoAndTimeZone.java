@@ -45,5 +45,16 @@ public class WorkInfoAndTimeZone {
 	public static WorkInfoAndTimeZone createWithoutWorkTime(WorkType workType) {
 		return new WorkInfoAndTimeZone( workType, Optional.empty(), Collections.emptyList() );
 	}
+	
+	/**
+	 * 所定時間帯なしで作成する
+	 * @param workType 勤務種類コード
+	 * @param workTime 就業時間帯コード
+	 */
+	public static WorkInfoAndTimeZone createWithoutPredetermineTimeZone(WorkType workType, WorkTimeSetting workTime) {
+		return new WorkInfoAndTimeZone( workType, Optional.of(workTime), Collections.emptyList() );
+	}
+	
+	
 
 }

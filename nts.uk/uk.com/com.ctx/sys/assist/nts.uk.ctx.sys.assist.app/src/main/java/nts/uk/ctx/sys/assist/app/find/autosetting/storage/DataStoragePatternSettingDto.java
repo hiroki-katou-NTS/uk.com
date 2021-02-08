@@ -23,57 +23,57 @@ public class DataStoragePatternSettingDto implements DataStoragePatternSetting.M
 	 * パターン名
 	 */
 	private String patternName;
-	
+
 	/**
 	 * 契約コード
 	 */
 	private String contractCode;
-	
+
 	/**
 	 *List<選択カテゴリ名称> 
 	 */
 	private List<SaveSelectionCategoryNameDto> selectCategories;
-	
+
 	/**
 	 * 調査用保存可否
 	 */
 	private int idenSurveyArch;
-	
+
 	/**
 	 * 日次対象年
 	 */
 	private Integer dailyReferYear;
-	
+
 	/**
 	 * 日次対象月
 	 */
 	private Integer dailyReferMonth;
-	
+
 	/**
 	 * 月次対象年
 	 */
 	private Integer monthlyReferYear;
-	
+
 	/**
 	 * 月次対象月
 	 */
 	private Integer monthlyReferMonth;
-	
+
 	/**
 	 * 年次対象年
 	 */
 	private Integer annualReferYear;
-	
+
 	/**
 	 * 圧縮パスワード有無
 	 */
 	private int withoutPassword;
-	
+
 	/**
 	 * パターン圧縮パスワード
 	 */
 	private String patternCompressionPwd;
-	
+
 	/**
 	 * パターン補足説明
 	 */
@@ -83,4 +83,20 @@ public class DataStoragePatternSettingDto implements DataStoragePatternSetting.M
 	public void setCategories(List<DataStorageSelectionCategory> categories) {
 		//NOT USED
 	}
+
+	/**
+	 * Creates from domain.
+	 *
+	 * @param domain the domain
+	 * @return the Data storage pattern setting dto
+	 */
+	public static DataStoragePatternSettingDto createFromDomain(DataStoragePatternSetting domain) {
+		if (domain == null) {
+			return null;
+		}
+		DataStoragePatternSettingDto dto = new DataStoragePatternSettingDto();
+		domain.setMemento(dto);
+		return dto;
+	}
+
 }

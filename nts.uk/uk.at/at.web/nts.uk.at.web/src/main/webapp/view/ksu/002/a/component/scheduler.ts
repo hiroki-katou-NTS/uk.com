@@ -202,6 +202,7 @@ module nts.uk.ui.at.ksu002.a {
                     text-align: center;
                     box-sizing: border-box;
                     white-space: nowrap;
+                    outline: none;
                 }
                 .scheduler .data-info .join *,
                 .scheduler .data-info .leave *{
@@ -221,31 +222,37 @@ module nts.uk.ui.at.ksu002.a {
                     cursor: pointer;
                     background-color: transparent;
                     position: relative;
-                    z-index: 9;
+                    z-index: 2;
                 }
-                .scheduler .ntsControl input:focus {
+                .scheduler .join:focus input,
+                .scheduler .leave:focus input,
+                .scheduler .join[data-click="1"] input,
+                .scheduler .leave[data-click="1"] input {
                     color: #fff;
                     box-shadow: 0px 0px 0px 2px #000 !important;
                     background-color: #007fff !important;
+                    z-index: 3;
                 }
-                .scheduler .ntsControl input.state-2:focus {
+                .scheduler .ntsControl input:focus {
+                    z-index: 3;
                     color: #000;
                     box-shadow: 0px 0px 0px 2px #000 !important;
                     background-color: #fff !important;
                 }
-                .scheduler .ntsControl.error input.state-0,
-                .scheduler .ntsControl.error input.state-1,
-                .scheduler .ntsControl.error input.state-2 {
+                .scheduler .ntsControl.error input {
                     color: #000;
                     box-shadow: 0px 0px 0px 2px #ff6666 !important;
                     background-color: transparent !important;
                 }
-                .scheduler .ntsControl.error input.state-0:focus,
-                .scheduler .ntsControl.error input.state-1:focus,
-                .scheduler .ntsControl.error input.state-2:focus {
+                .scheduler .ntsControl.error input:focus,
+                .scheduler .join:focus .ntsControl.error input,
+                .scheduler .leave:focus .ntsControl.error input,
+                .scheduler .join[data-click="1"] .ntsControl.error input,
+                .scheduler .leave[data-click="1"] .ntsControl.error input {
+                    z-index: 3;
                     color: #000;
                     box-shadow: 0px 0px 0px 2px #ff6666 !important;
-                    background-color: rgba(255, 102, 102, 0.1) !important;                    
+                    background-color: #007fff !important;                    
                 }
                 .scheduler .calendar {
                     float: left;
@@ -363,7 +370,6 @@ module nts.uk.ui.at.ksu002.a {
     }
 
     export module controls {
-        const RO = 'readonly';
         const CLBC = 'clearByCode';
         const MSG_1811 = 'Msg_1811';
         const VALIDATE = 'validate';
@@ -604,59 +610,31 @@ module nts.uk.ui.at.ksu002.a {
             </div>
             <div class="work-time cf">
                 <div class="join">
-                    <input class="begin" data-bind="
-                        css: {
-                            'state-0': [1, 2].indexOf(ko.unwrap($component.click.begin)) === -1,
-                            'state-1': ko.unwrap($component.click.begin) === 1,
-                            'state-2': ko.unwrap($component.click.begin) === 2,
-                        },
-                        attr: {
-                            tabindex: $tabindex
-                        },
+                    <input class="begin" tabindex="-1" data-bind="
                         ntsTimeWithDayEditor: {
                             name: $component.$i18n('KSU002_28'),
                             constraint: 'TimeWithDayAttr',
                             mode: 'time',
                             inputFormat: 'time',
                             value: $component.model.begin,
-                            readonly: false,
-                            enable: $component.enable,
                             required: $component.model.required,
                             option: {
                                 timeWithDay: false
                             }
-                        },
-                        event: {
-                            blur: function() { $component.hideInput.apply($component, ['begin']) },
-                            click: function() { $component.showInput.apply($component, ['begin']) }
                         }" />
                 </div>
                 <div class="leave">
-                    <input class="finish" data-bind="
-                        css: {
-                            'state-0': [1, 2].indexOf(ko.unwrap($component.click.finish)) === -1,
-                            'state-1': ko.unwrap($component.click.finish) === 1,
-                            'state-2': ko.unwrap($component.click.finish) === 2,
-                        },
-                        attr: {
-                            tabindex: $tabindex
-                        },
+                    <input class="finish" tabindex="-1" data-bind="
                         ntsTimeWithDayEditor: {
                             name: $component.$i18n('KSU002_29'),
                             constraint: 'TimeWithDayAttr',
                             mode: 'time',
                             inputFormat: 'time',
                             value: $component.model.finish,
-                            readonly: false,
-                            enable: $component.enable,
                             required: $component.model.required,
                             option: {
                                 timeWithDay: false
                             }
-                        },
-                        event: {
-                            blur: function() { $component.hideInput.apply($component, ['finish']) },
-                            click: function() { $component.showInput.apply($component, ['finish']) }
                         }" />
                 </div>
             </div>
@@ -671,11 +649,6 @@ module nts.uk.ui.at.ksu002.a {
                     required: ko.observable(false)
                 };
 
-            click: WorkTimeRange<number> = {
-                begin: ko.observable(0),
-                finish: ko.observable(0)
-            };
-
             text: {
                 wtype: KnockoutObservable<string>;
                 wtime: KnockoutObservable<string>;
@@ -688,11 +661,23 @@ module nts.uk.ui.at.ksu002.a {
 
             constructor(private data: { dayData: c.DayData<ObserverScheduleData>; context: BindingContext }) {
                 super();
+
+                this.enable = ko.computed({
+                    read: () => {
+                        const { dayData, context } = data;
+
+                        return context.$editable()
+                            && !!dayData.data.wtime.code()
+                            && !(dayData.data.confirmed() || dayData.data.achievement() || !dayData.data.need2Work())
+                            && dayData.data.classification() !== WORK_STYLE.HOLIDAY
+                            && dayData.data.value.required() === WORKTYPE_SETTING.REQUIRED;
+                    },
+                    owner: this
+                });
             }
 
             created() {
                 const vm = this;
-                const pt = nts.uk.time.parseTime;
                 const { data, model, text } = vm;
                 const { context, dayData } = data;
                 const cache: { begin: string | number | null; finish: string | number | null; } = { begin: null, finish: null };
@@ -703,17 +688,6 @@ module nts.uk.ui.at.ksu002.a {
 
                     text.wtype = wtype.name;
                     text.wtime = wtime.name;
-
-                    vm.enable = ko.computed({
-                        read: () => {
-                            return context.$editable()
-                                && !(data.confirmed() || data.achievement())
-                                && data.classification() !== WORK_STYLE.HOLIDAY
-                                && !!data.wtime.code()
-                                && data.value.required() === WORKTYPE_SETTING.REQUIRED;
-                        },
-                        owner: vm
-                    })
 
                     ko.computed({
                         read: () => {
@@ -737,7 +711,16 @@ module nts.uk.ui.at.ksu002.a {
                                         $finish.trigger(VALIDATE);
                                     }
                                 })
-                                .then(() => value.validate(!$begin.ntsError('hasError') && !$finish.ntsError('hasError')));
+                                .then(() => value.validate(!$begin.ntsError('hasError') && !$finish.ntsError('hasError')))
+                                .then(() => {
+                                    $begin
+                                        .prop('disabled', true)
+                                        .attr('disabled', 'disabled');
+
+                                    $finish
+                                        .prop('disabled', true)
+                                        .attr('disabled', 'disabled');
+                                });
                         });
 
                     value.begin.valueHasMutated();
@@ -757,7 +740,16 @@ module nts.uk.ui.at.ksu002.a {
                                         $begin.trigger(VALIDATE);
                                     }
                                 })
-                                .then(() => value.validate(!$begin.ntsError('hasError') && !$finish.ntsError('hasError')));
+                                .then(() => value.validate(!$begin.ntsError('hasError') && !$finish.ntsError('hasError')))
+                                .then(() => {
+                                    $begin
+                                        .prop('disabled', true)
+                                        .attr('disabled', 'disabled');
+
+                                    $finish
+                                        .prop('disabled', true)
+                                        .attr('disabled', 'disabled');
+                                });
                         });
 
                     value.finish.valueHasMutated();
@@ -793,9 +785,20 @@ module nts.uk.ui.at.ksu002.a {
 
             mounted() {
                 const vm = this;
-                const { click, model, enable } = vm;
-                const $begin = $(vm.$el).find('input.begin');
-                const $finish = $(vm.$el).find('input.finish');
+
+                vm.initValidate();
+
+                $(vm.$el).find('[data-bind]').removeAttr('data-bind');
+            }
+
+            initValidate() {
+                const vm = this;
+                const { model, enable } = vm;
+                const $join = $(vm.$el).find('.work-time div.join');
+                const $begin = $(vm.$el).find('.work-time input.begin');
+
+                const $leave = $(vm.$el).find('.work-time div.leave');
+                const $finish = $(vm.$el).find('.work-time input.finish');
                 const validate = () => {
                     const b = ko.unwrap(model.begin);
                     const f = ko.unwrap(model.finish);
@@ -823,91 +826,314 @@ module nts.uk.ui.at.ksu002.a {
 
                 $finish.on(VALIDATE, validate);
 
-                ko.computed({
-                    read: () => {
-                        const readonly = vm.data.context.$editable() ? ko.unwrap(click.begin) < 2 : true;
-
-                        if ($begin.length) {
-                            if (readonly) {
-                                $begin.attr(RO, RO);
-                            } else {
-                                $begin.removeAttr(RO).select();
-                            }
-                        }
-                    },
-                    owner: vm,
-                    disposeWhenNodeIsRemoved: vm.$el
-                });
-
-                ko.computed({
-                    read: () => {
-                        const readonly = vm.data.context.$editable() ? ko.unwrap(click.finish) < 2 : true;
-
-                        if ($finish.length) {
-                            if (readonly) {
-                                $finish.attr(RO, RO);
-                            } else {
-                                $finish.removeAttr(RO).select();
-                            }
-                        }
-                    },
-                    owner: vm,
-                    disposeWhenNodeIsRemoved: vm.$el
-                });
-
-                /*$begin
-                    .on('keyup', (evt: JQueryEventObject) => {
-                        if ([13, 32].indexOf(evt.keyCode) > -1) {
-                            vm.showInput('begin');
-                        }
-
-                        return true;
-                    });
-
-                $finish
-                    .on('keyup', (evt: JQueryEventObject) => {
-                        if ([13, 32].indexOf(evt.keyCode) > -1) {
-                            vm.showInput('finish');
-                        }
-
-                        return true;
-                    });*/
-
-                $(vm.$el).find('[data-bind]').removeAttr('data-bind');
+                setTimeout(() => {
+                    vm.bindingEvent($begin, $join);
+                    vm.bindingEvent($finish, $leave);
+                }, 300);
             }
 
-            hideInput(input: INPUT_TYPE) {
+            bindingEvent($input: JQuery, $container: JQuery) {
                 const vm = this;
+                const { data, enable } = vm;
+                const { context } = data;
+                const { $tabindex } = context;
 
-                if (input === 'begin') {
-                    vm.click.begin(0);
-                } else if (input === 'finish') {
-                    vm.click.finish(0);
-                }
-            }
+                $container
+                    .on('mousedown', () => {
+                        $container.attr('data-mouse-down', 'true');
+                    })
+                    .on('keyup', (evt: JQueryEventObject) => {
+                        if ($container.attr('data-focus') === 'true') {
+                            return;
+                        }
 
-            showInput(input: INPUT_TYPE) {
-                const vm = this;
-                const { dayData } = vm.data;
-                const { data } = dayData;
+                        if ([13, 37, 39].indexOf(evt.keyCode) > -1) {
+                            const $focusables = $container
+                                .closest('.calendar-container')
+                                .find('.work-time div.join[tabindex], .work-time div.leave[tabindex]');
 
-                if (!data || ko.unwrap(data.confirmed) || ko.unwrap(data.achievement) || !ko.unwrap(data.need2Work)) {
-                    return;
-                }
+                            const [current] = $focusables
+                                .toArray()
+                                .map((e: HTMLElement, i: number) => $container.is(e) ? i : -1)
+                                .filter((v) => v !== -1);
 
-                if (input === 'begin') {
-                    const i = vm.click.begin();
+                            if (evt.keyCode === 37 || (evt.shiftKey && evt.keyCode === 13)) {
+                                if (current > 0) {
+                                    $($focusables.get(current - 1)).focus();
+                                } else {
+                                    $focusables.last().focus();
+                                }
 
-                    if (i <= 1) {
-                        vm.click.begin(i + 1);
+                                return;
+                            }
+
+                            if (current < $focusables.length - 1) {
+                                $($focusables.get(current + 1)).focus();
+                            } else {
+                                $focusables.first().focus();
+                            }
+
+                            return;
+                        }
+
+                        // F2 key press (edit mode)
+                        if (evt.keyCode === 113) {
+                            $container
+                                .attr('data-click', 2)
+                                .removeAttr('tabindex')
+                                .attr('data-focus', 'true');
+
+                            // continues
+                            $.Deferred()
+                                .resolve($input)
+                                .then(() => {
+                                    $input
+                                        .removeAttr('disabled')
+                                        .prop('disabled', false);
+                                })
+                                .then(() => {
+                                    $input.focus();
+                                })
+                                .then(() => {
+                                    $input.select();
+                                });
+
+                            return;
+                        }
+
+                        // [0-9] key press (edit mode with value)
+                        if ((48 <= evt.keyCode && evt.keyCode <= 57) || (96 <= evt.keyCode && evt.keyCode <= 105)) {
+                            $container
+                                .attr('data-click', 2)
+                                .removeAttr('tabindex')
+                                .attr('data-focus', 'true');
+
+                            // continues
+                            $.Deferred()
+                                .resolve($input)
+                                .then(() => {
+                                    $input
+                                        .removeAttr('disabled')
+                                        .prop('disabled', false);
+                                })
+                                .then(() => {
+                                    $input.focus();
+                                })
+                                .then(() => $input.val(evt.key));
+
+                            return;
+                        }
+                    })
+                    .on('focus', () => {
+                        if ($container.attr('data-mouse-down') !== 'true') {
+                            if ($container.attr('data-click') === '0') {
+                                $container.attr('data-click', 1);
+                            }
+                        }
+
+                        $container.removeAttr('data-mouse-down');
+                    })
+                    .on('click', () => {
+                        $container.removeAttr('data-mouse-down');
+
+                        const click: string = $container.attr('data-click');
+
+                        if (!enable()) {
+                            return;
+                        }
+
+                        $container
+                            .closest('.calendar-container')
+                            .find('.join[data-click="1"], .leave[data-click="1"], .join[data-click="2"], .leave[data-click="2"]')
+                            .each((__: number, e: HTMLElement) => {
+                                if ($container.not(e)) {
+                                    $(e).trigger('blur');
+                                }
+                            });
+
+                        if (click === '1') {
+                            $container
+                                .attr('data-click', 2)
+                                .removeAttr('tabindex')
+                                .attr('data-focus', 'true');
+
+                            // continues
+                            $input
+                                .removeAttr('disabled')
+                                .prop('disabled', false)
+                                .focus();
+
+                            return;
+                        }
+
+                        if (click === '0') {
+                            $container
+                                .attr('data-click', 1);
+
+                            if (b.version.match(/IE/)) {
+                                // fix focus in IE
+                                $container
+                                    .focus();
+                            }
+                        }
+
+                        $input
+                            .prop('disabled', true)
+                            .attr('disabled', 'disabled');
+                    })
+                    .on('blur', () => {
+                        const fc = $container.attr('data-focus');
+                        const md = $container.attr('data-mouse-down');
+
+                        // if $input isn't focus
+                        if (md !== 'true' && fc === 'false') {
+                            $input
+                                .prop('disabled', true)
+                                .attr('disabled', 'disabled');
+
+                            $container
+                                .attr('data-click', '0');
+
+                            if (!ko.unwrap(enable)) {
+                                $container
+                                    .removeAttr('tabindex');
+                            } else {
+                                $container
+                                    .attr('tabindex', $tabindex);
+                            }
+                        }
+                    })
+                    .attr('data-click', 0)
+                    .attr('data-focus', 'false');
+
+                $input
+                    .on('keydown', (evt) => {
+                        if (evt.keyCode === 13) {
+                            $.Deferred()
+                                .resolve()
+                                .then(() => {
+                                    $input
+                                        .trigger('blur');
+                                })
+                                .then(() => {
+                                    $container.focus();
+                                    /*const $focusables = $container
+                                        .closest('.calendar-container')
+                                        .find('.work-time div.join[tabindex], .work-time div.leave[tabindex]');
+
+                                    const [current] = $focusables
+                                        .toArray()
+                                        .map((e: HTMLElement, i: number) => $container.is(e) ? i : -1)
+                                        .filter((v) => v !== -1);
+
+                                    if (evt.shiftKey) {
+                                        if (current > 0) {
+                                            const prev = $focusables.get(current - 1);
+
+                                            if (prev) {
+                                                $(prev).focus();
+                                            } else {
+                                                $container.focus();
+                                            }
+                                        }
+                                    } else {
+                                        if (current < $focusables.length - 1) {
+                                            const next = $focusables.get(current + 1);
+
+                                            if (next) {
+                                                $(next).focus();
+                                            } else {
+                                                $container.focus();
+                                            }
+                                        }
+                                    }*/
+                                });
+
+                            return;
+                        }
+
+                        $container
+                            .attr('data-key', evt.key)
+                            .attr('data-shift', evt.shiftKey + '')
+                            .attr('data-key-code', evt.keyCode);
+                    })
+                    .on('blur', () => {
+                        $input
+                            .disableSelection()
+                            .prop('disabled', true)
+                            .attr('disabled', 'disabled')
+                            .enableSelection();
+
+                        $container
+                            .attr('data-click', 0)
+                            .attr('data-focus', 'false');
+
+                        if (!ko.unwrap(enable)) {
+                            $container
+                                .removeAttr('tabindex');
+                        } else {
+                            $container
+                                .attr('tabindex', $tabindex);
+                        }
+
+                        // fix tab in IE
+                        if ($container.attr('data-key-code') === '9') {
+                            const $focusables = $container
+                                .closest('.calendar-container')
+                                .find('.work-time div.join[tabindex], .work-time div.leave[tabindex]');
+
+                            const [current] = $focusables
+                                .toArray()
+                                .map((e: HTMLElement, i: number) => $container.is(e) ? i : -1)
+                                .filter((v) => v !== -1);
+
+                            if ($container.attr('data-shift') === 'true') {
+                                if (current > 0) {
+                                    const prev = $focusables.get(current - 1);
+
+                                    if (prev) {
+                                        $(prev).focus();
+                                    } else {
+                                        $focusables.last().focus();
+                                    }
+                                }
+                            } else {
+                                if (current < $focusables.length - 1) {
+                                    const next = $focusables.get(current + 1);
+
+                                    if (next) {
+                                        $(next).focus();
+                                    } else {
+                                        $focusables.first().focus();
+                                    }
+                                }
+                            }
+                        }
+
+                        $container
+                            .removeAttr('data-key')
+                            .removeAttr('data-shift')
+                            .removeAttr('data-key-code');
+                    })
+                    .on('click', (evt) => {
+                        evt.stopPropagation();
+                    })
+                    .prop('disabled', true)
+                    .attr('disabled', 'disabled');
+
+                ko.computed(() => {
+                    const editable = vm.enable();
+
+                    $input
+                        .prop('disabled', true)
+                        .attr('disabled', 'disabled');
+
+                    if (!editable) {
+                        $container.removeAttr('tabindex');
+                    } else {
+                        $container.attr('tabindex', $tabindex);
                     }
-                } else if (input === 'finish') {
-                    const i = vm.click.finish();
-
-                    if (i <= 1) {
-                        vm.click.finish(i + 1);
-                    }
-                }
+                });
             }
         }
 

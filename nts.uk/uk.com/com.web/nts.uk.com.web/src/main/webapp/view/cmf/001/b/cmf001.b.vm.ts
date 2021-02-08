@@ -45,7 +45,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
                     $.when( d1, d2 ).done(function ( result, rs ) {
                         if (result) {
                             let item = new model.StandardAcceptanceConditionSetting(
-                                result.systemType, result.conditionSettingCode, result.conditionSettingName, 
+                                result.systemType, result.conditionSetCode, result.conditionSetName, 
                                 result.deleteExistData, result.acceptMode, result.csvDataItemLineNumber, 
                                 result.csvDataStartLine, result.characterCode, result.deleteExistDataMethod, result.categoryId);
                             self.selectedStandardImportSetting(item);
@@ -79,7 +79,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
             let self = this;
             nts.uk.request.jump("/view/cmf/001/d/index.xhtml", {
                 systemType: self.systemType(),
-                conditionCode: self.selectedStandardImportSetting().conditionSettingCode()
+                conditionCode: self.selectedStandardImportSetting().conditionSetCode()
             });
         }
         
@@ -88,8 +88,8 @@ module nts.uk.com.view.cmf001.b.viewmodel {
             setShared('CMF001mParams', {
                 activation: model.M_ACTIVATION.Duplicate_Standard,
                 systemType: self.systemType(),
-                conditionCode: self.selectedStandardImportSetting().conditionSettingCode(),
-                conditionName: self.selectedStandardImportSetting().conditionSettingName()
+                conditionCode: self.selectedStandardImportSetting().conditionSetCode(),
+                conditionName: self.selectedStandardImportSetting().conditionSetName()
             }, true);
             
             modal("/view/cmf/001/m/index.xhtml").onClosed(function() {
@@ -102,7 +102,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
                     
                     //process copy condition setting.
                     let copyParam : any = {systemType: self.selectedStandardImportSetting().systemType(),
-                                            sourceCondSetCode: self.selectedStandardImportSetting().conditionSettingCode(),
+                                            sourceCondSetCode: self.selectedStandardImportSetting().conditionSetCode(),
                                             destCondSetCode: desCode,
                                             destCondSetName: desName,
                                             override: isOverride};
@@ -155,7 +155,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
             service.getAllStdData(self.systemType()).done(function(data: Array<any>) {
                 if (data && data.length) {
                     let _rsList: Array<model.StandardAcceptanceConditionSetting> = _.map(data, rs => {
-                        return new model.StandardAcceptanceConditionSetting(rs.systemType, rs.conditionSettingCode, rs.conditionSettingName, rs.deleteExistData);
+                        return new model.StandardAcceptanceConditionSetting(rs.systemType, rs.conditionSetCode, rs.conditionSetName, rs.deleteExistData);
                     });
 //                    _rsList = _.sortBy(_rsList, ['code']);
                     if (code) {
@@ -198,8 +198,8 @@ module nts.uk.com.view.cmf001.b.viewmodel {
             let self = this;
             let data = new model.StandardAcceptanceConditionSetting(
                 self.selectedStandardImportSetting().systemType(), 
-                self.selectedStandardImportSetting().conditionSettingCode(), 
-                self.selectedStandardImportSetting().conditionSettingName(), 
+                self.selectedStandardImportSetting().conditionSetCode(), 
+                self.selectedStandardImportSetting().conditionSetName(), 
                 self.selectedStandardImportSetting().deleteExistData(), 
                 self.selectedStandardImportSetting().acceptMode(), 
                 self.selectedStandardImportSetting().csvDataItemLineNumber(), 
@@ -218,7 +218,7 @@ module nts.uk.com.view.cmf001.b.viewmodel {
             if (!nts.uk.ui.errors.hasError()) {
                 block.invisible();
                 service.registerStdData(command).done(function() {
-                    self.getAllData(data.conditionSettingCode()).done(() => {
+                    self.getAllData(data.conditionSetCode()).done(() => {
                         info({ messageId: "Msg_15" }).then(() => {
                             if (self.screenMode() != model.SCREEN_MODE.UPDATE) $("#B4_3").focus();
                             else $("#B3_4_container").focus();
@@ -240,16 +240,16 @@ module nts.uk.com.view.cmf001.b.viewmodel {
 
             confirm({ messageId: "Msg_18" }).ifYes(() => {
                 block.invisible();
-                let indexItemDelete = _.findIndex(self.listStandardImportSetting(), (item: model.StandardAcceptanceConditionSetting) => { return item.conditionSettingCode() == data.conditionSettingCode(); });
-                self.listStandardImportSetting.remove(function(item) { return item.conditionSettingCode() == data.conditionSettingCode(); });
+                let indexItemDelete = _.findIndex(self.listStandardImportSetting(), (item: model.StandardAcceptanceConditionSetting) => { return item.conditionSetCode() == data.conditionSetCode(); });
+                self.listStandardImportSetting.remove(function(item) { return item.conditionSetCode() == data.conditionSetCode(); });
                 service.deleteStdData(command).done(function() {
                     if (self.listStandardImportSetting().length == 0) {
                         self.selectedStandardImportSettingCode(null);
                     } else {
                         if (indexItemDelete == self.listStandardImportSetting().length) {
-                            self.selectedStandardImportSettingCode(self.listStandardImportSetting()[indexItemDelete - 1].conditionSettingCode());
+                            self.selectedStandardImportSettingCode(self.listStandardImportSetting()[indexItemDelete - 1].conditionSetCode());
                         } else {
-                            self.selectedStandardImportSettingCode(self.listStandardImportSetting()[indexItemDelete].conditionSettingCode());
+                            self.selectedStandardImportSettingCode(self.listStandardImportSetting()[indexItemDelete].conditionSetCode());
                         }
                     }
 

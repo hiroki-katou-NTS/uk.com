@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.uk.ctx.at.request.dom.application.applist.service.param.AttendanceNameItem;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -21,4 +22,6 @@ public class ApprSttContentPrepareOutput {
 	private List<WorkType> workTypeLst;
 	
 	private List<WorkTimeSetting> workTimeSettingLst;
+	
+	private List<AttendanceNameItem> attendanceNameItemLst;
 }

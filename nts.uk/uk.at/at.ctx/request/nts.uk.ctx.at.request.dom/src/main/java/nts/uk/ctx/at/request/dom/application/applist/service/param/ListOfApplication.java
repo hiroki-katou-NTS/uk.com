@@ -10,6 +10,7 @@ import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.applist.service.ApplicationTypeDisplay;
+import nts.uk.ctx.at.request.dom.application.applist.service.content.ComplementLeaveAppLink;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 
 /**
@@ -110,7 +111,7 @@ public class ListOfApplication {
 	/**
 	 * 振休振出申請
 	 */
-	private Optional<ComplementLeaveAppConnect> opComplementLeaveApp;
+	private Optional<ComplementLeaveAppLink> opComplementLeaveApp;
 	
 	/**
 	 * 申請開始日
@@ -140,7 +141,7 @@ public class ListOfApplication {
 	/**
 	 * 背景色
 	 */
-	private Optional<Integer> opBackgroundColor;
+	private Optional<String> opBackgroundColor;
 	
 	/**
 	 * 表示行数超

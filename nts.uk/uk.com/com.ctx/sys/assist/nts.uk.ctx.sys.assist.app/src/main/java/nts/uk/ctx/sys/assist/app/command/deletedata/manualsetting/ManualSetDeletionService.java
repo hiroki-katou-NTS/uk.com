@@ -842,7 +842,7 @@ public class ManualSetDeletionService extends ExportService<Object>{
 							return ResultState.TERMINATE;
 						}
 					} else {
-						return ResultState.ABNORMAL_END;
+						return ResultState.TERMINATE;
 					}
 
 					String categoryId = category.getCategoryId();
@@ -864,6 +864,7 @@ public class ManualSetDeletionService extends ExportService<Object>{
 						} catch (Exception e) {
 							e.printStackTrace();
 							hasError = true;
+							break;
 						}
 					}
 				}

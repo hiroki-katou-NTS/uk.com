@@ -12,12 +12,12 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.BasicScheduleConfirmImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.BasicScheduleConfirmImport.ConfirmedAtrImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport_Old;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ShortWorkingTimeSheetImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.WorkScheduleTimeZoneImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.BasicScheduleConfirmImport.ConfirmedAtrImport;
 import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ScBasicScheduleExport;
 import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ScBasicSchedulePub;
 import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ScWorkScheduleExport_New;
@@ -61,11 +61,12 @@ public class ScBasicScheduleAdapterImpl implements ScBasicScheduleAdapter {
 
 	@Override
 	public ScBasicScheduleImport findByIDRefactor(String employeeID, GeneralDate date) {
-		ScWorkScheduleExport_New scWorkScheduleExport = scBasicSchedulePub.findByIdNewV2(employeeID, date);
+		ScWorkScheduleExport_New scWorkScheduleExport = scBasicSchedulePub.findByIdNewV2(employeeID, date).orElse(null);
 		return fromExport(scWorkScheduleExport);
 	}
 	
 	private ScBasicScheduleImport fromExport(ScWorkScheduleExport_New scWorkScheduleExport) {
+		if (scWorkScheduleExport == null) return null;
 		return new ScBasicScheduleImport(
 				scWorkScheduleExport.getEmployeeId(), 
 				scWorkScheduleExport.getDate(), 
@@ -80,9 +81,7 @@ public class ScBasicScheduleAdapterImpl implements ScBasicScheduleAdapter {
 						x.getShortWorkTimeFrameNo(), 
 						x.getChildCareAttr(), 
 						x.getStartTime(), 
-						x.getEndTime(), 
-						x.getDeductionTime(), 
-						x.getShortTime())).collect(Collectors.toList()));
+						x.getEndTime())).collect(Collectors.toList()));
 	}
 
 	@Override

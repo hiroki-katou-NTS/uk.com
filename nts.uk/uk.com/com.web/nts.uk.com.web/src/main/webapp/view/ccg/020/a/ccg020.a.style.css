@@ -11,6 +11,7 @@
   position: relative;
   top: 5px;
   padding-left: 20px;
+  cursor: pointer;
 }
 #search-bar {
   display: inline-block;

@@ -1,8 +1,8 @@
 package nts.uk.screen.at.app.kaf021.query.a;
 
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfYear;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeYear;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.AgreementOneYear;
 
 @Getter
 public class AgreementTimeYearDto {
@@ -14,10 +14,10 @@ public class AgreementTimeYearDto {
         this.status = null;
     }
 
-    public AgreementTimeYearDto(int year, AgreementTimeYear domain) {
+    public AgreementTimeYearDto(int year, AgreementTimeYear domain, AgreementOneYear oneYear) {
         this.year = year;
-        this.time = new AggreementTimeDto(domain.getRecordTime());
-        this.maxTime = new AggreementTimeDto(domain.getLimitTime());
+        this.time = new AggreementTimeDto(domain.getRecordTime(), oneYear.getBasic());
+        this.maxTime = new AggreementTimeDto(domain.getLimitTime(), oneYear.getSpecConditionLimit());
         this.status = domain.getStatus().value;
     }
 

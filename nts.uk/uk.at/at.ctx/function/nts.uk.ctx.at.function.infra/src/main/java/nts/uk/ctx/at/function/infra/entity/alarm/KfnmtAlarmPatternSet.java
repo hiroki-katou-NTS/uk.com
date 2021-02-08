@@ -22,7 +22,7 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtCheckCondition;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
- * アラームリストパターン設定
+ * Entity アラームリストパターン設定
  *
  */
 @AllArgsConstructor
@@ -89,8 +89,8 @@ public class KfnmtAlarmPatternSet extends UkJpaEntity implements Serializable {
 				this.alarmPerSet.authSetting == 1,
 				this.alarmPerSet.alarmPerSetItems.stream().map(item -> item.pk.roleID).collect(Collectors.toList()));
 	}
-	
+
 	public List<CheckCondition> toCheckCondition() {
-		return this.checkConList.stream().map(c ->c.toDomain()).collect(Collectors.toList());
+		return this.checkConList.stream().map(KfnmtCheckCondition::toDomain).collect(Collectors.toList());
 	}
 }

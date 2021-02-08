@@ -7,11 +7,12 @@ import lombok.val;
 import nts.uk.ctx.at.record.app.find.dailyperform.resttime.dto.BreakTimeDailyDto;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ConvertibleAttendanceItem;
 
 public class BreakTimeOfDailyPerformanceCommand extends DailyWorkCommonCommand {
 
-	@Getter
+//	@Getter
 	private Optional<BreakTimeOfDailyPerformance> data = Optional.empty();
 
 	@Override
@@ -33,6 +34,10 @@ public class BreakTimeOfDailyPerformanceCommand extends DailyWorkCommonCommand {
 		}
 		this.data = Optional.of((BreakTimeOfDailyPerformance) data);
 	}
+	
+	public BreakTimeOfDailyPerformance getData() {
+		return this.data.orElse(new BreakTimeOfDailyPerformance(this.getEmployeeId(), this.getWorkDate(), new BreakTimeOfDailyAttd()));
+	}
 
 	@Override
 	public Optional<BreakTimeOfDailyPerformance> toDomain() {
@@ -41,7 +46,7 @@ public class BreakTimeOfDailyPerformanceCommand extends DailyWorkCommonCommand {
 
 	@Override
 	public Optional<BreakTimeDailyDto> toDto() {
-		return getData().map(b -> BreakTimeDailyDto.getDto(b));
+		return data.map(b -> BreakTimeDailyDto.getDto(b));
 	}
 
 	@Override

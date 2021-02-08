@@ -72,14 +72,27 @@ module nts.uk.com.view.ccg013.c.viewmodel {
             self.getData = false;
 
             self.columns = ko.observableArray([
-                { headerText: nts.uk.resource.getText("CCG013_49"), prop: 'index', key: 'index', width: 55, formatter: _.escape },
+                {
+                    headerText: nts.uk.resource.getText("CCG013_49"),
+                    prop: 'displayOrder',
+                    key: 'displayOrder',
+                    width: 55,
+                    formatter: _.escape,
+                    template: '<div style="text-align: right">${displayOrder}</div>',
+                },
                 { headerText: nts.uk.resource.getText("CCG013_49"), prop: 'code', key: 'code', width: 0, formatter: _.escape, hidden: true },
                 { headerText: nts.uk.resource.getText("CCG013_50"), prop: 'name', key: 'name', width: 167, formatter: _.escape },
                 { headerText: 'pk', prop: 'primaryKey', key: 'primaryKey', width: 0, hidden: true }
             ]);
 
             self.newColumns = ko.observableArray([
-                { headerText: nts.uk.resource.getText("CCG013_51"), prop: 'index', width: 55, formatter: _.escape },
+                {
+                    headerText: nts.uk.resource.getText("CCG013_51"),
+                    prop: 'displayOrder',
+                    width: 55,
+                    formatter: _.escape,
+                    template: '<div style="text-align: right">${displayOrder}</div>',
+                },
                 { headerText: nts.uk.resource.getText("CCG013_51"), prop: 'code', width: 0, formatter: _.escape, hidden: true },
                 { headerText: nts.uk.resource.getText("CCG013_52"), prop: 'targetItem', width: 160, formatter: _.escape },
                 { headerText: nts.uk.resource.getText("CCG013_53"), prop: 'name', width: 160, formatter: _.escape },
@@ -122,8 +135,8 @@ module nts.uk.com.view.ccg013.c.viewmodel {
             if (titleMenuId) {
                 self.titleMenuId(titleMenuId);
             }
-
             $.when(self.findAllDisplay(), self.getSystemEnum()).done(function () {
+                var newData: any = [];
                 self.selectedSystemCode(5);
                 if (titleBar.treeMenus) {
                     _.forEach(titleBar.treeMenus, function (item: any, index: number) {
@@ -131,13 +144,13 @@ module nts.uk.com.view.ccg013.c.viewmodel {
                             return standardMenuItem.code == item.code && standardMenuItem.system == item.system && standardMenuItem.menu_cls == item.classification;
                         });
                         if (standardMenu) {
-                            var order = self.newItems().length + 1;
                             var primaryKey = nts.uk.util.randomId();
-                            var data = new ItemModel(index + 1, primaryKey, standardMenu.code, standardMenu.targetItem, standardMenu.name, order, standardMenu.menu_cls, standardMenu.system);
-                            self.newItems.push(data);
+                            var data = new ItemModel(index + 1, primaryKey, standardMenu.code, standardMenu.targetItem, standardMenu.name, index + 1, standardMenu.menu_cls, standardMenu.system, standardMenu.displayOrder, item.webMenuSetting, item.menu_cls);
+                            newData.push(data);
                             self.tempItems.push(data);
                         }
                     });
+                    self.newItems(_.orderBy(newData, ['order'], ['asc']));
                 }
                 self.disableSwapButton();
                 dfd.resolve();
@@ -199,12 +212,13 @@ module nts.uk.com.view.ccg013.c.viewmodel {
                 var index = 0;
                 _.forEach(data, function (item) {
                     var id = nts.uk.util.randomId();
-                    self.allItems.push(new ItemModel(idx + 1, id, item.code, item.targetItems, item.displayName, index, item.classification, item.system));
+                    self.allItems.push(new ItemModel(idx + 1, id, item.code, item.targetItems, item.displayName, index, item.classification, item.system, item.displayOrder, item.webMenuSetting, item.menu_cls));
                     if (item.system == self.selectedSystemCode()) {
-                        list001.push(new ItemModel(idx + 1, id, item.code, item.targetItems, item.displayName, index, item.classification, item.system));
+                        list001.push(new ItemModel(idx + 1, id, item.code, item.targetItems, item.displayName, index, item.classification, item.system, item.displayOrder, item.webMenuSetting, item.menu_cls));
                     }
                 });
-                self.items(list001);
+                var newData = _.orderBy(list001, ['system', 'displayOrder', 'code'], ['asc', 'asc', 'asc']);
+                self.items(newData);
                 dfd.resolve(data);
             }).fail(function (res) {
                 dfd.reject(res);
@@ -223,7 +237,7 @@ module nts.uk.com.view.ccg013.c.viewmodel {
                 _.forEach(editMenuBar.listSystem, function (item) {
                     self.systemList.push(new SystemModel(item.value, item.localizedName));
                 });
-                self.systemList(self.systemList());
+                self.systemList(self.systemList().filter(x => x.systemCode !== System.OFFICE_HELPER));
                 dfd.resolve();
             }).fail(function (error) {
                 dfd.reject();
@@ -233,30 +247,38 @@ module nts.uk.com.view.ccg013.c.viewmodel {
         }
 
         findBySystem(system: number): void {
-            var self = this;
-            var list001: Array<ItemModel> = [];
-            var index = 0;
-            _.forEach(self.allItems(), function (item: ItemModel, idx) {
-                if (self.selectedSystemCode() === 5) {
-                    if (item.menu_cls != Menu_Cls.TopPage) {
-                        var id = nts.uk.util.randomId();
-                        list001.push(new ItemModel(idx + 1, id, item.code, item.targetItem, item.name, index, item.menu_cls, item.system));
-                        index++;
-                    }
-                } else {
-                    if ((item.system == self.selectedSystemCode() && item.menu_cls != Menu_Cls.TopPage) || (item.system == 0 && item.menu_cls == Menu_Cls.TopPage)) {
-                        var id = nts.uk.util.randomId();
-                        list001.push(new ItemModel(idx + 1, id, item.code, item.targetItem, item.name, index, item.menu_cls, item.system));
-                        index++;
-                    }
-                }
-            });
-            var list002 = _.uniqBy(list001, 'targetItem');
-            _.forEach(list002, (x, index) => {
-                x.index = index + 1;
-            });
-
-            self.items(list002);
+            const self = this;
+            let list001: ItemModel[] = [];
+            const allItemsClone = _.orderBy(self.allItems(), ['system', 'displayOrder', 'code'], ['asc', 'asc', 'asc']);
+            const list002 = _.chain(allItemsClone)
+                .filter((item: any) =>
+                    item.system === System.COMMON &&
+                    item.menu_cls === Menu_Cls.TopPage &&
+                    item.webMenuSetting === WebMenuSetting.Display
+                )
+                .value();
+            if (self.selectedSystemCode() === System.ALL) {
+                list001 = _.chain(allItemsClone)
+                    .filter((item: ItemModel) =>
+                        item.menu_cls !== Menu_Cls.TopPage &&
+                        item.menu_cls !== Menu_Cls.OfficeHelper &&
+                        item.webMenuSetting === WebMenuSetting.Display
+                    )
+                    .map(item => new ItemModel(list001.length, nts.uk.util.randomId(), item.code, item.targetItem, item.name, list001.length, item.menu_cls, item.system, item.displayOrder, item.webMenuSetting, item.menu_cls))
+                    .value();
+            } else {
+                list001 = _.chain(allItemsClone)
+                    .filter((item: ItemModel) =>
+                        item.system === system &&
+                        item.menu_cls !== Menu_Cls.TopPage &&
+                        item.menu_cls !== Menu_Cls.OfficeHelper &&
+                        item.webMenuSetting === WebMenuSetting.Display
+                    )
+                    .map(item => new ItemModel(list001.length, nts.uk.util.randomId(), item.code, item.targetItem, item.name, list001.length, item.menu_cls, item.system, item.displayOrder, item.webMenuSetting, item.menu_cls))
+                    .value();
+            }
+            const listStandardMenu = _.concat(list001, list002);
+            self.items(listStandardMenu);
         }
 
         /**
@@ -268,14 +290,13 @@ module nts.uk.com.view.ccg013.c.viewmodel {
                 if (_.indexOf(_.map(self.newItems(), 'primaryKey'), selected) == -1) {
                     var item = _.find(self.items(), function (c) { return c.primaryKey == selected; });
                     item.order = self.newItems().length + 1;
-                    //item.primaryKey = nts.uk.util.randomId();
-                    self.newItems.push(new ItemModel(self.newItems().length + 1, nts.uk.util.randomId(), item.code, item.targetItem, item.name, item.order, item.menu_cls, item.system));
+                    self.newItems.push(new ItemModel(item.order, nts.uk.util.randomId(), item.code, item.targetItem, item.name, item.order, item.menu_cls, item.system, item.displayOrder, item.webMenuSetting, item.menu_cls));
                 }
             });
             _.forEach(self.newItems(), (x, index) => {
                 x.index = index + 1;
             });
-
+            self.newItems(_.orderBy(self.newItems(), ['order'], ['asc']));
             self.currentCodeList([]);
             self.disableSwapButton();
         }
@@ -296,10 +317,10 @@ module nts.uk.com.view.ccg013.c.viewmodel {
                 item.order = self.newItems().length + 1;
                 self.newItems.push(item);
             });
+            self.newItems(_.orderBy(self.newItems(), ['order'], ['asc']));
             _.forEach(self.newItems(), (x, index) => {
                 x.index = index + 1;
             });
-
             self.newCurrentCodeList([]);
             self.disableSwapButton();
         }
@@ -321,12 +342,13 @@ module nts.uk.com.view.ccg013.c.viewmodel {
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
+            _.each(self.newItems(), (item) => {
+                item.order = index;
+                item.displayOrder = index;
+                index++;
+            });
 
             if (self.titleMenuId()) {
-                _.each(self.newItems(), (item) => {
-                    item.order = index;
-                    index++;
-                });
                 nts.uk.ui.windows.setShared("CCG013C_TEXT_COLOR", self.letterColor());
                 nts.uk.ui.windows.setShared("CCG013C_BACKGROUND_COLOR", self.backgroundColor());
                 nts.uk.ui.windows.setShared("CCG013C_TITLE_MENU_NAME", self.nameTitleBar());
@@ -339,10 +361,10 @@ module nts.uk.com.view.ccg013.c.viewmodel {
             nts.uk.ui.windows.close();
         }
 
-        // /**
-        //  * Click on button d1_26
-        //  * Close the popup
-        //  */
+        /**
+         * Click on button d1_26
+         * Close the popup
+         */
         closeDialog() {
             var self = this;
             nts.uk.ui.windows.close();
@@ -378,8 +400,11 @@ module nts.uk.com.view.ccg013.c.viewmodel {
         order: number;
         menu_cls: number;
         system: number;
+        displayOrder: number;
+        webMenuSetting: number
+        classification: number;
 
-        constructor(index: number, id: string, code: string, targetItem: string, name: string, order: number, menu_cls: number, system: number) {
+        constructor(index: number, id: string, code: string, targetItem: string, name: string, order: number, menu_cls: number, system: number, displayOrder: number, webMenuSetting: number, classification: number) {
             this.index = index;
             this.primaryKey = id;
             this.code = code;
@@ -388,6 +413,9 @@ module nts.uk.com.view.ccg013.c.viewmodel {
             this.order = order;
             this.menu_cls = menu_cls;
             this.system = system;
+            this.displayOrder = displayOrder;
+            this.webMenuSetting = webMenuSetting;
+            this.classification = classification;
         }
     }
 
@@ -401,16 +429,31 @@ module nts.uk.com.view.ccg013.c.viewmodel {
         }
     }
 
+    enum WebMenuSetting {
+        Notdisplay = 0,
+        Display = 1
+    }
+
+    enum System {
+        COMMON = 0,
+        TIME_SHEET = 1,
+        OFFICE_HELPER = 2,
+        KYUYOU = 3,
+        JINJIROU= 4,
+        ALL = 5
+    }
+
     enum Menu_Cls {
         Standard = 0,
-        OptionalItemApplication,
-        MobilePhone,
-        Tablet,
-        CodeName,
-        GroupCompanyMenu,
-        Customize,
-        OfficeHelper,
-        TopPage
+        OptionalItemApplication = 1,
+        MobilePhone = 2,
+        Tablet = 3,
+        CodeName = 4,
+        GroupCompanyMenu = 5,
+        Customize = 6,
+        OfficeHelper = 7,
+        TopPage = 8,
+        SmartPhone = 9
     }
 
     export class TitleMenu {

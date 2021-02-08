@@ -20,7 +20,7 @@ import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDispSettingDto;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSettingDto;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.applicationsetting.DisplayReasonDto;
-import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.othdwork.hdworkapply.HdWorkAppReflectDto;
+import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.othdwork.hdworkapply.HdWorkAppReflectDto_Old;
 import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.othdwork.otworkapply.OtWorkAppReflectDto;
 import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.stampapplication.StampAppReflectDto;
 import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.substituteworkapplication.SubstituteWorkAppReflectDto;
@@ -60,7 +60,7 @@ public class DtoKaf022 {
 	private GoBackReflectDto goBackReflect;
 
 	private HolidayWorkAppSetDto holidayWorkApplicationSetting;
-	private HdWorkAppReflectDto holidayWorkApplicationReflect;
+	private HdWorkAppReflectDto_Old holidayWorkApplicationReflect;
 
 	private TimeLeaveAppReflectDto timeLeaveApplicationReflect;
 

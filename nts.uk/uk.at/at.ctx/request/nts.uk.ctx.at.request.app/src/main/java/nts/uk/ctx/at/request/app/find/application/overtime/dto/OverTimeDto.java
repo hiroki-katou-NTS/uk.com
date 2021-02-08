@@ -10,7 +10,7 @@ import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.AgreeOverTimeD
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ApplicationReasonDto;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.OvertimeColorCheck;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorResult;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
 import nts.uk.ctx.at.request.dom.application.overtime.service.AppOvertimeReference;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.SiftType;
@@ -291,7 +291,7 @@ public class OverTimeDto {
 	 */
 	public List<OvertimeColorCheck> resultLst;
 	
-	public static OverTimeDto fromDomain(AppOverTime appOverTime){
+	public static OverTimeDto fromDomain(AppOverTime_Old appOverTime){
 //		return new OverTimeDto(
 //				appOverTime.getVersion(),
 //				ApplicationDto_New.fromDomain(appOverTime.getApplication()), 

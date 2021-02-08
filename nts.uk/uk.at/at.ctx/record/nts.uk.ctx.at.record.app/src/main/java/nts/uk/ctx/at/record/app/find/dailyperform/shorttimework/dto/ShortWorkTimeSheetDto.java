@@ -38,16 +38,16 @@ public class ShortWorkTimeSheetDto implements ItemConst {
 	/** 控除時間: 勤怠時間 */
 	// @AttendanceItemLayout(layout = "E", jpPropertyName = "")
 	// @AttendanceItemValue(type = ValueType.INTEGER)
-	private Integer deductionTime;
+//	private Integer deductionTime;
 
 	/** 時間: 勤怠時間 */
 	// @AttendanceItemLayout(layout = "F", jpPropertyName = "")
 	// @AttendanceItemValue(type = ValueType.INTEGER)
-	private Integer shortTime;
+//	private Integer shortTime;
 
 	@Override
 	public ShortWorkTimeSheetDto clone(){
-		return new ShortWorkTimeSheetDto(no, attr, startTime, endTime, deductionTime, shortTime);
+		return new ShortWorkTimeSheetDto(no, attr, startTime, endTime);
 	}
 	
 	public String enumText() {

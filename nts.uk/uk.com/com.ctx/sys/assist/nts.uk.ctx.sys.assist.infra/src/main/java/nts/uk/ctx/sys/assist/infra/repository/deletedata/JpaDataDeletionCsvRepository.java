@@ -17,15 +17,15 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.Query;
 
-import com.google.common.base.Strings;
-
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.assist.dom.category.TimeStore;
 import nts.uk.ctx.sys.assist.dom.categoryfieldmt.HistoryDiviSion;
 import nts.uk.ctx.sys.assist.dom.deletedata.DataDeletionCsvRepository;
+import nts.uk.ctx.sys.assist.dom.deletedata.DeleteDataException;
 import nts.uk.ctx.sys.assist.dom.deletedata.EmployeeDeletion;
 import nts.uk.ctx.sys.assist.dom.deletedata.TableDeletionDataCsv;
 import nts.uk.shr.com.context.AppContexts;
@@ -267,6 +267,10 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 				query.append(",");
 			}
 		}
+		// Remove ',' at the end if necessary
+		if (query.toString().trim().endsWith(",")) {
+			query.deleteCharAt(query.lastIndexOf(","));
+		}
 
 		// From
 		query.append(" FROM ").append(tableList.getTableEnglishName()).append(" t");
@@ -289,7 +293,7 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 
 			boolean isFirstOnStatement = true;
 			for (int i = 0; i < parentFields.length; i++) {
-				if (!Strings.isNullOrEmpty(parentFields[i]) && !Strings.isNullOrEmpty(childFields[i])) {
+				if (!StringUtil.isNullOrEmpty(parentFields[i], true) && !StringUtil.isNullOrEmpty(childFields[i], true)) {
 					if (!isFirstOnStatement) {
 						query.append(" AND ");
 					}
@@ -599,7 +603,7 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 		}
 	}
 	
-	public void delelteDataDynamic(TableDeletionDataCsv tableList, List<String> targetEmployeesSid) {
+	public void delelteDataDynamic(TableDeletionDataCsv tableList, List<String> targetEmployeesSid) throws Exception {
 		StringBuffer query = new StringBuffer("");
 		// All Column
 		List<String> columns = getAllColumnName(tableList.getTableEnglishName());
@@ -626,7 +630,7 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 
 			boolean isFirstOnStatement = true;
 			for (int i = 0; i < parentFields.length; i++) {
-				if (!Strings.isNullOrEmpty(parentFields[i]) && !Strings.isNullOrEmpty(childFields[i])) {
+				if (!StringUtil.isNullOrEmpty(parentFields[i], true) && !StringUtil.isNullOrEmpty(childFields[i], true)) {
 					if (!isFirstOnStatement) {
 						query.append(" AND ");
 					}
@@ -864,7 +868,7 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 				try {
 					queryString.executeUpdate();
 				} catch (Exception e) {
-					throw e;
+					throw new DeleteDataException(e.getMessage(), sid);
 				}
 			}
 		}else {
@@ -882,7 +886,7 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 	
 	private String getFieldAcq(List<String> allColumns, Optional<String> fieldName, String fieldAcqName) {
 		String fieldAcq = fieldName.orElse("");
-		if (!Strings.isNullOrEmpty(fieldAcq)) {
+		if (!StringUtil.isNullOrEmpty(fieldAcq, true)) {
 			if (allColumns.contains(fieldAcq)) {
 				return " t." + fieldAcq + " AS " + fieldAcqName + ", ";
 			} else {
@@ -930,7 +934,7 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 	 * 
 	 */
 	@Override
-	public void deleteData(TableDeletionDataCsv tableDelData, List<EmployeeDeletion> employeeDeletions) {
+	public void deleteData(TableDeletionDataCsv tableDelData, List<EmployeeDeletion> employeeDeletions) throws Exception {
 		List<String> targetEmployeesSid = employeeDeletions.stream().map(emp -> emp.getEmployeeId()).collect(Collectors.toList());
 		try {
 			delelteDataDynamic(tableDelData, targetEmployeesSid);

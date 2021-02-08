@@ -1,6 +1,5 @@
 package nts.uk.screen.at.app.query.kcp013;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -20,11 +19,9 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * ScreenQuery職場で使える就業時間帯取得.
- * UKDesign.UniversalK.共通.KCP_共通部品.KCP013_就業時間帯選択.メニュー別OCD
+ * ScreenQuery職場で使える就業時間帯取得.UKDesign.UniversalK.共通.KCP_共通部品.KCP013_就業時間帯選択.メニュー別OCD
  * 
- * ScreenQuery就業時間帯を全件取得.
- * UKDesign.UniversalK.共通.KCP_共通部品.KCP013_就業時間帯選択.メニュー別OCD
+ * ScreenQuery就業時間帯を全件取得.UKDesign.UniversalK.共通.KCP_共通部品.KCP013_就業時間帯選択.メニュー別OCD
  *
  * @author thanhlv
  *
@@ -62,28 +59,33 @@ public class GetAllWorkingHoursQuery {
 	 */
 	public AcquireWorkingHoursDto getWorkingHours(AcquireWorkingHoursRequest request) {
 
-		AcquireWorkingHoursDto dto = new AcquireWorkingHoursDto();
+		AcquireWorkingHoursDto result = new AcquireWorkingHoursDto();
 
 		String companyId = AppContexts.user().companyId();
 
-		// <<Public>> 職場が選択できる就業時間帯を取得する
-		List<WorkTimeSetting> listWorkTime = workTimeWorkplaceRepo.getWorkTimeWorkplaceById(companyId,
-				request.getWorkPlaceId());
+		// step 1 call「職場IDから職場別就業時間帯を取得」を実行する
+		List<WorkTimeSetting> listWorkTime = workTimeWorkplaceRepo.getWorkTimeWorkplaceById(companyId, request.getWorkPlaceId());
+					
 		if (listWorkTime.size() > 0) {
-			//Collections.sort(listWorkTime, Comparator.comparing(x -> x.getWorktimeCode().v()));
+			List<String> worktimeCodes = listWorkTime.stream().map(x -> {
+				return x.getWorktimeCode().v();
+			}).collect(Collectors.toList());
+
+			// step 2 Query.該当所定時間設定を取得する
+			List<PredetemineTimeSetting> predetemineTimeSettings = predetemineTimeSettingRepository.findByCodeList(companyId, worktimeCodes);
+
+			result.setPredetemineTimeSettings(predetemineTimeSettings);
+			result.setListWorkTime(listWorkTime);
+			result.setHasWorkTimeInModeWorkPlace(true);
+			
+		} else {
+			// step 3 call ScreenQuery : 就業時間帯を全件取得
+			result = getAllWorkingHoursDtos();
+			result.setHasWorkTimeInModeWorkPlace(false);
+			
 		}
-		List<String> worktimeCodes = listWorkTime.stream().map(x -> {
-			return x.getWorktimeCode().v();
-		}).collect(Collectors.toList());
-
-		// Query.該当所定時間設定を取得する
-		List<PredetemineTimeSetting> predetemineTimeSettings = predetemineTimeSettingRepository
-				.findByCodeList(companyId, worktimeCodes);
-
-		dto.setListWorkTime(listWorkTime);
-		dto.setPredetemineTimeSettings(predetemineTimeSettings);
-
-		return dto;
+		result.setModeCompany(false);
+		return result;
 	}
 
 	/**
@@ -111,7 +113,7 @@ public class GetAllWorkingHoursQuery {
 
 		dto.setListWorkTime(listWorkTime);
 		dto.setPredetemineTimeSettings(predetemineTimeSettings);
-
+		dto.setModeCompany(true);
 		return dto;
 	}
 }

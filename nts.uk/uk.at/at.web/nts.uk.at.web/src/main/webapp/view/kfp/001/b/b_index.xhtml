@@ -7,8 +7,8 @@
 <body>
 	<ui:composition>
 		<com:ValidatorScript>
-			nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.primitivevalue.AggrFrameCode
-			nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.primitivevalue.OptionalAggrName
+			nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.primitivevalue.AnyAggrFrameCode
+			nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.primitivevalue.AnyAggrName
 		</com:ValidatorScript>
 		<div id="left-content" tabindex="3"
 			class="bg-green caret-right caret-background cf"
@@ -20,7 +20,7 @@
 						width: 250,
 						height: 300,
 						dataSource: optionalList,
-						primaryKey: 'aggrFrameCode',
+						primaryKey: 'anyAggrFrameCode',
 						columns: columns,
 						multiple: false,
 						value: currentCode
@@ -38,7 +38,7 @@
 						#{i18n.getText('KFP001_14')}</div>
 					<span> <input id="code-text-d4-2"
 						style="margin-left: 40px ! important" tabindex="4"
-						data-bind="ntsTextEditor: {value: aggrFrameCode,constraint:'AggrFrameCode', required: true, name: '#[KFP001_15]', enable:$parent.enableText}, hasFocus: $parent.isFocus" /></span>
+						data-bind="ntsTextEditor: {value: anyAggrFrameCode,constraint:'AggrFrameCode', required: true, name: '#[KFP001_15]', enable:$parent.enableText}, hasFocus: $parent.isFocus" /></span>
 					<hr></hr>
 				</div>
 				<div>
@@ -49,7 +49,7 @@
 					<div id="code-text-d4" style="margin-top: -30px">
 						<input id="code-text-d4-21" style="margin-left: 130px ! important"
 							tabindex="5"
-							data-bind="ntsTextEditor: {value: optionalAggrName,constraint:'OptionalAggrName', required: true, name: '#[KFP001_17]', enable:$parent.enableText}" />
+							data-bind="ntsTextEditor: {value: anyAggrName,constraint:'OptionalAggrName', required: true, name: '#[KFP001_17]', enable:$parent.enableText}" />
 					</div>
 					<hr></hr>
 				</div>

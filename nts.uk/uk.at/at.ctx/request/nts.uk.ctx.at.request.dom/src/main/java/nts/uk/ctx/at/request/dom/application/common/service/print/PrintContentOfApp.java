@@ -8,9 +8,12 @@ import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripPrintContent;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforGoBackCommonDirectOutput;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.HolidayShipmentOutput;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.ArrivedLateLeaveEarlyInfoOutput;
+import nts.uk.ctx.at.request.dom.application.overtime.service.DetailOutput;
 import nts.uk.ctx.at.request.dom.application.optional.OptionalItemPrintContent;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampOutput;
+import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplicationDetail;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppReasonStandard;
 
 import java.util.Collections;
@@ -90,11 +93,13 @@ public class PrintContentOfApp {
 	/**
 	 * 休暇申請の印刷内容
 	 */
-
+	private Optional<PrintContentOfApplyForLeave> opPrintContentApplyForLeave;
+	
 	/**
 	 * 休日出勤の印刷内容
 	 */
-
+	private Optional<PrintContentOfHolidayWork> opPrintContentOfHolidayWork;
+	
 	/**
 	 * 勤務変更申請の印刷内容
 	 */
@@ -103,6 +108,7 @@ public class PrintContentOfApp {
 	/**
 	 * 時間休暇申請の印刷内容
 	 */
+	private Optional<List<TimeLeaveApplicationDetail>> opPrintContentOfTimeLeave;
 
 	/**
 	 * 出張申請の印刷内容
@@ -119,6 +125,7 @@ public class PrintContentOfApp {
 	/**
 	 * 振休振出申請の印刷内容
 	 */
+    private Optional<HolidayShipmentOutput> optHolidayShipment;
 
 	/**
 	 * 打刻申請の印刷内容
@@ -135,7 +142,9 @@ public class PrintContentOfApp {
 	 */
 	private Optional<InforGoBackCommonDirectOutput> opInforGoBackCommonDirectOutput;
 
-
+	
+	private Optional<DetailOutput> opDetailOutput;
+	
 	/**
 	 * 任意項目申請の印刷内容
 	 */
@@ -146,6 +155,9 @@ public class PrintContentOfApp {
 		this.opArrivedLateLeaveEarlyInfo = Optional.empty();
 		this.opAppStampOutput = Optional.empty();
 		this.opBusinessTripPrintContent = Optional.empty();
+		this.opDetailOutput = Optional.empty();
 		this.optionalItemPrintContent = Optional.empty();
+		this.opPrintContentApplyForLeave = Optional.empty();
+		this.optHolidayShipment = Optional.empty();
 	}
 }

@@ -13,7 +13,7 @@ import { AppType } from 'views/kaf/s00';
             selectCheck: {
                 test(value: any) {
                     const vm = this;
-                    if (!vm.params.newModeContent.initSelectMultiDay) {
+                    if (!_.get(vm.params, 'newModeContent.initSelectMultiDay')) {
                         if (vm.params.isChangeDateError) {
                             return false;
                         }
@@ -29,7 +29,7 @@ import { AppType } from 'views/kaf/s00';
             selectCheck: {
                 test(value: any) {
                     const vm = this;
-                    if (vm.params.newModeContent.initSelectMultiDay) {
+                    if (_.get(vm.params, 'newModeContent.initSelectMultiDay')) {
                         if (vm.params.isChangeDateError) {
                             return false;
                         }
@@ -225,6 +225,16 @@ export class KafS00BComponent extends Vue {
                 appDispInfoStartupOutput.appDispInfoWithDateOutput = appDispInfoWithDateOutput;
                 self.$emit('kaf000BChangeDate', { startDate, endDate, appDispInfoStartupOutput });   
             }
+        }).catch((res: any) => {
+            if (res.messageId == 'Msg_426') {
+                self.$modal.error('Msg_426').then(() => {
+                    self.$goto('ccg008a');
+                });    
+            } else {
+                self.$modal.error(res.message).then(() => {
+                    self.$goto('ccg008a');
+                }); 
+            }
         });
     }
 
@@ -266,6 +276,16 @@ export class KafS00BComponent extends Vue {
                         appDispInfoStartupOutput.appDispInfoWithDateOutput = appDispInfoWithDateOutput;
                         self.$emit('kaf000BChangeDate', { startDate, endDate, appDispInfoStartupOutput });   
                     }
+                }).catch((res: any) => {
+                    if (res.messageId == 'Msg_426') {
+                        self.$modal.error('Msg_426').then(() => {
+                            self.$goto('ccg008a');
+                        });    
+                    } else {
+                        self.$modal.error(res.message).then(() => {
+                            self.$goto('ccg008a');
+                        }); 
+                    }
                 });
             }
         });
@@ -287,7 +307,7 @@ export class KafS00BComponent extends Vue {
         if (useDivision == 0) {
             self.$modal.error('Msg_323');
 
-            return false;
+            return true;
         }
         
         if (_.isNull(opErrorFlag)) {
@@ -311,7 +331,13 @@ export class KafS00BComponent extends Vue {
         }
         self.$modal.error({ messageId: msgID });
         
-        return false;
+        return true;
+    }
+
+    @Watch('$errors')
+    public errorWatcher() {
+        const self = this;
+        self.$emit('kafs00BValid', self.$valid);
     }
 }
 
