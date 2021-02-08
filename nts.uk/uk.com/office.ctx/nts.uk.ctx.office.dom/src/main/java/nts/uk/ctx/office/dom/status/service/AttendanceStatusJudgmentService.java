@@ -17,44 +17,51 @@ public class AttendanceStatusJudgmentService {
 	private AttendanceStatusJudgmentService() {}
 
 	public static AttendanceAccordActualData getActivityStatus(Required rq, String sid) {
-		
+
 		Optional<GoOutEmployeeInformation> goout = rq.getGoOutEmployeeInformation(sid, GeneralDate.today());
 		Optional<ActivityStatus> status = rq.getActivityStatus(sid, GeneralDate.today());
-		
+
 		// 在席状態を取得する
 		AttendanceStateImport attendanceState = rq.getAttendace(sid);
-		
+
 		// ステータス分類を判断する
-		Integer now = GeneralDateTime.now().hours() * 100 + GeneralDateTime.now().minutes();
-		if (goout.isPresent() && goout.get().getGoOutTime().lessThanOrEqualTo(now) && goout.get().getComebackTime().greaterThanOrEqualTo(now)) {
-			//case 1
+		Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
+		if (goout.isPresent() && goout.get().getGoOutTime().lessThanOrEqualTo(now)
+				&& goout.get().getComebackTime().greaterThanOrEqualTo(now)) {
+			// case 1
 			return AttendanceAccordActualData.builder()
 					.attendanceState(StatusClassfication.GO_OUT)
 					.workingNow(attendanceState.isWorkingNow())
 					.build();
-		} else {
-			if (attendanceState.getAttendanceState() == StatusClassfication.GO_HOME) {
-				//case 2
+		}
+
+		if (attendanceState.getAttendanceState() == StatusClassfication.GO_HOME) {
+			// case 2
+			return AttendanceAccordActualData.builder()
+					.attendanceState(attendanceState.getAttendanceState())
+					.workingNow(attendanceState.isWorkingNow())
+					.build();
+		}
+
+		if (status.isPresent()) {
+			if(status.get().getActivity()  == StatusClassfication.GO_OUT) {
+				// case 3
 				return AttendanceAccordActualData.builder()
 						.attendanceState(attendanceState.getAttendanceState())
 						.workingNow(attendanceState.isWorkingNow())
 						.build();
-			} else {
-				if (status.isPresent()) {
-					//case 3
-					return AttendanceAccordActualData.builder()
-							.attendanceState(status.get().getActivity())
-							.workingNow(attendanceState.isWorkingNow())
-							.build();
-				} else {
-					//case 4
-					return AttendanceAccordActualData.builder()
-							.attendanceState(attendanceState.getAttendanceState())
-							.workingNow(attendanceState.isWorkingNow())
-							.build();
-				}
 			}
+			// case 4
+			return AttendanceAccordActualData.builder()
+					.attendanceState(status.get().getActivity())
+					.workingNow(attendanceState.isWorkingNow())
+					.build();
 		}
+		// case 5
+		return AttendanceAccordActualData.builder()
+				.attendanceState(attendanceState.getAttendanceState())
+				.workingNow(attendanceState.isWorkingNow())
+				.build();
 	}
 	
 	public interface Required {

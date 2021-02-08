@@ -35,7 +35,7 @@ public class AttendanceStatusJudgmentServiceTest {
 		String sid = "sid";
 		GeneralDate baseDate = GeneralDate.today();
 		//[R-1]
-		Integer now = GeneralDateTime.now().hours() * 100 + GeneralDateTime.now().minutes();
+		Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 		GoOutEmployeeInformationDto gooutDto = GoOutEmployeeInformationDto.builder()
 				.goOutTime(now)
 				.comebackTime(now)
@@ -83,7 +83,7 @@ public class AttendanceStatusJudgmentServiceTest {
 		String sid = "sid";
 		GeneralDate baseDate = GeneralDate.today();
 		//[R-1]
-		Integer now = GeneralDateTime.now().hours() * 100 + GeneralDateTime.now().minutes();
+		Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 		GoOutEmployeeInformationDto gooutDto = GoOutEmployeeInformationDto.builder()
 				.goOutTime(now-1000)
 				.comebackTime(now)
@@ -131,7 +131,7 @@ public class AttendanceStatusJudgmentServiceTest {
 		String sid = "sid";
 		GeneralDate baseDate = GeneralDate.today();
 		//[R-1]
-		Integer now = GeneralDateTime.now().hours() * 100 + GeneralDateTime.now().minutes();
+		Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 		GoOutEmployeeInformationDto gooutDto = GoOutEmployeeInformationDto.builder()
 				.goOutTime(now)
 				.comebackTime(now+1000)
@@ -179,7 +179,7 @@ public class AttendanceStatusJudgmentServiceTest {
 		String sid = "sid";
 		GeneralDate baseDate = GeneralDate.today();
 		//[R-1]
-		Integer now = GeneralDateTime.now().hours() * 100 + GeneralDateTime.now().minutes();
+		Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 		GoOutEmployeeInformationDto gooutDto = GoOutEmployeeInformationDto.builder()
 				.goOutTime(now-100)
 				.comebackTime(now+1000)
@@ -263,7 +263,7 @@ public class AttendanceStatusJudgmentServiceTest {
 		String sid = "sid";
 		GeneralDate baseDate = GeneralDate.today();
 		//[R-1]
-				Integer now = GeneralDateTime.now().hours() * 100 + GeneralDateTime.now().minutes();
+				Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 				GoOutEmployeeInformationDto gooutDto = GoOutEmployeeInformationDto.builder()
 						.goOutTime(now+1000)
 						.comebackTime(now)
@@ -310,7 +310,7 @@ public class AttendanceStatusJudgmentServiceTest {
 		String sid = "sid";
 		GeneralDate baseDate = GeneralDate.today();
 		//[R-1]
-				Integer now = GeneralDateTime.now().hours() * 100 + GeneralDateTime.now().minutes();
+				Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 				GoOutEmployeeInformationDto gooutDto = GoOutEmployeeInformationDto.builder()
 						.goOutTime(now)
 						.comebackTime(now-1000)
@@ -355,6 +355,54 @@ public class AttendanceStatusJudgmentServiceTest {
 		GeneralDate baseDate = GeneralDate.today();
 		//[R-2]
 		ActivityStatusDto dto = ActivityStatusDto.builder()
+				.activity(2)
+				.date(GeneralDate.today())
+				.sid("sid")
+				.build();
+		Optional<ActivityStatus> statusResult = Optional.ofNullable(ActivityStatus.createFromMemento(dto));
+		//[R-3]
+		AttendanceStateImport attendacneRqResult = AttendanceStateImport.builder()
+				.attendanceState(StatusClassfication.PRESENT)
+				.workingNow(false)
+				.build();
+		
+		new Expectations() {
+			{
+				require.getGoOutEmployeeInformation(sid, baseDate);
+				result = Optional.empty();
+			}
+			{
+				require.getActivityStatus(sid, baseDate);
+				result = statusResult;
+			}
+			{
+				require.getAttendace(sid);
+				result = attendacneRqResult;
+			}
+		};
+		
+		//when
+		val result = AttendanceStatusJudgmentService.getActivityStatus(require, sid);
+		
+		val expected = AttendanceAccordActualData.builder()
+				.attendanceState(attendacneRqResult.getAttendanceState())
+				.workingNow(attendacneRqResult.isWorkingNow())
+				.build();
+		
+		//then
+		assertThat(result).isEqualTo(expected);
+	}
+	
+	/**
+	 * case 4
+	 */
+	@Test
+	public void getActivityStatusTest4() {
+		//given
+		String sid = "sid";
+		GeneralDate baseDate = GeneralDate.today();
+		//[R-2]
+		ActivityStatusDto dto = ActivityStatusDto.builder()
 				.activity(0)
 				.date(GeneralDate.today())
 				.sid("sid")
@@ -394,10 +442,10 @@ public class AttendanceStatusJudgmentServiceTest {
 	}
 	
 	/**
-	 * case 4
+	 * case 5
 	 */
 	@Test
-	public void getActivityStatusTest4() {
+	public void getActivityStatusTest5() {
 		//given
 		String sid = "sid";
 		GeneralDate baseDate = GeneralDate.today();

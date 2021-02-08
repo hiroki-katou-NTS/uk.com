@@ -89,90 +89,64 @@ public class JudgingStatusDomainService {
 				directDivision = Optional.ofNullable(consumer.getWorkInformation().getGoStraightAtr().value == 1);
 			});
 		}
-		Integer now = GeneralDateTime.now().hours() * 100 + GeneralDateTime.now().minutes();
+		Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 		
 		// case 1
 		if (leaveTime.isPresent() && leaveTime.get() <= now) {
-			return AttendanceAccordActualData.builder()
-					.attendanceState(StatusClassfication.GO_HOME)
-					.workingNow(workingNow.map(m -> m.booleanValue()).orElse(false))
-					.build();
+			return buildData(StatusClassfication.GO_HOME, workingNow);
 		}
 		
 		if (leaveTime.isPresent()) {
 			if (attendanceTime.isPresent() && attendanceTime.get() >= now) {
 				// case 2
 				if (directDivision.isPresent() && directDivision.get().booleanValue()) {
-					return AttendanceAccordActualData.builder()
-							.attendanceState(StatusClassfication.GO_OUT)
-							.workingNow(workingNow.map(m -> m.booleanValue()).orElse(false))
-							.build();
+					return buildData(StatusClassfication.GO_OUT, workingNow);
 				}
 				
 				// case 3
-				return AttendanceAccordActualData.builder()
-						.attendanceState(StatusClassfication.PRESENT)
-						.workingNow(workingNow.map(m -> m.booleanValue()).orElse(false))
-						.build();
+				return buildData(StatusClassfication.PRESENT, workingNow);
 			}
 			
 			// case 4
 			if (attendanceTime.isPresent()) {
-				return AttendanceAccordActualData.builder()
-						.attendanceState(StatusClassfication.NOT_PRESENT)
-						.workingNow(workingNow.map(m -> m.booleanValue()).orElse(false))
-						.build();
+				return buildData(StatusClassfication.NOT_PRESENT, workingNow);
 			}
 			
 			// case 5
-			return AttendanceAccordActualData.builder()
-					.attendanceState(StatusClassfication.NOT_PRESENT)
-					.workingNow(workingNow.map(m -> m.booleanValue()).orElse(false))
-					.build();
+			return buildData(StatusClassfication.NOT_PRESENT, workingNow);
 		}
 		
 		if (attendanceTime.isPresent() && attendanceTime.get() >= now) {
 			// case 6
 			if (directDivision.isPresent() && directDivision.get().booleanValue()) {
-				return AttendanceAccordActualData.builder()
-						.attendanceState(StatusClassfication.GO_OUT)
-						.workingNow(workingNow.map(m -> m.booleanValue()).orElse(false))
-						.build();
+				return buildData(StatusClassfication.GO_OUT, workingNow);
 			}
 			// case 7
-			return AttendanceAccordActualData.builder()
-					.attendanceState(StatusClassfication.PRESENT)
-					.workingNow(workingNow.map(m -> m.booleanValue()).orElse(false))
-					.build();
+			return buildData(StatusClassfication.PRESENT, workingNow);
 		}
 		
 		// case 8
 		if (attendanceTime.isPresent()) {
-			return AttendanceAccordActualData.builder()
-					.attendanceState(StatusClassfication.NOT_PRESENT)
-					.workingNow(workingNow.map(m -> m.booleanValue()).orElse(false))
-					.build();
+			return buildData(StatusClassfication.NOT_PRESENT, workingNow);
 		} 
 		
 		// case 9
 		if (!workDivision.isPresent()) {
-			return AttendanceAccordActualData.builder()
-					.attendanceState(StatusClassfication.NOT_PRESENT)
-					.workingNow(workingNow.map(m -> m.booleanValue()).orElse(false))
-					.build();
+			return buildData(StatusClassfication.NOT_PRESENT, workingNow);
 		}
 		
 		// case 10
 		if (workDivision.get() == WORK) {
-			return AttendanceAccordActualData.builder()
-					.attendanceState(StatusClassfication.NOT_PRESENT)
-					.workingNow(workingNow.map(m -> m.booleanValue()).orElse(false))
-					.build();
+			return buildData(StatusClassfication.NOT_PRESENT, workingNow);
 		}
 		
 		// case 11
+		return buildData(StatusClassfication.HOLIDAY, workingNow);
+	}
+	
+	private static AttendanceAccordActualData buildData(StatusClassfication statusClassfication, Optional<Boolean> workingNow) {
 		return AttendanceAccordActualData.builder()
-				.attendanceState(StatusClassfication.HOLIDAY)
+				.attendanceState(statusClassfication)
 				.workingNow(workingNow.map(m -> m.booleanValue()).orElse(false))
 				.build();
 	}

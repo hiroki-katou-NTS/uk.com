@@ -3,10 +3,8 @@ package nts.uk.screen.com.app.find.ccg005.search.employee;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.office.dom.favorite.adapter.EmployeeBasicImport;
 import nts.uk.ctx.office.dom.favorite.adapter.EmployeePositionAdapter;
@@ -71,13 +69,17 @@ public class SearchEmployeeScreenQuery {
 		List<String> sidsByName = searchEmployeePub.searchByEmployeeName(keyWorks, 2, baseDate); // システム区分 ＝ 就業 ＝ 2
 		sidsSearch.addAll(sidsByName);
 
+		List<String> distinctSidsSearch = sidsSearch.stream()
+                .distinct()
+                .collect(Collectors.toList());
+		
 		// 3: 参照できるか判断する(Require, 社員ID, 年月日): List<社員ID>
 		DefaultRequireImpl deterEmpLstDsRequireImpl = 
 				new DefaultRequireImpl(specifyAuthInquiryRepository, employeePositionAdapter);
 		List<String> empList = DetermineEmpIdListDomainService
 				.determineReferenced(
 						deterEmpLstDsRequireImpl, 
-						sidsSearch,
+						distinctSidsSearch,
 						baseDate, 
 						loginCid, 
 						loginRoleid, 
