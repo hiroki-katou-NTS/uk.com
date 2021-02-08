@@ -106,11 +106,11 @@ export class KafS05Component extends KafS00ShrComponent {
 
         return ((!self.c15 && value1 == NotUseAtr.USE) || (self.c15 && value2 == NotUseAtr.USE));
     }
-    // ※表3 = ○　OR　※表3-1-1 = ○
+    // ※表3 = ○　AND　※表3-1-1 = ○
     public get c3_1() {
         const self = this;
 
-        return self.c3_1_1 || self.c3;
+        return self.c3_1_1 && self.c3;
     }
     //  c3 AND「残業申請の表示情報．申請表示情報．申請表示情報(基準日関係なし)．複数回勤務の管理」＝true"
     public get c3_2() {
