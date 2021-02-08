@@ -487,9 +487,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				// 前日と翌日の勤務
 				PreviousAndNextDaily previousAndNextDailyForFix = new PreviousAndNextDaily(yesterDayForFixed, tomorrowForFixed, yesterInfo, tommorowInfo);
 				
-				if (timeSheetAtr.isSchedule()) {
-					integrationOfWorkTime.get().getFixedWorkSetting().get().getFixedWorkRestSetting().changeCalcMethodToSche();
-				}
+//				if (timeSheetAtr.isSchedule()) {
+//					integrationOfWorkTime.get().getFixedWorkSetting().get().getFixedWorkRestSetting().changeCalcMethodToSche();
+//				}
 				
 				// 固定勤務の時間帯作成
 				oneRange.createWithinWorkTimeSheet(

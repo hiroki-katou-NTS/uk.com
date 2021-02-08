@@ -10,7 +10,7 @@ import java.util.Optional;
 
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
-import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkRestSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -28,7 +28,6 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedStampReflec
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSetPK;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFixedWorkCalcSettingSetMemento;
-import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFixedWorkRestSetSetMemento;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaWorkTimezoneCommonSetSetMemento;
 
 /**
@@ -131,6 +130,11 @@ public class JpaFixedWorkSettingSetMemento implements FixedWorkSettingSetMemento
 	public void setUseHalfDayShift(Boolean useHalfDayShift) {
 		this.entity.setUseHalfDay(BooleanGetAtr.getAtrByBoolean(useHalfDayShift));
 	}
+	
+	@Override
+	public void setCommonRestSet(CommonRestSetting commonRestSet) {
+	    this.entity.setLevRestCalcType(commonRestSet.getCalculateMethod().value);
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -140,10 +144,10 @@ public class JpaFixedWorkSettingSetMemento implements FixedWorkSettingSetMemento
 	 * setFixedWorkRestSetting(nts.uk.ctx.at.shared.dom.worktime.common.
 	 * FixedWorkRestSet)
 	 */
-	@Override
-	public void setFixedWorkRestSetting(FixedWorkRestSet fixedWorkRestSetting) {
-		fixedWorkRestSetting.saveToMemento(new JpaFixedWorkRestSetSetMemento<KshmtFixedWorkSet>(this.entity));
-	}
+//	@Override
+//	public void setFixedWorkRestSetting(FixedWorkRestSet fixedWorkRestSetting) {
+//		fixedWorkRestSetting.saveToMemento(new JpaFixedWorkRestSetSetMemento<KshmtFixedWorkSet>(this.entity));
+//	}
 
 	/*
 	 * (non-Javadoc)

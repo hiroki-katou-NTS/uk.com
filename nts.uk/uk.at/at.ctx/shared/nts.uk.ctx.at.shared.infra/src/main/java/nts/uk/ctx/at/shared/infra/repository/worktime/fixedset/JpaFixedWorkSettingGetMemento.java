@@ -11,8 +11,9 @@ import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
-import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkRestSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.RestTimeOfficeWorkCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
@@ -23,7 +24,6 @@ import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingGetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSet;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFixedWorkCalcSettingGetMemento;
-import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFixedWorkRestSetGetMemento;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaWorkTimezoneCommonSetGetMemento;
 
 /**
@@ -108,6 +108,11 @@ public class JpaFixedWorkSettingGetMemento implements FixedWorkSettingGetMemento
 	public Boolean getUseHalfDayShift() {
 		return BooleanGetAtr.getAtrByInteger(this.entity.getUseHalfDay());
 	}
+	
+	@Override
+	public CommonRestSetting getCommonRestSet() {
+	    return new CommonRestSetting(RestTimeOfficeWorkCalcMethod.valueOf(this.entity.getLevRestCalcType()));
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -116,10 +121,10 @@ public class JpaFixedWorkSettingGetMemento implements FixedWorkSettingGetMemento
 	 * nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingGetMemento#
 	 * getFixedWorkRestSetting()
 	 */
-	@Override
-	public FixedWorkRestSet getFixedWorkRestSetting() {
-		return new FixedWorkRestSet(new JpaFixedWorkRestSetGetMemento<KshmtFixedWorkSet>(this.entity));
-	}
+//	@Override
+//	public FixedWorkRestSet getFixedWorkRestSetting() {
+//		return new FixedWorkRestSet(new JpaFixedWorkRestSetGetMemento<KshmtFixedWorkSet>(this.entity));
+//	}
 
 	/*
 	 * (non-Javadoc)

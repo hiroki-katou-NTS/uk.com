@@ -32,6 +32,7 @@ import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZonePerNo;
 import nts.uk.ctx.at.shared.dom.worktime.WorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkRestSet;
@@ -78,10 +79,14 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 	/** The use half day shift. */
 	// 半日用シフトを使用する
 	private Boolean useHalfDayShift;
+	
+	/** The common rest set. */
+    //共通の休憩設定
+    private CommonRestSetting commonRestSet; 
 
-	/** The fixed work rest setting. */
-	// 固定勤務の休憩設定
-	private FixedWorkRestSet fixedWorkRestSetting;
+//	/** The fixed work rest setting. */
+//	// 固定勤務の休憩設定
+//	private FixedWorkRestSet fixedWorkRestSetting;
 
 	/** The lst half day work timezone. */
 	// 平日勤務時間帯
@@ -111,7 +116,8 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 		this.offdayWorkTimezone = memento.getOffdayWorkTimezone();
 		this.commonSetting = memento.getCommonSetting();
 		this.useHalfDayShift = memento.getUseHalfDayShift();
-		this.fixedWorkRestSetting = memento.getFixedWorkRestSetting();
+		this.commonRestSet = memento.getCommonRestSet();
+//		this.fixedWorkRestSetting = memento.getFixedWorkRestSetting();
 		this.lstHalfDayWorkTimezone = memento.getLstHalfDayWorkTimezone();
 		this.lstStampReflectTimezone = memento.getLstStampReflectTimezone();
 		this.legalOTSetting = memento.getLegalOTSetting();
@@ -130,7 +136,8 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 		memento.setOffdayWorkTimezone(this.offdayWorkTimezone);
 		memento.setCommonSetting(this.commonSetting);
 		memento.setUseHalfDayShift(this.useHalfDayShift);
-		memento.setFixedWorkRestSetting(this.fixedWorkRestSetting);
+		memento.setCommonRestSet(this.commonRestSet);
+//		memento.setFixedWorkRestSetting(this.fixedWorkRestSetting);
 		memento.setLstHalfDayWorkTimezone(this.lstHalfDayWorkTimezone);
 		memento.setLstStampReflectTimezone(this.lstStampReflectTimezone);
 		memento.setLegalOTSetting(this.legalOTSetting);
@@ -254,7 +261,8 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 			cloned.offdayWorkTimezone = this.offdayWorkTimezone.clone();
 			cloned.commonSetting = this.commonSetting.clone();
 			cloned.useHalfDayShift = this.useHalfDayShift ? true : false;
-			cloned.fixedWorkRestSetting = this.fixedWorkRestSetting.clone();
+			cloned.commonRestSet = this.commonRestSet;
+//			cloned.fixedWorkRestSetting = this.fixedWorkRestSetting.clone();
 			cloned.lstHalfDayWorkTimezone = this.lstHalfDayWorkTimezone.stream().map(c -> c.clone()).collect(Collectors.toList());
 			cloned.lstStampReflectTimezone = this.lstStampReflectTimezone.stream().map(c -> c.clone()).collect(Collectors.toList());
 			cloned.legalOTSetting = LegalOTSetting.valueOf(this.legalOTSetting.value);

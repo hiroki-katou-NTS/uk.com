@@ -10,11 +10,14 @@ import java.util.stream.Collectors;
 
 import lombok.Value;
 import nts.uk.ctx.at.shared.app.command.worktime.common.FixedWorkCalcSettingDto;
+import nts.uk.ctx.at.shared.app.command.worktime.common.dto.CommonRestSettingDto;
 import nts.uk.ctx.at.shared.app.command.worktime.common.dto.FixedWorkRestSetDto;
 import nts.uk.ctx.at.shared.app.command.worktime.common.dto.StampReflectTimezoneDto;
 import nts.uk.ctx.at.shared.app.command.worktime.common.dto.WorkTimezoneCommonSetDto;
+import nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkRestSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.RestTimeOfficeWorkCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
@@ -41,9 +44,12 @@ public class FixedWorkSettingDto implements FixedWorkSettingGetMemento {
 
 	/** The use half day shift. */
 	private Boolean useHalfDayShift;
+	
+	/** The common rest set. */
+    private CommonRestSettingDto commonRestSet;
 
 	/** The fixed work rest setting. */
-	private FixedWorkRestSetDto fixedWorkRestSetting;
+//	private FixedWorkRestSetDto fixedWorkRestSetting;
 
 	/** The lst half day work timezone. */
 	private List<FixHalfDayWorkTimezoneDto> lstHalfDayWorkTimezone;
@@ -116,6 +122,13 @@ public class FixedWorkSettingDto implements FixedWorkSettingGetMemento {
 	public Boolean getUseHalfDayShift() {
 		return this.useHalfDayShift;
 	}
+	
+
+
+    @Override
+    public CommonRestSetting getCommonRestSet() {
+        return new CommonRestSetting(RestTimeOfficeWorkCalcMethod.valueOf(this.commonRestSet.getCalculateMethod().value));
+    }
 
 	/*
 	 * (non-Javadoc)
@@ -124,10 +137,10 @@ public class FixedWorkSettingDto implements FixedWorkSettingGetMemento {
 	 * nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingGetMemento#
 	 * getFixedWorkRestSetting()
 	 */
-	@Override
-	public FixedWorkRestSet getFixedWorkRestSetting() {
-		return new FixedWorkRestSet(this.fixedWorkRestSetting);
-	}
+//	@Override
+//	public FixedWorkRestSet getFixedWorkRestSetting() {
+//		return new FixedWorkRestSet(this.fixedWorkRestSetting);
+//	}
 
 	/*
 	 * (non-Javadoc)
