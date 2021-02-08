@@ -560,7 +560,7 @@ export class KafS05Component extends KafS00ShrComponent {
                         appOverTimeInsert.workHoursOp.push(timeZone);
                     }
                 }
-                if (self.c3_2) {
+                if (self.c3_1) {
                     let start = _.get(step1.getWorkHours2(), 'start');
                     let end = _.get(step1.getWorkHours2(), 'end');
                     if (_.isNumber(start) && _.isNumber(end)) {
@@ -573,7 +573,7 @@ export class KafS05Component extends KafS00ShrComponent {
                     }
                 }
             }
-            if (self.c3_1) {
+            if (self.c3) {
                 appOverTimeInsert.breakTimeOp = [] as Array<TimeZoneWithWorkNo>;
                 let breakTimes = step1.getBreakTimes() as Array<BreakTime>;
                 _.forEach(breakTimes, (item: BreakTime, index: number) => {
