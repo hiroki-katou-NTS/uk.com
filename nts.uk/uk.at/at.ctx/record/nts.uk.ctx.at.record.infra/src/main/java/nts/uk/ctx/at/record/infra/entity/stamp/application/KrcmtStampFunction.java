@@ -57,13 +57,6 @@ public class KrcmtStampFunction  extends ContractUkJpaEntity implements Serializ
 	@Column(name = "MAP_ADDRESS")
 	public String mapAddress;
 	
-	/**
-	 * 応援打刻を利用する
-	 */
-	@Basic(optional = false)
-	@Column(name = "SUPPORT_USE_ART")
-	public int supportUseArt;
-	
 	@OneToMany(targetEntity = KrccpStampRecordDis.class, mappedBy = "krccpStampFunction", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JoinTable(name = "KRCMT_STAMP_RECORD_DIS")
 	public List<KrccpStampRecordDis> lstRecordDis;
@@ -73,9 +66,8 @@ public class KrcmtStampFunction  extends ContractUkJpaEntity implements Serializ
 		return this.cid;
 	}
 
-	public StampResultDisplay toDomain() {
-		return new StampResultDisplay(this.cid, EnumAdaptor.valueOf(this.recordDisplayArt, NotUseAtr.class),
-				this.lstRecordDis.stream().map(mapper -> mapper.toDomain()).collect(Collectors.toList()));
+	public StampResultDisplay toDomain(){
+		return new StampResultDisplay(this.cid, EnumAdaptor.valueOf(this.recordDisplayArt, NotUseAtr.class), this.lstRecordDis.stream().map(mapper->mapper.toDomain()).collect(Collectors.toList()));
 	}
 	
 	public StampResultDisplay toDomainStamp(){

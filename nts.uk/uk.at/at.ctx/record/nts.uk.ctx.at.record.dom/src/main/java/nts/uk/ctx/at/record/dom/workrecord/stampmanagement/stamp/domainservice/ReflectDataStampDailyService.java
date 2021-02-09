@@ -1,10 +1,23 @@
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ExecutionTypeDaily;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.EmbossingExecutionFlag;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.OutputCreateDailyOneDay;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
+import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInfoImport;
+import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output.PeriodInMasterList;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.OutputTimeReflectForWorkinfo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.StampReflectRangeOutput;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrorMessageInfo;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * DS : 打刻データがいつの日別実績に反映するか
@@ -33,26 +46,62 @@ public class ReflectDataStampDailyService {
 	 * @param stamp
 	 * @return
 	 */
-	private static boolean reflectTemporarily(Require require,String employeeId,GeneralDate date,Stamp stamp) {
-		//	$日別実績 = require.日別実績を作成する(社員ID, 年月日, しない, empty, empty, empty)	
+	private static boolean reflectTemporarily(Require require, String employeeId, GeneralDate date, Stamp stamp) {
 		
+		String cid = AppContexts.user().companyId();
+		
+		//	$日別実績 = require.日別実績を作成する(社員ID, 年月日, しない, empty, empty, empty)
+		OutputCreateDailyOneDay dailyOneDay = require.createDailyResult(cid,
+				employeeId,
+				date,
+				ExecutionTypeDaily.CREATE,
+				EmbossingExecutionFlag.ALL,
+				null,
+				null,
+				null);
+		
+		if (!dailyOneDay.getListErrorMessageInfo().isEmpty()){
+			return false;
+		}
 		
 		//	$打刻反映範囲 = require.打刻反映時間帯を取得する($日別実績.日別実績の勤務情報)
+		OutputTimeReflectForWorkinfo forWorkinfo = require.get(cid,
+				employeeId,
+				date,
+				dailyOneDay.getIntegrationOfDaily().getWorkInformation());
+		
+		// 	$変更区分 = 日別勤怠の何が変更されたか#日別勤怠の何が変更されたか(true, true, true, true)	
+		ChangeDailyAttendance changeDailyAtt = new  ChangeDailyAttendance(true,
+				true, 
+				true,
+				true,
+				true);
 
 		//	$反映後の打刻 = require.打刻を反映する($日別実績, $打刻反映範囲, 打刻)
+		List<ErrorMessageInfo> errorMessageInfos = require.reflectStamp(stamp,
+				forWorkinfo.getStampReflectRangeOutput(),
+				dailyOneDay.getIntegrationOfDaily(),
+				changeDailyAtt);
 		
-		return false;
+		return stamp.isReflectedCategory();
 	}
-	
-	
+
 	public static interface Require {
 
-		//	[R-1] 日別実績を作成する
-		
-		//	[R-2] 打刻反映時間帯を取得する
-		
-		//	[R-3] 打刻を反映する
-		
-		//TODO: các require đang k giống trong code, chờ bug http://192.168.50.4:3000/issues/109911
+		// [R-1] 日別実績を作成する
+		OutputCreateDailyOneDay createDailyResult(String companyId, String employeeId, GeneralDate ymd,
+				ExecutionTypeDaily executionType, EmbossingExecutionFlag flag,
+				EmployeeGeneralInfoImport employeeGeneralInfoImport, PeriodInMasterList periodInMasterList,IntegrationOfDaily integrationOfDaily);
+
+		// [R-2] 打刻反映時間帯を取得する
+		OutputTimeReflectForWorkinfo get(String companyId, String employeeId, GeneralDate ymd,
+				WorkInfoOfDailyAttendance workInformation);	
+
+		// [R-3] 打刻を反映する
+		List<ErrorMessageInfo> reflectStamp(Stamp stamp, StampReflectRangeOutput stampReflectRangeOutput,
+				IntegrationOfDaily integrationOfDaily, ChangeDailyAttendance changeDailyAtt);
+
+		// TODO: các require đang k giống trong code, chờ bug
+		// http://192.168.50.4:3000/issues/109911
 	}
 }
