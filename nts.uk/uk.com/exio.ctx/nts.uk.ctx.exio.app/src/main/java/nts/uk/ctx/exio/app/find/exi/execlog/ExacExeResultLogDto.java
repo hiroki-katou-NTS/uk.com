@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.exio.dom.exi.execlog.ExacExeResultLog;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 外部受入実行結果ログ
@@ -75,7 +76,7 @@ public class ExacExeResultLogDto {
 	/**
 	 * 結果状態
 	 */
-	private int resultStatus;
+	private Integer resultStatus;
 
 	/**
 	 * 処理終了日時
@@ -87,14 +88,23 @@ public class ExacExeResultLogDto {
 	 */
 	private int processAtr;
 
-	private Long version;
 
 	public static ExacExeResultLogDto fromDomain(ExacExeResultLog domain) {
-		return new ExacExeResultLogDto(domain.getCid(), domain.getConditionSetCd(), domain.getExternalProcessId(),
-				domain.getExecutorId(), domain.getUserId(), domain.getProcessStartDatetime(), domain.getStandardAtr(),
-				domain.getExecuteForm(), domain.getTargetCount(), domain.getErrorCount(), domain.getFileName(),
-				domain.getSystemType(), domain.getResultStatus(), domain.getProcessEndDatetime(),
-				domain.getProcessAtr(), domain.getVersion());
+		return new ExacExeResultLogDto(domain.getCid(),
+				domain.getConditionSetCd(),
+				domain.getExternalProcessId(),
+				domain.getExecutorId(),
+				domain.getUserId(),
+				domain.getProcessStartDatetime(),
+				domain.getStandardAtr().value,
+				domain.getExecuteForm().value,
+				domain.getTargetCount(),
+				domain.getErrorCount(),
+				domain.getFileName(),
+				domain.getSystemType().value,
+				domain.getResultStatus().isPresent() ? 0 : domain.getResultStatus().get().value,
+				domain.getProcessEndDatetime().isPresent() ? null : domain.getProcessEndDatetime().get(),
+				domain.getProcessAtr().value);
 	}
 
 }

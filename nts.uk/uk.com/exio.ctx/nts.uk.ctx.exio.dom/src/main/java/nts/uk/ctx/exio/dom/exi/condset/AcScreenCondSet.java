@@ -150,10 +150,15 @@ public class AcScreenCondSet extends DomainObject {
 		Double condValueDb1 = null;
 		Double condValueDb2 = null;
 		Double itemValueDb = null;
+		String condValueS1 = null;
+		String valueItemS = null;
 		if(itemType == ItemType.DATE) {
 			condValueD1 = (GeneralDate) condValue1;
 			condValueD2 = (GeneralDate) condValue2;
 			valueItemD = (GeneralDate) itemValue;
+		} else if (itemType == ItemType.CHARACTER) {
+			condValueS1 = condValue1.toString();
+			valueItemS = itemValue.toString();
 		} else {
 			condValueDb1 = (Double) condValue1;
 			condValueDb2 = (Double) condValue2;
@@ -218,15 +223,19 @@ public class AcScreenCondSet extends DomainObject {
 			}
 			break;
 		case COND1_EQUAL_VAL: //条件値1　＝　値
-			if(itemType == ItemType.DATE || itemType == ItemType.CHARACTER) {
+			if(itemType == ItemType.DATE) {
 				result = valueItemD.equals(condValueD1);
+			} else if (itemType == ItemType.CHARACTER) {
+				result = valueItemS.equals(condValueS1);
 			} else {
 				result = itemValueDb == condValueDb1;	
 			}
 			break;
 		case COND1_NOT_EQUAL_VAL: //条件値1　≠　　値 
-			if(itemType == ItemType.DATE || itemType == ItemType.CHARACTER) {
+			if(itemType == ItemType.DATE) {
 				result = !valueItemD.equals(condValueD1);
+			} else if (itemType == ItemType.CHARACTER) {
+				result = !valueItemS.equals(condValueS1);
 			} else {
 				result = itemValueDb != condValueDb1;	
 			}

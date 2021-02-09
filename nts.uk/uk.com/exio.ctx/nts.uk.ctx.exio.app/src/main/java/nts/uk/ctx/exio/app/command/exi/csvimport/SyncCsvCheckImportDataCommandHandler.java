@@ -19,6 +19,7 @@ import javax.ejb.Stateful;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.infra.file.storage.StoredFileStreamService;
@@ -43,6 +44,12 @@ import nts.uk.ctx.exio.dom.exi.dataformat.NumDataFormatSet;
 import nts.uk.ctx.exio.dom.exi.execlog.ErrorOccurrenceIndicator;
 import nts.uk.ctx.exio.dom.exi.execlog.ExacErrorLog;
 import nts.uk.ctx.exio.dom.exi.execlog.ExacErrorLogRepository;
+import nts.uk.ctx.exio.dom.exi.execlog.ExacExeResultLog;
+import nts.uk.ctx.exio.dom.exi.execlog.ExacExeResultLogRepository;
+import nts.uk.ctx.exio.dom.exi.execlog.ExtExecutionMode;
+import nts.uk.ctx.exio.dom.exi.execlog.ExtResultStatus;
+import nts.uk.ctx.exio.dom.exi.execlog.ProcessingFlg;
+import nts.uk.ctx.exio.dom.exi.execlog.StandardFlg;
 import nts.uk.ctx.exio.dom.exi.extcategory.ExternalAcceptCategory;
 import nts.uk.ctx.exio.dom.exi.extcategory.ExternalAcceptCategoryItem;
 import nts.uk.ctx.exio.dom.exi.extcategory.ExternalAcceptCategoryItemService;
@@ -72,6 +79,8 @@ public class SyncCsvCheckImportDataCommandHandler extends AsyncCommandHandler<Cs
 	private StoredFileStreamService fileStreamService;
 	@Inject
 	private ExternalAcceptCategoryItemService categoryItemService;
+	@Inject
+	private ExacExeResultLogRepository exResultLog;
 	
 	private static final String NUMBER_OF_ERROR = "エラー件数";
 	private static final String NUMBER_OF_SUCCESS = "処理カウント";
@@ -112,8 +121,7 @@ public class SyncCsvCheckImportDataCommandHandler extends AsyncCommandHandler<Cs
 		//ドメインモデル「外部受入カテゴリ項目データ」
 		Optional<ExternalAcceptCategory> optAcceptCategory = acceptCategoryRepos.getByCategoryId(categoryId);
 		//受入コード変換
-		List<AcceptCdConvert> lstcdConvert = cdConvertRepos.getAcceptCdConvertByCompanyId(cid);
-		
+		List<AcceptCdConvert> lstcdConvert = cdConvertRepos.getAcceptCdConvertByCompanyId(cid);		
 		if(!optAcceptCategory.isPresent()) {
 			setter.updateData(NUMBER_OF_SUCCESS, command.getCsvLine());
 			setter.updateData(STATUS, command.getStateBehavior());
@@ -121,8 +129,12 @@ public class SyncCsvCheckImportDataCommandHandler extends AsyncCommandHandler<Cs
 		}
 		ExternalAcceptCategory acceptCategory = optAcceptCategory.get();
 		List<ExternalAcceptCategoryItem> lstAcceptItem = acceptCategory.getLstAcceptItem();
-		int numberOfError = 0;
+		ExacExeResultLog resultLog = new ExacExeResultLog();
+		int lineErrors = 0;
 		try {
+			Optional<ExacExeResultLog> optResultLog = exResultLog.getExacExeResultLogById(cid, command.getConditionSetCode(), command.getProcessId());
+			if(optResultLog.isPresent()) resultLog = optResultLog.get();
+			
 			// get input stream by fileId		
 			InputStream inputStream = this.fileStreamService.takeOutFromFileId(command.getCsvFileId());
 			int dataLineNum = condSet.getCsvDataItemLineNumber().isPresent() ? condSet.getCsvDataItemLineNumber().get().v() : 1;
@@ -133,7 +145,9 @@ public class SyncCsvCheckImportDataCommandHandler extends AsyncCommandHandler<Cs
 			CSVParsedResult csvParsedResult = csvReader.parse(inputStream);
 			//Read header
 			NtsCsvRecord colHeader = csvParsedResult.getRecords().get(dataLineNum - 1);
-			
+			if(csvParsedResult.getRecords().size() <= startLine) {
+				throw new BusinessException("CSVファイルの行数より取込開始行が大きいです、確認してください。");
+			}
 			List<ExacErrorLog> lstExacErrorLog = new ArrayList<>();
 			List<Map<Integer, Object>> lstCsvContent = new ArrayList<>();
 			int errItems = 0;
@@ -248,14 +262,14 @@ public class SyncCsvCheckImportDataCommandHandler extends AsyncCommandHandler<Cs
 				} //line of item
 				
 				if(!isLineError) {
-					numberOfError += 1; 
-					setter.updateData(NUMBER_OF_ERROR, numberOfError);
+					lineErrors += 1; 
+					setter.updateData(NUMBER_OF_ERROR, lineErrors);
 				} else {
 					if(isCond) {
 						//TODO insert vao db	
 						lstCsvContent.add(mapLineContent);
 					}			
-					setter.updateData(NUMBER_OF_SUCCESS, i - numberOfError);
+					setter.updateData(NUMBER_OF_SUCCESS, i - lineErrors);
 				}
 							
 				//↓-----------lan truoc
@@ -265,12 +279,12 @@ public class SyncCsvCheckImportDataCommandHandler extends AsyncCommandHandler<Cs
 					setter.updateData(STOP_MODE, 1);
 					asyncTask.finishedAsCancelled();
 					inputStream.close();
+					resultLog.setResultStatus(Optional.of(ExtResultStatus.BREAK));
 					break;
 				}			
-				
-				
 				setter.updateData(STATUS, command.getStateBehavior());
-				
+				resultLog.setResultStatus(Optional.of(ExtResultStatus.SUCCESS));
+
 				try {
 					TimeUnit.MILLISECONDS.sleep(1);
 				} catch (InterruptedException e) {
@@ -281,9 +295,14 @@ public class SyncCsvCheckImportDataCommandHandler extends AsyncCommandHandler<Cs
 				//↑---------lan truoc
 			} // line
 			exacErrorLogRepository.addList(lstExacErrorLog);
+			resultLog.setErrorCount(lineErrors);
+			resultLog.setProcessEndDatetime(Optional.ofNullable(GeneralDateTime.now()));
+			exResultLog.update(resultLog);
 			inputStream.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			resultLog.setResultStatus(Optional.of(ExtResultStatus.FAILURE));
+			resultLog.setErrorCount(lineErrors);
+			exResultLog.update(resultLog);
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}

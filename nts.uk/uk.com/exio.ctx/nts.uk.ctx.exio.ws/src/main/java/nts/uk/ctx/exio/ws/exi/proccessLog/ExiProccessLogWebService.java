@@ -23,7 +23,7 @@ public class ExiProccessLogWebService extends WebService {
 	 * @param exacErrorLogCommand
 	 */
 	@POST
-	@Path("addErrorLog")
+	@Path("addExtResultLog")
 	public JavaTypeResult<String> addErrorLog(ExacExeResultLogCommand exacExeResultLogCommand) {
 		return new JavaTypeResult<String>(this.addExacExeResultLogCommandHandler.handle(exacExeResultLogCommand));
 	}

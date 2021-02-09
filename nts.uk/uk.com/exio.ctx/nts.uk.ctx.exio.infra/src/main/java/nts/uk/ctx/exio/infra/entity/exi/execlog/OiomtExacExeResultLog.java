@@ -7,7 +7,6 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -24,15 +23,11 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 public class OiomtExacExeResultLog extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@Version
-	@Column(name = "EXCLUS_VER")
-	public Long version;
-
 	/**
 	 * ID
 	 */
 	@EmbeddedId
-	public OiomtExacExeResultLogPk exacExeResultLogPk;
+	public OiomtExacExeResultLogPk pk;
 	/**	契約コード */
 	@Basic(optional = false)
 	@Column(name = "CONTRACT_CD")
@@ -105,7 +100,7 @@ public class OiomtExacExeResultLog extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = false)
 	@Column(name = "RESULT_STATUS")
-	public int resultStatus;
+	public Integer resultStatus;
 
 	/**
 	 * 処理終了日時
@@ -123,6 +118,6 @@ public class OiomtExacExeResultLog extends UkJpaEntity implements Serializable {
 
 	@Override
 	protected Object getKey() {
-		return exacExeResultLogPk;
+		return pk;
 	}
 }
