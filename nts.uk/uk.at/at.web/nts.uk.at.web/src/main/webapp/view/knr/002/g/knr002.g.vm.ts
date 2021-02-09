@@ -311,7 +311,6 @@ module knr002.g {
                             service.makeSelectedBentoMenu(command).done(() => {
                                 blockUI.invisible();
                                 dialog.info({ messageId: "Msg_15" }).then(() => {
-                                    console.log("command: ", command);
                                     self.sendBentoMenu(true);
                                 });                      
                             }).fail(() => {
@@ -399,7 +398,7 @@ module knr002.g {
                                     //     nts.uk.ui.windows.close();
                                     // }); 
                                 }).fail(() => {
-                                    console.log("determine false");
+                                    
                                 }).always(() => {
                                     blockUI.clear();
                                 });

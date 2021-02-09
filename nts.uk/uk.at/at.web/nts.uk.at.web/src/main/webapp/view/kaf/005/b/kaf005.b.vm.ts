@@ -196,6 +196,20 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					if (vm.isStart) {
 						vm.isStart = false;
 					}
+					
+					// 勤務種類リストと就業時間帯リストがない場合エラーを返す
+					if (_.isEmpty(vm.dataSource.infoBaseDateOutput.worktypes)) {
+						// msg_1567
+						vm.$dialog.error({ messageId: 'Msg_1567'});	
+					}
+					if (vm.dataSource.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst) {
+						
+						if (_.isEmpty(vm.dataSource.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst)) {
+							vm.$dialog.error({ messageId: 'Msg_1568'});	
+						}
+					} else {
+						vm.$dialog.error({ messageId: 'Msg_1568'});	
+					}
                 }
             }).fail(err => {
 				// xử lý lỗi nghiệp vụ riêng
@@ -741,6 +755,8 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 						let item = _.find(workTypeList, (item: WorkType) => item.workTypeCode == workType.code)
 						if (!_.isNil(item)) {
 							workType.name = item.name;
+						} else {
+							workType.name = self.$i18n('KAF005_345');
 						}
 					} else {
 						workType.name = self.$i18n('KAF_005_345');
@@ -748,11 +764,11 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					workTime.code = infoWithDateApplication.workTimeCD;
 					if (!_.isNil(workTime.code)) {
 						let workTimeList = res.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst as Array<WorkTime>;
-						if (!_.isEmpty(workTimeList)) {
-							let item = _.find(workTimeList, (item: WorkTime) => item.worktimeCode == workTime.code);
-							if (!_.isNil(item)) {
-								workTime.name = item.workTimeDisplayName.workTimeName;
-							}
+						let item = _.find(workTimeList, (item: WorkTime) => item.worktimeCode == workTime.code)
+						if (!_.isNil(item)) {
+							workTime.name = item.workTimeDisplayName.workTimeName;
+						} else {
+							workTime.name = self.$i18n('KAF005_345');
 						}
 					} else {
 						workTime.name = self.$i18n('KAF_005_345');
@@ -811,13 +827,11 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					
 					if (!_.isNil(workTime.code)) {
 						let workTimeList = res.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst as Array<WorkTime>;
-						if (!_.isEmpty(workTimeList)) {
-							let item = _.find(workTimeList, (item: WorkTime) => item.worktimeCode == workTime.code);
-							if (!_.isNil(item)) {
-								workTime.name = item.workTimeDisplayName.workTimeName;
-							} else {
-								workTime.name = self.$i18n('KAF005_345');
-							}
+						let item = _.find(workTimeList, (item: WorkTime) => item.worktimeCode == workTime.code)
+						if (!_.isNil(item)) {
+							workTime.name = item.workTimeDisplayName.workTimeName;
+						} else {
+							workTime.name = self.$i18n('KAF005_345');
 						}
 					} else {
 						workTime.name = self.$i18n('KAF005_345');
