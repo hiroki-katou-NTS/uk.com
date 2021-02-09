@@ -2,12 +2,10 @@ package nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.schedule;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtAlarmCheckConditionCategory;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  *  スケジュール月次のアラームチェック条件
@@ -29,7 +27,11 @@ public class KfndtScheCondMonthLink extends ContractUkJpaEntity {
     /* カテゴリ */
     @Column(name = "CATEGORY")
     public int ctg;
-
+    @OneToOne
+    @JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
+            @JoinColumn(name = "CATEGORY", referencedColumnName = "CATEGORY", insertable = false, updatable = false),
+            @JoinColumn(name = "AL_CHECK_COND_CATE_CD", referencedColumnName = "CD", insertable = false, updatable = false) })
+    public KfnmtAlarmCheckConditionCategory condition;
     @Override
     protected Object getKey() {
         return this.eralCheckId;

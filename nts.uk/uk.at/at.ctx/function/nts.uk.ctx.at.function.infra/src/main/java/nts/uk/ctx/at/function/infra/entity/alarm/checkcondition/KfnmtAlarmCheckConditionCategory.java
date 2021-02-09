@@ -46,6 +46,10 @@ import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.fourweekfourdayo
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.mastercheck.KrcmtMasterCheckAlarmCheckCondition;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.monthly.KfnmtMonAlarmCheckCon;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.multimonth.KfnmtMulMonAlarmCond;
+import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.schedule.KfndtScheCondDayLink;
+import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.schedule.KfndtScheCondMonthLink;
+import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.schedule.KfndtScheCondYearLink;
+import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.weekly.KfndtWeekCondAlarmLink;
 import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -112,6 +116,23 @@ public class KfnmtAlarmCheckConditionCategory extends UkJpaEntity implements Ser
 	
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "condition", orphanRemoval = true)
 	public KrcmtMasterCheckAlarmCheckCondition masterCheckAlarmCheckCon;
+
+	/**
+	 * Add more 4 category
+	 */
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "condition", orphanRemoval = true)
+	public KfndtWeekCondAlarmLink kfndtWeekCondAlarmLink;
+
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "condition", orphanRemoval = true)
+	public KfndtScheCondDayLink kfndtScheCondDayLink;
+
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "condition", orphanRemoval = true)
+	public KfndtScheCondMonthLink kfndtScheCondMonthLink;
+
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "condition", orphanRemoval = true)
+	public KfndtScheCondYearLink kfndtScheCondYearLink;
+
+	// -----------------------
 
 	@Override
 	protected Object getKey() {
@@ -195,6 +216,14 @@ public class KfnmtAlarmCheckConditionCategory extends UkJpaEntity implements Ser
 			break;
 		case MASTER_CHECK:
 			extractionCondition = entity.masterCheckAlarmCheckCon == null ? null : entity.masterCheckAlarmCheckCon.toDomain();
+			break;
+		case SCHEDULE_DAILY:
+			break;
+		case SCHEDULE_MONTHLY:
+			break;
+		case SCHEDULE_YEAR:
+			break;
+		case WEEKLY:
 			break;
 		default:
 			break;
