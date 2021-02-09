@@ -159,19 +159,9 @@ module nts.uk.at.view.ktg026.a {
                                 .chain(data)
                                 .reduce((p, c) => {
                                     const { time } = c;
-                                    const { ot, wh } = time;
+                                    const { tt } = time;
 
-                                    if (p >= ot && p >= wh) {
-                                        return p;
-                                    }
-
-                                    if (ot >= p && ot >= wh) {
-                                        return ot;
-                                    }
-
-                                    if (wh >= p && wh >= ot) {
-                                        return wh;
-                                    }
+                                    return p >= tt ? p : tt;
                                 }, 0)
                                 .value();
 
@@ -458,12 +448,13 @@ module nts.uk.at.view.ktg026.a {
 
         private displayDataTable(data: EmployeesOvertimeDisplay): void {
             const vm = this;
-            const { ymOvertimes } = data;
 
             // clear table
             vm.dataTable([]);
 
             vm.$nextTick(() => {
+                const { ymOvertimes } = data;
+
                 if (!!ymOvertimes) {
                     const data = _
                         .chain(ymOvertimes)
@@ -474,6 +465,8 @@ module nts.uk.at.view.ktg026.a {
                             return {
                                 date,
                                 time: {
+                                    // tt =  ot + wh
+                                    // total = overtime + work with holiday
                                     tt: wh.agreementTime || 0,
                                     ot: (wh.agreementTime || 0) - (tt.agreementTime || 0),
                                     wh: (tt.agreementTime || 0)
