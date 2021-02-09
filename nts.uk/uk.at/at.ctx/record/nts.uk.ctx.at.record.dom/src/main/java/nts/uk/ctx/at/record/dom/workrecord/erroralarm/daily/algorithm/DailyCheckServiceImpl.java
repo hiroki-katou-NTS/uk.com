@@ -156,8 +156,10 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 							.isEmpty()) {
 						
 						// 日別実績を絞り込む
-						IntegrationOfDaily integrationDaily = dailyRecordShareFinder.find(item, i);
+						Optional<IntegrationOfDaily> optIntegrationDaily = dailyRecordShareFinder.find(item, i);
+						if(!optIntegrationDaily.isPresent()) continue;
 						
+						IntegrationOfDaily integrationDaily = optIntegrationDaily.get();
 						// 日次のチェック条件のアラーム値を生成する
 						OutputCheckResult checkTab3 = this.GenerateAlarmValueForDailyChkCondition(prepareData.getWorkRecordCond(), 
 								prepareData.getListErrorAlarmCon(), integrationDaily, item, i, wplId, prepareData.getWork(), extractConditionWorkRecord, 
