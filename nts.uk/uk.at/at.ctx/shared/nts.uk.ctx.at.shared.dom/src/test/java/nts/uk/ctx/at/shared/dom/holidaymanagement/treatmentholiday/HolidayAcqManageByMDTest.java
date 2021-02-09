@@ -124,7 +124,7 @@ public class HolidayAcqManageByMDTest {
 	 * 起算日 = 2021/1/1
 	 */
 	@Test
-	public void test_number_of_times_call_get28days() {
+	public void test_get28days() {
 		val holidayManaByMD = new HolidayAcqManageByMD(new MonthDay(1, 1), new FourWeekDays(28.0), new WeeklyDays(7.0));
 		val baseDate = GeneralDate.ymd(2021, 1, 1);
 		
@@ -140,51 +140,6 @@ public class HolidayAcqManageByMDTest {
 
 		assertThat(result.start()).isEqualTo(GeneralDate.ymd(2021, 1, 1));
 		assertThat(result.end()).isEqualTo(GeneralDate.ymd(2021, 1, 28));
-		
-	}
-	
-	/**
-	 * 月日
-	 * 起算日 = 2021/1/1
-	 */
-	@Test
-	public void test_get28days() {
-		val holidayManaByMD = new HolidayAcqManageByMD(new MonthDay(1, 1), new FourWeekDays(28.0), new WeeklyDays(7.0));
-		/**
-		 * ケース1	基準日 = 2021/1/1		期待値 = [2021/1/1 -> 2021/1/28]
-		 */
-		DatePeriod result = holidayManaByMD.get28Days(require, GeneralDate.ymd(2021, 1, 1));
-		assertThat(result.start()).isEqualTo(GeneralDate.ymd(2021, 1, 1));
-		assertThat(result.end()).isEqualTo(GeneralDate.ymd(2021, 1, 28));
-		
-		
-		/**
-		 * ケース2	基準日 = 2021/1/1		期待値 = [2021/1/1 -> 2021/1/28]
-		 */
-		result = holidayManaByMD.get28Days(require, GeneralDate.ymd(2021, 1, 28));
-		assertThat(result.start()).isEqualTo(GeneralDate.ymd(2021, 1, 1));
-		assertThat(result.end()).isEqualTo(GeneralDate.ymd(2021, 1, 28));
-		
-		/**
-		 * ケース3	基準日 = 2021/1/29	期待値 = [2021/1/29 -> 2021/2/25]
-		 */
-		result = holidayManaByMD.get28Days(require, GeneralDate.ymd(2021, 1, 29));
-		assertThat(result.start()).isEqualTo(GeneralDate.ymd(2021, 1, 29));
-		assertThat(result.end()).isEqualTo(GeneralDate.ymd(2021, 2, 25));
-		
-		/**
-		 * ケース4	基準日 = 2021/12/3	期待値 = [2021/12/3-> 2021/2/31]
-		 */
-		result = holidayManaByMD.get28Days(require, GeneralDate.ymd(2021, 12, 14));
-		assertThat(result.start()).isEqualTo(GeneralDate.ymd(2021, 12, 3));
-		assertThat(result.end()).isEqualTo(GeneralDate.ymd(2021, 12, 31));
-		
-		/**
-		 * ケース5	基準日 = 2022/1/1		期待値 = [2022/1/1-> 2021/1/28]
-		 */
-		result = holidayManaByMD.get28Days(require, GeneralDate.ymd(2022, 1, 1));
-		assertThat(result.start()).isEqualTo(GeneralDate.ymd(2022, 1, 1));
-		assertThat(result.end()).isEqualTo(GeneralDate.ymd(2022, 1, 28));
 		
 	}
 
