@@ -677,8 +677,11 @@ module nts.uk.ui.viewmodel {
 	});
 
 	// Hàm blockui được wrapper lại để gọi cho thống nhất
-	BaseViewModel.prototype.$blockui = function $blockui(act: 'show' | 'hide' | 'clear' | 'invisible' | 'grayout') {
-		return $.Deferred().resolve()
+	BaseViewModel.prototype.$blockui = function $blockui(act: 'show' | 'hide' | 'clear' | 'invisible' | 'grayout' | 'grayoutView' | 'invisibleView' | 'clearView') {
+		const vm = this;
+
+		return $.Deferred()
+			.resolve(true)
 			.then(() => {
 				switch (act) {
 					default:
@@ -692,6 +695,15 @@ module nts.uk.ui.viewmodel {
 						break;
 					case 'grayout':
 						block.grayout();
+						break;
+					case 'clearView':
+						block.clear(vm.$el);
+						break;
+					case 'grayoutView':
+						block.grayout(vm.$el);
+						break;
+					case 'invisibleView':
+						block.invisible(vm.$el);
 						break;
 				}
 			});

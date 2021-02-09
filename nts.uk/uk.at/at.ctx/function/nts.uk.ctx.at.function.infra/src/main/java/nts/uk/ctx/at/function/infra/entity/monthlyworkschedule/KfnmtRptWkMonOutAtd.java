@@ -18,12 +18,12 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "KFNMT_RPT_WK_MON_OUTATD")
 @EqualsAndHashCode(callSuper = true)
-public class KfnmtRptWkMonOuttd extends UkJpaEntity implements Serializable {
+public class KfnmtRptWkMonOutAtd extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	// Embedded primary key 出力項目ID + 並び順
 	@EmbeddedId
-	private KfnmtRptWkMonOuttdPK pk;
+	private KfnmtRptWkMonOutAtdPK pk;
 	
 	// column 排他バージョン
 	@Column(name = "EXCLUS_VER")
