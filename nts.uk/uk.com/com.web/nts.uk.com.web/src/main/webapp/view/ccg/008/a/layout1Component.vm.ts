@@ -6,9 +6,9 @@ module nts.uk.com.view.ccg008.a.Layout1ComponentViewModel {
     template: 
     `
         <div>
-          <span data-bind="if: $component.isShowUrlLayout1()">
+          <div data-bind="if: $component.isShowUrlLayout1()">
             <iframe class="iframe_fix" id="preview-iframe1" data-bind="attr:{src: $component.urlIframe1}"></iframe>
-          </span>
+          </div>
           <!-- ko if: $component.isFlowmenu() -->
             <div data-bind="foreach: $component.lstHtml">
               <div data-bind="html: html" id="F1-frame" ></div>
@@ -57,9 +57,13 @@ module nts.uk.com.view.ccg008.a.Layout1ComponentViewModel {
             if (!_.isEmpty(res)) {
               vm.renderHTML(res[0].htmlContent);
               // ddaay la voi void()
-              if($('.contents_layout_ccg015')[0]) {
-                $(window.frames['frameF1'].contentDocument).find('a').attr('href', 'javascript: void()').removeAttr('target');
-              }
+              vm.$nextTick(() => {
+                if($('.contents_layout_ccg015')[0]) {
+                  _.each((document.getElementById("frameF1") as any ).contentDocument.getElementsByTagName("a"), link => {
+                    link.addEventListener('click', (event: Event) => event.preventDefault());
+                  })
+                }
+              });
             }
           });
         } else {
@@ -72,9 +76,14 @@ module nts.uk.com.view.ccg008.a.Layout1ComponentViewModel {
             const height = ifrParent.innerHeight();
             (ifr as any).width = `${width.toString()}px`;
             (ifr as any).height = `${height.toString()}px`;
-            setTimeout(function(){    
-               $(window.frames['F2-frame'].contentDocument).find('a').attr('onclick', null).off("click");
-            }, 2000);
+            $('#F2-frame').on('load', function(){
+              vm.$nextTick(() => {
+                _.each((document.getElementById("F2-frame") as any ).contentDocument.getElementsByTagName("a"), link => {
+                  link.removeAttribute('onclick');
+                  link.removeAttribute('href')
+                })
+              });
+            });
           } else {
             const ifrParent = $('.contents_layout');
             const height = ifrParent.innerHeight();
@@ -86,6 +95,7 @@ module nts.uk.com.view.ccg008.a.Layout1ComponentViewModel {
     }
 
     mounted() {
+      const vm = this;
       const ifr = document.getElementById('preview-iframe1');
       let ifrParent: any;
       if($('.contents_layout_ccg015')[0]) {
@@ -95,6 +105,8 @@ module nts.uk.com.view.ccg008.a.Layout1ComponentViewModel {
       }
       const height = ifrParent.innerHeight() - 10;
       (ifr as any).height = `${height.toString()}px`;
+
+      
     }
 
     private renderHTML(htmlSrc: string) {
