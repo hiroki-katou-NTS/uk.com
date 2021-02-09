@@ -43,8 +43,7 @@ public class WeeklyHolidayAcqMana implements HolidayAcquisitionManagement, Domai
 	 * @return
 	 */
 	@Override
-	public HolidayAcqManaPeriod getManagementPeriod(
-			nts.uk.ctx.at.shared.dom.holidaymanagement.treatmentholiday.HolidayAcquisitionManagement.Require require,
+	public HolidayAcqManaPeriod getManagementPeriod(HolidayAcquisitionManagement.Require require,
 			GeneralDate ymd) {
 		// $仮設定 = require.開始曜日を取得する
 		WeekRuleManagement weekRuleManagement = require.find(); 
@@ -60,8 +59,7 @@ public class WeeklyHolidayAcqMana implements HolidayAcquisitionManagement, Domai
 	 * [3] 28日間を取得する
 	 */
 	@Override
-	public DatePeriod get28Days(
-			nts.uk.ctx.at.shared.dom.holidaymanagement.treatmentholiday.HolidayAcquisitionManagement.Require require,
+	public DatePeriod get28Days(HolidayAcquisitionManagement.Require require,
 			GeneralDate ymd) {
 		
 		val manaPeriod = this.getManagementPeriod(require, ymd);

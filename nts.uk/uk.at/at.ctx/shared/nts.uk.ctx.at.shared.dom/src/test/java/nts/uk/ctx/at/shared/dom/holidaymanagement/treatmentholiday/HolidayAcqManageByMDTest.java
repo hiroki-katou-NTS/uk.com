@@ -3,15 +3,19 @@ package nts.uk.ctx.at.shared.dom.holidaymanagement.treatmentholiday;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import lombok.val;
+import mockit.Expectations;
 import mockit.Injectable;
+import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.common.days.FourWeekDays;
 import nts.uk.ctx.at.shared.dom.common.days.WeeklyDays;
 import nts.uk.shr.com.time.calendar.MonthDay;
-
+@RunWith(JMockit.class)
 public class HolidayAcqManageByMDTest {
 	
 	@Injectable
@@ -115,13 +119,72 @@ public class HolidayAcqManageByMDTest {
 		assertThat(result).isEqualTo(StartDateClassification.SPECIFY_MD);
 	}
 	
+	/**
+	 * 月日
+	 * 起算日 = 2021/1/1
+	 */
+	@Test
+	public void test_number_of_times_call_get28days() {
+		val holidayManaByMD = new HolidayAcqManageByMD(new MonthDay(1, 1), new FourWeekDays(28.0), new WeeklyDays(7.0));
+		val baseDate = GeneralDate.ymd(2021, 1, 1);
+		
+		new Expectations(holidayManaByMD) {
+			{
+				holidayManaByMD.getManagementPeriod(require, baseDate);
+				result = new HolidayAcqManaPeriod(new DatePeriod(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 1, 28)), new FourWeekDays(28.0));
+				times = 1;
+			}
+		};
+		
+		val result = holidayManaByMD.get28Days(require, baseDate);
+
+		assertThat(result.start()).isEqualTo(GeneralDate.ymd(2021, 1, 1));
+		assertThat(result.end()).isEqualTo(GeneralDate.ymd(2021, 1, 28));
+		
+	}
+	
+	/**
+	 * 月日
+	 * 起算日 = 2021/1/1
+	 */
 	@Test
 	public void test_get28days() {
-		HolidayAcqManageByMD holidayAcqManageByMD = new HolidayAcqManageByMD(new MonthDay(1, 1), new FourWeekDays(28.0), new WeeklyDays(7.0));
-		DatePeriod result = holidayAcqManageByMD.get28Days(require, GeneralDate.ymd(2020, 12, 1));
+		val holidayManaByMD = new HolidayAcqManageByMD(new MonthDay(1, 1), new FourWeekDays(28.0), new WeeklyDays(7.0));
+		/**
+		 * ケース1	基準日 = 2021/1/1		期待値 = [2021/1/1 -> 2021/1/28]
+		 */
+		DatePeriod result = holidayManaByMD.get28Days(require, GeneralDate.ymd(2021, 1, 1));
+		assertThat(result.start()).isEqualTo(GeneralDate.ymd(2021, 1, 1));
+		assertThat(result.end()).isEqualTo(GeneralDate.ymd(2021, 1, 28));
 		
-		assertThat(result.start()).isEqualTo(GeneralDate.ymd(2020, 11, 4));
-		assertThat(result.end()).isEqualTo(GeneralDate.ymd(2020, 12, 1));
+		
+		/**
+		 * ケース2	基準日 = 2021/1/1		期待値 = [2021/1/1 -> 2021/1/28]
+		 */
+		result = holidayManaByMD.get28Days(require, GeneralDate.ymd(2021, 1, 28));
+		assertThat(result.start()).isEqualTo(GeneralDate.ymd(2021, 1, 1));
+		assertThat(result.end()).isEqualTo(GeneralDate.ymd(2021, 1, 28));
+		
+		/**
+		 * ケース3	基準日 = 2021/1/29	期待値 = [2021/1/29 -> 2021/2/25]
+		 */
+		result = holidayManaByMD.get28Days(require, GeneralDate.ymd(2021, 1, 29));
+		assertThat(result.start()).isEqualTo(GeneralDate.ymd(2021, 1, 29));
+		assertThat(result.end()).isEqualTo(GeneralDate.ymd(2021, 2, 25));
+		
+		/**
+		 * ケース4	基準日 = 2021/12/3	期待値 = [2021/12/3-> 2021/2/31]
+		 */
+		result = holidayManaByMD.get28Days(require, GeneralDate.ymd(2021, 12, 14));
+		assertThat(result.start()).isEqualTo(GeneralDate.ymd(2021, 12, 3));
+		assertThat(result.end()).isEqualTo(GeneralDate.ymd(2021, 12, 31));
+		
+		/**
+		 * ケース5	基準日 = 2022/1/1		期待値 = [2022/1/1-> 2021/1/28]
+		 */
+		result = holidayManaByMD.get28Days(require, GeneralDate.ymd(2022, 1, 1));
+		assertThat(result.start()).isEqualTo(GeneralDate.ymd(2022, 1, 1));
+		assertThat(result.end()).isEqualTo(GeneralDate.ymd(2022, 1, 28));
 		
 	}
 
