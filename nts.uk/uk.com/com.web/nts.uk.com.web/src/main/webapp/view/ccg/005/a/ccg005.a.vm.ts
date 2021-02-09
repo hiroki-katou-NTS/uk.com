@@ -382,6 +382,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       height: 40px;
     }
     #CCG005_no_avatar_small {
+      cursor: pointer;
       display: flex;
       align-items: center;
       background-color: #eeeeee;
@@ -682,11 +683,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
     private initFocusA1_4() {
       const vm = this;
       $('.ccg005-clearbtn').click(() => vm.deleteComment());
-      $('.CCG005-A1_4-border')
-        .focusin(() => $('.ccg005-clearbtn').css('visibility', 'visible'))
-        .focusout(() => {
-          $('.ccg005-clearbtn').css('visibility', 'hidden');
-        });
+      $('.CCG005-A1_4-border').focusin(() => $('.ccg005-clearbtn').css('visibility', 'visible'));
     }
 
     /**
