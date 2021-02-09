@@ -544,7 +544,7 @@ export class KafS05Component extends KafS00ShrComponent {
             if (step1.getWorkType() && self.c3) {
                 appOverTimeInsert.workInfoOp = {} as WorkInformation;
                 appOverTimeInsert.workInfoOp.workType = step1.getWorkType();
-                appOverTimeInsert.workInfoOp.workTime = step1.getWorkTime();
+                appOverTimeInsert.workInfoOp.workTime = step1.getWorkTime() == '' ? null : step1.getWorkTime();
             }
             appOverTimeInsert.workHoursOp = [] as Array<TimeZoneWithWorkNo>;
             {   
