@@ -1332,8 +1332,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 		// 勤務種類、就業時間帯チェックのメッセージを表示
 		detailBeforeUpdate.displayWorkingHourCheck(
 				companyId,
-				appOverTime.getWorkInfoOp().map(x -> x.getWorkTypeCode().v()).orElse(null),
-				appOverTime.getWorkInfoOp().map(x -> x.getWorkTimeCode().v()).orElse(null));
+				appOverTime.getWorkInfoOp().flatMap(x -> Optional.ofNullable(x.getWorkTypeCode())).map(x -> x.v()).orElse(null),
+				appOverTime.getWorkInfoOp().flatMap(x -> Optional.ofNullable(x.getWorkTimeCode())).map(x -> x.v()).orElse(null));
 		// 事前申請が必須か確認する
 		displayInfoOverTime.getInfoNoBaseDate()
 					       .getOverTimeAppSet()
@@ -1376,8 +1376,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 					appOverTime.getAppID(),
 					appOverTime.getPrePostAtr(),
 					appOverTime.getVersion(),
-					appOverTime.getWorkInfoOp().map(x -> x.getWorkTypeCode().v()).orElse(null),
-					appOverTime.getWorkInfoOp().map(x -> x.getWorkTimeCode().v()).orElse(null),
+					appOverTime.getWorkInfoOp().flatMap(x -> Optional.ofNullable(x.getWorkTypeCode())).map(x -> x.v()).orElse(null),
+					appOverTime.getWorkInfoOp().flatMap(x -> Optional.ofNullable(x.getWorkTimeCode())).map(x -> x.v()).orElse(null),
 					displayInfoOverTime.getAppDispInfoStartup());
 			
 		}
