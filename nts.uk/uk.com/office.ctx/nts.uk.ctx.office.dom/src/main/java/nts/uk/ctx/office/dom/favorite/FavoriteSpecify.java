@@ -21,19 +21,19 @@ public class FavoriteSpecify extends AggregateRoot {
 	// お気に入り名
 	private FavoriteName favoriteName;
 
-	// 作��D
+	// 作成者ID
 	private String creatorId;
 
 	// 入力日
 	private GeneralDateTime inputDate;
 
-	// 対象選�
+	// 対象選択
 	private TargetSelection targetSelection;
 
 	// 職場ID
 	private List<String> workplaceId;
 
-	// 頺
+	// 順序
 	private Integer order;
 
 	public FavoriteSpecify() {}

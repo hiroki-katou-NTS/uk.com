@@ -34,18 +34,18 @@ public class HealthLifeApiSession {
 	
 	public Context begin(String companyIdString) {
 		
-		val comapnyId = new CompanyId(companyIdString);
-		
+//		val comapnyId = new CompanyId(companyIdString);
+//		
 //		val linkage = linkageRepo.find(comapnyId.tenantCode()).get();
-		
-		val httpClient = DefaultNtsHttpClient.createDefault();
-		
+//		
+//		val httpClient = DefaultNtsHttpClient.createDefault();
+//		
 //		val authen = httpClient.fetch(Authenticate.api(linkage), Authenticate.Request.of(linkage));
 //		val login = httpClient.fetch(Login.api(linkage), Login.Request.of(authen));
-		
-		int healthLifeCompanyCode = Integer.parseInt(comapnyId.companyCode());
-		
-//		return new Context(l;inkage, httpClient, login.getCsrfToken(), healthLifeCompanyCode);
+//		
+//		int healthLifeCompanyCode = Integer.parseInt(comapnyId.companyCode());
+//		
+//		return new Context(linkage, httpClient, login.getCsrfToken(), healthLifeCompanyCode);
 		return null;
 	}
 	
