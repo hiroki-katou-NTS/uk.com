@@ -85,7 +85,7 @@ public class CreateWorkLedgerDisplayContentQuery {
         }
 
         List<AffiliationStatusDto> affiliationStatus = listEmployeeStatus.getAffiliationStatus();
-        affiliationStatus.forEach((AffiliationStatusDto e) -> {
+        affiliationStatus.parallelStream().forEach((AffiliationStatusDto e) -> {
             val item = new WorkLedgerDisplayContent();
             val eplInfo = mapSids.getOrDefault(e.getEmployeeID(), null);
             if (eplInfo != null) {
@@ -105,7 +105,7 @@ public class CreateWorkLedgerDisplayContentQuery {
                     .flatMap(y -> y.getYearMonthPeriod().yearMonthsBetween().stream())
                     .collect(Collectors.toList());
             List<MonthlyRecordValueImport> valueImports = actualMultipleMonth
-                    .getOrDefault(e.getEmployeeID(), null);
+                    .getOrDefault(e.getEmployeeID(), Collections.emptyList());
 
             Map<YearMonth, Map<Integer, ItemValue>> allValue = valueImports.stream()
                     .collect(Collectors.toMap(MonthlyRecordValueImport::getYearMonth,
@@ -118,7 +118,7 @@ public class CreateWorkLedgerDisplayContentQuery {
                 val value = attName.getOrDefault(att.getAttendanceId(), null);
                 if (value == null || value.getTypeOfAttendanceItem() == null) continue;
                 val attributeMonthly = attendanceItemList.getOrDefault(att.getAttendanceId(), null);
-                if (attributeMonthly != null) {
+                if (attributeMonthly != null && allValue!=null) {
                     val attribute = convertMonthlyToAttForms(attributeMonthly.getMonthlyAttendanceAtr().value);
                     if (attribute == null) continue;
                     for (val y : yearMonthList) {

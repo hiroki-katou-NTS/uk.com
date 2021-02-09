@@ -97,12 +97,12 @@ public class CreateAnnualWorkLedgerContentQuery {
         List<AffiliationStatusDto> affiliationStatus = listEmployeeStatus.getAffiliationStatus();
 
         // Loop 「社員の会社所属状況」の「対象社員」
-        affiliationStatus.forEach(emp -> {
+        affiliationStatus.parallelStream().forEach(emp -> {
             val employee = lstEmployee.get(emp.getEmployeeID());
             val workplaceInfo = lstWorkplaceInfor.get(emp.getEmployeeID());
             if (employee == null || workplaceInfo == null) return;
             Map<GeneralDate, Map<Integer, AttendanceItemDtoValue>> allValue = mapValue
-                    .getOrDefault(emp.getEmployeeID(), null);
+                    .getOrDefault(emp.getEmployeeID(), new HashMap<>());
             // 日次データ
             DailyData dailyData = null;
             if (!dailyOutputItems.isEmpty() && allValue != null) {
@@ -123,7 +123,7 @@ public class CreateAnnualWorkLedgerContentQuery {
                 if (closure.getClosureHistories() != null && closure.getClosureHistories().size() > 0) {
                     val closureHistory = closure.getClosureHistories().get(0);
                     List<MonthlyRecordValueImport> valueImports = actualMultipleMonth
-                            .getOrDefault(emp.getEmployeeID(), null);
+                            .getOrDefault(emp.getEmployeeID(), Collections.emptyList());
                     if (!monthlyOutputItems.isEmpty() && valueImports != null) {
                         lstMonthlyData = getMonthlyData(emp, monthlyOutputItems, valueImports);
                     }
@@ -172,7 +172,6 @@ public class CreateAnnualWorkLedgerContentQuery {
             if (index > 1) {
                 break;
             }
-            if (allValue == null) continue;
             val itemValue = new ArrayList<DailyValue>();
             List<GeneralDate> listDate = emp.getPeriodInformation()
                     .stream()

@@ -96,7 +96,7 @@ public class CreateDisplayContentWorkStatusQuery {
                     .flatMap(y -> y.datesBetween().stream().map(q -> GeneralDate.legacyDate(q.date())))
                     .collect(Collectors.toList());
             Map<GeneralDate, Map<Integer, AttendanceItemDtoValue>> allValue = mapValue
-                    .getOrDefault(e.getEmployeeId(), null);
+                    .getOrDefault(e.getEmployeeId(), new HashMap<>());
             val itemOneLines = new ArrayList<OutputItemOneLine>();
             for (OutputItem j : outputItems) {
                 val itemValue = new ArrayList<DailyValue>();
@@ -108,16 +108,17 @@ public class CreateDisplayContentWorkStatusQuery {
                     Double actualValue = 0D;
                     boolean alwaysNull = true;
                     if (j.getItemDetailAttributes() == CommonAttributesOfForms.WORK_TYPE ||
-                            j.getItemDetailAttributes() == CommonAttributesOfForms.WORKING_HOURS
-                            || j.getItemDetailAttributes() == CommonAttributesOfForms.OTHER_CHARACTER_NUMBER
-                            || j.getItemDetailAttributes() == CommonAttributesOfForms.OTHER_CHARACTERS) {
-                        listAtId.stream().map(d -> vl.getOrDefault(d.getAttendanceItemId(), null)).filter(sub -> sub != null && sub.getValue() != null).forEach(sub -> {
-                            val master = j.getItemDetailAttributes() == CommonAttributesOfForms.WORK_TYPE ?
-                                    allDataMaster.getOrDefault(WORK_TYPE, null)
-                                    : allDataMaster.getOrDefault(WORKING_HOURS, null);
-                            val name = master != null ? master.getOrDefault(sub.getValue(), null) : null;
-                            character.append(" ").append(name != null ? name.getName() : sub.getValue());
-                        });
+                            j.getItemDetailAttributes() == CommonAttributesOfForms.WORKING_HOURS) {
+                        for (OutputItemDetailAttItem d : listAtId) {
+                            AttendanceItemDtoValue sub = vl.getOrDefault(d.getAttendanceItemId(), null);
+                            if (sub != null && sub.getValue() != null) {
+                                val master = j.getItemDetailAttributes() == CommonAttributesOfForms.WORK_TYPE ?
+                                        allDataMaster.getOrDefault(WORK_TYPE, null)
+                                        : allDataMaster.getOrDefault(WORKING_HOURS, null);
+                                val name = master != null ? master.getOrDefault(sub.getValue(), null) : null;
+                                character.append(" ").append(name != null ? name.getName() : sub.getValue());
+                            }
+                        }
                         itemValue.add(
                                 new DailyValue(
                                         null,
