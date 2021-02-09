@@ -21,7 +21,7 @@ public class SpecialLeaveGrantNumber extends LeaveGrantNumber {
 //	public DayNumberOfGrant dayNumberOfGrant;
 //	//時間
 //	public Optional<TimeOfGrant> timeOfGrant;
-//	
+//
 //	private SpecialLeaveGrantNumber(BigDecimal days, Integer minutes) {
 //		this.dayNumberOfGrant = new DayNumberOfGrant(days == null? 0.0d: days.doubleValue());
 //		this.timeOfGrant = minutes != null ? Optional.of(new TimeOfGrant(minutes)) : Optional.empty();
@@ -38,7 +38,7 @@ public class SpecialLeaveGrantNumber extends LeaveGrantNumber {
 //	public static SpecialLeaveGrantNumber createFromJavaType(double days, Integer minutes) {
 //		return new SpecialLeaveGrantNumber(days, minutes);
 //	}
-	
+
 	protected SpecialLeaveGrantNumber(double days, Integer minutes) {
 		//super(days, minutes);
 		this.days = new SpecialLeaveGrantDayNumber(days);
@@ -50,5 +50,5 @@ public class SpecialLeaveGrantNumber extends LeaveGrantNumber {
 	}
 
 
-	
+
 }

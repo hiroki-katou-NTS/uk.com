@@ -454,7 +454,7 @@ public class RecordDomRequireService {
 	private PredetemineTimeSettingRepository predetemineTimeSettingRepo;
 	@Inject
 	private ManagedParallelWithContext parallel;
-	//@Inject
+	@Inject
 	private CheckBeforeCalcFlexChangeService checkBeforeCalcFlexChangeService;
 	@Inject
 	private CompanyAdapter companyAdapter;
@@ -689,7 +689,7 @@ public class RecordDomRequireService {
 		Optional<WorkingConditionItem> workingConditionItem(String employeeId, GeneralDate baseDate);
 
 	}
-	
+
 	public Require createRequire() {
 		return new RequireImpl(comSubstVacationRepo, compensLeaveComSetRepo,
 				specialLeaveGrantRepo, empEmployeeAdapter, grantDateTblRepo,
@@ -759,13 +759,13 @@ public class RecordDomRequireService {
 				lockStatusService, verticalTotalMethodOfMonthlyRepo, stampCardRepo,
 				bentoReservationRepo, bentoMenuRepo, integrationOfDailyGetter,
 				weekRuleManagementRepo, sharedAffWorkPlaceHisAdapter, getProcessingDate,
-				roleOfOpenPeriodRepo, ElapseYearRepository, syCompanyRecordAdapter, 
+				roleOfOpenPeriodRepo, ElapseYearRepository, syCompanyRecordAdapter,
 				snapshotAdapter, superHD60HConMedRepo, monthlyAggregationRemainingNumber);
 	}
-	
+
 	public  class RequireImpl extends nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RequireImp implements Require {
 		private Optional<WeekRuleManagement> weekRuleManagementCache = Optional.empty();
-		
+
 		public RequireImpl(ComSubstVacationRepository comSubstVacationRepo,
 				CompensLeaveComSetRepository compensLeaveComSetRepo, SpecialLeaveGrantRepository specialLeaveGrantRepo,
 				EmpEmployeeAdapter empEmployeeAdapter, GrantDateTblRepository grantDateTblRepo,
@@ -883,11 +883,11 @@ public class RecordDomRequireService {
 				ElapseYearRepository elapseYearRepo,SyCompanyRecordAdapter syCompanyRecordAdapter,
 				DailySnapshotWorkAdapter snapshotAdapter, SuperHD60HConMedRepository superHD60HConMedRepo,
 				MonthlyAggregationRemainingNumber monthlyAggregationRemainingNumber) {
-			
+
 			super(comSubstVacationRepo, compensLeaveComSetRepo, specialLeaveGrantRepo2,
-					empEmployeeAdapter, grantDateTblRepo, annLeaEmpBasicInfoRepo, specialHolidayRepo2, 
-					interimSpecialHolidayMngRepo2, specialLeaveBasicInfoRepo, interimRecAbasMngRepo2, empSubstVacationRepo, 
-					interimRemainRepo2, substitutionOfHDManaDataRepo2, payoutManagementDataRepo2, interimBreakDayOffMngRepo2, 
+					empEmployeeAdapter, grantDateTblRepo, annLeaEmpBasicInfoRepo, specialHolidayRepo2,
+					interimSpecialHolidayMngRepo2, specialLeaveBasicInfoRepo, interimRecAbasMngRepo2, empSubstVacationRepo,
+					interimRemainRepo2, substitutionOfHDManaDataRepo2, payoutManagementDataRepo2, interimBreakDayOffMngRepo2,
 					comDayOffManaDataRepo2, companyAdapter2, shareEmploymentAdapter, leaveManaDataRepo2, workingConditionItemRepo,
 					workingConditionRepo, workTimeSettingRepo, fixedWorkSettingRepo, flowWorkSettingRepo, diffTimeWorkSettingRepo,
 					flexWorkSettingRepo, predetemineTimeSettingRepo2, closureRepo, closureEmploymentRepo, workTypeRepo,
@@ -895,7 +895,7 @@ public class RecordDomRequireService {
 					annualPaidLeaveSettingRepo, outsideOTSettingRepo, workdayoffFrameRepo, yearHolidayRepo, usageUnitSettingRepo, regularLaborTimeComRepo,
 					deforLaborTimeComRepo, regularLaborTimeWkpRepo, deforLaborTimeWkpRepo, regularLaborTimeEmpRepo, deforLaborTimeEmpRepo, regularLaborTimeShaRepo,
 					deforLaborTimeShaRepo, sharedAffWorkPlaceHisAdapter);
-			
+
 			this.tmpResereLeaveMngRepo = tmpResereLeaveMngRepo;
 			this.sysEmploymentHisAdapter = sysEmploymentHisAdapter;
 			this.rervLeaGrantRemDataRepo = rervLeaGrantRemDataRepo;
@@ -1271,10 +1271,12 @@ public class RecordDomRequireService {
 		private IntegrationOfDailyGetter integrationOfDailyGetter;
 
 		private SyCompanyRecordAdapter syCompanyRecordAdapter;
-		
+
 		private MonthlyAggregationRemainingNumber monthlyAggregationRemainingNumber;
-		
+
 		private ElapseYearRepository elapseYearRepository;
+
+		private SpecialLeaveGrantRepository specialLeaveGrantRepository;
 
 		HashMap<String,Optional<PredetemineTimeSetting>> predetemineTimeSetting = new HashMap<String, Optional<PredetemineTimeSetting>>();
 		HashMap<String, Optional<RegularLaborTimeEmp>> regularLaborTimeEmpMap = new HashMap<String, Optional<RegularLaborTimeEmp>>();
@@ -1292,13 +1294,13 @@ public class RecordDomRequireService {
 		HashMap<String, Optional<EmpDeforLaborMonthActCalSet>> empDeforLaborMonthActCalSetMap = new HashMap<String, Optional<EmpDeforLaborMonthActCalSet>>();
 		HashMap<String, Optional<WkpRegulaMonthActCalSet>> wkpRegulaMonthActCalSetMap = new HashMap<String, Optional<WkpRegulaMonthActCalSet>>();
 		HashMap<String, Optional<EmpRegulaMonthActCalSet>> empRegulaMonthActCalSetMap = new HashMap<String, Optional<EmpRegulaMonthActCalSet>>();
-//		HashMap<String, YearMonth> yearMonthFromCalenderMap = new HashMap<String, YearMonth>();
+		HashMap<String, YearMonth> yearMonthFromCalenderMap = new HashMap<String, YearMonth>();
 		Optional<UsageUnitSetting> usageUnitSettingCache = Optional.empty();
 		List<RoleOfOpenPeriod> roleOfOpenPeriodCache = new ArrayList<RoleOfOpenPeriod>();
 		Optional<RoundingSetOfMonthly> roundingSetOfMonthlyCache = Optional.empty();
 		Optional<AgreementOperationSetting> agreementOperationSettingCache = Optional.empty();
 		List<ClosureEmployment> employmentClosureCache = new ArrayList<ClosureEmployment>();
-		
+
 		@Override
 		public Optional<SEmpHistoryImport> employeeEmploymentHis(CacheCarrier cacheCarrier, String companyId,
 				String employeeId, GeneralDate baseDate) {
@@ -2272,7 +2274,7 @@ public class RecordDomRequireService {
 			return item;
 		}
 
-		
+
 
 		@Override
 		public Optional<RegularLaborTimeEmp> regularLaborTimeByEmployment(String cid, String employmentCode) {
@@ -2390,7 +2392,7 @@ public class RecordDomRequireService {
 			if(wkpFlexMonthActCalSetMap.containsKey(wkpId)) {
 				return wkpFlexMonthActCalSetMap.get(wkpId);
 			}
-			Optional<WkpFlexMonthActCalSet> item = wkpFlexMonthActCalSetRepo.find(cid, wkpId); 
+			Optional<WkpFlexMonthActCalSet> item = wkpFlexMonthActCalSetRepo.find(cid, wkpId);
 			wkpFlexMonthActCalSetMap.put(wkpId, item);
 			return item;
 		}
@@ -2560,8 +2562,13 @@ public class RecordDomRequireService {
 		public Map<GeneralDate, DailyInterimRemainMngData> createDailyInterimRemainMngs(CacheCarrier cacheCarrier,
 				String companyId, String employeeId, DatePeriod period, MonAggrCompanySettings comSetting,
 				MonthlyCalculatingDailys dailys) {
-			// TODO 自動生成されたメソッド・スタブ
-			return null;
+
+			return monthlyAggregationRemainingNumber.createDailyInterimRemainMngs(cacheCarrier,
+					companyId,
+					employeeId,
+					period,
+					comSetting,
+					dailys);
 		}
 
 		@Override
@@ -2572,10 +2579,10 @@ public class RecordDomRequireService {
 		@Override
 		public AggregateMonthlyRecordValue aggregation(CacheCarrier cacheCarrier, DatePeriod period,
 				String companyId, String employeeId, YearMonth yearMonth, ClosureId closureId,   ClosureDate closureDate,
-				MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets, 
+				MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets,
 				MonthlyCalculatingDailys monthlyCalculatingDailys,
 				InterimRemainMngMode interimRemainMngMode, boolean isCalcAttendanceRate) {
-			
+
 			return monthlyAggregationRemainingNumber.aggregation(cacheCarrier, period, companyId, employeeId, yearMonth,
 					closureId, closureDate, companySets, employeeSets, monthlyCalculatingDailys, interimRemainMngMode,
 					isCalcAttendanceRate);
@@ -2606,8 +2613,9 @@ public class RecordDomRequireService {
 		@Override
 		public List<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String sid, int specialLeaveCode,
 				LeaveExpirationStatus expirationStatus, GeneralDate grantDate, GeneralDate deadlineDate) {
-			// TODO 自動生成されたメソッド・スタブ
-			return null;
+
+			return specialLeaveGrantRepo.getByPeriodStatus(
+					sid, specialLeaveCode, expirationStatus, grantDate, deadlineDate);
 		}
 
 		@Override
@@ -2626,20 +2634,20 @@ public class RecordDomRequireService {
 
 		@Override
 		public Optional<AnnualLeaveEmpBasicInfo> employeeAnnualLeaveBasicInfo(String employeeId) {
-			
+
 			return this.annLeaEmpBasicInfoRepo.get(employeeId);
 		}
 
 		@Override
 		public Optional<SpecialHoliday> specialHoliday(String companyID, int specialHolidayCD) {
-			
+
 			return this.specialHolidayRepo.findByCode(companyID, specialHolidayCD);
 		}
 
 		@Override
 		public List<AffCompanyHistSharedImport> employeeAffiliatedCompanyHistories(CacheCarrier cacheCarrier,
 				List<String> sids, DatePeriod datePeriod) {
-			
+
 			return this.empEmployeeAdapter.getAffCompanyHistByEmployee(cacheCarrier, sids, datePeriod);
 		}
 
