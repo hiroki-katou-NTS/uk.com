@@ -62,7 +62,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
               <td>
                 <!-- A1_7 -->
                 <i tabindex=5 class="ccg005-status-img-A1_7" data-bind="ntsIcon: { no: $component.activityStatusIcon(), width: 20, height: 20 }, visible: $component.isBaseDate"></i>
-                <i data-bind="ntsIcon: { no: 191, width: 20, height: 20 }, visible: $component.isDiffBaseDate"></i>
+                <i data-bind="click: $component.openFutureScreenCCG005E.bind($component, true, '', '') ,ntsIcon: { no: 191, width: 20, height: 20 }, visible: $component.isAfter"></i>
               </td>
             </tr>
           </table>
@@ -124,7 +124,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
 
 
 
-            <tr style="height: 45px;"  data-bind="attr:{ class: backgroundColor }">
+            <tr style="height: 45px;" id="ccg005-tr-background" data-bind="attr:{ class: backgroundColor }">
               <td style="padding-right: 5px; width: 30px; background-color: white;" class="ccg005-apply-binding-avatar">
                 <!-- A4_1 -->
                 <div tabindex=10 data-bind="attr:{ id: 'ccg005-avatar-change-'+sid }, click: $component.onClickAvatar.bind($component, sid)" />
@@ -142,7 +142,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
                   <!-- A4_2 -->
                   <label data-bind="text: attendanceDetailDto.workName, attr:{ class: 'limited-label work-name-class-'+sid }" style="max-width: 80px; width: auto !important;" />
                   <!-- A4_4 -->
-                  <i tabindex=14 data-bind="visible: displayAppIcon, click: $component.initPopupA4_4InList.bind($component, sid), attr:{ class: 'A4-4-application-icon-'+sid }, ntsIcon: {no: 190, width: 13, height: 13}"></i>
+                  <i tabindex=14 data-bind="visible: displayAppIcon, click: $component.initPopupA4_4InList.bind($component, $index, sid), attr:{ class: 'A4-4-application-icon-'+sid }, ntsIcon: {no: 190, width: 13, height: 13}"></i>
                 </div>
                 <div style="height: 20px;">
                 <!-- A4_3 -->
@@ -156,7 +156,8 @@ module nts.uk.at.view.ccg005.a.screenModel {
               <td class="ccg005-pl-5 ccg005-border-groove ccg005-right-unset ccg005-left-unset">
                 <!-- A4_7 -->
                 <span class="ccg005-flex">
-                  <i tabindex=15 class="ccg005-status-img" data-bind="click: $component.initPopupInList.bind($component, $index, sid, businessName, activityStatus), ntsIcon: {no: activityStatusIconNo, width: 20, height: 20}"></i>
+                  <i tabindex=15 class="ccg005-status-img" data-bind="click: $component.initPopupInList.bind($component, $index, sid, businessName), ntsIcon: {no: activityStatusIconNo, width: 20, height: 20}, visible: $component.isBaseDate"></i>
+                  <i data-bind="click: $component.openFutureScreenCCG005E.bind($component, false, sid, businessName) ,ntsIcon: { no: 191, width: 20, height: 20 }, visible: $component.isAfter"></i>
                 </span>
               </td>
               <td class="ccg005-pl-5 ccg005-border-groove ccg005-left-unset">
@@ -473,6 +474,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
     emojiUsage: KnockoutObservable<boolean> = ko.observable(false);
     isBaseDate: KnockoutObservable<boolean> = ko.observable(true);
     isSameOrBeforeBaseDate: KnockoutObservable<boolean> = ko.observable(true);
+    isAfter: KnockoutObservable<boolean> = ko.observable(false);
     inCharge: KnockoutObservable<boolean> = ko.observable(true);
     workplaceFromCDL008: KnockoutObservableArray<string> = ko.observableArray([]);
     employeeIdList: KnockoutObservableArray<string> = ko.observableArray([]);
@@ -484,7 +486,6 @@ module nts.uk.at.view.ccg005.a.screenModel {
 
     //data for screen E
     goOutParams: KnockoutObservable<GoOutParam> = ko.observable();
-    isDiffBaseDate: KnockoutComputed<boolean> = ko.computed(() => !this.isBaseDate());
 
     sIdUpdateStatus: KnockoutObservable<string> = ko.observable('');
     indexUpdateItem: KnockoutObservable<number> = ko.observable();
@@ -494,6 +495,9 @@ module nts.uk.at.view.ccg005.a.screenModel {
     applicationNameDisplay: KnockoutObservableArray<ApplicationNameViewModel> = ko.observableArray([]);
     applicationNameDisplayBySid: KnockoutObservableArray<string> = ko.observableArray([]);
     loginSid: string = __viewContext.user.employeeId;
+
+    //current selected index of loop
+    currentIndex: KnockoutObservable<number> = ko.observable(-1);
 
     mounted() {
       const vm = this;
@@ -529,6 +533,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
         const selectedDate = moment.utc(moment.utc(vm.selectedDate()).format('YYYY/MM/DD'));
         const baseDate = moment.utc(moment.utc().format('YYYY/MM/DD'));
         vm.isSameOrBeforeBaseDate(selectedDate.isSameOrBefore(baseDate));
+        vm.isAfter(selectedDate.isAfter(baseDate));
         vm.isBaseDate(selectedDate.isSame(baseDate));
         // パラメータ「在席情報を取得」
         const empIds = _.map(vm.attendanceInformationDtos(), atd => {
@@ -629,7 +634,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
           attendanceDetailDto: vm.getAttendanceDetailViewModel(item.sid, item.attendanceDetailDto),
           avatarDto: item.avatarDto,
           activityStatusIconNo: vm.initActivityStatus(item.activityStatusDto),
-          activityStatus: item.activityStatusDto,
+          status: item.activityStatusDto,
           comment: item.commentDto.comment,
           goOutDto: vm.getGoOutViewModel(item.goOutDto),
           emojiIconNo: vm.initEmojiType(item.emojiDto.emojiType),
@@ -668,7 +673,8 @@ module nts.uk.at.view.ccg005.a.screenModel {
         }
       });
       //hidden ' - ' when both check-in and check-out are empty
-      if (!attendanceDetailDto.checkInTime && !attendanceDetailDto.checkOutTime) {
+      if ((!attendanceDetailDto.checkInTime || attendanceDetailDto.checkInTime === "")
+        && (!attendanceDetailDto.checkOutTime || attendanceDetailDto.checkOutTime === "")) {
         $(`.check-in-out-class-${sid}`).ready(() => {
           $(`.check-in-out-class-${sid}`).css("visibility", "hidden");
         });
@@ -767,7 +773,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
     /**
      * Popup A4_4
      */
-    initPopupA4_4InList(sid: string) {
+    initPopupA4_4InList(index: any, sid: string) {
       const vm = this;
       const element = $(`.A4-4-application-icon-${sid}`);
       $('#ccg005-A4-4-popup').ntsPopup({
@@ -780,11 +786,13 @@ module nts.uk.at.view.ccg005.a.screenModel {
         dismissible: true
       });
       $('#ccg005-A4-4-popup').ntsPopup('toggle');
-      const a = vm.applicationNameDisplay();
       const appName = _.find(vm.applicationNameDisplay(), (item => item.sid === sid));
       if (appName) {
         vm.applicationNameDisplayBySid(appName.appName);
       }
+
+      //update currentIndex
+      vm.currentIndex(index());
     }
 
     initFocusA1_4() {
@@ -808,6 +816,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
         dismissible: true
       });
       $('.ccg005-status-img-A1_7').click(() => {
+        vm.currentIndex(-1);
         vm.sIdUpdateStatus(vm.loginSid);
         if (!vm.isBaseDate()) {
           return;
@@ -831,7 +840,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
     /**
      * Popup A4_7
      */
-    initPopupInList(index: any, sid: string, businessName: string, activityStatus: number) {
+    initPopupInList(index: any, sid: string, businessName: string) {
       const vm = this;
       const element = $('.ccg005-status-img')[index()];
       vm.indexUpdateItem(index());
@@ -854,8 +863,10 @@ module nts.uk.at.view.ccg005.a.screenModel {
       }));
 
       //update current status
-      vm.activatedStatus(activityStatus);
-      vm.attendanceInformationDtosDisplay()[index].activityStatus = activityStatus;
+      vm.activatedStatus(vm.attendanceInformationDtosDisplay()[index()].status);
+
+      //set current index
+      vm.currentIndex(index());
     }
 
     nextPage() {
@@ -871,8 +882,6 @@ module nts.uk.at.view.ccg005.a.screenModel {
         vm.currentPage(vm.currentPage() - 1);
       }
     }
-
-    submit() { }
 
     openScreenCCG005B() {
       const vm = this;
@@ -894,6 +903,31 @@ module nts.uk.at.view.ccg005.a.screenModel {
     openScreenCCG005E() {
       const vm = this;
       $('#ccg005-status-popup').ntsPopup('hide');
+      vm.$window.modal('/view/ccg/005/e/index.xhtml', vm.goOutParams()).then((x: Boolean) => {
+        if (x) {
+          vm.registerAttendanceStatus(2, 191);
+        }
+      });
+    }
+
+    /**
+     * A1_7 or A4_7  をクリックする
+     */
+    public openFutureScreenCCG005E(isLoginUser: boolean, sid: string, businessName: string) {
+      const vm = this;
+      if(isLoginUser) {
+        vm.goOutParams(new GoOutParam({
+          sid: __viewContext.user.employeeId,
+          businessName: vm.businessName(),
+          goOutDate: moment(vm.selectedDate()).format("YYYY/MM/DD")
+        }));
+      } else {
+        vm.goOutParams(new GoOutParam({
+          sid: sid,
+          businessName: businessName,
+          goOutDate: moment(vm.selectedDate()).format("YYYY/MM/DD")
+        }));
+      }
       vm.$window.modal('/view/ccg/005/e/index.xhtml', vm.goOutParams()).then((x: Boolean) => {
         if (x) {
           vm.registerAttendanceStatus(2, 191);
@@ -1127,7 +1161,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
      */
     onSearchEmployee() {
       const vm = this;
-      if(vm.searchValue().trim().length > 0) {
+      if (vm.searchValue().trim().length > 0) {
         const param = {
           keyWorks: vm.searchValue(),
           baseDate: vm.selectedDate(),
@@ -1194,7 +1228,6 @@ module nts.uk.at.view.ccg005.a.screenModel {
      */
     registerAttendanceStatus(selectedStatus: number, activityStatusIcon: number) {
       const vm = this;
-      vm.activatedStatus(selectedStatus); //TODO
       const params: ActivityStatusParam = {
         activity: selectedStatus,
         sid: vm.sIdUpdateStatus(),
@@ -1208,8 +1241,20 @@ module nts.uk.at.view.ccg005.a.screenModel {
         } else {
           (ko.bindingHandlers.ntsIcon as any).init($('.ccg005-status-img-A1_7'), () => ({ no: activityStatusIcon, width: 20, height: 20 }));
         }
+      });
+      //update view model
+      if (vm.currentIndex() !== -1) {
+        vm.attendanceInformationDtosDisplay()[vm.currentIndex()].status = selectedStatus;
 
-      })
+        const currentBgClass = vm.attendanceInformationDtosDisplay()[vm.currentIndex()].backgroundColor;
+        $('#ccg005-tr-background')[vm.currentIndex()].classList.remove(currentBgClass);
+
+        const newBgClass = vm.getBackgroundColorClass(selectedStatus);
+        vm.attendanceInformationDtosDisplay()[vm.currentIndex()].backgroundColor = newBgClass;
+        $('#ccg005-tr-background')[vm.currentIndex()].classList.add(newBgClass);
+      } else {
+        vm.activityStatus(selectedStatus);
+      }
     }
 
     private saveCharacteristic(inputDateTime: any): void {
@@ -1322,7 +1367,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
     attendanceDetailDto: AttendanceDetailViewModel;
     avatarDto: object.UserAvatarDto;
     activityStatusIconNo: number;
-    activityStatus: number;
+    status: number;
     comment: string;
     goOutDto: GoOutEmployeeInformationViewModel;
     emojiIconNo: number;
