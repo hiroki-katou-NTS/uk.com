@@ -603,6 +603,7 @@ module nts.uk.at.view.kdl003.a {
                 self.startTimeOption(1);
                 self.endTimeOption(1);
                 // Clear errors.
+                nts.uk.ui.errors.clearAll();
                 $('#inputEndTime').ntsError('clear');
                 $('#inputStartTime').ntsError('clear');
 

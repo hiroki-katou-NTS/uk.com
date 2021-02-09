@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.pub.imploymentinfoterminal.infoterminal;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -13,4 +14,6 @@ public interface EmpInfoTerminalComStatusPub {
 	
 	// [1] 削除する
 	void delete(EmpInfoTerminalComStatusExport empInfoTerminalComStatusExport);
+	
+	List<EmpInfoTerminalComStatusExport> get(String contractCode, List<String> empInfoTerCodeList);
 }

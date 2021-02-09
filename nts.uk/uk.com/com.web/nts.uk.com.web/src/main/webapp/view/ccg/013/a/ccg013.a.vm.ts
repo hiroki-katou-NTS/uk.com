@@ -520,15 +520,14 @@ module ccg013.a.viewmodel {
             }).onClosed(function () {
                 var titleBar = getShared("CCG013C_TitleBar");
                 if (titleBar) {
-                    let id = randomId(),
-                        displayOrder = titleMenu.titleMenu().length + 1;
+                    let id = randomId();
                     titleMenu.titleMenu.push(new TitleMenu({
                         menuBarId: titleMenu.menuBarId(),
                         titleMenuId: id,
                         titleMenuName: titleBar.nameTitleBar,
                         backgroundColor: titleBar.backgroundColor,
                         textColor: titleBar.letterColor,
-                        displayOrder: displayOrder,
+                        displayOrder: titleMenu.titleMenu().length + 1,
                         treeMenu: titleBar.treeMenu
                     }));
                     self.setupTitleMenu();
@@ -544,7 +543,7 @@ module ccg013.a.viewmodel {
                                     titleMenuId: titleMenu.titleMenuId(),
                                     code: x.code,
                                     name: x.name,
-                                    displayOrder: x.order,
+                                    displayOrder: x.displayOrder,
                                     classification: x.menu_cls,
                                     system: x.system,
                                     menu_cls: x.menu_cls
@@ -759,12 +758,11 @@ module ccg013.a.viewmodel {
             // this.titleMenuAtr = ko.observable(param.titleMenuAtr);
             // this.titleMenuCode = ko.observable(param.titleMenuCode);
             this.displayOrder = ko.observable(param.displayOrder);
-            this.treeMenu = ko.observableArray(_.orderBy(param.treeMenu, 'displayOrder', 'asc').map((x, index) => {
+            this.treeMenu = ko.observableArray(_.orderBy(param.treeMenu, ['system', 'displayOrder', 'code'], ['asc', 'asc', 'asc']).map((x, index) => {
                 if (!x.name) {
                     const name = _.find(param.menuNames, c => c.code === x.code && c.system === x.system && c.classification === x.classification);
                     x.name = name && name.displayName;
                 }
-                x.displayOrder = index;
                 return new TreeMenu(x);
             }));
             // this.imageName = ko.observable(param.imageName);

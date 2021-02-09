@@ -208,16 +208,14 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
             const list002 = _.chain(newAllPart)
                 .filter(item =>
                     item.system === System.COMMON &&
-                    item.classification === MenuClassification.TopPage &&
-                    item.webMenuSetting === WebMenuSetting.Display
+                    item.classification === MenuClassification.TopPage
                 )
                 .value();
             if (value === System.ALL) {
                 list001 = _.chain(newAllPart)
                     .filter(item =>
                         item.classification !== MenuClassification.TopPage &&
-                        item.classification !== MenuClassification.OfficeHelper &&
-                        item.webMenuSetting === WebMenuSetting.Display
+                        item.classification !== MenuClassification.OfficeHelper
                     )
                     .value();
             } else {
@@ -225,14 +223,18 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
                     .filter(item =>
                         item.system === value &&
                         item.classification !== MenuClassification.TopPage &&
-                        item.classification !== MenuClassification.OfficeHelper &&
-                        item.webMenuSetting === WebMenuSetting.Display
+                        item.classification !== MenuClassification.OfficeHelper
                     )
                     .value();
             }
             const listStandardMenu = _.concat(list001, list002);
             self.listStandardMenu(listStandardMenu);
         }
+    }
+
+    enum MenuAtr {
+        Menu = 0,
+        SeparatorLine = 1
     }
 
     enum WebMenuSetting {
