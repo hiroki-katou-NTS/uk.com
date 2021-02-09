@@ -284,14 +284,19 @@ module nts.uk.com.view.cmf001.share.model {
     }
 
     export class ExternalAcceptanceCategoryItemData {
+        // カテゴリ項目NO
         itemNo: number;
+        
+        // 外部受入カテゴリ 項目名
         itemName: string;
-        required: boolean;
-
-        constructor(code: number, name: string, required: boolean) {
-            this.itemNo = code;
-            this.itemName = name;
-            if (required) this.required = required;
+        
+        // 必須区分
+        requiredFlg: boolean;
+        
+        constructor(itemNo: number, itemName: string, requiredFlg: boolean) {
+            this.itemNo = itemNo;
+            this.itemName = itemName;
+            if (requiredFlg) this.requiredFlg = requiredFlg;
         }
     }
 

@@ -17,7 +17,9 @@ import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSet;
 import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSetRepository;
 import nts.uk.ctx.exio.dom.exi.condset.SystemType;
 import nts.uk.ctx.exio.dom.exi.extcategory.ExternalAcceptCategory;
+import nts.uk.ctx.exio.dom.exi.extcategory.ExternalAcceptCategoryItem;
 import nts.uk.ctx.exio.dom.exi.extcategory.ExternalAcceptCategoryRepository;
+import nts.uk.ctx.exio.dom.exi.extcategory.OiomtExAcpCategoryItemRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.i18n.TextResource;
@@ -36,6 +38,9 @@ public class StdAcceptCondSetFinder {
 	
 	@Inject
 	private ExternalAcceptCategoryRepository categoryRep;
+	
+	@Inject
+	private OiomtExAcpCategoryItemRepository categoryItemRep;
 
 	public List<SystemTypeDto> getSystemTypes() {
 		List<SystemTypeDto> result = new ArrayList<>();
@@ -111,17 +116,36 @@ public class StdAcceptCondSetFinder {
 	 * TODO: Dummies Data category => update after domain of category complete.
 	 * @return
 	 */
-	public List<ExAcpCtgItemDatDto> getCategoryItemData(String categoryId) {
+	public List<ExAcpCtgItemDatDto> getCategoryItemData(int categoryId) {
+		
 		List<ExAcpCtgItemDatDto> lstCategoryItemData = new ArrayList<ExAcpCtgItemDatDto>();
-		for (int i = 1; i <= 4; i++) {
-			for (int j = 1; j < 11; j++) {
-				lstCategoryItemData
-						.add(new ExAcpCtgItemDatDto("1" + i, j, "カテゴリ項目データ" + "" + i + "" + j, j % 2));
-			}
-		}
-
-		return lstCategoryItemData.stream().filter(item -> {
-			return item.getCategoryId().equals(categoryId);
-		}).collect(Collectors.toList());
+//		for (int i = 1; i <= 4; i++) {
+//			for (int j = 1; j < 11; j++) {
+//				lstCategoryItemData
+//						.add(new ExAcpCtgItemDatDto(0+i, j, "カテゴリ項目データ" + "" + i + "" + j, j % 2));
+//			}
+//		}
+//
+//		return lstCategoryItemData.stream().filter(item -> {
+//			return item.getCategoryId() == categoryId;
+//		}).collect(Collectors.toList());
+		
+		List<ExternalAcceptCategoryItem> listDomain = categoryItemRep.getByCategory(categoryId);
+		lstCategoryItemData.addAll(listDomain.stream().map(x -> new ExAcpCtgItemDatDto(x.getCategoryId(), x.getItemNo(), x.getItemName(), 
+															x.getTableName(), x.getColumnName(), x.getDataType().value, 
+															x.getAlphaUseFlg().isPresent() ? x.getAlphaUseFlg().get().value : null, 
+															x.getPrimatyKeyFlg().value, x.getPrimitiveName().isPresent() ? x.getPrimitiveName().get() : null,
+															x.getDecimalDigit().isPresent() ? x.getDecimalDigit().get() : null, 
+															x.getDecimalUnit().isPresent() ? x.getDecimalUnit().get().value : null, 
+															x.getRequiredFlg().value, x.getNumberRangeStart().isPresent() ? x.getNumberRangeStart().get() : null, 
+															x.getNumberRangeEnd().isPresent() ? x.getNumberRangeEnd().get() : null, 
+															x.getNumberRangeStart2().isPresent() ? x.getNumberRangeStart2().get() : null, 
+															x.getNumberRangeEnd2().isPresent() ? x.getNumberRangeEnd2().get() : null, 
+															x.getSpecialFlg().value, x.getRequiredNumber().isPresent() ? x.getRequiredNumber().get() : null, 
+															x.getDisplayFlg().value, x.getHistoryFlg().isPresent() ? x.getHistoryFlg().get().value : null, 
+															x.getHistoryContiFlg().isPresent() ? x.getHistoryContiFlg().get().value : null))
+													.collect(Collectors.toList()));
+		return lstCategoryItemData;
 	}
+	
 }

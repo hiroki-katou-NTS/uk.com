@@ -100,7 +100,7 @@ public class StdAcceptCondSetWebService extends WebService {
 	 */
 	@POST
 	@Path("getCategoryItemData/{categoryId}")
-	public List<ExAcpCtgItemDatDto> getCategoryItemData(@PathParam("categoryId") String categoryId) {
+	public List<ExAcpCtgItemDatDto> getCategoryItemData(@PathParam("categoryId") int categoryId) {
 		return stdAcceptCondSetFind.getCategoryItemData(categoryId);
 	}
 

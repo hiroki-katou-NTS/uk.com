@@ -148,7 +148,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                 let selectedAItemIndex = _.findIndex(self.listAcceptItem(), x => { return x.acceptItemNumber() == self.selectedAcceptItem(); });
                 let selectedAItem = _.find(self.listAcceptItem(), x => { return x.acceptItemNumber() == self.selectedAcceptItem(); });
                 let selectedCItem = _.find(self.listSelectedCategoryItem(), x => { return x.itemNo == selectedAItem.categoryItemNo(); });
-                if (selectedCItem.required) {
+                if (selectedCItem.requiredFlg) {
                     alertError({messageId: "Msg_898"});
                 } else {
                     self.listAcceptItem.remove(selectedAItem);
@@ -598,7 +598,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
             service.getCategoryItem(categoryId).done((rs: Array<any>) => {
                 if (rs && rs.length) {
                     let _rsList: Array<model.ExternalAcceptanceCategoryItemData> = _.map(rs, x => {
-                        return new model.ExternalAcceptanceCategoryItemData(x.itemNo, x.itemName, x.requiredCls);
+                        return new model.ExternalAcceptanceCategoryItemData(x.itemNo, x.itemName, x.requiredFlg == 0 ? false : true);
                     });
                     self.listCategoryItem(_rsList);
                 }
