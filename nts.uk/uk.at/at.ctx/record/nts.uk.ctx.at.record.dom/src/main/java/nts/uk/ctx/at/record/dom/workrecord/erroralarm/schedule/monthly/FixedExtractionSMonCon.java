@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.
 import java.util.Optional;
 
 /**
- * AggregateRoot: スケジュール日次の固有抽出条件
+ * AggregateRoot: スケジュール月次の固有抽出条件
  *
  */
 @Getter
