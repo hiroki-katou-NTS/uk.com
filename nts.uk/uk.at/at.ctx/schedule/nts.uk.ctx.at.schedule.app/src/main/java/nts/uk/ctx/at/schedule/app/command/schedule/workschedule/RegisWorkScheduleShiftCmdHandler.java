@@ -180,7 +180,7 @@ public class RegisWorkScheduleShiftCmdHandler<T> extends CommandHandlerWithResul
 			
 			for (int k = 0; k < lstEmpInfo.size(); k++) {
 				EmployeeImport empImport = lstEmpInfo.get(k);
-				List<ErrorInfoOfWorkSchedule> errorInforOfEmp = errorInformations.stream().filter(i -> i.getEmployeeId() == empImport.getEmployeeId()).collect(Collectors.toList());
+				List<ErrorInfoOfWorkSchedule> errorInforOfEmp = errorInformations.stream().filter(i -> i.getEmployeeId().equals(empImport.getEmployeeId())).collect(Collectors.toList());
 				for (int h = 0; h < errorInforOfEmp.size(); h++) {
 					ErrorInfomation errorInfomation = new ErrorInfomation(
 							empImport.getEmployeeId(),
