@@ -178,4 +178,11 @@ public interface AppRootInstanceService {
 	public boolean isDataApproverExistMonth(YearMonth yearMonth, List<ApprovalRouteDetails> approverRouteLst);
 	
 	public boolean isDataAgentExistMonth(YearMonth yearMonth, List<ApprovalRouteDetails> agentRouteLst);
+	
+	/**
+	 * UKDesign.ドメインモデル."NittsuSystem.UniversalK".ワークフロー.承認状態管理.就業承認状態管理.アルゴリズム.現在承認するべきフェーズの未承認者を取得する.現在承認するべきフェーズの未承認者を取得する
+	 * @param approvalRootState
+	 * @return
+	 */
+	public ApproverToApprove getApproverCanApprove(ApprovalRootState approvalRootState);
 }
