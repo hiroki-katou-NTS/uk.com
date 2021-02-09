@@ -47,7 +47,9 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remain.AnnualLeav
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AttendanceRate;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerform;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureIdHistory;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureIdHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantDays;
@@ -377,6 +379,8 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 			Optional<Boolean> isOverWriteOpt,
 			Optional<List<TmpAnnualLeaveMngWork>> forOverWriteListOpt){
 
+		GeneralDate closureStartDate = aggrPeriod.start();
+
 		AnnualLeaveInfo emptyInfo = new AnnualLeaveInfo();
 		emptyInfo.setYmd(aggrPeriod.start());
 
@@ -392,141 +396,296 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 				isSameInfo = true;
 			}
 		}
-		if (isSameInfo){
+
+		if (isSameInfo){ // 集計開始日時点の前回の年休の集計結果が存在するとき
 
 			// 「前回の年休情報」を取得　→　取得内容をもとに年休情報を作成
 			return createInfoFromRemainingData(
 					prevAnnualLeaveInfo.getGrantRemainingList(),
 					Optional.of(prevAnnualLeaveInfo.getMaxData()), aggrPeriod);
-		}
 
-		// 過去月集計モードの判断
-		if (aggrPastMonthModeOpt.isPresent() && yearMonthOpt.isPresent()) {
-			if (aggrPastMonthModeOpt.get() == true) {
+		} else {
+
+			// 過去月集計モードの判断
+			boolean aggrPastMonthMode = false;
+			if (aggrPastMonthModeOpt.isPresent() && yearMonthOpt.isPresent()) {
+				aggrPastMonthMode = aggrPastMonthModeOpt.get() ;
+			}
+
+			if (aggrPastMonthMode) { //  過去月集計モードのとき
 				List<AnnualLeaveGrantRemaining> remainingDatas = new ArrayList<>();
 
 				// 過去月集計モードで休暇残数を計算する締め開始日を取得する
+				Closure closure = ClosureService.getClosureDataByEmployee(require, cacheCarrier, employeeId, aggrPeriod.end());
+				//過去月モードの場合、年月は必須なのでemptyだった場合はそのままexceptionを発生させる。
+				List<DatePeriod> closurePeriods = closure.getPeriodByYearMonth(yearMonthOpt.get());
+				closureStartDate = aggrPeriod.start();
+				if(!closurePeriods.isEmpty())
+					closureStartDate = closurePeriods.get(0).start();
 
-				// 指定した年月の期間をすべて取得する
-
-				// 指定した年月の社員の締め履歴を取得する
-				List<ClosureIdHistory> closureIdHistoryList =
-						GetClosureIdHistory.ofEmployeeFromYearMonth(
-								require, cacheCarrier, employeeId, yearMonthOpt.get());
-
-				// 取得した締めIDを締め開始日に入れる
-				// ooooo要修正！！
-
-
-				// 「年休付与残数履歴データ」を取得
-				List<AnnualLeaveRemainingHistory> remainHistList
-					= require.annualLeaveRemainingHistory(
-						employeeId, yearMonthOpt.get());
-				if (remainHistList.size() > 0) {
-					// 付与日 ASC、期限切れ状態＝「使用可能」　を採用
-					remainHistList.sort((a, b) -> a.getGrantDate().compareTo(b.getGrantDate()));
-					for (AnnualLeaveRemainingHistory remainHist : remainHistList) {
-						if (remainHist.getExpirationStatus() != LeaveExpirationStatus.AVAILABLE) continue;
-
-						// 取得したドメインを年休付与残数データに変換
-						AnnualLeaveGrantRemaining remainData = new AnnualLeaveGrantRemaining(
-								AnnualLeaveGrantRemainingData.createFromHistory(remainHist));
-						remainingDatas.add(remainData);
-					}
-				}
+//				// 「年休付与残数履歴データ」を取得
+//				List<AnnualLeaveRemainingHistory> remainHistList
+//					= require.annualLeaveRemainingHistory(
+//						employeeId, yearMonthOpt.get());
+//				if (remainHistList.size() > 0) {
+//					// 付与日 ASC、期限切れ状態＝「使用可能」　を採用
+//					remainHistList.sort((a, b) -> a.getGrantDate().compareTo(b.getGrantDate()));
+//					for (AnnualLeaveRemainingHistory remainHist : remainHistList) {
+//						if (remainHist.getExpirationStatus() != LeaveExpirationStatus.AVAILABLE) continue;
+//
+//						// 取得したドメインを年休付与残数データに変換
+//						AnnualLeaveGrantRemaining remainData = new AnnualLeaveGrantRemaining(
+//								AnnualLeaveGrantRemainingData.createFromHistory(remainHist));
+//						remainingDatas.add(remainData);
+//					}
+//				}
 
 				// 年休上限データを取得
 				val annLeaMaxDataOpt = require.annualLeaveMaxData(employeeId);
 
-				// 取得内容をもとに年休情報を作成
-				return createInfoFromRemainingData(remainingDatas, annLeaMaxDataOpt, aggrPeriod);
+			} else {  //  過去月集計モードでないとき
+
+				// 休暇残数を計算する締め開始日を取得する
+				// 要修正
+
+
+
+
 			}
-		}
 
-		// 休暇残数を計算する締め開始日を取得する
-		GeneralDate closureStart = null;	// 締め開始日
-		Optional<GeneralDate> closureStartOpt = Optional.empty();
-		boolean isAfterClosureStart = false;
+			// 社員の年休情報を取得
+			AnnualLeaveInfo annualLeaveInfo = createInfoAsOfPeriodStart(
+					 require,
+					 cacheCarrier,
+					 companyId,
+					 employeeId,
+					 prevAnnualLeaveOpt,
+					 aggrPastMonthMode,
+					 yearMonthOpt,
+					 aggrPeriod,
+					 mode,
+					 isCalcAttendanceRate,
+					 isOverWriteOpt,
+					 forOverWriteListOpt,
+					 closureStartDate);
 
-		// 最新の締め終了日翌日を取得する
-		Optional<ClosureStatusManagement> sttMng = require.latestClosureStatusManagement(employeeId);
-		if (sttMng.isPresent()){
-			closureStart = sttMng.get().getPeriod().end();
-			if (closureStart.before(GeneralDate.max())){
-				closureStart = closureStart.addDays(1);
-			}
-			closureStartOpt = Optional.of(closureStart);
-		}
-		else {
-
-			//　社員に対応する締め開始日を取得する
-			closureStartOpt = GetClosureStartForEmployee.algorithm(require, cacheCarrier, employeeId);
-			if (closureStartOpt.isPresent()) closureStart = closureStartOpt.get();
-		}
-
-		// 取得した締め開始日と「集計開始日」を比較
-		if (closureStart != null){
-
-			// 締め開始日＜集計開始日　か確認する
-			if (closureStart.before(aggrPeriod.start())){
-				isAfterClosureStart = true;
-			}
-		}
-
-		if (!closureStartOpt.isPresent()){
-			closureStartOpt = Optional.of(aggrPeriod.start());
-		}
-
-		if (isAfterClosureStart){
-			// 締め開始日<集計開始日　の時
-
-			// 開始日までの年休残数を計算　（締め開始日～集計開始日前日）
-			val aggrResultOpt = algorithm(
-					require, cacheCarrier, companyId, employeeId,
-					new DatePeriod(closureStartOpt.get(),
-					aggrPeriod.start().addDays(-1)), mode, aggrPeriod.start().addDays(-1),
-					isCalcAttendanceRate, isOverWriteOpt, forOverWriteListOpt,
-					Optional.empty(), aggrPastMonthModeOpt, yearMonthOpt);
-
-			if (!aggrResultOpt.isPresent()) return emptyInfo;
-			val aggrResult = aggrResultOpt.get();
-
-			// 年休情報（期間終了日の翌日開始時点）を取得
-			val asOfPeriodEnd = aggrResult.getAsOfStartNextDayOfPeriodEnd();
-
-			// 取得内容をもとに年休情報を作成
+			// 年休付与残数データ、年休上限データをもとに年休情報を作成
 			return createInfoFromRemainingData(
-					asOfPeriodEnd.getGrantRemainingList(),
-					Optional.of(asOfPeriodEnd.getMaxData()), aggrPeriod);
+					annualLeaveInfo.getGrantRemainingList(),
+					Optional.ofNullable(annualLeaveInfo.getMaxData()),
+					aggrPeriod);
+
 		}
-
-		// 締め開始日>=集計開始日　or 締め開始日がnull　の時
-
-
-		// 「年休付与残数データ」を取得  要修正　のちに対応
-		List<AnnualLeaveGrantRemaining> remainingDatas = new ArrayList<>();
-		List<AnnualLeaveGrantRemainingData> remainings = require.annualLeaveGrantRemainingData(employeeId);
-
-		GeneralDate closureStartDate = closureStart;
-		remainings.stream()
-			.filter(c->c.getDeadline().afterOrEquals(closureStartDate)
-					&& c.getGrantDate().beforeOrEquals(closureStartDate)
-					&& c.getExpirationStatus().IsAVAILABLE())
-			.forEach(c->remainingDatas.add(new AnnualLeaveGrantRemaining(c)));
-
-//		for (val grantRemainingData : grantRemainingDatas){
-//			if (grantRemainingData.getExpirationStatus() == LeaveExpirationStatus.EXPIRED) continue;
-//			if (grantRemainingData.getGrantDate().after(closureStartOpt.get())) continue;
-//			if (grantRemainingData.getDeadline().before(closureStartOpt.get())) continue;
-//			remainingDatas.add(grantRemainingData);
-//		}
-
-		// 「年休上限データ」を取得
-		val annLeaMaxDataOpt = require.annualLeaveMaxData(employeeId);
-
-		// 取得内容をもとに年休情報を作成
-		return createInfoFromRemainingData(remainingDatas, annLeaMaxDataOpt, aggrPeriod);
 	}
+
+//		// 休暇残数を計算する締め開始日を取得する
+//		GeneralDate closureStart = null;	// 締め開始日
+//		Optional<GeneralDate> closureStartOpt = Optional.empty();
+//		boolean isAfterClosureStart = false;
+//
+//		// 最新の締め終了日翌日を取得する
+//		Optional<ClosureStatusManagement> sttMng = require.latestClosureStatusManagement(employeeId);
+//		if (sttMng.isPresent()){
+//			closureStart = sttMng.get().getPeriod().end();
+//			if (closureStart.before(GeneralDate.max())){
+//				closureStart = closureStart.addDays(1);
+//			}
+//			closureStartOpt = Optional.of(closureStart);
+//		}
+//		else {
+//
+//			//　社員に対応する締め開始日を取得する
+//			closureStartOpt = GetClosureStartForEmployee.algorithm(require, cacheCarrier, employeeId);
+//			if (closureStartOpt.isPresent()) closureStart = closureStartOpt.get();
+//		}
+//
+//		// 取得した締め開始日と「集計開始日」を比較
+//		if (closureStart != null){
+//
+//			// 締め開始日＜集計開始日　か確認する
+//			if (closureStart.before(aggrPeriod.start())){
+//				isAfterClosureStart = true;
+//			}
+//		}
+//
+//		if (!closureStartOpt.isPresent()){
+//			closureStartOpt = Optional.of(aggrPeriod.start());
+//		}
+//
+//		if (isAfterClosureStart){
+//			// 締め開始日<集計開始日　の時
+//
+//			// 開始日までの年休残数を計算　（締め開始日～集計開始日前日）
+//			val aggrResultOpt = algorithm(
+//					require, cacheCarrier, companyId, employeeId,
+//					new DatePeriod(closureStartOpt.get(),
+//					aggrPeriod.start().addDays(-1)), mode, aggrPeriod.start().addDays(-1),
+//					isCalcAttendanceRate, isOverWriteOpt, forOverWriteListOpt,
+//					Optional.empty(), aggrPastMonthModeOpt, yearMonthOpt);
+//
+//			if (!aggrResultOpt.isPresent()) return emptyInfo;
+//			val aggrResult = aggrResultOpt.get();
+//
+//			// 年休情報（期間終了日の翌日開始時点）を取得
+//			val asOfPeriodEnd = aggrResult.getAsOfStartNextDayOfPeriodEnd();
+//
+//			// 取得内容をもとに年休情報を作成
+//			return createInfoFromRemainingData(
+//					asOfPeriodEnd.getGrantRemainingList(),
+//					Optional.of(asOfPeriodEnd.getMaxData()), aggrPeriod);
+//		}
+//
+//		// 締め開始日>=集計開始日　or 締め開始日がnull　の時
+//
+//
+//		// 「年休付与残数データ」を取得  要修正　のちに対応
+//		List<AnnualLeaveGrantRemaining> remainingDatas = new ArrayList<>();
+//		List<AnnualLeaveGrantRemainingData> remainings = require.annualLeaveGrantRemainingData(employeeId);
+//
+//		GeneralDate closureStartDate = closureStart;
+//		remainings.stream()
+//			.filter(c->c.getDeadline().afterOrEquals(closureStartDate)
+//					&& c.getGrantDate().beforeOrEquals(closureStartDate)
+//					&& c.getExpirationStatus().IsAVAILABLE())
+//			.forEach(c->remainingDatas.add(new AnnualLeaveGrantRemaining(c)));
+//
+////		for (val grantRemainingData : grantRemainingDatas){
+////			if (grantRemainingData.getExpirationStatus() == LeaveExpirationStatus.EXPIRED) continue;
+////			if (grantRemainingData.getGrantDate().after(closureStartOpt.get())) continue;
+////			if (grantRemainingData.getDeadline().before(closureStartOpt.get())) continue;
+////			remainingDatas.add(grantRemainingData);
+////		}
+//
+//		// 「年休上限データ」を取得
+//		val annLeaMaxDataOpt = require.annualLeaveMaxData(employeeId);
+//
+//		// 取得内容をもとに年休情報を作成
+//		return createInfoFromRemainingData(remainingDatas, annLeaMaxDataOpt, aggrPeriod);
+//	}
+
+
+	/**
+	 * 社員の年休情報を取得
+	 * @param require
+	 * @param cacheCarrier
+	 * @param companyId　会社ID
+	 * @param employeeId 社員ID
+	 * @param prevAnnualLeaveOpt　前回の年休の集計結果
+	 * @param aggrPastMonthMode 過去月集計モード
+	 * @param yearMonthOpt 年月
+	 * @param aggrPeriod 集計期間
+	 * @param mode 実績のみ参照区分
+	 * @param isCalcAttendanceRate 出勤率計算フラグ
+	 * @param isOverWriteOpt 上書きフラグ
+	 * @param forOverWriteListOpt　上書き用の暫定管理データ
+	 * @return
+	 */
+	private static AnnualLeaveInfo createInfoAsOfPeriodStart(
+			RequireM3 require,
+			CacheCarrier cacheCarrier,
+			String companyId,
+			String employeeId,
+			Optional<AggrResultOfAnnualLeave> prevAnnualLeaveOpt,
+			Boolean aggrPastMonthMode,
+			Optional<YearMonth> yearMonthOpt,
+			DatePeriod aggrPeriod,
+			InterimRemainMngMode mode,
+			boolean isCalcAttendanceRate,
+			Optional<Boolean> isOverWriteOpt,
+			Optional<List<TmpAnnualLeaveMngWork>> forOverWriteListOpt,
+			GeneralDate closureStart
+			){
+
+			// 年休付与残数データリスト
+			List<AnnualLeaveGrantRemaining> grantRemainingDatas
+				= new ArrayList<AnnualLeaveGrantRemaining>();
+
+			// 年休上限データを取得
+			Optional<AnnualLeaveMaxData>  annLeaMaxDataOpt = Optional.empty();
+
+
+			// 取得した締め開始日とパラメータ「集計開始日」を比較
+
+			 // 締め開始日=パラメータ「集計開始日」
+			if ( closureStart.equals(aggrPeriod.start())
+					 // 締め開始日>パラメータ「集計開始日」 && パラメータ．過去月集計モードがfalse
+					|| ( closureStart.after(aggrPeriod.start()) && !aggrPastMonthMode )
+				){
+
+				// ドメインモデル「年休付与残数データ」を取得
+	//			【条件】
+	//			社員ID=パラメータ「社員ID」
+	//					付与日<=締め開始日
+	//					期限日>=締め開始日
+	//					期限切れ状態=使用可能
+				grantRemainingDatas = require.annualLeaveGrantRemainingData(employeeId).stream()
+						.filter(c->c.getGrantDate().beforeOrEquals(closureStart)
+								&& c.getDeadline().afterOrEquals(closureStart)
+								&& c.getExpirationStatus().IsAVAILABLE())
+						.map(c -> new AnnualLeaveGrantRemaining(c)).collect(Collectors.toList());
+
+				// 年休上限データを取得
+				annLeaMaxDataOpt = require.annualLeaveMaxData(employeeId);
+
+			}
+			// 締め開始日>パラメータ「集計開始日」 && パラメータ．過去月集計モードがtrue
+			else if (closureStart.after(aggrPeriod.start())
+					&& aggrPastMonthMode ){
+
+					// ドメインモデル「年休付与残数履歴データ」を取得
+					List<AnnualLeaveRemainingHistory> remainHistList
+						= require.annualLeaveRemainingHistory(
+							employeeId, yearMonthOpt.get());
+					if (remainHistList.size() > 0) {
+						// 付与日 ASC、期限切れ状態＝「使用可能」　を採用
+						remainHistList.sort((a, b) -> a.getGrantDate().compareTo(b.getGrantDate()));
+						for (AnnualLeaveRemainingHistory remainHist : remainHistList) {
+							if (remainHist.getExpirationStatus() != LeaveExpirationStatus.AVAILABLE) continue;
+
+							// 取得したドメインを年休付与残数データに変換
+							AnnualLeaveGrantRemaining remainData = new AnnualLeaveGrantRemaining(
+									AnnualLeaveGrantRemainingData.createFromHistory(remainHist));
+							grantRemainingDatas.add(remainData);
+						}
+					}
+
+					// 年月指定して年休上限データを取得
+					// 要修正　→AnnualLeaveMaxHistoryData リポジトリクラス内関数が不足
+
+			} else if (closureStart.before(aggrPeriod.start())){ // 締め開始日<パラメータ「集計開始日」
+
+					// 開始日までの年休残数を計算　（締め開始日～集計開始日前日）
+					val aggrResultOpt = algorithm(
+							require, cacheCarrier, companyId, employeeId,
+							new DatePeriod(closureStart, aggrPeriod.start().addDays(-1)),
+							mode, aggrPeriod.start().addDays(-1),
+							isCalcAttendanceRate, isOverWriteOpt, forOverWriteListOpt,
+							Optional.empty(), Optional.of(aggrPastMonthMode), yearMonthOpt);
+
+					if (aggrResultOpt.isPresent()) {
+						val aggrResult = aggrResultOpt.get();
+
+						// 年休情報（期間終了日の翌日開始時点）を取得
+						val asOfPeriodEnd = aggrResult.getAsOfStartNextDayOfPeriodEnd();
+
+						// 集計結果から、年休付与残数データを作成する
+						// 集計結果から、上限データを作成する
+						// 年休付与残数データ、年休上限データを返す
+						return createInfoFromRemainingData(
+								asOfPeriodEnd.getGrantRemainingList(),
+								Optional.of(asOfPeriodEnd.getMaxData()), aggrPeriod);
+
+					}
+			}
+
+			AnnualLeaveInfo annualLeaveInfo = new AnnualLeaveInfo();
+			annualLeaveInfo.setGrantRemainingList(grantRemainingDatas);
+			if ( annLeaMaxDataOpt.isPresent() ) {
+				annualLeaveInfo.setMaxData(annLeaMaxDataOpt.get());
+			}
+			return annualLeaveInfo;
+	}
+
 
 	/**
 	 * 年休付与残数データから年休情報を作成
@@ -649,7 +808,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 			// 年休集計期間WORKを作成し、Listに追加
 			GeneralDate workPeriodEnd = nextDayOfPeriodEnd;
 			if (nextDividedDay != null) workPeriodEnd = nextDividedDay.getYmd().addDays(-1);
-			
+
 //			AggregatePeriodWork nowWork = AggregatePeriodWork.of(
 //					new DatePeriod(nowDividedDay.getYmd(), workPeriodEnd),
 //					false,
@@ -658,9 +817,9 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 //					isAfterGrant,
 //					nowDividedDay.isLapsedAtr(),
 //					nowDividedDay.getNextAnnualLeaveGrant());
-			AggregatePeriodWork nowWork = new AggregatePeriodWork(new DatePeriod(nowDividedDay.getYmd(), workPeriodEnd), 
-					nowDividedDay.getLapsedWork(), 
-					nowDividedDay.getGrantWork(), 
+			AggregatePeriodWork nowWork = new AggregatePeriodWork(new DatePeriod(nowDividedDay.getYmd(), workPeriodEnd),
+					nowDividedDay.getLapsedWork(),
+					nowDividedDay.getGrantWork(),
 					nowDividedDay.getEndDay(),
 					nowDividedDay.getGrantPeriodAtr());
 			aggregatePeriodWorks.add(nowWork);
@@ -894,7 +1053,9 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 												CalcNextAnnualLeaveGrantDate.RequireM2,
 												CalcAnnLeaAttendanceRate.RequireM1,
 												LeaveRemainingNumber.RequireM3,
-												GetClosureIdHistory.RequireM2{
+//												GetClosureIdHistory.RequireM2{
+												GetClosureIdHistory.RequireM2,
+												nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService.RequireM3{
 
 		List<AnnualLeaveRemainingHistory> annualLeaveRemainingHistory(String sid, YearMonth ym);
 
@@ -907,4 +1068,5 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 
 		Optional<OperationStartSetDailyPerform> dailyOperationStartSet(CompanyId companyId);
 	}
+
 }

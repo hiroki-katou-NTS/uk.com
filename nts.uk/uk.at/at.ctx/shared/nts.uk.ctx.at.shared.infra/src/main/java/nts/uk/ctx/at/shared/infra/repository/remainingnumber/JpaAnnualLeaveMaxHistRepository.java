@@ -5,12 +5,15 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.AnnualLeaveMaxHistRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.AnnualLeaveMaxHistoryData;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KrcdtAnnLeaMaxHist;
+import nts.uk.ctx.at.shared.infra.entity.worktype.KshmtWorkType;
+import nts.uk.ctx.at.shared.infra.entity.worktype.KshmtWorkTypePK;
 
 /**
- * 
+ *
  * @author HungTT
  *
  */
@@ -41,6 +44,20 @@ public class JpaAnnualLeaveMaxHistRepository extends JpaRepository implements An
 		} else {
 			this.commandProxy().insert(KrcdtAnnLeaMaxHist.fromDomain(domain));
 		}
+	}
+
+	public Optional<AnnualLeaveMaxHistoryData> find(String employeeId, YearMonth yearMonth){
+		Optional<KrcdtAnnLeaMaxHist> data =
+				this.queryProxy().find(new KrcdtAnnLeaMaxHistPK(employeeId, yearMonth), KrcdtAnnLeaMaxHist.class);
+		if (data.isPresent()) {
+			return toDomain(data.get());
+		}
+		return Optional.empty();
+	}
+
+	private Optional<AnnualLeaveMaxHistoryData>toDomain(KrcdtAnnLeaMaxHist entity){
+		//to do
+		return null;
 	}
 
 }
