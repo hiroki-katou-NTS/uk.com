@@ -49,7 +49,7 @@ public class FileUploader{
 
 	private StoredFileInfo callUploadApi(Path pathToSource, String stereotype, String fileType) throws JsonParseException, JsonMappingException, IOException {
 
-		String serverUrl = UkConvertProperty.getProperty(UkConvertProperty.UK_AP_SERVER_URL);
+		String serverUrl = UkConvertProperty.getProperty(UkConvertProperty.UK_CLOUD_SERVER_URL);
 		URL url = new URL(serverUrl + "nts.uk.com.web/webapi/ntscommons/arc/filegate/upload");
 
 		ObjectMapper mapper = new ObjectMapper();

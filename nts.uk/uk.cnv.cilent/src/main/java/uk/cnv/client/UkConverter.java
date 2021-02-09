@@ -10,9 +10,11 @@ import java.util.stream.Collectors;
 
 import lombok.val;
 import nts.arc.layer.app.file.storage.StoredFileInfo;
-//import nts.uk.shr.infra.file.storage.UkFileStorage;
 import uk.cnv.client.dom.accountimport.AccountImportService;
+import uk.cnv.client.dom.csvexport.CSVExporter;
 import uk.cnv.client.dom.csvimport.CSVImporter;
+import uk.cnv.client.dom.execute.ConvertCodeExcecuter;
+import uk.cnv.client.dom.execute.CreateConvertDBService;
 import uk.cnv.client.dom.fileimport.FileImportService;
 import uk.cnv.client.dom.fileimport.FileUploader;
 import uk.cnv.client.dom.fileimport.JmDaicyoRepository;
@@ -35,40 +37,40 @@ public class UkConverter {
 
 	public void doWork() {
 
-//		// コンバート一時環境構築
-//		val createConvertDBService = new CreateConvertDBService();
-//		if(createConvertDBService.doWork().isError()) {
-//			LogManager.err("移行環境構築に失敗しました。処理を中断します。");
-//			return;
-//		}
-//
-//		// ファイル移行
-//		val fileImporter = new FileImportService();
-//		val FileImportServiceRequire = new FileImportServiceRequireImpl();
-//
-//		if (!fileImporter.doWork(FileImportServiceRequire)) {
-//			LogManager.err("ファイル移行に失敗しました。処理を中断します。");
-//			return;
-//		}
-//
-//		// アカウント移行
-//		val accountImporter = new AccountImportService();
-//		val accountImportServiceRequire = new AccountImportServiceRequireImpl();
-//		accountImporter.doWork(accountImportServiceRequire);
-//
-//		// コンバートコード実行
-//		val convertCodeExcecutor = new ConvertCodeExcecuter();
-//		if(convertCodeExcecutor.doWork().isError()) {
-//			LogManager.err("コンバートコードの実行時にエラーが発生しました。処理を中断します");
-//			return;
-//		}
-//
-//		// CSVファイルの出力
-//		val csvExporter = new CSVExporter();
-//		if(csvExporter.doWork().isError()) {
-//			LogManager.err("CSVのエクスポート時にエラーが発生しました。処理を中断します");
-//			return;
-//		}
+		// コンバート一時環境構築
+		val createConvertDBService = new CreateConvertDBService();
+		if(createConvertDBService.doWork().isError()) {
+			LogManager.err("移行環境構築に失敗しました。処理を中断します。");
+			return;
+		}
+
+		// ファイル移行
+		val fileImporter = new FileImportService();
+		val FileImportServiceRequire = new FileImportServiceRequireImpl();
+
+		if (!fileImporter.doWork(FileImportServiceRequire)) {
+			LogManager.err("ファイル移行に失敗しました。処理を中断します。");
+			return;
+		}
+
+		// アカウント移行
+		val accountImporter = new AccountImportService();
+		val accountImportServiceRequire = new AccountImportServiceRequireImpl();
+		accountImporter.doWork(accountImportServiceRequire);
+
+		// コンバートコード実行
+		val convertCodeExcecutor = new ConvertCodeExcecuter();
+		if(convertCodeExcecutor.doWork().isError()) {
+			LogManager.err("コンバートコードの実行時にエラーが発生しました。処理を中断します");
+			return;
+		}
+
+		// CSVファイルの出力
+		val csvExporter = new CSVExporter();
+		if(csvExporter.doWork().isError()) {
+			LogManager.err("CSVのエクスポート時にエラーが発生しました。処理を中断します");
+			return;
+		}
 
 		// CSVファイルのインポート処理呼び出し
 		val csvImporter = new CSVImporter();

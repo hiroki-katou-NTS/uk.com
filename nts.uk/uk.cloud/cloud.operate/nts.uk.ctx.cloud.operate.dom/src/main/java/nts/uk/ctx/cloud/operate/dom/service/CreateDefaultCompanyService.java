@@ -2,8 +2,6 @@ package nts.uk.ctx.cloud.operate.dom.service;
 
 import java.util.Optional;
 
-import javax.ejb.Stateless;
-
 import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.bs.company.dom.company.AbolitionAtr;
 import nts.uk.ctx.bs.company.dom.company.Company;
@@ -35,7 +33,7 @@ public class CreateDefaultCompanyService {
 			require.saveDefaultCompany(company);
 		});
 	}
-	
+
 	public static interface Require{
 		void saveDefaultCompany (Company company);
 	}

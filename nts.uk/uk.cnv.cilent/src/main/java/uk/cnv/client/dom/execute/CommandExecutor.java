@@ -37,7 +37,8 @@ public class CommandExecutor {
 
 	public CommandResult bcpExecute(String query, String fileName) {
 		// -t, : コンマ区切りファイル
-		String command = String.format("bcp \"%s\" queryout %s -t, -c -S %s -U %s -P %s -d %s",
+		// -w : Unicode文字を使用（UTF-16で出力される）
+		String command = String.format("bcp \"%s\" queryout %s -t, -w -S %s -U %s -P %s -d %s",
 				query, fileName, this.host, this.user, this.password, this.dbName);
 		return execute(command);
 	}

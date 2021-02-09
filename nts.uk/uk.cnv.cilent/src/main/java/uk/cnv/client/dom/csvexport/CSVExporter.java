@@ -3,12 +3,15 @@ package uk.cnv.client.dom.csvexport;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +41,13 @@ public class CSVExporter {
 
 		Path csvDir = Paths.get(UkConvertProperty.getProperty(UkConvertProperty.CSV_DIR));
 		File csvFolder = csvDir.toFile();
-		csvFolder.mkdir();
+		if(csvFolder.exists()) {
+			// 既に存在していたら中身を一度消す
+			deleteFolder(csvFolder);
+		}
+		if(!csvFolder.mkdir()) {
+			return new CommandResult(new RuntimeException("フォルダの生成に失敗しました。"));
+		}
 
 		Map<String, String> queryList = null;
 		try {
@@ -68,9 +77,7 @@ public class CSVExporter {
 				continue;
 			}
 
-			if(query.length() > QUERY_MAX_LENGTH) {
-				convertZeroLengthString(csvFile);
-			}
+			convertString(csvFile);
 		}
 
 		if(errorList.size() > 0) {
@@ -78,6 +85,20 @@ public class CSVExporter {
 		}
 
 		return new CommandResult();
+	}
+
+	private void deleteFolder(File targetFolder) {
+		String[] list = targetFolder.list();
+        for(String file : list) {
+        	Path filePath = targetFolder.toPath().resolve(file);
+            File f = filePath.toFile();
+            if(f.isDirectory()) {
+            	deleteFolder(f);
+            }else {
+                f.delete();
+            }
+        }
+        targetFolder.delete();
 	}
 
 	/** bcpコマンド準備
@@ -107,24 +128,36 @@ public class CSVExporter {
 		return "SELECT " + String.join(",", columns) + " FROM " + table;
 	}
 
-	private void convertZeroLengthString(String csvFile) {
-		// 長さ0文字列が0x00で出力されてしまうため、取り除く処理
-		String renamedFileName = csvFile.replace(".csv", "_bak.csv");
+	private void convertString(String csvFileName) {
+		String originalFileName = csvFileName.replace(".csv", "_original.csv");
 		BufferedReader br = null;
 		BufferedWriter bw = null;
 		try {
-			File originalFile = new File(csvFile);
-			File renamedFile = new File(renamedFileName);
-			originalFile.renameTo(renamedFile);
+			Path csvFile = Paths.get(csvFileName);
+			Path originalFile = Paths.get(originalFileName);
+			Files.copy(csvFile, originalFile, StandardCopyOption.REPLACE_EXISTING);
 
-			br = new BufferedReader(new FileReader(renamedFileName));
-			bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(csvFile, false),"UTF-8"));
+			// 文字コードの変更
+			br = new BufferedReader(new InputStreamReader(new FileInputStream(originalFileName), "UTF-16"));
+			bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(csvFileName, false),"UTF-8"));
 
-			String rowData = br.readLine();
-			rowData = rowData.replace(Integer.toString(0x00), "");
+			String rowData;
+			while((rowData = br.readLine()) != null) {
+				// 長さ0文字列が0x00で出力されてしまうため、取り除く処理
+				byte[] bytes = rowData.getBytes();
+				for (byte b : bytes) {
+					if (b == 0x00) {
+						b = (byte)"".charAt(0);
+					}
+				}
 
-			bw.write(rowData);
-			bw.newLine();
+				bw.write(new String(bytes));
+				bw.newLine();
+			}
+
+			br.close();
+			bw.close();
+			Files.delete(originalFile);
 		}
 		catch(Exception e) {
 			System.out.println(e.getMessage());

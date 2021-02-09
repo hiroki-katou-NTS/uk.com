@@ -50,8 +50,8 @@ public class CSVImporter {
 		Path zipFilePath = csvToZip();
 
 		try {
-			String serverUrl = UkConvertProperty.getProperty(UkConvertProperty.UK_AP_SERVER_URL);
-			URL url = new URL(serverUrl + "nts.uk.cloud.web/webapi/ctx/cld/operate/tenant/csvimport");
+			String serverUrl = UkConvertProperty.getProperty(UkConvertProperty.UK_CLOUD_SERVER_URL);
+			URL url = new URL(serverUrl + "webapi/ctx/cld/operate/tenant/csvimport");
 			csvImport(zipFilePath.toAbsolutePath().toString(), fileList, url);
 		}
 		catch (Exception e){
@@ -114,7 +114,6 @@ public class CSVImporter {
     		httpConn.setRequestProperty("Charsert", "UTF-8");
     		httpConn.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
 
-
     		try (OutputStream out = httpConn.getOutputStream()) {
     			File file = new File(zipFilepath);
 
@@ -133,7 +132,7 @@ public class CSVImporter {
     			sb.append(EOL);
     			sb.append("Content-Disposition: form-data; ");
     			sb.append("name=\"filenamelist\"" + EOL+ EOL);
-    			sb.append(String.join(","+ EOL, fileList) + EOL);
+    			sb.append(String.join(",", fileList) + EOL);
 
     			// userfile
 				sb.append("--");
@@ -159,23 +158,19 @@ public class CSVImporter {
 
     			status = httpConn.getResponseCode();
 
-    			switch(status) {
-    				case 200:
-    				case 201:
-	    				{
-			    			BufferedReader reader = new BufferedReader(new InputStreamReader(httpConn.getInputStream()));
+    			if(status >= 200 && status < 300) {
+	    			BufferedReader reader = new BufferedReader(new InputStreamReader(httpConn.getInputStream()));
 
-			    			StringBuilder responce = new StringBuilder();
-			    			String line = null;
-			    			while ((line = reader.readLine()) != null) {
-			    				responce.append(line + EOL);
-			    			}
-			    			reader.close();
-			    			LogManager.out(responce.toString());
-	    				};
-	    				break;
-	    			default:
-	    				throw new RuntimeException("Server returned error code:" + status);
+	    			StringBuilder responce = new StringBuilder();
+	    			String line = null;
+	    			while ((line = reader.readLine()) != null) {
+	    				responce.append(line + EOL);
+	    			}
+	    			reader.close();
+	    			LogManager.out(responce.toString());
+    			}
+    			else {
+    				throw new RuntimeException("Server returned error code:" + status);
     			}
     		} finally {
     			httpConn.disconnect();
