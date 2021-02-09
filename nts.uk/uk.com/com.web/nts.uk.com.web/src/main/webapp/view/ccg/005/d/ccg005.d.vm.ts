@@ -94,7 +94,8 @@ module nts.uk.at.view.ccg005.d.screenModel {
     }
 
     public onClickCancel() {
-      this.$window.close();
+      const vm = this;
+      this.$window.close(_.isEmpty(vm.favoriteList()) ? undefined : vm.favoriteList());
     }
 
     public createNewFavorite() {
@@ -183,6 +184,9 @@ module nts.uk.at.view.ccg005.d.screenModel {
               vm.callData();
               vm.$blockui("clear");
               vm.$dialog.info({ messageId: "Msg_16" }).then(() => {
+                if(vm.favoriteList().length === 0) {
+                  vm.createNewFavorite();
+                }
                 if (index >= vm.favoriteList().length) {
                   vm.selectedFavoriteOrder(vm.favoriteList()[index - 1].order);
                 } else {

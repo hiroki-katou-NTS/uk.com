@@ -456,7 +456,9 @@ module nts.uk.at.view.ccg005.a.screenModel {
         : this.perPage());
     startPage: KnockoutComputed<number> = ko.computed(() => this.perPage() * (this.currentPage() - 1) + 1);
     endPage: KnockoutComputed<number> = ko.computed(() => this.startPage() + this.totalRow() - 1);
-    paginationText: KnockoutComputed<string> = ko.computed(() => `${this.startPage()}-${this.endPage()}/${this.totalElement()}`);
+    paginationText: KnockoutComputed<string> = ko.computed(() => {
+      return ((this.totalElement() === 0) ? '0-0/0' : (`${this.startPage()}-${this.endPage()}/${this.totalElement()}`));
+    });
     // End pagination
 
     activityStatus: KnockoutObservable<number> = ko.observable();
@@ -569,8 +571,10 @@ module nts.uk.at.view.ccg005.a.screenModel {
     private initChangeFavorite() {
       const vm = this;
       vm.favoriteInputDate.subscribe((newVal) => {
-        vm.saveCharacteristic(newVal);
-        vm.subscribeFavorite();
+        if(newVal) {
+          vm.saveCharacteristic(newVal);
+          vm.subscribeFavorite();
+        }
       });
     }
 
@@ -578,7 +582,11 @@ module nts.uk.at.view.ccg005.a.screenModel {
       const vm = this;
       const selectedFavorite = _.find(vm.favoriteSpecifyData(), item => item.inputDate === vm.favoriteInputDate());
       if (!selectedFavorite) {
-        vm.favoriteInputDate(vm.favoriteSpecifyData()[0].inputDate);
+        if(_.isEmpty(vm.favoriteSpecifyData())) {
+          vm.createdDefaultFavorite();
+        } else {
+          vm.favoriteInputDate(vm.favoriteSpecifyData()[0].inputDate);
+        }
         return;
       }
       const param: DisplayInfoAfterSelectParam = new DisplayInfoAfterSelectParam({
@@ -895,7 +903,14 @@ module nts.uk.at.view.ccg005.a.screenModel {
     openScreenCCG005D() {
       const vm = this;
       $('#ccg005-star-popup').ntsPopup('hide');
-      vm.$window.modal('/view/ccg/005/d/index.xhtml');
+      vm.$window.modal('/view/ccg/005/d/index.xhtml').then((data) => {
+        if(data === undefined) {
+          vm.createdDefaultFavorite();
+        } else {
+          vm.favoriteSpecifyData(data);
+        }
+        vm.subscribeFavorite();
+      });
     }
 
     /**
