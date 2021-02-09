@@ -26,7 +26,6 @@ import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.TimezoneToUseHourlyHoliday;
-import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
@@ -47,7 +46,10 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavet
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.LateTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ChildCareAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
@@ -1002,8 +1004,8 @@ public class WorkScheduleTest {
 		WorkSchedule workSchedule = Helper.createWithWorkInfo(workInfo);
 		
 		new Expectations() {{
-			workInfo.getWorkStyle(require);
-			result = Optional.of(WorkStyle.ONE_DAY_REST);
+			workInfo.isAttendanceRate(require);
+			result = false;
 		}};
 		
 		NtsAssert.businessException("Msg_2103", () -> {
@@ -1024,8 +1026,8 @@ public class WorkScheduleTest {
 				TaskScheduleDetailTestHelper.create("code2", 10, 0, 12, 0)));
 		
 		new Expectations(workSchedule) {{
-			workInfo.getWorkStyle(require);
-			result = Optional.of(WorkStyle.ONE_DAY_WORK);
+			workInfo.isAttendanceRate(require);
+			result = true;
 			
 			workSchedule.getTimeVacation();
 			result = new HashMap<>();
@@ -1053,8 +1055,8 @@ public class WorkScheduleTest {
 				TaskScheduleDetailTestHelper.create("code2", 10, 0, 12, 0)));
 		
 		new Expectations(workSchedule) {{
-			workInfo.getWorkStyle(require);
-			result = Optional.of(WorkStyle.ONE_DAY_WORK);
+			workInfo.isAttendanceRate(require);
+			result = true;
 			
 			workSchedule.getTimeVacation();
 			result = new HashMap<>();
@@ -1086,8 +1088,8 @@ public class WorkScheduleTest {
 				TaskScheduleDetailTestHelper.create("code2", 10, 0, 12, 0)));
 		
 		new Expectations(workSchedule) {{
-			workInfo.getWorkStyle(require);
-			result = Optional.of(WorkStyle.ONE_DAY_WORK);
+			workInfo.isAttendanceRate(require);
+			result = true;
 			
 			workSchedule.getTimeVacation();
 			result = new HashMap<>();
@@ -1131,8 +1133,8 @@ public class WorkScheduleTest {
 						timevacationUseTimeOfDaily));
 		
 		new Expectations(workSchedule) {{
-			workInfo.getWorkStyle(require);
-			result = Optional.of(WorkStyle.ONE_DAY_WORK);
+			workInfo.isAttendanceRate(require);
+			result = true;
 			
 			workSchedule.getTimeVacation();
 			result = timeVacationResult;
@@ -1182,8 +1184,8 @@ public class WorkScheduleTest {
 						timevacationUseTimeOfDaily));
 		
 		new Expectations(workSchedule) {{
-			workInfo.getWorkStyle(require);
-			result = Optional.of(WorkStyle.ONE_DAY_WORK);
+			workInfo.isAttendanceRate(require);
+			result = true;
 			
 			workSchedule.getTimeVacation();
 			result = timeVacationResult;
@@ -1233,8 +1235,8 @@ public class WorkScheduleTest {
 						timevacationUseTimeOfDaily));
 		
 		new Expectations(workSchedule) {{
-			workInfo.getWorkStyle(require);
-			result = Optional.of(WorkStyle.ONE_DAY_WORK);
+			workInfo.isAttendanceRate(require);
+			result = true;
 			
 			workSchedule.getTimeVacation();
 			result = timeVacationResult;
@@ -1255,6 +1257,230 @@ public class WorkScheduleTest {
 		
 	}
 	
+	
+	
+	@Test
+	public void testGetTimeSpansWhichNotDuplicatedWithTheNotWorkingTimeSpan_breakTime() {
+		
+		BreakTimeOfDailyAttd breakTime = new BreakTimeOfDailyAttd(Arrays.asList(
+				new BreakTimeSheet(new BreakFrameNo(1), TimeWithDayAttr.hourMinute(12, 0), TimeWithDayAttr.hourMinute(13, 0)),
+				new BreakTimeSheet(new BreakFrameNo(1), TimeWithDayAttr.hourMinute(15, 0), TimeWithDayAttr.hourMinute(15, 30))
+				));
+		
+		WorkSchedule workSchedule = Helper.createWithBreakTimeAndShortTime(breakTime, Optional.empty());
+		
+		new Expectations(workSchedule) {{
+			workSchedule.getTimeVacation();
+			result = new HashMap<>();
+		}};
+		
+		TimeSpanForCalc target = new TimeSpanForCalc(TimeWithDayAttr.hourMinute(8, 0), TimeWithDayAttr.hourMinute(17, 0));
+		List<TimeSpanForCalc> result = NtsAssert.Invoke.privateMethod(workSchedule, "getTimeSpansWhichNotDuplicatedWithTheNotWorkingTimeSpan", require, target);
+		
+		assertThat( result )
+		.extracting( 
+			d -> d.getStart().hour(),
+			d -> d.getStart().minute(),
+			d -> d.getEnd().hour(),
+			d -> d.getEnd().minute() )
+		.containsExactly(
+			tuple( 8, 0, 12, 0),
+			tuple( 13, 0, 15, 0),
+			tuple( 15, 30, 17, 0) );
+		
+	}
+	
+	@Test
+	public void testGetTimeSpansWhichNotDuplicatedWithTheNotWorkingTimeSpan_shortTime() {
+		
+		ShortTimeOfDailyAttd shortTime = new ShortTimeOfDailyAttd(Arrays.asList(
+				new ShortWorkingTimeSheet(
+						new ShortWorkTimFrameNo(1), 
+						ChildCareAttribute.CHILD_CARE, 
+						TimeWithDayAttr.hourMinute(11, 0), 
+						TimeWithDayAttr.hourMinute(12, 0)),
+				new ShortWorkingTimeSheet(
+						new ShortWorkTimFrameNo(2), 
+						ChildCareAttribute.CARE, 
+						TimeWithDayAttr.hourMinute(15, 0), 
+						TimeWithDayAttr.hourMinute(17, 0))
+				));
+		
+		WorkSchedule workSchedule = Helper.createWithBreakTimeAndShortTime(new BreakTimeOfDailyAttd(), Optional.of(shortTime) );
+		
+		new Expectations(workSchedule) {{
+			workSchedule.getTimeVacation();
+			result = new HashMap<>();
+		}};
+		
+		TimeSpanForCalc target = new TimeSpanForCalc(TimeWithDayAttr.hourMinute(8, 0), TimeWithDayAttr.hourMinute(17, 0));
+		List<TimeSpanForCalc> result = NtsAssert.Invoke.privateMethod(workSchedule, "getTimeSpansWhichNotDuplicatedWithTheNotWorkingTimeSpan", require, target);
+		
+		assertThat( result )
+		.extracting( 
+			d -> d.getStart().hour(),
+			d -> d.getStart().minute(),
+			d -> d.getEnd().hour(),
+			d -> d.getEnd().minute() )
+		.containsExactly(
+			tuple( 8, 0, 11, 0),
+			tuple( 12, 0, 15, 0) );
+	}
+	
+	@Test
+	public void testGetTimeSpansWhichNotDuplicatedWithTheNotWorkingTimeSpan_timeVacation(
+			@Injectable TimevacationUseTimeOfDaily useTime) {
+		
+		WorkSchedule workSchedule = Helper.createWithBreakTimeAndShortTime(new BreakTimeOfDailyAttd(), Optional.empty() );
+		
+		Map<TimezoneToUseHourlyHoliday, TimeVacation> timeVacationMap = new HashMap<>();
+		timeVacationMap.put(
+				TimezoneToUseHourlyHoliday.GOINGOUT_UNION, 
+				new TimeVacation(
+					Arrays.asList(
+						new TimeSpanForCalc(
+							TimeWithDayAttr.hourMinute(9, 0), 
+							TimeWithDayAttr.hourMinute(10, 0)),
+						new TimeSpanForCalc(
+							TimeWithDayAttr.hourMinute(13, 0), 
+							TimeWithDayAttr.hourMinute(15, 0)) ),
+					useTime)
+				);
+		
+		new Expectations(workSchedule) {{
+			workSchedule.getTimeVacation();
+			result = timeVacationMap;
+		}};
+		
+		TimeSpanForCalc target = new TimeSpanForCalc(TimeWithDayAttr.hourMinute(8, 0), TimeWithDayAttr.hourMinute(17, 0));
+		List<TimeSpanForCalc> result = NtsAssert.Invoke.privateMethod(workSchedule, "getTimeSpansWhichNotDuplicatedWithTheNotWorkingTimeSpan", require, target);
+		
+		assertThat( result )
+		.extracting( 
+			d -> d.getStart().hour(),	
+			d -> d.getStart().minute(),
+			d -> d.getEnd().hour(),
+			d -> d.getEnd().minute() )
+		.containsExactly(
+			tuple( 8, 0, 9, 0),
+			tuple( 10, 0, 13, 0),
+			tuple( 15, 0, 17, 0) );
+	}
+	
+	@Test
+	public void testGetTimeSpansWhichNotDuplicatedWithTheNotWorkingTimeSpan_all(
+			@Injectable TimevacationUseTimeOfDaily useTime) {
+		
+		BreakTimeOfDailyAttd breakTime = new BreakTimeOfDailyAttd(Arrays.asList(
+				new BreakTimeSheet(
+						new BreakFrameNo(1), 
+						TimeWithDayAttr.hourMinute(12, 0), 
+						TimeWithDayAttr.hourMinute(13, 0)) ));
+		
+		ShortTimeOfDailyAttd shortTime = new ShortTimeOfDailyAttd(Arrays.asList(
+				new ShortWorkingTimeSheet(
+						new ShortWorkTimFrameNo(2), 
+						ChildCareAttribute.CARE, 
+						TimeWithDayAttr.hourMinute(15, 0), 
+						TimeWithDayAttr.hourMinute(17, 0))
+				));
+		
+		WorkSchedule workSchedule = Helper.createWithBreakTimeAndShortTime( breakTime, Optional.of( shortTime ) );
+		
+		Map<TimezoneToUseHourlyHoliday, TimeVacation> timeVacationMap = new HashMap<>();
+		timeVacationMap.put(
+				TimezoneToUseHourlyHoliday.GOINGOUT_UNION, 
+				new TimeVacation(
+					Arrays.asList(
+						new TimeSpanForCalc(
+							TimeWithDayAttr.hourMinute(9, 0), 
+							TimeWithDayAttr.hourMinute(10, 0)) ),
+					useTime)
+				);
+		
+		new Expectations(workSchedule) {{
+			
+			workSchedule.getTimeVacation();
+			result = timeVacationMap;
+		}};
+		
+		TimeSpanForCalc target = new TimeSpanForCalc(TimeWithDayAttr.hourMinute(8, 0), TimeWithDayAttr.hourMinute(17, 0));
+		List<TimeSpanForCalc> result = NtsAssert.Invoke.privateMethod(workSchedule, "getTimeSpansWhichNotDuplicatedWithTheNotWorkingTimeSpan", require, target);
+		
+		assertThat( result )
+		.extracting( 
+			d -> d.getStart().hour(),
+			d -> d.getStart().minute(),
+			d -> d.getEnd().hour(),
+			d -> d.getEnd().minute() )
+		.containsExactly(
+			tuple( 8, 0, 9, 0),
+			tuple( 10, 0, 12, 0),
+			tuple( 13, 0, 15, 0) );
+	}
+	
+	@Test
+	public void testGetWorkingTimeSpan_empty(
+			@Injectable WorkInfoOfDailyAttendance workInfo) {
+		
+		WorkSchedule workSchedule = Helper.createWithWorkInfo(workInfo);
+		
+		new Expectations(workSchedule) {{
+			
+			workInfo.isAttendanceRate(require);
+			result = false;
+		}};
+		
+		List<TimeSpanForCalc> result = NtsAssert.Invoke.privateMethod(workSchedule, "getWorkingTimeSpan", require);
+		
+		assertThat( result ).isEmpty();
+	}
+	
+	@Test
+	public void testGetWorkingTimeSpan_OK(
+			@Injectable WorkInfoOfDailyAttendance workInfo,
+			@Injectable TimeLeavingOfDailyAttd timeLeaving) {
+		
+		// not working time
+		BreakTimeOfDailyAttd breakTime = new BreakTimeOfDailyAttd(Arrays.asList(
+				new BreakTimeSheet(new BreakFrameNo(1), TimeWithDayAttr.hourMinute(12, 0), TimeWithDayAttr.hourMinute(13, 0)),
+				new BreakTimeSheet(new BreakFrameNo(1), TimeWithDayAttr.hourMinute(15, 0), TimeWithDayAttr.hourMinute(15, 30))
+				));
+		
+		WorkSchedule workSchedule = Helper.createWithParams(workInfo, breakTime, timeLeaving);
+		
+		List<TimeSpanForCalc> timeLeavingAttList = Arrays.asList(
+				new TimeSpanForCalc( TimeWithDayAttr.hourMinute(8, 0), TimeWithDayAttr.hourMinute(17, 00)),
+				new TimeSpanForCalc( TimeWithDayAttr.hourMinute(20, 0), TimeWithDayAttr.hourMinute(23, 00))
+				);
+		
+		new Expectations(workSchedule) {{
+			
+			workInfo.isAttendanceRate(require);
+			result = true;
+			
+			timeLeaving.getTimeOfTimeLeavingAtt();
+			result = timeLeavingAttList;
+		}};
+		
+		List<TimeSpanForCalc> result = NtsAssert.Invoke.privateMethod(workSchedule, "getWorkingTimeSpan", require);
+		
+		assertThat( result )
+			.extracting( 
+				d -> d.getStart().hour(),
+				d -> d.getStart().minute(),
+				d -> d.getEnd().hour(),
+				d -> d.getEnd().minute())
+			.containsExactly( 
+				tuple(8, 0, 12, 0),
+				// break-time 12:00~13:00
+				tuple(13, 0, 15, 0),
+				// break-time 15:00~15:30
+				tuple(15, 30, 17, 0),
+				tuple(20, 0, 23, 0)
+			);
+	}
+	
 	@Test
 	public void testCreateTaskScheduleForWholeDay_Msg_2103(
 			@Injectable WorkInfoOfDailyAttendance workInfo) {
@@ -1263,8 +1489,8 @@ public class WorkScheduleTest {
 		
 		new Expectations() {{
 			
-			workInfo.getWorkStyle(require);
-			result = Optional.of(WorkStyle.ONE_DAY_REST);
+			workInfo.isAttendanceRate(require);
+			result = false;
 		}};
 		
 		NtsAssert.businessException("Msg_2103", () -> {
@@ -1277,22 +1503,26 @@ public class WorkScheduleTest {
 			@Injectable WorkInfoOfDailyAttendance workInfo,
 			@Injectable TimeLeavingOfDailyAttd timeLeaving) {
 		
-		WorkSchedule workSchedule = Helper.createWithWorkInfoAndTimeLeaving(workInfo, timeLeaving);
+		// not working time
+		BreakTimeOfDailyAttd breakTime = new BreakTimeOfDailyAttd(Arrays.asList(
+				new BreakTimeSheet(new BreakFrameNo(1), TimeWithDayAttr.hourMinute(12, 0), TimeWithDayAttr.hourMinute(13, 0)),
+				new BreakTimeSheet(new BreakFrameNo(1), TimeWithDayAttr.hourMinute(15, 0), TimeWithDayAttr.hourMinute(15, 30))
+				));
 		
-		TimeSpanForCalc span1 = new TimeSpanForCalc(
-				TimeWithDayAttr.hourMinute(8, 00), 
-				TimeWithDayAttr.hourMinute(17, 00));
-		TimeSpanForCalc span2 = new TimeSpanForCalc(
-				TimeWithDayAttr.hourMinute(21, 00), 
-				TimeWithDayAttr.hourMinute(24, 00));
+		WorkSchedule workSchedule = Helper.createWithParams(workInfo, breakTime, timeLeaving);
+		
+		List<TimeSpanForCalc> timeLeavingAttList = Arrays.asList(
+				new TimeSpanForCalc( TimeWithDayAttr.hourMinute(8, 0), TimeWithDayAttr.hourMinute(17, 00)),
+				new TimeSpanForCalc( TimeWithDayAttr.hourMinute(20, 0), TimeWithDayAttr.hourMinute(23, 00))
+				);
 		
 		new Expectations() {{
 			
-			workInfo.getWorkStyle(require);
-			result = Optional.of(WorkStyle.ONE_DAY_WORK);
+			workInfo.isAttendanceRate(require);
+			result = true;
 			
 			timeLeaving.getTimeOfTimeLeavingAtt();
-			result = Arrays.asList( span1, span2);
+			result = timeLeavingAttList;
 		}};
 		
 		workSchedule.createTaskScheduleForWholeDay(require, new TaskCode("code"));
@@ -1301,43 +1531,52 @@ public class WorkScheduleTest {
 		assertThat( result.getDetails() )
 			.extracting(
 				d -> d.getTaskCode().v(),
-				d -> d.getTimeSpan().start(),
-				d -> d.getTimeSpan().end())
+				d -> d.getTimeSpan().getStart().hour(),
+				d -> d.getTimeSpan().getStart().minute(),
+				d -> d.getTimeSpan().getEnd().hour(),
+				d -> d.getTimeSpan().getEnd().minute())
 			.containsExactly(
-				tuple("code", 480, 1020),
-				tuple("code", 1260, 1440));
+				tuple("code", 8, 0, 12, 0),
+				tuple("code", 13, 0, 15, 0),
+				tuple("code", 15, 30, 17, 0),
+				tuple("code", 20, 0, 23, 0));
 	}
 	
 	@Test
-	public void testGetTimeSpansWhichNotDuplicatedWithTheNotWorkingTimeSpan() {
+	public void testAddTaskScheduleWithTimeSpan() {
 		
 		BreakTimeOfDailyAttd breakTime = new BreakTimeOfDailyAttd(Arrays.asList(
 				new BreakTimeSheet(new BreakFrameNo(1), TimeWithDayAttr.hourMinute(12, 0), TimeWithDayAttr.hourMinute(13, 0)),
 				new BreakTimeSheet(new BreakFrameNo(1), TimeWithDayAttr.hourMinute(15, 0), TimeWithDayAttr.hourMinute(15, 30))
 				));
 		
-		WorkSchedule workSchedule = Helper.createWithBreakTime(breakTime);
+		WorkSchedule workSchedule = Helper.createWithBreakTimeAndShortTime( breakTime, Optional.empty() );
 		
 		new Expectations(workSchedule) {{
+			
 			workSchedule.getTimeVacation();
 			result = new HashMap<>();
 		}};
 		
-		TimeSpanForCalc target = new TimeSpanForCalc(TimeWithDayAttr.hourMinute(8, 0), TimeWithDayAttr.hourMinute(17, 0));
-		List<TimeSpanForCalc> result = NtsAssert.Invoke.privateMethod(workSchedule, "getTimeSpansWhichNotDuplicatedWithTheNotWorkingTimeSpan", require, target);
+		workSchedule.addTaskScheduleWithTimeSpan(
+			require,
+			new TimeSpanForCalc(
+				TimeWithDayAttr.hourMinute(13, 0),
+				TimeWithDayAttr.hourMinute(17, 0)),
+			new TaskCode("001") );
 		
-		assertThat( result )
-		.extracting( 
-			d -> d.getStart(), 
-			d -> d.getEnd() )
-		.containsExactly(
-			tuple( TimeWithDayAttr.hourMinute(8, 0), TimeWithDayAttr.hourMinute(12, 0)),
-			tuple( TimeWithDayAttr.hourMinute(13, 0), TimeWithDayAttr.hourMinute(15, 0)),
-			tuple( TimeWithDayAttr.hourMinute(15, 30), TimeWithDayAttr.hourMinute(17, 0)) );
-		
+		assertThat( workSchedule.getTaskSchedule().getDetails() )
+			.extracting(
+				d -> d.getTaskCode().v(),
+				d -> d.getTimeSpan().getStart().hour(),
+				d -> d.getTimeSpan().getStart().minute(),
+				d -> d.getTimeSpan().getEnd().hour(),
+				d -> d.getTimeSpan().getEnd().minute())
+			.containsExactly(
+				tuple( "001", 13, 0, 15, 0),
+				tuple( "001", 15, 30, 17, 0)
+			);
 	}
-	
-	
 	
 	static class Helper {
 		
@@ -1345,7 +1584,7 @@ public class WorkScheduleTest {
 		 * @param breakTime
 		 * @return
 		 */
-		static WorkSchedule createWithBreakTime(BreakTimeOfDailyAttd breakTime) {
+		static WorkSchedule createWithBreakTimeAndShortTime(BreakTimeOfDailyAttd breakTime, Optional<ShortTimeOfDailyAttd> shortTime) {
 			
 			return new WorkSchedule(
 					"employeeID",
@@ -1358,7 +1597,7 @@ public class WorkScheduleTest {
 					TaskSchedule.createWithEmptyList(),
 					Optional.empty(), // timeLeaving
 					Optional.empty(), // attendanceTime
-					Optional.empty(), // shortTime
+					shortTime, // shortTime
 					Optional.empty()); // outingTime
 		}
 		
