@@ -1531,14 +1531,14 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				ValueType valueTypeEnum = EnumAdaptor.valueOf(val.getValueType(), ValueType.class);
 				if (valueTypeEnum.isIntegerCountable()) {
 					int currentValue = (int) val.value();
-					int totalValue = totalValueTypeEnum.isInteger()
+					int totalValue = totalValueTypeEnum.isInteger() && !StringUtil.isNullOrEmpty(totalVal.getValue(), true)
 							? Integer.parseInt(totalVal.getValue()) : 0;
 					totalVal.setValue(String.valueOf(totalValue + currentValue));
 					totalVal.setValueType(val.getValueType());
 				}
 				if (valueTypeEnum.isDoubleCountable()) {
 					double currentValueDouble = (double) val.value();
-					double totalValue = totalValueTypeEnum.isInteger()
+					double totalValue = totalValueTypeEnum.isInteger() && !StringUtil.isNullOrEmpty(totalVal.getValue(), true)
 							? Double.parseDouble(totalVal.getValue()) : 0d;
 					totalVal.setValue(String.valueOf(totalValue + currentValueDouble));
 					totalVal.setValueType(val.getValueType());
@@ -1588,8 +1588,8 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 
 						if (valueTypeEnum.isIntegerCountable()) {
 							int currentValue = (int) aVal.value();
-							int personalTotalValue = totalValueTypeEnum.isInteger()
-									? Integer.parseInt(personalTotal.getValue()) : 0;
+							int personalTotalValue = totalValueTypeEnum.isInteger() && !StringUtil.isNullOrEmpty(personalTotal.getValue(), true)
+											? Integer.parseInt(personalTotal.getValue()) : 0;
 							personalTotal.setValue(String.valueOf(personalTotalValue + currentValue));
 							employeeData.mapPersonalTotal.put(attdId, personalTotal);
 							totalVal.setValue(String.valueOf(personalTotalValue + currentValue));
@@ -1597,7 +1597,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 							employeeData.mapPersonalTotal.put(attdId, personalTotal);
 						} else if (valueTypeEnum.isDoubleCountable()) {
 							double currentValueDouble = (double) aVal.value();
-							double personalTotalValue = totalValueTypeEnum.isDouble()
+							double personalTotalValue = totalValueTypeEnum.isDouble() && !StringUtil.isNullOrEmpty(personalTotal.getValue(), true)
 									? Double.parseDouble(personalTotal.getValue()) : 0d;
 							personalTotal.setValue(String.valueOf(personalTotalValue + currentValueDouble));
 							employeeData.mapPersonalTotal.put(attdId, personalTotal);
