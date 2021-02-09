@@ -375,7 +375,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 				return self.$i18n('KAF005_66');
 			} else if (appType === AttendanceType.BREAKTIME) {
 				
-				return self.$i18n('KAF005_76');
+				return self.$i18n('KAF005_70');
 				
 			} else if (appType === AttendanceType.MIDDLE_BREAK_TIME) {
 				
