@@ -47,9 +47,13 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 		
 		createIggrid() {
 			const vm = this;
+			let heightCalc = screen.height - 327;
+			if(heightCalc < 503) {
+				heightCalc = 503;
+			}
 			$("#eGrid").igGrid({
-				height: 503,
 				width: window.innerWidth - 40,
+				height: heightCalc,
 				dataSource: vm.dataSource,
 				primaryKey: 'appID',
 				primaryKeyDataType: 'string',
@@ -67,16 +71,16 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 				columns: [
 					{ headerText: "", key: 'appID', width: 1, hidden: true },
 					{ headerText: vm.$i18n('KAF018_385'), key: 'dateStr', width: 180 },
-					{ headerText: vm.$i18n('KAF018_383'), key: 'appType', width: 150 },
+					{ headerText: vm.$i18n('KAF018_383'), key: 'appType', width: 200 },
 					{ headerText: vm.$i18n('KAF018_384'), key: 'prePostAtr', width: 70 },
-					{ headerText: vm.$i18n('KAF018_386'), key: 'content', width: 600 },
-					{ headerText: vm.$i18n('KAF018_387'), key: 'reflectedState', dataType: 'number', width: 150, formatter: (value: number) => vm.getReflectedStateText(value) },
-					{ headerText: vm.$i18n('KAF018_388'), key: 'approvalStatus', width: 150, formatter: vm.createApprovalStatus },
-					{ headerText: vm.$i18n('KAF018_389'), key: 'phase1', width: 400 },
-					{ headerText: vm.$i18n('KAF018_390'), key: 'phase2', width: 400 },
-					{ headerText: vm.$i18n('KAF018_391'), key: 'phase3', width: 400 },
-					{ headerText: vm.$i18n('KAF018_392'), key: 'phase4', width: 400 },
-					{ headerText: vm.$i18n('KAF018_393'), key: 'phase5', width: 417 }
+					{ headerText: vm.$i18n('KAF018_386'), key: 'content', width: 600, formatter: vm.createLimitedInfo },
+					{ headerText: vm.$i18n('KAF018_387'), key: 'reflectedState', dataType: 'number', width: 75, formatter: (value: number) => vm.getReflectedStateText(value) },
+					{ headerText: vm.$i18n('KAF018_388'), key: 'approvalStatus', width: 85, formatter: vm.createApprovalStatus },
+					{ headerText: vm.$i18n('KAF018_389'), key: 'phase1', width: 200, formatter: vm.createLimitedInfo },
+					{ headerText: vm.$i18n('KAF018_390'), key: 'phase2', width: 200, formatter: vm.createLimitedInfo },
+					{ headerText: vm.$i18n('KAF018_391'), key: 'phase3', width: 200, formatter: vm.createLimitedInfo },
+					{ headerText: vm.$i18n('KAF018_392'), key: 'phase4', width: 200, formatter: vm.createLimitedInfo },
+					{ headerText: vm.$i18n('KAF018_393'), key: 'phase5', width: 217, formatter: vm.createLimitedInfo }
 				],
 				features: [
 					{
@@ -91,6 +95,13 @@ module nts.uk.at.view.kaf018.e.viewmodel {
 					}
 				]
 			});
+		}
+		
+		createLimitedInfo(value: any) {
+			if(value) {
+				return '<span class="limited-label">' + value + '</span>';
+			}
+			return '';		
 		}
 		
 		createApprovalStatus(value: any) {

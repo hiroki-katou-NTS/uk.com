@@ -459,6 +459,8 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			dateRow = 0;
 			
 			WorksheetCollection sheetCollection = workbook.getWorksheets();
+			// set work sheet name 
+			String sheetName = optOutputItemDailyWork.isPresent() ? optOutputItemDailyWork.get().getItemName().v() : WorkScheOutputConstants.SHEET_NAME;
 			
 			// Write header data
 			writeHeaderData(query, outputItemDailyWork, sheet, reportData, dateRow);
@@ -488,8 +490,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 
 			// Get index of temp sheet
 			int indexTempSheet = sheet.getIndex();
-			WorkSheetInfo sheetInfo = new WorkSheetInfo(sheet, currentRow, indexTempSheet);
-
+			WorkSheetInfo sheetInfo = new WorkSheetInfo(sheet, currentRow, indexTempSheet, sheetName);
 			// Copy sheet
 			sheet = this.copySheet(sheetCollection, sheetInfo);
 			sheetInfo.setSheet(sheet);
@@ -947,7 +948,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				queryData.getQuery().setEmployeeId(empStatus.getEmployees());
 				queryData.setDatePeriod(range.toListDate());
 				//アルゴリズム「日付別の日別勤務表を作成する」を実行する
-				collectEmployeePerformanceDataByDate(reportData, queryData, dataRowCount);
+				this.collectEmployeePerformanceDataByDate(reportData, queryData, dataRowCount);
 			});
 			
 			// Calculate workplace total
@@ -1576,7 +1577,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 						totalGrossVal.setValueType(valueType);
 						
 						if (aVal.value() == null) return;
-						
+
 						if (valueTypeEnum.isIntegerCountable()) {
 							int currentValue = (int) aVal.value();
 							int personalTotalValue = totalValueTypeEnum.isInteger()
@@ -1586,8 +1587,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 							totalVal.setValue(String.valueOf(personalTotalValue + currentValue));
 							totalGrossVal.setValue(String.valueOf(personalTotalValue + currentValue));
 							employeeData.mapPersonalTotal.put(attdId, personalTotal);
-						}
-						if (valueTypeEnum.isDoubleCountable()) {
+						} else if (valueTypeEnum.isDoubleCountable()) {
 							double currentValueDouble = (double) aVal.value();
 							double personalTotalValue = totalValueTypeEnum.isDouble()
 									? Double.parseDouble(personalTotal.getValue()) : 0d;
@@ -1596,6 +1596,12 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 							totalVal.setValue(String.valueOf(personalTotalValue + currentValueDouble));
 							totalGrossVal.setValue(String.valueOf(personalTotalValue + currentValueDouble));
 							employeeData.mapPersonalTotal.put(attdId, personalTotal);
+						} else {
+							personalTotal.setValue("");
+							employeeData.mapPersonalTotal.put(attdId, personalTotal);
+							totalVal.setValue("");
+							totalGrossVal.setValue("");
+ 							employeeData.mapPersonalTotal.put(attdId, personalTotal);
 						}
 					});
 				});
@@ -1610,7 +1616,6 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			// Sum of all workplace total and workplace hierarchy total
 			workplaceData.lstChildWorkplaceReportData.forEach((k,child) -> {
 				child.getGrossTotal().forEach(item -> {
-					if (item.value() == null) return;
 					Optional<TotalValue> optTotalVal = lstTotalVal.stream().filter(x -> x.getAttendanceId() == item.getAttendanceId()).findFirst();
 					if (optTotalVal.isPresent()) {
 						TotalValue totalVal = optTotalVal.get();
@@ -1619,12 +1624,12 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 						ValueType valueTypeEnum = EnumAdaptor.valueOf(valueType, ValueType.class);
 						if (valueTypeEnum.isIntegerCountable()) {
 							totalVal.setValue(String.valueOf((int) totalVal.value() + Integer.parseInt(item.getValue())));
-						}
-						if (valueTypeEnum.isDoubleCountable()) {
+						} else if (valueTypeEnum.isDoubleCountable()) {
 							totalVal.setValue(String.valueOf((double) totalVal.value() + Double.parseDouble(item.getValue())));
+						} else {
+							totalVal.setValue("");
 						}
-					}
-					else {
+					} else {
 						TotalValue totalVal = new TotalValue();
 						totalVal.setAttendanceId(item.getAttendanceId());
 						totalVal.setValue(item.getValue());
@@ -2139,13 +2144,13 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		pageSetup.setHeader(1, "&16&\"MS ゴシック\"" + outputItem.getItemName().v());
 		
 		// Set header date
-		DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  H:mm", Locale.JAPAN);
+		DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd  HH:mm", Locale.JAPAN);
 		pageSetup.setHeader(2, "&8&\"MS ゴシック\" " + LocalDateTime.now().format(fullDateTimeFormatter) + "\npage &P ");
 		
 		Cells cells = sheet.getCells();
 		Cell periodCell = cells.get(dateRow,0);
 		
-		DateTimeFormatter jpFormatter = DateTimeFormatter.ofPattern("yyyy/M/d (E)", Locale.JAPAN);
+		DateTimeFormatter jpFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd (E)", Locale.JAPAN);
 		String periodStr = TextResource.localize("KWR001_112") + " "
 							+ query.getStartDate().toLocalDate().format(jpFormatter) + " "
 							+ WorkScheOutputConstants.PERIOD_SYMBOL + " "
@@ -3871,7 +3876,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		Worksheet ws = wsc.get(wsc.getCount() - 1);
 		// sheet name
 		sheetInfo.plusNewSheetIndex();
-		String sheetName = WorkScheOutputConstants.SHEET_NAME + sheetInfo.getNewSheetIndex();
+		String sheetName = sheetInfo.getSheetName();
 		ws.setName(sheetName);
 		return ws;
 	}

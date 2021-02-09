@@ -7,6 +7,7 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerSe
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.MacAddress;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.ModelEmpInfoTer;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 
 /**
@@ -44,4 +45,6 @@ public interface EmpInfoTerminalRepository {
 	// 	[6] 取得する
 	List<EmpInfoTerminal> get(ContractCode contractCode);
 
+	// [7] 取得する
+	List<EmpInfoTerminal> get(ContractCode contractCode, ModelEmpInfoTer model);
 }
