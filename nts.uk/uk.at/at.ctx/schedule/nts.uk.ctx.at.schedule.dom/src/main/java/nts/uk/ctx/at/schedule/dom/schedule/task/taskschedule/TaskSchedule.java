@@ -52,7 +52,7 @@ public class TaskSchedule implements DomainValue {
 	 * @param details 対象の詳細リスト
 	 * @return
 	 */
-	public static boolean checkDuplicate(List<TaskScheduleDetail> details) {
+	private static boolean checkDuplicate(List<TaskScheduleDetail> details) {
 		
 		if ( details.size() <= 1 ) {
 			return false;
@@ -75,7 +75,7 @@ public class TaskSchedule implements DomainValue {
 	 * @param startIndex チェックのスタート位置
 	 * @return
 	 */
-	public static List<TaskScheduleDetail> mergeTaskScheduleDetail(List<TaskScheduleDetail> details, int startIndex) {
+	private static List<TaskScheduleDetail> mergeTaskScheduleDetail(List<TaskScheduleDetail> details, int startIndex) {
 		
 		for ( int index = startIndex; index < details.size() - 1; index++) {
 			
