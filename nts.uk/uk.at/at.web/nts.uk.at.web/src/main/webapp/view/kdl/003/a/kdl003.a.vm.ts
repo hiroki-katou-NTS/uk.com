@@ -158,6 +158,7 @@ module nts.uk.at.view.kdl003.a {
                 });
                 //parent data
                 self.callerParameter = parentData;
+                
             }
 
             /**
@@ -167,6 +168,7 @@ module nts.uk.at.view.kdl003.a {
                 var self = this;
                 var dfd = $.Deferred<void>();
                 nts.uk.ui.block.invisible();
+                
                 $.when(self.loadWorkTime(self.callerParameter.selectedWorkTimeCode), self.loadWorkType())
                     .done(() => {
                         // Set initial selection.
@@ -227,23 +229,24 @@ module nts.uk.at.view.kdl003.a {
 
                         self.getHeaderWorkTime(data.useATR === 1);
                         let isCheckStatus = _.isNil(data.allCheckStatus) ? true : data.allCheckStatus;                        
-                        self.isAllCheckStatus(!isCheckStatus); //data.allCheckStatus !== 1
+                        self.isAllCheckStatus(!isCheckStatus);
                         self.isCheckStatus(isCheckStatus);
 
                         let listWorkTime: Array<WorkTimeSet> = [];
-                        if (!nts.uk.util.isNullOrEmpty(code)) {
-                            listWorkTime = data.availableWorkingHours; //data.availableWorkingHours.length > 0 ? data.availableWorkingHours : data.allWorkHours;
+                        if (!nts.uk.util.isNullOrEmpty(self.callerParameter.workTimeCodes)) {
+                            listWorkTime = data.availableWorkingHours;
                         } else if (!nts.uk.util.isNullOrEmpty(self.callerParameter.workPlaceId)
                             && !nts.uk.util.isNullOrEmpty(self.callerParameter.baseDate)) {
-                            listWorkTime = data.workingHoursByWorkplace; //data.workingHoursByWorkplace.length > 0 ? data.workingHoursByWorkplace : data.allWorkHours;
+                            listWorkTime = data.workingHoursByWorkplace;
                         } else {
-                            listWorkTime = data.allWorkHours;
+                            listWorkTime = data.allWorkHours;                            
                         }
 
                         //backup data 
                         self.allWorkHours(_.orderBy(data.allWorkHours, 'code', 'asc'));
 
-                        let selectableWorkHours = !nts.uk.util.isNullOrEmpty(code) ? data.availableWorkingHours : data.workingHoursByWorkplace;
+                        let selectableWorkHours = !nts.uk.util.isNullOrEmpty(self.callerParameter.workTimeCodes) 
+                                                    ? data.availableWorkingHours : data.workingHoursByWorkplace;
                         self.selectableWorkHours(_.orderBy(selectableWorkHours, 'code', 'asc'));
 
                         listWorkTime = _.orderBy(listWorkTime, 'code', 'asc');
@@ -600,6 +603,7 @@ module nts.uk.at.view.kdl003.a {
                 self.startTimeOption(1);
                 self.endTimeOption(1);
                 // Clear errors.
+                nts.uk.ui.errors.clearAll();
                 $('#inputEndTime').ntsError('clear');
                 $('#inputStartTime').ntsError('clear');
 
