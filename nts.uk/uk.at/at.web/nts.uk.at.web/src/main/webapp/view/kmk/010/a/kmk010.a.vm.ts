@@ -39,7 +39,7 @@ module nts.uk.at.view.kmk010.a {
                 self.checkRounding = ko.observable(0);
                 //self.superHD60HConMedModel.roundingTime.subscribe(function(selectUnit: number) {         
                 self.outsideOTSettingModel.roundingUnit.subscribe(function(selectUnit: number) {         
-                        self.updateSelectUnitRounding(selectUnit);
+                    self.updateSelectUnitRounding(selectUnit);
                 });
                 self.tabFinalArray = ko.observable(12);
                 
@@ -80,6 +80,7 @@ module nts.uk.at.view.kmk010.a {
                 
                 service.findByIdOutsideOTSetting().done(function(dataOutsideOTSetting) {
                     self.outsideOTSettingModel.updateData(dataOutsideOTSetting);
+
                     for (var brdItem of self.outsideOTSettingModel.breakdownItems()) {
                         var rateBRDItems: PremiumExtra60HRateModel[] = [];
                         for (var overtimeItem of self.outsideOTSettingModel.overtimes()) {
@@ -108,6 +109,10 @@ module nts.uk.at.view.kmk010.a {
                         self.updateEnableInputRate();
                         self.applyChangeEnableInputRate();
                         self.updateLanguage();
+
+                        self.updateSelectUnitRounding(dataOutsideOTSetting.roundingUnit);
+                        self.outsideOTSettingModel.roundingUnit.valueHasMutated();
+
                         nts.uk.ui.block.clear();
                         dfd.resolve(self);
                     });

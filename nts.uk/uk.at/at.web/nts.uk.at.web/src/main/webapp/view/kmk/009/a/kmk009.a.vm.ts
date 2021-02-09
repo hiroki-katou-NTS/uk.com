@@ -204,7 +204,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             //condition 6, ver7
             self.enableAtdBtn(isUse); //ver 7
             //A3_17 && A3_20                                 
-            self.enableUse(isUse && !_.isNull(self.attendanceModel.attendanceItemName()));            
+            self.enableUse(isUse && !_.isNil(self.attendanceModel.attendanceItemName()));            
         }
 
         /**
@@ -322,7 +322,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             var self = this;
             var dfd = $.Deferred<any>();
 
-            //            nts.uk.ui.block.invisible();
+            nts.uk.ui.block.grayout();
 
             service.getAllTotalTimesDetail(codeChanged).done(function(data) {
                 //                nts.uk.ui.block.clear();
@@ -341,8 +341,9 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                     }
                     self.stash.updateData(data);
                     self.itemTotalTimesDetail.updateData(data);
-                    self.selectUse(self.itemTotalTimesDetail.useAtr());
-                    // disable or enable Upper limit and under linit
+                    self.selectUse(self.itemTotalTimesDetail.useAtr());                    
+
+                    // disable or enable Upper limit and under limit
                     self.selectUppper(data.totalCondition.upperLimitSettingAtr);
                     if (self.selectUppper() == 1 && self.checkSelectUse()) {
                         self.enableUpper(true);
@@ -381,8 +382,10 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                                         self.isAllowShowAttendance( selectID[0].attendanceItemId >= 193 && selectID[0].attendanceItemId <= 202);
                                     }
                                 }
-                            });
 
+                                self.enableUse(self.checkSelectUse() && !_.isNil(self.attendanceModel.attendanceItemName()));  
+                                nts.uk.ui.block.clear();    
+                            });                            
                             dfd.resolve();
                         });
                     });
@@ -690,7 +693,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                                 self.attendanceModel.update(dailyAttendanceItem[0].attendanceItemId, dailyAttendanceItem[0].attendanceItemName);                                
                                 self.isAllowShowAttendance( dailyAttendanceItem[0].attendanceItemId >= 193 && dailyAttendanceItem[0].attendanceItemId <= 202);
                             }
-                            self.enableUse(parseInt(self.selectUse()) && !_.isNull(self.attendanceModel.attendanceItemName())); 
+                            self.enableUse(parseInt(self.selectUse()) && !_.isNil(self.attendanceModel.attendanceItemName())); 
                             nts.uk.ui.block.clear();
                         }).fail(() => {
                             nts.uk.ui.block.clear();
@@ -773,7 +776,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                 saveData.updateData(self.stash.toDto());
                 saveData.useAtr(0);
             }
-            if (self.selectUse() == SelectUseConst.Use && (self.enableUnder() == true || self.enableUpper() == true) && _.isNumber(self.attendanceModel.attendanceItemId())) {
+            if (self.selectUse() == SelectUseConst.Use && _.isNumber(self.attendanceModel.attendanceItemId())) { //(self.enableUnder() == true || self.enableUpper() == true) 
                 saveData.totalCondition.attendanceItemId(self.attendanceModel.attendanceItemId());
             } else {
                 saveData.totalCondition.attendanceItemId(SelectUseConst.NO_SELECT);
