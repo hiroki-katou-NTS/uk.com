@@ -528,7 +528,7 @@ public class WorkSchedule implements DomainAggregate {
 	 */
 	public void createTaskScheduleForWholeDay(Require require, TaskCode taskCode) {
 		
-		List<TimeSpanForCalc> workingTimeSpanList = getWorkingTimeSpan(require);
+		List<TimeSpanForCalc> workingTimeSpanList = this.getWorkingTimeSpan(require);
 		if ( workingTimeSpanList.isEmpty() ) {
 			throw new BusinessException("Msg_2103");
 		}
@@ -587,11 +587,13 @@ public class WorkSchedule implements DomainAggregate {
 			TimeSpanForCalc targetTimeSpan) {
 		List<TimeSpanForCalc> notWorkingTimeSpanList = new ArrayList<>();
 		
+		// break time list 休憩時間帯
 		List<TimeSpanForCalc> breakTimeList = this.lstBreakTime.getBreakTimeSheets().stream()
 				.map( sheet -> sheet.convertToTimeSpanForCalc())
 				.collect(Collectors.toList());
 		notWorkingTimeSpanList.addAll(breakTimeList);
 		
+		// short time list 短時間勤務時間帯
 		if ( this.optSortTimeWork.isPresent() ){
 			List<TimeSpanForCalc> shortTimeList = this.optSortTimeWork.get().getShortWorkingTimeSheets().stream()
 							.map( sheet -> sheet.convertToTimeSpanForCalc())
@@ -599,6 +601,7 @@ public class WorkSchedule implements DomainAggregate {
 			notWorkingTimeSpanList.addAll( shortTimeList );
 		}
 		
+		// time vacation 時間休暇
 		List<TimeSpanForCalc> timeVacationSpanList = this.getTimeVacation().values().stream()
 				.map( timeVacation -> timeVacation.getTimeList())
 				.flatMap( x -> x.stream() )
