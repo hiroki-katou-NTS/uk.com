@@ -314,11 +314,14 @@ public class AsposeHolidayShipment {
         } else {
             if (!manageMultipleTime) {
                 cells.deleteRow(15);
-                cells.deleteRow(10);
-                deleteCnt =+ 2;
+                deleteCnt++;
             }
             
             if (holidayShipment.getRec().isPresent()) {
+                if (!manageMultipleTime) {
+                    cells.deleteRow(10);
+                    deleteCnt++;
+                }
                 cells.get("B8").setValue(I18NText.getText("KAF011_85"));
                 if (manageMultipleTime) {
                     cells.get("B13").setValue(I18NText.getText("KAF011_86"));
@@ -326,6 +329,18 @@ public class AsposeHolidayShipment {
                     cells.get("B12").setValue(I18NText.getText("KAF011_86"));
                 }
             } else {
+                cells.deleteRow(15);
+                cells.deleteRow(14);
+                cells.deleteRow(13);
+                cells.deleteRow(12);
+                cells.deleteRow(11);
+                deleteCnt =+ 5;
+                
+                if (!manageMultipleTime) {
+                  cells.deleteRow(10);
+                  deleteCnt++;
+              }
+                
                 cells.get("B8").setValue(I18NText.getText("KAF011_86"));
                 if (manageMultipleTime) {
                     cells.get("B13").setValue(I18NText.getText("KAF011_86"));

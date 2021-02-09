@@ -9,16 +9,12 @@ import java.io.Serializable;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.Convert;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.layer.infra.data.entity.type.GeneralDateTimeToDBConverter;
-import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -43,51 +39,42 @@ public class KscdtScheExeLog extends UkJpaEntity implements Serializable {
     
     /** The exe sid. */
     @Basic(optional = false)
-    @NotNull
     @Column(name = "EXE_SID")
     private String exeSid;
     /**
      * 契約コード
      */
-    @NotNull
+    @Basic(optional = false)
     @Column(name = "CONTRACT_CD")
     private String contractCD;
     /** The exe str D. */
     // 開始日時
     @Basic(optional = false)
-    @NotNull
     @Column(name = "EXE_START")
-    @Convert(converter = GeneralDateTimeToDBConverter.class)
     private GeneralDateTime exeStrD;
     
     /** The exe end D. */
     @Basic(optional = false)
-    @NotNull
     @Column(name = "EXE_END")
-    @Convert(converter = GeneralDateTimeToDBConverter.class)
     private GeneralDateTime exeEndD;
     
     /** The re exe atr. */
+    @Basic(optional = false)
     @Column(name = "EXE_ATR")
     private int exeAtr;
     
     /** The start ymd. */
     @Basic(optional = false)
-    @NotNull
     @Column(name = "TARGET_START_DATE")
-    @Convert(converter = GeneralDateToDBConverter.class)
     private GeneralDate startYmd;
     
     /** The end ymd. */
     @Basic(optional = false)
-    @NotNull
     @Column(name = "TARGET_END_DATE")
-    @Convert(converter = GeneralDateToDBConverter.class)
     private GeneralDate endYmd;
     
     /** The completion status. */
     @Basic(optional = false)
-    @NotNull
     @Column(name = "COMPLETION_STATUS")
     private int completionStatus;
 

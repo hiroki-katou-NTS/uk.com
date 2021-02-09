@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -11,6 +12,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.application.appabsence.AppAbsenceFinder;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoWithDateDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApprovalPhaseStateForAppDto;
+import nts.uk.ctx.at.request.app.find.application.common.service.other.output.ActualContentDisplayDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.ChangeWorkTypeResultDto;
 import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.DisplayInforWhenStarting;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -18,6 +20,8 @@ import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.AbsenceServiceProcess;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.VacationCheckOutput;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
+import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
@@ -53,6 +57,9 @@ public class ChangeValueItemsOnHolidayShipment {
 	
 	@Inject
 	private HolidayShipmentService holidayShipmentService;
+	
+	@Inject
+	private CollectAchievement collectAchievement;
 	
 	/**
 	 * @name 振出日を変更する
@@ -198,6 +205,12 @@ public class ChangeValueItemsOnHolidayShipment {
 			ApprovalRootContentImport_New approvalRootContentImport_New = commonAlgorithm.getApprovalRoot(companyId, displayInforWhenStarting.appDispInfoStartup.getAppDetailScreenInfo().getApplication().getEmployeeID(), EmploymentRootAtr.APPLICATION, ApplicationType.COMPLEMENT_LEAVE_APPLICATION, newDate);
 			displayInforWhenStarting.appDispInfoStartup.getAppDispInfoWithDateOutput().setOpListApprovalPhaseState(approvalRootContentImport_New.getApprovalRootState().getListApprovalPhaseState().stream().map(c->ApprovalPhaseStateForAppDto.fromApprovalPhaseStateImport(c)).collect(Collectors.toList()));
 			displayInforWhenStarting.appDispInfoStartup.getAppDispInfoWithDateOutput().setOpErrorFlag(approvalRootContentImport_New.getErrorFlag().value);
+		}
+		
+		List<ActualContentDisplay> achievementContents = collectAchievement.getAchievementContents(companyId, displayInforWhenStarting.appDispInfoStartup.getAppDetailScreenInfo().getApplication().getEmployeeID(), Arrays.asList(newDate), ApplicationType.COMPLEMENT_LEAVE_APPLICATION);
+		if(!achievementContents.isEmpty()) {
+			displayInforWhenStarting.appDispInfoStartup.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().removeIf(c->c.toDomain().getDate().equals(displayInforWhenStarting.abs.application.toDomain().getAppDate().getApplicationDate()));
+			displayInforWhenStarting.appDispInfoStartup.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().add(ActualContentDisplayDto.fromDomain(achievementContents.get(0)));
 		}
 		return displayInforWhenStarting;
 	}

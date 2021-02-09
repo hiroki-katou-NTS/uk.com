@@ -989,7 +989,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             __viewContext.viewModel.viewAB.listWorkType(listWorkType);
         }
         
-        // convert data lấy từ server để đẩy vào Grid
+        // convert data lấy từ server để đẩy vào Grid 8888
         private convertDataToGrid(data: IDataStartScreen, viewMode: string) {
             let self = this;
             let result = {};
@@ -1057,8 +1057,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         let cell: IWorkScheduleShiftInforDto = listWorkScheduleShiftByEmpSort[j];
                         let time = new Time(new Date(cell.date));
                         let date = moment(cell.date, 'YYYY/MM/DD');
+                        
+                        // check ngày có thể chỉnh sửa 日 < A画面パラメータ.修正可能開始日 の場合
+                        let canModifyStartDate = true;
                         if(moment(cell.date, 'YYYY/MM/DD') < moment(scheduleModifyStartDate, 'YYYY/MM/DD')){
-                            cell.isEdit = false;
+                            canModifyStartDate = false;
                         }
                         
                         let ymd = time.yearMonthDay;
@@ -1156,7 +1159,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         }
                         
                         // điều kiện ※Aa1
-                        if (cell.isEdit == false) {
+                        if (canModifyStartDate == false || cell.isEdit == false) {
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 0));
                             listCellNotEditBg.push(new CellColor('_' + ymd, rowId, "xseal", 0));
                             listCellNotEditColor.push(new CellColor('_' + ymd, rowId, "color-schedule-performance", 0));
@@ -1164,11 +1167,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         // điều kiện ※Aa2
                         if (cell.isActive == false) {}
                         
-                        if (cell.isEdit == false || cell.needToWork == false || cell.achievements == true || cell.supportCategory == 3) {
+                        if (canModifyStartDate == false || cell.needToWork == false || cell.achievements == true || cell.supportCategory == 3) {
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xseal", 0));
                             arrListCellLock.push({ rowId: rowId, columnId: '_' + ymd });
                         } else if (cell.confirmed == true) {
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xdet", 0));
+                        }
+                        
+                        if (cell.confirmed == true) {
+                            arrListCellLock.push({ rowId: rowId, columnId: '_' + ymd });
                         }
                         
                     };
@@ -1180,8 +1187,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     objDetailContentDs['employeeId'] = emp.employeeId;
                     let listWorkScheduleInforByEmpSort = _.orderBy(listWorkScheduleInforByEmp, ['date'],['asc']);
                     _.each(listWorkScheduleInforByEmpSort, (cell: IWorkScheduleWorkInforDto) => {
+                        
+                        // check ngày có thể chỉnh sửa 日 < A画面パラメータ.修正可能開始日 の場合
+                        let canModifyStartDate = true;
                         if(moment(cell.date, 'YYYY/MM/DD') < moment(scheduleModifyStartDate, 'YYYY/MM/DD')){
-                            cell.isEdit = false;
+                            canModifyStartDate = false;
                         }
                         let time = new Time(new Date(cell.date));
                         let ymd = time.yearMonthDay;
@@ -1263,20 +1273,24 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         }
                         
                         // điều kiện ※Abc1 dieu kien edit
-                        if (cell.isEdit == false) {
+                        if (canModifyStartDate == false || cell.isEdit == false) {
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 0));
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 1));
                         }
                         // điều kiện ※Abc2
                         if (cell.isActive == false) {}
                         
-                        if (cell.isEdit == false || cell.needToWork == false || cell.achievements == true || cell.supportCategory == 3) {
+                        if (canModifyStartDate == false || cell.needToWork == false || cell.achievements == true || cell.supportCategory == 3) {
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xseal", 0));
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xseal", 1));
                             arrListCellLock.push({ rowId: rowId, columnId: '_' + ymd });
                         } else if (cell.confirmed == true) {
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xdet", 0));
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xdet", 1));
+                        }
+                        
+                        if (cell.confirmed == true) {
+                            arrListCellLock.push({ rowId: rowId, columnId: '_' + ymd });
                         }
                     });
                     detailContentDs.push(objDetailContentDs);
@@ -1288,8 +1302,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     let listWorkScheduleInforByEmpSort = _.orderBy(listWorkScheduleInforByEmp, ['date'],['asc']);
                     _.each(listWorkScheduleInforByEmpSort, (cell: IWorkScheduleWorkInforDto) => {
                         // set dataSource
+                        
+                        // check ngày có thể chỉnh sửa 日 < A画面パラメータ.修正可能開始日 の場合
+                        let canModifyStartDate = true;
                         if(moment(cell.date, 'YYYY/MM/DD') < moment(scheduleModifyStartDate, 'YYYY/MM/DD')){
-                            cell.isEdit = false;
+                            canModifyStartDate = false;
                         }
                         let time = new Time(new Date(cell.date));
                         let ymd = time.yearMonthDay;
@@ -1305,6 +1322,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             startTime    = '';
                             endTime      = '';
                         }
+                        
+                        if(cell.startTime == 0 && cell.endTime == 0){
+                            startTime    = '';
+                            endTime      = '';
+                        }
+                        
                         objDetailContentDs['_' + ymd] = new ExCell(workTypeCode, workTypeName, workTimeCode, workTimeName, startTime, endTime, '', '', cell.confirmed , cell.achievements, cell.workHolidayCls);
                         // set Deco background
                         // A10_color⑤ 勤務略名表示の背景色 (Màu nền hiển thị "chuyên cần, tên viết tắt")
@@ -1411,7 +1434,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         
                          // điều kiện ※Abc1
                          // dieu kien ※Ac
-                        if (cell.isEdit == false) {
+                        if (canModifyStartDate == false || cell.isEdit == false) {
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 0));
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 1));
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 2));
@@ -1421,7 +1444,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         // điều kiện ※Abc2
                         if (cell.isActive == false) {}
                         
-                        if (cell.isEdit == false || cell.needToWork == false || cell.achievements == true || cell.supportCategory == 3) {
+                        if (canModifyStartDate == false || cell.needToWork == false || cell.achievements == true || cell.supportCategory == 3) {
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xseal", 0));
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xseal", 1));
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xseal", 2));
@@ -1432,6 +1455,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xdet", 1));
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xdet", 2));
                             detailContentDecoModeConfirm.push(new CellColor('_' + ymd, rowId, "xdet", 3));
+                        }
+                        
+                        if (cell.confirmed == true) {
+                            arrListCellLock.push({ rowId: rowId, columnId: '_' + ymd });
                         }
                     });
                     detailContentDs.push(objDetailContentDs);
@@ -2859,6 +2886,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     if (!_.isNil(obj)) {
                         return;
                     }
+                    
                     let workType = self.dataCell.objWorkType;
                     let workTime = self.dataCell.objWorkTime;
                     // truong hop chon workType = required va workTime = 選択なし 
@@ -2874,7 +2902,76 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             nts.uk.ui.dialog.alertError({ messageId: 'Msg_435' });
                             dfd.resolve(false);
                         } else {
-                            dfd.resolve(true);
+                            if (data.workHolidayCls != 0) {
+                                let wtimeCd = cellData.workTimeCode;
+                                let objWTime = _.find(__viewContext.viewModel.viewAB.listWorkTime2, function(o) { return o.code === wtimeCd; });
+                                if (!_.isNil(objWTime)) { // truong hop worktime tồn tại trong list worktime
+                                    if (userInfor.disPlayFormat == 'time') {
+                                        let startTime = _.isNil(objWTime) ? '' : formatById("Clock_Short_HM", objWTime.tzStart1);
+                                        let endTime = _.isNil(objWTime) ? '' : formatById("Clock_Short_HM", objWTime.tzEnd1);
+
+                                        $("#extable").exTable("stickFields", ["workTypeName", "workTimeName", "startTime", "endTime"]);
+                                        $("#extable").exTable("stickData", {
+                                            workTypeCode: data.workTypeCode,
+                                            workTypeName: data.workTypeName,
+                                            workTimeCode: cellData.workTimeCode,
+                                            workTimeName: cellData.workTimeName,
+                                            startTime: startTime,
+                                            endTime: endTime,
+                                            achievements: false,
+                                            workHolidayCls: data.workHolidayCls
+                                        });
+
+                                        __viewContext.viewModel.viewAB.isRedColor = false;
+                                        dfd.resolve(true);
+
+                                    } else {
+                                        $("#extable").exTable("stickFields", ["workTypeName", "workTimeName"]);
+                                        $("#extable").exTable("stickData", {
+                                            workTypeCode: data.workTypeCode,
+                                            workTypeName: data.workTypeName,
+                                            workTimeCode: cellData.workTimeCode,
+                                            workTimeName: cellData.workTimeName,
+                                            startTime: '',
+                                            endTime: '',
+                                            achievements: false,
+                                            workHolidayCls: data.workHolidayCls
+                                        });
+                                        __viewContext.viewModel.viewAB.isRedColor = false;
+                                        dfd.resolve(true);
+                                    }
+                                } else { // truong hop worktime không tồn tại trong list worktime => lấy trong datasource
+                                    if (userInfor.disPlayFormat == 'time') {
+                                        $("#extable").exTable("stickFields", ["workTypeName", "workTimeName", "startTime", "endTime"]);
+                                        $("#extable").exTable("stickData", {
+                                            workTypeCode: data.workTypeCode,
+                                            workTypeName: data.workTypeName,
+                                            workTimeCode: cellData.workTimeCode,
+                                            workTimeName: cellData.workTimeName,
+                                            startTime: cellData.startTime,
+                                            endTime: cellData.endTime,
+                                            achievements: false,
+                                            workHolidayCls: data.workHolidayCls
+                                        });
+                                        __viewContext.viewModel.viewAB.isRedColor = false;
+                                        dfd.resolve(true);
+                                    } else {
+                                        $("#extable").exTable("stickFields", ["workTypeName", "workTimeName"]);
+                                        $("#extable").exTable("stickData", {
+                                            workTypeCode: data.workTypeCode,
+                                            workTypeName: data.workTypeName,
+                                            workTimeCode: cellData.workTimeCode,
+                                            workTimeName: cellData.workTimeName,
+                                            startTime: '',
+                                            endTime: '',
+                                            achievements: false,
+                                            workHolidayCls: data.workHolidayCls
+                                        });
+                                        __viewContext.viewModel.viewAB.isRedColor = false;
+                                        dfd.resolve(true);
+                                    }
+                                }
+                            }
                         }
                     } else {
                         dfd.resolve(true);

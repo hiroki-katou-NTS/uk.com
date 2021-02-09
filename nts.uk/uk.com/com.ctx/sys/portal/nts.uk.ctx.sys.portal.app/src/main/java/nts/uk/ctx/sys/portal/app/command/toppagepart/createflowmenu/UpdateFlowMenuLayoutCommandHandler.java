@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.CreateFlowMenu;
+import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.CreateFlowMenuFileService;
 import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.CreateFlowMenuRepository;
 import nts.uk.ctx.sys.portal.dom.toppagepart.createflowmenu.FlowMenuLayout;
 import nts.uk.shr.com.context.AppContexts;
@@ -23,7 +24,10 @@ public class UpdateFlowMenuLayoutCommandHandler extends CommandHandler<UpdateFlo
 	
 	@Inject
 	private CreateFlowMenuRepository createFlowMenuRepository;
-
+	
+	@Inject
+	private CreateFlowMenuFileService createFlowMenuFileService;
+	
 	@Override
 	protected void handle(CommandHandlerContext<UpdateFlowMenuLayoutCommand> context) {
 		UpdateFlowMenuLayoutCommand command = context.getCommand();
@@ -32,13 +36,12 @@ public class UpdateFlowMenuLayoutCommandHandler extends CommandHandler<UpdateFlo
 				.findByPk(AppContexts.user().companyId(), command.getFlowMenuCode());
 		
 		optCreateFlowMenu.ifPresent(domain -> {
+			//2. not　フローメニューレイアウト　empty: delete()
+			domain.getFlowMenuLayout().ifPresent(this.createFlowMenuFileService::deleteLayout);
 			//4. create(inputフローメニューレイアウト)
 			//5. set(ファイルID)
-			domain.setFlowMenuLayout(command.getFlowMenuLayout() != null 
-									? Optional.of(FlowMenuLayout.createFromMemento(command.getFlowMenuLayout()))
-									: Optional.empty());
-			
-			//2. not　フローメニューレイアウト　empty: delete()
+			domain.setFlowMenuLayout(Optional.ofNullable(command.getFlowMenuLayout())
+					.map(FlowMenuLayout::createFromMemento));
 			//6. set(フローメニューレイアウト)
 			//7. persist()
 			this.createFlowMenuRepository.update(domain);

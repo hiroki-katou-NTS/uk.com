@@ -110,17 +110,17 @@ module nts.uk.at.view {
 
         //短時間勤務時間帯
         export class ShortTimeDto {
-            shortTimeNo: number;//短時間勤務枠NO
-            shortTimeAtr: number;//育児介護区分 (0:育児,1:介護)
+            workNo: number;//短時間勤務枠NO
+            dayDivision: number;//育児介護区分 (0:育児,1:介護)
             startTime: number;//開始             
             endTime: number;//終了
-            constructor(shortTimeNo: number,
-                shortTimeAtr: number,
+            constructor(workNo: number,
+                dayDivision: number,
                 startTime: number,
                 endTime: number) {
                 let self = this;
-                self.shortTimeNo = shortTimeNo;
-                self.shortTimeAtr = shortTimeAtr;
+                self.workNo = workNo;
+                self.dayDivision = dayDivision;
                 self.startTime = startTime;
                 self.endTime = endTime;
             }
