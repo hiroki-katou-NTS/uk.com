@@ -83,7 +83,11 @@ module nts.uk.at.view.kmk010.d {
           vm.$window.close({ isSave: true });
           vm.$blockui('hide');
         });
-      }).fail((error) => { console.log(error); vm.$blockui('hide'); });
+      }).fail((error) => { 
+        vm.$dialog.error({ messageId: error.messageId }). then(() => {
+          vm.$blockui('hide'); 
+        });        
+      });
     }
 
     closeDialog() {
@@ -166,7 +170,11 @@ module nts.uk.at.view.kmk010.d {
 
       })
       .always(() => vm.$blockui('hide') )
-      .fail((error) => { console.log(error); vm.$blockui('hide'); });
+      .fail((error) => { 
+        vm.$dialog.error({ messageId: error.messageId }).then(() => {
+          vm.$blockui('hide'); 
+        });        
+      });
     }
   }
 
