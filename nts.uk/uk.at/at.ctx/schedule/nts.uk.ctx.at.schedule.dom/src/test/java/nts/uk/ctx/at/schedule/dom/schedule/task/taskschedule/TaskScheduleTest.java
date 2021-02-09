@@ -21,7 +21,7 @@ public class TaskScheduleTest {
 		
 		List<TaskScheduleDetail> details = new ArrayList<>();
 		
-		boolean result = TaskSchedule.checkDuplicate( details );
+		boolean result = NtsAssert.Invoke.staticMethod(TaskSchedule.class, "checkDuplicate", details);
 		
 		assertThat( result ).isFalse();
 	}
@@ -36,7 +36,7 @@ public class TaskScheduleTest {
 						TimeWithDayAttr.hourMinute(8, 0), 
 						TimeWithDayAttr.hourMinute(9, 0)) ));
 		
-		boolean result = TaskSchedule.checkDuplicate( details );
+		boolean result = NtsAssert.Invoke.staticMethod(TaskSchedule.class, "checkDuplicate", details);
 		
 		assertThat( result ).isFalse();
 	}
@@ -60,7 +60,7 @@ public class TaskScheduleTest {
 						TimeWithDayAttr.hourMinute(11, 0)))
 				));
 		
-		boolean result = TaskSchedule.checkDuplicate( details );
+		boolean result = NtsAssert.Invoke.staticMethod(TaskSchedule.class, "checkDuplicate", details);
 		
 		assertThat( result ).isFalse();
 	}
@@ -84,7 +84,7 @@ public class TaskScheduleTest {
 						TimeWithDayAttr.hourMinute(11, 0)))
 				));
 		
-		boolean result = TaskSchedule.checkDuplicate( details );
+		boolean result = NtsAssert.Invoke.staticMethod(TaskSchedule.class, "checkDuplicate", details);
 		
 		assertThat( result ).isTrue();
 	}
@@ -193,6 +193,374 @@ public class TaskScheduleTest {
 		
 	}
 	
+	@Test
+	public void testAddTaskScheduleDetail_before_notDuplicate_sameCode() {
+		
+		List<TaskScheduleDetail> details = new ArrayList<>(Arrays.asList(
+				new TaskScheduleDetail( new TaskCode("code1"), 
+						new TimeSpanForCalc(
+						TimeWithDayAttr.hourMinute(14, 0), 
+						TimeWithDayAttr.hourMinute(15, 0)))
+				));
+		
+		TaskSchedule taskSchedule = new TaskSchedule(details);
+		
+		TaskScheduleDetail newTask = new TaskScheduleDetail(
+				new TaskCode("code1"), 
+				new TimeSpanForCalc(
+					TimeWithDayAttr.hourMinute(13, 00), 
+					TimeWithDayAttr.hourMinute(14, 00) ));
+		
+		TaskSchedule result = taskSchedule.addTaskScheduleDetail( newTask );
+		
+		assertThat( result.getDetails() )
+			.extracting(
+				d -> d.getTaskCode().v(),
+				d -> d.getTimeSpan().getStart().hour(),
+				d -> d.getTimeSpan().getStart().minute(),
+				d -> d.getTimeSpan().getEnd().hour(),
+				d -> d.getTimeSpan().getEnd().minute())
+			.containsExactly(
+				tuple( "code1", 13, 0, 15, 0)
+			);
+	} 
 	
+	@Test
+	public void testAddTaskScheduleDetail_before_notDuplicate_differentCode() {
+		
+		List<TaskScheduleDetail> details = new ArrayList<>(Arrays.asList(
+				new TaskScheduleDetail( new TaskCode("code1"), 
+						new TimeSpanForCalc(
+						TimeWithDayAttr.hourMinute(14, 0), 
+						TimeWithDayAttr.hourMinute(15, 0)))
+				));
+		
+		TaskSchedule taskSchedule = new TaskSchedule(details);
+		
+		TaskScheduleDetail newTask = new TaskScheduleDetail(
+				new TaskCode("code-new"), 
+				new TimeSpanForCalc(
+					TimeWithDayAttr.hourMinute(13, 00), 
+					TimeWithDayAttr.hourMinute(14, 00) ));
+		
+		TaskSchedule result = taskSchedule.addTaskScheduleDetail( newTask );
+		
+		assertThat( result.getDetails() )
+			.extracting(
+				d -> d.getTaskCode().v(),
+				d -> d.getTimeSpan().getStart().hour(),
+				d -> d.getTimeSpan().getStart().minute(),
+				d -> d.getTimeSpan().getEnd().hour(),
+				d -> d.getTimeSpan().getEnd().minute())
+			.containsExactly(
+				tuple( "code-new", 13, 0, 14, 0),
+				tuple( "code1", 14, 0, 15, 0)
+			);
+	} 
+	
+	@Test
+	public void testAddTaskScheduleDetail_before_duplicate_sameCode() {
+		
+		List<TaskScheduleDetail> details = new ArrayList<>(Arrays.asList(
+				new TaskScheduleDetail( new TaskCode("code1"), 
+						new TimeSpanForCalc(
+						TimeWithDayAttr.hourMinute(14, 0), 
+						TimeWithDayAttr.hourMinute(15, 0)))
+				));
+		
+		TaskSchedule taskSchedule = new TaskSchedule(details);
+		
+		TaskScheduleDetail newTask = new TaskScheduleDetail(
+				new TaskCode("code1"), 
+				new TimeSpanForCalc(
+					TimeWithDayAttr.hourMinute(13, 00), 
+					TimeWithDayAttr.hourMinute(14, 30) ));
+		
+		TaskSchedule result = taskSchedule.addTaskScheduleDetail( newTask );
+		
+		assertThat( result.getDetails() )
+			.extracting(
+				d -> d.getTaskCode().v(),
+				d -> d.getTimeSpan().getStart().hour(),
+				d -> d.getTimeSpan().getStart().minute(),
+				d -> d.getTimeSpan().getEnd().hour(),
+				d -> d.getTimeSpan().getEnd().minute())
+			.containsExactly(
+				tuple( "code1", 13, 0, 15, 0)
+			);
+	} 
+	
+	@Test
+	public void testAddTaskScheduleDetail_before_duplicate_differentCode() {
+		
+		List<TaskScheduleDetail> details = new ArrayList<>(Arrays.asList(
+				new TaskScheduleDetail( new TaskCode("code1"), 
+						new TimeSpanForCalc(
+						TimeWithDayAttr.hourMinute(14, 0), 
+						TimeWithDayAttr.hourMinute(15, 0)))
+				));
+		
+		TaskSchedule taskSchedule = new TaskSchedule(details);
+		
+		TaskScheduleDetail newTask = new TaskScheduleDetail(
+				new TaskCode("code-new"), 
+				new TimeSpanForCalc(
+					TimeWithDayAttr.hourMinute(13, 00), 
+					TimeWithDayAttr.hourMinute(14, 30) ));
+		
+		TaskSchedule result = taskSchedule.addTaskScheduleDetail( newTask );
+		
+		assertThat( result.getDetails() )
+			.extracting(
+				d -> d.getTaskCode().v(),
+				d -> d.getTimeSpan().getStart().hour(),
+				d -> d.getTimeSpan().getStart().minute(),
+				d -> d.getTimeSpan().getEnd().hour(),
+				d -> d.getTimeSpan().getEnd().minute())
+			.containsExactly(
+					tuple( "code-new", 13, 0, 14, 30),
+					tuple( "code1", 14, 30, 15, 0)
+			);
+	} 
+	
+	
+	@Test
+	public void testAddTaskScheduleDetail_inside_sameCode() {
+		
+		List<TaskScheduleDetail> details = new ArrayList<>(Arrays.asList(
+				new TaskScheduleDetail( new TaskCode("code1"), 
+						new TimeSpanForCalc(
+						TimeWithDayAttr.hourMinute(13, 0), 
+						TimeWithDayAttr.hourMinute(16, 0)))
+				));
+		
+		TaskSchedule taskSchedule = new TaskSchedule(details);
+		
+		TaskScheduleDetail newTask = new TaskScheduleDetail(
+				new TaskCode("code1"), 
+				new TimeSpanForCalc(
+					TimeWithDayAttr.hourMinute(14, 0), 
+					TimeWithDayAttr.hourMinute(15, 0) ));
+		
+		TaskSchedule result = taskSchedule.addTaskScheduleDetail( newTask );
+		
+		assertThat( result.getDetails() )
+			.extracting(
+				d -> d.getTaskCode().v(),
+				d -> d.getTimeSpan().getStart().hour(),
+				d -> d.getTimeSpan().getStart().minute(),
+				d -> d.getTimeSpan().getEnd().hour(),
+				d -> d.getTimeSpan().getEnd().minute())
+			.containsExactly(
+				tuple( "code1", 13, 0, 16, 0)
+			);
+	}
+	
+	@Test
+	public void testAddTaskScheduleDetail_inside_differentCode() {
+		
+		List<TaskScheduleDetail> details = new ArrayList<>(Arrays.asList(
+				new TaskScheduleDetail( new TaskCode("code1"), 
+						new TimeSpanForCalc(
+						TimeWithDayAttr.hourMinute(13, 0), 
+						TimeWithDayAttr.hourMinute(16, 0)))
+				));
+		
+		TaskSchedule taskSchedule = new TaskSchedule(details);
+		
+		TaskScheduleDetail newTask = new TaskScheduleDetail(
+				new TaskCode("code-new"), 
+				new TimeSpanForCalc(
+					TimeWithDayAttr.hourMinute(14, 0), 
+					TimeWithDayAttr.hourMinute(15, 0) ));
+		
+		TaskSchedule result = taskSchedule.addTaskScheduleDetail( newTask );
+		
+		assertThat( result.getDetails() )
+			.extracting(
+				d -> d.getTaskCode().v(),
+				d -> d.getTimeSpan().getStart().hour(),
+				d -> d.getTimeSpan().getStart().minute(),
+				d -> d.getTimeSpan().getEnd().hour(),
+				d -> d.getTimeSpan().getEnd().minute())
+			.containsExactly(
+				tuple( "code1", 13, 0, 14, 0),
+				tuple( "code-new", 14, 0, 15, 0),
+				tuple( "code1", 15, 0, 16, 0)
+			);
+	} 
+	
+	@Test
+	public void testAddTaskScheduleDetail_after_duplicate_sameCode() {
+		
+		List<TaskScheduleDetail> details = new ArrayList<>(Arrays.asList(
+				new TaskScheduleDetail( new TaskCode("code1"), 
+						new TimeSpanForCalc(
+						TimeWithDayAttr.hourMinute(14, 0), 
+						TimeWithDayAttr.hourMinute(15, 0)))
+				));
+		
+		TaskSchedule taskSchedule = new TaskSchedule(details);
+		
+		TaskScheduleDetail newTask = new TaskScheduleDetail(
+				new TaskCode("code1"), 
+				new TimeSpanForCalc(
+					TimeWithDayAttr.hourMinute(14, 30), 
+					TimeWithDayAttr.hourMinute(16, 0) ));
+		
+		TaskSchedule result = taskSchedule.addTaskScheduleDetail( newTask );
+		
+		assertThat( result.getDetails() )
+			.extracting(
+				d -> d.getTaskCode().v(),
+				d -> d.getTimeSpan().getStart().hour(),
+				d -> d.getTimeSpan().getStart().minute(),
+				d -> d.getTimeSpan().getEnd().hour(),
+				d -> d.getTimeSpan().getEnd().minute())
+			.containsExactly(
+				tuple( "code1", 14, 0, 16, 0)
+			);
+	}
+	
+	@Test
+	public void testAddTaskScheduleDetail_after_duplicate_differentCode() {
+		
+		List<TaskScheduleDetail> details = new ArrayList<>(Arrays.asList(
+				new TaskScheduleDetail( new TaskCode("code1"), 
+						new TimeSpanForCalc(
+						TimeWithDayAttr.hourMinute(14, 0), 
+						TimeWithDayAttr.hourMinute(15, 0)))
+				));
+		
+		TaskSchedule taskSchedule = new TaskSchedule(details);
+		
+		TaskScheduleDetail newTask = new TaskScheduleDetail(
+				new TaskCode("code-new"), 
+				new TimeSpanForCalc(
+					TimeWithDayAttr.hourMinute(14, 30), 
+					TimeWithDayAttr.hourMinute(16, 0) ));
+		
+		TaskSchedule result = taskSchedule.addTaskScheduleDetail( newTask );
+		
+		assertThat( result.getDetails() )
+			.extracting(
+				d -> d.getTaskCode().v(),
+				d -> d.getTimeSpan().getStart().hour(),
+				d -> d.getTimeSpan().getStart().minute(),
+				d -> d.getTimeSpan().getEnd().hour(),
+				d -> d.getTimeSpan().getEnd().minute())
+			.containsExactly(
+					tuple( "code1", 14, 0, 14, 30),
+					tuple( "code-new", 14, 30, 16, 0)
+			);
+	} 
+	
+	@Test
+	public void testAddTaskScheduleDetail_after_notDuplicate_sameCode() {
+		
+		List<TaskScheduleDetail> details = new ArrayList<>(Arrays.asList(
+				new TaskScheduleDetail( new TaskCode("code1"), 
+						new TimeSpanForCalc(
+						TimeWithDayAttr.hourMinute(14, 0), 
+						TimeWithDayAttr.hourMinute(15, 0)))
+				));
+		
+		TaskSchedule taskSchedule = new TaskSchedule(details);
+		
+		TaskScheduleDetail newTask = new TaskScheduleDetail(
+				new TaskCode("code1"), 
+				new TimeSpanForCalc(
+					TimeWithDayAttr.hourMinute(15, 00), 
+					TimeWithDayAttr.hourMinute(16, 00) ));
+		
+		TaskSchedule result = taskSchedule.addTaskScheduleDetail( newTask );
+		
+		assertThat( result.getDetails() )
+			.extracting(
+				d -> d.getTaskCode().v(),
+				d -> d.getTimeSpan().getStart().hour(),
+				d -> d.getTimeSpan().getStart().minute(),
+				d -> d.getTimeSpan().getEnd().hour(),
+				d -> d.getTimeSpan().getEnd().minute())
+			.containsExactly(
+				tuple( "code1", 14, 0, 16, 0)
+			);
+	} 
+	
+	@Test
+	public void testAddTaskScheduleDetail_after_notDuplicate_differentCode() {
+		
+		List<TaskScheduleDetail> details = new ArrayList<>(Arrays.asList(
+				new TaskScheduleDetail( new TaskCode("code1"), 
+						new TimeSpanForCalc(
+						TimeWithDayAttr.hourMinute(14, 0), 
+						TimeWithDayAttr.hourMinute(15, 0)))
+				));
+		
+		TaskSchedule taskSchedule = new TaskSchedule(details);
+		
+		TaskScheduleDetail newTask = new TaskScheduleDetail(
+				new TaskCode("code-new"), 
+				new TimeSpanForCalc(
+					TimeWithDayAttr.hourMinute(15, 00), 
+					TimeWithDayAttr.hourMinute(16, 00) ));
+		
+		TaskSchedule result = taskSchedule.addTaskScheduleDetail( newTask );
+		
+		assertThat( result.getDetails() )
+			.extracting(
+				d -> d.getTaskCode().v(),
+				d -> d.getTimeSpan().getStart().hour(),
+				d -> d.getTimeSpan().getStart().minute(),
+				d -> d.getTimeSpan().getEnd().hour(),
+				d -> d.getTimeSpan().getEnd().minute())
+			.containsExactly(
+				tuple( "code1", 14, 0, 15, 0),
+				tuple( "code-new", 15, 0, 16, 0)
+				
+			);
+	} 
+	
+	@Test
+	public void testAddTaskScheduleDetail_multi() {
+		
+		List<TaskScheduleDetail> details = new ArrayList<>(Arrays.asList(
+				new TaskScheduleDetail( new TaskCode("code1"), 
+						new TimeSpanForCalc(
+						TimeWithDayAttr.hourMinute(13, 0), 
+						TimeWithDayAttr.hourMinute(14, 0))),
+				new TaskScheduleDetail( new TaskCode("code2"), 
+						new TimeSpanForCalc(
+						TimeWithDayAttr.hourMinute(14, 0), 
+						TimeWithDayAttr.hourMinute(15, 0))),
+				new TaskScheduleDetail( new TaskCode("code3"), 
+						new TimeSpanForCalc(
+						TimeWithDayAttr.hourMinute(15, 0), 
+						TimeWithDayAttr.hourMinute(16, 0)))
+				));
+		
+		TaskSchedule taskSchedule = new TaskSchedule(details);
+		
+		TaskScheduleDetail newTask = new TaskScheduleDetail(
+				new TaskCode("code-new"), 
+				new TimeSpanForCalc(
+					TimeWithDayAttr.hourMinute(13, 30), 
+					TimeWithDayAttr.hourMinute(15, 30) ));
+		
+		TaskSchedule result = taskSchedule.addTaskScheduleDetail( newTask );
+		
+		assertThat( result.getDetails() )
+			.extracting(
+				d -> d.getTaskCode().v(),
+				d -> d.getTimeSpan().getStart().hour(),
+				d -> d.getTimeSpan().getStart().minute(),
+				d -> d.getTimeSpan().getEnd().hour(),
+				d -> d.getTimeSpan().getEnd().minute())
+			.containsExactly(
+				tuple( "code1", 13, 0, 13, 30),
+				tuple( "code-new", 13, 30, 15, 30),
+				tuple( "code3", 15, 30, 16, 0)
+			);
+	} 
 
 }
