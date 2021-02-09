@@ -11,7 +11,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-//TODO: Auto-generated Javadoc
 /**
 * The primary key class for the KFNMT_RPT_WK_MON_OUTATD database table.
 * 
@@ -22,7 +21,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 @Builder
-public class KfnmtRptWkMonOuttdPK implements Serializable {
+public class KfnmtRptWkMonOutAtdPK implements Serializable {
 	/** The Constant serialVersionUID. */
 	// default serial version id, required for serializable classes.
 	private static final long serialVersionUID = 1L;

@@ -3,6 +3,7 @@ package nts.uk.ctx.at.function.infra.repository.employmentinfoterminal.infotermi
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -65,8 +66,8 @@ public class JpaEmpInfoTerminalComStatusRepository extends JpaRepository impleme
 		List<EmpInfoTerminalComStatus> list = new ArrayList<>();
 		CollectionUtil.split(empInfoTerCodeList, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subCodeList -> {
 			list.addAll(this.queryProxy().query(GET_LIST_BY_CODE_LIST, KfndtTimeRecorderSignalST.class)
-					.setParameter("contractCode", contractCode)
-					.setParameter("timeRecordCodeList", subCodeList)
+					.setParameter("contractCode", contractCode.v())
+					.setParameter("timeRecordCodeList", subCodeList.stream().map(e -> e.v()).collect(Collectors.toList()))
 					.getList(m->m.toDomain()));
 		});
 		return list;
