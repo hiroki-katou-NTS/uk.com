@@ -2904,7 +2904,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         } else {
                             if (data.workHolidayCls != 0) {
                                 let wtimeCd = cellData.workTimeCode;
-                                let objWTime = _.find(__viewContext.viewModel.viewAB.listWorkTime, function(o) { return o.code === wtimeCd; });
+                                let objWTime = _.find(__viewContext.viewModel.viewAB.listWorkTime2, function(o) { return o.code === wtimeCd; });
                                 if (!_.isNil(objWTime)) { // truong hop worktime tồn tại trong list worktime
                                     if (userInfor.disPlayFormat == 'time') {
                                         let startTime = _.isNil(objWTime) ? '' : formatById("Clock_Short_HM", objWTime.tzStart1);
