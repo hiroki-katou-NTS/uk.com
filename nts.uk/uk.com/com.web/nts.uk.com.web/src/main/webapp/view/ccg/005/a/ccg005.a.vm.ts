@@ -124,7 +124,8 @@ module nts.uk.at.view.ccg005.a.screenModel {
 
 
 
-            <tr style="height: 45px;" id="ccg005-tr-background" data-bind="attr:{ class: backgroundColor }">
+
+            <tr style="height: 45px;" class="ccg005-tr-background" data-bind="attr:{ id: backgroundColor }">
               <td style="padding-right: 5px; width: 30px; background-color: white;" class="ccg005-apply-binding-avatar">
                 <!-- A4_1 -->
                 <div tabindex=10 data-bind="attr:{ id: 'ccg005-avatar-change-'+sid }, click: $component.onClickAvatar.bind($component, sid)" />
@@ -409,15 +410,15 @@ module nts.uk.at.view.ccg005.a.screenModel {
       padding-left: 35px;
     }
 
-    .background-color-present {
+    #background-color-present {
       background-color: #99FF99;
     }
 
-    .background-color-go-out {
+    #background-color-go-out {
       background-color: #FFFF00;
     }
 
-    .background-color-holiday {
+    #background-color-holiday {
       background-color: #D9D9D9;
     }
   </style>`
@@ -1245,13 +1246,8 @@ module nts.uk.at.view.ccg005.a.screenModel {
       //update view model
       if (vm.currentIndex() !== -1) {
         vm.attendanceInformationDtosDisplay()[vm.currentIndex()].status = selectedStatus;
-
-        const currentBgClass = vm.attendanceInformationDtosDisplay()[vm.currentIndex()].backgroundColor;
-        $('#ccg005-tr-background')[vm.currentIndex()].classList.remove(currentBgClass);
-
         const newBgClass = vm.getBackgroundColorClass(selectedStatus);
-        vm.attendanceInformationDtosDisplay()[vm.currentIndex()].backgroundColor = newBgClass;
-        $('#ccg005-tr-background')[vm.currentIndex()].classList.add(newBgClass);
+        $('.ccg005-tr-background')[vm.currentIndex()].id = newBgClass;
       } else {
         vm.activityStatus(selectedStatus);
       }
