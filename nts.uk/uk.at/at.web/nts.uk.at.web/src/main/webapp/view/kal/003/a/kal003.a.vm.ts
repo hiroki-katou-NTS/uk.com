@@ -793,9 +793,8 @@ module nts.uk.at.view.kal003.a.viewmodel {
 
         checkParentValueFromSub() {
             const vm = this;
-
-            console.log(vm.tabScheduleCheckConditions());
         }
+    }
 }
 
 
