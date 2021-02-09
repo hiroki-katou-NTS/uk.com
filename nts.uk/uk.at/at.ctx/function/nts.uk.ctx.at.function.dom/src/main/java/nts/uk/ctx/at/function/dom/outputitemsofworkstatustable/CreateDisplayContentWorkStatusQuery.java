@@ -111,17 +111,13 @@ public class CreateDisplayContentWorkStatusQuery {
                             j.getItemDetailAttributes() == CommonAttributesOfForms.WORKING_HOURS
                             || j.getItemDetailAttributes() == CommonAttributesOfForms.OTHER_CHARACTER_NUMBER
                             || j.getItemDetailAttributes() == CommonAttributesOfForms.OTHER_CHARACTERS) {
-                        for (val d : listAtId) {
-                            val sub = vl.getOrDefault(d.getAttendanceItemId(), null);
-                            if (sub == null || sub.getValue() == null) continue;
+                        listAtId.stream().map(d -> vl.getOrDefault(d.getAttendanceItemId(), null)).filter(sub -> sub != null && sub.getValue() != null).forEach(sub -> {
                             val master = j.getItemDetailAttributes() == CommonAttributesOfForms.WORK_TYPE ?
                                     allDataMaster.getOrDefault(WORK_TYPE, null)
                                     : allDataMaster.getOrDefault(WORKING_HOURS, null);
-
                             val name = master != null ? master.getOrDefault(sub.getValue(), null) : null;
-                            if (name == null) continue;
-                            character.append("").append(name);
-                        }
+                            character.append(" ").append(name != null ? name.getName() : sub.getValue());
+                        });
                         itemValue.add(
                                 new DailyValue(
                                         null,

@@ -196,8 +196,7 @@ public class CreateAnnualWorkLedgerContentQuery {
                                 : allDataMaster.getOrDefault(WORKING_HOURS, null);
 
                         val name = master != null ? master.getOrDefault(sub.getValue(), null) : null;
-                        if (name == null) continue;
-                        character.append(" ").append(name);
+                        character.append(" ").append(name != null ? name.getName() : sub.value());
                     }
                     itemValue.add(
                             new DailyValue(null, character.toString(), l));
