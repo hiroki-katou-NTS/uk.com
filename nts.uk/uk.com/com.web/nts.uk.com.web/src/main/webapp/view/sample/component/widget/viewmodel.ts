@@ -1,7 +1,29 @@
 module nts.uk.ui.sample.widget {
+    type mode = 'a' | 'b' | 'c' | 'd';
+
     @bean()
     export class ViewModel extends ko.ViewModel {
+        kmode: KnockoutObservable<mode> = ko.observable('a');
 
+        changeMode() {
+            const vm = this;
+            const { kmode } = vm;
+
+            switch (ko.unwrap<mode>(kmode)) {
+                case 'a':
+                    kmode('b');
+                    break;
+                case 'b':
+                    kmode('c');
+                    break;
+                case 'c':
+                    kmode('d');
+                    break;
+                case 'd':
+                    kmode('a');
+                    break;
+            }
+        }
     }
 
     @component({

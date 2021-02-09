@@ -4,7 +4,9 @@ module knr002.k {
         screenModel.startPage().done(() => {
             __viewContext.bind(screenModel);
         }).then(() => {
-            $('#multi-list > tbody > tr:nth-child(1)').focus();
+            setTimeout(() => {
+                $('#multi-list > tbody > tr:nth-child(1)').focus();
+            }, 25);
         });        
     });
 }

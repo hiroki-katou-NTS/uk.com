@@ -43,7 +43,7 @@ public class KrcdtTrRqStMonitor extends UkJpaEntity implements Serializable {
 	
 	public static KrcdtTrRqStMonitor toEntity(ReqComStatusMonitoring domain) {
 		return new KrcdtTrRqStMonitor(
-				new KrcdtTrRqStMonitorPK(domain.getContractCode().v(), Integer.parseInt(domain.getTerminalCode().v())),
+				new KrcdtTrRqStMonitorPK(domain.getContractCode().v(), domain.getTerminalCode().v()),
 				domain.isConnecting() ? 1 : 0);
 	}
 	

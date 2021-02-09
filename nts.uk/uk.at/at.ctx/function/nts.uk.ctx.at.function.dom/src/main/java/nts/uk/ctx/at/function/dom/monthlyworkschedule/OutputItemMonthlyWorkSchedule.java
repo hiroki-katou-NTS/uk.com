@@ -82,7 +82,7 @@ public class OutputItemMonthlyWorkSchedule extends AggregateRoot {
 		this.lstDisplayedAttendance = memento.getLstDisplayedAttendance();		
 		this.remarkInputNo = memento.getRemarkInputNo();
 		this.layoutID = memento.getLayoutID();
-		this.employeeID = memento.getEmployeeID();
+		this.employeeID = memento.getSid();
 		this.textSize = memento.getTextSize();
 		this.itemType = memento.getItemSelectionEnum();
 		this.isRemarkPrinted = memento.getIsRemarkPrinted();
@@ -100,7 +100,7 @@ public class OutputItemMonthlyWorkSchedule extends AggregateRoot {
 		memento.setLayoutID(this.layoutID);
 		memento.setLstDisplayedAttendance(this.lstDisplayedAttendance);
 		memento.setRemarkInputNo(this.remarkInputNo);
-		memento.setEmployeeID(this.employeeID);
+		memento.setSid(this.employeeID);
 		memento.setTextSize(this.textSize);
 		memento.setItemSelectionEnum(this.itemType);
 		memento.setIsRemarkPrinted(this.isRemarkPrinted);
