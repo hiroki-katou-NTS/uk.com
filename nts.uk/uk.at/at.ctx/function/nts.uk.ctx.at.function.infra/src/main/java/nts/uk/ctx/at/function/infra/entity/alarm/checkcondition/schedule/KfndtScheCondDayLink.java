@@ -1,22 +1,19 @@
-package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.schedule.annual;
+package nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.schedule;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
- * スケジュール年間のアラームチェック条件
+ * スケジュール日次のアラームチェック条件
  */
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "KSCDT_SCHE_COND_YEAR_LINK")
-public class KscdtScheCondYearLink extends ContractUkJpaEntity {
+@Table(name = "KFNDT_SCHE_COND_DAY_LINK")
+public class KfndtScheCondDayLink extends ContractUkJpaEntity {
 
     @Id
     @Column(name = "ERAL_CHECK_ID")
@@ -35,7 +32,7 @@ public class KscdtScheCondYearLink extends ContractUkJpaEntity {
         return this.eralCheckId;
     }
 
-    public KscdtScheCondYearLink toDomain(){
-        return new KscdtScheCondYearLink();
+    public KfndtScheCondDayLink toDomain(){
+        return new KfndtScheCondDayLink();
     }
 }

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.schedule.monthly;
+package nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.schedule;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -15,8 +15,8 @@ import javax.persistence.Table;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "KSCDT_SCHE_COND_MONTH_LINK")
-public class KscdtScheCondMonthLink extends ContractUkJpaEntity {
+@Table(name = "KFNDT_SCHE_COND_MONTH_LINK")
+public class KfndtScheCondMonthLink extends ContractUkJpaEntity {
 
     @Id
     @Column(name = "ERAL_CHECK_ID")
@@ -35,7 +35,7 @@ public class KscdtScheCondMonthLink extends ContractUkJpaEntity {
         return this.eralCheckId;
     }
 
-    public KscdtScheCondMonthLink toDomain(){
-        return new KscdtScheCondMonthLink();
+    public KfndtScheCondMonthLink toDomain(){
+        return new KfndtScheCondMonthLink();
     }
 }

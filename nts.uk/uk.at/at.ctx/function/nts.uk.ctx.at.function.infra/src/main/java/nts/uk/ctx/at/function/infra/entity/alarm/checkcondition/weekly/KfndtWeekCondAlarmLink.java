@@ -1,19 +1,22 @@
-package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.schedule.daily;
+package nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.weekly;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
- * スケジュール日次のアラームチェック条件
+ *  週次のアラームチェック条件 Entity
  */
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "KSCDT_SCHE_COND_DAY_LINK")
-public class KscdtScheCondDayLink extends ContractUkJpaEntity {
+@Table(name = "KFNDT_WEEK_COND_ALARM_LINK")
+public class KfndtWeekCondAlarmLink extends ContractUkJpaEntity {
 
     @Id
     @Column(name = "ERAL_CHECK_ID")
@@ -32,7 +35,7 @@ public class KscdtScheCondDayLink extends ContractUkJpaEntity {
         return this.eralCheckId;
     }
 
-    public KscdtScheCondDayLink toDomain(){
-        return new KscdtScheCondDayLink();
+    public KfndtWeekCondAlarmLink toDomain(){
+        return new KfndtWeekCondAlarmLink();
     }
 }
