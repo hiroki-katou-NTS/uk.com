@@ -8,6 +8,9 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.io.Serializable;
 
+/**
+ * 週別実績の任意抽出条件 Entity
+ */
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor

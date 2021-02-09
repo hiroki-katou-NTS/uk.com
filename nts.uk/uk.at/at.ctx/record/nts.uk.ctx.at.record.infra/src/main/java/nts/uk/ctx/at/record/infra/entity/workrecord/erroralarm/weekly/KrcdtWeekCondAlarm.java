@@ -2,12 +2,29 @@ package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.weekly;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CheckedCondition;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareRange;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareSingleValue;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordName;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ContinuousPeriod;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.ExtractionCondScheduleWeekly;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.weekly.WeeklyCheckItemType;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlCompareRange;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlCompareSingle;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlSingleFixed;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmMessage;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.util.Optional;
+
+/**
+ * 週別実績の任意抽出条件 Entity
+ */
 
 @Entity
 @NoArgsConstructor
@@ -31,7 +48,7 @@ public class KrcdtWeekCondAlarm extends ContractUkJpaEntity {
 
     /* 連続期間 */
     @Column(name = "CONTINUOUS_MONTHS")
-    public int conMonth;
+    public Integer conMonth;
 
     /* メッセージ */
     @Column(name = "COND_MESSAGE")
@@ -40,5 +57,18 @@ public class KrcdtWeekCondAlarm extends ContractUkJpaEntity {
     @Override
     protected Object getKey() {
         return this.pk;
+    }
+
+    public ExtractionCondScheduleWeekly toDomain(KrcstErAlCompareSingle single, KrcstErAlSingleFixed singleFixed, KrcstErAlCompareRange range){
+        CheckedCondition checkedCondition = null;
+        if (single != null) {
+            checkedCondition = new CompareSingleValue<>(single.compareAtr, single.conditionType);
+            ((CompareSingleValue) checkedCondition).setValue(singleFixed.fixedValue);
+        } else {
+            checkedCondition = new CompareRange<>(range.compareAtr);
+            ((CompareRange) checkedCondition).setStartValue(range.startValue);
+            ((CompareRange) checkedCondition).setEndValue(range.endValue);
+        }
+        return new ExtractionCondScheduleWeekly(pk.checkId,checkedCondition, EnumAdaptor.valueOf(checkType, WeeklyCheckItemType.class),pk.condNo,useAtr,new ErrorAlarmWorkRecordName(condName), Optional.ofNullable(condMsg == null ? null : new ErrorAlarmMessage(condMsg)),Optional.ofNullable(conMonth == null ? null : new ContinuousPeriod(conMonth)));
     }
 }
