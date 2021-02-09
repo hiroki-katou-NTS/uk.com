@@ -330,13 +330,13 @@ public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Seriali
 	public KfnmtProcessExecution procExec;
 	
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "execSetting", orphanRemoval = true)
-	public List<KfnctExecutionExternalAccept> externalAcceptList;
+	public List<KfnmtExecutionExternalAccept> externalAcceptList;
 	
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "execSetting", orphanRemoval = true)
-	public List<KfnctExecutionExternalOutput> externalOutputList;
+	public List<KfnmtExecutionExternalOutput> externalOutputList;
 	
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "execSetting", orphanRemoval = true)
-	public List<KfnctExecutionIndexCategory> indexCategoryList;
+	public List<KfnmtExecutionIndexCategory> indexCategoryList;
 
 	/**
 	 * Gets the key.
@@ -474,23 +474,23 @@ public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Seriali
 		entity.updStatisticsArt = domain.getIndexReconstruction().getUpdateStatistics().value;
 				
 		entity.externalAcceptList = domain.getExternalAcceptance().getExtAcceptCondCodeList().stream()
-				.map(data -> KfnctExecutionExternalAccept.builder()
+				.map(data -> KfnmtExecutionExternalAccept.builder()
 						.contractCode(contractCode)
-						.pk(new KfnctExecutionExternalAcceptPk(entity.kfnmtProcExecSetPK.companyId, execItemCode, data.v()))
+						.pk(new KfnmtExecutionExternalAcceptPk(entity.kfnmtProcExecSetPK.companyId, execItemCode, data.v()))
 						.execSetting(entity)
 						.build())
 				.collect(Collectors.toList());
 		entity.externalOutputList = domain.getExternalOutput().getExtOutCondCodeList().stream()
-				.map(data -> KfnctExecutionExternalOutput.builder()
+				.map(data -> KfnmtExecutionExternalOutput.builder()
 						.contractCode(contractCode)
-						.pk(new KfnctExecutionExternalOutputPk(entity.kfnmtProcExecSetPK.companyId, execItemCode, data.v()))
+						.pk(new KfnmtExecutionExternalOutputPk(entity.kfnmtProcExecSetPK.companyId, execItemCode, data.v()))
 						.execSetting(entity)
 						.build())
 				.collect(Collectors.toList());
 		entity.indexCategoryList = domain.getIndexReconstruction().getCategoryList().stream()
-				.map(data -> KfnctExecutionIndexCategory.builder()
+				.map(data -> KfnmtExecutionIndexCategory.builder()
 						.contractCode(contractCode)
-						.pk(new KfnctExecutionIndexCategoryPk(entity.kfnmtProcExecSetPK.companyId, execItemCode, data.v()))
+						.pk(new KfnmtExecutionIndexCategoryPk(entity.kfnmtProcExecSetPK.companyId, execItemCode, data.v()))
 						.execSetting(entity)
 						.build())
 				.collect(Collectors.toList());

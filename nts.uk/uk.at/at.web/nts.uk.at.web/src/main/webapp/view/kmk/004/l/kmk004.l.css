@@ -1,0 +1,173 @@
+.kmk-004l #sidebar-area {
+	float: left;
+	height: calc(100vh - 142px);
+}
+
+.kmk-004l .content-area {
+	margin-left: 121px;
+}
+
+.view-l {
+    padding: 10px 20px;
+    height: calc(100vh - 163px);
+    overflow-y: scroll;
+}
+
+.view-l-common{
+    margin: 10px 20px;
+}
+
+.view-l-common .header-l {
+    width: 671px;
+}
+
+.view-l .header-l {
+    width: 671px;
+}
+
+.view-l .header-l ~ div {
+    font-size: 20px;
+}
+
+.view-l-common .header-l ~ div {
+    font-size: 20px;
+}
+
+.view-l .header-l .header_title {
+    margin-top: 10px;
+}
+
+.view-l-common .header-l .header_title {
+    margin-top: 10px;
+}
+
+.view-l .header-l .header_content {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.view-l-common .header-l .header_content {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.view-l .content {
+    text-align: left;
+    margin-left: 10px;
+}
+
+.view-l-common .content {
+    text-align: left;
+    margin-left: 10px;
+}
+
+.view-l .content1 {
+    text-align: center;
+}
+
+.view-l-common .content1 {
+    text-align: center;
+}
+
+.view-l .content ~ div {
+    margin-top: 15px;
+    float: left;
+}
+
+.view-l-common .content ~ div {
+    margin-top: 15px;
+    float: left;
+}
+
+.view-l #btn_year {
+	margin: 10px 0 13px 0
+}
+
+.view-l-common #btn_year {
+	margin: 10px 0 13px 0
+}
+
+.view-l #btm_area {
+    margin-top: -14px;
+}
+
+.view-l-common #btm_area {
+    margin-top: -14px;
+}
+
+#right-side {
+	padding-left: 30px;
+}
+
+#view-m-left-side {
+    vertical-align: baseline;
+    padding: 40px 0 0 40px;
+}
+
+#view-n-left-side {
+    vertical-align: baseline;
+    padding: 40px 0 0 40px;
+}
+
+#view-o-left-side {
+    vertical-align: baseline;
+    padding: 40px 0 0 75px;
+}
+
+#title {
+	font-size: 20px;
+}
+
+.div_row {
+    float: left;
+    width: 100%;
+    display: flex;
+}
+
+.box-year {
+	display: inline-block;
+	padding-right: 27px;
+}
+
+.view-l-times-table {
+	display: inline-block;
+}
+
+#nts-component-tree{
+	padding: 20px !important;
+}
+
+.ntsControl .nts-input {
+	text-align: center !important;
+}
+
+.selected-item {
+	height: 18px;
+    display: block;
+}
+
+.view-m {
+    height: calc(100vh - 143px);
+    overflow-y: scroll;
+    padding: -10px;
+}
+
+.view-n {
+    height: calc(100vh - 143px);
+    overflow-y: scroll;
+}
+
+.view-o {
+    height: calc(100vh - 143px);
+    overflow-y: scroll;
+}
+
+#func-notifier-errors {
+	top: 128px;
+    left: 121px;
+    position: fixed;
+    text-align: center;
+    width: 100px;
+    height: 24px;
+    z-index: 999999;
+}

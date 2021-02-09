@@ -119,7 +119,7 @@ public class MailDestinationPubImpl implements IMailDestinationPub {
 									.filter(perContact -> perContact.getPersonId().equals(sID)).findFirst();
 
 							perContactOpt.ifPresent(item -> {
-								if (item.getIsMailAddressDisplay()) {
+								if (item.isMailAddressDisplay()) {
 									mailDestination.addOutGoingMails(item.getMailAdress());
 								}
 							});
@@ -138,7 +138,7 @@ public class MailDestinationPubImpl implements IMailDestinationPub {
 									.filter(perContact -> perContact.getPersonId().equals(sID)).findFirst();
 
 							perContactOpt.ifPresent(item -> {
-								if (item.getIsMobileEmailAddressDisplay()) {
+								if (item.isMobileEmailAddressDisplay()) {
 									mailDestination.addOutGoingMails(item.getMobileMailAdress());
 								}
 							});
@@ -163,7 +163,7 @@ public class MailDestinationPubImpl implements IMailDestinationPub {
 								.filter(empContact -> empContact.getSid().equals(sID)).findFirst();
 
 						empContactOpt.ifPresent(item -> {
-							if (item.getIsMailAddressDisplay()) {
+							if (item.isMailAddressDisplay()) {
 								mailDestination.addOutGoingMails(item.getMailAddress());
 							}
 						});
@@ -182,7 +182,7 @@ public class MailDestinationPubImpl implements IMailDestinationPub {
 								.filter(empContact -> empContact.getSid().equals(sID)).findFirst();
 
 						empContactOpt.ifPresent(item -> {
-							if (item.getIsMobileMailAddressDisplay()) {
+							if (item.isMobileMailAddressDisplay()) {
 								mailDestination.addOutGoingMails(item.getPhoneMailAddress());
 							}
 						});

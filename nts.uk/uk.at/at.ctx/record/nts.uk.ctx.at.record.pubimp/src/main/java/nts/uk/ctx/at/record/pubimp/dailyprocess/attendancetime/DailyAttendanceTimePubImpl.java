@@ -99,16 +99,20 @@ public class DailyAttendanceTimePubImpl implements DailyAttendanceTimePub{
 							imp.getBreakEndTime().get(frameNo - 1).minusMinutes(imp.getBreakStartTime().get(frameNo - 1).valueAsMinutes())));
 			}
 		}
-		
-		
-		return provisionalCalculationService.calculation(Arrays.asList(new PrevisionalForImp(imp.getEmployeeid(), 
-																											imp.getYmd(),
-				  																							timeZoneMap, 
-				  																							imp.getWorkTypeCode(), 
-				  																							imp.getWorkTimeCode(), 
-				  																							breakTimeSheets, 
-				  																							imp.getOutingTimeSheets(), 
-				  																							imp.getShortWorkingTimeSheets())));
+
+
+        return provisionalCalculationService.calculation(Arrays.asList(
+                new PrevisionalForImp(
+                        imp.getEmployeeid(),
+                        imp.getYmd(),
+                        timeZoneMap,
+                        imp.getWorkTypeCode(),
+                        imp.getWorkTimeCode(),
+                        breakTimeSheets,
+                        Collections.emptyList(), // imp.getOutingTimeSheets(), => List<OutingTimeZoneImport>
+                        Collections.emptyList() // imp.getShortWorkingTimeSheets() => => List<ChildCareTimeZoneImport>
+                )
+        ));
 	}
 	
 	/**

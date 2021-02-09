@@ -48,6 +48,7 @@ public class JpaLeaveComDayOffManaRepository extends JpaRepository implements Le
 	@Override
 	public void add(LeaveComDayOffManagement domain) {
 		this.commandProxy().insert(toEntity(domain));
+		this.getEntityManager().flush();
 	}
 
 	@Override
@@ -66,6 +67,7 @@ public class JpaLeaveComDayOffManaRepository extends JpaRepository implements Le
 		Optional<KrcmtLeaveDayOffMana> existed = this.queryProxy().find(key, KrcmtLeaveDayOffMana.class);
 		if (existed.isPresent()){
 			this.commandProxy().remove(KrcmtLeaveDayOffMana.class, key);
+			this.getEntityManager().flush();
 		}
 		
 	}
