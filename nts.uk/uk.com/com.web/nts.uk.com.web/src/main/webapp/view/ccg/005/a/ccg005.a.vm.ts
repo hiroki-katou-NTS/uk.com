@@ -527,10 +527,40 @@ module nts.uk.at.view.ccg005.a.screenModel {
       (ko.bindingHandlers.ntsIcon as any).init($('.ccg005-status-img-A1_7'), () => ({ no: vm.activityStatusIcon(), width: 20, height: 20 }));
     }
 
+    private toStartScreen() {
+      const vm = this;
+      //set characteristic
+      vm.restoreCharacteristic().then((inputDate: any) => {
+        vm.favoriteInputDateCharacter(inputDate);
+      });
+      vm.$blockui('show');
+      vm.$ajax('com', API.getDisplayAttendanceData).then((response: object.DisplayAttendanceDataDto) => {
+        vm.emojiUsage(!!response.emojiUsage);
+        // A1_2 表示初期の在席データDTO.自分のビジネスネーム
+        vm.businessName(response.bussinessName);
+        vm.favoriteSpecifyData(response.favoriteSpecifyDto);
+        vm.inCharge(response.inCharge);
+        if (response && response.attendanceInformationDtos) {
+          vm.updateLoginData(response.attendanceInformationDtos);
+
+          if (_.isEmpty(vm.favoriteSpecifyData())) {
+            vm.createdDefaultFavorite();
+          }
+        }
+        vm.currentPage(1);
+        //get application name info
+        vm.applicationNameInfo(response.applicationNameDtos);
+        //set characteristic
+        if (vm.favoriteInputDateCharacter()) {
+          vm.favoriteInputDate(vm.favoriteInputDateCharacter());
+        }
+      }).always(() => vm.$blockui('clear'));
+    }
+
     /**
      * 日付を更新する時
      */
-    initChangeSelectedDate() {
+    private initChangeSelectedDate() {
       const vm = this;
       vm.selectedDate.subscribe(() => {
         const selectedDate = moment.utc(moment.utc(vm.selectedDate()).format('YYYY/MM/DD'));
@@ -576,6 +606,151 @@ module nts.uk.at.view.ccg005.a.screenModel {
           vm.subscribeFavorite();
         }
       });
+    }
+
+    
+    private initEmojiType(emojiType: number): number {
+      switch (emojiType) {
+        case EmojiType.WEARY: return Emoji.WEARY;
+        case EmojiType.SAD: return Emoji.SAD;
+        case EmojiType.AVERAGE: return Emoji.AVERAGE;
+        case EmojiType.GOOD: return Emoji.GOOD;
+        case EmojiType.HAPPY: return Emoji.HAPPY;
+        default: return Emoji.AVERAGE;
+      }
+    }
+
+    private initActivityStatus(status: number): number {
+      switch (status) {
+        case StatusClassfication.NOT_PRESENT: return StatusClassficationIcon.NOT_PRESENT;
+        case StatusClassfication.PRESENT: return StatusClassficationIcon.PRESENT;
+        case StatusClassfication.GO_OUT: return StatusClassficationIcon.GO_OUT;
+        case StatusClassfication.GO_HOME: return StatusClassficationIcon.GO_HOME;
+        case StatusClassfication.HOLIDAY: return StatusClassficationIcon.HOLIDAY;
+        default: return StatusClassficationIcon.GO_OUT;
+      }
+    }
+
+    private initResizeable(vm: any) {
+      $(window).on('ccg005.resize', () => {
+        vm.onResizeable(vm);
+      });
+    }
+
+    /**
+     * Popup A3_2
+     */
+    private initPopupArea() {
+      const vm = this;
+      $('#ccg005-star-popup').ntsPopup({
+        position: {
+          my: 'left top',
+          at: 'left-100 bottom',
+          of: $('#ccg005-star-img')
+        },
+        showOnStart: false,
+        dismissible: true
+      });
+      $('#ccg005-star-img').click(() => $('#ccg005-star-popup').ntsPopup('toggle'));
+    }
+
+    /**
+     * Popup A4_4
+     */
+    public initPopupA4_4InList(index: any, sid: string) {
+      const vm = this;
+      const element = $(`.A4-4-application-icon-${sid}`);
+      $('#ccg005-A4-4-popup').ntsPopup({
+        position: {
+          my: 'left top',
+          at: 'right bottom',
+          of: element
+        },
+        showOnStart: false,
+        dismissible: true
+      });
+      $('#ccg005-A4-4-popup').ntsPopup('toggle');
+      const appName = _.find(vm.applicationNameDisplay(), (item => item.sid === sid));
+      if (appName) {
+        vm.applicationNameDisplayBySid(appName.appName);
+      }
+
+      //update currentIndex
+      vm.currentIndex(index());
+    }
+
+    private initFocusA1_4() {
+      const vm = this;
+      $('.ccg005-clearbtn').click(() => vm.deleteComment());
+      $('.CCG005-A1_4-border')
+        .focusin(() => $('.ccg005-clearbtn').css('visibility', 'visible'))
+        .focusout(() => {
+          $('.ccg005-clearbtn').css('visibility', 'hidden');
+        });
+    }
+
+    /**
+     * Popup A1_7
+     */
+    private initPopupStatus() {
+      const vm = this;
+      $('#ccg005-status-popup').ntsPopup({
+        position: {},
+        showOnStart: false,
+        dismissible: true
+      });
+      $('.ccg005-status-img-A1_7').click(() => {
+        vm.currentIndex(-1);
+        vm.sIdUpdateStatus(vm.loginSid);
+        if (!vm.isBaseDate()) {
+          return;
+        }
+        vm.goOutParams(new GoOutParam({
+          sid: vm.loginSid,
+          businessName: vm.businessName(),
+          goOutDate: moment.utc().format("YYYY/MM/DD")
+        }));
+        vm.activatedStatus(vm.activityStatus());
+        $('#ccg005-status-popup').ntsPopup({
+          position: { my: 'right top', at: 'left top', of: $('.ccg005-status-img-A1_7') },
+          showOnStart: false,
+          dismissible: true
+        });
+        $('#ccg005-status-popup').ntsPopup('toggle')
+        vm.indexUpdateItem(-1);
+      });
+    }
+
+    /**
+     * Popup A4_7
+     */
+    public initPopupInList(index: any, sid: string, businessName: string) {
+      const vm = this;
+      const element = $('.ccg005-status-img')[index()];
+      vm.indexUpdateItem(index());
+      vm.sIdUpdateStatus(sid);
+      if (!vm.isBaseDate()) {
+        return;
+      }
+      $('#ccg005-status-popup').ntsPopup({
+        position: { my: 'left top', at: 'right top', of: element },
+        showOnStart: false,
+        dismissible: true
+      });
+      $('#ccg005-status-popup').ntsPopup('toggle')
+
+      //reset goOutParams to screen E
+      vm.goOutParams(new GoOutParam({
+        sid: sid,
+        businessName: businessName,
+        goOutDate: moment.utc().format("YYYY/MM/DD")
+      }));
+
+      //update current status
+      vm.activatedStatus(vm.attendanceInformationDtosDisplay()[index()].status);
+
+      //set current index
+      vm.currentIndex(index());
     }
 
     private subscribeFavorite() {
@@ -652,12 +827,6 @@ module nts.uk.at.view.ccg005.a.screenModel {
           backgroundColor: vm.getBackgroundColorClass(item.activityStatusDto)
         });
       }));
-    }
-
-    resetPagination() {
-      const vm = this;
-      vm.currentPage(1);
-      vm.totalElement(vm.attendanceInformationDtosDisplayClone().length);
     }
 
     //handle check-in check-out display
@@ -742,12 +911,6 @@ module nts.uk.at.view.ccg005.a.screenModel {
       }
     }
 
-    private initResizeable(vm: any) {
-      $(window).on('ccg005.resize', () => {
-        vm.onResizeable(vm);
-      });
-    }
-
     private onResizeable(vm: any) {
       const subHeight = $('#ccg005-content').height()
         - $('.grade-header-top').height()
@@ -762,137 +925,27 @@ module nts.uk.at.view.ccg005.a.screenModel {
       $('.grade-body-bottom').height(subHeight);
     }
 
-    /**
-     * Popup A3_2
-     */
-    private initPopupArea() {
-      const vm = this;
-      $('#ccg005-star-popup').ntsPopup({
-        position: {
-          my: 'left top',
-          at: 'left-100 bottom',
-          of: $('#ccg005-star-img')
-        },
-        showOnStart: false,
-        dismissible: true
-      });
-      $('#ccg005-star-img').click(() => $('#ccg005-star-popup').ntsPopup('toggle'));
-    }
-
-    /**
-     * Popup A4_4
-     */
-    initPopupA4_4InList(index: any, sid: string) {
-      const vm = this;
-      const element = $(`.A4-4-application-icon-${sid}`);
-      $('#ccg005-A4-4-popup').ntsPopup({
-        position: {
-          my: 'left top',
-          at: 'right bottom',
-          of: element
-        },
-        showOnStart: false,
-        dismissible: true
-      });
-      $('#ccg005-A4-4-popup').ntsPopup('toggle');
-      const appName = _.find(vm.applicationNameDisplay(), (item => item.sid === sid));
-      if (appName) {
-        vm.applicationNameDisplayBySid(appName.appName);
-      }
-
-      //update currentIndex
-      vm.currentIndex(index());
-    }
-
-    initFocusA1_4() {
-      const vm = this;
-      $('.ccg005-clearbtn').click(() => vm.deleteComment());
-      $('.CCG005-A1_4-border')
-        .focusin(() => $('.ccg005-clearbtn').css('visibility', 'visible'))
-        .focusout(() => {
-          $('.ccg005-clearbtn').css('visibility', 'hidden');
-        });
-    }
-
-    /**
-     * Popup A1_7
-     */
-    private initPopupStatus() {
-      const vm = this;
-      $('#ccg005-status-popup').ntsPopup({
-        position: {},
-        showOnStart: false,
-        dismissible: true
-      });
-      $('.ccg005-status-img-A1_7').click(() => {
-        vm.currentIndex(-1);
-        vm.sIdUpdateStatus(vm.loginSid);
-        if (!vm.isBaseDate()) {
-          return;
-        }
-        vm.goOutParams(new GoOutParam({
-          sid: vm.loginSid,
-          businessName: vm.businessName(),
-          goOutDate: moment.utc().format("YYYY/MM/DD")
-        }));
-        vm.activatedStatus(vm.activityStatus());
-        $('#ccg005-status-popup').ntsPopup({
-          position: { my: 'right top', at: 'left top', of: $('.ccg005-status-img-A1_7') },
-          showOnStart: false,
-          dismissible: true
-        });
-        $('#ccg005-status-popup').ntsPopup('toggle')
-        vm.indexUpdateItem(-1);
-      });
-    }
-
-    /**
-     * Popup A4_7
-     */
-    initPopupInList(index: any, sid: string, businessName: string) {
-      const vm = this;
-      const element = $('.ccg005-status-img')[index()];
-      vm.indexUpdateItem(index());
-      vm.sIdUpdateStatus(sid);
-      if (!vm.isBaseDate()) {
-        return;
-      }
-      $('#ccg005-status-popup').ntsPopup({
-        position: { my: 'left top', at: 'right top', of: element },
-        showOnStart: false,
-        dismissible: true
-      });
-      $('#ccg005-status-popup').ntsPopup('toggle')
-
-      //reset goOutParams to screen E
-      vm.goOutParams(new GoOutParam({
-        sid: sid,
-        businessName: businessName,
-        goOutDate: moment.utc().format("YYYY/MM/DD")
-      }));
-
-      //update current status
-      vm.activatedStatus(vm.attendanceInformationDtosDisplay()[index()].status);
-
-      //set current index
-      vm.currentIndex(index());
-    }
-
-    nextPage() {
+    public nextPage() {
       const vm = this;
       if (vm.currentPage() * vm.perPage() < vm.totalElement()) {
         vm.currentPage(vm.currentPage() + 1);
       }
     }
 
-    previousPage() {
+    public previousPage() {
       const vm = this;
       if (vm.currentPage() > 1) {
         vm.currentPage(vm.currentPage() - 1);
       }
     }
 
-    openScreenCCG005B() {
+    private resetPagination() {
+      const vm = this;
+      vm.currentPage(1);
+      vm.totalElement(vm.attendanceInformationDtosDisplayClone().length);
+    }
+
+    public openScreenCCG005B() {
       const vm = this;
       vm.$window.modal('/view/ccg/005/b/index.xhtml');
     }
@@ -900,7 +953,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
     /**
      * A3_2.1をクリックする（お気に入りダイアログを起動する）
      */
-    openScreenCCG005D() {
+    public openScreenCCG005D() {
       const vm = this;
       $('#ccg005-star-popup').ntsPopup('hide');
       vm.$window.modal('/view/ccg/005/d/index.xhtml').then((data) => {
@@ -916,7 +969,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
     /**
      * A1_7.3をクリックする　OR　外出アイコンをクリックする（外出入力ダイアログを起動する）
      */
-    openScreenCCG005E() {
+    public openScreenCCG005E() {
       const vm = this;
       $('#ccg005-status-popup').ntsPopup('hide');
       vm.$window.modal('/view/ccg/005/e/index.xhtml', vm.goOutParams()).then((x: Boolean) => {
@@ -951,7 +1004,19 @@ module nts.uk.at.view.ccg005.a.screenModel {
       });
     }
 
-    resetLastestData() {
+    /**
+     * 顔写真をクリックする（CDL010を起動する）
+     */
+    public onClickAvatar(sid?: string) {
+      const vm = this;
+      const data = {
+        employeeId: !!sid ? sid : vm.loginSid,
+        referenceDate: new Date(),
+      };
+      vm.$window.modal('com', '/view/cdl/010/a/index.xhtml', data);
+    }
+
+    public resetLastestData() {
       const vm = this;
       vm.attendanceInformationDtos([]);
       vm.attendanceInformationDtosDisplay([]);
@@ -963,37 +1028,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       vm.subscribeFavorite();
     }
 
-    private toStartScreen() {
-      const vm = this;
-      //set characteristic
-      vm.restoreCharacteristic().then((inputDate: any) => {
-        vm.favoriteInputDateCharacter(inputDate);
-      });
-      vm.$blockui('show');
-      vm.$ajax('com', API.getDisplayAttendanceData).then((response: object.DisplayAttendanceDataDto) => {
-        vm.emojiUsage(!!response.emojiUsage);
-        // A1_2 表示初期の在席データDTO.自分のビジネスネーム
-        vm.businessName(response.bussinessName);
-        vm.favoriteSpecifyData(response.favoriteSpecifyDto);
-        vm.inCharge(response.inCharge);
-        if (response && response.attendanceInformationDtos) {
-          vm.updateLoginData(response.attendanceInformationDtos);
-
-          if (_.isEmpty(vm.favoriteSpecifyData())) {
-            vm.createdDefaultFavorite();
-          }
-        }
-        vm.currentPage(1);
-        //get application name info
-        vm.applicationNameInfo(response.applicationNameDtos);
-        //set characteristic
-        if (vm.favoriteInputDateCharacter()) {
-          vm.favoriteInputDate(vm.favoriteInputDateCharacter());
-        }
-      }).always(() => vm.$blockui('clear'));
-    }
-
-    updateLoginData(atds: any) {
+    private updateLoginData(atds: any) {
       const vm = this;
       // 条件：在席情報DTO.社員ID＝ログイン社員ID
       const atdInfo = _.find(atds, (item: any) => item.sid === vm.loginSid);
@@ -1037,28 +1072,6 @@ module nts.uk.at.view.ccg005.a.screenModel {
       }
     }
 
-    private initEmojiType(emojiType: number): number {
-      switch (emojiType) {
-        case EmojiType.WEARY: return Emoji.WEARY;
-        case EmojiType.SAD: return Emoji.SAD;
-        case EmojiType.AVERAGE: return Emoji.AVERAGE;
-        case EmojiType.GOOD: return Emoji.GOOD;
-        case EmojiType.HAPPY: return Emoji.HAPPY;
-        default: return Emoji.AVERAGE;
-      }
-    }
-
-    private initActivityStatus(status: number): number {
-      switch (status) {
-        case StatusClassfication.NOT_PRESENT: return StatusClassficationIcon.NOT_PRESENT;
-        case StatusClassfication.PRESENT: return StatusClassficationIcon.PRESENT;
-        case StatusClassfication.GO_OUT: return StatusClassficationIcon.GO_OUT;
-        case StatusClassfication.GO_HOME: return StatusClassficationIcon.GO_HOME;
-        case StatusClassfication.HOLIDAY: return StatusClassficationIcon.HOLIDAY;
-        default: return StatusClassficationIcon.GO_OUT;
-      }
-    }
-
     private createdDefaultFavorite() {
       const vm = this;
       const inputDate = moment.utc().toISOString();
@@ -1084,7 +1097,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
     /**
      * コメントを登録する
      */
-    registerComment() {
+    public registerComment() {
       const vm = this;
       const command = {
         comment: vm.comment(),
@@ -1103,7 +1116,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
     /**
      * コメントを削除する
      */
-    deleteComment() {
+    private deleteComment() {
       const vm = this;
       if (_.isEmpty(vm.comment())) {
         return;
@@ -1122,21 +1135,9 @@ module nts.uk.at.view.ccg005.a.screenModel {
     }
 
     /**
-     * 顔写真をクリックする（CDL010を起動する）
-     */
-    onClickAvatar(sid?: string) {
-      const vm = this;
-      const data = {
-        employeeId: !!sid ? sid : vm.loginSid,
-        referenceDate: new Date(),
-      };
-      vm.$window.modal('com', '/view/cdl/010/a/index.xhtml', data);
-    }
-
-    /**
      * A3_2.3職場選択ボタンをクリックする　（職場：CDL008へ）
      */
-    openCDL008() {
+    public openCDL008() {
       const vm = this;
       const inputCDL008: any = {
         startMode: StartMode.WORKPLACE,
@@ -1175,7 +1176,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
     /**
      * 検索する時
      */
-    onSearchEmployee() {
+    public onSearchEmployee() {
       const vm = this;
       if (vm.searchValue().trim().length > 0) {
         const param = {
@@ -1192,7 +1193,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       }
     }
 
-    clearDataDisplay() {
+    private clearDataDisplay() {
       const vm = this;
       vm.totalElement(0);
       vm.attendanceInformationDtos([]);
@@ -1200,7 +1201,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       vm.attendanceInformationDtosDisplayClone([]);
     }
 
-    dataToDisplay(res: any) {
+    private dataToDisplay(res: any) {
       const vm = this;
       if (!res) {
         return;
@@ -1242,7 +1243,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
     /**
      * 在席のステータスを登録する
      */
-    registerAttendanceStatus(selectedStatus: number, activityStatusIcon: number) {
+    private registerAttendanceStatus(selectedStatus: number, activityStatusIcon: number) {
       const vm = this;
       const params: ActivityStatusParam = {
         activity: selectedStatus,
@@ -1328,14 +1329,9 @@ module nts.uk.at.view.ccg005.a.screenModel {
 
   // 表示色区分
   enum DisplayColor {
-    // 実績色
-    ACHIEVEMENT = 0,
-
-    // 予定色
-    SCHEDULED = 1,
-
-    // アラーム色
-    ALARM = 2
+    ACHIEVEMENT = 0, // 実績色
+    SCHEDULED = 1, // 予定色
+    ALARM = 2 // アラーム色
   }
 
   class FavoriteSpecifyData {
@@ -1385,20 +1381,17 @@ module nts.uk.at.view.ccg005.a.screenModel {
     businessName: string;
     displayAppIcon: boolean;
     backgroundColor: string;
+
     constructor(init?: Partial<AttendanceInformationViewModel>) {
       $.extend(this, init);
     }
   }
 
   class ActivityStatusParam {
-    // ステータス分類
-    activity: number;
+    activity: number; // ステータス分類
+    date: any; // 年月日
+    sid: string; // 社員ID
 
-    // 年月日
-    date: any;
-
-    // 社員ID
-    sid: string;
     constructor(init?: Partial<GoOutEmployeeInformationViewModel>) {
       $.extend(this, init);
     }
@@ -1407,23 +1400,17 @@ module nts.uk.at.view.ccg005.a.screenModel {
   class GoOutEmployeeInformationViewModel {
     goOutPeriod: string;
     goOutReason: string;
+
     constructor(init?: Partial<GoOutEmployeeInformationViewModel>) {
       $.extend(this, init);
     }
   }
 
   class AttendanceDetailViewModel {
-    // 勤務名
-    workName: string;
-
-    // 終了時刻
-    checkOutTime: string;
-
-    // 開始時刻
-    checkInTime: string;
-
-    // 勤務区分
-    workDivision: number;
+    workName: string; // 勤務名
+    checkOutTime: string; // 終了時刻
+    checkInTime: string; // 開始時刻
+    workDivision: number; // 勤務区分
 
     constructor(init?: Partial<AttendanceDetailViewModel>) {
       $.extend(this, init);
