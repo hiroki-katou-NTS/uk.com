@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.NameAlarmExtractCond;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmMessage;
-import nts.uk.ctx.at.shared.dom.workrecord.alarm.attendanceitemconditions.CheckConditions;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CheckedCondition;
 
 import java.util.Optional;
 
@@ -25,7 +25,7 @@ public class ExtractionCondScheduleYear extends AggregateRoot {
     private ScheduleYearCheckCond scheCheckConditions;
 
     // チェック条件
-    private CheckConditions checkConditions;
+    private CheckedCondition checkConditions;
 
     // チェック項目の種類
     private YearCheckItemType checkItemType;

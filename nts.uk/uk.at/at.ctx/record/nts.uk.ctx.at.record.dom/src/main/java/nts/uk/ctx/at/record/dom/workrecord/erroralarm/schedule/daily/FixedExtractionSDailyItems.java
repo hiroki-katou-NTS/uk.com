@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmMessage;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmMessage;
 
 import java.util.Optional;
 
