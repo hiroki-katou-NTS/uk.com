@@ -55,13 +55,13 @@ public class JpaAcceptCsvErrorContentRepository extends JpaRepository implements
 
 	private AcceptCsvErrorContent toDomain(OiomtExAcpCsvError entity)
 	{
-		AcceptCsvErrorContent result = new AcceptCsvErrorContent(entity.getPk().getCid(),
-				entity.getPk().getAsynTaskId(),
-				entity.getPk().getLineNumber(),
-				entity.getPk().getItemNo(),
-				entity.getItemName(),
-				entity.getItemValue(),
-				entity.getErrorContent());
+		AcceptCsvErrorContent result = new AcceptCsvErrorContent(entity.pk.getCid(),
+				entity.pk.getAsynTaskId(),
+				entity.pk.getLineNumber(),
+				entity.pk.getItemNo(),
+				entity.itemName,
+				entity.itemValue,
+				entity.errorContent);
 		return result;
 	}
 

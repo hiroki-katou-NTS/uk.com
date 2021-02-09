@@ -136,10 +136,11 @@ public class SyncCsvCheckImportDataCommandHandler extends AsyncCommandHandler<Cs
 			
 			List<ExacErrorLog> lstExacErrorLog = new ArrayList<>();
 			List<Map<Integer, Object>> lstCsvContent = new ArrayList<>();
+			int errItems = 0;
 			for (int i = 1; i <= command.getCsvLine() ; i++) { // line
 				List<List<String>> lstLineData = new ArrayList<>();
 				//Read record				
-				NtsCsvRecord record = csvParsedResult.getRecords().get(i + startLine - 1);
+				NtsCsvRecord record = csvParsedResult.getRecords().get(i + startLine - 2);
 				boolean isLineError = true; //エラー行を数る
 				boolean isCond = true; //True 受入条件がOK、False　受入条件がNOT　OK　　//受入条件をチェック
 				Map<SpecialExternalItem, SpecialEditValue> mapItemSpecial = new HashMap<>();
@@ -168,8 +169,9 @@ public class SyncCsvCheckImportDataCommandHandler extends AsyncCommandHandler<Cs
 					condEditAndCheck = convertCodeItem(lstcdConvert, accSetItem, csvItemValue.toString(), condEditAndCheck);
 					csvItemValue = condEditAndCheck.getEditValue();
 					if(!condEditAndCheck.getEditError().isEmpty()) {
+						errItems += 1;
 						//エラー内容を編集してドメイン「外部受入エラーログ」に書き出す
-						ExacErrorLog exLog = new ExacErrorLog(i * (items + 1), //ログ連番
+						ExacErrorLog exLog = new ExacErrorLog(errItems, //ログ連番
 								cid,
 								command.getProcessId(),
 								Optional.ofNullable(csvItemName),
@@ -187,10 +189,11 @@ public class SyncCsvCheckImportDataCommandHandler extends AsyncCommandHandler<Cs
 						isCond = false;
 					} else {
 						//② Check primitive value
-						if(acceptItem.getPrimitiveName().isPresent()) {
+						if(acceptItem.getPrimitiveName().isPresent() && !acceptItem.getPrimitiveName().get().isEmpty()) {
 							String prvError = checkPrimitivalue(acceptItem.getPrimitiveName().get(), csvItemValue);
 							if(!prvError.isEmpty()) {
-								ExacErrorLog exLog = new ExacErrorLog(i * (items + 1) + 1, //ログ連番
+								errItems += 1;
+								ExacErrorLog exLog = new ExacErrorLog(errItems, //ログ連番
 										cid,
 										command.getProcessId(),
 										Optional.ofNullable(csvItemName),
@@ -212,14 +215,15 @@ public class SyncCsvCheckImportDataCommandHandler extends AsyncCommandHandler<Cs
 							if(mapItemSpecial.containsKey(acceptItem.getSpecialFlg())) {
 								speValue = mapItemSpecial.get(acceptItem.getSpecialFlg());
 							} else {
-								speValue = categoryItemService.editSpecial(condEditAndCheck.getEditValue(),
+								speValue = categoryItemService.editSpecial(csvItemValue,
 										condSet.getAcceptMode(),
 										lstLineData,
 										acceptItem);
 								mapItemSpecial.put(acceptItem.getSpecialFlg(), speValue);
 							}
 							if(speValue.isChkError()) {
-								ExacErrorLog exLog = new ExacErrorLog(i * (items + 1) + 2, //ログ連番
+								errItems += 1;
+								ExacErrorLog exLog = new ExacErrorLog(errItems, //ログ連番
 										cid,
 										command.getProcessId(),
 										Optional.ofNullable(acceptItem.getTableName() + "[" + acceptItem.getColumnName() + "]"),

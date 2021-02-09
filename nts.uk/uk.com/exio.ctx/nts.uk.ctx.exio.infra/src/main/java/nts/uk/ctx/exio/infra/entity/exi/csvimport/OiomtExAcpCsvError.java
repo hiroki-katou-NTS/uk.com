@@ -9,10 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
  * workエラーログ
@@ -21,7 +18,6 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  */
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 @Entity
 @Table(name = "OIOMT_EX_ACP_CSV_ERROR")
 public class OiomtExAcpCsvError extends UkJpaEntity implements Serializable {

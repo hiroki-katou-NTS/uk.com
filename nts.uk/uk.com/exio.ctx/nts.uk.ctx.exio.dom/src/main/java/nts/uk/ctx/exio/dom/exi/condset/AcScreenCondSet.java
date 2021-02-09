@@ -136,10 +136,13 @@ public class AcScreenCondSet extends DomainObject {
 				condValue1 = this.timeConditionValue1.isPresent() ? this.timeConditionValue1.get() : null;
 				condValue2 = this.timeConditionValue2.isPresent() ? this.timeConditionValue2.get() : null;
 				break;
+			case CHARACTER:
+				condValue1 = this.characterConditionValue1.isPresent() ? this.characterConditionValue1.get() : null;
 			default:
 				break;
 		}
 		if (condValue1 == null && condValue2 == null) return result;
+		if (condValue1 == null && itemType == ItemType.CHARACTER) return result;
 		
 		GeneralDate condValueD1 = null;
 		GeneralDate condValueD2 = null;
@@ -215,14 +218,14 @@ public class AcScreenCondSet extends DomainObject {
 			}
 			break;
 		case COND1_EQUAL_VAL: //条件値1　＝　値
-			if(itemType == ItemType.DATE) {
+			if(itemType == ItemType.DATE || itemType == ItemType.CHARACTER) {
 				result = valueItemD.equals(condValueD1);
 			} else {
 				result = itemValueDb == condValueDb1;	
 			}
 			break;
 		case COND1_NOT_EQUAL_VAL: //条件値1　≠　　値 
-			if(itemType == ItemType.DATE) {
+			if(itemType == ItemType.DATE || itemType == ItemType.CHARACTER) {
 				result = !valueItemD.equals(condValueD1);
 			} else {
 				result = itemValueDb != condValueDb1;	

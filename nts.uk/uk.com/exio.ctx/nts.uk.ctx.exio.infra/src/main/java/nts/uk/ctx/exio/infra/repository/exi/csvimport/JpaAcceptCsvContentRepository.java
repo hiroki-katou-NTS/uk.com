@@ -56,16 +56,16 @@ public class JpaAcceptCsvContentRepository extends JpaRepository implements Acce
 	}
 
 	private AcceptCsvContent toDomain(OiomtExAcpCsvContent x) {
-		AcceptCsvContent domain = new AcceptCsvContent(x.getPk().getCid(),
-				x.getPk().getAsynTaskId(),
-				x.getPk().getLineNumber(),
-				x.getPk().getItemNo(),
-				EnumAdaptor.valueOf(x.getDeleteCondFlg(), DeleteExistDataMethod.class),
-				EnumAdaptor.valueOf(x.getAcceptMode(), AcceptMode.class),
-				x.getProcessDate(),
-				x.getTableName(),
-				x.getColumnName(),
-				x.getItemValue());
+		AcceptCsvContent domain = new AcceptCsvContent(x.pk.getCid(),
+				x.pk.getAsynTaskId(),
+				x.pk.getLineNumber(),
+				x.pk.getItemNo(),
+				EnumAdaptor.valueOf(x.deleteCondFlg, DeleteExistDataMethod.class),
+				EnumAdaptor.valueOf(x.acceptMode, AcceptMode.class),
+				x.processDate,
+				x.tableName,
+				x.columnName,
+				x.itemValue);
 		return domain;
 	}
 
