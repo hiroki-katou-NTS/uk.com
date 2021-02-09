@@ -33,7 +33,7 @@ public class UpdateAccountPolicyCommandHandler extends CommandHandler<UpdateAcco
 		this.passwordPolicyRepository.updatePasswordPolicy(passwordPolicy);
 		AccountLockPolicy accountLockPolicy = AccountLockPolicy.createFromJavaType(contractCode, command.errorCount,
 				command.lockInterval, command.lockOutMessage, command.isAccLockUse);
-		this.accountLockPolicyRepository.updateAccountLockPolicy(accountLockPolicy);
+		this.accountLockPolicyRepository.update(accountLockPolicy);
 	}
 
 }

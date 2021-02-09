@@ -28,14 +28,4 @@ public class CompanyBsImport {
 	public static String createCompanyId(String contractCd, String companyCode) {
 		return contractCd + "-" + companyCode;
 	}
-	
-	public static String extractTenantCode(String CompanyId) {
-		val Parts = CompanyId.split("-");
-		return Parts[0];
-	}
-
-	public static String extractCompanyCode(String CompanyId) {
-		val Parts = CompanyId.split("-");
-		return Parts[1];
-	}
 }

@@ -13,13 +13,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
-import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsImport;
 import nts.uk.ctx.sys.gateway.dom.outage.OutageMode;
 import nts.uk.ctx.sys.gateway.dom.outage.PlannedOutageState;
 import nts.uk.ctx.sys.gateway.dom.outage.SystemAvailability;
 import nts.uk.ctx.sys.gateway.dom.outage.company.PlannedOutageByCompany;
-import nts.uk.ctx.sys.gateway.dom.outage.tenant.PlannedOutageByTenant;
 import nts.uk.ctx.sys.gateway.dom.stopbycompany.StopMessage;
+import nts.uk.ctx.sys.shared.dom.company.CompanyInforImport;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -67,7 +66,7 @@ public class SgwdtStopByCompany extends UkJpaEntity implements Serializable {
 	
 	public PlannedOutageByCompany toDomain() {
 		return new PlannedOutageByCompany(
-				CompanyBsImport.createCompanyId(pk.contractCd, pk.companyCd), 
+				CompanyInforImport.createCompanyId(pk.contractCd, pk.companyCd), 
 				new PlannedOutageState(
 						EnumAdaptor.valueOf(systemStatus, SystemAvailability.class), 
 						EnumAdaptor.valueOf(stopMode, OutageMode.class), 

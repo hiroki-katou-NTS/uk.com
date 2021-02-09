@@ -14,6 +14,7 @@ import nts.uk.ctx.sys.gateway.dom.outage.company.PlannedOutageByCompanyRepositor
 import nts.uk.ctx.sys.gateway.dom.outage.tenant.PlannedOutageByTenant;
 import nts.uk.ctx.sys.gateway.dom.outage.tenant.PlannedOutageByTenantRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicy;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicyRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockOutData;
 import nts.uk.ctx.sys.gateway.dom.stopbycompany.StopByCompanyRepository;
 import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthentication;
@@ -65,6 +66,7 @@ public class LoginRequire {
 		private LoginUserContextManager loginUserContextManager;
 		private PlannedOutageByTenantRepository plannedOutageByTenantRepository;
 		private PlannedOutageByCompanyRepository plannedOutageByCompanyRepository;
+		private AccountLockPolicyRepository accountLockPolicyRepository;
 
 		public void setDependencies(
 				CompanyInformationAdapter companyInformationAdapter,
@@ -122,8 +124,7 @@ public class LoginRequire {
 
 		@Override
 		public Optional<AccountLockPolicy> getAccountLockPolicy(String tenantCode) {
-			// TODO 自動生成されたメソッド・スタブ
-			return null;
+			return accountLockPolicyRepository.getAccountLockPolicy(tenantCode);
 		}
 
 		@Override

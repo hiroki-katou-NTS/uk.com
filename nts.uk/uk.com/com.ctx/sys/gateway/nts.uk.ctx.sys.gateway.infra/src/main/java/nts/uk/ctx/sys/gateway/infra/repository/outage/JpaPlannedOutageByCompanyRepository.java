@@ -4,11 +4,11 @@ import java.util.Optional;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
-import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsImport;
 import nts.uk.ctx.sys.gateway.dom.outage.company.PlannedOutageByCompany;
 import nts.uk.ctx.sys.gateway.dom.outage.company.PlannedOutageByCompanyRepository;
 import nts.uk.ctx.sys.gateway.infra.entity.stopbycompany.SgwdtStopByCompany;
 import nts.uk.ctx.sys.gateway.infra.entity.stopbycompany.SgwdtStopByCompanyPK;
+import nts.uk.ctx.sys.shared.dom.company.CompanyInforImport;
 
 public class JpaPlannedOutageByCompanyRepository extends JpaRepository implements PlannedOutageByCompanyRepository {
 	
@@ -17,8 +17,8 @@ public class JpaPlannedOutageByCompanyRepository extends JpaRepository implement
 	private SgwdtStopByCompany toEntity(PlannedOutageByCompany domain) {
 		return new SgwdtStopByCompany(
 				new SgwdtStopByCompanyPK(
-						CompanyBsImport.extractTenantCode(domain.getCompanyId()), 
-						CompanyBsImport.extractCompanyCode(domain.getCompanyId())), 
+						CompanyInforImport.extractTenantCode(domain.getCompanyId()), 
+						CompanyInforImport.extractCompanyCode(domain.getCompanyId())), 
 				domain.getState().getSystemAvailability().value, 
 				domain.getState().getNoticeMessage().toString(), 
 				domain.getState().getOutageMode().value, 
