@@ -2,13 +2,25 @@ package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.schedule.monthly
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CheckedCondition;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareRange;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareSingleValue;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.NameAlarmExtractCond;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.*;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlCompareRange;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlCompareSingle;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlSingleFixed;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmMessage;
+import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.Optional;
 
+/**
+ * スケジュール月次の任意抽出条件 Entity
+ */
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -44,5 +56,39 @@ public class KscdtScheAnyCondMonth extends ContractUkJpaEntity {
     @Override
     protected Object getKey() {
         return this.pk;
+    }
+
+    public ExtractionCondScheduleMonth toDomain(KrcstErAlCompareSingle single, KrcstErAlSingleFixed singleFixed, KrcstErAlCompareRange range){
+
+        ScheduleMonCheckCond scheCheckConditions = null;
+        CheckedCondition checkedCondition = null;
+
+        switch (EnumAdaptor.valueOf(checkType,MonCheckItemType.class)){
+            case CONTRAST:
+                scheCheckConditions = new PublicHolidayCheckCond(EnumAdaptor.valueOf(checkType,TypeOfContrast.class));
+                break;
+            case TIME:
+                scheCheckConditions = new TimeCheckCond(EnumAdaptor.valueOf(checkType,TypeOfTime.class ));
+                break;
+            case NUMBER_DAYS:
+                scheCheckConditions = new DayCheckCond(EnumAdaptor.valueOf(checkType,TypeOfDays.class));
+                break;
+            case REMAIN_NUMBER:
+                scheCheckConditions = new ScheduleMonRemainCheckCond(EnumAdaptor.valueOf(checkType,TypeOfVacations.class),Optional.ofNullable(speVacCd == null? null : new SpecialHolidayCode(Integer.parseInt(speVacCd))));
+                break;
+            default:
+                break;
+        }
+        
+        if (single != null) {
+            checkedCondition = new CompareSingleValue<>(single.compareAtr, single.conditionType);
+            ((CompareSingleValue) checkedCondition).setValue(singleFixed.fixedValue);
+        } else {
+            checkedCondition = new CompareRange<>(range.compareAtr);
+            ((CompareRange) checkedCondition).setStartValue(range.startValue);
+            ((CompareRange) checkedCondition).setEndValue(range.endValue);
+        }
+
+        return new ExtractionCondScheduleMonth(pk.checkId,scheCheckConditions,checkedCondition, EnumAdaptor.valueOf(condType, MonCheckItemType.class),pk.sortBy,useAtr,new NameAlarmExtractCond(condName), Optional.ofNullable(condMsg == null ? null : new ErrorAlarmMessage(condName)));
     }
 }

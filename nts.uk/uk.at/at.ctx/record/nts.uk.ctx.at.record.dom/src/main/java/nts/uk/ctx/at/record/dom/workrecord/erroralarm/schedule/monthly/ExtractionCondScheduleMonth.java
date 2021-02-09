@@ -4,9 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CheckedCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.NameAlarmExtractCond;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmMessage;
-import nts.uk.ctx.at.shared.dom.workrecord.alarm.attendanceitemconditions.CheckConditions;
 
 import java.util.Optional;
 
@@ -25,7 +25,7 @@ public class ExtractionCondScheduleMonth extends AggregateRoot {
     private ScheduleMonCheckCond scheCheckConditions;
 
     // チェック条件
-    private CheckConditions checkConditions;
+    private CheckedCondition checkConditions;
 
     // チェック項目の種類
     private MonCheckItemType checkItemType;
