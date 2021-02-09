@@ -23,7 +23,12 @@ import { KSUS01BComponent } from '../b/index';
 export class KSUS01AComponent extends Vue {
     public title: string = 'KSUS01A';
 
-    public yearMonth = moment().format('YYYYMM');
+    public yearMonth: string = moment().format('YYYYMM');
+    public startDate: string = moment().format('YYYYMMDD');
+    public endDate: string = moment().format('YYYYMMDD');
+    public publicOpAtr: boolean = false;
+    public workDesiredOpAtr: boolean = false;
+    public endDatePublicationPeriod: string = null;
 
     public today = moment().format('YYYYMMDD');
 
@@ -38,6 +43,8 @@ export class KSUS01AComponent extends Vue {
 
     public xDown: number = null;
     public yDown: number = null;
+
+    public memo: string = '';
 
     @Watch('yearMonth')
     public subcribeYearMonth(value: string) {
@@ -59,6 +66,33 @@ export class KSUS01AComponent extends Vue {
 
     public initData() {
         let self = this;
+        self.$mask('show');
+        // self.$http.post('at', API.start).then((data: InitInformation) => {
+        //     self.startDate = moment(data.start, 'yyyy/MM/dd').format('YYYYMMDD');
+        //     self.endDate = moment(data.end, 'yyyy/MM/dd').format('YYYYMMDD');
+        //     self.publicOpAtr = data.publicOpAtr;
+        //     self.endDatePublicationPeriod = data.endDatePublicationPeriod;
+        //     self.workDesiredOpAtr = data.workDesiredOpAtr;
+
+        //     let desiredPeriodWork: PeriodCommand = {
+        //         start: 'startTime', //huytodo
+        //         end: 'endTime' //huytodo
+        //     };
+        //     let scheduledWorkingPeriod: PeriodCommand = {
+        //         start: 'startTime', //huytodo
+        //         end: 'endTime' //huytodo
+        //     };
+        //     let command: InforOnTargetPeriodInput = {
+        //         desiredPeriodWork,
+        //         scheduledWorkingPeriod
+        //     };
+        //     self.$http.post('at', API.changeDatePeriod, command).then((data: any ) => {  //huytodo any -> InforOnTargetPeriodDto
+                
+        //     });
+        // }).catch((error: any) => {
+        //     self.errorHandler(error);
+        // }).then(() => self.$mask('hide'));
+
         self.createDateHeaderList();
         self.createDateCellList();
     }
@@ -81,7 +115,10 @@ export class KSUS01AComponent extends Vue {
                 isActive: false,
                 isFocused: false,
                 rowNumber: Math.floor(index / 7),
-                weekDayIndex: index % 7
+                weekDayIndex: index % 7,
+                displayData: {} as DisplayData,
+                workScheduleStyle: 'padding: 0.25em 1em; font-weight: bold; border-radius: 0.25rem; display: inline-block;',
+                workDesireStyle: 'padding: 0.25em 1em; font-weight: bold; border-radius: 0.25rem; display: inline-block;'
             });
         }
     }
@@ -175,40 +212,90 @@ export class KSUS01AComponent extends Vue {
         let self = this;
         let isFirstDay = false;
         let isActive = false;
+        //huytodo testdata ------------------------
         // let startDate = '20210201';
         // let endDate = '20210305';
-        let startDate = moment(self.yearMonth, 'YYYYMM').format('YYYYMMDD');
-        let endDate = moment(self.yearMonth, 'YYYYMM').add(1, 'months').add(-1, 'days').format('YYYYMMDD');
+        self.startDate = moment(self.yearMonth, 'YYYYMM').format('YYYYMMDD');
+        self.endDate = moment(self.yearMonth, 'YYYYMM').add(1, 'months').add(-1, 'days').format('YYYYMMDD');
+        // ------------------------
         let count = 0;
         self.dateCellList = self.dateCellList.map((el, index) => {
             el = {
                 isActive: false,
                 isFocused: false,
                 rowNumber: el.rowNumber,
-                weekDayIndex: el.weekDayIndex
+                weekDayIndex: el.weekDayIndex,
+                displayData: {} as DisplayData,
+                workScheduleStyle: 'padding: 0.25em 1em; font-weight: bold; border-radius: 0.25rem; display: inline-block;',
+                workDesireStyle: 'padding: 0.25em 1em; font-weight: bold; border-radius: 0.25rem; display: inline-block;'
             };
-            if (!isFirstDay && el.weekDayIndex == moment(startDate).day()) {
+            if (!isFirstDay && el.weekDayIndex == moment(self.startDate).day()) {
                 isActive = true;
                 isFirstDay = true;
             }
             if (isActive) {
-                el.date = moment(startDate).add(count, 'days').format('YYYYMMDD');
-                if (el.date > endDate) {
+                el.date = moment(self.startDate).add(count, 'days').format('YYYYMMDD');
+                if (el.date > self.endDate) {
                     isActive = false;
                 }
                 el.isActive = isActive;
                 el.formatedDate = moment(el.date).format('D');
+
+                //default
+                el.displayData.workScheduleTimeZone = [];
+                el.displayData.workScheduleName = self.$i18n('KSUS01_14');
                 // huytodo test data----------------
                 if (el.formatedDate == '3') {
-                    el.workDesire = true;
-                    el.workSchedule = '休日';
+                    el.displayData.workScheduleAtr = WorkScheduleAtr.ONE_DAY_REST;
+                    el.displayData.workScheduleName = '休日';
+
+                    el.displayData.workDesireStatus = WorkDesireStatus.COMMUTING_HOPE;
+                    el.displayData.workDesireTimeZone = [
+                        {start: '12:30', end: '17:30'}
+                    ];
+                    el.displayData.workDesireName = '遅番';
+                    el.displayData.workDesireMemo = 'memo';
                 }
                 if (el.formatedDate == '6') {
-                    el.workDesire = false;
-                    el.workSchedule = '出勤';
+                    el.displayData.workScheduleAtr = WorkScheduleAtr.ONE_DAY_WORK;
+                    el.displayData.workScheduleName = '出勤';
+                    el.displayData.workScheduleTimeZone = [
+                        {attendanceStamp: '7:00', leaveStamp: '12:00'},
+                        {attendanceStamp: '12:30', leaveStamp: '17:30'}
+                    ];
+
+                    el.displayData.workDesireStatus = WorkDesireStatus.HOLIDAY_HOPE;
+                    el.displayData.workDesireName = '休日';
                 }
+                if (el.formatedDate == '9') {
+                    el.displayData.workScheduleAtr = WorkScheduleAtr.MORNING_WORK;
+                    el.displayData.workScheduleName = '早番';
+                    el.displayData.workScheduleTimeZone = [
+                        {attendanceStamp: '7:00', leaveStamp: '12:00'}
+                    ];
+                    el.displayData.otherStaffs = ['a', 'b'].join(', ');
+
+                    el.displayData.workDesireStatus = WorkDesireStatus.NO_HOPE;
+                }
+                if (el.formatedDate == '12') {
+                    
+                    el.displayData.workScheduleAtr = WorkScheduleAtr.AFTERNOON_WORK;
+                    el.displayData.workScheduleName = '遅番';
+                    el.displayData.workScheduleTimeZone = [
+                        {attendanceStamp: '12:30', leaveStamp: '17:30'}
+                    ];
+                    el.displayData.workDesireStatus = WorkDesireStatus.COMMUTING_HOPE;
+                    el.displayData.workDesireTimeZone = [
+                        {start: '7:00', end: '12:00'},
+                        {start: '12:30', end: '17:30'}
+                    ];
+                    el.displayData.workDesireName = '出勤';
+                    el.displayData.workDesireMemo = 'memo';
+                }
+                el.workScheduleStyle = self.setWorkScheduleStyle(el);
+                el.workDesireStyle = self.setWorkDesireStyle(el);
                 // ----------------
-                if (el.formatedDate == '1' && el.date > startDate) {
+                if (el.formatedDate == '1' && el.date > self.startDate) {
                     el.formatedDate = moment(el.date).format('M/D');
                 }
                 count++;
@@ -218,12 +305,58 @@ export class KSUS01AComponent extends Vue {
         });
     }
 
+    public setWorkScheduleStyle(dateCell: DateCell) {
+        switch (dateCell.displayData.workScheduleAtr) {
+            case WorkScheduleAtr.ONE_DAY_WORK:
+                return dateCell.workScheduleStyle + ' background-color: lightblue;';
+            case WorkScheduleAtr.MORNING_WORK:
+            case WorkScheduleAtr.AFTERNOON_WORK:
+                return dateCell.workScheduleStyle + ' background-color: antiquewhite;';
+            case WorkScheduleAtr.ONE_DAY_REST:
+            default:
+                dateCell.displayData.workScheduleColor = 'ffcc88';
+
+                return dateCell.workScheduleStyle + ' background-color: #' + dateCell.displayData.workScheduleColor + ';';    //huytodo correct way
+        }
+    }
+
     public bindDetail(dateCell: DateCell) {
         let self = this;
         self.detailCell = dateCell;
         self.detailCell.formatedLongMdwDate = moment(self.detailCell.date).format('M月D日 (ddd)');
 
+        let command: InforOnTargetDateInput = {
+            desiredSubmissionStatus: self.detailCell.displayData.workDesireStatus,
+            workHolidayAtr: self.detailCell.displayData.workScheduleAtr,
+            targetDate: self.detailCell.date
+        };
+
+        // self.$http.post(API.getDateDetail, command).then((data: InforOnTargetDateDto) => {
+        //     self.detailCell.displayData.otherStaffs = data.businessNames.join(', ');
+        //     self.detailCell.displayData.workDesireMemo = data.memo;
+        //     self.detailCell.displayData.workScheduleTimeZone = data.listAttendanceDto;
+        // });
+        self.memo = dateCell.displayData.workDesireMemo;
+
         console.log(dateCell, ' detail ', dateCell.formatedDate);
+    }
+
+    public setWorkDesireStyle(dateCell: DateCell) {
+        switch (dateCell.displayData.workDesireStatus) { 
+            case WorkDesireStatus.HOLIDAY_HOPE:
+                dateCell.displayData.workScheduleColor = 'ffcc88';
+
+                return dateCell.workScheduleStyle + ' background-color: #' + dateCell.displayData.workScheduleColor + ';';   //huytodo correct way
+            case WorkDesireStatus.COMMUTING_HOPE:                       //huytodo hoi? ve mau cho enum
+                if (dateCell.displayData.workDesireName == '出勤') {
+                    return dateCell.workScheduleStyle + ' background-color: lightblue;';
+                } else {
+                    return dateCell.workScheduleStyle + ' background-color: antiquewhite;';
+                }
+            case WorkDesireStatus.NO_HOPE:
+            default:
+                return dateCell.workScheduleStyle;
+        }
     }
 
     //3: 年月を変更する方法
@@ -242,7 +375,6 @@ export class KSUS01AComponent extends Vue {
 
     public showDetail(isShow: boolean, dateCell?: DateCell) {
         let self = this;
-        //huytodo focus problem
         if (dateCell) {
             if (!dateCell.isActive) {
                 return;
@@ -287,7 +419,9 @@ export class KSUS01AComponent extends Vue {
         } else {
             cellClass += 'uk-bg-white-smoke ';
         }
-        //huytodo   休日
+        if (dateCell.displayData.workScheduleAtr == WorkScheduleAtr.ONE_DAY_REST) {
+            return cellClass + 'uk-text-red';
+        }
         switch (dateCell.weekDayIndex) {
             case WeekDay.SUN:
                 return cellClass + 'uk-text-red';
@@ -295,6 +429,18 @@ export class KSUS01AComponent extends Vue {
                 return cellClass + 'uk-text-blue';
             default:
                 return cellClass;
+        }
+    }
+
+    public errorHandler(error: any) {
+        const vm = this;
+        switch (error.messageId) {
+            case 'Msg_2049':
+                vm.$modal.error({ messageId: error.messageId, messageParams: error.parameterIds });
+                break;
+            default:
+                vm.$modal.error({ messageId: error.messageId, messageParams: error.parameterIds });
+                break;
         }
     }
 
@@ -311,19 +457,38 @@ export class KSUS01AComponent extends Vue {
 }
 
 const API = {
-    // start: 'at/request/application/holidaywork/mobile/start',
+    start: 'screen/at/ksus01/a/getinforinitial',
+    getDateDetail: 'screen/at/ksus01/a/getinfortargetdate',
+    changeDatePeriod: 'screen/at/ksus01/a/getinfortargetperiod',
 };
 
+// for UI
 export interface DateCell {
     isActive: boolean;
     weekDayIndex: WeekDay;
     rowNumber: number;
     isFocused: boolean;
+    displayData: DisplayData;
+    workScheduleStyle: string;
+    workDesireStyle: string;
     date?: string;
     formatedDate?: string;
     formatedLongMdwDate?: string;
-    workDesire?: boolean;
-    workSchedule?: string;
+}
+
+export interface DisplayData {
+    workDesireDate?: string;        //huytodo to find and compare
+    workDesireName?: string;
+    workDesireColor?: string;
+    workDesireStatus?: WorkDesireStatus;
+    workDesireTimeZone?: Array<TimeZoneDto>;
+    workDesireMemo?: string;
+    workScheduleDate?: string;      //huytodo to find and compare
+    workScheduleName?: string;
+    workScheduleColor?: string;
+    workScheduleAtr?: WorkScheduleAtr;
+    workScheduleTimeZone?: Array<AttendanceDto>;
+    otherStaffs?: string;
 }
 
 export interface DateHeader {
@@ -331,6 +496,7 @@ export interface DateHeader {
     weekDayIndex: WeekDay;
 }
 
+// enum
 export enum WeekDay {
     SUN,
     MON,
@@ -342,7 +508,66 @@ export enum WeekDay {
 }
 
 export enum WorkDesireStatus {
-    NONE,
-    BREAK,
-    WORK
+    NO_HOPE,
+    HOLIDAY_HOPE,
+    COMMUTING_HOPE
 }
+
+export enum WorkScheduleAtr {
+    ONE_DAY_REST,
+    MORNING_WORK,
+    AFTERNOON_WORK,
+    ONE_DAY_WORK
+}
+
+// api input
+export interface InforOnTargetDateInput {
+    desiredSubmissionStatus: number;
+    workHolidayAtr: number;  //huytodo classification -> atr
+    targetDate: String;
+}
+
+export interface InforOnTargetPeriodInput {
+    desiredPeriodWork: PeriodCommand;
+    scheduledWorkingPeriod: PeriodCommand;
+}
+
+export interface PeriodCommand {
+    start: string;
+    end: string;
+}
+
+// api dto
+export interface InitInformation {
+    publicOpAtr: boolean;
+    workDesiredOpAtr: boolean;
+    endDatePublicationPeriod: string;
+    start: string;
+    end: string;
+}
+
+export interface InforOnTargetDateDto {
+    businessNames: Array<string>;
+    listWorkInforAndTimeZone: Array<WorkInforAndTimeZoneByShiftMasterDto>;
+    memo: string;
+    listAttendanceDto: Array<AttendanceDto>;
+}
+
+export interface WorkInforAndTimeZoneByShiftMasterDto {
+    wishName: string;
+    timezones: TimeZoneDto;
+    color: string;
+}
+
+export interface TimeZoneDto {
+    start: string;
+    end: string;
+}
+
+export interface AttendanceDto {
+    attendanceStamp: string;
+    leaveStamp: string;
+}
+
+
+
