@@ -90,7 +90,23 @@ module nts.uk.com.view.cmf001.d.viewmodel {
             });
             
             self.system.subscribe((data) => {
-                console.log(data);
+                service.getAllCategoryBystem(self.system()).done((rs: Array<any>)=>{
+                    if (rs && rs.length) {
+                        
+                        let _rsList: Array<model.ExternalAcceptanceCategory> = _.map(rs, x => {
+                            return new model.ExternalAcceptanceCategory(x.categoryId, x.categoryName);
+                        });
+                        self.listCategory(_rsList);
+                        if (nts.uk.text.isNullOrEmpty(self.listCategory())) {
+                            self.enableCategory(false);
+                            self.selectedCategory(self.stdCondSet().categoryId());
+                        } else {
+                            self.selectedCategory(self.listCategory()[0].categoryId);
+                        }                        
+                        
+                    }else
+                        alertError({ messageId: "Msg_74", messageParams: ["カテゴリ"] });
+                })
             });
         }
 
@@ -567,26 +583,12 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                 }).always(() => {
                     block.clear();
                 });
-                
-                
-                
-                
-                
-                
             }).fail(function(error) {
                 alertError(error);
                 dfd.reject();
             }).always(() => {
                 block.clear();
             });
-            
-            
-            
-            
-            
-            
-            
-            
             return dfd.promise();
         }
 
