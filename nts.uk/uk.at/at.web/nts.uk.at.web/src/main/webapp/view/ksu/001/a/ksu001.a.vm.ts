@@ -1912,14 +1912,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                         let startTime = null, endTime = null;
                         let isChangeTime = false;
-                        if (!_.isEmpty(cellStartTime) && !_.isNil(cellStartTime)) {
-                            startTime = duration.parseString(cellStartTime).toValue();
-                            isChangeTime = true;
-                        }
-                        if (!_.isEmpty(cellEndTime) && !_.isNil(cellEndTime)) {
-                            endTime = duration.parseString(cellEndTime).toValue();
-                            isChangeTime = true;
-                        }
+                        startTime = duration.parseString(cellStartTime).toValue();
+                        endTime = duration.parseString(cellEndTime).toValue();
+
                         let dataCell = {
                             sid: sid,
                             ymd: ymd,
@@ -1928,7 +1923,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             workTimeCd: cell.value.workTimeCode,
                             startTime : startTime,
                             endTime   : endTime,
-                            isChangeTime: isChangeTime
+                            isChangeTime: true
                         }
                         dataReg.push(dataCell);
                     }
@@ -3970,7 +3965,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.checkExitCellUpdated();
         }
         
-        checkExitCellUpdated(disBtnSave? : boolean) {
+        checkExitCellUpdated() {
             let self = this;
             let item = uk.localStorage.getItem(self.KEY);
             let userInfor = JSON.parse(item.get());
@@ -3983,10 +3978,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     self.enableBtnReg(false);
                 }
                 
-                if(!_.isNil(disBtnSave) && disBtnSave == true) {
-                    self.enableBtnReg(false);
-                }
-
                 if (userInfor.updateMode == 'stick') {
                     
                     // check undo
