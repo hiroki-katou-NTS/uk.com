@@ -9,8 +9,13 @@ import lombok.val;
 import nts.uk.ctx.sys.gateway.app.command.login.session.LoginAuthorizeAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.CheckIfCanLogin;
 import nts.uk.ctx.sys.gateway.dom.login.IdentifiedEmployeeInfo;
-import nts.uk.ctx.sys.gateway.dom.outage.PlannedOutageByCompany;
-import nts.uk.ctx.sys.gateway.dom.outage.PlannedOutageByTenant;
+import nts.uk.ctx.sys.gateway.dom.outage.company.PlannedOutageByCompany;
+import nts.uk.ctx.sys.gateway.dom.outage.company.PlannedOutageByCompanyRepository;
+import nts.uk.ctx.sys.gateway.dom.outage.tenant.PlannedOutageByTenant;
+import nts.uk.ctx.sys.gateway.dom.outage.tenant.PlannedOutageByTenantRepository;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicy;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockOutData;
+import nts.uk.ctx.sys.gateway.dom.stopbycompany.StopByCompanyRepository;
 import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthentication;
 import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticationRepository;
 import nts.uk.ctx.sys.shared.dom.company.CompanyInforImport;
@@ -58,6 +63,8 @@ public class LoginRequire {
 		private TenantAuthenticationRepository tenantAuthenticationRepository;
 		private LoginAuthorizeAdapter loginAuthorizeAdapter;
 		private LoginUserContextManager loginUserContextManager;
+		private PlannedOutageByTenantRepository plannedOutageByTenantRepository;
+		private PlannedOutageByCompanyRepository plannedOutageByCompanyRepository;
 
 		public void setDependencies(
 				CompanyInformationAdapter companyInformationAdapter,
@@ -83,14 +90,12 @@ public class LoginRequire {
 
 		@Override
 		public Optional<PlannedOutageByCompany> getPlannedOutageByCompany(String companyId) {
-			// TODO Auto-generated method stub
-			return null;
+			return plannedOutageByCompanyRepository.find(companyId);
 		}
 
 		@Override
 		public Optional<PlannedOutageByTenant> getPlannedOutageByTenant(String tenantCode) {
-			// TODO Auto-generated method stub
-			return null;
+			return plannedOutageByTenantRepository.find(tenantCode);
 		}
 		
 		@Override
@@ -113,6 +118,18 @@ public class LoginRequire {
 			loginAuthorizeAdapter.authorize(
 					loginUserContextManager.roleIdSetter(),
 					identified.getUserId());
+		}
+
+		@Override
+		public Optional<AccountLockPolicy> getAccountLockPolicy(String tenantCode) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public Optional<LockOutData> getLockOutData(String userId) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
 		}
 		
 	}

@@ -99,7 +99,8 @@ public abstract class LoginCommandHandlerBase<
 	 */
 	protected AtomTask authorize(Req require, Authen authen) {
 		
-		//val result = CheckIfCanLogin.check(require, authen.getIdentified());
+		// ログインできるかチェックする
+		CheckIfCanLogin.check(require, authen.getIdentified());
 		
 		// セッション構築
 		require.authorizeLoginSession(authen.getIdentified());

@@ -1,6 +1,7 @@
 package nts.uk.ctx.sys.gateway.dom.login;
 
 import lombok.val;
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.sys.gateway.dom.outage.CheckSystemAvailability;
 import nts.uk.ctx.sys.shared.dom.company.CompanyInforImport;
 
@@ -18,13 +19,13 @@ public class CheckIfCanLogin {
 		// 会社の廃止
 		val company = require.getCompanyInforImport(companyId);
 		if (company.isAbolished()) {
-			
+			throw new BusinessException("Msg_281");
 		}
 		
 		// システムが利用できるかチェックする
 		val status = CheckSystemAvailability.isAvailable(require, tenantCode, companyId, userId);
 		if (!status.isAvailable()) {
-			
+			throw new BusinessException("Msg_285");
 		}
 		
 		// 社員がログインできるかチェックする

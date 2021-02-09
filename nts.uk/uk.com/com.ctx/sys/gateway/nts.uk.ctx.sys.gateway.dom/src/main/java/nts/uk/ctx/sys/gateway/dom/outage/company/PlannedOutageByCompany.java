@@ -1,9 +1,11 @@
-package nts.uk.ctx.sys.gateway.dom.outage;
+package nts.uk.ctx.sys.gateway.dom.outage.company;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
+import nts.uk.ctx.sys.gateway.dom.outage.PlannedOutage;
+import nts.uk.ctx.sys.gateway.dom.outage.PlannedOutageState;
 
 /**
  * 会社単位の利用停止の設定

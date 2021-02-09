@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import mockit.Mocked;
 import nts.arc.testing.assertion.NtsAssert;
+import nts.uk.ctx.sys.gateway.dom.outage.company.PlannedOutageByCompany;
 
 public class PlannedOutageByCompanyTest {
 
