@@ -116,7 +116,7 @@ export class KafS05Component extends KafS00ShrComponent {
     public get c3_1() {
         const self = this;
         let model = self.model as Model;
-        let value = _.get(model, 'displayInfoOverTime.appDispInfoStartup.appDispInfoNoDateOutput.managementMultipleWorkCycles') == NotUseAtr.USE;
+        let value = _.get(model, 'displayInfoOverTime.appDispInfoStartup.appDispInfoNoDateOutput.managementMultipleWorkCycles');
 
         return value && self.c3;
     }

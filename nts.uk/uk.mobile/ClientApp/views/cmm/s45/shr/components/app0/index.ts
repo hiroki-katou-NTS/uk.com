@@ -151,7 +151,7 @@ export class CmmS45ShrComponentsApp0Component extends Vue {
     // c3 ＝ ○ AND「残業申請の表示情報．申請表示情報．申請表示情報(基準日関係なし)．複数回勤務の管理」＝true"
     public get c3_1() {
         const self = this;
-        let c3_1 = _.get(self.dataOutput, 'displayInfoOverTime.appDispInfoStartup.appDispInfoNoDateOutput.managementMultipleWorkCycles') == NotUseAtr.USE;
+        let c3_1 = _.get(self.dataOutput, 'displayInfoOverTime.appDispInfoStartup.appDispInfoNoDateOutput.managementMultipleWorkCycles');
 
         return self.c3 && c3_1;
     }
