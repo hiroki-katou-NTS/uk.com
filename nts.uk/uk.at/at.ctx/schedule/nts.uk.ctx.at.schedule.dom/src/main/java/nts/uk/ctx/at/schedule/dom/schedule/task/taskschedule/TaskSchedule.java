@@ -21,7 +21,7 @@ public class TaskSchedule implements DomainValue {
 	/**
 	 * 詳細リスト
 	 */
-	private List<TaskScheduleDetail> details;
+	private final List<TaskScheduleDetail> details;
 	
 	/**
 	 * @return

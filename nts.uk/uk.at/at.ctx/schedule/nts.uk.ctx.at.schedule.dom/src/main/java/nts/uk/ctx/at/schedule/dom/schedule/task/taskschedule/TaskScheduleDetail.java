@@ -21,12 +21,12 @@ public class TaskScheduleDetail implements DomainValue, Comparable<TaskScheduleD
 	/**
 	 * 作業コード
 	 */
-	private TaskCode taskCode;
+	private final TaskCode taskCode;
 	
 	/**
 	 * 時間帯
 	 */
-	private TimeSpanForCalc timeSpan;
+	private final TimeSpanForCalc timeSpan;
 	
 	/**
 	 * 作業枠NOを取得する
