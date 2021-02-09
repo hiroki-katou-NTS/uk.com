@@ -1,0 +1,23 @@
+table.fix-table .col-checkbox {
+  width: 36px;
+  text-align: center;
+}
+table.fix-table .col-num {
+  width: 36px;
+  text-align: center;
+}
+
+table.fix-table .col-name {
+  width: 160px;
+}
+
+table.fix-table .col-message {
+  width: 160px;
+}
+table.fix-table .col-use {
+  width: 140px;
+}
+
+.table-buttons {
+  margin-bottom: 10px;
+}
