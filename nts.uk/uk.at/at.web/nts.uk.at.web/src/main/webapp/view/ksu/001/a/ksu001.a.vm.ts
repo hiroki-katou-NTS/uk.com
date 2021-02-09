@@ -1912,8 +1912,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                         let startTime = null, endTime = null;
                         let isChangeTime = false;
-                        startTime = duration.parseString(cellStartTime).toValue();
-                        endTime = duration.parseString(cellEndTime).toValue();
+                        if (!_.isEmpty(cellStartTime) && !_.isNil(cellStartTime)) {
+                            startTime = duration.parseString(cellStartTime).toValue();
+                            isChangeTime = true;
+                        }
+                        if (!_.isEmpty(cellEndTime) && !_.isNil(cellEndTime)) {
+                            endTime = duration.parseString(cellEndTime).toValue();
+                            isChangeTime = true;
+                        }
 
                         let dataCell = {
                             sid: sid,
@@ -1923,7 +1929,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             workTimeCd: cell.value.workTimeCode,
                             startTime : startTime,
                             endTime   : endTime,
-                            isChangeTime: true
+                            isChangeTime: isChangeTime
                         }
                         dataReg.push(dataCell);
                     }
