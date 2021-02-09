@@ -12,8 +12,9 @@ import lombok.val;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.sys.gateway.app.command.login.LoginCommandHandlerBase;
 import nts.uk.ctx.sys.gateway.dom.login.IdentifiedEmployeeInfo;
+import nts.uk.ctx.sys.gateway.dom.login.identification.EmployeeIdentify;
 import nts.uk.ctx.sys.gateway.dom.login.password.AuthenticateEmployeePassword;
-import nts.uk.ctx.sys.gateway.dom.login.password.AuthenticateEmployeePasswordResult;
+import nts.uk.ctx.sys.gateway.dom.login.password.AuthenticateResultEmployeePassword;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -50,20 +51,25 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 		
 		// 入力チェック
 		command.checkInput();
-
 		String tenantCode = command.getTenantCode();
 		String companyId = require.createCompanyId(tenantCode, command.getCompanyCode());
 		String employeeCode = command.getEmployeeCode();
 		String password = command.getPassword();
 		
-		// ビルトインユーザ
+		// ビルトインユーザはこちらへ
 		if (require.getBuiltInUser(tenantCode, companyId).authenticate(employeeCode, password)) {
 			return Authentication.asBuiltInUser(tenantCode, companyId);
 		}
 		
+		// ログイン社員の識別
+		val idenResult = EmployeeIdentify.identify(require, companyId, employeeCode);
+		if(idenResult.isFailed()) {
+			//return AuthenticateEmployeePasswordResult.identificationFailed(idenResult.getIdentificationFailureLog().get());
+		}
+		val identified = idenResult.getEmployeeInfo().get();
+		
 		// パスワード認証
-		val authenticationResult = AuthenticateEmployeePassword.authenticate(
-				require, tenantCode, companyId, employeeCode, password);
+		val authenticationResult = AuthenticateEmployeePassword.authenticate(require, identified, password);
 		
 		return Authentication.of(authenticationResult);
 	}
@@ -88,7 +94,7 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 	}
 
 	/**
-	 * 社員認証失敗時の処理
+	 * パスワード認証失敗時の処理
 	 */
 	@Override
 	protected CheckChangePassDto employeeAuthenticationFailed(Require require, Authentication authen) {
@@ -106,12 +112,13 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 	@Value
 	static class Authentication implements LoginCommandHandlerBase.AuthenticationResult {
 		
+		// ビルトインユーザか
 		private boolean isBuiltInUser;
 		private String tenantCodeForBuiltInUser;
 		private String companyIdForBuiltInUser;
-		private AuthenticateEmployeePasswordResult authenResult;
+		private AuthenticateResultEmployeePassword authenResult;
 		
-		public static Authentication of(AuthenticateEmployeePasswordResult authenResult) {
+		public static Authentication of(AuthenticateResultEmployeePassword authenResult) {
 			return new Authentication(false, null, null, authenResult);
 		}
 		

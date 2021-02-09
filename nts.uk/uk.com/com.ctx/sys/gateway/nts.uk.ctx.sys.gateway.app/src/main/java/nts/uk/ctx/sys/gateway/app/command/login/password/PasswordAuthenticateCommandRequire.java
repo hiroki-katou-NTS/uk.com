@@ -16,6 +16,7 @@ import nts.uk.ctx.sys.gateway.dom.login.password.AuthenticationFailuresLog;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockOutData;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicy;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicyRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.changelog.PasswordChangeLog;
 import nts.uk.ctx.sys.shared.dom.company.CompanyInformationAdapter;
 import nts.uk.ctx.sys.shared.dom.employee.EmployeeDataManageInfoAdapter;
@@ -39,6 +40,9 @@ public class PasswordAuthenticateCommandRequire {
 	
 	@Inject
 	private UserRepository userRepo;
+	
+	@Inject
+	private PasswordPolicyRepository passwordPolicyRepository;
 
 	public Require createRequire(String tenantCode) {
 
@@ -81,8 +85,7 @@ public class PasswordAuthenticateCommandRequire {
 
 		@Override
 		public Optional<PasswordPolicy> getPasswordPolicy(String tenantCode) {
-			// TODO Auto-generated method stub
-			return null;
+			return passwordPolicyRepository.getPasswordPolicy(tenantCode);
 		}
 
 		@Override
@@ -112,6 +115,18 @@ public class PasswordAuthenticateCommandRequire {
 		@Override
 		public PasswordChangeLog getPasswordChangeLog(String userId) {
 			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void addFailureLog(String companyId, String employeeCode, String ipAddress) {
+			// TODO 自動生成されたメソッド・スタブ
+			
+		}
+
+		@Override
+		public Optional<LockOutData> getLockOutData(String userId) {
+			// TODO 自動生成されたメソッド・スタブ
 			return null;
 		}
 	}

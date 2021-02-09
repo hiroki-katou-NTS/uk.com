@@ -48,45 +48,45 @@ public class PasswordComplexityRequirementTest {
 	public void validatePassword_0() {
 		
 		val target = requirement(0, 0, 0, 0);
-		assertThat(target.validatePassword("")).isTrue();
+		assertThat(target.validatePassword("").size() == 0).isTrue();
 	}
 	
 	@Test
 	public void validatePassword_1() {
 		
 		val target = requirement(1, 0, 0, 0);
-		assertThat(target.validatePassword("a")).isTrue();
-		assertThat(target.validatePassword("")).isFalse();
+		assertThat(target.validatePassword("a").size() == 0).isTrue();
+		assertThat(target.validatePassword("").size() == 0).isFalse();
 	}
 	
 	@Test
 	public void validatePassword_2() {
 		
 		val target = requirement(0, 1, 0, 0);
-		assertThat(target.validatePassword("a")).isTrue();
-		assertThat(target.validatePassword("1")).isFalse();
+		assertThat(target.validatePassword("a").size() == 0).isTrue();
+		assertThat(target.validatePassword("1").size() == 0).isFalse();
 	}
 	
 	@Test
 	public void validatePassword_3() {
 		
 		val target = requirement(0, 1, 1, 0);
-		assertThat(target.validatePassword("a")).isFalse();
-		assertThat(target.validatePassword("1")).isFalse();
-		assertThat(target.validatePassword("a1")).isTrue();
+		assertThat(target.validatePassword("a").size() == 0).isFalse();
+		assertThat(target.validatePassword("1").size() == 0).isFalse();
+		assertThat(target.validatePassword("a1").size() == 0).isTrue();
 	}
 	
 	@Test
 	public void validatePassword_4() {
 		
 		val target = requirement(0, 1, 1, 1);
-		assertThat(target.validatePassword("a")).isFalse();
-		assertThat(target.validatePassword("1")).isFalse();
-		assertThat(target.validatePassword("$")).isFalse();
-		assertThat(target.validatePassword("a1")).isFalse();
-		assertThat(target.validatePassword("a$")).isFalse();
-		assertThat(target.validatePassword("1$")).isFalse();
-		assertThat(target.validatePassword("a1$")).isTrue();
+		assertThat(target.validatePassword("a").size() == 0).isFalse();
+		assertThat(target.validatePassword("1").size() == 0).isFalse();
+		assertThat(target.validatePassword("$").size() == 0).isFalse();
+		assertThat(target.validatePassword("a1").size() == 0).isFalse();
+		assertThat(target.validatePassword("a$").size() == 0).isFalse();
+		assertThat(target.validatePassword("1$").size() == 0).isFalse();
+		assertThat(target.validatePassword("a1$").size() == 0).isTrue();
 	}
 	
 	private static PasswordComplexityRequirement requirement(int minimum, int alphabet, int numeral, int symbol) {

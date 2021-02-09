@@ -2,13 +2,10 @@ package nts.uk.ctx.sys.gateway.dom.login;
 
 import java.util.Optional;
 
-import lombok.Value;
 import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.sys.gateway.dom.outage.PlannedOutage;
-import nts.uk.ctx.sys.gateway.dom.outage.PlannedOutage.Status;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicy;
 
 /**
@@ -47,17 +44,11 @@ public class CheckEmployeeUserAvailability {
 					}
 				});
 	}
-	
-	
-	
-	
-	// ↓いらん
-	
+		
 	public static interface Require extends 
 			AccountLockPolicy.RequireIsLocked {
 
 		Optional<AccountLockPolicy> getAccountLockPolicy(String tenantCode);
 		
-		boolean 
 	}
 }

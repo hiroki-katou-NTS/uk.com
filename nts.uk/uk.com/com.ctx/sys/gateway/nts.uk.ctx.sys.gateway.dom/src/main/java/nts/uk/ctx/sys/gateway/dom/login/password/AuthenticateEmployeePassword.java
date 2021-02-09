@@ -4,103 +4,49 @@ import java.util.Optional;
 
 import lombok.val;
 import nts.uk.ctx.sys.gateway.dom.login.IdentifiedEmployeeInfo;
+import nts.uk.ctx.sys.gateway.dom.login.identification.EmployeeIdentify;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicy;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.validate.PasswordValidationOnLogin;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.validate.ValidationResultOnLogin;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.validate.ValidationResultOnLogin.Status;
 import nts.uk.ctx.sys.shared.dom.employee.EmployeeDataMngInfoImport;
 import nts.uk.ctx.sys.shared.dom.user.User;
+import nts.uk.ctx.sys.shared.dom.user.password.PassStatus;
 
 /**
  * 社員コードとパスワードで認証する
  */
 public class AuthenticateEmployeePassword {
 
-	public static AuthenticateEmployeePasswordResult authenticate(
+	public static AuthenticateResultEmployeePassword authenticate(
 			Require require,
-			String tenantCode,
-			String companyId,
-			String employeeCode,
+			IdentifiedEmployeeInfo identified,
 			String password) {
 		
-		// 識別
-		IdentifiedEmployeeInfo identified;
-		{
-			val opt = identify(require, companyId, employeeCode);
-			if (!opt.isPresent()) {
-				return AuthenticateEmployeePasswordResult.notFoundUser();
-			}
-			identified = opt.get();
-		}
-		
-		val user = identified.getUser();
-		
 		// 認証
+		val user = identified.getUser();
 		if (!user.isCorrectPassword(password)) {
 			val atomTask = FailedAuthenticateEmployeePassword.failed(require, user.getUserID());
-			return AuthenticateEmployeePasswordResult.failedAuthentication(atomTask);
+			return AuthenticateResultEmployeePassword.failedAuthentication(atomTask);
 		}
 		
-		// パスワードリセット
-		if (user.getPassStatus().isReset()) {
-			return AuthenticateEmployeePasswordResult.succeededWithResetPassword(identified);
+		// パスワードリセットが必要の場合
+		if (user.getPassStatus().equals(PassStatus.Reset)) {
+			return AuthenticateResultEmployeePassword.succeededWithResetPassword(identified);
 		}
-		
-		//TODO: ちゃんと作る
-		// パスワードポリシー
-//		val passwordPolicyResult = checkPasswordPolicy(require, tenantCode, password, user);
-		PasswordValidationOnLogin passwordPolicyResult  = PasswordValidationOnLogin.ok();
-		
-		return AuthenticateEmployeePasswordResult.succeeded(identified, passwordPolicyResult);
-	}
-	
-	/**
-	 * 社員コードにより識別する
-	 * @param require
-	 * @param companyId
-	 * @param employeeCode
-	 * @return
-	 */
-	private static Optional<IdentifiedEmployeeInfo> identify(Require require, String companyId, String employeeCode) {
 
-		val employee = require.getEmployeeDataMngInfoImportByEmployeeCode(companyId, employeeCode);
-		if (!employee.isPresent()) {
-			return Optional.empty();
-		}
-		
-		val user = require.getUserByPersonId(employee.get().getPersonId());
-		if (!user.isPresent()) {
-			return Optional.empty();
-		}
-		
-		return Optional.of(new IdentifiedEmployeeInfo(employee.get(), user.get()));
-	}
-	
-	/**
-	 * パスワードポリシーへの準拠チェック
-	 * @param require
-	 * @param tenantCode
-	 * @param password
-	 * @param user
-	 * @return
-	 */
-	private static PasswordValidationOnLogin checkPasswordPolicy(
-			Require require,
-			String tenantCode,
-			String password,
-			User user) {
-		
-		return require.getPasswordPolicy(tenantCode)
+		// パスワードポリシーへの準拠チェック
+		val passwordPolicy = require.getPasswordPolicy(identified.getTenantCode());
+		val passwordPolicyResult = passwordPolicy
 				.map(p -> p.validateOnLogin(require, user.getUserID(), password, user.getPassStatus()))
-				.orElse(PasswordValidationOnLogin.ok());
+				.orElse(ValidationResultOnLogin.ok());
+		
+		return AuthenticateResultEmployeePassword.succeeded(identified, passwordPolicyResult);
 	}
-	
 	
 	public static interface Require extends
 			FailedAuthenticateEmployeePassword.Require,
-			PasswordPolicy.ValidateOnLoginRequire {
-		
-		Optional<EmployeeDataMngInfoImport> getEmployeeDataMngInfoImportByEmployeeCode(String companyId, String employeeCode);
-		
-		Optional<User> getUserByPersonId(String personId);
+			PasswordPolicy.ValidateOnLoginRequire, 
+			EmployeeIdentify.Require{
 		
 		Optional<PasswordPolicy> getPasswordPolicy(String tenantCode);
 	}

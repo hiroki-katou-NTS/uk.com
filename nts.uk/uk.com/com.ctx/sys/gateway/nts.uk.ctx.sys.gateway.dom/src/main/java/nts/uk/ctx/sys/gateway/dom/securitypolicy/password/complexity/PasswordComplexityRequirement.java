@@ -1,5 +1,8 @@
 package nts.uk.ctx.sys.gateway.dom.securitypolicy.password.complexity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.Value;
 import nts.arc.layer.dom.objecttype.DomainValue;
 
@@ -40,11 +43,10 @@ public class PasswordComplexityRequirement implements DomainValue {
 	 * @param password
 	 * @return
 	 */
-	public boolean validatePassword(String password) {
+	public List<String> validatePassword(String password) {
 		
-		if (password.length() < minimumLength.v()) {
-			return false;
-		}
+		List<String> errorList = new ArrayList<String>();
+		
 		
 		int alphabets = 0;
 		int numerals = 0;
@@ -61,9 +63,27 @@ public class PasswordComplexityRequirement implements DomainValue {
 			}
 		}
 		
-		return alphabets >= alphabetDigits.v()
-				&& numerals >= numeralDigits.v()
-				&& symbols >= symbolDigits.v();
+		// 総桁数不足
+		if (password.length() < minimumLength.v()) {
+			errorList.add("Msg_1186");
+		}
+
+		// 英字桁数不足
+		if (alphabets < alphabetDigits.v()) {
+			errorList.add("Msg_1188");
+		}
+
+		// 数字桁数不足
+		if (numerals < numeralDigits.v()) {
+			errorList.add("Msg_1189");
+		}
+
+		// 記号桁数不足
+		if (symbols < symbolDigits.v()) {
+			errorList.add("Msg_1190");
+		}
+		
+		return errorList;
 	}
 	
 	private static boolean isAlphabet(char c) {

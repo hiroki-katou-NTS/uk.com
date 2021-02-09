@@ -25,26 +25,34 @@ public class User extends AggregateRoot {
 	// ID
 	/** The user id. */
 	private String userID;
+	
 	// デフォルトユーザ
 	private boolean defaultUser;
+	
 	// パスワード
 	/** The password. */
 	private HashPassword password;
+	
 	// ログインID
 	/** The login id. */
 	private LoginID loginID;
+	
 	// 契約コード
 	/** The contract code. */
 	private ContractCode contractCode;
+	
 	// 有効期限
 	/** The expiration date. */
 	private GeneralDate expirationDate;
+	
 	// 特別利用者
 	/** The special user. */
 	private DisabledSegment specialUser;
+	
 	// 複数会社を兼務する
 	/** The multi company concurrent. */
 	private DisabledSegment multiCompanyConcurrent;
+	
 	// メールアドレス
 	/** The mail address. */
 	private Optional<MailAddress> mailAddress;

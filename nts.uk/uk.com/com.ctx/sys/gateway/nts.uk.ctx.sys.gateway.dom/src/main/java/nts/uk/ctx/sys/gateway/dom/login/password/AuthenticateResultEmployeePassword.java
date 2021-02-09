@@ -5,10 +5,10 @@ import java.util.Optional;
 import lombok.Value;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.sys.gateway.dom.login.IdentifiedEmployeeInfo;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.validate.PasswordValidationOnLogin;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.validate.ValidationResultOnLogin;
 
 @Value
-public class AuthenticateEmployeePasswordResult {
+public class AuthenticateResultEmployeePassword {
 
 	/** 認証ステータス */
 	Status status;
@@ -17,7 +17,7 @@ public class AuthenticateEmployeePasswordResult {
 	Optional<IdentifiedEmployeeInfo> identified;
 	
 	/** パスワードポリシーの検証結果（認証成功時のみ） */
-	Optional<PasswordValidationOnLogin> passwordValidation;
+	Optional<ValidationResultOnLogin> passwordValidation;
 	
 	/** 永続化処理 */
 	AtomTask atomTask;
@@ -27,11 +27,11 @@ public class AuthenticateEmployeePasswordResult {
 	 * @param passwordValidation
 	 * @return
 	 */
-	public static AuthenticateEmployeePasswordResult succeeded(
+	public static AuthenticateResultEmployeePassword succeeded(
 			IdentifiedEmployeeInfo identified,
-			PasswordValidationOnLogin passwordValidation) {
+			ValidationResultOnLogin passwordValidation) {
 		
-		return new AuthenticateEmployeePasswordResult(
+		return new AuthenticateResultEmployeePassword(
 				Status.SUCCESS,
 				Optional.of(identified),
 				Optional.of(passwordValidation),
@@ -42,10 +42,10 @@ public class AuthenticateEmployeePasswordResult {
 	 * 成功したがパスワードリセットのためパスワード変更必要
 	 * @return
 	 */
-	public static AuthenticateEmployeePasswordResult succeededWithResetPassword(
+	public static AuthenticateResultEmployeePassword succeededWithResetPassword(
 			IdentifiedEmployeeInfo identified) {
 		
-		return new AuthenticateEmployeePasswordResult(
+		return new AuthenticateResultEmployeePassword(
 				Status.SUCCESS_RESET_PASSWORD,
 				Optional.of(identified),
 				Optional.empty(),
@@ -54,14 +54,15 @@ public class AuthenticateEmployeePasswordResult {
 	
 	/**
 	 * 識別に失敗した
+	 * @param atomTask 
 	 * @return
 	 */
-	public static AuthenticateEmployeePasswordResult notFoundUser() {
-		return new AuthenticateEmployeePasswordResult(
-				Status.NOT_FOUND_USER,
+	public static AuthenticateResultEmployeePassword identificationFailed(AtomTask atomTask) {
+		return new AuthenticateResultEmployeePassword(
+				Status.IDENTIFICATION_FAILED,
 				Optional.empty(),
 				Optional.empty(),
-				AtomTask.none());
+				atomTask);
 	}
 	
 	/**
@@ -69,9 +70,9 @@ public class AuthenticateEmployeePasswordResult {
 	 * @param atomTask
 	 * @return
 	 */
-	public static AuthenticateEmployeePasswordResult failedAuthentication(AtomTask atomTask) {
-		return new AuthenticateEmployeePasswordResult(
-				Status.INCORRECT_PASSWORD,
+	public static AuthenticateResultEmployeePassword failedAuthentication(AtomTask atomTask) {
+		return new AuthenticateResultEmployeePassword(
+				Status.AUTHENTICATION_FAILED,
 				Optional.empty(),
 				Optional.empty(),
 				atomTask);
@@ -83,16 +84,16 @@ public class AuthenticateEmployeePasswordResult {
 	
 	public static enum Status {
 		
-		/** 識別に失敗 */
-		NOT_FOUND_USER,
-		
-		/** 認証に失敗 */
-		INCORRECT_PASSWORD,
-		
 		/** 認証に成功 */
 		SUCCESS,
 		
 		/** 認証に成功（パスワードリセット） */
 		SUCCESS_RESET_PASSWORD,
+		
+		/** 識別に失敗 */
+		IDENTIFICATION_FAILED,
+		
+		/** 認証に失敗 */
+		AUTHENTICATION_FAILED,
 	}
 }

@@ -8,20 +8,35 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.sys.gateway.dom.loginold.ContractCode;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.changelog.PasswordChangeLog;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.complexity.PasswordComplexityRequirement;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.validate.PasswordValidationOnLogin;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.validate.PasswordValidationOnLogin.Status;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.validate.ValidationResultOnLogin;
 import nts.uk.ctx.sys.shared.dom.user.password.PassStatus;
 
 @Getter
 public class PasswordPolicy extends AggregateRoot {
+	
+	// テナントコード
 	private ContractCode contractCode;
-	private NotificationPasswordChange notificationPasswordChange;
-	private boolean loginCheck;
-	private boolean initialPasswordChange;
+	
+	// 利用する
 	private boolean isUse;
-	private PasswordHistoryCount historyCount;
-	private PasswordValidityPeriod validityPeriod;
+	
+	// 複雑さ
 	private PasswordComplexityRequirement complexityRequirement;
+	
+	// 変更履歴回数
+	private PasswordHistoryCount historyCount;
+	
+	// 有効期限
+	private PasswordValidityPeriod validityPeriod;
+	
+	// 期限切れ逼迫通知
+	private NotificationPasswordChange notificationPasswordChange;
+	
+	// 初回ログイン時パスワード変更
+	private boolean initialPasswordChange;
+	
+	// ログイン時にポリシーチェック実施
+	private boolean loginCheck;
 
 	public PasswordPolicy(ContractCode contractCode, NotificationPasswordChange notificationPasswordChange,
 			boolean loginCheck, boolean initialPasswordChange, boolean isUse, PasswordHistoryCount historyCount,
@@ -48,24 +63,33 @@ public class PasswordPolicy extends AggregateRoot {
 
 	}
 
-	public PasswordValidationOnLogin validateOnLogin(
-			ValidateOnLoginRequire require,
+	/**
+	 * ログイン時の検証
+	 * @param require
+	 * @param userId
+	 * @param password
+	 * @param passwordStatus
+	 * @return
+	 */
+	public ValidationResultOnLogin validateOnLogin(ValidateOnLoginRequire require,
 			String userId,
 			String password,
 			PassStatus passwordStatus) {
 		
-		if (!loginCheck || !isUse) {
-			return PasswordValidationOnLogin.ok();
+		// ポリシー利用しない
+		if (!isUse) {
+			return ValidationResultOnLogin.ok();
 		}
 		
 		// 初期パスワード
 		if (initialPasswordChange && passwordStatus.equals(PassStatus.InitPassword)) {
-			return PasswordValidationOnLogin.error(Status.INITIAL);
+			return ValidationResultOnLogin.initial();
 		}
-			
+		
 		// 文字構成をチェック
-		if (!complexityRequirement.validatePassword(password)) {
-			return PasswordValidationOnLogin.error(Status.VIOLATED);
+		val errorList = complexityRequirement.validatePassword(password);
+		if (loginCheck && errorList.size() > 0) {
+			return ValidationResultOnLogin.complexityError(errorList);
 		}
 		
 		// 有効期限をチェック
@@ -74,33 +98,34 @@ public class PasswordPolicy extends AggregateRoot {
 			
 			// 有効期限切れ
 			if (remainingDays < 0) {
-				return PasswordValidationOnLogin.error(Status.EXPIRED);
+				return ValidationResultOnLogin.expired();
 			}
 			
-			// 期限切れが近い通知
+			// 期限切れが近い
 			if (notificationPasswordChange.needsNotify(remainingDays)) {
-				return PasswordValidationOnLogin.expiresSoon(remainingDays);
+				return ValidationResultOnLogin.expiresSoon(remainingDays);
 			}
 		}
-
-		return PasswordValidationOnLogin.ok();
-	}
-	
-	public static interface ValidateOnLoginRequire {
-		
-		PasswordChangeLog getPasswordChangeLog(String userId);
+		// 問題なし
+		return ValidationResultOnLogin.ok();
 	}
 	
 	/**
-	 * パスワードの残り有効日数を求める
+	 * 有効期限が切れるまでの残日数を求める
 	 * @param user
 	 * @return
 	 */
 	private int calculateRemainingDays(ValidateOnLoginRequire require, String userId) {
 		
 		val changeLog = require.getPasswordChangeLog(userId);
+		// 前回変更してからの日数
 		int ageInDays = changeLog.latestLog().ageInDays();
-		
+		// 有効日数から上の日数を引く
 		return validityPeriod.v().intValue() - ageInDays;
+	}
+	
+	public static interface ValidateOnLoginRequire {
+		
+		PasswordChangeLog getPasswordChangeLog(String userId);
 	}
 }
