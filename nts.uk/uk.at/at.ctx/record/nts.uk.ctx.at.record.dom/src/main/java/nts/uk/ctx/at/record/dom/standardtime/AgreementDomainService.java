@@ -61,7 +61,7 @@ public class AgreementDomainService {
 			
 			/** 取得した「36協定基本設定」。1年間を上書きする */
 			basicSetting.getOneYear().setBasic(pys.getOneYearTime());
-			basicSetForCalc.setHaveEmployeeSetting(true);
+			basicSetForCalc.personAgreementSetted();
 		});
 		
 		/** 「36協定基本設定」を返す */
@@ -90,8 +90,7 @@ public class AgreementDomainService {
 			
 			/** 取得した36協定基本設定。１ヶ月を上書きする */
 			basicSetting.getOneMonth().getBasic().setErAlTime(pys.getOneMonthTime());
-			
-			basicSetForCalc.setHaveEmployeeSetting(true);
+			basicSetForCalc.personAgreementSetted();
 		});
 		
 		/** 「36協定基本設定」を返す */

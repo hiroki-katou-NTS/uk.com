@@ -18,6 +18,12 @@ public class BasicAgreementSettingForCalc {
 	/** 社員の上限設定あるか: boolean */
 	private boolean haveEmployeeSetting;
 	
+	/** 個人の３６協定設定がセット済みにする */
+	public void personAgreementSetted() {
+		
+		this.haveEmployeeSetting = true;
+	}
+	
 	/** 月間エラーチェック */
 	public AgreementTimeStatusOfMonthly checkForOneMonth(AttendanceTimeMonth agreementTarget, AttendanceTimeMonth legalLimitTarget) {
 		
