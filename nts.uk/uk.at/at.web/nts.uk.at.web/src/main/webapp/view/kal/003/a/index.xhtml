@@ -261,22 +261,22 @@
                   />
                 </div>
                 <!-- ver 2 -->
-                <div class="tab-content-13">
+                <div class="tab-content-13" data-bind="with: tabScheduleCheckConditions">
                   <div
                     data-bind="component: { 
 											name: 'kal003-a-schedule-daily', 
 											params: { 
-												dataSetShare: tabScheduleCheckConditions 
+                        tabScheduleCheckConditions: $data 
 											}
 										}"
                   ></div>
                 </div>
-                <div class="tab-content-14">
+                <div class="tab-content-14" data-bind="with: tabScheduleFixedCheckConditions">
                   <div
                     data-bind="component: { 
                       name: 'kal003-a-schedule-daily-fixed', 
                       params: {
-                        dataSetShare: tabScheduleFixedCheckConditions
+                        tabScheduleFixedCheckConditions: $data 
                       }
                     }"
                   ></div>

@@ -62,8 +62,12 @@ module nts.uk.at.view.kal003.a.schedule.condition.viewmodel {
     checkConditionList: KnockoutObservableArray<ListItem> = ko.observableArray([]);
     userAtrCheck: KnockoutObservableArray<any> = ko.observableArray([]);
 
-    dataGetShare: KnockoutObservable<any> = ko.observable(null);
+    dataGetShare: KnockoutObservable<any> = ko.observable({});
 
+    constructor(params: any) {
+      super();
+    }
+    
     created(params: any) {
       const vm = this;
 
@@ -73,7 +77,8 @@ module nts.uk.at.view.kal003.a.schedule.condition.viewmodel {
       ]);
 
       //get value from parent screen
-      vm.dataGetShare = params.dataSetShare;
+      vm.dataGetShare().categoryId = params.tabScheduleCheckConditions.categoryId;
+      vm.dataGetShare().tabScheduleCheckConditions = params.tabScheduleCheckConditions;   
 
       vm.checkConditionList.subscribe((newList) => {           
         if (!newList || newList.length <= 0) {
@@ -85,23 +90,25 @@ module nts.uk.at.view.kal003.a.schedule.condition.viewmodel {
         //there is least one item which is not checked
         if (isSelectedAll === false) isSelectedAll = null;
         vm.checkAll(isSelectedAll);
-
+        vm.updateDataToSave();
       });
 
       vm.checkAll.subscribe((value) => {
         if (value === null) return;
         vm.SelectedCheckAll(value);
       });
+
+      vm.getCheckConditionsList();
     }
 
     OpenSettingCheckCondition(rowId: number) {
       const vm = this;
 
-      vm.dataGetShare().dataToSave(vm.checkConditionList());
-      
+      vm.dataGetShare().tabScheduleCheckConditions.dataToSave(vm.checkConditionList());
+      vm.dataGetShare().categoryId = rowId;
      /*
       let sendData = {
-        category: vm.dataGetShare.category,
+        category: vm.dataGetShare().categoryId,
         data: []
       };
       windows.setShared('inputKal003b', sendData);
@@ -116,16 +123,15 @@ module nts.uk.at.view.kal003.a.schedule.condition.viewmodel {
 
     AddNewConditionItem() {
       const vm = this;
-
       nts.uk.ui.errors.clearAll();
-
       let order = vm.checkConditionList().length + 1;
-      let conditionItem = new ListItem(false, order, null, [], null, false);
+      let conditionItem = new ListItem(false, order, 'スケジュー' + vm.dataGetShare().categoryId, [], null, false);
       conditionItem.checked.subscribe((value) => {
         vm.isAllowRemove(_.some(vm.checkConditionList(), (x) => x.checked() === true));  
         if( value === false) vm.checkAll(null); 
         else vm.checkConditionList.valueHasMutated();
       });
+
       vm.checkConditionList.push(conditionItem);
     }
 
@@ -154,6 +160,19 @@ module nts.uk.at.view.kal003.a.schedule.condition.viewmodel {
       const vm = this;
       _.forEach(vm.checkConditionList(), (item, index) => { item.checked(value); });
     }
+
+    getCheckConditionsList() {
+      const vm = this;
+      vm.checkConditionList.removeAll();
+      for( let i = 0; i < vm.dataGetShare().categoryId + 1; i++) {        
+        vm.AddNewConditionItem();
+      }
+    }
+
+    updateDataToSave() {
+      const vm = this;
+      vm.dataGetShare().tabScheduleCheckConditions.dataToSave(vm.checkConditionList());
+    }
   }
 
   export class ListItem {
@@ -172,6 +191,10 @@ module nts.uk.at.view.kal003.a.schedule.condition.viewmodel {
       this.message(message);
       this.useAtr(use);
     }
+  }
 
+  interface iDataToSave {
+    categoryId: number;
+    dataSetShare: any;
   }
 }

@@ -21,3 +21,6 @@ table.fix-table .col-use {
 .table-buttons {
   margin-bottom: 10px;
 }
+.table-buttons button {
+  margin-right: 5px;
+}

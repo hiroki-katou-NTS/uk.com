@@ -50,11 +50,12 @@ module nts.uk.at.view.kal003.a.viewmodel {
         tabAnnualHolidayCon: tab.AnnualHolidayCon;
         tabMasterCheckFixedCon: tab.MasterCheckFixedConTab;
 
-        tabScheduleCheckConditions: KnockoutObservable<any> = ko.observable(null);
-        tabScheduleFixedCheckConditions: KnockoutObservable<any> = ko.observable(null);
-
         selectCategoryFromDialog: KnockoutObservable<boolean> = ko.observable(false);
         afterDelete: KnockoutObservable<boolean> = ko.observable(false);
+
+
+        tabScheduleCheckConditions: KnockoutObservable<any> = ko.observable(null);
+        tabScheduleFixedCheckConditions: KnockoutObservable<any> = ko.observable(null);
 
         constructor() {
             super();
@@ -77,22 +78,26 @@ module nts.uk.at.view.kal003.a.viewmodel {
 
                 //-----------------
                 //02 スケジュール月次 - 3 tabs
-                { id: 'tab-13', title: getText('KAL003_16'), content: '.tab-content-13', enable: ko.computed(() => { 
-                    return  self.selectedCategory() == model.CATEGORY.SCHEDULE_DAILY 
+                {
+                    id: 'tab-13', title: getText('KAL003_16'), content: '.tab-content-13', enable: ko.computed(() => {
+                        return self.selectedCategory() == model.CATEGORY.SCHEDULE_DAILY
                             || self.selectedCategory() == model.CATEGORY.SCHEDULE_MONTHLY
                             || self.selectedCategory() == model.CATEGORY.SCHEDULE_YEAR
                             || self.selectedCategory() == model.CATEGORY.WEEKLY
-                }, this), visible: ko.computed(() => { 
-                    return  self.selectedCategory() == model.CATEGORY.SCHEDULE_DAILY 
+                    }, this), visible: ko.computed(() => {
+                        return self.selectedCategory() == model.CATEGORY.SCHEDULE_DAILY
                             || self.selectedCategory() == model.CATEGORY.SCHEDULE_MONTHLY
                             || self.selectedCategory() == model.CATEGORY.SCHEDULE_YEAR
                             || self.selectedCategory() == model.CATEGORY.WEEKLY
-                }, this) },
-                { id: 'tab-14', title: getText('KAL003_67'), content: '.tab-content-14', enable: ko.computed(() => { 
-                    return self.selectedCategory() == model.CATEGORY.SCHEDULE_MONTHLY
-                }, this), visible: ko.computed(() => { 
-                    return self.selectedCategory() == model.CATEGORY.SCHEDULE_MONTHLY 
-                }, this) },
+                    }, this)
+                },
+                {
+                    id: 'tab-14', title: getText('KAL003_67'), content: '.tab-content-14', enable: ko.computed(() => {
+                        return self.selectedCategory() == model.CATEGORY.SCHEDULE_MONTHLY
+                    }, this), visible: ko.computed(() => {
+                        return self.selectedCategory() == model.CATEGORY.SCHEDULE_MONTHLY
+                    }, this)
+                },
             ]);
             self.selectedTab = ko.observable('tab-1');
 
@@ -323,7 +328,6 @@ module nts.uk.at.view.kal003.a.viewmodel {
 
         duplicateAlarmCheckCondition() {
             let self = this;
-            console.log('zzz');
             self.selectedAlarmCheckConditionCode('');
             let result = ko.toJS(self.dupItem);
             let category = _.find(ko.toJS(self.cbbItemList), (x: model.ItemModel) => x.code == result.category);
@@ -629,7 +633,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
         private switchCategory(category: number) {
             let self = this;
             self.tabCheckCondition.category(category);
-      
+
             self.tabScheduleCheckConditions({
                 categoryId: category,
                 dataToSave: ko.observable(null)
@@ -793,6 +797,9 @@ module nts.uk.at.view.kal003.a.viewmodel {
 
         checkParentValueFromSub() {
             const vm = this;
+
+            //console.log(vm.tabScheduleCheckConditions());
+            //console.log(vm.tabScheduleFixedCheckConditions());
         }
     }
 }
