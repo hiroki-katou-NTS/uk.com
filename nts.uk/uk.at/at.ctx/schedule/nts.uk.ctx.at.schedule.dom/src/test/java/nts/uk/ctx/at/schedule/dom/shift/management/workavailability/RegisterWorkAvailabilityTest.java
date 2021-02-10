@@ -62,7 +62,7 @@ public class RegisterWorkAvailabilityTest {
 			}
 		};
 
-		this.workOneDays = Helper.createWorkAvaiOfOneDays(workRequire, GeneralDate.ymd(2021, 02, 04), shiftMasterCode);
+		this.workOneDays = Arrays.asList(Helper.createWorkAvaiOfOneDay(workRequire, GeneralDate.ymd(2021, 02, 04), shiftMasterCode));
 		
 	}
 	/**
@@ -156,7 +156,7 @@ public class RegisterWorkAvailabilityTest {
 			}
 		};
 
-		val workOneDays = Helper.createWorkAvaiOfOneDays(workRequire, GeneralDate.ymd(2021, 02, 01), shiftMasterCode);
+		val workOneDays = Arrays.asList(Helper.createWorkAvaiOfOneDay(workRequire, GeneralDate.ymd(2021, 02, 01), shiftMasterCode));
 		
 		NtsAssert.atomTask(
 				() -> RegisterWorkAvailability.register(require, "sid", this.datePeriod, workOneDays), 
@@ -173,7 +173,7 @@ public class RegisterWorkAvailabilityTest {
 	@Test
 	public void deadline_more_than_startDate() {
 		
-		val workOneDays = Helper.createWorkAvaiHolidays(workRequire, GeneralDate.ymd(2021, 2, 2));
+		val workOneDays = Arrays.asList(Helper.createWorkAvaiHoliday(workRequire, GeneralDate.ymd(2021, 2, 2)));
 		
 		new Expectations() {
 			{							
@@ -304,7 +304,7 @@ public class RegisterWorkAvailabilityTest {
 	@Test
 	public void testCheckError_throw_Msg_2051_over_number_holiday_true() {
 		
-		val workOneDays = Helper.createWorkAvaiHolidays(workRequire, GeneralDate.ymd(2021, 2, 2));
+		val workOneDays = Arrays.asList(Helper.createWorkAvaiHoliday(workRequire, GeneralDate.ymd(2021, 2, 2)));
 		
 		new Expectations() {
 			{			
@@ -333,7 +333,7 @@ public class RegisterWorkAvailabilityTest {
 	@Test
 	public void testCheckError_throw_Msg_2051_over_number_holiday_false() {
 		
-		val workOneDays = Helper.createWorkAvaiHolidays(workRequire, GeneralDate.ymd(2021, 2, 2));
+		val workOneDays = Arrays.asList(Helper.createWorkAvaiHoliday(workRequire, GeneralDate.ymd(2021, 2, 2)));
 		
 		new Expectations() {
 			{			
@@ -384,7 +384,7 @@ public class RegisterWorkAvailabilityTest {
 			}
 		};
 		
-		val workOneDays = Helper.createWorkAvaiHolidays(workRequire, GeneralDate.ymd(2021, 1, 31));
+		val workOneDays = Arrays.asList(Helper.createWorkAvaiHoliday(workRequire, GeneralDate.ymd(2021, 1, 31)));
 		NtsAssert.atomTask(
 				() -> RegisterWorkAvailability.register(require, "sid", datePeriod, workOneDays), 
 				any -> require.deleteAllWorkAvailabilityOfOneDay("sid", targetRegister),
@@ -456,29 +456,6 @@ public class RegisterWorkAvailabilityTest {
 	}
 	
 	public static class Helper {
-		/**
-		 * 希望＝シフト
-		 * @param require
-		 * @param ymd 希望日
-		 * @param shiftMasterCode　シフトコード
-		 * @return
-		 */
-		public static List<WorkAvailabilityOfOneDay> createWorkAvaiOfOneDays(@Injectable WorkAvailability.Require require, GeneralDate ymd, ShiftMasterCode shiftMasterCode) {
-			return Arrays.asList(
-					WorkAvailabilityOfOneDay.create(require, "sid", ymd, new WorkAvailabilityMemo("memo"),
-							AssignmentMethod.SHIFT, Arrays.asList(shiftMasterCode), Collections.emptyList()));
-		}
-		
-		/**
-		 * 希望＝休日
-		 * @return
-		 */
-		public static List<WorkAvailabilityOfOneDay> createWorkAvaiHolidays(@Injectable WorkAvailability.Require require, GeneralDate ymd) {
-			return Arrays.asList(
-					WorkAvailabilityOfOneDay.create(require, "sid", ymd, new WorkAvailabilityMemo("memo"),
-							AssignmentMethod.HOLIDAY, Collections.emptyList(), Collections.emptyList()));
-		}
-		
 		/**
 		 * 希望＝休日
 		 *  一日分の勤務希望を作る
