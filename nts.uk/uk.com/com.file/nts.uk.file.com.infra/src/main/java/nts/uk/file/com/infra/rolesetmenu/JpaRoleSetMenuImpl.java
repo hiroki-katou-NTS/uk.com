@@ -8,10 +8,9 @@ import java.util.List;
 import java.util.Map;
 
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.file.com.app.rolesetmenu.RoleSetMenuColumn;
 import nts.uk.file.com.app.rolesetmenu.RoleSetMenuRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -21,24 +20,21 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterCellStyle;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 
 @Stateless
-public class JpaRoleSetMenuImpl implements RoleSetMenuRepository {
-	
-	@PersistenceContext
-	private EntityManager entityManager;
+public class JpaRoleSetMenuImpl extends JpaRepository implements RoleSetMenuRepository {
 	
 	private static String QUERY_EXPORT = "SELECT "
 			+ " aa.ROLE_SET_CD, "
 			+ " aa.ROLE_SET_NAME,"
-			+ " (SELECT ROLE_SET_CD from SACMT_DEFAULT_ROLE_SET where CID = ?cid) AS DEFAULT_MENU,"
+			+ " (SELECT ROLE_SET_CD from SACMT_ROLESET_DEFAULT where CID = ?cid) AS DEFAULT_MENU,"
 			+ " bb.ROLE_CD,bb.ROLE_NAME,ee.ROLE_CD,"
 			+ " ee.ROLE_NAME,aa.APPROVAL_AUTHORITY,"
 			+ " cc.WEB_MENU_CD,dd.WEB_MENU_NAME "
-			+ " FROM SACMT_ROLE_SET aa "
+			+ " FROM SACMT_ROLESET aa "
 			+ " Left JOIN SACMT_ROLE bb ON   aa.EMPLOYMENT_ROLE = bb.ROLE_ID "
 			+ " Left JOIN SACMT_ROLE ee ON   aa.PERSON_INF_ROLE = ee.ROLE_ID "
 			+ " JOIN SPTMT_ROLE_SET_WEB_MENU cc "
 			+ " ON aa.ROLE_SET_CD = cc.ROLE_SET_CD "
-			+ " LEFT JOIN CCGST_WEB_MENU dd "
+			+ " LEFT JOIN SPTMT_WEB_MENU dd "
 			+ " ON cc.WEB_MENU_CD = dd.WEB_MENU_CD AND cc.CID = dd.CID "
 			+ " where aa.CID = ?cid AND cc.CID = ?cid "
 			+ " ORDER BY ROLE_SET_CD, cc.WEB_MENU_CD";
@@ -46,7 +42,7 @@ public class JpaRoleSetMenuImpl implements RoleSetMenuRepository {
 	@Override
 	public List<MasterData> exportDataExcel() {
 		String cid = AppContexts.user().companyId();
-		Query query = entityManager.createNativeQuery(QUERY_EXPORT.toString()).
+		Query query = getEntityManager().createNativeQuery(QUERY_EXPORT.toString()).
 				setParameter("cid", cid);
 
 		@SuppressWarnings("unchecked")

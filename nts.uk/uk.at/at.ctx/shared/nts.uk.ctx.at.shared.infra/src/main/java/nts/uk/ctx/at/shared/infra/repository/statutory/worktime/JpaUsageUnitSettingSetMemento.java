@@ -6,7 +6,7 @@ package nts.uk.ctx.at.shared.infra.repository.statutory.worktime;
 
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.UsageUnitSettingSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.KuwstUsageUnitWtSet;
+import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.KshmtLegaltimeUnitSet;
 
 /**
  * The Class JpaUsageUnitSettingSetMemento.
@@ -20,14 +20,14 @@ public class JpaUsageUnitSettingSetMemento implements UsageUnitSettingSetMemento
 	public static final int DEFINED_FALSE = 0;
 
 	/** The setting. */
-	private KuwstUsageUnitWtSet setting;
+	private KshmtLegaltimeUnitSet setting;
 
 	/**
 	 * Instantiates a new jpa usage unit setting set memento.
 	 *
 	 * @param setting the setting
 	 */
-	public JpaUsageUnitSettingSetMemento(KuwstUsageUnitWtSet setting) {
+	public JpaUsageUnitSettingSetMemento(KshmtLegaltimeUnitSet setting) {
 		this.setting = setting;
 	}
 

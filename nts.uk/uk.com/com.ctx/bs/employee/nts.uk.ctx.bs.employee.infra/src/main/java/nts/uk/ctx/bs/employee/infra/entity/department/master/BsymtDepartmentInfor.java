@@ -9,7 +9,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.bs.employee.dom.department.master.DepartmentInformation;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "BSYMT_DEP_INFO")
-public class BsymtDepartmentInfor extends UkJpaEntity {
+public class BsymtDepartmentInfor extends ContractUkJpaEntity {
 
 	@EmbeddedId
 	public BsymtDepartmentInforPk pk;

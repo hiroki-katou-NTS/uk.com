@@ -17,7 +17,7 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.ApprovalStatusMailTy
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailholidayinstruction.Content;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailholidayinstruction.Subject;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 承認状況メールテンプレート
@@ -27,8 +27,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSHST_APPROVAL_MAIL_TEMP")
-public class KshstApprovalStatusMailTemp extends UkJpaEntity implements Serializable {
+@Table(name = "KRQMT_APPROVAL_MAIL_TEMP")
+public class KshstApprovalStatusMailTemp extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**

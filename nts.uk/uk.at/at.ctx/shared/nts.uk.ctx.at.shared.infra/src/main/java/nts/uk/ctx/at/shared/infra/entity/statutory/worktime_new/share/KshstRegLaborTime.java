@@ -11,16 +11,16 @@ import javax.persistence.MappedSuperclass;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
- * The Class KshstComRegLaborTime.
+ * The Class KshmtLegaltimeDRegCom.
  */
 @Setter
 @Getter
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public abstract class KshstRegLaborTime extends UkJpaEntity {
+public abstract class KshstRegLaborTime extends ContractUkJpaEntity {
 
 	/** The exclus ver. */
 	@Column(name = "EXCLUS_VER")

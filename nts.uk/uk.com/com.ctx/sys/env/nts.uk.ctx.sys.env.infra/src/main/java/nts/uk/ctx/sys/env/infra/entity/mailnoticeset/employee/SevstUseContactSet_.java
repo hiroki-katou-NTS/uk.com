@@ -6,11 +6,11 @@ import javax.persistence.metamodel.StaticMetamodel;
 import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.employee.SevstUseContactSetPK;
 
 @Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2018-05-09T16:58:26")
-@StaticMetamodel(SevstUseContactSet.class)
+@StaticMetamodel(SevmtUseContactSya.class)
 public class SevstUseContactSet_ { 
 
-    public static volatile SingularAttribute<SevstUseContactSet, Integer> useMailSet;
-    public static volatile SingularAttribute<SevstUseContactSet, SevstUseContactSetPK> sevstUseContactSetPK;
-    public static volatile SingularAttribute<SevstUseContactSet, Integer> exclusVer;
+    public static volatile SingularAttribute<SevmtUseContactSya, Integer> useMailSet;
+    public static volatile SingularAttribute<SevmtUseContactSya, SevstUseContactSetPK> sevstUseContactSetPK;
+    public static volatile SingularAttribute<SevmtUseContactSya, Integer> exclusVer;
 
 }

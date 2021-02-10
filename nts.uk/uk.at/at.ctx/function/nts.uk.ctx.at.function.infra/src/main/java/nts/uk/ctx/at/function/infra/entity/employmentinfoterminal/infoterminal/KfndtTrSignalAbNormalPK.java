@@ -26,7 +26,7 @@ public class KfndtTrSignalAbNormalPK implements Serializable {
 	 * 就業情報端末コード
 	 */
 	@Column(name = "TIMERECORDER_CD")
-	public int timeRecordCode;
+	public String timeRecordCode;
 	
 	/**
 	 * 前回通信成功日時

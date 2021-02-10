@@ -54,7 +54,6 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.Time36Agreement
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.Time36AgreementErrorAtr;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.Time36ErrorInforList;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.service.MonthlyItems;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.service.OutsideOTSettingService;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.service.Time36AgreementTargetItem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
@@ -613,21 +612,21 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 		if(overtimeHoursDetails.getStatus()==AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR ||
 				overtimeHoursDetails.getStatus()==AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR) {
 			// エラー情報一覧に項目を追加
-//			time36ErrorInforList.getTime36AgreementErrorLst().add(new Time36AgreementError(
-//					overtimeHoursDetails.getAgreementTime().getThreshold(), 
-//					overtimeHoursDetails.getAgreementTime().getAgreementTime().v(), 
-//					Time36AgreementErrorAtr.MONTH_ERROR, 
-//					Optional.empty()));
+			time36ErrorInforList.getTime36AgreementErrorLst().add(new Time36AgreementError(
+					overtimeHoursDetails.getAgreementTime().getThreshold().getErAlTime().getError().v(), 
+					overtimeHoursDetails.getAgreementTime().getAgreementTime().v(), 
+					Time36AgreementErrorAtr.MONTH_ERROR, 
+					Optional.empty()));
 		}
 		// INPUT．時間外時間の詳細．36協定年間時間．状態をチェックする
 		if(overtimeHoursDetails.getAgreementTimeYear().getStatus()==AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR ||
 				overtimeHoursDetails.getAgreementTimeYear().getStatus()==AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR) {
 			// エラー情報一覧に項目を追加
-//			time36ErrorInforList.getTime36AgreementErrorLst().add(new Time36AgreementError(
-//					overtimeHoursDetails.getAgreementTimeYear().getRecordTime().getThreshold(), 
-//					overtimeHoursDetails.getAgreementTimeYear().getRecordTime().getTargetTime().v(), 
-//					Time36AgreementErrorAtr.YEAR_ERROR, 
-//					Optional.empty()));
+			time36ErrorInforList.getTime36AgreementErrorLst().add(new Time36AgreementError(
+					overtimeHoursDetails.getAgreementTimeYear().getRecordTime().getThreshold().getErAlTime().getError().v(), 
+					overtimeHoursDetails.getAgreementTimeYear().getRecordTime().getTargetTime().v(), 
+					Time36AgreementErrorAtr.YEAR_ERROR, 
+					Optional.empty()));
 		}
 		return time36ErrorInforList;
 	}
@@ -649,21 +648,21 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 		if(overtimeHoursDetails.getStatus()==AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP ||
 				overtimeHoursDetails.getStatus()==AgreementTimeStatusOfMonthly.EXCESS_BG_GRAY) {
 			// エラー情報一覧に項目を追加
-//			time36ErrorInforList.getTime36AgreementErrorLst().add(new Time36AgreementError(
-//					overtimeHoursDetails.getLegalMaxTime().getThreshold(), 
-//					overtimeHoursDetails.getLegalMaxTime().getAgreementTime().v(), 
-//					Time36AgreementErrorAtr.MAX_MONTH_ERROR, 
-//					Optional.empty()));
+			time36ErrorInforList.getTime36AgreementErrorLst().add(new Time36AgreementError(
+					overtimeHoursDetails.getLegalMaxTime().getThreshold().getErAlTime().getError().v(), 
+					overtimeHoursDetails.getLegalMaxTime().getAgreementTime().v(), 
+					Time36AgreementErrorAtr.MAX_MONTH_ERROR, 
+					Optional.empty()));
 		}
 		// INPUT．時間外時間の詳細．36協定年間時間．状態をチェックする
 		if(overtimeHoursDetails.getAgreementTimeYear().getStatus()==AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP ||
 				overtimeHoursDetails.getAgreementTimeYear().getStatus()==AgreementTimeStatusOfMonthly.EXCESS_BG_GRAY) {
 			// エラー情報一覧に項目を追加
-//			time36ErrorInforList.getTime36AgreementErrorLst().add(new Time36AgreementError(
-//					overtimeHoursDetails.getAgreementTimeYear().getLimitTime().getThreshold(), 
-//					overtimeHoursDetails.getAgreementTimeYear().getLimitTime().getTargetTime().v(), 
-//					Time36AgreementErrorAtr.MAX_YEAR_ERROR, 
-//					Optional.empty()));
+			time36ErrorInforList.getTime36AgreementErrorLst().add(new Time36AgreementError(
+					overtimeHoursDetails.getAgreementTimeYear().getLimitTime().getThreshold().getErAlTime().getError().v(), 
+					overtimeHoursDetails.getAgreementTimeYear().getLimitTime().getTargetTime().v(), 
+					Time36AgreementErrorAtr.MAX_YEAR_ERROR, 
+					Optional.empty()));
 		}
 		// INPUT．36協定上限複数月平均時間．平均時間をループする
 		for(AgreMaxAverageTime agreMaxAverageTime : overtimeHoursDetails.getAgreMaxAverageTimeMulti().getAverageTimes()) {
