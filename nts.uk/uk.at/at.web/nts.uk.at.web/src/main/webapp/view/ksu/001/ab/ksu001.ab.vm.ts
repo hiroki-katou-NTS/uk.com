@@ -8,7 +8,8 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
     export class ScreenModel {
 
         listWorkType: KnockoutObservableArray<ksu001.a.viewmodel.IWorkTypeDto> = ko.observableArray([]);
-        listWorkTime: any;
+        listWorkTime: KnockoutObservableArray<any> = ko.observableArray([]);
+        listWorkTime2: any;
         selectedWorkTypeCode: KnockoutObservable<string>;
         objWorkTime: any;
         input: any
@@ -97,7 +98,7 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                 uk.localStorage.setItemAsJson(self.KEY, userInfor);
                 
                 let ds = ko.unwrap(self.dataSources);
-                self.listWorkTime = ds;
+                self.listWorkTime2 = ds;
                 
                 let itemSelected;
                 if(wkpTimeCd === 'none'){
