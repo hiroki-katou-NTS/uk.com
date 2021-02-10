@@ -1,36 +1,36 @@
-.float-right {
+.ktg-005 .float-right {
 	float: right !important;
 }
 
-.display_flex {
+.ktg-005 .display_flex {
 	display: flex;
 }
 
-#contents-area {
+.ktg-005 #contents-area {
 	padding: 20px 0px 0px 20px;
 }
 
-.float_left {
+.ktg-005 .float_left {
 	float: left !important;
 }
 
-.display_block {
+.ktg-005 .display_block {
 	display: block;
 }
 
-#content-left {
+.ktg-005 #content-left {
 	float: left;
 	padding: 5px;
 }
 
-.div_line {
+.ktg-005 .div_line {
 	margin-top: 10px;
 	float: left;
 	clear: both;
 	width: 100%;
 }
 
-.toggle_div {
+.ktg-005 .toggle_div {
 	background-color: #F2F2F2;
 	margin-top: 10px;
 	border-radius: 5px;
@@ -38,22 +38,22 @@
 	padding: 10px 20px 10px 10px;
 }
 
-.expand_symbol {
+.ktg-005 .expand_symbol {
 	display: inline-block;
 	float: right;
 	line-height: 37px;
 }
 
-hr {
+.ktg-005 hr {
 	clear: both;
 }
 
-.ellipsis {
+.ktg-005 .ellipsis {
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	overflow: hidden;
 	line-height: 37px;
 }
-.pl-15{
+.ktg-005 .pl-15{
 	padding-left: 15px;
 }

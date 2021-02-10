@@ -10,7 +10,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 任意期間集計実行ログ
@@ -21,8 +21,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_AGGR_PERIODEXCUTION")
-public class KrcmtAggrPeriodExcution extends UkJpaEntity implements Serializable{
+@Table(name = "KRCDT_ANP_PERIOD_EXEC")
+public class KrcmtAggrPeriodExcution extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId

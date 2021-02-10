@@ -13,7 +13,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.pereg.dom.person.setting.matrix.personinfomatrixitem.PersonInfoMatrixItem;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * @author hieult
@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "PPEST_PERSON_INFO_MATRIX")
 @NoArgsConstructor
 @AllArgsConstructor
-public class PpestPersonInfoMatrixItem extends UkJpaEntity implements Serializable {
+public class PpestPersonInfoMatrixItem extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
