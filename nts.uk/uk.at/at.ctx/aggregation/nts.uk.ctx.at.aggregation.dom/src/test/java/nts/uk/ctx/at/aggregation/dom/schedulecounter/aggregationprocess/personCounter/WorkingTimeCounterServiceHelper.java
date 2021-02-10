@@ -51,7 +51,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.Co
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.StayingTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.TotalWorkingTime;
 
-public class CountWorkingTimeOfPerCtgServiceHelper {
+public class WorkingTimeCounterServiceHelper {
 	@Mocked
 	static WorkInfoOfDailyAttendance workInformation;
 
@@ -99,13 +99,19 @@ public class CountWorkingTimeOfPerCtgServiceHelper {
 
 	@Mocked
 	static Optional<SnapShot> snapshot;
-	
-	public static IntegrationOfDaily createDailyWorks(String sid, GeneralDate date, int workTime, Integer premiumTimeNo,
-			int premitumTime) {
+	/**
+	 * 日別勤怠を作る
+	 * @param sid 社員ID
+	 * @param date 年月日
+	 * @param workingWithin 総労働時間（就業時間）
+	 * @param workingExtra 割増時間（時間外時間）
+	 * @return
+	 */
+	public static IntegrationOfDaily createDailyWorks(String sid, GeneralDate date, AttendanceTime workingWithin, 
+			AttendanceTime workingExtra) {
 		return new IntegrationOfDaily(sid, date, workInformation, calAttr, affiliationInfor, pcLogOnInfo, employeeError
 				,	outingTime, breakTime
-				,	Optional.of(AttendanceTimeOfDailyAttendanceHelp.createDailyAttendance(workTime, premiumTimeNo
-						,	premitumTime))
+				,	Optional.of(AttendanceTimeOfDailyAttendanceHelp.createDailyAttendance(workingWithin, workingExtra))
 				,	attendanceLeave, shortTime, specDateAttr, attendanceLeavingGate, anyItemValue, editState, tempTime
 				,	remarks, snapshot);
 	}
@@ -127,12 +133,11 @@ public class CountWorkingTimeOfPerCtgServiceHelper {
 		@Mocked
 		static MedicalCareTimeOfDaily medicalCareTime;
 
-		public static AttendanceTimeOfDailyAttendance createDailyAttendance(int workTime, Integer premiumTimeNo,
-				int premitumTime) {
+		public static AttendanceTimeOfDailyAttendance createDailyAttendance(AttendanceTime workingWithin, AttendanceTime workingExtra) {
 			return new AttendanceTimeOfDailyAttendance(
-					workScheduleTimeOfDaily, ActualWorkingTimeOfDailyHelper.createActualWorkingTimeOfDaily(workTime,
-							premiumTimeNo, premitumTime),
-					stayingTime, unEmployedTime, budgetTimeVariance, medicalCareTime);
+						workScheduleTimeOfDaily
+					,	ActualWorkingTimeOfDailyHelper.createActualWorkingTimeOfDaily(workingWithin, workingExtra)
+					,	stayingTime, unEmployedTime, budgetTimeVariance, medicalCareTime);
 		}
 	}
 
@@ -150,12 +155,12 @@ public class CountWorkingTimeOfPerCtgServiceHelper {
 		@Mocked
 		private static DivergenceTimeOfDaily divTime;
 
-		public static ActualWorkingTimeOfDaily createActualWorkingTimeOfDaily(int workTime, Integer premiumTimeNo,
-				int premitumTime) {
+		public static ActualWorkingTimeOfDaily createActualWorkingTimeOfDaily(AttendanceTime workingWithin, 
+				AttendanceTime workingExtra) {
 
 			return new ActualWorkingTimeOfDaily(constraintDiffTime, constraintTime, timeDiff,
-					TotalWorkingTimeHelper.createTotalWorkingTime(workTime), divTime,
-					PremiumTimeOfDailyPerformanceHepler.createPremiumTimeOfDaily(premiumTimeNo, premitumTime));
+					TotalWorkingTimeHelper.createTotalWorkingTime(workingWithin), divTime,
+					PremiumTimeOfDailyPerformanceHepler.createPremiumTimeOfDaily(workingExtra));
 		}
 
 	}
@@ -209,9 +214,9 @@ public class CountWorkingTimeOfPerCtgServiceHelper {
 		@Mocked
 		static IntervalTimeOfDaily intervalTime;
 
-		public static TotalWorkingTime createTotalWorkingTime(int workTime) {
+		public static TotalWorkingTime createTotalWorkingTime(AttendanceTime workingWithin) {
 			return new TotalWorkingTime(totalTime, totalCalcTime, actualTime,
-					WithinStatutoryTimeOfDailyHepler.createWithinStatutoryTimeOfDaily(workTime),
+					WithinStatutoryTimeOfDailyHepler.createWithinStatutoryTimeOfDaily(workingWithin),
 					excessOfStatutoryTimeOfDaily, lateTimeOfDaily, leaveEarlyTimeOfDaily, breakTimeOfDaily,
 					outingTimeOfDailyPerformance, raiseSalaryTimeOfDailyPerfor, workTimes, temporaryTime, shortTime,
 					holidayOfDaily, intervalTime);
@@ -229,22 +234,21 @@ public class CountWorkingTimeOfPerCtgServiceHelper {
 		@Mocked
 		static WithinStatutoryMidNightTime midNightTime;
 
-		public static WithinStatutoryTimeOfDaily createWithinStatutoryTimeOfDaily(int workTime) {
-			return new WithinStatutoryTimeOfDaily(new AttendanceTime(workTime), actualTime, premiumTime, midNightTime);
+		public static WithinStatutoryTimeOfDaily createWithinStatutoryTimeOfDaily(AttendanceTime workingWithin) {
+			return new WithinStatutoryTimeOfDaily(workingWithin, actualTime, premiumTime, midNightTime);
 		}
 	}
 
 	public static class PremiumTimeOfDailyPerformanceHepler {
-
 		@Mocked
 		static AttendanceAmountDaily premiumAmount;
 
-		public static PremiumTimeOfDailyPerformance createPremiumTimeOfDaily(Integer premiumTimeNo, int premitumTime) {
-			return new PremiumTimeOfDailyPerformance(Arrays.asList(createPremiumTime(premitumTime, premitumTime)));
+		public static PremiumTimeOfDailyPerformance createPremiumTimeOfDaily(AttendanceTime workingExtra) {
+			return new PremiumTimeOfDailyPerformance(Arrays.asList(createPremiumTime(workingExtra)));
 		}
 
-		public static PremiumTime createPremiumTime(Integer premiumTimeNo, int premitumTime) {
-			return new PremiumTime(premiumTimeNo, new AttendanceTime(premitumTime), premiumAmount);
+		public static PremiumTime createPremiumTime(AttendanceTime workingExtra) {
+			return new PremiumTime(1, workingExtra, premiumAmount);
 		}
 	}
 }
