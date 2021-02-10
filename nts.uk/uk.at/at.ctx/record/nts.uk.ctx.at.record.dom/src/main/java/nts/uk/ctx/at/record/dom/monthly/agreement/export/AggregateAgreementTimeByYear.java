@@ -65,7 +65,7 @@ public class AggregateAgreementTimeByYear {
 		}
 		
 		/** 36協定年間時間を作成して返す */
-		val state = oneYearSet.check(yearTime.getAgreementTime(), yearTime.getLegalLimitTime(), agreementSet.isHaveEmployeeSetting());
+		val state = agreementSet.checkForOneYear(yearTime.getAgreementTime(), yearTime.getLegalLimitTime());
 		
 		/** 36協定年間時間を作成して返す */
 		return AgreementTimeYear.of(AgreementTimeOfYear.of(

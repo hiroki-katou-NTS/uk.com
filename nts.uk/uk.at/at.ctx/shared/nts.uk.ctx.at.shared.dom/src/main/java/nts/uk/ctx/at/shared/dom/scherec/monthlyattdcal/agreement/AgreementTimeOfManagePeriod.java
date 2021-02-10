@@ -114,10 +114,9 @@ public class AgreementTimeOfManagePeriod extends AggregateRoot {
 		val monthlyLegalLimitTime = AgreementTimeOfMonthly.of(legalLimitTime, monthAgreementSet.getSpecConditionLimit());
 		
 		/** エラーチェック */
-		val state = monthAgreementSet.check(agreementTime, legalLimitTime, agreementSet.isHaveEmployeeSetting());
+		val state = agreementSet.checkForOneMonth(agreementTime, legalLimitTime);
 		
-		return AgreementTimeOfManagePeriod.of(sid, ym, monthlyAgreementTime, 
-												monthlyLegalLimitTime, breakdown, state);
+		return AgreementTimeOfManagePeriod.of(sid, ym, monthlyAgreementTime, monthlyLegalLimitTime, breakdown, state);
 	}
 	
 	public static interface RequireM2 extends OutsideOTSetting.RequireM1 {

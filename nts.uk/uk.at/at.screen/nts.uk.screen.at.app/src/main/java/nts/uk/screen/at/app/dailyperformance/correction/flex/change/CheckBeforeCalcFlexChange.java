@@ -243,7 +243,7 @@ public class CheckBeforeCalcFlexChange implements CheckBeforeCalcFlexChangeServi
 			MonthlyFlexStatutoryLaborTime monthFlex = MonthlyStatutoryWorkingHours.flexMonAndWeekStatutoryTime(
 					require, cacheCarrier,
 					companyId, afEmpDto.getEmploymentCode(), calc.getEmployeeId(), datePeriod.start(),
-					yearMonthCalen);
+					periodExportOptNext.get().getProcessingYm());
 
 			// 締め期間中に「フレックス勤務」だった期間を取得する
 			// List<WorkingConditionItem> workingConditionItems =
