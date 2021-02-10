@@ -6,7 +6,9 @@ import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Embeddable;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.infra.data.entity.type.GeneralDateTimeToDBConverter;
 import nts.arc.time.GeneralDateTime;
@@ -15,10 +17,12 @@ import nts.arc.time.GeneralDateTime;
  * The primary key class for the SGWDT_LOCKOUT database table.
  * 
  */
-@Embeddable
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
-public class SgwmtLockoutDataPK implements Serializable {
+@Embeddable
+public class SgwdtLockoutDataPK implements Serializable {
 	
 	/** The Constant serialVersionUID. */
 	//default serial version id, required for serializable classes.
@@ -37,13 +41,6 @@ public class SgwmtLockoutDataPK implements Serializable {
 	@Convert(converter = GeneralDateTimeToDBConverter.class)
 	private GeneralDateTime lockoutDateTime;
 
-	/**
-	 * Instantiates a new sgwmt lockout data PK.
-	 */
-	public SgwmtLockoutDataPK() {
-		super();
-	}
-	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
@@ -51,10 +48,10 @@ public class SgwmtLockoutDataPK implements Serializable {
 		if (this == other) {
 			return true;
 		}
-		if (!(other instanceof SgwmtLockoutDataPK)) {
+		if (!(other instanceof SgwdtLockoutDataPK)) {
 			return false;
 		}
-		SgwmtLockoutDataPK castOther = (SgwmtLockoutDataPK)other;
+		SgwdtLockoutDataPK castOther = (SgwdtLockoutDataPK)other;
 		return 
 			this.userId.equals(castOther.userId)
 			&& this.contractCd.equals(castOther.contractCd);

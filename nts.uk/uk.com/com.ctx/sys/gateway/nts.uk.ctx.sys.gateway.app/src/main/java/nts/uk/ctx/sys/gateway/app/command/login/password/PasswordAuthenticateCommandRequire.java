@@ -14,7 +14,7 @@ import nts.uk.ctx.sys.gateway.app.command.login.LoginRequire;
 import nts.uk.ctx.sys.gateway.app.command.login.password.PasswordAuthenticateCommandHandler.Require;
 import nts.uk.ctx.sys.gateway.dom.login.password.AuthenticationFailuresLog;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicy;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockOutData;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockoutData;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicyRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.changelog.PasswordChangeLog;
@@ -107,7 +107,7 @@ public class PasswordAuthenticateCommandRequire {
 		}
 
 		@Override
-		public void save(LockOutData lockOutData) {
+		public void save(LockoutData lockOutData) {
 			// TODO Auto-generated method stub
 			
 		}
@@ -125,7 +125,7 @@ public class PasswordAuthenticateCommandRequire {
 		}
 
 		@Override
-		public Optional<LockOutData> getLockOutData(String userId) {
+		public Optional<LockoutData> getLockOutData(String userId) {
 			// TODO 自動生成されたメソッド・スタブ
 			return null;
 		}

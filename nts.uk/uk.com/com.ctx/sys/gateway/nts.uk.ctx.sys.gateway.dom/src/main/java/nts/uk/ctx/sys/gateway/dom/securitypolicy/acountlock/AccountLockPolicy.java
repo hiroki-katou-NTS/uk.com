@@ -1,23 +1,35 @@
 package nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
 import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.gateway.dom.login.password.AuthenticationFailuresLog;
 import nts.uk.ctx.sys.gateway.dom.loginold.ContractCode;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockOutData;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockoutData;
 
 @Getter
 public class AccountLockPolicy extends AggregateRoot {
+	
+	// 契約コード
 	private ContractCode contractCode;
-	private ErrorCount errorCount;
-	private LockInterval lockInterval;
-	private LockOutMessage lockOutMessage;
+	
+	// 利用する
 	private boolean isUse;
+	
+	// エラー回数
+	private ErrorCount errorCount;
+	
+	// エラー間隔
+	private LockInterval lockInterval;
+	
+	// ロックアウトメッセージ
+	private LockOutMessage lockOutMessage;
 
 	public AccountLockPolicy(ContractCode contractCode, ErrorCount errorCount, LockInterval lockInterval,
 			LockOutMessage lockOutMessage, boolean isUse) {
@@ -34,24 +46,6 @@ public class AccountLockPolicy extends AggregateRoot {
 		return new AccountLockPolicy(new ContractCode(contractCode), new ErrorCount(new BigDecimal(errorCount)),
 				new LockInterval(lockInterval), new LockOutMessage(lockOutMessage), isUse);
 	}
-
-	/**
-	 * 検証する
-	 * @param failuresLog
-	 * @return
-	 */
-	public Optional<LockOutData> validate(AuthenticationFailuresLog failuresLog) {
-		
-		val baseTime = GeneralDateTime.now().addMinutes(-lockInterval.valueAsMinutes());
-		int failuresCount = failuresLog.countFrom(baseTime);
-		
-		if (failuresCount >= errorCount.v().intValue()) {
-			val locked = LockOutData.autoLock(failuresLog.getUserId(), contractCode);
-			return Optional.of(locked);
-		}
-		
-		return Optional.empty();
-	}
 	
 	/**
 	 * ロックされているか
@@ -59,11 +53,39 @@ public class AccountLockPolicy extends AggregateRoot {
 	 * @param userId
 	 * @return
 	 */
-	public boolean isLocked(RequireIsLocked require, String userId) {
+	public boolean isLocked(Require require, String userId) {
 		return isUse && require.getLockOutData(userId).isPresent();
 	}
-
-	public static interface RequireIsLocked {
-		Optional<LockOutData> getLockOutData(String userId);
+	
+	/**
+	 * 認証失敗時の検証
+	 * @param require
+	 * @param userId
+	 * @return
+	 */
+	public Optional<AtomTask> validateAuthenticate(Require require, String tenantCode, String userId) {
+		int failureCount;
+		if(lockInterval.v() == 0) {
+			failureCount = require.getFailureLog(userId).size();
+		}
+		else {
+			val startDateTime = GeneralDateTime.now().addMinutes(-lockInterval.valueAsMinutes());
+			failureCount = require.getFailureLog(userId, startDateTime, GeneralDateTime.now()).size();
+		}
+		if(failureCount >= errorCount.v().intValue() - 1) {
+			return Optional.of(LockoutData.autoLock(require, new ContractCode(tenantCode), userId));
+		}
+		else {
+			return Optional.empty();
+		}
+	}
+	
+	public static interface Require extends LockoutData.Require{
+		
+		Optional<LockoutData> getLockOutData(String userId);
+		
+		List<AuthenticationFailuresLog> getFailureLog(String userId);
+		
+		List<AuthenticationFailuresLog> getFailureLog(String userId, GeneralDateTime start, GeneralDateTime end);
 	}
 }

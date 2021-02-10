@@ -5,7 +5,7 @@ import java.util.Optional;
 import lombok.val;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicy;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockOutData;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockoutData;
 
 /**
  * パスワード認証に失敗した
@@ -42,6 +42,6 @@ public class FailedAuthenticateEmployeePassword {
 		
 		void save(AuthenticationFailuresLog failuresLog);
 		
-		void save(LockOutData lockOutData);
+		void save(LockoutData lockOutData);
 	}
 }

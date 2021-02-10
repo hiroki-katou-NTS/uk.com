@@ -1,21 +1,25 @@
 package nts.uk.ctx.sys.gateway.app.command.login;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.gateway.app.command.login.session.LoginAuthorizeAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.CheckIfCanLogin;
 import nts.uk.ctx.sys.gateway.dom.login.IdentifiedEmployeeInfo;
+import nts.uk.ctx.sys.gateway.dom.login.password.AuthenticationFailuresLog;
 import nts.uk.ctx.sys.gateway.dom.outage.company.PlannedOutageByCompany;
 import nts.uk.ctx.sys.gateway.dom.outage.company.PlannedOutageByCompanyRepository;
 import nts.uk.ctx.sys.gateway.dom.outage.tenant.PlannedOutageByTenant;
 import nts.uk.ctx.sys.gateway.dom.outage.tenant.PlannedOutageByTenantRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicyRepository;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockOutData;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockOutDataRepository;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockoutData;
 import nts.uk.ctx.sys.gateway.dom.stopbycompany.StopByCompanyRepository;
 import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthentication;
 import nts.uk.ctx.sys.gateway.dom.tenantlogin.TenantAuthenticationRepository;
@@ -67,6 +71,7 @@ public class LoginRequire {
 		private PlannedOutageByTenantRepository plannedOutageByTenantRepository;
 		private PlannedOutageByCompanyRepository plannedOutageByCompanyRepository;
 		private AccountLockPolicyRepository accountLockPolicyRepository;
+		private LockOutDataRepository lockOutDataRepository;
 
 		public void setDependencies(
 				CompanyInformationAdapter companyInformationAdapter,
@@ -106,6 +111,34 @@ public class LoginRequire {
 		}
 
 		@Override
+		public Optional<AccountLockPolicy> getAccountLockPolicy(String tenantCode) {
+			return accountLockPolicyRepository.getAccountLockPolicy(tenantCode);
+		}
+
+		@Override
+		public List<AuthenticationFailuresLog> getFailureLog(String userId) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public List<AuthenticationFailuresLog> getFailureLog(String userId, GeneralDateTime start,
+				GeneralDateTime end) {
+			// TODO 自動生成されたメソッド・スタブ
+			return null;
+		}
+
+		@Override
+		public Optional<LockoutData> getLockOutData(String userId) {
+			return lockOutDataRepository.find(userId);
+		}
+
+		@Override
+		public void addLockoutData(LockoutData lockoutData) {
+			lockOutDataRepository.add(lockoutData);
+		}
+
+		@Override
 		public void authorizeLoginSession(IdentifiedEmployeeInfo identified) {
 			val CompanyInforImport =  getCompanyInforImport(identified.getCompanyId());
 			loginUserContextManager.loggedInAsEmployee(
@@ -121,17 +154,5 @@ public class LoginRequire {
 					loginUserContextManager.roleIdSetter(),
 					identified.getUserId());
 		}
-
-		@Override
-		public Optional<AccountLockPolicy> getAccountLockPolicy(String tenantCode) {
-			return accountLockPolicyRepository.getAccountLockPolicy(tenantCode);
-		}
-
-		@Override
-		public Optional<LockOutData> getLockOutData(String userId) {
-			// TODO 自動生成されたメソッド・スタブ
-			return null;
-		}
-		
 	}
 }

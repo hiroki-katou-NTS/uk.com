@@ -30,7 +30,7 @@ import nts.uk.ctx.sys.gateway.dom.loginold.LoginStatus;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicyRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.LockInterval;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockOutData;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockoutData;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockOutDataDto;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockOutDataRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockType;
@@ -242,7 +242,7 @@ public class TimeStampLoginCommandHandler extends LoginBaseTimeStampCommandHandl
 					.getAccountLockPolicy(new ContractCode(contractCode)).get();
 			if (accountLockPolicy.isUse()) {
 				// ドメインモデル「ロックアウトデータ」を取得する (Acquire domain model "lockout data")
-				Optional<LockOutData> lockoutData = this.lockOutDataRepository.findByUserId(userId);
+				Optional<LockoutData> lockoutData = this.lockOutDataRepository.find(userId);
 
 				if (lockoutData.isPresent()) {
 					Integer loginMethod = LoginMethod.NORMAL_LOGIN.value;
@@ -286,10 +286,13 @@ public class TimeStampLoginCommandHandler extends LoginBaseTimeStampCommandHandl
 			// satisfied)
 			if (this.checkLoginLog(user.getUserId(), accountLockPolicy)) {
 				// Add to domain model LockOutData
-				LockOutDataDto dto = LockOutDataDto.builder().userId(user.getUserId())
-						.contractCode(accountLockPolicy.getContractCode().v()).logoutDateTime(GeneralDateTime.now())
-						.lockType(LockType.AUTO_LOCK.value).build();
-				LockOutData lockOutData = new LockOutData(dto);
+				LockOutDataDto dto = LockOutDataDto.builder()
+						.userId(user.getUserId())
+						.contractCode(accountLockPolicy.getContractCode().v())
+						.logoutDateTime(GeneralDateTime.now())
+						.lockType(LockType.AUTO_LOCK.value)
+						.build();
+				LockoutData lockOutData = new LockoutData(dto);
 				this.lockOutDataRepository.add(lockOutData);
 			}
 		}

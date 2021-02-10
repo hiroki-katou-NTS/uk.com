@@ -12,15 +12,15 @@ import nts.arc.time.GeneralDateTime;
 /**
  * The Class SgwmtLogoutDataPK_.
  */
-@StaticMetamodel(SgwmtLockoutDataPK.class)
+@StaticMetamodel(SgwdtLockoutDataPK.class)
 public class SgwmtLockoutDataPK_ {
 
 	/** The sgwmt logout data PK. */
-	public static volatile SingularAttribute<SgwmtLockoutDataPK, String> userId;
+	public static volatile SingularAttribute<SgwdtLockoutDataPK, String> userId;
 
 	/** The contract cd. */
-	public static volatile SingularAttribute<SgwmtLockoutDataPK, String> contractCd;
+	public static volatile SingularAttribute<SgwdtLockoutDataPK, String> contractCd;
 	
 	/** The lockout date time. */
-    public static volatile SingularAttribute<SgwdtLockout, GeneralDateTime> lockoutDateTime;
+    public static volatile SingularAttribute<SgwdtLockoutData, GeneralDateTime> lockoutDateTime;
 }

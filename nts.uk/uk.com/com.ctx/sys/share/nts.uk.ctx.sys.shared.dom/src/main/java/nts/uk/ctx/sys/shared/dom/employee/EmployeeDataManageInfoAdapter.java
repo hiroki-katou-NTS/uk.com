@@ -3,7 +3,9 @@ package nts.uk.ctx.sys.shared.dom.employee;
 import java.util.Optional;
 
 /**
- * 社員データ管理情報のAdapter
+ * 
+ * 社員データ管理情報 <Adapter>
+ *
  */
 public interface EmployeeDataManageInfoAdapter {
 

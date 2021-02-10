@@ -146,7 +146,7 @@ public class PasswordAuthenticateCommandHandler extends LoginCommandHandlerBase<
 		}
 	}
 	
-	public static interface Require extends
+	public static interface Require extends 
 			AuthenticateEmployeePassword.Require,
 			LoginCommandHandlerBase.Require,
 			LoginBuiltInUser.RequireLogin {

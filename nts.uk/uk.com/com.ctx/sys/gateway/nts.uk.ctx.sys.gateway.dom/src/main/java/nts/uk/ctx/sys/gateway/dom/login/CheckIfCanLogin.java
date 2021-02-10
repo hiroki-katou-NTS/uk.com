@@ -29,13 +29,13 @@ public class CheckIfCanLogin {
 		}
 		
 		// 社員がログインできるかチェックする
-		CheckEmployeeUserAvailability.check(require, identified);
+		CheckEmployeeAvailability.check(require, identified);
 
 	}
 	
 	public static interface Require extends
 			CheckSystemAvailability.Require,
-			CheckEmployeeUserAvailability.Require{
+			CheckEmployeeAvailability.Require{
 		
 		CompanyInforImport getCompanyInforImport(String companyId);
 		
