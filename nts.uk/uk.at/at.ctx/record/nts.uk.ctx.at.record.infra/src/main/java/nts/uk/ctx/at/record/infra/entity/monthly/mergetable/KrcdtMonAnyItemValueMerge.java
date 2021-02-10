@@ -34,7 +34,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_MON_ANYITEMVALUE_MERGE")
+@Table(name = "KRCDT_MON_TIME_ANYITEM")
 public class KrcdtMonAnyItemValueMerge extends UkJpaEntity implements Serializable {
 
 	/** serialVersionUID */

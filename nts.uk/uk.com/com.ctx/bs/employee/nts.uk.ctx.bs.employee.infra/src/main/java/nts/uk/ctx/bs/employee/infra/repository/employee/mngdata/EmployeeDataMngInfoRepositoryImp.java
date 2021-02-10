@@ -149,10 +149,10 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 			"ji.JOB_CD, ji.JOB_NAME,",
 			"epl.CODE, epl.NAME,",
 			"cla.CLSCD, cla.CLSNAME",
-			"FROM [dbo].[BSYMT_EMP_DTA_MNG_INFO] mng",
-			"LEFT JOIN [dbo].[BSYMT_EMPLOYMENT_HIST] emh",
+			"FROM [dbo].[BSYMT_SYAIN] mng",
+			"LEFT JOIN [dbo].[BSYMT_AFF_EMP_HIST] emh",
 			"ON mng.SID = emh.SID AND mng.CID = emh.CID AND emh.START_DATE <= '{basedate} 23:59:59' AND emh.END_DATE >= '{basedate} 00:00:00'",
-			"LEFT JOIN [dbo].[BSYMT_EMPLOYMENT_HIS_ITEM] emhi",
+			"LEFT JOIN [dbo].[BSYMT_AFF_EMP_HIST_ITEM] emhi",
 			"ON emh.HIST_ID = emhi.HIST_ID AND emhi.SID = mng.SID",
 			"LEFT JOIN [dbo].[BSYMT_EMPLOYMENT] epl", "ON emhi.EMP_CD = epl.CODE AND epl.CID = '{comid}'",
 			"LEFT JOIN [dbo].[BPSMT_PERSON] per", "ON mng.PID = per.PID",
@@ -162,9 +162,9 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 			"ON adh.HIST_ID = adi.HIST_ID AND adh.CID = '{comid}' ",
 			"LEFT JOIN [dbo].[BSYMT_DEPARTMENT_INFO] dpi",
 			"ON adi.DEP_ID = dpi.DEP_ID AND dpi.CID = '{comid}'",
-			"LEFT JOIN [dbo].[BSYMT_AFF_WORKPLACE_HIST] awh",
+			"LEFT JOIN [dbo].[BSYMT_AFF_WKP_HIST] awh",
 			"ON mng.SID = awh.SID AND mng.CID = awh.CID AND awh.CID = '{comid}' AND awh.START_DATE <= '{basedate} 23:59:59' AND awh.END_DATE >= '{basedate} 00:00:00'",
-			"LEFT JOIN [dbo].[BSYMT_AFF_WPL_HIST_ITEM] whi", "ON awh.HIST_ID = whi.HIST_ID ",
+			"LEFT JOIN [dbo].[BSYMT_AFF_WKP_HIST_ITEM] whi", "ON awh.HIST_ID = whi.HIST_ID ",
 			"LEFT JOIN [dbo].[BSYMT_WKP_INFO] wif",
 			"ON wif.CID = '{comid}'",
 			"LEFT JOIN [dbo].[BSYMT_AFF_JOB_HIST] ajh",
@@ -174,9 +174,9 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 			"ON aji.JOB_TITLE_ID = jh.JOB_ID AND jh.CID = '{comid}' AND jh.START_DATE <= '{basedate} 23:59:59' AND jh.END_DATE >= '{basedate} 00:00:00'",
 			"LEFT JOIN [dbo].[BSYMT_JOB_INFO] ji",
 			"ON jh.JOB_ID = ji.JOB_ID AND jh.HIST_ID = ji.HIST_ID AND jh.CID = ji.CID AND ji.CID = '{comid}'",
-			"LEFT JOIN [dbo].[BSYMT_AFF_CLASS_HISTORY] ach",
+			"LEFT JOIN [dbo].[BSYMT_AFF_CLASS_HIST] ach",
 			"ON mng.SID = ach.SID AND mng.CID = ach.CID AND ach.CID = '{comid}' AND ach.START_DATE <= '{basedate} 23:59:59' AND ach.END_DATE >= '{basedate} 00:00:00'",
-			"LEFT JOIN [dbo].[BSYMT_AFF_CLASS_HIS_ITEM] ahi",
+			"LEFT JOIN [dbo].[BSYMT_AFF_CLASS_HIST_ITEM] ahi",
 			"ON mng.SID = ahi.SID AND ach.HIST_ID = ahi.HIST_ID AND mng.CID = ach.CID AND ach.CID = '{comid}'",
 			"LEFT JOIN [dbo].[BSYMT_CLASSIFICATION] cla",
 			"ON ahi.CLASSIFICATION_CODE = cla.CLSCD AND cla.CID = ach.CID AND cla.CID = '{comid}'",
@@ -223,7 +223,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<EmployeeDataMngInfo> findByEmployeeId(String sId) {
 		String sql = "select CID, SID, PID, SCD, DEL_STATUS_ATR, DEL_DATE, REMV_REASON, EXT_CD"
-				+ " from BSYMT_EMP_DTA_MNG_INFO"
+				+ " from BSYMT_SYAIN"
 				+ " where SID = ?";
 		try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 			stmt.setString(1, sId);
@@ -418,7 +418,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			
 			String sql = "select CID, SID, PID, SCD, DEL_STATUS_ATR, DEL_DATE, REMV_REASON, EXT_CD"
-					+ " from BSYMT_EMP_DTA_MNG_INFO"
+					+ " from BSYMT_SYAIN"
 					+ " where SID in (" + NtsStatement.In.createParamsString(subList) + ")"
 					+ " and CID = ? and DEL_STATUS_ATR = 0 ORDER BY SCD ASC";
 			
@@ -471,7 +471,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 		List<EmployeeDataMngInfo> result = new ArrayList<>();
 		
 		CollectionUtil.split(employeeCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, (subList) -> {
-			String sql = "SELECT * FROM BSYMT_EMP_DTA_MNG_INFO WHERE CID = ? AND SCD IN ("
+			String sql = "SELECT * FROM BSYMT_SYAIN WHERE CID = ? AND SCD IN ("
 					+ NtsStatement.In.createParamsString(subList) + ")"
 					+ " AND DEL_STATUS_ATR = 0";
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
@@ -659,7 +659,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 		CollectionUtil.split(sId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			
 			String sql = "select CID, SID, PID, SCD, DEL_STATUS_ATR, DEL_DATE, REMV_REASON, EXT_CD"
-					+ " from BSYMT_EMP_DTA_MNG_INFO"
+					+ " from BSYMT_SYAIN"
 					+ " where SID in (" + NtsStatement.In.createParamsString(subList) + ")"
 					+ " and DEL_STATUS_ATR = 0";
 			
@@ -701,7 +701,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 //		List<EmployeeDataMngInfo> data =  this.queryProxy().query(SELECT_EMPL_NOT_DELETE_BY_CID, BsymtEmployeeDataMngInfo.class).setParameter("companyId", companyId)
 //				.getList().stream().map(m -> toDomain(m)).collect(Collectors.toList());
 		List<EmployeeDataMngInfo> data = new ArrayList<>();
-			String sql = "SELECT * FROM BSYMT_EMP_DTA_MNG_INFO "
+			String sql = "SELECT * FROM BSYMT_SYAIN "
 					  + " WHERE CID = ? AND DEL_STATUS_ATR = 0 ";
 					  
 				try(PreparedStatement statement = this.connection().prepareStatement(sql)){
@@ -816,7 +816,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 
 	@Override
 	public void updateAll(List<EmployeeDataMngInfo> domains) {		
-		String UP_SQL = "UPDATE BSYMT_EMP_DTA_MNG_INFO SET UPD_DATE = UPD_DATE_VAL,  UPD_CCD = UPD_CCD_VAL,  UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
+		String UP_SQL = "UPDATE BSYMT_SYAIN SET UPD_DATE = UPD_DATE_VAL,  UPD_CCD = UPD_CCD_VAL,  UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
 				+ "  SCD = SCD_VAL, EXT_CD = EXT_CD_VAL WHERE SID = SID_VAL AND PID = PID_VAL AND CID = CID_VAL; ";
 		String updCcd = AppContexts.user().companyCode();
 		String updScd = AppContexts.user().employeeCode();
@@ -846,7 +846,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 		CollectionUtil.split(sid, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			
 			String sql = "select CID, SID, PID, SCD, DEL_STATUS_ATR, DEL_DATE, REMV_REASON, EXT_CD"
-					+ " from BSYMT_EMP_DTA_MNG_INFO"
+					+ " from BSYMT_SYAIN"
 					+ " where SID in (" + NtsStatement.In.createParamsString(subList) + ")"
 					+ " and DEL_STATUS_ATR != 0";
 			
@@ -883,7 +883,7 @@ public class EmployeeDataMngInfoRepositoryImp extends JpaRepository implements E
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			
 			String sql = "SELECT SID, SCD"
-					+ " FROM BSYMT_EMP_DTA_MNG_INFO"
+					+ " FROM BSYMT_SYAIN"
 					+ " WHERE SID IN (" + NtsStatement.In.createParamsString(subList) + ")";
 			
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {

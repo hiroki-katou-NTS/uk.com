@@ -18,7 +18,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_INTERIM_DAYOFF_MNG")
+@Table(name = "KRCDT_INTERIM_HD_COM_MNG")
 public class KrcmtInterimDayOffMng extends UkJpaEntity implements Serializable{
 	/**	暫定代休管理データID */
 	@Id

@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_DAI_CORRECTION_FUN")
+@Table(name = "KRCMT_DAY_CORRECTION_FUN")
 public class KrcmtDaiPerformEdFun extends UkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;

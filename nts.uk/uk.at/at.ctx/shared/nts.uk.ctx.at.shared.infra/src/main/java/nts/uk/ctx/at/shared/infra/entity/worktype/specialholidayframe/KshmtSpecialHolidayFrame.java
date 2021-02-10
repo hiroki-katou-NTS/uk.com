@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
-@Table(name="KSHMT_SPHD_FRAME")
+@Table(name="KSHMT_HDSP_FRAME")
 @AllArgsConstructor
 @NoArgsConstructor
 public class KshmtSpecialHolidayFrame extends UkJpaEntity implements Serializable {

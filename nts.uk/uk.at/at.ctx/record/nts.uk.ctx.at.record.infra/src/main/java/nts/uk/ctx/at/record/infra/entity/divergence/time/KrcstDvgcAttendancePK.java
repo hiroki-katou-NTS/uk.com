@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * The primary key class for the KRCST_DVGC_ATTENDANCE database table.
+ * The primary key class for the KRCMT_DVGC_ATTENDANCE database table.
  * 
  */
 @Getter

@@ -13,7 +13,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KFNMT_MON_PERFORMANCE_DIS")
+@Table(name = "KFNMT_MON_FORM_DEFAULT")
 public class KfnmtInitialDisplayMonthly extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

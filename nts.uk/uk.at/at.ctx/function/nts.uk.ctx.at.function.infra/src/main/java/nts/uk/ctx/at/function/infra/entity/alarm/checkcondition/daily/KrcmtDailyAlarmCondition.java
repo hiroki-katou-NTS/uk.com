@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_DAILY_ALARM_CON")
+@Table(name = "KFNMT_ALST_CHKDAY")
 public class KrcmtDailyAlarmCondition extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

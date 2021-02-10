@@ -16,7 +16,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KFNMT_AUT_MON_FORM_ITEM")
+@Table(name = "KFNMT_MON_FORM_ITEM")
 public class KfnmtDisplayTimeItemPfm  extends UkJpaEntity implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

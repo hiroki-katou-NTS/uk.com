@@ -14,7 +14,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "SEVST_SYSTEM_USE_SET")
+@Table(name = "SEVMT_SYSTEM_USE")
 public class SacmtSysUsageSet extends UkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId

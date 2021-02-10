@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  */
 @Data
 @Entity
-@Table(name = "KFNMT_PROC_EXEC")
+@Table(name = "KFNMT_AUTOEXEC")
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 public class KfnmtProcessExecution extends UkJpaEntity
@@ -55,11 +55,11 @@ public class KfnmtProcessExecution extends UkJpaEntity
 	private String execItemName;
 
 	@OneToOne(mappedBy = "procExec", cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinTable(name = "KFNMT_EXECUTION_SCOPE")
-	private KfnmtExecutionScope execScope;
+	@JoinTable(name = "KFNMT_AUTOEXEC_SCOPE")
+	private KfnmtAutoexecScope execScope;
 
 	@OneToOne(mappedBy = "procExec", cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinTable(name = "KFNMT_PROC_EXEC_SETTING")
+	@JoinTable(name = "KFNMT_AUTOEXEC_SETTEING")
 	private KfnmtProcessExecutionSetting execSetting;
 
 	/**
@@ -129,7 +129,7 @@ public class KfnmtProcessExecution extends UkJpaEntity
 	 */
 	@Override
 	public void setExecScope(ProcessExecutionScope execScope) {
-		this.execScope = KfnmtExecutionScope.createFromDomain(this.getCompanyId(), this.getExecItemCode(), execScope);
+		this.execScope = KfnmtAutoexecScope.createFromDomain(this.getCompanyId(), this.getExecItemCode(), execScope);
 	}
 
 	/**

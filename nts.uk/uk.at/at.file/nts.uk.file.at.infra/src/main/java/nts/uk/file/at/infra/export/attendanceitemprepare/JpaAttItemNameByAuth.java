@@ -19,8 +19,8 @@ import nts.uk.file.at.app.export.attendanceitemprepare.AttItemNameByAuthId;
 @Stateless
 public class JpaAttItemNameByAuth extends JpaRepository implements AttItemNameByAuth {
 
-	private static final String GET_ALL_BY_COMPANY = "SELECT c.AUTHORITY_DAILY_ID,c.ITEM_DAILY_ID,c.USE_ATR,c.CHANGED_BY_OTHERS,c.CHANGED_BY_YOU FROM KSHST_DAI_SER_TYPE_CTR c WHERE c.CID =?companyId";
-	private static final String GET_ALL_MONTHLY_BY_COMPANY = "SELECT c.AUTHORITY_MON_ID,c.ITEM_MONTHLY_ID,c.USE_ATR,c.CHANGED_BY_OTHERS,c.CHANGED_BY_YOU from KSHST_MON_SER_TYPE_CTR c WHERE c.CID =?companyId";
+	private static final String GET_ALL_BY_COMPANY = "SELECT c.AUTHORITY_DAILY_ID,c.ITEM_DAILY_ID,c.USE_ATR,c.CHANGED_BY_OTHERS,c.CHANGED_BY_YOU FROM KSHMT_DAY_ITEM_DISP_CTR c WHERE c.CID =?companyId";
+	private static final String GET_ALL_MONTHLY_BY_COMPANY = "SELECT c.AUTHORITY_MON_ID,c.ITEM_MONTHLY_ID,c.USE_ATR,c.CHANGED_BY_OTHERS,c.CHANGED_BY_YOU from KSHMT_MON_ITEM_DISP_CTR c WHERE c.CID =?companyId";
 
 	@Override
 	public Map<String, List<AttItemName>> getAllByComp(String companyId) {

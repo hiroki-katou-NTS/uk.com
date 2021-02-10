@@ -16,7 +16,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pereg.dom.mastercopy.DataCopyHandler;
-import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.PpemtHistorySelection;
+import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.PpemtSelectionHist;
 import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.PpemtHistorySelectionPK;
 import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.PpemtSelectionItem;
 import nts.uk.ctx.pereg.infra.entity.person.setting.selectionitem.selection.PpemtSelItemOrder;
@@ -34,7 +34,7 @@ public class PerInfoSelectionItemCopyHandler extends DataCopyHandler {
 	private static final String QUERY_HISTORY_ITEM_BY_CONTRACTCD = "SELECT l FROM PpemtSelectionItem l WHERE l.contractCd = :contractCd";
 	
 	/** The Constant QUERY_HISTORY_SELECTION. */
-	private static final String QUERY_HISTORY_SELECTION = "SELECT p FROM PpemtHistorySelection p WHERE p.companyId = :companyId AND p.selectionItemId IN :selectionItemIds";
+	private static final String QUERY_HISTORY_SELECTION = "SELECT p FROM PpemtSelectionHist p WHERE p.companyId = :companyId AND p.selectionItemId IN :selectionItemIds";
 	
 	/** The Constant QUERY_SELECTION. */
 	private static final String QUERY_SELECTION = "SELECT s FROM PpemtSelection s WHERE s.histId = :histId";
@@ -103,10 +103,10 @@ public class PerInfoSelectionItemCopyHandler extends DataCopyHandler {
 		// Delete domain [HistorySelection], Điều kiện: companyID ＝Input．companyID, selectionItemID ＝ 「PerInfoSelectionItem」．ID đa lấy
 		List<String> selectionItemIds = ppemtSelectionItem.stream().map(item -> item.selectionItemPk.selectionItemId)
 				.collect(Collectors.toList());
-		List<PpemtHistorySelection> ppemtHistorySelections = new ArrayList<>();
+		List<PpemtSelectionHist> ppemtHistorySelections = new ArrayList<>();
 		CollectionUtil.split(selectionItemIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			ppemtHistorySelections.addAll(this.entityManager
-				.createQuery(QUERY_HISTORY_SELECTION, PpemtHistorySelection.class).setParameter("companyId", targetCid)
+				.createQuery(QUERY_HISTORY_SELECTION, PpemtSelectionHist.class).setParameter("companyId", targetCid)
 				.setParameter("selectionItemIds", subList).getResultList());
 		});
 		List<String> histIds = ppemtHistorySelections.stream().map(item -> item.histidPK.histId)
@@ -129,12 +129,12 @@ public class PerInfoSelectionItemCopyHandler extends DataCopyHandler {
 		// 指定会社の選択項目定義を全て取得する
 		// Acquire domain model "Personal information selection item",Contractcode = Logged in contract code
 		// Acquire the domain model [HistorySelection] by Company ID = Input.Company ID zero and Selection item ID = SelectionItem.selectionitemid
-		List<PpemtHistorySelection> ppemtHistorySelectionsZero = this.entityManager
-				.createQuery(QUERY_HISTORY_SELECTION, PpemtHistorySelection.class).setParameter("companyId", sourceCid)
+		List<PpemtSelectionHist> ppemtHistorySelectionsZero = this.entityManager
+				.createQuery(QUERY_HISTORY_SELECTION, PpemtSelectionHist.class).setParameter("companyId", sourceCid)
 				.setParameter("selectionItemIds", selectionItemIds).getResultList();
 
 		// (Set [SelectionHistory], [Seletion],[OrderSelectionAndDefaultValues])
-		List<PpemtHistorySelection> newPpemtHistorySelections = new ArrayList<>();
+		List<PpemtSelectionHist> newPpemtHistorySelections = new ArrayList<>();
 		List<PpemtSelection> newPpemtSelections = new ArrayList<>();
 		List<PpemtSelItemOrder> newPpemtSelItemOrders = new ArrayList<>();
 
@@ -147,7 +147,7 @@ public class PerInfoSelectionItemCopyHandler extends DataCopyHandler {
 					.createQuery(QUERY_SELECTION_ORDER, PpemtSelItemOrder.class)
 					.setParameter("histId", item.histidPK.histId).getResultList();
 			// set [SelectionHistory]
-			newPpemtHistorySelections.add(new PpemtHistorySelection(new PpemtHistorySelectionPK(newHistId),
+			newPpemtHistorySelections.add(new PpemtSelectionHist(new PpemtHistorySelectionPK(newHistId),
 					item.selectionItemId, targetCid, item.startDate, item.endDate));
 			
 			Map<String, String> mapSelectionId = new HashMap<>();

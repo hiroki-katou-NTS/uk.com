@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KFNMT_ALCHKCONDCATE_ROLE")
+@Table(name = "KFNMT_ALST_CHK_REFPMT")
 public class KfnmtAlarmCheckConditionCategoryRole extends UkJpaEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;

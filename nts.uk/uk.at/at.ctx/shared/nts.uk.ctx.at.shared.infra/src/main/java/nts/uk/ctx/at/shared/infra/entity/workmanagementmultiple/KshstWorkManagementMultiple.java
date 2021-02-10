@@ -16,7 +16,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  * author hieult
  */
 @Entity
-@Table(name = "KSHST_WORK_MANAGEMENT")
+@Table(name = "KSHMT_2WORK_MNG")
 @AllArgsConstructor
 @NoArgsConstructor
 public class KshstWorkManagementMultiple extends UkJpaEntity implements Serializable {

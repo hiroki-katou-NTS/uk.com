@@ -15,7 +15,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "PPEST_EMP_COPY_SET_ITEM")
+@Table(name = "PPEMT_ENTRY_COPY_ITEM")
 public class PpestEmployeeCopySettingItem extends UkJpaEntity implements Serializable {
 
 	public void setCategoryId(String categoryId) {

@@ -12,8 +12,8 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlWtzSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOTTimezone;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowTimeZone;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowWorkSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloWorkTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFlo;
 
 /**
  * The Class JpaFlowWorkTimezoneSettingGetMemento.
@@ -21,14 +21,14 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowWorkSet;
 public class JpaFlowWorkTimezoneSettingGetMemento implements FlWtzSettingGetMemento {
 	
 	/** The entity. */
-	private KshmtFlowWorkSet entity;
+	private KshmtWtFlo entity;
 	
 	/**
 	 * Instantiates a new jpa flow work timezone setting get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlowWorkTimezoneSettingGetMemento(KshmtFlowWorkSet entity) {
+	public JpaFlowWorkTimezoneSettingGetMemento(KshmtWtFlo entity) {
 		super();
 		this.entity = entity;	
 		if (CollectionUtil.isEmpty(this.entity.getLstKshmtOtTimeZone())) {
@@ -41,7 +41,7 @@ public class JpaFlowWorkTimezoneSettingGetMemento implements FlWtzSettingGetMeme
 	 */
 	@Override
 	public TimeRoundingSetting getWorkTimeRounding() {
-		KshmtFlowTimeZone kshmtFlowTimeZone = this.entity.getKshmtFlowTimeZone();
+		KshmtWtFloWorkTs kshmtFlowTimeZone = this.entity.getKshmtFlowTimeZone();
 		return new TimeRoundingSetting(kshmtFlowTimeZone.getUnit(), kshmtFlowTimeZone.getRounding());
 	}
 

@@ -14,7 +14,7 @@ import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * The persistent class for the KRCST_NIGHT_TIMESHEET database table.
+ * The persistent class for the KRCMT_MIDNIGHT_TS database table.
  * 
  * @author yennh 深夜時間帯
  */
@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "KRCST_NIGHT_TIMESHEET")
+@Table(name = "KRCMT_MIDNIGHT_TS")
 public class KrcstNightTimeSheet extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 

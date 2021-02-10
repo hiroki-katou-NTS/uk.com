@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
-@Table(name = "WWFST_JOB_ASSIGN_SET")
+@Table(name = "WWFMT_JOB_ASSIGN")
 @AllArgsConstructor
 @NoArgsConstructor
 public class WwfstJobAssignSetting extends UkJpaEntity implements Serializable {

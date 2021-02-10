@@ -62,7 +62,7 @@ public class BsymtJobInfo extends UkJpaEntity implements Serializable {
 	@OneToOne(fetch = FetchType.LAZY)
 	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
 			@PrimaryKeyJoinColumn(name = "SEQUENCE_CD", referencedColumnName = "SEQ_CD") })
-	public BsymtJobSeqMaster bsymtJobSeqMaster;
+	public BsymtJobRank bsymtJobSeqMaster;
     
     /**
      * Instantiates a new bsymt job info.

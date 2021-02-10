@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRQST_REMAND_MAIL")
+@Table(name = "KRQMT_REMAND_MAIL")
 public class KrqstContentOfRemandMail extends UkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;

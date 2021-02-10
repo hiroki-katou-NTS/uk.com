@@ -46,7 +46,7 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
-@Table(name="KFNMT_EXEC_TASK_SETTING")
+@Table(name="KFNMT_AUTOEXEC_TASK")
 @AllArgsConstructor
 @NoArgsConstructor
 public class KfnmtExecutionTaskSetting extends UkJpaEntity implements Serializable{

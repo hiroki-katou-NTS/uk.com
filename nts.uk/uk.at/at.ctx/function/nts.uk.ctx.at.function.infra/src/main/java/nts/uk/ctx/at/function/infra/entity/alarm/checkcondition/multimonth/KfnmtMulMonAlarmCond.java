@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KFNMT_MUL_MON_ALARM_CHECK")
+@Table(name = "KFNMT_ALST_CHKMLT")
 public class KfnmtMulMonAlarmCond extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

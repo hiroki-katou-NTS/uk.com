@@ -17,7 +17,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "CCGPT_TOPPAGE_SET")
+@Table(name = "SPTMT_TOPPAGE_SET")
 public class CcgptTopPageSetting extends UkJpaEntity {
 
 	@EmbeddedId

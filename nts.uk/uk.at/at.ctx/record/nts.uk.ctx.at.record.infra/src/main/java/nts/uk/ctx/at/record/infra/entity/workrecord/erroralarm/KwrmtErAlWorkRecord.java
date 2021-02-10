@@ -43,36 +43,36 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTime
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimesValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimesValueDay;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcmtErAlCondition;
-import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcstErAlApplication;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcmtEralApplication;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcstErAlApplicationPK;
-import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcstErAlBusinessType;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcmtEralBusinessType;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcstErAlBusinessTypePK;
-import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcstErAlClass;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcmtEralClass;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcstErAlClassPK;
-import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcstErAlEmployment;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcmtEralEmployment;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcstErAlEmploymentPK;
-import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcstErAlJobTitle;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcmtEralJobTitle;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.KrcstErAlJobTitlePK;
-import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcmtErAlAtdItemCon;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcmtEralstCndgrp;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcmtErAlAtdItemConPK;
-import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlAtdTarget;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcmtEralstCndexprange;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlAtdTargetPK;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlCompareRange;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlCompareRangePK;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlCompareSingle;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlCompareSinglePK;
-import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlConGroup;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcmtEralstCndexpiptchk;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlInputCheck;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlInputCheckPK;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlSingleAtd;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlSingleAtdPK;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlSingleFixed;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlSingleFixedPK;
-import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.worktime.KrcstErAlWhActual;
-import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.worktime.KrcstErAlWhPlan;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.worktime.KrcmtEralWktmActual;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.worktime.KrcmtEralWktmPlan;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.worktime.KrcstErAlWhPlanActualPK;
-import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.worktype.KrcstErAlWtActual;
-import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.worktype.KrcstErAlWtPlan;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.worktype.KrcmtEralWktpActual;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.worktype.KrcmtEralWktpPlan;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.worktype.KrcstErAlWtPlanActualPK;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -85,7 +85,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_ERAL_SET")
+@Table(name = "KRCMT_ERAL_DAY_SET")
 public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -135,13 +135,13 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 	public KrcmtErAlCondition krcmtErAlCondition;
 
 	@OneToMany(mappedBy = "kwrmtErAlWorkRecord", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-	public List<KrcstErAlApplication> krcstErAlApplication;
+	public List<KrcmtEralApplication> krcstErAlApplication;
 
 	@Column(name = "CANCEL_ROLE_ID")
 	public String cancelRoleId;
 	
 	@Transient
-	public KrcstErAlApplication oneKrcstErAlApplication;
+	public KrcmtEralApplication oneKrcstErAlApplication;
 
 	@Override
 	protected Object getKey() {
@@ -151,7 +151,7 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 	public KwrmtErAlWorkRecord(KwrmtErAlWorkRecordPK kwrmtErAlWorkRecordPK, String errorAlarmName, int fixedAtr,
 			int useAtr, int remarkCancelErrorInput, int remarkColumnNo, int typeAtr, int boldAtr, String messageColor,
 			int cancelableAtr, Integer errorDisplayItem, String eralCheckId, KrcmtErAlCondition krcmtErAlCondition,
-			List<KrcstErAlApplication> krcstErAlApplication, String cancelRoleId) {
+			List<KrcmtEralApplication> krcstErAlApplication, String cancelRoleId) {
 		super();
 		this.kwrmtErAlWorkRecordPK = kwrmtErAlWorkRecordPK;
 		this.errorAlarmName = errorAlarmName;
@@ -172,7 +172,7 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 
 	@SuppressWarnings("unchecked")
 	private static <V> ErAlAttendanceItemCondition<V> convertKrcmtErAlAtdItemConToDomain(String comId, String eralCode,
-			KrcmtErAlAtdItemCon atdItemCon) {
+			KrcmtEralstCndgrp atdItemCon) {
 		ErAlAttendanceItemCondition<V> atdItemConDomain = new ErAlAttendanceItemCondition<V>(comId, eralCode,
 				atdItemCon.krcmtErAlAtdItemConPK.atdItemConNo, atdItemCon.conditionAtr, atdItemCon.useAtr == 1,
 				atdItemCon.type);
@@ -247,23 +247,23 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 		return atdItemConDomain;
 	}
 
-	private static KrcmtErAlAtdItemCon getKrcmtErAlAtdItemConFromDomain(String atdItemConditionGroup1,
+	private static KrcmtEralstCndgrp getKrcmtErAlAtdItemConFromDomain(String atdItemConditionGroup1,
 			ErAlAttendanceItemCondition<?> erAlAtdItemCon) {
 		KrcmtErAlAtdItemConPK krcmtErAlAtdItemConPK = new KrcmtErAlAtdItemConPK(atdItemConditionGroup1,
 				(erAlAtdItemCon.getTargetNO()));
-		List<KrcstErAlAtdTarget> lstAtdItemTarget = new ArrayList<>();
+		List<KrcmtEralstCndexprange> lstAtdItemTarget = new ArrayList<>();
 		if (erAlAtdItemCon.getConditionAtr() == ConditionAtr.TIME_WITH_DAY || erAlAtdItemCon.getType() == ErrorAlarmConditionType.INPUT_CHECK) {
-			lstAtdItemTarget.add(new KrcstErAlAtdTarget(new KrcstErAlAtdTargetPK(atdItemConditionGroup1,
+			lstAtdItemTarget.add(new KrcmtEralstCndexprange(new KrcstErAlAtdTargetPK(atdItemConditionGroup1,
 					(erAlAtdItemCon.getTargetNO()), (erAlAtdItemCon.getUncountableTarget().getAttendanceItem())), erAlAtdItemCon.getConditionAtr().value));
 		} else {
-			List<KrcstErAlAtdTarget> lstAtdItemTargetAdd = erAlAtdItemCon.getCountableTarget()
+			List<KrcmtEralstCndexprange> lstAtdItemTargetAdd = erAlAtdItemCon.getCountableTarget()
 					.getAddSubAttendanceItems().getAdditionAttendanceItems().stream()
-					.map(atdItemId -> new KrcstErAlAtdTarget(new KrcstErAlAtdTargetPK(atdItemConditionGroup1,
+					.map(atdItemId -> new KrcmtEralstCndexprange(new KrcstErAlAtdTargetPK(atdItemConditionGroup1,
 							(erAlAtdItemCon.getTargetNO()), (atdItemId)), 0))
 					.collect(Collectors.toList());
-			List<KrcstErAlAtdTarget> lstAtdItemTargetSub = erAlAtdItemCon.getCountableTarget()
+			List<KrcmtEralstCndexprange> lstAtdItemTargetSub = erAlAtdItemCon.getCountableTarget()
 					.getAddSubAttendanceItems().getSubstractionAttendanceItems().stream()
-					.map(atdItemId -> new KrcstErAlAtdTarget(new KrcstErAlAtdTargetPK(atdItemConditionGroup1,
+					.map(atdItemId -> new KrcmtEralstCndexprange(new KrcstErAlAtdTargetPK(atdItemConditionGroup1,
 							(erAlAtdItemCon.getTargetNO()), (atdItemId)), 1))
 					.collect(Collectors.toList());
 			lstAtdItemTarget.addAll(lstAtdItemTargetAdd);
@@ -332,7 +332,7 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 					new KrcstErAlInputCheckPK(atdItemConditionGroup1, erAlAtdItemCon.getTargetNO()),
 					erAlAtdItemCon.getInputCheck().getInputCheckCondition().value);
 		}
-		return new KrcmtErAlAtdItemCon(krcmtErAlAtdItemConPK, erAlAtdItemCon.getConditionAtr().value,
+		return new KrcmtEralstCndgrp(krcmtErAlAtdItemConPK, erAlAtdItemCon.getConditionAtr().value,
 				erAlAtdItemCon.isUse() ? 1 : 0, erAlAtdItemCon.getType().value, lstAtdItemTarget, erAlCompareSingle,
 				erAlCompareRange, erAlInputCheck, erAlSingleFixed, erAlSingleAtd);
 	}
@@ -351,8 +351,8 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 		int cancelableAtr = domain.getCancelableAtr() ? 1 : 0;
 		Integer errorDisplayItem = domain.getErrorDisplayItem();
 		String eralCheckId = domain.getErrorAlarmCheckID();
-		List<KrcstErAlApplication> krcstErAlApplication = domain.getLstApplication().stream()
-				.map(appTypeCd -> new KrcstErAlApplication(
+		List<KrcmtEralApplication> krcstErAlApplication = domain.getLstApplication().stream()
+				.map(appTypeCd -> new KrcmtEralApplication(
 						new KrcstErAlApplicationPK(AppContexts.user().companyId(), domain.getCode().v(), (appTypeCd))))
 				.collect(Collectors.toList());
 		String cancelRoleId = domain.getCancelRoleId();
@@ -368,18 +368,18 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 			int filterByJobTitle = (conditionDomain.getCheckTargetCondtion().getFilterByJobTitle() ? 1 : 0);
 			int filterByEmployment = (conditionDomain.getCheckTargetCondtion().getFilterByEmployment() ? 1 : 0);
 			int filterByClassification = (conditionDomain.getCheckTargetCondtion().getFilterByClassification() ? 1 : 0);
-			List<KrcstErAlBusinessType> lstBusinessType = conditionDomain.getCheckTargetCondtion()
-					.getLstBusinessTypeCode().stream().map(businessTypeCd -> new KrcstErAlBusinessType(
+			List<KrcmtEralBusinessType> lstBusinessType = conditionDomain.getCheckTargetCondtion()
+					.getLstBusinessTypeCode().stream().map(businessTypeCd -> new KrcmtEralBusinessType(
 							new KrcstErAlBusinessTypePK(eralCheckId, businessTypeCd.v(),domain.getCompanyId())))
 					.collect(Collectors.toList());
-			List<KrcstErAlJobTitle> lstJobTitle = conditionDomain.getCheckTargetCondtion().getLstJobTitleId().stream()
-					.map(jobTitleId -> new KrcstErAlJobTitle(new KrcstErAlJobTitlePK(eralCheckId, jobTitleId,domain.getCompanyId())))
+			List<KrcmtEralJobTitle> lstJobTitle = conditionDomain.getCheckTargetCondtion().getLstJobTitleId().stream()
+					.map(jobTitleId -> new KrcmtEralJobTitle(new KrcstErAlJobTitlePK(eralCheckId, jobTitleId,domain.getCompanyId())))
 					.collect(Collectors.toList());
-			List<KrcstErAlEmployment> lstEmployment = conditionDomain.getCheckTargetCondtion().getLstEmploymentCode()
-					.stream().map(emptCd -> new KrcstErAlEmployment(new KrcstErAlEmploymentPK(eralCheckId, emptCd.v(),domain.getCompanyId())))
+			List<KrcmtEralEmployment> lstEmployment = conditionDomain.getCheckTargetCondtion().getLstEmploymentCode()
+					.stream().map(emptCd -> new KrcmtEralEmployment(new KrcstErAlEmploymentPK(eralCheckId, emptCd.v(),domain.getCompanyId())))
 					.collect(Collectors.toList());
-			List<KrcstErAlClass> lstClassification = conditionDomain.getCheckTargetCondtion().getLstClassificationCode()
-					.stream().map(clssCd -> new KrcstErAlClass(new KrcstErAlClassPK(eralCheckId, clssCd.v(),domain.getCompanyId())))
+			List<KrcmtEralClass> lstClassification = conditionDomain.getCheckTargetCondtion().getLstClassificationCode()
+					.stream().map(clssCd -> new KrcmtEralClass(new KrcstErAlClassPK(eralCheckId, clssCd.v(),domain.getCompanyId())))
 					.collect(Collectors.toList());
 			// Set worktype condition
 			int workTypeUseAtr = conditionDomain.getWorkTypeCondition().isUse() ? 1 : 0;
@@ -387,24 +387,24 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 			int wtPlanActualOperator = 0;
 			int wtPlanFilterAtr = 0;
 			int wtActualFilterAtr = 0;
-			List<KrcstErAlWtPlan> lstWtPlan = new ArrayList<>();
-			List<KrcstErAlWtActual> lstWtActual = new ArrayList<>();
+			List<KrcmtEralWktpPlan> lstWtPlan = new ArrayList<>();
+			List<KrcmtEralWktpActual> lstWtActual = new ArrayList<>();
 			if (wtCompareAtr != FilterByCompare.SELECTED.value) {
 				PlanActualWorkType wtypeCondition = (PlanActualWorkType) conditionDomain.getWorkTypeCondition();
 				wtPlanActualOperator = wtypeCondition.getOperatorBetweenPlanActual().value;
 				wtPlanFilterAtr = wtypeCondition.getWorkTypePlan().isUse() ? 1 : 0;
 				wtActualFilterAtr = wtypeCondition.getWorkTypeActual().isUse() ? 1 : 0;
 				lstWtPlan = wtypeCondition.getWorkTypePlan().getLstWorkType().stream()
-						.map(wtCode -> new KrcstErAlWtPlan(new KrcstErAlWtPlanActualPK(eralCheckId, wtCode.v(),domain.getCompanyId())))
+						.map(wtCode -> new KrcmtEralWktpPlan(new KrcstErAlWtPlanActualPK(eralCheckId, wtCode.v(),domain.getCompanyId())))
 						.collect(Collectors.toList());
 				lstWtActual = wtypeCondition.getWorkTypeActual().getLstWorkType().stream()
-						.map(wtCode -> new KrcstErAlWtActual(new KrcstErAlWtPlanActualPK(eralCheckId, wtCode.v(),domain.getCompanyId())))
+						.map(wtCode -> new KrcmtEralWktpActual(new KrcstErAlWtPlanActualPK(eralCheckId, wtCode.v(),domain.getCompanyId())))
 						.collect(Collectors.toList());
 			} else {
 				SingleWorkType wtypeCondition = (SingleWorkType) conditionDomain.getWorkTypeCondition();
 				wtPlanFilterAtr = wtypeCondition.getTargetWorkType().isUse() ? 1 : 0;
 				lstWtPlan = wtypeCondition.getTargetWorkType().getLstWorkType().stream()
-						.map(wtCode -> new KrcstErAlWtPlan(new KrcstErAlWtPlanActualPK(eralCheckId, wtCode.v(),domain.getCompanyId())))
+						.map(wtCode -> new KrcmtEralWktpPlan(new KrcstErAlWtPlanActualPK(eralCheckId, wtCode.v(),domain.getCompanyId())))
 						.collect(Collectors.toList());
 			}
 			// Set worktime condition
@@ -413,24 +413,24 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 			int whPlanActualOperator = 0;
 			int whPlanFilterAtr = 0;
 			int whActualFilterAtr = 0;
-			List<KrcstErAlWhPlan> lstWhPlan = new ArrayList<>();
-			List<KrcstErAlWhActual> lstWhActual = new ArrayList<>();
+			List<KrcmtEralWktmPlan> lstWhPlan = new ArrayList<>();
+			List<KrcmtEralWktmActual> lstWhActual = new ArrayList<>();
 			if (whCompareAtr != FilterByCompare.SELECTED.value) {
 				PlanActualWorkTime wtimeCondition = (PlanActualWorkTime) conditionDomain.getWorkTimeCondition();
 				whPlanActualOperator = wtimeCondition.getOperatorBetweenPlanActual().value;
 				whPlanFilterAtr = wtimeCondition.getWorkTimePlan().isUse() ? 1 : 0;
 				whActualFilterAtr = wtimeCondition.getWorkTimeActual().isUse() ? 1 : 0;
 				lstWhPlan = wtimeCondition.getWorkTimePlan().getLstWorkTime().stream()
-						.map(wtCode -> new KrcstErAlWhPlan(new KrcstErAlWhPlanActualPK(eralCheckId, wtCode.v(),domain.getCompanyId())))
+						.map(wtCode -> new KrcmtEralWktmPlan(new KrcstErAlWhPlanActualPK(eralCheckId, wtCode.v(),domain.getCompanyId())))
 						.collect(Collectors.toList());
 				lstWhActual = wtimeCondition.getWorkTimeActual().getLstWorkTime().stream()
-						.map(wtCode -> new KrcstErAlWhActual(new KrcstErAlWhPlanActualPK(eralCheckId, wtCode.v(),domain.getCompanyId())))
+						.map(wtCode -> new KrcmtEralWktmActual(new KrcstErAlWhPlanActualPK(eralCheckId, wtCode.v(),domain.getCompanyId())))
 						.collect(Collectors.toList());
 			} else {
 				SingleWorkTime wtimeCondition = (SingleWorkTime) conditionDomain.getWorkTimeCondition();
 				whPlanFilterAtr = wtimeCondition.getTargetWorkTime().isUse() ? 1 : 0;
 				lstWhPlan = wtimeCondition.getTargetWorkTime().getLstWorkTime().stream()
-						.map(wtCode -> new KrcstErAlWhPlan(new KrcstErAlWhPlanActualPK(eralCheckId, wtCode.v(),domain.getCompanyId())))
+						.map(wtCode -> new KrcmtEralWktmPlan(new KrcstErAlWhPlanActualPK(eralCheckId, wtCode.v(),domain.getCompanyId())))
 						.collect(Collectors.toList());
 			}
 			// Set attendance item condition
@@ -439,18 +439,18 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 			String atdItemConditionGroup1 = conditionDomain.getAtdItemCondition().getGroup1().getAtdItemConGroupId();
 			String atdItemConditionGroup2 = conditionDomain.getAtdItemCondition().getGroup2().getAtdItemConGroupId();
 			int conditionOperator1 = conditionDomain.getAtdItemCondition().getGroup1().getConditionOperator().value;
-			List<KrcmtErAlAtdItemCon> lstAtdItemCon1 = conditionDomain.getAtdItemCondition().getGroup1()
+			List<KrcmtEralstCndgrp> lstAtdItemCon1 = conditionDomain.getAtdItemCondition().getGroup1()
 					.getLstErAlAtdItemCon().stream()
 					.map(erAlAtdItemCon -> getKrcmtErAlAtdItemConFromDomain(atdItemConditionGroup1, erAlAtdItemCon))
 					.collect(Collectors.toList());
-			KrcstErAlConGroup krcstErAlConGroup1 = new KrcstErAlConGroup(atdItemConditionGroup1, conditionOperator1,
+			KrcmtEralstCndexpiptchk krcstErAlConGroup1 = new KrcmtEralstCndexpiptchk(atdItemConditionGroup1, conditionOperator1,
 					lstAtdItemCon1);
 			int conditionOperator2 = conditionDomain.getAtdItemCondition().getGroup2().getConditionOperator().value;
-			List<KrcmtErAlAtdItemCon> lstAtdItemCon2 = conditionDomain.getAtdItemCondition().getGroup2()
+			List<KrcmtEralstCndgrp> lstAtdItemCon2 = conditionDomain.getAtdItemCondition().getGroup2()
 					.getLstErAlAtdItemCon().stream()
 					.map(erAlAtdItemCon -> getKrcmtErAlAtdItemConFromDomain(atdItemConditionGroup2, erAlAtdItemCon))
 					.collect(Collectors.toList());
-			KrcstErAlConGroup krcstErAlConGroup2 = new KrcstErAlConGroup(atdItemConditionGroup2, conditionOperator2,
+			KrcmtEralstCndexpiptchk krcstErAlConGroup2 = new KrcmtEralstCndexpiptchk(atdItemConditionGroup2, conditionOperator2,
 					lstAtdItemCon2);
 			krcmtErAlCondition = new KrcmtErAlCondition(eralCheckId,domain.getCompanyId(), messageDisplay, filterByBusinessType,
 					lstBusinessType, filterByJobTitle, lstJobTitle, filterByEmployment, lstEmployment,
@@ -472,7 +472,7 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 		return toDomain(entity, entity.krcstErAlApplication);
 	}
 	
-	public static ErrorAlarmWorkRecord toDomain(KwrmtErAlWorkRecord entity, List<KrcstErAlApplication> erAlApp) {
+	public static ErrorAlarmWorkRecord toDomain(KwrmtErAlWorkRecord entity, List<KrcmtEralApplication> erAlApp) {
 		return ErrorAlarmWorkRecord.createFromJavaType(entity.kwrmtErAlWorkRecordPK.companyId,
 				entity.kwrmtErAlWorkRecordPK.errorAlarmCode, entity.errorAlarmName, entity.fixedAtr == 1,
 				entity.useAtr == 1, entity.remarkCancelErrorInput, entity.remarkColumnNo, entity.typeAtr,
@@ -503,16 +503,16 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 	//fix for response
 	public static ErrorAlarmCondition toConditionDomainForRes(KwrmtErAlWorkRecord entity, 
 			List<KrcmtErAlCondition> alCons, 
-			Map<List<KrcstErAlConGroup>, List<KrcmtErAlAtdItemCon>> conditionGroup1, 
-			Map<List<KrcstErAlConGroup>, List<KrcmtErAlAtdItemCon>> conditionGroup2) {
+			Map<List<KrcmtEralstCndexpiptchk>, List<KrcmtEralstCndgrp>> conditionGroup1, 
+			Map<List<KrcmtEralstCndexpiptchk>, List<KrcmtEralstCndgrp>> conditionGroup2) {
 		return convertToConditionDomainForRes(entity, alCons.get(0), alCons, conditionGroup1, conditionGroup2);
 	}
 	
 	//fix for response
 	public static ErrorAlarmCondition convertToConditionDomainForRes(KwrmtErAlWorkRecord entity, KrcmtErAlCondition alCon, 
 			List<KrcmtErAlCondition> alCons, 
-			Map<List<KrcstErAlConGroup>, List<KrcmtErAlAtdItemCon>> conditionGroup1, 
-			Map<List<KrcstErAlConGroup>, List<KrcmtErAlAtdItemCon>> conditionGroup2) {
+			Map<List<KrcmtEralstCndexpiptchk>, List<KrcmtEralstCndgrp>> conditionGroup1, 
+			Map<List<KrcmtEralstCndexpiptchk>, List<KrcmtEralstCndgrp>> conditionGroup2) {
 		ErrorAlarmCondition condition = ErrorAlarmCondition.init();
 		condition.setDisplayMessage(alCon.messageDisplay);
 		condition.setContinuousPeriod(alCon.continuousPeriod);
@@ -585,7 +585,7 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 			// Set AttendanceItemCondition
 			if(alCon.atdItemConditionGroup1 != null) {
 				List<ErAlAttendanceItemCondition<?>> conditionsGroup1s = new ArrayList<>();
-				Map<Integer, List<KrcmtErAlAtdItemCon>> itemCon1 = conditionGroup1.values().stream().collect(Collectors.toList()).get(0)
+				Map<Integer, List<KrcmtEralstCndgrp>> itemCon1 = conditionGroup1.values().stream().collect(Collectors.toList()).get(0)
 						.stream().filter(item -> item.krcmtErAlAtdItemConPK.conditionGroupId.equals(alCon.atdItemConditionGroup1))
 						.collect(Collectors.groupingBy(x->x.krcmtErAlAtdItemConPK.atdItemConNo));
 				itemCon1.forEach((key,value) -> {
@@ -599,7 +599,7 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 			if(alCon.atdItemConditionGroup2 != null) {
 				List<ErAlAttendanceItemCondition<?>> conditionsGroup2s = new ArrayList<>();
 
-				Map<Integer, List<KrcmtErAlAtdItemCon>> itemCon1 = conditionGroup2.values().stream().collect(Collectors.toList()).get(0)
+				Map<Integer, List<KrcmtEralstCndgrp>> itemCon1 = conditionGroup2.values().stream().collect(Collectors.toList()).get(0)
 						.stream().filter(item -> item.krcmtErAlAtdItemConPK.conditionGroupId.equals(alCon.atdItemConditionGroup2))
 						.collect(Collectors.groupingBy(x->x.krcmtErAlAtdItemConPK.atdItemConNo));
 				itemCon1.forEach((key,value) -> {
@@ -609,10 +609,10 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 				conditionsGroup2.addAll(conditionsGroup2s);
 			}
 
-			List<KrcstErAlConGroup> conGroup1 = conditionGroup1.keySet().stream().collect(Collectors.toList()).get(0)
+			List<KrcmtEralstCndexpiptchk> conGroup1 = conditionGroup1.keySet().stream().collect(Collectors.toList()).get(0)
 					.stream().filter(item -> item.conditionGroupId.equals(alCon.atdItemConditionGroup1))
 					.collect(Collectors.toList());
-			List<KrcstErAlConGroup> conGroup2 = conditionGroup1.keySet().stream().collect(Collectors.toList()).get(0)
+			List<KrcmtEralstCndexpiptchk> conGroup2 = conditionGroup1.keySet().stream().collect(Collectors.toList()).get(0)
 			.stream().filter(item -> item.conditionGroupId.equals(alCon.atdItemConditionGroup2))
 			.collect(Collectors.toList());
 			
@@ -631,7 +631,7 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 	//fix for response
 	@SuppressWarnings("unchecked")
 	private static <V> ErAlAttendanceItemCondition<V> convertKrcmtErAlAtdItemConToDomainForRes(String comId, String eralCode,
-			 List<KrcmtErAlAtdItemCon> atdItemCon, Integer key) {
+			 List<KrcmtEralstCndgrp> atdItemCon, Integer key) {
 		ErAlAttendanceItemCondition<V> atdItemConDomain = new ErAlAttendanceItemCondition<V>(comId, eralCode,
 				atdItemCon.get(0).krcmtErAlAtdItemConPK.atdItemConNo, atdItemCon.get(0).conditionAtr, atdItemCon.get(0).useAtr == 1,
 				atdItemCon.get(0).type);
@@ -773,12 +773,12 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 			// Set AttendanceItemCondition
 			List<ErAlAttendanceItemCondition<?>> conditionsGroup1 = Optional
 					.ofNullable(alCon.krcstErAlConGroup1)
-					.orElse(new KrcstErAlConGroup("", 0, new ArrayList<>())).lstAtdItemCon.stream()
+					.orElse(new KrcmtEralstCndexpiptchk("", 0, new ArrayList<>())).lstAtdItemCon.stream()
 							.map(atdItemCon -> convertKrcmtErAlAtdItemConToDomain(comId, eralCode, atdItemCon))
 							.collect(Collectors.toList());
 			List<ErAlAttendanceItemCondition<?>> conditionsGroup2 = Optional
 					.ofNullable(alCon.krcstErAlConGroup2)
-					.orElse(new KrcstErAlConGroup("", 0, new ArrayList<>())).lstAtdItemCon.stream()
+					.orElse(new KrcmtEralstCndexpiptchk("", 0, new ArrayList<>())).lstAtdItemCon.stream()
 							.map(atdItemCon -> convertKrcmtErAlAtdItemConToDomain(comId, eralCode, atdItemCon))
 							.collect(Collectors.toList());
 			condition
@@ -786,11 +786,11 @@ public class KwrmtErAlWorkRecord extends UkJpaEntity implements Serializable {
 							alCon.group2UseAtr == 1)
 					.setAttendanceItemConditionGroup1(
 							Optional.ofNullable(alCon.krcstErAlConGroup1)
-									.orElse(new KrcstErAlConGroup("", 0, new ArrayList<>())).conditionOperator,
+									.orElse(new KrcmtEralstCndexpiptchk("", 0, new ArrayList<>())).conditionOperator,
 							conditionsGroup1)
 					.setAttendanceItemConditionGroup2(
 							Optional.ofNullable(alCon.krcstErAlConGroup2)
-									.orElse(new KrcstErAlConGroup("", 0, new ArrayList<>())).conditionOperator,
+									.orElse(new KrcmtEralstCndexpiptchk("", 0, new ArrayList<>())).conditionOperator,
 							conditionsGroup2);
 		}
 		condition.setCheckId(entity.eralCheckId);

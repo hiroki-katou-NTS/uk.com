@@ -35,7 +35,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_DAY_ANYITEMVALUE_MERGE")
+@Table(name = "KRCDT_DAY_TIME_ANYITEM")
 @NamedStoredProcedureQuery(name = "SSPR_DAIKYUZAN_PRC", procedureName = "SSPR_DAIKYUZAN_PRC", parameters = {
 		@StoredProcedureParameter(name = "CID", mode = ParameterMode.IN, type = String.class),
 		@StoredProcedureParameter(name = "SID", mode = ParameterMode.IN, type = String.class),

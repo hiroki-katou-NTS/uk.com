@@ -14,7 +14,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "KBPST_WP_BP_SET")
+@Table(name = "KRCMT_BONUS_PAY_SET_WKP")
 public class KbpstWPBonusPaySetting extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

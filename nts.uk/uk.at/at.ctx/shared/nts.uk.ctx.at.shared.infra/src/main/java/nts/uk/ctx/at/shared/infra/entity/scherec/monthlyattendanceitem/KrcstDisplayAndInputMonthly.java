@@ -17,7 +17,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
 @NoArgsConstructor
-@Table(name = "KSHST_MON_SER_TYPE_CTR")
+@Table(name = "KSHMT_MON_ITEM_DISP_CTR")
 public class KrcstDisplayAndInputMonthly extends UkJpaEntity implements Serializable {
  
 	private static final long serialVersionUID = 1L;
