@@ -134,11 +134,11 @@ export class CmmS45ShrComponentsApp0Component extends Vue {
         return c3 == NotUseAtr.USE;
     }
     // ※表3 = ○　OR　※表3-1-1 = ○
-    public get c3_1() {
-        const self = this;
+    // public get c3_1() {
+    //     const self = this;
 
-        return self.c3_1_1 || self.c3;
-    }
+    //     return self.c3_1_1 || self.c3;
+    // }
     // ※表15 = × AND「残業申請の表示情報．基準日に関係しない情報．残業休日出勤申請の反映．残業申請．事前．休憩・外出を申請反映する」＝する
     // ※表15 = ○ AND「残業申請の表示情報．基準日に関係しない情報．残業休日出勤申請の反映．残業申請．事後．休憩・外出を申請反映する」= する
     public get c3_1_1() {
@@ -149,11 +149,11 @@ export class CmmS45ShrComponentsApp0Component extends Vue {
         return ((!self.c15 && value1 == NotUseAtr.USE) || (self.c15 && value2 == NotUseAtr.USE)); 
     }
     // c3 ＝ ○ AND「残業申請の表示情報．申請表示情報．申請表示情報(基準日関係なし)．複数回勤務の管理」＝true"
-    public get c3_2() {
+    public get c3_1() {
         const self = this;
-        let c3_2 = _.get(self.dataOutput, 'displayInfoOverTime.appDispInfoStartup.appDispInfoNoDateOutput.managementMultipleWorkCycles');
+        let c3_1 = _.get(self.dataOutput, 'displayInfoOverTime.appDispInfoStartup.appDispInfoNoDateOutput.managementMultipleWorkCycles');
 
-        return self.c3 && c3_2;
+        return self.c3 && c3_1;
     }
     // 「残業申請の表示情報．基準日に関する情報．残業申請で利用する残業枠．残業枠一覧」 <> empty
     public get c4() {

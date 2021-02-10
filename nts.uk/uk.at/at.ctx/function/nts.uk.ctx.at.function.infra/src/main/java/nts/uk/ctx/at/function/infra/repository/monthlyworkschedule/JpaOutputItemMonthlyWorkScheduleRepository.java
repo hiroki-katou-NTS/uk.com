@@ -44,7 +44,7 @@ public class JpaOutputItemMonthlyWorkScheduleRepository extends JpaRepository
 			+ " AND c.itemType = :itemType";
 	
 	/** The Constant FIND_BY_LAYOUTID. */
-	private static final String FIND_BY_LAYOUTID = "SELECT c FROM KfnmtRptWkMonOuttd c"
+	private static final String FIND_BY_LAYOUTID = "SELECT c FROM KfnmtRptWkMonOutAtd c"
 			+ " WHERE c.pk.layoutID = :layoutID";
 
 	/*

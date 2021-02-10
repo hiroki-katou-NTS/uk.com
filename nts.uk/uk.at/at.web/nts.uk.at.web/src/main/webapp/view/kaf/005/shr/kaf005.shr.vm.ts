@@ -2,7 +2,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 	const template = `
 <div class="container cf" data-bind="with: $parent">
 	<div class="cf valign-top control-group"
-		data-bind="visible: visibleModel.c18()">
+		data-bind="visible: visibleModel.c7()">
 		<!--A5_1 休憩時間ラベル-->
 		<div class="cm-column" style="display: inline-block; width: 100px">
 			<div class="lblTitle pull-left"
@@ -37,7 +37,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 									name: '#[KAF005_337]', 
 									value: start, 
 									constraint:'TimeWithDayAttr', 
-									enable: $parent.outputMode(),
+									enable: ($parent.visibleModel.c7() && $parent.outputMode()),
 									option: {width: '85px', timeWithDay: true}}" /></td>
 						<!--A5_7 終了時刻-->
 						<td><input class="right-content"
@@ -46,7 +46,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 									name: '#[KAF005_338]', 
 									value: end, 
 									constraint:'TimeWithDayAttr', 
-									enable: $parent.outputMode(),
+									enable: ($parent.visibleModel.c7() && $parent.outputMode()),
 									option: {width: '85px', timeWithDay: true}}" /></td>
 					</tr>
 				</tbody>
@@ -284,7 +284,6 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 
 
 
-
 	`
 	@component({
         name: 'kaf005-share',
@@ -376,7 +375,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 				return self.$i18n('KAF005_66');
 			} else if (appType === AttendanceType.BREAKTIME) {
 				
-				return self.$i18n('KAF005_76');
+				return self.$i18n('KAF005_70');
 				
 			} else if (appType === AttendanceType.MIDDLE_BREAK_TIME) {
 				
