@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.infra.entity.monthly.roundingset.KrcstMonItemRound;
+import nts.uk.ctx.at.record.infra.entity.monthly.roundingset.KrcmtCalcMRound;
 import nts.uk.ctx.at.record.infra.entity.monthly.roundingset.KrcstMonItemRoundPK;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roundingset.RoundingMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roundingset.RoundingMonthRepository;
@@ -34,12 +34,12 @@ public class JpaRoudingMonthRepository extends JpaRepository implements Rounding
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT e");
-		builderString.append(" FROM KrcstMonItemRound e");
+		builderString.append(" FROM KrcmtCalcMRound e");
 		builderString.append(" WHERE e.PK.companyId = :companyId");
 		SELECT_BY_CID = builderString.toString();
 
 		builderString = new StringBuilder();
-		builderString.append(" DELETE FROM KrcstMonItemRound e");
+		builderString.append(" DELETE FROM KrcmtCalcMRound e");
 		builderString.append(" WHERE e.PK.companyId = :companyId");
 		DELETE_BY_CID = builderString.toString();
 	}
@@ -51,21 +51,21 @@ public class JpaRoudingMonthRepository extends JpaRepository implements Rounding
 	 *            the month set
 	 * @return the rounding month
 	 */
-	private RoundingMonth convertToDomain(KrcstMonItemRound monthSet) {
+	private RoundingMonth convertToDomain(KrcmtCalcMRound monthSet) {
 		RoundingMonth month = RoundingMonth.createFromJavaType(monthSet.PK.companyId, monthSet.PK.attendanceItemId,
 				monthSet.roundUnit, monthSet.roundProc);
 		return month;
 	}
 
 	/**
-	 * convert To Db Type KrcstMonItemRound.
+	 * convert To Db Type KrcmtCalcMRound.
 	 *
 	 * @param month
 	 *            the month
 	 * @return the krcst mon item round
 	 */
-	private KrcstMonItemRound convertToDbType(RoundingMonth month) {
-		KrcstMonItemRound monthSet = new KrcstMonItemRound();
+	private KrcmtCalcMRound convertToDbType(RoundingMonth month) {
+		KrcmtCalcMRound monthSet = new KrcmtCalcMRound();
 		KrcstMonItemRoundPK monthSetPK = new KrcstMonItemRoundPK(month.getCompanyId(), month.getTimeItemId());
 		monthSet.roundUnit = month.getUnit().value;
 		monthSet.roundProc = month.getRounding().value;
@@ -84,7 +84,7 @@ public class JpaRoudingMonthRepository extends JpaRepository implements Rounding
 	 */
 	@Override
 	public List<RoundingMonth> findByCompanyId(String companyId) {
-		return this.queryProxy().query(SELECT_BY_CID, KrcstMonItemRound.class).setParameter("companyId", companyId)
+		return this.queryProxy().query(SELECT_BY_CID, KrcmtCalcMRound.class).setParameter("companyId", companyId)
 				.getList(c -> convertToDomain(c));
 	}
 
@@ -108,7 +108,7 @@ public class JpaRoudingMonthRepository extends JpaRepository implements Rounding
 	@Override
 	public void update(RoundingMonth month) {
 		KrcstMonItemRoundPK primaryKey = new KrcstMonItemRoundPK(month.getCompanyId(), month.getTimeItemId());
-		KrcstMonItemRound entity = this.queryProxy().find(primaryKey, KrcstMonItemRound.class).get();
+		KrcmtCalcMRound entity = this.queryProxy().find(primaryKey, KrcmtCalcMRound.class).get();
 		entity.roundUnit = month.getUnit().value;
 		entity.roundProc = month.getRounding().value;
 		entity.PK = primaryKey;
@@ -124,7 +124,7 @@ public class JpaRoudingMonthRepository extends JpaRepository implements Rounding
 	 */
 	@Override
 	public Optional<RoundingMonth> findByCId(String companyId, Integer timeItemId) {
-		return this.queryProxy().find(new KrcstMonItemRoundPK(companyId, timeItemId), KrcstMonItemRound.class)
+		return this.queryProxy().find(new KrcstMonItemRoundPK(companyId, timeItemId), KrcmtCalcMRound.class)
 				.map(c -> convertToDomain(c));
 	}
 

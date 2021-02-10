@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCMT_TOTAL_EVAL_ORDER")
+@Table(name = "KSCMT_HORIZONTAL_SORT")
 public class KscmtTotalEvalOrderItem extends UkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
@@ -31,8 +31,8 @@ public class KscmtTotalEvalOrderItem extends UkJpaEntity implements Serializable
 	public Integer dispOrder;
 	// many eval order in one category
 	@ManyToOne
-	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "KSCMT_HORI_TOTAL_CATEGORY.CID", insertable = false, updatable = false),
-			@JoinColumn(name = "CATEGORY_CD", referencedColumnName = "KSCMT_HORI_TOTAL_CATEGORY.CATEGORY_CD", insertable = false, updatable = false)
+	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "KSCMT_HORIZONTAL_CATEGORY.CID", insertable = false, updatable = false),
+			@JoinColumn(name = "CATEGORY_CD", referencedColumnName = "KSCMT_HORIZONTAL_CATEGORY.CATEGORY_CD", insertable = false, updatable = false)
 	})
 	public KscmtHoriTotalCategoryItem kscmtHoriTotalCategory;
 	// one eval order to one cal day set

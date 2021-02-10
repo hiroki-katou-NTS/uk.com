@@ -20,13 +20,13 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.HowD
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.MessageDisplay;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.NameAlarmExtractionCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.TypeMonCheckItem;
-import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlConGroup;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcmtEralstCndexpiptchk;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_EXTRA_RESULT_MON")
+@Table(name = "KRCMT_ALST_CHKMON_UD")
 public class KrcmtExtraResultMonthly extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -71,7 +71,7 @@ public class KrcmtExtraResultMonthly extends UkJpaEntity implements Serializable
 
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, optional = true)
 	@JoinColumn(name = "ATD_ITEM_CONDITION_GROUP1", referencedColumnName = "CONDITION_GROUP_ID", insertable = false, updatable = false)
-	public KrcstErAlConGroup krcstErAlConGroup1;
+	public KrcmtEralstCndexpiptchk krcstErAlConGroup1;
 
 	@Column(name = "ATD_ITEM_CONDITION_GROUP2")
 	@Basic(optional = true)
@@ -79,7 +79,7 @@ public class KrcmtExtraResultMonthly extends UkJpaEntity implements Serializable
 
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, optional = true)
 	@JoinColumn(name = "ATD_ITEM_CONDITION_GROUP2", referencedColumnName = "CONDITION_GROUP_ID", insertable = false, updatable = false)
-	public KrcstErAlConGroup krcstErAlConGroup2;
+	public KrcmtEralstCndexpiptchk krcstErAlConGroup2;
 
 	@Override
 	protected Object getKey() {
@@ -89,7 +89,7 @@ public class KrcmtExtraResultMonthly extends UkJpaEntity implements Serializable
 	public KrcmtExtraResultMonthly(
 			String errorAlarmCheckID, int sortBy, String extraResultMonName, int useAtr, int typeCheckItem, int messageBold, String messageColor, String messageDisplay, 
 			Integer operatorBetweenGroups,
-			Integer group2UseAtr, String atdItemConditionGroup1, KrcstErAlConGroup krcstErAlConGroup1, String atdItemConditionGroup2, KrcstErAlConGroup krcstErAlConGroup2) {
+			Integer group2UseAtr, String atdItemConditionGroup1, KrcmtEralstCndexpiptchk krcstErAlConGroup1, String atdItemConditionGroup2, KrcmtEralstCndexpiptchk krcstErAlConGroup2) {
 		super();
 		this.errorAlarmCheckID = errorAlarmCheckID;
 		this.sortBy = sortBy;
@@ -121,9 +121,9 @@ public class KrcmtExtraResultMonthly extends UkJpaEntity implements Serializable
 				!isCheckConMonthly?null:domain.getCheckConMonthly().get().getOperatorBetweenGroups().value,
 				!isCheckConMonthly?null:domain.getCheckConMonthly().get().isUseGroup2()?1:0,
 				!isCheckConMonthly?null:domain.getCheckConMonthly().get().getGroup1().getAtdItemConGroupId(),
-				!isCheckConMonthly?null:KrcstErAlConGroup.toEntity(domain.getCheckConMonthly().get().getGroup1(), true),
+				!isCheckConMonthly?null:KrcmtEralstCndexpiptchk.toEntity(domain.getCheckConMonthly().get().getGroup1(), true),
 				!isCheckConMonthly?null:(domain.getCheckConMonthly().get().getGroup2()==null?null:domain.getCheckConMonthly().get().getGroup2().getAtdItemConGroupId()),
-				!isCheckConMonthly?null:(domain.getCheckConMonthly().get().getGroup2() == null?null:KrcstErAlConGroup.toEntity(domain.getCheckConMonthly().get().getGroup2(), false))
+				!isCheckConMonthly?null:(domain.getCheckConMonthly().get().getGroup2() == null?null:KrcmtEralstCndexpiptchk.toEntity(domain.getCheckConMonthly().get().getGroup2(), false))
 				);
 	}
 	

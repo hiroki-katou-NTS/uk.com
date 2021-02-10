@@ -32,7 +32,7 @@ public class JpaSelectionItemOrderRepository extends JpaRepository implements Se
 			+ " ORDER BY si.histId, si.dispOrder ASC";
 	
 	private static final String SELECT_ALL_IN_SELECTION_ITEM_ID = SELECT_ALL
-			+ " INNER JOIN PpemtHistorySelection his ON si.histId = his.histidPK.histId"
+			+ " INNER JOIN PpemtSelectionHist his ON si.histId = his.histidPK.histId"
 			+ " WHERE his.selectionItemId = :selectionItemId";
 	
 	private static final String SELECT_ALL_SELECTION_ID = SELECT_ALL

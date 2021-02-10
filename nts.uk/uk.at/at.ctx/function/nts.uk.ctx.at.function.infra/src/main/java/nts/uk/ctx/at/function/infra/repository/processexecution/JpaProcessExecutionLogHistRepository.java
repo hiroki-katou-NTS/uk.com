@@ -90,7 +90,7 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository implemen
 	public void update(ProcessExecutionLogHistory domain) {
 		KfnmtProcessExecutionLogHistory newEntity = JpaProcessExecutionLogHistRepository.toEntity(domain);
 		try {
-			String updateTableSQL = " UPDATE KFNMT_PROC_EXEC_LOG_HIST SET"
+			String updateTableSQL = " UPDATE KFNDT_AUTOEXEC_LOG_HIST SET"
 					+ " OVERALL_STATUS = ?" 
 					+ " ,ERROR_DETAIL = ? "
 					+ " ,LAST_EXEC_DATETIME = ? " 
@@ -132,7 +132,7 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository implemen
 		
 		try {
 			for(KfnmtExecutionTaskLog kfnmtExecutionTaskLog : newEntity.taskLogList) {
-				String updateTableSQL = " UPDATE KFNMT_EXEC_TASK_LOG SET"
+				String updateTableSQL = " UPDATE KFNDT_AUTOEXEC_TASK_LOG SET"
 						+ " STATUS = ?"
 						+ " ,LAST_END_EXEC_DATETIME = ?"
 						+ " ,ERROR_SYSTEM = ?"

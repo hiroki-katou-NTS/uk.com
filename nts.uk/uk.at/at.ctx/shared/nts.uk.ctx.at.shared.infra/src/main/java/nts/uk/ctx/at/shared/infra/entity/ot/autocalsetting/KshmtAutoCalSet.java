@@ -16,7 +16,7 @@ import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * The Class KshmtAutoComCalSet.
+ * The Class KrcmtCalcSetCom.
  */
 
 @Setter

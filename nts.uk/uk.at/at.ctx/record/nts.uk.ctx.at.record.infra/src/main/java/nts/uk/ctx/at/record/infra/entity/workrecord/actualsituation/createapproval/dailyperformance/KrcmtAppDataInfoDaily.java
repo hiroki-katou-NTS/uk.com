@@ -13,7 +13,7 @@ import nts.uk.ctx.at.record.dom.workrecord.actualsituation.createapproval.dailyp
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
-@Table(name="KRCMT_APP_DATA_INFO_DAI")
+@Table(name="KRCDT_APP_INST_ERR_DAY")
 @NoArgsConstructor
 public class KrcmtAppDataInfoDaily extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;

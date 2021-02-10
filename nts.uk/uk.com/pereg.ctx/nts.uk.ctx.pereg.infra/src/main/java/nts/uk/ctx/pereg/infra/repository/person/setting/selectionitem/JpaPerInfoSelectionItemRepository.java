@@ -27,7 +27,7 @@ public class JpaPerInfoSelectionItemRepository extends JpaRepository implements 
 	private static final String SELECT_ALL_SELECTION_ITEM_BY_CONTRACTCODE = "SELECT si FROM PpemtSelectionItem si WHERE si.contractCd = :contractCd"
 			+ " ORDER BY si.selectionItemName";
 
-	private static final String SELECT_ALL_SELECTION_ITEM_BY_CONTRACTCODE_AND_CID = "SELECT DISTINCT si FROM PpemtSelectionItem si INNER JOIN PpemtHistorySelection hs ON si.selectionItemPk.selectionItemId = hs.selectionItemId  WHERE si.contractCd = :contractCd AND hs.histidPK.histId IS NOT NULL AND hs.companyId=:companyId "
+	private static final String SELECT_ALL_SELECTION_ITEM_BY_CONTRACTCODE_AND_CID = "SELECT DISTINCT si FROM PpemtSelectionItem si INNER JOIN PpemtSelectionHist hs ON si.selectionItemPk.selectionItemId = hs.selectionItemId  WHERE si.contractCd = :contractCd AND hs.histidPK.histId IS NOT NULL AND hs.companyId=:companyId "
 			+ " ORDER BY si.selectionItemName ";
 	private static final String SELECT_SELECTION_ITEM_NAME = SELECT_ALL
 			+ " WHERE si.contractCd = :contractCode AND si.selectionItemName = :selectionItemName";
@@ -39,10 +39,10 @@ public class JpaPerInfoSelectionItemRepository extends JpaRepository implements 
 	private static final String SELECT_ALL_BY_PERSON_TYPE = "SELECT si FROM PpemtSelectionItem si"
 			+ " WHERE si.contractCd = :contractCode" + " ORDER BY si.selectionItemName ";
 	private static final String SELECT_BY_HIST_ID = SELECT_ALL
-			+ " INNER JOIN PpemtHistorySelection hs ON si.selectionItemPk.selectionItemId = hs.selectionItemId WHERE hs.histidPK.histId=:histId";
+			+ " INNER JOIN PpemtSelectionHist hs ON si.selectionItemPk.selectionItemId = hs.selectionItemId WHERE hs.histidPK.histId=:histId";
 
 	private static final String PERSON_SELECT_ALL = "SELECT si.selectionItemName, hs.startDate, hs.endDate, so.initSelection, ss.selectionCd, ss.selectionName, ss.externalCd, ss.memo FROM PpemtSelectionItem si "
-			+ "LEFT JOIN PpemtHistorySelection hs ON si.selectionItemPk.selectionItemId = hs.selectionItemId "
+			+ "LEFT JOIN PpemtSelectionHist hs ON si.selectionItemPk.selectionItemId = hs.selectionItemId "
 			+ "LEFT JOIN PpemtSelItemOrder so ON hs.histidPK.histId = so.histId "
 			+ "LEFT JOIN PpemtSelection ss ON so.histId = ss.histId AND so.selectionIdPK.selectionId = ss.selectionId.selectionId "
 			+ "WHERE si.contractCd =:contractCd AND hs.companyId =:companyId";

@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_RVSLEA_REMAIN_HIST")
+@Table(name = "KRCDT_HDSTK_REM_HIST")
 public class KrcdtReserveLeaveRemainHist extends UkJpaEntity implements Serializable{
 
 	@EmbeddedId

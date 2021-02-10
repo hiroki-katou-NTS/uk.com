@@ -27,7 +27,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  */
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_ANNLEA_MAX_HIST")
+@Table(name = "KRCDT_HDPAID_MAX_HIST")
 public class KrcdtAnnLeaMaxHist extends UkJpaEntity {
 
 	@Id

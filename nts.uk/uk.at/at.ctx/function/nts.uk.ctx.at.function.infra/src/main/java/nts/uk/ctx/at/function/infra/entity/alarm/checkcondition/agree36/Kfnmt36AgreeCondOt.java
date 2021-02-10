@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KFNMT_36AGREE_COND_OT")
+@Table(name = "KFNMT_ALST_CHK36AGR_OVCNT")
 public class Kfnmt36AgreeCondOt extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId

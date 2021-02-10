@@ -26,7 +26,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  *
  */
 @Entity
-@Table(name = "KRCDT_REMARK_MONTHRECORD")
+@Table(name = "KRCDT_MON_REMARKS")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter

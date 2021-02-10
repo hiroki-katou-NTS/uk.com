@@ -15,7 +15,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "CCGMT_FLOWMENU")
+@Table(name = "SPTMT_FLOWMENU")
 public class CcgmtFlowMenu extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

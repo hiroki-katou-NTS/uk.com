@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
-@Table(name = "KRCMT_LEAVE_DAYOFF_MANA")
+@Table(name = "KRCDT_HDWK_HD_COM_MNG")
 @NoArgsConstructor
 @AllArgsConstructor
 public class KrcmtLeaveDayOffMana extends UkJpaEntity implements Serializable{

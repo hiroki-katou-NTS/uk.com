@@ -76,7 +76,7 @@ public class KrqdtAppOvertime_Old extends UkJpaEntity implements Serializable {
 	private Integer overtimeShiftNight;
 
 	@OneToMany(targetEntity = KrqdtOvertimeInput_Old.class, mappedBy = "appOvertime", cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinTable(name = "KRQDT_OVERTIME_INPUT")
+	@JoinTable(name = "KRQDT_APP_OVERTIME_INPUT")
 	public List<KrqdtOvertimeInput_Old> overtimeInputs;
 
 	@OneToOne(targetEntity = KrqdtAppOvertimeDetail_Old.class, mappedBy = "appOvertime", cascade = CascadeType.ALL, orphanRemoval = true)

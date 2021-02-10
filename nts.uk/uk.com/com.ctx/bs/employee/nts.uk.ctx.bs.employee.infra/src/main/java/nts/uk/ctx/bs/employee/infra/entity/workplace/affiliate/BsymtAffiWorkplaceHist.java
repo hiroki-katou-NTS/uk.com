@@ -26,7 +26,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @AllArgsConstructor
-@Table(name = "BSYMT_AFF_WORKPLACE_HIST")
+@Table(name = "BSYMT_AFF_WKP_HIST")
 public class BsymtAffiWorkplaceHist extends UkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */

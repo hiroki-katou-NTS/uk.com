@@ -15,7 +15,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_DAILY_ERROR_CODE_PK")
+@Table(name = "KFNMT_ALST_CHKDAY_ERAL")
 public class KrcmtDailyErrorCode extends UkJpaEntity implements Serializable  {
 	private static final long serialVersionUID = 1L;
 

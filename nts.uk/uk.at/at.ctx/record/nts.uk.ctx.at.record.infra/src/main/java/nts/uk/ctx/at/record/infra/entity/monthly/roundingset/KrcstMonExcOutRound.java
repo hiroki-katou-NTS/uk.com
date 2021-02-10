@@ -15,7 +15,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  * @author shuichu_ishida
  */
 @Entity
-@Table(name = "KRCST_MON_EXCOUT_ROUND")
+@Table(name = "KRCMT_CALC_M_OUTSIDE_RND")
 @NoArgsConstructor
 public class KrcstMonExcOutRound extends UkJpaEntity implements Serializable {
 

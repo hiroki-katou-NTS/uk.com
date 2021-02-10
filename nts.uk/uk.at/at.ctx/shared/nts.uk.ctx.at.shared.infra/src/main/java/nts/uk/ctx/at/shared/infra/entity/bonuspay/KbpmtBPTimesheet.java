@@ -15,7 +15,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "KBPMT_BP_TIMESHEET")
+@Table(name = "KRCMT_BONUS_PAY_TS")
 public class KbpmtBPTimesheet extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_BUS_TYPE_SYAIN")
+@Table(name = "KRCMT_BUS_TYPE_HIST_ITEM")
 public class KrcmtBusinessTypeOfEmployee extends UkJpaEntity implements Serializable{
 
 	private static final long serialVersionUID = 1L;

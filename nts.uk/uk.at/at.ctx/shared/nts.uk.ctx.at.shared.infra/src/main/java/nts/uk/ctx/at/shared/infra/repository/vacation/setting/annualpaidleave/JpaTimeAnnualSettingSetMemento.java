@@ -10,7 +10,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualLeaveTimeDay;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualMaxDay;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KtvmtTimeAnnualSet;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KshmtHdpaidTimeSet;
 
 /**
  * The Class JpaTimeVacationSettingSetMemento.
@@ -18,14 +18,14 @@ import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KtvmtT
 public class JpaTimeAnnualSettingSetMemento implements TimeAnnualSettingSetMemento {
     
     /** The entity. */
-    private KtvmtTimeAnnualSet entity;
+    private KshmtHdpaidTimeSet entity;
     
     /**
      * Instantiates a new jpa time vacation setting set memento.
      *
      * @param entity the entity
      */
-    public JpaTimeAnnualSettingSetMemento(KtvmtTimeAnnualSet entity) {
+    public JpaTimeAnnualSettingSetMemento(KshmtHdpaidTimeSet entity) {
         this.entity = entity;
     }
     

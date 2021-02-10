@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumName;
 import nts.uk.ctx.at.schedule.dom.budget.premium.language.PremiumItemLanguage;
-import nts.uk.ctx.at.schedule.infra.entity.budget.premium.KmnmtPremiumItem;
+import nts.uk.ctx.at.schedule.infra.entity.budget.premium.KscmtPremiumItem;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -35,7 +35,7 @@ public class KmnmtPremiumItemLanguage extends UkJpaEntity {
 	@OneToOne
 	@PrimaryKeyJoinColumns(value = { @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
 			@PrimaryKeyJoinColumn(name = "PREMIUM_NO", referencedColumnName = "PREMIUM_NO") })
-	public KmnmtPremiumItem kmnmtPremiumItem;
+	public KscmtPremiumItem kmnmtPremiumItem;
 
 	@Override
 	protected Object getKey() {

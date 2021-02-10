@@ -26,7 +26,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCST_ERAL_SINGLE_FIXED")
+@Table(name = "KRCMT_ERALST_CNDEXPSGLFIX")
 public class KrcstErAlSingleFixed extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -42,7 +42,7 @@ public class KrcstErAlSingleFixed extends UkJpaEntity implements Serializable {
 	@JoinColumns({
 			@JoinColumn(name = "CONDITION_GROUP_ID", referencedColumnName = "CONDITION_GROUP_ID", insertable = false, updatable = false),
 			@JoinColumn(name = "ATD_ITEM_CON_NO", referencedColumnName = "ATD_ITEM_CON_NO", insertable = false, updatable = false) })
-	public KrcmtErAlAtdItemCon krcmtErAlAtdItemCon;
+	public KrcmtEralstCndgrp krcmtErAlAtdItemCon;
 	
 	@Override
 	protected Object getKey() {

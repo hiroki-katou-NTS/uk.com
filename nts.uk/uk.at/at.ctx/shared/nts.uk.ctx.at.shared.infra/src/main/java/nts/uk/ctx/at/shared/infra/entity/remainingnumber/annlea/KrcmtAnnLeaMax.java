@@ -8,7 +8,7 @@ import javax.persistence.Table;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
-@Table(name ="KRCMT_ANNLEA_MAX")
+@Table(name ="KRCDT_HDPAID_MAX")
 public class KrcmtAnnLeaMax extends UkJpaEntity{
 	
 	@Id

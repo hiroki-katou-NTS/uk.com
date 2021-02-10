@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="KRCST_BUS_ITEM_SORTED")
+@Table(name="KFNMT_DAY_FORM_BUS_SORT")
 public class KrcstBusinessTypeSorted extends UkJpaEntity implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

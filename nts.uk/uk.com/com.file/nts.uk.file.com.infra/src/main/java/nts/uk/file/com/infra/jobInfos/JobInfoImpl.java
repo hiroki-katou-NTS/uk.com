@@ -71,7 +71,7 @@ public class JobInfoImpl extends JpaRepository implements JobInfoRepository {
 			+				" ORDER BY  rs.ROLE_SET_CD ASC, em.SCD ASC) AS ROW_NUMBER "
 			+			" FROM SACMT_ROLESET_PERSON per"
 			+				" INNER JOIN SACMT_ROLE_SET rs ON rs.CID = per.CID AND rs.ROLE_SET_CD = per.ROLESET_CD" 
-			+				" INNER JOIN BSYMT_EMP_DTA_MNG_INFO em ON per.SID = em.SID"
+			+				" INNER JOIN BSYMT_SYAIN em ON per.SID = em.SID"
 			+		 		" INNER JOIN BSYMT_AFF_COM_HIST aff ON per.SID = aff.SID" 
 			+				" INNER JOIN BPSMT_PERSON p ON aff.PID = p.PID "
 			+				" INNER JOIN SACMT_USER us ON p.PID = us.ASSO_PID "

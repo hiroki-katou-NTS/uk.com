@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  * author hieult
  */
 @Entity
-@Table(name = "KRQDT_APP_LATE_OR_LEAVE")
+@Table(name = "KRQDT_APP_LATE_EARLY")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -82,7 +82,7 @@ public class KrqdtAppLateOrLeave_Old  extends UkJpaEntity implements Serializabl
 	}
 	
 	public static KrqdtAppLateOrLeave_Old toEntity(LateOrLeaveEarly domain){
-//		return new KrqdtAppLateOrLeave (
+//		return new KrqdtAppLateEarly (
 //					new KrqdtAppLateOrLeavePK(
 //							domain.getApplication().getCompanyID(), 
 //							domain.getApplication().getAppID()),

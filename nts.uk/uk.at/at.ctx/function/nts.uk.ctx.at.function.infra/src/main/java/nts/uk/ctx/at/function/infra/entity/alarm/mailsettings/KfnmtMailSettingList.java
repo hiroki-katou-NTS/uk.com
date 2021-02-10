@@ -15,7 +15,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
 @NoArgsConstructor
-@Table(name = "KFNMT_MAIL_SET_LIST")
+@Table(name = "KFNMT_ALST_MAILSET")
 public class KfnmtMailSettingList extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

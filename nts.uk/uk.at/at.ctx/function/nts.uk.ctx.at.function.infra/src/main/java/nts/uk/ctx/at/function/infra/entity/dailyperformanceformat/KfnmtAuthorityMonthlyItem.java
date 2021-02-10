@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KFNMT_AUT_MONTHLY_ITEM")
+@Table(name = "KFNMT_DAY_FORM_MON_ITEM")
 public class KfnmtAuthorityMonthlyItem extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

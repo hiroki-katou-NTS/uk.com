@@ -15,7 +15,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.UsageUnitSetting;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.UsageUnitSettingRepository;
-import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.KuwstUsageUnitWtSet;
+import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.KshmtLegaltimeUnitSet;
 
 /**
  * The Class JpaUsageUnitSettingRepository.
@@ -55,11 +55,11 @@ public class JpaUsageUnitSettingRepository extends JpaRepository implements Usag
 	 */
 	@Override
 	public Optional<UsageUnitSetting> findByCompany(String companyId) {
-//		return this.queryProxy().find(companyId, KuwstUsageUnitWtSet.class).map(setting -> this.toDomain(setting));
-		try (val statement = this.connection().prepareStatement("select * FROM KUWST_USAGE_UNIT_WT_SET where CID = ?")) {
+//		return this.queryProxy().find(companyId, KshmtLegaltimeUnitSet.class).map(setting -> this.toDomain(setting));
+		try (val statement = this.connection().prepareStatement("select * FROM KSHMT_LEGALTIME_UNIT_SET where CID = ?")) {
 			statement.setString(1, companyId);
-			Optional<KuwstUsageUnitWtSet> krcdtDaiBreakTimes = new NtsResultSet(statement.executeQuery()).getSingle(rec -> {
-				val entity = new KuwstUsageUnitWtSet();
+			Optional<KshmtLegaltimeUnitSet> krcdtDaiBreakTimes = new NtsResultSet(statement.executeQuery()).getSingle(rec -> {
+				val entity = new KshmtLegaltimeUnitSet();
 				entity.setCid(companyId);
 				entity.setIsWkp(rec.getInt("IS_WKP"));
 				entity.setIsEmp(rec.getInt("IS_EMP"));
@@ -78,7 +78,7 @@ public class JpaUsageUnitSettingRepository extends JpaRepository implements Usag
 	 * @param entity the entity
 	 * @return the usage unit setting
 	 */
-	private UsageUnitSetting toDomain(KuwstUsageUnitWtSet entity) {
+	private UsageUnitSetting toDomain(KshmtLegaltimeUnitSet entity) {
 		return new UsageUnitSetting(new JpaUsageUnitSettingGetMemento(entity));
 	}
 
@@ -88,8 +88,8 @@ public class JpaUsageUnitSettingRepository extends JpaRepository implements Usag
 	 * @param domain the domain
 	 * @return the juuwtst usage unit wt set
 	 */
-	private KuwstUsageUnitWtSet toEntity(UsageUnitSetting domain) {
-		KuwstUsageUnitWtSet entity = new KuwstUsageUnitWtSet();
+	private KshmtLegaltimeUnitSet toEntity(UsageUnitSetting domain) {
+		KshmtLegaltimeUnitSet entity = new KshmtLegaltimeUnitSet();
 		domain.saveToMemento(new JpaUsageUnitSettingSetMemento(entity));
 		return entity;
 	}
@@ -100,8 +100,8 @@ public class JpaUsageUnitSettingRepository extends JpaRepository implements Usag
 	 * @param entity the entity
 	 * @return the juuwtst usage unit wt set
 	 */
-	private KuwstUsageUnitWtSet updateEntity(KuwstUsageUnitWtSet entity) {
-		KuwstUsageUnitWtSet updatedEntity = this.queryProxy().find(entity.getCid(), KuwstUsageUnitWtSet.class)
+	private KshmtLegaltimeUnitSet updateEntity(KshmtLegaltimeUnitSet entity) {
+		KshmtLegaltimeUnitSet updatedEntity = this.queryProxy().find(entity.getCid(), KshmtLegaltimeUnitSet.class)
 				.get();
 		updatedEntity.setIsEmp(entity.getIsEmp());
 		updatedEntity.setIsEmpt(entity.getIsEmpt());

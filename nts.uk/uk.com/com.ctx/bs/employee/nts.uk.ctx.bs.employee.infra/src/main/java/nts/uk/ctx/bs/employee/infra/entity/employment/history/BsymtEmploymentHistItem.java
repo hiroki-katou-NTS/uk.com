@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  * The Class BsymtEmploymentHistItem.
  */
 @Entity
-@Table(name = "BSYMT_EMPLOYMENT_HIS_ITEM")
+@Table(name = "BSYMT_AFF_EMP_HIST_ITEM")
 public class BsymtEmploymentHistItem extends UkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -56,7 +56,7 @@ public class BsymtEmploymentHistItem extends UkJpaEntity implements Serializable
 	// Add by ThanhNC
 	@OneToOne
 	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID") })
-	public BsymtEmploymentHist bsymtEmploymentHist;
+	public BsymtAffEmpHist bsymtEmploymentHist;
 
 	/**
 	 * Instantiates a new bsymt employment hist item.

@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_DAI_BREAK_TIME_TS")
+@Table(name = "KRCDT_DAY_TS_BREAKTIME")
 public class KrcdtDaiBreakTime extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KFNMT_ALCHKTARGET_JOB")
+@Table(name = "KFNMT_ALST_CHK_TGTJOB")
 public class KfnmtAlarmCheckTargetJobTitle extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

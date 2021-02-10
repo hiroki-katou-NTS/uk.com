@@ -5,7 +5,7 @@ import java.util.List;
 
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceReasonInputMethodSetMemento;
 import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReasonSelect;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTime;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcmtDvgcTime;
 
 /**
  * The Class JpaDivergenceReasonInputMethodRepositorySetMemento.
@@ -13,7 +13,7 @@ import nts.uk.ctx.at.record.infra.entity.divergence.time.KrcstDvgcTime;
 public class JpaDivergenceReasonInputMethodSetMemento implements DivergenceReasonInputMethodSetMemento {
 
 	/** The entities. */
-	private KrcstDvgcTime entity;
+	private KrcmtDvgcTime entity;
 
 	/**
 	 * Instantiates a new jpa divergence time repository set memento.
@@ -28,7 +28,7 @@ public class JpaDivergenceReasonInputMethodSetMemento implements DivergenceReaso
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaDivergenceReasonInputMethodSetMemento(KrcstDvgcTime entity) {
+	public JpaDivergenceReasonInputMethodSetMemento(KrcmtDvgcTime entity) {
 		this.entity = entity;
 	}
 

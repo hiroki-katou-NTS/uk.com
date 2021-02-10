@@ -9,7 +9,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
-@Table(name = "KRCMT_RVSLEA_REMAIN")
+@Table(name = "KRCDT_HDSTK_REM")
 public class KrcmtReverseLeaRemain extends UkJpaEntity {
 	
 	@Id
