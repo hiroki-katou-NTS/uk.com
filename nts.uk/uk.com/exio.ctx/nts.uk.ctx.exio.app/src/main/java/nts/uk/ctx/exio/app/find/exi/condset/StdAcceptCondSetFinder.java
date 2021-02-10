@@ -99,11 +99,6 @@ public class StdAcceptCondSetFinder {
 	 */
 	public List<ExAcpCategoryDto> getCategoryBySystem(int sysType) {
 
-//		List<ExAcpCategoryDto> lstDataCategory = new ArrayList<ExAcpCategoryDto>();
-//		for (int i = 1; i <= 4; i++) {
-//			lstDataCategory.add(new ExAcpCategoryDto("1" + i, "カテゴリ名　" + i));
-//		}
-//		return lstDataCategory;
 		List<ExternalAcceptCategory> listCategory = categoryRep.getBySystem(EnumAdaptor.valueOf(sysType, SystemType.class),
 				EnumAdaptor.valueOf(1, NotUseAtr.class));
 		List<ExAcpCategoryDto> listCategoryDto = listCategory.stream().map(x -> new ExAcpCategoryDto(x.getCategoryId(), 
@@ -119,16 +114,6 @@ public class StdAcceptCondSetFinder {
 	public List<ExAcpCtgItemDatDto> getCategoryItemData(int categoryId) {
 		
 		List<ExAcpCtgItemDatDto> lstCategoryItemData = new ArrayList<ExAcpCtgItemDatDto>();
-//		for (int i = 1; i <= 4; i++) {
-//			for (int j = 1; j < 11; j++) {
-//				lstCategoryItemData
-//						.add(new ExAcpCtgItemDatDto(0+i, j, "カテゴリ項目データ" + "" + i + "" + j, j % 2));
-//			}
-//		}
-//
-//		return lstCategoryItemData.stream().filter(item -> {
-//			return item.getCategoryId() == categoryId;
-//		}).collect(Collectors.toList());
 		
 		List<ExternalAcceptCategoryItem> listDomain = categoryItemRep.getByCategory(categoryId);
 		lstCategoryItemData.addAll(listDomain.stream().map(x -> new ExAcpCtgItemDatDto(x.getCategoryId(), x.getItemNo(), x.getItemName(), 

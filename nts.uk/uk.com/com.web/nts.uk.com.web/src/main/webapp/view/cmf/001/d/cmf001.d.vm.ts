@@ -42,12 +42,13 @@ module nts.uk.com.view.cmf001.d.viewmodel {
         // B2_7
         systemTypes: KnockoutObservableArray<model.ItemModel> = ko.observableArray([]);
         system: KnockoutObservable<number> = ko.observable(1);
+        
+        listConditionInfor: KnockoutObservable<any> = ko.observable(null);
 
         constructor(data: any) {
             var self = this;
-            let item = _.find(model.getSystemTypes(), x => { return x.code == data.systemType; });
+            let item = _.find(model.getSystemTypes(), x => { return x.code == self.system(); });
             self.systemType = item;
-            self.system(data.systemType);
 
             self.stdCondSetCd(data.conditionCode);
 
@@ -56,12 +57,15 @@ module nts.uk.com.view.cmf001.d.viewmodel {
 
             self.listCategoryItem = ko.observableArray([]);
             
-            self.selectedCategory.subscribe((data) => {
-                if (data) {
-                    self.loadCategoryItemData(data);
-                    if (!self.startLoad()) {
-                        self.listAcceptItem.removeAll();
-                    }
+            self.system.subscribe((data) => {
+                if (data.valueOf) {
+//                    self.getCategoryitem();
+//                    if (!self.startLoad()) {
+//                        self.listAcceptItem.removeAll();
+//                    }
+                    self.getCategoryBySystem(data).then(() => {
+                        self.selectedCategory(self.listCategory()[0].categoryId);    
+                    });
                 }
             });
 
@@ -86,27 +90,17 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                 $("#fixed-table tr[data-id='" + data + "']").addClass("my-active-row");
             });
             self.selectedEncoding.subscribe((data) => {
-                console.log(data);
             });
             
-            self.system.subscribe((data) => {
-                service.getAllCategoryBystem(self.system()).done((rs: Array<any>)=>{
-                    if (rs && rs.length) {
-                        
-                        let _rsList: Array<model.ExternalAcceptanceCategory> = _.map(rs, x => {
-                            return new model.ExternalAcceptanceCategory(x.categoryId, x.categoryName);
-                        });
-                        self.listCategory(_rsList);
-                        if (nts.uk.text.isNullOrEmpty(self.listCategory())) {
-                            self.enableCategory(false);
-                            self.selectedCategory(self.stdCondSet().categoryId());
-                        } else {
-                            self.selectedCategory(self.listCategory()[0].categoryId);
-                        }                        
-                        
-                    }else
-                        alertError({ messageId: "Msg_74", messageParams: ["カテゴリ"] });
-                })
+            self.selectedCategory.subscribe((data) => {
+                if(data && self.stdCondSet()){
+                    self.listAcceptItem([]);
+                    self.listCategoryItem([]);
+    //                self.getCategoryBySystem(self.system()).then(() => {
+                        self.getCategoryitem();    
+    //                });                    
+                }
+
             });
         }
 
@@ -117,7 +111,6 @@ module nts.uk.com.view.cmf001.d.viewmodel {
         finished(fileInfo: any) {
             var self = this;
             self.fileId(fileInfo.id);
-            console.log(fileInfo);
             block.invisible();
             service.getNumberOfLine(self.fileId(),self.selectedEncoding()).done(function(totalLine: any) {
                 self.fileDataTotalLine(totalLine);
@@ -451,9 +444,27 @@ module nts.uk.com.view.cmf001.d.viewmodel {
 
         startPage(): JQueryPromise<any> {
             let self = this,
-                dfd = $.Deferred();
+            dfd = $.Deferred();
             block.invisible();
-            
+            self.getSystemCombobox().then(() => {
+                self.getConditionInfo(self.stdCondSetCd()).then(() => {
+                    if (!nts.uk.text.isNullOrEmpty(self.listConditionInfor())) {
+                        self.getCategoryBySystem(self.system());
+                        if (self.listCategory().length > 0) {
+                            self.getCategoryitem();
+                        }
+                    }
+                });
+            });
+            dfd.resolve();
+            dfd.reject();
+            return dfd.promise();
+        }
+        
+        // get system
+        private getSystemCombobox(): JQueryPromise<any> {
+            let self = this,
+            dfd = $.Deferred();
             service.getSysTypes().done(function(data: Array<any>) {
                 if (data && data.length) {
                     let _rsList: Array<model.ItemModel> = _.map(data, rs => {
@@ -465,136 +476,167 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                 } else {
                     nts.uk.request.jump("/view/cmf/001/a/index.xhtml");
                 }
-                
-                service.getOneStdData(self.stdCondSetCd()).done((cond) => {
-                    if (cond) {
-                        self.stdCondSet(new model.StandardAcceptanceConditionSetting(cond.systemType,
-                            cond.conditionSettingCode,
-                            cond.conditionSettingName,
-                            cond.deleteExistData, cond.acceptMode,
-                            cond.csvDataItemLineNumber == null ? 1 : cond.csvDataItemLineNumber,
-                            cond.csvDataStartLine == null ? 2 : cond.csvDataStartLine,
-                            cond.characterCode,
-                            cond.deleteExistDataMethod, cond.categoryId));
-                        if (cond.characterCode == null)
-                            self.selectedEncoding(3);
-                        else
-                            self.selectedEncoding(cond.characterCode);
-                        service.getAllCategoryBystem(self.system()).done((rs: Array<any>) => {
-                            if (rs && rs.length) {
-                                let _rsList: Array<model.ExternalAcceptanceCategory> = _.map(rs, x => {
-                                    return new model.ExternalAcceptanceCategory(x.categoryId, x.categoryName);
-                                });
-                                self.listCategory(_rsList);
-                                if (!nts.uk.text.isNullOrEmpty(cond.categoryId)) {
-                                    self.enableCategory(false);
-                                    self.selectedCategory(self.stdCondSet().categoryId());
-                                } else {
-                                    self.selectedCategory(self.listCategory()[0].categoryId);
-                                }
-                                service.getAllData(self.stdCondSet().conditionSetCode()).done(function(data: Array<any>) {
-                                    if (data && data.length) {//co du lieu dang ki
-                                        self.loadCategoryItemData(self.stdCondSet().categoryId()).done(() => {
-                                            let _rsList: Array<model.StandardAcceptItem> = _.map(data, rs => {
-                                                let formatSetting = null, fs = null, screenCondition: model.AcceptScreenConditionSetting = null;
-                                                switch (rs.itemType) {
-                                                    case model.ITEM_TYPE.NUMERIC:
-                                                        fs = rs.numberFormatSetting;
-                                                        if (fs)
-                                                            formatSetting = new model.NumericDataFormatSetting(
-                                                                fs.effectiveDigitLength, fs.startDigit, fs.endDigit,
-                                                                fs.decimalDivision, fs.decimalDigitNum, fs.decimalPointCls,
-                                                                fs.decimalFraction, fs.cdConvertCd, fs.fixedValue, fs.valueOfFixedValue);
-                                                        break;
-                                                    case model.ITEM_TYPE.CHARACTER:
-                                                        fs = rs.charFormatSetting;
-                                                        if (fs)
-                                                            formatSetting = new model.CharacterDataFormatSetting(
-                                                                fs.effectiveDigitLength, fs.startDigit, fs.endDigit,
-                                                                fs.cdEditing, fs.cdEditDigit, fs.cdEditMethod,
-                                                                fs.cdConvertCd, fs.fixedValue, fs.fixedVal);
-                                                        break;
-                                                    case model.ITEM_TYPE.DATE:
-                                                        fs = rs.dateFormatSetting;
-                                                        if (fs)
-                                                            formatSetting = new model.DateDataFormatSetting(fs.formatSelection, fs.fixedValue, fs.valueOfFixedValue);
-                                                        break;
-                                                    case model.ITEM_TYPE.INS_TIME:
-                                                        fs = rs.instTimeFormatSetting;
-                                                        if (fs)
-                                                            formatSetting = new model.InstantTimeDataFormatSetting(
-                                                                fs.effectiveDigitLength, fs.startDigit, fs.endDigit,
-                                                                fs.decimalSelect, fs.hourMinSelect, fs.delimiterSet,
-                                                                fs.roundProc, fs.roundProcCls, fs.fixedValue, fs.valueOfFixedValue);
-                                                        break;
-                                                    case model.ITEM_TYPE.TIME:
-                                                        fs = rs.timeFormatSetting;
-                                                        if (fs)
-                                                            formatSetting = new model.TimeDataFormatSetting(
-                                                                fs.effectiveDigitLength, fs.startDigit, fs.endDigit,
-                                                                fs.decimalSelect, fs.hourMinSelect, fs.delimiterSet,
-                                                                fs.roundProc, fs.roundProcCls, fs.fixedValue, fs.valueOfFixedValue);
-                                                        break;
-                                                }
-                                                if (rs.screenConditionSetting) {
-                                                    let sc = rs.screenConditionSetting;
-                                                    screenCondition = new model.AcceptScreenConditionSetting(rs.acceptItemName, sc.selectComparisonCondition,
-                                                        sc.timeConditionValue2, sc.timeConditionValue1,
-                                                        sc.timeMomentConditionValue2, sc.timeMomentConditionValue1,
-                                                        moment.utc(sc.dateConditionValue2, "YYYY/MM/DD").toISOString(), moment.utc(sc.dateConditionValue1, "YYYY/MM/DD").toISOString(),
-                                                        sc.characterConditionValue2, sc.characterConditionValue1,
-                                                        sc.numberConditionValue2, sc.numberConditionValue1,
-                                                        rs.conditionCode, rs.acceptItemNumber);
-                                                }
-                                                return new model.StandardAcceptItem(rs.csvItemName, rs.csvItemNumber, rs.itemType, rs.acceptItemNumber, rs.acceptItemName, rs.systemType, rs.conditionSettingCode, rs.categoryItemNo, formatSetting, screenCondition);
-                                            });
-                                            //_rsList = _.sortBy(_rsList, ['code']);
-                                            self.listAcceptItem(_rsList);
-                                            _.each(self.listAcceptItem(), rs => {
-                                                let item = _.find(self.listCategoryItem(), x => { return x.itemNo == rs.categoryItemNo(); });
-                                                if (item) {
-                                                    rs.acceptItemName(item.itemName);
-                                                    self.listSelectedCategoryItem.push(item);
-                                                    self.listCategoryItem.remove(item);
-                                                }
-                                            });
-                                        });
-                                    } else {//chua co du lieu, dang ki moi
-                                        self.startLoad(false);
-                                    }
-                                    dfd.resolve();
-                                }).fail(function(error) {
-                                    alertError(error);
-                                    dfd.reject();
-                                }).always(() => {
-                                    block.clear();
-                                });
-                            } else {
-                                alertError({ messageId: "Msg_74", messageParams: ["カテゴリ"] });
-                            }
-                        }).fail(function(error) {
-                            alertError(error);
-                        }).always(() => {
-                            block.clear();
-                        });
-                    }
-                }).fail((error) => {
-                    alertError(error);
-                }).always(() => {
-                    block.clear();
-                });
+
+                dfd.resolve();
             }).fail(function(error) {
-                alertError(error);
                 dfd.reject();
+                alertError(error);
             }).always(() => {
                 block.clear();
             });
             return dfd.promise();
         }
+        
+        // get condition information
+        private getConditionInfo(conditionCd: string): JQueryPromise<any> {
+            let self = this,
+            dfd = $.Deferred();
+            service.getOneStdData(conditionCd).done((cond) => {
+                if (cond) {
+                    
+                    self.listConditionInfor(cond);
+                    
+                    self.stdCondSet(new model.StandardAcceptanceConditionSetting(cond.systemType,
+                        cond.conditionSettingCode,
+                        cond.conditionSettingName,
+                        cond.deleteExistData, cond.acceptMode,
+                        cond.csvDataItemLineNumber == null ? 1 : cond.csvDataItemLineNumber,
+                        cond.csvDataStartLine == null ? 2 : cond.csvDataStartLine,
+                        cond.characterCode,
+                        cond.deleteExistDataMethod, cond.categoryId));
+                    if (cond.characterCode == null)
+                        self.selectedEncoding(3);
+                    else
+                        self.selectedEncoding(cond.characterCode);
+                }
+                return dfd.resolve();
+            }).fail(function(error) {
+                alertError(error);
+                return dfd.reject();
+            }).always(() => {
+                block.clear();
+            });
+            return dfd.promise();
+        }
+        
+        // get category by system
+        private getCategoryBySystem(system: number): JQueryPromise<any> {
+            let self = this,
+            dfd = $.Deferred();
+            service.getAllCategoryBystem(system).done((rs: Array<any>) => {
+                if (rs && rs.length) {
 
-        private loadCategoryItemData(categoryId: any): JQueryPromise<any> {
+                    let _rsList: Array<model.ExternalAcceptanceCategory> = _.map(rs, x => {
+                        return new model.ExternalAcceptanceCategory(x.categoryId, x.categoryName);
+                    });
+                    self.listCategory(_rsList);
+                    if (nts.uk.text.isNullOrEmpty(self.listCategory())) {
+                        self.enableCategory(false);
+                        self.selectedCategory(self.stdCondSet().categoryId());
+                    } else {
+                        self.selectedCategory(self.listCategory()[0].categoryId);
+                    }
+
+                } else
+                    alertError({ messageId: "Msg_74", messageParams: ["カテゴリ"] });
+                return dfd.resolve();
+            }).fail(function(error) {
+                alertError(error);
+                return dfd.reject();
+            }).always(() => {
+                block.clear();
+            });      
+            return dfd.promise();            
+        }
+
+        // get category item
+        private getCategoryitem(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
+            service.getAllData(self.stdCondSet().conditionSetCode()).done(function(data: Array<any>) {
+                if (data && data.length) {//co du lieu dang ki
+                    self.loadCategoryItemData(self.selectedCategory()).done(() => {
+                        let _rsList: Array<model.StandardAcceptItem> = _.map(data, rs => {
+                            let formatSetting = null, fs = null, screenCondition: model.AcceptScreenConditionSetting = null;
+                            switch (rs.itemType) {
+                                case model.ITEM_TYPE.NUMERIC:
+                                    fs = rs.numberFormatSetting;
+                                    if (fs)
+                                        formatSetting = new model.NumericDataFormatSetting(
+                                            fs.effectiveDigitLength, fs.startDigit, fs.endDigit,
+                                            fs.decimalDivision, fs.decimalDigitNum, fs.decimalPointCls,
+                                            fs.decimalFraction, fs.cdConvertCd, fs.fixedValue, fs.valueOfFixedValue);
+                                    break;
+                                case model.ITEM_TYPE.CHARACTER:
+                                    fs = rs.charFormatSetting;
+                                    if (fs)
+                                        formatSetting = new model.CharacterDataFormatSetting(
+                                            fs.effectiveDigitLength, fs.startDigit, fs.endDigit,
+                                            fs.cdEditing, fs.cdEditDigit, fs.cdEditMethod,
+                                            fs.cdConvertCd, fs.fixedValue, fs.fixedVal);
+                                    break;
+                                case model.ITEM_TYPE.DATE:
+                                    fs = rs.dateFormatSetting;
+                                    if (fs)
+                                        formatSetting = new model.DateDataFormatSetting(fs.formatSelection, fs.fixedValue, fs.valueOfFixedValue);
+                                    break;
+                                case model.ITEM_TYPE.INS_TIME:
+                                    fs = rs.instTimeFormatSetting;
+                                    if (fs)
+                                        formatSetting = new model.InstantTimeDataFormatSetting(
+                                            fs.effectiveDigitLength, fs.startDigit, fs.endDigit,
+                                            fs.decimalSelect, fs.hourMinSelect, fs.delimiterSet,
+                                            fs.roundProc, fs.roundProcCls, fs.fixedValue, fs.valueOfFixedValue);
+                                    break;
+                                case model.ITEM_TYPE.TIME:
+                                    fs = rs.timeFormatSetting;
+                                    if (fs)
+                                        formatSetting = new model.TimeDataFormatSetting(
+                                            fs.effectiveDigitLength, fs.startDigit, fs.endDigit,
+                                            fs.decimalSelect, fs.hourMinSelect, fs.delimiterSet,
+                                            fs.roundProc, fs.roundProcCls, fs.fixedValue, fs.valueOfFixedValue);
+                                    break;
+                            }
+                            if (rs.screenConditionSetting) {
+                                let sc = rs.screenConditionSetting;
+                                screenCondition = new model.AcceptScreenConditionSetting(rs.acceptItemName, sc.selectComparisonCondition,
+                                    sc.timeConditionValue2, sc.timeConditionValue1,
+                                    sc.timeMomentConditionValue2, sc.timeMomentConditionValue1,
+                                    moment.utc(sc.dateConditionValue2, "YYYY/MM/DD").toISOString(), moment.utc(sc.dateConditionValue1, "YYYY/MM/DD").toISOString(),
+                                    sc.characterConditionValue2, sc.characterConditionValue1,
+                                    sc.numberConditionValue2, sc.numberConditionValue1,
+                                    rs.conditionCode, rs.acceptItemNumber);
+                            }
+                            return new model.StandardAcceptItem(rs.csvItemName, rs.csvItemNumber, rs.itemType, rs.acceptItemNumber, rs.acceptItemName, rs.systemType, rs.conditionSettingCode, rs.categoryItemNo, formatSetting, screenCondition);
+                        });
+                        //_rsList = _.sortBy(_rsList, ['code']);
+                        self.listAcceptItem(_rsList);
+                        _.each(self.listAcceptItem(), rs => {
+                            let item = _.find(self.listCategoryItem(), x => { return x.itemNo == rs.categoryItemNo(); });
+                            if (item) {
+                                rs.acceptItemName(item.itemName);
+                                self.listSelectedCategoryItem.push(item);
+                                self.listCategoryItem.remove(item);
+                            }
+                        });
+                    });
+                } else {//chua co du lieu, dang ki moi
+                    self.startLoad(false);
+                }
+                dfd.resolve();
+            }).fail(function(error) {
+                dfd.reject();
+                alertError(error);
+            }).always(() => {
+                block.clear();
+            });
+            return dfd.promise();
+        }
+        
+        
+        private loadCategoryItemData(categoryId: any): JQueryPromise<any> {
+            let self = this,
+            dfd = $.Deferred();
             service.getCategoryItem(categoryId).done((rs: Array<any>) => {
                 if (rs && rs.length) {
                     let _rsList: Array<model.ExternalAcceptanceCategoryItemData> = _.map(rs, x => {
