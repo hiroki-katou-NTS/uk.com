@@ -120,17 +120,17 @@ public class KfnmtAlarmCheckConditionCategory extends UkJpaEntity implements Ser
 	/**
 	 * Add more 4 category
 	 */
-	@OneToOne(cascade = CascadeType.ALL, mappedBy = "condition", orphanRemoval = true)
-	public KfndtWeekCondAlarmLink kfndtWeekCondAlarmLink;
-
-	@OneToOne(cascade = CascadeType.ALL, mappedBy = "condition", orphanRemoval = true)
-	public KfndtScheCondDayLink kfndtScheCondDayLink;
-
-	@OneToOne(cascade = CascadeType.ALL, mappedBy = "condition", orphanRemoval = true)
-	public KfndtScheCondMonthLink kfndtScheCondMonthLink;
-
-	@OneToOne(cascade = CascadeType.ALL, mappedBy = "condition", orphanRemoval = true)
-	public KfndtScheCondYearLink kfndtScheCondYearLink;
+//	@OneToOne(cascade = CascadeType.ALL, mappedBy = "condition", orphanRemoval = true)
+//	public KfndtWeekCondAlarmLink kfndtWeekCondAlarmLink;
+//
+//	@OneToOne(cascade = CascadeType.ALL, mappedBy = "condition", orphanRemoval = true)
+//	public KfndtScheCondDayLink kfndtScheCondDayLink;
+//
+//	@OneToOne(cascade = CascadeType.ALL, mappedBy = "condition", orphanRemoval = true)
+//	public KfndtScheCondMonthLink kfndtScheCondMonthLink;
+//
+//	@OneToOne(cascade = CascadeType.ALL, mappedBy = "condition", orphanRemoval = true)
+//	public KfndtScheCondYearLink kfndtScheCondYearLink;
 
 	// -----------------------
 
