@@ -3,6 +3,7 @@ package nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import lombok.Value;
@@ -54,19 +55,16 @@ public class TaskSchedule implements DomainValue {
 	 */
 	private static boolean checkDuplicate(List<TaskScheduleDetail> details) {
 		
-		if ( details.size() <= 1 ) {
-			return false;
-		}
+		List<TimeSpanForCalc> timeSpans = details.stream()
+				.map(d -> d.getTimeSpan())
+				.collect(Collectors.toList());
 		
-		TaskScheduleDetail firstElement = details.get(0);
-		List<TaskScheduleDetail> remainList = details.subList(1, details.size());
+		AtomicInteger index = new AtomicInteger(0);
 		
-		boolean isDuplicated = remainList.stream().anyMatch( remainElement -> firstElement.isTimeSpanDuplicated(remainElement) );
-		if ( isDuplicated ) {
-			return true;
-		}
-		
-		return TaskSchedule.checkDuplicate(remainList);
+		return timeSpans.stream().anyMatch( base -> {
+			return timeSpans.subList(index.incrementAndGet(), timeSpans.size()).stream()
+					.anyMatch( target -> base.checkDuplication( target ).isDuplicated() );
+		});
 	}
 	
 	/**
