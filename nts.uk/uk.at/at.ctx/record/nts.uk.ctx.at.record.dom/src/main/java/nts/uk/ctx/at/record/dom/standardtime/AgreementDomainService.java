@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.standardtime.repository;
+package nts.uk.ctx.at.record.dom.standardtime;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,7 +14,6 @@ import nts.arc.time.calendar.Year;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.classification.affiliate.AffClassificationSidImport;
 import nts.uk.ctx.at.record.dom.adapter.employment.SyEmploymentImport;
-import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSettingsGetter;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfClassification;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfCompany;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfEmployment;
@@ -29,6 +28,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.time
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.AgreementOneYear;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.AgreementOverMaxTimes;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSettingForCalc;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
@@ -47,10 +47,12 @@ public class AgreementDomainService {
 	 * @param year 年度
 	 * @return 36協定基本設定
 	 */
-	public static BasicAgreementSetting getBasicSet(RequireM5 require, String companyId, String employeeId, GeneralDate criteriaDate, Year year) {
+	public static BasicAgreementSettingForCalc getBasicSet(RequireM5 require, String companyId, String employeeId, GeneralDate criteriaDate, Year year) {
 		
 		/** 36協定基本設定を取得する */
 		val basicSetting = getBasicSet(require, companyId, employeeId, criteriaDate);
+		
+		val basicSetForCalc = new BasicAgreementSettingForCalc(basicSetting, false);
 		
 		/** 個人の「36協定年間設定」を取得する */
 		val personYearSetting = require.agreementYearSetting(employeeId, year.v());
@@ -58,11 +60,12 @@ public class AgreementDomainService {
 		personYearSetting.ifPresent(pys -> {
 			
 			/** 取得した「36協定基本設定」。1年間を上書きする */
-			basicSetting.getOneYear().getSpecConditionLimit().setErAlTime(pys.getOneYearTime());
+			basicSetting.getOneYear().setBasic(pys.getOneYearTime());
+			basicSetForCalc.personAgreementSetted();
 		});
 		
 		/** 「36協定基本設定」を返す */
-		return basicSetting;
+		return basicSetForCalc;
 	}
 	
 	/**
@@ -73,10 +76,12 @@ public class AgreementDomainService {
 	 * @param ym 年月
 	 * @return 36協定基本設定
 	 */
-	public static BasicAgreementSetting getBasicSet(RequireM6 require, String companyId, String employeeId, GeneralDate criteriaDate, YearMonth ym) {
+	public static BasicAgreementSettingForCalc getBasicSet(RequireM6 require, String companyId, String employeeId, GeneralDate criteriaDate, YearMonth ym) {
 		
 		/** 36協定基本設定を取得する */
 		val basicSetting = getBasicSet(require, companyId, employeeId, criteriaDate);
+		
+		val basicSetForCalc = new BasicAgreementSettingForCalc(basicSetting, false);
 		
 		/** 個人の「３６協定年月設定」を取得する */
 		val personYMSetting = require.agreementMonthSetting(employeeId, ym);
@@ -84,11 +89,12 @@ public class AgreementDomainService {
 		personYMSetting.ifPresent(pys -> {
 			
 			/** 取得した36協定基本設定。１ヶ月を上書きする */
-			basicSetting.getOneMonth().getSpecConditionLimit().setErAlTime(pys.getOneMonthTime());
+			basicSetting.getOneMonth().getBasic().setErAlTime(pys.getOneMonthTime());
+			basicSetForCalc.personAgreementSetted();
 		});
 		
 		/** 「36協定基本設定」を返す */
-		return basicSetting;
+		return basicSetForCalc;
 	}
 	
 	/**
