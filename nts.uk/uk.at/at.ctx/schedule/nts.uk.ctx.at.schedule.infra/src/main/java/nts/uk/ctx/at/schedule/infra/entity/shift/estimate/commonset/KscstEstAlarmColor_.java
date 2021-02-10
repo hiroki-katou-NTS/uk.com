@@ -10,15 +10,15 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class KscstEstAlarmColor_.
  */
-@StaticMetamodel(KscstEstAlarmColor.class)
+@StaticMetamodel(KscmtEstAlarmColor.class)
 public class KscstEstAlarmColor_ {
 
 	/** The kscst est alarm color PK. */
-	public static volatile SingularAttribute<KscstEstAlarmColor, KscstEstAlarmColorPK> kscstEstAlarmColorPK;
+	public static volatile SingularAttribute<KscmtEstAlarmColor, KscstEstAlarmColorPK> kscstEstAlarmColorPK;
 	
 	/** The color cd. */
-	public static volatile SingularAttribute<KscstEstAlarmColor, String> colorCd;
+	public static volatile SingularAttribute<KscmtEstAlarmColor, String> colorCd;
 	
 	/** The kscst est guide setting. */
-	public static volatile SingularAttribute<KscstEstAlarmColor, KscstEstComSet> kscstEstGuideSetting;
+	public static volatile SingularAttribute<KscmtEstAlarmColor, KscmtEstCommon> kscstEstGuideSetting;
 }

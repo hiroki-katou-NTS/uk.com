@@ -6,7 +6,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRoundingSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHolSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleHolTs;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -15,14 +15,14 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class JpaFlexOffdayTZRoundSetMemento implements TimeZoneRoundingSetMemento{
 	
 	/** The entity. */
-	private KshmtFlexHolSet entity;
+	private KshmtWtFleHolTs entity;
 
 	/**
 	 * Instantiates a new jpa flex offday TZ round set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlexOffdayTZRoundSetMemento(KshmtFlexHolSet entity) {
+	public JpaFlexOffdayTZRoundSetMemento(KshmtWtFleHolTs entity) {
 		super();
 		this.entity = entity;
 	}

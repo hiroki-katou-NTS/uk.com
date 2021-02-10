@@ -14,6 +14,7 @@ import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.sys.gateway.dom.accessrestrictions.AccessRestrictions;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -41,13 +42,18 @@ public class SgwmtAccess extends UkJpaEntity implements Serializable {
 	}
 	
 	public SgwmtAccess(AccessRestrictions domain){
-		this.contractCd = domain.getContractCode().v();
+		this.contractCd = domain.getTenantCode().v();
 		this.accessLimitUseAtr = domain.getAccessLimitUseAtr().value;
-		this.listSgwmtAccessIp = domain.getAllowedIPaddress().stream().map(c -> new SgwmtAccessIp(c, domain.getContractCode().v())).collect(Collectors.toList());
+		this.listSgwmtAccessIp = domain.getWhiteList().stream()
+				.map(c -> new SgwmtAccessIp(c, domain.getTenantCode().v())).collect(Collectors.toList());
 	}
 	
 	public AccessRestrictions toDomain(){
-		return new AccessRestrictions(this.accessLimitUseAtr, this.contractCd, this.listSgwmtAccessIp.stream().map(c->c.toDomain()).collect(Collectors.toList()));
+		return new AccessRestrictions(
+				this.contractCd, 
+				NotUseAtr.valueOf(this.accessLimitUseAtr), 
+				this.listSgwmtAccessIp.stream()
+				.map(c->c.toDomain()).collect(Collectors.toList()));
 	}
 
 }

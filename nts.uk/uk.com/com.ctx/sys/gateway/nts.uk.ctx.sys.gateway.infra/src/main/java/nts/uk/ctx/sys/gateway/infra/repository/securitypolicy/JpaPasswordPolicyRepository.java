@@ -1,15 +1,16 @@
 package nts.uk.ctx.sys.gateway.infra.repository.securitypolicy;
 
-import java.math.BigDecimal;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.sys.gateway.dom.login.ContractCode;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.PasswordPolicy;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.PasswordPolicyRepository;
-import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.SgwstPasswordPolicy;
+import nts.uk.ctx.sys.gateway.dom.loginold.ContractCode;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicy;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.PasswordPolicyRepository;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.password.complexity.PasswordComplexityRequirement;
+import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.SgwmtPasswordPolicy;
 
 /**
  * The Class JpaPasswordPolicyRepository.
@@ -18,18 +19,18 @@ import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.SgwstPasswordPolicy;
 public class JpaPasswordPolicyRepository extends JpaRepository implements PasswordPolicyRepository {
 	
 	/** The select by contract code. */
-	private static  final String SELECT_BY_CONTRACT_CODE = "SELECT c FROM SgwstPasswordPolicy c WHERE c.contractCode = :contractCode";
+	private static  final String SELECT_BY_CONTRACT_CODE = "SELECT c FROM SgwmtPasswordPolicy c WHERE c.contractCd = :contractCd";
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.sys.gateway.dom.securitypolicy.PasswordPolicyRepository#getPasswordPolicy(nts.uk.ctx.sys.gateway.dom.login.ContractCode)
 	 */
 	@Override
-	public Optional<PasswordPolicy> getPasswordPolicy(ContractCode contractCode) {
-		Optional<SgwstPasswordPolicy> sgwstPasswordPolicyOptional = this.queryProxy()
-				.query(SELECT_BY_CONTRACT_CODE, SgwstPasswordPolicy.class)
-				.setParameter("contractCode", contractCode, ContractCode.class).getSingle();
-		if (sgwstPasswordPolicyOptional.isPresent()) {
-			return Optional.ofNullable(this.toDomain(sgwstPasswordPolicyOptional.get()));
+	public Optional<PasswordPolicy> getPasswordPolicy(ContractCode contractCd) {
+		Optional<SgwmtPasswordPolicy> sgwmtPasswordPolicyOptional = this.queryProxy()
+				.query(SELECT_BY_CONTRACT_CODE, SgwmtPasswordPolicy.class)
+				.setParameter("contractCd", contractCd, ContractCode.class).getSingle();
+		if (sgwmtPasswordPolicyOptional.isPresent()) {
+			return Optional.ofNullable(this.toDomain(sgwmtPasswordPolicyOptional.get()));
 		}
 		return Optional.empty();
 	}
@@ -39,42 +40,25 @@ public class JpaPasswordPolicyRepository extends JpaRepository implements Passwo
 	 */
 	@Override
 	public void updatePasswordPolicy(PasswordPolicy passwordPolicy) {
-		Optional<SgwstPasswordPolicy> sgwstPasswordPolicyOPtional = this.queryProxy()
-				.find(passwordPolicy.getContractCode().v(), SgwstPasswordPolicy.class);
+		
+		Optional<SgwmtPasswordPolicy> sgwstPasswordPolicyOPtional = this.queryProxy()
+				.find(passwordPolicy.getContractCode().v(), SgwmtPasswordPolicy.class);
+		
 		if (sgwstPasswordPolicyOPtional.isPresent()) {
-			SgwstPasswordPolicy sgwstPasswordPolicy = sgwstPasswordPolicyOPtional.get();
-			if (passwordPolicy.isUse()) {
-				sgwstPasswordPolicy.notificationPasswordChange = passwordPolicy.getNotificationPasswordChange().v();
-				sgwstPasswordPolicy.loginCheck = new BigDecimal(passwordPolicy.isLoginCheck() ? 1 : 0);
-				sgwstPasswordPolicy.initialPasswordChange = new BigDecimal(
-						passwordPolicy.isInitialPasswordChange() ? 1 : 0);
-				sgwstPasswordPolicy.isUse = new BigDecimal(1);
-				sgwstPasswordPolicy.historyCount = passwordPolicy.getHistoryCount().v();
-				sgwstPasswordPolicy.lowestDigits = passwordPolicy.getLowestDigits().v();
-				sgwstPasswordPolicy.validityPeriod = passwordPolicy.getValidityPeriod().v();
-				sgwstPasswordPolicy.numberOfDigits = passwordPolicy.getNumberOfDigits().v();
-				sgwstPasswordPolicy.symbolCharacters = passwordPolicy.getSymbolCharacters().v();
-				sgwstPasswordPolicy.alphabetDigit = passwordPolicy.getAlphabetDigit().v();
-			} else {
-				sgwstPasswordPolicy.notificationPasswordChange = new BigDecimal(0);
-				sgwstPasswordPolicy.loginCheck = new BigDecimal(0);
-				sgwstPasswordPolicy.initialPasswordChange = new BigDecimal(0);
-				sgwstPasswordPolicy.isUse = new BigDecimal(0);
-				sgwstPasswordPolicy.historyCount = new BigDecimal(0);
-				sgwstPasswordPolicy.lowestDigits = new BigDecimal(1);
-				sgwstPasswordPolicy.validityPeriod = new BigDecimal(0);
-				sgwstPasswordPolicy.numberOfDigits = new BigDecimal(0);
-				sgwstPasswordPolicy.symbolCharacters = new BigDecimal(0);
-				sgwstPasswordPolicy.alphabetDigit = new BigDecimal(0);
-			}
+			SgwmtPasswordPolicy sgwstPasswordPolicy = sgwstPasswordPolicyOPtional.get();
+			sgwstPasswordPolicy.notificationPasswordChange = passwordPolicy.getNotificationPasswordChange().v().intValue();
+			sgwstPasswordPolicy.loginCheck = passwordPolicy.isLoginCheck();
+			sgwstPasswordPolicy.initialPasswordChange = passwordPolicy.isInitialPasswordChange();
+			sgwstPasswordPolicy.isUse = passwordPolicy.isUse();
+			sgwstPasswordPolicy.historyCount = passwordPolicy.getHistoryCount().v().intValue();
+			sgwstPasswordPolicy.lowestDigits = passwordPolicy.getComplexityRequirement().getMinimumLength().v();
+			sgwstPasswordPolicy.validityPeriod = passwordPolicy.getValidityPeriod().v().intValue();
+			sgwstPasswordPolicy.numberOfDigits = passwordPolicy.getComplexityRequirement().getNumeralDigits().v();
+			sgwstPasswordPolicy.symbolCharacters = passwordPolicy.getComplexityRequirement().getSymbolDigits().v();
+			sgwstPasswordPolicy.alphabetDigit = passwordPolicy.getComplexityRequirement().getAlphabetDigits().v();
 
 		} else {
-			if (passwordPolicy.isUse()) {
-				this.commandProxy().insert(this.toEntity(passwordPolicy));
-			} else {
-				this.commandProxy().insert(new SgwstPasswordPolicy(passwordPolicy.getContractCode().v(), new BigDecimal(0), new BigDecimal(0),
-						new BigDecimal(0), new BigDecimal(0), new BigDecimal(0), new BigDecimal(1), new BigDecimal(0), new BigDecimal(0), new BigDecimal(0), new BigDecimal(0)));
-			}
+			this.commandProxy().insert(this.toEntity(passwordPolicy));
 		}
 	}
 
@@ -84,15 +68,23 @@ public class JpaPasswordPolicyRepository extends JpaRepository implements Passwo
 	 * @param sgwstPasswordPolicy the sgwst password policy
 	 * @return the password policy
 	 */
-	private PasswordPolicy toDomain(SgwstPasswordPolicy sgwstPasswordPolicy) {
-		return PasswordPolicy.createFromJavaType(sgwstPasswordPolicy.contractCode,
-				sgwstPasswordPolicy.notificationPasswordChange.intValue(),
-				sgwstPasswordPolicy.loginCheck.intValue() == 1 ? true : false,
-				sgwstPasswordPolicy.initialPasswordChange.intValue() == 1 ? true : false,
-				sgwstPasswordPolicy.isUse.intValue() == 1 ? true : false, sgwstPasswordPolicy.historyCount.intValue(),
-				sgwstPasswordPolicy.lowestDigits.intValue(), sgwstPasswordPolicy.validityPeriod.intValue(),
-				sgwstPasswordPolicy.numberOfDigits.intValue(), sgwstPasswordPolicy.symbolCharacters.intValue(),
-				sgwstPasswordPolicy.alphabetDigit.intValue());
+	private PasswordPolicy toDomain(SgwmtPasswordPolicy sgwstPasswordPolicy) {
+		
+		val complexity = PasswordComplexityRequirement.createFromJavaType(
+				sgwstPasswordPolicy.lowestDigits,
+				sgwstPasswordPolicy.numberOfDigits,
+				sgwstPasswordPolicy.symbolCharacters,
+				sgwstPasswordPolicy.alphabetDigit);
+		
+		return PasswordPolicy.createFromJavaType(
+				sgwstPasswordPolicy.contractCd,
+				sgwstPasswordPolicy.notificationPasswordChange,
+				sgwstPasswordPolicy.loginCheck,
+				sgwstPasswordPolicy.initialPasswordChange,
+				sgwstPasswordPolicy.isUse,
+				sgwstPasswordPolicy.historyCount,
+				sgwstPasswordPolicy.validityPeriod,
+				complexity);
 	}
 
 	/**
@@ -101,15 +93,18 @@ public class JpaPasswordPolicyRepository extends JpaRepository implements Passwo
 	 * @param passwordPolicy the password policy
 	 * @return the sgwst password policy
 	 */
-	private SgwstPasswordPolicy toEntity(PasswordPolicy passwordPolicy) {
-		return new SgwstPasswordPolicy(passwordPolicy.getContractCode().v(),
-				passwordPolicy.getNotificationPasswordChange().v(),
-				new BigDecimal(passwordPolicy.isLoginCheck() ? 1 : 0),
-				new BigDecimal(passwordPolicy.isInitialPasswordChange() ? 1 : 0),
-				new BigDecimal(passwordPolicy.isUse() ? 1 : 0), passwordPolicy.getHistoryCount().v(),
-				passwordPolicy.getLowestDigits().v(), passwordPolicy.getValidityPeriod().v(),
-				passwordPolicy.getNumberOfDigits().v(), passwordPolicy.getSymbolCharacters().v(),
-				passwordPolicy.getAlphabetDigit().v());
+	private SgwmtPasswordPolicy toEntity(PasswordPolicy passwordPolicy) {
+		return new SgwmtPasswordPolicy(passwordPolicy.getContractCode().v(),
+				passwordPolicy.getNotificationPasswordChange().v().intValue(),
+				passwordPolicy.isLoginCheck(),
+				passwordPolicy.isInitialPasswordChange(),
+				passwordPolicy.isUse(),
+				passwordPolicy.getHistoryCount().v().intValue(),
+				passwordPolicy.getComplexityRequirement().getMinimumLength().v().intValue(),
+				passwordPolicy.getValidityPeriod().v().intValue(),
+				passwordPolicy.getComplexityRequirement().getNumeralDigits().v().intValue(),
+				passwordPolicy.getComplexityRequirement().getSymbolDigits().v().intValue(),
+				passwordPolicy.getComplexityRequirement().getAlphabetDigits().v().intValue());
 	}
 
 }
