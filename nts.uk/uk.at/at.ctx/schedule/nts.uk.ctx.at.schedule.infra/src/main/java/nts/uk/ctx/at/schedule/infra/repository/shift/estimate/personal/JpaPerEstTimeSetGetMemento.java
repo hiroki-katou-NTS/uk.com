@@ -15,7 +15,7 @@ import nts.uk.ctx.at.schedule.dom.shift.estimate.time.MonthlyEstimateTime;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.time.MonthlyEstimateTimeSetting;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.time.YearlyEstimateTime;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.time.YearlyEstimateTimeSetting;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstTimePerSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstTimeSya;
 
 /**
  * The Class JpaEstimateTimeSettingPersonalGetMemento.
@@ -23,14 +23,14 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstTimeP
 public class JpaPerEstTimeSetGetMemento implements EstimateTimeSettingGetMemento{
 	
 	/** The est time Personal. */
-	private KscmtEstTimePerSet estTimePersonal;
+	private KscmtEstTimeSya estTimePersonal;
 	
 	/**
 	 * Instantiates a new jpa estimate time setting Personal get memento.
 	 *
 	 * @param estTimePersonal the est time Personal
 	 */
-	public JpaPerEstTimeSetGetMemento(KscmtEstTimePerSet estTimePersonal){
+	public JpaPerEstTimeSetGetMemento(KscmtEstTimeSya estTimePersonal){
 		this.estTimePersonal = estTimePersonal;
 	}
 

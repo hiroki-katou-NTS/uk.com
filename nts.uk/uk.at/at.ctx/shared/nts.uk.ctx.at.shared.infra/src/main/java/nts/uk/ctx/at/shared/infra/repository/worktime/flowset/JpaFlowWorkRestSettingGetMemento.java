@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.flowset;
 import nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSettingDetail;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSettingGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowRestSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloBrFlAll;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaCommonRestSettingGetMemento;
 
 /**
@@ -16,14 +16,14 @@ import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaCommonRestSettin
 public class JpaFlowWorkRestSettingGetMemento implements FlowWorkRestSettingGetMemento {
 
 	/** The entity. */
-	KshmtFlowRestSet entity;
+	KshmtWtFloBrFlAll entity;
 	
 	/**
 	 * Instantiates a new jpa flow work rest setting get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlowWorkRestSettingGetMemento(KshmtFlowRestSet entity) {
+	public JpaFlowWorkRestSettingGetMemento(KshmtWtFloBrFlAll entity) {
 		super();
 		this.entity = entity;
 	}

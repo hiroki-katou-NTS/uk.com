@@ -52,7 +52,6 @@ public class JpaExecutionTaskLogRepository extends JpaRepository implements Exec
 		this.commandProxy()
 				.insertAll(taskLogList.stream()
 						.map(item -> KfnmtExecutionTaskLog.builder()
-								.contractCode(AppContexts.user().contractCode())
 								.kfnmtExecTaskLogPK(new KfnmtExecutionTaskLogPK(companyId, execItemCd, execId, item.getProcExecTask().value))
 								.status((item.getStatus() != null && item.getStatus().isPresent())
 										? item.getStatus().get().value
@@ -68,7 +67,7 @@ public class JpaExecutionTaskLogRepository extends JpaRepository implements Exec
 	public void updateAll(String companyId, String execItemCd, String execId, List<ExecutionTaskLog> taskLogList) {
 		try {
 			for (ExecutionTaskLog executionTaskLog : taskLogList) {
-				String updateTableSQL = " UPDATE KFNMT_EXEC_TASK_LOG SET" + " STATUS = ?"
+				String updateTableSQL = " UPDATE KFNDT_AUTOEXEC_TASK_LOG SET" + " STATUS = ?"
 						+ " WHERE CID = ? AND EXEC_ITEM_CD = ? AND EXEC_ID = ? AND TASK_ID = ? ";
 				try (PreparedStatement ps = this.connection()
 						.prepareStatement(JDBCUtil.toUpdateWithCommonField(updateTableSQL))) {

@@ -44,7 +44,7 @@ public class JpaExcessHDManaDataRepo extends JpaRepository implements ExcessHoli
 	public Map<String, Double> getAllBySidWithExpCond(String cid, List<String> sids, int state) {
 		Map <String ,Double> result = new HashMap<>();
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT * FROM KRCMT_EXCESS_HD_MANA_DATA WHERE  CID = ? AND EXPIRED_STATE = ?   AND SID IN ("
+			String sql = "SELECT * FROM KRCDT_EXCESS_HD_MNG WHERE  CID = ? AND EXPIRED_STATE = ?   AND SID IN ("
 					+ NtsStatement.In.createParamsString(subList) + ")";
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 				stmt.setString(1, cid);

@@ -7,7 +7,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.workrule.workform.FlexWorkMntSetRepository;
 import nts.uk.ctx.at.shared.dom.workrule.workform.FlexWorkSet;
-import nts.uk.ctx.at.shared.infra.entity.flex.KshstFlexWorkSetting;
+import nts.uk.ctx.at.shared.infra.entity.flex.KshmtFlexMng;
 import nts.uk.ctx.at.shared.infra.entity.flex.KshstFlexWorkSettingPK;
 
 /**
@@ -23,7 +23,7 @@ public class JpaFlexWorkMntSetting extends JpaRepository implements FlexWorkMntS
 	@Override
 	public Optional<FlexWorkSet> find(String companyId) {
 		return this.queryProxy()
-				.find(new KshstFlexWorkSettingPK(companyId), KshstFlexWorkSetting.class)
+				.find(new KshstFlexWorkSettingPK(companyId), KshmtFlexMng.class)
 				.map(x -> convertToDomain(x));
 	}
 	
@@ -33,7 +33,7 @@ public class JpaFlexWorkMntSetting extends JpaRepository implements FlexWorkMntS
 	 * @param setting the setting
 	 * @return the flex work set
 	 */
-	public FlexWorkSet convertToDomain(KshstFlexWorkSetting setting) {
+	public FlexWorkSet convertToDomain(KshmtFlexMng setting) {
 		return FlexWorkSet.createFromJavaType(setting.getId().getCid(), setting.getManageFlexWork());
 	}
 	
@@ -43,8 +43,8 @@ public class JpaFlexWorkMntSetting extends JpaRepository implements FlexWorkMntS
 	 * @param setting the setting
 	 * @return the kshst flex work setting
 	 */
-	public KshstFlexWorkSetting convertToDbType(FlexWorkSet setting) {
-		KshstFlexWorkSetting entity = new KshstFlexWorkSetting();
+	public KshmtFlexMng convertToDbType(FlexWorkSet setting) {
+		KshmtFlexMng entity = new KshmtFlexMng();
 		KshstFlexWorkSettingPK primaryKey = new KshstFlexWorkSettingPK();
 		primaryKey.setCid(setting.getCompanyId().v());
 		entity.setId(primaryKey);
@@ -57,7 +57,7 @@ public class JpaFlexWorkMntSetting extends JpaRepository implements FlexWorkMntS
 	 */
 	@Override
 	public void add(FlexWorkSet flexWorkSetting) {
-		KshstFlexWorkSetting setting = convertToDbType(flexWorkSetting);
+		KshmtFlexMng setting = convertToDbType(flexWorkSetting);
 		this.commandProxy().insert(setting);
 	}
 
@@ -66,9 +66,9 @@ public class JpaFlexWorkMntSetting extends JpaRepository implements FlexWorkMntS
 	 */
 	@Override
 	public void update(FlexWorkSet flexWorkSetting) {
-		Optional<KshstFlexWorkSetting> optEntity = this.queryProxy().find(new KshstFlexWorkSettingPK(flexWorkSetting.getCompanyId().v()), KshstFlexWorkSetting.class);
+		Optional<KshmtFlexMng> optEntity = this.queryProxy().find(new KshstFlexWorkSettingPK(flexWorkSetting.getCompanyId().v()), KshmtFlexMng.class);
 		
-		KshstFlexWorkSetting setting;
+		KshmtFlexMng setting;
 		if (optEntity.isPresent()) {
 			setting = optEntity.get();
 			setting.setManageFlexWork(flexWorkSetting.getUseFlexWorkSetting().value);

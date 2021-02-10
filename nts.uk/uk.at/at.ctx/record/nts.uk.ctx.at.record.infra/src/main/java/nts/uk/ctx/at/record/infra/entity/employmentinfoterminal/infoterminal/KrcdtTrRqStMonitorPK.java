@@ -25,7 +25,7 @@ public class KrcdtTrRqStMonitorPK implements Serializable {
 	 * 端末コード
 	 */
 	@Column(name = "TIMERECORDER_CD")
-	public int timeRecordCode;
+	public String timeRecordCode;
 	
 	
 	
