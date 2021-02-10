@@ -19,7 +19,7 @@ import javax.persistence.criteria.Root;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.function.dom.employmentfunction.LinkPlanTimeItem;
 import nts.uk.ctx.at.function.dom.employmentfunction.LinkPlanTimeItemRepository;
-import nts.uk.ctx.at.function.infra.entity.employmentfunction.KfnstPlanTimeItem;
+import nts.uk.ctx.at.function.infra.entity.employmentfunction.KfnmtPlanTimeItem;
 import nts.uk.ctx.at.function.infra.entity.employmentfunction.KfnstPlanTimeItemPK_;
 import nts.uk.ctx.at.function.infra.entity.employmentfunction.KfnstPlanTimeItem_;
 
@@ -38,8 +38,8 @@ public class JpaLinkPlanTimeItemRepository extends JpaRepository implements Link
 
 		CriteriaBuilder builder = em.getCriteriaBuilder();
 
-		CriteriaQuery<KfnstPlanTimeItem> query = builder.createQuery(KfnstPlanTimeItem.class);
-		Root<KfnstPlanTimeItem> root = query.from(KfnstPlanTimeItem.class);
+		CriteriaQuery<KfnmtPlanTimeItem> query = builder.createQuery(KfnmtPlanTimeItem.class);
+		Root<KfnmtPlanTimeItem> root = query.from(KfnmtPlanTimeItem.class);
 
 		List<Predicate> predicateList = new ArrayList<>();
 
@@ -48,7 +48,7 @@ public class JpaLinkPlanTimeItemRepository extends JpaRepository implements Link
 
 		query.where(predicateList.toArray(new Predicate[] {}));
 
-		List<KfnstPlanTimeItem> result = em.createQuery(query).getResultList();
+		List<KfnmtPlanTimeItem> result = em.createQuery(query).getResultList();
 
 		if (result.isEmpty()) {
 			return Collections.emptyList();

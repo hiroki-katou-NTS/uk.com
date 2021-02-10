@@ -50,7 +50,7 @@ import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOverTimeD
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimeDetail;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimeDetailPk;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimePK;
-import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtOvertimeInput;
+import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtAppOvertimeInput;
 import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtOvertimeInputPK;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
@@ -195,13 +195,13 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 				krqdtAppOverTime.breakTimeEnd10 = item.getTimeZone().getEndTime().v();
 			}
 		});
-		krqdtAppOverTime.overtimeInputs = new ArrayList<KrqdtOvertimeInput>();
+		krqdtAppOverTime.overtimeInputs = new ArrayList<KrqdtAppOvertimeInput>();
 		// ------
 		List<OvertimeApplicationSetting> overtimeApplicationSettings = appOverTime.getApplicationTime().getApplicationTime();
 		if (!CollectionUtil.isEmpty(overtimeApplicationSettings)) {
 			krqdtAppOverTime.overtimeInputs = overtimeApplicationSettings
 				.stream()
-				.map(x -> new KrqdtOvertimeInput(
+				.map(x -> new KrqdtAppOvertimeInput(
 										new KrqdtOvertimeInputPK(
 												AppContexts.user().companyId(),
 												appOverTime.getAppID(),
@@ -310,16 +310,16 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 		updateAppOverTime.get().breakTimeStart10 = krqdtAppOverTime.breakTimeStart10;
 		updateAppOverTime.get().breakTimeEnd10 = krqdtAppOverTime.breakTimeEnd10;
 		
-		List<KrqdtOvertimeInput> overtimeInputs = new ArrayList<KrqdtOvertimeInput>();
+		List<KrqdtAppOvertimeInput> overtimeInputs = new ArrayList<KrqdtAppOvertimeInput>();
 		
 		krqdtAppOverTime.overtimeInputs.stream().forEach(x -> {
-			Optional<KrqdtOvertimeInput> result = updateAppOverTime.get().overtimeInputs.stream().filter(
+			Optional<KrqdtAppOvertimeInput> result = updateAppOverTime.get().overtimeInputs.stream().filter(
 					a -> a.krqdtOvertimeInputPK.getAttendanceType() == x.krqdtOvertimeInputPK.getAttendanceType()
 							&& a.krqdtOvertimeInputPK.getAppId() == x.krqdtOvertimeInputPK.getAppId()
 							&& a.krqdtOvertimeInputPK.getCid() == x.krqdtOvertimeInputPK.getCid()
 							&& a.krqdtOvertimeInputPK.getFrameNo() == x.krqdtOvertimeInputPK.getFrameNo()
 					).findFirst();
-			KrqdtOvertimeInput krqdtOvertimeInput;
+			KrqdtAppOvertimeInput krqdtOvertimeInput;
 			if (result.isPresent()) {
 				result.get().applicationTime = x.applicationTime;
 				krqdtOvertimeInput = result.get();
