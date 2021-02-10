@@ -29,28 +29,6 @@ public class TaskScheduleDetailTest {
 	}
 	
 	@Test
-	public void testIsTimeSpanDuplicated_true() {
-		
-		TaskScheduleDetail target = TaskScheduleDetailTestHelper.create("code1", 8, 0, 9, 0);
-		TaskScheduleDetail other = TaskScheduleDetailTestHelper.create("code2", 8, 30, 9, 30);
-		
-		boolean result = target.isTimeSpanDuplicated( other );
-		
-		assertThat( result ).isTrue();
-	}
-	
-	@Test
-	public void testIsTimeSpanDuplicated_false() {
-		
-		TaskScheduleDetail target = TaskScheduleDetailTestHelper.create("code1", 8, 0, 9, 0);
-		TaskScheduleDetail other = TaskScheduleDetailTestHelper.create("code2", 9, 0, 10, 0);
-		
-		boolean result = target.isTimeSpanDuplicated( other );
-		
-		assertThat( result ).isFalse();
-	}
-	
-	@Test
 	public void testGetNotDuplicatedWith_OtherConnonateBegintime() {
 		
 		TaskScheduleDetail target = TaskScheduleDetailTestHelper.create("code1", 8, 0, 12, 0);

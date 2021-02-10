@@ -36,16 +36,6 @@ public class TaskScheduleDetail implements DomainValue, Comparable<TaskScheduleD
 		return new TaskFrameNo(1);
 	}
 	
-	/**
-	 * 時間帯が重複するか
-	 * @param other 対象の作業予定詳細
-	 * @return
-	 */
-	public boolean isTimeSpanDuplicated(TaskScheduleDetail other) {
-		return this.timeSpan.checkDuplication( other.getTimeSpan() ).isDuplicated();
-	}
-
-
 	@Override
 	public int compareTo(TaskScheduleDetail other) {
 		return this.timeSpan.getStart().compareTo( other.getTimeSpan().getStart() );
