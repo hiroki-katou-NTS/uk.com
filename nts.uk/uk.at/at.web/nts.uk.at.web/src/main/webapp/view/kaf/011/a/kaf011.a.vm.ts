@@ -178,12 +178,15 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 						}); 
 					}
 				console.log(data);	
+				vm.$blockui("show");
 				vm.$ajax('at/request/application/holidayshipment/save', data).then(() =>{
+					vm.$blockui("hide");
 					vm.$dialog.info({ messageId: "Msg_15" }).done(()=>{
 						vm.$jump("/view/kaf/011/a/index.xhtml", vm.params);
 					});
 				}).fail((failData) => {
 					vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds });
+					vm.$blockui("hide");
 				});
 			}
 			

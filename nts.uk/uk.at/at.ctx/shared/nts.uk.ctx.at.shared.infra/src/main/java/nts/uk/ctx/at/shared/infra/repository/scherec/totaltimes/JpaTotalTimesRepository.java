@@ -23,11 +23,11 @@ import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimes;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesRepository;
-import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshstTotalCondition;
+import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshmtTotalCondition;
 import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshstTotalConditionPK;
-import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshstTotalSubjects;
+import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshmtTotalSubjects;
 import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshstTotalSubjectsPK;
-import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshstTotalTimes;
+import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshmtTotalTimes;
 import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshstTotalTimesPK;
 
 /**
@@ -36,7 +36,7 @@ import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshstTotalTimesPK;
 @Stateless
 public class JpaTotalTimesRepository extends JpaRepository implements TotalTimesRepository {
 	
-	private static final String FIND_BY_COMPANY_ID_AND_USE_CLS = "SELECT a FROM KshstTotalTimes a "
+	private static final String FIND_BY_COMPANY_ID_AND_USE_CLS = "SELECT a FROM KshmtTotalTimes a "
 			+ " WHERE a.kshstTotalTimesPK.cid = :companyId"
 			+ " AND a.useAtr = :useAtr ";
 
@@ -49,14 +49,14 @@ public class JpaTotalTimesRepository extends JpaRepository implements TotalTimes
 	@SneakyThrows
 	@Override
 	public List<TotalTimes> getAllTotalTimes(String companyId) {
-		String sqlJdbc = "SELECT * " + "FROM KSHST_TOTAL_SUBJECTS KTS "
+		String sqlJdbc = "SELECT * " + "FROM KSHMT_TOTAL_SUBJECTS KTS "
 				+ "WHERE KTS.CID = ? ORDER BY KTS.TOTAL_TIMES_NO ASC";
 
 		try (PreparedStatement stmt1 = this.connection().prepareStatement(sqlJdbc)) {
 
 			stmt1.setString(1, companyId);
 
-			List<KshstTotalSubjects> listTotalSubjects = new NtsResultSet(stmt1.executeQuery())
+			List<KshmtTotalSubjects> listTotalSubjects = new NtsResultSet(stmt1.executeQuery())
 					.getList(rec -> {
 						KshstTotalSubjectsPK kshstTotalSubjectsPK = new KshstTotalSubjectsPK();
 						kshstTotalSubjectsPK.setCid(rec.getString("CID"));
@@ -64,32 +64,32 @@ public class JpaTotalTimesRepository extends JpaRepository implements TotalTimes
 						kshstTotalSubjectsPK.setWorkTypeAtr(rec.getInt("WORK_TYPE_ATR"));
 						kshstTotalSubjectsPK.setWorkTypeCd(rec.getString("WORK_TYPE_CD"));
 
-						KshstTotalSubjects entity = new KshstTotalSubjects();
+						KshmtTotalSubjects entity = new KshmtTotalSubjects();
 						entity.setKshstTotalSubjectsPK(kshstTotalSubjectsPK);
 
 						return entity;
 					});
 
-			Map<Integer, List<KshstTotalSubjects>> listTotalSubjectsMap = listTotalSubjects.stream()
+			Map<Integer, List<KshmtTotalSubjects>> listTotalSubjectsMap = listTotalSubjects.stream()
 					.collect(Collectors
 							.groupingBy(item -> item.getKshstTotalSubjectsPK().getTotalTimesNo()));
 
-			sqlJdbc = "SELECT * " + "FROM KSHST_TOTAL_TIMES KTT "
-					+ "LEFT JOIN KSHST_TOTAL_CONDITION KTC ON KTT.CID = KTC.CID AND KTT.TOTAL_TIMES_NO = KTC.TOTAL_TIMES_NO "
+			sqlJdbc = "SELECT * " + "FROM KSHMT_TOTAL_TIMES KTT "
+					+ "LEFT JOIN KSHMT_TOTAL_CONDITION KTC ON KTT.CID = KTC.CID AND KTT.TOTAL_TIMES_NO = KTC.TOTAL_TIMES_NO "
 					+ "WHERE KTT.CID = ? ORDER BY KTT.TOTAL_TIMES_NO ASC";
 
 			try (PreparedStatement stmt2 = this.connection().prepareStatement(sqlJdbc)) {
 
 				stmt2.setString(1, companyId);
 
-				List<KshstTotalTimes> result = new NtsResultSet(stmt2.executeQuery())
+				List<KshmtTotalTimes> result = new NtsResultSet(stmt2.executeQuery())
 						.getList(rec -> {
 
 							KshstTotalConditionPK kshstTotalConditionPK = new KshstTotalConditionPK();
 							kshstTotalConditionPK.setCid(rec.getString("CID"));
 							kshstTotalConditionPK.setTotalTimesNo(rec.getInt("TOTAL_TIMES_NO"));
 
-							KshstTotalCondition totalCondition = new KshstTotalCondition();
+							KshmtTotalCondition totalCondition = new KshmtTotalCondition();
 							totalCondition.setKshstTotalConditionPK(kshstTotalConditionPK);
 							totalCondition.setUpperLimitSetAtr(rec.getInt("UPPER_LIMIT_SET_ATR"));
 							totalCondition.setLowerLimitSetAtr(rec.getInt("LOWER_LIMIT_SET_ATR"));
@@ -103,7 +103,7 @@ public class JpaTotalTimesRepository extends JpaRepository implements TotalTimes
 							kshstTotalTimesPK.setCid(rec.getString("CID"));
 							kshstTotalTimesPK.setTotalTimesNo(rec.getInt("TOTAL_TIMES_NO"));
 
-							KshstTotalTimes entity = new KshstTotalTimes();
+							KshmtTotalTimes entity = new KshmtTotalTimes();
 							entity.setKshstTotalTimesPK(kshstTotalTimesPK);
 							entity.setUseAtr(rec.getInt("USE_ATR"));
 							entity.setCountAtr(rec.getInt("COUNT_ATR"));
@@ -138,7 +138,7 @@ public class JpaTotalTimesRepository extends JpaRepository implements TotalTimes
 	public Optional<TotalTimes> getTotalTimesDetail(String companyId, Integer totalCountNo) {
 		KshstTotalTimesPK kshstTotalTimesPK = new KshstTotalTimesPK(companyId, totalCountNo);
 
-		Optional<KshstTotalTimes> optKshstTotalTimes = this.queryProxy().find(kshstTotalTimesPK, KshstTotalTimes.class);
+		Optional<KshmtTotalTimes> optKshstTotalTimes = this.queryProxy().find(kshstTotalTimesPK, KshmtTotalTimes.class);
 
 		if (!optKshstTotalTimes.isPresent()) {
 			return Optional.empty();
@@ -156,20 +156,20 @@ public class JpaTotalTimesRepository extends JpaRepository implements TotalTimes
 	 */
 	@Override
 	public void update(TotalTimes totalTimes) {
-		Optional<KshstTotalTimes> optional = this.queryProxy().find(
+		Optional<KshmtTotalTimes> optional = this.queryProxy().find(
 				new KshstTotalTimesPK(totalTimes.getCompanyId(), totalTimes.getTotalCountNo()),
-				KshstTotalTimes.class);
+				KshmtTotalTimes.class);
 
 		if (!optional.isPresent()) {
 			throw new RuntimeException("Total times not existed.");
 		}
 
-		KshstTotalTimes entity = optional.get();
+		KshmtTotalTimes entity = optional.get();
 		totalTimes.saveToMemento(new JpaTotalTimesSetMemento(entity));
 		this.commandProxy().update(entity);
 	}
 
-	private static final String FIND_ALL_BY_LIST_FRAME_NO = "SELECT a FROM KshstTotalTimes a "
+	private static final String FIND_ALL_BY_LIST_FRAME_NO = "SELECT a FROM KshmtTotalTimes a "
 			+ " WHERE a.kshstTotalTimesPK.cid = :companyId"
 			+ " AND a.kshstTotalTimesPK.totalTimesNo IN :totalCountNos ";
 	
@@ -180,7 +180,7 @@ public class JpaTotalTimesRepository extends JpaRepository implements TotalTimes
 			return Collections.emptyList();
 		List<TotalTimes> resultList = new ArrayList<>();
 		CollectionUtil.split(totalCountNos, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			resultList.addAll(this.queryProxy().query(FIND_ALL_BY_LIST_FRAME_NO, KshstTotalTimes.class)
+			resultList.addAll(this.queryProxy().query(FIND_ALL_BY_LIST_FRAME_NO, KshmtTotalTimes.class)
 				.setParameter("companyId", companyId)
 				.setParameter("totalCountNos", subList)
 				.getList(x -> new TotalTimes(new JpaTotalTimesGetMemento(x))));
@@ -190,7 +190,7 @@ public class JpaTotalTimesRepository extends JpaRepository implements TotalTimes
 
 	@Override
 	public List<TotalTimes> findByCompanyIdAndUseCls(String companyId, int useCls) {
-		return this.queryProxy().query(FIND_BY_COMPANY_ID_AND_USE_CLS, KshstTotalTimes.class)
+		return this.queryProxy().query(FIND_BY_COMPANY_ID_AND_USE_CLS, KshmtTotalTimes.class)
 				.setParameter("companyId", companyId)
 				.setParameter("useAtr", useCls)
 				.getList().stream()

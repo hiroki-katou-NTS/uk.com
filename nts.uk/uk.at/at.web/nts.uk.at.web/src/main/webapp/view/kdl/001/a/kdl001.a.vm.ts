@@ -154,9 +154,9 @@ module nts.uk.at.view.kdl001.a {
                 self.workingHoursItemLists.push(new WorkTimeSet());
 
                 if (self.selectAbleCodeList().length > 0) { //check all                    
-                    selectAbleItemList = data.availableWorkingHours.length > 0 ? data.availableWorkingHours : data.allWorkHours;
+                    selectAbleItemList = data.availableWorkingHours;//data.availableWorkingHours.length > 0 ? data.availableWorkingHours : data.allWorkHours;
                 } else if (!nts.uk.util.isNullOrEmpty(self.workPlaceId()) && !nts.uk.util.isNullOrEmpty(self.baseDate())) {
-                    selectAbleItemList = data.workingHoursByWorkplace.length > 0 ? data.workingHoursByWorkplace : data.allWorkHours;
+                    selectAbleItemList = data.workingHoursByWorkplace;//data.workingHoursByWorkplace.length > 0 ? data.workingHoursByWorkplace : data.allWorkHours;
                 } else {
                     selectAbleItemList = data.allWorkHours;
                 }
@@ -360,6 +360,7 @@ module nts.uk.at.view.kdl001.a {
                 self.selectAbleItemList(_.cloneDeep(self.isCheckAllStatus() ? self.workingHoursItemLists() : self.selectableWorkingHours()));
                 self.resetConditionSelected();
                 $('#inputStartTime').focus();
+                nts.uk.ui.errors.clearAll();
                 dfd.resolve();
                 return dfd.promise();
             }
