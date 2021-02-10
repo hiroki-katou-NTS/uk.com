@@ -8,7 +8,7 @@ import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSettingGetMem
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkingCode;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorktypeCode;
-import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtCompanyWorkSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtBasicWorkCom;
 import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtCompanyWorkSetPK;
 
 /**
@@ -17,7 +17,7 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtCompanyW
 public class JpaBWSettingComGetMemento implements BasicWorkSettingGetMemento {
 
 	/** The type value. */
-	private KscmtCompanyWorkSet typeValue;
+	private KscmtBasicWorkCom typeValue;
 
 	/**
 	 * Instantiates a new jpa basic work setting get memento.
@@ -25,7 +25,7 @@ public class JpaBWSettingComGetMemento implements BasicWorkSettingGetMemento {
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaBWSettingComGetMemento(KscmtCompanyWorkSet typeValue) {
+	public JpaBWSettingComGetMemento(KscmtBasicWorkCom typeValue) {
 		super();
 		if(typeValue.getKscmtCompanyWorkSetPK() == null){
 			typeValue.setKscmtCompanyWorkSetPK(new KscmtCompanyWorkSetPK());

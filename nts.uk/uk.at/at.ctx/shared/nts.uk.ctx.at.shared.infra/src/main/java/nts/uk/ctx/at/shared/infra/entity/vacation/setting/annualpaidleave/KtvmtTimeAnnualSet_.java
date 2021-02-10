@@ -10,9 +10,9 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class KtvmtTimeVacationSet_.
  */
-@StaticMetamodel(KtvmtTimeAnnualSet.class)
+@StaticMetamodel(KshmtHdpaidTimeSet.class)
 public class KtvmtTimeAnnualSet_ {
     
     /** The cid. */
-    public static volatile SingularAttribute<KtvmtTimeAnnualSet, String> cid;
+    public static volatile SingularAttribute<KshmtHdpaidTimeSet, String> cid;
 }

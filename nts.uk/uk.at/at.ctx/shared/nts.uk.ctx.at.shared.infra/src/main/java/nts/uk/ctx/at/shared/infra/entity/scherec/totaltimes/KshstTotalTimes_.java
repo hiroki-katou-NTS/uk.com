@@ -6,10 +6,10 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class KshstTotalTimes_.
  */
-@StaticMetamodel(KshstTotalTimes.class)
+@StaticMetamodel(KshmtTotalTimes.class)
 public class KshstTotalTimes_ {
 	
 	/** The kshstSummaryListPK. */
-    public static volatile SingularAttribute<KshstTotalTimes, KshstTotalTimesPK> kshstTotalTimesPK;
+    public static volatile SingularAttribute<KshmtTotalTimes, KshstTotalTimesPK> kshstTotalTimesPK;
 
 }

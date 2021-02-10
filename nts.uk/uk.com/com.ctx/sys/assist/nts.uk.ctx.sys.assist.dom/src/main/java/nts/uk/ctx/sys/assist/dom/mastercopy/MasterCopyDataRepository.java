@@ -33,7 +33,7 @@ public interface MasterCopyDataRepository {
      * @param companyId the company id
      * @param isOnlyCid
      */
-	void doCopy(String tableName, List<String> keys, CopyMethod copyMethod, String companyId, boolean isOnlyCid);
+	void doCopy(String tableName, List<String> keys, CopyMethod copyMethod, String cotnractCode, String companyId, boolean isOnlyCid);
 
 	/**
 	 *
