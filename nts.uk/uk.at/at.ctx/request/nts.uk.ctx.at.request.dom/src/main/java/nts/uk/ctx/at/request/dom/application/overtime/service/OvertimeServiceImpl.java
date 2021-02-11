@@ -11,6 +11,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
@@ -544,6 +545,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 		output.setCalculatedFlag(CalculatedFlag.UNCALCULATED);
 		output.setIsProxy(isProxy);
 		output.setOvertimeAppAtr(overtimeAppAtr);
+		// 勤務種類リストと就業時間帯リストがない場合エラーを返す UI
 		return output;
 	}
 
@@ -713,7 +715,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 					}
 				}
 			}
-			throw new BusinessException(errorMessage);
+			if(Strings.isNotBlank(errorMessage)) {
+				throw new BusinessException(errorMessage);
+			}
 		}
 	}
 	
@@ -953,7 +957,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 	}
 
 	@Override
-	public DisplayInfoOverTime startA(
+	public DisplayInfoOverTime startA( // output is not needed to add error list parameter, because just check error msg on UI // 114330
 			String companyId,
 			String employeeId,
 			Optional<GeneralDate> dateOp,
@@ -1328,8 +1332,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 		// 勤務種類、就業時間帯チェックのメッセージを表示
 		detailBeforeUpdate.displayWorkingHourCheck(
 				companyId,
-				appOverTime.getWorkInfoOp().map(x -> x.getWorkTypeCode().v()).orElse(null),
-				appOverTime.getWorkInfoOp().map(x -> x.getWorkTimeCode().v()).orElse(null));
+				appOverTime.getWorkInfoOp().flatMap(x -> Optional.ofNullable(x.getWorkTypeCode())).map(x -> x.v()).orElse(null),
+				appOverTime.getWorkInfoOp().flatMap(x -> Optional.ofNullable(x.getWorkTimeCode())).map(x -> x.v()).orElse(null));
 		// 事前申請が必須か確認する
 		displayInfoOverTime.getInfoNoBaseDate()
 					       .getOverTimeAppSet()
@@ -1372,8 +1376,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 					appOverTime.getAppID(),
 					appOverTime.getPrePostAtr(),
 					appOverTime.getVersion(),
-					appOverTime.getWorkInfoOp().map(x -> x.getWorkTypeCode().v()).orElse(null),
-					appOverTime.getWorkInfoOp().map(x -> x.getWorkTimeCode().v()).orElse(null),
+					appOverTime.getWorkInfoOp().flatMap(x -> Optional.ofNullable(x.getWorkTypeCode())).map(x -> x.v()).orElse(null),
+					appOverTime.getWorkInfoOp().flatMap(x -> Optional.ofNullable(x.getWorkTimeCode())).map(x -> x.v()).orElse(null),
 					displayInfoOverTime.getAppDispInfoStartup());
 			
 		}
