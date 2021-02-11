@@ -176,14 +176,14 @@ public class CalculationRangeOfOneDay {
 			IntegrationOfDaily integrationOfDaily,
 			PreviousAndNextDaily previousAndNextDaily) {
 		
-		/* 固定控除時間帯の作成 */
-		DeductionTimeSheet deductionTimeSheet = DeductionTimeSheet.createTimeSheetForFixBreakTime(
+		/* 控除時間帯の作成 */
+		DeductionTimeSheet deductionTimeSheet = DeductionTimeSheet.createDeductionTimeForCalc(
 				todayWorkType,
 				integrationOfWorkTime,
 				integrationOfDaily,
 				this.oneDayOfRange,
 				this.attendanceLeavingWork,
-				this.predetermineTimeSetForCalc);
+				Optional.empty());
 		
 		this.theDayOfWorkTimesLoop(
 				companyCommonSetting,
@@ -494,22 +494,14 @@ public class CalculationRangeOfOneDay {
 			IntegrationOfDaily integrationOfDaily,
 			PreviousAndNextDaily previousAndNextDaily){
 		
-		List<LateTimeSheet> lateTimeSheet = this.withinWorkingTimeSheet.isPresent() 
-				? this.withinWorkingTimeSheet.get().getWithinWorkTimeFrame().stream()
-						.filter(c -> c.getLateTimeSheet().isPresent())
-						.map(c -> c.getLateTimeSheet().get())
-						.collect(Collectors.toList())
-				: new ArrayList<>();
-	
 		//控除時間帯の作成
-		val deductionTimeSheet = provisionalDeterminationOfDeductionTimeSheet(
+		DeductionTimeSheet deductionTimeSheet = DeductionTimeSheet.createDeductionTimeForCalc(
 				todayWorkType,
 				integrationOfWorkTime,
 				integrationOfDaily,
 				this.oneDayOfRange,
 				this.attendanceLeavingWork,
-				this.predetermineTimeSetForCalc,
-				lateTimeSheet, true);
+				Optional.empty());
 		
 		theDayOfWorkTimesLoop(
 				companyCommonSetting,
@@ -528,7 +520,7 @@ public class CalculationRangeOfOneDay {
 
 	/**
 	 * 控除時間帯の仮確定
-	 * アルゴリズム：流動休憩用の時間帯作成
+	 * アルゴリズム：計上用と控除用の控除時間帯の取得
 	 * @param todayWorkType 勤務種類
 	 * @param integrationOfWorkTime 統合就業時間帯
 	 * @param integrationOfDaily 日別実績(Work)
@@ -726,7 +718,7 @@ public class CalculationRangeOfOneDay {
 		};
 		
 		//控除時間帯の取得
-		DeductionTimeSheet deductionTimeSheetCalcBefore = DeductionTimeSheet.collectDeductionTimesForCalc(
+		DeductionTimeSheet deductionTimeSheetCalcBefore = DeductionTimeSheet.createDeductionTimeForCalc(
 				todayWorkType,
 				integrationOfWorkTime,
 				integrationOfDaily,
@@ -750,7 +742,7 @@ public class CalculationRangeOfOneDay {
 		}
 		
 		//控除時間帯の取得
-		DeductionTimeSheet deductionTimeSheetCalcAfter = DeductionTimeSheet.collectDeductionTimesForCalc(
+		DeductionTimeSheet deductionTimeSheetCalcAfter = DeductionTimeSheet.createDeductionTimeForCalc(
 				todayWorkType,
 				integrationOfWorkTime,
 				integrationOfDaily,
@@ -777,7 +769,7 @@ public class CalculationRangeOfOneDay {
 	}
 	
 	/**
-	 * 補正用事前処理
+	 * 補正用事前処理　ichioka見直し　アルゴリズム：控除時間帯の取得	・・・	流動休憩
 	 * 補正用処理
 	 * @param personDailySetting 社員設定管理
 	 * @param todayWorkType 勤務種類
