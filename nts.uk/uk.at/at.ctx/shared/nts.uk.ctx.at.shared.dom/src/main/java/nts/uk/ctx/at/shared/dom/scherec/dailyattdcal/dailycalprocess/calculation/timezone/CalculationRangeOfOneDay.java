@@ -769,8 +769,8 @@ public class CalculationRangeOfOneDay {
 	}
 	
 	/**
-	 * 補正用事前処理　ichioka見直し　アルゴリズム：控除時間帯の取得	・・・	流動休憩
-	 * 補正用処理
+	 * 補正用事前処理
+	 * アルゴリズム：控除時間帯の取得
 	 * @param personDailySetting 社員設定管理
 	 * @param todayWorkType 勤務種類
 	 * @param integrationOfWorkTime 統合就業時間帯
