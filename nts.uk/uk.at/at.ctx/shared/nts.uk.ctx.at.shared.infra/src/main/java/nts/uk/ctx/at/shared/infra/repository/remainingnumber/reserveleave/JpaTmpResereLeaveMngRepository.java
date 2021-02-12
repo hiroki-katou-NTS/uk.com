@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepos
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.interim.TmpResereLeaveMngRepository;
-import nts.uk.ctx.at.shared.infra.entity.remainingnumber.reserveleave.KrcdtInterimHdstk;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.reserveleave.KrcdtHdstkTemp;
 import nts.arc.time.calendar.period.DatePeriod;
 @Stateless
 public class JpaTmpResereLeaveMngRepository extends JpaRepository implements TmpResereLeaveMngRepository{
@@ -24,18 +24,18 @@ public class JpaTmpResereLeaveMngRepository extends JpaRepository implements Tmp
 	private InterimRemainRepository interRemain;
 	@Override
 	public Optional<TmpResereLeaveMng> getById(String resereMngId) {
-		Optional<TmpResereLeaveMng> optKrcmtInterimReserveMng = this.queryProxy().find(resereMngId, KrcdtInterimHdstk.class)
+		Optional<TmpResereLeaveMng> optKrcmtInterimReserveMng = this.queryProxy().find(resereMngId, KrcdtHdstkTemp.class)
 				.map(x -> toDomain(x));
 		return optKrcmtInterimReserveMng;
 	}
 
-	private TmpResereLeaveMng toDomain(KrcdtInterimHdstk x) {
+	private TmpResereLeaveMng toDomain(KrcdtHdstkTemp x) {
 		return new TmpResereLeaveMng(x.remainMngId, new UseDay(x.usedDays));
 	}
 
 	@Override
 	public void deleteById(String resereMngId) {
-		Optional<KrcdtInterimHdstk> optKrcmtInterimReserveMng = this.queryProxy().find(resereMngId, KrcdtInterimHdstk.class);
+		Optional<KrcdtHdstkTemp> optKrcmtInterimReserveMng = this.queryProxy().find(resereMngId, KrcdtHdstkTemp.class);
 		optKrcmtInterimReserveMng.ifPresent(x -> {
 			this.commandProxy().remove(x);
 		});
@@ -43,13 +43,13 @@ public class JpaTmpResereLeaveMngRepository extends JpaRepository implements Tmp
 
 	@Override
 	public void persistAndUpdate(TmpResereLeaveMng dataMng) {
-		Optional<KrcdtInterimHdstk> optKrcmtInterimReserveMng = this.queryProxy().find(dataMng.getResereId(), KrcdtInterimHdstk.class);
+		Optional<KrcdtHdstkTemp> optKrcmtInterimReserveMng = this.queryProxy().find(dataMng.getResereId(), KrcdtHdstkTemp.class);
 		if(optKrcmtInterimReserveMng.isPresent()) {
-			KrcdtInterimHdstk entity = optKrcmtInterimReserveMng.get();
+			KrcdtHdstkTemp entity = optKrcmtInterimReserveMng.get();
 			entity.usedDays = dataMng.getUseDays().v();
 			this.commandProxy().update(entity);
 		} else {
-			KrcdtInterimHdstk entity = new KrcdtInterimHdstk();
+			KrcdtHdstkTemp entity = new KrcdtHdstkTemp();
 			entity.remainMngId = dataMng.getResereId();
 			entity.usedDays = dataMng.getUseDays().v();
 			this.getEntityManager().persist(entity);
