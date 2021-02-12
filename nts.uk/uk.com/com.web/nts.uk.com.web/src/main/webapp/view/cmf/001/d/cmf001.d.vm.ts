@@ -13,7 +13,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
         systemType: model.ItemModel;
 
         listCategory: KnockoutObservableArray<model.ExternalAcceptanceCategory>;
-        selectedCategory: KnockoutObservable<string>;
+        selectedCategory: KnockoutObservable<number>;
 
         listCategoryItem: KnockoutObservableArray<model.ExternalAcceptanceCategoryItemData>;
         listSelectedCategoryItem: KnockoutObservableArray<model.ExternalAcceptanceCategoryItemData> = ko.observableArray([]);
@@ -53,7 +53,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
             self.stdCondSetCd(data.conditionCode);
 
             self.listCategory = ko.observableArray([]);
-            self.selectedCategory = ko.observable('');
+            self.selectedCategory = ko.observable(null);
 
             self.listCategoryItem = ko.observableArray([]);
             
@@ -64,7 +64,9 @@ module nts.uk.com.view.cmf001.d.viewmodel {
 //                        self.listAcceptItem.removeAll();
 //                    }
                     self.getCategoryBySystem(data).then(() => {
-                        self.selectedCategory(self.listCategory()[0].categoryId);    
+                        self.selectedCategory(self.listCategory()[0].categoryId);
+                        self.selectedCategory.valueHasMutated();
+                        self.enableCategory(true);  
                     });
                 }
             });
@@ -553,9 +555,12 @@ module nts.uk.com.view.cmf001.d.viewmodel {
         private getCategoryitem(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
-            service.getAllData(self.stdCondSet().conditionSetCode()).done(function(data: Array<any>) {
-                if (data && data.length) {//co du lieu dang ki
-                    self.loadCategoryItemData(self.selectedCategory()).done(() => {
+            // OIOMT_EX_ACP_CATEGORY_ITEM
+            self.loadCategoryItemData(self.selectedCategory()).done(() => {
+
+                // OIOMT_STD_ACCEPT_ITEM
+                service.getAllData(self.stdCondSet().conditionSetCode()).done(function(data: Array<any>) {
+                    if (data && data.length) {//co du lieu dang ki
                         let _rsList: Array<model.StandardAcceptItem> = _.map(data, rs => {
                             let formatSetting = null, fs = null, screenCondition: model.AcceptScreenConditionSetting = null;
                             switch (rs.itemType) {
@@ -610,19 +615,30 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                             return new model.StandardAcceptItem(rs.csvItemName, rs.csvItemNumber, rs.itemType, rs.acceptItemNumber, rs.acceptItemName, rs.systemType, rs.conditionSettingCode, rs.categoryItemNo, formatSetting, screenCondition);
                         });
                         //_rsList = _.sortBy(_rsList, ['code']);
-                        self.listAcceptItem(_rsList);
-                        _.each(self.listAcceptItem(), rs => {
-                            let item = _.find(self.listCategoryItem(), x => { return x.itemNo == rs.categoryItemNo(); });
-                            if (item) {
-                                rs.acceptItemName(item.itemName);
-                                self.listSelectedCategoryItem.push(item);
-                                self.listCategoryItem.remove(item);
+                        // get data for right list ( list accept item)
+                        _.each(self.listCategoryItem(), a =>{
+                            let temp = _.filter(_rsList, x => { return a.itemNo == x.categoryItemNo(); });
+                            if (temp.length > 0) {
+                                self.enableCategory(false);
+                                self.listAcceptItem(_rsList);
+
+                                _.each(self.listAcceptItem(), rs => {
+                                    let item = _.find(self.listCategoryItem(), x => { return x.itemNo == rs.categoryItemNo(); });
+                                    if (item) {
+                                        rs.acceptItemName(item.itemName);
+                                        self.listSelectedCategoryItem.push(item);
+                                        self.listCategoryItem.remove(item);
+                                    }
+                                });
                             }
+
                         });
-                    });
-                } else {//chua co du lieu, dang ki moi
-                    self.startLoad(false);
-                }
+                        
+                    } else {//chua co du lieu, dang ki moi
+                        self.startLoad(false);
+                    }
+                });
+
                 dfd.resolve();
             }).fail(function(error) {
                 dfd.reject();

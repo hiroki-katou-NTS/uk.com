@@ -165,11 +165,11 @@ module nts.uk.com.view.cmf001.share.model {
         systemType: KnockoutObservable<number>;
         alreadySetting: KnockoutObservable<boolean> = ko.observable(false);
         action: KnockoutObservable<number> = ko.observable(0);
-        categoryId: KnockoutObservable<string> = ko.observable(null);
+        categoryId: KnockoutObservable<number> = ko.observable(null);
 
         constructor(systemType: number, code: string, name: string, deleteExistData: number, acceptMode?: number,
                  csvDataItemLineNumber?: number, csvDataStartLine?: number, characterCode?: number, deleteExistDataMethod?: number,
-                 categoryId?: string) {
+                 categoryId?: number) {
             this.systemType = ko.observable(systemType);
             this.conditionSetCode = ko.observable(code);
             this.dispConditionSettingCode = code;
@@ -274,10 +274,10 @@ module nts.uk.com.view.cmf001.share.model {
     }
 
     export class ExternalAcceptanceCategory {
-        categoryId: string;
+        categoryId: number;
         categoryName: string;
 
-        constructor(id: string, name: string) {
+        constructor(id: number, name: string) {
             this.categoryId = id;
             this.categoryName = name;
         }
