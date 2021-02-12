@@ -9,6 +9,7 @@ module nts.uk.com.view.ccg034.h {
   @bean()
   export class ScreenModel extends ko.ViewModel {
     partData: CCG034D.PartDataAttachmentModel = null;
+    originalFileId: string = null;
     // File name
     fileName: KnockoutObservable<string> = ko.observable('');
     // Upload file
@@ -52,6 +53,7 @@ module nts.uk.com.view.ccg034.h {
       vm.isBold(vm.partData.isBold);
       vm.uploadedFileName(vm.partData.fileName);
       vm.fileSize(vm.partData.fileSize);
+      vm.originalFileId = vm.fileId();
 
       if (vm.fileId()) {
         vm.isNewMode = false;
@@ -68,10 +70,7 @@ module nts.uk.com.view.ccg034.h {
 
     public uploadFinished(data: any) {
       const vm = this;
-      if (!vm.partData.originalFileId) {
-        vm.partData.originalFileId = data.id;
-      }
-      if (vm.fileId() !== vm.partData.originalFileId) {
+      if (vm.fileId() !== vm.originalFileId) {
         (nts.uk.request as any).file.remove(vm.fileId());
       }
       vm.fileId(data.id);
@@ -87,9 +86,10 @@ module nts.uk.com.view.ccg034.h {
     public closeDialog() {
       const vm = this;
       if (vm.fileId() !== vm.partData.originalFileId) {
-        (nts.uk.request as any).file.remove(vm.fileId());
+        vm.$window.close({ isSaving: false, fileId: vm.fileId() });
+      } else {
+        vm.$window.close({ isSaving: false });
       }
-      vm.$window.close();
     }
 
     /**
@@ -113,7 +113,7 @@ module nts.uk.com.view.ccg034.h {
                 vm.partData.fileSize = vm.fileSize();
                 vm.partData.fileLink = (nts.uk.request as any).liveView(vm.fileId());
                 // Return data
-                vm.$window.close(vm.partData);
+                vm.$window.close({ isSaving: true, partData: vm.partData });
               } else {
                 vm.$dialog.error({ messageId: 'Msg_70', messageParams: [String(MAX_FILE_SIZE_MB)] });
               }

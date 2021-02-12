@@ -12,12 +12,13 @@ import javax.ejb.Stateless;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetCom;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetEmp;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetRepo;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetSha;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSetWkp;
-import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshmtLegalTimeMCom;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshmtLegalTimeMComPK;
@@ -36,7 +37,8 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 
 	private static final String SELECT_YEAR_COM = "SELECT x FROM KshmtLegalTimeMCom x "
 			+ "WHERE x.pk.cid = :cid AND x.pk.type = :type AND x.pk.ym >= :start "
-			+ "AND x.pk.ym <= :end";
+			+ "AND x.pk.ym <= :end "
+			+ "ORDER BY x.pk.ym ASC";
 	private static final String SELECT_YEAR_SYA = "SELECT x FROM KshmtLegalTimeMSya x "
 			+ "WHERE x.pk.cid = :cid AND x.pk.type = :type AND x.pk.ym >= :start "
 			+ "AND x.pk.ym <= :end AND x.pk.sid = :sid";
@@ -46,6 +48,18 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 	private static final String SELECT_YEAR_EMP = "SELECT x FROM KshmtLegalTimeMEmp x "
 			+ "WHERE x.pk.cid = :cid AND x.pk.type = :type AND x.pk.ym >= :start "
 			+ "AND x.pk.ym <= :end AND x.pk.empCD = :empCD";
+	
+	private static final String SELECT_EMP_BY_CID = "SELECT x FROM KshmtLegalTimeMEmp x "
+			+ "WHERE x.pk.cid = :cid AND x.pk.type = :type";
+	
+	private static final String SELECT_YEAR_SYA_BY_CID_TYPE = "SELECT x FROM KshmtLegalTimeMSya x "
+			+ "WHERE x.pk.cid = :cid AND x.pk.type = :type";
+	
+	private static final String SELECT_YEAR_WKP_BY_CID_TYPE = "SELECT x FROM KshmtLegalTimeMWkp x "
+			+ "WHERE x.pk.cid = :cid AND x.pk.type = :type";
+	
+	private static final String SELECT_YEAR_COM_BY_CID = "SELECT x FROM KshmtLegalTimeMCom x "
+			+ "WHERE x.pk.cid = :cid AND x.pk.type = :type";
 
 	@Override
 	public Optional<MonthlyWorkTimeSetCom> findCompany(String cid, LaborWorkTypeAttr laborAttr, YearMonth ym) {
@@ -256,7 +270,7 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 			+ "WHERE x.pk.cid = :cid  AND x.pk.type = :type AND x.pk.wkpId = :wkpId", KshmtLegalTimeMWkp.class)
 				.setParameter("cid", cid)
 				.setParameter("type", laborAttr.value)
-				.setParameter("sid", wkpId)
+				.setParameter("wkpId", wkpId)
 				.getList(c -> MonthlyWorkTimeSetWkp.of(cid, wkpId, laborAttr, new YearMonth(c.pk.ym), c.domain()));
 	}
 
@@ -270,6 +284,32 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 				.setParameter("empCD", empCD)
 				.getList(c -> MonthlyWorkTimeSetEmp.of(cid, new EmploymentCode(empCD), laborAttr, new YearMonth(c.pk.ym), c.domain()));
 	}
+	
+	@Override
+	public void removeCompany(String cid, int laborAttr, YearMonthPeriod yearMonthPeriod) {
+		
+		String startMonth = yearMonthPeriod.start().month() <= 9 
+				? "0" + String.valueOf(yearMonthPeriod.start().month()) 
+				: String.valueOf(yearMonthPeriod.start().month());
+		
+		String start = String.valueOf(yearMonthPeriod.start().year()) + startMonth;
+		
+		String endMonth = yearMonthPeriod.end().month() <= 9 
+				? "0" + String.valueOf(yearMonthPeriod.end().month()) 
+				: String.valueOf(yearMonthPeriod.end().month());
+		
+		String end = String.valueOf(yearMonthPeriod.end().year()) + endMonth;
+		
+		this.queryProxy().query("SELECT x FROM KshmtLegalTimeMCom x "
+				+ "WHERE x.pk.cid = :cid  AND x.pk.ym >= :start "
+				+ "AND x.pk.ym <= :end "
+				+ "AND x.pk.type = :laborAttr", KshmtLegalTimeMCom.class)
+					.setParameter("cid", cid)
+					.setParameter("start", Integer.parseInt(start))
+					.setParameter("end", Integer.parseInt(end))
+					.setParameter("laborAttr", laborAttr)
+					.getList().forEach(c -> commandProxy().remove(c));
+	}
 
 	@Override
 	public void removeEmployee(String cid, String sid, int year) {
@@ -281,6 +321,35 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 					.setParameter("start", year * 100 + 01)
 					.setParameter("end", year * 100 + 12)
 					.getList().forEach(c -> commandProxy().remove(cid));
+	}
+	
+	@Override
+	public void removeEmployee(String cid, String sid, int laborAttr, YearMonthPeriod yearMonthPeriod) {
+		
+		String startMonth = yearMonthPeriod.start().month() <= 9 
+				? "0" + String.valueOf(yearMonthPeriod.start().month()) 
+				: String.valueOf(yearMonthPeriod.start().month());
+		
+		String start = String.valueOf(yearMonthPeriod.start().year()) + startMonth;
+		
+		String endMonth = yearMonthPeriod.end().month() <= 9 
+				? "0" + String.valueOf(yearMonthPeriod.end().month()) 
+				: String.valueOf(yearMonthPeriod.end().month());
+		
+		String end = String.valueOf(yearMonthPeriod.end().year()) + endMonth;
+		
+		this.queryProxy().query("SELECT x FROM KshmtLegalTimeMSya x "
+				+ "WHERE x.pk.cid = :cid  "
+				+ "AND x.pk.ym >= :start "
+				+ "AND x.pk.ym <= :end "
+				+ "AND x.pk.sid = :sid "
+				+ "AND x.pk.type = :laborAttr", KshmtLegalTimeMSya.class)
+					.setParameter("cid", cid)
+					.setParameter("sid", sid)
+					.setParameter("start", Integer.parseInt(start))
+					.setParameter("end", Integer.parseInt(end))
+					.setParameter("laborAttr", laborAttr)
+					.getList().forEach(c -> commandProxy().remove(c));
 	}
 
 	@Override
@@ -294,6 +363,35 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 					.setParameter("end", year * 100 + 12)
 					.getList().forEach(c -> commandProxy().remove(cid));
 	}
+	
+	@Override
+	public void removeEmployment(String cid, String empCD, int laborAttr, YearMonthPeriod yearMonthPeriod) {
+		
+		String startMonth = yearMonthPeriod.start().month() <= 9 
+				? "0" + String.valueOf(yearMonthPeriod.start().month()) 
+				: String.valueOf(yearMonthPeriod.start().month());
+		
+		String start = String.valueOf(yearMonthPeriod.start().year()) + startMonth;
+		
+		String endMonth = yearMonthPeriod.end().month() <= 9 
+				? "0" + String.valueOf(yearMonthPeriod.end().month()) 
+				: String.valueOf(yearMonthPeriod.end().month());
+		
+		String end = String.valueOf(yearMonthPeriod.end().year()) + endMonth;
+		
+		this.queryProxy().query("SELECT x FROM KshmtLegalTimeMEmp x "
+				+ "WHERE x.pk.cid = :cid  "
+				+ "AND x.pk.ym >= :start "
+				+ "AND x.pk.ym <= :end "
+				+ "AND x.pk.empCD = :empCD "
+				+ "AND x.pk.type = :laborAttr", KshmtLegalTimeMEmp.class)
+					.setParameter("cid", cid)
+					.setParameter("empCD", empCD)
+					.setParameter("start", Integer.parseInt(start))
+					.setParameter("end", Integer.parseInt(end))
+					.setParameter("laborAttr", laborAttr)
+					.getList().forEach(c -> commandProxy().remove(c));
+	}
 
 	@Override
 	public void removeWorkplace(String cid, String wkpId, int year) {
@@ -305,5 +403,183 @@ public class JpaMonthlyWorkTimeSetRepo extends JpaRepository implements MonthlyW
 					.setParameter("start", year * 100 + 01)
 					.setParameter("end", year * 100 + 12)
 					.getList().forEach(c -> commandProxy().remove(cid));
+	}
+	
+	@Override
+	public void removeWorkplace(String cid, String wkpId, int laborAttr, YearMonthPeriod yearMonthPeriod) {
+		
+		String startMonth = yearMonthPeriod.start().month() <= 9 
+				? "0" + String.valueOf(yearMonthPeriod.start().month()) 
+				: String.valueOf(yearMonthPeriod.start().month());
+		
+		String start = String.valueOf(yearMonthPeriod.start().year()) + startMonth;
+		
+		String endMonth = yearMonthPeriod.end().month() <= 9 
+				? "0" + String.valueOf(yearMonthPeriod.end().month()) 
+				: String.valueOf(yearMonthPeriod.end().month());
+		
+		String end = String.valueOf(yearMonthPeriod.end().year()) + endMonth;
+		
+		this.queryProxy().query("SELECT x FROM KshmtLegalTimeMWkp x "
+				+ "WHERE x.pk.cid = :cid  "
+				+ "AND x.pk.ym >= :start "
+				+ "AND x.pk.ym <= :end "
+				+ "AND x.pk.wkpId = :wkpId "
+				+ "AND x.pk.type = :laborAttr", KshmtLegalTimeMWkp.class)
+					.setParameter("cid", cid)
+					.setParameter("wkpId", wkpId)
+					.setParameter("start", Integer.parseInt(start))
+					.setParameter("end", Integer.parseInt(end))
+					.setParameter("laborAttr", laborAttr)
+					.getList().forEach(c -> commandProxy().remove(c));
+	}
+
+
+	@Override
+	public List<MonthlyWorkTimeSetCom> findCompanyByPeriod(String cid, LaborWorkTypeAttr laborAttr,
+			YearMonthPeriod yearMonthPeriod) {
+		
+		String startMonth = yearMonthPeriod.start().month() <= 9 
+				? "0" + String.valueOf(yearMonthPeriod.start().month()) 
+				: String.valueOf(yearMonthPeriod.start().month());
+		
+		String start = String.valueOf(yearMonthPeriod.start().year()) + startMonth;
+		
+		String endMonth = yearMonthPeriod.end().month() <= 9 
+				? "0" + String.valueOf(yearMonthPeriod.end().month()) 
+				: String.valueOf(yearMonthPeriod.end().month());
+		
+		String end = String.valueOf(yearMonthPeriod.end().year()) + endMonth;
+		
+		
+		return this.queryProxy().query(SELECT_YEAR_COM, KshmtLegalTimeMCom.class)
+				.setParameter("cid", cid)
+				.setParameter("type", laborAttr.value)
+				.setParameter("start", Integer.parseInt(start))
+				.setParameter("end", Integer.parseInt(end))
+				.getList(c -> MonthlyWorkTimeSetCom.of(cid, laborAttr, new YearMonth(c.pk.ym), c.domain()));
+	}
+	
+	@Override
+	public List<MonthlyWorkTimeSetWkp> findWorkplaceByPeriod(String cid, String workplaceId, LaborWorkTypeAttr laborAttr, YearMonthPeriod yearMonthPeriod) {
+		
+		String startMonth = yearMonthPeriod.start().month() <= 9 
+				? "0" + String.valueOf(yearMonthPeriod.start().month()) 
+				: String.valueOf(yearMonthPeriod.start().month());
+		
+		String start = String.valueOf(yearMonthPeriod.start().year()) + startMonth;
+		
+		String endMonth = yearMonthPeriod.end().month() <= 9 
+				? "0" + String.valueOf(yearMonthPeriod.end().month()) 
+				: String.valueOf(yearMonthPeriod.end().month());
+		
+		String end = String.valueOf(yearMonthPeriod.end().year()) + endMonth;
+		
+		
+		return this.queryProxy().query(SELECT_YEAR_WKP, KshmtLegalTimeMWkp.class)
+				.setParameter("cid", cid)
+				.setParameter("type", laborAttr.value)
+				.setParameter("start", Integer.parseInt(start))
+				.setParameter("end", Integer.parseInt(end))
+				.setParameter("wkpId", workplaceId)
+				.getList(c -> MonthlyWorkTimeSetWkp.of(cid, c.pk.wkpId, laborAttr, new YearMonth(c.pk.ym), c.domain()));
+	}
+	
+	@Override
+	public List<MonthlyWorkTimeSetEmp> findEmploymentByPeriod(String cid, String empCode, LaborWorkTypeAttr laborAttr, YearMonthPeriod yearMonthPeriod) {
+		
+		String startMonth = yearMonthPeriod.start().month() <= 9 
+				? "0" + String.valueOf(yearMonthPeriod.start().month()) 
+				: String.valueOf(yearMonthPeriod.start().month());
+		
+		String start = String.valueOf(yearMonthPeriod.start().year()) + startMonth;
+		
+		String endMonth = yearMonthPeriod.end().month() <= 9 
+				? "0" + String.valueOf(yearMonthPeriod.end().month()) 
+				: String.valueOf(yearMonthPeriod.end().month());
+		
+		String end = String.valueOf(yearMonthPeriod.end().year()) + endMonth;
+		
+		
+		return this.queryProxy().query(SELECT_YEAR_EMP, KshmtLegalTimeMEmp.class)
+				.setParameter("cid", cid)
+				.setParameter("type", laborAttr.value)
+				.setParameter("start", Integer.parseInt(start))
+				.setParameter("end", Integer.parseInt(end))
+				.setParameter("empCD", empCode)
+				.getList(c -> MonthlyWorkTimeSetEmp.of(cid, new EmploymentCode(empCode), laborAttr, new YearMonth(c.pk.ym), c.domain()));
+	}
+	
+	@Override
+	public List<MonthlyWorkTimeSetSha> findEmployeeByPeriod(String cid, String sid, LaborWorkTypeAttr laborAttr, YearMonthPeriod yearMonthPeriod) {
+		
+		String startMonth = yearMonthPeriod.start().month() <= 9 
+				? "0" + String.valueOf(yearMonthPeriod.start().month()) 
+				: String.valueOf(yearMonthPeriod.start().month());
+		
+		String start = String.valueOf(yearMonthPeriod.start().year()) + startMonth;
+		
+		String endMonth = yearMonthPeriod.end().month() <= 9 
+				? "0" + String.valueOf(yearMonthPeriod.end().month()) 
+				: String.valueOf(yearMonthPeriod.end().month());
+		
+		String end = String.valueOf(yearMonthPeriod.end().year()) + endMonth;
+		
+		
+		return this.queryProxy().query(SELECT_YEAR_SYA, KshmtLegalTimeMSya.class)
+				.setParameter("cid", cid)
+				.setParameter("type", laborAttr.value)
+				.setParameter("start", Integer.parseInt(start))
+				.setParameter("end", Integer.parseInt(end))
+				.setParameter("sid", sid)
+				.getList(c -> MonthlyWorkTimeSetSha.of(cid, sid, laborAttr, new YearMonth(c.pk.ym), c.domain()));
+	}
+	
+
+	@Override
+	public List<MonthlyWorkTimeSetEmp> findEmploymentbyCid(String cid, LaborWorkTypeAttr laborAttr) {
+		return this.queryProxy().query(SELECT_EMP_BY_CID, KshmtLegalTimeMEmp.class)
+				.setParameter("cid", cid)
+				.setParameter("type", laborAttr.value)
+				.getList(c -> MonthlyWorkTimeSetEmp.of(cid, new EmploymentCode(c.pk.empCD), laborAttr, new YearMonth(c.pk.ym), c.domain()));
+	}
+
+	@Override
+	public List<MonthlyWorkTimeSetSha> findEmployeeByCid(String cid, LaborWorkTypeAttr laborAttr) {
+		return this.queryProxy().query(SELECT_YEAR_SYA_BY_CID_TYPE, KshmtLegalTimeMSya.class)
+				.setParameter("cid", cid)
+				.setParameter("type", laborAttr.value)
+				.getList(c -> MonthlyWorkTimeSetSha.of(cid, c.pk.sid, laborAttr, new YearMonth(c.pk.ym), c.domain()));
+	}
+
+	@Override
+	public List<MonthlyWorkTimeSetWkp> findWorkplace(String cid, LaborWorkTypeAttr laborAttr) {
+		return this.queryProxy().query(SELECT_YEAR_WKP_BY_CID_TYPE, KshmtLegalTimeMWkp.class)
+				.setParameter("cid", cid)
+				.setParameter("type", laborAttr.value)
+				.getList(c -> MonthlyWorkTimeSetWkp.of(cid, c.pk.wkpId, laborAttr, new YearMonth(c.pk.ym), c.domain()));
+	}
+
+	@Override
+	public List<MonthlyWorkTimeSetCom> findMonthlyWorkTimeSetComByCid(String cid, LaborWorkTypeAttr laborAttr) {
+		return this.queryProxy().query(SELECT_YEAR_COM_BY_CID, KshmtLegalTimeMCom.class)
+				.setParameter("cid", cid)
+				.setParameter("type", laborAttr.value)
+				.getList(c -> MonthlyWorkTimeSetCom.of(cid, laborAttr, new YearMonth(c.pk.ym), c.domain()));
+	}
+
+	@Override
+	public void removeEmployeeByYearMonth(String cid, String sid, int laborAttr, int yearMonth) {
+
+		this.queryProxy().query("SELECT x FROM KshmtLegalTimeMSya x "
+				+ "WHERE x.pk.cid = :cid  "
+				+ "AND x.pk.ym = :ym "
+				+ "AND x.pk.sid = :sid "
+				+ "AND x.pk.type = :laborAttr", KshmtLegalTimeMSya.class)
+					.setParameter("cid", cid)
+					.setParameter("sid", sid)
+					.setParameter("ym", yearMonth)
+					.setParameter("laborAttr", laborAttr)
+					.getList().forEach(c -> commandProxy().remove(c));
 	}
 }

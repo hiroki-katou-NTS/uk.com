@@ -15,7 +15,7 @@ public class WorkTypeSetDto {
 
 	private int countHodiday;
 
-	private int closeAtr;
+	private Integer closeAtr;
 
 	private int sumAbsenseNo;
 
