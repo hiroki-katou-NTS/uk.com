@@ -13,19 +13,19 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.TimeDay;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 古いクラス → 削除予定 → 使わないでください (Old Class → Delete plan → Please don't use it)
  * author hieult
  */
 @Entity
-@Table(name = "KRQDT_APP_LATE_OR_LEAVE")
+@Table(name = "KRQDT_APP_LATE_EARLY")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class KrqdtAppLateOrLeave_Old  extends UkJpaEntity implements Serializable {
+public class KrqdtAppLateOrLeave_Old  extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -82,7 +82,7 @@ public class KrqdtAppLateOrLeave_Old  extends UkJpaEntity implements Serializabl
 	}
 	
 	public static KrqdtAppLateOrLeave_Old toEntity(LateOrLeaveEarly domain){
-//		return new KrqdtAppLateOrLeave (
+//		return new KrqdtAppLateEarly (
 //					new KrqdtAppLateOrLeavePK(
 //							domain.getApplication().getCompanyID(), 
 //							domain.getApplication().getAppID()),

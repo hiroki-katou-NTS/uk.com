@@ -1,4 +1,4 @@
-package nts.uk.ctx.workflow.dom.approverstatemanagement;
+﻿package nts.uk.ctx.workflow.dom.approverstatemanagement;
 
 import java.util.List;
 import java.util.Map;
@@ -123,8 +123,6 @@ public interface ApprovalRootStateRepository {
 	public List<String> resultKTG002Mobile(GeneralDate startDate, GeneralDate endDate, String approverID,
 			Integer rootType, String companyID);
 
-	public boolean resultKTG002(GeneralDate startDate, GeneralDate endDate, String approverID, Integer rootType,
-			String companyID);
 
 	/**
 	 * refactor 4

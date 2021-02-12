@@ -9,8 +9,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.arc.time.GeneralDate;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+
 /**
  * 暫定積立年休管理データ
  *
@@ -20,10 +20,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Getter
 @Setter
-//@Table(name = "KRCDT_INTERIM_HDSTK")
-@Table(name = "KRCMT_INTERIM_RESERVE_MNG")
-public class KrcdtInterimHdstk extends UkJpaEntity{
-
+@Table(name = "KRCDT_HDSTK_TEMP")
+public class KrcdtHdstkTemp extends ContractUkJpaEntity{
 	/**
 	 * 暫定積立年休管理データID
 	 */
