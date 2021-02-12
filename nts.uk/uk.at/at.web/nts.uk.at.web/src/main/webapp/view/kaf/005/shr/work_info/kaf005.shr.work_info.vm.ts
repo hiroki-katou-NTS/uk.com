@@ -91,7 +91,7 @@ module nts.uk.at.view.kaf005.shr.work_info.viewmodel {
 						class="row-cell-margin inputTime-kaf005 right-content"
 						id="inpStartTime2"
 						data-bind="ntsTimeWithDayEditor: { 
-						name: '#[KAF005_333]',
+						name: '#[KAF005_335]',
 						constraint:'TimeWithDayAttr',
 						value: workInfo().workHours2.start,
 						enable: outputMode(),
@@ -108,7 +108,7 @@ module nts.uk.at.view.kaf005.shr.work_info.viewmodel {
 					<input id="inpEndTime2"
 						class="right-content inputTime-kaf005"
 						data-bind="ntsTimeWithDayEditor: {
-						name: '#[KAF005_334]',
+						name: '#[KAF005_336]',
 						constraint:'TimeWithDayAttr',
 						value: workInfo().workHours2.end,
 						enable: outputMode(),

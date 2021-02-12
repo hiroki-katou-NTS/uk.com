@@ -7,7 +7,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -18,7 +18,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-public class KshmtWorkTimeOrder extends UkJpaEntity {
+public class KshmtWorkTimeOrder extends ContractUkJpaEntity {
 
 	@EmbeddedId
 	public KshmpWorkTimeOrderPK kshmpWorkTimeOrderPK;

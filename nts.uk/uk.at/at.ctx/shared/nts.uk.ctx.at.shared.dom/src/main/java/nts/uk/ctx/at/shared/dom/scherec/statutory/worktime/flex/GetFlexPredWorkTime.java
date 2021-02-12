@@ -6,7 +6,7 @@ import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
- * 会社別フレックス勤務集計方法
+ * フレックス勤務所定労働時間取得
  * @author shuichi_ishida
  */
 @Getter
@@ -35,7 +35,7 @@ public class GetFlexPredWorkTime extends AggregateRoot implements Serializable{
 	 * ファクトリー
 	 * @param companyId 会社ID
 	 * @param reference 参照先
-	 * @return 会社別フレックス勤務集計方法
+	 * @return フレックス勤務所定労働時間取得
 	 */
 	public static GetFlexPredWorkTime of(
 			String companyId,

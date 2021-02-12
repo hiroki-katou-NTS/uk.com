@@ -21,6 +21,7 @@ module nts.uk.at.view.kml001.a {
       selectedHistory: KnockoutObservable<vmbase.GridPersonCostCalculation> = ko.observable(null);
       defaultPremiumSettings: KnockoutObservableArray<any> = ko.observableArray([]);
       latestPersonalData: KnockoutObservable<any> = ko.observable(null);
+      keepPremiumSettingBeforeChange: KnockoutObservable<any> = ko.observable(null);
 
       constructor() {
         super();
@@ -239,13 +240,20 @@ module nts.uk.at.view.kml001.a {
       premiumDialog(): void {
 
         var self = this;
+
+        let beforeChangeData = self.keepPremiumSettingBeforeChange().premiumSets
+          ? self.keepPremiumSettingBeforeChange().premiumSets : [];
+
         let oldPremiumSets = self.clonePersonCostCalculation(self.currentPersonCost()).premiumSets();
+
         nts.uk.ui.windows.setShared('isInsert', self.isInsert());
         nts.uk.ui.windows.sub.modal("/view/kml/001/b/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function () {
           nts.uk.ui.block.invisible();
           self.langId(nts.uk.ui.windows.getShared("KML001_B_LANGID"));
           if (nts.uk.ui.windows.getShared('updatePremiumSeting') == true) {
             nts.uk.ui.errors.clearAll();
+            self.getDefaultPremiumSetting();
+
             var dfdPremiumItemSelect = servicebase.premiumItemSelect();
             var dfdPersonCostCalculationSelect = servicebase.personCostCalculationSelect();
             $.when(dfdPremiumItemSelect, dfdPersonCostCalculationSelect).done((premiumItemSelectData, dfdPersonCostCalculationSelectData) => {
@@ -261,19 +269,46 @@ module nts.uk.at.view.kml001.a {
                     item.useAtr,
                     false,
                     item.unitPrice
-                  ));
+                  )
+                );
               });
               // PersonCostCalculationSelect: Done
               if (!dfdPersonCostCalculationSelectData.length) {
                 self.currentPersonCost().premiumSets.removeAll();
-                self.premiumItems().forEach(function (item) {
-                  if (item.useAtr()) {
-                    self.currentPersonCost().premiumSets.push(
-                      new vmbase.PremiumSetting("", "", item.displayNumber(), 100, item.name(), item.useAtr(), [], item.unitPrice())
-                    );
+                self.premiumItems().forEach(function (item, i) {                  
+                  if (item.useAtr()) {           
+                    let findItem: any = _.find(oldPremiumSets, (x) => x.displayNumber() == item.displayNumber());
+                    if (!_.isNil(findItem)) {               
+                      self.currentPersonCost().premiumSets.push(findItem);
+                    } else {                      
+                      findItem = _.find(beforeChangeData, (x) => parseInt(x.id) === item.displayNumber());
+                      if (!_.isNil(findItem)) {
+                        let attendanceNames = [];
+                        _.forEach(findItem.attendanceNames, (o) => {
+                          attendanceNames.push({...o, name: o.attendanceItemName});
+                        });
+                        self.currentPersonCost().premiumSets.push( 
+                          new vmbase.PremiumSetting(
+                            '', '', findItem.id, findItem.rate, findItem.name, 
+                            item.useAtr(), attendanceNames, findItem.unitPrice
+                          )
+                        );
+                      } else {
+                        self.currentPersonCost().premiumSets.push(
+                          new vmbase.PremiumSetting("", "", item.displayNumber(), 100, item.name(), item.useAtr(), [], item.unitPrice())
+                        );
+                      }
+                      
+                    }
                   }
                 });
+                
+                self.currentPersonCost().premiumSets().forEach((item, index) => {
+                  self.createViewAttendanceItems(item.attendanceItems(), index);
+                });
+                
                 $("#A4_10").focus();
+
               } else {
                 if (self.isInsert()) {
                   self.currentPersonCost().premiumSets.removeAll();
@@ -533,16 +568,16 @@ module nts.uk.at.view.kml001.a {
           let findHistory = _.find(self.gridPersonCostList(), (x) => x.dateRange === value);
           self.selectedHistory(findHistory);
           servicebase.findByHistoryID({ historyID: findHistory.historyId }).done((data) => {
-            if (data) {
-              self.getPersonalCostCalculatorDetails(data).done(() => {
-                if (ko.unwrap(self.viewAttendanceItems()).length) {
-                  self.$blockui('hide');
-                }
-              }).fail(() => { self.$blockui('hide'); });
-            } else {
-              self.$blockui('hide');
-            }
-
+            //if (data) {
+            self.keepPremiumSettingBeforeChange(data);
+            self.getPersonalCostCalculatorDetails(data).done(() => {
+              if (ko.unwrap(self.viewAttendanceItems()).length) {
+                self.$blockui('hide');
+              }
+            }).fail(() => { self.$blockui('hide'); });
+            //} else {
+            self.$blockui('hide');
+            //}
           }).fail(res => { console.log(res); });
 
           self.isInsert(false);
@@ -566,38 +601,40 @@ module nts.uk.at.view.kml001.a {
 
           let premiumSets: Array<vmbase.PremiumSettingInterface> = [];
           let premiumSetting: vmbase.PremiumSettingInterface = {};
-          
+
           self.createViewAttendanceItemsDefault(self.defaultPremiumSettings().length);
-          
+
           if (data.premiumSets.length > 0) {
 
             data.premiumSets = _.orderBy(data.premiumSets, 'id', 'asc');
+
+            let viewIndex: number = 0;
+
             data.premiumSets.forEach((item, index) => {
               let attendanceNames: Array<vmbase.AttendanceItem> = [];
+              if (item.useAtr === 1) {
+                _.forEach(item.attendanceNames, (item) => {
+                  attendanceNames.push(new vmbase.AttendanceItem(item.attendanceItemId, item.attendanceItemName));
+                });
 
-              _.forEach(item.attendanceNames, (item) => {
-                attendanceNames.push(new vmbase.AttendanceItem(item.attendanceItemId, item.attendanceItemName));
-              });
-
-              self.createViewAttendanceItems(attendanceNames, index);
-
-              premiumSetting = {};
-              premiumSetting.companyID = data.companyID;
-              premiumSetting.historyID = data.historyID;
-              premiumSetting.displayNumber = item.id;
-              premiumSetting.rate = item.rate;
-              premiumSetting.name = item.name;
-              premiumSetting.unitPrice = item.unitPrice;
-              premiumSetting.useAtr = item.useAtr;
-              premiumSetting.attendanceItems = attendanceNames;
-              premiumSets.push(premiumSetting);
+                premiumSetting = {};
+                premiumSetting.companyID = data.companyID;
+                premiumSetting.historyID = data.historyID;
+                premiumSetting.displayNumber = item.id;
+                premiumSetting.rate = item.rate;
+                premiumSetting.name = item.name;
+                premiumSetting.unitPrice = item.unitPrice;
+                premiumSetting.useAtr = item.useAtr;
+                premiumSetting.attendanceItems = attendanceNames;
+                premiumSets.push(premiumSetting);
+              }
             });
-            //console.log(self.defaultPremiumSettings());
-            if (data.premiumSets.length < self.defaultPremiumSettings().length) {
+
+            if (premiumSets.length < self.defaultPremiumSettings().length) {
               _.forEach(self.defaultPremiumSettings(), (item) => {
-                let hasItem = _.some(premiumSets, (x: any) => x.displayNumber === item.displayNumber);                
-                if (!hasItem) {    
-                  premiumSetting = {};            
+                let hasItem = _.some(premiumSets, (x: any) => x.displayNumber === item.displayNumber);
+                if (!hasItem && item.useAtr === 1) {
+                  premiumSetting = {};
                   premiumSetting.companyID = '';
                   premiumSetting.historyID = '';
                   premiumSetting.displayNumber = item.displayNumber;
@@ -610,22 +647,15 @@ module nts.uk.at.view.kml001.a {
                 }
               });
             }
+
             //re-order
             premiumSets = _.orderBy(premiumSets, 'displayNumber', 'asc');
+            _.forEach(premiumSets, (x, index) => {
+              self.createViewAttendanceItems(x.attendanceItems, index);
+            });
 
           } else {
-            _.forEach(self.defaultPremiumSettings(), (item) => {
-              premiumSetting = {};
-              premiumSetting.companyID = data.companyID;
-              premiumSetting.historyID = data.historyID;
-              premiumSetting.displayNumber = item.displayNumber;
-              premiumSetting.rate = item.rate;
-              premiumSetting.name = item.name;
-              premiumSetting.unitPrice = item.unitPrice;
-              premiumSetting.useAtr = item.useAtr;
-              premiumSetting.attendanceItems = [];
-              premiumSets.push(premiumSetting);
-            });
+            premiumSets = self.createPremiumDefault(data.companyID, data.historyID);
           }
 
           premiumSets = _.orderBy(premiumSets, 'displayNumber', 'asc');
@@ -649,7 +679,33 @@ module nts.uk.at.view.kml001.a {
 
           dfd.resolve();
         } else {
-          dfd.reject();
+
+          let tempPerson: vmbase.PersonCostCalculationInterface = {};
+          let findItem = _.find(self.gridPersonCostList(), (x: any) => x.dateRange === self.currentGridPersonCost());
+
+          if (_.isNil(findItem)) dfd.reject();
+
+          tempPerson.companyID = findItem.companyId;
+          tempPerson.historyID = findItem.historyId;
+          tempPerson.startDate = findItem.startDate;
+          tempPerson.endDate = findItem.endDate;
+          tempPerson.unitPrice = null;
+          tempPerson.memo = null;
+          tempPerson.premiumSets = self.createPremiumDefault(findItem.companyId, findItem.historyId);
+          tempPerson.calculationSetting = 0;
+          tempPerson.roundingUnitPrice = 0;
+          tempPerson.unit = 0;
+          tempPerson.inUnits = 0;
+          tempPerson.workingHour = 0;
+          tempPerson.personCostRoundingSetting = {
+            unitPriceRounding: vmbase.UnitPriceRounding.ROUND_UP,
+            unit: vmbase.AmountUnit.ONE_YEN,
+            rounding: vmbase.InUnits.TRUNCATION
+          };
+
+          self.currentPersonCost().updateData(tempPerson);
+
+          dfd.resolve();
         }
 
         return dfd.promise();
@@ -697,7 +753,10 @@ module nts.uk.at.view.kml001.a {
         const self = this;
         var premiumItemSelect = servicebase.premiumItemSelect();
         $.when(premiumItemSelect).done((data) => {
+
           let premiumItemSelectData: any = _.orderBy(data, ['displayNumber'], ['asc']);
+
+          self.defaultPremiumSettings.removeAll();
           if (premiumItemSelectData.length > 0) {
             _.forEach(premiumItemSelectData, (item) => {
               if (item.useAtr) {
@@ -723,6 +782,35 @@ module nts.uk.at.view.kml001.a {
         _.forEach(self.currentPersonCost().premiumSets(), (item, index) => {
           self.currentPersonCost().premiumSets()[index].rate(100);
         });
+      }
+
+      createPremiumDefault(companyId: string, historyId: string) {
+        const self = this;
+        let premiumSets: Array<vmbase.PremiumSettingInterface> = [];
+        let premiumSetting: vmbase.PremiumSettingInterface = {};
+
+        _.forEach(self.defaultPremiumSettings(), (item, index) => {
+          if (item.useAtr === 1) {
+            //self.createViewAttendanceItems([], index);
+            premiumSetting = {};
+            premiumSetting.companyID = companyId;
+            premiumSetting.historyID = historyId;
+            premiumSetting.displayNumber = item.displayNumber;
+            premiumSetting.rate = item.rate;
+            premiumSetting.name = item.name;
+            premiumSetting.unitPrice = item.unitPrice;
+            premiumSetting.useAtr = item.useAtr;
+            premiumSetting.attendanceItems = [];
+            premiumSets.push(premiumSetting);
+          }
+        });
+
+        premiumSets = _.orderBy(premiumSets, 'displayNumber', 'asc');
+        _.forEach(premiumSets, (x, index) => {
+          self.createViewAttendanceItems(x.attendanceItems, index);
+        });
+
+        return premiumSets;
       }
     }
   }

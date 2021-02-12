@@ -25,7 +25,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.ClassifiBasicWorkRepository;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.ClassificationBasicWork;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.ClassificationCode;
-import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtClassifyWorkSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtBasicWorkCls;
 import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtClassifyWorkSetPK_;
 import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtClassifyWorkSet_;
 
@@ -44,7 +44,7 @@ public class JpaClassifiBasicWorkRepository extends JpaRepository implements Cla
 	 */
 	@Override
 	public void insert(ClassificationBasicWork classificationBasicWork) {
-		List<KscmtClassifyWorkSet> entities = this.toEntity(classificationBasicWork);
+		List<KscmtBasicWorkCls> entities = this.toEntity(classificationBasicWork);
 		commandProxy().insertAll(entities);
 	}
 
@@ -57,7 +57,7 @@ public class JpaClassifiBasicWorkRepository extends JpaRepository implements Cla
 	 */
 	@Override
 	public void update(ClassificationBasicWork classificationBasicWork) {
-		List<KscmtClassifyWorkSet> entities = this.toEntity(classificationBasicWork);
+		List<KscmtBasicWorkCls> entities = this.toEntity(classificationBasicWork);
 		commandProxy()
 				.updateAll(entities.stream().map(entity -> this.updateEntity(entity)).collect(Collectors.toList()));
 	}
@@ -74,10 +74,10 @@ public class JpaClassifiBasicWorkRepository extends JpaRepository implements Cla
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder bd = em.getCriteriaBuilder();
 
-		CriteriaDelete<KscmtClassifyWorkSet> cd = bd.createCriteriaDelete(KscmtClassifyWorkSet.class);
+		CriteriaDelete<KscmtBasicWorkCls> cd = bd.createCriteriaDelete(KscmtBasicWorkCls.class);
 
 		// Root
-		Root<KscmtClassifyWorkSet> root = cd.from(KscmtClassifyWorkSet.class);
+		Root<KscmtBasicWorkCls> root = cd.from(KscmtBasicWorkCls.class);
 
 		// Predicate where clause
 		List<Predicate> predicateList = new ArrayList<>();
@@ -104,10 +104,10 @@ public class JpaClassifiBasicWorkRepository extends JpaRepository implements Cla
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder bd = em.getCriteriaBuilder();
-		CriteriaQuery<KscmtClassifyWorkSet> cq = bd.createQuery(KscmtClassifyWorkSet.class);
+		CriteriaQuery<KscmtBasicWorkCls> cq = bd.createQuery(KscmtBasicWorkCls.class);
 		
 		// Root
-		Root<KscmtClassifyWorkSet> root = cq.from(KscmtClassifyWorkSet.class);
+		Root<KscmtBasicWorkCls> root = cq.from(KscmtBasicWorkCls.class);
 		cq.select(root);
 		
 		// Predicate where clause
@@ -122,7 +122,7 @@ public class JpaClassifiBasicWorkRepository extends JpaRepository implements Cla
 		cq.where(predicateList.toArray(new Predicate[] {}));
 		
 		// Create Query
-		TypedQuery<KscmtClassifyWorkSet> query = em.createQuery(cq);
+		TypedQuery<KscmtBasicWorkCls> query = em.createQuery(cq);
 
 		if (CollectionUtil.isEmpty(query.getResultList())) {
 			return Optional.empty();
@@ -144,7 +144,7 @@ public class JpaClassifiBasicWorkRepository extends JpaRepository implements Cla
 		CriteriaQuery<String> cq = bd.createQuery(String.class);
 		
 		// Root
-		Root<KscmtClassifyWorkSet> root = cq.from(KscmtClassifyWorkSet.class);
+		Root<KscmtBasicWorkCls> root = cq.from(KscmtBasicWorkCls.class);
 		
 		// Select Classification Code
 		cq.select(root.get(KscmtClassifyWorkSet_.kscmtClassifyWorkSetPK).get(KscmtClassifyWorkSetPK_.classifyCode)).distinct(true);
@@ -172,7 +172,7 @@ public class JpaClassifiBasicWorkRepository extends JpaRepository implements Cla
 	 *            the entity
 	 * @return the classification basic work
 	 */
-	private ClassificationBasicWork toDomain(List<KscmtClassifyWorkSet> entity) {
+	private ClassificationBasicWork toDomain(List<KscmtBasicWorkCls> entity) {
 		return new ClassificationBasicWork(new JpaClassifiBasicWorkGetMemento(entity));
 	}
 
@@ -183,9 +183,9 @@ public class JpaClassifiBasicWorkRepository extends JpaRepository implements Cla
 	 *            the domain
 	 * @return the list
 	 */
-	private List<KscmtClassifyWorkSet> toEntity(ClassificationBasicWork domain) {
+	private List<KscmtBasicWorkCls> toEntity(ClassificationBasicWork domain) {
 		return domain.getBasicWorkSetting().stream().map(basic -> {
-			KscmtClassifyWorkSet entity = new KscmtClassifyWorkSet();
+			KscmtBasicWorkCls entity = new KscmtBasicWorkCls();
 			basic.saveToMemento(new JpaBWSettingClassifySetMemento(entity));
 			entity.getKscmtClassifyWorkSetPK().setCid(domain.getCompanyId());
 			entity.getKscmtClassifyWorkSetPK().setClassifyCode(domain.getClassificationCode().v());
@@ -200,9 +200,9 @@ public class JpaClassifiBasicWorkRepository extends JpaRepository implements Cla
 	 *            the entity
 	 * @return the kcbmt classify work set
 	 */
-	private KscmtClassifyWorkSet updateEntity(KscmtClassifyWorkSet entity) {
-		KscmtClassifyWorkSet entityToUpdate = this.queryProxy()
-				.find(entity.getKscmtClassifyWorkSetPK(), KscmtClassifyWorkSet.class).get();
+	private KscmtBasicWorkCls updateEntity(KscmtBasicWorkCls entity) {
+		KscmtBasicWorkCls entityToUpdate = this.queryProxy()
+				.find(entity.getKscmtClassifyWorkSetPK(), KscmtBasicWorkCls.class).get();
 		entityToUpdate.setWorktypeCode(entity.getWorktypeCode());
 		entityToUpdate.setWorkingCode(StringUtils.isEmpty(entity.getWorkingCode()) ? null : entity.getWorkingCode());
 		entityToUpdate.getKscmtClassifyWorkSetPK()
@@ -226,10 +226,10 @@ public class JpaClassifiBasicWorkRepository extends JpaRepository implements Cla
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder bd = em.getCriteriaBuilder();
-		CriteriaQuery<KscmtClassifyWorkSet> cq = bd.createQuery(KscmtClassifyWorkSet.class);
+		CriteriaQuery<KscmtBasicWorkCls> cq = bd.createQuery(KscmtBasicWorkCls.class);
 
 		// Root
-		Root<KscmtClassifyWorkSet> root = cq.from(KscmtClassifyWorkSet.class);
+		Root<KscmtBasicWorkCls> root = cq.from(KscmtBasicWorkCls.class);
 		cq.select(root);
 
 		// Predicate where clause
@@ -247,7 +247,7 @@ public class JpaClassifiBasicWorkRepository extends JpaRepository implements Cla
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
 		// Create Query
-		TypedQuery<KscmtClassifyWorkSet> query = em.createQuery(cq);
+		TypedQuery<KscmtBasicWorkCls> query = em.createQuery(cq);
 
 		if (CollectionUtil.isEmpty(query.getResultList())) {
 			return Optional.empty();

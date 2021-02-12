@@ -15,14 +15,14 @@ import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class BsymtEmploymentHistItem.
  */
 @Entity
-@Table(name = "BSYMT_EMPLOYMENT_HIS_ITEM")
-public class BsymtEmploymentHistItem extends UkJpaEntity implements Serializable {
+@Table(name = "BSYMT_AFF_EMP_HIST_ITEM")
+public class BsymtEmploymentHistItem extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -56,7 +56,7 @@ public class BsymtEmploymentHistItem extends UkJpaEntity implements Serializable
 	// Add by ThanhNC
 	@OneToOne
 	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID") })
-	public BsymtEmploymentHist bsymtEmploymentHist;
+	public BsymtAffEmpHist bsymtEmploymentHist;
 
 	/**
 	 * Instantiates a new bsymt employment hist item.

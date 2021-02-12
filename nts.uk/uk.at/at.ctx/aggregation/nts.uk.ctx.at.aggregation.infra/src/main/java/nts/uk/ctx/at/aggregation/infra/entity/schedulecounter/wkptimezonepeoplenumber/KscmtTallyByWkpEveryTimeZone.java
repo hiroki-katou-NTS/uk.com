@@ -18,7 +18,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCMT_TALLY_BYWKP_EVERY_TIMEZONE")
+@Table(name = "KAGMT_TALLY_BYWKP_EVERY_TIMEZONE")
 public class KscmtTallyByWkpEveryTimeZone extends ContractUkJpaEntity implements Serializable {
 
 	/** 会社ID */

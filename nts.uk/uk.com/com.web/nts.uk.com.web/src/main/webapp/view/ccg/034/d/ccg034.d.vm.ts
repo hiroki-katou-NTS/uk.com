@@ -1008,14 +1008,12 @@ module nts.uk.com.view.ccg034.d {
                 vm.mapPartData[partClientId] = result.partData;
                 // Update part DOM
                 LayoutUtils.renderPartDOMAttachment($part, result.partData as PartDataAttachmentModel);
-              } else if (isCreateDialog) {
-                // If this is dialog setitng when create => remove part
-                vm.removePart($part);
-                if (result.fileId) {
-                  vm.removeFile(result.fileId);
+              } else {
+                if (isCreateDialog) {
+                  // If this is dialog setitng when create => remove part
+                  vm.removePart($part);
                 }
-              } else if (result.fileId) {
-                vm.modifiedPartList.added.push(result.fileId);
+                vm.removeFile(result.fileId);
               }
             });
           break;
@@ -1024,27 +1022,23 @@ module nts.uk.com.view.ccg034.d {
             .then((result: any) => {
               if (result.isSaving) {
                 const partImage = (result.partData as PartDataImageModel);
-                if (partImage.isFixed === 1 && partImage.fileId) {
-                  // Only prepare for delete if has changes
-                  if (!_.find(vm.modifiedPartList.added, partImage.fileId) && partImage.fileId !== partImage.originalFileId) {
-                    vm.modifiedPartList.added.push(partImage.fileId);
-                  }
-                  if (!_.find(vm.modifiedPartList.deleted, partImage.originalFileId) && partImage.fileId !== partImage.originalFileId) {
-                    vm.modifiedPartList.deleted.push(partImage.originalFileId);
-                  }
+                // Only prepare for delete if has changes
+                if (!_.find(vm.modifiedPartList.added, partImage.fileId) && partImage.fileId !== partImage.originalFileId) {
+                  vm.modifiedPartList.added.push(partImage.fileId);
+                }
+                if (!_.find(vm.modifiedPartList.deleted, partImage.originalFileId) && partImage.fileId !== partImage.originalFileId) {
+                  vm.modifiedPartList.deleted.push(partImage.originalFileId);
                 }
                 // Update part data
                 vm.mapPartData[partClientId] = result.partData;
                 // Update part DOM
                 LayoutUtils.renderPartDOMImage($part, result.partData as PartDataImageModel);
-              } else if (isCreateDialog) {
-                // If this is dialog setitng when create => remove part
-                vm.removePart($part);
-                if (result.fileId) {
-                  vm.removeFile(result.fileId);
+              } else {
+                if (isCreateDialog) {
+                  // If this is dialog setitng when create => remove part
+                  vm.removePart($part);
                 }
-              } else if (result.fileId) {
-                vm.modifiedPartList.added.push(result.fileId);
+                vm.removeFile(result.fileId);
               }
             });
           break;
@@ -1340,6 +1334,9 @@ module nts.uk.com.view.ccg034.d {
       htmlContent += ` xmlns:com="http://xmlns.jcp.org/jsf/component"`;
       htmlContent += ` xmlns:com="http://xmlns.jcp.org/jsf/html"`;
       htmlContent += `<head>`;
+      htmlContent += `<style>`;
+      htmlContent += `.ccg034-component-container { word-break: break-all; word-break: break-word; word-wrap: break-word }`;
+      htmlContent += `</style>`;
       htmlContent += `<link rel="stylesheet" type="text/css" href="/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/base.css">`;
       htmlContent += `</head>`;
       htmlContent += `<body>`;
@@ -1400,7 +1397,9 @@ module nts.uk.com.view.ccg034.d {
      * 変更前のファイルは削除
      */
     private removeFile(fileId: string) {
-      (nts.uk.request as any).file.remove(fileId);
+      if (!nts.uk.text.isNullOrEmpty(fileId)) {
+        (nts.uk.request as any).file.remove(fileId);
+      }
     }
 
     private updateOriginalFileId() {
@@ -1873,7 +1872,7 @@ module nts.uk.com.view.ccg034.d {
               'cursor': 'pointer',
             });
           $partHTML = $("<div>")
-            .attr('style', '-ms-word-break: break-all')
+            .addClass("ccg034-component-container")
             .css({
               'position': 'absolute',
               'top': `${partDataMenuModel.positionTop}px`,
@@ -1885,7 +1884,6 @@ module nts.uk.com.view.ccg034.d {
               'justify-content': LayoutUtils.getHorizontalClass(partDataMenuModel.alignHorizontal),
               'overflow': 'hidden',
               'text-overflow': 'ellipsis',
-              'word-break': 'break-word',
             })
             .append($partMenuHTML);
           break;
@@ -1900,7 +1898,7 @@ module nts.uk.com.view.ccg034.d {
               'white-space': 'pre-wrap',
             });
           $partHTML = $("<div>")
-            .attr('style', '-ms-word-break: break-all')
+            .addClass("ccg034-component-container")
             .css({
               'position': 'absolute',
               'top': `${partDataLabelModel.positionTop}px`,
@@ -1912,7 +1910,6 @@ module nts.uk.com.view.ccg034.d {
               'justify-content': LayoutUtils.getHorizontalClass(partDataLabelModel.alignHorizontal),
               'overflow': 'hidden',
               'text-overflow': 'ellipsis',
-              'word-break': 'break-word',
               'background-color': partDataLabelModel.backgroundColor,
             })
             .append($partLabelHTML);
@@ -1930,7 +1927,7 @@ module nts.uk.com.view.ccg034.d {
               'cursor': 'pointer',
             });
           $partHTML = $("<div>")
-            .attr('style', '-ms-word-break: break-all')
+            .addClass("ccg034-component-container")
             .css({
               'position': 'absolute',
               'top': `${partDataLinkModel.positionTop}px`,
@@ -1942,7 +1939,6 @@ module nts.uk.com.view.ccg034.d {
               'justify-content': LayoutUtils.getHorizontalClass(partDataLinkModel.alignHorizontal),
               'overflow': 'hidden',
               'text-overflow': 'ellipsis',
-              'word-break': 'break-word',
             })
             .append($partLinkHTML);
           break;
@@ -1960,7 +1956,7 @@ module nts.uk.com.view.ccg034.d {
               'cursor': 'pointer',
             });
           $partHTML = $("<div>")
-            .attr('style', '-ms-word-break: break-all')
+            .addClass("ccg034-component-container")
             .css({
               'position': 'absolute',
               'top': `${partDataAttachmentModel.positionTop}px`,
@@ -1972,7 +1968,6 @@ module nts.uk.com.view.ccg034.d {
               'justify-content': LayoutUtils.getHorizontalClass(partDataAttachmentModel.alignHorizontal),
               'overflow': 'hidden',
               'text-overflow': 'ellipsis',
-              'word-break': 'break-word',
             })
             .append($partAttachmentHTML);
           break;

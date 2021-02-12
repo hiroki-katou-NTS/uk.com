@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class KscdtScheErrLog.
@@ -26,7 +26,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name = "KSCDT_BATCH_ERR_LOG")
-public class KscdtScheErrLog extends UkJpaEntity implements Serializable {
+public class KscdtScheErrLog extends ContractUkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
@@ -40,12 +40,6 @@ public class KscdtScheErrLog extends UkJpaEntity implements Serializable {
     @NotNull
     @Column(name = "ERR_CONTENT")
     private String errContent;
-    /**
-     * 契約コード
-     */
-    @NotNull
-    @Column(name = "CONTRACT_CD")
-    private String contractCd;
     /** The cid. */
     @NotNull
     @Column(name = "CID")
