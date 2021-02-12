@@ -23,6 +23,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.app.command.application.approvalstatus.ApprovalStatusMailTempCommand;
 import nts.uk.ctx.at.request.app.command.application.approvalstatus.RegisterApprovalStatusMailTempCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApplicationListDto;
+import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprSttActivationParam;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprSttConfirmEmpMonthDayDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprSttEmpDateContentDto;
 import nts.uk.ctx.at.request.app.find.application.approvalstatus.ApprSttEmpParam;
@@ -137,8 +138,8 @@ public class ApprovalStatusWebservice extends WebService {
 	// refactor 5
 	@POST
 	@Path("getApprovalStatusActivation")
-	public ApprSttSpecDeadlineDto getApprovalStatusActivation(Integer selectClosureId){
-		return finder.getApprovalStatusActivation(selectClosureId);
+	public ApprSttSpecDeadlineDto getApprovalStatusActivation(ApprSttActivationParam apprSttActivationParam){
+		return finder.getApprovalStatusActivation(apprSttActivationParam.getSelectClosureId());
 	}
 	
 	@POST

@@ -1160,7 +1160,7 @@ module cmm045.a.viewmodel {
                         } else {
 							let linkAppDate = null;
 							if(item.appType==10) {
-								if(item.opComplementLeaveApp.complementLeaveFlg==1) {
+								if(!_.isNull(item.opComplementLeaveApp.complementLeaveFlg)) {
 									linkAppDate = moment(item.opComplementLeaveApp.linkAppDate).format("M/D(ddd)");
 								}	
 							}
@@ -1233,7 +1233,7 @@ module cmm045.a.viewmodel {
                 let time = moment(item[key]).format("M/D(ddd) H:mm");
 				let isSyncApp = false;
 				if(item.appType==10) {
-					if(item.opComplementLeaveApp.complementLeaveFlg==1) {
+					if(!_.isNull(item.opComplementLeaveApp.complementLeaveFlg)) {
 						isSyncApp = true;	
 					}
 				}
@@ -1246,7 +1246,7 @@ module cmm045.a.viewmodel {
 				let statusStr = _.escape(getText(item[key]));
 				let isSyncApp = false;
 				if(item.appType==10) {
-					if(item.opComplementLeaveApp.complementLeaveFlg==1) {
+					if(!_.isNull(item.opComplementLeaveApp.complementLeaveFlg)) {
 						isSyncApp = true;	
 					}
 				}
