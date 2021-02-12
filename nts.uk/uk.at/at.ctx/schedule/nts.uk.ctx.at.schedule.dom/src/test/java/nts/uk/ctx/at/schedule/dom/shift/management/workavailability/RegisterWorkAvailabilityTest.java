@@ -14,7 +14,9 @@ import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Mocked;
+import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
+import nts.arc.task.tran.AtomTask;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -398,6 +400,7 @@ public class RegisterWorkAvailabilityTest {
 	 * 希望日:	2021/02/28
 	 * 期待値：	登録対象の期間: (2021/02/01, 2021/02/28)
 	 * Inputの期間開始日～期間終了日のデータがDelete実行されることをテスト
+	 * Insertも実行されるケースをテスト
 	 */
 	@Test
 	public void testRegister_deadline_equals_endDate() {
@@ -418,23 +421,27 @@ public class RegisterWorkAvailabilityTest {
 		
 		NtsAssert.atomTask(
 				() -> RegisterWorkAvailability.register(require, "sid", datePeriod, workOneDays), 
-				any -> require.deleteAllWorkAvailabilityOfOneDay("sid", datePeriod));
+				any -> require.deleteAllWorkAvailabilityOfOneDay("sid", datePeriod),
+				any -> require.insertAllWorkAvailabilityOfOneDay(workOneDays)
+				);
+		
 	} 
 	
 	/**
-	 * ケース:	締切日 ＞ 期間.開始日 && 希望日 ＝ 締切日 && 締切日 ＞ 期間.終了日
+	 * ケース:	締切日 ＞ 期間.開始日 && 希望日 なし && 締切日 ＞ 期間.終了日
 	 * 期間：		（2021/02/01, 2021/02/28）
 	 * 締切日：	2021/03/1
-	 * 希望日:	2021/03/1
+	 * 希望日:	なし
 	 * 期待値：　	登録対象の期間: (2021/02/1, 2021/02/28)
 	 * Inputの期間開始日～締切日のデータがDelete実行されることをテスト		
-	 * Insertも実行されるケースをテスト	
+	 * Insertは実行されないケース
 	 */
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testRegister_deadline_more_than_endDate() {
 		val datePeriod = new DatePeriod(GeneralDate.ymd(2021, 2, 1), GeneralDate.ymd(2021, 2, 28));
 		val targetRegister = new DatePeriod(GeneralDate.ymd(2021, 2, 1), GeneralDate.ymd(2021, 2, 28));
-		val workOneDays = Arrays.asList(Helper.createWorkAvaiHoliday(workRequire, GeneralDate.ymd(2021, 3, 1)));
+		val workOneDays = new ArrayList<WorkAvailabilityOfOneDay>();
 		new Expectations() {
 			{				
 				service.get(require, (String) any, (GeneralDate) any);
@@ -448,11 +455,25 @@ public class RegisterWorkAvailabilityTest {
 			}
 		};
 		
-		NtsAssert.atomTask(
-				() -> RegisterWorkAvailability.register(require, "sid", datePeriod, workOneDays), 
-				any -> require.deleteAllWorkAvailabilityOfOneDay("sid", targetRegister),
-				any -> require.insertAllWorkAvailabilityOfOneDay(any.get())
-				);
+		AtomTask persist = RegisterWorkAvailability.register(require, "sid", datePeriod, workOneDays);
+
+		new Verifications() {{
+			require.deleteAllWorkAvailabilityOfOneDay("sid", targetRegister);
+			times = 0;  // まだ呼ばれていない
+			
+			require.insertAllWorkAvailabilityOfOneDay((List<WorkAvailabilityOfOneDay>)any);
+			times = 0;
+		}};
+
+		persist.run();  // AtomTaskを実行
+
+		new Verifications() {{
+			require.deleteAllWorkAvailabilityOfOneDay("sid", targetRegister);
+			times = 1;  // 1回だけ呼ばれた
+			
+			require.insertAllWorkAvailabilityOfOneDay((List<WorkAvailabilityOfOneDay>)any);
+			times = 0;  //insertは実行されない
+		}};
 	}
 	
 	public static class Helper {
