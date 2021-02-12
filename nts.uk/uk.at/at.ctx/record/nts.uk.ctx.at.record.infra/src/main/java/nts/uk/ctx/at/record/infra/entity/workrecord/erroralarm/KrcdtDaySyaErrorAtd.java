@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public class KrcdtErAttendanceItem extends UkJpaEntity {
+public class KrcdtDaySyaErrorAtd extends UkJpaEntity {
 
 	@EmbeddedId
 	public KrcdtErAttendanceItemPK krcdtErAttendanceItemPK;
@@ -43,7 +43,7 @@ public class KrcdtErAttendanceItem extends UkJpaEntity {
 		return this.krcdtErAttendanceItemPK;
 	}
 	
-	public KrcdtErAttendanceItem(String id, int attendanceItemId, String cid, 
+	public KrcdtDaySyaErrorAtd(String id, int attendanceItemId, String cid, 
 			String sid, String ccd, GeneralDate processDate) {
 		
 		this.krcdtErAttendanceItemPK = new KrcdtErAttendanceItemPK(id, attendanceItemId);

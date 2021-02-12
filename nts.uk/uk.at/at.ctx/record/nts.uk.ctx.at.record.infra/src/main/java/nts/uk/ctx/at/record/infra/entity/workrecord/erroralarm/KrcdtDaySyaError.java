@@ -24,24 +24,24 @@ import nts.uk.shr.com.context.AppContexts;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCDT_DAY_ERAL")
-public class KrcdtSyainDpErList extends KrcdtEmpErAlCommon implements Serializable {
+public class KrcdtDaySyaError extends KrcdtEmpErAlCommon implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 //	@Getter
 //	@OneToMany(mappedBy = "erOth", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 
-	public KrcdtSyainDpErList(String id, String errorCode, String employeeId, GeneralDate processingDate,
+	public KrcdtDaySyaError(String id, String errorCode, String employeeId, GeneralDate processingDate,
 			String companyID, String errorAlarmMessage, String contractCode,
-			List<KrcdtErAttendanceItem> erAttendanceItem) {
+			List<KrcdtDaySyaErrorAtd> erAttendanceItem) {
 		super(id, errorCode, employeeId, processingDate, companyID, errorAlarmMessage, contractCode, erAttendanceItem);
 	}
 
-	public static KrcdtSyainDpErList toEntity(EmployeeDailyPerError er) {
+	public static KrcdtDaySyaError toEntity(EmployeeDailyPerError er) {
 		String ccd = AppContexts.user().contractCode();
 		
 		String id = IdentifierUtil.randomUniqueId();
-		return new KrcdtSyainDpErList(id, er.getErrorAlarmWorkRecordCode().v(),
+		return new KrcdtDaySyaError(id, er.getErrorAlarmWorkRecordCode().v(),
 				er.getEmployeeID(), er.getDate(),
 				er.getCompanyID(), 
 				er.getErrorAlarmMessage().map(c -> c.v()).orElse(null), ccd,

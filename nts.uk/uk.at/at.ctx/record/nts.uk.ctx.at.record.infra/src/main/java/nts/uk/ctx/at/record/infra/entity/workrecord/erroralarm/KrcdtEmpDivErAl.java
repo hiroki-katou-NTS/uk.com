@@ -28,11 +28,11 @@ public class KrcdtEmpDivErAl extends KrcdtEmpErAlCommon implements Serializable 
 
 //	@Getter
 //	@OneToMany(mappedBy = "erDiv", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-//	public List<KrcdtErAttendanceItem> erAttendanceItem;
+//	public List<KrcdtDaySyaErrorAtd> erAttendanceItem;
 
 	public KrcdtEmpDivErAl(String id, String errorCode, String employeeId, GeneralDate processingDate,
 			String companyID, String errorAlarmMessage, String contractCode, 
-			List<KrcdtErAttendanceItem> erAttendanceItem) {
+			List<KrcdtDaySyaErrorAtd> erAttendanceItem) {
 		super(id, errorCode, employeeId, processingDate, companyID, errorAlarmMessage,  contractCode, erAttendanceItem);
 	}
 

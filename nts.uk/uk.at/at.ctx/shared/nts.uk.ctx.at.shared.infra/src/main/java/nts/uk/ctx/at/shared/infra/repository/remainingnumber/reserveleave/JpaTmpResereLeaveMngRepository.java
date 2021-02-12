@@ -59,8 +59,8 @@ public class JpaTmpResereLeaveMngRepository extends JpaRepository implements Tmp
 	@SneakyThrows
 	@Override
 	public List<TmpResereLeaveMng> findBySidPriod(String sid, DatePeriod period) {
-		try(PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCMT_INTERIM_RESERVE_MNG a1"
-				+ " INNER JOIN KRCMT_INTERIM_REMAIN_MNG a2 ON a1.RESERVE_MNG_ID = a2.REMAIN_MNG_ID"
+		try(PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCDT_HDSTK_TEMP a1"
+				+ " INNER JOIN KRCDT_INTERIM_REMAIN_MNG a2 ON a1.RESERVE_MNG_ID = a2.REMAIN_MNG_ID"
 				+ " WHERE a2.SID = ?"
 				+ " AND  a2.REMAIN_TYPE = 1"
 				+ " AND a2.YMD >= ? and a2.YMD <= ?"

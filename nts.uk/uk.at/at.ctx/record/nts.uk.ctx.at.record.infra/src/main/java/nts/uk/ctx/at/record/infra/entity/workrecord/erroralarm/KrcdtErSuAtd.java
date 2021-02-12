@@ -17,7 +17,7 @@ import nts.arc.time.GeneralDate;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCDT_DAY_ERAL_SU_ATD")
-public class KrcdtErSuAtd extends KrcdtErAttendanceItem implements Serializable {
+public class KrcdtErSuAtd extends KrcdtDaySyaErrorAtd implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
