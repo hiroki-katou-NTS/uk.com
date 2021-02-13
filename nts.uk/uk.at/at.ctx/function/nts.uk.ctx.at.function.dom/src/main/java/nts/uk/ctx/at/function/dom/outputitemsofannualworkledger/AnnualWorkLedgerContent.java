@@ -33,6 +33,9 @@ public class AnnualWorkLedgerContent {
     // 職場コード
     private String workplaceCode;
 
+    // 階層コード
+    private String hierarchyCd;
+
     // 職場名称
     private String workplaceName;
 

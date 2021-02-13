@@ -22,4 +22,7 @@ public class MonthlyValue {
 
     // 文字値
     private String characterValue;
+
+    //
+    private String name;
 }
