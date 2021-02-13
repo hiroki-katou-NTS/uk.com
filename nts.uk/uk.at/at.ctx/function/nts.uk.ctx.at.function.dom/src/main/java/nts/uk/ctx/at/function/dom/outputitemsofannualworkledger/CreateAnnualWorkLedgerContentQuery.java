@@ -254,7 +254,7 @@ public class CreateAnnualWorkLedgerContentQuery {
             List<MonthlyValue> lstMonthlyValue = new ArrayList<>();
             // 「期間」の中にループを行い
             for (val y : yearMonthList) {
-                val value = allValue.getOrDefault(y, null);
+                val value = allValue.getOrDefault(y, new HashMap<>());
                 val monthlyRecordValues = monthlyItem.getSelectedAttendanceItemList();
                 if (monthlyRecordValues != null) {
                     lstMonthlyValue.add(fromMonthlyRecordValue(monthlyItem, monthlyRecordValues, value, y));
