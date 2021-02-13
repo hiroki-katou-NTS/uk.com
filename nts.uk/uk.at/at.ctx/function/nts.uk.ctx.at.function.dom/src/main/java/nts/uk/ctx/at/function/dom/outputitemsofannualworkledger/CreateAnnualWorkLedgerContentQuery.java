@@ -78,18 +78,16 @@ public class CreateAnnualWorkLedgerContentQuery {
             throw new BusinessException("Msg_1860");
         }
         // DAILY
-        List<AttendanceResultDto> listItemValue = require.getValueOf(listSid, datePeriod, listIdDailys)
-                .stream().filter(distinctByKey(AttendanceResultDto::getEmployeeId)).collect(Collectors.toList());
+        List<AttendanceResultDto> listItemValue = require.getValueOf(listSid, datePeriod, listIdDailys);
         Map<String, Map<GeneralDate, Map<Integer, AttendanceItemDtoValue>>> mapValue = new HashMap<>();
         Map<Integer, Map<String, CodeNameInfoDto>> allDataMaster = require.getAllDataMaster(cid, datePeriod.end(), listIdDailys);
-        for (val attendanceResultDto : listItemValue) {
-            Map<Integer, AttendanceItemDtoValue> allValue = attendanceResultDto.getAttendanceItems().stream()
-                    .filter(distinctByKey(AttendanceItemDtoValue::getItemId))
-                    .collect(Collectors.toMap(AttendanceItemDtoValue::getItemId, l -> l));
-            Map<GeneralDate, Map<Integer, AttendanceItemDtoValue>> mapDateAndItem = new HashMap<>();
-            mapDateAndItem.put(attendanceResultDto.getWorkingDate(), allValue);
-            mapValue.put(attendanceResultDto.getEmployeeId(), mapDateAndItem);
-        }
+        listSid.forEach(e -> {
+            val listValueEm = listItemValue.stream().filter(i -> i.getEmployeeId().equals(e)).collect(Collectors.toList());
+            Map<GeneralDate, Map<Integer, AttendanceItemDtoValue>> values = listValueEm.stream()
+                    .collect(Collectors.toMap(AttendanceResultDto::getWorkingDate,
+                            i -> i.getAttendanceItems().stream().collect(Collectors.toMap(AttendanceItemDtoValue::getItemId, l -> l))));
+            mapValue.put(e, values);
+        });
         // MONTHLY
         Map<String, List<MonthlyRecordValueImport>> actualMultipleMonth =
                 require.getActualMultipleMonth(listSid, yearMonthPeriod, listIdMonthly);

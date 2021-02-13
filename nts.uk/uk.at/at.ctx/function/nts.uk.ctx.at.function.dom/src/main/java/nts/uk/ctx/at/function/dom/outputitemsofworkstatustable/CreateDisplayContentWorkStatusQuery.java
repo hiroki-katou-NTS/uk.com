@@ -64,17 +64,16 @@ public class CreateDisplayContentWorkStatusQuery {
                 .map(StatusOfEmployee::getEmployeeId).collect(Collectors.toList());
         Map<Integer, Map<String, CodeNameInfoDto>> allDataMaster = require.getAllDataMaster(cid, datePeriod.end(), listIds);
 
-        List<AttendanceResultDto> listItemValue = require.getValueOf(listEmployee, datePeriod, listIds)
-                .stream().filter(distinctByKey(AttendanceResultDto::getEmployeeId)).collect(Collectors.toList());
+        List<AttendanceResultDto> listItemValue = require.getValueOf(listEmployee, datePeriod, listIds);
         Map<String, Map<GeneralDate, Map<Integer, AttendanceItemDtoValue>>> mapValue = new HashMap<>();
-        for (AttendanceResultDto attendanceResultDto : listItemValue) {
-            Map<Integer, AttendanceItemDtoValue> allValue = attendanceResultDto.getAttendanceItems().stream()
-                    .filter(distinctByKey(AttendanceItemDtoValue::getItemId))
-                    .collect(Collectors.toMap(AttendanceItemDtoValue::getItemId, l -> l));
-            Map<GeneralDate, Map<Integer, AttendanceItemDtoValue>> mapDateAndItem = new HashMap<>();
-            mapDateAndItem.put(attendanceResultDto.getWorkingDate(), allValue);
-            mapValue.put(attendanceResultDto.getEmployeeId(), mapDateAndItem);
-        }
+
+        listEmployee.forEach(e -> {
+            val listValueEm = listItemValue.stream().filter(i -> i.getEmployeeId().equals(e)).collect(Collectors.toList());
+            Map<GeneralDate, Map<Integer, AttendanceItemDtoValue>> values = listValueEm.stream()
+                    .collect(Collectors.toMap(AttendanceResultDto::getWorkingDate,
+                            i -> i.getAttendanceItems().stream().collect(Collectors.toMap(AttendanceItemDtoValue::getItemId, l -> l))));
+            mapValue.put(e, values);
+        });
         for (StatusOfEmployee e : listEmployeeStatus) {
             val item = new DisplayContentWorkStatus();
             val eplInfo = mapSids.get(e.getEmployeeId());
