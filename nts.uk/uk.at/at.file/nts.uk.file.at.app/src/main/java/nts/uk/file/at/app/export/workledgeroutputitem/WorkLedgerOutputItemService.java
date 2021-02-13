@@ -15,12 +15,17 @@ import nts.uk.ctx.at.function.dom.adapter.actualmultiplemonth.ActualMultipleMont
 import nts.uk.ctx.at.function.dom.adapter.actualmultiplemonth.MonthlyRecordValueImport;
 import nts.uk.ctx.at.function.dom.adapter.outputitemsofworkstatustable.AffComHistAdapter;
 import nts.uk.ctx.at.function.dom.adapter.outputitemsofworkstatustable.AttendanceItemServiceAdapter;
+import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.CodeNameInfoDto;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.EmpAffInfoExportDto;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.EmployeeInfor;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.StatusOfEmployee;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.WorkPlaceInfo;
 import nts.uk.ctx.at.function.dom.workledgeroutputitem.*;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffAtWorkplaceImport;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
+import nts.uk.ctx.at.record.dom.algorithm.masterinfo.CodeNameInfo;
+import nts.uk.ctx.at.record.dom.algorithm.masterinfo.GetMaterData;
+import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.closure.GetSpecifyPeriod;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeBasicInfoImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
@@ -62,6 +67,7 @@ public class WorkLedgerOutputItemService extends ExportService<WorkLedgerOutputI
 
     @Inject
     private WorkplaceConfigInfoAdapter workplaceConfigInfoAdapter;
+
     @Inject
     private GetSettingDetailWorkLedger detailWorkLedger;
 
@@ -82,6 +88,7 @@ public class WorkLedgerOutputItemService extends ExportService<WorkLedgerOutputI
 
     @Inject
     private ClosureRepository closureRepository;
+
     @Inject
     private ClosureEmploymentRepository closureEmploymentRepository;
 
@@ -94,6 +101,19 @@ public class WorkLedgerOutputItemService extends ExportService<WorkLedgerOutputI
     @Inject
     private MonthlyAttendanceItemRepository monthlyAttendanceItemRepository;
 
+    @Inject
+    private GetSpecifyPeriod getSpecifyPeriod;
+
+    @Inject
+    private GetMaterData getMaterData;
+
+    private static final int WORKPLACE = 5;
+
+    private static final int EMPLOYMENT = 8;
+
+    private static final int POSITION = 7;
+
+    private static final int CLASSIFICATION = 6;
 
     @Override
     protected void handle(ExportServiceContext<WorkLedgerOutputItemFileQuery> context) {
@@ -102,22 +122,38 @@ public class WorkLedgerOutputItemService extends ExportService<WorkLedgerOutputI
         YearMonth yearMonthStart = new YearMonth(query.getStartMonth());
         YearMonth yearMonthEnd = new YearMonth(query.getEndMonth());
         YearMonthPeriod yearMonthPeriod = new YearMonthPeriod(yearMonthStart, yearMonthEnd);
-
-        List<String> lstEmpIds = query.getLstEmpIds();
-        val cl = closureRepository.findById(AppContexts.user().companyId(), query.getClosureId());
-        val basedateNow = GeneralDate.today();
-        if (!cl.isPresent() || cl.get().getHistoryByBaseDate(basedateNow) == null) {
-            throw new BusinessException("");
-        }
-        val closureDate = cl.get().getHistoryByBaseDate(basedateNow).getClosureDate();
-        DatePeriod datePeriod = this.getFromClosureDate(yearMonthStart, yearMonthEnd, closureDate.getClosureDay().v());
-        // [No.600]社員ID（List）から社員コードと表示名を取得（削除社員考慮）
-        List<EmployeeBasicInfoImport> lstEmployeeInfo = empEmployeeAdapter.getEmpInfoLstBySids(lstEmpIds, datePeriod, true, true);
-        // 2 Call 会社を取得する
+        val closureId = query.getClosureId() == 0 ? 1 : query.getClosureId();
         String companyId = AppContexts.user().companyId();
-        CompanyBsImport companyInfo = companyBsAdapter.getCompanyByCid(companyId);
-        // 3 Call 社員ID（List）と基準日から所属職場IDを取得
+        // 1 ⑨:find(会社ID、ClosureId)
+        Optional<Closure> closureOptional = closureRepository.findById(AppContexts.user().companyId(), closureId);
+
+        // 1.1
+        val periodOptionalStart = this.getSpecifyPeriod.getSpecifyPeriod(yearMonthStart)
+                .stream().filter(x -> x.getClosureId().value == closureId).findFirst();
+        // 1.2
+        val periodOptionalEnd = this.getSpecifyPeriod.getSpecifyPeriod(yearMonthEnd)
+                .stream().filter(x -> x.getClosureId().value == closureId).findFirst();
+        List<String> lstEmpIds = query.getLstEmpIds();
+
+        if (!periodOptionalStart.isPresent() || !periodOptionalEnd.isPresent()) {
+            throw new RuntimeException(" CAN NOT FIND DATE PERIOD WITH CID = "
+                    + companyId + "AND CLOSURE_ID = " + closureId);
+        }
+
+        // ⑩
+        DatePeriod datePeriodStart = periodOptionalStart.get().getPeriod();
+        // ⑪
+        DatePeriod datePeriodEnd = periodOptionalEnd.get().getPeriod();
+        // 2 ⑫
+        DatePeriod datePeriod = new DatePeriod(datePeriodStart.start(), datePeriodEnd.end());
+
         GeneralDate baseDate = datePeriod.end();
+
+        // 3 ① [No.600]社員ID（List）から社員コードと表示名を取得（削除社員考慮）
+        List<EmployeeBasicInfoImport> lstEmployeeInfo = empEmployeeAdapter.getEmpInfoLstBySids(lstEmpIds, datePeriod, true, true);
+        // 4 ② Call 会社を取得する
+        CompanyBsImport companyInfo = companyBsAdapter.getCompanyByCid(companyId);
+        // 5 Call 社員ID（List）と基準日から所属職場IDを取得
         List<AffAtWorkplaceImport> lstAffAtWorkplaceImport = affWorkplaceAdapter
                 .findBySIdAndBaseDate(lstEmpIds, baseDate);
         List<EmployeeInfor> employeeInfoList = new ArrayList<>();
@@ -132,19 +168,23 @@ public class WorkLedgerOutputItemService extends ExportService<WorkLedgerOutputI
         });
         List<String> listWorkplaceId = lstAffAtWorkplaceImport.stream()
                 .map(AffAtWorkplaceImport::getWorkplaceId).collect(Collectors.toList());
-        // 3.1 Call [No.560]職場IDから職場の情報をすべて取得する
+        // 5.1 ④ Call [No.560]職場IDから職場の情報をすべて取得する
         List<WorkplaceInfor> lstWorkplaceInfo = workplaceConfigInfoAdapter.getWorkplaceInforByWkpIds(companyId, listWorkplaceId, baseDate);
 
-        List<WorkPlaceInfo> placeInfoList = lstWorkplaceInfo.stream().map(e -> new WorkPlaceInfo(e.getWorkplaceId(), e.getWorkplaceCode(), e.getWorkplaceName())).collect(Collectors.toList());
+        List<WorkPlaceInfo> placeInfoList = lstWorkplaceInfo.stream()
+                .map(e -> new WorkPlaceInfo(e.getWorkplaceId(), e.getWorkplaceCode(), e.getWorkplaceName(), e.getHierarchyCode()))
+                .collect(Collectors.toList());
 
-        // 4. 勤務状況表の出力設定の詳細を取得する.
+        // 6 ⑤ 勤務状況表の出力設定の詳細を取得する.
 
         WorkLedgerOutputItem workLedgerDetail = detailWorkLedger.getDetail(query.getSettingId());
 
 
         RequireImpl require = new RequireImpl(monthlyItemService, actualMultipleMonthAdapter, shareEmploymentAdapter, closureRepository,
-                closureEmploymentRepository, affComHistAdapter, monthlyAttItemCanAggregateRepo, monthlyAttendanceItemRepository);
-        List<WorkLedgerDisplayContent> listData = CreateWorkLedgerDisplayContentQuery.createWorkLedgerDisplayContent(require, datePeriod, employeeInfoList, workLedgerDetail, placeInfoList);
+                closureEmploymentRepository, affComHistAdapter, monthlyAttItemCanAggregateRepo, monthlyAttendanceItemRepository, getMaterData);
+        // 7 ⑥
+        List<WorkLedgerDisplayContent> listData = CreateWorkLedgerDisplayContentQuery
+                .createWorkLedgerDisplayContent(require, datePeriod, employeeInfoList, workLedgerDetail, placeInfoList, yearMonthPeriod);
         Comparator<WorkLedgerDisplayContent> compare = Comparator
                 .comparing(WorkLedgerDisplayContent::getWorkplaceCode)
                 .thenComparing(WorkLedgerDisplayContent::getEmployeeCode);
@@ -154,7 +194,6 @@ public class WorkLedgerOutputItemService extends ExportService<WorkLedgerOutputI
                 companyInfo.getCompanyName(),
                 workLedgerDetail.getName().v(),
                 yearMonthPeriod,
-                closureDate,
                 query.isZeroDisplay(),
                 lsSorted,
                 query.isCode()
@@ -173,10 +212,11 @@ public class WorkLedgerOutputItemService extends ExportService<WorkLedgerOutputI
         private AffComHistAdapter affComHistAdapter;
         private MonthlyAttItemCanAggregateRepository monthlyAttItemCanAggregateRepo;
         private MonthlyAttendanceItemRepository monthlyAttendanceItemRepository;
+        private GetMaterData getMaterData;
 
         @Override
-        public List<StatusOfEmployee> getAffiliateEmpListDuringPeriod(DatePeriod datePeriod, List<String> empIdList) {
-            return affComHistAdapter.getListAffComHist(empIdList, datePeriod);
+        public EmpAffInfoExportDto getAffiliationPeriod(List<String> listSid, YearMonthPeriod YMPeriod, GeneralDate baseDate) {
+            return affComHistAdapter.getAffiliationPeriod(listSid, YMPeriod, baseDate);
         }
 
         @Override
@@ -213,14 +253,26 @@ public class WorkLedgerOutputItemService extends ExportService<WorkLedgerOutputI
                     new CacheCarrier(), employeeId, baseDate);
             return cls != null ? Optional.of(cls) : Optional.empty();
         }
-    }
 
-    private DatePeriod getFromClosureDate(YearMonth startMonth, YearMonth endMonth, int closureDay) {
-        GeneralDate startDate = GeneralDate.ymd(startMonth.year(), startMonth.month(),
-                Math.min(closureDay, startMonth.lastDateInMonth())).addDays(1);
-        GeneralDate endDate = GeneralDate.ymd(endMonth.year(), endMonth.month(),
-                Math.min(closureDay, endMonth.lastDateInMonth()));
+        @Override
+        public Map<Integer, Map<String, CodeNameInfoDto>> getAllDataMaster(String companyId, GeneralDate dateReference, List<Integer> lstDivNO) {
 
-        return new DatePeriod(startDate, endDate);
+            val data = getMaterData.getAllDataMaster(companyId, dateReference, lstDivNO);
+            Map<Integer, Map<String, CodeNameInfoDto>> rs = new HashMap<>();
+            Map<Integer, Map<String, CodeNameInfo>> listItem = new HashMap<>();
+            listItem.put(WORKPLACE, data.getOrDefault(WORKPLACE, null));
+            listItem.put(EMPLOYMENT, data.getOrDefault(EMPLOYMENT, null));
+            listItem.put(POSITION, data.getOrDefault(POSITION, null));
+            listItem.put(CLASSIFICATION, data.getOrDefault(CLASSIFICATION, null));
+
+            listItem.forEach((k, e) -> {
+                Map<String, CodeNameInfoDto> item = new HashMap<>();
+                e.forEach((key, value) -> {
+                    item.put(key, new CodeNameInfoDto(value.getCode(), value.getName(), value.getId()));
+                });
+                rs.put(k, item);
+            });
+            return rs;
+        }
     }
 }

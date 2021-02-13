@@ -18,14 +18,13 @@ import nts.uk.ctx.at.function.dom.adapter.outputitemsofworkstatustable.Attendanc
 import nts.uk.ctx.at.function.dom.adapter.outputitemsofworkstatustable.AttendanceResultDto;
 import nts.uk.ctx.at.function.dom.commonform.ClosureDateEmployment;
 import nts.uk.ctx.at.function.dom.commonform.GetClosureDateEmploymentDomainService;
-import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.AnnualWorkLedgerContent;
-import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.AnnualWorkLedgerExportDataSource;
-import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.AnnualWorkLedgerOutputSetting;
-import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.CreateAnnualWorkLedgerContentQuery;
-import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.EmployeeInfor;
-import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.StatusOfEmployee;
+import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.*;
+import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.EmpAffInfoExportDto;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffAtWorkplaceImport;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
+import nts.uk.ctx.at.record.dom.algorithm.masterinfo.CodeNameInfo;
+import nts.uk.ctx.at.record.dom.algorithm.masterinfo.GetMaterData;
+import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.closure.GetSpecifyPeriod;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeBasicInfoImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
@@ -39,6 +38,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsImport;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -90,6 +90,16 @@ public class AnnualWorkLedgerExportService extends ExportService<AnnualWorkLedge
     @Inject
     private DisplayAnnualWorkLedgerReportGenerator displayGenerator;
 
+    @Inject
+    private GetSpecifyPeriod getSpecifyPeriod;
+
+    @Inject
+    private GetMaterData getMaterData;
+
+    private static final int WORK_TYPE = 1;
+
+    private static final int WORKING_HOURS = 2;
+
     /**
      * 勤務状況表の対象ファイルを出力する :: ファイルの出力
      *
@@ -101,32 +111,49 @@ public class AnnualWorkLedgerExportService extends ExportService<AnnualWorkLedge
         YearMonth yearMonthStart = new YearMonth(query.getStartMonth());
         YearMonth yearMonthEnd = new YearMonth(query.getEndMonth());
         YearMonthPeriod yearMonthPeriod = new YearMonthPeriod(yearMonthStart, yearMonthEnd);
-
-        val cl = closureRepository.findById(AppContexts.user().companyId(), query.getClosureId());
-        val basedateNow = GeneralDate.today();
-        if (!cl.isPresent() || cl.get().getHistoryByBaseDate(basedateNow) == null) {
-            throw new BusinessException("");
-        }
-        val closureDate = cl.get().getHistoryByBaseDate(basedateNow).getClosureDate();
-        List<String> lstEmpIds = query.getLstEmpIds();
-        DatePeriod datePeriod = this.getFromClosureDate(yearMonthStart, yearMonthEnd, closureDate.getClosureDay().v());
-        GeneralDate baseDate = datePeriod.end();
+        val closureId = query.getClosureId() == 0 ? 1 : query.getClosureId();
         String companyId = AppContexts.user().companyId();
+        // 1 ⑨:find(会社ID、ClosureId)
+        Optional<Closure> closureOptional = closureRepository.findById(AppContexts.user().companyId(), closureId);
+        // 1.1
+        val periodOptionalStart = this.getSpecifyPeriod.getSpecifyPeriod(yearMonthStart)
+                .stream().filter(x -> x.getClosureId().value == closureId).findFirst();
+        // 1.2
+        val periodOptionalEnd = this.getSpecifyPeriod.getSpecifyPeriod(yearMonthEnd)
+                .stream().filter(x -> x.getClosureId().value == closureId).findFirst();
 
-        // 1 Call [No.600]社員ID（List）から社員コードと表示名を取得（削除社員考慮）
+        if (!periodOptionalStart.isPresent() || !periodOptionalEnd.isPresent()) {
+            throw new RuntimeException(" CAN NOT FIND DATE PERIOD WITH CID = "
+                    + companyId + "AND CLOSURE_ID = " + closureId);
+        }
+
+        List<String> lstEmpIds = query.getLstEmpIds();
+        // ⑩
+        DatePeriod datePeriodStart = periodOptionalStart.get().getPeriod();
+        // ⑪
+        DatePeriod datePeriodEnd = periodOptionalEnd.get().getPeriod();
+        // 2 ⑫
+        DatePeriod datePeriod = new DatePeriod(datePeriodStart.start(), datePeriodEnd.end());
+        GeneralDate baseDate = datePeriod.end();
+        ClosureDate closureDate = null;
+        if (closureOptional.isPresent())
+            closureDate = closureOptional.get().getHistoryByBaseDate(baseDate).getClosureDate();
+        // 3 ① Call [No.600]社員ID（List）から社員コードと表示名を取得（削除社員考慮）
         List<EmployeeBasicInfoImport> lstEmployeeInfo = empEmployeeAdapter.getEmpInfoLstBySids(lstEmpIds, datePeriod, true, false);
         Map<String, EmployeeBasicInfoImport> mapEmployeeInfo = lstEmployeeInfo.stream().filter(distinctByKey(EmployeeBasicInfoImport::getSid))
                 .collect(Collectors.toMap(EmployeeBasicInfoImport::getSid, i -> i));
 
-        // 2 Call 会社を取得する
+        // 4 ② Call 会社を取得する
         CompanyBsImport companyInfo = companyBsAdapter.getCompanyByCid(companyId);
 
-        // 3 Call 社員ID（List）と基準日から所属職場IDを取得
+        // 5 ③ Call 社員ID（List）と基準日から所属職場IDを取得
         List<AffAtWorkplaceImport> lstAffAtWorkplaceImport = affWorkplaceAdapter.findBySIdAndBaseDate(lstEmpIds, baseDate);
+
         List<String> listWorkplaceId = lstAffAtWorkplaceImport.stream().map(AffAtWorkplaceImport::getWorkplaceId).distinct()
                 .collect(Collectors.toList());
-        // 3.1 Call [No.560]職場IDから職場の情報をすべて取得する
+        // 5.1 ④ Call [No.560]職場IDから職場の情報をすべて取得する
         List<WorkplaceInfor> lstWorkplaceInfo = workplaceConfigInfoAdapter.getWorkplaceInforByWkpIds(companyId, listWorkplaceId, baseDate);
+
         Map<String, WorkplaceInfor> mapWorkplaceInfo = lstWorkplaceInfo.stream().filter(distinctByKey(WorkplaceInfor::getWorkplaceId))
                 .collect(Collectors.toMap(WorkplaceInfor::getWorkplaceId, i -> i));
 
@@ -139,21 +166,29 @@ public class AnnualWorkLedgerExportService extends ExportService<AnnualWorkLedge
         // 4 Call 基準日で社員の雇用と締め日を取得する
         RequireClosureDateEmploymentService require1 = new RequireClosureDateEmploymentService(
                 shareEmploymentAdapter, closureRepository, closureEmploymentRepository);
-        List<ClosureDateEmployment> lstClosureDateEmployment = GetClosureDateEmploymentDomainService.get(require1, baseDate, lstEmpIds);
-        Map<String, ClosureDateEmployment> mapClosureDateEmployment = lstClosureDateEmployment.stream().filter(distinctByKey(ClosureDateEmployment::getEmployeeId))
-                .collect(Collectors.toMap(ClosureDateEmployment::getEmployeeId, i -> i));
+
 
         // 5 Call 年間勤務台帳の出力設定の詳細を取得する
         Optional<AnnualWorkLedgerOutputSetting> outputSetting = annualWorkLedgerOutputSettingFinder.getById(query.getSettingId());
         if (!outputSetting.isPresent()) {
             throw new BusinessException("Msg_1898");
         }
+        // 6 ⑤ call 基準日で社員の雇用と締め日を取得する
+        List<ClosureDateEmployment> lstClosureDateEmployment = GetClosureDateEmploymentDomainService.get(require1, baseDate, lstEmpIds);
+        Map<String, ClosureDateEmployment> mapClosureDateEmployment = lstClosureDateEmployment.stream().filter(distinctByKey(ClosureDateEmployment::getEmployeeId))
+                .collect(Collectors.toMap(ClosureDateEmployment::getEmployeeId, i -> i));
 
         // 6 Call 年間勤務台帳の表示内容を作成する
         RequireCreateAnnualWorkLedgerContentService require2 = new RequireCreateAnnualWorkLedgerContentService(
-                affComHistAdapter, itemServiceAdapter, actualMultipleMonthAdapter);
-        List<AnnualWorkLedgerContent> lstContent = CreateAnnualWorkLedgerContentQuery.getData(require2,
-                datePeriod, mapEmployeeInfo, outputSetting.get(), mapEmployeeWorkplace, mapClosureDateEmployment);
+                affComHistAdapter, itemServiceAdapter, actualMultipleMonthAdapter, getMaterData);
+        List<AnnualWorkLedgerContent> lstContent = CreateAnnualWorkLedgerContentQuery.getData(
+                require2,
+                datePeriod,
+                mapEmployeeInfo,
+                outputSetting.get(),
+                mapEmployeeWorkplace,
+                mapClosureDateEmployment,
+                yearMonthPeriod);
         Comparator<AnnualWorkLedgerContent> compare = Comparator
                 .comparing(AnnualWorkLedgerContent::getWorkplaceCode)
                 .thenComparing(AnnualWorkLedgerContent::getEmployeeCode);
@@ -164,20 +199,11 @@ public class AnnualWorkLedgerExportService extends ExportService<AnnualWorkLedge
                 companyInfo.getCompanyName(),
                 outputSetting.get(),
                 yearMonthPeriod,
-                closureDate,
+                datePeriod,
                 query.isZeroDisplay(),
                 lsSorted
         );
         displayGenerator.generate(context.getGeneratorContext(), dataSource);
-    }
-
-    private DatePeriod getFromClosureDate(YearMonth startMonth, YearMonth endMonth, int closureDay) {
-        GeneralDate startDate = GeneralDate.ymd(startMonth.year(), startMonth.month(),
-                Math.min(closureDay, startMonth.lastDateInMonth())).addDays(1);
-        GeneralDate endDate = GeneralDate.ymd(endMonth.year(), endMonth.month(),
-                Math.min(closureDay, endMonth.lastDateInMonth()));
-
-        return new DatePeriod(startDate, endDate);
     }
 
     @AllArgsConstructor
@@ -197,7 +223,7 @@ public class AnnualWorkLedgerExportService extends ExportService<AnnualWorkLedge
                     ClosureService.createRequireM3(closureRepository, closureEmploymentRepository, shareEmploymentAdapter),
                     new CacheCarrier(), employeeId, baseDate);
 
-            return closure!=null?Optional.of(closure):Optional.empty();
+            return closure != null ? Optional.of(closure) : Optional.empty();
         }
     }
 
@@ -206,10 +232,11 @@ public class AnnualWorkLedgerExportService extends ExportService<AnnualWorkLedge
         private AffComHistAdapter affComHistAdapter;
         private AttendanceItemServiceAdapter itemServiceAdapter;
         private ActualMultipleMonthAdapter actualMultipleMonthAdapter;
+        private GetMaterData getMaterData;
 
         @Override
-        public List<StatusOfEmployee> getListAffComHistByListSidAndPeriod(List<String> sid, DatePeriod datePeriod) {
-            return affComHistAdapter.getListAffComHist(sid, datePeriod);
+        public EmpAffInfoExportDto getAffiliationPeriod(List<String> listSid, YearMonthPeriod YMPeriod, GeneralDate baseDate) {
+            return affComHistAdapter.getAffiliationPeriod(listSid, YMPeriod, baseDate);
         }
 
         @Override
@@ -222,7 +249,26 @@ public class AnnualWorkLedgerExportService extends ExportService<AnnualWorkLedge
         public Map<String, List<MonthlyRecordValueImport>> getActualMultipleMonth(List<String> employeeIds, YearMonthPeriod period, List<Integer> itemIds) {
             return actualMultipleMonthAdapter.getActualMultipleMonth(employeeIds, period, itemIds);
         }
+
+        @Override
+        public Map<Integer, Map<String, CodeNameInfoDto>> getAllDataMaster(String companyId, GeneralDate dateReference, List<Integer> lstDivNO) {
+            Map<Integer, Map<String, CodeNameInfoDto>> rs = new HashMap<>();
+            val data = getMaterData.getAllDataMaster(companyId, dateReference, lstDivNO);
+            Map<Integer, Map<String, CodeNameInfo>> listItem = new HashMap<>();
+            listItem.put(WORK_TYPE, data.getOrDefault(WORK_TYPE, null));
+            listItem.put(WORKING_HOURS, data.getOrDefault(WORKING_HOURS, null));
+
+            listItem.forEach((k, e) -> {
+                Map<String, CodeNameInfoDto> item = new HashMap<>();
+                e.forEach((key, value) -> {
+                    item.put(key, new CodeNameInfoDto(value.getCode(), value.getName(), value.getId()));
+                });
+                rs.put(k, item);
+            });
+            return rs;
+        }
     }
+
     public static <T> Predicate<T> distinctByKey(
             Function<? super T, ?> keyExtractor) {
 

@@ -125,8 +125,7 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
                 cells.merge(count, 0, 1, 2, true, true);
                 cells.get(count, 0).getStyle()
                         .setVerticalAlignment(TextAlignmentType.LEFT);
-                cells.get(count, 0).setValue(checkCode(dataSource.isCode(),
-                        oneLine.getPrimitiveValue()) ? oneLine.getCode() : oneLine.getAttendanceItemName());
+                cells.get(count, 0).setValue(oneLine.getAttendanceItemName());
                 cells.get(count, 14).getStyle()
                         .setVerticalAlignment(TextAlignmentType.RIGHT);
                 cells.get(count, 14).setValue(oneLine.getTotal());
@@ -137,8 +136,13 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
                 for (int k = 0; k < oneLine.getValueList().size(); k++) {
                     val item = oneLine.getValueList().get(k);
                     val column = yearMonths.indexOf(item.getDate()) + 2;
-                    cells.get(count, column).setValue(formatValue(item.getActualValue(), item.getCharacterValue(),
-                            oneLine.getAttribute(), dataSource.isZeroDisplay()));
+                    if(!dataSource.isCode() && checkCode(oneLine.getPrimitiveValue())){
+                        cells.get(count, column).setValue(item.getName());
+                    }else {
+                        cells.get(count, column).setValue(formatValue(item.getActualValue(), item.getCharacterValue(),
+                                oneLine.getAttribute(), dataSource.isZeroDisplay()));
+                    }
+
                 }
                 itemOnePage++;
                 count++;
@@ -244,14 +248,12 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
         return (minute < 0 ? "-" : "") + String.format("%d:%02d", hours, minutes);
     }
 
-    private boolean checkCode(boolean isCode, Integer primitive) {
+    private boolean checkCode( Integer primitive) {
         val listAtt = Arrays.asList(
-                PrimitiveValueOfAttendanceItem.WORKPLACE_CD,
+                PrimitiveValueOfAttendanceItem.WORK_HOURS_CD,
                 PrimitiveValueOfAttendanceItem.POSITION_CD,
-                PrimitiveValueOfAttendanceItem.CLASSIFICATION_CD,
                 PrimitiveValueOfAttendanceItem.EMP_CTG_CD,
-                PrimitiveValueOfAttendanceItem.WORK_TYPE_DIFFERENT_CD);
-
-        return primitive != null && isCode && listAtt.stream().anyMatch(x -> x.value == primitive);
+                PrimitiveValueOfAttendanceItem.CLASSIFICATION_CD);
+        return primitive != null && listAtt.stream().anyMatch(x -> x.value == primitive);
     }
 }

@@ -15,7 +15,6 @@ public class WorkLedgerExportDataSource {
     private String companyName;
     private String title;
     private YearMonthPeriod yearMonthPeriod;
-    private ClosureDate closureDate;
     private boolean isZeroDisplay;
     private List<WorkLedgerDisplayContent> listContent;
     private boolean code;
