@@ -128,7 +128,7 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
         // C1_1
         cells.get(firstRow + 3, 0).setValue(TextResource.localize("KWR004_206"));
 
-        val closureDay = dataSource.getClosureDate().getLastDayOfMonth() ? 0 : dataSource.getClosureDate().getClosureDay().v();
+        val closureDay = dataSource.getDatePeriod().start().day() - 1;
         val yearMonths = dataSource.getYearMonthPeriod().yearMonthsBetween();
         for (int mi = 0; mi < yearMonths.size(); mi++) {
             val yearMonth = yearMonths.get(mi);
@@ -222,12 +222,12 @@ public class AsposeDisplayAnnualWorkLedgerReportGenerator extends AsposeCellsRep
                 break;
             case TIME_OF_DAY:
                 if (valueDouble != null) {
-                    rs = convertToTime((int) valueDouble.intValue());
+                    rs = convertToTime(valueDouble.intValue());
                 }
                 break;
             case TIME:
                 if (valueDouble != null) {
-                    val minute = (int) valueDouble.intValue();
+                    val minute = valueDouble.intValue();
                     if (minute != 0 || isZeroDisplay) {
                         rs = convertToTime(minute);
                     }

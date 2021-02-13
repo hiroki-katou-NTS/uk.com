@@ -20,8 +20,6 @@ import nts.uk.ctx.at.function.dom.commonform.ClosureDateEmployment;
 import nts.uk.ctx.at.function.dom.commonform.GetClosureDateEmploymentDomainService;
 import nts.uk.ctx.at.function.dom.outputitemsofannualworkledger.*;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.EmpAffInfoExportDto;
-import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.EmployeeInfor;
-import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.dto.StatusOfEmployee;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffAtWorkplaceImport;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.algorithm.masterinfo.CodeNameInfo;
@@ -201,7 +199,7 @@ public class AnnualWorkLedgerExportService extends ExportService<AnnualWorkLedge
                 companyInfo.getCompanyName(),
                 outputSetting.get(),
                 yearMonthPeriod,
-                closureDate,
+                datePeriod,
                 query.isZeroDisplay(),
                 lsSorted
         );
