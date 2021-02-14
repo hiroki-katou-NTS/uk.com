@@ -49,7 +49,7 @@ public class UpdateWorkLedgerSettingDomainService {
                 outputItemList,
                 name,
                 settingCategory,
-                settingCategory == SettingClassificationCommon.FREE_SETTING ? employeeId : null
+                settingCategory == SettingClassificationCommon.FREE_SETTING ? Optional.of(employeeId) : Optional.empty()
         );
         return AtomTask.of(() -> {
             require.updateWorkLedgerOutputItem(id, workLedgerOutputItem);

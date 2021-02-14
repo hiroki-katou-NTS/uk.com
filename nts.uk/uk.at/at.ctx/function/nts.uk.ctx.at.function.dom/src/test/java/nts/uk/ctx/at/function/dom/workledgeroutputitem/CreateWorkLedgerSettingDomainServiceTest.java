@@ -42,6 +42,7 @@ public class CreateWorkLedgerSettingDomainServiceTest {
         new Expectations(AppContexts.class) {{
             AppContexts.user().employeeId();
             result = "employeeId01";
+
             require.standardCheck(code);
             result = true;
         }};
@@ -106,8 +107,10 @@ public class CreateWorkLedgerSettingDomainServiceTest {
         new Expectations(AppContexts.class,IdentifierUtil.class) {{
             AppContexts.user().employeeId();
             result = "employeeId03";
+
             IdentifierUtil.randomUniqueId();
             result = "uid03";
+
             require.standardCheck(code);
             result = false;
         }};
@@ -143,8 +146,10 @@ public class CreateWorkLedgerSettingDomainServiceTest {
         new Expectations(AppContexts.class,IdentifierUtil.class) {{
             AppContexts.user().employeeId();
             result = "employeeId04";
+
             IdentifierUtil.randomUniqueId();
             result = "uid04";
+
             require.freeCheck(code, "employeeId04");
             result = false;
         }};

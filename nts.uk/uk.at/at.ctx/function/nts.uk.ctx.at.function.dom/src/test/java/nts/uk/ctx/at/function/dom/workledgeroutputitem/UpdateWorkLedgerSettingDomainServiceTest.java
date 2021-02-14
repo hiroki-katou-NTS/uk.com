@@ -77,12 +77,13 @@ public class UpdateWorkLedgerSettingDomainServiceTest {
 				Arrays.asList(new AttendanceItemToPrint(1, 1)),
 				name,
 				SettingClassificationCommon.STANDARD_SELECTION,
-				"sid"
+				Optional.of("sid")
 		);
 
 		new Expectations(AppContexts.class) {{
 			require.getOutputSettingDetail("uid02");
 			result = Optional.of(item);
+
 			AppContexts.user().employeeId();
 			result = "employeeId03";
 		}};
@@ -120,11 +121,12 @@ public class UpdateWorkLedgerSettingDomainServiceTest {
 				Arrays.asList(new AttendanceItemToPrint(1, 1)),
 				name,
 				SettingClassificationCommon.FREE_SETTING,
-				"sid"
+				Optional.of("sid")
 		);
 		new Expectations(AppContexts.class) {{
 			AppContexts.user().employeeId();
 			result = "employeeId03";
+
 			require.getOutputSettingDetail("uid03");
 			result = Optional.of(item);
 		}};

@@ -9,6 +9,7 @@ import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClassificationCommon;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * AggregateRoot: 勤務台帳の出力項目
@@ -33,7 +34,7 @@ public class WorkLedgerOutputItem extends AggregateRoot {
 	private SettingClassificationCommon standardFreeClassification;
 
     // 社員ID: 社員ID
-    private String employeeId;
+    private Optional<String> employeeId;
 
     // [C-0] 年間勤務台帳の出力設定を作成する
 

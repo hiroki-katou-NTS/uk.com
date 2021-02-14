@@ -43,6 +43,7 @@ public class DuplicateWorkLedgerSettingDomainServiceTest {
 		new Expectations(AppContexts.class) {{
 			AppContexts.user().employeeId();
 			result = "employeeId";
+
 			require.getOutputItemDetail("dupSrcId01");
 			result = Optional.empty();
 		}};
@@ -72,6 +73,7 @@ public class DuplicateWorkLedgerSettingDomainServiceTest {
 		new Expectations(AppContexts.class) {{
 			AppContexts.user().employeeId();
 			result = "employeeId00";
+
 			require.getOutputItemDetail("dupSrcId01");
 			result = Optional.empty();
 		}};
@@ -107,13 +109,15 @@ public class DuplicateWorkLedgerSettingDomainServiceTest {
 				Arrays.asList(new AttendanceItemToPrint(1, 1)),
 				name,
 				SettingClassificationCommon.STANDARD_SELECTION,
-				"sid"
+				Optional.of("sid")
 		);
 		new Expectations(AppContexts.class) {{
 			AppContexts.user().employeeId();
 			result = "employeeId02";
+
 			require.getOutputItemDetail("dupSrcId02");
 			result = Optional.of(item);
+
 			require.standardCheck(code);
 			result = true;
 		}};
@@ -149,13 +153,15 @@ public class DuplicateWorkLedgerSettingDomainServiceTest {
 				Arrays.asList(new AttendanceItemToPrint(1, 1)),
 				name,
 				SettingClassificationCommon.FREE_SETTING,
-				"sid"
+				Optional.of("sid")
 		);
 		new Expectations(AppContexts.class) {{
 			AppContexts.user().employeeId();
 			result = "employeeId03";
+
 			require.getOutputItemDetail("dupSrcId03");
 			result = Optional.of(item);
+
 			require.freeCheck(code, "employeeId03");
 			result = true;
 		}};
@@ -191,15 +197,18 @@ public class DuplicateWorkLedgerSettingDomainServiceTest {
 				Arrays.asList(new AttendanceItemToPrint(1, 1)),
 				name,
 				SettingClassificationCommon.STANDARD_SELECTION,
-				"sid"
+				Optional.of("sid")
 		);
 		new Expectations(AppContexts.class,IdentifierUtil.class) {{
 			AppContexts.user().employeeId();
 			result = "employeeId04";
+
 			require.getOutputItemDetail("dupSrcId04");
 			result = Optional.of(item);
+
 			require.standardCheck(code);
 			result = false;
+
 			IdentifierUtil.randomUniqueId();
 			result = "uid04";
 		}};
@@ -238,15 +247,18 @@ public class DuplicateWorkLedgerSettingDomainServiceTest {
 				Arrays.asList(new AttendanceItemToPrint(1, 1)),
 				name,
 				SettingClassificationCommon.FREE_SETTING,
-				"sid"
+				Optional.of("sid")
 		);
 		new Expectations(AppContexts.class,IdentifierUtil.class) {{
 			AppContexts.user().employeeId();
 			result = "employeeId05";
+
 			require.getOutputItemDetail("dupSrcId05");
 			result = Optional.of(item);
+
 			require.freeCheck(code, "employeeId05");
 			result = false;
+
 			IdentifierUtil.randomUniqueId();
 			result = "uid05";
 		}};

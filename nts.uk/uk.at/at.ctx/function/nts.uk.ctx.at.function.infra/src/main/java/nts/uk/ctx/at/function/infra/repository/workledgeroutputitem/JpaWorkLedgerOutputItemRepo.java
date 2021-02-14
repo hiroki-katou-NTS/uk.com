@@ -16,6 +16,7 @@ import nts.uk.ctx.at.function.infra.entity.outputitemofworkledger.KfnmtRptRecSet
 
 import javax.ejb.Stateless;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -237,7 +238,7 @@ public class JpaWorkLedgerOutputItemRepo extends JpaRepository implements WorkLe
                 null,
                 new OutputItemSettingName(entity.name),
                 EnumAdaptor.valueOf(entity.settingType, SettingClassificationCommon.class),
-                entity.employeeId
+                entity.employeeId != null? Optional.of(entity.employeeId):Optional.empty()
         );
     }
 
@@ -249,7 +250,7 @@ public class JpaWorkLedgerOutputItemRepo extends JpaRepository implements WorkLe
                 outputItemList,
                 new OutputItemSettingName(entity.name),
                 EnumAdaptor.valueOf(entity.settingType, SettingClassificationCommon.class),
-                entity.employeeId
+                entity.employeeId != null? Optional.of(entity.employeeId):Optional.empty()
         );
     }
 
