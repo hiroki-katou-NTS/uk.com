@@ -9,6 +9,7 @@ import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.SettingClassificationCommon;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * AggregateRoot: 任意期間集計表の出力設定
@@ -29,7 +30,7 @@ public class OutputSettingOfArbitrary extends AggregateRoot {
     private OutputItemSettingName name;
 
     // 社員ID: 社員ID
-    private String employeeId;
+    private Optional<String> employeeId;
 
     // 定型自由区分: 帳票共通の設定区分
     private SettingClassificationCommon standardFreeClassification;

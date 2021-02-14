@@ -18,6 +18,7 @@ import nts.uk.ctx.at.function.infra.entity.arbitraryperiodsummarytable.KfnmtRptW
 import javax.ejb.Stateless;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -232,12 +233,12 @@ public class JpaOutputSettingOfArbitraryRepo extends JpaRepository implements Ou
     }
 
     private static OutputSettingOfArbitrary toDomain(KfnmtRptWkAnpOut entity) {
-
+        val sidOpt =  entity.sid!= null ? Optional.of( entity.sid) : Optional.empty();
         return new OutputSettingOfArbitrary(
                 entity.layOutId,
                 new OutputItemSettingCode(Integer.toString(entity.exportCd)),
                 new OutputItemSettingName(entity.name),
-                entity.sid,
+                sidOpt,
                 EnumAdaptor.valueOf(entity.settingType, SettingClassificationCommon.class),
                 Collections.emptyList()
 
@@ -245,12 +246,12 @@ public class JpaOutputSettingOfArbitraryRepo extends JpaRepository implements Ou
     }
 
     private static OutputSettingOfArbitrary toDomain(KfnmtRptWkAnpOut entity, List<AttendanceItemToPrint> outputItemList) {
-
+        val sidOpt =  entity.sid!= null ? Optional.of( entity.sid) : Optional.empty();
         return new OutputSettingOfArbitrary(
                 entity.layOutId,
                 new OutputItemSettingCode(Integer.toString(entity.exportCd)),
                 new OutputItemSettingName(entity.name),
-                entity.sid,
+                sidOpt,
                 EnumAdaptor.valueOf(entity.settingType, SettingClassificationCommon.class),
                 outputItemList
 

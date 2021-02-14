@@ -90,14 +90,16 @@ public class DuplicateArbitraryScheduleDomainServiceTest {
         new Expectations(AppContexts.class) {{
             AppContexts.user().employeeId();
             result = "employeeId";
+
             require.getOutputSetting("dupSrcId02");
             result = Optional.of(new OutputSettingOfArbitrary(
                     "uid",
                     code,
                     name,
-                    "employeeId",
+                    Optional.of("employeeId"),
                     SettingClassificationCommon.FREE_SETTING,
                     Arrays.asList(new AttendanceItemToPrint(1, 1))));
+
             require.freeCheck(code, "employeeId");
             result = true;
 
@@ -129,14 +131,16 @@ public class DuplicateArbitraryScheduleDomainServiceTest {
         new Expectations(AppContexts.class) {{
             AppContexts.user().employeeId();
             result = "employeeId02";
+
             require.getOutputSetting("dupSrcId02");
             result = Optional.of(new OutputSettingOfArbitrary(
                     "uid",
                     code,
                     name,
-                    "employeeId03",
+                    Optional.of("employeeId"),
                     SettingClassificationCommon.STANDARD_SELECTION,
                     Arrays.asList(new AttendanceItemToPrint(1, 1))));
+
             require.standardCheck(code);
             result = true;
         }};
@@ -169,16 +173,19 @@ public class DuplicateArbitraryScheduleDomainServiceTest {
         new Expectations(AppContexts.class, IdentifierUtil.class) {{
             AppContexts.user().employeeId();
             result = "employeeId04";
+
             require.getOutputSetting("dupSrcId04");
             result = Optional.of(new OutputSettingOfArbitrary(
                     "uid",
                     code,
                     name,
-                    "employeeId03",
+                    Optional.of("employeeId"),
                     SettingClassificationCommon.STANDARD_SELECTION,
                     Arrays.asList(new AttendanceItemToPrint(1, 1))));
+
             require.standardCheck(code);
             result = false;
+
             IdentifierUtil.randomUniqueId();
             result = "uid04";
         }};
@@ -214,16 +221,19 @@ public class DuplicateArbitraryScheduleDomainServiceTest {
         new Expectations(AppContexts.class, IdentifierUtil.class) {{
             AppContexts.user().employeeId();
             result = "employeeId05";
+
             require.getOutputSetting("dupSrcId05");
             result = Optional.of(new OutputSettingOfArbitrary(
                     "uid",
                     code,
                     name,
-                    "employeeId03",
+                    Optional.of("employeeId"),
                     SettingClassificationCommon.FREE_SETTING,
                     Arrays.asList(new AttendanceItemToPrint(1, 1))));
+
             require.freeCheck(code, "employeeId05");
             result = false;
+
             IdentifierUtil.randomUniqueId();
             result = "uid05";
         }};

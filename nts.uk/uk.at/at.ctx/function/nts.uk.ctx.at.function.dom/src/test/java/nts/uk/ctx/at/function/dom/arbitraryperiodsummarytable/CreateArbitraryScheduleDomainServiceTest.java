@@ -35,6 +35,7 @@ public class CreateArbitraryScheduleDomainServiceTest {
         new Expectations(AppContexts.class) {{
             AppContexts.user().employeeId();
             result = "employeeId";
+
             require.standardCheck(code);
             result = true;
         }};
@@ -66,6 +67,7 @@ public class CreateArbitraryScheduleDomainServiceTest {
         new Expectations(AppContexts.class) {{
             AppContexts.user().employeeId();
             result = "employeeId01";
+
             require.freeCheck(code, "employeeId01");
             result = true;
         }};
@@ -95,8 +97,10 @@ public class CreateArbitraryScheduleDomainServiceTest {
         new Expectations(AppContexts.class, IdentifierUtil.class) {{
             AppContexts.user().employeeId();
             result = "employeeId02";
+
             IdentifierUtil.randomUniqueId();
             result = "uid03";
+
             require.standardCheck(code);
             result = false;
         }};
@@ -129,8 +133,10 @@ public class CreateArbitraryScheduleDomainServiceTest {
         new Expectations(AppContexts.class, IdentifierUtil.class) {{
             AppContexts.user().employeeId();
             result = "employeeId03";
+
             IdentifierUtil.randomUniqueId();
             result = "uid04";
+
             require.freeCheck(code, "employeeId03");
             result = false;
         }};

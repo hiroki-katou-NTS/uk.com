@@ -70,14 +70,15 @@ public class KfnmtRptWkAnpOut extends UkJpaEntity implements Serializable {
         return layOutId;
     }
 
-    public static KfnmtRptWkAnpOut fromDomain(OutputSettingOfArbitrary domain, String cid){
+    public static KfnmtRptWkAnpOut fromDomain(OutputSettingOfArbitrary domain, String cid) {
+        String sid = domain.getEmployeeId().isPresent() ? domain.getEmployeeId().get() : null;
         return new KfnmtRptWkAnpOut(
                 domain.getSettingId(),
                 AppContexts.user().contractCode(),
                 cid,
                 Integer.parseInt(domain.getCode().v()),
                 domain.getName().v(),
-                domain.getEmployeeId(),
+                sid,
                 domain.getStandardFreeClassification().value
         );
     }

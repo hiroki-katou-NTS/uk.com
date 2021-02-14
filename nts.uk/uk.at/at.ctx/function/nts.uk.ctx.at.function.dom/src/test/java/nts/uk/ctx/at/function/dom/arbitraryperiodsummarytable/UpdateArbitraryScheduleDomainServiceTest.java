@@ -102,7 +102,7 @@ public class UpdateArbitraryScheduleDomainServiceTest {
                     "uid",
                     code,
                     name,
-                    "employeeId03",
+                    Optional.of("employeeId03"),
                     SettingClassificationCommon.STANDARD_SELECTION,
                     Arrays.asList(new AttendanceItemToPrint(1, 1)))
             );
@@ -144,7 +144,7 @@ public class UpdateArbitraryScheduleDomainServiceTest {
                     "uid",
                     code,
                     name,
-                    "employeeId03",
+                    Optional.of("employeeId03"),
                     SettingClassificationCommon.FREE_SETTING,
                     Arrays.asList(new AttendanceItemToPrint(1, 1)))
             );

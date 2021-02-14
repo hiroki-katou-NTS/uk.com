@@ -38,7 +38,7 @@ public class UpdateArbitraryScheduleDomainService {
                 settingId,
                 code,
                 name,
-                classificationCommon == SettingClassificationCommon.FREE_SETTING ? employeeId : null,
+                classificationCommon == SettingClassificationCommon.FREE_SETTING ? Optional.of(employeeId) : Optional.empty(),
                 classificationCommon,
                 itemToPrintList
 

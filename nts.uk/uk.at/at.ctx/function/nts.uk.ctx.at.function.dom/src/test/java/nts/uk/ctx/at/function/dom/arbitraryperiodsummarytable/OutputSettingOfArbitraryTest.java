@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -24,10 +25,10 @@ public class OutputSettingOfArbitraryTest {
 
     /**
      * Test:
-     * - method checkDuplicateFreeSettings: is true
+     * - method checkDuplicateBoilerplateSelection: is true
      */
     @Test
-    public void testDuplicateFreeSettings_01() {
+    public void testDuplicateBoilerplateSelection() {
         val code = new OutputItemSettingCode("OutputItemSettingCode01");
         new Expectations() {{
             require.checkTheFixedForm(code);
@@ -42,7 +43,7 @@ public class OutputSettingOfArbitraryTest {
      * - method checkDuplicateFreeSettings: is true
      */
     @Test
-    public void testDuplicateFreeSettings_02() {
+    public void testDuplicateFreeSettings() {
         val code = new OutputItemSettingCode("OutputItemSettingCode02");
 
         new Expectations() {{
@@ -59,14 +60,14 @@ public class OutputSettingOfArbitraryTest {
      * - SettingClassificationCommon: FREE_SETTING
      */
     @Test
-    public void testGetterOutputSettings_03() {
+    public void testGetterOutputSettings_01() {
         val code = new OutputItemSettingCode("OutputItemSettingCode03");
         val name = new OutputItemSettingName("OutputItemSettingName03");
         val outputSettings = new OutputSettingOfArbitrary(
                 "id03",
                 code,
                 name,
-                "emp03",
+                Optional.of("emp03"),
                 SettingClassificationCommon.STANDARD_SELECTION,
                 Arrays.asList(new AttendanceItemToPrint(1, 1))
         );
@@ -80,14 +81,14 @@ public class OutputSettingOfArbitraryTest {
      * - SettingClassificationCommon: FREE_SETTING
      */
     @Test
-    public void testGetterOutputSettings_04() {
+    public void testGetterOutputSettings_02() {
         val code = new OutputItemSettingCode("OutputItemSettingCode03");
         val name = new OutputItemSettingName("OutputItemSettingName03");
         val outputSettings = new OutputSettingOfArbitrary(
                 "id03",
                 code,
                 name,
-                "emp03",
+                Optional.of("emp03"),
                 SettingClassificationCommon.FREE_SETTING,
                 Arrays.asList(new AttendanceItemToPrint(1, 1))
         );
