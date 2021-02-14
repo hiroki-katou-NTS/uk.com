@@ -53,13 +53,14 @@ public class KfnmtRptRecSetting extends UkJpaEntity implements Serializable {
         return iD;
     }
     public static KfnmtRptRecSetting fromDomain(WorkLedgerOutputItem domain, String cid){
+        String sid = domain.getEmployeeId().isPresent() ? domain.getEmployeeId().get() : null;
         return new KfnmtRptRecSetting(
                 domain.getId(),
                 AppContexts.user().contractCode(),
                 cid,
                 Integer.parseInt(domain.getCode().v()),
                 domain.getName().v(),
-                domain.getEmployeeId(),
+                sid,
                 domain.getStandardFreeClassification().value
         );
     }

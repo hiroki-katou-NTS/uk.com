@@ -34,7 +34,7 @@ public class WorkLedgerOutputItemTest {
      * - method checkDuplicateStandardSelections: is true
      */
     @Test
-    public void testDuplicateStandardSelection_01() {
+    public void testDuplicateStandardSelection() {
         val code = new OutputItemSettingCode("OutputItemSettingCode01");
         new Expectations() {{
             require.standardCheck(code);
@@ -49,7 +49,7 @@ public class WorkLedgerOutputItemTest {
      * - method checkDuplicateFreeSettings: is true
      */
     @Test
-    public void testDuplicateFreeSettings_02() {
+    public void testDuplicateFreeSettings() {
         val code = new OutputItemSettingCode("OutputItemSettingCode02");
 
         new Expectations() {{
@@ -66,7 +66,7 @@ public class WorkLedgerOutputItemTest {
      * - SettingClassificationCommon: FREE_SETTING
      */
     @Test
-    public void testGetterOutputSettings_03() {
+    public void testGetterOutputSettings_01() {
         val code = new OutputItemSettingCode("OutputItemSettingCode03");
         val name = new OutputItemSettingName("OutputItemSettingName03");
         val outputSettings = new WorkLedgerOutputItem(
@@ -75,7 +75,7 @@ public class WorkLedgerOutputItemTest {
                 Arrays.asList(new AttendanceItemToPrint(1, 1)),
                 name,
                 SettingClassificationCommon.STANDARD_SELECTION,
-                "emp03"
+                Optional.of("sid")
         );
 
         NtsAssert.invokeGetters(outputSettings);
@@ -87,7 +87,7 @@ public class WorkLedgerOutputItemTest {
      * - SettingClassificationCommon: STANDARD_SELECTION
      */
     @Test
-    public void testGetterOutputSettings_04() {
+    public void testGetterOutputSettings_02() {
         val code = new OutputItemSettingCode("OutputItemSettingCode03");
         val name = new OutputItemSettingName("OutputItemSettingName03");
         val outputSettings = new WorkLedgerOutputItem(
@@ -96,7 +96,7 @@ public class WorkLedgerOutputItemTest {
                 Arrays.asList(new AttendanceItemToPrint(1, 1)),
                 name,
                 SettingClassificationCommon.FREE_SETTING,
-                "emp03"
+                Optional.of("sid")
         );
 
         NtsAssert.invokeGetters(outputSettings);

@@ -13,6 +13,7 @@ import nts.uk.shr.com.context.AppContexts;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.List;
+import java.util.Optional;
 
 /**
      * 勤務台帳の設定を作成する
@@ -48,7 +49,7 @@ public class CreateWorkLedgerSettingDomainService {
                 outputItemList,
                 name,
                 settingCategory,
-                settingCategory == SettingClassificationCommon.FREE_SETTING ? employeeId : null
+                settingCategory == SettingClassificationCommon.FREE_SETTING ? Optional.of(employeeId) : Optional.empty()
         );
 
         return AtomTask.of(() -> {
