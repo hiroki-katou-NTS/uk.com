@@ -22,7 +22,7 @@ public class RemarkOfDailyCommand extends DailyWorkCommonCommand {
 			
 			val value = ((RemarksOfDailyDto) item).toDomain(getEmployeeId(), getWorkDate());
 			//updateData(((RemarksOfDailyDto) item).toDomain(getEmployeeId(), getWorkDate()));
-			updateData(new RemarksOfDailyPerform(getEmployeeId(), getWorkDate(), value));
+			updateDatas(value);
 		}
 	}
 	
