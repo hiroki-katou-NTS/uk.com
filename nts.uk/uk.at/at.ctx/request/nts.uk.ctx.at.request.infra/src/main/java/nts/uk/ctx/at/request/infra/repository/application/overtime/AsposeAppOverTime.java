@@ -194,8 +194,8 @@ public class AsposeAppOverTime {
 		
 		cellB12.setValue(I18NText.getText("KAF005_40"));
 		
-		String workType = appOverTime.getWorkInfoOp().map(x -> x.getWorkTypeCode().v()).orElse(null);
-		String workTime = appOverTime.getWorkInfoOp().map(x -> x.getWorkTimeCode().v()).orElse(null);
+		String workType = appOverTime.getWorkInfoOp().flatMap(x -> Optional.ofNullable(x.getWorkTypeCode())).map(x -> x.v()).orElse(null);
+		String workTime = appOverTime.getWorkInfoOp().flatMap(x -> Optional.ofNullable(x.getWorkTimeCode())).map(x -> x.v()).orElse(null);
 		// 申請の印刷内容．残業申請の印刷内容．残業申請の表示情報．基準日に関する情報．勤務種類リスト
 		if (workType != null) {
 			String nameWorktype = displayInfoOverTime.getInfoBaseDateOutput().getWorktypes()
@@ -566,7 +566,7 @@ public class AsposeAppOverTime {
 			result.setStartReasonCommon(result.getStartReasonCommon() + 6);
 			cells.deleteRows(12, 6);
 		}
-		if (!c3) {
+		if (!c1) {
 			result.setStartReasonCommon(result.getStartReasonCommon() + 1);
 			cells.deleteRow(11);
 		}

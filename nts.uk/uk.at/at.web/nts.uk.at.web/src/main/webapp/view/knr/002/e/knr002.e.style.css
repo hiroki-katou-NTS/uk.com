@@ -67,11 +67,11 @@
 }
 
 .btn-arrow > .btn-bak {
-	background-image: url(http://localhost:8080/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/181.png);
+	background-image: url(/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/181.png);
 }
 
 .btn-arrow > .btn-restore {
-	background-image: url(http://localhost:8080/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/183.png);
+	background-image: url(/nts.uk.com.js.web/lib/nittsu/ui/style/stylesheets/images/icons/numbered/183.png);
 }
 
 .d-flex {

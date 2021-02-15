@@ -37,7 +37,6 @@ module nts.uk.at.view.knr002.a {
                 
                 vm.selectedFilter.subscribe(function(value) {
                     let filterValue;
-                    console.time('time');
                     switch(value) {
                         case 0:
                             $("#grid").ntsGrid("destroy");
@@ -63,9 +62,6 @@ module nts.uk.at.view.knr002.a {
                     setTimeout(() => {
                         $('#grid tr:nth-child(1)').focus();
                     }, 0);
-                    
-                    console.log(filterValue);
-                    console.timeEnd('time');
                 });
             }
 
@@ -166,7 +162,7 @@ module nts.uk.at.view.knr002.a {
                         });
                     }
                 })
-                .fail(res => console.log('fail roi'))
+                .fail(res => {})
                 .always(() => blockUI.clear() );
             }
 
