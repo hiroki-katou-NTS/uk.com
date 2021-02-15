@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.function.ac.alarm;
 
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -27,7 +29,8 @@ public class AlarmListPersonServiceAdapterImpl implements AlarmListPersonService
 	public void extractMasterCheckResult(String cid, List<String> lstSid, DatePeriod dPeriod,
 			String errorMasterCheckId, List<WorkPlaceHistImport> lstWplHist,
 			List<StatusOfEmployeeAdapter> lstStatusEmp, List<ResultOfEachCondition> lstResultCondition,
-			List<AlarmListCheckInfor> lstCheckInfor) {
+			List<AlarmListCheckInfor> lstCheckInfor, Consumer<Integer> counter,
+			Supplier<Boolean> shouldStop) {
 		List<WorkPlaceHistImportAl> lstWkpIdAndPeriod = lstWplHist.stream().map(x -> 
 					new WorkPlaceHistImportAl(x.getEmployeeId(), 
 							x.getLstWkpIdAndPeriod().stream()
@@ -42,7 +45,7 @@ public class AlarmListPersonServiceAdapterImpl implements AlarmListPersonService
 				lstWkpIdAndPeriod,
 				lstStaEmp,
 				lstResultCondition,
-				lstCheckInfor);
+				lstCheckInfor, counter, shouldStop);
 		
 	}
 	
@@ -54,7 +57,8 @@ public class AlarmListPersonServiceAdapterImpl implements AlarmListPersonService
 			String errorDailyCheckId, DailyAlarmCondition dailyAlarmCondition, 
 			List<WorkPlaceHistImport> getWplByListSidAndPeriod, 
 			List<StatusOfEmployeeAdapter> lstStatusEmp, 
-			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType) {
+			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType, Consumer<Integer> counter,
+			Supplier<Boolean> shouldStop) {
 		
 		List<String> extractConditionWorkRecord = dailyAlarmCondition.getExtractConditionWorkRecord();
 		List<String> errorDailyCheckCd = dailyAlarmCondition.getErrorAlarmCode();
@@ -69,13 +73,15 @@ public class AlarmListPersonServiceAdapterImpl implements AlarmListPersonService
 			.map(x -> new StatusOfEmployeeAdapterAl(x.getEmployeeId(), x.getListPeriod())).collect(Collectors.toList());
 		
 		extractService.extractDailyCheckResult(cid, lstSid, dPeriod, errorDailyCheckId, extractConditionWorkRecord, 
-				errorDailyCheckCd, lstWkpIdAndPeriod, lstStaEmp, lstResultCondition, lstCheckType);
+				errorDailyCheckCd, lstWkpIdAndPeriod, lstStaEmp, lstResultCondition, lstCheckType,
+				counter, shouldStop);
 	}
 
 	@Override
 	public void extractMonthCheckResult(String cid, List<String> lstSid, YearMonthPeriod mPeriod, String fixConId,
 			List<String> lstAnyConID, List<WorkPlaceHistImport> lstWplHist,
-			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckInfor) {
+			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckInfor, Consumer<Integer> counter,
+			Supplier<Boolean> shouldStop) {
 		List<WorkPlaceHistImportAl> lstWkpIdAndPeriod = lstWplHist.stream().map(x -> 
 			new WorkPlaceHistImportAl(x.getEmployeeId(), 
 					x.getLstWkpIdAndPeriod().stream()
@@ -85,7 +91,12 @@ public class AlarmListPersonServiceAdapterImpl implements AlarmListPersonService
 				lstSid,
 				mPeriod,
 				fixConId,
-				lstAnyConID, lstWkpIdAndPeriod, lstResultCondition, lstCheckInfor);
+				lstAnyConID,
+				lstWkpIdAndPeriod,
+				lstResultCondition,
+				lstCheckInfor,
+				counter,
+				shouldStop);
 	}
 
 	@Override

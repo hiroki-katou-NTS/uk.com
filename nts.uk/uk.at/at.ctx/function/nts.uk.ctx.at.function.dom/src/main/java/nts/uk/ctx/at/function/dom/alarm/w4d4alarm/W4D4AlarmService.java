@@ -20,16 +20,16 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import org.eclipse.persistence.jpa.jpql.parser.DateTime;
-
 import lombok.val;
+import mockit.Injectable;
 import nts.arc.task.AsyncTask;
 import nts.arc.task.parallel.ManagedParallelWithContext;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.adapter.WorkPlaceHistImport;
 import nts.uk.ctx.at.function.dom.adapter.WorkPlaceIdAndPeriodImport;
-import nts.uk.ctx.at.function.dom.adapter.alarm.BasicScheduleAdapter;
-import nts.uk.ctx.at.function.dom.adapter.alarm.BasicScheduleImport;
 import nts.uk.ctx.at.function.dom.adapter.companyRecord.StatusOfEmployeeAdapter;
 import nts.uk.ctx.at.function.dom.adapter.worklocation.RecordWorkInfoFunAdapter;
 import nts.uk.ctx.at.function.dom.adapter.worklocation.RecordWorkInfoFunAdapterDto;
@@ -45,20 +45,20 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCate
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckTargetCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.AlarmCheckCondition4W4D;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.FourW4DCheckCond;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionAlarmPeriodDate;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionResultDetail;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.treatmentholiday.HolidayNumberManagement;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.treatmentholiday.TreatmentHoliday;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.treatmentholiday.TreatmentHolidayRepository;
 import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
-import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
-import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class W4D4AlarmService {
@@ -77,7 +77,14 @@ public class W4D4AlarmService {
 
 	@Inject
 	private WorkScheduleFunctionAdapter wScheduleAdapter;
-
+	@Inject
+	private TreatmentHolidayRepository treatHolidayRepos;
+	@Injectable
+	private TreatmentHoliday.Require require;
+	
+	@Injectable
+	HolidayNumberManagement.Require requireMng;
+	
 	public List<ValueExtractAlarm> calculateTotal4W4D(EmployeeSearchDto employee, DatePeriod period,
 			String checkConditionCode) {
 		String companyID = AppContexts.user().companyId();
@@ -245,119 +252,122 @@ public class W4D4AlarmService {
 		return result;
 
 	}
-	/**
-	 * 法内休日４週下限　４日固定
-	 */
-	private int staturoryDaysCheck = 4;
-	/**
-	 * 法外休日４週下限　０日固定
-	 */
-	private int nonStaturoryDaysCheck = 0;
 
+	/**
+	 * 4週4休の集計処理（２次）
+	 * @param cid
+	 * @param lstSid
+	 * @param dPeriod
+	 * @param w4dCheckCond
+	 * @param getWplByListSidAndPeriod
+	 * @param lstStatusEmp
+	 * @return
+	 */
 	public List<ExtractionResultDetail> extractCheck4W4d(String cid, List<String> lstSid,
 			DatePeriod dPeriod, 
 			FourW4DCheckCond w4dCheckCond,
 			List<WorkPlaceHistImport> getWplByListSidAndPeriod,
-			List<StatusOfEmployeeAdapter> lstStatusEmp){
+			List<StatusOfEmployeeAdapter> lstStatusEmp, Consumer<Integer> counter,
+			Supplier<Boolean> shouldStop){
 		List<ExtractionResultDetail> lstResult = new ArrayList<>();
 	
-		// ドメインモデル「勤務種類」を取得
-		List<WorkType> workTypesHoliday = workTypeRepository.findByDepreacateAtrAndWorkTypeAtr(cid,
-				DeprecateClassification.NotDeprecated.value, WorkTypeUnit.OneDay.value);
-
-		// ドメインモデル「勤務種類」を取得 ↓
-		// 【法定内休日】勤務種類<List>を取得する
-		List<String> legalHLDWorkTypes = workTypesHoliday.stream()
-				.filter(x -> x.getDailyWork().getOneDay() ==  WorkTypeClassification.Holiday
-				&& x.getWorkTypeSetList().get(0).getHolidayAtr() == HolidayAtr.STATUTORY_HOLIDAYS)
-				.collect(Collectors.toList()).stream().map(x -> x.getWorkTypeCode().v()).collect(Collectors.toList());				
-
-		// ドメインモデル「勤務種類」を取得 ↓
-		// 【法定外休日】勤務種類<List>を取得する
-		List<String> nonLegalHLDWorkTypes = workTypesHoliday.stream()
-				.filter(x -> x.getDailyWork().getOneDay() ==  WorkTypeClassification.Holiday
-				&& x.getWorkTypeSetList().get(0).getHolidayAtr() == HolidayAtr.NON_STATUTORY_HOLIDAYS)
-				.collect(Collectors.toList()).stream().map(x -> x.getWorkTypeCode().v()).collect(Collectors.toList());
-		//勤務予定
-		List<WorkScheduleBasicInforFunctionImport> basicScheduleImports = new ArrayList<>();
-		if(w4dCheckCond == FourW4DCheckCond.WithScheduleAndActualResults) {
-			basicScheduleImports = wScheduleAdapter.getScheBySids(lstSid, dPeriod);	
-		}
+		//ドメインモデル「休日の扱い」を取得
+		Optional<TreatmentHoliday> optTreatHolidaySet = treatHolidayRepos.get(cid);
+		if(!optTreatHolidaySet.isPresent()) return lstResult;
+		TreatmentHoliday treatHolidaySet = optTreatHolidaySet.get();
+		
 
 		// 日別実績の勤務情報を取得する
 		List<RecordWorkInfoFunAdapterDto> workInfos = recordWorkInfoFunAdapter.findByPeriodOrderByYmdAndEmps(lstSid,
 				dPeriod);
-		for(int ss = 0; ss < lstSid.size(); ss++) {
-			String sid = lstSid.get(ss);			
-			//法内休日数
-			int staturoryDays = 0;
-			//法外休日数
-			int nonStaturoryDays = 0;
-			String workplaceId = "";
-			List<WorkPlaceHistImport> getWpl = getWplByListSidAndPeriod.stream().filter(x -> x.getEmployeeId().equals(sid)).collect(Collectors.toList());
-			if(!getWpl.isEmpty()) {
-				 WorkPlaceIdAndPeriodImport wpPeriod = getWpl.get(0).getLstWkpIdAndPeriod().get(0);
-				 workplaceId = wpPeriod.getWorkplaceId();
-			}
-			List<RecordWorkInfoFunAdapterDto> workInfoSid = workInfos.stream()
-					.filter(w -> w.getEmployeeId().equals(sid))
-					.collect(Collectors.toList());
-			List<WorkScheduleBasicInforFunctionImport> basicScheduleImportSid = basicScheduleImports.stream()
-					.filter(w -> w.getEmployeeID().equals(sid))
-					.collect(Collectors.toList());
-			for (int i = 0; dPeriod.start().daysTo(dPeriod.end()) - i >= 0 ; i++) {
-				List<StatusOfEmployeeAdapter> lstStatusOfE = lstStatusEmp.stream().filter(x -> x.getEmployeeId().equals(sid)).collect(Collectors.toList());
-				GeneralDate date = dPeriod.start().addDays(i);
-				if(lstStatusOfE.isEmpty()) {
-					continue;
+		parallelManager.forEach(CollectionUtil.partitionBySize(lstSid, 100), emps -> {
+
+			synchronized (this) {
+				if (shouldStop.get()) {
+					return;
 				}
-				List<DatePeriod> lstStatusE = lstStatusOfE.get(0).getListPeriod();
-				String workTypeCode = "";
-				for (int j = 0; j < lstStatusE.size(); j++) {
-					DatePeriod ePeriod = lstStatusE.get(j);
-					if(ePeriod.start().beforeOrEquals(date) && ePeriod.end().afterOrEquals(date)) {
-						List<RecordWorkInfoFunAdapterDto> workInfo = workInfoSid.stream()
-								.filter(w -> w.getWorkingDate().equals(date))
-								.collect(Collectors.toList());
-						if(w4dCheckCond == FourW4DCheckCond.WithScheduleAndActualResults 
-								&& workInfo.isEmpty() 
-								&& !basicScheduleImports.isEmpty()) {
-							List<WorkScheduleBasicInforFunctionImport> basicScheduleImport = basicScheduleImportSid.stream()
-									.filter(w -> w.getYmd().equals(date))
+			}
+			//勤務予定
+			List<WorkScheduleBasicInforFunctionImport> basicScheduleImports = new ArrayList<>();
+			if(w4dCheckCond == FourW4DCheckCond.WithScheduleAndActualResults) {
+				basicScheduleImports = wScheduleAdapter.getScheBySids(emps, dPeriod);	
+			}
+			for(int ss = 0; ss < emps.size(); ss++) {
+				String sid = lstSid.get(ss);
+				String workplaceId = "";
+				List<WorkPlaceHistImport> getWpl = getWplByListSidAndPeriod.stream()
+						.filter(x -> x.getEmployeeId().equals(sid)).collect(Collectors.toList());
+				if(!getWpl.isEmpty()) {
+					 WorkPlaceIdAndPeriodImport wpPeriod = getWpl.get(0).getLstWkpIdAndPeriod().get(0);
+					 workplaceId = wpPeriod.getWorkplaceId();
+				}
+				List<RecordWorkInfoFunAdapterDto> workInfoSid = workInfos.stream()
+						.filter(w -> w.getEmployeeId().equals(sid))
+						.collect(Collectors.toList());
+				List<WorkScheduleBasicInforFunctionImport> basicScheduleImportSid = basicScheduleImports.stream()
+						.filter(w -> w.getEmployeeID().equals(sid))
+						.collect(Collectors.toList());
+				Map<GeneralDate, WorkInformation> mapWorkInfor = new HashMap<>();
+				for (int i = 0; dPeriod.start().daysTo(dPeriod.end()) - i >= 0 ; i++) {
+					List<StatusOfEmployeeAdapter> lstStatusOfE = lstStatusEmp.stream()
+							.filter(x -> x.getEmployeeId().equals(sid)).collect(Collectors.toList());
+					GeneralDate date = dPeriod.start().addDays(i);
+					if(lstStatusOfE.isEmpty()) {
+						continue;
+					}
+					List<DatePeriod> lstStatusE = lstStatusOfE.get(0).getListPeriod();
+					
+					for (int j = 0; j < lstStatusE.size(); j++) {
+						DatePeriod ePeriod = lstStatusE.get(j);
+						if(ePeriod.start().beforeOrEquals(date) && ePeriod.end().afterOrEquals(date)) {
+							WorkInformation workInfor = null;
+							List<RecordWorkInfoFunAdapterDto> workInfo = workInfoSid.stream()
+									.filter(w -> w.getWorkingDate().equals(date))
 									.collect(Collectors.toList());
-							if(!basicScheduleImport.isEmpty()) {
-								workTypeCode = basicScheduleImport.get(0).getWorkTypeCd();
+							if(w4dCheckCond == FourW4DCheckCond.WithScheduleAndActualResults 
+									&& workInfo.isEmpty() 
+									&& !basicScheduleImports.isEmpty()) {
+								List<WorkScheduleBasicInforFunctionImport> basicScheduleImport = basicScheduleImportSid.stream()
+										.filter(w -> w.getYmd().equals(date))
+										.collect(Collectors.toList());
+								if(!basicScheduleImport.isEmpty()) {
+									workInfor =  new WorkInformation(basicScheduleImport.get(0).getWorkTypeCd(),
+											basicScheduleImport.get(0).getWorkTimeCd().isPresent() ? basicScheduleImport.get(0).getWorkTimeCd().get() : null);
+								}
 							}
-						}
-						if(!workInfo.isEmpty()) {
-							workTypeCode = workInfo.get(0).getWorkTypeCode();
-						}
-						//法内休日数
-						if(!workTypeCode.isEmpty() && legalHLDWorkTypes.contains(workTypeCode)) {
-							staturoryDays += 1;
-						}
-						//法外休日数
-						if(!workTypeCode.isEmpty() && nonLegalHLDWorkTypes.contains(workTypeCode)) {
-							nonStaturoryDays += 1;
+							
+							if(!workInfo.isEmpty()) {
+								workInfor = new WorkInformation(workInfo.get(0).getWorkTypeCode(),
+										workInfo.get(0).getWorkTimeCode());
+							}
+							mapWorkInfor.put(date, workInfor);
 						}
 					}
-				}				
+					
+				}
+				HolidayNumberManagement holidayNumberMana = treatHolidaySet.getNumberHoliday(require, dPeriod.start());
+				int holidays = holidayNumberMana.countNumberHolidays(requireMng, mapWorkInfor);
+				
+				if(((w4dCheckCond == FourW4DCheckCond.WithScheduleAndActualResults && !workInfoSid.isEmpty() || !basicScheduleImportSid.isEmpty())
+						|| (w4dCheckCond == FourW4DCheckCond.ForActualResultsOnly && !workInfoSid.isEmpty()))
+						&& holidays < holidayNumberMana.getHolidayDays().v()) {
+					ExtractionAlarmPeriodDate alarmDate = new ExtractionAlarmPeriodDate(Optional.ofNullable(dPeriod.start()), Optional.ofNullable(dPeriod.end()));
+					ExtractionResultDetail alarmDetail = new ExtractionResultDetail(sid,
+							alarmDate, 
+							w4dCheckCond.name(),
+							TextResource.localize("KAL010_64"), 
+							GeneralDateTime.now(), 
+							Optional.ofNullable(workplaceId),
+							Optional.ofNullable(""),
+							Optional.ofNullable(TextResource.localize("KAL010_63", String.valueOf(holidays))));
+					lstResult.add(alarmDetail);
+				}
 			}
-			if(((w4dCheckCond == FourW4DCheckCond.WithScheduleAndActualResults && !workInfoSid.isEmpty() || !basicScheduleImportSid.isEmpty())
-					|| (w4dCheckCond == FourW4DCheckCond.ForActualResultsOnly && !workInfoSid.isEmpty()))
-					&& (staturoryDays < staturoryDaysCheck || nonStaturoryDays < nonStaturoryDaysCheck)) {
-				ExtractionAlarmPeriodDate alarmDate = new ExtractionAlarmPeriodDate(Optional.ofNullable(dPeriod.start()), Optional.ofNullable(dPeriod.end()));
-				ExtractionResultDetail alarmDetail = new ExtractionResultDetail(sid,
-						alarmDate, 
-						w4dCheckCond.name(),
-						TextResource.localize("KAL010_64"), 
-						GeneralDateTime.now(), 
-						Optional.ofNullable(workplaceId),
-						Optional.ofNullable(""),
-						Optional.ofNullable(TextResource.localize("KAL010_63", String.valueOf(staturoryDays))));
-				lstResult.add(alarmDetail);
+			synchronized (this) {
+				counter.accept(emps.size());
 			}
-		}
+		});
+		
 		return lstResult;
 	}
 	/**

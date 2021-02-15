@@ -4,15 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.adapter.approvalrootstate.AppRootStateConfirmAdapter;
 import nts.uk.ctx.at.record.dom.adapter.approvalrootstate.AppRootStateStatusSprImport;
 import nts.uk.ctx.at.record.dom.adapter.approvalrootstate.Request113Import;
@@ -113,14 +117,16 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 	
 	@Inject
 	private DailyRecordConverter dailyRecordConverter;
-	
+	@Inject
+	private ManagedParallelWithContext parallelManager;
 	
 	@Override
 	public void extractDailyCheck(String cid, List<String> lstSid, DatePeriod dPeriod, 
 			String errorDailyCheckId, List<String> extractConditionWorkRecord,
 			List<String> errorDailyCheckCd, List<WorkPlaceHistImportAl> getWplByListSidAndPeriod, 
 			List<StatusOfEmployeeAdapterAl> lstStatusEmp, 
-			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType) {
+			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType, Consumer<Integer> counter,
+			Supplier<Boolean> shouldStop) {
 		List<WorkTypeCode> lstWkType = new ArrayList<>();
 		
 		// チェックする前にデータを準備
@@ -129,63 +135,74 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 		for(ErrorAlarmCondition alarmCon : prepareData.getListErrorAlarmCon()) {
 			lstWkType.addAll(alarmCon.getWorkType());
 		}
-		
-		// get work place id
-		for(String item : lstSid) {
-			
-			List<WorkPlaceIdAndPeriodImportAl> lstWpl = getWplByListSidAndPeriod.stream().filter(x -> x.getEmployeeId().equals(item))
-					.collect(Collectors.toList())
-					.get(0).getLstWkpIdAndPeriod().stream()
-						.filter(x -> x.getDatePeriod().start()
-								.beforeOrEquals(dPeriod == null || dPeriod.end() == null ? GeneralDate.today() : dPeriod.end()) 
-								&& x.getDatePeriod().end()
-								.afterOrEquals(dPeriod == null || dPeriod.start() == null ? GeneralDate.today() : dPeriod.start()))
-						.collect(Collectors.toList());
-			String wplId = "";
-			if(!lstWpl.isEmpty()) {
-				wplId = lstWpl.get(0).getWorkplaceId();
+		parallelManager.forEach(CollectionUtil.partitionBySize(lstSid, 100), emps -> {
+
+			synchronized (this) {
+				if (shouldStop.get()) {
+					return;
+				}
 			}
-			
-			
-			
-			for(GeneralDate i = dPeriod.start(); i.equals(dPeriod.end().addDays(1)); i.addDays(1)) {
-				for(StatusOfEmployeeAdapterAl status : lstStatusEmp) {
-					
-					// 社員の会社所属状況をチェック
-					if(status.getEmployeeId() == item && !status.getListPeriod().stream().map(y -> y.contains(i)).collect(Collectors.toList())
-							.isEmpty()) {
+			// get work place id
+			for(String item : emps) {
+				
+				List<WorkPlaceIdAndPeriodImportAl> lstWpl = getWplByListSidAndPeriod.stream().filter(x -> x.getEmployeeId().equals(item))
+						.collect(Collectors.toList())
+						.get(0).getLstWkpIdAndPeriod().stream()
+							.filter(x -> x.getDatePeriod().start()
+									.beforeOrEquals(dPeriod == null || dPeriod.end() == null ? GeneralDate.today() : dPeriod.end()) 
+									&& x.getDatePeriod().end()
+									.afterOrEquals(dPeriod == null || dPeriod.start() == null ? GeneralDate.today() : dPeriod.start()))
+							.collect(Collectors.toList());
+				String wplId = "";
+				if(!lstWpl.isEmpty()) {
+					wplId = lstWpl.get(0).getWorkplaceId();
+				}
+				
+				
+				
+				for(GeneralDate i = dPeriod.start(); i.equals(dPeriod.end().addDays(1)); i.addDays(1)) {
+					for(StatusOfEmployeeAdapterAl status : lstStatusEmp) {
 						
-						// 日別実績を絞り込む
-						Optional<IntegrationOfDaily> optIntegrationDaily = dailyRecordShareFinder.find(item, i);
-						if(!optIntegrationDaily.isPresent()) continue;
-						
-						IntegrationOfDaily integrationDaily = optIntegrationDaily.get();
-						// 日次のチェック条件のアラーム値を生成する
-						OutputCheckResult checkTab3 = this.GenerateAlarmValueForDailyChkCondition(prepareData.getWorkRecordCond(), 
-								prepareData.getListErrorAlarmCon(), integrationDaily, item, i, wplId, prepareData.getWork(), extractConditionWorkRecord, 
-								lstWkType, errorDailyCheckId);
-						lstResultCondition.addAll(checkTab3.getLstResultCondition());
-						lstCheckType.addAll(checkTab3.getLstCheckType());
-						
-						// 日別実績のエラーアラームのアラーム値を生成する
-						OutputCheckResult checkTab2 = this.GenerateAlarmValueDailyPerformanceError(prepareData.getListError(), 
-								integrationDaily, item, i, wplId, prepareData.getWork());
-						lstResultCondition.addAll(checkTab2.getLstResultCondition());
-						lstCheckType.addAll(checkTab2.getLstCheckType());
-						
-						// 日次の固定抽出条件のアラーム値を生成する
-						OutputCheckResult checkTab4 = this.GenerateAlarmValuesDailyFixedExtractConditions(prepareData.getDataforDailyFix(), 
-								integrationDaily, item, i, wplId, prepareData.getWork(), prepareData.getListWorkType(), 
-								prepareData.getListWorktime());
-						lstResultCondition.addAll(checkTab4.getLstResultCondition());
-						lstCheckType.addAll(checkTab4.getLstCheckType());
-						
-					}else {
-						break;
+						// 社員の会社所属状況をチェック
+						if(status.getEmployeeId() == item && !status.getListPeriod().stream().map(y -> y.contains(i)).collect(Collectors.toList())
+								.isEmpty()) {
+							
+							// 日別実績を絞り込む
+							Optional<IntegrationOfDaily> optIntegrationDaily = dailyRecordShareFinder.find(item, i);
+							if(!optIntegrationDaily.isPresent()) continue;
+							
+							IntegrationOfDaily integrationDaily = optIntegrationDaily.get();
+							// 日次のチェック条件のアラーム値を生成する
+							OutputCheckResult checkTab3 = this.GenerateAlarmValueForDailyChkCondition(prepareData.getWorkRecordCond(), 
+									prepareData.getListErrorAlarmCon(), integrationDaily, item, i, wplId, prepareData.getWork(), extractConditionWorkRecord, 
+									lstWkType, errorDailyCheckId);
+							lstResultCondition.addAll(checkTab3.getLstResultCondition());
+							lstCheckType.addAll(checkTab3.getLstCheckType());
+							
+							// 日別実績のエラーアラームのアラーム値を生成する
+							OutputCheckResult checkTab2 = this.GenerateAlarmValueDailyPerformanceError(prepareData.getListError(), 
+									integrationDaily, item, i, wplId, prepareData.getWork());
+							lstResultCondition.addAll(checkTab2.getLstResultCondition());
+							lstCheckType.addAll(checkTab2.getLstCheckType());
+							
+							// 日次の固定抽出条件のアラーム値を生成する
+							OutputCheckResult checkTab4 = this.GenerateAlarmValuesDailyFixedExtractConditions(prepareData.getDataforDailyFix(), 
+									integrationDaily, item, i, wplId, prepareData.getWork(), prepareData.getListWorkType(), 
+									prepareData.getListWorktime());
+							lstResultCondition.addAll(checkTab4.getLstResultCondition());
+							lstCheckType.addAll(checkTab4.getLstCheckType());
+							
+						}else {
+							break;
+						}
 					}
 				}
 			}
-		}
+			synchronized (this) {
+				counter.accept(emps.size());
+			}
+		});
+		
 	}
 
 	/**

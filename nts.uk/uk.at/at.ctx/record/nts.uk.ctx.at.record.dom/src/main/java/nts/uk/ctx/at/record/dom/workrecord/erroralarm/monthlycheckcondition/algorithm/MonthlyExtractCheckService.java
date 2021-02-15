@@ -1,8 +1,9 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.algorithm;
 
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.WorkPlaceHistImportAl;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckInfor;
@@ -22,6 +23,7 @@ public interface MonthlyExtractCheckService {
 	 */
 	void extractMonthlyAlarm(String cid, List<String> lstSid, YearMonthPeriod mPeriod, String fixConId,List<String> lstAnyConID,
 			List<WorkPlaceHistImportAl> getWplByListSidAndPeriod, 
-			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType);
+			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType, Consumer<Integer> counter,
+			Supplier<Boolean> shouldStop);
 
 }

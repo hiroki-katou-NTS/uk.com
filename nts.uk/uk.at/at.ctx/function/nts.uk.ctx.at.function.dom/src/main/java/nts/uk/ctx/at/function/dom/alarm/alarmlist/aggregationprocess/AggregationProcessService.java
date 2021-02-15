@@ -44,7 +44,6 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckTargetCondition
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.CheckCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.annualholiday.AnnualHolidayAlarmCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.appapproval.AppApprovalAlarmCheckCondition;
-import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.ConExtractedDaily;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.AlarmCheckCondition4W4D;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.FourW4DCheckCond;
@@ -309,8 +308,14 @@ public class AggregationProcessService {
 				case SCHEDULE_4WEEK:
 					AlarmCheckCondition4W4D fourW4DCheckCond = (AlarmCheckCondition4W4D) x.getExtractionCondition();
 					FourW4DCheckCond w4d4Cond = fourW4DCheckCond.getFourW4DCheckCond();
-					ResultOfEachCondition w4d4CondResult = extractService.lstRunW4d4CheckErAl(cid, lstSidTmp, datePeriod, w4d4Cond
-							, getWplByListSidAndPeriod, lstStatusEmp);
+					ResultOfEachCondition w4d4CondResult = extractService.lstRunW4d4CheckErAl(cid,
+							lstSidTmp,
+							datePeriod,
+							w4d4Cond,
+							getWplByListSidAndPeriod,
+							lstStatusEmp,
+							counter,
+							shouldStop);
 					if(w4d4CondResult != null) {
 						lstResultCondition.add(w4d4CondResult);	
 					}
@@ -326,11 +331,17 @@ public class AggregationProcessService {
 					
 				case DAILY:
 					DailyAlarmCondition dailyAlarmCon = (DailyAlarmCondition) x.getExtractionCondition();
-					ConExtractedDaily conExtracDai = dailyAlarmCon.getConExtractedDaily();		
-					
-					extractAlarmService.extractDailyCheckResult(cid, lstSid, datePeriod, 
-							dailyAlarmCon.getDailyAlarmConID(), dailyAlarmCon,
-							getWplByListSidAndPeriod, lstStatusEmp, lstResultCondition, lstCheckType);
+					extractAlarmService.extractDailyCheckResult(cid,
+							lstSid,
+							datePeriod, 
+							dailyAlarmCon.getDailyAlarmConID(),
+							dailyAlarmCon,
+							getWplByListSidAndPeriod,
+							lstStatusEmp,
+							lstResultCondition,
+							lstCheckType,
+							counter,
+							shouldStop);
 					
 				case WEEKLY:
 					break;
@@ -344,7 +355,9 @@ public class AggregationProcessService {
 							monCheck.getArbExtraCon(),
 							getWplByListSidAndPeriod,
 							lstResultCondition,
-							lstCheckType);
+							lstCheckType,
+							counter,
+							shouldStop);
 					break;
 					
 				case APPLICATION_APPROVAL:
@@ -408,7 +421,9 @@ public class AggregationProcessService {
 							getWplByListSidAndPeriod, 
 							lstStatusEmp, 
 							lstResultCondition,
-							lstCheckType);
+							lstCheckType,
+							counter,
+							shouldStop);
 					break;	
 					
 				default:

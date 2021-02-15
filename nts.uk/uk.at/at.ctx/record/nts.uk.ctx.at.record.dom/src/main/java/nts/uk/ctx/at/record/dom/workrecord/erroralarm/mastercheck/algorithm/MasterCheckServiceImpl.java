@@ -3,14 +3,18 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffAtWorkplaceImport;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
@@ -62,10 +66,13 @@ public class MasterCheckServiceImpl implements MasterCheckService {
 	private MasterCheckFixedExtractConditionRepository masterCheckRepos;
 	@Inject
 	private MasterCheckFixedExtractItemRepository masterCheckItemRepos;
+	@Inject
+	private ManagedParallelWithContext parallelManager;
 	@Override
 	public void extractMasterCheck(String cid, List<String> lstSid, DatePeriod dPeriod, String errorMasterCheckId,
 			List<WorkPlaceHistImportAl> getWplByListSidAndPeriod, List<StatusOfEmployeeAdapterAl> lstStatusEmp,
-			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType) {
+			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType, Consumer<Integer> counter,
+			Supplier<Boolean> shouldStop) {
 		//ドメインモデル「マスタチェックの固定抽出条件」を取得
 		List<MasterCheckFixedExtractCondition> lstMasterCheck = masterCheckRepos.findAll(errorMasterCheckId, true);
 		List<MasterCheckFixedCheckItem> lstItemNo = lstMasterCheck.stream().map(x -> x.getNo()).collect(Collectors.toList());
@@ -78,155 +85,173 @@ public class MasterCheckServiceImpl implements MasterCheckService {
 			lstCheckType.add(new AlarmListCheckInfor(String.valueOf(exCond.getNo().value), AlarmListCheckType.FixCheck));
 			MasterCheckFixedExtractItem extractItem = lstMasterCheckItem.stream().filter(x -> x.getNo() == exCond.getNo())
 					.collect(Collectors.toList()).get(0);
-			lstSid.stream().forEach(sid -> {
-				//アラーム内容
-				String alarmValue = "";
-				//チェック対象値
-				String targetValues = "";
-				String wCheckValues = "";
-				if(exCond.getNo() == MasterCheckFixedCheckItem.ID_CODE_CONFIRM) {
-					List<StampCard> stampCard = dataCheck.lstStampCard.stream()
-							.filter(x -> x.getEmployeeId().equals(sid)).collect(Collectors.toList());
-						if(stampCard.isEmpty()) {
-							alarmValue = TextResource.localize("KAL010_564");
-							targetValues = TextResource.localize("KAL010_574");
-						}
-				} else if(exCond.getNo() == MasterCheckFixedCheckItem.DAYOFF_GRANT_TBL_CONFIRM) {
-					List<AnnualLeaveEmpBasicInfo> annuaEmpInfo = dataCheck.lstAnnualEmpInfo.stream()
-							.filter(x -> x.getEmployeeId().equals(sid)).collect(Collectors.toList());
-						if(!annuaEmpInfo.isEmpty()) {
-							AnnualLeaveEmpBasicInfo empInfo = annuaEmpInfo.get(0);
-							List<GrantHdTblSet> grantTable = dataCheck.lstGrantHdTable.stream()
-									.filter(x -> x.getYearHolidayCode().v().equals(empInfo.getGrantRule().getGrantTableCode().v()))
-									.collect(Collectors.toList());
-							if(grantTable.isEmpty()) {
-								alarmValue = TextResource.localize("KAL010_565", empInfo.getGrantRule().getGrantTableCode().v());
-								targetValues = TextResource.localize("KAL010_575", empInfo.getGrantRule().getGrantTableCode().v());
-							}
-						}
-				} else if (exCond.getNo() == MasterCheckFixedCheckItem.WEEKDAY_WORKTYPE_CONFIRM
-						|| exCond.getNo() == MasterCheckFixedCheckItem.WEEKDAY_WORKTIME_CONFIRM
-						|| exCond.getNo() == MasterCheckFixedCheckItem.HOLIDAY_WORK_WORKTYPE_CONFIRM
-						|| exCond.getNo() == MasterCheckFixedCheckItem.HOLIDAY_WORK_WORKTIME_CONFIRM
-						|| exCond.getNo() == MasterCheckFixedCheckItem.HOLIDAY_WORKTYPE_CONFIRM) {
-					List<WorkingConditionItem> workingItem = dataCheck.lstWorkingItem.stream()
-							.filter(w -> w.getEmployeeId().equals(sid)).collect(Collectors.toList());						
-					if(!workingItem.isEmpty()) {
-						for (int i = 0; i < workingItem.size(); i++) {
-							WorkingConditionItem workingItemEmp = workingItem.get(i);
-							if(exCond.getNo() == MasterCheckFixedCheckItem.WEEKDAY_WORKTYPE_CONFIRM) {
-								Optional<WorkTypeCode> optWorkTypeCode = workingItemEmp.getWorkCategory().getWeekdayTime().getWorkTypeCode();
-								if(optWorkTypeCode.isPresent()) {
-									List<WorkType> empOfWt = dataCheck.lstWorkType.stream()
-											.filter(w -> w.getWorkTypeCode().v().equals(optWorkTypeCode.get().v())).collect(Collectors.toList());
-									if(empOfWt.isEmpty()) {
-										wCheckValues = wCheckValues + "、" + optWorkTypeCode.get().v();
-									}
-								}	
-							} else if (exCond.getNo() == MasterCheckFixedCheckItem.WEEKDAY_WORKTIME_CONFIRM) {
-								Optional<WorkTimeCode> optWorkTimeCode = workingItemEmp.getWorkCategory().getWeekdayTime().getWorkTimeCode();
-								if(optWorkTimeCode.isPresent()) {
-									List<WorkTimeSetting> empOfWtime = dataCheck.lstWorkTime.stream()
-											.filter(w -> w.getWorktimeCode().v().equals(optWorkTimeCode.get().v())).collect(Collectors.toList());
-									if(empOfWtime.isEmpty()) {
-										wCheckValues = wCheckValues + "、" + optWorkTimeCode.get().v();									
-									}
-								}
-							} else if (exCond.getNo() == MasterCheckFixedCheckItem.HOLIDAY_WORK_WORKTYPE_CONFIRM) {
-								Optional<WorkTypeCode> optWTypeCodeHoW = workingItemEmp.getWorkCategory().getHolidayWork().getWorkTypeCode();
-								if(optWTypeCodeHoW.isPresent()) {
-									List<WorkType> empOfWt = dataCheck.lstWorkType.stream()
-											.filter(w -> w.getWorkTypeCode().v().equals(optWTypeCodeHoW.get().v())).collect(Collectors.toList());
-									if(empOfWt.isEmpty()) {
-										wCheckValues = wCheckValues + "、" + optWTypeCodeHoW.get().v();
-									}
-								}
-							} else if (exCond.getNo() == MasterCheckFixedCheckItem.HOLIDAY_WORK_WORKTIME_CONFIRM) {
-								Optional<WorkTimeCode> optWorkTimeHW = workingItemEmp.getWorkCategory().getHolidayWork().getWorkTimeCode();
-								if(optWorkTimeHW.isPresent()) {
-									List<WorkTimeSetting> empOfWtime = dataCheck.lstWorkTime.stream()
-											.filter(w -> w.getWorktimeCode().v().equals(optWorkTimeHW.get().v())).collect(Collectors.toList());
-									if(empOfWtime.isEmpty()) {
-										wCheckValues = wCheckValues + "、" +  optWorkTimeHW.get().v();
-									}
-								}
-							} else {
-								Optional<WorkTypeCode> optWTypeCodeH = workingItemEmp.getWorkCategory().getHolidayTime().getWorkTypeCode();
-								if(optWTypeCodeH.isPresent()) {
-									List<WorkType> empOfWt = dataCheck.lstWorkType.stream()
-											.filter(w -> w.getWorkTypeCode().v().equals(optWTypeCodeH.get().v())).collect(Collectors.toList());
-									if(empOfWt.isEmpty()) {
-										wCheckValues = wCheckValues + "、" + optWTypeCodeH.get().v();
-									}
-								}
-							}
-							
-						}
-						if(!wCheckValues.isEmpty()) {
-							wCheckValues = wCheckValues.substring(1);
-							if(exCond.getNo() == MasterCheckFixedCheckItem.WEEKDAY_WORKTYPE_CONFIRM) {
-								alarmValue = TextResource.localize("KAL010_566", wCheckValues);
-								targetValues = TextResource.localize("KAL010_576", wCheckValues);	
-							} else if (exCond.getNo() == MasterCheckFixedCheckItem.WEEKDAY_WORKTIME_CONFIRM){
-								alarmValue = TextResource.localize("KAL010_567", wCheckValues);
-								targetValues = TextResource.localize("KAL010_577", wCheckValues);	
-							} else if (exCond.getNo() == MasterCheckFixedCheckItem.HOLIDAY_WORK_WORKTYPE_CONFIRM) {
-								alarmValue = TextResource.localize("KAL010_568", wCheckValues);
-								targetValues = TextResource.localize("KAL010_576", wCheckValues);
-							} else if (exCond.getNo() == MasterCheckFixedCheckItem.HOLIDAY_WORK_WORKTIME_CONFIRM) {
-								alarmValue = TextResource.localize("KAL010_584", wCheckValues);
-								targetValues = TextResource.localize("KAL010_577", wCheckValues);
-							} else {
-								alarmValue = TextResource.localize("KAL010_585", wCheckValues);
-								targetValues = TextResource.localize("KAL010_576", wCheckValues);
-							}
-								
-						}
+			parallelManager.forEach(CollectionUtil.partitionBySize(lstSid, 100), emps -> {
+
+				synchronized (this) {
+					if (shouldStop.get()) {
+						return;
 					}
-				} else {
-					//TODO 勤務場所確認の場合所属職場履歴項目.勤務場所をまだ対応してないから一旦途中で
-					
 				}
-				if(!alarmValue.isEmpty()) {
-					ExtractionAlarmPeriodDate dPeriodR = new ExtractionAlarmPeriodDate(dPeriod == null ? Optional.empty() : Optional.ofNullable(dPeriod.start()),
-							dPeriod == null ? Optional.empty() : Optional.ofNullable(dPeriod.end()));
-					String condName = extractItem.getName().v();
-					List<WorkPlaceIdAndPeriodImportAl> lstWpl = getWplByListSidAndPeriod.stream().filter(x -> x.getEmployeeId().equals(sid)).collect(Collectors.toList())
-							.get(0).getLstWkpIdAndPeriod().stream()
-								.filter(x -> x.getDatePeriod().start().beforeOrEquals(dPeriod == null || dPeriod.end() == null ? GeneralDate.today() : dPeriod.end()) 
-										&& x.getDatePeriod().end().afterOrEquals(dPeriod == null || dPeriod.start() == null ? GeneralDate.today() : dPeriod.start())).collect(Collectors.toList());
-					String wpl = "";
-					if(!lstWpl.isEmpty()) {
-						wpl = lstWpl.get(0).getWorkplaceId();
-					}
-					
-					ExtractionResultDetail resultDetail = new ExtractionResultDetail(sid,
-							dPeriodR,
-							condName, 
-							alarmValue, 
-							GeneralDateTime.now(),
-							Optional.ofNullable(wpl),
-							exCond.getMessage().isPresent() ? Optional.ofNullable(exCond.getMessage().get().v()) : Optional.empty(),
-							Optional.ofNullable(targetValues));
-					List<ResultOfEachCondition> lstResultTmp = lstResultCondition.stream()
-							.filter(r -> r.getNo().equals(String.valueOf(exCond.getNo().value)) && r.getCheckType() == AlarmListCheckType.FixCheck).collect(Collectors.toList());
-					if(!lstResultTmp.isEmpty()) {
-						ResultOfEachCondition resultTemp = lstResultTmp.get(0);
-						lstResultCondition.remove(resultTemp);
-						resultTemp.getLstResultDetail().add(resultDetail);
-						lstResultCondition.add(resultTemp);
+				emps.stream().forEach(sid -> {
+					//アラーム内容
+					String alarmValue = "";
+					//チェック対象値
+					String targetValues = "";
+					String wCheckValues = "";
+					if(exCond.getNo() == MasterCheckFixedCheckItem.ID_CODE_CONFIRM) {
+						List<StampCard> stampCard = dataCheck.lstStampCard.stream()
+								.filter(x -> x.getEmployeeId().equals(sid)).collect(Collectors.toList());
+							if(stampCard.isEmpty()) {
+								alarmValue = TextResource.localize("KAL010_564");
+								targetValues = TextResource.localize("KAL010_574");
+							}
+					} else if(exCond.getNo() == MasterCheckFixedCheckItem.DAYOFF_GRANT_TBL_CONFIRM) {
+						List<AnnualLeaveEmpBasicInfo> annuaEmpInfo = dataCheck.lstAnnualEmpInfo.stream()
+								.filter(x -> x.getEmployeeId().equals(sid)).collect(Collectors.toList());
+							if(!annuaEmpInfo.isEmpty()) {
+								AnnualLeaveEmpBasicInfo empInfo = annuaEmpInfo.get(0);
+								List<GrantHdTblSet> grantTable = dataCheck.lstGrantHdTable.stream()
+										.filter(x -> x.getYearHolidayCode().v().equals(empInfo.getGrantRule().getGrantTableCode().v()))
+										.collect(Collectors.toList());
+								if(grantTable.isEmpty()) {
+									alarmValue = TextResource.localize("KAL010_565", empInfo.getGrantRule().getGrantTableCode().v());
+									targetValues = TextResource.localize("KAL010_575", empInfo.getGrantRule().getGrantTableCode().v());
+								}
+							}
+					} else if (exCond.getNo() == MasterCheckFixedCheckItem.WEEKDAY_WORKTYPE_CONFIRM
+							|| exCond.getNo() == MasterCheckFixedCheckItem.WEEKDAY_WORKTIME_CONFIRM
+							|| exCond.getNo() == MasterCheckFixedCheckItem.HOLIDAY_WORK_WORKTYPE_CONFIRM
+							|| exCond.getNo() == MasterCheckFixedCheckItem.HOLIDAY_WORK_WORKTIME_CONFIRM
+							|| exCond.getNo() == MasterCheckFixedCheckItem.HOLIDAY_WORKTYPE_CONFIRM) {
+						List<WorkingConditionItem> workingItem = dataCheck.lstWorkingItem.stream()
+								.filter(w -> w.getEmployeeId().equals(sid)).collect(Collectors.toList());						
+						if(!workingItem.isEmpty()) {
+							for (int i = 0; i < workingItem.size(); i++) {
+								WorkingConditionItem workingItemEmp = workingItem.get(i);
+								wCheckValues = checkWorkTypeWorktimeConfirm(dataCheck, exCond, wCheckValues,
+										workingItemEmp);
+								
+							}
+							if(!wCheckValues.isEmpty()) {
+								wCheckValues = wCheckValues.substring(1);
+								if(exCond.getNo() == MasterCheckFixedCheckItem.WEEKDAY_WORKTYPE_CONFIRM) {
+									alarmValue = TextResource.localize("KAL010_566", wCheckValues);
+									targetValues = TextResource.localize("KAL010_576", wCheckValues);	
+								} else if (exCond.getNo() == MasterCheckFixedCheckItem.WEEKDAY_WORKTIME_CONFIRM){
+									alarmValue = TextResource.localize("KAL010_567", wCheckValues);
+									targetValues = TextResource.localize("KAL010_577", wCheckValues);	
+								} else if (exCond.getNo() == MasterCheckFixedCheckItem.HOLIDAY_WORK_WORKTYPE_CONFIRM) {
+									alarmValue = TextResource.localize("KAL010_568", wCheckValues);
+									targetValues = TextResource.localize("KAL010_576", wCheckValues);
+								} else if (exCond.getNo() == MasterCheckFixedCheckItem.HOLIDAY_WORK_WORKTIME_CONFIRM) {
+									alarmValue = TextResource.localize("KAL010_584", wCheckValues);
+									targetValues = TextResource.localize("KAL010_577", wCheckValues);
+								} else {
+									alarmValue = TextResource.localize("KAL010_585", wCheckValues);
+									targetValues = TextResource.localize("KAL010_576", wCheckValues);
+								}
+									
+							}
+						}
 					} else {
-						ResultOfEachCondition cond = new ResultOfEachCondition(AlarmListCheckType.FixCheck, 
-								String.valueOf(exCond.getNo().value), 
-								new ArrayList<>());
-						cond.getLstResultDetail().add(resultDetail);
-						lstResultCondition.add(cond);
+						//TODO 勤務場所確認の場合所属職場履歴項目.勤務場所をまだ対応してないから一旦途中で
+						
 					}
-					
+					if(!alarmValue.isEmpty()) {
+						ExtractionAlarmPeriodDate dPeriodR = new ExtractionAlarmPeriodDate(dPeriod == null ? Optional.empty() : Optional.ofNullable(dPeriod.start()),
+								dPeriod == null ? Optional.empty() : Optional.ofNullable(dPeriod.end()));
+						String condName = extractItem.getName().v();
+						List<WorkPlaceIdAndPeriodImportAl> lstWpl = getWplByListSidAndPeriod.stream().filter(x -> x.getEmployeeId().equals(sid)).collect(Collectors.toList())
+								.get(0).getLstWkpIdAndPeriod().stream()
+									.filter(x -> x.getDatePeriod().start().beforeOrEquals(dPeriod == null || dPeriod.end() == null ? GeneralDate.today() : dPeriod.end()) 
+											&& x.getDatePeriod().end().afterOrEquals(dPeriod == null || dPeriod.start() == null ? GeneralDate.today() : dPeriod.start())).collect(Collectors.toList());
+						String wpl = "";
+						if(!lstWpl.isEmpty()) {
+							wpl = lstWpl.get(0).getWorkplaceId();
+						}
+						
+						ExtractionResultDetail resultDetail = new ExtractionResultDetail(sid,
+								dPeriodR,
+								condName, 
+								alarmValue, 
+								GeneralDateTime.now(),
+								Optional.ofNullable(wpl),
+								exCond.getMessage().isPresent() ? Optional.ofNullable(exCond.getMessage().get().v()) : Optional.empty(),
+								Optional.ofNullable(targetValues));
+						List<ResultOfEachCondition> lstResultTmp = lstResultCondition.stream()
+								.filter(r -> r.getNo().equals(String.valueOf(exCond.getNo().value)) && r.getCheckType() == AlarmListCheckType.FixCheck).collect(Collectors.toList());
+						if(!lstResultTmp.isEmpty()) {
+							ResultOfEachCondition resultTemp = lstResultTmp.get(0);
+							lstResultCondition.remove(resultTemp);
+							resultTemp.getLstResultDetail().add(resultDetail);
+							lstResultCondition.add(resultTemp);
+						} else {
+							ResultOfEachCondition cond = new ResultOfEachCondition(AlarmListCheckType.FixCheck, 
+									String.valueOf(exCond.getNo().value), 
+									new ArrayList<>());
+							cond.getLstResultDetail().add(resultDetail);
+							lstResultCondition.add(cond);
+						}
+						
+					}
+				});
+				synchronized (this) {
+					counter.accept(emps.size());
 				}
 			});
+			
 		});
 		
+	}
+	private String checkWorkTypeWorktimeConfirm(DataCheck dataCheck, MasterCheckFixedExtractCondition exCond,
+			String wCheckValues, WorkingConditionItem workingItemEmp) {
+		if(exCond.getNo() == MasterCheckFixedCheckItem.WEEKDAY_WORKTYPE_CONFIRM) {
+			Optional<WorkTypeCode> optWorkTypeCode = workingItemEmp.getWorkCategory().getWeekdayTime().getWorkTypeCode();
+			if(optWorkTypeCode.isPresent()) {
+				List<WorkType> empOfWt = dataCheck.lstWorkType.stream()
+						.filter(w -> w.getWorkTypeCode().v().equals(optWorkTypeCode.get().v())).collect(Collectors.toList());
+				if(empOfWt.isEmpty()) {
+					wCheckValues = wCheckValues + "、" + optWorkTypeCode.get().v();
+				}
+			}	
+		} else if (exCond.getNo() == MasterCheckFixedCheckItem.WEEKDAY_WORKTIME_CONFIRM) {
+			Optional<WorkTimeCode> optWorkTimeCode = workingItemEmp.getWorkCategory().getWeekdayTime().getWorkTimeCode();
+			if(optWorkTimeCode.isPresent()) {
+				List<WorkTimeSetting> empOfWtime = dataCheck.lstWorkTime.stream()
+						.filter(w -> w.getWorktimeCode().v().equals(optWorkTimeCode.get().v())).collect(Collectors.toList());
+				if(empOfWtime.isEmpty()) {
+					wCheckValues = wCheckValues + "、" + optWorkTimeCode.get().v();									
+				}
+			}
+		} else if (exCond.getNo() == MasterCheckFixedCheckItem.HOLIDAY_WORK_WORKTYPE_CONFIRM) {
+			Optional<WorkTypeCode> optWTypeCodeHoW = workingItemEmp.getWorkCategory().getHolidayWork().getWorkTypeCode();
+			if(optWTypeCodeHoW.isPresent()) {
+				List<WorkType> empOfWt = dataCheck.lstWorkType.stream()
+						.filter(w -> w.getWorkTypeCode().v().equals(optWTypeCodeHoW.get().v())).collect(Collectors.toList());
+				if(empOfWt.isEmpty()) {
+					wCheckValues = wCheckValues + "、" + optWTypeCodeHoW.get().v();
+				}
+			}
+		} else if (exCond.getNo() == MasterCheckFixedCheckItem.HOLIDAY_WORK_WORKTIME_CONFIRM) {
+			Optional<WorkTimeCode> optWorkTimeHW = workingItemEmp.getWorkCategory().getHolidayWork().getWorkTimeCode();
+			if(optWorkTimeHW.isPresent()) {
+				List<WorkTimeSetting> empOfWtime = dataCheck.lstWorkTime.stream()
+						.filter(w -> w.getWorktimeCode().v().equals(optWorkTimeHW.get().v())).collect(Collectors.toList());
+				if(empOfWtime.isEmpty()) {
+					wCheckValues = wCheckValues + "、" +  optWorkTimeHW.get().v();
+				}
+			}
+		} else {
+			Optional<WorkTypeCode> optWTypeCodeH = workingItemEmp.getWorkCategory().getHolidayTime().getWorkTypeCode();
+			if(optWTypeCodeH.isPresent()) {
+				List<WorkType> empOfWt = dataCheck.lstWorkType.stream()
+						.filter(w -> w.getWorkTypeCode().v().equals(optWTypeCodeH.get().v())).collect(Collectors.toList());
+				if(empOfWt.isEmpty()) {
+					wCheckValues = wCheckValues + "、" + optWTypeCodeH.get().v();
+				}
+			}
+		}
+		return wCheckValues;
 	}
 	public class DataCheck{
 		/**打刻カード	 */

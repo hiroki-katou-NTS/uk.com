@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.function.dom.adapter.alarm;
 
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
@@ -25,7 +27,8 @@ public interface AlarmListPersonServiceAdapter {
 	void extractMasterCheckResult(String cid, List<String> lstSid, DatePeriod dPeriod,
 			String errorMasterCheckId, List<WorkPlaceHistImport> lstWplHist,
 			List<StatusOfEmployeeAdapter> lstStatusEmp,List<ResultOfEachCondition> lstResultCondition,
-			List<AlarmListCheckInfor> lstCheckInfor);
+			List<AlarmListCheckInfor> lstCheckInfor, Consumer<Integer> counter,
+			Supplier<Boolean> shouldStop);
 	
 	/**
 	 * 日次チェック
@@ -42,7 +45,8 @@ public interface AlarmListPersonServiceAdapter {
 			String errorDailyCheckId, DailyAlarmCondition dailyAlarmCondition,
 			List<WorkPlaceHistImport> getWplByListSidAndPeriod, 
 			List<StatusOfEmployeeAdapter> lstStatusEmp, 
-			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType);
+			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType, Consumer<Integer> counter,
+			Supplier<Boolean> shouldStop);
 	/**
 	 * 月次
 	 * @param cid
@@ -58,7 +62,8 @@ public interface AlarmListPersonServiceAdapter {
 	void extractMonthCheckResult(String cid, List<String> lstSid, YearMonthPeriod mPeriod, String fixConId,
 			List<String> lstAnyConID, List<WorkPlaceHistImport> lstWplHist,
 			List<ResultOfEachCondition> lstResultCondition,
-			List<AlarmListCheckInfor> lstCheckInfor);
+			List<AlarmListCheckInfor> lstCheckInfor, Consumer<Integer> counter,
+			Supplier<Boolean> shouldStop);
 	/**
 	 * 複数月次
 	 * @param cid
