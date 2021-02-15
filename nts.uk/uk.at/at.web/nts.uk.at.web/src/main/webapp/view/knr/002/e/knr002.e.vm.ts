@@ -229,7 +229,7 @@ module nts.uk.at.view.knr002.e {
                         $("#detail-grid").igGrid("dataSourceObject", vm.settingContentGrid()).igGrid("dataBind");
                     }
                 })
-                .fail((res: any) => console.log(res))
+                .fail((res: any) => {})
                 .always(() => blockUI.clear());
             }
 
@@ -251,7 +251,7 @@ module nts.uk.at.view.knr002.e {
                         $("#detail-grid").igGrid("dataSourceObject", vm.settingContentGrid()).igGrid("dataBind");
                     }
                 })
-                .fail((res: any) => console.log(res))
+                .fail((res: any) => {})
                 .always(() => blockUI.clear());
             }
 
@@ -273,7 +273,6 @@ module nts.uk.at.view.knr002.e {
                 const vm = this;
 
                 let shareData = vm.bakGridData()[vm.selectedRow()];
-                console.log(shareData, 'shareData');
                 if (shareData.backupDate.length === 0) {
                     nts.uk.ui.dialog.error({ messageId: 'Msg_2022' });
                     return;
@@ -302,7 +301,6 @@ module nts.uk.at.view.knr002.e {
 
                 service.getInitData()
                 .done((res: InitialDisplayBackupScreenDto) => {
-                    console.log('load Init');
                     if (res) {
                         
                         vm.setDisplayModelEmpInfoTerminal(res.listEmpInfoTerminal);
@@ -337,7 +335,7 @@ module nts.uk.at.view.knr002.e {
                         
                     }
                 })
-                .fail((res: any) => console.log(res))
+                .fail((res: any) => {})
                 .always(() => blockUI.clear());
             }
 

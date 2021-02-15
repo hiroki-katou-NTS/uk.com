@@ -133,7 +133,17 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 				return vm.$ajax(API.getAppNameInAppList);
 			}).then((appNameLst: any) => {
 				vm.appNameLst = appNameLst;
-				return vm.$ajax(API.getApprovalStatusActivation);
+				return $.Deferred((dfd) => {
+					return character.restore(__viewContext.user.employeeId + __viewContext.user.companyId).then((restoreData: any) => {
+						let selectedClosureIdCache = null;
+						if(restoreData)	{
+							selectedClosureIdCache = restoreData.employmentInfo.selectedClosureId;
+						}
+						dfd.resolve(selectedClosureIdCache);
+					});
+				});
+			}).then((data: any) => {
+				return vm.$ajax(API.getApprovalStatusActivation, {selectClosureId: data});
 			}).then((data: any) => {
 				return $.Deferred((dfd) => {
 					vm.closureLst(_.map(data.closureList, (o: any) => {

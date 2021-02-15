@@ -56,6 +56,9 @@ module knr002.k {
                         }
                     });
                 }
+                setTimeout(() => {
+                    $('#multi-list > tbody > tr:nth-child(1)').focus();
+                }, 25);
                 blockUI.clear();   																			
                 dfd.resolve();											
                 return dfd.promise();											
