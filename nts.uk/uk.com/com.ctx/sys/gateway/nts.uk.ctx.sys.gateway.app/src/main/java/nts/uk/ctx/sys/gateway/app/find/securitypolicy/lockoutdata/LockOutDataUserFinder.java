@@ -16,9 +16,9 @@ import nts.uk.ctx.sys.gateway.app.find.securitypolicy.lockoutdata.dto.LockOutDat
 import nts.uk.ctx.sys.gateway.app.find.securitypolicy.lockoutdata.dto.LockOutDataUserDto;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserDto;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockOutData;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockOutDataRepository;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.SearchUser;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockOutData;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockOutDataRepository;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.SearchUser;
 import nts.uk.shr.com.context.AppContexts;
 
 /**

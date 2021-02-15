@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.fourweekfourdayoff;
+﻿package nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.fourweekfourdayoff;
 
 import java.io.Serializable;
 
@@ -16,13 +16,13 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionCode;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.fourweekfourdayoff.AlarmCheckCondition4W4D;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtAlarmCheckConditionCategory;
 import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KFNMT_ALARMCHECK4W4D")
-public class KfnmtAlarmCheck4W4D extends UkJpaEntity implements Serializable {
+@Table(name = "KFNMT_ALST_CHK_4W4D")
+public class KfnmtAlarmCheck4W4D extends ContractUkJpaEntity implements Serializable {
 
 	/**
 	 * 

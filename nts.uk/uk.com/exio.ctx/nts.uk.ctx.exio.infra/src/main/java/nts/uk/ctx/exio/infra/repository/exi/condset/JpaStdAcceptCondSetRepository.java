@@ -1,4 +1,4 @@
-package nts.uk.ctx.exio.infra.repository.exi.condset;
+﻿package nts.uk.ctx.exio.infra.repository.exi.condset;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -28,12 +28,12 @@ import java.util.Optional;
 public class JpaStdAcceptCondSetRepository extends JpaRepository implements StdAcceptCondSetRepository {
 
 	/** The query select all by company id */
-	private static final String SELECT_ALL_BY_COMPANY_ID = "SELECT c FROM OiomtStdAcceptCondSet c "
+	private static final String SELECT_ALL_BY_COMPANY_ID = "SELECT c FROM OiomtExAcCond c "
 			+ "WHERE c.stdAcceptCondSetPk.cid = :companyId "
 			+ "ORDER BY c.stdAcceptCondSetPk.conditionSetCd";
 
 	/** The query select all */
-	private static final String SELECT_ALL = "SELECT c FROM OiomtStdAcceptCondSet c "
+	private static final String SELECT_ALL = "SELECT c FROM OiomtExAcCond c "
 			+ "WHERE c.stdAcceptCondSetPk.cid = :companyId "
 			+ "ORDER BY c.stdAcceptCondSetPk.conditionSetCd";
 	
@@ -53,7 +53,7 @@ public class JpaStdAcceptCondSetRepository extends JpaRepository implements StdA
 	 */
 	@Override
 	public List<StdAcceptCondSet> findAllStdAcceptCondSetsByCompanyId(String companyId) {
-		return this.queryProxy().query(SELECT_ALL_BY_COMPANY_ID, OiomtStdAcceptCondSet.class)
+		return this.queryProxy().query(SELECT_ALL_BY_COMPANY_ID, OiomtExAcCond.class)
 								.setParameter("companyId", companyId)
 								.getList(entity -> toDomain(entity));
 	}
@@ -83,7 +83,7 @@ public class JpaStdAcceptCondSetRepository extends JpaRepository implements StdA
 	 */
 	@Override
 	public List<StdAcceptCondSet> getAllStdAcceptCondSet(String cid) {
-		return this.queryProxy().query(SELECT_ALL, OiomtStdAcceptCondSet.class)
+		return this.queryProxy().query(SELECT_ALL, OiomtExAcCond.class)
 								.setParameter("companyId", cid)
 								.getList(entity -> toDomain(entity));
 	}
@@ -156,7 +156,7 @@ public class JpaStdAcceptCondSetRepository extends JpaRepository implements StdA
 	 */
 	@Override
 	public void remove(String cid, int sysType, String conditionSetCd) {
-		this.commandProxy().remove(OiomtStdAcceptCondSet.class,
+		this.commandProxy().remove(OiomtExAcCond.class,
 								   new OiomtStdAcceptCondSetPk(cid, conditionSetCd));
 	}
 

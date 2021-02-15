@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.daily;
+﻿package nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.daily;
 
 import java.io.Serializable;
 import java.util.List;
@@ -19,12 +19,12 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionCode;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.daily.DailyAlarmCondition;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtAlarmCheckConditionCategory;
 import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_DAILY_ALARM_CON")
-public class KrcmtDailyAlarmCondition extends UkJpaEntity implements Serializable {
+@Table(name = "KFNMT_ALST_CHKDAY")
+public class KrcmtDailyAlarmCondition extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -56,9 +56,6 @@ public class KrcmtDailyAlarmCondition extends UkJpaEntity implements Serializabl
 	@OneToMany(mappedBy = "dailyAlarmCondition", cascade = CascadeType.ALL, orphanRemoval = true)
 	public List<KrcmtDailyErrorCode> listErrorAlarmCode;
 
-//	@OneToMany(mappedBy = "dailyAlarmCondition", cascade = CascadeType.ALL, orphanRemoval = true)
-//	public List<KrcmtDailyFixExtra> listFixedExtractConditionWorkRecord;
-
 	@OneToMany(mappedBy = "dailyAlarmCondition", cascade = CascadeType.ALL, orphanRemoval = true)
 	public List<KrcmtDailyWkRecord> listExtractConditionWorkRecord;
 
@@ -87,7 +84,6 @@ public class KrcmtDailyAlarmCondition extends UkJpaEntity implements Serializabl
 		return new KrcmtDailyAlarmCondition(domain.getDailyAlarmConID(), companyId, code.v(), category.value,
 				domain.getConExtractedDaily().value, domain.isAddApplication() ? 1 : 0,
 				KrcmtDailyErrorCode.toEntity(domain.getDailyAlarmConID(), domain.getErrorAlarmCode()),
-//				KrcmtDailyFixExtra.toEntity(domain.getDailyAlarmConID(), domain.getErrorAlarmCode()),
 				KrcmtDailyWkRecord.toEntity(domain.getDailyAlarmConID(), domain.getExtractConditionWorkRecord()));
 	}
 

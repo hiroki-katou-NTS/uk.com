@@ -1,0 +1,391 @@
+import org.gradle.api.Project
+
+apply plugin: 'java'
+
+buildscript {
+	ext {
+		version = "1.0.0"
+		localRepo = "${project(':cloud.web').projectDir}/../../uk.repo"
+	}	
+	
+	repositories {
+		flatDir {
+			dirs localRepo
+	 	}
+	}
+	
+	dependencies {
+		// compress js plugin
+		classpath 'com.eriwen:gradle-js-plugin:1.12.0'
+
+		classpath "com.bmuschko:gradle-cargo-plugin:2.2.1"
+		
+		classpath "de.aaschmid.gradle.plugins:gradle-cpd-plugin:0.5"
+		
+		// compile typescript to js  plugin
+		classpath "com.moowork.gradle:gradle-node-plugin:1.2.0"
+		
+		classpath "de.richsource.gradle.plugins:typescript-gradle-plugin:1.8.0"
+	}
+}
+
+//すべてのプロジェクトに適応すべき内容はここに追記する
+allprojects {
+	apply from: "$rootDir/gradle/properties.gradle"
+	apply from: "$rootDir/gradle/library_properties.gradle"
+
+	sourceCompatibility = "$javaVersion"
+	targetCompatibility = "$javaVersion" 
+
+	task cleanandbuildallproject (dependsOn: ['clean', 'build']) { }
+}
+
+subprojects {
+	apply plugin: 'java'
+	apply plugin: 'eclipse'
+	apply plugin: 'eclipse-wtp'
+	
+	repositories {
+		flatDir {
+			dirs localRepo
+	 	}
+	}	
+	
+	[compileJava, compileTestJava]*.options*.encoding = "$defaultEncoding"
+	
+	jar {
+		// contains source code
+		exclude !project.hasProperty('sourceMap') || sourceMap == 'false' ? '' : '**/*.java'
+		includeEmptyDirs false
+    	from sourceSets.main.allSource
+ 	}
+ 	
+ 	task upver (type: Copy, dependsOn: ['compileJava', 'jar']) {
+        from "build/libs"
+        into "${project(':cloud.web').projectDir}/../../uk.repo"
+        include "nts*.jar"
+        exclude "nts*web.jar"
+	}
+	
+	task initd (dependsOn: [
+	]) { }
+	
+	dependencies {
+	   // Apache commons lang
+		compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.5'
+		
+		// Lombok
+		compile group: 'org.projectlombok', name: 'lombok', version: '1.16.18'
+		
+		// JUnit
+		testCompile group: 'junit', name: 'junit', version: '4.12'
+		testCompile group: 'org.hamcrest', name: 'hamcrest-core', version: '1.3'
+		testCompile group: 'org.hamcrest', name: 'hamcrest-library', version: '1.3'
+		
+		// JMockit
+		testCompile group: 'org.jmockit', name: 'jmockit', version: '1.28'
+		
+		// CDI
+		compileOnly group: 'javax.enterprise', name: 'cdi-api', version: '1.2'
+
+		// EJB
+		compileOnly group: 'javax.ejb', name: 'javax.ejb-api', version: '3.2'
+		
+		// inject
+		compile group: 'javax.inject', name: 'javax.inject', version: '1'
+		
+		// transaction
+		compile group: 'javax.transaction', name: 'javax.transaction-api', version: '1.2'
+		
+		// validation
+		compile group: 'javax.validation', name: 'validation-api', version: '1.1.0.Final'
+		
+		// json parser
+		compile group: 'org.glassfish', name: 'javax.json', version: '1.0.4'
+		
+		// Concurrency Utilities for Java EE
+		compile group: 'javax.enterprise.concurrent', name: 'javax.enterprise.concurrent-api', version: '1.0'
+		
+		// JPA
+		compile group: 'org.eclipse.persistence', name: 'javax.persistence', version: '2.1.1'
+		compile group: 'org.eclipse.persistence', name: 'eclipselink', version: '2.6.4'
+		
+		// JAX-RS
+		compile group: 'javax.ws.rs', name: 'javax.ws.rs-api', version: '2.0.1'
+		
+		// Jackson
+		compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.9.3'
+		compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.3'
+
+		// servlet
+		compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0'
+		
+		// Log4J
+		compile group: 'log4j', name: 'log4j', version: '1.2.17'
+		compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.7'
+		compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.7'
+		
+		// SLF4J
+		compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+		compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.22'
+		
+        // Apache commons CSV
+		compile group: 'org.apache.commons', name: 'commons-csv', version: '1.4'
+        
+        // Apache commons IO
+		compile group: 'commons-io', name: 'commons-io', version: '2.5'
+		
+		// https://mvnrepository.com/artifact/org.quartz-scheduler/quartz
+		compile group: 'org.quartz-scheduler', name: 'quartz', version: '2.3.0'
+		
+		// HttpClient
+		compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.5'
+		compile group: 'org.apache.httpcomponents', name: 'httpcore', version: '4.4.9'
+		
+        compile group: 'nts.gul', name: 'nts.gul', version: version
+        compile group: 'nts.arc', name: 'nts.arc', version: version
+		
+		compile group: 'com.shr', name: 'nts.uk.shr.com', version: version
+	}
+}
+
+
+//=========================hr:cloud.operate==================================
+project (':cloud.operate') {
+}
+
+project (':cloud.operate:nts.uk.ctx.cloud.operate.ws') {
+	dependencies {
+		compile project(':cloud.operate:nts.uk.ctx.cloud.operate.app')
+	}
+}
+
+project (':cloud.operate:nts.uk.ctx.cloud.operate.dom') {
+	dependencies {
+	}
+}
+
+project (':cloud.operate:nts.uk.ctx.cloud.operate.app') {
+	dependencies {
+		compile group: 'com.shr', name: 'nts.uk.shr.find', version: version
+		compile project(':cloud.operate:nts.uk.ctx.cloud.operate.dom')
+	}
+}
+
+project (':cloud.operate:nts.uk.ctx.cloud.operate.infra') {
+	dependencies {
+		compile project(':cloud.operate:nts.uk.ctx.cloud.operate.dom')
+	}
+}
+
+project (':cloud.operate:nts.uk.ctx.cloud.operate.ac') {
+	dependencies {
+		compile group: 'at.function', name: 'nts.uk.ctx.at.function.pub', version: version
+	}
+}
+
+
+//=====================nts.uk.cloud.web=============================
+project (':cloud.web:nts.uk.cloud.web') {
+	apply plugin: 'war'
+	apply plugin: 'com.moowork.node'
+	apply plugin: 'de.richsource.gradle.plugins.typescript'
+	
+	war {
+		exclude '**/*.ts'
+		exclude '**/*.js.map'
+		baseName= "nts.uk.cloud.web"
+		includeEmptyDirs false
+	}
+	
+	dependencies {
+		providedCompile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
+		compile group: 'aspose', name: 'cells', version: '9.0.0'
+		runtime group: 'aspose', name: 'aspose.pdf', version: '11.7.0'
+		
+		// https://mvnrepository.com/artifact/net.lingala.zip4j/zip4j
+		runtime group: 'net.lingala.zip4j', name: 'zip4j', version: '1.3.2'
+		
+		runtime group: 'eu.medsea.mimeutil', name: 'mime-util', version: '2.1.3'
+		runtime group: 'com.googlecode.juniversalchardet', name: 'juniversalchardet', version: '1.0.3'
+		// Java Mail
+		runtime group: 'javax.mail', name: 'mail', version: '1.4.7'
+		
+		// for SMTP authentications
+		runtime group: 'org.apache.geronimo.javamail', name: 'geronimo-javamail_1.4_mail', version: '1.8.4'
+		runtime group: 'jcifs', name: 'jcifs', version: '1.3.17'
+		
+		runtime project (':cloud.operate:nts.uk.ctx.cloud.operate.ac')
+		runtime project (':cloud.operate:nts.uk.ctx.cloud.operate.app')
+		runtime project (':cloud.operate:nts.uk.ctx.cloud.operate.dom')
+		runtime project (':cloud.operate:nts.uk.ctx.cloud.operate.infra')
+		runtime project (':cloud.operate:nts.uk.ctx.cloud.operate.ws')
+		
+		runtime(group: 'com.query', name: 'nts.uk.query.ac', version: version)
+		runtime(group: 'com.query', name: 'nts.uk.query.app', version: version)
+		runtime(group: 'com.query', name: 'nts.uk.query.infra', version: version)
+		runtime(group: 'com.query', name: 'nts.uk.query.model', version: version)
+		runtime(group: 'com.query', name: 'nts.uk.query.pub', version: version)
+		runtime(group: 'com.query', name: 'nts.uk.query.pubimp', version: version)
+		
+		runtime(group: 'com.pereg', name: 'nts.uk.ctx.pereg.ac', version: version)		
+		runtime(group: 'com.pereg', name: 'nts.uk.ctx.pereg.app', version: version)
+		runtime(group: 'com.pereg', name: 'nts.uk.ctx.pereg.dom', version: version)
+		runtime(group: 'com.pereg', name: 'nts.uk.ctx.pereg.infra', version: version)
+		runtime(group: 'com.pereg', name: 'nts.uk.ctx.pereg.pub', version: version)
+		runtime(group: 'com.pereg', name: 'nts.uk.ctx.pereg.pubimp', version: version)
+		
+		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.pub', version: version)
+		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.pubimp', version: version)
+		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.ac', version: version)
+		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.app', version: version)
+		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.dom', version: version)
+		runtime(group: 'com.workflow', name: 'nts.uk.ctx.workflow.infra', version: version)
+
+		runtime(group: 'com.bs.company', name: 'nts.uk.ctx.bs.company.app', version: version)
+		runtime(group: 'com.bs.company', name: 'nts.uk.ctx.bs.company.dom', version: version)
+		runtime(group: 'com.bs.company', name: 'nts.uk.ctx.bs.company.infra', version: version)
+		runtime(group: 'com.bs.company', name: 'nts.uk.ctx.bs.company.pub', version: version)
+		runtime(group: 'com.bs.company', name: 'nts.uk.ctx.bs.company.pubimp', version: version)
+		runtime(group: 'com.bs.company', name: 'nts.uk.ctx.bs.company.ac', version: version)
+
+		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.app', version: version)
+		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.dom', version: version)
+		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.infra', version: version)
+		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pub', version: version)
+		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pubimp', version: version)
+		runtime(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.ac', version: version)
+		
+		runtime(group: 'com.bs.person', name: 'nts.uk.ctx.bs.person.app', version: version)
+		runtime(group: 'com.bs.person', name: 'nts.uk.ctx.bs.person.dom', version: version)
+		runtime(group: 'com.bs.person', name: 'nts.uk.ctx.bs.person.infra', version: version)
+		runtime(group: 'com.bs.person', name: 'nts.uk.ctx.bs.person.pub', version: version)
+		runtime(group: 'com.bs.person', name: 'nts.uk.ctx.bs.person.pubimp', version: version)
+		runtime(group: 'com.bs.person', name: 'nts.uk.ctx.bs.person.ac', version: version)
+
+		runtime(group: 'com.sys.share', name: 'nts.uk.ctx.sys.shared.app', version: version)
+		runtime(group: 'com.sys.share', name: 'nts.uk.ctx.sys.shared.dom', version: version)
+		runtime(group: 'com.sys.share', name: 'nts.uk.ctx.sys.shared.infra', version: version)
+		runtime(group: 'com.sys.share', name: 'nts.uk.ctx.sys.shared.pub', version: version)
+		runtime(group: 'com.sys.share', name: 'nts.uk.ctx.sys.shared.pubimp', version: version)
+		runtime(group: 'com.sys.share', name: 'nts.uk.ctx.sys.shared.ac', version: version)
+
+		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.app', version: version)
+		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.dom', version: version)
+		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.infra', version: version)
+		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.pub', version: version)
+		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.pubimp', version: version)
+		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.ac', version: version)
+
+		runtime(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.dom', version: version)
+		runtime(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.app', version: version)
+		runtime(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.infra', version: version)
+		runtime(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.pub', version: version)
+		runtime(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.pubimp', version: version)
+		runtime(group: 'com.sys.portal', name: 'nts.uk.ctx.sys.portal.ac', version: version)
+
+		runtime(group: 'com.sys.assist', name: 'nts.uk.ctx.sys.assist.pub', version: version)
+		runtime(group: 'com.sys.assist', name: 'nts.uk.ctx.sys.assist.pubimp', version: version)
+		runtime(group: 'com.sys.assist', name: 'nts.uk.ctx.sys.assist.ac', version: version)
+		runtime(group: 'com.sys.assist', name: 'nts.uk.ctx.sys.assist.app', version: version)
+		runtime(group: 'com.sys.assist', name: 'nts.uk.ctx.sys.assist.dom', version: version)
+		runtime(group: 'com.sys.assist', name: 'nts.uk.ctx.sys.assist.infra', version: version)
+		
+		runtime(group: 'com.sys.log', name: 'nts.uk.ctx.sys.log.app', version: version)
+		runtime(group: 'com.sys.log', name: 'nts.uk.ctx.sys.log.dom', version: version)
+		runtime(group: 'com.sys.log', name: 'nts.uk.ctx.sys.log.infra', version: version)
+		runtime(group: 'com.sys.log', name: 'nts.uk.ctx.sys.log.pub', version: version)
+		runtime(group: 'com.sys.log', name: 'nts.uk.ctx.sys.log.pubimp', version: version)
+		runtime(group: 'com.sys.log', name: 'nts.uk.ctx.sys.log.ac', version: version)
+
+		runtime(group: 'com.sys.gateway', name: 'nts.uk.ctx.sys.gateway.dom', version: version)
+		runtime(group: 'com.sys.gateway', name: 'nts.uk.ctx.sys.gateway.app', version: version)
+		runtime(group: 'com.sys.gateway', name: 'nts.uk.ctx.sys.gateway.infra', version: version)
+		runtime(group: 'com.sys.gateway', name: 'nts.uk.ctx.sys.gateway.pub', version: version)
+		runtime(group: 'com.sys.gateway', name: 'nts.uk.ctx.sys.gateway.pubimp', version: version)
+		runtime(group: 'com.sys.gateway', name: 'nts.uk.ctx.sys.gateway.ac', version: version)
+		
+		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.app', version: version)
+		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.dom', version: version)
+		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.infra', version: version)
+		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.pub', version: version)
+		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.pubimp', version: version)
+		runtime(group: 'com.sys.auth', name: 'nts.uk.ctx.sys.auth.ac', version: version)
+
+		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.ac', version: version
+		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.app', version: version
+		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.dom', version: version
+		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.infra', version: version
+		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.pub', version: version
+		runtime group: 'at.shared', name: 'nts.uk.ctx.at.shared.pubimp', version: version
+
+		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.ac', version: version
+		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.app', version: version
+		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.dom', version: version
+		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.infra', version: version
+		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.pub', version: version
+		runtime group: 'at.auth', name: 'nts.uk.ctx.at.auth.pubimp', version: version
+
+		runtime group: 'at.function', name: 'nts.uk.ctx.at.function.ac', version: version
+		runtime group: 'at.function', name: 'nts.uk.ctx.at.function.app', version: version
+		runtime group: 'at.function', name: 'nts.uk.ctx.at.function.dom', version: version
+		runtime group: 'at.function', name: 'nts.uk.ctx.at.function.infra', version: version
+		runtime group: 'at.function', name: 'nts.uk.ctx.at.function.pub', version: version
+		runtime group: 'at.function', name: 'nts.uk.ctx.at.function.pubimp', version: version
+		
+		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.ac', version: version
+		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.app', version: version
+		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.dom', version: version
+		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.infra', version: version
+		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.pub', version: version
+		runtime group: 'at.record', name: 'nts.uk.ctx.at.record.pubimp', version: version
+		
+		runtime group: 'at.request', name: 'nts.uk.ctx.at.request.ac', version: version
+		runtime group: 'at.request', name: 'nts.uk.ctx.at.request.app', version: version
+		runtime group: 'at.request', name: 'nts.uk.ctx.at.request.dom', version: version
+		runtime group: 'at.request', name: 'nts.uk.ctx.at.request.infra', version: version
+		runtime group: 'at.request', name: 'nts.uk.ctx.at.request.pub', version: version
+		runtime group: 'at.request', name: 'nts.uk.ctx.at.request.pubimp', version: version
+		
+		runtime group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.ac', version: version
+		runtime group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.app', version: version
+		runtime group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.dom', version: version
+		runtime group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.infra', version: version
+		runtime group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.pub', version: version
+		runtime group: 'at.schedule', name: 'nts.uk.ctx.at.schedule.pubimp', version: version
+
+		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.app', version: version
+		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.dom', version: version
+		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.infra', version: version
+		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.pub', version: version
+		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.pubimp', version: version
+		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.ac', version: version
+
+		runtime group: 'pr.shared', name: 'nts.uk.ctx.pr.shared.app', version: version
+		runtime group: 'pr.shared', name: 'nts.uk.ctx.pr.shared.dom', version: version
+		runtime group: 'pr.shared', name: 'nts.uk.ctx.pr.shared.infra', version: version
+		runtime group: 'pr.shared', name: 'nts.uk.ctx.pr.shared.pub', version: version
+		runtime group: 'pr.shared', name: 'nts.uk.ctx.pr.shared.pubimp', version: version
+		runtime group: 'pr.shared', name: 'nts.uk.ctx.pr.shared.ac', version: version
+	}
+	
+	task tsc(type: de.richsource.gradle.plugins.typescript.CompileTypeScript) {
+		target = "ES5"
+		noLib = true
+		watch = false
+		sourcemap = !project.hasProperty('sourceMap') || sourceMap == 'true'
+		include '**/*.ts'
+		source = new File('src/main/webapp/view')
+		outputDir = new File('src/main/webapp/view')
+	}
+	
+	task tscw(type: de.richsource.gradle.plugins.typescript.CompileTypeScript) {
+		target = "ES5"
+		noLib = true
+		watch = true
+		sourcemap = !project.hasProperty('sourceMap') || sourceMap == 'true'
+		include '**/*.ts'
+		source = new File('src/main/webapp/view')
+		outputDir = new File('src/main/webapp/view')
+	}
+}

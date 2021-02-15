@@ -15,13 +15,13 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCST_FORM_TIMEUNIT")
-public class KscstFormTimeUnit extends UkJpaEntity implements Serializable {
+@Table(name = "KSCMT_FORM_TIMEUNIT")
+public class KscstFormTimeUnit extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/* 主キー */
@@ -51,7 +51,7 @@ public class KscstFormTimeUnit extends UkJpaEntity implements Serializable {
 	public KscstFormAmount kscstFormulaAmount;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "kscstFormulaTimeUnit", orphanRemoval = true)
-	public List<KscstFormTimeunitFunc> listTime;
+	public List<KscmtFormTimeunitFunc> listTime;
 
 	@Override
 	protected Object getKey() {
