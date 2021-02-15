@@ -27,6 +27,7 @@ module nts.uk.at.view.kaf005.shr.footer.viewmodel {
 		<div class="cell valign-center">
 			<input data-bind="ntsTextEditor: {
 											enable: outputMode,
+											name: $i18n('KAF005_92', [messageInfos()[0].titleInput()]),
 											value: messageInfos()[0].valueInput,
 											constraint: 'DivergenceReason',
 											option: {
@@ -65,6 +66,7 @@ module nts.uk.at.view.kaf005.shr.footer.viewmodel {
 		<div class="cell valign-center">
 			<input data-bind="ntsTextEditor: {
 														enable: outputMode,
+														name: $i18n('KAF005_92', [messageInfos()[1].titleInput()]),
 														value: messageInfos()[1].valueInput,
 														constraint: 'DivergenceReason',
 														option: {
