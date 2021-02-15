@@ -6,7 +6,11 @@ import nts.arc.primitive.DecimalPrimitiveValue;
 import nts.arc.primitive.constraint.DecimalMantissaMaxLength;
 import nts.arc.primitive.constraint.DecimalMaxValue;
 import nts.arc.primitive.constraint.DecimalMinValue;
-
+/**
+ * 数値データ設定固定値
+ * @author yen_nth
+ *
+ */
 @DecimalMaxValue("9999999999.99")
 @DecimalMinValue("-9999999999.99")
 @DecimalMantissaMaxLength(2)
