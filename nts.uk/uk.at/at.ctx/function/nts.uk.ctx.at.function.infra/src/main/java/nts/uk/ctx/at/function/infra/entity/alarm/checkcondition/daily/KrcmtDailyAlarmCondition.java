@@ -1,4 +1,4 @@
-﻿package nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.daily;
+package nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.daily;
 
 import java.io.Serializable;
 import java.util.List;

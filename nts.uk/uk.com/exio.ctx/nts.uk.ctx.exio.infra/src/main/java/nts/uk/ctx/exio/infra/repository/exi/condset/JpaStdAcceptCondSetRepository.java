@@ -1,4 +1,4 @@
-﻿package nts.uk.ctx.exio.infra.repository.exi.condset;
+package nts.uk.ctx.exio.infra.repository.exi.condset;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -11,7 +11,7 @@ import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSet;
 import nts.uk.ctx.exio.dom.exi.condset.StdAcceptCondSetRepository;
 import nts.uk.ctx.exio.dom.exi.condset.SystemType;
 import nts.uk.ctx.exio.dom.exi.csvimport.ExiCharset;
-import nts.uk.ctx.exio.infra.entity.exi.condset.OiomtStdAcceptCondSet;
+import nts.uk.ctx.exio.infra.entity.exi.condset.OiomtExAcCond;
 import nts.uk.ctx.exio.infra.entity.exi.condset.OiomtStdAcceptCondSetPk;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -37,11 +37,11 @@ public class JpaStdAcceptCondSetRepository extends JpaRepository implements StdA
 			+ "WHERE c.stdAcceptCondSetPk.cid = :companyId "
 			+ "ORDER BY c.stdAcceptCondSetPk.conditionSetCd";
 	
-	private static final String GET_BY_CODE = "SELECT c FROM OiomtStdAcceptCondSet c "
+	private static final String GET_BY_CODE = "SELECT c FROM OiomtExAcCond c "
 			+ " WHERE c.stdAcceptCondSetPk.cid = :companyId "
 			+ " AND c.stdAcceptCondSetPk.conditionSetCd = :conditionSetCd"
 			+ " ORDER BY c.stdAcceptCondSetPk.conditionSetCd";
-	private static final String SELECT_ALL_BY_SYS = "SELECT c FROM OiomtStdAcceptCondSet c "
+	private static final String SELECT_ALL_BY_SYS = "SELECT c FROM OiomtExAcCond c "
 			+ "WHERE c.stdAcceptCondSetPk.cid = :companyId "
 			+ " AND c.systemType = :systemType"
 			+ " ORDER BY c.stdAcceptCondSetPk.conditionSetCd";
@@ -58,7 +58,7 @@ public class JpaStdAcceptCondSetRepository extends JpaRepository implements StdA
 								.getList(entity -> toDomain(entity));
 	}
 
-	private StdAcceptCondSet toDomain(OiomtStdAcceptCondSet entity) {
+	private StdAcceptCondSet toDomain(OiomtExAcCond entity) {
 		StdAcceptCondSet domain = new StdAcceptCondSet(entity.getStdAcceptCondSetPk().getCid(),
 				new AcceptanceConditionCode(entity.getStdAcceptCondSetPk().getConditionSetCd()),
 				new AcceptanceConditionName(entity.getConditionSetName()),
@@ -98,7 +98,7 @@ public class JpaStdAcceptCondSetRepository extends JpaRepository implements StdA
 	 */
 	@Override
 	public Optional<StdAcceptCondSet> getById(String cid, String conditionSetCd) {
-		return this.queryProxy().query(GET_BY_CODE, OiomtStdAcceptCondSet.class)
+		return this.queryProxy().query(GET_BY_CODE, OiomtExAcCond.class)
 				.setParameter("companyId", cid)
 				.setParameter("conditionSetCd", conditionSetCd)
 				.getSingle(entity -> toDomain(entity));
@@ -115,10 +115,10 @@ public class JpaStdAcceptCondSetRepository extends JpaRepository implements StdA
 		this.commandProxy().insert(toEntity(domain));
 	}
 
-	private OiomtStdAcceptCondSet toEntity(StdAcceptCondSet domain) {
+	private OiomtExAcCond toEntity(StdAcceptCondSet domain) {
 		OiomtStdAcceptCondSetPk pk = new OiomtStdAcceptCondSetPk(domain.getCompanyId(), domain.getConditionSetCode().v());
 		String contractCd = AppContexts.user().contractCode();
-		OiomtStdAcceptCondSet entity = new OiomtStdAcceptCondSet(pk,
+		OiomtExAcCond entity = new OiomtExAcCond(pk,
 				contractCd,
 				domain.getSystemType().isPresent() ? domain.getSystemType().get().value : null,
 				domain.getCategoryId().isPresent() ? domain.getCategoryId().get() : null,
@@ -139,9 +139,9 @@ public class JpaStdAcceptCondSetRepository extends JpaRepository implements StdA
 	 */
 	@Override
 	public void update(StdAcceptCondSet domain) {
-		OiomtStdAcceptCondSet newStdAcceptCondSet = toEntity(domain);
-		Optional<OiomtStdAcceptCondSet> updateStdAcceptCondSet = this.queryProxy().find(newStdAcceptCondSet.getStdAcceptCondSetPk(),
-																						OiomtStdAcceptCondSet.class);
+		OiomtExAcCond newStdAcceptCondSet = toEntity(domain);
+		Optional<OiomtExAcCond> updateStdAcceptCondSet = this.queryProxy().find(newStdAcceptCondSet.getStdAcceptCondSetPk(),
+																						OiomtExAcCond.class);
 		if (updateStdAcceptCondSet.isPresent()) {
 			this.commandProxy().update(newStdAcceptCondSet);
 		}
@@ -170,7 +170,7 @@ public class JpaStdAcceptCondSetRepository extends JpaRepository implements StdA
 	 */
 	@Override
 	public boolean isSettingCodeExist(String cid, String conditionSetCd) {
-		return this.queryProxy().find(new OiomtStdAcceptCondSetPk(cid, conditionSetCd), OiomtStdAcceptCondSet.class)
+		return this.queryProxy().find(new OiomtStdAcceptCondSetPk(cid, conditionSetCd), OiomtExAcCond.class)
 								.isPresent();
 	}
 
@@ -181,9 +181,9 @@ public class JpaStdAcceptCondSetRepository extends JpaRepository implements StdA
 	 */
 	@Override
 	public void updateFromD(StdAcceptCondSet domain) {
-		OiomtStdAcceptCondSet newStdAcceptCondSet = toEntity(domain);
-		Optional<OiomtStdAcceptCondSet> updateStdAcceptCondSet = this.queryProxy().find(newStdAcceptCondSet.getStdAcceptCondSetPk(),
-																						OiomtStdAcceptCondSet.class);
+		OiomtExAcCond newStdAcceptCondSet = toEntity(domain);
+		Optional<OiomtExAcCond> updateStdAcceptCondSet = this.queryProxy().find(newStdAcceptCondSet.getStdAcceptCondSetPk(),
+																						OiomtExAcCond.class);
 		if (updateStdAcceptCondSet.isPresent()) {			
 			this.commandProxy().update(newStdAcceptCondSet);
 		}
@@ -191,7 +191,7 @@ public class JpaStdAcceptCondSetRepository extends JpaRepository implements StdA
 
 	@Override
 	public List<StdAcceptCondSet> getStdAcceptCondSetBySysType(String cid, int sysType) {
-		return this.queryProxy().query(SELECT_ALL_BY_SYS, OiomtStdAcceptCondSet.class)
+		return this.queryProxy().query(SELECT_ALL_BY_SYS, OiomtExAcCond.class)
 				.setParameter("companyId", cid)
 				.setParameter("systemType", sysType)
 				.getList(entity -> toDomain(entity));

@@ -129,7 +129,7 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 	static {
 		StringBuilder builderDate = new StringBuilder();
 		builderDate.append("SELECT * ");
-		builderDate.append("FROM WWFMT_WP_APPROVAL_ROOT WHERE CID = 'companyID'");
+		builderDate.append("FROM WWFMT_APPROVAL_ROUTE_WP WHERE CID = 'companyID'");
 		builderDate.append("AND SYSTEM_ATR = 'sysAtr' AND START_DATE <= 'eDate' AND END_DATE >= 'sDate' ");
 		builderDate.append("AND EMPLOYMENT_ROOT_ATR IN 'rootAtr'");
 		FIND_DATEPERIOD = builderDate.toString();

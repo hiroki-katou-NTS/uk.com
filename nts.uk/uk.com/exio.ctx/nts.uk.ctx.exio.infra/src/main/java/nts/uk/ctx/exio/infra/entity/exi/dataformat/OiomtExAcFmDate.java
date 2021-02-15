@@ -1,4 +1,4 @@
-﻿package nts.uk.ctx.exio.infra.entity.exi.dataformat;
+package nts.uk.ctx.exio.infra.entity.exi.dataformat;
 
 import java.io.Serializable;
 
@@ -69,7 +69,7 @@ public class OiomtExAcFmDate extends ContractUkJpaEntity implements Serializable
 		return dateDataFormSetPk;
 	}
 
-	public OiomtDateDataFormSet(String cid,String conditionCode, int acceptItemNum, int fixedValue,
+	public OiomtExAcFmDate(String cid,String conditionCode, int acceptItemNum, int fixedValue,
 			int formatSelection, GeneralDate valueOfFixedValue) {
 		super();
 		this.dateDataFormSetPk = new OiomtDateDataFormSetPk(cid, conditionCode, acceptItemNum);
@@ -78,8 +78,8 @@ public class OiomtExAcFmDate extends ContractUkJpaEntity implements Serializable
 		this.formatSelection = formatSelection;
 	}
 
-	public static OiomtDateDataFormSet fromDomain(StdAcceptItem item, DateDataFormSet domain) {
-		return new OiomtDateDataFormSet(item.getCid(), item.getConditionSetCd().v(),
+	public static OiomtExAcFmDate fromDomain(StdAcceptItem item, DateDataFormSet domain) {
+		return new OiomtExAcFmDate(item.getCid(), item.getConditionSetCd().v(),
 				item.getAcceptItemNumber(), domain.getFixedValue().value, domain.getFormatSelection().value,
 				domain.getValueOfFixedValue().isPresent() ? domain.getValueOfFixedValue().get() : null);
 	}

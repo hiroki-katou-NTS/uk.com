@@ -1,4 +1,4 @@
-﻿package nts.uk.ctx.exio.infra.entity.exi.item;
+package nts.uk.ctx.exio.infra.entity.exi.item;
 
 import java.io.Serializable;
 import java.util.Optional;
@@ -42,8 +42,8 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @Setter
 @Getter
-@Table(name = "OIOMT_STD_ACCEPT_ITEM")
-public class OiomtStdAcceptItem extends ContractUkJpaEntity implements Serializable {
+@Table(name = "OIOMT_EX_AC_ITEM")
+public class OiomtExAcItem extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -106,29 +106,29 @@ public class OiomtStdAcceptItem extends ContractUkJpaEntity implements Serializa
 		return stdAcceptItemPk;
 	}
 
-	public static OiomtStdAcceptItem toEntity(StdAcceptItem domain) {
-		OiomtAcScreenCondSet screenConSet = domain.getAcceptScreenConditionSetting().isPresent()
-				? OiomtAcScreenCondSet.fromDomain(domain, domain.getAcceptScreenConditionSetting().get())
+	public static OiomtExAcItem toEntity(StdAcceptItem domain) {
+		OiomtExAcScreenCond screenConSet = domain.getAcceptScreenConditionSetting().isPresent()
+				? OiomtExAcScreenCond.fromDomain(domain, domain.getAcceptScreenConditionSetting().get())
 				: null;
-		OiomtNumDataFormatSet numDataFormatSet = domain.getItemType() == ItemType.NUMERIC && domain.getDataFormatSetting().isPresent()
-				? OiomtNumDataFormatSet.fromDomain(domain,
+		OiomtExAcFmNum numDataFormatSet = domain.getItemType() == ItemType.NUMERIC && domain.getDataFormatSetting().isPresent()
+				? OiomtExAcFmNum.fromDomain(domain,
 						(NumDataFormatSet) domain.getDataFormatSetting().get())
 				: null;
-		OiomtChrDataFormatSet chrDataFormatSet = domain.getItemType() == ItemType.CHARACTER && domain.getDataFormatSetting().isPresent()
-				? OiomtChrDataFormatSet.fromDomain(domain,
+		OiomtExAcFmChac chrDataFormatSet = domain.getItemType() == ItemType.CHARACTER && domain.getDataFormatSetting().isPresent()
+				? OiomtExAcFmChac.fromDomain(domain,
 						(ChrDataFormatSet) domain.getDataFormatSetting().get())
 				: null;
-		OiomtDateDataFormSet dateDataFormatSet = domain.getItemType() == ItemType.DATE && domain.getDataFormatSetting().isPresent()
-				? OiomtDateDataFormSet.fromDomain(domain, (DateDataFormSet) domain.getDataFormatSetting().get())
+		OiomtExAcFmDate dateDataFormatSet = domain.getItemType() == ItemType.DATE && domain.getDataFormatSetting().isPresent()
+				? OiomtExAcFmDate.fromDomain(domain, (DateDataFormSet) domain.getDataFormatSetting().get())
 				: null;
-		OiomtInsTimeDatFmSet insTimeFormatSet =  domain.getItemType() == ItemType.INS_TIME && domain.getDataFormatSetting().isPresent()
-				? OiomtInsTimeDatFmSet.fromDomain(domain, (InsTimeDatFmSet) domain.getDataFormatSetting().get())
+		OiomtExAcFmTime insTimeFormatSet =  domain.getItemType() == ItemType.INS_TIME && domain.getDataFormatSetting().isPresent()
+				? OiomtExAcFmTime.fromDomain(domain, (InsTimeDatFmSet) domain.getDataFormatSetting().get())
 				: null;
 		OiomtTimeDataFmSet timeDateFormatSet = domain.getItemType() == ItemType.TIME && domain.getDataFormatSetting().isPresent()
 				? OiomtTimeDataFmSet.fromDomain(domain, (TimeDataFormatSet) domain.getDataFormatSetting().get())
 				: null;
 		OiomtStdAcceptItemPk pk = new OiomtStdAcceptItemPk(domain.getCid(), domain.getConditionSetCd().v(), domain.getAcceptItemNumber());
-		OiomtStdAcceptItem entity = new OiomtStdAcceptItem(pk,
+		OiomtExAcItem entity = new OiomtExAcItem(pk,
 				AppContexts.user().contractCode(),
 				domain.getCategoryItemNo(),
 				domain.getCsvItemNumber().isPresent() ? domain.getCsvItemNumber().get() : null,

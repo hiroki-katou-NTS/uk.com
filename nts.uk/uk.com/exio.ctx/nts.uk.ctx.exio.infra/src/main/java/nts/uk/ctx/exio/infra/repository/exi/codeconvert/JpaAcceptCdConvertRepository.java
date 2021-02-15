@@ -1,4 +1,4 @@
-﻿package nts.uk.ctx.exio.infra.repository.exi.codeconvert;
+package nts.uk.ctx.exio.infra.repository.exi.codeconvert;
 
 import java.util.List;
 import java.util.Optional;
@@ -73,9 +73,9 @@ public class JpaAcceptCdConvertRepository extends JpaRepository implements Accep
 				}).collect(Collectors.toList()));
 	}
 
-	private OiomtAcceptCdConvert toEntity(AcceptCdConvert domain) {
+	private OiomtExAcCdConv toEntity(AcceptCdConvert domain) {
 		String contractCd = AppContexts.user().contractCode();
-		return new OiomtAcceptCdConvert(
+		return new OiomtExAcCdConv(
 				new OiomtAcceptCdConvertPk(domain.getCid(), domain.getConvertCd().v()), domain.getConvertName().v(),
 				contractCd,
 				domain.getAcceptWithoutSetting().value, domain.getListConvertDetails().stream().map(itemDetail -> {

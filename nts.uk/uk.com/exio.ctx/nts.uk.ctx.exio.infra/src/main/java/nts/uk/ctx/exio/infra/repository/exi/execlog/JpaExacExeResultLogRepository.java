@@ -5,7 +5,7 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 
-import nts.uk.ctx.exio.infra.entity.exi.execlog.OiomtExacExeResultLog;
+import nts.uk.ctx.exio.infra.entity.exi.execlog.OiodtExAcExecLog;
 import nts.uk.ctx.exio.infra.entity.exi.execlog.OiomtExacExeResultLogPk;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.ctx.exio.dom.exi.execlog.ExacExeResultLogRepository;
@@ -22,7 +22,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 public class JpaExacExeResultLogRepository extends JpaRepository implements ExacExeResultLogRepository
 {
 
-    private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM OiomtExacExeResultLog f";
+    private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM OiodtExAcExecLog f";
     private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING + " WHERE  f.pk.cid =:cid"
     		+ " AND  f.pk.conditionSetCd =:conditionSetCd"
     		+ " AND  f.pk.externalProcessId =:externalProcessId ";
@@ -30,13 +30,13 @@ public class JpaExacExeResultLogRepository extends JpaRepository implements Exac
 
     @Override
     public List<ExacExeResultLog> getAllExacExeResultLog(){
-        return this.queryProxy().query(SELECT_ALL_QUERY_STRING, OiomtExacExeResultLog.class)
+        return this.queryProxy().query(SELECT_ALL_QUERY_STRING, OiodtExAcExecLog.class)
                 .getList(item -> toDomain(item));
     }
 
     @Override
     public Optional<ExacExeResultLog> getExacExeResultLogById(String cid, String conditionSetCd, String externalProcessId){
-        return this.queryProxy().query(SELECT_BY_KEY_STRING, OiomtExacExeResultLog.class)
+        return this.queryProxy().query(SELECT_BY_KEY_STRING, OiodtExAcExecLog.class)
         .setParameter("cid", cid)
         .setParameter("conditionSetCd", conditionSetCd)
         .setParameter("externalProcessId", externalProcessId)
@@ -51,9 +51,9 @@ public class JpaExacExeResultLogRepository extends JpaRepository implements Exac
 
     @Override
     public void update(ExacExeResultLog domain){
-        OiomtExacExeResultLog newExacExeResultLog = toEntity(domain);
-        OiomtExacExeResultLog updateExacExeResultLog = this.queryProxy().find(newExacExeResultLog.pk,
-        		OiomtExacExeResultLog.class).get();
+        OiodtExAcExecLog newExacExeResultLog = toEntity(domain);
+        OiodtExAcExecLog updateExacExeResultLog = this.queryProxy().find(newExacExeResultLog.pk,
+        		OiodtExAcExecLog.class).get();
         if (null == updateExacExeResultLog) {
             return;
         }
@@ -74,10 +74,10 @@ public class JpaExacExeResultLogRepository extends JpaRepository implements Exac
 
     @Override
     public void remove(String cid, String conditionSetCd, String externalProcessId){
-        this.commandProxy().remove(OiomtExacExeResultLog.class, new OiomtExacExeResultLogPk(cid, conditionSetCd, externalProcessId)); 
+        this.commandProxy().remove(OiodtExAcExecLog.class, new OiomtExacExeResultLogPk(cid, conditionSetCd, externalProcessId)); 
     }
 
-    private static ExacExeResultLog toDomain(OiomtExacExeResultLog entity) {
+    private static ExacExeResultLog toDomain(OiodtExAcExecLog entity) {
     	ExacExeResultLog domain = new ExacExeResultLog(entity.pk.cid,
     			entity.pk.conditionSetCd,
     			entity.pk.externalProcessId,
@@ -96,11 +96,11 @@ public class JpaExacExeResultLogRepository extends JpaRepository implements Exac
     	return domain;
     }
 
-    private OiomtExacExeResultLog toEntity(ExacExeResultLog domain) {
+    private OiodtExAcExecLog toEntity(ExacExeResultLog domain) {
     	OiomtExacExeResultLogPk pk = new OiomtExacExeResultLogPk(domain.getCid(),
     			domain.getConditionSetCd(),
     			domain.getExternalProcessId());
-    	OiomtExacExeResultLog entity = new OiomtExacExeResultLog(pk,
+    	OiodtExAcExecLog entity = new OiodtExAcExecLog(pk,
     			AppContexts.user().contractCode(),
     			domain.getExecutorId(),
     			domain.getUserId(),
@@ -122,7 +122,7 @@ public class JpaExacExeResultLogRepository extends JpaRepository implements Exac
 	 */
 	@Override
 	public List<ExacExeResultLog> getExacExeResultLogByProcessId(String externalProcessId) {
-		 return this.queryProxy().query(SELECT_BY_PROCESS_ID, OiomtExacExeResultLog.class)
+		 return this.queryProxy().query(SELECT_BY_PROCESS_ID, OiodtExAcExecLog.class)
 				 .setParameter("externalProcessId", externalProcessId)
 	                .getList(item -> toDomain(item));
 	}

@@ -1,4 +1,4 @@
-﻿package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.multimonth;
+package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.multimonth;
 
 import java.io.Serializable;
 import java.util.Optional;
@@ -27,7 +27,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.HowD
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.MessageDisplay;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.NameAlarmExtractionCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.multimonth.MulMonthAlarmCheckCond;
-import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcmtErAlAtdItemCon;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcmtEralstCndgrp;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 /**
@@ -39,7 +39,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @Entity
 @Table(name = "KRCDT_MULTIMONTH_COND_ALARM")
-public class KrcmtMulMonAlarmCheck extends ContractUkJpaEntity implements Serializable {
+public class KrcmtAlstChkmltUd extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -82,16 +82,16 @@ public class KrcmtMulMonAlarmCheck extends ContractUkJpaEntity implements Serial
 	public String messageDisplay;
 	
 	@OneToOne(cascade = CascadeType.ALL, mappedBy="krcmtMulMonAlarmCheck", orphanRemoval=true)
-	public KrcmtErAlAtdItemCon krcmtErAlAtdItemCon;
+	public KrcmtEralstCndgrp krcmtErAlAtdItemCon;
 	
 	@Override
 	protected Object getKey() {
 		return pk;
 	}
 
-	public static KrcmtMulMonAlarmCheck toEntity(MulMonthAlarmCheckCond domain ) {
+	public static KrcmtAlstChkmltUd toEntity(MulMonthAlarmCheckCond domain ) {
 		KrcmtMulMonAlarmCheckPK pk = new KrcmtMulMonAlarmCheckPK(domain.getEralCheckId(), domain.getCondNo());
-		KrcmtMulMonAlarmCheck entity = new KrcmtMulMonAlarmCheck(domain.getCid(), 
+		KrcmtAlstChkmltUd entity = new KrcmtAlstChkmltUd(domain.getCid(), 
 				pk,
 				AppContexts.user().contractCode(),
 				domain.getNameAlarmCon().v(),
@@ -101,7 +101,7 @@ public class KrcmtMulMonAlarmCheck extends ContractUkJpaEntity implements Serial
 				domain.getNumbers().isPresent() ? domain.getNumbers().get() : null,
 				domain.getCompaOperator().isPresent() ? domain.getCompaOperator().get().value : null,
 				domain.getDisplayMessage().isPresent() ? domain.getDisplayMessage().get().v() : null,
-						KrcmtErAlAtdItemCon.toEntity(domain.getEralCheckId(),domain.getErAlAttendanceItemCondition(),true));
+						KrcmtEralstCndgrp.toEntity(domain.getEralCheckId(),domain.getErAlAttendanceItemCondition(),true));
 		return entity;
 	}
 	

@@ -186,7 +186,7 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 		static {
 			StringBuilder builderDate = new StringBuilder();
 			builderDate.append("SELECT * ");
-			builderDate.append("FROM WWFMT_PS_APPROVAL_ROOT WHERE CID = 'companyID' ");
+			builderDate.append("FROM WWFMT_APPROVAL_ROUTE_PS WHERE CID = 'companyID' ");
 			builderDate.append("AND SYSTEM_ATR = 'sysAtr' AND START_DATE <= 'eDate' AND END_DATE >= 'sDate' ");
 			builderDate.append("AND EMPLOYMENT_ROOT_ATR IN 'rootAtr'");
 			FIND_PERIOD = builderDate.toString();

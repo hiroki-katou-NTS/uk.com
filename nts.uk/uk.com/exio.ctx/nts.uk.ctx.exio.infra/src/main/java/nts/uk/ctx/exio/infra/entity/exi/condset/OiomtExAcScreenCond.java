@@ -1,4 +1,4 @@
-﻿package nts.uk.ctx.exio.infra.entity.exi.condset;
+package nts.uk.ctx.exio.infra.entity.exi.condset;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -19,7 +19,7 @@ import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.exio.dom.exi.condset.AcScreenCondSet;
 import nts.uk.ctx.exio.dom.exi.item.StdAcceptItem;
-import nts.uk.ctx.exio.infra.entity.exi.item.OiomtStdAcceptItem;
+import nts.uk.ctx.exio.infra.entity.exi.item.OiomtExAcItem;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
@@ -133,7 +133,7 @@ public class OiomtExAcScreenCond extends ContractUkJpaEntity implements Serializ
 		return acScreenCondSetPk;
 	}
 
-	public OiomtAcScreenCondSet(String cid, String conditionCode, int acceptItemNum,
+	public OiomtExAcScreenCond(String cid, String conditionCode, int acceptItemNum,
 			Integer selCompareCond, Integer timeCondVal1, Integer timeCondVal2, Integer timeMoCondVal1,
 			Integer timeMoCondVal2, GeneralDate dateCondVal1, GeneralDate dateCondVal2, String charCondVal1,
 			String charCondVal2, BigDecimal numCondVal1, BigDecimal numCondVal2) {
@@ -153,8 +153,8 @@ public class OiomtExAcScreenCond extends ContractUkJpaEntity implements Serializ
 		this.numCondVal1 = numCondVal1;
 	}
 
-	public static OiomtAcScreenCondSet fromDomain(StdAcceptItem item, AcScreenCondSet domain) {
-		return new OiomtAcScreenCondSet(item.getCid(), item.getConditionSetCd().v(),
+	public static OiomtExAcScreenCond fromDomain(StdAcceptItem item, AcScreenCondSet domain) {
+		return new OiomtExAcScreenCond(item.getCid(), item.getConditionSetCd().v(),
 				item.getAcceptItemNumber(),
 				domain.getSelectComparisonCondition().value,
 				domain.getTimeConditionValue1().isPresent() ? domain.getTimeConditionValue1().get().v() : null,

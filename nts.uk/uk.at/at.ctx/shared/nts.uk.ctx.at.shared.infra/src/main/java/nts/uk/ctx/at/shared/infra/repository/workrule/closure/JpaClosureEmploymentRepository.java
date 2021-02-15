@@ -44,7 +44,7 @@ public class JpaClosureEmploymentRepository extends JpaRepository implements Clo
 	
 	private static final String FIND;
 	
-	private final String FIND_ALL = "SELECT c FROM KclmtClosureEmployment c  WHERE c.kclmpClosureEmploymentPK.companyId = :cid ";
+	private final String FIND_ALL = "SELECT c FROM KshmtClosureEmp c  WHERE c.kclmpClosureEmploymentPK.companyId = :cid ";
 	
 
 	static {
@@ -200,8 +200,8 @@ public class JpaClosureEmploymentRepository extends JpaRepository implements Clo
 
 	@Override
 	public List<ClosureEmployment> findAllByCid(String cid) {
-		List<KclmtClosureEmployment> result = new ArrayList<>();
-		result.addAll(this.queryProxy().query(FIND_ALL, KclmtClosureEmployment.class)
+		List<KshmtClosureEmp> result = new ArrayList<>();
+		result.addAll(this.queryProxy().query(FIND_ALL, KshmtClosureEmp.class)
 				.setParameter("cid", cid)
 				.getList());
 		return result.stream().map(f -> convertToDomain(f)).collect(Collectors.toList());

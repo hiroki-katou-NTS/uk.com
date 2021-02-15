@@ -1,4 +1,4 @@
-﻿package nts.uk.ctx.exio.infra.entity.exi.dataformat;
+package nts.uk.ctx.exio.infra.entity.exi.dataformat;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -119,7 +119,7 @@ public class OiomtExAcFmNum extends ContractUkJpaEntity implements Serializable 
 		return numDataFormatSetPk;
 	}
 
-	public OiomtNumDataFormatSet(String cid, String conditionCode, int acceptItemNum, int fixedValue,
+	public OiomtExAcFmNum(String cid, String conditionCode, int acceptItemNum, int fixedValue,
 			int decimalDivision, int effectiveDigitLength, String cdConvertCd, BigDecimal valueOfFixedValue,
 			Integer decimalDigitNum, Integer startDigit, Integer endDigit, Integer decimalPointCls,
 			Integer decimalFraction) {
@@ -137,8 +137,8 @@ public class OiomtExAcFmNum extends ContractUkJpaEntity implements Serializable 
 		this.decimalFraction = decimalFraction;
 	}
 
-	public static OiomtNumDataFormatSet fromDomain(StdAcceptItem item, NumDataFormatSet domain) {
-		return new OiomtNumDataFormatSet(item.getCid(), item.getConditionSetCd().v(),
+	public static OiomtExAcFmNum fromDomain(StdAcceptItem item, NumDataFormatSet domain) {
+		return new OiomtExAcFmNum(item.getCid(), item.getConditionSetCd().v(),
 				item.getAcceptItemNumber(), domain.getFixedValue().value, domain.getDecimalDivision().value,
 				domain.getEffectiveDigitLength().value,
 				domain.getCdConvertCd().isPresent() ? domain.getCdConvertCd().get().v() : null,

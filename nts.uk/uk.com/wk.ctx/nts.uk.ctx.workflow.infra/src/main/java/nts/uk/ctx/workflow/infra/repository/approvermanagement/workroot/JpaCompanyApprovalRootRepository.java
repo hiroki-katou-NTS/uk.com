@@ -120,7 +120,7 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 	static {
 		StringBuilder builderEmp = new StringBuilder();
 		builderEmp.append("SELECT * ");
-		builderEmp.append("FROM WWFMT_COM_APPROVAL_ROOT  WHERE CID = 'companyID' ");
+		builderEmp.append("FROM WWFMT_APPROVAL_ROUTE_COM  WHERE CID = 'companyID' ");
 		builderEmp.append("AND SYSTEM_ATR = 'sysAtr' AND START_DATE <= 'eDate' AND END_DATE >= 'sDate' ");
 		builderEmp.append("AND EMPLOYMENT_ROOT_ATR in 'rootAtr'");
 		FIND_DATEPERIOD = builderEmp.toString();

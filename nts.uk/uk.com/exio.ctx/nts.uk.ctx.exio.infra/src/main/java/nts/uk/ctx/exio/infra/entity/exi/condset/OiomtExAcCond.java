@@ -1,4 +1,4 @@
-﻿package nts.uk.ctx.exio.infra.entity.exi.condset;
+package nts.uk.ctx.exio.infra.entity.exi.condset;
 
 import java.io.Serializable;
 
@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class OiomtStdAcceptCondSet extends ContractUkJpaEntity implements Serializable {
+public class OiomtExAcCond extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**

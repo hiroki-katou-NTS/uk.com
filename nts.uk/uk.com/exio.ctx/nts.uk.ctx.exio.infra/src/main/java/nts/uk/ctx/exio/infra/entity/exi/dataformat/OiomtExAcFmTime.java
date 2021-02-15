@@ -1,4 +1,4 @@
-﻿package nts.uk.ctx.exio.infra.entity.exi.dataformat;
+package nts.uk.ctx.exio.infra.entity.exi.dataformat;
 
 import java.io.Serializable;
 
@@ -118,7 +118,7 @@ public class OiomtExAcFmTime extends ContractUkJpaEntity implements Serializable
 		return insTimeDatFmSetPk;
 	}
 
-	public OiomtInsTimeDatFmSet(String cid,  String conditionCode, int acceptItemNum, int delimiterSet,
+	public OiomtExAcFmTime(String cid,  String conditionCode, int acceptItemNum, int delimiterSet,
 			int fixedValue, int hourMinSelect, int effectiveDigitLength, int roundProc, int decimalSelect,
 			Integer valueOfFixedValue, Integer startDigit, Integer endDigit, Integer roundProcCls) {
 		super();
@@ -135,8 +135,8 @@ public class OiomtExAcFmTime extends ContractUkJpaEntity implements Serializable
 		this.roundProcCls = roundProcCls;
 	}
 
-	public static OiomtInsTimeDatFmSet fromDomain(StdAcceptItem item, InsTimeDatFmSet domain) {
-		return new OiomtInsTimeDatFmSet(item.getCid(), item.getConditionSetCd().v(),
+	public static OiomtExAcFmTime fromDomain(StdAcceptItem item, InsTimeDatFmSet domain) {
+		return new OiomtExAcFmTime(item.getCid(), item.getConditionSetCd().v(),
 				item.getAcceptItemNumber(), domain.getDelimiterSet().value, domain.getFixedValue().value,
 				domain.getHourMinSelect().value, domain.getEffectiveDigitLength().value, domain.getRoundProc().value,
 				domain.getDecimalSelect().value,

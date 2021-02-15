@@ -1,4 +1,4 @@
-﻿package nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.fourweekfourdayoff;
+package nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.fourweekfourdayoff;
 
 import java.io.Serializable;
 

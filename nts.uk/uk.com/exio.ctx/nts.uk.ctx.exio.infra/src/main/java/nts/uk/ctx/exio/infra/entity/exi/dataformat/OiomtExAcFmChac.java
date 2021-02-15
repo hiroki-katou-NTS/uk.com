@@ -1,4 +1,4 @@
-﻿package nts.uk.ctx.exio.infra.entity.exi.dataformat;
+package nts.uk.ctx.exio.infra.entity.exi.dataformat;
 
 import java.io.Serializable;
 
@@ -111,7 +111,7 @@ public class OiomtExAcFmChac extends ContractUkJpaEntity implements Serializable
 		return chrDataFormatSetPk;
 	}
 
-	public OiomtChrDataFormatSet(String cid, String conditionCode, int acceptItemNum, int cdEditing,
+	public OiomtExAcFmChac(String cid, String conditionCode, int acceptItemNum, int cdEditing,
 			int fixedValue, int effectiveDigitLength, String cdConvertCd, Integer cdEditMethod, Integer cdEditDigit,
 			String fixedVal, Integer startDigit, Integer endDigit) {
 		super();
@@ -127,8 +127,8 @@ public class OiomtExAcFmChac extends ContractUkJpaEntity implements Serializable
 		this.endDigit = endDigit;
 	}
 
-	public static OiomtChrDataFormatSet fromDomain(StdAcceptItem item, ChrDataFormatSet domain) {
-		return new OiomtChrDataFormatSet(item.getCid(), item.getConditionSetCd().v(),
+	public static OiomtExAcFmChac fromDomain(StdAcceptItem item, ChrDataFormatSet domain) {
+		return new OiomtExAcFmChac(item.getCid(), item.getConditionSetCd().v(),
 				item.getAcceptItemNumber(), domain.getCdEditing().value, domain.getFixedValue().value,
 				domain.getEffectiveDigitLength().value,
 				domain.getCdConvertCd().isPresent() ? domain.getCdConvertCd().get().v() : null,
