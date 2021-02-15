@@ -68,7 +68,7 @@ public class OutputSettingListArbitraryWebService extends WebService {
                     domain.getOutputItemList(),
                     domain.getName().v(),
                     domain.getStandardFreeClassification(),
-                    domain.getEmployeeId()
+                    domain.getEmployeeId().isPresent()?domain.getEmployeeId().get():null
             );
         }
         return null;
