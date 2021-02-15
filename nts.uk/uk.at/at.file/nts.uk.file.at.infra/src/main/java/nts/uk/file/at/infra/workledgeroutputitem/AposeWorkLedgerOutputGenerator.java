@@ -123,9 +123,21 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
                 }
                 cells.clearContents(count, 0, cells.getMaxRow(), 15);
                 cells.merge(count, 0, 1, 2, true, true);
-                cells.get(count, 0).getStyle()
-                        .setVerticalAlignment(TextAlignmentType.LEFT);
-                cells.get(count, 0).setValue(oneLine.getAttendanceItemName());
+
+                Cell cell = cells.get(count, 0);
+                Style style = cell.getStyle();
+                style.setVerticalAlignment(TextAlignmentType.LEFT);
+
+                if(dataSource.isCode() && checkCode(oneLine.getPrimitiveValue())){
+                    cells.get(count, 0).setValue(oneLine.getCode());
+                    cell.setStyle(style);
+                    cells.setStyle(style);
+
+                }else {
+                    cells.get(count, 0).setValue(oneLine.getAttendanceItemName());
+                    cell.setStyle(style);
+                    cells.setStyle(style);
+                }
                 cells.get(count, 14).getStyle()
                         .setVerticalAlignment(TextAlignmentType.RIGHT);
                 cells.get(count, 14).setValue(oneLine.getTotal());
@@ -136,13 +148,8 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
                 for (int k = 0; k < oneLine.getValueList().size(); k++) {
                     val item = oneLine.getValueList().get(k);
                     val column = yearMonths.indexOf(item.getDate()) + 2;
-                    if(!dataSource.isCode() && checkCode(oneLine.getPrimitiveValue())){
-                        cells.get(count, column).setValue(item.getName());
-                    }else {
                         cells.get(count, column).setValue(formatValue(item.getActualValue(), item.getCharacterValue(),
                                 oneLine.getAttribute(), dataSource.isZeroDisplay()));
-                    }
-
                 }
                 itemOnePage++;
                 count++;
