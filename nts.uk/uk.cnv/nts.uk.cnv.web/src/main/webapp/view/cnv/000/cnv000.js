@@ -19,8 +19,8 @@ $(function () {
 		$.ajax(ajaxOption.build("/nts.uk.cnv.web/webapi/cnv/tabledesign/importfromfile", {
 			path: $('#folderpath_import').val(),
 			type: $('[name="ddl_type_import"]:checked').val(),
-			branch: $('#branch').text(),
-			date: $('#verDate').text()
+			branch: $('#branch_import').val(),
+			date: $('#verDate_import').val()
 		})).done(function (res) {
 			console.log(res);
 			if (typeof res === "undefined") {
@@ -47,7 +47,9 @@ $(function () {
 			withComment:
 				$('#withComment').prop('checked') ? true : false,
 			oneFile:
-				($('[name="oneOrMultiple"]:checked').val() === "true") ? true : false
+				($('[name="oneOrMultiple"]:checked').val() === "true") ? true : false,
+			branch: $('#branch_export').val(),
+			date: $('#verDate_export').val()
 		})).done(function (res) {
 			console.log(res);
 			if (typeof res === "undefined") {

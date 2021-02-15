@@ -19,19 +19,16 @@ public class DefaultEntityManagerLoader implements EntityManagerLoader{
 
 	@Override
 	public void forAllDataSources(Consumer<EntityManager> process) {
-		// TODO 自動生成されたメソッド・スタブ
-		throw new RuntimeException("未実装");
+		process.accept(this.entityManager);
 	}
 
 	@Override
 	public void forDefaultDatasource(Consumer<EntityManager> process) {
-		// TODO 自動生成されたメソッド・スタブ
-		throw new RuntimeException("未実装");
+		process.accept(this.entityManager);
 	}
 
 	@Override
 	public void forTenantDatasource(String tenantCode, Consumer<EntityManager> process) {
-		// TODO 自動生成されたメソッド・スタブ
-		throw new RuntimeException("未実装");
+		process.accept(this.entityManager);
 	}
 }
