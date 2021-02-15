@@ -2682,5 +2682,12 @@ public class RecordDomRequireService {
 			return this.empEmployeeAdapter.lstClassByEmployeeId(cacheCarrier, companyId, employeeIds, datePeriod);
 		}
 
+		@Override
+		public Optional<nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.AnnualLeaveMaxHistoryData> AnnualLeaveMaxHistoryData(
+				String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate) {
+
+			return this.annualLeaveMaxHistRepo.find(employeeId, yearMonth, closureId, closureDate);
+		}
+
 	}
 }

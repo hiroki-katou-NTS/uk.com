@@ -54,6 +54,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureIdHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureIdHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee.RequireM1;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantDays;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantNum;
@@ -427,14 +428,14 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 				if(!closurePeriods.isEmpty())
 					closureStartDate = closurePeriods.get(0).start();
 
-
 			} else {  //  過去月集計モードでないとき
 
 				// 休暇残数を計算する締め開始日を取得する
-				// 要修正
-
-
-
+				Optional<GeneralDate> closureStartDateOpt
+					= getClosureStartDate(require, cacheCarrier, employeeId);
+				if ( closureStartDateOpt.isPresent() ) {
+					closureStartDate = closureStartDateOpt.get();
+				}
 
 			}
 
@@ -463,27 +464,6 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		}
 	}
 
-//		// 休暇残数を計算する締め開始日を取得する
-//		GeneralDate closureStart = null;	// 締め開始日
-//		Optional<GeneralDate> closureStartOpt = Optional.empty();
-//		boolean isAfterClosureStart = false;
-//
-//		// 最新の締め終了日翌日を取得する
-//		Optional<ClosureStatusManagement> sttMng = require.latestClosureStatusManagement(employeeId);
-//		if (sttMng.isPresent()){
-//			closureStart = sttMng.get().getPeriod().end();
-//			if (closureStart.before(GeneralDate.max())){
-//				closureStart = closureStart.addDays(1);
-//			}
-//			closureStartOpt = Optional.of(closureStart);
-//		}
-//		else {
-//
-//			//　社員に対応する締め開始日を取得する
-//			closureStartOpt = GetClosureStartForEmployee.algorithm(require, cacheCarrier, employeeId);
-//			if (closureStartOpt.isPresent()) closureStart = closureStartOpt.get();
-//		}
-//
 //		// 取得した締め開始日と「集計開始日」を比較
 //		if (closureStart != null){
 //
@@ -548,6 +528,35 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 //		return createInfoFromRemainingData(remainingDatas, annLeaMaxDataOpt, aggrPeriod);
 //	}
 
+	/**
+	 * 休暇残数を計算する締め開始日を取得する
+	 * @param employeeId 社員ID
+	 * @return 締め開始日
+	 */
+	static public Optional<GeneralDate> getClosureStartDate(
+			RequireM3 require, CacheCarrier cacheCarrier, String employeeId) {
+
+		GeneralDate closureStart = null;	// 締め開始日
+		Optional<GeneralDate> closureStartOpt = Optional.empty();
+
+		// 最新の締め終了日翌日を取得する
+		Optional<ClosureStatusManagement> sttMng = require.latestClosureStatusManagement(employeeId);
+		if (sttMng.isPresent()){
+			// 受け取った「年月日」を返す
+			closureStart = sttMng.get().getPeriod().end();
+			if (closureStart.before(GeneralDate.max())){
+				closureStart = closureStart.addDays(1);
+			}
+			closureStartOpt = Optional.of(closureStart);
+		}
+		else {
+			// 社員に対応する締め開始日を取得する
+			// 受け取った「締め開始日」を返す
+			closureStartOpt = GetClosureStartForEmployee.algorithm(require, cacheCarrier, employeeId);
+		}
+
+		return closureStartOpt;
+	}
 
 	/**
 	 * 社員の年休情報を取得
@@ -642,9 +651,10 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 						= require.AnnualLeaveMaxHistoryData(
 								employeeId, yearMonthOpt.get(), closure.getClosureId(), closure.getClosureDateOfCurrentMonth().get());
 
-
-
-
+					// 「AnnualLeaveMaxData」クラスへキャスト
+					if ( annualLeaveMaxHistoryData.isPresent() ) {
+						annLeaMaxDataOpt = Optional.of((AnnualLeaveMaxData)annualLeaveMaxHistoryData.get());
+					}
 
 			} else if (closureStart.before(aggrPeriod.start())){ // 締め開始日<パラメータ「集計開始日」
 
@@ -665,10 +675,10 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 						// 集計結果から、年休付与残数データを作成する
 						// 集計結果から、上限データを作成する
 						// 年休付与残数データ、年休上限データを返す
+
 						return createInfoFromRemainingData(
 								asOfPeriodEnd.getGrantRemainingList(),
 								Optional.of(asOfPeriodEnd.getMaxData()), aggrPeriod);
-
 					}
 			}
 
@@ -679,7 +689,6 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 			}
 			return annualLeaveInfo;
 	}
-
 
 	/**
 	 * 年休付与残数データから年休情報を作成
