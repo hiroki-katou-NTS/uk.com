@@ -233,12 +233,11 @@ public class JpaOutputSettingOfArbitraryRepo extends JpaRepository implements Ou
     }
 
     private static OutputSettingOfArbitrary toDomain(KfnmtRptWkAnpOut entity) {
-        val sidOpt =  entity.sid!= null ? Optional.of( entity.sid) : Optional.empty();
         return new OutputSettingOfArbitrary(
                 entity.layOutId,
                 new OutputItemSettingCode(Integer.toString(entity.exportCd)),
                 new OutputItemSettingName(entity.name),
-                sidOpt,
+                entity.sid!= null ? Optional.of( entity.sid) : Optional.empty(),
                 EnumAdaptor.valueOf(entity.settingType, SettingClassificationCommon.class),
                 Collections.emptyList()
 
@@ -246,12 +245,11 @@ public class JpaOutputSettingOfArbitraryRepo extends JpaRepository implements Ou
     }
 
     private static OutputSettingOfArbitrary toDomain(KfnmtRptWkAnpOut entity, List<AttendanceItemToPrint> outputItemList) {
-        val sidOpt =  entity.sid!= null ? Optional.of( entity.sid) : Optional.empty();
         return new OutputSettingOfArbitrary(
                 entity.layOutId,
                 new OutputItemSettingCode(Integer.toString(entity.exportCd)),
                 new OutputItemSettingName(entity.name),
-                sidOpt,
+                entity.sid!= null ? Optional.of( entity.sid) : Optional.empty(),
                 EnumAdaptor.valueOf(entity.settingType, SettingClassificationCommon.class),
                 outputItemList
 
