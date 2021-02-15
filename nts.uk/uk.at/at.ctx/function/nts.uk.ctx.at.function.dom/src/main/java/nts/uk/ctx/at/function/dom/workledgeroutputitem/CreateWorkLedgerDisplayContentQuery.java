@@ -118,7 +118,7 @@ public class CreateWorkLedgerDisplayContentQuery {
                 val value = attName.getOrDefault(att.getAttendanceId(), null);
                 if (value == null || value.getTypeOfAttendanceItem() == null) continue;
                 val attributeMonthly = attendanceItemList.getOrDefault(att.getAttendanceId(), null);
-                if (attributeMonthly != null && allValue!=null) {
+                if (attributeMonthly != null && allValue != null) {
                     val attribute = convertMonthlyToAttForms(attributeMonthly.getMonthlyAttendanceAtr().value);
                     if (attribute == null) continue;
                     for (val y : yearMonthList) {
@@ -126,11 +126,13 @@ public class CreateWorkLedgerDisplayContentQuery {
                         if (values == null) continue;
                         val valueSub = values.getOrDefault(att.getAttendanceId(), null);
                         boolean isCharacter = attribute == CommonAttributesOfForms.WORK_TYPE
-                                || attribute == CommonAttributesOfForms.WORKING_HOURS;
+                                || attribute == CommonAttributesOfForms.WORKING_HOURS
+                                || attribute == CommonAttributesOfForms.OTHER_CHARACTERS
+                                ||attribute == CommonAttributesOfForms.OTHER_CHARACTER_NUMBER;
                         val primitiveValue = attributeMonthly.getPrimitiveValue().isPresent() ? attributeMonthly.getPrimitiveValue().get() : null;
                         String nameDisplay = "";
                         if (valueSub != null) {
-                            if (primitiveValue != null) {
+                            if (primitiveValue != null && valueSub.booleanOrDefault()) {
                                 val key = valueSub.value().toString();
                                 val name = allDataMaster.getOrDefault(primitiveValue.value, null);
                                 if (name != null) {
