@@ -11,7 +11,7 @@ module nts.uk.com.view.ccg008.a.Layout2ComponentViewModel {
           <!-- /ko -->  
           <!-- ko if: url.indexOf('.js') > -1 -->
             <div data-bind="attr:{ id: 'WG2-' + $index() }">
-              <div data-bind="component: { name: name }" style="margin-bottom: 10px; height:100%;" ></div>
+              <div data-bind="component: { name: name }" ></div>
             </div>
           <!-- /ko -->  
         </div>
@@ -23,7 +23,7 @@ module nts.uk.com.view.ccg008.a.Layout2ComponentViewModel {
           <!-- /ko -->  
           <!-- ko if: url.indexOf('.js') > -1 -->
             <div data-bind="attr:{ id: 'WG3-' + $index() }">
-              <div data-bind="component: { name: name }" style="margin-bottom: 10px; height:100%;" ></div>
+              <div data-bind="component: { name: name  }" ></div>
             </div>
           <!-- /ko -->
         </div>
@@ -90,16 +90,16 @@ module nts.uk.com.view.ccg008.a.Layout2ComponentViewModel {
       let name = "";
       switch (type) {
         case 0:
-          url = "/nts.uk.at.web/view/ktg/005/a/index.xhtml";
-          name = "";
+          url = "/view/ktg/005/a/ktg005.a.component.js";
+          name = "ktg-005-a";
           break;
         case 1:
-          url = "/nts.uk.at.web/view/ktg/001/a/index.xhtml";
-          name = "";
+          url = "/view/ktg/001/a/ktg001.a.component.js";
+          name = "kgt-001-a";
           break;
         case 2:
-          url = "/nts.uk.at.web/view/ktg/004/a/index.xhtml";
-          name = "";
+          url = "/view/ktg/004/a/ktg004.a.component.js";
+          name = "ktg-004-a";
           break;
         case 3:
           url = "/view/ktg/026/a/ktg026component.a.vm.js";

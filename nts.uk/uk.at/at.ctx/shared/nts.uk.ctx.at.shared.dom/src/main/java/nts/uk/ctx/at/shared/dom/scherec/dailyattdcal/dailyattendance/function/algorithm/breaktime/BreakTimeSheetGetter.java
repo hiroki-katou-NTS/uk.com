@@ -71,16 +71,16 @@ public class BreakTimeSheetGetter {
 		
 		switch (workTimeSet.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeForm()) {
 		case FIXED: /** 固定勤務 */
+			
 			deductionTimeSheet = oneDayCalcRange.getDeductionTimeSheetOnFixed(workType, workTimeSet, domainDaily);
 			break;
 		case FLEX: /** フレックス勤務 */
-			val wts = workTimeSet.getWorkTimeSetting();
 			
-			if(wts.getWorkTimeDivision().getWorkTimeMethodSet() == WorkTimeMethodSet.FIXED_WORK) {
+			if(workTimeSet.isFixBreak(workType)) {
 				/** 固定休憩 */
 				deductionTimeSheet = oneDayCalcRange.getDeductionTimeSheetOnFixed(workType, workTimeSet, domainDaily);
 				
-			} else if(wts.getWorkTimeDivision().getWorkTimeMethodSet() == WorkTimeMethodSet.FLOW_WORK) {
+			} else  {
 				
 				/** 流動休憩 */
 				deductionTimeSheet = getDeductionTimeSheetOnFlexFlow(require, workType, workTimeSet, 

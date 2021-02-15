@@ -8,6 +8,7 @@
 	float: right;
 	margin-top: -42px;
 	margin-right: 10px;
+  margin-left: 10px;
 	cursor: pointer;
 }
 
@@ -50,25 +51,24 @@
 
 #ver4 {
     z-index: 1;
-    margin-left: calc(100vw - 300px);
-    position: absolute;
+    position: sticky;
 }
 
 #setting{
-	margin-top: 40px;
-  margin-right: -250px;
+	margin-top: 0px;
+  margin-right: 10px;
   float: right;
 }
 
 
 #reload{
-  margin-top: 40px;
-  margin-right: -220px;
-  float: right;
+  margin-top: 10px;
+  margin-right: 40px;
 }
 
 #closure{
-  margin-right: 30px;
+  margin-right: 10px;
+  margin-left: calc(100vw - 485px);
   height: 30px;
   outline: none;
 }
@@ -129,4 +129,8 @@
   display: inline-table;
   width: 100%;
   position: inherit;
+}
+
+.nts-switch-button {
+  margin-left: 0px !important;
 }

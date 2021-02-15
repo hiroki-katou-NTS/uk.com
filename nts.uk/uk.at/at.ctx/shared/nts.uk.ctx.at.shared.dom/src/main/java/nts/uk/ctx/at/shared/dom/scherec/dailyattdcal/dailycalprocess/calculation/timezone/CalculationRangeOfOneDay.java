@@ -62,6 +62,7 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.FixedChangeAtr;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOTSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.PrePlanWorkTimeCalcMethod;
+import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeForm;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceDayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -913,13 +914,21 @@ public class CalculationRangeOfOneDay {
 		//所定時間帯を取得する
 		PredetermineTimeSetForCalc predetermineTimeSet = this.getPredetermineTimeSheetForFlow(timeLeavingWork.getWorkNo(), todayWorkType);
 		
-		//計算範囲を判断する
-		creatingWithinWorkTimeSheet.getWithinWorkTimeFrame().add(this.createWithinWorkTimeFrameIncludingCalculationRange(
-				todayWorkType,
-				integrationOfDaily,
-				integrationOfWorkTime.getFlowWorkSetting().get(),
-				timeLeavingWork,
-				predetermineTimeSet));
+		if (integrationOfWorkTime.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeForm() == WorkTimeForm.FLOW) {
+			
+			//計算範囲を判断する
+			creatingWithinWorkTimeSheet.getWithinWorkTimeFrame().add(this.createWithinWorkTimeFrameIncludingCalculationRange(
+					todayWorkType,
+					integrationOfDaily,
+					integrationOfWorkTime.getFlowWorkSetting().get(),
+					timeLeavingWork,
+					predetermineTimeSet));
+		} else {
+			
+			//計算範囲を判断する
+			creatingWithinWorkTimeSheet.getWithinWorkTimeFrame().add(this.createWithinWorkTimeFrameIncludingCalculationRangeForFlex(
+					todayWorkType, timeLeavingWork, predetermineTimeSet));
+		}
 
 		//遅刻時間帯を計算
 		timeLeavingWork = creatingWithinWorkTimeSheet.calcLateTimeDeduction(
@@ -1026,6 +1035,53 @@ public class CalculationRangeOfOneDay {
 			TimeLeavingWork timeLeavingWork,
 			PredetermineTimeSetForCalc predetermineTimeSet) {
 		
+		/** 計算範囲を判断 */
+		TimeSpanForDailyCalc calcRange = getCalcRange(todayWorkType, timeLeavingWork, predetermineTimeSet);
+		
+		if(isCalculateFromScheduleStartTime(calcRange.getStart(), integrationOfDaily, flowWorkSetting)) {
+			//予定勤務時間帯．出勤時刻までの時間帯に補正する
+			calcRange = calcRange.shiftOnlyStart(integrationOfDaily.getWorkInformation().getScheduleTimeSheet(new WorkNo(1)).get().getAttendance());
+		}
+		
+		//就業時間内時間枠作成
+		return createWithinWorkTimeFrame(timeLeavingWork.getWorkNo().v(), calcRange);
+	}
+	
+	/**
+	 * 計算範囲を判断（フレックス）
+	 * @param todayWorkType 勤務種類
+	 * @param timeLeavingWork 出退勤
+	 * @param predetermineTimeSet 計算用所定時間設定
+	 * @return 就業時間内時間枠
+	 */
+	public WithinWorkTimeFrame createWithinWorkTimeFrameIncludingCalculationRangeForFlex(WorkType todayWorkType, 
+			TimeLeavingWork timeLeavingWork, PredetermineTimeSetForCalc predetermineTimeSet) {
+		
+		/** 計算範囲を判断 */
+		TimeSpanForDailyCalc calcRange = getCalcRange(todayWorkType, timeLeavingWork, predetermineTimeSet);
+		
+		//就業時間内時間枠作成
+		return createWithinWorkTimeFrame(timeLeavingWork.getWorkNo().v(), calcRange);
+	}
+
+	private WithinWorkTimeFrame createWithinWorkTimeFrame(int workNo, TimeSpanForDailyCalc calcRange) {
+		return new WithinWorkTimeFrame(
+				new EmTimeFrameNo(workNo),
+				calcRange,
+				calcRange,
+				new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN),
+				new ArrayList<>(),
+				new ArrayList<>(),
+				new ArrayList<>(),
+				MidNightTimeSheetForCalcList.createEmpty(),
+				new ArrayList<>(),
+				Optional.empty(),
+				Optional.empty());
+	}
+
+	/** 計算範囲を判断 */
+	private TimeSpanForDailyCalc getCalcRange(WorkType todayWorkType, TimeLeavingWork timeLeavingWork,
+			PredetermineTimeSetForCalc predetermineTimeSet) {
 		//出退勤の計算範囲を計算用クラスとして作成
 		TimeSpanForDailyCalc calcRange = new TimeSpanForDailyCalc(timeLeavingWork.getTimeZone().getStart(), timeLeavingWork.getTimeZone().getEnd());
 		
@@ -1038,25 +1094,7 @@ public class CalculationRangeOfOneDay {
 			//午後開始の時刻からの時間帯に補正する
 			calcRange = calcRange.shiftOnlyStart(predetermineTimeSet.getPMStartTime());
 		}
-		
-		if(isCalculateFromScheduleStartTime(calcRange.getStart(), integrationOfDaily, flowWorkSetting)) {
-			//予定勤務時間帯．出勤時刻までの時間帯に補正する
-			calcRange = calcRange.shiftOnlyStart(integrationOfDaily.getWorkInformation().getScheduleTimeSheet(new WorkNo(1)).get().getAttendance());
-		}
-		
-		//就業時間内時間枠作成
-		return new WithinWorkTimeFrame(
-				new EmTimeFrameNo(timeLeavingWork.getWorkNo().v()),
-				calcRange,
-				calcRange,
-				new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN),
-				new ArrayList<>(),
-				new ArrayList<>(),
-				new ArrayList<>(),
-				MidNightTimeSheetForCalcList.createEmpty(),
-				new ArrayList<>(),
-				Optional.empty(),
-				Optional.empty());
+		return calcRange;
 	}
 	
 	/**

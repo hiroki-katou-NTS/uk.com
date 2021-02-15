@@ -12,7 +12,7 @@ import nts.uk.ctx.at.function.dom.monthlyworkschedule.ItemSelectionEnum;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.OutputItemMonthlyWorkSchedule;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.OutputItemMonthlyWorkScheduleRepository;
 import nts.uk.ctx.at.function.infra.entity.monthlyworkschedule.KfnmtRptWkMonOut;
-import nts.uk.ctx.at.function.infra.entity.monthlyworkschedule.KfnmtRptWkMonOuttd;
+import nts.uk.ctx.at.function.infra.entity.monthlyworkschedule.KfnmtRptWkMonOutAtd;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -27,7 +27,7 @@ public class JpaOutputItemMonthlyWorkScheduleRepository extends JpaRepository
 	/** The Constant FIND_BY_SELECTION_CID_SID. */
 	private static final String FIND_BY_SELECTION_CID_SID = "SELECT c FROM KfnmtRptWkMonOut c"
 			+ " WHERE c.companyID = :companyID"
-			+ " AND c.employeeID = :employeeID"
+			+ " AND c.sid = :employeeID"
 			+ " AND c.itemType = :itemType";
 
 	/** The Constant FIND_BY_SELECTION_CID_CODE. */
@@ -40,11 +40,11 @@ public class JpaOutputItemMonthlyWorkScheduleRepository extends JpaRepository
 	private static final String FIND_BY_SELECTION_CID_CODE_SID = "SELECT c FROM KfnmtRptWkMonOut c"
 			+ " WHERE c.companyID = :companyID"
 			+ " AND c.itemCode = :itemCode"
-			+ " AND c.employeeID = :employeeID"
+			+ " AND c.sid = :employeeID"
 			+ " AND c.itemType = :itemType";
 	
 	/** The Constant FIND_BY_LAYOUTID. */
-	private static final String FIND_BY_LAYOUTID = "SELECT c FROM KfnmtRptWkMonOuttd c"
+	private static final String FIND_BY_LAYOUTID = "SELECT c FROM KfnmtRptWkMonOutAtd c"
 			+ " WHERE c.pk.layoutID = :layoutID";
 
 	/*
@@ -69,7 +69,7 @@ public class JpaOutputItemMonthlyWorkScheduleRepository extends JpaRepository
 	 */
 	@Override
 	public void update(OutputItemMonthlyWorkSchedule domain) {
-		List<KfnmtRptWkMonOuttd> otdList = this.queryProxy().query(FIND_BY_LAYOUTID, KfnmtRptWkMonOuttd.class)
+		List<KfnmtRptWkMonOutAtd> otdList = this.queryProxy().query(FIND_BY_LAYOUTID, KfnmtRptWkMonOutAtd.class)
 											.setParameter("layoutID", domain.getLayoutID())
 											.getList();
 		

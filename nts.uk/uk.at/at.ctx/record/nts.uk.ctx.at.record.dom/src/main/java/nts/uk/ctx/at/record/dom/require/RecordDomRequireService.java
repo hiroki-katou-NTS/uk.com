@@ -71,7 +71,7 @@ import nts.uk.ctx.at.record.dom.reservation.bentomenu.Bento;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
-import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
+import nts.uk.ctx.at.record.dom.standardtime.AgreementDomainService;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementMonthSettingRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementUnitSettingRepository;
@@ -238,6 +238,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.exce
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementOperationSetting;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementUnitSetting;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSettingForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthlyRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.IntegrationOfMonthly;
@@ -759,7 +760,7 @@ public class RecordDomRequireService {
 				bentoReservationRepo, bentoMenuRepo, integrationOfDailyGetter,
 				weekRuleManagementRepo, sharedAffWorkPlaceHisAdapter, getProcessingDate,
 				roleOfOpenPeriodRepo, ElapseYearRepository, syCompanyRecordAdapter, 
-				snapshotAdapter, superHD60HConMedRepo);
+				snapshotAdapter, superHD60HConMedRepo, monthlyAggregationRemainingNumber);
 	}
 	
 	public  class RequireImpl extends nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RequireImp implements Require {
@@ -880,7 +881,8 @@ public class RecordDomRequireService {
 				WeekRuleManagementRepo weekRuleManagementRepo, SharedAffWorkPlaceHisAdapter sharedAffWorkPlaceHisAdapter,
 				GetProcessingDate getProcessingDate, RoleOfOpenPeriodRepository roleOfOpenPeriodRepo,
 				ElapseYearRepository elapseYearRepo,SyCompanyRecordAdapter syCompanyRecordAdapter,
-				DailySnapshotWorkAdapter snapshotAdapter, SuperHD60HConMedRepository superHD60HConMedRepo) {
+				DailySnapshotWorkAdapter snapshotAdapter, SuperHD60HConMedRepository superHD60HConMedRepo,
+				MonthlyAggregationRemainingNumber monthlyAggregationRemainingNumber) {
 			
 			super(comSubstVacationRepo, compensLeaveComSetRepo, specialLeaveGrantRepo2,
 					empEmployeeAdapter, grantDateTblRepo, annLeaEmpBasicInfoRepo, specialHolidayRepo2, 
@@ -1018,7 +1020,7 @@ public class RecordDomRequireService {
 			this.snapshotAdapter = snapshotAdapter;
 			this.superHD60HConMedRepo = superHD60HConMedRepo;
 			this.syCompanyRecordAdapter = syCompanyRecordAdapter;
-//			this.monthlyAggregationRemainingNumber = monthlyAggregationRemainingNumber;
+			this.monthlyAggregationRemainingNumber = monthlyAggregationRemainingNumber;
 			this.elapseYearRepository = elapseYearRepo;
 		}
 
@@ -1290,7 +1292,7 @@ public class RecordDomRequireService {
 		HashMap<String, Optional<EmpDeforLaborMonthActCalSet>> empDeforLaborMonthActCalSetMap = new HashMap<String, Optional<EmpDeforLaborMonthActCalSet>>();
 		HashMap<String, Optional<WkpRegulaMonthActCalSet>> wkpRegulaMonthActCalSetMap = new HashMap<String, Optional<WkpRegulaMonthActCalSet>>();
 		HashMap<String, Optional<EmpRegulaMonthActCalSet>> empRegulaMonthActCalSetMap = new HashMap<String, Optional<EmpRegulaMonthActCalSet>>();
-		HashMap<String, YearMonth> yearMonthFromCalenderMap = new HashMap<String, YearMonth>();
+//		HashMap<String, YearMonth> yearMonthFromCalenderMap = new HashMap<String, YearMonth>();
 		Optional<UsageUnitSetting> usageUnitSettingCache = Optional.empty();
 		List<RoleOfOpenPeriod> roleOfOpenPeriodCache = new ArrayList<RoleOfOpenPeriod>();
 		Optional<RoundingSetOfMonthly> roundingSetOfMonthlyCache = Optional.empty();
@@ -1546,16 +1548,16 @@ public class RecordDomRequireService {
 			return parallel;
 		}
 
-		@Override
-		public YearMonth yearMonthFromCalender(CacheCarrier cacheCarrier, String companyId, YearMonth yearMonth) {
-			String key = companyId + yearMonth.v();
-			if(yearMonthFromCalenderMap.containsKey(key)) {
-				return yearMonthFromCalenderMap.get(key);
-			}
-			YearMonth item = companyAdapter.getYearMonthFromCalenderYM(cacheCarrier, companyId, yearMonth);
-			yearMonthFromCalenderMap.put(key, item);
-			return item;
-		}
+//		@Override
+//		public YearMonth yearMonthFromCalender(CacheCarrier cacheCarrier, String companyId, YearMonth yearMonth) {
+//			String key = companyId + yearMonth.v();
+//			if(yearMonthFromCalenderMap.containsKey(key)) {
+//				return yearMonthFromCalenderMap.get(key);
+//			}
+//			YearMonth item = companyAdapter.getYearMonthFromCalenderYM(cacheCarrier, companyId, yearMonth);
+//			yearMonthFromCalenderMap.put(key, item);
+//			return item;
+//		}
 
 		@Override
 		public ConditionCalcResult flexConditionCalcResult(CacheCarrier cacheCarrier, String companyId,
@@ -2457,8 +2459,8 @@ public class RecordDomRequireService {
 		}
 
 		@Override
-		public BasicAgreementSetting basicAgreementSetting(String cid, String sid, GeneralDate baseDate, Year year) {
-
+		public BasicAgreementSettingForCalc basicAgreementSetting(String cid, String sid, GeneralDate baseDate, Year year) {
+			
 			return AgreementDomainService.getBasicSet(this, cid, sid, baseDate, year);
 		}
 
@@ -2469,8 +2471,8 @@ public class RecordDomRequireService {
 		}
 
 		@Override
-		public BasicAgreementSetting basicAgreementSetting(String cid, String sid, YearMonth ym, GeneralDate baseDate) {
-
+		public BasicAgreementSettingForCalc basicAgreementSetting(String cid, String sid, YearMonth ym, GeneralDate baseDate) {
+			
 			return AgreementDomainService.getBasicSet(this, cid, sid, baseDate, ym);
 		}
 

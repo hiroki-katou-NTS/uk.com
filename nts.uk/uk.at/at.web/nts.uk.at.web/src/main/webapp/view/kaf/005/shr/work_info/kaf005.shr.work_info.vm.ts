@@ -13,10 +13,10 @@ module nts.uk.at.view.kaf005.shr.work_info.viewmodel {
 			<div class="valign-center control-group"
 				data-bind="text: $i18n('KAF005_35'), ntsFormLabel:{required: true}"></div>
 		</div>
-		<div class="cell valign-top" data-bind="if: visibleModel.c26() && visibleModel.c7()" style="width: 25px;">
+		<div class="cell valign-top" data-bind="if: visibleModel.c7()" style="width: 25px;">
 			<!--A4_7 選択ボタン-->
 			<button style="margin-left: 18px" class="workSelect"
-				data-bind="enable: visibleModel.c26() && visibleModel.c7() && outputMode(), click : openDialogKdl003, text: $i18n('KAF005_36')"></button>
+				data-bind="enable: visibleModel.c7() && outputMode(), click : openDialogKdl003, text: $i18n('KAF005_36')"></button>
 		</div>
 		<div class="cell valign-center">
 			<div class="valign-center control-group">
@@ -91,7 +91,7 @@ module nts.uk.at.view.kaf005.shr.work_info.viewmodel {
 						class="row-cell-margin inputTime-kaf005 right-content"
 						id="inpStartTime2"
 						data-bind="ntsTimeWithDayEditor: { 
-						name: '#[KAF005_333]',
+						name: '#[KAF005_335]',
 						constraint:'TimeWithDayAttr',
 						value: workInfo().workHours2.start,
 						enable: outputMode(),
@@ -108,7 +108,7 @@ module nts.uk.at.view.kaf005.shr.work_info.viewmodel {
 					<input id="inpEndTime2"
 						class="right-content inputTime-kaf005"
 						data-bind="ntsTimeWithDayEditor: {
-						name: '#[KAF005_334]',
+						name: '#[KAF005_336]',
 						constraint:'TimeWithDayAttr',
 						value: workInfo().workHours2.end,
 						enable: outputMode(),
