@@ -129,7 +129,8 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
                 style.setVerticalAlignment(TextAlignmentType.LEFT);
 
                 if(dataSource.isCode() && checkCode(oneLine.getPrimitiveValue())){
-                    cells.get(count, 0).setValue(oneLine.getCode());
+                    val stringCode = "'" + String.valueOf(oneLine.getCode());
+                    cells.get(count, 0).setValue(stringCode);
                     cell.setStyle(style);
                     cells.setStyle(style);
 
