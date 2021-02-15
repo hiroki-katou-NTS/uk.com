@@ -5,7 +5,7 @@ import nts.uk.ctx.sys.gateway.dom.login.ContractCode;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockOutDataSetMemento;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockType;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LoginMethod;
-import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwdtLockout;
+import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwmtLockoutData;
 import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwmtLockoutDataPK;
 
 /**
@@ -14,14 +14,14 @@ import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwmtLocko
 public class JpaLockOutDataSetMemento implements LockOutDataSetMemento {
 	
 	/** The sgwmt lockout data. */
-	private SgwdtLockout sgwmtLockoutData;
+	private SgwmtLockoutData sgwmtLockoutData;
 
 	/**
 	 * Instantiates a new jpa lock out data set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaLockOutDataSetMemento(SgwdtLockout entity) {
+	public JpaLockOutDataSetMemento(SgwmtLockoutData entity) {
 		if (entity.getSgwmtLockoutDataPK() == null) {
 			entity.setSgwmtLockoutDataPK(new SgwmtLockoutDataPK());
 		}

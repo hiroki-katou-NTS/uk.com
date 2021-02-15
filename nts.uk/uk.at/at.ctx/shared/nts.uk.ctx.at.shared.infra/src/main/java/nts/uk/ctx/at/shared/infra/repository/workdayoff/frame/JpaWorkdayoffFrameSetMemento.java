@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameName;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameNo;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRole;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.workdayoff.frame.KshmtHdWorkFrame;
+import nts.uk.ctx.at.shared.infra.entity.workdayoff.frame.KshstWorkdayoffFrame;
 import nts.uk.ctx.at.shared.infra.entity.workdayoff.frame.KshstWorkdayoffFramePK;
 
 /**
@@ -18,14 +18,14 @@ import nts.uk.ctx.at.shared.infra.entity.workdayoff.frame.KshstWorkdayoffFramePK
 public class JpaWorkdayoffFrameSetMemento implements WorkdayoffFrameSetMemento{
 	
 	/** The kshst workdayoff frame. */
-	private KshmtHdWorkFrame kshstWorkdayoffFrame;
+	private KshstWorkdayoffFrame kshstWorkdayoffFrame;
 	
 	/**
 	 * Instantiates a new jpa workdayoff frame set memento.
 	 *
 	 * @param kshstWorkdayoffFrame the kshst workdayoff frame
 	 */
-	public JpaWorkdayoffFrameSetMemento(KshmtHdWorkFrame kshstWorkdayoffFrame) {
+	public JpaWorkdayoffFrameSetMemento(KshstWorkdayoffFrame kshstWorkdayoffFrame) {
 		if(kshstWorkdayoffFrame.getKshstWorkdayoffFramePK() == null){
 			kshstWorkdayoffFrame.setKshstWorkdayoffFramePK(new KshstWorkdayoffFramePK());
 		}

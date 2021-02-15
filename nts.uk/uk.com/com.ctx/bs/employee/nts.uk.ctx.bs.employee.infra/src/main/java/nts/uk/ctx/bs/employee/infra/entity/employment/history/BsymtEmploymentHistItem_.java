@@ -26,5 +26,5 @@ public class BsymtEmploymentHistItem_ {
 	public static volatile SingularAttribute<BsymtEmploymentHistItem, Integer> salarySegment;
 
 	/** The bsymt employment hist. */
-	public static volatile SingularAttribute<BsymtEmploymentHistItem, BsymtAffEmpHist> bsymtEmploymentHist;
+	public static volatile SingularAttribute<BsymtEmploymentHistItem, BsymtEmploymentHist> bsymtEmploymentHist;
 }

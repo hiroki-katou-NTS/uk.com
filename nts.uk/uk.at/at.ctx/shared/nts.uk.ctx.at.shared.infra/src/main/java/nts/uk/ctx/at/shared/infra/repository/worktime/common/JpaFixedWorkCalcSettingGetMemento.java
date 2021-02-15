@@ -7,8 +7,8 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.ExceededPredAddVacationCalc;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.OverTimeCalcNoBreak;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDif;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFix;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDiffTimeWorkSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSet;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -39,13 +39,13 @@ public class JpaFixedWorkCalcSettingGetMemento<T extends UkJpaEntity> implements
 	 */
 	@Override
 	public ExceededPredAddVacationCalc getExceededPredAddVacationCalc() {
-		if (this.entity instanceof KshmtWtFix) {
+		if (this.entity instanceof KshmtFixedWorkSet) {
 			return new ExceededPredAddVacationCalc(
-					new JpaExceededPredAddVacationCalcGetMemento<KshmtWtFix>((KshmtWtFix) this.entity));
+					new JpaExceededPredAddVacationCalcGetMemento<KshmtFixedWorkSet>((KshmtFixedWorkSet) this.entity));
 		}
-		if (this.entity instanceof KshmtWtDif) {
-			return new ExceededPredAddVacationCalc(new JpaExceededPredAddVacationCalcGetMemento<KshmtWtDif>(
-					(KshmtWtDif) this.entity));
+		if (this.entity instanceof KshmtDiffTimeWorkSet) {
+			return new ExceededPredAddVacationCalc(new JpaExceededPredAddVacationCalcGetMemento<KshmtDiffTimeWorkSet>(
+					(KshmtDiffTimeWorkSet) this.entity));
 		}
 		throw new IllegalStateException("entity type is not valid");
 	}
@@ -59,13 +59,13 @@ public class JpaFixedWorkCalcSettingGetMemento<T extends UkJpaEntity> implements
 	 */
 	@Override
 	public OverTimeCalcNoBreak getOverTimeCalcNoBreak() {
-		if (this.entity instanceof KshmtWtFix) {
+		if (this.entity instanceof KshmtFixedWorkSet) {
 			return new OverTimeCalcNoBreak(
-					new JpaOverTimeCalcNoBreakGetMemento<KshmtWtFix>((KshmtWtFix) this.entity));
+					new JpaOverTimeCalcNoBreakGetMemento<KshmtFixedWorkSet>((KshmtFixedWorkSet) this.entity));
 		}
-		if (this.entity instanceof KshmtWtDif) {
+		if (this.entity instanceof KshmtDiffTimeWorkSet) {
 			return new OverTimeCalcNoBreak(
-					new JpaOverTimeCalcNoBreakGetMemento<KshmtWtDif>((KshmtWtDif) this.entity));
+					new JpaOverTimeCalcNoBreakGetMemento<KshmtDiffTimeWorkSet>((KshmtDiffTimeWorkSet) this.entity));
 		}
 		throw new IllegalStateException("entity type is not valid");
 	}

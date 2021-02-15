@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleHolTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHolSet;
 
 /**
  * The Class JpaFlexODHDWTSheetGetMemento.
@@ -16,14 +16,14 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleHolTs;
 public class JpaFlexODHDWTSheetGetMemento implements HDWorkTimeSheetSettingGetMemento{
 	
 	/** The entity. */
-	private KshmtWtFleHolTs entity;
+	private KshmtFlexHolSet entity;
 
 	/**
 	 * Instantiates a new jpa flex offday HDWT sheet get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlexODHDWTSheetGetMemento(KshmtWtFleHolTs entity) {
+	public JpaFlexODHDWTSheetGetMemento(KshmtFlexHolSet entity) {
 		super();
 		this.entity = entity;
 	}

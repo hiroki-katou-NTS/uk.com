@@ -10,13 +10,13 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class KrcstFormulaDisporder_.
  */
-@StaticMetamodel(KrcmtAnyfSort.class)
+@StaticMetamodel(KrcstFormulaDisporder.class)
 public class KrcstFormulaDisporder_ {
 
 	/** The krcst formula disporder PK. */
-	public static volatile SingularAttribute<KrcmtAnyfSort, KrcstFormulaDisporderPK> krcstFormulaDisporderPK;
+	public static volatile SingularAttribute<KrcstFormulaDisporder, KrcstFormulaDisporderPK> krcstFormulaDisporderPK;
 
 	/** The disporder. */
-	public static volatile SingularAttribute<KrcmtAnyfSort, Integer> disporder;
+	public static volatile SingularAttribute<KrcstFormulaDisporder, Integer> disporder;
 
 }

@@ -20,9 +20,9 @@ import nts.uk.ctx.sys.portal.dom.toppagepart.optionalwidget.OptionalWidget;
 import nts.uk.ctx.sys.portal.dom.toppagepart.optionalwidget.OptionalWidgetRepository;
 import nts.uk.ctx.sys.portal.dom.toppagepart.optionalwidget.WidgetDisplayItem;
 import nts.uk.ctx.sys.portal.dom.toppagepart.size.Size;
-import nts.uk.ctx.sys.portal.infra.entity.toppage.widget.SptmtOptionalWidget;
+import nts.uk.ctx.sys.portal.infra.entity.toppage.widget.SptstOptionalWidget;
 import nts.uk.ctx.sys.portal.infra.entity.toppage.widget.SptstOptionalWidgetPK;
-import nts.uk.ctx.sys.portal.infra.entity.toppage.widget.SptmtWidgetDisplay;
+import nts.uk.ctx.sys.portal.infra.entity.toppage.widget.SptstWidgetDisplay;
 import nts.uk.ctx.sys.portal.infra.entity.toppage.widget.SptstWidgetDisplayPK;
 import nts.uk.ctx.sys.portal.infra.entity.toppagepart.CcgmtTopPagePart;
 import nts.uk.ctx.sys.portal.infra.entity.toppagepart.CcgmtTopPagePartPK;
@@ -30,17 +30,17 @@ import nts.uk.ctx.sys.portal.infra.entity.toppagepart.CcgmtTopPagePartPK;
 @Stateless
 public class JpaOptionalWidgetRepository extends JpaRepository implements OptionalWidgetRepository {
 
-	private static final String SELECT_WIDGET_DISPLAY = "SELECT s FROM SptmtWidgetDisplay AS s where s.sptstWidgetDisplayPK.companyID = :companyID "
+	private static final String SELECT_WIDGET_DISPLAY = "SELECT s FROM SptstWidgetDisplay AS s where s.sptstWidgetDisplayPK.companyID = :companyID "
 			+ "AND s.sptstWidgetDisplayPK.topPagePartID =:topPagePartID ";
 	private static final String GET_SELECTED_WIDGET = "SELECT c FROM CcgmtTopPagePart AS c where c.ccgmtTopPagePartPK.companyID = :companyID "
 			+ "AND c.code =:code AND c.topPagePartType =:topPagePartType ";
 
-	private static final String SELECT_BASE = "SELECT o, t FROM SptmtOptionalWidget o "
+	private static final String SELECT_BASE = "SELECT o, t FROM SptstOptionalWidget o "
 			+ "INNER JOIN CcgmtTopPagePart t ON o.sptstOptionalWidgetPK.topPagePartID = t.ccgmtTopPagePartPK.topPagePartID "
 			+ "AND o.sptstOptionalWidgetPK.companyID = t.ccgmtTopPagePartPK.companyID ";
 	
 	private static final String SELECT_IN = SELECT_BASE + " WHERE o.sptstOptionalWidgetPK.topPagePartID IN :topPagePartID AND o.sptstOptionalWidgetPK.companyID =:companyID";
-	private static final String SELECT_LIST_DISPLAY_ITEMS = "SELECT d FROM SptmtWidgetDisplay d WHERE d.sptstWidgetDisplayPK.topPagePartID = :topPagePartID AND d.sptstWidgetDisplayPK.companyID =:companyID";
+	private static final String SELECT_LIST_DISPLAY_ITEMS = "SELECT d FROM SptstWidgetDisplay d WHERE d.sptstWidgetDisplayPK.topPagePartID = :topPagePartID AND d.sptstWidgetDisplayPK.companyID =:companyID";
 	
 	private static final String SELECT_BY_COMPANY = SELECT_BASE + " WHERE o.sptstOptionalWidgetPK.companyID = :companyID";
 			
@@ -61,7 +61,7 @@ public class JpaOptionalWidgetRepository extends JpaRepository implements Option
 		}
 		CcgmtTopPagePart cPagePart = optional.get();
 		List<WidgetDisplayItem> sptstOptionalWidgets = this.queryProxy()
-				.query(SELECT_WIDGET_DISPLAY, SptmtWidgetDisplay.class)
+				.query(SELECT_WIDGET_DISPLAY, SptstWidgetDisplay.class)
 				.setParameter("companyID", cPagePart.ccgmtTopPagePartPK.companyID)
 				.setParameter("topPagePartID", cPagePart.ccgmtTopPagePartPK.topPagePartID)
 				.getList(s -> toDomainDisplayItem(s));
@@ -72,7 +72,7 @@ public class JpaOptionalWidgetRepository extends JpaRepository implements Option
 		return Optional.of(optionalWidget);
 	}
 
-	private WidgetDisplayItem toDomainDisplayItem(SptmtWidgetDisplay entity) {
+	private WidgetDisplayItem toDomainDisplayItem(SptstWidgetDisplay entity) {
 		WidgetDisplayItem widget = WidgetDisplayItem.createFromJavaType(entity.sptstWidgetDisplayPK.widgetType,
 				entity.useAtr);
 		return widget;
@@ -92,14 +92,14 @@ public class JpaOptionalWidgetRepository extends JpaRepository implements Option
 		cmTopPagePart.width = widget.getWidth().v();
 		this.commandProxy().insert(cmTopPagePart);
 		//insert into Optional Widget
-		SptmtOptionalWidget sptstOptionalWidget = new SptmtOptionalWidget();
+		SptstOptionalWidget sptstOptionalWidget = new SptstOptionalWidget();
 		SptstOptionalWidgetPK sptstOptionalWidgetPK = new SptstOptionalWidgetPK(widget.getCompanyID(),
 				widget.getToppagePartID());
 		sptstOptionalWidget.sptstOptionalWidgetPK = sptstOptionalWidgetPK;
 		this.commandProxy().insert(sptstOptionalWidget);
 		//insert into Widget display items
 		widget.getWDisplayItems().stream().forEach(x -> {
-			SptmtWidgetDisplay sptstWidgetDisplay = new SptmtWidgetDisplay();
+			SptstWidgetDisplay sptstWidgetDisplay = new SptstWidgetDisplay();
 			SptstWidgetDisplayPK sptstWidgetDisplayPK = new SptstWidgetDisplayPK(widget.getCompanyID(),
 					widget.getToppagePartID(), x.getDisplayItemType().value);
 			sptstWidgetDisplay.sptstWidgetDisplayPK = sptstWidgetDisplayPK;
@@ -120,14 +120,14 @@ public class JpaOptionalWidgetRepository extends JpaRepository implements Option
 		cmTopPagePart.width = widget.getWidth().v();
 		this.commandProxy().update(cmTopPagePart);
 
-		SptmtOptionalWidget sptstOptionalWidget = new SptmtOptionalWidget();
+		SptstOptionalWidget sptstOptionalWidget = new SptstOptionalWidget();
 		SptstOptionalWidgetPK sptstOptionalWidgetPK = new SptstOptionalWidgetPK(widget.getCompanyID(),
 				widget.getToppagePartID());
 		sptstOptionalWidget.sptstOptionalWidgetPK = sptstOptionalWidgetPK;
 		this.commandProxy().update(sptstOptionalWidget);
 
 		widget.getWDisplayItems().stream().forEach(x -> {
-			SptmtWidgetDisplay sptstWidgetDisplay = new SptmtWidgetDisplay();
+			SptstWidgetDisplay sptstWidgetDisplay = new SptstWidgetDisplay();
 			SptstWidgetDisplayPK sptstWidgetDisplayPK = new SptstWidgetDisplayPK(widget.getCompanyID(),
 					widget.getToppagePartID(), x.getDisplayItemType().value);
 			sptstWidgetDisplay.sptstWidgetDisplayPK = sptstWidgetDisplayPK;
@@ -143,9 +143,9 @@ public class JpaOptionalWidgetRepository extends JpaRepository implements Option
 		displayItemTypes.stream().forEach(x -> {
 			sWidgetDisplayPKs.add(new SptstWidgetDisplayPK(companyID, topPagePartID, x.intValue()));
 		});
-		this.commandProxy().removeAll(SptmtWidgetDisplay.class, sWidgetDisplayPKs);
+		this.commandProxy().removeAll(SptstWidgetDisplay.class, sWidgetDisplayPKs);
 		this.getEntityManager().flush();
-		this.commandProxy().remove(SptmtOptionalWidget.class, new SptstOptionalWidgetPK(companyID, topPagePartID));
+		this.commandProxy().remove(SptstOptionalWidget.class, new SptstOptionalWidgetPK(companyID, topPagePartID));
 		this.commandProxy().remove(CcgmtTopPagePart.class, new CcgmtTopPagePartPK(companyID, topPagePartID));
 	}
 
@@ -188,7 +188,7 @@ public class JpaOptionalWidgetRepository extends JpaRepository implements Option
 	}
 
 	private OptionalWidget joinObjectToDomain(Object[] entity) {
-		SptmtOptionalWidget OptionalWidget = (SptmtOptionalWidget) entity[0];
+		SptstOptionalWidget OptionalWidget = (SptstOptionalWidget) entity[0];
 		CcgmtTopPagePart topPagePart = (CcgmtTopPagePart) entity[1];
 		List<WidgetDisplayItem> wDisplayItems = widgetDisplayItems(OptionalWidget.sptstOptionalWidgetPK.topPagePartID, OptionalWidget.sptstOptionalWidgetPK.companyID);
 		return new OptionalWidget(OptionalWidget.sptstOptionalWidgetPK.companyID, OptionalWidget.sptstOptionalWidgetPK.topPagePartID, 
@@ -197,7 +197,7 @@ public class JpaOptionalWidgetRepository extends JpaRepository implements Option
 	}
 	
 	private List<WidgetDisplayItem> widgetDisplayItems(String topPagePartId, String companyID){
-		return this.queryProxy().query(SELECT_LIST_DISPLAY_ITEMS, SptmtWidgetDisplay.class)
+		return this.queryProxy().query(SELECT_LIST_DISPLAY_ITEMS, SptstWidgetDisplay.class)
 				.setParameter("topPagePartID", topPagePartId)
 				.setParameter("companyID", companyID)
 				.getList(c ->c.toDomain());
@@ -205,9 +205,9 @@ public class JpaOptionalWidgetRepository extends JpaRepository implements Option
 
 	private List<OptionalWidget> joinListObjectToDomain(List<Object[]> entitys, String companyID) {
 		List<OptionalWidget> result = new ArrayList<>();
-		List<SptmtWidgetDisplay> displayItems = this.findItems(companyID);
+		List<SptstWidgetDisplay> displayItems = this.findItems(companyID);
 		for (Object[] entity : entitys) {
-			SptmtOptionalWidget OptionalWidget = (SptmtOptionalWidget) entity[0];
+			SptstOptionalWidget OptionalWidget = (SptstOptionalWidget) entity[0];
 			CcgmtTopPagePart topPagePart = (CcgmtTopPagePart) entity[1];
 			List<WidgetDisplayItem> wDisplayItems = displayItems.stream()
 					.filter(c -> c.sptstWidgetDisplayPK.topPagePartID
@@ -222,13 +222,13 @@ public class JpaOptionalWidgetRepository extends JpaRepository implements Option
 		return result;
 	}
 	
-	private static final String SELECT_LIST_DISPLAY_ITEMS_BY_COMPANY_ID = "SELECT i FROM SptmtOptionalWidget o " 
-			+ "INNER JOIN SptmtWidgetDisplay i ON o.sptstOptionalWidgetPK.topPagePartID = i.sptstWidgetDisplayPK.topPagePartID "
+	private static final String SELECT_LIST_DISPLAY_ITEMS_BY_COMPANY_ID = "SELECT i FROM SptstOptionalWidget o " 
+			+ "INNER JOIN SptstWidgetDisplay i ON o.sptstOptionalWidgetPK.topPagePartID = i.sptstWidgetDisplayPK.topPagePartID "
 			+ "AND o.sptstOptionalWidgetPK.companyID = i.sptstWidgetDisplayPK.companyID "
 			+ "WHERE o.sptstOptionalWidgetPK.companyID = :companyID ";
 	
-	private List<SptmtWidgetDisplay> findItems(String companyID){
-		return this.queryProxy().query(SELECT_LIST_DISPLAY_ITEMS_BY_COMPANY_ID, SptmtWidgetDisplay.class)
+	private List<SptstWidgetDisplay> findItems(String companyID){
+		return this.queryProxy().query(SELECT_LIST_DISPLAY_ITEMS_BY_COMPANY_ID, SptstWidgetDisplay.class)
 				.setParameter("companyID", companyID)
 				.getList();
 	}

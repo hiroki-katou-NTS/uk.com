@@ -9,13 +9,13 @@ import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudget;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetRepository;
-import nts.uk.ctx.at.schedule.infra.entity.budget.external.KscmtExtBudget;
+import nts.uk.ctx.at.schedule.infra.entity.budget.external.KscstExternalBudget;
 import nts.uk.ctx.at.schedule.infra.entity.budget.external.KstscExternalBudgetPK;
 
 @Stateless
 public class JpaExternalBudgetRepository extends JpaRepository implements ExternalBudgetRepository {
 
-	private static final String SELECT_NO_WHERE = "SELECT c FROM KscmtExtBudget c ";
+	private static final String SELECT_NO_WHERE = "SELECT c FROM KscstExternalBudget c ";
 
 	private static final String SELECT_ALL_DETAILS = SELECT_NO_WHERE 
 			+ " WHERE c.kscstExternalBudgetPk.companyId = :companyId";
@@ -27,7 +27,7 @@ public class JpaExternalBudgetRepository extends JpaRepository implements Extern
 	private static final String SELECTED_ITEM_ATR = SELECT_ALL_DETAILS + " AND c.budgetAtr = :budgetAtr AND c.unitAtr = :unitAtr";
 	
 
-	private static ExternalBudget toDomain(KscmtExtBudget entity) {
+	private static ExternalBudget toDomain(KscstExternalBudget entity) {
 		ExternalBudget domain = ExternalBudget.createFromJavaType(entity.kscstExternalBudgetPk.companyId,
 				entity.kscstExternalBudgetPk.externalBudgetCd, 
 				entity.externalBudgetName,
@@ -36,8 +36,8 @@ public class JpaExternalBudgetRepository extends JpaRepository implements Extern
 		return domain;
 	}
 
-	private static KscmtExtBudget toEntity(ExternalBudget domain) {
-		val entity = new KscmtExtBudget();
+	private static KscstExternalBudget toEntity(ExternalBudget domain) {
+		val entity = new KscstExternalBudget();
 		entity.kscstExternalBudgetPk = new KstscExternalBudgetPK();
 		entity.kscstExternalBudgetPk.companyId = domain.getCompanyId();
 		entity.kscstExternalBudgetPk.externalBudgetCd = domain.getExternalBudgetCd().v();
@@ -49,7 +49,7 @@ public class JpaExternalBudgetRepository extends JpaRepository implements Extern
 
 	@Override
 	public List<ExternalBudget> findAll(String companyId) {
-		return this.queryProxy().query(SELECT_ALL_DETAILS, KscmtExtBudget.class)
+		return this.queryProxy().query(SELECT_ALL_DETAILS, KscstExternalBudget.class)
 				.setParameter("companyId", companyId).getList(c -> toDomain(c));
 	}
 
@@ -61,9 +61,9 @@ public class JpaExternalBudgetRepository extends JpaRepository implements Extern
 
 	@Override
 	public void update(ExternalBudget externalBudgetResult) {
-		KscmtExtBudget entity = this.queryProxy()
+		KscstExternalBudget entity = this.queryProxy()
 				.find(new KstscExternalBudgetPK(externalBudgetResult.getCompanyId(),
-						externalBudgetResult.getExternalBudgetCd().v()), KscmtExtBudget.class)
+						externalBudgetResult.getExternalBudgetCd().v()), KscstExternalBudget.class)
 				.get();
 		entity.setExternalBudgetName(externalBudgetResult.getExternalBudgetName().v());
 //		entity.setUnitAtr(externalBudgetResult.getUnitAtr().value);
@@ -76,13 +76,13 @@ public class JpaExternalBudgetRepository extends JpaRepository implements Extern
 		val objectKey = new KstscExternalBudgetPK();
 		objectKey.companyId = companyId;
 		objectKey.externalBudgetCd = externalBudgetCode;
-		this.commandProxy().remove(KscmtExtBudget.class, objectKey);
+		this.commandProxy().remove(KscstExternalBudget.class, objectKey);
 
 	}
 
 	@Override
 	public Optional<ExternalBudget> find(String companyId, String externalBudgetCd) {
-		return this.queryProxy().query(SELECTED_ITEM, KscmtExtBudget.class).setParameter("companyId", companyId)
+		return this.queryProxy().query(SELECTED_ITEM, KscstExternalBudget.class).setParameter("companyId", companyId)
 				.setParameter("externalBudgetCd", externalBudgetCd).getSingle(c -> toDomain(c));
 	}
 
@@ -92,7 +92,7 @@ public class JpaExternalBudgetRepository extends JpaRepository implements Extern
 	 */
 	@Override
 	public List<ExternalBudget> findByAtr(String companyId, int budgetAtr, int unitAtr) {
-		return this.queryProxy().query(SELECTED_ITEM_ATR, KscmtExtBudget.class)
+		return this.queryProxy().query(SELECTED_ITEM_ATR, KscstExternalBudget.class)
 				.setParameter("companyId", companyId)
 				.setParameter("budgetAtr", budgetAtr)
 				.setParameter("unitAtr", unitAtr)

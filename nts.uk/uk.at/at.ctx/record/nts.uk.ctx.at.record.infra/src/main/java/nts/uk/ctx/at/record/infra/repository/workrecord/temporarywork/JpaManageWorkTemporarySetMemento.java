@@ -6,7 +6,7 @@ package nts.uk.ctx.at.record.infra.repository.workrecord.temporarywork;
 import java.math.BigDecimal;
 
 import nts.uk.ctx.at.record.dom.workrecord.temporarywork.ManageWorkTemporarySetMemento;
-import nts.uk.ctx.at.record.infra.entity.workrecord.temporarywork.KrcmtTemporaryMng;
+import nts.uk.ctx.at.record.infra.entity.workrecord.temporarywork.KrcstManageWorkTemp;
 
 /**
  * @author hoangdd
@@ -14,12 +14,12 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.temporarywork.KrcmtTemporary
  */
 public class JpaManageWorkTemporarySetMemento implements ManageWorkTemporarySetMemento{
 
-	private KrcmtTemporaryMng krcstManageWorkTemp;
+	private KrcstManageWorkTemp krcstManageWorkTemp;
 	
 	/**
 	 * @param krcstManageWorkTemp
 	 */
-	public JpaManageWorkTemporarySetMemento(KrcmtTemporaryMng krcstManageWorkTemp) {
+	public JpaManageWorkTemporarySetMemento(KrcstManageWorkTemp krcstManageWorkTemp) {
 		this.krcstManageWorkTemp = krcstManageWorkTemp;
 	}
 

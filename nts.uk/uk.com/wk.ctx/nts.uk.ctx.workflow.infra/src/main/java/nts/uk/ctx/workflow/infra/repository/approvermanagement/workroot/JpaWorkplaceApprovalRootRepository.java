@@ -16,7 +16,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.SystemAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRootRepository;
-import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtApprovalRouteWp;
+import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtWpApprovalRoot;
 import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtWpApprovalRootPK;
 /**
  * 
@@ -26,7 +26,7 @@ import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtWpAppro
 @RequestScoped
 public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements WorkplaceApprovalRootRepository{
 
-	private static final String FIND_BY_ALL = "SELECT c FROM WwfmtApprovalRouteWp c";
+	private static final String FIND_BY_ALL = "SELECT c FROM WwfmtWpApprovalRoot c";
 	private static final String FIND_BY_CID = FIND_BY_ALL
 			+ " WHERE c.wwfmtWpApprovalRootPK.companyId = :companyId";
 	private static final String FIND_BY_WKPID = FIND_BY_ALL
@@ -73,29 +73,29 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 			+ " AND c.endDate >= :baseDate"
 			+ " AND c.employmentRootAtr = :employmentRootAtr";	
 	//CMM018_ver2
-	private static final String FIND_BY_ATR_WORK1 = "SELECT c FROM WwfmtApprovalRouteWp c"
+	private static final String FIND_BY_ATR_WORK1 = "SELECT c FROM WwfmtWpApprovalRoot c"
 			+ " WHERE c.wwfmtWpApprovalRootPK.companyId = :companyId"
 			+ " AND c.wwfmtWpApprovalRootPK.workplaceId = :workplaceId"
 			+ " AND c.sysAtr = 0"
 			+ " AND c.employmentRootAtr = 1"
 			+ " AND c.applicationType IN :lstAppType";
-	private static final String FIND_BY_ATR_WORK02 = "SELECT c FROM WwfmtApprovalRouteWp c"
+	private static final String FIND_BY_ATR_WORK02 = "SELECT c FROM WwfmtWpApprovalRoot c"
 			+ " WHERE c.wwfmtWpApprovalRootPK.companyId = :companyId"
 			+ " AND c.wwfmtWpApprovalRootPK.workplaceId = :workplaceId"
 			+ " AND c.sysAtr = 0"
 			+ " AND c.employmentRootAtr IN (0,2)";
-	private static final String FIND_BY_ATR_HR0 = "SELECT c FROM WwfmtApprovalRouteWp c"
+	private static final String FIND_BY_ATR_HR0 = "SELECT c FROM WwfmtWpApprovalRoot c"
 			+ " WHERE c.wwfmtWpApprovalRootPK.companyId = :companyId"
 			+ " AND c.wwfmtWpApprovalRootPK.workplaceId = :workplaceId"
 			+ " AND c.sysAtr = 1"
 			+ " AND c.employmentRootAtr = 0";
-	private static final String FIND_BY_ATR_HR4 = "SELECT c FROM WwfmtApprovalRouteWp c"
+	private static final String FIND_BY_ATR_HR4 = "SELECT c FROM WwfmtWpApprovalRoot c"
 			+ " WHERE c.wwfmtWpApprovalRootPK.companyId = :companyId"
 			+ " AND c.wwfmtWpApprovalRootPK.workplaceId = :workplaceId"
 			+ " AND c.sysAtr = 1"
 			+ " AND c.employmentRootAtr = 4"
 			+ " AND c.noticeId IN :lstNoticeID";
-	private static final String FIND_BY_ATR_HR5 = "SELECT c FROM WwfmtApprovalRouteWp c"
+	private static final String FIND_BY_ATR_HR5 = "SELECT c FROM WwfmtWpApprovalRoot c"
 			+ " WHERE c.wwfmtWpApprovalRootPK.companyId = :companyId"
 			+ " AND c.wwfmtWpApprovalRootPK.workplaceId = :workplaceId"
 			+ " AND c.sysAtr = 1"
@@ -128,7 +128,7 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 		StringBuilder builder = new StringBuilder();
 		builder.append("SELECT CID, APPROVAL_ID, WKPID, HIST_ID, START_DATE, END_DATE, APP_TYPE, ");
 		builder.append("CONFIRMATION_ROOT_TYPE, EMPLOYMENT_ROOT_ATR, SYSTEM_ATR, NOTICE_ID, BUS_EVENT_ID ");
-		builder.append("FROM WWFMT_APPROVAL_ROUTE_WP WHERE CID = 'companyID' AND WKPID = 'workplaceID' ");
+		builder.append("FROM WWFMT_WP_APPROVAL_ROOT WHERE CID = 'companyID' AND WKPID = 'workplaceID' ");
 		builder.append("AND SYSTEM_ATR = 'sysAtr' AND START_DATE <= 'date' AND END_DATE >= 'date' ");
 		builder.append("AND EMPLOYMENT_ROOT_ATR = 'rootAtr'");
 		FIND_COMMON = builder.toString();
@@ -159,20 +159,20 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 		FIND_BUS_EVENT = builder.toString();
 	}
 	
-	private static final String FIND_ALL_BY_BASEDATE_CM = "SELECT c FROM WwfmtApprovalRouteWp c"
+	private static final String FIND_ALL_BY_BASEDATE_CM = "SELECT c FROM WwfmtWpApprovalRoot c"
 			+ " WHERE  c.wwfmtWpApprovalRootPK.companyId = :companyId"
 			+ " AND c.startDate <= :baseDate"
 			+ " AND c.endDate >= :baseDate"
 			+ " AND c.sysAtr = 1"
 			+ " AND c.employmentRootAtr = 0";
-	private static final String FIND_ALL_BY_BASEDATE_NT = "SELECT c FROM WwfmtApprovalRouteWp c"
+	private static final String FIND_ALL_BY_BASEDATE_NT = "SELECT c FROM WwfmtWpApprovalRoot c"
 			+ " WHERE  c.wwfmtWpApprovalRootPK.companyId = :companyId"
 			+ " AND c.startDate <= :baseDate"
 			+ " AND c.endDate >= :baseDate"
 			+ " AND c.sysAtr = 1"
 			+ " AND c.employmentRootAtr = 4"
 			+ " AND c.noticeId IN :lstNoticeID";
-	private static final String FIND_ALL_BY_BASEDATE_EV = "SELECT c FROM WwfmtApprovalRouteWp c"
+	private static final String FIND_ALL_BY_BASEDATE_EV = "SELECT c FROM WwfmtWpApprovalRoot c"
 			+ " WHERE  c.wwfmtWpApprovalRootPK.companyId = :companyId"
 			+ " AND c.startDate <= :baseDate"
 			+ " AND c.endDate >= :baseDate"
@@ -190,31 +190,31 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 			List<Integer> lstAppType, List<Integer> lstNoticeID, List<String> lstEventID) {
 		List<WorkplaceApprovalRoot> lstWp = new ArrayList<>();
 		if(sysAtr == SystemAtr.WORK.value){//就業
-			lstWp.addAll(this.queryProxy().query(FIND_BY_ATR_WORK02, WwfmtApprovalRouteWp.class)
+			lstWp.addAll(this.queryProxy().query(FIND_BY_ATR_WORK02, WwfmtWpApprovalRoot.class)
 					.setParameter("companyId", companyId)
 					.setParameter("workplaceId", workplaceId)
 					.getList(c->toDomainWpApR(c)));
 			if(!lstAppType.isEmpty()){
-				lstWp.addAll(this.queryProxy().query(FIND_BY_ATR_WORK1, WwfmtApprovalRouteWp.class)
+				lstWp.addAll(this.queryProxy().query(FIND_BY_ATR_WORK1, WwfmtWpApprovalRoot.class)
 						.setParameter("companyId", companyId)
 						.setParameter("workplaceId", workplaceId)
 						.setParameter("lstAppType", lstAppType)
 						.getList(c->toDomainWpApR(c)));
 			}
 		}else{//人事
-			lstWp.addAll(this.queryProxy().query(FIND_BY_ATR_HR0, WwfmtApprovalRouteWp.class)
+			lstWp.addAll(this.queryProxy().query(FIND_BY_ATR_HR0, WwfmtWpApprovalRoot.class)
 					.setParameter("companyId", companyId)
 					.setParameter("workplaceId", workplaceId)
 					.getList(c->toDomainWpApR(c)));
 			if(!lstNoticeID.isEmpty()){
-				lstWp.addAll(this.queryProxy().query(FIND_BY_ATR_HR4, WwfmtApprovalRouteWp.class)
+				lstWp.addAll(this.queryProxy().query(FIND_BY_ATR_HR4, WwfmtWpApprovalRoot.class)
 						.setParameter("companyId", companyId)
 						.setParameter("workplaceId", workplaceId)
 						.setParameter("lstNoticeID", lstNoticeID)
 						.getList(c->toDomainWpApR(c)));
 			}
 			if(!lstEventID.isEmpty()){
-				lstWp.addAll(this.queryProxy().query(FIND_BY_ATR_HR5, WwfmtApprovalRouteWp.class)
+				lstWp.addAll(this.queryProxy().query(FIND_BY_ATR_HR5, WwfmtWpApprovalRoot.class)
 						.setParameter("companyId", companyId)
 						.setParameter("workplaceId", workplaceId)
 						.setParameter("lstEventID", lstEventID)
@@ -235,7 +235,7 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 	@Override
 	public Optional<WorkplaceApprovalRoot> getWpApprovalRoot(String companyId, String approvalId, String workplaceId, String historyId) {
 		WwfmtWpApprovalRootPK pk = new WwfmtWpApprovalRootPK(companyId, approvalId, workplaceId, historyId);
-		return this.queryProxy().find(pk, WwfmtApprovalRouteWp.class).map(c->toDomainWpApR(c));
+		return this.queryProxy().find(pk, WwfmtWpApprovalRoot.class).map(c->toDomainWpApR(c));
 	}
 	
 	/**
@@ -250,7 +250,7 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 			Integer applicationType, int employmentRootAtr, String id, int sysAtr) {
 		//common
 		if(employmentRootAtr == 0){
-			return this.queryProxy().query(SELECT_WPAPR_BY_EDATE_CM_SYS, WwfmtApprovalRouteWp.class)
+			return this.queryProxy().query(SELECT_WPAPR_BY_EDATE_CM_SYS, WwfmtWpApprovalRoot.class)
 					.setParameter("companyId", companyId)
 					.setParameter("workplaceId", workplaceId)
 					.setParameter("endDate", endDate)
@@ -259,7 +259,7 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 		}
 		//confirm
 		if(employmentRootAtr == 2){
-			return this.queryProxy().query(SELECT_WPAPR_BY_EDATE_CONFIRM, WwfmtApprovalRouteWp.class)
+			return this.queryProxy().query(SELECT_WPAPR_BY_EDATE_CONFIRM, WwfmtWpApprovalRoot.class)
 					.setParameter("companyId", companyId)
 					.setParameter("workplaceId", workplaceId)
 					.setParameter("endDate", endDate)
@@ -269,7 +269,7 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 		}
 		//notice
 		if(employmentRootAtr == 4){
-			return this.queryProxy().query(SELECT_WPAPR_BY_EDATE_NOTICE, WwfmtApprovalRouteWp.class)
+			return this.queryProxy().query(SELECT_WPAPR_BY_EDATE_NOTICE, WwfmtWpApprovalRoot.class)
 					.setParameter("companyId", companyId)
 					.setParameter("workplaceId", workplaceId)
 					.setParameter("endDate", endDate)
@@ -279,7 +279,7 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 		}
 		//event
 		if(employmentRootAtr == 5){
-			return this.queryProxy().query(SELECT_WPAPR_BY_EDATE_EVENT, WwfmtApprovalRouteWp.class)
+			return this.queryProxy().query(SELECT_WPAPR_BY_EDATE_EVENT, WwfmtWpApprovalRoot.class)
 					.setParameter("companyId", companyId)
 					.setParameter("workplaceId", workplaceId)
 					.setParameter("endDate", endDate)
@@ -288,7 +288,7 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 					.getList(c->toDomainWpApR(c));
 		}
 		//15 app type
-		return this.queryProxy().query(SELECT_WPAPR_BY_EDATE, WwfmtApprovalRouteWp.class)
+		return this.queryProxy().query(SELECT_WPAPR_BY_EDATE, WwfmtWpApprovalRoot.class)
 				.setParameter("companyId", companyId)
 				.setParameter("workplaceId", workplaceId)
 				.setParameter("endDate", endDate)
@@ -382,7 +382,7 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 	 */
 	@Override
 	public void addAllWpApprovalRoot(List<WorkplaceApprovalRoot> wpAppRoot) {
-		List<WwfmtApprovalRouteWp> lstEntity = new ArrayList<>();
+		List<WwfmtWpApprovalRoot> lstEntity = new ArrayList<>();
 		for (WorkplaceApprovalRoot wp : wpAppRoot) {
 			lstEntity.add(toEntityWpApR(wp));
 		}
@@ -394,8 +394,8 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 	 */
 	@Override
 	public void updateWpApprovalRoot(WorkplaceApprovalRoot wpAppRoot) {
-		WwfmtApprovalRouteWp a = toEntityWpApR(wpAppRoot);
-		WwfmtApprovalRouteWp x = this.queryProxy().find(a.wwfmtWpApprovalRootPK, WwfmtApprovalRouteWp.class).get();
+		WwfmtWpApprovalRoot a = toEntityWpApR(wpAppRoot);
+		WwfmtWpApprovalRoot x = this.queryProxy().find(a.wwfmtWpApprovalRootPK, WwfmtWpApprovalRoot.class).get();
 		x.setStartDate(a.startDate);
 		x.setEndDate(a.endDate);
 		x.setApplicationType(a.applicationType);
@@ -409,10 +409,10 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 	 */
 	@Override
 	public void updateAllWpApprovalRoot(List<WorkplaceApprovalRoot> wpAppRoot) {
-		List<WwfmtApprovalRouteWp> lstEntity = new ArrayList<>();
+		List<WwfmtWpApprovalRoot> lstEntity = new ArrayList<>();
 		for (WorkplaceApprovalRoot wp : wpAppRoot) {
-			WwfmtApprovalRouteWp a = toEntityWpApR(wp);
-			WwfmtApprovalRouteWp x = this.queryProxy().find(a.wwfmtWpApprovalRootPK, WwfmtApprovalRouteWp.class).get();
+			WwfmtWpApprovalRoot a = toEntityWpApR(wp);
+			WwfmtWpApprovalRoot x = this.queryProxy().find(a.wwfmtWpApprovalRootPK, WwfmtWpApprovalRoot.class).get();
 			x.setStartDate(a.startDate);
 			x.setEndDate(a.endDate);
 			x.setApplicationType(a.applicationType);
@@ -432,15 +432,15 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 	@Override
 	public void deleteWpApprovalRoot(String companyId, String approvalId, String workplaceId, String historyId) {
 		WwfmtWpApprovalRootPK comPK = new WwfmtWpApprovalRootPK(companyId, approvalId, workplaceId, historyId);
-		this.commandProxy().remove(WwfmtApprovalRouteWp.class,comPK);
+		this.commandProxy().remove(WwfmtWpApprovalRoot.class,comPK);
 	}
 	
 	/**
-	 * convert entity WwfmtApprovalRouteWp to domain WorkplaceApprovalRoot
+	 * convert entity WwfmtWpApprovalRoot to domain WorkplaceApprovalRoot
 	 * @param entity
 	 * @return
 	 */
-	private WorkplaceApprovalRoot toDomainWpApR(WwfmtApprovalRouteWp entity){
+	private WorkplaceApprovalRoot toDomainWpApR(WwfmtWpApprovalRoot entity){
 		val domain = WorkplaceApprovalRoot.convert(entity.wwfmtWpApprovalRootPK.companyId,
 				entity.wwfmtWpApprovalRootPK.approvalId,
 				entity.wwfmtWpApprovalRootPK.workplaceId,
@@ -457,12 +457,12 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 	}
 	
 	/**
-	 * convert domain WorkplaceApprovalRoot to entity WwfmtApprovalRouteWp
+	 * convert domain WorkplaceApprovalRoot to entity WwfmtWpApprovalRoot
 	 * @param domain
 	 * @return
 	 */
-	private WwfmtApprovalRouteWp toEntityWpApR(WorkplaceApprovalRoot domain){
-		val entity = new WwfmtApprovalRouteWp();
+	private WwfmtWpApprovalRoot toEntityWpApR(WorkplaceApprovalRoot domain){
+		val entity = new WwfmtWpApprovalRoot();
 		entity.wwfmtWpApprovalRootPK = new WwfmtWpApprovalRootPK(domain.getCompanyId(), domain.getApprovalId(),
 				domain.getWorkplaceId(), domain.getApprRoot().getHistoryItems().get(0).getHistoryId());
 		entity.sysAtr = domain.getApprRoot().getSysAtr().value;
@@ -482,7 +482,7 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 	
 	public List<WorkplaceApprovalRoot> findAllByBaseDate(String companyId, GeneralDate baseDate, int sysAtr){
 		List<WorkplaceApprovalRoot> data = this.queryProxy()
-				.query(FIND_ALL_BY_BASEDATE, WwfmtApprovalRouteWp.class)
+				.query(FIND_ALL_BY_BASEDATE, WwfmtWpApprovalRoot.class)
 				.setParameter("companyId", companyId)
 				.setParameter("baseDate", baseDate)
 				.setParameter("sysAtr", sysAtr)
@@ -502,7 +502,7 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 			int employmentRootAtr, String id, int sysAtr) {
 		//common
 		if(employmentRootAtr == 0){
-			return this.queryProxy().query(SELECT_WPAPR_BY_COMMON_SYS, WwfmtApprovalRouteWp.class)
+			return this.queryProxy().query(SELECT_WPAPR_BY_COMMON_SYS, WwfmtWpApprovalRoot.class)
 					.setParameter("companyId", companyId)
 					.setParameter("workplaceId", workplaceId)
 					.setParameter("sysAtr", sysAtr)
@@ -510,7 +510,7 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 		}
 		//confirm
 		if(employmentRootAtr == 2){
-			return this.queryProxy().query(FIND_BY_CFR_TYPE, WwfmtApprovalRouteWp.class)
+			return this.queryProxy().query(FIND_BY_CFR_TYPE, WwfmtWpApprovalRoot.class)
 					.setParameter("companyId", companyId)
 					.setParameter("workplaceId", workplaceId)
 					.setParameter("confirmationRootType", applicationType)
@@ -519,7 +519,7 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 		}
 		//notice
 		if(employmentRootAtr == 4){
-			return this.queryProxy().query(FIND_BY_NTR_TYPE, WwfmtApprovalRouteWp.class)
+			return this.queryProxy().query(FIND_BY_NTR_TYPE, WwfmtWpApprovalRoot.class)
 					.setParameter("companyId", companyId)
 					.setParameter("workplaceId", workplaceId)
 					.setParameter("noticeId", applicationType)
@@ -528,7 +528,7 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 		}
 		//event
 		if(employmentRootAtr == 5){
-			return this.queryProxy().query(FIND_BY_EVR_TYPE, WwfmtApprovalRouteWp.class)
+			return this.queryProxy().query(FIND_BY_EVR_TYPE, WwfmtWpApprovalRoot.class)
 					.setParameter("companyId", companyId)
 					.setParameter("workplaceId", workplaceId)
 					.setParameter("busEventId", id)
@@ -536,7 +536,7 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 					.getList(c->toDomainWpApR(c));
 		}
 		//15 app type
-		return this.queryProxy().query(FIND_BY_APP_TYPE, WwfmtApprovalRouteWp.class)
+		return this.queryProxy().query(FIND_BY_APP_TYPE, WwfmtWpApprovalRoot.class)
 				.setParameter("companyId", companyId)
 				.setParameter("workplaceId", workplaceId)
 				.setParameter("applicationType", applicationType)
@@ -547,7 +547,7 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 	@Override
 	public List<WorkplaceApprovalRoot> getWpAppRootLast(String companyId, String workplaceId, GeneralDate endDate, int sysAtr) {
 		
-		return this.queryProxy().query(FIND_WP_APP_LAST, WwfmtApprovalRouteWp.class)
+		return this.queryProxy().query(FIND_WP_APP_LAST, WwfmtWpApprovalRoot.class)
 				.setParameter("companyId", companyId)
 				.setParameter("workplaceId", workplaceId)
 				.setParameter("endDate", endDate)
@@ -559,13 +559,13 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 	public List<WorkplaceApprovalRoot> getWpAppRoot(String companyID, GeneralDate date, 
 			Integer employmentRootAtr, Integer confirmRootAtr) {
 		if(confirmRootAtr==null){
-			return this.queryProxy().query(FIND_BY_DATE_EMP, WwfmtApprovalRouteWp.class)
+			return this.queryProxy().query(FIND_BY_DATE_EMP, WwfmtWpApprovalRoot.class)
 					.setParameter("companyId", companyID)
 					.setParameter("baseDate", date)
 					.setParameter("employmentRootAtr", employmentRootAtr)
 					.getList(c -> toDomainWpApR(c));
 		}
-		return this.queryProxy().query(FIND_BY_DATE_EMP_CONFIRM, WwfmtApprovalRouteWp.class)
+		return this.queryProxy().query(FIND_BY_DATE_EMP_CONFIRM, WwfmtWpApprovalRoot.class)
 				.setParameter("companyId", companyID)
 				.setParameter("baseDate", date)
 				.setParameter("confirmationRootType", confirmRootAtr)
@@ -577,19 +577,19 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 	public List<WorkplaceApprovalRoot> findByBaseDateJinji(String companyId, GeneralDate baseDate, 
 		List<Integer> lstNoticeID, List<String> lstEventID) {
 		List<WorkplaceApprovalRoot> lstResult = new ArrayList<>();
-		lstResult.addAll(this.queryProxy().query(FIND_ALL_BY_BASEDATE_CM, WwfmtApprovalRouteWp.class)
+		lstResult.addAll(this.queryProxy().query(FIND_ALL_BY_BASEDATE_CM, WwfmtWpApprovalRoot.class)
 				.setParameter("companyId", companyId)
 				.setParameter("baseDate", baseDate)
 				.getList(c->toDomainWpApR(c)));
 		if(!lstNoticeID.isEmpty()) {
-			lstResult.addAll(this.queryProxy().query(FIND_ALL_BY_BASEDATE_NT, WwfmtApprovalRouteWp.class)
+			lstResult.addAll(this.queryProxy().query(FIND_ALL_BY_BASEDATE_NT, WwfmtWpApprovalRoot.class)
 					.setParameter("companyId", companyId)
 					.setParameter("baseDate", baseDate)
 					.setParameter("lstNoticeID", lstNoticeID)
 					.getList(c->toDomainWpApR(c)));
 		}
 		if(!lstEventID.isEmpty()) {
-			lstResult.addAll(this.queryProxy().query(FIND_ALL_BY_BASEDATE_EV, WwfmtApprovalRouteWp.class)
+			lstResult.addAll(this.queryProxy().query(FIND_ALL_BY_BASEDATE_EV, WwfmtWpApprovalRoot.class)
 					.setParameter("companyId", companyId)
 					.setParameter("baseDate", baseDate)
 					.setParameter("lstEventID", lstEventID)

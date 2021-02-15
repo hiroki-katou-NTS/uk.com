@@ -6,7 +6,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.predset;
 
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
-import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtWtComPredTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtWorkTimeSheetSet;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -15,14 +15,14 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class JpaTimezoneGetMemento implements TimezoneGetMemento{
 
 	/** The entity. */
-	private KshmtWtComPredTs entity;
+	private KshmtWorkTimeSheetSet entity;
 	
 	/**
 	 * Instantiates a new jpa timezone get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaTimezoneGetMemento(KshmtWtComPredTs entity) {
+	public JpaTimezoneGetMemento(KshmtWorkTimeSheetSet entity) {
 		super();
 		this.entity = entity;
 	}

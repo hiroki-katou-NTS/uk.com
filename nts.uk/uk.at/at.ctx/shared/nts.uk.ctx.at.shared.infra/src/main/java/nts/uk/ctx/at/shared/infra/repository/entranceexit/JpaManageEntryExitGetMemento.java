@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.shared.infra.repository.entranceexit;
 
 import nts.uk.ctx.at.shared.dom.entranceexit.ManageEntryExitGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.entranceexit.KshmtGateMng;
+import nts.uk.ctx.at.shared.infra.entity.entranceexit.KshstManageEntryExit;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -12,14 +12,14 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 public class JpaManageEntryExitGetMemento implements ManageEntryExitGetMemento{
 
 	/** The kshst manage entry exit. */
-	private KshmtGateMng kshstManageEntryExit;
+	private KshstManageEntryExit kshstManageEntryExit;
 	
 	/**
 	 * Instantiates a new jpa manage entry exit get memento.
 	 *
 	 * @param kshstManageEntryExit the kshst manage entry exit
 	 */
-	public JpaManageEntryExitGetMemento(KshmtGateMng kshstManageEntryExit) {
+	public JpaManageEntryExitGetMemento(KshstManageEntryExit kshstManageEntryExit) {
 		this.kshstManageEntryExit = kshstManageEntryExit;
 	}
 	

@@ -11,9 +11,9 @@ import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimateDetailSettingGetMemento
 import nts.uk.ctx.at.schedule.dom.shift.estimate.numberofday.EstimateNumberOfDay;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.price.EstimatedPriceSetting;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.time.EstimateTimeSetting;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstDaysCom;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstPriceCom;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstTimeCom;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstDaysComSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstPriceComSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstTimeComSet;
 
 /**
  * The Class JpaEstimateDetailSettingCompanyGetMemento.
@@ -21,13 +21,13 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstTimeCo
 public class JpaComEstDetailSetGetMemento implements EstimateDetailSettingGetMemento{
 	
 	/** The estimate time companys. */
-	private List<KscmtEstTimeCom> estimateTimeCompanys;
+	private List<KscmtEstTimeComSet> estimateTimeCompanys;
 	
 	/** The estimate price companys. */
-	private List<KscmtEstPriceCom> estimatePriceCompanys;
+	private List<KscmtEstPriceComSet> estimatePriceCompanys;
 	
 	/** The estimate days companys. */
-	private List<KscmtEstDaysCom> estimateDaysCompanys;
+	private List<KscmtEstDaysComSet> estimateDaysCompanys;
 
 	
 	/**
@@ -35,9 +35,9 @@ public class JpaComEstDetailSetGetMemento implements EstimateDetailSettingGetMem
 	 *
 	 * @param estimateTimeCompanys the estimate time companys
 	 */
-	public JpaComEstDetailSetGetMemento(List<KscmtEstTimeCom> estimateTimeCompanys,
-			List<KscmtEstPriceCom> estimatePriceCompanys,
-			List<KscmtEstDaysCom> estimateDaysCompanys) {
+	public JpaComEstDetailSetGetMemento(List<KscmtEstTimeComSet> estimateTimeCompanys,
+			List<KscmtEstPriceComSet> estimatePriceCompanys,
+			List<KscmtEstDaysComSet> estimateDaysCompanys) {
 		this.estimateTimeCompanys = estimateTimeCompanys;
 		this.estimatePriceCompanys = estimatePriceCompanys;
 		this.estimateDaysCompanys = estimateDaysCompanys;

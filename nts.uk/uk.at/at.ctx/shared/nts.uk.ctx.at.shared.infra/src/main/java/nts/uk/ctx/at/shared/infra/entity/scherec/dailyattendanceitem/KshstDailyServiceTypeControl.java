@@ -14,7 +14,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
 @NoArgsConstructor
-@Table(name = "KSHMT_DAY_ITEM_DISP_CTR")
+@Table(name = "KSHST_DAI_SER_TYPE_CTR")
 public class KshstDailyServiceTypeControl extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId

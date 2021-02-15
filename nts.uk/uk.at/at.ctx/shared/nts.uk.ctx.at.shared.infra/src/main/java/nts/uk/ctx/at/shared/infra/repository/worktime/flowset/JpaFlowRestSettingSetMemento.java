@@ -6,7 +6,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.flowset;
 
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSettingSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloBrFlAllTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowFlowRtSet;
 
 /**
  * The Class JpaFlowRestSettingSetMemento.
@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloBrFlAllTs;
 public class JpaFlowRestSettingSetMemento implements FlowRestSettingSetMemento {
 
 	/** The entity. */
-	private KshmtWtFloBrFlAllTs entity;
+	private KshmtFlowFlowRtSet entity;
 
 	/**
 	 * Instantiates a new jpa flow rest setting set memento.
@@ -22,7 +22,7 @@ public class JpaFlowRestSettingSetMemento implements FlowRestSettingSetMemento {
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaFlowRestSettingSetMemento(KshmtWtFloBrFlAllTs entity) {
+	public JpaFlowRestSettingSetMemento(KshmtFlowFlowRtSet entity) {
 		super();
 		this.entity = entity;
 	}

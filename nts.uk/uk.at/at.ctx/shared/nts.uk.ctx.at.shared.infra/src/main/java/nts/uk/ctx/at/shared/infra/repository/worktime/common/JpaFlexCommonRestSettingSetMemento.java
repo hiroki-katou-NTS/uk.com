@@ -6,7 +6,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 
 import nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSettingSetmemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.RestTimeOfficeWorkCalcMethod;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFl;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexRestSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexRestSetPK;
 
 /**
@@ -15,7 +15,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexRestSetPK;
 public class JpaFlexCommonRestSettingSetMemento implements CommonRestSettingSetmemento{
 	
 	/** The entity. */
-	private KshmtWtFleBrFl entity;
+	private KshmtFlexRestSet entity;
 	
 
 	/**
@@ -23,7 +23,7 @@ public class JpaFlexCommonRestSettingSetMemento implements CommonRestSettingSetm
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlexCommonRestSettingSetMemento(KshmtWtFleBrFl entity) {
+	public JpaFlexCommonRestSettingSetMemento(KshmtFlexRestSet entity) {
 		super();
 		if(entity.getKshmtFlexRestSetPK() == null){
 			entity.setKshmtFlexRestSetPK(new KshmtFlexRestSetPK());

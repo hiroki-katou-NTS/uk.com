@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_MON_FORM")
+@Table(name = "KRCMT_AUT_MON_FORM")
 public class KrcmtMonPfmCorrectionFormat extends UkJpaEntity implements Serializable  {
 
 	private static final long serialVersionUID = 1L;
@@ -33,7 +33,7 @@ public class KrcmtMonPfmCorrectionFormat extends UkJpaEntity implements Serializ
 	public String sheetName;
 	
 	@OneToMany(mappedBy="monthlyactualresultpfm", cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinTable(name = "KFNMT_MON_FORM_SHEET")
+	@JoinTable(name = "KFNMT_AUT_MON_FORM_SHEET")
 	public List<KfnmtMonthlyActualResultPrm> listKrcmtMonthlyActualResultPfm;
 	
 	@Override

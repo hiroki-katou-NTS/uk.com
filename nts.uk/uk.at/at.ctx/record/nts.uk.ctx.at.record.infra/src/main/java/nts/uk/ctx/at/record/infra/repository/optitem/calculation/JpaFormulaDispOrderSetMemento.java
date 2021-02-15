@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.infra.repository.optitem.calculation;
 
-import nts.uk.ctx.at.record.infra.entity.optitem.calculation.disporder.KrcmtAnyfSort;
+import nts.uk.ctx.at.record.infra.entity.optitem.calculation.disporder.KrcstFormulaDisporder;
 import nts.uk.ctx.at.record.infra.entity.optitem.calculation.disporder.KrcstFormulaDisporderPK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemNo;
@@ -18,7 +18,7 @@ import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.disporder.FormulaDis
 public class JpaFormulaDispOrderSetMemento implements FormulaDispOrderSetMemento {
 
 	/** The type value. */
-	private KrcmtAnyfSort typeValue;
+	private KrcstFormulaDisporder typeValue;
 
 	/**
 	 * Instantiates a new jpa formula disp order set memento.
@@ -26,7 +26,7 @@ public class JpaFormulaDispOrderSetMemento implements FormulaDispOrderSetMemento
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaFormulaDispOrderSetMemento(KrcmtAnyfSort typeValue) {
+	public JpaFormulaDispOrderSetMemento(KrcstFormulaDisporder typeValue) {
 		KrcstFormulaDisporderPK krcstFormulaDisporderPK = typeValue.getKrcstFormulaDisporderPK();
 
 		// Check PK exist

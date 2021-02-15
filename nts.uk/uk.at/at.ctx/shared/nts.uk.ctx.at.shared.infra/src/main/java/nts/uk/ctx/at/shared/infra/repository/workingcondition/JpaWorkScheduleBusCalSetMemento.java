@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.infra.repository.workingcondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.TimeZoneScheduledMasterAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleBusCalSetMemento;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkScheduleMasterReferenceAtr;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondScheMeth;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtScheduleMethod;
 
 /**
  * The Class JpaWorkScheduleBusCalSetMemento.
@@ -15,7 +15,7 @@ import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondScheMeth;
 public class JpaWorkScheduleBusCalSetMemento implements WorkScheduleBusCalSetMemento {
 
 	/** The entity. */
-	private KshmtWorkcondScheMeth entity;
+	private KshmtScheduleMethod entity;
 
 	/**
 	 * Instantiates a new jpa work schedule bus cal set memento.
@@ -23,7 +23,7 @@ public class JpaWorkScheduleBusCalSetMemento implements WorkScheduleBusCalSetMem
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaWorkScheduleBusCalSetMemento(KshmtWorkcondScheMeth entity) {
+	public JpaWorkScheduleBusCalSetMemento(KshmtScheduleMethod entity) {
 		this.entity = entity;
 	}
 

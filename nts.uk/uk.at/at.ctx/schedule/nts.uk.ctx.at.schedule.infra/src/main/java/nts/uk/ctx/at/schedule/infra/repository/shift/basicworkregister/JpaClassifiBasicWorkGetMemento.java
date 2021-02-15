@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSetting;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.ClassifiBasicWorkGetMemento;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.ClassificationCode;
-import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtBasicWorkCls;
+import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtClassifyWorkSet;
 
 /**
  * The Class JpaClassifiBasicWorkGetMemento.
@@ -19,7 +19,7 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtBasicWor
 public class JpaClassifiBasicWorkGetMemento implements ClassifiBasicWorkGetMemento {
 
 	/** The type value. */
-	private List<KscmtBasicWorkCls> typeValue;
+	private List<KscmtClassifyWorkSet> typeValue;
 
 	/**
 	 * Instantiates a new jpa classifi basic work get memento.
@@ -27,7 +27,7 @@ public class JpaClassifiBasicWorkGetMemento implements ClassifiBasicWorkGetMemen
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaClassifiBasicWorkGetMemento(List<KscmtBasicWorkCls> typeValue) {
+	public JpaClassifiBasicWorkGetMemento(List<KscmtClassifyWorkSet> typeValue) {
 		super();
 		this.typeValue = typeValue;
 		if (this.typeValue == null) {

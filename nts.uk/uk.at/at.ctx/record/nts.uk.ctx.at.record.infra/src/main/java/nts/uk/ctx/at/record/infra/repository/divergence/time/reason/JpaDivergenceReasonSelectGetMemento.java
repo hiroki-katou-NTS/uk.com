@@ -4,7 +4,7 @@ import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceInputRequired;
 import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReason;
 import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReasonCode;
 import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReasonSelectGetMemento;
-import nts.uk.ctx.at.record.infra.entity.divergence.reason.KrcmtDvgcReason;
+import nts.uk.ctx.at.record.infra.entity.divergence.reason.KrcstDvgcReason;
 
 /**
  * The Class JpaDivergenceReasonSelectRepositoryGetMemento.
@@ -12,7 +12,7 @@ import nts.uk.ctx.at.record.infra.entity.divergence.reason.KrcmtDvgcReason;
 public class JpaDivergenceReasonSelectGetMemento implements DivergenceReasonSelectGetMemento {
 
 	/** The entity. */
-	private KrcmtDvgcReason entity;
+	private KrcstDvgcReason entity;
 
 	/**
 	 * Instantiates a new jpa divergence reason select repository get memento.
@@ -27,7 +27,7 @@ public class JpaDivergenceReasonSelectGetMemento implements DivergenceReasonSele
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaDivergenceReasonSelectGetMemento(KrcmtDvgcReason entity) {
+	public JpaDivergenceReasonSelectGetMemento(KrcstDvgcReason entity) {
 		this.entity = entity;
 	}
 

@@ -7,7 +7,7 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.La
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.LastWeekHolidayNumberOfOneWeek;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.OneWeekPublicHoliday;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.WeekNumberOfDay;
-import nts.uk.ctx.at.shared.infra.entity.holidaysetting.configuration.Kshmt4w4dNumSet;
+import nts.uk.ctx.at.shared.infra.entity.holidaysetting.configuration.KshmtFourweekfourHdNumbSet;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -19,14 +19,14 @@ public class JpaFourWeekFourHolidayNumberSettingGetMemento implements FourWeekFo
 	private final static int TRUE_VALUE = 1;
 	
 	/** The kshmt fourweekfour hd numb set. */
-	private Kshmt4w4dNumSet kshmtFourweekfourHdNumbSet;
+	private KshmtFourweekfourHdNumbSet kshmtFourweekfourHdNumbSet;
 	
 	/**
 	 * Instantiates a new jpa four week four holiday number setting get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFourWeekFourHolidayNumberSettingGetMemento(Kshmt4w4dNumSet entity){
+	public JpaFourWeekFourHolidayNumberSettingGetMemento(KshmtFourweekfourHdNumbSet entity){
 		this.kshmtFourweekfourHdNumbSet = entity;
 	}
 	

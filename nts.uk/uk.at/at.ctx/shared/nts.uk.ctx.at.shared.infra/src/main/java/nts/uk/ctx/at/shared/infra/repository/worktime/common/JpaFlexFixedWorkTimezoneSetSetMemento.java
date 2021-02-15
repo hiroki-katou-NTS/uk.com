@@ -14,10 +14,10 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSetSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFlWek;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleOverTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHaRtSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOtTimeSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOtTimeSetPK;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleWorkTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkTimeSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkTimeSetPK;
 
 /**
@@ -26,7 +26,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkTimeSetPK
 public class JpaFlexFixedWorkTimezoneSetSetMemento implements FixedWorkTimezoneSetSetMemento {
 
 	/** The entity. */
-	private KshmtWtFleBrFlWek entity;
+	private KshmtFlexHaRtSet entity;
 
 	/**
 	 * Instantiates a new jpa flex fixed work timezone set set memento.
@@ -34,7 +34,7 @@ public class JpaFlexFixedWorkTimezoneSetSetMemento implements FixedWorkTimezoneS
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaFlexFixedWorkTimezoneSetSetMemento(KshmtWtFleBrFlWek entity) {
+	public JpaFlexFixedWorkTimezoneSetSetMemento(KshmtFlexHaRtSet entity) {
 		super();
 		this.entity = entity;
 	}
@@ -58,7 +58,7 @@ public class JpaFlexFixedWorkTimezoneSetSetMemento implements FixedWorkTimezoneS
 		Integer amPmAtr = this.entity.getKshmtFlexHaRtSetPK().getAmPmAtr();
 		
 		// get other list entity has type # amPmAtr
-		List<KshmtWtFleWorkTs> lstOtherAmPmEntity = this.entity.getKshmtFlexWorkTimeSets().stream()
+		List<KshmtFlexWorkTimeSet> lstOtherAmPmEntity = this.entity.getKshmtFlexWorkTimeSets().stream()
 				.filter(item -> item.getKshmtFlexWorkTimeSetPK().getAmPmAtr() != amPmAtr)
 				.collect(Collectors.toList());
 		
@@ -69,15 +69,15 @@ public class JpaFlexFixedWorkTimezoneSetSetMemento implements FixedWorkTimezoneS
 		}
 		
 		// convert map entity
-		Map<KshmtFlexWorkTimeSetPK, KshmtWtFleWorkTs> mapEntity = this.entity.getKshmtFlexWorkTimeSets().stream()
-				.collect(Collectors.toMap(entity -> ((KshmtWtFleWorkTs) entity).getKshmtFlexWorkTimeSetPK(),
+		Map<KshmtFlexWorkTimeSetPK, KshmtFlexWorkTimeSet> mapEntity = this.entity.getKshmtFlexWorkTimeSets().stream()
+				.collect(Collectors.toMap(entity -> ((KshmtFlexWorkTimeSet) entity).getKshmtFlexWorkTimeSetPK(),
 						Function.identity()));
 		
 		String companyId = this.entity.getKshmtFlexHaRtSetPK().getCid();
 		String workTimeCd = this.entity.getKshmtFlexHaRtSetPK().getWorktimeCd();
 		
 		// add other list AmPm entity
-		List<KshmtWtFleWorkTs> newListEntity = new ArrayList<>();
+		List<KshmtFlexWorkTimeSet> newListEntity = new ArrayList<>();
 		newListEntity.addAll(lstOtherAmPmEntity);
 		
 		// set data domain
@@ -91,9 +91,9 @@ public class JpaFlexFixedWorkTimezoneSetSetMemento implements FixedWorkTimezoneS
 			pk.setTimeFrameNo(domain.getEmploymentTimeFrameNo().v());
 			
 			// find entity if existed, else new entity
-			KshmtWtFleWorkTs entity = mapEntity.get(pk);
+			KshmtFlexWorkTimeSet entity = mapEntity.get(pk);
 			if (entity == null) {
-				entity = new KshmtWtFleWorkTs(pk);
+				entity = new KshmtFlexWorkTimeSet(pk);
 			}
 			
 			// save to memento
@@ -123,7 +123,7 @@ public class JpaFlexFixedWorkTimezoneSetSetMemento implements FixedWorkTimezoneS
 		Integer amPmAtr = this.entity.getKshmtFlexHaRtSetPK().getAmPmAtr();
 		
 		// get other list entity has type # amPmAtr
-		List<KshmtWtFleOverTs> lstOtherAmPmEntity = this.entity.getKshmtFlexOtTimeSets().stream()
+		List<KshmtFlexOtTimeSet> lstOtherAmPmEntity = this.entity.getKshmtFlexOtTimeSets().stream()
 				.filter(item -> item.getKshmtFlexOtTimeSetPK().getAmPmAtr() != amPmAtr)
 				.collect(Collectors.toList());
 		
@@ -134,15 +134,15 @@ public class JpaFlexFixedWorkTimezoneSetSetMemento implements FixedWorkTimezoneS
 		}
 		
 		// convert map entity
-		Map<KshmtFlexOtTimeSetPK, KshmtWtFleOverTs> mapEntity = this.entity.getKshmtFlexOtTimeSets().stream()
-				.collect(Collectors.toMap(entity -> ((KshmtWtFleOverTs) entity).getKshmtFlexOtTimeSetPK(),
+		Map<KshmtFlexOtTimeSetPK, KshmtFlexOtTimeSet> mapEntity = this.entity.getKshmtFlexOtTimeSets().stream()
+				.collect(Collectors.toMap(entity -> ((KshmtFlexOtTimeSet) entity).getKshmtFlexOtTimeSetPK(),
 						Function.identity()));
 		
 		String companyId = this.entity.getKshmtFlexHaRtSetPK().getCid();
 		String workTimeCd = this.entity.getKshmtFlexHaRtSetPK().getWorktimeCd();
 		
 		// add other list AmPm entity
-		List<KshmtWtFleOverTs> newListEntity = new ArrayList<>();
+		List<KshmtFlexOtTimeSet> newListEntity = new ArrayList<>();
 		newListEntity.addAll(lstOtherAmPmEntity);
 		
 		// set data domain
@@ -156,9 +156,9 @@ public class JpaFlexFixedWorkTimezoneSetSetMemento implements FixedWorkTimezoneS
 			pk.setWorktimeNo(domain.getWorkTimezoneNo().v());
 			
 			// find entity if existed, else new entity
-			KshmtWtFleOverTs entity = mapEntity.get(pk);
+			KshmtFlexOtTimeSet entity = mapEntity.get(pk);
 			if (entity == null) {
-				entity = new KshmtWtFleOverTs(pk);
+				entity = new KshmtFlexOtTimeSet(pk);
 			}
 			
 			// save to memento

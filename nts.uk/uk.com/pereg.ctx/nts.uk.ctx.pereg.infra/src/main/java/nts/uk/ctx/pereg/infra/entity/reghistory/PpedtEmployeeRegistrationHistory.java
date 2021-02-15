@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "PPEDT_PER_REG_HIST")
+@Table(name = "PPEDT_EMP_REG_HISTORY")
 public class PpedtEmployeeRegistrationHistory extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

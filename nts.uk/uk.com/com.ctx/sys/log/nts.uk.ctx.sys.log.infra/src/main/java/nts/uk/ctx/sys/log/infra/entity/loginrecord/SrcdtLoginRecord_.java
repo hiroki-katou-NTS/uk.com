@@ -10,24 +10,24 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class SgwmtLogoutDataPK_.
  */
-@StaticMetamodel(SrcdtLoginCorrection.class)
+@StaticMetamodel(SrcdtLoginRecord.class)
 public class SrcdtLoginRecord_ {
 
 	/** The operation id. */
-	public static volatile SingularAttribute<SrcdtLoginCorrection, SrcdtLoginRecordPK> srcdtLoginRecordPK;
+	public static volatile SingularAttribute<SrcdtLoginRecord, SrcdtLoginRecordPK> srcdtLoginRecordPK;
 
 	/** The lock status. */
-	public static volatile SingularAttribute<SrcdtLoginCorrection, Integer> lockStatus;
+	public static volatile SingularAttribute<SrcdtLoginRecord, Integer> lockStatus;
 	
     /** The login method. */
-    public static volatile SingularAttribute<SrcdtLoginCorrection, Integer> loginMethod;
+    public static volatile SingularAttribute<SrcdtLoginRecord, Integer> loginMethod;
     
 	/** The login status. */
-	public static volatile SingularAttribute<SrcdtLoginCorrection, Integer> loginStatus;
+	public static volatile SingularAttribute<SrcdtLoginRecord, Integer> loginStatus;
 	
     /** The remarks. */
-    public static volatile SingularAttribute<SrcdtLoginCorrection, String> remarks;
+    public static volatile SingularAttribute<SrcdtLoginRecord, String> remarks;
     
     /** The url. */
-    public static volatile SingularAttribute<SrcdtLoginCorrection, String> url;
+    public static volatile SingularAttribute<SrcdtLoginRecord, String> url;
 }

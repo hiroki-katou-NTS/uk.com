@@ -87,7 +87,7 @@ public class JpaEmployeeInformationRepository extends JpaRepository implements E
 			+ " AND jh.endDate >= :refDate";
 
 	private static final String EMPLOYMENT_QUERY = "SELECT eh.sid, e.bsymtEmploymentPK.code, e.name "
-			+ "FROM BsymtAffEmpHist eh "
+			+ "FROM BsymtEmploymentHist eh "
 			+ "LEFT JOIN BsymtEmploymentHistItem ehi ON ehi.hisId = eh.hisId AND eh.companyId =:cid "
 			+ "LEFT JOIN BsymtEmployment e ON e.bsymtEmploymentPK.code = ehi.empCode AND  e.bsymtEmploymentPK.cid =:cid "
 			+ "WHERE eh.sid IN :listSid "
@@ -95,7 +95,7 @@ public class JpaEmployeeInformationRepository extends JpaRepository implements E
 			+ "AND eh.endDate >= :refDate";
 
 	private static final String CLASSIFICATION_QUERY = "SELECT ach.sid, c.bsymtClassificationPK.clscd, c.clsname "
-			+ "FROM BsymtAffClassHist ach "
+			+ "FROM BsymtAffClassHistory ach "
 			+ "LEFT JOIN BsymtAffClassHistItem achi ON achi.historyId = ach.historyId AND ach.cid =:cid "
 			+ "LEFT JOIN BsymtClassification c ON c.bsymtClassificationPK.clscd = achi.classificationCode AND c.bsymtClassificationPK.cid =:cid "
 			+ "WHERE ach.sid IN :listSid "
@@ -103,8 +103,8 @@ public class JpaEmployeeInformationRepository extends JpaRepository implements E
 			+ "AND ach.endDate >= :refDate";
 
 	private static final String EMPCLS_QUERY = "SELECT wc.kshmtWorkingCondPK.sid, wci.laborSys "
-			+ "FROM KshmtWorkcondHist wc "
-			+ "LEFT JOIN KshmtWorkcondHistItem wci ON wci.historyId = wc.kshmtWorkingCondPK.historyId "
+			+ "FROM KshmtWorkingCond wc "
+			+ "LEFT JOIN KshmtWorkingCondItem wci ON wci.historyId = wc.kshmtWorkingCondPK.historyId "
 			+ "WHERE wc.kshmtWorkingCondPK.sid IN :listSid "
 			+ "AND wc.strD <= :refDate "
 			+ "AND wc.endD >= :refDate";

@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.shortworktime.KshmtShorttimeHist;
+import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHist;
 import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHistPK;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -24,7 +24,7 @@ public class JpaSWorkTimeHistSetMemento implements SWorkTimeHistSetMemento {
 	private String companyId;
 
 	/** The entity. */
-	private List<KshmtShorttimeHist> entities;
+	private List<BshmtWorktimeHist> entities;
 
 	/**
 	 * Instantiates a new jpa S work time hist set memento.
@@ -32,7 +32,7 @@ public class JpaSWorkTimeHistSetMemento implements SWorkTimeHistSetMemento {
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaSWorkTimeHistSetMemento(String companyId, List<KshmtShorttimeHist> entities) {
+	public JpaSWorkTimeHistSetMemento(String companyId, List<BshmtWorktimeHist> entities) {
 		this.companyId = companyId;
 		entities.stream().forEach(item -> {
 			if (item.getBshmtWorktimeHistPK() == null) {
@@ -89,7 +89,7 @@ public class JpaSWorkTimeHistSetMemento implements SWorkTimeHistSetMemento {
 
 		historyItems.stream().forEach(item -> {
 			if (!entityHistIds.contains(item.identifier())) {
-				KshmtShorttimeHist entity = new KshmtShorttimeHist();
+				BshmtWorktimeHist entity = new BshmtWorktimeHist();
 				BshmtWorktimeHistPK kshmtWorkingCondPK = new BshmtWorktimeHistPK(companyId,
 						item.identifier());
 				entity.setBshmtWorktimeHistPK(kshmtWorkingCondPK);

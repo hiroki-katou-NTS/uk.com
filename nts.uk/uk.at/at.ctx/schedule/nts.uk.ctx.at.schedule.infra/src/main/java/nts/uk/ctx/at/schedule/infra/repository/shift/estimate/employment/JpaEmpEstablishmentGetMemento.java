@@ -9,9 +9,9 @@ import java.util.List;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimateDetailSetting;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.Year;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.employment.EmploymentEstablishmentGetMemento;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstDaysEmp;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstPriceEmp;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstTimeEmp;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstDaysEmpSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstPriceEmpSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstTimeEmpSet;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 
@@ -23,13 +23,13 @@ public class JpaEmpEstablishmentGetMemento implements EmploymentEstablishmentGet
 	public static final int FIRST_TIME = 0;
 	
 	/** The estimate time Employments. */
-	private List<KscmtEstTimeEmp> estimateTimeEmployments;
+	private List<KscmtEstTimeEmpSet> estimateTimeEmployments;
 	
 	/** The estimate price Employments. */
-	private List<KscmtEstPriceEmp> estimatePriceEmployments;
+	private List<KscmtEstPriceEmpSet> estimatePriceEmployments;
 	
 	/** The estimate days Employments. */
-	private List<KscmtEstDaysEmp> estimateDaysEmployments;
+	private List<KscmtEstDaysEmpSet> estimateDaysEmployments;
 	
 	
 	
@@ -38,9 +38,9 @@ public class JpaEmpEstablishmentGetMemento implements EmploymentEstablishmentGet
 	 *
 	 * @param estimateTimeEmployments the estimate time Employments
 	 */
-	public JpaEmpEstablishmentGetMemento(List<KscmtEstTimeEmp> estimateTimeEmployments,
-			List<KscmtEstPriceEmp> estimatePriceEmployments,
-			List<KscmtEstDaysEmp> estimateDaysEmployments) {
+	public JpaEmpEstablishmentGetMemento(List<KscmtEstTimeEmpSet> estimateTimeEmployments,
+			List<KscmtEstPriceEmpSet> estimatePriceEmployments,
+			List<KscmtEstDaysEmpSet> estimateDaysEmployments) {
 		this.estimateTimeEmployments = estimateTimeEmployments;
 		this.estimatePriceEmployments = estimatePriceEmployments;
 		this.estimateDaysEmployments = estimateDaysEmployments;

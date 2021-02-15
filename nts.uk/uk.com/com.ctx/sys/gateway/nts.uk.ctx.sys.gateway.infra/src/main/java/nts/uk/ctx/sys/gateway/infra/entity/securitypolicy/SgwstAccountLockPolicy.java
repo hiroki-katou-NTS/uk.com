@@ -15,7 +15,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "SGWMT_ACC_LOCK_POLICY")
+@Table(name = "SGWST_ACC_LOCK_POLICY")
 public class SgwstAccountLockPolicy extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id

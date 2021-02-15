@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "BSYMT_AFF_COM_HIST_ITEM")
+@Table(name = "BSYMT_AFF_COM_INFO")
 public class BsymtAffCompanyInfo extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

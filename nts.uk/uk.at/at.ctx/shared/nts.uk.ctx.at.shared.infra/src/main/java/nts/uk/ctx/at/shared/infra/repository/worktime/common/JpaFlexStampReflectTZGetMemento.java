@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezoneGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleStmpRefTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexStampReflect;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexStampReflectPK;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -17,7 +17,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class JpaFlexStampReflectTZGetMemento implements StampReflectTimezoneGetMemento {
 
 	/** The entity. */
-	private KshmtWtFleStmpRefTs entity;
+	private KshmtFlexStampReflect entity;
 
 	/**
 	 * Instantiates a new jpa flex stamp reflect TZ get memento.
@@ -25,7 +25,7 @@ public class JpaFlexStampReflectTZGetMemento implements StampReflectTimezoneGetM
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaFlexStampReflectTZGetMemento(KshmtWtFleStmpRefTs entity) {
+	public JpaFlexStampReflectTZGetMemento(KshmtFlexStampReflect entity) {
 		super();
 		if (entity.getKshmtFlexStampReflectPK() == null) {
 			entity.setKshmtFlexStampReflectPK(new KshmtFlexStampReflectPK());

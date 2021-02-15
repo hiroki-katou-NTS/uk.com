@@ -8,8 +8,8 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.infra.entity.monthly.vtotalmethod.KrcmtCalcMPayAbsn;
-import nts.uk.ctx.at.record.infra.entity.monthly.vtotalmethod.KrcmtCalcMPayAttn;
+import nts.uk.ctx.at.record.infra.entity.monthly.vtotalmethod.KrcstMonPayAbsnDays;
+import nts.uk.ctx.at.record.infra.entity.monthly.vtotalmethod.KrcstMonPayAttnDays;
 import nts.uk.ctx.at.record.infra.entity.monthly.vtotalmethod.KrcstMonPayAttnDaysPK;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.PayItemCountOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.PayItemCountOfMonthlyRepository;
@@ -23,19 +23,19 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 public class JpaPayItemCountOfMonthly extends JpaRepository implements PayItemCountOfMonthlyRepository {
 
 	private static final String FIND_BY_CID_FOR_ATTN =
-			"SELECT a FROM KrcmtCalcMPayAttn a "
+			"SELECT a FROM KrcstMonPayAttnDays a "
 			+ "WHERE a.PK.companyId = :companyId ";
 	
 	private static final String FIND_BY_CID_FOR_ABSN =
-			"SELECT a FROM KrcmtCalcMPayAbsn a "
+			"SELECT a FROM KrcstMonPayAbsnDays a "
 			+ "WHERE a.PK.companyId = :companyId ";
 	
 	private static final String REMOVE_BY_CID_FOR_ATTN =
-			"DELETE FROM KrcmtCalcMPayAttn a "
+			"DELETE FROM KrcstMonPayAttnDays a "
 			+ "WHERE a.PK.companyId = :companyId ";
 	
 	private static final String REMOVE_BY_CID_FOR_ABSN =
-			"DELETE FROM KrcmtCalcMPayAbsn a "
+			"DELETE FROM KrcstMonPayAbsnDays a "
 			+ "WHERE a.PK.companyId = :companyId ";
 	
 	/** 検索 */
@@ -43,12 +43,12 @@ public class JpaPayItemCountOfMonthly extends JpaRepository implements PayItemCo
 	public Optional<PayItemCountOfMonthly> find(String companyId) {
 
 		val attnDaysList = this.queryProxy()
-				.query(FIND_BY_CID_FOR_ATTN, KrcmtCalcMPayAttn.class)
+				.query(FIND_BY_CID_FOR_ATTN, KrcstMonPayAttnDays.class)
 				.setParameter("companyId", companyId)
 				.getList();
 		
 		val absnDaysList = this.queryProxy()
-				.query(FIND_BY_CID_FOR_ABSN, KrcmtCalcMPayAbsn.class)
+				.query(FIND_BY_CID_FOR_ABSN, KrcstMonPayAbsnDays.class)
 				.setParameter("companyId", companyId)
 				.getList();
 		
@@ -63,7 +63,7 @@ public class JpaPayItemCountOfMonthly extends JpaRepository implements PayItemCo
 	 * @return ドメイン：月別実績の給与項目カウント
 	 */
 	private static PayItemCountOfMonthly toDomain(String companyId,
-			List<KrcmtCalcMPayAttn> attnDaysList, List<KrcmtCalcMPayAbsn> absnDaysList){
+			List<KrcstMonPayAttnDays> attnDaysList, List<KrcstMonPayAbsnDays> absnDaysList){
 		
 		List<WorkTypeCode> payAttendanceDays = new ArrayList<>();
 		List<WorkTypeCode> payAbsenceDays = new ArrayList<>();
@@ -92,13 +92,13 @@ public class JpaPayItemCountOfMonthly extends JpaRepository implements PayItemCo
 		// 追加
 		val attendanceDays = payItemCountOfMonthly.getPayAttendanceDays();
 		for (val workTypeCode : attendanceDays){
-			KrcmtCalcMPayAttn entity = new KrcmtCalcMPayAttn();
+			KrcstMonPayAttnDays entity = new KrcstMonPayAttnDays();
 			entity.PK = new KrcstMonPayAttnDaysPK(companyId, workTypeCode.v());
 			this.getEntityManager().persist(entity);
 		}
 		val absenceDays = payItemCountOfMonthly.getPayAbsenceDays();
 		for (val workTypeCode : absenceDays){
-			KrcmtCalcMPayAbsn entity = new KrcmtCalcMPayAbsn();
+			KrcstMonPayAbsnDays entity = new KrcstMonPayAbsnDays();
 			entity.PK = new KrcstMonPayAttnDaysPK(companyId, workTypeCode.v());
 			this.getEntityManager().persist(entity);
 		}

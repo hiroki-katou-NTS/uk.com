@@ -10,7 +10,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.portal.dom.placement.Placement;
 import nts.uk.ctx.sys.portal.dom.placement.PlacementRepository;
-import nts.uk.ctx.sys.portal.infra.entity.placement.SptmtPlacement;
+import nts.uk.ctx.sys.portal.infra.entity.placement.CcgmtPlacement;
 import nts.uk.ctx.sys.portal.infra.entity.placement.CcgmtPlacementPK;
 
 /**
@@ -19,34 +19,34 @@ import nts.uk.ctx.sys.portal.infra.entity.placement.CcgmtPlacementPK;
 @Stateless
 public class JpaPlacementRepository extends JpaRepository implements PlacementRepository {
 	
-	private static final String SELECT_SINGLE = "SELECT c FROM SptmtPlacement c WHERE c.ccgmtPlacementPK.placementID = :placementID";
-	private static final String SELECT_BY_LAYOUT = "SELECT c FROM SptmtPlacement c WHERE c.layoutID = :layoutID";
-	private static final String SELECT_BY_TOPPAGEPART = "SELECT c FROM SptmtPlacement c WHERE c.topPagePartID = :topPagePartID";
+	private static final String SELECT_SINGLE = "SELECT c FROM CcgmtPlacement c WHERE c.ccgmtPlacementPK.placementID = :placementID";
+	private static final String SELECT_BY_LAYOUT = "SELECT c FROM CcgmtPlacement c WHERE c.layoutID = :layoutID";
+	private static final String SELECT_BY_TOPPAGEPART = "SELECT c FROM CcgmtPlacement c WHERE c.topPagePartID = :topPagePartID";
 
 	@Override
 	public Optional<Placement> find(String placementID) {
-		return this.queryProxy().query(SELECT_SINGLE, SptmtPlacement.class)
+		return this.queryProxy().query(SELECT_SINGLE, CcgmtPlacement.class)
 				.setParameter("placementID", placementID)
 				.getSingle(c -> toDomain(c));
 	}
 
 	@Override
 	public List<Placement> findByLayout(String layoutID) {
-		return this.queryProxy().query(SELECT_BY_LAYOUT, SptmtPlacement.class)
+		return this.queryProxy().query(SELECT_BY_LAYOUT, CcgmtPlacement.class)
 				.setParameter("layoutID", layoutID)
 				.getList(c -> toDomain(c));
 	}
 	
 	@Override
 	public List<Placement> findByTopPagePart(String topPagePartID) {
-		return this.queryProxy().query(SELECT_BY_TOPPAGEPART, SptmtPlacement.class)
+		return this.queryProxy().query(SELECT_BY_TOPPAGEPART, CcgmtPlacement.class)
 				.setParameter("topPagePartID", topPagePartID)
 				.getList(c -> toDomain(c));
 	}
 
 	@Override
 	public void remove(String companyID, String placementID) {
-		this.commandProxy().remove(SptmtPlacement.class, new CcgmtPlacementPK(companyID, placementID));
+		this.commandProxy().remove(CcgmtPlacement.class, new CcgmtPlacementPK(companyID, placementID));
 		this.getEntityManager().flush();
 	}
 	
@@ -56,7 +56,7 @@ public class JpaPlacementRepository extends JpaRepository implements PlacementRe
 		for (String placementID : placementIDs) {
 			listCcgmtPlacementPK.add(new CcgmtPlacementPK(companyID, placementID));
 		}
-		this.commandProxy().removeAll(SptmtPlacement.class, listCcgmtPlacementPK);
+		this.commandProxy().removeAll(CcgmtPlacement.class, listCcgmtPlacementPK);
 		this.getEntityManager().flush();
 	}
 
@@ -72,8 +72,8 @@ public class JpaPlacementRepository extends JpaRepository implements PlacementRe
 	
 	@Override
 	public void update(Placement placement) {
-		SptmtPlacement newEntity = toEntity(placement);
-		SptmtPlacement updatedEntity = this.queryProxy().find(newEntity.ccgmtPlacementPK, SptmtPlacement.class).get();
+		CcgmtPlacement newEntity = toEntity(placement);
+		CcgmtPlacement updatedEntity = this.queryProxy().find(newEntity.ccgmtPlacementPK, CcgmtPlacement.class).get();
 		updatedEntity.column = newEntity.column;
 		updatedEntity.row = newEntity.row;
 		updatedEntity.width = newEntity.width;
@@ -86,10 +86,10 @@ public class JpaPlacementRepository extends JpaRepository implements PlacementRe
 	/**
 	 * Convert entity to domain
 	 * 
-	 * @param SptmtPlacement entity
+	 * @param CcgmtPlacement entity
 	 * @return Placement instance
 	 */
-	private Placement toDomain(SptmtPlacement entity) {
+	private Placement toDomain(CcgmtPlacement entity) {
 		return Placement.createFromJavaType(
 			entity.ccgmtPlacementPK.companyID, entity.ccgmtPlacementPK.placementID, entity.layoutID, entity.topPagePartID,
 			entity.column, entity.row,
@@ -99,10 +99,10 @@ public class JpaPlacementRepository extends JpaRepository implements PlacementRe
 	/**
 	 * Convert domain to entity
 	 * 
-	 * @param domain SptmtPlacement
-	 * @return SptmtPlacement instance
+	 * @param domain CcgmtPlacement
+	 * @return CcgmtPlacement instance
 	 */
-	private SptmtPlacement toEntity(Placement domain) {
+	private CcgmtPlacement toEntity(Placement domain) {
 		// External Url information
 		Integer width = null, height = null;
 		String externalUrl = null;
@@ -112,7 +112,7 @@ public class JpaPlacementRepository extends JpaRepository implements PlacementRe
 			externalUrl = domain.getExternalUrl().get().getUrl().v();
 		}
 		
-		return new SptmtPlacement(
+		return new CcgmtPlacement(
 			new CcgmtPlacementPK(domain.getCompanyID(), domain.getPlacementID()),
 			domain.getLayoutID(), domain.getColumn().v(), domain.getRow().v(),
 			width, height, externalUrl, domain.getToppagePartID());
@@ -121,11 +121,11 @@ public class JpaPlacementRepository extends JpaRepository implements PlacementRe
 	/**
 	 * Convert Collection domain to Collection entity
 	 * 
-	 * @param placements Collection SptmtPlacement
-	 * @return Collection SptmtPlacement
+	 * @param placements Collection CcgmtPlacement
+	 * @return Collection CcgmtPlacement
 	 */
-	private Collection<SptmtPlacement> toEntity(Collection<Placement> placements) {
-		List<SptmtPlacement> entities = new ArrayList<SptmtPlacement>();
+	private Collection<CcgmtPlacement> toEntity(Collection<Placement> placements) {
+		List<CcgmtPlacement> entities = new ArrayList<CcgmtPlacement>();
 		for (Placement placement : placements) {
 			entities.add(toEntity(placement));
 		}

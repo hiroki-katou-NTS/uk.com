@@ -12,16 +12,16 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.ManagermentAtr;
-import nts.uk.ctx.at.shared.infra.entity.remainingnumber.specialholiday.interim.KrcdtInterimHdSpMng;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.specialholiday.interim.KrcmtInterimSpeHoliday;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.specialholiday.interim.KrcmtInterimSpeHolidayPK;
 @Stateless
 public class JpaInterimSpecialHolidayMngRepo extends JpaRepository implements InterimSpecialHolidayMngRepository{
 
-	private static final String DELETE_BY_ID = "DELETE FROM KrcdtInterimHdSpMng c"
+	private static final String DELETE_BY_ID = "DELETE FROM KrcmtInterimSpeHoliday c"
 			+ " WHERE c.pk.specialHolidayId = :specialHolidayId";
-	private static final String QUERY_BY_ID = "SELECT c FROM KrcdtInterimHdSpMng c"
+	private static final String QUERY_BY_ID = "SELECT c FROM KrcmtInterimSpeHoliday c"
 			+ " WHERE c.pk.specialHolidayId = :specialHolidayId";
-	private InterimSpecialHolidayMng toDomain(KrcdtInterimHdSpMng c) {
+	private InterimSpecialHolidayMng toDomain(KrcmtInterimSpeHoliday c) {
 		return new InterimSpecialHolidayMng(
 				c.pk.specialHolidayId,
 				c.pk.specialHolidayCode, 
@@ -32,10 +32,10 @@ public class JpaInterimSpecialHolidayMngRepo extends JpaRepository implements In
 	@Override
 	public void persistAndUpdateInterimSpecialHoliday(InterimSpecialHolidayMng domain) {
 		KrcmtInterimSpeHolidayPK key = new KrcmtInterimSpeHolidayPK(domain.getSpecialHolidayId(), domain.getSpecialHolidayCode());
-		KrcdtInterimHdSpMng entity = this.getEntityManager().find(KrcdtInterimHdSpMng.class, key);
+		KrcmtInterimSpeHoliday entity = this.getEntityManager().find(KrcmtInterimSpeHoliday.class, key);
 		
 		if(entity == null) {
-			entity = new KrcdtInterimHdSpMng();
+			entity = new KrcmtInterimSpeHoliday();
 			entity.mngAtr = domain.getMngAtr().value;
 			entity.useDays = domain.getUseDays().isPresent() ? domain.getUseDays().get().v() : 0;
 			entity.useTimes = domain.getUseTimes().isPresent() ? domain.getUseTimes().get().v() : 0;
@@ -57,7 +57,7 @@ public class JpaInterimSpecialHolidayMngRepo extends JpaRepository implements In
 	}
 	@Override
 	public List<InterimSpecialHolidayMng> findById(String mngId) {
-		return this.queryProxy().query(QUERY_BY_ID, KrcdtInterimHdSpMng.class)
+		return this.queryProxy().query(QUERY_BY_ID, KrcmtInterimSpeHoliday.class)
 				.setParameter("specialHolidayId", mngId)
 				.getList(c -> toDomain(c));
 	}

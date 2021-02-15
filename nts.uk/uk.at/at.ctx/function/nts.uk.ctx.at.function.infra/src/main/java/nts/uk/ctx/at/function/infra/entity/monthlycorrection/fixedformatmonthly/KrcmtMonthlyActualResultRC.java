@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KFNMT_MON_FORM_BUS_SHEET")
+@Table(name = "KRCMT_BUS_MON_FORM_SHEET")
 public class KrcmtMonthlyActualResultRC extends UkJpaEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
@@ -42,7 +42,7 @@ public class KrcmtMonthlyActualResultRC extends UkJpaEntity implements Serializa
 	public KrcmtMonthlyRecordWorkType monthlyactualresult;
 
 	@OneToMany(mappedBy="monthlyacresult", cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinTable(name = "KFNMT_MON_FORM_BUS_ITEM")
+	@JoinTable(name = "KRCMT_BUS_MON_FORM_ITEM")
 	public List<KrcmtDisplayTimeItemRC> listKrcmtDisplayTimeItemRC;
 	
 	

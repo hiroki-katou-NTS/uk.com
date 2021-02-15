@@ -14,7 +14,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.infra.entity.workrecord.closurestatus.KrcdtClosureSts;
+import nts.uk.ctx.at.record.infra.entity.workrecord.closurestatus.KrcdtClosureSttMng;
 import nts.uk.ctx.at.record.infra.entity.workrecord.closurestatus.KrcdtClosureSttMngPk;
 import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagementRepository;
@@ -32,15 +32,15 @@ public class JpaClosureStatusManagementRepository extends JpaRepository implemen
 
 	@Override
 	public void add(ClosureStatusManagement domain) {
-		this.commandProxy().insert(KrcdtClosureSts.fromDomain(domain));
+		this.commandProxy().insert(KrcdtClosureSttMng.fromDomain(domain));
 	}
 
 	@Override
 	public Optional<ClosureStatusManagement> getById(String employeeId, YearMonth ym, int closureId,
 			ClosureDate closureDate) {
-		Optional<KrcdtClosureSts> opt = this.queryProxy().find(new KrcdtClosureSttMngPk(ym.v(), employeeId,
+		Optional<KrcdtClosureSttMng> opt = this.queryProxy().find(new KrcdtClosureSttMngPk(ym.v(), employeeId,
 				closureId, closureDate.getClosureDay().v(), closureDate.getLastDayOfMonth() ? 1 : 0),
-				KrcdtClosureSts.class);
+				KrcdtClosureSttMng.class);
 		if (opt.isPresent())
 			return Optional.of(opt.get().toDomain());
 		return Optional.empty();
@@ -48,8 +48,8 @@ public class JpaClosureStatusManagementRepository extends JpaRepository implemen
 
 	@Override
 	public Optional<ClosureStatusManagement> getLatestByEmpId(String employeeId) {
-		String sql = "SELECT a FROM KrcdtClosureSts a WHERE a.pk.employeeId = :employeeId ORDER BY a.end DESC";
-		List<KrcdtClosureSts> lstEntity = this.queryProxy().query(sql, KrcdtClosureSts.class)
+		String sql = "SELECT a FROM KrcdtClosureSttMng a WHERE a.pk.employeeId = :employeeId ORDER BY a.end DESC";
+		List<KrcdtClosureSttMng> lstEntity = this.queryProxy().query(sql, KrcdtClosureSttMng.class)
 				.setParameter("employeeId", employeeId).getList();
 		if (lstEntity.isEmpty())
 			return Optional.empty();
@@ -59,12 +59,12 @@ public class JpaClosureStatusManagementRepository extends JpaRepository implemen
 	@Override
 	public List<ClosureStatusManagement> getByIdListAndDatePeriod(List<String> employeeIds, DatePeriod span){
 		
-		List<KrcdtClosureSts> result = new ArrayList<>();
-		StringBuilder query = new StringBuilder("SELECT a FROM KrcdtClosureSts a ");
+		List<KrcdtClosureSttMng> result = new ArrayList<>();
+		StringBuilder query = new StringBuilder("SELECT a FROM KrcdtClosureSttMng a ");
 		query.append("WHERE a.pk.employeeId IN :employeeId ");
 		query.append("AND a.start <= :endDate ");
 		query.append("AND a.end >= :startDate ");
-		TypedQueryWrapper<KrcdtClosureSts> tQuery=  this.queryProxy().query(query.toString(), KrcdtClosureSts.class);
+		TypedQueryWrapper<KrcdtClosureSttMng> tQuery=  this.queryProxy().query(query.toString(), KrcdtClosureSttMng.class);
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds -> {
 			result.addAll(tQuery
 					.setParameter("employeeId", empIds)
@@ -75,18 +75,18 @@ public class JpaClosureStatusManagementRepository extends JpaRepository implemen
 		return toDomainFromJoin(result);
 	}
 
-	private List<ClosureStatusManagement> toDomainFromJoin(List<KrcdtClosureSts> result) {
+	private List<ClosureStatusManagement> toDomainFromJoin(List<KrcdtClosureSttMng> result) {
 		return result.stream().map(tc -> tc.toDomain()).collect(Collectors.toList());		
 	}
 
 	@Override
 	public Map<String, ClosureStatusManagement> getLatestBySids(List<String> sids) {
 		Map<String, ClosureStatusManagement> result = new HashMap<>();
-		StringBuilder query = new StringBuilder("SELECT a FROM KrcdtClosureSts a ");
+		StringBuilder query = new StringBuilder("SELECT a FROM KrcdtClosureSttMng a ");
 		query.append("WHERE a.pk.employeeId IN :employeeId ");
-		TypedQueryWrapper<KrcdtClosureSts> tQuery=  this.queryProxy().query(query.toString(), KrcdtClosureSts.class);
+		TypedQueryWrapper<KrcdtClosureSttMng> tQuery=  this.queryProxy().query(query.toString(), KrcdtClosureSttMng.class);
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			List<KrcdtClosureSts> closureEntityLst = tQuery
+			List<KrcdtClosureSttMng> closureEntityLst = tQuery
 					.setParameter("employeeId", sids)
 					.getList();
 			Map<String,List<ClosureStatusManagement>>  closureStatus = toDomainFromJoin(closureEntityLst).stream().collect(Collectors.groupingBy(c -> c.getEmployeeId()));

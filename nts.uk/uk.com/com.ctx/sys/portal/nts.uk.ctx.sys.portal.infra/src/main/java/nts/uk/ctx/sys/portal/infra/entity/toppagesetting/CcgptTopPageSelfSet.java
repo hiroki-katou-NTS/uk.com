@@ -18,7 +18,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Getter
 @Setter
-@Table(name = "SPTMT_TOPPAGE_SELF")
+@Table(name = "CCGPT_TOPPAGE_SELF_SET")
 public class CcgptTopPageSelfSet extends UkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 

@@ -34,7 +34,7 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
-@Table(name = "KFNDT_AUTOEXEC_LOG")
+@Table(name = "KFNMT_PROC_EXEC_LOG")
 @AllArgsConstructor
 @NoArgsConstructor
 public class KfnmtProcessExecutionLog extends UkJpaEntity implements Serializable {
@@ -89,7 +89,7 @@ public class KfnmtProcessExecutionLog extends UkJpaEntity implements Serializabl
 	public GeneralDate reflectApprovalResultEnd;
 
 	@OneToMany(mappedBy = "procExecLogItem", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-	@JoinTable(name = "KFNDT_AUTOEXEC_TASK_LOG")
+	@JoinTable(name = "KFNMT_EXEC_TASK_LOG")
 	public List<KfnmtExecutionTaskLog> taskLogList;
 
 	@Override

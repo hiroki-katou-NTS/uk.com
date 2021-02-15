@@ -5,7 +5,7 @@
 package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTimeGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFiWekTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHaFixRest;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHaFixRestPK;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -15,14 +15,14 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class JpaFlexOffdayDeductionTimeGetMemento implements DeductionTimeGetMemento{
 	
 	/** The entity. */
-	private KshmtWtFleBrFiWekTs entity;
+	private KshmtFlexHaFixRest entity;
 	
 	/**
 	 * Instantiates a new jpa flex offday deduction time get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlexOffdayDeductionTimeGetMemento(KshmtWtFleBrFiWekTs entity) {
+	public JpaFlexOffdayDeductionTimeGetMemento(KshmtFlexHaFixRest entity) {
 		super();
 		if(entity.getKshmtFlexHaFixRestPK() == null){
 			entity.setKshmtFlexHaFixRestPK(new KshmtFlexHaFixRestPK());

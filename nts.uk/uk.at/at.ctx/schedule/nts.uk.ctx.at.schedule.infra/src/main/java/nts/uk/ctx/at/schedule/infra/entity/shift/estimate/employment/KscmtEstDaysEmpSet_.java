@@ -10,25 +10,25 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class KscmtEstDaysEmpSet_.
  */
-@StaticMetamodel(KscmtEstDaysEmp.class)
+@StaticMetamodel(KscmtEstDaysEmpSet.class)
 public class KscmtEstDaysEmpSet_ {
 
 	/** The kscmt est days emp set PK. */
-	public static volatile SingularAttribute<KscmtEstDaysEmp, KscmtEstDaysEmpSetPK> kscmtEstDaysEmpSetPK;
+	public static volatile SingularAttribute<KscmtEstDaysEmpSet, KscmtEstDaysEmpSetPK> kscmtEstDaysEmpSetPK;
 	
 	/** The est condition 1 st days. */
-	public static volatile SingularAttribute<KscmtEstDaysEmp, Integer> estCondition1stDays;
+	public static volatile SingularAttribute<KscmtEstDaysEmpSet, Integer> estCondition1stDays;
 	
 	/** The est condition 2 nd days. */
-	public static volatile SingularAttribute<KscmtEstDaysEmp, Integer> estCondition2ndDays;
+	public static volatile SingularAttribute<KscmtEstDaysEmpSet, Integer> estCondition2ndDays;
 	
 	/** The est condition 3 rd days. */
-	public static volatile SingularAttribute<KscmtEstDaysEmp, Integer> estCondition3rdDays;
+	public static volatile SingularAttribute<KscmtEstDaysEmpSet, Integer> estCondition3rdDays;
 	
 	/** The est condition 4 th days. */
-	public static volatile SingularAttribute<KscmtEstDaysEmp, Integer> estCondition4thDays;
+	public static volatile SingularAttribute<KscmtEstDaysEmpSet, Integer> estCondition4thDays;
 	
 	/** The est condition 5 th days. */
-	public static volatile SingularAttribute<KscmtEstDaysEmp, Integer> estCondition5thDays;
+	public static volatile SingularAttribute<KscmtEstDaysEmpSet, Integer> estCondition5thDays;
 	
 }

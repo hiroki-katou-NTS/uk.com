@@ -17,7 +17,7 @@ import nts.uk.ctx.sys.env.dom.mailserver.Server;
 import nts.uk.ctx.sys.env.dom.mailserver.SmtpInfo;
 import nts.uk.ctx.sys.env.dom.mailserver.UseAuthentication;
 import nts.uk.ctx.sys.env.dom.mailserver.UseServer;
-import nts.uk.ctx.sys.env.infra.entity.mailserver.SevmtMailServer;
+import nts.uk.ctx.sys.env.infra.entity.mailserver.SevstMailServer;
 
 /**
  * The Class JpaMailServerGetMemento.
@@ -30,14 +30,14 @@ public class JpaMailServerGetMemento implements MailServerGetMemento {
 	 * @param sevstMailServer the new sevst mail server
 	 */
 	@Setter
-	private SevmtMailServer sevstMailServer;
+	private SevstMailServer sevstMailServer;
 	
 	/**
 	 * Instantiates a new jpa mail server get memento.
 	 *
 	 * @param sevstMailServer the sevst mail server
 	 */
-	public JpaMailServerGetMemento(SevmtMailServer sevstMailServer) {
+	public JpaMailServerGetMemento(SevstMailServer sevstMailServer) {
 		this.sevstMailServer = sevstMailServer;
 	}
 	

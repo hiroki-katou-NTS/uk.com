@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.Break
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.BreakdownItemNo;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.language.OutsideOTBRDItemLangSetMemento;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.language.LanguageId;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.language.KshmtOutsideDetailLang;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.language.KshstOutsideOtBrdLang;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.language.KshstOutsideOtBrdLangPK;
 
 /**
@@ -18,14 +18,14 @@ import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.language.KshstOutsi
 public class JpaOutsideOTBRDItemLangSetMemento implements OutsideOTBRDItemLangSetMemento {
 	
 	/** The entity. */
-	private KshmtOutsideDetailLang entity;
+	private KshstOutsideOtBrdLang entity;
 	
 	/**
 	 * Instantiates a new jpa overtime lang BRD item set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaOutsideOTBRDItemLangSetMemento(KshmtOutsideDetailLang entity) {
+	public JpaOutsideOTBRDItemLangSetMemento(KshstOutsideOtBrdLang entity) {
 		if(entity.getKshstOutsideOtBrdLangPK() == null){
 			entity.setKshstOutsideOtBrdLangPK(new KshstOutsideOtBrdLangPK());
 		}

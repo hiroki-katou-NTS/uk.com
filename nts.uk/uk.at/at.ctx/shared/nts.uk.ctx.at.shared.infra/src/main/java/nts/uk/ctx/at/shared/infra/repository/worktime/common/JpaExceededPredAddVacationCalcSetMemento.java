@@ -7,8 +7,8 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 import nts.uk.ctx.at.shared.dom.worktime.common.CalcMethodExceededPredAddVacation;
 import nts.uk.ctx.at.shared.dom.worktime.common.OTFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.ExceededPredAddVacationCalcSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDif;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFix;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDiffTimeWorkSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSet;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -40,14 +40,14 @@ public class JpaExceededPredAddVacationCalcSetMemento<T extends UkJpaEntity>
 	 */
 	@Override
 	public void setCalcMethod(CalcMethodExceededPredAddVacation calcMethod) {
-		if (this.entity instanceof KshmtWtFix) {
+		if (this.entity instanceof KshmtFixedWorkSet) {
 			if (calcMethod != null) {
-				((KshmtWtFix) this.entity).setExceededPredCalcMethod(calcMethod.value);
+				((KshmtFixedWorkSet) this.entity).setExceededPredCalcMethod(calcMethod.value);
 			}
 		}
-		if (this.entity instanceof KshmtWtDif) {
+		if (this.entity instanceof KshmtDiffTimeWorkSet) {
 			if (calcMethod != null) {
-				((KshmtWtDif) this.entity).setExceededPredCalcMethod(calcMethod.value);
+				((KshmtDiffTimeWorkSet) this.entity).setExceededPredCalcMethod(calcMethod.value);
 			}
 		}
 	}
@@ -61,14 +61,14 @@ public class JpaExceededPredAddVacationCalcSetMemento<T extends UkJpaEntity>
 	 */
 	@Override
 	public void setOtFrameNo(OTFrameNo otFrameNo) {
-		if (this.entity instanceof KshmtWtFix) {
+		if (this.entity instanceof KshmtFixedWorkSet) {
 			if (otFrameNo != null) {
-				((KshmtWtFix) this.entity).setExceededPredOtFrameNo(otFrameNo.v());
+				((KshmtFixedWorkSet) this.entity).setExceededPredOtFrameNo(otFrameNo.v());
 			}
 		}
-		if (this.entity instanceof KshmtWtDif) {
+		if (this.entity instanceof KshmtDiffTimeWorkSet) {
 			if (otFrameNo != null) {
-				((KshmtWtDif) this.entity).setExceededPredOtFrameNo(otFrameNo.v());
+				((KshmtDiffTimeWorkSet) this.entity).setExceededPredOtFrameNo(otFrameNo.v());
 			}
 		}
 	}

@@ -5,20 +5,20 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
 @Generated(value = "EclipseLink-2.5.2.v20140319-rNA", date = "2017-12-23T17:54:14")
-@StaticMetamodel(KshmtWtFixHolTs.class)
+@StaticMetamodel(KshmtFixedHolTimeSet.class)
 public class KshmtFixedHolTimeSet_ {
 
-	public static volatile SingularAttribute<KshmtWtFixHolTs, Integer> timeEnd;
-	public static volatile SingularAttribute<KshmtWtFixHolTs, Integer> unit;
-	public static volatile SingularAttribute<KshmtWtFixHolTs, KshmtFixedHolTimeSetPK> kshmtFixedHolTimeSetPK;
-	public static volatile SingularAttribute<KshmtWtFixHolTs, Integer> rounding;
-	public static volatile SingularAttribute<KshmtWtFixHolTs, Integer> holTime;
-	public static volatile SingularAttribute<KshmtWtFixHolTs, Integer> timeStr;
-	public static volatile SingularAttribute<KshmtWtFixHolTs, Integer> pubHolTime;
-	public static volatile SingularAttribute<KshmtWtFixHolTs, Integer> outHolFrameNo;
-	public static volatile SingularAttribute<KshmtWtFixHolTs, Integer> exclusVer;
-	public static volatile SingularAttribute<KshmtWtFixHolTs, Integer> holFrameNo;
-	public static volatile SingularAttribute<KshmtWtFixHolTs, Integer> outHolTime;
-	public static volatile SingularAttribute<KshmtWtFixHolTs, Integer> pubHolFrameNo;
+	public static volatile SingularAttribute<KshmtFixedHolTimeSet, Integer> timeEnd;
+	public static volatile SingularAttribute<KshmtFixedHolTimeSet, Integer> unit;
+	public static volatile SingularAttribute<KshmtFixedHolTimeSet, KshmtFixedHolTimeSetPK> kshmtFixedHolTimeSetPK;
+	public static volatile SingularAttribute<KshmtFixedHolTimeSet, Integer> rounding;
+	public static volatile SingularAttribute<KshmtFixedHolTimeSet, Integer> holTime;
+	public static volatile SingularAttribute<KshmtFixedHolTimeSet, Integer> timeStr;
+	public static volatile SingularAttribute<KshmtFixedHolTimeSet, Integer> pubHolTime;
+	public static volatile SingularAttribute<KshmtFixedHolTimeSet, Integer> outHolFrameNo;
+	public static volatile SingularAttribute<KshmtFixedHolTimeSet, Integer> exclusVer;
+	public static volatile SingularAttribute<KshmtFixedHolTimeSet, Integer> holFrameNo;
+	public static volatile SingularAttribute<KshmtFixedHolTimeSet, Integer> outHolTime;
+	public static volatile SingularAttribute<KshmtFixedHolTimeSet, Integer> pubHolFrameNo;
 
 }

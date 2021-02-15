@@ -11,7 +11,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.SettlementOrder;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOTTimezoneGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowTimeSetting;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloOverTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtOtTimeZone;
 
 /**
  * The Class JpaFlowOTTimezoneGetMemento.
@@ -19,14 +19,14 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloOverTs;
 public class JpaFlowOTTimezoneGetMemento implements FlowOTTimezoneGetMemento {
 
 	/** The entity. */
-	private KshmtWtFloOverTs entity; 
+	private KshmtOtTimeZone entity; 
 	
 	/**
 	 * Instantiates a new jpa flow OT timezone get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlowOTTimezoneGetMemento(KshmtWtFloOverTs entity) {
+	public JpaFlowOTTimezoneGetMemento(KshmtOtTimeZone entity) {
 		super();
 		this.entity = entity;
 	}

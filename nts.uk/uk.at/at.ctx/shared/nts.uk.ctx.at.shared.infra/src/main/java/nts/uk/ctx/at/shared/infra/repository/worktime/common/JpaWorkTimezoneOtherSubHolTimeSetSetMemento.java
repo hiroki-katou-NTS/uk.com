@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.CompensatoryOccurrenceDivision;
 import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSetSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComHdcom;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtSubstitutionSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtSubstitutionSetPK;
 
 /**
@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtSubstitutionSetPK;
 public class JpaWorkTimezoneOtherSubHolTimeSetSetMemento implements WorkTimezoneOtherSubHolTimeSetSetMemento {
 
 	/** The entity. */
-	private KshmtWtComHdcom entity;
+	private KshmtSubstitutionSet entity;
 
 	/**
 	 * Instantiates a new jpa work timezone other sub hol time set set memento.
@@ -25,7 +25,7 @@ public class JpaWorkTimezoneOtherSubHolTimeSetSetMemento implements WorkTimezone
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaWorkTimezoneOtherSubHolTimeSetSetMemento(KshmtWtComHdcom entity) {
+	public JpaWorkTimezoneOtherSubHolTimeSetSetMemento(KshmtSubstitutionSet entity) {
 		super();
 		this.entity = entity;
 		if (this.entity.getKshmtSubstitutionSetPK() == null) {

@@ -220,7 +220,7 @@ public class JpaOvertimeRepository_Old extends JpaRepository implements Overtime
 					+ "detail.EXCEPTION_LIMIT_ERROR_TIME, detail.ACTUAL_TIME_YEAR, detail.LIMIT_TIME_YEAR, detail.REG_APPLICATION_TIME, detail.REG_ACTUAL_TIME, detail.REG_LIMIT_TIME, detail.REG_LIMIT_TIME_MULTI, "
 					+ "om.OVER_MONTH, " + "detm.START_YM, detm.END_YM, detm.AVE_TIME, detm.TOTAL_TIME "
 					+ "FROM KRQDT_APP_OVERTIME ot "
-					+ "LEFT JOIN KRQDT_APP_OVERTIME_INPUT input ON ot.CID = input.CID and ot.APP_ID = input.APP_ID "
+					+ "LEFT JOIN KRQDT_OVERTIME_INPUT input ON ot.CID = input.CID and ot.APP_ID = input.APP_ID "
 					+ "LEFT JOIN KRQDT_APP_OVERTIME_DETAIL detail ON ot.CID = detail.CID and ot.APP_ID = detail.APP_ID "
 					+ "LEFT JOIN KRQDT_YEAR36_OVER_MONTH om ON ot.CID = om.CID and ot.APP_ID = om.APP_ID "
 					+ "LEFT JOIN KRQDT_APP_OVERTIME_DET_M detm ON ot.CID = detm.CID and ot.APP_ID = detm.APP_ID "
@@ -272,10 +272,10 @@ public class JpaOvertimeRepository_Old extends JpaRepository implements Overtime
 
 			// get krqdtAppOvertime
 			KrqdtAppOvertime_Old krqdtAppOvertime = optKrqdtAppOvertime.get();
-			// get list KrqdtAppOvertimeInput
+			// get list KrqdtOvertimeInput
 			List<KrqdtOvertimeInput_Old> lstKrqdtOvertimeInputFilter = lstKrqdtOvertimeInput.stream()
 					.filter(x -> x.getKrqdtOvertimeInputPK().getAppId().equals(appId)).collect(Collectors.toList());
-			// set KrqdtAppOvertimeInput for krqdtAppOvertime
+			// set KrqdtOvertimeInput for krqdtAppOvertime
 			krqdtAppOvertime.setOvertimeInputs(lstKrqdtOvertimeInputFilter);
 			// get KrqdtAppOvertimeDetail
 			Optional<KrqdtAppOvertimeDetail_Old> optKrqdtAppOvertimeDetail = lstkrqdtAppOvertimeDetail.stream()

@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.OTFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.SettlementOrder;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeOTTimezoneGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDifOverTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDtOtTimeSet;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -17,9 +17,9 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 public class JpaDiffTimeOTTimezoneGetMemento implements DiffTimeOTTimezoneGetMemento {
 
-	private KshmtWtDifOverTs entity;
+	private KshmtDtOtTimeSet entity;
 
-	public JpaDiffTimeOTTimezoneGetMemento(KshmtWtDifOverTs item) {
+	public JpaDiffTimeOTTimezoneGetMemento(KshmtDtOtTimeSet item) {
 		this.entity = item;
 	}
 

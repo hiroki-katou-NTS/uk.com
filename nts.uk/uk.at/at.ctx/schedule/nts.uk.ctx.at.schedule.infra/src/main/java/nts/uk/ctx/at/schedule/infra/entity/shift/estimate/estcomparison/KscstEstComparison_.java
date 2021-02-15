@@ -10,12 +10,12 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class KscstEstComparison_.
  */
-@StaticMetamodel(KscmtEstComparison.class)
+@StaticMetamodel(KscstEstComparison.class)
 public class KscstEstComparison_ {
 
 	/** The cid. */
-	public static volatile SingularAttribute<KscmtEstComparison, String> cid;
+	public static volatile SingularAttribute<KscstEstComparison, String> cid;
 	
 	/** The comparison atr. */
-	public static volatile SingularAttribute<KscmtEstComparison, Integer> comparisonAtr;
+	public static volatile SingularAttribute<KscstEstComparison, Integer> comparisonAtr;
 }

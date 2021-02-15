@@ -21,10 +21,10 @@ import nts.uk.ctx.at.shared.dom.workingcondition.PersonalWorkCategory;
 import nts.uk.ctx.at.shared.dom.workingcondition.ScheduleMethod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemSetMemento;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondCtg;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondWeek;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondScheMeth;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondHistItem;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPerWorkCat;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPersonalDayOfWeek;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtScheduleMethod;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCondItem;
 
 /**
  * The Class JpaWorkingConditionItemSetMemento.
@@ -32,7 +32,7 @@ import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondHistItem;
 public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSetMemento {
 
 	/** The entity. */
-	private KshmtWorkcondHistItem entity;
+	private KshmtWorkingCondItem entity;
 
 	/**
 	 * Instantiates a new jpa working condition item set memento.
@@ -40,7 +40,7 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaWorkingConditionItemSetMemento(KshmtWorkcondHistItem entity) {
+	public JpaWorkingConditionItemSetMemento(KshmtWorkingCondItem entity) {
 		this.entity = entity;
 	}
 
@@ -110,7 +110,7 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	@Override
 	public void setWorkCategory(PersonalWorkCategory workCategory, String employeeId) {
 		if (workCategory != null) {
-			List<KshmtWorkcondCtg> kshmtPerWorkCats = new ArrayList<>();
+			List<KshmtPerWorkCat> kshmtPerWorkCats = new ArrayList<>();
 			if (this.entity.getKshmtPerWorkCats() != null) {
 				kshmtPerWorkCats = this.entity.getKshmtPerWorkCats();
 			}
@@ -170,7 +170,7 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 	@Override
 	public void setWorkDayOfWeek(PersonalDayOfWeek workDayOfWeek, String employeeId) {
 		if (workDayOfWeek != null) {
-			List<KshmtWorkcondWeek> kshmtPersonalDayOfWeeks = new ArrayList<>();
+			List<KshmtPersonalDayOfWeek> kshmtPersonalDayOfWeeks = new ArrayList<>();
 			if (this.entity.getKshmtPersonalDayOfWeeks() != null) {
 				kshmtPersonalDayOfWeeks = this.entity.getKshmtPersonalDayOfWeeks();
 			}
@@ -223,10 +223,10 @@ public class JpaWorkingConditionItemSetMemento implements WorkingConditionItemSe
 			return;
 		}
 
-		KshmtWorkcondScheMeth kshmtScheduleMethod = this.entity.getKshmtScheduleMethod();
+		KshmtScheduleMethod kshmtScheduleMethod = this.entity.getKshmtScheduleMethod();
 
 		if (kshmtScheduleMethod == null) {
-			kshmtScheduleMethod = new KshmtWorkcondScheMeth();
+			kshmtScheduleMethod = new KshmtScheduleMethod();
 		}
 
 		kshmtScheduleMethod.setSid(employeeId);

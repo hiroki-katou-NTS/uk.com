@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.RestClockManageAtr;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestClockCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSetSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloBrFlAll;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowRestSet;
 
 /**
  * The Class JpaFlowRestSetSetMemento.
@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloBrFlAll;
 public class JpaFlowRestSetSetMemento implements FlowRestSetSetMemento {
 
 	/** The entity. */
-	KshmtWtFloBrFlAll entity;
+	KshmtFlowRestSet entity;
 
 	/**
 	 * Instantiates a new jpa flow rest set set memento.
@@ -25,7 +25,7 @@ public class JpaFlowRestSetSetMemento implements FlowRestSetSetMemento {
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaFlowRestSetSetMemento(KshmtWtFloBrFlAll entity) {
+	public JpaFlowRestSetSetMemento(KshmtFlowRestSet entity) {
 		super();
 		this.entity = entity;
 	}

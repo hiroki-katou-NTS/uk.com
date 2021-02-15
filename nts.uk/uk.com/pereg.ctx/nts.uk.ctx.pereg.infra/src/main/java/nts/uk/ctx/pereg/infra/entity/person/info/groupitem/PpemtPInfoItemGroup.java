@@ -18,7 +18,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "PPEMT_GROUP_ITEM")
+@Table(name = "PPEMT_PINFO_ITEM_GROUP")
 public class PpemtPInfoItemGroup extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

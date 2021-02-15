@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSHMT_WT_COM_WKP")
+@Table(name = "KSHMT_WORKTIME_WORKPLACE")
 public class KshmtWorkTimeWorkplace extends UkJpaEntity {
 
     @EmbeddedId

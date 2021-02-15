@@ -18,7 +18,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KFNMT_DAY_FORM_DEFAULT")
+@Table(name = "KFNMT_DAI_PERFORMANCE_DIS")
 public class KfnmtDailyPerformanceDisplay extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

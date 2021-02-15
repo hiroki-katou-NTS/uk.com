@@ -6,10 +6,10 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
 @Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2018-03-27T23:12:35")
-@StaticMetamodel(KrcmtDvgcUnitSet.class)
+@StaticMetamodel(KrcstDrtUseUnit.class)
 public class KrcstDrtUseUnit_ { 
 
-    public static volatile SingularAttribute<KrcmtDvgcUnitSet, BigDecimal> worktypeUseSet;
-    public static volatile SingularAttribute<KrcmtDvgcUnitSet, String> cid;
+    public static volatile SingularAttribute<KrcstDrtUseUnit, BigDecimal> worktypeUseSet;
+    public static volatile SingularAttribute<KrcstDrtUseUnit, String> cid;
 
 }

@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KFNMT_DAY_FORM_BUS_MON")
+@Table(name = "KRCMT_BUS_MONTHLY_ITEM")
 public class KrcmtBusinessTypeMonthly extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

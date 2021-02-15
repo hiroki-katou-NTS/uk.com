@@ -12,25 +12,25 @@ import nts.arc.time.GeneralDate;
 /**
  * The Class BsymtAffClassHistory_.
  */
-@StaticMetamodel(BsymtAffClassHist.class)
+@StaticMetamodel(BsymtAffClassHistory.class)
 public class BsymtAffClassHistory_ {
 
 	/** The history id. */
-	public static volatile SingularAttribute<BsymtAffClassHist, String> historyId;
+	public static volatile SingularAttribute<BsymtAffClassHistory, String> historyId;
 
 	/** The cid. */
-	public static volatile SingularAttribute<BsymtAffClassHist, String> cid;
+	public static volatile SingularAttribute<BsymtAffClassHistory, String> cid;
 
 	/** The sid. */
-	public static volatile SingularAttribute<BsymtAffClassHist, String> sid;
+	public static volatile SingularAttribute<BsymtAffClassHistory, String> sid;
 
 	/** The start date. */
-	public static volatile SingularAttribute<BsymtAffClassHist, GeneralDate> startDate;
+	public static volatile SingularAttribute<BsymtAffClassHistory, GeneralDate> startDate;
 
 	/** The end date. */
-	public static volatile SingularAttribute<BsymtAffClassHist, GeneralDate> endDate;
+	public static volatile SingularAttribute<BsymtAffClassHistory, GeneralDate> endDate;
 	
 	/** The bsymt aff class hist item. */
-	public static volatile SingularAttribute<BsymtAffClassHist,  BsymtAffClassHistItem> bsymtAffClassHistItem;
+	public static volatile SingularAttribute<BsymtAffClassHistory,  BsymtAffClassHistItem> bsymtAffClassHistItem;
 
 }

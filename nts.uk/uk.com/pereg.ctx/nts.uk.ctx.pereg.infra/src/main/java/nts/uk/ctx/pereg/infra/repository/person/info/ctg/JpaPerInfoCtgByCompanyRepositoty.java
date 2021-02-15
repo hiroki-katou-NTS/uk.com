@@ -14,8 +14,8 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCtgByCompanyRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCtgOrder;
-import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtCtg;
-import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtCtgSort;
+import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtg;
+import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtgOrder;
 import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtgPK;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -24,21 +24,21 @@ public class JpaPerInfoCtgByCompanyRepositoty extends JpaRepository implements P
 
 	private final static String SELECT_CATEGORY_BY_COMPANY_ID_QUERY = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId, ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
 			+ " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr, co.canAbolition "
-			+ " FROM  PpemtCtg ca, PpemtCtgCommon co"
+			+ " FROM  PpemtPerInfoCtg ca, PpemtPerInfoCtgCm co"
 			+ " WHERE ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd"
 			+ " AND co.ppemtPerInfoCtgCmPK.contractCd = :contractCd"
 			+ " AND ca.ppemtPerInfoCtgPK.perInfoCtgId = :perInfoCtgId" + " AND ca.cid =:cid";
 
-	private final static String SELECT_REQUIRED_ITEMS_IDS = "SELECT DISTINCT i.ppemtPerInfoItemPK.perInfoItemDefId FROM PpemtCtg a"
-			+ " INNER JOIN PpemtItem i"
+	private final static String SELECT_REQUIRED_ITEMS_IDS = "SELECT DISTINCT i.ppemtPerInfoItemPK.perInfoItemDefId FROM PpemtPerInfoCtg a"
+			+ " INNER JOIN PpemtPerInfoItem i"
 			+ " ON a.ppemtPerInfoCtgPK.perInfoCtgId = i.perInfoCtgId "
-			+ " INNER JOIN PpemtItemCommon c ON i.itemCd = c.ppemtPerInfoItemCmPK.itemCd"
+			+ " INNER JOIN PpemtPerInfoItemCm c ON i.itemCd = c.ppemtPerInfoItemCmPK.itemCd"
 			+ " WHERE c.ppemtPerInfoItemCmPK.contractCd = :contractCd AND c.systemRequiredAtr = 1 "
 			+ " AND i.perInfoCtgId = :perInfoCtgId";
 
-	private final static String FIND_ALL_BY_COMPANY = String.join(" ", "SELECT po FROM PpemtCtg ca INNER JOIN PpemtCtgCommon co",
+	private final static String FIND_ALL_BY_COMPANY = String.join(" ", "SELECT po FROM PpemtPerInfoCtg ca INNER JOIN PpemtPerInfoCtgCm co",
 			"ON ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd",
-			"INNER JOIN PpemtCtgSort po",
+			"INNER JOIN PpemtPerInfoCtgOrder po",
 			"ON ca.cid = po.cid AND ca.ppemtPerInfoCtgPK.perInfoCtgId = po.ppemtPerInfoCtgPK.perInfoCtgId",
 			"WHERE co.ppemtPerInfoCtgCmPK.contractCd = :contractCd AND ca.cid = :cid",
 			"AND ((co.salaryUseAtr = 1 AND :salaryUseAtr = 1) OR (co.personnelUseAtr = 1 AND :personnelUseAtr = 1) OR (co.employmentUseAtr = 1 AND :employmentUseAtr = 1))",
@@ -46,26 +46,26 @@ public class JpaPerInfoCtgByCompanyRepositoty extends JpaRepository implements P
 			"ORDER BY po.disporder");
 
 	private final static String SELECT_CTG_NAME_BY_CTG_CD_QUERY = "SELECT c.categoryName"
-			+ " FROM PpemtCtg c WHERE c.cid = :cid AND c.categoryCd = :categoryCd";
+			+ " FROM PpemtPerInfoCtg c WHERE c.cid = :cid AND c.categoryCd = :categoryCd";
 	
 	private final static String SELECT_CHECK_CTG_NAME_QUERY = "SELECT c.categoryName"
-			+ " FROM PpemtCtg c WHERE c.cid = :companyId AND c.categoryName = :categoryName"
+			+ " FROM PpemtPerInfoCtg c WHERE c.cid = :companyId AND c.categoryName = :categoryName"
 			+ " AND c.ppemtPerInfoCtgPK.perInfoCtgId != :ctgId";
 	
 	private final static String SELECT_CTG_ORDER_BY_IDS = String.join(" ", 
 			"SELECT c.ppemtPerInfoCtgPK.perInfoCtgId, c.disporder",
-			"FROM PpemtCtgSort c",
+			"FROM PpemtPerInfoCtgOrder c",
 			"WHERE c.ppemtPerInfoCtgPK.perInfoCtgId IN :ctgIds",
 			"AND c.cid = :cid");
 
 	private final static String SELECT_ITEMS_ORDER_BY_IDS = String.join(" ", 
 			"SELECT i.ppemtPerInfoItemPK.perInfoItemDefId, i.disporder",
-			"FROM PpemtItemSort i",
+			"FROM PpemtPerInfoItemOrder i",
 			"WHERE i.perInfoCtgId IN :ctgIds",
 			"AND i.ppemtPerInfoItemPK.perInfoItemDefId IN :itIds");
 
-	private static PpemtCtg toEntity(PersonInfoCategory domain) {
-		PpemtCtg entity = new PpemtCtg();
+	private static PpemtPerInfoCtg toEntity(PersonInfoCategory domain) {
+		PpemtPerInfoCtg entity = new PpemtPerInfoCtg();
 		entity.ppemtPerInfoCtgPK = new PpemtPerInfoCtgPK(domain.getPersonInfoCategoryId());
 		entity.cid = AppContexts.user().companyId();
 		entity.categoryCd = domain.getCategoryCode().v();
@@ -75,8 +75,8 @@ public class JpaPerInfoCtgByCompanyRepositoty extends JpaRepository implements P
 
 	}
 
-	private static PpemtCtgSort toEntityCategoryOrder(PersonInfoCtgOrder domain) {
-		PpemtCtgSort entity = new PpemtCtgSort();
+	private static PpemtPerInfoCtgOrder toEntityCategoryOrder(PersonInfoCtgOrder domain) {
+		PpemtPerInfoCtgOrder entity = new PpemtPerInfoCtgOrder();
 		entity.ppemtPerInfoCtgPK = new PpemtPerInfoCtgPK(domain.getCategoryId());
 		entity.cid = domain.getCompanyId();
 		entity.disporder = domain.getDisorder();
@@ -164,7 +164,7 @@ public class JpaPerInfoCtgByCompanyRepositoty extends JpaRepository implements P
 	@Override
 	public List<PersonInfoCtgOrder> getOrderList(String companyId,String contractCd, int salaryUseAtr,
 			int personnelUseAtr, int employmentUseAtr) {
-		List<PpemtCtgSort> entities = this.queryProxy().query(FIND_ALL_BY_COMPANY, PpemtCtgSort.class)
+		List<PpemtPerInfoCtgOrder> entities = this.queryProxy().query(FIND_ALL_BY_COMPANY, PpemtPerInfoCtgOrder.class)
 				.setParameter("cid", companyId)
 				.setParameter("contractCd", contractCd)
 				.setParameter("salaryUseAtr", salaryUseAtr)

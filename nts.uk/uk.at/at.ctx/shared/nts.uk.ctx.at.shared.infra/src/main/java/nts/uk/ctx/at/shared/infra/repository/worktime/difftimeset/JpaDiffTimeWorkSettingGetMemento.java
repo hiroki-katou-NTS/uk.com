@@ -20,8 +20,8 @@ import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingGetMemen
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkStampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.EmTimezoneChangeExtent;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtCom;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDif;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDiffTimeWorkSet;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFixedWorkCalcSettingGetMemento;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFixedWorkRestSetGetMemento;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaWorkTimezoneCommonSetGetMemento;
@@ -32,7 +32,7 @@ import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaWorkTimezoneComm
 public class JpaDiffTimeWorkSettingGetMemento implements DiffTimeWorkSettingGetMemento {
 
 	/** The entity. */
-	private KshmtWtDif entity;
+	private KshmtDiffTimeWorkSet entity;
 
 	/**
 	 * Instantiates a new jpa diff time work setting get memento.
@@ -40,7 +40,7 @@ public class JpaDiffTimeWorkSettingGetMemento implements DiffTimeWorkSettingGetM
 	 * @param kshmtDiffTimeWorkSet
 	 *            the kshmt diff time work set
 	 */
-	public JpaDiffTimeWorkSettingGetMemento(KshmtWtDif kshmtDiffTimeWorkSet) {
+	public JpaDiffTimeWorkSettingGetMemento(KshmtDiffTimeWorkSet kshmtDiffTimeWorkSet) {
 		this.entity = kshmtDiffTimeWorkSet;
 
 	}
@@ -75,7 +75,7 @@ public class JpaDiffTimeWorkSettingGetMemento implements DiffTimeWorkSettingGetM
 	 */
 	@Override
 	public FixedWorkRestSet getRestSet() {
-		return new FixedWorkRestSet(new JpaFixedWorkRestSetGetMemento<KshmtWtDif>(this.entity));
+		return new FixedWorkRestSet(new JpaFixedWorkRestSetGetMemento<KshmtDiffTimeWorkSet>(this.entity));
 	}
 
 	/*
@@ -97,7 +97,7 @@ public class JpaDiffTimeWorkSettingGetMemento implements DiffTimeWorkSettingGetM
 	 */
 	@Override
 	public WorkTimezoneCommonSet getCommonSet() {
-		KshmtWtCom diffTimeCommonSet = this.entity.getKshmtWorktimeCommonSet();
+		KshmtWorktimeCommonSet diffTimeCommonSet = this.entity.getKshmtWorktimeCommonSet();
 		if (diffTimeCommonSet == null) {
 			return null;
 		}
@@ -172,7 +172,7 @@ public class JpaDiffTimeWorkSettingGetMemento implements DiffTimeWorkSettingGetM
 	 */
 	@Override
 	public Optional<FixedWorkCalcSetting> getCalculationSetting() {
-		return Optional.ofNullable(new FixedWorkCalcSetting(new JpaFixedWorkCalcSettingGetMemento<KshmtWtDif>(this.entity)));
+		return Optional.ofNullable(new FixedWorkCalcSetting(new JpaFixedWorkCalcSettingGetMemento<KshmtDiffTimeWorkSet>(this.entity)));
 	}
 
 }

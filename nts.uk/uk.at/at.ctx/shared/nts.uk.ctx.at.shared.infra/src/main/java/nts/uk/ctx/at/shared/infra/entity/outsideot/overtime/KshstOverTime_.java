@@ -10,22 +10,22 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class KshstOverTime_.
  */
-@StaticMetamodel(KshmtOutside.class)
+@StaticMetamodel(KshstOverTime.class)
 public class KshstOverTime_ {
 
 	/** The kshst over time PK. */
-	public static volatile SingularAttribute<KshmtOutside, KshstOverTimePK> kshstOverTimePK;
+	public static volatile SingularAttribute<KshstOverTime, KshstOverTimePK> kshstOverTimePK;
 	
 	/** The is 60 h super hd. */
-	public static volatile SingularAttribute<KshmtOutside, Integer> is60hSuperHd;
+	public static volatile SingularAttribute<KshstOverTime, Integer> is60hSuperHd;
 	
 	/** The use atr. */
-	public static volatile SingularAttribute<KshmtOutside, Integer> useAtr;
+	public static volatile SingularAttribute<KshstOverTime, Integer> useAtr;
 	
 	/** The name. */
-	public static volatile SingularAttribute<KshmtOutside, String> name;
+	public static volatile SingularAttribute<KshstOverTime, String> name;
 	
 	/** The over time. */
-	public static volatile SingularAttribute<KshmtOutside, Integer> overTime;
+	public static volatile SingularAttribute<KshstOverTime, Integer> overTime;
 
 }

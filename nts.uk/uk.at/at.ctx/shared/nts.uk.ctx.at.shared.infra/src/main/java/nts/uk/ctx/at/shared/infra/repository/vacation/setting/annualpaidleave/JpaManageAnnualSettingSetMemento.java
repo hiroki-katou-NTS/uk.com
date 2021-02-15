@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.HalfDayManage;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.ManageAnnualSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.RemainingNumberSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.YearLyOfNumberDays;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KshmtHdpaidSetMng;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KmamtMngAnnualSet;
 
 /**
  * The Class JpaManageAnnualSettingSetMemento.
@@ -16,14 +16,14 @@ import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KshmtH
 public class JpaManageAnnualSettingSetMemento implements ManageAnnualSettingSetMemento {
     
     /** The entity. */
-    private KshmtHdpaidSetMng entity;
+    private KmamtMngAnnualSet entity;
     
     /**
      * Instantiates a new jpa manage annual setting set memento.
      *
      * @param entity the entity
      */
-    public JpaManageAnnualSettingSetMemento(KshmtHdpaidSetMng entity) {
+    public JpaManageAnnualSettingSetMemento(KmamtMngAnnualSet entity) {
         this.entity = entity;
     }
     

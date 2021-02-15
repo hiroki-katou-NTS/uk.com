@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.worktimeset;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.DisplayMode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.WorkTimeDisplayModeGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWtComDispMode;
+import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWorktimeDispMode;
 
 /**
  * The Class JpaWorkTimeDisplayModeGetMemento.
@@ -15,7 +15,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWtComDispMode;
 public class JpaWorkTimeDisplayModeGetMemento implements WorkTimeDisplayModeGetMemento {
 
 	/** The entity. */
-	private KshmtWtComDispMode entity;
+	private KshmtWorktimeDispMode entity;
 
 	/**
 	 * Instantiates a new jpa work time display mode get memento.
@@ -23,7 +23,7 @@ public class JpaWorkTimeDisplayModeGetMemento implements WorkTimeDisplayModeGetM
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaWorkTimeDisplayModeGetMemento(KshmtWtComDispMode entity) {
+	public JpaWorkTimeDisplayModeGetMemento(KshmtWorktimeDispMode entity) {
 		this.entity = entity;
 	}
 

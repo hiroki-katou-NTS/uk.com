@@ -9,10 +9,10 @@ import java.util.stream.Collectors;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeOTTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimezoneSettingSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDif;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDifOverTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDiffTimeWorkSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDtOtTimeSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDtOtTimeSetPK;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDifWorkTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDtWorkTimeSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDtWorkTimeSetPK;
 
 /**
@@ -21,7 +21,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDtWorkTimeSet
 public class JpaDiffTimezoneSettingSetMemento implements DiffTimezoneSettingSetMemento {
 
 	/** The entity. */
-	private KshmtWtDif entity;
+	private KshmtDiffTimeWorkSet entity;
 
 	/** The type. */
 	private int type;
@@ -29,37 +29,37 @@ public class JpaDiffTimezoneSettingSetMemento implements DiffTimezoneSettingSetM
 	/** The period no. */
 	private int periodNo;
 
-	public JpaDiffTimezoneSettingSetMemento(KshmtWtDif entity, int type) {
+	public JpaDiffTimezoneSettingSetMemento(KshmtDiffTimeWorkSet entity, int type) {
 		this.entity = entity;
 		this.type = type;
 	}
 
 	@Override
 	public void setEmploymentTimezones(List<EmTimeZoneSet> employmentTimezones) {
-		// KSHMT_WT_DIF_WORK_TS
+		// KSHMT_DT_WORK_TIME_SET
 
 		if (this.entity.getLstKshmtDtWorkTimeSet() == null) {
 			this.entity.setLstKshmtDtWorkTimeSet(new ArrayList<>());
 		}
-		List<KshmtWtDifWorkTs> otherList = this.entity.getLstKshmtDtWorkTimeSet().stream()
+		List<KshmtDtWorkTimeSet> otherList = this.entity.getLstKshmtDtWorkTimeSet().stream()
 				.filter(entity -> entity.getKshmtDtWorkTimeSetPK().getAmPmAtr() != this.type)
 				.collect(Collectors.toList());
 
 		// get list old entity
-		Map<KshmtDtWorkTimeSetPK, KshmtWtDifWorkTs> lstOldEntity = this.entity.getLstKshmtDtWorkTimeSet().stream()
+		Map<KshmtDtWorkTimeSetPK, KshmtDtWorkTimeSet> lstOldEntity = this.entity.getLstKshmtDtWorkTimeSet().stream()
 				.filter(entity -> entity.getKshmtDtWorkTimeSetPK().getAmPmAtr() == this.type)
-				.collect(Collectors.toMap(KshmtWtDifWorkTs::getKshmtDtWorkTimeSetPK, Function.identity()));
+				.collect(Collectors.toMap(KshmtDtWorkTimeSet::getKshmtDtWorkTimeSetPK, Function.identity()));
 
-		List<KshmtWtDifWorkTs> newListEntity = new ArrayList<>();
+		List<KshmtDtWorkTimeSet> newListEntity = new ArrayList<>();
 
 		periodNo = 0;
 		employmentTimezones.stream().forEach(domain -> {
 			periodNo++;
 			KshmtDtWorkTimeSetPK pk = new KshmtDtWorkTimeSetPK(this.entity.getKshmtDiffTimeWorkSetPK().getCid(),
 					this.entity.getKshmtDiffTimeWorkSetPK().getWorktimeCd(), this.type, periodNo);
-			KshmtWtDifWorkTs entity = lstOldEntity.get(pk);
+			KshmtDtWorkTimeSet entity = lstOldEntity.get(pk);
 			if (entity == null) {
-				entity = new KshmtWtDifWorkTs();
+				entity = new KshmtDtWorkTimeSet();
 				entity.setKshmtDtWorkTimeSetPK(pk);
 			}
 			domain.saveToMemento(new JpaEmTimeZoneSetSetMemento(entity));
@@ -75,29 +75,29 @@ public class JpaDiffTimezoneSettingSetMemento implements DiffTimezoneSettingSetM
 
 	@Override
 	public void setOTTimezones(List<DiffTimeOTTimezoneSet> oTTimezones) {
-		// KSHMT_WT_DIF_OVER_TS
+		// KSHMT_DT_OT_TIME_SET
 		if (this.entity.getLstKshmtDtOtTimeSet() == null) {
 			this.entity.setLstKshmtDtOtTimeSet(new ArrayList<>());
 		}
-		List<KshmtWtDifOverTs> otherList = this.entity.getLstKshmtDtOtTimeSet().stream()
+		List<KshmtDtOtTimeSet> otherList = this.entity.getLstKshmtDtOtTimeSet().stream()
 				.filter(entity -> entity.getKshmtDtOtTimeSetPK().getAmPmAtr() != this.type)
 				.collect(Collectors.toList());
 
 		// get list old entity
-		Map<KshmtDtOtTimeSetPK, KshmtWtDifOverTs> lstOldEntity = this.entity.getLstKshmtDtOtTimeSet().stream()
+		Map<KshmtDtOtTimeSetPK, KshmtDtOtTimeSet> lstOldEntity = this.entity.getLstKshmtDtOtTimeSet().stream()
 				.filter(entity -> entity.getKshmtDtOtTimeSetPK().getAmPmAtr() == this.type)
-				.collect(Collectors.toMap(KshmtWtDifOverTs::getKshmtDtOtTimeSetPK, Function.identity()));
+				.collect(Collectors.toMap(KshmtDtOtTimeSet::getKshmtDtOtTimeSetPK, Function.identity()));
 
-		List<KshmtWtDifOverTs> newListEntity = new ArrayList<>();
+		List<KshmtDtOtTimeSet> newListEntity = new ArrayList<>();
 
 		periodNo = 0;
 		oTTimezones.forEach(domain -> {
 			periodNo++;
 			KshmtDtOtTimeSetPK pk = new KshmtDtOtTimeSetPK(this.entity.getKshmtDiffTimeWorkSetPK().getCid(),
 					this.entity.getKshmtDiffTimeWorkSetPK().getWorktimeCd(), this.type, periodNo);
-			KshmtWtDifOverTs entity = lstOldEntity.get(pk);
+			KshmtDtOtTimeSet entity = lstOldEntity.get(pk);
 			if (entity == null) {
-				entity = new KshmtWtDifOverTs();
+				entity = new KshmtDtOtTimeSet();
 				entity.setKshmtDtOtTimeSetPK(pk);
 			}
 			domain.saveToMemento(new JpaDiffTimeOTTimezoneSetMemento(entity));

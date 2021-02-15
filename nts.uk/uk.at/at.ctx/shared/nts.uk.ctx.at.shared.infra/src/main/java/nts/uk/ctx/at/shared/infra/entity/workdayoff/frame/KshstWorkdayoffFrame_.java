@@ -13,22 +13,22 @@ import nts.uk.ctx.at.shared.infra.entity.workdayoff.frame.KshstWorkdayoffFramePK
  * The Class KshstWorkdayoffFrame_.
  */
 @Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2017-11-30T09:30:55")
-@StaticMetamodel(KshmtHdWorkFrame.class)
+@StaticMetamodel(KshstWorkdayoffFrame.class)
 public class KshstWorkdayoffFrame_ { 
 
     /** The trans fr name. */
-    public static volatile SingularAttribute<KshmtHdWorkFrame, String> transFrName;
+    public static volatile SingularAttribute<KshstWorkdayoffFrame, String> transFrName;
     
     /** The kshst workdayoff frame PK. */
-    public static volatile SingularAttribute<KshmtHdWorkFrame, KshstWorkdayoffFramePK> kshstWorkdayoffFramePK;
+    public static volatile SingularAttribute<KshstWorkdayoffFrame, KshstWorkdayoffFramePK> kshstWorkdayoffFramePK;
     
     /** The use atr. */
-    public static volatile SingularAttribute<KshmtHdWorkFrame, Short> useAtr;
+    public static volatile SingularAttribute<KshstWorkdayoffFrame, Short> useAtr;
     
     /** The exclus ver. */
-    public static volatile SingularAttribute<KshmtHdWorkFrame, Integer> exclusVer;
+    public static volatile SingularAttribute<KshstWorkdayoffFrame, Integer> exclusVer;
     
     /** The wdo fr name. */
-    public static volatile SingularAttribute<KshmtHdWorkFrame, String> wdoFrName;
+    public static volatile SingularAttribute<KshstWorkdayoffFrame, String> wdoFrName;
 
 }

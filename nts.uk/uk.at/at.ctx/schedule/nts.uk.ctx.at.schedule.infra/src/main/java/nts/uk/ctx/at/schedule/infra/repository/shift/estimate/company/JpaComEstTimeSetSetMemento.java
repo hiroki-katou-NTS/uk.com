@@ -10,7 +10,7 @@ import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimateTargetClassification;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.time.EstimateTimeSettingSetMemento;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.time.MonthlyEstimateTimeSetting;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.time.YearlyEstimateTimeSetting;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstTimeCom;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstTimeComSet;
 import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstTimeComSetPK;
 
 /**
@@ -19,14 +19,14 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstTimeCo
 public class JpaComEstTimeSetSetMemento implements EstimateTimeSettingSetMemento{
 	
 	/** The est time company. */
-	private KscmtEstTimeCom estTimeCompany;
+	private KscmtEstTimeComSet estTimeCompany;
 	
 	/**
 	 * Instantiates a new jpa estimate time setting company get memento.
 	 *
 	 * @param estTimeCompany the est time company
 	 */
-	public JpaComEstTimeSetSetMemento(KscmtEstTimeCom estTimeCompany){
+	public JpaComEstTimeSetSetMemento(KscmtEstTimeComSet estTimeCompany){
 		if(estTimeCompany.getKscmtEstTimeComSetPK() == null){
 			estTimeCompany.setKscmtEstTimeComSetPK(new KscmtEstTimeComSetPK());
 		}

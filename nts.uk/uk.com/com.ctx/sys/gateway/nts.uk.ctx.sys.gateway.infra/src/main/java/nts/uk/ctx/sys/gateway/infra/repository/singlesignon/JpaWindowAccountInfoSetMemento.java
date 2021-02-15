@@ -8,7 +8,7 @@ import nts.uk.ctx.sys.gateway.dom.singlesignon.HostName;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.UseAtr;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.UserName;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.WindowsAccountInfoSetMemento;
-import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtSsoWinAcc;
+import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtWindowAcc;
 import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtWindowAccPK;
 
 /**
@@ -17,14 +17,14 @@ import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtWindowAccPK;
 public class JpaWindowAccountInfoSetMemento implements WindowsAccountInfoSetMemento {
 	
 	/** The typed value. */
-	private SgwmtSsoWinAcc typedValue;
+	private SgwmtWindowAcc typedValue;
 	
 	/**
 	 * Instantiates a new jpa window account set memento.
 	 *
 	 * @param typedValue the typed value
 	 */
-	public JpaWindowAccountInfoSetMemento(String companyId, String employeeId, SgwmtSsoWinAcc typedValue) {
+	public JpaWindowAccountInfoSetMemento(String companyId, String employeeId, SgwmtWindowAcc typedValue) {
 		this.typedValue = typedValue;
 		if (this.typedValue.getSgwmtWindowAccPK() == null) {
 			this.typedValue.setSgwmtWindowAccPK(new SgwmtWindowAccPK());

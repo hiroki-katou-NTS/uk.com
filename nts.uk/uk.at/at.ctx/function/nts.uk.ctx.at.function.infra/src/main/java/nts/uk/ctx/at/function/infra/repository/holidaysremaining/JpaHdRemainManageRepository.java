@@ -11,15 +11,15 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.function.dom.holidaysremaining.HolidaysRemainingManagement;
 import nts.uk.ctx.at.function.dom.holidaysremaining.ItemOutputForm;
 import nts.uk.ctx.at.function.dom.holidaysremaining.repository.HolidaysRemainingManagementRepository;
-import nts.uk.ctx.at.function.infra.entity.holidaysremaining.KfnmtRptRemlstOutitem;
+import nts.uk.ctx.at.function.infra.entity.holidaysremaining.KfnmtHdRemainManage;
 import nts.uk.ctx.at.function.infra.entity.holidaysremaining.KfnmtHdRemainManagePk;
-import nts.uk.ctx.at.function.infra.entity.holidaysremaining.KfnmtRptRemlstOuthdsp;
+import nts.uk.ctx.at.function.infra.entity.holidaysremaining.KfnmtSpecialHoliday;
 import nts.uk.ctx.at.function.infra.entity.holidaysremaining.KfnmtSpecialHolidayPk;
 
 @Stateless
 public class JpaHdRemainManageRepository extends JpaRepository implements HolidaysRemainingManagementRepository {
 
-	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM KfnmtRptRemlstOutitem f";
+	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM KfnmtHdRemainManage f";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.hdRemainManagePk.cid =:cid AND  f.hdRemainManagePk.cd =:cd ";
 	private static final String SELECT_BY_COMPANY_ID = SELECT_ALL_QUERY_STRING
@@ -27,7 +27,7 @@ public class JpaHdRemainManageRepository extends JpaRepository implements Holida
 
 	@Override
 	public Optional<HolidaysRemainingManagement> getHolidayManagerByCidAndExecCd(String companyID, String code) {
-		return this.queryProxy().query(SELECT_BY_KEY_STRING, KfnmtRptRemlstOutitem.class).setParameter("cd", code)
+		return this.queryProxy().query(SELECT_BY_KEY_STRING, KfnmtHdRemainManage.class).setParameter("cd", code)
 				.setParameter("cid", companyID).getSingle(JpaHdRemainManageRepository::toDomain);
 	}
 
@@ -43,11 +43,11 @@ public class JpaHdRemainManageRepository extends JpaRepository implements Holida
 
 	@Override
 	public void update(HolidaysRemainingManagement domain) {
-		KfnmtRptRemlstOutitem updateData = this.toEntity(domain);
-		Optional<KfnmtRptRemlstOutitem> optOldData = this.queryProxy().find(updateData.hdRemainManagePk,
-				KfnmtRptRemlstOutitem.class);
+		KfnmtHdRemainManage updateData = this.toEntity(domain);
+		Optional<KfnmtHdRemainManage> optOldData = this.queryProxy().find(updateData.hdRemainManagePk,
+				KfnmtHdRemainManage.class);
 		if (optOldData.isPresent()) {
-			KfnmtRptRemlstOutitem oldData = optOldData.get();
+			KfnmtHdRemainManage oldData = optOldData.get();
 			oldData.name = updateData.name;
 			oldData.yearlyHoliday = updateData.yearlyHoliday;
 			oldData.insideHalfDay = updateData.insideHalfDay;
@@ -72,21 +72,21 @@ public class JpaHdRemainManageRepository extends JpaRepository implements Holida
 	@Override
 	public void remove(String companyId, String code) {
 		KfnmtHdRemainManagePk kfnmtSpecialHolidayPk = new KfnmtHdRemainManagePk(companyId, code);
-		Optional<KfnmtRptRemlstOutitem> optOldData = this.queryProxy().find(kfnmtSpecialHolidayPk,
-				KfnmtRptRemlstOutitem.class);
+		Optional<KfnmtHdRemainManage> optOldData = this.queryProxy().find(kfnmtSpecialHolidayPk,
+				KfnmtHdRemainManage.class);
 		if (optOldData.isPresent()) {
-			this.commandProxy().remove(KfnmtRptRemlstOutitem.class, kfnmtSpecialHolidayPk);
+			this.commandProxy().remove(KfnmtHdRemainManage.class, kfnmtSpecialHolidayPk);
 		}
 	}
 
 	@Override
 	public List<HolidaysRemainingManagement> getHolidayManagerLogByCompanyId(String companyId) {
-		return this.queryProxy().query(SELECT_BY_COMPANY_ID, KfnmtRptRemlstOutitem.class).setParameter("cid", companyId)
+		return this.queryProxy().query(SELECT_BY_COMPANY_ID, KfnmtHdRemainManage.class).setParameter("cid", companyId)
 				.getList(JpaHdRemainManageRepository::toDomain);
 	}
 
-	private KfnmtRptRemlstOutitem toEntity(HolidaysRemainingManagement domain) {
-		return new KfnmtRptRemlstOutitem(new KfnmtHdRemainManagePk(domain.getCompanyID(), domain.getCode().v()),
+	private KfnmtHdRemainManage toEntity(HolidaysRemainingManagement domain) {
+		return new KfnmtHdRemainManage(new KfnmtHdRemainManagePk(domain.getCompanyID(), domain.getCode().v()),
 				domain.getName().v(), domain.getListItemsOutput().getAnnualHoliday().isYearlyHoliday() ? 1 : 0,
 				domain.getListItemsOutput().getAnnualHoliday().isInsideHalfDay() ? 1 : 0,
 				domain.getListItemsOutput().getAnnualHoliday().isInsideHours() ? 1 : 0,
@@ -104,13 +104,13 @@ public class JpaHdRemainManageRepository extends JpaRepository implements Holida
 				domain.getListItemsOutput().getNursingcareLeave().isNursingLeave() ? 1
 						: 0,
 				domain.getListItemsOutput().getSpecialHoliday().stream()
-						.map(itemDetai -> new KfnmtRptRemlstOuthdsp(
+						.map(itemDetai -> new KfnmtSpecialHoliday(
 								new KfnmtSpecialHolidayPk(domain.getCompanyID(), domain.getCode().v(), itemDetai),
 								null))
 						.collect(Collectors.toList()));
 	}
 
-	private static HolidaysRemainingManagement toDomain(KfnmtRptRemlstOutitem entity) {
+	private static HolidaysRemainingManagement toDomain(KfnmtHdRemainManage entity) {
 		return new HolidaysRemainingManagement(entity.hdRemainManagePk.cid, entity.hdRemainManagePk.cd, entity.name,
 				new ItemOutputForm(entity.nursingCareLeave > 0, entity.remainChargeSub > 0, entity.representSub > 0,
 						entity.outItemSub > 0, entity.outputHolidayForward > 0, entity.monthlyPublic > 0,

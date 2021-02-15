@@ -6,7 +6,7 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.Pu
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidayManagementClassification;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidayManagementStartDate;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidaySettingSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.holidaysetting.configuration.KshmtHdpubSet;
+import nts.uk.ctx.at.shared.infra.entity.holidaysetting.configuration.KshmtPublicHdSet;
 
 /**
  * The Class JpaPublicHolidaySettingSetMemento.
@@ -20,14 +20,14 @@ public class JpaPublicHolidaySettingSetMemento implements PublicHolidaySettingSe
 	private final static int FALSE_VALUE = 0;
 	
 	/** The kshmt public hd set. */
-	private KshmtHdpubSet kshmtPublicHdSet;
+	private KshmtPublicHdSet kshmtPublicHdSet;
 	
 	/**
 	 * Instantiates a new jpa public holiday setting set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaPublicHolidaySettingSetMemento(KshmtHdpubSet entity) {
+	public JpaPublicHolidaySettingSetMemento(KshmtPublicHdSet entity) {
 		this.kshmtPublicHdSet = entity;
 	}
 	

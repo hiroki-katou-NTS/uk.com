@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.SuperHD60HConMed;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.SuperHD60HConMedRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.SuperHDOccUnit;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.holiday.KshmtHd60hConMed;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.holiday.KshstSuperHdConMed;
 
 /**
  * The Class JpaSuperHD60HConMedRepository.
@@ -33,7 +33,7 @@ public class JpaSuperHD60HConMedRepository extends JpaRepository
 	public Optional<SuperHD60HConMed> findById(String companyId) {
 		
 		// find by id to entity
-		Optional<KshmtHd60hConMed> opEntity = this.queryProxy().find(companyId, KshmtHd60hConMed.class);
+		Optional<KshstSuperHdConMed> opEntity = this.queryProxy().find(companyId, KshstSuperHdConMed.class);
 		
 		// check exist data
 		if (opEntity.isPresent()) {
@@ -53,7 +53,7 @@ public class JpaSuperHD60HConMedRepository extends JpaRepository
 	@Override
 	public void save(SuperHD60HConMed domain) {
 		Optional<SuperHD60HConMed> opEntity = this.findById(domain.getCompanyId());
-		KshmtHd60hConMed entity = new KshmtHd60hConMed();
+		KshstSuperHdConMed entity = new KshstSuperHdConMed();
 		if (opEntity.isPresent()) {
 			this.toEntity(entity, domain);
 			this.commandProxy().update(entity);
@@ -70,7 +70,7 @@ public class JpaSuperHD60HConMedRepository extends JpaRepository
 	 * @param entity the entity
 	 * @return the super HD 60 H con med
 	 */
-	private SuperHD60HConMed toDomain(KshmtHd60hConMed entity) {
+	private SuperHD60HConMed toDomain(KshstSuperHdConMed entity) {
 		return new SuperHD60HConMed(entity.getCid(), 
 									new TimeRoundingSetting(entity.getRoundTime(), entity.getRounding()), 
 									new SuperHDOccUnit(entity.getSuperHdUnit()));
@@ -82,7 +82,7 @@ public class JpaSuperHD60HConMedRepository extends JpaRepository
 	 * @param domain the domain
 	 * @return the kshst super hd con med
 	 */
-	private KshmtHd60hConMed toEntity(KshmtHd60hConMed entity, SuperHD60HConMed domain) {
+	private KshstSuperHdConMed toEntity(KshstSuperHdConMed entity, SuperHD60HConMed domain) {
 		entity.setCid(domain.getCompanyId());
 		entity.setRounding(domain.getTimeRoundingSetting().getRounding().value);
 		entity.setRoundTime(domain.getTimeRoundingSetting().getRoundingTime().value);

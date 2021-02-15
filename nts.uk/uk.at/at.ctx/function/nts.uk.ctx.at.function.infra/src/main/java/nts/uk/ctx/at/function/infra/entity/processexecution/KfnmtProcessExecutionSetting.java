@@ -46,7 +46,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  */
 @Data
 @Entity
-@Table(name = "KFNMT_AUTOEXEC_SETTEING")
+@Table(name = "KFNMT_PROC_EXEC_SETTING")
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)

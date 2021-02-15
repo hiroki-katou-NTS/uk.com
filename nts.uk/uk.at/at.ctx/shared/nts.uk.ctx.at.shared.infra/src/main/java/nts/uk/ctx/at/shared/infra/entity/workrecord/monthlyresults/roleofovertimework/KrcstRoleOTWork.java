@@ -14,13 +14,13 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 
 /**
- * The persistent class for the KRCMT_OV_ROLE_OVER database table.
+ * The persistent class for the KRCST_ROLE_OT_WORK database table.
  * 
  */
 @Entity
 @Getter
 @Setter
-@Table(name="KRCMT_OV_ROLE_OVER")
+@Table(name="KRCST_ROLE_OT_WORK")
 public class KrcstRoleOTWork extends UkJpaEntity implements Serializable {
 	
 	/** The Constant serialVersionUID. */

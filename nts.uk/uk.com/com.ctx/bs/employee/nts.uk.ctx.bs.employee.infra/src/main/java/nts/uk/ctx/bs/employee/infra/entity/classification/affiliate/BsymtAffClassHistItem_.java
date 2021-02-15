@@ -23,6 +23,6 @@ public class BsymtAffClassHistItem_ {
 	public static volatile SingularAttribute<BsymtAffClassHistItem, String> classificationCode;
 	
 	/** The bsymt aff class history. */
-	public static volatile SingularAttribute<BsymtAffClassHistItem, BsymtAffClassHist> bsymtAffClassHistory;
+	public static volatile SingularAttribute<BsymtAffClassHistItem, BsymtAffClassHistory> bsymtAffClassHistory;
 
 }

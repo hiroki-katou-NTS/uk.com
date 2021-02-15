@@ -14,7 +14,7 @@ import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * The Class KshmtLegaltimeDRegCom.
+ * The Class KshstComRegLaborTime.
  */
 @Setter
 @Getter

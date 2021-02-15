@@ -9,7 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * The primary key class for the KSHMT_TEMPORARY_MNG database table.
+ * The primary key class for the KSHST_TEMP_WK_USE_MANAGE database table.
  * 
  */
 @Embeddable

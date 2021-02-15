@@ -24,8 +24,8 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneMedicalSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneShortTimeWorkSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComTemporary;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtCom;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtTempWorktimeSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
 
 /**
  * The Class JpaWorkTimezoneCommonSetGetMemento.
@@ -33,7 +33,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtCom;
 public class JpaWorkTimezoneCommonSetGetMemento implements WorkTimezoneCommonSetGetMemento {
 
 	/** The entity. */
-	private KshmtWtCom entity;
+	private KshmtWorktimeCommonSet entity;
 
 	/**
 	 * Instantiates a new jpa work timezone common set get memento.
@@ -41,7 +41,7 @@ public class JpaWorkTimezoneCommonSetGetMemento implements WorkTimezoneCommonSet
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaWorkTimezoneCommonSetGetMemento(KshmtWtCom entity) {
+	public JpaWorkTimezoneCommonSetGetMemento(KshmtWorktimeCommonSet entity) {
 		super();
 		this.entity = entity;
 	}
@@ -167,7 +167,7 @@ public class JpaWorkTimezoneCommonSetGetMemento implements WorkTimezoneCommonSet
 	 */
 	@Override
 	public WorkTimezoneExtraordTimeSet getExtraordTimeSet() {
-		KshmtWtComTemporary entityTemp = this.entity.getKshmtTempWorktimeSet();
+		KshmtTempWorktimeSet entityTemp = this.entity.getKshmtTempWorktimeSet();
 		return new WorkTimezoneExtraordTimeSet(new JpaWorkTimezoneExtraordTimeSetGetMemento(entityTemp));
 	}
 

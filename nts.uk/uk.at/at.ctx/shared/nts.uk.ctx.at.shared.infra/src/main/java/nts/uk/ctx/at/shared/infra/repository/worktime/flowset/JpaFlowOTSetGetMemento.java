@@ -6,7 +6,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.flowset;
 
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FixedChangeAtr;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOTGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFlo;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowWorkSet;
 
 /**
  * The Class JpaFlowOTSetGetMemento.
@@ -14,14 +14,14 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFlo;
 public class JpaFlowOTSetGetMemento implements FlowOTGetMemento {
 	
 	/** The entity. */
-	private KshmtWtFlo entity;
+	private KshmtFlowWorkSet entity;
 	
 	/**
 	 * Instantiates a new jpa flow OT set get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlowOTSetGetMemento(KshmtWtFlo entity) {
+	public JpaFlowOTSetGetMemento(KshmtFlowWorkSet entity) {
 		super();
 		this.entity = entity;
 	}

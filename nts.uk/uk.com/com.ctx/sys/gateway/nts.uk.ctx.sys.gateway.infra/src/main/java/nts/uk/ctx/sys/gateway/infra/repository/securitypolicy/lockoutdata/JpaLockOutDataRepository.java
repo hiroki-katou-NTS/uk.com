@@ -23,7 +23,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockOutData;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.LockOutDataRepository;
-import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwdtLockout;
+import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwmtLockoutData;
 import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwmtLockoutDataPK_;
 import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwmtLockoutData_;
 
@@ -46,8 +46,8 @@ public class JpaLockOutDataRepository extends JpaRepository implements LockOutDa
 		EntityManager em = this.getEntityManager();
 
 		CriteriaBuilder builder = em.getCriteriaBuilder();
-		CriteriaQuery<SgwdtLockout> query = builder.createQuery(SgwdtLockout.class);
-		Root<SgwdtLockout> root = query.from(SgwdtLockout.class);
+		CriteriaQuery<SgwmtLockoutData> query = builder.createQuery(SgwmtLockoutData.class);
+		Root<SgwmtLockoutData> root = query.from(SgwmtLockoutData.class);
 
 		List<Predicate> predicateList = new ArrayList<>();
 
@@ -58,7 +58,7 @@ public class JpaLockOutDataRepository extends JpaRepository implements LockOutDa
 		query.where(predicateList.toArray(new Predicate[] {}));
 
 		//Get Result
-		List<SgwdtLockout> result = em.createQuery(query).getResultList();
+		List<SgwmtLockoutData> result = em.createQuery(query).getResultList();
 
 		if (result.isEmpty()) {
 			return Optional.empty();
@@ -72,7 +72,7 @@ public class JpaLockOutDataRepository extends JpaRepository implements LockOutDa
 	 */
 	@Override
 	public void add(LockOutData lockOutData) {
-		SgwdtLockout entity = new SgwdtLockout();
+		SgwmtLockoutData entity = new SgwmtLockoutData();
 		lockOutData.saveToMemento(new JpaLockOutDataSetMemento(entity));
 		this.commandProxy().insert(entity);
 	}
@@ -90,8 +90,8 @@ public class JpaLockOutDataRepository extends JpaRepository implements LockOutDa
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-		CriteriaDelete<SgwdtLockout> cq = criteriaBuilder.createCriteriaDelete(SgwdtLockout.class);
-		Root<SgwdtLockout> root = cq.from(SgwdtLockout.class);
+		CriteriaDelete<SgwmtLockoutData> cq = criteriaBuilder.createCriteriaDelete(SgwmtLockoutData.class);
+		Root<SgwmtLockoutData> root = cq.from(SgwmtLockoutData.class);
 		
 		CollectionUtil.split(usersID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
 			List<Predicate> lstpredicateWhere = new ArrayList<>();
@@ -109,8 +109,8 @@ public class JpaLockOutDataRepository extends JpaRepository implements LockOutDa
 		EntityManager em = this.getEntityManager();
 
 		CriteriaBuilder builder = em.getCriteriaBuilder();
-		CriteriaQuery<SgwdtLockout> query = builder.createQuery(SgwdtLockout.class);
-		Root<SgwdtLockout> root = query.from(SgwdtLockout.class);
+		CriteriaQuery<SgwmtLockoutData> query = builder.createQuery(SgwmtLockoutData.class);
+		Root<SgwmtLockoutData> root = query.from(SgwmtLockoutData.class);
 
 		List<Predicate> predicateList = new ArrayList<>();
 
@@ -121,7 +121,7 @@ public class JpaLockOutDataRepository extends JpaRepository implements LockOutDa
 		query.where(predicateList.toArray(new Predicate[] {}));
 
 		//Get Result
-		List<SgwdtLockout> result = em.createQuery(query).getResultList();
+		List<SgwmtLockoutData> result = em.createQuery(query).getResultList();
 		return result.stream().map(this::toDomain).collect(Collectors.toList());
 	}
 	
@@ -131,7 +131,7 @@ public class JpaLockOutDataRepository extends JpaRepository implements LockOutDa
 	 * @param entity the entity
 	 * @return the lock out data
 	 */
-	private LockOutData toDomain(SgwdtLockout entity) {
+	private LockOutData toDomain(SgwmtLockoutData entity) {
 		return new LockOutData(new JpaLockOutDataGetMemento(entity));
 	}
 
@@ -143,8 +143,8 @@ public class JpaLockOutDataRepository extends JpaRepository implements LockOutDa
 		EntityManager em = this.getEntityManager();
 
 		CriteriaBuilder builder = em.getCriteriaBuilder();
-		CriteriaQuery<SgwdtLockout> query = builder.createQuery(SgwdtLockout.class);
-		Root<SgwdtLockout> root = query.from(SgwdtLockout.class);
+		CriteriaQuery<SgwmtLockoutData> query = builder.createQuery(SgwmtLockoutData.class);
+		Root<SgwmtLockoutData> root = query.from(SgwmtLockoutData.class);
 
 		List<Predicate> predicateList = new ArrayList<>();
 
@@ -157,7 +157,7 @@ public class JpaLockOutDataRepository extends JpaRepository implements LockOutDa
 		query.where(predicateList.toArray(new Predicate[] {}));
 
 		//Get Result
-		List<SgwdtLockout> result = em.createQuery(query).getResultList();
+		List<SgwmtLockoutData> result = em.createQuery(query).getResultList();
 
 		if (result.isEmpty()) {
 			return Optional.empty();

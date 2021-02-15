@@ -7,16 +7,16 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.multimonth.MulMonCheckCondCospRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.multimonth.MulMonthCheckCondCosp;
-import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.multimonth.KrcmtAlstChkmltUdccrsp;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.multimonth.KrcmtMulMonCondCosp;
 @Stateless
 public class JpaMulMonCheckCondCospRepository extends JpaRepository implements MulMonCheckCondCospRepository {
 
-	private static final String SELECT_COND_BY_ID = " SELECT c FROM KrcmtAlstChkmltUdccrsp c"
+	private static final String SELECT_COND_BY_ID = " SELECT c FROM KrcmtMulMonCondCosp c"
 			+ " WHERE c.errorAlarmCheckID = :errorAlarmCheckID ";
 	
 	@Override
 	public Optional<MulMonthCheckCondCosp> getMulMonthCheckCondCospById(String errorAlarmCheckID) {
-		Optional<MulMonthCheckCondCosp> data = this.queryProxy().query(SELECT_COND_BY_ID, KrcmtAlstChkmltUdccrsp.class)
+		Optional<MulMonthCheckCondCosp> data = this.queryProxy().query(SELECT_COND_BY_ID, KrcmtMulMonCondCosp.class)
 				.setParameter("errorAlarmCheckID", errorAlarmCheckID)
 				.getSingle(c->c.toDomain());
 		return data;
@@ -24,15 +24,15 @@ public class JpaMulMonCheckCondCospRepository extends JpaRepository implements M
 
 	@Override
 	public void addMulMonthCheckCondCosp(MulMonthCheckCondCosp mulMonthCheckCondCosp) {
-		this.commandProxy().insert(KrcmtAlstChkmltUdccrsp.toEntity(mulMonthCheckCondCosp));
+		this.commandProxy().insert(KrcmtMulMonCondCosp.toEntity(mulMonthCheckCondCosp));
 		this.getEntityManager().flush();
 	}
 
 	@Override
 	public void updateMulMonthCheckCondCosp(MulMonthCheckCondCosp mulMonthCheckCondCosp) {
-		KrcmtAlstChkmltUdccrsp newEntity = KrcmtAlstChkmltUdccrsp.toEntity(mulMonthCheckCondCosp);
-		KrcmtAlstChkmltUdccrsp updateEntity = this.queryProxy().find(
-				mulMonthCheckCondCosp.getErrorAlarmCheckID(), KrcmtAlstChkmltUdccrsp.class).get();
+		KrcmtMulMonCondCosp newEntity = KrcmtMulMonCondCosp.toEntity(mulMonthCheckCondCosp);
+		KrcmtMulMonCondCosp updateEntity = this.queryProxy().find(
+				mulMonthCheckCondCosp.getErrorAlarmCheckID(), KrcmtMulMonCondCosp.class).get();
 		updateEntity.isUseFlg = newEntity.isUseFlg;
 		updateEntity.times = newEntity.times;
 		updateEntity.compareOperator = newEntity.compareOperator;
@@ -43,7 +43,7 @@ public class JpaMulMonCheckCondCospRepository extends JpaRepository implements M
 
 	@Override
 	public void deleteMulMonthCheckCondCosp(String errorAlarmCheckID) {
-		KrcmtAlstChkmltUdccrsp newEntity = this.queryProxy().query(SELECT_COND_BY_ID,KrcmtAlstChkmltUdccrsp.class)
+		KrcmtMulMonCondCosp newEntity = this.queryProxy().query(SELECT_COND_BY_ID,KrcmtMulMonCondCosp.class)
 				.setParameter("errorAlarmCheckID", errorAlarmCheckID)
 				.getSingle().get();
 		this.commandProxy().remove(newEntity);

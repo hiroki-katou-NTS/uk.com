@@ -19,8 +19,8 @@ public class JpaPerInfoInitValSetCtg extends JpaRepository implements PerInfoIni
 
 	private static final String SEL_ALL_CTG = "SELECT  b.ppemtPerInfoCtgPK.perInfoCtgId, b.categoryName, cm.categoryType, "
 			+ " CASE WHEN (c.settingCtgPk.perInfoCtgId) IS NOT NULL  THEN 'True' ELSE 'False' END AS isSetting "
-			+ " FROM PpemtCtg b " + " INNER JOIN PpemtCtgCommon cm "
-			+ " ON b.categoryCd = cm.ppemtPerInfoCtgCmPK.categoryCd " + " INNER JOIN PpemtCtgSort e "
+			+ " FROM PpemtPerInfoCtg b " + " INNER JOIN PpemtPerInfoCtgCm cm "
+			+ " ON b.categoryCd = cm.ppemtPerInfoCtgCmPK.categoryCd " + " INNER JOIN PpemtPerInfoCtgOrder e "
 			+ " ON  b.ppemtPerInfoCtgPK.perInfoCtgId = e.ppemtPerInfoCtgPK.perInfoCtgId " + " AND b.cid = e.cid "
 			+ " LEFT JOIN PpemtPersonInitValueSettingCtg c "
 			+ " ON  b.ppemtPerInfoCtgPK.perInfoCtgId  = c.settingCtgPk.perInfoCtgId "
@@ -34,9 +34,9 @@ public class JpaPerInfoInitValSetCtg extends JpaRepository implements PerInfoIni
 	
 	// sonnlb
 	private final static String SEL_CTG_BY_SET_ID = "SELECT b.categoryCd, b.categoryName "
-			+ " FROM PpemtPersonInitValueSettingCtg c " + " LEFT JOIN PpemtCtg b"
-			+ " ON c.settingCtgPk.perInfoCtgId = b.ppemtPerInfoCtgPK.perInfoCtgId" + " LEFT JOIN PpemtCtgCommon cm "
-			+ " ON b.categoryCd = cm.ppemtPerInfoCtgCmPK.categoryCd" + " LEFT JOIN PpemtCtgSort e"
+			+ " FROM PpemtPersonInitValueSettingCtg c " + " LEFT JOIN PpemtPerInfoCtg b"
+			+ " ON c.settingCtgPk.perInfoCtgId = b.ppemtPerInfoCtgPK.perInfoCtgId" + " LEFT JOIN PpemtPerInfoCtgCm cm "
+			+ " ON b.categoryCd = cm.ppemtPerInfoCtgCmPK.categoryCd" + " LEFT JOIN PpemtPerInfoCtgOrder e"
 			+ " ON c.settingCtgPk.perInfoCtgId = e.ppemtPerInfoCtgPK.perInfoCtgId" + " AND b.cid = e.cid "
 			+ " WHERE b.abolitionAtr = 0 " + " AND c.settingCtgPk.settingId = :settingId" + " ORDER BY e.disporder ";
 

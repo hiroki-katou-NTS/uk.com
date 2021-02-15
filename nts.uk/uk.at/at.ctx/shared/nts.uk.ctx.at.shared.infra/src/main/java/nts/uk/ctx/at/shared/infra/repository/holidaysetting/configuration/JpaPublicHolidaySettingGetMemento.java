@@ -8,16 +8,16 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.Pu
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidayManagementStartDate;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidayPeriod;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidaySettingGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.holidaysetting.configuration.KshmtHdpubSet;
+import nts.uk.ctx.at.shared.infra.entity.holidaysetting.configuration.KshmtPublicHdSet;
 import nts.uk.shr.com.context.AppContexts;
 
 public class JpaPublicHolidaySettingGetMemento implements PublicHolidaySettingGetMemento {
 
 	private final static int TRUE_VALUE = 1;
 	
-	private KshmtHdpubSet kshmtPublicHdSet;
+	private KshmtPublicHdSet kshmtPublicHdSet;
 	
-	public JpaPublicHolidaySettingGetMemento(KshmtHdpubSet entity) {
+	public JpaPublicHolidaySettingGetMemento(KshmtPublicHdSet entity) {
 		this.kshmtPublicHdSet = entity;
 	}
 	

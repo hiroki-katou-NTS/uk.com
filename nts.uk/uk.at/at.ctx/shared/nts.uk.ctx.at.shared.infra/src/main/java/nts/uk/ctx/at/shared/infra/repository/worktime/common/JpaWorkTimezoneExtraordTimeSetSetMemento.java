@@ -9,9 +9,9 @@ import nts.uk.ctx.at.shared.dom.worktime.common.ExtraordTimeCalculateMethod;
 import nts.uk.ctx.at.shared.dom.worktime.common.ExtraordWorkOTFrameSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.HolidayFramset;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneExtraordTimeSetSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComTemporary;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtTempWorktimeSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtTempWorktimeSetPK;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtCom;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
 
 /**
  * The Class JpaWorkTimezoneExtraordTimeSetSetMemento.
@@ -19,7 +19,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtCom;
 public class JpaWorkTimezoneExtraordTimeSetSetMemento implements WorkTimezoneExtraordTimeSetSetMemento {
 
 	/** The entity. */
-	private KshmtWtComTemporary entity;
+	private KshmtTempWorktimeSet entity;
 
 	/**
 	 * Instantiates a new jpa work timezone extraord time set set memento.
@@ -27,7 +27,7 @@ public class JpaWorkTimezoneExtraordTimeSetSetMemento implements WorkTimezoneExt
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaWorkTimezoneExtraordTimeSetSetMemento(KshmtWtCom parentEntity) {
+	public JpaWorkTimezoneExtraordTimeSetSetMemento(KshmtWorktimeCommonSet parentEntity) {
 		super();
 		this.initialEntity(parentEntity);
 	}
@@ -91,9 +91,9 @@ public class JpaWorkTimezoneExtraordTimeSetSetMemento implements WorkTimezoneExt
 	 * @param parentEntity
 	 *            the parent entity
 	 */
-	private void initialEntity(KshmtWtCom parentEntity) {
+	private void initialEntity(KshmtWorktimeCommonSet parentEntity) {
 		if (parentEntity.getKshmtTempWorktimeSet() == null) {
-			parentEntity.setKshmtTempWorktimeSet(new KshmtWtComTemporary());
+			parentEntity.setKshmtTempWorktimeSet(new KshmtTempWorktimeSet());
 		}
 		
 		// check existed key

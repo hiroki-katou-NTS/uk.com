@@ -10,17 +10,17 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class KclmtClosure_.
  */
-@StaticMetamodel(KshmtClosure.class)
+@StaticMetamodel(KclmtClosure.class)
 public class KclmtClosure_ {
 
 	/** The kclmt closure PK. */
-	public static volatile SingularAttribute<KshmtClosure, KclmtClosurePK> kclmtClosurePK;
+	public static volatile SingularAttribute<KclmtClosure, KclmtClosurePK> kclmtClosurePK;
 
 	/** The use class. */
-	public static volatile SingularAttribute<KshmtClosure, Integer> useClass;
+	public static volatile SingularAttribute<KclmtClosure, Integer> useClass;
 
 	/** The month. */
-	public static volatile SingularAttribute<KshmtClosure, Integer> closureMonth;
+	public static volatile SingularAttribute<KclmtClosure, Integer> closureMonth;
 
 
 }

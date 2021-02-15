@@ -15,7 +15,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "PPEMT_ROLE_CTG_AUTH")
+@Table(name = "PPEMT_PERSON_CTG_AUTH")
 @Entity
 public class PpemtPersonCategoryAuth extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;

@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.SingleDayScheduleGetMemento;
 import nts.uk.ctx.at.shared.dom.workingcondition.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondWeek;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPersonalDayOfWeek;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPersonalDayOfWeekPK;
 
 /**
@@ -23,7 +23,7 @@ import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPersonalDayOfWeek
 public class JpaSDayScheDayOfGetMemento implements SingleDayScheduleGetMemento {
 
 	/** The entity. */
-	private KshmtWorkcondWeek entity;
+	private KshmtPersonalDayOfWeek entity;
 
 	/**
 	 * Instantiates a new jpa single day schedule get memento.
@@ -31,7 +31,7 @@ public class JpaSDayScheDayOfGetMemento implements SingleDayScheduleGetMemento {
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaSDayScheDayOfGetMemento(KshmtWorkcondWeek entity) {
+	public JpaSDayScheDayOfGetMemento(KshmtPersonalDayOfWeek entity) {
 		if (entity.getKshmtPersonalDayOfWeekPK() == null) {
 			entity.setKshmtPersonalDayOfWeekPK(new KshmtPersonalDayOfWeekPK());
 		}

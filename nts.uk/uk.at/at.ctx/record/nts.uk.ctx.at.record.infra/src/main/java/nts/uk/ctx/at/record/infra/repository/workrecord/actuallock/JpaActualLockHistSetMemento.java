@@ -8,7 +8,7 @@ import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLockHistorySetMemento;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
-import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcdtAtdActuallockHist;
+import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcdtActualLockHist;
 import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcdtActualLockHistPK;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
@@ -18,10 +18,10 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 public class JpaActualLockHistSetMemento implements ActualLockHistorySetMemento {
 
 	/** The typed value. */
-	private KrcdtAtdActuallockHist typedValue;
+	private KrcdtActualLockHist typedValue;
 
 	
-	public JpaActualLockHistSetMemento(KrcdtAtdActuallockHist typedValue) {
+	public JpaActualLockHistSetMemento(KrcdtActualLockHist typedValue) {
 		this.typedValue = typedValue;
 		if (this.typedValue.getKrcdtActualLockHistPK() == null) {
 			this.typedValue.setKrcdtActualLockHistPK(new KrcdtActualLockHistPK());

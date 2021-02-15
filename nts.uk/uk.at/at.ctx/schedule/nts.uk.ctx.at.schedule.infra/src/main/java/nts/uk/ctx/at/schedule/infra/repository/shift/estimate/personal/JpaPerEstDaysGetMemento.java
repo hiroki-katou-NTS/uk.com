@@ -14,7 +14,7 @@ import nts.uk.ctx.at.schedule.dom.shift.estimate.numberofday.MonthlyEstimateDays
 import nts.uk.ctx.at.schedule.dom.shift.estimate.numberofday.MonthlyEstimateNumberOfDay;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.numberofday.YearlyEstimateDays;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.numberofday.YearlyEstimateNumberOfDay;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstDaysSya;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstDaysPerSet;
 import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstDaysPerSetPK;
 
 /**
@@ -23,7 +23,7 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstDaysP
 public class JpaPerEstDaysGetMemento implements EstimateNumberOfDayGetMemento {
 	
 	/** The estimate days Personal. */
-	private KscmtEstDaysSya estimateDaysPersonal;
+	private KscmtEstDaysPerSet estimateDaysPersonal;
 	
 	
 	/**
@@ -31,7 +31,7 @@ public class JpaPerEstDaysGetMemento implements EstimateNumberOfDayGetMemento {
 	 *
 	 * @param estimateDaysPersonal the estimate days Personal
 	 */
-	public JpaPerEstDaysGetMemento(KscmtEstDaysSya estimateDaysPersonal) {
+	public JpaPerEstDaysGetMemento(KscmtEstDaysPerSet estimateDaysPersonal) {
 		if(estimateDaysPersonal.getKscmtEstDaysPerSetPK() == null){
 			estimateDaysPersonal.setKscmtEstDaysPerSetPK(new KscmtEstDaysPerSetPK());
 		}

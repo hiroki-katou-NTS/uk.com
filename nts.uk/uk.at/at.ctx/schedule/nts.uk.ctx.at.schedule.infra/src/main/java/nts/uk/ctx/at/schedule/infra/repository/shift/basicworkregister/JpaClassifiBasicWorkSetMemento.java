@@ -10,7 +10,7 @@ import java.util.List;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSetting;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.ClassifiBasicWorkSetMemento;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.ClassificationCode;
-import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtBasicWorkCls;
+import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtClassifyWorkSet;
 
 /**
  * The Class JpaClassifiBasicWorkSetMemento.
@@ -18,7 +18,7 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtBasicWor
 public class JpaClassifiBasicWorkSetMemento implements ClassifiBasicWorkSetMemento {
 
 	/** The type value. */
-	private List<KscmtBasicWorkCls> typeValue;
+	private List<KscmtClassifyWorkSet> typeValue;
 
 	/**
 	 * Instantiates a new jpa classifi basic work set memento.
@@ -26,7 +26,7 @@ public class JpaClassifiBasicWorkSetMemento implements ClassifiBasicWorkSetMemen
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaClassifiBasicWorkSetMemento(List<KscmtBasicWorkCls> typeValue) {
+	public JpaClassifiBasicWorkSetMemento(List<KscmtClassifyWorkSet> typeValue) {
 		super();
 		this.typeValue = typeValue;
 		if (this.typeValue == null) {
@@ -70,7 +70,7 @@ public class JpaClassifiBasicWorkSetMemento implements ClassifiBasicWorkSetMemen
 	@Override
 	public void setBasicWorkSetting(List<BasicWorkSetting> basicWorkSetting) {
 		basicWorkSetting.stream().forEach(item -> {
-			KscmtBasicWorkCls entity = new KscmtBasicWorkCls();
+			KscmtClassifyWorkSet entity = new KscmtClassifyWorkSet();
 			entity.getKscmtClassifyWorkSetPK().setWorkdayDivision(item.getWorkdayDivision().value);
 			entity.setWorktypeCode(item.getWorktypeCode().v());
 			entity.setWorkingCode(item.getWorkingCode().v());

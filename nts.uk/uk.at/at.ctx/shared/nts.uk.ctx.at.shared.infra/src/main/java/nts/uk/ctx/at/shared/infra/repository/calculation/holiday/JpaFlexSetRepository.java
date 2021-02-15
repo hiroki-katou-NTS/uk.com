@@ -8,7 +8,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worklabor.flex.FlexSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worklabor.flex.FlexSetRepository;
-import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshmtCalcCFlex;
+import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstFlexSet;
 import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstFlexSetPK;
 /**
  * 
@@ -21,7 +21,7 @@ public class JpaFlexSetRepository extends JpaRepository implements FlexSetReposi
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT e");
-		builderString.append(" FROM KshmtCalcCFlex e");
+		builderString.append(" FROM KshstFlexSet e");
 		builderString.append(" WHERE e.kshstFlexSetPK.companyId = :companyId");
 		SELECT_BY_CID = builderString.toString();
 	}
@@ -31,7 +31,7 @@ public class JpaFlexSetRepository extends JpaRepository implements FlexSetReposi
 	 * @param kshstFlexSet
 	 * @return
 	 */
-	private FlexSet convertToDomain(KshmtCalcCFlex kshstFlexSet) {
+	private FlexSet convertToDomain(KshstFlexSet kshstFlexSet) {
 		FlexSet flexSet = FlexSet.createFromJavaType(kshstFlexSet.kshstFlexSetPK.companyId, kshstFlexSet.missCalcHd,
 				kshstFlexSet.premiumCalcHd, kshstFlexSet.missCalcSubhd, kshstFlexSet.premiumCalcSubhd, kshstFlexSet.flexDeductCalc, kshstFlexSet.flexNonwkingCalc);
 		
@@ -39,12 +39,12 @@ public class JpaFlexSetRepository extends JpaRepository implements FlexSetReposi
 	}
 	
 	/**
-	 * convert To Db Type KshmtCalcCFlex
+	 * convert To Db Type KshstFlexSet
 	 * @param flexSet
 	 * @return
 	 */
-	private KshmtCalcCFlex convertToDbType(FlexSet flexSet) {
-		KshmtCalcCFlex kshstFlexSet = new KshmtCalcCFlex();
+	private KshstFlexSet convertToDbType(FlexSet flexSet) {
+		KshstFlexSet kshstFlexSet = new KshstFlexSet();
 		KshstFlexSetPK kshstFlexSetPK = new KshstFlexSetPK(flexSet.getCompanyId());
 				kshstFlexSet.missCalcHd = flexSet.getMissCalcHd().value;
 				kshstFlexSet.premiumCalcHd = flexSet.getPremiumCalcHd().value;
@@ -59,7 +59,7 @@ public class JpaFlexSetRepository extends JpaRepository implements FlexSetReposi
 	 */
 	@Override
 	public List<FlexSet> findByCompanyId(String companyId) {
-		return this.queryProxy().query(SELECT_BY_CID, KshmtCalcCFlex.class).setParameter("companyId", companyId)
+		return this.queryProxy().query(SELECT_BY_CID, KshstFlexSet.class).setParameter("companyId", companyId)
 				.getList(c -> convertToDomain(c));
 	}
 	
@@ -77,7 +77,7 @@ public class JpaFlexSetRepository extends JpaRepository implements FlexSetReposi
 	@Override
 	public void update(FlexSet flexSet) {
 		KshstFlexSetPK primaryKey = new KshstFlexSetPK(flexSet.getCompanyId());
-		KshmtCalcCFlex entity = this.queryProxy().find(primaryKey, KshmtCalcCFlex.class).get();
+		KshstFlexSet entity = this.queryProxy().find(primaryKey, KshstFlexSet.class).get();
 				entity.missCalcHd = flexSet.getMissCalcHd().value;
 				entity.premiumCalcHd = flexSet.getPremiumCalcHd().value;
 				entity.missCalcSubhd = flexSet.getMissCalcSubhd().value;
@@ -94,7 +94,7 @@ public class JpaFlexSetRepository extends JpaRepository implements FlexSetReposi
 	 */
 	@Override
 	public Optional<FlexSet> findByCId(String companyId) {
-		return this.queryProxy().find(new KshstFlexSetPK(companyId),KshmtCalcCFlex.class)
+		return this.queryProxy().find(new KshstFlexSetPK(companyId),KshstFlexSet.class)
 				.map(c->convertToDomain(c));
 	}
 }

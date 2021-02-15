@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "KRCDT_DAY_ERAL_DG_ATD")
-public class KrcdtErDivAtd extends KrcdtDaySyaErrorAtd implements Serializable {
+public class KrcdtErDivAtd extends KrcdtErAttendanceItem implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
@@ -50,7 +50,7 @@ public class KrcdtErDivAtd extends KrcdtDaySyaErrorAtd implements Serializable {
 ////	
 ////	@ManyToOne
 ////	@JoinColumns({ @JoinColumn(name = "ID", referencedColumnName = "ID", insertable = false, updatable = false)})
-////	public KrcdtDaySyaError erOth;
+////	public KrcdtSyainDpErList erOth;
 //	
 //	public static KrcdtErDivAtd toEntity(String id, int attendanceItemId, String cid, 
 //			String sid, String ccd, GeneralDate processDate){

@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSetGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFlHol;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOdRtSet;
 
 /**
  * The Class JpaFlexOffdayTzOFRTimeSetGetMemento.
@@ -19,14 +19,14 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFlHol;
 public class JpaFlexODTzOFRTimeSetGetMemento implements TimezoneOfFixedRestTimeSetGetMemento{
 	
 	/** The entitys. */
-	private KshmtWtFleBrFlHol entity;
+	private KshmtFlexOdRtSet entity;
 
 	/**
 	 * Instantiates a new jpa flex OD tz OFR time set get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlexODTzOFRTimeSetGetMemento(KshmtWtFleBrFlHol entity) {
+	public JpaFlexODTzOFRTimeSetGetMemento(KshmtFlexOdRtSet entity) {
 		super();
 		this.entity = entity;
 	}

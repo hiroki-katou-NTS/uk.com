@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondHist;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCond;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.arc.time.calendar.period.DatePeriod;
 
@@ -23,7 +23,7 @@ public class JpaWorkingConditionGetMemento implements WorkingConditionGetMemento
 
 	/** The kshmt working cond. */
 	@Setter
-	private List<KshmtWorkcondHist> kshmtWorkingConds;
+	private List<KshmtWorkingCond> kshmtWorkingConds;
 
 	/**
 	 * Instantiates a new jpa working condition get memento.
@@ -31,7 +31,7 @@ public class JpaWorkingConditionGetMemento implements WorkingConditionGetMemento
 	 * @param kshmtWorkingCond
 	 *            the kshmt working cond
 	 */
-	public JpaWorkingConditionGetMemento(List<KshmtWorkcondHist> kshmtWorkingConds) {
+	public JpaWorkingConditionGetMemento(List<KshmtWorkingCond> kshmtWorkingConds) {
 		this.kshmtWorkingConds = kshmtWorkingConds;
 	}
 

@@ -19,12 +19,12 @@ import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.reflection.FieldReflection;
 import nts.gul.reflection.ReflectionUtil;
-import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.workdays.KrcdtWekDaysAbsence;
+import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.workdays.KrcdtWekAggrAbsnDays;
 import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.workdays.KrcdtWekAggrSpecDays;
 import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.workdays.KrcdtWekAggrSpvcDays;
-import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.worktime.KrcdtWekTimeBonusPay;
-import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.worktime.KrcdtWekTimeDvgc;
-import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.worktime.KrcdtWekTimeGoout;
+import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.worktime.KrcdtWekAggrBnspyTime;
+import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.worktime.KrcdtWekAggrDivgTime;
+import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.worktime.KrcdtWekAggrGoout;
 import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.worktime.KrcdtWekAggrPremTime;
 import nts.uk.ctx.at.record.infra.entity.weekly.verticaltotal.worktime.KrcdtWekMedicalTime;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
@@ -637,7 +637,7 @@ public class KrcdtWekAttendanceTime extends UkJpaEntity implements Serializable 
 	public List<KrcdtWekAggrHdwkTime> krcdtWekAggrHdwkTimes;
 	/** 縦計：勤務日数：集計欠勤日数 */
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="krcdtWekAttendanceTime", orphanRemoval = true)
-	public List<KrcdtWekDaysAbsence> krcdtWekAggrAbsnDays;
+	public List<KrcdtWekAggrAbsnDays> krcdtWekAggrAbsnDays;
 	/** 縦計：勤務日数：集計特定日数 */
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="krcdtWekAttendanceTime", orphanRemoval = true)
 	public List<KrcdtWekAggrSpecDays> krcdtWekAggrSpecDays;
@@ -646,13 +646,13 @@ public class KrcdtWekAttendanceTime extends UkJpaEntity implements Serializable 
 	public List<KrcdtWekAggrSpvcDays> krcdtWekAggrSpvcDays;
 	/** 縦計：勤務時間：集計加給時間 */
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="krcdtWekAttendanceTime", orphanRemoval = true)
-	public List<KrcdtWekTimeBonusPay> krcdtWekAggrBnspyTime;
+	public List<KrcdtWekAggrBnspyTime> krcdtWekAggrBnspyTime;
 	/** 縦計：勤務時間：集計乖離時間 */
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="krcdtWekAttendanceTime", orphanRemoval = true)
-	public List<KrcdtWekTimeDvgc> krcdtWekAggrDivgTime;
+	public List<KrcdtWekAggrDivgTime> krcdtWekAggrDivgTime;
 	/** 縦計：勤務時間：集計外出 */
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="krcdtWekAttendanceTime", orphanRemoval = true)
-	public List<KrcdtWekTimeGoout> krcdtWekAggrGoout;
+	public List<KrcdtWekAggrGoout> krcdtWekAggrGoout;
 	/** 縦計：勤務時間：集計割増時間 */
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="krcdtWekAttendanceTime", orphanRemoval = true)
 	public List<KrcdtWekAggrPremTime> krcdtWekAggrPremTime;
@@ -661,10 +661,10 @@ public class KrcdtWekAttendanceTime extends UkJpaEntity implements Serializable 
 	public List<KrcdtWekMedicalTime> krcdtWekMedicalTime;
 	/** 時間外超過：時間外超過 */
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="krcdtWekAttendanceTime", orphanRemoval = true)
-	public List<KrcdtWekTimeOutside> krcdtWekExcoutTime;
+	public List<KrcdtWekExcoutTime> krcdtWekExcoutTime;
 	/** 回数集計：回数集計 */
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="krcdtWekAttendanceTime", orphanRemoval = true)
-	public List<KrcdtWekTimeTotalcount> krcdtWekTotalTimes;
+	public List<KrcdtWekTotalTimes> krcdtWekTotalTimes;
 	/** 任意項目：任意項目値 */
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="krcdtWekAttendanceTime", orphanRemoval = true)
 	public List<KrcdtWekAnyItemValue> krcdtWekAnyItemValue;

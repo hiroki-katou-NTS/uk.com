@@ -14,7 +14,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.emp.EmpRegulaMonthActCalSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.emp.EmpRegulaMonthActCalSetRepo;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
-import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.employment.KrcmtCalcMSetRegEmp;
+import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.employment.KrcstEmpRegMCalSet;
 import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.employment.KrcstEmpRegMCalSetPK;
 
 /**
@@ -23,7 +23,7 @@ import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.employment.KrcstEmp
 @Stateless
 public class JpaEmpRegulaMonthActCalSetRepository extends JpaRepository implements EmpRegulaMonthActCalSetRepo {
 
-	private static final String SELECT_BY_CID = "SELECT c FROM KrcmtCalcMSetRegEmp c"
+	private static final String SELECT_BY_CID = "SELECT c FROM KrcstEmpRegMCalSet c"
 			+ " WHERE c.krcstEmpRegMCalSetPK.cid = :cid";
 	
 	/*
@@ -36,7 +36,7 @@ public class JpaEmpRegulaMonthActCalSetRepository extends JpaRepository implemen
 	@Override
 	public void add(EmpRegulaMonthActCalSet domain) {
 		// Create new entity
-		KrcmtCalcMSetRegEmp entity = new KrcmtCalcMSetRegEmp();
+		KrcstEmpRegMCalSet entity = new KrcstEmpRegMCalSet();
 
 		// Transfer data
 		entity.transfer(domain);
@@ -61,7 +61,7 @@ public class JpaEmpRegulaMonthActCalSetRepository extends JpaRepository implemen
 		KrcstEmpRegMCalSetPK pk = new KrcstEmpRegMCalSetPK(domain.getComId(),
 				domain.getEmploymentCode().v());
 		
-		this.queryProxy().find(pk, KrcmtCalcMSetRegEmp.class).ifPresent(e -> {
+		this.queryProxy().find(pk, KrcstEmpRegMCalSet.class).ifPresent(e -> {
 			
 			e.transfer(domain);
 			
@@ -82,7 +82,7 @@ public class JpaEmpRegulaMonthActCalSetRepository extends JpaRepository implemen
 		// Get info
 		KrcstEmpRegMCalSetPK pk = new KrcstEmpRegMCalSetPK(cid, empCode);
 		
-		return this.queryProxy().find(pk, KrcmtCalcMSetRegEmp.class).map(c -> toDomain(c));
+		return this.queryProxy().find(pk, KrcstEmpRegMCalSet.class).map(c -> toDomain(c));
 	}
 
 	/*
@@ -94,14 +94,14 @@ public class JpaEmpRegulaMonthActCalSetRepository extends JpaRepository implemen
 	 */
 	@Override
 	public void remove(String cid, String empCode) {
-		Optional<KrcmtCalcMSetRegEmp> optEntity = this.queryProxy().find(new KrcstEmpRegMCalSetPK(cid, empCode),
-				KrcmtCalcMSetRegEmp.class);
-		KrcmtCalcMSetRegEmp entity = optEntity.get();
+		Optional<KrcstEmpRegMCalSet> optEntity = this.queryProxy().find(new KrcstEmpRegMCalSetPK(cid, empCode),
+				KrcstEmpRegMCalSet.class);
+		KrcstEmpRegMCalSet entity = optEntity.get();
 		this.commandProxy().remove(entity);
 
 	}
 
-	private EmpRegulaMonthActCalSet toDomain (KrcmtCalcMSetRegEmp e) {
+	private EmpRegulaMonthActCalSet toDomain (KrcstEmpRegMCalSet e) {
 		
 		return EmpRegulaMonthActCalSet.of(new EmploymentCode(e.getKrcstEmpRegMCalSetPK().getEmpCd()), 
 				e.getKrcstEmpRegMCalSetPK().getCid(), 
@@ -112,8 +112,8 @@ public class JpaEmpRegulaMonthActCalSetRepository extends JpaRepository implemen
 	@Override
 	public List<EmpRegulaMonthActCalSet> findByCid(String cid) {
 		
-		List<KrcmtCalcMSetRegEmp> entities = this.queryProxy()
-				.query(SELECT_BY_CID , KrcmtCalcMSetRegEmp.class).setParameter("cid", cid).getList();
+		List<KrcstEmpRegMCalSet> entities = this.queryProxy()
+				.query(SELECT_BY_CID , KrcstEmpRegMCalSet.class).setParameter("cid", cid).getList();
 		
 		return entities.stream().map(m -> {
 			return toDomain(m);

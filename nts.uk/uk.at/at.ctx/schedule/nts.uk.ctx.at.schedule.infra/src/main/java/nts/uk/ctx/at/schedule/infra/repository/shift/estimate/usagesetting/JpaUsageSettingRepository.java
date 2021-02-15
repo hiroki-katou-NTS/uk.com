@@ -11,7 +11,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.usagesetting.UsageSetting;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.usagesetting.UsageSettingRepository;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.usagesetting.KscmtEstUsage;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.usagesetting.KscstEstUsageSet;
 
 /**
  * The Class JpaUsageSettingRepository.
@@ -29,7 +29,7 @@ public class JpaUsageSettingRepository extends JpaRepository implements UsageSet
 	@Override
 	public void add(UsageSetting domain) {
 		// Create entity
-		KscmtEstUsage entity = new KscmtEstUsage();
+		KscstEstUsageSet entity = new KscstEstUsageSet();
 
 		// Push data
 		domain.saveToMemento(new JpaUsageSettingSetMemento(entity));
@@ -48,7 +48,7 @@ public class JpaUsageSettingRepository extends JpaRepository implements UsageSet
 	@Override
 	public void update(UsageSetting domain) {
 		// Create entity
-		KscmtEstUsage entity = new KscmtEstUsage();
+		KscstEstUsageSet entity = new KscstEstUsageSet();
 
 		// Push data
 		domain.saveToMemento(new JpaUsageSettingSetMemento(entity));
@@ -66,8 +66,8 @@ public class JpaUsageSettingRepository extends JpaRepository implements UsageSet
 	@Override
 	public Optional<UsageSetting> findByCompanyId(String companyId) {
 		// Find records.
-		Optional<KscmtEstUsage> optKscstEstUsageSet = this.queryProxy().find(companyId,
-				KscmtEstUsage.class);
+		Optional<KscstEstUsageSet> optKscstEstUsageSet = this.queryProxy().find(companyId,
+				KscstEstUsageSet.class);
 
 		// Check exist.
 		if (!optKscstEstUsageSet.isPresent()) {

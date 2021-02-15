@@ -46,7 +46,7 @@ public class KrcdtEmpErAlCommon extends UkJpaEntity {
 	public String errorAlarmMessage;
 	
 	@Transient
-	public List<KrcdtDaySyaErrorAtd> erAttendanceItem;
+	public List<KrcdtErAttendanceItem> erAttendanceItem;
 
 	@Override
 	protected Object getKey() {
@@ -54,7 +54,7 @@ public class KrcdtEmpErAlCommon extends UkJpaEntity {
 	}
 
 	public KrcdtEmpErAlCommon(String id, String errorCode, String employeeId, GeneralDate processingDate,
-			String companyID, String errorAlarmMessage, String contractCode, List<KrcdtDaySyaErrorAtd> erAttendanceItem) {
+			String companyID, String errorAlarmMessage, String contractCode, List<KrcdtErAttendanceItem> erAttendanceItem) {
 		super();
 		this.id = id;
 		this.errorCode = errorCode;
@@ -73,11 +73,11 @@ public class KrcdtEmpErAlCommon extends UkJpaEntity {
 				0, this.errorAlarmMessage);
 	}
 	
-	public List<KrcdtDaySyaErrorAtd> getErAttendanceItem() {
+	public List<KrcdtErAttendanceItem> getErAttendanceItem() {
 		return erAttendanceItem;
 	}
 	
-	public void setErAttendanceItem(List<KrcdtDaySyaErrorAtd> er) {
+	public void setErAttendanceItem(List<KrcdtErAttendanceItem> er) {
 		erAttendanceItem = er;
 	}
 }

@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeStampReflectGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDif;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDiffTimeWorkSet;
 
 /**
  * The Class JpaDiffTimeStampReflectGetMemento.
@@ -14,14 +14,14 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDif;
 public class JpaDiffTimeStampReflectGetMemento implements DiffTimeStampReflectGetMemento {
 
 	/** The entity. */
-	private KshmtWtDif entity;
+	private KshmtDiffTimeWorkSet entity;
 
 	/**
 	 * Instantiates a new jpa diff time stamp reflect get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaDiffTimeStampReflectGetMemento(KshmtWtDif entity) {
+	public JpaDiffTimeStampReflectGetMemento(KshmtDiffTimeWorkSet entity) {
 		this.entity = entity;
 	}
 

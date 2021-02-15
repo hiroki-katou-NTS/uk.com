@@ -15,7 +15,7 @@ import nts.uk.ctx.at.schedule.dom.shift.estimate.time.MonthlyEstimateTime;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.time.MonthlyEstimateTimeSetting;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.time.YearlyEstimateTime;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.time.YearlyEstimateTimeSetting;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstTimeCom;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstTimeComSet;
 
 /**
  * The Class JpaEstimateTimeSettingCompanyGetMemento.
@@ -23,14 +23,14 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstTimeCo
 public class JpaComEstTimeSetGetMemento implements EstimateTimeSettingGetMemento{
 	
 	/** The est time company. */
-	private KscmtEstTimeCom estTimeCompany;
+	private KscmtEstTimeComSet estTimeCompany;
 	
 	/**
 	 * Instantiates a new jpa estimate time setting company get memento.
 	 *
 	 * @param estTimeCompany the est time company
 	 */
-	public JpaComEstTimeSetGetMemento(KscmtEstTimeCom estTimeCompany){
+	public JpaComEstTimeSetGetMemento(KscmtEstTimeComSet estTimeCompany){
 		this.estTimeCompany = estTimeCompany;
 	}
 

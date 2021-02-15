@@ -7,7 +7,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.workrule.workuse.TemporaryWorkUseManage;
 import nts.uk.ctx.at.shared.dom.workrule.workuse.TemporaryWorkUseManageRepository;
-import nts.uk.ctx.at.shared.infra.entity.workusage.KshmtTemporaryMng;
+import nts.uk.ctx.at.shared.infra.entity.workusage.KshstTempWkUseManage;
 import nts.uk.ctx.at.shared.infra.entity.workusage.KshstTempWkUseManagePK;
 
 /**
@@ -23,7 +23,7 @@ public class JpaTemporaryWorkUseManageRepository extends JpaRepository implement
 	 * @param setting the setting
 	 * @return the flex work set
 	 */
-	public TemporaryWorkUseManage convertToDomain(KshmtTemporaryMng setting) {
+	public TemporaryWorkUseManage convertToDomain(KshstTempWkUseManage setting) {
 		return TemporaryWorkUseManage.createFromJavaType(setting.getId().getCid(), setting.getUseClassification());
 	}
 	
@@ -33,8 +33,8 @@ public class JpaTemporaryWorkUseManageRepository extends JpaRepository implement
 	 * @param setting the setting
 	 * @return the kshst flex work setting
 	 */
-	public KshmtTemporaryMng convertToDbType(TemporaryWorkUseManage setting) {
-		KshmtTemporaryMng entity = new KshmtTemporaryMng();
+	public KshstTempWkUseManage convertToDbType(TemporaryWorkUseManage setting) {
+		KshstTempWkUseManage entity = new KshstTempWkUseManage();
 		KshstTempWkUseManagePK primaryKey = new KshstTempWkUseManagePK();
 		primaryKey.setCid(setting.getCompanyId().v());
 		entity.setId(primaryKey);
@@ -48,7 +48,7 @@ public class JpaTemporaryWorkUseManageRepository extends JpaRepository implement
 	@Override
 	public Optional<TemporaryWorkUseManage> findByCid(String companyId) {
 		return this.queryProxy()
-				.find(new KshstTempWkUseManagePK(companyId), KshmtTemporaryMng.class)
+				.find(new KshstTempWkUseManagePK(companyId), KshstTempWkUseManage.class)
 				.map(x -> convertToDomain(x));
 
 	}
@@ -58,7 +58,7 @@ public class JpaTemporaryWorkUseManageRepository extends JpaRepository implement
 	 */
 	@Override
 	public void insert(TemporaryWorkUseManage managementSetting) {
-		KshmtTemporaryMng setting = convertToDbType(managementSetting);
+		KshstTempWkUseManage setting = convertToDbType(managementSetting);
 		this.commandProxy().insert(setting);
 	}
 
@@ -67,7 +67,7 @@ public class JpaTemporaryWorkUseManageRepository extends JpaRepository implement
 	 */
 	@Override
 	public void update(TemporaryWorkUseManage managementSetting) {
-		KshmtTemporaryMng setting = convertToDbType(managementSetting);
+		KshstTempWkUseManage setting = convertToDbType(managementSetting);
 		this.commandProxy().update(setting);
 	}
 

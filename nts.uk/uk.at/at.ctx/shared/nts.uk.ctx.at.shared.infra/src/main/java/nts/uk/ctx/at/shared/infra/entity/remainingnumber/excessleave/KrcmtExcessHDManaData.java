@@ -9,7 +9,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
-@Table(name = "KRCDT_EXCESS_HD_MNG")
+@Table(name = "KRCMT_EXCESS_HD_MANA_DATA")
 public class KrcmtExcessHDManaData extends UkJpaEntity{
 	
 	@Id

@@ -5,7 +5,7 @@
 package nts.uk.ctx.at.shared.infra.repository.worktime.flexset;
 
 import nts.uk.ctx.at.shared.dom.worktime.flexset.TimeSheetGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFle;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkSetPK;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -15,14 +15,14 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class JpaFlexTimeSheetGetMemento implements TimeSheetGetMemento {
 	
 	/** The entity. */
-	private KshmtWtFle entity;
+	private KshmtFlexWorkSet entity;
 	
 	/**
 	 * Instantiates a new jpa time sheet get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlexTimeSheetGetMemento(KshmtWtFle entity) {
+	public JpaFlexTimeSheetGetMemento(KshmtFlexWorkSet entity) {
 		super();
 		if(entity.getKshmtFlexWorkSetPK() == null){
 			entity.setKshmtFlexWorkSetPK(new KshmtFlexWorkSetPK());

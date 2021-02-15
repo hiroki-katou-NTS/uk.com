@@ -8,11 +8,11 @@ import javax.persistence.metamodel.StaticMetamodel;
 import nts.uk.ctx.at.shared.infra.entity.holidaysetting.company.KshmtComMonthDaySetPK;
 
 @Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2017-12-18T18:29:35")
-@StaticMetamodel(KshmtHdpubDPerMCom.class)
+@StaticMetamodel(KshmtComMonthDaySet.class)
 public class KshmtComMonthDaySet_ { 
 
-    public static volatile SingularAttribute<KshmtHdpubDPerMCom, KshmtComMonthDaySetPK> kshmtComMonthDaySetPK;
-    public static volatile SingularAttribute<KshmtHdpubDPerMCom, Integer> exclusVer;
-    public static volatile SingularAttribute<KshmtHdpubDPerMCom, BigDecimal> inLegalHd;
+    public static volatile SingularAttribute<KshmtComMonthDaySet, KshmtComMonthDaySetPK> kshmtComMonthDaySetPK;
+    public static volatile SingularAttribute<KshmtComMonthDaySet, Integer> exclusVer;
+    public static volatile SingularAttribute<KshmtComMonthDaySet, BigDecimal> inLegalHd;
 
 }

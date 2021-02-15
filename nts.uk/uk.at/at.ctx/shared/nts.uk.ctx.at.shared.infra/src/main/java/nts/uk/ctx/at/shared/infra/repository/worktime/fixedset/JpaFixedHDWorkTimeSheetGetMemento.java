@@ -12,7 +12,7 @@ import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.worktime.common.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFixHolTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHolTimeSet;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -21,7 +21,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class JpaFixedHDWorkTimeSheetGetMemento implements HDWorkTimeSheetSettingGetMemento {
 
 	/** The entity. */
-	private KshmtWtFixHolTs entity;
+	private KshmtFixedHolTimeSet entity;
 
 	/** The Constant TRUE. */
 	private static final Integer TRUE = 1;
@@ -32,7 +32,7 @@ public class JpaFixedHDWorkTimeSheetGetMemento implements HDWorkTimeSheetSetting
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaFixedHDWorkTimeSheetGetMemento(KshmtWtFixHolTs entity) {
+	public JpaFixedHDWorkTimeSheetGetMemento(KshmtFixedHolTimeSet entity) {
 		super();
 		this.entity = entity;
 	}

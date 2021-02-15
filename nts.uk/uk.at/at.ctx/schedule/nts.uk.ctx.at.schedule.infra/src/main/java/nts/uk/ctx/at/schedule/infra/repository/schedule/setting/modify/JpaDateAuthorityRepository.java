@@ -8,7 +8,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.setting.modify.control.DateAuthority;
 import nts.uk.ctx.at.schedule.dom.schedule.setting.modify.control.DateAuthorityRepository;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.setting.modify.KscmtScheAuthDate;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.setting.modify.KscstScheDateAuthority;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.setting.modify.KscstScheDateAuthorityPK;
 @Stateless
 public class JpaDateAuthorityRepository extends JpaRepository implements DateAuthorityRepository{
@@ -16,7 +16,7 @@ public class JpaDateAuthorityRepository extends JpaRepository implements DateAut
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT e");
-		builderString.append(" FROM KscmtScheAuthDate e");
+		builderString.append(" FROM KscstScheDateAuthority e");
 		builderString.append(" WHERE e.kscstScheDateAuthorityPK.companyId = :companyId");
 		builderString.append(" AND e.kscstScheDateAuthorityPK.roleId = :roleId");
 		SELECT_BY_CID = builderString.toString();
@@ -26,7 +26,7 @@ public class JpaDateAuthorityRepository extends JpaRepository implements DateAut
 	 * @param schemodifyDeadline
 	 * @return
 	 */
-	private DateAuthority convertToDomain(KscmtScheAuthDate kscstScheDateAuthority) {
+	private DateAuthority convertToDomain(KscstScheDateAuthority kscstScheDateAuthority) {
 		DateAuthority dateAuthority = DateAuthority.createFromJavaType(
 				kscstScheDateAuthority.kscstScheDateAuthorityPK.companyId, 
 				kscstScheDateAuthority.kscstScheDateAuthorityPK.roleId, 
@@ -42,8 +42,8 @@ public class JpaDateAuthorityRepository extends JpaRepository implements DateAut
 	 * @param schemodifyDeadline
 	 * @return
 	 */
-	private KscmtScheAuthDate convertToDbType(DateAuthority dateAuthority) {
-		KscmtScheAuthDate scheDateAuthority = new KscmtScheAuthDate();
+	private KscstScheDateAuthority convertToDbType(DateAuthority dateAuthority) {
+		KscstScheDateAuthority scheDateAuthority = new KscstScheDateAuthority();
 		KscstScheDateAuthorityPK scheDateAuthorityPK = new KscstScheDateAuthorityPK(dateAuthority.getCompanyId(), dateAuthority.getRoleId(),dateAuthority.getFunctionNoDate());
 		scheDateAuthority.availableDate = dateAuthority.getAvailableDate();
 		scheDateAuthority.kscstScheDateAuthorityPK = scheDateAuthorityPK;
@@ -55,7 +55,7 @@ public class JpaDateAuthorityRepository extends JpaRepository implements DateAut
 	 */
 	@Override
 	public List<DateAuthority> findByCompanyId(String companyId, String roleId) {
-		return this.queryProxy().query(SELECT_BY_CID, KscmtScheAuthDate.class).setParameter("companyId", companyId)
+		return this.queryProxy().query(SELECT_BY_CID, KscstScheDateAuthority.class).setParameter("companyId", companyId)
 				.setParameter("roleId", roleId)
 				.getList(c -> convertToDomain(c));
 	}
@@ -74,7 +74,7 @@ public class JpaDateAuthorityRepository extends JpaRepository implements DateAut
 	@Override
 	public void update(DateAuthority author) {
 		KscstScheDateAuthorityPK primaryKey = new KscstScheDateAuthorityPK(author.getCompanyId(), author.getRoleId(), author.getFunctionNoDate());
-		KscmtScheAuthDate entity = this.queryProxy().find(primaryKey, KscmtScheAuthDate.class).get();
+		KscstScheDateAuthority entity = this.queryProxy().find(primaryKey, KscstScheDateAuthority.class).get();
 				entity.availableDate = author.getAvailableDate();
 				entity.kscstScheDateAuthorityPK = primaryKey;
 		this.commandProxy().update(entity);
@@ -85,7 +85,7 @@ public class JpaDateAuthorityRepository extends JpaRepository implements DateAut
 	 */
 	@Override
 	public Optional<DateAuthority> findByCId(String companyId, String roleId, int functionNoDate) {
-		return this.queryProxy().find(new KscstScheDateAuthorityPK(companyId, roleId ,functionNoDate), KscmtScheAuthDate.class)
+		return this.queryProxy().find(new KscstScheDateAuthorityPK(companyId, roleId ,functionNoDate), KscstScheDateAuthority.class)
 				.map(c -> convertToDomain(c));
 	}
 

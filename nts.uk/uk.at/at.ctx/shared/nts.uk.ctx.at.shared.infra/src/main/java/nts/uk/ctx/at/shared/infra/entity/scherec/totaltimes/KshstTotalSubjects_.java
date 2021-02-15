@@ -6,9 +6,9 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class KshstSummaryList_.
  */
-@StaticMetamodel(KshmtTotalSubjects.class)
+@StaticMetamodel(KshstTotalSubjects.class)
 public class KshstTotalSubjects_ {
 	/** The kshstSummaryListPK. */
-    public static volatile SingularAttribute<KshmtTotalSubjects, KshstTotalSubjectsPK> kshstTotalSubjectsPK;
+    public static volatile SingularAttribute<KshstTotalSubjects, KshstTotalSubjectsPK> kshstTotalSubjectsPK;
 
 }

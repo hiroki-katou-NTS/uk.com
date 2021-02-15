@@ -14,7 +14,7 @@ import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
 import nts.uk.ctx.at.function.dom.processexecution.LastExecDateTime;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
-@Table(name="KFNDT_AUTOEXEC_LASTDATE")
+@Table(name="KFNMT_LAST_EXEC_DATETIME")
 @AllArgsConstructor
 @NoArgsConstructor
 public class KfnmtLastExecDateTime extends UkJpaEntity implements Serializable{

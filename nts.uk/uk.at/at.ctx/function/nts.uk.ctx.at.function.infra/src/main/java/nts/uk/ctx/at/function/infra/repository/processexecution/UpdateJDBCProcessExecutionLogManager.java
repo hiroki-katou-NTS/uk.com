@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 public class UpdateJDBCProcessExecutionLogManager extends JpaRepository {
 	public void updateProcessExecutionLogManager (ProcessExecutionLogManage domain) {
 		try {
-			String updateTableSQL = " UPDATE KFNDT_AUTOEXEC_MNG SET"
+			String updateTableSQL = " UPDATE KFNMT_PRO_EXE_LOG_MANAGE SET"
 					+ " CURRENT_STATUS = ?,OVERALL_STATUS = ?,ERROR_DETAIL = ?, LAST_EXEC_DATETIME = ?, LAST_EXEC_DATETIME_EX = ?"
 					+ ", LAST_END_EXEC_DATETIME = ?, ERROR_SYSTEM = ?, ERROR_BUSINESS = ?"
 					+ " WHERE CID = ? AND EXEC_ITEM_CD = ? ";
@@ -49,7 +49,7 @@ public class UpdateJDBCProcessExecutionLogManager extends JpaRepository {
 	
 	public Optional<ProcessExecutionLogManage> getLogByCIdAndExecCd(String companyId, String execItemCd) {
 		try {
-			String updateTableSQL = " SELECT * FROM KFNDT_AUTOEXEC_MNG "
+			String updateTableSQL = " SELECT * FROM KFNMT_PRO_EXE_LOG_MANAGE "
 					+ " WHERE CID = ? AND EXEC_ITEM_CD = ? ";
 			try (PreparedStatement statement = this.connection().prepareStatement(updateTableSQL)) {
 				statement.setString(1, companyId);

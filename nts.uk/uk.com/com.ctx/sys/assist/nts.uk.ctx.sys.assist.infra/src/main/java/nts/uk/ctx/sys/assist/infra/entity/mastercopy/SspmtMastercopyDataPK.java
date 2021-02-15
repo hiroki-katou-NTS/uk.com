@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * The primary key class for the SSPCT_MASTERCOPY_DATA database table.
+ * The primary key class for the SSPMT_MASTERCOPY_DATA database table.
  * 
  */
 @Getter

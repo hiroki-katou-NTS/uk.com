@@ -6,7 +6,7 @@ import javax.persistence.Table;
 import nts.uk.ctx.pereg.dom.roles.functionauth.authsettingdesc.PersonInfoAuthDescription;
 import nts.uk.shr.infra.permit.data.JpaEntityOfDescriptionOfAvailabilityPermissionBase;
 
-@Table(name = "PPECT_ROLE_FUNC")
+@Table(name = "PPEMT_PER_INFO_FUNCTION")
 @Entity
 public class PpemtPersonInfoFunction
 		extends JpaEntityOfDescriptionOfAvailabilityPermissionBase<PersonInfoAuthDescription> {

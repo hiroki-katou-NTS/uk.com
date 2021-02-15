@@ -7,17 +7,17 @@ import javax.persistence.metamodel.StaticMetamodel;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtOtherLateEarlyPK;
 
 @Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2017-12-23T17:54:14")
-@StaticMetamodel(KshmtWtComLatetime.class)
+@StaticMetamodel(KshmtOtherLateEarly.class)
 public class KshmtOtherLateEarly_ { 
 
-    public static volatile SingularAttribute<KshmtWtComLatetime, Integer> deductionUnit;
-    public static volatile SingularAttribute<KshmtWtComLatetime, Integer> deductionRounding;
-    public static volatile SingularAttribute<KshmtWtComLatetime, Integer> graceTime;
-    public static volatile SingularAttribute<KshmtWtComLatetime, Integer> extractLateEarlyTime;
-    public static volatile SingularAttribute<KshmtWtComLatetime, KshmtOtherLateEarlyPK> kshmtOtherLateEarlyPK;
-    public static volatile SingularAttribute<KshmtWtComLatetime, Integer> recordUnit;
-    public static volatile SingularAttribute<KshmtWtComLatetime, Integer> includeWorktime;
-    public static volatile SingularAttribute<KshmtWtComLatetime, Integer> recordRounding;
-    public static volatile SingularAttribute<KshmtWtComLatetime, Integer> exclusVer;
+    public static volatile SingularAttribute<KshmtOtherLateEarly, Integer> deductionUnit;
+    public static volatile SingularAttribute<KshmtOtherLateEarly, Integer> deductionRounding;
+    public static volatile SingularAttribute<KshmtOtherLateEarly, Integer> graceTime;
+    public static volatile SingularAttribute<KshmtOtherLateEarly, Integer> extractLateEarlyTime;
+    public static volatile SingularAttribute<KshmtOtherLateEarly, KshmtOtherLateEarlyPK> kshmtOtherLateEarlyPK;
+    public static volatile SingularAttribute<KshmtOtherLateEarly, Integer> recordUnit;
+    public static volatile SingularAttribute<KshmtOtherLateEarly, Integer> includeWorktime;
+    public static volatile SingularAttribute<KshmtOtherLateEarly, Integer> recordRounding;
+    public static volatile SingularAttribute<KshmtOtherLateEarly, Integer> exclusVer;
 
 }

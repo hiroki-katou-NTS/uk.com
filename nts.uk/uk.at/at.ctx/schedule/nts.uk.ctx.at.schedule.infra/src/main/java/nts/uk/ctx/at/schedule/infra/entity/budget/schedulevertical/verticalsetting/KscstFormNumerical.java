@@ -38,7 +38,7 @@ public class KscstFormNumerical extends UkJpaEntity implements Serializable {
 		@JoinColumn(name = "VERTICAL_CAL_CD", referencedColumnName = "VERTICAL_CAL_CD", insertable = false, updatable = false),
 		@JoinColumn(name = "VERTICAL_CAL_ITEM_ID", referencedColumnName = "ITEM_ID", insertable = false, updatable = false)
 	})
-	public KscmtVerticalItem kscmtGenVertItem;
+	public KscmtGenVertItem kscmtGenVertItem;
 	
 	@Override
 	protected Object getKey() {

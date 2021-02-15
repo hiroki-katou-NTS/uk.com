@@ -11,24 +11,24 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class KscstEstAggregateSet_.
  */
-@StaticMetamodel(KscmtEstAggregate.class)
+@StaticMetamodel(KscstEstAggregateSet.class)
 public class KscstEstAggregateSet_ {
 
 	/** The cid. */
-	public static volatile SingularAttribute<KscmtEstAggregate, String> cid;
+	public static volatile SingularAttribute<KscstEstAggregateSet, String> cid;
 	
 	/** The half day atr. */
-	public static volatile SingularAttribute<KscmtEstAggregate, Integer> halfDayAtr;
+	public static volatile SingularAttribute<KscstEstAggregateSet, Integer> halfDayAtr;
 	
 	/** The year hd atr. */
-	public static volatile SingularAttribute<KscmtEstAggregate, Integer> yearHdAtr;
+	public static volatile SingularAttribute<KscstEstAggregateSet, Integer> yearHdAtr;
 	
 	/** The sphd atr. */
-	public static volatile SingularAttribute<KscmtEstAggregate, Integer> sphdAtr;
+	public static volatile SingularAttribute<KscstEstAggregateSet, Integer> sphdAtr;
 	
 	/** The havy hd atr. */
-	public static volatile SingularAttribute<KscmtEstAggregate, Integer> havyHdAtr;
+	public static volatile SingularAttribute<KscstEstAggregateSet, Integer> havyHdAtr;
 	
 	/** The kscst per cost extra item. */
-	public static volatile ListAttribute<KscmtEstAggregate, KscmtPerCostExtraItem> kscstPerCostExtraItem;
+	public static volatile ListAttribute<KscstEstAggregateSet, KscstPerCostExtraItem> kscstPerCostExtraItem;
 }

@@ -6,7 +6,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSettingGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFlWekTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHaRestSet;
 
 /**
  * The Class JpaFlexHAFlowRestGetMemento.
@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFlWekTs;
 public class JpaFlexHAFlowRestGetMemento implements FlowRestSettingGetMemento{
 
 	/** The entity. */
-	private KshmtWtFleBrFlWekTs entity;
+	private KshmtFlexHaRestSet entity;
 	
 	
 	/**
@@ -22,7 +22,7 @@ public class JpaFlexHAFlowRestGetMemento implements FlowRestSettingGetMemento{
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlexHAFlowRestGetMemento(KshmtWtFleBrFlWekTs entity) {
+	public JpaFlexHAFlowRestGetMemento(KshmtFlexHaRestSet entity) {
 		super();
 		this.entity = entity;
 	}

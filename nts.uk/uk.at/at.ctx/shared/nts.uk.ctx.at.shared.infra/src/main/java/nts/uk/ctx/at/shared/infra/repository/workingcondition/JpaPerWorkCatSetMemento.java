@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.workingcondition.PersonalWorkCategorySetMemento;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondCtg;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPerWorkCat;
 
 
 /**
@@ -23,7 +23,7 @@ import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondCtg;
 public class JpaPerWorkCatSetMemento implements PersonalWorkCategorySetMemento {
 
 	/** The entities. */
-	private List<KshmtWorkcondCtg> entities;
+	private List<KshmtPerWorkCat> entities;
 	
 	/** The sid. */
 	private String sid;
@@ -32,7 +32,7 @@ public class JpaPerWorkCatSetMemento implements PersonalWorkCategorySetMemento {
 	private String historyId;
 
 	/** The map single day schedule. */
-	private Map<Integer, KshmtWorkcondCtg> mapSingleDaySchedule;
+	private Map<Integer, KshmtPerWorkCat> mapSingleDaySchedule;
 
 	/**
 	 * Instantiates a new jpa personal work category set memento.
@@ -40,7 +40,7 @@ public class JpaPerWorkCatSetMemento implements PersonalWorkCategorySetMemento {
 	 * @param entities
 	 *            the entitys
 	 */
-	public JpaPerWorkCatSetMemento(String historyId, List<KshmtWorkcondCtg> entities, String sid) {
+	public JpaPerWorkCatSetMemento(String historyId, List<KshmtPerWorkCat> entities, String sid) {
 		this.mapSingleDaySchedule = new HashMap<>();
 		if (!CollectionUtil.isEmpty(entities)) {
 			this.mapSingleDaySchedule = entities.stream().collect(Collectors.toMap(
@@ -156,8 +156,8 @@ public class JpaPerWorkCatSetMemento implements PersonalWorkCategorySetMemento {
 		}
 		
 		// Create primary key
-		KshmtWorkcondCtg entity = this.mapSingleDaySchedule
-				.getOrDefault(Integer.valueOf(workCategoryAtr), new KshmtWorkcondCtg());
+		KshmtPerWorkCat entity = this.mapSingleDaySchedule
+				.getOrDefault(Integer.valueOf(workCategoryAtr), new KshmtPerWorkCat());
 		entity.setSid(this.sid);
 		domain.get().saveToMemento(
 				new JpaSDayScheWorkCatSetMemento(this.historyId, workCategoryAtr, entity));

@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
 @NoArgsConstructor
-@Table(name = "KFNMT_ALST_MAILSET_AUTO")
+@Table(name = "KFNMT_MAIL_SET_AUTOMATIC")
 public class KfnmtMailSettingAutomatic extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -40,14 +40,14 @@ public class KfnmtMailSettingAutomatic extends UkJpaEntity implements Serializab
 	public String mailAddressCC;
 
 	@OneToMany(mappedBy = "mailAutomaticCC", cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinTable(name = "KFNMT_ALST_MAILSET")
+	@JoinTable(name = "KFNMT_MAIL_SET_LIST")
 	public List<KfnmtMailSettingList> mailSettingListCC;
 
 	@Column(name = "BCC", nullable = true)
 	public String mailAddressBCC;
 
 	@OneToMany(mappedBy = "mailAutomaticBCC", cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinTable(name = "KFNMT_ALST_MAILSET")
+	@JoinTable(name = "KFNMT_MAIL_SET_LIST")
 	public List<KfnmtMailSettingList> mailSettingListBCC;
 
 	@Column(name = "SUBJECT", nullable = true)
@@ -63,14 +63,14 @@ public class KfnmtMailSettingAutomatic extends UkJpaEntity implements Serializab
 	public String adminMailAddressCC;
 
 	@OneToMany(mappedBy = "mailAutomaticAdminCC", cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinTable(name = "KFNMT_ALST_MAILSET")
+	@JoinTable(name = "KFNMT_MAIL_SET_LIST")
 	public List<KfnmtMailSettingList> mailSettingListAdminCC;
 
 	@Column(name = "ADMIN_BCC", nullable = true)
 	public String adminMailAddressBCC;
 
 	@OneToMany(mappedBy = "mailAutomaticAdminBCC", cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinTable(name = "KFNMT_ALST_MAILSET")
+	@JoinTable(name = "KFNMT_MAIL_SET_LIST")
 	public List<KfnmtMailSettingList> mailSettingListAdminBCC;
 
 	@Column(name = "ADMIN_SUBJECT", nullable = true)

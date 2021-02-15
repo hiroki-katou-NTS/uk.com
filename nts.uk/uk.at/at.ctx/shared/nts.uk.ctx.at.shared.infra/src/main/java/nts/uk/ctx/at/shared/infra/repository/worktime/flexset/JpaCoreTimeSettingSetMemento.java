@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.usecls.ApplyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.TimeSheet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFle;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkSetPK;
 
 /**
@@ -17,14 +17,14 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkSetPK;
 public class JpaCoreTimeSettingSetMemento implements CoreTimeSettingSetMemento {
 	
 	/** The entity. */
-	private KshmtWtFle entity;
+	private KshmtFlexWorkSet entity;
 	
 	/**
 	 * Instantiates a new jpa core time setting set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaCoreTimeSettingSetMemento(KshmtWtFle entity) {
+	public JpaCoreTimeSettingSetMemento(KshmtFlexWorkSet entity) {
 		super();
 		if(entity.getKshmtFlexWorkSetPK() == null){
 			entity.setKshmtFlexWorkSetPK(new KshmtFlexWorkSetPK());

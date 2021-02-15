@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSetGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloBrFl;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowRtSet;
 
 /**
  * The Class JpaTimezoneOfFixedRestTimeSetGetMemento.
@@ -19,14 +19,14 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloBrFl;
 public class JpaTimezoneOfFixedRestTimeSetGetMemento implements TimezoneOfFixedRestTimeSetGetMemento {
 
 	/** The entity. */
-	private KshmtWtFloBrFl entity;
+	private KshmtFlowRtSet entity;
 	
 	/**
 	 * Instantiates a new jpa timezone of fixed rest time set get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaTimezoneOfFixedRestTimeSetGetMemento(KshmtWtFloBrFl entity) {
+	public JpaTimezoneOfFixedRestTimeSetGetMemento(KshmtFlowRtSet entity) {
 		super();
 		this.entity = entity;
 		if (CollectionUtil.isEmpty(this.entity.getLstKshmtFlowFixedRtSet())) {

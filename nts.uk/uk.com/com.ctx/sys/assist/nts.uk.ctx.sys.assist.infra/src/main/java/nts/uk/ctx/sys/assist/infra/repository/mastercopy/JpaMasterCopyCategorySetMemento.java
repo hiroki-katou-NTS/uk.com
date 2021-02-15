@@ -10,12 +10,12 @@ import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyCategoryNo;
 import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyCategoryOrder;
 import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyCategorySetMemento;
 import nts.uk.ctx.sys.assist.dom.mastercopy.SystemType;
-import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspctMastercopyCategory;
+import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyCategory;
 
 public class JpaMasterCopyCategorySetMemento implements MasterCopyCategorySetMemento {
 
 	/** The entity. */
-	private SspctMastercopyCategory entity;
+	private SspmtMastercopyCategory entity;
 
 	/**
 	 * Instantiates a new jpa master copy category set memento.
@@ -32,7 +32,7 @@ public class JpaMasterCopyCategorySetMemento implements MasterCopyCategorySetMem
 	 * 
 	 *            the entity
 	 */
-	public JpaMasterCopyCategorySetMemento(SspctMastercopyCategory entity) {
+	public JpaMasterCopyCategorySetMemento(SspmtMastercopyCategory entity) {
 		this.entity = entity;
 	}
 

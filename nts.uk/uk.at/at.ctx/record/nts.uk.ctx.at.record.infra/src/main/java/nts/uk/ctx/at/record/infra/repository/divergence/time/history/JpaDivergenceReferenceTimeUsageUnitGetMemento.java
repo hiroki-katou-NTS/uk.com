@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 import lombok.Setter;
 import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceReferenceTimeUsageUnitGetMemento;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcmtDvgcUnitSet;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstDrtUseUnit;
 
 /**
  * The Class JpaDivergenceReferenceTimeUsageUnitGetMemento.
@@ -13,7 +13,7 @@ public class JpaDivergenceReferenceTimeUsageUnitGetMemento implements Divergence
 
 	/** The entity. */
 	@Setter
-	private KrcmtDvgcUnitSet krcstDrtUseUnit;
+	private KrcstDrtUseUnit krcstDrtUseUnit;
 
 	/**
 	 * Instantiates a new jpa divergence reference time usage unit get memento.
@@ -27,7 +27,7 @@ public class JpaDivergenceReferenceTimeUsageUnitGetMemento implements Divergence
 	 *
 	 * @param krcstDrtUseUnit the krcst drt use unit
 	 */
-	public JpaDivergenceReferenceTimeUsageUnitGetMemento(KrcmtDvgcUnitSet krcstDrtUseUnit) {
+	public JpaDivergenceReferenceTimeUsageUnitGetMemento(KrcstDrtUseUnit krcstDrtUseUnit) {
 		this.krcstDrtUseUnit = krcstDrtUseUnit;
 	}
 

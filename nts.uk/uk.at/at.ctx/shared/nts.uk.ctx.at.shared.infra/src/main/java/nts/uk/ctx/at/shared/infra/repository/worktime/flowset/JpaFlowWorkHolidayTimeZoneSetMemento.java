@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlWorkHdTzSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowTimeSetting;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloHolTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFworkHolidayTime;
 
 /**
  * The Class JpaFlowWorkHolidayTimeZoneSetMemento.
@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloHolTs;
 public class JpaFlowWorkHolidayTimeZoneSetMemento implements FlWorkHdTzSetMemento {
 
 	/** The entity. */
-	KshmtWtFloHolTs entity;
+	KshmtFworkHolidayTime entity;
 
 	/**
 	 * Instantiates a new jpa flow work holiday time zone set memento.
@@ -24,7 +24,7 @@ public class JpaFlowWorkHolidayTimeZoneSetMemento implements FlWorkHdTzSetMement
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaFlowWorkHolidayTimeZoneSetMemento(KshmtWtFloHolTs entity) {
+	public JpaFlowWorkHolidayTimeZoneSetMemento(KshmtFworkHolidayTime entity) {
 		super();
 		this.entity = entity;
 	}

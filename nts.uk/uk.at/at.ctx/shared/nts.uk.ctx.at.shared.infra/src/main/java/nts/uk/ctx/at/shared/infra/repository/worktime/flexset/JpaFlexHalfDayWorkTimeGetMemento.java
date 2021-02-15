@@ -10,7 +10,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexHalfDayWorkTimeGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleOverTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOtTimeSet;
 
 /**
  * The Class JpaFlexHalfDayWorkTimeGetMemento.
@@ -18,7 +18,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleOverTs;
 public class JpaFlexHalfDayWorkTimeGetMemento implements FlexHalfDayWorkTimeGetMemento {
 
 	/** The entity. */
-	/*private*/ List<KshmtWtFleOverTs> entity;
+	/*private*/ List<KshmtFlexOtTimeSet> entity;
 
 	/** The entity group. */
 	// private KshmtFlexHaGroup entityGroup;
@@ -31,7 +31,7 @@ public class JpaFlexHalfDayWorkTimeGetMemento implements FlexHalfDayWorkTimeGetM
 	 * @param entityGroup
 	 *            the entity group
 	 */
-//	public JpaFlexHalfDayWorkTimeGetMemento(List<KshmtWtFleOverTs> entity,
+//	public JpaFlexHalfDayWorkTimeGetMemento(List<KshmtFlexOtTimeSet> entity,
 //			KshmtFlexHaGroup entityGroup) {
 //		super();
 //		// this.entity = entity;

@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  */
 @Data
 @Entity
-@Table(name = "KRCMT_ANP_PERIOD")
+@Table(name = "KRCMT_OPTIONALAGGR_PERIOD")
 @EqualsAndHashCode(callSuper = true)
 public class KrcmtOptionalAggrPeriod extends UkJpaEntity
 		implements AnyAggrPeriod.MementoGetter, AnyAggrPeriod.MementoSetter, Serializable {

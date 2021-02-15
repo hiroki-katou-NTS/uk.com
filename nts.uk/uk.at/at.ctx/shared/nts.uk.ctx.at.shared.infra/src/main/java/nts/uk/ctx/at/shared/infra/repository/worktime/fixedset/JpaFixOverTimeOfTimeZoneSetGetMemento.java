@@ -11,7 +11,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.OTFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSetGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.SettlementOrder;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFixOverTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedOtTimeSet;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -20,7 +20,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class JpaFixOverTimeOfTimeZoneSetGetMemento implements OverTimeOfTimeZoneSetGetMemento {
 
 	/** The entity. */
-	private KshmtWtFixOverTs entity;
+	private KshmtFixedOtTimeSet entity;
 
 	/**
 	 * Instantiates a new jpa fix over time of time zone set get memento.
@@ -28,7 +28,7 @@ public class JpaFixOverTimeOfTimeZoneSetGetMemento implements OverTimeOfTimeZone
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaFixOverTimeOfTimeZoneSetGetMemento(KshmtWtFixOverTs entity) {
+	public JpaFixOverTimeOfTimeZoneSetGetMemento(KshmtFixedOtTimeSet entity) {
 		super();
 		this.entity = entity;
 	}

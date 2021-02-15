@@ -8,13 +8,13 @@ import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeDeductTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeRestTimezoneSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDif;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDifBrWekTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDiffTimeWorkSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDtHalfRestTime;
 import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDtHalfRestTimePK;
 
 public class JpaDiffTimeRestTimezoneSetMemento implements DiffTimeRestTimezoneSetMemento {
 
-	private KshmtWtDif entity;
+	private KshmtDiffTimeWorkSet entity;
 
 	private int type;
 
@@ -24,7 +24,7 @@ public class JpaDiffTimeRestTimezoneSetMemento implements DiffTimeRestTimezoneSe
 
 	private int periodNo;
 
-	public JpaDiffTimeRestTimezoneSetMemento(KshmtWtDif entity, int type) {
+	public JpaDiffTimeRestTimezoneSetMemento(KshmtDiffTimeWorkSet entity, int type) {
 		this.entity = entity;
 		this.type = type;
 		this.companyId = entity.getKshmtDiffTimeWorkSetPK().getCid();
@@ -33,28 +33,28 @@ public class JpaDiffTimeRestTimezoneSetMemento implements DiffTimeRestTimezoneSe
 
 	@Override
 	public void setRestTimezones(List<DiffTimeDeductTimezone> restTimezone) {
-		//KSHMT_WT_DIF_BR_WEK_TS
+		//KSHMT_DT_HALF_REST_TIME
 		if (this.entity.getLstKshmtDtHalfRestTime() == null) {
 			this.entity.setLstKshmtDtHalfRestTime(new ArrayList<>());
 		}
-		List<KshmtWtDifBrWekTs> otherList = this.entity.getLstKshmtDtHalfRestTime().stream()
+		List<KshmtDtHalfRestTime> otherList = this.entity.getLstKshmtDtHalfRestTime().stream()
 				.filter(entity -> entity.getKshmtDtHalfRestTimePK().getAmPmAtr() != this.type)
 				.collect(Collectors.toList());
 		// get list old entity
-		Map<KshmtDtHalfRestTimePK, KshmtWtDifBrWekTs> lstOldEntity = this.entity.getLstKshmtDtHalfRestTime().stream()
+		Map<KshmtDtHalfRestTimePK, KshmtDtHalfRestTime> lstOldEntity = this.entity.getLstKshmtDtHalfRestTime().stream()
 				.filter(entity -> entity.getKshmtDtHalfRestTimePK().getAmPmAtr() == this.type)
-				.collect(Collectors.toMap(KshmtWtDifBrWekTs::getKshmtDtHalfRestTimePK, Function.identity()));
+				.collect(Collectors.toMap(KshmtDtHalfRestTime::getKshmtDtHalfRestTimePK, Function.identity()));
 
-		List<KshmtWtDifBrWekTs> newListEntity = new ArrayList<>();
+		List<KshmtDtHalfRestTime> newListEntity = new ArrayList<>();
 
 		periodNo = 0;
 		restTimezone.forEach(domain -> {
 			periodNo++;
 			KshmtDtHalfRestTimePK pk = new KshmtDtHalfRestTimePK(this.companyId, this.workTimeCode, this.type,
 					periodNo);
-			KshmtWtDifBrWekTs entity = lstOldEntity.get(pk);
+			KshmtDtHalfRestTime entity = lstOldEntity.get(pk);
 			if (entity == null) {
-				entity = new KshmtWtDifBrWekTs();
+				entity = new KshmtDtHalfRestTime();
 				entity.setKshmtDtHalfRestTimePK(pk);
 			}
 			domain.saveToMemento(new JpaDiffTimeDeductTimezoneSetMemento(entity));

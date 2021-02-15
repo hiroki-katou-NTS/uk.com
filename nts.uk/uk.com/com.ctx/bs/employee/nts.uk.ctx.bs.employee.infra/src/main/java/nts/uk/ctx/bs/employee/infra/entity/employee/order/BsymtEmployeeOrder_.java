@@ -13,13 +13,13 @@ import nts.uk.ctx.bs.employee.infra.entity.employee.order.BsymtEmployeeOrderPK;
  * The Class BsymtEmployeeOrder_.
  */
 @Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2018-02-12T17:45:39")
-@StaticMetamodel(BsymtSrchSyaSort.class)
+@StaticMetamodel(BsymtEmployeeOrder.class)
 public class BsymtEmployeeOrder_ { 
 
     /** The name. */
-    public static volatile SingularAttribute<BsymtSrchSyaSort, String> name;
+    public static volatile SingularAttribute<BsymtEmployeeOrder, String> name;
     
     /** The id. */
-    public static volatile SingularAttribute<BsymtSrchSyaSort, BsymtEmployeeOrderPK> id;
+    public static volatile SingularAttribute<BsymtEmployeeOrder, BsymtEmployeeOrderPK> id;
 
 }

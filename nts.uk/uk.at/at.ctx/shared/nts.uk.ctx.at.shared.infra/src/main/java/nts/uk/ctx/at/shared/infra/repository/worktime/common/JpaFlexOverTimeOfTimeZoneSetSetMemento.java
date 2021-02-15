@@ -10,7 +10,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.OTFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSetSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.SettlementOrder;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleOverTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOtTimeSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOtTimeSetPK;
 
 /**
@@ -19,14 +19,14 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOtTimeSetPK;
 public class JpaFlexOverTimeOfTimeZoneSetSetMemento implements OverTimeOfTimeZoneSetSetMemento{
 	
 	/** The entity. */
-	private KshmtWtFleOverTs entity;
+	private KshmtFlexOtTimeSet entity;
 
 	/**
 	 * Instantiates a new jpa flex over time of time zone set get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlexOverTimeOfTimeZoneSetSetMemento(KshmtWtFleOverTs entity) {
+	public JpaFlexOverTimeOfTimeZoneSetSetMemento(KshmtFlexOtTimeSet entity) {
 		super();
 		if(entity.getKshmtFlexOtTimeSetPK() == null){
 			entity.setKshmtFlexOtTimeSetPK(new KshmtFlexOtTimeSetPK());

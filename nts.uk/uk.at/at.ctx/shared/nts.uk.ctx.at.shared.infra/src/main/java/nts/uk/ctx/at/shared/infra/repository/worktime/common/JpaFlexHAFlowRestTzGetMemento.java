@@ -12,7 +12,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestTimezoneGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFlWek;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHaRtSet;
 
 /**
  * The Class JpaFlexOffdayFlowRestTzGetMemento.
@@ -20,14 +20,14 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFlWek;
 public class JpaFlexHAFlowRestTzGetMemento implements FlowRestTimezoneGetMemento{
 	
 	/** The entity. */
-	private KshmtWtFleBrFlWek entity;
+	private KshmtFlexHaRtSet entity;
 	
 	/**
 	 * Instantiates a new jpa flex HA flow rest tz get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlexHAFlowRestTzGetMemento(KshmtWtFleBrFlWek entity) {
+	public JpaFlexHAFlowRestTzGetMemento(KshmtFlexHaRtSet entity) {
 		super();
 		this.entity = entity;
 	}

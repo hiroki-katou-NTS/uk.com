@@ -6,7 +6,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.flexset;
 
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexCalcSettingGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFle;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkSet;
 
 /**
  * The Class JpaFlexCalcSettingGetMemento.
@@ -14,14 +14,14 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFle;
 public class JpaFlexCalcSettingGetMemento implements FlexCalcSettingGetMemento {
 	
 	/** The entity. */
-	private KshmtWtFle entity;
+	private KshmtFlexWorkSet entity;
 
 	/**
 	 * Instantiates a new jpa flex calc setting get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlexCalcSettingGetMemento(KshmtWtFle entity) {
+	public JpaFlexCalcSettingGetMemento(KshmtFlexWorkSet entity) {
 		super();
 		this.entity = entity;
 	}

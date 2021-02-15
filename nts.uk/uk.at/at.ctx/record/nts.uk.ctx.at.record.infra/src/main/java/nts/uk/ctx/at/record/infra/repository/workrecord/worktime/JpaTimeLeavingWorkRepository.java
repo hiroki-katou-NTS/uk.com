@@ -14,7 +14,7 @@ public class JpaTimeLeavingWorkRepository extends JpaRepository implements TimeL
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("DELETE a ");
-		builderString.append("FROM KrcdtDayTsAtdStmp a ");
+		builderString.append("FROM KrcdtTimeLeavingWork a ");
 		builderString.append("WHERE a.krcdtTimeLeavingWorkPK.employeeId = :employeeId ");
 		builderString.append("AND a.krcdtTimeLeavingWorkPK.ymd = :ymd ");
 		REMOVE_BY_EMPLOYEE = builderString.toString();

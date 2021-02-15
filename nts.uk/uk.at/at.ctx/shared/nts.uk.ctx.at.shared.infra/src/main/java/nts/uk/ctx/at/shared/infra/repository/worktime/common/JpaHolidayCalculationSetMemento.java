@@ -6,7 +6,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.HolidayCalculationSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtCom;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
 
 /**
  * The Class JpaHolidayCalculationSetMemento.
@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtCom;
 public class JpaHolidayCalculationSetMemento implements HolidayCalculationSetMemento {
 
 	/** The entity. */
-	private KshmtWtCom entity;
+	private KshmtWorktimeCommonSet entity;
 
 	/**
 	 * Instantiates a new jpa holiday calculation set memento.
@@ -22,7 +22,7 @@ public class JpaHolidayCalculationSetMemento implements HolidayCalculationSetMem
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaHolidayCalculationSetMemento(KshmtWtCom entity) {
+	public JpaHolidayCalculationSetMemento(KshmtWorktimeCommonSet entity) {
 		super();
 		this.entity = entity;
 	}

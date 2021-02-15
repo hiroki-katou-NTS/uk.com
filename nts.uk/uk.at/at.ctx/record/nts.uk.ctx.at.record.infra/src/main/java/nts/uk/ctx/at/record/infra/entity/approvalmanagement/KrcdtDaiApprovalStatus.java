@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_DAY_BOSS_CHECK")
+@Table(name = "KRCDT_DAI_APPROVAL")
 public class KrcdtDaiApprovalStatus extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

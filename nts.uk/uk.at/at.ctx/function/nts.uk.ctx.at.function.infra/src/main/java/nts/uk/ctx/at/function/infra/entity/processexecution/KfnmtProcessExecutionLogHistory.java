@@ -33,7 +33,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Data
 @EqualsAndHashCode(callSuper = false)
-@Table(name = "KFNDT_AUTOEXEC_LOG_HIST")
+@Table(name = "KFNMT_PROC_EXEC_LOG_HIST")
 @AllArgsConstructor
 @NoArgsConstructor
 public class KfnmtProcessExecutionLogHistory extends UkJpaEntity implements ProcessExecutionLogHistory.MementoGetter, ProcessExecutionLogHistory.MementoSetter, Serializable {
@@ -115,7 +115,7 @@ public class KfnmtProcessExecutionLogHistory extends UkJpaEntity implements Proc
 
     /* 各処理の終了状態 */
     @OneToMany(mappedBy = "procExecLogHistItem", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    @JoinTable(name = "KFNDT_AUTOEXEC_TASK_LOG")
+    @JoinTable(name = "KFNMT_EXEC_TASK_LOG")
     public List<KfnmtExecutionTaskLog> taskLogList;
 
     @Override

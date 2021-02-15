@@ -28,7 +28,7 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
-@Table(name = "KFNDT_AUTOEXEC_MNG")
+@Table(name = "KFNMT_PRO_EXE_LOG_MANAGE")
 @AllArgsConstructor
 @NoArgsConstructor
 public class KfnmtProcessExecutionLogManage extends UkJpaEntity {

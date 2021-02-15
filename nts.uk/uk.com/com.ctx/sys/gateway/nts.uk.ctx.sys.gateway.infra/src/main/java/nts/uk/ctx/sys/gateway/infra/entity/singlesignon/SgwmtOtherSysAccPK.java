@@ -9,7 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The primary key class for the SGWMT_SSO_OTHER_SYS_ACC database table.
+ * The primary key class for the SGWMT_OTHER_SYS_ACC database table.
  * 
  */
 @Setter

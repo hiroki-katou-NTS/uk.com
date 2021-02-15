@@ -23,15 +23,15 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.employment.EmploymentEstablishment;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.employment.EmploymentEstablishmentRepository;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstDaysEmp;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstDaysEmpSet;
 import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstDaysEmpSetPK;
 import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstDaysEmpSetPK_;
 import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstDaysEmpSet_;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstPriceEmp;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstPriceEmpSet;
 import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstPriceEmpSetPK;
 import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstPriceEmpSetPK_;
 import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstPriceEmpSet_;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstTimeEmp;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstTimeEmpSet;
 import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstTimeEmpSetPK;
 import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstTimeEmpSetPK_;
 import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstTimeEmpSet_;
@@ -61,7 +61,7 @@ public class JpaEmpEstablishmentRepository extends JpaRepository
 			int targetYear) {
 
 		// get by data base
-		List<KscmtEstTimeEmp> estimateTimeEmployments = this.getEstimateTimeEmployment(companyId,
+		List<KscmtEstTimeEmpSet> estimateTimeEmployments = this.getEstimateTimeEmployment(companyId,
 				employmentCode, targetYear);
 
 		// check exist data
@@ -71,7 +71,7 @@ public class JpaEmpEstablishmentRepository extends JpaRepository
 		}
 
 		// get by data base
-		List<KscmtEstPriceEmp> estimatePriceEmployments = this
+		List<KscmtEstPriceEmpSet> estimatePriceEmployments = this
 				.getEstimatePriceEmployment(companyId, employmentCode, targetYear);
 
 		// check exist data
@@ -81,7 +81,7 @@ public class JpaEmpEstablishmentRepository extends JpaRepository
 		}
 
 		// get by data base
-		List<KscmtEstDaysEmp> estimateDaysEmployments = this.getEstimateDaysEmployment(companyId,
+		List<KscmtEstDaysEmpSet> estimateDaysEmployments = this.getEstimateDaysEmployment(companyId,
 				employmentCode, targetYear);
 
 		// check exist data
@@ -102,9 +102,9 @@ public class JpaEmpEstablishmentRepository extends JpaRepository
 	 * @param targetYear the target year
 	 * @return the estimate time employment default
 	 */
-	private List<KscmtEstTimeEmp> getEstimateTimeEmploymentDefault(String companyId,
+	private List<KscmtEstTimeEmpSet> getEstimateTimeEmploymentDefault(String companyId,
 			String employmentCode, int targetYear) {
-		List<KscmtEstTimeEmp> estimateTimeEmployments = new ArrayList<>();
+		List<KscmtEstTimeEmpSet> estimateTimeEmployments = new ArrayList<>();
 		for (int index = DEFAULT_VALUE; index <= TOTAL_MONTH_OF_YEAR; index++) {
 			estimateTimeEmployments
 					.add(this.toEntityTimeDefault(companyId, employmentCode, targetYear, index));
@@ -120,18 +120,18 @@ public class JpaEmpEstablishmentRepository extends JpaRepository
 	 * @param targetYear the target year
 	 * @return the estimate time employment
 	 */
-	private List<KscmtEstTimeEmp> getEstimateTimeEmployment(String companyId,
+	private List<KscmtEstTimeEmpSet> getEstimateTimeEmployment(String companyId,
 			String emmploymentCode, int targetYear) {
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		// call KSCMT_EST_TIME_COM (KscmtEstTimeEmp SQL)
-		CriteriaQuery<KscmtEstTimeEmp> cq = criteriaBuilder
-				.createQuery(KscmtEstTimeEmp.class);
+		// call KSCMT_EST_TIME_COM_SET (KscmtEstTimeEmpSet SQL)
+		CriteriaQuery<KscmtEstTimeEmpSet> cq = criteriaBuilder
+				.createQuery(KscmtEstTimeEmpSet.class);
 
 		// root data
-		Root<KscmtEstTimeEmp> root = cq.from(KscmtEstTimeEmp.class);
+		Root<KscmtEstTimeEmpSet> root = cq.from(KscmtEstTimeEmpSet.class);
 
 		// select root
 		cq.select(root);
@@ -158,7 +158,7 @@ public class JpaEmpEstablishmentRepository extends JpaRepository
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		// create query
-		TypedQuery<KscmtEstTimeEmp> query = em.createQuery(cq);
+		TypedQuery<KscmtEstTimeEmpSet> query = em.createQuery(cq);
 
 		// exclude select
 		return query.getResultList();
@@ -171,9 +171,9 @@ public class JpaEmpEstablishmentRepository extends JpaRepository
 	 * @param targetYear the target year
 	 * @return the estimate price Employment default
 	 */
-	private List<KscmtEstPriceEmp> getEstimatePriceEmploymentDefault(String companyId,
+	private List<KscmtEstPriceEmpSet> getEstimatePriceEmploymentDefault(String companyId,
 			String employementCode, int targetYear) {
-		List<KscmtEstPriceEmp> estimatePriceEmployments = new ArrayList<>();
+		List<KscmtEstPriceEmpSet> estimatePriceEmployments = new ArrayList<>();
 		for (int index = DEFAULT_VALUE; index <= TOTAL_MONTH_OF_YEAR; index++) {
 			estimatePriceEmployments
 					.add(this.toEntityPriceDefault(companyId, employementCode, targetYear, index));
@@ -188,19 +188,19 @@ public class JpaEmpEstablishmentRepository extends JpaRepository
 	 * @param targetYear the target year
 	 * @return the estimate price Employment
 	 */
-	private List<KscmtEstPriceEmp> getEstimatePriceEmployment(String companyId,
+	private List<KscmtEstPriceEmpSet> getEstimatePriceEmployment(String companyId,
 			String employmentCode, int targetYear) {
 
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		// call KSCMT_EST_PRICE_COM (KscmtEstPriceEmp SQL)
-		CriteriaQuery<KscmtEstPriceEmp> cq = criteriaBuilder
-				.createQuery(KscmtEstPriceEmp.class);
+		// call KSCMT_EST_PRICE_COM_SET (KscmtEstPriceEmpSet SQL)
+		CriteriaQuery<KscmtEstPriceEmpSet> cq = criteriaBuilder
+				.createQuery(KscmtEstPriceEmpSet.class);
 
 		// root data
-		Root<KscmtEstPriceEmp> root = cq.from(KscmtEstPriceEmp.class);
+		Root<KscmtEstPriceEmpSet> root = cq.from(KscmtEstPriceEmpSet.class);
 
 		// select root
 		cq.select(root);
@@ -227,7 +227,7 @@ public class JpaEmpEstablishmentRepository extends JpaRepository
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		// create query
-		TypedQuery<KscmtEstPriceEmp> query = em.createQuery(cq);
+		TypedQuery<KscmtEstPriceEmpSet> query = em.createQuery(cq);
 
 		// exclude select
 		return query.getResultList();
@@ -240,9 +240,9 @@ public class JpaEmpEstablishmentRepository extends JpaRepository
 	 * @param targetYear the target year
 	 * @return the estimate days Employment default
 	 */
-	private List<KscmtEstDaysEmp> getEstimateDaysEmploymentDefault(String companyId,
+	private List<KscmtEstDaysEmpSet> getEstimateDaysEmploymentDefault(String companyId,
 			String employmentCode, int targetYear) {
-		List<KscmtEstDaysEmp> estimateDaysEmployments = new ArrayList<>();
+		List<KscmtEstDaysEmpSet> estimateDaysEmployments = new ArrayList<>();
 		for (int index = DEFAULT_VALUE; index <= TOTAL_MONTH_OF_YEAR; index++) {
 			estimateDaysEmployments
 					.add(this.toEntityDaysDefault(companyId, employmentCode, targetYear, index));
@@ -257,18 +257,18 @@ public class JpaEmpEstablishmentRepository extends JpaRepository
 	 * @param targetYear the target year
 	 * @return the estimate days Employment
 	 */
-	private List<KscmtEstDaysEmp> getEstimateDaysEmployment(String companyId, String employmentCode, int targetYear) {
+	private List<KscmtEstDaysEmpSet> getEstimateDaysEmployment(String companyId, String employmentCode, int targetYear) {
 		
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 		
-		// call KSCMT_EST_DAYS_COM (KscmtEstDaysEmp SQL)
-		CriteriaQuery<KscmtEstDaysEmp> cq = criteriaBuilder
-				.createQuery(KscmtEstDaysEmp.class);
+		// call KSCMT_EST_DAYS_COM_SET (KscmtEstDaysEmpSet SQL)
+		CriteriaQuery<KscmtEstDaysEmpSet> cq = criteriaBuilder
+				.createQuery(KscmtEstDaysEmpSet.class);
 		
 		// root data
-		Root<KscmtEstDaysEmp> root = cq.from(KscmtEstDaysEmp.class);
+		Root<KscmtEstDaysEmpSet> root = cq.from(KscmtEstDaysEmpSet.class);
 		
 		// select root
 		cq.select(root);
@@ -295,7 +295,7 @@ public class JpaEmpEstablishmentRepository extends JpaRepository
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 		
 		// create query
-		TypedQuery<KscmtEstDaysEmp> query = em.createQuery(cq);
+		TypedQuery<KscmtEstDaysEmpSet> query = em.createQuery(cq);
 		
 		// exclude select
 		return query.getResultList();
@@ -308,9 +308,9 @@ public class JpaEmpEstablishmentRepository extends JpaRepository
 	 * @param estimatePriceEmployments the estimate price Employments
 	 * @return the Employment establishment
 	 */
-	private EmploymentEstablishment toDomain(List<KscmtEstTimeEmp> estimateTimeEmployments,
-			List<KscmtEstPriceEmp> estimatePriceEmployments,
-			List<KscmtEstDaysEmp> estimateDaysEmployments) {
+	private EmploymentEstablishment toDomain(List<KscmtEstTimeEmpSet> estimateTimeEmployments,
+			List<KscmtEstPriceEmpSet> estimatePriceEmployments,
+			List<KscmtEstDaysEmpSet> estimateDaysEmployments) {
 		return new EmploymentEstablishment(new JpaEmpEstablishmentGetMemento(estimateTimeEmployments,
 				estimatePriceEmployments, estimateDaysEmployments));
 	}
@@ -324,9 +324,9 @@ public class JpaEmpEstablishmentRepository extends JpaRepository
 	 * @param targetCls the target cls
 	 * @return the kscmt est time emp set
 	 */
-	public KscmtEstTimeEmp toEntityTimeDefault(String companyId, String employmentCode,
+	public KscmtEstTimeEmpSet toEntityTimeDefault(String companyId, String employmentCode,
 			int targetYear, int targetCls) {
-		KscmtEstTimeEmp entity = new KscmtEstTimeEmp();
+		KscmtEstTimeEmpSet entity = new KscmtEstTimeEmpSet();
 		entity.setKscmtEstTimeEmpSetPK(
 				new KscmtEstTimeEmpSetPK(companyId, employmentCode, targetYear, targetCls));
 		entity.setEstCondition1stTime(DEFAULT_VALUE);
@@ -347,9 +347,9 @@ public class JpaEmpEstablishmentRepository extends JpaRepository
 	 * @param targetCls the target cls
 	 * @return the kscmt est price emp set
 	 */
-	public KscmtEstPriceEmp toEntityPriceDefault(String companyId, String employmentCode,
+	public KscmtEstPriceEmpSet toEntityPriceDefault(String companyId, String employmentCode,
 			int targetYear, int targetCls) {
-		KscmtEstPriceEmp entity = new KscmtEstPriceEmp();
+		KscmtEstPriceEmpSet entity = new KscmtEstPriceEmpSet();
 		entity.setKscmtEstPriceEmpSetPK(
 				new KscmtEstPriceEmpSetPK(companyId, employmentCode, targetYear, targetCls));
 		entity.setEstCondition1stMny(DEFAULT_VALUE);
@@ -369,9 +369,9 @@ public class JpaEmpEstablishmentRepository extends JpaRepository
 	 * @param targetCls the target cls
 	 * @return the kscmt est days emp set
 	 */
-	public KscmtEstDaysEmp toEntityDaysDefault(String companyId, String employmentCode,
+	public KscmtEstDaysEmpSet toEntityDaysDefault(String companyId, String employmentCode,
 			int targetYear, int targetCls) {
-		KscmtEstDaysEmp entity = new KscmtEstDaysEmp();
+		KscmtEstDaysEmpSet entity = new KscmtEstDaysEmpSet();
 		entity.setKscmtEstDaysEmpSetPK(
 				new KscmtEstDaysEmpSetPK(companyId, employmentCode, targetYear, targetCls));
 		entity.setEstCondition1stDays(DEFAULT_VALUE);
@@ -392,7 +392,7 @@ public class JpaEmpEstablishmentRepository extends JpaRepository
 	@Override
 	public void saveEmploymentEstablishment(EmploymentEstablishment employmentEstablishment) {
 		// find by id => optional data
-		List<KscmtEstTimeEmp> estimateTimeEmployments = this.getEstimateTimeEmployment(
+		List<KscmtEstTimeEmpSet> estimateTimeEmployments = this.getEstimateTimeEmployment(
 				employmentEstablishment.getCompanyId().v(),
 				employmentEstablishment.getEmploymentCode().v(),
 				employmentEstablishment.getTargetYear().v());
@@ -410,7 +410,7 @@ public class JpaEmpEstablishmentRepository extends JpaRepository
 		}
 
 		// find by id => optional data
-		List<KscmtEstPriceEmp> estimatePriceEmployments = this.getEstimatePriceEmployment(
+		List<KscmtEstPriceEmpSet> estimatePriceEmployments = this.getEstimatePriceEmployment(
 				employmentEstablishment.getCompanyId().v(),
 				employmentEstablishment.getEmploymentCode().v(), employmentEstablishment.getTargetYear().v());
 
@@ -423,7 +423,7 @@ public class JpaEmpEstablishmentRepository extends JpaRepository
 			isAddPrice = true;
 		}
 		// find by id => optional data
-		List<KscmtEstDaysEmp> estimateDaysEmployments = this.getEstimateDaysEmployment(
+		List<KscmtEstDaysEmpSet> estimateDaysEmployments = this.getEstimateDaysEmployment(
 				employmentEstablishment.getCompanyId().v(),
 				employmentEstablishment.getEmploymentCode().v(), employmentEstablishment.getTargetYear().v());
 
@@ -471,15 +471,15 @@ public class JpaEmpEstablishmentRepository extends JpaRepository
 	public void removeEmploymentEstablishment(String companyId, String employmentCode,
 			int targetYear) {
 		// find by time
-		List<KscmtEstTimeEmp> estimateTimeEmployments = this.getEstimateTimeEmployment(companyId,
+		List<KscmtEstTimeEmpSet> estimateTimeEmployments = this.getEstimateTimeEmployment(companyId,
 				employmentCode, targetYear);
 
 		// find by price
-		List<KscmtEstPriceEmp> estimatePriceEmployments = this
+		List<KscmtEstPriceEmpSet> estimatePriceEmployments = this
 				.getEstimatePriceEmployment(companyId, employmentCode, targetYear);
 
 		// find by number of day
-		List<KscmtEstDaysEmp> estimateDaysEmployments = this.getEstimateDaysEmployment(companyId,
+		List<KscmtEstDaysEmpSet> estimateDaysEmployments = this.getEstimateDaysEmployment(companyId,
 				employmentCode, targetYear);
 
 		// remove all data
@@ -496,17 +496,17 @@ public class JpaEmpEstablishmentRepository extends JpaRepository
 	 * @param targetYear the target year
 	 * @return the estimate time
 	 */
-	private List<KscmtEstTimeEmp> getEstimateTime(String companyId, int targetYear) {
+	private List<KscmtEstTimeEmpSet> getEstimateTime(String companyId, int targetYear) {
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		// call KSCMT_EST_TIME_COM (KscmtEstTimeEmp SQL)
-		CriteriaQuery<KscmtEstTimeEmp> cq = criteriaBuilder
-				.createQuery(KscmtEstTimeEmp.class);
+		// call KSCMT_EST_TIME_COM_SET (KscmtEstTimeEmpSet SQL)
+		CriteriaQuery<KscmtEstTimeEmpSet> cq = criteriaBuilder
+				.createQuery(KscmtEstTimeEmpSet.class);
 
 		// root data
-		Root<KscmtEstTimeEmp> root = cq.from(KscmtEstTimeEmp.class);
+		Root<KscmtEstTimeEmpSet> root = cq.from(KscmtEstTimeEmpSet.class);
 
 		// select root
 		cq.select(root);
@@ -528,7 +528,7 @@ public class JpaEmpEstablishmentRepository extends JpaRepository
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		// create query
-		TypedQuery<KscmtEstTimeEmp> query = em.createQuery(cq);
+		TypedQuery<KscmtEstTimeEmpSet> query = em.createQuery(cq);
 
 		// exclude select
 		return query.getResultList();
@@ -543,8 +543,8 @@ public class JpaEmpEstablishmentRepository extends JpaRepository
 	 */
 	@Override
 	public List<String> findAllEmploymentSetting(String companyId, int targetYear) {
-		List<KscmtEstTimeEmp> estimateTime = this.getEstimateTime(companyId, targetYear);
-		Map<String, KscmtEstTimeEmp> mapEstimateTime = new HashMap<>();
+		List<KscmtEstTimeEmpSet> estimateTime = this.getEstimateTime(companyId, targetYear);
+		Map<String, KscmtEstTimeEmpSet> mapEstimateTime = new HashMap<>();
 		estimateTime.forEach(estimate -> {
 			if (!mapEstimateTime.containsKey(estimate.getKscmtEstTimeEmpSetPK().getEmpcd())) {
 				mapEstimateTime.put(estimate.getKscmtEstTimeEmpSetPK().getEmpcd(), estimate);

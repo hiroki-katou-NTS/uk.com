@@ -2,7 +2,7 @@ package nts.uk.ctx.at.record.infra.repository.workrecord.goout;
 
 import nts.uk.ctx.at.record.dom.workrecord.goout.MaxGoOut;
 import nts.uk.ctx.at.record.dom.workrecord.goout.OutManageGetMemento;
-import nts.uk.ctx.at.record.infra.entity.workrecord.goout.KrcmtGooutMng;
+import nts.uk.ctx.at.record.infra.entity.workrecord.goout.KrcstOutManage;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 
 /**
@@ -13,14 +13,14 @@ import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 public class JpaOutManageGetMemento implements OutManageGetMemento{
 
 	/** The krcst out manage. */
-	private KrcmtGooutMng krcstOutManage;
+	private KrcstOutManage krcstOutManage;
 	
 	/**
 	 * Instantiates a new jpa out manage get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaOutManageGetMemento(KrcmtGooutMng entity) {
+	public JpaOutManageGetMemento(KrcstOutManage entity) {
 		this.krcstOutManage = entity;
 	}
 	

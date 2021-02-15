@@ -20,7 +20,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSetSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtPioritySetPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtRoundingSetPK;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtCom;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComStmp;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComStmpPK;
 
@@ -37,7 +37,7 @@ public class JpaWorkTimezoneStampSetSetMemento implements WorkTimezoneStampSetSe
 	 *
 	 * @param parentEntity the parent entity
 	 */
-	public JpaWorkTimezoneStampSetSetMemento(KshmtWtCom parentEntity) {
+	public JpaWorkTimezoneStampSetSetMemento(KshmtWorktimeCommonSet parentEntity) {
 		super();
 		this.initialEntity(parentEntity);
 	}
@@ -124,7 +124,7 @@ public class JpaWorkTimezoneStampSetSetMemento implements WorkTimezoneStampSetSe
 	 * 
 	 * @param parentEntity
 	 */
-	private void initialEntity(KshmtWtCom parentEntity) {
+	private void initialEntity(KshmtWorktimeCommonSet parentEntity) {
 		if(parentEntity.getKshmtWtComStmp() == null) {
 			parentEntity.setKshmtWtComStmp(new KshmtWtComStmp());
 		}

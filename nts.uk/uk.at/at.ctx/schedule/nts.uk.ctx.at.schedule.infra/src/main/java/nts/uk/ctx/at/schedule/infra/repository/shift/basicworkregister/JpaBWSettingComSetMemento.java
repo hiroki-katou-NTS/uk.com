@@ -8,7 +8,7 @@ import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSettingSetMem
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkingCode;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorktypeCode;
-import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtBasicWorkCom;
+import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtCompanyWorkSet;
 import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtCompanyWorkSetPK;
 
 /**
@@ -17,14 +17,14 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtCompanyW
 public class JpaBWSettingComSetMemento implements BasicWorkSettingSetMemento {
 
 	/** The type value. */
-	private KscmtBasicWorkCom typeValue;
+	private KscmtCompanyWorkSet typeValue;
 
 	/**
 	 * Instantiates a new jpa BW setting com set memento.
 	 *
 	 * @param typeValue the type value
 	 */
-	public JpaBWSettingComSetMemento(KscmtBasicWorkCom typeValue) {
+	public JpaBWSettingComSetMemento(KscmtCompanyWorkSet typeValue) {
 		if(typeValue.getKscmtCompanyWorkSetPK() == null){
 			typeValue.setKscmtCompanyWorkSetPK(new KscmtCompanyWorkSetPK());
 		}

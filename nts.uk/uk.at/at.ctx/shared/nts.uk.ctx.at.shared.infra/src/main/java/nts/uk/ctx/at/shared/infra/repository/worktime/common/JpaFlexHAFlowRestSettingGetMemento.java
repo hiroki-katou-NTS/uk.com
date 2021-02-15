@@ -6,7 +6,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSettingGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFlWek;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHaRtSet;
 
 /**
  * The Class JpaFlexOffdayFlowRestSettingGetMemento.
@@ -14,14 +14,14 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFlWek;
 public class JpaFlexHAFlowRestSettingGetMemento implements FlowRestSettingGetMemento{
 	
 	/** The entity. */
-	private KshmtWtFleBrFlWek entity;
+	private KshmtFlexHaRtSet entity;
 
 	/**
 	 * Instantiates a new jpa flex HA flow rest setting get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlexHAFlowRestSettingGetMemento(KshmtWtFleBrFlWek entity) {
+	public JpaFlexHAFlowRestSettingGetMemento(KshmtFlexHaRtSet entity) {
 		super();
 		this.entity = entity;
 	}

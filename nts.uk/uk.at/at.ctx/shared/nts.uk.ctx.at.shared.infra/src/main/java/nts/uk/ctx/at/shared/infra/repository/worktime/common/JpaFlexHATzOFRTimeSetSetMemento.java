@@ -13,9 +13,9 @@ import java.util.stream.Collectors;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSetSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFiWekTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHaFixRest;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHaFixRestPK;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFlWek;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHaRtSet;
 
 /**
  * The Class JpaFlexOffdayTzOFRTimeSetGetMemento.
@@ -23,7 +23,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFlWek;
 public class JpaFlexHATzOFRTimeSetSetMemento implements TimezoneOfFixedRestTimeSetSetMemento{
 	
 	/** The entitys. */
-	private KshmtWtFleBrFlWek entity;
+	private KshmtFlexHaRtSet entity;
 	
 	/** The period no. */
 	private int periodNo = 1;
@@ -34,7 +34,7 @@ public class JpaFlexHATzOFRTimeSetSetMemento implements TimezoneOfFixedRestTimeS
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlexHATzOFRTimeSetSetMemento(KshmtWtFleBrFlWek entity) {
+	public JpaFlexHATzOFRTimeSetSetMemento(KshmtFlexHaRtSet entity) {
 		super();
 		this.entity = entity;
 	}
@@ -60,8 +60,8 @@ public class JpaFlexHATzOFRTimeSetSetMemento implements TimezoneOfFixedRestTimeS
 		}
 		
 		// convert map entity
-		Map<KshmtFlexHaFixRestPK, KshmtWtFleBrFiWekTs> mapEntity = this.entity.getKshmtFlexHaFixRests().stream()
-				.collect(Collectors.toMap(entity -> ((KshmtWtFleBrFiWekTs) entity).getKshmtFlexHaFixRestPK(),
+		Map<KshmtFlexHaFixRestPK, KshmtFlexHaFixRest> mapEntity = this.entity.getKshmtFlexHaFixRests().stream()
+				.collect(Collectors.toMap(entity -> ((KshmtFlexHaFixRest) entity).getKshmtFlexHaFixRestPK(),
 						Function.identity()));
 		
 		String companyId = this.entity.getKshmtFlexHaRtSetPK().getCid();
@@ -79,9 +79,9 @@ public class JpaFlexHATzOFRTimeSetSetMemento implements TimezoneOfFixedRestTimeS
 			pk.setPeriodNo(periodNo);
 			
 			// find entity existed if not have, new entity
-			KshmtWtFleBrFiWekTs entity = mapEntity.get(pk);
+			KshmtFlexHaFixRest entity = mapEntity.get(pk);
 			if (entity == null) {
-				entity = new KshmtWtFleBrFiWekTs(pk);
+				entity = new KshmtFlexHaFixRest(pk);
 			}
 			
 			// save to memento

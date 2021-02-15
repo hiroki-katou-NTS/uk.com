@@ -7,7 +7,7 @@ package nts.uk.ctx.sys.auth.infra.repository.otreferset;
 import java.math.BigDecimal;
 
 import nts.uk.ctx.sys.auth.dom.otreferset.OvertimeReferSetSetMemento;
-import nts.uk.ctx.sys.auth.infra.entity.otreferset.SacmtOtRefer;
+import nts.uk.ctx.sys.auth.infra.entity.otreferset.SacmtOtReferSet;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -16,7 +16,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaOvertimeReferSetSetMemento implements OvertimeReferSetSetMemento{
 
 	/** The sacmt ot refer set. */
-	private SacmtOtRefer sacmtOtReferSet;
+	private SacmtOtReferSet sacmtOtReferSet;
 	
 	/** The Constant DO. */
 	private static final Integer DO = 1;
@@ -29,7 +29,7 @@ public class JpaOvertimeReferSetSetMemento implements OvertimeReferSetSetMemento
 	 *
 	 * @param entity the entity
 	 */
-	public JpaOvertimeReferSetSetMemento(SacmtOtRefer entity) {
+	public JpaOvertimeReferSetSetMemento(SacmtOtReferSet entity) {
 		this.sacmtOtReferSet = entity;
 		if (this.sacmtOtReferSet.getCid() == null) {
 			this.sacmtOtReferSet.setCid(AppContexts.user().companyId());

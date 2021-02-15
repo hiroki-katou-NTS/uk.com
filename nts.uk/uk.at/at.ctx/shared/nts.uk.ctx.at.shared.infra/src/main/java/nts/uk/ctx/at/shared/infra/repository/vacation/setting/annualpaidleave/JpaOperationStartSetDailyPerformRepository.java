@@ -14,7 +14,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerform;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerformRepository;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KshmtDayOpeStartDate;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KshstStartSetDailyPfm;
 
 /**
  * The Class JpaOperationStartSetDailyPerformRepository.
@@ -28,7 +28,7 @@ public class JpaOperationStartSetDailyPerformRepository extends JpaRepository im
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public Optional<OperationStartSetDailyPerform> findByCid(CompanyId companyId) {
-		return this.queryProxy().find(companyId, KshmtDayOpeStartDate.class).map(entity -> this.toDomain(entity));
+		return this.queryProxy().find(companyId, KshstStartSetDailyPfm.class).map(entity -> this.toDomain(entity));
 	}
 
 	/* (non-Javadoc)
@@ -47,12 +47,12 @@ public class JpaOperationStartSetDailyPerformRepository extends JpaRepository im
 		this.commandProxy().update(this.toEntity(domain));
 	}
 	
-	private OperationStartSetDailyPerform toDomain(KshmtDayOpeStartDate entity) {
+	private OperationStartSetDailyPerform toDomain(KshstStartSetDailyPfm entity) {
 		return new OperationStartSetDailyPerform(new JpaOperationStartSetDailyPerformGetMemento(entity));
 	}
 
-	private KshmtDayOpeStartDate toEntity(OperationStartSetDailyPerform domain) {
-		KshmtDayOpeStartDate entity = new KshmtDayOpeStartDate();
+	private KshstStartSetDailyPfm toEntity(OperationStartSetDailyPerform domain) {
+		KshstStartSetDailyPfm entity = new KshstStartSetDailyPfm();
 		domain.saveToMemento(new JpaOperationStartSetDailyPerformSetMemento(entity));
 		return entity;
 	}

@@ -5,13 +5,13 @@ import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeDeductTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeRestTimezoneGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDif;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDiffTimeWorkSet;
 
 public class JpaDiffTimeRestTimezoneGetMemento implements DiffTimeRestTimezoneGetMemento {
 
-	private KshmtWtDif entity;
+	private KshmtDiffTimeWorkSet entity;
 
-	public JpaDiffTimeRestTimezoneGetMemento(KshmtWtDif entity) {
+	public JpaDiffTimeRestTimezoneGetMemento(KshmtDiffTimeWorkSet entity) {
 		this.entity = entity;
 	}
 

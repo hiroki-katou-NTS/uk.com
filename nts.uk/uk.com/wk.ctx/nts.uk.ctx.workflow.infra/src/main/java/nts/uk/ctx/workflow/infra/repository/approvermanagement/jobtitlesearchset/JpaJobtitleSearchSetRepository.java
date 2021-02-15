@@ -11,7 +11,7 @@ import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.JobtitleSearchSet;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.JobtitleSearchSetRepository;
-import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfmtJobSearch;
+import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfstJobtitleSearchSet;
 import nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot.WwfstJobtitleSearchSetPK;
 
 @Stateless
@@ -19,7 +19,7 @@ public class JpaJobtitleSearchSetRepository extends JpaRepository implements Job
 
 	@Override
 	public Optional<JobtitleSearchSet> finById(String cid, String jobtitleId) {
-		WwfmtJobSearch entity = this.getEntityManager().find(WwfmtJobSearch.class,
+		WwfstJobtitleSearchSet entity = this.getEntityManager().find(WwfstJobtitleSearchSet.class,
 				new WwfstJobtitleSearchSetPK(cid, jobtitleId));
 		if (Objects.isNull(entity)) {
 			return Optional.empty();
@@ -32,7 +32,7 @@ public class JpaJobtitleSearchSetRepository extends JpaRepository implements Job
 	 * @param entity
 	 * @return
 	 */
-	private JobtitleSearchSet toDomain(WwfmtJobSearch entity) {
+	private JobtitleSearchSet toDomain(WwfstJobtitleSearchSet entity) {
 		return JobtitleSearchSet.createSimpleFromJavaType(entity.wwfstJobtitleSearchSetPK.companyId,
 				entity.wwfstJobtitleSearchSetPK.jobId, entity.searchSetFlg);
 	}
@@ -42,8 +42,8 @@ public class JpaJobtitleSearchSetRepository extends JpaRepository implements Job
 	 * @return
 	 * @author yennth
 	 */
-	private WwfmtJobSearch toEntityJob(JobtitleSearchSet domain){
-		val entity = new WwfmtJobSearch();
+	private WwfstJobtitleSearchSet toEntityJob(JobtitleSearchSet domain){
+		val entity = new WwfstJobtitleSearchSet();
 		entity.wwfstJobtitleSearchSetPK = new WwfstJobtitleSearchSetPK(domain.getCompanyId(), domain.getJobId());
 		entity.searchSetFlg = domain.getSearchSetFlg().value;
 		return entity;
@@ -55,8 +55,8 @@ public class JpaJobtitleSearchSetRepository extends JpaRepository implements Job
 	 */
 	@Override
 	public void update(JobtitleSearchSet jobSearch) {
-		WwfmtJobSearch entity = toEntityJob(jobSearch);
-		WwfmtJobSearch oldEntity = this.queryProxy().find(entity.wwfstJobtitleSearchSetPK, WwfmtJobSearch.class).get();
+		WwfstJobtitleSearchSet entity = toEntityJob(jobSearch);
+		WwfstJobtitleSearchSet oldEntity = this.queryProxy().find(entity.wwfstJobtitleSearchSetPK, WwfstJobtitleSearchSet.class).get();
 		oldEntity.searchSetFlg = entity.searchSetFlg;
 		this.commandProxy().update(oldEntity);
 	}
@@ -66,7 +66,7 @@ public class JpaJobtitleSearchSetRepository extends JpaRepository implements Job
 	 */
 	@Override
 	public void insert(JobtitleSearchSet jobSearch) {
-		WwfmtJobSearch entity = toEntityJob(jobSearch);
+		WwfstJobtitleSearchSet entity = toEntityJob(jobSearch);
 		this.commandProxy().insert(entity);
 	}
 
@@ -74,7 +74,7 @@ public class JpaJobtitleSearchSetRepository extends JpaRepository implements Job
 	public List<JobtitleSearchSet> findByListJob(String cid, List<String> jobtitleId) {
 		List<JobtitleSearchSet> listJob = new ArrayList<>();
 		for(String item: jobtitleId){
-			WwfmtJobSearch entity = this.getEntityManager().find(WwfmtJobSearch.class,
+			WwfstJobtitleSearchSet entity = this.getEntityManager().find(WwfstJobtitleSearchSet.class,
 					new WwfstJobtitleSearchSetPK(cid, item));
 			if(entity != null){
 				listJob.add(toDomain(entity));

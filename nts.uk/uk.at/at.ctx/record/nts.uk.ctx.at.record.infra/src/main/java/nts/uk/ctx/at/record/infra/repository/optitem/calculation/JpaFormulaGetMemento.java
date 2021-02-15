@@ -7,7 +7,7 @@ package nts.uk.ctx.at.record.infra.repository.optitem.calculation;
 import java.util.Optional;
 
 import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtFormulaRoundingPK;
-import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtAnyf;
+import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtOptItemFormula;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemNo;
@@ -25,14 +25,14 @@ import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.Symbol;
 public class JpaFormulaGetMemento implements FormulaGetMemento {
 
 	/** The entity. */
-	private KrcmtAnyf entity;
+	private KrcmtOptItemFormula entity;
 
 	/**
 	 * Instantiates a new jpa formula get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFormulaGetMemento(KrcmtAnyf entity) {
+	public JpaFormulaGetMemento(KrcmtOptItemFormula entity) {
 		this.entity = entity;
 	}
 
@@ -92,11 +92,11 @@ public class JpaFormulaGetMemento implements FormulaGetMemento {
 
 		switch (this.entity.getCalcAtr()) {
 
-		case KrcmtAnyf.FORMULA_SETTING:
+		case KrcmtOptItemFormula.FORMULA_SETTING:
 			domain = new CalcFormulaSetting(new JpaFormulaSettingGetMemento(this.entity.getKrcmtFormulaSetting()));
 			break;
 
-		case KrcmtAnyf.ITEM_SELECTION:
+		case KrcmtOptItemFormula.ITEM_SELECTION:
 			domain = new CalcFormulaSetting(new JpaItemSelectionGetMemento(this.entity.getKrcmtCalcItemSelections()));
 			break;
 

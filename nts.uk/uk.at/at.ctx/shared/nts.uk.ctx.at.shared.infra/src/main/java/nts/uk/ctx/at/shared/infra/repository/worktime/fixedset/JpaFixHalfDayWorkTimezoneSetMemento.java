@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixHalfDayWorkTimezoneSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFix;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSetPK;
 
 /**
@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSetPK;
 public class JpaFixHalfDayWorkTimezoneSetMemento implements FixHalfDayWorkTimezoneSetMemento {
 
 	/** The entity. */
-	private KshmtWtFix entity;
+	private KshmtFixedWorkSet entity;
 
 	/** The type. */
 	private AmPmAtr type;
@@ -30,7 +30,7 @@ public class JpaFixHalfDayWorkTimezoneSetMemento implements FixHalfDayWorkTimezo
 	 * @param type
 	 *            the type
 	 */
-	public JpaFixHalfDayWorkTimezoneSetMemento(KshmtWtFix entity, AmPmAtr type) {
+	public JpaFixHalfDayWorkTimezoneSetMemento(KshmtFixedWorkSet entity, AmPmAtr type) {
 		super();
 		this.entity = entity;
 		if (this.entity.getKshmtFixedWorkSetPK() == null) {

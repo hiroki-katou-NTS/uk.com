@@ -10,17 +10,17 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class KscmtWorkplaceWorkSet_.
  */
-@StaticMetamodel(KscmtBasicWorkWkp.class)
+@StaticMetamodel(KscmtWorkplaceWorkSet.class)
 public class KscmtWorkplaceWorkSet_ {
 
 	/** The kwbmt workplace work set PK. */
-	public static volatile SingularAttribute<KscmtBasicWorkWkp, KscmtWorkplaceWorkSetPK> kscmtWorkplaceWorkSetPK;
+	public static volatile SingularAttribute<KscmtWorkplaceWorkSet, KscmtWorkplaceWorkSetPK> kscmtWorkplaceWorkSetPK;
 	
 	/** The workype code. */
-	public static volatile SingularAttribute<KscmtBasicWorkWkp, String> workypeCode;
+	public static volatile SingularAttribute<KscmtWorkplaceWorkSet, String> workypeCode;
 
 	/** The working code. */
-	public static volatile SingularAttribute<KscmtBasicWorkWkp, String> workingCode;
+	public static volatile SingularAttribute<KscmtWorkplaceWorkSet, String> workingCode;
 
 	
 }

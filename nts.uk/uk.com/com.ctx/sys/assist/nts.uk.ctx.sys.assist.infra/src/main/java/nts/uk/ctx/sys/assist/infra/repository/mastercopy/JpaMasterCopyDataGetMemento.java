@@ -12,18 +12,18 @@ import nts.uk.ctx.sys.assist.dom.mastercopy.KeyInformation;
 import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyCategoryNo;
 import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyDataGetMemento;
 import nts.uk.ctx.sys.assist.dom.mastercopy.TargetTableInfo;
-import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspctMastercopyCategory;
-import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspctMastercopyData;
+import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyCategory;
+import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyData;
 
 /**
  * The Class JpaMasterCopyDataGetMemento.
  */
 public class JpaMasterCopyDataGetMemento implements MasterCopyDataGetMemento {
 
-	private SspctMastercopyCategory categoryEntity;
+	private SspmtMastercopyCategory categoryEntity;
 
 	/** The entity. */
-	private List<SspctMastercopyData> dataEntities;
+	private List<SspmtMastercopyData> dataEntities;
 
 	/**
 	 * Instantiates a new jpa master copy data get memento.
@@ -31,7 +31,7 @@ public class JpaMasterCopyDataGetMemento implements MasterCopyDataGetMemento {
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaMasterCopyDataGetMemento(SspctMastercopyCategory categoryEntity, List<SspctMastercopyData> dataEntities) {
+	public JpaMasterCopyDataGetMemento(SspmtMastercopyCategory categoryEntity, List<SspmtMastercopyData> dataEntities) {
 		this.categoryEntity = categoryEntity;
 		this.dataEntities = dataEntities;
 	}

@@ -25,7 +25,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
-import nts.uk.ctx.at.shared.infra.entity.workdayoff.frame.KshmtHdWorkFrame;
+import nts.uk.ctx.at.shared.infra.entity.workdayoff.frame.KshstWorkdayoffFrame;
 import nts.uk.ctx.at.shared.infra.entity.workdayoff.frame.KshstWorkdayoffFramePK;
 import nts.uk.ctx.at.shared.infra.entity.workdayoff.frame.KshstWorkdayoffFramePK_;
 import nts.uk.ctx.at.shared.infra.entity.workdayoff.frame.KshstWorkdayoffFrame_;
@@ -49,7 +49,7 @@ public class JpaWorkdayoffFrameRepository extends JpaRepository
 			int workdayoffFrameNo) {
 		return this.queryProxy()
 				.find(new KshstWorkdayoffFramePK(companyId.v(), (short) workdayoffFrameNo),
-						KshmtHdWorkFrame.class)
+						KshstWorkdayoffFrame.class)
 				.map(e -> this.toDomain(e));
 	}
 
@@ -77,11 +77,11 @@ public class JpaWorkdayoffFrameRepository extends JpaRepository
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		CriteriaQuery<KshmtHdWorkFrame> cq = criteriaBuilder
-				.createQuery(KshmtHdWorkFrame.class);
+		CriteriaQuery<KshstWorkdayoffFrame> cq = criteriaBuilder
+				.createQuery(KshstWorkdayoffFrame.class);
 
 		// root data
-		Root<KshmtHdWorkFrame> root = cq.from(KshmtHdWorkFrame.class);
+		Root<KshstWorkdayoffFrame> root = cq.from(KshstWorkdayoffFrame.class);
 
 		// select root
 		cq.select(root);
@@ -97,7 +97,7 @@ public class JpaWorkdayoffFrameRepository extends JpaRepository
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		// creat query
-		TypedQuery<KshmtHdWorkFrame> query = em.createQuery(cq);
+		TypedQuery<KshstWorkdayoffFrame> query = em.createQuery(cq);
 
 		// exclude select
 		return query.getResultList().stream().map(category -> toDomain(category))
@@ -111,8 +111,8 @@ public class JpaWorkdayoffFrameRepository extends JpaRepository
 	 *            the domain
 	 * @return the kshst workdayoff frame
 	 */
-	private KshmtHdWorkFrame toEntity(WorkdayoffFrame domain) {
-		KshmtHdWorkFrame entity = new KshmtHdWorkFrame();
+	private KshstWorkdayoffFrame toEntity(WorkdayoffFrame domain) {
+		KshstWorkdayoffFrame entity = new KshstWorkdayoffFrame();
 		domain.saveToMemento(new JpaWorkdayoffFrameSetMemento(entity));
 		return entity;
 	}
@@ -124,7 +124,7 @@ public class JpaWorkdayoffFrameRepository extends JpaRepository
 	 *            the entity
 	 * @return the workdayoff frame
 	 */
-	private WorkdayoffFrame toDomain(KshmtHdWorkFrame entity) {
+	private WorkdayoffFrame toDomain(KshstWorkdayoffFrame entity) {
 		return new WorkdayoffFrame(new JpaWorkdayoffFrameGetMemento(entity));
 	}
 
@@ -143,16 +143,16 @@ public class JpaWorkdayoffFrameRepository extends JpaRepository
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		CriteriaQuery<KshmtHdWorkFrame> cq = criteriaBuilder
-				.createQuery(KshmtHdWorkFrame.class);
+		CriteriaQuery<KshstWorkdayoffFrame> cq = criteriaBuilder
+				.createQuery(KshstWorkdayoffFrame.class);
 
 		// root data
-		Root<KshmtHdWorkFrame> root = cq.from(KshmtHdWorkFrame.class);
+		Root<KshstWorkdayoffFrame> root = cq.from(KshstWorkdayoffFrame.class);
 
 		// select root
 		cq.select(root);
 		
-		List<KshmtHdWorkFrame> resultList = new ArrayList<>();
+		List<KshstWorkdayoffFrame> resultList = new ArrayList<>();
 
 		CollectionUtil.split(workdayoffFrNos, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
 			// add where
@@ -183,10 +183,10 @@ public class JpaWorkdayoffFrameRepository extends JpaRepository
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		CriteriaQuery<KshmtHdWorkFrame> cq = criteriaBuilder.createQuery(KshmtHdWorkFrame.class);
+		CriteriaQuery<KshstWorkdayoffFrame> cq = criteriaBuilder.createQuery(KshstWorkdayoffFrame.class);
 
 		// root data
-		Root<KshmtHdWorkFrame> root = cq.from(KshmtHdWorkFrame.class);
+		Root<KshstWorkdayoffFrame> root = cq.from(KshstWorkdayoffFrame.class);
 
 		// select root
 		cq.select(root);
@@ -204,7 +204,7 @@ public class JpaWorkdayoffFrameRepository extends JpaRepository
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		// creat query
-		TypedQuery<KshmtHdWorkFrame> query = em.createQuery(cq);
+		TypedQuery<KshstWorkdayoffFrame> query = em.createQuery(cq);
 
 		// exclude select
 		return query.getResultList().stream().map(category -> toDomain(category)).collect(Collectors.toList());

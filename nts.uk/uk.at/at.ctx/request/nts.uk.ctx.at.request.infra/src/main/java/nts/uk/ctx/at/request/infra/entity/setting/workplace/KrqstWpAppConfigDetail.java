@@ -22,7 +22,7 @@
 //@Entity
 //@AllArgsConstructor
 //@NoArgsConstructor
-//@Table(name = "KRQMT_APP_CF_DETAIL_WKP")
+//@Table(name = "KRQST_WP_APP_CF_DETAIL")
 //public class KrqstWpAppConfigDetail  extends UkJpaEntity implements Serializable{
 //	
 //	@EmbeddedId
@@ -125,7 +125,7 @@
 //		@PrimaryKeyJoinColumn(name="CID",referencedColumnName="CID"),
 //		@PrimaryKeyJoinColumn(name="WKP_ID",referencedColumnName="WKP_ID")
 //	})
-//	private KrqmtAppConfigWkp krqstWpAppConfig;
+//	private KrqstWpAppConfig krqstWpAppConfig;
 //	
 //	/**
 //	 * 

@@ -7,7 +7,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.entranceexit.ManageEntryExit;
 import nts.uk.ctx.at.shared.dom.entranceexit.ManageEntryExitRepository;
-import nts.uk.ctx.at.shared.infra.entity.entranceexit.KshmtGateMng;
+import nts.uk.ctx.at.shared.infra.entity.entranceexit.KshstManageEntryExit;
 
 /**
  * @author hoangdd
@@ -21,7 +21,7 @@ public class JpaManageEntryExitReposioty extends JpaRepository implements Manage
 	 */
 	@Override
 	public Optional<ManageEntryExit> findByID(String companyID) {
-		return this.queryProxy().find(companyID, KshmtGateMng.class).map(e -> this.toDomain(e));
+		return this.queryProxy().find(companyID, KshstManageEntryExit.class).map(e -> this.toDomain(e));
 	}
 
 	/* (non-Javadoc)
@@ -46,13 +46,13 @@ public class JpaManageEntryExitReposioty extends JpaRepository implements Manage
 	 * @param domain the domain
 	 * @return the kshst manage entry exit
 	 */
-	private KshmtGateMng toEntity(ManageEntryExit domain) {
-		KshmtGateMng entity = new KshmtGateMng();
+	private KshstManageEntryExit toEntity(ManageEntryExit domain) {
+		KshstManageEntryExit entity = new KshstManageEntryExit();
 		domain.saveToMemento(new JpaManageEntryExitSetMemento(entity));
 		return entity;
 	}
 	
-	private ManageEntryExit toDomain(KshmtGateMng entity) {
+	private ManageEntryExit toDomain(KshstManageEntryExit entity) {
 		ManageEntryExit domain = new ManageEntryExit(new JpaManageEntryExitGetMemento(entity));
 		return domain;
 	}

@@ -6,7 +6,7 @@ package nts.uk.ctx.at.schedule.infra.repository.shift.estimate.usagesetting;
 
 import nts.uk.ctx.at.schedule.dom.shift.estimate.usagesetting.UsageSettingGetMemento;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.usagesetting.UseClassification;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.usagesetting.KscmtEstUsage;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.usagesetting.KscstEstUsageSet;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
@@ -15,7 +15,7 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 public class JpaUsageSettingGetMemento implements UsageSettingGetMemento {
 
 	/** The entity. */
-	private KscmtEstUsage entity;
+	private KscstEstUsageSet entity;
 
 	/**
 	 * Instantiates a new jpa usage setting get memento.
@@ -23,7 +23,7 @@ public class JpaUsageSettingGetMemento implements UsageSettingGetMemento {
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaUsageSettingGetMemento(KscmtEstUsage entity) {
+	public JpaUsageSettingGetMemento(KscstEstUsageSet entity) {
 		this.entity = entity;
 	}
 
