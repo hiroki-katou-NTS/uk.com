@@ -26,6 +26,47 @@
 				data-bind="with: characterDataFormatSetting">
 				<div id="H1_1" class="label dialog-title">#{i18n.getText('CMF001_265')}</div>
 				<div class="div-table">
+				
+					<div class="div-table-row">
+						<div class="div-table-col-2">
+							<div id="H5_1" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_292')}</div>
+						</div>
+						<div id="H5_2" tabindex="8" class="div-table-col">
+							<div id="H5_3" tabindex="-1" class="div-table-col"
+								data-bind="ntsRadioButton: {
+									checked: fixedValue, 
+									option: $parent.effectFixedValItem()[0], 
+									name:'#{i18n.getText('CMF001_293')}',
+									optionValue: 'code', 
+									enable: $parent.enableFixedValueCls(), 
+									optionText: 'name', 
+									group: 'fixedValCls'
+									}">
+							</div>
+							<div id="H5_4" tabindex="-1" class="div-table-col radio-group"
+								data-bind="ntsRadioButton: {
+									checked: fixedValue, 
+									option: $parent.effectFixedValItem()[1], 
+									name:'#{i18n.getText('CMF001_293')}',
+									optionValue: 'code', 
+									enable: $parent.enableFixedValueCls(), 
+									optionText: 'name', 
+									group: 'fixedValCls' 
+									}">
+							</div>
+						</div>
+						<div style="display: inline">
+							<input id="H5_5" tabindex="9"
+								data-bind="ntsTextEditor: {
+								value: fixedVal,
+								name:'#{i18n.getText('CMF001_296')}',
+								constraint: 'DataSettingFixedValue',
+								required: true,
+								option : {width : '255px'},
+								enable: $parent.enableFixedValue()}" />
+						</div>
+					</div>
+				
 					<div class="div-table-row">
 						<div id="H2_1" class="div-table-col-2"
 							data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_266')}</div>
@@ -144,45 +185,7 @@
 							style="margin-left: 15px;"
 							data-bind="text: $parent.codeConvertCode().dispConvertName"></div>
 					</div>
-					<div class="div-table-row">
-						<div class="div-table-col-2">
-							<div id="H5_1" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_292')}</div>
-						</div>
-						<div id="H5_2" tabindex="8" class="div-table-col">
-							<div id="H5_3" tabindex="-1" class="div-table-col"
-								data-bind="ntsRadioButton: {
-									checked: fixedValue, 
-									option: $parent.effectFixedValItem()[0], 
-									name:'#{i18n.getText('CMF001_293')}',
-									optionValue: 'code', 
-									enable: $parent.enableFixedValueCls(), 
-									optionText: 'name', 
-									group: 'fixedValCls'
-									}">
-							</div>
-							<div id="H5_4" tabindex="-1" class="div-table-col radio-group"
-								data-bind="ntsRadioButton: {
-									checked: fixedValue, 
-									option: $parent.effectFixedValItem()[1], 
-									name:'#{i18n.getText('CMF001_293')}',
-									optionValue: 'code', 
-									enable: $parent.enableFixedValueCls(), 
-									optionText: 'name', 
-									group: 'fixedValCls' 
-									}">
-							</div>
-						</div>
-						<div style="display: inline">
-							<input id="H5_5" tabindex="9"
-								data-bind="ntsTextEditor: {
-								value: fixedVal,
-								name:'#{i18n.getText('CMF001_296')}',
-								constraint: 'DataSettingFixedValue',
-								required: true,
-								option : {width : '255px'},
-								enable: $parent.enableFixedValue()}" />
-						</div>
-					</div>
+					
 				</div>
 			</div>
 			<div id="functions-area-bottom">
