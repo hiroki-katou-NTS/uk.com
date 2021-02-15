@@ -295,12 +295,20 @@ module nts.uk.at.view.kal001.a.model {
         nameRequired : string;
         nameStartRequired : string;
         nameEndRequired : string;
+        isEnable : KnockoutObservable<boolean>;
         constructor(dto:  service.CheckConditionTimeDto){
             let self = this;
             this.category = dto.category;
             this.categoryName = dto.categoryName;
             this.period36Agreement = dto.period36Agreement;
-            
+            if(dto.category == 0
+                || dto.category == 3
+                || dto.category == 5
+                || dto.category == 7){
+                isEnable =  ko.observable(true);
+            } else {
+                isEnable =  ko.observable(false);
+            }
             if(dto.category==2 || dto.category==5 || dto.category==8){
                 this.dateValue= ko.observable(new DateValue(dto.startDate, dto.endDate) );
                 this.typeInput = "fullDate"; 
