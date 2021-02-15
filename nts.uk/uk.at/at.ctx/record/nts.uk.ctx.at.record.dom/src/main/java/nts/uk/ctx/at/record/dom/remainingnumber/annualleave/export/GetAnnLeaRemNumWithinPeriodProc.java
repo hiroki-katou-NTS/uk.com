@@ -30,6 +30,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremaini
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveNumberInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveRemainingHistory;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.AnnualLeaveMaxData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.AnnualLeaveMaxHistoryData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.CalcAnnLeaAttendanceRate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.CreateInterimAnnualMngData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
@@ -48,6 +49,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualle
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerform;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureIdHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureIdHistory;
@@ -57,6 +59,7 @@ import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantNum;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthServiceTbl;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.NextAnnualLeaveGrant;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 /**
  * 処理：期間中の年休残数を取得
@@ -399,7 +402,8 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 
 		if (isSameInfo){ // 集計開始日時点の前回の年休の集計結果が存在するとき
 
-			// 「前回の年休情報」を取得　→　取得内容をもとに年休情報を作成
+			// パラメータ「前回の年休の集計結果．年休情報(期間終了日の翌日開始時点)」の年休付与残数データ・年休上限データを取得
+			// 年休付与残数データ、年休上限データをもとに年休情報を作成
 			return createInfoFromRemainingData(
 					prevAnnualLeaveInfo.getGrantRemainingList(),
 					Optional.of(prevAnnualLeaveInfo.getMaxData()), aggrPeriod);
@@ -417,31 +421,12 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 
 				// 過去月集計モードで休暇残数を計算する締め開始日を取得する
 				Closure closure = ClosureService.getClosureDataByEmployee(require, cacheCarrier, employeeId, aggrPeriod.end());
-				//過去月モードの場合、年月は必須なのでemptyだった場合はそのままexceptionを発生させる。
+				// 過去月モードの場合、年月は必須なのでemptyだった場合はそのままexceptionを発生させる。
 				List<DatePeriod> closurePeriods = closure.getPeriodByYearMonth(yearMonthOpt.get());
 				closureStartDate = aggrPeriod.start();
 				if(!closurePeriods.isEmpty())
 					closureStartDate = closurePeriods.get(0).start();
 
-//				// 「年休付与残数履歴データ」を取得
-//				List<AnnualLeaveRemainingHistory> remainHistList
-//					= require.annualLeaveRemainingHistory(
-//						employeeId, yearMonthOpt.get());
-//				if (remainHistList.size() > 0) {
-//					// 付与日 ASC、期限切れ状態＝「使用可能」　を採用
-//					remainHistList.sort((a, b) -> a.getGrantDate().compareTo(b.getGrantDate()));
-//					for (AnnualLeaveRemainingHistory remainHist : remainHistList) {
-//						if (remainHist.getExpirationStatus() != LeaveExpirationStatus.AVAILABLE) continue;
-//
-//						// 取得したドメインを年休付与残数データに変換
-//						AnnualLeaveGrantRemaining remainData = new AnnualLeaveGrantRemaining(
-//								AnnualLeaveGrantRemainingData.createFromHistory(remainHist));
-//						remainingDatas.add(remainData);
-//					}
-//				}
-
-				// 年休上限データを取得
-				val annLeaMaxDataOpt = require.annualLeaveMaxData(employeeId);
 
 			} else {  //  過去月集計モードでないとき
 
@@ -649,8 +634,17 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 						}
 					}
 
+					// 社員の締めを取得
+					Closure closure = ClosureService.getClosureDataByEmployee(require, cacheCarrier, employeeId, aggrPeriod.end());
+
 					// 年月指定して年休上限データを取得
-					// 要修正　→AnnualLeaveMaxHistoryData リポジトリクラス内関数が不足
+					Optional<AnnualLeaveMaxHistoryData> annualLeaveMaxHistoryData
+						= require.AnnualLeaveMaxHistoryData(
+								employeeId, yearMonthOpt.get(), closure.getClosureId(), closure.getClosureDateOfCurrentMonth().get());
+
+
+
+
 
 			} else if (closureStart.before(aggrPeriod.start())){ // 締め開始日<パラメータ「集計開始日」
 
@@ -1061,6 +1055,10 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 
 		/** 締め状態管理 */
 		Optional<ClosureStatusManagement> latestClosureStatusManagement(String employeeId);
+
+		/** 年休上限履歴データを取得する */
+		Optional<AnnualLeaveMaxHistoryData> AnnualLeaveMaxHistoryData(
+				String employeeId, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate);
 
 		Optional<AnnualLeaveMaxData> annualLeaveMaxData(String employeeId);
 

@@ -10,7 +10,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 /**
- * 
+ *
  * @author HungTT - 年休上限履歴データ
  *
  */
@@ -22,7 +22,7 @@ public class AnnualLeaveMaxHistoryData extends AggregateRoot {
 	 * 社員ID
 	 */
 	private String employeeId;
-	
+
 	/**
 	 * 会社ID
 	 */
@@ -53,15 +53,15 @@ public class AnnualLeaveMaxHistoryData extends AggregateRoot {
 	 */
 	private ClosureDate closureDate;
 
-	public AnnualLeaveMaxHistoryData(String employeeId, String companyId, HalfdayAnnualLeaveMax halfdayAnnualLeaveMax,
-			TimeAnnualLeaveMax timeAnnualLeaveMax, YearMonth yearMonth, int closureId, ClosureDate closureDate) {
+	public AnnualLeaveMaxHistoryData(String employeeId, String companyId, Optional<HalfdayAnnualLeaveMax> halfdayAnnualLeaveMax,
+			Optional<TimeAnnualLeaveMax> timeAnnualLeaveMax, YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate) {
 		super();
 		this.employeeId = employeeId;
 		this.companyId = companyId;
-		this.halfdayAnnualLeaveMax = Optional.ofNullable(halfdayAnnualLeaveMax);
-		this.timeAnnualLeaveMax = Optional.ofNullable(timeAnnualLeaveMax);
+		this.halfdayAnnualLeaveMax = halfdayAnnualLeaveMax;
+		this.timeAnnualLeaveMax = timeAnnualLeaveMax;
 		this.yearMonth = yearMonth;
-		this.closureId = EnumAdaptor.valueOf(closureId, ClosureId.class);
+		this.closureId = closureId;
 		this.closureDate = closureDate;
 	}
 
