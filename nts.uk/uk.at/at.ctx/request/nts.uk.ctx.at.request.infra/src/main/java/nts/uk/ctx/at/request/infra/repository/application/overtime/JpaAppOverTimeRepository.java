@@ -97,8 +97,8 @@ public class JpaAppOverTimeRepository extends JpaRepository implements AppOverTi
 				
 		krqdtAppOverTime.krqdtAppOvertimePK = krqdtAppOvertimePK;
 		krqdtAppOverTime.overtimeAtr = appOverTime.getOverTimeClf().value;
-		krqdtAppOverTime.workTypeCode = appOverTime.getWorkInfoOp().map(x -> x.getWorkTypeCode().v()).orElse(null);
-		krqdtAppOverTime.workTimeCode = appOverTime.getWorkInfoOp().map(x -> x.getWorkTimeCode().v()).orElse(null);
+		krqdtAppOverTime.workTypeCode = appOverTime.getWorkInfoOp().flatMap(x -> Optional.ofNullable(x.getWorkTypeCode())).map(x -> x.v()).orElse(null);
+		krqdtAppOverTime.workTimeCode = appOverTime.getWorkInfoOp().flatMap(x -> Optional.ofNullable(x.getWorkTimeCode())).map(x -> x.v()).orElse(null);
 		List<TimeZoneWithWorkNo> workHours = appOverTime.getWorkHoursOp().orElse(Collections.emptyList());
 		workHours.stream().forEach(item -> {
 			if (item.getWorkNo().v() == 1) {
