@@ -18,7 +18,7 @@ module nts.uk.com.view.cmf001.i.viewmodel {
         atrNotUse: number = model.NOT_USE_ATR.NOT_USE;
 
         checkRequired1: KnockoutObservable<boolean> = ko.observable(true);
-
+        
         constructor() {
             let self = this;
 
