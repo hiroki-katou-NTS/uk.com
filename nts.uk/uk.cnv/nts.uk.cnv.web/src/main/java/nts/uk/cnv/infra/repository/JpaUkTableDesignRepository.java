@@ -137,8 +137,7 @@ public class JpaUkTableDesignRepository extends JpaRepository implements UkTable
 			sql = "SELECT td FROM ScvmtUkTableDesign td "
 				+ " WHERE td.pk.tableId = :tableId"
 				+ " AND   td.pk.branch = :branch"
-				+ " AND   td.pk.date <= :date"
-				+ " ORDER BY td.pk.date DESC";
+				+ " AND   td.pk.date = :date";
 			result = this.queryProxy().query(sql, ScvmtUkTableDesign.class)
 					.setParameter("tableId", tableId)
 					.setParameter("branch", branch)
@@ -148,8 +147,7 @@ public class JpaUkTableDesignRepository extends JpaRepository implements UkTable
 		else {
 			sql = "SELECT td FROM ScvmtUkTableDesign td "
 					+ " WHERE td.pk.tableId = :tableId"
-					+ " AND   td.pk.date <= :date"
-					+ " ORDER BY td.pk.date DESC";
+					+ " AND   td.pk.date = :date";
 			result = this.queryProxy().query(sql, ScvmtUkTableDesign.class)
 					.setParameter("tableId", tableId)
 					.setParameter("date", date)
@@ -173,8 +171,7 @@ public class JpaUkTableDesignRepository extends JpaRepository implements UkTable
 		if (branch != null && !branch.isEmpty()) {
 			sql = "SELECT td FROM ScvmtUkTableDesign td"
 				+ " WHERE td.pk.branch = :branch"
-				+ " AND   td.pk.date <= :date"
-				+ " ORDER BY td.pk.tableId, td.pk.date DESC";
+				+ " AND   td.pk.date = :date";
 			list = this.queryProxy().query(sql, ScvmtUkTableDesign.class)
 					.setParameter("branch", branch)
 					.setParameter("date", date)
@@ -182,8 +179,7 @@ public class JpaUkTableDesignRepository extends JpaRepository implements UkTable
 		}
 		else {
 			sql = "SELECT td FROM ScvmtUkTableDesign td"
-				+ " WHERE td.pk.date <= :date"
-				+ " ORDER BY td.pk.tableId, td.pk.date DESC";
+				+ " WHERE td.pk.date = :date";
 			list = this.queryProxy().query(sql, ScvmtUkTableDesign.class)
 					.setParameter("date", date)
 					.getList();
