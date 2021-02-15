@@ -287,7 +287,6 @@ public class KfnmtAlarmCheckConditionCategory extends ContractUkJpaEntity implem
 												.getAlarmCheckConAgr())
 								: null,
 				domain.getCategory() == AlarmCategory.ATTENDANCE_RATE_FOR_HOLIDAY  
-				domain.getCategory() == AlarmCategory.ATTENDANCE_RATE_FOR_HOLIDAY 
 			    && (AnnualHolidayAlarmCondition) domain.getExtractionCondition() != null
 			    && ((AnnualHolidayAlarmCondition) domain.getExtractionCondition()).getAlarmCheckSubConAgr() != null
 				? KfnmtAlCheckSubConAg.toEntity(domain.getCompanyId(), domain.getCode().v(),

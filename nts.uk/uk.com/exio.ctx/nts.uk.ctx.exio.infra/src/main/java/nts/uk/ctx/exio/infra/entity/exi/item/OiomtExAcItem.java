@@ -129,7 +129,6 @@ public class OiomtExAcItem extends ContractUkJpaEntity implements Serializable {
 				: null;
 		OiomtStdAcceptItemPk pk = new OiomtStdAcceptItemPk(domain.getCid(), domain.getConditionSetCd().v(), domain.getAcceptItemNumber());
 		OiomtExAcItem entity = new OiomtExAcItem(pk,
-				AppContexts.user().contractCode(),
 				domain.getCategoryItemNo(),
 				domain.getCsvItemNumber().isPresent() ? domain.getCsvItemNumber().get() : null,
 				domain.getCsvItemName().isPresent() ? domain.getCsvItemName().get() : null,
