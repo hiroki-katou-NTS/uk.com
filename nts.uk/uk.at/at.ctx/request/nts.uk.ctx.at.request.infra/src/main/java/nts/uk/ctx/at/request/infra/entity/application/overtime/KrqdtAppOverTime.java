@@ -187,7 +187,7 @@ public class KrqdtAppOverTime extends ContractUkJpaEntity implements Serializabl
 		AppOverTime appOverTime = new AppOverTime();
 		
 		appOverTime.setOverTimeClf(EnumAdaptor.valueOf(overtimeAtr, OvertimeAppAtr.class));
-		if (StringUtils.isNotBlank(workTimeCode) || StringUtils.isNotBlank(workTimeCode)) {
+		if (StringUtils.isNotBlank(workTypeCode) || StringUtils.isNotBlank(workTimeCode)) {
 			WorkInformation workInformation = new WorkInformation("", "");
 			appOverTime.setWorkInfoOp(Optional.of(workInformation));
 			if (StringUtils.isNotBlank(workTypeCode)) {

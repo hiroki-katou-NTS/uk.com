@@ -474,6 +474,19 @@ export class KafS09AComponent extends KafS00ShrComponent {
             });
         }
     }
+
+    public getValidAllValue() {
+        const vm = this;
+        let validAll: boolean = true;
+        for (let child of vm.$children) {
+            if (!child.$valid) {
+                validAll = false;
+            }
+        }
+        
+        return validAll;
+    }
+
     public register() {
         const self = this;
         if (self.model.straight == 2 && self.model.bounce == 2) {
@@ -664,6 +677,16 @@ export class KafS09AComponent extends KafS00ShrComponent {
         const self = this;
         console.log('emit' + opAppReason);
         self.application.opAppReason = opAppReason;
+    }
+
+    public kafs00BValid(kafs00BValid) {
+        const self = this;
+        self.isValidateAll = self.getValidAllValue();
+    }
+
+    public kafs00CValid(kafs00CValid) {
+        const self = this;
+        self.isValidateAll = self.getValidAllValue();
     }
 
 }

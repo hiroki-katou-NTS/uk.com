@@ -153,7 +153,7 @@
                                        <span class="label" style="margin-left: 50px;">#{i18n.getText('KMK002_109')}</span>
                                        <span class="label" style="margin-left: 20px;" data-bind="text: dailyUnit, visible: performanceAtr() === 1"></span> <!-- daily -->
                                        <span class="label" style="margin-left: 20px;" data-bind="text: monthlyUnit, visible: performanceAtr() === 0"></span> <!-- monthly -->
-                                       <span class="label" data-bind="text: unit"></span>
+                                       <span class="label" data-bind="text: unit, visible: optionalItemAtr() !== 0"></span>
                                     </div>
                                  </td>
                               </tr>

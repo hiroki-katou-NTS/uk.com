@@ -175,7 +175,7 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 				if(params.predetemineTimeSetting) {
 					lstTimezone = params.predetemineTimeSetting.prescribedTimezoneSetting.lstTimezone
 				}
-				
+
 				var time1 = _.filter(lstTimezone, ['workNo', 1]);
 				var time2 = _.filter(lstTimezone, ['workNo', 2]);
 
@@ -280,13 +280,13 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 			}
 
 			vm.$blockui("show");
-			
+
 			vm.$validate('#kaf000-a-component4 .nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
 				.then(isValid => {
 					if (isValid) {
 						if(vm.reflectWorkChange.whetherReflectAttendance() === 1 && vm.model().setupType() === 0) {
 							return vm.$validate('.nts-input');
-						} 
+						}
 						return true;
 					}
 				})
@@ -351,23 +351,21 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 		}
 
 		handleConfirmMessage(listMes: any, vmParam: any): any {
-			const vm = this;
+            const vm = this;
 
-			return new Promise((resolve: any) => {
-				if(_.isEmpty(listMes)) {
-					resolve(true);
-				}
-				let msg = listMes[0].value;
+            if (_.isEmpty(listMes)) {
+                return $.Deferred().resolve(true);
+            }
+            let msg = listMes[0].value;
 
-				return vm.$dialog.confirm({ messageId: msg.msgID, messageParams: msg.paramLst })
-					.then((value) => {
-						if (value === 'yes') {
-							return vm.handleConfirmMessage(listMes, vmParam);
-						} else {
-							resolve(false);
-						}
-					})
-	        });
+            return vm.$dialog.confirm({messageId: msg.msgID, messageParams: msg.paramLst})
+                .then((value) => {
+                    if (value === 'yes') {
+                        return vm.handleConfirmMessage(listMes, vmParam);
+                    } else {
+                        return $.Deferred().resolve(false);
+                    }
+                })
 		}
 
 		registerData(params: any): any {

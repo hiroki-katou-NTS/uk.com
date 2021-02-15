@@ -1,69 +1,69 @@
-#contents-area {
+.ktg-001-a #contents-area {
 	padding: 0;
 }
 
-.widget-table {
+.ktg-001-a .widget-table {
 	width: 100%;
 	max-width: 305px;
 	margin: 0 auto;
 	table-layout: fixed;
 }
 
-.widget-table .go-button {
+.ktg-001-a .widget-table .go-button {
 	width: 34px;
 }
 
-.widget-table .go-button button {
+.ktg-001-a .widget-table .go-button button {
 	width: 25px;
 	border: 0;
 	box-shadow: none;
 	padding: 0;
 }
 
-.widget-table td {
+.ktg-001-a .widget-table td {
 	padding: 2px;
 	overflow: hidden;
 }
 
-.widget-table .widget-table-child {
+.ktg-001-a .widget-table .widget-table-child {
 	height: 37px;
 }
 
-.widget-table tr {
+.ktg-001-a .widget-table tr {
 	border-bottom: 1px solid #B1B1B1;
 }
 
-.parent{
+.ktg-001-a .parent{
 	border-left: 1px solid #B1B1B1;
 	border-right: 1px solid #B1B1B1;
 	border-bottom: 1px solid #B1B1B1;
-    height: 320px;
     width: 305px;
-    margin: 0 auto;
+	margin: 0 auto;
+	background: white;
 } 
 
-.child-row {
+.ktg-001-a .child-row {
 	padding-left: 22px;
 }
 
-.row {
+.ktg-001-a .row {
 	width: 225px;
 	max-width: 200px;
 }
 
-.row .child-row {
+.ktg-001-a .row .child-row {
 	width: 213px;
 	height: 33px;
 }
 
-.row .go-button {
+.ktg-001-a .row .go-button {
 	width: 32px;
 }
 
-.row td:nth-child(3) {
+.ktg-001-a .row td:nth-child(3) {
 	width: 25px;
 }
 
-div.form-label {
+.ktg-001-a div.form-label {
     border-color: #10A5F5;
 }

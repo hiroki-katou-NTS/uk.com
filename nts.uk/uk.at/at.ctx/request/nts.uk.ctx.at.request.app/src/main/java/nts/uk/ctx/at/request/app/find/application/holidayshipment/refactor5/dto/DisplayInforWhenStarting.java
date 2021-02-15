@@ -60,16 +60,16 @@ public class DisplayInforWhenStarting {
 	
 	public HolidayShipmentOutput toDomain() {
 	    return new HolidayShipmentOutput(
-	            applicationForWorkingDay.toDomain(), 
+	            applicationForWorkingDay == null ? null : applicationForWorkingDay.toDomain(), 
 	            appDispInfoStartup.toDomain(), 
-	            applicationForHoliday.toDomain(), 
+	            applicationForHoliday == null ? null : applicationForHoliday.toDomain(), 
 	            remainingHolidayInfor.toDomain(), 
 	            substituteHdWorkAppSet.toDomain(), 
 	            EnumAdaptor.valueOf(holidayManage, ManageDistinct.class), 
 	            EnumAdaptor.valueOf(substituteManagement, ManageDistinct.class), 
 	            workInfoAttendanceReflect.toDomain(), 
 	            substituteWorkAppReflect.toDomain(), 
-	            this.existAbs() ? Optional.of(abs.toDomainInsertAbs()) : Optional.empty(), 
-	            this.existRec() ? Optional.of(rec.toDomainInsertRec()) : Optional.empty());
+	            this.existAbs() ? Optional.of(abs.toDomainAbs()) : Optional.empty(), 
+	            this.existRec() ? Optional.of(rec.toDomain()) : Optional.empty());
 	}
 }

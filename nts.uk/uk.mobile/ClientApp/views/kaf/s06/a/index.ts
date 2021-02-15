@@ -129,8 +129,8 @@ export class KafS06AComponent extends KafS00ShrComponent {
             self.$updateValidator('workHours2', {
                 timeRange: true
             });
-            self.$validate('workHours1');
-            self.$validate('workHours2');
+            // self.$validate('workHours1');
+            // self.$validate('workHours2');
 
         }
     }
@@ -1265,7 +1265,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
             text: '--- 選択してください ---'
         });
         self.dropdownList = dropDownList;
-        self.selectedValueHolidayType = String(self.getSelectedValue());
+        self.selectedValueHolidayType = !_.isNil(self.getSelectedValue()) ?  String(self.getSelectedValue()) : null;
         // 
 
     }
@@ -1275,7 +1275,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
 
         if (!self.model.appAbsenceStartInfoDto || !_.isNil(self.selectedValueHolidayType)) {
 
-            return self.selectedValueHolidayType;
+            return self.selectedValueHolidayType || null;
         }
         // 休暇申請起動時の表示情報．休暇残数情報．年休管理区分　＝　管理する
         let c1_1 = self.model.appAbsenceStartInfoDto.remainVacationInfo.annualLeaveManagement.annualLeaveManageDistinct == ManageDistinct.YES;
@@ -1360,6 +1360,8 @@ export class KafS06AComponent extends KafS00ShrComponent {
 
             return HolidayAppType.DIGESTION_TIME;
         }
+
+        return null;
     }
 
     public openKDL002(type?: string) {
@@ -1599,7 +1601,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
             workingHours.push(timeZoneWithWorkNoDto);
 
         }
-        if (self.c10 && _.isNumber(_.get(self.workHours2, 'start')) && _.get(self.workHours2, 'end') && self.c11) {
+        if (self.c10 && _.isNumber(_.get(self.workHours2, 'start')) && _.isNumber(_.get(self.workHours2, 'end')) && self.c11) {
             let timeZoneWithWorkNoDto = {} as TimeZoneWithWorkNoDto;
             timeZoneWithWorkNoDto.workNo = 2;
             timeZoneWithWorkNoDto.timeZone = {

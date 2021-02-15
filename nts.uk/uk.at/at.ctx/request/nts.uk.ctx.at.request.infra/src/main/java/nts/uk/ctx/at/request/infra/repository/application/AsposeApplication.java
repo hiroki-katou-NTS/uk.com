@@ -10,6 +10,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 
 import com.aspose.cells.Cell;
@@ -43,6 +44,7 @@ import nts.uk.ctx.at.request.infra.repository.application.optional.AposeOptional
 import nts.uk.ctx.at.request.infra.repository.application.overtime.AsposeAppOverTime;
 import nts.uk.ctx.at.request.infra.repository.application.stamp.AsposeAppStamp;
 import nts.uk.ctx.at.request.infra.repository.application.workchange.AsposeWorkChange;
+import nts.uk.ctx.at.request.infra.repository.application.timeleaveapplication.AsposeTimeLeaveApplication;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
@@ -86,6 +88,9 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 	private AsposeHolidayShipment asposeHolidayShipment;
 	
 	private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy年 MM月 dd日 (E)", Locale.JAPAN);
+
+	@Inject
+	private AsposeTimeLeaveApplication asposeTimeLeaveApp;
 
 	@Override
 	public void generate(FileGeneratorContext generatorContext, PrintContentOfApp printContentOfApp, ApplicationType appType) {
@@ -220,6 +225,11 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 			}
 			break;
 		case ANNUAL_HOLIDAY_APPLICATION:
+			asposeTimeLeaveApp.printAppContent(worksheet, printContentOfApp);
+			reasonLabel = worksheet.getCells().get("B15");
+			remarkLabel = worksheet.getCells().get("B18");
+			reasonContent = worksheet.getCells().get("D15");
+			printBottomKAF000(reasonLabel, remarkLabel, reasonContent, printContentOfApp, appType);
 			break;
 		case EARLY_LEAVE_CANCEL_APPLICATION:
 			asposeLateLeaveEarly.printLateEarlyContent(worksheet, printContentOfApp);
@@ -266,11 +276,11 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		case STAMP_APPLICATION:
 			return "";
 		case ANNUAL_HOLIDAY_APPLICATION:
-			return "";
+			return "application/KAF012_template.xlsx";
 		case EARLY_LEAVE_CANCEL_APPLICATION:
 			return "application/KAF004_template.xlsx";
 		case COMPLEMENT_LEAVE_APPLICATION:
-			return "";
+			return "application/KAF011_template.xlsx";
 		case OPTIONAL_ITEM_APPLICATION:
 			return "application/KAF020_template.xlsx";
 		default:
@@ -500,7 +510,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		if(printContentOfApp.getOpAppReason() != null) {
 			appReason = printContentOfApp.getOpAppReason().v();
 		}
-		reasonContent.setValue(appReasonStandard + "\n" + appReason);
+		reasonContent.setValue(appReasonStandard + (StringUtils.isEmpty(appReasonStandard) ? Strings.EMPTY : "\n") + appReason);
 	}
 
 }
