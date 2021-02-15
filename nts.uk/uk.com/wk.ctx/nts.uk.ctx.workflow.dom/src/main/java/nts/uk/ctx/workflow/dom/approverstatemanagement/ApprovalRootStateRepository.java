@@ -1,4 +1,4 @@
-﻿package nts.uk.ctx.workflow.dom.approverstatemanagement;
+package nts.uk.ctx.workflow.dom.approverstatemanagement;
 
 import java.util.List;
 import java.util.Map;
