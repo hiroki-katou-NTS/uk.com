@@ -35,10 +35,10 @@ public class KscstFormAmount extends UkJpaEntity implements Serializable {
 			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
 			@JoinColumn(name = "VERTICAL_CAL_CD", referencedColumnName = "VERTICAL_CAL_CD", insertable = false, updatable = false),
 			@JoinColumn(name = "VERTICAL_CAL_ITEM_ID", referencedColumnName = "ITEM_ID", insertable = false, updatable = false) })
-	public KscmtVerticalItem kscmtGenVertItem;
+	public KscmtGenVertItem kscmtGenVertItem;
 	
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "kscstFormulaAmount", orphanRemoval = true)
-	public KscmtFormMoney moneyFunc;
+	public KscstFormMoney moneyFunc;
 	
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "kscstFormulaAmount", orphanRemoval = true)
 	public KscstFormTimeUnit timeUnit;

@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.worktimeset;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.DisplayMode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.WorkTimeDisplayModeSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWtComDispMode;
+import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWorktimeDispMode;
 import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWorktimeDispModePK;
 
 /**
@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWorktimeDispModePK;
 public class JpaWorkTimeDisplayModeSetMemento implements WorkTimeDisplayModeSetMemento {
 
 	/** The entity. */
-	private KshmtWtComDispMode entity;
+	private KshmtWorktimeDispMode entity;
 
 	/**
 	 * Instantiates a new jpa work time display mode set memento.
@@ -24,7 +24,7 @@ public class JpaWorkTimeDisplayModeSetMemento implements WorkTimeDisplayModeSetM
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaWorkTimeDisplayModeSetMemento(KshmtWtComDispMode entity) {
+	public JpaWorkTimeDisplayModeSetMemento(KshmtWorktimeDispMode entity) {
 		if (entity.getKshmtWorktimeDispModePK() == null) {
 			entity.setKshmtWorktimeDispModePK(new KshmtWorktimeDispModePK());
 		}

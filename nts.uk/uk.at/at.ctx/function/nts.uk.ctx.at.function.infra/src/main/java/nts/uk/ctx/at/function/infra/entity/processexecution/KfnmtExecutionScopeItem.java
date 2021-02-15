@@ -7,7 +7,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name="KFNMT_AUTOEXEC_SCOPE_ITEM")
+@Table(name="KFNMT_EXEC_SCOPE_ITEM")
 @NoArgsConstructor
 public class KfnmtExecutionScopeItem extends UkJpaEntity implements Serializable{
 
@@ -23,7 +23,7 @@ public class KfnmtExecutionScopeItem extends UkJpaEntity implements Serializable
 	@JoinColumns({
 		@JoinColumn(name="CID", referencedColumnName="CID", insertable = false, updatable = false),
 		@JoinColumn(name="EXEC_ITEM_CD", referencedColumnName="EXEC_ITEM_CD", insertable = false, updatable = false)})
-	public KfnmtAutoexecScope execScope;
+	public KfnmtExecutionScope execScope;
 
 	/**
 	 * Gets primary key.

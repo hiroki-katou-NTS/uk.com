@@ -5,7 +5,7 @@ import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyCategoryName;
 import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyCategoryNo;
 import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyCategoryOrder;
 import nts.uk.ctx.sys.assist.dom.mastercopy.SystemType;
-import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspctMastercopyCategory;
+import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyCategory;
 
 /**
  * The Class JpaMasterCopyCategoryGetMemento.
@@ -13,7 +13,7 @@ import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspctMastercopyCategory;
 public class JpaMasterCopyCategoryGetMemento implements MasterCopyCategoryGetMemento {
 
 	/** The entity. */
-	private SspctMastercopyCategory entity;
+	private SspmtMastercopyCategory entity;
 
 	/**
 	 * Instantiates a new jpa master copy category get memento.
@@ -21,7 +21,7 @@ public class JpaMasterCopyCategoryGetMemento implements MasterCopyCategoryGetMem
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaMasterCopyCategoryGetMemento(SspctMastercopyCategory entity) {
+	public JpaMasterCopyCategoryGetMemento(SspmtMastercopyCategory entity) {
 		this.entity = entity;
 	}
 

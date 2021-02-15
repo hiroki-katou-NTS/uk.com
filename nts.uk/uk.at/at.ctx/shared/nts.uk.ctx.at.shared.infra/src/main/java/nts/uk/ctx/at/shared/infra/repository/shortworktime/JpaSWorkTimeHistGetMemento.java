@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.shortworktime.KshmtShorttimeHist;
+import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHist;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.arc.time.calendar.period.DatePeriod;
 
@@ -20,7 +20,7 @@ public class JpaSWorkTimeHistGetMemento implements SWorkTimeHistGetMemento {
 	private final static int FIRST_ITEM_INDEX = 0;
 
 	/** The entity. */
-	private List<KshmtShorttimeHist> entities;
+	private List<BshmtWorktimeHist> entities;
 
 	/**
 	 * Instantiates a new jpa S work time hist get memento.
@@ -28,7 +28,7 @@ public class JpaSWorkTimeHistGetMemento implements SWorkTimeHistGetMemento {
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaSWorkTimeHistGetMemento(List<KshmtShorttimeHist> entities) {
+	public JpaSWorkTimeHistGetMemento(List<BshmtWorktimeHist> entities) {
 		this.entities = entities;
 	}
 

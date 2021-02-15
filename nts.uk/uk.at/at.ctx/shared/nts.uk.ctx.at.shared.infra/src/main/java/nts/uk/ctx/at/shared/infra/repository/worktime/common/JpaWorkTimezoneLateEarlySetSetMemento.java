@@ -12,11 +12,11 @@ import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneLateEarlyCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.OtherEmTimezoneLateEarlySet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneLateEarlySetSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComLatetimeMng;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtLateEarlySet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtLateEarlySetPK;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComLatetime;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtOtherLateEarly;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtOtherLateEarlyPK;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtCom;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
 
 /**
  * The Class JpaWorkTimezoneLateEarlySetSetMemento.
@@ -24,7 +24,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtCom;
 public class JpaWorkTimezoneLateEarlySetSetMemento implements WorkTimezoneLateEarlySetSetMemento {
 
 	/** The parent entity. */
-	private KshmtWtCom parentEntity;
+	private KshmtWorktimeCommonSet parentEntity;
 
 	/**
 	 * Instantiates a new jpa work timezone late early set set memento.
@@ -32,7 +32,7 @@ public class JpaWorkTimezoneLateEarlySetSetMemento implements WorkTimezoneLateEa
 	 * @param parentEntity
 	 *            the parent entity
 	 */
-	public JpaWorkTimezoneLateEarlySetSetMemento(KshmtWtCom parentEntity) {
+	public JpaWorkTimezoneLateEarlySetSetMemento(KshmtWorktimeCommonSet parentEntity) {
 		super();
 		this.parentEntity = parentEntity;
 		// initial entity
@@ -59,12 +59,12 @@ public class JpaWorkTimezoneLateEarlySetSetMemento implements WorkTimezoneLateEa
 	 */
 	@Override
 	public void setOtherClassSet(List<OtherEmTimezoneLateEarlySet> list) {
-		List<KshmtWtComLatetime> lstEntity = this.parentEntity.getKshmtOtherLateEarlies();
+		List<KshmtOtherLateEarly> lstEntity = this.parentEntity.getKshmtOtherLateEarlies();
 		if (CollectionUtil.isEmpty(lstEntity)) {
 			lstEntity = new ArrayList<>();
 		}
 		
-		List<KshmtWtComLatetime> newLstEntity = new ArrayList<>();
+		List<KshmtOtherLateEarly> newLstEntity = new ArrayList<>();
 		
 		for (OtherEmTimezoneLateEarlySet emTimezone : list) {
 			
@@ -72,7 +72,7 @@ public class JpaWorkTimezoneLateEarlySetSetMemento implements WorkTimezoneLateEa
 			KshmtOtherLateEarlyPK newPK = this.setPrimaryKey(parentEntity, new KshmtOtherLateEarlyPK());
 			
 			// get entity existed
-			KshmtWtComLatetime entity = lstEntity.stream().filter(item -> {
+			KshmtOtherLateEarly entity = lstEntity.stream().filter(item -> {
 					KshmtOtherLateEarlyPK pk = item.getKshmtOtherLateEarlyPK();
 					
 					return pk.getCid().equals(newPK.getCid()) && pk.getWorktimeCd().equals(newPK.getWorktimeCd())
@@ -80,7 +80,7 @@ public class JpaWorkTimezoneLateEarlySetSetMemento implements WorkTimezoneLateEa
 							&& pk.getWorktimeSetMethod() == newPK.getWorktimeSetMethod()
 							&& pk.getLateEarlyAtr() == emTimezone.getLateEarlyAtr().value;
 					}).findFirst()
-					.orElse(new KshmtWtComLatetime(newPK));
+					.orElse(new KshmtOtherLateEarly(newPK));
 			
 			// save to memento
 			emTimezone.saveToMemento(new JpaOtherEmTimezoneLateEarlySetSetMemento(entity));
@@ -98,11 +98,11 @@ public class JpaWorkTimezoneLateEarlySetSetMemento implements WorkTimezoneLateEa
 	 * @param parentEntity
 	 *            the parent entity
 	 */
-	private void initialEntity(KshmtWtCom parentEntity) {
-		KshmtWtComLatetimeMng entity = parentEntity.getKshmtLateEarlySet();
+	private void initialEntity(KshmtWorktimeCommonSet parentEntity) {
+		KshmtLateEarlySet entity = parentEntity.getKshmtLateEarlySet();
 
 		if(entity == null){
-			entity = new KshmtWtComLatetimeMng();
+			entity = new KshmtLateEarlySet();
 		}
 		// check existed key
 		if (entity.getKshmtLateEarlySetPK() == null) {
@@ -124,7 +124,7 @@ public class JpaWorkTimezoneLateEarlySetSetMemento implements WorkTimezoneLateEa
 	 * @param primaryKey the primary key
 	 * @return the t
 	 */
-	private <T> T setPrimaryKey(KshmtWtCom parentEntity, T primaryKey) {
+	private <T> T setPrimaryKey(KshmtWorktimeCommonSet parentEntity, T primaryKey) {
 		
 		// KshmtLateEarlySetPK
 		if (primaryKey instanceof KshmtLateEarlySetPK) {

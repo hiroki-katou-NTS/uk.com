@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.predset;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.worktime.predset.BreakDownTimeDay;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetermineTimeGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtWtComPredTime;
+import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtPredTimeSet;
 
 /**
  * The Class JpaPredetermineTimeGetMemento.
@@ -15,14 +15,14 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtWtComPredTime;
 public class JpaPredetermineTimeGetMemento implements PredetermineTimeGetMemento{
 	
 	/** The entity. */
-	private  KshmtWtComPredTime entity;
+	private  KshmtPredTimeSet entity;
 	
 	/**
 	 * Instantiates a new jpa predetermine time get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaPredetermineTimeGetMemento(KshmtWtComPredTime entity) {
+	public JpaPredetermineTimeGetMemento(KshmtPredTimeSet entity) {
 		super();
 		this.entity = entity;
 	}

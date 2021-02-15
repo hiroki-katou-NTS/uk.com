@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.infra.repository.workrecord.goout;
 import java.math.BigDecimal;
 
 import nts.uk.ctx.at.record.dom.workrecord.goout.OutManageSetMemento;
-import nts.uk.ctx.at.record.infra.entity.workrecord.goout.KrcmtGooutMng;
+import nts.uk.ctx.at.record.infra.entity.workrecord.goout.KrcstOutManage;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -14,14 +14,14 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaOutManageSetMemento implements OutManageSetMemento{
 
 	/** The krcst out manage. */
-	private KrcmtGooutMng krcstOutManage; 
+	private KrcstOutManage krcstOutManage; 
 	
 	/**
 	 * Instantiates a new jpa out manage set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaOutManageSetMemento(KrcmtGooutMng entity) {
+	public JpaOutManageSetMemento(KrcstOutManage entity) {
 		this.krcstOutManage = entity;
 	}
 	

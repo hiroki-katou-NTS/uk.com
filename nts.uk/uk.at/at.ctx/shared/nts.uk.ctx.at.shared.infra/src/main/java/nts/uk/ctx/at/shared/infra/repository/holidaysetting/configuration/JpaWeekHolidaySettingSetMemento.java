@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.WeekHolidaySettingSetMemento;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.WeekNumberOfDay;
-import nts.uk.ctx.at.shared.infra.entity.holidaysetting.configuration.KshmtHdpubPerWeek;
+import nts.uk.ctx.at.shared.infra.entity.holidaysetting.configuration.KshmtWeekHdSet;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -14,14 +14,14 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaWeekHolidaySettingSetMemento implements WeekHolidaySettingSetMemento{
 
 	/** The kshmt week hd set. */
-	private KshmtHdpubPerWeek kshmtWeekHdSet;
+	private KshmtWeekHdSet kshmtWeekHdSet;
 	
 	/**
 	 * Instantiates a new jpa week holiday setting set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaWeekHolidaySettingSetMemento(KshmtHdpubPerWeek entity){
+	public JpaWeekHolidaySettingSetMemento(KshmtWeekHdSet entity){
 		if(entity.getCid() == null){
 			entity.setCid(AppContexts.user().companyId());
 		}

@@ -37,7 +37,7 @@ public class KscmtFormPeople extends UkJpaEntity implements Serializable {
 		@JoinColumn(name = "VERTICAL_CAL_CD", referencedColumnName = "VERTICAL_CAL_CD", insertable = false, updatable = false),
 		@JoinColumn(name = "VERTICAL_CAL_ITEM_ID", referencedColumnName = "ITEM_ID", insertable = false, updatable = false)
 	})
-	public KscmtVerticalItem kscmtGenVertItemPeople;
+	public KscmtGenVertItem kscmtGenVertItemPeople;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "kscmtFormPeople", orphanRemoval = true)
 	public List<KscmtFormPeopleFunc> listPeopleFunc;

@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.infra.repository.divergence.time.message;
 import java.util.Optional;
 
 import nts.uk.ctx.at.record.dom.divergence.time.message.WorkTypeDivergenceTimeErrorAlarmMessageSetMemento;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.message.KrcmtDvgcEralMsgBus;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.message.KrcstDvgcwtTimeEaMsg;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.message.KrcstDvgcwtTimeEaMsgPK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmMessage;
@@ -16,7 +16,7 @@ public class JpaWorkTypeDivergenceTimeErrorAlarmMessageSetMemento
 		implements WorkTypeDivergenceTimeErrorAlarmMessageSetMemento {
 
 	/** The entity. */
-	private KrcmtDvgcEralMsgBus entity;
+	private KrcstDvgcwtTimeEaMsg entity;
 
 	/**
 	 * Instantiates a new jpa work type divergence time error alarm message set
@@ -32,7 +32,7 @@ public class JpaWorkTypeDivergenceTimeErrorAlarmMessageSetMemento
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaWorkTypeDivergenceTimeErrorAlarmMessageSetMemento(KrcmtDvgcEralMsgBus entity) {
+	public JpaWorkTypeDivergenceTimeErrorAlarmMessageSetMemento(KrcstDvgcwtTimeEaMsg entity) {
 		this.entity = entity;
 	}
 

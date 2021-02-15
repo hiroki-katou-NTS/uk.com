@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.detail.RepeatMonthDaysSelect;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
-@Table(name="KFNMT_AUTOEXEC_TASK_DATE")
+@Table(name="KFNMT_REP_MONTH_DAY")
 @AllArgsConstructor
 @NoArgsConstructor
 public class KfnmtRepeatMonthDay extends UkJpaEntity implements Serializable{

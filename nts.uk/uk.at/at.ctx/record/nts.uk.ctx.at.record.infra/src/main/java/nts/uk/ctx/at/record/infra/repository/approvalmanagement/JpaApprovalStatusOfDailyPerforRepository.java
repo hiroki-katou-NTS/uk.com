@@ -44,7 +44,7 @@ public class JpaApprovalStatusOfDailyPerforRepository extends JpaRepository
 	public void delete(String employeeId, GeneralDate ymd) {
 		
 		Connection con = this.getEntityManager().unwrap(Connection.class);
-		String sqlQuery = "Delete From KRCDT_DAY_BOSS_CHECK Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'" ;
+		String sqlQuery = "Delete From KRCDT_DAI_APPROVAL Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'" ;
 		try {
 			con.createStatement().executeUpdate(sqlQuery);
 		} catch (SQLException e) {

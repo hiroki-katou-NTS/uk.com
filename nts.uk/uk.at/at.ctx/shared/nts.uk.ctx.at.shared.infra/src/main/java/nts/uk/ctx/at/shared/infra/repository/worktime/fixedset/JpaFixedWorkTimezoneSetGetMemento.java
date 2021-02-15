@@ -15,8 +15,8 @@ import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSetGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFixOverTs;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFixWorkTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedOtTimeSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkTimeSet;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -25,12 +25,12 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class JpaFixedWorkTimezoneSetGetMemento implements FixedWorkTimezoneSetGetMemento {
 
 	/** The kshmt fixed work time sets. */
-	// KSHMT_WT_FIX_WORK_TS 就業時間の時間帯設定(固定)
-	private List<KshmtWtFixWorkTs> kshmtFixedWorkTimeSets;
+	// KSHMT_FIXED_WORK_TIME_SET 就業時間の時間帯設定(固定)
+	private List<KshmtFixedWorkTimeSet> kshmtFixedWorkTimeSets;
 
 	/** The kshmt fixed ot time sets. */
-	// KSHMT_WT_FIX_OVER_TS 残業時間の時間帯設定
-	private List<KshmtWtFixOverTs> kshmtFixedOtTimeSets;
+	// KSHMT_FIXED_OT_TIME_SET 残業時間の時間帯設定
+	private List<KshmtFixedOtTimeSet> kshmtFixedOtTimeSets;
 
 	/**
 	 * Instantiates a new jpa fixed work timezone set get memento.
@@ -40,8 +40,8 @@ public class JpaFixedWorkTimezoneSetGetMemento implements FixedWorkTimezoneSetGe
 	 * @param kshmtFixedOtTimeSets
 	 *            the kshmt fixed ot time sets
 	 */
-	public JpaFixedWorkTimezoneSetGetMemento(List<KshmtWtFixWorkTs> kshmtFixedWorkTimeSets,
-			List<KshmtWtFixOverTs> kshmtFixedOtTimeSets) {
+	public JpaFixedWorkTimezoneSetGetMemento(List<KshmtFixedWorkTimeSet> kshmtFixedWorkTimeSets,
+			List<KshmtFixedOtTimeSet> kshmtFixedOtTimeSets) {
 		super();		
 		this.kshmtFixedWorkTimeSets = kshmtFixedWorkTimeSets;
 		this.kshmtFixedOtTimeSets = kshmtFixedOtTimeSets;

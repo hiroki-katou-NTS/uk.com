@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KFNMT_ALST_CHK_TGT")
+@Table(name = "KFNMT_AL_CHK_TARGET_COND")
 public class KfnmtAlarmCheckTargetCondition extends UkJpaEntity implements Serializable {
 	/**
 	* 

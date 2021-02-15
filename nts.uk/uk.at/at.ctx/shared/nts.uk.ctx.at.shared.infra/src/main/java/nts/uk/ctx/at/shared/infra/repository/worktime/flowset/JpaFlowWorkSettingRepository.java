@@ -22,10 +22,10 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.perfomance.AmPmWorkTimezone;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloBrFiAllTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowFixedRtSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowFixedRtSetPK_;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowFixedRtSet_;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFlo;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowWorkSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowWorkSetPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowWorkSetPK_;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowWorkSet_;
@@ -48,8 +48,8 @@ public class JpaFlowWorkSettingRepository extends JpaRepository
 	@Override
 	public Optional<FlowWorkSetting> find(String companyId, String workTimeCode) {
 		// Query
-		Optional<KshmtWtFlo> optionalEntityTimeSet = this.queryProxy()
-				.find(new KshmtFlowWorkSetPK(companyId, workTimeCode), KshmtWtFlo.class);
+		Optional<KshmtFlowWorkSet> optionalEntityTimeSet = this.queryProxy()
+				.find(new KshmtFlowWorkSetPK(companyId, workTimeCode), KshmtFlowWorkSet.class);
 
 		// Check exist
 		if (!optionalEntityTimeSet.isPresent()) {
@@ -79,7 +79,7 @@ public class JpaFlowWorkSettingRepository extends JpaRepository
 	 */
 	@Override
 	public void remove(String companyId, String workTimeCode) {
-		this.commandProxy().remove(KshmtWtFlo.class, new KshmtFlowWorkSetPK(companyId, workTimeCode));
+		this.commandProxy().remove(KshmtFlowWorkSet.class, new KshmtFlowWorkSetPK(companyId, workTimeCode));
 	}
 	
 	/**
@@ -88,17 +88,17 @@ public class JpaFlowWorkSettingRepository extends JpaRepository
 	 * @param domain the domain
 	 * @return the kshmt flow work set
 	 */
-	private KshmtWtFlo toEntity(FlowWorkSetting domain) {
+	private KshmtFlowWorkSet toEntity(FlowWorkSetting domain) {
 		// Find entity
-		Optional<KshmtWtFlo> optional = this.queryProxy().find(
-				new KshmtFlowWorkSetPK(domain.getCompanyId(), domain.getWorkingCode().v()), KshmtWtFlo.class);
+		Optional<KshmtFlowWorkSet> optional = this.queryProxy().find(
+				new KshmtFlowWorkSetPK(domain.getCompanyId(), domain.getWorkingCode().v()), KshmtFlowWorkSet.class);
 
-		KshmtWtFlo entity;
+		KshmtFlowWorkSet entity;
 		// check existed
 		if (optional.isPresent()) {
 			entity = optional.get();
 		} else {
-			entity = new KshmtWtFlo();
+			entity = new KshmtFlowWorkSet();
 		}
 		// save to memento
 		domain.saveToMemento(new JpaFlowWorkSettingSetMemento(entity));
@@ -116,8 +116,8 @@ public class JpaFlowWorkSettingRepository extends JpaRepository
 		EntityManager em = this.getEntityManager();
 
 		CriteriaBuilder builder = em.getCriteriaBuilder();
-		CriteriaQuery<KshmtWtFlo> query = builder.createQuery(KshmtWtFlo.class);
-		Root<KshmtWtFlo> root = query.from(KshmtWtFlo.class);
+		CriteriaQuery<KshmtFlowWorkSet> query = builder.createQuery(KshmtFlowWorkSet.class);
+		Root<KshmtFlowWorkSet> root = query.from(KshmtFlowWorkSet.class);
 
 		List<Predicate> predicateList = new ArrayList<>();
 
@@ -127,7 +127,7 @@ public class JpaFlowWorkSettingRepository extends JpaRepository
 
 		query.where(predicateList.toArray(new Predicate[] {}));
 
-		List<KshmtWtFlo> result = em.createQuery(query).getResultList();
+		List<KshmtFlowWorkSet> result = em.createQuery(query).getResultList();
 
 		return result.stream()
 				.map(entity -> new FlowWorkSetting(new JpaFlowWorkSettingGetMemento(entity)))
@@ -143,8 +143,8 @@ public class JpaFlowWorkSettingRepository extends JpaRepository
 		EntityManager em = this.getEntityManager();
 
 		CriteriaBuilder builder = em.getCriteriaBuilder();
-		CriteriaQuery<KshmtWtFloBrFiAllTs> query = builder.createQuery(KshmtWtFloBrFiAllTs.class);
-		Root<KshmtWtFloBrFiAllTs> root = query.from(KshmtWtFloBrFiAllTs.class);
+		CriteriaQuery<KshmtFlowFixedRtSet> query = builder.createQuery(KshmtFlowFixedRtSet.class);
+		Root<KshmtFlowFixedRtSet> root = query.from(KshmtFlowFixedRtSet.class);
 
 		List<Predicate> predicateList = new ArrayList<>();
 
@@ -160,9 +160,9 @@ public class JpaFlowWorkSettingRepository extends JpaRepository
 		
 		query.orderBy(builder.asc(root.get(KshmtFlowFixedRtSet_.strDay)));
 
-		List<KshmtWtFloBrFiAllTs> result = em.createQuery(query).getResultList();
+		List<KshmtFlowFixedRtSet> result = em.createQuery(query).getResultList();
 
-		Map<WorkTimeCode, List<KshmtWtFloBrFiAllTs>> mapResttimes = result.stream().collect(
+		Map<WorkTimeCode, List<KshmtFlowFixedRtSet>> mapResttimes = result.stream().collect(
 				Collectors.groupingBy(item -> new WorkTimeCode(item.getKshmtFlowFixedRtSetPK().getWorktimeCd())));
 
 		Map<WorkTimeCode, List<AmPmWorkTimezone>> map = mapResttimes.entrySet().stream().collect(Collectors.toMap(
@@ -182,8 +182,8 @@ public class JpaFlowWorkSettingRepository extends JpaRepository
 		EntityManager em = this.getEntityManager();
 
 		CriteriaBuilder builder = em.getCriteriaBuilder();
-		CriteriaQuery<KshmtWtFloBrFiAllTs> query = builder.createQuery(KshmtWtFloBrFiAllTs.class);
-		Root<KshmtWtFloBrFiAllTs> root = query.from(KshmtWtFloBrFiAllTs.class);
+		CriteriaQuery<KshmtFlowFixedRtSet> query = builder.createQuery(KshmtFlowFixedRtSet.class);
+		Root<KshmtFlowFixedRtSet> root = query.from(KshmtFlowFixedRtSet.class);
 
 		List<Predicate> predicateList = new ArrayList<>();
 
@@ -199,9 +199,9 @@ public class JpaFlowWorkSettingRepository extends JpaRepository
 		
 		query.orderBy(builder.asc(root.get(KshmtFlowFixedRtSet_.strDay)));
 
-		List<KshmtWtFloBrFiAllTs> result = em.createQuery(query).getResultList();
+		List<KshmtFlowFixedRtSet> result = em.createQuery(query).getResultList();
 
-		Map<WorkTimeCode, List<KshmtWtFloBrFiAllTs>> mapResttimes = result.stream().collect(
+		Map<WorkTimeCode, List<KshmtFlowFixedRtSet>> mapResttimes = result.stream().collect(
 				Collectors.groupingBy(item -> new WorkTimeCode(item.getKshmtFlowFixedRtSetPK().getWorktimeCd())));
 
 		Map<WorkTimeCode, List<AmPmWorkTimezone>> map = mapResttimes.entrySet().stream().collect(Collectors.toMap(
@@ -218,8 +218,8 @@ public class JpaFlowWorkSettingRepository extends JpaRepository
 		EntityManager em = this.getEntityManager();
 
 		CriteriaBuilder builder = em.getCriteriaBuilder();
-		CriteriaQuery<KshmtWtFlo> query = builder.createQuery(KshmtWtFlo.class);
-		Root<KshmtWtFlo> root = query.from(KshmtWtFlo.class);
+		CriteriaQuery<KshmtFlowWorkSet> query = builder.createQuery(KshmtFlowWorkSet.class);
+		Root<KshmtFlowWorkSet> root = query.from(KshmtFlowWorkSet.class);
 
 		List<Predicate> predicateList = new ArrayList<>();
 
@@ -232,7 +232,7 @@ public class JpaFlowWorkSettingRepository extends JpaRepository
 
 		query.where(predicateList.toArray(new Predicate[] {}));
 
-		List<KshmtWtFlo> result = em.createQuery(query).getResultList();
+		List<KshmtFlowWorkSet> result = em.createQuery(query).getResultList();
 
 		return result.stream()
 				.map(entity -> new FlowWorkSetting(new JpaFlowWorkSettingGetMemento(entity)))

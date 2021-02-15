@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSHMT_CALC_C_ADD_HD_HOU")
+@Table(name = "KSHST_HOUR_PAY_ADD_SET")
 public class KshstHourPayAaddSet extends UkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	/** 主キー */

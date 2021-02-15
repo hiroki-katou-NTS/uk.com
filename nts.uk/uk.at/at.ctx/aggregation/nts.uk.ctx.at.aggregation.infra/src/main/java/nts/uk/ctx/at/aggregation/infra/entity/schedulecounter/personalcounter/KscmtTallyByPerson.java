@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KAGMT_TALLY_BYPERSON")
+@Table(name = "KSCMT_TALLY_BYPERSON")
 public class KscmtTallyByPerson extends ContractUkJpaEntity implements Serializable {
 
     @EmbeddedId

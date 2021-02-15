@@ -2,14 +2,14 @@ package nts.uk.ctx.sys.env.infra.repository.mailnoticeset.employee;
 
 import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UseContactSettingGetMemento;
 import nts.uk.ctx.sys.env.dom.mailnoticeset.employee.UserInfoItem;
-import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.employee.SevmtUseContactSya;
+import nts.uk.ctx.sys.env.infra.entity.mailnoticeset.employee.SevstUseContactSet;
 
 public class JpaUseContactSettingGetMemento implements UseContactSettingGetMemento {
 
 	private static final Integer TRUE_VAL = 1;
-	private SevmtUseContactSya entity;
+	private SevstUseContactSet entity;
 	
-	public JpaUseContactSettingGetMemento(SevmtUseContactSya e) {
+	public JpaUseContactSettingGetMemento(SevstUseContactSet e) {
 		this.entity = e;
 	}
 

@@ -236,7 +236,7 @@ public class JpaAffClassHistItemRepository extends JpaRepository implements AffC
 
 		List<AffClassHistItem> result = new ArrayList<>();
 		CollectionUtil.split(historyIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT * FROM BSYMT_AFF_CLASS_HIST_ITEM" 
+			String sql = "SELECT * FROM BSYMT_AFF_CLASS_HIS_ITEM" 
 						+ " WHERE  HIST_ID IN ("+ NtsStatement.In.createParamsString(subList) + ")";
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 				for (int i = 0; i < subList.size(); i++) {
@@ -260,7 +260,7 @@ public class JpaAffClassHistItemRepository extends JpaRepository implements AffC
 
 	@Override
 	public void addAll(List<AffClassHistItem> domains) {
-		String INS_SQL = "INSERT INTO BSYMT_AFF_CLASS_HIST_ITEM (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
+		String INS_SQL = "INSERT INTO BSYMT_AFF_CLASS_HIS_ITEM (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
 				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG," 
 				+ " HIST_ID, SID, CLASSIFICATION_CODE)"
 				+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
@@ -299,7 +299,7 @@ public class JpaAffClassHistItemRepository extends JpaRepository implements AffC
 
 	@Override
 	public void updateAll(List<AffClassHistItem> domains) {
-		String UP_SQL = "UPDATE BSYMT_AFF_CLASS_HIST_ITEM SET UPD_DATE = UPD_DATE_VAL,  UPD_CCD = UPD_CCD_VAL,  UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
+		String UP_SQL = "UPDATE BSYMT_AFF_CLASS_HIS_ITEM SET UPD_DATE = UPD_DATE_VAL,  UPD_CCD = UPD_CCD_VAL,  UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
 				+ " CLASSIFICATION_CODE = CLASSIFICATION_CODE_VAL WHERE SID = SID_VAL AND HIST_ID = HIST_ID_VAL; ";
 		String updCcd = AppContexts.user().companyCode();
 		String updScd = AppContexts.user().employeeCode();

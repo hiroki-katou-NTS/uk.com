@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSetting;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.CompanyBasicWorkGetMemento;
-import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtBasicWorkCom;
+import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtCompanyWorkSet;
 
 /**
  * The Class JpaCompanyBasicWorkGetMemento.
@@ -18,7 +18,7 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtBasicWor
 public class JpaCompanyBasicWorkGetMemento implements CompanyBasicWorkGetMemento {
 
 	/** The type value. */
-	private List<KscmtBasicWorkCom> typeValue;
+	private List<KscmtCompanyWorkSet> typeValue;
 
 	/**
 	 * Instantiates a new jpa company basic work get memento.
@@ -26,7 +26,7 @@ public class JpaCompanyBasicWorkGetMemento implements CompanyBasicWorkGetMemento
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaCompanyBasicWorkGetMemento(List<KscmtBasicWorkCom> typeValue) {
+	public JpaCompanyBasicWorkGetMemento(List<KscmtCompanyWorkSet> typeValue) {
 		super();
 		this.typeValue = typeValue;
 		if (this.typeValue == null) {

@@ -12,10 +12,10 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSetSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFixOverTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedOtTimeSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedOtTimeSetPK;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFix;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFixWorkTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkTimeSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkTimeSetPK;
 
 /**
@@ -24,7 +24,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkTimeSet
 public class JpaFixedWorkTimezoneSetSetMemento implements FixedWorkTimezoneSetSetMemento {
 
 	/** The parent entitjy. */
-	private KshmtWtFix parentEntity;
+	private KshmtFixedWorkSet parentEntity;
 	
 	/** The cid. */
 	private String cid;
@@ -40,7 +40,7 @@ public class JpaFixedWorkTimezoneSetSetMemento implements FixedWorkTimezoneSetSe
 	 *
 	 * @param parentEntity the parent entitjy
 	 */
-	public JpaFixedWorkTimezoneSetSetMemento(KshmtWtFix parentEntity, int type) {
+	public JpaFixedWorkTimezoneSetSetMemento(KshmtFixedWorkSet parentEntity, int type) {
 		super();
 		this.parentEntity = parentEntity;
 		this.type = type;
@@ -71,25 +71,25 @@ public class JpaFixedWorkTimezoneSetSetMemento implements FixedWorkTimezoneSetSe
 			this.parentEntity.setKshmtFixedWorkTimeSets(new ArrayList<>());
 		}
 		
-		List<KshmtWtFixWorkTs> otherList = this.parentEntity.getKshmtFixedWorkTimeSets().stream()
+		List<KshmtFixedWorkTimeSet> otherList = this.parentEntity.getKshmtFixedWorkTimeSets().stream()
 				.filter(entity -> entity.getKshmtFixedWorkTimeSetPK().getAmPmAtr() != this.type)
 				.collect(Collectors.toList());
 		
-		// KSHMT_WT_FIX_WORK_TS
+		// KSHMT_FIXED_WORK_TIME_SET
 		if (CollectionUtil.isEmpty(lstWorkingTimezone)) {
 			this.parentEntity.setKshmtFixedWorkTimeSets(otherList);
 			return;
 		}
 		
 		// get list entity
-		List<KshmtWtFixWorkTs> lstEntity = this.parentEntity.getKshmtFixedWorkTimeSets().stream()
+		List<KshmtFixedWorkTimeSet> lstEntity = this.parentEntity.getKshmtFixedWorkTimeSets().stream()
 				.filter(entity -> entity.getKshmtFixedWorkTimeSetPK().getAmPmAtr() == this.type)
 				.collect(Collectors.toList());
 		if (CollectionUtil.isEmpty(lstEntity)) {
 			lstEntity = new ArrayList<>();
 		}
 		
-		List<KshmtWtFixWorkTs> newListEntity = new ArrayList<>();
+		List<KshmtFixedWorkTimeSet> newListEntity = new ArrayList<>();
 		
 		// sort asc start time
 		lstWorkingTimezone.stream()
@@ -102,10 +102,10 @@ public class JpaFixedWorkTimezoneSetSetMemento implements FixedWorkTimezoneSetSe
 					domain.getEmploymentTimeFrameNo().v());
 			
 			// get entity existed
-			KshmtWtFixWorkTs entity = lstEntity.stream()
+			KshmtFixedWorkTimeSet entity = lstEntity.stream()
 					.filter(item -> item.getKshmtFixedWorkTimeSetPK().equals(pk))
 					.findFirst()
-					.orElse(new KshmtWtFixWorkTs(pk));
+					.orElse(new KshmtFixedWorkTimeSet(pk));
 			
 			// set data
 			entity.setUnit(domain.getTimezone().getRounding().getRoundingTime().value);
@@ -136,25 +136,25 @@ public class JpaFixedWorkTimezoneSetSetMemento implements FixedWorkTimezoneSetSe
 			this.parentEntity.setKshmtFixedOtTimeSets(new ArrayList<>());
 		}
 		
-		List<KshmtWtFixOverTs> otherList = this.parentEntity.getKshmtFixedOtTimeSets().stream()
+		List<KshmtFixedOtTimeSet> otherList = this.parentEntity.getKshmtFixedOtTimeSets().stream()
 				.filter(entity -> entity.getKshmtFixedOtTimeSetPK().getAmPmAtr() != this.type)
 				.collect(Collectors.toList());
 		
-		// KSHMT_WT_FIX_OVER_TS
+		// KSHMT_FIXED_OT_TIME_SET
 		if (CollectionUtil.isEmpty(lstOTTimezone)) {
 			this.parentEntity.setKshmtFixedOtTimeSets(otherList);
 			return;
 		}
 		
 		// get list entity
-		List<KshmtWtFixOverTs> lstEntity = this.parentEntity.getKshmtFixedOtTimeSets().stream()
+		List<KshmtFixedOtTimeSet> lstEntity = this.parentEntity.getKshmtFixedOtTimeSets().stream()
 				.filter(entity -> entity.getKshmtFixedOtTimeSetPK().getAmPmAtr() == this.type)
 				.collect(Collectors.toList());
 		if (CollectionUtil.isEmpty(lstEntity)) {
 			lstEntity = new ArrayList<>();
 		}
 		
-		List<KshmtWtFixOverTs> newListEntity = new ArrayList<>();
+		List<KshmtFixedOtTimeSet> newListEntity = new ArrayList<>();
 		
 		// sort asc start time
 		lstOTTimezone.stream()
@@ -167,10 +167,10 @@ public class JpaFixedWorkTimezoneSetSetMemento implements FixedWorkTimezoneSetSe
 					domain.getWorkTimezoneNo().v());
 			
 			// get entity existed
-			KshmtWtFixOverTs entity = lstEntity.stream()
+			KshmtFixedOtTimeSet entity = lstEntity.stream()
 					.filter(item -> item.getKshmtFixedOtTimeSetPK().equals(pk))
 					.findFirst()
-					.orElse(new KshmtWtFixOverTs(pk));
+					.orElse(new KshmtFixedOtTimeSet(pk));
 			
 			// set data
 			domain.saveToMemento(new JpaFixOverTimeOfTimeZoneSetSetMemento(entity));

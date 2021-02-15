@@ -4,16 +4,16 @@ import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeHalfDaySetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimezoneSetting;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDif;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDiffTimeWorkSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDiffTimeWorkSetPK;
 
 public class JpaDiffTimeHalfDayWorkTimezoneSetMemento implements DiffTimeHalfDaySetMemento {
 
-	private KshmtWtDif entity;
+	private KshmtDiffTimeWorkSet entity;
 
 	private int type;
 
-	public JpaDiffTimeHalfDayWorkTimezoneSetMemento(KshmtWtDif entity, int value) {
+	public JpaDiffTimeHalfDayWorkTimezoneSetMemento(KshmtDiffTimeWorkSet entity, int value) {
 		this.entity = entity;
 		if (this.entity.getKshmtDiffTimeWorkSetPK() == null) {
 			this.entity.setKshmtDiffTimeWorkSetPK(new KshmtDiffTimeWorkSetPK());

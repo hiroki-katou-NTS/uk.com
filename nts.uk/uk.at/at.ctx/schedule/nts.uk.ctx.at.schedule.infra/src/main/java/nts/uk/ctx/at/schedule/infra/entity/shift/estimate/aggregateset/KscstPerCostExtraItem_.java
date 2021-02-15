@@ -10,12 +10,12 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class KscstPerCostExtraItem_.
  */
-@StaticMetamodel(KscmtPerCostExtraItem.class)
+@StaticMetamodel(KscstPerCostExtraItem.class)
 public class KscstPerCostExtraItem_ {
 
 	/** The kscst per cost extra item PK. */
-	public static volatile SingularAttribute<KscmtPerCostExtraItem, KscstPerCostExtraItemPK> kscstPerCostExtraItemPK;
+	public static volatile SingularAttribute<KscstPerCostExtraItem, KscstPerCostExtraItemPK> kscstPerCostExtraItemPK;
 	
 	/** The kscst est aggregate set. */
-	public static volatile SingularAttribute<KscmtPerCostExtraItem, KscmtEstAggregate> kscstEstAggregateSet;
+	public static volatile SingularAttribute<KscstPerCostExtraItem, KscstEstAggregateSet> kscstEstAggregateSet;
 }

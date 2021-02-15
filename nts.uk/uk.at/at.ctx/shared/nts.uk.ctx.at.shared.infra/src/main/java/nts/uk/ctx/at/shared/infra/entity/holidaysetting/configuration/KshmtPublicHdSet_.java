@@ -6,17 +6,17 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
 @Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2018-01-18T15:57:31")
-@StaticMetamodel(KshmtHdpubSet.class)
+@StaticMetamodel(KshmtPublicHdSet.class)
 public class KshmtPublicHdSet_ { 
 
-    public static volatile SingularAttribute<KshmtHdpubSet, Integer> period;
-    public static volatile SingularAttribute<KshmtHdpubSet, Date> fullDate;
-    public static volatile SingularAttribute<KshmtHdpubSet, Integer> isManageComPublicHd;
-    public static volatile SingularAttribute<KshmtHdpubSet, Integer> publicHdManageAtr;
-    public static volatile SingularAttribute<KshmtHdpubSet, Integer> determineStartD;
-    public static volatile SingularAttribute<KshmtHdpubSet, Integer> dayMonth;
-    public static volatile SingularAttribute<KshmtHdpubSet, Integer> isWeeklyHdCheck;
-    public static volatile SingularAttribute<KshmtHdpubSet, Integer> exclusVer;
-    public static volatile SingularAttribute<KshmtHdpubSet, String> cid;
+    public static volatile SingularAttribute<KshmtPublicHdSet, Integer> period;
+    public static volatile SingularAttribute<KshmtPublicHdSet, Date> fullDate;
+    public static volatile SingularAttribute<KshmtPublicHdSet, Integer> isManageComPublicHd;
+    public static volatile SingularAttribute<KshmtPublicHdSet, Integer> publicHdManageAtr;
+    public static volatile SingularAttribute<KshmtPublicHdSet, Integer> determineStartD;
+    public static volatile SingularAttribute<KshmtPublicHdSet, Integer> dayMonth;
+    public static volatile SingularAttribute<KshmtPublicHdSet, Integer> isWeeklyHdCheck;
+    public static volatile SingularAttribute<KshmtPublicHdSet, Integer> exclusVer;
+    public static volatile SingularAttribute<KshmtPublicHdSet, String> cid;
 
 }

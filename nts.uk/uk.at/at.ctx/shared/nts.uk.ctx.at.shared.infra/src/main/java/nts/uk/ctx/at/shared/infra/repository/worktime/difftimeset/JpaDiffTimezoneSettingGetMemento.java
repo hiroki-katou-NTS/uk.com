@@ -11,7 +11,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeOTTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimezoneSettingGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDif;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDiffTimeWorkSet;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -19,11 +19,11 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 public class JpaDiffTimezoneSettingGetMemento implements DiffTimezoneSettingGetMemento {
 
-	private KshmtWtDif entity;
+	private KshmtDiffTimeWorkSet entity;
 
 	private Integer type;
 
-	public JpaDiffTimezoneSettingGetMemento(KshmtWtDif entity, Integer type) {
+	public JpaDiffTimezoneSettingGetMemento(KshmtDiffTimeWorkSet entity, Integer type) {
 		this.entity = entity;
 		this.type = type;
 	}

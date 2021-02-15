@@ -13,13 +13,13 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.item.SpecificDateItem;
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.item.SpecificDateItemRepository;
-import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.specificdate.KscmtSpecDateItem;
+import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.specificdate.KsmstSpecificDateItem;
 import nts.uk.ctx.at.schedule.infra.entity.shift.businesscalendar.specificdate.KsmstSpecificDateItemPK;
 
 @Stateless
 public class JpaSpecificDateItemRepositoryImp extends JpaRepository implements SpecificDateItemRepository {
 
-	private static final String SELECT_NO_WHERE = "SELECT s FROM KscmtSpecDateItem s";
+	private static final String SELECT_NO_WHERE = "SELECT s FROM KsmstSpecificDateItem s";
 	private static final String GET_ALL = SELECT_NO_WHERE
 			+ " WHERE s.ksmstSpecificDateItemPK.companyId = :companyId";
 	private static final String GET_BY_USE = SELECT_NO_WHERE
@@ -33,19 +33,19 @@ public class JpaSpecificDateItemRepositoryImp extends JpaRepository implements S
 	 * @param ksmstSpecificDateItem
 	 * @return
 	 */
-	private SpecificDateItem toBonusPaySettingDomain(KscmtSpecDateItem ksmstSpecificDateItem) {
+	private SpecificDateItem toBonusPaySettingDomain(KsmstSpecificDateItem ksmstSpecificDateItem) {
 		return SpecificDateItem.createFromJavaType(ksmstSpecificDateItem.ksmstSpecificDateItemPK.companyId,
 				ksmstSpecificDateItem.useAtr,
 				ksmstSpecificDateItem.ksmstSpecificDateItemPK.itemNo, ksmstSpecificDateItem.name);
 	}
 
 	/**
-	 * convert domain SpecificDateItem to entity KscmtSpecDateItem
+	 * convert domain SpecificDateItem to entity KsmstSpecificDateItem
 	 * @param domain
 	 * @return
 	 */
-	private static KscmtSpecDateItem toEntity(SpecificDateItem domain) {
-		val entity = new KscmtSpecDateItem();
+	private static KsmstSpecificDateItem toEntity(SpecificDateItem domain) {
+		val entity = new KsmstSpecificDateItem();
 		entity.ksmstSpecificDateItemPK = new KsmstSpecificDateItemPK(domain.getCompanyId(), domain.getSpecificDateItemNo().v());
 		entity.name = domain.getSpecificName().v();
 		entity.useAtr = domain.getUseAtr().value;
@@ -55,14 +55,14 @@ public class JpaSpecificDateItemRepositoryImp extends JpaRepository implements S
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<SpecificDateItem> getAll(String companyId) {
-		return this.queryProxy().query(GET_ALL, KscmtSpecDateItem.class).setParameter("companyId", companyId)
+		return this.queryProxy().query(GET_ALL, KsmstSpecificDateItem.class).setParameter("companyId", companyId)
 				.getList(x -> this.toBonusPaySettingDomain(x));
 	}
 
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<SpecificDateItem> getSpecifiDateByUse(String companyId, int useAtr) {
-		return this.queryProxy().query(GET_BY_USE, KscmtSpecDateItem.class).setParameter("companyId", companyId)
+		return this.queryProxy().query(GET_BY_USE, KsmstSpecificDateItem.class).setParameter("companyId", companyId)
 				.setParameter("useAtr", useAtr).getList(x -> this.toBonusPaySettingDomain(x));
 	}
 
@@ -72,10 +72,10 @@ public class JpaSpecificDateItemRepositoryImp extends JpaRepository implements S
 	 */
 	@Override
 	public void updateSpecificDateItem(List<SpecificDateItem> lstSpecificDateItem) {
-		List<KscmtSpecDateItem> lstEntity = new ArrayList<>();
+		List<KsmstSpecificDateItem> lstEntity = new ArrayList<>();
 		for (SpecificDateItem specificDateItem : lstSpecificDateItem) {
-			KscmtSpecDateItem b = toEntity(specificDateItem);
-			KscmtSpecDateItem x = this.queryProxy().find(b.ksmstSpecificDateItemPK, KscmtSpecDateItem.class).get();
+			KsmstSpecificDateItem b = toEntity(specificDateItem);
+			KsmstSpecificDateItem x = this.queryProxy().find(b.ksmstSpecificDateItemPK, KsmstSpecificDateItem.class).get();
 			x.setUseAtr(b.useAtr);
 			x.setName(b.name);
 			lstEntity.add(x);
@@ -88,7 +88,7 @@ public class JpaSpecificDateItemRepositoryImp extends JpaRepository implements S
 	 */
 	@Override
 	public void addSpecificDateItem(List<SpecificDateItem> lstSpecificDateItem) {
-		List<KscmtSpecDateItem> lstEntity = new ArrayList<>();
+		List<KsmstSpecificDateItem> lstEntity = new ArrayList<>();
 		for (SpecificDateItem specificDateItem : lstSpecificDateItem) {
 			lstEntity.add(toEntity(specificDateItem));
 		}
@@ -105,7 +105,7 @@ public class JpaSpecificDateItemRepositoryImp extends JpaRepository implements S
 	public List<SpecificDateItem> getSpecifiDateByListCode(String companyId, List<Integer> lstSpecificDateItem) {
 		List<SpecificDateItem> resultList = new ArrayList<>();
 		CollectionUtil.split(lstSpecificDateItem, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			resultList.addAll(this.queryProxy().query(GET_BY_LIST_CODE, KscmtSpecDateItem.class)
+			resultList.addAll(this.queryProxy().query(GET_BY_LIST_CODE, KsmstSpecificDateItem.class)
 								  .setParameter("companyId", companyId)
 								  .setParameter("lstSpecificDateItem", subList)
 								  .getList(c->toBonusPaySettingDomain(c)));

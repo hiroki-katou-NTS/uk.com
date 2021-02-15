@@ -119,7 +119,7 @@ public class KrqdtAppHolidayWork_Old extends UkJpaEntity implements Serializable
     private Integer holidayShiftNight;
     
     @OneToMany(targetEntity=KrqdtHolidayWorkInput_Old.class, mappedBy="appHolidayWork", cascade = CascadeType.ALL)
-    @JoinTable(name = "KRQDT_APP_HD_WORK_TIME")
+    @JoinTable(name = "KRQDT_HOLIDAY_WORK_INPUT")
 	public List<KrqdtHolidayWorkInput_Old> holidayWorkInputs;
 
 	@OneToOne(targetEntity = KrqdtAppOvertimeDetail_Old.class, mappedBy = "appHolidayWork", cascade = CascadeType.ALL)

@@ -2,7 +2,7 @@ package nts.uk.ctx.at.shared.infra.repository.holidaysetting.configuration;
 
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.ForwardSettingOfPublicHolidaySetMemento;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidayCarryOverDeadline;
-import nts.uk.ctx.at.shared.infra.entity.holidaysetting.configuration.KshmtHdpubForwardSet;
+import nts.uk.ctx.at.shared.infra.entity.holidaysetting.configuration.KshmtForwardSetOfPublicHd;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -17,14 +17,14 @@ public class JpaForwardSettingOfPublicHolidaySetMemento implements ForwardSettin
 	private static final int FALSE_VALUE = 0;
 	
 	/** The kshmt forward set of public hd. */
-	private KshmtHdpubForwardSet kshmtForwardSetOfPublicHd;
+	private KshmtForwardSetOfPublicHd kshmtForwardSetOfPublicHd;
 	
 	/**
 	 * Instantiates a new jpa forward setting of public holiday set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaForwardSettingOfPublicHolidaySetMemento(KshmtHdpubForwardSet entity){
+	public JpaForwardSettingOfPublicHolidaySetMemento(KshmtForwardSetOfPublicHd entity){
 		if(entity.getCid() == null){
 			entity.setCid(AppContexts.user().companyId());
 		}

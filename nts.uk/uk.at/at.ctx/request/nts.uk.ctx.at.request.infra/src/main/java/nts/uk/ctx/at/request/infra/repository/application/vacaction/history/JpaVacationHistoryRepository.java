@@ -45,7 +45,7 @@ public class JpaVacationHistoryRepository extends JpaRepository implements Vacat
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		// call KSHMT_CLOSURE (KshmtClosure SQL)
+		// call KCLMT_CLOSURE (KclmtClosure SQL)
 		CriteriaQuery<KrqmtVacationHistory> cq = criteriaBuilder.createQuery(KrqmtVacationHistory.class);
 
 		// root data
@@ -86,7 +86,7 @@ public class JpaVacationHistoryRepository extends JpaRepository implements Vacat
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		// call KSHMT_CLOSURE (KshmtClosure SQL)
+		// call KCLMT_CLOSURE (KclmtClosure SQL)
 		CriteriaQuery<KrqmtVacationHistory> cq = criteriaBuilder.createQuery(KrqmtVacationHistory.class);
 
 		// root data
@@ -129,7 +129,7 @@ public class JpaVacationHistoryRepository extends JpaRepository implements Vacat
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		// call KSHMT_CLOSURE (KshmtClosure SQL)
+		// call KCLMT_CLOSURE (KclmtClosure SQL)
 		CriteriaQuery<KrqmtVacationHistory> cq = criteriaBuilder.createQuery(KrqmtVacationHistory.class);
 
 		// root data
@@ -277,7 +277,7 @@ public class JpaVacationHistoryRepository extends JpaRepository implements Vacat
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		// call KSHMT_CLOSURE (KshmtClosure SQL)
+		// call KCLMT_CLOSURE (KclmtClosure SQL)
 		CriteriaQuery<KrqmtVacationHistory> cq = criteriaBuilder.createQuery(KrqmtVacationHistory.class);
 
 		// root data

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
-import nts.uk.ctx.at.record.infra.entity.optitem.applicable.KrcmtAnyfCondEmp;
+import nts.uk.ctx.at.record.infra.entity.optitem.applicable.KrcstApplEmpCon;
 import nts.uk.ctx.at.record.infra.entity.optitem.applicable.KrcstApplEmpConPK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemNo;
@@ -23,7 +23,7 @@ public class JpaEmpConditionSetMemento implements EmpConditionSetMemento {
 	/** The type values. */
 
 	@Getter
-	private List<KrcmtAnyfCondEmp> typeValues;
+	private List<KrcstApplEmpCon> typeValues;
 
 	/** The cid. */
 	private String cid;
@@ -36,7 +36,7 @@ public class JpaEmpConditionSetMemento implements EmpConditionSetMemento {
 	 *
 	 * @param entities the entities
 	 */
-	public JpaEmpConditionSetMemento(List<KrcmtAnyfCondEmp> entities) {
+	public JpaEmpConditionSetMemento(List<KrcstApplEmpCon> entities) {
 		this.typeValues = entities;
 	}
 
@@ -71,7 +71,7 @@ public class JpaEmpConditionSetMemento implements EmpConditionSetMemento {
 	@Override
 	public void setEmpConditions(List<EmploymentCondition> empConditions) {
 		this.typeValues = empConditions.stream().map(item -> {
-			KrcmtAnyfCondEmp empCon = this.typeValues.stream()
+			KrcstApplEmpCon empCon = this.typeValues.stream()
 					.filter(entity -> entity.getKrcstApplEmpConPK().getEmpCd().equals(item.getEmpCd()))
 					.findFirst()
 					.orElse(null);
@@ -81,7 +81,7 @@ public class JpaEmpConditionSetMemento implements EmpConditionSetMemento {
 			} else {
 				// create value
 				KrcstApplEmpConPK pk = new KrcstApplEmpConPK(this.cid, this.optNo, item.getEmpCd());
-				empCon = new KrcmtAnyfCondEmp(pk);
+				empCon = new KrcstApplEmpCon(pk);
 				empCon.setEmpApplAtr(item.getEmpApplicableAtr().value);
 			}
 			return empCon;

@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSetSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleWorkTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkTimeSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkTimeSetPK;
 
 /**
@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkTimeSetPK
 public class JpaFlexEmTimeZoneSetSetMemento implements EmTimeZoneSetSetMemento{
 	
 	/** The entity. */
-	private KshmtWtFleWorkTs entity;
+	private KshmtFlexWorkTimeSet entity;
 	
 
 	/**
@@ -24,7 +24,7 @@ public class JpaFlexEmTimeZoneSetSetMemento implements EmTimeZoneSetSetMemento{
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlexEmTimeZoneSetSetMemento(KshmtWtFleWorkTs entity) {
+	public JpaFlexEmTimeZoneSetSetMemento(KshmtFlexWorkTimeSet entity) {
 		super();
 		if (entity.getKshmtFlexWorkTimeSetPK() == null) {
 			entity.setKshmtFlexWorkTimeSetPK(new KshmtFlexWorkTimeSetPK());

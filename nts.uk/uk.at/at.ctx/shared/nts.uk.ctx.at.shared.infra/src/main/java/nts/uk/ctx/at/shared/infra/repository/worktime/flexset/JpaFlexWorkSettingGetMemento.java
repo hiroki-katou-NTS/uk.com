@@ -19,8 +19,8 @@ import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexHalfDayWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexOffdayWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSetting;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtCom;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFle;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkSet;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFlexFlowWorkRestSettingGetMemento;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFlexStampReflectTZGetMemento;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaWorkTimezoneCommonSetGetMemento;
@@ -31,10 +31,10 @@ import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaWorkTimezoneComm
 public class JpaFlexWorkSettingGetMemento implements FlexWorkSettingGetMemento{
 	
 	/** The entity. */
-	private KshmtWtFle entity;
+	private KshmtFlexWorkSet entity;
 	
 	/** The entity common. */
-	private KshmtWtCom entityCommon;
+	private KshmtWorktimeCommonSet entityCommon;
 	
 
 	/**
@@ -43,7 +43,7 @@ public class JpaFlexWorkSettingGetMemento implements FlexWorkSettingGetMemento{
 	 * @param entity the entity
 	 * @param entityCommon the entity common
 	 */
-	public JpaFlexWorkSettingGetMemento(KshmtWtFle entity, KshmtWtCom entityCommon) {
+	public JpaFlexWorkSettingGetMemento(KshmtFlexWorkSet entity, KshmtWorktimeCommonSet entityCommon) {
 		super();
 		this.entity = entity;
 		this.entityCommon = entityCommon;

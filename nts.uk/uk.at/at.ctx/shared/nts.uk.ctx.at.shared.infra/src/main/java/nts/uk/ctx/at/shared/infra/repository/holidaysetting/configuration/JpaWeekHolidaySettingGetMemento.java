@@ -3,7 +3,7 @@ package nts.uk.ctx.at.shared.infra.repository.holidaysetting.configuration;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.WeekHolidaySettingGetMemento;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.WeekNumberOfDay;
-import nts.uk.ctx.at.shared.infra.entity.holidaysetting.configuration.KshmtHdpubPerWeek;
+import nts.uk.ctx.at.shared.infra.entity.holidaysetting.configuration.KshmtWeekHdSet;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -12,14 +12,14 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaWeekHolidaySettingGetMemento implements WeekHolidaySettingGetMemento {
 	
 	/** The kshmt week hd set. */
-	private KshmtHdpubPerWeek kshmtWeekHdSet;
+	private KshmtWeekHdSet kshmtWeekHdSet;
 	
 	/**
 	 * Instantiates a new jpa week holiday setting get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaWeekHolidaySettingGetMemento(KshmtHdpubPerWeek entity){
+	public JpaWeekHolidaySettingGetMemento(KshmtWeekHdSet entity){
 		this.kshmtWeekHdSet = entity;
 	}
 

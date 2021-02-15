@@ -22,7 +22,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLock;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLockRepository;
-import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcdtAtdActualLock;
+import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcstActualLock;
 import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcstActualLockPK;
 import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcstActualLockPK_;
 import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcstActualLock_;
@@ -42,7 +42,7 @@ public class JpaActualLockRepository extends JpaRepository implements ActualLock
 	 */
 	@Override
 	public void add(ActualLock actualLock) {
-		KrcdtAtdActualLock entity = new KrcdtAtdActualLock();
+		KrcstActualLock entity = new KrcstActualLock();
 		actualLock.saveToMemento(new JpaActualLockSetMemento(entity));
 		this.commandProxy().insert(entity);
 	}
@@ -55,10 +55,10 @@ public class JpaActualLockRepository extends JpaRepository implements ActualLock
 	 */
 	@Override
 	public void update(ActualLock actualLock) {
-		Optional<KrcdtAtdActualLock> optional = this.queryProxy().find(
+		Optional<KrcstActualLock> optional = this.queryProxy().find(
 				new KrcstActualLockPK(actualLock.getCompanyId(), actualLock.getClosureId().value),
-				KrcdtAtdActualLock.class);
-		KrcdtAtdActualLock entity = new KrcdtAtdActualLock();
+				KrcstActualLock.class);
+		KrcstActualLock entity = new KrcstActualLock();
 		if (optional.isPresent()) {
 			entity = optional.get();
 		}
@@ -77,10 +77,10 @@ public class JpaActualLockRepository extends JpaRepository implements ActualLock
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder bd = em.getCriteriaBuilder();
-		CriteriaQuery<KrcdtAtdActualLock> cq = bd.createQuery(KrcdtAtdActualLock.class);
+		CriteriaQuery<KrcstActualLock> cq = bd.createQuery(KrcstActualLock.class);
 
 		// Root
-		Root<KrcdtAtdActualLock> root = cq.from(KrcdtAtdActualLock.class);
+		Root<KrcstActualLock> root = cq.from(KrcstActualLock.class);
 		cq.select(root);
 
 		// Predicate where clause
@@ -92,7 +92,7 @@ public class JpaActualLockRepository extends JpaRepository implements ActualLock
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
 		// Create Query
-		TypedQuery<KrcdtAtdActualLock> query = em.createQuery(cq);
+		TypedQuery<KrcstActualLock> query = em.createQuery(cq);
 
 		return query.getResultList().stream().map(item -> this.toDomain(item)).collect(Collectors.toList());
 	}
@@ -105,7 +105,7 @@ public class JpaActualLockRepository extends JpaRepository implements ActualLock
 	 */
 	@Override
 	public Optional<ActualLock> findById(String companyId, int closureId) {
-		return this.queryProxy().find(new KrcstActualLockPK(companyId, closureId), KrcdtAtdActualLock.class)
+		return this.queryProxy().find(new KrcstActualLockPK(companyId, closureId), KrcstActualLock.class)
 				.map(c -> this.toDomain(c));
 	}
 	
@@ -125,13 +125,13 @@ public class JpaActualLockRepository extends JpaRepository implements ActualLock
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder bd = em.getCriteriaBuilder();
-		CriteriaQuery<KrcdtAtdActualLock> cq = bd.createQuery(KrcdtAtdActualLock.class);
+		CriteriaQuery<KrcstActualLock> cq = bd.createQuery(KrcstActualLock.class);
 
 		// Root
-		Root<KrcdtAtdActualLock> root = cq.from(KrcdtAtdActualLock.class);
+		Root<KrcstActualLock> root = cq.from(KrcstActualLock.class);
 		cq.select(root);
 
-		List<KrcdtAtdActualLock> resultList = new ArrayList<>();
+		List<KrcstActualLock> resultList = new ArrayList<>();
 
 		CollectionUtil.split(closureIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
 			// Predicate where clause
@@ -159,7 +159,7 @@ public class JpaActualLockRepository extends JpaRepository implements ActualLock
 	 */
 	@Override
 	public void remove(String companyId, int closureId) {
-		this.commandProxy().remove(KrcdtAtdActualLock.class, new KrcstActualLockPK(companyId, closureId));
+		this.commandProxy().remove(KrcstActualLock.class, new KrcstActualLockPK(companyId, closureId));
 	}
 
 	/**
@@ -169,7 +169,7 @@ public class JpaActualLockRepository extends JpaRepository implements ActualLock
 	 *            the entity
 	 * @return the actual lock
 	 */
-	private ActualLock toDomain(KrcdtAtdActualLock entity) {
+	private ActualLock toDomain(KrcstActualLock entity) {
 		return new ActualLock(new JpaActualLockGetMemento(entity));
 
 	}

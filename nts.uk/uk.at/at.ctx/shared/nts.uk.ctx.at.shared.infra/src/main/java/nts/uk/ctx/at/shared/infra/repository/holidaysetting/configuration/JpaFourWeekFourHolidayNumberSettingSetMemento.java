@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.FourWeekFourHolidayNumberSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.FourWeekPublicHoliday;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.OneWeekPublicHoliday;
-import nts.uk.ctx.at.shared.infra.entity.holidaysetting.configuration.Kshmt4w4dNumSet;
+import nts.uk.ctx.at.shared.infra.entity.holidaysetting.configuration.KshmtFourweekfourHdNumbSet;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -19,14 +19,14 @@ public class JpaFourWeekFourHolidayNumberSettingSetMemento implements FourWeekFo
 	private final static int FALSE_VALUE = 0;
 	
 	/** The kshmt fourweekfour hd numb set. */
-	private Kshmt4w4dNumSet kshmtFourweekfourHdNumbSet;
+	private KshmtFourweekfourHdNumbSet kshmtFourweekfourHdNumbSet;
 	
 	/**
 	 * Instantiates a new jpa four week four holiday number setting set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFourWeekFourHolidayNumberSettingSetMemento(Kshmt4w4dNumSet entity){
+	public JpaFourWeekFourHolidayNumberSettingSetMemento(KshmtFourweekfourHdNumbSet entity){
 		if(entity.getCid() == null){
 			entity.setCid(AppContexts.user().companyId());
 		}

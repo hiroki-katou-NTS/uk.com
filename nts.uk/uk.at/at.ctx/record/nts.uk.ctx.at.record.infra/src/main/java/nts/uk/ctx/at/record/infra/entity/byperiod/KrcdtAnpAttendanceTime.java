@@ -16,12 +16,12 @@ import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.gul.reflection.FieldReflection;
 import nts.gul.reflection.ReflectionUtil;
-import nts.uk.ctx.at.record.infra.entity.byperiod.verticaltotal.workdays.KrcdtAnpDaysAbsence;
+import nts.uk.ctx.at.record.infra.entity.byperiod.verticaltotal.workdays.KrcdtAnpAggrAbsnDays;
 import nts.uk.ctx.at.record.infra.entity.byperiod.verticaltotal.workdays.KrcdtAnpAggrSpecDays;
 import nts.uk.ctx.at.record.infra.entity.byperiod.verticaltotal.workdays.KrcdtAnpAggrSpvcDays;
 import nts.uk.ctx.at.record.infra.entity.byperiod.verticaltotal.worktime.KrcdtAnpAggrBnspyTime;
 import nts.uk.ctx.at.record.infra.entity.byperiod.verticaltotal.worktime.KrcdtAnpAggrDivgTime;
-import nts.uk.ctx.at.record.infra.entity.byperiod.verticaltotal.worktime.KrcdtAnpTimeGoout;
+import nts.uk.ctx.at.record.infra.entity.byperiod.verticaltotal.worktime.KrcdtAnpAggrGoout;
 import nts.uk.ctx.at.record.infra.entity.byperiod.verticaltotal.worktime.KrcdtAnpAggrPremTime;
 import nts.uk.ctx.at.record.infra.entity.byperiod.verticaltotal.worktime.KrcdtAnpMedicalTime;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
@@ -627,7 +627,7 @@ public class KrcdtAnpAttendanceTime extends UkJpaEntity implements Serializable 
 	public List<KrcdtAnpAggrHdwkTime> krcdtAnpAggrHdwkTimes;
 	/** 縦計：勤務日数：集計欠勤日数 */
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="krcdtAnpAttendanceTime", orphanRemoval = true)
-	public List<KrcdtAnpDaysAbsence> krcdtAnpAggrAbsnDays;
+	public List<KrcdtAnpAggrAbsnDays> krcdtAnpAggrAbsnDays;
 	/** 縦計：勤務日数：集計特定日数 */
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="krcdtAnpAttendanceTime", orphanRemoval = true)
 	public List<KrcdtAnpAggrSpecDays> krcdtAnpAggrSpecDays;
@@ -642,7 +642,7 @@ public class KrcdtAnpAttendanceTime extends UkJpaEntity implements Serializable 
 	public List<KrcdtAnpAggrDivgTime> krcdtAnpAggrDivgTime;
 	/** 縦計：勤務時間：集計外出 */
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="krcdtAnpAttendanceTime", orphanRemoval = true)
-	public List<KrcdtAnpTimeGoout> krcdtAnpAggrGoout;
+	public List<KrcdtAnpAggrGoout> krcdtAnpAggrGoout;
 	/** 縦計：勤務時間：集計割増時間 */
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="krcdtAnpAttendanceTime", orphanRemoval = true)
 	public List<KrcdtAnpAggrPremTime> krcdtAnpAggrPremTime;
@@ -654,7 +654,7 @@ public class KrcdtAnpAttendanceTime extends UkJpaEntity implements Serializable 
 	public List<KrcdtAnpExcoutTime> krcdtAnpExcoutTime;
 	/** 回数集計：回数集計 */
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="krcdtAnpAttendanceTime", orphanRemoval = true)
-	public List<KrcdtAnpTimeTotalcount> krcdtAnpTotalTimes;
+	public List<KrcdtAnpTotalTimes> krcdtAnpTotalTimes;
 	/** 任意項目：任意項目値 */
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="krcdtAnpAttendanceTime", orphanRemoval = true)
 	public List<KrcdtAnpAnyItemValue> krcdtAnpAnyItemValue;

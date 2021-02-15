@@ -16,7 +16,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_ALST_CHKDAY_FIXED")
+@Table(name = "KRCMT_FIX_CON_WORK_RECORD")
 public class KrcmtFixedConditionWorkRecord extends UkJpaEntity implements Serializable {
 
 

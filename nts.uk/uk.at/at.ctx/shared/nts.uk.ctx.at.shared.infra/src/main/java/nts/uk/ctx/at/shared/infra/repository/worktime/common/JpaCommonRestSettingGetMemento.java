@@ -6,7 +6,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 
 import nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSettingGetmemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.RestTimeOfficeWorkCalcMethod;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloBrFlAll;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowRestSet;
 
 /**
  * The Class JpaCommonRestSettingGetMemento.
@@ -14,14 +14,14 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloBrFlAll;
 public class JpaCommonRestSettingGetMemento implements CommonRestSettingGetmemento {
 
 	/** The entity. */
-	KshmtWtFloBrFlAll entity;
+	KshmtFlowRestSet entity;
 	
 	/**
 	 * Instantiates a new jpa common rest setting get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaCommonRestSettingGetMemento(KshmtWtFloBrFlAll entity) {
+	public JpaCommonRestSettingGetMemento(KshmtFlowRestSet entity) {
 		super();
 		this.entity = entity;
 	}

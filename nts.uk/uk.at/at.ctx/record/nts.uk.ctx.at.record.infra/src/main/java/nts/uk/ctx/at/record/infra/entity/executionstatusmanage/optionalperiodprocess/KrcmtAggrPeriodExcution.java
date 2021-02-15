@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_ANP_PERIOD_EXEC")
+@Table(name = "KRCMT_AGGR_PERIODEXCUTION")
 public class KrcmtAggrPeriodExcution extends UkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	

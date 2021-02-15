@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFixHolTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHolTimeSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHolTimeSetPK;
 
 /**
@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHolTimeSetP
 public class JpaFixedHDWorkTimeSheetSetMemento implements HDWorkTimeSheetSettingSetMemento {
 
 	/** The entity. */
-	private KshmtWtFixHolTs entity;
+	private KshmtFixedHolTimeSet entity;
 
 	/**
 	 * Instantiates a new jpa fixed HD work time sheet set memento.
@@ -29,7 +29,7 @@ public class JpaFixedHDWorkTimeSheetSetMemento implements HDWorkTimeSheetSetting
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaFixedHDWorkTimeSheetSetMemento(String companyId, String workTimeCd, KshmtWtFixHolTs entity) {
+	public JpaFixedHDWorkTimeSheetSetMemento(String companyId, String workTimeCd, KshmtFixedHolTimeSet entity) {
 		if (entity.getKshmtFixedHolTimeSetPK() == null) {
 			entity.setKshmtFixedHolTimeSetPK(new KshmtFixedHolTimeSetPK());
 		}

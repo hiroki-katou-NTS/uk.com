@@ -14,9 +14,9 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowStampReflectTzSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.ReflectReferenceTwoWorkTime;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloStmpRefTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowStampReflect;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowStampReflectPK;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloStmpRef2Ts;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFstampReflectTime;
 
 /**
  * The Class JpaFlowStampReflectTimezoneSetMemento.
@@ -24,7 +24,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloStmpRef2Ts;
 public class JpaFlowStampReflectTimezoneSetMemento implements FlowStampReflectTzSetMemento {
 
 	/** The entity. */
-	private KshmtWtFloStmpRef2Ts entity;
+	private KshmtFstampReflectTime entity;
 
 	/** The company id. */
 	private String companyId;
@@ -38,7 +38,7 @@ public class JpaFlowStampReflectTimezoneSetMemento implements FlowStampReflectTz
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaFlowStampReflectTimezoneSetMemento(KshmtWtFloStmpRef2Ts entity) {
+	public JpaFlowStampReflectTimezoneSetMemento(KshmtFstampReflectTime entity) {
 		super();
 		this.entity = entity;
 		if (CollectionUtil.isEmpty(this.entity.getLstKshmtFlowStampReflect())) {
@@ -75,14 +75,14 @@ public class JpaFlowStampReflectTimezoneSetMemento implements FlowStampReflectTz
 			return;
 		}
 
-		List<KshmtWtFloStmpRefTs> lstEntity = this.entity.getLstKshmtFlowStampReflect();
+		List<KshmtFlowStampReflect> lstEntity = this.entity.getLstKshmtFlowStampReflect();
 		if (CollectionUtil.isEmpty(lstEntity)) {
 			lstEntity = new ArrayList<>();
 		}
 
 		// convert map entity
-		Map<KshmtFlowStampReflectPK, KshmtWtFloStmpRefTs> mapEntity = lstEntity.stream()
-				.collect(Collectors.toMap(KshmtWtFloStmpRefTs::getKshmtFlowStampReflectPK, Function.identity()));
+		Map<KshmtFlowStampReflectPK, KshmtFlowStampReflect> mapEntity = lstEntity.stream()
+				.collect(Collectors.toMap(KshmtFlowStampReflect::getKshmtFlowStampReflectPK, Function.identity()));
 
 		// set list entity
 		this.entity.setLstKshmtFlowStampReflect(lstRtz.stream().map(domain -> {
@@ -94,9 +94,9 @@ public class JpaFlowStampReflectTimezoneSetMemento implements FlowStampReflectTz
 			pk.setAttendAtr(domain.getClassification().value);
 
 			// find entity if existed, else new entity
-			KshmtWtFloStmpRefTs entity = mapEntity.get(pk);
+			KshmtFlowStampReflect entity = mapEntity.get(pk);
 			if (entity == null) {
-				entity = new KshmtWtFloStmpRefTs();
+				entity = new KshmtFlowStampReflect();
 				entity.setKshmtFlowStampReflectPK(pk);
 			}
 

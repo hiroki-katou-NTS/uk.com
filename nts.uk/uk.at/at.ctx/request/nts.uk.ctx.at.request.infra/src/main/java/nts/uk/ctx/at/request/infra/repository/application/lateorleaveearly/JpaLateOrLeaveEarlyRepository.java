@@ -24,7 +24,7 @@ import nts.uk.ctx.at.request.infra.entity.application.lateorleaveearly.KrqdtAppL
 @Stateless
 public class JpaLateOrLeaveEarlyRepository extends JpaRepository implements LateOrLeaveEarlyRepository {
 
-	// private final String SELECT= "SELECT c FROM KrqdtAppLateEarly c";
+	// private final String SELECT= "SELECT c FROM KrqdtAppLateOrLeave c";
 	// private final String SELECT_ALL_BY_COMPANY = SELECT + " WHERE
 	// c.KrqdtAppLateOrLeavePK.companyID = :companyID";
 	private static final String SELECT_SINGLE = "SELECT c" + " FROM KrqdtAppLateOrLeave_Old c"

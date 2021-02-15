@@ -19,11 +19,11 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.ExtractionPeriodMo
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.SpecifyStartMonth;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.StartMonth;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.YearSpecifiedType;
-import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtAlstPtnDeftm;
+import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtCheckCondition;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
-@Table(name = "KFNMT_ALST_PTN_DEFTMMON")
+@Table(name = "KFNMT_EXTRACT_PER_MONTH")
 @NoArgsConstructor
 public class KfnmtExtractPeriodMonth extends UkJpaEntity implements Serializable{
 	
@@ -77,7 +77,7 @@ public class KfnmtExtractPeriodMonth extends UkJpaEntity implements Serializable
 		@JoinColumn(name = "ALARM_PATTERN_CD", referencedColumnName = "ALARM_PATTERN_CD", insertable = false, updatable = false), 
 		@JoinColumn(name = "ALARM_CATEGORY", referencedColumnName = "ALARM_CATEGORY", insertable = false, updatable = false)
 		})
-	public KfnmtAlstPtnDeftm checkCondition;
+	public KfnmtCheckCondition checkCondition;
 	
 	
 	public void fromEntity(KfnmtExtractPeriodMonth newEntity) {

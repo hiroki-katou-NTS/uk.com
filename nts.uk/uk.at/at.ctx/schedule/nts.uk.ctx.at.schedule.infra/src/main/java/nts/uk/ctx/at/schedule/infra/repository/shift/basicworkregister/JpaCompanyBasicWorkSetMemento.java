@@ -9,7 +9,7 @@ import java.util.List;
 
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSetting;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.CompanyBasicWorkSetMemento;
-import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtBasicWorkCom;
+import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtCompanyWorkSet;
 
 /**
  * The Class JpaCompanyBasicWorkSetMemento.
@@ -17,7 +17,7 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.basicworkregister.KscmtBasicWor
 public class JpaCompanyBasicWorkSetMemento implements CompanyBasicWorkSetMemento {
 
 	/** The type value. */
-	private List<KscmtBasicWorkCom> typeValue;
+	private List<KscmtCompanyWorkSet> typeValue;
 
 	/**
 	 * Instantiates a new jpa company basic work set memento.
@@ -25,7 +25,7 @@ public class JpaCompanyBasicWorkSetMemento implements CompanyBasicWorkSetMemento
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaCompanyBasicWorkSetMemento(List<KscmtBasicWorkCom> typeValue) {
+	public JpaCompanyBasicWorkSetMemento(List<KscmtCompanyWorkSet> typeValue) {
 		super();
 		if (this.typeValue == null) {
 			this.typeValue = new ArrayList<>();
@@ -56,7 +56,7 @@ public class JpaCompanyBasicWorkSetMemento implements CompanyBasicWorkSetMemento
 	@Override
 	public void setBasicWorkSetting(List<BasicWorkSetting> basicWorkSetting) {
 		basicWorkSetting.stream().forEach(item -> {
-			KscmtBasicWorkCom entity = new KscmtBasicWorkCom();
+			KscmtCompanyWorkSet entity = new KscmtCompanyWorkSet();
 			entity.getKscmtCompanyWorkSetPK().setWorkdayDivision(item.getWorkdayDivision().value);
 			entity.setWorktypeCode(item.getWorktypeCode().v());
 			entity.setWorkingCode(item.getWorkingCode().v());

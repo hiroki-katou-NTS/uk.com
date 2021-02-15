@@ -571,7 +571,7 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	@Override
 	public boolean findWorkTypeRecord(String companyId, String workTypeCode) {
 		try (PreparedStatement statement = this.connection().prepareStatement(
-				"select Count(*) from KSHMT_WKTP"
+				"select Count(*) from KSHMT_WORKTYPE"
 				+ " where CID = ? and CD = ?")) {
 			
 			statement.setString(1, companyId);
@@ -632,7 +632,7 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	}
 
 	/**
-	 * Insert workType to KSHMT_WKTP
+	 * Insert workType to KSHMT_WORKTYPE
 	 */
 	@Override
 	public void add(WorkType workType) {

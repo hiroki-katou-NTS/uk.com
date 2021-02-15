@@ -27,11 +27,11 @@ import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.record.dom.calculationattribute.CalAttrOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.calculationattribute.repo.CalAttrOfDailyPerformanceRepository;
-import nts.uk.ctx.at.record.infra.entity.daily.calculationattribute.KrcdtDayInfoCalc;
+import nts.uk.ctx.at.record.infra.entity.daily.calculationattribute.KrcstDaiCalculationSet;
 import nts.uk.ctx.at.record.infra.entity.daily.calculationattribute.KrcstDaiCalculationSetPK;
-import nts.uk.ctx.at.record.infra.entity.daily.calculationattribute.KrcmtCalcSetFlex;
-import nts.uk.ctx.at.record.infra.entity.daily.calculationattribute.KrcmtCalcSetHdWork;
-import nts.uk.ctx.at.record.infra.entity.daily.calculationattribute.KrcmtCalcSetOverTime;
+import nts.uk.ctx.at.record.infra.entity.daily.calculationattribute.KrcstFlexAutoCalSet;
+import nts.uk.ctx.at.record.infra.entity.daily.calculationattribute.KrcstHolAutoCalSet;
+import nts.uk.ctx.at.record.infra.entity.daily.calculationattribute.KrcstOtAutoCalSet;
 import nts.uk.ctx.at.shared.dom.calculationattribute.enums.DivergenceTimeAttr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalFlexOvertimeSetting;
@@ -51,19 +51,19 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public CalAttrOfDailyPerformance find(String employeeId, GeneralDate baseDate) {
-		KrcdtDayInfoCalc calc = this.queryProxy()
-				.find(new KrcstDaiCalculationSetPK(employeeId, baseDate), KrcdtDayInfoCalc.class).orElse(null);
+		KrcstDaiCalculationSet calc = this.queryProxy()
+				.find(new KrcstDaiCalculationSetPK(employeeId, baseDate), KrcstDaiCalculationSet.class).orElse(null);
 		if (calc != null) {
 			//1
-//			KrcmtCalcSetFlex flexCalc = this.queryProxy()
-//					.find(StringUtils.rightPad(calc.flexExcessTimeId, 36), KrcmtCalcSetFlex.class).orElse(null);
-			String sql1 = "select * from KRCMT_CALC_SET_FLEX "
+//			KrcstFlexAutoCalSet flexCalc = this.queryProxy()
+//					.find(StringUtils.rightPad(calc.flexExcessTimeId, 36), KrcstFlexAutoCalSet.class).orElse(null);
+			String sql1 = "select * from KRCST_FLEX_AUTO_CAL_SET "
 					+ " where FLEX_EXCESS_TIME_ID = ?";
-			Optional<KrcmtCalcSetFlex> flexCalc= Optional.empty();
+			Optional<KrcstFlexAutoCalSet> flexCalc= Optional.empty();
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql1)) {
 				stmt.setString(1 , StringUtils.rightPad(calc.flexExcessTimeId, 36));
 				flexCalc = new NtsResultSet(stmt.executeQuery()).getSingle(rec -> {
-					KrcmtCalcSetFlex ent = new KrcmtCalcSetFlex(
+					KrcstFlexAutoCalSet ent = new KrcstFlexAutoCalSet(
 							rec.getString("FLEX_EXCESS_TIME_ID"),
 							rec.getInt("FLEX_EXCESS_TIME_CAL_ATR"),
 							rec.getInt("FLEX_EXCESS_LIMIT_SET")
@@ -75,15 +75,15 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 				throw new RuntimeException(e);
 			}
 			//2
-//			KrcmtCalcSetHdWork holidayCalc = this.queryProxy()
-//					.find(StringUtils.rightPad(calc.holWorkTimeId, 36), KrcmtCalcSetHdWork.class).orElse(null);
-			String sql2 = "select * from KRCMT_CALC_SET_HD_WORK "
+//			KrcstHolAutoCalSet holidayCalc = this.queryProxy()
+//					.find(StringUtils.rightPad(calc.holWorkTimeId, 36), KrcstHolAutoCalSet.class).orElse(null);
+			String sql2 = "select * from KRCST_HOL_AUTO_CAL_SET "
 					+ " where HOL_WORK_TIME_ID = ?";
-			Optional<KrcmtCalcSetHdWork> holidayCalc= Optional.empty();
+			Optional<KrcstHolAutoCalSet> holidayCalc= Optional.empty();
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql2)) {
 				stmt.setString(1 , StringUtils.rightPad(calc.holWorkTimeId, 36));
 				holidayCalc = new NtsResultSet(stmt.executeQuery()).getSingle(rec -> {
-					KrcmtCalcSetHdWork ent = new KrcmtCalcSetHdWork(
+					KrcstHolAutoCalSet ent = new KrcstHolAutoCalSet(
 							rec.getString("HOL_WORK_TIME_ID"),
 							rec.getInt("HOL_WORK_TIME_CAL_ATR"),
 							rec.getInt("HOL_WORK_TIME_LIMIT_SET"),
@@ -97,15 +97,15 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 				throw new RuntimeException(e);
 			}
 			//3
-//			KrcmtCalcSetOverTime overtimeCalc = this.queryProxy()
-//					.find(StringUtils.rightPad(calc.overTimeWorkId, 36), KrcmtCalcSetOverTime.class).orElse(null);
-			String sql3 = "select * from KRCMT_CALC_SET_OVER_TIME "
+//			KrcstOtAutoCalSet overtimeCalc = this.queryProxy()
+//					.find(StringUtils.rightPad(calc.overTimeWorkId, 36), KrcstOtAutoCalSet.class).orElse(null);
+			String sql3 = "select * from KRCST_OT_AUTO_CAL_SET "
 					+ " where OVER_TIME_WORK_ID = ?";
-			Optional<KrcmtCalcSetOverTime> overtimeCalc= Optional.empty();
+			Optional<KrcstOtAutoCalSet> overtimeCalc= Optional.empty();
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql3)) {
 				stmt.setString(1 , StringUtils.rightPad(calc.overTimeWorkId, 36));
 				overtimeCalc = new NtsResultSet(stmt.executeQuery()).getSingle(rec -> {
-					KrcmtCalcSetOverTime ent = new KrcmtCalcSetOverTime(
+					KrcstOtAutoCalSet ent = new KrcstOtAutoCalSet(
 							rec.getString("OVER_TIME_WORK_ID"),
 							rec.getInt("EARLY_OVER_TIME_CAL_ATR"),
 							rec.getInt("EARLY_OVER_TIME_LIMIT_SET"),
@@ -133,19 +133,19 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 
 	@Override
 	public void update(CalAttrOfDailyPerformance domain) {
-		KrcdtDayInfoCalc calc = this.queryProxy()
+		KrcstDaiCalculationSet calc = this.queryProxy()
 				.find(new KrcstDaiCalculationSetPK(domain.getEmployeeId(), domain.getYmd()),
-						KrcdtDayInfoCalc.class)
+						KrcstDaiCalculationSet.class)
 				.orElse(null);
 		if (calc == null) {
 			this.add(domain);
 		} else {
-			KrcmtCalcSetFlex flexCalc = this.queryProxy()
-					.find(StringUtils.rightPad(calc.flexExcessTimeId, 36), KrcmtCalcSetFlex.class).orElse(null);
-			KrcmtCalcSetHdWork holidayCalc = this.queryProxy()
-					.find(StringUtils.rightPad(calc.holWorkTimeId, 36), KrcmtCalcSetHdWork.class).orElse(null);
-			KrcmtCalcSetOverTime overtimeCalc = this.queryProxy()
-					.find(StringUtils.rightPad(calc.overTimeWorkId, 36), KrcmtCalcSetOverTime.class).orElse(null);
+			KrcstFlexAutoCalSet flexCalc = this.queryProxy()
+					.find(StringUtils.rightPad(calc.flexExcessTimeId, 36), KrcstFlexAutoCalSet.class).orElse(null);
+			KrcstHolAutoCalSet holidayCalc = this.queryProxy()
+					.find(StringUtils.rightPad(calc.holWorkTimeId, 36), KrcstHolAutoCalSet.class).orElse(null);
+			KrcstOtAutoCalSet overtimeCalc = this.queryProxy()
+					.find(StringUtils.rightPad(calc.overTimeWorkId, 36), KrcstOtAutoCalSet.class).orElse(null);
 			if (domain.getCalcategory().getRasingSalarySetting() != null) {
 				calc.bonusPayNormalCalSet = domain.getCalcategory().getRasingSalarySetting().isRaisingSalaryCalcAtr() ? 1 : 0;
 				calc.bonusPaySpeCalSet = domain.getCalcategory().getRasingSalarySetting().isSpecificRaisingSalaryCalcAtr() ? 1 : 0;
@@ -170,16 +170,16 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 
 	@Override
 	public void add(CalAttrOfDailyPerformance domain) {
-		KrcmtCalcSetFlex flexCalc = new KrcmtCalcSetFlex(IdentifierUtil.randomUniqueId());
+		KrcstFlexAutoCalSet flexCalc = new KrcstFlexAutoCalSet(IdentifierUtil.randomUniqueId());
 		setFlexCalcSetting(domain.getCalcategory().getFlexExcessTime().getFlexOtTime(), flexCalc);
 
-		KrcmtCalcSetHdWork holidayCalc = new KrcmtCalcSetHdWork(IdentifierUtil.randomUniqueId());
+		KrcstHolAutoCalSet holidayCalc = new KrcstHolAutoCalSet(IdentifierUtil.randomUniqueId());
 		setHolidayCalcSetting(domain.getCalcategory().getHolidayTimeSetting(), holidayCalc);
 
-		KrcmtCalcSetOverTime overtimeCalc = new KrcmtCalcSetOverTime(IdentifierUtil.randomUniqueId());
+		KrcstOtAutoCalSet overtimeCalc = new KrcstOtAutoCalSet(IdentifierUtil.randomUniqueId());
 		setOvertimeCalcSetting(domain.getCalcategory().getOvertimeSetting(), overtimeCalc);
 
-		KrcdtDayInfoCalc calcSet = new KrcdtDayInfoCalc(
+		KrcstDaiCalculationSet calcSet = new KrcstDaiCalculationSet(
 				new KrcstDaiCalculationSetPK(domain.getEmployeeId(), domain.getYmd()));
 		if (domain.getCalcategory().getRasingSalarySetting() != null) {
 			calcSet.bonusPayNormalCalSet = domain.getCalcategory().getRasingSalarySetting().isRaisingSalaryCalcAtr() ? 1 : 0;
@@ -217,10 +217,10 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 	@SneakyThrows
 	private List<CalAttrOfDailyPerformance> internalQuery(DatePeriod baseDate, List<String> empIds) {
 		String subEmp = NtsStatement.In.createParamsString(empIds);
-		StringBuilder query = new StringBuilder("SELECT * FROM KRCDT_DAY_INFO_CALC c  ");
-		query.append(" LEFT JOIN KRCMT_CALC_SET_OVER_TIME ot ON c.OVER_TIME_WORK_ID = ot.OVER_TIME_WORK_ID  ");
-		query.append(" LEFT JOIN KRCMT_CALC_SET_FLEX f ON c.FLEX_EXCESS_TIME_ID = f.FLEX_EXCESS_TIME_ID  ");
-		query.append(" LEFT JOIN KRCMT_CALC_SET_HD_WORK ho ON c.HOL_WORK_TIME_ID = ho.HOL_WORK_TIME_ID ");
+		StringBuilder query = new StringBuilder("SELECT * FROM KRCST_DAI_CALCULATION_SET c  ");
+		query.append(" LEFT JOIN KRCST_OT_AUTO_CAL_SET ot ON c.OVER_TIME_WORK_ID = ot.OVER_TIME_WORK_ID  ");
+		query.append(" LEFT JOIN KRCST_FLEX_AUTO_CAL_SET f ON c.FLEX_EXCESS_TIME_ID = f.FLEX_EXCESS_TIME_ID  ");
+		query.append(" LEFT JOIN KRCST_HOL_AUTO_CAL_SET ho ON c.HOL_WORK_TIME_ID = ho.HOL_WORK_TIME_ID ");
 		query.append(" WHERE c.YMD <= ? AND c.YMD >= ? ");
 		query.append(" AND c.SID IN (" + subEmp + ")");
 		try (val stmt = this.connection().prepareStatement(query.toString())){
@@ -253,8 +253,8 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 		}
 	}
 
-	private CalAttrOfDailyPerformance toDomain(KrcdtDayInfoCalc calc, KrcmtCalcSetFlex flexCalc,
-			KrcmtCalcSetHdWork holidayCalc, KrcmtCalcSetOverTime overtimeCalc) {
+	private CalAttrOfDailyPerformance toDomain(KrcstDaiCalculationSet calc, KrcstFlexAutoCalSet flexCalc,
+			KrcstHolAutoCalSet holidayCalc, KrcstOtAutoCalSet overtimeCalc) {
 		AutoCalSetting flex = null;
 		AutoCalRestTimeSetting holiday = null;
 		AutoCalOvertimeSetting overtime = null;
@@ -288,7 +288,7 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 				new AutoCalcSetOfDivergenceTime(getEnum(calc.divergenceTime, DivergenceTimeAttr.class)));
 	}
 
-	private void setOvertimeCalcSetting(AutoCalOvertimeSetting domain, KrcmtCalcSetOverTime overtimeCalc) {
+	private void setOvertimeCalcSetting(AutoCalOvertimeSetting domain, KrcstOtAutoCalSet overtimeCalc) {
 		if (domain != null) {
 			overtimeCalc.earlyMidOtCalAtr = domain.getEarlyMidOtTime() == null ? 0
 					: domain.getEarlyMidOtTime().getCalAtr().value;
@@ -317,14 +317,14 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 		}
 	}
 
-	private void setFlexCalcSetting(AutoCalSetting domain, KrcmtCalcSetFlex flexCalc) {
+	private void setFlexCalcSetting(AutoCalSetting domain, KrcstFlexAutoCalSet flexCalc) {
 		if (domain != null) {
 			flexCalc.flexExcessLimitSet = domain.getUpLimitORtSet() == null ? 0 : domain.getUpLimitORtSet().value;
 			flexCalc.flexExcessTimeCalAtr = domain.getCalAtr() == null ? 0 : domain.getCalAtr().value;
 		}
 	}
 
-	private void setHolidayCalcSetting(AutoCalRestTimeSetting domain, KrcmtCalcSetHdWork holidayCalc) {
+	private void setHolidayCalcSetting(AutoCalRestTimeSetting domain, KrcstHolAutoCalSet holidayCalc) {
 		if (domain != null) {
 			holidayCalc.holWorkTimeCalAtr = domain.getRestTime() == null ? 0 : domain.getRestTime().getCalAtr().value;
 			holidayCalc.holWorkTimeLimitSet = domain.getRestTime() == null ? 0
@@ -348,21 +348,21 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
 	@Override
 	public void deleteByKey(String employeeId, GeneralDate baseDate) {
 		
-		this.queryProxy().find(new KrcstDaiCalculationSetPK(employeeId, baseDate), KrcdtDayInfoCalc.class).ifPresent(entity -> {
+		this.queryProxy().find(new KrcstDaiCalculationSetPK(employeeId, baseDate), KrcstDaiCalculationSet.class).ifPresent(entity -> {
 			this.commandProxy().remove(entity);
-			this.queryProxy().find(StringUtils.rightPad(entity.flexExcessTimeId, 36), KrcmtCalcSetFlex.class).ifPresent(e -> {
+			this.queryProxy().find(StringUtils.rightPad(entity.flexExcessTimeId, 36), KrcstFlexAutoCalSet.class).ifPresent(e -> {
 						this.commandProxy().remove(e);
 					});
-			this.queryProxy().find(StringUtils.rightPad(entity.holWorkTimeId, 36), KrcmtCalcSetHdWork.class).ifPresent(e -> {
+			this.queryProxy().find(StringUtils.rightPad(entity.holWorkTimeId, 36), KrcstHolAutoCalSet.class).ifPresent(e -> {
 						this.commandProxy().remove(e);
 					});
-			this.queryProxy().find(StringUtils.rightPad(entity.overTimeWorkId, 36), KrcmtCalcSetOverTime.class).ifPresent(e -> {
+			this.queryProxy().find(StringUtils.rightPad(entity.overTimeWorkId, 36), KrcstOtAutoCalSet.class).ifPresent(e -> {
 						this.commandProxy().remove(e);
 					});
 		});
 		
 //		Connection con = this.getEntityManager().unwrap(Connection.class);
-//		String sqlQuery = "Delete From KRCDT_DAY_INFO_CALC Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + baseDate + "'" ;
+//		String sqlQuery = "Delete From KRCST_DAI_CALCULATION_SET Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + baseDate + "'" ;
 //		try {
 //			con.createStatement().executeUpdate(sqlQuery);
 //			workInfo.dirtying(employeeId, baseDate);
@@ -393,10 +393,10 @@ public class JpaCalAttrOfDailyPerformanceRepoImpl extends JpaRepository implemen
     private List<CalAttrOfDailyPerformance> internalQueryMap(List<GeneralDate> dates, List<String> employeeIds){
     	String subEmp = NtsStatement.In.createParamsString(employeeIds);
     	String subDate = NtsStatement.In.createParamsString(dates);
-		StringBuilder query = new StringBuilder("SELECT * FROM KRCDT_DAY_INFO_CALC c  ");
-		query.append(" LEFT JOIN KRCMT_CALC_SET_OVER_TIME ot ON c.OVER_TIME_WORK_ID = ot.OVER_TIME_WORK_ID  ");
-		query.append(" LEFT JOIN KRCMT_CALC_SET_FLEX f ON c.FLEX_EXCESS_TIME_ID = f.FLEX_EXCESS_TIME_ID  ");
-		query.append(" LEFT JOIN KRCMT_CALC_SET_HD_WORK ho ON c.HOL_WORK_TIME_ID = ho.HOL_WORK_TIME_ID ");
+		StringBuilder query = new StringBuilder("SELECT * FROM KRCST_DAI_CALCULATION_SET c  ");
+		query.append(" LEFT JOIN KRCST_OT_AUTO_CAL_SET ot ON c.OVER_TIME_WORK_ID = ot.OVER_TIME_WORK_ID  ");
+		query.append(" LEFT JOIN KRCST_FLEX_AUTO_CAL_SET f ON c.FLEX_EXCESS_TIME_ID = f.FLEX_EXCESS_TIME_ID  ");
+		query.append(" LEFT JOIN KRCST_HOL_AUTO_CAL_SET ho ON c.HOL_WORK_TIME_ID = ho.HOL_WORK_TIME_ID ");
 		query.append(" WHERE c.SID IN (" + subEmp + ")");
 		query.append(" AND c.YMD IN (" + subDate  + ")");
 		try (val stmt = this.connection().prepareStatement(query.toString())){

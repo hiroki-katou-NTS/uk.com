@@ -16,7 +16,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCMT_HORIZONTAL_CATEGORY")
+@Table(name = "KSCMT_HORI_TOTAL_CATEGORY")
 public class KscmtHoriTotalCategoryItem extends UkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId

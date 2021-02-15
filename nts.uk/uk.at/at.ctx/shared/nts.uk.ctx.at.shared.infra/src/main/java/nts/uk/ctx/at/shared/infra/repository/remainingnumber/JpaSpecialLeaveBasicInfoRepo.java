@@ -21,25 +21,25 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.enums.UseAtr;
-import nts.uk.ctx.at.shared.infra.entity.remainingnumber.spLea.basicInfo.KrcmtHdspBasic;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.spLea.basicInfo.KrcmtSpecialLeaveInfo;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.spLea.basicInfo.KrcmtSpecialLeaveInfoPK;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaSpecialLeaveBasicInfoRepo extends JpaRepository implements SpecialLeaveBasicInfoRepository {
 
-	private static final String FIND_QUERY = "SELECT s FROM KrcmtHdspBasic s WHERE s.key.employeeId = :employeeId ";
+	private static final String FIND_QUERY = "SELECT s FROM KrcmtSpecialLeaveInfo s WHERE s.key.employeeId = :employeeId ";
 
 	private static final String FIND_QUERY_BYSIDCD = String.join(" ", FIND_QUERY, "AND s.key.spLeaveCD = :spLeaveCD");
 	
-	private static final String QUERY_BY_SID_LEAVECD_ISUSE = "SELECT s FROM KrcmtHdspBasic s"
+	private static final String QUERY_BY_SID_LEAVECD_ISUSE = "SELECT s FROM KrcmtSpecialLeaveInfo s"
 			+ " WHERE s.key.employeeId = :employeeId "
 			+ " AND s.key.spLeaveCD = :spLeaveCD "
 			+ " AND s.useCls = :useCls";
 	
 	@Override
 	public List<SpecialLeaveBasicInfo> listSPLeav(String sid) {
-		List<SpecialLeaveBasicInfo> result = this.queryProxy().query(FIND_QUERY, KrcmtHdspBasic.class)
+		List<SpecialLeaveBasicInfo> result = this.queryProxy().query(FIND_QUERY, KrcmtSpecialLeaveInfo.class)
 				.setParameter("employeeId", sid).getList(item -> {
 					return toDomain(item);
 				});
@@ -55,7 +55,7 @@ public class JpaSpecialLeaveBasicInfoRepo extends JpaRepository implements Speci
 	@Override
 	public void update(SpecialLeaveBasicInfo domain) {
 		KrcmtSpecialLeaveInfoPK key = new KrcmtSpecialLeaveInfoPK(domain.getSID(), domain.getSpecialLeaveCode().v());
-		Optional<KrcmtHdspBasic> entity = this.queryProxy().find(key, KrcmtHdspBasic.class);
+		Optional<KrcmtSpecialLeaveInfo> entity = this.queryProxy().find(key, KrcmtSpecialLeaveInfo.class);
 		if (!entity.isPresent()) {
 			return;
 		}
@@ -69,7 +69,7 @@ public class JpaSpecialLeaveBasicInfoRepo extends JpaRepository implements Speci
 	@Override
 	public void delete(String sID, int spLeavCD) {
 		KrcmtSpecialLeaveInfoPK key = new KrcmtSpecialLeaveInfoPK(sID, spLeavCD);
-		this.commandProxy().remove(KrcmtHdspBasic.class, key);
+		this.commandProxy().remove(KrcmtSpecialLeaveInfo.class, key);
 	}
 
 	/**
@@ -78,7 +78,7 @@ public class JpaSpecialLeaveBasicInfoRepo extends JpaRepository implements Speci
 	 * @param domain
 	 * @return
 	 */
-	private void updateEntity(SpecialLeaveBasicInfo domain, KrcmtHdspBasic entity) {
+	private void updateEntity(SpecialLeaveBasicInfo domain, KrcmtSpecialLeaveInfo entity) {
 		entity.useCls = domain.getUsed().value;
 		entity.appSetting = domain.getApplicationSet().value;
 		entity.grantDate = domain.getGrantSetting().getGrantDate();
@@ -102,8 +102,8 @@ public class JpaSpecialLeaveBasicInfoRepo extends JpaRepository implements Speci
 	 * @param domain
 	 * @return
 	 */
-	private KrcmtHdspBasic toEntity(SpecialLeaveBasicInfo domain) {
-		KrcmtHdspBasic entity = new KrcmtHdspBasic();
+	private KrcmtSpecialLeaveInfo toEntity(SpecialLeaveBasicInfo domain) {
+		KrcmtSpecialLeaveInfo entity = new KrcmtSpecialLeaveInfo();
 		entity.cID = domain.getCID();
 		KrcmtSpecialLeaveInfoPK key = new KrcmtSpecialLeaveInfoPK(domain.getSID(), domain.getSpecialLeaveCode().v());
 		entity.key = key;
@@ -129,7 +129,7 @@ public class JpaSpecialLeaveBasicInfoRepo extends JpaRepository implements Speci
 	 * @param entity
 	 * @return
 	 */
-	private SpecialLeaveBasicInfo toDomain(KrcmtHdspBasic entity) {
+	private SpecialLeaveBasicInfo toDomain(KrcmtSpecialLeaveInfo entity) {
 		return new SpecialLeaveBasicInfo(entity.cID, entity.key.employeeId, entity.key.spLeaveCD, entity.useCls,
 				entity.appSetting, entity.grantDate, entity.grantNumber, entity.grantTable);
 	}
@@ -137,7 +137,7 @@ public class JpaSpecialLeaveBasicInfoRepo extends JpaRepository implements Speci
 	@Override
 	public Optional<SpecialLeaveBasicInfo> getBySidLeaveCd(String sid, int spLeaveCD) {
 		Optional<SpecialLeaveBasicInfo> result = this.queryProxy()
-				.query(FIND_QUERY_BYSIDCD, KrcmtHdspBasic.class).setParameter("employeeId", sid)
+				.query(FIND_QUERY_BYSIDCD, KrcmtSpecialLeaveInfo.class).setParameter("employeeId", sid)
 				.setParameter("spLeaveCD", spLeaveCD).getSingle(item -> toDomain(item));
 		return result;
 	}
@@ -146,7 +146,7 @@ public class JpaSpecialLeaveBasicInfoRepo extends JpaRepository implements Speci
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public Optional<SpecialLeaveBasicInfo> getBySidLeaveCdUser(String sid, int spLeaveCD, UseAtr use) {
 		Optional<SpecialLeaveBasicInfo> result = this.queryProxy()
-				.query(QUERY_BY_SID_LEAVECD_ISUSE, KrcmtHdspBasic.class)
+				.query(QUERY_BY_SID_LEAVECD_ISUSE, KrcmtSpecialLeaveInfo.class)
 				.setParameter("employeeId", sid)
 				.setParameter("spLeaveCD", spLeaveCD)
 				.setParameter("useCls", use.value)				
@@ -157,10 +157,10 @@ public class JpaSpecialLeaveBasicInfoRepo extends JpaRepository implements Speci
 	@Override
 	@SneakyThrows
 	public List<SpecialLeaveBasicInfo> getAllBySidsLeaveCd(String cid, List<String> sids, int spLeaveCD) {
-		List<KrcmtHdspBasic> entities = new ArrayList<>();
+		List<KrcmtSpecialLeaveInfo> entities = new ArrayList<>();
 		
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT * FROM KRCMT_HDSP_BASIC WHERE CID = ? AND SPECIAL_LEAVE_CD = ? AND SID IN ("+ NtsStatement.In.createParamsString(subList) + ")";
+			String sql = "SELECT * FROM KRCMT_SPECIAL_LEAVE_INFO WHERE CID = ? AND SPECIAL_LEAVE_CD = ? AND SID IN ("+ NtsStatement.In.createParamsString(subList) + ")";
 			
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 				stmt.setString( 1, cid);
@@ -169,8 +169,8 @@ public class JpaSpecialLeaveBasicInfoRepo extends JpaRepository implements Speci
 					stmt.setString( 3 + i, subList.get(i));
 				}
 				
-				List<KrcmtHdspBasic> result = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
-					KrcmtHdspBasic entity = new KrcmtHdspBasic();
+				List<KrcmtSpecialLeaveInfo> result = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+					KrcmtSpecialLeaveInfo entity = new KrcmtSpecialLeaveInfo();
 					entity.key = new KrcmtSpecialLeaveInfoPK(rec.getString("SID"), rec.getInt("SPECIAL_LEAVE_CD"));
 					entity.cID = rec.getString("CID");
 					entity.useCls = rec.getInt("USE_ATR");
@@ -192,7 +192,7 @@ public class JpaSpecialLeaveBasicInfoRepo extends JpaRepository implements Speci
 
 	@Override
 	public void addAll(List<SpecialLeaveBasicInfo> domains) {
-		String INS_SQL = "INSERT INTO KRCMT_HDSP_BASIC (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
+		String INS_SQL = "INSERT INTO KRCMT_SPECIAL_LEAVE_INFO (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
 				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG," 
 				+ " SID, SPECIAL_LEAVE_CD, CID, USE_ATR, APPLICATION_SET, GRANT_DATE, GRANTED_DAYS, GRANT_TABLE)"
 				+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
@@ -248,7 +248,7 @@ public class JpaSpecialLeaveBasicInfoRepo extends JpaRepository implements Speci
 
 	@Override
 	public void updateAll(List<SpecialLeaveBasicInfo> domains) {
-		String UP_SQL = "UPDATE KRCMT_HDSP_BASIC SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
+		String UP_SQL = "UPDATE KRCMT_SPECIAL_LEAVE_INFO SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
 				+ " USE_ATR = USE_ATR_VAL , APPLICATION_SET = APPLICATION_SET_VAL, GRANT_DATE = GRANT_DATE_VAL, "
 				+ " GRANTED_DAYS = GRANTED_DAYS_VAL, GRANT_TABLE = GRANT_TABLE_VAL"
 				+ " WHERE SID = SID_VAL AND SPECIAL_LEAVE_CD = SPECIAL_LEAVE_CD_VAL AND  CID = CID_VAL;";
@@ -295,7 +295,7 @@ public class JpaSpecialLeaveBasicInfoRepo extends JpaRepository implements Speci
 		List<Object[]> entities = new ArrayList<>();
 		
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT * FROM KRCMT_HDSP_BASIC WHERE CID = ? AND SPECIAL_LEAVE_CD = ? AND SID IN ("+ NtsStatement.In.createParamsString(subList) + ")";
+			String sql = "SELECT * FROM KRCMT_SPECIAL_LEAVE_INFO WHERE CID = ? AND SPECIAL_LEAVE_CD = ? AND SID IN ("+ NtsStatement.In.createParamsString(subList) + ")";
 			
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 				stmt.setString( 1, cid);

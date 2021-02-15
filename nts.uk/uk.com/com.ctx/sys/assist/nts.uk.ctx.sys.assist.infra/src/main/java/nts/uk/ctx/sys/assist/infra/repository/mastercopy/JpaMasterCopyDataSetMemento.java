@@ -7,18 +7,18 @@ import java.util.stream.Collectors;
 import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyCategoryNo;
 import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyDataSetMemento;
 import nts.uk.ctx.sys.assist.dom.mastercopy.TargetTableInfo;
-import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspctMastercopyCategory;
-import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspctMastercopyData;
+import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyCategory;
+import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyData;
 import nts.uk.ctx.sys.assist.infra.entity.mastercopy.SspmtMastercopyDataPK;
 
 /**
  * The Class JpaMasterCopyDataSetMemento.
  */
 public class JpaMasterCopyDataSetMemento implements MasterCopyDataSetMemento {
-	private SspctMastercopyCategory categoryEntity;
+	private SspmtMastercopyCategory categoryEntity;
 	
 	/** The data entities. */
-	private List<SspctMastercopyData> dataEntities;
+	private List<SspmtMastercopyData> dataEntities;
 
 	/**
 	 * Instantiates a new jpa master copy data set memento.
@@ -26,7 +26,7 @@ public class JpaMasterCopyDataSetMemento implements MasterCopyDataSetMemento {
 	 * @param dataEntites
 	 *            the entity
 	 */
-	public JpaMasterCopyDataSetMemento(SspctMastercopyCategory categoryEntity,List<SspctMastercopyData> dataEntites) {
+	public JpaMasterCopyDataSetMemento(SspmtMastercopyCategory categoryEntity,List<SspmtMastercopyData> dataEntites) {
 		this.categoryEntity = categoryEntity;
 		this.dataEntities = dataEntites;
 		
@@ -44,7 +44,7 @@ public class JpaMasterCopyDataSetMemento implements MasterCopyDataSetMemento {
 		int categoryNo = this.categoryEntity.getCategoryNo();
 		this.dataEntities =  targetTables.stream().map(e -> {
 			SspmtMastercopyDataPK pk = new SspmtMastercopyDataPK(categoryNo, e.getTableNo().v());
-			return new SspctMastercopyData(pk,new BigDecimal(e.getCopyAttribute().value), e.getKey().getKEY1().v(), e.getKey().getKEY2().get().v(),
+			return new SspmtMastercopyData(pk,new BigDecimal(e.getCopyAttribute().value), e.getKey().getKEY1().v(), e.getKey().getKEY2().get().v(),
 					e.getKey().getKEY3().get().v(), e.getKey().getKEY4().get().v(), e.getKey().getKEY5().get().v(), e.getTableName().v());
 		}).collect(Collectors.toList());
 	}

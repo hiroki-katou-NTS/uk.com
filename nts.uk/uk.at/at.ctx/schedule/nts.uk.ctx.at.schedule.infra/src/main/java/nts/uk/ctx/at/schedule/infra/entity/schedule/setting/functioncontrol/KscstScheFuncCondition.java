@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCMT_FUNCTION_CONP_COND")
+@Table(name = "KSCST_SCHE_FUNC_COND")
 public class KscstScheFuncCondition extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

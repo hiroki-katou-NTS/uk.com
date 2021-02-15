@@ -11,7 +11,7 @@ import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameGetMemento;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameName;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameNo;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRole;
-import nts.uk.ctx.at.shared.infra.entity.workdayoff.frame.KshmtHdWorkFrame;
+import nts.uk.ctx.at.shared.infra.entity.workdayoff.frame.KshstWorkdayoffFrame;
 
 /**
  * The Class JpaWorkdayoffFrameGetMemento.
@@ -19,14 +19,14 @@ import nts.uk.ctx.at.shared.infra.entity.workdayoff.frame.KshmtHdWorkFrame;
 public class JpaWorkdayoffFrameGetMemento implements WorkdayoffFrameGetMemento{
 	
 	/** The kshst workdayoff frame. */
-	private KshmtHdWorkFrame kshstWorkdayoffFrame;
+	private KshstWorkdayoffFrame kshstWorkdayoffFrame;
 	
 	/**
 	 * Instantiates a new jpa workdayoff frame get memento.
 	 *
 	 * @param kshstWorkdayoffFrame the kshst workdayoff frame
 	 */
-	public JpaWorkdayoffFrameGetMemento(KshmtHdWorkFrame kshstWorkdayoffFrame) {
+	public JpaWorkdayoffFrameGetMemento(KshstWorkdayoffFrame kshstWorkdayoffFrame) {
 		this.kshstWorkdayoffFrame = kshstWorkdayoffFrame;
 	}
 

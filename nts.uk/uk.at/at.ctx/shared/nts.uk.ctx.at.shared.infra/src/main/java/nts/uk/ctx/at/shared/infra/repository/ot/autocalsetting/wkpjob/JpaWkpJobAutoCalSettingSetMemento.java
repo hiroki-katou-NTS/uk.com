@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalcOfLe
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.JobTitleId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.wkpjob.WkpJobAutoCalSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
-import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkpjob.KrcmtCalcSetWkpJob;
+import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkpjob.KshmtAutoWkpJobCal;
 import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkpjob.KshmtAutoWkpJobCalPK;
 
 /**
@@ -23,14 +23,14 @@ import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkpjob.KshmtAutoWkpJo
 public class JpaWkpJobAutoCalSettingSetMemento implements WkpJobAutoCalSettingSetMemento {
 	
 	/** The entity. */
-	private KrcmtCalcSetWkpJob entity;
+	private KshmtAutoWkpJobCal entity;
 
 	/**
 	 * Instantiates a new jpa wkp job auto cal setting set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaWkpJobAutoCalSettingSetMemento(KrcmtCalcSetWkpJob entity) {
+	public JpaWkpJobAutoCalSettingSetMemento(KshmtAutoWkpJobCal entity) {
 		if (entity.getKshmtAutoWkpJobCalPK() == null) {
 			entity.setKshmtAutoWkpJobCalPK(new KshmtAutoWkpJobCalPK());
 		}

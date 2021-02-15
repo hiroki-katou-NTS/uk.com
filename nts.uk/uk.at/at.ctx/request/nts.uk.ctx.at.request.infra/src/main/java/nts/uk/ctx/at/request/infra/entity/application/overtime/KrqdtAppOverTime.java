@@ -169,9 +169,9 @@ public class KrqdtAppOverTime extends ContractUkJpaEntity implements Serializabl
 	@Column(name = "BREAK_TIME_END10")
 	public Integer breakTimeEnd10;
 	
-	@OneToMany(targetEntity = KrqdtAppOvertimeInput.class, mappedBy = "appOvertime", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(targetEntity = KrqdtOvertimeInput.class, mappedBy = "appOvertime", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinTable(name = "KRQDT_APP_OVERTIME_INPUT")
-	public List<KrqdtAppOvertimeInput> overtimeInputs;
+	public List<KrqdtOvertimeInput> overtimeInputs;
 	
 	@OneToOne(targetEntity = KrqdtAppOvertimeDetail.class, mappedBy = "appOvertime", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinTable(name = "KRQDT_APP_OVERTIME_DETAIL")

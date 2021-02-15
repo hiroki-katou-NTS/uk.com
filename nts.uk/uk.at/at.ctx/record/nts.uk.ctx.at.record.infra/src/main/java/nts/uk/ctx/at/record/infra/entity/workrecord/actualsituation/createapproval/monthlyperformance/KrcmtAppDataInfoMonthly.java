@@ -14,7 +14,7 @@ import nts.uk.ctx.at.record.dom.workrecord.actualsituation.createapproval.monthl
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
-@Table(name="KRCDT_APP_INST_ERR_MON")
+@Table(name="KRCMT_APP_DATA_INFO_MON")
 @NoArgsConstructor
 public class KrcmtAppDataInfoMonthly extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;

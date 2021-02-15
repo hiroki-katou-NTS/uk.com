@@ -15,7 +15,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.SingleDayScheduleGetMemento;
 import nts.uk.ctx.at.shared.dom.workingcondition.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondCtg;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPerWorkCat;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPerWorkCatPK;
 
 /**
@@ -24,7 +24,7 @@ import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPerWorkCatPK;
 public class JpaSDayScheWorkCatGetMemento implements SingleDayScheduleGetMemento {
 
 	/** The entity. */
-	private KshmtWorkcondCtg entity;
+	private KshmtPerWorkCat entity;
 
 	/**
 	 * Instantiates a new jpa single day schedule work category get memento.
@@ -32,7 +32,7 @@ public class JpaSDayScheWorkCatGetMemento implements SingleDayScheduleGetMemento
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaSDayScheWorkCatGetMemento(KshmtWorkcondCtg entity) {
+	public JpaSDayScheWorkCatGetMemento(KshmtPerWorkCat entity) {
 		if (entity.getKshmtPerWorkCatPK() == null) {
 			entity.setKshmtPerWorkCatPK(new KshmtPerWorkCatPK());
 		}

@@ -7,7 +7,7 @@ package nts.uk.ctx.at.record.infra.repository.optitem.applicable;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import nts.uk.ctx.at.record.infra.entity.optitem.applicable.KrcmtAnyfCondEmp;
+import nts.uk.ctx.at.record.infra.entity.optitem.applicable.KrcstApplEmpCon;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemNo;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.applicable.EmpConditionGetMemento;
@@ -19,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.scherec.optitem.applicable.EmploymentCondition;
 public class JpaEmpConditionGetMemento implements EmpConditionGetMemento {
 
 	/** The type values. */
-	private List<KrcmtAnyfCondEmp> typeValues;
+	private List<KrcstApplEmpCon> typeValues;
 
 	/** The company id. */
 	private String companyId;
@@ -34,7 +34,7 @@ public class JpaEmpConditionGetMemento implements EmpConditionGetMemento {
 	 * @param optionalItemNo the optional item no
 	 * @param typeValues the type values
 	 */
-	public JpaEmpConditionGetMemento(String companyId, Integer optionalItemNo, List<KrcmtAnyfCondEmp> typeValues) {
+	public JpaEmpConditionGetMemento(String companyId, Integer optionalItemNo, List<KrcstApplEmpCon> typeValues) {
 		this.typeValues = typeValues;
 		this.companyId = companyId;
 		this.optItemNo = optionalItemNo;

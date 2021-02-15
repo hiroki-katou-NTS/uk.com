@@ -10,19 +10,19 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class KshstOutsideOtBrd_.
  */
-@StaticMetamodel(KshmtOutsideDetail.class)
+@StaticMetamodel(KshstOutsideOtBrd.class)
 public class KshstOutsideOtBrd_ {
 
 	/** The kshst outside ot brd PK. */
-	public static volatile SingularAttribute<KshmtOutsideDetail, KshstOutsideOtBrdPK> kshstOutsideOtBrdPK;
+	public static volatile SingularAttribute<KshstOutsideOtBrd, KshstOutsideOtBrdPK> kshstOutsideOtBrdPK;
 	
 	/** The name. */
-	public static volatile SingularAttribute<KshmtOutsideDetail, String> name;
+	public static volatile SingularAttribute<KshstOutsideOtBrd, String> name;
 	
 	/** The use atr. */
-	public static volatile SingularAttribute<KshmtOutsideDetail, Integer> useAtr;
+	public static volatile SingularAttribute<KshstOutsideOtBrd, Integer> useAtr;
 	
 	/** The product number. */
-	public static volatile SingularAttribute<KshmtOutsideDetail, Integer> productNumber;
+	public static volatile SingularAttribute<KshstOutsideOtBrd, Integer> productNumber;
 
 }

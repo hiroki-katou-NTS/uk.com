@@ -11,7 +11,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.use.UseUnitAutoCalSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.use.UseUnitAutoCalSettingRepository;
-import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.use.KrcmtCalcSetUnitSet;
+import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.use.KshmtAutoUseUnitSet;
 
 /**
  * The Class JpaUseUnitAutoCalSettingRepository.
@@ -24,13 +24,13 @@ public class JpaUseUnitAutoCalSettingRepository  extends JpaRepository implement
 	 */
 	@Override
 	public void update(UseUnitAutoCalSetting useUnitAutoCalSetting) {
-		Optional<KrcmtCalcSetUnitSet> optional = this.queryProxy().find(useUnitAutoCalSetting.getCompanyId().v(), KrcmtCalcSetUnitSet.class);
+		Optional<KshmtAutoUseUnitSet> optional = this.queryProxy().find(useUnitAutoCalSetting.getCompanyId().v(), KshmtAutoUseUnitSet.class);
 
 		if (!optional.isPresent()) {
 			throw new RuntimeException("Unit Auto not existed.");
 		}
 
-		KrcmtCalcSetUnitSet entity = optional.get();
+		KshmtAutoUseUnitSet entity = optional.get();
 		useUnitAutoCalSetting.saveToMemento(new JpaUseUnitAutoCalSettingSetMemento(entity));
 		this.commandProxy().update(entity);		
 		
@@ -42,7 +42,7 @@ public class JpaUseUnitAutoCalSettingRepository  extends JpaRepository implement
 	@Override
 	public Optional<UseUnitAutoCalSetting> getAllUseUnitAutoCalSetting(String companyId) {
 
-		Optional<KrcmtCalcSetUnitSet> optKshmtAutoUseUnitSet = this.queryProxy().find(companyId, KrcmtCalcSetUnitSet.class);
+		Optional<KshmtAutoUseUnitSet> optKshmtAutoUseUnitSet = this.queryProxy().find(companyId, KshmtAutoUseUnitSet.class);
 
 		if (!optKshmtAutoUseUnitSet.isPresent()) {
 			return Optional.empty();

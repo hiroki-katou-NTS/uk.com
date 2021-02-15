@@ -13,7 +13,7 @@ import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimatedCondition;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.price.EstimatePrice;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.price.EstimatedPrice;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.price.EstimatedPriceSettingGetMemento;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstPriceCom;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstPriceComSet;
 
 /**
  * The Class JpaEstimatedCompanyPriceGetMemento.
@@ -21,14 +21,14 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstPriceC
 public class JpaComEstPriceGetMemento implements  EstimatedPriceSettingGetMemento{
 	
 	/** The estimate price company. */
-	private KscmtEstPriceCom estimatePriceCompany;
+	private KscmtEstPriceComSet estimatePriceCompany;
 	
 	/**
 	 * Instantiates a new jpa estimated company price get memento.
 	 *
 	 * @param estimatePriceCompany the estimate price company
 	 */
-	public JpaComEstPriceGetMemento(KscmtEstPriceCom estimatePriceCompany) {
+	public JpaComEstPriceGetMemento(KscmtEstPriceComSet estimatePriceCompany) {
 		this.estimatePriceCompany = estimatePriceCompany;
 	}
 

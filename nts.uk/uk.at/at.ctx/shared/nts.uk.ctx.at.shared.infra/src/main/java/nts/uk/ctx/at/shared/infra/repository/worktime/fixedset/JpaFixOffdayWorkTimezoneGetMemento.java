@@ -12,7 +12,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixOffdayWorkTimezoneGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFix;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSet;
 
 /**
  * The Class JpaFixOffdayWorkTimezoneGetMemento.
@@ -20,14 +20,14 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFix;
 public class JpaFixOffdayWorkTimezoneGetMemento implements FixOffdayWorkTimezoneGetMemento {
 
 	/** The entity. */
-	private KshmtWtFix entity;
+	private KshmtFixedWorkSet entity;
 
 	/**
 	 * Instantiates a new jpa fix offday work timezone get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFixOffdayWorkTimezoneGetMemento(KshmtWtFix entity) {
+	public JpaFixOffdayWorkTimezoneGetMemento(KshmtFixedWorkSet entity) {
 		super();
 		this.entity = entity;
 	}

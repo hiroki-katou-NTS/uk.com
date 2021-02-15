@@ -39,7 +39,7 @@ public class SspdtCategoryDeletion extends UkJpaEntity implements Serializable {
 	
 	@ManyToOne
 	@JoinColumn(name = "DEL_ID", referencedColumnName = "DEL_ID", insertable = false, updatable = false)
-	public SspdtDeletionManual manualSetDeletion;
+	public SspdtManualSetDeletion manualSetDeletion;
 	
 	@Override
 	protected Object getKey() {

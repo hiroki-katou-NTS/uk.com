@@ -10,7 +10,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.An
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
-@Table(name = "KRCMT_HDPAID_BASIC")
+@Table(name = "KRCMT_ANNLEA_INFO")
 public class KrcmtAnnLeaBasicInfo extends UkJpaEntity{
 	
 	@Id

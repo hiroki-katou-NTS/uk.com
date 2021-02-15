@@ -10,9 +10,9 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class KfnstPlanTimeItem_.
  */
-@StaticMetamodel(KfnmtPlanTimeItem.class)
+@StaticMetamodel(KfnstPlanTimeItem.class)
 public class KfnstPlanTimeItem_ {
     
-    public static volatile SingularAttribute<KfnmtPlanTimeItem, KfnstPlanTimeItemPK> kfnstPlanTimeItemPK;
+    public static volatile SingularAttribute<KfnstPlanTimeItem, KfnstPlanTimeItemPK> kfnstPlanTimeItemPK;
 
 }

@@ -25,11 +25,11 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
-import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtWtComPredTime;
+import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtPredTimeSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtPredTimeSetPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtPredTimeSetPK_;
 import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtPredTimeSet_;
-import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtWtComPredTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtWorkTimeSheetSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.predset.KshmtWorkTimeSheetSet_;
 
 /**
@@ -49,8 +49,8 @@ public class JpaPredetemineTimeSetRepository extends JpaRepository implements Pr
 	public Optional<PredetemineTimeSetting> findByWorkTimeCode(String companyId, String workTimeCode) {
 
 		// Query
-		Optional<KshmtWtComPredTime> optionalEntityTimeSet = this.queryProxy()
-				.find(new KshmtPredTimeSetPK(companyId, workTimeCode), KshmtWtComPredTime.class);
+		Optional<KshmtPredTimeSet> optionalEntityTimeSet = this.queryProxy()
+				.find(new KshmtPredTimeSetPK(companyId, workTimeCode), KshmtPredTimeSet.class);
 
 		// Check exist
 		if (!optionalEntityTimeSet.isPresent()) {
@@ -70,7 +70,7 @@ public class JpaPredetemineTimeSetRepository extends JpaRepository implements Pr
 	 */
 	@Override
 	public void add(PredetemineTimeSetting domain) {
-		KshmtWtComPredTime entity = new KshmtWtComPredTime();
+		KshmtPredTimeSet entity = new KshmtPredTimeSet();
 		domain.saveToMemento(new JpaPredetemineTimeSettingSetMemento(entity));
 		this.commandProxy().insert(entity);
 	}
@@ -85,9 +85,9 @@ public class JpaPredetemineTimeSetRepository extends JpaRepository implements Pr
 	@Override
 	public void update(PredetemineTimeSetting domain) {
 		// Query
-		Optional<KshmtWtComPredTime> optionalEntityTimeSet = this.queryProxy().find(
-				new KshmtPredTimeSetPK(domain.getCompanyId(), domain.getWorkTimeCode().v()), KshmtWtComPredTime.class);
-		KshmtWtComPredTime entity = optionalEntityTimeSet.get();
+		Optional<KshmtPredTimeSet> optionalEntityTimeSet = this.queryProxy().find(
+				new KshmtPredTimeSetPK(domain.getCompanyId(), domain.getWorkTimeCode().v()), KshmtPredTimeSet.class);
+		KshmtPredTimeSet entity = optionalEntityTimeSet.get();
 		domain.saveToMemento(new JpaPredetemineTimeSettingSetMemento(entity));
 		this.commandProxy().update(entity);
 
@@ -102,7 +102,7 @@ public class JpaPredetemineTimeSetRepository extends JpaRepository implements Pr
 	 */
 	@Override
 	public void remove(String companyId, String workTimeCode) {
-		this.commandProxy().remove(KshmtWtComPredTime.class, new KshmtPredTimeSetPK(companyId, workTimeCode));
+		this.commandProxy().remove(KshmtPredTimeSet.class, new KshmtPredTimeSetPK(companyId, workTimeCode));
 	}
 
 	/*
@@ -119,14 +119,14 @@ public class JpaPredetemineTimeSetRepository extends JpaRepository implements Pr
 		CriteriaBuilder predCb = em.getCriteriaBuilder();
 
 		// create CriteriaQuery
-		CriteriaQuery<KshmtWtComPredTime> predCquery = predCb.createQuery(KshmtWtComPredTime.class);
-		Root<KshmtWtComPredTime> predRoot = predCquery.from(KshmtWtComPredTime.class);
-		ListJoin<KshmtWtComPredTime, KshmtWtComPredTs> joinRoot = predRoot
+		CriteriaQuery<KshmtPredTimeSet> predCquery = predCb.createQuery(KshmtPredTimeSet.class);
+		Root<KshmtPredTimeSet> predRoot = predCquery.from(KshmtPredTimeSet.class);
+		ListJoin<KshmtPredTimeSet, KshmtWorkTimeSheetSet> joinRoot = predRoot
 				.join(KshmtPredTimeSet_.kshmtWorkTimeSheetSets, JoinType.LEFT);
 		// select root
 		predCquery.select(predRoot);
 
-		List<KshmtWtComPredTime> resultList = new ArrayList<>();
+		List<KshmtPredTimeSet> resultList = new ArrayList<>();
 
 		// split list worktimecode
 		CollectionUtil.split(workTimeCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
@@ -166,14 +166,14 @@ public class JpaPredetemineTimeSetRepository extends JpaRepository implements Pr
 		CriteriaBuilder predCb = em.getCriteriaBuilder();
 
 		// create CriteriaQuery
-		CriteriaQuery<KshmtWtComPredTime> predCquery = predCb.createQuery(KshmtWtComPredTime.class);
-		Root<KshmtWtComPredTime> predRoot = predCquery.from(KshmtWtComPredTime.class);
-		ListJoin<KshmtWtComPredTime, KshmtWtComPredTs> joinRoot = predRoot
+		CriteriaQuery<KshmtPredTimeSet> predCquery = predCb.createQuery(KshmtPredTimeSet.class);
+		Root<KshmtPredTimeSet> predRoot = predCquery.from(KshmtPredTimeSet.class);
+		ListJoin<KshmtPredTimeSet, KshmtWorkTimeSheetSet> joinRoot = predRoot
 				.join(KshmtPredTimeSet_.kshmtWorkTimeSheetSets, JoinType.LEFT);
 		// select root
 		predCquery.select(predRoot);
 
-		List<KshmtWtComPredTime> resultList = new ArrayList<>();
+		List<KshmtPredTimeSet> resultList = new ArrayList<>();
 
 		// split list worktimecode
 		CollectionUtil.split(workTimeCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
@@ -214,14 +214,14 @@ public class JpaPredetemineTimeSetRepository extends JpaRepository implements Pr
 		CriteriaBuilder predCb = em.getCriteriaBuilder();
 
 		// create CriteriaQuery
-		CriteriaQuery<KshmtWtComPredTime> predCquery = predCb.createQuery(KshmtWtComPredTime.class);
-		Root<KshmtWtComPredTime> predRoot = predCquery.from(KshmtWtComPredTime.class);
-		ListJoin<KshmtWtComPredTime, KshmtWtComPredTs> joinRoot = predRoot
+		CriteriaQuery<KshmtPredTimeSet> predCquery = predCb.createQuery(KshmtPredTimeSet.class);
+		Root<KshmtPredTimeSet> predRoot = predCquery.from(KshmtPredTimeSet.class);
+		ListJoin<KshmtPredTimeSet, KshmtWorkTimeSheetSet> joinRoot = predRoot
 				.join(KshmtPredTimeSet_.kshmtWorkTimeSheetSets, JoinType.LEFT);
 		// select root
 		predCquery.select(predRoot);
 
-		List<KshmtWtComPredTime> resultList = new ArrayList<>();
+		List<KshmtPredTimeSet> resultList = new ArrayList<>();
 
 		// split list worktimecode
 		CollectionUtil.split(workTimeCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
@@ -261,8 +261,8 @@ public class JpaPredetemineTimeSetRepository extends JpaRepository implements Pr
 		CriteriaBuilder predCb = em.getCriteriaBuilder();
 
 		// create CriteriaQuery
-		CriteriaQuery<KshmtWtComPredTime> predCquery = predCb.createQuery(KshmtWtComPredTime.class);
-		Root<KshmtWtComPredTime> predRoot = predCquery.from(KshmtWtComPredTime.class);
+		CriteriaQuery<KshmtPredTimeSet> predCquery = predCb.createQuery(KshmtPredTimeSet.class);
+		Root<KshmtPredTimeSet> predRoot = predCquery.from(KshmtPredTimeSet.class);
 
 		// select root
 		predCquery.select(predRoot);
@@ -301,13 +301,13 @@ public class JpaPredetemineTimeSetRepository extends JpaRepository implements Pr
 		CriteriaBuilder predCb = em.getCriteriaBuilder();
 
 		// create CriteriaQuery
-		CriteriaQuery<KshmtWtComPredTime> predCquery = predCb.createQuery(KshmtWtComPredTime.class);
-		Root<KshmtWtComPredTime> predRoot = predCquery.from(KshmtWtComPredTime.class);
+		CriteriaQuery<KshmtPredTimeSet> predCquery = predCb.createQuery(KshmtPredTimeSet.class);
+		Root<KshmtPredTimeSet> predRoot = predCquery.from(KshmtPredTimeSet.class);
 
 		// select root
 		predCquery.select(predRoot);
 
-		List<KshmtWtComPredTime> result = new ArrayList<>();
+		List<KshmtPredTimeSet> result = new ArrayList<>();
 
 		// split list worktimecode
 		CollectionUtil.split(worktimeCodes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {

@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTimezoneRoundingSetGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTypeRoundingSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.RoundingGoOutTimeSheet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComGooutRound;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtSpecialRoundOut;
 
 /**
  * The Class JpaGoOutTimezoneRoundingSetGetMemento.
@@ -30,7 +30,7 @@ public class JpaGoOutTimezoneRoundingSetGetMemento implements GoOutTimezoneRound
 	 * @param entities
 	 *            the entities
 	 */
-	public JpaGoOutTimezoneRoundingSetGetMemento(List<KshmtWtComGooutRound> entities) {
+	public JpaGoOutTimezoneRoundingSetGetMemento(List<KshmtSpecialRoundOut> entities) {
 		super();
 		this.entityMap = entities.stream().collect(Collectors.toMap(
 				entity -> RoundingTimeType

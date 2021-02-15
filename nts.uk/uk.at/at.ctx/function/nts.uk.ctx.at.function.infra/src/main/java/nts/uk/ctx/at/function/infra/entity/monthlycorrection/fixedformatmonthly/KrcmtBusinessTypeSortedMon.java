@@ -12,7 +12,7 @@ import nts.uk.ctx.at.function.dom.monthlycorrection.fixedformatmonthly.OrderRefe
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
-@Table(name = "KFNMT_MON_FORM_BUS_SORT")
+@Table(name = "KRCMT_BUS_MON_ITEM_SORTED")
 public class KrcmtBusinessTypeSortedMon extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

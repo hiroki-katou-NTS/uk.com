@@ -11,9 +11,9 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class SgwdtContract_.
  */
-@StaticMetamodel(SgwmtContract.class)
+@StaticMetamodel(SgwdtContract.class)
 public class SgwdtContract_ {
     
     /** The contract cd. */
-    public static volatile SingularAttribute<SgwmtContract, String> contractCd;
+    public static volatile SingularAttribute<SgwdtContract, String> contractCd;
 }

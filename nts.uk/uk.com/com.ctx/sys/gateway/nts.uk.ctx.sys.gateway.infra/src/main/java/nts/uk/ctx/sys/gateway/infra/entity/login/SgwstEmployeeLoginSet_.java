@@ -10,10 +10,10 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class SgwstEmployeeLoginSet_.
  */
-@StaticMetamodel(SgwmtEmployeeLogin.class)
+@StaticMetamodel(SgwstEmployeeLoginSet.class)
 public class SgwstEmployeeLoginSet_ {
 	
 	/** The contract cd. */
-	public static volatile SingularAttribute<SgwmtEmployeeLogin, String> contractCd;
+	public static volatile SingularAttribute<SgwstEmployeeLoginSet, String> contractCd;
 	
 }

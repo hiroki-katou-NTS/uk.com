@@ -15,7 +15,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="KRCMT_36AGR_UNIT")
+@Table(name="KMKMT_AGREEMENT_UNIT_SET")
 public class KmkmtAgeementUnitSetting extends UkJpaEntity implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

@@ -12,22 +12,22 @@ import nts.arc.time.GeneralDate;
 /**
  * The Class BsymtEmploymentHist_.
  */
-@StaticMetamodel(BsymtAffEmpHist.class)
+@StaticMetamodel(BsymtEmploymentHist.class)
 public class BsymtEmploymentHist_ {
 
 	/** The his id. */
-	public static volatile SingularAttribute<BsymtAffEmpHist, String> hisId;
+	public static volatile SingularAttribute<BsymtEmploymentHist, String> hisId;
 
 	/** The company id. */
-	public static volatile SingularAttribute<BsymtAffEmpHist, String> companyId;
+	public static volatile SingularAttribute<BsymtEmploymentHist, String> companyId;
 
 	/** The sid. */
-	public static volatile SingularAttribute<BsymtAffEmpHist, String> sid;
+	public static volatile SingularAttribute<BsymtEmploymentHist, String> sid;
 
 	/** The str date. */
-	public static volatile SingularAttribute<BsymtAffEmpHist, GeneralDate> strDate;
+	public static volatile SingularAttribute<BsymtEmploymentHist, GeneralDate> strDate;
 
 	/** The end date. */
-	public static volatile SingularAttribute<BsymtAffEmpHist, GeneralDate> endDate;
+	public static volatile SingularAttribute<BsymtEmploymentHist, GeneralDate> endDate;
 
 }

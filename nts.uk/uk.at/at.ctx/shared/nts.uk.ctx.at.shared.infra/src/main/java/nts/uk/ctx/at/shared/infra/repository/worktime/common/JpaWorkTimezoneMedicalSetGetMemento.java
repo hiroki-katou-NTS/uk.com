@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.OneDayTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkSystemAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneMedicalSetGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComMedical;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtMedicalTimeSet;
 
 /**
  * The Class JpaWorkTimezoneMedicalSetGetMemento.
@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComMedical;
 public class JpaWorkTimezoneMedicalSetGetMemento implements WorkTimezoneMedicalSetGetMemento {
 
 	/** The entity. */
-	private KshmtWtComMedical entity;
+	private KshmtMedicalTimeSet entity;
 
 	/**
 	 * Instantiates a new jpa work timezone medical set get memento.
@@ -24,7 +24,7 @@ public class JpaWorkTimezoneMedicalSetGetMemento implements WorkTimezoneMedicalS
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaWorkTimezoneMedicalSetGetMemento(KshmtWtComMedical entity) {
+	public JpaWorkTimezoneMedicalSetGetMemento(KshmtMedicalTimeSet entity) {
 		super();
 		this.entity = entity;
 	}

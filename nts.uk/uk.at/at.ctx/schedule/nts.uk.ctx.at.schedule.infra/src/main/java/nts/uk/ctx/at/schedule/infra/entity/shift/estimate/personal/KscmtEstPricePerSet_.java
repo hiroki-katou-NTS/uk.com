@@ -10,25 +10,25 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class KscmtEstPricePerSet_.
  */
-@StaticMetamodel(KscmtEstPriceSya.class)
+@StaticMetamodel(KscmtEstPricePerSet.class)
 public class KscmtEstPricePerSet_ {
 
 	/** The kscmt est price Per set PK. */
-	public static volatile SingularAttribute<KscmtEstPriceSya, KscmtEstPricePerSetPK> kscmtEstPricePerSetPK;
+	public static volatile SingularAttribute<KscmtEstPricePerSet, KscmtEstPricePerSetPK> kscmtEstPricePerSetPK;
 	
 	/** The est condition 1 st mny. */
-	public static volatile SingularAttribute<KscmtEstPriceSya, Integer> estCondition1stMny;
+	public static volatile SingularAttribute<KscmtEstPricePerSet, Integer> estCondition1stMny;
 	
 	/** The est condition 2 nd mny. */
-	public static volatile SingularAttribute<KscmtEstTimeSya, Integer> estCondition2ndMny;
+	public static volatile SingularAttribute<KscmtEstTimePerSet, Integer> estCondition2ndMny;
 	
 	/** The est condition 3 rd mny. */
-	public static volatile SingularAttribute<KscmtEstTimeSya, Integer> estCondition3rdMny;
+	public static volatile SingularAttribute<KscmtEstTimePerSet, Integer> estCondition3rdMny;
 	
 	/** The est condition 4 th mny. */
-	public static volatile SingularAttribute<KscmtEstTimeSya, Integer> estCondition4thMny;
+	public static volatile SingularAttribute<KscmtEstTimePerSet, Integer> estCondition4thMny;
 	
 	/** The est condition 5 th mny. */
-	public static volatile SingularAttribute<KscmtEstTimeSya, Integer> estCondition5thMny;
+	public static volatile SingularAttribute<KscmtEstTimePerSet, Integer> estCondition5thMny;
 	
 }

@@ -14,9 +14,9 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestTimezoneSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloBrFlAllTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowFlowRtSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowFlowRtSetPK;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloBrFl;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowRtSet;
 
 /**
  * The Class JpaFlowRestTimezoneSetMemento.
@@ -24,7 +24,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloBrFl;
 public class JpaFlowRestTimezoneSetMemento implements FlowRestTimezoneSetMemento {
 
 	/** The entity. */
-	private KshmtWtFloBrFl entity;
+	private KshmtFlowRtSet entity;
 	
 	/** The company id. */
 	private String companyId;
@@ -40,7 +40,7 @@ public class JpaFlowRestTimezoneSetMemento implements FlowRestTimezoneSetMemento
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlowRestTimezoneSetMemento(KshmtWtFloBrFl entity) {
+	public JpaFlowRestTimezoneSetMemento(KshmtFlowRtSet entity) {
 		super();
 		this.entity = entity;
 		if (CollectionUtil.isEmpty(this.entity.getLstKshmtFlowFlowRtSet())) {
@@ -61,17 +61,17 @@ public class JpaFlowRestTimezoneSetMemento implements FlowRestTimezoneSetMemento
 			return;
 		}		
 		
-		List<KshmtWtFloBrFlAllTs> lstEntity = this.entity.getLstKshmtFlowFlowRtSet();
+		List<KshmtFlowFlowRtSet> lstEntity = this.entity.getLstKshmtFlowFlowRtSet();
         if (CollectionUtil.isEmpty(lstEntity)) {
             lstEntity = new ArrayList<>();
         }
 		
         // convert map entity
-     	Map<KshmtFlowFlowRtSetPK, KshmtWtFloBrFlAllTs> mapEntity = lstEntity.stream()
-     			.collect(Collectors.toMap(KshmtWtFloBrFlAllTs::getKshmtFlowFlowRtSetPK, Function.identity()));
+     	Map<KshmtFlowFlowRtSetPK, KshmtFlowFlowRtSet> mapEntity = lstEntity.stream()
+     			.collect(Collectors.toMap(KshmtFlowFlowRtSet::getKshmtFlowFlowRtSetPK, Function.identity()));
         
         // set list entity
-        List<KshmtWtFloBrFlAllTs> newListEntity = new ArrayList<>();
+        List<KshmtFlowFlowRtSet> newListEntity = new ArrayList<>();
         int periodNo = 1;
         for (FlowRestSetting domain : set) {
         	KshmtFlowFlowRtSetPK pk = new KshmtFlowFlowRtSetPK();
@@ -81,9 +81,9 @@ public class JpaFlowRestTimezoneSetMemento implements FlowRestTimezoneSetMemento
             pk.setPeriodNo(periodNo);
             
             // find entity if existed, else new entity
-            KshmtWtFloBrFlAllTs entity = mapEntity.get(pk);
+            KshmtFlowFlowRtSet entity = mapEntity.get(pk);
  			if (entity == null) {
- 				entity = new KshmtWtFloBrFlAllTs();
+ 				entity = new KshmtFlowFlowRtSet();
  				entity.setKshmtFlowFlowRtSetPK(pk);
  			}
             

@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * Class entity of table SacmtRoleSetWebMenu/SACMT_ROLESET_DEFAULT
+ * Class entity of table SacmtRoleSetWebMenu/SACMT_DEFAULT_ROLE_SET
  * @author HieuNV
  *
  */

@@ -9,7 +9,7 @@ import java.util.List;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimateTargetClassification;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.price.EstimatedPrice;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.price.EstimatedPriceSettingSetMemento;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstPriceEmp;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstPriceEmpSet;
 import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstPriceEmpSetPK;
 
 /**
@@ -18,14 +18,14 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstPri
 public class JpaEmpEstPriceSetMemento implements EstimatedPriceSettingSetMemento{
 	
 	/** The estimate price employment. */
-	private KscmtEstPriceEmp estimatePriceEmployment;
+	private KscmtEstPriceEmpSet estimatePriceEmployment;
 	
 	/**
 	 * Instantiates a new jpa employment estimated price set memento.
 	 *
 	 * @param estimatePriceEmployment the estimate price employment
 	 */
-	public JpaEmpEstPriceSetMemento(KscmtEstPriceEmp estimatePriceEmployment) {
+	public JpaEmpEstPriceSetMemento(KscmtEstPriceEmpSet estimatePriceEmployment) {
 		if (estimatePriceEmployment.getKscmtEstPriceEmpSetPK() == null) {
 			estimatePriceEmployment.setKscmtEstPriceEmpSetPK(new KscmtEstPriceEmpSetPK());
 		}

@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.Break
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.BreakdownItemNo;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.language.OutsideOTBRDItemLangGetMemento;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.language.LanguageId;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.language.KshmtOutsideDetailLang;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.language.KshstOutsideOtBrdLang;
 
 /**
  * The Class JpaOutsideOTBRDItemLangGetMemento.
@@ -18,14 +18,14 @@ public class JpaOutsideOTBRDItemLangGetMemento implements OutsideOTBRDItemLangGe
 
 	
 	/** The entity. */
-	private KshmtOutsideDetailLang entity;
+	private KshstOutsideOtBrdLang entity;
 	
 	/**
 	 * Instantiates a new jpa overtime lang BRD item get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaOutsideOTBRDItemLangGetMemento(KshmtOutsideDetailLang entity) {
+	public JpaOutsideOTBRDItemLangGetMemento(KshstOutsideOtBrdLang entity) {
 		this.entity = entity;
 	}
 

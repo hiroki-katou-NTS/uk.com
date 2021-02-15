@@ -7,7 +7,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.FourWeekFourHolidayNumberSetting;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.FourWeekFourHolidayNumberSettingRepository;
-import nts.uk.ctx.at.shared.infra.entity.holidaysetting.configuration.Kshmt4w4dNumSet;
+import nts.uk.ctx.at.shared.infra.entity.holidaysetting.configuration.KshmtFourweekfourHdNumbSet;
 
 /**
  * The Class JpaFourWeekFourHolidayNumberSettingRepository.
@@ -20,7 +20,7 @@ public class JpaFourWeekFourHolidayNumberSettingRepository extends JpaRepository
 	 */
 	@Override
 	public Optional<FourWeekFourHolidayNumberSetting> findByCID(String companyId) {
-		return this.queryProxy().find(companyId, Kshmt4w4dNumSet.class).map(e -> this.toDomain(e));
+		return this.queryProxy().find(companyId, KshmtFourweekfourHdNumbSet.class).map(e -> this.toDomain(e));
 	}
 
 	/* (non-Javadoc)
@@ -45,8 +45,8 @@ public class JpaFourWeekFourHolidayNumberSettingRepository extends JpaRepository
 	 * @param domain the domain
 	 * @return the kshmt fourweekfour hd numb set
 	 */
-	private Kshmt4w4dNumSet toEntity(FourWeekFourHolidayNumberSetting domain){
-		Kshmt4w4dNumSet entity = new Kshmt4w4dNumSet();
+	private KshmtFourweekfourHdNumbSet toEntity(FourWeekFourHolidayNumberSetting domain){
+		KshmtFourweekfourHdNumbSet entity = new KshmtFourweekfourHdNumbSet();
 		domain.saveToMemento(new JpaFourWeekFourHolidayNumberSettingSetMemento(entity));
 		return entity;
 	}
@@ -57,7 +57,7 @@ public class JpaFourWeekFourHolidayNumberSettingRepository extends JpaRepository
 	 * @param entity the entity
 	 * @return the four week four holiday number setting
 	 */
-	private FourWeekFourHolidayNumberSetting toDomain(Kshmt4w4dNumSet entity){
+	private FourWeekFourHolidayNumberSetting toDomain(KshmtFourweekfourHdNumbSet entity){
 		FourWeekFourHolidayNumberSetting domain = 
 				new FourWeekFourHolidayNumberSetting(new JpaFourWeekFourHolidayNumberSettingGetMemento(entity));
 		return domain;

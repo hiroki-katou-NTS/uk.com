@@ -7,7 +7,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceReferenceTimeUsageUnit;
 import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceReferenceTimeUsageUnitRepository;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcmtDvgcUnitSet;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstDrtUseUnit;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -37,7 +37,7 @@ public class JpaDivergenceReferenceTimeUsageUnitRepository extends JpaRepository
 	 */
 	@Override
 	public Optional<DivergenceReferenceTimeUsageUnit> findByCompanyId(String companyId) {
-		return this.queryProxy().find(companyId, KrcmtDvgcUnitSet.class).map(e -> this.toDomain(e));
+		return this.queryProxy().find(companyId, KrcstDrtUseUnit.class).map(e -> this.toDomain(e));
 	}
 
 	/**
@@ -47,9 +47,9 @@ public class JpaDivergenceReferenceTimeUsageUnitRepository extends JpaRepository
 	 *            the domain
 	 * @return the krcstDrtUseUnit
 	 */
-	private KrcmtDvgcUnitSet toEntity(DivergenceReferenceTimeUsageUnit domain) {
-		KrcmtDvgcUnitSet entity = this.queryProxy().find(domain.getCId(), KrcmtDvgcUnitSet.class)
-				.orElse(new KrcmtDvgcUnitSet());
+	private KrcstDrtUseUnit toEntity(DivergenceReferenceTimeUsageUnit domain) {
+		KrcstDrtUseUnit entity = this.queryProxy().find(domain.getCId(), KrcstDrtUseUnit.class)
+				.orElse(new KrcstDrtUseUnit());
 		domain.saveToMemento(new JpaDivergenceReferenceTimeUsageUnitSetMemento(entity));
 		return entity;
 	}
@@ -61,7 +61,7 @@ public class JpaDivergenceReferenceTimeUsageUnitRepository extends JpaRepository
 	 *            the entity
 	 * @return the divergence reference time usage unit
 	 */
-	private DivergenceReferenceTimeUsageUnit toDomain(KrcmtDvgcUnitSet entity) {
+	private DivergenceReferenceTimeUsageUnit toDomain(KrcstDrtUseUnit entity) {
 		JpaDivergenceReferenceTimeUsageUnitGetMemento memento = new JpaDivergenceReferenceTimeUsageUnitGetMemento(
 				entity);
 		return new DivergenceReferenceTimeUsageUnit(memento);

@@ -104,7 +104,7 @@ public class AnyItemValueOfDailyRepoImpl extends JpaRepository implements AnyIte
 		List<AnyItemValueOfDaily> result = new ArrayList<>();
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds ->{
 			try (PreparedStatement stmt = this.connection().prepareStatement(
-						"SELECT * FROM KRCDT_DAY_TIME_ANYITEM op" 
+						"SELECT * FROM KRCDT_DAY_ANYITEMVALUE_MERGE op" 
 						+" WHERE YMD >= ?"
 						+" AND YMD <= ?"
 						+" AND SID IN (" + empIds.stream().map(s -> "?").collect(Collectors.joining(",")) + ")")
@@ -147,7 +147,7 @@ public class AnyItemValueOfDailyRepoImpl extends JpaRepository implements AnyIte
     	
 		CollectionUtil.split(subList, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds ->{
 			try (PreparedStatement stmt = this.connection().prepareStatement(
-						"SELECT * FROM KRCDT_DAY_TIME_ANYITEM op" 
+						"SELECT * FROM KRCDT_DAY_ANYITEMVALUE_MERGE op" 
 						+" WHERE SID IN (" + empIds.stream().map(s -> "?").collect(Collectors.joining(",")) + ")"
 					    +" AND YMD IN (" + subListDate.stream().map(z -> "?").collect(Collectors.joining(",")) + ")")
 				) {
@@ -238,7 +238,7 @@ public class AnyItemValueOfDailyRepoImpl extends JpaRepository implements AnyIte
 	@SneakyThrows
 	private void removeWithJdbc(String employeeId, GeneralDate baseDate) {
 		try (val statement = this.connection().prepareStatement(
-				"DELETE FROM KRCDT_DAY_TIME_ANYITEM"
+				"DELETE FROM KRCDT_DAY_ANYITEMVALUE_MERGE"
 				+ " WHERE SID = ? AND YMD = ?")) {
 			statement.setString(1, employeeId);
 			statement.setDate(2, Date.valueOf(baseDate.localDate()));
@@ -261,7 +261,7 @@ public class AnyItemValueOfDailyRepoImpl extends JpaRepository implements AnyIte
 	public void deleteAnyItemValueOfDaily(String employeeId, GeneralDate ymd) {
 		
 		Connection con = this.getEntityManager().unwrap(Connection.class);
-		String sqlQuery = "Delete From KRCDT_DAY_TIME_ANYITEM Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'" ;
+		String sqlQuery = "Delete From KRCDT_DAY_ANYITEMVALUE_MERGE Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'" ;
 		try {
 			con.createStatement().executeUpdate(sqlQuery);
 		} catch (SQLException e) {

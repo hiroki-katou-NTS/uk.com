@@ -19,13 +19,13 @@ import nts.uk.ctx.sys.assist.dom.storage.ResultOfSaving;
 import nts.uk.ctx.sys.assist.dom.storage.ResultOfSavingRepository;
 import nts.uk.ctx.sys.assist.dom.storage.SaveStatus;
 import nts.uk.ctx.sys.assist.infra.entity.storage.SspmtResultOfLog;
-import nts.uk.ctx.sys.assist.infra.entity.storage.SspdtSaveResult;
+import nts.uk.ctx.sys.assist.infra.entity.storage.SspmtResultOfSaving;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
 public class JpaResultOfSavingRepository extends JpaRepository implements ResultOfSavingRepository {
 
-	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM SspdtSaveResult f";
+	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM SspmtResultOfSaving f";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
 			+ " WHERE  f.storeProcessingId IN :storeProcessingId ";
 	private static final String SELECT_WITH_NULL_LIST_EMPLOYEE = SELECT_ALL_QUERY_STRING
@@ -40,26 +40,26 @@ public class JpaResultOfSavingRepository extends JpaRepository implements Result
 				+ " AND f.practitioner IN :practitioner ";
 	private static final String SELECT_BY_SAVE_SET_CODE = SELECT_ALL_QUERY_STRING
 			+ " WHERE f.patternCode IN :saveSetCodes";
-	private static final String FIND_RESULTS_BY_STARTDATETIME = "SELECT r FROM SspdtSaveResult r "
+	private static final String FIND_RESULTS_BY_STARTDATETIME = "SELECT r FROM SspmtResultOfSaving r "
 			+ "WHERE r.saveStartDatetime >= :start AND r.saveStartDatetime <= :end ";
-	private static final String SELECT_BY_FILE_ID = "SELECT f FROM SspdtSaveResult f "
+	private static final String SELECT_BY_FILE_ID = "SELECT f FROM SspmtResultOfSaving f "
 			+ "WHERE f.fileId = :fileId";
 
 	@Override
 	public List<ResultOfSaving> getAllResultOfSaving() {
-		return this.queryProxy().query(SELECT_ALL_QUERY_STRING, SspdtSaveResult.class)
+		return this.queryProxy().query(SELECT_ALL_QUERY_STRING, SspmtResultOfSaving.class)
 				.getList(item -> item.toDomain());
 	}
 
 	@Override
 	public Optional<ResultOfSaving> getResultOfSavingById(String storeProcessingId) {
-		return this.queryProxy().query(SELECT_BY_KEY_STRING, SspdtSaveResult.class)
+		return this.queryProxy().query(SELECT_BY_KEY_STRING, SspmtResultOfSaving.class)
 				.setParameter("storeProcessingId", Collections.singletonList(storeProcessingId)).getSingle(c -> c.toDomain());
 	}
 
 	@Override
 	public void add(ResultOfSaving data) {
-		SspdtSaveResult entity = SspdtSaveResult.toEntity(data);
+		SspmtResultOfSaving entity = SspmtResultOfSaving.toEntity(data);
 		String password = data.getCompressedPassword().map(i -> i.v()).orElse("");
 		entity.compressedPassword = StringUtils.isNotEmpty(password) ? CommonKeyCrypt.encrypt(password) : null;
 		this.commandProxy().insert(entity);
@@ -68,7 +68,7 @@ public class JpaResultOfSavingRepository extends JpaRepository implements Result
 	@Override
 	public void update(String storeProcessingId, int targetNumberPeople, SaveStatus saveStatus, String fileId,
 			NotUseAtr deletedFiles, String compressedFileName) {
-		Optional<SspdtSaveResult> resultOfSavingOpt = this.queryProxy().find(storeProcessingId, SspdtSaveResult.class);
+		Optional<SspmtResultOfSaving> resultOfSavingOpt = this.queryProxy().find(storeProcessingId, SspmtResultOfSaving.class);
 		resultOfSavingOpt.ifPresent(data -> {
 			data.targetNumberPeople = targetNumberPeople;
 			data.saveStatus = saveStatus.value;
@@ -87,13 +87,13 @@ public class JpaResultOfSavingRepository extends JpaRepository implements Result
 			data.setTargetNumberPeople(targetNumberPeople);
 			data.setSaveStatus(saveStatus);
 			data.setSaveEndDatetime(Optional.of(GeneralDateTime.now()));
-			this.commandProxy().update(SspdtSaveResult.toEntity(data));
+			this.commandProxy().update(SspmtResultOfSaving.toEntity(data));
 		});
 	}
 
 	@Override
 	public void update(ResultOfSaving data) {
-		Optional<SspdtSaveResult> op = this.queryProxy().find(data.getStoreProcessingId(), SspdtSaveResult.class);
+		Optional<SspmtResultOfSaving> op = this.queryProxy().find(data.getStoreProcessingId(), SspmtResultOfSaving.class);
 		op.ifPresent(oldEntity -> {
 			oldEntity.pcAccount = data.getLoginInfo().getAccount();
 			oldEntity.pcId = data.getLoginInfo().getIpAddress();
@@ -106,7 +106,7 @@ public class JpaResultOfSavingRepository extends JpaRepository implements Result
 
 	@Override
 	public void update(String storeProcessingId, long fileSize) {
-		Optional<SspdtSaveResult> resultOfSavingOpt = this.queryProxy().find(storeProcessingId, SspdtSaveResult.class);
+		Optional<SspmtResultOfSaving> resultOfSavingOpt = this.queryProxy().find(storeProcessingId, SspmtResultOfSaving.class);
 		resultOfSavingOpt.ifPresent(data -> {
 			data.fileSize = fileSize;
 			this.commandProxy().update(data);
@@ -116,8 +116,8 @@ public class JpaResultOfSavingRepository extends JpaRepository implements Result
 	
 	@Override
 	public void update(String fileId) {
-		Optional<SspdtSaveResult> op = this.queryProxy()
-												.query(SELECT_BY_FILE_ID, SspdtSaveResult.class)
+		Optional<SspmtResultOfSaving> op = this.queryProxy()
+												.query(SELECT_BY_FILE_ID, SspmtResultOfSaving.class)
 												.setParameter("fileId", fileId)
 												.getSingle();
 		op.ifPresent(data -> {
@@ -138,7 +138,7 @@ public class JpaResultOfSavingRepository extends JpaRepository implements Result
 		
 		if (!CollectionUtil.isEmpty(listOperatorEmployeeId)) {
 			resultOfSavings.addAll(
-					this.queryProxy().query(SELECT_WITH_NOT_NULL_LIST_EMPLOYEE, SspdtSaveResult.class)
+					this.queryProxy().query(SELECT_WITH_NOT_NULL_LIST_EMPLOYEE, SspmtResultOfSaving.class)
 					.setParameter("cid", cid)
 					.setParameter("startDateOperator", startDateOperator)
 					.setParameter("endDateOperator", endDateOperator)
@@ -146,7 +146,7 @@ public class JpaResultOfSavingRepository extends JpaRepository implements Result
 					.getList(item -> item.toDomain()));
 		} else {
 			resultOfSavings.addAll(
-					this.queryProxy().query(SELECT_WITH_NULL_LIST_EMPLOYEE, SspdtSaveResult.class)
+					this.queryProxy().query(SELECT_WITH_NULL_LIST_EMPLOYEE, SspmtResultOfSaving.class)
 					.setParameter("cid", cid)
 					.setParameter("startDateOperator", startDateOperator)
 					.setParameter("endDateOperator", endDateOperator)
@@ -157,24 +157,24 @@ public class JpaResultOfSavingRepository extends JpaRepository implements Result
 
 	@Override
 	public List<ResultOfSaving> getResultOfSavingByIds(List<String> storeProcessingIds) {
-		return this.queryProxy().query(SELECT_BY_KEY_STRING, SspdtSaveResult.class)
+		return this.queryProxy().query(SELECT_BY_KEY_STRING, SspmtResultOfSaving.class)
 				.setParameter("storeProcessingId", Arrays.asList(storeProcessingIds))
-				.getList(SspdtSaveResult::toDomain); 
+				.getList(SspmtResultOfSaving::toDomain); 
 	}
 	
 	@Override
 	public List<ResultOfSaving> getResultOfSavingBySaveSetCode(List<String> saveSetCodes) {
-		return this.queryProxy().query(SELECT_BY_SAVE_SET_CODE, SspdtSaveResult.class)
+		return this.queryProxy().query(SELECT_BY_SAVE_SET_CODE, SspmtResultOfSaving.class)
 				.setParameter("saveSetCodes", saveSetCodes)
-				.getList(SspdtSaveResult::toDomain);
+				.getList(SspmtResultOfSaving::toDomain);
 				
 	}
 	
 	@Override
 	public List<ResultOfSaving> getByStartDatetime(GeneralDateTime from, GeneralDateTime to) {
-		return this.queryProxy().query(FIND_RESULTS_BY_STARTDATETIME, SspdtSaveResult.class)
+		return this.queryProxy().query(FIND_RESULTS_BY_STARTDATETIME, SspmtResultOfSaving.class)
 				.setParameter("start", from)
 				.setParameter("end", to)
-				.getList(SspdtSaveResult::toDomain);
+				.getList(SspmtResultOfSaving::toDomain);
 	}
 }

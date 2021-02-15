@@ -24,7 +24,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.infra.entity.optitem.applicable.KrcmtAnyfCondEmp;
+import nts.uk.ctx.at.record.infra.entity.optitem.applicable.KrcstApplEmpCon;
 import nts.uk.ctx.at.record.infra.entity.optitem.applicable.KrcstApplEmpConPK_;
 import nts.uk.ctx.at.record.infra.entity.optitem.applicable.KrcstApplEmpCon_;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.applicable.EmpCondition;
@@ -45,7 +45,7 @@ public class JpaEmpConditionRepository extends JpaRepository implements EmpCondi
 	 */
 	@Override
 	public void update(EmpCondition dom) {
-		List<KrcmtAnyfCondEmp> entities = this.findByItemNo(dom.getCompanyId().v(), dom.getOptItemNo().v());
+		List<KrcstApplEmpCon> entities = this.findByItemNo(dom.getCompanyId().v(), dom.getOptItemNo().v());
 		JpaEmpConditionSetMemento memento = new JpaEmpConditionSetMemento(entities);
 		dom.saveToMemento(memento);
 
@@ -62,7 +62,7 @@ public class JpaEmpConditionRepository extends JpaRepository implements EmpCondi
 	@Override
 	public EmpCondition find(String companyId, Integer optionalItemNo) {
 
-		List<KrcmtAnyfCondEmp> entityEmpCons = this.findByItemNo(companyId, optionalItemNo);
+		List<KrcstApplEmpCon> entityEmpCons = this.findByItemNo(companyId, optionalItemNo);
 
 		return new EmpCondition(new JpaEmpConditionGetMemento(companyId, optionalItemNo, entityEmpCons));
 	}
@@ -74,7 +74,7 @@ public class JpaEmpConditionRepository extends JpaRepository implements EmpCondi
 	 * @param optionalItemNo the optional item no
 	 * @return the list
 	 */
-	private List<KrcmtAnyfCondEmp> findByItemNo(String companyId, Integer optionalItemNo) {
+	private List<KrcstApplEmpCon> findByItemNo(String companyId, Integer optionalItemNo) {
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 
@@ -82,10 +82,10 @@ public class JpaEmpConditionRepository extends JpaRepository implements EmpCondi
 		CriteriaBuilder builder = em.getCriteriaBuilder();
 
 		// Create query
-		CriteriaQuery<KrcmtAnyfCondEmp> cq = builder.createQuery(KrcmtAnyfCondEmp.class);
+		CriteriaQuery<KrcstApplEmpCon> cq = builder.createQuery(KrcstApplEmpCon.class);
 
 		// From table
-		Root<KrcmtAnyfCondEmp> root = cq.from(KrcmtAnyfCondEmp.class);
+		Root<KrcstApplEmpCon> root = cq.from(KrcstApplEmpCon.class);
 
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
@@ -114,10 +114,10 @@ public class JpaEmpConditionRepository extends JpaRepository implements EmpCondi
 			return Collections.emptyList();
 		}
 		
-		List<KrcmtAnyfCondEmp> result = new ArrayList<>();
+		List<KrcstApplEmpCon> result = new ArrayList<>();
 		CollectionUtil.split(optionalItemNoList, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 			
-			String sql = "select * from KRCMT_ANYF_COND_EMP"
+			String sql = "select * from KRCST_APPL_EMP_CON"
 					+ " where CID = ?"
 					+ " and OPTIONAL_ITEM_NO in (" + NtsStatement.In.createParamsString(subList) + ")";
 			
@@ -127,8 +127,8 @@ public class JpaEmpConditionRepository extends JpaRepository implements EmpCondi
 					stmt.setInt(2 + i, subList.get(i));
 				}
 				
-				List<KrcmtAnyfCondEmp> subResult = new NtsResultSet(stmt.executeQuery())
-						.getList(rec -> KrcmtAnyfCondEmp.MAPPER.toEntity(rec));
+				List<KrcstApplEmpCon> subResult = new NtsResultSet(stmt.executeQuery())
+						.getList(rec -> KrcstApplEmpCon.MAPPER.toEntity(rec));
 				result.addAll(subResult);
 				
 			} catch (SQLException e) {
@@ -138,7 +138,7 @@ public class JpaEmpConditionRepository extends JpaRepository implements EmpCondi
 		});
 		
 		// Group by item NO
-		Map<Integer, List<KrcmtAnyfCondEmp>> mapEmpCondition = result.stream().collect(
+		Map<Integer, List<KrcstApplEmpCon>> mapEmpCondition = result.stream().collect(
 				Collectors.groupingBy(item -> item.getKrcstApplEmpConPK().getOptionalItemNo()));
 
 		// Return

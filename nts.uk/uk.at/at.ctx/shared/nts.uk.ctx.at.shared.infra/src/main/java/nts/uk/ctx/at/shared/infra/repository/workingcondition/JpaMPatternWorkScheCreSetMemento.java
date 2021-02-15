@@ -2,7 +2,7 @@ package nts.uk.ctx.at.shared.infra.repository.workingcondition;
 
 import nts.uk.ctx.at.shared.dom.workingcondition.MonthlyPatternWorkScheduleCreSetMemento;
 import nts.uk.ctx.at.shared.dom.workingcondition.TimeZoneScheduledMasterAtr;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondScheMeth;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtScheduleMethod;
 
 
 /**
@@ -11,14 +11,14 @@ import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondScheMeth;
 public class JpaMPatternWorkScheCreSetMemento implements MonthlyPatternWorkScheduleCreSetMemento{
 
 	/** The kshmt schedule method. */
-	private KshmtWorkcondScheMeth kshmtScheduleMethod;
+	private KshmtScheduleMethod kshmtScheduleMethod;
 	
 	/**
 	 * Instantiates a new jpa monthly pattern work schedule cre set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaMPatternWorkScheCreSetMemento(KshmtWorkcondScheMeth entity){
+	public JpaMPatternWorkScheCreSetMemento(KshmtScheduleMethod entity){
 		this.kshmtScheduleMethod = entity;
 	}
 

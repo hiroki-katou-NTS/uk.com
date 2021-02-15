@@ -21,7 +21,7 @@ import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * The Class KrcmtAnyv.
+ * The Class KrcstOptionalItem.
  */
 @Getter
 @Setter

@@ -10,11 +10,11 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class KshstOutsideOtBrdAten_.
  */
-@StaticMetamodel(KshmtOutsideAtd.class)
+@StaticMetamodel(KshstOutsideOtBrdAten.class)
 public class KshstOutsideOtBrdAten_ {
 
 	/** The kshst outside ot brd aten PK. */
-	public static volatile SingularAttribute<KshmtOutsideAtd, KshstOutsideOtBrdAtenPK> kshstOutsideOtBrdAtenPK;
+	public static volatile SingularAttribute<KshstOutsideOtBrdAten, KshstOutsideOtBrdAtenPK> kshstOutsideOtBrdAtenPK;
 	
 
 }

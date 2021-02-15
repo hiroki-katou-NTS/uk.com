@@ -25,7 +25,7 @@ import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.SpecialHolida
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.specialholidayevent.KshstClassificationList;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.specialholidayevent.KshstClassificationListPK;
-import nts.uk.ctx.at.shared.infra.entity.specialholiday.specialholidayevent.KshmtHdspevCondEmp;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.specialholidayevent.KshstEmploymentList;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.specialholidayevent.KshstEmploymentListPK;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.specialholidayevent.KshstSpecialHolidayEvent;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.specialholidayevent.KshstSpecialHolidayEventPK;
@@ -44,7 +44,7 @@ public class JpaSpecialHolidayEvent extends JpaRepository implements SpecialHoli
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT e");
-		builderString.append(" FROM KshmtHdspevCondEmp e");
+		builderString.append(" FROM KshstEmploymentList e");
 		builderString.append(" WHERE e.pk.companyId = :companyId");
 		builderString.append(" AND e.pk.specialHolidayEventNo= :SHENo ORDER BY e.pk.employmentCd ");
 		FIND_EMP_LIST_QUERY = builderString.toString();
@@ -64,7 +64,7 @@ public class JpaSpecialHolidayEvent extends JpaRepository implements SpecialHoli
 		FIND_BY_NO_LIST_QUERY = builderString.toString();
 
 		builderString = new StringBuilder();
-		builderString.append("DELETE FROM KshmtHdspevCondEmp e");
+		builderString.append("DELETE FROM KshstEmploymentList e");
 		builderString.append(" WHERE e.pk.companyId = :companyId");
 		builderString.append(" AND e.pk.specialHolidayEventNo = :SHENo");
 		REMOVE_EMP_ITEMS_QUERY = builderString.toString();
@@ -128,11 +128,11 @@ public class JpaSpecialHolidayEvent extends JpaRepository implements SpecialHoli
 	}
 
 	private List<EmploymentList> getEmpList(String companyId, int SHENo) {
-		return this.queryProxy().query(FIND_EMP_LIST_QUERY, KshmtHdspevCondEmp.class)
+		return this.queryProxy().query(FIND_EMP_LIST_QUERY, KshstEmploymentList.class)
 				.setParameter("companyId", companyId).setParameter("SHENo", SHENo).getList(c -> toEmpList(c));
 	}
 
-	private EmploymentList toEmpList(KshmtHdspevCondEmp entity) {
+	private EmploymentList toEmpList(KshstEmploymentList entity) {
 		return new EmploymentList(entity.pk.companyId, entity.pk.specialHolidayEventNo,
 				new EmploymentCode(entity.pk.employmentCd));
 	}
@@ -160,8 +160,8 @@ public class JpaSpecialHolidayEvent extends JpaRepository implements SpecialHoli
 
 	}
 
-	private KshmtHdspevCondEmp toEmpEntity(EmploymentList domain) {
-		return new KshmtHdspevCondEmp(new KshstEmploymentListPK(domain.getCompanyId(),
+	private KshstEmploymentList toEmpEntity(EmploymentList domain) {
+		return new KshstEmploymentList(new KshstEmploymentListPK(domain.getCompanyId(),
 				domain.getSpecialHolidayEventNo(), domain.getEmploymentCd().v()));
 	}
 

@@ -12,7 +12,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSetGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFlWek;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHaRtSet;
 
 /**
  * The Class JpaFlexFixedWorkTimezoneSetGetMemento.
@@ -21,14 +21,14 @@ public class JpaFlexFixedWorkTimezoneSetGetMemento implements FixedWorkTimezoneS
 	
 	
 	/** The entity. */
-	private KshmtWtFleBrFlWek entity;
+	private KshmtFlexHaRtSet entity;
 	
 	/**
 	 * Instantiates a new jpa flex fixed work timezone set get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlexFixedWorkTimezoneSetGetMemento(KshmtWtFleBrFlWek entity) {
+	public JpaFlexFixedWorkTimezoneSetGetMemento(KshmtFlexHaRtSet entity) {
 		super();
 		this.entity = entity;
 	}

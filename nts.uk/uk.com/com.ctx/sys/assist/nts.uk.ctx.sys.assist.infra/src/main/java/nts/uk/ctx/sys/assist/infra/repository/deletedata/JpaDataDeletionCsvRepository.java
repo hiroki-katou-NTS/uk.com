@@ -63,7 +63,7 @@ public class JpaDataDeletionCsvRepository extends JpaRepository implements DataD
 			.append("e.fieldParent2, e.fieldParent3, e.fieldParent4, e.fieldParent5, e.fieldParent6, e.fieldParent7, ")
 			.append("e.fieldParent8, e.fieldParent9, e.fieldParent10, e.fieldChild1, e.fieldChild2, e.fieldChild3, ")
 			.append("e.fieldChild4, e.fieldChild5, e.fieldChild6, e.fieldChild7, e.fieldChild8, e.fieldChild9,e.fieldChild10,e.categoryFieldMtPk.tableNo ")
-			.append("FROM SspdtDeletionManual a, SspdtDeletionResult b, SspmtCategoryForDelete c, SspdtCategoryDeletion d, SspmtCategoryFieldMtForDelete e ")
+			.append("FROM SspdtManualSetDeletion a, SspdtResultDeletion b, SspmtCategoryForDelete c, SspdtCategoryDeletion d, SspmtCategoryFieldMtForDelete e ")
 			.append("WHERE a.sspdtManualSetDeletionPK.delId = b.sspdtResultDeletionPK.delId AND a.sspdtManualSetDeletionPK.delId = d.sspdtCategoryDeletionPK.delId AND c.categoryId = e.categoryFieldMtPk.categoryId AND d.sspdtCategoryDeletionPK.categoryId = c.categoryId AND a.sspdtManualSetDeletionPK.delId = :delId ");
 	
 	private static final String SELECT_COLUMN_NAME_SQL = "select COLUMN_NAME from INFORMATION_SCHEMA.COLUMNS"

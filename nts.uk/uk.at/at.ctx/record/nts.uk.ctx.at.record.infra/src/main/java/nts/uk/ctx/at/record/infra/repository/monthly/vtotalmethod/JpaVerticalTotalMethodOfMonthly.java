@@ -8,7 +8,7 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 //import nts.uk.ctx.at.record.dom.monthly.vtotalmethod.WorkTypeClassification;
-import nts.uk.ctx.at.record.infra.entity.monthly.vtotalmethod.KrcmtCalcMAgg;
+import nts.uk.ctx.at.record.infra.entity.monthly.vtotalmethod.KrcstVertMonMethod;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.AggregateMethodOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.SpecCountNotCalcSubject;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.SpecTotalCountMonthly;
@@ -24,11 +24,11 @@ public class JpaVerticalTotalMethodOfMonthly extends JpaRepository implements Ve
 
 	/** The Constant FIND_BY_CID. */
 	private static final String FIND_BY_CID =
-			"SELECT a FROM KrcmtCalcMAgg a "
+			"SELECT a FROM KrcstVertMonMethod a "
 			+ "WHERE a.cid = :companyId ";
 	
 	private static final String REMOVE_BY_CID =
-			"DELETE FROM KrcmtCalcMAgg a "
+			"DELETE FROM KrcstVertMonMethod a "
 			+ "WHERE a.cid = :companyId ";
 	
 	/* (non-Javadoc)
@@ -38,7 +38,7 @@ public class JpaVerticalTotalMethodOfMonthly extends JpaRepository implements Ve
 	public Optional<AggregateMethodOfMonthly> findByCid(String companyId) {
 		
 		val vertDaysList = this.queryProxy()
-				.query(FIND_BY_CID, KrcmtCalcMAgg.class)
+				.query(FIND_BY_CID, KrcstVertMonMethod.class)
 				.setParameter("companyId", companyId)
 				.getSingle();
 		
@@ -52,7 +52,7 @@ public class JpaVerticalTotalMethodOfMonthly extends JpaRepository implements Ve
 	 * @param lstVertical the lst vertical
 	 * @return the vertical total method of monthly
 	 */
-	public AggregateMethodOfMonthly toDomain(KrcmtCalcMAgg entity) {
+	public AggregateMethodOfMonthly toDomain(KrcstVertMonMethod entity) {
 		
 		return AggregateMethodOfMonthly.of(entity.cid, 
 				TADaysCountOfMonthlyAggr.of(
@@ -70,8 +70,8 @@ public class JpaVerticalTotalMethodOfMonthly extends JpaRepository implements Ve
 	 * @param setting the setting
 	 * @return the krcst vert mon method
 	 */
-	public KrcmtCalcMAgg toDbType(AggregateMethodOfMonthly setting) {
-		KrcmtCalcMAgg entity = new KrcmtCalcMAgg();
+	public KrcstVertMonMethod toDbType(AggregateMethodOfMonthly setting) {
+		KrcstVertMonMethod entity = new KrcstVertMonMethod();
 		entity.cid = setting.getCompanyId();
 		entity.transAttendDay = setting.getTransferAttendanceDays().getTADaysCountCondition().value;
 		entity.calcTargetOutCountCondition = setting.getSpecTotalCountMonthly().getSpecCount().value;
@@ -86,7 +86,7 @@ public class JpaVerticalTotalMethodOfMonthly extends JpaRepository implements Ve
 	 */
 	@Override
 	public void insert(AggregateMethodOfMonthly setting) {
-		//List<KrcmtCalcMAgg> lstEntity = toDbType(setting);
+		//List<KrcstVertMonMethod> lstEntity = toDbType(setting);
 		this.commandProxy().insert(toDbType(setting));
 	}
 

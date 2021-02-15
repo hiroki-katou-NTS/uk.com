@@ -12,7 +12,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexOffdayWorkTimeGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFlHol;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOdRtSet;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFlexODFlWRestTzGetMemento;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFlexODHDWTSheetGetMemento;
 
@@ -22,14 +22,14 @@ import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFlexODHDWTSheetG
 public class JpaFlexODWorkTimeGetMemento implements FlexOffdayWorkTimeGetMemento{
 	
 	/** The entity. */
-	private KshmtWtFleBrFlHol entity;
+	private KshmtFlexOdRtSet entity;
 	
 	/**
 	 * Instantiates a new jpa flex OD work time get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlexODWorkTimeGetMemento(KshmtWtFleBrFlHol entity) {
+	public JpaFlexODWorkTimeGetMemento(KshmtFlexOdRtSet entity) {
 		super();
 		this.entity = entity;
 	}

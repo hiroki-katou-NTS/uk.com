@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_ERALST_CNDEXPSGL")
+@Table(name = "KRCST_ERAL_INPUT_CHECK")
 public class KrcstErAlInputCheck extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -39,7 +39,7 @@ public class KrcstErAlInputCheck extends UkJpaEntity implements Serializable {
 	@JoinColumns({
 		@JoinColumn(name = "CONDITION_GROUP_ID", referencedColumnName = "CONDITION_GROUP_ID", insertable = false, updatable = false),
 		@JoinColumn(name = "ATD_ITEM_CON_NO", referencedColumnName = "ATD_ITEM_CON_NO", insertable = false, updatable = false) })
-	public KrcmtEralstCndgrp krcmtErAlAtdItemCon;
+	public KrcmtErAlAtdItemCon krcmtErAlAtdItemCon;
     
 	@Override
 	protected Object getKey() {

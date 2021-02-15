@@ -24,7 +24,7 @@ import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.DailyUnit;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.WeeklyUnit;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.regular.RegularLaborTimeSha;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.regular.RegularLaborTimeShaRepo;
-import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshmtLegaltimeDRegSya;
+import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaRegLaborTime;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaRegLaborTimePK;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaRegLaborTimePK_;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaRegLaborTime_;
@@ -62,7 +62,7 @@ public class JpaShainRegularLaborTimeRepository extends JpaRepository implements
 	 */
 	@Override
 	public void delete(String cid, String empId) {
-		commandProxy().remove(KshmtLegaltimeDRegSya.class, new KshstShaRegLaborTimePK(cid, empId));
+		commandProxy().remove(KshstShaRegLaborTime.class, new KshstShaRegLaborTimePK(cid, empId));
 	}
 
 	/*
@@ -71,7 +71,7 @@ public class JpaShainRegularLaborTimeRepository extends JpaRepository implements
 	 */
 	@Override
 	public Optional<RegularLaborTimeSha> find(String cid, String empId) {
-		Optional<KshmtLegaltimeDRegSya> optEntity = this.queryProxy().find(new KshstShaRegLaborTimePK(cid, empId), KshmtLegaltimeDRegSya.class);
+		Optional<KshstShaRegLaborTime> optEntity = this.queryProxy().find(new KshstShaRegLaborTimePK(cid, empId), KshstShaRegLaborTime.class);
 
 		// Check exist
 		if (!optEntity.isPresent()) {
@@ -88,8 +88,8 @@ public class JpaShainRegularLaborTimeRepository extends JpaRepository implements
 	 *            the empl reg work hour
 	 * @return the kshst sha reg labor time
 	 */
-	private KshmtLegaltimeDRegSya toEntity(RegularLaborTimeSha domain) {
-		KshmtLegaltimeDRegSya entity = new KshmtLegaltimeDRegSya();
+	private KshstShaRegLaborTime toEntity(RegularLaborTimeSha domain) {
+		KshstShaRegLaborTime entity = new KshstShaRegLaborTime();
 
 		entity.setDailyTime(domain.getDailyTime().getDailyTime().v());
 		entity.setWeeklyTime(domain.getWeeklyTime().getTime().v());
@@ -105,7 +105,7 @@ public class JpaShainRegularLaborTimeRepository extends JpaRepository implements
 	 *            the entity
 	 * @return the shain regular work time
 	 */
-	private RegularLaborTimeSha toDomain(KshmtLegaltimeDRegSya entity) {
+	private RegularLaborTimeSha toDomain(KshstShaRegLaborTime entity) {
 		return RegularLaborTimeSha.of(entity.getKshstShaRegLaborTimePK().getCid(),
 				entity.getKshstShaRegLaborTimePK().getSid(),
 				new WeeklyUnit(new WeeklyTime(entity.getWeeklyTime())), 
@@ -118,7 +118,7 @@ public class JpaShainRegularLaborTimeRepository extends JpaRepository implements
 	 * @param entities the entities
 	 * @return the list
 	 */
-	private List<RegularLaborTimeSha> toDomain(List<KshmtLegaltimeDRegSya> entities) {
+	private List<RegularLaborTimeSha> toDomain(List<KshstShaRegLaborTime> entities) {
 		if (entities == null || entities.isEmpty()) {
 			return Collections.emptyList();
 		}
@@ -135,8 +135,8 @@ public class JpaShainRegularLaborTimeRepository extends JpaRepository implements
 		EntityManager em = this.getEntityManager();
 
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<KshmtLegaltimeDRegSya> cq = cb.createQuery(KshmtLegaltimeDRegSya.class);
-		Root<KshmtLegaltimeDRegSya> root = cq.from(KshmtLegaltimeDRegSya.class);
+		CriteriaQuery<KshstShaRegLaborTime> cq = cb.createQuery(KshstShaRegLaborTime.class);
+		Root<KshstShaRegLaborTime> root = cq.from(KshstShaRegLaborTime.class);
 
 		// Constructing condition.
 		List<Predicate> predicateList = new ArrayList<Predicate>();
@@ -144,7 +144,7 @@ public class JpaShainRegularLaborTimeRepository extends JpaRepository implements
 				.add(cb.equal(root.get(KshstShaRegLaborTime_.kshstShaRegLaborTimePK).get(KshstShaRegLaborTimePK_.cid), cid));
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
-		List<KshmtLegaltimeDRegSya> resultList = em.createQuery(cq).getResultList();
+		List<KshstShaRegLaborTime> resultList = em.createQuery(cq).getResultList();
 
 		return this.toDomain(resultList);
 	}

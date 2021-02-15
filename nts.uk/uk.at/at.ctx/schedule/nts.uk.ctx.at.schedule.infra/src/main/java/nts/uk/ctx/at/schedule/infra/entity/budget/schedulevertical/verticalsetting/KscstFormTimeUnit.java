@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCMT_FORM_TIMEUNIT")
+@Table(name = "KSCST_FORM_TIMEUNIT")
 public class KscstFormTimeUnit extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -51,7 +51,7 @@ public class KscstFormTimeUnit extends UkJpaEntity implements Serializable {
 	public KscstFormAmount kscstFormulaAmount;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "kscstFormulaTimeUnit", orphanRemoval = true)
-	public List<KscmtFormTimeunitFunc> listTime;
+	public List<KscstFormTimeunitFunc> listTime;
 
 	@Override
 	protected Object getKey() {

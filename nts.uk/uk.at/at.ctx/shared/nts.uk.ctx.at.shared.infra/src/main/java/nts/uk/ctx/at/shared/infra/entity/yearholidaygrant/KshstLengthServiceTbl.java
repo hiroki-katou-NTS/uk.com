@@ -14,7 +14,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  *
  */
 @Entity
-@Table(name="KSHMT_HDPAID_SERVICE_TBL")
+@Table(name="KSHST_LENG_SERVICE_TBL")
 @AllArgsConstructor
 @NoArgsConstructor
 public class KshstLengthServiceTbl extends UkJpaEntity {

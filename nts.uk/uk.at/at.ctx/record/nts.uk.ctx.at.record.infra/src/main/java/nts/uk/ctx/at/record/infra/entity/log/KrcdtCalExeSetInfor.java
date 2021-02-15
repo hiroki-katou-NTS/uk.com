@@ -33,7 +33,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
 @NoArgsConstructor
-@Table(name = "KRCMT_EXEC_CASE_DETAIL")
+@Table(name = "KRCST_CAL_EXE_SET_INFO")
 public class KrcdtCalExeSetInfor extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -98,7 +98,7 @@ public class KrcdtCalExeSetInfor extends UkJpaEntity implements Serializable {
 		@JoinColumn(name="CAL_EXECUTION_SET_INFO_ID", referencedColumnName="CAL_EXECUTION_SET_INFO_ID", insertable = false, updatable = false),
 		@JoinColumn(name="EXECUTION_CONTENT", referencedColumnName="EXECUTION_CONTENT", insertable = false, updatable = false)
 	})
-	public KrcdtExecLog executionlog;
+	public KrcdtExecutionLog executionlog;
 	
 	@OneToOne
 	@JoinColumn(name="CAL_EXECUTION_SET_INFO_ID", referencedColumnName="MONTHLY_AGG_SET_INFOR_ID", insertable = false, updatable = false, nullable=true)

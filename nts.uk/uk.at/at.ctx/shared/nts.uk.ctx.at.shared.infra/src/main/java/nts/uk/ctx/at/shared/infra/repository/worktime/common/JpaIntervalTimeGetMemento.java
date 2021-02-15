@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.IntervalTimeGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtCom;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
 
 /**
  * The Class JpaIntervalTimeGetMemento.
@@ -15,7 +15,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtCom;
 public class JpaIntervalTimeGetMemento implements IntervalTimeGetMemento {
 
 	/** The entity. */
-	private KshmtWtCom entity;
+	private KshmtWorktimeCommonSet entity;
 
 	/**
 	 * Instantiates a new jpa interval time get memento.
@@ -23,7 +23,7 @@ public class JpaIntervalTimeGetMemento implements IntervalTimeGetMemento {
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaIntervalTimeGetMemento(KshmtWtCom entity) {
+	public JpaIntervalTimeGetMemento(KshmtWorktimeCommonSet entity) {
 		super();
 		this.entity = entity;
 	}

@@ -12,7 +12,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestTimezoneGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFlHol;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOdRtSet;
 
 /**
  * The Class JpaFlexODFlowRestTzGetMemento.
@@ -20,7 +20,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFlHol;
 public class JpaFlexODFlowRestTzGetMemento implements FlowRestTimezoneGetMemento{
 	
 	/** The entity. */
-	private KshmtWtFleBrFlHol entity;
+	private KshmtFlexOdRtSet entity;
 
 
 	/**
@@ -28,7 +28,7 @@ public class JpaFlexODFlowRestTzGetMemento implements FlowRestTimezoneGetMemento
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlexODFlowRestTzGetMemento(KshmtWtFleBrFlHol entity) {
+	public JpaFlexODFlowRestTzGetMemento(KshmtFlexOdRtSet entity) {
 		super();
 		this.entity = entity;
 	}

@@ -12,7 +12,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowStampReflectTzGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.ReflectReferenceTwoWorkTime;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloStmpRef2Ts;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFstampReflectTime;
 
 /**
  * The Class JpaFlowStampReflectTimezoneGetMemento.
@@ -20,14 +20,14 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloStmpRef2Ts;
 public class JpaFlowStampReflectTimezoneGetMemento implements FlowStampReflectTzGetMemento {
 
 	/** The entity. */
-	private KshmtWtFloStmpRef2Ts entity;
+	private KshmtFstampReflectTime entity;
 	
 	/**
 	 * Instantiates a new jpa flow stamp reflect timezone get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlowStampReflectTimezoneGetMemento(KshmtWtFloStmpRef2Ts entity) {
+	public JpaFlowStampReflectTimezoneGetMemento(KshmtFstampReflectTime entity) {
 		super();
 		this.entity = entity;
 		if (CollectionUtil.isEmpty(this.entity.getLstKshmtFlowStampReflect())) {

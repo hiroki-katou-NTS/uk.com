@@ -11,7 +11,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.com.ComAutoCalSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.com.ComAutoCalSettingRepository;
-import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.com.KrcmtCalcSetCom;
+import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.com.KshmtAutoComCalSet;
 
 /**
  * The Class JpaComAutoCalSettingRepository.
@@ -24,13 +24,13 @@ public class JpaComAutoCalSettingRepository extends JpaRepository implements Com
 	 */
 	@Override
 	public void update(ComAutoCalSetting comAutoCalSetting) {
-		Optional<KrcmtCalcSetCom> optional = this.queryProxy().find(comAutoCalSetting.getCompanyId().v(), KrcmtCalcSetCom.class);
+		Optional<KshmtAutoComCalSet> optional = this.queryProxy().find(comAutoCalSetting.getCompanyId().v(), KshmtAutoComCalSet.class);
 
 		if (!optional.isPresent()) {
 			throw new RuntimeException("Total times not existed.");
 		}
 
-		KrcmtCalcSetCom entity = optional.get();
+		KshmtAutoComCalSet entity = optional.get();
 		comAutoCalSetting.saveToMemento(new JpaComAutoCalSettingSetMemento(entity));
 		this.commandProxy().update(entity);
 	}
@@ -41,7 +41,7 @@ public class JpaComAutoCalSettingRepository extends JpaRepository implements Com
 	@Override
 	public Optional<ComAutoCalSetting> getAllComAutoCalSetting(String companyId) {
 
-		Optional<KrcmtCalcSetCom> optKshmtAutoComCalSet = this.queryProxy().find(companyId, KrcmtCalcSetCom.class);
+		Optional<KshmtAutoComCalSet> optKshmtAutoComCalSet = this.queryProxy().find(companyId, KshmtAutoComCalSet.class);
 
 		if (!optKshmtAutoComCalSet.isPresent()) {
 			return Optional.empty();

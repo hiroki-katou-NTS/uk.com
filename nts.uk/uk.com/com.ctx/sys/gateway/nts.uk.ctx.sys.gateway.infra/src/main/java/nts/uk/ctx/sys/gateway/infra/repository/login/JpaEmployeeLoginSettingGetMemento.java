@@ -7,7 +7,7 @@ package nts.uk.ctx.sys.gateway.infra.repository.login;
 import nts.uk.ctx.sys.gateway.dom.login.ContractCode;
 import nts.uk.ctx.sys.gateway.dom.login.EmployeeLoginSettingGetMemento;
 import nts.uk.ctx.sys.gateway.dom.login.ManageDistinct;
-import nts.uk.ctx.sys.gateway.infra.entity.login.SgwmtEmployeeLogin;
+import nts.uk.ctx.sys.gateway.infra.entity.login.SgwstEmployeeLoginSet;
 
 /**
  * The Class JpaEmployeeLoginSettingGetMemento.
@@ -15,14 +15,14 @@ import nts.uk.ctx.sys.gateway.infra.entity.login.SgwmtEmployeeLogin;
 public class JpaEmployeeLoginSettingGetMemento implements EmployeeLoginSettingGetMemento {
 
 	/** The entity. */
-	private SgwmtEmployeeLogin entity;
+	private SgwstEmployeeLoginSet entity;
 	
 	/**
 	 * Instantiates a new jpa employee login setting get memento.
 	 *
 	 * @param enity the enity
 	 */
-	public JpaEmployeeLoginSettingGetMemento(SgwmtEmployeeLogin enity) {
+	public JpaEmployeeLoginSettingGetMemento(SgwstEmployeeLoginSet enity) {
 		this.entity = enity;
 	}
 

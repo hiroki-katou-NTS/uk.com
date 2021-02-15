@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestSetSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.StampBreakCalculation;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFl;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexRestSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexRestSetPK;
 
 /**
@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexRestSetPK;
 public class JpaFlexFlowFixedRestSetSetMemento implements FlowFixedRestSetSetMemento {
 
 	/** The entity. */
-	private KshmtWtFleBrFl entity;
+	private KshmtFlexRestSet entity;
 
 	/**
 	 * Instantiates a new jpa flex flow fixed rest set set memento.
@@ -24,7 +24,7 @@ public class JpaFlexFlowFixedRestSetSetMemento implements FlowFixedRestSetSetMem
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaFlexFlowFixedRestSetSetMemento(KshmtWtFleBrFl entity) {
+	public JpaFlexFlowFixedRestSetSetMemento(KshmtFlexRestSet entity) {
 		super();
 		if (entity.getKshmtFlexRestSetPK() == null) {
 			entity.setKshmtFlexRestSetPK(new KshmtFlexRestSetPK());
@@ -54,7 +54,7 @@ public class JpaFlexFlowFixedRestSetSetMemento implements FlowFixedRestSetSetMem
 	 */
 	@Override
 	public void setCalculateFromStamp(StampBreakCalculation val) {
-		val.saveToMemento(new JpaStampBreakCalculationSetMemento<KshmtWtFleBrFl>(this.entity));
+		val.saveToMemento(new JpaStampBreakCalculationSetMemento<KshmtFlexRestSet>(this.entity));
 	}
 
 }

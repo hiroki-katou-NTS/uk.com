@@ -12,12 +12,12 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 
 /**
- * The persistent class for the KRCMT_OTK_HD_CK_WKTP_NTGT database table.
+ * The persistent class for the KRCCT_OTK_WT_NONTARGET database table.
  * 
  */
 @Entity
-@Table(name="KRCMT_OTK_HD_CK_WKTP_NTGT")
-//@NamedQuery(name="KrcmtOtkHdCkWktpNtgt.findAll", query="SELECT k FROM KrcmtOtkHdCkWktpNtgt k")
+@Table(name="KRCCT_OTK_WT_NONTARGET")
+//@NamedQuery(name="KrcctOtkWtNontarget.findAll", query="SELECT k FROM KrcctOtkWtNontarget k")
 public class KrcctOtkWtNonTarget extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -26,7 +26,7 @@ public class KrcctOtkWtNonTarget extends UkJpaEntity implements Serializable {
 
 	@ManyToOne
 	@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false)
-	public KrcmtOtkHdCk krcctOtkVacationCk;
+	public KrcctOtkVacationCk krcctOtkVacationCk;
 	
 	public KrcctOtkWtNonTarget() {
 	}

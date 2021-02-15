@@ -13,7 +13,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "KRCDT_HD_SP_REMAIN")
+@Table(name = "KRCMT_SPEC_LEAVE_REMAIN")
 public class KrcmtSpecialLeaveReam extends UkJpaEntity  {
 	
 	/**

@@ -10,9 +10,9 @@ import java.util.List;
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
 import nts.uk.ctx.at.shared.dom.shortworktime.SChildCareFrame;
 import nts.uk.ctx.at.shared.dom.shortworktime.SWorkTimeHistItemSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.shortworktime.KshmtShorttimeTs;
+import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtSchildCareFrame;
 import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtSchildCareFramePK;
-import nts.uk.ctx.at.shared.infra.entity.shortworktime.KshmtShorttimeHistItem;
+import nts.uk.ctx.at.shared.infra.entity.shortworktime.BshmtWorktimeHistItem;
 
 /**
  * The Class JpaSWorkTimeHistItemSetMemento.
@@ -20,7 +20,7 @@ import nts.uk.ctx.at.shared.infra.entity.shortworktime.KshmtShorttimeHistItem;
 public class JpaSWorkTimeHistItemSetMemento implements SWorkTimeHistItemSetMemento {
 
 	/** The entity. */
-	private KshmtShorttimeHistItem entity;
+	private BshmtWorktimeHistItem entity;
 
 	/**
 	 * Instantiates a new jpa S work time hist item set memento.
@@ -28,7 +28,7 @@ public class JpaSWorkTimeHistItemSetMemento implements SWorkTimeHistItemSetMemen
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaSWorkTimeHistItemSetMemento(KshmtShorttimeHistItem entity) {
+	public JpaSWorkTimeHistItemSetMemento(BshmtWorktimeHistItem entity) {
 		this.entity = entity;
 	}
 
@@ -73,17 +73,17 @@ public class JpaSWorkTimeHistItemSetMemento implements SWorkTimeHistItemSetMemen
 	 */
 	@Override
 	public void setLstTimeSlot(List<SChildCareFrame> lstTimeZone) {
-		List<KshmtShorttimeTs> newListBshmtSchildCareFrame = new ArrayList<>();
+		List<BshmtSchildCareFrame> newListBshmtSchildCareFrame = new ArrayList<>();
 
 		for (SChildCareFrame schildCareFrame : lstTimeZone) {
 
 			BshmtSchildCareFramePK pk = new BshmtSchildCareFramePK(this.entity.getBshmtWorktimeHistItemPK().getSid(),
 					this.entity.getBshmtWorktimeHistItemPK().getHistId(), schildCareFrame.getTimeSlot());
-			KshmtShorttimeTs newEntity = new KshmtShorttimeTs(pk);
+			BshmtSchildCareFrame newEntity = new BshmtSchildCareFrame(pk);
 			if (this.entity.getLstBshmtSchildCareFrame() != null){
 				newEntity = this.entity.getLstBshmtSchildCareFrame().stream().filter(
 						entity -> entity.getBshmtSchildCareFramePK().getTimeNo() == schildCareFrame.getTimeSlot())
-						.findFirst().orElse(new KshmtShorttimeTs(pk));
+						.findFirst().orElse(new BshmtSchildCareFrame(pk));
 			}
 			newEntity.setStrClock(schildCareFrame.getStartTime().v());
 			newEntity.setEndClock(schildCareFrame.getEndTime().v());

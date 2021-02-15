@@ -5,7 +5,7 @@ import nts.uk.ctx.sys.gateway.dom.login.ContractCode;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.loginlog.LoginLogGetMemento;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.loginlog.OperationSection;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.loginlog.SuccessFailureClassification;
-import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.loginlog.SgwdtLoginLog;
+import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.loginlog.SgwmtLoginLog;
 
 /**
  * The Class JpaLoginLogGetMemento.
@@ -13,14 +13,14 @@ import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.loginlog.SgwdtLoginLog
 public class JpaLoginLogGetMemento implements LoginLogGetMemento{
 	
 	/** The entity. */
-	private SgwdtLoginLog entity;
+	private SgwmtLoginLog entity;
 	
 	/**
 	 * Instantiates a new jpa login log get memento.
 	 *
 	 * @param sgwmtLoginLog the sgwmt login log
 	 */
-	public JpaLoginLogGetMemento(SgwdtLoginLog sgwmtLoginLog) {
+	public JpaLoginLogGetMemento(SgwmtLoginLog sgwmtLoginLog) {
 		this.entity = sgwmtLoginLog;
 	}
 

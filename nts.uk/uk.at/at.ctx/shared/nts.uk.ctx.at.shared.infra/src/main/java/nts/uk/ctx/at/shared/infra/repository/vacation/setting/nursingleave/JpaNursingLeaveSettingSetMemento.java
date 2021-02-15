@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.MaxPersonSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.TimeCareNursingSet;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KshmtHdnursingLeave;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingLeaveSet;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingLeaveSetPK;
 //import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingWorkType;
 //import nts.uk.ctx.at.shared.infra.entity.vacation.setting.nursingleave.KnlmtNursingWorkTypePK;
@@ -26,14 +26,14 @@ import nts.uk.shr.com.time.calendar.MonthDay;
 public class JpaNursingLeaveSettingSetMemento implements NursingLeaveSettingSetMemento {
 
     /** The entity nursing. */
-    private KshmtHdnursingLeave entityNursing;
+    private KnlmtNursingLeaveSet entityNursing;
 
     /**
      * Instantiates a new jpa nursing leave setting set memento.
      *
      * @param entityNursing the entity nursing
      */
-    public JpaNursingLeaveSettingSetMemento(KshmtHdnursingLeave entityNursing) {
+    public JpaNursingLeaveSettingSetMemento(KnlmtNursingLeaveSet entityNursing) {
         // check exist primary key
         if (entityNursing.getKnlmtNursingLeaveSetPK() == null) {
             entityNursing.setKnlmtNursingLeaveSetPK(new KnlmtNursingLeaveSetPK());

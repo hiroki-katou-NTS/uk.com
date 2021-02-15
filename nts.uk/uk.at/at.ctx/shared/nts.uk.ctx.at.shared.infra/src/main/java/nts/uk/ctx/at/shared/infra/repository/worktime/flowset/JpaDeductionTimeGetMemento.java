@@ -5,7 +5,7 @@
 package nts.uk.ctx.at.shared.infra.repository.worktime.flowset;
 
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTimeGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloBrFiAllTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowFixedRtSet;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -14,14 +14,14 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class JpaDeductionTimeGetMemento implements DeductionTimeGetMemento {
 	
 	/** The entity. */
-	private KshmtWtFloBrFiAllTs entity;
+	private KshmtFlowFixedRtSet entity;
 	
 	/**
 	 * Instantiates a new jpa deduction time get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaDeductionTimeGetMemento(KshmtWtFloBrFiAllTs entity) {
+	public JpaDeductionTimeGetMemento(KshmtFlowFixedRtSet entity) {
 		super();
 		this.entity = entity;
 	}

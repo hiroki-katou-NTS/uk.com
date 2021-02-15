@@ -5,14 +5,14 @@ import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeRestTimezone;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDif;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDiffTimeWorkSet;
 
 public class DiffTimeDayOffWorkTimezoneGetMemento
 		implements nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeDayOffWorkTimezoneGetMemento {
 
-	private KshmtWtDif entity;
+	private KshmtDiffTimeWorkSet entity;
 
-	public DiffTimeDayOffWorkTimezoneGetMemento(KshmtWtDif entity) {
+	public DiffTimeDayOffWorkTimezoneGetMemento(KshmtDiffTimeWorkSet entity) {
 		this.entity = entity;
 	}
 

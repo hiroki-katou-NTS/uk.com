@@ -10,9 +10,9 @@ import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimateDetailSettingSetMemento
 import nts.uk.ctx.at.schedule.dom.shift.estimate.numberofday.EstimateNumberOfDay;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.price.EstimatedPriceSetting;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.time.EstimateTimeSetting;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstDaysEmp;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstPriceEmp;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstTimeEmp;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstDaysEmpSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstPriceEmpSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstTimeEmpSet;
 
 /**
  * The Class JpaEstimateDetailSettingEmploymentSetMemento.
@@ -20,13 +20,13 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstTim
 public class JpaEmpEstDetailSetSetMemento implements EstimateDetailSettingSetMemento{
 	
 	/** The estimate time Employments. */
-	private List<KscmtEstTimeEmp> estimateTimeEmployments;
+	private List<KscmtEstTimeEmpSet> estimateTimeEmployments;
 	
 	/** The estimate price Employments. */
-	private List<KscmtEstPriceEmp> estimatePriceEmployments;
+	private List<KscmtEstPriceEmpSet> estimatePriceEmployments;
 	
 	/** The estimate days Employments. */
-	private List<KscmtEstDaysEmp> estimateDaysEmployments;
+	private List<KscmtEstDaysEmpSet> estimateDaysEmployments;
 
 	
 	/**
@@ -35,8 +35,8 @@ public class JpaEmpEstDetailSetSetMemento implements EstimateDetailSettingSetMem
 	 * @param estimateTimeEmployments the estimate time Employments
 	 * @param estimatePriceEmployments the estimate price Employments
 	 */
-	public JpaEmpEstDetailSetSetMemento(List<KscmtEstTimeEmp> estimateTimeEmployments,
-			List<KscmtEstPriceEmp> estimatePriceEmployments,List<KscmtEstDaysEmp> estimateDaysEmployments) {
+	public JpaEmpEstDetailSetSetMemento(List<KscmtEstTimeEmpSet> estimateTimeEmployments,
+			List<KscmtEstPriceEmpSet> estimatePriceEmployments,List<KscmtEstDaysEmpSet> estimateDaysEmployments) {
 		this.estimateTimeEmployments = estimateTimeEmployments;
 		this.estimatePriceEmployments = estimatePriceEmployments;
 		this.estimateDaysEmployments = estimateDaysEmployments;

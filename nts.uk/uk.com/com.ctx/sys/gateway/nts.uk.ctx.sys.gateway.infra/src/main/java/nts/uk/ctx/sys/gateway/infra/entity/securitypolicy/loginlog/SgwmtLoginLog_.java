@@ -13,27 +13,27 @@ import nts.arc.time.GeneralDateTime;
 /**
  * The Class SgwdtContract_.
  */
-@StaticMetamodel(SgwdtLoginLog.class)
+@StaticMetamodel(SgwmtLoginLog.class)
 public class SgwmtLoginLog_ {
     
     /** The sgwmt logout data PK. */
-    public static volatile SingularAttribute<SgwdtLoginLog, Long> idNumber;
+    public static volatile SingularAttribute<SgwmtLoginLog, Long> idNumber;
     
     /** The operation section. */
-    public static volatile SingularAttribute<SgwdtLoginLog, Integer> operationSection;
+    public static volatile SingularAttribute<SgwmtLoginLog, Integer> operationSection;
     
     /** The success or failure. */
-    public static volatile SingularAttribute<SgwdtLoginLog, Integer> successOrFailure;
+    public static volatile SingularAttribute<SgwmtLoginLog, Integer> successOrFailure;
     
     /** The sgwmt logout data PK. */
-	public static volatile SingularAttribute<SgwdtLoginLog, String> userId;
+	public static volatile SingularAttribute<SgwmtLoginLog, String> userId;
 
 	/** The contract cd. */
-	public static volatile SingularAttribute<SgwdtLoginLog, String> contractCd;
+	public static volatile SingularAttribute<SgwmtLoginLog, String> contractCd;
 	
 	/** The program id. */
-	public static volatile SingularAttribute<SgwdtLoginLog, String> programId;
+	public static volatile SingularAttribute<SgwmtLoginLog, String> programId;
 	
 	/** The process date time. */
-	public static volatile SingularAttribute<SgwdtLoginLog, GeneralDateTime> processDateTime;
+	public static volatile SingularAttribute<SgwmtLoginLog, GeneralDateTime> processDateTime;
 }

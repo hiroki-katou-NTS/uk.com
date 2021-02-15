@@ -12,7 +12,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.holidayinstruction.HolidayInstruct;
 import nts.uk.ctx.at.request.dom.application.holidayinstruction.HolidayInstructRepository;
-import nts.uk.ctx.at.request.infra.entity.holidayworkinstruct.KrqdtInstructHdWork;
+import nts.uk.ctx.at.request.infra.entity.holidayworkinstruct.KrqdtHolidayInstruct;
 
 @Stateless
 public class JpaHolidayInstructRepository extends JpaRepository implements HolidayInstructRepository {
@@ -22,7 +22,7 @@ public class JpaHolidayInstructRepository extends JpaRepository implements Holid
 	
 	static{
 		StringBuilder query = new StringBuilder();
-		query.append("Select o from KrqdtInstructHdWork o");
+		query.append("Select o from KrqdtHolidayInstruct o");
 		FIND_ALL = query.toString();
 		
 		query = new StringBuilder();
@@ -39,7 +39,7 @@ public class JpaHolidayInstructRepository extends JpaRepository implements Holid
 	}
 	@Override
 	public HolidayInstruct getHolidayWorkInstruct(GeneralDate instructDate, String targetPerson) {
-		Optional<HolidayInstruct> overTimeInstructs = this.queryProxy().query(FIND_FOR_TARGET_PERSON,KrqdtInstructHdWork.class)
+		Optional<HolidayInstruct> overTimeInstructs = this.queryProxy().query(FIND_FOR_TARGET_PERSON,KrqdtHolidayInstruct.class)
 				.setParameter("instructDate", instructDate.date())
 				.setParameter("targetPerson", targetPerson).getSingle(c -> convertToDomain(c));
 				if(overTimeInstructs.isPresent()){
@@ -47,7 +47,7 @@ public class JpaHolidayInstructRepository extends JpaRepository implements Holid
 				}
 				return null;
 			}
-	private HolidayInstruct convertToDomain(KrqdtInstructHdWork krqdtHolidayWorkInstruct){
+	private HolidayInstruct convertToDomain(KrqdtHolidayInstruct krqdtHolidayWorkInstruct){
 		 return HolidayInstruct.createSimpleFromJavaType(
 				 krqdtHolidayWorkInstruct.getWorkContent(),
 				 krqdtHolidayWorkInstruct.getInputDate(),
@@ -67,7 +67,7 @@ public class JpaHolidayInstructRepository extends JpaRepository implements Holid
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<HolidayInstruct> getAllHolidayInstructBySId(String sId, GeneralDate strDate, GeneralDate endDate) {
-		List<HolidayInstruct> holidayInstruct = this.queryProxy().query(FIND_ALL_BY_TARGET_PERSON, KrqdtInstructHdWork.class)
+		List<HolidayInstruct> holidayInstruct = this.queryProxy().query(FIND_ALL_BY_TARGET_PERSON, KrqdtHolidayInstruct.class)
 				.setParameter("targetPerson", sId).getList(c -> convertToDomain(c));
 		
 		List<HolidayInstruct> result = new ArrayList<>();

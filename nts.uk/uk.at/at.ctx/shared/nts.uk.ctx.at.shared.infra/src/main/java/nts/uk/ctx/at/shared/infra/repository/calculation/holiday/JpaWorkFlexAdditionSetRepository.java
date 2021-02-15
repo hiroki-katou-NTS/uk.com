@@ -9,7 +9,7 @@ import java.util.Optional;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkFlexAdditionSet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkFlexAdditionSetRepository;
-import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshmtCalcCAddHdFle;
+import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstWorkFlexSet;
 
 /**
  * The Class JpaWorkFlexAdditionSetRepository.
@@ -21,7 +21,7 @@ public class JpaWorkFlexAdditionSetRepository extends JpaRepository implements W
 	 */
 	@Override
 	public Optional<WorkFlexAdditionSet> findByCid(String companyID) {
-		Optional<KshmtCalcCAddHdFle> optEntity = this.queryProxy().find(companyID, KshmtCalcCAddHdFle.class);
+		Optional<KshstWorkFlexSet> optEntity = this.queryProxy().find(companyID, KshstWorkFlexSet.class);
 		if (optEntity.isPresent()) {
 			JpaHolidayAddtionRepository holidayAddtionRepository = new JpaHolidayAddtionRepository();
 			WorkFlexAdditionSet domain = holidayAddtionRepository.convertToDomainFlexWork(optEntity.get());

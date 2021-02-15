@@ -13,8 +13,8 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowOffdayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowStampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkDedicateSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSetting;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtCom;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFlo;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowWorkSet;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaWorkTimezoneCommonSetGetMemento;
 
 /**
@@ -23,14 +23,14 @@ import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaWorkTimezoneComm
 public class JpaFlowWorkSettingGetMemento implements FlowWorkSettingGetMemento {
 
 	/** The entity. */
-	private KshmtWtFlo entity;
+	private KshmtFlowWorkSet entity;
 	
 	/**
 	 * Instantiates a new jpa flow work setting get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlowWorkSettingGetMemento(KshmtWtFlo entity) {
+	public JpaFlowWorkSettingGetMemento(KshmtFlowWorkSet entity) {
 		super();
 		this.entity = entity;
 	}
@@ -72,7 +72,7 @@ public class JpaFlowWorkSettingGetMemento implements FlowWorkSettingGetMemento {
 	 */
 	@Override
 	public WorkTimezoneCommonSet getCommonSetting() {
-		KshmtWtCom commonEntity = this.entity.getKshmtWorktimeCommonSet();
+		KshmtWorktimeCommonSet commonEntity = this.entity.getKshmtWorktimeCommonSet();
 		if (commonEntity == null) {
 			return null;
 		}

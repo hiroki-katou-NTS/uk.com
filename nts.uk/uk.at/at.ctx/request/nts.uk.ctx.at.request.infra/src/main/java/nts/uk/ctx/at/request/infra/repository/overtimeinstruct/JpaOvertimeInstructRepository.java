@@ -11,7 +11,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.overtimeinstruct.OverTimeInstruct;
 import nts.uk.ctx.at.request.dom.overtimeinstruct.OvertimeInstructRepository;
-import nts.uk.ctx.at.request.infra.entity.overtimeinstruct.KrqdtInstructOvertime;
+import nts.uk.ctx.at.request.infra.entity.overtimeinstruct.KrqdtOvertimeInstruct;
 
 @Stateless
 public class JpaOvertimeInstructRepository extends JpaRepository implements OvertimeInstructRepository {
@@ -21,7 +21,7 @@ public class JpaOvertimeInstructRepository extends JpaRepository implements Over
 	
 	static{
 		StringBuilder query = new StringBuilder();
-		query.append("Select o from KrqdtInstructOvertime o");
+		query.append("Select o from KrqdtOvertimeInstruct o");
 		FIND_ALL = query.toString();
 		
 		query = new StringBuilder();
@@ -41,7 +41,7 @@ public class JpaOvertimeInstructRepository extends JpaRepository implements Over
 	@Override
 	public OverTimeInstruct getOvertimeInstruct(GeneralDate instructDate, String targetPerson) {
 		
-		List<OverTimeInstruct> overTimeInstructs = this.queryProxy().query(FIND_FOR_TARGET_PERSON,KrqdtInstructOvertime.class)
+		List<OverTimeInstruct> overTimeInstructs = this.queryProxy().query(FIND_FOR_TARGET_PERSON,KrqdtOvertimeInstruct.class)
 		.setParameter("instructDate", instructDate.date())
 		.setParameter("targetPerson", targetPerson).getList(c -> convertToDomain(c));
 		if(overTimeInstructs != null){
@@ -53,7 +53,7 @@ public class JpaOvertimeInstructRepository extends JpaRepository implements Over
 	}
 	
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	private OverTimeInstruct convertToDomain(KrqdtInstructOvertime krqdtOvertimeInstruct){
+	private OverTimeInstruct convertToDomain(KrqdtOvertimeInstruct krqdtOvertimeInstruct){
 		 return OverTimeInstruct.createSimpleFromJavaType(krqdtOvertimeInstruct.getKrqdtOvertimeInstructPK().getCid(),
 				krqdtOvertimeInstruct.getWorkContent(),
 				krqdtOvertimeInstruct.getInputDate(),
@@ -74,7 +74,7 @@ public class JpaOvertimeInstructRepository extends JpaRepository implements Over
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<OverTimeInstruct> getAllOverTimeInstructBySId(String sId, GeneralDate strDate, GeneralDate endDate) {
-		List<OverTimeInstruct> overTimeInstructs = this.queryProxy().query(FIND_ALL_BY_TARGET_PERSON, KrqdtInstructOvertime.class)
+		List<OverTimeInstruct> overTimeInstructs = this.queryProxy().query(FIND_ALL_BY_TARGET_PERSON, KrqdtOvertimeInstruct.class)
 				.setParameter("targetPerson", sId).getList(c -> convertToDomain(c));
 		List<OverTimeInstruct> result = new ArrayList<>();
 		for (OverTimeInstruct item : overTimeInstructs) {

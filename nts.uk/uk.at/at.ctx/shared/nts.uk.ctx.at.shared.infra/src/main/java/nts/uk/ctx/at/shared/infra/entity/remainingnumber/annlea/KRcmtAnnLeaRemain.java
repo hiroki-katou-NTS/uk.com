@@ -9,7 +9,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
-@Table(name = "KRCDT_HDPAID_REM")
+@Table(name = "KRCMT_ANNLEA_REMAIN")
 public class KRcmtAnnLeaRemain extends UkJpaEntity{
 
 	@Id

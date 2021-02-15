@@ -29,7 +29,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
 @NoArgsConstructor
-@Table(name = "KRCMT_ALST_CHKMON_UDREMOP")
+@Table(name = "KRCMT_CHECK_REMAIN_MON")
 public class KrcmtCheckRemainNumberMon extends UkJpaEntity implements Serializable {
 	/**
 	* 
@@ -48,10 +48,10 @@ public class KrcmtCheckRemainNumberMon extends UkJpaEntity implements Serializab
 	
 	
 	@OneToOne(mappedBy = "comparerange", cascade = CascadeType.ALL)
-	public KrcmtAlstChkmonUdremvr krcmtCompareRange;
+	public KrcmtCompareRange krcmtCompareRange;
 
 	@OneToOne(mappedBy = "comparesingle",cascade = CascadeType.ALL)
-	public KrcmtAlstChkmonUdremvs krcmtCompareSingleVal;
+	public KrcmtCompareSingleVal krcmtCompareSingleVal;
 	
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
 	@JoinColumns({ @JoinColumn(name = "ERAL_CHECK_ID", referencedColumnName = "ERAL_CHECK_ID", nullable = true) })
@@ -62,7 +62,7 @@ public class KrcmtCheckRemainNumberMon extends UkJpaEntity implements Serializab
 		return errorAlarmCheckID;
 	}
 
-	public KrcmtCheckRemainNumberMon(String errorAlarmCheckID, int typeCheckVacation, int checkOperatorType, KrcmtAlstChkmonUdremvr krcmtCompareRange, KrcmtAlstChkmonUdremvs krcmtCompareSingleVal, List<KrcmtRemainListItemID> listItemID) {
+	public KrcmtCheckRemainNumberMon(String errorAlarmCheckID, int typeCheckVacation, int checkOperatorType, KrcmtCompareRange krcmtCompareRange, KrcmtCompareSingleVal krcmtCompareSingleVal, List<KrcmtRemainListItemID> listItemID) {
 		super();
 		this.errorAlarmCheckID = errorAlarmCheckID;
 		this.typeCheckVacation = typeCheckVacation;
@@ -76,8 +76,8 @@ public class KrcmtCheckRemainNumberMon extends UkJpaEntity implements Serializab
 	public static KrcmtCheckRemainNumberMon toEntity(CheckRemainNumberMon domain) {
 		return new KrcmtCheckRemainNumberMon(domain.getErrorAlarmCheckID(), domain.getCheckVacation().value,
 				domain.getCheckOperatorType().value,
-				domain.getCheckOperatorType() == CheckOperatorType.RANGE_VALUE ? KrcmtAlstChkmonUdremvr.toEntity(domain.getErrorAlarmCheckID(), (CompareRange<CheckConValueRemainingNumber>) domain.getCheckCondition()) : null,
-				domain.getCheckOperatorType() == CheckOperatorType.SINGLE_VALUE ? KrcmtAlstChkmonUdremvs.toEntity(domain.getErrorAlarmCheckID(), (CompareSingleValue<CheckConValueRemainingNumber>) domain.getCheckCondition()) : null,
+				domain.getCheckOperatorType() == CheckOperatorType.RANGE_VALUE ? KrcmtCompareRange.toEntity(domain.getErrorAlarmCheckID(), (CompareRange<CheckConValueRemainingNumber>) domain.getCheckCondition()) : null,
+				domain.getCheckOperatorType() == CheckOperatorType.SINGLE_VALUE ? KrcmtCompareSingleVal.toEntity(domain.getErrorAlarmCheckID(), (CompareSingleValue<CheckConValueRemainingNumber>) domain.getCheckCondition()) : null,
 				!domain.getListAttdID().isPresent()?null:KrcmtRemainListItemID.toEntity(domain.getErrorAlarmCheckID(), domain.getListAttdID().get())
 						);
 

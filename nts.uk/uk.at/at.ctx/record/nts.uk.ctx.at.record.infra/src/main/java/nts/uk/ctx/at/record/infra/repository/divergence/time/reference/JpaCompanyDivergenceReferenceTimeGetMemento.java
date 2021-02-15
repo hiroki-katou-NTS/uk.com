@@ -7,7 +7,7 @@ import lombok.Setter;
 import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeGetMemento;
 import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceReferenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.history.DivergenceReferenceTimeValue;
-import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcmtDvgcRefTime;
+import nts.uk.ctx.at.record.infra.entity.divergence.time.history.KrcstDrt;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -18,12 +18,12 @@ public class JpaCompanyDivergenceReferenceTimeGetMemento implements CompanyDiver
 
 	/** The entity. */
 	@Setter
-	private KrcmtDvgcRefTime entity;
+	private KrcstDrt entity;
 
 	public JpaCompanyDivergenceReferenceTimeGetMemento() {
 	}
 
-	public JpaCompanyDivergenceReferenceTimeGetMemento(KrcmtDvgcRefTime krcstDrt) {
+	public JpaCompanyDivergenceReferenceTimeGetMemento(KrcstDrt krcstDrt) {
 		this.entity = krcstDrt;
 	}
 

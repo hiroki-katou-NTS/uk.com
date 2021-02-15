@@ -5,13 +5,13 @@ import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeDeductTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeRestTimezoneGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDifBrWekTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDtHalfRestTime;
 
 public class JpaHalfDTRestTimezoneGetMemento implements DiffTimeRestTimezoneGetMemento {
 
-	private List<KshmtWtDifBrWekTs> lstEntity;
+	private List<KshmtDtHalfRestTime> lstEntity;
 
-	public JpaHalfDTRestTimezoneGetMemento(List<KshmtWtDifBrWekTs> lstKshmtDtHalfRestTime) {
+	public JpaHalfDTRestTimezoneGetMemento(List<KshmtDtHalfRestTime> lstKshmtDtHalfRestTime) {
 		this.lstEntity = lstKshmtDtHalfRestTime;
 	}
 

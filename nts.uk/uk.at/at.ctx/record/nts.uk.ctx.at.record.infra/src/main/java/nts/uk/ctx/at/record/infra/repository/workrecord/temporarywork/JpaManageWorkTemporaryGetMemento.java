@@ -6,7 +6,7 @@ package nts.uk.ctx.at.record.infra.repository.workrecord.temporarywork;
 
 import nts.uk.ctx.at.record.dom.workrecord.temporarywork.ManageWorkTemporaryGetMemento;
 import nts.uk.ctx.at.record.dom.workrecord.temporarywork.MaxUsage;
-import nts.uk.ctx.at.record.infra.entity.workrecord.temporarywork.KrcmtTemporaryMng;
+import nts.uk.ctx.at.record.infra.entity.workrecord.temporarywork.KrcstManageWorkTemp;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /**
@@ -15,13 +15,13 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 public class JpaManageWorkTemporaryGetMemento implements ManageWorkTemporaryGetMemento{
 
 	/** The krcst manage work temp. */
-	private KrcmtTemporaryMng krcstManageWorkTemp;
+	private KrcstManageWorkTemp krcstManageWorkTemp;
 	
 	
 	/**
 	 * @param krcstManageWorkTemp
 	 */
-	public JpaManageWorkTemporaryGetMemento(KrcmtTemporaryMng krcstManageWorkTemp) {
+	public JpaManageWorkTemporaryGetMemento(KrcstManageWorkTemp krcstManageWorkTemp) {
 		this.krcstManageWorkTemp = krcstManageWorkTemp;
 	}
 

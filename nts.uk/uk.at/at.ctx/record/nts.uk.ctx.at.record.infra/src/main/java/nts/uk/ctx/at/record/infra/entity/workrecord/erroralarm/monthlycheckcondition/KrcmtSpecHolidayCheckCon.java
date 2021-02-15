@@ -15,7 +15,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
 @Entity      
-@Table(name = "KRCMT_ALST_CHKMON_UDHDPUB")
+@Table(name = "KRCMT_SPEC_HOLIDAY_CHECK")
 public class KrcmtSpecHolidayCheckCon extends UkJpaEntity implements Serializable  {
 	
 	private static final long serialVersionUID = 1L;

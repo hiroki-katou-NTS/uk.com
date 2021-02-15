@@ -9,7 +9,7 @@ import java.util.Optional;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.OperationStartSetDailyPerformGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KshmtDayOpeStartDate;
+import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KshstStartSetDailyPfm;
 
 /**
  * The Class JpaOperationStartSetDailyPerformGetMemento.
@@ -17,14 +17,14 @@ import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KshmtD
 public class JpaOperationStartSetDailyPerformGetMemento implements OperationStartSetDailyPerformGetMemento{
 
 	/** The entity. */
-	private KshmtDayOpeStartDate entity;
+	private KshstStartSetDailyPfm entity;
 	
 	/**
 	 * Instantiates a new jpa operation start set daily perform get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaOperationStartSetDailyPerformGetMemento(KshmtDayOpeStartDate entity) {
+	public JpaOperationStartSetDailyPerformGetMemento(KshstStartSetDailyPfm entity) {
 		this.entity = entity;
 	}
 

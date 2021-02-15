@@ -16,7 +16,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSHMT_HDSPEV")
+@Table(name = "KSHST_S_HOLIDAY_EVENT")
 // 事象に対する特別休暇
 public class KshstSpecialHolidayEvent extends UkJpaEntity implements Serializable {
 

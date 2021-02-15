@@ -12,7 +12,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.setting.displaycontrol.DisplayControl
 import nts.uk.ctx.at.schedule.dom.schedule.setting.displaycontrol.ScheDispControl;
 import nts.uk.ctx.at.schedule.dom.schedule.setting.displaycontrol.SchePerInfoAtr;
 import nts.uk.ctx.at.schedule.dom.schedule.setting.displaycontrol.ScheQualifySet;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscmtDispCtrl;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscmtScheDispControl;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscmtScheDispControlPK;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscmtSchePerInfoAtr;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscmtSchePerInfoAtrPk;
@@ -29,7 +29,7 @@ public class JpaScheSettingDispControlRepository extends JpaRepository implement
 	public Optional<ScheDispControl> getScheDispControl(String companyId) {
 		KscmtScheDispControlPK primaryKey = new KscmtScheDispControlPK(companyId);
 
-		return this.queryProxy().find(primaryKey, KscmtDispCtrl.class).map(x -> toDomain(x));
+		return this.queryProxy().find(primaryKey, KscmtScheDispControl.class).map(x -> toDomain(x));
 	}
 
 	/**
@@ -46,7 +46,7 @@ public class JpaScheSettingDispControlRepository extends JpaRepository implement
 	@Override
 	public void updateScheDispControl(ScheDispControl scheDispControl) {
 		KscmtScheDispControlPK primaryKey = new KscmtScheDispControlPK(scheDispControl.getCompanyId());		
-		KscmtDispCtrl kscmtScheDispControl = this.queryProxy().find(primaryKey, KscmtDispCtrl.class).get();
+		KscmtScheDispControl kscmtScheDispControl = this.queryProxy().find(primaryKey, KscmtScheDispControl.class).get();
 		
 		kscmtScheDispControl.personSyQualify = scheDispControl.getPersonSyQualify().v();
 		kscmtScheDispControl.pubHolidayShortageAtr = scheDispControl.getPubHolidayShortageAtr().value == 0 ? false : true;
@@ -82,7 +82,7 @@ public class JpaScheSettingDispControlRepository extends JpaRepository implement
 	 * @param entity
 	 * @return
 	 */
-	private static ScheDispControl toDomain(KscmtDispCtrl entity) {
+	private static ScheDispControl toDomain(KscmtScheDispControl entity) {
 		if (entity == null) {
 			return null;
 		}
@@ -135,7 +135,7 @@ public class JpaScheSettingDispControlRepository extends JpaRepository implement
 	 * @param scheDispControl
 	 * @return
 	 */
-	private KscmtDispCtrl convertToDbType(ScheDispControl scheDispControl) {
+	private KscmtScheDispControl convertToDbType(ScheDispControl scheDispControl) {
 		KscmtScheDispControlPK primaryKey = new KscmtScheDispControlPK(scheDispControl.getCompanyId());
 		
 		List<KscmtSchePerInfoAtr> schePerInfoAtr = null;
@@ -154,7 +154,7 @@ public class JpaScheSettingDispControlRepository extends JpaRepository implement
 			}).collect(Collectors.toList());
 		}
 		
-		return new KscmtDispCtrl(
+		return new KscmtScheDispControl(
 				primaryKey,
 				scheDispControl.getPersonSyQualify().v(),
 				scheDispControl.getPubHolidayShortageAtr().value == 0 ? false : true,

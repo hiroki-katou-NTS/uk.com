@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDisplayName;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeNote;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWt;
+import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWorkTimeSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWorkTimeSetPK;
 import nts.uk.shr.com.primitive.Memo;
 
@@ -23,14 +23,14 @@ import nts.uk.shr.com.primitive.Memo;
 public class JpaWorkTimeSettingSetMemento implements WorkTimeSettingSetMemento {
 
 	/** The entity. */
-	private KshmtWt entity;
+	private KshmtWorkTimeSet entity;
 
 	/**
 	 * Instantiates a new jpa work time setting set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaWorkTimeSettingSetMemento(KshmtWt entity) {
+	public JpaWorkTimeSettingSetMemento(KshmtWorkTimeSet entity) {
 		if(entity.getKshmtWorkTimeSetPK() == null){
 			entity.setKshmtWorkTimeSetPK(new KshmtWorkTimeSetPK());
 		}

@@ -55,13 +55,13 @@ public class JpaNursingLeaveSetRepository extends JpaRepository implements Nursi
                     "                    FROM (  " +
                     "                     SELECT  " +
                     "                      *  " +
-                    "                     FROM KSHMT_HDNURSING_LEAVE LVA   " +
+                    "                     FROM KNLMT_NURSING_LEAVE_SET LVA   " +
                     "                     WHERE LVA.CID = ? AND LVA.NURSING_TYPE = 1   " +
                     "                     ) AS LV  " +
-                    "                    INNER JOIN KSHMT_HDNURSING_LEAVE LV2 ON LV2.CID = LV.CID AND LV2.NURSING_TYPE = 0   " +
-                    "                    LEFT JOIN KSHMT_HDSP_FRAME SF ON SF.CID = LV.CID AND SF.SPHD_FRAME_NO = LV2.HDSP_FRAME_NO  " +
+                    "                    INNER JOIN KNLMT_NURSING_LEAVE_SET LV2 ON LV2.CID = LV.CID AND LV2.NURSING_TYPE = 0   " +
+                    "                    LEFT JOIN KSHMT_SPHD_FRAME SF ON SF.CID = LV.CID AND SF.SPHD_FRAME_NO = LV2.HDSP_FRAME_NO  " +
                     "                    LEFT JOIN KSHMT_ABSENCE_FRAME AF ON AF.CID = LV.CID AND AF.ABSENCE_FRAME_NO = LV2.ABSENCE_FRAME_NO " +
-                    "				     LEFT JOIN KSHMT_HDSP_FRAME SF1 ON SF1.CID = LV.CID AND SF1.SPHD_FRAME_NO = LV.HDSP_FRAME_NO  " +
+                    "				     LEFT JOIN KSHMT_SPHD_FRAME SF1 ON SF1.CID = LV.CID AND SF1.SPHD_FRAME_NO = LV.HDSP_FRAME_NO  " +
                     "                    LEFT JOIN KSHMT_ABSENCE_FRAME AF1 ON AF1.CID = LV.CID  AND AF1.ABSENCE_FRAME_NO = LV.ABSENCE_FRAME_NO ;";
 
 

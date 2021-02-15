@@ -32,7 +32,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  *  Entity UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.就業機能.更新処理自動実行.更新処理自動実行ログ.更新処理自動実行タスクログ
  */
 @Entity
-@Table(name="KFNDT_AUTOEXEC_TASK_LOG")
+@Table(name="KFNMT_EXEC_TASK_LOG")
 @Builder
 @Data
 @NoArgsConstructor

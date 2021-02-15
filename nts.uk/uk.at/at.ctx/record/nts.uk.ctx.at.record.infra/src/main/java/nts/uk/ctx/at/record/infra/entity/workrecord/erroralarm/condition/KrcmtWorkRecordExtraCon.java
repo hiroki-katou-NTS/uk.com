@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  */
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_ALST_CHKDAY_UD")
+@Table(name = "KRCMT_WK_RECORD_EXTRA_CON")
 public class KrcmtWorkRecordExtraCon  extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	

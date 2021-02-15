@@ -8,7 +8,7 @@ import nts.uk.ctx.sys.gateway.dom.singlesignon.CompanyCode;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.OtherSysAccountSetMemento;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.UseAtr;
 import nts.uk.ctx.sys.gateway.dom.singlesignon.UserName;
-import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtSsoOtherSysAcc;
+import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtOtherSysAcc;
 import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtOtherSysAccPK;
 
 /**
@@ -17,14 +17,14 @@ import nts.uk.ctx.sys.gateway.infra.entity.singlesignon.SgwmtOtherSysAccPK;
 public class JpaOtherSysAccountSetMemento implements OtherSysAccountSetMemento {
 
 	/** The typed value. */
-	private SgwmtSsoOtherSysAcc typedValue;
+	private SgwmtOtherSysAcc typedValue;
 
 	/**
 	 * Instantiates a new jpa other sys account set memento.
 	 *
 	 * @param typedValue the typed value
 	 */
-	public JpaOtherSysAccountSetMemento(SgwmtSsoOtherSysAcc typedValue) {
+	public JpaOtherSysAccountSetMemento(SgwmtOtherSysAcc typedValue) {
 		this.typedValue = typedValue;
 		if (this.typedValue.getSgwmtOtherSysAccPK() == null) {
 			this.typedValue.setSgwmtOtherSysAccPK(new SgwmtOtherSysAccPK());

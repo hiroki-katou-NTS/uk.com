@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezoneGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFlWek;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHaRtSet;
 
 /**
  * The Class JpaFlexHAFWRestTZGetMemento.
@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFlWek;
 public class JpaFlexHAFWRestTZGetMemento implements FlowWorkRestTimezoneGetMemento{
 	
 	/** The entity group. */
-	private KshmtWtFleBrFlWek entity;
+	private KshmtFlexHaRtSet entity;
 	
 
 	/**
@@ -24,7 +24,7 @@ public class JpaFlexHAFWRestTZGetMemento implements FlowWorkRestTimezoneGetMemen
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlexHAFWRestTZGetMemento(KshmtWtFleBrFlWek entity) {
+	public JpaFlexHAFWRestTZGetMemento(KshmtFlexHaRtSet entity) {
 		super();
 		this.entity = entity;
 	}

@@ -6,11 +6,11 @@ import javax.persistence.metamodel.StaticMetamodel;
 import nts.uk.ctx.at.record.infra.entity.divergence.time.message.KrcstDvgcTimeEaMsgPK;
 
 @Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2018-03-27T23:12:35")
-@StaticMetamodel(KrcmtDvgcEralMsgCom.class)
+@StaticMetamodel(KrcstDvgcTimeEaMsg.class)
 public class KrcstDvgcTimeEaMsg_ { 
 
-    public static volatile SingularAttribute<KrcmtDvgcEralMsgCom, String> errorMessage;
-    public static volatile SingularAttribute<KrcmtDvgcEralMsgCom, String> alarmMessage;
-    public static volatile SingularAttribute<KrcmtDvgcEralMsgCom, KrcstDvgcTimeEaMsgPK> id;
+    public static volatile SingularAttribute<KrcstDvgcTimeEaMsg, String> errorMessage;
+    public static volatile SingularAttribute<KrcstDvgcTimeEaMsg, String> alarmMessage;
+    public static volatile SingularAttribute<KrcstDvgcTimeEaMsg, KrcstDvgcTimeEaMsgPK> id;
 
 }

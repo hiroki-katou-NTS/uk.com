@@ -53,10 +53,10 @@ public class CopyDataRepoImp implements CopyDataRepository {
             case COPY_OTHER:
                 //using adapter
                 switch (tableName) {
-                    case "KRCMT_ERAL_DAY_SET":
+                    case "KRCMT_ERAL_SET":
                         erAlWorkRecordCopyAdapter.copy(companyId, copyMethod);
                         break;
-                    case "PPEMT_CTG":
+                    case "PPEMT_PER_INFO_CTG":
                         personalInfoDataCopyAdapter.personalInfoDefCopy(companyId, copyMethod);
                         break;
                     default:

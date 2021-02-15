@@ -9,11 +9,11 @@ import javax.ejb.Stateless;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
-import nts.uk.ctx.at.record.infra.entity.workrule.specific.KrcmtCalcDRestTime;
+import nts.uk.ctx.at.record.infra.entity.workrule.specific.KrcstConstraintTimeCal;
 import nts.uk.ctx.at.record.infra.entity.workrule.specific.KrcstConstraintTimeCalPK;
-import nts.uk.ctx.at.record.infra.entity.workrule.specific.KrcmtCalcMHdOffset;
+import nts.uk.ctx.at.record.infra.entity.workrule.specific.KrcstHolidayPriorOrder;
 import nts.uk.ctx.at.record.infra.entity.workrule.specific.KrcstHolidayPriorOrderPK;
-import nts.uk.ctx.at.record.infra.entity.workrule.specific.KrcmtCalcDTotaltime;
+import nts.uk.ctx.at.record.infra.entity.workrule.specific.KrcstWkHourLimitCtrl;
 import nts.uk.ctx.at.record.infra.entity.workrule.specific.KrcstWkHourLimitCtrlPK;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calculationsettings.totalrestrainttime.CalculateOfTotalConstraintTime;
 import nts.uk.ctx.at.shared.dom.workrule.specific.SpecificWorkRuleRepository;
@@ -29,19 +29,19 @@ public class JpaSpecificWorkRuleRepository extends JpaRepository implements Spec
 	/** The Constant SEL_TOTAL_CONSTRAINT. */
 	private static final String SEL_TOTAL_CONSTRAINT = 
 			"SELECT a "
-			+ "FROM KrcmtCalcDRestTime a "
+			+ "FROM KrcstConstraintTimeCal a "
 			+ "WHERE a.id.cid = :companyId ";
 	
 	/** The Constant SEL_TIME_OFF_ORDER. */
 	private static final String SEL_TIME_OFF_ORDER = 
 			"SELECT a "
-			+ "FROM KrcmtCalcMHdOffset a "
+			+ "FROM KrcstHolidayPriorOrder a "
 			+ "WHERE a.id.cid = :companyId ";
 	
 	/** The Constant SEL_WORK_HOUR_LIMIT. */
 //	private static final String SEL_WORK_HOUR_LIMIT = 
 //			"SELECT a "
-//			+ "FROM KrcmtCalcDTotaltime a "
+//			+ "FROM KrcstWkHourLimitCtrl a "
 //			+ "WHERE a.id.cid = :companyId ";
 	
 	/**
@@ -50,7 +50,7 @@ public class JpaSpecificWorkRuleRepository extends JpaRepository implements Spec
 	 * @param entity the entity
 	 * @return the calculate of total constraint time
 	 */
-	public CalculateOfTotalConstraintTime toDomain(KrcmtCalcDRestTime entity) {
+	public CalculateOfTotalConstraintTime toDomain(KrcstConstraintTimeCal entity) {
 		return CalculateOfTotalConstraintTime.createFromJavaType(entity.getId().getCid(), entity.getCalMethod());
 	}
 	
@@ -60,7 +60,7 @@ public class JpaSpecificWorkRuleRepository extends JpaRepository implements Spec
 	 * @param entity the entity
 	 * @return the time off vacation priority order
 	 */
-	public TimeOffVacationPriorityOrder toDomain(KrcmtCalcMHdOffset entity) {
+	public TimeOffVacationPriorityOrder toDomain(KrcstHolidayPriorOrder entity) {
 		return TimeOffVacationPriorityOrder.createFromJavaType(entity.getId().getCid(), entity.getSubstitute(),
 				entity.getSixtyHour(), entity.getSpecial(), entity.getAnnual());
 	}
@@ -71,7 +71,7 @@ public class JpaSpecificWorkRuleRepository extends JpaRepository implements Spec
 	 * @param entity the entity
 	 * @return the upper limit total working hour
 	 */
-	public UpperLimitTotalWorkingHour toDomain(KrcmtCalcDTotaltime entity) {
+	public UpperLimitTotalWorkingHour toDomain(KrcstWkHourLimitCtrl entity) {
 		return UpperLimitTotalWorkingHour.createFromJavaType(entity.getId().getCid(), entity.getWorkLimitCtrl());
 	}
 	
@@ -81,8 +81,8 @@ public class JpaSpecificWorkRuleRepository extends JpaRepository implements Spec
 	 * @param setting the setting
 	 * @return the krcst constraint time cal
 	 */
-	public KrcmtCalcDRestTime toDbType(CalculateOfTotalConstraintTime setting) {
-		KrcmtCalcDRestTime entity = new KrcmtCalcDRestTime();
+	public KrcstConstraintTimeCal toDbType(CalculateOfTotalConstraintTime setting) {
+		KrcstConstraintTimeCal entity = new KrcstConstraintTimeCal();
 		KrcstConstraintTimeCalPK primaryKey = new KrcstConstraintTimeCalPK();
 		primaryKey.setCid(setting.getCompanyId().v());
 		entity.setCalMethod(setting.getCalcMethod().value);
@@ -96,8 +96,8 @@ public class JpaSpecificWorkRuleRepository extends JpaRepository implements Spec
 	 * @param setting the setting
 	 * @return the krcst holiday prior order
 	 */
-	public KrcmtCalcMHdOffset toDbType(TimeOffVacationPriorityOrder setting) {
-		KrcmtCalcMHdOffset entity = new KrcmtCalcMHdOffset();
+	public KrcstHolidayPriorOrder toDbType(TimeOffVacationPriorityOrder setting) {
+		KrcstHolidayPriorOrder entity = new KrcstHolidayPriorOrder();
 		KrcstHolidayPriorOrderPK primaryKey = new KrcstHolidayPriorOrderPK();
 		primaryKey.setCid(setting.getCompanyId().v());
 		entity.setSubstitute(setting.getSubstituteHoliday());
@@ -114,8 +114,8 @@ public class JpaSpecificWorkRuleRepository extends JpaRepository implements Spec
 	 * @param setting the setting
 	 * @return the krcst wk hour limit ctrl
 	 */
-	public KrcmtCalcDTotaltime toDbType(UpperLimitTotalWorkingHour setting) {
-		KrcmtCalcDTotaltime entity = new KrcmtCalcDTotaltime();
+	public KrcstWkHourLimitCtrl toDbType(UpperLimitTotalWorkingHour setting) {
+		KrcstWkHourLimitCtrl entity = new KrcstWkHourLimitCtrl();
 		KrcstWkHourLimitCtrlPK primaryKey = new KrcstWkHourLimitCtrlPK();
 		primaryKey.setCid(setting.getCompanyId().v());
 		entity.setWorkLimitCtrl(setting.getLimitSet().value);
@@ -128,7 +128,7 @@ public class JpaSpecificWorkRuleRepository extends JpaRepository implements Spec
 	 */
 	@Override
 	public Optional<CalculateOfTotalConstraintTime> findCalcMethodByCid(String companyId) {
-		Optional<KrcmtCalcDRestTime> opt = this.queryProxy().query(SEL_TOTAL_CONSTRAINT, KrcmtCalcDRestTime.class).
+		Optional<KrcstConstraintTimeCal> opt = this.queryProxy().query(SEL_TOTAL_CONSTRAINT, KrcstConstraintTimeCal.class).
 				setParameter("companyId", companyId).getSingle();
 		if (opt.isPresent()) {
 			return Optional.of(toDomain(opt.get()));
@@ -141,7 +141,7 @@ public class JpaSpecificWorkRuleRepository extends JpaRepository implements Spec
 	 */
 	@Override
 	public Optional<TimeOffVacationPriorityOrder> findTimeOffVacationOrderByCid(String companyId) {
-		Optional<KrcmtCalcMHdOffset> opt = this.queryProxy().query(SEL_TIME_OFF_ORDER, KrcmtCalcMHdOffset.class).
+		Optional<KrcstHolidayPriorOrder> opt = this.queryProxy().query(SEL_TIME_OFF_ORDER, KrcstHolidayPriorOrder.class).
 				setParameter("companyId", companyId).getSingle();
 		if (opt.isPresent()) {
 			return Optional.of(toDomain(opt.get()));
@@ -154,17 +154,17 @@ public class JpaSpecificWorkRuleRepository extends JpaRepository implements Spec
 	 */
 	@Override
 	public Optional<UpperLimitTotalWorkingHour> findUpperLimitWkHourByCid(String companyId) {
-		try (PreparedStatement statement = this.connection().prepareStatement("select * FROM KRCMT_CALC_D_TOTALTIME where CID = ?")) {
+		try (PreparedStatement statement = this.connection().prepareStatement("select * FROM KRCST_WK_HOUR_LIMIT_CTRL where CID = ?")) {
 			statement.setString(1, companyId);
-			Optional<KrcmtCalcDTotaltime> opt = new NtsResultSet(statement.executeQuery()).getSingle(rec -> {
-				val entity = new KrcmtCalcDTotaltime();
+			Optional<KrcstWkHourLimitCtrl> opt = new NtsResultSet(statement.executeQuery()).getSingle(rec -> {
+				val entity = new KrcstWkHourLimitCtrl();
 				KrcstWkHourLimitCtrlPK id = new KrcstWkHourLimitCtrlPK();
 				id.setCid(companyId);
 				entity.setWorkLimitCtrl(rec.getInt("WORK_LIMIT_CTRL"));
 				entity.setId(id);
 				return entity;
 			});
-//			Optional<KrcmtCalcDTotaltime> opt = this.queryProxy().query(SEL_WORK_HOUR_LIMIT, KrcmtCalcDTotaltime.class).
+//			Optional<KrcstWkHourLimitCtrl> opt = this.queryProxy().query(SEL_WORK_HOUR_LIMIT, KrcstWkHourLimitCtrl.class).
 //					setParameter("companyId", companyId).getSingle();
 			if (opt.isPresent()) {
 				return Optional.of(toDomain(opt.get()));
@@ -181,7 +181,7 @@ public class JpaSpecificWorkRuleRepository extends JpaRepository implements Spec
 	 */
 	@Override
 	public void insertCalcMethod(CalculateOfTotalConstraintTime setting) {
-		KrcmtCalcDRestTime entity = toDbType(setting);
+		KrcstConstraintTimeCal entity = toDbType(setting);
 		this.commandProxy().insert(entity);
 	}
 
@@ -190,7 +190,7 @@ public class JpaSpecificWorkRuleRepository extends JpaRepository implements Spec
 	 */
 	@Override
 	public void insertTimeOffVacationOrder(TimeOffVacationPriorityOrder setting) {
-		KrcmtCalcMHdOffset entity = toDbType(setting);
+		KrcstHolidayPriorOrder entity = toDbType(setting);
 		this.commandProxy().insert(entity);
 	}
 
@@ -199,7 +199,7 @@ public class JpaSpecificWorkRuleRepository extends JpaRepository implements Spec
 	 */
 	@Override
 	public void insertUpperLimitWkHour(UpperLimitTotalWorkingHour setting) {
-		KrcmtCalcDTotaltime entity = toDbType(setting);
+		KrcstWkHourLimitCtrl entity = toDbType(setting);
 		this.commandProxy().insert(entity);
 	}
 
@@ -208,7 +208,7 @@ public class JpaSpecificWorkRuleRepository extends JpaRepository implements Spec
 	 */
 	@Override
 	public void updateCalcMethod(CalculateOfTotalConstraintTime setting) {
-		KrcmtCalcDRestTime entity = toDbType(setting);
+		KrcstConstraintTimeCal entity = toDbType(setting);
 		this.commandProxy().update(entity);
 	}
 
@@ -217,7 +217,7 @@ public class JpaSpecificWorkRuleRepository extends JpaRepository implements Spec
 	 */
 	@Override
 	public void updateTimeOffVacationOrder(TimeOffVacationPriorityOrder setting) {
-		KrcmtCalcMHdOffset entity = toDbType(setting);
+		KrcstHolidayPriorOrder entity = toDbType(setting);
 		this.commandProxy().update(entity);
 	}
 
@@ -226,7 +226,7 @@ public class JpaSpecificWorkRuleRepository extends JpaRepository implements Spec
 	 */
 	@Override
 	public void updateUpperLimitWkHour(UpperLimitTotalWorkingHour setting) {
-		KrcmtCalcDTotaltime entity = toDbType(setting);
+		KrcstWkHourLimitCtrl entity = toDbType(setting);
 		this.commandProxy().update(entity);
 	}
 

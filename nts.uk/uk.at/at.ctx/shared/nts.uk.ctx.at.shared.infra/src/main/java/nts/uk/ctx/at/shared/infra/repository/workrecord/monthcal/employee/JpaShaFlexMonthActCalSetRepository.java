@@ -13,7 +13,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.sha.ShaFlexMonthActCalSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.sha.ShaFlexMonthActCalSetRepo;
-import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.employee.KrcmtCalcMSetFleSya;
+import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.employee.KrcstShaFlexMCalSet;
 import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.employee.KrcstShaFlexMCalSetPK;
 
 /**
@@ -22,7 +22,7 @@ import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.employee.KrcstShaFl
 @Stateless
 public class JpaShaFlexMonthActCalSetRepository extends JpaRepository implements ShaFlexMonthActCalSetRepo {
 	
-	private static final String SELECT_BY_CID = "SELECT c FROM KrcmtCalcMSetFleSya c"
+	private static final String SELECT_BY_CID = "SELECT c FROM KrcstShaFlexMCalSet c"
 			+ " WHERE c.krcstShaFlexMCalSetPK.cid = :cid";
 
 	/*
@@ -35,7 +35,7 @@ public class JpaShaFlexMonthActCalSetRepository extends JpaRepository implements
 	@Override
 	public void add(ShaFlexMonthActCalSet domain) {
 		// Create new entity
-		KrcmtCalcMSetFleSya entity = new KrcmtCalcMSetFleSya();
+		KrcstShaFlexMCalSet entity = new KrcstShaFlexMCalSet();
 
 		// Transfer data
 		entity.transfer(domain);
@@ -60,7 +60,7 @@ public class JpaShaFlexMonthActCalSetRepository extends JpaRepository implements
 		KrcstShaFlexMCalSetPK pk = new KrcstShaFlexMCalSetPK(domain.getComId().toString(),
 				domain.getEmpId());
 		
-		this.queryProxy().find(pk, KrcmtCalcMSetFleSya.class).ifPresent(e -> {
+		this.queryProxy().find(pk, KrcstShaFlexMCalSet.class).ifPresent(e -> {
 			
 			e.transfer(domain);
 			
@@ -80,7 +80,7 @@ public class JpaShaFlexMonthActCalSetRepository extends JpaRepository implements
 		// Get info
 		KrcstShaFlexMCalSetPK pk = new KrcstShaFlexMCalSetPK(cid, sid);
 		
-		return this.queryProxy().find(pk, KrcmtCalcMSetFleSya.class).map(c -> toDomain(c));
+		return this.queryProxy().find(pk, KrcstShaFlexMCalSet.class).map(c -> toDomain(c));
 	}
 
 	/*
@@ -93,12 +93,12 @@ public class JpaShaFlexMonthActCalSetRepository extends JpaRepository implements
 	@Override
 	public void remove(String cid, String sid) {
 		this.queryProxy().find(new KrcstShaFlexMCalSetPK(cid, sid),
-				KrcmtCalcMSetFleSya.class)
+				KrcstShaFlexMCalSet.class)
 			.ifPresent(entity -> this.commandProxy().remove(entity));
 
 	}
 
-	private ShaFlexMonthActCalSet toDomain (KrcmtCalcMSetFleSya e) {
+	private ShaFlexMonthActCalSet toDomain (KrcstShaFlexMCalSet e) {
 		
 		return ShaFlexMonthActCalSet.of(e.getKrcstShaFlexMCalSetPK().getCid(),
 										e.flexAggregateMethod(),
@@ -110,7 +110,7 @@ public class JpaShaFlexMonthActCalSetRepository extends JpaRepository implements
 
 	@Override
 	public List<ShaFlexMonthActCalSet> findAllShaByCid(String cid) {
-		List<KrcmtCalcMSetFleSya> entitys = this.queryProxy().query(SELECT_BY_CID, KrcmtCalcMSetFleSya.class)
+		List<KrcstShaFlexMCalSet> entitys = this.queryProxy().query(SELECT_BY_CID, KrcstShaFlexMCalSet.class)
 				.setParameter("cid", cid).getList();
 		return entitys.stream().map(m -> {
 			return toDomain(m);

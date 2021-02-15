@@ -21,10 +21,10 @@ import nts.uk.ctx.at.shared.dom.workingcondition.PersonalWorkCategory;
 import nts.uk.ctx.at.shared.dom.workingcondition.ScheduleMethod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemGetMemento;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondCtg;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondWeek;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondScheMeth;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondHistItem;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPerWorkCat;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPersonalDayOfWeek;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtScheduleMethod;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkingCondItem;
 
 /**
  * The Class JpaWorkingConditionItemGetMemento.
@@ -32,13 +32,13 @@ import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondHistItem;
 public class JpaWorkingConditionItemGetMemento implements WorkingConditionItemGetMemento {
 
 	/** The entity. */
-	private KshmtWorkcondHistItem entity;
+	private KshmtWorkingCondItem entity;
 	/** The entity. */
-	private List<KshmtWorkcondCtg> perWorkCat;
+	private List<KshmtPerWorkCat> perWorkCat;
 	/** The entity. */
-	private List<KshmtWorkcondWeek> perDayWeek;
+	private List<KshmtPersonalDayOfWeek> perDayWeek;
 	/** The entity. */
-	private KshmtWorkcondScheMeth method;
+	private KshmtScheduleMethod method;
 
 	/**
 	 * Instantiates a new jpa working condition item get memento.
@@ -46,7 +46,7 @@ public class JpaWorkingConditionItemGetMemento implements WorkingConditionItemGe
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaWorkingConditionItemGetMemento(KshmtWorkcondHistItem entity) {
+	public JpaWorkingConditionItemGetMemento(KshmtWorkingCondItem entity) {
 		super();
 		this.entity = entity;
 		this.perDayWeek = entity.getKshmtPersonalDayOfWeeks();
@@ -61,7 +61,7 @@ public class JpaWorkingConditionItemGetMemento implements WorkingConditionItemGe
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaWorkingConditionItemGetMemento(KshmtWorkcondHistItem entity, Map<String, Object> enums) {
+	public JpaWorkingConditionItemGetMemento(KshmtWorkingCondItem entity, Map<String, Object> enums) {
 		super();
 		this.entity = entity;
 		//就業区分 - 労働制
@@ -87,8 +87,8 @@ public class JpaWorkingConditionItemGetMemento implements WorkingConditionItemGe
 		enums.put("IS00126", this.entity.getKshmtScheduleMethod().getRefWorkingHours());
 	}
 	
-	public JpaWorkingConditionItemGetMemento(KshmtWorkcondHistItem entity, List<KshmtWorkcondCtg> perWorkCat, 
-			List<KshmtWorkcondWeek> perDayWeek, KshmtWorkcondScheMeth method) {
+	public JpaWorkingConditionItemGetMemento(KshmtWorkingCondItem entity, List<KshmtPerWorkCat> perWorkCat, 
+			List<KshmtPersonalDayOfWeek> perDayWeek, KshmtScheduleMethod method) {
 		super();
 		this.entity = entity;
 		this.perWorkCat = perWorkCat;

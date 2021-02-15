@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * The primary key class for the KRCMT_DVGC_REF_TIME database table.
+ * The primary key class for the KRCST_DRT database table.
  * 
  */
 @Getter

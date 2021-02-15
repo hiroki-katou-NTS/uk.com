@@ -10,7 +10,7 @@ import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 
 /**
- * The primary key class for the KRCDT_DAY_TS_LOGON database table.
+ * The primary key class for the KRCDT_DAY_PC_LOGON_INFO database table.
  * 
  */
 @Embeddable

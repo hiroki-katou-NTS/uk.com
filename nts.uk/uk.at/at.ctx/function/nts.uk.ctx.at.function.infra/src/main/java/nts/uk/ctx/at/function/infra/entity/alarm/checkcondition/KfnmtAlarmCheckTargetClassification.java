@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KFNMT_ALST_CHK_TGTCLS")
+@Table(name = "KFNMT_ALCHKTARGET_CLS")
 public class KfnmtAlarmCheckTargetClassification extends UkJpaEntity implements Serializable {
 	
 	private static final long serialVersionUID = 1L;

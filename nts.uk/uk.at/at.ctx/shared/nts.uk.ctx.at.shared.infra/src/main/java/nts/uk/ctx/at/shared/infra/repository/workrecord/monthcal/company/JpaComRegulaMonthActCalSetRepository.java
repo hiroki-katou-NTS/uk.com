@@ -11,7 +11,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.com.ComRegulaMonthActCalSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.com.ComRegulaMonthActCalSetRepo;
-import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.company.KrcmtCalcMSetRegCom;
+import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.company.KrcstComRegMCalSet;
 
 /**
  * The Class JpaComRegulaMonthActCalSetRepository.
@@ -29,7 +29,7 @@ public class JpaComRegulaMonthActCalSetRepository extends JpaRepository
 	@Override
 	public Optional<ComRegulaMonthActCalSet> find(String companyId) {
 		// Get info
-		return this.queryProxy().find(companyId, KrcmtCalcMSetRegCom.class).map(c -> toDomain(c));
+		return this.queryProxy().find(companyId, KrcstComRegMCalSet.class).map(c -> toDomain(c));
 	}
 
 	/*
@@ -42,7 +42,7 @@ public class JpaComRegulaMonthActCalSetRepository extends JpaRepository
 	@Override
 	public void add(ComRegulaMonthActCalSet domain) {
 		// Create new entity
-		KrcmtCalcMSetRegCom entity = new KrcmtCalcMSetRegCom();
+		KrcstComRegMCalSet entity = new KrcstComRegMCalSet();
 
 		// Transfer data
 		entity.transfer(domain);
@@ -62,7 +62,7 @@ public class JpaComRegulaMonthActCalSetRepository extends JpaRepository
 	@Override
 	public void update(ComRegulaMonthActCalSet domain) {
 		// Get info
-		this.queryProxy().find(domain.getComId(), KrcmtCalcMSetRegCom.class).ifPresent(e -> {
+		this.queryProxy().find(domain.getComId(), KrcstComRegMCalSet.class).ifPresent(e -> {
 			
 			e.transfer(domain);
 			
@@ -78,10 +78,10 @@ public class JpaComRegulaMonthActCalSetRepository extends JpaRepository
 	 */
 	@Override
 	public void remove(String cId) {
-		this.commandProxy().remove(KrcmtCalcMSetRegCom.class, cId);
+		this.commandProxy().remove(KrcstComRegMCalSet.class, cId);
 	}
 
-	private ComRegulaMonthActCalSet toDomain (KrcmtCalcMSetRegCom e) {
+	private ComRegulaMonthActCalSet toDomain (KrcstComRegMCalSet e) {
 		
 		return ComRegulaMonthActCalSet.of(e.getCid(), 
 				e.getAggregateTimeSet(), 

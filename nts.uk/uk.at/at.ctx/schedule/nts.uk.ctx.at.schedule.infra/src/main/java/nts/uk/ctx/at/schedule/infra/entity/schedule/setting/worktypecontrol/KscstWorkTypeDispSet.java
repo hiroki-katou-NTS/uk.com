@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCMT_DISP_WKTP")
+@Table(name = "KSCST_WORKTYPE_DISP_SET")
 public class KscstWorkTypeDispSet extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

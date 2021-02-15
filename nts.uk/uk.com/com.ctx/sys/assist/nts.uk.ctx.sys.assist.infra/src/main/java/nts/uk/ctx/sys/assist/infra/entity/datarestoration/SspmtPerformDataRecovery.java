@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Getter
-@Table(name = "SSPDT_RECOVER_PERFORM")
+@Table(name = "SSPMT_PERFORM_DAT_RECOVER")
 public class SspmtPerformDataRecovery extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -98,7 +98,7 @@ public class SspmtPerformDataRecovery extends UkJpaEntity implements Serializabl
 		return dataRecoveryProcessId;
 	}
 
-	public PerformDataRecovery toDomain(List<SspdtRecoverTarget> targets, List<SspdtRecoverTargetCond> restorationTarget) {
+	public PerformDataRecovery toDomain(List<SspmtTarget> targets, List<SspmtRestorationTarget> restorationTarget) {
 		return new PerformDataRecovery(this.dataRecoveryProcessId,
 				this.cid, 
 				targets != null ? targets.stream().map(x -> new Target(x.targetPk.dataRecoveryProcessId, x.targetPk.sid, x.scd, x.bussinessName)).collect(Collectors.toList()) : null,

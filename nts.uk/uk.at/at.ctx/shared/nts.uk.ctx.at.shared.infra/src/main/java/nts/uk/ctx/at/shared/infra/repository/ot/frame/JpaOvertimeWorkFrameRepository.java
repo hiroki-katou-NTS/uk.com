@@ -25,7 +25,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
-import nts.uk.ctx.at.shared.infra.entity.ot.frame.KshmtOverFrame;
+import nts.uk.ctx.at.shared.infra.entity.ot.frame.KshstOvertimeFrame;
 import nts.uk.ctx.at.shared.infra.entity.ot.frame.KshstOvertimeFramePK;
 import nts.uk.ctx.at.shared.infra.entity.ot.frame.KshstOvertimeFramePK_;
 import nts.uk.ctx.at.shared.infra.entity.ot.frame.KshstOvertimeFrame_;
@@ -44,7 +44,7 @@ public class JpaOvertimeWorkFrameRepository extends JpaRepository
 	@Override
 	public Optional<OvertimeWorkFrame> findOvertimeWorkFrame(CompanyId companyId, int overtimeWorkFrNo) {
 		return this.queryProxy()
-				.find(new KshstOvertimeFramePK(companyId.v(), (short) overtimeWorkFrNo), KshmtOverFrame.class)
+				.find(new KshstOvertimeFramePK(companyId.v(), (short) overtimeWorkFrNo), KshstOvertimeFrame.class)
 				.map(e -> this.toDomain(e));
 	}
 
@@ -67,11 +67,11 @@ public class JpaOvertimeWorkFrameRepository extends JpaRepository
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		CriteriaQuery<KshmtOverFrame> cq = criteriaBuilder
-			.createQuery(KshmtOverFrame.class);
+		CriteriaQuery<KshstOvertimeFrame> cq = criteriaBuilder
+			.createQuery(KshstOvertimeFrame.class);
 		
 		// root data
-		Root<KshmtOverFrame> root = cq.from(KshmtOverFrame.class);
+		Root<KshstOvertimeFrame> root = cq.from(KshstOvertimeFrame.class);
 
 		// select root
 		cq.select(root);
@@ -87,7 +87,7 @@ public class JpaOvertimeWorkFrameRepository extends JpaRepository
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		// creat query
-		TypedQuery<KshmtOverFrame> query = em.createQuery(cq);
+		TypedQuery<KshstOvertimeFrame> query = em.createQuery(cq);
 
 		// exclude select
 		return query.getResultList().stream().map(category -> toDomain(category))
@@ -101,16 +101,16 @@ public class JpaOvertimeWorkFrameRepository extends JpaRepository
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		CriteriaQuery<KshmtOverFrame> cq = criteriaBuilder
-				.createQuery(KshmtOverFrame.class);
+		CriteriaQuery<KshstOvertimeFrame> cq = criteriaBuilder
+				.createQuery(KshstOvertimeFrame.class);
 
 		// root data
-		Root<KshmtOverFrame> root = cq.from(KshmtOverFrame.class);
+		Root<KshstOvertimeFrame> root = cq.from(KshstOvertimeFrame.class);
 
 		// select root
 		cq.select(root);
 
-		List<KshmtOverFrame> resultList = new ArrayList<>();
+		List<KshstOvertimeFrame> resultList = new ArrayList<>();
 
 		CollectionUtil.split(overtimeWorkFrNos, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT,
 				splitData -> {
@@ -140,11 +140,11 @@ public class JpaOvertimeWorkFrameRepository extends JpaRepository
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		CriteriaQuery<KshmtOverFrame> cq = criteriaBuilder
-			.createQuery(KshmtOverFrame.class);
+		CriteriaQuery<KshstOvertimeFrame> cq = criteriaBuilder
+			.createQuery(KshstOvertimeFrame.class);
 		
 		// root data
-		Root<KshmtOverFrame> root = cq.from(KshmtOverFrame.class);
+		Root<KshstOvertimeFrame> root = cq.from(KshstOvertimeFrame.class);
 
 		// select root
 		cq.select(root);
@@ -162,7 +162,7 @@ public class JpaOvertimeWorkFrameRepository extends JpaRepository
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		// creat query
-		TypedQuery<KshmtOverFrame> query = em.createQuery(cq);
+		TypedQuery<KshstOvertimeFrame> query = em.createQuery(cq);
 
 		// exclude select
 		return query.getResultList().stream().map(category -> toDomain(category))
@@ -175,8 +175,8 @@ public class JpaOvertimeWorkFrameRepository extends JpaRepository
 	 * @param domain the domain
 	 * @return the kshst overtime frame
 	 */
-	private KshmtOverFrame toEntity(OvertimeWorkFrame domain){
-		KshmtOverFrame entity = new KshmtOverFrame();
+	private KshstOvertimeFrame toEntity(OvertimeWorkFrame domain){
+		KshstOvertimeFrame entity = new KshstOvertimeFrame();
 		domain.saveToMemento(new JpaOvertimeWorkFrameSetMemento(entity));
 		return entity;
 	}
@@ -187,7 +187,7 @@ public class JpaOvertimeWorkFrameRepository extends JpaRepository
 	 * @param entity the entity
 	 * @return the overtime work frame
 	 */
-	private OvertimeWorkFrame toDomain(KshmtOverFrame entity){
+	private OvertimeWorkFrame toDomain(KshstOvertimeFrame entity){
 		return new OvertimeWorkFrame(new JpaOvertimeWorkFrameGetMemento(entity));
 	}
 

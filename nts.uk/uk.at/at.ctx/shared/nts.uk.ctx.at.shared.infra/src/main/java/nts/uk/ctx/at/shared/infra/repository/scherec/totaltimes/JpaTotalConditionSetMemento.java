@@ -9,7 +9,7 @@ import java.util.Optional;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.ConditionThresholdLimit;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.UseAtr;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.memento.TotalConditionSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshmtTotalCondition;
+import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshstTotalCondition;
 import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshstTotalConditionPK;
 
 /**
@@ -18,7 +18,7 @@ import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshstTotalConditionP
 public class JpaTotalConditionSetMemento implements TotalConditionSetMemento {
 
 	/** The entity. */
-	private KshmtTotalCondition entity;
+	private KshstTotalCondition entity;
 
 	/**
 	 * Instantiates a new jpa total condition set memento.
@@ -28,7 +28,7 @@ public class JpaTotalConditionSetMemento implements TotalConditionSetMemento {
 	 * @param entity the entity
 	 */
 	public JpaTotalConditionSetMemento(String cid, Integer totalTimesNo,
-			KshmtTotalCondition entity) {
+			KshstTotalCondition entity) {
 		if (entity.getKshstTotalConditionPK() == null) {
 			KshstTotalConditionPK pk = new KshstTotalConditionPK();
 			pk.setCid(cid);

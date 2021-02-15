@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezoneGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloBrFl;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowRtSet;
 
 /**
  * The Class JpaFlowWorkRestTimezoneGetMemento.
@@ -16,14 +16,14 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloBrFl;
 public class JpaFlowWorkRestTimezoneGetMemento implements FlowWorkRestTimezoneGetMemento {
 
 	/** The entity. */
-	private KshmtWtFloBrFl entity;
+	private KshmtFlowRtSet entity;
 	
 	/**
 	 * Instantiates a new jpa flow work rest timezone get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlowWorkRestTimezoneGetMemento(KshmtWtFloBrFl entity) {
+	public JpaFlowWorkRestTimezoneGetMemento(KshmtFlowRtSet entity) {
 		super();
 		this.entity = entity;		
 	}

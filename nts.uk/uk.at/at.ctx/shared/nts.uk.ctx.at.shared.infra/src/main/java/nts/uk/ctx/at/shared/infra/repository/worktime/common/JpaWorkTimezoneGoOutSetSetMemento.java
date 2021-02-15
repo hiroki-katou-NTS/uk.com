@@ -7,8 +7,8 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTimezoneRoundingSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.TotalRoundingSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSetSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtCom;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComGoout;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeGoOutSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeGoOutSetPK;
 
 /**
@@ -17,14 +17,14 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeGoOutSetPK
 public class JpaWorkTimezoneGoOutSetSetMemento implements WorkTimezoneGoOutSetSetMemento {
 
 	/** The entity. */
-	private KshmtWtCom entity;
+	private KshmtWorktimeCommonSet entity;
 
 	/**
 	 * Instantiates a new jpa work timezone go out set set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaWorkTimezoneGoOutSetSetMemento(KshmtWtCom entity) {
+	public JpaWorkTimezoneGoOutSetSetMemento(KshmtWorktimeCommonSet entity) {
 		super();
 		this.entity = entity;
 	}
@@ -44,7 +44,7 @@ public class JpaWorkTimezoneGoOutSetSetMemento implements WorkTimezoneGoOutSetSe
 					this.entity.getKshmtWorktimeCommonSetPK().getWorktimeCd(),
 					this.entity.getKshmtWorktimeCommonSetPK().getWorkFormAtr(),
 					this.entity.getKshmtWorktimeCommonSetPK().getWorktimeSetMethod());
-			KshmtWtComGoout entity = new KshmtWtComGoout();
+			KshmtWorktimeGoOutSet entity = new KshmtWorktimeGoOutSet();
 			entity.setKshmtWorktimeGoOutSetPK(pk);
 			this.entity.setKshmtWorktimeGoOutSet(entity);
 		}
