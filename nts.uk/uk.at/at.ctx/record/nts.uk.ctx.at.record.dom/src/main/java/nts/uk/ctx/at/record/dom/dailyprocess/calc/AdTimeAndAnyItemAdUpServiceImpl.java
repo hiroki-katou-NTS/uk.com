@@ -1,4 +1,4 @@
-﻿package nts.uk.ctx.at.record.dom.dailyprocess.calc;
+package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import java.util.ArrayList;
 import java.util.Arrays;

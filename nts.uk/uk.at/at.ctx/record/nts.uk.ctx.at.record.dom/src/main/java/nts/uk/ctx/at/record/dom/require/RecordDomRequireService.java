@@ -1,4 +1,4 @@
-﻿package nts.uk.ctx.at.record.dom.require;
+package nts.uk.ctx.at.record.dom.require;
 
 import java.util.ArrayList;
 import java.util.Collections;
