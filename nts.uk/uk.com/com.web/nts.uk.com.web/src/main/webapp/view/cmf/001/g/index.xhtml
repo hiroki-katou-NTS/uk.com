@@ -12,7 +12,8 @@
 			<com:ValidatorScript>
                     nts.uk.ctx.exio.dom.exi.dataformat.AcceptedDigit
                     nts.uk.ctx.exio.dom.exi.dataformat.DecimalDigitNumber
-                    nts.uk.ctx.exio.dom.exi.dataformat.DataSettingFixedValue
+                    <!-- nts.uk.ctx.exio.dom.exi.dataformat.DataSettingFixedValue -->
+                    nts.uk.ctx.exio.dom.exi.condset.AcceptanceConditionValue
             </com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
@@ -27,6 +28,48 @@
 				data-bind="with: numDataFormatSetting">
 				<div id="G1_1" class="label dialog-title">#{i18n.getText('CMF001_220')}</div>
 				<div class="div-table">
+				
+					<div class="div-table-row">
+						<div class="div-table-col-2">
+							<div id="G5_1" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_252')}</div>
+						</div>
+						<div id="G5_2" tabindex="9" class="div-table-col">
+							<div id="G5_3" tabindex="-1" class="div-table-col"
+								data-bind="ntsRadioButton: {
+									checked: fixedValue, 
+									option: $parent.effectFixedValItem()[0], 
+									optionValue: 'code', 
+									enable: $parent.enableFixedValueCls(), 
+									name: '#{i18n.getText('CMF001_253')}', 
+									optionText: 'name', 
+									group: 'fixedValCls' 
+									}">
+							</div>
+							<div id="G5_4" tabindex="-1" class="div-table-col radio-group"
+								data-bind="ntsRadioButton: {
+									checked: fixedValue, 
+									option: $parent.effectFixedValItem()[1], 
+									optionValue: 'code', 
+									enable: $parent.inputMode, 
+									name: '#{i18n.getText('CMF001_253')}', 
+									optionText: 'name', 
+									group: 'fixedValCls' 
+									}">
+							</div>
+						</div>
+						<div style="display: inline">
+							<input id="G5_5" tabindex="10"
+								data-bind="ntsNumberEditor: {
+								value: valueOfFixedValue,
+								name: '#{i18n.getText('CMF001_256')}', 
+								required: true,
+								constraint: 'AcceptanceConditionValue',
+								enable: $parent.enableFixedValue(),
+								option: {decimallength: 2, width : '115px'}
+								}" />
+						</div>
+					</div>				
+				
 					<div class="div-table-row">
 						<div id="G2_1" class="div-table-col-2"
 							data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_221')}</div>
@@ -161,45 +204,7 @@
 							style="margin-left: 15px;"
 							data-bind="text: $parent.codeConvertCode().dispConvertName"></div>
 					</div>
-					<div class="div-table-row">
-						<div class="div-table-col-2">
-							<div id="G5_1" data-bind="ntsFormLabel: { }">#{i18n.getText('CMF001_252')}</div>
-						</div>
-						<div id="G5_2" tabindex="9" class="div-table-col">
-							<div id="G5_3" tabindex="-1" class="div-table-col"
-								data-bind="ntsRadioButton: {
-									checked: fixedValue, 
-									option: $parent.effectFixedValItem()[0], 
-									optionValue: 'code', 
-									enable: $parent.enableFixedValueCls(), 
-									name: '#{i18n.getText('CMF001_253')}', 
-									optionText: 'name', 
-									group: 'fixedValCls' 
-									}">
-							</div>
-							<div id="G5_4" tabindex="-1" class="div-table-col radio-group"
-								data-bind="ntsRadioButton: {
-									checked: fixedValue, 
-									option: $parent.effectFixedValItem()[1], 
-									optionValue: 'code', 
-									enable: $parent.inputMode, 
-									name: '#{i18n.getText('CMF001_253')}', 
-									optionText: 'name', 
-									group: 'fixedValCls' 
-									}">
-							</div>
-						</div>
-						<div style="display: inline">
-							<input id="G5_5" tabindex="10"
-								data-bind="ntsTextEditor: {
-								value: valueOfFixedValue,
-								name: '#{i18n.getText('CMF001_256')}', 
-								required: true,
-								constraint: 'DataSettingFixedValue',
-								enable: $parent.enableFixedValue(),
-								option : {width : '255px'}}" />
-						</div>
-					</div>
+
 				</div>
 			</div>
 			<div id="functions-area-bottom">

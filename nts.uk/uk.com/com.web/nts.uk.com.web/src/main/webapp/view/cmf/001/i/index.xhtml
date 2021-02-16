@@ -27,24 +27,7 @@
 					<col width="180px" />
 					<col width="135px" />
 					<col width="160px" />
-					<tr>
-						<td>
-							<!--I2_1 形式選択(ラベル)-->
-							<div class="label"
-								data-bind="ntsFormLabel: { text: '#{i18n.getText('CMF001_301')}' }"></div>
-						</td>
-						<td>
-							<!--I2_2 形式選択-->
-							<div id="I2_2" tabindex="1"
-								data-bind="ntsRadioBoxGroup: {
-								name: '#[CMF001_302]',
-								options: itemsFormatSelection,
-								optionsValue: 'code',
-								optionsText: 'name',
-								value: setting().formatSelection,
-								enable: checkActive3() &amp;&amp; inputMode}"></div>
-						</td>
-					</tr>
+					
 					<tr>
 						<td>
 							<!--I4_1 固定値(ラベル)-->
@@ -63,16 +46,37 @@
 								enable: inputMode}"></div>
 						</td>
 						<!--I4_5 固定値の値-->
-						<td><input id="I4_5" tabindex="4"
-							data-bind="ntsTextEditor: {
+						<td><div id="I4_5" tabindex="4"
+							data-bind="ntsDatePicker: {
 								name: '#[CMF001_324]',
-								constraint: 'DataSettingFixedValue',
 								value: setting().valueOfFixedValue,
 								enable: checkActive2() &amp;&amp; inputMode,
 								required: checkRequired1,
-								option : {width : '253px'}}" />
+								option : {width : '253px'},
+								dateFormat: 'YYYY/MM/DD ddd'
+								}" />
 						</td>
 					</tr>
+					
+					<tr>
+						<td>
+							<!--I2_1 形式選択(ラベル)-->
+							<div class="label"
+								data-bind="ntsFormLabel: { text: '#{i18n.getText('CMF001_301')}' }"></div>
+						</td>
+						<td>
+							<!--I2_2 形式選択-->
+							<div id="I2_2" tabindex="1"
+								data-bind="ntsRadioBoxGroup: {
+								name: '#[CMF001_302]',
+								options: itemsFormatSelection,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: setting().formatSelection,
+								enable: checkActive3() &amp;&amp; inputMode}"></div>
+						</td>
+					</tr>
+
 				</table>
 			</div>
 			<div id="functions-area-bottom">
