@@ -91,7 +91,7 @@
 															<com:ko-if bind="!isMultiMonthAverage() &amp;&amp; !isHoliday()  ">
 																<div tabindex="-1" class ='inputDate nts-custom' data-bind="ntsDateRangePicker:
 																				 { required: required,
-																				  enable: isEnable,
+																				  enable: isEnable(),
 																				  showNextPrevious: false,
 																				  value: dateValue,
 																				  maxRange: 'oneYear',
@@ -110,7 +110,8 @@
 																				  showNextPrevious: false,
 																				  value: multiMonthAverage,
 																				  dateFormat: 'yearmonth'}, 
-																				 visible: !visible()"/><div id = "textHoliday" >#{i18n.getText('KAL001_160')}</div>
+																				 visible: !visible()"/>
+																	<div id = "textHoliday" >#{i18n.getText('KAL001_160')}</div>
 																 </div>
 															 </com:ko-if>
 															 <!-- <com:ko-if bind="isMultiMonthAverage()">

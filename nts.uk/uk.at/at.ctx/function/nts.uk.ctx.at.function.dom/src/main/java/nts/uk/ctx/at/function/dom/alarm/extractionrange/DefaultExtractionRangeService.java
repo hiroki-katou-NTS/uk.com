@@ -13,8 +13,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.AllArgsConstructor;
 import lombok.val;
-import mockit.Injectable;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
@@ -39,6 +39,9 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.treatmentholiday.TreatmentHoli
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
+import nts.uk.ctx.at.shared.dom.workrule.weekmanage.WeekRuleManagement;
+import nts.uk.ctx.at.shared.dom.workrule.weekmanage.WeekRuleManagementRepo;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 
 @Stateless
@@ -54,8 +57,8 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 	private AgreementOperationSettingAdapter agreementOperationSettingAdapter;
 	@Inject
 	private TreatmentHolidayRepository treatHolidayRepo;
-	@Injectable
-	private TreatmentHoliday.Require require;
+	@Inject
+	private WeekRuleManagementRepo weekRuleManagementRepo;
 	@Override
 	public List<CheckConditionTimeDto> getPeriodByCategory(String alarmCode, String companyId, int closureId,
 			Integer processingYm) {
@@ -310,7 +313,14 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 	}
 	
 	//http://192.168.50.4:3000/issues/112749
-	//周期単位の期間を算出する
+	/**
+	 * 周期単位の期間を算出する
+	 * @param c
+	 * @param closureId
+	 * @param yearMonth
+	 * @param companyId
+	 * @return
+	 */
 	public CheckConditionTimeDto get4WeekTime(CheckCondition c, int closureId, YearMonth yearMonth, String companyId) {
 
 		ExtractionPeriodUnit periodUnit = (ExtractionPeriodUnit) c.getExtractPeriodList().get(0);
@@ -322,6 +332,7 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 		}
 		TreatmentHoliday treatHolidaySet = optTreatHolidaySet.get();
 		//休日取得数と管理期間を取得する
+		RequireImpl require = new RequireImpl(weekRuleManagementRepo);
 		HolidayNumberManagement holidays = treatHolidaySet.getNumberHoliday(require, GeneralDate.today());
 		
 		switch (periodUnit.getSegmentationOfCycle()) {
@@ -343,5 +354,14 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 				period.start().toString(),
 				period.end().toString(), null, null);
 	}
-
+	@AllArgsConstructor
+	private static class RequireImpl implements TreatmentHoliday.Require{
+		private WeekRuleManagementRepo weekRuleManagementRepo;
+		@Override
+		public WeekRuleManagement find() {
+			String companyID = AppContexts.user().companyId();
+			return weekRuleManagementRepo.find(companyID).get();
+		}
+		
+	}
 }

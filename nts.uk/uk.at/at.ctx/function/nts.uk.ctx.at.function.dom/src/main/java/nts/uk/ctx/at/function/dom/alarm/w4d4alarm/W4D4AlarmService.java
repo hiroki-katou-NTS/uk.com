@@ -20,8 +20,8 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import lombok.AllArgsConstructor;
 import lombok.val;
-import mockit.Injectable;
 import nts.arc.task.AsyncTask;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
@@ -52,6 +52,8 @@ import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionResultDetai
 import nts.uk.ctx.at.shared.dom.holidaymanagement.treatmentholiday.HolidayNumberManagement;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.treatmentholiday.TreatmentHoliday;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.treatmentholiday.TreatmentHolidayRepository;
+import nts.uk.ctx.at.shared.dom.workrule.weekmanage.WeekRuleManagement;
+import nts.uk.ctx.at.shared.dom.workrule.weekmanage.WeekRuleManagementRepo;
 import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
@@ -79,11 +81,10 @@ public class W4D4AlarmService {
 	private WorkScheduleFunctionAdapter wScheduleAdapter;
 	@Inject
 	private TreatmentHolidayRepository treatHolidayRepos;
-	@Injectable
-	private TreatmentHoliday.Require require;
-	
-	@Injectable
-	HolidayNumberManagement.Require requireMng;
+	@Inject
+	private WeekRuleManagementRepo weekRuleManagementRepo;
+	@Inject
+	private WorkTypeRepository workTypeRepo;
 	
 	public List<ValueExtractAlarm> calculateTotal4W4D(EmployeeSearchDto employee, DatePeriod period,
 			String checkConditionCode) {
@@ -345,8 +346,10 @@ public class W4D4AlarmService {
 					}
 					
 				}
+				RequireImpl require = new RequireImpl(weekRuleManagementRepo, workTypeRepo);
+				
 				HolidayNumberManagement holidayNumberMana = treatHolidaySet.getNumberHoliday(require, dPeriod.start());
-				int holidays = holidayNumberMana.countNumberHolidays(requireMng, mapWorkInfor);
+				int holidays = holidayNumberMana.countNumberHolidays(require, mapWorkInfor);
 				
 				if(((w4dCheckCond == FourW4DCheckCond.WithScheduleAndActualResults && !workInfoSid.isEmpty() || !basicScheduleImportSid.isEmpty())
 						|| (w4dCheckCond == FourW4DCheckCond.ForActualResultsOnly && !workInfoSid.isEmpty()))
@@ -498,6 +501,26 @@ public class W4D4AlarmService {
 			List<RecordWorkInfoFunAdapterDto> listWorkInfoOfDailyPerByID, List<WorkScheduleBasicInforFunctionImport> basicSchedules) {
 		return w4D4CheckAdapter.checkHolidayWithSchedule(employee.getWorkplaceId(), employee.getId(), period,
 				legalHolidayWorkTypeCodes, illegalHolidayWorkTypeCodes, listWorkInfoOfDailyPerByID, basicSchedules);
+	}
+	
+	@AllArgsConstructor
+	private static class RequireImpl implements TreatmentHoliday.Require, HolidayNumberManagement.Require{
+		
+		private WeekRuleManagementRepo weekRuleManagementRepo;
+		
+		private WorkTypeRepository workTypeRepo;
+		
+		@Override
+		public WeekRuleManagement find() {
+			String companyID = AppContexts.user().companyId();
+			return weekRuleManagementRepo.find(companyID).get();
+		}
+		@Override
+		public Optional<WorkType> findByPK(String workTypeCd) {
+			String companyID = AppContexts.user().companyId();
+			return workTypeRepo.findByPK(companyID, workTypeCd);
+		}
+		
 	}
 
 }
