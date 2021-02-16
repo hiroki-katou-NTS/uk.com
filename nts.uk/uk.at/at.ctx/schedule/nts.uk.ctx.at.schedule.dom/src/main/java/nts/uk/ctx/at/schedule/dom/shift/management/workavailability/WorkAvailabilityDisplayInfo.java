@@ -1,9 +1,12 @@
 package nts.uk.ctx.at.schedule.dom.shift.management.workavailability;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import lombok.Value;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
 
 /**
  * 勤務希望の表示情報
@@ -13,11 +16,13 @@ import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
  */
 @Value
 public class WorkAvailabilityDisplayInfo {
-	
+	/** 種類 */
 	private AssignmentMethod method;
 	
-	private List<String> nameList;
+	/** シフトリスト */
+	private Map<ShiftMasterCode, Optional<String>> shiftList;
 	
+	/** 時間帯リスト*/
 	private List<TimeSpanForCalc> timeZoneList;
 
 }

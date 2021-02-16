@@ -9,7 +9,7 @@
           <div class="card" v-if="true">
             <div class="card-header uk-bg-accordion">
               <button class="btn btn-link" type="button">
-                  {{'KAFS00_4' | i18n}}
+                  {{'KAFS05_41' | i18n}}
               </button>
             </div>
             <div class="collapse">
@@ -50,7 +50,6 @@
         <!--A1_B3_2-->
         <span class="textSize uk-text-dark-gray">{{ "KAFS05_64" | i18n }}</span>
         <button
-          v-bind:disabled="!$appContext.c2"
           v-on:click="$appContext.openKDL002('worktype')"
           type="button"
           class="btn btn-selection mt-2 mb-2"
@@ -65,7 +64,6 @@
         <button
           type="button"
           v-on:click="$appContext.openKDL002('worktime')"
-          v-bind:disabled="!$appContext.c2"
           class="btn btn-selection mt-2 mb-2"
         >
           <span class="badge badge-secondary">{{
@@ -90,7 +88,7 @@
       </div>
     </div>
     <!--A1_B5-->
-    <div v-if="$appContext.c3_2" class="card card-label">
+    <div v-if="$appContext.c3_1" class="card card-label">
       <!--A1_B5_1-->
       <div class="card-header uk-bg-accordion">
         <span>{{ "KAFS05_67" | i18n }}</span>
@@ -103,7 +101,7 @@
     </div>
 
     <!-- Break A1_B6-->
-    <div v-if="$appContext.c3_1" class="card card-label">
+    <div v-if="$appContext.c3" class="card card-label">
       <!--A1_B6_1-->
       <div class="card-header uk-bg-accordion mt-2 mb-n2">
         <span>{{ "KAFS05_68" | i18n }}</span>

@@ -4,19 +4,23 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave;
 
+import java.io.Serializable;
+
 import lombok.Builder;
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 
 /**
+ * 半日年休管理
  * The Class HalfDayManage.
  */
 @Builder
-public class HalfDayManage {
+public class HalfDayManage implements Serializable{
 
-    /** The maximum day. */
-    // 上限日数. Default value = 5 - #83430
-    public final Integer maxDayOfYear = 5;
+    /**
+	 * Serializable
+	 */
+	private static final long serialVersionUID = 1L;
 
     /** The manage type. */
     // 管理区分
@@ -30,7 +34,7 @@ public class HalfDayManage {
     /** The max number uniform company. */
     // 会社一律上限回数
     public AnnualNumberDay maxNumberUniformCompany;
-    
+
     //端数処理区分
     public RoundProcessingClassification roundProcesCla;
 }

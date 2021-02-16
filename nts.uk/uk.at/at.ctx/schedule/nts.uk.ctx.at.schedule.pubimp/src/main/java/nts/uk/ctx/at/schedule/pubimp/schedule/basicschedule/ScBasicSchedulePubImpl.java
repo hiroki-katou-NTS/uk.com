@@ -162,7 +162,7 @@ public class ScBasicSchedulePubImpl implements ScBasicSchedulePub {
 
 	private ShortWorkingTimeSheetExport convertToShortWorkingTimeSheet(ShortWorkingTimeSheet swt) {
 		return new ShortWorkingTimeSheetExport(swt.getShortWorkTimeFrameNo().v(), swt.getChildCareAttr().value,
-				swt.getStartTime().v(), swt.getEndTime().v(), swt.getDeductionTime().v(), swt.getShortTime().v());
+				swt.getStartTime().v(), swt.getEndTime().v());
 	}
 
 	private ScheduleTimeSheetExport convertToScheduleTimeSheet(ScheduleTimeSheet st) {
@@ -209,9 +209,7 @@ public class ScBasicSchedulePubImpl implements ScBasicSchedulePub {
 							a.getShortWorkTimeFrameNo().v(),
 							a.getChildCareAttr().value,
 							a.getStartTime().v(),
-							a.getEndTime().v(),
-							a.getDeductionTime() == null ? 0 : a.getDeductionTime().v(),
-							a.getShortTime() == null ? 0 : a.getShortTime().v());
+							a.getEndTime().v());
 				}).collect(Collectors.toList());
 				result.setListShortWorkingTimeSheetExport(listExport);							
 			});		

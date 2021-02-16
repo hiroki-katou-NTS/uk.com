@@ -107,13 +107,13 @@ export class KafS05Component extends KafS00ShrComponent {
         return ((!self.c15 && value1 == NotUseAtr.USE) || (self.c15 && value2 == NotUseAtr.USE));
     }
     // ※表3 = ○　OR　※表3-1-1 = ○
-    public get c3_1() {
-        const self = this;
+    // public get c3_1() {
+    //     const self = this;
 
-        return self.c3_1_1 || self.c3;
-    }
+    //     return self.c3_1_1 || self.c3;
+    // }
     //  c3 AND「残業申請の表示情報．申請表示情報．申請表示情報(基準日関係なし)．複数回勤務の管理」＝true"
-    public get c3_2() {
+    public get c3_1() {
         const self = this;
         let model = self.model as Model;
         let value = _.get(model, 'displayInfoOverTime.appDispInfoStartup.appDispInfoNoDateOutput.managementMultipleWorkCycles');
@@ -417,6 +417,22 @@ export class KafS05Component extends KafS00ShrComponent {
                 }
                 let step1 = vm.$refs.step1 as KafS05Step1Component;
                 step1.loadData(vm.model.displayInfoOverTime);
+                // 勤務種類リストと就業時間帯リストがない場合エラーを返す
+                if (vm.model.displayInfoOverTime) {
+                    
+                    if (_.isEmpty(vm.model.displayInfoOverTime.infoBaseDateOutput.worktypes)) {
+                        // msg_1567
+                        vm.$modal.error({ messageId: 'Msg_1567'});	
+                    }
+                    if (vm.model.displayInfoOverTime.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst) {
+                        
+                        if (_.isEmpty(vm.model.displayInfoOverTime.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst)) {
+                            vm.$modal.error({ messageId: 'Msg_1568'});	
+                        }
+                    } else {
+                        vm.$modal.error({ messageId: 'Msg_1568'});	
+                    }
+                }
             }
         }).catch((error: any) => {
             vm.handleErrorCustom(error).then((result) => {
@@ -528,7 +544,7 @@ export class KafS05Component extends KafS00ShrComponent {
             if (step1.getWorkType() && self.c3) {
                 appOverTimeInsert.workInfoOp = {} as WorkInformation;
                 appOverTimeInsert.workInfoOp.workType = step1.getWorkType();
-                appOverTimeInsert.workInfoOp.workTime = step1.getWorkTime();
+                appOverTimeInsert.workInfoOp.workTime = step1.getWorkTime() == '' ? null : step1.getWorkTime();
             }
             appOverTimeInsert.workHoursOp = [] as Array<TimeZoneWithWorkNo>;
             {   
@@ -544,7 +560,7 @@ export class KafS05Component extends KafS00ShrComponent {
                         appOverTimeInsert.workHoursOp.push(timeZone);
                     }
                 }
-                if (self.c3_2) {
+                if (self.c3_1) {
                     let start = _.get(step1.getWorkHours2(), 'start');
                     let end = _.get(step1.getWorkHours2(), 'end');
                     if (_.isNumber(start) && _.isNumber(end)) {
@@ -557,7 +573,7 @@ export class KafS05Component extends KafS00ShrComponent {
                     }
                 }
             }
-            if (self.c3_1) {
+            if (self.c3) {
                 appOverTimeInsert.breakTimeOp = [] as Array<TimeZoneWithWorkNo>;
                 let breakTimes = step1.getBreakTimes() as Array<BreakTime>;
                 _.forEach(breakTimes, (item: BreakTime, index: number) => {
@@ -661,6 +677,21 @@ export class KafS05Component extends KafS00ShrComponent {
         if (vm.numb == 1 && value == 2) {
             vm.$mask('show');
             let step1 = vm.$refs.step1 as KafS05Step1Component;
+            if (
+                (_.isNumber(_.get(step1, 'workHours2.start')) && !_.isNumber(_.get(step1, 'workHours2.end'))) 
+                || (_.isNumber(_.get(step1, 'workHours2.end') && !_.isNumber(_.get(step1, 'workHours2.start'))))
+            ) {
+
+                vm.$nextTick(() => {
+                    vm.$mask('hide');
+                });
+                vm.$modal.error({ messageId: 'Msg_307'})
+                    .then(() => {
+                        
+                    });
+
+                return;
+            }
             vm.isValidateAll = vm.customValidate(step1);
             step1.$validate();
             window.scrollTo(500, 0);
@@ -722,6 +753,9 @@ export class KafS05Component extends KafS00ShrComponent {
                     });
                 });
         } else if (vm.numb == 2 && value == 1) { // step 2 -> step 1
+            let step2 = vm.$refs.step2 as KafS05Step2Component;
+            step2.overTimes = [];
+            step2.holidayTimes = [];
             vm.numb = value;
         } else if (vm.numb == 2 && value == 3) {
             let step3 = vm.$refs.step3 as KafS05Step3Component;
@@ -933,6 +967,7 @@ export class KafS05Component extends KafS00ShrComponent {
                             infoWithDateApplicationOp.breakTime = res.data.breakTimeZoneSetting;
                             infoWithDateApplicationOp.workTypeCD = step1.workInfo.workType.code;
                             infoWithDateApplicationOp.workTimeCD = step1.workInfo.workTime.code;
+                            self.model.displayInfoOverTime.infoWithDateApplicationOp = infoWithDateApplicationOp;
                         }
                         step1.loadData(self.model.displayInfoOverTime, true, true);
                         step1.createHoursWorkTime();
@@ -1012,6 +1047,7 @@ export class KafS05Component extends KafS00ShrComponent {
                             infoWithDateApplicationOp.breakTime = res.data.breakTimeZoneSetting;
                             infoWithDateApplicationOp.workTypeCD = step1.workInfo.workType.code;
                             infoWithDateApplicationOp.workTimeCD = step1.workInfo.workTime.code;
+                            self.model.displayInfoOverTime.infoWithDateApplicationOp = infoWithDateApplicationOp;
                         }
                         step1.loadData(self.model.displayInfoOverTime, true, true);
                         step1.createHoursWorkTime();

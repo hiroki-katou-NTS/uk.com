@@ -46,8 +46,8 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.MailRes
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
-import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMng;
-import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMngRepository;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.AppHdsubRec;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.AppHdsubRecRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.SyncState;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
@@ -98,7 +98,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	@Inject
 	private AbsenceLeaveAppRepository absRepo;
 	@Inject
-	private CompltLeaveSimMngRepository compLeaveRepo;
+	private AppHdsubRecRepository compLeaveRepo;
 	
 	@Inject
 	private MailSender mailsender;
@@ -188,7 +188,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 			// アルゴリズム「職場IDから職場別就業時間帯を取得」を実行する
 			List<WorkTimeSetting> listWorkTime = workTimeWorkplaceRepo.getWorkTimeWorkplaceById(companyID, wkpID);
 			if(listWorkTime.size()>0) {
-				Collections.sort(listWorkTime, Comparator.comparing(x -> x.getWorktimeCode().v()));
+				Collections.sort(listWorkTime, (x1, x2) -> x1.getWorktimeCode().compareTo(x2.getWorktimeCode()));
 				return listWorkTime;
 			}
 		}
@@ -279,7 +279,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	public AppCompltLeaveSyncOutput getAppComplementLeaveSync(String companyId, String appId) {
 		// TODO Auto-generated method stub
 		Optional<AbsenceLeaveApp> abs = absRepo.findByAppId(appId);
-		Optional<CompltLeaveSimMng> sync = null;
+		Optional<AppHdsubRec> sync = null;
 		String absId = "";
 		String recId = "";
 		boolean synced = false;

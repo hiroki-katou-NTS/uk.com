@@ -57,8 +57,10 @@ public class RemoveProcessExecutionCommandHandler extends CommandHandler<RemoveP
 			this.scheduler.unscheduleOnCurrentCompany(SortingProcessScheduleJob.class, scheduleId);
 			Optional<String> endScheduleId = execTaskSetting.getEndScheduleId();
 			if (endScheduleId.isPresent()) {
-				this.scheduler.unscheduleOnCurrentCompany(SortingProcessEndScheduleJob.class, endScheduleId.get());
+				this.scheduler.unscheduleOnCurrentCompany(SortingProcessScheduleJob.class, endScheduleId.get());
 			}
+			execTaskSetting.getRepeatScheduleId().ifPresent(repScheduleId -> this.scheduler
+					.unscheduleOnCurrentCompany(SortingProcessScheduleJob.class, repScheduleId));
 		});
 		// ドメインモデル「実行タスク設定」を削除する
 		this.execSetRepo.remove(companyId, command.getExecItemCd());

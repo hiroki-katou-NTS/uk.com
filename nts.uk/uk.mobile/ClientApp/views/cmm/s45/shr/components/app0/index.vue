@@ -59,7 +59,7 @@
 
 
     <!-- B3_1 -->
-    <div class="card card-label" v-if="c3_2">
+    <div class="card card-label" v-if="c3_1">
         <div class="card-header uk-bg-accordion mt-2 headerDiv">
             <span class="textPosition">{{ "KAFS05_67" | i18n }}</span>
         </div>
@@ -81,12 +81,13 @@
 
 
     <!-- B4_1 -->
-    <div class="card card-label" v-if="c3_1">
+    <div class="card card-label" v-if="c3">
         <div class="card-header uk-bg-accordion mt-2 headerDiv">
             <span class="textPosition">{{ "KAFS05_68" | i18n }}</span>
         </div>
     </div>
-    <div v-if="c3_1">
+    <div v-if="c3">
+        <div v-if="isEmptyBreakTime">{{'KAFS05_54' | i18n}}</div>
         <div 
         v-for="(item, index) in breakTimes"
         v-bind:key="index"

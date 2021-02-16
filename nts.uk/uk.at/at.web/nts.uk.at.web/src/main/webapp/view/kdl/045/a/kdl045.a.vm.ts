@@ -126,7 +126,6 @@ module nts.uk.at.view.kdl045.a {
             isDisableA5_21: KnockoutObservable<boolean> = ko.observable(true);
             isDisableA5_23: KnockoutObservable<boolean> = ko.observable(true);
             isDisableA5_26: KnockoutObservable<boolean> = ko.observable(true);
-            isDisableA5_27: KnockoutObservable<boolean> = ko.observable(true);
             isDisableA11_3: KnockoutObservable<boolean> = ko.observable(true);
             isDisableA13_1: KnockoutObservable<boolean> = ko.observable(true);
             isDisableA13_2: KnockoutObservable<boolean> = ko.observable(true);
@@ -152,13 +151,15 @@ module nts.uk.at.view.kdl045.a {
             workTimeForm : KnockoutObservable<number>;
             workStyle :KnockoutObservable<number> = ko.observable(null);
             
+            checkIsHoliday   : KnockoutObservable<boolean> = ko.observable(false); 
+            
             disableA10  : KnockoutObservable<boolean> = ko.observable(false);
             
             constructor() {
                 let self = this;
 
                 self.employee = ko.observable(getShared('dataShareTo045'));
-                self.canModified = self.employee().canModified == 1 ? true : false;
+                self.canModified = (self.employee().canModified == 1 && self.employee().employeeInfo.workInfoDto.isConfirmed == 0) ? true : false;
                 self.tabs = ko.observableArray([
                     { id: 'tab-1', title: getText('KDL045_6'), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
                     { id: 'tab-2', title: getText('KDL045_7'), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) }
@@ -173,12 +174,26 @@ module nts.uk.at.view.kdl045.a {
 						let tempBreakTime : any = breakTimeNo[i];
 						self.dataSourceTime().push({ range1: ko.observable({ startTime: !_.isNil(tempBreakTime.startTime) ? tempBreakTime.startTime : tempBreakTime.start, 
 																	endTime: !_.isNil(tempBreakTime.endTime) ? tempBreakTime.endTime : tempBreakTime.end, breakFrameNo: i + 1,
-																			 name : self.showTimeByPeriod(tempBreakTime.startTime,tempBreakTime.endTime)
+																			 name : self.showTimeByPeriod(
+                                                                             !_.isNil(tempBreakTime.startTime) ? tempBreakTime.startTime : tempBreakTime.start,
+                                                                             !_.isNil(tempBreakTime.endTime) ? tempBreakTime.endTime : tempBreakTime.end)
 						}) });
 					}
 				}
 				// do có trường hợp fixedWorkInforDto = null nên đang fix tạm - TQP
                 self.fixBreakTime(self.employee().employeeInfo.fixedWorkInforDto != null ? self.employee().employeeInfo.fixedWorkInforDto.fixBreakTime ==1 ? true:false : false);
+                if(self.fixBreakTime()){
+                    self.isEnableAllControl(true);
+                }else{
+                    self.isEnableAllControl(false);    
+                }
+                self.fixBreakTime.subscribe(value => {
+                    if(value){
+                        self.isEnableAllControl(true);
+                    }else{
+                        self.isEnableAllControl(false);    
+                    }
+                });
                 self.workTimeForm = self.employee().employeeInfo.fixedWorkInforDto != null ?  ko.observable(self.employee().employeeInfo.fixedWorkInforDto.workType) : ko.observable();
                 self.includingWorkType(_.includes(self.employee().scheCorrection, self.workTimeForm()));
                 //listData
@@ -202,10 +217,20 @@ module nts.uk.at.view.kdl045.a {
                     startTime: self.employee().employeeInfo.workScheduleDto != null && self.employee().employeeInfo.workScheduleDto.startTime2 != '' ? self.employee().employeeInfo.workScheduleDto.startTime2  : null, 
                     endTime: self.employee().employeeInfo.workScheduleDto != null && self.employee().employeeInfo.workScheduleDto.endTime2 != '' ? self.employee().employeeInfo.workScheduleDto.endTime2 : null});
                 self.isShowTimeRange2 = (self.employee().targetInfor == 1 ? true : false);
-                if(self.employee().employeeInfo.workScheduleDto == null || (self.employee().employeeInfo.workScheduleDto.startTime2 == 0 || self.employee().employeeInfo.workScheduleDto.endTime2 == 0)){
+                if(self.employee().employeeInfo.workScheduleDto == null || (self.employee().employeeInfo.workScheduleDto.startTime2 == 0 || self.employee().employeeInfo.workScheduleDto.endTime2 == 0)
+					|| (self.employee().employeeInfo.workScheduleDto.startTime2 == null || self.employee().employeeInfo.workScheduleDto.endTime2 == null) || self.workTimeForm() == 1
+					){
                     self.isEnableA5_9(false);
                 }
                 
+                self.timeRange1Value.subscribe(value => {
+                    console.log("TU");
+
+                });
+                self.timeRange2Value.subscribe(value => {
+                    console.log("TU2");
+
+                });
                 
                 //A10_1,A10_2
                 self.timeA10_1(self.showTimeByPeriod(self.employee().employeeInfo.workScheduleDto != null ? self.employee().employeeInfo.workScheduleDto.startTime1 : null, 
@@ -233,11 +258,11 @@ module nts.uk.at.view.kdl045.a {
                 //A1_5
                 let shortW = moment(self.employee().employeeInfo.workInfoDto.date).format("dd");
                 if (shortW == "土") {
-                    shortW = "<span style='color:#0000ff;'>" + getText('KDL045_64') + shortW + getText('KDL045_65') + "</span>";
+                    shortW = "<span style='color:#0000ff;'>（"  + shortW + "）</span>";
                 } else if (shortW == "日") {
-                    shortW = "<span style='color:#ff0000;'>" + getText('KDL045_64') + shortW + getText('KDL045_65') + "</span>";
+                    shortW = "<span style='color:#ff0000;'>（" + shortW + "）</span>";
                 } else {
-                    shortW = getText('KDL045_64') + shortW + getText('KDL045_65');
+                    shortW = 　"（" + shortW + "）" ;
                 }
                 self.basedate(self.employee().employeeInfo.workInfoDto.date + shortW);
 
@@ -249,22 +274,22 @@ module nts.uk.at.view.kdl045.a {
                 let shortTime = self.employee().employeeInfo.workInfoDto.shortTime;
                 for (let i = 0; i < shortTime.length; i++) {
                     self.showLineA8_10 = true;
-                    if (shortTime[i].shortTimeNo == 1 && shortTime[i].shortTimeAtr == 0) { // shortTimeAtr : (0:育児,1:介護)
+                    if (shortTime[i].workNo == 1 && shortTime[i].dayDivision == 0) { // shortTimeAtr : (0:育児,1:介護)
                         self.childcareNo1 = self.showTimeByPeriod(shortTime[i].startTime, shortTime[i].endTime);
                         self.showChildCare = true;
                         continue;
                     }
-                    if (shortTime[i].shortTimeNo == 2 && shortTime[i].shortTimeAtr == 0) {
+                    if (shortTime[i].workNo == 2 && shortTime[i].dayDivision == 0) {
                         self.childcareNo2 = self.showTimeByPeriod(shortTime[i].startTime, shortTime[i].endTime);
                         self.showChildCare = true;
                         continue;
                     }
-                    if (shortTime[i].shortTimeNo == 1 && shortTime[i].shortTimeAtr == 1) {
+                    if (shortTime[i].workNo == 1 && shortTime[i].dayDivision == 1) {
                         self.nursingNo1 = self.showTimeByPeriod(shortTime[i].startTime, shortTime[i].endTime);
                         self.showNursing = true;
                         continue;
                     }
-                    if (shortTime[i].shortTimeNo == 2 && shortTime[i].shortTimeAtr == 1) {
+                    if (shortTime[i].workNo == 2 && shortTime[i].dayDivision == 1) {
                         self.nursingNo2 = self.showTimeByPeriod(shortTime[i].startTime, shortTime[i].endTime);
                         self.showNursing = true;
                         continue;
@@ -323,7 +348,7 @@ module nts.uk.at.view.kdl045.a {
                     if (listTimeVacationAndType[i].typeVacation == shareModelData.TimeVacationType.PRIVATE) {
                         let listPrivateTime :any = [];
                         for(let k = 0;k< listTimeVacationAndType[i].timeVacation.timeZone.length;k++){
-                            let tempData = getText('KDL045_49')+ self.showTimeByPeriod(listTimeVacationAndType[i].timeVacation.timeZone[k].startTime.time, listTimeVacationAndType[i].timeVacation.timeZone[k].endTime.time)
+                            let tempData = self.showTimeByPeriod(listTimeVacationAndType[i].timeVacation.timeZone[k].startTime.time, listTimeVacationAndType[i].timeVacation.timeZone[k].endTime.time)
                             listPrivateTime.push(tempData);
                         }
                         self.listPrivateTime = listPrivateTime;
@@ -343,7 +368,7 @@ module nts.uk.at.view.kdl045.a {
                     if (listTimeVacationAndType[i].typeVacation == shareModelData.TimeVacationType.UNION) {
                         let listUnionTime :any = [];
                         for(let k = 0;k< listTimeVacationAndType[i].timeVacation.timeZone.length;k++){
-                            let tempData = getText('KDL045_49')+ self.showTimeByPeriod(listTimeVacationAndType[i].timeVacation.timeZone[k].startTime.time, listTimeVacationAndType[i].timeVacation.timeZone[k].endTime.time)
+                            let tempData = self.showTimeByPeriod(listTimeVacationAndType[i].timeVacation.timeZone[k].startTime.time, listTimeVacationAndType[i].timeVacation.timeZone[k].endTime.time)
                             listUnionTime.push(tempData);
                         }
                         self.listUnionTime = listUnionTime;
@@ -399,6 +424,11 @@ module nts.uk.at.view.kdl045.a {
                     self.displayByIncludingWorkType(value);
                 });
                 self.workStyle.subscribe(style =>{
+                    if(style != null && style !=0){
+                        self.checkIsHoliday(false);    
+                    }else{
+                        self.checkIsHoliday(true);
+                    }
                     self.displayByWorkStyle(style);
                 });
             }
@@ -469,12 +499,17 @@ module nts.uk.at.view.kdl045.a {
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
+                block.grayout();
                 $.when(self.getInformationStartup()).done(function() {
                     self.displayInformationStartup();
                     if(self.workStyle() !=null && self.workStyle() !=0){
+                        self.checkIsHoliday(false);
                         self.workTime.valueHasMutated();
                         self.displayByIncludingWorkType(self.includingWorkType());
+                    }else{
+                        self.checkIsHoliday(true);
                     }
+                    block.clear();
                     dfd.resolve();
                 });
 
@@ -537,7 +572,8 @@ module nts.uk.at.view.kdl045.a {
                     self.isEnableA5_9(true); //enable A5_10,A5_11
                     //enable A5_19,A5_20
                     self.isEnableAllControl(true);
-                    if( (self.timeRange2Value().startTime == 0 && self.timeRange2Value().endTime == 0) || (self.timeRange2Value().startTime == "" && self.timeRange2Value().endTime == "")){
+                    if( (self.timeRange2Value().startTime == 0 && self.timeRange2Value().endTime == 0) || (self.timeRange2Value().startTime == "" && self.timeRange2Value().endTime == "") 
+                        || self.workTimeForm() == 1 ){
                         self.isEnableA5_9(false); //disenable A5_10,A5_11
                         let timeRange2ScreenModel = $("#a5-9").data("screenModel");
                             if (timeRange2ScreenModel) {
@@ -564,7 +600,7 @@ module nts.uk.at.view.kdl045.a {
                     workTimeCodes: [],
                     selectedWorkTimeCode: self.workTime()
                 }, true);
-
+                block.grayout();
                 nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml').onClosed(function(): any {
                     //view all code of selected item 
                     let childData = nts.uk.ui.windows.getShared('childData');
@@ -609,8 +645,12 @@ module nts.uk.at.view.kdl045.a {
                                         } 
                                     }
                                 }
+                               block.clear(); 
                             });
-                        }
+                        }else{
+							self.workStyle(null);
+                            block.clear();
+						}
                     }
                 });
             }
@@ -652,7 +692,7 @@ module nts.uk.at.view.kdl045.a {
                     workTime1: new shareModelData.TimeZoneDto(new shareModelData.TimeOfDayDto(0,self.timeRange1Value().startTime),new shareModelData.TimeOfDayDto(0,self.timeRange1Value().endTime)),
                     workTime2: self.isShowTimeRange2 && self.isEnableA5_9()?new shareModelData.TimeZoneDto(new shareModelData.TimeOfDayDto(0,self.timeRange2Value().startTime),new shareModelData.TimeOfDayDto(0,self.timeRange2Value().endTime)):null
                 }
-                nts.uk.ui.block.grayout();
+                block.grayout();
                 service.checkTimeIsIncorrect(command).done(function (result) {
                     for(let i = 0;i< result.length;i++){
                         if(!result[i].check){
@@ -661,7 +701,7 @@ module nts.uk.at.view.kdl045.a {
                                 $(itemSelect).ntsError('set',{ messageId: 'Msg_439', messageParams: [getText('KDL045_12')] });    
                             }else{
                                 if(result[i].timeSpan.startTime == result[i].timeSpan.endTime){
-                                    $(itemSelect).ntsError('set',{ messageId: 'Msg_2058', messageParams: [result[i].nameError,result[i].timeInput] });
+                                    $(itemSelect).ntsError('set',{ messageId: 'Msg_2058', messageParams: [result[i].nameError,formatById("Clock_Short_HM", result[i].timeSpan.startTime)] });
                                 }else{
                                     $(itemSelect).ntsError('set',{ messageId: 'Msg_1772', messageParams: [result[i].nameError,formatById("Clock_Short_HM", result[i].timeSpan.startTime),formatById("Clock_Short_HM", result[i].timeSpan.endTime)] });    
                                 }
@@ -672,7 +712,7 @@ module nts.uk.at.view.kdl045.a {
                 }).fail(function (res: any) {
                     alertError({ messageId: res.messageId, messageParams: res.parameterIds  });
                 }).always(function() {
-                    nts.uk.ui.block.clear();
+                    block.clear();
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -686,7 +726,7 @@ module nts.uk.at.view.kdl045.a {
                     workType : self.workType(),
                     workTimeCode : self.workTime()
                 }
-                nts.uk.ui.block.grayout();
+                block.grayout();
                 service.getMoreInformation(command).done(function (result) {
                     self.workStyle(result.workStyle);
                     self.workStyle.valueHasMutated();
@@ -704,7 +744,7 @@ module nts.uk.at.view.kdl045.a {
                     alertError({ messageId: "" });
                     block.clear();
                 }).always(function() {
-                    nts.uk.ui.block.clear();
+                    block.clear();
                     dfd.resolve();
                 });
                 
@@ -732,7 +772,7 @@ module nts.uk.at.view.kdl045.a {
                 let listData: any = [];
                 if (self.moreInformation.breakTime != null) {
                     //A5_23
-                    let breakTime = self.moreInformation.breakTime.timeZoneList.sort((x,y) => {return x.start - y.start});
+                    let breakTime = self.moreInformation.breakTime.timeZoneList.sort((x : any,y : any) => {return x.start - y.start});
                     for (let i = 0; i < self.moreInformation.breakTime.timeZoneList.length; i++) {
                         let tempBreakTime = breakTime[i];
                         listData.push({
@@ -762,7 +802,7 @@ module nts.uk.at.view.kdl045.a {
                         self.isEnableA5_9(true);
                         self.isEnableAllControl(true);
                         if((self.timeRange2Value().startTime == 0 && self.timeRange2Value().endTime == 0)
-                            || (self.timeRange2Value().startTime == "" && self.timeRange2Value().endTime == "")){
+                            || (self.timeRange2Value().startTime == "" && self.timeRange2Value().endTime == "") || self.workTimeForm() == 1){
                             self.isEnableA5_9(false); //disenable A5_10,A5_11
                             let timeRange2ScreenModel = $("#a5-9").data("screenModel");
                             if (timeRange2ScreenModel) {
@@ -775,16 +815,25 @@ module nts.uk.at.view.kdl045.a {
                     self.isEnableA5_5(false);
                     self.isEnableA5_9(false);
                     self.isEnableAllControl(false);
-                    let timeRange1ScreenModel = $("#a5-5").data("screenModel");
-                                        if (timeRange1ScreenModel) {
-                                            timeRange1ScreenModel.startTime(null);
-                                            timeRange1ScreenModel.endTime(null);
-                                        } 
-                    let timeRange2ScreenModel = $("#a5-9").data("screenModel");
-                    if (timeRange2ScreenModel) {
-                        timeRange2ScreenModel.startTime(null);
-                        timeRange2ScreenModel.endTime(null);
-                    } 
+//                    let timeRange1ScreenModel = $("#a5-5").data("screenModel");
+//                                        if (timeRange1ScreenModel) {
+//                                            timeRange1ScreenModel.startTime(null);
+//                                            timeRange1ScreenModel.endTime(null);
+//                                        } 
+//                    let timeRange2ScreenModel = $("#a5-9").data("screenModel");
+//                    if (timeRange2ScreenModel) {
+//                        timeRange2ScreenModel.startTime(null);
+//                        timeRange2ScreenModel.endTime(null);
+//                    } 
+                   if((self.timeRange2Value().startTime == 0 && self.timeRange2Value().endTime == 0)
+                            || (self.timeRange2Value().startTime == "" && self.timeRange2Value().endTime == "") || self.workTimeForm() == 1){
+                            self.isEnableA5_9(false); //disenable A5_10,A5_11
+                            let timeRange2ScreenModel = $("#a5-9").data("screenModel");
+                            if (timeRange2ScreenModel) {
+                                timeRange2ScreenModel.startTime(null);
+                                timeRange2ScreenModel.endTime(null);
+                            } 
+                        }
                 }
                 
             }
@@ -867,13 +916,13 @@ module nts.uk.at.view.kdl045.a {
                         self.assignmentMethodName(getText('KDL045_47'));
                         let nameList = self.informationStartup.workAvaiOfOneDayDto.workAvaiByHolidayDto.nameList;
                         for (let i = 0; i < nameList.length; i++) {
-                            self.listDetail.push(getText('KDL045_49') + nameList[i]);
+                            self.listDetail.push(nameList[i]);
                         }
                     }else if (assignmentMethod == shareModelData.AssignmentMethod.TIME_ZONE) {
                         self.assignmentMethodName(getText('KDL045_48'));
                         let timeZoneList = self.informationStartup.workAvaiOfOneDayDto.workAvaiByHolidayDto.timeZoneList;
                         for (let i = 0; i < timeZoneList.length; i++) {
-                            self.listDetail.push(getText('KDL045_49') + self.showTimeByPeriod(timeZoneList[i].start, timeZoneList[i].end));
+                            self.listDetail.push(self.showTimeByPeriod(timeZoneList[i].start, timeZoneList[i].end));
                         }
                     } 
                     self.listDetail();
@@ -931,8 +980,8 @@ module nts.uk.at.view.kdl045.a {
                         let listBreakTimeZoneDto = [];
                         for(let i =0;i<self.dataSourceTime().length;i++){
                             let temp = {
-                                startTime : self.dataSourceTime()[i].range1().startTime,
-                                endTime  : self.dataSourceTime()[i].range1().endTime,
+                                start : self.dataSourceTime()[i].range1().startTime,
+                                end  : self.dataSourceTime()[i].range1().endTime,
                                 breakFrameNo : i+1     
                             }
                             listBreakTimeZoneDto.push(temp);
@@ -957,7 +1006,8 @@ module nts.uk.at.view.kdl045.a {
                                 workTypeName : self.workTypeName(),//勤務種類名称
                                 workTimeName : self.workTimeName(), //就業時間帯名称
                                 workType : self.workTimeForm(),//勤務タイプ
-                                fixBreakTime : self.fixBreakTime()
+                                fixBreakTime : self.fixBreakTime(),
+								isHoliday : self.workStyle() == 0 ? true : false
                                 
                             };
                         
@@ -992,8 +1042,8 @@ module nts.uk.at.view.kdl045.a {
                             workTypeName : self.workTypeName(),//勤務種類名称
                             workTimeName : null, //就業時間帯名称
                             workType : null,//勤務タイプ
-                            fixBreakTime : false
-                            
+                            fixBreakTime : false,
+                            isHoliday : self.workStyle() == 0 ? true : false
                         };
                     
                     let resultKdl045 = {
@@ -1013,7 +1063,6 @@ module nts.uk.at.view.kdl045.a {
                 if(self.isShowTimeRange2){
                     if(self.isEnableA5_9() && self.timeRange2Value().startTime <= self.timeRange1Value().endTime && self.timeRange2Value().endTime > self.timeRange1Value().startTime ){
                         $('#a5-5').ntsError('set',{ messageId: 'Msg_515', messageParams: [getText('KDL045_12')] });
-                        $('#a5-5').focus();
                         checkError =  true;
                     }
                 
@@ -1024,41 +1073,41 @@ module nts.uk.at.view.kdl045.a {
                     }
                 }  
                 
-                if(self.checkDataSourceTime()){
-                    $('#kdl045').ntsError('set',{ messageId: 'Msg_1793' });
-                    $('#kdl045').focus();
-                }
+//                if(self.checkDataSourceTime()){
+//                    $('#kdl045').ntsError('set',{ messageId: 'Msg_1793' });
+//                    $('#kdl045').focus();
+//                }
                 
                 return checkError;
 
             }
             //kiểm tra xem các khoảng break time có thuộc khoảng tg của WorkNO hay k
-            private checkDataSourceTime():boolean{
-                let self = this;
-                //Trường hợp tồn tại workNo 1
-                if(self.isEnableA5_5() && (!self.isEnableA5_9() || !self.isShowTimeRange2)){
-                    for(let i = 0; i <self.dataSourceTime().length;i++){
-                        if(! (self.dataSourceTime()[i].range1().startTime >= self.timeRange1Value().startTime 
-                                && self.dataSourceTime()[i].range1().endTime <= self.timeRange1Value().endTime)){
-                            return true;
-                        }
-                    }
-                }
-                //Trường hợp tồn tại workNo 1 và 2
-                if(self.isEnableA5_5() && self.isEnableA5_9() && self.isShowTimeRange2){
-                    for(let i = 0; i <self.dataSourceTime().length;i++){
-                        if(!( (self.dataSourceTime()[i].range1().startTime >= self.timeRange1Value().startTime 
-                                && self.dataSourceTime()[i].range1().endTime <= self.timeRange1Value().endTime) ||
-                               (self.dataSourceTime()[i].range1().startTime >= self.timeRange2Value().startTime 
-                                    && self.dataSourceTime()[i].range1().endTime <= self.timeRange2Value().endTime)
-                             )){
-                            return true;
-                        }
-                    }
-                }
-                return false;
-                
-            }
+//            private checkDataSourceTime():boolean{
+//                let self = this;
+//                //Trường hợp tồn tại workNo 1
+//                if(self.isEnableA5_5() && (!self.isEnableA5_9() || !self.isShowTimeRange2)){
+//                    for(let i = 0; i <self.dataSourceTime().length;i++){
+//                        if(! (self.dataSourceTime()[i].range1().startTime >= self.timeRange1Value().startTime 
+//                                && self.dataSourceTime()[i].range1().endTime <= self.timeRange1Value().endTime)){
+//                            return true;
+//                        }
+//                    }
+//                }
+//                //Trường hợp tồn tại workNo 1 và 2
+//                if(self.isEnableA5_5() && self.isEnableA5_9() && self.isShowTimeRange2){
+//                    for(let i = 0; i <self.dataSourceTime().length;i++){
+//                        if(!( (self.dataSourceTime()[i].range1().startTime >= self.timeRange1Value().startTime 
+//                                && self.dataSourceTime()[i].range1().endTime <= self.timeRange1Value().endTime) ||
+//                               (self.dataSourceTime()[i].range1().startTime >= self.timeRange2Value().startTime 
+//                                    && self.dataSourceTime()[i].range1().endTime <= self.timeRange2Value().endTime)
+//                             )){
+//                            return true;
+//                        }
+//                    }
+//                }
+//                return false;
+//                
+//            }
 
             private showTimeByPeriod(startTime: number, endTime: number): string {
                 let start = (startTime != null || startTime <= 0) ?

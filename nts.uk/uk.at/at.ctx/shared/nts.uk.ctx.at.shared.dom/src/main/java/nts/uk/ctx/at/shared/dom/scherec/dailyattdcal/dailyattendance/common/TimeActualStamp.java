@@ -9,7 +9,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancet
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
-import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -170,6 +169,8 @@ public class TimeActualStamp {
 		this.overtimeDeclaration = Optional.ofNullable(overtimeDeclaration);
 		this.timeVacation = Optional.ofNullable(timeVacation);
 	}
+	
+	
 	
 	/**
 	 * @param actualStamp 実打刻

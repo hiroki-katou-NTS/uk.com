@@ -70,12 +70,14 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 	
 	@Override
 	public List<AppRemainCreateInfor> lstRemainDataFromApp(CacheCarrier cacheCarrier, String cid, String sid, DatePeriod dateData) {
-		
 		List<Integer> lstReflect = new ArrayList<>();
 		lstReflect.add(ReflectedState_New.NOTREFLECTED.value);
 		lstReflect.add(ReflectedState_New.WAITREFLECTION.value);
 		List<Integer> lstAppType = this.lstAppType();
-		List<Application> lstAppData = appRepository.getByPeriodReflectType(sid, dateData, lstReflect, lstAppType);
+		List<Application> lstAppData = new ArrayList<>();
+		if(!lstAppType.isEmpty()) {
+			lstAppData = appRepository.getByPeriodReflectType(sid, dateData, lstReflect, lstAppType);
+		}
 		return this.lstResult(cid, sid, lstAppData);
 	}
 	@Override
@@ -84,20 +86,25 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 		lstReflect.add(ReflectedState_New.NOTREFLECTED.value);
 		lstReflect.add(ReflectedState_New.WAITREFLECTION.value);
 		List<Integer> lstAppType = this.lstAppType();
-		List<Application> lstAppData = appRepository.getByListDateReflectType(sid, dates, lstReflect, lstAppType);
+		List<Application> lstAppData = new ArrayList<>();
+		if(!lstAppType.isEmpty()) {
+			lstAppData = appRepository.getByListDateReflectType(sid, dates, lstReflect, lstAppType);
+		}
 		return this.lstResult(cid, sid, lstAppData);
 	}
 
 	private List<Integer> lstAppType(){
 		List<Integer> lstAppType = new ArrayList<>();
-		lstAppType.add(ApplicationType.ABSENCE_APPLICATION.value);
-		lstAppType.add(ApplicationType.WORK_CHANGE_APPLICATION.value);
-		lstAppType.add(ApplicationType.ANNUAL_HOLIDAY_APPLICATION.value);
-		lstAppType.add(ApplicationType.COMPLEMENT_LEAVE_APPLICATION.value);
-		lstAppType.add(ApplicationType.GO_RETURN_DIRECTLY_APPLICATION.value);
-		lstAppType.add(ApplicationType.LONG_BUSINESS_TRIP_APPLICATION.value);
-		lstAppType.add(ApplicationType.OVER_TIME_APPLICATION.value);
-		lstAppType.add(ApplicationType.BREAK_TIME_APPLICATION.value);
+		//HoaTT　2021/01/29
+		//反映する時、エラーが発生してるので、とりあえずコメントする（暫定データ処理は申請の新ドメインをまだ対応しない）
+//		lstAppType.add(ApplicationType.ABSENCE_APPLICATION.value);
+//		lstAppType.add(ApplicationType.WORK_CHANGE_APPLICATION.value);
+//		lstAppType.add(ApplicationType.ANNUAL_HOLIDAY_APPLICATION.value);
+//		lstAppType.add(ApplicationType.COMPLEMENT_LEAVE_APPLICATION.value);
+//		lstAppType.add(ApplicationType.GO_RETURN_DIRECTLY_APPLICATION.value);
+//		lstAppType.add(ApplicationType.LONG_BUSINESS_TRIP_APPLICATION.value);
+//		lstAppType.add(ApplicationType.OVER_TIME_APPLICATION.value);
+//		lstAppType.add(ApplicationType.BREAK_TIME_APPLICATION.value);
 		return lstAppType;
 	}
 	private List<AppRemainCreateInfor> lstResult(String cid, String sid, List<Application> lstAppData){
@@ -141,16 +148,16 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 			case COMPLEMENT_LEAVE_APPLICATION:
 				Optional<AbsenceLeaveApp> optAbsApp = absAppRepo.findByAppId(appData.getAppID());
 				optAbsApp.ifPresent(x -> {
-					outData.setWorkTypeCode(x.getWorkTypeCD() == null ? Optional.empty() : Optional.of(x.getWorkTypeCD().v()));
-					if(x.getChangeWorkHoursType() == NotUseAtr.USE) {
-						outData.setWorkTimeCode(x.getWorkTimeCD() == null ? Optional.empty() : Optional.of(x.getWorkTimeCD()));						
+					outData.setWorkTypeCode(Optional.of(x.getWorkInformation().getWorkTypeCode().v()));
+					if(x.getWorkChangeUse() == NotUseAtr.USE) {
+						outData.setWorkTimeCode(x.getWorkInformation().getWorkTimeCodeNotNull().isPresent() ? Optional.empty() : Optional.of(x.getWorkInformation().getWorkTimeCode().v()));						
 					}
 				});	
 				
 				Optional<RecruitmentApp> recApp = recAppRepo.findByID(appData.getAppID());
 				recApp.ifPresent(y -> {
-					outData.setWorkTimeCode(Optional.of(y.getWorkTimeCD().v()));
-					outData.setWorkTypeCode(Optional.of(y.getWorkTypeCD().v()));
+					outData.setWorkTimeCode(Optional.of(y.getWorkInformation().getWorkTimeCode().v()));
+					outData.setWorkTypeCode(Optional.of(y.getWorkInformation().getWorkTypeCode().v()));
 				});	
 				
 				break;

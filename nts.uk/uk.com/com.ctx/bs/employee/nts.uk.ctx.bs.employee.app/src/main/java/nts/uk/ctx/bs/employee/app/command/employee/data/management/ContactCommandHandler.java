@@ -25,10 +25,14 @@ public class ContactCommandHandler extends CommandHandler<ContactCommand> {
     @Override
     protected void handle(CommandHandlerContext<ContactCommand> commandHandlerContext) {
         ContactCommand command = commandHandlerContext.getCommand();
+        //#113902
+        Boolean isUseOfProfile = command.getUseOfProfile();
         String employeeId = AppContexts.user().employeeId();
 
-        // cmd 6 : 個人連絡先を登録する
-        this.updateEmployeeContact(command.getEmployeeContact(), employeeId);
+		// cmd 6 : 個人連絡先を登録する
+		if (isUseOfProfile) {
+			this.updateEmployeeContact(command.getEmployeeContact(), employeeId);
+		}
     }
 
     // 個人連絡先を登録する

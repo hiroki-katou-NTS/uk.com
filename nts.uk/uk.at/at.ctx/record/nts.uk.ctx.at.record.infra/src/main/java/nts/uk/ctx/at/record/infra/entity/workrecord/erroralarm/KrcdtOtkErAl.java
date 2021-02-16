@@ -25,10 +25,6 @@ public class KrcdtOtkErAl extends KrcdtEmpErAlCommon implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-//	@Getter
-//	@OneToMany(mappedBy = "erOtk", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-//	public List<KrcdtErAttendanceItem> erAttendanceItem;
-
 	public KrcdtOtkErAl(String id, String errorCode, String employeeId, GeneralDate processingDate, String companyID,
 			String errorAlarmMessage, String contractCode, List<KrcdtErAttendanceItem> erAttendanceItem) {
 		super(id, errorCode, employeeId, processingDate, companyID, errorAlarmMessage, contractCode, erAttendanceItem);
@@ -45,7 +41,7 @@ public class KrcdtOtkErAl extends KrcdtEmpErAlCommon implements Serializable {
 				er.getCompanyID(),
 				er.getErrorAlarmMessage().map(c -> c.v()).orElse(null), ccd, 
 				er.getAttendanceItemList().stream()
-						.map(item -> KrcdtErAttendanceItem.toEntity(id, item, 
+						.map(item -> new KrcdtErOtkAtd(id, item, 
 									er.getCompanyID(), er.getEmployeeID(), ccd, er.getDate()))
 						.collect(Collectors.toList())
 				);

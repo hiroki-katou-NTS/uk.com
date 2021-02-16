@@ -10,7 +10,7 @@
           <div class="card" v-if="true">
             <div class="card-header uk-bg-accordion">
               <button class="btn btn-link" type="button">
-                  {{'KAFS00_4' | i18n}}
+                  {{'KAFS05_41' | i18n}}
               </button>
             </div>
             <div class="collapse">
@@ -117,6 +117,7 @@
             <nts-time-editor
               v-model="holidayTimes[index].applicationTime"
               name=""
+              v-bind:record-id="index"
               v-bind:disabled="!$appContext.c3_disable"
             />
           </div>

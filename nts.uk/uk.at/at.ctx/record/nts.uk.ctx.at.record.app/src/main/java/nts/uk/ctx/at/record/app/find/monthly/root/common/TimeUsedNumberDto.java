@@ -6,19 +6,17 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedMinutes;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedTimes;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveMaxRemainingTime;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.TimeAnnualLeaveUsedTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeavaRemainTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialLeaveUseTimes;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.UseNumber;
 
 @Data
 @NoArgsConstructor
@@ -31,37 +29,34 @@ public class TimeUsedNumberDto implements ItemConst, AttendanceItemDataGate {
 	@AttendanceItemValue(type = ValueType.COUNT)
 	@AttendanceItemLayout(jpPropertyName = COUNT, layout = LAYOUT_A)
 	private int usedTimes;
-	
+
 	/** 使用時間 */
 	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = TIME, layout = LAYOUT_B)
 	private int usedTime;
-	
+
 	/** 使用時間付与前 */
 	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = GRANT + BEFORE, layout = LAYOUT_C)
 	private int usedTimeBeforeGrant;
-	
+
 	/** 使用時間付与後 */
 	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = GRANT + AFTER, layout = LAYOUT_D)
 	private Integer usedTimeAfterGrant;
 
-	public static TimeUsedNumberDto from(TimeAnnualLeaveUsedTime domain) {
+	public static TimeUsedNumberDto from(UsedMinutes domain) {
 		return domain == null ? null : new TimeUsedNumberDto(
-						domain.getUsedTimes().v(), 
-						domain.getUsedTime().valueAsMinutes(),
-						domain.getUsedTimeBeforeGrant().valueAsMinutes(),
-						domain.getUsedTimeAfterGrant().isPresent() ? domain.getUsedTimeAfterGrant().get().valueAsMinutes() : null);
+						0,
+						domain.valueAsMinutes(),
+						0,
+						null);
 	}
 
-	public TimeAnnualLeaveUsedTime toDomain() {
-		return TimeAnnualLeaveUsedTime.of(
-							new UsedTimes(usedTimes), new UsedMinutes(usedTime),
-							new UsedMinutes(usedTimeBeforeGrant),
-							Optional.ofNullable(usedTimeAfterGrant == null ? null : new UsedMinutes(usedTimeAfterGrant)));
+	public UsedMinutes toDomain() {
+		return new UsedMinutes(usedTime);
 	}
-	
+
 	public static TimeUsedNumberDto from(AnnualLeaveMaxRemainingTime domain) {
 		return domain == null ? null : new TimeUsedNumberDto(
 						0, domain.getTime().valueAsMinutes(),
@@ -75,20 +70,25 @@ public class TimeUsedNumberDto implements ItemConst, AttendanceItemDataGate {
 							new RemainingMinutes(usedTimeBeforeGrant),
 							Optional.ofNullable(usedTimeAfterGrant == null ? null : new RemainingMinutes(usedTimeAfterGrant)));
 	}
-	
+
 	public static TimeUsedNumberDto from(SpecialLeaveUseTimes domain) {
+
+//		return domain == null ? null : new TimeUsedNumberDto(
+//						domain.getUseNumber().v(),
+//						domain.getUseTimes().valueAsMinutes(),
+//						domain.getBeforeUseGrantTimes().valueAsMinutes(),
+//						domain.getAfterUseGrantTimes().isPresent() ? domain.getAfterUseGrantTimes().get().valueAsMinutes() : null);
+//		return null;
 		return domain == null ? null : new TimeUsedNumberDto(
-						domain.getUseNumber().v(), 
-						domain.getUseTimes().valueAsMinutes(),
-						domain.getBeforeUseGrantTimes().valueAsMinutes(),
-						domain.getAfterUseGrantTimes().isPresent() ? domain.getAfterUseGrantTimes().get().valueAsMinutes() : null);
+				0,
+				domain.getUseTimes().valueAsMinutes(),
+				0,
+				null);
 	}
-	
+
 	public SpecialLeaveUseTimes toSpecial(){
-		return new SpecialLeaveUseTimes(new UseNumber(usedTimes), 
-										new SpecialLeavaRemainTime(usedTime), 
-										new SpecialLeavaRemainTime(usedTimeBeforeGrant), 
-										Optional.ofNullable(usedTimeAfterGrant == null ? null : new SpecialLeavaRemainTime(usedTimeAfterGrant)));
+		return new SpecialLeaveUseTimes(new SpecialLeavaRemainTime(usedTime));
+
 	}
 
 	@Override

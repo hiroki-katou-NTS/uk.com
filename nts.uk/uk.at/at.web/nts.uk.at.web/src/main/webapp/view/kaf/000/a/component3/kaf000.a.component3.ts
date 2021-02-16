@@ -43,15 +43,17 @@ module nts.uk.at.view.kaf000.a.component3.viewmodel {
 			vm.application = params.application;
 			
             vm.appDispInfoStartupOutput.subscribe(value => {
-				if(vm.application().opStampRequestMode()==1) {
-					vm.application().prePostAtr(1);
-					vm.prePostAtrDisp(false);
-				} else {
-					vm.prePostAtr(value.appDispInfoWithDateOutput.prePostAtr);
-                	vm.prePostAtrDisp(value.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr == 1);
+				if(_.isNull(params.application().prePostAtr())) {
+					if(vm.application().opStampRequestMode()==1) {
+						vm.application().prePostAtr(1);
+						vm.prePostAtrDisp(false);
+					} else {
+						vm.prePostAtr(value.appDispInfoWithDateOutput.prePostAtr);
+	                	vm.prePostAtrDisp(value.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr == 1);
+					}
+					let appTypeSetting = _.find(value.appDispInfoNoDateOutput.applicationSetting.appTypeSetting, (o: any) => o.appType == vm.appType());
+                	vm.prePostAtrEnable(appTypeSetting.canClassificationChange);	
 				}
-                let appTypeSetting = _.find(value.appDispInfoNoDateOutput.applicationSetting.appTypeSetting, (o: any) => o.appType == vm.appType());
-                vm.prePostAtrEnable(appTypeSetting.canClassificationChange);
             });
         }
     }

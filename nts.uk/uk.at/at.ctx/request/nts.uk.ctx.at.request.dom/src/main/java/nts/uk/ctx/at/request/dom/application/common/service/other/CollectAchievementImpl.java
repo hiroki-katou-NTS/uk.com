@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.dom.application.common.service.other;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -38,7 +39,6 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
-import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -381,7 +381,7 @@ public class CollectAchievementImpl implements CollectAchievement {
 			// 取得した実績をOutput「表示する実績内容」に追加する
 			result.add(actualContentDisplay);
 		}
-		return result;
+		return result.stream().sorted(Comparator.comparing(ActualContentDisplay::getDate)).collect(Collectors.toList());
 	}
 
 	@Override

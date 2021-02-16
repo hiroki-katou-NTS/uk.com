@@ -77,6 +77,9 @@ public class ExecutionTaskSetting extends AggregateRoot {
 
 	/* 終了処理スケジュールID */
 	private Optional<String> endScheduleId;
+	
+	/* 1日の繰り返しスケジュールID */
+	private Optional<String> repeatScheduleId;
 
 	@Override
 	public void validate() throws BusinessException {
@@ -300,7 +303,7 @@ public class ExecutionTaskSetting extends AggregateRoot {
 	public ExecutionTaskSetting(OneDayRepeatInterval oneDayRepInr, ExecutionCode execItemCd, String companyId,
 			boolean enabledSetting, GeneralDateTime nextExecDateTime, TaskEndDate endDate, TaskEndTime endTime,
 			RepeatContentItem content, RepeatDetailSetting detailSetting, GeneralDate startDate, StartTime startTime,
-			String scheduleId, String endScheduleId) {
+			String scheduleId, String endScheduleId, String repeatScheduleId) {
 		super();
 		this.oneDayRepInr = oneDayRepInr;
 		this.execItemCd = execItemCd;
@@ -315,6 +318,7 @@ public class ExecutionTaskSetting extends AggregateRoot {
 		this.startTime = startTime;
 		this.scheduleId = scheduleId;
 		this.endScheduleId = Optional.ofNullable(endScheduleId);
+		this.repeatScheduleId = Optional.ofNullable(repeatScheduleId);
 	}
 
 	public ExecutionTaskSetting(OneDayRepeatInterval oneDayRepInr, ExecutionCode execItemCd, String companyId,

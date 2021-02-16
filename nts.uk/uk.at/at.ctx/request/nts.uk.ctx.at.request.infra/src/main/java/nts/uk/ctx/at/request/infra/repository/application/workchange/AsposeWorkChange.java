@@ -122,18 +122,18 @@ public class AsposeWorkChange {
             List<TimeZoneWithWorkNo> timezZone2 = listTimeZone.stream().filter(item -> item.getWorkNo().v().equals(2)).collect(Collectors.toList());
             if(appDisp.getReflectWorkChangeApp().getWhetherReflectAttendance().equals(NotUseAtr.USE)) {
                 if(timezZone1.size() > 0) {
-                    valueD10 = timezZone1.get(0).getTimeZone().getStartTime().getInDayTimeWithFormat()
+                    valueD10 = timezZone1.get(0).getTimeZone().getStartTime().getFullText()
                             + HALF_SIZE_SPACE + "～" + HALF_SIZE_SPACE
-                            + timezZone1.get(0).getTimeZone().getEndTime().getInDayTimeWithFormat();
+                            + timezZone1.get(0).getTimeZone().getEndTime().getFullText();
                 } else {
                     // Not happen
                 }
                 
                 if(appDisp.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().isManagementMultipleWorkCycles()) {
                     if(timezZone2.size() > 0) {
-                        valueD11 = timezZone2.get(0).getTimeZone().getStartTime().getInDayTimeWithFormat()
+                        valueD11 = timezZone2.get(0).getTimeZone().getStartTime().getFullText()
                                 + HALF_SIZE_SPACE + "～" + HALF_SIZE_SPACE
-                                + timezZone2.get(0).getTimeZone().getEndTime().getInDayTimeWithFormat();
+                                + timezZone2.get(0).getTimeZone().getEndTime().getFullText();
                     }
                 }
             }
@@ -152,11 +152,13 @@ public class AsposeWorkChange {
                 valueD13 = I18NText.getText("KAF007_83");
             }
             
-            if(!appDisp.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().isManagementMultipleWorkCycles() && valueD11 == "") {
+            if(!appDisp.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().isManagementMultipleWorkCycles() 
+                    || appDisp.getReflectWorkChangeApp().getWhetherReflectAttendance().equals(NotUseAtr.NOT_USE) 
+                    || valueD11.equals("")) {
                 cells.deleteRow(10);
                 deleteCnt++;
             }
-            if(valueD10 == "") {
+            if(valueD10.equals("")) {
                 cells.deleteRow(9);
                 deleteCnt++;
             }

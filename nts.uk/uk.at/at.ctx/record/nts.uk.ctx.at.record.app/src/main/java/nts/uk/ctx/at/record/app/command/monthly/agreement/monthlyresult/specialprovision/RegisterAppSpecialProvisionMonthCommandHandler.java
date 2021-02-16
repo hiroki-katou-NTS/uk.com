@@ -1,5 +1,16 @@
 package nts.uk.ctx.at.record.app.command.monthly.agreement.monthlyresult.specialprovision;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
+
 import lombok.AllArgsConstructor;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
@@ -13,7 +24,12 @@ import nts.uk.ctx.at.record.dom.adapter.personempbasic.PersonEmpBasicInfoAdapter
 import nts.uk.ctx.at.record.dom.adapter.workplace.SWkpHistRcImported;
 import nts.uk.ctx.at.record.dom.adapter.workplace.SyWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
-import nts.uk.ctx.at.record.dom.monthly.agreement.approver.*;
+import nts.uk.ctx.at.record.dom.monthly.agreement.approver.AppCreationResult;
+import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByCompany;
+import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByCompanyRepo;
+import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByWorkplace;
+import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByWorkplaceRepo;
+import nts.uk.ctx.at.record.dom.monthly.agreement.approver.OneMonthAppCreate;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.AggregateAgreementTimeByYM;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.AggregateAgreementTimeByYear;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.AgreementExcessInfo;
@@ -24,24 +40,21 @@ import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.SpecialProvisionsOfAgreement;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.SpecialProvisionsOfAgreementRepo;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
+import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreMaxAverageTimeMulti;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeYear;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.*;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfClassification;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfCompany;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfEmployment;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.AgreementTimeOfWorkPlace;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.enums.LaborSystemtAtr;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementOperationSetting;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementUnitSetting;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSettingForCalc;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.shr.com.context.AppContexts;
-
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * 36協定特別条項の適用申請の登録を行う（1ヶ月）
@@ -69,6 +82,8 @@ public class RegisterAppSpecialProvisionMonthCommandHandler
     private AffWorkplaceAdapter affWorkplaceAdapter;
     @Inject
     private PersonEmpBasicInfoAdapter personEmpBasicInfoAdapter;
+    @Inject
+    private AgreementOperationSettingRepository agreementOperationSettingRepository;
 
     @Override
     protected List<ErrorResultDto> handle(CommandHandlerContext<List<RegisterAppSpecialProvisionMonthCommand>> context) {
@@ -77,7 +92,7 @@ public class RegisterAppSpecialProvisionMonthCommandHandler
         RequireImpl require = new RequireImpl(cid, requireService.createRequire(),
                 specialProvisionsOfAgreementRepo, approver36AgrByCompanyRepo,
                 unitOfApproverRepo, syWorkplaceAdapter, approver36AgrByWorkplaceRepo,
-                affWorkplaceAdapter);
+                affWorkplaceAdapter,agreementOperationSettingRepository);
         List<RegisterAppSpecialProvisionMonthCommand> commands = context.getCommand();
         List<ErrorResultDto> errorResults = new ArrayList<>();
         List<AppCreationResult> results = new ArrayList<>();
@@ -128,6 +143,7 @@ public class RegisterAppSpecialProvisionMonthCommandHandler
         private SyWorkplaceAdapter syWorkplaceAdapter;
         private Approver36AgrByWorkplaceRepo approver36AgrByWorkplaceRepo;
         private AffWorkplaceAdapter affWorkplaceAdapter;
+        private AgreementOperationSettingRepository agreementOperationSettingRepository;
 
 
         @Override
@@ -242,7 +258,7 @@ public class RegisterAppSpecialProvisionMonthCommandHandler
                 }
 
                 @Override
-                public BasicAgreementSetting basicAgreementSetting(String cid, String sid, GeneralDate baseDate, nts.arc.time.calendar.Year year) {
+                public BasicAgreementSettingForCalc basicAgreementSetting(String cid, String sid, GeneralDate baseDate, nts.arc.time.calendar.Year year) {
                     return require.basicAgreementSetting(cid, sid, baseDate, year);
                 }
 
@@ -251,6 +267,11 @@ public class RegisterAppSpecialProvisionMonthCommandHandler
                     return require.agreementTimeOfManagePeriod(sid, ym);
                 }
             };
+        }
+
+        @Override
+        public Optional<AgreementOperationSetting> find() {
+            return agreementOperationSettingRepository.find(AppContexts.user().companyId());
         }
     }
 }

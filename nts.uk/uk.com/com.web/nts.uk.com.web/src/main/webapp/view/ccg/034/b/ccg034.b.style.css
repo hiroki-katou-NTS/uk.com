@@ -1,6 +1,8 @@
-.hyperlink {
+.ccg034-hyperlink {
   cursor: default;
   pointer-events: none;
+  text-decoration: none;
+  color: gray;
 }
 #B1_1 {
   overflow: hidden;

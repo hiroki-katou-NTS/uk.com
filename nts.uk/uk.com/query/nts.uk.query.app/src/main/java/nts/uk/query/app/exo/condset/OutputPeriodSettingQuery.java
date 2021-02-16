@@ -84,22 +84,22 @@ public class OutputPeriodSettingQuery {
 		case 1:
 			// 処理日 = 締め開始日とする
 			resultDate = closure.getClosureStartDate();
-			return this.adjustDate(resultDate, dateAdjust);
+			return this.adjustDate(resultDate, dateAdjust, AdjustMode.DAYS);
 		// 締め終了日
 		case 2:
 			// 処理日 = 締め終了日とする
 			resultDate = closure.getClosureEndDate();
-			return this.adjustDate(resultDate, dateAdjust);
+			return this.adjustDate(resultDate, dateAdjust, AdjustMode.DAYS);
 		// 処理年月
 		case 3:
 			// 処理日 = 処理年月の１日とする
 			resultDate = this.getStartOfMonth(closure.getProcessingYm());
-			return this.adjustDate(resultDate, dateAdjust);
+			return this.adjustDate(resultDate, dateAdjust, AdjustMode.MONTHS);
 		// システム日付
 		case 4:
 			// 処理日 = システム日付とする
 			resultDate = GeneralDate.today();
-			return this.adjustDate(resultDate, dateAdjust);
+			return this.adjustDate(resultDate, dateAdjust, AdjustMode.DAYS);
 		case 5:
 			// 処理日 = 処理日調整とする
 			return dateSpecify;
@@ -154,7 +154,18 @@ public class OutputPeriodSettingQuery {
 		return GeneralDate.ymd(yearMonth.year(), yearMonth.month(), 1);
 	}
 
-	private GeneralDate adjustDate(GeneralDate date, Optional<Integer> daysToAdjust) {
-		return daysToAdjust.map(days -> date.addDays(days)).orElse(date);
+	private GeneralDate adjustDate(GeneralDate date, Optional<Integer> valueToAdjust, AdjustMode adjustMode) {
+		switch (adjustMode) {
+		case DAYS:
+			return valueToAdjust.map(date::addDays).orElse(date);
+		case MONTHS:
+			return valueToAdjust.map(date::addMonths).orElse(date);
+		default:
+			return null;
+		}
+	}
+
+	private enum AdjustMode {
+		DAYS, MONTHS
 	}
 }

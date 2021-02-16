@@ -56,9 +56,7 @@ public class ShortTimeOfDailyDto extends AttendanceItemCommon {
 					(c) -> new ShortWorkTimeSheetDto(c.getShortWorkTimeFrameNo().v(), 
 														c.getChildCareAttr() == null ? 0 : c.getChildCareAttr().value,
 														c.getStartTime() == null ? null : c.getStartTime().valueAsMinutes(),
-														c.getEndTime() == null ? null : c.getEndTime().valueAsMinutes(),
-														c.getDeductionTime() == null ? null : c.getDeductionTime().valueAsMinutes(),
-														c.getShortTime() == null ? null : c.getShortTime().valueAsMinutes())));
+														c.getEndTime() == null ? null : c.getEndTime().valueAsMinutes())));
 			result.exsistData();
 		}
 		return result;
@@ -72,9 +70,7 @@ public class ShortTimeOfDailyDto extends AttendanceItemCommon {
 					(c) -> new ShortWorkTimeSheetDto(c.getShortWorkTimeFrameNo().v(), 
 														c.getChildCareAttr() == null ? 0 : c.getChildCareAttr().value,
 														c.getStartTime() == null ? null : c.getStartTime().valueAsMinutes(),
-														c.getEndTime() == null ? null : c.getEndTime().valueAsMinutes(),
-														c.getDeductionTime() == null ? null : c.getDeductionTime().valueAsMinutes(),
-														c.getShortTime() == null ? null : c.getShortTime().valueAsMinutes())));
+														c.getEndTime() == null ? null : c.getEndTime().valueAsMinutes())));
 			result.exsistData();
 		}
 		return result;
@@ -127,8 +123,7 @@ public class ShortTimeOfDailyDto extends AttendanceItemCommon {
 									.map(c -> new ShortWorkingTimeSheet(new ShortWorkTimFrameNo(c.getNo()),
 												c.getAttr() == ChildCareAttribute.CHILD_CARE.value 
 														? ChildCareAttribute.CHILD_CARE : ChildCareAttribute.CARE,
-												createTimeWithDayAttr(c.getStartTime()), createTimeWithDayAttr(c.getEndTime()),
-												createAttendanceTime(c.getDeductionTime()), createAttendanceTime(c.getShortTime())))
+												createTimeWithDayAttr(c.getStartTime()), createTimeWithDayAttr(c.getEndTime())))
 									.collect(Collectors.toList());
 						
 	}

@@ -45,6 +45,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		created(params: AppInitParam) {
 			// new 
 			const vm = this;
+			vm.$blockui("show");
 			vm.urlParam = $(location).attr('search').split("=")[1];
 			let dataTransfer: DataTransfer;
 			if (_.isNil(params)) {
@@ -96,7 +97,6 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				}
 			}
 			
-			vm.$blockui("show");
 			// load setting common KAF000
 			vm.loadData(empLst, dateLst, vm.appType(), null, Number(vm.getOverTimeAtrByUrl()))
 				.then((loadDataFlag: any) => {
@@ -114,6 +114,21 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 								} else {
 									vm.visibleModel.c15_3(false);									
 								}
+								if (vm.dataSource) {
+									// 「残業申請の表示情報．基準日に関係しない情報．残業休日出勤申請の反映．残業申請．事前．休憩・外出を申請反映する」= する
+									let c18_1_1 = vm.dataSource.infoNoBaseDate.overTimeReflect.overtimeWorkAppReflect.reflectBeforeBreak == NotUseAtr.USE;
+									// ※15-3 = ○　AND
+									// 「残業申請の表示情報．基準日に関係しない情報．残業休日出勤申請の反映．残業申請．事後．休憩・外出を申請反映する」= する
+									let c18_1_2 = vm.dataSource.infoNoBaseDate.overTimeReflect.overtimeWorkAppReflect.reflectBreakOuting == NotUseAtr.USE;
+									let c18_1 = (!vm.visibleModel.c15_3() && c18_1_1) || (vm.visibleModel.c15_3() && c18_1_2);
+									vm.visibleModel.c18_1(c18_1);
+						
+									// ※7 = ○　OR　※18-1 = ○
+									let c18 = vm.visibleModel.c7() || c18_1;
+									vm.visibleModel.c18(c18);
+									
+								}
+												
 							}
 						}
 					});
@@ -160,6 +175,19 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						vm.bindOverTime(vm.dataSource, 1);
 						vm.bindMessageInfo(vm.dataSource);
 						vm.assginTimeTemp();
+						// 勤務種類リストと就業時間帯リストがない場合エラーを返す
+						if (_.isEmpty(vm.dataSource.infoBaseDateOutput.worktypes)) {
+							// msg_1567
+							vm.$dialog.error({ messageId: 'Msg_1567'});	
+						}
+						if (vm.dataSource.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst) {
+							
+							if (_.isEmpty(vm.dataSource.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst)) {
+								vm.$dialog.error({ messageId: 'Msg_1568'});	
+							}
+						} else {
+							vm.$dialog.error({ messageId: 'Msg_1568'});	
+						}
 					}
 				}).fail((failData: any) => {
 					// xử lý lỗi nghiệp vụ riêng
@@ -170,7 +198,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						}
 					});
 				}).always(() => {
-					vm.$blockui("hide");
+					vm.$blockui("hide");						
 					$('#kaf000-a-component4-singleDate').focus();
 				});
 		}
@@ -662,7 +690,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			}
 
 			// validate chung KAF000
-			vm.$validate('#kaf000-a-component4 .nts-input', 
+			vm.$validate(
+			'#kaf000-a-component4 .nts-input',
+			'#kaf000-a-component5 .nts-input', 
 			'#kaf000-a-component3-prePost', 
 			'#kaf000-a-component5-comboReason',
 			'#inpStartTime1',
@@ -868,24 +898,23 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 					if (!_.isNil(item)) {
 						workType.name = item.name;
 					} else {
-						workType.name = self.$i18n('KAF_005_345');
+						workType.name = self.$i18n('KAF005_345');
 					}
 				} else {
-					workType.name = self.$i18n('KAF_005_345');
+					workType.name = self.$i18n('KAF005_345');
 				}
 				workTime.code = infoWithDateApplication.workTimeCD;
 				if (!_.isNil(workTime.code)) {
 					let workTimeList = res.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst as Array<WorkTime>;
-					if (!_.isEmpty(workTimeList)) {
-						let item = _.find(workTimeList, (item: WorkTime) => item.worktimeCode == workTime.code);
-						if (!_.isNil(item)) {
-							workTime.name = item.workTimeDisplayName.workTimeName;
-						} else {
-							workTime.name = self.$i18n('KAF_005_345');
-						}
+					let item = _.find(workTimeList, (item: WorkTime) => item.worktimeCode == workTime.code)
+					if (!_.isNil(item)) {
+						workTime.name = item.workTimeDisplayName.workTimeName;
+					} else {
+						workTime.name = self.$i18n('KAF005_345');
 					}
+					
 				} else {
-					workTime.name = self.$i18n('KAF_005_345');
+					workTime.name = self.$i18n('KAF005_345');
 				}
 				
 				// not change in select work type 
@@ -2344,17 +2373,17 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			// （「事前事後区分」が表示しない　AND　「残業申請の表示情報．申請表示情報．申請表示情報(基準日関係あり)．事前事後区分」= 「事後」）
 			let c15_3 = false;
 			// visibleModel.c15_3(c15_3);
-			if (res.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr == 0) {
-				
-				let prePost = res.appDispInfoStartup.appDispInfoWithDateOutput.prePostAtr;
+			if (res.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr != 0) {
+				let prePost = self.application().prePostAtr();
 				if (prePost == 1) {
 					c15_3 = true;					
 				} else {
 					c15_3 = false;
 				}
 				visibleModel.c15_3(c15_3);
+				
 			} else {
-				let prePost = self.application().prePostAtr();
+				let prePost = res.appDispInfoStartup.appDispInfoWithDateOutput.prePostAtr;
 				if (prePost == 1) {
 					c15_3 = true;					
 				} else {

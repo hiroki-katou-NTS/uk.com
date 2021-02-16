@@ -6,15 +6,16 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class ParamGetAllAppAbsence {
-	private String startAppDate;
-	private String endAppDate;
-	private String employeeID;
-	private boolean displayHalfDayValue;
-	private Integer holidayType;
-	private int alldayHalfDay;
+//	private String startAppDate;
+//	private String endAppDate;
+//	private boolean displayHalfDayValue;
+//	private Integer holidayType;
+//	private int alldayHalfDay;
+//	private int prePostAtr;
+//	private String relationCD;
+//    private String employeeID;
+    private String date;
 	private String workTypeCode;
-	private int prePostAtr;
 	private String workTimeCode;
-	private String relationCD;
 	private AppAbsenceStartInfoDto appAbsenceStartInfoDto;
 }

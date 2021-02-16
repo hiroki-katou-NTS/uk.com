@@ -8,6 +8,7 @@
 	float: right;
 	margin-top: -42px;
 	margin-right: 10px;
+  margin-left: 10px;
 	cursor: pointer;
 }
 
@@ -15,7 +16,7 @@
 	width: 30px;
 	float: right;
 	margin-top: -42px;
-	margin-right: 35px;
+	margin-right: 25px;
 	cursor: pointer;
 }
 
@@ -37,7 +38,9 @@
 	position: relative;
 	height: 45px;
 }
-
+#functions-area {
+  border: none !important;
+}
 .placement-container {
 	overflow: auto;
 }
@@ -48,38 +51,38 @@
 
 #ver4 {
     z-index: 1;
-    margin-left: calc(100vw - 300px);
-    position: absolute;
+    position: sticky;
 }
 
 #setting{
-	margin-top: 40px;
-  margin-right: -250px;
+	margin-top: 0px;
+  margin-right: 10px;
   float: right;
 }
 
 
 #reload{
-  margin-top: 40px;
-  margin-right: -220px;
-  float: right;
+  margin-top: 10px;
+  margin-right: 40px;
 }
 
 #closure{
-  margin-right: 30px;
+  margin-right: 10px;
+  margin-left: calc(100vw - 485px);
   height: 30px;
   outline: none;
 }
 .content {
   padding: 10px;
-  height: calc(100% - 80px);
+  margin-top: -35px;
+  height: 100%;
 }
 .content-top {
   border: 2px solid #B1B1B1;
   border-radius: 7px;
   height: 100%;
   padding: 10px;
-  margin-top: 30px;
+  margin-top: 20px;
 }
 .contents_layout {
   display: inline-flex;
@@ -88,7 +91,7 @@
 }
 
 .contents_2 {
-  height: 100%;
+  height: 98%;
   padding: 5px 5px 0px 0px;
   min-width: 458px;
   overflow-y: auto;
@@ -96,7 +99,7 @@
 }
 
 .contents_3 {
-  height: 100%;
+  height: 98%;
   padding: 5px 5px 0px 0px;
   min-width: 458px;
   overflow-y: auto;
@@ -111,14 +114,23 @@
   padding: 5px 5px 0px 5px;
   overflow-y: auto;
   width: 100%;
-  height: 100%;
+  height: 99%;
 }
 
 .iframe_fix {
   width: 100%;
 }
-.contents-area {
-  position: relative;
-  padding: 7px;
-  overflow-y: auto;
+#ccg008-contents-area {
+  padding: 7px; 
+  height: calc(100vh - 200px)
+}
+#functon-area {
+  height: 40px;
+  display: inline-table;
+  width: 100%;
+  position: inherit;
+}
+
+.nts-switch-button {
+  margin-left: 0px !important;
 }

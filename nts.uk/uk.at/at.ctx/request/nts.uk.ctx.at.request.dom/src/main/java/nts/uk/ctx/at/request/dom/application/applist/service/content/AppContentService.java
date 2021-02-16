@@ -22,6 +22,8 @@ import nts.uk.ctx.at.request.dom.application.applist.service.param.AttendanceNam
 import nts.uk.ctx.at.request.dom.application.applist.service.param.ListOfApplication;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalBehaviorAtrImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
@@ -228,4 +230,16 @@ public interface AppContentService {
 	 * pair right: 超過回数
 	 */
 	public Pair<Integer, Integer> getAgreementTime36(String employeeID, YearMonth yearMonth, Map<String, Pair<Integer, Integer>> cache);
+	
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面ver4.アルゴリズム.各申請データを作成.振休振出申請データを作成.振休振出申請内容.振休振出申請内容
+	 * @param absenceLeaveApp 振休申請データ
+	 * @param recruitmentApp 振出申請データ
+	 * @param appReasonDisAtr 申請理由内容区分
+	 * @param screenAtr ScreenID
+	 * @param complementLeaveAppLink 振休振出申請紐付け
+	 * @param application 申請
+	 */
+	public String getComplementLeaveContent(AbsenceLeaveApp absenceLeaveApp, RecruitmentApp recruitmentApp, DisplayAtr appReasonDisAtr,
+			ScreenAtr screenAtr, ComplementLeaveAppLink complementLeaveAppLink, Application application, List<WorkType> workTypeLst);
 }
