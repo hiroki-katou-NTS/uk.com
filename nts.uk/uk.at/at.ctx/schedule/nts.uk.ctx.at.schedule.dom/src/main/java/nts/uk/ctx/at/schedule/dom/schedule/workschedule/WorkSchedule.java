@@ -645,11 +645,11 @@ public class WorkSchedule implements DomainAggregate {
 					throw new BusinessException("Msg_2100");
 				}
 				
-				timeVacationList.forEach( timeVacation -> {
-					if (timeVacation.checkDuplication(taskTimeSpan).isDuplicated() ) {
-						throw new BusinessException("Msg_2101");
-					}
-				});
+				boolean isDuplicateWithTimeVacation = timeVacationList.stream()
+						.anyMatch( timeVacation -> timeVacation.checkDuplication(taskTimeSpan).isDuplicated() );
+				if ( isDuplicateWithTimeVacation ){
+					throw new BusinessException("Msg_2101");
+				}
 				
 			});
 		
