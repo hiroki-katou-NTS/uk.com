@@ -8,7 +8,7 @@ import nts.uk.shr.com.permit.DescriptionOfAvailabilityPermissionBase;
  * @author dan_pv
  *
  */
-public class ScheModifyFunctionByWorkplace extends DescriptionOfAvailabilityPermissionBase {
+public class ScheModifyFuncByWorkplace extends DescriptionOfAvailabilityPermissionBase {
 
 	/**
 	 * @param functionNo No
@@ -17,7 +17,7 @@ public class ScheModifyFunctionByWorkplace extends DescriptionOfAvailabilityPerm
 	 * @param displayOrder 表示順
 	 * @param defaultValue 初期値
 	 */
-	public ScheModifyFunctionByWorkplace(int functionNo, String name, String explanation, int displayOrder,
+	public ScheModifyFuncByWorkplace(int functionNo, String name, String explanation, int displayOrder,
 			boolean defaultValue) {
 		super(functionNo, name, explanation, displayOrder, defaultValue);
 	}

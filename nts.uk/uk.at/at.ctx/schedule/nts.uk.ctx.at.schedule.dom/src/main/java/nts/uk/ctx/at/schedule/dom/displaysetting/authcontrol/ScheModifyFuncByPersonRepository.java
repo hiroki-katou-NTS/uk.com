@@ -3,28 +3,28 @@ package nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol;
 import java.util.List;
 import java.util.Optional;
 
-public interface ScheModifyFunctionByPersonRepository {
+public interface ScheModifyFuncByPersonRepository {
 	
 	/**
 	 * @param domain スケジュール修正個人別の機能
 	 */
-	void insert(ScheModifyFunctionByPerson domain);
+	void insert(ScheModifyFuncByPerson domain);
 	
 	/**
 	 * @param domain スケジュール修正個人別の機能
 	 */
-	void update(ScheModifyFunctionByPerson domain);
+	void update(ScheModifyFuncByPerson domain);
 	
 	/**
 	 * @param functionNo 機能NO
 	 * @return
 	 */
-	Optional<ScheModifyFunctionByPerson> get( int functionNo );
+	Optional<ScheModifyFuncByPerson> get( int functionNo );
 	
 	/**
 	 * @param functionNoList　機能NO一覧
 	 * @return
 	 */
-	List<ScheModifyFunctionByPerson> getList( List<Integer> functionNoList);
+	List<ScheModifyFuncByPerson> getList( List<Integer> functionNoList);
 
 }
