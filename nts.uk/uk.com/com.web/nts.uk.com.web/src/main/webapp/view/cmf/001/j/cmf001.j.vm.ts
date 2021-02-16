@@ -36,6 +36,7 @@ module nts.uk.com.view.cmf001.j.viewmodel {
         checkRequired2: KnockoutObservable<boolean> = ko.observable(true);
         checkRequired3: KnockoutObservable<boolean> = ko.observable(true);
 
+        stampOrTime: KnockoutObservable<number> = ko.observable(0);
         constructor() {
             var self = this;
 
@@ -75,6 +76,9 @@ module nts.uk.com.view.cmf001.j.viewmodel {
             ]);
 
             let params = getShared("CMF001jParams");
+            
+            self.stampOrTime(params.stampOrTime);
+            
             self.inputMode = params.inputMode;
             self.lineNumber = params.lineNumber;
             if (params.formatSetting) {

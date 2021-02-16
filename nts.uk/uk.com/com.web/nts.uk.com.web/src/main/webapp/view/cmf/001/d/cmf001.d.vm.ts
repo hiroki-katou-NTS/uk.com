@@ -195,7 +195,8 @@ module nts.uk.com.view.cmf001.d.viewmodel {
 
         //open screen G, H, I, J
         dataTypeSetting(data: model.StandardAcceptItem) {
-            let self = this, url = "", formatSetting = null, paramName = "";
+            //0: stamp time; 1: time
+            let self = this, url = "", formatSetting = null, paramName = "", stampOrTime = 0;
             switch (data.itemType()) {
                 case model.ITEM_TYPE.NUMERIC:
                     url = "/view/cmf/001/g/index.xhtml";
@@ -224,11 +225,12 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                 case model.ITEM_TYPE.TIME:
                     url = "/view/cmf/001/j/index.xhtml";
                     paramName = "CMF001jParams";
+                    stampOrTime = 1;
                     if (data.timeFormatSetting())
                         formatSetting = ko.toJS(data.timeFormatSetting);
                     break;
             }
-            setShared(paramName, { formatSetting: formatSetting, inputMode: true, lineNumber: data.acceptItemNumber() }, true);
+            setShared(paramName, { formatSetting: formatSetting, inputMode: true, lineNumber: data.acceptItemNumber(), stampOrTime: stampOrTime}, true);
 
             modal(url).onClosed(function() {
                 var output = getShared('CMF001FormatOutput');

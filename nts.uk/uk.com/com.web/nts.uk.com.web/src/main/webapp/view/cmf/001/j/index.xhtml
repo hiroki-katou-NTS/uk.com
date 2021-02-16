@@ -11,7 +11,8 @@
 			<script>var dialogSize = { width: 650, height: 500 };</script>
 			<com:ValidatorScript>
 				nts.uk.ctx.exio.dom.exi.dataformat.AcceptedDigit
-	            nts.uk.ctx.exio.dom.exi.dataformat.DataSettingFixedValue
+	            nts.uk.ctx.exio.dom.exi.condset.AcceptanceConditionTimeMoment
+	            nts.uk.ctx.exio.dom.exi.condset.AcceptanceConditionTime
             </com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="cmf001.j.style.css" />
@@ -28,6 +29,62 @@
 					<col width="180px" />
 					<col width="135px" />
 					<col width="160px" />
+					
+					<!-- J7 -->
+					<tr>
+						<td>
+							<!--J7_1 固定値(ラベル)-->
+							<div class="label"
+								data-bind="ntsFormLabel: { text: '#{i18n.getText('CMF001_361')}' }"></div>
+						</td>
+						<td>
+							<!--J7_2 固定値使用有無-->
+							<div tabindex="9"
+								data-bind="ntsRadioBoxGroup: {
+								name: '#[CMF001_362]',
+								options: itemsFixedValue,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: setting().fixedValue,
+								enable: inputMode}"></div>
+						</td>
+						<!--J7_5 固定値の値-->
+						<com:ko-if bind = "stampOrTime() === 0">
+							<div>
+								<td>
+									<input id="J7_5" tabindex="10"
+										data-bind="ntsTimeEditor: {
+											name: '#[CMF001_365]',
+											constraint: 'AcceptanceConditionTimeMoment',
+											value: setting().valueOfFixedValue,
+											enable: checkActive3() &amp;&amp; inputMode,
+											required: checkRequired3,
+											option : {width : '50px'},
+											mode: 'time',
+											inputFormat: 'HH:mm'}" />
+								</td>
+							</div>
+						</com:ko-if>
+						
+						<com:ko-if bind = "stampOrTime() === 1">
+							<div>
+								<td>
+									<input id="J7_5" tabindex="10"
+										data-bind="ntsTimeEditor: {
+											name: '#[CMF001_365]',
+											constraint: 'AcceptanceConditionTime',
+											value: setting().valueOfFixedValue,
+											enable: checkActive3() &amp;&amp; inputMode,
+											required: checkRequired3,
+											option : {width : '50px'},
+											mode: 'time',
+											inputFormat: 'HH:mm'}" />
+								</td>
+							</div>
+						</com:ko-if>						
+						
+					</tr>
+					
 					<!-- J2 -->
 					<tr>
 						<td>
@@ -167,35 +224,7 @@
 								]}"></div>
 						</td>
 					</tr>
-					<!-- J7 -->
-					<tr>
-						<td>
-							<!--J7_1 固定値(ラベル)-->
-							<div class="label"
-								data-bind="ntsFormLabel: { text: '#{i18n.getText('CMF001_361')}' }"></div>
-						</td>
-						<td>
-							<!--J7_2 固定値使用有無-->
-							<div tabindex="9"
-								data-bind="ntsRadioBoxGroup: {
-								name: '#[CMF001_362]',
-								options: itemsFixedValue,
-								optionsValue: 'code',
-								optionsText: 'name',
-								value: setting().fixedValue,
-								enable: inputMode}"></div>
-						</td>
-						<!--J7_5 固定値の値-->
-						<td><input id="J7_5" tabindex="10"
-							data-bind="ntsTextEditor: {
-								name: '#[CMF001_365]',
-								constraint: 'DataSettingFixedValue',
-								value: setting().valueOfFixedValue,
-								enable: checkActive3() &amp;&amp; inputMode,
-								required: checkRequired3,
-								option : {width : '253px'}}" />
-						</td>
-					</tr>
+
 				</table>
 			</div>
 			<div id="functions-area-bottom">
