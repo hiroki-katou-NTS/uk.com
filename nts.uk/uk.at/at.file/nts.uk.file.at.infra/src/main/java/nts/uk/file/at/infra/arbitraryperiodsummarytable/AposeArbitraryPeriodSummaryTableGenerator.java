@@ -1,7 +1,6 @@
 package nts.uk.file.at.infra.arbitraryperiodsummarytable;
 
 import com.aspose.cells.*;
-import lombok.Data;
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDateTime;
@@ -10,7 +9,6 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.app.query.arbitraryperiodsummarytable.*;
 import nts.uk.ctx.at.function.dom.arbitraryperiodsummarytable.OutputSettingOfArbitrary;
 import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.enums.CommonAttributesOfForms;
-import nts.uk.ctx.at.shared.dom.adapter.workplace.config.info.WorkplaceInfor;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.PrimitiveValueOfAttendanceItem;
 import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsImport;
 import nts.uk.file.at.app.export.arbitraryperiodsummarytable.ArbitraryPeriodSummaryDto;
@@ -28,17 +26,15 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReportGenerator implements ArbitraryPeriodSummaryTableGenerator {
-    private static final String TEMPLATE_FILE_ADD = "report/KWR007.xlsx";
+    private static final String TEMPLATE_FILE_ADD = "report/KWR07.xlsx";
     private static final String EXCEL_EXT = ".xlsx";
     private static final String PRINT_AREA = "";
-    private static final int MAX_ITEM_ONE_PAGE = 50;
+    private static final int MAX_ITEM_ONE_LINE = 20;
     private static final String FORMAT_DATE = "yyyy/MM/dd";
 
 
@@ -98,31 +94,20 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
                 val query = dataSource.getQuery();
                 List<AttendanceItemDisplayContents> contentsList = data.getContentsList();
                 List<AttendanceDetailDisplayContents> detailDisplayContents = data.getDetailDisplayContents();
-
                 List<WorkplaceTotalDisplayContent> totalDisplayContents = data.getTotalDisplayContents();
-
                 List<DisplayContent> totalAll = data.getTotalAll();
-
                 List<CumulativeWorkplaceDisplayContent> cumulativeWorkplaceDisplayContents =
                         data.getCumulativeWorkplaceDisplayContents();
                 DatePeriod period = dataSource.getPeriod();
-
                 int count = 0;
-                int itemOnePage = 0;
-                Cells cellsTemplate = worksheet.getCells();
+                Cells cellsTemplate = worksheetTemplate.getCells();
                 Cells cells = worksheet.getCells();
-                int page = 1;
                 boolean pageNew = false;
                 for (int i = 0; i < detailDisplayContents.size(); i++) {
                     if (i == 0) {
-                        cells.copyRow(cellsTemplate, 0, 0);
-                        cells.clearContents(0,0,1,21);
-
-                        cells.get(0,0).setValue(TextResource.localize("KWR007_301")
-                                + period.start().toString(FORMAT_DATE)+ TextResource.localize("KWR007_307")
-                                + period.end().toString(FORMAT_DATE));
-                        printInfo(worksheetTemplate, worksheet, 2, contentsList, 1);
-                        count += 4;
+                        // C1_1
+                        printInfo(worksheetTemplate, worksheet, contentsList, period);
+                        count += 5;
                     }
                     if (pageNew) {
                         cells.copyRows(cells, 1, count, 4);
@@ -133,20 +118,87 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
                     int wplHierarchy = Integer.parseInt(content.getHierarchyCode());
                     int pageBreakWplHierarchy = query.getPageBreakWplHierarchy();
                     boolean isPageBreakByWpl = query.isPageBreakByWpl();
-
-                    if ((isPageBreakByWpl && i >= 1) || (wplHierarchy > pageBreakWplHierarchy)) {
+                    if ((isPageBreakByWpl && i > 1) || (wplHierarchy > pageBreakWplHierarchy)) {
                         pageBreaks.add(count);
                         pageNew = true;
                     }
                     List<DisplayedEmployee> listDisplayedEmployees = content.getListDisplayedEmployees();
-                        cells.copyRow(cells, 1, count + 1);
-                        cells.copyRow(cells, 2, count + 2);
-                        cells.clearContents(count, 0, cells.getMaxRow(), 16);
+                    cells.copyRow(cellsTemplate, 5, count);
+                    //D1_1
+                    cells.get(count, 0).setValue(TextResource.localize("KWR007_302")
+                            + " " + content.getWorkplaceCd() + " " + content.getWorkplaceName());
+                    count += 1;
+                    for (int j = 0; j < listDisplayedEmployees.size(); j++) {
+                        val item = listDisplayedEmployees.get(j);
+                        if (j % 2 == 0) {
+                            cells.copyRows(cellsTemplate, 6, count, 2);
 
-                    cells.get(count, 0).setValue(TextResource.localize("")
-                            + "　" + content.getWorkplaceCd() + "KWR007_302" + content.getWorkplaceName());
-                    //cells.get(count + 1, 0).setValue(TextResource.localize("") + "　" + content.getEmployeeCode() + "　" + content.getEmployeeName());
+                        } else {
+                            cells.copyRows(cellsTemplate, 8, count, 2);
+                        }
+                        cells.get(count, 0).setValue(
+                                item.getEmployeeCode() + " " + item.getEmployeeName());
+                        val contents = item.getContentList();
+                        for (int k = 0; k < MAX_ITEM_ONE_LINE; k++) {
+                            // Line 01:
+                            cells.get(count, 1 + k).setValue(contents.get(k).getValue());
+                            // Line 02:
+                            if (contents.size() >= MAX_ITEM_ONE_LINE)
+                                cells.get(count + 1, 1 + k).setValue(contents.get(20 + k).getValue());
+                        }
+                        count += 2;
+                    }
+                    if (query.isWorkplaceTotal()) {
+                        val sumByWplOpt = totalDisplayContents
+                                .stream().filter(e -> e.getWorkplaceId().equals(content.getWorkplaceId())).findFirst();
+                        if (sumByWplOpt.isPresent()) {
+                            val sumByWpl = sumByWplOpt.get();
+                            cells.copyRows(cellsTemplate, 10, count, 2);
+                            cells.get(count, 0).setValue(TextResource.localize("KWR007_304"));
+                            val listSum = sumByWpl.getListOfWorkplaces();
+                            if (listSum != null)
+                                for (int k = 0; k < MAX_ITEM_ONE_LINE; k++) {
+                                    // Line 01:
+                                    cells.get(count, 1 + k).setValue(listSum.get(k).getValue());
+                                    // Line 02:
+                                    if (listSum.size() >= MAX_ITEM_ONE_LINE)
+                                        cells.get(count + 1, 1 + k).setValue(listSum.get(20 + k).getValue());
+                                }
+                            count += 2;
+                        }
+                    }
                 }
+                if (query.isCumulativeWorkplace()) {
+
+                    for (int i = 0; i < cumulativeWorkplaceDisplayContents.size(); i++) {
+                        val item = cumulativeWorkplaceDisplayContents.get(i);
+                        val listValue = item.getListOfWorkplaces();
+                        cells.copyRows(cellsTemplate, 10, count, 2);
+                        cells.get(count, 0).setValue(TextResource.localize("KWR007_305"));
+                        for (int k = 0; k < MAX_ITEM_ONE_LINE; k++) {
+                            // Line 01:
+                            cells.get(count, 1 + k).setValue(listValue.get(k).getValue());
+                            // Line 02:
+                            if (listValue.size() >= MAX_ITEM_ONE_LINE)
+                                cells.get(count + 1, 1 + k).setValue(listValue.get(20 + k).getValue());
+                        }
+                        count += 2;
+                    }
+
+                }
+                if (query.isTotal()) {
+                    cells.copyRows(cellsTemplate, 10, count, 2);
+                    cells.get(count, 0).setValue(TextResource.localize("KWR007_306"));
+                    for (int k = 0; k < MAX_ITEM_ONE_LINE; k++) {
+                        // Line 01:
+                        cells.get(count, 1 + k).setValue(totalAll.get(k).getValue());
+                        // Line 02:
+                        if (totalAll.size() >= MAX_ITEM_ONE_LINE)
+                            cells.get(count + 1, 1 + k).setValue(totalAll.get(20 + k).getValue());
+                    }
+
+                }
+
                 PageSetup pageSetup = worksheet.getPageSetup();
                 pageSetup.setPrintArea(PRINT_AREA + count);
             }
@@ -157,24 +209,26 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
 
     }
 
-    private void printInfo(Worksheet worksheetTemplate, Worksheet worksheet, int rowCount,
-                           List<AttendanceItemDisplayContents> contentsList, int destinationRowIndex) throws Exception {
+    private void printInfo(Worksheet worksheetTemplate, Worksheet worksheet,
+                           List<AttendanceItemDisplayContents> contentsList, DatePeriod datePeriod) throws Exception {
 
         Cells cellsTemplate = worksheetTemplate.getCells();
         Cells cells = worksheet.getCells();
-        cells.copyRows(cellsTemplate, 0, destinationRowIndex, 4);
-        cells.clearContents(0,0,cells.getMaxRow(),cells.getMaxColumn());
-        cells.merge(1,1,4,1,true);
-        cells.get(1,1).setValue(TextResource.localize(""));
-        cells.get(rowCount, 2).setValue("");
-        cells.get(rowCount, 14).setValue(TextResource.localize(""));
-    }
+        cells.copyRows(cellsTemplate, 0, 0, 5);
+        cells.clearContents(0, 0, cells.getMaxRow(), cells.getMaxColumn());
 
-    /**
-     * Display year month yyyy/MM
-     */
-    private String toYearMonthString(YearMonth yearMonth) {
-        return String.format("%04d/%02d", yearMonth.year(), yearMonth.month());
+        cells.get(0, 0).setValue(TextResource.localize("KWR007_301")
+                + datePeriod.start().toString(FORMAT_DATE) + TextResource.localize("KWR007_307")
+                + datePeriod.end().toString(FORMAT_DATE));
+
+        cells.get(1, 0).setValue(TextResource.localize("KWR007_302"));
+        for (int i = 0; i < MAX_ITEM_ONE_LINE; i++) {
+            // Line 01:
+            cells.get(1, 1 + i).setValue(contentsList.get(i).getAttendanceName());
+            // Line 02:
+            if (contentsList.size() >= MAX_ITEM_ONE_LINE)
+                cells.get(3, 1 + i).setValue(contentsList.get(20 + i).getAttendanceName());
+        }
     }
 
     /**
