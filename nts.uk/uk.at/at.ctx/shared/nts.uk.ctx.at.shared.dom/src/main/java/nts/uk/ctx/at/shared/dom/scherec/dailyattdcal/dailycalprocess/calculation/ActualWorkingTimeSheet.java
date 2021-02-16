@@ -120,9 +120,9 @@ public abstract class ActualWorkingTimeSheet extends CalculationTimeSheet{
 	}
 	
 	/**
-	 * 深夜時間帯のリストを作り直す
-	 * @param baseTime 基準時間
-	 * @param isDateBefore 基準時間より早い時間を切り出す
+	 * 深夜時間帯一覧を作り直す
+	 * @param baseTime 指定時刻
+	 * @param isDateBefore 指定時刻より早い時間を切り出す
 	 * @return 切り出した深夜時間帯一覧
 	 */
 	public MidNightTimeSheetForCalcList recreateMidNightTimeSheetBeforeBase(TimeWithDayAttr baseTime,boolean isDateBefore){

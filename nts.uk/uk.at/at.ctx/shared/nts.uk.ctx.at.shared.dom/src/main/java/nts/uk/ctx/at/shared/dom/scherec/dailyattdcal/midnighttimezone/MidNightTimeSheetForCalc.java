@@ -90,9 +90,9 @@ public class MidNightTimeSheetForCalc extends CalculationTimeSheet {
 	}
 	
 	/**
-	 * 深夜時間帯のリストを作り直す
-	 * @param baseTime 基準時間
-	 * @param isDateBefore 基準時間より早い時間を切り出す
+	 * 深夜時間帯を作り直す
+	 * @param baseTime 指定時刻
+	 * @param isDateBefore 指定時刻より早い時間を切り出す
 	 * @return 切り出した深夜時間帯
 	 */
 	public Optional<MidNightTimeSheetForCalc> recreateMidNightTimeSheetBeforeBase(TimeWithDayAttr baseTime, boolean isDateBefore){
@@ -125,7 +125,7 @@ public class MidNightTimeSheetForCalc extends CalculationTimeSheet {
 			TimeRoundingSetting roundSetting){
 		//計算範囲と深夜時間帯の重複した時間帯を取得
 		Optional<TimeSpanForDailyCalc> duplicate = calcRange.getDuplicatedWith(midNightTimeSheet);
-		if(duplicate.isPresent()) {
+		if(!duplicate.isPresent()) {
 			return Optional.empty();
 		}
 		
@@ -133,8 +133,8 @@ public class MidNightTimeSheetForCalc extends CalculationTimeSheet {
 		MidNightTimeSheetForCalc duplicatedMidNight = new MidNightTimeSheetForCalc(
 				duplicate.get(),
 				roundSetting,
-				recordTimeSheet,
-				dedTimeSheet);
+				new ArrayList<>(),
+				new ArrayList<>());
 		
 		//計上用の控除時間帯を重複した範囲でセットする
 		duplicatedMidNight.addDuplicatedDeductionTimeSheet(

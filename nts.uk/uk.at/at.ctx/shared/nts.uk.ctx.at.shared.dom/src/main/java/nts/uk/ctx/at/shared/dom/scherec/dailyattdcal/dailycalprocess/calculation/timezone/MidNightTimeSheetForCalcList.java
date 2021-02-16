@@ -63,11 +63,11 @@ public class MidNightTimeSheetForCalcList {
 	public static MidNightTimeSheetForCalcList createEmpty() {
 		return new MidNightTimeSheetForCalcList(new ArrayList<>());
 	}
-	
+
 	/**
-	 * 深夜時間帯のリストを作り直す
-	 * @param baseTime 基準時間
-	 * @param isDateBefore 基準時間より早い時間を切り出す
+	 * 深夜時間帯一覧を作り直す
+	 * @param baseTime 指定時刻
+	 * @param isDateBefore 指定時刻より早い時間を切り出す
 	 * @return 切り出した深夜時間帯
 	 */
 	public MidNightTimeSheetForCalcList recreateMidNightTimeSheetBeforeBase(TimeWithDayAttr baseTime, boolean isDateBefore){
@@ -77,6 +77,17 @@ public class MidNightTimeSheetForCalcList {
 					.filter(t -> t.isPresent())
 					.map(t -> t.get())
 					.collect(Collectors.toList()));
+	}
+
+	/**
+	 * 深夜時間を計算する
+	 * アルゴリズム：深夜時間を計算
+	 * @return 深夜時間
+	 */
+	public AttendanceTime calcTotalTime() {
+		return new AttendanceTime(this.timeSheets.stream()
+				.map(t -> t.calcTotalTime().valueAsMinutes())
+				.collect(Collectors.summingInt(value -> value)));
 	}
 
 	/**
@@ -95,18 +106,8 @@ public class MidNightTimeSheetForCalcList {
 	}
 	
 	/**
-	 * 深夜時間の計算
-	 * @return
-	 */
-	public AttendanceTime calcTotalTime() {
-		return new AttendanceTime(this.timeSheets.stream()
-				.map(t -> t.calcTotalTime().valueAsMinutes())
-				.collect(Collectors.summingInt(value -> value)));
-	}
-	
-	/**
-	 * 重複範囲の時間帯を持つ計算用深夜時間帯に作り直す
-	 * @param timeSpan 重複を調べたい時間帯
+	 * 指定された時間帯と重複している深夜時間帯を取得
+	 * @param timeSpan 時間帯
 	 * @return 重複範囲の時間帯深夜時間帯一覧
 	 */
 	public MidNightTimeSheetForCalcList getDuplicateRangeTimeSheet(TimeSpanForDailyCalc timeSpan) {
