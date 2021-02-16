@@ -52,7 +52,9 @@ public class TaskSchedule implements DomainValue {
 	/**
 	 * 重複チェックする
 	 * @param details 対象の詳細リスト
-	 * @return
+	 * @return 
+	 * true: if any time spans in list 'details' is duplicate 対象の詳細リストの中の要素が重複
+	 * false: all time spans in list 'details' are not duplicate 対象の詳細リストの中の要素が全て非重複  
 	 */
 	private static boolean checkDuplicate(List<TaskScheduleDetail> details) {
 		
