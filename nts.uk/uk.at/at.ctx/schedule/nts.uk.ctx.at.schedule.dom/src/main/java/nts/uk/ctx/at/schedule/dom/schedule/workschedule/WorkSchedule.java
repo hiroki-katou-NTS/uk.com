@@ -633,6 +633,7 @@ public class WorkSchedule implements DomainAggregate {
 			.forEach( taskTimeSpan -> {
 				
 				if ( !this.optTimeLeaving.get().isIncludeInWorkTimeSpan(taskTimeSpan) ) {
+					// if this.workInfo is attendance rate, this.optTimeLeaving will always be present.
 					throw new BusinessException("Msg_2098");
 				}
 				
