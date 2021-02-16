@@ -138,4 +138,9 @@ public class LeaveNumberInfo implements Cloneable {
 			this.usedPercent = new LeaveUsedPercent(new BigDecimal(usedPer));
 		}
 	}
+
+	/** 残数不足のときにはtrueを返す */
+	public boolean isShortageRemain() {
+		return getRemainingNumber().isShortageRemain();
+	}
 }

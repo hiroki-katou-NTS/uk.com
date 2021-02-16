@@ -3,27 +3,21 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremain
 import java.math.BigDecimal;
 import java.util.Optional;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingNumber;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
-import nts.uk.ctx.at.shared.dom.remainingnumber.base.YearDayNumber;
-import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemaining;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemainingData;
 
 @Getter
 @NoArgsConstructor
 //@AllArgsConstructor
 // domain name CS00037: 年休付与残数データ
-public class AnnualLeaveGrantRemainingData extends LeaveGrantRemaining {
+public class AnnualLeaveGrantRemainingData extends LeaveGrantRemainingData {
 
 //	private String annLeavID;
 //

@@ -24,7 +24,7 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.ConfirmLeavePeriod;
-import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemaining;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveNumberInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedNumber;
@@ -32,7 +32,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfo;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemaining;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InforSpecialLeaveOfEmployeeSevice;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialHolidayInterimMngData;
@@ -139,11 +138,11 @@ public class SpecialLeaveManagementService {
 		SpecialLeaveInfo specialLeaveInfoEnd = outputData.getAsOfPeriodEnd();
 
 		// ダミーとして作成した「特別休暇付与残数(List)」を取得
-		List<SpecialLeaveGrantRemaining> remainingList
-			= specialLeaveInfoEnd.getGrantRemainingNumberList();
-		List<SpecialLeaveGrantRemaining> dummyRemainingList
+		List<SpecialLeaveGrantRemainingData> remainingList
+			= specialLeaveInfoEnd.getGrantRemainingDataList();
+		List<SpecialLeaveGrantRemainingData> dummyRemainingList
 			= remainingList.stream()
-				.filter(c -> c.isDummyAtr())
+				.filter(c -> c.isShortageRemain())
 				.collect(Collectors.toList());
 
 		// 取得した特別休暇付与残数の「特別休暇使用数」、「特別休暇残数」をそれぞれ合計
@@ -155,21 +154,19 @@ public class SpecialLeaveManagementService {
 		});
 
 		// 合計した「特別休暇使用数」「特別休暇残数」から特別休暇付与残数を作成
-		LeaveGrantRemaining leaveGrantRemainingTotal = new LeaveGrantRemaining();
+//		LeaveGrantRemainingData leaveGrantRemainingTotal = new LeaveGrantRemainingData();
+		SpecialLeaveGrantRemainingData specialLeaveGrantRemainingData
+			= new SpecialLeaveGrantRemainingData();
 		LeaveNumberInfo leaveNumberInfo = new LeaveNumberInfo();
 		// 明細．残数　←　合計した「特別休暇残数」
 		leaveNumberInfo.setRemainingNumber(leaveRemainingNumberTotal);
 		// 明細．使用数　←　合計した「特別休暇使用数」
 		leaveNumberInfo.setUsedNumber(leaveUsedNumberTotal);
-		leaveGrantRemainingTotal.setDetails(leaveNumberInfo);
-		// 年休不足ダミーフラグ　←　false
-		leaveGrantRemainingTotal.setDummyAtr(false);
+		specialLeaveGrantRemainingData.setDetails(leaveNumberInfo);
+//		// 年休不足ダミーフラグ　←　false
+//		leaveGrantRemainingTotal.setDummyAtr(false);
 
-		// 特別休暇情報．付与残数データに作成した特別休暇付与残数を追加
-		SpecialLeaveGrantRemaining specialLeaveGrantRemaining
-			= new SpecialLeaveGrantRemaining(leaveGrantRemainingTotal);
-
-		specialLeaveInfoEnd.getGrantRemainingNumberList().add(specialLeaveGrantRemaining);
+		specialLeaveInfoEnd.getGrantRemainingDataList().add(specialLeaveGrantRemainingData);
 
 		// 特別休暇不足分として作成した特別休暇付与データを削除する -------------------------
 
@@ -271,7 +268,7 @@ public class SpecialLeaveManagementService {
 					companyId,
 					employeeId,
 					aggrPeriod.start(),
-					prevSpecialLeaveInfo.getGrantRemainingList());
+					prevSpecialLeaveInfo.getGrantRemainingDataList());
 		}
 
 		// 休暇残数を計算する締め開始日を取得する
@@ -322,13 +319,13 @@ public class SpecialLeaveManagementService {
 				= createInfoFromRemainingData(
 					companyId,
 					employeeId,
-					closureStartOpt.get(), // ooooo
+					closureStartOpt.get(),
 					specialLeaveGrantRemainingDataList);
 
 			return specialLeaveInfo;
 		}
 
-		return null; // ooooo
+		return null;
 	}
 
 	/**
@@ -430,7 +427,7 @@ public class SpecialLeaveManagementService {
 
 			lstSpeData = inPeriodOfSpecialLeaveResultInforStart
 					.getAsOfStartNextDayOfPeriodEnd()
-					.getGrantRemainingList();
+					.getGrantRemainingDataList();
 
 			return lstSpeData;
 		}
@@ -794,7 +791,7 @@ public class SpecialLeaveManagementService {
 			}
 		}
 		targetDatas.sort((a, b) -> a.getGrantDate().compareTo(b.getGrantDate()));
-		specialLeaveInfo.setGrantRemainingList(targetDatas);
+		specialLeaveInfo.setGrantRemainingDataList(targetDatas);
 
 //		// 特休情報．上限データ　←　パラメータ「上限データ」
 //		if (!maxDataOpt.isPresent()) {

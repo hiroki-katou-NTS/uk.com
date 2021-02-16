@@ -172,7 +172,7 @@ public class LeaveGrantRemainingData extends AggregateRoot {
 			// 消化できなかった休暇使用数をもとに、付与残数ダミーデータを作成する
 
 			// 「年休付与残数データ」を作成する
-			val dummyRemainData = new LeaveGrantRemaining();
+			val dummyRemainData = new LeaveGrantRemainingData();
 
 			dummyRemainData.setLeaveID("");
 			// 社員ID←パラメータ「社員ID」
@@ -213,13 +213,15 @@ public class LeaveGrantRemainingData extends AggregateRoot {
 
 			dummyRemainData.setDetails(leaveNumberInfo);
 
-//			年休不足ダミーフラグ←true
-			dummyRemainData.setDummyAtr(true);
-
 			// 付与残数データに追加
 			targetRemainingDatas.add(dummyRemainData);
 
 		}
+	}
+
+	/** 残数不足のときにはtrueを返す */
+	public boolean isShortageRemain() {
+		return details.isShortageRemain();
 	}
 
 	@Override

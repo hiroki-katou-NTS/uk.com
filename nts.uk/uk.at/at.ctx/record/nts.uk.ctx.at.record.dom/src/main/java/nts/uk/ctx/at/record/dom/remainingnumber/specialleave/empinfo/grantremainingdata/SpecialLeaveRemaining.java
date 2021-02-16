@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemaining;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.grantnumber.SpecialLeaveUndigestNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.DayNumberOfRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.TimeOfRemain;
@@ -82,7 +82,7 @@ public class SpecialLeaveRemaining implements Cloneable {
 	 * @param afterGrantAtr 付与後フラグ
 	 */
 	public void updateRemainingNumber(
-			List<SpecialLeaveGrantRemaining> remainingDataList,
+			List<SpecialLeaveGrantRemainingData> remainingDataList,
 			boolean afterGrantAtr){
 
 		// 特別休暇付与残数データから実特別休暇の特別休暇残数を作成

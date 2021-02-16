@@ -392,7 +392,7 @@ public class GetRsvLeaRemNumWithinPeriod {
 				double grantDays = 0.0;
 
 				// 付与残数データを取得
-				for (val grantRemaining : annualLeaveInfo.getGrantRemainingList()){
+				for (val grantRemaining : annualLeaveInfo.getGrantRemainingDataList()){
 					if (grantRemaining.getDeadline().compareTo(annualLeaveInfo.getYmd().addDays(-1)) != 0) continue;
 					if (grantRemaining.getExpirationStatus() != LeaveExpirationStatus.EXPIRED) continue;
 

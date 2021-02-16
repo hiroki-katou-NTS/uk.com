@@ -54,7 +54,7 @@ public class RemainSpecialHolidayUpdating {
 
 		// 特別休暇付与残数データの更新
 		// 特別休暇付与残数データ更新処理
-		List<SpecialLeaveGrantRemainingData> details = output.getAsOfPeriodEnd().getGrantRemainingList();
+		List<SpecialLeaveGrantRemainingData> details = output.getAsOfPeriodEnd().getGrantRemainingDataList();
 		for (SpecialLeaveGrantRemainingData detail : details){
 
 			String specialId = IdentifierUtil.randomUniqueId();
