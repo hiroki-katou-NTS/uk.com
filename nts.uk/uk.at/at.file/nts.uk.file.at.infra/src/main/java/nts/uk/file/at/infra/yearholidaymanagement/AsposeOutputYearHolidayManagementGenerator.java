@@ -38,11 +38,13 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
+import nts.arc.primitive.TimeDurationPrimitiveValue;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.record.dom.adapter.company.AffComHistItemImport;
 import nts.uk.ctx.at.record.dom.adapter.company.AffCompanyHistImport;
 import nts.uk.ctx.at.record.dom.adapter.company.StatusOfEmployeeExport;
@@ -506,6 +508,9 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 	private void printData(Worksheet worksheet, String programId, String companyName, String exportTime,
 			List<EmployeeHolidayInformationExport> data, String sheetName, OutputYearHolidayManagementQuery query) {
 		try {
+			AnnualPaidLeaveSetting annualPaidLeaveSetting = this.annualPaidLeaveSettingRepository
+					.findByCompanyId(AppContexts.user().companyId());
+			boolean isManageTime = annualPaidLeaveSetting.getTimeSetting().getTimeManageType().equals(ManageDistinct.YES);
 			worksheet.setName(sheetName);
 			Cells cells = worksheet.getCells();
 			this.setHeader(cells, query);
@@ -523,12 +528,12 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 						: null;
 				List<AnnualHolidayGrantDetail> holidayDetails = emp.getHolidayDetails();
 				// tính tổng số dòng để xác định phân trang nếu data quá quy định
-				int dataLine = this.getTotalLineOfEmp(holidayInfo, holidayDetails);
+				List<Integer> dataLine = this.getTotalLineOfEmp(holidayInfo, holidayDetails, isManageTime);
 				String wpName = WORKPLACE_TITLE + emp.getWorkplace().getWorkplaceCode() + " "
 						+ emp.getWorkplace().getWorkplaceName();
 				String lastWpName = cells.get(lastWPRow, 0).getStringValue();
 				// tổng số dòng = số dòng data + 1 dòng in WorkPlace (nếu có);
-				int totalLine = dataLine + (!lastWpName.equals(wpName) ? 1 : 0);
+				int totalLine = dataLine.stream().reduce(0, Integer::sum) + (!lastWpName.equals(wpName) ? 1 : 0);
 				int maxrow = currentRow < 38 ? MAX_ROW + 1 : MAX_ROW - 3;
 				if (currentRow - beginRow + totalLine > maxrow) {
 					HorizontalPageBreakCollection pageBreaks = worksheet.getHorizontalPageBreaks();
@@ -604,16 +609,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 				int holidayDetailCol = MIN_GRANT_DETAIL_COL;
 				for (int j = 0; j < holidayDetails.size(); j++) {
 					AnnualHolidayGrantDetail detail = holidayDetails.get(j);
-					// case date  年休取得日の印字方法  = 年月日
-					if(query.getPrintAnnualLeaveDate() == AnnualLeaveAcquisitionDate.DATE) {
-						cells.get(holidayDetailRow, holidayDetailCol).setValue(this.genHolidayText(detail, query.getPrintAnnualLeaveDate()));
-					}
-					// case time 年休取得日の印字方法  = 月日
-					if(query.getPrintAnnualLeaveDate() == AnnualLeaveAcquisitionDate.TIME) {
-						cells.get(holidayDetailRow, holidayDetailCol).setValue(this.genHolidayText(detail, query.getPrintAnnualLeaveDate()));
-//						cells.get(holidayDetailRow + 1, holidayDetailCol).setValue(this.generateTimeText(detail));
-					}
-					
+					cells.get(holidayDetailRow, holidayDetailCol).setValue(this.genHolidayText(detail, query.getPrintAnnualLeaveDate()));
 					if (holidayDetailCol == MAX_GRANT_DETAIL_COL) {
 						holidayDetailRow++;
 						holidayDetailCol = MIN_GRANT_DETAIL_COL;
@@ -622,8 +618,70 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 					}
 				}
 
-				currentRow = currentRow + dataLine;
-				isBlueBackground = this.setRowStyle(cells, currentRow, dataLine, isBlueBackground);
+				currentRow = currentRow + dataLine.get(0);
+				isBlueBackground = this.setRowStyle(cells, currentRow, dataLine.get(0), isBlueBackground, isManageTime, false);
+				
+				// If manageTime in KMF001C = ON
+				if (isManageTime) {
+					// Print AnnualHolidayGrantInfor
+					if (holidayInfo != null) {
+						// print AnnualHolidayGrant
+						int holidayInfoRow = currentRow;
+						if (holidayInfo.getLstGrantInfor().size() > 0) {
+							for (int j = 0; j < holidayInfo.getLstGrantInfor().size(); j++) {
+								AnnualHolidayGrant grantInfo = holidayInfo.getLstGrantInfor().get(j);
+								String grantDate = String.valueOf(grantInfo.getYmd());
+								cells.get(holidayInfoRow, GRANT_DATE_COL).setValue(grantDate);
+								String grantDealine = String.valueOf(grantInfo.getDeadline());
+								cells.get(holidayInfoRow, GRANT_DEADLINE_COL).setValue(grantDealine);
+								String grantHours = this.generateTimeText(grantInfo.getGrantMinutes());
+								cells.get(holidayInfoRow, GRANT_DAYS_COL).setValue(grantHours);
+								String useHours = this.generateTimeText(grantInfo.getUsedMinutes());
+								cells.get(holidayInfoRow, GRANT_USEDAY_COL).setValue(useHours);
+								String remainHours = this.generateTimeText(grantInfo.getRemainMinutes());
+								cells.get(holidayInfoRow, GRANT_REMAINDAY_COL).setValue(remainHours);
+
+								holidayInfoRow++;
+							}
+						} else {
+							cells.get(holidayInfoRow, GRANT_DATE_COL).setValue("");
+							cells.get(holidayInfoRow, GRANT_DAYS_COL).setValue("0:00");
+							cells.get(holidayInfoRow, GRANT_USEDAY_COL).setValue("0:00");
+							cells.get(holidayInfoRow, GRANT_REMAINDAY_COL).setValue("0:00");
+						}
+					}
+					// Print HolidayDetails
+
+					holidayDetailRow = currentRow;
+					holidayDetailCol = MIN_GRANT_DETAIL_COL;
+					// TODO: 114095 - Quản lý thời gian
+					// Tạm thời fake data
+					List<String> dateList = Collections.emptyList();
+					List<String> hourList = Collections.emptyList();
+//					dateList = Arrays.asList("19/12/25", "(20/2/9)","19/12/25", "(20/2/9)","19/12/25", "(20/2/9)","19/12/25", "(20/2/9)","19/12/25", "(20/2/9)","19/12/25", "(20/2/9)","19/12/25", "(20/2/9)","19/12/25", "(20/2/9)","19/12/25", "(20/2/9)",
+//							"19/12/25", "(20/2/9)","19/12/25", "(20/2/9)","19/12/25", "(20/2/9)","19/12/25", "(20/2/9)","19/12/25", "(20/2/9)","19/12/25", "(20/2/9)","19/12/25", "(20/2/9)","19/12/25", "(20/2/9)","19/12/25", "(20/2/9)");
+//					hourList = Arrays.asList("3:00", "(2:00)", "3:00", "(2:00)", "3:00", "(2:00)", "3:00", "(2:00)", "3:00", "(2:00)", "3:00", "(2:00)", "3:00", "(2:00)", "3:00", "(2:00)", "3:00", "(2:00)", "3:00", "(2:00)",
+//							"3:00", "(2:00)", "3:00", "(2:00)", "3:00", "(2:00)", "3:00", "(2:00)", "3:00", "(2:00)", "3:00", "(2:00)", "3:00", "(2:00)", "3:00", "(2:00)", "3:00", "(2:00)", "3:00", "(2:00)");
+					
+					if (holidayInfo.getLstGrantInfor().stream().anyMatch(item -> item.getGrantMinutes().v() > 0)) {
+						int newLineCount = ((int) Math.ceil(dateList.size() / 15.0)) * 2;
+						if (newLineCount > dataLine.get(1)) {
+							dataLine.set(1, newLineCount);
+						}
+						for (int j = 0; j < dateList.size(); j++) {
+							cells.get(holidayDetailRow, holidayDetailCol).setValue(dateList.get(j));
+							cells.get(holidayDetailRow + 1, holidayDetailCol).setValue(hourList.get(j));
+							if (holidayDetailCol == MAX_GRANT_DETAIL_COL) {
+								holidayDetailRow += 2;
+								holidayDetailCol = MIN_GRANT_DETAIL_COL;
+							} else {
+								holidayDetailCol++;
+							}
+						}
+					}
+					currentRow = currentRow + dataLine.get(1);
+					isBlueBackground = this.setRowStyle(cells, currentRow, dataLine.get(1), isBlueBackground, isManageTime, true);
+				}
 			}
 
 		} catch (Exception e) {
@@ -636,28 +694,44 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 	 * 
 	 * @param holidayInfo
 	 * @param holidayDetails
-	 * @return số dòng cần để in
+	 * @return số dòng cần để in ([x, y] với x là số dòng in date, y là số dòng in time (optional))
 	 */
-	private int getTotalLineOfEmp(AnnualHolidayGrantInfor holidayInfo, List<AnnualHolidayGrantDetail> holidayDetails) {
-		AnnualPaidLeaveSetting annualPaidLeaveSetting = this.annualPaidLeaveSettingRepository
-				.findByCompanyId(AppContexts.user().companyId());
-		boolean isManageTime = annualPaidLeaveSetting.getTimeSetting().getTimeManageType().equals(ManageDistinct.NO);
-		// mặc định là 2 dòng với date, 4 dòng với time 
-		int result = isManageTime ? 2 : 4;
+	private List<Integer> getTotalLineOfEmp(AnnualHolidayGrantInfor holidayInfo, List<AnnualHolidayGrantDetail> holidayDetails,
+			boolean isManageTime) {
+		// mặc định là 2 dòng với date, 4 dòng với time (nếu có)
+		List<Integer> result = isManageTime ? Arrays.asList(2, 4) : Arrays.asList(2);
+		// danh sách các detail sử dụng ngày nghỉ năm
+		List<AnnualHolidayGrantDetail> useDays = holidayDetails.stream().filter(detail -> detail.getUseDays() > 0)
+				.collect(Collectors.toList());
+		// danh sách các detail sử dụng giờ nghỉ năm
+		// TODO: 114095 - Quản lý thời gian
+		List<AnnualHolidayGrantDetail> useHours = Collections.emptyList();
 		// dòng của lineOfDetails = tổng data /15 + 1 dòng nếu /15 có dư ra
-		int lineOfDetails = holidayDetails.size() / 15 + (holidayDetails.size() % 15 > 0 ? 1 : 0);
-
-		int lineOfholidayInfo = holidayInfo != null ? holidayInfo.getLstGrantInfor().size() : 0;
-		// số dòng của data sẽ là của getLstGrantInfor hoặc holidayDetails nếu 1 trong 2 > 2
-		if (lineOfholidayInfo > result || lineOfDetails > result) {
-			// số dòng của data tùy thuộc getLstGrantInfor hoặc holidayDetails bên nào lớn hơn
-			if (lineOfholidayInfo > lineOfDetails) {
-				result = lineOfholidayInfo;
-			} else {
-				result = lineOfDetails;
-			}
+		int lineOfDayDetails = (int) Math.ceil(useDays.size() / 15.0);
+		// nếu trường hợp time thì tính thêm detail time x2
+		int lineOfHourDetails = 0;
+		if (isManageTime) {
+			lineOfHourDetails = ((int) Math.ceil(useHours.size() / 15.0)) * 2;
 		}
+		int lineOfholidayInfo = holidayInfo != null ? holidayInfo.getLstGrantInfor().size() : 0;
 		
+		switch (result.size()) {
+		// có in thời gian
+		case 2:
+			// số dòng của data sẽ là của getLstGrantInfor hoặc holidayDetails nếu 1 trong 2 > 2
+			if (lineOfholidayInfo > result.get(1) || lineOfHourDetails > result.get(1)) {
+				// số dòng của data tùy thuộc getLstGrantInfor hoặc holidayDetails bên nào lớn hơn
+				result.set(1, Collections.max(Arrays.asList(lineOfholidayInfo, lineOfHourDetails)));
+			}
+		// in ngày
+		case 1:
+			// số dòng của data sẽ là của getLstGrantInfor hoặc holidayDetails nếu 1 trong 2 > 2
+			if (lineOfholidayInfo > result.get(0) || lineOfHourDetails > result.get(0)) {
+				// số dòng của data tùy thuộc getLstGrantInfor hoặc holidayDetails bên nào lớn hơn
+				result.set(0, Collections.max(Arrays.asList(lineOfholidayInfo, lineOfDayDetails)));
+			}
+			break;
+		}
 		return result;
 	}
 
@@ -670,12 +744,10 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 	 * @param isBlueBackground
 	 * @return trạng thái màu của dòng kế được in ra (xanh hay trắng)
 	 */
-	private boolean setRowStyle(Cells cells, int newRow, int totalLine, boolean isBlueBackground) {
+	private boolean setRowStyle(Cells cells, int newRow, int totalLine, boolean isBlueBackground, 
+			boolean isManageTime, boolean isPrintingTime) {
 		Style style = new Style();
-
-		AnnualPaidLeaveSetting annualPaidLeaveSetting = this.annualPaidLeaveSettingRepository
-				.findByCompanyId(AppContexts.user().companyId());
-		if (annualPaidLeaveSetting.getTimeSetting().getTimeManageType().equals(ManageDistinct.NO)) {
+		if (!isPrintingTime) {
 			for (int i = totalLine; i > 0; i--) {
 				for (int j = 0; j < MAX_COL; j++) {
 					Cell cell = cells.get(newRow - i, j);
@@ -691,10 +763,19 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 								this.setBackGround(cell);
 							}
 						}
+						// case last line
+						if (i == 1 && j != EMP_NAME_COL) {
+							this.setBorder(cell, BorderType.BOTTOM_BORDER, CellBorderType.THIN);
+						}
 					}
 					this.setTextStyle(cell);
 				}
-				isBlueBackground = !isBlueBackground;
+				// case last line
+				if (i == 1) {
+					isBlueBackground = false;
+				} else {
+					isBlueBackground = !isBlueBackground;
+				}
 			}
 		} else { 
 			for (int i = totalLine; i > 0; i--) {
@@ -715,7 +796,9 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 					}
 					this.setTextStyle(cell);
 				}
-				if (i % 2 !=0 && i != totalLine) {
+				if (i == 1) {
+					isBlueBackground = false;
+				} else if (i % 2 !=0 && i != totalLine) {
 					isBlueBackground = !isBlueBackground;
 				}
 				
@@ -723,10 +806,12 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 		}
 		
 		// set border when end employee
-		for (int i = 0; i < MAX_COL; i++) {
-			style.copy(cells.get(newRow - 1, i).getStyle());
-			style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
-			cells.get(newRow - 1, i).setStyle(style);
+		if (!isManageTime || isPrintingTime) {
+			for (int i = 0; i < MAX_COL; i++) {
+				style.copy(cells.get(newRow - 1, i).getStyle());
+				style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+				cells.get(newRow - 1, i).setStyle(style);
+			}
 		}
 		return isBlueBackground;
 	}
@@ -929,17 +1014,20 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 				.getListAffComHistByListSidAndPeriod(Arrays.asList(employeeId), workPeriod);
 		// 年休付与情報．年休付与(List)分ループ
 		if(annualHolidayGrantInfor != null ) {
-			for (AnnualHolidayGrant holidayGrant : annualHolidayGrantInfor.getLstGrantInfor()) {
+			// Fix bug ConcurrentModificationException
+			annualHolidayGrantInfor.getLstGrantInfor().removeIf(holidayGrant -> {
 				// 年休付与(i)．付与日が取得した所属期間(List)のどれかに入っているか？
-				// 年休付与(i)．付与日 đang ở trong phần nào của 所属期間(List) đã cấp
+//				// 年休付与(i)．付与日 đang ở trong phần nào của 所属期間(List) đã cấp
 				for (StatusOfEmployeeExport sttEmployee : listStatusOfEmployeeExport) { 
 					for (DatePeriod period : sttEmployee.getListPeriod()) {
 						if (!holidayGrant.getYmd().after(period.start()) || !holidayGrant.getYmd().before(period.end())) {
-							annualHolidayGrantInfor.getLstGrantInfor().remove(holidayGrant);
+							return true;
 						}
 					}
 				}
-			}
+				return false;
+			});
+			
 			// 指定する期間(YMD)と所属会社履歴の重複期間(YMD)を取得する
 			// 社員の指定期間中の所属期間を取得する RQ588
 			GeneralDate overlapStartDate = annualHolidayGrantInfor.getDoubleTrackStartDate().isPresent()
@@ -955,18 +1043,20 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 				annualHolidayGrantData.setAnnualHolidayGrantInfor(Optional.empty());
 				return annualHolidayGrantData;
 			}
-			for (AnnualHolidayGrantDetail detail : holidayDetailList) {
+			// Fix bug ConcurrentModificationException
+			holidayDetailList.removeIf(detail ->  {
 				// 年休使用詳細(i)．年月日と取得した重複期間(List)の重なりをチェックする
 				for(StatusOfEmployeeExport employeeExport: overlapSttEmp) {
 					// どの重複期間とも重なりが無かった
 					for(DatePeriod period: employeeExport.getListPeriod()) {
 						if(!detail.getYmd().after(period.start()) || !detail.getYmd().before(period.end())) {
 							// <OUTPUT>年休使用詳細(i) を削除(空に)する。
-							holidayDetailList.remove(detail);
+							return true;
 						}
 					}
 				}
-			}
+				return false;
+			});
 		
 			// 指定する期間(YMD)と所属会社履歴の期間(YMD)が重複する場合、そのオリジナルの所属会社履歴を取得する
 			// RequestList211
@@ -974,14 +1064,16 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 					.getAffCompanyHistByEmployee(Arrays.asList(employeeId), new DatePeriod(overlapStartDate, GeneralDate.today()));
 			for (AffCompanyHistImport affCompany : listAffCompanyHistImport) {
 				// 年休付与(i)．付与日～期限日と取得した所属期間(List)の重なりをチェックする
-				for (AnnualHolidayGrant holidayGrant : annualHolidayGrantInfor.getLstGrantInfor()) {
+				// Fix bug ConcurrentModificationException
+				annualHolidayGrantInfor.getLstGrantInfor().removeIf(holidayGrant -> {
 					for(AffComHistItemImport affCom : affCompany.getLstAffComHistItem()) {
 						// どの重複期間とも重なりが無かった
 						if(!holidayGrant.getYmd().after(affCom.getDatePeriod().start()) || !holidayGrant.getYmd().before(affCom.getDatePeriod().end())) {
-							annualHolidayGrantInfor.getLstGrantInfor().remove(holidayGrant);
+							return true;
 						}
 					}
-				};
+					return false;
+				});
 			}	
 		}
 		annualHolidayGrantData.setHolidayDetails(holidayDetailList);
@@ -1003,11 +1095,9 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 	}
 	
 	
-	private String generateTimeText(AnnualHolidayGrantDetail detail) {
-		String hour = String.valueOf(detail.getUseDays() / 60);
-		Double minTime = (detail.getUseDays() % 60) * 60;
-		String min = minTime < 10 ? "0" + minTime.toString() : minTime.toString();
-		String result = hour + ":" + min;
-		return result;
+	private String generateTimeText(TimeDurationPrimitiveValue<? extends TimeDurationPrimitiveValue<?>> time) {
+		String hour = String.valueOf(time.hour());
+		String min = StringUtil.padLeft(String.valueOf(time.minute()), 2, '0');
+		return hour + ":" + min;
 	}
 }

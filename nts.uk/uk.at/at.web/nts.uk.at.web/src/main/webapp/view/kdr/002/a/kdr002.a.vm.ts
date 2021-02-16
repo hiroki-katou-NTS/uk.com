@@ -122,68 +122,29 @@ module nts.uk.at.view.kdr002.a.viewmodel {
 
             self.closureId.subscribe((value) => {
                 if (value === 0 ) {
-                    let tempDate: any;
-                     service.findAllClosure().done((closures) => {
-                        tempDate = _.minBy(closures, (o: any) => {
-                            return o.month;
-                        })
-                    }).always(() => {
-                        let startDateRange = moment(tempDate.month, "YYYYMM").subtract(1, 'month').format("YYYYMMDD");
-                        let endDateRange = moment(startDateRange).add(1, 'year').subtract(1, 'day').format("YYYYMMDD");
-                        let monthDate = moment(tempDate.month, "YYYYMM").subtract(1, 'month').format("YYYYMM");
-                        self.printDate(parseInt(monthDate));
-                        self.period({ startDate: startDateRange, endDate: endDateRange });
-                    });    
-                    
+                  service.findAllClosure().done((closures) => {
+                    let tempDate: any = _.minBy(closures, 'closureId');
+                    self.updatePeriod(tempDate);
+                    // Only set period when start screen
+                    if ($("#ccgcomponent").contents().length === 0) {
+                      const periodStartDate = moment(tempDate.month, "YYYYMM");
+                      const periodEndDate = moment(tempDate.month, "YYYYMM");
+                      self.reloadCCG001(periodStartDate, periodEndDate);
+                    }
+                  });            
+                } else {
+                  service.findClosureById(value).done(closure => {
+                    self.updatePeriod(closure)
+                    // Only set period when start screen
+                    if ($("#ccgcomponent").contents().length === 0) {
+                      const periodStartDate = moment(closure.month, "YYYYMM");
+                      const periodEndDate = moment(closure.month, "YYYYMM");
+                      self.reloadCCG001(periodStartDate, periodEndDate);
+                    } 
+                  });
                 }
             });
-            
-
-            //_____CCG001________
-            self.ccgcomponent = {
-                /** Common properties */
-                systemType: 2, // システム区分
-                showEmployeeSelection: false, // 検索タイプ
-                showQuickSearchTab: true, // クイック検索
-                showAdvancedSearchTab: true, // 詳細検索
-                showBaseDate: false, // 基準日利用
-                showClosure: true, // 就業締め日利用
-                showAllClosure: true, // 全締め表示
-                showPeriod: true, // 対象期間利用
-                periodFormatYM: true, // 対象期間精度
-
-                /** Required parameter */
-                baseDate: moment().format("YYYY-MM-DD"), // 基準日
-                periodStartDate: moment(), // 対象期間開始日
-                periodEndDate: moment(), // 対象期間終了日
-                inService: true, // 在職区分
-                leaveOfAbsence: true, // 休職区分
-                closed: true, // 休業区分
-                retirement: true, // 退職区分
-
-                /** Quick search tab options */
-                showAllReferableEmployee: true, // 参照可能な社員すべて
-                showOnlyMe: true, // 自分だけ
-                showSameWorkplace: true, // 同じ職場の社員
-                showSameWorkplaceAndChild: true, // 同じ職場とその配下の社員
-
-                /** Advanced search properties */
-                showEmployment: true, // 雇用条件
-                showWorkplace: true, // 職場条件
-                showClassification: true, // 分類条件
-                showJobTitle: true, // 職位条件
-                showWorktype: true, // 勤種条件
-                isMutipleCheck: true, // 選択モード
-
-                /** Return data */
-                returnDataFromCcg001: function(data: Ccg001ReturnedData) {
-                    self.lstSearchEmployee(data.listEmployee);
-                    self.applyKCP005ContentSearch(data.listEmployee);
-                    self.startDateString(data.periodStart);
-                    self.endDateString(data.periodEnd);
-                    self.closureId(data.closureId);
-                }
-            };
+            self.closureId.valueHasMutated();
         }
 
         /**
@@ -223,6 +184,71 @@ module nts.uk.at.view.kdr002.a.viewmodel {
                 maxWidth: 380,
                 maxRows: 21
             };
+        }
+
+        private reloadCCG001(periodStart: any, periodEnd: any) {
+          const self = this;
+          //_____CCG001________
+          self.ccgcomponent = {
+            /** Common properties */
+            systemType: 2, // システム区分
+            showEmployeeSelection: false, // 検索タイプ
+            showQuickSearchTab: true, // クイック検索
+            showAdvancedSearchTab: true, // 詳細検索
+            showBaseDate: false, // 基準日利用
+            showClosure: true, // 就業締め日利用
+            showAllClosure: true, // 全締め表示
+            showPeriod: true, // 対象期間利用
+            periodFormatYM: true, // 対象期間精度
+
+            /** Required parameter */
+            baseDate: moment().format("YYYY-MM-DD"), // 基準日
+            periodStartDate: periodStart, // 対象期間開始日
+            periodEndDate: periodEnd, // 対象期間終了日
+            inService: true, // 在職区分
+            leaveOfAbsence: true, // 休職区分
+            closed: true, // 休業区分
+            retirement: true, // 退職区分
+
+            /** Quick search tab options */
+            showAllReferableEmployee: true, // 参照可能な社員すべて
+            showOnlyMe: true, // 自分だけ
+            showSameWorkplace: true, // 同じ職場の社員
+            showSameWorkplaceAndChild: true, // 同じ職場とその配下の社員
+
+            /** Advanced search properties */
+            showEmployment: true, // 雇用条件
+            showWorkplace: true, // 職場条件
+            showClassification: true, // 分類条件
+            showJobTitle: true, // 職位条件
+            showWorktype: true, // 勤種条件
+            isMutipleCheck: true, // 選択モード
+
+            /** Return data */
+            returnDataFromCcg001: function(data: Ccg001ReturnedData) {
+                self.lstSearchEmployee(data.listEmployee);
+                self.applyKCP005ContentSearch(data.listEmployee);
+                self.startDateString(data.periodStart);
+                self.endDateString(data.periodEnd);
+                self.closureId(data.closureId);
+            }
+          };
+        }
+
+        private updatePeriod(closure: any) {
+          const self = this;
+          let closureDate: number = closure.closureSelected.closureDate;
+          let endDateRange = moment(closure.month, "YYYYMM").add(1, 'year').subtract(1, 'month');
+          // Case closureDate is last day of month
+          if (closureDate === 0) {
+            endDateRange = endDateRange.endOf('M');
+          } else {
+            endDateRange = endDateRange.set("date", closureDate);
+          }
+          let startDateRange = endDateRange.clone().subtract(1, 'year').add(1, 'day');
+          let monthDate = moment(closure.month, "YYYYMM").subtract(1, 'month').format("YYYYMM");
+          self.printDate(parseInt(monthDate));
+          self.period({ startDate: startDateRange, endDate: endDateRange });
         }
 
         //起動する

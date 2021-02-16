@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveGrantTime;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingTime;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedTime;
 /**
  * 年休付与
  * @author do_dt
@@ -26,9 +29,9 @@ public class AnnualHolidayGrant {
 	/**年休残数	 */
 	private double remainDays;
 	/**時間付与数 */
-	private int grantMinute;
+	private LeaveGrantTime grantMinutes;
 	/**時間使用数 */
-	private int usedMinute;
+	private LeaveUsedTime usedMinutes;
 	/**時間残数 */
-	private int remainMinutes;
+	private LeaveRemainingTime remainMinutes;
 }

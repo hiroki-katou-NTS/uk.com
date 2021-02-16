@@ -200,9 +200,10 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 						a.getDetails().getUsedNumber().getDays().v(),
 						a.getDeadline(),
 						a.getDetails().getRemainingNumber().getDays().v(),
-						a.getDetails().getGrantNumber().getMinutes().map(LeaveGrantTime::valueAsMinutes).orElse(0),
-						a.getDetails().getUsedNumber().getMinutes().map(LeaveUsedTime::valueAsMinutes).orElse(0),
-						a.getDetails().getRemainingNumber().getMinutes().map(LeaveRemainingTime::valueAsMinutes).orElse(0));				lstAnnHolidayGrant.add(grantData);
+						a.getDetails().getGrantNumber().getMinutes().orElse(new LeaveGrantTime(0)),
+						a.getDetails().getUsedNumber().getMinutes().orElse(new LeaveUsedTime(0)),
+						a.getDetails().getRemainingNumber().getMinutes().orElse(new LeaveRemainingTime(0)));				
+				lstAnnHolidayGrant.add(grantData);
 			}
 			output.setLstGrantInfor(lstAnnHolidayGrant);
 		}
@@ -443,9 +444,9 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 						x.getDetails().getUsedNumber().getDays().v(),
 						x.getDeadline(),
 						x.getDetails().getRemainingNumber().getDays().v(),
-						x.getDetails().getGrantNumber().getMinutes().map(LeaveGrantTime::valueAsMinutes).orElse(0),
-						x.getDetails().getUsedNumber().getMinutes().map(LeaveUsedTime::valueAsMinutes).orElse(0),
-						x.getDetails().getRemainingNumber().getMinutes().map(LeaveRemainingTime::valueAsMinutes).orElse(0));
+						x.getDetails().getGrantNumber().getMinutes().orElse(new LeaveGrantTime(0)),
+						x.getDetails().getUsedNumber().getMinutes().orElse(new LeaveUsedTime(0)),
+						x.getDetails().getRemainingNumber().getMinutes().orElse(new LeaveRemainingTime(0)));
 				lstOutput.add(data);
 			});
 
@@ -458,14 +459,16 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 						x.getDetails().getUsedNumber().getDays().v(),
 						x.getDeadline(),
 						x.getDetails().getRemainingNumber().getDays().v(),
-						x.getDetails().getGrantNumber().getMinutes().map(LeaveGrantTime::valueAsMinutes).orElse(0),
-						x.getDetails().getUsedNumber().getMinutes().map(LeaveUsedTime::valueAsMinutes).orElse(0),
-						x.getDetails().getRemainingNumber().getMinutes().map(LeaveRemainingTime::valueAsMinutes).orElse(0));
+						x.getDetails().getGrantNumber().getMinutes().orElse(new LeaveGrantTime(0)),
+						x.getDetails().getUsedNumber().getMinutes().orElse(new LeaveUsedTime(0)),
+						x.getDetails().getRemainingNumber().getMinutes().orElse(new LeaveRemainingTime(0)));
 				lstOutput.add(data);
 			});
 			
 			// 指定月時点の使用数を計算指定月時点の使用数を計算 - 6 
 			List<AnnualLeaveGrantRemainingData> lstAnnRemainHis = this.lstRemainHistory(sid, lstAnnLeaRem, period.start());
+			// Loại bỏ bug trùng lặp
+			lstAnnRemainHis.removeAll(lstAnnLeaRem);
 			// 取得した年休付与残数データをOUTPUTのクラスに移送
 			lstAnnRemainHis.stream().forEach(x -> {
 				AnnualHolidayGrant data = new AnnualHolidayGrant(x.getGrantDate(),
@@ -473,9 +476,9 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 						x.getDetails().getUsedNumber().getDays().v(),
 						x.getDeadline(),
 						x.getDetails().getRemainingNumber().getDays().v(),
-						x.getDetails().getGrantNumber().getMinutes().map(LeaveGrantTime::valueAsMinutes).orElse(0),
-						x.getDetails().getUsedNumber().getMinutes().map(LeaveUsedTime::valueAsMinutes).orElse(0),
-						x.getDetails().getRemainingNumber().getMinutes().map(LeaveRemainingTime::valueAsMinutes).orElse(0));
+						x.getDetails().getGrantNumber().getMinutes().orElse(new LeaveGrantTime(0)),
+						x.getDetails().getUsedNumber().getMinutes().orElse(new LeaveUsedTime(0)),
+						x.getDetails().getRemainingNumber().getMinutes().orElse(new LeaveRemainingTime(0)));
 				lstOutput.add(data);
 			});
 			
