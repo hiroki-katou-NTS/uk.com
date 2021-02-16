@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 /**
@@ -33,4 +34,14 @@ public class Task  implements DomainAggregate{
 	
 	/*** 子作業一覧 */
 	private List<TaskCode> taskSubs;
+	
+	/**
+	 * 有効期限内か
+	 * @param date 対象日
+	 * @return
+	 */
+	public boolean isWithinExpirationDate(GeneralDate date) {
+		// TODO need to implement
+		return true;
+	}
 }
