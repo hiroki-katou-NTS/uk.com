@@ -161,6 +161,15 @@ public interface ApplicationRepository {
 	public List<Application> getByListDateReflectType(String sid, List<GeneralDate> dateData, List<Integer> reflect, List<Integer> appType);
 	/**
 	 * 
+	 * @param sid
+	 * @param period
+	 * @param reflect
+	 * @param appType
+	 * @return
+	 */
+	public List<Application> getByListDateReflectType(String sid, DatePeriod period, List<Integer> reflect, List<Integer> appType);
+	/**
+	 * 
 	 * @param companyId
 	 * @param configName
 	 * @param subName
