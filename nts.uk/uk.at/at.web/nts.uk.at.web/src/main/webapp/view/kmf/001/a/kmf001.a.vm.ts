@@ -62,8 +62,8 @@ module nts.uk.at.view.kmf001.a.viewmodel {
              nts.uk.ui.windows.sub.modal("/view/kmk/007/b/index.xhtml", {});
            
         }
-       public openKMK004A(): void {
-            nts.uk.request.jump("/view/kmk/004/a/index.xhtml", {});
+       public openKMF004A(): void {
+            nts.uk.request.jump("/view/kmf/004/a/index.xhtml", {});
         }
        public openKMK004I(): void {
             nts.uk.request.jump("/view/kmf/004/i/index.xhtml", {});
