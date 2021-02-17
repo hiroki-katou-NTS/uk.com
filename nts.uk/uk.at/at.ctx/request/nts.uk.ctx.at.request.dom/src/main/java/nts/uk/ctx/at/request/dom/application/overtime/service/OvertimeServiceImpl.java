@@ -777,6 +777,11 @@ public class OvertimeServiceImpl implements OvertimeService {
 			public Optional<TimeLeaveApplication> findTimeLeavById(String companyId, String appId) {
 				return timeLeaveApplicationRepo.findById(companyId, appId);
 			}
+
+			@Override
+			public Optional<AppOverTime> findOvertime(String companyId, String appId) {
+				return appOverTimeRepository.find(companyId, appId);
+			}
 		};
 	}
 

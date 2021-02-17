@@ -7,6 +7,7 @@ import nts.uk.ctx.at.shared.dom.application.common.ApplicationTypeShare;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.businesstrip.ReflectBusinessTripApp;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.directgoback.GoBackReflect;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.lateearlycancellation.LateEarlyCancelReflect;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWork;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveApplicationReflect;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
@@ -24,8 +25,8 @@ public class GetDomainReflectModelApp {
 		// 反映する申請の申請種類をもとに、反映条件のドメインモデルを取得する
 		switch (appType) {
 		case OVER_TIME_APPLICATION:
-			// TODO: 0：残業申請の反映
-			return null;
+			// 0：残業申請の反映
+			return require.findOvertime(companyId).orElse(null);
 		case ABSENCE_APPLICATION:
 			// TODO: 1：休暇申請の反映
 			return null;
@@ -83,5 +84,7 @@ public class GetDomainReflectModelApp {
 		public Optional<ReflectBusinessTripApp> findReflectBusinessTripApp(String companyId);
 		
 		public Optional<TimeLeaveApplicationReflect> findReflectTimeLeav(String companyId);
+		
+		public Optional<AppReflectOtHdWork> findOvertime(String companyId);
 	}
 }

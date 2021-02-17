@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.dailyprocess.calc;
+package nts.uk.ctx.at.shared.dom.scherec.dailyprocess.calc;
 
 import lombok.Value;
 

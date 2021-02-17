@@ -13,6 +13,8 @@ import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
 import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarlyRepository;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTimeRepository;
 import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImage;
 import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImageRepository;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
@@ -39,11 +41,13 @@ public class GetApplicationRequireImpl {
 	private AppRecordImageRepository repoRecordImg;
 	@Inject
 	private TimeLeaveApplicationRepository timeLeaveApplicationRepository;
+	@Inject
+	private AppOverTimeRepository appOverTimeRepository;
 
 	public RequireImpl createImpl() {
 
 		return new RequireImpl(repoGoBack, repoBusTrip, repoLateLeave, repoStamp, repoWorkChange, repoRecordImg,
-				timeLeaveApplicationRepository);
+				timeLeaveApplicationRepository, appOverTimeRepository);
 	}
 
 	@AllArgsConstructor
@@ -62,6 +66,8 @@ public class GetApplicationRequireImpl {
 		private final AppRecordImageRepository repoRecordImg;
 
 		private final TimeLeaveApplicationRepository timeLeaveApplicationRepository;
+		
+		private final AppOverTimeRepository appOverTimeRepository;
 
 		@Override
 		public Optional<AppWorkChange> findAppWorkCg(String companyId, String appID, Application app) {
@@ -99,6 +105,11 @@ public class GetApplicationRequireImpl {
 		@Override
 		public Optional<TimeLeaveApplication> findTimeLeavById(String companyId, String appId) {
 			return timeLeaveApplicationRepository.findById(companyId, appId);
+		}
+
+		@Override
+		public Optional<AppOverTime> findOvertime(String companyId, String appId) {
+			return appOverTimeRepository.find(companyId, appId);
 		}
 
 	}

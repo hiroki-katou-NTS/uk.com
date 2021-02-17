@@ -545,7 +545,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 						OvertimeApplicationSetting overtimeApplicationSetting = new OvertimeApplicationSetting();
 						overtimeApplicationSetting.setAttendanceType(EnumAdaptor.valueOf(item.getAttendanceType(), AttendanceType_Update.class));
 						overtimeApplicationSetting.setFrameNo(new FrameNo(item.getFrameNo()));
-						overtimeApplicationSetting.setApplicationTime(new TimeWithDayAttr(item.getTime()));
+						overtimeApplicationSetting.setApplicationTime(new AttendanceTime(item.getTime()));
 						overTimeApplicationTimes.add(overtimeApplicationSetting);
 						
 					}

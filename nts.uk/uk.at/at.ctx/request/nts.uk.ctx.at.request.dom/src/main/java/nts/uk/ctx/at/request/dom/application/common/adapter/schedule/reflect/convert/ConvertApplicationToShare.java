@@ -1,14 +1,19 @@
 package nts.uk.ctx.at.request.dom.application.common.adapter.schedule.reflect.convert;
 
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import lombok.val;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.DailyAttendanceUpdateStatus;
 import nts.uk.ctx.at.request.dom.application.ReflectionStatus;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarly;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36AgreeUpperLimit;
 import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImage;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
 import nts.uk.ctx.at.request.dom.application.stamp.DestinationTimeApp;
@@ -36,6 +41,23 @@ import nts.uk.ctx.at.shared.dom.application.lateleaveearly.ArrivedLateLeaveEarly
 import nts.uk.ctx.at.shared.dom.application.lateleaveearly.LateCancelationShare;
 import nts.uk.ctx.at.shared.dom.application.lateleaveearly.LateOrEarlyAtrShare;
 import nts.uk.ctx.at.shared.dom.application.lateleaveearly.TimeReportShare;
+import nts.uk.ctx.at.shared.dom.application.overtime.AppOverTimeShare;
+import nts.uk.ctx.at.shared.dom.application.overtime.AppOvertimeDetailShare;
+import nts.uk.ctx.at.shared.dom.application.overtime.ApplicationTimeShare;
+import nts.uk.ctx.at.shared.dom.application.overtime.AttendanceTypeShare;
+import nts.uk.ctx.at.shared.dom.application.overtime.DivergenceReasonShare;
+import nts.uk.ctx.at.shared.dom.application.overtime.NumberOfMonthShare;
+import nts.uk.ctx.at.shared.dom.application.overtime.OverTimeShiftNightShare;
+import nts.uk.ctx.at.shared.dom.application.overtime.OvertimeAppAtrShare;
+import nts.uk.ctx.at.shared.dom.application.overtime.OvertimeApplicationSettingShare;
+import nts.uk.ctx.at.shared.dom.application.overtime.ReasonDivergenceShare;
+import nts.uk.ctx.at.shared.dom.application.overtime.Time36AgreeAnnualShare;
+import nts.uk.ctx.at.shared.dom.application.overtime.Time36AgreeMonthShare;
+import nts.uk.ctx.at.shared.dom.application.overtime.Time36AgreeShare;
+import nts.uk.ctx.at.shared.dom.application.overtime.Time36AgreeUpperLimitAverageShare;
+import nts.uk.ctx.at.shared.dom.application.overtime.Time36AgreeUpperLimitMonthShare;
+import nts.uk.ctx.at.shared.dom.application.overtime.Time36AgreeUpperLimitPerMonthShare;
+import nts.uk.ctx.at.shared.dom.application.overtime.Time36AgreeUpperLimitShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.AppRecordImageShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.AppStampShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.DestinationTimeAppShare;
@@ -106,8 +128,47 @@ public class ConvertApplicationToShare {
 
 		switch (application.getAppType()) {
 		case OVER_TIME_APPLICATION:
-			// TODO: wait new domain
-			return appShare;
+
+			AppOverTime appOver = (AppOverTime) application;
+
+			//申請時間
+			ApplicationTimeShare appTimeShare = new ApplicationTimeShare(
+					appOver.getApplicationTime().getApplicationTime().stream().map(x -> {
+						return new OvertimeApplicationSettingShare(x.getFrameNo().v(),
+								EnumAdaptor.valueOf(x.getAttendanceType().value, AttendanceTypeShare.class),
+								x.getApplicationTime().v());
+					}).collect(Collectors.toList()), appOver.getApplicationTime().getFlexOverTime(),
+					appOver.getApplicationTime().getOverTimeShiftNight().map(x -> {
+						return new OverTimeShiftNightShare(null, x.getMidNightOutSide(), x.getOverTimeMidNight());// TODO
+					}), appOver.getApplicationTime().getAnyItem().orElse(new ArrayList<>()), //
+					appOver.getApplicationTime().getReasonDissociation()
+							.map(x -> x.stream()
+									.map(y -> new ReasonDivergenceShare(new DivergenceReasonShare(y.getReason().v()),
+											y.getReasonCode(), y.getDiviationTime()))
+									.collect(Collectors.toList()))
+							.orElse(new ArrayList<>()));
+
+			// 時間外時間の詳細
+			val detailOverTimeOp = appOver.getDetailOverTimeOp().map(x -> new AppOvertimeDetailShare(x.getCid(),
+					x.getAppId(), x.getYearMonth(),
+					new Time36AgreeShare(x.getTime36Agree().getApplicationTime(),
+							new Time36AgreeMonthShare(x.getTime36Agree().getAgreeMonth().getActualTime(),
+									x.getTime36Agree().getAgreeMonth().getLimitAlarmTime(),
+									x.getTime36Agree().getAgreeMonth().getLimitErrorTime(),
+									new NumberOfMonthShare(x.getTime36Agree().getAgreeMonth().getNumOfYear36Over().v()), // TODO
+									x.getTime36Agree().getAgreeMonth().getYear36OverMonth(),
+									x.getTime36Agree().getAgreeMonth().getExceptionLimitAlarmTime(),
+									x.getTime36Agree().getAgreeMonth().getExceptionLimitErrorTime()),
+							new Time36AgreeAnnualShare(x.getTime36Agree().getAgreeAnnual().getActualTime(),
+									x.getTime36Agree().getAgreeAnnual().getLimitTime())),
+					toTime36Limit(x.getTime36AgreeUpperLimit())));
+
+			AppOverTimeShare overShare = new AppOverTimeShare(
+					EnumAdaptor.valueOf(appOver.getOverTimeClf().value, OvertimeAppAtrShare.class), appTimeShare,
+					appOver.getBreakTimeOp().orElse(new ArrayList<>()),
+					appOver.getWorkHoursOp().orElse(new ArrayList<>()), appOver.getWorkInfoOp(), detailOverTimeOp);
+			overShare.setApplication(appShare);
+			return overShare;
 
 		case ABSENCE_APPLICATION:
 			// TODO: wait new domain
@@ -216,5 +277,17 @@ public class ConvertApplicationToShare {
 				app.getEngraveFrameNo(), StartEndClassificationShare.valueOf(app.getStartEndClassification().value),
 				app.getSupportWork());
 
+	}
+
+	private static Time36AgreeUpperLimitShare toTime36Limit(Time36AgreeUpperLimit dom) {
+		return new Time36AgreeUpperLimitShare(dom.getApplicationTime(),
+				new Time36AgreeUpperLimitMonthShare(dom.getAgreeUpperLimitMonth().getOverTime(),
+						dom.getAgreeUpperLimitMonth().getUpperLimitTime()),
+				new Time36AgreeUpperLimitAverageShare(
+						dom.getAgreeUpperLimitAverage().getAverageTimeLst().stream()
+								.map(x -> new Time36AgreeUpperLimitPerMonthShare(x.getPeriod(),
+										x.calculationAverageTime(), x.getTotalTime()))
+								.collect(Collectors.toList()),
+						dom.getAgreeUpperLimitAverage().getUpperLimitTime()));
 	}
 }
