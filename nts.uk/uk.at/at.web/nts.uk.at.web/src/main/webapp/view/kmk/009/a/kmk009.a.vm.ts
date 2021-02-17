@@ -322,7 +322,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             var self = this;
             var dfd = $.Deferred<any>();
 
-            nts.uk.ui.block.grayout();
+            nts.uk.ui.block.invisible();
 
             service.getAllTotalTimesDetail(codeChanged).done(function(data) {
                 //                nts.uk.ui.block.clear();
