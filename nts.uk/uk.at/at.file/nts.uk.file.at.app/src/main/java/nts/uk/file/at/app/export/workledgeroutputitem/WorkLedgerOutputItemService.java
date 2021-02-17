@@ -124,8 +124,6 @@ public class WorkLedgerOutputItemService extends ExportService<WorkLedgerOutputI
         YearMonthPeriod yearMonthPeriod = new YearMonthPeriod(yearMonthStart, yearMonthEnd);
         val closureId = query.getClosureId() == 0 ? 1 : query.getClosureId();
         String companyId = AppContexts.user().companyId();
-        // 1 ⑨:find(会社ID、ClosureId)
-        Optional<Closure> closureOptional = closureRepository.findById(AppContexts.user().companyId(), closureId);
 
         // 1.1
         val periodOptionalStart = this.getSpecifyPeriod.getSpecifyPeriod(yearMonthStart)

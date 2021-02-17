@@ -120,15 +120,15 @@ public class CreateWorkLedgerDisplayContentQuery {
                 val attributeMonthly = attendanceItemList.getOrDefault(att.getAttendanceId(), null);
                 if (attributeMonthly != null && allValue != null) {
                     val attribute = convertMonthlyToAttForms(attributeMonthly.getMonthlyAttendanceAtr().value);
-                    if (attribute == null) continue;
+                    if (attribute == null||attribute == CommonAttributesOfForms.OTHER_CHARACTERS
+                            ||attribute == CommonAttributesOfForms.OTHER_CHARACTER_NUMBER
+                            ||attribute == CommonAttributesOfForms.OTHER_NUMERICAL_VALUE) continue;
                     for (val y : yearMonthList) {
                         val values = allValue.getOrDefault(y, null);
                         if (values == null) continue;
                         val valueSub = values.getOrDefault(att.getAttendanceId(), null);
                         boolean isCharacter = attribute == CommonAttributesOfForms.WORK_TYPE
-                                || attribute == CommonAttributesOfForms.WORKING_HOURS
-                                || attribute == CommonAttributesOfForms.OTHER_CHARACTERS
-                                ||attribute == CommonAttributesOfForms.OTHER_CHARACTER_NUMBER;
+                                || attribute == CommonAttributesOfForms.WORKING_HOURS;
                         val primitiveValue = attributeMonthly.getPrimitiveValue().isPresent() ? attributeMonthly.getPrimitiveValue().get() : null;
                         String nameDisplay = "";
                         if (valueSub != null) {
