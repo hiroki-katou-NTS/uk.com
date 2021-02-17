@@ -9,8 +9,6 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.TimeMonthWithCalculationAndMinus;
@@ -24,30 +22,25 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.flex.FlexTim
 public class FlexTimeMDto implements ItemConst, AttendanceItemDataGate {
 
 	/** フレックス時間: 計算付き月間時間(マイナス有り) */
-	@AttendanceItemLayout(jpPropertyName = TIME, layout = LAYOUT_A)
 	private TimeMonthWithCalculationDto flexTime;
 
 	/** 事前フレックス時間: 勤怠月間時間 */
-	@AttendanceItemValue(type = ValueType.TIME)
-	@AttendanceItemLayout(jpPropertyName = BEFORE, layout = LAYOUT_B)
 	private int beforeFlexTime;
 
 	/** 法定外フレックス時間: 勤怠月間時間(マイナス有り) */
-	@AttendanceItemValue(type = ValueType.TIME)
-	@AttendanceItemLayout(jpPropertyName = ILLEGAL, layout = LAYOUT_C)
 	private int illegalFlexTime;
 
 	/** 法定内フレックス時間: 勤怠月間時間(マイナス有り) */
-	@AttendanceItemValue(type = ValueType.TIME)
-	@AttendanceItemLayout(jpPropertyName = LEGAL, layout = LAYOUT_D)
 	private int legalFlexTime;
+	
+	private FlexCurrentMonthDto currentMonth;
 
 	public FlexTime toDomain() {
 		return FlexTime.of(flexTime == null ? new TimeMonthWithCalculationAndMinus() : flexTime.toDomainWithMinus(),
 				new AttendanceTimeMonth(beforeFlexTime),
 				new AttendanceTimeMonthWithMinus(legalFlexTime),
 				new AttendanceTimeMonthWithMinus(illegalFlexTime),
-				new FlexTimeCurrentMonth());
+				currentMonth == null ? new FlexTimeCurrentMonth() : currentMonth.toDomain());
 	}
 	
 	public static FlexTimeMDto from(FlexTime domain) {
@@ -57,6 +50,7 @@ public class FlexTimeMDto implements ItemConst, AttendanceItemDataGate {
 			dto.setFlexTime(TimeMonthWithCalculationDto.from(domain.getFlexTime()));
 			dto.setIllegalFlexTime(domain.getIllegalFlexTime() == null ? 0 : domain.getIllegalFlexTime().valueAsMinutes());
 			dto.setLegalFlexTime(domain.getLegalFlexTime() == null ? 0 : domain.getLegalFlexTime().valueAsMinutes());
+			dto.setCurrentMonth(FlexCurrentMonthDto.from(domain.getFlexTimeCurrentMonth()));
 		}
 		return dto;
 	}
@@ -79,18 +73,26 @@ public class FlexTimeMDto implements ItemConst, AttendanceItemDataGate {
 
 	@Override
 	public AttendanceItemDataGate newInstanceOf(String path) {
-		if (path.equals(TIME)) {
+		switch (path) {
+		case CUR_MONTH:
+			return new FlexCurrentMonthDto();
+		case TIME:
 			return new TimeMonthWithCalculationDto();
+		default:
+			return null;
 		}
-		return null;
 	}
 
 	@Override
 	public Optional<AttendanceItemDataGate> get(String path) {
-		if (path.equals(TIME)) {
+		switch (path) {
+		case CUR_MONTH:
+			return Optional.ofNullable(currentMonth);
+		case TIME:
 			return Optional.ofNullable(flexTime);
+		default:
+			return Optional.empty();
 		}
-		return Optional.empty();
 	}
 
 	@Override
@@ -123,8 +125,12 @@ public class FlexTimeMDto implements ItemConst, AttendanceItemDataGate {
 
 	@Override
 	public void set(String path, AttendanceItemDataGate value) {
-		if (path.equals(TIME)) {
+		switch (path) {
+		case CUR_MONTH:
+			currentMonth = (FlexCurrentMonthDto) value;
+		case TIME:
 			flexTime = (TimeMonthWithCalculationDto) value;
+		default:
 		}
 	}
 
