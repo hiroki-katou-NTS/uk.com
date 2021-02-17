@@ -326,7 +326,9 @@ module nts.uk.com.view.ccg003.a {
         msg.creator = item.creator;
         msg.flag = item.flag;
         msg.message = item.message;
-        msg.dateDisplay = item.message ? `${item.message.startDate} ${vm.$i18n('CCG003_15')} ${item.message.endDate}` : '';
+        msg.dateDisplay = item.message
+          ? `${moment.utc(item.message.startDate, 'YYYY/MM/DD').format('M/D')} ${vm.$i18n('CCG003_15')} ${moment.utc(item.message.endDate, 'YYYY/MM/DD').format('M/D')}`
+          : '';
         msg.messageDisplay = vm.replaceUrl(item.message.notificationMessage);
         return msg;
       });
