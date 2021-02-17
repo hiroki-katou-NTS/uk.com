@@ -16,9 +16,9 @@ import nts.uk.ctx.at.shared.dom.workingcondition.SingleDayScheduleSetMemento;
 import nts.uk.ctx.at.shared.dom.workingcondition.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPerWorkCat;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondCtg;
 import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtPerWorkCatPK;
-import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkCatTimeZone;
+import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkcondCtgTs;
 
 /**
  * The Class JpaSingleDayScheduleSetMemento.
@@ -26,10 +26,10 @@ import nts.uk.ctx.at.shared.infra.entity.workingcondition.KshmtWorkCatTimeZone;
 public class JpaSDayScheWorkCatSetMemento implements SingleDayScheduleSetMemento {
 
 	/** The entity. */
-	private KshmtPerWorkCat entity;
+	private KshmtWorkcondCtg entity;
 	
 	/** The map kshmt work cat time zone. */
-	private Map<Integer, KshmtWorkCatTimeZone> mapKshmtWorkCatTimeZone;
+	private Map<Integer, KshmtWorkcondCtgTs> mapKshmtWorkCatTimeZone;
 
 	/**
 	 * Instantiates a new jpa single day schedule set memento.
@@ -38,7 +38,7 @@ public class JpaSDayScheWorkCatSetMemento implements SingleDayScheduleSetMemento
 	 *            the entity
 	 */
 	public JpaSDayScheWorkCatSetMemento(String historyId, int workCategoryAtr,
-			KshmtPerWorkCat entity) {
+			KshmtWorkcondCtg entity) {
 		if (entity.getKshmtPerWorkCatPK() == null) {
 			KshmtPerWorkCatPK kshmtPerWorkCatPK = new KshmtPerWorkCatPK();
 			kshmtPerWorkCatPK.setHistoryId(historyId);
@@ -85,8 +85,8 @@ public class JpaSDayScheWorkCatSetMemento implements SingleDayScheduleSetMemento
 	@Override
 	public void setWorkingHours(List<TimeZone> workingHours) {
 		this.entity.setKshmtWorkCatTimeZones(workingHours.stream().map(item -> {
-			KshmtWorkCatTimeZone kshmtWorkCatTimeZone = this.mapKshmtWorkCatTimeZone.getOrDefault(Integer.valueOf(item.getCnt()), new KshmtWorkCatTimeZone());
-			item.saveToMemento(new JpaTimezoneSetMemento<KshmtWorkCatTimeZone>(
+			KshmtWorkcondCtgTs kshmtWorkCatTimeZone = this.mapKshmtWorkCatTimeZone.getOrDefault(Integer.valueOf(item.getCnt()), new KshmtWorkcondCtgTs());
+			item.saveToMemento(new JpaTimezoneSetMemento<KshmtWorkcondCtgTs>(
 					this.entity.getKshmtPerWorkCatPK().getHistoryId(),
 					this.entity.getKshmtPerWorkCatPK().getPerWorkCatAtr(), kshmtWorkCatTimeZone));
 			return kshmtWorkCatTimeZone;

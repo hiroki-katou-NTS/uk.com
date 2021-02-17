@@ -17,8 +17,8 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.CompanyId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
-import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmtClosure;
-import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmtClosureHist;
+import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KshmtClosure;
+import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KshmtClosureHist;
 
 /**
  * The Class JpaClosureGetMemento.
@@ -28,17 +28,17 @@ import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmtClosureHist;
 public class JpaClosureGetMemento implements ClosureGetMemento{
 	
 	/** The Kclmt closure. */
-	private KclmtClosure kclmtClosure;
+	private KshmtClosure kclmtClosure;
 	
 	/** The kclmt closure history. */
-	private List<KclmtClosureHist> kclmtClosureHistorys;
+	private List<KshmtClosureHist> kclmtClosureHistorys;
 	
 	/**
 	 * Instantiates a new jpa closure get memento.
 	 *
-	 * @param KclmtClosure the kclmt closure
+	 * @param KshmtClosure the kclmt closure
 	 */
-	public JpaClosureGetMemento(KclmtClosure kclmtClosure, List<KclmtClosureHist> kclmtClosureHistorys) {
+	public JpaClosureGetMemento(KshmtClosure kclmtClosure, List<KshmtClosureHist> kclmtClosureHistorys) {
 		this.kclmtClosure = kclmtClosure;
 		this.kclmtClosureHistorys = kclmtClosureHistorys;
 	}

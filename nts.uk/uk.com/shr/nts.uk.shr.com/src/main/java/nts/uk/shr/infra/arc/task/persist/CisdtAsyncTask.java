@@ -14,11 +14,12 @@ import javax.persistence.Table;
 
 import nts.arc.layer.infra.data.entity.type.GeneralDateTimeToDBConverter;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name="CISDT_ASYNC_TASK")
 @Cacheable(false)
-public class CisdtAsyncTask implements Serializable {
+public class CisdtAsyncTask extends ContractUkJpaEntity implements Serializable {
 	
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
@@ -45,5 +46,9 @@ public class CisdtAsyncTask implements Serializable {
 	@OneToOne(optional = true, cascade = CascadeType.ALL)
 	@PrimaryKeyJoinColumn
 	public CisdtAsyncTaskAbort abort;
-	
+
+	@Override
+	protected Object getKey() {
+		return taskId;
+	}
 }

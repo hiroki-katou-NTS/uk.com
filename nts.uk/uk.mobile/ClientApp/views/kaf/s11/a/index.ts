@@ -793,8 +793,10 @@ export class KafS11AComponent extends KafS00ShrComponent {
             }    
         } else {
             // ※4-3
-            if (!vm.displayInforWhenStarting.rec) {
-                onlyAbs = true;
+            if (vm.displayInforWhenStarting) {
+                if (!vm.displayInforWhenStarting.rec) {
+                    onlyAbs = true;
+                }
             }
         }
 
@@ -840,6 +842,11 @@ export class KafS11AComponent extends KafS00ShrComponent {
         }
 
         return false;
+    }
+
+    // ※A15, ※A16
+    public isSelectMngLst(mngLst: Array<any>) {
+        return !_.isEmpty(mngLst);
     }
 
     public kaf000CChangeReasonCD(opAppStandardReasonCD) {
@@ -1312,6 +1319,9 @@ export class KafS11AComponent extends KafS00ShrComponent {
                     workingHours: [],
                     workChangeUse: _.isEmpty(vm.leaveWorkInfo.workTimeCD) ? false : true
                 };
+                if (!vm.dispLeaveWorkTime) {
+                    cmd.abs.workInformation.workTime = null;
+                }
             }
         } else {
             if (vm.displayInforWhenStarting.rec) {
@@ -1343,6 +1353,9 @@ export class KafS11AComponent extends KafS00ShrComponent {
                     workingHours: [],
                     workChangeUse: _.isEmpty(vm.leaveWorkInfo.workTimeCD) ? false : true
                 };
+                if (!vm.dispLeaveWorkTime) {
+                    cmd.abs.workInformation.workTime = null;
+                }
                 cmd.absOldHolidayMngLst = vm.displayInforWhenStarting.abs.leaveComDayOffMana;
                 cmd.absOldWorkMngLst = vm.displayInforWhenStarting.abs.payoutSubofHDManagements;
             }

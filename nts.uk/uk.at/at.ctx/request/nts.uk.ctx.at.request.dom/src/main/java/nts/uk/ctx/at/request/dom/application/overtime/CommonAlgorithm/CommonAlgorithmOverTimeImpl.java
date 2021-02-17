@@ -250,8 +250,8 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 										  .sorted((x1, x2) -> x1.getWorkTypeCode().v().compareTo(x2.getWorkTypeCode().v()))
 										  .collect(Collectors.toList());
 		}
-		// 取得した「勤務種類」をチェック
-		if (CollectionUtil.isEmpty(workTypes)) throw new BusinessException("Msg_1567");
+		// // 取得した「勤務種類」をチェック
+		// if (CollectionUtil.isEmpty(workTypes)) throw new BusinessException("Msg_1567");
 		return workTypes;
 	}
 	
@@ -266,7 +266,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 		//出勤
 		allDayAtrs.add(0);
 		//休出
-		allDayAtrs.add(11);
+		// allDayAtrs.add(11);
 		//振出
 		allDayAtrs.add(7);
 		// 連続勤務
@@ -280,21 +280,21 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 	private List<Integer> halfAtrs(){
 		List<Integer> halfAtrs = new ArrayList<>();
 		// 休日
-		halfAtrs.add(1);
+		// halfAtrs.add(1);
 		// 振出
 		halfAtrs.add(7);
 		// 年休
-		halfAtrs.add(2);
+		// halfAtrs.add(2);
 		// 出勤
 		halfAtrs.add(0);
 		//特別休暇
-		halfAtrs.add(4);
+		// halfAtrs.add(4);
 		// 欠勤
-		halfAtrs.add(5);
+		// halfAtrs.add(5);
 		// 代休
-		halfAtrs.add(6);
+		// halfAtrs.add(6);
 		//時間消化休暇
-		halfAtrs.add(9);
+		// halfAtrs.add(9);
 		return halfAtrs;
 	}
 
@@ -315,8 +315,8 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 		// 07_勤務種類取得
 		List<WorkType> worktypes = this.getWorkType(appEmploymentSettingOp);
 		output.setWorktypes(worktypes);
-		// INPUT．「就業時間帯の設定<List>」をチェックする
-		if (workTime.isEmpty()) throw new BusinessException("Msg_1568");
+		// // INPUT．「就業時間帯の設定<List>」をチェックする
+		// if (workTime.isEmpty()) throw new BusinessException("Msg_1568");
 		return output;
 	}
 
@@ -1004,8 +1004,8 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 		// 勤務種類、就業時間帯のマスタ未登録チェックする
 		detailBeforeUpdate.displayWorkingHourCheck(
 				companyId,
-				appOverTime.getWorkInfoOp().map(x -> x.getWorkTypeCode().v()).orElse(null),
-				appOverTime.getWorkInfoOp().map(x -> x.getWorkTimeCode().v()).orElse(null));
+				appOverTime.getWorkInfoOp().flatMap(x -> Optional.ofNullable(x.getWorkTypeCode())).map(x -> x.v()).orElse(null),
+				appOverTime.getWorkInfoOp().flatMap(x -> Optional.ofNullable(x.getWorkTimeCode())).map(x -> x.v()).orElse(null));
 		// 申請する残業時間をチェックする
 		this.checkOverTime(appOverTime.getApplicationTime());
 		// 事前申請・実績超過チェックする

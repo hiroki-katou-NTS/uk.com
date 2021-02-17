@@ -21,7 +21,8 @@ public class ServletSessionLowLayer implements SessionLowLayer {
 
 	@Override
 	public void loggedIn() {
-		this.getSession().ifPresent(s -> s.setAttribute(LOGGED_IN_FLAG, true));
+		request.changeSessionId();
+		request.getSession().setAttribute(LOGGED_IN_FLAG, true);
 		CsrfToken.loggedIn();
 	}
 

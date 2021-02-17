@@ -271,7 +271,7 @@ declare module nts.uk.ui.vm {
 				};
 			};
 		}
-		readonly $blockui: (act: 'show' | 'hide' | 'clear' | 'invisible' | 'grayout') => JQueryDeferred<void>;
+		readonly $blockui: (act: 'show' | 'hide' | 'clear' | 'invisible' | 'grayout' | 'grayoutView' | 'invisibleView' | 'clearView') => JQueryDeferred<void>;
 		readonly $validate: {
 			(): JQueryDeferred<boolean>;
 			(selector: string): JQueryDeferred<boolean>;
