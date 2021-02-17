@@ -129,8 +129,10 @@ public class DuplicateWorkStatusSettingDomainServiceTest {
             {
                 AppContexts.user().employeeId();
                 result = "employeeId";
+
                 IdentifierUtil.randomUniqueId();
                 result = iD;
+
                 require.getWorkStatusOutputSettings(settingId);
                 result = Optional.of(domain);
 
