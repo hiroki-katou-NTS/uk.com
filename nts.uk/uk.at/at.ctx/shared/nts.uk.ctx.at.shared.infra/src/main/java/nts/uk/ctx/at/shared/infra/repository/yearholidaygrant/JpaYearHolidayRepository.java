@@ -17,9 +17,9 @@ import nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantHdTblSet;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.UseConditionAtr;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayCode;
 import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayRepository;
-import nts.uk.ctx.at.shared.infra.entity.yearholidaygrant.KshstGrantCondition;
+import nts.uk.ctx.at.shared.infra.entity.yearholidaygrant.KshmtHdpaidCondition;
 import nts.uk.ctx.at.shared.infra.entity.yearholidaygrant.KshstGrantConditionPK;
-import nts.uk.ctx.at.shared.infra.entity.yearholidaygrant.KshstGrantHdTblSet;
+import nts.uk.ctx.at.shared.infra.entity.yearholidaygrant.KshmtHdpaidTblSet;
 import nts.uk.ctx.at.shared.infra.entity.yearholidaygrant.KshstGrantHdTblSetPK;
 
 /**
@@ -31,9 +31,9 @@ import nts.uk.ctx.at.shared.infra.entity.yearholidaygrant.KshstGrantHdTblSetPK;
 @Stateless
 public class JpaYearHolidayRepository extends JpaRepository implements YearHolidayRepository {
 	
-	private static final String FIND_ALL_BY_CID = "SELECT a FROM KshstGrantHdTblSet a "
+	private static final String FIND_ALL_BY_CID = "SELECT a FROM KshmtHdpaidTblSet a "
 			+ "WHERE a.kshstGrantHdTblSetPK.companyId = :companyId ORDER BY a.kshstGrantHdTblSetPK.yearHolidayCode ASC";
-	private static final String DELETE_CONDITION = "DELETE FROM KshstGrantCondition c "
+	private static final String DELETE_CONDITION = "DELETE FROM KshmtHdpaidCondition c "
 			+ "WHERE c.kshstGrantConditionPK.companyId =:companyId "
 			+ "AND c.kshstGrantConditionPK.yearHolidayCode =:yearHolidayCode ";
 	private static final String DELETE_GRANT_DATES = "DELETE FROM KshstGrantHdTbl g "
@@ -42,7 +42,7 @@ public class JpaYearHolidayRepository extends JpaRepository implements YearHolid
 	
 	@Override
 	public List<GrantHdTblSet> findAll(String companyId) {
-		return this.queryProxy().query(FIND_ALL_BY_CID, KshstGrantHdTblSet.class)
+		return this.queryProxy().query(FIND_ALL_BY_CID, KshmtHdpaidTblSet.class)
 				.setParameter("companyId", companyId)
 				.getList(x -> convertToDomainYearHoliday(x));
 	}	
@@ -50,7 +50,7 @@ public class JpaYearHolidayRepository extends JpaRepository implements YearHolid
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public Optional<GrantHdTblSet> findByCode(String companyId, String yearHolidayCode) {
-		return this.queryProxy().find(new KshstGrantHdTblSetPK(companyId, yearHolidayCode), KshstGrantHdTblSet.class)
+		return this.queryProxy().find(new KshstGrantHdTblSetPK(companyId, yearHolidayCode), KshmtHdpaidTblSet.class)
 				.map(x -> convertToDomainYearHoliday(x));
 	}
 
@@ -62,8 +62,8 @@ public class JpaYearHolidayRepository extends JpaRepository implements YearHolid
 	@Override
 	public void update(GrantHdTblSet yearHoliday) {
 		KshstGrantHdTblSetPK key = new KshstGrantHdTblSetPK(yearHoliday.getCompanyId(), yearHoliday.getYearHolidayCode().v());
-		Optional<KshstGrantHdTblSet> entity = this.queryProxy().find(key, KshstGrantHdTblSet.class);
-		KshstGrantHdTblSet kshstYearHoliday = entity.get();
+		Optional<KshmtHdpaidTblSet> entity = this.queryProxy().find(key, KshmtHdpaidTblSet.class);
+		KshmtHdpaidTblSet kshstYearHoliday = entity.get();
 		kshstYearHoliday.yearHolidayName = yearHoliday.getYearHolidayName().v();
 		kshstYearHoliday.calculationMethod = yearHoliday.getCalculationMethod().value;
 		kshstYearHoliday.simultaneousGrandMonthDays = yearHoliday.getSimultaneousGrandMonthDays();
@@ -71,10 +71,10 @@ public class JpaYearHolidayRepository extends JpaRepository implements YearHolid
 		kshstYearHoliday.useSimultaneousGrant = yearHoliday.getUseSimultaneousGrant().value;
 		kshstYearHoliday.yearHolidayNote = yearHoliday.getYearHolidayNote().v();
 		
-		List<KshstGrantCondition> grantCoditionList = yearHoliday.getGrantConditions().stream()
+		List<KshmtHdpaidCondition> grantCoditionList = yearHoliday.getGrantConditions().stream()
 				.map(x -> {
 					KshstGrantConditionPK conditionKey = new KshstGrantConditionPK(yearHoliday.getCompanyId(), yearHoliday.getYearHolidayCode().v(), x.getConditionNo());
-					return new KshstGrantCondition(conditionKey, x.getConditionValue() != null ? x.getConditionValue().v() : null, x.getUseConditionAtr().value);
+					return new KshmtHdpaidCondition(conditionKey, x.getConditionValue() != null ? x.getConditionValue().v() : null, x.getUseConditionAtr().value);
 				}).collect(Collectors.toList());
 		
 		kshstYearHoliday.grantConditions = grantCoditionList;
@@ -84,7 +84,7 @@ public class JpaYearHolidayRepository extends JpaRepository implements YearHolid
 
 	@Override
 	public void remove(String companyId, String yearHolidayCode) {
-		this.commandProxy().remove(KshstGrantHdTblSet.class, new KshstGrantHdTblSetPK(companyId, yearHolidayCode));
+		this.commandProxy().remove(KshmtHdpaidTblSet.class, new KshstGrantHdTblSetPK(companyId, yearHolidayCode));
 	}
 	
 	@Override
@@ -106,10 +106,10 @@ public class JpaYearHolidayRepository extends JpaRepository implements YearHolid
 	/**
 	 * Convert to domain
 	 * 
-	 * @param KshstGrantHdTblSet
+	 * @param KshmtHdpaidTblSet
 	 * @return
 	 */
-	private GrantHdTblSet convertToDomainYearHoliday(KshstGrantHdTblSet x) {
+	private GrantHdTblSet convertToDomainYearHoliday(KshmtHdpaidTblSet x) {
 		List<GrantCondition> grantConditions = x.grantConditions.stream().map(t -> {
 			return new 	GrantCondition(t.kshstGrantConditionPK.companyId, 
 					new YearHolidayCode(t.kshstGrantConditionPK.yearHolidayCode), 
@@ -135,14 +135,14 @@ public class JpaYearHolidayRepository extends JpaRepository implements YearHolid
 	 * @param yearHoliday
 	 * @return
 	 */
-	private KshstGrantHdTblSet toEntity(GrantHdTblSet yearHoliday) {
-		List<KshstGrantCondition> grantCoditionList = yearHoliday.getGrantConditions().stream()
+	private KshmtHdpaidTblSet toEntity(GrantHdTblSet yearHoliday) {
+		List<KshmtHdpaidCondition> grantCoditionList = yearHoliday.getGrantConditions().stream()
 				.map(x -> {
 					KshstGrantConditionPK key = new KshstGrantConditionPK(yearHoliday.getCompanyId(), yearHoliday.getYearHolidayCode().v(), x.getConditionNo());
-					return new KshstGrantCondition(key, x.getConditionValue() != null ? x.getConditionValue().v() : null, x.getUseConditionAtr().value);
+					return new KshmtHdpaidCondition(key, x.getConditionValue() != null ? x.getConditionValue().v() : null, x.getUseConditionAtr().value);
 				}).collect(Collectors.toList());
 		
-		return new KshstGrantHdTblSet(
+		return new KshmtHdpaidTblSet(
 				new KshstGrantHdTblSetPK(yearHoliday.getCompanyId(), yearHoliday.getYearHolidayCode().v()),
 				yearHoliday.getYearHolidayName().v(),
 				yearHoliday.getCalculationMethod().value,

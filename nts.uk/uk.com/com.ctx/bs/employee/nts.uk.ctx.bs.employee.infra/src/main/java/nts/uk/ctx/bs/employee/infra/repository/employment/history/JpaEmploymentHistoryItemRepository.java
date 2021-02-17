@@ -47,7 +47,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaEmploymentHistoryItemRepository extends JpaRepository implements EmploymentHistoryItemRepository {
 
 //	private static final String SEL_HIS_ITEM = " SELECT a.bsymtEmploymentPK.code ,a.name FROM BsymtEmployment a"
-//			+ " INNER JOIN BsymtEmploymentHist h" 
+//			+ " INNER JOIN BsymtAffEmpHist h" 
 //			+ " ON a.bsymtEmploymentPK.cid = h.companyId"
 //			+ " INNER JOIN BsymtEmploymentHistItem i"
 //			+ " ON  h.hisId = i.hisId " 
@@ -58,11 +58,11 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 //			+ " AND a.bsymtEmploymentPK.cid =:companyId";
 	
 	private static final String SELECT_BY_EMPID_BASEDATE = "SELECT ehi FROM BsymtEmploymentHistItem ehi"
-			+ " INNER JOIN  BsymtEmploymentHist eh on eh.hisId = ehi.hisId"
+			+ " INNER JOIN  BsymtAffEmpHist eh on eh.hisId = ehi.hisId"
 			+ " WHERE eh.sid = :sid AND eh.strDate <= :basedate AND :basedate <= eh.endDate";
 
 	private static final String SELECT_BY_EMPID = "SELECT ehi.sid, eh.strDate, eh.endDate, ehi.empCode FROM BsymtEmploymentHistItem ehi"
-			+ " INNER JOIN  BsymtEmploymentHist eh on eh.hisId = ehi.hisId"
+			+ " INNER JOIN  BsymtAffEmpHist eh on eh.hisId = ehi.hisId"
 			+ " WHERE eh.sid = :sid ORDER BY eh.strDate";
 	
 //	/** The Constant SELECT_BY_HISTIDS. */
@@ -70,17 +70,17 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 //			+ " WHERE aw.hisId IN :historyId";
 	
 //	private static final String SELECT_BY_LIST_EMPTCODE_DATEPERIOD = "SELECT ehi FROM BsymtEmploymentHistItem ehi" 
-//			+ " INNER JOIN  BsymtEmploymentHist eh on eh.hisId = ehi.hisId" 
+//			+ " INNER JOIN  BsymtAffEmpHist eh on eh.hisId = ehi.hisId" 
 //			+ " WHERE ehi.empCode IN :employmentCodes AND eh.strDate <= :endDate AND :startDate <= eh.endDate";
 	
 	private static final String GET_LST_SID_BY_EMPTCODE_DATEPERIOD = "SELECT ehi.sid FROM BsymtEmploymentHistItem ehi" 
-			+ " INNER JOIN  BsymtEmploymentHist eh on eh.hisId = ehi.hisId " 
+			+ " INNER JOIN  BsymtAffEmpHist eh on eh.hisId = ehi.hisId " 
 			+ " WHERE ehi.empCode IN :employmentCodes AND eh.strDate <= :endDate AND :startDate <= eh.endDate"
 			+ " AND eh.companyId = :companyId";
 	//hoatt
 	private static final String GET_BY_LSTSID_DATE = "SELECT h.sid, a.bsymtEmploymentPK.code, a.name"
 			+ " FROM BsymtEmployment a"
-			+ " INNER JOIN BsymtEmploymentHist h"
+			+ " INNER JOIN BsymtAffEmpHist h"
 			+ " ON a.bsymtEmploymentPK.cid = h.companyId"
 			+ " INNER JOIN BsymtEmploymentHistItem i"
 			+ " ON h.hisId = i.hisId AND h.sid = i.sid"
@@ -94,9 +94,9 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 	public Optional<EmploymentInfo> getDetailEmploymentHistoryItem(String companyId, String sid, GeneralDate date) {
 		StringBuilder builder = new StringBuilder();
 		builder.append(" SELECT a.CODE ,a.NAME ,h.START_DATE ,h.END_DATE FROM BSYMT_EMPLOYMENT a");
-		builder.append(" INNER JOIN BSYMT_EMPLOYMENT_HIST h");
+		builder.append(" INNER JOIN BSYMT_AFF_EMP_HIST h");
 		builder.append(" ON a.CID = h.CID");
-		builder.append(" INNER JOIN BSYMT_EMPLOYMENT_HIS_ITEM i");
+		builder.append(" INNER JOIN BSYMT_AFF_EMP_HIST_ITEM i");
 		builder.append(" ON h.HIST_ID = i.HIST_ID AND h.SID = i.SID AND a.CODE = i.EMP_CD");
 		builder.append(" WHERE a.CID = ? AND h.SID = ? ");
 		builder.append(" AND h.START_DATE <= ? AND h.END_DATE >= ?");
@@ -474,7 +474,7 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 		List<BsymtEmploymentHistItem> listHistItem = new ArrayList<>();
 		CollectionUtil.split(historyIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 				try(PreparedStatement statement = this.connection().prepareStatement(
-						"select * from BSYMT_EMPLOYMENT_HIS_ITEM a"
+						"select * from BSYMT_AFF_EMP_HIST_ITEM a"
 					  + " where a.HIST_ID in (" + NtsStatement.In.createParamsString(subList) + ")")){
 					for (int i = 0; i < subList.size(); i++) {
 						statement.setString(i + 1, subList.get(i));
@@ -510,7 +510,7 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 		List<Object[]> results = new ArrayList<>();
 		CollectionUtil.split(historyIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
 				try(PreparedStatement statement = this.connection().prepareStatement(
-						"select * from BSYMT_EMPLOYMENT_HIS_ITEM a"
+						"select * from BSYMT_AFF_EMP_HIST_ITEM a"
 					  + " where a.HIST_ID in (" + NtsStatement.In.createParamsString(subList) + ")")){
 					for (int i = 0; i < subList.size(); i++) {
 						statement.setString(i + 1, subList.get(i));
@@ -560,7 +560,7 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 	public List<EmploymentHistoryItem> getEmploymentHistoryItem(String cid, GeneralDate baseDate) {
 		List<BsymtEmploymentHistItem> listHistItem = new ArrayList<>();
 				try(PreparedStatement statement = this.connection().prepareStatement(
-						"SELECT DISTINCT b.* FROM BSYMT_EMPLOYMENT_HIST a INNER JOIN BSYMT_EMPLOYMENT_HIS_ITEM b ON a.HIST_ID = b.HIST_ID"
+						"SELECT DISTINCT b.* FROM BSYMT_AFF_EMP_HIST a INNER JOIN BSYMT_AFF_EMP_HIST_ITEM b ON a.HIST_ID = b.HIST_ID"
 					  + " WHERE a.CID = ? AND a.START_DATE  <= ? AND a.END_DATE >= ? ORDER BY b.EMP_CD")){
 					statement.setString(1, cid);
 					statement.setDate(2, Date.valueOf(baseDate.localDate()));
@@ -607,7 +607,7 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 
 	@Override
 	public void addAll(List<EmploymentHistoryItem> domains) {
-		String INS_SQL = "INSERT INTO BSYMT_EMPLOYMENT_HIS_ITEM (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
+		String INS_SQL = "INSERT INTO BSYMT_AFF_EMP_HIST_ITEM (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
 				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG," 
 				+ " HIST_ID, SID, EMP_CD,"
 				+ " SALARY_SEGMENT)"
@@ -647,7 +647,7 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 
 	@Override
 	public void updateAll(List<EmploymentHistoryItem> domains) {
-		String UP_SQL = "UPDATE BSYMT_EMPLOYMENT_HIS_ITEM SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
+		String UP_SQL = "UPDATE BSYMT_AFF_EMP_HIST_ITEM SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
 				+ " EMP_CD = EMP_CD_VAL, SALARY_SEGMENT = SALARY_SEGMENT_VAL"
 				+ " WHERE HIST_ID = HIST_ID_VAL AND SID = SID_VAL;";
 		String updCcd = AppContexts.user().companyCode();
@@ -683,7 +683,7 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 		String cid = AppContexts.user().companyId();
 		List<EmploymentHistoryOfEmployee> listHistItem = new ArrayList<>();
 //		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-//			String sql = "SELECT a.SID, a.START_DATE, a.END_DATE, b.EMP_CD FROM BSYMT_EMPLOYMENT_HIST a INNER JOIN BSYMT_EMPLOYMENT_HIS_ITEM b ON a.HIST_ID = b.HIST_ID"
+//			String sql = "SELECT a.SID, a.START_DATE, a.END_DATE, b.EMP_CD FROM BSYMT_AFF_EMP_HIST a INNER JOIN BSYMT_AFF_EMP_HIST_ITEM b ON a.HIST_ID = b.HIST_ID"
 //					  + " WHERE a.CID = ? AND a.START_DATE  <= ? AND  ? <= a.END_DATE AND  b.EMP_CD IN ("
 //					  +  NtsStatement.In.createParamsString(employmentCodes) + ")"
 //					  + " AND a.SID IN (" + NtsStatement.In.createParamsString(subList) + ")  ORDER BY b.EMP_CD";
@@ -716,7 +716,7 @@ public class JpaEmploymentHistoryItemRepository extends JpaRepository implements
 //				};
 //		});
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT a.SID, a.START_DATE, a.END_DATE, b.EMP_CD FROM BSYMT_EMPLOYMENT_HIST a INNER JOIN BSYMT_EMPLOYMENT_HIS_ITEM b ON a.HIST_ID = b.HIST_ID"
+			String sql = "SELECT a.SID, a.START_DATE, a.END_DATE, b.EMP_CD FROM BSYMT_AFF_EMP_HIST a INNER JOIN BSYMT_AFF_EMP_HIST_ITEM b ON a.HIST_ID = b.HIST_ID"
 					  + " WHERE a.SID IN (" + NtsStatement.In.createParamsString(subList) + ") "
 					  + " AND a.START_DATE  <= ? AND  ? <= a.END_DATE"
 					  + " AND a.CID = ? "

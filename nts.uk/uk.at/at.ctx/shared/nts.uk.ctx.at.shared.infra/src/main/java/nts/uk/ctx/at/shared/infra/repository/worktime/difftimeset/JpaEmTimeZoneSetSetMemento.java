@@ -3,7 +3,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.difftimeset;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSetSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDtWorkTimeSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDifWorkTs;
 
 /**
  * The Class JpaEmTimeZoneSetSetMemento.
@@ -11,9 +11,9 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDtWorkTimeSet
 public class JpaEmTimeZoneSetSetMemento implements EmTimeZoneSetSetMemento {
 
 	/** The entity. */
-	private KshmtDtWorkTimeSet entity;
+	private KshmtWtDifWorkTs entity;
 
-	public JpaEmTimeZoneSetSetMemento(KshmtDtWorkTimeSet entity) {
+	public JpaEmTimeZoneSetSetMemento(KshmtWtDifWorkTs entity) {
 		this.entity = entity;
 	}
 

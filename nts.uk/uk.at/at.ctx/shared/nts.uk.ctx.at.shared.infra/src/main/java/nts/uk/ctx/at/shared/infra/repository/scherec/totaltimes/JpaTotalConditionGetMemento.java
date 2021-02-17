@@ -9,7 +9,7 @@ import java.util.Optional;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.ConditionThresholdLimit;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.UseAtr;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.memento.TotalConditionGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshstTotalCondition;
+import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshmtTotalCondition;
 
 /**
  * The Class JpaTotalConditionGetMemento.
@@ -17,14 +17,14 @@ import nts.uk.ctx.at.shared.infra.entity.scherec.totaltimes.KshstTotalCondition;
 public class JpaTotalConditionGetMemento implements TotalConditionGetMemento {
 
 	/** The entity. */
-	private KshstTotalCondition entity;
+	private KshmtTotalCondition entity;
 
 	/**
 	 * Instantiates a new jpa total condition get memento.
 	 *
 	 * @param totalTimes the total times
 	 */
-	public JpaTotalConditionGetMemento(KshstTotalCondition totalTimes) {
+	public JpaTotalConditionGetMemento(KshmtTotalCondition totalTimes) {
 		this.entity = totalTimes;
 	}
 

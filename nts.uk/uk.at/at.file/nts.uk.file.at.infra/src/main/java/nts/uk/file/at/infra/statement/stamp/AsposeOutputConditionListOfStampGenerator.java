@@ -215,7 +215,9 @@ public class AsposeOutputConditionListOfStampGenerator extends AsposeCellsReport
 				printData(rows.get(), cell, printStyle, data);
 				rows.set(rows.get() + 1);
 			}
+			reportContext.getWorkbook().getWorksheets().get(0).getHorizontalPageBreaks().add(rows.get());
 		});
+		reportContext.getWorkbook().getWorksheets().get(0).getHorizontalPageBreaks().add(rows.get());
 		return rows.get();
 	}
 	

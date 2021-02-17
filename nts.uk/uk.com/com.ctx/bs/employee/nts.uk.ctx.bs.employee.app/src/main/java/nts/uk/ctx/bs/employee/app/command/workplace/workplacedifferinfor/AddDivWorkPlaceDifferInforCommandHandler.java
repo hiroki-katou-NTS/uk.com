@@ -8,8 +8,8 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.bs.employee.dom.workplace.differinfor.DivWorkDifferInfor;
-import nts.uk.ctx.bs.employee.dom.workplace.differinfor.DivWorkDifferInforRepository;
+import nts.uk.ctx.bs.employee.dom.operationrule.OperationRule;
+import nts.uk.ctx.bs.employee.dom.operationrule.OperationRuleRepository;
 /**
  * add DivWorkPlaceDifferInfor Command Handler  
  * @author yennth
@@ -17,18 +17,18 @@ import nts.uk.ctx.bs.employee.dom.workplace.differinfor.DivWorkDifferInforReposi
 @Stateless
 public class AddDivWorkPlaceDifferInforCommandHandler extends CommandHandler<AddDivWorkPlaceDifferInforCommand>{
 	@Inject
-	private DivWorkDifferInforRepository divRep;
+	private OperationRuleRepository operationRuleRep;
 	// add a item
 	@Override
 	protected void handle(CommandHandlerContext<AddDivWorkPlaceDifferInforCommand> context) {
 		AddDivWorkPlaceDifferInforCommand data = context.getCommand();
-		Optional<DivWorkDifferInfor> div = divRep.findDivWork(data.getCompanyId());
+		Optional<OperationRule> div = operationRuleRep.findOperationRule(data.getCompanyId());
 		// if existed in Data base
 		if(div.isPresent()){
 			throw new BusinessException("Msg_3");
 		}
-		DivWorkDifferInfor divNew = DivWorkDifferInfor.createFromJavaType(data.getCompanyId(), data.getRegWorkDiv());
+		OperationRule divNew = new OperationRule( data.getCompanyId(), data.getRegWorkDiv());
 		divNew.validate();
-		divRep.insertDivWork(divNew);
+		operationRuleRep.insert(divNew);
 	}
 }

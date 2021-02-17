@@ -186,6 +186,8 @@ module nts.uk.com.view.ccg020.a {
           )
         )
       );
+      // Ver1: queryStringがNotEmptyの場合：URL　＝　url　+　’?’　+　queryString
+      _.forEach(treeMenu, item => item.url = !_.isEmpty(item.queryString) ? `${item.url}?${item.queryString}` : item.url);
       treeMenu = _.uniqBy(treeMenu, 'url');
       _.forEach(treeMenu, (item: TreeMenu) => {
         item.name = item.displayName === item.defaultName
