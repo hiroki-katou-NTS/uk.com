@@ -63,7 +63,7 @@ module nts.uk.at.view.kmk004.b {
 
 					/** Advanced search properties */
 					showEmployment: true,
-					showDepartment: true,
+					showDepartment: false,
 					showWorkplace: true,
 					showClassification: true,
 					showJobTitle: true,

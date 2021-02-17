@@ -205,7 +205,7 @@ class ScreenJComponent extends ko.ViewModel {
 
 				/** Advanced search properties */
 				showEmployment: true,
-				showDepartment: true,
+				showDepartment: false,
 				showWorkplace: true,
 				showClassification: true,
 				showJobTitle: true,
