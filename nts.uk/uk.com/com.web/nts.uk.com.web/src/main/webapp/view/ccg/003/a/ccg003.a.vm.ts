@@ -92,7 +92,7 @@ module nts.uk.com.view.ccg003.a {
             <!-- A6_2 メッセージ内容 -->
             <div class="mr-data no-border-radius">
               <div>
-                <span style="white-space: pre-wrap;" data-bind="html: messageDisplay"></span>
+                <span style="white-space: pre-wrap; word-break: break-all; display: inline-block; width: 430px;" data-bind="html: messageDisplay"></span>
                 <span class="ccg003-block-5" data-bind="text: $component.$i18n('CCG003_8', [creator])"></span>
                 <span class="ccg003-block-5" data-bind="text: $component.$i18n('CCG003_9', [dateDisplay])"></span>
               </div>
