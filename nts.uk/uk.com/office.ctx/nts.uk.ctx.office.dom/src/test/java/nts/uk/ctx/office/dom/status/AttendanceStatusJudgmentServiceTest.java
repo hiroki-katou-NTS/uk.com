@@ -62,7 +62,7 @@ public class AttendanceStatusJudgmentServiceTest {
 		val result = AttendanceStatusJudgmentService.getActivityStatus(require, sid);
 		
 		val expected = AttendanceAccordActualData.builder()
-				.attendanceState(attendacneRqResult.getAttendanceState())
+				.attendanceState(StatusClassfication.GO_OUT)
 				.workingNow(attendacneRqResult.isWorkingNow())
 				.build();
 		
@@ -110,7 +110,7 @@ public class AttendanceStatusJudgmentServiceTest {
 		val result = AttendanceStatusJudgmentService.getActivityStatus(require, sid);
 		
 		val expected = AttendanceAccordActualData.builder()
-				.attendanceState(attendacneRqResult.getAttendanceState())
+				.attendanceState(StatusClassfication.GO_OUT)
 				.workingNow(attendacneRqResult.isWorkingNow())
 				.build();
 		
@@ -158,7 +158,7 @@ public class AttendanceStatusJudgmentServiceTest {
 		val result = AttendanceStatusJudgmentService.getActivityStatus(require, sid);
 		
 		val expected = AttendanceAccordActualData.builder()
-				.attendanceState(attendacneRqResult.getAttendanceState())
+				.attendanceState(StatusClassfication.GO_OUT)
 				.workingNow(attendacneRqResult.isWorkingNow())
 				.build();
 		
@@ -254,7 +254,7 @@ public class AttendanceStatusJudgmentServiceTest {
 	/**
 	 * case 2
 	 * 
-	 * goout.isNotPresent()
+	 * goout.isPresent()
 	 * getGoOutTime().greaterThan(now)
 	 */
 	@Test
@@ -266,7 +266,7 @@ public class AttendanceStatusJudgmentServiceTest {
 				Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 				GoOutEmployeeInformationDto gooutDto = GoOutEmployeeInformationDto.builder()
 						.goOutTime(now+1000)
-						.comebackTime(now)
+						.comebackTime(now+2000)
 						.build();
 				Optional<GoOutEmployeeInformation> gooutResult = Optional.ofNullable(GoOutEmployeeInformation.createFromMemento(gooutDto));
 		//[R-3]
@@ -301,7 +301,7 @@ public class AttendanceStatusJudgmentServiceTest {
 	/**
 	 * case 2
 	 * 
-	 * goout.isNotPresent()
+	 * goout.isPresent()
 	 * getComebackTime().lessThan(now)
 	 */
 	@Test

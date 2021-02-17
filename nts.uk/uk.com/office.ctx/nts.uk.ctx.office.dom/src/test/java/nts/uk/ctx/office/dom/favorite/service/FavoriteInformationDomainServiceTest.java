@@ -3,6 +3,7 @@ package nts.uk.ctx.office.dom.favorite.service;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.After;
@@ -28,37 +29,57 @@ public class FavoriteInformationDomainServiceTest {
 	private Require require;
 	
 	@Mocked
-	private List<FavoriteSpecify> resultMap = new ArrayList<>();
+	private List<FavoriteSpecify> resultList = new ArrayList<>();
 	
 	@Mocked
-	private FavoriteSpecify favoriteSpecify = FavoriteSpecificARTestHelper.mockFavoriteInfoAR();
+	private FavoriteSpecify favoriteSpecify = FavoriteSpecifyDomainServiceTestHelper.mockFavoriteSpecify();
 	
 	@Before
 	public void beforeTest() {
-		resultMap.add(favoriteSpecify);
+		resultList.add(favoriteSpecify);
 	}
 	
 	@After
 	public void afterTest() {
-		resultMap.clear();
+		resultList.clear();
 	}
 
 	/**
 	 * Test DS お気に入り情報を取得する
 	 * WorkplaceId input is empty
+	 * $お気に入りListがある
 	 */
 	@Test
-	public void test() {
+	public void test1() {
 		new Expectations() {
 			{
 				favoriteInfoRequire.getBySid("mock-sid");
-				result = resultMap;
+				result = resultList;
 			}
 		};
 		FavoriteInformationDomainService ds = new FavoriteInformationDomainService();
 		val res = ds.get(favoriteInfoRequire, "mock-sid");
 		assertThat(res).isNotEmpty();
 		assertThat(res.get(favoriteSpecify)).isNotNull();
+	}
+	
+	/**
+	 * Test DS お気に入り情報を取得する
+	 * WorkplaceId input is empty
+	 * $お気に入りListがない
+	 */
+	@Test
+	public void test2() {
+		new Expectations() {
+			{
+				favoriteInfoRequire.getBySid("mock-sid");
+				result = Collections.emptyList();
+			}
+		};
+		FavoriteInformationDomainService ds = new FavoriteInformationDomainService();
+		val res = ds.get(favoriteInfoRequire, "mock-sid");
+		assertThat(res).isEmpty();
+		assertThat(res.get(favoriteSpecify)).isNull();
 	}
 	
 }

@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,7 +51,7 @@ public class EmployeeListFromWpDomainServiceTest {
 
 	/**
 	 * Test DS 職場IDから社員IDリストを取得
-	 * WorkplaceId input is empty
+	 * WorkplaceId input is not empty
 	 */
 	@Test
 	public void testWithWkpIdInput() {
@@ -69,7 +70,7 @@ public class EmployeeListFromWpDomainServiceTest {
 	
 	/**
 	 * Test DS 職場IDから社員IDリストを取得
-	 * WorkplaceId input is not empty
+	 * WorkplaceId input is empty
 	 */
 	@Test
 	public void testWithEmptyWkpIdInput() {
@@ -85,7 +86,7 @@ public class EmployeeListFromWpDomainServiceTest {
 			}
 		};
 		
-		val res = EmployeeListFromWpDomainService.getEmployeeIdList(require, "mock-sid", new ArrayList<>(), baseDate);
+		val res = EmployeeListFromWpDomainService.getEmployeeIdList(require, "mock-sid", Collections.emptyList(), baseDate);
 		assertThat(res).isNotEmpty();
 		assertThat(res.size()).isEqualTo(2);
 		assertThat(res).isEqualTo(acquireTheWorkplace);

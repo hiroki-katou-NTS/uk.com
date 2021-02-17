@@ -22,13 +22,11 @@ public class FavoriteSpecifyTest {
 	@Injectable
 	private Require require;
 
-	public final FavoriteSpecifyDto mockDto = new FavoriteSpecifyDto("favoriteName", "creatorId", null, 0,
-			Collections.emptyList(), 0);
 
 	@Test
 	public void getters() {
 		// when
-		FavoriteSpecify domain = FavoriteSpecify.createFromMemento(mockDto);
+		FavoriteSpecify domain = FavoriteSpecifyTestHelper.mockFavoriteSpecify(0, Collections.emptyList());
 
 		// then 
 		NtsAssert.invokeGetters(domain);
@@ -46,7 +44,7 @@ public class FavoriteSpecifyTest {
 	public void setMemento() {
 		// given
 		FavoriteSpecifyDto nullDto = new FavoriteSpecifyDto();
-		FavoriteSpecify domain = FavoriteSpecify.createFromMemento(mockDto);
+		FavoriteSpecify domain = FavoriteSpecifyTestHelper.mockFavoriteSpecify(0, Collections.emptyList());
 
 		// when
 		domain.setMemento(nullDto);
@@ -59,9 +57,7 @@ public class FavoriteSpecifyTest {
 	@Test
 	public void passingTargetInfoNameTest1() {
 		//given
-		FavoriteSpecifyDto mockDto = new FavoriteSpecifyDto("favoriteName", "creatorId", null, 1, // 1 is AFFILIATION_WORKPLACE
-				Collections.emptyList(), 0);
-		FavoriteSpecify domain = FavoriteSpecify.createFromMemento(mockDto);
+		FavoriteSpecify domain = FavoriteSpecifyTestHelper.mockFavoriteSpecify(1, Collections.emptyList()); // 1 is AFFILIATION_WORKPLACE
 
 		//when
 		val list = domain.passingTargetInfoName(require);
@@ -71,23 +67,14 @@ public class FavoriteSpecifyTest {
 	}
 
 	//targetSelection = WORKPLACE
+	//職場Mapが NOT Empty
 	@Test
 	public void passingTargetInfoNameTest2() {
 		//given
-		FavoriteSpecifyDto mockDto = new FavoriteSpecifyDto("favoriteName", "creatorId", null, 0, //0 is WORKPLACE
-				Arrays.asList("string"), 0);
-		FavoriteSpecify domain = FavoriteSpecify.createFromMemento(mockDto);
-		WorkplaceInforImport info = new WorkplaceInforImport(
-				"workplaceId",
-				"hierarchyCode",
-				"workplaceCode",
-				"workplaceName",
-				"workplaceDisplayName",
-				"workplaceGenericName",
-				"workplaceExternalCode"
-				);
-		Map<String, WorkplaceInforImport> resultMap = new HashMap<>();
-		resultMap.put("key",info);
+		FavoriteSpecify domain = FavoriteSpecifyTestHelper.mockFavoriteSpecify(0, Arrays.asList("string")); //0 is WORKPLACE
+
+		Map<String, WorkplaceInforImport> resultMap = FavoriteSpecifyTestHelper.mockRequireGetWrkspDispName();
+
 		new Expectations() {
 			{
 				require.getWrkspDispName(Arrays.asList("string"), (GeneralDate) any);
@@ -100,5 +87,28 @@ public class FavoriteSpecifyTest {
 		
 		//then
 		assertThat(list).isNotEmpty();
+	}
+	
+	//targetSelection = WORKPLACE
+	//職場Mapが Empty
+	@Test
+	public void passingTargetInfoNameTest3() {
+		//given
+		FavoriteSpecify domain = FavoriteSpecifyTestHelper.mockFavoriteSpecify(0, Arrays.asList("string")); //0 is WORKPLACE
+
+		Map<String, WorkplaceInforImport> resultMap = new HashMap<>();
+
+		new Expectations() {
+			{
+				require.getWrkspDispName(Arrays.asList("string"), (GeneralDate) any);
+				result = resultMap;
+			}
+		};
+		
+		//when
+		val list = domain.passingTargetInfoName(require);
+		
+		//then
+		assertThat(list).isEmpty();
 	}
 }

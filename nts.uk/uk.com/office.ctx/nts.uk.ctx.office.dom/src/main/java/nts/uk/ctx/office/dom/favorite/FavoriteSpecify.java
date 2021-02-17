@@ -113,7 +113,7 @@ public class FavoriteSpecify extends AggregateRoot {
 		 * 
 		 * @param wrkspIds 職場IDリス�
 		 * @param date     基準日
-		 * @return List<String>
+		 * @return  Map<String, WorkplaceInforImport>
 		 * 
 		 *         職場惱を取得するAdapter.職場惱を取得す�職場IDリスト、基準日)
 		 */

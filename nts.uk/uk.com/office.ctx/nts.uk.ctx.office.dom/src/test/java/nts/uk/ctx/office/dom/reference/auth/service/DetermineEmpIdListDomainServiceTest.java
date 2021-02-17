@@ -1,7 +1,6 @@
 package nts.uk.ctx.office.dom.reference.auth.service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -24,27 +23,44 @@ public class DetermineEmpIdListDomainServiceTest {
 	@Injectable
 	private Require require;
 
-	// 見られる職位ID is Empty
+	/**
+	 * 在席照会で参照できる権限の指定 が  ない
+	 */
 	@Test
-	public void determineReferencedTest1() {
+	public void determineReferencedTest1_1() {
 		// given
-		// [R-1]
-		Optional<SpecifyAuthInquiry> specifyAuthInquiry = Optional.ofNullable(SpecifyAuthInquiry.builder().build());
-		
-		// [R-2]
-		EmployeeJobHistImport emp = EmployeeJobHistImport.builder()
-				.employeeId("employeeId")
-				.jobTitleID("jobTitleID")
-				.jobTitleName("jobTitleName")
-				.sequenceCode("sequenceCode")
-				.startDate(GeneralDate.today())
-				.endDate(GeneralDate.today())
-				.jobTitleCode("jobTitleCode")
-				.build();
-		Map<String, EmployeeJobHistImport> positionBySidsAndBaseDate = new HashMap<>();
-		positionBySidsAndBaseDate.put("sid", emp);
 		List<String> sids = new ArrayList<String>();
 		sids.add("sid");
+		
+		// [R-1]
+		Optional<SpecifyAuthInquiry> specifyAuthInquiry = Optional.empty();
+		
+		new Expectations() {
+			{
+				require.getByCidAndRoleId("cid", "roleId");
+				result = specifyAuthInquiry;
+			}
+		};
+		
+		// when
+		val result = DetermineEmpIdListDomainService.determineReferenced(require, sids, GeneralDate.today(), "cid",
+				"roleId", "sid");
+		
+		// then
+		assertThat(result).isEmpty();
+	}
+	
+	/**
+	 * 在席照会で参照できる権限の指定があるが、見られる職位IDListがEmpty
+	 */
+	@Test
+	public void determineReferencedTest1_2() {
+		// given
+		List<String> sids = new ArrayList<String>();
+		sids.add("sid");
+		
+		// [R-1]
+		Optional<SpecifyAuthInquiry> specifyAuthInquiry = DetermineEmpIdListDomainServiceTestHelper.mockRequireGetByCidAndRoleId();
 		
 		new Expectations() {
 			{
@@ -66,30 +82,14 @@ public class DetermineEmpIdListDomainServiceTest {
 	@Test
 	public void determineReferencedTest2() {
 		// given
+		List<String> sids = new ArrayList<String>();
+		sids.add("loginSid");
+		
 		// [R-1]
-		List<String> positionIdSeens = new ArrayList<String>();
-		positionIdSeens.add("positionIdSeen");
-		Optional<SpecifyAuthInquiry> specifyAuthInquiry = Optional
-				.ofNullable(SpecifyAuthInquiry.builder()
-						.cid("cid")
-						.employmentRoleId("employmentRoleId")
-						.positionIdSeen(positionIdSeens)
-						.build());
+		Optional<SpecifyAuthInquiry> specifyAuthInquiry = DetermineEmpIdListDomainServiceTestHelper.mockRequireGetByCidAndRoleId("positionIdSeen");
 		
 		// [R-2]
-		EmployeeJobHistImport emp = EmployeeJobHistImport.builder()
-				.employeeId("employeeId")
-				.jobTitleID("jobTitleID")
-				.jobTitleName("jobTitleName")
-				.sequenceCode("sequenceCode")
-				.startDate(GeneralDate.today())
-				.endDate(GeneralDate.today())
-				.jobTitleCode("jobTitleCode")
-				.build();
-		Map<String, EmployeeJobHistImport> positionBySidsAndBaseDate = new HashMap<>();
-		positionBySidsAndBaseDate.put("sid", emp);
-		List<String> sids = new ArrayList<String>();
-		sids.add("sid");
+		Map<String, EmployeeJobHistImport> positionBySidsAndBaseDate = DetermineEmpIdListDomainServiceTestHelper.mockRequireGetPositionBySidsAndBaseDate("jobTitleId");
 		
 		new Expectations() {
 			{
@@ -104,7 +104,7 @@ public class DetermineEmpIdListDomainServiceTest {
 		
 		// when
 		val result = DetermineEmpIdListDomainService.determineReferenced(require, sids, GeneralDate.today(), "cid",
-				"roleId", "sid");
+				"roleId", "loginSid");
 		
 		// then
 		assertThat(result).isEmpty();
@@ -115,30 +115,14 @@ public class DetermineEmpIdListDomainServiceTest {
 	@Test
 	public void determineReferencedTest3() {
 		// given
+		List<String> sids = new ArrayList<String>();
+		sids.add("loginSid");
+		
 		// [R-1]
-		List<String> positionIdSeens = new ArrayList<String>();
-		positionIdSeens.add("positionIdSeen");
-		Optional<SpecifyAuthInquiry> specifyAuthInquiry = Optional
-				.ofNullable(SpecifyAuthInquiry.builder()
-						.cid("cid")
-						.employmentRoleId("employmentRoleId")
-						.positionIdSeen(positionIdSeens)
-						.build());
+		Optional<SpecifyAuthInquiry> specifyAuthInquiry = DetermineEmpIdListDomainServiceTestHelper.mockRequireGetByCidAndRoleId("positionIdSeen");
 		
 		// [R-2]
-		EmployeeJobHistImport emp = EmployeeJobHistImport.builder()
-				.employeeId("employeeId")
-				.jobTitleID("jobTitleID")
-				.jobTitleName("jobTitleName")
-				.sequenceCode("sequenceCode")
-				.startDate(GeneralDate.today())
-				.endDate(GeneralDate.today())
-				.jobTitleCode("jobTitleCode")
-				.build();
-		Map<String, EmployeeJobHistImport> positionBySidsAndBaseDate = new HashMap<>();
-		positionBySidsAndBaseDate.put("sid", emp);
-		List<String> sids = new ArrayList<String>();
-		sids.add("sid");
+		Map<String, EmployeeJobHistImport> positionBySidsAndBaseDate = DetermineEmpIdListDomainServiceTestHelper.mockRequireGetPositionBySidsAndBaseDate("jobTitleId");
 		
 		new Expectations() {
 			{
@@ -153,7 +137,7 @@ public class DetermineEmpIdListDomainServiceTest {
 		
 		// when
 		val result = DetermineEmpIdListDomainService.determineReferenced(require, sids, GeneralDate.today(), "cid",
-				"roleId", "sid1");
+				"roleId", "notLoginSid");
 		
 		// then
 		assertThat(result).isEmpty();
@@ -164,30 +148,14 @@ public class DetermineEmpIdListDomainServiceTest {
 	@Test
 	public void determineReferencedTest4() {
 		// given
+		List<String> sids = new ArrayList<String>();
+		sids.add("loginSid");
+		
 		// [R-1]
-		List<String> positionIdSeens = new ArrayList<String>();
-		positionIdSeens.add("positionIdSeen");
-		Optional<SpecifyAuthInquiry> specifyAuthInquiry = Optional
-				.ofNullable(SpecifyAuthInquiry.builder()
-						.cid("cid")
-						.employmentRoleId("employmentRoleId")
-						.positionIdSeen(positionIdSeens)
-						.build());
+		Optional<SpecifyAuthInquiry> specifyAuthInquiry = DetermineEmpIdListDomainServiceTestHelper.mockRequireGetByCidAndRoleId("positionIdSeen");
 		
 		// [R-2]
-		EmployeeJobHistImport emp = EmployeeJobHistImport.builder()
-				.employeeId("employeeId")
-				.jobTitleID("positionIdSeen")
-				.jobTitleName("jobTitleName")
-				.sequenceCode("sequenceCode")
-				.startDate(GeneralDate.today())
-				.endDate(GeneralDate.today())
-				.jobTitleCode("jobTitleCode")
-				.build();
-		Map<String, EmployeeJobHistImport> positionBySidsAndBaseDate = new HashMap<>();
-		positionBySidsAndBaseDate.put("sid", emp);
-		List<String> sids = new ArrayList<String>();
-		sids.add("sid");
+		Map<String, EmployeeJobHistImport> positionBySidsAndBaseDate = DetermineEmpIdListDomainServiceTestHelper.mockRequireGetPositionBySidsAndBaseDate("positionIdSeen");
 		
 		new Expectations() {
 			{
@@ -202,7 +170,7 @@ public class DetermineEmpIdListDomainServiceTest {
 		
 		// when
 		val result = DetermineEmpIdListDomainService.determineReferenced(require, sids, GeneralDate.today(), "cid",
-				"roleId", "sid1");
+				"roleId", "notLoginSid");
 		
 		// then
 		assertThat(result).isNotEmpty();
