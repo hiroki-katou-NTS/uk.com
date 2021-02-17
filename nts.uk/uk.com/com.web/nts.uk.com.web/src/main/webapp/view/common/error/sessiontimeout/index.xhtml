@@ -16,7 +16,16 @@
 
 		<ui:define name="content">
 			<div id="contents-area" class="cf">
-				<div id="error-message">
+				<div id="error-message-tenant">
+					テナント情報が確認できませんでした。<br />テナント認証をしなおしてください。
+				</div>
+				<label>テナントコード:	</label>
+				<input type="text" name="tenantCode" id="tenantCode"></input><br />
+				<label>パスワード:	</label>
+				<input type="text" name="tenantPass" id="tenantPass"></input><br />
+				<button class="large" data-bind="click: contractEntered">テナント認証</button>
+
+				<div id="error-message-session">
 					しばらくの間操作がなかったため、サーバとの接続を切断しました。<br />ログインをしなおしてください。
 				</div>
 				<button class="large" data-bind="click: gotoLogin">ログイン画面へ</button>

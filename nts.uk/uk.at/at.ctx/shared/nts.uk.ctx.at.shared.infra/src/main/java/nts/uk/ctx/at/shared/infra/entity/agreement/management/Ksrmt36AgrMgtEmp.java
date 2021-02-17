@@ -20,7 +20,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.time
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting.BasicAgreementSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -36,18 +36,12 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class Ksrmt36AgrMgtEmp extends UkJpaEntity implements Serializable {
+public class Ksrmt36AgrMgtEmp extends ContractUkJpaEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     public Ksrmt36AgrMgtEmpPk ksrmt36AgrMgtEmpPk;
 
-
-    /**
-     * 契約コード
-     */
-    @Column(name = "CONTRACT_CD")
-    public String contractCD;
     /**
      * 基本設定の1ヶ月アラーム時間
      * 雇用３６協定時間.３６協定基本設定.1ヶ月.基本設定.エラーアラーム時間
@@ -139,11 +133,8 @@ public class Ksrmt36AgrMgtEmp extends UkJpaEntity implements Serializable {
     }
 
     public static Ksrmt36AgrMgtEmp toEntity(AgreementTimeOfEmployment domain) {
-        val contractCD = AppContexts.user().contractCode();
         return new Ksrmt36AgrMgtEmp(
                 new Ksrmt36AgrMgtEmpPk(domain.getCompanyId(),domain.getEmploymentCategoryCode().v(), domain.getLaborSystemAtr().value),
-                //contractCD
-                contractCD,
                 // basicMAllTime ->分類３６協定時間.３６協定基本設定.1ヶ月.基本設定.エラーアラーム時間
                 domain.getSetting().getOneMonth().getBasic().getErAlTime().getAlarm().v(),
 

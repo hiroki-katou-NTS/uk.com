@@ -14,7 +14,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 //import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "CBKMT_BANK")
-public class CbkmtBank extends UkJpaEntity implements Serializable {
+public class CbkmtBank extends ContractUkJpaEntity implements Serializable {
 	
 	static final long serialVersionUID = 42L;
 	

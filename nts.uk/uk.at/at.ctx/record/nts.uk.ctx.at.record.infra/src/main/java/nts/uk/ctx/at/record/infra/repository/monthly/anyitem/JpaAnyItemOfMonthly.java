@@ -845,7 +845,7 @@ public class JpaAnyItemOfMonthly extends JpaRepository implements AnyItemOfMonth
 		List<AnyItemOfMonthly> result = new ArrayList<>();
 		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds ->{
 			try (PreparedStatement stmt = this.connection().prepareStatement(
-						"SELECT * FROM KRCDT_MON_ANYITEMVALUE_MERGE op" 
+						"SELECT * FROM KRCDT_MON_TIME_ANYITEM op" 
 						+" WHERE op.YM IN (" + yearMonths.stream().map(s -> "?").collect(Collectors.joining(",")) + ")" 
 						+" AND op.SID IN (" + empIds.stream().map(s -> "?").collect(Collectors.joining(",")) + ")")) {
 

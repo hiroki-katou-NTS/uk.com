@@ -151,12 +151,16 @@ module nts.uk.at.view.knr002.c {
                         $('.radio-right').focus();
                         vm.selectedUpdateValue(null);
                         vm.updateValueList([]);
-                        console.log(vm.selectedUpdateValue(), 'selected update value');
-                        console.log(rowData, 'row data');
                         let inputRangeArr = rowData.inputRange.split('/');
-                        vm.currentValueList(inputRangeArr.map((item: any) => new BoxModel(item.charAt(0), item.substring(2, item.length -1))));
+                        vm.currentValueList(inputRangeArr.map((item: any) => {
+                            let list = item.split('(');
+                            return new BoxModel(list[0], list[1].substring(0, list[1].length -1));
+                        }));
                         vm.selectedCurrentValue(rowData.currentValue);
-                        vm.updateValueList(inputRangeArr.map((item: any) => new BoxModel(item.charAt(0), item.substring(2, item.length -1))));
+                        vm.updateValueList(inputRangeArr.map((item: any) => {
+                            let list = item.split('(');
+                            return new BoxModel(list[0], list[1].substring(0, list[1].length -1));
+                        }));
                         if (rowData.updateValue.length == 0) {
                           vm.selectedUpdateValue(rowData.currentValue);  
                           break;
@@ -319,6 +323,9 @@ module nts.uk.at.view.knr002.c {
                     case INPUT_TYPE.SELECTION:
                         vm.checkExistBeforeAdd(vm.rowData().smallClassification);
                         let indexInputRange = _.findIndex(vm.updateValueList(), (item) => vm.selectedUpdateValue() ==  item.id);
+                        if (indexInputRange == -1) {
+                            break;
+                        }
                         let newRow = new SettingValue(Math.random(), vm.rowData().majorClassification, vm.rowData().smallClassification, 'yes', '⦿' + vm.updateValueList()[indexInputRange].name, vm.rowData().variableName, vm.selectedUpdateValue());
                         vm.settingData.push(newRow);
                         break;
@@ -428,7 +435,7 @@ module nts.uk.at.view.knr002.c {
                         }
                     }     
                 })
-                .fail(res => console.log('fail roi'))
+                .fail(res => {})
                 .always(() => blockUI.clear());
             } 
 

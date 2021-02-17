@@ -1,6 +1,5 @@
 package nts.uk.ctx.bs.employee.dom.employee.mgndata;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

@@ -13,11 +13,11 @@ import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixHalfDayWorkTimezoneGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHalfRestSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedOtTimeSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFixBrWekTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFixOverTs;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFix;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSetPK;
-import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkTimeSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFixWorkTs;
 
 /**
  * The Class JpaFixHalfDayWorkTimezoneGetMemento.
@@ -25,7 +25,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkTimeSet
 public class JpaFixHalfDayWorkTimezoneGetMemento implements FixHalfDayWorkTimezoneGetMemento {
 
 	/** The entity. */
-	private KshmtFixedWorkSet entity;
+	private KshmtWtFix entity;
 
 	/** The type. */
 	private AmPmAtr type;
@@ -38,7 +38,7 @@ public class JpaFixHalfDayWorkTimezoneGetMemento implements FixHalfDayWorkTimezo
 	 * @param type
 	 *            the type
 	 */
-	public JpaFixHalfDayWorkTimezoneGetMemento(KshmtFixedWorkSet entity, AmPmAtr type) {
+	public JpaFixHalfDayWorkTimezoneGetMemento(KshmtWtFix entity, AmPmAtr type) {
 		super();
 		if (entity.getKshmtFixedWorkSetPK() == null) {
 			entity.setKshmtFixedWorkSetPK(new KshmtFixedWorkSetPK());
@@ -55,11 +55,11 @@ public class JpaFixHalfDayWorkTimezoneGetMemento implements FixHalfDayWorkTimezo
 	 */
 	@Override
 	public FixRestTimezoneSet getRestTimezone() {
-		// KSHMT_FIXED_HALF_REST_SET
+		// KSHMT_WT_FIX_BR_WEK_TS
 		if (CollectionUtil.isEmpty(this.entity.getKshmtFixedHalfRestSets())) {
 			this.entity.setKshmtFixedHalfRestSets(new ArrayList<>());
 		}
-		List<KshmtFixedHalfRestSet> kshmtFixedHalfRestSets = this.entity.getKshmtFixedHalfRestSets().stream()
+		List<KshmtWtFixBrWekTs> kshmtFixedHalfRestSets = this.entity.getKshmtFixedHalfRestSets().stream()
 				.sorted((item1, item2) -> item1.getStartTime() - item2.getEndTime())
 				.filter(entity -> entity.getKshmtFixedHalfRestSetPK().getAmPmAtr() == this.type.value)
 				.collect(Collectors.toList());
@@ -74,19 +74,19 @@ public class JpaFixHalfDayWorkTimezoneGetMemento implements FixHalfDayWorkTimezo
 	 */
 	@Override
 	public FixedWorkTimezoneSet getWorkTimezone() {
-		// KSHMT_FIXED_WORK_TIME_SET 就業時間の時間帯設定(固定)
+		// KSHMT_WT_FIX_WORK_TS 就業時間の時間帯設定(固定)
 		if (CollectionUtil.isEmpty(this.entity.getKshmtFixedWorkTimeSets())) {
 			this.entity.setKshmtFixedWorkTimeSets(new ArrayList<>());
 		}
-		List<KshmtFixedWorkTimeSet> kshmtFixedWorkTimeSets = this.entity.getKshmtFixedWorkTimeSets().stream()
+		List<KshmtWtFixWorkTs> kshmtFixedWorkTimeSets = this.entity.getKshmtFixedWorkTimeSets().stream()
 				.sorted((item1, item2) -> item1.getTimeStr() - item2.getTimeStr())
 				.filter(entity -> entity.getKshmtFixedWorkTimeSetPK().getAmPmAtr() == this.type.value)
 				.collect(Collectors.toList());
-		// KSHMT_FIXED_OT_TIME_SET 残業時間の時間帯設定
+		// KSHMT_WT_FIX_OVER_TS 残業時間の時間帯設定
 		if (CollectionUtil.isEmpty(this.entity.getKshmtFixedOtTimeSets())) {
 			this.entity.setKshmtFixedOtTimeSets(new ArrayList<>());
 		}
-		List<KshmtFixedOtTimeSet> kshmtFixedOtTimeSets = this.entity.getKshmtFixedOtTimeSets().stream()
+		List<KshmtWtFixOverTs> kshmtFixedOtTimeSets = this.entity.getKshmtFixedOtTimeSets().stream()
 				.sorted((item1, item2) -> item1.getTimeStr() - item2.getTimeStr())
 				.filter(entity -> entity.getKshmtFixedOtTimeSetPK().getAmPmAtr() == this.type.value)
 				.collect(Collectors.toList());
