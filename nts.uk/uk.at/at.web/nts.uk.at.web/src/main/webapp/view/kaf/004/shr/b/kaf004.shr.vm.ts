@@ -27,7 +27,7 @@ module nts.uk.at.view.kaf004_ref.shr.b.viewmodel {
                                 <!-- A6_4 -->
                                 <span>
                                     <input data-bind="ntsTimeWithDayEditor: {
-                                name: $i18n('KAF004_42'),
+                                name: $i18n('KAF004_64'),
                                 value: $parent.workManagement.workTime,
                                 option: {timeWithDay: true, width: '90'},
                                 constraint: 'TimeWithDayAttr',
@@ -62,7 +62,7 @@ module nts.uk.at.view.kaf004_ref.shr.b.viewmodel {
                                 <!-- A6_10 -->
                                 <span>
                                     <input data-bind="ntsTimeWithDayEditor: {
-                                name: $i18n('KAF004_42'),
+                                name: $i18n('KAF004_65'),
                                 value: $parent.workManagement.leaveTime,
                                 option: {timeWithDay: true, width: '90'},
                                 constraint: 'TimeWithDayAttr',
@@ -89,7 +89,7 @@ module nts.uk.at.view.kaf004_ref.shr.b.viewmodel {
                         <tr data-bind="visible: ko.toJS($parent.condition2())">
                             <td class="padding-5">
                                 <!-- A6_14 -->
-                                <span class="label" data-bind="text: $i18n('KAF004_21')"></span>
+                                <span class="label" data-bind="text: $i18n('KAF004_68')"></span>
 
                                 <!-- A6_15 -->
                                 <span class="label" id="label-A6_15"
@@ -99,7 +99,7 @@ module nts.uk.at.view.kaf004_ref.shr.b.viewmodel {
                                 <!-- A6_16 -->
                                 <span>
                                     <input data-bind="ntsTimeWithDayEditor: {
-                                name: $i18n('KAF004_42'),
+                                name: $i18n('KAF004_68'),
                                 value: $parent.workManagement.workTime2,
                                 option: {timeWithDay: true, width: '90'},
                                 constraint: 'TimeWithDayAttr',
@@ -126,7 +126,7 @@ module nts.uk.at.view.kaf004_ref.shr.b.viewmodel {
                         <tr data-bind="visible: ko.toJS($parent.condition2())">
                             <td class="padding-5">
                                 <!-- A6_20 -->
-                                <span class="label" data-bind="text: $i18n('KAF004_21')"></span>
+                                <span class="label" data-bind="text: $i18n('KAF004_68')"></span>
 
                                 <!-- A6_21 -->
                                 <span class="label" id="label-A6_21" data-bind="text: $parent.workManagement.scheWorkTime2"></span>
@@ -135,7 +135,7 @@ module nts.uk.at.view.kaf004_ref.shr.b.viewmodel {
                                 <!-- A6_22 -->
                                 <span>
                                     <input data-bind="ntsTimeWithDayEditor: {
-                                name: $i18n('KAF004_42'),
+                                name: $i18n('KAF004_67'),
                                 value: $parent.workManagement.leaveTime2,
                                 option: {timeWithDay: true, width: '90'},
                                 constraint: 'TimeWithDayAttr',
