@@ -9,8 +9,6 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.TimeMonthWithCalculation;
@@ -22,14 +20,9 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.TimeMonthWithCalc
 /** 計算付き月間時間 */
 public class TimeMonthWithCalculationDto implements ItemConst, AttendanceItemDataGate {
 
-
-	@AttendanceItemLayout(jpPropertyName = TIME, layout = LAYOUT_A)
-	@AttendanceItemValue(type = ValueType.TIME)
 	/** 時間 */
 	private Integer time;
 
-	@AttendanceItemLayout(jpPropertyName = CALC, layout = LAYOUT_B)
-	@AttendanceItemValue(type = ValueType.TIME)
 	/** 計算時間 */
 	private Integer calcTime;
 
