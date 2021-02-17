@@ -464,9 +464,10 @@ module a5 {
                 let dataFlexFlow: any = null;
                 if (self.isFlow()) {//flow
                     dataFlexFlow = {
-                        workForm: EnumWorkForm.REGULAR,
-                        settingMethod:SettingMethod.FLOW,
-                        lstEnum: self.enumSetting,
+                        workForm : EnumWorkForm.FLEX,
+                        settingMethod : SettingMethod.FLOW,
+                        isFlow: true,
+                        lstEnum : self.enumSetting,
                         //1勤務目と2勤務目の間を休憩として扱うか
                         useRest: self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.usePluralWorkRestTime()?1:0,
                         //休憩として扱う場合の単位
@@ -474,36 +475,53 @@ module a5 {
                         //休憩として扱う場合の端数処理
                         roundType: self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.roundingBreakMultipleWork.rounding(),
                         //休憩中に退勤した場合の休憩時間の計算方法
-                        calcMethod: self.mainSettingModel.flowWorkSetting.restSetting.commonRestSetting.calculateMethod()
+                        calcMethod: self.mainSettingModel.flowWorkSetting.restSetting.commonRestSetting.calculateMethod(),
+                        //固定の場合の実績の休憩計算方法
+                        fixedCalcMethod : self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateMethod() ?? 0,
+                        //私用外出の計上方法
+                        usePrivateGoOutRest : self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromStamp.usePrivateGoOutRest(),
+                        //組合外出の計上方法
+                        useAssoGoOutRest : self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromStamp.useAssoGoOutRest(),
                     }
                 }
                 else {//flex
                     dataFlexFlow = {
-                        workForm: EnumWorkForm.FLEX,
-                        settingMethod:SettingMethod.FLOW,
-                        lstEnum: self.enumSetting,
+                        workForm : EnumWorkForm.FLEX,
+                        settingMethod : SettingMethod.FLOW,
+                        isFlow: false,
+                        lstEnum : self.enumSetting,
                         useRest: self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.usePluralWorkRestTime()?1:0,
                         roundUnit: self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.roundingBreakMultipleWork.roundingTime(),
                         roundType: self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.roundingBreakMultipleWork.rounding(),
-                        calcMethod: self.mainSettingModel.flexWorkSetting.restSetting.commonRestSetting.calculateMethod()
+                        fixedCalcMethod : self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateMethod() ?? 0,
+                        calcMethod: self.mainSettingModel.flexWorkSetting.restSetting.commonRestSetting.calculateMethod(),
+                        usePrivateGoOutRest : self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromStamp.usePrivateGoOutRest(),
+                        useAssoGoOutRest : self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromStamp.useAssoGoOutRest()
                     }
                 }
+                
                 nts.uk.ui.windows.setShared('KMK003_DIALOG_G_INPUT_DATA', dataFlexFlow);
                 nts.uk.ui.windows.sub.modal("/view/kmk/003/g/index.xhtml").onClosed(() => {
                     var returnObject = nts.uk.ui.windows.getShared('KMK003_DIALOG_G_OUTPUT_DATA');
                     //if case flex
                     if (self.isFlex()) {
-                        self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.usePluralWorkRestTime(returnObject.useRest==1?true:false);
+                        self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.usePluralWorkRestTime(returnObject.useRest==1);
                         self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.roundingBreakMultipleWork.rounding(returnObject.roundType);
                         self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.roundingBreakMultipleWork.roundingTime(returnObject.roundUnit);
                         self.mainSettingModel.flexWorkSetting.restSetting.commonRestSetting.calculateMethod(returnObject.calcMethod);
+                        self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromStamp.usePrivateGoOutRest(returnObject.usePrivateGoOutRest);
+                        self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromStamp.useAssoGoOutRest(returnObject.useAssoGoOutRest);
+                        self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateMethod(returnObject.fixedCalcMethod);
                     }
                     else//case flow
                     {
-                        self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.usePluralWorkRestTime(returnObject.useRest==1?true:false);
+                        self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.usePluralWorkRestTime(returnObject.useRest==1);
                         self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.roundingBreakMultipleWork.rounding(returnObject.roundType);
                         self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.roundingBreakMultipleWork.roundingTime(returnObject.roundUnit);
                         self.mainSettingModel.flowWorkSetting.restSetting.commonRestSetting.calculateMethod(returnObject.calcMethod);
+                        self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromStamp.usePrivateGoOutRest(returnObject.usePrivateGoOutRest);
+                        self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromStamp.useAssoGoOutRest(returnObject.useAssoGoOutRest);
+                        self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateMethod(returnObject.fixedCalcMethod);
                     }
                 });
             }
@@ -524,8 +542,7 @@ module a5 {
                     dataFixedDiff = {
                         workForm: EnumWorkForm.REGULAR,
                         settingMethod:SettingMethod.FIXED,
-                        actualRest: self.mainSettingModel.fixedWorkSetting.fixedWorkRestSetting.fixedRestCalculateMethod(),
-                        restTimeCalcMethod: self.mainSettingModel.fixedWorkSetting.fixedWorkRestSetting.commonRestSet.calculateMethod()
+                        restTimeCalcMethod: self.mainSettingModel.fixedWorkSetting.commonRestSet.calculateMethod()
                     }
                 }
                 nts.uk.ui.windows.setShared('KMK003_DIALOG_G_INPUT_DATA', dataFixedDiff);
@@ -536,8 +553,7 @@ module a5 {
                         self.mainSettingModel.diffWorkSetting.restSet.commonRestSet.calculateMethod(returnObject.restTimeCalcMethod);
                     }
                     else {
-                        self.mainSettingModel.fixedWorkSetting.fixedWorkRestSetting.fixedRestCalculateMethod(returnObject.actualRest);
-                        self.mainSettingModel.fixedWorkSetting.fixedWorkRestSetting.commonRestSet.calculateMethod(returnObject.restTimeCalcMethod);
+                        self.mainSettingModel.fixedWorkSetting.commonRestSet.calculateMethod(returnObject.restTimeCalcMethod);
                     }
                 });
             }
