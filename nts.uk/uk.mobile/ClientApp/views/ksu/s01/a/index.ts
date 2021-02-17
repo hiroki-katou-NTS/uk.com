@@ -246,10 +246,11 @@ export class KSUS01AComponent extends Vue {
                 el.displayData.workScheduleName = self.$i18n('KSUS01_14');
                 // huytodo test data----------------
                 if (el.formatedDate == '3') {
-                    el.displayData.workScheduleAtr = WorkScheduleAtr.ONE_DAY_REST;
+                    el.displayData.workScheduleAtr = WorkHolidayAtr.ONE_DAY_REST;
                     el.displayData.workScheduleName = '休日';
 
                     el.displayData.workDesireStatus = WorkDesireStatus.COMMUTING_HOPE;
+                    el.displayData.workDesireAtr = WorkHolidayAtr.AFTERNOON_WORK;
                     el.displayData.workDesireTimeZone = [
                         {start: '12:30', end: '17:30'}
                     ];
@@ -257,7 +258,7 @@ export class KSUS01AComponent extends Vue {
                     el.displayData.workDesireMemo = 'memo';
                 }
                 if (el.formatedDate == '6') {
-                    el.displayData.workScheduleAtr = WorkScheduleAtr.ONE_DAY_WORK;
+                    el.displayData.workScheduleAtr = WorkHolidayAtr.ONE_DAY_WORK;
                     el.displayData.workScheduleName = '出勤';
                     el.displayData.workScheduleTimeZone = [
                         {attendanceStamp: '7:00', leaveStamp: '12:00'},
@@ -265,10 +266,11 @@ export class KSUS01AComponent extends Vue {
                     ];
 
                     el.displayData.workDesireStatus = WorkDesireStatus.HOLIDAY_HOPE;
+                    el.displayData.workDesireAtr = WorkHolidayAtr.ONE_DAY_REST;
                     el.displayData.workDesireName = '休日';
                 }
                 if (el.formatedDate == '9') {
-                    el.displayData.workScheduleAtr = WorkScheduleAtr.MORNING_WORK;
+                    el.displayData.workScheduleAtr = WorkHolidayAtr.MORNING_WORK;
                     el.displayData.workScheduleName = '早番';
                     el.displayData.workScheduleTimeZone = [
                         {attendanceStamp: '7:00', leaveStamp: '12:00'}
@@ -279,12 +281,13 @@ export class KSUS01AComponent extends Vue {
                 }
                 if (el.formatedDate == '12') {
                     
-                    el.displayData.workScheduleAtr = WorkScheduleAtr.AFTERNOON_WORK;
+                    el.displayData.workScheduleAtr = WorkHolidayAtr.AFTERNOON_WORK;
                     el.displayData.workScheduleName = '遅番';
                     el.displayData.workScheduleTimeZone = [
                         {attendanceStamp: '12:30', leaveStamp: '17:30'}
                     ];
                     el.displayData.workDesireStatus = WorkDesireStatus.COMMUTING_HOPE;
+                    el.displayData.workDesireAtr = WorkHolidayAtr.ONE_DAY_WORK;
                     el.displayData.workDesireTimeZone = [
                         {start: '7:00', end: '12:00'},
                         {start: '12:30', end: '17:30'}
@@ -307,12 +310,12 @@ export class KSUS01AComponent extends Vue {
 
     public setWorkScheduleStyle(dateCell: DateCell) {
         switch (dateCell.displayData.workScheduleAtr) {
-            case WorkScheduleAtr.ONE_DAY_WORK:
+            case WorkHolidayAtr.ONE_DAY_WORK:
                 return dateCell.workScheduleStyle + ' background-color: lightblue;';
-            case WorkScheduleAtr.MORNING_WORK:
-            case WorkScheduleAtr.AFTERNOON_WORK:
+            case WorkHolidayAtr.MORNING_WORK:
+            case WorkHolidayAtr.AFTERNOON_WORK:
                 return dateCell.workScheduleStyle + ' background-color: antiquewhite;';
-            case WorkScheduleAtr.ONE_DAY_REST:
+            case WorkHolidayAtr.ONE_DAY_REST:
             default:
                 dateCell.displayData.workScheduleColor = 'ffcc88';
 
@@ -419,7 +422,7 @@ export class KSUS01AComponent extends Vue {
         } else {
             cellClass += 'uk-bg-white-smoke ';
         }
-        if (dateCell.displayData.workScheduleAtr == WorkScheduleAtr.ONE_DAY_REST) {
+        if (dateCell.displayData.workScheduleAtr == WorkHolidayAtr.ONE_DAY_REST) {
             return cellClass + 'uk-text-red';
         }
         switch (dateCell.weekDayIndex) {
@@ -481,12 +484,13 @@ export interface DisplayData {
     workDesireName?: string;
     workDesireColor?: string;
     workDesireStatus?: WorkDesireStatus;
+    workDesireAtr?: WorkHolidayAtr;
     workDesireTimeZone?: Array<TimeZoneDto>;
     workDesireMemo?: string;
     workScheduleDate?: string;      //huytodo to find and compare
     workScheduleName?: string;
     workScheduleColor?: string;
-    workScheduleAtr?: WorkScheduleAtr;
+    workScheduleAtr?: WorkHolidayAtr;
     workScheduleTimeZone?: Array<AttendanceDto>;
     otherStaffs?: string;
 }
@@ -513,7 +517,7 @@ export enum WorkDesireStatus {
     COMMUTING_HOPE
 }
 
-export enum WorkScheduleAtr {
+export enum WorkHolidayAtr {
     ONE_DAY_REST,
     MORNING_WORK,
     AFTERNOON_WORK,

@@ -149,19 +149,19 @@
                 <span style="color: #999">{{ "KSUS01_12" | i18n }}</span>
             </div>
             <div class="detail-spacing detail-indent">
-                <div v-if="detailCell && (detailCell.displayData.workDesireStatus == undefined || detailCell.displayData.workDesireStatus == 0)">
+                <div v-if="detailCell && (detailCell.displayData.workDesireStatus == undefined || detailCell.displayData.workDesireStatus == 0 || detailCell.displayData.workDesireAtr == undefined)">
                     <span style="font-weight: bold;">{{ "KSUS01_22" | i18n }}</span>
                 </div>
                 <div v-else>
                     <!-- A4_12 -->
                     <span v-bind:style="detailCell && detailCell.workDesireStyle">
-                        <span style="margin: 0" class="uk-text-holiday" v-if="detailCell && detailCell.displayData.workDesireStatus == 1">
+                        <span style="margin: 0" class="uk-text-holiday" v-if="detailCell && detailCell.displayData.workDesireAtr == 0">
                             {{detailCell && detailCell.displayData.workDesireName}}
                         </span>
-                        <span style="margin: 0" class="uk-text-attendance" v-if="detailCell && detailCell.displayData.workDesireStatus == 2 && detailCell.displayData.workDesireName == '出勤'">
+                        <span style="margin: 0" class="uk-text-half-day-work" v-if="detailCell && (detailCell.displayData.workDesireAtr == 1 || detailCell.displayData.workDesireAtr == 2)">
                             {{detailCell && detailCell.displayData.workDesireName}}
                         </span>
-                        <span style="margin: 0" class="uk-text-half-day-work" v-if="detailCell && detailCell.displayData.workDesireStatus == 2 && detailCell.displayData.workDesireName != '出勤'">
+                        <span style="margin: 0" class="uk-text-attendance" v-if="detailCell && detailCell.displayData.workDesireAtr == 3">
                             {{detailCell && detailCell.displayData.workDesireName}}
                         </span>
                     </span>
