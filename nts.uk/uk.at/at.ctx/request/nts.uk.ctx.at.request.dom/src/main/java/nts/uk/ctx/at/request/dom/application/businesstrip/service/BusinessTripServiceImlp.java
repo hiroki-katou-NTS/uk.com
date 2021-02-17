@@ -7,6 +7,8 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.*;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
+import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeave;
+import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeaveRepository;
 import nts.uk.ctx.at.request.dom.application.businesstrip.*;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
@@ -19,6 +21,8 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.Abs
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork_Old;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository_Old;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
@@ -52,9 +56,6 @@ public class BusinessTripServiceImlp implements BusinessTripService {
     private ApplicationRepository appRepo;
 
     @Inject
-    private GoBackDirectlyRepository goBackDirectlyRepository;
-
-    @Inject
     private AppWorkChangeRepository appWorkChangeRepository;
 
     @Inject
@@ -65,9 +66,6 @@ public class BusinessTripServiceImlp implements BusinessTripService {
 
     @Inject
     private WorkTimeSettingRepository wkTimeRepo;
-
-    @Inject
-    private AppHolidayWorkRepository_Old appHolidayWorkRepository;
 
     @Inject
     private AbsenceLeaveAppRepository absRepo;
@@ -89,6 +87,15 @@ public class BusinessTripServiceImlp implements BusinessTripService {
 
     @Inject
     private CommonAlgorithm commonAlgorithm;
+
+    @Inject
+    private AppHolidayWorkRepository appHolidayWorkRepository;
+
+    @Inject
+    private GoBackDirectlyRepository goBackDirectlyRepository;
+
+    @Inject
+    private ApplyForLeaveRepository applyForLeaveRepository;
 
     private static final String NO_INPUT_NAME = "なし";
 
@@ -578,12 +585,14 @@ public class BusinessTripServiceImlp implements BusinessTripService {
         switch (appType) {
             case HOLIDAY_WORK_APPLICATION:
                 //休日出勤申請 6
-                Optional<AppHolidayWork_Old> appHolidayWork = appHolidayWorkRepository.getFullAppHolidayWork(cid, appId);
+                Optional<AppHolidayWork> appHolidayWork = appHolidayWorkRepository.find(cid, appId);
                 if (appHolidayWork.isPresent()) {
-                    wkTypeCd = appHolidayWork.get().getWorkTypeCode().v();
-                    wkTimeCd = appHolidayWork.get().getWorkTimeCode() == null ? null : appHolidayWork.get().getWorkTimeCode().v();
-                    opWorkTime = appHolidayWork.map(i -> i.getWorkClock1().getStartTime().v());
-                    opLeaveTime = appHolidayWork.map(i -> i.getWorkClock1().getEndTime().v());
+                    wkTypeCd = appHolidayWork.get().getWorkInformation().getWorkTypeCode().v();
+                    wkTimeCd = appHolidayWork.get().getWorkInformation().getWorkTimeCode() == null ? null : appHolidayWork.get().getWorkInformation().getWorkTimeCode().v();
+                    opWorkTime = appHolidayWork.get().getWorkingTimeList().isPresent() ?
+                            Optional.of(appHolidayWork.get().getWorkingTimeList().get().get(0).getTimeZone().getStartTime().v()) : Optional.empty();
+                    opLeaveTime = appHolidayWork.get().getWorkingTimeList().isPresent() ?
+                            Optional.of(appHolidayWork.get().getWorkingTimeList().get().get(0).getTimeZone().getEndTime().v()) : Optional.empty();
                 }
                 break;
             case GO_RETURN_DIRECTLY_APPLICATION:
@@ -627,12 +636,14 @@ public class BusinessTripServiceImlp implements BusinessTripService {
                 break;
             case ABSENCE_APPLICATION:
                 // 休暇申請 1
-                Optional<AppAbsence> appAbsence = appAbsenceRepository.getAbsenceByAppId(cid, appId);
+                Optional<ApplyForLeave> appAbsence = applyForLeaveRepository.findApplyForLeave(cid, appId);
                 if (appAbsence.isPresent()) {
-                    wkTypeCd = appAbsence.get().getWorkTypeCode().v();
-                    wkTimeCd = appAbsence.get().getWorkTimeCode() == null ? null : appAbsence.get().getWorkTimeCode().v();
-                    opWorkTime = appAbsence.map(i -> i.getStartTime1().getDayTime());
-                    opLeaveTime = appAbsence.map(i -> i.getEndTime1().getDayTime());
+                    wkTypeCd = appAbsence.get().getReflectFreeTimeApp().getWorkInfo().getWorkTypeCode().v();
+                    wkTimeCd = appAbsence.get().getReflectFreeTimeApp().getWorkInfo().getWorkTimeCode() == null ? null : appAbsence.get().getReflectFreeTimeApp().getWorkInfo().getWorkTimeCode().v();
+                    opWorkTime = appAbsence.get().getReflectFreeTimeApp().getWorkingHours().isPresent() ?
+                            Optional.of(appAbsence.get().getReflectFreeTimeApp().getWorkingHours().get().get(0).getTimeZone().getStartTime().v()) : Optional.empty();
+                    opLeaveTime = appAbsence.get().getReflectFreeTimeApp().getWorkingHours().isPresent() ?
+                            Optional.of(appAbsence.get().getReflectFreeTimeApp().getWorkingHours().get().get(0).getTimeZone().getEndTime().v()) : Optional.empty();
                 }
                 break;
             case COMPLEMENT_LEAVE_APPLICATION:
