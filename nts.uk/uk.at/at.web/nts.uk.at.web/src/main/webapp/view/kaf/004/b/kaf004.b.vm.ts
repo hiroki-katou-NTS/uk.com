@@ -505,14 +505,14 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
                                     infoStartup: ko.toJS(vm.appDispInfoStartupOutput)
                                 };
 
-                                return vm.$ajax(API.initPageB, command)
-                                    .done((res: any) => {
-                                        this.fetchData(res);
-                                    })
-                                    .fail((err: any) => {
-                                        console.log()
-                                        vm.$dialog.error({ messageId: err.messageId });
-                                    });
+                                // return vm.$ajax(API.initPageB, command)
+                                //     .done((res: any) => {
+                                //         this.fetchData(res);
+                                //     })
+                                //     .fail((err: any) => {
+                                //         console.log()
+                                //         vm.$dialog.error({ messageId: err.messageId });
+                                //     });
                             })
                     }
                 }).always(() => vm.$blockui('hide'));
