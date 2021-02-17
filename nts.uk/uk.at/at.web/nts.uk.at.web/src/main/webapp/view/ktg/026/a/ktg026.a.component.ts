@@ -77,7 +77,8 @@ module nts.uk.at.view.ktg026.a {
                 },
                 gridLines: {
                     color: '#999',
-                    z: 1
+                    z: 1,
+                    zeroLineColor: '#fff'
                 },
                 stacked: true
             }]
@@ -144,6 +145,8 @@ module nts.uk.at.view.ktg026.a {
             const dataSource = valueAccessor();
             const type: 'head' | 'body' | KnockoutObservable<'head' | 'body'> = allBindingsAccessor.get('type');
 
+            const ie = !!navigator.userAgent.match(/MSIE|Trident/g);
+
             $.Deferred()
                 .resolve(true)
                 .then(() => _.get(window, 'Chart') || $.getScript(SCR_URL))
@@ -183,6 +186,12 @@ module nts.uk.at.view.ktg026.a {
                                 },
                                 options: options(max || 4800, tpe)
                             });
+
+                            if (ie) {
+                                $(element).closest('.widget-container').addClass('ie')
+                            } else {
+                                $(element).closest('.widget-container').removeClass('ie');
+                            }
                         },
                         disposeWhenNodeIsRemoved: element
                     })
@@ -288,12 +297,13 @@ module nts.uk.at.view.ktg026.a {
                 .ktg-026-a.widget-content:not(.ui-resizable) td {
                     border-bottom: 0;
                 }
+                .ktg-026-a.widget-content.ui-resizable th,
                 .ktg-026-a.widget-content.ui-resizable td {
                     border-bottom: 1px solid #999;
                 }
                 .ktg-026-a.widget-content.ui-resizable td[rowspan] {
-                    border: 0;
                     padding: 0;
+                    overflow: hidden;
                 }
                 .ktg-026-a.widget-content.ui-resizable td[rowspan] canvas {
                     width: 230px !important;
@@ -307,8 +317,8 @@ module nts.uk.at.view.ktg026.a {
                 .ktg-026-a.widget-content.ui-resizable.widget-fixed td[rowspan] canvas {
                     height: 41px !important;
                 }
-                .ktg-026-a.widget-content.ui-resizable tr:last-child td {
-                    border-bottom: 0;
+                .widget-container.ie .ktg-026-a.widget-content.ui-resizable td[rowspan] canvas {
+                    margin-top: -1px;
                 }
                 .widget-container.has-scroll .ktg-026-a.scroll-padding {
                     padding-right: 17px;
