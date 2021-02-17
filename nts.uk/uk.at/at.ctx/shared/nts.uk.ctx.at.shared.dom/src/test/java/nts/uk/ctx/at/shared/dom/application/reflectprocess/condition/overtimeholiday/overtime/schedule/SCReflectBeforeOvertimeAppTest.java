@@ -16,7 +16,7 @@ public class SCReflectBeforeOvertimeAppTest {
 	 
 	@Test
 	public void test() {
-		SCReflectBeforeOvertimeApp.process(require, overTimeApp, dailyApp, reflectOvertimeBeforeSet);
+		//SCReflectBeforeOvertimeApp.process(require, overTimeApp, dailyApp, reflectOvertimeBeforeSet);
 	}
 
 }
