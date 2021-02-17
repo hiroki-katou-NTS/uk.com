@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.tuple;
 
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import lombok.val;
@@ -14,15 +15,20 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 
 public class TaskScheduleDetailTest {
 	
+	private TaskScheduleDetail target;
+	
+	@Before
+	public void init() {
+		target = TaskScheduleDetailTestHelper.create("code1", 8, 0, 12, 0);
+	}
+	
 	@Test
 	public void testGetters() {
-		TaskScheduleDetail target = TaskScheduleDetailTestHelper.create("code", 8, 0, 9, 0);
 		NtsAssert.invokeGetters(target);
 	}
 	
 	@Test
 	public void testGetTaskFrameNo() {
-		TaskScheduleDetail target = TaskScheduleDetailTestHelper.create("code", 8, 0, 9, 0);
 		val result = target.getTaskFrameNo();
 		
 		assertThat( result.v() ).isEqualTo( 1 );
@@ -30,8 +36,6 @@ public class TaskScheduleDetailTest {
 	
 	@Test
 	public void testGetNotDuplicatedWith_OtherConnonateBegintime() {
-		
-		TaskScheduleDetail target = TaskScheduleDetailTestHelper.create("code1", 8, 0, 12, 0);
 		
 		TimeSpanForCalc otherTimeSpan = new TimeSpanForCalc(
 				TimeWithDayAttr.hourMinute(7, 0), 
@@ -50,8 +54,6 @@ public class TaskScheduleDetailTest {
 	
 	@Test
 	public void testGetNotDuplicatedWith_OtherIsInside() {
-		
-		TaskScheduleDetail target = TaskScheduleDetailTestHelper.create("code1", 8, 0, 12, 0);
 		
 		TimeSpanForCalc otherTimeSpan = new TimeSpanForCalc(
 				TimeWithDayAttr.hourMinute(9, 0), 
@@ -72,8 +74,6 @@ public class TaskScheduleDetailTest {
 	@Test
 	public void testGetNotDuplicatedWith_TargetIsInside() {
 		
-		TaskScheduleDetail target = TaskScheduleDetailTestHelper.create("code1", 8, 0, 12, 0);
-		
 		TimeSpanForCalc otherTimeSpan = new TimeSpanForCalc(
 				TimeWithDayAttr.hourMinute(8, 0), 
 				TimeWithDayAttr.hourMinute(14, 0));
@@ -85,8 +85,6 @@ public class TaskScheduleDetailTest {
 	
 	@Test
 	public void testGetNotDuplicatedWith_NotDuplicate() {
-		
-		TaskScheduleDetail target = TaskScheduleDetailTestHelper.create("code1", 8, 0, 12, 0);
 		
 		TimeSpanForCalc otherTimeSpan = new TimeSpanForCalc(
 				TimeWithDayAttr.hourMinute(13, 0), 
