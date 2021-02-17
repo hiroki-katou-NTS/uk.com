@@ -28,44 +28,42 @@ import nts.uk.shr.com.context.LoginUserContext;
  */
 @Stateless
 public class OutsideOTSettingSaveCommandHandler extends CommandHandler<OutsideOTSettingSaveCommand>{
-	
+
 	/** The outside OT setting repository. */
 	@Inject
 	private OutsideOTSettingRepository outsideOTSettingRepository;
-	
+
 	/** The super HD 60 H con med repository. */
 	@Inject
 	private SuperHD60HConMedRepository superHD60HConMedRepository;
-	
+
 	@Inject
 	private Com60HourVacationRepository com60HourVacationRepository;
-	
 	/** The Constant BEGIN_RATE_ZERO. */
 	public static final int BEGIN_RATE_ZERO = 0;
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command
 	 * .CommandHandlerContext)
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<OutsideOTSettingSaveCommand> context) {
-		
+
 		// get login user
 		LoginUserContext loginUserContext = AppContexts.user();
-		
+
 		// get company id
 		String companyId = loginUserContext.companyId();
-		
+
 		// get command
 		OutsideOTSettingSaveCommand command = context.getCommand();
-		
+
 		// to domain
 		OutsideOTSetting domainSetting = command.toDomainSetting(companyId);
 //		SuperHD60HConMed domainSupper = command.toDomainSuper(companyId);
-		
 //		Optional<Com60HourVacation> optionalCom60Hour = this.com60HourVacationRepository.findById(companyId);
 //		if(optionalCom60Hour.isPresent()){
 //			if(optionalCom60Hour.get().getSetting().getIsManage().equals(ManageDistinct.YES)){
@@ -73,12 +71,21 @@ public class OutsideOTSettingSaveCommandHandler extends CommandHandler<OutsideOT
 //				this.checkDomainSettingAndSuper(domainSetting, domainSupper);
 //			}
 //		}
-		
+        val brdItem = outsideOTSettingRepository.findAllBRDItem(companyId);
+        if (brdItem != null && !brdItem.isEmpty()) {
+            domainSetting.getBreakdownItems().forEach(e -> {
+                val rate = brdItem.stream().filter(i -> i.getBreakdownItemNo().value == e.getBreakdownItemNo().value).findFirst();
+                if (rate.isPresent() && (e.getPremiumExtra60HRates() == null || e.getPremiumExtra60HRates().isEmpty())) {
+                    e.setPremiumExtra60HRates(rate.get().getPremiumExtra60HRates());
+                }
+
+            });
+        }
 		// save domain
 		this.outsideOTSettingRepository.save(domainSetting);
 //		this.superHD60HConMedRepository.save(domainSupper);
 	}
-	
+
 	/**
 	 * Check domain setting and super.
 	 *
@@ -88,9 +95,9 @@ public class OutsideOTSettingSaveCommandHandler extends CommandHandler<OutsideOT
 	private void checkDomainSettingAndSuper(OutsideOTSetting domainSetting,
 			SuperHD60HConMed domainSupper) {
 		domainSetting.getBreakdownItems().stream().forEach(bd -> {
-			
+
 			bd.getPremiumExtra60HRates().stream().forEach(per -> {
-				
+
 				val ot = domainSetting.getOvertimes().stream().filter(c -> c.getOvertimeNo() == per.getOvertimeNo()).findFirst();
 				if (ot.get().isSuperHoliday60HOccurs() && per.getPremiumRate().v() <= BEGIN_RATE_ZERO) {
 					throw new BusinessException("Msg_491");
