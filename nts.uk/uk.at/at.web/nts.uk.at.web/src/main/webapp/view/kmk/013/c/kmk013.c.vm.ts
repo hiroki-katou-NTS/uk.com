@@ -345,9 +345,9 @@ module nts.uk.at.view.kmk013.c {
                                     validate(obj.excessHolidayNo, self.comboItemsWorkOff),
                                     validate(obj.excessSphdNo, self.comboItemsWorkOff)));
                             }else{
-                                self.itemsC8.push(new GridItem(ot.code,0,nts.uk.resource.getText('KMK013_152'),ot.name,0,0));    
+                                self.itemsC8.push(new GridItem(ot.code,0,nts.uk.resource.getText('KMK013_152'),ot.name,0,0));
                             }
-                            
+
                         });
                         
                     _.forEach(self.workOffFrameListName, wof => {
@@ -358,7 +358,7 @@ module nts.uk.at.view.kmk013.c {
                                 nts.uk.resource.getText('KMK013_157'),
                                 wof.name));
                         }else{
-                            self.itemsC9.push(new GridItem(wof.code,0,nts.uk.resource.getText('KMK013_157'),wof.name));    
+                            self.itemsC9.push(new GridItem(wof.code,0,nts.uk.resource.getText('KMK013_157'),wof.name));
                         }
                     });
                     _.forEach(self.workOffFrameListName, wof => {
