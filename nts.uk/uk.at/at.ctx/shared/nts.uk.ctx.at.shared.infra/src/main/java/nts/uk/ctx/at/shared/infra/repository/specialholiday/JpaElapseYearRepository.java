@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.ElapseYear;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.ElapseYearMonthTbl;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.ElapseYearRepository;
-import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantinformation.KshstElapseYears;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantinformation.KshmtHdspElapseYears;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantinformation.KshstElapseYearsPK;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantinformation.KshstElapseYearsTbl;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantinformation.KshstElapseYearsTblPK;
@@ -33,7 +33,7 @@ public class JpaElapseYearRepository extends JpaRepository implements ElapseYear
 	 * @param c
 	 * @return
 	 */
-	private ElapseYear createDomainFromEntity(KshstElapseYears e) {
+	private ElapseYear createDomainFromEntity(KshmtHdspElapseYears e) {
 		String companyId = AppContexts.user().companyId();
 		int specialHolidayCode = e.pk.specialHolidayCode;
 		boolean fixedAssign = e.fixedAssign == 1;
@@ -49,7 +49,7 @@ public class JpaElapseYearRepository extends JpaRepository implements ElapseYear
 	 * @param domain
 	 * @return
 	 */
-	private KshstElapseYears toEntity(ElapseYear domain) {
+	private KshmtHdspElapseYears toEntity(ElapseYear domain) {
 		KshstElapseYearsPK pk
 			= new KshstElapseYearsPK(domain.getCompanyId(), domain.getSpecialHolidayCode().v());
 		int years = 0;
@@ -62,7 +62,7 @@ public class JpaElapseYearRepository extends JpaRepository implements ElapseYear
 		if (domain.isFixedAssign()){
 			fixedAssign = 1;
 		}
-		return new KshstElapseYears(pk, fixedAssign, years, months);
+		return new KshmtHdspElapseYears(pk, fixedAssign, years, months);
 	}
 
 	/**
@@ -74,7 +74,7 @@ public class JpaElapseYearRepository extends JpaRepository implements ElapseYear
 
 		// 「特別休暇付与経過年数テーブル」
 		Optional<ElapseYear> e = this.queryProxy()
-			.find(new KshstElapseYearsPK(companyId.v(), specialHolidayCode.v()), KshstElapseYears.class)
+			.find(new KshstElapseYearsPK(companyId.v(), specialHolidayCode.v()), KshmtHdspElapseYears.class)
 			.map(x -> this.createDomainFromEntity(x));
 
 		if ( !e.isPresent()){ // 取得できないとき
@@ -98,7 +98,7 @@ public class JpaElapseYearRepository extends JpaRepository implements ElapseYear
 
 		// 「特別休暇付与経過年数テーブル」
 		this.commandProxy().remove(
-				KshstElapseYears.class,
+				KshmtHdspElapseYears.class,
 				new KshstElapseYearsPK(companyId, specialHolidayCode));
 
 		// 「特別休暇経過年数テーブル」
@@ -118,7 +118,7 @@ public class JpaElapseYearRepository extends JpaRepository implements ElapseYear
 
 		// 「特別休暇付与経過年数テーブル」 前処理
 		// Entityへ変換
-		KshstElapseYears kshstElapseYears = this.toEntity(elapseYear);
+		KshmtHdspElapseYears kshstElapseYears = this.toEntity(elapseYear);
 
 		// 「特別休暇経過年数テーブル」 前処理
 		// Entityへ変換

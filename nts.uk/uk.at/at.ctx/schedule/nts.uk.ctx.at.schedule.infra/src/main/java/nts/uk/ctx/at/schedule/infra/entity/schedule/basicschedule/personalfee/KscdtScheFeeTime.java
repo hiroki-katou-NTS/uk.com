@@ -18,7 +18,7 @@ import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.workscheduletime.KscdtScheTime;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class KscdtScheFeeTime.
@@ -26,7 +26,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Getter
 @Entity
 @Table(name = "KSCDT_SCHE_FEE_TIME")
-public class KscdtScheFeeTime extends UkJpaEntity implements Serializable {
+public class KscdtScheFeeTime extends ContractUkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;

@@ -28,6 +28,7 @@ import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyData;
 import nts.uk.ctx.sys.assist.dom.mastercopy.MasterCopyDataRepository;
 import nts.uk.ctx.sys.assist.dom.mastercopy.TargetTableInfo;
 import nts.uk.ctx.sys.assist.dom.mastercopy.handler.CopyDataRepository;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 
 @Stateless
@@ -75,6 +76,7 @@ public class MasterCopyDataCommandHanlder extends AsyncCommandHandler<MasterCopy
 		TaskDataSetter setter = asyncTask.getDataSetter();
 
 		// get company id
+		String contractCode = AppContexts.user().contractCode();
 		String companyId = context.getCommand().getCompanyId();
 
 		// get command
@@ -137,7 +139,7 @@ public class MasterCopyDataCommandHanlder extends AsyncCommandHandler<MasterCopy
 		for (MasterCopyData masterCopyData : masterCopyDataList) {
 			for (TargetTableInfo targetTableInfo : masterCopyData.getTargetTables()) {
 				try {
-					copyDataRepository.copy(companyId, targetTableInfo,
+					copyDataRepository.copy(contractCode, companyId, targetTableInfo,
 							categoryCopyMethod.get(masterCopyData.getCategoryNo().v()));
 				} catch (Exception ex) {
 					MasterCopyCategory copyCategory = repository

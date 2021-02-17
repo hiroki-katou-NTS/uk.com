@@ -12,6 +12,7 @@ import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.sys.gateway.dom.accessrestrictions.AllowedIPAddress;
+import nts.uk.ctx.sys.gateway.dom.accessrestrictions.IPAddressRegistrationFormat;
 import nts.uk.ctx.sys.gateway.dom.accessrestrictions.IPAddressSetting;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -74,8 +75,8 @@ public class SgwmtAccessIp extends UkJpaEntity implements Serializable {
 
 	public AllowedIPAddress toDomain() {
 		return new AllowedIPAddress(
+				IPAddressRegistrationFormat.valueOf(this.ipInputType),
 				new IPAddressSetting(this.pk.startIP1, this.pk.startIP2, this.pk.startIP3, this.pk.startIP4),
-				this.ipInputType,
 				this.ipInputType == 0 ? Optional.empty()
 						: Optional.of(new IPAddressSetting(this.endIP1, this.endIP2, this.endIP3, this.endIP4)),
 				this.ipCmt);

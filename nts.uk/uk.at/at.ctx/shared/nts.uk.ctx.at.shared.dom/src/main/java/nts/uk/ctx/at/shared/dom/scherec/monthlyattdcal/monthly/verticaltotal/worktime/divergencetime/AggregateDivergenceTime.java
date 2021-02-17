@@ -66,28 +66,7 @@ public class AggregateDivergenceTime implements Serializable{
 		domain.divergenceAtr = divergenceAtr;
 		return domain;
 	}
-	/**
-	 * for using table KRCDT_MON_MERGE
-	 * @author lanlt
-	 * @param divergenceTime
-	 * @param deductionTime
-	 * @param divergenceTimeAfterDeduction
-	 * @param divergenceAtr
-	 * @return
-	 */
-	public static AggregateDivergenceTime of(
-			AttendanceTimeMonth divergenceTime,
-			AttendanceTimeMonth deductionTime,
-			AttendanceTimeMonth divergenceTimeAfterDeduction,
-			DivergenceAtrOfMonthly divergenceAtr){
-		
-		val domain = new AggregateDivergenceTime();
-		domain.divergenceTime = divergenceTime;
-		domain.deductionTime = deductionTime;
-		domain.divergenceTimeAfterDeduction = divergenceTimeAfterDeduction;
-		domain.divergenceAtr = divergenceAtr;
-		return domain;
-	}
+
 	
 	/**
 	 * 乖離時間に分を加算する

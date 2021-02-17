@@ -26,7 +26,7 @@ public class KrcdtOtkErAl extends KrcdtEmpErAlCommon implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	public KrcdtOtkErAl(String id, String errorCode, String employeeId, GeneralDate processingDate, String companyID,
-			String errorAlarmMessage, String contractCode, List<KrcdtErAttendanceItem> erAttendanceItem) {
+			String errorAlarmMessage, String contractCode, List<KrcdtDaySyaErrorAtd> erAttendanceItem) {
 		super(id, errorCode, employeeId, processingDate, companyID, errorAlarmMessage, contractCode, erAttendanceItem);
 		
 		this.erAttendanceItem = erAttendanceItem;

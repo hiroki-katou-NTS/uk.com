@@ -12,16 +12,16 @@ import nts.arc.time.GeneralDate;
 /**
  * The Class BshmtWorktimeHist_.
  */
-@StaticMetamodel(BshmtWorktimeHist.class)
+@StaticMetamodel(KshmtShorttimeHist.class)
 public class BshmtWorktimeHist_ {
 
 	/** The bshmt worktime hist PK. */
-	public static SingularAttribute<BshmtWorktimeHist, BshmtWorktimeHistPK> bshmtWorktimeHistPK;
+	public static SingularAttribute<KshmtShorttimeHist, BshmtWorktimeHistPK> bshmtWorktimeHistPK;
 	
 	/** The str ymd. */
-	public static SingularAttribute<BshmtWorktimeHist, GeneralDate> strYmd;
+	public static SingularAttribute<KshmtShorttimeHist, GeneralDate> strYmd;
 	
 	/** The end ymd. */
-	public static SingularAttribute<BshmtWorktimeHist, GeneralDate> endYmd;
+	public static SingularAttribute<KshmtShorttimeHist, GeneralDate> endYmd;
 	 
 }

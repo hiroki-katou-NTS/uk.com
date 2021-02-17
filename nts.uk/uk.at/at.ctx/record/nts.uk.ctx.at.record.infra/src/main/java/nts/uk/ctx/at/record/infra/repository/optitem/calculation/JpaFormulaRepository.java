@@ -18,7 +18,7 @@ import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtOptItemFormula;
+import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtAnyf;
 import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtOptItemFormulaPK;
 import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtOptItemFormulaPK_;
 import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtOptItemFormula_;
@@ -73,7 +73,7 @@ public class JpaFormulaRepository extends JpaRepository implements FormulaReposi
 	@Override
 	public List<Formula> findByOptItemNo(String companyId, Integer optItemNo) {
 
-		List<KrcmtOptItemFormula> results = this.findEntity(companyId, optItemNo);
+		List<KrcmtAnyf> results = this.findEntity(companyId, optItemNo);
 
 		// Return
 		if (CollectionUtil.isEmpty(results)) {
@@ -90,16 +90,16 @@ public class JpaFormulaRepository extends JpaRepository implements FormulaReposi
 	 * @param optItemNo the opt item no
 	 * @return the list
 	 */
-	private List<KrcmtOptItemFormula> findEntity(String companyId, Integer optItemNo) {
+	private List<KrcmtAnyf> findEntity(String companyId, Integer optItemNo) {
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 
 		// create query
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-		CriteriaQuery<KrcmtOptItemFormula> cq = criteriaBuilder.createQuery(KrcmtOptItemFormula.class);
+		CriteriaQuery<KrcmtAnyf> cq = criteriaBuilder.createQuery(KrcmtAnyf.class);
 
 		// select from table
-		Root<KrcmtOptItemFormula> root = cq.from(KrcmtOptItemFormula.class);
+		Root<KrcmtAnyf> root = cq.from(KrcmtAnyf.class);
 		cq.select(root);
 
 		// add conditions
@@ -123,7 +123,7 @@ public class JpaFormulaRepository extends JpaRepository implements FormulaReposi
 	 * find(java.lang.String)
 	 */
 	public List<Formula> find(String companyId) {
-		List<KrcmtOptItemFormula> results = this.findEntityByCompanyId(companyId);
+		List<KrcmtAnyf> results = this.findEntityByCompanyId(companyId);
 
 		// Return
 		if (CollectionUtil.isEmpty(results)) {
@@ -140,16 +140,16 @@ public class JpaFormulaRepository extends JpaRepository implements FormulaReposi
 	 * @param optItemNo the opt item no
 	 * @return the list
 	 */
-	private List<KrcmtOptItemFormula> findEntityByCompanyId(String companyId) {
+	private List<KrcmtAnyf> findEntityByCompanyId(String companyId) {
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 
 		// create query
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-		CriteriaQuery<KrcmtOptItemFormula> cq = criteriaBuilder.createQuery(KrcmtOptItemFormula.class);
+		CriteriaQuery<KrcmtAnyf> cq = criteriaBuilder.createQuery(KrcmtAnyf.class);
 
 		// select from table
-		Root<KrcmtOptItemFormula> root = cq.from(KrcmtOptItemFormula.class);
+		Root<KrcmtAnyf> root = cq.from(KrcmtAnyf.class);
 		cq.select(root);
 
 		// add conditions
@@ -171,8 +171,8 @@ public class JpaFormulaRepository extends JpaRepository implements FormulaReposi
 	 */
 	@Override
 	public Formula findById(String companyId, Integer optItemNo, String formulaId) {
-		KrcmtOptItemFormula entity = this.queryProxy()
-				.find(new KrcmtOptItemFormulaPK(companyId, optItemNo, formulaId), KrcmtOptItemFormula.class).get();
+		KrcmtAnyf entity = this.queryProxy()
+				.find(new KrcmtOptItemFormulaPK(companyId, optItemNo, formulaId), KrcmtAnyf.class).get();
 		return new Formula(new JpaFormulaGetMemento(entity));
 	}
 
