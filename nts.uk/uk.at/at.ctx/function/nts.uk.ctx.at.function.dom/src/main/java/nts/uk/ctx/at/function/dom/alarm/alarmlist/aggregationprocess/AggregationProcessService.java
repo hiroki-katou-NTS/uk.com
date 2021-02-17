@@ -16,7 +16,6 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
@@ -70,8 +69,6 @@ public class AggregationProcessService {
 	@Inject
 	private WorkplaceWorkRecordAdapter wpAdapter;
 	@Inject
-	private ManagedParallelWithContext parallelManager;
-	@Inject
 	private AlarmPatternSettingRepository alPatternSettingRepo;
 	@Inject
 	private AlarmListPersonServiceAdapter extractAlarmService;
@@ -90,56 +87,7 @@ public class AggregationProcessService {
 	private AgreementCheckService check36Alarm;
 	@Inject
 	private TotalProcessAnnualHoliday annualHolidayService;
-		
-	public List<AlarmExtraValueWkReDto> processAlarmListWorkRecord(GeneralDate baseDate, String companyID, List<EmployeeSearchDto> listEmployee, 
-			String checkPatternCode, List<PeriodByAlarmCategory> periodByCategory) {
-		List<AlarmExtraValueWkReDto> result = new ArrayList<>();
-		
-		// パラメータ．パターンコードをもとにドメインモデル「アラームリストパターン設定」を取得する
-		// パラメータ．パターンコードから「アラームリストパターン設定」を取得する
-		Optional<AlarmPatternSetting> alarmPatternSetting = this.alPatternSettingRepo.findByAlarmPatternCode(companyID, checkPatternCode);		
-		if(!alarmPatternSetting.isPresent())
-			throw new RuntimeException("「アラームリストパターン設定 」が見つかりません！");
-		
-		
-		List<ValueExtractAlarm> valueList = new ArrayList<>();
-
-		valueList.addAll(extractService.process(companyID, alarmPatternSetting.get().getCheckConList(), periodByCategory, listEmployee));
-
-		
-		// get list workplaceId and hierarchyCode 
-		List<String> listWorkplaceId = listEmployee.stream().map(e -> e.getWorkplaceId()).filter(wp -> wp != null).distinct().collect(Collectors.toList());
-//		Map<String, WkpConfigAtTimeAdapterDto> hierarchyWPMap = syWorkplaceAdapter.findByWkpIdsAtTime(companyID, baseDate, listWorkplaceId)
-//																			.stream().collect(Collectors.toMap(WkpConfigAtTimeAdapterDto::getWorkplaceId, x->x));
-		//[No.560]職場IDから職場の情報をすべて取得する
-		List<WorkPlaceInforExport> wkpExportList = this.workplaceAdapter.getWorkplaceInforByWkpIds(companyID, listWorkplaceId, baseDate);
-		
-		// Map employeeID to EmployeeSearchDto object
-		Map<String, EmployeeSearchDto> mapEmployeeId = listEmployee.stream().collect(Collectors.toMap(EmployeeSearchDto::getId, x->x));
-		
-		// MAP Enum AlarmCategory 
-		Map<String, AlarmCategory> mapTextResourceToEnum = this.mapTextResourceToEnum();
-		
-		
-		//Convert from ValueExtractAlarm to AlarmExtraValueWkReDto
-		for(ValueExtractAlarm value: valueList) {
-			AlarmExtraValueWkReDto itemResult = new AlarmExtraValueWkReDto(value.getWorkplaceID().orElse(null),
-					value.getWorkplaceID().isPresent() && wkpExportList.stream().filter(x -> value.getWorkplaceID().get().equals(x.getWorkplaceId())).findFirst().isPresent() ?
-							wkpExportList.stream().filter(x -> value.getWorkplaceID().get().equals(x.getWorkplaceId())).findFirst().get().getHierarchyCode() : "",
-					mapEmployeeId.get(value.getEmployeeID()).getWorkplaceName(), 
-					value.getEmployeeID(),
-					mapEmployeeId.get(value.getEmployeeID()).getCode(),
-					mapEmployeeId.get(value.getEmployeeID()).getName(), 
-					value.getAlarmValueDate(), 
-					mapTextResourceToEnum.get(value.getClassification()).value,
-					value.getClassification(),
-					value.getAlarmItem(),
-					value.getAlarmValueMessage(),
-					value.getComment().orElse(null),null);
-			result.add(itemResult);
-		}
-		return result;
-	}
+	
 	/**
 	 * アラーム: 集計処理
 	 * @param baseDate システム日付
@@ -190,8 +138,7 @@ public class AggregationProcessService {
 					value.getAlarmItem(),
 					value.getAlarmValueMessage(),
 					value.getComment().orElse(null),
-					value.getCheckedValue().orElse(null)
-					);
+					value.getCheckedValue().orElse(null));
 		}).collect(Collectors.toList());
 	}
 	
@@ -275,11 +222,10 @@ public class AggregationProcessService {
 					|| !extractTargetCondition.getLstClassificationCode().isEmpty()
 					|| !extractTargetCondition.getLstEmploymentCode().isEmpty()
 					|| !extractTargetCondition.getLstJobTitleId().isEmpty()) {
-				lstSidTmp.clear();
-				List<RegulationInfoEmployeeResult> listTarget = erCheckAdapter.filterEmployees(datePeriod == null ? GeneralDate.today() : datePeriod.start()
+				lstSidTmp.clear();				
+				List<RegulationInfoEmployeeResult> listTarget = erCheckAdapter.filterEmployees(datePeriod == null || datePeriod.end() == null ? GeneralDate.today() : datePeriod.end()
 						,lstSid
-						,x.getExtractTargetCondition());
-				
+						,x.getExtractTargetCondition());			
 				lstSidTmp.addAll(listTarget.stream().map(c -> c.getEmployeeId())
 						.collect(Collectors.toList()));
 			}

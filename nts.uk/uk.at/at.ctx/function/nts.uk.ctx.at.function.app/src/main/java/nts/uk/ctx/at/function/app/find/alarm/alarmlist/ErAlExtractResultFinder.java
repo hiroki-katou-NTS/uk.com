@@ -28,8 +28,8 @@ public class ErAlExtractResultFinder {
 	
 	public ErAlExtractViewResult getResult(String processId) {
 		return resultRepo.findBy(AppContexts.user().companyId(), AppContexts.user().employeeId(), ExtractExecuteType.MANUAL, processId).map(r -> {
-			return new ErAlExtractViewResult(r.getEmpInfos().stream().map(ei -> ei.toList()).collect(Collectors.toList()),
-											r.getEmpEralData().stream().map(ei -> ei.toList()).collect(Collectors.toList()));
+			return new ErAlExtractViewResult(r.getEmpInfos().stream().map(ei -> ei.createToList()).collect(Collectors.toList()),
+											r.getEmpEralData().stream().map(ei -> ei.createToList()).collect(Collectors.toList()));
 		}).orElseGet(() -> new ErAlExtractViewResult());
 	}
 	
@@ -37,8 +37,8 @@ public class ErAlExtractResultFinder {
 		return resultRepo.findByLimited(AppContexts.user().companyId(), AppContexts.user().employeeId(), 
 				ExtractExecuteType.MANUAL, processId, limit).map(r -> {
 					
-			return new ErAlExtractViewResult(r.getEmpInfos().stream().map(ei -> ei.toList()).collect(Collectors.toList()),
-											r.getEmpEralData().stream().map(ei -> ei.toList()).collect(Collectors.toList()));
+			return new ErAlExtractViewResult(r.getEmpInfos().stream().map(ei -> ei.createToList()).collect(Collectors.toList()),
+											r.getEmpEralData().stream().map(ei -> ei.createToList()).collect(Collectors.toList()));
 		}).orElseGet(() -> new ErAlExtractViewResult());
 	}
 	

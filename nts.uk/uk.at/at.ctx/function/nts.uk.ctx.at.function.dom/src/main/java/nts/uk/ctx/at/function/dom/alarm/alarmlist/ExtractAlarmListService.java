@@ -3,6 +3,7 @@ package nts.uk.ctx.at.function.dom.alarm.alarmlist;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -15,7 +16,6 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.at.function.dom.adapter.WorkPlaceHistImport;
 import nts.uk.ctx.at.function.dom.adapter.employeebasic.EmployeeBasicInfoFnImport;
 import nts.uk.ctx.at.function.dom.adapter.employeebasic.SyEmployeeFnAdapter;
 import nts.uk.ctx.at.function.dom.adapter.workplace.WorkPlaceInforExport;
@@ -43,29 +43,27 @@ public class ExtractAlarmListService {
 	public ExtractedAlarmDto extractAlarm(List<EmployeeSearchDto> listEmployee, String checkPatternCode,
 			List<PeriodByAlarmCategory> periodByCategory) {		
 		String companyID = AppContexts.user().companyId();
-		
 		// チェック条件に当てはまらない場合(When it does not fit the check condition)
 		// 条件を満たしていない
 		if (listEmployee.isEmpty()) {
 			// エラーメッセージ(#Msg_834)を表示する
 			throw new BusinessException("Msg_834");	
 		}
-		
-		// ドメインモデル「アラームリスト抽出処理状況」を作成する
-//		GeneralDateTime now1 = GeneralDateTime.now();
-		GeneralDate today = GeneralDate.today();
-
-		
+		List<String> lstSid = listEmployee.stream().map(x -> x.getId()).collect(Collectors.toList());
+		AtomicInteger counter = new AtomicInteger(lstSid.size());
 		// 勤務実績のアラームリストの集計処理を行う
-		List<AlarmExtraValueWkReDto> listAlarmExtraValueWR = aggregationProcessService.processAlarmListWorkRecord(today, companyID, listEmployee,
-				checkPatternCode, periodByCategory);
-
-		// 集計結果を確認する sort list
-		Comparator<AlarmExtraValueWkReDto> comparator = Comparator.comparing(AlarmExtraValueWkReDto::getHierarchyCd)
-																	.thenComparing(Comparator.comparing(AlarmExtraValueWkReDto::getEmployeeCode))
-																	.thenComparing(Comparator.comparing(AlarmExtraValueWkReDto::getAlarmValueDate))
-																	.thenComparing(Comparator.comparing(AlarmExtraValueWkReDto::getCategory));
-		List<AlarmExtraValueWkReDto> sortedAlarmExtraValue = listAlarmExtraValueWR.stream().sorted(comparator).collect(Collectors.toList());
+		List<AlarmExtraValueWkReDto> listAlarmExtraValueWR = this.extractResultAlarm(companyID,
+				checkPatternCode,
+				periodByCategory,
+				lstSid,
+				"abc", //TODO 渡すパラメータが必要
+				null,
+				null, finished -> {
+					counter.set(counter.get() + finished);
+				},
+				() -> {
+					return true;
+				}).getExtractedAlarmData();
 		// 集計データが無い場合
 		if (listAlarmExtraValueWR.isEmpty()) {
 			// 情報メッセージ(#Msg_835) を表示する
@@ -73,7 +71,7 @@ public class ExtractAlarmListService {
 		}
 		// 集計データがある場合
 		// B画面 ダイアログ「アラームリスト」を起動する
-		return new ExtractedAlarmDto(sortedAlarmExtraValue, false, false);		
+		return new ExtractedAlarmDto(listAlarmExtraValueWR, false, false);		
 
 	}
 	/**

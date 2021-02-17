@@ -281,6 +281,8 @@ public class W4D4AlarmService {
 		// 日別実績の勤務情報を取得する
 		List<RecordWorkInfoFunAdapterDto> workInfos = recordWorkInfoFunAdapter.findByPeriodOrderByYmdAndEmps(lstSid,
 				dPeriod);
+		RequireImpl require = new RequireImpl(weekRuleManagementRepo, workTypeRepo);
+		HolidayNumberManagement holidayNumberMana = treatHolidaySet.getNumberHoliday(require, dPeriod.start());
 		parallelManager.forEach(CollectionUtil.partitionBySize(lstSid, 100), emps -> {
 
 			synchronized (this) {
@@ -341,23 +343,22 @@ public class W4D4AlarmService {
 								workInfor = new WorkInformation(workInfo.get(0).getWorkTypeCode(),
 										workInfo.get(0).getWorkTimeCode());
 							}
-							mapWorkInfor.put(date, workInfor);
+							if(workInfor != null) {
+								mapWorkInfor.put(date, workInfor);	
+							}
 						}
 					}
 					
 				}
-				RequireImpl require = new RequireImpl(weekRuleManagementRepo, workTypeRepo);
+				if(mapWorkInfor.isEmpty()) continue;
 				
-				HolidayNumberManagement holidayNumberMana = treatHolidaySet.getNumberHoliday(require, dPeriod.start());
 				int holidays = holidayNumberMana.countNumberHolidays(require, mapWorkInfor);
 				
-				if(((w4dCheckCond == FourW4DCheckCond.WithScheduleAndActualResults && !workInfoSid.isEmpty() || !basicScheduleImportSid.isEmpty())
-						|| (w4dCheckCond == FourW4DCheckCond.ForActualResultsOnly && !workInfoSid.isEmpty()))
-						&& holidays < holidayNumberMana.getHolidayDays().v()) {
+				if(holidays < holidayNumberMana.getHolidayDays().v()) {
 					ExtractionAlarmPeriodDate alarmDate = new ExtractionAlarmPeriodDate(Optional.ofNullable(dPeriod.start()), Optional.ofNullable(dPeriod.end()));
 					ExtractionResultDetail alarmDetail = new ExtractionResultDetail(sid,
 							alarmDate, 
-							w4dCheckCond.name(),
+							w4dCheckCond.nameId,
 							TextResource.localize("KAL010_64"), 
 							GeneralDateTime.now(), 
 							Optional.ofNullable(workplaceId),
