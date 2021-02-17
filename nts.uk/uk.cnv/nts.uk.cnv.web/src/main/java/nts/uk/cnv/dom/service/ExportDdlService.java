@@ -1,6 +1,7 @@
 package nts.uk.cnv.dom.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -26,15 +27,13 @@ public class ExportDdlService {
 		return String.join("\r\n", sql);
 	}
 
-	public List<ExportDdlServiceResult>  exportDdl(Require require, String tableId, String type, boolean withComment, String branch, GeneralDate date) {
-		List<TableDesign> tableDesign = require.find(tableId, branch, date);
-		if(tableDesign.size() == 0) {
+	public ExportDdlServiceResult  exportDdl(Require require, String tableId, String type, boolean withComment, String branch, GeneralDate date) {
+		Optional<TableDesign> tableDesign = require.find(tableId, branch, date);
+		if(!tableDesign.isPresent()) {
 			throw new BusinessException(new RawErrorMessage("定義が見つかりません：" + tableId));
 		}
 
-		return tableDesign.stream()
-			.map(td -> exportDdl(require, td, type, withComment))
-			.collect(Collectors.toList());
+		return exportDdl(require, tableDesign.get(), type, withComment);
 	}
 
 	private ExportDdlServiceResult exportDdl(Require require, TableDesign tableDesign, String type, boolean withComment) {
@@ -62,7 +61,7 @@ public class ExportDdlService {
 
 	public interface Require {
 		List<TableDesign> findAll(String branch, GeneralDate date);
-		List<TableDesign> find(String tablename, String branch, GeneralDate date);
+		Optional<TableDesign> find(String tablename, String branch, GeneralDate date);
 
 	}
 }

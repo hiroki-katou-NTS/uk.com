@@ -45,10 +45,10 @@ $(function () {
 		})).done(function (res) {
 
 			$('#verlist > option').remove();
-			res.forEach(response => {
-				response.branch + " " + response.date
-				$('#verlist').append($('<option>').html(response.branch + ":" + response.date).val(response));
-			});
+//			res.forEach(response => {
+//				response.branch + " " + response.date
+//				$('#verlist').append($('<option>').html(response.branch + ":" + response.date).val(response));
+//			});
 
 			$('#tabledesign').val(res[0].ddl);
 			$('#view_branch').val(res[0].branch);

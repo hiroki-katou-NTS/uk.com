@@ -40,7 +40,7 @@ public class TableDesignWebService extends WebService{
 
 	@POST
 	@Path("exportddl")
-	public List<ExportDdlServiceResult> export(TableDesignExportDto params) {
+	public ExportDdlServiceResult export(TableDesignExportDto params) {
 		return tdService.exportDdl(params);
 	}
 

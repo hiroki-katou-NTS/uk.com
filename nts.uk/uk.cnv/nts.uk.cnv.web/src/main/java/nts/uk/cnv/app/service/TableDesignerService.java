@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -68,7 +69,7 @@ public class TableDesignerService {
 	@Inject
 	private TransactionService transactionService;
 
-	public List<ExportDdlServiceResult>  exportDdl(TableDesignExportDto params) {
+	public ExportDdlServiceResult exportDdl(TableDesignExportDto params) {
 		RequireImpl require = new RequireImpl(ukTableDesignRepository);
 
 		return exportDdlService.exportDdl(
@@ -90,8 +91,8 @@ public class TableDesignerService {
 		private final UkTableDesignRepository tableDesignRepository;
 
 		@Override
-		public List<TableDesign> find(String tableId, String branch, GeneralDate date) {
-			return tableDesignRepository.find(tableId, branch, date);
+		public Optional<TableDesign> find(String tableId, String branch, GeneralDate date) {
+			return tableDesignRepository.findByKey(tableId, branch, date);
 		}
 
 		@Override
@@ -207,10 +208,7 @@ public class TableDesignerService {
 						params.getType(),
 						params.isWithComment(),
 						params.getBranch(),
-						params.getDate())
-					.stream()
-					.findFirst()
-					.orElseThrow(RuntimeException::new);
+						params.getDate());
 
 				String ddl = result.getDdl();
 

@@ -32,7 +32,15 @@ public class JpaUkTableDesignRepository extends JpaRepository implements UkTable
 
 	@Override
 	public void update(TableDesign tableDesign) {
-		this.commandProxy().update(toEntity(tableDesign));
+		ScvmtUkTableDesign tergetEntity = toEntity(tableDesign);
+		Optional<ScvmtUkTableDesign> before = this.queryProxy().find(
+				tergetEntity.pk, ScvmtUkTableDesign.class);
+
+		if(before.isPresent()) {
+			this.commandProxy().remove(before);
+		}
+
+		this.commandProxy().insert(toEntity(tableDesign));
 	}
 
 	@Override
@@ -114,47 +122,14 @@ public class JpaUkTableDesignRepository extends JpaRepository implements UkTable
 	@Override
 	@SneakyThrows
 	public Optional<TableDesign> findByKey(String tableId, String branch, GeneralDate date) {
-		String sql = "SELECT td FROM ScvmtUkTableDesign td "
-				+ " WHERE td.pk.tableId = :tableId"
-				+ " AND   td.pk.branch = :branch"
-				+ " AND   td.pk.date = :date";
-		Optional<ScvmtUkTableDesign> result = this.queryProxy().query(sql, ScvmtUkTableDesign.class)
-				.setParameter("tableId", tableId)
-				.setParameter("branch", branch)
-				.setParameter("date", date)
-				.getSingle();
-
+		Optional<ScvmtUkTableDesign> result = find(tableId, branch, date);
 		return Optional.of(result.get().toDomain());
 	}
 
-	@Override
-	@SneakyThrows
-	public List<TableDesign> find(String tableId, String branch, GeneralDate date) {
-		String sql;
-		List<TableDesign> result;
-
-		if (branch != null && !branch.isEmpty()) {
-			sql = "SELECT td FROM ScvmtUkTableDesign td "
-				+ " WHERE td.pk.tableId = :tableId"
-				+ " AND   td.pk.branch = :branch"
-				+ " AND   td.pk.date = :date";
-			result = this.queryProxy().query(sql, ScvmtUkTableDesign.class)
-					.setParameter("tableId", tableId)
-					.setParameter("branch", branch)
-					.setParameter("date", date)
-					.getList(td -> td.toDomain());
-		}
-		else {
-			sql = "SELECT td FROM ScvmtUkTableDesign td "
-					+ " WHERE td.pk.tableId = :tableId"
-					+ " AND   td.pk.date = :date";
-			result = this.queryProxy().query(sql, ScvmtUkTableDesign.class)
-					.setParameter("tableId", tableId)
-					.setParameter("date", date)
-					.getList(td -> td.toDomain());
-		}
-
-		return result;
+	private Optional<ScvmtUkTableDesign> find(String tableId, String branch, GeneralDate date) {
+		return this.queryProxy().find(
+				new ScvmtUkTableDesignPk(tableId, branch, date),
+				ScvmtUkTableDesign.class);
 	}
 
 	@Override

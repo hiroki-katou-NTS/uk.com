@@ -15,7 +15,7 @@ public interface UkTableDesignRepository {
 	List<TableDesign> getByTableName(String tablename);
 
 	Optional<TableDesign> findByKey(String tablename, String branch, GeneralDate date);
-	List<TableDesign> find(String tableId, String branch, GeneralDate date);
+	//List<TableDesign> find(String tableId, String branch, GeneralDate date);
 	List<TableDesign> getAll(String branch, GeneralDate date);
 	List<GetUkTablesResultDto> getAllTableList(String branch, GeneralDate date);
 }

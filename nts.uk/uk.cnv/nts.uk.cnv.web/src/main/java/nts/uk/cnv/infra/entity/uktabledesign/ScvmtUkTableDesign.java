@@ -60,7 +60,7 @@ public class ScvmtUkTableDesign extends JpaEntity implements Serializable {
 
 	@Override
 	protected Object getKey() {
-		return name;
+		return pk;
 	}
 
 	public TableDesign toDomain() {
