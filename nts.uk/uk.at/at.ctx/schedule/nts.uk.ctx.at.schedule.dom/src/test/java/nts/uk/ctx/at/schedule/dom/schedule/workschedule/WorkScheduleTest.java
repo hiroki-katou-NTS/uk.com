@@ -21,6 +21,7 @@ import mockit.Mocked;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskSchedule;
+import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskScheduleDetail;
 import nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule.TaskScheduleDetailTestHelper;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
@@ -1543,7 +1544,7 @@ public class WorkScheduleTest {
 	}
 	
 	@Test
-	public void testAddTaskScheduleWithTimeSpan() {
+	public void testAddTaskScheduleWithTimeSpan_taskSchedule_empty() {
 		
 		BreakTimeOfDailyAttd breakTime = new BreakTimeOfDailyAttd(Arrays.asList(
 				new BreakTimeSheet(new BreakFrameNo(1), TimeWithDayAttr.hourMinute(12, 0), TimeWithDayAttr.hourMinute(13, 0)),
@@ -1561,7 +1562,7 @@ public class WorkScheduleTest {
 		workSchedule.addTaskScheduleWithTimeSpan(
 			require,
 			new TimeSpanForCalc(
-				TimeWithDayAttr.hourMinute(13, 0),
+				TimeWithDayAttr.hourMinute(14, 0),
 				TimeWithDayAttr.hourMinute(17, 0)),
 			new TaskCode("001") );
 		
@@ -1573,7 +1574,53 @@ public class WorkScheduleTest {
 				d -> d.getTimeSpan().getEnd().hour(),
 				d -> d.getTimeSpan().getEnd().minute())
 			.containsExactly(
-				tuple( "001", 13, 0, 15, 0),
+				tuple( "001", 14, 0, 15, 0),
+				tuple( "001", 15, 30, 17, 0)
+			);
+	}
+	
+	@Test
+	public void testAddTaskScheduleWithTimeSpan_taskSchedule_exist() {
+		
+		BreakTimeOfDailyAttd breakTime = new BreakTimeOfDailyAttd(Arrays.asList(
+				new BreakTimeSheet(new BreakFrameNo(1), TimeWithDayAttr.hourMinute(12, 0), TimeWithDayAttr.hourMinute(13, 0)),
+				new BreakTimeSheet(new BreakFrameNo(1), TimeWithDayAttr.hourMinute(15, 0), TimeWithDayAttr.hourMinute(15, 30))
+				));
+		
+		TaskSchedule taskSchedule = new TaskSchedule(Arrays.asList(
+				new TaskScheduleDetail(
+						new TaskCode("000"),
+						new TimeSpanForCalc(
+								TimeWithDayAttr.hourMinute(13, 00), 
+								TimeWithDayAttr.hourMinute(15, 00))
+						)
+				));
+		
+		WorkSchedule workSchedule = Helper.createWithBreakTimeAndTaskSchedule( breakTime, taskSchedule );
+		
+		new Expectations(workSchedule) {{
+			
+			workSchedule.getTimeVacation();
+			result = new HashMap<>();
+		}};
+		
+		workSchedule.addTaskScheduleWithTimeSpan(
+			require,
+			new TimeSpanForCalc(
+				TimeWithDayAttr.hourMinute(14, 0),
+				TimeWithDayAttr.hourMinute(17, 0)),
+			new TaskCode("001") );
+		
+		assertThat( workSchedule.getTaskSchedule().getDetails() )
+			.extracting(
+				d -> d.getTaskCode().v(),
+				d -> d.getTimeSpan().getStart().hour(),
+				d -> d.getTimeSpan().getStart().minute(),
+				d -> d.getTimeSpan().getEnd().hour(),
+				d -> d.getTimeSpan().getEnd().minute())
+			.containsExactly(
+				tuple( "000", 13, 0, 14, 0),
+				tuple( "001", 14, 0, 15, 0),
 				tuple( "001", 15, 30, 17, 0)
 			);
 	}
@@ -1582,6 +1629,29 @@ public class WorkScheduleTest {
 		
 		/**
 		 * @param breakTime
+		 * @param taskSchedule
+		 * @return
+		 */
+		static WorkSchedule createWithBreakTimeAndTaskSchedule(BreakTimeOfDailyAttd breakTime, TaskSchedule taskSchedule) {
+			
+			return new WorkSchedule(
+					"employeeID",
+					GeneralDate.today(),
+					ConfirmedATR.UNSETTLED,
+					workInfo,
+					affInfo, 
+					breakTime,
+					Collections.emptyList(), // editState
+					taskSchedule,
+					Optional.empty(), // timeLeaving
+					Optional.empty(), // attendanceTime
+					Optional.empty(), // shortTime
+					Optional.empty()); // outingTime
+		}
+		
+		/**
+		 * @param breakTime
+		 * @param shortTime
 		 * @return
 		 */
 		static WorkSchedule createWithBreakTimeAndShortTime(BreakTimeOfDailyAttd breakTime, Optional<ShortTimeOfDailyAttd> shortTime) {
