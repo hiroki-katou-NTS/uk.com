@@ -11,7 +11,7 @@ module nts.uk.at.view.ktg026.a {
     const SCR_URL = 'https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js';
 
     // options for chartjs
-    const options = (max: number, min: number = 0) => ({
+    const options = (max: number, type: 'head' | 'body' = 'body') => ({
         responsive: true,
         maintainAspectRatio: false,
         legend: {
@@ -34,8 +34,9 @@ module nts.uk.at.view.ktg026.a {
         scales: {
             xAxes: [{
                 ticks: {
-                    min,
-                    max,
+                    min: 0,
+                    max: Math.min(max, 6000),
+                    display: true,
                     beginAtZero: true,
                     callback: function (value: number, index: number, data: number[]) {
                         const { format } = time as any;
@@ -62,7 +63,7 @@ module nts.uk.at.view.ktg026.a {
                 stacked: true,
                 position: 'top',
                 afterFit: (scale: any) => {
-                    scale.height = 41;
+                    scale.height = type === 'body' ? 0 : 41;
                 },
                 gridLines: {
                     color: '#999',
@@ -138,9 +139,10 @@ module nts.uk.at.view.ktg026.a {
         virtual: false
     })
     export class Ktg026ChartBindingHandler implements KnockoutBindingHandler {
-        init(element: HTMLCanvasElement, valueAccessor: () => KnockoutObservableArray<DataRow>) {
+        init(element: HTMLCanvasElement, valueAccessor: () => KnockoutObservableArray<DataRow>, allBindingsAccessor: KnockoutAllBindingsAccessor) {
             let chart: any = null;
             const dataSource = valueAccessor();
+            const type: 'head' | 'body' | KnockoutObservable<'head' | 'body'> = allBindingsAccessor.get('type');
 
             $.Deferred()
                 .resolve(true)
@@ -149,6 +151,7 @@ module nts.uk.at.view.ktg026.a {
                     ko.computed({
                         read: () => {
                             const data = ko.unwrap<DataRow[]>(dataSource) || [];
+                            const tpe = ko.unwrap<'head' | 'body'>(type) || 'body';
 
                             // destroy old chart instance
                             if (chart && typeof chart.destroy === 'function') {
@@ -169,16 +172,16 @@ module nts.uk.at.view.ktg026.a {
                             chart = new Chart(element.getContext("2d"), {
                                 type: 'horizontalBar',
                                 data: {
-                                    labels: data.map(({ date }) => date),
-                                    datasets: [{
-                                        data: data.map(({ time }) => time.ot),
+                                    labels: tpe === 'head' ? [] : data.map(({ date }) => date),
+                                    datasets: tpe === 'head' ? [] : [{
+                                        data: data.map(({ time }) => Math.min(time.ot, 6000)),
                                         backgroundColor: data.map(() => "#49bfa8")
                                     }, {
                                         data: data.map(({ time }) => time.wh),
                                         backgroundColor: data.map(() => "#e05f4e")
                                     }]
                                 },
-                                options: options(max || 4800, 0)
+                                options: options(max || 4800, tpe)
                             });
                         },
                         disposeWhenNodeIsRemoved: element
@@ -227,6 +230,26 @@ module nts.uk.at.view.ktg026.a {
                     </tbody>
                 </table>
             </div>
+            <div class="ktg-026-a widget-content widget-fixed scroll-padding ui-resizable">
+                <div>
+                    <table>
+                        <colgroup>
+                            <col width="25%" />
+                            <col width="25%" />
+                            <col width="50%" />
+                        </colgroup>
+                        <head>
+                            <tr>
+                                <th class="text-center" data-bind="i18n: 'KTG026_7'"></th>
+                                <th class="text-center" data-bind="i18n: 'KTG026_4'"></th>
+                                <td rowspan="1">
+                                    <canvas data-bind="ktg-026-chart: $component.dataTable, type: 'head'"></canvas>
+                                </td>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
             <div class="ktg-026-a" data-bind="widget-content: 110">
                 <div>
                     <table>
@@ -235,20 +258,16 @@ module nts.uk.at.view.ktg026.a {
                             <col width="25%" />
                             <col width="50%" />
                         </colgroup>
-                        <tbody>
-                            <tr>
-                                <td class="text-center" data-bind="i18n: 'KTG026_7'"></td>
-                                <td class="text-center" data-bind="i18n: 'KTG026_4'"></td>
-                                <td data-bind="attr: { rowspan: $component.dataTable().length + 1 }">
-                                    <canvas data-bind="ktg-026-chart: $component.dataTable"></canvas>
-                                </td>
-                            </tr>
-                            <!-- ko foreach: { data: $component.dataTable, as: 'row' } -->
+                        <tbody data-bind="foreach: { data: $component.dataTable, as: 'row' }">
                             <tr>
                                 <td data-bind="text: row.date"></td>
                                 <td class="text-right" data-bind="time: row.time.tt, css: row.state"></td>
+                                <!-- ko if: $index() === 0 -->
+                                <td data-bind="attr: { rowspan: $component.dataTable().length }">
+                                    <canvas data-bind="ktg-026-chart: $component.dataTable, type: 'body'"></canvas>
+                                </td>
+                                <!-- /ko -->
                             </tr>
-                            <!-- /ko -->
                         </tbody>
                     </table>
                 </div>
@@ -279,8 +298,20 @@ module nts.uk.at.view.ktg026.a {
                 .ktg-026-a.widget-content.ui-resizable td[rowspan] canvas {
                     width: 230px !important;
                 }
+                .ktg-026-a.widget-content.ui-resizable.widget-fixed {
+                    padding-bottom: 0px;
+                }
+                .ktg-026-a.widget-content.ui-resizable.widget-fixed>div {
+                    padding-bottom: 0px;
+                }
+                .ktg-026-a.widget-content.ui-resizable.widget-fixed td[rowspan] canvas {
+                    height: 41px !important;
+                }
                 .ktg-026-a.widget-content.ui-resizable tr:last-child td {
                     border-bottom: 0;
+                }
+                .widget-container.has-scroll .ktg-026-a.scroll-padding {
+                    padding-right: 17px;
                 }
                 /* 限度アラーム時間超過 */
                 .ktg-026-a.widget-content.ui-resizable .exceeding-limit-alarm {
@@ -340,10 +371,10 @@ module nts.uk.at.view.ktg026.a {
                     const data = ko.unwrap<DataRow[]>(vm.dataTable);
 
                     if (!data.length) {
-                        return '.ktg-026-a.widget-content td[rowspan] canvas { height: 41px !important; }';
+                        return '.ktg-026-a.widget-content:not(.widget-fixed) td[rowspan] canvas { height: 0px !important; }';
                     }
 
-                    return `.ktg-026-a.widget-content td[rowspan] canvas { height: ${(data.length + 1) * 41}px !important; }`;
+                    return `.ktg-026-a.widget-content:not(.widget-fixed) td[rowspan] canvas { height: ${data.length * 41}px !important; }`;
                 }
             });
 
@@ -396,6 +427,8 @@ module nts.uk.at.view.ktg026.a {
                         $(vm.$el)
                             .find('[data-bind]')
                             .removeAttr('data-bind');
+
+                        $('.ktg-026-a.ui-resizable').trigger('wg.resize');
                     });
                 });
         }
@@ -419,6 +452,8 @@ module nts.uk.at.view.ktg026.a {
 
                     vm.extractOvertime(requestBody);
                 });
+
+            $('.ktg-026-a.ui-resizable').trigger('wg.resize');
         }
 
         private extractOvertime(command: any): void {
@@ -479,6 +514,8 @@ module nts.uk.at.view.ktg026.a {
                     // rebind new data to table & chart
                     vm.dataTable(data);
                 }
+
+                vm.$nextTick(() => $('.ktg-026-a.ui-resizable').trigger('wg.resize'));
             });
         }
     }
