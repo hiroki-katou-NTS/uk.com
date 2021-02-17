@@ -87,7 +87,7 @@ public class ReflectTimeDigestTimeVacation {
 				// [input.時間消化申請(work）を日別勤怠(work）の外出時間]へセット
 				if (x.getOutingTimeOfDaily().isEmpty()) {
 					x.getOutingTimeOfDaily().add(new OutingTimeOfDaily(new BreakTimeGoOutTimes(0),
-							appTimeType == AppTimeType.PRIVATE ? GoingOutReason.PRIVATE : GoingOutReason.PUBLIC,
+							appTimeType == AppTimeType.PRIVATE ? GoingOutReason.PRIVATE : GoingOutReason.UNION,
 							TimevacationUseTimeOfDaily.defaultValue(),
 							OutingTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
 									WithinOutingTotalTime.sameTime(TimeWithCalculation.sameTime(new AttendanceTime(0))),

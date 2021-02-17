@@ -40,6 +40,9 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancet
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakTimeGoOutTimes;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTotalTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
@@ -72,6 +75,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.Ac
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.TotalWorkingTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.IntervalExemptionTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.WithinOutingTotalTime;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.shr.com.time.AttendanceClock;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -220,9 +224,18 @@ public class ReflectApplicationHelper {
 				new TimevacationUseTimeOfDaily(new AttendanceTime(111), new AttendanceTime(111),
 						new AttendanceTime(111), new AttendanceTime(111), Optional.empty(), new AttendanceTime(111), new AttendanceTime(111)),
 				new IntervalExemptionTime(new AttendanceTime(111))));
+		List<OutingTimeOfDaily> outingTimeOfDailyPerformance = new ArrayList<OutingTimeOfDaily>();
+		outingTimeOfDailyPerformance.add(new OutingTimeOfDaily(new BreakTimeGoOutTimes(no), GoingOutReason.PRIVATE,
+				TimevacationUseTimeOfDaily.defaultValue(),
+				OutingTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
+						WithinOutingTotalTime.sameTime(TimeWithCalculation.sameTime(new AttendanceTime(0))),
+						TimeWithCalculation.sameTime(new AttendanceTime(0))),
+				OutingTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
+						WithinOutingTotalTime.sameTime(TimeWithCalculation.sameTime(new AttendanceTime(0))),
+						TimeWithCalculation.sameTime(new AttendanceTime(0))), lstSheet));
 		AttendanceTimeOfDailyAttendance attTime = new AttendanceTimeOfDailyAttendance(null,
 				ActualWorkingTimeOfDaily.of(new TotalWorkingTime(null, null, null, null, null, lateTimeOfDaily,
-						leaveEarlyTimeOfDaily, null, null, null, null, null, null, null, null), 0, 0, 0, 0),
+						leaveEarlyTimeOfDaily, null, outingTimeOfDailyPerformance, null, null, null, null, null, null), 0, 0, 0, 0),
 				null, null, null, null);
 
 		IntegrationOfDaily domainDaily = new IntegrationOfDaily(
