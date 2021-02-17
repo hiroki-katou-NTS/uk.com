@@ -48,6 +48,7 @@ module nts.uk.com.view.ccg003.a {
             <div tabindex="1" class="ml-10" data-bind="ntsDateRangePicker: {
               required: false,
               enable: true,
+              name: $i18n('CCG003_6'),
               showNextPrevious: false,
               value: dateValue,
               maxRange: 'oneMonth'}"
