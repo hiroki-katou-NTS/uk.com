@@ -51,7 +51,7 @@ public class AsposeAppOverTime {
 	private static final String TIME_ZERO = new TimeWithDayAttr(0).getInDayTimeWithFormat();
 	
 	
-	public StringBuilder getContentReason (Optional<DetailOutput> opDetailOutput, int frame) {
+	public StringBuilder getContentReason (Optional<DetailOutput> opDetailOutput, int frame, boolean c1, boolean c2) {
 		StringBuilder d31 = new StringBuilder("");
 		// 申請の印刷内容．残業申請の印刷内容．残業申請の表示情報．基準日に関係しない情報．利用する乖離理由．選択肢一覧
 		// 申請の印刷内容．残業申請の印刷内容．残業申請．申請時間．乖離理由
@@ -81,11 +81,15 @@ public class AsposeAppOverTime {
 								reOptional1.flatMap(a -> Optional.ofNullable(a.getReasonCode())).map(b -> b.v()).orElse("") + " " + I18NText.getText("KAF005_345"));
 				
 		String contentInputD31 = reOptional1.flatMap(x -> Optional.ofNullable(x.getReason())).map(x -> x.v()).orElse("");
-		d31.append(contentCodeD31);
+		if (c1) {
+			d31.append(contentCodeD31);			
+		}
 		if (!StringUtils.isBlank(contentCodeD31)) {
 			d31.append("\n");			
 		}
-		d31.append(contentInputD31);
+		if (c2) {
+			d31.append(contentInputD31);			
+		}
 		return d31;
 	}
 	
@@ -527,9 +531,9 @@ public class AsposeAppOverTime {
 		cellB30.setValue(I18NText.getText("KAF005_93", b30));
 		cellB33.setValue(I18NText.getText("KAF005_93", b33));
 		if (appOverTime.getApplicationTime().getReasonDissociation().isPresent()) {
-			StringBuilder d31 = this.getContentReason(opDetailOutput, 1);
+			StringBuilder d31 = this.getContentReason(opDetailOutput, 1, c6_1, c6_2);
 			cellD30.setValue(d31);
-			StringBuilder d34 = this.getContentReason(opDetailOutput, 2);
+			StringBuilder d34 = this.getContentReason(opDetailOutput, 2, c7_1, c7_2);
 			cellD33.setValue(d34);
 		}
 		
