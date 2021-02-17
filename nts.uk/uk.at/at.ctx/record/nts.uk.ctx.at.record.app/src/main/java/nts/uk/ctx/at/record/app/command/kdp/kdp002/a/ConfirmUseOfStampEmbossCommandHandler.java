@@ -113,7 +113,7 @@ public class ConfirmUseOfStampEmbossCommandHandler extends CommandHandler<Confir
 		}
 
 		if (used.equals(CanEngravingUsed.ENGTAVING_FUNCTION_CANNOT_USED)) {
-			throw new BusinessException("Msg_1645", TextResource.localize("KDP002_1"));
+			throw new BusinessException("Msg_1644", TextResource.localize("KDP002_1"));
 		}
 
 		if (used.equals(CanEngravingUsed.UNREGISTERED_STAMP_CARD)) {
