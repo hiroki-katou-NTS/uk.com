@@ -125,7 +125,7 @@ public class OutingTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 	}
 
 	private Optional<WorkStamp> createTimeActual(TimeStampDto c) {
-		return c == null ? Optional.empty() : Optional.of(TimeStampDto.toDomain(c));
+		return c == null ? Optional.empty() : Optional.ofNullable(TimeStampDto.toDomain(c));
 	}
 
 	@Override

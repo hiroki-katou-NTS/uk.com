@@ -323,7 +323,7 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 		AttendanceTime outingTimeCalculation = new AttendanceTime(x.outingTimeCalculation);
 		AttendanceTime outingTime = new AttendanceTime(x.outingTime);
 		OutingTimeSheet outingTimeSheet = new OutingTimeSheet(new OutingFrameNo(x.krcdtDaiOutingTimePK.outingFrameNo),
-				Optional.of(outStamp), outingTimeCalculation, outingTime, reasonForGoOut, Optional.of(backStamp));
+				Optional.ofNullable(outStamp), outingTimeCalculation, outingTime, reasonForGoOut, Optional.ofNullable(backStamp));
 		return outingTimeSheet;
 	}
 

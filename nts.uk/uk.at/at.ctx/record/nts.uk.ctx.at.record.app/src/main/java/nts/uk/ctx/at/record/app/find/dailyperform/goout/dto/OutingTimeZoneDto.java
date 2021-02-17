@@ -87,7 +87,7 @@ public class OutingTimeZoneDto implements ItemConst, AttendanceItemDataGate {
 		switch (path) {
 		case GO_OUT:
 		case BACK:
-			return new WithActualTimeStampDto();
+			return new TimeStampDto();
 		default:
 			return null;
 		}
