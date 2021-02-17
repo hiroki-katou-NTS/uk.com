@@ -83,7 +83,11 @@ module nts.uk.at.view.kmk010.d {
           vm.$window.close({ isSave: true });
           vm.$blockui('hide');
         });
-      }).fail((error) => { console.log(error); vm.$blockui('hide'); });
+      }).fail((error) => { 
+        vm.$dialog.error({ messageId: error.messageId }). then(() => {
+          vm.$blockui('hide'); 
+        });        
+      });
     }
 
     closeDialog() {
@@ -131,7 +135,7 @@ module nts.uk.at.view.kmk010.d {
             let premiumExtra60HRates: Array<PremiumItem> = [];
             if (item.premiumExtra60HRates.length === 0) {
               _.forEach(vm.overTimeHeader(), (x, index) => {
-                premiumExtra60HRates.push(new PremiumItem(row + 1, 0, index + 1));
+                premiumExtra60HRates.push(new PremiumItem(row + 1, 0, x.overtimeNo));
               })
             } else {
               _.forEach(vm.overTimeHeader(), (col: any, index) => {
@@ -164,8 +168,13 @@ module nts.uk.at.view.kmk010.d {
         vm.focusControl();
         vm.$blockui('hide');
 
-      }).fail((error) => { console.log(error); vm.$blockui('hide'); });
-
+      })
+      .always(() => vm.$blockui('hide') )
+      .fail((error) => { 
+        vm.$dialog.error({ messageId: error.messageId }).then(() => {
+          vm.$blockui('hide'); 
+        });        
+      });
     }
   }
 
