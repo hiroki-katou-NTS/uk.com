@@ -85,10 +85,8 @@ public class OutputFileWorkStatusService extends ExportService<OutputFileWorkSta
         List<String> lstEmpIds = query.getLstEmpIds();
         val closureId = query.getClosureId() == 0 ? 1 : query.getClosureId();
         val cid = AppContexts.user().companyId();
-        // 1 ⑨:find(会社ID、ClosureId)
-        Optional<Closure> closureOptional = closureRepository.findById(cid, query.getClosureId());
 
-        // 1.1 ⑩ = ⑨.指定した年月の締め期間を取得する(締め, 年月)
+        // 1.1  ⑨.指定した年月の締め期間を取得する(締め, 年月)
         val periodOptional = this.getSpecifyPeriod.getSpecifyPeriod(yearMonth)
                 .stream().filter(x -> x.getClosureId().value == closureId).findFirst();
 

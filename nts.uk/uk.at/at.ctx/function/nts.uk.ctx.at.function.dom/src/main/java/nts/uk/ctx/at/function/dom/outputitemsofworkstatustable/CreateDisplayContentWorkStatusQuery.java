@@ -101,15 +101,15 @@ public class CreateDisplayContentWorkStatusQuery {
                 val itemValue = new ArrayList<DailyValue>();
                 for (GeneralDate l : listDate) {
                     val vl = allValue.getOrDefault(l, null);
-                    if (vl == null) continue;
+                    if (vl == null || j.getItemDetailAttributes() == CommonAttributesOfForms.OTHER_CHARACTERS
+                            || j.getItemDetailAttributes() == CommonAttributesOfForms.OTHER_CHARACTER_NUMBER
+                            ||j.getItemDetailAttributes() == CommonAttributesOfForms.OTHER_NUMERICAL_VALUE) continue;
                     val listAtId = j.getSelectedAttendanceItemList();
                     StringBuilder character = new StringBuilder();
                     Double actualValue = 0D;
                     boolean alwaysNull = true;
-                    if (j.getItemDetailAttributes() == CommonAttributesOfForms.WORK_TYPE ||
-                            j.getItemDetailAttributes() == CommonAttributesOfForms.WORKING_HOURS
-                            || j.getItemDetailAttributes() == CommonAttributesOfForms.OTHER_CHARACTERS
-                            ||j.getItemDetailAttributes() == CommonAttributesOfForms.OTHER_CHARACTER_NUMBER) {
+                    if (j.getItemDetailAttributes() == CommonAttributesOfForms.WORK_TYPE||
+                            j.getItemDetailAttributes() == CommonAttributesOfForms.WORKING_HOURS) {
                         for (OutputItemDetailAttItem d : listAtId) {
                             AttendanceItemDtoValue sub = vl.getOrDefault(d.getAttendanceItemId(), null);
                             if (sub != null && sub.getValue() != null) {

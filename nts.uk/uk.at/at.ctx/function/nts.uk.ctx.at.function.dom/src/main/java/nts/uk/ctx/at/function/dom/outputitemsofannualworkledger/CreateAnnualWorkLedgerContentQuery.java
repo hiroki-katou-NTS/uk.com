@@ -178,15 +178,15 @@ public class CreateAnnualWorkLedgerContentQuery {
             for (GeneralDate l : listDate) {
                 val value =
                         allValue.getOrDefault(l, null);
-                if (value == null) continue;
+                if (value == null || item.getItemDetailAttributes() == CommonAttributesOfForms.OTHER_CHARACTERS
+                        || item.getItemDetailAttributes() == CommonAttributesOfForms.OTHER_CHARACTER_NUMBER
+                        || item.getItemDetailAttributes() == CommonAttributesOfForms.OTHER_NUMERICAL_VALUE) continue;
                 val listAtId = item.getSelectedAttendanceItemList();
                 StringBuilder character = new StringBuilder();
                 Double actualValue = 0D;
                 boolean alwaysNull = true;
-                if (item.getItemDetailAttributes() == CommonAttributesOfForms.WORK_TYPE ||
-                        item.getItemDetailAttributes() == CommonAttributesOfForms.WORKING_HOURS
-                        || item.getItemDetailAttributes() == CommonAttributesOfForms.OTHER_CHARACTERS
-                        || item.getItemDetailAttributes() == CommonAttributesOfForms.OTHER_CHARACTER_NUMBER) {
+                if (item.getItemDetailAttributes() == CommonAttributesOfForms.WORK_TYPE
+                        || item.getItemDetailAttributes() == CommonAttributesOfForms.WORKING_HOURS) {
                     for (val d : listAtId) {
                         val sub = value.getOrDefault(d.getAttendanceItemId(), null);
                         if (sub == null || sub.getValue() == null) continue;
@@ -273,12 +273,12 @@ public class CreateAnnualWorkLedgerContentQuery {
         Double actualValue = 0d;
         for (OutputItemDetailAttItem d : selectedAttendanceItemList) {
             val subItem = itemValueMap.getOrDefault(d.getAttendanceItemId(), null);
-            if (subItem == null) continue;
+            if (subItem == null || monthlyItem.getItemDetailAttributes() == CommonAttributesOfForms.OTHER_CHARACTERS
+                    || monthlyItem.getItemDetailAttributes() == CommonAttributesOfForms.OTHER_CHARACTER_NUMBER
+                    || monthlyItem.getItemDetailAttributes() == CommonAttributesOfForms.OTHER_NUMERICAL_VALUE) continue;
             val rawValue = subItem.getValue();
             if (monthlyItem.getItemDetailAttributes() == CommonAttributesOfForms.WORK_TYPE ||
-                    monthlyItem.getItemDetailAttributes() == CommonAttributesOfForms.WORKING_HOURS
-                    || monthlyItem.getItemDetailAttributes() == CommonAttributesOfForms.OTHER_CHARACTERS
-                    || monthlyItem.getItemDetailAttributes() == CommonAttributesOfForms.OTHER_CHARACTER_NUMBER) {
+                    monthlyItem.getItemDetailAttributes() == CommonAttributesOfForms.WORKING_HOURS) {
                 character.append(rawValue);
             } else {
                 Double value = rawValue == null ? 0 : Double.parseDouble(rawValue);
