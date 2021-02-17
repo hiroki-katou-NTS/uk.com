@@ -135,7 +135,7 @@ module nts.uk.at.view.kmk010.d {
             let premiumExtra60HRates: Array<PremiumItem> = [];
             if (item.premiumExtra60HRates.length === 0) {
               _.forEach(vm.overTimeHeader(), (x, index) => {
-                premiumExtra60HRates.push(new PremiumItem(row + 1, 0, x.overtimeNo);
+                premiumExtra60HRates.push(new PremiumItem(row + 1, 0, x.overtimeNo));
               })
             } else {
               _.forEach(vm.overTimeHeader(), (col: any, index) => {
