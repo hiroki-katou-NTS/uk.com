@@ -1,0 +1,202 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+		<ui:composition template="../../../../master/base.xhtml">
+			<ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE" />			
+				<com:stylefile path="kmt001.a.css" />
+				<com:scriptfile path="kmt001.a.vm.js" />
+
+				<com:ValidatorScript>
+					nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode
+					nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskName
+					nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskAbName
+					nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskNote
+				</com:ValidatorScript>
+
+			</ui:define>
+			
+			<ui:define name="content">
+				<div id="functions-area">
+          <a tabindex="1" class="goback" data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }, text: $vm.$i18n('KMT001_11')"></a>
+					<button tabindex="1" data-bind="text: $vm.$i18n('KMT001_12'), click: AddNewWork, enable: $root.errors.isEmpty" />
+					<button tabindex="2" class="proceed" data-bind="text: $vm.$i18n('KMT001_12'), click: RegistrationWork" />
+					<button tabindex="3" class="danger" data-bind="text: $vm.$i18n('KMT001_13'), click: DeleteWork" />
+				</div>
+				<div id="contents-area">
+					<div class="wrapper">
+						<div class="pull-left">
+							<div data-bind="ntsPanel:{width: '340px', direction: 'right', showIcon: true, visible: true}">
+								<div class="table mb-10">
+									<div class="cell valign-center" data-bind="ntsFormLabel: { required: true }" >
+										<label data-bind="text: $vm.$i18n('KMT001_15')"></label>										
+									</div>
+									<div class="cell valign-center">
+										<div tabindex="5" class="combo-box" data-bind="ntsComboBox: {
+											name: '#[KMT001_15]',
+											options: ko.observableArray([
+												{ code: '001', name: '作業 1' },
+												{ code: '002', name: '作業 2' },
+												{ code: '003', name: '作業 3' },
+											]),
+											optionsValue: 'code',
+											visibleItemsCount: 5,
+											value: selectedCode,
+											optionsText: 'name',
+											editable: false,
+											enable: true,
+											required: true,
+											selectFirstIfNull: true
+										}"></div>
+									</div>
+								</div>
+								<div tabindex="6" data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'code', comId: 'multi-list', 
+									items: workList, selected: currentCodeList, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />
+				
+								<table tabindex="6" id="multi-list" data-bind="ntsGridList: {
+										height: 380,
+										options:  workList,
+										optionsValue: 'code',
+										columns: ko.observableArray([
+												{ headertext: $i18n('KMT001_18'), key: 'code', width: 200 },
+												{ headertext: $i18n('KMT001_19'), key: 'name', width: 122 }
+										]),
+										multiple: false,
+										value: currentCodeList
+									}"></table>
+							</div>
+						</div>
+						<div class="pull-left">
+							<div>
+								<div class="table mb-10">
+									<div class="cell w-35 valign-center" data-bind="ntsFormLabel: { required: true , constraint: 'TaskCode'}">
+										<label data-bind="text: $vm.$i18n('KMT001_20')"></label>
+									</div>
+									<div class="cell valign-center">
+										<div>
+											<input tabindex="7" data-bind="ntsTextEditor: {
+												value: model().code,																			
+												required: true,
+												enable: true,
+												constraint: 'TaskCode',
+												name: '#[KMT001_21]'
+											}" />
+										</div>
+									</div>
+								</div>
+
+								<div class="table mb-10">
+									<div class="cell w-35 valign-center" data-bind="ntsFormLabel: { required: true, constraint: 'TaskName' }">
+										<label data-bind="text: $vm.$i18n('KMT001_22')"></label>
+									</div>
+									<div class="cell valign-center">
+										<div>
+											<input tabindex="8" data-bind="ntsTextEditor: {
+												value: model().name,																			
+												required: true,
+												enable: true,
+												constraint: 'TaskName',
+												name: '#[KMT001_23]'
+											}" />
+										</div>
+									</div>
+								</div>
+
+								<div class="table mb-10">
+									<div class="cell w-35 valign-center" data-bind="ntsFormLabel: { required: true, constraint: 'TaskAbName' }">
+										<label data-bind="text: $vm.$i18n('KMT001_24')"></label>
+									</div>
+									<div class="cell valign-center w-40">
+										<div>
+											<input tabindex="9" data-bind="ntsTextEditor: {
+												value: model().abbreviatedName,																			
+												required: true,
+												enable: true,
+												constraint: 'TaskAbName',
+												name: '#[KMT001_25]'
+											}" />
+										</div>
+									</div>
+									<div class="cell w-40">
+										<div class="pull-right">
+											<div class="table">
+												<div class="cell valign-center" data-bind="ntsFormLabel: { required: true }">
+													<label data-bind="text: $vm.$i18n('KMT001_26')"></label>
+												</div>
+												<div class="cell valign-center">
+													<div>
+														<div tabindex="10" id="colorpicker" data-bind="ntsColorPicker: {
+															value: model().color, 
+															enable: true, width: 50
+														}"/>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="table mb-10">
+									<div class="cell w-35 valign-center" data-bind="ntsFormLabel: { required: true }">
+										<label data-bind="text: $vm.$i18n('KMT001_28')"></label>
+									</div>
+									<div class="cell valign-center">
+										<div class="table">
+											<div class="cell" tabindex="11" data-bind="ntsDatePicker: { 
+												value: model().expStartDate, 
+												name: '#[KMT001_30]',
+												required: true
+											 }"></div>
+											<div class="cell plr-5">~</div>
+											<div class="cell" tabindex="12" data-bind="ntsDatePicker: { 
+												value: model().expEndDate, 
+												name: '#[KMT001_31]',
+												required: true
+											 }"></div>
+										</div>
+									</div>
+								</div>
+
+								<div class="table mb-10">
+									<div class="cell w-35">
+										<div data-bind="ntsFormLabel: { required: false, constraint: 'TaskNote' }">
+											<label data-bind="text: $vm.$i18n('KMT001_34')"></label>
+										</div>
+									</div> 
+									<div class="cell valign-center w-75">
+										<textarea tabindex="13" data-bind="ntsMultilineEditor: { 
+											value: model().remarks, name: '#[KMT001_35]', constraint: 'TaskNote'  
+										}" />
+									</div>
+								</div>
+								<hr class="mb-10" />
+								<!-- A10_1 - A14_1 -->
+								<div data-bind="foreach: externalCodeList">
+									<div class="table mb-10">
+										<div class="cell w-35 valign-center" data-bind="ntsFormLabel: { required: false }">
+											<label data-bind="text: $vm.$i18n(code)"></label>
+										</div>
+										<div class="cell valign-center">
+											<div>
+												<input tabindex="14" data-bind="ntsTextEditor: {
+													value: $parent.model().externalCode[$index()],
+													required: false,
+													enable: true,
+													name: '#[' + code + ']'
+												}" />
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</ui:define>
+		</ui:composition>
+  </body>
+</html>
