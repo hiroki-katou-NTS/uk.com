@@ -27,7 +27,7 @@
                 <div class="margin-date-picker">
                   <!-- B2_2 表示期間 -->
                   <div id="B2_2" tabindex="1" class="ml-10" data-bind="ntsDateRangePicker: {
-                    required: false,
+                    required: true,
                     enable: true,
                     name: $i18n('CCG003_11'),
                     showNextPrevious: false,
@@ -55,7 +55,8 @@
                           </th>
                           <!-- B4_2 メッセージ内容 -->
                           <th class="pl-10">
-                            <a class="blue-link limited-label w-300" data-bind="text: content, click: $vm.onClickTargetLink.bind($vm, $data)"></a>
+                            <a class="blue-link w-300" style="display: inline-block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                              data-bind="text: content, click: $vm.onClickTargetLink.bind($vm, $data)"></a>
                           </th>
                         </tr>
                       </com:ko-foreach>
