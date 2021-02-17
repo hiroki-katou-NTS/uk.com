@@ -118,7 +118,7 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
                     int wplHierarchy = Integer.parseInt(content.getHierarchyCode());
                     int pageBreakWplHierarchy = query.getPageBreakWplHierarchy();
                     boolean isPageBreakByWpl = query.isPageBreakByWpl();
-                    if ((isPageBreakByWpl && i > 1) || (wplHierarchy > pageBreakWplHierarchy)) {
+                    if ((isPageBreakByWpl && i >= 1) && (wplHierarchy > pageBreakWplHierarchy)) {
                         pageBreaks.add(count);
                         pageNew = true;
                     }
@@ -174,7 +174,7 @@ public class AposeArbitraryPeriodSummaryTableGenerator extends AsposeCellsReport
                         val item = cumulativeWorkplaceDisplayContents.get(i);
                         val listValue = item.getListOfWorkplaces();
                         cells.copyRows(cellsTemplate, 10, count, 2);
-                        cells.get(count, 0).setValue(TextResource.localize("KWR007_305"));
+                        cells.get(count, 0).setValue(TextResource.localize("KWR007_305",item.getHierarchyCode()));
                         for (int k = 0; k < MAX_ITEM_ONE_LINE; k++) {
                             // Line 01:
                             cells.get(count, 1 + k).setValue(listValue.get(k).getValue());
