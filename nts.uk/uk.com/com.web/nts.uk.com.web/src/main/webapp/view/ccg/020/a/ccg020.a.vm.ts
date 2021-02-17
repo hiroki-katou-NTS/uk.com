@@ -222,7 +222,7 @@ module nts.uk.com.view.ccg020.a {
             if (list.length > 0) {
               $tableResult.append(
                 $('<p/>')
-                  .addClass('result-search')
+                  .addClass('result-search custom-limited-label')
                   .text(nts.uk.text.format(nts.uk.resource.getText('CCG002_8'), vm.valueSearch())
                 )
               );
