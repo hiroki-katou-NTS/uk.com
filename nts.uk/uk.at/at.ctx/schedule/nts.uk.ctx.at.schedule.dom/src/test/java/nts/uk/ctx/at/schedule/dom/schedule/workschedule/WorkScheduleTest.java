@@ -100,7 +100,7 @@ public class WorkScheduleTest {
 			
 		}};
 		
-		NtsAssert.businessException("Msg_430", 
+		NtsAssert.businessException("Msg_2119", 
 				() -> WorkSchedule.create(require, "empId", GeneralDate.ymd(2020, 11, 1), workInformation));
 		
 	}
@@ -653,8 +653,8 @@ public class WorkScheduleTest {
 		assertThat(value.getUseTime()).isEqualTo(timePaidUseTime2);
 		assertThat(value.getTimeList())
 			.extracting(
-				e -> e.startValue(),
-				e -> e.endValue())
+				e -> e.start(),
+				e -> e.end())
 			.containsExactly( tuple ( 100, 200 ));
 		
 	}
@@ -712,8 +712,8 @@ public class WorkScheduleTest {
 		assertThat(value1.getUseTime()).isEqualTo(timePaidUseTime1);
 		assertThat(value1.getTimeList())
 			.extracting(
-				e -> e.startValue(),
-				e -> e.endValue())
+				e -> e.start(),
+				e -> e.end())
 			.containsExactly( tuple ( 100, 200 ));
 		
 			// value2
@@ -721,8 +721,8 @@ public class WorkScheduleTest {
 		assertThat(value2.getUseTime()).isEqualTo(timePaidUseTime2);
 		assertThat(value2.getTimeList())
 			.extracting(
-				e -> e.startValue(),
-				e -> e.endValue())
+				e -> e.start(),
+				e -> e.end())
 			.containsExactly( tuple ( 300, 400 ));
 		
 	}
@@ -768,8 +768,8 @@ public class WorkScheduleTest {
 		assertThat(value.getUseTime()).isEqualTo(timePaidUseTime2);
 		assertThat(value.getTimeList())
 			.extracting(
-				e -> e.startValue(),
-				e -> e.endValue())
+				e -> e.start(),
+				e -> e.end())
 			.containsExactly( tuple ( 100, 200 ));
 		
 	}
@@ -822,16 +822,16 @@ public class WorkScheduleTest {
 		assertThat(value1.getUseTime()).isEqualTo(timePaidUseTime1);
 		assertThat(value1.getTimeList())
 			.extracting(
-				e -> e.startValue(),
-				e -> e.endValue())
+				e -> e.start(),
+				e -> e.end())
 			.containsExactly( tuple ( 100, 200 ));
 		
 		TimeVacation value2 = result.get(TimezoneToUseHourlyHoliday.WORK_NO2_AFTER);
 		assertThat(value2.getUseTime()).isEqualTo(timePaidUseTime2);
 		assertThat(value2.getTimeList())
 			.extracting(
-				e -> e.startValue(),
-				e -> e.endValue())
+				e -> e.start(),
+				e -> e.end())
 			.containsExactly( tuple ( 300, 400 ));
 		
 	}

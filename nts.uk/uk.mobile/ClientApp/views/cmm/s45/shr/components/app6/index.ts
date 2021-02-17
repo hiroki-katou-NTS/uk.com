@@ -35,6 +35,10 @@ export class CmmS45ShrComponentsApp6Component extends Vue {
         end: ''
     } as WorkHours;
 
+    public goWorkAtr?: boolean = false;
+
+    public backHomeAtr?: boolean = false;
+
     public breakTimes: Array<BreakTime> = [];
 
     public preApp: ExtraTime = {
@@ -161,11 +165,13 @@ export class CmmS45ShrComponentsApp6Component extends Vue {
         const self = this;
         self.bindWorkInfo();
         self.bindWorkHours();
+        self.bindGoWorkBackHomeAtr();
         self.bindBreakTime();
         self.bindHolidayTimes();
         self.bindOverTimes();
         self.bindReasons();
     }
+
     public bindHolidayTimes() {
         const self = this;
         let holidayTimes = [] as Array<HolidayTime>;
@@ -317,7 +323,7 @@ export class CmmS45ShrComponentsApp6Component extends Vue {
         if (!_.isNil(hdWorkDispInfoWithDateOutput)) {
             // AttendanceType.BREAKTIME
             {
-                let applicationTime = _.get(hdWorkDispInfoWithDateOutput, 'applicationTime.applicationTime') as Array<OvertimeApplicationSetting>;
+                let applicationTime = _.get(hdWorkDispInfoWithDateOutput, 'actualApplicationTime.applicationTime') as Array<OvertimeApplicationSetting>;
                 _.forEach(applicationTime, (item: OvertimeApplicationSetting) => {
                     let findResult = _.findLast(holidayTimes, (i: OverTime) => i.type == item.attendanceType && i.frameNo == String(item.frameNo)) as HolidayTime;
                     if (!_.isNil(findResult)) {
@@ -326,7 +332,7 @@ export class CmmS45ShrComponentsApp6Component extends Vue {
                 });
             }
             {
-                let midNightHolidayTimes = _.get(hdWorkDispInfoWithDateOutput, 'applicationTime.overTimeShiftNight.midNightHolidayTimes') as Array<HolidayMidNightTime>;
+                let midNightHolidayTimes = _.get(hdWorkDispInfoWithDateOutput, 'actualApplicationTime.overTimeShiftNight.midNightHolidayTimes') as Array<HolidayMidNightTime>;
                 _.forEach(midNightHolidayTimes, (item: HolidayMidNightTime) => {
                     let findResult: HolidayTime;
                     // AttendanceType.MIDDLE_BREAK_TIME
@@ -479,7 +485,7 @@ export class CmmS45ShrComponentsApp6Component extends Vue {
             let achivementExcess = _.get(appHdWorkDispInfo, 'calculationResult.actualOvertimeStatus.achivementExcess') as OutDateApplication;
             // AttendanceType.NORMALOVERTIME
             {
-                let applicationTime = _.get(hdWorkDispInfoWithDateOutput, 'applicationTime.applicationTime') as Array<OvertimeApplicationSetting>;
+                let applicationTime = _.get(hdWorkDispInfoWithDateOutput, 'actualApplicationTime.applicationTime') as Array<OvertimeApplicationSetting>;
                 _.forEach(applicationTime, (item: OvertimeApplicationSetting) => {
                     let findResult = _.findLast(overTimes, (i: OverTime) => i.type == item.attendanceType && i.frameNo == String(item.frameNo)) as OverTime;
                     if (!_.isNil(findResult)) {
@@ -496,7 +502,7 @@ export class CmmS45ShrComponentsApp6Component extends Vue {
             }
             // AttendanceType.MIDNIGHT_OUTSIDE
             {
-                let overTimeMidNight = _.get(hdWorkDispInfoWithDateOutput, 'applicationTime.overTimeShiftNight.overTimeMidNight');
+                let overTimeMidNight = _.get(hdWorkDispInfoWithDateOutput, 'actualApplicationTime.overTimeShiftNight.overTimeMidNight');
                 let findResult = _.findLast(overTimes, (i: OverTime) => i.type == AttendanceType.MIDNIGHT_OUTSIDE) as OverTime;
                 if (!_.isNil(findResult)) {
                     findResult.actualApp.actualTime = overTimeMidNight || 0;
@@ -513,10 +519,18 @@ export class CmmS45ShrComponentsApp6Component extends Vue {
         self.overTimes = overTimes;
     }
 
+    public bindGoWorkBackHomeAtr() {
+        const self = this;
+        if (self.c14) {
+            self.goWorkAtr = _.get(self.dataOutput, 'appHolidayWork.goWorkAtr');
+            self.backHomeAtr = _.get(self.dataOutput, 'appHolidayWork.backHomeAtr');
+        }
+    }
+
     public bindBreakTime() {
         const self = this;
         let breakTime = [] as Array<BreakTime>;
-        _.range(1, 10)
+        _.range(1, 11)
         .forEach((index: number) => {
             let result = _.findLast(_.get(self.dataOutput, 'appHolidayWork.breakTimeList'), (i: TimeZoneWithWorkNo) => i.workNo == index) as any;
             let findResult = _.get(result, 'timeZone') as TimeZoneNew;
@@ -535,9 +549,7 @@ export class CmmS45ShrComponentsApp6Component extends Vue {
         const self = this;
         let appHolidayWork = self.dataOutput.appHolidayWork as AppHolidayWork;
         let appHdWorkDispInfo = self.dataOutput.appHdWorkDispInfo as AppHdWorkDispInfo;
-        let nameType = _.get(appHdWorkDispInfo, 'hdWorkDispInfoWithDateOutput.initWorkTypeName');
-        let nameTime = _.get(appHdWorkDispInfo, 'hdWorkDispInfoWithDateOutput.initWorkTimeName');
-        self.createWorkInfo(_.get(appHolidayWork, 'workInformation.workType'), _.get(appHolidayWork, 'workInformation.workTime'), nameType, nameTime);
+        self.createWorkInfo(_.get(appHolidayWork, 'workInformation.workType'), _.get(appHolidayWork, 'workInformation.workTime'));
     }
 
     public bindWorkHours() {
@@ -623,7 +635,7 @@ export class CmmS45ShrComponentsApp6Component extends Vue {
                 let workTypes = appHdWorkDispInfo.hdWorkDispInfoWithDateOutput.workTypeList;
                 let resultWorkType = 
                     _.find(workTypes, (i: any) => i.workTypeCode == workType.code);
-                workType.name = resultWorkType ? (resultWorkType.name || '')  : self.$i18n('KAFS05_55');
+                workType.name = resultWorkType ? (resultWorkType.name || '')  : self.$i18n('KAFS10_28');
             }
             if (nameTime) {
                 workTime.name = nameTime;
@@ -631,7 +643,7 @@ export class CmmS45ShrComponentsApp6Component extends Vue {
                 let workTimes = appHdWorkDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst;
                 let resultWorkTime = 
                         _.find(workTimes, (i: any) => i.worktimeCode == workTime.code);
-                workTime.name = resultWorkTime ? (_.get(resultWorkTime, 'workTimeDisplayName.workTimeName') || '') : self.$i18n('KAFS05_55');
+                workTime.name = resultWorkTime ? (_.get(resultWorkTime, 'workTimeDisplayName.workTimeName') || '') : self.$i18n('KAFS10_28');
             }
         }
         let workInfo = {} as WorkInfo;
@@ -749,6 +761,16 @@ export class CmmS45ShrComponentsApp6Component extends Vue {
         const self = this;
 
         return self.c7 && self.c12 && self.c13;
+    }
+
+    //  「休日出勤申請起動時の表示情報．申請表示情報．申請表示情報(基準日関係なし)．申請承認設定のOutputを利用
+    //  「休出申請設定」．直行直帰の機能の利用設定 == true AND 「申請詳細設定．時刻計算利用区分」が利用する
+    public get c14() {
+        const self = this;
+        let useDirectBounceFunction = _.get(self.dataOutput, 'appHdWorkDispInfo.holidayWorkAppSet.useDirectBounceFunction');
+        let timeCalUse = _.get(self.dataOutput, 'appHdWorkDispInfo.holidayWorkAppSet.applicationDetailSetting.timeCalUse');
+
+        return useDirectBounceFunction == NotUseAtr.USE && timeCalUse == NotUseAtr.USE;
     }
 }
 const API = {

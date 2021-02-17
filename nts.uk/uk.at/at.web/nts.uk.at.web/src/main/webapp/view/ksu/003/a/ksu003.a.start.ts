@@ -8,9 +8,6 @@ module nts.uk.at.view.ksu003.a {
 				$(window).resize(function() {
 					screenModel.setPositionButonDownAndHeightGrid();
 				});
-				setTimeout(() => {
-					$('#period-setting').focus();
-				}, 0.5);
 			});
 			initEvent();
 			initEvent2();
@@ -61,11 +58,9 @@ module nts.uk.at.view.ksu003.a {
 	$(window).resize(function() {
 		let self = this;
 		if (window.innerHeight < 700) {
-			$("#note-sort").css({ "margin-left": 1022 + 'px !important' });
 			$(".close").css({ "margin-right": 45 + 'px !important' });
 			$("#note-color").css({ "margin-right": 57 + 'px !important' });
 		} else {
-			$("#note-sort").css({ "margin-left": 1043 + 'px ' });
 			$("hr-row2").css({ "width": 1237 + 'px' });
 		}
 	});

@@ -124,7 +124,11 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 		        vm.application().opReversionReason(successData.appDetailScreenInfo.application.opReversionReason);
 		        vm.application().opStampRequestMode(successData.appDetailScreenInfo.application.opStampRequestMode);
                 vm.appDispInfoStartupOutput(successData);
-				vm.kaf011BViewModel(new Kaf011BViewModel(vm.childParam));
+				if(vm.childParam.appType() == AppType.COMPLEMENT_LEAVE_APPLICATION){
+					vm.kaf011BViewModel(new Kaf011BViewModel(vm.childParam));
+				}else{
+					vm.kaf011BViewModel(null);
+				}
                 let viewContext: any = __viewContext,
                     loginID = viewContext.user.employeeId,
                     loginFlg = successData.appDetailScreenInfo.application.enteredPerson == loginID || successData.appDetailScreenInfo.application.employeeID == loginID,

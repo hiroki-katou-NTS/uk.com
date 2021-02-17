@@ -14,6 +14,7 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.text.IdentifierUtil;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.assist.dom.deletedata.CategoryDeletion;
 import nts.uk.ctx.sys.assist.dom.deletedata.DataDeletionPatternSetting;
 import nts.uk.ctx.sys.assist.dom.deletedata.DataDeletionPatternSettingRepository;
@@ -76,11 +77,13 @@ public class AutoDeletionPreparationCommandHandler extends CommandHandlerWithRes
 			Integer monthlyReferMonth = this.getTargetMonth(patternSetting.getMonthlyReferMonth());
 			boolean disableMonth = monthlyReferYear == null || monthlyReferMonth == null;
 			String monthStartDate = disableMonth ? null
-					: String.format("%d%d", today.addYears(monthlyReferYear).year(), // （システム日付（今年） ー
+					: String.format("%d%s", today.addYears(monthlyReferYear).year(), // （システム日付（今年） ー
 																						// データ削除のパターン設定.月次参照年）
-							today.addMonths(monthlyReferYear).month()); // +（システム日付（今月） ー データ削除のパターン設定.月次参照月）
+							StringUtil.padLeft(String.valueOf(today.addMonths(monthlyReferYear).month()), 2, '0')); // +（システム日付（今月） ー データ削除のパターン設定.月次参照月）
 			// 月次保存終了年月
-			String monthEndDate = disableMonth ? null : String.format("%d%d", today.year(), today.month()); // システム日付（年月）
+			String monthEndDate = disableMonth ? null : String.format("%d%s", 
+					today.year(), 
+					StringUtil.padLeft(String.valueOf(today.month()), 2, '0')); // システム日付（年月）
 			// 年次開始年
 			Integer annualReferYear = this.getTargetYear(patternSetting.getAnnualReferYear());
 			boolean disableYear = annualReferYear == null;

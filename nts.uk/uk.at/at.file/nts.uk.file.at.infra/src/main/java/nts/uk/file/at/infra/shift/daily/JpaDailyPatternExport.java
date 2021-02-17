@@ -36,8 +36,8 @@ public class JpaDailyPatternExport extends JpaRepository implements DailyPattern
             +" ROW_NUMBER() OVER (PARTITION BY T1.CD ORDER BY T1.CD, T1.NAME,T2.CYCLE_ORDER) AS ROW_NUMBER "
             +" FROM KSCMT_WORKING_CYCLE T1 "
             +" INNER JOIN KSCMT_WORKING_CYCLE_DTL T2 ON T1.CD = T2.CD AND T2.CID = T1.CID  "
-            +" LEFT JOIN KSHMT_WORKTYPE T3 ON T2.WKTP_CD = T3.CD AND T3.CID = T1.CID"
-            +" LEFT JOIN KSHMT_WORK_TIME_SET T4 ON T2.WKTM_CD = T4.WORKTIME_CD AND T4.CID = T1.CID "
+            +" LEFT JOIN KSHMT_WKTP T3 ON T2.WKTP_CD = T3.CD AND T3.CID = T1.CID"
+            +" LEFT JOIN KSHMT_WT T4 ON T2.WKTM_CD = T4.WORKTIME_CD AND T4.CID = T1.CID "
             +" WHERE T1.CID = ? ) "
             +" TABLE_RESULT;";
 

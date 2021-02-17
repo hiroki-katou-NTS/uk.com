@@ -214,6 +214,7 @@ export class CmmS45CComponent extends Vue {
         self.showApproval = false;
         self.appCount++;
         self.currentApp = self.listAppMeta[self.appCount];
+        self.reasons = null;
         self.isLoadingComplete = false;
         self.$mask('show');
         self.initData();
@@ -226,6 +227,7 @@ export class CmmS45CComponent extends Vue {
         self.showApproval = false;
         self.appCount--;
         self.currentApp = self.listAppMeta[self.appCount];
+        self.reasons = null;
         self.isLoadingComplete = false;
         self.$mask('show');
         self.initData();
@@ -524,7 +526,7 @@ export class CmmS45CComponent extends Vue {
         }
         let appDate = vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.inputDate;
 
-        return vm.$dt(new Date(appDate), 'YYYY/MM/DD hh:mm');
+        return vm.$dt(new Date(appDate), 'YYYY/MM/DD HH:mm');
     }
 
     get comboReasonDisp() {

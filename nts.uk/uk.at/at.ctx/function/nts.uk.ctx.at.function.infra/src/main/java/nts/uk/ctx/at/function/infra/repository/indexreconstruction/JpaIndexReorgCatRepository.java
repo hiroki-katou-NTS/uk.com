@@ -1,14 +1,14 @@
 package nts.uk.ctx.at.function.infra.repository.indexreconstruction;
 
+import java.util.List;
+import java.util.Optional;
+
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.function.dom.indexreconstruction.IndexReorgCat;
 import nts.uk.ctx.at.function.dom.indexreconstruction.repository.IndexReorgCatRepository;
 import nts.uk.ctx.at.function.infra.entity.indexreconstruction.KfnctIndexReorgCat;
-import nts.uk.shr.com.context.AppContexts;
-
-import javax.ejb.Stateless;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * The Class JpaIndexReorgCatRepository.
@@ -85,9 +85,7 @@ public class JpaIndexReorgCatRepository extends JpaRepository implements IndexRe
 	 * @return the entity インデックス再構成カテゴリ
 	 */
 	private KfnctIndexReorgCat toEntity(IndexReorgCat domain) {
-		String companyId = AppContexts.user().companyId();
-		String contractCode = AppContexts.user().contractCode();
-		return new KfnctIndexReorgCat(companyId, contractCode, domain);
+		return new KfnctIndexReorgCat(domain);
 	}
 
 }

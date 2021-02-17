@@ -10,7 +10,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.sys.auth.pub.service.ListCompanyService;
-import nts.uk.ctx.sys.gateway.dom.login.adapter.ListCompanyAdapter;
+import nts.uk.ctx.sys.gateway.dom.loginold.adapter.ListCompanyAdapter;
 
 /**
  * The Class ListCompanyAdapterImpl.

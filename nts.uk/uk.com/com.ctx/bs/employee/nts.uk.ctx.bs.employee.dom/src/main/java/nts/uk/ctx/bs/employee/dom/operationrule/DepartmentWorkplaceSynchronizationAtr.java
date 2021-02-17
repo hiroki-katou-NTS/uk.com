@@ -24,5 +24,4 @@ public enum DepartmentWorkplaceSynchronizationAtr {
 	public static DepartmentWorkplaceSynchronizationAtr of(int value) {
 		return EnumAdaptor.valueOf(value, DepartmentWorkplaceSynchronizationAtr.class);
 	}
-
 }

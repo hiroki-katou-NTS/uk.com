@@ -134,6 +134,12 @@ export class KafS00CComponent extends Vue {
         self.$emit('kaf000CChangeAppReason', value);
     }
 
+    @Watch('$errors')
+    public errorWatcher() {
+        const self = this;
+        self.$emit('kafs00CValid', self.$valid);
+    }
+
 }
 
 interface ReasonTypeItemDto {

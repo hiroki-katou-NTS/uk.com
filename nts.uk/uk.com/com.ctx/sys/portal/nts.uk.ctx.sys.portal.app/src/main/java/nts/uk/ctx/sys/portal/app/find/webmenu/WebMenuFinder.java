@@ -1,5 +1,7 @@
 package nts.uk.ctx.sys.portal.app.find.webmenu;
 
+import static java.util.stream.Collectors.*;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -13,11 +15,13 @@ import javax.inject.Inject;
 
 import org.apache.logging.log4j.util.Strings;
 
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.i18n.I18NResources;
 import nts.arc.scoped.request.RequestContextProvider;
 import nts.gul.collection.CollectionUtil;
+import nts.gul.util.OptionalUtil;
 import nts.uk.ctx.sys.portal.app.find.roleset.RoleSetPortalFinder;
 import nts.uk.ctx.sys.portal.app.find.standardmenu.StandardMenuDto;
 import nts.uk.ctx.sys.portal.app.find.webmenu.detail.MenuBarDetailDto;
@@ -45,6 +49,8 @@ import nts.uk.ctx.sys.portal.dom.webmenu.smartphonemenu.SPMenuRepository;
 import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleByRoleTiesRepository;
 import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetLinkWebMenu;
 import nts.uk.ctx.sys.portal.dom.webmenu.webmenulinking.RoleSetLinkWebMenuRepository;
+import nts.uk.ctx.sys.shared.dom.user.builtin.BuiltInUser;
+import nts.uk.shr.com.constants.DefaultSettingKeys;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.AppContextsConfig;
 import nts.uk.shr.com.context.LoginUserContext;
@@ -188,28 +194,36 @@ public class WebMenuFinder {
 	 */
 	private List<MenuCodeDto> getMenuSet(String companyId, String userId) {
 		if (companyId == null || userId == null) return null;
-		// Get role ties
-		List<String> roleIds = roleAdapter.getRoleId(userId);
-		List<MenuCodeDto> roleMenuCodes = new ArrayList<>();
-		roleIds.stream().forEach(r -> {
-			roleTiesRepository.getByRoleIdAndCompanyId(r, companyId)
-							.ifPresent(t -> roleMenuCodes.add(new MenuCodeDto(t.getCompanyId(), t.getWebMenuCd().v())));
-		});
-		
+
 		List<MenuCodeDto> menuCodes = new ArrayList<>();
-		// Get role set
-		Optional<String> roleSetCdOpt = roleSetFinder.getRoleSetCode(companyId, userId);
-		if (roleSetCdOpt.isPresent()) {
-			List<RoleSetLinkWebMenu> menus = roleSetLinkMenuRepo.findByRoleSetCd(companyId, roleSetCdOpt.get());
-			menuCodes = menus.stream().map(m -> new MenuCodeDto(m.getCompanyId(), m.getWebMenuCd().v())).collect(Collectors.toList());
+		
+		// Get role ties
+		List<String> roleIds;
+		if (BuiltInUser.USER_ID.equals(userId)) {
+			roleIds = BuiltInUser.allRoleIds();
+		} else {
+			roleIds = roleAdapter.getRoleId(userId);
 		}
 		
-		for (MenuCodeDto menuCode : roleMenuCodes) {
-			if (menuCodes.stream().noneMatch(m -> menuCode.equals(m))) {
-				menuCodes.add(menuCode);
-			}
+		roleIds.stream()
+				.map(r -> roleTiesRepository.getByRoleIdAndCompanyId(r, companyId))
+				.flatMap(OptionalUtil::stream)
+				.map(t -> new MenuCodeDto(t.getCompanyId(), t.getWebMenuCd().v()))
+				.forEach(m -> menuCodes.add(m));
+		
+		// Get role set
+		if (!BuiltInUser.USER_ID.equals(userId)) {
+			
+			roleSetFinder.getRoleSetCode(companyId, userId).ifPresent(roleSetCode -> {
+				
+				roleSetLinkMenuRepo.findByRoleSetCd(companyId, roleSetCode).stream()
+						.map(m -> new MenuCodeDto(m.getCompanyId(), m.getWebMenuCd().v()))
+						.forEach(m -> menuCodes.add(m));
+			});
 		}
-		return menuCodes;
+		
+		// 重複排除
+		return menuCodes.stream().distinct().collect(toList());
 	}
 	
 	/**
@@ -326,14 +340,22 @@ public class WebMenuFinder {
 	 * @return program string
 	 */
 	public List<ProgramNameDto> getProgram() {
-		String companyId = AppContexts.user().companyId();
 		String pgId = RequestContextProvider.get().get(AppContextsConfig.KEY_PROGRAM_ID);
 		if (pgId == null) return new ArrayList<>();
+		
 		String programId = pgId, screenId = null;
 		if (pgId.length() > 6) {
 			 programId = pgId.substring(0, 6);
 			 screenId = pgId.substring(6);
 		}
+		
+		String companyId = AppContexts.user().companyId();
+		
+		// ビルトインユーザならゼロ会社のメニューを参照
+		if (BuiltInUser.USER_ID.equals(AppContexts.user().userId())) {
+			companyId = DefaultSettingKeys.COMPANY_ID;
+		}
+		
 		return standardMenuRepository.getProgram(companyId, programId, screenId).stream()
 				.map(m -> new ProgramNameDto(m.getQueryString(), pgId + " " + m.getDisplayName()))
 				.collect(Collectors.toList());

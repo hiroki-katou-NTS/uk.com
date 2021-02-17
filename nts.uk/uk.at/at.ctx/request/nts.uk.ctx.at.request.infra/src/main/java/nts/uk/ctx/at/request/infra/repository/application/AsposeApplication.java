@@ -10,6 +10,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 
 import com.aspose.cells.Cell;
@@ -279,7 +280,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		case EARLY_LEAVE_CANCEL_APPLICATION:
 			return "application/KAF004_template.xlsx";
 		case COMPLEMENT_LEAVE_APPLICATION:
-			return "";
+			return "application/KAF011_template.xlsx";
 		case OPTIONAL_ITEM_APPLICATION:
 			return "application/KAF020_template.xlsx";
 		default:
@@ -509,7 +510,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		if(printContentOfApp.getOpAppReason() != null) {
 			appReason = printContentOfApp.getOpAppReason().v();
 		}
-		reasonContent.setValue(appReasonStandard + "\n" + appReason);
+		reasonContent.setValue(appReasonStandard + (StringUtils.isEmpty(appReasonStandard) ? Strings.EMPTY : "\n") + appReason);
 	}
 
 }

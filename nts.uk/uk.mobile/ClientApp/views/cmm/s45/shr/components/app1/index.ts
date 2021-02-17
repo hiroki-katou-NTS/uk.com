@@ -156,6 +156,13 @@ export class CmmS45ShrComponentsApp1Component extends Vue {
 
         return c2;
     }
+    //休暇申請. 反映情報．勤務情報．就業時間帯変更する
+    public get isChangeWork() {
+        const self = this;
+        let isChangeWork = _.get(self.dataOutput, 'applyForLeaveDto.reflectFreeTimeApp.workChangeUse') == NotUseAtr.USE;
+
+        return isChangeWork;
+    }
 
     // 休暇申請起動時の表示情報．就業時間帯表示フラグ = true
     public get c9() {
@@ -473,7 +480,7 @@ export class CmmS45ShrComponentsApp1Component extends Vue {
         workType.code = codeType || '';
 
         let workTime = {} as Work;
-        workTime.code = codeTime || (self.c2 ? self.$i18n('KAFS06_51') : self.$i18n('KAF006_55'));
+        workTime.code = codeTime || (self.isChangeWork ? self.$i18n('KAFS06_51') : self.$i18n('KAFS06_55'));
         let workTypes = _.get(self.dataOutput, 'appAbsenceStartInfoDto.workTypeLst');
 
         let resultWorkType = 

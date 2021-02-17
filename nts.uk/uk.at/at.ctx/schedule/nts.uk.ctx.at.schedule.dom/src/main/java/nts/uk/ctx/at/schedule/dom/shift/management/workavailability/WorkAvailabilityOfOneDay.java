@@ -80,8 +80,8 @@ public class WorkAvailabilityOfOneDay implements DomainAggregate{
 	 * 
 	 * @return 出した勤務希望が休日の種類かどうか
 	 */
-	public boolean isHolidayAvailability() {
-		return this.workAvailability.isHolidayAvailability();
+	public boolean isHolidayAvailability(Require require) {
+		return this.workAvailability.isHolidayAvailability(require);
 	}
 	
 	/**

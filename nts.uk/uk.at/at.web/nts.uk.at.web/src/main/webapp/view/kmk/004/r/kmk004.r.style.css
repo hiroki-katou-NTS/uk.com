@@ -1,0 +1,19 @@
+@import url("base.css");
+
+#nts-component-tree {
+	padding: 10px 20px 20px 20px !important;
+}
+
+#employment-list .ntsSearchBox {
+	width: 155px !important;
+}
+
+#employment-list  .search-btn {
+	min-width: 40px !important;
+	width: 61px !important;
+}
+
+#employment-list  .clear-btn {
+	min-width: 40px !important;
+	width: 51px !important;
+}

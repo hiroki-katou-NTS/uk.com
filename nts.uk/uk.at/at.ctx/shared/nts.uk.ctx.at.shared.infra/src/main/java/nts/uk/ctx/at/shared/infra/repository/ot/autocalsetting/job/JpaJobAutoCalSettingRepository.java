@@ -19,7 +19,7 @@ import javax.persistence.criteria.Root;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.job.JobAutoCalSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.job.JobAutoCalSettingRepository;
-import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.job.KshmtAutoJobCalSet;
+import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.job.KrcmtCalcSetJob;
 import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.job.KshmtAutoJobCalSetPK;
 import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.job.KshmtAutoJobCalSetPK_;
 import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.job.KshmtAutoJobCalSet_;
@@ -47,15 +47,15 @@ public class JpaJobAutoCalSettingRepository extends JpaRepository implements Job
 	 * @param jobAutoCalSetting the job auto cal setting
 	 * @return the kshmt auto job cal set
 	 */
-	private KshmtAutoJobCalSet toEntity(JobAutoCalSetting jobAutoCalSetting) {
-		Optional<KshmtAutoJobCalSet> optinal = this.queryProxy().find(
+	private KrcmtCalcSetJob toEntity(JobAutoCalSetting jobAutoCalSetting) {
+		Optional<KrcmtCalcSetJob> optinal = this.queryProxy().find(
 				new KshmtAutoJobCalSetPK(jobAutoCalSetting.getCompanyId().v(), jobAutoCalSetting.getJobId().v()),
-				KshmtAutoJobCalSet.class);
-		KshmtAutoJobCalSet entity = null;
+				KrcmtCalcSetJob.class);
+		KrcmtCalcSetJob entity = null;
 		if (optinal.isPresent()) {
 			entity = optinal.get();
 		} else {
-			entity = new KshmtAutoJobCalSet();
+			entity = new KrcmtCalcSetJob();
 		}
 		JpaJobAutoCalSettingSetMemento memento = new JpaJobAutoCalSettingSetMemento(entity);
 		jobAutoCalSetting.saveToMemento(memento);
@@ -69,8 +69,8 @@ public class JpaJobAutoCalSettingRepository extends JpaRepository implements Job
 	public Optional<JobAutoCalSetting> getJobAutoCalSetting(String companyId, String jobId) {
 		KshmtAutoJobCalSetPK kshmtAutoJobCalSetPK = new KshmtAutoJobCalSetPK(companyId, jobId);
 
-		Optional<KshmtAutoJobCalSet> optKshmtAutoJobCalSet = this.queryProxy().find(kshmtAutoJobCalSetPK,
-				KshmtAutoJobCalSet.class);
+		Optional<KrcmtCalcSetJob> optKshmtAutoJobCalSet = this.queryProxy().find(kshmtAutoJobCalSetPK,
+				KrcmtCalcSetJob.class);
 
 		if (!optKshmtAutoJobCalSet.isPresent()) {
 			return Optional.empty();
@@ -84,7 +84,7 @@ public class JpaJobAutoCalSettingRepository extends JpaRepository implements Job
 	 */
 	@Override
 	public void delete(String cid, String jobId) {
-		this.commandProxy().remove(KshmtAutoJobCalSet.class, new KshmtAutoJobCalSetPK(cid, jobId));
+		this.commandProxy().remove(KrcmtCalcSetJob.class, new KshmtAutoJobCalSetPK(cid, jobId));
 
 	}
 
@@ -107,8 +107,8 @@ public class JpaJobAutoCalSettingRepository extends JpaRepository implements Job
 		EntityManager em = this.getEntityManager();
 
 		CriteriaBuilder builder = em.getCriteriaBuilder();
-		CriteriaQuery<KshmtAutoJobCalSet> cq = builder.createQuery(KshmtAutoJobCalSet.class);
-		Root<KshmtAutoJobCalSet> root = cq.from(KshmtAutoJobCalSet.class);
+		CriteriaQuery<KrcmtCalcSetJob> cq = builder.createQuery(KrcmtCalcSetJob.class);
+		Root<KrcmtCalcSetJob> root = cq.from(KrcmtCalcSetJob.class);
 
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 

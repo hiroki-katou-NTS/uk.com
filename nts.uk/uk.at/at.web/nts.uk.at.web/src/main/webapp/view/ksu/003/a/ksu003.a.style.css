@@ -1,15 +1,15 @@
 /* A1_4 */
 #contents-area {
 	height: auto !important;
+	margin-top: -12px;
 }
 
 #extable-ksu003 {
 	width: auto !important;
 }
 
-.close {
-	float: right;
-	margin-right: 20px;
+.proceed {
+	margin-left: 20px !important;
 }
 
 /* A2_1 */
@@ -18,7 +18,7 @@
 	border: 1px solid #cccccc !important;
 	width: 310px;
 	height: 25px;
-	margin-left: 37px;
+	margin-left: 25px;
 }
 .ui-igcombo-list{
 	max-height: 130px !important;
@@ -88,7 +88,7 @@
 
 #operation-unit {
 	margin-top: 5px;
-	margin-left: 10px;
+	margin-left: -1px;
 }
 
 #functon-area-row3-left {
@@ -96,7 +96,7 @@
 }
 
 #check-time, #check-name {
-	margin-left: 40px;
+	margin-left: 30px;
 }
 
 #hr-row2 {
@@ -106,7 +106,7 @@
 .toLeft {
 	width: 27px;
 	height: 15px;
-	margin-left: 577px;
+	margin-left: 585px;
 	float: left;
 	margin-top: -10px;
 }
@@ -157,7 +157,7 @@
 }
 
 #extable-ksu003 td, #extable-ksu003 td>* {
-	font-size: 10.5px !important;
+	font-size: 10.5px;
 }
 
 .ex-editor > input {
@@ -196,8 +196,8 @@
 	white-space: nowrap;
 } 
 #note-sort {
-	margin-left: 1171px;
-	margin-top: -2px !important;
+	margin-left: 35px;
+	margin-top: 5px !important;
 }
 
 html {

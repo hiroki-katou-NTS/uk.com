@@ -126,7 +126,7 @@ public class WorkSchedule implements DomainAggregate {
 			){
 		
 		if (! workInformation.checkNormalCondition(require) ) {
-			throw new BusinessException("Msg_430");
+			throw new BusinessException("Msg_2119");
 		}
 			
 		return new WorkSchedule(
@@ -478,7 +478,7 @@ public class WorkSchedule implements DomainAggregate {
 	public void handCorrectBreakTimeList(Require require, List<TimeSpanForCalc> newBreakTimeList) {
 		
 		List<TimeSpanForCalc> sortedBreakTimeList = newBreakTimeList.stream()
-				.sorted(Comparator.comparingInt(TimeSpanForCalc::startValue))
+				.sorted(Comparator.comparingInt(TimeSpanForCalc::start))
 				.collect(Collectors.toList());;
 				
 		List<BreakTimeSheet> newBreakTimeSheets = 

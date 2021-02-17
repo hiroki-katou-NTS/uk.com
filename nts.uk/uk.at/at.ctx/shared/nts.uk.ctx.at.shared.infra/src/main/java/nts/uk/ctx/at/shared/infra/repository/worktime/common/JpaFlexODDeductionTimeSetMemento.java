@@ -5,7 +5,7 @@
 package nts.uk.ctx.at.shared.infra.repository.worktime.common;
 
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTimeSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOdFixRest;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFiHolTs;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -14,7 +14,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class JpaFlexODDeductionTimeSetMemento implements DeductionTimeSetMemento{
 	
 	/** The entity. */
-	private KshmtFlexOdFixRest entity;
+	private KshmtWtFleBrFiHolTs entity;
 	
 
 	/**
@@ -22,7 +22,7 @@ public class JpaFlexODDeductionTimeSetMemento implements DeductionTimeSetMemento
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlexODDeductionTimeSetMemento(KshmtFlexOdFixRest entity) {
+	public JpaFlexODDeductionTimeSetMemento(KshmtWtFleBrFiHolTs entity) {
 		super();
 		this.entity = entity;
 	}

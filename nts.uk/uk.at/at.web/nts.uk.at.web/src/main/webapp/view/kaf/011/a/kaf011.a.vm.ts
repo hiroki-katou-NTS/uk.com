@@ -3,6 +3,7 @@
 module nts.uk.at.view.kaf011.a.viewmodel {
 	
 	import Kaf000AViewModel = nts.uk.at.view.kaf000.a.viewmodel.Kaf000AViewModel;
+	import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
 	import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
 	import Application = nts.uk.at.view.kaf011.Application;
 	import RecruitmentApp = nts.uk.at.view.kaf011.RecruitmentApp;
@@ -65,16 +66,18 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 					vm.displayInforWhenStarting(data);
 					vm.isSendMail(data.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.manualSendMailAtr == 1);
 					vm.remainDays(data.remainingHolidayInfor.remainDays + '日');
-					vm.appCombinaDipslay(data.substituteHdWorkAppSet.simultaneousApplyRequired == 1);
+					vm.appCombinaDipslay(data.substituteHdWorkAppSet.simultaneousApplyRequired == 0);
 					vm.recruitmentApp.bindingScreenA(data.applicationForWorkingDay, data);
 					vm.absenceLeaveApp.bindingScreenA(data.applicationForHoliday, data);
 					vm.comment.update(data.substituteHdWorkAppSet);
 					$('#isSendMail').css({'display': 'inline-block'});
 					$('#contents-area').css({'display': ''});
 					$('#functions-area').css({'opacity': ''});
+					CommonProcess.checkUsage(true, "#recAppDate", vm);
+					$("#recAppDate").focus();
 					vm.$blockui("hide"); 
 				}).fail((failData: any) => {
-					vm.$dialog.error(failData).then(() => { vm.$jump("com", "/view/ccg/008/a/index.xhtml"); });
+					vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds }).then(() => { vm.$jump("com", "/view/ccg/008/a/index.xhtml"); });
 				}).always(() => {
 					
 				});
@@ -83,7 +86,7 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 				if (failData.messageId === "Msg_43") {
 					vm.$dialog.error(failData).then(() => { vm.$jump("com", "/view/ccg/008/a/index.xhtml"); });
 				} else {
-					vm.$dialog.error(failData);
+					vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds });
 				}
 				vm.$blockui("hide"); 
 			});
@@ -102,14 +105,13 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 					displayInforWhenStartingdto.rec = null;
 					displayInforWhenStartingdto.abs = null;
 					vm.$ajax('at/request/application/holidayshipment/changeRecDate',{workingDate: moment(value).format('YYYY/MM/DD'), holidayDate: holidayDate, displayInforWhenStarting: displayInforWhenStartingdto}).then((data: any) =>{
-						vm.appDispInfoStartupOutput().appDispInfoWithDateOutput = data.appDispInfoStartup.appDispInfoWithDateOutput;
+						vm.appDispInfoStartupOutput(data.appDispInfoStartup);
 						vm.displayInforWhenStarting(data);
 						if(data.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.recordDate == 1){
-							vm.recruitmentApp.workTypeList(data.applicationForWorkingDay.workTypeList);
-							vm.recruitmentApp.workInformation.workTime(data.applicationForWorkingDay.workTime);
-							vm.recruitmentApp.workInformation.workType(data.applicationForWorkingDay.workType);
+							vm.recruitmentApp.bindingScreenA(data.applicationForWorkingDay, data);					
 						}
 						vm.absenceLeaveApp.workInformation.workType(data.applicationForHoliday.workType);
+						CommonProcess.checkUsage(true, "#recAppDate", vm);
 					}).always(() => {
 						vm.$blockui("hide"); 
 					});
@@ -124,13 +126,12 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 					displayInforWhenStartingdto.abs = null;
 					let workingDate = (vm.appCombinaSelected() != 2 && vm.recruitmentApp.application.appDate() && !$('#recAppDate').ntsError('hasError')) ? moment(vm.recruitmentApp.application.appDate()).format('YYYY/MM/DD'): null;
 					vm.$ajax('at/request/application/holidayshipment/changeAbsDate',{workingDate: workingDate, holidayDate: moment(value).format('YYYY/MM/DD'), displayInforWhenStarting: displayInforWhenStartingdto}).then((data: any) =>{
-						vm.appDispInfoStartupOutput().appDispInfoWithDateOutput = data.appDispInfoStartup.appDispInfoWithDateOutput;
+						vm.appDispInfoStartupOutput(data.appDispInfoStartup)
 						vm.displayInforWhenStarting(data);
 						if(data.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.recordDate == 1){
-							vm.absenceLeaveApp.workTypeList(data.applicationForWorkingDay.workTypeList);
-							vm.absenceLeaveApp.workInformation.workTime(data.applicationForWorkingDay.workTime);
-							vm.absenceLeaveApp.workInformation.workType(data.applicationForWorkingDay.workType);
+							vm.absenceLeaveApp.bindingScreenA(data.applicationForHoliday, data);
 						}
+						CommonProcess.checkUsage(true, "#absAppDate", vm);
 					}).always(() => {
 						vm.$blockui("hide"); 
 					});
@@ -177,12 +178,15 @@ module nts.uk.at.view.kaf011.a.viewmodel {
 						}); 
 					}
 				console.log(data);	
+				vm.$blockui("show");
 				vm.$ajax('at/request/application/holidayshipment/save', data).then(() =>{
+					vm.$blockui("hide");
 					vm.$dialog.info({ messageId: "Msg_15" }).done(()=>{
 						vm.$jump("/view/kaf/011/a/index.xhtml", vm.params);
 					});
 				}).fail((failData) => {
 					vm.$dialog.error({ messageId: failData.messageId, messageParams: failData.parameterIds });
+					vm.$blockui("hide");
 				});
 			}
 			

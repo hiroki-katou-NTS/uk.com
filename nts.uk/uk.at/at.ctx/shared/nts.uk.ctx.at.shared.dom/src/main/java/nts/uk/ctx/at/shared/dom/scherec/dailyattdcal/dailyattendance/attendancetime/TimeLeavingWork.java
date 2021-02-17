@@ -26,7 +26,6 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class TimeLeavingWork extends DomainObject{
 	
 	/** 勤務NO */
@@ -39,11 +38,14 @@ public class TimeLeavingWork extends DomainObject{
 	private boolean canceledLate = false;
 	/** 早退を取り消した */
 	private boolean CanceledEarlyLeave = false;
+	// fix bug 114181
+	//private TimeSpanForCalc timespan;
 	
-	private TimeSpanForCalc timespan;
-	
+	// fix bug 114181
 	public TimeSpanForCalc getTimespan() {
-		return this.craeteTimeSpan();
+		TimeWithDayAttr att_attr = getAttendanceTime().orElse(null); //出勤（実じゃない）
+		TimeWithDayAttr lea_attr  = getLeaveTime().orElse(null);//退勤（実じゃない）    
+		return new TimeSpanForCalc(att_attr, lea_attr);
 	}
 	
 	public TimeLeavingWork(WorkNo workNo, TimeActualStamp attendanceStamp, TimeActualStamp leaveStamp) {
@@ -51,8 +53,8 @@ public class TimeLeavingWork extends DomainObject{
 		this.workNo = workNo;
 		this.attendanceStamp = Optional.ofNullable(attendanceStamp);
 		this.leaveStamp = Optional.ofNullable(leaveStamp);
-		
-		this.timespan = this.craeteTimeSpan();
+		// fix bug 114181
+		//this.timespan = this.craeteTimeSpan();
 	}
 	
 	/**
@@ -96,21 +98,23 @@ public class TimeLeavingWork extends DomainObject{
 	 * 出勤時刻と退勤時刻から計算用時間帯クラス作成
 	 * @return 計算用時間帯クラス
 	 */
-	private TimeSpanForCalc craeteTimeSpan() {
-		
-		TimeWithDayAttr att_attr = getAttendanceTime().orElse(null); //出勤（実じゃない）
-		TimeWithDayAttr lea_attr  = getLeaveTime().orElse(null);//退勤（実じゃない）    
-		
-		return new TimeSpanForCalc(att_attr, lea_attr);
-	}
+	// fix bug 114181
+	/*
+	 * private TimeSpanForCalc craeteTimeSpan() {
+	 * 
+	 * TimeWithDayAttr att_attr = getAttendanceTime().orElse(null); //出勤（実じゃない）
+	 * TimeWithDayAttr lea_attr = getLeaveTime().orElse(null);//退勤（実じゃない）
+	 * 
+	 * return new TimeSpanForCalc(att_attr, lea_attr); }
+	 */
 
 	/**
 	 * 出勤時刻と退勤時刻から時間帯クラス作成
 	 * @return 時間帯
 	 */
 	public TimeZone getTimeZone() {
-		
-		return new TimeZone(this.timespan.getStart(), this.timespan.getEnd());
+		TimeSpanForCalc timespan = this.getTimespan();
+		return new TimeZone(timespan.getStart(), timespan.getEnd());
 		
 	}
 	

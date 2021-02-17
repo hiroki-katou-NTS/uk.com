@@ -16,6 +16,7 @@ import lombok.Setter;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.assist.dom.mastercopy.CopyMethod;
+import nts.uk.shr.com.constants.DefaultSettingKeys;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -25,15 +26,32 @@ import nts.uk.shr.com.context.AppContexts;
 @Getter
 public class DataCopyHandler {
 
-    private static final int INS_DATE_COLL = 1;
-    private static final int INS_CCD_COLL = 2;
-    private static final int INS_SCD_COLL = 3;
-    private static final int INS_PG_COLL = 4;
-    private static final int UDP_DATE_COLL = 5;
-    private static final int UDP_CCD_COLL = 6;
-    private static final int UDP_SCD_COLL = 7;
-    private static final int UDP_PG_COLL = 8;
-    private static final int EXCLUS_VER_COLL = 9;
+    /**
+     * ゼロ会社コピー用のSELECTで指定する契約コードと会社IDの位置
+     * CONTRACT_CDはあとから追加したため、修正の影響を抑えるために会社IDは 0 のまま、契約コードを 1 とする
+     */
+    private static final int SOURCE_COLUMN_CONTRACT_CD = 1;
+    private static final int SOURCE_COLUMN_CID = 0;
+    
+    /**
+     * 上記の2カラムを除いたデータ本体の開始カラム位置
+     */
+    private static final int SOURCE_START_COLUMN = 2;
+    
+    /**
+     * クエリパラメータの開始インデックス
+     */
+    private static final int QUERY_PARAM_START_INDEX = 1;
+
+    private static final int INS_DATE_COLL = SOURCE_START_COLUMN;
+    private static final int INS_CCD_COLL = INS_DATE_COLL + 1;
+    private static final int INS_SCD_COLL = INS_CCD_COLL + 1;
+    private static final int INS_PG_COLL = INS_SCD_COLL + 1;
+    private static final int UDP_DATE_COLL = INS_PG_COLL + 1;
+    private static final int UDP_CCD_COLL = UDP_DATE_COLL + 1;
+    private static final int UDP_SCD_COLL = UDP_CCD_COLL + 1;
+    private static final int UDP_PG_COLL = UDP_SCD_COLL + 1;
+    private static final int EXCLUS_VER_COLL = UDP_PG_COLL + 1;
 
     /**
      * Logger
@@ -48,6 +66,10 @@ public class DataCopyHandler {
      * The copy method.
      */
     protected CopyMethod copyMethod;
+    /**
+     * The contract code.
+     */
+    protected String contractCode;
     /**
      * The company Id.
      */
@@ -78,8 +100,9 @@ public class DataCopyHandler {
     @SuppressWarnings("unchecked")
     public void doCopy() {
         // Get all company zero data
+    	// ゼロ契約ゼロ会社から初期値をSELECT
         Query sq = this.entityManager.createNativeQuery(this.selectQuery)
-                .setParameter(1, AppContexts.user().zeroCompanyIdInContract());
+                .setParameter(1, DefaultSettingKeys.COMPANY_ID);
         List<Object> sourceObjects = sq.getResultList();
         if (sourceObjects.isEmpty()) return;
 
@@ -87,14 +110,16 @@ public class DataCopyHandler {
         int keySize = keys.size();
         int keyCheck = keySize - 1;
 
-        Query selectQueryTarget = this.entityManager.createNativeQuery(this.selectQuery).setParameter(1,
-                this.companyId);
+        // 既存データをSELECT
+        Query selectQueryTarget = this.entityManager.createNativeQuery(this.selectQuery)
+        		.setParameter(1, this.companyId);
         List<Object> oldDatas = selectQueryTarget.getResultList();
 
         switch (copyMethod) {
             case REPLACE_ALL:
-                Query dq = this.entityManager.createNativeQuery(this.deleteQuery).setParameter(1,
-                        this.companyId);
+            	// 既存データをDELETE（会社IDのみ指定で全削除）
+                Query dq = this.entityManager.createNativeQuery(this.deleteQuery)
+                		.setParameter(1, this.companyId);
                 dq.executeUpdate();
             case DO_NOTHING:
                 if(copyMethod != CopyMethod.REPLACE_ALL && !oldDatas.isEmpty()){
@@ -137,40 +162,44 @@ public class DataCopyHandler {
 
                     if (i == 0) {
                         StringJoiner joiner = new StringJoiner(",");
-                        for (int j = 1; j < rowData.length - keyCheck; j++) {
+                        for (int j = SOURCE_START_COLUMN; j < rowData.length - keyCheck; j++) {
                             joiner.add("?");
                         }
                         insertQueryString = "INSERT INTO " + this.tableName + " VALUES (" + joiner.toString() + ")";
                     }
 
-                    if (!StringUtils.isEmpty(insertQueryString)) {
-                        Query iq = this.entityManager.createNativeQuery(insertQueryString);
-                        // Run insert query
-                        for (int k = 1; k < rowData.length - keyCheck; k++) {
-                            if (rowData[0].equals(rowData[k])) {
-                                rowData[k] = companyId;
-                            }
-                            if (k == INS_DATE_COLL || k == UDP_DATE_COLL) {
-                                rowData[k] = Timestamp.valueOf(GeneralDateTime.now().localDateTime());
-                            } else if (k == INS_CCD_COLL || k == UDP_CCD_COLL) {
-                                rowData[k] = AppContexts.user().companyCode();
-                            } else if (k == INS_SCD_COLL || k == UDP_SCD_COLL) {
-                                rowData[k] = AppContexts.user().employeeCode();
-                            } else if (k == INS_PG_COLL || k == UDP_PG_COLL) {
-                                rowData[k] = "CMM001";
-                            }
+                    if (StringUtils.isEmpty(insertQueryString)) {
+                    	continue;
+                    }
+                    
+                    Query iq = this.entityManager.createNativeQuery(insertQueryString);
+                    // Run insert query
+                    for (int k = SOURCE_START_COLUMN; k < rowData.length - keyCheck; k++) {
+                        if (rowData[SOURCE_COLUMN_CID].equals(rowData[k])) {
+                            rowData[k] = companyId;
+                        } else if (rowData[SOURCE_COLUMN_CONTRACT_CD].equals(rowData[k])) {
+                            rowData[k] = contractCode;;
+                        } else if (k == INS_DATE_COLL || k == UDP_DATE_COLL) {
+                            rowData[k] = Timestamp.valueOf(GeneralDateTime.now().localDateTime());
+                        } else if (k == INS_CCD_COLL || k == UDP_CCD_COLL) {
+                            rowData[k] = AppContexts.user().companyCode();
+                        } else if (k == INS_SCD_COLL || k == UDP_SCD_COLL) {
+                            rowData[k] = AppContexts.user().employeeCode();
+                        } else if (k == INS_PG_COLL || k == UDP_PG_COLL) {
+                            rowData[k] = "CMM001";
+                        }
 
-                            if (!isOnlyCid && k > EXCLUS_VER_COLL) {
-                                for (int n = rowData.length - keyCheck; n < rowData.length; n++) {
-                                    if (rowData[n].equals(rowData[k])) {
-                                        rowData[k] = UUID.randomUUID().toString();
-                                    }
+                        if (!isOnlyCid && k > EXCLUS_VER_COLL) {
+                            for (int n = rowData.length - keyCheck; n < rowData.length; n++) {
+                                if (rowData[n].equals(rowData[k])) {
+                                    rowData[k] = UUID.randomUUID().toString();
                                 }
                             }
-                            iq.setParameter(k, rowData[k]);
                         }
-                        iq.executeUpdate();
+                        iq.setParameter(k - QUERY_PARAM_START_INDEX, rowData[k]);
                     }
+                    iq.executeUpdate();
+                    
                 }
 
             default:
@@ -181,6 +210,7 @@ public class DataCopyHandler {
     public static final class DataCopyHandlerBuilder {
         EntityManager entityManager;
         protected CopyMethod copyMethod;
+        protected String contractCode;
         protected String companyId;
         private List<String> keys = new ArrayList<>();
         private String tableName;
@@ -207,7 +237,8 @@ public class DataCopyHandler {
             return this;
         }
 
-        public DataCopyHandlerBuilder withCompanyId(String companyId) {
+        public DataCopyHandlerBuilder withCompanyId(String contractCode, String companyId) {
+        	this.contractCode = contractCode;
             this.companyId = companyId;
             return this;
         }
@@ -240,7 +271,7 @@ public class DataCopyHandler {
                     tail +=", "+joinerTail.toString();
                 }
 
-                this.selectQuery = "SELECT " + keys.get(0) + " , *" + tail + " FROM " + tableName + " WHERE CID = ?";
+                this.selectQuery = "SELECT " + keys.get(0) + " , CONTRACT_CD, *" + tail + " FROM " + tableName + " WHERE CID = ?";
                 this.deleteQuery = "DELETE FROM " + tableName + " WHERE CID  = ?";
             }
             return this;
@@ -250,6 +281,7 @@ public class DataCopyHandler {
             DataCopyHandler dataCopyHandler = new DataCopyHandler();
             dataCopyHandler.setEntityManager(entityManager);
             dataCopyHandler.setCopyMethod(copyMethod);
+            dataCopyHandler.setContractCode(contractCode);
             dataCopyHandler.setCompanyId(companyId);
             dataCopyHandler.setTableName(tableName);
             dataCopyHandler.setKeys(keys);
