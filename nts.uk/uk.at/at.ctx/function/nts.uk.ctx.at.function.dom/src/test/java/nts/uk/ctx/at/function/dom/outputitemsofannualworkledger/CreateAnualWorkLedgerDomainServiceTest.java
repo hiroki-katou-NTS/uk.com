@@ -39,6 +39,7 @@ public class CreateAnualWorkLedgerDomainServiceTest {
             {
                 AppContexts.user().employeeId();
                 result = "sid1";
+
                 require.checkTheStandard(code);
                 result = true;
             }
@@ -65,6 +66,7 @@ public class CreateAnualWorkLedgerDomainServiceTest {
             {
                 AppContexts.user().employeeId();
                 result = "sid";
+
                 require.checkFreedom(code, "sid");
                 result = true;
             }
@@ -89,8 +91,10 @@ public class CreateAnualWorkLedgerDomainServiceTest {
             {
                 AppContexts.user().employeeId();
                 result = "sid1";
+
                 require.checkTheStandard(code);
                 result = false;
+
                 IdentifierUtil.randomUniqueId();
                 result = "id";
             }
@@ -123,8 +127,10 @@ public class CreateAnualWorkLedgerDomainServiceTest {
 
                 AppContexts.user().employeeId();
                 result = "sid";
+
                 require.checkFreedom(code, "sid");
                 result = false;
+
                 IdentifierUtil.randomUniqueId();
                 result = "id";
             }

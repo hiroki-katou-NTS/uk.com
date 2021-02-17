@@ -116,6 +116,7 @@ public class UpdateWorkStatusSettingDomainServiceTest {
             {
                 AppContexts.user().employeeId();
                 result = empId;
+
                 require.getWorkStatusOutputSettings(settingId);
                 result = Optional.of(domain);
             }

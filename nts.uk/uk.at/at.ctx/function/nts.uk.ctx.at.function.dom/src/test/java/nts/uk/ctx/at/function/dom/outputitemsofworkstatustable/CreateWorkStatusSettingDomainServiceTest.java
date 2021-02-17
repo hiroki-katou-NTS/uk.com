@@ -63,6 +63,7 @@ public class CreateWorkStatusSettingDomainServiceTest {
             {
                 AppContexts.user().employeeId();
                 result = empId;
+
                 require.checkFreedom(code.v(), empId);
                 result = true;
             }
@@ -91,8 +92,10 @@ public class CreateWorkStatusSettingDomainServiceTest {
 
                 AppContexts.user().employeeId();
                 result = empId;
+
                 require.checkTheStandard(code.v());
                 result = false;
+
                 IdentifierUtil.randomUniqueId();
                 result = iD;
             }
