@@ -312,7 +312,7 @@ public class AttendanceStatusJudgmentServiceTest {
 		//[R-1]
 				Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 				GoOutEmployeeInformationDto gooutDto = GoOutEmployeeInformationDto.builder()
-						.goOutTime(now)
+						.goOutTime(now-2000)
 						.comebackTime(now-1000)
 						.build();
 				Optional<GoOutEmployeeInformation> gooutResult = Optional.ofNullable(GoOutEmployeeInformation.createFromMemento(gooutDto));

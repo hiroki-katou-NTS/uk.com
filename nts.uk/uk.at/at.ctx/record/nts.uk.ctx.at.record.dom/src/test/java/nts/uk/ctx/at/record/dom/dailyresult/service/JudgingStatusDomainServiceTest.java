@@ -1,13 +1,10 @@
 package nts.uk.ctx.at.record.dom.dailyresult.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
@@ -16,22 +13,10 @@ import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.dailyresult.service.JudgingStatusDomainService.Require;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
-import nts.uk.ctx.at.shared.dom.WorkInformation;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
-import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
-import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @RunWith(JMockit.class)
 public class JudgingStatusDomainServiceTest {
@@ -39,73 +24,6 @@ public class JudgingStatusDomainServiceTest {
 	@Injectable
 	private Require require;
 
-	private Optional<WorkInfoOfDailyPerformance> getR1Result(NotUseAttribute attr) {
-		WorkInformation workInformation = new WorkInformation("001", "002");
-
-		WorkInfoOfDailyAttendance workInfoOfDailyAttendance = new WorkInfoOfDailyAttendance();
-		workInfoOfDailyAttendance.setRecordInfo(workInformation);
-		workInfoOfDailyAttendance.setGoStraightAtr(attr);
-
-		WorkInfoOfDailyPerformance WorkInfoOfDailyPerformance = new WorkInfoOfDailyPerformance();
-		WorkInfoOfDailyPerformance.setWorkInformation(workInfoOfDailyAttendance);
-
-		return Optional.ofNullable(WorkInfoOfDailyPerformance);
-	}
-
-	private Optional<TimeLeavingOfDailyPerformance> getR2Result(Integer nowAttendance, Integer nowLeave, Integer workNo) {
-		WorkTimeInformation workTimeInformationAttendance = new WorkTimeInformation();
-		workTimeInformationAttendance
-				.setTimeWithDay(Optional.ofNullable(nowAttendance == null ? null : new TimeWithDayAttr(nowAttendance)));
-
-		WorkStamp workStampAttendance = new WorkStamp();
-		workStampAttendance.setTimeDay(workTimeInformationAttendance);
-
-		TimeActualStamp timeActualStampAttendance = new TimeActualStamp();
-		timeActualStampAttendance.setStamp(Optional.ofNullable(workStampAttendance));
-
-		WorkTimeInformation workTimeInformationLeave = new WorkTimeInformation();
-		workTimeInformationLeave
-				.setTimeWithDay(Optional.ofNullable(nowLeave == null ? null : new TimeWithDayAttr(nowLeave)));
-
-		WorkStamp workStampLeave = new WorkStamp();
-		workStampLeave.setTimeDay(workTimeInformationLeave);
-
-		TimeActualStamp timeActualStampLeave = new TimeActualStamp();
-		timeActualStampLeave.setStamp(Optional.ofNullable(workStampLeave));
-
-		TimeLeavingWork timeLeavingWork1 = new TimeLeavingWork();
-		timeLeavingWork1.setWorkNo(new WorkNo(workNo));
-		timeLeavingWork1.setAttendanceStamp(Optional.ofNullable(timeActualStampAttendance));
-		timeLeavingWork1.setLeaveStamp(Optional.ofNullable(timeActualStampLeave));
-		
-		TimeLeavingOfDailyAttd timeLeave = new TimeLeavingOfDailyAttd();
-		List<TimeLeavingWork> list = new ArrayList<>();
-		list.add(timeLeavingWork1);
-		timeLeave.setTimeLeavingWorks(list);
-		timeLeave.setWorkTimes(new WorkTimes(1));
-
-		TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance = new TimeLeavingOfDailyPerformance();
-		timeLeavingOfDailyPerformance.setEmployeeId("employeeId");
-		timeLeavingOfDailyPerformance.setYmd(GeneralDate.today());
-		timeLeavingOfDailyPerformance.setAttendance(timeLeave);
-
-		return Optional.ofNullable(timeLeavingOfDailyPerformance);
-	}
-
-	private Optional<WorkType> getR4Result(WorkTypeUnit workTypeUnit, WorkTypeClassification oneDay,
-			WorkTypeClassification morning, WorkTypeClassification afternoon) {
-		DailyWork dailyWork = new DailyWork();
-		dailyWork.setWorkTypeUnit(workTypeUnit);
-		dailyWork.setOneDay(oneDay);
-		dailyWork.setMorning(morning);
-		dailyWork.setAfternoon(afternoon);
-
-		WorkType workType = new WorkType();
-		workType.setWorkTypeCode(new WorkTypeCode("001"));
-		workType.setDailyWork(dailyWork);
-		return Optional.ofNullable(workType);
-	}
-	
 	@Before
 	public void before() {
 		JudgingStatusDomainService.clearStaticVariable();
@@ -125,7 +43,7 @@ public class JudgingStatusDomainServiceTest {
 		Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 
 		// [R-2]
-		Optional<TimeLeavingOfDailyPerformance> r2Result = this.getR2Result(0, now, 1);
+		Optional<TimeLeavingOfDailyPerformance> r2Result = JudgingStatusDomainServiceTestHelper.getR2Result(0, now, 1);
 
 		new Expectations() {
 			{
@@ -135,9 +53,8 @@ public class JudgingStatusDomainServiceTest {
 		};
 
 		// when
-		val result = JudgingStatusDomainService.JudgingStatus(require, sid);
-		val expected = AttendanceAccordActualData.builder().attendanceState(StatusClassfication.GO_HOME)
-				.workingNow(false).build();
+		AttendanceAccordActualData result = JudgingStatusDomainService.JudgingStatus(require, sid);
+		AttendanceAccordActualData expected = JudgingStatusDomainServiceTestHelper.case1Expected();
 
 		// then
 		assertThat(result).isEqualTo(expected);
@@ -158,13 +75,13 @@ public class JudgingStatusDomainServiceTest {
 		Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 		
 		//[R-1]
-		Optional<WorkInfoOfDailyPerformance> r1Result = this.getR1Result(NotUseAttribute.Not_use);
+		Optional<WorkInfoOfDailyPerformance> r1Result = JudgingStatusDomainServiceTestHelper.getR1Result(NotUseAttribute.Not_use);
 
 		// [R-2]
-		Optional<TimeLeavingOfDailyPerformance> r2Result = this.getR2Result(0, now - 1000, 1);
+		Optional<TimeLeavingOfDailyPerformance> r2Result = JudgingStatusDomainServiceTestHelper.getR2Result(0, now - 1000, 1);
 		
 		//[R-4]
-		Optional<WorkType> r4Result = this.getR4Result(
+		Optional<WorkType> r4Result = JudgingStatusDomainServiceTestHelper.getR4Result(
 				WorkTypeUnit.OneDay, 
 				WorkTypeClassification.Closure, 
 				WorkTypeClassification.Closure, 
@@ -187,9 +104,8 @@ public class JudgingStatusDomainServiceTest {
 		};
 
 		// when
-		val result = JudgingStatusDomainService.JudgingStatus(require, sid);
-		val expected = AttendanceAccordActualData.builder().attendanceState(StatusClassfication.GO_HOME)
-				.workingNow(false).build();
+		AttendanceAccordActualData result = JudgingStatusDomainService.JudgingStatus(require, sid);
+		AttendanceAccordActualData expected = JudgingStatusDomainServiceTestHelper.case1Expected();
 
 		// then
 		assertThat(result).isEqualTo(expected);
@@ -211,10 +127,10 @@ public class JudgingStatusDomainServiceTest {
 		Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 
 		// [R-1]
-		Optional<WorkInfoOfDailyPerformance> r1Result = this.getR1Result(NotUseAttribute.Use);
+		Optional<WorkInfoOfDailyPerformance> r1Result = JudgingStatusDomainServiceTestHelper.getR1Result(NotUseAttribute.Use);
 
 		// [R-2]
-		Optional<TimeLeavingOfDailyPerformance> r2Result = this.getR2Result(now, now + 1000, 1);
+		Optional<TimeLeavingOfDailyPerformance> r2Result = JudgingStatusDomainServiceTestHelper.getR2Result(now, now + 1000, 1);
 
 		new Expectations() {
 			{
@@ -228,9 +144,8 @@ public class JudgingStatusDomainServiceTest {
 		};
 
 		// when
-		val result = JudgingStatusDomainService.JudgingStatus(require, sid);
-		val expected = AttendanceAccordActualData.builder().attendanceState(StatusClassfication.GO_OUT)
-				.workingNow(false).build();
+		AttendanceAccordActualData result = JudgingStatusDomainService.JudgingStatus(require, sid);
+		AttendanceAccordActualData expected = JudgingStatusDomainServiceTestHelper.case2Expected();
 
 		// then
 		assertThat(result).isEqualTo(expected);
@@ -253,13 +168,13 @@ public class JudgingStatusDomainServiceTest {
 		Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 
 		// [R-1]
-		Optional<WorkInfoOfDailyPerformance> r1Result = this.getR1Result(NotUseAttribute.Use);
+		Optional<WorkInfoOfDailyPerformance> r1Result = JudgingStatusDomainServiceTestHelper.getR1Result(NotUseAttribute.Use);
 
 		// [R-2]
-		Optional<TimeLeavingOfDailyPerformance> r2Result = this.getR2Result(now, now + 1000, 1);
+		Optional<TimeLeavingOfDailyPerformance> r2Result = JudgingStatusDomainServiceTestHelper.getR2Result(now, now + 1000, 1);
 		
 		//[R-4]
-		Optional<WorkType> r4Result = this.getR4Result(
+		Optional<WorkType> r4Result = JudgingStatusDomainServiceTestHelper.getR4Result(
 				WorkTypeUnit.OneDay, 
 				WorkTypeClassification.Closure, 
 				WorkTypeClassification.Closure, 
@@ -282,9 +197,8 @@ public class JudgingStatusDomainServiceTest {
 		};
 
 		// when
-		val result = JudgingStatusDomainService.JudgingStatus(require, sid);
-		val expected = AttendanceAccordActualData.builder().attendanceState(StatusClassfication.GO_OUT)
-				.workingNow(false).build();
+		AttendanceAccordActualData result = JudgingStatusDomainService.JudgingStatus(require, sid);
+		AttendanceAccordActualData expected = JudgingStatusDomainServiceTestHelper.case2Expected();
 
 		// then
 		assertThat(result).isEqualTo(expected);
@@ -294,7 +208,7 @@ public class JudgingStatusDomainServiceTest {
 	 * case 2
 	 * 
 	 * $退勤時刻 ＞　日時＃今()
-	 * $出勤時刻 ＞ 日時＃今()
+	 * $出勤時刻 <  日時＃今()
 	 * $直行区分 == する
 	 */
 	@Test
@@ -305,10 +219,10 @@ public class JudgingStatusDomainServiceTest {
 		Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 
 		// [R-1]
-		Optional<WorkInfoOfDailyPerformance> r1Result = this.getR1Result(NotUseAttribute.Use);
+		Optional<WorkInfoOfDailyPerformance> r1Result = JudgingStatusDomainServiceTestHelper.getR1Result(NotUseAttribute.Use);
 
 		// [R-2]
-		Optional<TimeLeavingOfDailyPerformance> r2Result = this.getR2Result(now + 1000, now + 1000, 1);
+		Optional<TimeLeavingOfDailyPerformance> r2Result = JudgingStatusDomainServiceTestHelper.getR2Result(now - 1000, now + 1000, 1);
 
 		new Expectations() {
 			{
@@ -322,9 +236,8 @@ public class JudgingStatusDomainServiceTest {
 		};
 
 		// when
-		val result = JudgingStatusDomainService.JudgingStatus(require, sid);
-		val expected = AttendanceAccordActualData.builder().attendanceState(StatusClassfication.GO_OUT)
-				.workingNow(false).build();
+		AttendanceAccordActualData result = JudgingStatusDomainService.JudgingStatus(require, sid);
+		AttendanceAccordActualData expected = JudgingStatusDomainServiceTestHelper.case2Expected();
 
 		// then
 		assertThat(result).isEqualTo(expected);
@@ -334,7 +247,7 @@ public class JudgingStatusDomainServiceTest {
 	 * case 2
 	 * 
 	 * $退勤時刻 ＞　日時＃今()
-	 * $出勤時刻 ＞ 日時＃今()
+	 * $出勤時刻 < 日時＃今()
 	 * $直行区分 == Empty
 	 */
 	@Test
@@ -345,7 +258,7 @@ public class JudgingStatusDomainServiceTest {
 		Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 
 		// [R-2]
-		Optional<TimeLeavingOfDailyPerformance> r2Result = this.getR2Result(now + 1000, now + 1000, 1);
+		Optional<TimeLeavingOfDailyPerformance> r2Result = JudgingStatusDomainServiceTestHelper.getR2Result(now - 1000, now + 1000, 1);
 
 		new Expectations() {
 			{
@@ -355,9 +268,8 @@ public class JudgingStatusDomainServiceTest {
 		};
 
 		// when
-		val result = JudgingStatusDomainService.JudgingStatus(require, sid);
-		val expected = AttendanceAccordActualData.builder().attendanceState(StatusClassfication.GO_OUT)
-				.workingNow(false).build();
+		AttendanceAccordActualData result = JudgingStatusDomainService.JudgingStatus(require, sid);
+		AttendanceAccordActualData expected = JudgingStatusDomainServiceTestHelper.case2Expected();
 
 		// then
 		assertThat(result).isNotEqualTo(expected);
@@ -379,10 +291,10 @@ public class JudgingStatusDomainServiceTest {
 		Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 
 		// [R-1]
-		Optional<WorkInfoOfDailyPerformance> r1Result = this.getR1Result(NotUseAttribute.Not_use);
+		Optional<WorkInfoOfDailyPerformance> r1Result = JudgingStatusDomainServiceTestHelper.getR1Result(NotUseAttribute.Not_use);
 
 		// [R-2]
-		Optional<TimeLeavingOfDailyPerformance> r2Result = this.getR2Result(now, now + 1000, 1);
+		Optional<TimeLeavingOfDailyPerformance> r2Result = JudgingStatusDomainServiceTestHelper.getR2Result(now, now + 1000, 1);
 
 		new Expectations() {
 			{
@@ -396,9 +308,8 @@ public class JudgingStatusDomainServiceTest {
 		};
 
 		// when
-		val result = JudgingStatusDomainService.JudgingStatus(require, sid);
-		val expected = AttendanceAccordActualData.builder().attendanceState(StatusClassfication.PRESENT)
-				.workingNow(false).build();
+		AttendanceAccordActualData result = JudgingStatusDomainService.JudgingStatus(require, sid);
+		AttendanceAccordActualData expected = JudgingStatusDomainServiceTestHelper.case3Expected();
 
 		// then
 		assertThat(result).isEqualTo(expected);
@@ -420,13 +331,13 @@ public class JudgingStatusDomainServiceTest {
 		Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 
 		// [R-1]
-		Optional<WorkInfoOfDailyPerformance> r1Result = this.getR1Result(NotUseAttribute.Not_use);
+		Optional<WorkInfoOfDailyPerformance> r1Result = JudgingStatusDomainServiceTestHelper.getR1Result(NotUseAttribute.Not_use);
 
 		// [R-2]
-		Optional<TimeLeavingOfDailyPerformance> r2Result = this.getR2Result(now, now + 1000, 1);
+		Optional<TimeLeavingOfDailyPerformance> r2Result = JudgingStatusDomainServiceTestHelper.getR2Result(now, now + 1000, 1);
 
 		//[R-4]
-		Optional<WorkType> r4Result = this.getR4Result(
+		Optional<WorkType> r4Result = JudgingStatusDomainServiceTestHelper.getR4Result(
 				WorkTypeUnit.OneDay, 
 				WorkTypeClassification.Closure, 
 				WorkTypeClassification.Closure, 
@@ -449,9 +360,8 @@ public class JudgingStatusDomainServiceTest {
 		};
 
 		// when
-		val result = JudgingStatusDomainService.JudgingStatus(require, sid);
-		val expected = AttendanceAccordActualData.builder().attendanceState(StatusClassfication.PRESENT)
-				.workingNow(false).build();
+		AttendanceAccordActualData result = JudgingStatusDomainService.JudgingStatus(require, sid);
+		AttendanceAccordActualData expected = JudgingStatusDomainServiceTestHelper.case3Expected();
 
 		// then
 		assertThat(result).isEqualTo(expected);
@@ -460,7 +370,7 @@ public class JudgingStatusDomainServiceTest {
 	/**
 	 * case 3
 	 * 
-	 * $出勤時刻 > 日時＃今()
+	 * $出勤時刻 < 日時＃今()
 	 * $直行区分 == しない
 	 */
 	@Test
@@ -471,10 +381,10 @@ public class JudgingStatusDomainServiceTest {
 		Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 
 		// [R-1]
-		Optional<WorkInfoOfDailyPerformance> r1Result = this.getR1Result(NotUseAttribute.Not_use);
+		Optional<WorkInfoOfDailyPerformance> r1Result = JudgingStatusDomainServiceTestHelper.getR1Result(NotUseAttribute.Not_use);
 
 		// [R-2]
-		Optional<TimeLeavingOfDailyPerformance> r2Result = this.getR2Result(now + 1000, now + 1000, 1);
+		Optional<TimeLeavingOfDailyPerformance> r2Result = JudgingStatusDomainServiceTestHelper.getR2Result(now - 1000, now + 1000, 1);
 
 		new Expectations() {
 			{
@@ -488,9 +398,8 @@ public class JudgingStatusDomainServiceTest {
 		};
 
 		// when
-		val result = JudgingStatusDomainService.JudgingStatus(require, sid);
-		val expected = AttendanceAccordActualData.builder().attendanceState(StatusClassfication.PRESENT)
-				.workingNow(false).build();
+		AttendanceAccordActualData result = JudgingStatusDomainService.JudgingStatus(require, sid);
+		AttendanceAccordActualData expected = JudgingStatusDomainServiceTestHelper.case3Expected();
 
 		// then
 		assertThat(result).isEqualTo(expected);
@@ -509,7 +418,7 @@ public class JudgingStatusDomainServiceTest {
 		Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 
 		// [R-2]
-		Optional<TimeLeavingOfDailyPerformance> r2Result = this.getR2Result(now - 1000, now + 1000, 1);
+		Optional<TimeLeavingOfDailyPerformance> r2Result = JudgingStatusDomainServiceTestHelper.getR2Result(now + 1000, now + 1000, 1);
 
 		new Expectations() {
 			{
@@ -519,9 +428,8 @@ public class JudgingStatusDomainServiceTest {
 		};
 
 		// when
-		val result = JudgingStatusDomainService.JudgingStatus(require, sid);
-		val expected = AttendanceAccordActualData.builder().attendanceState(StatusClassfication.NOT_PRESENT)
-				.workingNow(false).build();
+		AttendanceAccordActualData result = JudgingStatusDomainService.JudgingStatus(require, sid);
+		AttendanceAccordActualData expected = JudgingStatusDomainServiceTestHelper.case4Expected();
 
 		// then
 		assertThat(result).isEqualTo(expected);
@@ -541,13 +449,13 @@ public class JudgingStatusDomainServiceTest {
 		Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 
 		//[R-1]
-		Optional<WorkInfoOfDailyPerformance> r1Result = this.getR1Result(NotUseAttribute.Not_use);
+		Optional<WorkInfoOfDailyPerformance> r1Result = JudgingStatusDomainServiceTestHelper.getR1Result(NotUseAttribute.Not_use);
 		
 		// [R-2]
-		Optional<TimeLeavingOfDailyPerformance> r2Result = this.getR2Result(now - 1000, now + 1000, 1);
+		Optional<TimeLeavingOfDailyPerformance> r2Result = JudgingStatusDomainServiceTestHelper.getR2Result(now + 1000, now + 1000, 1);
 
 		//[R-4]
-		Optional<WorkType> r4Result = this.getR4Result(
+		Optional<WorkType> r4Result = JudgingStatusDomainServiceTestHelper.getR4Result(
 				WorkTypeUnit.OneDay, 
 				WorkTypeClassification.Closure, 
 				WorkTypeClassification.Closure, 
@@ -570,9 +478,8 @@ public class JudgingStatusDomainServiceTest {
 		};
 
 		// when
-		val result = JudgingStatusDomainService.JudgingStatus(require, sid);
-		val expected = AttendanceAccordActualData.builder().attendanceState(StatusClassfication.NOT_PRESENT)
-				.workingNow(false).build();
+		AttendanceAccordActualData result = JudgingStatusDomainService.JudgingStatus(require, sid);
+		AttendanceAccordActualData expected = JudgingStatusDomainServiceTestHelper.case4Expected();
 
 		// then
 		assertThat(result).isEqualTo(expected);
@@ -591,7 +498,7 @@ public class JudgingStatusDomainServiceTest {
 		Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 
 		// [R-2]
-		Optional<TimeLeavingOfDailyPerformance> r2Result = this.getR2Result(null, now + 1000, 1);
+		Optional<TimeLeavingOfDailyPerformance> r2Result = JudgingStatusDomainServiceTestHelper.getR2Result(null, now + 1000, 1);
 
 		new Expectations() {
 			{
@@ -601,9 +508,8 @@ public class JudgingStatusDomainServiceTest {
 		};
 
 		// when
-		val result = JudgingStatusDomainService.JudgingStatus(require, sid);
-		val expected = AttendanceAccordActualData.builder().attendanceState(StatusClassfication.NOT_PRESENT)
-				.workingNow(false).build();
+		AttendanceAccordActualData result = JudgingStatusDomainService.JudgingStatus(require, sid);
+		AttendanceAccordActualData expected = JudgingStatusDomainServiceTestHelper.case5Expected();
 
 		// then
 		assertThat(result).isEqualTo(expected);
@@ -623,13 +529,13 @@ public class JudgingStatusDomainServiceTest {
 		Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 
 		//[R-1]
-		Optional<WorkInfoOfDailyPerformance> r1Result = this.getR1Result(NotUseAttribute.Not_use);
+		Optional<WorkInfoOfDailyPerformance> r1Result = JudgingStatusDomainServiceTestHelper.getR1Result(NotUseAttribute.Not_use);
 		
 		// [R-2]
-		Optional<TimeLeavingOfDailyPerformance> r2Result = this.getR2Result(null, now + 1000, 1);
+		Optional<TimeLeavingOfDailyPerformance> r2Result = JudgingStatusDomainServiceTestHelper.getR2Result(null, now + 1000, 1);
 
 		//[R-4]
-		Optional<WorkType> r4Result = this.getR4Result(
+		Optional<WorkType> r4Result = JudgingStatusDomainServiceTestHelper.getR4Result(
 				WorkTypeUnit.OneDay, 
 				WorkTypeClassification.Closure, 
 				WorkTypeClassification.Closure, 
@@ -652,9 +558,8 @@ public class JudgingStatusDomainServiceTest {
 		};
 
 		// when
-		val result = JudgingStatusDomainService.JudgingStatus(require, sid);
-		val expected = AttendanceAccordActualData.builder().attendanceState(StatusClassfication.NOT_PRESENT)
-				.workingNow(false).build();
+		AttendanceAccordActualData result = JudgingStatusDomainService.JudgingStatus(require, sid);
+		AttendanceAccordActualData expected = JudgingStatusDomainServiceTestHelper.case5Expected();
 
 		// then
 		assertThat(result).isEqualTo(expected);
@@ -676,10 +581,10 @@ public class JudgingStatusDomainServiceTest {
 		Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 
 		// [R-1]
-		Optional<WorkInfoOfDailyPerformance> r1Result = this.getR1Result(NotUseAttribute.Use);
+		Optional<WorkInfoOfDailyPerformance> r1Result = JudgingStatusDomainServiceTestHelper.getR1Result(NotUseAttribute.Use);
 
 		// [R-2]
-		Optional<TimeLeavingOfDailyPerformance> r2Result = this.getR2Result(now, null, 1);
+		Optional<TimeLeavingOfDailyPerformance> r2Result = JudgingStatusDomainServiceTestHelper.getR2Result(now, null, 1);
 
 		new Expectations() {
 			{
@@ -693,9 +598,8 @@ public class JudgingStatusDomainServiceTest {
 		};
 
 		// when
-		val result = JudgingStatusDomainService.JudgingStatus(require, sid);
-		val expected = AttendanceAccordActualData.builder().attendanceState(StatusClassfication.GO_OUT)
-				.workingNow(false).build();
+		AttendanceAccordActualData result = JudgingStatusDomainService.JudgingStatus(require, sid);
+		AttendanceAccordActualData expected = JudgingStatusDomainServiceTestHelper.case6Expected();
 
 		// then
 		assertThat(result).isEqualTo(expected);
@@ -717,13 +621,13 @@ public class JudgingStatusDomainServiceTest {
 		Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 
 		// [R-1]
-		Optional<WorkInfoOfDailyPerformance> r1Result = this.getR1Result(NotUseAttribute.Use);
+		Optional<WorkInfoOfDailyPerformance> r1Result = JudgingStatusDomainServiceTestHelper.getR1Result(NotUseAttribute.Use);
 
 		// [R-2]
-		Optional<TimeLeavingOfDailyPerformance> r2Result = this.getR2Result(now, null, 1);
+		Optional<TimeLeavingOfDailyPerformance> r2Result = JudgingStatusDomainServiceTestHelper.getR2Result(now, null, 1);
 
 		//[R-4]
-		Optional<WorkType> r4Result = this.getR4Result(
+		Optional<WorkType> r4Result = JudgingStatusDomainServiceTestHelper.getR4Result(
 				WorkTypeUnit.OneDay, 
 				WorkTypeClassification.Closure, 
 				WorkTypeClassification.Closure, 
@@ -746,9 +650,8 @@ public class JudgingStatusDomainServiceTest {
 		};
 
 		// when
-		val result = JudgingStatusDomainService.JudgingStatus(require, sid);
-		val expected = AttendanceAccordActualData.builder().attendanceState(StatusClassfication.GO_OUT)
-				.workingNow(false).build();
+		AttendanceAccordActualData result = JudgingStatusDomainService.JudgingStatus(require, sid);
+		AttendanceAccordActualData expected = JudgingStatusDomainServiceTestHelper.case6Expected();
 
 		// then
 		assertThat(result).isEqualTo(expected);
@@ -758,7 +661,7 @@ public class JudgingStatusDomainServiceTest {
 	/**
 	 * case 6
 	 * 
-	 * $出勤時刻 > 日時＃今()
+	 * $出勤時刻 < 日時＃今()
 	 * $直行区分 == する
 	 */
 	@Test
@@ -769,10 +672,10 @@ public class JudgingStatusDomainServiceTest {
 		Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 
 		// [R-1]
-		Optional<WorkInfoOfDailyPerformance> r1Result = this.getR1Result(NotUseAttribute.Use);
+		Optional<WorkInfoOfDailyPerformance> r1Result = JudgingStatusDomainServiceTestHelper.getR1Result(NotUseAttribute.Use);
 
 		// [R-2]
-		Optional<TimeLeavingOfDailyPerformance> r2Result = this.getR2Result(now + 1000, null, 1);
+		Optional<TimeLeavingOfDailyPerformance> r2Result = JudgingStatusDomainServiceTestHelper.getR2Result(now - 1000, null, 1);
 
 		new Expectations() {
 			{
@@ -786,9 +689,8 @@ public class JudgingStatusDomainServiceTest {
 		};
 
 		// when
-		val result = JudgingStatusDomainService.JudgingStatus(require, sid);
-		val expected = AttendanceAccordActualData.builder().attendanceState(StatusClassfication.GO_OUT)
-				.workingNow(false).build();
+		AttendanceAccordActualData result = JudgingStatusDomainService.JudgingStatus(require, sid);
+		AttendanceAccordActualData expected = JudgingStatusDomainServiceTestHelper.case6Expected();
 
 		// then
 		assertThat(result).isEqualTo(expected);
@@ -797,7 +699,7 @@ public class JudgingStatusDomainServiceTest {
 	/**
 	 * case 6
 	 * 
-	 * $出勤時刻 > 日時＃今()
+	 * $出勤時刻 < 日時＃今()
 	 * $直行区分 == Empty
 	 */
 	@Test
@@ -808,7 +710,7 @@ public class JudgingStatusDomainServiceTest {
 		Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 
 		// [R-2]
-		Optional<TimeLeavingOfDailyPerformance> r2Result = this.getR2Result(now + 1000, null, 1);
+		Optional<TimeLeavingOfDailyPerformance> r2Result = JudgingStatusDomainServiceTestHelper.getR2Result(now - 1000, null, 1);
 
 		new Expectations() {
 			{
@@ -818,9 +720,8 @@ public class JudgingStatusDomainServiceTest {
 		};
 
 		// when
-		val result = JudgingStatusDomainService.JudgingStatus(require, sid);
-		val expected = AttendanceAccordActualData.builder().attendanceState(StatusClassfication.GO_OUT)
-				.workingNow(false).build();
+		AttendanceAccordActualData result = JudgingStatusDomainService.JudgingStatus(require, sid);
+		AttendanceAccordActualData expected = JudgingStatusDomainServiceTestHelper.case6Expected();
 
 		// then
 		assertThat(result).isNotEqualTo(expected);
@@ -840,10 +741,10 @@ public class JudgingStatusDomainServiceTest {
 		Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 
 		// [R-1]
-		Optional<WorkInfoOfDailyPerformance> r1Result = this.getR1Result(NotUseAttribute.Not_use);
+		Optional<WorkInfoOfDailyPerformance> r1Result = JudgingStatusDomainServiceTestHelper.getR1Result(NotUseAttribute.Not_use);
 
 		// [R-2]
-		Optional<TimeLeavingOfDailyPerformance> r2Result = this.getR2Result(now, null, 1);
+		Optional<TimeLeavingOfDailyPerformance> r2Result = JudgingStatusDomainServiceTestHelper.getR2Result(now, null, 1);
 
 		new Expectations() {
 			{
@@ -857,9 +758,8 @@ public class JudgingStatusDomainServiceTest {
 		};
 
 		// when
-		val result = JudgingStatusDomainService.JudgingStatus(require, sid);
-		val expected = AttendanceAccordActualData.builder().attendanceState(StatusClassfication.PRESENT)
-				.workingNow(false).build();
+		AttendanceAccordActualData result = JudgingStatusDomainService.JudgingStatus(require, sid);
+		AttendanceAccordActualData expected = JudgingStatusDomainServiceTestHelper.case7Expected();
 
 		// then
 		assertThat(result).isEqualTo(expected);
@@ -880,13 +780,13 @@ public class JudgingStatusDomainServiceTest {
 		Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 
 		// [R-1]
-		Optional<WorkInfoOfDailyPerformance> r1Result = this.getR1Result(NotUseAttribute.Not_use);
+		Optional<WorkInfoOfDailyPerformance> r1Result = JudgingStatusDomainServiceTestHelper.getR1Result(NotUseAttribute.Not_use);
 
 		// [R-2]
-		Optional<TimeLeavingOfDailyPerformance> r2Result = this.getR2Result(now, null, 1);
+		Optional<TimeLeavingOfDailyPerformance> r2Result = JudgingStatusDomainServiceTestHelper.getR2Result(now, null, 1);
 
 		//[R-4]
-		Optional<WorkType> r4Result = this.getR4Result(
+		Optional<WorkType> r4Result = JudgingStatusDomainServiceTestHelper.getR4Result(
 				WorkTypeUnit.OneDay, 
 				WorkTypeClassification.Closure, 
 				WorkTypeClassification.Closure, 
@@ -909,9 +809,8 @@ public class JudgingStatusDomainServiceTest {
 		};
 
 		// when
-		val result = JudgingStatusDomainService.JudgingStatus(require, sid);
-		val expected = AttendanceAccordActualData.builder().attendanceState(StatusClassfication.PRESENT)
-				.workingNow(false).build();
+		AttendanceAccordActualData result = JudgingStatusDomainService.JudgingStatus(require, sid);
+		AttendanceAccordActualData expected = JudgingStatusDomainServiceTestHelper.case7Expected();
 
 		// then
 		assertThat(result).isEqualTo(expected);
@@ -920,7 +819,7 @@ public class JudgingStatusDomainServiceTest {
 	/**
 	 * case 7
 	 * 
-	 * $出勤時刻 > 日時＃今()
+	 * $出勤時刻 < 日時＃今()
 	 */
 	@Test
 	public void JudgingStatusTest7_2() {
@@ -930,10 +829,10 @@ public class JudgingStatusDomainServiceTest {
 		Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 
 		// [R-1]
-		Optional<WorkInfoOfDailyPerformance> r1Result = this.getR1Result(NotUseAttribute.Not_use);
+		Optional<WorkInfoOfDailyPerformance> r1Result = JudgingStatusDomainServiceTestHelper.getR1Result(NotUseAttribute.Not_use);
 
 		// [R-2]
-		Optional<TimeLeavingOfDailyPerformance> r2Result = this.getR2Result(now + 1000, null, 1);
+		Optional<TimeLeavingOfDailyPerformance> r2Result = JudgingStatusDomainServiceTestHelper.getR2Result(now - 1000, null, 1);
 
 		new Expectations() {
 			{
@@ -947,9 +846,8 @@ public class JudgingStatusDomainServiceTest {
 		};
 
 		// when
-		val result = JudgingStatusDomainService.JudgingStatus(require, sid);
-		val expected = AttendanceAccordActualData.builder().attendanceState(StatusClassfication.PRESENT)
-				.workingNow(false).build();
+		AttendanceAccordActualData result = JudgingStatusDomainService.JudgingStatus(require, sid);
+		AttendanceAccordActualData expected = JudgingStatusDomainServiceTestHelper.case7Expected();
 
 		// then
 		assertThat(result).isEqualTo(expected);
@@ -968,7 +866,7 @@ public class JudgingStatusDomainServiceTest {
 		Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 
 		// [R-2]
-		Optional<TimeLeavingOfDailyPerformance> r2Result = this.getR2Result(now - 1000, null, 1);
+		Optional<TimeLeavingOfDailyPerformance> r2Result = JudgingStatusDomainServiceTestHelper.getR2Result(now + 1000, null, 1);
 
 		new Expectations() {
 			{
@@ -978,9 +876,8 @@ public class JudgingStatusDomainServiceTest {
 		};
 
 		// when
-		val result = JudgingStatusDomainService.JudgingStatus(require, sid);
-		val expected = AttendanceAccordActualData.builder().attendanceState(StatusClassfication.NOT_PRESENT)
-				.workingNow(false).build();
+		AttendanceAccordActualData result = JudgingStatusDomainService.JudgingStatus(require, sid);
+		AttendanceAccordActualData expected = JudgingStatusDomainServiceTestHelper.case8Expected();
 
 		// then
 		assertThat(result).isEqualTo(expected);
@@ -1000,13 +897,13 @@ public class JudgingStatusDomainServiceTest {
 		Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 
 		//[R-1]
-		Optional<WorkInfoOfDailyPerformance> r1Result = this.getR1Result(NotUseAttribute.Not_use);
+		Optional<WorkInfoOfDailyPerformance> r1Result = JudgingStatusDomainServiceTestHelper.getR1Result(NotUseAttribute.Not_use);
 		
 		// [R-2]
-		Optional<TimeLeavingOfDailyPerformance> r2Result = this.getR2Result(now - 1000, null, 1);
+		Optional<TimeLeavingOfDailyPerformance> r2Result = JudgingStatusDomainServiceTestHelper.getR2Result(now + 1000, null, 1);
 
 		//[R-4]
-		Optional<WorkType> r4Result = this.getR4Result(
+		Optional<WorkType> r4Result = JudgingStatusDomainServiceTestHelper.getR4Result(
 				WorkTypeUnit.OneDay, 
 				WorkTypeClassification.Closure, 
 				WorkTypeClassification.Closure, 
@@ -1029,9 +926,8 @@ public class JudgingStatusDomainServiceTest {
 		};
 
 		// when
-		val result = JudgingStatusDomainService.JudgingStatus(require, sid);
-		val expected = AttendanceAccordActualData.builder().attendanceState(StatusClassfication.NOT_PRESENT)
-				.workingNow(false).build();
+		AttendanceAccordActualData result = JudgingStatusDomainService.JudgingStatus(require, sid);
+		AttendanceAccordActualData expected = JudgingStatusDomainServiceTestHelper.case8Expected();
 
 		// then
 		assertThat(result).isEqualTo(expected);
@@ -1059,11 +955,8 @@ public class JudgingStatusDomainServiceTest {
 		};
 
 		// when
-		val result = JudgingStatusDomainService.JudgingStatus(require, sid);
-		val expected = AttendanceAccordActualData.builder()
-				.attendanceState(StatusClassfication.NOT_PRESENT)
-				.workingNow(false)
-				.build();
+		AttendanceAccordActualData result = JudgingStatusDomainService.JudgingStatus(require, sid);
+		AttendanceAccordActualData expected = JudgingStatusDomainServiceTestHelper.case9Expected();
 
 		// then
 		assertThat(result).isEqualTo(expected);
@@ -1082,10 +975,10 @@ public class JudgingStatusDomainServiceTest {
 		String code = "001";
 		
 		//[R-1]
-		Optional<WorkInfoOfDailyPerformance> r1Result = this.getR1Result(NotUseAttribute.Not_use);
+		Optional<WorkInfoOfDailyPerformance> r1Result = JudgingStatusDomainServiceTestHelper.getR1Result(NotUseAttribute.Not_use);
 		
 		//[R-4]
-		Optional<WorkType> r4Result = this.getR4Result(
+		Optional<WorkType> r4Result = JudgingStatusDomainServiceTestHelper.getR4Result(
 				WorkTypeUnit.OneDay, 
 				WorkTypeClassification.Closure, 
 				WorkTypeClassification.Closure, 
@@ -1107,11 +1000,8 @@ public class JudgingStatusDomainServiceTest {
 		};
 
 		// when
-		val result = JudgingStatusDomainService.JudgingStatus(require, sid);
-		val expected = AttendanceAccordActualData.builder()
-				.attendanceState(StatusClassfication.NOT_PRESENT)
-				.workingNow(false)
-				.build();
+		AttendanceAccordActualData result = JudgingStatusDomainService.JudgingStatus(require, sid);
+		AttendanceAccordActualData expected = JudgingStatusDomainServiceTestHelper.case9Expected();
 
 		// then
 		assertThat(result).isEqualTo(expected);
@@ -1131,13 +1021,13 @@ public class JudgingStatusDomainServiceTest {
 		GeneralDate baseDate = GeneralDate.today();
 
 		// [R-1]
-		Optional<WorkInfoOfDailyPerformance> r1Result = this.getR1Result(NotUseAttribute.Not_use);
+		Optional<WorkInfoOfDailyPerformance> r1Result = JudgingStatusDomainServiceTestHelper.getR1Result(NotUseAttribute.Not_use);
 
 		// [R-2]
-		Optional<TimeLeavingOfDailyPerformance> r2Result = this.getR2Result(null, null, 0);
+		Optional<TimeLeavingOfDailyPerformance> r2Result = JudgingStatusDomainServiceTestHelper.getR2Result(null, null, 0);
 
 		// [R-4]
-		Optional<WorkType> r4Result = this.getR4Result(
+		Optional<WorkType> r4Result = JudgingStatusDomainServiceTestHelper.getR4Result(
 				WorkTypeUnit.OneDay, 
 				WorkTypeClassification.Attendance,
 				WorkTypeClassification.Attendance, 
@@ -1159,12 +1049,9 @@ public class JudgingStatusDomainServiceTest {
 		};
 
 		// when
-		val result = JudgingStatusDomainService.JudgingStatus(require, sid);
-		val expected = AttendanceAccordActualData.builder()
-				.attendanceState(StatusClassfication.NOT_PRESENT)
-				.workingNow(true)
-				.build();
-
+		AttendanceAccordActualData result = JudgingStatusDomainService.JudgingStatus(require, sid);
+		AttendanceAccordActualData expected = JudgingStatusDomainServiceTestHelper.case10Expected();
+		
 		// then
 		assertThat(result).isEqualTo(expected);
 	}
@@ -1182,13 +1069,13 @@ public class JudgingStatusDomainServiceTest {
 		GeneralDate baseDate = GeneralDate.today();
 
 		// [R-1]
-		Optional<WorkInfoOfDailyPerformance> r1Result = this.getR1Result(NotUseAttribute.Not_use);
+		Optional<WorkInfoOfDailyPerformance> r1Result = JudgingStatusDomainServiceTestHelper.getR1Result(NotUseAttribute.Not_use);
 
 		// [R-2]
-		Optional<TimeLeavingOfDailyPerformance> r2Result = this.getR2Result(null, null, 1);
+		Optional<TimeLeavingOfDailyPerformance> r2Result = JudgingStatusDomainServiceTestHelper.getR2Result(null, null, 1);
 
 		// [R-4]
-		Optional<WorkType> r4Result = this.getR4Result(
+		Optional<WorkType> r4Result = JudgingStatusDomainServiceTestHelper.getR4Result(
 				WorkTypeUnit.MonringAndAfternoon,
 				WorkTypeClassification.AnnualHoliday, 
 				WorkTypeClassification.Attendance,
@@ -1210,11 +1097,8 @@ public class JudgingStatusDomainServiceTest {
 		};
 
 		// when
-		val result = JudgingStatusDomainService.JudgingStatus(require, sid);
-		val expected = AttendanceAccordActualData.builder()
-				.attendanceState(StatusClassfication.NOT_PRESENT)
-				.workingNow(true)
-				.build();
+		AttendanceAccordActualData result = JudgingStatusDomainService.JudgingStatus(require, sid);
+		AttendanceAccordActualData expected = JudgingStatusDomainServiceTestHelper.case10Expected();
 
 		// then
 		assertThat(result).isEqualTo(expected);
@@ -1233,13 +1117,13 @@ public class JudgingStatusDomainServiceTest {
 		GeneralDate baseDate = GeneralDate.today();
 
 		// [R-1]
-		Optional<WorkInfoOfDailyPerformance> r1Result = this.getR1Result(NotUseAttribute.Not_use);
+		Optional<WorkInfoOfDailyPerformance> r1Result = JudgingStatusDomainServiceTestHelper.getR1Result(NotUseAttribute.Not_use);
 
 		// [R-2]
-		Optional<TimeLeavingOfDailyPerformance> r2Result = this.getR2Result(null, null, 1);
+		Optional<TimeLeavingOfDailyPerformance> r2Result = JudgingStatusDomainServiceTestHelper.getR2Result(null, null, 1);
 
 		// [R-4]
-		Optional<WorkType> r4Result = this.getR4Result(
+		Optional<WorkType> r4Result = JudgingStatusDomainServiceTestHelper.getR4Result(
 				WorkTypeUnit.MonringAndAfternoon,
 				WorkTypeClassification.AnnualHoliday, 
 				WorkTypeClassification.AnnualHoliday,
@@ -1261,11 +1145,8 @@ public class JudgingStatusDomainServiceTest {
 		};
 
 		// when
-		val result = JudgingStatusDomainService.JudgingStatus(require, sid);
-		val expected = AttendanceAccordActualData.builder()
-				.attendanceState(StatusClassfication.NOT_PRESENT)
-				.workingNow(true)
-				.build();
+		AttendanceAccordActualData result = JudgingStatusDomainService.JudgingStatus(require, sid);
+		AttendanceAccordActualData expected = JudgingStatusDomainServiceTestHelper.case10Expected();
 
 		// then
 		assertThat(result).isEqualTo(expected);
@@ -1284,13 +1165,13 @@ public class JudgingStatusDomainServiceTest {
 		GeneralDate baseDate = GeneralDate.today();
 
 		// [R-1]
-		Optional<WorkInfoOfDailyPerformance> r1Result = this.getR1Result(NotUseAttribute.Not_use);
+		Optional<WorkInfoOfDailyPerformance> r1Result = JudgingStatusDomainServiceTestHelper.getR1Result(NotUseAttribute.Not_use);
 
 		// [R-2]
-		Optional<TimeLeavingOfDailyPerformance> r2Result = this.getR2Result(null, null, 1);
+		Optional<TimeLeavingOfDailyPerformance> r2Result = JudgingStatusDomainServiceTestHelper.getR2Result(null, null, 1);
 
 		// [R-4]
-		Optional<WorkType> r4Result = this.getR4Result(
+		Optional<WorkType> r4Result = JudgingStatusDomainServiceTestHelper.getR4Result(
 				WorkTypeUnit.OneDay, 
 				WorkTypeClassification.AnnualHoliday,
 				WorkTypeClassification.AnnualHoliday, 
@@ -1312,11 +1193,8 @@ public class JudgingStatusDomainServiceTest {
 		};
 
 		// when
-		val result = JudgingStatusDomainService.JudgingStatus(require, sid);
-		val expected = AttendanceAccordActualData.builder()
-				.attendanceState(StatusClassfication.HOLIDAY)
-				.workingNow(false)
-				.build();
+		AttendanceAccordActualData result = JudgingStatusDomainService.JudgingStatus(require, sid);
+		AttendanceAccordActualData expected = JudgingStatusDomainServiceTestHelper.case11Expected();
 
 		// then
 		assertThat(result).isEqualTo(expected);
@@ -1335,13 +1213,13 @@ public class JudgingStatusDomainServiceTest {
 		GeneralDate baseDate = GeneralDate.today();
 
 		// [R-1]
-		Optional<WorkInfoOfDailyPerformance> r1Result = this.getR1Result(NotUseAttribute.Not_use);
+		Optional<WorkInfoOfDailyPerformance> r1Result = JudgingStatusDomainServiceTestHelper.getR1Result(NotUseAttribute.Not_use);
 
 		// [R-2]
-		Optional<TimeLeavingOfDailyPerformance> r2Result = this.getR2Result(null, null, 1);
+		Optional<TimeLeavingOfDailyPerformance> r2Result = JudgingStatusDomainServiceTestHelper.getR2Result(null, null, 1);
 
 		// [R-4]
-		Optional<WorkType> r4Result = this.getR4Result(
+		Optional<WorkType> r4Result = JudgingStatusDomainServiceTestHelper.getR4Result(
 				WorkTypeUnit.MonringAndAfternoon,
 				WorkTypeClassification.AnnualHoliday, 
 				WorkTypeClassification.AnnualHoliday,
@@ -1363,11 +1241,8 @@ public class JudgingStatusDomainServiceTest {
 		};
 
 		// when
-		val result = JudgingStatusDomainService.JudgingStatus(require, sid);
-		val expected = AttendanceAccordActualData.builder()
-				.attendanceState(StatusClassfication.HOLIDAY)
-				.workingNow(false)
-				.build();
+		AttendanceAccordActualData result = JudgingStatusDomainService.JudgingStatus(require, sid);
+		AttendanceAccordActualData expected = JudgingStatusDomainServiceTestHelper.case11Expected();
 
 		// then
 		assertThat(result).isEqualTo(expected);

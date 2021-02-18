@@ -97,7 +97,7 @@ public class JudgingStatusDomainService {
 		}
 		
 		if (leaveTime.isPresent()) {
-			if (attendanceTime.isPresent() && attendanceTime.get() >= now) {
+			if (attendanceTime.isPresent() && attendanceTime.get() <= now) {
 				// case 2
 				if (directDivision.isPresent() && directDivision.get().booleanValue()) {
 					return buildData(StatusClassfication.GO_OUT, workingNow);
@@ -116,7 +116,7 @@ public class JudgingStatusDomainService {
 			return buildData(StatusClassfication.NOT_PRESENT, workingNow);
 		}
 		
-		if (attendanceTime.isPresent() && attendanceTime.get() >= now) {
+		if (attendanceTime.isPresent() && attendanceTime.get() <= now) {
 			// case 6
 			if (directDivision.isPresent() && directDivision.get().booleanValue()) {
 				return buildData(StatusClassfication.GO_OUT, workingNow);
