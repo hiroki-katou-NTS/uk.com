@@ -3,9 +3,9 @@ package nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort;
 import org.junit.Test;
 
 import nts.arc.testing.assertion.NtsAssert;
-import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.LicenseClassification;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.RankCode;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.ScheduleTeamCd;
+import nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle.LicenseClassification;
 
 public class SortEmployeeTest {
 

@@ -19,7 +19,7 @@ public class KfnmtRptYrRecDispContPk implements Serializable {
 
     // 	設定ID
     @Column(name = "ID")
-    public int iD;
+    public String iD;
 
     // 	出力順位-> 出力項目.順位
     @Column(name = "ITEM_POS")

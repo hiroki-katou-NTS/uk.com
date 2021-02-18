@@ -22,12 +22,10 @@ import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.EmploymentHistoryImported;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
-import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.ApplyWorkTypeOutput;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.BreakOutType;
-import nts.uk.ctx.at.request.dom.application.overtime.service.CheckWorkingInfoResult;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.substituteapplicationsetting.SubstituteHdWorkAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetRepository;
@@ -57,6 +55,7 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
+import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
@@ -87,9 +86,6 @@ public class HolidayShipmentScreenAFinder {
 	
 	@Inject
 	private PredetemineTimeSettingRepository preTimeSetRepo;
-
-	@Inject
-	private OtherCommonAlgorithm otherCommonAlgorithm;
 	
 	@Inject
 	private WorkingConditionRepository wkingCondRepo;
@@ -273,14 +269,13 @@ public class HolidayShipmentScreenAFinder {
 		Optional<WorkingConditionItem> workingConditionItem = WorkingConditionService.findWorkConditionByEmployee(this.createImp(), employeeId, baseDate);
 		
 		//取得した労働条件項目．区分別勤務．平日時．就業時間帯コードは、INPUT．就業時間帯の設定の一覧に存在するかチェックする(Check xem 'Item điều kiện lao đông.Work by classification. Weekday time.WorktimeCode đã lấy' có tồn tại ở trong INPUT.WorktimeSettingList hay không?)
-		if(workingConditionItem.isPresent()) {
-			result.setWorkTime(workingConditionItem.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().map(x -> x.v()).orElse(null));
+		Optional<String> workTime = workingConditionItem.isPresent()?workingConditionItem.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().map(x -> x.v()): Optional.empty();
+		if(workTime.isPresent() && workTimeLst.stream().map(c->c.getWorktimeCode().v()).filter(c->c.equals(workTime.get())).findAny().isPresent()) {
+			//振出申請起動時の表示情報．初期選択就業時間帯=取得した労働条件項目．区分別勤務．平日時．就業時間帯コード(DisplayInfo khi khoi dong don xin lam bu. InitialSelectionWorktime =  Item điều kiện lao đông.Work by classification. Weekday time.WorktimeCode da lay)
+			result.setWorkTime(workTime.get());
 		}else {
-			result.setWorkTime("");
-			//12.マスタ勤務種類、就業時間帯データをチェック
-	        CheckWorkingInfoResult checkResult = otherCommonAlgorithm.checkWorkingInfo(companyId, null, result.getWorkTime());
-	        //「職場別就業時間帯」を取得した先頭値を表示
-	        if(checkResult.isWkTimeError() && !workTimeLst.isEmpty()){
+	        //振出申請起動時の表示情報．初期選択就業時間帯=INPUT．就業時間帯の設定の一覧の先頭の就業時間帯(DisplayInfo khi khơi dong don xin lam bu. InitialSelectionWorktime= INPUT. worktime dau tien cua WorktimeSettingList
+	        if(!workTimeLst.isEmpty()){
 	        	result.setWorkTime(workTimeLst.get(0).getWorktimeCode().v());
 	        }
 		}
@@ -299,13 +294,13 @@ public class HolidayShipmentScreenAFinder {
 		PrescribedTimezoneSetting prescribedTimezoneSetting = appAbsenceFinder.initWorktimeCode(companyId, result.getWorkType(), result.getWorkTime());
 		if(prescribedTimezoneSetting != null) {
 			for (TimezoneUse time : prescribedTimezoneSetting.getLstTimezone()) {
-				if(time.getWorkNo() == 1) {
+				if(time.getWorkNo() == 1 && time.getUseAtr()==UseSetting.USE) {
 					//振出申請起動時の表示情報．開始時刻=取得した時間帯(使用区分付き)．開始 (DisplayInfo khi khởi động đơn xin làm bù. StartTime= TimeSheet with UseAtr. StartTime đã lấy)
 					result.setStartTime(time.getStart().v());
 					//振出申請起動時の表示情報．終了時刻=取得した時間帯(使用区分付き)．終了(DisplayInfo khi khởi động đơn xin làm bù. EndTime= TimeSheet withUseAtr. EndTime đã lấy)
 					result.setEndTime(time.getEnd().v());
 				}
-				if(time.getWorkNo() == 2) {
+				if(time.getWorkNo() == 2 && time.getUseAtr()==UseSetting.USE) {
 					//振出申請起動時の表示情報．開始時刻=取得した時間帯(使用区分付き)．開始 (DisplayInfo khi khởi động đơn xin làm bù. StartTime= TimeSheet with UseAtr. StartTime đã lấy)
 					result.setStartTime2(time.getStart().v());
 					//振出申請起動時の表示情報．終了時刻=取得した時間帯(使用区分付き)．終了(DisplayInfo khi khởi động đơn xin làm bù. EndTime= TimeSheet withUseAtr. EndTime đã lấy)

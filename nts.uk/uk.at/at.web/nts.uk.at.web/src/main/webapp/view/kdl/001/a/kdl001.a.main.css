@@ -5,23 +5,23 @@ body {
 	overflow-x: hidden;
 }
 .control-group { 
-	margin: 5px;
-	margin-left: 15px; 
+	margin: 0 0 5px 15px;
+	overflow: hidden;
 }
 .label:FIRST-CHILD{
 	font-size: large;
 	margin-bottom: 5px;
-	margin-left: 20px;
+	margin-left: 15px;
 }
 #search-div {
-	padding-left: 120px;
-	margin-bottom: 10px;
+	/* padding-left: 120px; */
+	margin-bottom: 5px;
 }
-#search-div span:NTH-CHILD(3) {
-/* 	font-size: x-large; */
+/* #search-div span:NTH-CHILD(3) {
+	font-size: x-large;
 	margin-left: 10px;
 	margin-right: 15px;
-}
+} */
 .ui-igcombo-wrapper {
 	width: 90px;
 }
@@ -31,12 +31,8 @@ input.ui-igcombo-field {
 div.nts-column{
 	padding-left: 10px;
 }
-#search-div button:NTH-CHILD(6) {
-	margin-left: 20px;
-	width: 60px;
-}
-#search-div button:LAST-CHILD {
-	margin-left: 257px;
+.ui-iggrid .ui-iggrid-tablebody td {
+	height: 23px;
 }
 #day-list-div {
 	padding-left: 15px;
@@ -53,10 +49,35 @@ div.nts-column{
 #contents-area{
 	overflow: hidden !important;
 }
-.inputTime{
+.inputTime {
 	width: 100px;
-    text-align: center !important;
+  text-align: center !important;
 }
-.label{
+#search-div .inputTime {
+	width: 70px;
+}
+/* .label{
 	margin-left: 10px;
+} */
+.search-by-code {
+	width: 100%;
+	margin-bottom: 10px;
+}
+
+.table .cell.cell-right {
+	width: 62%;
+	text-align: right;
+}
+.search-by-code .cell:last-child {
+	text-align: right;
+}
+
+.search-by-code .cell:last-child .control-group {
+	margin: 0;
+}
+.search-by-code .cell:last-child button {
+	margin-top: 5px;
+}
+.search-by-code .cell.control-group .ntsCheckBox {
+	margin-right: 40px;
 }

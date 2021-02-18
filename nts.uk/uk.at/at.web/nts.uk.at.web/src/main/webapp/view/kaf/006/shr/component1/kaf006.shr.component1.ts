@@ -3,7 +3,7 @@ module nts.uk.at.view.kaf006.shr.component1.viewmodel {
     @component({
         name: 'kaf006-shr-component1',
         template: `
-        <div data-bind="visible: $parent.selectedType() !== 6">
+        <div id="kaf006-shr-component1" data-bind="visible: $parent.selectedType() !== 6">
             <table>
                 <tr class="text-center bg-green">
                     <!-- A14_1 -->
@@ -23,7 +23,7 @@ module nts.uk.at.view.kaf006.shr.component1.viewmodel {
                 </tr>
             </table>
         </div>
-        <div data-bind="visible: $parent.selectedType() === 6">
+        <div id="kaf006-shr-component1" data-bind="visible: $parent.selectedType() === 6">
             <table>
                 <tr class="text-center bg-green">
                     <td class="table-border py-10" data-bind="text: $i18n('Com_ExsessHoliday')"></td>

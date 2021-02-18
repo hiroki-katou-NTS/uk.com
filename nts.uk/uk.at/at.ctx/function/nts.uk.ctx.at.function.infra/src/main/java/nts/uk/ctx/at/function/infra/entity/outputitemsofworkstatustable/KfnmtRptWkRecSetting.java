@@ -7,10 +7,7 @@ import nts.uk.ctx.at.function.dom.outputitemsofworkstatustable.WorkStatusOutputS
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 
 /**
@@ -24,8 +21,10 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class KfnmtRptWkRecSetting extends UkJpaEntity implements Serializable {
     private static final long serialVersionUID = 1L;
-    @EmbeddedId
-    public KfnmtRptWkRecSettingPk pk;
+    // 	設定ID
+    @Id
+    @Column(name = "ID")
+    public String iD;
 
     //	契約コード
     @Column(name = "CONTRACT_CD")
@@ -33,7 +32,7 @@ public class KfnmtRptWkRecSetting extends UkJpaEntity implements Serializable {
 
     // 	会社ID
     @Column(name = "CID")
-    public String companyID;
+    public String companyId;
 
     //	設定表示コード -> 勤務状況の出力設定.設定表示コード
     @Column(name = "DISPLAY_CODE")
@@ -48,23 +47,23 @@ public class KfnmtRptWkRecSetting extends UkJpaEntity implements Serializable {
     public String employeeId;
 
     // 	定型自由区分	-> 勤務状況の出力設定.定型自由区分
-    @Column(name = "EMPLOYEE_CODE")
-    public int employeeCode;
+    @Column(name = "SETTING_TYPE")
+    public int settingType;
 
     @Override
     protected Object getKey() {
-        return pk;
+        return iD;
     }
 
-    public static KfnmtRptWkRecSetting fromDomain(WorkStatusOutputSettings domain, String cid){
+    public static KfnmtRptWkRecSetting fromDomain(WorkStatusOutputSettings domain, String cid) {
         return new KfnmtRptWkRecSetting(
-                new KfnmtRptWkRecSettingPk(domain.getSettingId()),
-                AppContexts.user().contractCode(),// TODO
+                domain.getSettingId(),
+                AppContexts.user().contractCode(),
                 cid,
                 Integer.parseInt(domain.getSettingDisplayCode().v()),
                 domain.getSettingName().v(),
                 domain.getEmployeeId(),
-                domain.getDesignateFreeClassing().value
+                domain.getStandardFreeDivision().value
         );
     }
 

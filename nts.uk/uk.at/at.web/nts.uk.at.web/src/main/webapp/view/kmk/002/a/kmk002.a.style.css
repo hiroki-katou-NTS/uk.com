@@ -34,7 +34,13 @@
 }
 .nts-fixed-table {
 	margin-left: 10px;
+	padding-bottom: 20px;
 }
+
+.nts-fixed-body-wrapper {
+	height: 260px !important;
+}
+
 .nts-switch-button {
 	min-width: 85px;
 }
