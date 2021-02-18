@@ -109,8 +109,8 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
                             this.toYearMonthString(dataSource.getYearMonthPeriod().start()) + TextResource.localize("KWR005_305") +
                             this.toYearMonthString(dataSource.getYearMonthPeriod().end()));
 
-                    cells.get(count, 0).setValue("");
-                    cells.get(count + 1, 0).setValue("");
+                    cells.get(count, 0).setValue(TextResource.localize("KWR005_301") + "　" + content.getWorkplaceCode() + "　" + content.getWorkplaceName());
+                    cells.get(count + 1, 0).setValue(TextResource.localize("KWR005_302") + "　" + content.getEmployeeCode() + "　" + content.getEmployeeName());
 
                     printDate(worksheet, count + 2, yearMonths);
                     count += 3;
