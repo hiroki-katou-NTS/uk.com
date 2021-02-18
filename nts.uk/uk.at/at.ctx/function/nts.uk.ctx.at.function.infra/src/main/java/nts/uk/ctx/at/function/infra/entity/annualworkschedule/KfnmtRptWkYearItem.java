@@ -21,7 +21,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import nts.uk.ctx.at.function.dom.annualworkschedule.CalculationFormulaOfItem;
 import nts.uk.ctx.at.function.dom.annualworkschedule.ItemsOutputToBookTable;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 帳表に出力する項目
@@ -32,7 +32,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "KFNMT_RPT_WK_YEAR_ITEM")
 @EqualsAndHashCode(callSuper = true)
-public class KfnmtRptWkYearItem extends UkJpaEntity implements Serializable
+public class KfnmtRptWkYearItem extends ContractUkJpaEntity implements Serializable
 															 , ItemsOutputToBookTable.MementoSetter
 															 , ItemsOutputToBookTable.MementoGetter {
 	private static final long serialVersionUID = 1L;
@@ -44,19 +44,11 @@ public class KfnmtRptWkYearItem extends UkJpaEntity implements Serializable
 	/** 会社ID */
 	@Column(name = "CID")
 	private String cid;
-
-	/** 契約コード */
-	@Column(name = "CONTRACT_CD")
-	private String contractCd;
 	
 	/** 排他バージョン */
 	@Version
 	@Column(name = "EXCLUS_VER")
 	private int exclusVer;
-
-	/** 社員ID */
-	@Column(name = "SID")
-	private String sid;
 
 	/** 並び順 */
 	@Basic(optional = false)
@@ -117,7 +109,6 @@ public class KfnmtRptWkYearItem extends UkJpaEntity implements Serializable
 			id.attandanceItemId = t.getAttendanceItemId();
 			id.layoutId = this.kfnmtRptWkYearItemPK.layoutId;
 			KfnmtRptWkYearCalc calItem = new KfnmtRptWkYearCalc();
-			calItem.setContractCd(this.contractCd);
 			calItem.setOperator(t.getOperation());
 			return calItem;
 		}).collect(Collectors.toList());

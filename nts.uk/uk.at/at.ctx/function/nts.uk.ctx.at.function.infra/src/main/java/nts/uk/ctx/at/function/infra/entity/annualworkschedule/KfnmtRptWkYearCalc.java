@@ -14,7 +14,7 @@ import javax.persistence.Version;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * UKDesign.データベース.ER図.就業.contexts.就業機能.年間勤務表.項目の算出式
@@ -26,7 +26,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "KFNMT_RPT_WK_YEAR_CALC")
 @EqualsAndHashCode(callSuper = true)
-public class KfnmtRptWkYearCalc extends UkJpaEntity implements Serializable {
+public class KfnmtRptWkYearCalc extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -34,10 +34,6 @@ public class KfnmtRptWkYearCalc extends UkJpaEntity implements Serializable {
 	/** The id. */
 	@EmbeddedId
 	private KfnmtRptWkYearCalcPK id;
-	
-	/** 契約コード */
-	@Column(name = "CONTRACT_CD")
-	private String contractCd;
 	
 	/** 会社ID */
 	@Column(name = "CID")
@@ -49,7 +45,7 @@ public class KfnmtRptWkYearCalc extends UkJpaEntity implements Serializable {
 	private int exclusVer;
 
 	/** オペレーション: 加, 減 */
-	@Column(name = "OPERATOR")
+	@Column(name = "OPERATION")
 	private int operator;
 	
 	@ManyToOne(fetch = FetchType.LAZY)

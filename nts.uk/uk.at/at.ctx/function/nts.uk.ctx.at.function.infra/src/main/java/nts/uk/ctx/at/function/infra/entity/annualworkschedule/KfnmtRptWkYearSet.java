@@ -17,8 +17,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import nts.uk.ctx.at.function.dom.annualworkschedule.ItemsOutputToBookTable;
 import nts.uk.ctx.at.function.dom.annualworkschedule.SettingOutputItemOfAnnualWorkSchedule;
-import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 年間勤務表の出力項目設定
@@ -30,7 +29,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "KFNMT_RPT_WK_YEAR_SET")
 @EqualsAndHashCode(callSuper = true)
-public class KfnmtRptWkYearSet extends UkJpaEntity implements Serializable
+public class KfnmtRptWkYearSet extends ContractUkJpaEntity implements Serializable
 															, SettingOutputItemOfAnnualWorkSchedule.MementoSetter
 															, SettingOutputItemOfAnnualWorkSchedule.MementoGetter {
 
@@ -49,10 +48,6 @@ public class KfnmtRptWkYearSet extends UkJpaEntity implements Serializable
 	/** 会社ID */
 	@Column(name = "CID")
 	private String cid;
-
-	/** 契約コード */
-	@Column(name = "CONTRACT_CD")
-	private String contractCd;
 	
 	/** 排他バージョン */
 	@Version
@@ -123,7 +118,11 @@ public class KfnmtRptWkYearSet extends UkJpaEntity implements Serializable
 		this.lstKfnmtRptWkYearItems = listItemsOutput.stream().map(t -> {
 			KfnmtRptWkYearItem kfnmtRptWkYearItem = new KfnmtRptWkYearItem();
 			t.setMemento(kfnmtRptWkYearItem);
-			kfnmtRptWkYearItem.setContractCd(AppContexts.user().contractCode());
+			kfnmtRptWkYearItem.setCid(this.cid);
+			if (kfnmtRptWkYearItem.kfnmtRptWkYearItemPK == null) {
+				kfnmtRptWkYearItem.kfnmtRptWkYearItemPK = new KfnmtRptWkYearItemPK();
+			}
+			kfnmtRptWkYearItem.kfnmtRptWkYearItemPK.layoutId = this.layoutId;
 			return kfnmtRptWkYearItem;
 		}).collect(Collectors.toList());
 	}

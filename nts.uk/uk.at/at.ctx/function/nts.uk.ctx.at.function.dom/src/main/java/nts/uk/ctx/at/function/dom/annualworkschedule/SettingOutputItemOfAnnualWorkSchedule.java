@@ -15,6 +15,7 @@ import nts.uk.ctx.at.function.dom.annualworkschedule.primitivevalue.OutItemsWoSc
 import nts.uk.ctx.at.function.dom.employmentfunction.commonform.SettingClassification;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.就業機能.年間勤務表.年間勤務表の出力項目設定
@@ -89,7 +90,7 @@ public class SettingOutputItemOfAnnualWorkSchedule extends AggregateRoot {
 	}
 
 	public void setMemento(MementoSetter memento) {
-		memento.setCid(this.cid.v());
+		memento.setCid(AppContexts.user().companyId());
 		memento.setCd(this.cd.v());
 		memento.setName(this.name.v());
 		memento.setListItemsOutput(this.listItemsOutput);
@@ -109,7 +110,7 @@ public class SettingOutputItemOfAnnualWorkSchedule extends AggregateRoot {
 		// 出力する項目一覧は1件以上設定しなければならない(List output item phải >=1 ) #Msg_880
 		// 印刷形式 = "勤怠チェックリスト" の場合、並び順 ≧ 3 の「帳票に出力する項目」が設定されている必要があります。#Msg_880
 		if (this.listItemsOutput == null || this.listItemsOutput.isEmpty()
-				|| (this.printForm.equals(AnnualWorkSheetPrintingForm.TIME_CHECK_LIST) && this.listItemsOutput.size() < 4)) {
+				|| (this.printForm.equals(AnnualWorkSheetPrintingForm.TIME_CHECK_LIST) && this.listItemsOutput.size() < 3)) {
 			throw new BusinessException("Msg_880");
 		}
 	}

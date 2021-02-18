@@ -5,8 +5,7 @@ module nts.uk.at.view.kwr008.b.service{
     var paths = {
         findAllBySettingType: "at/function/annualworkschedule/findAll/",
         deleteOutputItemSetting: "at/function/annualworkschedule/delete/outputitemsetting",
-        updateOutputItemSetting: "at/function/annualworkschedule/update/outputitemsetting",
-        registerOutputItemSetting: "at/function/annualworkschedule/add/outputitemsetting",
+        saveOutputItemSetting: "at/function/annualworkschedule/save/outputitemsetting",
         getValueOutputFormat: "at/function/annualworkschedule/get/enum/valueoutputformat",
         getOutputAgreementTime : "at/function/annualworkschedule/get/enum/outputagreementtime",
         getListItemOutput : "at/function/annualworkschedule/get/listItemOutput/",
@@ -26,16 +25,12 @@ module nts.uk.at.view.kwr008.b.service{
         return nts.uk.request.ajax(paths.findByLayoutId + layoutId);
     }
     
-    export function registerOutputItemSetting(command : any): JQueryPromise<any>{
-        return ajax(paths.registerOutputItemSetting, command);
+    export function saveOutputItemSetting(command : any): JQueryPromise<any>{
+        return ajax(paths.saveOutputItemSetting, command);
     }
     
     export function deleteOutputItemSetting(command : any): JQueryPromise<any>{
         return ajax(paths.deleteOutputItemSetting, command);
-    }
-    
-    export function updateOutputItemSetting(command : any): JQueryPromise<any>{
-        return ajax(paths.updateOutputItemSetting, command);
     }
     
     export function getValueOutputFormat(): JQueryPromise<Array<share.EnumConstantDto>>{

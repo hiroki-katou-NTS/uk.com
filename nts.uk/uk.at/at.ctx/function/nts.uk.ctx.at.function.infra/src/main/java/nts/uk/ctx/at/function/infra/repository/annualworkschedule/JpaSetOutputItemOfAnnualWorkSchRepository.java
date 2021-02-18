@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.infra.repository.annualworkschedule;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import javax.ejb.Stateless;
 
@@ -74,8 +75,8 @@ public class JpaSetOutputItemOfAnnualWorkSchRepository extends JpaRepository imp
 	@Override
 	public void add(SettingOutputItemOfAnnualWorkSchedule domain) {
 		KfnmtRptWkYearSet entity = new KfnmtRptWkYearSet();
+		entity.setLayoutId(UUID.randomUUID().toString());
 		domain.setMemento(entity);
-		
 		// Insert
 		this.commandProxy().insert(entity);
 	}

@@ -9,6 +9,8 @@ module nts.uk.at.view.kwr008.b.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import model = nts.uk.at.view.kwr008.share.model;
     import errors = nts.uk.ui.errors;
+    const ADDITION = getText('KWR002_178');
+    const SUBTRACTION = getText('KWR002_179');
 
     export class ScreenModel {
         //enum mode
@@ -66,12 +68,16 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 ));
             }
             //event select change
-            self.selectedLayoutId.subscribe((settingId) => {
+            self.selectedLayoutId.subscribe((layoutId) => {
                 _.defer(() => { errors.clearAll() });
                 errors.clearAll();
                 block.invisible();
-                if (settingId) {
-                    // TODO
+                if (layoutId) {
+                    service.findByLayoutId(layoutId).then((res: any) => {
+                        self.currentSetOutputSettingCode(new SetOutputItemOfAnnualWorkSchDto(res));
+                        self.outputItem(self.currentSetOutputSettingCode().listItemsOutput());
+                    });
+                    block.clear();
                 } else {
                     block.clear();
                     self.registerMode();
@@ -122,6 +128,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             if (KWR008BParam) {
                 self.selectedPrintForm(KWR008BParam.printFormat);
                 selectionType = KWR008BParam.selectionType;
+                self.currentSetOutputSettingCode().settingType(KWR008BParam.selectionType);
             }
 
             $.when(service.getValueOutputFormat()
@@ -151,19 +158,6 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 }
                 block.clear();
             });
-
-            if (KWR008BParam.printFormat === 1) {
-                self.listStandardImportSetting.push(new SetOutputItemOfAnnualWorkSchDto({
-                    cd: '02',
-                    name: 'Fake data 36'
-                }));
-            } else {
-                self.listStandardImportSetting.push(new SetOutputItemOfAnnualWorkSchDto({
-                    cd: '01',
-                    name: 'Fake data'
-                }));
-            }
-            
             return dfd.promise();
         }
 
@@ -181,41 +175,6 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             });
         }
 
-        buildOutputItemByOper(lstItems: Array<any>, outputItem: SetOutputItemOfAnnualWorkSchDto, isAdd: boolean) {
-            let self = this;
-            let operationName = "";
-            // TODO
-            // if (calculationItem.itemsForAdd()) {
-            //     _.forEach(calculationItem.itemsForAdd(), (addItem) => {
-            //         const attendanceItems: model.AttendanceItemDto[] = self.attendanceItem.filter((item) => item.attendanceItemId === addItem);
-            //         const targetItem = attendanceItems.length > 0 ? attendanceItems[0] : null;
-            //         if (targetItem) {
-            //             if (operationName) {
-            //                 operationName = operationName + " + " + targetItem.attendanceItemName;
-            //             } else {
-            //                 operationName = targetItem.attendanceItemName;
-            //             }
-            //         }
-            //     });
-            // }
-
-            // if (calculationItem.itemsForSubtract()) {
-            //     _.forEach(calculationItem.itemsForSubtract(), (addItem) => {
-            //         const attendanceItems: model.AttendanceItemDto[] = self.attendanceItem.filter((item) => item.attendanceItemId === addItem);
-            //         const targetItem = attendanceItems.length > 0 ? attendanceItems[0] : null;
-            //         if (targetItem) {
-            //             if (operationName) {
-            //                 operationName = operationName + " - " + targetItem.attendanceItemName;
-            //             } else {
-            //                 operationName = targetItem.attendanceItemName;
-            //             }
-            //         }
-            //     });
-            // }
-
-            return operationName;
-        }
-
         //check list output when start page
         checkListItemOutput() {
             var self = this;
@@ -224,8 +183,8 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 self.registerMode();
             } else {
                 if (!self.selectedLayoutId()) {
-                    self.selectedLayoutId(self.listStandardImportSetting()[0].layoutId);
-                    self.updateMode(self.listStandardImportSetting()[0].layoutId);
+                    self.selectedLayoutId(self.listStandardImportSetting()[0].layoutId());
+                    self.updateMode(self.listStandardImportSetting()[0].layoutId());
                 }
             }
         }
@@ -239,15 +198,21 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         //mode register
         registerMode() {
             let self = this;
-
             self.isNewMode(true);
             self.currentSetOutputSettingCode(new SetOutputItemOfAnnualWorkSchDto(null));
-            // self.selectedPrintForm(0);
             self.selectedLayoutId('');
             for (var i = 0; i < self.outputItem().length; i++) {
-                // TODO
+                self.outputItem()[i].updateData(
+                    i + 1,
+                    null,
+                    false,
+                    '',
+                    0, //set is 36協定時間 if it's fist OutputItem
+                    null,
+                    (i == 0) ? self.rule36CalculationName : ((i == 1) ? self.rule36CalculationAverageName: ''));
             }
-
+            self.outputItem()[0].headingName(self.rule36CalculationName);
+            self.outputItem()[1].headingName(self.rule36CalculationAverageName);
             $("#B3_2").focus();
         }
 
@@ -262,21 +227,6 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 return;
             }
 
-            for (var i = 0; i < itemOutByName.length; i++) {
-                // item Rule 36 - do not checking
-                if (itemOutByName[i].item36AgreementTime()) {
-                    continue;
-                }
-                if (itemOutByName[i].listOperationSetting().length == 0) {
-                    alertError({ messageId: "Msg_881" });
-                    block.clear();
-                    return;
-                } else if (itemOutByName[i].listOperationSetting().length > 50) {
-                    alertError({ messageId: "Msg_882" });
-                    block.clear();
-                    return;
-                }
-            }
             $('.nts-input').trigger("validate");
             if (errors.hasError()) {
                 block.clear();
@@ -303,30 +253,24 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 );
             }
             self.currentSetOutputSettingCode().printForm(self.selectedPrintForm());
+            debugger
             self.currentSetOutputSettingCode().buildListItemOutput(ko.toJS(itemOutByName));
             let data: model.SetOutputItemOfAnnualWorkSchDto = ko.toJS(self.currentSetOutputSettingCode);
-
-            if (self.isNewMode()) { //register
-                service.registerOutputItemSetting(data).done(() => {
-                   
-                }).fail(err => {
-                    alertError({ messageId: err.messageId });
-                }).always(function() {
-                    block.clear();
+            data.settingType = self.currentSetOutputSettingCode().settingType();
+            data.newMode = self.isNewMode();
+            service.saveOutputItemSetting(data).done(() => {
+                self.currentSetOutputSettingCode().displayCode = self.currentSetOutputSettingCode().cd();
+                self.currentSetOutputSettingCode().displayName = self.currentSetOutputSettingCode().name();
+                self.listStandardImportSetting.push(self.currentSetOutputSettingCode());
+                self.listStandardImportSetting_Sort();
+                info({ messageId: 'Msg_15' }).then(() => {
+                    self.selectedLayoutId(self.currentSetOutputSettingCode().layoutId());
                 });
-            } else { //update
-                service.updateOutputItemSetting(data).done(() => {
-                    
-                    info({ messageId: 'Msg_15' }).then(() => {
-                        self.selectedLayoutId(data.layoutId);
-                        $('#B3_3').focus();
-                    });
-                }).fail(err => {
-                    console.log(err);
-                }).always(function() {
-                    block.clear();
-                });
-            }
+            }).fail(err => {
+                alertError({ messageId: err.messageId });
+            }).always(function() {
+                block.clear();
+            });
         }
 
         isValidate(itemOut: ItemsOutputToBookTable[]) {
@@ -339,10 +283,10 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             const vm = this;
             confirm({ messageId: 'Msg_18' }).ifYes(() => {
 
-                let selectedIndex = _.findIndex(vm.listStandardImportSetting(), (obj) => { return obj.layoutId == vm.selectedLayoutId(); });
+                let selectedIndex = _.findIndex(vm.listStandardImportSetting(), (obj) => { return obj.layoutId() == vm.selectedLayoutId(); });
 
                 let data = ko.toJS(vm.listStandardImportSetting()[selectedIndex]);
-                vm.listStandardImportSetting.remove((item: any) => { return item.settingId() == data.settingId; });
+                vm.listStandardImportSetting.remove((item: any) => { return item.layoutId() == data.layoutId; });
                 // send request remove item
                 service.deleteOutputItemSetting(data).done(() => {
                     info({ messageId: 'Msg_16' }).then(() => {
@@ -350,9 +294,9 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                             vm.selectedLayoutId('');
                         } else {
                             if (selectedIndex >= vm.listStandardImportSetting().length) {
-                                vm.selectedLayoutId(vm.listStandardImportSetting()[vm.listStandardImportSetting().length - 1].layoutId);
+                                vm.selectedLayoutId(vm.listStandardImportSetting()[vm.listStandardImportSetting().length - 1].layoutId());
                             } else {
-                                vm.selectedLayoutId(vm.listStandardImportSetting()[selectedIndex].layoutId);
+                                vm.selectedLayoutId(vm.listStandardImportSetting()[selectedIndex].layoutId());
                             }
                         }
                     });
@@ -392,6 +336,12 @@ module nts.uk.at.view.kwr008.b.viewmodel {
 
         openKDL048Dialog(dataNode: ItemsOutputToBookTable) {
             const vm = this;
+            block.invisible();
+            let index = _.findIndex(vm.outputItem(), (x) => { return x.sortBy() === dataNode.sortBy(); });
+            if (index === -1) {
+                block.clear();
+                return;
+            }
             let attendanceItemTransfer: share.model.AttendanceItemShare = new share.model.AttendanceItemShare();
             // タイトル行.出力項目コード = B3_2
             attendanceItemTransfer.titleLine.layoutCode = vm.currentSetOutputSettingCode().cd();
@@ -411,15 +361,10 @@ module nts.uk.at.view.kwr008.b.viewmodel {
 
             let selectedLst: any[] = [];
             if (!!dataNode.calculationExpression()) {
-                // TODO filter lst add and substract
-                // selectedLst = _.map(dataNode.outputTargetItem().itemsForAdd(), (item) => new share.model.SelectedTimeItem({
-                //     itemId: item.toString(),
-                //     operator: '+'
-                // }));
-                // selectedLst.push(_.map(dataNode.outputTargetItem().itemsForSubtract(), (item) => new share.model.SelectedTimeItem({
-                //     itemId: item.toString(),
-                //     operator: '-'
-                // })));
+                selectedLst = _.map(dataNode.listOperationSetting(), (item) => new share.model.SelectedTimeItem({
+                    itemId: item.toString(),
+                    operator: item.operation() === 1 ? ADDITION : SUBTRACTION
+                }));
             }
             attendanceItemTransfer.selectedTimeList = selectedLst;
             let atdCanUsed = _.map(vm.attendanceItem, (mapItem: share.model.AttendanceItemDto) => new share.model.AtdItemKDL048Model({
@@ -432,9 +377,36 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             setShared('attendanceItem', attendanceItemTransfer, true);
 
             nts.uk.ui.windows.sub.modal("at", "/view/kdl/048/index.xhtml").onClosed(() => {
-                // TODO
-             });
+                const resultData = getShared('attendanceRecordExport');
+                if (!resultData) {
+                    block.clear();
+                    return;
+                }
+                vm.buildOutputItemByOper(resultData.attendanceId, index);
+            });
         }
+
+        buildOutputItemByOper(lstItems: Array<any>, index: number) {
+            let vm = this;
+            let operationName = '';
+            if (!!lstItems) {
+                _.forEach(lstItems, (item) => {
+                    const attendanceItems: model.AttendanceItemDto[] = vm.attendanceItem.filter((item) => item.attendanceItemId === item.attendanceItemId);
+                    const targetItem = attendanceItems.length > 0 ? attendanceItems[0] : null;
+                    if (targetItem) {
+                        if (operationName) {
+                            operationName = operationName + " " +  item.operator + " " + targetItem.attendanceItemName;
+                        } else {
+                            operationName = targetItem.attendanceItemName;
+                        }
+                    }
+                });
+                vm.outputItem()[index].buildOutputTargetItem(lstItems);
+                console.log(vm.outputItem()[index].listOperationSetting());
+            }
+            vm.outputItem()[index].calculationExpression(operationName);
+        }
+
     }
 
     export class CalculationFormulaOfItem {
@@ -491,7 +463,8 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                  , useClass: boolean
                  , headingName: string
                  , valOutFormat: number
-                 , listOperationSetting: CalculationFormulaOfItem[]) {
+                 , listOperationSetting: CalculationFormulaOfItem[]
+                 , calculationExpression: string) {
             let self = this;
             self.sortBy(sortBy || 1);
             self.itemOutCd(itemOutCd || '');
@@ -499,6 +472,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             self.headingName(headingName || '');
             self.valOutFormat(valOutFormat || 0);
             self.listOperationSetting(listOperationSetting ? listOperationSetting : []);
+            self.calculationExpression(calculationExpression);
         }
 
         buildOutputTargetItem(listOperationSetting: any[]) {
@@ -506,7 +480,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             if (listOperationSetting && listOperationSetting.length > 0) {
                 for (var i = 0; i < listOperationSetting.length; i++) {
                     self.listOperationSetting.push(new CalculationFormulaOfItem(
-                        listOperationSetting[i].attendanceItemId,
+                        listOperationSetting[i].itemId,
                         listOperationSetting[i].operation,
                         listOperationSetting[i].name));
                 }
@@ -517,37 +491,38 @@ module nts.uk.at.view.kwr008.b.viewmodel {
     }
 
     export class SetOutputItemOfAnnualWorkSchDto {
-        layoutId: string;
-        settingType: number;
+        layoutId: KnockoutObservable<string> = ko.observable('');
+        settingType: KnockoutObservable<number> = ko.observable(1);
         cd: KnockoutObservable<string> = ko.observable('');
         displayCode: string;
         name: KnockoutObservable<string> = ko.observable('');
         displayName: string;
         outNumExceedTime36Agr: KnockoutObservable<boolean> = ko.observable(false);
-        monthsInTotalDisplay: KnockoutObservable<number> = ko.observable(0);
+        monthsInTotalDisplay: KnockoutObservable<number> = ko.observable(1);
         listItemsOutput: KnockoutObservableArray<ItemsOutputToBookTable> = ko.observableArray([]);
         printForm: KnockoutObservable<number> = ko.observable(0);
-        
-        totalAverageDisplay: KnockoutObservable<string> = ko.observable('1');
+        totalAverageDisplay: KnockoutObservable<number> = ko.observable(1);
         multiMonthDisplay: KnockoutObservable<boolean> = ko.observable(false);
+        newMode: boolean = false;
 
         constructor(param: any) {
             let self = this;
             if (param) {
-                self.layoutId = param.layoutId || '';
-                self.settingType = param.settingType || 0;
+                self.layoutId(param.layoutId || '');
+                self.settingType(param.settingType || 0);
                 self.cd(param.cd || '');
                 self.displayCode = self.cd();
                 self.name(param.name || '');
                 self.displayName = self.name();
                 self.outNumExceedTime36Agr(param.outNumExceedTime36Agr || false);
-                self.monthsInTotalDisplay(param.monthsInTotalDisplay || false);
+                self.monthsInTotalDisplay(param.monthsInTotalDisplay || 1);
                 self.printForm(param.printForm || 0);
                 self.printForm.subscribe(data => {
                     self.printForm(data);
                 });
-                self.totalAverageDisplay(param ? param.totalAverageDisplay || '1' : '1');
+                self.totalAverageDisplay(param.totalAverageDisplay || 1);
                 self.multiMonthDisplay(param ? param.multiMonthDisplay : false);
+                self.buildListItemOutput(param.listItemOutput);
             }
         }
 
@@ -562,8 +537,8 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                         listItemOutput[i].useClass,
                         listItemOutput[i].headingName,
                         listItemOutput[i].valOutFormat);
-                    if (listItemOutput[i].outputTargetItem) {
-                        outputItemData.buildOutputTargetItem(listItemOutput[i].outputTargetItem);
+                    if (listItemOutput[i].calculationExpression) {
+                        outputItemData.buildOutputTargetItem(listItemOutput[i].listOperationSetting);
                     }
                     self.listItemsOutput.push(outputItemData);
                 }

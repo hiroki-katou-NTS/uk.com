@@ -6,6 +6,7 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.function.dom.annualworkschedule.enums.ValueOuputFormat;
 import nts.uk.ctx.at.function.dom.annualworkschedule.primitivevalue.FormOutputItemName;
 import nts.uk.ctx.at.function.dom.annualworkschedule.primitivevalue.ItemOutTblBookCode;
@@ -40,14 +41,15 @@ public class ItemsOutputToBookTable extends DomainObject {
 	@Override
 	public void validate() {
 		super.validate();
-		// 勤怠項目の件数＜＝50でなければならない
-		if (this.listOperationSetting != null && this.listOperationSetting.size() <= 50) {
-			// #Msg_882
-			throw new BusinessException("Msg_882");
-		} else {
+		if (this.listOperationSetting == null || this.listOperationSetting.isEmpty()) {
 			// 出力対象項目が設定されていなければならない(output item phải set)
 			// #Msg_881
 			throw new BusinessException("Msg_881");
+		}
+		// 勤怠項目の件数＜＝50でなければならない
+		if (this.sortBy > 2 && this.listOperationSetting.size() >= 50) {
+			// #Msg_882
+			throw new BusinessException("Msg_882");
 		}
 	}
 	
@@ -60,7 +62,9 @@ public class ItemsOutputToBookTable extends DomainObject {
 	}
 
 	public void getMemento(MementoGetter memento) {
-		this.itemOutCd = new ItemOutTblBookCode(memento.getItemOutCd());
+		this.itemOutCd = new ItemOutTblBookCode(!StringUtil.isNullOrEmpty(memento.getItemOutCd(), true)
+				? memento.getItemOutCd()
+				: StringUtil.padLeft(String.valueOf(memento.getSortBy()), 2, '0'));
 		this.sortBy = memento.getSortBy();
 		this.headingName = new FormOutputItemName(memento.getHeadingName());
 		this.useClass = memento.isUseClass();

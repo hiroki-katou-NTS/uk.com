@@ -13,6 +13,7 @@ import nts.arc.enums.EnumConstant;
 import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.function.app.command.annualworkschedule.SetOutItemsWoScCommand;
+import nts.uk.ctx.at.function.app.command.annualworkschedule.SetOutItemsWoScCommandSaveHandler;
 import nts.uk.ctx.at.function.app.export.annualworkschedule.AnnualWorkScheduleExportQuery;
 import nts.uk.ctx.at.function.app.export.annualworkschedule.AnnualWorkScheduleExportService;
 import nts.uk.ctx.at.function.app.find.annualworkschedule.ItemOutTblBookDto;
@@ -50,6 +51,9 @@ public class Kwr008WebService extends WebService {
 
 	@Inject
 	private SettingOutputItemOfAnnualWorkScheduleFinder settingFinder;
+	
+	@Inject
+	private SetOutItemsWoScCommandSaveHandler saveHandler;
 
 	@POST
 	@Path("getCurrentLoginerRole")
@@ -126,15 +130,9 @@ public class Kwr008WebService extends WebService {
 	}
 	
 	@POST
-	@Path("add/outputitemsetting")
-	public void addOutputItemSetting(SetOutItemsWoScCommand command){
-//		this.addOutputItemSetting.handle(command);
-	}
-	
-	@POST
-	@Path("update/outputitemsetting")
-	public void updateOutputItemSetting(SetOutItemsWoScCommand command){
-//		this.updateOutputItemSetting.handle(command);
+	@Path("save/outputitemsetting")
+	public void addOutputItemSetting(SetOutItemsWoScCommand command) {
+		this.saveHandler.handle(command);
 	}
 	
 	/**
@@ -161,7 +159,7 @@ public class Kwr008WebService extends WebService {
 	}
 	
 	@POST
-	@Path("/findByLayoutId/{settingId}")
+	@Path("/findByLayoutId/{layoutId}")
 	public SetOutputItemOfAnnualWorkSchDto findByLayoutId(@PathParam("layoutId") String layoutId) {
 		return this.settingFinder.findByLayoutId(layoutId);
 	}

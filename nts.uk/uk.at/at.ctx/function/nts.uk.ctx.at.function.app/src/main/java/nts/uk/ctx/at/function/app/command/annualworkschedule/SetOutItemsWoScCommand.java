@@ -3,12 +3,12 @@ package nts.uk.ctx.at.function.app.command.annualworkschedule;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.Data;
 import lombok.Getter;
-import lombok.Value;
 import nts.uk.ctx.at.function.dom.annualworkschedule.ItemsOutputToBookTable;
 import nts.uk.ctx.at.function.dom.annualworkschedule.SettingOutputItemOfAnnualWorkSchedule;
 
-@Value
+@Data
 public class SetOutItemsWoScCommand implements SettingOutputItemOfAnnualWorkSchedule.MementoGetter {
 
 	/** 項目設定ID. */

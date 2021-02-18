@@ -8,7 +8,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * 
  * @author LienPTK
  */
-@StringMaxLength(12)
+@StringMaxLength(20)
 public class FormOutputItemName extends StringPrimitiveValue<FormOutputItemName> {
 
 	/** The Constant serialVersionUID. */

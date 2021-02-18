@@ -28,18 +28,21 @@ public class SetOutItemsWoScCommandSaveHandler extends CommandHandler<SetOutItem
 		Optional<String> employeeId = command.getSettingType() == SettingClassification.FREE_SETTING.value
 									? Optional.of(AppContexts.user().employeeId())
 									: Optional.empty();
-		
-		Optional<SettingOutputItemOfAnnualWorkSchedule> domain = this.repository.findByCode(command.getCd()
-																						  , employeeId
-																						  , companyId
-																						  , command.getSettingType());
-		// コードは重複してはならない(khong trung code)
-		if (domain.isPresent()) {
-			// #Msg_3
-			throw new BusinessException("Msg_3");
+		command.setCid(companyId);
+		if (command.getSettingType() == SettingClassification.FREE_SETTING.value) {
+			command.setSid(AppContexts.user().employeeId());
 		}
 		
 		if (command.isNewMode()) {
+			Optional<SettingOutputItemOfAnnualWorkSchedule> domain = this.repository.findByCode(command.getCd()
+					  , employeeId
+					  , companyId
+					  , command.getSettingType());
+			// コードは重複してはならない(khong trung code)
+			if (domain.isPresent()) {
+				// #Msg_3
+				throw new BusinessException("Msg_3");
+			}
 			repository.add(SettingOutputItemOfAnnualWorkSchedule.createFromMemento(command));
 		} else {
 			repository.update(SettingOutputItemOfAnnualWorkSchedule.createFromMemento(command));

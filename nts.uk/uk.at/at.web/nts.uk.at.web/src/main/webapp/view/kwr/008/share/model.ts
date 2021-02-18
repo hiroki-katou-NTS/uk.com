@@ -23,11 +23,15 @@ module nts.uk.at.view.kwr008.share.model {
     }
 
     export class SetOutputItemOfAnnualWorkSchDto {
-        cd: string;    // コード
-        name: string;    // 名称
-        printForm: number;  // 印刷形式
-        layoutId: string;      // 項目設定ID
+        cd: string;             // コード
+        name: string;           // 名称
+        printForm: number;      // 印刷形式
+        layoutId: string;       // 項目設定ID
+        settingType: number;    // 項目選択種類
         listItemsOutput: ItemsOutputToBookTableDto[];
+        outNumExceedTime36Agr: boolean;
+        multiMonthDisplay: boolean;
+        newMode: boolean;
 
         constructor(init?: Partial<SetOutputItemOfAnnualWorkSchDto>) {
             $.extend(this, init);

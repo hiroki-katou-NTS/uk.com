@@ -533,21 +533,6 @@ module nts.uk.at.view.kwr008.a {
                 service.findAllBySettingType(share.SelectionClassification.STANDARD, self.printFormat())
                   .done((dataArr: Array<share.SetOutputItemOfAnnualWorkSchDto>) => {
                     self.outputItem(dataArr);
-                    // fake data
-                    self.outputItem.push(new share.SetOutputItemOfAnnualWorkSchDto({
-                        cd: '01',    // コード
-                        name: 'Fake Data',    // 名称
-                        printForm: 0,  // 印刷形式
-                        layoutId: '1',      // 項目設定ID
-                        listItemsOutput: []
-                    }));
-                    self.outputItem.push(new share.SetOutputItemOfAnnualWorkSchDto({
-                        cd: '02',    // コード
-                        name: 'Fake Data 36',    // 名称
-                        printForm: 1,  // 印刷形式
-                        layoutId: '2',      // 項目設定ID
-                        listItemsOutput: []
-                    }));
                     dfd.resolve();
                 });
                 return dfd.promise();
