@@ -60,11 +60,11 @@ module nts.uk.at.view.kmk010.d {
       const vm = this;
 
       let outputPremiumRate = [];
-      _.forEach(vm.vacationConversion().conversionRate(), (x, row) => {
+      _.forEach(vm.vacationConversion().conversionRate(), (x: any, row) => {
         _.forEach(x.premiumExtra60HRates(), (o: any) => {
           outputPremiumRate.push({
             premiumRate: parseInt(o.premiumRate()),
-            breakdownItemNo: row + 1,
+            breakdownItemNo: x.breakdownItemNo,
             overtimeNo: o.overtimeNo
           });
         });
@@ -135,19 +135,20 @@ module nts.uk.at.view.kmk010.d {
             let premiumExtra60HRates: Array<PremiumItem> = [];
             if (item.premiumExtra60HRates.length === 0) {
               _.forEach(vm.overTimeHeader(), (x, index) => {
-                premiumExtra60HRates.push(new PremiumItem(row + 1, 0, x.overtimeNo));
+                premiumExtra60HRates.push(new PremiumItem(item.breakdownItemNo, 0, x.overtimeNo));
               })
             } else {
               _.forEach(vm.overTimeHeader(), (col: any, index) => {
                 const findPremiumItem = _.find(item.premiumExtra60HRates, (o: any) => { return o.overtimeNo === col.overtimeNo });
                 const premiumRate: number = (findPremiumItem) ? findPremiumItem.premiumRate : 0;
-                premiumExtra60HRates.push(new PremiumItem(row + 1, premiumRate, col.overtimeNo));
+                premiumExtra60HRates.push(new PremiumItem(item.breakdownItemNo, premiumRate, col.overtimeNo));
               });
             }
 
             let breakdownItem: BreakdownItem = new BreakdownItem(
               item.name,
-              _.orderBy(premiumExtra60HRates, 'overtimeNo', 'asc')
+              _.orderBy(premiumExtra60HRates, 'overtimeNo', 'asc'),
+              item.breakdownItemNo
             );
             vm.breakdownItems.push(breakdownItem);
           });
@@ -204,10 +205,12 @@ module nts.uk.at.view.kmk010.d {
   export class BreakdownItem {
     name: string;
     premiumExtra60HRates: KnockoutObservableArray<PremiumItem> = ko.observableArray([]);
-
-    constructor(name: string, rate: Array<PremiumItem>) {
+    breakdownItemNo: number;
+    
+    constructor(name: string, rate: Array<PremiumItem>, itemNo?: number) {
       this.name = name;
       this.premiumExtra60HRates(rate);
+      this.breakdownItemNo = itemNo;
     }
   }
 

@@ -380,7 +380,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                                     if (!_.isEmpty(selectID)) {
                                         self.attendanceModel.update(selectID[0].attendanceItemId, selectID[0].attendanceItemName);
                                         nts.uk.ui.windows.setShared('SelectedAttendanceId', selectID[0].attendanceItemId, true);
-                                        self.isAllowShowAttendance( selectID[0].attendanceItemId >= 193 && selectID[0].attendanceItemId <= 202);
+                                        self.isAllowShowAttendance( selectID[0].attendanceItemId < 193 || selectID[0].attendanceItemId > 202);
                                     }
                                 }
 
@@ -692,7 +692,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                                 self.attendanceModel.update(null, null);
                             } else {
                                 self.attendanceModel.update(dailyAttendanceItem[0].attendanceItemId, dailyAttendanceItem[0].attendanceItemName);                                
-                                self.isAllowShowAttendance( dailyAttendanceItem[0].attendanceItemId >= 193 && dailyAttendanceItem[0].attendanceItemId <= 202);
+                                self.isAllowShowAttendance( dailyAttendanceItem[0].attendanceItemId < 193 || dailyAttendanceItem[0].attendanceItemId > 202);
                             }
                             self.enableSelectUpper(parseInt(self.selectUse()) && !_.isNil(self.attendanceModel.attendanceItemName())); 
                             nts.uk.ui.block.clear();
