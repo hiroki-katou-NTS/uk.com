@@ -6,6 +6,9 @@
   display: inline-block;
   position: absolute;
 }
+.blue-link-ccg020 {
+  color: blue;
+}
 .img-ccg020 {
   width: 20px;
   position: relative;

@@ -229,7 +229,7 @@ module nts.uk.com.view.ccg020.a {
 
               _.forEach(list, (item) => {
                 const $ul = $('<a/>')
-                  .addClass('result-search custom-limited-label')
+                  .addClass('result-search custom-limited-label blue-link-ccg020')
                   .attr('href', item.url)
                   .text(item.name);
                 $tableResult.append($ul);

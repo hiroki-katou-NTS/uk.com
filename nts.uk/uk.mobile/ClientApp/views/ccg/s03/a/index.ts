@@ -4,11 +4,14 @@ import * as _ from 'lodash';
 import * as moment from 'moment';
 
 @component({
-  name: 'ccgs03a',
   route: '/ccg/s03/a',
   style: require('./style.scss'),
   template: require('./index.vue'),
-  validations: {}
+  validations: {
+    dateRangeInput: {
+      required: true
+    }
+  }
 })
 export class Ccgs03AComponent extends Vue {
 
@@ -67,13 +70,18 @@ export class Ccgs03AComponent extends Vue {
       .then((response: any) => {
         if (response && response.data) {
           const employeeNotification: EmployeeNotification = response.data;
+          this.systemDate = moment.utc(employeeNotification.systemDate).locale('ja').format('YYYY/M/D(dd)');
+          _.map(employeeNotification.anniversaryNotices, (item: AnniversaryNotices) => 
+            item.anniversaryNotice.anniversaryTitle = this.convertTitleAnniversaries(item.anniversaryNotice));
           this.anniversaries = employeeNotification.anniversaryNotices;
           const msgNotices = _.map(employeeNotification.msgNotices, (x: any) => {
             const msg = new MsgNotices();
             msg.creator = x.creator;
             msg.flag = x.flag;
             msg.message = x.message;
-            msg.dateDisplay = x.message ? x.message.startDate + ' ' + this.$i18n('CCG003_15') + ' ' + x.message.endDate : '';
+            msg.dateDisplay = x.message
+              ? `${moment.utc(x.message.startDate).format('M/D')} ${this.$i18n('CCG003_15')} ${moment.utc(x.message.endDate).format('M/D')}`
+              : '';
             msg.messageDisplay = this.replaceUrl(x.message.notificationMessage);
 
             return msg;
@@ -81,7 +89,6 @@ export class Ccgs03AComponent extends Vue {
           this.msgNotices = msgNotices;
           this.role = employeeNotification.role;
           this.roleFlag = !!this.role && employeeNotification.role.employeeReferenceRange !== 3;
-          this.systemDate = moment.utc(employeeNotification.systemDate).locale('ja').format('YYYY/M/D(dd)');
           this.$mask('hide');
         }
       })
@@ -115,9 +122,9 @@ export class Ccgs03AComponent extends Vue {
     this.$mask('show');
     this.msgNotices = [];
     this.anniversaries = [];
-    const startDate = moment.utc(this.dateValue.start, 'YYYY/MM/DD');
-    const endDate = moment.utc(this.dateValue.end, 'YYYY/MM/DD');
-    const baseDate = moment.utc(new Date(), 'YYYY/MM/DD');
+    const startDate = moment.utc(moment.utc(this.dateValue.start).format('YYYY/MM/DD'), 'YYYY/MM/DD');
+    const endDate = moment.utc(moment.utc(this.dateValue.end).format('YYYY/MM/DD'), 'YYYY/MM/DD');
+    const baseDate = moment.utc(moment.utc().format('YYYY/MM/DD'), 'YYYY/MM/DD');
     if (startDate.isAfter(baseDate) || endDate.isAfter(baseDate)) {
       this.$modal.error({
         messageId: 'Msg_1833'
@@ -155,13 +162,17 @@ export class Ccgs03AComponent extends Vue {
       .then((response: any) => {
         if (response && response.data) {
           const destinationNotification: DestinationNotification = response.data;
+          _.map(destinationNotification.anniversaryNotices, (item: AnniversaryNotices) => 
+            item.anniversaryNotice.anniversaryTitle = this.convertTitleAnniversaries(item.anniversaryNotice));
           this.anniversaries = destinationNotification.anniversaryNotices;
           const msgNotices = _.map(destinationNotification.msgNotices, (x: any) => {
             const msg = new MsgNotices();
             msg.creator = x.creator;
             msg.flag = x.flag;
             msg.message = x.message;
-            msg.dateDisplay = x.message ? x.message.startDate + ' ' + this.$i18n('CCG003_15') + ' ' + x.message.endDate : '';
+            msg.dateDisplay = x.message
+              ? `${moment.utc(x.message.startDate, 'YYYY/MM/DD').format('M/D')} ${this.$i18n('CCG003_15')} ${moment.utc(x.message.endDate, 'YYYY/MM/DD').format('M/D')}`
+              : '';
             msg.messageDisplay = this.replaceUrl(x.message.notificationMessage);
 
             return msg;
@@ -171,6 +182,40 @@ export class Ccgs03AComponent extends Vue {
         }
       })
       .catch((error: any) => this.$modal.error(error).then(() => this.$mask('hide')));
+  }
+
+  /**
+   * 記念日のタイトル部分の表示について ver5
+   */
+  private convertTitleAnniversaries(param: AnniversaryNotice): string {
+    if (!param) {
+      return '';
+    }
+    const vm = this;
+    let displayDate = '';
+    const startDate = moment.utc(moment.utc(vm.dateValue.start).format('YYYY/MM/DD'), 'YYYY/MM/DD');
+    const endDate = moment.utc(moment.utc(vm.dateValue.end).format('YYYY/MM/DD'), 'YYYY/MM/DD');
+    const systemDate = moment.utc(moment.utc(vm.systemDate, 'YYYY/M/D(dd)').format('YYYY/MM/DD'), 'YYYY/MM/DD');
+    let anniversaryDate = moment.utc(moment.utc(`${startDate.year()}-${param.displayDate}`, 'YYYY-MM-DD').format('YYYY/MM/DD'), 'YYYY/MM/DD');
+    if (startDate.isSame(systemDate) && endDate.isSame(systemDate)) {
+      if (startDate.isSameOrBefore(anniversaryDate)) {
+        displayDate = anniversaryDate.locale('ja').format('M/D(dd)');
+      } else {
+        displayDate =  anniversaryDate.add(1, 'y') .locale('ja').format('M/D(dd)');
+      }
+    }
+    // 条件：期間開始日、終了日がどちらかまたは共に「システム日」ではない場合
+    // 1	期間開始日.年月日　≦　期間開始日.年＋個人の記念日.月日　≦　期間終了日.年月日
+    if (startDate.isSameOrBefore(anniversaryDate) && anniversaryDate.isSameOrBefore(endDate)) {
+      displayDate =  anniversaryDate.locale('ja').format('M/D(dd)');
+    }
+    // 2	期間開始日.年月日　≦　期間終了日.年＋個人の記念日.月日　≦　期間終了日.年月日
+    anniversaryDate = moment.utc(moment.utc(`${endDate.year}-${param.displayDate}`, 'YYYY-MM-DD').format('YYYY/MM/DD'), 'YYYY/MM/DD');
+    if (startDate.isBefore(anniversaryDate) && anniversaryDate.isBefore(endDate)) {
+      displayDate = anniversaryDate.locale('ja').format('M/D(dd)');
+    }
+
+    return `${displayDate} ${param.anniversaryTitle}`;
   }
 
   /**
