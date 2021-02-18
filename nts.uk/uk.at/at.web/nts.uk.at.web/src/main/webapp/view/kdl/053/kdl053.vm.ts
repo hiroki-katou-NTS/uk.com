@@ -17,6 +17,15 @@ module nts.uk.at.view.kdl053 {
             const self = this;
             self.loadScheduleRegisterErr(); 
         }
+        mounted(){
+            const self = this;
+            if(self.hasError()){
+                self.$window.size(540, 820);
+            } else {
+                self.$window.size(500, 820);
+            }
+        }
+
         loadScheduleRegisterErr(): void {
             const self = this;
             let data = getShared('dataShareDialogKDL053');           
@@ -35,7 +44,8 @@ module nts.uk.at.view.kdl053 {
                 errorRegistrationList = _.union(errorRegistrationList, _.sortBy(temp, item => item.date));
             });
 
-            self.hasError(data.isRegistered == 1);            
+            self.hasError(data.isRegistered == 1); 
+
             _.each(errorRegistrationList, errorLog => {
                 switch (self.getDayfromDate(errorLog.date)) {
                     case 0:
@@ -79,9 +89,12 @@ module nts.uk.at.view.kdl053 {
                         })
                     })      
                     self.registrationErrorListCsv(errorRegistrationList);
-                    self.registrationErrorList(errorRegistrationList);          
+                    self.registrationErrorList(errorRegistrationList);  
+                } else {
+                    self.registrationErrorListCsv(errorRegistrationList);
+                    self.registrationErrorList(errorRegistrationList);
+                }   
 
-                }                
                 $("#grid").igGrid({
                     width: "780px",
                     height: "330px",
@@ -119,8 +132,9 @@ module nts.uk.at.view.kdl053 {
             })
             .always(() => {
                 self.$blockui("hide");
-            });
+            });            
         }
+        
         exportCsv(): void {
             const self = this;
             self.$blockui("invisible"); 
@@ -137,8 +151,6 @@ module nts.uk.at.view.kdl053 {
         getDayfromDate(fromDate: string): number {
             let date = new Date(fromDate);
             return date.getDay();
-        }
-
-        
+        }        
     }
 }

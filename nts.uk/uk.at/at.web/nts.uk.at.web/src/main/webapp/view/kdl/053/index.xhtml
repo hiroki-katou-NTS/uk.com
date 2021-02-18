@@ -21,9 +21,9 @@
 					<!-- A1_2: Button 閉じる-->
 					<button tabindex="2" id="btnClose" data-bind="click: closeDialog">#{i18n.getText('KDL053_3')}</button>				
 			</div>     
-            <div id="content-area" style="overflow:hidden">
+            <div id="content-area" style="overflow:hidden">               
                 <div>
-                    <div data-bind= "if: hasError">
+                    <div data-bind= "if: hasError">                        
                         <!--A2-1-->
                         <div class="label">#{i18n.getText('KDL053_4')}</div>
 
@@ -32,7 +32,7 @@
                         <div style="margin-left: 20px;" data-bind="ntsFormLabel:{}">#{i18n.getText('KDL053_9')} </div>
                     </div>
 
-                    <div data-bind= "ifnot: hasError">
+                    <div data-bind= "ifnot: hasError">                       
                         <!--A3-->   
                         <div style="margin: 15px 0px 0px 20px;" data-bind="ntsFormLabel:{}">#{i18n.getText('KDL053_9')} </div>
                     </div>                         
