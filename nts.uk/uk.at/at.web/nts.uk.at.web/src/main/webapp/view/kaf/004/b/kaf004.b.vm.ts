@@ -17,6 +17,11 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
                                         appType: appType,
                                         appDispInfoStartupOutput: appDispInfoStartupOutput
                                     } }"></div>
+            <div data-bind="component: { name: 'kaf000-b-component2', 
+								params: {
+									appType: appType,
+									appDispInfoStartupOutput: appDispInfoStartupOutput
+								} }"></div>
             <div data-bind="component: { name: 'kaf000-b-component3',
                                     params: {
                                         appType: appType,
@@ -309,7 +314,8 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
                 vm.workManagement.workTime(_.filter(lateEarliesApp, { 'workNo': 1, 'lateOrEarlyClassification': 0 })[0].timeWithDayAttr);
                 // vm.lateOrEarlyInfo1().isActive(true);
             } else {
-                if (vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail!== null && vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opWorkTime !== null && vm.application().prePostAtr() == 1) {
+                if (vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail!== null && vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opWorkTime !== null && vm.application().prePostAtr() == 1
+                    && vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.trackRecordAtr === 0) {
                     vm.workManagement.workTime(vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opWorkTime);
                 }
             }
@@ -318,7 +324,8 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
                 vm.workManagement.leaveTime(_.filter(lateEarliesApp, { 'workNo': 1, 'lateOrEarlyClassification': 1 })[0].timeWithDayAttr);
                 // vm.lateOrEarlyInfo2().isActive(true);
             } else {
-                if (vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail!== null && vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opLeaveTime !== null && vm.application().prePostAtr() == 1) {
+                if (vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail!== null && vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opLeaveTime !== null && vm.application().prePostAtr() == 1
+                && vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.trackRecordAtr === 0) {
                     vm.workManagement.leaveTime(vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opLeaveTime);
                 }
             }
@@ -327,7 +334,8 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
                 vm.workManagement.workTime2(_.filter(lateEarliesApp, { 'workNo': 2, 'lateOrEarlyClassification': 0 })[0].timeWithDayAttr);
                 // vm.lateOrEarlyInfo3().isActive(true);
             } else {
-                if (vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail!== null && vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opWorkTime2 !== null && vm.application().prePostAtr() == 1) {
+                if (vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail!== null && vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opWorkTime2 !== null && vm.application().prePostAtr() == 1
+                && vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.trackRecordAtr === 0) {
                     vm.workManagement.workTime2(vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opWorkTime2);
                 }
             }
@@ -336,7 +344,8 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
                 vm.workManagement.leaveTime2(_.filter(lateEarliesApp, { 'workNo': 2, 'lateOrEarlyClassification': 1 })[0].timeWithDayAttr);
                 // vm.lateOrEarlyInfo4().isActive(true);
             } else {
-                if (vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail!== null && vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opDepartureTime2 !== null && vm.application().prePostAtr() == 1) {
+                if (vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail!== null && vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opDepartureTime2 !== null && vm.application().prePostAtr() == 1
+                && vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.trackRecordAtr === 0) {
                     vm.workManagement.leaveTime2(vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opDepartureTime2);
                 }
             }
@@ -505,14 +514,14 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
                                     infoStartup: ko.toJS(vm.appDispInfoStartupOutput)
                                 };
 
-                                return vm.$ajax(API.initPageB, command)
-                                    .done((res: any) => {
-                                        this.fetchData(res);
-                                    })
-                                    .fail((err: any) => {
-                                        console.log()
-                                        vm.$dialog.error({ messageId: err.messageId });
-                                    });
+                                // return vm.$ajax(API.initPageB, command)
+                                //     .done((res: any) => {
+                                //         this.fetchData(res);
+                                //     })
+                                //     .fail((err: any) => {
+                                //         console.log()
+                                //         vm.$dialog.error({ messageId: err.messageId });
+                                //     });
                             })
                     }
                 }).always(() => vm.$blockui('hide'));
@@ -531,16 +540,16 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
             vm.arrivedLateLeaveEarlyInfo().arrivedLateLeaveEarly.lateOrLeaveEarlies = [];
             vm.arrivedLateLeaveEarlyInfo().arrivedLateLeaveEarly.lateCancelation = [];
             if(vm.application().prePostAtr() === 1) {
-                if(vm.lateOrEarlyInfo1().isIndicated() && vm.lateOrEarlyInfo1().isActive() && vm.lateOrEarlyInfo1().isCheck()) {
+                if(vm.lateOrEarlyInfo1().isIndicated() && vm.lateOrEarlyInfo1().isCheck()) {
                     vm.arrivedLateLeaveEarlyInfo().arrivedLateLeaveEarly.lateCancelation.push({workNo: 1, lateOrEarlyClassification: 0})
                 }
-                if(vm.lateOrEarlyInfo2().isIndicated() && vm.lateOrEarlyInfo2().isActive() && vm.lateOrEarlyInfo2().isCheck()) {
+                if(vm.lateOrEarlyInfo2().isIndicated() && vm.lateOrEarlyInfo2().isCheck()) {
                     vm.arrivedLateLeaveEarlyInfo().arrivedLateLeaveEarly.lateCancelation.push({workNo: 1, lateOrEarlyClassification: 1})
                 }
-                if(vm.lateOrEarlyInfo3().isIndicated() && vm.lateOrEarlyInfo3().isActive() && vm.lateOrEarlyInfo3().isCheck()) {
+                if(vm.lateOrEarlyInfo3().isIndicated() && vm.lateOrEarlyInfo3().isCheck()) {
                     vm.arrivedLateLeaveEarlyInfo().arrivedLateLeaveEarly.lateCancelation.push({workNo: 2, lateOrEarlyClassification: 0})
                 }
-                if(vm.lateOrEarlyInfo4().isIndicated() && vm.lateOrEarlyInfo4().isActive() && vm.lateOrEarlyInfo4().isCheck()) {
+                if(vm.lateOrEarlyInfo4().isIndicated() && vm.lateOrEarlyInfo4().isCheck()) {
                     vm.arrivedLateLeaveEarlyInfo().arrivedLateLeaveEarly.lateCancelation.push({workNo: 2, lateOrEarlyClassification: 1})
                 }
             }
