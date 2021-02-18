@@ -223,9 +223,7 @@ module nts.uk.at.view.ktg026.a {
                 return { controlsDescendantBindings: false };
             }
 
-            const canvas = document.createElement('canvas');
-
-            $(element).append(canvas);
+            const canvas = $('<canvas>').appendTo(element).get(0);
 
             ko.applyBindingsToNode(canvas, { 'ktg-026-chart': data, type: 'body' }, bindingContext);
 
