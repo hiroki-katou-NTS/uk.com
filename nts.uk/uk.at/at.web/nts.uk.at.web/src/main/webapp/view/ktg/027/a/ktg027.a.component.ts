@@ -4,6 +4,38 @@ module nts.uk.at.view.ktg027.a {
         GET_DATA_INIT: "/screen/at/overtimehours/getOvertimedDisplayForSuperiorsDto",
     };
 
+
+
+    // get text color of 対象時間
+    const genTextColor = (state: number) => {
+        if ([1, 3].indexOf(state) > -1) {
+            return "#ffffff";
+        }
+
+        if ([2, 4].indexOf(state) > -1) {
+            return "#ff0000";
+        }
+
+        return "";
+    };
+
+    // get background color of 対象時間
+    const genBackgroundColor = (state: number) => {
+        if ([1, 3].indexOf(state) > -1) {
+            return "#FD4D4D";
+        }
+
+        if ([2, 4].indexOf(state) > -1) {
+            return "#F6F636";
+        }
+
+        if ([6, 7].indexOf(state) > -1) {
+            return "#eb9152";
+        }
+
+        return "";
+    };
+
     @component({
         name: 'ktg-027-a',
         template: `
@@ -72,7 +104,7 @@ module nts.uk.at.view.ktg027.a {
                         <tbody data-bind="foreach: { data: $component.dataTable, as: 'row' }">
                             <tr>
                                 <td data-bind="text: row.businessName, click: function() { $component.openKTG026(row) }"></td>
-                                <td class="text-right" data-bind="time: row.time.tt, click: function() { $component.openKDW003(row) }"></td>
+                                <td class="text-right" data-bind="time: row.time.tt, click: function() { $component.openKDW003(row) }, style: row.state"></td>
                                 <td data-bind="ktg-chart: $component.dataTable"></td>
                             </tr>
                         </tbody>
@@ -184,11 +216,11 @@ module nts.uk.at.view.ktg027.a {
                                         ot: agreementTime.agreementTime,
                                         wh: agreMax.agreementTime - agreementTime.agreementTime
                                     },
-                                    state
+                                    state: `color: ${genTextColor(state)}; background-color: ${genBackgroundColor(state)}`
                                 });
                             }
 
-                            return _.extend(emp, { time: { tt: 120, ot: 0, wh: 0 } });
+                            return _.extend(emp, { time: { tt: 120, ot: 0, wh: 0 }, state: '' });
                         })
                         .filter(() => overtimeSubor.length)
                         .value();
