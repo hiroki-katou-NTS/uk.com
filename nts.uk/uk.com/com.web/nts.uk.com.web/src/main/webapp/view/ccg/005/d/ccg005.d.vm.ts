@@ -42,6 +42,7 @@ module nts.uk.at.view.ccg005.d.screenModel {
 
     //mode
     mode: KnockoutObservable<number> = ko.observable(Mode.UPDATE);
+    enableDeleteBtn: KnockoutObservable<boolean> = ko.computed(() => this.mode() === Mode.UPDATE);
 
     mounted() {
       const vm = this;

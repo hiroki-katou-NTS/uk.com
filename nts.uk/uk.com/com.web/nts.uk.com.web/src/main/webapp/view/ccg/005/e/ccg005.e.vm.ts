@@ -43,7 +43,7 @@ module nts.uk.at.view.ccg005.e.screenModel {
     sid: KnockoutObservable<string> = ko.observable();
     disableBusinessName: KnockoutObservable<boolean> = ko.observable(true);
     isGoOut: KnockoutObservable<boolean> = ko.observable(false);
-
+    enableDeleteBtn: KnockoutObservable<boolean> = ko.observable(false);
 
     created(props: createProps) {
       const vm = this;
@@ -57,6 +57,7 @@ module nts.uk.at.view.ccg005.e.screenModel {
         date: moment(props.goOutDate),
       }).then((data: GoOutEmployeeInformationDto) => {
         if(data) {
+          vm.enableDeleteBtn(true);
           vm.goOutReason(data.goOutReason);
           vm.goOutTime(data.goOutTime);
           vm.comebackTime(data.comebackTime);
@@ -100,24 +101,31 @@ module nts.uk.at.view.ccg005.e.screenModel {
       const vm = this;
       vm.$validate().then((valid: boolean) => {
         if (valid) {
-          const gouOutInfo = new GoOutEmployeeInformation({
-            goOutTime: vm.goOutTime(),
-            goOutReason: vm.goOutReason(),
-            goOutDate: moment(vm.goOutDate()),
-            comebackTime: vm.comebackTime(),
-            sid: vm.sid(),
-          });
-          vm.$blockui('grayout');
-          vm.$ajax(API.saveOrUpdate, gouOutInfo)
-            .then(() => {
-              vm.$blockui('clear');
-              vm.$dialog.info({ messageId: "Msg_15" });
-              vm.isGoOut(true);
-              vm.$window.close(vm.isGoOut());
+          if(vm.goOutTime() > vm.comebackTime()) {
+            return vm.$dialog.error({ messageId: "Msg_2075" });
+          }
+          if(vm.goOutTime() > Number(moment.utc().hours()*60 + moment.utc().minutes())) {
+            vm.$dialog.info({ messageId: "Msg_2074" }).then(() => {
+              const gouOutInfo = new GoOutEmployeeInformation({
+                goOutTime: vm.goOutTime(),
+                goOutReason: vm.goOutReason(),
+                goOutDate: moment(vm.goOutDate()),
+                comebackTime: vm.comebackTime(),
+                sid: vm.sid(),
+              });
+              vm.$blockui('grayout');
+              vm.$ajax(API.saveOrUpdate, gouOutInfo)
+                .then(() => {
+                  vm.$blockui('clear');
+                  vm.$dialog.info({ messageId: "Msg_15" });
+                  vm.isGoOut(true);
+                  vm.$window.close(vm.isGoOut());
+                })
+                .always(() => {
+                  vm.$blockui('clear');
+                });
             })
-            .always(() => {
-              vm.$blockui('clear');
-            });
+          }
         }
       });
     }
