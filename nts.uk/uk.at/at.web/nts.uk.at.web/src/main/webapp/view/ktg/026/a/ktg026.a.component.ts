@@ -245,9 +245,16 @@ module nts.uk.at.view.ktg026.a {
         template: `
             <div class="ktg-026-a widget-title">
                 <table>
+                    <colgroup>
+                        <col width="auto" />
+                        <col width="32px" />
+                    </colgroup>
                     <thead>
                         <tr>
                             <th data-bind="i18n: 'KTG026_5'"></th>
+                            <th>
+                                <button class="hidden" data-bind="click: $component.close, i18n: 'KTG026_8'"></button>
+                            </th>
                         </tr>
                     </thead>
                 </table>
@@ -564,6 +571,12 @@ module nts.uk.at.view.ktg026.a {
 
                 vm.$nextTick(() => $('.ktg-026-a.ui-resizable').trigger('wg.resize'));
             });
+        }
+
+        close() {
+            const vm = this;
+
+            vm.$window.close();
         }
     }
 
