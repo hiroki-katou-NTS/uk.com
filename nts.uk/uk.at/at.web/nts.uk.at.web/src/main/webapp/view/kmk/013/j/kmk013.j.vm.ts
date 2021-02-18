@@ -5,7 +5,7 @@ module nts.uk.at.view.kmk013.j {
     export module viewmodel {
         export class ScreenModel {
             transAttendMethod: KnockoutObservableArray<ItemModel>;
-            selectedItem: KnockoutObservable<number>; // J2_4
+            selectedTransAttendMethod: KnockoutObservable<number>; // J2_4
             
             lstWorkTypeGivenDays: KnockoutObservableArray<WorkType>;
             lstWorkTypeAttendanceDays: KnockoutObservableArray<WorkType>;
@@ -17,6 +17,18 @@ module nts.uk.at.view.kmk013.j {
             workTypeNamesAttendance: KnockoutObservable<string>;
             items: KnockoutObservableArray<WorktypeDisplayDto>;
             useAtr: KnockoutObservable<number>;
+
+            controlSetItems: KnockoutObservableArray<any>;
+            selectedControlSetItem: KnockoutObservable<number> = ko.observable(0);
+            calculationMethod: KnockoutObservableArray<any>;
+            selectedCalculationMethod: KnockoutObservable<number> = ko.observable(0);
+            nonCalculationMethod: KnockoutObservableArray<any>;
+            selectedNonCalculationMethod: KnockoutObservable<number> = ko.observable(0);
+            useAtrItems: KnockoutObservableArray<any>;
+            selectedWorkDayItem: KnockoutObservable<number> = ko.observable(0);
+            selectedNonWorkDayItem: KnockoutObservable<number> = ko.observable(0);
+
+            verticalTotalMethodOfMon: VerticalTotalMethodOfMon;
             
             constructor() {
                 var self = this;
@@ -24,7 +36,7 @@ module nts.uk.at.view.kmk013.j {
                     new ItemModel(0, nts.uk.resource.getText("KMK013_311")),
                     new ItemModel(1, nts.uk.resource.getText("KMK013_312"))
                 ]);
-                self.selectedItem = ko.observable(0);
+                self.selectedTransAttendMethod = ko.observable(0);
                 self.lstWorkTypeGivenDays = ko.observableArray([]);
                 self.lstWorkTypeAttendanceDays = ko.observableArray([]);
                 self.items = ko.observableArray([]);
@@ -42,144 +54,112 @@ module nts.uk.at.view.kmk013.j {
                     // Set tooltip
                     $('#itemname_attendanceDay').text(data);
                 });
-                
+                // Ver 27
+                self.controlSetItems = ko.observableArray<ItemModel>([
+                    new ItemModel(0, nts.uk.resource.getText("KMK013_353")),
+                    new ItemModel(1, nts.uk.resource.getText("KMK013_354")),
+                    new ItemModel(2, nts.uk.resource.getText("KMK013_355"))
+                ]);
+                self.calculationMethod = ko.observableArray<ItemModel>([
+                    new ItemModel(0, nts.uk.resource.getText("KMK013_358")),
+                    new ItemModel(1, nts.uk.resource.getText("KMK013_359")),
+                    new ItemModel(2, nts.uk.resource.getText("KMK013_360"))
+                ]);
+                self.nonCalculationMethod = ko.observableArray<ItemModel>([
+                    new ItemModel(0, nts.uk.resource.getText("KMK013_316")),
+                    new ItemModel(1, nts.uk.resource.getText("KMK013_317")),
+                    new ItemModel(2, nts.uk.resource.getText("KMK013_318"))
+                ]);
+                self.useAtrItems = ko.observableArray([
+                    { code: 1, name: nts.uk.resource.getText("KMK013_209") },
+                    { code: 0, name: nts.uk.resource.getText("KMK013_210") }
+                ]);
             }
-            
+
             // Start Page
             public startPage(): JQueryPromise<void> {
                 var dfd = $.Deferred<void>();
                 var self = this;
-                self.getWorkTypeList().done(function() {
-                    self.findAll();
-                    service.loadAllSetting().done(function(data) {
-                        if (data) {
-                            self.selectedItem(data.attendanceItemCountingMethod);
-                        }
-                    }).fail(function(res) {
-                        nts.uk.ui.dialog.alert(res.message);
-                    });
-                    
+                nts.uk.ui.block.invisible();
+                $.when(service.init()).done(function(res: IVerticalTotalMethodOfMon) {
+                    if (res) {
+                        let data = new VerticalTotalMethodOfMon(res);
+                        self.verticalTotalMethodOfMon = data;
+                        self.selectedControlSetItem(data.config);
+                        self.selectedCalculationMethod(data.calculationMethod);
+                        self.selectedTransAttendMethod(data.countingDay);
+                        self.selectedNonCalculationMethod(data.countingCon);
+                        self.selectedWorkDayItem(data.countingWorkDay);
+                        self.selectedNonWorkDayItem(data.countingNonWorkDay);
+                    }
                     dfd.resolve();
-                }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
-                });
-                
-                return dfd.promise();
-            }
-            
-            openKDL002_givenDays(): void {
-                var self = this;
-                var workTypeCodes = _.map(self.workTypeList(), function(item: IWorkTypeModal) { return item.workTypeCode });
-                nts.uk.ui.windows.setShared('KDL002_Multiple', true);
-                nts.uk.ui.windows.setShared('KDL002_AllItemObj', workTypeCodes);
-                nts.uk.ui.windows.setShared('KDL002_SelectedItemId', self.currentItem().workTypeList(), true);
-                
-                nts.uk.ui.windows.sub.modal('/view/kdl/002/a/index.xhtml').onClosed(function(): any {
+                }).fail((err) => {
+                    nts.uk.ui.dialog.alertError({ messageId: err.messageId });
+                }).always(() => {
                     nts.uk.ui.block.clear();
-                    var data = nts.uk.ui.windows.getShared('KDL002_SelectedNewItem');
-                    var name = [];
-                    _.forEach(data, function(item: IWorkTypeModal) {
-                        name.push(item.name);
-                    });
-                    self.workTypeNames(name.join(" + "));
-    
-                    var workTypeCodes = _.map(data, function(item: any) { return item.code; });
-                    self.currentItem().workTypeList(workTypeCodes);
-                });
-            }
-            
-            openKDL002_attendanceDays(): void {
-                var self = this;
-                var workTypeCodes = _.map(self.workTypeList(), function(item: IWorkTypeModal) { return item.workTypeCode });
-                nts.uk.ui.windows.setShared('KDL002_Multiple', true);
-                nts.uk.ui.windows.setShared('KDL002_AllItemObj', workTypeCodes);
-                nts.uk.ui.windows.setShared('KDL002_SelectedItemId', self.currentItemAttendance().workTypeList(), true);
-                
-                nts.uk.ui.windows.sub.modal('/view/kdl/002/a/index.xhtml').onClosed(function(): any {
-                    nts.uk.ui.block.clear();
-                    var data = nts.uk.ui.windows.getShared('KDL002_SelectedNewItem');
-                    var name = [];
-                    _.forEach(data, function(item: IWorkTypeModal) {
-                        name.push(item.name);
-                    });
-                    self.workTypeNamesAttendance(name.join(" + "));
-    
-                    var workTypeCodes = _.map(data, function(item: any) { return item.code; });
-                    self.currentItemAttendance().workTypeList(workTypeCodes);     
-                });
-            }
-            
-            getWorkTypeList() {
-                var self = this;
-                var dfd = $.Deferred();
-                service.findWorkType().done(function(res) {
-                    self.workTypeList.removeAll();
-                    _.forEach(res, function(item) {
-                        self.workTypeList.push({
-                            workTypeCode: item.workTypeCode,
-                            name: item.name,
-                            memo: item.memo
-                        });
-                    });
-                    dfd.resolve();
-                }).fail(function(error) {
-                    alert(error.message);
-                    dfd.reject(error);
                 });
                 return dfd.promise();
             }
-            
-            getNames(data: Array<IWorkTypeModal>, workTypeCodesSelected: Array<string>, control: KnockoutObservable<string>) {
-                var name = [];
+
+            openScreenO() {
                 var self = this;
-                if (workTypeCodesSelected && workTypeCodesSelected.length > 0) {
-                    _.forEach(data, function(item: IWorkTypeModal) {
-                        _.forEach(workTypeCodesSelected, function(items: any) {
-                            if (_.includes(items, item)) {
-                                service.findWorkTypeName(items).done(function(workType) {
-                                    name.push(workType.workTypeName);
-                                    control(name.join(" + "));
-                                });
-                            }
-                        });
-                    });
+
+                let vacationPriority = self.verticalTotalMethodOfMon.getOffsetPriority();
+                let data = null;
+                if (vacationPriority.substituteHoliday == 0 &&
+                    vacationPriority.sixtyHourVacation == 0 &&
+                    vacationPriority.specialHoliday == 0 &&
+                    vacationPriority.annualHoliday == 0) {
+                    data = {
+                        annual: 2,
+                        substitute: 0,
+                        sixtyHour: 1,
+                        special: 3
+                    };
+                } else {
+                    data = {
+                        annual: vacationPriority.annualHoliday,
+                        substitute: vacationPriority.substituteHoliday,
+                        sixtyHour: vacationPriority.sixtyHourVacation,
+                        special: vacationPriority.specialHoliday
+                    };
                 }
-            }
-            
-            findAll(): JQueryPromise<any> {
-                var self = this;
-                var dfd = $.Deferred();
-                self.items.removeAll();
-                
-                service.findPayItem().done(function(data) {
-                    var attPayItems = data.payAttendanceDays;
-                    var absPayItems = data.payAbsenceDays;
-                    _.each(absPayItems, (items: any) => {
-                        self.currentItem().workTypeList().push(items);
-                    });
-                    self.getNames(self.currentItem().workTypeList(), absPayItems, self.workTypeNames);
-                    _.each(attPayItems, (items: any) => {
-                        self.currentItemAttendance().workTypeList().push(items);
-                    });
-                    self.getNames(self.currentItemAttendance().workTypeList(), attPayItems, self.workTypeNamesAttendance);
+
+                nts.uk.ui.block.invisible();
+                nts.uk.ui.windows.setShared('KMK013_0_Order', data);
+                nts.uk.ui.windows.sub.modal("/view/kmk/013/o/index.xhtml").onClosed(() => {
+
+                    var res = nts.uk.ui.windows.getShared("KMK013_O_NewOrder");
+                    if (res) {
+                        self.verticalTotalMethodOfMon.updateOffsetPriority(
+                            res.substitute,
+                            res.sixtyHour,
+                            res.special,
+                            res.annual
+                        );
+                    }
+
                 });
-                
-                return dfd.promise();
             }
-            
+
             // Save data
             saveData(): void {
-                let self = this,
-                    data: any = {};
+                let self = this;
                 blockUI.grayout();
-                data.attendanceItemCountingMethod = self.selectedItem();
-                var workType = ko.toJS(self.currentItem());
-                var workTypeAttendance = ko.toJS(self.currentItemAttendance());
-                var workTypeData: any = {
-                    payAttendanceDays: workTypeAttendance.workTypeList,
-                    payAbsenceDays: workType.workTypeList
+                let data = {
+                    config: self.selectedControlSetItem(),
+                    calculationMethod: self.selectedCalculationMethod(),
+                    annualHoliday: self.verticalTotalMethodOfMon.vacationOffset.annualHoliday,
+                    substituteHoliday: self.verticalTotalMethodOfMon.vacationOffset.substituteHoliday,
+                    sixtyHourVacation: self.verticalTotalMethodOfMon.vacationOffset.sixtyHourVacation,
+                    specialHoliday: self.verticalTotalMethodOfMon.vacationOffset.specialHoliday,
+                    countingDay: self.selectedTransAttendMethod(),
+                    countingCon: self.selectedNonCalculationMethod(),
+                    countingWorkDay:  self.selectedWorkDayItem(),
+                    countingNonWorkDay: self.selectedNonWorkDayItem(),
                 };
-                $.when(service.registerVertical(data),service.registerPayItem(workTypeData)).done(()=>{
+
+                $.when(service.registerVertical(data)).done(()=>{
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
                                 $('#trans-attend').focus();
                     });
@@ -255,4 +235,62 @@ module nts.uk.at.view.kmk013.j {
     export interface IWorktypeDisplaySetDto {
         workTypeCode?: string;
     }
+
+    class VerticalTotalMethodOfMon {
+        config: number; // 総労働時間の上限値制御.設定
+        calculationMethod: number; // 総拘束時間の計算.計算方法
+        vacationOffset: ITimeVacationOffsetPriority; // // 時間休暇相殺優先順位
+        countingDay: number; // 月別実績の集計方法.振出日数.振出日数カウント条件
+        countingCon: number; // 月別実績の集計方法.特定日.計算対象外のカウント条件
+        countingWorkDay: number; // 月別実績の集計方法.特定日.連続勤務の日でもカウントする
+        countingNonWorkDay: number; // 月別実績の集計方法.特定日.勤務日ではない日でもカウントする
+
+        constructor (param: IVerticalTotalMethodOfMon) {
+            this.config = param.config;
+            this.calculationMethod = param.calculationMethod;
+            this.vacationOffset = {
+                annualHoliday: param.annualHoliday,
+                substituteHoliday: param.substituteHoliday,
+                sixtyHourVacation: param.sixtyHourVacation,
+                specialHoliday: param.specialHoliday
+            };
+            this.countingDay = param.countingDay;
+            this.countingCon = param.countingCon;
+            this.countingWorkDay = param.countingWorkDay;
+            this.countingNonWorkDay = param.countingNonWorkDay;
+        }
+
+        updateOffsetPriority(substitute: number, sixtyHour: number, special: number, annual: number) {
+            this.vacationOffset.annualHoliday = annual;
+            this.vacationOffset.substituteHoliday = substitute;
+            this.vacationOffset.sixtyHourVacation = sixtyHour;
+            this.vacationOffset.specialHoliday = special;
+        }
+
+        getOffsetPriority() {
+            return this.vacationOffset;
+        }
+
+    }
+
+    interface IVerticalTotalMethodOfMon {
+        config: number; // 総労働時間の上限値制御.設定
+        calculationMethod: number; // 総拘束時間の計算.計算方法
+        annualHoliday: number; // 時間休暇相殺優先順位.年休
+        substituteHoliday: number; // 時間休暇相殺優先順位.代休
+        sixtyHourVacation: number; // 時間休暇相殺優先順位.60H超休
+        specialHoliday: number; // 時間休暇相殺優先順位.特別休暇
+        countingDay: number; // 月別実績の集計方法.振出日数.振出日数カウント条件
+        countingCon: number; // 月別実績の集計方法.特定日.計算対象外のカウント条件
+        countingWorkDay: number; // 月別実績の集計方法.特定日.連続勤務の日でもカウントする
+        countingNonWorkDay: number; // 月別実績の集計方法.特定日.勤務日ではない日でもカウントする
+    }
+
+    interface ITimeVacationOffsetPriority {
+        annualHoliday: number; // 時間休暇相殺優先順位.年休
+        substituteHoliday: number; // 時間休暇相殺優先順位.代休
+        sixtyHourVacation: number; // 時間休暇相殺優先順位.60H超休
+        specialHoliday: number; // 時間休暇相殺優先順位.特別休暇
+    }
+
 }
