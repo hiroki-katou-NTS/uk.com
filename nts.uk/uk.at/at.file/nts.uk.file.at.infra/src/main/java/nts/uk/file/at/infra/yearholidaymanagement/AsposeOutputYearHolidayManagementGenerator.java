@@ -55,6 +55,8 @@ import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnualHoli
 import nts.uk.ctx.at.request.dom.application.common.adapter.closure.PresentClosingPeriodImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.closure.RqClosureAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedMinutes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.AnnualHolidayGrant;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.AnnualHolidayGrantDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.param.AnnualHolidayGrantInfor;
@@ -608,6 +610,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 				int holidayDetailRow = currentRow;
 				int holidayDetailCol = MIN_GRANT_DETAIL_COL;
 				for (int j = 0; j < holidayDetails.size(); j++) {
+					if (!holidayDetails.get(j).getUsedNumbers().getUsedDays().isPresent()) continue;
 					AnnualHolidayGrantDetail detail = holidayDetails.get(j);
 					cells.get(holidayDetailRow, holidayDetailCol).setValue(this.genHolidayText(detail, query.getPrintAnnualLeaveDate()));
 					if (holidayDetailCol == MAX_GRANT_DETAIL_COL) {
@@ -654,16 +657,17 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 
 					holidayDetailRow = currentRow;
 					holidayDetailCol = MIN_GRANT_DETAIL_COL;
-					// TODO: 114095 - Quản lý thời gian
-					// Tạm thời fake data
-					List<String> dateList = Collections.emptyList();
-					List<String> hourList = Collections.emptyList();
-//					dateList = Arrays.asList("19/12/25", "(20/2/9)","19/12/25", "(20/2/9)","19/12/25", "(20/2/9)","19/12/25", "(20/2/9)","19/12/25", "(20/2/9)","19/12/25", "(20/2/9)","19/12/25", "(20/2/9)","19/12/25", "(20/2/9)","19/12/25", "(20/2/9)",
-//							"19/12/25", "(20/2/9)","19/12/25", "(20/2/9)","19/12/25", "(20/2/9)","19/12/25", "(20/2/9)","19/12/25", "(20/2/9)","19/12/25", "(20/2/9)","19/12/25", "(20/2/9)","19/12/25", "(20/2/9)","19/12/25", "(20/2/9)");
-//					hourList = Arrays.asList("3:00", "(2:00)", "3:00", "(2:00)", "3:00", "(2:00)", "3:00", "(2:00)", "3:00", "(2:00)", "3:00", "(2:00)", "3:00", "(2:00)", "3:00", "(2:00)", "3:00", "(2:00)", "3:00", "(2:00)",
-//							"3:00", "(2:00)", "3:00", "(2:00)", "3:00", "(2:00)", "3:00", "(2:00)", "3:00", "(2:00)", "3:00", "(2:00)", "3:00", "(2:00)", "3:00", "(2:00)", "3:00", "(2:00)", "3:00", "(2:00)");
+					List<String> dateList = holidayDetails.stream()
+							.filter(detail -> detail.getUsedNumbers().getUsedTime().isPresent())
+							.map(detail -> this.genHolidayText(detail, query.getPrintAnnualLeaveDate()))
+							.collect(Collectors.toList());
+					List<String> hourList = holidayDetails.stream()
+							.filter(detail -> detail.getUsedNumbers().getUsedTime().isPresent())
+							.map(this::genTimeText)
+							.collect(Collectors.toList());
 					
-					if (holidayInfo.getLstGrantInfor().stream().anyMatch(item -> item.getGrantMinutes().v() > 0)) {
+					if (holidayInfo != null && 
+							holidayInfo.getLstGrantInfor().stream().anyMatch(item -> item.getGrantMinutes().v() > 0)) {
 						int newLineCount = ((int) Math.ceil(dateList.size() / 15.0)) * 2;
 						if (newLineCount > dataLine.get(1)) {
 							dataLine.set(1, newLineCount);
@@ -701,11 +705,13 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 		// mặc định là 2 dòng với date, 4 dòng với time (nếu có)
 		List<Integer> result = isManageTime ? Arrays.asList(2, 4) : Arrays.asList(2);
 		// danh sách các detail sử dụng ngày nghỉ năm
-		List<AnnualHolidayGrantDetail> useDays = holidayDetails.stream().filter(detail -> detail.getUseDays() > 0)
+		List<AnnualHolidayGrantDetail> useDays = holidayDetails.stream()
+				.filter(detail -> detail.getUsedNumbers().getUsedDays().map(AnnualLeaveUsedDayNumber::v).orElse(0d) > 0)
 				.collect(Collectors.toList());
 		// danh sách các detail sử dụng giờ nghỉ năm
-		// TODO: 114095 - Quản lý thời gian
-		List<AnnualHolidayGrantDetail> useHours = Collections.emptyList();
+		List<AnnualHolidayGrantDetail> useHours = holidayDetails.stream()
+				.filter(detail -> detail.getUsedNumbers().getUsedTime().map(UsedMinutes::valueAsMinutes).orElse(0) > 0)
+				.collect(Collectors.toList());
 		// dòng của lineOfDetails = tổng data /15 + 1 dòng nếu /15 có dư ra
 		int lineOfDayDetails = (int) Math.ceil(useDays.size() / 15.0);
 		// nếu trường hợp time thì tính thêm detail time x2
@@ -876,19 +882,32 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 	 * @return text của ngày nghỉ
 	 */
 	private String genHolidayText(AnnualHolidayGrantDetail detail, AnnualLeaveAcquisitionDate dateType) {
-		String format = dateType.equals(AnnualLeaveAcquisitionDate.DATE) ? "yy/MM/dd" : "MM/dd";
+		boolean isDateType = dateType.equals(AnnualLeaveAcquisitionDate.DATE);
+		String format = isDateType ? "yy/MM/dd" : "MM/dd";
 		String result = detail.getYmd().toString(format);
-		if (detail.getAmPmAtr() == AmPmAtr.AM) {
-			result += "A";
+		if (isDateType) {
+			if (detail.getAmPmAtr() == AmPmAtr.AM) {
+				result += "A";
+			}
+			if (detail.getAmPmAtr() == AmPmAtr.PM) {
+				result += "P";
+			}
 		}
-		if (detail.getAmPmAtr() == AmPmAtr.PM) {
-			result += "P";
+		return this.formatApplicationOrSchedule(result, detail.getReferenceAtr());
+	}
+	
+	private String genTimeText(AnnualHolidayGrantDetail detail) {
+		return detail.getUsedNumbers().getUsedTime()
+				.map(this::generateTimeText)
+				.map(result -> this.formatApplicationOrSchedule(result, detail.getReferenceAtr()))
+				.orElse(null);
+	}
+	
+	private String formatApplicationOrSchedule(String input, ReferenceAtr referenceAtr) {
+		if (referenceAtr.equals(ReferenceAtr.APP_AND_SCHE)) {
+			return "(" + input + ")";
 		}
-		if (detail.getReferenceAtr().equals(ReferenceAtr.APP_AND_SCHE)) {
-			result = "(" + result + ")";
-		}
-
-		return result;
+		return input;
 	}
 
 	/**

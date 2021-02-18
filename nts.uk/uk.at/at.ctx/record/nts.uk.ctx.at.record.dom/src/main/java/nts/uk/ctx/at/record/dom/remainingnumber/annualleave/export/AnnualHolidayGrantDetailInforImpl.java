@@ -61,7 +61,7 @@ public class AnnualHolidayGrantDetailInforImpl implements AnnualHolidayGrantDeta
 				if(y.getRemainManaID().equals(annData.getRemainManaID())) {
 					AnnualHolidayGrantDetail annDetail = new AnnualHolidayGrantDetail(sid,
 							y.getYmd(),
-							annData.getUseNumber().getUsedDays().map(c -> c.v()).orElse(0d),
+							annData.getUseNumber(),
 							x.isReferenceFlg()  ? ReferenceAtr.RECORD 
 									: (y.getCreatorAtr() == CreateAtr.RECORD ? ReferenceAtr.RECORD : ReferenceAtr.APP_AND_SCHE),
 							AmPmAtr.valueOf(vacation));
