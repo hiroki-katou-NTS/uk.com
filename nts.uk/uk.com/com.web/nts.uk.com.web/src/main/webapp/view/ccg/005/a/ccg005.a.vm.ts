@@ -19,7 +19,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
   @component({
     name: 'ccg005-component',
     template: `<div style="display: flex; position: relative; overflow-x: hidden; overflow-y: auto; height: 440px" id="ccg005-watching">
-    <div id="ccg005-content">
+    <div data-bind="widget-content: 200" id="ccg005-content">
       <div style="margin: 0 10px;">
         <div class="grade-header-top">
           <!-- A0 -->
@@ -149,7 +149,6 @@ module nts.uk.at.view.ccg005.a.screenModel {
                 <!-- A4_3 -->
                   <span class="limited-label" style="max-width: 120px;">
                     <label id="check-in-out" data-bind="text: attendanceDetailDto.checkInTime, attr:{ class: 'check-in-class-'+sid }"/>
-                    <label id="check-in-out" data-bind="text:' - ', attr:{ class: 'check-in-out-class-'+sid }"/>
                     <label id="check-in-out" data-bind="text: attendanceDetailDto.checkOutTime, attr:{ class: 'check-out-class-'+sid }"/>
                   </span>
                 </div>
@@ -305,6 +304,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       </div>
     </div>
   </div>
+  <!--------------------------------------- CSS --------------------------------------->
   <style>
     .ccg005-w100 {
       width: 100px;
@@ -602,14 +602,14 @@ module nts.uk.at.view.ccg005.a.screenModel {
     private initChangeFavorite() {
       const vm = this;
       vm.favoriteInputDate.subscribe((newVal) => {
-        if(newVal) {
+        if (newVal) {
           vm.saveCharacteristic(newVal);
           vm.subscribeFavorite();
         }
       });
     }
 
-    
+
     private initEmojiType(emojiType: number): number {
       switch (emojiType) {
         case EmojiType.WEARY: return Emoji.WEARY;
@@ -633,9 +633,10 @@ module nts.uk.at.view.ccg005.a.screenModel {
     }
 
     private initResizeable(vm: any) {
-      $(window).on('ccg005.resize', () => {
-        vm.onResizeable(vm);
-      });
+      $('.widget-container .widget-content.ui-resizable')
+        .on('wg.resize', () => {
+          vm.onResizeable(vm);
+        });
     }
 
     /**
@@ -682,8 +683,15 @@ module nts.uk.at.view.ccg005.a.screenModel {
 
     private initFocusA1_4() {
       const vm = this;
-      $('.ccg005-clearbtn').click(() => vm.deleteComment());
-      $('.CCG005-A1_4-border').focusin(() => $('.ccg005-clearbtn').css('visibility', 'visible'));
+
+      $('.CCG005-A1_4-border')
+        .focusin(() => $('.ccg005-clearbtn').css('visibility', 'visible'))
+        .focusout(() => $('.ccg005-clearbtn').css('visibility', 'hidden'));
+
+      $('.ccg005-clearbtn').click(() => {
+        vm.deleteComment();
+        $('.CCG005-A1_4-border').focusout();
+      });
     }
 
     /**
@@ -754,7 +762,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       const vm = this;
       const selectedFavorite = _.find(vm.favoriteSpecifyData(), item => item.inputDate === vm.favoriteInputDate());
       if (!selectedFavorite) {
-        if(_.isEmpty(vm.favoriteSpecifyData())) {
+        if (_.isEmpty(vm.favoriteSpecifyData())) {
           vm.createdDefaultFavorite();
         } else {
           vm.favoriteInputDate(vm.favoriteSpecifyData()[0].inputDate);
@@ -847,16 +855,13 @@ module nts.uk.at.view.ccg005.a.screenModel {
           $(`.check-in-class-${sid}`).addClass("pd-left-35");
         }
       });
-      //hidden ' - ' when both check-in and check-out are empty
-      if ((!attendanceDetailDto.checkInTime || attendanceDetailDto.checkInTime === "")
-        && (!attendanceDetailDto.checkOutTime || attendanceDetailDto.checkOutTime === "")) {
-        $(`.check-in-out-class-${sid}`).ready(() => {
-          $(`.check-in-out-class-${sid}`).css("visibility", "hidden");
-        });
-      }
+
+      //handle ' - '
+      const checkOutTime = attendanceDetailDto.checkOutTime === ""  ? "" :  ('- ' + attendanceDetailDto.checkOutTime);
+
       return new AttendanceDetailViewModel({
         workName: attendanceDetailDto.workName,
-        checkOutTime: attendanceDetailDto.checkOutTime,
+        checkOutTime: checkOutTime,
         checkInTime: attendanceDetailDto.checkInTime,
         workDivision: attendanceDetailDto.workDivision,
       });
@@ -954,7 +959,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       const vm = this;
       $('#ccg005-star-popup').ntsPopup('hide');
       vm.$window.modal('/view/ccg/005/d/index.xhtml').then((data) => {
-        if(data === undefined) {
+        if (data === undefined) {
           vm.createdDefaultFavorite();
         } else {
           vm.favoriteSpecifyData(data);
@@ -981,7 +986,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
      */
     public openFutureScreenCCG005E(isLoginUser: boolean, sid: string, businessName: string) {
       const vm = this;
-      if(isLoginUser) {
+      if (isLoginUser) {
         vm.goOutParams(new GoOutParam({
           sid: __viewContext.user.employeeId,
           businessName: vm.businessName(),
@@ -1125,9 +1130,6 @@ module nts.uk.at.view.ccg005.a.screenModel {
       };
       vm.$blockui('show');
       vm.$ajax('com', API.deleteComment, command)
-        .then(() => {
-          $('.ccg005-clearbtn').css('visibility', 'hidden');
-        })
         .always(() => vm.$blockui('clear'));
     }
 
