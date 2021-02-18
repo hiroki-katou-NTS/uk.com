@@ -637,7 +637,9 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 				item.reasonCode = vm.messageInfos()[0].selectedCode();
 				item.reason = vm.messageInfos()[0].valueInput();
 				item.diviationTime = 1;
-				applicationTime.reasonDissociation.push(item);
+				if ((!_.isNil(item.reasonCode) && item.reasonCode != '') || (!_.isNil(item.reason) && item.reason != '')) {
+					applicationTime.reasonDissociation.push(item);					
+				}
 			}
 			
 			if (vm.visibleModel.c12_1() || vm.visibleModel.c12_2()) {
@@ -647,7 +649,9 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 				item.reasonCode = vm.messageInfos()[1].selectedCode();
 				item.reason = vm.messageInfos()[1].valueInput();
 				item.diviationTime = 2;
-				applicationTime.reasonDissociation.push(item);
+				if ((!_.isNil(item.reasonCode) && item.reasonCode != '') || (!_.isNil(item.reason) && item.reason != '')) {
+					applicationTime.reasonDissociation.push(item);					
+				}
 			}
 
 
