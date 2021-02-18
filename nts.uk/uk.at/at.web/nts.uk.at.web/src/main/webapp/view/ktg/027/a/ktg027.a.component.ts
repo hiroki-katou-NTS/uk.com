@@ -285,17 +285,31 @@ module nts.uk.at.view.ktg027.a {
         openKTG026(item: any) {
             const vm = this;
             const { $user } = vm;
-
+            let companyID: any = ko.observable(__viewContext.user.companyId);
+            let paramKTG026 = {
+              companyId: companyID,
+              employeeId: item.employeeId,
+              targetDate: vm.targetYear(),
+              targetYear: "",
+              mode: "Superior",
+            };
             vm.$window
-                .modal('at', '/view/ktg/026/a/superior.xhtml', {});
+                .modal('at', '/view/ktg/026/a/superior.xhtml', paramKTG026);
         }
 
         openKDW003(item: any) {
             const vm = this;
             const { $user } = vm;
-
+            let paramKDW003 = {
+              lstEmployeeShare: item.employeeId,
+              errorRefStartAtr: false,
+              changePeriodAtr: true,
+              screenMode: "Normal",
+              displayFormat: "individual",
+              initClock: "",
+            };
             vm.$window
-                .shared('KDW003_PARAM', {})
+                .shared('KDW003_PARAM', paramKDW003)
                 .then(() => vm.$jump('at', "/view/kdw/003/a/index.xhtml"));
         }
 
