@@ -114,7 +114,7 @@ public class GetInforOnTargetDate {
 	
 	final static String SPACE = " ";
     final static String ZEZO_TIME = "00:00";
-    final static String DATE_TIME_FORMAT = "yyyyMMdd";
+    final static String DATE_TIME_FORMAT = "yyyy/MM/dd HH:mm";
     
     public InforOnTargetDateDto handle(int desiredSubmissionStatus, int workHolidayClassification,String targetDate) {
 		
