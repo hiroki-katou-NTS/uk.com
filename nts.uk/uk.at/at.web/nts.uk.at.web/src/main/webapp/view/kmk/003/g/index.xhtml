@@ -28,7 +28,7 @@
 
         <div id="contents-area">
             <div class="main-container">
-
+            <!-- G1_9 -> G1_14 Group start -->
                 <!-- START form label -  -->
                 <div class="dialog-rows">
                     <div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KMK003_234')}</div>
@@ -42,19 +42,19 @@
                 <div class="dialog-block">
                     <div class="dialog-rows " style=" width: 350px">
                         <div tabindex="2" data-bind="ntsRadioBoxGroup: {
-										options: lstRest,
+										options: calcMethodLst,
 										name: '#[KMK003_234]',
 										optionsValue: 'id',
 										optionsText: 'name',
-										value: selectedRest,
+										value: selectedCalcMethod,
 										enable: true}"></div>
                     </div>
                 </div>
                 <!-- END setting items -  -->
+            <!--END Group-->
+            <!-- ====================================================================================== -->
 
-                <!-- ====================================================================================== -->
-
-                <!--G1 Group start-->
+            <!-- G1_1 -> G1_8 Group start -->
                 <div data-bind="visible: isFlow">
                     <!-- START form label -  -->
                     <div class="dialog-rows">
@@ -68,7 +68,7 @@
                     <!-- START setting items -  -->
                     <div class="dialog-block">
                         <div class="dialog-rows">
-                            <div data-bind="ntsCheckBox: {checked: secondWorkUsage}">#{i18n.getText('KMK003_231')}</div>
+                            <div data-bind="ntsCheckBox: {checked: useRest}">#{i18n.getText('KMK003_231')}</div>
                         </div>
                         <div class="dialog-rows" style="margin-left: 35px">
                             <label>#{i18n.getText('KMK003_324')}</label>
@@ -82,7 +82,7 @@
 										optionsText: 'name',
 										dropDownAttachedToBody: true,
 										editable: false,
-										enable: secondWorkUsage }"></div>
+										enable: useRest }"></div>
                             </div>
                             <com:ko tag="if" bind="updateRounding">
                                 <div class="control-warp" style="width: 170px;">
@@ -95,16 +95,16 @@
 										optionsText: 'name',
 										dropDownAttachedToBody: true,
 										editable: false,
-										enable: secondWorkUsage }"></div>
+										enable: useRest }"></div>
                                 </div>
                             </com:ko>
                         </div>
                     </div>
                     <!-- END setting items -  -->
                 </div>
-                <!--G1 Group end-->
+            <!-- G1 Group end-->
 
-                <!--G4 Group start-->
+            <!--G4 Group start-->
                 <!-- START form label -  -->
                 <div data-bind="visible: isFlow() || isFlex()">
                     <div class="dialog-rows">
@@ -130,16 +130,16 @@
 
                         <div class="checkbox-group" style="margin-left: 25px">
                             <div class="dialog-rows">
-                                <div data-bind="ntsCheckBox: {checked:  usePrivateGoOutRest, enable: selectedRest() == 0}">#{i18n.getText('KMK003_250')}</div>
+                                <div data-bind="ntsCheckBox: {checked:  usePrivateGoOutRest, enable: selectedFixedCalc() == 1}">#{i18n.getText('KMK003_250')}</div>
                             </div>
                             <div class="dialog-rows">
-                                <div data-bind="ntsCheckBox: {checked:  useAssoGoOutRest, enable: selectedRest() == 0}">#{i18n.getText('KMK003_251')}</div>
+                                <div data-bind="ntsCheckBox: {checked:  useAssoGoOutRest, enable: selectedFixedCalc() == 1}">#{i18n.getText('KMK003_251')}</div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <!-- END setting items -  -->
-                <!--G4 Group end-->
+            <!--G4 Group end-->
             </div>
         </div>
 

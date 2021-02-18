@@ -11,15 +11,15 @@ module nts.uk.at.view.kmk003.g {
             unitValue: KnockoutObservable<number>;
             roundingValue: KnockoutObservable<number>;
 
-            lstRest: KnockoutObservableArray<any>;
+            calcMethodLst: KnockoutObservableArray<any>;
             fixedCalcLst: KnockoutObservableArray<any>;
             specialLstRest: KnockoutObservableArray<any>;
-            secondWorkUsage: KnockoutObservable<boolean>;
+            useRest: KnockoutObservable<boolean>;
 
             usePrivateGoOutRest: KnockoutObservable<boolean>;
             useAssoGoOutRest: KnockoutObservable<boolean>;
 
-            selectedRest: KnockoutObservable<number>;
+            selectedCalcMethod: KnockoutObservable<number>;
             selectedFixedCalc: KnockoutObservable<number>;
             dataObject: KnockoutObservable<any>;
             updateRounding: KnockoutObservable<boolean>;
@@ -35,11 +35,12 @@ module nts.uk.at.view.kmk003.g {
                 self.unitValue = ko.observable(1);
                 self.roundingValue = ko.observable(0);
 
-                self.lstRest = ko.observableArray([
+                self.calcMethodLst = ko.observableArray([
                     new RadioBoxModel(0, nts.uk.resource.getText('KMK003_235')),
                     new RadioBoxModel(1, nts.uk.resource.getText('KMK003_236')),
                     new RadioBoxModel(2, nts.uk.resource.getText('KMK003_237'))
                 ]);
+
 
                 self.fixedCalcLst = ko.observableArray([
                     new RadioBoxModel(0, nts.uk.resource.getText('KMK003_241')),
@@ -50,12 +51,12 @@ module nts.uk.at.view.kmk003.g {
                     new RadioBoxModel(0, nts.uk.resource.getText('KMK003_235')),
                     new RadioBoxModel(1, nts.uk.resource.getText('KMK003_236'))
                 ]);
-                self.secondWorkUsage = ko.observable(false);
+                self.useRest = ko.observable(false);
 
                 self.usePrivateGoOutRest = ko.observable(false);
                 self.useAssoGoOutRest = ko.observable(false);
 
-                self.selectedRest = ko.observable(0);
+                self.selectedCalcMethod = ko.observable(0);
                 self.selectedFixedCalc = ko.observable(0);
                 self.dataObject = ko.observable(null);
 
@@ -119,13 +120,13 @@ module nts.uk.at.view.kmk003.g {
                     _self.roundingComboBoxOptions(_self.getSpecialRounding(_self.dataObject()));
                     _self.unitValue(dataObject.roundUnit);
                     _self.roundingValue(dataObject.roundType);
-                    _self.selectedRest(dataObject.calcMethod);
+                    _self.selectedCalcMethod(dataObject.calcMethod);
                     _self.selectedFixedCalc(dataObject.fixedCalcMethod);
-                    _self.secondWorkUsage(dataObject.useRest);
+                    _self.useRest(dataObject.useRest);
                     _self.usePrivateGoOutRest(dataObject.usePrivateGoOutRest);
                     _self.useAssoGoOutRest(dataObject.useAssoGoOutRest);
                 } else { // other
-                    _self.selectedRest(dataObject.restTimeCalcMethod);
+                    _self.selectedCalcMethod(dataObject.restTimeCalcMethod);
                 }
             }
 
@@ -137,8 +138,7 @@ module nts.uk.at.view.kmk003.g {
                 return arrayRounding;
             }
 
-            private getSpecialRounding(dataObject: any):
-                any {
+            private getSpecialRounding(dataObject: any) : any {
                 let arrayRounding: any = [];
                 dataObject.lstEnum.rounding.forEach(function (item: any, index: number) {
                     if (index != 2) {
@@ -160,20 +160,20 @@ module nts.uk.at.view.kmk003.g {
                     if (_self.isFlex()) { // flex
                         returnData = {
                             //default values
-                            useRest: _self.secondWorkUsage(),
+                            useRest: _self.useRest(),
                             roundUnit: 0,
                             roundType: 0,
-                            calcMethod: _self.selectedRest(),
+                            calcMethod: _self.selectedCalcMethod(),
                             fixedCalcMethod: _self.selectedFixedCalc(),
                             usePrivateGoOutRest: _self.usePrivateGoOutRest(),
                             useAssoGoOutRest: _self.useAssoGoOutRest()
                         };
                     } else { // flow
                         returnData = {
-                            useRest: _self.secondWorkUsage(),
+                            useRest: _self.useRest(),
                             roundUnit: _self.unitValue(),
                             roundType: _self.roundingValue(),
-                            calcMethod: _self.selectedRest(),
+                            calcMethod: _self.selectedCalcMethod(),
                             fixedCalcMethod: _self.selectedFixedCalc(),
                             usePrivateGoOutRest: _self.usePrivateGoOutRest(),
                             useAssoGoOutRest: _self.useAssoGoOutRest()
@@ -181,7 +181,7 @@ module nts.uk.at.view.kmk003.g {
                     }
                 } else { //other
                     returnData = {
-                        restTimeCalcMethod: _self.selectedRest()
+                        restTimeCalcMethod: _self.selectedCalcMethod()
                     };
                 }
                 nts.uk.ui.windows.setShared("KMK003_DIALOG_G_OUTPUT_DATA", returnData);
