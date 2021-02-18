@@ -24,7 +24,7 @@ public class FavoriteSpecifyDomainServiceTestHelper {
 	public static FavoriteSpecify mockFavoriteSpecify() {
 		FavoriteSpecifyDto memento = new FavoriteSpecifyDto(
 				"favoriteName", 
-				"creatorId", 
+				"sid", 
 				GeneralDateTime.FAKED_NOW, 
 				0,
 				Collections.emptyList(),
@@ -48,7 +48,7 @@ public class FavoriteSpecifyDomainServiceTestHelper {
 	 */
 	public static Map<String, WorkplaceInforImport> mockRequireGetWorkplaceInfo(){
 		WorkplaceInforImport info = new WorkplaceInforImport(
-				"workplaceId",
+				"wspId",
 				"hierarchyCode",
 				"workplaceCode",
 				"workplaceName",
@@ -66,7 +66,7 @@ public class FavoriteSpecifyDomainServiceTestHelper {
 	 */
 	public static Map<String, EmployeeJobHistImport> mockRequireGetPositionBySidsAndBaseDate(){
 		EmployeeJobHistImport emp = EmployeeJobHistImport.builder()
-				.employeeId("employeeId")
+				.employeeId("sid")
 				.jobTitleID("jobTitleID")
 				.jobTitleName("jobTitleName")
 				.sequenceCode("sequenceCode")
