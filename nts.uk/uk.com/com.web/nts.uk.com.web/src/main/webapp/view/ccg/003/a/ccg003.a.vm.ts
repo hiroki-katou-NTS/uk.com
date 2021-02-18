@@ -45,8 +45,8 @@ module nts.uk.com.view.ccg003.a {
             <!-- A4_1 表示期間(ラベル) -->
             <span class="auto-margin" data-bind="text: $component.$i18n('CCG003_6')"></span>
             <!-- A4_2 表示期間 -->
-            <div tabindex="1" class="ml-10" data-bind="ntsDateRangePicker: {
-              required: false,
+            <div id="ccg003-A4_2" tabindex="1" class="ml-10" data-bind="ntsDateRangePicker: {
+              required: true,
               enable: true,
               name: $i18n('CCG003_6'),
               showNextPrevious: false,
@@ -284,37 +284,43 @@ module nts.uk.com.view.ccg003.a {
      */
     onClickFilter(): void {
       const vm = this;
-      vm.$blockui('show');
-      const startDate = moment.utc(vm.dateValue().startDate, vm.formatType);
-      const endDate = moment.utc(vm.dateValue().endDate, vm.formatType);
-      const baseDate = moment.utc(new Date(), vm.formatType);
-      if (startDate.isAfter(baseDate) || endDate.isAfter(baseDate)) {
-        vm.$dialog.error({ messageId: 'Msg_1833' });
-        vm.$blockui('hide');
-        return;
-      }
-      vm.anniversaries([]);
-      vm.msgNotices([]);
+      vm.$validate('#ccg003-A4_2').then(valid => {
+        if (!valid) {
+          nts.uk.ui.errors.show();
+          return;
+        }
+        vm.$blockui('show');
+        const startDate = moment.utc(vm.dateValue().startDate, vm.formatType);
+        const endDate = moment.utc(vm.dateValue().endDate, vm.formatType);
+        const baseDate = moment.utc(new Date(), vm.formatType);
+        if (startDate.isAfter(baseDate) || endDate.isAfter(baseDate)) {
+          vm.$dialog.error({ messageId: 'Msg_1833' });
+          vm.$blockui('hide');
+          return;
+        }
+        vm.anniversaries([]);
+        vm.msgNotices([]);
 
-      const param: DatePeriod = new DatePeriod({
-        startDate: startDate.toISOString(),
-        endDate: endDate.toISOString()
-      });
-      vm.$ajax('com', API.getContentOfDestinationNotification, param)
-        .then((response: DestinationNotification) => {
-          if (response) {
-            _.map(response.anniversaryNotices, item => item.anniversaryNotice.anniversaryTitle = vm.convertTitleAnniversaries(item.anniversaryNotice));
-            vm.anniversaries(response.anniversaryNotices);
-            const msgNotices = vm.listMsgNotice(response.msgNotices);
-            vm.msgNotices(msgNotices);
+        const param: DatePeriod = new DatePeriod({
+          startDate: startDate.toISOString(),
+          endDate: endDate.toISOString()
+        });
+        vm.$ajax('com', API.getContentOfDestinationNotification, param)
+          .then((response: DestinationNotification) => {
+            if (response) {
+              _.map(response.anniversaryNotices, item => item.anniversaryNotice.anniversaryTitle = vm.convertTitleAnniversaries(item.anniversaryNotice));
+              vm.anniversaries(response.anniversaryNotices);
+              const msgNotices = vm.listMsgNotice(response.msgNotices);
+              vm.msgNotices(msgNotices);
 
-            if (!_.isEmpty(response.anniversaryNotices || !_.isEmpty(response.msgNotices))) {
-              $('#A4-CCG003').css('border-bottom', 'unset');
+              if (!_.isEmpty(response.anniversaryNotices || !_.isEmpty(response.msgNotices))) {
+                $('#A4-CCG003').css('border-bottom', 'unset');
+              }
             }
-          }
-        })
-        .fail(error => vm.$dialog.error(error))
-        .always(() => vm.$blockui('hide'));
+          })
+          .fail(error => vm.$dialog.error(error))
+          .always(() => vm.$blockui('hide'));
+      });
     }
 
     listMsgNotice(messages: any[]): MsgNotices[] {
