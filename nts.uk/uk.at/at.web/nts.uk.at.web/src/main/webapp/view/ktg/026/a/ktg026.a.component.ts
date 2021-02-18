@@ -199,6 +199,49 @@ module nts.uk.at.view.ktg026.a {
         }
     }
 
+    @handler({
+        bindingName: 'ktg-chart',
+        validatable: true,
+        virtual: false
+    })
+    export class Ktg0267ChartBindingHandler implements KnockoutBindingHandler {
+        init(element: HTMLTableCellElement, valueAccessor: () => KnockoutObservableArray<DataRow>, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: any, bindingContext: KnockoutBindingContext): { controlsDescendantBindings: boolean; } {
+            element.removeAttribute('data-bind');
+
+            if (element.tagName !== 'TD') {
+                element.innerText = 'This binding work with only [TD] tag.';
+
+                return { controlsDescendantBindings: false };
+            }
+
+            const data = valueAccessor();
+            const index = bindingContext.$index();
+
+            if (index !== 0) {
+                element.classList.add('hidden');
+
+                return { controlsDescendantBindings: false };
+            }
+
+            const canvas = document.createElement('canvas');
+
+            $(element).append(canvas);
+
+            ko.applyBindingsToNode(canvas, { 'ktg-026-chart': data, type: 'body' }, bindingContext);
+
+            ko.computed({
+                read: () => {
+                    const rows = ko.unwrap<DataRow[]>(data);
+
+                    element.rowSpan = rows.length;
+                },
+                disposeWhenNodeIsRemoved: element
+            });
+
+            return { controlsDescendantBindings: true };
+        }
+    }
+
     @component({
         name: 'ktg-026-a',
         template: `
@@ -271,11 +314,7 @@ module nts.uk.at.view.ktg026.a {
                             <tr>
                                 <td data-bind="text: row.date"></td>
                                 <td class="text-right" data-bind="time: row.time.tt, css: row.state"></td>
-                                <!-- ko if: $index() === 0 -->
-                                <td data-bind="attr: { rowspan: $component.dataTable().length }">
-                                    <canvas data-bind="ktg-026-chart: $component.dataTable, type: 'body'"></canvas>
-                                </td>
-                                <!-- /ko -->
+                                <td data-bind="ktg-chart: $component.dataTable"></td>
                             </tr>
                         </tbody>
                     </table>
