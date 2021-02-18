@@ -141,6 +141,6 @@ public class LeaveNumberInfo implements Cloneable {
 
 	/** 残数不足のときにはtrueを返す */
 	public boolean isShortageRemain() {
-		return getRemainingNumber().isShortageRemain();
+		return this.remainingNumber.isShortageRemain();
 	}
 }

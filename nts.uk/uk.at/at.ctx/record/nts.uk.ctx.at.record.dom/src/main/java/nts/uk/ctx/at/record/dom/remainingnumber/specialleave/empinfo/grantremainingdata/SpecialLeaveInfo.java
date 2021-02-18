@@ -15,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.RemNumShiftListWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemainingData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveNumberInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveOverNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUndigestNumber;
@@ -53,7 +54,7 @@ public class SpecialLeaveInfo implements Cloneable {
 		this.remainingNumber = new SpecialLeaveRemaining();
 		this.grantRemainingDataList = new ArrayList<>();
 
-		//this.annualPaidLeaveSet = null;
+
 	}
 
 	/**
@@ -650,12 +651,51 @@ public class SpecialLeaveInfo implements Cloneable {
 		return resultInfo;
 	}
 
+	/**
+	 * マイナス分の特休付与残数を1レコードにまとめる
+	 * @return 特別休暇付与残数データ
+	 */
+	public Optional<SpecialLeaveGrantRemainingData>
+			createLeaveGrantRemainingShortageData(){
+
+		// 残数不足（ダミー）として作成した「特別休暇付与残数(List)」を取得
+		List<SpecialLeaveGrantRemainingData> remainingList
+			= this.getGrantRemainingDataList();
+		List<SpecialLeaveGrantRemainingData> dummyRemainingList
+			= remainingList.stream()
+				.filter(c -> c.isShortageRemain())
+				.collect(Collectors.toList());
+
+		if ( dummyRemainingList.size()==0 ) {
+			return Optional.empty();
+		}
+
+		// 取得した特別休暇付与残数の「特別休暇使用数」、「特別休暇残数」をそれぞれ合計
+		LeaveRemainingNumber leaveRemainingNumberTotal = new LeaveRemainingNumber();
+		LeaveUsedNumber leaveUsedNumberTotal = new LeaveUsedNumber();
+		dummyRemainingList.forEach(c->{
+			leaveRemainingNumberTotal.add(c.getDetails().getRemainingNumber());
+			leaveUsedNumberTotal.add(c.getDetails().getUsedNumber());
+		});
+
+		// 合計した「特別休暇使用数」「特別休暇残数」から特別休暇付与残数を作成
+		SpecialLeaveGrantRemainingData specialLeaveGrantRemainingData
+			= new SpecialLeaveGrantRemainingData();
+		LeaveNumberInfo leaveNumberInfo = new LeaveNumberInfo();
+		// 明細．残数　←　合計した「特別休暇残数」
+		leaveNumberInfo.setRemainingNumber(leaveRemainingNumberTotal);
+		// 明細．使用数　←　合計した「特別休暇使用数」
+		leaveNumberInfo.setUsedNumber(leaveUsedNumberTotal);
+		specialLeaveGrantRemainingData.setDetails(leaveNumberInfo);
+
+		return Optional.of(specialLeaveGrantRemainingData);
+	}
 
 	/**
 	 * 付与残数データから特別休暇不足分の特別休暇付与残数を削除
 	 */
 	public void deleteDummy(){
-		// 「特別休暇付与残数．特別休暇不足ダミーフラグ」=trueの特別休暇付与残数をListから削除
+		// 特別休暇付与残数が残数不足の特別休暇付与残数をListから削除
 		List<SpecialLeaveGrantRemainingData> noDummyList
 			= this.getGrantRemainingDataList().stream()
 				.filter(c->!c.isShortageRemain())

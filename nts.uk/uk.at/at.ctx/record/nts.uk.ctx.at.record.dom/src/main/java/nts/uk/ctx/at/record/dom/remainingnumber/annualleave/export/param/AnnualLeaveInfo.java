@@ -23,11 +23,13 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.RemNumShiftListWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemainingData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveNumberInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUndigestDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUndigestTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.AnnualLeaveError;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveGrant;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveUsedNumber;
@@ -601,7 +603,58 @@ public class AnnualLeaveInfo implements Cloneable {
 		//○年休情報．年月日を終了日に更新
 		aggResult.getAsOfPeriodEnd().setYmd(aggregatePeriodWork.getPeriod().end());
 
+	}
 
+	/**
+	 * マイナス分の年休付与残数を1レコードにまとめる
+	 * @return 年休付与残数データ
+	 */
+	public Optional<AnnualLeaveGrantRemainingData>
+			createLeaveGrantRemainingShortageData(){
+
+		// 残数不足（ダミー）として作成した「年休付与残数(List)」を取得
+		List<AnnualLeaveGrantRemainingData> remainingList
+			= this.getGrantRemainingDataList();
+		List<AnnualLeaveGrantRemainingData> dummyRemainingList
+			= remainingList.stream()
+				.filter(c -> c.isShortageRemain())
+				.collect(Collectors.toList());
+
+		if ( dummyRemainingList.size()==0 ) {
+			return Optional.empty();
+		}
+
+		// 取得した年休付与残数の「年休使用数」、「年休残数」をそれぞれ合計
+		LeaveRemainingNumber leaveRemainingNumberTotal = new LeaveRemainingNumber();
+		LeaveUsedNumber leaveUsedNumberTotal = new LeaveUsedNumber();
+		dummyRemainingList.forEach(c->{
+			leaveRemainingNumberTotal.add(c.getDetails().getRemainingNumber());
+			leaveUsedNumberTotal.add(c.getDetails().getUsedNumber());
+		});
+
+		// 合計した「年休使用数」「年休残数」から年休付与残数を作成
+		AnnualLeaveGrantRemainingData annualLeaveGrantRemainingData
+			= new AnnualLeaveGrantRemainingData();
+		LeaveNumberInfo leaveNumberInfo = new LeaveNumberInfo();
+		// 明細．残数　←　合計した「年休残数」
+		leaveNumberInfo.setRemainingNumber(leaveRemainingNumberTotal);
+		// 明細．使用数　←　合計した「年休使用数」
+		leaveNumberInfo.setUsedNumber(leaveUsedNumberTotal);
+		annualLeaveGrantRemainingData.setDetails(leaveNumberInfo);
+
+		return Optional.of(annualLeaveGrantRemainingData);
+	}
+
+	/**
+	 * 付与残数データから年休不足分の年休付与残数を削除
+	 */
+	public void deleteDummy(){
+		//　年休付与残数が残数不足の年休付与残数をListから削除
+		List<AnnualLeaveGrantRemainingData> noDummyList
+			= this.getGrantRemainingDataList().stream()
+				.filter(c->!c.isShortageRemain())
+				.collect(Collectors.toList());
+		this.setGrantRemainingDataList(noDummyList);
 	}
 
 }

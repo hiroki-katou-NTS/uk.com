@@ -195,4 +195,34 @@ public class InPeriodOfSpecialLeaveResultInfor {
 		return domain;
 	}
 
+	/**
+	 * 特別休暇不足分として作成した特別休暇付与データを削除する
+	 */
+	public void deleteShortageRemainData() {
+
+		// 特別休暇情報(期間終了日時点)の不足分特別休暇残数データを削除
+		asOfPeriodEnd.deleteDummy();
+
+		// 特別休暇情報(期間終了日の翌日開始時点)の不足分付与残数データを削除
+		asOfStartNextDayOfPeriodEnd.deleteDummy();
+
+		// 特別休暇の集計結果．特別休暇情報(付与時点)を取得
+		if ( asOfGrant.isPresent() ){
+			// 取得した特別休暇情報(付与時点)でループ
+			asOfGrant.get().forEach(info->{
+				// 特別休暇情報(付与時点)の不足分付与残数データを削除
+				info.deleteDummy();
+			});
+		}
+
+		// 特別休暇の集計結果．特別休暇情報(消滅時点)を取得
+		if ( lapsed.isPresent() ){
+			// 取得した特別休暇情報(付与時点)でループ
+			lapsed.get().forEach(info->{
+				// 付与残数データから特別休暇不足分の特別休暇付与残数を削除
+				info.deleteDummy();
+			});
+		}
+	}
+
 }

@@ -21,6 +21,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrRes
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggregatePeriodWork;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.DividedDayEachProcess;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveInfo;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.ConfirmLeavePeriod;
@@ -40,6 +41,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.YearDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.scherec.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AttendanceRate;
@@ -330,12 +332,20 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 					tempAnnualLeaveMngs, aggrResult, annualLeaveSet);
 		}
 
-		// 年休不足分を付与残数データとして作成する
-		aggrResult = createShortRemainingDatas(
-				employeeId, companyId, aggrResult);
+		// 【渡すパラメータ】 年休情報　←　年休の集計結果．年休情報（期間終了日時点）
+		AnnualLeaveInfo annualLeaveInfoEnd = aggrResult.getAsOfPeriodEnd();
 
-		// 年休不足分として作成した年休付与データを削除する
-		aggrResult = deleteDummyRemainingDatas(aggrResult);
+		// マイナス分の特別休暇付与残数を1レコードにまとめる
+		Optional<AnnualLeaveGrantRemainingData> remainingShortageData
+			= annualLeaveInfoEnd.createLeaveGrantRemainingShortageData();
+
+		// 特別休暇不足分として作成した特別休暇付与データを削除する
+		aggrResult.deleteShortageRemainData();
+
+		// 特別休暇(期間終了日時点)に残数不足の付与残数データを追加
+		if ( remainingShortageData.isPresent() ) {
+			annualLeaveInfoEnd.getGrantRemainingDataList().add(remainingShortageData.get());
+		}
 
 		// 「年休の集計結果」を返す
 		return Optional.of(aggrResult);
@@ -915,7 +925,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 	}
 
 	/**
-	 * 年休不足分を付与残数データとして作成する
+	 * 年休不足分を付与残数データとして作成する 　　→　未使用
 	 * @param result 年休の集計結果
 	 * @param isOutShortRemainOpt 不足分付与残数データ出力区分
 	 * @return 年休の集計結果

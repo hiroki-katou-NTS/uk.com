@@ -130,95 +130,23 @@ public class SpecialLeaveManagementService {
 					outputData);
 		}
 
-		// マイナス分の年休付与残数を1レコードにまとめる --------------------------------
-
-		// ダミーとして作成した「年休付与残数(List)」を取得
-
 		// 【渡すパラメータ】 特別休暇情報　←　特別休暇の集計結果．特別休暇情報（期間終了日時点）
 		SpecialLeaveInfo specialLeaveInfoEnd = outputData.getAsOfPeriodEnd();
 
-		// ダミーとして作成した「特別休暇付与残数(List)」を取得
-		List<SpecialLeaveGrantRemainingData> remainingList
-			= specialLeaveInfoEnd.getGrantRemainingDataList();
-		List<SpecialLeaveGrantRemainingData> dummyRemainingList
-			= remainingList.stream()
-				.filter(c -> c.isShortageRemain())
-				.collect(Collectors.toList());
+		// マイナス分の特別休暇付与残数を1レコードにまとめる
+		Optional<SpecialLeaveGrantRemainingData> remainingShortageData
+			= specialLeaveInfoEnd.createLeaveGrantRemainingShortageData();
 
-		// 取得した特別休暇付与残数の「特別休暇使用数」、「特別休暇残数」をそれぞれ合計
-		LeaveRemainingNumber leaveRemainingNumberTotal = new LeaveRemainingNumber();
-		LeaveUsedNumber leaveUsedNumberTotal = new LeaveUsedNumber();
-		dummyRemainingList.forEach(c->{
-			leaveRemainingNumberTotal.add(c.getDetails().getRemainingNumber());
-			leaveUsedNumberTotal.add(c.getDetails().getUsedNumber());
-		});
+		// 特別休暇不足分として作成した特別休暇付与データを削除する
+		outputData.deleteShortageRemainData();
 
-		// 合計した「特別休暇使用数」「特別休暇残数」から特別休暇付与残数を作成
-//		LeaveGrantRemainingData leaveGrantRemainingTotal = new LeaveGrantRemainingData();
-		SpecialLeaveGrantRemainingData specialLeaveGrantRemainingData
-			= new SpecialLeaveGrantRemainingData();
-		LeaveNumberInfo leaveNumberInfo = new LeaveNumberInfo();
-		// 明細．残数　←　合計した「特別休暇残数」
-		leaveNumberInfo.setRemainingNumber(leaveRemainingNumberTotal);
-		// 明細．使用数　←　合計した「特別休暇使用数」
-		leaveNumberInfo.setUsedNumber(leaveUsedNumberTotal);
-		specialLeaveGrantRemainingData.setDetails(leaveNumberInfo);
-//		// 年休不足ダミーフラグ　←　false
-//		leaveGrantRemainingTotal.setDummyAtr(false);
-
-		specialLeaveInfoEnd.getGrantRemainingDataList().add(specialLeaveGrantRemainingData);
-
-		// 特別休暇不足分として作成した特別休暇付与データを削除する -------------------------
-
-		// パラメータ「特別休暇の集計結果．特別休暇情報(期間終了日時点)」に対して処理
-		// →　specialLeaveInfoEnd
-
-		// 特別休暇情報(期間終了日時点)の不足分特別休暇残数データを削除
-		// 「特別休暇付与残数．特別休暇不足ダミーフラグ」=trueの特別休暇付与残数をListから削除
-		// 付与残数データから特別休暇不足分の特別休暇付与残数を削除
-		{
-			SpecialLeaveInfo specialLeaveInfoTmp = outputData.getAsOfPeriodEnd();
-			// 付与残数データから特別休暇不足分の特別休暇付与残数を削除
-			specialLeaveInfoTmp.deleteDummy();
-		}
-
-		// 特別休暇情報(期間終了日の翌日開始時点)の不足分付与残数データを削除
-		// パラメータ「特別休暇の集計結果．特別休暇情報(期間終了日の翌日開始時点)」に対して処理
-		{
-			SpecialLeaveInfo specialLeaveInfoTmp = outputData.getAsOfStartNextDayOfPeriodEnd();
-			// 付与残数データから特別休暇不足分の特別休暇付与残数を削除
-			specialLeaveInfoTmp.deleteDummy();
-		}
-
-		// 特別休暇の集計結果．特別休暇情報(付与時点)を取得
-		{
-			if ( outputData.getAsOfGrant().isPresent() ){
-				List<SpecialLeaveInfo> specialLeaveInfoTmpList = outputData.getAsOfGrant().get();
-
-				// 取得した特別休暇情報(付与時点)でループ
-				specialLeaveInfoTmpList.forEach(info->{
-					// 付与残数データから特別休暇不足分の特別休暇付与残数を削除
-					info.deleteDummy();
-				});
-			}
-		}
-
-		// 特別休暇の集計結果．特別休暇情報(消滅時点)を取得
-		{
-			if ( outputData.getLapsed().isPresent() ){
-				List<SpecialLeaveInfo> specialLeaveInfoTmpList = outputData.getLapsed().get();
-
-				// 取得した特別休暇情報(付与時点)でループ
-				specialLeaveInfoTmpList.forEach(info->{
-					// 付与残数データから特別休暇不足分の特別休暇付与残数を削除
-					info.deleteDummy();
-				});
-			}
+		// 特別休暇(期間終了日時点)に残数不足の付与残数データを追加
+		if ( remainingShortageData.isPresent() ) {
+			specialLeaveInfoEnd.getGrantRemainingDataList().add(remainingShortageData.get());
 		}
 
 		return outputData;
 	}
-
 
 	/**
 	 * 集計開始日時点の特別休暇情報を作成
