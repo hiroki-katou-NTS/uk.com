@@ -219,7 +219,7 @@ module nts.uk.com.view.ccg003.a {
       if (!vm.isEmployee()) {
         return;
       }
-      vm.$blockui('show');
+      vm.$blockui('grayoutView');
       vm.$ajax('com', API.getEmployeeNotification)
         .then((response: EmployeeNotification) => {
           if (response) {
@@ -235,7 +235,7 @@ module nts.uk.com.view.ccg003.a {
           }
         })
         .fail(error => vm.$dialog.error(error))
-        .always(() => vm.$blockui('hide'));
+        .always(() => vm.$blockui('clearView'));
     }
 
     mounted() {
@@ -289,13 +289,13 @@ module nts.uk.com.view.ccg003.a {
           nts.uk.ui.errors.show();
           return;
         }
-        vm.$blockui('show');
+        vm.$blockui('grayoutView');
         const startDate = moment.utc(vm.dateValue().startDate, vm.formatType);
         const endDate = moment.utc(vm.dateValue().endDate, vm.formatType);
         const baseDate = moment.utc(new Date(), vm.formatType);
         if (startDate.isAfter(baseDate) || endDate.isAfter(baseDate)) {
           vm.$dialog.error({ messageId: 'Msg_1833' });
-          vm.$blockui('hide');
+          vm.$blockui('clearView');
           return;
         }
         vm.anniversaries([]);
@@ -319,7 +319,7 @@ module nts.uk.com.view.ccg003.a {
             }
           })
           .fail(error => vm.$dialog.error(error))
-          .always(() => vm.$blockui('hide'));
+          .always(() => vm.$blockui('clearView'));
       });
     }
 
@@ -365,7 +365,7 @@ module nts.uk.com.view.ccg003.a {
         anniversary: moment.utc(anniversary, 'MM-DD').format('MMDD'),
         referDate: moment.utc(vm.dateValue().endDate).toISOString(),
       }
-      vm.$blockui('show');
+      vm.$blockui('grayoutView');
       vm.$ajax('com', API.updateAnnivesaryNotice, command)
         .then(() => {
           const anniversaries = vm.anniversaries();
@@ -373,7 +373,7 @@ module nts.uk.com.view.ccg003.a {
           vm.anniversaries(anniversaries);
         })
         .fail(error => vm.$dialog.error(error))
-        .always(() => vm.$blockui('hide'));
+        .always(() => vm.$blockui('clearView'));
     }
 
     /**
@@ -391,7 +391,7 @@ module nts.uk.com.view.ccg003.a {
         }],
         sid: __viewContext.user.employeeId
       }
-      vm.$blockui('show');
+      vm.$blockui('grayoutView');
       vm.$ajax('com', API.viewMessageNotice, command)
         .then(() => {
           const msgNotices = vm.msgNotices();
@@ -399,7 +399,7 @@ module nts.uk.com.view.ccg003.a {
           vm.msgNotices(msgNotices);
         })
         .fail(error => vm.$dialog.error(error))
-        .always(() => vm.$blockui('hide'));
+        .always(() => vm.$blockui('clearView'));
     }
 
     /**
