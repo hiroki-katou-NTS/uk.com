@@ -1557,12 +1557,11 @@ module nts.uk.at.view.kmk003.a {
                         roundingSets.push(roundingModel.toDto());
                     }
 
-                    let dto: RoundingTimeDto = {
-                        attendanceMinuteLaterCalculate: this.attendanceMinuteLaterCalculate() ? 1 : 0,
-                        leaveWorkMinuteAgoCalculate: this.leaveWorkMinuteAgoCalculate() ? 1 : 0,
+                    return {
+                        attendanceMinuteLaterCalculate: this.attendanceMinuteLaterCalculate() ? NotUseAtr.USE : null,
+                        leaveWorkMinuteAgoCalculate: this.leaveWorkMinuteAgoCalculate() ? NotUseAtr.USE : NotUseAtr.NOT_USE,
                         roundingSets: roundingSets
-                    }
-                    return dto;
+                    };
                 }
             }
 
@@ -2298,6 +2297,14 @@ module nts.uk.at.view.kmk003.a {
                     this.inLawOT(0);
                     this.notInLawOT(0);
                 }
+            }
+
+            export enum NotUseAtr {
+                /** The use. */
+                USE = 1,
+
+                /** The not use. */
+                NOT_USE = 0
             }
 
             export class ExceededPredAddVacationCalcModel {

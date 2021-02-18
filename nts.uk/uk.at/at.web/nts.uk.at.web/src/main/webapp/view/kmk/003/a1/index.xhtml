@@ -113,14 +113,14 @@
 			immediate: false}"
         />
         <com:ko tag="if" bind="isDetailAndNotFlexOrFlow">
-            <div tabindex="32"
+            <div tabindex="32" class=""
                  data-bind="ntsCheckBox: { enable: true, checked: predseting.predetermine }">#{i18n.getText('KMK003_38')}</div>
         </com:ko>
     </div>
     <com:ko tag="ifnot" bind="condition30">
         <div class="setting_rows">
             <div tabindex="33" class="label_time_tab1"
-                 data-bind="ntsCheckBox: { enable: condition30,checked: timeZoneModelTwo.useAtr }">#{i18n.getText('KMK003_37')}</div>
+                 data-bind="ntsCheckBox: { enable: !condition30(), checked: timeZoneModelTwo.useAtr }">#{i18n.getText('KMK003_37')}</div>
             <span style="margin-left: -5px;">#{i18n.getText('KMK003_209')}</span>
             <input tabindex="34" id="shiftTwoStart" data-bind="ntsTimeWithDayEditor: {
 			name: '#[KMK003_163]',
@@ -189,14 +189,9 @@
 				readonly: false,
 				immediate: false}"
             />
-            <div tabindex="39" style="margin-left: 20px"
-                 data-bind="ntsCheckBox: { enable: coreTimeSettingModel.timesheet() == 1 }">#{i18n.getText('KMK003_307')}</div>
+
         </div>
-        <div class="setting_rows">
-            <div tabindex="40" style="margin-left: 423px"
-                 data-bind="ntsCheckBox: { enable: coreTimeSettingModel.timesheet() == 1 }">#{i18n.getText('KMK003_308')}</div>
-        </div>
-        <div class="setting_rows mt-10">
+        <div class="setting_rows mt-25">
             <div class="setting_header_tab1"
                  data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK003_184')}</div>
             <input tabindex="39" data-bind="ntsTimeEditor: {

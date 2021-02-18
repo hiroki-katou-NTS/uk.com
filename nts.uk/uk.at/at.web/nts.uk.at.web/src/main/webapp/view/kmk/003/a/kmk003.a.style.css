@@ -51,16 +51,6 @@
 	background-size: 10px 10px;
 }
 
-#switch-tab-mode {
-	margin-left: 100px;
-	margin-top: 20px;
-}
-
-#switch-tab-mode .nts-switch-button {
-	width: 140px;
-	height: 35px;
-}
-
 .cf .nts-switch-button {
 	min-width: 80px;
 } 
@@ -132,24 +122,4 @@ html {
 .disabled-panel{
 	pointer-events: none;
     opacity: 0.35;
-}
-
-.workTimeAbName-label {
-	margin-left: 40px;
-}
-
-.label-memo-option {
-	margin-left: 42px;
-}
-
-.label-worktime-method {
-	margin-left: 32px;
-}
-
-#cbb-worktime-method {
-	margin-left: 24px;
-}
-
-.workTimeAbName-input {
-	margin-left: 10px;
 }

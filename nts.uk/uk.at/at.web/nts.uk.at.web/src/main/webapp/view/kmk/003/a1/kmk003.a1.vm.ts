@@ -74,7 +74,6 @@ module a1 {
                 width: "50",
             }));
 
-
             self.beforeUpdateWorkTimeOption = ko.observable(new nts.uk.ui.option.TimeEditorOption({
                 width: "50"
             }));
@@ -155,11 +154,11 @@ module a1 {
             }, this);
             //A7_13, A7_14, A7_16 display condition
             self.condition30 = ko.computed(() => {
-                return (!self.timeZoneModelTwo.useAtr || self.isFlexMode() || self.isDiffTimeMode())
+                return ( self.isFlexMode() || self.isDiffTimeMode())
             },this);
 
             self.condition31 = ko.computed(() => {
-                return (!self.timeZoneModelTwo.useAtr && self.isFlexMode() && self.isDiffTimeMode());
+                return (self.timeZoneModelTwo.useAtr && self.isFlexMode() && self.isDiffTimeMode());
             })
                                                    
             // Subscribe event update dialog J interlock for A7_4, A7_6, A7_12, A7_13, A7_14
