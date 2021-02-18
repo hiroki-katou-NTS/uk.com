@@ -75,25 +75,27 @@ module nts.uk.at.view.kdl053 {
             let listIds: Array<any> = _.map(errorRegistrationList, item => { return item.attendanceItemId }); 
 
             this.$blockui("invisible");
-            self.$ajax(Paths.GET_ATENDANCENAME_BY_IDS,listIds).done((data: Array<any>)=>{
-                if(data && data.length > 0){
-                    let index = 0, idx = 0;                   
-                    _.each(errorRegistrationList, item => {
-                        item.id = idx;
+            self.$ajax(Paths.GET_ATENDANCENAME_BY_IDS, listIds).done((data: Array<any>) => {
+                if (data && data.length > 0) {
+                    let index = 0, idx = 0;
+                    _.each(errorRegistrationList, item => {                        
                         idx++;
-                        _.each(data, itemName =>{
-                            if(item.attendanceItemId == itemName.attendanceItemId ){
-                                errorRegistrationList[index].errName = itemName.attendanceItemName;                                
+                        _.each(data, itemName => {
+                            if (item.attendanceItemId == itemName.attendanceItemId) {
+                                errorRegistrationList[index].errName = itemName.attendanceItemName;
                                 index++;
-                            }                           
+                            }
                         })
-                    })      
-                    self.registrationErrorListCsv(errorRegistrationList);
-                    self.registrationErrorList(errorRegistrationList);  
-                } else {
+                    })
                     self.registrationErrorListCsv(errorRegistrationList);
                     self.registrationErrorList(errorRegistrationList);
-                }   
+                } else {
+                    _.each(errorRegistrationList, item => {
+                        item.errName = "";
+                    })
+                    self.registrationErrorListCsv(errorRegistrationList);
+                    self.registrationErrorList(errorRegistrationList);
+                }
 
                 $("#grid").igGrid({
                     width: "780px",
@@ -101,23 +103,22 @@ module nts.uk.at.view.kdl053 {
                     dataSource: self.registrationErrorList(),
                     dataSourceType: "json",
                     primaryKey: "id",
-                    autoGenerateColumns: false,                        
+                    autoGenerateColumns: false,
                     responseDatakey: "results",
-                    columns: [
-                        { headerText: "STT", key: "id", dataType: "number", hidden: true },
-                        { headerText: getText('KDL053_5'), key: "employeeCdName", dataType: "string", width: "25%" },                          
+                    columns: [                        
+                        { headerText: getText('KDL053_5'), key: "employeeCdName", dataType: "string", width: "30%" },
                         { headerText: getText('KDL053_6'), key: "dateCss", dataType: "string", width: "16%" },
                         { headerText: getText('KDL053_7'), key: "errName", dataType: "string", width: "18%" },
-                        { headerText: getText('KDL053_8'), key: "errorMessage", width:"35%" }                                   
+                        { headerText: getText('KDL053_8'), key: "errorMessage", width: "34%" }
                     ],
                     features: [
                         {
-                            name : 'Paging',
+                            name: 'Paging',
                             type: "local",
-                            pageSize : 10
+                            pageSize: 10
                         },
                         {
-                            name : 'Resizing',
+                            name: 'Resizing',
                             columnSettings: [
                                 { columnKey: "employeeCdName", allowResizing: true },
                                 { columnKey: "dateCss", allowResizing: true },
@@ -130,11 +131,10 @@ module nts.uk.at.view.kdl053 {
                 $('#btnClose').focus();
                 self.$blockui("hide");
             })
-            .always(() => {
-                self.$blockui("hide");
-            });            
-        }
-        
+                .always(() => {
+                    self.$blockui("hide");
+                });
+        }  
         exportCsv(): void {
             const self = this;
             self.$blockui("invisible"); 
