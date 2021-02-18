@@ -56,7 +56,12 @@ public class JpaOvertimeWorkFrameRepository extends JpaRepository
 	public void update(OvertimeWorkFrame overtimeWorkFrame) {
 		this.commandProxy().update(this.toEntity(overtimeWorkFrame));
 	}
-	
+
+	@Override
+	public void updateAll(List<OvertimeWorkFrame> overtimeWorkFrames) {
+		this.commandProxy().updateAll(overtimeWorkFrames.stream().map(this::toEntity).collect(Collectors.toList()));
+	}
+
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository#getAllOvertimeWorkFrame(java.lang.String)
 	 */

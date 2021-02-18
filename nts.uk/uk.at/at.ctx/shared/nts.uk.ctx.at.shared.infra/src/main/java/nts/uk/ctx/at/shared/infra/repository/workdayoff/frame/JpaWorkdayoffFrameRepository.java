@@ -64,6 +64,11 @@ public class JpaWorkdayoffFrameRepository extends JpaRepository
 		this.commandProxy().update(this.toEntity(workdayoffFrame));
 	}
 
+	@Override
+	public void updateAll(List<WorkdayoffFrame> workdayoffFrames) {
+		this.commandProxy().updateAll(workdayoffFrames.stream().map(this::toEntity).collect(Collectors.toList()));
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
