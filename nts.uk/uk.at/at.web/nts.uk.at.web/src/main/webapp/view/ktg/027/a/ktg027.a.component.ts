@@ -184,14 +184,14 @@ module nts.uk.at.view.ktg027.a {
         dataTable!: KnockoutComputed<any[]>;
         chartStyle!: KnockoutComputed<string>;
 
-        constructor(private cache: { currentOrNextMonth: 0 | 1; }) {
+        constructor(private cache: { currentOrNextMonth: 1 | 2; }) {
             super();
 
             if (!this.cache) {
-                this.cache = { currentOrNextMonth: 0 };
+                this.cache = { currentOrNextMonth: 1 };
             } else {
                 if (typeof this.cache.currentOrNextMonth === 'undefined') {
-                    this.cache.currentOrNextMonth = 0;
+                    this.cache.currentOrNextMonth = 1;
                 }
             }
 
@@ -323,11 +323,11 @@ module nts.uk.at.view.ktg027.a {
             const { $user } = vm;
             let companyID: any = ko.observable(__viewContext.user.companyId);
             let paramKTG026 = {
-              companyId: companyID,
-              employeeId: item.employeeId,
-              targetDate: vm.targetYear(),
-              targetYear: "",
-              mode: "Superior",
+                companyId: companyID,
+                employeeId: item.employeeId,
+                targetDate: vm.targetYear(),
+                targetYear: "",
+                mode: "Superior",
             };
             vm.$window
                 .modal('at', '/view/ktg/026/a/superior.xhtml', paramKTG026);
@@ -337,12 +337,12 @@ module nts.uk.at.view.ktg027.a {
             const vm = this;
             const { $user } = vm;
             let paramKDW003 = {
-              lstEmployeeShare: item.employeeId,
-              errorRefStartAtr: false,
-              changePeriodAtr: true,
-              screenMode: "Normal",
-              displayFormat: "individual",
-              initClock: "",
+                lstEmployeeShare: item.employeeId,
+                errorRefStartAtr: false,
+                changePeriodAtr: true,
+                screenMode: "Normal",
+                displayFormat: "individual",
+                initClock: "",
             };
             vm.$window
                 .shared('KDW003_PARAM', paramKDW003)

@@ -416,8 +416,17 @@ module nts.uk.at.view.ktg026.a {
 
         employeesOvertime!: any;
 
-        constructor(private cache: { currentOrNextMonth: number; } | null) {
+        constructor(private cache: { currentOrNextMonth: 1 | 2; } | null) {
             super();
+
+            if (!this.cache) {
+                this.cache = { currentOrNextMonth: 1 };
+            } else {
+                if (typeof this.cache.currentOrNextMonth === 'undefined') {
+                    this.cache.currentOrNextMonth = 1;
+                }
+            }
+
             const vm = this;
 
             vm.chartStyle = ko.computed({
