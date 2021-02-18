@@ -129,7 +129,7 @@ export class Ccgs03AComponent extends Vue {
 
     if (startDate.isAfter(endDate)) {
       this.$modal.error({
-        messageId: 'FND_E_SPAN_REVERSED',
+        messageId: 'MsgB_21',
         messageParams: [this.$i18n('CCGS03_6').toString()]
       })
       .then(() => this.$mask('hide'));
@@ -139,7 +139,7 @@ export class Ccgs03AComponent extends Vue {
 
     if (startDate.add(1, 'M').isBefore(endDate)) {
       this.$modal.error({
-        messageId: 'FND_E_SPAN_OVER_MONTH',
+        messageId: 'MsgB_22',
         messageParams: [this.$i18n('CCGS03_6').toString()]
       })
       .then(() => this.$mask('hide'));
