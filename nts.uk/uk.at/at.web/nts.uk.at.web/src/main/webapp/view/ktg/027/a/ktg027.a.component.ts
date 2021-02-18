@@ -141,6 +141,10 @@ module nts.uk.at.view.ktg027.a {
                     padding-right: 0px;
                     text-overflow: ellipsis;
                 }
+                .ktg-027-a.widget-content.ui-resizable td:nth-child(1),
+                .ktg-027-a.widget-content.ui-resizable td:nth-child(2) {
+                    cursor: pointer;
+                }
                 .ktg-027-a.widget-content.ui-resizable td[rowspan] {
                     padding: 0;
                     overflow: hidden;
