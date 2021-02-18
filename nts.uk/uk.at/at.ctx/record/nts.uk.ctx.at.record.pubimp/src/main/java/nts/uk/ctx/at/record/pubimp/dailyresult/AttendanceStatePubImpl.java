@@ -44,7 +44,7 @@ public class AttendanceStatePubImpl implements AttendanceStatePub {
 		
 		return AttendanceStateExport.builder()
 				.attendanceState(EnumAdaptor.valueOf(data.getAttendanceState().value,StatusClassfication.class))
-				.workingNow(data.isWorkingNow())
+				.workingNow(data.getWorkingNow())
 				.build();
 	}
 }

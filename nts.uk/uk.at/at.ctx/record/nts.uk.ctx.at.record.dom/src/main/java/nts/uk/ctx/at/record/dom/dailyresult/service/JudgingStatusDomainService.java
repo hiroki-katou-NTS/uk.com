@@ -147,7 +147,7 @@ public class JudgingStatusDomainService {
 	private static AttendanceAccordActualData buildData(StatusClassfication statusClassfication, Optional<Boolean> workingNow) {
 		return AttendanceAccordActualData.builder()
 				.attendanceState(statusClassfication)
-				.workingNow(workingNow.map(m -> m.booleanValue()).orElse(false))
+				.workingNow(workingNow)
 				.build();
 	}
 

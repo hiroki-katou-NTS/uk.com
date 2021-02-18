@@ -216,10 +216,12 @@ public class AttendanceInformationScreenQuery {
 			Integer workDivision = null;
 			//システム日の場合：
 			if(activityStatus != null) {
-				if (activityStatus.isWorkingNow()) {
-					workDivision = WorkDivision.WORK.value;
-				} else {
-					workDivision = WorkDivision.HOLIDAY.value;
+				if(activityStatus.getWorkingNow().isPresent()) {
+					if (activityStatus.getWorkingNow().get()) {
+						workDivision = WorkDivision.WORK.value;
+					} else {
+						workDivision = WorkDivision.HOLIDAY.value;
+					}
 				}
 			}
 			//システム日ではない場合

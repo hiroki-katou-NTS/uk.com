@@ -31,7 +31,7 @@ public class AttendanceStatusJudgmentService {
 			// case 1
 			return AttendanceAccordActualData.builder()
 					.attendanceState(StatusClassfication.GO_OUT)
-					.workingNow(attendanceState.isWorkingNow())
+					.workingNow(attendanceState.getWorkingNow())
 					.build();
 		}
 
@@ -39,7 +39,7 @@ public class AttendanceStatusJudgmentService {
 			// case 2
 			return AttendanceAccordActualData.builder()
 					.attendanceState(attendanceState.getAttendanceState())
-					.workingNow(attendanceState.isWorkingNow())
+					.workingNow(attendanceState.getWorkingNow())
 					.build();
 		}
 
@@ -48,19 +48,19 @@ public class AttendanceStatusJudgmentService {
 				// case 3
 				return AttendanceAccordActualData.builder()
 						.attendanceState(attendanceState.getAttendanceState())
-						.workingNow(attendanceState.isWorkingNow())
+						.workingNow(attendanceState.getWorkingNow())
 						.build();
 			}
 			// case 4
 			return AttendanceAccordActualData.builder()
 					.attendanceState(status.get().getActivity())
-					.workingNow(attendanceState.isWorkingNow())
+					.workingNow(attendanceState.getWorkingNow())
 					.build();
 		}
 		// case 5
 		return AttendanceAccordActualData.builder()
 				.attendanceState(attendanceState.getAttendanceState())
-				.workingNow(attendanceState.isWorkingNow())
+				.workingNow(attendanceState.getWorkingNow())
 				.build();
 	}
 	

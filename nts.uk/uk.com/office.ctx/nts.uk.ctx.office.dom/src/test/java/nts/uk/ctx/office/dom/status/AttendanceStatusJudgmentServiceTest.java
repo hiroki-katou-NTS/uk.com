@@ -44,7 +44,7 @@ public class AttendanceStatusJudgmentServiceTest {
 		//[R-3]
 		AttendanceStateImport attendacneRqResult = AttendanceStateImport.builder()
 				.attendanceState(StatusClassfication.GO_OUT)
-				.workingNow(false)
+				.workingNow(Optional.ofNullable(false))
 				.build();
 		
 		new Expectations() {
@@ -63,7 +63,7 @@ public class AttendanceStatusJudgmentServiceTest {
 		
 		val expected = AttendanceAccordActualData.builder()
 				.attendanceState(StatusClassfication.GO_OUT)
-				.workingNow(attendacneRqResult.isWorkingNow())
+				.workingNow(attendacneRqResult.getWorkingNow())
 				.build();
 		
 		//then
@@ -92,7 +92,7 @@ public class AttendanceStatusJudgmentServiceTest {
 		//[R-3]
 		AttendanceStateImport attendacneRqResult = AttendanceStateImport.builder()
 				.attendanceState(StatusClassfication.GO_OUT)
-				.workingNow(false)
+				.workingNow(Optional.ofNullable(false))
 				.build();
 		
 		new Expectations() {
@@ -111,7 +111,7 @@ public class AttendanceStatusJudgmentServiceTest {
 		
 		val expected = AttendanceAccordActualData.builder()
 				.attendanceState(StatusClassfication.GO_OUT)
-				.workingNow(attendacneRqResult.isWorkingNow())
+				.workingNow(attendacneRqResult.getWorkingNow())
 				.build();
 		
 		//then
@@ -140,7 +140,7 @@ public class AttendanceStatusJudgmentServiceTest {
 		//[R-3]
 		AttendanceStateImport attendacneRqResult = AttendanceStateImport.builder()
 				.attendanceState(StatusClassfication.GO_OUT)
-				.workingNow(false)
+				.workingNow(Optional.ofNullable(false))
 				.build();
 		
 		new Expectations() {
@@ -159,7 +159,7 @@ public class AttendanceStatusJudgmentServiceTest {
 		
 		val expected = AttendanceAccordActualData.builder()
 				.attendanceState(StatusClassfication.GO_OUT)
-				.workingNow(attendacneRqResult.isWorkingNow())
+				.workingNow(attendacneRqResult.getWorkingNow())
 				.build();
 		
 		//then
@@ -188,7 +188,7 @@ public class AttendanceStatusJudgmentServiceTest {
 		//[R-3]
 		AttendanceStateImport attendacneRqResult = AttendanceStateImport.builder()
 				.attendanceState(StatusClassfication.GO_OUT)
-				.workingNow(false)
+				.workingNow(Optional.ofNullable(false))
 				.build();
 		
 		new Expectations() {
@@ -207,7 +207,7 @@ public class AttendanceStatusJudgmentServiceTest {
 		
 		val expected = AttendanceAccordActualData.builder()
 				.attendanceState(attendacneRqResult.getAttendanceState())
-				.workingNow(attendacneRqResult.isWorkingNow())
+				.workingNow(attendacneRqResult.getWorkingNow())
 				.build();
 		
 		//then
@@ -225,7 +225,7 @@ public class AttendanceStatusJudgmentServiceTest {
 		//[R-3]
 		AttendanceStateImport attendacneRqResult = AttendanceStateImport.builder()
 				.attendanceState(StatusClassfication.GO_HOME)
-				.workingNow(false)
+				.workingNow(Optional.ofNullable(false))
 				.build();
 		
 		new Expectations() {
@@ -244,7 +244,7 @@ public class AttendanceStatusJudgmentServiceTest {
 		
 		val expected = AttendanceAccordActualData.builder()
 				.attendanceState(attendacneRqResult.getAttendanceState())
-				.workingNow(attendacneRqResult.isWorkingNow())
+				.workingNow(attendacneRqResult.getWorkingNow())
 				.build();
 		
 		//then
@@ -272,7 +272,7 @@ public class AttendanceStatusJudgmentServiceTest {
 		//[R-3]
 		AttendanceStateImport attendacneRqResult = AttendanceStateImport.builder()
 				.attendanceState(StatusClassfication.GO_HOME)
-				.workingNow(false)
+				.workingNow(Optional.ofNullable(false))
 				.build();
 		
 		new Expectations() {
@@ -291,7 +291,7 @@ public class AttendanceStatusJudgmentServiceTest {
 		
 		val expected = AttendanceAccordActualData.builder()
 				.attendanceState(attendacneRqResult.getAttendanceState())
-				.workingNow(attendacneRqResult.isWorkingNow())
+				.workingNow(attendacneRqResult.getWorkingNow())
 				.build();
 		
 		//then
@@ -319,7 +319,7 @@ public class AttendanceStatusJudgmentServiceTest {
 		//[R-3]
 		AttendanceStateImport attendacneRqResult = AttendanceStateImport.builder()
 				.attendanceState(StatusClassfication.GO_HOME)
-				.workingNow(false)
+				.workingNow(Optional.ofNullable(false))
 				.build();
 		
 		new Expectations() {
@@ -338,7 +338,7 @@ public class AttendanceStatusJudgmentServiceTest {
 		
 		val expected = AttendanceAccordActualData.builder()
 				.attendanceState(attendacneRqResult.getAttendanceState())
-				.workingNow(attendacneRqResult.isWorkingNow())
+				.workingNow(attendacneRqResult.getWorkingNow())
 				.build();
 		
 		//then
@@ -363,7 +363,7 @@ public class AttendanceStatusJudgmentServiceTest {
 		//[R-3]
 		AttendanceStateImport attendacneRqResult = AttendanceStateImport.builder()
 				.attendanceState(StatusClassfication.PRESENT)
-				.workingNow(false)
+				.workingNow(Optional.ofNullable(false))
 				.build();
 		
 		new Expectations() {
@@ -386,7 +386,7 @@ public class AttendanceStatusJudgmentServiceTest {
 		
 		val expected = AttendanceAccordActualData.builder()
 				.attendanceState(attendacneRqResult.getAttendanceState())
-				.workingNow(attendacneRqResult.isWorkingNow())
+				.workingNow(attendacneRqResult.getWorkingNow())
 				.build();
 		
 		//then
@@ -411,7 +411,7 @@ public class AttendanceStatusJudgmentServiceTest {
 		//[R-3]
 		AttendanceStateImport attendacneRqResult = AttendanceStateImport.builder()
 				.attendanceState(StatusClassfication.GO_OUT)
-				.workingNow(false)
+				.workingNow(Optional.ofNullable(false))
 				.build();
 		
 		new Expectations() {
@@ -434,7 +434,7 @@ public class AttendanceStatusJudgmentServiceTest {
 		
 		val expected = AttendanceAccordActualData.builder()
 				.attendanceState(statusResult.get().getActivity())
-				.workingNow(attendacneRqResult.isWorkingNow())
+				.workingNow(attendacneRqResult.getWorkingNow())
 				.build();
 		
 		//then
@@ -453,7 +453,7 @@ public class AttendanceStatusJudgmentServiceTest {
 		//[R-3]
 		AttendanceStateImport attendacneRqResult = AttendanceStateImport.builder()
 				.attendanceState(StatusClassfication.GO_OUT)
-				.workingNow(false)
+				.workingNow(Optional.ofNullable(false))
 				.build();
 		
 		new Expectations() {
@@ -476,7 +476,7 @@ public class AttendanceStatusJudgmentServiceTest {
 		
 		val expected = AttendanceAccordActualData.builder()
 				.attendanceState(attendacneRqResult.getAttendanceState())
-				.workingNow(attendacneRqResult.isWorkingNow())
+				.workingNow(attendacneRqResult.getWorkingNow())
 				.build();
 		
 		//then

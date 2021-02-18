@@ -115,51 +115,51 @@ public class JudgingStatusDomainServiceTestHelper {
 		return Optional.ofNullable(workType);
 	}
 	
-	public static AttendanceAccordActualData case1Expected() {
-		return buildData(StatusClassfication.GO_HOME, false);
+	public static AttendanceAccordActualData case1Expected(Optional<Boolean> workingNow) {
+		return buildData(StatusClassfication.GO_HOME, workingNow);
 	}
 	
-	public static AttendanceAccordActualData case2Expected() {
-		return buildData(StatusClassfication.GO_OUT, false);
+	public static AttendanceAccordActualData case2Expected(Optional<Boolean> workingNow) {
+		return buildData(StatusClassfication.GO_OUT, workingNow);
 	}
 	
-	public static AttendanceAccordActualData case3Expected() {
-		return buildData(StatusClassfication.PRESENT, false);
+	public static AttendanceAccordActualData case3Expected(Optional<Boolean> workingNow) {
+		return buildData(StatusClassfication.PRESENT, workingNow);
 	}
 	
-	public static AttendanceAccordActualData case4Expected() {
-		return buildData(StatusClassfication.NOT_PRESENT, false);
+	public static AttendanceAccordActualData case4Expected(Optional<Boolean> workingNow) {
+		return buildData(StatusClassfication.NOT_PRESENT, workingNow);
 	}
 	
-	public static AttendanceAccordActualData case5Expected() {
-		return buildData(StatusClassfication.NOT_PRESENT, false);
+	public static AttendanceAccordActualData case5Expected(Optional<Boolean> workingNow) {
+		return buildData(StatusClassfication.NOT_PRESENT, workingNow);
 	}
 	
-	public static AttendanceAccordActualData case6Expected() {
-		return buildData(StatusClassfication.GO_OUT, false);
+	public static AttendanceAccordActualData case6Expected(Optional<Boolean> workingNow) {
+		return buildData(StatusClassfication.GO_OUT, workingNow);
 	}
 	
-	public static AttendanceAccordActualData case7Expected() {
-		return buildData(StatusClassfication.PRESENT, false);
+	public static AttendanceAccordActualData case7Expected(Optional<Boolean> workingNow) {
+		return buildData(StatusClassfication.PRESENT, workingNow);
 	}
 	
-	public static AttendanceAccordActualData case8Expected() {
-		return buildData(StatusClassfication.NOT_PRESENT, false);
+	public static AttendanceAccordActualData case8Expected(Optional<Boolean> workingNow) {
+		return buildData(StatusClassfication.NOT_PRESENT, workingNow);
 	}
 	
-	public static AttendanceAccordActualData case9Expected() {
-		return buildData(StatusClassfication.NOT_PRESENT, false);
+	public static AttendanceAccordActualData case9Expected(Optional<Boolean> workingNow) {
+		return buildData(StatusClassfication.NOT_PRESENT, workingNow);
 	}
 	
-	public static AttendanceAccordActualData case10Expected() {
-		return buildData(StatusClassfication.NOT_PRESENT, true);
+	public static AttendanceAccordActualData case10Expected(Optional<Boolean> workingNow) {
+		return buildData(StatusClassfication.NOT_PRESENT, workingNow);
 	}
 	
-	public static AttendanceAccordActualData case11Expected() {
-		return buildData(StatusClassfication.HOLIDAY, false);
+	public static AttendanceAccordActualData case11Expected(Optional<Boolean> workingNow) {
+		return buildData(StatusClassfication.HOLIDAY, workingNow);
 	}
 	
-	private static AttendanceAccordActualData buildData(StatusClassfication statusClassfication, boolean workingNow) {
+	private static AttendanceAccordActualData buildData(StatusClassfication statusClassfication, Optional<Boolean> workingNow) {
 		return AttendanceAccordActualData.builder()
 				.attendanceState(statusClassfication)
 				.workingNow(workingNow)

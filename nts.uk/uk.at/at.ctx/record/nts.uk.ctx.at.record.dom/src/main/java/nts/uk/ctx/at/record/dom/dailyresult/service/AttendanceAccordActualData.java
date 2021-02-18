@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.dailyresult.service;
 
+import java.util.Optional;
+
 import lombok.Builder;
 import lombok.Data;
 
@@ -10,5 +12,5 @@ public class AttendanceAccordActualData {
 	private StatusClassfication attendanceState;
 
 	// 勤務が出勤ですか
-	private boolean workingNow;
+	private Optional<Boolean> workingNow;
 }
