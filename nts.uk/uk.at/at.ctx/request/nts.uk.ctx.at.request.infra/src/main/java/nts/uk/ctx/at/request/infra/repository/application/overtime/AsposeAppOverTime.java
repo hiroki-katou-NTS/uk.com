@@ -84,7 +84,7 @@ public class AsposeAppOverTime {
 		if (c1) {
 			d31.append(contentCodeD31);			
 		}
-		if (!StringUtils.isBlank(contentCodeD31)) {
+		if (!StringUtils.isBlank(contentCodeD31) && c1) {
 			d31.append("\n");			
 		}
 		if (c2) {
