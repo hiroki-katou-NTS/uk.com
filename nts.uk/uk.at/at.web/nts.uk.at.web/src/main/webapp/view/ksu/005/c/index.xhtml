@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>    
+    <ui:composition template="../../../../master/dialog.xhtml">
+        <ui:define name="htmlHead">	
+            <script>var dialogSize = { width: 600, height: 300 };</script>
+            <com:ValidatorScript>
+                nts.uk.ctx.at.aggregation.dom.scheduletable.OutputSettingCode
+                nts.uk.ctx.at.aggregation.dom.scheduletable.OutputSettingName                
+            </com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="ksu005.c.style.css" />		
+			<com:scriptfile path="ksu005.c.vm.js" />
+		</ui:define>
+
+		<!-- PAGE CONTENT -->
+        <ui:define name="content">
+        
+            <div id="contents-area">
+                <div class="container-custom">
+                    <!--C1-1-->
+                    <div data-bind="ntsFormLabel:{}">#{i18n.getText('KSU005_49')} </div>    
+                    <span style="margin-top: 8px; margin-left: 20px;" data-bind="text: code"></span>     
+                    <span style="margin-top: 8px; margin-left: 60px;" data-bind="text: name"></span>  
+                </div>        
+                <div class="container-custom">
+                    <!--C2-1-->
+                    <div data-bind="ntsFormLabel:{}">#{i18n.getText('KSU005_50')} </div>
+                    <div style="margin-left: 8px;">
+                        <input id="outputSettingCode" data-bind="ntsTextEditor:{
+                            name:'#[KSU005_51]',
+                            required: true,
+                            constraint: 'OutputSettingCode',
+                            option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({                                        
+                                width: '20px',
+                                textalign: 'left'
+                            })),                  
+                            value: valueCode 
+                        }" />
+                    </div>
+
+                    <!--B3-3-->
+                    <div style="margin-left: 20px;">
+                        <input id="outputSettingName" data-bind="ntsTextEditor:{
+                            name:'#[KSU005_52]',
+                            required: true,
+                            constraint: 'OutputSettingName',
+                            option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({                                        
+                                width: '180px',
+                                textalign: 'left'
+                            })),            
+                            value: valueName             
+                        }" />
+                    </div>
+                </div>                
+            </div>        
+        
+            <div id="functions-area-bottom">
+                <!--c3-1-->
+                <button tabindex="1" class="x-large proceed" id="C3_1" data-bind="click: closeDialog">#{i18n.getText('KSU005_53')}</button>
+                <!--C3-2-->
+                <button tabindex="1"  id="C3_2" data-bind="click: closeDialog">#{i18n.getText('KSU005_54')}</button>                        
+            </div>	 
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

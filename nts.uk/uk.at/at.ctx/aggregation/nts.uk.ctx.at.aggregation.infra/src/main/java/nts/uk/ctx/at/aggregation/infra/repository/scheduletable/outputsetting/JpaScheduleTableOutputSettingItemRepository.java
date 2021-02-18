@@ -53,6 +53,45 @@ public class JpaScheduleTableOutputSettingItemRepository extends JpaRepository
 			+ "LEFT JOIN KagmtRptScheduleTallyByPerson c ON a.pk.companyId = c.pk.companyId AND a.pk.code = c.pk.code "
 			+ "LEFT JOIN KagmtRptScheduleTallyByWkp d ON a.pk.companyId = d.pk.companyId AND a.pk.code = d.pk.code "
 			+ "WHERE a.pk.companyId = :companyId";
+	
+	private ScheduleTableOutputSetting toDomainFromListObj(List<Object[]> objects) {
+		List<PersonalCounterCategory> personalCounterCategories = new ArrayList<PersonalCounterCategory>();
+		List<WorkplaceCounterCategory> workplaceCounterCategories = new ArrayList<WorkplaceCounterCategory>();
+		List<ScheduleTableOutputSettingTemp> list = new ArrayList<>();
+		List<OneRowOutputItem> oneRowOutputItems = new ArrayList<OneRowOutputItem>();
+		KagmtRptSchedule entity = (KagmtRptSchedule) objects.get(0)[0];
+		String code = entity.pk.code;
+		String name = entity.name;
+		int personalInfo = (Integer) objects.get(0)[1];
+		int additionalInfo = (Integer) objects.get(0)[2];
+		int attendanceItem = (Integer) objects.get(0)[3];
+		int personalCatergoryNo = (Integer) objects.get(0)[4];
+		int workplaceCatergoryNo = (Integer) objects.get(0)[5];
+		
+		objects.stream().forEach(object -> {
+			list.add(new ScheduleTableOutputSettingTemp(code, name, personalInfo, additionalInfo, attendanceItem,
+					personalCatergoryNo, workplaceCatergoryNo));
+		});
+		
+		list.stream().forEach(x -> {
+			personalCounterCategories.add(PersonalCounterCategory.of(x.getPersonalCatergoryNo()));
+			workplaceCounterCategories.add(WorkplaceCounterCategory.of(x.getWorkplaceCatergoryNo()));
+			
+			OneRowOutputItem item = OneRowOutputItem.create(Optional.of(EnumAdaptor.valueOf(personalInfo, ScheduleTablePersonalInfoItem.class)),
+					Optional.of(EnumAdaptor.valueOf(additionalInfo, ScheduleTablePersonalInfoItem.class)),
+					Optional.of(EnumAdaptor.valueOf(attendanceItem, ScheduleTableAttendanceItem.class)));			
+			oneRowOutputItems.add(item);
+		});		
+		
+
+		OutputItem outputItem = new OutputItem(NotUseAtr.valueOf(entity.additionalColumUseAtr),
+				NotUseAtr.valueOf(entity.shiftBackColorUseAtr), NotUseAtr.valueOf(entity.recordDispAtr),
+				oneRowOutputItems);
+
+		return new ScheduleTableOutputSetting(new OutputSettingCode(code), new OutputSettingName(name), outputItem,
+				workplaceCounterCategories, personalCounterCategories);
+	}
+	
 	private ScheduleTableOutputSetting toDomainFromObj(Object[] object) {
 		List<PersonalCounterCategory> personalCounterCategories = new ArrayList<PersonalCounterCategory>();
 		List<WorkplaceCounterCategory> workplaceCounterCategories = new ArrayList<WorkplaceCounterCategory>();
@@ -87,7 +126,6 @@ public class JpaScheduleTableOutputSettingItemRepository extends JpaRepository
 		return new ScheduleTableOutputSetting(new OutputSettingCode(code), new OutputSettingName(name), outputItem,
 				workplaceCounterCategories, personalCounterCategories);
 	}
-	
 	private List<ScheduleTableOutputSetting> toListDomainFromListObj(List<Object []> objects){
 		List<ScheduleTableOutputSetting> scheduleTableOutputSettings = new ArrayList<ScheduleTableOutputSetting>();
 		objects.stream().forEach(obj -> {
@@ -175,18 +213,23 @@ public class JpaScheduleTableOutputSettingItemRepository extends JpaRepository
 
 	@Override
 	public Optional<ScheduleTableOutputSetting> get(String companyId, OutputSettingCode code) {
-		Optional<Object[]> result = this.queryProxy().query(GET_BY_CID_AND_CODE, Object[].class)
+		List<Object[]> results = this.queryProxy().query(GET_BY_CID_AND_CODE)
 				.setParameter("companyId", companyId)
-				.setParameter("code", code)
-				.getSingle();
-		return result.isPresent() ? Optional.of(this.toDomainFromObj(result.get())) : Optional.empty();
+				.setParameter("code", code.v())
+				.getList();	
+
+//		String c = code.v();
+//		List<ScheduleTableOutputSetting> a = this.toListDomainFromListObj(results);	
+		return Optional.of(this.toDomainFromListObj(results));		
+
 	}
 
 	@Override
 	public List<ScheduleTableOutputSetting> getList(String companyId) {
 		List<Object[]> results = this.queryProxy().query(GET_BY_CID)
 				.setParameter("companyId", companyId)
-				.getList();
+				.getList();		
+		
 		return this.toListDomainFromListObj(results);
 	}
 

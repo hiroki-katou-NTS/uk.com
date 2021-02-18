@@ -1,5 +1,4 @@
-module nts.uk.at.view.kmf004.x {
-    var __viewContext = window['__viewContext'] || {};
+module nts.uk.at.view.ksu005.a.test {
     __viewContext.ready(function() {
         var screenModel = new viewmodel.ScreenModel();
         screenModel.startPage().done(function() {

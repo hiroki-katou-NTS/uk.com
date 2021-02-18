@@ -52,7 +52,9 @@ public class ScheduleTableOutputSettingDto {
 		});
 
 		list.stream().forEach(item -> {
-			additionalInfos.add(1);
+			personalInfos.add(item.getPersonalInfo().isPresent() ? item.getPersonalInfo().get().value : null);
+			additionalInfos.add(item.getAdditionalInfo().isPresent() ? item.getAdditionalInfo().get().value : null);
+			attendanceItems.add(item.getAttendanceItem().isPresent() ? item.getAttendanceItem().get().value : null);
 		});
 		return new ScheduleTableOutputSettingDto(domain.getCode().v(), domain.getName().v(),
 				domain.getOutputItem().getAdditionalColumnUseAtr().value,
