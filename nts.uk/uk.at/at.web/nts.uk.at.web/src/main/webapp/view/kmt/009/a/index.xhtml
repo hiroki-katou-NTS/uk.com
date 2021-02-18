@@ -10,16 +10,151 @@
         <com:scriptfile set="IGNITE" />			
 				<com:stylefile path="kmt009.a.css" />
 				<com:scriptfile path="kmt009.a.vm.js" />
+
+				<com:ValidatorScript>
+					nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode
+					nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskName
+					nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskAbName
+					nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskNote
+				</com:ValidatorScript>
+
 			</ui:define>
 			
 			<ui:define name="content">
 				<div id="functions-area">
-          Ok
+          <a tabindex="1" class="goback" data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }, text: $vm.$i18n('KMT009_2')"></a>
+					<button tabindex="1" data-bind="text: $vm.$i18n('KMT009_3'), click: addNewRegistrationWork, enable: $root.errors.isEmpty" />
+					<button tabindex="2" class="proceed" data-bind="text: $vm.$i18n('KMT009_4'), click: saveRegistrationWork" />
+					<button tabindex="3" class="danger" data-bind="text: $vm.$i18n('KMT009_5'), click: deleteRegistrationWork" />
 				</div>
 				<div id="contents-area">
-          OK
+					<div class="wrapper">
+						<div class="pull-left">
+							<div data-bind="ntsPanel:{width: '340px', direction: 'right', showIcon: true, visible: true}">
+								<div class="table mb-10">
+									<div class="cell valign-center" data-bind="ntsFormLabel: { required: true }" >
+										<label data-bind="text: $vm.$i18n('KMT009_6')"></label>										
+									</div>
+									<div class="cell valign-center">
+										<div tabindex="5" class="combo-box" data-bind="ntsComboBox: {
+											name: '#[KMT009_7]',
+											options: workList,
+											optionsValue: 'code',
+											visibleItemsCount: 5,
+											value: selectedWorkCode,
+											optionsText: 'name',
+											editable: false,
+											enable: true,
+											required: true,
+											selectFirstIfNull: true
+										}"></div>
+									</div>
+								</div>
+								<div tabindex="6" data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'code', comId: 'multi-list', 
+									items: registrationWorkList, selected: currentCode, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />
+				
+								<table tabindex="6" id="multi-list" data-bind="ntsGridList: {
+										height: 380,
+										options:  registrationWorkList,
+										optionsValue: 'code',
+										columns: ko.observableArray([
+												{ headerText: $i18n('KMT009_9'), key: 'code', hidden: true },
+												{ headerText: $i18n('KMT009_21'), key: 'display', width: 235, 
+													columnCssClass: 'limited-label', formatter: _.escape },
+												{ headerText: $i18n('KMT009_11'), key: 'configured', width: 80, 
+													headerCssClass: 'text-center',columnCssClass: 'text-center'  }
+										]),
+										multiple: false,
+										value: currentCode
+									}"></table>
+							</div>
+						</div>
+						<div class="pull-left">
+							<div>
+								<div class="table mb-10">
+									<div class="cell w-35 valign-center" data-bind="ntsFormLabel: { required: false}">
+										<label data-bind="text: $vm.$i18n('KMT009_12')"></label>
+									</div>
+									<div class="cell valign-center">
+										<div>
+											<input id="KMT009_13" tabindex="7" data-bind="ntsTextEditor: {
+												value: model().code,																			
+												required: true,
+												enable: true,
+												constraint: 'TaskCode',
+												name: '#[KMT001_21]',
+												enable: isNewMode
+											}" />
+										</div>
+									</div>
+								</div>
+
+								<div class="table mb-10">
+									<div class="cell w-35 valign-center" data-bind="ntsFormLabel: { required: false }">
+										<label data-bind="text: $vm.$i18n('KMT009_14')"></label>
+									</div>
+									<div class="cell valign-center">
+										<div>
+											<input tabindex="8" data-bind="ntsTextEditor: {
+												value: model().name,																			
+												required: true,
+												enable: true,
+												constraint: 'TaskName',
+												name: '#[KMT009_15]'
+											}" />
+										</div>
+									</div>
+								</div>
+
+								<div class="table mb-10">
+									<div class="cell w-35 valign-center" data-bind="ntsFormLabel: { required: false }">
+										<label data-bind="text: $vm.$i18n('KMT001_28')"></label>
+									</div>
+									<div class="cell valign-center">
+										<div class="table">
+											<div class="cell">
+												<label data-bind="text: model().expStartDate"></label>
+											</div>
+											<div class="cell plr-5">~</div>
+											<div class="cell">
+												<label data-bind="text: model().expEndDate"></label>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="table mb-10">
+									<div class="cell w-35">
+										<div data-bind="ntsFormLabel: { required: false}">
+											<label data-bind="text: $vm.$i18n('KMT009_17')"></label>
+										</div>
+									</div> 									
+								</div>
+								<div class="mb-10">
+									<div class="button mb-10">
+										<button data-bind="text: $vm.$i18n('KMT009_18'), click: openDialogKDL012">1</button>
+										<button class="danger" data-bind="text: $vm.$i18n('KMT009_19'), click: deleteRowItem, enable: currentCodeList().length &gt; 0">2</button>
+									</div> 						
+									<div class="gridList">
+										<table id="multi-list" data-bind="ntsGridList: {
+											height: 300,
+											options: model().listOfRefinedItems,
+											optionsValue: 'code',
+											columns: ko.observableArray([
+												{ headerText: $i18n('KMT009_09'), key: 'code', hidden: true },
+												{ headerText: $i18n('KMT009_21'), key: 'display', width: 250 },
+												{ headerText: $i18n('KMT009_22'), key: 'expireDate', width: 200, columnCssClass: 'limited-label', formatter: _.escape  }
+											]),
+											multiple: true,
+											value: currentCodeList
+										}"></table>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
 			</ui:define>
 		</ui:composition>
-   	</body>
+  </body>
 </html>
