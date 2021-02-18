@@ -384,7 +384,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                                     }
                                 }
 
-                                self.enableUse(self.checkSelectUse() && !_.isNil(self.attendanceModel.attendanceItemName()));  
+                                self.enableSelectUpper(self.checkSelectUse() && !_.isNil(self.attendanceModel.attendanceItemName()));  
                                 nts.uk.ui.block.clear();    
                             });                            
                             dfd.resolve();
