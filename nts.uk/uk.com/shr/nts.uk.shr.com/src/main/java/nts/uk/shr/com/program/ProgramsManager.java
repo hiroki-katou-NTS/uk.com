@@ -3541,9 +3541,31 @@ public class ProgramsManager {
     /**
      * KNR001
      */
-    public static final Program KNR001A = new Program(WebAppId.AT, ProgramIdConsts.KNR001A, "KNR001_170",
+    public static final Program KNR001A = new Program(WebAppId.AT, ProgramIdConsts.KNR001A, "KNR001_1",
             "/view/knr/001/a/index.xhtml");
     
+    /**
+     * KNR002
+     */
+    public static final Program KNR002A = new Program(WebAppId.AT, ProgramIdConsts.KNR002A, "KNR002_1",
+            "/view/knr/002/a/index.xhtml");
+    public static final Program KNR002B = new Program(WebAppId.AT, ProgramIdConsts.KNR002B, "KNR002_2",
+            "/view/knr/002/b/index.xhtml");
+    public static final Program KNR002C = new Program(WebAppId.AT, ProgramIdConsts.KNR002C, "KNR002_3",
+            "/view/knr/002/c/index.xhtml");
+    public static final Program KNR002D = new Program(WebAppId.AT, ProgramIdConsts.KNR002D, "KNR002_4",
+            "/view/knr/002/d/index.xhtml");
+    public static final Program KNR002E = new Program(WebAppId.AT, ProgramIdConsts.KNR002E, "KNR002_5",
+            "/view/knr/002/e/index.xhtml");
+    public static final Program KNR002F = new Program(WebAppId.AT, ProgramIdConsts.KNR002F, "KNR002_6",
+            "/view/knr/002/f/index.xhtml");
+    public static final Program KNR002G = new Program(WebAppId.AT, ProgramIdConsts.KNR002G, "KNR002_7",
+            "/view/knr/002/g/index.xhtml");
+    public static final Program KNR002H = new Program(WebAppId.AT, ProgramIdConsts.KNR002H, "KNR002_8",
+            "/view/knr/002/h/index.xhtml");
+    public static final Program KNR002K = new Program(WebAppId.AT, ProgramIdConsts.KNR002K, "KNR002_11",
+            "/view/knr/002/k/index.xhtml");
+
     public static final Program KSM008L = new Program(WebAppId.AT, ProgramIdConsts.KSM008L, "KSM008_147",
             "/view/ksm/008/k/index.xhtml");
 		

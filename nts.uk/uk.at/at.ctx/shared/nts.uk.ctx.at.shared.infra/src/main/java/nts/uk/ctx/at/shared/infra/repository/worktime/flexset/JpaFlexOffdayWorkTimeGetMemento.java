@@ -12,9 +12,9 @@
 //import nts.uk.ctx.at.shared.dom.worktime.common.FlowWorkRestTimezone;
 //import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
 //import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexOffdayWorkTimeGetMemento;
-//import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtFlexHolSet;
-//import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexHaFixRest;
-//import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOdRestSet;
+//import nts.uk.ctx.at.shared.infra.entity.worktime.KshmtWtFleHolTs;
+//import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFiWekTs;
+//import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFlHolTs;
 //import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexOdRestTime;
 //import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFlexOffdayFlWRestTzGetMemento;
 //import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFlexOffdayHDWTSheetGetMemento;
@@ -25,16 +25,16 @@
 //public class JpaFlexOffdayWorkTimeGetMemento implements FlexOffdayWorkTimeGetMemento{
 //	
 //	/** The entity worktimezones. */
-//	private List<KshmtFlexHolSet> entityWorktimezones;
+//	private List<KshmtWtFleHolTs> entityWorktimezones;
 //	
 //	/** The entity. */
 //	private KshmtFlexOdRestTime entity;
 //	
 //	/** The entity fixed rests. */
-//	private List<KshmtFlexHaFixRest> entityFixedRests;
+//	private List<KshmtWtFleBrFiWekTs> entityFixedRests;
 //	
 //	/** The entity flow rests. */
-//	private List<KshmtFlexOdRestSet> entityFlowRests;
+//	private List<KshmtWtFleBrFlHolTs> entityFlowRests;
 //	
 //
 //	/**
@@ -45,8 +45,8 @@
 //	 * @param entityFixedRests the entity fixed rests
 //	 * @param entityFlowRests the entity flow rests
 //	 */
-//	public JpaFlexOffdayWorkTimeGetMemento(List<KshmtFlexHolSet> entityWorktimezones, KshmtFlexOdRestTime entity,
-//			List<KshmtFlexHaFixRest> entityFixedRests, List<KshmtFlexOdRestSet> entityFlowRests) {
+//	public JpaFlexOffdayWorkTimeGetMemento(List<KshmtWtFleHolTs> entityWorktimezones, KshmtFlexOdRestTime entity,
+//			List<KshmtWtFleBrFiWekTs> entityFixedRests, List<KshmtWtFleBrFlHolTs> entityFlowRests) {
 //		super();
 //		this.entityWorktimezones = entityWorktimezones;
 //		this.entity = entity;

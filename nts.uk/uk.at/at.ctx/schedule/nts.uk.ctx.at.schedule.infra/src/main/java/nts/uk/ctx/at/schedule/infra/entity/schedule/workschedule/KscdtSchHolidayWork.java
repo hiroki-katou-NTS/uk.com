@@ -71,7 +71,17 @@ public class KscdtSchHolidayWork extends ContractUkJpaEntity {
 			@PrimaryKeyJoinColumn(name = "YMD", referencedColumnName = "YMD") })
 	public KscdtSchTime kscdtSchTime;
 
-	public static KscdtSchHolidayWork toEntity(HolidayWorkFrameTimeSheet timeSheet, HolidayWorkFrameTime time,
+	public static KscdtSchHolidayWork toEntity(HolidayWorkFrameTime time, HolidayWorkFrameTimeSheet timeSheet, 
+			String sID, GeneralDate yMD, String cID) {
+		KscdtSchHolidayWorkPK pk = new KscdtSchHolidayWorkPK(sID, yMD, timeSheet.getHolidayWorkTimeSheetNo().v());
+		KscdtSchHolidayWork kscdtSchHolidayWork = new KscdtSchHolidayWork(pk, cID,
+				timeSheet.getTimeSheet().getStart().v(), timeSheet.getTimeSheet().getEnd().v(),
+				time.getHolidayWorkTime().get().getTime().v(), time.getTransferTime().get().getTime().v(),
+				time.getBeforeApplicationTime().get().v());
+		return kscdtSchHolidayWork;
+	}
+	
+	public static KscdtSchHolidayWork toEntity2(HolidayWorkFrameTimeSheet timeSheet,  HolidayWorkFrameTime time, 
 			String sID, GeneralDate yMD, String cID) {
 		KscdtSchHolidayWorkPK pk = new KscdtSchHolidayWorkPK(sID, yMD, timeSheet.getHolidayWorkTimeSheetNo().v());
 		KscdtSchHolidayWork kscdtSchHolidayWork = new KscdtSchHolidayWork(pk, cID,

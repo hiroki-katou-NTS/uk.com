@@ -109,8 +109,8 @@ module nts.uk.at.view.kwr006.c {
                 self.mapCodeIdAtd = {};
 
                 self.dataOutputType = ko.observableArray([
-                    new ItemModel(3, nts.uk.resource.getText("KWR006_92"), null),
-                    new ItemModel(1, nts.uk.resource.getText("KWR006_93"), null)
+                    new ItemModel(1, nts.uk.resource.getText("KWR006_92"), null),
+                    new ItemModel(3, nts.uk.resource.getText("KWR006_93"), null)
                 ]);
 
                 self.itemListAttribute = ko.observableArray([
@@ -468,8 +468,8 @@ module nts.uk.at.view.kwr006.c {
         }
     }
     class FontSizeEnum {
-        static SMALL = 1;
-        static BIG = 3;
+        static SMALL = 3;
+        static BIG = 1;
     }
 
 }

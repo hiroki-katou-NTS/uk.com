@@ -22,7 +22,7 @@ import nts.uk.ctx.sys.gateway.app.command.securitypolicy.lockoutdata.LockOutData
 import nts.uk.ctx.sys.gateway.app.find.securitypolicy.lockoutdata.LockOutDataUserFinder;
 import nts.uk.ctx.sys.gateway.app.find.securitypolicy.lockoutdata.dto.LockOutDataDto;
 import nts.uk.ctx.sys.gateway.app.find.securitypolicy.lockoutdata.dto.LockOutDataUserDto;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.lockoutdata.SearchUser;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.SearchUser;
 
 /**
  * The Class LockOutDataWebService.

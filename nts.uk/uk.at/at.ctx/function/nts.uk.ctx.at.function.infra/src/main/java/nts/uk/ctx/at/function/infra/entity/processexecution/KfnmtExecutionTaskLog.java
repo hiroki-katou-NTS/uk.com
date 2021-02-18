@@ -26,19 +26,19 @@ import nts.uk.ctx.at.function.dom.processexecution.executionlog.EndStatus;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ExecutionTaskLog;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionTask;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  *  Entity UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.就業機能.更新処理自動実行.更新処理自動実行ログ.更新処理自動実行タスクログ
  */
 @Entity
-@Table(name="KFNMT_EXEC_TASK_LOG")
+@Table(name="KFNDT_AUTOEXEC_TASK_LOG")
 @Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class KfnmtExecutionTaskLog extends UkJpaEntity implements Serializable {
+public class KfnmtExecutionTaskLog extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	/* 主キー */
@@ -49,10 +49,6 @@ public class KfnmtExecutionTaskLog extends UkJpaEntity implements Serializable {
 	@Version
 	@Column(name = "EXCLUS_VER")
 	private Long exclusVer;
-
-	/** The Contract Code. */
-	@Column(name = "CONTRACT_CD")
-	public String contractCode;
 
 	/* 終了状態 */
 	@Column(name = "STATUS")
@@ -98,7 +94,6 @@ public class KfnmtExecutionTaskLog extends UkJpaEntity implements Serializable {
 	public static KfnmtExecutionTaskLog toEntity(String companyId, String execItemCd, String execId, ExecutionTaskLog domain) {
 		return KfnmtExecutionTaskLog.builder()
 				.kfnmtExecTaskLogPK(new KfnmtExecutionTaskLogPK(companyId, execItemCd, execId, domain.getProcExecTask().value))
-				.contractCode(AppContexts.user().contractCode())
 				.errorBusiness(domain.getErrorBusiness().map(value -> value ? 1 : 0).orElse(null))
 				.errorSystem(domain.getErrorSystem().map(value -> value ? 1 : 0).orElse(null))
 				.errorSystemDetail(domain.getSystemErrorDetails().orElse(null))

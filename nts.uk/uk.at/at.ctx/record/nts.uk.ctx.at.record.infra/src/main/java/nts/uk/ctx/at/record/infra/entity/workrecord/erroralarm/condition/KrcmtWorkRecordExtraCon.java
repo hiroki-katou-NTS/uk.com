@@ -15,15 +15,15 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkRecordExtrac
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.TypeCheckWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ColorCode;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.NameWKRecord;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 /**
  *勤務実績の固定抽出条件 
  *
  */
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCMT_WK_RECORD_EXTRA_CON")
-public class KrcmtWorkRecordExtraCon  extends UkJpaEntity implements Serializable {
+@Table(name = "KRCMT_ALST_CHKDAY_UD")
+public class KrcmtWorkRecordExtraCon  extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Id

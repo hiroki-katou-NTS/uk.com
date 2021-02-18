@@ -221,6 +221,11 @@ public class CompanyPubImp implements ICompanyPub {
 	}
 
 	@Override
+	public String createCompanyId(String companyCode, String tenantCode) {
+		return Company.createCompanyId(companyCode, tenantCode);
+	}
+
+	@Override
 	public YearMonthPeriod getyearMonth(String cid, int year) {
 		Optional<Company> company = this.repo.getComanyInfoByCid(cid);
 

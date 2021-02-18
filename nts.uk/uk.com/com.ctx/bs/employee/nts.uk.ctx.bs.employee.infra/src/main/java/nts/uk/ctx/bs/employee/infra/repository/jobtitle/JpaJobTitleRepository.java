@@ -251,7 +251,7 @@ public class JpaJobTitleRepository extends JpaRepository implements JobTitleRepo
 
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 		
-		// TODO: Join BsymtJobSeqMaster, sort by 序列．並び順 ASC
+		// TODO: Join BsymtJobRank, sort by 序列．並び順 ASC
 
 		// Get result
 		List<BsymtJobHist> listBsymtJobHist = em.createQuery(cq).getResultList();

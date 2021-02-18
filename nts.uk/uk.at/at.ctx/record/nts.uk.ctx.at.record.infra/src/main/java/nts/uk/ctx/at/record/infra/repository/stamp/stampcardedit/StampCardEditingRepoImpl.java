@@ -10,7 +10,7 @@ import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardDigitNumber;
 import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditMethod;
 import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditing;
 import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditingRepo;
-import nts.uk.ctx.at.record.infra.entity.stamp.stampcardedit.KrcmtEditingCards;
+import nts.uk.ctx.at.record.infra.entity.stamp.stampcardedit.KrcmtCardsEditing;
 
 @Stateless
 public class StampCardEditingRepoImpl extends JpaRepository implements StampCardEditingRepo {
@@ -18,7 +18,7 @@ public class StampCardEditingRepoImpl extends JpaRepository implements StampCard
 	@Override
 	public StampCardEditing get(String companyId) {
 		
-		Optional<StampCardEditing> StampCardEditingOpt= this.queryProxy().find(companyId, KrcmtEditingCards.class).map(x -> toDomain(x));
+		Optional<StampCardEditing> StampCardEditingOpt= this.queryProxy().find(companyId, KrcmtCardsEditing.class).map(x -> toDomain(x));
 		if(!StampCardEditingOpt.isPresent()){
 			
 			return null;
@@ -30,12 +30,12 @@ public class StampCardEditingRepoImpl extends JpaRepository implements StampCard
 	
 	@Override
 	public void update(StampCardEditing domain) {
-		Optional<KrcmtEditingCards> editCardEnt = this.queryProxy().find(domain.getCompanyId(), KrcmtEditingCards.class);
+		Optional<KrcmtCardsEditing> editCardEnt = this.queryProxy().find(domain.getCompanyId(), KrcmtCardsEditing.class);
 		if (!editCardEnt.isPresent()) {
 			return;
 		}
 		
-		KrcmtEditingCards entity = editCardEnt.get();
+		KrcmtCardsEditing entity = editCardEnt.get();
 		
 		entity = toEntity(domain, entity);
 		
@@ -43,7 +43,7 @@ public class StampCardEditingRepoImpl extends JpaRepository implements StampCard
 		
 	}
 	
-	private StampCardEditing toDomain(KrcmtEditingCards ent) {
+	private StampCardEditing toDomain(KrcmtCardsEditing ent) {
 
 		return new StampCardEditing(ent.cid, new StampCardDigitNumber(ent.numberOfDigits),
 				EnumAdaptor.valueOf(ent.editingMethod, StampCardEditMethod.class));
@@ -51,7 +51,7 @@ public class StampCardEditingRepoImpl extends JpaRepository implements StampCard
 	
 	
 	
-	public KrcmtEditingCards toEntity(StampCardEditing domain, KrcmtEditingCards  entity) {
+	public KrcmtCardsEditing toEntity(StampCardEditing domain, KrcmtCardsEditing  entity) {
 		entity.editingMethod = domain.getStampMethod() == null ? 0 : domain.getStampMethod().value;
 		entity.numberOfDigits = domain.getDigitsNumber() == null ? 0 : domain.getDigitsNumber().v();
 		return entity;
