@@ -1,8 +1,10 @@
 package nts.uk.ctx.at.schedule.dom.displaysetting.functioncontrol;
 
+import java.util.HashSet;
 import java.util.List;
 
 import lombok.Value;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainValue;
 
 /**
@@ -25,8 +27,38 @@ public class CompletionMethodControl implements DomainValue {
 	private final List<FuncCtrlCompletionMethod> completionMethodControl;
 	
 	/**
-	 * 	アラームチェックコードリスト
+	 * アラームチェックコードリスト
 	 */
 	private final List<String> alarmCheckCodeList;
+	
+	/**
+	 * @param completionExecutionMethod 完了実行方法
+	 * @param completionMethodControl 完了方法制御
+	 * @param alarmCheckCodeList アラームチェックコードリスト
+	 * @return
+	 */
+	public static CompletionMethodControl create(
+			FuncCtrlCompletionExecutionMethod completionExecutionMethod,
+			List<FuncCtrlCompletionMethod> completionMethodControl,
+			List<String> alarmCheckCodeList ) {
+		
+		if ( completionMethodControl.size() != new HashSet<>(completionMethodControl).size() ) {
+			throw new RuntimeException();
+		}
+		
+		if ( completionExecutionMethod.isSettingBefore()  ) {
+			
+			if ( completionMethodControl.isEmpty() ) {
+				throw new BusinessException("Msg_1690", "KSM011_82");
+			}
+			
+			if ( completionMethodControl.contains(FuncCtrlCompletionMethod.AlarmCheck) && 
+					alarmCheckCodeList.isEmpty() ) {
+				throw new BusinessException("Msg_1690", "KSM011_87");
+			}
+		}
+		
+		return new CompletionMethodControl(completionExecutionMethod, completionMethodControl, alarmCheckCodeList);
+	}
 	
 }

@@ -73,11 +73,12 @@ public class ScheModifyWorkplaceFunctionCtrl implements DomainAggregate {
 		}
 		
 		if ( useDisplayFormat.isEmpty() ) {
-			// TODO inv-4
-			throw new BusinessException("Msg_2125");
+			throw new BusinessException("Msg_1690", "KSM011_76");
 		}
 		
-		// TODO inv-5
+		if ( useCompletionAtr.isUse() && !completionMethodControl.isPresent() ) {
+			throw new BusinessException("Msg_1690", "KSM011_78");
+		}
 		
 		return new ScheModifyWorkplaceFunctionCtrl(useDisplayPeriod, useDisplayFormat, pageCanBeStarted, useCompletionAtr, completionMethodControl);
 		
