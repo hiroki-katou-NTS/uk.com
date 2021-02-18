@@ -66,7 +66,7 @@ public class SelectFunctionFinder {
 			dto.setUseAggDeformedSetting(optAggSetting.get().getUseDeformedLabor().value);
 		}
 
-//		dto.setOptionLicenseCustomize(AppContexts.optionLicense().customize().ootsuka());
+		dto.setOptionLicenseCustomize(AppContexts.optionLicense().customize().ootsuka());
 
 		// ドメインモデル「臨時勤務利用管理」を取得する
 		Optional<TemporaryWorkUseManage> optTempWorkUse = tempWorkRepo.findByCid(companyId);

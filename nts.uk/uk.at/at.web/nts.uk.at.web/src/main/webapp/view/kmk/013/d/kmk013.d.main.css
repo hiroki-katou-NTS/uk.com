@@ -22,24 +22,6 @@
 	margin-top: 8px;
 }
 
-hr {
-	margin-left: 24px;
-}
-
-#d3_7, #d4_7 {
-	margin-left: 95px;
-}
-
-.ntsRadioBox {
-	margin-left: 52px;
-	padding-top: 2px;
-}
-
-#left-table {
-	width: 400px;
-	padding-left: 30px;
-	vertical-align: top;
-}
 
 #right-table {
 	width: 400px;
@@ -71,8 +53,8 @@ hr {
 }
 
 .d7_label {
-	padding: 10px 30px;
-	margin-left: 23px;
+	padding-left: 30px;
+	display: inline-block;
 }
 
 #dateInput {
@@ -81,4 +63,50 @@ hr {
 div[tabindex]:focus {
 	box-shadow: 0 0 1px 1px #0096f2;
 	border-radius: 2px;
+}
+
+#D3 {
+	float: left;
+	display: block;
+	width: 450px;
+}
+
+#D4 {
+	display: inline-block;
+}
+
+#D5 {
+	clear: both;
+}
+
+#D5_2 {
+	width: 400px;
+}
+
+#D6_1, #D3_1, #D4_1, #D5_1, #D7_1  {
+	display: block;
+}
+
+#D6_2 {
+	width: 200px;
+}
+
+#D4_10 {
+	width: 200px;
+}
+
+.group-radio {
+	padding-left: 30px;
+}
+
+.group-radio .ntsRadioBox {
+	padding: 3px 0;
+}
+
+#D3_4, #D4_4 {
+	padding-left: 35px;
+}
+
+#D5 .nts-input {
+	width: 40px;
 }
