@@ -907,7 +907,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 		displayInfoOverTime.setInfoWithDateApplicationOp(infoOptional);
 		displayInfoOverTime.setOvertimeAppAtr(appOverTime.getOverTimeClf());
 		displayInfoOverTime.setIsProxy(false);
-		displayInfoOverTime.setCalculatedFlag(CalculatedFlag.UNCALCULATED);
+		displayInfoOverTime.setCalculatedFlag(CalculatedFlag.CALCULATED);
 		CalculationResult calculationResult = new CalculationResult();
 		calculationResult.setOverStateOutput(overStateOutput);
 		displayInfoOverTime.setCalculationResultOp(Optional.of(calculationResult));
