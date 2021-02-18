@@ -23,9 +23,9 @@
 			<ui:define name="content">
 				<div id="functions-area">
           <a tabindex="1" class="goback" data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }, text: $vm.$i18n('KMT001_11')"></a>
-					<button tabindex="1" data-bind="text: $vm.$i18n('KMT001_12'), click: AddNewWork, enable: $root.errors.isEmpty" />
-					<button tabindex="2" class="proceed" data-bind="text: $vm.$i18n('KMT001_12'), click: RegistrationWork" />
-					<button tabindex="3" class="danger" data-bind="text: $vm.$i18n('KMT001_13'), click: DeleteWork" />
+					<button tabindex="1" data-bind="text: $vm.$i18n('KMT001_12'), click: addNewRegistrationWork, enable: $root.errors.isEmpty" />
+					<button tabindex="2" class="proceed" data-bind="text: $vm.$i18n('KMT001_12'), click: saveRegistrationWork" />
+					<button tabindex="3" class="danger" data-bind="text: $vm.$i18n('KMT001_13'), click: deleteRegistrationWork" />
 				</div>
 				<div id="contents-area">
 					<div class="wrapper">
@@ -38,14 +38,10 @@
 									<div class="cell valign-center">
 										<div tabindex="5" class="combo-box" data-bind="ntsComboBox: {
 											name: '#[KMT001_15]',
-											options: ko.observableArray([
-												{ code: '001', name: '作業 1' },
-												{ code: '002', name: '作業 2' },
-												{ code: '003', name: '作業 3' },
-											]),
+											options: workList,
 											optionsValue: 'code',
 											visibleItemsCount: 5,
-											value: selectedCode,
+											value: selectedWorkCode,
 											optionsText: 'name',
 											editable: false,
 											enable: true,
@@ -55,18 +51,18 @@
 									</div>
 								</div>
 								<div tabindex="6" data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'code', comId: 'multi-list', 
-									items: workList, selected: currentCodeList, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />
+									items: registrationWorkList, selected: currentCode, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />
 				
 								<table tabindex="6" id="multi-list" data-bind="ntsGridList: {
 										height: 380,
-										options:  workList,
+										options:  registrationWorkList,
 										optionsValue: 'code',
 										columns: ko.observableArray([
-												{ headertext: $i18n('KMT001_18'), key: 'code', width: 200 },
-												{ headertext: $i18n('KMT001_19'), key: 'name', width: 122 }
+												{ headertext: $i18n('KMT001_18'), key: 'code', width: 190 },
+												{ headertext: $i18n('KMT001_19'), key: 'name', width: 132, columnCssClass: 'limited-label', formatter: _.escape  }
 										]),
 										multiple: false,
-										value: currentCodeList
+										value: currentCode
 									}"></table>
 							</div>
 						</div>
@@ -78,12 +74,13 @@
 									</div>
 									<div class="cell valign-center">
 										<div>
-											<input tabindex="7" data-bind="ntsTextEditor: {
+											<input id="KMT001_21" tabindex="7" data-bind="ntsTextEditor: {
 												value: model().code,																			
 												required: true,
 												enable: true,
 												constraint: 'TaskCode',
-												name: '#[KMT001_21]'
+												name: '#[KMT001_21]',
+												enable: isNewMode
 											}" />
 										</div>
 									</div>
@@ -183,7 +180,7 @@
 										<div class="cell valign-center">
 											<div>
 												<input tabindex="14" data-bind="ntsTextEditor: {
-													value: $parent.model().externalCode[$index()],
+													value: $parent.model().externalCode()[$index()],
 													required: false,
 													enable: true,
 													name: '#[' + code + ']'
