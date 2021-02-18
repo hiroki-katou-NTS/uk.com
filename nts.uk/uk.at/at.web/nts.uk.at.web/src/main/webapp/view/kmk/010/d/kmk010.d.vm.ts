@@ -162,9 +162,9 @@ module nts.uk.at.view.kmk010.d {
           data.superHolidayOccurrenceUnit,
         );
 
-        if (data.roundingTime === 4 || data.roundingTime === 6) {
+        //if (data.roundingTime === 4 || data.roundingTime === 6) {
           vm.vacationConversion().unit.valueHasMutated();
-        }
+        //}
 
         vm.focusControl();
         vm.$blockui('hide');

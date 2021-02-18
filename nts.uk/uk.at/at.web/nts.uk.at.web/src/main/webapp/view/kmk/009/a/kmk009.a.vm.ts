@@ -690,6 +690,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                             let dailyAttendanceItem: Array<DailyAttendanceItemDto> = _.filter(dataRes, function(obj) { return obj.attendanceItemId == atdSelected });
                             if (_.isUndefined(atdSelected) || _.isEmpty(atdSelected) || _.isUndefined(dailyAttendanceItem)) {
                                 self.attendanceModel.update(null, null);
+                                self.isAllowShowAttendance(false);
                             } else {
                                 self.attendanceModel.update(dailyAttendanceItem[0].attendanceItemId, dailyAttendanceItem[0].attendanceItemName);                                
                                 self.isAllowShowAttendance( dailyAttendanceItem[0].attendanceItemId < 193 || dailyAttendanceItem[0].attendanceItemId > 202);
@@ -699,7 +700,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                         }).fail(() => {
                             nts.uk.ui.block.clear();
                         });
-                    }
+                    } 
                 });
             });
         }
