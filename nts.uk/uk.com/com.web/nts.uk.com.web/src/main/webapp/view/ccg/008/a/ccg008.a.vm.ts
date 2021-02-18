@@ -48,40 +48,42 @@ module nts.uk.com.view.ccg008.a.screenModel {
       const toppageCode = (itemsUrl as any).toppagecode ? (itemsUrl as any).toppagecode : "";
       vm.$blockui('grayout');
       vm.$ajax("com", API.getLoginUser).then((user) => {
-        vm.$ajax("com", API.getSetting).then((res) => {
-          if (res.reloadInterval) {
-            vm.reloadInterval(res.reloadInterval);
-          }
-          if (user && res) {
-            vm.isShowButtonSetting(true);
-          }
-          vm.topPageSetting = res;
-          //var fromScreen = "login";
-          vm.$ajax("com", API.getCache).then((data: any) => {
-            character.save("cache", data).then(() => {
-              vm.topPageCode(toppageCode);
-              character.restore("cache").then((obj: any) => {
-                if (obj) {
-                  let endDate = moment.utc(obj.endDate, "YYYY/MM/DD").add(vm.topPageSetting.switchingDate, 'days').format("YYYY/MM/DD");
-                  if (moment.utc(endDate, 'YYYY/MM/DD')
-                      .isBefore(moment.utc(moment.utc().format('YYYY/MM/DD'), 'YYYY/MM/DD'))
-                  ) {
-                    vm.selectedSwitch(2);
-                    obj.currentOrNextMonth = 2;
+        if(__viewContext.user.isEmployee) {
+          vm.$ajax("com", API.getSetting).then((res) => {
+            if (res.reloadInterval) {
+              vm.reloadInterval(res.reloadInterval);
+            }
+            if (user && res) {
+              vm.isShowButtonSetting(true);
+            }
+            vm.topPageSetting = res;
+            //var fromScreen = "login";
+            vm.$ajax("com", API.getCache).then((data: any) => {
+              character.save("cache", data).then(() => {
+                vm.topPageCode(toppageCode);
+                character.restore("cache").then((obj: any) => {
+                  if (obj) {
+                    let endDate = moment.utc(obj.endDate, "YYYY/MM/DD").add(vm.topPageSetting.switchingDate, 'days').format("YYYY/MM/DD");
+                    if (moment.utc(endDate, 'YYYY/MM/DD')
+                        .isBefore(moment.utc(moment.utc().format('YYYY/MM/DD'), 'YYYY/MM/DD'))
+                    ) {
+                      vm.selectedSwitch(2);
+                      obj.currentOrNextMonth = 2;
+                    } else {
+                      vm.selectedSwitch(1);
+                    }
+                    vm.closureSelected(obj.closureId);
+                    nts.uk.ui.windows.setShared("cache", obj);
                   } else {
-                    vm.selectedSwitch(1);
+                    vm.closureSelected(1);
+                    vm.selectedSwitch(null);
                   }
-                  vm.closureSelected(obj.closureId);
-                  nts.uk.ui.windows.setShared("cache", obj);
-                } else {
-                  vm.closureSelected(1);
-                  vm.selectedSwitch(null);
-                }
+                });
               });
             });
+          vm.dataToppage(null);
           });
-        vm.dataToppage(null);
-        });
+        }
       }).always(() => vm.$blockui("clear"));
 
       // 会社の締めを取得する - Lấy closure company
