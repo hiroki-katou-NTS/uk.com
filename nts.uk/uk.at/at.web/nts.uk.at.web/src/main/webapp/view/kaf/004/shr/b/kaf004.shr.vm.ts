@@ -99,7 +99,7 @@ module nts.uk.at.view.kaf004_ref.shr.b.viewmodel {
                                 <!-- A6_16 -->
                                 <span>
                                     <input data-bind="ntsTimeWithDayEditor: {
-                                name: $i18n('KAF004_68'),
+                                name: $i18n('KAF004_66'),
                                 value: $parent.workManagement.workTime2,
                                 option: {timeWithDay: true, width: '90'},
                                 constraint: 'TimeWithDayAttr',
