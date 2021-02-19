@@ -107,13 +107,13 @@ export class KafS05Component extends KafS00ShrComponent {
         return ((!self.c15 && value1 == NotUseAtr.USE) || (self.c15 && value2 == NotUseAtr.USE));
     }
     // ※表3 = ○　OR　※表3-1-1 = ○
-    public get c3_1() {
-        const self = this;
+    // public get c3_1() {
+    //     const self = this;
 
-        return self.c3_1_1 || self.c3;
-    }
+    //     return self.c3_1_1 || self.c3;
+    // }
     //  c3 AND「残業申請の表示情報．申請表示情報．申請表示情報(基準日関係なし)．複数回勤務の管理」＝true"
-    public get c3_2() {
+    public get c3_1() {
         const self = this;
         let model = self.model as Model;
         let value = _.get(model, 'displayInfoOverTime.appDispInfoStartup.appDispInfoNoDateOutput.managementMultipleWorkCycles');
@@ -544,7 +544,7 @@ export class KafS05Component extends KafS00ShrComponent {
             if (step1.getWorkType() && self.c3) {
                 appOverTimeInsert.workInfoOp = {} as WorkInformation;
                 appOverTimeInsert.workInfoOp.workType = step1.getWorkType();
-                appOverTimeInsert.workInfoOp.workTime = step1.getWorkTime();
+                appOverTimeInsert.workInfoOp.workTime = step1.getWorkTime() == '' ? null : step1.getWorkTime();
             }
             appOverTimeInsert.workHoursOp = [] as Array<TimeZoneWithWorkNo>;
             {   
@@ -560,7 +560,7 @@ export class KafS05Component extends KafS00ShrComponent {
                         appOverTimeInsert.workHoursOp.push(timeZone);
                     }
                 }
-                if (self.c3_2) {
+                if (self.c3_1) {
                     let start = _.get(step1.getWorkHours2(), 'start');
                     let end = _.get(step1.getWorkHours2(), 'end');
                     if (_.isNumber(start) && _.isNumber(end)) {
@@ -573,7 +573,7 @@ export class KafS05Component extends KafS00ShrComponent {
                     }
                 }
             }
-            if (self.c3_1) {
+            if (self.c3) {
                 appOverTimeInsert.breakTimeOp = [] as Array<TimeZoneWithWorkNo>;
                 let breakTimes = step1.getBreakTimes() as Array<BreakTime>;
                 _.forEach(breakTimes, (item: BreakTime, index: number) => {

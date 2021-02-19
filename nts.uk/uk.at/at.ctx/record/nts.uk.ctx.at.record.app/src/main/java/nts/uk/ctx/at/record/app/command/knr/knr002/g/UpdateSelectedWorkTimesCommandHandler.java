@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.app.command.knr.knr002.g;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,7 +40,7 @@ public class UpdateSelectedWorkTimesCommandHandler extends CommandHandler<Update
 		List<WorkTimeCode> selectedWorkTimes = command.getSelectedWorkTimes();
 		// 1. get*(契約コード、就業情報端末コード)
 		Optional<TimeRecordReqSetting> timeRecordReqSetting = this.timeRecordReqSettingRepository
-																  .getTimeRecordReqSetting(terminalCode, contractCode);
+																  .getTimeRecordWorkTime(terminalCode, contractCode);
 		if (!timeRecordReqSetting.isPresent())
 			return;
 		TimeRecordReqSetting timeRecordReqSettingVal = timeRecordReqSetting.get();
@@ -49,9 +50,9 @@ public class UpdateSelectedWorkTimesCommandHandler extends CommandHandler<Update
 																timeRecordReqSettingVal.getContractCode(),
 																timeRecordReqSettingVal.getCompanyId(),
 																timeRecordReqSettingVal.getCompanyCode(),
-																timeRecordReqSettingVal.getEmployeeIds(),
-																timeRecordReqSettingVal.getBentoMenuFrameNumbers(),
-																timeRecordReqSettingVal.getWorkTypeCodes())
+																Collections.emptyList(),
+																Collections.emptyList(),
+																Collections.emptyList())
 														 .workTime(selectedWorkTimes)
 														 .build();
 		// 3. persist

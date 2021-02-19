@@ -39,7 +39,7 @@ public class KfndtTrSignalAbNormal extends UkJpaEntity implements Serializable {
 	
 	public static KfndtTrSignalAbNormal toEntity(EmpInfoTerComAbPeriod domain) {
 		return new KfndtTrSignalAbNormal(
-				new KfndtTrSignalAbNormalPK(domain.getContractCode().v(),Integer.parseInt(domain.getEmpInfoTerCode().v()), domain.getLastComSuccess()),
+				new KfndtTrSignalAbNormalPK(domain.getContractCode().v(), domain.getEmpInfoTerCode().v(), domain.getLastComSuccess()),
 				domain.getLastestComSuccess());
 	}
 	
