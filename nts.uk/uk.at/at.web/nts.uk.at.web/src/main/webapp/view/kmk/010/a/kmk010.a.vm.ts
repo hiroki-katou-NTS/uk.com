@@ -69,7 +69,7 @@ module nts.uk.at.view.kmk010.a {
                       // find all rounding sub
                     service.findAllOvertimeRoundingSub().done(function(lstRoundingSub) {
                         self.lstRoundingSub = lstRoundingSub;
-                        self.updateSelectUnitRounding(self.superHD60HConMedModel.roundingTime());
+                        //self.updateSelectUnitRounding(self.superHD60HConMedModel.roundingTime());
                     });
                 });
                 
@@ -110,9 +110,8 @@ module nts.uk.at.view.kmk010.a {
                         self.applyChangeEnableInputRate();
                         self.updateLanguage();
 
-                        self.updateSelectUnitRounding(dataOutsideOTSetting.roundingUnit);
-                        self.outsideOTSettingModel.roundingUnit.valueHasMutated();
-
+                        //self.updateSelectUnitRounding(dataOutsideOTSetting.roundingUnit);                       
+                        //self.outsideOTSettingModel.roundingUnit.valueHasMutated();
                         nts.uk.ui.block.clear();
                         dfd.resolve(self);
                     });
@@ -568,9 +567,9 @@ module nts.uk.at.view.kmk010.a {
                 this.note = ko.observable('');
                 this.calculationMethod = ko.observable(0);
                 this.overtimes = ko.observableArray([]);
-                this.breakdownItems = ko.observableArray([]);
-                this.roundingUnit = ko.observable(0);
+                this.breakdownItems = ko.observableArray([]);                
                 this.roundingProcess = ko.observable(0);
+                this.roundingUnit = ko.observable(0);
             }
 
             updateData(dto: OutsideOTSettingDto) {
@@ -590,8 +589,8 @@ module nts.uk.at.view.kmk010.a {
                     modelBRD.updateData(overtimeBRD, true);
                     dataBreakdownItemModel.push(modelBRD);
                 }
-                this.breakdownItems(dataBreakdownItemModel);
-                this.roundingUnit(dto.roundingUnit);
+                this.breakdownItems(dataBreakdownItemModel);                
+                this.roundingUnit(dto.roundingUnit);                
                 this.roundingProcess(dto.roundingProcess);
 
             }
