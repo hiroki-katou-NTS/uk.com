@@ -3,18 +3,22 @@ package nts.uk.ctx.at.shared.app.command.worktime.common.dto;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.worktime.common.RoundingSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.RoundingTimeGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.RoundingTimeSetMemento;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
+@AllArgsConstructor
+@NoArgsConstructor
 public class RoundingTimeDto implements RoundingTimeGetMemento, RoundingTimeSetMemento {
 
-	private Integer attendanceMinuteLaterCalculate;
+	public Integer attendanceMinuteLaterCalculate;
 	
-	private Integer leaveWorkMinuteAgoCalculate;
+	public Integer leaveWorkMinuteAgoCalculate;
 	
-	private List<RoundingSetDto> roundingSets;
+	public List<RoundingSetDto> roundingSets;
 	
 	
 	@Override

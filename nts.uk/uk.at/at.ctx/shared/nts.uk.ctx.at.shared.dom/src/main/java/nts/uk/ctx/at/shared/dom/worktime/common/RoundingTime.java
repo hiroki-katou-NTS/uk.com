@@ -40,8 +40,8 @@ public class RoundingTime {
 	 */
 	public RoundingTime(RoundingTimeGetMemento memento) {
 		super();
-		this.attendanceMinuteLaterCalculate = NotUseAtr.NOT_USE;//memento.getAttendanceMinuteLaterCalculate();
-		this.leaveWorkMinuteAgoCalculate = NotUseAtr.NOT_USE;//memento.getLeaveWorkMinuteAgoCalculate();
+		this.attendanceMinuteLaterCalculate = memento.getAttendanceMinuteLaterCalculate();
+		this.leaveWorkMinuteAgoCalculate = memento.getLeaveWorkMinuteAgoCalculate();
 		this.roundingSets = Arrays.asList(new RoundingSet(new InstantRounding(FontRearSection.AFTER, RoundingTimeUnit.FIFTEEN), Superiority.ATTENDANCE),
 				new RoundingSet(new InstantRounding(FontRearSection.AFTER, RoundingTimeUnit.FIFTEEN), Superiority.GO_OUT),
 				new RoundingSet(new InstantRounding(FontRearSection.AFTER, RoundingTimeUnit.FIFTEEN), Superiority.OFFICE_WORK),
