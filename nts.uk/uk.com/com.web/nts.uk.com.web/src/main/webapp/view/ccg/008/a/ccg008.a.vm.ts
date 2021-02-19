@@ -301,7 +301,7 @@ module nts.uk.com.view.ccg008.a.screenModel {
 
 		getToppage(data: DataTopPage, screen: string = 'other') {
 			const vm = this;
-			const { topPageSetting } = vm;
+			const { topPageSetting, closureId, currentOrNextMonth } = vm;
 			const { displayTopPage, standardMenu } = data;
 
 			const loadWidget = () => {
@@ -310,13 +310,17 @@ module nts.uk.com.view.ccg008.a.screenModel {
 				}
 
 				const { layout2, layout3, urlLayout1, layoutDisplayType } = displayTopPage;
+
 				const layout2Widget = (settings: WidgetSettingDto[]) => {
 					return _
 						.chain(settings)
 						.orderBy(['order', 'asc'])
 						.map(({ widgetType }) => ({
 							name: getWidgetName(widgetType),
-							params: {}
+							params: {
+								closureId: ko.unwrap<number>(closureId),
+								currentOrNextMonth: ko.unwrap<1 | 2>(currentOrNextMonth)
+							}
 						}))
 						.value();
 				};
