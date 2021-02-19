@@ -696,7 +696,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 				date,
 				workTypeCode.orElse(null),
 				workTimeCode.orElse(null),
-				timeZones,
+				Collections.emptyMap(), //timeZones,
 				breakTimes.stream().map(x -> x.getStart().v()).collect(Collectors.toList()),
 				breakTimes.stream().map(x -> x.getEnd().v()).collect(Collectors.toList()),
 				Collections.emptyList(),
