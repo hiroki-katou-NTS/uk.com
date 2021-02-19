@@ -45,7 +45,10 @@ public class BreakTimeOfDailyAttd implements DomainObject {
 	 * @return
 	 */
 	public boolean isDuplicatedWithBreakTime(TimeSpanForCalc target) {
-		return this.breakTimeSheets.stream().anyMatch( breakTimeSheet -> breakTimeSheet.isDuplicatedWithTimeSpan(target));
+		
+		return this.breakTimeSheets.stream()
+				.map( sheet -> sheet.convertToTimeSpanForCalc() )
+				.anyMatch( timespan -> timespan.checkDuplication(target).isDuplicated() );
 	}
 	
 }

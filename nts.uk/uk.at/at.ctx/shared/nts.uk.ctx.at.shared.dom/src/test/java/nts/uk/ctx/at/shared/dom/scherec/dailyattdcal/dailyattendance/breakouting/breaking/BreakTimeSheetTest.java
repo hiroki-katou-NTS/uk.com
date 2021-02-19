@@ -39,26 +39,4 @@ public class BreakTimeSheetTest {
 		assertThat( result.getEnd().minute() ).isEqualTo( 0 );
 	}
 	
-	@Test
-	public void testIsDuplicatedWithTimeSpan_true() {
-		TimeSpanForCalc timeSpan = new TimeSpanForCalc(
-				TimeWithDayAttr.hourMinute(12, 30), 
-				TimeWithDayAttr.hourMinute(14, 0));
-		
-		boolean result = target.isDuplicatedWithTimeSpan(timeSpan);
-		
-		assertThat( result ).isTrue();
-	}
-	
-	@Test
-	public void testIsDuplicatedWithTimeSpan_false() {
-		TimeSpanForCalc timeSpan = new TimeSpanForCalc(
-				TimeWithDayAttr.hourMinute(13, 0), 
-				TimeWithDayAttr.hourMinute(14, 0));
-		
-		boolean result = target.isDuplicatedWithTimeSpan(timeSpan);
-		
-		assertThat( result ).isFalse();
-	}
-
 }
