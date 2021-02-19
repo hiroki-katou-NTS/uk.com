@@ -87,7 +87,6 @@ public class KrcmtEralstCndgrp extends ContractUkJpaEntity implements Serializab
 	@OneToOne(cascade = CascadeType.ALL, mappedBy="krcmtErAlAtdItemCon", orphanRemoval=true)
 	public KrcstErAlSingleFixed erAlSingleFixed;
 
-	
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval=true, fetch = FetchType.LAZY)
 	@JoinColumns({
 			@JoinColumn(name = "CONDITION_GROUP_ID", referencedColumnName = "CONDITION_GROUP_ID", nullable = false),
@@ -101,12 +100,13 @@ public class KrcmtEralstCndgrp extends ContractUkJpaEntity implements Serializab
 	@JoinColumns({ @JoinColumn(name = "CONDITION_GROUP_ID", referencedColumnName = "CONDITION_GROUP_ID", insertable = false, updatable = false) })
 	public KrcmtEralstCndexpiptchk krcstErAlConGroup;
 
+
 	@OneToOne
 	@JoinColumns({ 
 		@JoinColumn(name = "CONDITION_GROUP_ID", referencedColumnName = "ERAL_CHECK_ID", insertable = false, updatable = false),
 		@JoinColumn(name = "ATD_ITEM_CON_NO", referencedColumnName = "COND_NO", insertable = false, updatable = false)})
-	public KrcmtAlstChkmltUd krcmtMulMonAlarmCheck;
-
+	public KrcmtAlstChkmltUd KrcmtAlstChkmltUd;
+	
 	@Override
 	protected Object getKey() {
 		return this.krcmtErAlAtdItemConPK;
