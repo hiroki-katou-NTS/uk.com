@@ -286,7 +286,6 @@ module nts.uk.com.view.ccg003.a {
       const vm = this;
       vm.$validate('#ccg003-A4_2').then(valid => {
         if (!valid) {
-          nts.uk.ui.errors.show();
           return;
         }
         vm.$blockui('grayoutView');
