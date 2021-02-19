@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
@@ -34,6 +35,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepo
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecordRepository;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.CanEngravingUsed;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.MakeUseJudgmentResults;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampFunctionAvailableService;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
@@ -116,9 +118,20 @@ public class CheckCanUseSmartPhoneStampCommandHandler extends CommandHandlerWith
 		
 		Optional<String> cardNumber = cradResultOpt.map(x -> x.getCardNumber());
 		
-		return new CheckCanUseSmartPhoneStampResult(cardNumber.isPresent() ? cardNumber.get() : null,
-				jugResult.getUsed().value);
-
+		// EA3833
+		CanEngravingUsed used = jugResult.getUsed();
+		
+		// 打刻機能利用不可
+		if (used.equals(CanEngravingUsed.NOT_PURCHASED_STAMPING_OPTION)) {
+			throw new BusinessException("Msg_1644");
+		}
+		
+		// 打刻カード未登録
+		if (used.equals(CanEngravingUsed.UNREGISTERED_STAMP_CARD)) {
+			throw new BusinessException("Msg_1619");
+		}
+		
+		return new CheckCanUseSmartPhoneStampResult(cardNumber.isPresent() ? cardNumber.get() : null, used.value);
 	}
 
 	@AllArgsConstructor
