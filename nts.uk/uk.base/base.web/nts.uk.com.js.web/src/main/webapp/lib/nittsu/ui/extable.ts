@@ -4373,7 +4373,12 @@ module nts.uk.ui.exTable {
                         let stringValidator = new nts.uk.ui.validation.StringValidator(vtor.columnText, vtor.primitiveValue, {});
                         let res = stringValidator.validate(value);
                         isValid = res.isValid;
-                        formatValue = res.parsedValue;
+                        if (vtor.textFormat) {
+                            formatValue = nts.uk.text.formatCode(value, vtor.textFormat.padSide, vtor.textFormat.padChar, vtor.textFormat.length);
+                        } else {
+                            formatValue = res.parsedValue;
+                        }
+                        
                         message = res.errorMessage;
                     } else {
                         isValid = true;
@@ -4438,7 +4443,7 @@ module nts.uk.ui.exTable {
          */
         export function mandate($grid: HTMLElement, columnKey: any, innerIdx: any) {
             let visibleColumns = helper.getVisibleColumnsOn($grid);
-            let actValid, dataType, max, min, required, columnText, primitiveValue;
+            let actValid, dataType, max, min, required, columnText, primitiveValue, textFormat;
             _.forEach(visibleColumns, function(col: any) {
                 if (col.key === columnKey) {
                     if (!col.dataType) return false;
@@ -4461,6 +4466,7 @@ module nts.uk.ui.exTable {
                     required = col.required;
                     columnText = col.headerText;
                     primitiveValue = col.primitiveValue;
+                    textFormat = col.textFormat;
                     return false; 
                 }
             });
@@ -4472,7 +4478,8 @@ module nts.uk.ui.exTable {
                     min: min,
                     required: required,
                     columnText: columnText,
-                    primitiveValue: primitiveValue
+                    primitiveValue: primitiveValue,
+                    textFormat: textFormat
                 };
         }
         
