@@ -15,8 +15,6 @@ module nts.uk.at.kdp003.p {
 
 		created() {
 			const vm = this;
-            vm.searchNotice();
-
 			vm.startDate.subscribe((value) => {
 				vm.dateValue().startDate = value;
 				vm.dateValue.valueHasMutated();
@@ -26,7 +24,6 @@ module nts.uk.at.kdp003.p {
 				vm.dateValue().endDate = value;
 				vm.dateValue.valueHasMutated();
 			});
-
 		}
 
 		mounted() {
@@ -66,17 +63,17 @@ module nts.uk.at.kdp003.p {
 
 	export interface DisplayNotice {
 		id: string;
-		period: string; //期間
-		message: string; //メッセージの内容
+		period: string;
+		message: string;
 	}
 
 	export interface MessageNotice {
-		creatorID: string; //作成者ID
-		inputDate: string; //入力日
-		modifiedDate: string; //更新日
-		startDate: string; //開始日
-		endDate: string; //終了日
-		notificationMessage: string; //メッセージの内容
+		creatorID: string;
+		inputDate: string;
+		modifiedDate: string;
+		startDate: string;
+		endDate: string;
+		notificationMessage: string;
 	}
 
 }
