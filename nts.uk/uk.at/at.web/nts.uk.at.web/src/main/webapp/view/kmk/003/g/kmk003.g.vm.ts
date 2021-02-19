@@ -12,7 +12,6 @@ module nts.uk.at.view.kmk003.g {
             roundingValue: KnockoutObservable<number>;
 
             calcMethodLst: KnockoutObservableArray<any>;
-            fixedCalcLst: KnockoutObservableArray<any>;
             specialLstRest: KnockoutObservableArray<any>;
             useRest: KnockoutObservable<boolean>;
 
@@ -40,12 +39,6 @@ module nts.uk.at.view.kmk003.g {
                     new RadioBoxModel(1, nts.uk.resource.getText('KMK003_236')),
                     new RadioBoxModel(2, nts.uk.resource.getText('KMK003_237'))
                 ]);
-
-
-                self.fixedCalcLst = ko.observableArray([
-                    new RadioBoxModel(0, nts.uk.resource.getText('KMK003_241')),
-                    new RadioBoxModel(1, nts.uk.resource.getText('KMK003_243'))
-                ])
 
                 self.specialLstRest = ko.observableArray([
                     new RadioBoxModel(0, nts.uk.resource.getText('KMK003_235')),
@@ -102,14 +95,14 @@ module nts.uk.at.view.kmk003.g {
                     return;
                 }
                 //check mode
-                if (dataObject.workForm == EnumWorkForm.FLEX || dataObject.isFlow )// flex or flow
+                if (dataObject.workForm == EnumWorkForm.FLEX || dataObject.isFlow)// flex or flow
                 {
                     //check if Flow
                     if (dataObject.isFlow) {
                         _self.isFlow(true);
                     }
                     //check if flex
-                    else{
+                    else {
                         _self.isFlex(true);
                     }
                     dataObject.lstEnum.roundingTimeUnit.forEach(function (item: any, index: number) {
@@ -138,7 +131,7 @@ module nts.uk.at.view.kmk003.g {
                 return arrayRounding;
             }
 
-            private getSpecialRounding(dataObject: any) : any {
+            private getSpecialRounding(dataObject: any): any {
                 let arrayRounding: any = [];
                 dataObject.lstEnum.rounding.forEach(function (item: any, index: number) {
                     if (index != 2) {
@@ -153,35 +146,33 @@ module nts.uk.at.view.kmk003.g {
              */
             public save(): void {
                 let _self = this;
-                let data:any = _self.dataObject();
+                let data: any = _self.dataObject();
                 let returnData: any;
-                if ((data.workForm == EnumWorkForm.FLEX) || ((data.workForm == EnumWorkForm.REGULAR) && (data.settingMethod == SettingMethod.FLOW)))//case flex
-                {
-                    if (_self.isFlex()) { // flex
-                        returnData = {
-                            //default values
-                            useRest: _self.useRest(),
-                            roundUnit: 0,
-                            roundType: 0,
-                            calcMethod: _self.selectedCalcMethod(),
-                            fixedCalcMethod: _self.selectedFixedCalc(),
-                            usePrivateGoOutRest: _self.usePrivateGoOutRest(),
-                            useAssoGoOutRest: _self.useAssoGoOutRest()
-                        };
-                    } else { // flow
-                        returnData = {
-                            useRest: _self.useRest(),
-                            roundUnit: _self.unitValue(),
-                            roundType: _self.roundingValue(),
-                            calcMethod: _self.selectedCalcMethod(),
-                            fixedCalcMethod: _self.selectedFixedCalc(),
-                            usePrivateGoOutRest: _self.usePrivateGoOutRest(),
-                            useAssoGoOutRest: _self.useAssoGoOutRest()
-                        };
-                    }
+
+                if (_self.isFlex()) { // flex
+                    returnData = {
+                        //default values
+                        useRest: _self.useRest(),
+                        roundUnit: 0,
+                        roundType: 0,
+                        calcMethod: _self.selectedCalcMethod(),
+                        fixedCalcMethod: _self.selectedFixedCalc(),
+                        usePrivateGoOutRest: _self.usePrivateGoOutRest(),
+                        useAssoGoOutRest: _self.useAssoGoOutRest()
+                    };
+                } else if (_self.isFlow()) { // flow
+                    returnData = {
+                        useRest: _self.useRest(),
+                        roundUnit: _self.unitValue(),
+                        roundType: _self.roundingValue(),
+                        calcMethod: _self.selectedCalcMethod(),
+                        fixedCalcMethod: _self.selectedFixedCalc(),
+                        usePrivateGoOutRest: _self.usePrivateGoOutRest(),
+                        useAssoGoOutRest: _self.useAssoGoOutRest()
+                    };
                 } else { //other
                     returnData = {
-                        restTimeCalcMethod: _self.selectedCalcMethod()
+                        fixedCalcMethod: _self.selectedFixedCalc()
                     };
                 }
                 nts.uk.ui.windows.setShared("KMK003_DIALOG_G_OUTPUT_DATA", returnData);
@@ -191,7 +182,7 @@ module nts.uk.at.view.kmk003.g {
             /**
              * Close
              */
-            public close(): void {
+            public close() : void {
                 let self = this;
                 nts.uk.ui.windows.setShared("KMK003_DIALOG_G_OUTPUT_DATA", self.dataObject());
                 nts.uk.ui.windows.close();

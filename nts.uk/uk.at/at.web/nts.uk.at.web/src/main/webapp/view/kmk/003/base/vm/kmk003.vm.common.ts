@@ -1558,7 +1558,7 @@ module nts.uk.at.view.kmk003.a {
                     }
 
                     return {
-                        attendanceMinuteLaterCalculate: this.attendanceMinuteLaterCalculate() ? NotUseAtr.USE : null,
+                        attendanceMinuteLaterCalculate: this.attendanceMinuteLaterCalculate() ? NotUseAtr.USE : NotUseAtr.NOT_USE,
                         leaveWorkMinuteAgoCalculate: this.leaveWorkMinuteAgoCalculate() ? NotUseAtr.USE : NotUseAtr.NOT_USE,
                         roundingSets: roundingSets
                     };

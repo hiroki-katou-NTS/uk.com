@@ -117,10 +117,10 @@
                  data-bind="ntsCheckBox: { enable: true, checked: predseting.predetermine }">#{i18n.getText('KMK003_38')}</div>
         </com:ko>
     </div>
-    <com:ko tag="ifnot" bind="condition30">
+    <com:ko tag="if" bind="condition30">
         <div class="setting_rows">
             <div tabindex="33" class="label_time_tab1"
-                 data-bind="ntsCheckBox: { enable: !condition30(), checked: timeZoneModelTwo.useAtr }">#{i18n.getText('KMK003_37')}</div>
+                 data-bind="ntsCheckBox: { enable: condition30, checked: timeZoneModelTwo.useAtr }">#{i18n.getText('KMK003_37')}</div>
             <span style="margin-left: -5px;">#{i18n.getText('KMK003_209')}</span>
             <input tabindex="34" id="shiftTwoStart" data-bind="ntsTimeWithDayEditor: {
 			name: '#[KMK003_163]',
