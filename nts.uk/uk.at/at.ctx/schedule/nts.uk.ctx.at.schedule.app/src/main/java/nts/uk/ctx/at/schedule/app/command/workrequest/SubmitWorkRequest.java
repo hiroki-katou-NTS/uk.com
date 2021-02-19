@@ -127,9 +127,9 @@ public class SubmitWorkRequest extends CommandHandler<SubmitWorkRequestCmd> {
 				shiftMasterRepo, fixedWorkSettingRepository, flowWorkSettingRepository, flexWorkSettingRepository,
 				predetemineTimeSettingRepository);
 		// 2:
-		AtomTask persist = RegisterWorkAvailability.register(requireRegisterWorkAvailability, listDomain,
+		AtomTask persist = RegisterWorkAvailability.register(requireRegisterWorkAvailability,employeeId,
 				new DatePeriod(GeneralDate.fromString(command.getStartPeriod(), "yyyy/MM/dd"),
-						GeneralDate.fromString(command.getEndPeriod(), "yyyy/MM/dd")));
+						GeneralDate.fromString(command.getEndPeriod(), "yyyy/MM/dd")), listDomain);
 
 		// 3:
 		transaction.execute(() -> {
