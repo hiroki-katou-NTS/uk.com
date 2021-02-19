@@ -90,10 +90,14 @@ module nts.uk.ui.ktg004.a {
         itemsDisplay: KnockoutObservableArray<ItemDisplay> = ko.observableArray([]);
         specialHolidaysRemainings: KnockoutObservableArray<SpecialHolidaysRemaining> = ko.observableArray([]);
 
+        constructor(private params: { currentOrNextMonth: 1 | 2; }) {
+            super();
+        }
+
         created() {
             const vm = this;
-
-            const { currentOrNextMonth } = windows.getShared("cache") || { currentOrNextMonth: 1 };
+            const { params } = vm;
+            const { currentOrNextMonth } = params || { currentOrNextMonth: 1 };
 
             vm.$blockui('invisibleView')
                 .then(() => vm.$ajax("at", KTG004_API.GET_DATA, { topPageYearMonthEnum: currentOrNextMonth }))
