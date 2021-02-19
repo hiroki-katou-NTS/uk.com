@@ -11,69 +11,61 @@ module nts.uk.com.view.ktg031.a {
   @component({
     name: 'ktg031-component',
     template: `
-      <div id="ktg031-container">
-        <div class="header-line"></div>
-        <div class="body">
-          <div class="body-top-row">
-            <div data-bind="ntsComboBox: {
-              name: '#[KTG031_10]',
-              width: 150,
-              value: $component.selectedAlarmType,
-              options: $component.listAlarmType,
-              optionsValue: 'code',
-              optionsText: 'name',
-              visibleItemsCount: 5,
-              required: true,
-              selectFirstIfNull: true,
-              columns: [
-                { prop: 'name', length: 10 },
-              ]}"></div>
-            <div class="body-top-label">
-              <span class="label" data-bind="text: $component.$i18n('KTG031_11')"></span>
-              <div data-bind="if: $component.isEmployee">
-                <i class="img-icon" data-bind="ntsIcon: {no: 5, width: 30, height: 30}, click: $component.openDialogSetting"></i>
+      <div data-bind="widget-content: 100, default: 410" id="ktg031-container">
+        <div class="ktg031-header-line"></div>
+          <div class="body">
+            <div class="body-top-row">
+              <div data-bind="ntsComboBox: {
+                name: '#[KTG031_10]',
+                width: 150,
+                value: $component.selectedAlarmType,
+                options: $component.listAlarmType,
+                optionsValue: 'code',
+                optionsText: 'name',
+                visibleItemsCount: 5,
+                required: true,
+                selectFirstIfNull: true,
+                columns: [
+                  { prop: 'name', length: 10 },
+                ]}"></div>
+              <div class="body-top-label">
+                <span class="label" data-bind="text: $component.$i18n('KTG031_11')"></span>
+                <div data-bind="if: $component.isEmployee">
+                  <i class="img-icon" data-bind="ntsIcon: {no: 5, width: 30, height: 30}, click: $component.openDialogSetting"></i>
+                </div>
               </div>
             </div>
+            <div class="table-container">
+              <table id="ktg031-grid">
+                <tbody data-bind="foreach: $component.listAlarm">
+                  <tr>
+                    <td class="column-date">
+                      <span data-bind="text: dateMonth"></span>
+                      <span data-bind="text: $component.$i18n('KTG031_13')"></span>
+                    </td>
+                    <td>
+                      <span class="limited-label" data-bind="text: displayMessage"></span>
+                    </td>
+                    <td class="column-action">
+                      <div data-bind="ntsCheckBox: { checked: isReaded }"></div>
+                    </td>
+                    <td class="column-action">
+                      <i class="img-icon" data-bind="ntsIcon: {no: 178, width: 20, height: 20}, click: function() { $component.openUrl(linkUrl); }"></i>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
-          <div class="table-container">
-            <table id="ktg031-grid">
-              <tbody data-bind="foreach: $component.listAlarm">
-                <tr>
-                  <td class="column-date">
-                    <span data-bind="text: dateMonth"></span>
-                    <span data-bind="text: $component.$i18n('KTG031_13')"></span>
-                  </td>
-                  <td>
-                    <span class="limited-label" data-bind="text: displayMessage"></span>
-                  </td>
-                  <td class="column-action">
-                    <div data-bind="ntsCheckBox: { checked: isReaded }"></div>
-                  </td>
-                  <td class="column-action">
-                    <i class="img-icon" data-bind="ntsIcon: {no: 178, width: 20, height: 20}, click: function() { $component.openUrl(linkUrl); }"></i>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
       </div>
       <style type="text/css" rel="stylesheet">
         #ktg031-container {
           width: 100%;
-          height: 250px;
           display: flex;
           flex-direction: column;
-          border: 1px groove;
-          over-flow-y: auto;
         }
 
-        #ktg031-container::before {
-          display: inline-block;
-          height: 250px;
-        }
-
-        #ktg031-container .header-line {
+        #ktg031-container .ktg031-header-line {
           width: 100%;
           height: 5px;
           background-color: #689f38;
@@ -143,7 +135,7 @@ module nts.uk.com.view.ktg031.a {
     listAlarmType: KnockoutObservableArray<{ code: number, name: string }> = ko.observableArray([]);
     listAlarm: KnockoutObservableArray<AlarmDisplayDataDto> = ko.observableArray();
     $grid: JQuery;
-
+    widget: string = 'KTG031A';
     created(params: any) {
       const vm = this;
       vm.listAlarmType([
