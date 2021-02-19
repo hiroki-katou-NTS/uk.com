@@ -55,6 +55,9 @@ public class WorkplaceGroupWs extends WebService {
     @Inject
     private DeleteHospitalBusinessOfficeHistCommandHandler deleteHospitalCommandHandler;
 
+    @Inject
+    private UpdateHospitalBusinessOfficeHistCommandHandler updateHospitalCommandHandler;
+
     /**
      * Get all team setting
      *
@@ -143,11 +146,19 @@ public class WorkplaceGroupWs extends WebService {
     public void addHospitalBusinessOfficeHist(AddHospitalBusinessOfficeHistCommand command) {
         addHospitalCommandHandler.handle(command);
     }
+
     //C
     @POST
     @Path("deletehospitalbusinessofficehist")
     public void deleteHospitalBusinessOfficeHist(DeleteHospitalBusinessOfficeHistCommand command) {
         deleteHospitalCommandHandler.handle(command);
+    }
+
+    //C
+    @POST
+    @Path("updatehospitalbusinessofficehist")
+    public void updateHospitalBusinessOfficeHist(UpdateHospitalBusinessOfficeHistCommand command) {
+        updateHospitalCommandHandler.handle(command);
     }
 
 }
