@@ -1,9 +1,13 @@
 package nts.uk.ctx.bs.employee.ws.workplacegroup;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.bs.employee.app.command.hospitalofficeinfo.RegistOfNightShiftInforCommand;
+import nts.uk.ctx.bs.employee.app.command.hospitalofficeinfo.RegistOfNightShiftInforCommandHandler;
 import nts.uk.ctx.bs.employee.app.command.workplace.group.*;
 import nts.uk.ctx.bs.employee.app.find.employeeinfo.workplacegroup.*;
+import nts.uk.ctx.bs.employee.app.query.hospitalofficeinfo.GetNightShiftInformationQuery;
 import nts.uk.ctx.bs.employee.app.query.hospitalofficeinfo.GetOptionInformationQuery;
+import nts.uk.ctx.bs.employee.app.query.hospitalofficeinfo.HospitalBusinessOfficeInfoDto;
 import nts.uk.ctx.bs.employee.app.query.hospitalofficeinfo.OptionInforDto;
 import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplaceInforParam;
 
@@ -39,6 +43,12 @@ public class WorkplaceGroupWs extends WebService {
 
     @Inject
     private GetOptionInformationQuery getOptionInformationQuery;
+
+    @Inject
+    private RegistOfNightShiftInforCommandHandler registOfNightShiftInforCommandHandler;
+
+    @Inject
+    private GetNightShiftInformationQuery getNightShiftInformationQuery;
 
     /**
      * Get all team setting
@@ -93,10 +103,28 @@ public class WorkplaceGroupWs extends WebService {
     public AffWorkplaceGroupDto getWorkplaceGroupEmployee(DateRequest date) {
         return workplaceGroupEmployeeQuery.getWorkplaceGroupOfEmployee(date.toDate());
     }
-
+    // Update KSM007 TODO CHINH.HM
     @POST
     @Path("optioninformation")
     public OptionInforDto getOptionInfor() {
         return getOptionInformationQuery.getInfor();
     }
+
+    @POST
+    @Path("register")
+    public void registOfNightShiftInfor(RegistOfNightShiftInforCommand command) {
+        registOfNightShiftInforCommandHandler.handle(command);
+    }
+
+    @POST
+    @Path("getnightshiftinformation")
+    public HospitalBusinessOfficeInfoDto getNightShiftInformation(String historyId) {
+      return   getNightShiftInformationQuery.getHospitalBusinessOfficeInfo(historyId);
+    }
+//    @POST
+//    @Path("getnightshiftinformation")
+//    public HospitalBusinessOfficeInfoDto getNightShiftInformation(String historyId) {
+//      return   getNightShiftInformationQuery.getHospitalBusinessOfficeInfo(historyId);
+//    }
+
 }

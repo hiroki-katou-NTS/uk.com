@@ -64,5 +64,7 @@ public interface HospitalBusinessOfficeInfoHistoryRepository {
 	 * @param historyId 履歴ID
 	 */
 	void delete(String workplaceGroupId, String historyId);
+
+	void update(HospitalBusinessOfficeInfo hospitalInfo, HospitalBusinessOfficeInfoHistory hospitalHist);
 	
 }
