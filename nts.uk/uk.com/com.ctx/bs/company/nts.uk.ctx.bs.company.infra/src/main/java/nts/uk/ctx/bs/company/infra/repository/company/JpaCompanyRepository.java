@@ -47,6 +47,7 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 		builderString.append("SELECT e");
 		builderString.append(" FROM BcmmtCompanyInfor e");
 		builderString.append(" WHERE e.isAbolition = 0 ");
+		builderString.append(" AND e.contractCd = :contractCd");
 		builderString.append(" ORDER BY e.companyCode ");
 		GETALLCOMPANY = builderString.toString();
 	}
@@ -117,8 +118,10 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 //	}
 
 	@Override
-	public List<Company> getAllCompany() {
-		return this.queryProxy().query(GETALLCOMPANY, BcmmtCompanyInfor.class).getList(c -> toDomainCom(c));
+	public List<Company> getAllCompany(String contractCd) {
+		return this.queryProxy().query(GETALLCOMPANY, BcmmtCompanyInfor.class)
+				.setParameter("contractCd",contractCd)
+				.getList(c -> toDomainCom(c));
 	}
 
 	/**
@@ -211,8 +214,9 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 	 * @author yennth
 	 */
 	@Override
-	public List<Company> findAll() {
-		return this.queryProxy().query(SELECT_NO_WHERE, BcmmtCompanyInfor.class)
+	public List<Company> findAll(String contractCd) {
+		return this.queryProxy().query(GET_ALL_COMPANY_BY_CONTRACT_CD, BcmmtCompanyInfor.class)
+				.setParameter("contractCd", contractCd)
 				.getList(c -> toDomainCom(c));
 	}
 
