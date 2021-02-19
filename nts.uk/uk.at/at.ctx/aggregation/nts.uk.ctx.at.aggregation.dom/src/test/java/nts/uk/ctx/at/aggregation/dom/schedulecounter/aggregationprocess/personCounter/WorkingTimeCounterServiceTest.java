@@ -4,13 +4,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -18,12 +17,13 @@ import org.junit.runner.RunWith;
 
 import lombok.val;
 import mockit.Expectations;
+import mockit.Injectable;
 import mockit.Mock;
 import mockit.MockUp;
 import mockit.Mocked;
 import mockit.integration.junit4.JMockit;
 import nts.arc.time.GeneralDate;
-import nts.gul.util.OptionalUtil;
+import nts.uk.ctx.at.aggregation.dom.schedulecounter.aggregationprocess.personCounter.WorkingTimeCounterServiceHelper.AttendanceTimeOfDailyAttendanceHelp;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.AttendanceTimeTotalizationService;
 import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.AttendanceTimesForAggregation;
@@ -107,23 +107,22 @@ public class WorkingTimeCounterServiceTest {
 	 * @param service
 	 */
 	@Test
-	public void test_argument_of_countWorkingTime(@Mocked AttendanceTimeTotalizationService service) {
+	public void test_argument_of_countWorkingTime(@Injectable AttendanceTimeTotalizationService service) {
 		val targetUnit =  Arrays.asList(
 				AttendanceTimesForAggregation.WORKING_TOTAL
 			,	AttendanceTimesForAggregation.WORKING_WITHIN
 			,	AttendanceTimesForAggregation.WORKING_EXTRA);
 		
-		val dailyAttendance = this.dailyWorks.stream()
-						.collect(Collectors.groupingBy(IntegrationOfDaily::getEmployeeId))
-						.entrySet().stream()
-						.collect(Collectors.toMap(Map.Entry::getKey, entry -> {
-							return entry.getValue().stream()
-									.map(c -> c.getAttendanceTimeOfDailyPerformance())
-									.flatMap(OptionalUtil::stream)
-									.collect(Collectors.toList());
-						})).values().stream().flatMap(Collection::stream).collect(Collectors.toList());
+		val dailyAttendance= new ArrayList<AttendanceTimeOfDailyAttendance>(Arrays.asList(
+							/** 総労働時間（就業時間） = 300, 割増時間（時間外時間） = 100 */
+							AttendanceTimeOfDailyAttendanceHelp.createDailyAttendance(new AttendanceTime(300), new AttendanceTime(100))
+							/** 総労働時間（就業時間） = 400, 割増時間（時間外時間） = 200 */
+						,	AttendanceTimeOfDailyAttendanceHelp.createDailyAttendance(new AttendanceTime(400), new AttendanceTime(200))
+							/** 総労働時間（就業時間） = 500, 割増時間（時間外時間） = 300 */
+						,	AttendanceTimeOfDailyAttendanceHelp.createDailyAttendance(new AttendanceTime(500), new AttendanceTime(300))
+						));
 		
-		new Expectations( ) {
+		new Expectations() {
 			{
 				service.totalize(targetUnit, dailyAttendance);
 			}

@@ -133,6 +133,12 @@ public class WorkingTimeCounterServiceHelper {
 		@Mocked
 		static MedicalCareTimeOfDaily medicalCareTime;
 
+		/**
+		 * 日別勤怠の勤怠時間を作る
+		 * @param workingWithin 就業時間
+		 * @param workingExtra 時間外時間
+		 * @return
+		 */
 		public static AttendanceTimeOfDailyAttendance createDailyAttendance(AttendanceTime workingWithin, AttendanceTime workingExtra) {
 			return new AttendanceTimeOfDailyAttendance(
 						workScheduleTimeOfDaily
