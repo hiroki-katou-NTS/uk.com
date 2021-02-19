@@ -4,9 +4,10 @@ import * as _ from 'lodash';
 import * as moment from 'moment';
 
 @component({
-  route: '/ccg/s03/a',
+  name: 'ccgs03a',
   style: require('./style.scss'),
   template: require('./index.vue'),
+  resource: require('./resources.json'),
   validations: {
     dateRangeInput: {
       required: true
