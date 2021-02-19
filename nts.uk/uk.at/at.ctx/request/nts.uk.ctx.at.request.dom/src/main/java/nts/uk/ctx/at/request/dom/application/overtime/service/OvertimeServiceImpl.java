@@ -11,17 +11,24 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
+import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripRepository;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeStatusAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.reflect.GetApplicationReflectionResultAdapter;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertimeHoliday;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorCheck;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
@@ -35,8 +42,12 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualC
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.CalculatedFlag;
+import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarly;
+import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarlyRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTimeRepository;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
@@ -49,18 +60,30 @@ import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeApplicationSetting;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
+import nts.uk.ctx.at.request.dom.application.overtime.ReasonDivergence;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.CheckBeforeOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.ICommonAlgorithmOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.InfoBaseDateOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.InfoNoBaseDate;
 import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.InfoWithDateApplication;
+import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImage;
+import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImageRepository;
+import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
+import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository;
+import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
+import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeRepository;
+import nts.uk.ctx.at.request.dom.applicationreflect.algorithm.obtainappreflect.ObtainAppReflectResultProcess;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.PrePostInitAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.OverrideSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeLeaveAppCommonSet;
 import nts.uk.ctx.at.request.dom.workrecord.dailyrecordprocess.dailycreationwork.BreakTimeZoneSetting;
+import nts.uk.ctx.at.shared.dom.application.common.ApplicationShare;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.SystemFixedErrorAlarm;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
@@ -71,6 +94,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
@@ -116,6 +140,22 @@ public class OvertimeServiceImpl implements OvertimeService {
 	@Inject
 	private CommonAlgorithm commonAlgorithmImpl;
 	
+	@Inject
+	private GoBackDirectlyRepository repoGoBack;
+	@Inject
+	private BusinessTripRepository repoBusTrip;
+	@Inject
+	private ArrivedLateLeaveEarlyRepository repoLateLeave;
+	@Inject
+	private AppStampRepository repoStamp;
+	@Inject
+	private AppWorkChangeRepository repoWorkChange;
+	@Inject
+	private AppRecordImageRepository repoRecordImg;
+	@Inject
+	private ApplicationRepository applicationRepository;
+	@Inject
+	private GetApplicationReflectionResultAdapter getApplicationReflectionResultAdapter;
 	
 	@Override
 	public int checkOvertimeAtr(String url) {
@@ -505,6 +545,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 		output.setCalculatedFlag(CalculatedFlag.UNCALCULATED);
 		output.setIsProxy(isProxy);
 		output.setOvertimeAppAtr(overtimeAppAtr);
+		// 勤務種類リストと就業時間帯リストがない場合エラーを返す UI
 		return output;
 	}
 
@@ -600,11 +641,134 @@ public class OvertimeServiceImpl implements OvertimeService {
 		// 「@登録時の乖離時間チェック」をチェックする
 		if (overtimeLeaveAppCommonSet.getCheckDeviationRegister() == nts.uk.shr.com.enumcommon.NotUseAtr.NOT_USE) return;
 		// 日別実績への申請反映結果を取得 not done
-		
+		String companyID = AppContexts.user().companyId();
+		String employeeID = "";
+		GeneralDate baseDate = null; 
+		Optional<Application> application = Optional.empty();
+		if(appType==ApplicationType.OVER_TIME_APPLICATION) {
+			employeeID = appOverOptional.get().getEmployeeID();
+			baseDate = appOverOptional.get().getAppDate().getApplicationDate();
+			application = Optional.of((Application) appOverOptional.get());
+		} else {
+			employeeID = appHolidayOptional.get().getEmployeeID();
+			baseDate = appHolidayOptional.get().getAppDate().getApplicationDate();
+			application = Optional.of((Application) appHolidayOptional.get());
+		}
+		Optional<IntegrationOfDaily> opIntegrationOfDaily = ObtainAppReflectResultProcess.process(
+				this.createObtainAppReflectResultProcessRequire(), companyID, employeeID, baseDate, application);
 		// 取得した「日別勤怠(Work)」から「日別勤怠(Work)．エラー一覧」を取得する
-		
-		
-		
+		Optional<List<ReasonDivergence>> reasonDissociation = Optional.empty();
+		if(appType==ApplicationType.OVER_TIME_APPLICATION) {
+			if(appOverOptional.isPresent()) {
+				if(appOverOptional.get().getApplicationTime().getReasonDissociation().isPresent()) {
+					reasonDissociation = appOverOptional.get().getApplicationTime().getReasonDissociation();
+				}
+			}
+		} else {
+			if(appHolidayOptional.isPresent()) {
+				if(appHolidayOptional.get().getApplicationTime().getReasonDissociation().isPresent()) {
+					reasonDissociation = appHolidayOptional.get().getApplicationTime().getReasonDissociation();
+				}
+			}
+		}
+		if(!opIntegrationOfDaily.isPresent() && reasonDissociation.isPresent()) {
+			// エラーメッセージ（Msg_1298）を表示する
+			throw new BusinessException("Msg_1298");
+		}
+		if(opIntegrationOfDaily.isPresent()) {
+			// エラーメッセージを表示する
+			String errorMessage = "";
+			if(opIntegrationOfDaily.isPresent()) {
+				List<SystemFixedErrorAlarm> fixedErrorAlarmCodeLst = new ArrayList<>();
+				if(appType==ApplicationType.HOLIDAY_WORK_APPLICATION) {
+					fixedErrorAlarmCodeLst.add(SystemFixedErrorAlarm.DIVERGENCE_ERROR_3);
+				}
+				if(appType==ApplicationType.OVER_TIME_APPLICATION) {
+					if(appOverOptional.isPresent()) {
+						if(appOverOptional.get().getOverTimeClf()==OvertimeAppAtr.EARLY_OVERTIME) {
+							fixedErrorAlarmCodeLst.add(SystemFixedErrorAlarm.DIVERGENCE_ERROR_1);
+						}
+					}
+				}
+				if(appType==ApplicationType.OVER_TIME_APPLICATION) {
+					if(appOverOptional.isPresent()) {
+						if(appOverOptional.get().getOverTimeClf()==OvertimeAppAtr.NORMAL_OVERTIME) {
+							fixedErrorAlarmCodeLst.add(SystemFixedErrorAlarm.DIVERGENCE_ERROR_2);
+						}
+					}
+				}
+				if(appType==ApplicationType.OVER_TIME_APPLICATION) {
+					if(appOverOptional.isPresent()) {
+						if(appOverOptional.get().getOverTimeClf()==OvertimeAppAtr.EARLY_NORMAL_OVERTIME) {
+							fixedErrorAlarmCodeLst.add(SystemFixedErrorAlarm.DIVERGENCE_ERROR_1);
+							fixedErrorAlarmCodeLst.add(SystemFixedErrorAlarm.DIVERGENCE_ERROR_2);
+						}
+					}
+				}
+				List<EmployeeDailyPerError> employeeDailyPerErrorLst = new ArrayList<>();
+				for(SystemFixedErrorAlarm fixedErrorAlarmCode : fixedErrorAlarmCodeLst) {
+					employeeDailyPerErrorLst.addAll(opIntegrationOfDaily.get().getDeclareErrorList(fixedErrorAlarmCode));
+				}
+				if(!CollectionUtil.isEmpty(employeeDailyPerErrorLst)) {
+					if(employeeDailyPerErrorLst.get(0).getErrorAlarmMessage().isPresent()) {
+						errorMessage = employeeDailyPerErrorLst.get(0).getErrorAlarmMessage().get().v();
+					}
+				}
+			}
+			if(Strings.isNotBlank(errorMessage)) {
+				throw new BusinessException(errorMessage);
+			}
+		}
+	}
+	
+	private ObtainAppReflectResultProcess.Require createObtainAppReflectResultProcessRequire() {
+		return new ObtainAppReflectResultProcess.Require() {
+			
+			@Override
+			public Optional<GoBackDirectly> findGoBack(String companyId, String appID, Application app) {
+				return repoGoBack.find(companyId, appID,app);
+			}
+			
+			@Override
+			public Optional<BusinessTrip> findBusinessTripApp(String companyId, String appID, Application app) {
+				return repoBusTrip.findByAppId(companyId, appID,app);
+			}
+			
+			@Override
+			public Optional<ArrivedLateLeaveEarly> findArrivedLateLeaveEarly(String companyId, String appID,
+					Application application) {
+				ArrivedLateLeaveEarly app = repoLateLeave.getLateEarlyApp(companyId, appID, application);
+				return app == null ? Optional.empty() : Optional.of(app);
+			}
+			
+			@Override
+			public Optional<AppWorkChange> findAppWorkCg(String companyId, String appID, Application app) {
+				return repoWorkChange.findbyID(companyId, appID, app);
+			}
+			
+			@Override
+			public Optional<AppStamp> findAppStamp(String companyId, String appID, Application app) {
+				return repoStamp.findByAppID(companyId, appID, app);
+			}
+			
+			@Override
+			public Optional<IntegrationOfDaily> getAppReflectResult(String cid, ApplicationShare application,
+					GeneralDate baseDate, Optional<IntegrationOfDaily> dailyData) {
+				return getApplicationReflectionResultAdapter.getApp(cid, application, baseDate, dailyData);
+			}
+			
+			@Override
+			public List<Application> getAppForReflect(String sid, GeneralDate dateData, List<Integer> recordStatus,
+					List<Integer> scheStatus, List<Integer> appType) {
+				DatePeriod period = new DatePeriod(dateData, dateData);
+				return applicationRepository.getAppForReflect(sid, period, recordStatus, scheStatus, appType);
+			}
+
+			@Override
+			public Optional<AppRecordImage> findAppRecordImage(String companyId, String appID, Application app) {
+				return repoRecordImg.findByAppID(companyId, appID, app);
+			}
+		};
 	}
 
 	@Override
@@ -793,7 +957,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 	}
 
 	@Override
-	public DisplayInfoOverTime startA(
+	public DisplayInfoOverTime startA( // output is not needed to add error list parameter, because just check error msg on UI // 114330
 			String companyId,
 			String employeeId,
 			Optional<GeneralDate> dateOp,
@@ -1168,8 +1332,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 		// 勤務種類、就業時間帯チェックのメッセージを表示
 		detailBeforeUpdate.displayWorkingHourCheck(
 				companyId,
-				appOverTime.getWorkInfoOp().map(x -> x.getWorkTypeCode().v()).orElse(null),
-				appOverTime.getWorkInfoOp().map(x -> x.getWorkTimeCode().v()).orElse(null));
+				appOverTime.getWorkInfoOp().flatMap(x -> Optional.ofNullable(x.getWorkTypeCode())).map(x -> x.v()).orElse(null),
+				appOverTime.getWorkInfoOp().flatMap(x -> Optional.ofNullable(x.getWorkTimeCode())).map(x -> x.v()).orElse(null));
 		// 事前申請が必須か確認する
 		displayInfoOverTime.getInfoNoBaseDate()
 					       .getOverTimeAppSet()
@@ -1212,8 +1376,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 					appOverTime.getAppID(),
 					appOverTime.getPrePostAtr(),
 					appOverTime.getVersion(),
-					appOverTime.getWorkInfoOp().map(x -> x.getWorkTypeCode().v()).orElse(null),
-					appOverTime.getWorkInfoOp().map(x -> x.getWorkTimeCode().v()).orElse(null),
+					appOverTime.getWorkInfoOp().flatMap(x -> Optional.ofNullable(x.getWorkTypeCode())).map(x -> x.v()).orElse(null),
+					appOverTime.getWorkInfoOp().flatMap(x -> Optional.ofNullable(x.getWorkTimeCode())).map(x -> x.v()).orElse(null),
 					displayInfoOverTime.getAppDispInfoStartup());
 			
 		}

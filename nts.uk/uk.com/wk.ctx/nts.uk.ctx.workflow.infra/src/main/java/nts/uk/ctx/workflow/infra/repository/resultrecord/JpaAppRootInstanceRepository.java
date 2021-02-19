@@ -37,10 +37,10 @@ import nts.uk.ctx.workflow.infra.entity.resultrecord.FullJoinAppRootInstance;
 import nts.uk.ctx.workflow.infra.entity.resultrecord.WwfdpAppApproveInstancePK;
 import nts.uk.ctx.workflow.infra.entity.resultrecord.WwfdpAppFrameInstancePK;
 import nts.uk.ctx.workflow.infra.entity.resultrecord.WwfdpAppPhaseInstancePK;
-import nts.uk.ctx.workflow.infra.entity.resultrecord.WwfdtAppApproveInstance;
-import nts.uk.ctx.workflow.infra.entity.resultrecord.WwfdtAppFrameInstance;
-import nts.uk.ctx.workflow.infra.entity.resultrecord.WwfdtAppPhaseInstance;
-import nts.uk.ctx.workflow.infra.entity.resultrecord.WwfdtAppRootInstance;
+import nts.uk.ctx.workflow.infra.entity.resultrecord.WwfdtInstApprove;
+import nts.uk.ctx.workflow.infra.entity.resultrecord.WwfdtInstFrame;
+import nts.uk.ctx.workflow.infra.entity.resultrecord.WwfdtInstPhase;
+import nts.uk.ctx.workflow.infra.entity.resultrecord.WwfdtInstRoute;
 import nts.uk.shr.com.context.AppContexts;
 import nts.arc.time.calendar.period.DatePeriod;
 /**
@@ -54,10 +54,10 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 	private final String BASIC_SELECT =
 			"SELECT appRoot.ROOT_ID, appRoot.CID, appRoot.EMPLOYEE_ID, appRoot.START_DATE, appRoot.END_DATE, appRoot.ROOT_TYPE, "
 					+ "phase.PHASE_ORDER, phase.APPROVAL_FORM, frame.FRAME_ORDER, frame.CONFIRM_ATR, appApprover.APPROVER_CHILD_ID "
-					+ "FROM WWFDT_APP_ROOT_INSTANCE appRoot " + "LEFT JOIN WWFDT_APP_PHASE_INSTANCE phase "
-					+ "ON appRoot.ROOT_ID = phase.ROOT_ID " + "LEFT JOIN WWFDT_APP_FRAME_INSTANCE frame "
+					+ "FROM WWFDT_INST_ROUTE appRoot " + "LEFT JOIN WWFDT_INST_PHASE phase "
+					+ "ON appRoot.ROOT_ID = phase.ROOT_ID " + "LEFT JOIN WWFDT_INST_FRAME frame "
 					+ "ON phase.ROOT_ID = frame.ROOT_ID " + "AND phase.PHASE_ORDER = frame.PHASE_ORDER "
-					+ "LEFT JOIN WWFDT_APP_APPROVE_INSTANCE appApprover " + "ON frame.ROOT_ID = appApprover.ROOT_ID "
+					+ "LEFT JOIN WWFDT_INST_APPROVE appApprover " + "ON frame.ROOT_ID = appApprover.ROOT_ID "
 					+ "AND frame.PHASE_ORDER = appApprover.PHASE_ORDER "
 					+ "AND frame.FRAME_ORDER = appApprover.FRAME_ORDER";
 
@@ -72,11 +72,11 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 			+ " AND appRoot.START_DATE >= 'recordDate'";
 
 	private final String FIND_BY_EMP_DATE_NEWEST = BASIC_SELECT + " WHERE appRoot.ROOT_ID IN ("
-			+ " SELECT TOP 1 ROOT_ID FROM WWFDT_APP_ROOT_INSTANCE" + " WHERE EMPLOYEE_ID = 'employeeID'"
+			+ " SELECT TOP 1 ROOT_ID FROM WWFDT_INST_ROUTE" + " WHERE EMPLOYEE_ID = 'employeeID'"
 			+ " AND CID = 'companyID'" + " AND ROOT_TYPE = rootType " + "order by START_DATE desc)";
 
 	private final String FIND_BY_EMP_DATE_NEWEST_BELOW = BASIC_SELECT + " WHERE appRoot.ROOT_ID IN ("
-			+ " SELECT TOP 1 ROOT_ID FROM WWFDT_APP_ROOT_INSTANCE" + " WHERE EMPLOYEE_ID = 'employeeID'"
+			+ " SELECT TOP 1 ROOT_ID FROM WWFDT_INST_ROUTE" + " WHERE EMPLOYEE_ID = 'employeeID'"
 			+ " AND ROOT_TYPE = rootType " + " AND START_DATE < 'recordDate' " + " AND CID = 'companyID'"
 			+ "order by START_DATE desc)";
 
@@ -97,7 +97,7 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 			+ " AND appRoot.CID = 'companyID'" + " AND appRoot.ROOT_TYPE = rootType"
 			+ " AND appRoot.END_DATE >= 'startDate'" + " AND appRoot.START_DATE <= 'endDate'" + " UNION " + BASIC_SELECT
 			+ " WHERE appApprover.APPROVER_CHILD_ID IN"
-			+ " (SELECT c.SID FROM CMMMT_AGENT c where c.AGENT_SID1 = 'approverID' and c.START_DATE <= 'sysDate' and c.END_DATE >= 'sysDate')"
+			+ " (SELECT c.SID FROM WWFMT_AGENT c where c.AGENT_SID1 = 'approverID' and c.START_DATE <= 'sysDate' and c.END_DATE >= 'sysDate')"
 			+ " AND appRoot.CID = 'companyID'" + " AND appRoot.ROOT_TYPE = rootType"
 			+ " AND appRoot.END_DATE >= 'startDate'" + " AND appRoot.START_DATE <= 'endDate'";
 			
@@ -132,24 +132,24 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 
 	@Override
 	public void delete(AppRootInstance appRootInstance) {
-		this.commandProxy().remove(WwfdtAppRootInstance.class, appRootInstance.getRootID());
+		this.commandProxy().remove(WwfdtInstRoute.class, appRootInstance.getRootID());
 		this.getEntityManager().flush();
 	}
 
-	private WwfdtAppRootInstance fromDomain(AppRootInstance appRootInstance) {
-		return new WwfdtAppRootInstance(appRootInstance.getRootID(), appRootInstance.getCompanyID(),
+	private WwfdtInstRoute fromDomain(AppRootInstance appRootInstance) {
+		return new WwfdtInstRoute(appRootInstance.getRootID(), appRootInstance.getCompanyID(),
 				appRootInstance.getEmployeeID(), appRootInstance.getDatePeriod().start(),
 				appRootInstance.getDatePeriod().end(), appRootInstance.getRootType().value,
 				appRootInstance.getListAppPhase().stream()
-						.map(x -> new WwfdtAppPhaseInstance(new WwfdpAppPhaseInstancePK(appRootInstance.getRootID(), x
+						.map(x -> new WwfdtInstPhase(new WwfdpAppPhaseInstancePK(appRootInstance.getRootID(), x
 								.getPhaseOrder()), x.getApprovalForm().value,
 								null,
 								x.getListAppFrame().stream()
-										.map(y -> new WwfdtAppFrameInstance(
+										.map(y -> new WwfdtInstFrame(
 												new WwfdpAppFrameInstancePK(appRootInstance.getRootID(),
 														x.getPhaseOrder(), y.getFrameOrder()),
 												y.isConfirmAtr() ? 1 : 0, null,
-												y.getListApprover().stream().map(z -> new WwfdtAppApproveInstance(
+												y.getListApprover().stream().map(z -> new WwfdtInstApprove(
 														new WwfdpAppApproveInstancePK(appRootInstance.getRootID(),
 																x.getPhaseOrder(), y.getFrameOrder(), z),
 														null)).collect(Collectors.toList())))
@@ -305,11 +305,11 @@ public class JpaAppRootInstanceRepository extends JpaRepository implements AppRo
 				sql.append(
 						" frame.PHASE_ORDER, phase.APPROVAL_FORM, frame.FRAME_ORDER, frame.CONFIRM_ATR, a.APPROVER_CHILD_ID  ");
 				sql.append(
-						" FROM WWFDT_APP_ROOT_INSTANCE appRoot LEFT JOIN WWFDT_APP_PHASE_INSTANCE phase ON appRoot.ROOT_ID = phase.ROOT_ID ");
+						" FROM WWFDT_INST_ROUTE appRoot LEFT JOIN WWFDT_INST_PHASE phase ON appRoot.ROOT_ID = phase.ROOT_ID ");
 				sql.append(
-						" LEFT JOIN WWFDT_APP_FRAME_INSTANCE frame ON phase.ROOT_ID = frame.ROOT_ID AND phase.PHASE_ORDER = frame.PHASE_ORDER ");
+						" LEFT JOIN WWFDT_INST_FRAME frame ON phase.ROOT_ID = frame.ROOT_ID AND phase.PHASE_ORDER = frame.PHASE_ORDER ");
 				sql.append(
-						" LEFT JOIN WWFDT_APP_APPROVE_INSTANCE a ON frame.ROOT_ID = a.ROOT_ID AND frame.PHASE_ORDER = a.PHASE_ORDER AND frame.FRAME_ORDER = a.FRAME_ORDER ");
+						" LEFT JOIN WWFDT_INST_APPROVE a ON frame.ROOT_ID = a.ROOT_ID AND frame.PHASE_ORDER = a.PHASE_ORDER AND frame.FRAME_ORDER = a.FRAME_ORDER ");
 				sql.append(
 						" WHERE appRoot.CID = ? AND appRoot.ROOT_TYPE = ? AND appRoot.END_DATE >= ? AND appRoot.START_DATE <= ? ");
 				sql.append(" AND appRoot.EMPLOYEE_ID IN ( ");

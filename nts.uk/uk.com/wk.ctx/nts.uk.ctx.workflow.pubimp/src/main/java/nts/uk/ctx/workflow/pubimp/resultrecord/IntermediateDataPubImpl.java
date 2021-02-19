@@ -620,8 +620,8 @@ public class IntermediateDataPubImpl implements IntermediateDataPub {
 		}
 		// 中間データから承認ルートインスタンスに変換する
 		ApprovalRootState approvalRootState = appRootInstanceService.convertFromAppRootInstance(opAppRootInstance.get(), opAppRootConfirm.get());
-		// 承認するべき承認者を取得する
-		ApproverToApprove approverToApprove = appRootInstanceService.getApproverToApprove(approvalRootState);
+		// アルゴリズム「現在承認するべきフェーズの未承認者を取得する」を実行する
+		ApproverToApprove approverToApprove = appRootInstanceService.getApproverCanApprove(approvalRootState);
 		return new ApproverApproveExport(date, employeeID, 
 				approverToApprove.getAuthorList().stream().map(x -> new ApproverEmpExport(x.getEmployeeID(), x.getEmployeeCD(), x.getEmployeeName()))
 				.collect(Collectors.toList()));

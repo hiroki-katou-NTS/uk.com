@@ -1,0 +1,201 @@
+/* .body-container,
+.first-line,
+.third-line {
+    display: flex;
+} */
+
+body > div:nth-child(1) {
+	position: absolute;
+}
+
+body > div:nth-child(2) {
+	padding-top: 100px;
+	padding-left: 160px;
+}
+
+.top-container {
+	padding-left: 5px;
+}
+
+.top-container > button {
+	width: 160px !important;
+}
+
+.ct-text {
+    align-self: center;
+}
+
+.right {
+	margin-left: 5px;
+}
+
+.first-line {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+.first-line > div {
+	margin-right: 35px;
+}
+
+.second-line {
+	margin-bottom: 5px;
+}
+
+.detail {
+	margin-right: 5px;
+	width: 282px;
+}
+
+.pnl-top {
+	padding: 10px 0 10px 5px;
+    border: 1px solid black;
+    background-color: #E0F59E;
+}
+
+.pnl-body {
+	border: 1px solid black;
+	border-top: 0;
+	padding: 30px 10px 5px 5px;
+}
+
+.pnl-container {
+	width: 265px;
+	min-height: 276px;
+}
+
+.left th.ui-iggrid-header{
+	text-align: center !important;
+}
+
+.d-flex {
+	display: flex;
+}
+
+.letter-pnl {
+	padding: 5px;
+	height: 100px;
+	border: 1px solid #999999;
+}
+
+.letter-mode,
+.time-mode,
+.ip-mode {
+	margin-top: 35px;
+}
+
+.change-value {
+	margin-top: 25px;
+}
+
+.letter-pnl {
+	margin: 25px 0 10px 20px;
+}
+
+.letter-pnl > div > span:nth-child(1) {
+	width: 90px;
+}
+
+.w-60 {
+	width: 60px;
+}
+
+.letter-mode .current-value {
+	padding-left: 5px;
+	padding-bottom: 5px;
+    width: 184px;
+    border-bottom: 1px solid blue;
+}
+
+.time-mode .current-value {
+	padding-left: 5px;
+	padding-bottom: 5px;
+    width: 40px;
+    border-bottom: 1px solid blue;
+}
+
+.ip-mode .current-value {
+	padding-left: 5px;
+	padding-bottom: 5px;
+    width: 184px;
+    border-bottom: 1px solid blue;
+}
+
+.dot {
+	position: relative;
+}
+
+.dot span { 
+	position: absolute;
+	bottom: 0;
+	left: -3px;
+}
+
+.selection-container,
+.check-container {
+	padding-top: 55px;
+	padding-left: 30px;
+}
+
+.selection-left,
+.check-left {
+	margin-right: 15px;
+	width: 50px;
+}
+
+.selection-left > p,
+.selection-right > p,
+.check-left > p,
+.check-right > p {
+	margin-bottom: 10px;
+}
+
+.radio-left {
+	flex-direction: column;
+	align-items: center;
+}
+
+.current-check {
+	align-items: center;
+}
+
+.radio-right,
+.current-check,
+.update-check {
+	flex-direction: column;
+}
+
+.ntsRadioBox {
+	margin-bottom: 5px !important;
+}
+
+.arrow-container {
+	padding-top: 90px;
+	width: 60px;
+	flex-direction: column;
+	align-items: center;
+}
+
+.arrow-container button {
+	width: 45px !important;
+	height: 70px !important;
+}
+
+.before::before {
+	content: ":";
+}
+
+.ui-iggrid-tablebody {
+	white-space: nowrap;
+}
+
+.small_name {
+	width: 184px;
+}
+
+
+ 
+
+
+
+

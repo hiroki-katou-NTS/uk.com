@@ -14,7 +14,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.function.dom.annualworkschedule.CalcFormulaItem;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
 * 項目の算出式
@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KFNRT_CALC_FORMULA_ITEM")
-public class KfnrtCalcFormulaItem extends UkJpaEntity implements Serializable
+public class KfnrtCalcFormulaItem extends ContractUkJpaEntity implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 	/**
