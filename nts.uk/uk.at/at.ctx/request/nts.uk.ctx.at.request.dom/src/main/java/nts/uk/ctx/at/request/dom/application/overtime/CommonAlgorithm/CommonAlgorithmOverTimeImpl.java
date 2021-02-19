@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.i18n.I18NText;
@@ -457,23 +459,26 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 				workTypeLst,
 				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpWorkTimeLst().orElse(Collections.emptyList()),
 				archievementDetail.orElse(null));
-		// 16_勤務種類・就業時間帯を選択する
-		SelectWorkOutput selectWorkOutput = overTimeService.selectWork(
-				companyId,
-				employeeId,
-				dateOp,
-				new WorkTypeCode(initWkTypeWkTimeOutput.getWorkTypeCD()),
-				new WorkTimeCode(initWkTypeWkTimeOutput.getWorkTimeCD()),
-				startTimeSPR,
-				endTimeSPR,
-				Optional.ofNullable(appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().map(x -> x.get(0)).orElse(null)),
-				overtimeAppSet);
+		if (!StringUtils.isBlank(initWkTypeWkTimeOutput.getWorkTypeCD()) && !StringUtils.isBlank(initWkTypeWkTimeOutput.getWorkTimeCD())) {
+			// 16_勤務種類・就業時間帯を選択する
+			SelectWorkOutput selectWorkOutput = overTimeService.selectWork(
+					companyId,
+					employeeId,
+					dateOp,
+					Optional.ofNullable(initWkTypeWkTimeOutput.getWorkTypeCD()).map(x -> new WorkTypeCode(x)).orElse(null),
+					Optional.ofNullable(initWkTypeWkTimeOutput.getWorkTimeCD()).map(x -> new WorkTimeCode(x)).orElse(null),
+					startTimeSPR,
+					endTimeSPR,
+					Optional.ofNullable(appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().map(x -> x.get(0)).orElse(null)),
+					overtimeAppSet);
+			output.setBreakTime(Optional.ofNullable(selectWorkOutput.getBreakTimeZoneSetting()));
+			output.setWorkHours(selectWorkOutput.getWorkHours());
+			output.setApplicationTime(Optional.ofNullable(selectWorkOutput.getApplicationTime()));
+			
+		}
 		// 取得情報を「申請日に関係する情報」にセットして返す
 		output.setWorkTypeCD(Optional.ofNullable(initWkTypeWkTimeOutput.getWorkTypeCD()));
 		output.setWorkTimeCD(Optional.ofNullable(initWkTypeWkTimeOutput.getWorkTimeCD()));
-		output.setBreakTime(Optional.ofNullable(selectWorkOutput.getBreakTimeZoneSetting()));
-		output.setWorkHours(selectWorkOutput.getWorkHours());
-		output.setApplicationTime(Optional.ofNullable(selectWorkOutput.getApplicationTime()));
 		
 		
 		return output;

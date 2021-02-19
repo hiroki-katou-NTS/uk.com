@@ -756,6 +756,18 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 								
 							}
 						}
+						
+						// wokr type or worktime null
+						if (vm.visibleModel.c7()) {
+							if ((_.isNil(vm.workInfo().workType().code) || vm.workInfo().workType().code == '') 
+							|| (_.isNil(vm.workInfo().workTime().code) || vm.workInfo().workTime().code == '')
+							) {
+								$('.workSelect').focus();
+								return false;			
+							}
+							
+						}
+						
 						return true;						
 					}
 				})
