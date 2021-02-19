@@ -805,6 +805,15 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 							workHours2.end(workHoursDto.endTimeOp2);						
 						}
 					} else {
+						
+						if (mode == ACTION.CHANGE_DATE) {
+							workHours1.start(null);
+							workHours1.end(null);
+							if (self.visibleModel.c29()) {
+								workHours2.start(null);
+								workHours2.end(null);						
+							}
+						}
 						if (mode == ACTION.CHANGE_WORK) {
 							workHours1.start(null);
 							workHours1.end(null);
