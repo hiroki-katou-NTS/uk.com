@@ -46,6 +46,13 @@ public interface TopPagePersonSettingRepository {
 	List<TopPagePersonSetting> getByCompanyIdAndEmployeeIds(String companyId, List<String> employeeIds);
 	
 	/**
+	 * Gets the by company id
+	 * @param companyId the company id
+	 * @return the by company id and employee ids
+	 */
+	List<TopPagePersonSetting> getByCompanyId(String companyId);
+	
+	/**
 	 * Gets the by company id and employee id.
 	 * 社員IDから個人別トップページ設定を取得する
 	 * @param companyId the company id
