@@ -358,6 +358,30 @@ module nts.uk.com.view.ccg008.a.screenModel {
 						vm.widgetRight(thirstWidgets);
 						break;
 				}
+
+
+				if (layout2) {
+					const showSwitch = _.filter(layout2, ({ widgetType }) => [0, 1, 2, 3, 4].indexOf(widgetType) > -1);
+					const showClosure = _.filter(layout2, ({ widgetType }) => widgetType === 1);
+
+					vm.isShowSwitch(!!showSwitch.length);
+					vm.isShowClosure(!!showClosure.length);
+				}
+
+				if (layout3) {
+					const showSwitch = _.filter(layout3, ({ widgetType }) => [0, 1, 2, 3, 4].indexOf(widgetType) > -1);
+					const showClosure = _.filter(layout3, ({ widgetType }) => widgetType === 1);
+
+					// not overwrite value of layout2
+					if (ko.unwrap<boolean>(vm.isShowSwitch) === false) {
+						vm.isShowSwitch(!!showSwitch.length);
+					}
+
+					// not overwrite value of layout2
+					if (ko.unwrap<boolean>(vm.isShowClosure) === false) {
+						vm.isShowClosure(!!showClosure.length);
+					}
+				}
 			};
 
 			if (screen === 'login') {
@@ -383,32 +407,7 @@ module nts.uk.com.view.ccg008.a.screenModel {
 						}
 					}
 				} else {
-					const { layout2, layout3 } = displayTopPage;
-
 					loadWidget();
-
-					if (layout2) {
-						const showSwitch = _.filter(layout2, ({ widgetType }) => [0, 1, 2, 3, 4].indexOf(widgetType) > -1);
-						const showClosure = _.filter(layout2, ({ widgetType }) => widgetType === 1);
-
-						vm.isShowSwitch(!!showSwitch.length);
-						vm.isShowClosure(!!showClosure.length);
-					}
-
-					if (layout3) {
-						const showSwitch = _.filter(layout3, ({ widgetType }) => [0, 1, 2, 3, 4].indexOf(widgetType) > -1);
-						const showClosure = _.filter(layout3, ({ widgetType }) => widgetType === 1);
-
-						// not overwrite value of layout2
-						if (ko.unwrap<boolean>(vm.isShowSwitch) === false) {
-							vm.isShowSwitch(!!showSwitch.length);
-						}
-
-						// not overwrite value of layout2
-						if (ko.unwrap<boolean>(vm.isShowClosure) === false) {
-							vm.isShowClosure(!!showClosure.length);
-						}
-					}
 				}
 			} else {
 				loadWidget();
