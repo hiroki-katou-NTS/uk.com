@@ -12,7 +12,7 @@ module nts.uk.at.view.kmk003.g {
             roundingValue: KnockoutObservable<number>;
 
             calcMethodLst: KnockoutObservableArray<any>;
-            specialLstRest: KnockoutObservableArray<any>;
+            fixedCalcMethodLst: KnockoutObservableArray<any>;
             useRest: KnockoutObservable<boolean>;
 
             usePrivateGoOutRest: KnockoutObservable<boolean>;
@@ -40,10 +40,11 @@ module nts.uk.at.view.kmk003.g {
                     new RadioBoxModel(2, nts.uk.resource.getText('KMK003_237'))
                 ]);
 
-                self.specialLstRest = ko.observableArray([
-                    new RadioBoxModel(0, nts.uk.resource.getText('KMK003_235')),
-                    new RadioBoxModel(1, nts.uk.resource.getText('KMK003_236'))
+                self.fixedCalcMethodLst = ko.observableArray([
+                    new RadioBoxModel(0, nts.uk.resource.getText('KMK003_241')),
+                    new RadioBoxModel(1, nts.uk.resource.getText('KMK003_243'))
                 ]);
+
                 self.useRest = ko.observable(false);
 
                 self.usePrivateGoOutRest = ko.observable(false);
@@ -172,7 +173,7 @@ module nts.uk.at.view.kmk003.g {
                     };
                 } else { //other
                     returnData = {
-                        fixedCalcMethod: _self.selectedFixedCalc()
+                        calcMethod: _self.selectedCalcMethod()
                     };
                 }
                 nts.uk.ui.windows.setShared("KMK003_DIALOG_G_OUTPUT_DATA", returnData);

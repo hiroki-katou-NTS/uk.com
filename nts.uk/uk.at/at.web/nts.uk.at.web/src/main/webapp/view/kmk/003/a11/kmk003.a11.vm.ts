@@ -24,6 +24,8 @@ module a11 {
         // Screen mode
         isDetailMode: KnockoutObservable<boolean>;
         isSimpleMode: KnockoutObservable<boolean>;
+        isFlow: KnockoutObservable<boolean>;
+        isFixed: KnockoutObservable<boolean>;
         
         // Screen data model
         model: MainSettingModel;
@@ -45,7 +47,7 @@ module a11 {
         // Old data (using for reset value)
         oldWorkdayOffTimeOneDayTime: KnockoutObservable<number>;
         oldWorkdayOffTimeHalfDayTime: KnockoutObservable<number>;
-        oldWorkdayOffTimeCertainTime: KnockoutObservable<number>;        
+        oldWorkdayOffTimeCertainTime: KnockoutObservable<number>;
         oldFromOverTimeOneDayTime: KnockoutObservable<number>;
         oldFromOverTimeHalfDayTime: KnockoutObservable<number>;
         oldFromOverTimeCertainTime: KnockoutObservable<number>;
@@ -64,17 +66,17 @@ module a11 {
                     if (!nts.uk.util.isNullOrUndefined(_self.workdayOffTimeUseDivision)) _self.workdayOffTimeUseDivision(true);
                 }    
             });
-            
+
             // Check exist
             if (nts.uk.util.isNullOrUndefined(model) || nts.uk.util.isNullOrUndefined(settingEnum)) {
                 // Stop rendering page
                 return;    
             }
             
-            // Init all data          
+            // Init all data
             _self.oldWorkdayOffTimeOneDayTime = ko.observable(0);
             _self.oldWorkdayOffTimeHalfDayTime = ko.observable(0);
-            _self.oldWorkdayOffTimeCertainTime = ko.observable(0);       
+            _self.oldWorkdayOffTimeCertainTime = ko.observable(0);
             _self.oldFromOverTimeOneDayTime = ko.observable(0);
             _self.oldFromOverTimeHalfDayTime = ko.observable(0);
             _self.oldFromOverTimeCertainTime = ko.observable(0);
@@ -149,23 +151,36 @@ module a11 {
          */
         private bindingData() {
             let _self = this;
-        
-            _self.workdayOffTimeUseDivision = _self.model.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.useDivision;
-            _self.workdayOffTimeSubHolTransferSetAtr = _self.model.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.subHolTransferSetAtr;
-            _self.workdayOffTimeOneDayTime = _self.model.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.designatedTime.oneDayTime;
-            _self.workdayOffTimeHalfDayTime = _self.model.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.designatedTime.halfDayTime;
-            _self.workdayOffTimeCertainTime = _self.model.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.certainTime;
-            
-            _self.fromOverTimeUseDivision = _self.model.commonSetting.getOverTimeSet().subHolTimeSet.useDivision;
-            _self.fromOverTimeSubHolTransferSetAtr = _self.model.commonSetting.getOverTimeSet().subHolTimeSet.subHolTransferSetAtr;
-            _self.fromOverTimeOneDayTime = _self.model.commonSetting.getOverTimeSet().subHolTimeSet.designatedTime.oneDayTime;
-            _self.fromOverTimeHalfDayTime = _self.model.commonSetting.getOverTimeSet().subHolTimeSet.designatedTime.halfDayTime;
-            _self.fromOverTimeCertainTime = _self.model.commonSetting.getOverTimeSet().subHolTimeSet.certainTime;
-            
-            // Set old data 
+
+            _self.isFlow = _self.model.workTimeSetting.isFlow;
+            _self.isFixed = _self.model.workTimeSetting.isFixed;
+            _self.isFlow.subscribe((v) => {
+                if (v){
+                    _self.workdayOffTimeOneDayTime = _self.model.flowWorkSetting.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.designatedTime.oneDayTime;
+                    _self.workdayOffTimeHalfDayTime = _self.model.flowWorkSetting.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.designatedTime.halfDayTime;
+                    _self.fromOverTimeOneDayTime = _self.model.flowWorkSetting.commonSetting.getOverTimeSet().subHolTimeSet.designatedTime.oneDayTime;
+                    _self.fromOverTimeHalfDayTime = _self.model.flowWorkSetting.commonSetting.getOverTimeSet().subHolTimeSet.designatedTime.halfDayTime;
+                    _self.workdayOffTimeUseDivision = _self.model.flowWorkSetting.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.useDivision;
+                    _self.workdayOffTimeSubHolTransferSetAtr = _self.model.flowWorkSetting.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.subHolTransferSetAtr;
+                    _self.workdayOffTimeCertainTime = _self.model.flowWorkSetting.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.certainTime;
+                }
+            })
+            _self.isFixed.subscribe((v) => {
+                if (v){
+                    _self.workdayOffTimeOneDayTime = _self.model.fixedWorkSetting.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.designatedTime.oneDayTime;
+                    _self.workdayOffTimeHalfDayTime = _self.model.fixedWorkSetting.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.designatedTime.halfDayTime;
+                    _self.fromOverTimeOneDayTime = _self.model.fixedWorkSetting.commonSetting.getOverTimeSet().subHolTimeSet.designatedTime.oneDayTime;
+                    _self.fromOverTimeHalfDayTime = _self.model.fixedWorkSetting.commonSetting.getOverTimeSet().subHolTimeSet.designatedTime.halfDayTime;
+                    _self.fromOverTimeUseDivision = _self.model.fixedWorkSetting.commonSetting.getOverTimeSet().subHolTimeSet.useDivision;
+                    _self.fromOverTimeSubHolTransferSetAtr = _self.model.fixedWorkSetting.commonSetting.getOverTimeSet().subHolTimeSet.subHolTransferSetAtr;
+                    _self.fromOverTimeCertainTime = _self.model.fixedWorkSetting.commonSetting.getOverTimeSet().subHolTimeSet.certainTime;
+                }
+            })
+
+            // Set old data
             _self.oldWorkdayOffTimeOneDayTime(_self.model.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.designatedTime.oneDayTime());
             _self.oldWorkdayOffTimeHalfDayTime(_self.model.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.designatedTime.halfDayTime());
-            _self.oldWorkdayOffTimeCertainTime(_self.model.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.certainTime());        
+            _self.oldWorkdayOffTimeCertainTime(_self.model.commonSetting.getWorkDayOffTimeSet().subHolTimeSet.certainTime());
             _self.oldFromOverTimeOneDayTime(_self.model.commonSetting.getOverTimeSet().subHolTimeSet.designatedTime.oneDayTime());
             _self.oldFromOverTimeHalfDayTime(_self.model.commonSetting.getOverTimeSet().subHolTimeSet.designatedTime.halfDayTime());
             _self.oldFromOverTimeCertainTime(_self.model.commonSetting.getOverTimeSet().subHolTimeSet.certainTime());

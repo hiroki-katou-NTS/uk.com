@@ -153,11 +153,11 @@ module a1 {
                 return self.isDetailMode() && !self.isFlowMode() && !self.isFlexMode();
             }, this);
             //A7_13, A7_14, A7_16 display condition
+            //TODO missing 複数回勤務管理.使用区分 ＝ true
             self.condition30 = ko.computed(() => {
                 return !self.isFlexMode() && !self.isDiffTimeMode();
             },this);
 
-            //TODO fix 31
             self.condition31 = ko.computed(() => {
                 return self.timeZoneModelTwo.useAtr() && !self.isFlexMode() && !self.isDiffTimeMode();
             })

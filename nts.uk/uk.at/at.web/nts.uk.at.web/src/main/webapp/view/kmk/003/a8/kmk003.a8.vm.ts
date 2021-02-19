@@ -22,7 +22,7 @@ module a8 {
     class ScreenModel {
 
         isNewMode: KnockoutObservable<boolean>;
-        
+        isFlow : KnockoutObservable<boolean>;
         // Screen mode
         isDetailMode: KnockoutObservable<boolean>;
         
@@ -63,10 +63,6 @@ module a8 {
             let _self = this;
             _self.isNewMode = isNewMode;
 
-            // _self.isFluidWork = ko.computed(() => {
-            //    return _self.workTimeMethod() != 2;
-            // },_self);
-
             _self.isNewMode.subscribe((v) => {
                 // Set default value for switch button
                 if (v) {
@@ -92,6 +88,7 @@ module a8 {
             _self.screenMode = screenMode;
             _self.model = model; 
             _self.settingEnum = settingEnum;
+            _self.isFlow = model.workTimeSetting.isFlow;
             
             // Init UI
             _self.workTimeTabs = ko.observableArray([
