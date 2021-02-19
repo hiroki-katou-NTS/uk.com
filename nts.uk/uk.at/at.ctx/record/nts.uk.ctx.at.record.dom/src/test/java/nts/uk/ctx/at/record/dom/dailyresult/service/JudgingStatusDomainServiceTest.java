@@ -1035,57 +1035,6 @@ public class JudgingStatusDomainServiceTest {
 	}
 
 	/**
-	 * case 9
-	 * 
-	 * $退勤時刻 ＝　Empty
-	 * $出勤時刻 ＝　Empty
-	 * $勤務が出勤ですか　＝ Not　Empty
-	 */
-	@Test
-	public void judgingStatusTest9_2() {
-		// given
-		String sid = "sid";
-		GeneralDate baseDate = GeneralDate.today();
-		String code = "001";
-		
-		Optional<Boolean> r1ResultWorking = Optional.ofNullable(false); // NOT IN 「出勤、休日出勤、振出、連続勤務」
-		
-		//[R-1]
-		Optional<WorkInfoOfDailyPerformance> r1Result = JudgingStatusDomainServiceTestHelper.getR1Result(NotUseAttribute.Not_use);
-		 //NotUseAttribute.Not_use -> false
-		
-		//[R-4]
-		Optional<WorkType> r4Result = JudgingStatusDomainServiceTestHelper.getR4Result(
-				WorkTypeUnit.OneDay, 
-				WorkTypeClassification.Closure, 
-				WorkTypeClassification.Closure, 
-				WorkTypeClassification.Closure
-				);
-		
-		new Expectations() {
-			{
-				require.getDailyActualWorkInfo(sid, baseDate);
-				result = r1Result;
-			}
-			{
-				require.getDailyAttendanceAndDeparture(sid, baseDate);
-			}
-			{
-				require.getWorkType(code);
-				result = r4Result;
-			}
-		};
-
-		// when
-		AttendanceAccordActualData result = JudgingStatusDomainService.JudgingStatus(require, sid);
-		AttendanceAccordActualData expected = JudgingStatusDomainServiceTestHelper.case9Expected(r1ResultWorking);
-
-		// then
-		assertThat(result).isEqualTo(expected);
-	}
-
-	
-	/**
 	 * case 10
 	 * 
 	 * $退勤時刻 ＝　Empty
