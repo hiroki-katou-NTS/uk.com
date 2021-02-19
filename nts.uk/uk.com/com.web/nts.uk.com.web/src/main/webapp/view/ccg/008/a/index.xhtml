@@ -6,84 +6,63 @@
 <body>
   <ui:composition template="/master/base.xhtml">
     <ui:define name="htmlHead">
-      <com:stylefile path="../../common/common.css" />
-      <com:stylefile path="ccg008.a.style.css" />
-
       <com:scriptfile set="IGNITE" />
 
-      <com:scriptfile path="./ccg008.a.service.js" />
+      <com:stylefile path="ccg008.a.style.css" />
       <com:scriptfile path="./ccg008.a.vm.js" />
 
-      <com:scriptfile path="./layout1Component.vm.js" />
-      <com:scriptfile path="./layout2Component.vm.js" />
+      <com:scriptfile path="/view/kdp/001/a/kdp001.a.component.js" of="nts.uk.at.web" />
 
-      <com:scriptfile path="/view/ktg/027/a/ktg027.a.component.js" of="nts.uk.at.web" />
-      <com:scriptfile path="/view/ktg/026/a/ktg026.a.component.js" of="nts.uk.at.web" />
-      <com:scriptfile path="/view/ktg/031/a/ktg031.a.vm.js" of="nts.uk.at.web" />
       <com:scriptfile path="/view/ktg/001/a/ktg001.a.component.js" of="nts.uk.at.web" />
       <com:scriptfile path="/view/ktg/005/a/ktg005.a.component.js" of="nts.uk.at.web" />
       <com:scriptfile path="/view/ktg/004/a/ktg004.a.component.js" of="nts.uk.at.web" />
+      <com:scriptfile path="/view/ktg/027/a/ktg027.a.component.js" of="nts.uk.at.web" />
+      <com:scriptfile path="/view/ktg/026/a/ktg026.a.component.js" of="nts.uk.at.web" />
+      
+      <!-- old widget -->
+      <com:scriptfile path="/view/ktg/031/a/ktg031.a.vm.js" of="nts.uk.at.web" />
+
     </ui:define>
     <ui:define name="content">
       <div id="functions-area">
-        <com:ko-if bind="isShowClosure()">
-          <div tabindex="2" data-bind="ntsComboBox: {
+        <div tabindex="2" data-bind="ntsComboBox: {
             name: '#[CCG008_16]',
             options: lstClosure,
             optionsValue: 'closureId',
             visibleItemsCount: 5,
-            value: closureSelected,
+            value: $vm.closureId,
             optionsText: 'closureName',
             editable: false,
             required: true,
             selectFirstIfNull: true,
             columns: [
-            { prop: 'closureId', length: 4 },
-            { prop: 'closureName', length: 8 },
-            ]}"></div>
-        </com:ko-if>
-        <com:ko-if bind="isShowSwitch()">
-          <div tabindex="3" data-bind="ntsSwitchButton: {
+              { prop: 'closureId', length: 4 },
+              { prop: 'closureName', length: 8 },
+            ]
+          },
+          css: {
+            hidden: !$vm.isShowClosure()
+          }"></div>
+        <div tabindex="3" data-bind="ntsSwitchButton: {
             name: '#[CCG008_13]',
             options: dateSwitch,
             optionsValue: 'code',
             optionsText: 'name',
-            value: selectedSwitch,
-            }">
-          </div>
-        </com:ko-if>
-        <com:ko-if bind="isShowButtonRefresh()">
-          <button class="btn-refresh" tabindex="4" data-bind="click: onClickReload"></button>
-        </com:ko-if>
-        <com:ko-if bind="isShowButtonSetting()">
-          <button class="btn-setting" tabindex="4" data-bind="click: openScreenE"></button>
-        </com:ko-if>
+            value: $vm.currentOrNextMonth,
+          }, css: {
+            hidden: !$vm.isShowSwitch()
+          }">
+        </div>
+        <button class="btn-refresh" tabindex="4"
+          data-bind="click: function() { $vm.callApiTopPage() }, css: { hidden: !$vm.isShowButtonRefresh() }"></button>
+        <button class="btn-setting" tabindex="4"
+          data-bind="click: function() { $vm.openScreenE() }, css: { hidden: !$vm.isShowButtonSetting() }"></button>
       </div>
       <div id="contents-area">
-        <div class="content-top">
-          <com:ko-if bind="layoutDisplayType() === 2 || layoutDisplayType() === 3">
-            <div class="contents_2" id="F2"
-              data-bind="component: { name: 'layout2-component', params: {item: paramWidgetLayout2, isLayout: 2}}">
-            </div>
-          </com:ko-if>
-          <com:ko-if bind="visible()">
-            <div class="widget-group" data-bind="component: { 
-                    name: 'layout1-component',
-                    params: {
-                      item: paramIframe1
-                    }
-                  }"></div>
-          </com:ko-if>
-          <com:ko-if bind="layoutDisplayType() === 1">
-            <div class="widget-group"
-              data-bind="component: { name: 'layout2-component', params: {item: paramWidgetLayout2, isLayout: 2}}">
-            </div>
-          </com:ko-if>
-          <com:ko-if bind="layoutDisplayType() === 3">
-            <div class="widget-group"
-              data-bind="component: { name: 'layout2-component', params: {item: paramWidgetLayout3, isLayout: 3}}">
-            </div>
-          </com:ko-if>
+        <div class="widget-home cf" data-bind="css: $vm.classLayoutName">
+          <div class="widget-left" data-bind="widget-group: $vm.widgetLeft"></div>
+          <div class="widget-center" data-bind="widget-frame: $vm.widgetCenter"></div>
+          <div class="widget-right" data-bind="widget-group: $vm.widgetRight"></div>
         </div>
       </div>
     </ui:define>
@@ -91,3 +70,28 @@
 </body>
 
 </html>
+
+<!--
+          <com:ko-if bind="layoutDisplayType() === 2 || layoutDisplayType() === 3">
+            <div class="contents_2" id="F2"
+              data-bind="component: { name: 'layout2-component', params: { item: paramWidgetLayout2, isLayout: 2 } }">
+            </div>
+          </com:ko-if>
+          <com:ko-if bind="visible()">
+            <div class="widget-group" data-bind="component: { 
+                    name: 'layout1-component',
+                    params: {
+                      item: $vm.paramIframe1
+                    }
+                  }"></div>
+          </com:ko-if>
+          <com:ko-if bind="layoutDisplayType() === 1">
+            <div class="widget-group"
+              data-bind="component: { name: 'layout2-component', params: { item: paramWidgetLayout2, isLayout: 2} }">
+            </div>
+          </com:ko-if>
+          <com:ko-if bind="layoutDisplayType() === 3">
+            <div class="widget-group"
+              data-bind="component: { name: 'layout2-component', params: {item: paramWidgetLayout3, isLayout: 3 } }">
+            </div>
+          </com:ko-if>-->
