@@ -92,6 +92,14 @@ module nts.uk.ui.ktg004.a {
 
         constructor(private params: { currentOrNextMonth: 1 | 2; }) {
             super();
+
+            if (this.params === undefined) {
+                this.params = { currentOrNextMonth: 1 };
+            }
+
+            if (this.params.currentOrNextMonth === undefined) {
+                this.params.currentOrNextMonth = 1;
+            }
         }
 
         created() {
