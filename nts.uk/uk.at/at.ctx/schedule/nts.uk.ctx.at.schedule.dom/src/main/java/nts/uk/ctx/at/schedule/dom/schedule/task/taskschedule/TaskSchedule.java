@@ -25,7 +25,7 @@ public class TaskSchedule implements DomainValue {
 	private final List<TaskScheduleDetail> details;
 	
 	/**
-	 * emptyListで作る
+	 * 作業なしで作る
 	 * @return
 	 */
 	public static TaskSchedule createWithEmptyList() {
