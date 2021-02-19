@@ -18,8 +18,8 @@ module nts.uk.at.view.ccg005.a.screenModel {
 
   @component({
     name: 'ccg005-component',
-    template: `<div style="display: flex; position: relative; overflow-x: hidden; overflow-y: auto; height: 440px" id="ccg005-watching">
-    <div data-bind="widget-content: 200" id="ccg005-content">
+    template: `<div data-bind="widget-content: 200, default: 440" style="display: flex; position: relative; overflow: hidden;" id="ccg005-watching">
+    <div  id="ccg005-content">
       <div style="margin: 0 10px;">
         <div class="grade-header-top">
           <!-- A0 -->
@@ -55,7 +55,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
                         placeholder: $component.$i18n('CCG005_35')
                       }))
                     }, visible: $component.isSameOrBeforeBaseDate"/>
-                    <i class="ccg005-clearbtn" style="position: absolute; right: 5px; visibility: hidden;" data-bind="ntsIcon: {no: 198, width: 20, height: 28}"></i>
+                    <i class="ccg005-clearbtn" style="position: absolute; right: 5px; display: none;" data-bind="click: $component.deleteComment(), ntsIcon: {no: 198, width: 20, height: 28}"></i>
                   </div>
                 </div>
               </td>
@@ -422,6 +422,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
     #background-color-holiday {
       background-color: #D9D9D9;
     }
+
   </style>`
   })
 
@@ -466,6 +467,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
     activatedStatus: KnockoutObservable<number> = ko.observable();
     activityStatusIcon: KnockoutComputed<number> = ko.computed(() => this.initActivityStatus(this.activityStatus()));
     businessName: KnockoutObservable<string> = ko.observable('');
+    originalComment: KnockoutObservable<string> = ko.observable('');
     comment: KnockoutObservable<string> = ko.observable('');
     commentDate: KnockoutObservable<any> = ko.observable('');
     avatarPath: KnockoutObservable<string> = ko.observable('');
@@ -683,14 +685,22 @@ module nts.uk.at.view.ccg005.a.screenModel {
 
     private initFocusA1_4() {
       const vm = this;
+      let isDelAble: boolean = false;
+      $('.ccg005-clearbtn').hover(
+        () => {
+         isDelAble = true;
+        },
+        () => {
+          isDelAble = false;
+        });
 
-      $('.CCG005-A1_4-border')
-        .focusin(() => $('.ccg005-clearbtn').css('visibility', 'visible'))
-        .focusout(() => $('.ccg005-clearbtn').css('visibility', 'hidden'));
-
-      $('.ccg005-clearbtn').click(() => {
-        vm.deleteComment();
-        $('.CCG005-A1_4-border').focusout();
+      $('#CCG005-A1_4')
+      .focusin(() => $('.ccg005-clearbtn').css('display', 'inline'))
+      .focusout(() => {
+        $('.ccg005-clearbtn').css('display', 'none');
+        if(isDelAble) {
+          vm.deleteComment();
+        }
       });
     }
 
@@ -1069,6 +1079,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
 
       // A1_4
       if (atdInfo.commentDto) {
+        vm.originalComment(atdInfo.commentDto.comment);
         vm.comment(atdInfo.commentDto.comment);
         vm.commentDate(atdInfo.commentDto.date);
       }
@@ -1118,11 +1129,18 @@ module nts.uk.at.view.ccg005.a.screenModel {
     /**
      * コメントを削除する
      */
-    private deleteComment() {
+    public deleteComment() {
       const vm = this;
+
+      // $('#CCG005-A1_4').blur();
+
       if (_.isEmpty(vm.comment())) {
         return;
       }
+      // //set input value to comment in db
+      // if(!vm.originalComment().match(vm.comment())) {
+      //   return vm.comment(vm.originalComment());
+      // }
       vm.comment('');
       const command = {
         date: moment.utc(vm.commentDate()).toISOString(),
