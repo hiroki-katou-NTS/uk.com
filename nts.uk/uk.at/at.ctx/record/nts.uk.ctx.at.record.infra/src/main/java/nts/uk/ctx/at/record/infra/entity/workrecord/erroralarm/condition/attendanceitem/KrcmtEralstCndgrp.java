@@ -36,6 +36,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTime
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimesValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimesValueDay;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.multimonth.KrcmtAlstChkmltUdcsum;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.multimonth.KrcmtAlstChkmltUd;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.multimonth.KrcmtAlstChkmltUdcavg;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.multimonth.KrcmtAlstChkmltUdcont;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.multimonth.KrcmtAlstChkmltUdccrsp;
@@ -118,7 +119,11 @@ public class KrcmtEralstCndgrp extends ContractUkJpaEntity implements Serializab
 	@OneToOne
 	@JoinColumns({ @JoinColumn(name = "CONDITION_GROUP_ID", referencedColumnName = "ERAL_CHECK_ID", insertable = false, updatable = false) })
 	public KrcmtAlstChkmltUdccrsp krcmtMulMonCondCosp;
-	
+	@OneToOne
+	@JoinColumns({ 
+		@JoinColumn(name = "CONDITION_GROUP_ID", referencedColumnName = "ERAL_CHECK_ID", insertable = false, updatable = false),
+		@JoinColumn(name = "ATD_ITEM_CON_NO", referencedColumnName = "COND_NO", insertable = false, updatable = false)})
+	public KrcmtAlstChkmltUd krcmtMulMonAlarmCheck;
 	@Override
 	protected Object getKey() {
 		return this.krcmtErAlAtdItemConPK;
