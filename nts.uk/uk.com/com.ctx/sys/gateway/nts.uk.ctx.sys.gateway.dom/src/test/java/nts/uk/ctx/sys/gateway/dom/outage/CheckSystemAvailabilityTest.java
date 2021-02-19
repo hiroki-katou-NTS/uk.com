@@ -23,7 +23,7 @@ public class CheckSystemAvailabilityTest {
 	@Mocked PlannedOutageByCompany outageByCompany;
 
 	// システム利用停止なし
-	@Test
+	//@Test
 	public void no_outage() {
 		
 		new Expectations() {{
@@ -36,7 +36,7 @@ public class CheckSystemAvailabilityTest {
 	}
 
 	// システム利用停止のデータはあるが「通常運用中」ステータス
-	@Test
+	//@Test
 	public void available_outage() {
 		
 		new Expectations() {{
@@ -58,7 +58,7 @@ public class CheckSystemAvailabilityTest {
 	}
 
 	// テナントで利用停止だが利用可能
-	@Test
+	//@Test
 	public void outage_tenant_available() {
 		
 		new Expectations() {{
@@ -74,7 +74,7 @@ public class CheckSystemAvailabilityTest {
 	}
 
 	// テナントで利用停止により利用不可
-	@Test
+	//@Test
 	public void outage_tenant_reject() {
 		
 		new Expectations() {{
@@ -90,7 +90,7 @@ public class CheckSystemAvailabilityTest {
 	}
 
 	// 会社で利用停止だが利用可能
-	@Test
+	//@Test
 	public void outage_company_available() {
 		
 		new Expectations() {{
@@ -106,7 +106,7 @@ public class CheckSystemAvailabilityTest {
 	}
 
 	// 会社で利用停止により利用不可
-	@Test
+	//@Test
 	public void outage_company_reject() {
 		
 		new Expectations() {{

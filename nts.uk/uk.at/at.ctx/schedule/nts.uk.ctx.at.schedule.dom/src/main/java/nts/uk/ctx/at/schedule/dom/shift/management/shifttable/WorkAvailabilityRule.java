@@ -43,6 +43,7 @@ public interface WorkAvailabilityRule {
 	boolean isOverHolidayMaxDays(Require require, List<WorkAvailabilityOfOneDay> workAvailabilityList);
 	
 	/**
+	 * 基準日に対応する締切日と期間を取得する
 	 * @param baseDate 基準日
 	 */
 	DeadlineAndPeriodOfWorkAvailability getCorrespondingDeadlineAndPeriod(GeneralDate baseDate);
