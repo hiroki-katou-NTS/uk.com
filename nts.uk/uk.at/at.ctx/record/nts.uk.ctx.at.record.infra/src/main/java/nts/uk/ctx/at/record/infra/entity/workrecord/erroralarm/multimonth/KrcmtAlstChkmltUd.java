@@ -8,7 +8,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -18,7 +17,6 @@ import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.ErAlAttendanceItemCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.SingleValueCompareType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.TypeCheckWorkRecordMultipleMonth;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.HowDisplayMessage;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.MessageDisplay;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.NameAlarmExtractionCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.multimonth.MulMonthAlarmCheckCond;
@@ -72,9 +70,8 @@ private static final long serialVersionUID = 1L;
 	@Basic(optional = false)
 	public String messageDisplay;
 	
-	@OneToOne(cascade = CascadeType.ALL, mappedBy="krcmtMulMonAlarmCheck", orphanRemoval=true)
-	public KrcmtEralstCndgrp krcmtErAlAtdItemCon;
-	
+	@OneToOne(cascade = CascadeType.ALL, mappedBy="KrcmtAlstChkmltUd", orphanRemoval=true)
+	public KrcmtEralstCndgrp krcmtEralstCndgrp;
 	@Override
 	protected Object getKey() {
 		return pk;
@@ -97,7 +94,7 @@ private static final long serialVersionUID = 1L;
 	}
 	
 	public MulMonthAlarmCheckCond toDomain() {
-		ErAlAttendanceItemCondition<?> erAlAttendanceItemCondition = this.krcmtErAlAtdItemCon.toDomain(this.krcmtErAlAtdItemCon, this.cid, null);
+		ErAlAttendanceItemCondition<?> erAlAttendanceItemCondition = this.krcmtEralstCndgrp.toDomain(this.krcmtEralstCndgrp, this.cid, null);
 		MulMonthAlarmCheckCond domain = new MulMonthAlarmCheckCond(this.cid,
 				this.pk.eralCheckId,
 				this.pk.condNo,

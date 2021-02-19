@@ -35,11 +35,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedAmou
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimeDuration;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimesValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimesValueDay;
-import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.multimonth.KrcmtAlstChkmltUdcsum;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.multimonth.KrcmtAlstChkmltUd;
-import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.multimonth.KrcmtAlstChkmltUdcavg;
-import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.multimonth.KrcmtAlstChkmltUdcont;
-import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.multimonth.KrcmtAlstChkmltUdccrsp;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
@@ -104,26 +100,13 @@ public class KrcmtEralstCndgrp extends ContractUkJpaEntity implements Serializab
 	@JoinColumns({ @JoinColumn(name = "CONDITION_GROUP_ID", referencedColumnName = "CONDITION_GROUP_ID", insertable = false, updatable = false) })
 	public KrcmtEralstCndexpiptchk krcstErAlConGroup;
 
-	@OneToOne
-	@JoinColumns({ @JoinColumn(name = "CONDITION_GROUP_ID", referencedColumnName = "ERAL_CHECK_ID", insertable = false, updatable = false) })
-	public KrcmtAlstChkmltUdcsum krcmtMulMonCond;
-	
-	@OneToOne
-	@JoinColumns({ @JoinColumn(name = "CONDITION_GROUP_ID", referencedColumnName = "ERAL_CHECK_ID", insertable = false, updatable = false) })
-	public KrcmtAlstChkmltUdcavg krcmtMulMonCondAvg;
-	
-	@OneToOne
-	@JoinColumns({ @JoinColumn(name = "CONDITION_GROUP_ID", referencedColumnName = "ERAL_CHECK_ID", insertable = false, updatable = false) })
-	public KrcmtAlstChkmltUdcont krcmtMulMonCondCont;
-	
-	@OneToOne
-	@JoinColumns({ @JoinColumn(name = "CONDITION_GROUP_ID", referencedColumnName = "ERAL_CHECK_ID", insertable = false, updatable = false) })
-	public KrcmtAlstChkmltUdccrsp krcmtMulMonCondCosp;
+
 	@OneToOne
 	@JoinColumns({ 
 		@JoinColumn(name = "CONDITION_GROUP_ID", referencedColumnName = "ERAL_CHECK_ID", insertable = false, updatable = false),
 		@JoinColumn(name = "ATD_ITEM_CON_NO", referencedColumnName = "COND_NO", insertable = false, updatable = false)})
-	public KrcmtAlstChkmltUd krcmtMulMonAlarmCheck;
+	public KrcmtAlstChkmltUd KrcmtAlstChkmltUd;
+	
 	@Override
 	protected Object getKey() {
 		return this.krcmtErAlAtdItemConPK;

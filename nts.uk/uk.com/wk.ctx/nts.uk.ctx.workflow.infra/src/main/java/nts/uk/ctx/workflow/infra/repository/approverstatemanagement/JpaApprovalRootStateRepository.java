@@ -892,4 +892,18 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 					}).collect(Collectors.toList());
 			}));
 	}
+
+	@Override
+	public List<ApprovalRootState> findByApproverAndPeriod(String companyID, GeneralDate startDate, GeneralDate endDate,
+			List<String> approverIDs) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<ApprovalRootState> findApprovalRootStateIds(String companyId, List<String> approverIds,
+			GeneralDate startDate, GeneralDate endDate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
