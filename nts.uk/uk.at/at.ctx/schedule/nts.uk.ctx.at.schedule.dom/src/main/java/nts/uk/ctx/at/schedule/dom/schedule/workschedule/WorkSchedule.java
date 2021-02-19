@@ -87,29 +87,6 @@ public class WorkSchedule implements DomainAggregate {
 	private Optional<OutingTimeOfDailyAttd> outingTime;
 
 	/**
-	 * TODO 勤務予定に外出時間帯を追加、あとで直す！！
-	 * 外出時間帯を追加したことによってコンパイルエラーが発生するため、
-	 * 一旦仮で外出時間帯以外を受け付けるコンストラクタを用意。
-	 */
-//	public WorkSchedule(String sid, GeneralDate date, ConfirmedATR confirmedAtr
-//			, WorkInfoOfDailyAttendance workInfo, AffiliationInforOfDailyAttd affInfo
-//			, Optional<BreakTimeOfDailyAttd> breakTime, List<EditStateOfDailyAttd> editState
-//			, Optional<TimeLeavingOfDailyAttd> timeLeaving, Optional<AttendanceTimeOfDailyAttendance> attendanceTime
-//			, Optional<ShortTimeOfDailyAttd> sortTimeWork) {
-//
-//		this.employeeID = sid;
-//		this.ymd = date;
-//		this.confirmedATR = confirmedAtr;
-//		this.workInfo = workInfo;
-//		this.affInfo = affInfo;
-//		this.lstBreakTime = breakTime;
-//		this.lstEditState = editState;
-//		this.optTimeLeaving = timeLeaving;
-//		this.optAttendanceTime = attendanceTime;
-//		this.optSortTimeWork = sortTimeWork;
-//		this.outingTime = Optional.empty();
-//	}
-	/**
 	 * 作る
 	 * @param require
 	 * @param employeeId 社員ID

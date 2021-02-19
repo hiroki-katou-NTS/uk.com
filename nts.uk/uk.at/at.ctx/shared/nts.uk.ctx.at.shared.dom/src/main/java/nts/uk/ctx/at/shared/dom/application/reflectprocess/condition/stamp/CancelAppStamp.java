@@ -122,7 +122,7 @@ public class CancelAppStamp {
 	}
 	
 	private static void removeStamp(WorkStamp stamp) {
-		stamp.setTimeDay(new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.APPLICATION, null), null));
+		stamp.setTimeDay(new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.APPLICATION, Optional.empty()), null));
 		stamp.setLocationCode(Optional.empty());
 	}
 

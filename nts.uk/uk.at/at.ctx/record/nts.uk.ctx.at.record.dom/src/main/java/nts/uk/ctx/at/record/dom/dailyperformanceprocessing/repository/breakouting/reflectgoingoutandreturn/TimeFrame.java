@@ -54,8 +54,8 @@ public class TimeFrame {
 		
 		domain.numberOfReflections = numberOfReflections;
 		domain.frameNo = frameNo;
-		domain.start = Optional.of(new TimeActualStamp(start,start,1));
-		domain.end =  Optional.of(new TimeActualStamp(end,end,1));
+		domain.start = Optional.of(new TimeActualStamp(start, start, 1, Optional.empty(), Optional.empty()));
+		domain.end =  Optional.of(new TimeActualStamp(end, end, 1, Optional.empty(), Optional.empty()));
 		domain.goOutReason = Optional.ofNullable(goOutReason);
 		
 		return domain;

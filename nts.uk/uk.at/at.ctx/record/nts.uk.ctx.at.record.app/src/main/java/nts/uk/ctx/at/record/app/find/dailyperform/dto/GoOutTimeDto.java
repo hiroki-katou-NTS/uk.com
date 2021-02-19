@@ -97,11 +97,11 @@ public class GoOutTimeDto implements ItemConst, AttendanceItemDataGate {
 	public OutingTimeSheet toDomain(){
 		return new OutingTimeSheet(
 				new OutingFrameNo(no),
-				outing == null ? Optional.empty() : Optional.of(TimeStampDto.toDomain(outing)),
+				outing == null ? Optional.empty() : Optional.ofNullable(TimeStampDto.toDomain(outing)),
 				outingTimeCalc == null ? AttendanceTime.ZERO : new AttendanceTime(outingTimeCalc),
 				outingTime == null ? AttendanceTime.ZERO : new AttendanceTime(outingTime), 
 				reason(), 
-				comeBack == null ? Optional.empty() : Optional.of(TimeStampDto.toDomain(comeBack)));
+				comeBack == null ? Optional.empty() : Optional.ofNullable(TimeStampDto.toDomain(comeBack)));
 	}
 	
 	

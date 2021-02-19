@@ -54,8 +54,8 @@ public class ReturnDirectTimeCorrection {
 			outingTimeSheet.ifPresent(x -> {
 				//outingTimeSheets.set(index, setOutTimeSheet(x, leavWork));
 				//#111712
-				//戻り.打刻.時刻.時刻←退勤.打刻.時刻.時刻
-				//戻り.打刻.時刻.時刻変更理由.時刻変更手段←”自動セット”
+				//戻り.時刻.時刻←退勤.打刻.時刻.時刻
+				//戻り.時刻.時刻変更理由.時刻変更手段←”自動セット”
 				WorkStamp stampLeav= leavWork.getLeaveStamp().map(y -> y.getStamp().orElse(null)).orElse(null);
 				x.setComeBack(Optional.of(
 						new WorkStamp(new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, Optional.empty()),

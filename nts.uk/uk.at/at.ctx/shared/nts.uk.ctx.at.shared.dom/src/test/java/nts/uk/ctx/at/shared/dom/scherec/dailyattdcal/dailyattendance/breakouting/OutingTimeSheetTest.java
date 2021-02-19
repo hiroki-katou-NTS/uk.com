@@ -31,10 +31,10 @@ public class OutingTimeSheetTest {
 	@Test
 	public void getters() {
 		//外出
-		val goOut = Helper.createTimeAcutualStamp(new TimeWithDayAttr(2000));
+		val goOut = Helper.createStamp(new TimeWithDayAttr(2000));
 
 		//戻り
-		val comeBack = Helper.createTimeAcutualStamp(new TimeWithDayAttr(3000));
+		val comeBack = Helper.createStamp(new TimeWithDayAttr(3000));
 
 		//外出時間帯
 		val outingTime = Helper.createOutingTime(
@@ -51,7 +51,7 @@ public class OutingTimeSheetTest {
 	public void getTimeZone_empty_1() {
 
 		//外出
-		val goOut = Helper.createTimeAcutualStamp(new TimeWithDayAttr(1600));
+		val goOut = Helper.createStamp(new TimeWithDayAttr(1600));
 
 		//戻り empty
 
@@ -81,10 +81,10 @@ public class OutingTimeSheetTest {
 	public void getTimeZone_empty_2() {
 
 		//外出
-		val goOut = Helper.createTimeAcutualStamp(new TimeWithDayAttr(2000));
+		val goOut = Helper.createStamp(new TimeWithDayAttr(2000));
 
 		//戻り
-		val comeBack = Helper.createTimeAcutualStamp(new TimeWithDayAttr(1000));
+		val comeBack = Helper.createStamp(new TimeWithDayAttr(1000));
 
 		//外出時間帯
 		val outingTime = Helper.createOutingTime(
@@ -113,10 +113,10 @@ public class OutingTimeSheetTest {
 	public void getTimeZone_empty_3() {
 
 		//外出
-		val goOut = Helper.createTimeAcutualStamp(new TimeWithDayAttr(2000));
+		val goOut = Helper.createStamp(new TimeWithDayAttr(2000));
 
 		//戻り
-		val comeBack = Helper.createTimeAcutualStamp(new TimeWithDayAttr(2000));
+		val comeBack = Helper.createStamp(new TimeWithDayAttr(2000));
 
 		//外出時間帯
 		val outingTime = Helper.createOutingTime(
@@ -143,10 +143,10 @@ public class OutingTimeSheetTest {
 	public void getTimeZone_successfully() {
 
 		//外出
-		val goOut = Helper.createTimeAcutualStamp(new TimeWithDayAttr(2000));
+		val goOut = Helper.createStamp(new TimeWithDayAttr(2000));
 
 		//戻り
-		val comeBack = Helper.createTimeAcutualStamp(new TimeWithDayAttr(3000));
+		val comeBack = Helper.createStamp(new TimeWithDayAttr(3000));
 
 		//外出時間帯
 		val outingTime = Helper.createOutingTime(
@@ -176,16 +176,6 @@ public class OutingTimeSheetTest {
 		public static WorkStamp createStamp(TimeWithDayAttr timeWithDay) {
 
 			return WorkStampTest.WorkStampHelper.createWorkStampWithTimeWithDay(timeWithDay.v());
-		}
-
-		/**
-		 * 時刻（日区分付き）を指定して勤怠打刻(実打刻付き)を作る
-		 * 時刻以外はdummy
-		 * @param stamp
-		 * @return
-		 */
-		public static WorkStamp createTimeAcutualStamp (TimeWithDayAttr stamp) {
-			return  Helper.createStamp(stamp);
 		}
 
 		/**

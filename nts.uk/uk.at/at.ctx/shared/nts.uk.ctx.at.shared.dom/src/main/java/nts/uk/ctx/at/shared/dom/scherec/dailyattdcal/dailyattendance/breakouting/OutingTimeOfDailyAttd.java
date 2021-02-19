@@ -49,7 +49,7 @@ public class OutingTimeOfDailyAttd {
 			WorkTimeMethodSet workTimeMethodSet,
 			Optional<FlowWorkRestTimezone> fluRestTime,
 			Optional<FlowWorkRestSettingDetail> flowDetail,
-			Optional<WorkTimezoneCommonSet> commonSet) {
+			RoundingTime roundingTime) {
 		
 		/** △外出を取得 */
 		List<OutingTimeSheet> outtingTimeSheetreturnList = (dedAtr.isDeduction())?
@@ -63,8 +63,7 @@ public class OutingTimeOfDailyAttd {
 																			 .filter(ts -> ts.isCalcState())
 																			 .collect(Collectors.toList());
 																			 
-		RoundingTime roundingTimeinfo = commonSet.get().getStampSet().getRoundingTime();																	 
-		List<OutingTimeSheet> roundingOutingTime = roundingTimeinfo.roundingOutingTime(outtingTimeSheetreturnList);
+		List<OutingTimeSheet> roundingOutingTime = roundingTime.roundingOutingTime(outtingTimeSheetreturnList);
 																			 
 		List<TimeSheetOfDeductionItem> returnList = roundingOutingTime.stream()
 															 .map(tc -> tc.toTimeSheetOfDeductionItem())
