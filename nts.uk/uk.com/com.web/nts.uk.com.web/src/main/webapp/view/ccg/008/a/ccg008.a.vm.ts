@@ -1,419 +1,543 @@
 module nts.uk.com.view.ccg008.a.screenModel {
-  import setShared = nts.uk.ui.windows.setShared;
-  import getShared = nts.uk.ui.windows.getShared;
-  import ntsFile = nts.uk.request.file;
-  import character = nts.uk.characteristics;
+	import request = nts.uk.request;
+	const MINUTESTOMILISECONDS = 60000;
 
-  const MINUTESTOMILISECONDS = 60000;
-  const API = {
-    getCache: "screen/com/ccg008/get-cache",
-    getClosure: "screen/com/ccg008/get-closure",
-    getSetting: "screen/com/ccg008/get-setting",
-    getDisplayTopPage: "toppage/getTopPage",
-    extract: "sys/portal/createflowmenu/extractListFileId",
-    getLoginUser: "screen/com/ccg008/get-user"
-}
-  @bean()
-  export class ViewModel extends ko.ViewModel {
-    topPageCode: KnockoutObservable<string> = ko.observable("");
-    isStart: boolean;
-    dateSwitch: KnockoutObservableArray<any> = ko.observableArray([
-      { code: "1", name: nts.uk.resource.getText("CCG008_14") },
-      { code: "2", name: nts.uk.resource.getText("CCG008_15") },
-    ]);
-    selectedSwitch: KnockoutObservable<any> = ko.observable(null);
-    switchVisible: KnockoutObservable<boolean>;
-    isShowClosure: KnockoutObservable<boolean> = ko.observable(false);
-    closureSelected: KnockoutObservable<number> = ko.observable(1);
-    lstClosure: KnockoutObservableArray<ItemCbbModel> = ko.observableArray([]);
-    reloadInterval: KnockoutObservable<number> = ko.observable(0);
-    paramWidgetLayout2: KnockoutObservableArray<WidgetSettingDto> = ko.observableArray([]);
-    paramWidgetLayout3: KnockoutObservableArray<WidgetSettingDto> = ko.observableArray([]);
-    paramIframe1: KnockoutObservable<DisplayInTopPage> = ko.observable();
-    topPageSetting: any;
-    isShowSwitch: KnockoutObservable<boolean> = ko.observable(false);
-    isShowButtonRefresh: KnockoutObservable<boolean> = ko.observable(false);
-    isShowButtonSetting: KnockoutObservable<boolean> = ko.observable(false);
-    dataToppage: KnockoutObservable<DataTopPage> = ko.observable(null);
-    layoutDisplayType: KnockoutObservable<number> = ko.observable(null);
-    visible: KnockoutObservable<boolean> = ko.observable(false);
-    reload: any;
+	const D_FORMAT = 'YYYY/MM/DD';
 
-    created() {
-      const vm = this;
-      const transferData = __viewContext.transferred.value;
-      let code = transferData && transferData.topPageCode ? transferData.topPageCode : "";
-      const fromScreen = transferData && transferData.screen ? transferData.screen : "other";
-      const itemsUrl = nts.uk.request.QueryString.parseUrl(location.href).items
-      const toppageCode = (itemsUrl as any).toppagecode ? (itemsUrl as any).toppagecode : "";
-      vm.$blockui('grayout');
-      vm.$ajax("com", API.getLoginUser).then((user) => {
-        if(__viewContext.user.isEmployee) {
-          vm.$ajax("com", API.getSetting).then((res) => {
-            if (res.reloadInterval) {
-              vm.reloadInterval(res.reloadInterval);
-            }
-            if (user && res) {
-              vm.isShowButtonSetting(true);
-            }
-            vm.topPageSetting = res;
-            //var fromScreen = "login";
-            vm.$ajax("com", API.getCache).then((data: any) => {
-              character.save("cache", data).then(() => {
-                vm.topPageCode(toppageCode);
-                character.restore("cache").then((obj: any) => {
-                  if (obj) {
-                    let endDate = moment.utc(obj.endDate, "YYYY/MM/DD").add(vm.topPageSetting.switchingDate, 'days').format("YYYY/MM/DD");
-                    if (moment.utc(endDate, 'YYYY/MM/DD')
-                        .isBefore(moment.utc(moment.utc().format('YYYY/MM/DD'), 'YYYY/MM/DD'))
-                    ) {
-                      vm.selectedSwitch(2);
-                      obj.currentOrNextMonth = 2;
-                    } else {
-                      vm.selectedSwitch(1);
-                    }
-                    vm.closureSelected(obj.closureId);
-                    nts.uk.ui.windows.setShared("cache", obj);
-                  } else {
-                    vm.closureSelected(1);
-                    vm.selectedSwitch(null);
-                  }
-                });
-              });
-            });
-          vm.dataToppage(null);
-          });
-        }
-      }).always(() => vm.$blockui("clear"));
+	const API = {
+		getCache: "screen/com/ccg008/get-cache",
+		getClosure: "screen/com/ccg008/get-closure",
+		getSetting: "screen/com/ccg008/get-setting",
+		getDisplayTopPage: "toppage/getTopPage",
+		extract: "sys/portal/createflowmenu/extractListFileId",
+		getLoginUser: "screen/com/ccg008/get-user"
+	};
 
-      // 会社の締めを取得する - Lấy closure company
-      service.getClosure().done((data: any) => {
-        vm.lstClosure(data);
-      });
-      _.extend(window, { vm: self });
-    }
+	const getWidgetName = (type: number) => {
+		switch (type) {
+			case 0:
+				return "ktg-005-a";
+			case 1:
+				return "ktg-001-a";
+			case 2:
+				return "ktg-004-a";
+			case 3:
+				return "ktg-026-a";
+			case 4:
+				return "ktg-027-a";
+			case 5:
+				return "kdp-001-a";
+			case 6:
+				return "ktg031-component";
+			case 7:
+				return 'ccg005-component';
+			default:
+				return '';
+		}
+	}
 
-    mounted() {
-      const vm = this;
-      vm.selectedSwitch.subscribe(function (value) {
-        character.save("cache", new Cache(vm.closureSelected(), value));
-        nts.uk.ui.windows.setShared("cache", new Cache(vm.closureSelected(), value));
-        vm.callApiTopPage(vm);
-      });
+	type LAYOUT_DISPLAY_TYPE = null | 0 | 1 | 2 | 3;
 
-      vm.closureSelected.subscribe(function (value) {
-        vm.selectedSwitch.valueHasMutated();
-      });
+	type WIDGET = {
+		name: string;
+		params: any;
+	};
 
-      vm.reloadInterval.subscribe((data: any) => {
-        let minutes = vm.getMinutes(data);
-        let miliSeconds = minutes * MINUTESTOMILISECONDS;
-          clearInterval(vm.reload);
-          if (data !== 0) {
-            vm.reload =  setInterval(() => {
-              if (vm.paramWidgetLayout2().length > 0 ||  vm.paramWidgetLayout3().length > 0) {
-                vm.callApiTopPage(vm);
-              }
-            }, miliSeconds);
-          }
-      });
+	@handler({
+		bindingName: 'widget-group',
+		validatable: true,
+		virtual: false
+	})
+	export class WidgetGroupBindingHandler implements KnockoutBindingHandler {
+		init = (element: HTMLElement, valueAccessor: () => KnockoutObservableArray<WIDGET>, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: ViewModel, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } => {
+			element.removeAttribute('data-bind');
 
-      $('#content-top').focus()
-    }
+			if (element.tagName !== 'DIV') {
+				element.innerHTML = 'Please use this binding for only [DIV] tag.';
 
-    callApiTopPage(vm: any) {
-      const transferData = __viewContext.transferred.value;
-      let code = transferData && transferData.topPageCode ? transferData.topPageCode : "";
-      const fromScreen = transferData && transferData.screen ? transferData.screen : "other";
-      const itemsUrl = nts.uk.request.QueryString.parseUrl(location.href).items
-      const toppageCode = (itemsUrl as any).toppagecode ? (itemsUrl as any).toppagecode : "";
-      if(code === "" && toppageCode !== "") {
-        code = toppageCode
-      }
-      let topPageSetting: any;
-      vm.$blockui('grayout');
-      vm.$ajax("com", API.getSetting).then((res: any) => {
-        topPageSetting = res;
-        const param = {
-          topPageSetting: topPageSetting,
-          fromScreen: fromScreen,
-          topPageCode: code,
-        };
-        vm.layoutDisplayType(null);
-        vm.$ajax("com", API.getDisplayTopPage, param).then((data: DataTopPage) => {
-          if (data.displayTopPage) {
-          vm.layoutDisplayType(data.displayTopPage.layoutDisplayType);
-          }
-          vm.getToppage(data);
-        });
-      })
-      .always(() => vm.$blockui("clear"));
-    }
+				return;
+			}
 
-    onClickReload() {
-      const vm = this;
-      this.callApiTopPage(vm);
-    }
+			const items = valueAccessor();
 
-    getToppage(data: DataTopPage) {
-      const vm = this;
-      if (data.displayTopPage && data.displayTopPage.layoutDisplayType !== 0 && data.displayTopPage.layout2.length > 0) {
-        vm.isShowButtonRefresh(true);
-      }
-      const transferData = __viewContext.transferred.value;
-      const fromScreen = transferData && transferData.screen ? transferData.screen : "other";
-      if(fromScreen === 'login'){
-        if (vm.topPageSetting.menuClassification !== MenuClassification.TopPage && vm.topPageSetting.loginMenuCode !== '0000') {
-          if (data.standardMenu.url) {
-            if (!!data.standardMenu.url.split("web/")[1]) {
-               // show standardmenu
-              const res = "/" + data.standardMenu.url.split("web/")[1];
-              const topPageUrl = "/view/ccg/008/a/index.xhtml";
-              if (res && topPageUrl !== res.trim()) {
-                if (_.includes(data.standardMenu.url, ".at.")) {
-                  nts.uk.request.jump("at", res);
-                } else {
-                  nts.uk.request.jump(res);
-                }
-              }
-            }
-          }
-          // show toppage
-        } else {
-          const layout1 = data.displayTopPage.layout1;
-          const layout2 = data.displayTopPage.layout2;
-          const layout3 = data.displayTopPage.layout3;
-          vm.visible(true)
-          if (layout1) {
-            vm.paramIframe1(data.displayTopPage);
-          }
-          if (layout2) {
-            _.each(layout2, (item: WidgetSettingDto) => {
-              if([0,1,2,3,4].indexOf(item.widgetType) > -1) {
-                vm.isShowSwitch(true);
-              }
-              if (item.widgetType === 1) {
-                vm.isShowClosure(true);
-              }
-              
-            });
-            vm.paramWidgetLayout2(layout2);
-          }
-          if (layout3) {
-            _.each(layout3, (item: WidgetSettingDto) => {
-              if([0,1,2,3,4].indexOf(item.widgetType) > -1) {
-                vm.isShowSwitch(true);
-              }
-            
-              if (item.widgetType === 1) {
-                vm.isShowClosure(true);
-              }
-            });
-            vm.paramWidgetLayout3(layout3);
-          }
-        }
-      } else {
-        const layout1 = data.displayTopPage.layout1;
-        const layout2 = data.displayTopPage.layout2;
-        const layout3 = data.displayTopPage.layout3;
-        vm.visible(true)
-        if (layout1) {
-          vm.paramIframe1(data.displayTopPage);
-        }
-        if (layout2) {
-          _.each(layout2, (item: WidgetSettingDto) => {
-            if([0,1,2,3,4].indexOf(item.widgetType) > -1) {
-              vm.isShowSwitch(true);
-            }
-            if (item.widgetType === 1) {
-              vm.isShowClosure(true);
-            } 
-          });
-          vm.paramWidgetLayout2(layout2);
-        }
-        if (layout3) {
-          _.each(layout3, (item: WidgetSettingDto) => {
-            if([0,1,2,3,4].indexOf(item.widgetType) > -1) {
-              vm.isShowSwitch(true);
-            }
-          
-            if (item.widgetType === 1) {
-              vm.isShowClosure(true);
-            } 
-          });
+			element.classList.add('widget-group');
+			element.innerHTML = '<div data-bind="widget: { name: wg.name, params: wg.params }"></div>';
 
-          
-          vm.paramWidgetLayout3(layout3);
-        }
-        
-      }
-      if(!vm.isShowClosure()) {
-        $('#dateSwitch').css("margin-left", "calc(100vw - 275px)");
-      }
-    }
+			ko.applyBindingsToNode(element, { foreach: { data: items, as: 'wg' } }, bindingContext);
 
-    openScreenE() {
-      const self = this;
-      nts.uk.ui.windows.setShared("DataFromScreenA", self.reloadInterval());
-      nts.uk.ui.windows.sub
-        .modal("/view/ccg/008/e/index.xhtml")
-        .onClosed(() => {
-          const result = nts.uk.ui.windows.getShared("DataFromScreenE");
-          self.reloadInterval(result);
-        });
-    }
-    
-    getMinutes(value: number) {
-      let minutes = 0;
-      switch (value) {
-        case 0:
-          minutes = 0;
-          break;
-        case 1:
-          minutes = 1;
-          break;
-        case 2:
-          minutes = 5;
-          break;
-        case 3:
-          minutes = 10;
-          break;
-        case 4:
-          minutes = 20;
-          break;
-        case 5:
-          minutes = 30;
-          break;
-        case 6:
-          minutes = 40;
-          break;
-        case 7:
-          minutes = 50;
-          break;
-        case 8:
-          minutes = 60;
-          break;
-      }
-      return minutes;
-    }
-  }
-  export class Cache {
-    closureId: number;
-    currentOrNextMonth: number;
-    constructor(closureId: number, currentOrNextMonth: number) {
-      this.closureId = closureId;
-      this.currentOrNextMonth = currentOrNextMonth;
-    }
-  }
-  export class ItemCbbModel {
-    closureId: number;
-    closureName: string;
-    constructor(closureId: number, closureName: string) {
-      this.closureId = closureId;
-      this.closureName = closureName;
-    }
-  }
+			return { controlsDescendantBindings: true };
+		}
+	}
 
-  enum LayoutType {
-    LAYOUT_TYPE_0 = 0,
-    LAYOUT_TYPE_1 = 1,
-    LAYOUT_TYPE_2 = 2,
-    LAYOUT_TYPE_3 = 3,
-  }
+	@handler({
+		bindingName: 'widget-frame',
+		validatable: true,
+		virtual: false
+	})
+	export class WidgetFrameBindingHandler implements KnockoutBindingHandler {
+		init = (element: HTMLElement, valueAccessor: () => KnockoutObservable<string | null>, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: ViewModel, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } => {
+			element.removeAttribute('data-bind');
 
-  export class DataTopPage {
-    displayTopPage: DisplayInTopPage;
-    menuClassification: number;
-    standardMenu: StandardMenuDto;
-    constructor(init?: Partial<DataTopPage>) {
-      $.extend(this, init);
-    }
-  }
+			if (element.tagName !== 'DIV') {
+				element.innerHTML = 'Please use this binding for only [DIV] tag.';
 
-  export class DisplayInTopPage {
-    layout1: Array<FlowMenuOutputCCG008>;
-    layout2: Array<WidgetSettingDto>;
-    layout3: Array<WidgetSettingDto>;
-    urlLayout1: string;
-    layoutDisplayType: number;
-    constructor(init?: Partial<DisplayInTopPage>) {
-      $.extend(this, init);
-    }
-  }
+				return;
+			}
 
-  export class WidgetSettingDto {
-    widgetType: number;
-    order: number;
-    constructor(init?: Partial<WidgetSettingDto>) {
-      $.extend(this, init);
-    }
-  }
+			const url = valueAccessor();
 
-  export class FlowMenuOutputCCG008 {
-    flowCode: string;
-    flowName: string;
-    fileId: string;
-    isFlowmenu: boolean;
-    constructor(init?: Partial<FlowMenuOutputCCG008>) {
-      $.extend(this, init);
-    }
-  }
+			element.classList.add('widget-frame');
 
-  export class StandardMenuDto {
-    companyId: string;
-    code: string;
-    targetItems: string;
-    displayName: string;
-    displayOrder: number;
-    menuAtr: number;
-    url: string;
-    system: number;
-    classification: number;
-    webMenuSetting: number;
-    afterLoginDisplay: number;
-    logLoginDisplay: number;
-    logStartDisplay: number;
-    logUpdateDisplay: number;
-    logSettingDisplay: LogSettingDisplayDto;
-    constructor(init?: Partial<StandardMenuDto>) {
-      $.extend(this, init);
-    }
-  }
-  export class LogSettingDisplayDto {
-    logLoginDisplay: number;
-    logStartDisplay: number;
-    logUpdateDisplay: number;
-  }
+			ko.computed({
+				read: () => {
+					const src = ko.unwrap<string | null>(url);
 
-  export class ItemLayout {
-    url: string;
-    html: string;
-    order: number;
-    constructor(init?: Partial<ItemLayout>) {
-      $.extend(this, init);
-    }
-  }
+					if (!src) {
+						element.innerHTML = 'NO_DATA_SETTING';
+					} else {
+						element.innerHTML = `<iframe src="${src}" />`;
+					}
+				},
+				disposeWhenNodeIsRemoved: element
+			});
 
-  export enum MenuClassification {
-    /**0:標準 */
-    Standard = 0,
-    /**1:任意項目申請 */
-    OptionalItemApplication = 1,
-    /**2:携帯 */
-    MobilePhone = 2,
-    /**3:タブレット */
-    Tablet = 3,
-    /**4:コード名称 */
-    CodeName = 4,
-    /**5:グループ会社メニュー */
-    GroupCompanyMenu = 5,
-    /**6:カスタマイズ */
-    Customize = 6,
-    /**7:オフィスヘルパー稟議書*/
-    OfficeHelper = 7,
-    /**8:トップページ*/
-    TopPage = 8,
-    /**9:スマートフォン*/
-    SmartPhone = 9,
-  }
+			return { controlsDescendantBindings: true };
+		}
+	}
+
+	@bean()
+	export class ViewModel extends ko.ViewModel {
+		dateSwitch: KnockoutObservableArray<any> = ko.observableArray([]);
+
+		closureId: KnockoutObservable<number> = ko.observable(1);
+
+		lstClosure: KnockoutObservableArray<ItemCbbModel> = ko.observableArray([]);
+		reloadInterval: KnockoutObservable<number> = ko.observable(0);
+		paramWidgetLayout2: KnockoutObservableArray<WidgetSettingDto> = ko.observableArray([]);
+		paramWidgetLayout3: KnockoutObservableArray<WidgetSettingDto> = ko.observableArray([]);
+		paramIframe1: KnockoutObservable<DisplayInTopPage> = ko.observable();
+		topPageSetting: any;
+
+		isShowClosure: KnockoutObservable<boolean> = ko.observable(false);
+		isShowSwitch: KnockoutObservable<boolean> = ko.observable(false);
+		isShowButtonRefresh: KnockoutObservable<boolean> = ko.observable(false);
+		isShowButtonSetting: KnockoutObservable<boolean> = ko.observable(false);
+
+		dataToppage: KnockoutObservable<DataTopPage> = ko.observable(null);
+
+		currentOrNextMonth: KnockoutObservable<null | 1 | 2> = ko.observable(null);
+		layoutDisplayType: KnockoutObservable<LAYOUT_DISPLAY_TYPE> = ko.observable(null);
+
+		widgetLeft: KnockoutObservableArray<WIDGET> = ko.observableArray([]);
+		widgetCenter: KnockoutObservable<string | null> = ko.observable(null);
+		widgetRight: KnockoutObservableArray<WIDGET> = ko.observableArray([]);
+
+		classLayoutName!: KnockoutComputed<string>;
+
+		reload: number | null = null;
+
+		constructor() {
+			super();
+
+			const vm = this;
+
+			vm.dateSwitch([
+				{ code: "1", name: vm.$i18n("CCG008_14") },
+				{ code: "2", name: vm.$i18n("CCG008_15") }
+			]);
+
+			vm.classLayoutName = ko.computed({
+				read: () => {
+					const ltpy = ko.unwrap<LAYOUT_DISPLAY_TYPE>(vm.layoutDisplayType);
+
+					return `layout-type-${ltpy}`;
+				}
+			});
+
+			vm.currentOrNextMonth
+				.subscribe(function (currentOrNextMonth: 1 | 2) {
+					if (currentOrNextMonth) {
+						const closureId = ko.unwrap<number>(vm.closureId);
+
+						vm.$window
+							.storage('cache', {
+								closureId,
+								currentOrNextMonth
+							})
+							.then((cache: any) => vm.$window.shared('cache', cache));
+
+						vm.callApiTopPage();
+					}
+				});
+
+			vm.closureId
+				.subscribe(function (value) {
+					vm.currentOrNextMonth.valueHasMutated();
+				});
+
+			vm.reloadInterval
+				.subscribe((data: any) => {
+					const minutes = vm.getMinutes(data);
+					const miliSeconds = minutes * MINUTESTOMILISECONDS;
+
+					clearInterval(vm.reload);
+
+					if (data !== 0) {
+						vm.reload = setInterval(() => {
+							if (vm.paramWidgetLayout2().length > 0 || vm.paramWidgetLayout3().length > 0) {
+								vm.callApiTopPage();
+							}
+						}, miliSeconds);
+					}
+				});
+		}
+
+		created() {
+			const vm = this;
+			const { isEmployee } = vm.$user;
+
+			const GLOGIN = vm.$ajax("com", API.getLoginUser);
+			const GCLOSURE = vm.$ajax('com', API.getClosure);
+
+			const GCAHCE = isEmployee ? vm.$ajax("com", API.getCache) : $.Deferred().resolve(null);
+			const GSETTING = isEmployee ? vm.$ajax("com", API.getSetting) : $.Deferred().resolve(null);
+
+			vm.$blockui('grayout')
+				.then(() => $.when(GLOGIN, GSETTING, GCAHCE, GCLOSURE))
+				.then((user, setting, cache, closure) => {
+					if (setting) {
+						if (setting.reloadInterval) {
+							vm.reloadInterval(setting.reloadInterval);
+						}
+
+						if (user) {
+							vm.isShowButtonSetting(true);
+						}
+
+						vm.topPageSetting = setting;
+					}
+
+					//var fromScreen = "login"; 
+					if (cache) {
+						vm.$window
+							.storage("cache", cache)
+							.then(() => {
+								vm.$window
+									.storage('cache')
+									.then((obj: any) => {
+										if (obj) {
+											const { switchingDate } = vm.topPageSetting;
+											const endDate = moment.utc(obj.endDate, D_FORMAT).add(switchingDate, 'day').startOf('day');
+
+											if (endDate.isBefore(moment().startOf('day'))) {
+												vm.currentOrNextMonth(2);
+
+												obj.currentOrNextMonth = 2;
+											} else {
+												vm.currentOrNextMonth(1);
+											}
+
+											vm.closureId(obj.closureId);
+
+											vm.$window.shared('cache', obj);
+										} else {
+											vm.closureId(1);
+											vm.currentOrNextMonth(null);
+										}
+									});
+							});
+					}
+
+					vm.dataToppage(null);
+
+					// 会社の締めを取得する - Lấy closure company
+					vm.lstClosure(closure);
+				})
+				.always(() => vm.$blockui("clear"));
+
+		}
+
+		mounted() {
+			const vm = this;
+
+			$(vm.$el)
+				.removeAttr('data-bind')
+				.find('[data-bind]')
+				.removeAttr('data-bind');
+		}
+
+		callApiTopPage() {
+			const vm = this;
+			const qs = (request as any).QueryString;
+			const { toppagecode } = qs.parseUrl(location.href).items;
+			const { value: transferData } = __viewContext.transferred || { value: undefined };
+			const { screen, topPageCode } = transferData || { screen: 'other', topPageCode: '' };
+
+			// clear layout
+			vm.layoutDisplayType(null);
+
+			// clear widget data
+			vm.widgetLeft([]);
+			vm.widgetCenter(null);
+			vm.widgetRight([]);
+
+			vm
+				.$blockui('grayout')
+				.then(() => vm.$ajax("com", API.getSetting))
+				.then((topPageSetting: any) => {
+					vm
+						.$ajax("com", API.getDisplayTopPage, {
+							topPageSetting,
+							fromScreen: screen || 'other',
+							topPageCode: topPageCode || toppagecode || '',
+						})
+						.then((data: DataTopPage) => {
+							// load widget data
+							vm.getToppage(data, screen);
+						});
+				})
+				.always(() => vm.$blockui("clear"));
+		}
+
+		getToppage(data: DataTopPage, screen: string = 'other') {
+			const vm = this;
+			const { topPageSetting } = vm;
+			const { displayTopPage, standardMenu } = data;
+
+			const loadWidget = () => {
+				if (!displayTopPage) {
+					return;
+				}
+
+				const { layout2, layout3, urlLayout1, layoutDisplayType } = displayTopPage;
+				const layout2Widget = (settings: WidgetSettingDto[]) => {
+					return _
+						.chain(settings)
+						.orderBy(['order', 'asc'])
+						.map(({ widgetType }) => ({
+							name: getWidgetName(widgetType),
+							params: {}
+						}))
+						.value();
+				};
+
+				vm.widgetCenter(urlLayout1);
+
+				switch (layoutDisplayType) {
+					default:
+					case 0:
+						// clear widgets
+						vm.widgetLeft([]);
+						vm.widgetRight([]);
+						break;
+					case 1:
+						// clear widget of left group
+						vm.widgetLeft([]);
+
+						const rightWidgets = layout2Widget(layout2);
+
+						vm.widgetRight(rightWidgets);
+						break;
+					case 2:
+						const leftWidgets = layout2Widget(layout2);
+
+						vm.widgetLeft(leftWidgets);
+
+						// clear widget of right group
+						vm.widgetRight([]);
+						break;
+					case 3:
+						const firstWidgets = layout2Widget(layout2);
+						const thirstWidgets = layout2Widget(layout3);
+
+						vm.widgetLeft(firstWidgets);
+						vm.widgetRight(thirstWidgets);
+						break;
+				}
+			};
+
+			if (screen === 'login') {
+				const { menuClassification, loginMenuCode } = topPageSetting;
+
+				if (menuClassification !== MenuClassification.TopPage && loginMenuCode !== '0000') {
+					const { url } = standardMenu;
+
+					if (url) {
+						const [, res] = url.split('web/');
+
+						if (!!res) {
+							// show standardmenu
+							const topPageUrl = "view/ccg/008/a/index.xhtml";
+
+							if (topPageUrl !== res.trim()) {
+								if (_.includes(url, ".at.")) {
+									vm.$jump('at', `/${res}`);
+								} else {
+									vm.$jump('com', `/${res}`);
+								}
+							}
+						}
+					}
+				} else {
+					const { layout2, layout3 } = displayTopPage;
+
+					loadWidget();
+
+					if (layout2) {
+						const showSwitch = _.filter(layout2, ({ widgetType }) => [0, 1, 2, 3, 4].indexOf(widgetType) > -1);
+						const showClosure = _.filter(layout2, ({ widgetType }) => widgetType === 1);
+
+						vm.isShowSwitch(!!showSwitch.length);
+						vm.isShowClosure(!!showClosure.length);
+					}
+
+					if (layout3) {
+						const showSwitch = _.filter(layout3, ({ widgetType }) => [0, 1, 2, 3, 4].indexOf(widgetType) > -1);
+						const showClosure = _.filter(layout3, ({ widgetType }) => widgetType === 1);
+
+						// not overwrite value of layout2
+						if (ko.unwrap<boolean>(vm.isShowSwitch) === false) {
+							vm.isShowSwitch(!!showSwitch.length);
+						}
+
+						// not overwrite value of layout2
+						if (ko.unwrap<boolean>(vm.isShowClosure) === false) {
+							vm.isShowClosure(!!showClosure.length);
+						}
+					}
+				}
+			} else {
+				loadWidget();
+			}
+
+			if (displayTopPage) {
+				const { layout2, layoutDisplayType } = displayTopPage;
+
+				vm.layoutDisplayType(layoutDisplayType);
+				vm.isShowButtonRefresh(layoutDisplayType !== 0 && !!layout2.length);
+			}
+		}
+
+		openScreenE() {
+			const vm = this;
+			const interval = ko.unwrap<number>(vm.reloadInterval);
+
+			vm.$window
+				.shared('DataFromScreenA', interval)
+				.then(() => vm.$window.modal('com', '/view/ccg/008/e/index.xhtml'))
+				.then(() => vm.$window.shared('DataFromScreenE'))
+				.then((value: number) => vm.reloadInterval(value))
+				.then(() => vm.$window.shared('DataFromScreenE', null));
+		}
+
+		getMinutes(value: number) {
+			return [0, 1, 5, 10, 20, 30, 40, 50, 60][value] || 0;
+		}
+	}
+
+	export class ItemCbbModel {
+		closureId: number;
+		closureName: string;
+		constructor(closureId: number, closureName: string) {
+			this.closureId = closureId;
+			this.closureName = closureName;
+		}
+	}
+
+	export class DataTopPage {
+		displayTopPage: DisplayInTopPage;
+		menuClassification: number;
+		standardMenu: StandardMenuDto;
+		constructor(init?: Partial<DataTopPage>) {
+			$.extend(this, init);
+		}
+	}
+
+	export class DisplayInTopPage {
+		layout1: Array<FlowMenuOutputCCG008>;
+		layout2: Array<WidgetSettingDto>;
+		layout3: Array<WidgetSettingDto>;
+		urlLayout1: string;
+		layoutDisplayType: LAYOUT_DISPLAY_TYPE;
+		constructor(init?: Partial<DisplayInTopPage>) {
+			$.extend(this, init);
+		}
+	}
+
+	export class WidgetSettingDto {
+		widgetType: number;
+		order: number;
+		constructor(init?: Partial<WidgetSettingDto>) {
+			$.extend(this, init);
+		}
+	}
+
+	export class FlowMenuOutputCCG008 {
+		flowCode: string;
+		flowName: string;
+		fileId: string;
+		isFlowmenu: boolean;
+		constructor(init?: Partial<FlowMenuOutputCCG008>) {
+			$.extend(this, init);
+		}
+	}
+
+	export class StandardMenuDto {
+		companyId: string;
+		code: string;
+		targetItems: string;
+		displayName: string;
+		displayOrder: number;
+		menuAtr: number;
+		url: string;
+		system: number;
+		classification: number;
+		webMenuSetting: number;
+		afterLoginDisplay: number;
+		logLoginDisplay: number;
+		logStartDisplay: number;
+		logUpdateDisplay: number;
+		logSettingDisplay: LogSettingDisplayDto;
+		constructor(init?: Partial<StandardMenuDto>) {
+			$.extend(this, init);
+		}
+	}
+
+	export class LogSettingDisplayDto {
+		logLoginDisplay: number;
+		logStartDisplay: number;
+		logUpdateDisplay: number;
+	}
+
+	export class ItemLayout {
+		url: string;
+		html: string;
+		order: number;
+		constructor(init?: Partial<ItemLayout>) {
+			$.extend(this, init);
+		}
+	}
+
+	export enum MenuClassification {
+		/**0:標準 */
+		Standard = 0,
+		/**1:任意項目申請 */
+		OptionalItemApplication = 1,
+		/**2:携帯 */
+		MobilePhone = 2,
+		/**3:タブレット */
+		Tablet = 3,
+		/**4:コード名称 */
+		CodeName = 4,
+		/**5:グループ会社メニュー */
+		GroupCompanyMenu = 5,
+		/**6:カスタマイズ */
+		Customize = 6,
+		/**7:オフィスヘルパー稟議書*/
+		OfficeHelper = 7,
+		/**8:トップページ*/
+		TopPage = 8,
+		/**9:スマートフォン*/
+		SmartPhone = 9,
+	}
 }
