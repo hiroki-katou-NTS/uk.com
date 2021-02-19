@@ -35,7 +35,7 @@ module nts.uk.at.view.kmk013.e {
                         service.getPossibleItem(_.map(data.itemRoundingSet, (i: any) => i.timeItemId)).done(attendanceItems => {
                             _.forEach(attendanceItems, (element) => {
                                 let obj: any = _.find(data.itemRoundingSet, ['timeItemId', element.attendanceItemId]);
-                                let ur = new UnitRouding(element.attendanceItemId, element.attendanceItemName, obj.unit, obj.rounding);
+                                let ur = new UnitRouding(element.attendanceItemId, element.attendanceItemName, obj ? obj.unit : 0, obj ? obj.rounding : 0);
                                 self.listData.push(ur);
                             });
                             dfd.resolve();

@@ -307,60 +307,67 @@ module nts.uk.at.view.kmk013.c {
                 let self = this;
                 let dfd = $.Deferred();
                 service.findByCompanyId().done(arr => {
-                    let data = arr[0];
-                    //0時跨ぎ計算を行う
-                    self.selectedValueC23(data.calcFromZeroTime);
-                    //計算するしない設定（平日）.法定内休日
-                    self.selectedC34(data.legalHd);
-                    //計算するしない設定（平日）.法定外休日
-                    self.selectedC38(data.nonLegalHd);
-                    //計算するしない設定（平日）.法定外祝日
-                    self.selectedC312(data.nonLegalPublicHd);
-                    //計算するしない設定（法定内休日）.平日 
-                    self.selectedC44(data.weekday1);
-                    //計算するしない設定（法定内休日）.法定外休日
-                    self.selectedC48(data.nonLegalHd1);
-                    //計算するしない設定（法定内休日）.法定外祝日
-                    self.selectedC412(data.nonLegalPublicHd1);
-                    //計算するしない設定（法定外休日）.平日
-                    self.selectedC54(data.weekday2);
-                    //計算するしない設定（法定外休日）.法定内休日
-                    self.selectedC58(data.legalHd2);
-                    //計算するしない設定（法定外休日）.法定外祝日
-                    self.selectedC512(data.nonLegalHd2);
-                    //計算するしない設定（法定外祝日）.平日
-                    self.selectedC64(data.weekday3);
-                    //計算するしない設定（法定外祝日）.法定内休日
-                    self.selectedC68(data.legalHd3);
-                    //計算するしない設定（法定外祝日）.法定外休日
-                    self.selectedC612(data.nonLegalPublicHd3);
-                    
-                        _.forEach(self.overTimeFrameListName, ot => {
-                            let obj = _.find(data.weekdayHoliday, ['overworkFrameNo',ot.code]);
-                            if(obj){
-                                self.itemsC8.push(new GridItem(obj.overworkFrameNo,
-                                    validate(obj.weekdayNo, self.comboItemsWorkOff),
-                                    nts.uk.resource.getText('KMK013_152'),
-                                    ot.name,
-                                    validate(obj.excessHolidayNo, self.comboItemsWorkOff),
-                                    validate(obj.excessSphdNo, self.comboItemsWorkOff)));
-                            }else{
-                                self.itemsC8.push(new GridItem(ot.code,0,nts.uk.resource.getText('KMK013_152'),ot.name,0,0));
-                            }
+                    let data: any = {
+                        weekdayHoliday: [],
+                        overdayHolidayAtten: [],
+                        overdayCalcHoliday: []
+                    };
+                    if (!_.isEmpty(arr)) {
+                        data = arr[0];
+                        //0時跨ぎ計算を行う
+                        self.selectedValueC23(data.calcFromZeroTime);
+                        //計算するしない設定（平日）.法定内休日
+                        self.selectedC34(data.legalHd);
+                        //計算するしない設定（平日）.法定外休日
+                        self.selectedC38(data.nonLegalHd);
+                        //計算するしない設定（平日）.法定外祝日
+                        self.selectedC312(data.nonLegalPublicHd);
+                        //計算するしない設定（法定内休日）.平日
+                        self.selectedC44(data.weekday1);
+                        //計算するしない設定（法定内休日）.法定外休日
+                        self.selectedC48(data.nonLegalHd1);
+                        //計算するしない設定（法定内休日）.法定外祝日
+                        self.selectedC412(data.nonLegalPublicHd1);
+                        //計算するしない設定（法定外休日）.平日
+                        self.selectedC54(data.weekday2);
+                        //計算するしない設定（法定外休日）.法定内休日
+                        self.selectedC58(data.legalHd2);
+                        //計算するしない設定（法定外休日）.法定外祝日
+                        self.selectedC512(data.nonLegalHd2);
+                        //計算するしない設定（法定外祝日）.平日
+                        self.selectedC64(data.weekday3);
+                        //計算するしない設定（法定外祝日）.法定内休日
+                        self.selectedC68(data.legalHd3);
+                        //計算するしない設定（法定外祝日）.法定外休日
+                        self.selectedC612(data.nonLegalPublicHd3);
+                    }
 
-                        });
-                        
+                    _.forEach(self.overTimeFrameListName, ot => {
+                        let obj = _.find(data.weekdayHoliday, ['overworkFrameNo', ot.code]);
+                        if (obj) {
+                            self.itemsC8.push(new GridItem(obj.overworkFrameNo,
+                                validate(obj.weekdayNo, self.comboItemsWorkOff),
+                                nts.uk.resource.getText('KMK013_152'),
+                                ot.name,
+                                validate(obj.excessHolidayNo, self.comboItemsWorkOff),
+                                validate(obj.excessSphdNo, self.comboItemsWorkOff)));
+                        } else {
+                            self.itemsC8.push(new GridItem(ot.code,0, nts.uk.resource.getText('KMK013_152'), ot.name,0,0));
+                        }
+                    });
+
                     _.forEach(self.workOffFrameListName, wof => {
-                        let obj = _.find(data.overdayHolidayAtten, ['holidayWorkFrameNo',wof.code]);
+                        let obj = _.find(data.overdayHolidayAtten, ['holidayWorkFrameNo', wof.code]);
                         if (obj) {
                             self.itemsC9.push(new GridItem(obj.holidayWorkFrameNo,
                                 validate(obj.overWorkNo, self.comboItemOvertime),
                                 nts.uk.resource.getText('KMK013_157'),
                                 wof.name));
                         }else{
-                            self.itemsC9.push(new GridItem(wof.code,0,nts.uk.resource.getText('KMK013_157'),wof.name));
+                            self.itemsC9.push(new GridItem(wof.code,0, nts.uk.resource.getText('KMK013_157'),wof.name));
                         }
                     });
+
                     _.forEach(self.workOffFrameListName, wof => {
                         let obj = _.find(data.overdayCalcHoliday, ['holidayWorkFrameNo', wof.code]);
                         if (obj) {
@@ -374,6 +381,7 @@ module nts.uk.at.view.kmk013.c {
                             self.itemsC10.push(new GridItem(wof.code, 0, nts.uk.resource.getText('KMK013_163'), wof.name, 0, 0));
                         }
                     });
+
                     dfd.resolve();
                 });
 

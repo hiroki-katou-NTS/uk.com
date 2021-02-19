@@ -27,15 +27,13 @@ import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionRepository;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calculationsettings.totalrestrainttime.CalculateOfTotalConstraintTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worklabor.defor.DeformLaborOT;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worklabor.defor.DeformLaborOTRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worklabor.flex.FlexSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worklabor.flex.FlexSetRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.midnighttimezone.MidNightTimeSheet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.zerotime.ZeroTime;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.zerotime.ZeroTimeRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.zerotime.*;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roundingset.RoundingSetOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.roundingset.RoundingSetOfMonthlyRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.vtotalmethod.AggregateMethodOfMonthly;
@@ -268,7 +266,7 @@ public class CalculationSettingExportImpl implements MasterListData {
 				} else if (row == 8) {
 					if (col == 0) value = TextResource.localize("KMK013_488");
 					else if (col == 3 && weekRuleManagement.isPresent())
-					    value = TextResource.localize(EnumAdaptor.valueOf(weekRuleManagement.get().getDayOfWeek().value - 1, DayOfWeek.class).nameId);
+					    value = TextResource.localize(EnumAdaptor.valueOf(weekRuleManagement.get().getWeekStart().value, DayOfWeek.class).nameId);
 				} else if (row == 9) {
 					if (col == 0) value = TextResource.localize("KMK013_489");
 					else if (col == 1) value = TextResource.localize("KMK013_289");
@@ -694,82 +692,154 @@ public class CalculationSettingExportImpl implements MasterListData {
 	private List<MasterData> getSheet5MasterDatas() {
 		String companyId = AppContexts.user().companyId();
 		Optional<ZeroTime> zeroTime = zeroTimeRepo.findByCId(companyId);
+		List<WorkdayoffFrame> workdayoffFrames = workdayoffFrameRepo.findByUseAtr(companyId, UseAtr.USE.value);
+		List<OvertimeWorkFrame> otWorkFrames = overtimeWorkFrameRepo.getOvertimeWorkFrameByFrameByCom(companyId, UseAtr.USE.value);
+		int rows = Math.max(1, Math.max(workdayoffFrames.size(), otWorkFrames.size()));
 		List<MasterData> data = new ArrayList<>();
-        Map<String, MasterCellData> rowData = new HashMap<>();
-        for (int col = 0; col < 23; col++){
-            String value = "";
-            if (col == 0 && zeroTime.isPresent())
-                value = zeroTime.get().getCalcFromZeroTime() == 1
-                        ? TextResource.localize("KMK013_96")
-                        : TextResource.localize("KMK013_97");
-            else if (col == 1 && zeroTime.isPresent() && zeroTime.get().getCalcFromZeroTime() == 1)
-                value = zeroTime.get().getLegalHd() == 1
-                        ? TextResource.localize("KMK013_96")
-                        : TextResource.localize("KMK013_97");
-            else if (col == 2 && zeroTime.isPresent() && zeroTime.get().getCalcFromZeroTime() == 1)
-                value = zeroTime.get().getNonLegalHd() == 1
-                        ? TextResource.localize("KMK013_96")
-                        : TextResource.localize("KMK013_97");
-            else if (col == 3 && zeroTime.isPresent() && zeroTime.get().getCalcFromZeroTime() == 1)
-                value = zeroTime.get().getNonLegalPublicHd() == 1
-                        ? TextResource.localize("KMK013_96")
-                        : TextResource.localize("KMK013_97");
-            else if (col == 4 && zeroTime.isPresent() && zeroTime.get().getCalcFromZeroTime() == 1)
-                value = zeroTime.get().getWeekday1() == 1
-                        ? TextResource.localize("KMK013_96")
-                        : TextResource.localize("KMK013_97");
-            else if (col == 5 && zeroTime.isPresent() && zeroTime.get().getCalcFromZeroTime() == 1)
-                value = zeroTime.get().getNonLegalHd1() == 1
-                        ? TextResource.localize("KMK013_96")
-                        : TextResource.localize("KMK013_97");
-            else if (col == 6 && zeroTime.isPresent() && zeroTime.get().getCalcFromZeroTime() == 1)
-                value = zeroTime.get().getNonLegalPublicHd1() == 1
-                        ? TextResource.localize("KMK013_96")
-                        : TextResource.localize("KMK013_97");
-            else if (col == 7 && zeroTime.isPresent() && zeroTime.get().getCalcFromZeroTime() == 1)
-                value = zeroTime.get().getWeekday2() == 1
-                        ? TextResource.localize("KMK013_96")
-                        : TextResource.localize("KMK013_97");
-            else if (col == 8 && zeroTime.isPresent() && zeroTime.get().getCalcFromZeroTime() == 1)
-                value = zeroTime.get().getLegalHd2() == 1
-                        ? TextResource.localize("KMK013_96")
-                        : TextResource.localize("KMK013_97");
-            else if (col == 9 && zeroTime.isPresent() && zeroTime.get().getCalcFromZeroTime() == 1)
-                value = zeroTime.get().getNonLegalHd2() == 1
-                        ? TextResource.localize("KMK013_96")
-                        : TextResource.localize("KMK013_97");
-            else if (col == 10 && zeroTime.isPresent() && zeroTime.get().getCalcFromZeroTime() == 1)
-                value = zeroTime.get().getWeekday3() == 1
-                        ? TextResource.localize("KMK013_96")
-                        : TextResource.localize("KMK013_97");
-            else if (col == 11 && zeroTime.isPresent() && zeroTime.get().getCalcFromZeroTime() == 1)
-                value = zeroTime.get().getLegalHd3() == 1
-                        ? TextResource.localize("KMK013_96")
-                        : TextResource.localize("KMK013_97");
-            else if (col == 12 && zeroTime.isPresent() && zeroTime.get().getCalcFromZeroTime() == 1)
-                value = zeroTime.get().getNonLegalPublicHd3() == 1
-                        ? TextResource.localize("KMK013_96")
-                        : TextResource.localize("KMK013_97");
-            else {
-//                Optional<AggDeformedLaborSetting> optAggSetting = aggSettingRepo.findByCid(companyId);
-//                Optional<DeformLaborOT> domain = deformLaborOTRepo.findByCId(companyId);
-//                if (optAggSetting.isPresent()
-//                        && optAggSetting.get().getUseDeformedLabor() == UseAtr.USE
-//                        && domain.isPresent()) {
-//                    value = domain.get().getLegalOtCalc().value == 1
-//                            ? TextResource.localize("KMK013_209")
-//                            : TextResource.localize("KMK013_210");
-//                }
-            }
-            rowData.put(
-                    col + "",
-                    MasterCellData.builder()
-                            .columnId(col + "")
-                            .value(value)
-                            .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
-                            .build());
-        }
-        data.add(MasterData.builder().rowData(rowData).build());
+		for (int row = 0; row < rows; row++) {
+			Map<String, MasterCellData> rowData = new HashMap<>();
+			for (int col = 0; col < 23; col++) {
+				String value = "";
+				if (row == 0 && col == 0 && zeroTime.isPresent())
+					value = zeroTime.get().getCalcFromZeroTime() == 1
+							? TextResource.localize("KMK013_91")
+							: TextResource.localize("KMK013_92");
+				else if (row == 0 && col == 1 && zeroTime.isPresent() && zeroTime.get().getCalcFromZeroTime() == 1)
+					value = zeroTime.get().getLegalHd() == 1
+							? TextResource.localize("KMK013_96")
+							: TextResource.localize("KMK013_97");
+				else if (row == 0 && col == 2 && zeroTime.isPresent() && zeroTime.get().getCalcFromZeroTime() == 1)
+					value = zeroTime.get().getNonLegalHd() == 1
+							? TextResource.localize("KMK013_96")
+							: TextResource.localize("KMK013_97");
+				else if (row == 0 && col == 3 && zeroTime.isPresent() && zeroTime.get().getCalcFromZeroTime() == 1)
+					value = zeroTime.get().getNonLegalPublicHd() == 1
+							? TextResource.localize("KMK013_96")
+							: TextResource.localize("KMK013_97");
+				else if (row == 0 && col == 4 && zeroTime.isPresent() && zeroTime.get().getCalcFromZeroTime() == 1)
+					value = zeroTime.get().getWeekday1() == 1
+							? TextResource.localize("KMK013_96")
+							: TextResource.localize("KMK013_97");
+				else if (row == 0 && col == 5 && zeroTime.isPresent() && zeroTime.get().getCalcFromZeroTime() == 1)
+					value = zeroTime.get().getNonLegalHd1() == 1
+							? TextResource.localize("KMK013_96")
+							: TextResource.localize("KMK013_97");
+				else if (row == 0 && col == 6 && zeroTime.isPresent() && zeroTime.get().getCalcFromZeroTime() == 1)
+					value = zeroTime.get().getNonLegalPublicHd1() == 1
+							? TextResource.localize("KMK013_96")
+							: TextResource.localize("KMK013_97");
+				else if (row == 0 && col == 7 && zeroTime.isPresent() && zeroTime.get().getCalcFromZeroTime() == 1)
+					value = zeroTime.get().getWeekday2() == 1
+							? TextResource.localize("KMK013_96")
+							: TextResource.localize("KMK013_97");
+				else if (row == 0 && col == 8 && zeroTime.isPresent() && zeroTime.get().getCalcFromZeroTime() == 1)
+					value = zeroTime.get().getLegalHd2() == 1
+							? TextResource.localize("KMK013_96")
+							: TextResource.localize("KMK013_97");
+				else if (row == 0 && col == 9 && zeroTime.isPresent() && zeroTime.get().getCalcFromZeroTime() == 1)
+					value = zeroTime.get().getNonLegalHd2() == 1
+							? TextResource.localize("KMK013_96")
+							: TextResource.localize("KMK013_97");
+				else if (row == 0 && col == 10 && zeroTime.isPresent() && zeroTime.get().getCalcFromZeroTime() == 1)
+					value = zeroTime.get().getWeekday3() == 1
+							? TextResource.localize("KMK013_96")
+							: TextResource.localize("KMK013_97");
+				else if (row == 0 && col == 11 && zeroTime.isPresent() && zeroTime.get().getCalcFromZeroTime() == 1)
+					value = zeroTime.get().getLegalHd3() == 1
+							? TextResource.localize("KMK013_96")
+							: TextResource.localize("KMK013_97");
+				else if (row == 0 && col == 12 && zeroTime.isPresent() && zeroTime.get().getCalcFromZeroTime() == 1)
+					value = zeroTime.get().getNonLegalPublicHd3() == 1
+							? TextResource.localize("KMK013_96")
+							: TextResource.localize("KMK013_97");
+				else if (col == 13 && otWorkFrames.size() > row) {
+					value = otWorkFrames.get(row).getOvertimeWorkFrName().v();
+				} else if (col == 14 && otWorkFrames.size() > row && zeroTime.isPresent()) {
+					OvertimeWorkFrame otFrame = otWorkFrames.get(row);
+					Optional<WeekdayHoliday> weekdayHoliday = zeroTime.get().getWeekdayHoliday().stream().filter(i -> i.getOverworkFrameNo().intValue() == otFrame.getOvertimeWorkFrNo().v().intValue()).findFirst();
+					if (weekdayHoliday.isPresent()) {
+						if (weekdayHoliday.get().getWeekdayNo() == 0) value = TextResource.localize("KMK013_235");
+						else {
+							Optional<WorkdayoffFrame> workdayoffFrame = workdayoffFrames.stream().filter(i -> i.getWorkdayoffFrNo().v().intValue() == weekdayHoliday.get().getWeekdayNo()).findFirst();
+							if (workdayoffFrame.isPresent()) value = workdayoffFrame.get().getWorkdayoffFrName().v();
+						}
+					}
+				} else if (col == 15 && otWorkFrames.size() > row && zeroTime.isPresent()) {
+					OvertimeWorkFrame otFrame = otWorkFrames.get(row);
+					Optional<WeekdayHoliday> weekdayHoliday = zeroTime.get().getWeekdayHoliday().stream().filter(i -> i.getOverworkFrameNo().intValue() == otFrame.getOvertimeWorkFrNo().v().intValue()).findFirst();
+					if (weekdayHoliday.isPresent()) {
+						if (weekdayHoliday.get().getExcessHolidayNo() == 0) value = TextResource.localize("KMK013_235");
+						else {
+							Optional<WorkdayoffFrame> workdayoffFrame = workdayoffFrames.stream().filter(i -> i.getWorkdayoffFrNo().v().intValue() == weekdayHoliday.get().getExcessHolidayNo()).findFirst();
+							if (workdayoffFrame.isPresent()) value = workdayoffFrame.get().getWorkdayoffFrName().v();
+						}
+					}
+				} else if (col == 16 && otWorkFrames.size() > row && zeroTime.isPresent()) {
+					OvertimeWorkFrame otFrame = otWorkFrames.get(row);
+					Optional<WeekdayHoliday> weekdayHoliday = zeroTime.get().getWeekdayHoliday().stream().filter(i -> i.getOverworkFrameNo().intValue() == otFrame.getOvertimeWorkFrNo().v().intValue()).findFirst();
+					if (weekdayHoliday.isPresent()) {
+						if (weekdayHoliday.get().getExcessSphdNo() == 0) value = TextResource.localize("KMK013_235");
+						else {
+							Optional<WorkdayoffFrame> workdayoffFrame = workdayoffFrames.stream().filter(i -> i.getWorkdayoffFrNo().v().intValue() == weekdayHoliday.get().getExcessSphdNo()).findFirst();
+							if (workdayoffFrame.isPresent()) value = workdayoffFrame.get().getWorkdayoffFrName().v();
+						}
+					}
+				} else if (col == 17 && workdayoffFrames.size() > row) {
+					value = workdayoffFrames.get(row).getWorkdayoffFrName().v();
+				} else if (col == 18 && workdayoffFrames.size() > row && zeroTime.isPresent()) {
+					WorkdayoffFrame workdayoffFrame = workdayoffFrames.get(row);
+					Optional<HdFromWeekday> hdFromWeekday = zeroTime.get().getOverdayHolidayAtten().stream().filter(i -> i.getHolidayWorkFrameNo() == workdayoffFrame.getWorkdayoffFrNo().v().intValue()).findFirst();
+					if (hdFromWeekday.isPresent()) {
+						if (hdFromWeekday.get().getOverWorkNo() == null || hdFromWeekday.get().getOverWorkNo().intValue() == 0)
+							value = TextResource.localize("KMK013_235");
+						else {
+							Optional<OvertimeWorkFrame> otFrame = otWorkFrames.stream().filter(i -> i.getOvertimeWorkFrNo().v().intValue() == hdFromWeekday.get().getOverWorkNo().intValue()).findFirst();
+							if (otFrame.isPresent()) value = otFrame.get().getOvertimeWorkFrName().v();
+						}
+					}
+				} else if (col == 19 && workdayoffFrames.size() > row) {
+					value = workdayoffFrames.get(row).getWorkdayoffFrName().v();
+				} else if (col == 20 && workdayoffFrames.size() > row && zeroTime.isPresent()) {
+					WorkdayoffFrame workdayoffFrame = workdayoffFrames.get(row);
+					Optional<HdFromHd> hdFromHd = zeroTime.get().getOverdayCalcHoliday().stream().filter(i -> i.getHolidayWorkFrameNo() == workdayoffFrame.getWorkdayoffFrNo().v().intValue()).findFirst();
+					if (hdFromHd.isPresent()) {
+						if (hdFromHd.get().getCalcOverDayEnd() == 0) value = TextResource.localize("KMK013_235");
+						else {
+							Optional<WorkdayoffFrame> dayoffFrame = workdayoffFrames.stream().filter(i -> i.getWorkdayoffFrNo().v().intValue() == hdFromHd.get().getCalcOverDayEnd()).findFirst();
+							if (dayoffFrame.isPresent()) value = dayoffFrame.get().getWorkdayoffFrName().v();
+						}
+					}
+				} else if (col == 21 && workdayoffFrames.size() > row && zeroTime.isPresent()) {
+					WorkdayoffFrame workdayoffFrame = workdayoffFrames.get(row);
+					Optional<HdFromHd> hdFromHd = zeroTime.get().getOverdayCalcHoliday().stream().filter(i -> i.getHolidayWorkFrameNo() == workdayoffFrame.getWorkdayoffFrNo().v().intValue()).findFirst();
+					if (hdFromHd.isPresent()) {
+						if (hdFromHd.get().getStatutoryHd() == 0) value = TextResource.localize("KMK013_235");
+						else {
+							Optional<WorkdayoffFrame> dayoffFrame = workdayoffFrames.stream().filter(i -> i.getWorkdayoffFrNo().v().intValue() == hdFromHd.get().getStatutoryHd()).findFirst();
+							if (dayoffFrame.isPresent()) value = dayoffFrame.get().getWorkdayoffFrName().v();
+						}
+					}
+				} else if (col == 22 && workdayoffFrames.size() > row && zeroTime.isPresent()) {
+					WorkdayoffFrame workdayoffFrame = workdayoffFrames.get(row);
+					Optional<HdFromHd> hdFromHd = zeroTime.get().getOverdayCalcHoliday().stream().filter(i -> i.getHolidayWorkFrameNo() == workdayoffFrame.getWorkdayoffFrNo().v().intValue()).findFirst();
+					if (hdFromHd.isPresent()) {
+						if (hdFromHd.get().getExcessHd() == 0) value = TextResource.localize("KMK013_235");
+						else {
+							Optional<WorkdayoffFrame> dayoffFrame = workdayoffFrames.stream().filter(i -> i.getWorkdayoffFrNo().v().intValue() == hdFromHd.get().getExcessHd()).findFirst();
+							if (dayoffFrame.isPresent()) value = dayoffFrame.get().getWorkdayoffFrName().v();
+						}
+					}
+				}
+				rowData.put(
+						col + "",
+						MasterCellData.builder()
+								.columnId(col + "")
+								.value(value)
+								.style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+								.build());
+			}
+			data.add(MasterData.builder().rowData(rowData).build());
+		}
 		return data;
 	}
 
