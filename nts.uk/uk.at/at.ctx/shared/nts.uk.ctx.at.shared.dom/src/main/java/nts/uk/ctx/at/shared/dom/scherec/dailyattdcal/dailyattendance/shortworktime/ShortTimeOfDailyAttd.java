@@ -99,7 +99,8 @@ public class ShortTimeOfDailyAttd implements DomainObject{
 	public boolean isDuplicatedWithShortTime(TimeSpanForCalc target) {
 		
 		return this.shortWorkingTimeSheets.stream()
-				.anyMatch( shortWorkingTimeSheet -> shortWorkingTimeSheet.isDuplicatedWithTimeSpan(target));
+				.map( sheet -> sheet.convertToTimeSpanForCalc() )
+				.anyMatch( timeSpan -> timeSpan.checkDuplication(target).isDuplicated() );
 	}
 	
 }
