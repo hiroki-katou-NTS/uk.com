@@ -22,6 +22,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
 import nts.uk.ctx.at.shared.dom.application.stamp.AppRecordImageShare;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * @author thanh_nx
@@ -52,7 +53,7 @@ public class GetTargetDateRecordApplication {
 						SetPreClockArt.NONE, ChangeClockArt.GOING_TO_WORK, ChangeCalArt.NONE),
 				new RefectActualResult(null, null, null, null), Optional.empty());
 
-		Optional<GeneralDate> date = ReflectDataStampDailyService.getJudgment(require, applicaton.getEmployeeID(),
+		Optional<GeneralDate> date = ReflectDataStampDailyService.getJudgment(require, AppContexts.user().companyId(), applicaton.getEmployeeID(),
 				stamp);
 		return Pair.of(date, Optional.of(stamp));
 
