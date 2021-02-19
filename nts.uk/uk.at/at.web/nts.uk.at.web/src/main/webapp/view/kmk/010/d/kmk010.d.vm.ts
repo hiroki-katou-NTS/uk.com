@@ -25,17 +25,16 @@ module nts.uk.at.view.kmk010.d {
       const vm = this;
 
       vm.vacationConversion = ko.observable(new VacationConversionDto([], 0, 0, 0));
-
-      vm.getEnumConstant().done(() => {
-        vm.getVacationConversionList();
-
-        vm.vacationConversion().unit.subscribe((newValue) => {
-          if (newValue !== 4 && newValue !== 6) {
-            vm.lstRounding(_.filter(vm.lstRounding(), (item) => item.value !== 2));
-          } else {
-            vm.lstRounding(_.cloneDeep(vm.lstRoundingBk()));
-          }
-        });
+      vm.vacationConversion().unit.subscribe((newValue) => {
+        if (newValue !== 4 && newValue !== 6) {
+          vm.lstRounding(_.filter(vm.lstRounding(), (item) => item.value !== 2));
+        } else {
+          vm.lstRounding(_.cloneDeep(vm.lstRoundingBk()));
+        }
+      });
+      
+      $.when(vm.getEnumConstant()).done(() => {
+        vm.getVacationConversionList();        
       });
     }
 

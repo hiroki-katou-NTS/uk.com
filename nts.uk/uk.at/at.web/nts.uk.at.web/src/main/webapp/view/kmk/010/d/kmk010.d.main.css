@@ -25,7 +25,15 @@ table.fixed-table tbody td.text-center {
 table.fixed-table tbody td input {
   margin: 3px 0;
 }
-
+table.fixed-table {
+  width: 100%;
+}
+table.fixed-table th {
+  text-align: center;
+}
+table.fixed-table tr:first-child th:first-child {
+  text-align: left;
+}
 #contents-area .content-body {
   padding: 5px 15px;
 }
@@ -62,4 +70,8 @@ table.fixed-table tbody td input {
 } 
 .ntsControl.symbol:after {
   top: 9px;
+}
+#KMK010_84 {
+  min-width: 100px;
+  width: auto;
 }
