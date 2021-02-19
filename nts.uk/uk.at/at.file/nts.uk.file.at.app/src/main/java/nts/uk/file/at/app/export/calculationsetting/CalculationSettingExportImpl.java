@@ -268,7 +268,7 @@ public class CalculationSettingExportImpl implements MasterListData {
 				} else if (row == 8) {
 					if (col == 0) value = TextResource.localize("KMK013_488");
 					else if (col == 3 && weekRuleManagement.isPresent())
-					    value = TextResource.localize(EnumAdaptor.valueOf(weekRuleManagement.get().getDayOfWeek().value - 1, DayOfWeek.class).nameId);
+					    value = TextResource.localize(EnumAdaptor.valueOf(weekRuleManagement.get().getWeekStart().value, DayOfWeek.class).nameId);
 				} else if (row == 9) {
 					if (col == 0) value = TextResource.localize("KMK013_489");
 					else if (col == 1) value = TextResource.localize("KMK013_289");

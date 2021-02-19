@@ -14,7 +14,7 @@ public class WeekRuleManagementFinder {
     public WeekRuleManagementDto find() {
         String companyId = AppContexts.user().companyId();
         return repo.find(companyId)
-                .map(i -> new WeekRuleManagementDto(i.getDayOfWeek().value))
+                .map(i -> new WeekRuleManagementDto(i.getWeekStart().value))
                 .orElse(null);
     }
 }

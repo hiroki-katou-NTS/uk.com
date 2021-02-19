@@ -3,7 +3,7 @@ module nts.uk.at.view.kmk013.e {
         var screenModel = new e.viewmodel.ScreenModel();
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
-            $('.unit-combo-box')[0].focus();
+            if ($('.unit-combo-box').length > 0) $('.unit-combo-box')[0].focus();
         })
     });
 }

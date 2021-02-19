@@ -76,7 +76,7 @@
 											constraint: 'MaxUsage',
 											option: {unitID: 'TIMES'},
 											enable: tempWorkSet() == 1,
-											required: tempWorkSet() == 1}"/>
+											required: true}"/>
 					<span class="label">#{i18n.getText('KMK013_349')}</span>
 					<input id="temptime" style="width: 44px;"
 						   data-bind="ntsTimeEditor: {
@@ -86,7 +86,7 @@
 											inputFormat: 'time',
 											mode: 'time',
 											enable: tempWorkSet() == 1,
-											required: tempWorkSet() == 1}"/>
+											required: true}"/>
 				</div>
 				<div class="control-group valign-center">
 					<div style="width: 143px;" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK013_487')}</div>
