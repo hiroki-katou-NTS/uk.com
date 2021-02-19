@@ -188,7 +188,6 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 		
 		
 		//指定月時点の使用数を計算 - 6
-		// TODO : pending Q A
 		List<AnnualLeaveGrantRemainingData> lstAnnRemainHis = this.lstRemainHistory(sid,
 				annualLeaveRemain.getAsOfPeriodEnd().getGrantRemainingNumberList(), period.start());
 		if(!lstAnnRemainHis.isEmpty()) {

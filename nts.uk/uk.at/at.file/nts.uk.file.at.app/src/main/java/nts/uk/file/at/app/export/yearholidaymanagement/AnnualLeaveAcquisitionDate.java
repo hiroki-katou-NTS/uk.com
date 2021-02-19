@@ -3,9 +3,9 @@ package nts.uk.file.at.app.export.yearholidaymanagement;
 //年休取得日の印字方法
 public enum AnnualLeaveAcquisitionDate {
 	// 年月日
-	DATE(0, "年月日"),
+	YMD(0, "年月日"),
 	// 月日
-	TIME(1,"月日");
+	MD(1,"月日");
 
 	public int value;
 
@@ -25,7 +25,7 @@ public enum AnnualLeaveAcquisitionDate {
 	public static AnnualLeaveAcquisitionDate valueOf(Integer value) {
 		// Invalid object.
 		if (value == null) {
-			return TIME;
+			return MD;
 		}
 		// Find value.
 		for (AnnualLeaveAcquisitionDate val : AnnualLeaveAcquisitionDate.values()) {

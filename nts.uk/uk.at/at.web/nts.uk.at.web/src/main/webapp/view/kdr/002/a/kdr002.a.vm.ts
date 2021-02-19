@@ -445,7 +445,7 @@ module nts.uk.at.view.kdr002.a.viewmodel {
                 dfd = $.Deferred();
             //with the case of After_1_year
             if (self.selectedDateType() === 1) {
-                let datePeriodValidate = moment(self.period().startDate).format("YYYYMM"); 
+                let datePeriodValidate = moment(self.period().startDate, "YYYY/MM/DD").format("YYYYMM"); 
                 self.printDate(parseInt(datePeriodValidate));
             }
 
@@ -465,12 +465,12 @@ module nts.uk.at.view.kdr002.a.viewmodel {
                     //②社員範囲選択の就業締め日 = 全締め　&　参照区分 = 過去 &全ての就業締め日の中の一番未来の締め月 <= 指定月→ 出力エラー　(#Msg_1500)
                     service.findAllClosure().done((closures) => {
                         self.closureData(closures);
-                        _.forEach(closures, (closure) => {
-                            if (closure.month <= self.printDate()) {
-                                dfd.resolve(false);
-                            }
-                        });
-                        dfd.resolve(true);
+                        const closure: any = _.minBy(closures, 'closureId');
+                        if (closure.month <= self.printDate()) {
+                          dfd.resolve(false);
+                        } else {
+                          dfd.resolve(true);
+                        }
                     });
                 }
             });

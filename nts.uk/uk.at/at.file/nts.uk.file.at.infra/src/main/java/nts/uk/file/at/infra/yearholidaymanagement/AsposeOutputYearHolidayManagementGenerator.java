@@ -427,7 +427,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 						? anualHolidayGrantInfo.getAnnualHolidayGrantInfor().get().getDoubleTrackStartDate().get()
 						: query.getPeriod().start()) : GeneralDate.today();
 				// 抽出対象社員かチェックする
-				if(anualHolidayGrantInfo.isEmployeeExtracted()) {
+				if(!anualHolidayGrantInfo.isEmployeeExtracted()) {
 					return;
 				}
 				// アルゴリズム「年休明細情報を取得」を実行する II
@@ -574,10 +574,10 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 				Range employeeNameRange = cells.createRange(currentRow + 1, EMP_POS_COL, 1, 2);
 				employeeNameRange.merge();
 				// Print AnnualHolidayGrantInfor
+				int holidayInfoRow = currentRow;
 				if (holidayInfo != null) {
 					// print AnnualHolidayGrant
 					cells.get(currentRow, NEXT_GRANTDATE_COL).setValue(String.valueOf(holidayInfo.getYmd()));
-					int holidayInfoRow = currentRow;
 					if (holidayInfo.getLstGrantInfor().size() > 0) {
 						for (int j = 0; j < holidayInfo.getLstGrantInfor().size(); j++) {
 							AnnualHolidayGrant grantInfo = holidayInfo.getLstGrantInfor().get(j);
@@ -604,13 +604,23 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 						cells.get(holidayInfoRow, GRANT_USEDAY_COL).setValue("0.0");
 						cells.get(holidayInfoRow, GRANT_REMAINDAY_COL).setValue("0.0");
 					}
+				} else {
+					cells.get(holidayInfoRow, GRANT_DAYS_COL).setValue("0.0");
+					cells.get(holidayInfoRow, GRANT_USEDAY_COL).setValue("0.0");
+					cells.get(holidayInfoRow, GRANT_REMAINDAY_COL).setValue("0.0");
 				}
 				// Print HolidayDetails
-
+				// Lọc dữ liệu schedule trong trường hợp chỉ lấy dữ liệu thực hoặc quá khứ
+				if (query.getSelectedReferenceType() == 0 || query.getSelectedDateType().equals(PeriodToOutput.PAST)) {
+					holidayDetails = holidayDetails.stream()
+							.filter(detail -> detail.getReferenceAtr().equals(ReferenceAtr.RECORD))
+							.collect(Collectors.toList());
+				}
 				int holidayDetailRow = currentRow;
 				int holidayDetailCol = MIN_GRANT_DETAIL_COL;
 				for (int j = 0; j < holidayDetails.size(); j++) {
-					if (!holidayDetails.get(j).getUsedNumbers().getUsedDays().isPresent()) continue;
+					if (!holidayDetails.get(j).getUsedNumbers().getUsedDays().isPresent()
+							|| holidayDetails.get(j).getUsedNumbers().getUsedDays().get().v().equals(0d)) continue;
 					AnnualHolidayGrantDetail detail = holidayDetails.get(j);
 					cells.get(holidayDetailRow, holidayDetailCol).setValue(this.genHolidayText(detail, query.getPrintAnnualLeaveDate()));
 					if (holidayDetailCol == MAX_GRANT_DETAIL_COL) {
@@ -626,10 +636,10 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 				
 				// If manageTime in KMF001C = ON
 				if (isManageTime) {
+					holidayInfoRow = currentRow;
 					// Print AnnualHolidayGrantInfor
 					if (holidayInfo != null) {
 						// print AnnualHolidayGrant
-						int holidayInfoRow = currentRow;
 						if (holidayInfo.getLstGrantInfor().size() > 0) {
 							for (int j = 0; j < holidayInfo.getLstGrantInfor().size(); j++) {
 								AnnualHolidayGrant grantInfo = holidayInfo.getLstGrantInfor().get(j);
@@ -652,6 +662,10 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 							cells.get(holidayInfoRow, GRANT_USEDAY_COL).setValue("0:00");
 							cells.get(holidayInfoRow, GRANT_REMAINDAY_COL).setValue("0:00");
 						}
+					} else {
+						cells.get(holidayInfoRow, GRANT_DAYS_COL).setValue("0:00");
+						cells.get(holidayInfoRow, GRANT_USEDAY_COL).setValue("0:00");
+						cells.get(holidayInfoRow, GRANT_REMAINDAY_COL).setValue("0:00");
 					}
 					// Print HolidayDetails
 
@@ -882,16 +896,13 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 	 * @return text của ngày nghỉ
 	 */
 	private String genHolidayText(AnnualHolidayGrantDetail detail, AnnualLeaveAcquisitionDate dateType) {
-		boolean isDateType = dateType.equals(AnnualLeaveAcquisitionDate.DATE);
-		String format = isDateType ? "yy/MM/dd" : "MM/dd";
+		String format = dateType.equals(AnnualLeaveAcquisitionDate.YMD) ? "yy/MM/dd" : "MM/dd";
 		String result = detail.getYmd().toString(format);
-		if (isDateType) {
-			if (detail.getAmPmAtr() == AmPmAtr.AM) {
-				result += "A";
-			}
-			if (detail.getAmPmAtr() == AmPmAtr.PM) {
-				result += "P";
-			}
+		if (detail.getAmPmAtr() == AmPmAtr.AM) {
+			result += "A";
+		}
+		if (detail.getAmPmAtr() == AmPmAtr.PM) {
+			result += "P";
 		}
 		return this.formatApplicationOrSchedule(result, detail.getReferenceAtr());
 	}

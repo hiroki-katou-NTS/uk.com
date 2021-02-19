@@ -62,8 +62,9 @@ public class AnnualHolidayGrantDetailInforImpl implements AnnualHolidayGrantDeta
 					AnnualHolidayGrantDetail annDetail = new AnnualHolidayGrantDetail(sid,
 							y.getYmd(),
 							annData.getUseNumber(),
-							x.isReferenceFlg()  ? ReferenceAtr.RECORD 
-									: (y.getCreatorAtr() == CreateAtr.RECORD ? ReferenceAtr.RECORD : ReferenceAtr.APP_AND_SCHE),
+							x.isReferenceFlg() ? ReferenceAtr.RECORD 
+									: ((y.getCreatorAtr() == CreateAtr.RECORD || y.getCreatorAtr() == CreateAtr.FLEXCOMPEN) 
+											? ReferenceAtr.RECORD : ReferenceAtr.APP_AND_SCHE),
 							AmPmAtr.valueOf(vacation));
 					lstOutputData.add(annDetail);
 				}
