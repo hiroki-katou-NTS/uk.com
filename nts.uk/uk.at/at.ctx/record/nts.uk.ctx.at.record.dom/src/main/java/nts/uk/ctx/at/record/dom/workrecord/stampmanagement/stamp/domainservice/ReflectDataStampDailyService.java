@@ -33,10 +33,10 @@ public class ReflectDataStampDailyService {
 	 * @param stamp
 	 * @return 反映対象日
 	 */
-	public static Optional<GeneralDate> getJudgment(Require require,String employeeId,Stamp stamp) {
+	public static Optional<GeneralDate> getJudgment(Require require, String cid,  String employeeId,Stamp stamp) {
 		GeneralDate date = stamp.getStampDateTime().toDate();
 		DatePeriod period = new DatePeriod(date.addDays(-2), date.addDays(1));
-		return period.stream().filter(c-> reflectTemporarily(require, employeeId, c, stamp)).findFirst();
+		return period.stream().filter(c-> reflectTemporarily(require, cid, employeeId, c, stamp)).findFirst();
 	}
 	/**
 	 * 	[prv-1] 日別実績を仮反映する
@@ -46,9 +46,7 @@ public class ReflectDataStampDailyService {
 	 * @param stamp
 	 * @return
 	 */
-	private static boolean reflectTemporarily(Require require, String employeeId, GeneralDate date, Stamp stamp) {
-		
-		String cid = AppContexts.user().companyId();
+	private static boolean reflectTemporarily(Require require, String cid, String employeeId, GeneralDate date, Stamp stamp) {
 		
 		//	$日別実績 = require.日別実績を作成する(社員ID, 年月日, しない, empty, empty, empty)
 		OutputCreateDailyOneDay dailyOneDay = require.createDailyResult(cid,

@@ -84,11 +84,11 @@ public class CreateDailyResultsStampsTest {
 			}
 		};
 		
-		List<ErrorMessageInfo> errors = CreateDailyResultsStamps.create(require, companyId, employeeId, Optional.empty());
+		List<ErrorMessageInfo> errors = CreateDailyResultsStamps.create(require, companyId, employeeId, Optional.of(GeneralDate.today()));
 		assertThat(errors).isNotEmpty();
 		assertThat(errors.get(0).getEmployeeID()).isEqualTo(employeeId);
 		assertThat(errors.get(0).getCompanyID()).isEqualTo(companyId);
-		assertThat(errors.get(0).getMessageError()).isEqualTo("This is Message");
+		assertThat(errors.get(0).getMessageError().v()).isEqualTo("This is Message");
 		assertThat(errors.get(0).getExecutionContent()).isEqualTo(ExecutionContent.DAILY_CREATION);
 		assertThat(errors.get(0).getProcessDate()).isEqualTo(GeneralDate.today());
 	}
