@@ -5,7 +5,10 @@ import nts.uk.ctx.bs.employee.dom.workplace.group.hospitalofficeinfo.HospitalBus
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Query: 夜勤時間帯履歴一覧を取得する
@@ -15,8 +18,22 @@ public class GetAListOfNightShiftHistoryQuery {
     @Inject
     private HospitalBusinessOfficeInfoHistoryRepository officeInfoHistoryRepository;
 
-    public Optional<HospitalBusinessOfficeInfoHistory> getHospitalBusinessOfficeInfo(String workplaceGroupId){
+    public List<HospitalBusinessOfficeInfoHistoryDto> getHospitalBusinessHistory(String workplaceGroupId) {
+        Optional<HospitalBusinessOfficeInfoHistory> officeInfoHistory = officeInfoHistoryRepository
+                .getHospitalBusinessOfficeInfoHistory(workplaceGroupId);
+        if (officeInfoHistory.isPresent()) {
+            HospitalBusinessOfficeInfoHistory history = officeInfoHistory.get();
+            String wplgId = history.getWorkplaceGroupId();
 
-     return officeInfoHistoryRepository.getHospitalBusinessOfficeInfoHistory(workplaceGroupId);
+            return history.getHistoryItems().stream().map(e -> new HospitalBusinessOfficeInfoHistoryDto(
+                    wplgId,
+                    e.identifier(),
+                    e.start(),
+                    e.end()
+            )).collect(Collectors.toList());
+
+        }
+
+        return Collections.emptyList();
     }
 }

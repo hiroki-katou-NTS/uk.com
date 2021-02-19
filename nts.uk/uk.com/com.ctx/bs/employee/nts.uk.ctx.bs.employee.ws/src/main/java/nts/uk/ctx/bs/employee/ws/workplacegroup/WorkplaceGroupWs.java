@@ -1,14 +1,10 @@
 package nts.uk.ctx.bs.employee.ws.workplacegroup;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.bs.employee.app.command.hospitalofficeinfo.RegistOfNightShiftInforCommand;
-import nts.uk.ctx.bs.employee.app.command.hospitalofficeinfo.RegistOfNightShiftInforCommandHandler;
+import nts.uk.ctx.bs.employee.app.command.hospitalofficeinfo.*;
 import nts.uk.ctx.bs.employee.app.command.workplace.group.*;
 import nts.uk.ctx.bs.employee.app.find.employeeinfo.workplacegroup.*;
-import nts.uk.ctx.bs.employee.app.query.hospitalofficeinfo.GetNightShiftInformationQuery;
-import nts.uk.ctx.bs.employee.app.query.hospitalofficeinfo.GetOptionInformationQuery;
-import nts.uk.ctx.bs.employee.app.query.hospitalofficeinfo.HospitalBusinessOfficeInfoDto;
-import nts.uk.ctx.bs.employee.app.query.hospitalofficeinfo.OptionInforDto;
+import nts.uk.ctx.bs.employee.app.query.hospitalofficeinfo.*;
 import nts.uk.ctx.bs.employee.dom.workplace.master.service.WorkplaceInforParam;
 
 import javax.inject.Inject;
@@ -49,6 +45,15 @@ public class WorkplaceGroupWs extends WebService {
 
     @Inject
     private GetNightShiftInformationQuery getNightShiftInformationQuery;
+
+    @Inject
+    private GetAListOfNightShiftHistoryQuery getAListOfNightShiftHistoryQuery;
+
+    @Inject
+    private AddHospitalBusinessOfficeHistCommandHandler addHospitalCommandHandler;
+
+    @Inject
+    private DeleteHospitalBusinessOfficeHistCommandHandler deleteHospitalCommandHandler;
 
     /**
      * Get all team setting
@@ -103,11 +108,27 @@ public class WorkplaceGroupWs extends WebService {
     public AffWorkplaceGroupDto getWorkplaceGroupEmployee(DateRequest date) {
         return workplaceGroupEmployeeQuery.getWorkplaceGroupOfEmployee(date.toDate());
     }
+
     // Update KSM007 TODO CHINH.HM
+    // A
     @POST
     @Path("optioninformation")
     public OptionInforDto getOptionInfor() {
         return getOptionInformationQuery.getInfor();
+    }
+
+
+    //B INIT SCREEN
+    @POST
+    @Path("getnightshiftinformation")
+    public HospitalBusinessOfficeInfoDto getNightShiftInformation(PramsDto prams) {
+        return getNightShiftInformationQuery.getHospitalBusinessOfficeInfo(prams.getId());
+    }
+
+    @POST
+    @Path("getlistnightshiftinforhist")
+    public List<HospitalBusinessOfficeInfoHistoryDto> getHospitalBusinessOfficeInfo(PramsDto prams) {
+        return getAListOfNightShiftHistoryQuery.getHospitalBusinessHistory(prams.getId());
     }
 
     @POST
@@ -116,15 +137,18 @@ public class WorkplaceGroupWs extends WebService {
         registOfNightShiftInforCommandHandler.handle(command);
     }
 
+    //C
     @POST
-    @Path("getnightshiftinformation")
-    public HospitalBusinessOfficeInfoDto getNightShiftInformation(String historyId) {
-      return   getNightShiftInformationQuery.getHospitalBusinessOfficeInfo(historyId);
+    @Path("addhospitalbusinessofficehist")
+    public void addHospitalBusinessOfficeHist(AddHospitalBusinessOfficeHistCommand command) {
+        addHospitalCommandHandler.handle(command);
     }
-//    @POST
-//    @Path("getnightshiftinformation")
-//    public HospitalBusinessOfficeInfoDto getNightShiftInformation(String historyId) {
-//      return   getNightShiftInformationQuery.getHospitalBusinessOfficeInfo(historyId);
-//    }
+    //C
+    @POST
+    @Path("deletehospitalbusinessofficehist")
+    public void deleteHospitalBusinessOfficeHist(DeleteHospitalBusinessOfficeHistCommand command) {
+        deleteHospitalCommandHandler.handle(command);
+    }
 
 }
+

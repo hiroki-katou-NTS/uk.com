@@ -53,7 +53,7 @@ public class RegistOfNightShiftInforCommandHandler extends CommandHandler<Regist
                 .getHospitalBusinessOfficeInfoHistory(command.getWorkplaceGroupId());
         if (officeInfoHistory.isPresent()) {
             if (officeInfo.isPresent()) {
-                historyRepository.update(hospitalBusinessOfficeInfo, officeInfoHistory.get());
+                historyRepository.updateHospitalBusinessOfficeInfo(officeInfo.get());
             } else {
                 historyRepository.insert(hospitalBusinessOfficeInfo, officeInfoHistory.get());
             }
