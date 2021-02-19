@@ -366,7 +366,7 @@ module nts.uk.at.view.kdp010_old.g {
                     fromScreen: self.mode == 0? 'A': ''
 				}
 				nts.uk.ui.windows.setShared('KDP010_G', dataG);
-				nts.uk.ui.windows.sub.modal("/view/kdp/010_old/h/index.xhtml").onClosed(() => {
+				nts.uk.ui.windows.sub.modal("/view/kdp/010/h/index.xhtml").onClosed(() => {
 					self.dataKdpH = nts.uk.ui.windows.getShared('KDP010_H');
 					if (self.dataKdpH) {
 						self.dataShare = self.dataKdpH.dataShare == undefined ? self.dataKdpH : self.dataKdpH.dataShare;

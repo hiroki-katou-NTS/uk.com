@@ -2,8 +2,10 @@ module nts.uk.at.view.kaf022.x {
     export module viewmodel {
         export class ScreenModel {
 
-            public goToCompanySettings(): void {
-                nts.uk.request.jump("/view/kaf/022/b/index.xhtml");
+            public openGDialog(): void {
+                nts.uk.ui.windows.sub.modal("/view/kdp/010/g/index.xhtml").onClosed(() => {
+                       
+                });
             }
 
             public goToEmploymentSettings(): void {
