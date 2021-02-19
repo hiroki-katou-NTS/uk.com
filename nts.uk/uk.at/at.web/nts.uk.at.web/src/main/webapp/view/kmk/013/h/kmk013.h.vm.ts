@@ -64,7 +64,6 @@ module nts.uk.at.view.kmk013.h {
                         self.selectedIdH8_2(data.actualStampOfPriorityClass);
                         self.selectedIdH9_2(data.breakSwitchClass);
                     }
-                    $( "#h2_3" ).focus();
                     dfd.resolve();
                 }).fail(error => {
                     dfd.reject();
@@ -93,7 +92,7 @@ module nts.uk.at.view.kmk013.h {
                 };
                 service.save(data).done(() => {
                     nts.uk.ui.dialog.info({messageId: 'Msg_15'}).then(() => {
-                        $( "#h2_3" ).focus();
+                        $("#h3_2").focus();
                     });
                 }).fail(error => {
                     nts.uk.ui.dialog.alert(error);
