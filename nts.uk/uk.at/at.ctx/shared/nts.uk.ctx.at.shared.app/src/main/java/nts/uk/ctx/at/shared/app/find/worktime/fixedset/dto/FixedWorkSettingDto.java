@@ -134,7 +134,7 @@ public class FixedWorkSettingDto implements FixedWorkSettingSetMemento {
 	@Override
 	public void setCommonRestSet(CommonRestSetting commonRestSet) {
 	    this.commonRestSet = new CommonRestSettingDto();
-	    commonRestSet.setCalculateMethod(commonRestSet.getCalculateMethod());
+	    this.commonRestSet.setCalculateMethod(commonRestSet.getCalculateMethod());
 	}
 
 	/*
