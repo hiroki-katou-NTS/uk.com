@@ -11,7 +11,7 @@ import nts.uk.ctx.at.request.infra.entity.application.overtime.KrqdtOvertimeInpu
 
 @Stateless
 public class JpaOvertimeInputRepository extends JpaRepository implements OvertimeInputRepository {
-	private static final String FIND_ALL ="SELECT e FROM KrqdtOvertimeInput e";
+	private static final String FIND_ALL ="SELECT e FROM KrqdtAppOvertimeInput e";
 	private static final String FIND_BY_APPID;
 	private static final String FIND_BY_APPID_AND_ATTENDANCEID;
 	static{

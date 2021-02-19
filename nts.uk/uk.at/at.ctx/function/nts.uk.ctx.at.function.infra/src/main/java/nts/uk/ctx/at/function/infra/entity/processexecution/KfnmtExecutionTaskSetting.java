@@ -43,13 +43,13 @@ import nts.uk.ctx.at.function.dom.processexecution.tasksetting.primitivevalue.En
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.primitivevalue.OneDayRepeatIntervalDetail;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.primitivevalue.StartTime;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name="KFNMT_EXEC_TASK_SETTING")
+@Table(name="KFNMT_AUTOEXEC_TASK")
 @AllArgsConstructor
 @NoArgsConstructor
-public class KfnmtExecutionTaskSetting extends UkJpaEntity implements Serializable{
+public class KfnmtExecutionTaskSetting extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	/* 主キー */
 	@EmbeddedId
@@ -59,10 +59,6 @@ public class KfnmtExecutionTaskSetting extends UkJpaEntity implements Serializab
 	@Version
 	@Column(name = "EXCLUS_VER")
 	private Long exclusVer;
-
-	/** The Contract Code. */
-	@Column(name = "CONTRACT_CD")
-	public String contractCode;
 	
 	/* 開始日 */
 	@Column(name = "START_DATE")
@@ -285,7 +281,6 @@ public class KfnmtExecutionTaskSetting extends UkJpaEntity implements Serializab
 						domain.getCompanyId(), 
 						domain.getExecItemCd().v()),
 				domain.getVersion(),
-				AppContexts.user().contractCode(),
 				domain.getStartDate(),
 				domain.getStartTime().v(),
 				domain.getEndTime().getEndTimeCls().value,

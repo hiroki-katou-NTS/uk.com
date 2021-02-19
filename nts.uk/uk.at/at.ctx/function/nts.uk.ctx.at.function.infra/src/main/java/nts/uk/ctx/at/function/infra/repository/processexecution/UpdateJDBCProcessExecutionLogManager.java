@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
@@ -18,17 +19,19 @@ import nts.uk.ctx.at.function.dom.processexecution.executionlog.EndStatus;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.OverallErrorDetail;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogManage;
 import nts.uk.shr.infra.data.jdbc.JDBCUtil;
+import nts.uk.shr.infra.data.jdbc.UkPreparedStatement;
 
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 @Stateless
 public class UpdateJDBCProcessExecutionLogManager extends JpaRepository {
 	public void updateProcessExecutionLogManager (ProcessExecutionLogManage domain) {
 		try {
-			String updateTableSQL = " UPDATE KFNMT_PRO_EXE_LOG_MANAGE SET"
+			String updateTableSQL = " UPDATE KFNDT_AUTOEXEC_MNG SET"
 					+ " CURRENT_STATUS = ?,OVERALL_STATUS = ?,ERROR_DETAIL = ?, LAST_EXEC_DATETIME = ?, LAST_EXEC_DATETIME_EX = ?"
 					+ ", LAST_END_EXEC_DATETIME = ?, ERROR_SYSTEM = ?, ERROR_BUSINESS = ?"
 					+ " WHERE CID = ? AND EXEC_ITEM_CD = ? ";
-			try (PreparedStatement ps = this.connection().prepareStatement(JDBCUtil.toUpdateWithCommonField(updateTableSQL))) {			
+			try (PreparedStatement pss = this.connection().prepareStatement(JDBCUtil.toUpdateWithCommonField(updateTableSQL))) {
+				val ps = new UkPreparedStatement(pss);
 				ps.setString(1, domain.getCurrentStatus().map(item -> String.valueOf(item.value)).orElse(null));
 				ps.setString(2, domain.getOverallStatus().map(item -> String.valueOf(item.value)).orElse(null));
 				ps.setString(3, domain.getOverallError().map(item -> String.valueOf(item.value)).orElse(null));
@@ -49,7 +52,7 @@ public class UpdateJDBCProcessExecutionLogManager extends JpaRepository {
 	
 	public Optional<ProcessExecutionLogManage> getLogByCIdAndExecCd(String companyId, String execItemCd) {
 		try {
-			String updateTableSQL = " SELECT * FROM KFNMT_PRO_EXE_LOG_MANAGE "
+			String updateTableSQL = " SELECT * FROM KFNDT_AUTOEXEC_MNG "
 					+ " WHERE CID = ? AND EXEC_ITEM_CD = ? ";
 			try (PreparedStatement statement = this.connection().prepareStatement(updateTableSQL)) {
 				statement.setString(1, companyId);

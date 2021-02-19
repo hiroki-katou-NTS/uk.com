@@ -16,7 +16,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  *
@@ -28,7 +28,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class KrqstAppEmploymentSet extends UkJpaEntity implements Serializable {
+public class KrqstAppEmploymentSet extends ContractUkJpaEntity implements Serializable {
 
 	@Version
 	@Column(name = "EXCLUS_VER")
@@ -45,9 +45,9 @@ public class KrqstAppEmploymentSet extends UkJpaEntity implements Serializable {
     private Integer displayFlag;
 
     
-    @OneToMany(targetEntity=KrqdtAppEmployWorktype.class, cascade = CascadeType.ALL, mappedBy = "KrqstAppEmploymentSet", orphanRemoval = true)
-	@JoinTable(name = "KRQDT_APP_EMPLOY_WORKTYPE")
-	public List<KrqdtAppEmployWorktype> krqdtAppEmployWorktype;
+    @OneToMany(targetEntity=KrqmtAppWktpEmp.class, cascade = CascadeType.ALL, mappedBy = "KrqstAppEmploymentSet", orphanRemoval = true)
+	@JoinTable(name = "KRQMT_APP_WKTP_EMP")
+	public List<KrqmtAppWktpEmp> krqdtAppEmployWorktype;
     
 	@Override
 	protected Object getKey() {

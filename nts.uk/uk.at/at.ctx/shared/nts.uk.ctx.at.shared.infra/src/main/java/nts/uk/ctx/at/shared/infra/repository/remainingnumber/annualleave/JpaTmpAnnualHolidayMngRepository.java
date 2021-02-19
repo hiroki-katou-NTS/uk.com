@@ -19,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHol
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHolidayMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
-import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KrcmtInterimAnnualMng;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KrcdtHdpaidTemp;
 import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
@@ -29,18 +29,18 @@ public class JpaTmpAnnualHolidayMngRepository extends JpaRepository implements T
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public Optional<TmpAnnualHolidayMng> getById(String mngId) {
-		Optional<TmpAnnualHolidayMng> optTmpAnnualHolidayMng = this.queryProxy().find(mngId, KrcmtInterimAnnualMng.class)
+		Optional<TmpAnnualHolidayMng> optTmpAnnualHolidayMng = this.queryProxy().find(mngId, KrcdtHdpaidTemp.class)
 				.map(x -> toDomain(x));
 		return optTmpAnnualHolidayMng;
 	}
 
-	private TmpAnnualHolidayMng toDomain(KrcmtInterimAnnualMng x) {
+	private TmpAnnualHolidayMng toDomain(KrcdtHdpaidTemp x) {
 		return new TmpAnnualHolidayMng(x.annualMngId, x.workTypeCode, new UseDay(x.useDays));
 	}
 
 	@Override
 	public void deleteById(String mngId) {
-		Optional<KrcmtInterimAnnualMng> optTmpAnnualHolidayMng = this.queryProxy().find(mngId, KrcmtInterimAnnualMng.class);
+		Optional<KrcdtHdpaidTemp> optTmpAnnualHolidayMng = this.queryProxy().find(mngId, KrcdtHdpaidTemp.class);
 		optTmpAnnualHolidayMng.ifPresent(x -> {
 			this.commandProxy().remove(x);
 		});
@@ -49,14 +49,14 @@ public class JpaTmpAnnualHolidayMngRepository extends JpaRepository implements T
 
 	@Override
 	public void persistAndUpdate(TmpAnnualHolidayMng dataMng) {
-		Optional<KrcmtInterimAnnualMng> optTmpAnnualHolidayMng = this.queryProxy().find(dataMng.getAnnualId(), KrcmtInterimAnnualMng.class);
+		Optional<KrcdtHdpaidTemp> optTmpAnnualHolidayMng = this.queryProxy().find(dataMng.getAnnualId(), KrcdtHdpaidTemp.class);
 		if(optTmpAnnualHolidayMng.isPresent()) {
-			KrcmtInterimAnnualMng entity = optTmpAnnualHolidayMng.get();
+			KrcdtHdpaidTemp entity = optTmpAnnualHolidayMng.get();
 			entity.useDays = dataMng.getUseDays().v();
 			entity.workTypeCode = dataMng.getWorkTypeCode();
 			this.commandProxy().update(entity);
 		} else {
-			KrcmtInterimAnnualMng entity = new KrcmtInterimAnnualMng();
+			KrcdtHdpaidTemp entity = new KrcdtHdpaidTemp();
 			entity.annualMngId = dataMng.getAnnualId();
 			entity.useDays = dataMng.getUseDays().v();
 			entity.workTypeCode = dataMng.getWorkTypeCode();
@@ -67,8 +67,8 @@ public class JpaTmpAnnualHolidayMngRepository extends JpaRepository implements T
 	@SneakyThrows
 	@Override
 	public List<TmpAnnualHolidayMng> getBySidPeriod(String sid, DatePeriod period) {
-		try(PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCMT_INTERIM_ANNUAL_MNG a1"
-				+ " INNER JOIN KRCMT_INTERIM_REMAIN_MNG a2 ON a1.ANNUAL_MNG_ID = a2.REMAIN_MNG_ID"
+		try(PreparedStatement sql = this.connection().prepareStatement("SELECT * FROM KRCDT_HDPAID_TEMP a1"
+				+ " INNER JOIN KRCDT_INTERIM_REMAIN_MNG a2 ON a1.ANNUAL_MNG_ID = a2.REMAIN_MNG_ID"
 				+ " WHERE a2.SID = ?"
 				+ " AND  a2.REMAIN_TYPE = 0"
 				+ " AND a2.YMD >= ? and a2.YMD <= ?"

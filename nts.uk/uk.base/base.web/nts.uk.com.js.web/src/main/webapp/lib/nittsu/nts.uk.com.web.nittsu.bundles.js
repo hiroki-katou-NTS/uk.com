@@ -51045,6 +51045,7 @@ var nts;
                         function WidgetResizeContentBindingHandler() {
                         }
                         WidgetResizeContentBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                            var $el = $(element);
                             var widget = viewModel.widget;
                             var WG_SIZE = 'WIDGET_SIZE';
                             var mkv = new ko.ViewModel();
@@ -51073,7 +51074,7 @@ var nts;
                                 frame.src = src;
                                 element.appendChild(frame);
                             }
-                            $(element)
+                            $el
                                 .removeAttr('data-bind')
                                 .addClass('widget-content')
                                 .resizable({
@@ -51093,6 +51094,23 @@ var nts;
                                             mkv.$window.storage(WG_SIZE, size);
                                         });
                                     }
+                                },
+                                resize: function () { return $el.trigger('wg.resize'); }
+                            })
+                                .on('wg.resize', function () {
+                                var scr = $el.find('div').first();
+                                var ctn = $el.closest('.widget-container');
+                                if (scr) {
+                                    var _a = scr.get(0), offsetHeight = _a.offsetHeight, scrollHeight = _a.scrollHeight;
+                                    if (offsetHeight < scrollHeight) {
+                                        ctn.addClass('has-scroll');
+                                    }
+                                    else {
+                                        ctn.removeClass('has-scroll');
+                                    }
+                                }
+                                else {
+                                    ctn.removeClass('has-scroll');
                                 }
                             })
                                 .find('.ui-resizable-s')
@@ -51114,7 +51132,8 @@ var nts;
                                     }
                                     size[key] = { set: !fx, value: value };
                                     mkv.$window.storage(WG_SIZE, size);
-                                });
+                                })
+                                    .always(function () { return $el.trigger('wg.resize'); });
                             });
                             if (widget) {
                                 mkv

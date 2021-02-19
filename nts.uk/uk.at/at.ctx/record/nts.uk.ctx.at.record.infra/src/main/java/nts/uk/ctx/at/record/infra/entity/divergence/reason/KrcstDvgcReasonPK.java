@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * The primary key class for the KRCST_DVGC_REASON database table.
+ * The primary key class for the KRCMT_DVGC_REASON database table.
  * 
  */
 
@@ -27,7 +27,7 @@ public class KrcstDvgcReasonPK implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/** The no. */
-	@Column(name="[NO]")
+	@Column(name="NO")
 	private Integer no;
 
 	/** The cid. */
