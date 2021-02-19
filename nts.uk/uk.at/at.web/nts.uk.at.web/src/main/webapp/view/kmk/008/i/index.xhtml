@@ -1,151 +1,51 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
-
+<html
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:com="http://xmlns.jcp.org/jsf/component"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+>
 <body>
-	<ui:composition template="../../../../master/dialog.xhtml">
-		<ui:define name="htmlHead">
-			<script>
-				var dialogSize = {
-					width : 555,
-					height : 500
-				};
-			</script>
-			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="kmk008.i.main.css" />
-			<com:scriptfile path="kmk008.i.start.js" />
-			<com:scriptfile path="kmk008.i.vm.js" />
-			<com:scriptfile path="kmk008.i.service.js" />
-		</ui:define>
+<ui:composition template="../../../../master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <script>
+            var dialogSize = {
+                width: 400,
+                height: 305
+            };
+        </script>
+        <com:scriptfile set="IGNITE"/>
+        <com:stylefile path="kmk008.i.main.css"/>
+        <com:scriptfile path="kmk008.i.vm.js"/>
+    </ui:define>
 
-		<ui:define name="content">
-			<div id="contents-area">
-				<div data-bind="with: operationSetting">
-					<div class="label">#{i18n.getText('KMK008_5')}</div>
-					<hr />
-					<div class="valign-center control-group control-group-margin control-group-padding">
-						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK008_32')}</div>
-						<div id="combo-box-month-setting" tabindex="1"
-							data-bind="ntsComboBox: {
-							name: '#{i18n.getText('KMK008_32')}',
-							options: startingMonth,
-							optionsValue: 'value',
-							value: selectedStartingMonth,
-							optionsText: 'localizedName',
-							editable: false,
-							enable: true,
-							columns: [
-							{ prop: 'localizedName', length: 10 },
-						]} ">
-						</div>
-					</div>
-					<div class="valign-center control-group div-group-date-setting control-group-padding">
-						<div class="closing-date-clean">
-							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK008_33')}</div>
-							<button tabindex="2"
-								data-bind="ntsHelpButton: {image: 'image/img_001.png', position: 'right top', enable: true }">?</button>
-						</div>
-						<div class="closing-date-clean rdb-closing-date-classification">
-							<div id="rdb-closing-date-classification" tabindex="3"
-								data-bind="ntsRadioBoxGroup: {
-							options: closingDateAtr,
-							optionsValue: 'value',
-							optionsText: 'localizedName',
-							value: $parent.selectedClosingDateAtr,
-							enable: true }">
-							</div>
-						</div>
-
-						<div class="closing-date-clean">
-							<div id="cbx-closing-date-setting" tabindex="4"
-								data-bind="ntsComboBox: {
-						name: '#{i18n.getText('KMK008_33')}',
-						options: closingDateType,
-						optionsValue: 'value',
-						value: selectedClosingDateType,
-						optionsText: 'localizedName',
-						editable: false,
-						enable: $parent.isEnableClosingDateType,
-						columns: [
-							{ prop: 'localizedName', length: 10 },
-						]} ">
-							</div>
-						</div>
-					</div>
-
-					<div class="valign-center control-group control-group-margin control-group-padding">
-						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK008_34')}</div>
-						<button tabindex="5"
-							data-bind="ntsHelpButton: {image: 'image/img_002.png', position: 'right top', enable: true }">?</button>
-						<div id="cbx-limit-setting" tabindex="6"
-							data-bind="ntsComboBox: {
-							name: '#{i18n.getText('KMK008_34')}',
-							options: numberTimesOverLimitType,
-							optionsValue: 'value',
-							value: selectedNumberTimesOverLimitType,
-							optionsText: 'localizedName',
-							editable: false,
-							enable: true,
-							columns: [
-								{ prop: 'localizedName', length: 10 },
-							]} ">
-						</div>
-					</div>
-					<div class="valign-center control-group control-group-margin control-group-padding"
-						id="target-data-content">
-						<div class="target-data-content">
-							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMK008_35')}</div>
-							<button tabindex="7"
-								data-bind="ntsHelpButton: {image: 'image/img_003.png', position: 'right top', enable: true }">?</button>
-						</div>
-						<div class="target-data-content">
-							<table id="table-target-data" style="width: 340px">
-								<tr style="background-color: #E0F59E">
-									<th style="width: 30%">#{i18n.getText('KMK008_36')}</th>
-									<th style="width: 70%">#{i18n.getText('KMK008_35')}</th>
-								</tr>
-								<tr>
-									<td class="table-target-data-td-label">アラームリスト</td>
-									<td>
-										<div tabindex="8" class="target-classification"
-											data-bind="ntsSwitchButton: {
-								    		name: '#{i18n.getText('KMK008_35')}',
-											options: alarmListAtr,
-											optionsValue: 'value',
-											optionsText: 'localizedName',
-											value: selectedAlarmListAtr,
-											enable: $parent.isEnableTargetSetting }">
-										</div>
-									</td>
-								</tr>
-								<tr>
-									<td class="table-target-data-td-label">年間勤務表</td>
-									<td>
-										<div tabindex="8" class="target-classification"
-											data-bind="ntsSwitchButton: {
-								    		name: '#{i18n.getText('KMK008_35')}',
-											options: yearlyWorkTableAtr,
-											optionsValue: 'value',
-											optionsText: 'localizedName',
-											value: selectedYearlyWorkTableAtr,
-											enable: $parent.isEnableTargetSetting }">
-										</div>
-									</td>
-								</tr>
-							</table>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="valign-center control-group function-button-class"
-				id="functions-area-bottom">
-				<button class="proceed x-large" data-bind="click: insertAndUpdate">#{i18n.getText('KMK008_37')}</button>
-				<button data-bind="click: closeDialog">#{i18n.getText('KMK008_38')}</button>
-			</div>
-		</ui:define>
-	</ui:composition>
+    <ui:define name="content">
+        <div id="contents-area">
+            <div class="wrapper">
+                <div class="head-title">
+                    <span id="I1_1" class="label">#{i18n.getText('KMK008_171')}</span>
+                </div>
+                <div data-itemno="I1_2" class="company">
+                    <span data-itemno="I1_2" class="label">#{i18n.getText('Com_Company')}</span>
+                </div>
+                <div class="chk_I13" data-itemno="I1_3"
+                     tabindex="1" data-bind="ntsCheckBox: { checked: useWorkPlace }">
+                    #{i18n.getText('Com_Workplace')}
+                </div>
+            </div>
+        </div>
+        <div id="functions-area-bottom">
+            <button tabindex="2" class="large proceed"
+                    data-itemno="I1_4" data-bind="click: submitAndCloseDialog">
+                #{i18n.getText('KMK008_37')}
+            </button>
+            <button tabindex="3" data-itemno="I1_5"
+                    data-bind="click: closeDialog">
+                #{i18n.getText('KMK008_38')}
+            </button>
+        </div>
+    </ui:define>
+</ui:composition>
 </body>
 </html>

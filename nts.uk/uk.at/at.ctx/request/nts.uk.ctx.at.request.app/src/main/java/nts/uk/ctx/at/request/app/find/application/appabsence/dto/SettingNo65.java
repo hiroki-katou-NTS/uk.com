@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class SettingNo65 {
-	//休暇申請設定．年休より優先消化チェック区分 - HdAppSet
+	//休暇申請設定．年休より優先消化チェック区分 - HolidayApplicationSetting
 	private int pridigCheck;
 	//振休管理設定．管理区分
 	private boolean subVacaManage;

@@ -63,23 +63,10 @@ public class EnterStampFromICCardServiceTest {
 		OvertimeDeclaration declaration = new OvertimeDeclaration(new AttendanceTime(1), new AttendanceTime(1));
 		RefectActualResult result = new RefectActualResult("DUMMY", new WorkLocationCD("DUMMY"),
 				new WorkTimeCode("DUMMY"), declaration);
-		AtomTask atomTask = AtomTask.of(() -> {});// dummy
-
-		TimeStampInputResult inputResult = new TimeStampInputResult(
-				new StampDataReflectResult(Optional.of(GeneralDate.today()), atomTask), Optional.of(atomTask));
-
-		new MockUp<EnterStampForSharedStampService>() {
-			@Mock
-			public TimeStampInputResult create(EnterStampForSharedStampService.Require require, String conteactCode,
-					String employeeID, Optional<StampNumber> StampNumber, Relieve relieve,
-					GeneralDateTime stmapDateTime, StampButton stampButton, RefectActualResult refActualResult) {
-				return inputResult;
-			}
-		};
-
+		
 		new Expectations() {
 			{
-				require.getByCardNoAndContractCode("DUMMY", "DUMMY");
+				require.getByCardNoAndContractCode(anyString, anyString);
 			}
 		};
 
@@ -113,7 +100,7 @@ public class EnterStampFromICCardServiceTest {
 		new Expectations() {
 			{
 				require.getByCardNoAndContractCode(stampNumber.v(), contractCode.v());
-				result = Optional.of(new StampCard("DUMMY", "DUMMY", "DUMMY"));
+				result = Optional.of(new StampCard("000001", "1111101010", "eadf-adf9-adfg4"));
 
 			}
 		};
@@ -121,7 +108,7 @@ public class EnterStampFromICCardServiceTest {
 		StampingResultEmployeeId stampingResultEmployeeId = EnterStampFromICCardService.create(require, contractCode,
 				stampNumber, dateTime, stampButton, result);
 
-		assertThat(stampingResultEmployeeId.employeeId).isEqualTo("DUMMY");
+		assertThat(stampingResultEmployeeId.employeeId).isEqualTo("eadf-adf9-adfg4");
 
 	}
 

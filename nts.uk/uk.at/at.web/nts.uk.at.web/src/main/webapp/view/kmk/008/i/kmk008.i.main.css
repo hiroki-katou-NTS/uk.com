@@ -1,90 +1,29 @@
-.closing-date-clean {
-	float: left;
-	clear: right;
+.head-title {
+    margin-bottom: 20px;
 }
 
-#combo-box-month-setting {
-	margin-left: 80px;
+.ntsCheckBox {
+    margin-bottom: 16px;
+    margin-left: 136px;
 }
 
-.rdb-closing-date-classification {
-	margin-left: 55px !important;
+.wrapper {
+    margin-top: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-bottom: 0;
+    display: inline-block;
 }
 
-#combo-box-month-setting {
-	width: 100px;
-	min-width: 50px !important;
+.company {
+    margin-left: 170px;
+    margin-bottom: 20px;
 }
 
-#rdb-closing-date-classification .ntsRadioBox {
-	width: 100% !important;
-	height: 30px;
+#I1_1 {
+    white-space: pre-wrap;
 }
 
-#rdb-closing-date-classification {
-	width: 150px;
-	padding-top: 10px;
-}
-
-#cbx-closing-date-setting {
-	min-width: 50px !important;
-	width: 100px;
-	margin-top: 35px;
-	margin-left: -30px;
-}
-
-.div-group-date-setting {
-	height: 50px;
-	margin-bottom: 40px !important;
-}
-
-#cbx-limit-setting {
-	margin-left: 10px;
-	width: 100px;
-	min-width: 50px !important;
-}
-
-.target-data-content {
-	float: left;
-	clear: right;
-}
-
-#target-data-content {
-	height: 110px;
-}
-
-#table-target-data {
-	margin-left: 40px;
-}
-
-#table-target-data, th, td {
-	border: 1px solid gray;
-}
-
-.control-group-margin {
-	margin-bottom: 20px;
-}
-
-.control-group-padding {
-	padding-left: 15px;
-}
-
-.target-classification {
-	margin: 4px;
-}
-
-.function-button-class {
-	text-align: center;
-}
-
-.function-button-class>button {
-	margin-right: 15px;
-}
-
-#table-target-data-td-label {
-	background-color: #F7EFD4l;
-}
-
-.ntsHelpButton .nts-help-button-image{
-	padding: 0px !important;
+.head-title {
+    text-align: left;
 }

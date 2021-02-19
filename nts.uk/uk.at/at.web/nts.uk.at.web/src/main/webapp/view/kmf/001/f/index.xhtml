@@ -99,7 +99,7 @@
 										optionsValue: 'value',
 										optionsText: 'localizedName',
 										value: compenPreApply,
-										enable: false }">
+										enable: isManageCompen }">
 							</span></td>
 						</tr>
 						
@@ -121,6 +121,39 @@
 										]}"></div>
 							</td>
 						</tr>
+						<!-- F4_1, F4_2 -->
+						<tr>
+							<td class="pad_left_30" colspan="2"><label>#{i18n.getText('KMF001_327')}</label></td>
+							<td class="pad_over_left_80" style="padding-left: 70px;">
+								<div  
+									data-bind="ntsRadioBoxGroup: {
+                                    name: '#{i18n.getText('KMF001_327')}',
+                                    options: [ { code: 0, name: '#{i18n.getText('KMF001_328')}' },
+                                            { code: 1, name: '#{i18n.getText('KMF001_329')}' }],
+                                    optionsValue: 'code',
+                                    optionsText: 'name',
+                                    enable: isManageCompen,
+                                    value: manageDeadline }" />
+							</td>
+						</tr>
+						<!-- F4_3, F4_4, F4_5 -->
+						<tr>
+							<td class="pad_left_30" colspan="2"><label>#{i18n.getText('KMF001_330')}</label></td>
+							<td class="pad_over_left_80">
+								<span 
+								data-bind="ntsSwitchButton: {
+												name: '#[KMF001_330]',
+												options: ko.observableArray([
+					                				{ code: 1, name: '#{i18n.getText('KMF001_331')}' },
+					                				{ code: 0, name: '#{i18n.getText('KMF001_332')}' }
+					            				]),
+												optionsValue: 'code',
+												optionsText: 'name',
+												value: managementClassification,
+												enable: isManageCompen }"/>
+								<label>#{i18n.getText('KMF001_333')}</label>
+							</td>
+						</tr>
 						
 						<tr>
 							<td colspan="6">
@@ -139,7 +172,7 @@
 										optionsValue: 'value',
 										optionsText: 'localizedName',
 										value: compenTimeManage,
-										enable: false }">
+										enable: isManageCompen }">
 							</span>
 								<div class="hr_width">
 									<hr />
@@ -168,7 +201,7 @@
 										value: timeUnitCode,
 										optionsText: 'localizedName',
 										editable: false,
-										enable: false,
+										enable: isManageTime,
 										columns: [
 											{ prop: 'localizedName', length: 4 },
 										]}"></div>
@@ -187,7 +220,7 @@
 							</td>
 						</tr>
 						<tr>
-							<td class="pad_left_30"><div tabindex="10"
+							<td class="pad_left_30" colspan="3"><div tabindex="10"
 									data-bind="ntsCheckBox: { checked: checkWorkTime, enable: isManageCompen}">#{i18n.getText('KMF001_80')}</div></td>
 						</tr>
 						<tr>
@@ -229,7 +262,7 @@
 							<td class="pad_left_30"><!-- <div tabindex="15"
 									data-bind="ntsCheckBox: { checked: checkOverTime, enable: isManageCompen}">#{i18n.getText('KMF001_84')}</div> -->
 									<div tabindex="15"
-									data-bind="ntsCheckBox: { checked: checkOverTime, enable: false}">#{i18n.getText('KMF001_84')}</div>
+									data-bind="ntsCheckBox: { checked: checkOverTime, enable: isManageCompen}">#{i18n.getText('KMF001_84')}</div>
 									</td>
 						</tr>
 						<tr>
@@ -248,7 +281,7 @@
 											optionsValue: 'value',
 											optionsText: 'localizedName',
 											value: selectedOfOverTime,
-											enable: false}"></div>
+											enable:enableOverArea}"></div>
 							</td>
 							<td colspan="2" class="pad_left_70">
 								<div class="text_width">
@@ -258,7 +291,7 @@
 									<!-- <input id="overOneDay" class="check_error" tabindex="17"
 										data-bind="ntsTimeEditor: {name:'#[KMF001_81]',value: overOneDay, constraint: 'OneDayTime', mode: 'time', option: inputOption, inputFormat: 'time', enable: enableDesignOver, required: true}" /> -->
 								<input id="overOneDay" class="check_error" tabindex="17"
-										data-bind="ntsTimeEditor: {name:'#[KMF001_81]',value: overOneDay, constraint: 'OneDayTime', mode: 'time', option: inputOption, inputFormat: 'time', enable: false, required: true}" />
+										data-bind="ntsTimeEditor: {name:'#[KMF001_81]',value: overOneDay, constraint: 'OneDayTime', mode: 'time', option: inputOption, inputFormat: 'time', enable: enableDesignOver, required: true}" />
 								</div>
 							</td>
 							<td colspan="2" class="pad_left_70">
@@ -269,7 +302,7 @@
 									<!-- <input id="overHalfDay" class="check_error" tabindex="18"
 										data-bind="ntsTimeEditor: {name:'#[KMF001_82]',value: overHalfDay, constraint: 'OneDayTime', mode: 'time', option: inputOption, inputFormat: 'time', enable: enableDesignOver, required: true}" /> -->
 								<input id="overHalfDay" class="check_error" tabindex="18"
-										data-bind="ntsTimeEditor: {name:'#[KMF001_82]',value: overHalfDay, constraint: 'OneDayTime', mode: 'time', option: inputOption, inputFormat: 'time', enable: false, required: true}" />
+										data-bind="ntsTimeEditor: {name:'#[KMF001_82]',value: overHalfDay, constraint: 'OneDayTime', mode: 'time', option: inputOption, inputFormat: 'time', enable: enableDesignOver, required: true}" />
 								</div>
 							</td>
 						</tr>
@@ -279,7 +312,7 @@
 									<!-- <input id="overAll" class="check_error" tabindex="19"
 										data-bind="ntsTimeEditor: {name:'#[KMF001_137]',value: overAll, constraint: 'OneDayTime', mode: 'time', option: inputOption, inputFormat: 'time', enable: enableOverAll, required: true}" /> -->
 								<input id="overAll" class="check_error" tabindex="19"
-										data-bind="ntsTimeEditor: {name:'#[KMF001_137]',value: overAll, constraint: 'OneDayTime', mode: 'time', option: inputOption, inputFormat: 'time', enable: false, required: true}" />
+										data-bind="ntsTimeEditor: {name:'#[KMF001_137]',value: overAll, constraint: 'OneDayTime', mode: 'time', option: inputOption, inputFormat: 'time', enable: enableOverAll, required: true}" />
 								</div>
 								<div class="text_width">
 									<label>#{i18n.getText('KMF001_83')}</label>
@@ -339,129 +372,6 @@
 												enable: !isEmptyEmployment() }">
 										</span></td>
 										<td style="width:200px;"></td>
-									</tr>
-									<tr>
-										<td colspan="4">
-											<div>
-												<hr />
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td class="padding_head"></td>
-										<td colspan="3">
-											<div data-bind="ntsFormLabel: {}" class="margin_right_50">#{i18n.getText('KMF001_75')}</div>
-										</td>
-									</tr>
-									<tr>
-										<td class="padding_head"></td>
-										<td colspan="3">
-											<div>
-												<hr />
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td></td>
-										<td colspan="2" class="lbl_text"><label>#{i18n.getText('KMF001_90')}</label></td>
-										<td class="padding_over"><div tabindex="10"
-												class="combo-box"
-												data-bind="ntsComboBox: {
-												options: expirationTimeEnums,
-												optionsValue: 'value',
-												visibleItemsCount: 15,
-												value: emExpirationTime,
-												optionsText: 'localizedName',
-												editable: false,
-												enable: isEmManageCompen,
-												columns: [
-													{ prop: 'localizedName', length: 10 },
-												]}"></div></td>
-									</tr>
-									<tr>
-										<td></td>
-										<td colspan="2" class="lbl_text"><label>#{i18n.getText('KMF001_77')}</label></td>
-										<td class="padding_over"><!-- <span tabindex="11"
-											data-bind="ntsSwitchButton: {
-												options: applyPermissionEnums,
-												optionsValue: 'value',
-												optionsText: 'localizedName',
-												value: emPreApply,
-												enable: isEmManageCompen }">
-										</span> -->
-										<span tabindex="11"
-											data-bind="ntsSwitchButton: {
-												options: applyPermissionEnums,
-												optionsValue: 'value',
-												optionsText: 'localizedName',
-												value: emPreApply,
-												enable: false }">
-										</span>
-										
-										</td>
-									</tr>
-									<tr>
-										<td></td>
-										<td colspan="2">
-											<div data-bind="ntsFormLabel: {}">#{i18n.getText('KMF001_78')}</div>
-										</td>
-										<td class="padding_over">
-											<div>
-												<!-- <span tabindex="12"
-													data-bind="ntsSwitchButton: {
-														options: manageDistinctEnums,
-														optionsValue: 'value',
-														optionsText: 'localizedName',
-														value: emTimeManage,
-														enable: isEmManageCompen }"> -->
-														<span tabindex="12"
-													data-bind="ntsSwitchButton: {
-														options: manageDistinctEnums,
-														optionsValue: 'value',
-														optionsText: 'localizedName',
-														value: emTimeManage,
-														enable: false }">
-												</span>
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td class="padding_head"></td>
-										<td colspan="3">
-											<div>
-												<hr />
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td></td>
-										<td colspan="2" class="lbl_text"><label>#{i18n.getText('KMF001_102')}</label></td>
-										<td class="padding_over"><!-- <div tabindex="13"
-												class="combo-box"
-												data-bind="ntsComboBox: {
-												options: timeVacationDigestiveUnitEnums,
-												optionsValue: 'value',
-												value: emTimeUnit,
-												optionsText: 'localizedName',
-												editable: false,
-												enable: enableDigestiveUnit,
-												columns: [
-													{ prop: 'localizedName', length: 4 },
-												]}"></div> -->
-												<div tabindex="13"
-												class="combo-box"
-												data-bind="ntsComboBox: {
-												options: timeVacationDigestiveUnitEnums,
-												optionsValue: 'value',
-												value: emTimeUnit,
-												optionsText: 'localizedName',
-												editable: false,
-												enable: false,
-												columns: [
-													{ prop: 'localizedName', length: 4 },
-												]}"></div>
-												
-												</td>
 									</tr>
 								</table> <!-- end right -->
 							</td>

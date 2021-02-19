@@ -24,8 +24,6 @@ public class ServerZipFileTempService {
 	private ServerPreparationService serverPreparationService;
 	@Inject
 	private ResultDeletionRepository repoResultOfDelete;
-	@Inject
-	private ManualSetDeletionRepository manualSetDeletionRepo;
 
 	public ServerPrepareMng handleServerZipFile(String recoveryProcessingId, String storeProcessingId) {
 		Optional<ResultOfSaving> optResultOfSaving = repoResultOfSaving.getResultOfSavingById(storeProcessingId);

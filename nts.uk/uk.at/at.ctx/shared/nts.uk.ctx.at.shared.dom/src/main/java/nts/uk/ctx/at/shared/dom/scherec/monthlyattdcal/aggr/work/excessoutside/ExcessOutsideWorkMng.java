@@ -46,6 +46,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.totalworking
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.excessoutside.ExcessOutsideWorkOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTCalMed;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.OutsideOTBRDItem;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.SuperHD60HConMed;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.Overtime;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.monthly.MonthlyStatutoryWorkingHours;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -176,6 +177,7 @@ public class ExcessOutsideWorkMng {
 	
 	/**
 	 * 集計
+	 * 時間外超過
 	 */
 	public void aggregate(RequireM5 require, CacheCarrier cacheCarrier){
 		// 労働制を確認する
@@ -183,8 +185,7 @@ public class ExcessOutsideWorkMng {
 			
 			// 通常・変形労働時間勤務の時間外超過を集計する
 			this.aggregateExcessOutsideWork(require, cacheCarrier, null);
-		}
-		if (this.workingSystem == WorkingSystem.FLEX_TIME_WORK){
+		} else if (this.workingSystem == WorkingSystem.FLEX_TIME_WORK){
 			
 			// フレックス集計方法を確認する
 			val flexAggregateMethod = this.settingsByFlex.getFlexAggrSet().getAggrMethod();
@@ -192,21 +193,18 @@ public class ExcessOutsideWorkMng {
 				
 				// 原則集計で時間外超過を集計する
 				this.aggregateExcessOutsideWork(require, cacheCarrier, FlexAggregateMethod.PRINCIPLE);
-			}
-			if (flexAggregateMethod == FlexAggregateMethod.FOR_CONVENIENCE){
+			} else if (flexAggregateMethod == FlexAggregateMethod.FOR_CONVENIENCE){
 				
 				// 便宜上集計で時間外超過を集計する
 				this.aggregateExcessOutsideWork(require, cacheCarrier, FlexAggregateMethod.FOR_CONVENIENCE);
-
-				// 原則集計で時間外超過を集計する
-				//this.aggregateExcessOutsideWork(FlexAggregateMethod.PRINCIPLE, repositories);
-				
-				// 原則集計と便宜上集計の結果を比較する
-				//*****（未）　設計が保留中。比較する場合、どのクラスを比較するかで、原則・便宜上の各計算結果の保持方法の検討要。
 			}
 		}
 		
-		// 超休精算
+		/** 超有休の付与時間を計算 */
+		val superHD60HConMed = require.superHD60HConMed(companyId);
+		superHD60HConMed.ifPresent(c -> {
+			c.calcTimeSuperHD(require, excessOutsideWork);
+		});
 	}
 	
 	/**
@@ -1319,7 +1317,11 @@ public class ExcessOutsideWorkMng {
 	public static interface RequireM5 extends FlexTimeOfMonthly.RequireM6, 
 												FlexTimeOfMonthly.RequireM5, RequireM3, 
 												RegularAndIrregularTimeOfMonthly.RequireM1, 
-												RegularAndIrregularTimeOfMonthly.RequireM3{}
+												RegularAndIrregularTimeOfMonthly.RequireM3,
+												SuperHD60HConMed.RequireM1 {
+		
+		Optional<SuperHD60HConMed> superHD60HConMed(String cid);
+	}
 	
 	public static interface RequireM4 extends MonthlyDetail.RequireM5 {}
 	

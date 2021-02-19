@@ -123,27 +123,34 @@ public class CommonApprovalRootFinder {
 	}
 
 	/**
+	 * UKDesign.UniversalK.共通.CMM_マスタメンテナンス.CMM018_承認者の登録.CMM018_承認者の登録（就業・人事）.AB:承認者の登録（就業・人事）（会社）.アルゴリズム."02.起動する(まとめて設定モード)"
 	 * get All Company Approval Root(grouping by history)
 	 * @param data
 	 * @return
 	 */
 	private DataFullDto getAllComApprovalRoot(CommonApprovalRootDto data){
-		//list company get from db
+		// list company get from db
+		// ドメインモデル「会社別承認ルート」を取得する
 		List<CompanyAppRootDto> lstCompanyRoot = data.getLstCompanyRoot();
 		List<ObjectDate> lstObjDate = new ArrayList<>();
 		lstCompanyRoot.forEach(item ->{
 			lstObjDate.add(new ObjectDate(item.getCompany().getApprovalId(), item.getCompany().getStartDate(), item.getCompany().getEndDate(),false));
 		});
-		//grouping history
+		// grouping history
+		
+		// グルーピングした期間は重なっているかチェックする（期間毎に重なるフラグを持つ）
 		ObjGrouping result = this.groupingMapping(lstObjDate);
 		List<ObjectDate> lstRootCheckOvl = result.getLstRootCheckOvl();
 		List<ObjDate> lstTrung = result.getLstDate();
 		List<DataDisplayComDto> lstComFinal = new ArrayList<>();
 		int index = 0;
+		// 画面を新規モードにする
 		if(lstRootCheckOvl.isEmpty()){
 			return new DataFullDto("", data.getCompanyName(),lstComFinal, null, null);
 		}
 		//grouping companyRoot by history
+		
+		// ドメインモデル「就業承認ルート履歴」の期間．開始日と期間．終了日でグルーピングする
 		for (ObjectDate objDate : lstRootCheckOvl) {
 			List<CompanyAppRootDto> lstItem = new ArrayList<>();
 			ObjDate date = new ObjDate(objDate.getStartDate(), objDate.getEndDate());
@@ -158,6 +165,7 @@ public class CommonApprovalRootFinder {
 			//TH: not grouping
 			else{
 				for (CompanyAppRootDto com : lstCompanyRoot) {
+					
 					if(com.getCompany().getApprovalId().compareTo(objDate.getApprovalId())==0){
 						lstItem.add(com);
 					}
@@ -166,6 +174,8 @@ public class CommonApprovalRootFinder {
 			lstComFinal.add(new DataDisplayComDto(index,objDate.isOverlap(),lstItem));
 			index++;
 		}
+		
+		// -> 最新の「就業承認ルート履歴」を選択する (UI)
 		return new DataFullDto("", data.getCompanyName(), lstComFinal, null, null);
 	}
 	/**
@@ -263,19 +273,25 @@ public class CommonApprovalRootFinder {
 	private CommonApprovalRootDto getDataComApprovalRoot(ParamDto param, String companyName){
 		//user contexts
 		String companyId = AppContexts.user().companyId();
+		
 		List<CompanyAppRootDto> lstComRoot = new ArrayList<>();
+		
 		//get all data from ComApprovalRoot (会社別就業承認ルート)
-		List<ComApprovalRootDto> lstCom = this.repoCom.getComRootStart(companyId, param.getSystemAtr(), 
-				param.getLstAppType(), param.getLstNoticeID(), param.getLstEventID())
-							.stream()
-							.map(c->ComApprovalRootDto.fromDomain(c))
-							.collect(Collectors.toList());
+		List<ComApprovalRootDto> lstCom = this.repoCom.getComRootStart(companyId, 
+				param.getSystemAtr(), 
+				param.getLstAppType(), 
+				param.getLstNoticeID(), 
+				param.getLstEventID()).stream()
+									  .map(c->ComApprovalRootDto.fromDomain(c))
+									  .collect(Collectors.toList());
+		
 		for (ComApprovalRootDto rootCom : lstCom) {
 			//get All Approval Phase by approvalId
 			List<ApprovalPhaseDto> lstPhaseDto = this.convertDto(rootCom.getApprovalId());
 			//add in lstAppRoot
 			lstComRoot.add(new CompanyAppRootDto(rootCom, lstPhaseDto));
 		}
+		
 		return new CommonApprovalRootDto(companyName,"","",lstComRoot, null, null);
 	}
 	/**

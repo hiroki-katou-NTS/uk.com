@@ -26,16 +26,11 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numb
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.BreakDayOffRemainMngRefactParam;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.FixedManagementDataMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.UnbalanceVacation;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataManagementAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.SelectedAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 
 @RunWith(JMockit.class)
@@ -56,17 +51,6 @@ public class GetTemporaryDataTest {
 	public void setUp() throws Exception {
 	}
 
-	/*
-	 * テストしたい内容
-	 * 
-	 * 暫定データから「逐次発生の休暇明細」を作成 準備するデータ 暫定代休管理データがある
-	 * 
-	 * 暫定休出管理データがある
-	 * 
-	 * モード : 月次か
-	 * 
-	 * 代休紐付け管理データがある → 相殺済みできる
-	 */
 	@Test
 	public void testProcess() {
 
@@ -115,9 +99,12 @@ public class GetTemporaryDataTest {
 						new DatePeriod(GeneralDate.min(), GeneralDate.max())));
 
 				// 暫定休出代休紐付け管理
-				require.getBreakDayOffMng("d4", anyBoolean, (DataManagementAtr) any);
-				result = Arrays.asList(new InterimBreakDayOffMng("", DataManagementAtr.INTERIM, "d4",
-						DataManagementAtr.INTERIM, new UseTime(240), new UseDay(0.5), SelectedAtr.AUTOMATIC));
+//				require.getBreakDayOffMng("d4", anyBoolean, (DataManagementAtr) any);
+//				result = Arrays.asList(new InterimBreakDayOffMng("", DataManagementAtr.INTERIM, "d4",
+//						DataManagementAtr.INTERIM, new UseTime(240), new UseDay(0.5), SelectedAtr.AUTOMATIC));
+				require.getBycomDayOffID(anyString, GeneralDate.ymd(2019, 11, 10));
+				result = Arrays.asList(DaikyuFurikyuHelper.createLeavComDayOff(GeneralDate.ymd(2019, 11, 10),
+						GeneralDate.ymd(2019, 11, 19), 0.5));
 
 				require.findComLeavEmpSet(CID, anyString);
 				result = NumberRemainVacationLeaveRangeQueryTest.createComLeav(ManageDistinct.YES, ManageDistinct.YES,
@@ -147,14 +134,13 @@ public class GetTemporaryDataTest {
 								Optional.of(new AttendanceTime(0)), Optional.empty()),
 						Tuple.tuple("d4", MngDataStatus.RECORD, false, Optional.of(GeneralDate.ymd(2019, 11, 10)), 1.0,
 								Optional.of(new AttendanceTime(480)), OccurrenceDigClass.DIGESTION, 0.5,
-								Optional.of(new AttendanceTime(240)), Optional.empty()),
+								Optional.of(new AttendanceTime(480)), Optional.empty()),
 						Tuple.tuple("k1", MngDataStatus.SCHEDULE, false, Optional.of(GeneralDate.ymd(2019, 11, 05)),
 								1.0, Optional.of(new AttendanceTime(480)), OccurrenceDigClass.OCCURRENCE, 1.0,
 								Optional.of(new AttendanceTime(480)), GeneralDate.ymd(2020, 06, 06)),
 						Tuple.tuple("k2", MngDataStatus.RECORD, false, Optional.of(GeneralDate.ymd(2019, 11, 6)), 1.0,
 								Optional.of(new AttendanceTime(480)), OccurrenceDigClass.OCCURRENCE, 1.0,
 								Optional.of(new AttendanceTime(480)), GeneralDate.ymd(2019, 06, 06)));
-
 	}
 
 	private BreakDayOffRemainMngRefactParam createInput(boolean mode, DatePeriod dateData,

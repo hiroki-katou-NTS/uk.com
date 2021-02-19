@@ -4,12 +4,18 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.vacation.setting.annualpaidleave;
 
+import java.util.Optional;
+
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeAnnualRoundProcesCla;
 import nts.uk.ctx.at.shared.dom.vacation.setting.TimeDigestiveUnit;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.ContractTimeRound;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.DayTimeAnnualLeave;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.MaxDayReference;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.MaxTimeDay;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualLeaveTimeDay;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualSettingGetMemento;
+import nts.uk.ctx.at.shared.dom.workingcondition.LaborContractTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.TimeAnnualMaxDay;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.annualpaidleave.KtvmtTimeAnnualSet;
 
@@ -85,13 +91,22 @@ public class JpaTimeAnnualSettingGetMemento implements TimeAnnualSettingGetMemen
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
      * TimeVacationSettingGetMemento#isEnoughTimeOneDay()
      */
-    @Override
-    public boolean isEnoughTimeOneDay() {
-        return this.entity.getIsEnoughTimeOneDay() == 1 ? true : false;
-    }
+   
 
 	@Override
 	public TimeAnnualRoundProcesCla GetRoundProcessClassific() {		
 		return TimeAnnualRoundProcesCla.valueOf(this.entity.getRoundProcessCla());
+	}
+
+	@Override
+	public TimeAnnualLeaveTimeDay getTimeAnnualLeaveTimeDay() {
+		
+		TimeAnnualLeaveTimeDay data = new TimeAnnualLeaveTimeDay(
+				DayTimeAnnualLeave.valueOf(this.entity.getTimeOfDayRef()), 
+				Optional.ofNullable(this.entity.getUnifromTime() ==null ? null : new LaborContractTime(this.entity.getUnifromTime())), 
+
+				Optional.ofNullable(this.entity.getContractTimeRound() == null ? null :  ContractTimeRound.valueOf(this.entity.getContractTimeRound())));
+		return data
+				;
 	}
 }

@@ -7,19 +7,18 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-
 /**
- * 時間外時間の詳細: 主キー情報
+ * Refactor5
+ * @author hoangnd
+ *
  */
-@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
 public class KrqdtAppOvertimeDetailPk implements Serializable {
-	private static final long serialVersionUID = 1L;
-
+	
+	public static final long serialVersionUID = 1L;
 	/**
 	 * 会社ID
 	 */

@@ -24,7 +24,7 @@ public class JpaPublicHolidayManagementUsageUnitRepository extends JpaRepository
 	 * @see nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHolidayManagementUsageUnitRepository#findByCID(java.lang.String)
 	 */
 	@Override
-	public Optional<PublicHolidayManagementUsageUnit> findByCID(String companyId) {
+	public Optional<PublicHolidayManagementUsageUnit> get(String companyId) {
 		return this.queryProxy().find(companyId, KshmtPubHdMngUnitSet.class).map(e -> this.toDomain(e));
 	}
 
@@ -40,7 +40,7 @@ public class JpaPublicHolidayManagementUsageUnitRepository extends JpaRepository
 	 * @see nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHolidayManagementUsageUnitRepository#add(nts.uk.ctx.bs.employee.dom.holidaysetting.configuration.PublicHolidayManagementUsageUnit)
 	 */
 	@Override
-	public void add(PublicHolidayManagementUsageUnit domain) {
+	public void insert(PublicHolidayManagementUsageUnit domain) {
 		this.commandProxy().insert(this.toEntity(domain));
 	}
 	

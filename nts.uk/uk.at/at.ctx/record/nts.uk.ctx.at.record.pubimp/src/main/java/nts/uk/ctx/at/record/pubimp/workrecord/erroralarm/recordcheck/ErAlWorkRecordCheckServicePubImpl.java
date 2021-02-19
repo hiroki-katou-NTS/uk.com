@@ -17,21 +17,16 @@ import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationEmployeeInfoR;
 import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQueryR;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
-import nts.uk.ctx.at.record.dom.affiliationinformation.repository.WorkTypeOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.AlCheckTargetCondition;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.recordcheck.ErAlSubjectFilterConditionDto;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.recordcheck.ErAlWorkRecordCheckServicePub;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.recordcheck.RegulationInfoEmployeeQueryResult;
-import nts.uk.ctx.at.shared.dom.affiliationinformation.WorkTypeOfDailyPerformance;
 
 @Stateless
 public class ErAlWorkRecordCheckServicePubImpl implements ErAlWorkRecordCheckServicePub {
 
 	@Inject
 	private ErAlWorkRecordCheckService checkService;
-	
-	@Inject
-	private WorkTypeOfDailyPerforRepository businessTypeFinder;
 	
 	@Inject
 	private AffiliationInforOfDailyPerforRepository affiliationFinder;
@@ -89,23 +84,18 @@ public class ErAlWorkRecordCheckServicePubImpl implements ErAlWorkRecordCheckSer
 	public Map<String, List<RegulationEmployeeInfoR>> filterEmployees(DatePeriod targetPeriod, Collection<String> employeeIds,
 			List<ErAlSubjectFilterConditionDto> conditions) {
 		List<String> empIds = new ArrayList<>(employeeIds);
-		//勤務種別
-		Map<String, Map<GeneralDate, WorkTypeOfDailyPerformance>> businessTypes = businessTypeFinder.finds(empIds, targetPeriod)
-				.stream().collect(Collectors.groupingBy(c -> c.getEmployeeId(), 
-						Collectors.collectingAndThen(Collectors.toList(), 
-								list -> list.stream().collect(Collectors.toMap(b -> b.getDate(), b -> b)))));
 		//所属情報
 		List<AffiliationInforOfDailyPerfor> affiliations = affiliationFinder.finds(empIds, targetPeriod);
+		
 		return conditions.stream().collect(Collectors.toMap(c -> c.getErrorAlarmId(), c -> {
 			return affiliations.stream().map(a -> {
-				WorkTypeOfDailyPerformance bs = businessTypes.get(a.getEmployeeId()).get(a.getYmd());
-				if(canCheck(bs, a, c)){
+				if(canCheck(a, c)){
 					return RegulationEmployeeInfoR
 							.builder()
 							.employeeId(a.getEmployeeId())
 							.targetDate(a.getYmd())
 							.errorAlarmID(c.getErrorAlarmId())
-							.businessTypeCode(bs.getWorkTypeCode().v())
+							.businessTypeCode(a.getAffiliationInfor().getBusinessTypeCode().map(af -> af.v()).orElse(null))
 							.employmentCode(a.getAffiliationInfor().getEmploymentCode().v())
 							.jobTitleId(a.getAffiliationInfor().getJobTitleID())
 							.classificationCode(a.getAffiliationInfor().getClsCode().v())
@@ -128,9 +118,9 @@ public class ErAlWorkRecordCheckServicePubImpl implements ErAlWorkRecordCheckSer
 				.workplaceId(r.getWorkplaceId()).workplaceName(r.getWorkplaceName()).build();
 	}
 	
-	private boolean canCheck(WorkTypeOfDailyPerformance budinessType, AffiliationInforOfDailyPerfor affiliation, ErAlSubjectFilterConditionDto checkCondition){
+	private boolean canCheck(AffiliationInforOfDailyPerfor affiliation, ErAlSubjectFilterConditionDto checkCondition){
 		if(isTrue(checkCondition.getFilterByBusinessType())){
-			if(!checkCondition.getLstBusinessTypeCode().contains(budinessType.getWorkTypeCode().v())){
+			if(!checkCondition.getLstBusinessTypeCode().contains(affiliation.getAffiliationInfor().getBusinessTypeCode().map(c -> c.v()).orElse(null))){
 				return false;
 			}
 		}

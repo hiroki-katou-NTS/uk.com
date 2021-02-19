@@ -20,9 +20,9 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class WrWorkStampExport extends DomainObject{
 	
 	/*
-	 * 丸め後の時刻 TimeWithDayAttr
-	 */
-	private int afterRoundingTime;
+//	 * 丸め後の時刻 TimeWithDayAttr
+//	 */
+//	private int afterRoundingTime;
 	
 	/*
 	 * 時刻
@@ -34,9 +34,9 @@ public class WrWorkStampExport extends DomainObject{
 	 */
 	private String locationCode;
 
-	public WrWorkStampExport(int afterRoundingTime, WrWorkTimeInformationExport timeDay, String locationCode) {
+	public WrWorkStampExport(WrWorkTimeInformationExport timeDay, String locationCode) {
 		super();
-		this.afterRoundingTime = afterRoundingTime;
+//		this.afterRoundingTime = afterRoundingTime;
 		this.timeDay = timeDay;
 		this.locationCode = locationCode;
 	}

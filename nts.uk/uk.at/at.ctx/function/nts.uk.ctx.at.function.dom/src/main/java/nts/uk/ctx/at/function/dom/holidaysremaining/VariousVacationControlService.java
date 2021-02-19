@@ -58,7 +58,7 @@ public class VariousVacationControlService {
 
 		// 振休管理区分
 		val substVacation = comSubstVacationRepository.findById(companyId);
-		if (substVacation.isPresent() && substVacation.get().getSetting().getIsManage() == ManageDistinct.YES) {
+		if (substVacation.isPresent() && substVacation.get().getManageDistinct() == ManageDistinct.YES) {
 			pauseItemHolidaySetting = true;
 		}
 		val listNursingLeaveSetting = nursingLeaveSettingRepository.findByCompanyId(companyId);

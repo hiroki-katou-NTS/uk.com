@@ -43,12 +43,7 @@ public class OutsideOTSettingFinder {
 		// call repository find data
 		Optional<OutsideOTSetting> overtimeSetting = this.repository.findById(companyId);
 
-		OutsideOTSettingDto dto = new OutsideOTSettingDto();
-		if (overtimeSetting.isPresent()) {
-			overtimeSetting.get().saveToMemento(dto);
-		}
-
-		return dto;
+		return overtimeSetting.map(c -> OutsideOTSettingDto.of(c)).orElse(new OutsideOTSettingDto());
 
 	}
 	
@@ -68,12 +63,7 @@ public class OutsideOTSettingFinder {
 		// call repository find data
 		Optional<OutsideOTSetting> overtimeSetting = this.repository.reportById(companyId);
 		
-		OutsideOTSettingDto dto = new OutsideOTSettingDto();
-		if (overtimeSetting.isPresent()) {
-			overtimeSetting.get().saveToMemento(dto);
-		}
-		
-		return dto;
+		return overtimeSetting.map(c -> OutsideOTSettingDto.of(c)).orElse(new OutsideOTSettingDto());
 		
 	}
 	

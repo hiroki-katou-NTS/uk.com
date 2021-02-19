@@ -192,4 +192,12 @@ public class JpaAppWorkChangeRepository extends JpaRepository implements AppWork
 		return appWorkChange;
 	}
 
+	@Override
+	public Optional<AppWorkChange> findbyID(String companyId, String appID, Application app) {
+		return this.findbyID(companyId, appID).map(c ->{
+			c.setReflectionStatus(app.getReflectionStatus());
+			return c;
+		});
+	}
+
 }

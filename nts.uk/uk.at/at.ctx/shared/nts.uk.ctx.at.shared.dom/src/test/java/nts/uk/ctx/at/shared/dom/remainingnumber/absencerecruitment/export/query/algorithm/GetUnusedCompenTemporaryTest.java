@@ -23,17 +23,13 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.AbsRecMngInPeriodRefactParamInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.UnbalanceCompensation;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.DaikyuFurikyuHelper;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataManagementAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.SelectedAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
 
 @RunWith(JMockit.class)
 public class GetUnusedCompenTemporaryTest {
@@ -67,10 +63,8 @@ public class GetUnusedCompenTemporaryTest {
 	 * モード : 月次か
 	 * 
 	 */
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testModeMonth() {
-
 		List<InterimRecMng> useRecMng = Arrays.asList(
 				DaikyuFurikyuHelper.createRecMng("a1", GeneralDate.max(), 1.0),
 				DaikyuFurikyuHelper.createRecMng("a2", GeneralDate.max(),1.0),
@@ -93,28 +87,16 @@ public class GetUnusedCompenTemporaryTest {
 		
 		new Expectations() {
 			{
-
-				require.getRecOrAbsMngs((List<String>) any, false, DataManagementAtr.INTERIM);
-
-				result = Arrays.asList(
-						createRecAbs("a1",1.0),//使用日数
-						createRecAbs("b1",1.0));//使用日数
+				
+				require.getByPayoutId(SID, GeneralDate.ymd(2019, 11, 4));
+				result = Arrays.asList(DaikyuFurikyuHelper.createHD(GeneralDate.ymd(2019, 11, 04), GeneralDate.ymd(2019, 11, 30), 1.0));
+				
 				
 				require.findEmploymentHistory(CID, SID, (GeneralDate) any);
 				result = Optional.of(new BsEmploymentHistoryImport(SID, 
 						"00",  //雇用コード
 						"A",// 雇用名称.
 						new DatePeriod(GeneralDate.min(), GeneralDate.max())));
-
-				//締め
-//				require.getFirstMonth(CID);
-//				result = new CompanyDto(11);// 期首月
-//
-//				require.findEmpById(anyString, anyString);
-//				result = Optional.of(new EmpSubstVacation(CID, "00", 
-//						new SubstVacationSetting(ManageDistinct.YES,//管理区分
-//						ExpirationTime.THIS_MONTH,// 休暇使用期限
-//						ApplyPermission.ALLOW)));// 先取り許可
 
 			}
 
@@ -140,8 +122,7 @@ public class GetUnusedCompenTemporaryTest {
 						Tuple.tuple("a3", MngDataStatus.RECORD, false,
 								Optional.of(GeneralDate.ymd(2019, 11, 8)), OccurrenceDigClass.OCCURRENCE, 0.0,
 								GeneralDate.ymd(9999, 12, 31), DigestionAtr.USED));
-
-	}
+		}
 
 	/*
 	 * テストしたい内容 
@@ -157,7 +138,6 @@ public class GetUnusedCompenTemporaryTest {
 	 * モード : その他
 	 * 
 	 */
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testModeOther() {
 
@@ -187,10 +167,9 @@ public class GetUnusedCompenTemporaryTest {
 								1.0),
 						DaikyuFurikyuHelper.createRecMng("a3", GeneralDate.max(),0.0));
 
-				require.getRecOrAbsMngs((List<String>) any, false, DataManagementAtr.INTERIM);
-
-				result = Arrays.asList(createRecAbs( "a1", 1.0),//使用日数
-						createRecAbs("a5", 1.0));//使用日数
+				require.getByPayoutId(SID, GeneralDate.ymd(2019, 11, 4));
+				result = Arrays.asList(DaikyuFurikyuHelper.createHD(GeneralDate.ymd(2019, 11, 04), GeneralDate.ymd(2019, 11, 30), 1.0));
+				
 
 				require.findEmploymentHistory(CID, SID, (GeneralDate) any);
 				result = Optional.of(new BsEmploymentHistoryImport(SID, 
@@ -198,18 +177,6 @@ public class GetUnusedCompenTemporaryTest {
 						"A",// 雇用名称.
 						new DatePeriod(GeneralDate.min(), GeneralDate.max())));
 
-				//締め
-//				require.getClosureDataByEmployee(SID, (GeneralDate) any);
-//				result = NumberRemainVacationLeaveRangeQueryTest.createClosure();
-//
-//				require.getFirstMonth(CID);
-//				result = new CompanyDto(11);// 期首月
-//
-//				require.findEmpById(anyString, anyString);
-//				result = Optional.of(new EmpSubstVacation(CID, "00", 
-//						new SubstVacationSetting(ManageDistinct.YES,//管理区分
-//						ExpirationTime.THIS_MONTH,// 休暇使用期限
-//						ApplyPermission.ALLOW)));// 先取り許可
 			}
 
 		};
@@ -235,11 +202,7 @@ public class GetUnusedCompenTemporaryTest {
 								Optional.of(GeneralDate.ymd(2019, 11, 8)),  OccurrenceDigClass.OCCURRENCE, 0.0,
 								GeneralDate.ymd(9999, 12, 31), DigestionAtr.USED));
 
+
 	}
 
-	private InterimRecAbsMng createRecAbs(String id, Double useDay) {
-		return new InterimRecAbsMng(id,
-				DataManagementAtr.INTERIM, id, DataManagementAtr.INTERIM, new UseDay(useDay), SelectedAtr.MANUAL);
-	}
-	
 }

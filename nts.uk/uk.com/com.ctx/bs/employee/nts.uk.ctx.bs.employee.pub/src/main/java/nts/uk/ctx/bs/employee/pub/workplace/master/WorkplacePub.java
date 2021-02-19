@@ -157,6 +157,9 @@ public interface WorkplacePub {
 	 * @param baseDate 基準日
 	 */
 	List<AffWorkplaceHistoryItemExport2> getWorkHisItemfromWkpIdAndBaseDate(String workPlaceId, GeneralDate baseDate);
+	
+	// 職場（List）と基準日から所属職場履歴項目を取得する
+	List<AffWorkplaceHistoryItemExport3> getWorkHisItemfromWkpIdsAndBaseDate(List<String> workPlaceIds, GeneralDate baseDate);
 
 
 	Optional<SWkpHistWrkLocationExport> findBySidWrkLocationCD(String employeeId, GeneralDate baseDate);

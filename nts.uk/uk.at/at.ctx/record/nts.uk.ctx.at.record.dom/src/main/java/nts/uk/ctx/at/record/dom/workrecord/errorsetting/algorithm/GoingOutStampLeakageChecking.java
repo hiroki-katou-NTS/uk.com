@@ -216,8 +216,6 @@ public class GoingOutStampLeakageChecking {
 									|| timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay()
 									.getReasonTimeChange().getTimeChangeMeans() == TimeChangeMeans.DIRECT_BOUNCE_APPLICATION) {
 								stamp = new WorkStamp(
-										timeLeavingWork.getAttendanceStamp().get().getStamp().get()
-												.getAfterRoundingTime(),
 										timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get(),
 										timeLeavingWork.getAttendanceStamp().get().getStamp().get().getLocationCode()
 												.isPresent()
@@ -263,7 +261,6 @@ public class GoingOutStampLeakageChecking {
 									|| leavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay()
 									.getReasonTimeChange().getTimeChangeMeans() == TimeChangeMeans.DIRECT_BOUNCE_APPLICATION) {
 								stamp = new WorkStamp(
-										leavingWork.getAttendanceStamp().get().getStamp().get().getAfterRoundingTime(),
 										leavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get(),
 										leavingWork.getAttendanceStamp().get().getStamp().get().getLocationCode()
 												.isPresent()
@@ -338,7 +335,6 @@ public class GoingOutStampLeakageChecking {
 								|| timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay()
 								.getReasonTimeChange().getTimeChangeMeans()  == TimeChangeMeans.DIRECT_BOUNCE_APPLICATION) {
 							stamp = new WorkStamp(
-									timeLeavingWork.getAttendanceStamp().get().getStamp().get().getAfterRoundingTime(),
 									timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get(),
 									timeLeavingWork.getAttendanceStamp().get().getStamp().get().getLocationCode()
 											.isPresent()
@@ -381,7 +377,6 @@ public class GoingOutStampLeakageChecking {
 									|| leavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay()
 									.getReasonTimeChange().getTimeChangeMeans() == TimeChangeMeans.DIRECT_BOUNCE_APPLICATION) {
 								stamp = new WorkStamp(
-										leavingWork.getAttendanceStamp().get().getStamp().get().getAfterRoundingTime(),
 										leavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get(),
 										leavingWork.getAttendanceStamp().get().getStamp().get().getLocationCode()
 												.isPresent()

@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.app.find.scherec.dailyattendanceitem;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.ControlOfAttendanceItems;
@@ -19,9 +21,9 @@ public class ControlOfAttendanceItemsDto {
 	private String headerBgColorOfDailyPer;
 
 	/**時間項目の入力単位*/
-	private Integer inputUnitOfTimeItem;
+	private BigDecimal inputUnitOfTimeItem;
 	
-	public ControlOfAttendanceItemsDto(String companyID, int itemDailyID, String headerBgColorOfDailyPer, Integer inputUnitOfTimeItem) {
+	public ControlOfAttendanceItemsDto(String companyID, int itemDailyID, String headerBgColorOfDailyPer, BigDecimal inputUnitOfTimeItem) {
 		super();
 		this.companyID = companyID;
 		this.itemDailyID = itemDailyID;
@@ -34,7 +36,7 @@ public class ControlOfAttendanceItemsDto {
 				domain.getCompanyID(),
 				domain.getItemDailyID(),
 				!domain.getHeaderBgColorOfDailyPer().isPresent() ?null:domain.getHeaderBgColorOfDailyPer().get().v(),
-				!domain.getInputUnitOfTimeItem().isPresent()?null: domain.getInputUnitOfTimeItem().get().value
+				!domain.getInputUnitOfTimeItem().isPresent()?null: domain.getInputUnitOfTimeItem().get()
 				);
 	}
 }

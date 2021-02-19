@@ -19,12 +19,19 @@
 			</div>
 			<div id="contents-area">
 				<div class="container">
-					<div>
+					<div class="flex">
 						<div class="image-left">
 							<button id="buttonDeleteData" class="delete-data"
 								data-bind="click : openDeleteDataScreen" tabindex="1"></button>
-						</div>
-
+            </div>
+            <div class="image-left">
+              <button id="buttonSetting" class="setting"
+                data-bind="click: openSettingScreen" tabindex="2"></button>
+            </div>
+            <div class="image-left">
+              <button id="buttonHistory" class="history"
+                data-bind="click: openHistoryScreen" tabindex="3"></button>
+            </div>
 					</div>
 				</div>
 			</div>

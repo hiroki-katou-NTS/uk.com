@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.holidayshipment;
 
+import java.util.Optional;
+
 import nts.arc.time.GeneralDate;
 
 public interface HolidayShipmentService {
@@ -10,6 +12,6 @@ public interface HolidayShipmentService {
 	 * @param absDate 振休日
 	 * @return
 	 */
-	public GeneralDate detRefDate(GeneralDate recDate, GeneralDate absDate);
+	public Optional<GeneralDate> detRefDate(Optional<GeneralDate> recDate, Optional<GeneralDate> absDate);
 	
 }

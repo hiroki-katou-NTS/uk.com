@@ -73,24 +73,24 @@ public class GetWorkplacesServiceTest {
 	 *  require.getProcessCloseCorrespondToEmps is not empty
 	 *  listClosureInformation.stream().anyMatch(item -> item.getClosureID() == closureId) = false
 	 */
-	@Test
-	public void testGetWorkplacesServiceTest_3() {
-		List<String> workplaceIds = Arrays.asList("workplaceId1","workplaceId2","workplaceId3","workplaceId4","workplaceId5"); // dummy
-		GeneralDate baseDate      = GeneralDate.today();// dummy
-		Integer closureId         = 1;// dummy
-		List<String> sids         = Arrays.asList("employeeId", "employeeId2", "employeeId3");// dummy
-		new Expectations() {
-			{ 
-				require.getAffiliatedEmployees(workplaceIds.get(0), baseDate);
-				result = Arrays.asList(new AffWorkplaceHistoryItemImport("historyId","employeeId","workplaceId","normalWorkplaceId"));
-				
-				require.getProcessCloseCorrespondToEmps((List<String>) any, (GeneralDate) any);
-				result = Arrays.asList(new ClosureInformation("employeeId", 1));
-			}
-		};
-		
-		assertThat(GetWorkplacesService.get(require, closureId, workplaceIds, baseDate).isEmpty()).isFalse();
-	} 
+//	@Test
+//	public void testGetWorkplacesServiceTest_3() {
+//		List<String> workplaceIds = Arrays.asList("workplaceId1","workplaceId2","workplaceId3","workplaceId4","workplaceId5"); // dummy
+//		GeneralDate baseDate      = GeneralDate.today();// dummy
+//		Integer closureId         = 1;// dummy
+//		List<String> sids         = Arrays.asList("employeeId", "employeeId2", "employeeId3");// dummy
+//		new Expectations() {
+//			{ 
+//				require.getAffiliatedEmployees(workplaceIds.get(0), baseDate);
+//				result = Arrays.asList(new AffWorkplaceHistoryItemImport("historyId","employeeId","workplaceId","normalWorkplaceId"));
+//				
+//				require.getProcessCloseCorrespondToEmps((List<String>) any, (GeneralDate) any);
+//				result = Arrays.asList(new ClosureInformation("employeeId", 1));
+//			}
+//		};
+//		
+//		assertThat(GetWorkplacesService.get(require, closureId, workplaceIds, baseDate).isEmpty()).isFalse();
+//	} 
 	
 	
 	/**

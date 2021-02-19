@@ -18,9 +18,9 @@ import nts.uk.ctx.at.shared.app.command.remainingnumber.paymana.UpdateSubstituti
 import nts.uk.ctx.at.shared.app.find.remainingnumber.paymana.SubstitutionOfHDManagementDataDto;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.paymana.SubstitutionOfHDManagementDataFinder;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.SubstitutionManagementDataFinder;
-import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.dto.ExtraHolidayManagementDataDto;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.dto.SubDataSearchConditionDto;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.dto.SubstituteDataManagementDto;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.DisplayRemainingNumberDataInformation;
 
 @Path("at/record/remainnumber/subhd")
 @Produces("application/json")
@@ -40,7 +40,6 @@ public class SubstitutionOfHDManagementDataWebService extends WebService {
 	
 	@Inject
 	private SubstitutionManagementDataFinder subManagementFinder;
-
 	@POST
 	@Path("update")
 	public List<String> update(UpdateSubstitutionOfHDManaDataCommand command){
@@ -67,11 +66,11 @@ public class SubstitutionOfHDManagementDataWebService extends WebService {
 		return finder.getBySidRemainDayAndInPayout(employeeId);
 	}
 
-	@POST
-	@Path("getBySidDatePeriod/{empId}/{payoutID}")
-	public List<SubstitutionOfHDManagementDataDto> getBySidDatePeriod(@PathParam("empId")String sid,@PathParam("payoutID")String payoutID) {
-		return finder.getBySidDatePeriod(sid,payoutID);
-	}
+//	@POST
+//	@Path("getBySidDatePeriod/{empId}/{payoutID}")
+//	public List<SubstitutionOfHDManagementDataDto> getBySidDatePeriod(@PathParam("empId")String sid,@PathParam("payoutID")String payoutID) {
+//		return finder.getBySidDatePeriod(sid,payoutID);
+//	}
 	
 	@POST
 	@Path("insertSubOfHDMan")
@@ -87,7 +86,7 @@ public class SubstitutionOfHDManagementDataWebService extends WebService {
 	
 	@POST
 	@Path("getExtraHolidayData")
-	public ExtraHolidayManagementDataDto getExtraHolidayData(SubDataSearchConditionDto dto){
-		return subManagementFinder.getExtraHolidayManagementData(dto);
-	}
+	public DisplayRemainingNumberDataInformation getExtraHolidayData(SubDataSearchConditionDto dto){
+		return subManagementFinder.getExtraHolidayManagementDataUpdate(dto);
+	}	
 }

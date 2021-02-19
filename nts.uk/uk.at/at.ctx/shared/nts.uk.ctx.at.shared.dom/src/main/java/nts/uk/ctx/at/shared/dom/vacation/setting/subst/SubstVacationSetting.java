@@ -12,13 +12,13 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 
 /**
  * The Class SubstVacationSetting.
+ * 振休取得・使用方法
  */
 @Getter
 public class SubstVacationSetting extends DomainObject {
 
-	/** The is manage. */
-	// 管理区分
-	private ManageDistinct isManage;
+	//期限日の管理方法	
+	private ManageDeadline manageDeadline;
 
 	/** The expiration date. */
 	// 休暇使用期限
@@ -27,6 +27,8 @@ public class SubstVacationSetting extends DomainObject {
 	/** The allow prepaid leave. */
 	// 先取り許可
 	private ApplyPermission allowPrepaidLeave;
+	
+
 
 	/**
 	 * Instantiates a new subst vacation setting.
@@ -38,12 +40,13 @@ public class SubstVacationSetting extends DomainObject {
 	 * @param allowPrepaidLeave
 	 *            the allow prepaid leave
 	 */
-	public SubstVacationSetting(ManageDistinct isManage, ExpirationTime expirationDate,
-			ApplyPermission allowPrepaidLeave) {
+	public SubstVacationSetting(ManageDeadline manageDeadline, ExpirationTime expirationDate,
+			ApplyPermission allowPrepaidLeave ) {
 		super();
-		this.isManage = isManage;
+		this.manageDeadline = manageDeadline;
 		this.expirationDate = expirationDate;
 		this.allowPrepaidLeave = allowPrepaidLeave;
+	
 	}
 
 	// =================== Memento State Support Method ===================
@@ -54,9 +57,12 @@ public class SubstVacationSetting extends DomainObject {
 	 *            the memento
 	 */
 	public SubstVacationSetting(SubstVacationSettingGetMemento memento) {
-		this.isManage = memento.getIsManage();
+		
+		this.manageDeadline = memento.manageDeadline();
 		this.expirationDate = memento.getExpirationDate();
 		this.allowPrepaidLeave = memento.getAllowPrepaidLeave();
+	
+		
 	}
 
 	/**
@@ -65,10 +71,12 @@ public class SubstVacationSetting extends DomainObject {
 	 * @param memento
 	 *            the memento
 	 */
-	public void saveToMemento(SubstVacationSettingSetMemento memento) {
-		memento.setIsManage(this.isManage);
+	public void saveToMemento(SubstVacationSettingSetMemento memento ) {
+		memento.setManageDeadline(this.manageDeadline);
 		memento.setExpirationDate(this.expirationDate);
 		memento.setAllowPrepaidLeave(this.allowPrepaidLeave);
+		
+		
 	}
 
 }

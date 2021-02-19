@@ -49,4 +49,14 @@ public class KsrmtWeekRuleMng extends UkJpaEntity implements Serializable {
 		
 		this.startOfWeek = domain.getWeekStart().value;
 	}
+	
+	public static KsrmtWeekRuleMng map(WeekRuleManagement domain){
+		
+		KsrmtWeekRuleMng entity = new KsrmtWeekRuleMng();
+		
+		entity.cid = domain.getCid();
+		entity.from(domain);
+		
+		return entity;
+	}
 }

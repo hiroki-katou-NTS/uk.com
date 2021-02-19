@@ -1,13 +1,15 @@
 package nts.uk.ctx.at.function.app.command.attendancerecord.export.setting;
 
-import nts.arc.layer.app.command.CommandHandler;
-import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.*;
-import nts.uk.shr.com.context.AppContexts;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 //import java.util.stream.Collectors;
+
+import nts.arc.layer.app.command.CommandHandler;
+import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSetting;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSettingRepository;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingCode;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingName;
 
 /**
  * The Class AttendanceRecordExportSettingDeleteCommandHandler.
@@ -34,8 +36,8 @@ public class AttendanceRecordExportSettingDeleteCommandHandler
 
 		// convert to domain
 		AttendanceRecordExportSetting domain = new AttendanceRecordExportSetting();
-		domain.setCompanyId(AppContexts.user().companyId());
-		domain.setCode(new ExportSettingCode(command.getCode()));
+		domain.setLayoutId(command.getLayoutId());
+		domain.setCode(new ExportSettingCode(String.valueOf(command.getCode())));
 		domain.setName(new ExportSettingName(command.getName()));
 
 		// Delete

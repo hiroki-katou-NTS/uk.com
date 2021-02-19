@@ -67,3 +67,6 @@ div#tab-2.ui-tabs-panel.ui-corner-bottom.ui-widget-content{
 div#tab-3.ui-tabs-panel.ui-corner-bottom.ui-widget-content{
 	max-height: calc(100% - 120px) !important;
 } 
+#igGridLog_hscroller_container {
+	display: block !important;
+}

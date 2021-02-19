@@ -3,7 +3,7 @@ module nts.uk.at.view.ksm005.a {
         var screenModel = new viewmodel.ScreenModel();
         screenModel.startPage().done(function(res) {
             __viewContext.bind(res);
-            screenModel.isBuild = true;
+            // screenModel.isBuild = true;
         }).then(() => {
             if(screenModel.lstMonthlyPattern().length > 0) {
                 $('#inp_monthlyPatternName').focus();

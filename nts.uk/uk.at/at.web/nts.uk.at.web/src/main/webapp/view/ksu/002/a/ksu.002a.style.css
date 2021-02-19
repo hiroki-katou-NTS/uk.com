@@ -1,0 +1,31 @@
+.ksu-002a {
+    width: 903px;
+}
+
+#functions-area .ksu-002a {
+    padding-left: 5px;
+}
+
+.ksu-002a .btn-right {
+    float: right;
+}
+
+.ksu-002a .title-date {
+	display: block;
+	float: left;
+    box-sizing: border-box;
+    width: calc(100% - 45px);
+}
+
+.ksu-002a .title-date+.btn-guide {
+	float: left;
+    margin-left: 5px;
+    margin-top: 13px;
+    width: 40px;
+    height: 28px;
+}
+
+.ksu-002a .action-bar {
+    width: 100%;
+    box-sizing: border-box;
+}

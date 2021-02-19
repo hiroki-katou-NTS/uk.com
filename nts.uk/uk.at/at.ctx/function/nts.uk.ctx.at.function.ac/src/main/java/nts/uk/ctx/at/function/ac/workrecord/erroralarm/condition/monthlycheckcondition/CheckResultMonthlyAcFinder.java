@@ -43,7 +43,7 @@ public class CheckResultMonthlyAcFinder implements CheckResultMonthlyAdapter {
 	
 	@Override
 	public boolean checkPublicHoliday(String companyId, String employeeCd, String employeeId, String workplaceId,
-			boolean isManageComPublicHd, YearMonth yearMonth, SpecHolidayCheckConFunImport specHolidayCheckCon) {
+			int isManageComPublicHd, YearMonth yearMonth, SpecHolidayCheckConFunImport specHolidayCheckCon) {
 		return checkResultMonthlyPub.checkPublicHoliday(companyId, employeeCd, employeeId, workplaceId, isManageComPublicHd, yearMonth,
 				convertToSpecHolidayCheckConFunImport(specHolidayCheckCon));
 	}

@@ -123,7 +123,7 @@ module nts.uk.at.view.kdp005.a {
 								block.clear();
 							});
 
-						self.getStampToSuppress();
+//						self.getStampToSuppress();
 					} else {
 						self.isUsed(false);
 						self.errorMessage(self.getErrorNotUsed(res.used));
@@ -427,7 +427,7 @@ module nts.uk.at.view.kdp005.a {
 				}).fail((res) => {
 					dialog.alertError({ messageId: res.messageId });
 				}).always(() => {
-					self.getStampToSuppress();
+//					self.getStampToSuppress();
 					block.clear();
 				});
 

@@ -40,11 +40,11 @@ public class JpaMaxPersonSettingGetMemento implements MaxPersonSettingGetMemento
      * (non-Javadoc)
      * 
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.
-     * MaxPersonSettingGetMemento#getNursingNumberPerson()
+     * MaxPersonSettingGetMemento#getNursingNumberLeaveDay2()
      */
     @Override
-    public NumberDayNursing getNursingNumberPerson() {
-        return new NumberDayNursing(this.entity.getNursingNumPerson());
+    public NumberDayNursing getNursingNumberLeaveDay2() {
+        return new NumberDayNursing(this.entity.getNursingNumLeaveDay2());
     }
 
 }

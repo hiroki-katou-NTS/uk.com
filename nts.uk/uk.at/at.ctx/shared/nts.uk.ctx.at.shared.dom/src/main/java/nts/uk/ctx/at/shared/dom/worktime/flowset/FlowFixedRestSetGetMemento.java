@@ -17,13 +17,6 @@ public interface FlowFixedRestSetGetMemento {
 	FlowFixedRestCalcMethod getCalculateMethod();
 
 	/**
-	 * Gets the calculate from schedule.
-	 *
-	 * @return the calculate from schedule
-	 */
-	ScheduleBreakCalculation getCalculateFromSchedule();
-
-	/**
 	 * Gets the calculate from stamp.
 	 *
 	 * @return the calculate from stamp

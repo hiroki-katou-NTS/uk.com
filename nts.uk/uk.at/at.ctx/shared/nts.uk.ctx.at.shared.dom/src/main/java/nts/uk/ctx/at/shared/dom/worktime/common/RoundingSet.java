@@ -6,12 +6,14 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
  * The Class RoundingSet.
  */
 // 丸め設定
+@Setter
 @Getter
 @NoArgsConstructor
 public class RoundingSet extends WorkTimeDomainObject implements Cloneable{
@@ -57,5 +59,10 @@ public class RoundingSet extends WorkTimeDomainObject implements Cloneable{
 			throw new RuntimeException("AggregateTotalTimeSpentAtWork clone error.");
 		}
 		return cloned;
+	}
+
+	public RoundingSet(InstantRounding instantRounding, Superiority attendance) {
+		this.roundingSet = instantRounding;
+		this.section = attendance;
 	}
 }

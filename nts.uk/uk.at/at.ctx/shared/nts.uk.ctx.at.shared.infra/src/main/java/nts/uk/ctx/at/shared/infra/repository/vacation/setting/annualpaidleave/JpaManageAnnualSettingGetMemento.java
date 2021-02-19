@@ -53,10 +53,6 @@ public class JpaManageAnnualSettingGetMemento implements ManageAnnualSettingGetM
      * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
      * ManageAnnualSettingGetMemento#getMaxGrantDay()
      */
-    @Override
-    public AnnualLeaveGrantDay getMaxGrantDay() {
-        return new AnnualLeaveGrantDay(this.entity.getHalfMaxGrantDay());
-    }
 
     /*
      * (non-Javadoc)
@@ -96,31 +92,11 @@ public class JpaManageAnnualSettingGetMemento implements ManageAnnualSettingGetM
     public RemainingNumberSetting getRemainingNumberSetting() {
         RemainingNumberSetting remain = RemainingNumberSetting.builder()
                 .retentionYear(new RetentionYear(this.entity.getRetentionYear()))
-                .remainingDayMaxNumber(new MaxRemainingDay(this.entity.getRemainingMaxDay()))
+               /* .remainingDayMaxNumber(new MaxRemainingDay(this.entity.getRemainingMaxDay()))*/
                 .build();
         return remain;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
-     * ManageAnnualSettingGetMemento#getDisplaySetting()
-     */
-    @Override
-    public DisplaySetting getDisplaySetting() {
-        DisplaySetting display = DisplaySetting.builder()
-                .nextGrantDayDisplay(DisplayDivision.valueOf(this.entity.getNextGrantDayDispAtr()))
-                .remainingNumberDisplay(DisplayDivision.valueOf(this.entity.getRemainingNumDispAtr()))
-                .build();
-        return display;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.
-     * ManageAnnualSettingGetMemento#getYearLyOfDays()
-     */
 	@Override
 	public YearLyOfNumberDays getYearLyOfDays() {
 		return new YearLyOfNumberDays(entity.getYearlyOfDays());

@@ -6,8 +6,8 @@ import javax.inject.Inject;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.gul.text.StringUtil;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsComRepository;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsOrgRepository;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteComRepository;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteOrgRepository;
 import nts.uk.shr.com.context.AppContexts;
 /**
  * 
@@ -18,10 +18,10 @@ import nts.uk.shr.com.context.AppContexts;
 public class DeleteShiftPalletCommandHandler extends CommandHandler<DeleteShiftPalletComCommand>{
 
 	@Inject
-	private ShiftPalletsComRepository repocom;
+	private ShiftPaletteComRepository repocom;
 	
 	@Inject
-	private ShiftPalletsOrgRepository repoOrg;
+	private ShiftPaletteOrgRepository repoOrg;
 
 	@Override
 	

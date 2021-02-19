@@ -47,7 +47,7 @@ public class StatusPollingRequest extends NRLRequest<Frame> {
 		String nrlNo = context.getEntity().pickItem(Element.NRL_NO);
 		//TODO: default ContractCode "000000000000"
 		SendTimeRecordSettingImport setting = sendNRDataAdapter
-				.sendTimeRecordSetting(Integer.parseInt(nrlNo.trim()), "000000000000").orElse(new SendTimeRecordSettingImport());
+				.sendTimeRecordSetting(nrlNo.trim(), "000000000000").orElse(new SendTimeRecordSettingImport());
 
 		items.add(new MapItem(Element.REQUEST1, setting.isRequest1() ? Element.Value.FLAG_ON : Element.Value.FLAG_OFF));
 		items.add(new MapItem(Element.REQUEST2, setting.isRequest2() ? Element.Value.FLAG_ON : Element.Value.FLAG_OFF));

@@ -22,6 +22,8 @@ import nts.uk.ctx.workflow.dom.adapter.bs.PersonAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.PersonImport;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WkpDepInfo;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceApproverAdapter;
+import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApproverRegisterSet;
+import nts.uk.ctx.workflow.dom.approvermanagement.setting.UseClassification;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhaseRepository;
@@ -39,6 +41,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.EmpApp
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.EmpOrderApproverAsApp;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.EmployeeApproverOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.WpApproverAsAppOutput;
+import nts.uk.ctx.workflow.dom.service.ApprovalSettingService;
 import nts.uk.ctx.workflow.dom.service.CollectApprovalRootService;
 import nts.uk.ctx.workflow.dom.service.output.ErrorFlag;
 import nts.uk.ctx.workflow.dom.service.output.LevelOutput;
@@ -48,6 +51,9 @@ import nts.uk.ctx.workflow.dom.service.output.LevelOutput.LevelInforOutput.Level
 
 @Stateless
 public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprovalRoot {
+	
+	public static final Integer EMPLOYMENT = 0;
+	public static final Integer HUMAN_RESOURCE = 1;
 	@Inject
 	private CompanyApprovalRootRepository comRootRepository;
 	@Inject
@@ -64,6 +70,10 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 	private PersonAdapter psAdapter;
 	@Inject
 	private CollectApprovalRootService collectApprSv;
+
+	
+	@Inject
+	private ApprovalSettingService approvalSettingService;
 	
 	/**
 	 * 01.申請者としての承認ルートを取得する
@@ -72,12 +82,23 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 	public DataSourceApproverList lstEmps(String companyID, int sysAtr, GeneralDate baseDate,  List<String> lstEmpIds, List<AppTypes> lstApps) {
 		// toan the du lieu co workplace
 		Map<String, WpApproverAsAppOutput> appOutput = new HashMap<>();
-		// ドメインモデル「会社別就業承認ルート」を取得する(lấy dữ liệu domain 「会社別就業承認ルート」)
-		List<CompanyApprovalRoot> lstComs = comRootRepository.findByBaseDate(companyID, baseDate, sysAtr);
-		// ドメインモデル「職場別就業承認ルート」を取得する(lấy dữ liệu domain 「職場別就業承認ルート」)
-		List<WorkplaceApprovalRoot> lstWps = wpRootRepository.findAllByBaseDate(companyID, baseDate, sysAtr);
-		// ドメインモデル「個人別就業承認ルート」を取得する(lấy dữ liệu domain「個人別就業承認ルート」)
-		List<PersonApprovalRoot> lstPss = psRootRepository.findAllByBaseDate(companyID, baseDate, sysAtr);
+		List<CompanyApprovalRoot> lstComs = Collections.emptyList();
+		List<WorkplaceApprovalRoot> lstWps = Collections.emptyList();
+		List<PersonApprovalRoot> lstPss = Collections.emptyList();
+		ApproverRegisterSet approverRegsterSet = approvalSettingService.getSettingUseUnit(companyID, sysAtr);
+		
+		if (approverRegsterSet.getCompanyUnit() == UseClassification.DO_USE) {
+			// ドメインモデル「会社別就業承認ルート」を取得する(lấy dữ liệu domain 「会社別就業承認ルート」)
+			lstComs = comRootRepository.findByBaseDate(companyID, baseDate, sysAtr);			
+		}
+		if (approverRegsterSet.getWorkplaceUnit() == UseClassification.DO_USE) {
+			// ドメインモデル「職場別就業承認ルート」を取得する(lấy dữ liệu domain 「職場別就業承認ルート」)
+			lstWps = wpRootRepository.findAllByBaseDate(companyID, baseDate, sysAtr);			
+		}
+		if (approverRegsterSet.getEmployeeUnit() == UseClassification.DO_USE) {
+			// ドメインモデル「個人別就業承認ルート」を取得する(lấy dữ liệu domain「個人別就業承認ルート」)
+			lstPss = psRootRepository.findAllByBaseDate(companyID, baseDate, sysAtr);			
+		}
 		
 		// 選択する対象社員リストを先頭から最後までループする(loop list nhan vien da chon tu dau den cuoi)
 		for (String empId : lstEmpIds) {

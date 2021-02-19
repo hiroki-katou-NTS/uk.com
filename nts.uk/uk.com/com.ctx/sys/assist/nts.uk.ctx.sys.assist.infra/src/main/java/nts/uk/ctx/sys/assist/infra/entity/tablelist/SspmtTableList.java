@@ -37,14 +37,13 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "CATEGORY_NAME")
 	public String categoryName;
-	
+
 	/**
 	 * データ復旧処理ID
 	 */
 	@Basic(optional = true)
 	@Column(name = "DATA_RECOVERY_PROCESS_ID")
 	public String dataRecoveryProcessId;
-
 	
 	/**
 	 * テーブル日本語名
@@ -99,8 +98,8 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 	 * 保存セットコード
 	 */
 	@Basic(optional = true)
-	@Column(name = "SAVE_SET_CODE")
-	public String saveSetCode;
+	@Column(name = "PATTERN_CD")
+	public String patternCode;
 
 	/**
 	 * 保存セット名称
@@ -108,13 +107,6 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "SAVE_SET_NAME")
 	public String saveSetName;
-
-	/**
-	 * 保存ファイル名
-	 */
-	// @Basic(optional = false)
-	// @Column(name = "SAVE_FILE_NAME")
-	// public String saveFileName;
 
 	/**
 	 * 保存形態
@@ -821,9 +813,9 @@ public class SspmtTableList extends UkJpaEntity implements Serializable {
 	}
 
 	public TableList toDomain() {
-		return new TableList(tableListPk.categoryId, categoryName, tableListPk.dataStorageProcessingId,
-				tableListPk.systemType, dataRecoveryProcessId, tableListPk.tableNo, tableJapaneseName, tableEnglishName, fieldAcqCid,
-				fieldAcqDateTime, fieldAcqEmployeeId, fieldAcqEndDate, fieldAcqStartDate, saveSetCode, saveSetName,
+		return new TableList(tableListPk.categoryId, categoryName, dataRecoveryProcessId,
+				tableListPk.systemType, tableListPk.dataStorageProcessingId, tableListPk.tableNo, tableJapaneseName, tableEnglishName, fieldAcqCid,
+				fieldAcqDateTime, fieldAcqEmployeeId, fieldAcqEndDate, fieldAcqStartDate, patternCode, saveSetName,
 				saveForm, saveDateFrom, saveDateTo, storageRangeSaved, retentionPeriodCls, internalFileName,
 				anotherComCls, referenceYear, referenceMonth, compressedFileName, fieldChild1, fieldChild2, fieldChild3,
 				fieldChild4, fieldChild5, fieldChild6, fieldChild7, fieldChild8, fieldChild9, fieldChild10, historyCls,

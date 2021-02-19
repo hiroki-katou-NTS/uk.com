@@ -88,23 +88,4 @@ public class JpaAcquisitionRuleGetMemento implements AcquisitionRuleGetMemento {
 		return annualHoliday;
 	}
 
-	@Override
-	public HoursHoliday getHoursHoliday() {
-		
-		HoursHoliday hoursHoliday = new HoursHoliday();
-		
-		if(this.typeValue.getExcessHoliday() == 0) {
-			hoursHoliday.setPriorityOverpaid(false);
-		} else {
-			hoursHoliday.setPriorityOverpaid(true);
-		}
-		
-		if(this.typeValue.getOverrideHoliday() == 0) {
-			hoursHoliday.setSixtyHoursOverrideHoliday(false);
-		} else {
-			hoursHoliday.setSixtyHoursOverrideHoliday(true);
-		}
-		
-		return hoursHoliday;
-	}
 }

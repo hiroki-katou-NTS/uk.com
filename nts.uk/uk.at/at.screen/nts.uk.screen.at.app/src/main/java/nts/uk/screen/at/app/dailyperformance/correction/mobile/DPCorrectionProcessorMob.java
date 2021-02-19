@@ -57,11 +57,11 @@ import nts.uk.ctx.at.request.app.find.application.applicationlist.AppGroupExport
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationExportDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationListForScreen;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
-import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemIdContainer;
-import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemIdContainer;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeUseSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
@@ -1057,7 +1057,7 @@ public class DPCorrectionProcessorMob {
 							if (attOpt.isPresent()) {
 								Optional<WorkStamp> workStampOpt = attOpt.get().getStamp();
 								if (workStampOpt.isPresent() && stampSourceAt) {
-									workStampOpt.get().setPropertyWorkStamp(workStampOpt.get().getAfterRoundingTime(),
+									workStampOpt.get().setPropertyWorkStamp(
 											workStampOpt.get().getTimeDay().getTimeWithDay().isPresent()?workStampOpt.get().getTimeDay().getTimeWithDay().get():null,
 											workStampOpt.get().getLocationCode().isPresent()
 													? workStampOpt.get().getLocationCode().get()
@@ -1069,7 +1069,7 @@ public class DPCorrectionProcessorMob {
 							Optional<TimeActualStamp> leavOpt = x.getLeaveStamp();
 							if (leavOpt.isPresent() && stampSourceLeav) {
 								Optional<WorkStamp> workStampOpt = leavOpt.get().getStamp();
-								workStampOpt.get().setPropertyWorkStamp(workStampOpt.get().getAfterRoundingTime(),
+								workStampOpt.get().setPropertyWorkStamp(
 										workStampOpt.get().getTimeDay().getTimeWithDay().isPresent()?workStampOpt.get().getTimeDay().getTimeWithDay().get():null,
 										workStampOpt.get().getLocationCode().isPresent()
 												? workStampOpt.get().getLocationCode().get()

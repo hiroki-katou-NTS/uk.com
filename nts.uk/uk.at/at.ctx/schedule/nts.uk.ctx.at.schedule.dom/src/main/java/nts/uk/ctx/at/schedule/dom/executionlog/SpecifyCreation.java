@@ -1,13 +1,12 @@
 package nts.uk.ctx.at.schedule.dom.executionlog;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternCode;
-
-import java.util.Optional;
 
 /**
  * The Class Specify Creation

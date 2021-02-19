@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.app.command.workcheduleworkrecord.appreflectprocess
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectCondition;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -37,4 +38,15 @@ public class TimeLeaveAppReflectConditionCommand {
      * 時間特別休暇
      */
     private int specialVacationTime;
+    
+    public static TimeLeaveAppReflectConditionCommand fromDomain(TimeLeaveAppReflectCondition timeLeaveAppReflectCondition) {
+        return new TimeLeaveAppReflectConditionCommand(
+                timeLeaveAppReflectCondition.getSuperHoliday60H().value, 
+                timeLeaveAppReflectCondition.getNursing().value, 
+                timeLeaveAppReflectCondition.getChildNursing().value, 
+                timeLeaveAppReflectCondition.getSubstituteLeaveTime().value,
+                timeLeaveAppReflectCondition.getAnnualVacationTime().value, 
+                timeLeaveAppReflectCondition.getSpecialVacationTime().value
+                );
+    }
 }

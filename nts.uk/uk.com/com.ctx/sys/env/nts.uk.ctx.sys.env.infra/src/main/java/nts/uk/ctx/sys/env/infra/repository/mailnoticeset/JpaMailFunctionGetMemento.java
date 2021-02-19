@@ -32,7 +32,7 @@ public class JpaMailFunctionGetMemento implements MailFunctionGetMemento {
 	 */
 	@Override
 	public FunctionId getFunctionId() {
-		return new FunctionId(this.entity.getFunctionId());
+		return new FunctionId(this.entity.getFunctionId().v());
 	}
 
 	/* (non-Javadoc)
@@ -40,7 +40,7 @@ public class JpaMailFunctionGetMemento implements MailFunctionGetMemento {
 	 */
 	@Override
 	public FunctionName getFunctionName() {
-		return new FunctionName(this.entity.getFunctionName());
+		return new FunctionName(this.entity.getFunctionName().v());
 	}
 
 	/* (non-Javadoc)
@@ -56,6 +56,6 @@ public class JpaMailFunctionGetMemento implements MailFunctionGetMemento {
 	 */
 	@Override
 	public SortOrder getSortOrder() {
-		return new SortOrder(this.entity.getSortOrder());
+		return new SortOrder(this.entity.getSortOrder().v());
 	}
 }

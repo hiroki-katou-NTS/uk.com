@@ -21,8 +21,8 @@ public class OneYearErrorAlarmTime {
 	}
 	
 	private OneYearErrorAlarmTime(AgreementOneYearTime error, AgreementOneYearTime alarm) {
-		this.error = alarm;
-		this.alarm = error;
+		this.error = error;
+		this.alarm = alarm;
 	}
 	
 	public static OneYearErrorAlarmTime of(AgreementOneYearTime error, AgreementOneYearTime alarm) {

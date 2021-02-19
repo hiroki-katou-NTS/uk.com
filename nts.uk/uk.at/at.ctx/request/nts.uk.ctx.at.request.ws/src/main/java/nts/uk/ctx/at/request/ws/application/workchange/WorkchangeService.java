@@ -13,18 +13,8 @@ import nts.uk.ctx.at.request.app.command.application.workchange.AddAppWorkChange
 import nts.uk.ctx.at.request.app.command.application.workchange.AddAppWorkChangeCommandHandlerPC;
 import nts.uk.ctx.at.request.app.command.application.workchange.AddAppWorkChangeCommandPC;
 import nts.uk.ctx.at.request.app.command.application.workchange.UpdateAppWorkChangeCommandHandler;
-import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeAppdateDto;
-import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeCommonSetFinder;
-import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeDetailParam;
-import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeFinder;
-import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeOutputDto;
-import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeParamPC;
-import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeRecordWorkInfoFinder;
-import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeSetDto_Old;
-import nts.uk.ctx.at.request.app.find.application.workchange.RecordWorkInfoDto;
-import nts.uk.ctx.at.request.app.find.application.workchange.WorkChangeDetailFinder;
+import nts.uk.ctx.at.request.app.find.application.workchange.*;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDispInfoDto;
-import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDispInfoDto_Old;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.WorkChangeCheckRegisterDto;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 
@@ -73,7 +63,7 @@ public class WorkchangeService extends WebService {
 
 	/**
 	 * 
-	 * @param appId
+	 * @param appWorkChangeDetailParam
 	 * @return
 	 */
 	@POST
@@ -99,8 +89,8 @@ public class WorkchangeService extends WebService {
 
 	@POST
 	@Path("workChangeSet")
-	public AppWorkChangeSetDto_Old getWorkChangeSet() {
-		return appWorkFinder.findByCom();
+	public AppWorkChangeSetDto getWorkChangeSet() {
+		return appWorkFinder.findByCompany();
 	}
 
 	@POST
@@ -123,7 +113,7 @@ public class WorkchangeService extends WebService {
 
 	@POST
 	@Path("changeWorkSelection")
-	public AppWorkChangeDispInfoDto_Old changeWorkSelection(AppWorkChangeParamPC param) {
+	public AppWorkChangeDispInfoDto changeWorkSelection(AppWorkChangeParamPC param) {
 		return appWorkFinder.changeWorkSelection(param);
 	}
 

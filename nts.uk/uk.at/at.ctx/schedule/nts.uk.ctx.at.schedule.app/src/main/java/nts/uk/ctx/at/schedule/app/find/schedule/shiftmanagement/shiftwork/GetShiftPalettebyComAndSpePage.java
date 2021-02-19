@@ -8,8 +8,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsCom;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsComRepository;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteCom;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteComRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -21,11 +21,11 @@ import nts.uk.shr.com.context.AppContexts;
 public class GetShiftPalettebyComAndSpePage {
 	
 	@Inject
-	private ShiftPalletsComRepository shiftPalletsComRepo;
+	private ShiftPaletteComRepository shiftPalletsComRepo;
 	
-	public ShiftPalletsCom getShiftPalletCom(int pageNumber) {
+	public ShiftPaletteCom getShiftPalletCom(int pageNumber) {
 		String companyId = AppContexts.user().companyId();
-		Optional<ShiftPalletsCom> shiftPalletsCom = shiftPalletsComRepo.findShiftPallet(companyId, pageNumber);
+		Optional<ShiftPaletteCom> shiftPalletsCom = shiftPalletsComRepo.findShiftPallet(companyId, pageNumber);
 		if (shiftPalletsCom.isPresent()) {
 			return shiftPalletsCom.get();
 		}

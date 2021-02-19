@@ -53,12 +53,13 @@ public class WorkSchedulePubImpl implements WorkSchedulePub {
 			timeLeavingOfDailyAttd = new TimeLeavingOfDailyAttdExport(timeLeavingWorks,
 					data.getOptTimeLeaving().get().getWorkTimes() ==null?0:data.getOptTimeLeaving().get().getWorkTimes().v());
 		}
-		List<BreakTimeOfDailyAttdExport> listBreakTimeOfDaily = data.getLstBreakTime().stream()
-				.map(c -> new BreakTimeOfDailyAttdExport(c.getBreakType().value,
-						c.getBreakTimeSheets().stream().map(x -> new BreakTimeSheetExport(x.getBreakFrameNo().v(),
-								x.getStartTime().v(), x.getEndTime().v(), x.getBreakTime().v()))
-								.collect(Collectors.toList())
-				)).collect(Collectors.toList());
+		BreakTimeOfDailyAttdExport listBreakTimeOfDaily = new BreakTimeOfDailyAttdExport(
+							data.getLstBreakTime().getBreakTimeSheets().stream().map(x -> 
+									new BreakTimeSheetExport(x.getBreakFrameNo().v(), 
+															x.getStartTime().v(), 
+															x.getEndTime().v(), 
+															x.getBreakTime().v()))
+								.collect(Collectors.toList()));
 
 		WorkScheduleExport workScheduleExport = new WorkScheduleExport(
 				data.getWorkInfo().getRecordInfo().getWorkTypeCode().v(),
@@ -85,7 +86,7 @@ public class WorkSchedulePubImpl implements WorkSchedulePub {
 	}
 
 	private WorkStampExport convertToWorkStamp(WorkStamp domain) {
-		return new WorkStampExport(domain.getAfterRoundingTime().v(), new WorkTimeInformationExport(
+		return new WorkStampExport( new WorkTimeInformationExport(
 				new ReasonTimeChangeExport(domain.getTimeDay().getReasonTimeChange().getTimeChangeMeans().value,
 						domain.getTimeDay().getReasonTimeChange().getEngravingMethod().isPresent()
 								? domain.getTimeDay().getReasonTimeChange().getEngravingMethod().get().value

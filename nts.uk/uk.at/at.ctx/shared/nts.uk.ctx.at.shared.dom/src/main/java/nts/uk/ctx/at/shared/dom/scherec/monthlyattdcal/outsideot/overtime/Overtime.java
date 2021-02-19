@@ -40,29 +40,17 @@ public class Overtime extends DomainObject implements Serializable{
 	// 超過時間NO
 	private OvertimeNo overtimeNo;
 	
-	
 	/**
 	 * Instantiates a new overtime.
 	 */
-	public Overtime(OvertimeGetMemento memento) {
-		this.superHoliday60HOccurs = memento.getSuperHoliday60HOccurs();
-		this.useClassification = memento.getUseClassification();
-		this.name = memento.getName();
-		this.overtime = memento.getOvertime();
-		this.overtimeNo = memento.getOvertimeNo();
-	}
-	
-	/**
-	 * Save to memento.
-	 *
-	 * @param memento the memento
-	 */
-	public void saveToMemento(OvertimeSetMemento memento){
-		memento.setSuperHoliday60HOccurs(this.superHoliday60HOccurs);
-		memento.setUseClassification(this.useClassification);
-		memento.setName(this.name);
-		memento.setOvertime(this.overtime);
-		memento.setOvertimeNo(this.overtimeNo);
+	public Overtime(boolean superHoliday60HOccurs, UseClassification useClassification, 
+			OvertimeName name, OvertimeValue overtime, OvertimeNo overtimeNo) {
+		
+		this.superHoliday60HOccurs = superHoliday60HOccurs;
+		this.useClassification = useClassification;
+		this.name = name;
+		this.overtime = overtime;
+		this.overtimeNo = overtimeNo;
 	}
 	
 	/**

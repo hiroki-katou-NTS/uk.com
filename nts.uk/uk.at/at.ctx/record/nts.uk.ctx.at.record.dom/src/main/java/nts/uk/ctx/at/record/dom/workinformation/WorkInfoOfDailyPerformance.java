@@ -36,13 +36,13 @@ public class WorkInfoOfDailyPerformance extends AggregateRoot {
 	private WorkInfoOfDailyAttendance workInformation;
 
     public WorkInfoOfDailyPerformance(String employeeId, WorkInformation recordWorkInformation,
-            WorkInformation scheduleWorkInformation, CalculationState calculationState, NotUseAttribute goStraightAtr,
-            NotUseAttribute backStraightAtr, GeneralDate ymd, List<ScheduleTimeSheet> scheduleTimeSheets) {
+            CalculationState calculationState, NotUseAttribute goStraightAtr,
+            NotUseAttribute backStraightAtr, GeneralDate ymd, 
+            List<ScheduleTimeSheet> scheduleTimeSheets) {
         this.employeeId = employeeId;
         this.ymd = ymd;
         this.workInformation = new WorkInfoOfDailyAttendance(
         		recordWorkInformation,
-        		scheduleWorkInformation,
         		calculationState,
         		goStraightAtr,
         		backStraightAtr,
@@ -55,13 +55,6 @@ public class WorkInfoOfDailyPerformance extends AggregateRoot {
 		this.ymd = ymd;
 		setWorkInformation(workInfo);
 	} 
-	
-	/**
-	 * 勤務予定を実績に移す
-	 */
-	public void shiftFromScheduleToRecord() {
-		this.workInformation.setRecordInfo(workInformation.getScheduleInfo());
-	}
 	
 	/** <<Event>> 実績の就業時間帯が変更されたを発行する */
 	public void workTimeChanged() {
@@ -84,15 +77,6 @@ public class WorkInfoOfDailyPerformance extends AggregateRoot {
 				.build().toBePublished();
 	}
 
-	/**
-	 * 勤務予定の勤務情報と勤務実績の勤務情報が同じかどうか確認する
-	 * @param workNo
-	 * @param predetermineTimeSheetSetting
-	 * @return
-	 */
-	public boolean isMatchWorkInfomation() {			
-		return workInformation.isMatchWorkInfomation();
-	}
 
 	/**
 	 * 指定された勤務回数の予定時間帯を取得する
@@ -105,7 +89,7 @@ public class WorkInfoOfDailyPerformance extends AggregateRoot {
 	}
 
 	public WorkInfoOfDailyPerformance(String employeeId, WorkInformation recordWorkInformation,
-			WorkInformation scheduleWorkInformation, CalculationState calculationState, NotUseAttribute goStraightAtr,
+			CalculationState calculationState, NotUseAttribute goStraightAtr,
 			NotUseAttribute backStraightAtr, GeneralDate ymd, DayOfWeek dayOfWeek,
 			List<ScheduleTimeSheet> scheduleTimeSheets) {
 		super();
@@ -113,13 +97,11 @@ public class WorkInfoOfDailyPerformance extends AggregateRoot {
 		this.ymd = ymd;
 		this.workInformation = new WorkInfoOfDailyAttendance(
 				recordWorkInformation,
-				scheduleWorkInformation,
 				calculationState,
 				goStraightAtr,
 				backStraightAtr,
 				dayOfWeek,
-				scheduleTimeSheets
-				);
+				scheduleTimeSheets);
 	}
 	
 	/**

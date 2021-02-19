@@ -3,7 +3,7 @@ package nts.uk.ctx.sys.assist.app.find.resultofsaving;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
-import lombok.Value;
+import lombok.Data;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.assist.dom.storage.LoginInfo;
 import nts.uk.ctx.sys.assist.dom.storage.ResultLogSaving;
@@ -13,7 +13,7 @@ import nts.uk.ctx.sys.assist.dom.storage.ResultOfSaving;
  * データ保存の保存結果
  */
 @AllArgsConstructor
-@Value
+@Data
 public class ResultOfSavingDto {
 
 	/**
@@ -25,11 +25,6 @@ public class ResultOfSavingDto {
 	 * 会社ID
 	 */
 	private String cid;
-
-	/**
-	 * システム種類
-	 */
-	private int systemType;
 
 	/**
 	 * ファイル容量
@@ -112,9 +107,8 @@ public class ResultOfSavingDto {
 			(
 				domain.getStoreProcessingId(), 
 				domain.getCid(), 
-				domain.getSystemType().value,
 				domain.getFileSize().orElse(null), 
-				domain.getSaveSetCode().map(i -> i.v()).orElse(null), 
+				domain.getPatternCode().v(), 
 				domain.getSaveFileName().map(i -> i.v()).orElse(null),
 				domain.getSaveName().v(),
 				domain.getSaveForm().value,

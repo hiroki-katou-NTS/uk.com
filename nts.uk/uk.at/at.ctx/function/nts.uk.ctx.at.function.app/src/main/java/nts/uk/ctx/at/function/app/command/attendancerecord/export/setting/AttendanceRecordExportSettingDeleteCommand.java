@@ -14,8 +14,11 @@ import lombok.Setter;
 @AllArgsConstructor
 public class AttendanceRecordExportSettingDeleteCommand {
 
+	/** The layout id. */
+	String layoutId;
+	
 	/** The code. */
-	long code;
+	String code;
 
 	/** The name. */
 	String name;
@@ -26,6 +29,13 @@ public class AttendanceRecordExportSettingDeleteCommand {
 	/** The seal use atr. */
 	Boolean sealUseAtr;
 
+	/** The monthly display. */
+	Integer monthlyDisplay;
+	
+	/** The item sel type. */
+	Integer itemSelType;
+
+	
 	/**
 	 * Instantiates a new attendance record export setting delete command.
 	 */

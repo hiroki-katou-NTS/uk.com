@@ -292,7 +292,7 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 		int wtActualFilterAtr = 0;
 		List<KrcstErAlWtPlan> lstWtPlan = new ArrayList<>();
 		List<KrcstErAlWtActual> lstWtActual = new ArrayList<>();
-		if (wtCompareAtr != FilterByCompare.EXTRACT_SAME.value) {
+		if (wtCompareAtr != FilterByCompare.SELECTED.value) {
 			PlanActualWorkType wtypeCondition = (PlanActualWorkType) conditionDomain.getWorkTypeCondition();
 			wtPlanActualOperator = wtypeCondition.getOperatorBetweenPlanActual().value;
 			wtPlanFilterAtr = wtypeCondition.getWorkTypePlan().isUse() ? 1 : 0;
@@ -318,7 +318,7 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 		int whActualFilterAtr = 0;
 		List<KrcstErAlWhPlan> lstWhPlan = new ArrayList<>();
 		List<KrcstErAlWhActual> lstWhActual = new ArrayList<>();
-		if (whCompareAtr != FilterByCompare.EXTRACT_SAME.value) {
+		if (whCompareAtr != FilterByCompare.SELECTED.value) {
 			PlanActualWorkTime wtimeCondition = (PlanActualWorkTime) conditionDomain.getWorkTimeCondition();
 			whPlanActualOperator = wtimeCondition.getOperatorBetweenPlanActual().value;
 			whPlanFilterAtr = wtimeCondition.getWorkTimePlan().isUse() ? 1 : 0;
@@ -476,7 +476,7 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 		// Set WorkTypeCondition
 
 		condition.createWorkTypeCondition(entity.workTypeUseAtr == 1, entity.wtCompareAtr == null ? 0 : entity.wtCompareAtr);
-		if (entity.wtCompareAtr != null && entity.wtCompareAtr != FilterByCompare.EXTRACT_SAME.value) {
+		if (entity.wtCompareAtr != null && entity.wtCompareAtr != FilterByCompare.SELECTED.value) {
 			condition.setWorkTypePlan((entity.wtPlanFilterAtr != null && entity.wtPlanFilterAtr == 1),
 					Optional.ofNullable(entity.lstWtPlan).orElse(Collections.emptyList()).stream()
 							.map(wtype -> wtype.krcstErAlWtPlanPK.workTypeCode).collect(Collectors.toList()));
@@ -492,7 +492,7 @@ public class KrcmtErAlCondition extends UkJpaEntity implements Serializable {
 		// Set WorkTimeCondtion
 		condition.createWorkTimeCondition(entity.workingHoursUseAtr == 1,
 				entity.whCompareAtr == null ? 0 : entity.whCompareAtr);
-		if (entity.whCompareAtr != null && entity.whCompareAtr != FilterByCompare.EXTRACT_SAME.value) {
+		if (entity.whCompareAtr != null && entity.whCompareAtr != FilterByCompare.SELECTED.value) {
 			condition.setWorkTimePlan((entity.whPlanFilterAtr != null && entity.whPlanFilterAtr == 1),
 					Optional.ofNullable(entity.lstWhPlan).orElse(Collections.emptyList()).stream()
 							.map(wtime -> wtime.krcstErAlWhPlanActualPK.workTimeCode).collect(Collectors.toList()));

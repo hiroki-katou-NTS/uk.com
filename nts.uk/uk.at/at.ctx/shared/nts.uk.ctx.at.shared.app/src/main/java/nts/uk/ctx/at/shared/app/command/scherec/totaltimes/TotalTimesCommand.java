@@ -5,22 +5,20 @@
 package nts.uk.ctx.at.shared.app.command.scherec.totaltimes;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.CountAtr;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.SummaryAtr;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.SummaryList;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalCondition;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimes;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesABName;
-import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesGetMemento;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesName;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.UseAtr;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.WorkTypeAtr;
+import nts.uk.ctx.at.shared.dom.scherec.totaltimes.memento.TotalTimesGetMemento;
 
 /**
  * The Class TotalTimesCommand.
@@ -105,8 +103,8 @@ public class TotalTimesCommand {
 		 * getCompanyId()
 		 */
 		@Override
-		public CompanyId getCompanyId() {
-			return new CompanyId(this.companyId);
+		public String getCompanyId() {
+			return this.companyId;
 		}
 
 		/*
@@ -201,7 +199,7 @@ public class TotalTimesCommand {
 		 * getTotalSubjects()
 		 */
 		@Override
-		public Optional<SummaryList> getSummaryList() {
+		public SummaryList getSummaryList() {
 			SummaryList summaryList = new SummaryList();
 			summaryList.setWorkTimeCodes(this.command.listTotalSubjects.stream()
 					.filter(item -> WorkTypeAtr.WORKINGTIME
@@ -212,7 +210,7 @@ public class TotalTimesCommand {
 							.equals(WorkTypeAtr.valueOf(item.getWorkTypeAtr())))
 					.map(TotalSubjectsDto::getWorkTypeCode).collect(Collectors.toList()));
 			
-			return Optional.of(summaryList);
+			return summaryList;
 		}
 
 	}

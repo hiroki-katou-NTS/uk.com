@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.worktime.flexset;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -68,7 +69,7 @@ public class TimeSheet extends WorkTimeDomainObject implements Cloneable{
 	public static TimeSheet createDefault() {
 		return new TimeSheet(TimeWithDayAttr.THE_PRESENT_DAY_0000, TimeWithDayAttr.THE_PRESENT_DAY_0000);
 	}
-	
+
 	@Override
 	public TimeSheet clone() {
 		TimeSheet cloned = new TimeSheet();
@@ -81,4 +82,14 @@ public class TimeSheet extends WorkTimeDomainObject implements Cloneable{
 		}
 		return cloned;
 	}
+
+
+	/**
+	 * 計算時間帯に変換する
+	 * @return
+	 */
+	public TimeSpanForCalc timespan() {
+		return new TimeSpanForCalc( this.startTime, this.endTime );
+	}
+
 }

@@ -116,13 +116,13 @@ public class KrcdtDayOuenTimeSheet extends UkJpaEntity implements Serializable {
 									new WorkTimeInformation(
 											new ReasonTimeChange(
 													EnumAdaptor.valueOf(startTimeChangeWay, TimeChangeMeans.class), 
-													startStampMethod == null ? null : EnumAdaptor.valueOf(startStampMethod, EngravingMethod.class)), 
+													startStampMethod == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(startStampMethod, EngravingMethod.class))), 
 											startTime == null ? null : new TimeWithDayAttr(startTime))), 
 								Optional.ofNullable(endTime == null ? null : 
 									new WorkTimeInformation(
 											new ReasonTimeChange(
 													EnumAdaptor.valueOf(endTimeChangeWay, TimeChangeMeans.class), 
-													endStampMethod == null ? null : EnumAdaptor.valueOf(endStampMethod, EngravingMethod.class)), 
+													endStampMethod == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(endStampMethod, EngravingMethod.class))), 
 											endTime == null ? null : new TimeWithDayAttr(endTime))))));
 	}
 	

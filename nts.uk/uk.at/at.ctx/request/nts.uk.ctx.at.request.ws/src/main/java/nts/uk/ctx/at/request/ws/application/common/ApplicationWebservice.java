@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.request.ws.application.common;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -14,10 +16,12 @@ import javax.ws.rs.Produces;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.app.command.application.applicationlist.AppListApproveResult;
 import nts.uk.ctx.at.request.app.command.application.common.AppDetailBehaviorCmd;
 import nts.uk.ctx.at.request.app.command.application.common.AppNewBehaviorCmd;
@@ -57,6 +61,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.R
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.MailSenderResult;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ApproveProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
@@ -381,6 +386,32 @@ public class ApplicationWebservice extends WebService {
 		
 		// return newAfterRegister.processAfterRegister(appID, appTypeSetting, mailServerSet);
 		return null;
+	}
+	
+	@POST
+	@Path("initApp")
+	public boolean registerSample() {
+		return true;
+	}
+	
+	@POST
+	@Path("checkBeforeSample")
+	public List<ConfirmMsgOutput> checkBeforeRegisterSample(List<String> msgIDLst) {
+		if(msgIDLst.contains("Msg_324") || msgIDLst.contains("Msg_197") || msgIDLst.contains("Msg_26")) {
+			throw new BusinessException(msgIDLst.get(0));
+		}
+		if(CollectionUtil.isEmpty(msgIDLst)) {
+			return Collections.emptyList();
+		}
+		return msgIDLst.stream().map(x -> new ConfirmMsgOutput(x, Collections.emptyList())).collect(Collectors.toList());
+	}
+	
+	@POST
+	@Path("changeDataSample")
+	public ProcessResult registerSample(List<String> msgIDLst) {
+		ProcessResult processResult = new ProcessResult();
+		processResult.setProcessDone(true);
+		return processResult;
 	}
 }
 

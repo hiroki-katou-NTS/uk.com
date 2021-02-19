@@ -74,13 +74,13 @@ public class StartKSU001 {
 		TargetOrgIdenInfor targetOrgIdenInfor = null;
 		if (resultStep1.targetOrgIdenInfor.unit == TargetOrganizationUnit.WORKPLACE.value) {
 			targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE,
-					Optional.of(resultStep1.targetOrgIdenInfor.workplaceId),
+					Optional.of(param.workplaceId == null ? resultStep1.targetOrgIdenInfor.workplaceId : param.workplaceId),
 					Optional.empty());
 		}else{
 			targetOrgIdenInfor = new TargetOrgIdenInfor(
 					TargetOrganizationUnit.WORKPLACE_GROUP,
 					Optional.empty(),
-					Optional.of(resultStep1.targetOrgIdenInfor.workplaceGroupId));
+					Optional.of(param.workplaceGroupId == null ? resultStep1.targetOrgIdenInfor.workplaceGroupId : param.workplaceGroupId));
 		}
 
 		ExtractTargetEmployeesParam param2 = new ExtractTargetEmployeesParam(endDate, targetOrgIdenInfor);

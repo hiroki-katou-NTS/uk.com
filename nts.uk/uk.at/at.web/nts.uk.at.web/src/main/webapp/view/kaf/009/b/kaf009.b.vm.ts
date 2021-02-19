@@ -72,7 +72,7 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
         application: KnockoutObservable<Application>;
         model: Model;
         dataFetch: KnockoutObservable<ModelDto> = ko.observable(null);
-        mode: string = 'edit';
+        mode: KnockoutObservable<String> = ko.observable('edit');
         approvalReason: KnockoutObservable<string>;
         printContentOfEachAppDto: KnockoutObservable<PrintContentOfEachAppDto>;
         applicationTest: any = {
@@ -109,7 +109,8 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
 			vm.appType = params.appType;
             vm.model = new Model(true, true, true, '', '', '', '');
             if (ko.toJS(vm.appDispInfoStartupOutput).appDetailScreenInfo) {
-                vm.mode = ko.toJS(vm.appDispInfoStartupOutput).appDetailScreenInfo.outputMode == 1 ? 'edit' : 'view';
+                let mode = ko.toJS(vm.appDispInfoStartupOutput).appDetailScreenInfo.outputMode == 1 ? 'edit' : 'view';
+				vm.mode(mode); 
             }
             vm.createParamKAF009();
 
@@ -132,6 +133,10 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
         createParamKAF009() {
             let vm = this;
             vm.$blockui('show');
+			if (ko.toJS(vm.appDispInfoStartupOutput).appDetailScreenInfo) {
+                let mode = ko.toJS(vm.appDispInfoStartupOutput).appDetailScreenInfo.outputMode == 1 ? 'edit' : 'view';
+				vm.mode(mode); 
+            }
             return vm.$ajax(API.getDetail, {
                 companyId: vm.$user.companyId,
                 applicationId: vm.application().appID()
@@ -241,7 +246,7 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
                 }).done(result => {
                     if (result != undefined) {
                         vm.$dialog.info( { messageId: "Msg_15" } ).then(() => {
-                            vm.reload();
+                        	ko.contextFor($('#contents-area')[0]).$vm.loadData();
                         });
                     }
                 }).fail(err => {
@@ -296,7 +301,7 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
             }
             vm.$dialog.error(param).then(res => {
                 if (err.messageId == 'Msg_197') {
-                    vm.reload();
+                	ko.contextFor($('#contents-area')[0]).$vm.loadData();
                 }
             });
         }

@@ -32,7 +32,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBr
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataManagementAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RequiredDay;
@@ -51,6 +50,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryL
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.DeadlCheckMonth;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.TermManagement;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureGetMemento;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
@@ -137,8 +137,8 @@ public class NumberRemainVacationLeaveRangeQueryTest {
 						new InterimDayOffMng("daikyu4", new RequiredTime(0), new RequiredDay(1.0), new UnOffsetTime(0),
 								new UnOffsetDay(1.0)));
 
-				require.getBreakDayOffMng(anyString, anyBoolean, (DataManagementAtr) any);
-				result = new ArrayList<>();
+//				require.getBycomDayOffID(anyString, GeneralDate.ymd(2019, 11, 10));
+//				result = new ArrayList<>();
 
 			}
 
@@ -354,7 +354,7 @@ public class NumberRemainVacationLeaveRangeQueryTest {
 				return new EmploymentCode(empCode);
 			}
 
-			@Override
+			/*@Override
 			public CompensatoryDigestiveTimeUnit getCompensatoryDigestiveTimeUnit() {
 				return new CompensatoryDigestiveTimeUnit(new CompensatoryDigestiveTimeUnitGetMemento() {
 
@@ -369,7 +369,7 @@ public class NumberRemainVacationLeaveRangeQueryTest {
 					}
 				});
 			}
-
+*/
 			@Override
 			public CompensatoryAcquisitionUse getCompensatoryAcquisitionUse() {
 				return new CompensatoryAcquisitionUse(new CompensatoryAcquisitionUseGetMemento() {
@@ -387,6 +387,11 @@ public class NumberRemainVacationLeaveRangeQueryTest {
 					@Override
 					public DeadlCheckMonth getDeadlCheckMonth() {
 						return DeadlCheckMonth.THREE_MONTH;
+					}
+
+					@Override
+					public TermManagement termManagement() {
+						return TermManagement.MANAGE_BASED_ON_THE_DATE;
 					}
 				});
 			}

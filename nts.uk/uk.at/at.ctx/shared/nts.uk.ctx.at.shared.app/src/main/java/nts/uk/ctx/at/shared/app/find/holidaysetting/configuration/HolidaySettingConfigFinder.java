@@ -1,19 +1,12 @@
 package nts.uk.ctx.at.shared.app.find.holidaysetting.configuration;
 
-import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.ForwardSettingOfPublicHoliday;
-import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.ForwardSettingOfPublicHolidayRepository;
-import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.FourWeekFourHolidayNumberSetting;
-import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.FourWeekFourHolidayNumberSettingRepository;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidaySetting;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidaySettingRepository;
-import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.WeekHolidaySetting;
-import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.WeekHolidaySettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -23,16 +16,16 @@ import nts.uk.shr.com.context.AppContexts;
 public class HolidaySettingConfigFinder {
 	
 	/** The forward set of pub hd repo. */
-	@Inject
-	private ForwardSettingOfPublicHolidayRepository forwardSetOfPubHdRepo;
+//	@Inject
+//	private ForwardSettingOfPublicHolidayRepository forwardSetOfPubHdRepo;
 	
 	/** The four weekfour hd numb set repo. */
-	@Inject
-	private FourWeekFourHolidayNumberSettingRepository fourWeekfourHdNumbSetRepo;
+//	@Inject
+//	private FourWeekFourHolidayNumberSettingRepository fourWeekfourHdNumbSetRepo;
 	
 	/** The week hd set repo. */
-	@Inject
-	private WeekHolidaySettingRepository weekHdSetRepo;
+//	@Inject
+//	private WeekHolidaySettingRepository weekHdSetRepo;
 	
 	/** The pub hd set repo. */
 	@Inject
@@ -45,48 +38,17 @@ public class HolidaySettingConfigFinder {
 	 */
 	public HolidaySettingConfigDto findHolidaySettingConfigData(){
 		String companyId = AppContexts.user().companyId();
-		
-		ForwardSettingOfPublicHolidayFindDto forwardSetOfPubHdDto = new ForwardSettingOfPublicHolidayFindDto();
-		FourWeekFourHolidayNumberSettingFindDto fourWeekfourHdNumbSetDto = new FourWeekFourHolidayNumberSettingFindDto();
-		WeekHolidaySettingFindDto weekHdSetDto = new WeekHolidaySettingFindDto();
+
 		PublicHolidaySettingFindDto pubHdSetDto = new PublicHolidaySettingFindDto();
-		
-		Optional<ForwardSettingOfPublicHoliday> optionalForwardSetOfPubHd = this.forwardSetOfPubHdRepo.findByCID(companyId);
-		if(optionalForwardSetOfPubHd.isPresent()){
-			ForwardSettingOfPublicHoliday forwardSetOfPubHdDomain = optionalForwardSetOfPubHd.get();
-			forwardSetOfPubHdDomain.saveToMemento(forwardSetOfPubHdDto);
-		} else {
-			forwardSetOfPubHdDto = null;
-		}
-		
-		Optional<FourWeekFourHolidayNumberSetting> optionalFourWeekfourHdNumbSet = this.fourWeekfourHdNumbSetRepo.findByCID(companyId);
-		if(optionalFourWeekfourHdNumbSet.isPresent()){
-			FourWeekFourHolidayNumberSetting fourWeekfourHdNumbSetDomain = optionalFourWeekfourHdNumbSet.get();
-			fourWeekfourHdNumbSetDomain.saveToMemento(fourWeekfourHdNumbSetDto);
-		} else {
-			fourWeekfourHdNumbSetDto = null;
-		}
-		
-		Optional<WeekHolidaySetting> optionalWeekHdSet = this.weekHdSetRepo.findByCID(companyId);
-		if(optionalWeekHdSet.isPresent()){
-			WeekHolidaySetting weekHdSetDomain = optionalWeekHdSet.get();
-			weekHdSetDomain.saveToMemento(weekHdSetDto);
-		} else {
-			weekHdSetDto = null;
-		}
-		
-		List<PublicHolidaySetting> lstPubHdSet = this.pubHdSetRepo.findByCIDToList(companyId);
-		if(lstPubHdSet != null && !lstPubHdSet.isEmpty()){
-			PublicHolidaySetting pubHdSetDomain = lstPubHdSet.get(0);
-			pubHdSetDomain.saveToMemento(pubHdSetDto, 0);
-			
-			pubHdSetDomain = lstPubHdSet.get(1);
-			pubHdSetDomain.saveToMemento(pubHdSetDto, 1);
+		Optional<PublicHolidaySetting> optPubHdSetting = this.pubHdSetRepo.get(companyId);
+		if(optPubHdSetting.isPresent()){
+			PublicHolidaySetting pubHdSetDomain = optPubHdSetting.get();
+
 		} else {
 			pubHdSetDto = null;
 		}
 		
-		HolidaySettingConfigDto dto = new HolidaySettingConfigDto(forwardSetOfPubHdDto, fourWeekfourHdNumbSetDto, weekHdSetDto, pubHdSetDto);
+		HolidaySettingConfigDto dto = new HolidaySettingConfigDto(null, null, null, pubHdSetDto);
 		
 		return dto;
 	}
@@ -95,10 +57,9 @@ public class HolidaySettingConfigFinder {
 		String companyId = AppContexts.user().companyId();
 		PublicHolidaySettingFindDto pubHdSetDto = new PublicHolidaySettingFindDto();
 		
-		Optional<PublicHolidaySetting> optPubHDSet = this.pubHdSetRepo.findByCID(companyId);
+		Optional<PublicHolidaySetting> optPubHDSet = this.pubHdSetRepo.get(companyId);
 		if (optPubHDSet.isPresent()) {
 			PublicHolidaySetting pubHDSet = optPubHDSet.get();
-			pubHDSet.saveToMemento(pubHdSetDto);
 		} else {
 			pubHdSetDto = null;
 		}

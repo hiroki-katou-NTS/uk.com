@@ -22,8 +22,8 @@ public class DeformLaborOT extends DomainObject {
 	/*変形法定内残業を計算する*/
 	private NotUseAtr legalOtCalc;
 
-	public static DeformLaborOT createFromJavaType(String cid, NotUseAtr legalOtCalc) {
-		return new DeformLaborOT(cid, legalOtCalc);
+	public static DeformLaborOT createFromJavaType(String cid, int legalOtCalc) {
+		return new DeformLaborOT(cid, NotUseAtr.valueOf(legalOtCalc));
 	}
 	
 	/**

@@ -1,40 +1,17 @@
 package nts.uk.ctx.at.request.dom.application.businesstrip.service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
-import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
-
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
-import nts.gul.text.StringUtil;
-import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.ReflectedState;
-import nts.uk.ctx.at.request.dom.application.ReflectionStatus;
-import nts.uk.ctx.at.request.dom.application.ReflectionStatusOfDay;
+import nts.uk.ctx.at.request.dom.application.*;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
-import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
-import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripInfo;
-import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripInfoOutput;
-import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripRepository;
-import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripWorkTypes;
+import nts.uk.ctx.at.request.dom.application.businesstrip.*;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
@@ -42,8 +19,8 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.Abs
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork_Old;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository_Old;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeRepository;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
@@ -53,14 +30,17 @@ import nts.uk.ctx.at.request.dom.setting.request.application.businesstrip.AppTri
 import nts.uk.ctx.at.request.dom.setting.request.application.businesstrip.AppTripRequestSetRepository;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
-import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
+import nts.uk.ctx.at.shared.dom.worktype.*;
 import nts.uk.shr.com.context.AppContexts;
+import org.apache.logging.log4j.util.Strings;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Stateless
 public class BusinessTripServiceImlp implements BusinessTripService {
@@ -87,7 +67,7 @@ public class BusinessTripServiceImlp implements BusinessTripService {
     private WorkTimeSettingRepository wkTimeRepo;
 
     @Inject
-    private AppHolidayWorkRepository appHolidayWorkRepository;
+    private AppHolidayWorkRepository_Old appHolidayWorkRepository;
 
     @Inject
     private AbsenceLeaveAppRepository absRepo;
@@ -110,8 +90,10 @@ public class BusinessTripServiceImlp implements BusinessTripService {
     @Inject
     private CommonAlgorithm commonAlgorithm;
 
+    private static final String NO_INPUT_NAME = "なし";
+
     /**
-     * アルゴリズム「出張申請未承認申請を取得」を実行する
+     * UKDesign.UniversalK.就業.KAF_申請.KAF008_出張申請.A:出張の申請（新規）.アルゴリズム.出張申請画面初期（新規）.アルゴリズム「出張申請未承認申請を取得」を実行する
      *
      * @param sid                       社員ID
      * @param appDate                   申請対象日リスト
@@ -181,9 +163,7 @@ public class BusinessTripServiceImlp implements BusinessTripService {
         BusinessTripInfoOutput output = new BusinessTripInfoOutput();
         // ドメインモデル「出張申請設定」を取得する
         Optional<AppTripRequestSet> tripRequestSet = appTripRequestSetRepository.findById(companyId);
-        if (tripRequestSet.isPresent()) {
-            output.setSetting(tripRequestSet.get());
-        }
+        tripRequestSet.ifPresent(output::setSetting);
         // ドメインモデル「出張申請」を取得する
         Optional<BusinessTrip> businessTrip = businessTripRepository.findByAppId(companyId, appId);
 
@@ -237,12 +217,12 @@ public class BusinessTripServiceImlp implements BusinessTripService {
         output.setWorkTypeAfterChange(Optional.empty());
         output.setActualContentDisplay(Optional.empty());
         result.setBusinessTripInfoOutput(output);
-        result.setBusinessTrip(businessTrip.isPresent() ? businessTrip.get() : null);
+        result.setBusinessTrip(businessTrip.orElse(null));
         return result;
     }
 
     /**
-     * 出張申請勤務種類を取得する
+     * UKDesign.UniversalK.就業.KAF_申請.KAF008_出張申請.A:出張の申請（新規）.アルゴリズム.出張申請画面初期（新規）.アルゴリズム「出張申請勤務種類を取得する」を実行する
      *
      * @param appEmploymentSet       ドメインモデル「雇用別申請承認設定」
      * @param workStyle              出勤休日区分
@@ -253,17 +233,14 @@ public class BusinessTripServiceImlp implements BusinessTripService {
         String cid = AppContexts.user().companyId();
         List<WorkType> result = Collections.emptyList();
 
-        if (!appEmploymentSet.isPresent()) {
-            return result;
-        }
-
-        Optional<TargetWorkTypeByApp> opTargetWorkTypeByApp = appEmploymentSet.get()
+        Optional<TargetWorkTypeByApp> opTargetWorkTypeByApp = !appEmploymentSet.isPresent() ? Optional.empty() : appEmploymentSet.get()
                 .getTargetWorkTypeByAppLst()
                 .stream()
                 .filter((x ->
                         x.getAppType() == ApplicationType.BUSINESS_TRIP_APPLICATION && x.getOpBusinessTripAppWorkType().isPresent() && x.getOpBusinessTripAppWorkType().get().value == workStyle.value
                 ))
                 .findAny();
+
         if (opTargetWorkTypeByApp.isPresent()) {
             if (opTargetWorkTypeByApp.get().isDisplayWorkType()
                     && opTargetWorkTypeByApp.get().getOpBusinessTripAppWorkType().isPresent()
@@ -312,53 +289,63 @@ public class BusinessTripServiceImlp implements BusinessTripService {
     }
 
     /**
-     * アルゴリズム「出張申請就業時間帯チェック」を実行する
-     * @param wkTypeCd
-     * @param wkTimeCd
-     * @param inputDate
-     * @param startWorkTime
-     * @param endWorkTime
+     * UKDesign.UniversalK.就業.KAF_申請.KAF008_出張申請.A:出張の申請（新規）.アルゴリズム.出張申請個別エラーチェック.アルゴリズム「出張申請就業時間帯チェック」を実行する
+     * @param wkTypeCd              対象日の画面の勤務種類コード
+     * @param wkTimeCd              対象日の画面の就業時間帯コード
+     * @param startWorkTime         対象日の出勤時刻
+     * @param endWorkTime           対象日の退勤時刻
+     * @param checkInputTime        入力チェック
      */
     @Override
-    public void checkInputWorkCode(String wkTypeCd, String wkTimeCd, GeneralDate inputDate, Integer startWorkTime, Integer endWorkTime) {
+    public ResultCheckInputCode checkRequireWorkTimeCode(String wkTypeCd, String wkTimeCd, Integer startWorkTime, Integer endWorkTime, boolean checkInputTime) {
         SetupType checkNeededOfWorkTime = basicScheduleService.checkNeededOfWorkTimeSetting(wkTypeCd);
         switch (checkNeededOfWorkTime) {
             case REQUIRED:
-                if (StringUtil.isNullOrEmpty(wkTimeCd, true)) {
-                    throw new BusinessException("Msg_24", inputDate.toString());
+                if (Strings.isBlank(wkTimeCd)) {
+                    return new ResultCheckInputCode(false, "Msg_24");
                 } else {
-                    if (startWorkTime == null && endWorkTime == null) {
-                        throw new BusinessException("Msg_1912", inputDate.toString());
+                    if (!checkInputTime && Strings.isBlank(wkTimeCd)) {
+                        return new ResultCheckInputCode(true, null);
                     } else {
-                        if (startWorkTime > endWorkTime) {
-                            throw new BusinessException("Msg_1913", inputDate.toString());
-                        }
+                        return this.checkInputTimeCode(startWorkTime, endWorkTime);
                     }
                 }
-                break;
             case OPTIONAL:
-                if (!StringUtil.isNullOrEmpty(wkTimeCd, true)) {
-                    if (startWorkTime == null && endWorkTime == null) {
-                        throw new BusinessException("Msg_1912", inputDate.toString());
-                    } else {
-                        if (startWorkTime > endWorkTime) {
-                            throw new BusinessException("Msg_1913", inputDate.toString());
-                        }
-                    }
+                if (!(!checkInputTime && Strings.isBlank(wkTimeCd))) {
+                    return this.checkInputTimeCode(startWorkTime, endWorkTime);
                 }
                 break;
             case NOT_REQUIRED:
-                if (!StringUtil.isNullOrEmpty(wkTimeCd, true)) {
-                    throw new BusinessException("Msg_23", inputDate.toString());
+                if (Strings.isNotBlank(wkTimeCd)) {
+                    return new ResultCheckInputCode(false, "Msg_23");
+                } else {
+                    if (!checkInputTime && Strings.isBlank(wkTimeCd)) {
+                        return new ResultCheckInputCode(true, null);
+                    } else {
+                        return this.checkInputTimeCode(startWorkTime, endWorkTime);
+                    }
                 }
-                break;
         }
+        return new ResultCheckInputCode(true, null);
+    }
+
+    private ResultCheckInputCode checkInputTimeCode(Integer startWorkTime, Integer endWorkTime) {
+        // 出勤時刻、退勤時刻のいずれかが空白の場合
+        if (startWorkTime == null || endWorkTime == null) {
+            return new ResultCheckInputCode(false, "Msg_1912");
+        } else {
+            // 出勤時刻＞退勤時刻となっている場合
+            if (startWorkTime > endWorkTime) {
+                return new ResultCheckInputCode(false, "Msg_1913");
+            }
+        }
+        return new ResultCheckInputCode(true, null);
     }
 
     /**
-     * アルゴリズム「出張申請勤務種類分類内容取得」を実行する
-     * @param workType
-     * @return
+     * UKDesign.UniversalK.就業.KAF_申請.KAF008_出張申請.A:出張の申請（新規）.アルゴリズム.出張申請勤務変更ダイアログ用情報の取得.アルゴリズム「出張申請勤務種類分類内容取得」を実行する
+     * @param workType INPUT.勤務種類
+     * @return 出勤日(True/False)
      */
     @Override
     public boolean getBusinessTripClsContent(WorkType workType) {
@@ -392,10 +379,10 @@ public class BusinessTripServiceImlp implements BusinessTripService {
             case MonringAndAfternoon:
                 WorkTypeClassification afternoonWork = workType.getDailyWork().getAfternoon();
                 WorkTypeClassification morningWork = workType.getDailyWork().getMorning();
-                if (workDays.contains(morningWork) && workDays.contains(afternoonWork)) {
+                if (holidays.contains(morningWork) && holidays.contains(afternoonWork)) {
                     result = false;
                 }
-                if (holidays.contains(morningWork) && holidays.contains(afternoonWork)) {
+                if (workDays.contains(morningWork) || workDays.contains(afternoonWork)) {
                     result = true;
                 }
                 break;
@@ -404,17 +391,19 @@ public class BusinessTripServiceImlp implements BusinessTripService {
     }
 
     /**
-     * アルゴリズム「出張申請個別エラーチェック」を実行する
-     * @param infos
-     * @param actualContent
+     * UKDesign.UniversalK.就業.KAF_申請.KAF008_出張申請.A:出張の申請（新規）.アルゴリズム.出張申請登録前エラーチェック.アルゴリズム「出張申請個別エラーチェック」を実行する
+     * @param infos                 出張申請
+     * @param output                出張申請の表示情報
+     * @param screenWorkInfoName
      */
     @Override
-    public void businessTripIndividualCheck(List<BusinessTripInfo> infos, List<ActualContentDisplay> actualContent) {
+    public void businessTripIndividualCheck(List<BusinessTripInfo> infos, BusinessTripInfoOutput output, Map<GeneralDate, ScreenWorkInfoName> screenWorkInfoName) {
         String sid = AppContexts.user().employeeId();
         String cid = AppContexts.user().companyId();
+        List<EmployeeInfoImport> employeeInfoImports = atEmployeeAdapter.getByListSID(Arrays.asList(sid));
 
         // loop 年月日　in　期間
-        infos.stream().forEach(i -> {
+        infos.forEach(i -> {
             String wkTypeCd = i.getWorkInformation().getWorkTypeCode().v();
             String wkTimeCd = i.getWorkInformation().getWorkTimeCode() == null ? null : i.getWorkInformation().getWorkTimeCode().v();
             Integer workTimeStart = null;
@@ -426,44 +415,148 @@ public class BusinessTripServiceImlp implements BusinessTripService {
             }
 
             // アルゴリズム「出張申請就業時間帯チェック」を実行する
-            this.checkInputWorkCode(wkTypeCd, wkTimeCd, i.getDate(), workTimeStart, workTimeEnd);
+            ResultCheckInputCode checkRequiredCode = this.checkRequireWorkTimeCode(wkTypeCd, wkTimeCd, workTimeStart, workTimeEnd, false);
+            if (!checkRequiredCode.isResult()) {
+                // エラーを「年月日＋メッセージ」とする
+                throw new BusinessException(checkRequiredCode.getMsg(), i.getDate().toString());
+            }
+
+            // アルゴリズム「出張申請登録前入力コードチェック」を実行する
+            ResultCheckInputCode checkInputValidCode = this.checkInputCodeBeforeRegister(
+                    i.getDate(),
+                    output,
+                    wkTypeCd,
+                    wkTimeCd,
+                    screenWorkInfoName.containsKey(i.getDate()) ? screenWorkInfoName.get(i.getDate()).getWorkTypeName() : "",
+                    screenWorkInfoName.containsKey(i.getDate()) ? screenWorkInfoName.get(i.getDate()).getWorkTimeName() : ""
+            );
+            if (!checkInputValidCode.isResult()) {
+                // エラーを「年月日＋メッセージ」とする
+                throw new BusinessException(checkInputValidCode.getMsg(), i.getDate().toString());
+            }
+
+            // アルゴリズム「申請の矛盾チェック」を実行する
+            this.commonAlgorithm.appConflictCheck(
+                    cid,
+                    employeeInfoImports.get(0),
+                    Arrays.asList(i.getDate()),
+                    new ArrayList<>(Arrays.asList(i.getWorkInformation().getWorkTypeCode().v())),
+                    output.getAppDispInfoStartup()
+                            .getAppDispInfoWithDateOutput()
+                            .getOpActualContentDisplayLst().isPresent() ?
+                            output.getAppDispInfoStartup()
+                                    .getAppDispInfoWithDateOutput()
+                                    .getOpActualContentDisplayLst().get() : Collections.emptyList()
+            );
+
         });
+    }
 
-        List<GeneralDate> dates = infos.stream().map(i -> i.getDate()).collect(Collectors.toList());
-        List<String> workTypeCodes = infos.stream().map(i -> i.getWorkInformation().getWorkTypeCode().v()).collect(Collectors.toList());
+    @Override
+    public BusinessTripInfoOutput checkChangeWorkTypeCode(GeneralDate inputDate, BusinessTripInfoOutput infoOutput, String inputCode) {
+        String cid = AppContexts.user().companyId();
 
-        List<EmployeeInfoImport> employeeInfoImports = atEmployeeAdapter.getByListSID(Arrays.asList(sid));
-        // アルゴリズム「申請の矛盾チェック」を実行する
-        this.commonAlgorithm.appConflictCheck(
-                cid,
-                employeeInfoImports.get(0),
-                dates,
-                workTypeCodes,
-                actualContent
-        );
+        // コードが未入力
+        if (Strings.isBlank(inputCode)) {
+            throw new BusinessException("Msg_1329", inputDate.toString());
+        }
+
+        // アルゴリズム「出張申請入力コードチェック」を実行する
+        CheckChangeWorkCode checkInputCode = this.checkInputCode(inputDate, infoOutput, inputCode);
+
+        if (checkInputCode.isResult()) {
+            // ドメインモデル「勤務種類」を取得する
+            Optional<WorkType> getWorkTypeInfo = wkTypeRepo.findByPK(cid, checkInputCode.getCode());
+            if (infoOutput.getWorkTypeAfterChange().isPresent()) {
+                // 変更後勤務種類にセット
+                BusinessTripWorkTypes itemAfterChange = new BusinessTripWorkTypes(inputDate, getWorkTypeInfo.get());
+                if (infoOutput.getWorkTypeAfterChange().get().contains(itemAfterChange)) {
+                    int index = infoOutput.getWorkTypeAfterChange().get().indexOf(itemAfterChange);
+                    infoOutput.getWorkTypeAfterChange().get().set(index, itemAfterChange);
+                } else {
+                    infoOutput.getWorkTypeAfterChange().get().add(itemAfterChange);
+                }
+            }
+        } else {
+            // #Msg_457(利用できる勤怠項目がありません。)を表示する
+            throw new BusinessException("Msg_457", inputDate.toString());
+        }
+
+        return infoOutput;
     }
 
     /**
-     * 反映状態を取得する
-     *
-     * @param status 反映状態＝申請.反映状態
-     * @return 申請の反映状態＝反映状態（Enum）
+     * UKDesign.UniversalK.就業.KAF_申請.KAF008_出張申請.A:出張の申請（新規）.ユースケース.勤務種類コードを入力する.システム.アルゴリズム「出張申請入力コードチェック」を実行する
+     * @param inputDate         変更対象の年月日
+     * @param infoOutput        出張申請の表示情報
+     * @param inputCode         画面入力した勤務種類CD
+     * @return 結果(True/False)
      */
-    private ReflectedState getRefectionStatus(ReflectionStatus status) {
-        ReflectedState result = null;
-        loop:
-        for (ReflectionStatusOfDay eachState : status.getListReflectionStatusOfDay()) {
-            switch (eachState.getActualReflectStatus()) {
-                case REFLECTED:
-                    continue loop;
-                case CANCELED:
-                    continue loop;
-                default:
-                    return eachState.getActualReflectStatus();
-            }
+    private CheckChangeWorkCode checkInputCode(GeneralDate inputDate, BusinessTripInfoOutput infoOutput, String inputCode) {
 
+        Optional<BusinessTripWorkTypes> currentDateWorkType = infoOutput.getWorkTypeBeforeChange().get().stream().filter(i -> i.getDate().equals(inputDate)).findFirst();
+
+        List<WorkType> workTypesBeforeChange = new ArrayList<>();
+
+        if (currentDateWorkType.isPresent()) {
+            // アルゴリズム「出張申請勤務変更ダイアログ用情報の取得」を実行する
+            workTypesBeforeChange = getBusinessTripWorkChangeInfo(infoOutput, currentDateWorkType.get().getWorkType());
         }
-        return result;
+
+        // 取得した勤務種類リストの中に、INPUT.勤務種類コードが存在する
+        Optional<WorkType> inputWorkType = workTypesBeforeChange.stream().filter(i -> i.getWorkTypeCode().v().equals(inputCode)).findFirst();
+
+        return inputWorkType.map(workType -> new CheckChangeWorkCode(true, workType.getWorkTypeCode().v())).orElseGet(() -> new CheckChangeWorkCode(false, null));
+
+    }
+
+
+    /**
+     * UKDesign.UniversalK.就業.KAF_申請.KAF008_出張申請.A:出張の申請（新規）.アルゴリズム.出張申請入力コードチェック.アルゴリズム「出張申請勤務変更ダイアログ用情報の取得」を実行する
+     * @param businessTripInfoOutput    出張申請の表示情報
+     * @param workType                  出張申請の表示情報.変更前勤務種類.勤務種類（年月日＝年月日）
+     * @return 勤務種類リスト
+     */
+    private List<WorkType> getBusinessTripWorkChangeInfo(BusinessTripInfoOutput businessTripInfoOutput, WorkType workType) {
+        Boolean businessTripWorkCls = this.getBusinessTripClsContent(workType);
+        if (businessTripWorkCls) {
+            // 勤務種類リスト＝出張申請の表示情報.出勤日勤務種類リスト
+            return businessTripInfoOutput.getWorkDayCds().get();
+        } else {
+            // 勤務種類リスト＝出張申請の表示情報.休日勤務種類リスト
+            return businessTripInfoOutput.getHolidayCds().get();
+        }
+    }
+
+    /**
+     * UKDesign.UniversalK.就業.KAF_申請.KAF008_出張申請.A:出張の申請（新規）.アルゴリズム.出張申請個別エラーチェック.アルゴリズム「出張申請登録前入力コードチェック」を実行する
+     * @param date              年月日
+     * @param output            出張申請の表示情報
+     * @param wkTypeCd          勤務種類コード
+     * @param wkTimeCd          就業時間帯コード
+     * @param wkTypeName        勤務種類名称
+     * @param wkTimeName        就業時間帯名称
+     * @return 結果(True/False)
+     */
+    public ResultCheckInputCode checkInputCodeBeforeRegister(GeneralDate date, BusinessTripInfoOutput output, String wkTypeCd, String wkTimeCd, String wkTypeName, String wkTimeName) {
+
+        if (Strings.isNotBlank(wkTypeCd) && wkTypeName.equals(NO_INPUT_NAME)) {
+            CheckChangeWorkCode checkWkCode = this.checkInputCode(date, output, wkTypeCd);
+            if (!checkWkCode.isResult()) {
+                return new ResultCheckInputCode(false, "Msg_457");
+            }
+        }
+        if (Strings.isNotBlank(wkTimeCd) && wkTimeName.equals(NO_INPUT_NAME)) {
+            Optional<List<WorkTimeSetting>> wkTimeSetList = output.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpWorkTimeLst();
+            if (wkTimeSetList.isPresent()) {
+                Optional<WorkTimeSetting> timeSet = wkTimeSetList.get().stream().filter(i -> i.getWorktimeCode().v().equals(wkTimeCd)).findFirst();
+                if (!timeSet.isPresent()) {
+                    return new ResultCheckInputCode(false, "Msg_1685");
+                }
+            }
+        }
+
+        return new ResultCheckInputCode(true, null);
     }
 
     /**
@@ -485,7 +578,7 @@ public class BusinessTripServiceImlp implements BusinessTripService {
         switch (appType) {
             case HOLIDAY_WORK_APPLICATION:
                 //休日出勤申請 6
-                Optional<AppHolidayWork> appHolidayWork = appHolidayWorkRepository.getFullAppHolidayWork(cid, appId);
+                Optional<AppHolidayWork_Old> appHolidayWork = appHolidayWorkRepository.getFullAppHolidayWork(cid, appId);
                 if (appHolidayWork.isPresent()) {
                     wkTypeCd = appHolidayWork.get().getWorkTypeCode().v();
                     wkTimeCd = appHolidayWork.get().getWorkTimeCode() == null ? null : appHolidayWork.get().getWorkTimeCode().v();
@@ -547,25 +640,25 @@ public class BusinessTripServiceImlp implements BusinessTripService {
                 Optional<RecruitmentApp> recAppOpt = recRepo.findByID(appId);
                 if (recAppOpt.isPresent()) {
                     // 振出申請
-                    wkTypeCd = Optional.of(recAppOpt.get().getWorkTypeCD().v()).orElse(null);
-                    wkTimeCd = Optional.of(recAppOpt.get().getWorkTimeCD().v()).orElse(null);
-                    opWorkTime = recAppOpt.isPresent() ? Optional.of(recAppOpt.get().getWorkTime1().getStartTime().v()) : Optional.empty();
-                    opLeaveTime = recAppOpt.isPresent() ? Optional.of(recAppOpt.get().getWorkTime1().getEndTime().v()) : Optional.empty();
+                    wkTypeCd = Optional.of(recAppOpt.get().getWorkInformation().getWorkTypeCode().v()).orElse(null);
+                    wkTimeCd = Optional.of(recAppOpt.get().getWorkInformation().getWorkTimeCode().v()).orElse(null);
+                    opWorkTime = Optional.of(recAppOpt.get().getWorkTime(new WorkNo(1)).get().getTimeZone().getStartTime().v());
+                    opLeaveTime = Optional.of(recAppOpt.get().getWorkTime(new WorkNo(1)).get().getTimeZone().getEndTime().v());
                 } else {
                     // 振休申請
                     Optional<AbsenceLeaveApp> absAppOpt = absRepo.findByID(appId);
-                    wkTypeCd = Optional.of(absAppOpt.get().getWorkTypeCD().v()).orElse(null);
-                    wkTimeCd = Optional.of(absAppOpt.get().getWorkTimeCD()).orElse(null);
-                    opWorkTime = absAppOpt.isPresent() ? Optional.of(absAppOpt.get().getWorkTime1().getStartTime().v()) : Optional.empty();
-                    opLeaveTime = absAppOpt.isPresent() ? Optional.of(absAppOpt.get().getWorkTime1().getEndTime().v()) : Optional.empty();
+                    wkTypeCd = Optional.of(absAppOpt.get().getWorkInformation().getWorkTimeCode().v()).orElse(null);
+                    wkTimeCd = absAppOpt.get().getWorkInformation().getWorkTimeCodeNotNull().isPresent() ? absAppOpt.get().getWorkInformation().getWorkTimeCodeNotNull().get().v() : null;
+                    opWorkTime = absAppOpt.get().getWorkTime(new WorkNo(1)).map(c -> c.getTimeZone().getStartTime().v());
+                    opLeaveTime = absAppOpt.get().getWorkTime(new WorkNo(1)).map(c -> c.getTimeZone().getEndTime().v());
                 }
                 break;
         }
 
         //ドメインモデル「勤務種類」を1件取得する - (lấy 1 dữ liệu của domain 「WorkType」)
-        wkTypeName = StringUtil.isNullOrEmpty(wkTypeCd, true) ? Optional.empty() : wkTypeRepo.findByPK(cid, wkTypeCd).map(x -> x.getName().v());
+        wkTypeName = Strings.isBlank(wkTypeCd) ? Optional.empty() : wkTypeRepo.findByPK(cid, wkTypeCd).map(x -> x.getName().v());
         //ドメインモデル「就業時間帯」を1件取得する - (lấy 1 dữ liệu của domain 「WorkTime」)
-        wkTimeName = StringUtil.isNullOrEmpty(wkTimeCd, true) ? Optional.empty() : wkTimeRepo.findByCode(cid, wkTimeCd).map(x -> x.getWorkTimeDisplayName().getWorkTimeName().v());
+        wkTimeName = Strings.isBlank(wkTimeCd) ? Optional.empty() : wkTimeRepo.findByCode(cid, wkTimeCd).map(x -> x.getWorkTimeDisplayName().getWorkTimeName().v());
 
         content.getOpAchievementDetail().get().setWorkTypeCD(wkTypeCd);
         content.getOpAchievementDetail().get().setWorkTimeCD(wkTimeCd);

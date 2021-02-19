@@ -16,9 +16,9 @@ import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.BusinessTypeForm
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.BusinessTypeFormatDetailDto;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.BusinessFormatSheet;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.BusinessTypeFormatDaily;
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessFormatSheetRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypeFormatDailyRepository;
+import nts.uk.ctx.at.shared.dom.workrule.businesstype.BusinessTypeCode;
 //import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.service.CompanyDailyItemService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;

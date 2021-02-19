@@ -117,7 +117,7 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 	private static final String FIND_BUS_EVENT;
 	static {
 		StringBuilder builder = new StringBuilder();
-		builder.append("SELECT CID, APPROVAL_ID, HIST_ID, START_DATE, END_DATE, APP_TYPE, BRANCH_ID, ANYITEM_APP_ID, ");
+		builder.append("SELECT CID, APPROVAL_ID, HIST_ID, START_DATE, END_DATE, APP_TYPE, ");
 		builder.append("CONFIRMATION_ROOT_TYPE, EMPLOYMENT_ROOT_ATR, SYSTEM_ATR, NOTICE_ID, BUS_EVENT_ID ");
 		builder.append("FROM WWFMT_COM_APPROVAL_ROOT WHERE CID = 'companyID' ");
 		builder.append("AND SYSTEM_ATR = 'sysAtr' AND START_DATE <= 'date' AND END_DATE >= 'date' ");
@@ -136,7 +136,7 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 		
 		builder = new StringBuilder();
 		builder.append(FIND_COMMON);
-		builder.append(" AND ANYITEM_APP_ID = 'targetType'");
+		// builder.append(" AND ANYITEM_APP_ID = 'targetType'");
 		FIND_ANYITEM = builder.toString();
 		
 		builder = new StringBuilder();
@@ -336,8 +336,8 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 				record.getInt("APP_TYPE"), 
 				record.getGeneralDate("START_DATE").toString("yyyy-MM-dd"), 
 				record.getGeneralDate("END_DATE").toString("yyyy-MM-dd"), 
-				record.getString("BRANCH_ID"), 
-				record.getString("ANYITEM_APP_ID"), 
+				// record.getString("BRANCH_ID"), 
+				// record.getString("ANYITEM_APP_ID"), 
 				record.getInt("CONFIRMATION_ROOT_TYPE"), 
 				record.getInt("EMPLOYMENT_ROOT_ATR"), 
 				record.getInt("SYSTEM_ATR"), 
@@ -378,8 +378,6 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 			x.setStartDate(a.startDate);
 			x.setEndDate(a.endDate);
 			x.setApplicationType(a.applicationType);
-			x.setBranchId(a.branchId);
-			x.setAnyItemAppId(a.anyItemAppId);
 			x.setConfirmationRootType(a.confirmationRootType);
 			x.setEmploymentRootAtr(a.employmentRootAtr);
 			lstEntity.add(x);
@@ -398,8 +396,6 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 			x.setStartDate(a.startDate);
 			x.setEndDate(a.endDate);
 			x.setApplicationType(a.applicationType);
-			x.setBranchId(a.branchId);
-			x.setAnyItemAppId(a.anyItemAppId);
 			x.setConfirmationRootType(a.confirmationRootType);
 			x.setEmploymentRootAtr(a.employmentRootAtr);
 		this.commandProxy().update(x);
@@ -427,8 +423,6 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 				entity.applicationType,
 				entity.startDate,
 				entity.endDate,
-				entity.branchId,
-				entity.anyItemAppId,
 				entity.confirmationRootType,
 				entity.employmentRootAtr,
 				entity.sysAtr,
@@ -448,14 +442,11 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 		entity.sysAtr = domain.getApprRoot().getSysAtr().value;
 		entity.startDate = domain.getApprRoot().getHistoryItems().get(0).start();
 		entity.endDate = domain.getApprRoot().getHistoryItems().get(0).end();
-		entity.branchId = domain.getApprRoot().getBranchId();
 		entity.employmentRootAtr = domain.getApprRoot().getEmploymentRootAtr().value;
 		entity.applicationType = domain.getApprRoot().getEmploymentRootAtr().equals(EmploymentRootAtr.APPLICATION) ?
 				domain.getApprRoot().getApplicationType().value : null;
 		entity.confirmationRootType = domain.getApprRoot().getEmploymentRootAtr().equals(EmploymentRootAtr.CONFIRMATION) ?
 				domain.getApprRoot().getConfirmationRootType().value : null;
-		entity.anyItemAppId = domain.getApprRoot().getEmploymentRootAtr().equals(EmploymentRootAtr.ANYITEM) ?
-				domain.getApprRoot().getAnyItemApplicationId() : null;
 		entity.noticeId = domain.getApprRoot().getEmploymentRootAtr().equals(EmploymentRootAtr.NOTICE) ?
 				domain.getApprRoot().getNoticeId() : null;
 		entity.busEventId = domain.getApprRoot().getEmploymentRootAtr().equals(EmploymentRootAtr.BUS_EVENT) ?

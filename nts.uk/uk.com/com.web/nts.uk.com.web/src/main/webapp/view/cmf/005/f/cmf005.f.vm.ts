@@ -46,6 +46,7 @@ module nts.uk.com.view.cmf005.f.viewmodel {
         enableDate: KnockoutObservable<boolean>;
         enableMonth: KnockoutObservable<boolean>;
         enableYear: KnockoutObservable<boolean>;
+        modal: any;
         
         constructor() {
             var self = this;
@@ -54,6 +55,7 @@ module nts.uk.com.view.cmf005.f.viewmodel {
             self.timeStart = new Date();
             self.timeOver = ko.observable('00:00:00');
             self.dataManagementDel = ko.observable({});
+            self.modal = params.modal;
 
             self.delId(params.delId);
 
@@ -138,8 +140,10 @@ module nts.uk.com.view.cmf005.f.viewmodel {
             let self = this,
                 dfd = $.Deferred();
             // Management deletion monitoring process 
-            
-            self.interval = setInterval(() => self.confirmProcess(), 1000);
+            service.addManualSetDel(self.modal).then(data => {
+              self.delId(data);
+              self.interval = setInterval(() => self.confirmProcess(), 1000);
+            });
             $("#F10_2").focus();
             dfd.resolve();
             return dfd.promise();

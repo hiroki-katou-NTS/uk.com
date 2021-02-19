@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
 import nts.uk.ctx.bs.employee.pub.workplace.*;
@@ -815,6 +814,22 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 		
 		return result;
 	}
+	
+	@Override
+	public List<AffWorkplaceHistoryItemExport3> getWorkHisItemfromWkpIdsAndBaseDate(List<String> workPlaceIds, GeneralDate baseDate) {
+		List<AffWorkplaceHistoryItem> affWrkPlcItems = affWkpHistItemRepo.getAffWrkplaHistItemByListWkpIdAndDate(baseDate, workPlaceIds);
+
+		if (affWrkPlcItems.isEmpty()) {
+			return new ArrayList<>();
+		}
+
+		List<AffWorkplaceHistoryItemExport3> result = affWrkPlcItems.stream().map(item -> {
+			return new AffWorkplaceHistoryItemExport3(item.getHistoryId(), item.getEmployeeId(), item.getWorkplaceId(),
+					item.getNormalWorkplaceId(), item.getWorkLocationCode().isPresent() ? item.getWorkLocationCode().get().toString() : null);
+		}).collect(Collectors.toList());
+
+		return result;
+	}
 
 
 	@Override
@@ -852,4 +867,5 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 						affWrkPlcItem.get().getWorkLocationCode().get().v() : null )
 				.build());
 	}
+
 }

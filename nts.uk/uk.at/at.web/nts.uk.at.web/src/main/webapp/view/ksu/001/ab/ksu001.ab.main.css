@@ -55,7 +55,6 @@
 	line-height: 27px;
 }
 
-.disabledWorkTime {
-	opacity: 0.3;
-	pointer-events: none;
+.workstyleclassfication {
+	width: 100px !important;
 }

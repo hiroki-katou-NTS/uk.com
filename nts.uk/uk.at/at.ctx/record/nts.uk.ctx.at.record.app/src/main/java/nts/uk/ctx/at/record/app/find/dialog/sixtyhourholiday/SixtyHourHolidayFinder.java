@@ -101,10 +101,10 @@ public class SixtyHourHolidayFinder {
 				, Optional.empty());
 
 		// ドメインモデル「暫定60H超休管理データ」を取得
-		List<TmpHolidayOver60hMng> lstHolidayOver60hMngs = this.tmpHolidayOver60hMngRepository
-				.getByEmployeeIdAndDatePeriodAndRemainType(employeeId
-						, closingPeriod
-						, RemainType.SIXTY_OVER_BREAK.value);
+//		List<TmpHolidayOver60hMng> lstHolidayOver60hMngs = this.tmpHolidayOver60hMngRepository
+//				.getByEmployeeIdAndDatePeriodAndRemainType(employeeId
+//						, closingPeriod
+//						, RemainType.SIXTY_OVER_BREAK.value);
 
 		// Step. 60超過時間表示情報詳細を作成
 		List<RemainNumberDetailDto> remainNumberDetailDtos = aggrResultOfHolidayOver60h.getAsOfPeriodEnd().getGrantRemainingList().stream()
@@ -126,20 +126,20 @@ public class SixtyHourHolidayFinder {
 			})
 			.collect(Collectors.toList());
 
-		remainNumberDetailDtos.addAll(lstHolidayOver60hMngs.stream().map(item -> {
-			RemainNumberDetailDto mapResult = new RemainNumberDetailDto();
-			// 残数情報．使用日　＝　取得した暫定60H超休管理データ．対象日
-			mapResult.setUsageDate(item.getYmd());
-	
-			// 残数情報．使用時間　＝　取得した暫定60H超休管理データ．使用時間
-			if (item.getUseTime().isPresent()) {
-				mapResult.setUsageTime(item.getUseTime().get().v());
-			}
-			// 残数情報．作成区分　＝　取得した暫定60H超休管理データ．作成元区分
-			mapResult.setCreationCategory(item.getCreatorAtr().value);
-			return mapResult;
-		})
-		.collect(Collectors.toList()));
+//		remainNumberDetailDtos.addAll(lstHolidayOver60hMngs.stream().map(item -> {
+//			RemainNumberDetailDto mapResult = new RemainNumberDetailDto();
+//			// 残数情報．使用日　＝　取得した暫定60H超休管理データ．対象日
+//			mapResult.setUsageDate(item.getYmd());
+//	
+//			// 残数情報．使用時間　＝　取得した暫定60H超休管理データ．使用時間
+//			if (item.getUseTime().isPresent()) {
+//				mapResult.setUsageTime(item.getUseTime().get().v());
+//			}
+//			// 残数情報．作成区分　＝　取得した暫定60H超休管理データ．作成元区分
+//			mapResult.setCreationCategory(item.getCreatorAtr().value);
+//			return mapResult;
+//		})
+//		.collect(Collectors.toList()));
 
 		result.setRemainNumberDetailDtos(remainNumberDetailDtos);
 

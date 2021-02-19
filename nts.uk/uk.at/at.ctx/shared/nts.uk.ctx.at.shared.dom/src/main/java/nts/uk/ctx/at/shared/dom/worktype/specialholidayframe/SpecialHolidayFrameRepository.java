@@ -41,4 +41,6 @@ public interface SpecialHolidayFrameRepository {
 	 * @param specialHolidayFrame the Special Holiday Frame
 	 */
 	void update(SpecialHolidayFrame specialHolidayFrame);
+	
+	List<SpecialHolidayFrame> findByCompanyIdAndUseCls(String companyId, int useCls);
 }

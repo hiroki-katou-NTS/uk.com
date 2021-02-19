@@ -10,11 +10,11 @@ import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordExport
 public interface AttendanceRecordExportSettingGetMemento {
 
 	/**
-	 * Gets the company id.
+	 * Gets the layout id.
 	 *
-	 * @return the company id
+	 * @return the layout id
 	 */
-	String getCompanyId();
+	String getLayoutId();
 
 	/**
 	 * Gets the daily ouput item.
@@ -58,7 +58,6 @@ public interface AttendanceRecordExportSettingGetMemento {
 	 */
 	List<SealColumnName> getSealStamp();
 
-	
 	/**
 	 * Gets the name use atr.
 	 *
@@ -66,4 +65,17 @@ public interface AttendanceRecordExportSettingGetMemento {
 	 */
 	Integer getNameUseAtr();
 
+	/**
+	 * KWR002 B - font size Gets the export font size.
+	 *
+	 * @return the export font size
+	 */
+	ExportFontSize getExportFontSize();
+
+	/**
+	 * KWR002 F A18_2 Gets the monthly confirmed display.
+	 *
+	 * @return the monthly confirmed display
+	 */
+	MonthlyConfirmedDisplay getMonthlyConfirmedDisplay();
 }

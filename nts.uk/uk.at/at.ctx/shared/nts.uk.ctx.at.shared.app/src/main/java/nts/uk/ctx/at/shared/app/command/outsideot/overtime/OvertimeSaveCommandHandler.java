@@ -47,7 +47,7 @@ public class OvertimeSaveCommandHandler extends CommandHandler<OvertimeSaveComma
 		OvertimeSaveCommand command = context.getCommand();
 		
 		// to domains
-		List<Overtime> domains = command.getOvertimes().stream().map(dto -> new Overtime(dto))
+		List<Overtime> domains = command.getOvertimes().stream().map(dto -> dto.domain())
 				.collect(Collectors.toList());
 		
 		// save all list overtime

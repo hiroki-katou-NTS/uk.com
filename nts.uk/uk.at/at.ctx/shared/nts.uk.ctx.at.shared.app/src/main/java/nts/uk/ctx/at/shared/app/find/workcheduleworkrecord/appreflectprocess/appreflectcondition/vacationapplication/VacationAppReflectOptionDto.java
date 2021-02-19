@@ -3,6 +3,10 @@ package nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.ap
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.VacationAppReflectOption;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.ReflectWorkHourCondition;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Data
 @NoArgsConstructor
@@ -22,4 +26,15 @@ public class VacationAppReflectOptionDto {
      * 就業時間帯を反映する
      */
     private int reflectWorkHour;
+    
+    public static VacationAppReflectOptionDto fromDomain(VacationAppReflectOption domain) {
+    	return new VacationAppReflectOptionDto(domain.getOneDayLeaveDeleteAttendance().value, domain.getReflectAttendance().value, domain.getReflectWorkHour().value);
+    }
+    
+    public VacationAppReflectOption toDomain() {
+        return new VacationAppReflectOption(
+                EnumAdaptor.valueOf(oneDayLeaveDeleteAttendance, NotUseAtr.class), 
+                EnumAdaptor.valueOf(reflectAttendance, NotUseAtr.class), 
+                EnumAdaptor.valueOf(reflectWorkHour, ReflectWorkHourCondition.class));
+    }
 }

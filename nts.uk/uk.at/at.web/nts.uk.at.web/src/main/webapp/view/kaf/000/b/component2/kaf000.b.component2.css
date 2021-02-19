@@ -7,5 +7,5 @@
 
 #kaf000-b-component2 #opReversionReason {
 	padding-left: 12px;
-	width: 95px;
+	word-break: break-all;
 }

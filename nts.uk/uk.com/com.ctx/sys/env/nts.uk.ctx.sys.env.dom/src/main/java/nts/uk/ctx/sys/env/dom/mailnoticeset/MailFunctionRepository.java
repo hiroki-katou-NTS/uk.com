@@ -18,4 +18,6 @@ public interface MailFunctionRepository {
 	 * @return the list
 	 */
 	public List<MailFunction> findAll(Boolean proprietySendMailSettingAtr);
+
+	public List<MailFunction> findAll();
 }

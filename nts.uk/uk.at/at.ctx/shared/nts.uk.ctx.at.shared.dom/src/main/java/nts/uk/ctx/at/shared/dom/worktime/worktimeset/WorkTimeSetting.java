@@ -6,9 +6,14 @@ package nts.uk.ctx.at.shared.dom.worktime.worktimeset;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
+import nts.uk.ctx.at.shared.dom.worktime.WorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeAggregateRoot;
 import nts.uk.shr.com.primitive.Memo;
 
@@ -83,7 +88,7 @@ public class WorkTimeSetting extends WorkTimeAggregateRoot implements Cloneable{
 		memento.setMemo(this.memo);
 		memento.setNote(this.note);
 	}
-	
+
 	/**
 	 * Checks if is abolish.
 	 *
@@ -95,7 +100,7 @@ public class WorkTimeSetting extends WorkTimeAggregateRoot implements Cloneable{
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -109,7 +114,7 @@ public class WorkTimeSetting extends WorkTimeAggregateRoot implements Cloneable{
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -147,7 +152,7 @@ public class WorkTimeSetting extends WorkTimeAggregateRoot implements Cloneable{
 		this.memo = memo;
 		this.note = note;
 	}
-	
+
 	/**
 	 * create this Instance
 	 * @return new Instance
@@ -164,7 +169,7 @@ public class WorkTimeSetting extends WorkTimeAggregateRoot implements Cloneable{
 			cloned.workTimeDisplayName = this.workTimeDisplayName.clone();
 			cloned.memo = new Memo(this.memo.v());
 			cloned.note = new WorkTimeNote(this.note.v());
-		}	
+		}
 		catch (Exception e){
 			throw new RuntimeException("WorkTimeSetting clone error.");
 		}
@@ -173,6 +178,54 @@ public class WorkTimeSetting extends WorkTimeAggregateRoot implements Cloneable{
 
 	public void setAbolishAtr(AbolishAtr abolishAtr) {
 		this.abolishAtr = abolishAtr;
+	}
+
+
+	/**
+	 * 勤務設定を取得する
+	 * @param require
+	 * @return 勤務設定
+	 */
+	public WorkSetting getWorkSetting(Require require) {
+
+		val atr = this.getWorkTimeDivision().getWorkTimeForm();
+		switch ( atr ) {
+			case FIXED:	// 就業時間帯の勤務形態 -> 固定勤務
+				return require.getWorkSettingForFixedWork( this.getWorktimeCode() );
+			case FLOW:	// 就業時間帯の勤務形態 -> 流動勤務
+				return require.getWorkSettingForFlowWork( this.getWorktimeCode() );
+			case FLEX:	// 就業時間帯の勤務形態 -> フレックス勤務
+				return require.getWorkSettingForFlexWork( this.getWorktimeCode() );
+			default:
+				break;
+		}
+
+		throw new RuntimeException("WorkingTimeForm is failure:" + atr.toString());
+	}
+
+
+	public static interface Require {
+
+		/**
+		 * 固定勤務設定を取得する
+		 * @param code
+		 * @return 固定勤務設定
+		 */
+		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code);
+
+		/**
+		 * 流動勤務設定を取得する
+		 * @param code 就業時間帯コード
+		 * @return 流動勤務設定
+		 */
+		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code);
+
+		/**
+		 * フレックス勤務設定を取得する
+		 * @param code 就業時間帯コード
+		 * @return フレックス勤務設定
+		 */
+		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code);
 	}
 
 }

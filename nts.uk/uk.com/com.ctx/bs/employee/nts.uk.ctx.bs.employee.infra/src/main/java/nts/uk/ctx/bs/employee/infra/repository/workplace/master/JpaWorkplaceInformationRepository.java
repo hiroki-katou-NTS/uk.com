@@ -355,16 +355,16 @@ public class JpaWorkplaceInformationRepository extends JpaRepository implements 
 		return resultList.stream().map(item -> new WorkplaceInfo(new JpaWorkplaceInfoGetMemento(item)))
 				.collect(Collectors.toList());
 	}
-	
 	@Override
 	public List<WorkplaceInfo> findByWkpId(String wkpId) {
 
 		List<BsymtWorkplaceInfor> resultList = new ArrayList<>();
 
 			String sql = "SELECT CID, WKP_ID, WKP_HIST_ID, WKP_CD, WKP_NAME, WKP_GENERIC, WKP_DISP_NAME, WKP_EXTERNAL_CD "
-					+ "FROM BSYMT_WKP_INFO " + "WHERE WKP_ID = " + wkpId;
+					+ "FROM BSYMT_WKP_INFO " + "WHERE WKP_ID = ?";
 
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+				stmt.setString(1, wkpId);
 
 				resultList.addAll(new NtsResultSet(stmt.executeQuery()).getList(rs -> {
 					BsymtWorkplaceInfor info = new BsymtWorkplaceInfor();

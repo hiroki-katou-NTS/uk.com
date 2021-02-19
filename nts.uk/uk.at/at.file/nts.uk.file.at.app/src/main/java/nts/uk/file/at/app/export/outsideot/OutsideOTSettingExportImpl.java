@@ -22,7 +22,6 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSettin
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSettingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.BreakdownItemNo;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.language.OutsideOTBRDItemLangRepository;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.PremiumExtra60HRate;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.SuperHD60HConMed;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.SuperHD60HConMedRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.Overtime;
@@ -405,16 +404,16 @@ public class OutsideOTSettingExportImpl implements MasterListData {
 					overtime.isSuperHoliday60HOccurs() ? TRUE_SETTING_RATE : FALSE_SETTING_RATE);
 		});
 		masterDatas.add(new MasterData(dataA121, null, ""));
-		List<PremiumExtra60HRate> lstExtra60Rate = this.superHD60HConMedRepository.findAllPremiumRate(companyId);
+//		List<PremiumExtra60HRate> lstExtra60Rate = this.outsideOTSettingRepository.fin(companyId);
 		this.outsideOTSettingRepository.findAllBRDItem(companyId).forEach(breakdownItem -> {
 			Map<String, Object> dataA141 = new HashMap<>();
 			dataA141.put(NUMBER_COLS_START, breakdownItem.getName().v());
 			if (breakdownItem.isUseClass()) {
-				lstExtra60Rate.forEach(extraRate -> {
-					if (extraRate.getBreakdownItemNo() == breakdownItem.getBreakdownItemNo()) {
+				breakdownItem.getPremiumExtra60HRates().forEach(extraRate -> {
+//					if (extraRate.get == breakdownItem.getBreakdownItemNo()) {
 						dataA141.put(NUMBER_COLS + extraRate.getOvertimeNo().value,
 								this.toPercent(extraRate.getPremiumRate().v()));
-					}
+//					}
 				});
 			}
 			masterDatas.add(new MasterData(dataA141, null, ""));

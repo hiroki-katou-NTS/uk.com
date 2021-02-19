@@ -58,12 +58,13 @@ public class DetailAfterApprovalImpl implements DetailAfterApproval {
 			applicationRepository.update(application);
 			reflectAppId = application.getAppID();
 			// 反映対象なのかチェックする(check xem có phải đối tượng phản ánh hay k?)
-			if((application.isPreApp() && (application.isOverTimeApp() || application.isHolidayWorkApp()))
-				|| application.isWorkChangeApp()
-				|| application.isGoReturnDirectlyApp()){
-				// 社員の申請を反映(phản ánh employee application)
-				//appReflectManager.reflectEmployeeOfApp(application);
-			}
+			// Gọi webservice riêng
+//			if((application.isPreApp() && (application.isOverTimeApp() || application.isHolidayWorkApp()))
+//				|| application.isWorkChangeApp()
+//				|| application.isGoReturnDirectlyApp()){
+//				// 社員の申請を反映(phản ánh employee application)
+//				//appReflectManager.reflectEmployeeOfApp(application, ExecutionTypeExImport.NORMAL_EXECUTION, "", 0);
+//			}
 		} else {
 			// 反映状態を「未反映」に変更する
 			for(ReflectionStatusOfDay reflectionStatusOfDay : application.getReflectionStatus().getListReflectionStatusOfDay()) {

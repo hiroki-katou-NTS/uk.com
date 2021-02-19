@@ -12,8 +12,8 @@ import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarl
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.ArrivedLateLeaveEarlyInfoOutput;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateCancelation;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.TimeReport;
-import nts.uk.ctx.at.request.infra.entity.application.lateleaveearly.KrqdtAppLateOrLeavePK_New;
-import nts.uk.ctx.at.request.infra.entity.application.lateleaveearly.KrqdtAppLateOrLeave_New;
+import nts.uk.ctx.at.request.infra.entity.application.lateleaveearly.KrqdtAppLateOrLeavePK;
+import nts.uk.ctx.at.request.infra.entity.application.lateleaveearly.KrqdtAppLateOrLeave;
 
 /**
  * @author anhnm
@@ -40,7 +40,7 @@ public class ArrivedLateLeaveEarlyRepositoryImp extends JpaRepository implements
 		ArrivedLateLeaveEarly arrivedLateLeaveEarly = infoOutput.getArrivedLateLeaveEarly().get();
 
 		// entity primary key
-		KrqdtAppLateOrLeavePK_New pk = new KrqdtAppLateOrLeavePK_New(cID, application.getAppID());
+		KrqdtAppLateOrLeavePK pk = new KrqdtAppLateOrLeavePK(cID, application.getAppID());
 
 		// initial value for entity value
 		Integer lateCanAtr1 = null, earlyCanAtr1 = null, lateCanAtr2 = null, earlyCanAtr2 = null;
@@ -85,7 +85,7 @@ public class ArrivedLateLeaveEarlyRepositoryImp extends JpaRepository implements
 		}
 
 		// create entity with value
-		KrqdtAppLateOrLeave_New entity = new KrqdtAppLateOrLeave_New();
+		KrqdtAppLateOrLeave entity = new KrqdtAppLateOrLeave();
 		entity.setKrqdtAppLateOrLeavePK(pk);
 
 		// if(lateTime empty => lateCancelAtr1 = null)
@@ -119,7 +119,7 @@ public class ArrivedLateLeaveEarlyRepositoryImp extends JpaRepository implements
 	public ArrivedLateLeaveEarly getLateEarlyApp(String companyId, String appId, Application app) {
 
 		return new NtsStatement(SELECT_BY_CID_APPID, this.jdbcProxy()).paramString("companyId", companyId)
-				.paramString("appId", appId).getSingle(x -> KrqdtAppLateOrLeave_New.MAPPER.toEntity(x).toDomain(app))
+				.paramString("appId", appId).getSingle(x -> KrqdtAppLateOrLeave.MAPPER.toEntity(x).toDomain(app))
 				.get();
 	}
 
@@ -177,9 +177,9 @@ public class ArrivedLateLeaveEarlyRepositoryImp extends JpaRepository implements
 		}
 
 		// create entity with value
-		KrqdtAppLateOrLeave_New entity = new NtsStatement(SELECT_BY_CID_APPID, this.jdbcProxy())
+		KrqdtAppLateOrLeave entity = new NtsStatement(SELECT_BY_CID_APPID, this.jdbcProxy())
 				.paramString("companyId", cID).paramString("appId", application.getAppID())
-				.getSingle(x -> KrqdtAppLateOrLeave_New.MAPPER.toEntity(x)).get();
+				.getSingle(x -> KrqdtAppLateOrLeave.MAPPER.toEntity(x)).get();
 		// entity.setKrqdtAppLateOrLeavePK(pk);
 
 		// if(lateTime empty => lateCancelAtr1 = null)
@@ -203,7 +203,7 @@ public class ArrivedLateLeaveEarlyRepositoryImp extends JpaRepository implements
 
 	@Override
 	public void remove(String cID, String appId) {
-		this.commandProxy().remove(KrqdtAppLateOrLeave_New.class, new KrqdtAppLateOrLeavePK_New(cID, appId));
+		this.commandProxy().remove(KrqdtAppLateOrLeave.class, new KrqdtAppLateOrLeavePK(cID, appId));
 	}
 
 }

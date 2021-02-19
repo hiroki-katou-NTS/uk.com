@@ -51,6 +51,7 @@
 				path="/view/kaf/000/a/component7/kaf000.a.component7.js" />
 			<com:scriptfile 
 				path="/view/kaf/000/a/component8/kaf000.a.component8.js" />
+			<com:scriptfile path="/view/kaf/000/a/component9/kaf000.a.component9.js" />
 				
 				
 			<com:stylefile path="/view/kaf/002/b/kaf002.b.main.css" />
@@ -60,7 +61,8 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
-				<button class="proceed" data-bind="text:this.$i18n('KAF009_3'), click: register"></button>
+				<div style="display: inline-block;" data-bind="component: { name: 'kaf000-a-component9', params: isFromOther }"></div>
+				<button class="proceed" data-bind="text: $vm.$i18n('KAF009_3'), click: register"></button>
 				<div
 					data-bind="component: { name: 'kaf000-a-component7', 
 											params: {
@@ -82,7 +84,8 @@
 									params: {
 										appType: appType,
 										application: application,
-										appDispInfoStartupOutput: appDispInfoStartupOutput
+										appDispInfoStartupOutput: appDispInfoStartupOutput,
+										isAgentMode: isAgentMode
                                           } }"></div>
                   	<div class="cell" style="position: absolute;" data-bind="component: { name: 'kaf000-a-component8',
 									params: {
@@ -116,13 +119,14 @@
 						optionsValue: 'code',
 						value: selectedCode,
 						optionsText: 'name',
+						name: $i18n('KAF002_77'),
 						required: true
 					}"></div>
 				</div>
 				
 				<div class="blockSecond">
 					<input class="inputBlockSecond" id="inputTimeKAF002"
-						data-bind=" css: selectedCode() == 3 ? 'adjustWidth' : '', ntsTimeEditor: {	value: time, required: true, inputFormat: 'time', constraint: 'AttendanceClock', mode: 'time'
+						data-bind=" css: selectedCode() == 3 ? 'adjustWidth' : '', ntsTimeEditor: { name: $i18n('KAF002_79'), value: time, required: true, inputFormat: 'time', constraint: 'AttendanceClock', mode: 'time'
 													}"/>
 					
 					<div class="dropListBlockSecond" data-bind="visible: selectedCode() == 3, ntsComboBox: {

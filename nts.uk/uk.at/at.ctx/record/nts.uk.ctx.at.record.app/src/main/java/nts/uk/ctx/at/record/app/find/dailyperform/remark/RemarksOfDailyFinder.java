@@ -14,7 +14,7 @@ import nts.uk.ctx.at.record.app.find.dailyperform.remark.dto.RemarksOfDailyDto;
 import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerform;
 import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerformRepo;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.FinderFacade;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ConvertibleAttendanceItem;
 import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless

@@ -23,10 +23,12 @@ module nts.uk.com.view.cdl009.a {
             isRetirement: KnockoutObservable<boolean>;
             
             enrollmentStatusList: KnockoutObservableArray<number>;
+            selectFirst: KnockoutObservable<boolean>;
 
             constructor() {
                 let self = this;
                 var params = getShared('CDL009Params');
+                self.selectFirst= ko.observable(params.selectFirst || params.selectFirst === false ? params.selectFirst : true);
                 self.multiSelectedTree = ko.observableArray([]);
                 self.multiSelectedTree(params.selectedIds ? params.selectedIds : []);
                 self.isMultiSelect = ko.observable(params.isMultiple);
@@ -41,7 +43,7 @@ module nts.uk.com.view.cdl009.a {
                     isMultipleUse: true,
                     isMultiSelect: true,
                     treeType: TreeType.WORK_PLACE,
-                    selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                    selectType: self.selectFirst() == true ? SelectType.SELECT_FIRST_ITEM : SelectType.SELECT_BY_SELECTED_CODE,
                     baseDate: self.baseDate,
                     selectedId: self.multiSelectedTree,
                     isShowSelectButton: true,

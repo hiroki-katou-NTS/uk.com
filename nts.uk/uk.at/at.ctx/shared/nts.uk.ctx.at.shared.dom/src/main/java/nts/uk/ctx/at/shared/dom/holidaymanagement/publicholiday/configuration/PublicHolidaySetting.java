@@ -4,77 +4,37 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 
+/**
+ * 
+ * @author quytb
+ * 公休設定
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared.休日管理.公休管理.設定.公休設定
+ * 
+ */
 @Getter
 @Setter
-/**
- * The Class PublicHolidaySetting.
- */
-// 公休設定
+@AllArgsConstructor
 public class PublicHolidaySetting extends AggregateRoot {
 	
 	/** The company ID. */
 	// 会社ID
 	private String companyID;
 	
-	/** The is manage com public hd. */
-	// 会社の公休管理をする
-	private boolean isManageComPublicHd;
+	/** 公休を管理する */	
+	private int isManagePublicHoliday;
 	
-	/** The public hd management classification. */
-	// 公休管理区分
-	private PublicHolidayManagementClassification publicHdManagementClassification;
+	/** 公休管理期間  */
+	private PublicHolidayPeriod publicHolidayPeriod;
 	
-	/** The is weekly hd check. */
-	// 週間休日チェックをする
-	private boolean isWeeklyHdCheck;
+	/** 公休繰越期限 */
+	private PublicHolidayCarryOverDeadline publicHolidayCarryOverDeadline;
 	
-	/** The public hd management start date. */
-	//公休管理開始日
-	private PublicHolidayManagementStartDate publicHdManagementStartDate;
+	/** 公休日数がマイナス時に繰越する */
+	private int carryOverNumberOfPublicHolidayIsNegative;
 	
-	/**
-	 * Instantiates a new public holiday setting.
-	 *
-	 * @param memento the memento
-	 */
-	public PublicHolidaySetting(PublicHolidaySettingGetMemento memento) {
-		this.companyID = memento.getCompanyID();
-		this.isManageComPublicHd = memento.getIsManageComPublicHd();
-		this.publicHdManagementClassification = memento.getPublicHdManagementClassification();
-		this.isWeeklyHdCheck = memento.getIsWeeklyHdCheck();
-		this.publicHdManagementStartDate = memento.getPublicHolidayManagementStartDate(null);
-	}
-	
-	public PublicHolidaySetting(PublicHolidaySettingGetMemento memento, Integer publicHdManageAtr) {
-		this.companyID = memento.getCompanyID();
-		this.isManageComPublicHd = memento.getIsManageComPublicHd();
-		this.publicHdManagementClassification = memento.getPublicHdManagementClassification();
-		this.isWeeklyHdCheck = memento.getIsWeeklyHdCheck();
-		this.publicHdManagementStartDate = memento.getPublicHolidayManagementStartDate(publicHdManageAtr);
-	}	
-
-	/**
-	 * Save to memento.
-	 *
-	 * @param memento the memento
-	 */
-	public void saveToMemento(PublicHolidaySettingSetMemento memento) {
-		memento.setCompanyID(this.companyID);
-		memento.setIsManageComPublicHd(this.isManageComPublicHd);
-		memento.setPublicHdManagementClassification(this.publicHdManagementClassification);
-		memento.setIsWeeklyHdCheck(this.isWeeklyHdCheck);
-		memento.setPublicHolidayManagementStartDate(this.publicHdManagementStartDate);
-	}
-	
-	public void saveToMemento(PublicHolidaySettingSetMemento memento, Integer publicHdManageAtr) {
-		memento.setCompanyID(this.companyID);
-		memento.setIsManageComPublicHd(this.isManageComPublicHd);
-		memento.setPublicHdManagementClassification(this.publicHdManagementClassification);
-		memento.setIsWeeklyHdCheck(this.isWeeklyHdCheck);
-		memento.setPublicHolidayManagementStartDate(this.publicHdManagementStartDate, publicHdManageAtr);
-	}
 }

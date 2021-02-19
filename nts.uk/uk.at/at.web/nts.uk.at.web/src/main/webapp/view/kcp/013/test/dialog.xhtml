@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+    <ui:composition template="../../../../master/dialog.xhtml">
+        <ui:define name="htmlHead">
+            <script type='text/javascript'>
+                var dialogSize = {
+                    width: 1200,
+                    height: 600
+                };
+            </script>
+            <com:scriptfile set="IGNITE" />
+            
+            <!-- library for test screen -->
+			<com:scriptfile path="test.kcp013.cpn.vm.js" />
+			<com:scriptfile path="kcp013.dialog.start.js" />
+
+			<com:scriptfile path="../../../kcp/013/shared/kcp013.vm.js" />
+            
+        </ui:define>
+        <ui:define name="content">
+            <div id="functions-area">
+				<button class="btnSetting" data-bind="click: closeDialog"
+					tabindex="1">Close</button>
+            </div>
+            <div id="contents-area" class="kcp-013-test cf">
+                <div class="component-panel cf">
+                    <div id="tree-grid" class="left-panel"></div>
+                    <div class="right-panel">
+                        <div data-bind="
+                            kcp013: selected,
+                            workplace-id: workplaceId,
+                            dataSources: dataSources,
+                            filter: filter,
+                            disabled: disabled,
+                            show-mode: showMode,
+                            tabindex: 0,
+                            width: width,
+                        "></div>
+                    </div>
+                </div>
+            </div>
+        </ui:define>
+    </ui:composition>
+</body>
+
+</html>

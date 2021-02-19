@@ -9,11 +9,12 @@ import java.util.Map;
 import lombok.Getter;
 import lombok.val;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.MonthlyAggregationErrorInfo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.export.attdstatus.AttendanceStatusList;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonthlyCalculatingDailys;
+import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalCount;
+import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimes;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 
 /**
@@ -86,33 +87,18 @@ public class TotalCountByPeriod implements Cloneable, Serializable {
 	public void totalize(RequireM1 require, String companyId, String employeeId,
 			DatePeriod period, MonAggrCompanySettings companySets, MonthlyCalculatingDailys monthlyCalcDailys){
 
-		// 日別実績から回数集計結果を取得する準備をする
-		TotalTimesFromDailyRecord algorithm = new TotalTimesFromDailyRecord(
-				companyId,
-				employeeId,
-				monthlyCalcDailys.getAttendanceTimeOfDailyMap(),
-				monthlyCalcDailys.getAnyItemValueOfDailyList(),
-				monthlyCalcDailys.getTimeLeaveOfDailyMap(),
-				monthlyCalcDailys.getWorkInfoOfDailyMap(),
-				monthlyCalcDailys.getAffiInfoOfDailyMap(),
-				companySets.getAllWorkTypeMap(),
-				companySets.getOptionalItemMap());
+		val dailyWorks = monthlyCalcDailys.getDailyWorks(employeeId);
+		val attendanceStates = new AttendanceStatusList(monthlyCalcDailys.getAttendanceTimeOfDailyMap(), 
+														monthlyCalcDailys.getTimeLeaveOfDailyMap());
 		
 		// 回数集計マスタを取得
 		val totalTimesList = companySets.getTotalTimesList();
 		
-		// 回数集計処理
-		val results = algorithm.getResults(require, totalTimesList, period);
-		
-		// 回数集計結果を返す
-		for (val result : results.entrySet()){
-			this.totalCountList.putIfAbsent(
-					result.getKey(),
-					TotalCount.of(
-							result.getKey(),
-							new AttendanceDaysMonth(result.getValue().getCount().v()),
-							new AttendanceTimeMonth(result.getValue().getTime().v())));
-		}
+		/** ○パラメータ「回数集計」一覧をループ */
+		totalTimesList.stream().forEach(tt -> {
+			
+			totalCountList.put(tt.getTotalCountNo(), tt.aggregateTotalCount(require, dailyWorks, attendanceStates));
+		});
 	}
 	
 	/**
@@ -133,7 +119,7 @@ public class TotalCountByPeriod implements Cloneable, Serializable {
 		}
 	}
 	
-	public static interface RequireM1 extends TotalTimesFromDailyRecord.RequireM2 {
+	public static interface RequireM1 extends TotalTimes.RequireM1 {
 
 	}
 }

@@ -148,14 +148,14 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
             }).done(res => {
                 if (res) {
                     let businessTripContent = res.businessTripDto;
-                    let eachDetail: Array<any> = _.map(businessTripContent.tripInfos, function (detail) {
+                    let eachDetail: Array<any> = _.map(businessTripContent.tripInfos, function (detail: any) {
                         const workInfo = res.businessTripInfoOutputDto.infoBeforeChange;
                         const timeInfo = res.businessTripInfoOutputDto.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst;
                         let workName = "";
                         let timeName = "";
 
                         if (!workName) {
-                            let wkDayInfo = _.filter(ko.toJS(workInfo), function (item) {
+                            let wkDayInfo = _.filter(ko.toJS(workInfo), function (item: any) {
                                 return item.date == detail.date;
                             });
                             if (wkDayInfo.length != 0 && wkDayInfo[0].workTypeDto) {
@@ -166,7 +166,7 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
                         }
 
                         if (!timeName) {
-                            let wkTimeInfo = _.filter(ko.toJS(timeInfo), function (item) {
+                            let wkTimeInfo = _.filter(ko.toJS(timeInfo), function (item: any) {
                                 return item.worktimeCode == detail.wkTimeCd;
                             });
                             if (wkTimeInfo.length != 0 && wkTimeInfo[0].workTimeDisplayName) {
@@ -210,11 +210,19 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
             const vm = this;
 
             let dataFetch = ko.toJS(vm.dataFetch);
+            let screenContent: any = _.map(dataFetch.businessTripContent.tripInfos, (i: any) => {
+                return {
+                    date: i.date,
+                    workTypeName: i.wkTypeName,
+                    workTimeName: i.wkTimeName
+                }
+            });
 
             let command = {
                 businessTrip: dataFetch.businessTripContent,
                 businessTripInfoOutput: dataFetch.businessTripOutput,
-                application: ko.toJS(vm.application())
+                application: ko.toJS(vm.application()),
+                screenContent: screenContent
             };
 
             vm.$blockui("show");
@@ -234,7 +242,7 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
                 }).fail(err => {
                     vm.handleError(err);
                 }).always(() => {
-                    vm.$errors("clear");
+                    // vm.$errors("clear");
                     vm.$blockui("hide");
                 });
         }
@@ -246,30 +254,48 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
 
         handleError(err: any) {
             const vm = this;
-            let param;
 
-            if (err.message && err.messageId) {
+            if (err && err.messageId) {
 
-                if (err.messageId == "Msg_23" || err.messageId == "Msg_24" || err.messageId == "Msg_1912" || err.messageId == "Msg_1913" ) {
+                if ( _.includes(["Msg_23","Msg_24","Msg_1912","Msg_1913","Msg_457","Msg_1685"], err.messageId)) {
                     err.message = err.parameterIds[0] + err.message;
-                    param = err;
-                } else {
-                    param = {messageId: err.messageId, messageParams: err.parameterIds};
                 }
 
-            } else {
-                if (err.message) {
-                    param = {message: err.message, messageParams: err.parameterIds};
-                } else {
-                    param = {messageId: err.messageId, messageParams: err.parameterIds};
+                switch (err.messageId) {
+                    case "Msg_23":
+                    case "Msg_24":
+                    case "Msg_457": {
+                        let id = '#' + err.parameterIds[0].replace(/\//g, "") + '-wkCode';
+                        vm.$errors({
+                            [id]: err
+                        });
+                        break;
+                    }
+                    case "Msg_1715": {
+                        let id = '#' + err.parameterIds[1].replace(/\//g, "") + '-wkCode';
+                        vm.$errors({
+                            [id]: err
+                        });
+                        break;
+                    }
+                    case "Msg_1685":
+                    case "Msg_1912":
+                    case "Msg_1913": {
+                        let id = '#' + err.parameterIds[0].replace(/\//g, "") + '-tmCode';
+                        vm.$errors({
+                            [id]: err
+                        });
+                        break;
+                    }
+                    default: {
+                        vm.$dialog.error(err).then(() => {
+                            if (err.messageId == 'Msg_197') {
+                                location.reload();
+                            }
+                        });
+                    }
                 }
             }
-
-            vm.$dialog.error(param).then(() => {
-                if (err.messageId == 'Msg_197') {
-                    location.reload();
-                }
-            });
         }
 
     }

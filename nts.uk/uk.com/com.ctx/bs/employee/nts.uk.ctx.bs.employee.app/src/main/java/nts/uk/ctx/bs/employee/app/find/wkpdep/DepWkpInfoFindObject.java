@@ -1,9 +1,14 @@
 package nts.uk.ctx.bs.employee.app.find.wkpdep;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
 
-@Value
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class DepWkpInfoFindObject {
 
     /** The start mode (department or workplace). */

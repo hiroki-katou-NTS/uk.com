@@ -1,8 +1,9 @@
 package nts.uk.ctx.at.function.infra.entity.processexecution;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 //import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -13,6 +14,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -40,7 +42,9 @@ import nts.uk.ctx.at.function.dom.processexecution.tasksetting.enums.RepeatConte
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.primitivevalue.EndTime;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.primitivevalue.OneDayRepeatIntervalDetail;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.primitivevalue.StartTime;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
+
 @Entity
 @Table(name="KFNMT_EXEC_TASK_SETTING")
 @AllArgsConstructor
@@ -50,6 +54,15 @@ public class KfnmtExecutionTaskSetting extends UkJpaEntity implements Serializab
 	/* 主キー */
 	@EmbeddedId
     public KfnmtExecutionTaskSettingPK kfnmtExecTaskSettingPK;
+
+	/** The exclus ver. */
+	@Version
+	@Column(name = "EXCLUS_VER")
+	private Long exclusVer;
+
+	/** The Contract Code. */
+	@Column(name = "CONTRACT_CD")
+	public String contractCode;
 	
 	/* 開始日 */
 	@Column(name = "START_DATE")
@@ -75,10 +88,6 @@ public class KfnmtExecutionTaskSetting extends UkJpaEntity implements Serializab
 	@Column(name = "ONE_DAY_REP_INR")
 	public Integer oneDayRepInterval;
 	
-	/* 繰り返しする */
-	@Column(name = "REP_CLS")
-	public Integer repeatCls;
-	
 	/* 繰り返し内容 */
 	@Column(name = "REP_CONTENT")
 	public Integer repeatContent;
@@ -98,7 +107,6 @@ public class KfnmtExecutionTaskSetting extends UkJpaEntity implements Serializab
 	/* 次回実行日時 */
 	@Column(name = "NEXT_EXEC_DATE_TIME")
 	public GeneralDateTime nextExecDateTime;
-	
 	
 	/* 日 */
 	@Column(name = "MONDAY")
@@ -179,11 +187,15 @@ public class KfnmtExecutionTaskSetting extends UkJpaEntity implements Serializab
 	/* スケジュールID */
 	@Column(name = "SCHEDULE_ID")
 	public String scheduleId;
+	
 	/* 終了処理スケジュールID*/
 	@Column(name = "END_SCHEDULE_ID")
 	public String endScheduleId;
 	
-	@OneToMany(mappedBy="execTaskSetting", cascade = CascadeType.ALL)
+	@Column(name = "REPEAT_SCHEDULE_ID")
+	public String repeatScheduleId;
+	
+	@OneToMany(mappedBy="execTaskSetting", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinTable(name = "KFNMT_REP_MONTH_DATE")
 	public List<KfnmtRepeatMonthDay> repeatMonthDateList;
 	
@@ -200,15 +212,17 @@ public class KfnmtExecutionTaskSetting extends UkJpaEntity implements Serializab
 		// 終了時刻 
 		TaskEndTime endTime = new TaskEndTime(
 				EnumAdaptor.valueOf(this.endTimeCls, EndTimeClassification.class),
-				this.endTime == null ? null : new EndTime(this.endTime));
+				Optional.ofNullable(this.endTime).map(EndTime::new));
 		
 		// 繰り返し間隔
-		OneDayRepeatInterval oneDayRepInr = new OneDayRepeatInterval(this.oneDayRepInterval == null ? null : EnumAdaptor.valueOf(this.oneDayRepInterval,OneDayRepeatIntervalDetail.class), EnumAdaptor.valueOf(this.oneDayRepCls, OneDayRepeatClassification.class));
+		OneDayRepeatInterval oneDayRepInr = new OneDayRepeatInterval(
+				Optional.ofNullable(this.oneDayRepInterval).map(data -> EnumAdaptor.valueOf(data, OneDayRepeatIntervalDetail.class)),
+				EnumAdaptor.valueOf(this.oneDayRepCls, OneDayRepeatClassification.class));
 				
 		// 終了日日付指定
 		TaskEndDate endDate = new TaskEndDate(
 				EnumAdaptor.valueOf(this.endDateCls, EndDateClassification.class),
-				this.endDate);
+				Optional.ofNullable(this.endDate));
 		
 		
 		// 繰り返し詳細設定(毎週)
@@ -244,7 +258,7 @@ public class KfnmtExecutionTaskSetting extends UkJpaEntity implements Serializab
 		RepeatDetailSettingMonthly monthly = new RepeatDetailSettingMonthly(days, months);
 		
 		// 繰り返し詳細設定
-		RepeatDetailSetting detailSetting = new RepeatDetailSetting(weekly, monthly);
+		RepeatDetailSetting detailSetting = new RepeatDetailSetting(Optional.of(weekly), Optional.of(monthly));
 		
 		return new ExecutionTaskSetting(oneDayRepInr,
 										new ExecutionCode(this.kfnmtExecTaskSettingPK.execItemCd),
@@ -253,11 +267,11 @@ public class KfnmtExecutionTaskSetting extends UkJpaEntity implements Serializab
 										this.nextExecDateTime,
 										endDate,
 										endTime,
-										this.repeatCls == 1 ? true : false,
 										EnumAdaptor.valueOf(this.repeatContent, RepeatContentItem.class),
 										detailSetting,
 										startDate,
-										new StartTime(this.startTime),this.scheduleId,this.endScheduleId);
+										new StartTime(this.startTime),this.scheduleId,this.endScheduleId,
+										this.repeatScheduleId);
 	}
 	
 	/**
@@ -267,39 +281,44 @@ public class KfnmtExecutionTaskSetting extends UkJpaEntity implements Serializab
 	 */
 	public static KfnmtExecutionTaskSetting toEntity(ExecutionTaskSetting domain) {
 		return new KfnmtExecutionTaskSetting(
-							new KfnmtExecutionTaskSettingPK(domain.getCompanyId(), domain.getExecItemCd().v()),
-							domain.getStartDate(),
-							domain.getStartTime().v(),
-							domain.getEndTime() == null ? 0 : domain.getEndTime().getEndTimeCls().value,
-							domain.getEndTime().getEndTime() == null ? null : domain.getEndTime().getEndTime().v(),
-							domain.getOneDayRepInr() == null ? 0 : domain.getOneDayRepInr().getOneDayRepCls().value,
-							(domain.getOneDayRepInr().getDetail() == null || !domain.getOneDayRepInr().getDetail().isPresent()) ? null : domain.getOneDayRepInr().getDetail().get().value,
-							domain.isRepeat() ? 1 : 0,
-							domain.getContent() == null ? 0 : domain.getContent().value,
-							domain.getEndDate() == null ? 0 : domain.getEndDate().getEndDateCls().value,
-							domain.getEndDate() == null ? null : domain.getEndDate().getEndDate(),
-							domain.isEnabledSetting() ? 1 : 0,
-							(domain.getNextExecDateTime() == null || !domain.getNextExecDateTime().isPresent())  ? null : domain.getNextExecDateTime().get(),
-							domain.getDetailSetting().getWeekly().getWeekdaySetting().isMonday() ? 1 : 0,
-							domain.getDetailSetting().getWeekly().getWeekdaySetting().isTuesday() ? 1 : 0,
-							domain.getDetailSetting().getWeekly().getWeekdaySetting().isWednesday() ? 1 : 0,
-							domain.getDetailSetting().getWeekly().getWeekdaySetting().isThursday() ? 1 : 0,
-							domain.getDetailSetting().getWeekly().getWeekdaySetting().isFriday() ? 1 : 0,
-							domain.getDetailSetting().getWeekly().getWeekdaySetting().isSaturday() ? 1 : 0,
-							domain.getDetailSetting().getWeekly().getWeekdaySetting().isSunday() ? 1 : 0,
-							domain.getDetailSetting().getMonthly().getMonth().isJanuary() ? 1 : 0,
-							domain.getDetailSetting().getMonthly().getMonth().isFebruary() ? 1 : 0,
-							domain.getDetailSetting().getMonthly().getMonth().isMarch() ? 1 : 0,
-							domain.getDetailSetting().getMonthly().getMonth().isApril() ? 1 : 0,
-							domain.getDetailSetting().getMonthly().getMonth().isMay() ? 1 : 0,
-							domain.getDetailSetting().getMonthly().getMonth().isJune() ? 1 : 0,
-							domain.getDetailSetting().getMonthly().getMonth().isJuly() ? 1 : 0,
-							domain.getDetailSetting().getMonthly().getMonth().isAugust() ? 1 : 0,
-							domain.getDetailSetting().getMonthly().getMonth().isSeptember() ? 1 : 0,
-							domain.getDetailSetting().getMonthly().getMonth().isOctober() ? 1 : 0,
-							domain.getDetailSetting().getMonthly().getMonth().isNovember() ? 1 : 0,
-							domain.getDetailSetting().getMonthly().getMonth().isDecember() ? 1 : 0,
-							domain.getScheduleId(), (domain.getEndScheduleId()!=null && domain.getEndScheduleId().isPresent())?domain.getEndScheduleId().get():null,		
-							new ArrayList<>());
+				new KfnmtExecutionTaskSettingPK(
+						domain.getCompanyId(), 
+						domain.getExecItemCd().v()),
+				domain.getVersion(),
+				AppContexts.user().contractCode(),
+				domain.getStartDate(),
+				domain.getStartTime().v(),
+				domain.getEndTime().getEndTimeCls().value,
+				domain.getEndTime().getEndTime().map(EndTime::v).orElse(null),
+				domain.getOneDayRepInr().getOneDayRepCls().value,
+				domain.getOneDayRepInr().getDetail().map(data -> data.value).orElse(null),
+				domain.getContent().value,
+				domain.getEndDate().getEndDateCls().value,
+				domain.getEndDate().getEndDate().orElse(null),
+				domain.isEnabledSetting() ? 1 : 0,
+				domain.getNextExecDateTime().orElse(null),
+				domain.getDetailSetting().getWeekly().map(data -> data.getWeekdaySetting().getMonday().value).orElse(null),
+				domain.getDetailSetting().getWeekly().map(data -> data.getWeekdaySetting().getTuesday().value).orElse(null),
+				domain.getDetailSetting().getWeekly().map(data -> data.getWeekdaySetting().getWednesday().value).orElse(null),
+				domain.getDetailSetting().getWeekly().map(data -> data.getWeekdaySetting().getThursday().value).orElse(null),
+				domain.getDetailSetting().getWeekly().map(data -> data.getWeekdaySetting().getFriday().value).orElse(null),
+				domain.getDetailSetting().getWeekly().map(data -> data.getWeekdaySetting().getSaturday().value).orElse(null),
+				domain.getDetailSetting().getWeekly().map(data -> data.getWeekdaySetting().getSunday().value).orElse(null),
+				domain.getDetailSetting().getMonthly().map(data -> data.getMonth().getJanuary().value).orElse(null),
+				domain.getDetailSetting().getMonthly().map(data -> data.getMonth().getFebruary().value).orElse(null),
+				domain.getDetailSetting().getMonthly().map(data -> data.getMonth().getMarch().value).orElse(null),
+				domain.getDetailSetting().getMonthly().map(data -> data.getMonth().getApril().value).orElse(null),
+				domain.getDetailSetting().getMonthly().map(data -> data.getMonth().getMay().value).orElse(null),
+				domain.getDetailSetting().getMonthly().map(data -> data.getMonth().getJune().value).orElse(null),
+				domain.getDetailSetting().getMonthly().map(data -> data.getMonth().getJuly().value).orElse(null),
+				domain.getDetailSetting().getMonthly().map(data -> data.getMonth().getAugust().value).orElse(null),
+				domain.getDetailSetting().getMonthly().map(data -> data.getMonth().getSeptember().value).orElse(null),
+				domain.getDetailSetting().getMonthly().map(data -> data.getMonth().getOctober().value).orElse(null),
+				domain.getDetailSetting().getMonthly().map(data -> data.getMonth().getNovember().value).orElse(null),
+				domain.getDetailSetting().getMonthly().map(data -> data.getMonth().getDecember().value).orElse(null),
+				domain.getScheduleId(),		
+				domain.getEndScheduleId().orElse(null),
+				domain.getRepeatScheduleId().orElse(null),
+				Collections.emptyList());
 	}
 }

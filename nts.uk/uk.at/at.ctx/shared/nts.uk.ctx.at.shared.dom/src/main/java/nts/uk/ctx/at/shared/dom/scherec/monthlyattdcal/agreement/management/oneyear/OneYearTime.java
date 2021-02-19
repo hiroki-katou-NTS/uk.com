@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear;
 
+import lombok.Getter;
 import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.Setter;
@@ -7,6 +8,7 @@ import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.ExcessState;
 
 /** １年間時間 */
+@Getter
 public class OneYearTime {
 
 	/** エラーアラーム時間 */

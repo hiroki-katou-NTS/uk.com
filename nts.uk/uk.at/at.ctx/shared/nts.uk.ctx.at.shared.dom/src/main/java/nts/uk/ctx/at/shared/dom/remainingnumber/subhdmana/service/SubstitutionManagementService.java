@@ -26,7 +26,7 @@ public class SubstitutionManagementService {
 		GeneralDate baseDate = GeneralDate.today();
 		Optional<SWkpHistImport> sWkpHistImport = syWorkplaceAdapter.findBySid(employeeId, baseDate);
 		if (sWkpHistImport.isPresent()){
-		ExtraHolidayManagementOutput extraHolidayManagementOutput = extraHolidayManagementService.dataExtractionProcessing(0, employeeId, startDate, endDate);
+		ExtraHolidayManagementOutput extraHolidayManagementOutput = extraHolidayManagementService.dataExtractionProcessing(0, employeeId);
 			return new SubstituteManagementOutput(sWkpHistImport.orElse(null), extraHolidayManagementOutput);
 		} else{
 			throw new BusinessException("Msg_504");

@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.dailyperformanceformat;
 import java.math.BigDecimal;
 
 import lombok.Getter;
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
+import nts.uk.ctx.at.shared.dom.workrule.businesstype.BusinessTypeCode;
 
 /**
  * 

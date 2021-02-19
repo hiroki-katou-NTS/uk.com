@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -83,5 +84,18 @@ public class WorkTimezoneLateEarlySet extends WorkTimeDomainObject implements Cl
 			throw new RuntimeException("WorkTimezoneLateEarlySet clone error.");
 		}
 		return cloned;
+	}
+
+	/**
+	 * デフォルト設定のインスタンスを生成する
+	 * @return 就業時間帯の遅刻・早退設定
+	 */
+	public static WorkTimezoneLateEarlySet generateDefault(){
+		WorkTimezoneLateEarlySet domain = new WorkTimezoneLateEarlySet();
+		domain.commonSet = new EmTimezoneLateEarlyCommonSet(true);
+		domain.otherClassSets = new ArrayList<>();
+		domain.otherClassSets.add(OtherEmTimezoneLateEarlySet.generateDefault(LateEarlyAtr.LATE));
+		domain.otherClassSets.add(OtherEmTimezoneLateEarlySet.generateDefault(LateEarlyAtr.EARLY));
+		return domain;
 	}
 }

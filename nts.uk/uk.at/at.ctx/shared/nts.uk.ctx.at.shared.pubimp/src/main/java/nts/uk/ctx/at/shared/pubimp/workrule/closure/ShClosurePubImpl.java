@@ -27,6 +27,8 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetYearProcessAndPeriod;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetYearProcessAndPeriodDto;
 import nts.uk.ctx.at.shared.pub.workrule.closure.ClosureDateExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.PresentClosingPeriodExport;
 import nts.uk.ctx.at.shared.pub.workrule.closure.ShClosurePub;
@@ -41,6 +43,9 @@ public class ShClosurePubImpl implements ShClosurePub {
 	/** The work time hist repo. */
 	@Inject
 	private ClosureRepository closureRepo;
+	
+	@Inject
+	private GetYearProcessAndPeriod getYearProcessAndPeriod;
 
 	/*
 	 * (non-Javadoc)
@@ -52,25 +57,17 @@ public class ShClosurePubImpl implements ShClosurePub {
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public Optional<PresentClosingPeriodExport> find(String cId, int closureId) {
-		Optional<Closure> optClosure = closureRepo.findById(cId, closureId);
-
-		// Check exist and active
-		if (!optClosure.isPresent() || optClosure.get().getUseClassification()
-				.equals(UseClassification.UseClass_NotUse)) {
-			return Optional.empty();
-		}
-
-		Closure closure = optClosure.get();
-
-		// Get Processing Ym 処理年月
-		YearMonth processingYm = closure.getClosureMonth().getProcessingYm();
-
-		DatePeriod closurePeriod = ClosureService.getClosurePeriod(closureId, processingYm, optClosure);
+		//refactor chuyển lên dom phần nội dung hàm cho đúng theo thiết kế
+		//theo điều tra thì đây có vẻ là dành cho 処理年月と締め期間を取得する
+		//UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared.就業規則.就業締め日.アルゴリズム.Query.処理年月と締め期間を取得する.処理年月と締め期間を取得する
+		GetYearProcessAndPeriodDto dto = getYearProcessAndPeriod.find(cId, closureId).get();
 
 		// Return
-		return Optional.of(PresentClosingPeriodExport.builder().processingYm(processingYm)
-				.closureStartDate(closurePeriod.start()).closureEndDate(closurePeriod.end())
-				.build());
+		return Optional.of(PresentClosingPeriodExport.builder()
+										.processingYm(dto.getProcessingYm())
+										.closureStartDate(dto.getClosureStartDate())
+										.closureEndDate(dto.getClosureEndDate())
+										.build());
 	}
 	
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)

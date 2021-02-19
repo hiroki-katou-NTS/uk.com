@@ -1,10 +1,9 @@
 package find.person.contact;
 
 import java.util.Optional;
-
 import lombok.Setter;
-import nts.uk.ctx.bs.person.dom.person.contact.EmergencyContact;
-import nts.uk.ctx.bs.person.dom.person.contact.PersonContact;
+import nts.uk.ctx.bs.person.dom.person.personal.contact.EmergencyContact;
+import nts.uk.ctx.bs.person.dom.person.personal.contact.PersonalContact;
 import nts.uk.shr.pereg.app.PeregItem;
 import nts.uk.shr.pereg.app.find.dto.PeregDomainDto;
 
@@ -72,45 +71,28 @@ public class PersonContactDto extends PeregDomainDto {
 	@PeregItem("IS00270")
 	private String emerMemo2;
 
-	public static PersonContactDto createFromDomain(PersonContact domain) {
+	public static PersonContactDto createFromDomain(PersonalContact domain) {
 		PersonContactDto perContact = new PersonContactDto();
-		perContact.setRecordId(domain.getPersonId());
-		if (domain.getCellPhoneNumber().isPresent()) {
-			perContact.setCellPhoneNumber(domain.getCellPhoneNumber().get().v());
+		perContact.setRecordId(domain.getPersonalId());
+		if (domain.getPhoneNumber().isPresent()) {
+			perContact.setCellPhoneNumber(domain.getPhoneNumber().get().v());
 		}
-		if (domain.getMailAdress().isPresent()) {
-			perContact.setMailAdress(domain.getMailAdress().get().v());
+		if (domain.getMailAddress().isPresent()) {
+			perContact.setMailAdress(domain.getMailAddress().get().v());
 		}
-		if (domain.getMobileMailAdress().isPresent()) {
-			perContact.setMobileMailAdress(domain.getMobileMailAdress().get().v());
+		if (domain.getMobileEmailAddress().isPresent()) {
+			perContact.setMobileMailAdress(domain.getMobileEmailAddress().get().v());
 		}
 
 		Optional<EmergencyContact> emerContact1Opt = domain.getEmergencyContact1();
-		if (emerContact1Opt.isPresent()) {
-			EmergencyContact emerContact1 = emerContact1Opt.get();
-			if (emerContact1.getContactName() != null) {
-				perContact.setEmerContactName1(emerContact1.getContactName().map(i->i.v()).orElse(null));
-			}
-			if (emerContact1.getPhoneNumber() != null) {
-				perContact.setEmerPhoneNumber1(emerContact1.getPhoneNumber().map(i->i.v()).orElse(null));
-			}
-			if (emerContact1.getMemo() != null) {
-				perContact.setEmerMemo1(emerContact1.getMemo().map(i->i.v()).orElse(null));
-			}
-		}
+		perContact.setEmerMemo1(emerContact1Opt.map(item -> item.getRemark().v()).orElse(null));
+		perContact.setEmerContactName1(emerContact1Opt.map(item -> item.getContactName().v()).orElse(null));
+		perContact.setEmerPhoneNumber1(emerContact1Opt.map(item -> item.getPhoneNumber().v()).orElse(null));
+		
 		Optional<EmergencyContact> emerContact2Opt = domain.getEmergencyContact2();
-		if (emerContact2Opt.isPresent()) {
-			EmergencyContact emerContact2 = emerContact2Opt.get();
-			if (emerContact2.getContactName() != null) {
-				perContact.setEmerContactName2(emerContact2.getContactName().map(i->i.v()).orElse(null));
-			}
-			if (emerContact2.getPhoneNumber() != null) {
-				perContact.setEmerPhoneNumber2(emerContact2.getPhoneNumber().map(i->i.v()).orElse(null));
-			}
-			if (emerContact2.getMemo() != null) {
-				perContact.setEmerMemo2(emerContact2.getMemo().map(i->i.v()).orElse(null));
-			}
-		}
+		perContact.setEmerMemo2(emerContact2Opt.map(item -> item.getRemark().v()).orElse(null));
+		perContact.setEmerContactName2(emerContact2Opt.map(item -> item.getContactName().v()).orElse(null));
+		perContact.setEmerPhoneNumber2(emerContact2Opt.map(item -> item.getPhoneNumber().v()).orElse(null));
 		return perContact;
 	}
 }

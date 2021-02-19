@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
 /**
@@ -13,6 +14,7 @@ import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
  */
 // 共通の休憩設定
 @Getter
+@Setter
 @NoArgsConstructor
 public class CommonRestSetting extends WorkTimeDomainObject implements Cloneable{
 

@@ -43,9 +43,10 @@ public class CardUnregistered {
 				recordRepo, dakokuRepo);
 		List<CardUnregisteredDto> dto = new ArrayList<>();
 		String companyID = AppContexts.user().companyId();
+		String contractCode = AppContexts.user().contractCode();
 
 		// 1: 取得する(@Require, 期間): List<表示する打刻情報>
-		List<StampInfoDisp> stampInfoDisps = GetNewestStampNotRegisteredService.get(require, period);
+		List<StampInfoDisp> stampInfoDisps = GetNewestStampNotRegisteredService.get(require, period, contractCode);
 
 		if (stampInfoDisps.isEmpty()) {
 			return dto;
@@ -110,7 +111,7 @@ public class CardUnregistered {
 
 		@Override
 		public List<Stamp> getStempRcNotResgistNumberStamp(String contractCode, DatePeriod period) {
-			return dakokuRepo.getStempRcNotResgistNumberStamp(AppContexts.user().contractCode(), period);
+			return dakokuRepo.getStempRcNotResgistNumberStamp(contractCode, period);
 		}
 	}
 }

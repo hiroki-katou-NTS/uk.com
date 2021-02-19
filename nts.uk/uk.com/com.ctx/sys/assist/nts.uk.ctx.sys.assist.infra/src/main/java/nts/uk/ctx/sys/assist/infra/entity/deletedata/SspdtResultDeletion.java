@@ -181,7 +181,7 @@ public class SspdtResultDeletion extends UkJpaEntity implements Serializable {
 			result.getSId(), 
 			result.getStatus().value, 
 			result.getStartDateTimeDel(), 
-			result.getEndDateTimeDel(), 
+			result.getEndDateTimeDel().orElse(null), 
 			result.getFileId(), 
 			result.getFileName().v(), 
 			result.getFileSize(), 

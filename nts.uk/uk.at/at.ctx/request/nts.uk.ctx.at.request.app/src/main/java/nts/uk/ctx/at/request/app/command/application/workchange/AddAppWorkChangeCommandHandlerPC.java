@@ -40,7 +40,6 @@ public class AddAppWorkChangeCommandHandlerPC extends CommandHandlerWithResult<A
     @Override
     protected ProcessResult handle(CommandHandlerContext<AddAppWorkChangeCommand> context) {
         AddAppWorkChangeCommand command = context.getCommand();
-        command.getApplicationDto().setEmployeeID(AppContexts.user().employeeId());
         Application application = new Application();
         ApplicationDto applicationDto = command.getApplicationDto();
         if (StringUtils.isBlank(applicationDto.getAppID())) {

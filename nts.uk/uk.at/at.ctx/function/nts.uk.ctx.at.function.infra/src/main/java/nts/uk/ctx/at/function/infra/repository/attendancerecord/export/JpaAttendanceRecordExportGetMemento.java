@@ -8,21 +8,21 @@ import nts.uk.ctx.at.function.dom.attendancerecord.export.ExportAtr;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.AttendanceRecordDisplay;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecord;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.SingleAttendanceRecord;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRec;
+import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnmtRptWkAtdOutframe;
 import nts.uk.ctx.at.function.infra.repository.attendancerecord.JpaCalculateAttendanceRecordGetMemento;
 import nts.uk.ctx.at.function.infra.repository.attendancerecord.JpaSingleAttendanceRecordGetMemento;
-
 /**
  * The Class JpaAttendanceRecordExportGetMemento.
  * 
  * @author NWS_QUANGNT
  */
 public class JpaAttendanceRecordExportGetMemento implements AttendanceRecordExportGetMemento {
-
+	
+	
 	/** The entity. */
-	private KfnstAttndRec upperEntity;
+	private KfnmtRptWkAtdOutframe upperEntity;
 
-	private KfnstAttndRec lowerEntity;
+	private KfnmtRptWkAtdOutframe lowerEntity;
 
 	/**
 	 * Instantiates a new jpa attendance record export get memento.
@@ -30,7 +30,7 @@ public class JpaAttendanceRecordExportGetMemento implements AttendanceRecordExpo
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaAttendanceRecordExportGetMemento(KfnstAttndRec upperEntity, KfnstAttndRec lowerEntity) {
+	public JpaAttendanceRecordExportGetMemento(KfnmtRptWkAtdOutframe upperEntity, KfnmtRptWkAtdOutframe lowerEntity) {
 		this.upperEntity = upperEntity;
 		this.lowerEntity = lowerEntity;
 	}
@@ -99,14 +99,14 @@ public class JpaAttendanceRecordExportGetMemento implements AttendanceRecordExpo
 
 		if (upperEntity != null) {
 
-			// 13 <= Attribute <=15
-			if (this.upperEntity.getAttribute().compareTo(new BigDecimal(12)) == 1
-					&& this.upperEntity.getAttribute().compareTo(new BigDecimal(16)) == -1)
+			// 1 <= Attribute <= 3
+			if (this.upperEntity.getAttribute().compareTo(new BigDecimal(0)) == 1
+					&& this.upperEntity.getAttribute().compareTo(new BigDecimal(4)) == -1)
 				return Optional
 						.of(new SingleAttendanceRecord(new JpaSingleAttendanceRecordGetMemento(upperEntity, null)));
-			// 16<= Attribute <= 18
-			if (this.upperEntity.getAttribute().compareTo(new BigDecimal(15)) == 1
-					&& this.upperEntity.getAttribute().compareTo(new BigDecimal(19)) == -1)
+			// 4 <= Attribute <= 7
+			if (this.upperEntity.getAttribute().compareTo(new BigDecimal(3)) == 1
+					&& this.upperEntity.getAttribute().compareTo(new BigDecimal(8)) == -1)
 				return Optional.of(
 						new CalculateAttendanceRecord(new JpaCalculateAttendanceRecordGetMemento(upperEntity, null)));
 		}
@@ -124,14 +124,14 @@ public class JpaAttendanceRecordExportGetMemento implements AttendanceRecordExpo
 	public Optional<AttendanceRecordDisplay> getLowerPosition() {
 
 		if (lowerEntity != null) {
-			// 13 <= Attribute <=15
-			if (this.lowerEntity.getAttribute().compareTo(new BigDecimal(12)) == 1
-					&& this.lowerEntity.getAttribute().compareTo(new BigDecimal(16)) == -1)
+			// 1 <= Attribute <= 3
+			if (this.lowerEntity.getAttribute().compareTo(new BigDecimal(0)) == 1
+					&& this.lowerEntity.getAttribute().compareTo(new BigDecimal(4)) == -1)
 				return Optional
 						.of(new SingleAttendanceRecord(new JpaSingleAttendanceRecordGetMemento(lowerEntity, null)));
-			// 16<= Attribute <= 18
-			if (this.lowerEntity.getAttribute().compareTo(new BigDecimal(15)) == 1
-					&& this.lowerEntity.getAttribute().compareTo(new BigDecimal(19)) == -1)
+			// 4 <= Attribute <= 7
+			if (this.lowerEntity.getAttribute().compareTo(new BigDecimal(3)) == 1
+					&& this.lowerEntity.getAttribute().compareTo(new BigDecimal(8)) == -1)
 				return Optional.of(
 						new CalculateAttendanceRecord(new JpaCalculateAttendanceRecordGetMemento(lowerEntity, null)));
 		}

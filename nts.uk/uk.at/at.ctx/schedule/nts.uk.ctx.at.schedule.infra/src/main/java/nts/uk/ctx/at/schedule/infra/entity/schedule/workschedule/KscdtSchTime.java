@@ -23,6 +23,10 @@ import nts.arc.time.GeneralDate;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.ExcessOfStatutoryMidNightTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.ExcessOfStatutoryTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.WithinStatutoryMidNightTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.WithinStatutoryTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakTimeGoOutTimes;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakTimeOfDaily;
@@ -56,10 +60,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationuse
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.ActualWorkingTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.ConstraintTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.TotalWorkingTime;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.ExcessOfStatutoryMidNightTime;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.ExcessOfStatutoryTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.WithinStatutoryMidNightTime;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.WithinStatutoryTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
 import nts.uk.shr.com.time.AttendanceClock;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
@@ -288,11 +288,25 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 		List<HolidayWorkFrameTimeSheet> holidayWorkFrameTimeSheet = workTimeOfDaily.getHolidayWorkFrameTimeSheet();
 		List<HolidayWorkFrameTime> holidayWorkFrameTime = workTimeOfDaily.getHolidayWorkFrameTime();
 		List<KscdtSchHolidayWork> kscdtSchHolidayWork = new ArrayList<>();
-		for (HolidayWorkFrameTimeSheet x : holidayWorkFrameTimeSheet) {
-			KscdtSchHolidayWork work = holidayWorkFrameTime.stream()
-					.map(y -> KscdtSchHolidayWork.toEntity(x, y, sID, yMD, cID)).findFirst().get();
-			kscdtSchHolidayWork.add(work);
+		
+		if(holidayWorkFrameTimeSheet.size() != holidayWorkFrameTime.size()) {
+			if(holidayWorkFrameTime.size() > 0 && holidayWorkFrameTimeSheet.size() > 0) {
+				for (HolidayWorkFrameTime x : holidayWorkFrameTime) {
+					KscdtSchHolidayWork work = holidayWorkFrameTimeSheet.stream()
+							.map(y -> KscdtSchHolidayWork.toEntity(x, y, sID, yMD, cID)).findFirst().get();
+					kscdtSchHolidayWork.add(work);
+				}
+			}
+		} else {
+			if(holidayWorkFrameTime.size() > 0 && holidayWorkFrameTimeSheet.size() > 0) {
+			for (HolidayWorkFrameTimeSheet x : holidayWorkFrameTimeSheet) {
+				KscdtSchHolidayWork work = holidayWorkFrameTime.stream()
+						.map(y -> KscdtSchHolidayWork.toEntity2(x, y, sID, yMD, cID)).findFirst().get();
+				kscdtSchHolidayWork.add(work);
+			}
+			}
 		}
+		
 
 		// create KscdtSchBonusPay
 		// 勤務予定．勤怠時間．勤務時間．総労働時間．加給時間．割増時間
@@ -406,11 +420,11 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 		KscdtSchHolidayWork kscdtSchHolidayWork = new KscdtSchHolidayWork();
 
 		ExcessOfStatutoryMidNightTime nightTime = new ExcessOfStatutoryMidNightTime(
-				new TimeDivergenceWithCalculation(new AttendanceTime(this.extMidNiteTotal), new AttendanceTime(0), new AttendanceTime(0)),
+				new TimeDivergenceWithCalculation(new AttendanceTime(this.extMidNiteTotal), new AttendanceTime(0), new AttendanceTimeOfExistMinus(0)),
 				new AttendanceTime(this.extMidNiteTotalPreApp));
 
 		ExcessOverTimeWorkMidNightTime midNightTimes = new ExcessOverTimeWorkMidNightTime(
-				new TimeDivergenceWithCalculation(new AttendanceTime(extMidNiteTotalPreApp), new AttendanceTime(0), new AttendanceTime(0)));
+				new TimeDivergenceWithCalculation(new AttendanceTime(extMidNiteTotalPreApp), new AttendanceTime(0), new AttendanceTimeOfExistMinus(0)));
 		OverTimeOfDaily overTimeOfDaily = new OverTimeOfDaily(new ArrayList<>(), new ArrayList<>(),
 				Finally.of(midNightTimes), new AttendanceTime(extVarwkOtwTimeLegal),
 				new FlexTime(
@@ -433,7 +447,7 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 
 		// WithinStatutoryMidNightTime
 		WithinStatutoryMidNightTime midNightTime = new WithinStatutoryMidNightTime(
-				new TimeDivergenceWithCalculation(new AttendanceTime(prsMidniteTime), new AttendanceTime(0), new AttendanceTime(0)));
+				new TimeDivergenceWithCalculation(new AttendanceTime(prsMidniteTime), new AttendanceTime(0), new AttendanceTimeOfExistMinus(0)));
 		WithinStatutoryTimeOfDaily withinStatutoryTimeOfDaily = new WithinStatutoryTimeOfDaily(
 				new AttendanceTime(this.prsWorkTime), new AttendanceTime(this.prsWorkTimeAct),
 				new AttendanceTime(this.prsPrimeTime), midNightTime);

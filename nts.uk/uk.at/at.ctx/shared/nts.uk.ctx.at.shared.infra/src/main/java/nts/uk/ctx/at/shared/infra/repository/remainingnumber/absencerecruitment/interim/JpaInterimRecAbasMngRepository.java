@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.infra.repository.remainingnumber.absencerecruitment
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -406,6 +407,31 @@ public class JpaInterimRecAbasMngRepository extends JpaRepository implements Int
 					.getList(x -> toDomainAbs(x));
 			return lstOutput;
 		}
+	}
+
+    /**
+     * kdl035 ドメインモデル「暫定振出管理データ」を取得する
+     * @param mngIds
+     * @return
+     */
+	@Override
+	public List<InterimRecMng> getRecByIds(List<String> mngIds) {
+		if (mngIds == null || mngIds.isEmpty()) return Collections.emptyList();
+		return this.queryProxy()
+				.query("SELECT a FROM KrcmtInterimRecMng a, KrcmtInterimRemainMng b " +
+                        "WHERE a.recruitmentMngId = b.remainMngId " +
+                        "AND b.remainMngId in :mngIds " +
+                        "ORDER BY b.ymd", KrcmtInterimRecMng.class)
+				.setParameter("mngIds", mngIds)
+				.getList((KrcmtInterimRecMng i) -> new InterimRecMng(
+						i.recruitmentMngId,
+						i.expirationDate,
+						new OccurrenceDay(i.occurrenceDays),
+						EnumAdaptor.valueOf(i.statutoryAtr, StatutoryAtr.class),
+						new UnUsedDay(i.unUsedDays)
+                    )
+				);
+
 	}
 
 	private InterimAbsMng toDomainAbs(NtsResultRecord x) {

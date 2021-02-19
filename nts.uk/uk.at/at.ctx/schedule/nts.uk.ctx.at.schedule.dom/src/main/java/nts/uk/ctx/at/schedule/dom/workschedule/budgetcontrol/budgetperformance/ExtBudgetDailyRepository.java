@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.schedule.dom.workschedule.budgetcontrol.budgetperformance;
 
 import java.util.List;
-import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -50,5 +49,11 @@ public interface ExtBudgetDailyRepository {
 	 * @param extBudgetDaily
 	 */
 	public void delete(TargetOrgIdenInfor targetOrg,ExtBudgetActItemCode itemCode, GeneralDate ymd);
-
+	
+	/**
+	 * [6] 期間の日次の外部予算実績をすべて取得する
+	 */
+	public List<ExtBudgetDaily> getAllExtBudgetDailyByPeriod (TargetOrgIdenInfor targetOrg , DatePeriod datePeriod );
+	
+	public List<ExtBudgetDaily> getAllExtBudgetDailyByPeriod (List<TargetOrgIdenInfor> lstTargetOrg , DatePeriod datePeriod );
 }

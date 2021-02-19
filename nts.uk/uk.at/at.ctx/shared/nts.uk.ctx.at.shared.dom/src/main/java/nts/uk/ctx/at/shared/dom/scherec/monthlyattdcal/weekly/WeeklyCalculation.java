@@ -103,6 +103,7 @@ public class WeeklyCalculation implements Cloneable {
 	 * @param employeeId 社員ID
 	 * @param yearMonth 年月（度）
 	 * @param weekPeriod 週期間
+	 * @param period 期間
 	 * @param workingSystem 労働制
 	 * @param aggregateAtr 集計区分
 	 * @param settingsByReg 通常勤務が必要とする設定
@@ -114,18 +115,11 @@ public class WeeklyCalculation implements Cloneable {
 	 * @param companySets 月別集計で必要な会社別設定
 	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
-	public void aggregate(
-			String companyId,
-			String employeeId,
-			YearMonth yearMonth,
-			DatePeriod weekPeriod,
-			WorkingSystem workingSystem,
-			MonthlyAggregateAtr aggregateAtr,
-			SettingRequiredByReg settingsByReg,
-			SettingRequiredByDefo settingsByDefo,
-			AggregateTotalWorkingTime aggregateTotalWorkingTime,
-			WeekStart weekStart,
-			AttendanceTimeMonth premiumTimeOfPrevMonLast,
+	public void aggregate(String companyId, String employeeId, YearMonth yearMonth,
+			DatePeriod weekPeriod, DatePeriod period, WorkingSystem workingSystem,
+			MonthlyAggregateAtr aggregateAtr, SettingRequiredByReg settingsByReg,
+			SettingRequiredByDefo settingsByDefo, AggregateTotalWorkingTime aggregateTotalWorkingTime,
+			WeekStart weekStart, AttendanceTimeMonth premiumTimeOfPrevMonLast,
 			Map<GeneralDate, AttendanceTimeOfDailyAttendance> attendanceTimeOfDailyMap,
 			MonAggrCompanySettings companySets){
 		
@@ -144,8 +138,9 @@ public class WeeklyCalculation implements Cloneable {
 			
 			// 週割増時間を集計する
 			this.regAndIrgTime.aggregatePremiumTime(companyId, employeeId, weekPeriod,
-					workingSystem, aggregateAtr, settingsByReg, settingsByDefo,
-					aggregateTotalWorkingTime, weekStart, premiumTimeOfPrevMonLast);
+					period, workingSystem, aggregateAtr, settingsByReg, settingsByDefo,
+					aggregateTotalWorkingTime, weekStart, premiumTimeOfPrevMonLast,
+					companySets.getVerticalTotalMethod());
 			break;
 			
 		case FLEX_TIME_WORK:

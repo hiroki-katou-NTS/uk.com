@@ -49,7 +49,7 @@ public class KrqmtAppOvertimeFrame extends ContractUkJpaEntity {
         return pk.otFrameNo;
     }
 
-    public static List<OvertimeQuotaSetUse> toDomains(String companyId, List<KrqmtAppOvertimeFrame> entities) {
+    public static List<OvertimeQuotaSetUse> toDomains(List<KrqmtAppOvertimeFrame> entities) {
         List<OvertimeQuotaSetUse> domains = new ArrayList<>();
         Map<Object, List<KrqmtAppOvertimeFrame>> group = entities.stream().collect(Collectors.groupingBy(e -> new HashMap() {{
             put(e.pk.overtimeAtr, e.pk.flexAtr);

@@ -23,7 +23,7 @@
 }
 
 #single-list tr td:last-child {
-	text-align: center;
+	text-align: left;
 }
 .time{
 	float: right;

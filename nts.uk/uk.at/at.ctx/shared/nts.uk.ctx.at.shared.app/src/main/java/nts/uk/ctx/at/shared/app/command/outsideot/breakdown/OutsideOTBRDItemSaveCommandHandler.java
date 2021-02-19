@@ -52,7 +52,7 @@ public class OutsideOTBRDItemSaveCommandHandler extends CommandHandler<OutsideOT
 
 		// to domains
 		List<OutsideOTBRDItem> domains = command.getOvertimeBRDItems().stream()
-				.map(dto -> new OutsideOTBRDItem(dto)).collect(Collectors.toList());
+				.map(dto -> dto.domain()).collect(Collectors.toList());
 		
 		if(CollectionUtil.isEmpty(domains)){
 			throw new BusinessException("Msg_485");

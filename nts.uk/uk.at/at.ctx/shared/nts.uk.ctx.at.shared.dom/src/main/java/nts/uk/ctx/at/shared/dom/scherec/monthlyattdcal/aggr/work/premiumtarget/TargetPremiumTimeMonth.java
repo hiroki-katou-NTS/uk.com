@@ -49,36 +49,21 @@ public class TargetPremiumTimeMonth {
 		
 		// 変形労働勤務の月割増時間の対象となる時間を求める
 		val targetPremiumTimeMonthOfIrregular = new TargetPremiumTimeMonthOfIrregular();
-		targetPremiumTimeMonthOfIrregular.askPremiumTimeMonth(
-				companyId, employeeId, datePeriod, addSet, aggregateTotalWorkingTime, isAddVacation);
+		targetPremiumTimeMonthOfIrregular.askPremiumTimeMonth(companyId, employeeId, datePeriod, addSet,
+																aggregateTotalWorkingTime, isAddVacation);
+		
 		this.addedVacationUseTime = targetPremiumTimeMonthOfIrregular.getAddedVacationUseTime();
 		
-		// （実績）所定労働時間を取得する
-		val prescribedWorkingTime = aggregateTotalWorkingTime.getPrescribedWorkingTime();
-		prescribedWorkingTime.aggregate(datePeriod);
-		val recordPresctibedWorkingTime = prescribedWorkingTime.getRecordPrescribedWorkingTime();
 		
-		// 法定労働時間と所定労働時間を比較する
 		val targetPremiumTimeMonthSrc = targetPremiumTimeMonthOfIrregular.getTargetPremiumTimeMonth();
-		AttendanceTimeMonthWithMinus excessOrDificiency = new AttendanceTimeMonthWithMinus(0);
-		if (statutoryWorkingTimeMonth.greaterThanOrEqualTo(recordPresctibedWorkingTime.v())){
 
-			// 月割増対象時間と法定労働時間を比較する
-			if (targetPremiumTimeMonthSrc.lessThanOrEqualTo(statutoryWorkingTimeMonth.v())) return;
-			
-			// 月割増対象時間（過不足分）を求める
-			excessOrDificiency = new AttendanceTimeMonthWithMinus(targetPremiumTimeMonthSrc.v());
-			excessOrDificiency = excessOrDificiency.minusMinutes(statutoryWorkingTimeMonth.v());
-		}
-		else {
-			
-			// 月割増対象時間と所定労働時間を比較する
-			if (targetPremiumTimeMonthSrc.lessThanOrEqualTo(recordPresctibedWorkingTime.v())) return;
-			
-			// 月割増対象時間（過不足分）を求める
-			excessOrDificiency = new AttendanceTimeMonthWithMinus(targetPremiumTimeMonthSrc.v());
-			excessOrDificiency = excessOrDificiency.minusMinutes(recordPresctibedWorkingTime.v());
-		}
+		// 月割増対象時間と法定労働時間を比較する
+		if (targetPremiumTimeMonthSrc.lessThanOrEqualTo(statutoryWorkingTimeMonth.v())) 
+			return;
+		
+		// 月割増対象時間（過不足分）を求める
+		int premiumTime = targetPremiumTimeMonthSrc.v() - statutoryWorkingTimeMonth.v();
+		val excessOrDificiency = new AttendanceTimeMonthWithMinus(premiumTime);
 		
 		// 月割増対象時間を求める
 		this.time = excessOrDificiency.minusMinutes(weeklyTotalPremiumTime.v());

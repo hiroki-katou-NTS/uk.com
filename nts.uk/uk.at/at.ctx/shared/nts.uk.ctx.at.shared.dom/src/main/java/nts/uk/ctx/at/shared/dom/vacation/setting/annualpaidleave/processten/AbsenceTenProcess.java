@@ -108,13 +108,13 @@ public class AbsenceTenProcess {
 				if (compensatoryLeaveEmSet.getIsManaged().equals(ManageDistinct.YES)) {
 					// ドメインモデル「雇用の代休管理設定」．管理区分 = 管理する
 					result.setSubstitutionFlg(true);
-					result.setExpirationOfsubstiHoliday(
-							compensatoryLeaveEmSet.getCompensatoryAcquisitionUse().getExpirationTime().value);
+				/*	result.setExpirationOfsubstiHoliday(
+							compensatoryLeaveEmSet.getCompensatoryAcquisitionUse().getExpirationTime().value);*/
 					// add refactor RequestList203
-					result.setAdvancePayment(compensatoryLeaveEmSet.getCompensatoryAcquisitionUse().getPreemptionPermit().value);
-					isManageByTime = compensatoryLeaveEmSet.getCompensatoryDigestiveTimeUnit()
-							.getIsManageByTime().value;
-					digestiveUnit = compensatoryLeaveEmSet.getCompensatoryDigestiveTimeUnit().getDigestiveUnit().value;
+				/*	result.setAdvancePayment(compensatoryLeaveEmSet.getCompensatoryAcquisitionUse().getPreemptionPermit().value);*/
+					/*isManageByTime = compensatoryLeaveEmSet.getCompensatoryDigestiveTimeUnit()
+							.getIsManageByTime().value;*/
+				/*	digestiveUnit = compensatoryLeaveEmSet.getCompensatoryDigestiveTimeUnit().getDigestiveUnit().value;*/
 				} else {
 					// ドメインモデル「雇用の代休管理設定」．管理区分 = 管理しない
 					result.setSubstitutionFlg(false);
@@ -170,34 +170,68 @@ public class AbsenceTenProcess {
 		ApplyPermission applyPermission = null;
 		// アルゴリズム「社員所属雇用履歴を取得」を実行する
 		Optional<BsEmploymentHistoryImport> empHistImport = require.employmentHistory(cacheCarrier, companyID, employeeID, baseDate);
+//		if(empHistImport.isPresent()){
+//			//ドメインモデル「雇用振休管理設定」を取得する(láy dữ liệu domain 「雇用振休管理設定」)
+//			Optional<EmpSubstVacation> optEmpSubData = require.empSubstVacation(companyID, empHistImport.get().getEmploymentCode());
+//			if(optEmpSubData.isPresent()){//１件以上取得できた(1data trở lên)
+//				//ドメインモデル「雇用振休管理設定」．管理区分をチェックする(kiểm tra domain 「雇用振休管理設定」．管理区分)
+//				EmpSubstVacation empSubData = optEmpSubData.get();
+//				if(empSubData.getManageDistinct().equals(ManageDistinct.YES)){
+//					subManageFlag = true;
+//					//振休使用期限=ドメインモデル「振休管理設定」．「振休取得・使用方法」．休暇使用期限
+//					expirationOfLeave = empSubData.getSetting().getExpirationDate().value;
+//					//refactor RQ204
+//					applyPermission = empSubData.getSetting().getAllowPrepaidLeave();
+//				}
+//			}else{//０件(0 data)
+//				//ドメインモデル「振休管理設定」を取得する(lấy dữ liệu domain 「振休管理設定」)
+//				Optional<ComSubstVacation>  comSub = require.comSubstVacation(companyID);
+//				if(comSub.isPresent()){
+//					ComSubstVacation comSubSet = comSub.get();
+//					if(comSubSet.isManaged()){
+//						subManageFlag = true;
+//						//振休使用期限=ドメインモデル「振休管理設定」．「振休取得・使用方法」．休暇使用期限
+//						expirationOfLeave = comSubSet.getSetting().getExpirationDate().value;
+//						//refactor RQ204
+//						applyPermission = comSubSet.getSetting().getAllowPrepaidLeave();
+//					}
+//				}
+//			}
+//		}
 		if(empHistImport.isPresent()){
-			//ドメインモデル「雇用振休管理設定」を取得する(láy dữ liệu domain 「雇用振休管理設定」)
-			Optional<EmpSubstVacation> optEmpSubData = require.empSubstVacation(companyID, empHistImport.get().getEmploymentCode());
-			if(optEmpSubData.isPresent()){//１件以上取得できた(1data trở lên)
-				//ドメインモデル「雇用振休管理設定」．管理区分をチェックする(kiểm tra domain 「雇用振休管理設定」．管理区分)
-				EmpSubstVacation empSubData = optEmpSubData.get();
-				if(empSubData.getSetting().getIsManage().equals(ManageDistinct.YES)){
-					subManageFlag = true;
-					//振休使用期限=ドメインモデル「振休管理設定」．「振休取得・使用方法」．休暇使用期限
-					expirationOfLeave = empSubData.getSetting().getExpirationDate().value;
-					//refactor RQ204
-					applyPermission = empSubData.getSetting().getAllowPrepaidLeave();
-				}
-			}else{//０件(0 data)
-				//ドメインモデル「振休管理設定」を取得する(lấy dữ liệu domain 「振休管理設定」)
-				Optional<ComSubstVacation>  comSub = require.comSubstVacation(companyID);
-				if(comSub.isPresent()){
-					ComSubstVacation comSubSet = comSub.get();
-					if(comSubSet.isManaged()){
-						subManageFlag = true;
-						//振休使用期限=ドメインモデル「振休管理設定」．「振休取得・使用方法」．休暇使用期限
-						expirationOfLeave = comSubSet.getSetting().getExpirationDate().value;
-						//refactor RQ204
-						applyPermission = comSubSet.getSetting().getAllowPrepaidLeave();
-					}
-				}
-			}
-		}
+            //ドメインモデル「雇用振休管理設定」を取得する(láy dữ liệu domain 「雇用振休管理設定」)
+            Optional<EmpSubstVacation> optEmpSubData = require.empSubstVacation(companyID, empHistImport.get().getEmploymentCode());
+            if(optEmpSubData.isPresent()){//１件以上取得できた(1data trở lên)
+                //ドメインモデル「雇用振休管理設定」．管理区分をチェックする(kiểm tra domain 「雇用振休管理設定」．管理区分)
+                EmpSubstVacation empSubData = optEmpSubData.get();
+                if(empSubData.getManageDistinct().equals(ManageDistinct.YES)){
+                    Optional<ComSubstVacation>  comSub = require.comSubstVacation(companyID);
+                    if(comSub.isPresent()){
+                        ComSubstVacation comSubSet = comSub.get();
+                        if(comSubSet.isManaged()){
+                            subManageFlag = true;
+                            //振休使用期限=ドメインモデル「振休管理設定」．「振休取得・使用方法」．休暇使用期限
+                            expirationOfLeave = comSubSet.getSetting().getExpirationDate().value;
+                            //refactor RQ204
+                            applyPermission = comSubSet.getSetting().getAllowPrepaidLeave();
+                        }
+                    }
+                }
+            }else{//０件(0 data)
+                //ドメインモデル「振休管理設定」を取得する(lấy dữ liệu domain 「振休管理設定」)
+                Optional<ComSubstVacation>  comSub = require.comSubstVacation(companyID);
+                if(comSub.isPresent()){
+                    ComSubstVacation comSubSet = comSub.get();
+                    if(comSubSet.isManaged()){
+                        subManageFlag = true;
+                        //振休使用期限=ドメインモデル「振休管理設定」．「振休取得・使用方法」．休暇使用期限
+                        expirationOfLeave = comSubSet.getSetting().getExpirationDate().value;
+                        //refactor RQ204
+                        applyPermission = comSubSet.getSetting().getAllowPrepaidLeave();
+                    }
+                }
+            }
+        }
 		return new LeaveSetOutput(subManageFlag, expirationOfLeave, applyPermission);
 	}
 	

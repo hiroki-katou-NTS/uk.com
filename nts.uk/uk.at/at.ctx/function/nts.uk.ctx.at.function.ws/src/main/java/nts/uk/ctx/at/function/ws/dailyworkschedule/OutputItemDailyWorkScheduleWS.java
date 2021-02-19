@@ -6,6 +6,7 @@ package nts.uk.ctx.at.function.ws.dailyworkschedule;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -14,8 +15,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import nts.arc.enums.EnumAdaptor;
-import nts.arc.enums.EnumConstant;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.function.app.command.dailyworkschedule.OutputItemDailyWorkScheduleCommand;
 import nts.uk.ctx.at.function.app.command.dailyworkschedule.OutputItemDailyWorkScheduleDeleteHandler;
@@ -24,9 +23,7 @@ import nts.uk.ctx.at.function.app.find.dailyworkschedule.DataInforReturnDto;
 import nts.uk.ctx.at.function.app.find.dailyworkschedule.DataReturnDto;
 import nts.uk.ctx.at.function.app.find.dailyworkschedule.OutputItemDailyWorkScheduleDto;
 import nts.uk.ctx.at.function.app.find.dailyworkschedule.OutputItemDailyWorkScheduleFinder;
-import nts.uk.ctx.at.function.dom.dailyworkschedule.NameWorkTypeOrHourZone;
-import nts.uk.ctx.at.function.dom.dailyworkschedule.RemarkInputContent;
-import nts.uk.ctx.at.function.dom.dailyworkschedule.RemarksContentChoice;
+import nts.uk.ctx.at.function.app.find.dailyworkschedule.OutputStandardSettingOfDailyWorkScheduleDto;
 
 /**
  * The Class OutputItemDailyWorkScheduleWS.
@@ -55,8 +52,8 @@ public class OutputItemDailyWorkScheduleWS extends WebService{
 	 */
 	@Path("find")
 	@POST
-	public Map<String, Object> find(){
-		return this.outputItemDailyWorkScheduleFinder.findByCid();
+	public Map<String, Object> find(RequestStartScreenCDto dto) {
+		return this.outputItemDailyWorkScheduleFinder.startScreenC(Optional.of(dto.getCode()), dto.getSelectTionType());
 	}
 	
 	/**
@@ -75,10 +72,10 @@ public class OutputItemDailyWorkScheduleWS extends WebService{
 	 *
 	 * @param code the code
 	 */
-	@Path("delete/{code}")
+	@Path("delete/{layoutId}/{selectionType}")
 	@POST
-	public void delete(@PathParam("code") String code){
-		this.outputItemDailyWorkScheduleDeleteHandler.delete(code);
+	public void delete(@PathParam("layoutId") String layoutId, @PathParam("selectionType") Integer selectionType) {
+		this.outputItemDailyWorkScheduleDeleteHandler.delete(layoutId, selectionType);
 	}
 	
 	/**
@@ -88,7 +85,7 @@ public class OutputItemDailyWorkScheduleWS extends WebService{
 	 */
 	@Path("findCopy")
 	@POST
-	public List<DataInforReturnDto> findCopy(){
+	public List<DataInforReturnDto> findCopy() {
 		return this.outputItemDailyWorkScheduleFinder.getFormatDailyPerformance();
 	}
 	
@@ -99,43 +96,42 @@ public class OutputItemDailyWorkScheduleWS extends WebService{
 	 * @param codeSourceSerivce the code source serivce
 	 * @return the list
 	 */
-	@Path("executeCopy/{codeCopy}/{codeSourceSerivce}")
+	@Path("executeCopy/{codeCopy}/{codeSourceSerivce}/{selectionType}/{fontSize}")
 	@POST
-	public DataReturnDto executeCopy(@PathParam("codeCopy") String codeCopy, @PathParam("codeSourceSerivce") String codeSourceSerivce){
-		return this.outputItemDailyWorkScheduleFinder.executeCopy(codeCopy, codeSourceSerivce);
+	public DataReturnDto executeCopy(@PathParam("codeCopy") String codeCopy
+			, @PathParam("codeSourceSerivce") String codeSourceSerivce
+			, @PathParam("selectionType") Integer selectionType
+			, @PathParam("fontSize") Integer fontSize) {
+		return this.outputItemDailyWorkScheduleFinder.executeCopy(codeCopy, codeSourceSerivce, selectionType, fontSize);
+	}
+	
+	@Path("findByCode/{code}/{selectionType}")
+	@POST
+	public OutputItemDailyWorkScheduleDto findByCode(@PathParam("code") String code, @PathParam("selectionType") Integer selectionType) {
+		return this.outputItemDailyWorkScheduleFinder.findByCode(code, selectionType);
+	}
+
+	/**
+	 * Find stand setting by company id.
+	 *
+	 * @param companyId the company id
+	 * @return the output standard setting of daily work schedule dto
+	 */
+	@Path("findStandardSetting/{companyId}")
+	@POST
+	public OutputStandardSettingOfDailyWorkScheduleDto findStandSettingByCompanyId(@PathParam("companyId") String companyId) {
+		return this.outputItemDailyWorkScheduleFinder.getStandardSetting(companyId);
 	}
 	
 	/**
-	 * Gets the enum name.
+	 * Find free setting by company id.
 	 *
-	 * @return the enum name
+	 * @param companyId the company id
+	 * @return the output standard setting of daily work schedule dto
 	 */
-	@Path("enumName")
+	@Path("findFreeSetting/{companyId}/{employeeId}")
 	@POST
-	public List<EnumConstant> getEnumName(){
-		return EnumAdaptor.convertToValueNameList(NameWorkTypeOrHourZone.class);
-	}
-	
-	/**
-	 * Gets the enum remark content choice.
-	 *
-	 * @return the enum remark content choice
-	 */
-	@Path("enumRemarkContentChoice")
-	@POST
-	public List<EnumConstant> getEnumRemarkContentChoice(){
-		return EnumAdaptor.convertToValueNameList(RemarksContentChoice.class);
-	}
-	
-	@Path("enumRemarkInputContent")
-	@POST
-	public List<EnumConstant> getEnumRemarkInputContent(){
-		return EnumAdaptor.convertToValueNameList(RemarkInputContent.class);
-	}
-	
-	@Path("findByCode/{code}")
-	@POST
-	public OutputItemDailyWorkScheduleDto findByCode(@PathParam("code") String code){
-		return this.outputItemDailyWorkScheduleFinder.findByCodeId(code);
+	public OutputStandardSettingOfDailyWorkScheduleDto findFreeSettingByCompanyId(@PathParam("companyId") String companyId) {
+		return this.outputItemDailyWorkScheduleFinder.getStandardSetting(companyId);
 	}
 }

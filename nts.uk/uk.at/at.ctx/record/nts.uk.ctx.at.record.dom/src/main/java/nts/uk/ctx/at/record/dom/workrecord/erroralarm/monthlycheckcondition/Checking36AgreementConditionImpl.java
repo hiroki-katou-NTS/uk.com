@@ -1,11 +1,5 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition;
 
-import java.util.List;
-import java.util.Optional;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
@@ -14,7 +8,6 @@ import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementMonthSettingRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementYearSettingRepository;
-import nts.uk.ctx.at.record.dom.standardtime.repository.BasicAgreementSettingRepository;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.common.Year;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.exceptsetting.AgreementMonthSetting;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.exceptsetting.AgreementYearSetting;
@@ -25,15 +18,17 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfM
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import java.util.List;
+import java.util.Optional;
+
 @Stateless
 public class Checking36AgreementConditionImpl implements Checking36AgreementCondition{
 	
 	@Inject
 	private AgreementYearSettingRepository agreementYearSettingRepo;
-	
-	@Inject
-	private BasicAgreementSettingRepository basicAgreementSettingRepo;
-	
+
 	@Inject 
 	private AgreementMonthSettingRepository agreementMonthSettingRepo;
 	
@@ -227,7 +222,6 @@ public class Checking36AgreementConditionImpl implements Checking36AgreementCond
 				/** TODO: 36協定時間対応により、コメントアウトされた */
 //				basicSet.setAlarmOneYear(new AlarmOneYear(newAgreementYearSetting.getAlarmOneYear().v()));
 //				basicSet.setErrorOneYear(new ErrorOneYear(newAgreementYearSetting.getErrorOneYear().v()));
-				this.basicAgreementSettingRepo.update2(basicSet);
 			}
 			
 			if(yearMonth!=null){
@@ -238,7 +232,6 @@ public class Checking36AgreementConditionImpl implements Checking36AgreementCond
 					/** TODO: 36協定時間対応により、コメントアウトされた */
 //					basicSet.setAlarmOneMonth(agreementMonthSetting.getAlarmOneMonth());
 //					basicSet.setErrorOneMonth(agreementMonthSetting.getErrorOneMonth());
-					this.basicAgreementSettingRepo.update2(basicSet);
 				}
 			
 			}

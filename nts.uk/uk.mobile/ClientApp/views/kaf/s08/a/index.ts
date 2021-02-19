@@ -35,7 +35,7 @@ export class KafS08AComponent extends Vue {
     @Prop({default : () => {}}) public readonly params!: any;
 
     //public paramsFromA1: any | null = null;
-    public achievementDetails: [] = [];
+    public actualContent: [] = [];
     public comment: Object = {};
     public derpartureTime: number;
     public returnTime: number;
@@ -74,7 +74,7 @@ export class KafS08AComponent extends Vue {
         vm.derpartureTime = departureTime;
         vm.returnTime = returnTime;
         //table có được ở màn hình A1 chuyển lên.
-        vm.achievementDetails = achievementDetails;
+        // vm.achievementDetails = achievementDetails;
         //lấy giá trị comment set ở A1
         vm.comment = comment;
         //nhan businessTripInfoOutput tu man hinh start
@@ -99,8 +99,9 @@ export class KafS08AComponent extends Vue {
     }
 
     //thực hiện emit từ component con A2 quay trở lại A1
-    public ProcessPrevStepOne(departureTime, returnTime, appReason) {
+    public ProcessPrevStepOne(departureTime, returnTime, appReason, businessTripActualContent) {
         const vm = this;
+        vm.actualContent = businessTripActualContent;
         vm.derpartureTime = departureTime;
         vm.returnTime = returnTime;
         vm.appReason = appReason;

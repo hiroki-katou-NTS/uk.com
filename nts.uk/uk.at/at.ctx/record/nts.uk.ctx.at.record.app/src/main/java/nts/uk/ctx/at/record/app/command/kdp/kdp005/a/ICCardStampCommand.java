@@ -32,7 +32,7 @@ public class ICCardStampCommand {
 	private RefectActualResultCommand refActualResult;
 
 	public GeneralDateTime getStampDatetime() {
-		return GeneralDateTime.fromString(this.datetime, "yyyy/MM/dd HH:mm:ss");
+		return GeneralDateTime.now();
 	}
 
 	public StampButton getStampButton() {

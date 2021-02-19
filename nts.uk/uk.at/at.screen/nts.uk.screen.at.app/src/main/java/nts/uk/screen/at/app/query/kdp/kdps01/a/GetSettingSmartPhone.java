@@ -132,18 +132,21 @@ public class GetSettingSmartPhone {
 		}
 
 		@Override
-		public Optional<StampSettingPerson> getStampSet(String companyId) {
+		public Optional<StampSettingPerson> getStampSet() {
+			String companyId = AppContexts.user().companyId();
 			return stampSetPerRepo.getStampSet(companyId);
 		}
 
 		@Override
-		public Optional<SettingsSmartphoneStamp> getSettingsSmartphone(String companyId) {
+		public Optional<SettingsSmartphoneStamp> getSettingsSmartphone() {
+			String companyId = AppContexts.user().companyId();
 			return settingsSmartphoneStampRepo.get(companyId);
 		}
 
 		@Override
-		public Optional<PortalStampSettings> getPotalSettings(String comppanyID) {
-			return portalStampSettingsrepo.get(comppanyID);
+		public Optional<PortalStampSettings> getPotalSettings() {
+			String companyId = AppContexts.user().companyId();
+			return portalStampSettingsrepo.get(companyId);
 		}
 
 		@Override

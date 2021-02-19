@@ -13,7 +13,7 @@
 				nts.uk.ctx.at.shared.dom.yearholidaygrant.YearHolidayNote
 				nts.uk.ctx.at.shared.dom.yearholidaygrant.ConditionValue
 				nts.uk.ctx.at.shared.dom.yearholidaygrant.WorkingDays
-				nts.uk.ctx.at.shared.dom.yearholidaygrant.AttendanceRate
+				nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AttendanceRate
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="style.css" />
@@ -32,7 +32,7 @@
 					data-bind="click: addFunction, enable: $root.errors.isEmpty">#{i18n.getText('KMF003_4')}</button>
 				<button id="A_BTN_003" data-bind="click: deleteFunction, enable: !editMode()"
 					class="danger">#{i18n.getText('KMF003_6')}</button>
-				<button id="print-button" data-bind="click: exportExcel">#{i18n.getText('KMK007_4')}</button> 	
+				<!-- <button id="print-button" data-bind="click: exportExcel">#{i18n.getText('KMK007_4')}</button> --> 	
 				
 			</div>
 			<!-- END FUNCTION AREA-->

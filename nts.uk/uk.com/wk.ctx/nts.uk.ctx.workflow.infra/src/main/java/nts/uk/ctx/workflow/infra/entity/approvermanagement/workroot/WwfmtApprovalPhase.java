@@ -27,9 +27,9 @@ public class WwfmtApprovalPhase extends UkJpaEntity implements Serializable{
 	/**主キー*/
 	@EmbeddedId
 	public WwfmtApprovalPhasePK wwfmtApprovalPhasePK;
-	/**分岐ID*/
-	@Column(name = "BRANCH_ID")
-	public String branchId;
+//	/**分岐ID*/
+//	@Column(name = "BRANCH_ID")
+//	public String branchId;
 	/**承認形態*/
 	@Column(name = "APPROVAL_FORM")
 	public int approvalForm;

@@ -194,7 +194,7 @@ public class ReflectAttendanceClock {
 		}
 		//実打刻を反映するなのかをチェックする
 		if(actualStampAtr == ActualStampAtr.STAMP ) {
-			ReasonTimeChange reasonTimeChangeNew = new ReasonTimeChange(TimeChangeMeans.REAL_STAMP,EngravingMethod.TIME_RECORD_ID_INPUT);
+			ReasonTimeChange reasonTimeChangeNew = new ReasonTimeChange(TimeChangeMeans.REAL_STAMP,Optional.of(EngravingMethod.TIME_RECORD_ID_INPUT));
 			//時刻を変更してもいいか判断する
 			boolean check = this.isCanChangeTime(cid, workStamp, reasonTimeChangeNew);
 			if(!check) {
@@ -354,11 +354,10 @@ public class ReflectAttendanceClock {
 			}else {
 				WorkStamp workStampNew = new WorkStamp();
 				WorkTimeInformation timeDay = new WorkTimeInformation(
-						new ReasonTimeChange(TimeChangeMeans.REAL_STAMP, EngravingMethod.TIME_RECORD_ID_INPUT),
+						new ReasonTimeChange(TimeChangeMeans.REAL_STAMP, Optional.of(EngravingMethod.TIME_RECORD_ID_INPUT)),
 						timeWithDayAttr);
 				workStampNew.setTimeDay(timeDay);
 				workStampNew.setLocationCode(Optional.empty());
-				workStampNew.setAfterRoundingTime(timeWithDayAttr);
 				workStamp = Optional.of(workStampNew);
 				workStamp.get().setLocationCode(Optional.ofNullable(timePrintDestinationOutput.getLocationCode()));
 				if(actualStampAtr == ActualStampAtr.STAMP ) {
@@ -369,9 +368,9 @@ public class ReflectAttendanceClock {
 				
 			}
 			//打刻を丸める (làm tròn 打刻)
-			this.roundStamp(integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTimeCode() !=null
-					?integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTimeCode().v():null, workStamp.get(),
-					attendanceAtr, actualStampAtr);
+//			this.roundStamp(integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTimeCode() !=null
+//					?integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTimeCode().v():null, workStamp.get(),
+//					attendanceAtr, actualStampAtr);
 			
 			if(actualStampAtr == ActualStampAtr.STAMP ) {
 				timeActualStamp.get().setStamp(workStamp);
@@ -393,11 +392,10 @@ public class ReflectAttendanceClock {
 			TimeActualStamp timeActualStamp = new TimeActualStamp();
 			WorkStamp workStamp = new WorkStamp();
 			WorkTimeInformation timeDay = new WorkTimeInformation(
-					new ReasonTimeChange(TimeChangeMeans.REAL_STAMP, EngravingMethod.TIME_RECORD_ID_INPUT),
+					new ReasonTimeChange(TimeChangeMeans.REAL_STAMP, Optional.of(EngravingMethod.TIME_RECORD_ID_INPUT)),
 					timeWithDayAttr);
 			workStamp.setTimeDay(timeDay);
 			workStamp.setLocationCode(Optional.empty());
-			workStamp.setAfterRoundingTime(timeWithDayAttr);
 			workStamp.setLocationCode(Optional.ofNullable(timePrintDestinationOutput.getLocationCode()));
 			if(actualStampAtr == ActualStampAtr.STAMP ) {
 				timeActualStamp.setStamp(Optional.of(workStamp));
@@ -405,9 +403,9 @@ public class ReflectAttendanceClock {
 				timeActualStamp.setActualStamp(Optional.of(workStamp));
 			}
 			
-				this.roundStamp(integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTimeCode() !=null
-						? integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTimeCode().v():null, workStamp,
-					attendanceAtr, actualStampAtr);
+//				this.roundStamp(integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTimeCode() !=null
+//						? integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTimeCode().v():null, workStamp,
+//					attendanceAtr, actualStampAtr);
 			//パラメータの実打刻区分をチェックする
 			if(actualStampAtr == ActualStampAtr.STAMP_REAL ) {
 				//申告時刻を反映する
@@ -441,51 +439,51 @@ public class ReflectAttendanceClock {
 	 * 打刻を丸める (new_2020)
 	 */
 	
-	public void roundStamp(String workTimeCode, WorkStamp workStamp,AttendanceAtr attendanceAtr,ActualStampAtr actualStampAtr) {
-		String companyId = AppContexts.user().companyId();
-		if (actualStampAtr == ActualStampAtr.STAMP) {
-			// ドメインモデル「丸め設定」を取得する (Lấy 「丸め設定」)
-			RoundingSet roudingTime = workTimeCode != null ? this.getRoudingTime(companyId, workTimeCode,
-					attendanceAtr == AttendanceAtr.LEAVING_WORK ? Superiority.OFFICE_WORK : Superiority.ATTENDANCE)
-					: null;
-			
-			InstantRounding instantRounding = null;
-			if (roudingTime != null) {
-				instantRounding = new InstantRounding(roudingTime.getRoundingSet().getFontRearSection(),
-						roudingTime.getRoundingSet().getRoundingTimeUnit());
-			}
-			//勤怠打刻．時刻を丸める (Làm tròn 勤怠打刻．時刻 )
-			if (instantRounding != null && workStamp.getTimeDay().getTimeWithDay().isPresent()) {
-				//block thời gian theo e num ( 1,5,6,10,15,20,30,60)
-				int blockTime = new Integer(instantRounding.getRoundingTimeUnit().description).intValue();
-				//tổng thời gian tuyền vào
-				int numberMinuteTimeOfDay = workStamp.getTimeDay().getTimeWithDay().get().v().intValue();
-				//thời gian dư sau khi chia dư cho block time
-				int modTimeOfDay = numberMinuteTimeOfDay % blockTime;
-				//thoi gian thay doi sau khi lam tron
-				int timeChange = 0;
-				//làm tròn lên hay xuống
-				boolean isBefore = instantRounding.getFontRearSection() == FontRearSection.BEFORE;
-				if(isBefore) {
-					timeChange = (modTimeOfDay ==0)? numberMinuteTimeOfDay:numberMinuteTimeOfDay - modTimeOfDay;
-				}else {
-					timeChange = (modTimeOfDay ==0)? numberMinuteTimeOfDay:numberMinuteTimeOfDay - modTimeOfDay + blockTime;
-				}
-				//workStamp.getTimeDay().setTimeWithDay(Optional.of(new TimeWithDayAttr(timeChange)));
-				workStamp.setAfterRoundingTime(new TimeWithDayAttr(timeChange));
-			}//end : nếu time khác giá trị default
-		}
-	}
-	private RoundingSet getRoudingTime(String companyId, String workTimeCode, Superiority superiority) {
-		Optional<WorkTimezoneCommonSet> workTimezoneCommonSet = GetCommonSet.workTimezoneCommonSet(
-				requireService.createRequire(), companyId, workTimeCode);
-		if (workTimezoneCommonSet.isPresent()) {
-			WorkTimezoneStampSet stampSet = workTimezoneCommonSet.get().getStampSet();
-			return stampSet.getRoundingSets().stream().filter(item -> item.getSection() == superiority).findFirst().isPresent() ?
-					stampSet.getRoundingSets().stream().filter(item -> item.getSection() == superiority).findFirst().get() : null;
-		}
-		return null;
-	}
+//	public void roundStamp(String workTimeCode, WorkStamp workStamp,AttendanceAtr attendanceAtr,ActualStampAtr actualStampAtr) {
+//		String companyId = AppContexts.user().companyId();
+//		if (actualStampAtr == ActualStampAtr.STAMP) {
+//			// ドメインモデル「丸め設定」を取得する (Lấy 「丸め設定」)
+//			RoundingSet roudingTime = workTimeCode != null ? this.getRoudingTime(companyId, workTimeCode,
+//					attendanceAtr == AttendanceAtr.LEAVING_WORK ? Superiority.OFFICE_WORK : Superiority.ATTENDANCE)
+//					: null;
+//			
+//			InstantRounding instantRounding = null;
+//			if (roudingTime != null) {
+//				instantRounding = new InstantRounding(roudingTime.getRoundingSet().getFontRearSection(),
+//						roudingTime.getRoundingSet().getRoundingTimeUnit());
+//			}
+//			//勤怠打刻．時刻を丸める (Làm tròn 勤怠打刻．時刻 )
+//			if (instantRounding != null && workStamp.getTimeDay().getTimeWithDay().isPresent()) {
+//				//block thời gian theo e num ( 1,5,6,10,15,20,30,60)
+//				int blockTime = new Integer(instantRounding.getRoundingTimeUnit().description).intValue();
+//				//tổng thời gian tuyền vào
+//				int numberMinuteTimeOfDay = workStamp.getTimeDay().getTimeWithDay().get().v().intValue();
+//				//thời gian dư sau khi chia dư cho block time
+//				int modTimeOfDay = numberMinuteTimeOfDay % blockTime;
+//				//thoi gian thay doi sau khi lam tron
+//				int timeChange = 0;
+//				//làm tròn lên hay xuống
+//				boolean isBefore = instantRounding.getFontRearSection() == FontRearSection.BEFORE;
+//				if(isBefore) {
+//					timeChange = (modTimeOfDay ==0)? numberMinuteTimeOfDay:numberMinuteTimeOfDay - modTimeOfDay;
+//				}else {
+//					timeChange = (modTimeOfDay ==0)? numberMinuteTimeOfDay:numberMinuteTimeOfDay - modTimeOfDay + blockTime;
+//				}
+//				//workStamp.getTimeDay().setTimeWithDay(Optional.of(new TimeWithDayAttr(timeChange)));
+//				workStamp.setAfterRoundingTime(new TimeWithDayAttr(timeChange));
+//			}//end : nếu time khác giá trị default
+//		}
+//	}
+//	private RoundingSet getRoudingTime(String companyId, String workTimeCode, Superiority superiority) {
+//		Optional<WorkTimezoneCommonSet> workTimezoneCommonSet = GetCommonSet.workTimezoneCommonSet(
+//				requireService.createRequire(), companyId, workTimeCode);
+//		if (workTimezoneCommonSet.isPresent()) {
+//			WorkTimezoneStampSet stampSet = workTimezoneCommonSet.get().getStampSet();
+//			return stampSet.getRoundingSets().stream().filter(item -> item.getSection() == superiority).findFirst().isPresent() ?
+//					stampSet.getRoundingSets().stream().filter(item -> item.getSection() == superiority).findFirst().get() : null;
+//		}
+//		return null;
+//	}
 	
 	/**
 	 * 時刻を変更してもいいか判断する (new_2020)

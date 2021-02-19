@@ -11,6 +11,9 @@ import org.junit.Test;
 
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletsHelper.ShiftPalletsComHelper.PalletHelper.PalletCombinationsHelper;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.Combinations;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftCombinationName;
+import nts.uk.ctx.at.schedule.dom.shift.management.shiftPalette.ShiftPaletteCombinations;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
 
 /**
@@ -23,7 +26,7 @@ public class ShiftPalletCombinationsTest {
 	@Test
 	public void create_shiftPalletsCombi_position0_fail() {
 		NtsAssert.businessException("Msg_1616", () -> {
-			new ShiftPalletCombinations(
+			new ShiftPaletteCombinations(
 					0, 
 					new ShiftCombinationName("shiftComName"), // dummy
 					Arrays.asList(new Combinations(
@@ -35,7 +38,7 @@ public class ShiftPalletCombinationsTest {
 	@Test
 	public void create_shiftPalletsCombi_position21_fail() {
 		NtsAssert.businessException("Msg_1616", () -> {
-			new ShiftPalletCombinations(
+			new ShiftPaletteCombinations(
 					21, 
 					new ShiftCombinationName("shiftComName"), // dummy
 					Arrays.asList(new Combinations(
@@ -47,7 +50,7 @@ public class ShiftPalletCombinationsTest {
 	@Test
 	public void create_shiftPalletsCombi_size0_fail() {
 		NtsAssert.businessException("Msg_1626", () -> {
-			new ShiftPalletCombinations(
+			new ShiftPaletteCombinations(
 					1, // dummy
 					new ShiftCombinationName("shiftComName"), // dummy
 					Collections.emptyList());
@@ -57,7 +60,7 @@ public class ShiftPalletCombinationsTest {
 	@Test
 	public void create_shiftPalletsCombi_size32_fail() {
 		NtsAssert.businessException("Msg_1626", () -> {
-			new ShiftPalletCombinations(
+			new ShiftPaletteCombinations(
 					1, // dummy
 					new ShiftCombinationName("shiftComName"), // dummy
 					Arrays.asList(
@@ -99,7 +102,7 @@ public class ShiftPalletCombinationsTest {
 	@Test
 	public void create_shiftPalletsCombi_duplicate() {
 		NtsAssert.businessException("Msg_1626", () -> {
-			new ShiftPalletCombinations(
+			new ShiftPaletteCombinations(
 					1, // dummy
 					new ShiftCombinationName("shiftComName"), // dummy
 					Arrays.asList(
@@ -115,7 +118,7 @@ public class ShiftPalletCombinationsTest {
 
 	@Test 
 	public void create_shiftPalletsCombi_position1_success() {
-		ShiftPalletCombinations target = new ShiftPalletCombinations(
+		ShiftPaletteCombinations target = new ShiftPaletteCombinations(
 				1, 
 				new ShiftCombinationName("shiftComName"),
 				Arrays.asList(new Combinations(
@@ -136,7 +139,7 @@ public class ShiftPalletCombinationsTest {
 	
 	@Test
 	public void create_shiftPalletsCombi_position20_success() {
-		ShiftPalletCombinations target = new ShiftPalletCombinations(
+		ShiftPaletteCombinations target = new ShiftPaletteCombinations(
 				20, 
 				new ShiftCombinationName("shiftComName"),
 				Arrays.asList(new Combinations(
@@ -158,7 +161,7 @@ public class ShiftPalletCombinationsTest {
 	
 	@Test
 	public void create_shiftPalletsCombi_size1_success() {
-		ShiftPalletCombinations target = new ShiftPalletCombinations(
+		ShiftPaletteCombinations target = new ShiftPaletteCombinations(
 					1, // dummy
 					new ShiftCombinationName("shiftComName"), // dummy
 					Arrays.asList(
@@ -181,7 +184,7 @@ public class ShiftPalletCombinationsTest {
 	
 	@Test
 	public void create_shiftPalletsCombi_size31_success() {
-		ShiftPalletCombinations target = new ShiftPalletCombinations(
+		ShiftPaletteCombinations target = new ShiftPaletteCombinations(
 					1, // dummy
 					new ShiftCombinationName("shiftComName"), // dummy
 					Arrays.asList(
@@ -234,7 +237,7 @@ public class ShiftPalletCombinationsTest {
 	
 	@Test
 	public void sortCombinations_success() {
-		ShiftPalletCombinations target = new ShiftPalletCombinations(
+		ShiftPaletteCombinations target = new ShiftPaletteCombinations(
 				1, // dummy
 				new ShiftCombinationName("shiftComName"),  // dummy
 				Arrays.asList(
@@ -257,7 +260,7 @@ public class ShiftPalletCombinationsTest {
 	
 	@Test
 	public void testGetListShiftMasterCode() {
-		ShiftPalletCombinations target = new ShiftPalletCombinations(
+		ShiftPaletteCombinations target = new ShiftPaletteCombinations(
 				1, // dummy
 				new ShiftCombinationName("shiftComName"),  // dummy
 				Arrays.asList(
@@ -294,7 +297,7 @@ public class ShiftPalletCombinationsTest {
 	
 	@Test
 	public void getters() {
-		ShiftPalletCombinations target = PalletCombinationsHelper.DUMMY;
+		ShiftPaletteCombinations target = PalletCombinationsHelper.DUMMY;
 		NtsAssert.invokeGetters(target);
 	}
 

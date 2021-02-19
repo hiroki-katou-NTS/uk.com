@@ -55,11 +55,11 @@ public class AnnualPaidLeaveFinder {
         dto.setMaxManageSemiVacation(setting.getManageAnnualSetting().getHalfDayManage().manageType.value);
         dto.setMaxNumberSemiVacation(setting.getManageAnnualSetting().getHalfDayManage().reference.value);
         dto.setMaxNumberCompany(setting.getManageAnnualSetting().getHalfDayManage().maxNumberUniformCompany.v());
-        dto.setMaxGrantDay(setting.getManageAnnualSetting().getMaxGrantDay().v());
-        dto.setMaxRemainingDay(setting.getManageAnnualSetting().getRemainingNumberSetting().remainingDayMaxNumber.v());
+      /*  dto.setMaxGrantDay(setting.getManageAnnualSetting().getMaxGrantDay().v());
+        dto.setMaxRemainingDay(setting.getManageAnnualSetting().getRemainingNumberSetting().remainingDayMaxNumber.v());*/
         dto.setNumberYearRetain(setting.getManageAnnualSetting().getRemainingNumberSetting().retentionYear.v());
-        dto.setRemainingNumberDisplay(setting.getManageAnnualSetting().getDisplaySetting().remainingNumberDisplay.value);
-        dto.setNextGrantDayDisplay(setting.getManageAnnualSetting().getDisplaySetting().nextGrantDayDisplay.value);
+        /*dto.setRemainingNumberDisplay(setting.getManageAnnualSetting().getDisplaySetting().remainingNumberDisplay.value);
+        dto.setNextGrantDayDisplay(setting.getManageAnnualSetting().getDisplaySetting().nextGrantDayDisplay.value);*/
         dto.setYearlyOfDays(setting.getManageAnnualSetting().getYearlyOfNumberDays().v());        
         dto.setRoundProcessCla(setting.getManageAnnualSetting().getHalfDayManage().roundProcesCla.value);
         
@@ -70,7 +70,9 @@ public class AnnualPaidLeaveFinder {
         dto.setReference(setting.getTimeSetting().getMaxYearDayLeave().reference.value);
         dto.setMaxTimeDay(setting.getTimeSetting().getMaxYearDayLeave().maxNumberUniformCompany.v());
         dto.setRoundProcessClassific(setting.getTimeSetting().getRoundProcessClassific().value);
-        
+        dto.setTimeOfDayReference(setting.getTimeSetting().getTimeAnnualLeaveTimeDay().getTimeOfDayReference().value);
+        dto.setUnifromTime(setting.getTimeSetting().getTimeAnnualLeaveTimeDay().getUniformTime().isPresent() ? setting.getTimeSetting().getTimeAnnualLeaveTimeDay().getUniformTime().get().v() : null );
+        dto.setContractTimeRound(setting.getTimeSetting().getTimeAnnualLeaveTimeDay().getContractTimeRound().isPresent() ? setting.getTimeSetting().getTimeAnnualLeaveTimeDay().getContractTimeRound().get().value : null );
         return dto;
     }
 }

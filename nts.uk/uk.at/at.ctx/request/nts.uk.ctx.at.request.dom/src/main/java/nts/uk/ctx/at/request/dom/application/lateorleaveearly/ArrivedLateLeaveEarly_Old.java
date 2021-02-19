@@ -12,10 +12,14 @@ import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReflectionInformation_New;
+/**
+ * 古い遅刻早退取消申請 (古いクラス → 削除予定 → 使わないでください (Old Class → Delete plan → Please don't use it))
+ * @author AnhNM
+ *
+ */
 @Setter
 @Getter
 @EqualsAndHashCode(callSuper=false)
-//遅刻早退取消申請
 public class ArrivedLateLeaveEarly_Old {
 //	取消
 	private List<LateCancelation> lateCancelation;

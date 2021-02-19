@@ -158,7 +158,17 @@ public class JpaInterimBreakDayOffMngRepository extends JpaRepository implements
 			return lstOutput;
 		}
 	}
-	
+
+	@Override
+	public List<InterimBreakMng> getBreakByIds(List<String> mngIds) {
+		if (mngIds == null || mngIds.isEmpty()) return Collections.emptyList();
+		return this.queryProxy().query("SELECT a FROM KrcmtInterimBreakMng a, KrcmtInterimRemainMng b " +
+				"WHERE a.breakMngId = b.remainMngId " +
+				"AND b.remainMngId IN :mngIds", KrcmtInterimBreakMng.class)
+				.setParameter("mngIds", mngIds)
+				.getList(i -> toDomainBreakMng(i));
+	}
+
 	@Override
 	public void persistAndUpdateInterimBreakMng(InterimBreakMng domain) {
 

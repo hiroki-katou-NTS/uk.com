@@ -333,7 +333,7 @@ public class FlexTimeOfMonthly implements SerializableWithOptional{
 					// 週の計算
 					val weekCalc = newWeek.getWeeklyCalculation();
 					weekCalc.aggregate(companyId, employeeId, yearMonth, weekAggrPeriod,
-							workingSystem, aggregateAtr,
+							datePeriod, workingSystem, aggregateAtr,
 							null, null, aggregateTotalWorkingTime,
 							WeekStart.TighteningStartDate, new AttendanceTimeMonth(0),
 							attendanceTimeOfDailyMap, companySets);

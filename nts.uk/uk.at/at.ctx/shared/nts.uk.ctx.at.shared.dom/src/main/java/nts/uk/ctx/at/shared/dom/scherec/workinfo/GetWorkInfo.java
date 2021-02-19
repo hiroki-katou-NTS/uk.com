@@ -21,14 +21,6 @@ public interface GetWorkInfo {
 	 * @return 勤務情報
 	 */
 	Optional<WorkInformation> getRecord(CacheCarrier cacheCarrier, String employeeId, GeneralDate ymd);
-	
-	/**
-	 * 予定の勤務情報を取得する
-	 * @param employeeId 社員ID
-	 * @param ymd 年月日
-	 * @return 勤務情報
-	 */
-	Optional<WorkInformation> getSchedule(CacheCarrier cacheCarrier, String employeeId, GeneralDate ymd);
 
 	/**
 	 * 実績の勤務情報を取得する
@@ -38,11 +30,4 @@ public interface GetWorkInfo {
 	 */
 	Map<GeneralDate, WorkInformation> getRecordMap(CacheCarrier cacheCarrier, String employeeId, DatePeriod period);
 	
-	/**
-	 * 予定の勤務情報を取得する
-	 * @param employeeId 社員ID
-	 * @param period 期間
-	 * @return 勤務情報マップ
-	 */
-	Map<GeneralDate, WorkInformation> getScheduleMap(CacheCarrier cacheCarrier, String employeeId, DatePeriod period);
 }

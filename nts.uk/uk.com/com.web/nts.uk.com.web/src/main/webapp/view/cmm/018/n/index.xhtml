@@ -20,6 +20,7 @@
 			<com:scriptfile path="cmm018.n.start.js" />
 			<com:scriptfile path="cmm018.n.vm.js" />
 			<com:scriptfile path="cmm018.n.service.js" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
 		</ui:define>
 
 		<ui:define name="content">
@@ -30,22 +31,37 @@
 			<div id="contents-area">
 
 				<div id="ccgcomponent"></div>
-
-				<div id="leftPanel">
-					<div id="label1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMM018_90')}</div>
-
-					<div id="rightTable">
-						<table id="multi-list"
-							data-bind="ntsGridList: {
-							height: 390,
-							options: lstAppDis,
-							optionsValue: 'id',
-							columns: columns,
-							multiple: true,
-							value: currentAppType,
-							showNumbering: true
-						}"></table>
+				<div id="container">
+					<div class="controlTop">
+						<!-- N2_1 -->
+						<div style="display: inline-block;">
+							<div class="N21Button" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMM018_125')}</div>						
+						</div>
+						<!-- N2_2 -->
+						<div style="display: inline-block;">						
+							<div data-bind="ntsDatePicker: { value: baseDate }"></div>
+						</div>
+						<!-- rightButton -->
+						<div data-bind="ntsFormLabel: {required: true}" class='rightButton'>#{i18n.getText('CMM018_90')}</div>
 					</div>
+					<!-- N3 -->
+					<div id="component-items-list" class="N3Component"></div>						
+					<!-- rightComponent -->
+					<div class="rightComponent">
+						<div>
+							<table id="multi-list"
+								data-bind="ntsGridList: {
+									height: 390,
+									options: lstAppDis,
+									optionsValue: 'id',
+									columns: columns,
+									multiple: true,
+									value: currentAppType,
+									showNumbering: true
+							}"></table>
+						</div>
+					</div>
+				
 				</div>
 
 			</div>

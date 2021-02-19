@@ -19,7 +19,6 @@ public class MonthlyWorkScheduleCondition {
 	public static final int PAGE_BREAK_NOT_USE = 0;
 	public static final int PAGE_BREAK_EMPLOYEE = 1;
 	public static final int PAGE_BREAK_WORKPLACE = 2;
-	
 
 	/** The company id. */
 	// 会社ID
@@ -30,8 +29,20 @@ public class MonthlyWorkScheduleCondition {
 	private String userId;
 
 	/** The output type. */
-	// 帳票出力種類
+	// 出力形式
 	private Integer outputType;
+
+	/** The item setting classify. */
+	//  項目設定区分
+	private Integer itemSettingType;
+
+	/** The display type. */
+	//  ゼロ表示区分
+	private Integer displayType;
+	
+	/** The item display switch. */
+	//  項目表示切替
+	private Integer itemDisplaySwitch;
 
 	/** The page break indicator. */
 	// 改ページ区分

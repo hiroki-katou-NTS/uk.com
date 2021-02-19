@@ -17,6 +17,7 @@ import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.SubstitutionManag
 import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.dto.ExtraHolidayManagementDataDto;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.dto.SubDataSearchConditionDto;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.dto.SubstituteDataManagementDto;
+import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementDataDto;
 
 /**
  * @author nam.lh
@@ -48,5 +49,11 @@ public class SubHdManagementWebService extends WebService{
 	@Path("getExtraHolidayData")
 	public ExtraHolidayManagementDataDto getExtraHolidayData(SubDataSearchConditionDto dto){
 		return subManagementFinder.getExtraHolidayManagementData(dto);
+	}
+	
+	@POST
+	@Path("getByIdAndUnUse")
+	public List<LeaveManagementDataDto> getLeaveManaDataByIdAndUnUse(String sid) {
+		return subManagementFinder.getLeaveManaDataByIdAndUnUse(sid);
 	}
 }

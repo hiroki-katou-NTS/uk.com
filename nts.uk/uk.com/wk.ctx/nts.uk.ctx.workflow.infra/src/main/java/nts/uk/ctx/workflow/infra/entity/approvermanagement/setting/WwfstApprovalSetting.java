@@ -9,13 +9,13 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
-@Table(name = "WWFST_APPROVAL_SETTING")
+@Table(name = "WWFMT_APPROVAL")
 @AllArgsConstructor
 @NoArgsConstructor
-public class WwfstApprovalSetting extends UkJpaEntity implements Serializable {
+public class WwfstApprovalSetting extends ContractUkJpaEntity implements Serializable {
 
 	/**
 	 * 
@@ -29,9 +29,21 @@ public class WwfstApprovalSetting extends UkJpaEntity implements Serializable {
 	public String companyId;
 
 	/** 本人による承認 */
-	@Column(name = "PRINCIPAL_APPROVAL_FLG")
-	public int principalApprovalFlg;
-
+	@Column(name = "SELF_APPROVAL_ATR")
+	public int selfApprovalAtr;
+	
+	// 会社単位
+	@Column(name = "CMP_UNIT_SET")
+	public int cmpUnitSet;
+	
+	// 職場単位
+	@Column(name = "WKP_UNIT_SET")
+	public int wkpUnitSet;
+	
+	// 社員単位
+	@Column(name = "SYA_UNIT_SET")
+	public int syaUnitSet;
+	
 	@Override
 	protected Object getKey() {
 		return companyId;

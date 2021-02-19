@@ -29,7 +29,7 @@ public class StampRecordTest {
 		
 		StampNumber stampNumber = new StampNumber("stampNumber");
 		GeneralDateTime stampDateTime = GeneralDateTime.now();
-		Optional<EmpInfoTerminalCode> empInfoTerCode = Optional.of(new EmpInfoTerminalCode(1000)); 
+		Optional<EmpInfoTerminalCode> empInfoTerCode = Optional.of(new EmpInfoTerminalCode("1000")); 
 		StampRecord stampRecord = new StampRecord(new ContractCode("DUMMY"), 
 				stampNumber,
 				stampDateTime, 

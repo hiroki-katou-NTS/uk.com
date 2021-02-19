@@ -23,10 +23,8 @@ public class JpaAcquisitionRuleExRepository extends JpaRepository implements Acq
                             +"AR.MANAGE_ATR, "
                             +"AR.COMPENSATORY_DAY_OFF, "
                             +"AR.SABSTITUTE_HOLIDAY, "
-                            +"AR.FUNDED_PAID_HOLIDAY, "
-                            +"AR.EXCESS_HOLIDAY, "
-                            +"AR.OVERRIDE_HOLIDAY "
-                    +"FROM KARST_ACQUISITION_RULE AR "
+                            +"AR.FUNDED_PAID_HOLIDAY "
+                    +"FROM KSHMT_HD_GET_RULE AR "
                     +"WHERE AR.CID = ? ";
 
     @Override
@@ -67,10 +65,6 @@ public class JpaAcquisitionRuleExRepository extends JpaRepository implements Acq
                 datas.add(toData("", "", I18NText.getText("KMF001_171"), null));
                 // Row 4
                 datas.add(toData("", "", I18NText.getText("KMF001_172"), null));
-                // Row 5
-                datas.add(toData("", I18NText.getText("KMF001_173"), I18NText.getText("KMF001_174"), null));
-                // Row 6
-                datas.add(toData("", "", I18NText.getText("KMF001_175"), null));
             }
             else {
                 // Row 1
@@ -81,10 +75,6 @@ public class JpaAcquisitionRuleExRepository extends JpaRepository implements Acq
                 datas.add(toData("", "", I18NText.getText("KMF001_171"), fillValue(rs.getString("SABSTITUTE_HOLIDAY"))));
                 // Row 4
                 datas.add(toData("", "", I18NText.getText("KMF001_172"), fillValue(rs.getString("FUNDED_PAID_HOLIDAY"))));
-                // Row 5
-                datas.add(toData("", I18NText.getText("KMF001_173"), I18NText.getText("KMF001_174"), fillValue(rs.getString("EXCESS_HOLIDAY"))));
-                // Row 6
-                datas.add(toData("", "", I18NText.getText("KMF001_175"), fillValue(rs.getString("OVERRIDE_HOLIDAY"))));
             }
 
         }
@@ -103,10 +93,6 @@ public class JpaAcquisitionRuleExRepository extends JpaRepository implements Acq
         datas.add(toData("", "", I18NText.getText("KMF001_171"), null));
         // Row 4
         datas.add(toData("", "", I18NText.getText("KMF001_172"), null));
-        // Row 5
-        datas.add(toData("", I18NText.getText("KMF001_173"), I18NText.getText("KMF001_174"), null));
-        // Row 6
-        datas.add(toData("", "", I18NText.getText("KMF001_175"), null));
 
         return datas;
     }

@@ -140,7 +140,8 @@ module nts.uk.at.view.kdl014.a {
                     tg.push(new EmpInfomation(item));
                 }
             });
-            self.empInfomationList(_.orderBy(tg, ['code'], ['asc']));
+            
+            self.empInfomationList(_.orderBy(tg, ['code', 'dateShow', 'time'], ['asc']));
         }
         
         cancel_Dialog(): any {

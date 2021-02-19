@@ -52,7 +52,7 @@ public class RegisterOfCancelWorkConfirmationTest {
 						new YearMonth(2020),
 						Optional.of("DUMMY"),
 						Optional.of(GeneralDateTime.now()),
-						true).get(),
+						false).get(),
 				any -> require.insert(any.get()));
 	}
 	
@@ -77,7 +77,7 @@ public class RegisterOfCancelWorkConfirmationTest {
 				new YearMonth(2020),
 				Optional.of("DUMMY"),
 				Optional.of(GeneralDateTime.now()),
-				false);
+				true);
 		
 		assertThat(atom).isEmpty();
 	}
@@ -117,7 +117,7 @@ public class RegisterOfCancelWorkConfirmationTest {
 						new YearMonth(2020),
 						Optional.of("DUMMY"),
 						Optional.of(GeneralDateTime.now()),
-						false).get(),
+						true).get(),
 				any -> require.delete(any.get()));
 		
 	}

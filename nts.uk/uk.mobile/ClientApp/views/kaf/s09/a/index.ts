@@ -42,6 +42,8 @@ export class KafS09AComponent extends KafS00ShrComponent {
     public data: any = 'data';
     public isChangeDate: boolean = false;
     public user: any;
+    public C1: boolean = true;
+    public C2: boolean = true;
     public application: any = {
         version: 1,
         prePostAtr: 1,
@@ -73,31 +75,56 @@ export class KafS09AComponent extends KafS00ShrComponent {
 
     };
     public appWorkChangeDto: any = {};
-    public dataOutput;
+    public dataOutput: any = null;
     public appDispInfoStartupOutput: any = {};
+
+    // A3_1 が表示する　AND　A3_1に「変更しない」を選択している =X
+    // 直行直帰申請起動時の表示情報.直行直帰申請の反映.勤務情報を反映する　＝　反映しない or 反映する
+    public get c3() {
+        const self = this;
+
+        let reflectApplication = _.get(self.dataOutput, 'goBackReflect.reflectApplication');
+        let c1 = (reflectApplication == ApplicationStatus.DO_NOT_REFLECT || reflectApplication == ApplicationStatus.DO_REFLECT);
+        let c3 = false;
+        c3 = c1 || _.get(self.model, 'changeWork') == 1;
+
+
+        return c3;
+    }
+
 
     public created() {
         const self = this;
+
         if (self.params) {
-            console.log(self.params);
             self.mode = false;
-            this.dataOutput = self.params;
+            self.dataOutput = self.params;
+            self.appDispInfoStartupOutput = self.dataOutput.appDispInfoStartup;
         }
-        self.fetchStart();
 
     }
     public mounted() {
         let self = this;
-
+        self.fetchStart();
     }
 
     public fetchStart() {
         const self = this;
-        self.$mask('show');
+        if (self.mode) {
+            self.$mask('show');
+        } else {
+            self.$nextTick(() => {
+                self.$mask('show');
+            });
+        }
         self.$auth.user.then((usr: any) => {
             self.user = usr;
         }).then(() => {
-            return self.loadCommonSetting(AppType.GO_RETURN_DIRECTLY_APPLICATION);
+            if (self.mode) {
+                return self.loadCommonSetting(AppType.GO_RETURN_DIRECTLY_APPLICATION);
+            }
+
+            return true;
         }).then((loadData: any) => {
             if (loadData) {
                 return self.$http.post('at', API.startS09, {
@@ -109,8 +136,9 @@ export class KafS09AComponent extends KafS00ShrComponent {
                     appDispInfoStartupDto: self.dataOutput ? self.dataOutput.appDispInfoStartup : self.appDispInfoStartupOutput
                 });
             }
-            if (self.appDispInfoStartupOutput) {
+            if (!_.isNil(_.get(self.appDispInfoStartupOutput, 'appDispInfoWithDateOutput.opErrorFlag'))) {
                 if (self.appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag != 0) {
+
                     return self.$http.post('at', API.startS09, {
                         companyId: self.user.companyId,
                         employeeId: self.user.employeeId,
@@ -132,14 +160,14 @@ export class KafS09AComponent extends KafS00ShrComponent {
             self.createParamB();
             self.createParamC();
             self.bindStart();
-            self.$mask('hide');
         }).catch((err: any) => {
             self.handleErrorMessage(err).then((res: any) => {
                 if (err.messageId == 'Msg_43') {
                     self.$goto('ccg008a');
                 }
             });
-        });
+        })
+        .then(() => self.$mask('hide'));
     }
 
 
@@ -164,27 +192,18 @@ export class KafS09AComponent extends KafS00ShrComponent {
         const self = this;
         self.kaf000_B_Params = null;
         let paramb = {
-            input: {
-                mode: self.mode ? 0 : 1,
-                appDisplaySetting: self.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting,
-                newModeContent: {
-                    // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．申請表示設定																	
-                    appTypeSetting: self.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting,
-                    useMultiDaySwitch: false,
-                    initSelectMultiDay: false
-                },
-                detailModeContent: null
-
-
+            mode: self.mode ? 0 : 1,
+            appDisplaySetting: self.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting,
+            newModeContent: {
+                // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．申請表示設定																	
+                appTypeSetting: self.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting,
+                useMultiDaySwitch: false,
+                initSelectMultiDay: false
             },
-            output: {
-                prePostAtr: 0,
-                startDate: null,
-                endDate: null
-            }
+            detailModeContent: null
         };
         if (!self.mode) {
-            paramb.input.detailModeContent = {
+            paramb.detailModeContent = {
                 prePostAtr: self.appDispInfoStartupOutput.appDetailScreenInfo.application.prePostAtr,
                 startDate: self.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStartDate,
                 endDate: self.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppEndDate,
@@ -199,36 +218,28 @@ export class KafS09AComponent extends KafS00ShrComponent {
         // KAFS00_C_起動情報
         let appDispInfoNoDateOutput = self.appDispInfoStartupOutput.appDispInfoNoDateOutput;
         self.kaf000_C_Params = {
-            input: {
-                // 定型理由の表示
-                // 申請表示情報．申請表示情報(基準日関係なし)．定型理由の表示区分
-                displayFixedReason: appDispInfoNoDateOutput.displayStandardReason,
-                // 申請理由の表示
-                // 申請表示情報．申請表示情報(基準日関係なし)．申請理由の表示区分
-                displayAppReason: appDispInfoNoDateOutput.displayAppReason,
-                // 定型理由一覧
-                // 申請表示情報．申請表示情報(基準日関係なし)．定型理由項目一覧
-                reasonTypeItemLst: appDispInfoNoDateOutput.reasonTypeItemLst,
-                // 申請制限設定
-                // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．申請制限設定
-                appLimitSetting: appDispInfoNoDateOutput.applicationSetting.appLimitSetting,
-                // 選択中の定型理由
-                // empty
-                // opAppStandardReasonCD: this.mode ? 1 : this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason,
-                // 入力中の申請理由
-                // empty
-                // opAppReason: this.mode ? 'Empty' : this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD
-                // 定型理由
-                opAppStandardReasonCD: self.mode ? '' : self.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD,
-                // 申請理由
-                opAppReason: self.mode ? '' : self.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason
-            },
-            output: {
-                // 定型理由
-                opAppStandardReasonCD: self.mode ? '' : self.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD,
-                // 申請理由
-                opAppReason: self.mode ? '' : self.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason
-            }
+            // 定型理由の表示
+            // 申請表示情報．申請表示情報(基準日関係なし)．定型理由の表示区分
+            displayFixedReason: appDispInfoNoDateOutput.displayStandardReason,
+            // 申請理由の表示
+            // 申請表示情報．申請表示情報(基準日関係なし)．申請理由の表示区分
+            displayAppReason: appDispInfoNoDateOutput.displayAppReason,
+            // 定型理由一覧
+            // 申請表示情報．申請表示情報(基準日関係なし)．定型理由項目一覧
+            reasonTypeItemLst: appDispInfoNoDateOutput.reasonTypeItemLst,
+            // 申請制限設定
+            // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．申請制限設定
+            appLimitSetting: appDispInfoNoDateOutput.applicationSetting.appLimitSetting,
+            // 選択中の定型理由
+            // empty
+            // opAppStandardReasonCD: this.mode ? 1 : this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason,
+            // 入力中の申請理由
+            // empty
+            // opAppReason: this.mode ? 'Empty' : this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD
+            // 定型理由
+            opAppStandardReasonCD: self.mode ? '' : self.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD,
+            // 申請理由
+            opAppReason: self.mode ? '' : self.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason
         };
     }
 
@@ -314,16 +325,16 @@ export class KafS09AComponent extends KafS00ShrComponent {
         self.appGoBackDirect.straightDistinction = self.model.straight == 2 ? 0 : 1;
         self.appGoBackDirect.straightLine = self.model.bounce == 2 ? 0 : 1;
         self.appGoBackDirect.isChangedWork = self.model.changeWork == 2 ? 0 : 1;
-        if (self.C1) {
-            if (self.model.changeWork == 1) {
-                self.appGoBackDirect.dataWork = {
-                    workType: self.model.workType.code,
-                    workTime: self.model.workTime.code
-                };
-            }
-        } else {
+        if (!self.C1) {
             self.appGoBackDirect.isChangedWork = null;
         }
+        if (self.C2 && self.c3) {
+            self.appGoBackDirect.dataWork = {
+                workType: self.model.workType.code,
+                workTime: self.model.workTime.code
+            };
+        }
+        self.dataOutput.goBackApplication = self.appGoBackDirect;
         if (!self.mode) {
             let opAppStandardReasonCD =  self.application.opAppStandardReasonCD;
             let opAppReason = self.application.opAppReason;
@@ -463,6 +474,19 @@ export class KafS09AComponent extends KafS00ShrComponent {
             });
         }
     }
+
+    public getValidAllValue() {
+        const vm = this;
+        let validAll: boolean = true;
+        for (let child of vm.$children) {
+            if (!child.$valid) {
+                validAll = false;
+            }
+        }
+        
+        return validAll;
+    }
+
     public register() {
         const self = this;
         if (self.model.straight == 2 && self.model.bounce == 2) {
@@ -500,7 +524,7 @@ export class KafS09AComponent extends KafS00ShrComponent {
             inforGoBackCommonDirectDto: self.dataOutput,
             mode: self.mode
         }).then((res: any) => {
-            self.$mask('hide');
+            // self.$mask('hide');
             let isConfirm = true;
             if (!_.isEmpty(res)) {
                 // display list confirm message
@@ -512,7 +536,8 @@ export class KafS09AComponent extends KafS00ShrComponent {
                     self.registerData(res);
                 }
 
-
+            } else {
+                self.$mask('hide');
             }
 
         }).catch((res: any) => {
@@ -522,30 +547,24 @@ export class KafS09AComponent extends KafS00ShrComponent {
     }
 
 
-    public C1: boolean = true;
+    
     public isC1() {
         const self = this;
-        let param = self.dataOutput.goBackReflect.reflectApplication;
-        if (param == ApplicationStatus.DO_NOT_REFLECT || param == ApplicationStatus.DO_REFLECT) {
-            return false;
-        } else {
-            return true;
-        }
+        
+        const reflectApplication = self.dataOutput.goBackReflect.reflectApplication;
+
+        return !(reflectApplication == ApplicationStatus.DO_NOT_REFLECT || reflectApplication == ApplicationStatus.DO_REFLECT);
+        
     }
-    public C2: boolean = true;
     public isC2() {
         const self = this;
-        let param = self.dataOutput.goBackReflect.reflectApplication;
-        if (param == ApplicationStatus.DO_NOT_REFLECT) {
-            return false;
-        } else {
-            return true;
-        }
+
+        const reflectApplication = self.dataOutput.goBackReflect.reflectApplication;
+
+        return reflectApplication != ApplicationStatus.DO_NOT_REFLECT;
     }
 
-    public isC3() {
-
-    }
+    
     public checkChangeWork() {
         const self = this;
         self.model.changeWork = self.dataOutput.goBackReflect.reflectApplication == ApplicationStatus.DO_REFLECT_1 ? 1 : 2;
@@ -658,6 +677,16 @@ export class KafS09AComponent extends KafS00ShrComponent {
         const self = this;
         console.log('emit' + opAppReason);
         self.application.opAppReason = opAppReason;
+    }
+
+    public kafs00BValid(kafs00BValid) {
+        const self = this;
+        self.isValidateAll = self.getValidAllValue();
+    }
+
+    public kafs00CValid(kafs00CValid) {
+        const self = this;
+        self.isValidateAll = self.getValidAllValue();
     }
 
 }

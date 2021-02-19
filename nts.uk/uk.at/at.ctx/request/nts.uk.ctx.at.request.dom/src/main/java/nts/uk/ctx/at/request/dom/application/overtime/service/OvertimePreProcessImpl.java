@@ -194,8 +194,9 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 		if(recordWorkInfoImport.getLeaveStampTimeFirst()==null){
 			// Input．実績内容．出勤打刻ある　AND　Input．実績内容．退勤打刻なし
 			// request 23
-			DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = dailyAttendanceTimeCaculation.getCalculation(employeeID, date, workType, workTime, 
-					recordWorkInfoImport.getAttendanceStampTimeFirst(), recordWorkInfoImport.getLeaveStampTimeFirst(), Collections.emptyList(), Collections.emptyList());
+			DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = new DailyAttendanceTimeCaculationImport();
+//					dailyAttendanceTimeCaculation.getCalculation(employeeID, date, workType, workTime, 
+//					recordWorkInfoImport.getAttendanceStampTimeFirst(), recordWorkInfoImport.getLeaveStampTimeFirst(), Collections.emptyList(), Collections.emptyList());
 			overTimeInputsRefer.stream().forEach(x -> {
 				x.setApplicationTime(dailyAttendanceTimeCaculationImport.getOverTime().entrySet()
 				.stream().filter(y -> y.getKey()==x.getFrameNo()).findAny()
@@ -217,8 +218,9 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 			return result;
 		}
 		// request 23
-		DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = dailyAttendanceTimeCaculation.getCalculation(employeeID, date, workType, workTime, 
-				recordWorkInfoImport.getAttendanceStampTimeFirst(), recordWorkInfoImport.getLeaveStampTimeFirst(), Collections.emptyList(), Collections.emptyList());
+		DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = new DailyAttendanceTimeCaculationImport();
+//				dailyAttendanceTimeCaculation.getCalculation(employeeID, date, workType, workTime, 
+//				recordWorkInfoImport.getAttendanceStampTimeFirst(), recordWorkInfoImport.getLeaveStampTimeFirst(), Collections.emptyList(), Collections.emptyList());
 		result.setWorkClockFromTo1Refer(convertWorkClockFromTo(recordWorkInfoImport.getAttendanceStampTimeFirst(), recordWorkInfoImport.getLeaveStampTimeFirst()));
 		overTimeInputsRefer.stream().forEach(x -> {
 			x.setApplicationTime(dailyAttendanceTimeCaculationImport.getOverTime().entrySet()
@@ -258,8 +260,9 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 			return result;
 		}
 		// request 23
-		DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = dailyAttendanceTimeCaculation.getCalculation(employeeID, date, workType, workTime, 
-				recordWorkInfoImport.getAttendanceStampTimeFirst(), recordWorkInfoImport.getLeaveStampTimeFirst(), Collections.emptyList(), Collections.emptyList());
+		DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = new DailyAttendanceTimeCaculationImport();
+//				dailyAttendanceTimeCaculation.getCalculation(employeeID, date, workType, workTime, 
+//				recordWorkInfoImport.getAttendanceStampTimeFirst(), recordWorkInfoImport.getLeaveStampTimeFirst(), Collections.emptyList(), Collections.emptyList());
 		result.setWorkClockFromTo1Refer(convertWorkClockFromTo(recordWorkInfoImport.getAttendanceStampTimeFirst(), recordWorkInfoImport.getLeaveStampTimeFirst()));
 		overTimeInputsRefer.stream().forEach(x -> {
 			x.setApplicationTime(dailyAttendanceTimeCaculationImport.getOverTime().entrySet()

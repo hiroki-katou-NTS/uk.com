@@ -4,12 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.scherec.totaltimes;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.ConditionThresholdLimit;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalCondition;
-import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalConditionGetMemento;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.UseAtr;
+import nts.uk.ctx.at.shared.dom.scherec.totaltimes.memento.TotalConditionGetMemento;
 
 /**
  * The Class TotalConditionDto.
@@ -92,8 +94,12 @@ public class TotalConditionDto {
 		 * getThresoldUpperLimit()
 		 */
 		@Override
-		public ConditionThresholdLimit getThresoldUpperLimit() {
-			return new ConditionThresholdLimit(this.command.getThresoldUpperLimit().intValue());
+		public Optional<ConditionThresholdLimit> getThresoldUpperLimit() {
+			if (this.command.getThresoldUpperLimit() == null) {
+				return Optional.empty();
+			}
+			
+			return Optional.of(new ConditionThresholdLimit(this.command.getThresoldUpperLimit().intValue()));
 		}
 
 		/*
@@ -104,8 +110,12 @@ public class TotalConditionDto {
 		 * getThresoldLowerLimit()
 		 */
 		@Override
-		public ConditionThresholdLimit getThresoldLowerLimit() {
-			return new ConditionThresholdLimit(this.command.getThresoldLowerLimit().intValue());
+		public Optional<ConditionThresholdLimit> getThresoldLowerLimit() {
+			if (this.command.getThresoldLowerLimit() == null) {
+				return Optional.empty();
+			}
+			
+			return Optional.of(new ConditionThresholdLimit(this.command.getThresoldLowerLimit().intValue()));
 		}
 
 		
@@ -113,8 +123,8 @@ public class TotalConditionDto {
 		 * @see nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalConditionGetMemento#getAttendanceItemId()
 		 */
 		@Override
-		public Integer getAttendanceItemId() {
-			return this.command.getAttendanceItemId();
+		public Optional<Integer> getAttendanceItemId() {
+			return Optional.ofNullable(this.command.getAttendanceItemId());
 		}
 
 	}

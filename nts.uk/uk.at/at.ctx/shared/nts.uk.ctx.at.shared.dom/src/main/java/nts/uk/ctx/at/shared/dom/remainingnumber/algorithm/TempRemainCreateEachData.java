@@ -319,7 +319,7 @@ TempRemainCreateEachData {
 		SubstVacationSetting subSetting = null;
 		if(employmentHolidaySetting != null
 				&& employmentHolidaySetting.getAbsSetting().isPresent()) {
-			subSetting = employmentHolidaySetting.getAbsSetting().get().getSetting();
+		//	subSetting = employmentHolidaySetting.getAbsSetting().get().getSetting();
 			
 		} else {
 			ComSubstVacation companyHolidaySetting = inforData.getCompanyHolidaySetting().getAbsSetting().get();
@@ -343,7 +343,7 @@ TempRemainCreateEachData {
 		ExpirationTime expriTime = ExpirationTime.UNLIMITED;
 		if(employmentHolidaySetting != null 
 				&& employmentHolidaySetting.getDayOffSetting() != null) {
-			expriTime = employmentHolidaySetting.getDayOffSetting().getCompensatoryAcquisitionUse().getExpirationTime();
+		/*	expriTime = employmentHolidaySetting.getDayOffSetting().getCompensatoryAcquisitionUse().getExpirationTime();*/
 		} else {
 			expriTime = inforData.getCompanyHolidaySetting().getDayOffSetting().getCompensatoryAcquisitionUse().getExpirationTime();
 		}

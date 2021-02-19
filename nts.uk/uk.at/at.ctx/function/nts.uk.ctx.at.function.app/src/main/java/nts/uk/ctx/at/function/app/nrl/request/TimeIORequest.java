@@ -84,7 +84,7 @@ public class TimeIORequest extends NRLRequest<Frame> {
 							.midnightTime(record.get(FieldName.IO_MIDNIGHTOT)).build();
 			
 			Pair<Optional<AtomTask>, Optional<StampDataReflectResultImport>> result = convertTRStampAdapter
-					.convertData(Integer.parseInt(nrlNo.trim()), "000000000000", stamData);
+					.convertData(nrlNo.trim(), "000000000000", stamData);
 			if (result.getLeft().isPresent())
 				result.getLeft().get().run();
 			if (result.getRight().isPresent())

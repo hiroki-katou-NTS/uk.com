@@ -4,11 +4,13 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
     import Model = nts.uk.at.view.kaf009_ref.shr.viewmodel.Model;
     import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
     import Kaf000AViewModel = nts.uk.at.view.kaf000.a.viewmodel.Kaf000AViewModel;
+	import AppInitParam = nts.uk.at.view.kaf000.shr.viewmodel.AppInitParam;
 
     @bean()
     class Kaf009AViewModel extends Kaf000AViewModel {
 
 		appType: KnockoutObservable<number> = ko.observable(AppType.GO_RETURN_DIRECTLY_APPLICATION);
+		isAgentMode : KnockoutObservable<boolean> = ko.observable(false);
         application: KnockoutObservable<Application>;
         applicationTest: any = {
                 employeeID: this.$user.employeeId,
@@ -42,16 +44,38 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
             };
         model: Model;
         dataFetch: KnockoutObservable<ModelDto> = ko.observable(null);
-        mode: string = 'edit';
+        mode: KnockoutObservable<String> = ko.observable('edit');
         isSendMail: KnockoutObservable<Boolean>;
+		isFromOther: boolean = false;
 
-        created(params: any) {
+        created(params: AppInitParam) {
             const vm = this;
+			if(!_.isNil(__viewContext.transferred.value)) {
+				vm.isFromOther = true;
+			}
+			sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');
+			let empLst: Array<string> = [],
+				dateLst: Array<string> = [];
             vm.isSendMail = ko.observable(false);
             vm.application = ko.observable(new Application(vm.appType()));
             vm.model = new Model(true, true, true, '', '', '', '');
+			if (!_.isEmpty(params)) {
+				if (!_.isEmpty(params.employeeIds)) {
+					empLst = params.employeeIds;
+				}
+				if (!_.isEmpty(params.baseDate)) {
+					let paramDate = moment(params.baseDate).format('YYYY/MM/DD');
+					dateLst = [paramDate];
+					vm.application().appDate(paramDate);
+					vm.application().opAppStartDate(paramDate);
+                    vm.application().opAppEndDate(paramDate);
+				}
+				if (params.isAgentMode) {
+					vm.isAgentMode(params.isAgentMode);
+				}
+			}
             vm.$blockui("show");
-            vm.loadData([], [], vm.appType())
+            vm.loadData(empLst, dateLst, vm.appType())
             .then((loadDataFlag: any) => {
                 vm.application().appDate.subscribe(value => {
                     console.log(value);
@@ -60,6 +84,7 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                     }
                 });
                 if(loadDataFlag) {
+					vm.application().employeeIDLst(empLst);
                     let ApplicantEmployeeID: null,
                         ApplicantList: null,
                         appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput),
@@ -78,6 +103,11 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                         goBackApplication: ko.observable(res.goBackApplication),
                         isChangeDate: false
                     });
+					if (!_.isEmpty(params)) {
+						if (!_.isEmpty(params.baseDate)) {
+							vm.changeDate();
+						}
+					}
                 }
             }).fail((failData: any) => {
                 let param;
@@ -144,6 +174,7 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
             vm.applicationTest.opAppReason = application.opAppReason;
             vm.applicationTest.opAppStandardReasonCD = application.opAppStandardReasonCD;
             vm.applicationTest.opReversionReason = application.opReversionReason;
+			vm.applicationTest.employeeID = application.employeeIDLst[0];
             if (vm.model) {
 				let isCondition1 = vm.model.checkbox3() == true && !vm.model.workTypeCode() && (vm.dataFetch().goBackReflect().reflectApplication === 3 || vm.dataFetch().goBackReflect().reflectApplication === 2);
 				let isCondition2 = vm.model.checkbox3() == null && !vm.model.workTypeCode() && vm.dataFetch().goBackReflect().reflectApplication === 1;

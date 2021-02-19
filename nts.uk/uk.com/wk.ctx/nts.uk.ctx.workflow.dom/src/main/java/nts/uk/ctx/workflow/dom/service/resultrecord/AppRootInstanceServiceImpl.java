@@ -2,6 +2,7 @@ package nts.uk.ctx.workflow.dom.service.resultrecord;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -20,6 +21,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.collection.ListHashMap;
 import nts.uk.ctx.workflow.dom.adapter.bs.EmployeeAdapter;
@@ -50,7 +52,6 @@ import nts.uk.ctx.workflow.dom.service.output.ApproverPersonOutput;
 import nts.uk.ctx.workflow.dom.service.output.Request113Output;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
-import nts.arc.time.calendar.period.DatePeriod;
 
 @RequestScoped
 public class AppRootInstanceServiceImpl implements AppRootInstanceService {
@@ -214,6 +215,7 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 		approvalRootState.setEmployeeID(appRootInstance.getEmployeeID());
 		approvalRootState.setApprovalRecordDate(appRootConfirm.getRecordDate());
 		approvalRootState.setListApprovalPhaseState(new ArrayList<>());
+		approvalRootState.setRootStateID(appRootConfirm.getRootID());
 		// ドメインモデル「承認ルート中間データ」の値をoutput「承認ルートインスタンス」に入れる
 		appRootInstance.getListAppPhase().forEach(appPhaseInstance -> {
 			ApprovalPhaseState approvalPhaseState = new ApprovalPhaseState();
@@ -317,10 +319,10 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 				continue;
 			}
 			approvalPhaseState.getListApprovalFrame().forEach(frameState -> {
-//				if(frameState.getApprovalAtr()!=ApprovalBehaviorAtr.UNAPPROVED){
-//					return;
-//				}
-//				approverIDLst.addAll(frameState.getListApproverState().stream().map(x -> x.getApproverID()).collect(Collectors.toList()));
+				if(frameState.isApproved(approvalPhaseState.getApprovalForm())){
+					return;
+				}
+				approverIDLst.addAll(frameState.getLstApproverInfo().stream().map(x -> x.getApproverID()).collect(Collectors.toList()));
 			});
 		}
 		// アルゴリズム「指定した社員が指定した承認者リストの代行承認者かの判断」を実行する
@@ -622,7 +624,6 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 		// システム日付時点で代行依頼があれば、承認できる
 		val representRequests = this.agentRepository.findAgentByPeriod(
 				companyId, Arrays.asList(approverId), GeneralDate.today(), GeneralDate.today(), 1);
-		val representRequesterIds = representRequests.stream().map(a -> a.getAgentID()).collect(Collectors.toList());
 		
 		val instancesMap = appRootInstancesMap(companyId, approverId, representRequests, targetEmployeeIds, period);
 		
@@ -632,10 +633,24 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 		// その場合、instancesMapには当該データが存在しないことになる。
 		// そういったデータはルート状況リストに含めずに返す仕様。
 		for (val confirm : confirms) {
-			val instance = instancesMap.apply(confirm.getEmployeeID(), confirm.getRecordDate());
+			Optional<AppRootInstance> instance = instancesMap.apply(confirm.getEmployeeID(), confirm.getRecordDate());
 			if (!instance.isPresent()) {
 				continue;
 			}
+			
+			List<String> approverLst = instance.get().getListAppPhase()
+				.stream().map(x -> x.getListAppFrame())
+				.flatMap(Collection::stream).collect(Collectors.toList())
+				.stream().map(x -> x.getListApprover())
+				.flatMap(Collection::stream).collect(Collectors.toList());
+			
+			List<AgentInfoOutput> representRequesterIds = this.agentRepository.find(companyId, approverLst, GeneralDate.today())
+					.stream().map(x -> new AgentInfoOutput(
+							x.getAgentSid1(), 
+							x.getEmployeeId(), 
+							x.getStartDate(), 
+							x.getEndDate()))
+					.collect(Collectors.toList());
 			
 			routeSituations.add(RouteSituation.create(confirm, instance.get(), approverId, representRequesterIds));
 		}
