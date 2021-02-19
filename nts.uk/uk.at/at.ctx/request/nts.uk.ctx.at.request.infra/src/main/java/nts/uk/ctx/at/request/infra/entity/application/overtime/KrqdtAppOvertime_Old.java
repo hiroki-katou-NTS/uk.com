@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 残業申請
@@ -35,7 +35,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class KrqdtAppOvertime_Old extends UkJpaEntity implements Serializable {
+public class KrqdtAppOvertime_Old extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
@@ -76,7 +76,7 @@ public class KrqdtAppOvertime_Old extends UkJpaEntity implements Serializable {
 	private Integer overtimeShiftNight;
 
 	@OneToMany(targetEntity = KrqdtOvertimeInput_Old.class, mappedBy = "appOvertime", cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinTable(name = "KRQDT_OVERTIME_INPUT")
+	@JoinTable(name = "KRQDT_APP_OVERTIME_INPUT")
 	public List<KrqdtOvertimeInput_Old> overtimeInputs;
 
 	@OneToOne(targetEntity = KrqdtAppOvertimeDetail_Old.class, mappedBy = "appOvertime", cascade = CascadeType.ALL, orphanRemoval = true)
