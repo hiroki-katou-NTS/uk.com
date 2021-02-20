@@ -138,7 +138,9 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 	private final static String SELECT_CATEGORY_BY_CATEGORY_CD_QUERY = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId, ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
 			+ " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr"
 			+ " FROM  PpemtCtg ca, PpemtCtgCommon co"
-			+ " WHERE ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd" + " AND ca.categoryCd = :categoryCd"
+			+ " WHERE ca.contractCd = co.ppemtPerInfoCtgCmPK.contractCd"
+			+ " AND ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd"
+			+ " AND ca.categoryCd = :categoryCd"
 			+ " AND ca.cid = :cid";
 
 	private final static String SELECT_ALL_CATEGORY_BY_CATEGORY_CD_QUERY = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId, ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
