@@ -9,12 +9,22 @@ import java.util.List;
 
 import org.junit.Test;
 
+import mockit.Injectable;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 public class TaskScheduleTest {
+	
+	@Test
+	public void testGetters(
+			@Injectable TaskScheduleDetail detail1,
+			@Injectable TaskScheduleDetail detail2) {
+		
+		TaskSchedule target = new TaskSchedule(Arrays.asList(detail1, detail2));
+		NtsAssert.invokeGetters(target);
+	}
 	
 	@Test
 	public void testCheckDuplicate_size0() {
