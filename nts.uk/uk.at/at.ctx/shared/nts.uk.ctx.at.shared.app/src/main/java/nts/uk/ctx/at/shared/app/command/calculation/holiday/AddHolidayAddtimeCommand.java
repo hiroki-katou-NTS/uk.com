@@ -5,29 +5,13 @@
 package nts.uk.ctx.at.shared.app.command.calculation.holiday;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetManageWorkHour;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HourlyPaymentAdditionSet;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.LeaveSetAdded;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.ReferEmployeeInformation;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.ReferWorkRecord;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.ReferenceDestinationAbsenceWorkingHours;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.TimeHolidayAddingMethod;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.TimeHolidayAdditionSet;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.VacationSpecifiedTimeRefer;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkClassOfTimeHolidaySet;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkDeformedLaborAdditionSet;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkFlexAdditionSet;
-import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkRegularAdditionSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.*;
 import nts.uk.ctx.at.shared.dom.workingcondition.BreakdownTimeDay;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -65,9 +49,6 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 @AllArgsConstructor
 public class AddHolidayAddtimeCommand {
 
-	/** The refer com holiday time. */
-	private int referComHolidayTime;
-
 	/** The one day. */
 	private BigDecimal oneDay;
 
@@ -76,12 +57,6 @@ public class AddHolidayAddtimeCommand {
 
 	/** The afternoon. */
 	private BigDecimal afternoon;
-
-	/** The refer actual work hours. */
-	private int referActualWorkHours;
-
-	/** The not referring ach. */
-	private int notReferringAch;
 
 	/** The annual holiday. */
 	private int annualHoliday;
@@ -123,7 +98,13 @@ public class AddHolidayAddtimeCommand {
 	
 	/** The work class 2. */
 	/*勤務区分*/
-	private int workClass2;	
+	private int workClass2;
+
+	// 参照先設定
+	private int refAtrCom;
+
+	// 個人別設定参照先
+	private Integer refAtrEmp;
 
 	
 	/**
@@ -137,13 +118,6 @@ public class AddHolidayAddtimeCommand {
 				new AttendanceTime(this.morning.intValue()),
 				new AttendanceTime(this.afternoon.intValue()));
 		
-		ReferenceDestinationAbsenceWorkingHours workingHours = ReferenceDestinationAbsenceWorkingHours.valueOf(this.referComHolidayTime); 
-		
-		ReferWorkRecord referWorkRecord = new ReferWorkRecord(workingHours, breakdownTimeDay);
-		
-		VacationSpecifiedTimeRefer vacationSpecifiedTimeRefer = VacationSpecifiedTimeRefer.valueOf(this.notReferringAch);
-		ReferEmployeeInformation referEmployeeInformation = new ReferEmployeeInformation(vacationSpecifiedTimeRefer);
-		
 		LeaveSetAdded additionVacationSet = new LeaveSetAdded(NotUseAtr.valueOf(this.annualHoliday), 
 																NotUseAtr.valueOf(this.yearlyReserved), 
 																NotUseAtr.valueOf(this.specialHoliday));
@@ -154,14 +128,20 @@ public class AddHolidayAddtimeCommand {
 		WorkDeformedLaborAdditionSet deformedLaborAdditionSet = this.toDomainIrregularWork(companyId);
 		AddSetManageWorkHour addSetManageWorkHour = this.toDomainAddSetManageWorkHour(companyId);
 		HourlyPaymentAdditionSet hourlyPaymentAdditionSet = this.todomainHourlyPaymentAdd(companyId);
+
+		RefDesForAdditionalTakeLeave refDesForAdditionalTakeLeave = new RefDesForAdditionalTakeLeave(
+				breakdownTimeDay,
+				this.refAtrCom,
+				this.refAtrEmp
+		);
 		
 		// convert to domain
-		HolidayAddtionSet holidayAddtionSet = HolidayAddtionSet.createFromJavaType(companyId, 
-				referWorkRecord,
-				NotUseAtr.valueOf(this.referActualWorkHours), 
-				referEmployeeInformation,
+		HolidayAddtionSet holidayAddtionSet = HolidayAddtionSet.createFromJavaType(
+				companyId,
+				refDesForAdditionalTakeLeave,
 				additionVacationSet,
 				createLstTimeHolidayAdditionSet());
+
 		
 		Map<String, AggregateRoot> mapAggre = new HashMap<>();
 		

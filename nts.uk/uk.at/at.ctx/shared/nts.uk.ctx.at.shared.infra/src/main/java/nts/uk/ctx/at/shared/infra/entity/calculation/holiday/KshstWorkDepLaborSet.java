@@ -81,6 +81,10 @@ public class KshstWorkDepLaborSet  extends UkJpaEntity implements Serializable{
 	/*就業時間帯毎の設定を可能とする*/
 	@Column(name = "ENABLE_SET_PER_WORK_HOUR2")
 	public int enableSetPerWorkHour2;
+
+	// // 申請により取り消した場合も控除する
+	@Column(name = "DEDUCT_BY_APPLICATION")
+	public int deductByApplication;
 	
 	@OneToOne(optional = false)
 		@JoinColumn(name = "CID", referencedColumnName="CID", insertable = false, updatable = false)

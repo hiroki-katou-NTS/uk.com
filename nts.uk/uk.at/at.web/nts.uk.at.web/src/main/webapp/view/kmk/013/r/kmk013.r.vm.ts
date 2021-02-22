@@ -32,6 +32,8 @@ module nts.uk.at.view.kmk013.r.viewmodel {
         }
 
         mounted() {
+            const vm = this;
+            vm.init();
             $('#R1_3').focus();
         }
 
@@ -49,7 +51,9 @@ module nts.uk.at.view.kmk013.r.viewmodel {
                 }
             }).fail((err) => {
                 vm.$dialog.error(err);
-            }).always(() => vm.$blockui("clear"));
+            }).always(() => {
+                vm.$blockui("clear");
+            });
         }
 
         register() {
@@ -66,9 +70,7 @@ module nts.uk.at.view.kmk013.r.viewmodel {
 
             vm.$blockui("grayout");
             vm.$ajax(API.SAVE, command).done((res) => {
-                vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
-                   vm.$window.close(null);
-                });
+                vm.$dialog.info({ messageId: "Msg_15" });
             }).fail((err) => {
                 vm.$dialog.error(err);
             }).always(() => vm.$blockui("clear"));
@@ -110,8 +112,8 @@ module nts.uk.at.view.kmk013.r.viewmodel {
     }
 
     const API = {
-        INIT: "",
-        SAVE: ""
+        INIT: "at/shared/scherec/hdset/getSetting",
+        SAVE: "at/shared/scherec/hdset/save"
     }
 
 }

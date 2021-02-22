@@ -61,7 +61,8 @@ public class OutsideOTSetting extends AggregateRoot implements Serializable{
 	// 超過時間一覧
 	private List<Overtime> overtimes;
 
-	//TODO QA 39234
+	//
+	// TODO QA 39234
 	/** 丸め */
 	private Optional<TimeRoundingOfExcessOutsideTime> timeRoundingOfExcessOutsideTime;
 	
