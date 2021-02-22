@@ -6,7 +6,13 @@
 <body>
     <ui:composition template="../../../../master/dialog.xhtml">
         <ui:define name="htmlHead">
-            <script>var dialogSize = { width: 1060, height: 830 };</script>
+            <script>var dialogSize = { width: 1060, height: 850 };</script>
+            <com:EnumScript>
+				nts.uk.ctx.at.aggregation.dom.scheduletable.ScheduleTablePersonalInfoItem
+                nts.uk.ctx.at.aggregation.dom.scheduletable.ScheduleTableAttendanceItem
+                nts.uk.ctx.at.aggregation.dom.schedulecounter.WorkplaceCounterCategory
+                nts.uk.ctx.at.aggregation.dom.schedulecounter.PersonalCounterCategory
+			</com:EnumScript>
             <com:ValidatorScript>
                 nts.uk.ctx.at.aggregation.dom.scheduletable.OutputSettingCode
                 nts.uk.ctx.at.aggregation.dom.scheduletable.OutputSettingName                
@@ -20,11 +26,11 @@
         <ui:define name="content">
             <div id="functions-area">
                 <!--B1-1-->
-                <button tabindex="1" id="B1_1">#{i18n.getText('KSU005_12')}</button>
+                <button tabindex="1" id="B1_1" data-bind="click: clearData">#{i18n.getText('KSU005_12')}</button>
                 <!--B1-2-->
-                <button tabindex="1" class="proceed" id="B1_2">#{i18n.getText('KSU005_13')}</button>
+                <button tabindex="1" class="proceed" id="B1_2" data-bind="click: registerOrUpdate, enable: $root.errors.isEmpty">#{i18n.getText('KSU005_13')}</button>
                 <!--B1-3-->
-                <button tabindex="1" class="danger" id="B1_3">#{i18n.getText('KSU005_15')}</button>
+                <button tabindex="1" class="danger" id="B1_3" data-bind="click: remove, enable: enableDelete()">#{i18n.getText('KSU005_15')}</button>
                 <!--B1-4-->
                 <button tabindex="1" id="B1_4" data-bind="click: openDialog">#{i18n.getText('KSU005_14')}</button>
                 <!--B1-5-->
@@ -68,7 +74,8 @@
                                     width: '20px',
                                     textalign: 'left'
                                 })),                  
-                                value: outputSettingModel().code                         
+                                enable: scheduleTableOutputSetting().isEnableCode,
+                                value: scheduleTableOutputSetting().code                         
                                 
                             }" />
                         </div>
@@ -83,14 +90,14 @@
                                     width: '100px',
                                     textalign: 'left'
                                 })),            
-                                value: outputSettingModel().name                           
+                                value: scheduleTableOutputSetting().name                           
                             }" />
                         </div>
                     </div>
 
                     <div style="margin-top:10px" >
                         <div id="tab-panel" data-bind="ntsTabPanel: { width: 250, dataSource: tabs, active: selectedTab}">
-                            <div class="tab-content-1 tab-content-fixsize">                             
+                            <div class="tab-content-1 tab1-content-fixsize">                             
                                 <div class="container-tab-custom">
                                     <!--B5-1-->
                                     <div data-bind="ntsFormLabel:{required: false}"> #{i18n.getText('KSU005_26')}</div>
@@ -101,7 +108,7 @@
                                     options: $vm.lstAddColInfo,
                                     optionsValue: 'code',
                                     optionsText: 'name',
-                                    value: $vm.addSelected,
+                                    value: $vm.scheduleTableOutputSetting().additionalColumn,
                                     required: true,
                                     enable: true }"></div>
                                 </div>
@@ -110,7 +117,7 @@
                                     <div data-bind="ntsFormLabel:{required: false}"> #{i18n.getText('KSU005_29')}</div>
                                     <div style="width: 98px;"></div>
                                     <!--B6-2-->
-                                    <div data-bind="ntsCheckBox: { checked: checked }">#{i18n.getText('KSU005_30')}
+                                    <div data-bind="ntsCheckBox: { checked: isShiftBackgroundColor}">#{i18n.getText('KSU005_30')}
                                     </div>
                                 </div>
                                 <div class="container-tab-custom">
@@ -123,7 +130,7 @@
                                     options: $vm.lstWorkInfo,
                                     optionsValue: 'code',
                                     optionsText: 'name',
-                                    value: $vm.workSelected,
+                                    value: $vm.scheduleTableOutputSetting().dailyDataDisplay,
                                     required: true,
                                     enable: true }"></div>
                                 </div>
@@ -131,23 +138,22 @@
                                 <!-- <div class="container-tab-custom"> -->
                                     <div>
                                     <!--B8-1-->
-                                    <div data-bind="ntsFormLabel:{required: true}"> #{i18n.getText('KSU005_31')}</div>
-                                   
+                                    <div data-bind="ntsFormLabel:{required: true}"> #{i18n.getText('KSU005_31')}</div>                                   
 
                                     <!--B8-2-->
-                                    <button tabindex="1" id="B8_2" data-bind="click: addItem" >#{i18n.getText('KSU005_32')}</button>
+                                    <button tabindex="1" id="B8_2" data-bind="click: addItem, enable:isEnableAddBtn" >#{i18n.getText('KSU005_32')}</button>
 
                                     <!--B8-3-->
                                     <button tabindex="1" id="B8_3" class="danger" data-bind="click: removeItem">#{i18n.getText('KSU005_33')}</button>                                   
                                 </div>
-                                <div style="margin: 15px 0px 0px 140px;">                                    
+                                <div style="margin: 15px 0px 0px 80px;">                                    
                                     <table id="fixed-table">
                                         <colgroup>
                                             <col width="30px" />
                                             <col width="40px" />
-                                            <col width="140px" />
-                                            <col width="140px" />
-                                            <col width="140px" />
+                                            <col width="160px" />
+                                            <col width="160px" />
+                                            <col width="160px" />
                                         </colgroup>
                                         <thead>
                                             <tr>
@@ -160,41 +166,48 @@
                                         </thead>
                                         <tbody data-bind="foreach: itemList">
                                             <tr>   
-                                                <td role="rowheader" data-bind="text: text"></td>                                         
+                                                <td role="rowheader" data-bind="text: rowNo"></td>    
+
                                                 <td  data-bind="visible: isNumberOne"></td>                                                
-                                                <td  data-bind="visible: isNumberOne">基本給</td>                                         
-                                                <td data-bind="visible: !isNumberOne()">
+                                                <td  data-bind="visible: isNumberOne">基本給</td>   
+
+                                                <td data-bind="visible: !isNumberOne()" style="text-align: center;">
                                                     <div data-bind="ntsCheckBox: {checked: checked}"></div>
                                                 </td>
 
-                                                <td data-bind="visible: !isNumberOne()"><div id="combo-box" data-bind="ntsComboBox: {options: itemList,
-                                                    width: 120,
-                                                    optionsValue: 'code',
+                                                <td data-bind="visible: !isNumberOne()"><div id="combo-box" data-bind="ntsComboBox: {
+                                                    options: $parent.personalInfoItems,
+                                                    width: 150,
+                                                    optionsValue: 'value',
                                                     visibleItemsCount: 5,
-                                                    value: selectedCode,
+                                                    value: personalInfo,
                                                     optionsText: 'name',
                                                     columns: [
-                                                            { prop: 'name', length: 4 },
+                                                            { prop: 'name', length: 10 },
                                                         ]}"></div>
                                                 </td>
-                                                <td><div id="combo-box" data-bind="ntsComboBox: {options: itemList,
-                                                    width: 120,
-                                                    optionsValue: 'code',
+
+                                                <td><div id="combo-box" data-bind="ntsComboBox: {
+                                                    options: $parent.personalInfoItems,
+                                                    width: 150,
+                                                    optionsValue: 'value',
                                                     visibleItemsCount: 5,
-                                                    value: selectedCode,
+                                                    value: additionInfo,
                                                     optionsText: 'name',
+                                                    enable: $parent.isEnableAdditionInfo,
                                                     columns: [
-                                                            { prop: 'name', length: 4 },
+                                                            { prop: 'name', length: 10 },
                                                         ]}"></div>
                                                 </td>
-                                                <td><div id="combo-box" data-bind="ntsComboBox: {options: itemList,
-                                                    width: 120,
-                                                    optionsValue: 'code',
+                                                <td><div id="combo-box" data-bind="ntsComboBox: {
+                                                    options: $parent.attendanceItems,
+                                                    width: 150,
+                                                    optionsValue: 'value',
                                                     visibleItemsCount: 5,
-                                                    value: selectedCode,
+                                                    value: attendanceItem,
                                                     optionsText: 'name',
                                                     columns: [
-                                                            { prop: 'name', length: 4 },
+                                                            { prop: 'name', length: 10 },
                                                         ]}"></div>
                                                 </td>                                                        
                                             </tr>
@@ -211,7 +224,7 @@
                                                                                                     showSearchBox: { showLeft : false, showRight: false},
                                                                                                     height: 300,
                                                                                                     dataSource: itemsSwap,                                   
-                                                                                                    primaryKey: 'id',
+                                                                                                    primaryKey: 'value',
                                                                                                     columns: columns2,
                                                                                                     disableMoveButton: false,
                                                                                                     value: currentCodeListSwap,
@@ -223,7 +236,7 @@
                             
                                     <div id="up-down" data-bind="ntsUpDown: {
                                                                                 targetSource: currentCodeListSwap,
-                                                                                primaryKey: 'code',
+                                                                                primaryKey: 'value',
                                                                                 comId: '#swap-list',
                                                                                 type: 'swap',
                                                                                 swapTarget: 'right'
@@ -240,10 +253,10 @@
                                     <table id="person-list" data-bind="ntsGridList: {								
                                                                 height: 220,
                                                                 dataSource: persons,
-                                                                primaryKey: 'id',
+                                                                primaryKey: 'value',
                                                                 columns: columns3,
                                                                 multiple: false,                                                                
-                                                                value: selectedCode,
+                                                                value: selectedPerson,
                                                                 rows: 10
                                                             }"></table>
                                                         </div>

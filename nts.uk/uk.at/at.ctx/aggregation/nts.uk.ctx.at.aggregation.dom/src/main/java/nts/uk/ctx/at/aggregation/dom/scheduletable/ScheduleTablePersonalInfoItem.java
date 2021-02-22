@@ -9,33 +9,36 @@ package nts.uk.ctx.at.aggregation.dom.scheduletable;
 public enum ScheduleTablePersonalInfoItem {
 
 	/** 社員名 */
-	EMPLOYEE_NAME(0),
+	EMPLOYEE_NAME(0, "社員名"),
 
 	/** 雇用 */
-	EMPLOYMENT(1),
+	EMPLOYMENT(1,"雇用"),
 	
 	/** 職位 */
-	JOBTITLE(2),
+	JOBTITLE(2, "職位"),
 	
 	/** 分類 */
-	CLASSIFICATION(3),
+	CLASSIFICATION(3, "分類" ),
 	
 	/** チーム */
-	TEAM(4),
+	TEAM(4,"チーム"),
 	
 	/** ランク */
-	RANK(5),
+	RANK(5,"ランク"),
 	
 	/** 看護区分 */
-	NURSE_CLASSIFICATION(6),
+	NURSE_CLASSIFICATION(6,"看護区分" ),
 	
 	/** 資格 */
-	QUALIFICATION(7);
+	QUALIFICATION(7,"資格");
 	
 	public int value;
+	public String nameId;
+	public String description;
 	
-	private ScheduleTablePersonalInfoItem (int value) {
+	private ScheduleTablePersonalInfoItem (int value, String nameId) {
 		this.value = value;
+		this.nameId = nameId;
 	}
 	
 }
