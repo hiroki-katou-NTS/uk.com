@@ -112,9 +112,7 @@ public class GetInforOnTargetDate {
 	@Inject
 	private ShiftMasterRepository shiftMasterRepository;
 	
-	final static String SPACE = " ";
-    final static String ZEZO_TIME = "00:00";
-    final static String DATE_TIME_FORMAT = "yyyy/MM/dd HH:mm";
+    final static String DATE_TIME_FORMAT = "YYYY/MM/DD";
     
     public InforOnTargetDateDto handle(int desiredSubmissionStatus, int workHolidayClassification,String targetDate) {
 		
@@ -333,7 +331,7 @@ public class GetInforOnTargetDate {
 		public List<String> sortEmployee(List<String> lstmployeeId, Integer sysAtr, Integer sortOrderNo,
 				GeneralDate referenceDate, Integer nameType) {
 			List<String> data = regulInfoEmpAdap.sortEmployee(AppContexts.user().companyId(), lstmployeeId, sysAtr, sortOrderNo, nameType,
-                    GeneralDateTime.fromString(referenceDate.toString() + SPACE + ZEZO_TIME, DATE_TIME_FORMAT));
+                    GeneralDateTime.fromString(referenceDate.toString(DATE_TIME_FORMAT), DATE_TIME_FORMAT));
             return data;
 		}
 
@@ -350,7 +348,7 @@ public class GetInforOnTargetDate {
 		@Override
 		public List<String> searchEmployee(RegulationInfoEmpQuery q, String roleId) {
 			EmployeeSearchQueryDto query = EmployeeSearchQueryDto.builder()
-                    .baseDate(GeneralDateTime.fromString(q.getBaseDate().toString() + SPACE + ZEZO_TIME, DATE_TIME_FORMAT))
+                    .baseDate(GeneralDateTime.fromString(q.getBaseDate().toString(DATE_TIME_FORMAT), DATE_TIME_FORMAT))
                     .referenceRange(q.getReferenceRange())
                     .systemType(q.getSystemType())
                     .filterByWorkplace(q.getFilterByWorkplace())

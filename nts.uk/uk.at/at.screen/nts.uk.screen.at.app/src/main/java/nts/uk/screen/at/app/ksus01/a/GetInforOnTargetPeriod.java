@@ -75,7 +75,7 @@ public class GetInforOnTargetPeriod {
 	@Inject
 	private WorkTypeRepository workTypeRepo;
 	
-	final static String DATE_TIME_FORMAT = "yyyy/MM/dd HH:mm";
+	final static String DATE_TIME_FORMAT = "YYYY/MM/DD";
 	
 	public InforOnTargetPeriodDto handle(InforOnTargetPeriodInput input) {
 		

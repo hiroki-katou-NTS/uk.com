@@ -17,8 +17,8 @@ public class WorkScheduleDto {
 	// シフトマスタ
 	private ShiftMasterDto shiftMaster;
 	
-	// 出勤休日区分
-	private Integer workStyle; 
+	// 	出勤休日区分
+	private Integer workAtr; 
 	
 	// 勤務予定.出退勤
 	private List<AttendanceDto> listAttendaceDto;
