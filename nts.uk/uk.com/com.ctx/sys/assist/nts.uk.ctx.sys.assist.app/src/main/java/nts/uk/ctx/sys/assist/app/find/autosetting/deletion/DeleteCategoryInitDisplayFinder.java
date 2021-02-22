@@ -69,7 +69,7 @@ public class DeleteCategoryInitDisplayFinder {
 	}
 
 	private List<DeleteCategoryDto> getCategoryList(LoginPersonInCharge pic) {
-		List<SystemType> systemTypes = picService.getSystemTypes(pic);
+		List<SystemType> systemTypes = picService.getSystemTypes(pic);			
 		return systemTypes.stream()
 				.map(type -> categoryForDelService.categoriesBySystemType(type.value).stream()
 						.map(domain -> DeleteCategoryDto.fromDomain(domain, type.value)).collect(Collectors.toList()))

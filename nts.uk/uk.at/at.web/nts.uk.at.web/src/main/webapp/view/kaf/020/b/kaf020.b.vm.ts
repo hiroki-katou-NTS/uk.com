@@ -23,16 +23,22 @@ module nts.uk.at.view.kaf020.b {
             appDispInfoStartupOutput: ko.observable(null)
         });
         allOptional: any = [];
+		isFromOther: boolean = false;
+		empLst: Array<string> = [];
+        dateLst: Array<string> = [];
+        baseDate: string;
 
         constructor(props: any) {
             super();
         }
+        
 
         created(params: any) {
             const vm = this;
-            if (params != undefined) {
-                nts.uk.characteristics.save("KAF020InitParams", params)
-                vm.code = params.code;
+            if (params && params.isAgentMode) vm.isAgentMode(params.isAgentMode);
+            if (params != undefined && params.optionalItem) {
+                nts.uk.characteristics.save("KAF020InitParams", params.optionalItem);
+                vm.code = params.optionalItem.code;
 
             } else {
                 nts.uk.characteristics.restore("KAF020InitParams").then((cacheParams: any) => {
@@ -41,11 +47,24 @@ module nts.uk.at.view.kaf020.b {
                     }
                 })
             }
+			if(!_.isNil(__viewContext.transferred.value)) {
+				vm.isFromOther = true;
+			}
+			sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');
+            if (params && params.empLst) vm.empLst = params.empLst;
+            if (params && params.baseDate) {
+                vm.baseDate = params.baseDate;
+                let paramDate = moment(params.baseDate).format('YYYY/MM/DD');
+                vm.dateLst = [paramDate];
+                vm.application().appDate(paramDate);
+                vm.application().opAppStartDate(paramDate);
+                vm.application().opAppEndDate(paramDate);
+            }
             vm.$blockui("show");
-            vm.loadData([], [], vm.appType()).then((loadFlag) => {
+            vm.loadData(vm.empLst, vm.dateLst, vm.appType()).then((loadFlag) => {
                 if (loadFlag) {
-                    if (params != undefined) {
-                        return vm.fetchData(params);
+                    if (params != undefined && params.optionalItem) {
+                        return vm.fetchData(params.optionalItem);
                     } else {
                         nts.uk.characteristics.restore("KAF020InitParams").then((cacheParams: any) => {
                             return vm.fetchData(cacheParams);
@@ -54,11 +73,9 @@ module nts.uk.at.view.kaf020.b {
                 }
             }).then((response: any) => {
 
-            })
-        }
-
-        mounted() {
-            const vm = this;
+            }).always(() => {
+                vm.$blockui("hide");
+            });
         }
 
         fetchData(params: any) {
@@ -69,27 +86,29 @@ module nts.uk.at.view.kaf020.b {
                 params.settingItems.forEach((opItem: any) => {
                     let optionalItem: OptionalItem = _.find(optionalItems, {optionalItemNo: opItem.no});
                     let controlOfAttendanceItem: any = _.find(controlAttendance, {itemDailyID: opItem.no + 640});
-                    contents.push({
-                        optionalItemName: optionalItem.optionalItemName,
-                        optionalItemNo: optionalItem.optionalItemNo,
-                        optionalItemAtr: optionalItem.optionalItemAtr,
-                        unit: optionalItem.unit,
-                        inputUnitOfTimeItem: controlOfAttendanceItem ? controlOfAttendanceItem.inputUnitOfTimeItem : null,
-                        description: optionalItem.description,
-                        timeUpper: optionalItem.calcResultRange.timeRange.dailyTimeRange.upperLimit != null ? nts.uk.time.format.byId("Time_Short_HM", optionalItem.calcResultRange.timeRange.dailyTimeRange.upperLimit) : null,
-                        timeLower: optionalItem.calcResultRange.timeRange.dailyTimeRange.lowerLimit != null ? nts.uk.time.format.byId("Time_Short_HM", optionalItem.calcResultRange.timeRange.dailyTimeRange.lowerLimit) : null,
-                        amountLower: optionalItem.calcResultRange.amountRange.dailyAmountRange.lowerLimit,
-                        amountUpper: optionalItem.calcResultRange.amountRange.dailyAmountRange.upperLimit,
-                        numberLower: optionalItem.calcResultRange.numberRange.dailyNumberRange.lowerLimit,
-                        numberUpper: optionalItem.calcResultRange.numberRange.dailyNumberRange.upperLimit,
-                        upperCheck: optionalItem.calcResultRange.upperCheck,
-                        lowerCheck: optionalItem.calcResultRange.lowerCheck,
-                        time: ko.observable(''),
-                        times: ko.observable(),
-                        amount: ko.observable(),
-                        detail: '',
-                        dispOrder: opItem.dispOrder
-                    });
+                    if (optionalItem) {
+                        contents.push({
+                            optionalItemName: optionalItem.optionalItemName,
+                            optionalItemNo: optionalItem.optionalItemNo,
+                            optionalItemAtr: optionalItem.optionalItemAtr,
+                            unit: optionalItem.unit,
+                            inputUnitOfTimeItem: controlOfAttendanceItem ? controlOfAttendanceItem.inputUnitOfTimeItem : null,
+                            description: optionalItem.description,
+                            timeUpper: optionalItem.calcResultRange.timeRange.dailyTimeRange.upperLimit != null ? nts.uk.time.format.byId("Time_Short_HM", optionalItem.calcResultRange.timeRange.dailyTimeRange.upperLimit) : null,
+                            timeLower: optionalItem.calcResultRange.timeRange.dailyTimeRange.lowerLimit != null ? nts.uk.time.format.byId("Time_Short_HM", optionalItem.calcResultRange.timeRange.dailyTimeRange.lowerLimit) : null,
+                            amountLower: optionalItem.calcResultRange.amountRange.dailyAmountRange.lowerLimit,
+                            amountUpper: optionalItem.calcResultRange.amountRange.dailyAmountRange.upperLimit,
+                            numberLower: optionalItem.calcResultRange.numberRange.dailyNumberRange.lowerLimit,
+                            numberUpper: optionalItem.calcResultRange.numberRange.dailyNumberRange.upperLimit,
+                            upperCheck: optionalItem.calcResultRange.upperCheck,
+                            lowerCheck: optionalItem.calcResultRange.lowerCheck,
+                            time: ko.observable(''),
+                            times: ko.observable(),
+                            amount: ko.observable(),
+                            detail: '',
+                            dispOrder: opItem.dispOrder
+                        });
+                    }
                 });
                 vm.dataFetch({applicationContents: ko.observableArray(contents), name: params.name, appDispInfoStartupOutput: ko.observable(vm.appDispInfoStartupOutput())});
             }).then(() => {
@@ -111,12 +130,19 @@ module nts.uk.at.view.kaf020.b {
 
         goBack() {
             const vm = this;
-            vm.$jump('../a/index.xhtml');
+            vm.$jump('../a/index.xhtml', {
+                fromB: true,
+                employeeIds: vm.empLst,
+                baseDate: vm.baseDate,
+                isAgentMode: vm.isAgentMode()
+            });
         }
 
         register() {
             const vm = this;
             let optionalItems = new Array();
+            let applicationDto = ko.toJS(vm.application());
+            applicationDto.employeeID = vm.application().employeeIDLst()[0];
             vm.dataFetch().applicationContents().forEach((item: OptionalItemApplicationContent) => {
                 optionalItems.push({
                     itemNo: item.optionalItemNo,
@@ -124,9 +150,9 @@ module nts.uk.at.view.kaf020.b {
                     amount: item.amount(),
                     time: item.time()
                 });
-            })
+            });
             let command = {
-                application: ko.toJS(vm.application()),
+                application: applicationDto,
                 appDispInfoStartup: vm.appDispInfoStartupOutput(),
                 optItemAppCommand: {
                     code: vm.code,
@@ -153,28 +179,19 @@ module nts.uk.at.view.kaf020.b {
                             // vm.dataFetch({applicationContents: ko.observableArray(contents), name: vm.dataFetch().name});
                         }
                     }).fail(err => {
-                        vm.$dialog.error(err);
-                        // vm.handleError(err);
+                        if (err && _.includes(["Msg_1692", "Msg_1693"], err.messageId) && err.parameterIds.length > 1) {
+                            let id = '#' + err.parameterIds[1];
+                            vm.$errors({
+                                [id]: err
+                            });
+                        } else {
+                            vm.$dialog.error(err);
+                        }
                     });
                 }
             });
         }
 
-        handleError(err: any) {
-            const vm = this;
-            let param;
-            if (err.message && err.messageId) {
-                param = {messageId: err.messageId, messageParams: err.parameterIds};
-            } else {
-
-                if (err.message) {
-                    param = {message: err.message, messageParams: err.parameterIds};
-                } else {
-                    param = {messageId: err.messageId, messageParams: err.parameterIds};
-                }
-            }
-            vm.$dialog.error(param);
-        }
     }
 
     interface OptionalItemData {

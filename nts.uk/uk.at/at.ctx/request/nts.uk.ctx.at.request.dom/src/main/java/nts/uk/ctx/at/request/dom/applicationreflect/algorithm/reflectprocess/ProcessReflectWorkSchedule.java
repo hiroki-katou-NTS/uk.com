@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.applicationreflect.algorithm.reflectprocess;
 
 import java.util.Optional;
 
+import nts.uk.ctx.at.request.dom.applicationreflect.object.PreApplicationWorkScheReflectAttr;
 import org.apache.commons.lang3.tuple.Pair;
 
 import nts.arc.enums.EnumAdaptor;
@@ -46,7 +47,7 @@ public class ProcessReflectWorkSchedule {
 		// [申請反映実行条件]を取得する
 		Optional<AppReflectExecutionCondition> appReFlectExec = require.findAppReflectExecCond(companyId);
 		/** [事前申請を勤務予定に反映する]をチェック */
-		if (!appReFlectExec.isPresent() || appReFlectExec.get().getApplyBeforeWorkSchedule() == NotUseAtr.NOT_USE) {
+		if (!appReFlectExec.isPresent() || appReFlectExec.get().getApplyBeforeWorkSchedule() == PreApplicationWorkScheReflectAttr.NOT_REFLECT) {
 			statusWorkSchedule.setReflectStatus(ReflectedState.REFLECTED);
 			return Pair.of(statusWorkSchedule, Optional.empty());
 		}

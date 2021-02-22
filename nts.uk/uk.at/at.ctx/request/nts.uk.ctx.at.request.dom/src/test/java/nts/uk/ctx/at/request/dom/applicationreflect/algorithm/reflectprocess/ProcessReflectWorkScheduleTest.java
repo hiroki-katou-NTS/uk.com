@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Optional;
 
+import nts.uk.ctx.at.request.dom.applicationreflect.object.PreApplicationWorkScheReflectAttr;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -96,7 +97,7 @@ public class ProcessReflectWorkScheduleTest {
 		new Expectations() {
 			{
 				require.findAppReflectExecCond(companyId);
-				result = Optional.of(new AppReflectExecutionCondition(companyId, NotUseAtr.NOT_USE, // 事前申請を勤務予定に反映する
+				result = Optional.of(new AppReflectExecutionCondition(companyId, PreApplicationWorkScheReflectAttr.NOT_REFLECT, // 事前申請を勤務予定に反映する
 						NotUseAtr.NOT_USE, NotUseAtr.USE));
 			}
 		};
@@ -129,7 +130,7 @@ public class ProcessReflectWorkScheduleTest {
 			{
 				require.findAppReflectExecCond(anyString);
 				result = Optional
-						.of(new AppReflectExecutionCondition(companyId, NotUseAtr.USE, NotUseAtr.NOT_USE, NotUseAtr.USE));
+						.of(new AppReflectExecutionCondition(companyId, PreApplicationWorkScheReflectAttr.REFLECT, NotUseAtr.NOT_USE, NotUseAtr.USE));
 				
 				CheckProcessDuringLock.checkProcess(require, companyId, closureId, anyBoolean, (GeneralDate) any);
 				result = NotUseAtr.NOT_USE;

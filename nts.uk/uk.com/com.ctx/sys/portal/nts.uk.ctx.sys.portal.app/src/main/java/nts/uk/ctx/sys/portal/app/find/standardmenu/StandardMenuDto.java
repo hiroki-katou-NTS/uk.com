@@ -61,6 +61,9 @@ public class StandardMenuDto {
 	 */
 	private LogSettingDisplayDto logSettingDisplay;
 	
+	/** Query string */
+	private String queryString;
+	
 	/**
 	 * From domain.
 	 *
@@ -91,6 +94,7 @@ public class StandardMenuDto {
 		standardMenuDto.webMenuSetting = standardMenu.getWebMenuSetting().value;
 		standardMenuDto.afterLoginDisplay = standardMenu.getAfterLoginDisplay();
 		standardMenuDto.logSettingDisplay = LogSettingDisplayDto.fromDomain(standardMenu.getLogSettingDisplay());
+		standardMenuDto.queryString = standardMenu.getQueryString();
 		return standardMenuDto;
 	}
 }

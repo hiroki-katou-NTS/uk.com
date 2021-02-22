@@ -1,6 +1,7 @@
 package nts.uk.file.at.app.export.statement.stamp;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -107,7 +108,10 @@ public class OutputListOfStampExportService extends ExportService<ConditionListO
 			List<EmployeEngravingInfor> employeEngravingInfors = (List<EmployeEngravingInfor>) data;
 			Map<String, List<EmployeEngravingInfor>> employeEngravingInforMap = employeEngravingInfors.stream()
 					.collect(Collectors.groupingBy(EmployeEngravingInfor::getEmployeeCode));
-			employeEngravingInforMap.forEach((key, value) -> {
+			List<String> employeeByKey = new ArrayList<>(employeEngravingInforMap.keySet());
+			Collections.sort(employeeByKey);
+			employeeByKey.forEach(key -> {
+				List<EmployeEngravingInfor> value = employeEngravingInforMap.get(key);
 				EmployeeInfor employeeInfor = new EmployeeInfor();
 				employeeInfor.setWorkplace(TextResource.localize("KDP011_32") + "　" + value.get(0).getWorkplaceCd()
 						+ "　" + value.get(0).getWorkplaceName());

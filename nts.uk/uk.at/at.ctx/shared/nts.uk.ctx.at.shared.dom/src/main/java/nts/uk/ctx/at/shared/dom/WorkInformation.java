@@ -20,7 +20,6 @@ import nts.uk.ctx.at.shared.dom.worktime.WorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -235,6 +234,10 @@ public class WorkInformation {
 		val workSetting = workTimeSetting.get().getWorkSetting(require);
 		val predetermineTimeSetting = workSetting.getPredetermineTimeSetting(require);
 		val attendanceDayAttr = workType.get().chechAttendanceDay();
+		if ( attendanceDayAttr.isHoliday() ) {
+			return Optional.of(WorkInfoAndTimeZone.createWithoutPredetermineTimeZone( workType.get(), workTimeSetting.get() ));
+		}
+		
 		val correctedTimezones = predetermineTimeSetting.getTimezoneByAmPmAtr(attendanceDayAttr.toAmPmAtr().get()).stream()
 				.map( e -> (TimeZone) e).collect(Collectors.toList());
 		
@@ -268,6 +271,11 @@ public class WorkInformation {
 
 		// 出勤日区分を取得する
 		val atdDayAtr = workType.get().chechAttendanceDay();
+		
+		if ( atdDayAtr.isHoliday() ) {
+			return Collections.emptyList();
+		}
+		
 		// 出勤日区分による変更可能な時間帯を取得する
 		return workSetting.get().getChangeableWorkingTimeZone(require).getByAtr( atdDayAtr );
 
@@ -354,7 +362,29 @@ public class WorkInformation {
 
 	}
 
+	/**
+	 * 同一か
+	 * @param otherObject 比較対象
+	 * @return true if they are same workType and same workTime
+	 */
+	public boolean isSame(WorkInformation otherObject) {
+		
+		if ( ! this.workTypeCode.v().equals(otherObject.getWorkTypeCode().v()) ) {
+			return false;
+		}
+		
+		return this.workTimeCode.equals( otherObject.getWorkTimeCodeNotNull());
+	}
 
+	/** 
+	 * 出勤系か
+	 * @param require
+	 * @return
+	 */
+	public boolean isAttendanceRate(Require require) {
+		Optional<WorkStyle> workStyle = this.getWorkStyle(require);
+		return workStyle.isPresent() && !(workStyle.get() == WorkStyle.ONE_DAY_REST);
+	}
 
 	public static interface Require
 		extends	WorkTimeSetting.Require
@@ -381,22 +411,6 @@ public class WorkInformation {
 		 * @return
 		 */
 		SetupType checkNeededOfWorkTimeSetting(String workTypeCode);
-
-		/**
-		 * 所定時間帯を取得する - WorkTimeSettingService
-		 * @param workTypeCd 勤務種類コード
-		 * @param workTimeCd 就業時間帯コード
-		 * @param workNo 勤務NO
-		 * @return 計算用所定時間設定
-		 *
-		 * WORNING!!
-		 * WorkTimeSettingService．getPredeterminedTimezoneメソッドは、引数に誤りがあり、
-		 * String workTimeCd(就業時間帯コード), String workTypeCd(勤務種類コード)
-		 * になっています。
-		 * このメソッドとは引数の順番が違うため、implementsして実装する際には十分気をつけてください。
-		 */
-		//PredetermineTimeSetForCalc getPredeterminedTimezone(String workTypeCd, String workTimeCd, Integer workNo);
-
 	}
 
 }

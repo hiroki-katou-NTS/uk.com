@@ -95,6 +95,10 @@ public class I18NResourcesForUK implements I18NResources, I18NResourceCustomizer
 	
 	public String getVersionOfCurrentCompany() {
 		
+		if(!AppContexts.user().hasLoggedIn()) {
+			return SERVER_START_TIME.toString("yyyyMMdd_hhmmss");
+		}
+		
 		val context = CompanyAndLanguage.createAsLogin();
 		GeneralDateTime lastUpdated = this.resourcesRepository.getLastUpdatedDateTime(context.companyId, context.languageId).orElse(null);
 		
@@ -141,7 +145,7 @@ public class I18NResourcesForUK implements I18NResources, I18NResourceCustomizer
 	public Map<String, String> loadForUserByResourceType(String languageId, String companyId, I18NResourceType resourceType) {
 		
 		val toMerge = this.defaultResources.createContentsMapByResourceType(languageId, resourceType);
-
+		
 		this.refreshIfRequired(languageId, companyId);
 		
 		val customizedMap = this.customizedResources.createContentsMapByResourceType(languageId, companyId, resourceType);
@@ -164,13 +168,14 @@ public class I18NResourcesForUK implements I18NResources, I18NResourceCustomizer
 	}
 
 	private void refreshIfRequired(String languageId, String companyId) {
-		
-		this.resourcesRepository.getLastUpdatedDateTime(companyId, languageId).ifPresent(datetimeOfDataSource -> {
-			if (this.customizedResources.requiresToUpdate(companyId, languageId, datetimeOfDataSource)) {
-				val newContainer = this.resourcesRepository.loadResourcesOfCompany(companyId, languageId);
-				this.customizedResources.update(languageId, companyId, newContainer);
-			}
-		});
+		if (AppContexts.user().hasLoggedIn()) {
+			this.resourcesRepository.getLastUpdatedDateTime(companyId, languageId).ifPresent(datetimeOfDataSource -> {
+				if (this.customizedResources.requiresToUpdate(companyId, languageId, datetimeOfDataSource)) {
+					val newContainer = this.resourcesRepository.loadResourcesOfCompany(companyId, languageId);
+					this.customizedResources.update(languageId, companyId, newContainer);
+				}
+			});
+		}
 	}
 
 	@Override
@@ -182,7 +187,6 @@ public class I18NResourcesForUK implements I18NResources, I18NResourceCustomizer
 			companyId = AppContexts.user().companyId();
 			languageId = AppContexts.user().language().basicLanguageId();
 		}
-		
 		this.refreshIfRequired(languageId, companyId);
 	}
 	

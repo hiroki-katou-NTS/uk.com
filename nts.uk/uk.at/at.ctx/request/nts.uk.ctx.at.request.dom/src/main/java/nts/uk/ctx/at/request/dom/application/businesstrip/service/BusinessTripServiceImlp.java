@@ -19,8 +19,8 @@ import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.Abs
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork_Old;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository_Old;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeRepository;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
@@ -30,6 +30,7 @@ import nts.uk.ctx.at.request.dom.setting.request.application.businesstrip.AppTri
 import nts.uk.ctx.at.request.dom.setting.request.application.businesstrip.AppTripRequestSetRepository;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.*;
@@ -66,7 +67,7 @@ public class BusinessTripServiceImlp implements BusinessTripService {
     private WorkTimeSettingRepository wkTimeRepo;
 
     @Inject
-    private AppHolidayWorkRepository appHolidayWorkRepository;
+    private AppHolidayWorkRepository_Old appHolidayWorkRepository;
 
     @Inject
     private AbsenceLeaveAppRepository absRepo;
@@ -577,7 +578,7 @@ public class BusinessTripServiceImlp implements BusinessTripService {
         switch (appType) {
             case HOLIDAY_WORK_APPLICATION:
                 //休日出勤申請 6
-                Optional<AppHolidayWork> appHolidayWork = appHolidayWorkRepository.getFullAppHolidayWork(cid, appId);
+                Optional<AppHolidayWork_Old> appHolidayWork = appHolidayWorkRepository.getFullAppHolidayWork(cid, appId);
                 if (appHolidayWork.isPresent()) {
                     wkTypeCd = appHolidayWork.get().getWorkTypeCode().v();
                     wkTimeCd = appHolidayWork.get().getWorkTimeCode() == null ? null : appHolidayWork.get().getWorkTimeCode().v();
@@ -639,17 +640,17 @@ public class BusinessTripServiceImlp implements BusinessTripService {
                 Optional<RecruitmentApp> recAppOpt = recRepo.findByID(appId);
                 if (recAppOpt.isPresent()) {
                     // 振出申請
-                    wkTypeCd = Optional.of(recAppOpt.get().getWorkTypeCD().v()).orElse(null);
-                    wkTimeCd = Optional.of(recAppOpt.get().getWorkTimeCD().v()).orElse(null);
-                    opWorkTime = recAppOpt.map(recruitmentApp -> recruitmentApp.getWorkTime1().getStartTime().v());
-                    opLeaveTime = recAppOpt.map(recruitmentApp -> recruitmentApp.getWorkTime1().getEndTime().v());
+                    wkTypeCd = Optional.of(recAppOpt.get().getWorkInformation().getWorkTypeCode().v()).orElse(null);
+                    wkTimeCd = Optional.of(recAppOpt.get().getWorkInformation().getWorkTimeCode().v()).orElse(null);
+                    opWorkTime = Optional.of(recAppOpt.get().getWorkTime(new WorkNo(1)).get().getTimeZone().getStartTime().v());
+                    opLeaveTime = Optional.of(recAppOpt.get().getWorkTime(new WorkNo(1)).get().getTimeZone().getEndTime().v());
                 } else {
                     // 振休申請
                     Optional<AbsenceLeaveApp> absAppOpt = absRepo.findByID(appId);
-                    wkTypeCd = Optional.of(absAppOpt.get().getWorkTypeCD().v()).orElse(null);
-                    wkTimeCd = Optional.of(absAppOpt.get().getWorkTimeCD()).orElse(null);
-                    opWorkTime = absAppOpt.map(absenceLeaveApp -> absenceLeaveApp.getWorkTime1().getStartTime().v());
-                    opLeaveTime = absAppOpt.map(absenceLeaveApp -> absenceLeaveApp.getWorkTime1().getEndTime().v());
+                    wkTypeCd = Optional.of(absAppOpt.get().getWorkInformation().getWorkTimeCode().v()).orElse(null);
+                    wkTimeCd = absAppOpt.get().getWorkInformation().getWorkTimeCodeNotNull().isPresent() ? absAppOpt.get().getWorkInformation().getWorkTimeCodeNotNull().get().v() : null;
+                    opWorkTime = absAppOpt.get().getWorkTime(new WorkNo(1)).map(c -> c.getTimeZone().getStartTime().v());
+                    opLeaveTime = absAppOpt.get().getWorkTime(new WorkNo(1)).map(c -> c.getTimeZone().getEndTime().v());
                 }
                 break;
         }

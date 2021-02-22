@@ -215,6 +215,7 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 		approvalRootState.setEmployeeID(appRootInstance.getEmployeeID());
 		approvalRootState.setApprovalRecordDate(appRootConfirm.getRecordDate());
 		approvalRootState.setListApprovalPhaseState(new ArrayList<>());
+		approvalRootState.setRootStateID(appRootConfirm.getRootID());
 		// ドメインモデル「承認ルート中間データ」の値をoutput「承認ルートインスタンス」に入れる
 		appRootInstance.getListAppPhase().forEach(appPhaseInstance -> {
 			ApprovalPhaseState approvalPhaseState = new ApprovalPhaseState();
@@ -282,8 +283,8 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 				AppRootConfirm appRootConfirm = this.getAppRootConfirmByDate(companyID, employeeIDLoop, loopDate, rootType);
 				// 中間データから承認ルートインスタンスに変換する
 				ApprovalRootState approvalRootState = this.convertFromAppRootInstance(appRootInstance, appRootConfirm);
-				// 承認ルート状況を取得する
-				approverToApproveLst.add(this.getApproverToApprove(approvalRootState));
+				// アルゴリズム「現在承認するべき未承認者を取得する」を実行する
+				approverToApproveLst.add(this.getApproverCanApprove(approvalRootState));
 			}
 		});
 		return approverToApproveLst;
@@ -318,10 +319,10 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 				continue;
 			}
 			approvalPhaseState.getListApprovalFrame().forEach(frameState -> {
-//				if(frameState.getApprovalAtr()!=ApprovalBehaviorAtr.UNAPPROVED){
-//					return;
-//				}
-//				approverIDLst.addAll(frameState.getListApproverState().stream().map(x -> x.getApproverID()).collect(Collectors.toList()));
+				if(frameState.isApproved(approvalPhaseState.getApprovalForm())){
+					return;
+				}
+				approverIDLst.addAll(frameState.getLstApproverInfo().stream().map(x -> x.getApproverID()).collect(Collectors.toList()));
 			});
 		}
 		// アルゴリズム「指定した社員が指定した承認者リストの代行承認者かの判断」を実行する
@@ -1003,5 +1004,55 @@ public class AppRootInstanceServiceImpl implements AppRootInstanceService {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public ApproverToApprove getApproverCanApprove(ApprovalRootState approvalRootState) {
+		String companyID = AppContexts.user().companyId();
+		// output「ルート状況」を初期化する
+		ApproverToApprove approverToApprove = new ApproverToApprove(
+				approvalRootState.getApprovalRecordDate(),
+				approvalRootState.getEmployeeID(),
+				new ArrayList<>());
+		List<String> approverIDLst = new ArrayList<>();
+		// ドメインモデル「承認フェーズインスタンス」．順序5～1の順でループする
+		List<ApprovalPhaseState> approvalPhaseStateLst = approvalRootState.getListApprovalPhaseState().stream()
+				.sorted(Comparator.comparing(ApprovalPhaseState::getPhaseOrder).reversed()).collect(Collectors.toList());
+		for(ApprovalPhaseState approvalPhaseState : approvalPhaseStateLst){
+			// アルゴリズム「承認フェーズ毎の承認者を取得する」を実行する
+			List<String> approverLst = judgmentApprovalStatusService.getApproverFromPhase(approvalPhaseState);
+			if(CollectionUtil.isEmpty(approverLst)){
+				continue;
+			}
+			// ループ中の承認フェーズをチェックする
+			if(approvalPhaseState.getApprovalAtr()==ApprovalBehaviorAtr.APPROVED ||
+					approvalPhaseState.getApprovalAtr()==ApprovalBehaviorAtr.DENIAL){
+				break;
+			}
+			// ループ中の承認フェーズが承認中のフェーズかチェックする
+			boolean checkPhase = judgmentApprovalStatusService.checkLoopApprovalPhase(approvalRootState, approvalPhaseState, false);
+			if(!checkPhase){
+				continue;
+			}
+			approvalPhaseState.getListApprovalFrame().forEach(frameState -> {
+				if(frameState.isApproved(approvalPhaseState.getApprovalForm())){
+					return;
+				}
+				approverIDLst.addAll(frameState.getLstApproverInfo().stream().map(x -> x.getApproverID()).collect(Collectors.toList()));
+			});
+		}
+		// アルゴリズム「指定した社員が指定した承認者リストの代行承認者かの判断」を実行する
+		ApprovalRepresenterOutput approvalRepresenterOutput = collectApprovalAgentInforService.getApprovalAgentInfor(companyID, approverIDLst);
+		// 取得した承認代行者リストを、output「承認すべき承認者」に追加する
+		approverIDLst.addAll(approvalRepresenterOutput.getListAgent());
+		approverIDLst.forEach(approverID -> {
+			// imported（ワークフロー）「社員」を取得する
+			PersonImport personImport = employeeAdapter.getEmployeeInformation(approverID);
+			approverToApprove.getAuthorList().add(new ApproverEmployee(
+					personImport.getSID(), 
+					personImport.getEmployeeCode(), 
+					personImport.getEmployeeName()));
+		});
+		return approverToApprove;
 	}
 }

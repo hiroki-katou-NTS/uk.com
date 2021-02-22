@@ -1,0 +1,32 @@
+
+#master-wrapper div#contents-area.kwr-003c {
+  padding: 30px;
+}
+
+.kwr-003c .d-flex {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+.kwr-003c .d-flex:first-child {
+  margin-bottom: 24px;  
+}
+.kwr-003c .d-flex > div {  
+  width: 120px;
+}
+.kwr-003c .d-flex .form-label {
+  margin-right: 32px;
+  width: 120px;
+}
+.kwr-003c .d-flex .code {
+  width: 50px;
+  margin-right: 5px;
+}
+.kwr-003c .d-flex .textEditor {
+  display: flex;
+  align-items: center;
+  width: auto;
+}
+.kwr-003c .d-flex:first-child .textEditor div {
+  padding: 5px 10px;
+}

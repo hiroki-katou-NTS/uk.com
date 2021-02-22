@@ -351,15 +351,17 @@ module nts.uk.com.view.cli003.f {
         dataType: string;
         hidden: boolean;
         width: string;
+        template: string;
         // setting for using export csv
         itemName: string;
-        constructor(headerText: string, key: string, dataType: string, hidden: boolean, width?: string) {
+        constructor(headerText: string, key: string, dataType: string, hidden: boolean, width?: string, template?: string) {
             this.headerText = headerText;
             this.key = key;
             this.dataType = dataType;
             this.hidden = hidden;
             this.itemName = headerText;
             this.width = width;
+            this.template = template;
         }
     }
     class PerCateCorrectRecordModel {
@@ -952,212 +954,212 @@ module nts.uk.com.view.cli003.f {
                 //All is order by SRCMT_LOG_OUTPUT_ITEM
                 case RECORD_TYPE.LOGIN:
                     vm.logDataResultHeader = [
-                        new IgGridColumnModel(logOutputItems[0].itemName, "userId", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[1].itemName, "userName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[2].itemName, "employeeCode", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[3].itemName, "ipAddress", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[4].itemName, "pcName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[5].itemName, "account", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[6].itemName, "modifyDateTime", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[7].itemName, "employmentAuthorityName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[8].itemName, "salarytAuthorityName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[9].itemName, "personalAuthorityName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[10].itemName, "targetNumberPeople", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[11].itemName, "officeHelperAuthorityName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[12].itemName, "accountAuthorityName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[13].itemName, "myNumberAuthorityName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[14].itemName, "groupCompanyAdminAuthorityName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[15].itemName, "companyAdminAuthorityName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[16].itemName, "systemAdminAuthorityName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[17].itemName, "menuName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[18].itemName, "loginStatus", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[19].itemName, "loginMethod", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[20].itemName, "accessResourceUrl", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[21].itemName, "note", "string", false, "150px"),
+                        new IgGridColumnModel(logOutputItems[0].itemName, "userId", "string", false, "150px", "<p class='limited-label'> ${userId} </p>"),
+                        new IgGridColumnModel(logOutputItems[1].itemName, "userName", "string", false, "150px", "<p class='limited-label'> ${userName} </p>"),
+                        new IgGridColumnModel(logOutputItems[2].itemName, "employeeCode", "string", false, "150px", "<p class='limited-label'> ${employeeCode} </p>"),
+                        new IgGridColumnModel(logOutputItems[3].itemName, "ipAddress", "string", false, "150px", "<p class='limited-label'> ${ipAddress} </p>"),
+                        new IgGridColumnModel(logOutputItems[4].itemName, "pcName", "string", false, "150px", "<p class='limited-label'> ${pcName} </p>"),
+                        new IgGridColumnModel(logOutputItems[5].itemName, "account", "string", false, "150px", "<p class='limited-label'> ${account} </p>"),
+                        new IgGridColumnModel(logOutputItems[6].itemName, "modifyDateTime", "string", false, "150px", "<p class='limited-label'> ${modifyDateTime} </p>"),
+                        new IgGridColumnModel(logOutputItems[7].itemName, "employmentAuthorityName", "string", false, "150px", "<p class='limited-label'> ${employmentAuthorityName} </p>"),
+                        new IgGridColumnModel(logOutputItems[8].itemName, "salarytAuthorityName", "string", false, "150px", "<p class='limited-label'> ${salarytAuthorityName} </p>"),
+                        new IgGridColumnModel(logOutputItems[9].itemName, "personalAuthorityName", "string", false, "150px", "<p class='limited-label'> ${personalAuthorityName} </p>"),
+                        new IgGridColumnModel(logOutputItems[10].itemName, "targetNumberPeople", "string", false, "150px", "<p class='limited-label'> ${targetNumberPeople} </p>"),
+                        new IgGridColumnModel(logOutputItems[11].itemName, "officeHelperAuthorityName", "string", false, "150px", "<p class='limited-label'> ${officeHelperAuthorityName} </p>"),
+                        new IgGridColumnModel(logOutputItems[12].itemName, "accountAuthorityName", "string", false, "150px", "<p class='limited-label'> ${accountAuthorityName} </p>"),
+                        new IgGridColumnModel(logOutputItems[13].itemName, "myNumberAuthorityName", "string", false, "150px", "<p class='limited-label'> ${myNumberAuthorityName} </p>"),
+                        new IgGridColumnModel(logOutputItems[14].itemName, "groupCompanyAdminAuthorityName", "string", false, "150px", "<p class='limited-label'> ${groupCompanyAdminAuthorityName} </p>"),
+                        new IgGridColumnModel(logOutputItems[15].itemName, "companyAdminAuthorityName", "string", false, "150px", "<p class='limited-label'> ${companyAdminAuthorityName} </p>"),
+                        new IgGridColumnModel(logOutputItems[16].itemName, "systemAdminAuthorityName", "string", false, "150px", "<p class='limited-label'> ${systemAdminAuthorityName} </p>"),
+                        new IgGridColumnModel(logOutputItems[17].itemName, "menuName", "string", false, "150px", "<p class='limited-label'> ${menuName} </p>"),
+                        new IgGridColumnModel(logOutputItems[18].itemName, "loginStatus", "string", false, "150px", "<p class='limited-label'> ${loginStatus} </p>"),
+                        new IgGridColumnModel(logOutputItems[19].itemName, "loginMethod", "string", false, "150px", "<p class='limited-label'> ${loginMethod} </p>"),
+                        new IgGridColumnModel(logOutputItems[20].itemName, "accessResourceUrl", "string", false, "150px", "<p class='limited-label'> ${accessResourceUrl} </p>"),
+                        new IgGridColumnModel(logOutputItems[21].itemName, "note", "string", false, "150px", "<p class='limited-label'> ${note} </p>"),
                     ];
                     break;
                 case RECORD_TYPE.START_UP:
                     vm.logDataResultHeader = [
-                        new IgGridColumnModel(logOutputItems[0].itemName, "userId", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[1].itemName, "userName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[2].itemName, "employeeCode", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[3].itemName, "ipAddress", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[4].itemName, "pcName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[5].itemName, "account", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[6].itemName, "modifyDateTime", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[7].itemName, "employmentAuthorityName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[8].itemName, "salarytAuthorityName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[9].itemName, "personalAuthorityName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[10].itemName, "targetNumberPeople", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[11].itemName, "officeHelperAuthorityName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[12].itemName, "accountAuthorityName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[13].itemName, "myNumberAuthorityName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[14].itemName, "groupCompanyAdminAuthorityName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[15].itemName, "companyAdminAuthorityName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[16].itemName, "systemAdminAuthorityName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[17].itemName, "note", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[18].itemName, "menuName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[19].itemName, "startUpMenuName", "string", false, "150px"),
+                        new IgGridColumnModel(logOutputItems[0].itemName, "userId", "string", false, "150px", "<p class='limited-label'> ${userId} </p>"),
+                        new IgGridColumnModel(logOutputItems[1].itemName, "userName", "string", false, "150px", "<p class='limited-label'> ${userName} </p>"),
+                        new IgGridColumnModel(logOutputItems[2].itemName, "employeeCode", "string", false, "150px", "<p class='limited-label'> ${employeeCode} </p>"),
+                        new IgGridColumnModel(logOutputItems[3].itemName, "ipAddress", "string", false, "150px", "<p class='limited-label'> ${ipAddress} </p>"),
+                        new IgGridColumnModel(logOutputItems[4].itemName, "pcName", "string", false, "150px", "<p class='limited-label'> ${pcName} </p>"),
+                        new IgGridColumnModel(logOutputItems[5].itemName, "account", "string", false, "150px", "<p class='limited-label'> ${account} </p>"),
+                        new IgGridColumnModel(logOutputItems[6].itemName, "modifyDateTime", "string", false, "150px", "<p class='limited-label'> ${modifyDateTime} </p>"),
+                        new IgGridColumnModel(logOutputItems[7].itemName, "employmentAuthorityName", "string", false, "150px", "<p class='limited-label'> ${employmentAuthorityName} </p>"),
+                        new IgGridColumnModel(logOutputItems[8].itemName, "salarytAuthorityName", "string", false, "150px", "<p class='limited-label'> ${salarytAuthorityName} </p>"),
+                        new IgGridColumnModel(logOutputItems[9].itemName, "personalAuthorityName", "string", false, "150px", "<p class='limited-label'> ${personalAuthorityName} </p>"),
+                        new IgGridColumnModel(logOutputItems[10].itemName, "targetNumberPeople", "string", false, "150px", "<p class='limited-label'> ${targetNumberPeople} </p>"),
+                        new IgGridColumnModel(logOutputItems[11].itemName, "officeHelperAuthorityName", "string", false, "150px", "<p class='limited-label'> ${officeHelperAuthorityName} </p>"),
+                        new IgGridColumnModel(logOutputItems[12].itemName, "accountAuthorityName", "string", false, "150px", "<p class='limited-label'> ${accountAuthorityName} </p>"),
+                        new IgGridColumnModel(logOutputItems[13].itemName, "myNumberAuthorityName", "string", false, "150px", "<p class='limited-label'> ${myNumberAuthorityName} </p>"),
+                        new IgGridColumnModel(logOutputItems[14].itemName, "groupCompanyAdminAuthorityName", "string", false, "150px", "<p class='limited-label'> ${groupCompanyAdminAuthorityName} </p>"),
+                        new IgGridColumnModel(logOutputItems[15].itemName, "companyAdminAuthorityName", "string", false, "150px", "<p class='limited-label'> ${companyAdminAuthorityName} </p>"),
+                        new IgGridColumnModel(logOutputItems[16].itemName, "systemAdminAuthorityName", "string", false, "150px", "<p class='limited-label'> ${systemAdminAuthorityName} </p>"),
+                        new IgGridColumnModel(logOutputItems[17].itemName, "note", "string", false, "150px", "<p class='limited-label'> ${note} </p>"),
+                        new IgGridColumnModel(logOutputItems[18].itemName, "menuName", "string", false, "150px", "<p class='limited-label'> ${menuName} </p>"),
+                        new IgGridColumnModel(logOutputItems[19].itemName, "startUpMenuName", "string", false, "150px", "<p class='limited-label'> ${startUpMenuName} </p>"),
                     ];
                     break;
                 case RECORD_TYPE.UPDATE_PERSION_INFO:
                     //parent
                     vm.logDataResultHeader = [
-                        new IgGridColumnModel(logOutputItems[0].itemName, "userId", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[1].itemName, "userName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[2].itemName, "employeeCode", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[3].itemName, "ipAddress", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[4].itemName, "pcName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[5].itemName, "account", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[6].itemName, "modifyDateTime", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[7].itemName, "employmentAuthorityName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[8].itemName, "salarytAuthorityName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[9].itemName, "personalAuthorityName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[10].itemName, "targetNumberPeople", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[11].itemName, "officeHelperAuthorityName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[12].itemName, "accountAuthorityName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[13].itemName, "myNumberAuthorityName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[14].itemName, "groupCompanyAdminAuthorityName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[15].itemName, "companyAdminAuthorityName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[16].itemName, "systemAdminAuthorityName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[17].itemName, "menuName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[35].itemName, "note", "string", false, "150px"),
+                        new IgGridColumnModel(logOutputItems[0].itemName, "userId", "string", false, "150px", "<p class='limited-label'> ${userId} </p>"),
+                        new IgGridColumnModel(logOutputItems[1].itemName, "userName", "string", false, "150px", "<p class='limited-label'> ${userName} </p>"),
+                        new IgGridColumnModel(logOutputItems[2].itemName, "employeeCode", "string", false, "150px", "<p class='limited-label'> ${employeeCode} </p>"),
+                        new IgGridColumnModel(logOutputItems[3].itemName, "ipAddress", "string", false, "150px", "<p class='limited-label'> ${ipAddress} </p>"),
+                        new IgGridColumnModel(logOutputItems[4].itemName, "pcName", "string", false, "150px", "<p class='limited-label'> ${pcName} </p>"),
+                        new IgGridColumnModel(logOutputItems[5].itemName, "account", "string", false, "150px", "<p class='limited-label'> ${account} </p>"),
+                        new IgGridColumnModel(logOutputItems[6].itemName, "modifyDateTime", "string", false, "150px", "<p class='limited-label'> ${modifyDateTime} </p>"),
+                        new IgGridColumnModel(logOutputItems[7].itemName, "employmentAuthorityName", "string", false, "150px", "<p class='limited-label'> ${employmentAuthorityName} </p>"),
+                        new IgGridColumnModel(logOutputItems[8].itemName, "salarytAuthorityName", "string", false, "150px", "<p class='limited-label'> ${salarytAuthorityName} </p>"),
+                        new IgGridColumnModel(logOutputItems[9].itemName, "personalAuthorityName", "string", false, "150px", "<p class='limited-label'> ${personalAuthorityName} </p>"),
+                        new IgGridColumnModel(logOutputItems[10].itemName, "targetNumberPeople", "string", false, "150px", "<p class='limited-label'> ${targetNumberPeople} </p>"),
+                        new IgGridColumnModel(logOutputItems[11].itemName, "officeHelperAuthorityName", "string", false, "150px", "<p class='limited-label'> ${officeHelperAuthorityName} </p>"),
+                        new IgGridColumnModel(logOutputItems[12].itemName, "accountAuthorityName", "string", false, "150px", "<p class='limited-label'> ${accountAuthorityName} </p>"),
+                        new IgGridColumnModel(logOutputItems[13].itemName, "myNumberAuthorityName", "string", false, "150px", "<p class='limited-label'> ${myNumberAuthorityName} </p>"),
+                        new IgGridColumnModel(logOutputItems[14].itemName, "groupCompanyAdminAuthorityName", "string", false, "150px", "<p class='limited-label'> ${groupCompanyAdminAuthorityName} </p>"),
+                        new IgGridColumnModel(logOutputItems[15].itemName, "companyAdminAuthorityName", "string", false, "150px", "<p class='limited-label'> ${companyAdminAuthorityName} </p>"),
+                        new IgGridColumnModel(logOutputItems[16].itemName, "systemAdminAuthorityName", "string", false, "150px", "<p class='limited-label'> ${systemAdminAuthorityName} </p>"),
+                        new IgGridColumnModel(logOutputItems[17].itemName, "menuName", "string", false, "150px", "<p class='limited-label'> ${menuName} </p>"),
+                        new IgGridColumnModel(logOutputItems[35].itemName, "note", "string", false, "150px", "<p class='limited-label'> ${note} </p>"),
                     ];
                     //sub
                     vm.logDataResultSubHeader = [
-                        new IgGridColumnModel(logOutputItems[18].itemName, "targetUserId", "string", false, "130px"),
-                        new IgGridColumnModel(logOutputItems[19].itemName, "targetUserName", "string", false, "130px"),
-                        new IgGridColumnModel(logOutputItems[20].itemName, "targetEmployeeCode", "string", false, "130px"),
-                        new IgGridColumnModel(logOutputItems[21].itemName, "categoryProcess", "string", false, "130px"),
-                        new IgGridColumnModel(logOutputItems[22].itemName, "categoryName", "string", false, "130px"),
-                        new IgGridColumnModel(logOutputItems[23].itemName, "methodCorrection", "string", false, "130px"),
-                        new IgGridColumnModel(logOutputItems[24].itemName, "targetYmd", "string", false, "130px"),
-                        new IgGridColumnModel(logOutputItems[25].itemName, "targetYm", "string", false, "130px"),
-                        new IgGridColumnModel(logOutputItems[26].itemName, "targetY", "string", false, "130px"),
-                        new IgGridColumnModel(logOutputItems[27].itemName, "target", "string", false, "130px"),
-                        new IgGridColumnModel(logOutputItems[28].itemName, "itemName", "string", false, "130px"),
-                        new IgGridColumnModel(logOutputItems[29].itemName, "itemValueBefore", "string", false, "130px"),
-                        new IgGridColumnModel(logOutputItems[30].itemName, "itemContentBefore", "string", false, "130px"),
-                        new IgGridColumnModel(logOutputItems[31].itemName, "itemValueAfter", "string", false, "130px"),
-                        new IgGridColumnModel(logOutputItems[32].itemName, "itemContentAfter", "string", false, "130px"),
-                        new IgGridColumnModel(logOutputItems[33].itemName, "correctionItem", "string", false, "130px"),
-                        new IgGridColumnModel(logOutputItems[34].itemName, "correctionYmd", "string", false, "130px"),
+                        new IgGridColumnModel(logOutputItems[18].itemName, "targetUserId", "string", false, "150px", "<p class='limited-label'> ${targetUserId} </p>"),
+                        new IgGridColumnModel(logOutputItems[19].itemName, "targetUserName", "string", false, "150px", "<p class='limited-label'> ${targetUserName} </p>"),
+                        new IgGridColumnModel(logOutputItems[20].itemName, "targetEmployeeCode", "string", false, "150px", "<p class='limited-label'> ${targetEmployeeCode} </p>"),
+                        new IgGridColumnModel(logOutputItems[21].itemName, "categoryProcess", "string", false, "150px", "<p class='limited-label'> ${categoryProcess} </p>"),
+                        new IgGridColumnModel(logOutputItems[22].itemName, "categoryName", "string", false, "150px", "<p class='limited-label'> ${categoryName} </p>"),
+                        new IgGridColumnModel(logOutputItems[23].itemName, "methodCorrection", "string", false, "150px", "<p class='limited-label'> ${methodCorrection} </p>"),
+                        new IgGridColumnModel(logOutputItems[24].itemName, "targetYmd", "string", false, "150px", "<p class='limited-label'> ${targetYmd} </p>"),
+                        new IgGridColumnModel(logOutputItems[25].itemName, "targetYm", "string", false, "150px", "<p class='limited-label'> ${targetYm} </p>"),
+                        new IgGridColumnModel(logOutputItems[26].itemName, "targetY", "string", false, "150px", "<p class='limited-label'> ${targetY} </p>"),
+                        new IgGridColumnModel(logOutputItems[27].itemName, "target", "string", false, "150px", "<p class='limited-label'> ${target} </p>"),
+                        new IgGridColumnModel(logOutputItems[28].itemName, "itemName", "string", false, "150px", "<p class='limited-label'> ${itemName} </p>"),
+                        new IgGridColumnModel(logOutputItems[29].itemName, "itemValueBefore", "string", false, "150px", "<p class='limited-label'> ${itemValueBefore} </p>"),
+                        new IgGridColumnModel(logOutputItems[30].itemName, "itemContentBefore", "string", false, "150px", "<p class='limited-label'> ${itemContentBefore} </p>"),
+                        new IgGridColumnModel(logOutputItems[31].itemName, "itemValueAfter", "string", false, "150px", "<p class='limited-label'> ${itemValueAfter} </p>"),
+                        new IgGridColumnModel(logOutputItems[32].itemName, "itemContentAfter", "string", false, "150px", "<p class='limited-label'> ${itemContentAfter} </p>"),
+                        new IgGridColumnModel(logOutputItems[33].itemName, "correctionItem", "string", false, "150px", "<p class='limited-label'> ${correctionItem} </p>"),
+                        new IgGridColumnModel(logOutputItems[34].itemName, "correctionYmd", "string", false, "150px", "<p class='limited-label'> ${correctionYmd} </p>"),
                     ];
                     break;
                 case RECORD_TYPE.DATA_CORRECT:
                     //parent
                     vm.logDataResultHeader = [
-                        new IgGridColumnModel(logOutputItems[0].itemName, "userId", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[1].itemName, "userName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[2].itemName, "employeeCode", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[3].itemName, "ipAddress", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[4].itemName, "pcName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[5].itemName, "account", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[6].itemName, "modifyDateTime", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[7].itemName, "employmentAuthorityName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[8].itemName, "salarytAuthorityName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[9].itemName, "personalAuthorityName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[10].itemName, "targetNumberPeople", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[11].itemName, "officeHelperAuthorityName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[12].itemName, "accountAuthorityName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[13].itemName, "myNumberAuthorityName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[14].itemName, "groupCompanyAdminAuthorityName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[15].itemName, "companyAdminAuthorityName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[16].itemName, "systemAdminAuthorityName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[17].itemName, "menuName", "string", false, "150px"),
+                        new IgGridColumnModel(logOutputItems[0].itemName, "userId", "string", false, "150px", "<p class='limited-label'> ${userId} </p>"),
+                        new IgGridColumnModel(logOutputItems[1].itemName, "userName", "string", false, "150px", "<p class='limited-label'> ${userName} </p>"),
+                        new IgGridColumnModel(logOutputItems[2].itemName, "employeeCode", "string", false, "150px", "<p class='limited-label'> ${employeeCode} </p>"),
+                        new IgGridColumnModel(logOutputItems[3].itemName, "ipAddress", "string", false, "150px", "<p class='limited-label'> ${ipAddress} </p>"),
+                        new IgGridColumnModel(logOutputItems[4].itemName, "pcName", "string", false, "150px", "<p class='limited-label'> ${pcName} </p>"),
+                        new IgGridColumnModel(logOutputItems[5].itemName, "account", "string", false, "150px", "<p class='limited-label'> ${account} </p>"),
+                        new IgGridColumnModel(logOutputItems[6].itemName, "modifyDateTime", "string", false, "150px", "<p class='limited-label'> ${modifyDateTime} </p>"),
+                        new IgGridColumnModel(logOutputItems[7].itemName, "employmentAuthorityName", "string", false, "150px", "<p class='limited-label'> ${employmentAuthorityName} </p>"),
+                        new IgGridColumnModel(logOutputItems[8].itemName, "salarytAuthorityName", "string", false, "150px", "<p class='limited-label'> ${salarytAuthorityName} </p>"),
+                        new IgGridColumnModel(logOutputItems[9].itemName, "personalAuthorityName", "string", false, "150px", "<p class='limited-label'> ${personalAuthorityName} </p>"),
+                        new IgGridColumnModel(logOutputItems[10].itemName, "targetNumberPeople", "string", false, "150px", "<p class='limited-label'> ${targetNumberPeople} </p>"),
+                        new IgGridColumnModel(logOutputItems[11].itemName, "officeHelperAuthorityName", "string", false, "150px", "<p class='limited-label'> ${officeHelperAuthorityName} </p>"),
+                        new IgGridColumnModel(logOutputItems[12].itemName, "accountAuthorityName", "string", false, "150px", "<p class='limited-label'> ${accountAuthorityName} </p>"),
+                        new IgGridColumnModel(logOutputItems[13].itemName, "myNumberAuthorityName", "string", false, "150px", "<p class='limited-label'> ${myNumberAuthorityName} </p>"),
+                        new IgGridColumnModel(logOutputItems[14].itemName, "groupCompanyAdminAuthorityName", "string", false, "150px", "<p class='limited-label'> ${groupCompanyAdminAuthorityName} </p>"),
+                        new IgGridColumnModel(logOutputItems[15].itemName, "companyAdminAuthorityName", "string", false, "150px", "<p class='limited-label'> ${companyAdminAuthorityName} </p>"),
+                        new IgGridColumnModel(logOutputItems[16].itemName, "systemAdminAuthorityName", "string", false, "150px", "<p class='limited-label'> ${systemAdminAuthorityName} </p>"),
+                        new IgGridColumnModel(logOutputItems[17].itemName, "menuName", "string", false, "150px", "<p class='limited-label'> ${menuName} </p>"),
                     ];
                     //sub
                     vm.logDataResultSubHeader = [
-                        new IgGridColumnModel(logOutputItems[18].itemName, "targetUserId", "string", false, "130px"),
-                        new IgGridColumnModel(logOutputItems[19].itemName, "targetUserName", "string", false, "130px"),
-                        new IgGridColumnModel(logOutputItems[20].itemName, "targetEmployeeCode", "string", false, "130px"),
-                        new IgGridColumnModel(logOutputItems[21].itemName, "targetYmd", "string", false, "130px"),
-                        new IgGridColumnModel(logOutputItems[22].itemName, "targetYm", "string", false, "130px"),
-                        new IgGridColumnModel(logOutputItems[23].itemName, "targetY", "string", false, "130px"),
-                        new IgGridColumnModel(logOutputItems[24].itemName, "target", "string", false, "130px"),
-                        new IgGridColumnModel(logOutputItems[25].itemName, "categoryCorrection", "string", false, "130px"),
-                        new IgGridColumnModel(logOutputItems[26].itemName, "targetItem", "string", false, "130px"),
-                        new IgGridColumnModel(logOutputItems[27].itemName, "itemValueBefore", "string", false, "130px"),
-                        new IgGridColumnModel(logOutputItems[28].itemName, "itemValueAfter", "string", false, "130px"),
-                        new IgGridColumnModel(logOutputItems[29].itemName, "itemContentBefore", "string", false, "130px"),
-                        new IgGridColumnModel(logOutputItems[30].itemName, "itemContentAfter", "string", false, "130px"),
-                        new IgGridColumnModel(logOutputItems[31].itemName, "remark", "string", false, "130px"),
+                        new IgGridColumnModel(logOutputItems[18].itemName, "targetUserId", "string", false, "150px", "<p class='limited-label'> ${targetUserId} </p>"),
+                        new IgGridColumnModel(logOutputItems[19].itemName, "targetUserName", "string", false, "150px", "<p class='limited-label'> ${targetUserName} </p>"),
+                        new IgGridColumnModel(logOutputItems[20].itemName, "targetEmployeeCode", "string", false, "150px", "<p class='limited-label'> ${targetEmployeeCode} </p>"),
+                        new IgGridColumnModel(logOutputItems[21].itemName, "targetYmd", "string", false, "150px", "<p class='limited-label'> ${targetYmd} </p>"),
+                        new IgGridColumnModel(logOutputItems[22].itemName, "targetYm", "string", false, "150px", "<p class='limited-label'> ${targetYm} </p>"),
+                        new IgGridColumnModel(logOutputItems[23].itemName, "targetY", "string", false, "150px", "<p class='limited-label'> ${targetY} </p>"),
+                        new IgGridColumnModel(logOutputItems[24].itemName, "target", "string", false, "150px", "<p class='limited-label'> ${target} </p>"),
+                        new IgGridColumnModel(logOutputItems[25].itemName, "categoryCorrection", "string", false, "150px", "<p class='limited-label'> ${categoryCorrection} </p>"),
+                        new IgGridColumnModel(logOutputItems[26].itemName, "targetItem", "string", false, "150px", "<p class='limited-label'> ${targetItem} </p>"),
+                        new IgGridColumnModel(logOutputItems[27].itemName, "itemValueBefore", "string", false, "150px", "<p class='limited-label'> ${itemValueBefore} </p>"),
+                        new IgGridColumnModel(logOutputItems[28].itemName, "itemValueAfter", "string", false, "150px", "<p class='limited-label'> ${itemValueAfter} </p>"),
+                        new IgGridColumnModel(logOutputItems[29].itemName, "itemContentBefore", "string", false, "150px", "<p class='limited-label'> ${itemContentBefore} </p>"),
+                        new IgGridColumnModel(logOutputItems[30].itemName, "itemContentAfter", "string", false, "150px", "<p class='limited-label'> ${itemContentAfter} </p>"),
+                        new IgGridColumnModel(logOutputItems[31].itemName, "remark", "string", false, "150px", "<p class='limited-label'> ${remark} </p>"),
                     ];
                     break;
                 case RECORD_TYPE.DATA_STORAGE:
                     //parent
                     vm.logDataResultHeader = [
-                        new IgGridColumnModel(logOutputItems[0].itemName, "ipAddress", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[1].itemName, "pcName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[2].itemName, "account", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[3].itemName, "employeeCode", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[4].itemName, "employeeName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[5].itemName, "startDateTime", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[6].itemName, "form", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[7].itemName, "name", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[8].itemName, "fileId", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[9].itemName, "fileSize", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[10].itemName, "status", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[11].itemName, "targetNumberPeople", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[12].itemName, "setCode", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[13].itemName, "fileName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[14].itemName, "endDateTime", "string", false, "150px"),
+                        new IgGridColumnModel(logOutputItems[0].itemName, "ipAddress", "string", false, "150px", "<p class='limited-label'> ${ipAddress} </p>"),
+                        new IgGridColumnModel(logOutputItems[1].itemName, "pcName", "string", false, "150px", "<p class='limited-label'> ${pcName} </p>"),
+                        new IgGridColumnModel(logOutputItems[2].itemName, "account", "string", false, "150px", "<p class='limited-label'> ${account} </p>"),
+                        new IgGridColumnModel(logOutputItems[3].itemName, "employeeCode", "string", false, "150px", "<p class='limited-label'> ${employeeCode} </p>"),
+                        new IgGridColumnModel(logOutputItems[4].itemName, "employeeName", "string", false, "150px", "<p class='limited-label'> ${employeeName} </p>"),
+                        new IgGridColumnModel(logOutputItems[5].itemName, "startDateTime", "string", false, "150px", "<p class='limited-label'> ${startDateTime} </p>"),
+                        new IgGridColumnModel(logOutputItems[6].itemName, "form", "string", false, "150px", "<p class='limited-label'> ${form} </p>"),
+                        new IgGridColumnModel(logOutputItems[7].itemName, "name", "string", false, "150px", "<p class='limited-label'> ${name} </p>"),
+                        new IgGridColumnModel(logOutputItems[8].itemName, "fileId", "string", false, "150px", "<p class='limited-label'> ${fileId} </p>"),
+                        new IgGridColumnModel(logOutputItems[9].itemName, "fileSize", "string", false, "150px", "<p class='limited-label'> ${fileSize} </p>"),
+                        new IgGridColumnModel(logOutputItems[10].itemName, "status", "string", false, "150px", "<p class='limited-label'> ${status} </p>"),
+                        new IgGridColumnModel(logOutputItems[11].itemName, "targetNumberPeople", "string", false, "150px", "<p class='limited-label'> ${targetNumberPeople} </p>"),
+                        new IgGridColumnModel(logOutputItems[12].itemName, "setCode", "string", false, "150px", "<p class='limited-label'> ${setCode} </p>"),
+                        new IgGridColumnModel(logOutputItems[13].itemName, "fileName", "string", false, "150px", "<p class='limited-label'> ${fileName} </p>"),
+                        new IgGridColumnModel(logOutputItems[14].itemName, "endDateTime", "string", false, "150px", "<p class='limited-label'> ${endDateTime} </p>"),
                     ];
                     //sub
                     vm.logDataResultSubHeader = [
-                        new IgGridColumnModel(logOutputItems[15].itemName, "processingContent", "string", false, "130px"),
-                        new IgGridColumnModel(logOutputItems[16].itemName, "errorContent", "string", false, "130px"),
-                        new IgGridColumnModel(logOutputItems[17].itemName, "errorDate", "string", false, "130px"),
-                        new IgGridColumnModel(logOutputItems[18].itemName, "errorEmployeeId", "string", false, "130px")
+                        new IgGridColumnModel(logOutputItems[15].itemName, "processingContent", "string", false, "150px", "<p class='limited-label'> ${processingContent} </p>"),
+                        new IgGridColumnModel(logOutputItems[16].itemName, "errorContent", "string", false, "150px", "<p class='limited-label'> ${errorContent} </p>"),
+                        new IgGridColumnModel(logOutputItems[17].itemName, "errorDate", "string", false, "150px", "<p class='limited-label'> ${errorDate} </p>"),
+                        new IgGridColumnModel(logOutputItems[18].itemName, "errorEmployeeId", "string", false, "130px", "<p class='limited-label'> ${errorEmployeeId} </p>")
                     ];
                     break;
                 case RECORD_TYPE.DATA_RECOVERY:
                     //parent
                     vm.logDataResultHeader = [
-                        new IgGridColumnModel(logOutputItems[0].itemName, "ipAddress", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[1].itemName, "pcName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[2].itemName, "account", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[3].itemName, "employeeCode", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[4].itemName, "employeeName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[5].itemName, "startDateTime", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[6].itemName, "form", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[7].itemName, "name", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[8].itemName, "endDateTime", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[9].itemName, "setCode", "string", false, "150px"),
+                        new IgGridColumnModel(logOutputItems[0].itemName, "ipAddress", "string", false, "150px", "<p class='limited-label'> ${ipAddress} </p>"),
+                        new IgGridColumnModel(logOutputItems[1].itemName, "pcName", "string", false, "150px", "<p class='limited-label'> ${pcName} </p>"),
+                        new IgGridColumnModel(logOutputItems[2].itemName, "account", "string", false, "150px", "<p class='limited-label'> ${account} </p>"),
+                        new IgGridColumnModel(logOutputItems[3].itemName, "employeeCode", "string", false, "150px", "<p class='limited-label'> ${employeeCode} </p>"),
+                        new IgGridColumnModel(logOutputItems[4].itemName, "employeeName", "string", false, "150px", "<p class='limited-label'> ${employeeName} </p>"),
+                        new IgGridColumnModel(logOutputItems[5].itemName, "startDateTime", "string", false, "150px", "<p class='limited-label'> ${startDateTime} </p>"),
+                        new IgGridColumnModel(logOutputItems[6].itemName, "form", "string", false, "150px", "<p class='limited-label'> ${form} </p>"),
+                        new IgGridColumnModel(logOutputItems[7].itemName, "name", "string", false, "150px", "<p class='limited-label'> ${name} </p>"),
+                        new IgGridColumnModel(logOutputItems[8].itemName, "endDateTime", "string", false, "150px", "<p class='limited-label'> ${endDateTime} </p>"),
+                        new IgGridColumnModel(logOutputItems[9].itemName, "setCode", "string", false, "150px", "<p class='limited-label'> ${setCode} </p>"),
                     ];
                     //sub
                     vm.logDataResultSubHeader = [
-                        new IgGridColumnModel(logOutputItems[10].itemName, "processingContent", "string", false, "130px"),
-                        new IgGridColumnModel(logOutputItems[11].itemName, "errorContent", "string", false, "130px"),
-                        new IgGridColumnModel(logOutputItems[12].itemName, "contentSql", "string", false, "130px"),
-                        new IgGridColumnModel(logOutputItems[13].itemName, "errorDate", "string", false, "130px"),
-                        new IgGridColumnModel(logOutputItems[14].itemName, "errorEmployeeId", "string", false, "130px")
+                        new IgGridColumnModel(logOutputItems[10].itemName, "processingContent", "string", false, "130px", "<p class='limited-label'> ${processingContent} </p>"),
+                        new IgGridColumnModel(logOutputItems[11].itemName, "errorContent", "string", false, "130px", "<p class='limited-label'> ${errorContent} </p>"),
+                        new IgGridColumnModel(logOutputItems[12].itemName, "contentSql", "string", false, "130px", "<p class='limited-label'> ${contentSql} </p>"),
+                        new IgGridColumnModel(logOutputItems[13].itemName, "errorDate", "string", false, "130px", "<p class='limited-label'> ${errorDate} </p>"),
+                        new IgGridColumnModel(logOutputItems[14].itemName, "errorEmployeeId", "string", false, "130px", "<p class='limited-label'> ${errorEmployeeId} </p>")
                     ];
                     break;
                 case RECORD_TYPE.DATA_DELETION:
                     //parent
                     vm.logDataResultHeader = [
-                        new IgGridColumnModel(logOutputItems[0].itemName, "ipAddress", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[1].itemName, "pcName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[2].itemName, "account", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[3].itemName, "employeeCode", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[4].itemName, "employeeName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[5].itemName, "startDateTime", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[6].itemName, "form", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[7].itemName, "status", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[8].itemName, "targetNumberPeople", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[9].itemName, "isDeletedFilesFlg", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[10].itemName, "fileSize", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[11].itemName, "fileName", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[12].itemName, "endDateTime", "string", false, "150px"),
-                        new IgGridColumnModel(logOutputItems[13].itemName, "setCode", "string", false, "150px"),
+                        new IgGridColumnModel(logOutputItems[0].itemName, "ipAddress", "string", false, "150px", "<p class='limited-label'> ${ipAddress} </p>"),
+                        new IgGridColumnModel(logOutputItems[1].itemName, "pcName", "string", false, "150px", "<p class='limited-label'> ${pcName} </p>"),
+                        new IgGridColumnModel(logOutputItems[2].itemName, "account", "string", false, "150px", "<p class='limited-label'> ${account} </p>"),
+                        new IgGridColumnModel(logOutputItems[3].itemName, "employeeCode", "string", false, "150px", "<p class='limited-label'> ${employeeCode} </p>"),
+                        new IgGridColumnModel(logOutputItems[4].itemName, "employeeName", "string", false, "150px", "<p class='limited-label'> ${employeeName} </p>"),
+                        new IgGridColumnModel(logOutputItems[5].itemName, "startDateTime", "string", false, "150px", "<p class='limited-label'> ${startDateTime} </p>"),
+                        new IgGridColumnModel(logOutputItems[6].itemName, "form", "string", false, "150px", "<p class='limited-label'> ${form} </p>"),
+                        new IgGridColumnModel(logOutputItems[7].itemName, "status", "string", false, "150px", "<p class='limited-label'> ${status} </p>"),
+                        new IgGridColumnModel(logOutputItems[8].itemName, "targetNumberPeople", "string", false, "150px", "<p class='limited-label'> ${targetNumberPeople} </p>"),
+                        new IgGridColumnModel(logOutputItems[9].itemName, "isDeletedFilesFlg", "string", false, "150px", "<p class='limited-label'> ${isDeletedFilesFlg} </p>"),
+                        new IgGridColumnModel(logOutputItems[10].itemName, "fileSize", "string", false, "150px", "<p class='limited-label'> ${fileSize} </p>"),
+                        new IgGridColumnModel(logOutputItems[11].itemName, "fileName", "string", false, "150px", "<p class='limited-label'> ${fileName} </p>"),
+                        new IgGridColumnModel(logOutputItems[12].itemName, "endDateTime", "string", false, "150px", "<p class='limited-label'> ${endDateTime} </p>"),
+                        new IgGridColumnModel(logOutputItems[13].itemName, "setCode", "string", false, "150px", "<p class='limited-label'> ${setCode} </p>"),
                     ];
                     //sub
                     vm.logDataResultSubHeader = [
-                        new IgGridColumnModel(logOutputItems[14].itemName, "processingContent", "string", false, "130px"),
-                        new IgGridColumnModel(logOutputItems[15].itemName, "errorContent", "string", false, "130px"),
-                        new IgGridColumnModel(logOutputItems[16].itemName, "errorDate", "string", false, "130px"),
-                        new IgGridColumnModel(logOutputItems[17].itemName, "errorEmployeeId", "string", false, "130px")
+                        new IgGridColumnModel(logOutputItems[14].itemName, "processingContent", "string", false, "130px", "<p class='limited-label'> ${processingContent} </p>"),
+                        new IgGridColumnModel(logOutputItems[15].itemName, "errorContent", "string", false, "130px", "<p class='limited-label'> ${errorContent} </p>"),
+                        new IgGridColumnModel(logOutputItems[16].itemName, "errorDate", "string", false, "130px", "<p class='limited-label'> ${errorDate} </p>"),
+                        new IgGridColumnModel(logOutputItems[17].itemName, "errorEmployeeId", "string", false, "130px", "<p class='limited-label'> ${errorEmployeeId} </p>")
                     ];
                     break;
                 default:
@@ -1240,10 +1242,6 @@ module nts.uk.com.view.cli003.f {
                 columns: vm.logDataResultHeader,
                 features: [
                     {
-                        name: "Tooltips",
-                        inherit: true
-                    },
-                    {
                         name: "Responsive",
                         enableVerticalRendering: false
                     },
@@ -1321,9 +1319,6 @@ module nts.uk.com.view.cli003.f {
                 width: "125%",
                 height: "calc(100% - 5px)",
                 features: [
-                    {
-                        name: "Tooltips"
-                    },
                     {
                         name: "Paging",
                         type: "local",
@@ -1425,9 +1420,6 @@ module nts.uk.com.view.cli003.f {
                 width: "125%",
                 height: "calc(100% - 5px)",
                 features: [
-                    {
-                        name: "Tooltips"
-                    },
                     {
                         name: "Paging",
                         type: "local",

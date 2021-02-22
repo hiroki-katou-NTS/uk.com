@@ -46,7 +46,7 @@ public class JpaShortTimeOfDailyPerformanceRepo extends JpaRepository implements
 	private ShortWorkingTimeSheet shortWorkTime(KrcdtDaiShortWorkTime c) {
 		return new ShortWorkingTimeSheet(new ShortWorkTimFrameNo(c.krcdtDaiShortWorkTimePK.shortWorkTimeFrameNo),
 				EnumAdaptor.valueOf(c.childCareAtr, ChildCareAttribute.class), new TimeWithDayAttr(c.startTime),
-				new TimeWithDayAttr(c.endTime), new AttendanceTime(c.deductionTime), new AttendanceTime(c.time));
+				new TimeWithDayAttr(c.endTime));
 	}
 
 	@Override
@@ -84,9 +84,7 @@ public class JpaShortTimeOfDailyPerformanceRepo extends JpaRepository implements
 	private KrcdtDaiShortWorkTime newEntities(String employeeId, GeneralDate ymd, ShortWorkingTimeSheet c) {
 		return new KrcdtDaiShortWorkTime(new KrcdtDaiShortWorkTimePK(employeeId, ymd, c.getShortWorkTimeFrameNo().v()),
 				c.getStartTime() == null ? 0 : c.getStartTime().valueAsMinutes(),
-				c.getEndTime() == null ? 0 : c.getEndTime().valueAsMinutes(), c.getChildCareAttr().value,
-				c.getShortTime() == null ? 0 : c.getShortTime().valueAsMinutes(),
-				c.getDeductionTime() == null ? 0 : c.getDeductionTime().valueAsMinutes());
+				c.getEndTime() == null ? 0 : c.getEndTime().valueAsMinutes(), c.getChildCareAttr().value);
 	}
 
 	private TypedQueryWrapper<KrcdtDaiShortWorkTime> findEntities(String employeeId, GeneralDate ymd) {
@@ -109,15 +107,15 @@ public class JpaShortTimeOfDailyPerformanceRepo extends JpaRepository implements
 		TypedQueryWrapper<KrcdtDaiShortWorkTime> tQuery=  this.queryProxy().query(query.toString(), KrcdtDaiShortWorkTime.class);
 		CollectionUtil.split(employeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds -> {
 			result.addAll(tQuery.setParameter("employeeId", empIds)
-								.setParameter("start", ymd.start())
-								.setParameter("end", ymd.end()).getList().stream()
-								.collect(Collectors.groupingBy(
-										c -> c.krcdtDaiShortWorkTimePK.sid + c.krcdtDaiShortWorkTimePK.ymd.toString()))
-								.entrySet().stream()
-								.map(c -> new ShortTimeOfDailyPerformance(c.getValue().get(0).krcdtDaiShortWorkTimePK.sid,
-												c.getValue().stream().map(x -> shortWorkTime(x)).collect(Collectors.toList()),
-												c.getValue().get(0).krcdtDaiShortWorkTimePK.ymd))
-								.collect(Collectors.toList()));
+				.setParameter("start", ymd.start())
+				.setParameter("end", ymd.end()).getList().stream()
+				.collect(Collectors.groupingBy(
+						c -> c.krcdtDaiShortWorkTimePK.sid + c.krcdtDaiShortWorkTimePK.ymd.toString()))
+				.entrySet().stream()
+				.map(c -> new ShortTimeOfDailyPerformance(c.getValue().get(0).krcdtDaiShortWorkTimePK.sid,
+								c.getValue().stream().map(x -> shortWorkTime(x)).collect(Collectors.toList()),
+								c.getValue().get(0).krcdtDaiShortWorkTimePK.ymd))
+				.collect(Collectors.toList()));
 		});
 		return result;
 	}
@@ -127,7 +125,7 @@ public class JpaShortTimeOfDailyPerformanceRepo extends JpaRepository implements
 	public void deleteByEmployeeIdAndDate(String employeeId, GeneralDate ymd) {
 		
 		Connection con = this.getEntityManager().unwrap(Connection.class);
-		String sqlQuery = "Delete From KRCDT_DAI_SHORTTIME_TS Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'" ;
+		String sqlQuery = "Delete From KRCDT_DAY_TS_SHORTTIME Where SID = " + "'" + employeeId + "'" + " and YMD = " + "'" + ymd + "'" ;
 		try {
 			con.createStatement().executeUpdate(sqlQuery);
 		} catch (SQLException e) {
@@ -150,15 +148,15 @@ public class JpaShortTimeOfDailyPerformanceRepo extends JpaRepository implements
 		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
 			result.addAll(tQuery.setParameter("employeeId", p.keySet())
 								.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
-								.getList().stream()
+				.getList().stream()
 								.filter(c -> p.get(c.krcdtDaiShortWorkTimePK.sid).contains(c.krcdtDaiShortWorkTimePK.ymd))
-								.collect(Collectors.groupingBy(
-										c -> c.krcdtDaiShortWorkTimePK.sid + c.krcdtDaiShortWorkTimePK.ymd.toString()))
-								.entrySet().stream()
-								.map(c -> new ShortTimeOfDailyPerformance(c.getValue().get(0).krcdtDaiShortWorkTimePK.sid,
-												c.getValue().stream().map(x -> shortWorkTime(x)).collect(Collectors.toList()),
-												c.getValue().get(0).krcdtDaiShortWorkTimePK.ymd))
-								.collect(Collectors.toList()));
+				.collect(Collectors.groupingBy(
+						c -> c.krcdtDaiShortWorkTimePK.sid + c.krcdtDaiShortWorkTimePK.ymd.toString()))
+				.entrySet().stream()
+				.map(c -> new ShortTimeOfDailyPerformance(c.getValue().get(0).krcdtDaiShortWorkTimePK.sid,
+								c.getValue().stream().map(x -> shortWorkTime(x)).collect(Collectors.toList()),
+								c.getValue().get(0).krcdtDaiShortWorkTimePK.ymd))
+				.collect(Collectors.toList()));
 		});
 		return result;
 	}

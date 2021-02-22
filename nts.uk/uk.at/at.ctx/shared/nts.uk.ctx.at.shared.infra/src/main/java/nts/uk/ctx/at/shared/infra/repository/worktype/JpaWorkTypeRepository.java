@@ -571,7 +571,7 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	@Override
 	public boolean findWorkTypeRecord(String companyId, String workTypeCode) {
 		try (PreparedStatement statement = this.connection().prepareStatement(
-				"select Count(*) from KSHMT_WORKTYPE"
+				"select Count(*) from KSHMT_WKTP"
 				+ " where CID = ? and CD = ?")) {
 			
 			statement.setString(1, companyId);
@@ -632,7 +632,7 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	}
 
 	/**
-	 * Insert workType to KSHMT_WORKTYPE
+	 * Insert workType to KSHMT_WKTP
 	 */
 	@Override
 	public void add(WorkType workType) {
@@ -814,10 +814,7 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 		KshmtWorkType entity = (KshmtWorkType) object[0];
 		Integer order = object[1] != null ? Integer.valueOf(object[1].toString()) : null;
 		
-		WorkType domain = WorkType.createSimpleFromJavaType(entity.kshmtWorkTypePK.companyId,
-				entity.kshmtWorkTypePK.workTypeCode, entity.symbolicName, entity.name, entity.abbreviationName,
-				entity.memo, entity.worktypeAtr, entity.oneDayAtr, entity.morningAtr, entity.afternoonAtr,
-				entity.deprecateAtr, entity.calculatorMethod);
+		WorkType domain = toDomain(entity);
 		if (order != null) {
 			domain.setDisplayOrder(order);
 		}
@@ -888,7 +885,7 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 
 	private static final String SELECT_ALL_WORKTYPE_BY_LIST_CODE = SELECT_FROM_WORKTYPE
 			+ " WHERE c.kshmtWorkTypePK.companyId = :companyId "
-			+ "AND c.kshmtWorkTypeSetPK.workTypeCode IN :workTypeCodes ";
+			+ "AND c.kshmtWorkTypePK.workTypeCode IN :workTypeCodes ";
 	
 	@Override
 	public List<WorkType> findByCidAndWorkTypeCodes(String companyId, List<String> workTypeCodes) {

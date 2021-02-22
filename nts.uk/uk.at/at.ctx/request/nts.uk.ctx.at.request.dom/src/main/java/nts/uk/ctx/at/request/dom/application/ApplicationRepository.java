@@ -7,6 +7,7 @@ import java.util.Optional;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 
 public interface ApplicationRepository {
@@ -67,9 +68,9 @@ public interface ApplicationRepository {
 	 * @return
 	 */
 	public List<Application> getListAppModeApprCMM045(String companyID, DatePeriod period, List<String> lstAppId,
-			boolean unapprovalStatus, boolean approvalStatus, boolean denialStatus, 
-			boolean agentApprovalStatus, boolean remandStatus, boolean cancelStatus, List<Integer> lstType,
-			List<PrePostAtr> prePostAtrLst, List<String> employeeIDLst, List<StampRequestMode> stampRequestModeLst);
+			boolean unapprovalStatus, boolean approvalStatus, boolean denialStatus, boolean agentApprovalStatus, 
+			boolean remandStatus, boolean cancelStatus, List<Integer> lstType, List<PrePostAtr> prePostAtrLst, 
+			List<String> employeeIDLst, List<StampRequestMode> stampRequestModeLst, List<OvertimeAppAtr> overtimeAppAtrLst);
 
 	/**
 	 * get List Application Pre
@@ -184,8 +185,8 @@ public interface ApplicationRepository {
 	 */
 	public Optional<Application> findByID(String appID);
 	
-	public List<Application> getByAppTypeList(List<String> employeeLst, GeneralDate startDate, GeneralDate endDate, 
-			List<ApplicationType> appTypeLst, List<PrePostAtr> prePostAtrLst, List<StampRequestMode> stampRequestModeLst);
+	public List<Application> getByAppTypeList(List<String> employeeLst, GeneralDate startDate, GeneralDate endDate, List<ApplicationType> appTypeLst, 
+			List<PrePostAtr> prePostAtrLst, List<StampRequestMode> stampRequestModeLst, List<OvertimeAppAtr> overtimeAppAtrLst);
 
 	public List<Application> getAppForKAF008(String sID, GeneralDate startDate, GeneralDate endDate);
 
@@ -203,5 +204,7 @@ public interface ApplicationRepository {
 			ApplicationType appType, String employeeID);
 	
 	public List<Application> getApprSttByEmpPeriod(String employeeID, DatePeriod period);
+	
+	public Optional<String> getNewestPreAppIDByEmpDate(String employeeID, GeneralDate date, ApplicationType appType);
 
 }

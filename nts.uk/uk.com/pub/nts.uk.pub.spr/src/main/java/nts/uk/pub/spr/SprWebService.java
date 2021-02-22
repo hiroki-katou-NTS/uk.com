@@ -16,8 +16,8 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import com.google.common.base.Strings;
 
 import lombok.val;
-import nts.uk.ctx.sys.gateway.app.command.login.LoginRecordRegistService;
-import nts.uk.ctx.sys.gateway.app.command.login.dto.LoginRecordInput;
+import nts.uk.ctx.sys.gateway.app.command.loginold.LoginRecordRegistService;
+import nts.uk.ctx.sys.gateway.app.command.loginold.dto.LoginRecordInput;
 import nts.uk.ctx.sys.gateway.app.command.systemsuspend.SystemSuspendOutput;
 import nts.uk.ctx.sys.gateway.app.command.systemsuspend.SystemSuspendService;
 import nts.uk.pub.spr.SprStubHelper.ApplicationTargetResult;

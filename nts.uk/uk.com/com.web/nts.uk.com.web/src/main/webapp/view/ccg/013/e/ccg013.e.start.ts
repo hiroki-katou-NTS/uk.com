@@ -3,5 +3,6 @@ module nts.uk.com.view.ccg013.e {
         var screenModel = new e.viewmodel.ScreenModel();
         screenModel.start();
         __viewContext.bind(screenModel); 
+        $('#web-code').focus();
     }); 
 }

@@ -13,43 +13,10 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class ApprSttConfirmEmp {
-	/**
-	 * 社員コード
-	 */
+	private List<DailyConfirmOutput> listDailyConfirm;
 	private String empCD;
-	
-	/**
-	 * 社員名
-	 */
 	private String empName;
-	
-	/**
-	 * 社員ID
-	 */
+	private Boolean monthConfirm;
+	private Integer monthApproval;
 	private String empID;
-	
-	/**
-	 * 月別本人確認
-	 */
-	private String sttUnConfirmDay;
-	
-	/**
-	 * 月別上長承認
-	 */
-	private String sttUnApprDay;
-	
-	/**
-	 * 日別本人確認
-	 */
-	private String sttUnConfirmMonth;
-	
-	/**
-	 * 日別上長承認
-	 */
-	private String sttUnApprMonth;
-	
-	/**
-	 * 期間（開始日～終了日）
-	 */
-	private List<ApprSttEmpDate> dateInfoLst;
 }

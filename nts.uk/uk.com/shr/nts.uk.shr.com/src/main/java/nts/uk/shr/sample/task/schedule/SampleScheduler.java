@@ -6,8 +6,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
-import nts.arc.task.schedule.ScheduledJobUserData;
 import nts.arc.task.schedule.cron.CronSchedule;
+import nts.arc.task.schedule.job.jobdata.ScheduledJobUserData;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.task.schedule.UkJobScheduleOptions;
 import nts.uk.shr.com.task.schedule.UkJobScheduler;
@@ -37,6 +37,6 @@ public class SampleScheduler {
 	
 	public void unschedule(String scheduleId) {
 		
-		this.scheduler.unscheduleOnCurrentCompany(SampleScheduledJob.class, scheduleId);
+		//this.scheduler.unscheduleOnCurrentCompany(SampleScheduledJob.class, scheduleId);
 	}
 }

@@ -70,18 +70,18 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 			vm.$ajax(API.getUseSetting).then((useSetResult: any) => {
 				if(useSetResult) {
 					if(useSetResult.usePersonConfirm && useSetResult.useBossConfirm) {
-						vm.confirmAndApprovalDailyFlg.text = vm.$i18n('KAF018_552');
+						vm.confirmAndApprovalDailyFlg.text(vm.$i18n('KAF018_552'));
 					} else if(useSetResult.usePersonConfirm){
-						vm.confirmAndApprovalDailyFlg.text = vm.$i18n('KAF018_553');
+						vm.confirmAndApprovalDailyFlg.text(vm.$i18n('KAF018_553'));
 					} else {
-						vm.confirmAndApprovalDailyFlg.text = vm.$i18n('KAF018_554');
+						vm.confirmAndApprovalDailyFlg.text(vm.$i18n('KAF018_554'));
 					}
 					if(useSetResult.monthlyIdentityConfirm && useSetResult.monthlyConfirm) {
-						vm.confirmAndApprovalMonthFlg.text = vm.$i18n('KAF018_555');		
+						vm.confirmAndApprovalMonthFlg.text(vm.$i18n('KAF018_555'));		
 					} else if(useSetResult.monthlyIdentityConfirm){
-						vm.confirmAndApprovalMonthFlg.text = vm.$i18n('KAF018_556');
+						vm.confirmAndApprovalMonthFlg.text(vm.$i18n('KAF018_556'));
 					} else {
-						vm.confirmAndApprovalMonthFlg.text = vm.$i18n('KAF018_557');
+						vm.confirmAndApprovalMonthFlg.text(vm.$i18n('KAF018_557'));
 					}
 					if((useSetResult.usePersonConfirm) || (useSetResult.useBossConfirm)) {
 						vm.confirmAndApprovalDailyFlg.enable(true);
@@ -133,11 +133,26 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 				return vm.$ajax(API.getAppNameInAppList);
 			}).then((appNameLst: any) => {
 				vm.appNameLst = appNameLst;
-				return vm.$ajax(API.getApprovalStatusActivation);
+				return $.Deferred((dfd) => {
+					return character.restore(__viewContext.user.employeeId + __viewContext.user.companyId).then((restoreData: any) => {
+						let selectedClosureIdCache = null;
+						if(restoreData)	{
+							selectedClosureIdCache = restoreData.employmentInfo.selectedClosureId;
+						}
+						dfd.resolve(selectedClosureIdCache);
+					});
+				});
+			}).then((data: any) => {
+				return vm.$ajax(API.getApprovalStatusActivation, {selectClosureId: data});
 			}).then((data: any) => {
 				return $.Deferred((dfd) => {
 					vm.closureLst(_.map(data.closureList, (o: any) => {
-						return new ClosureItem(o.closureHistories[0].closureId, o.closureHistories[0].closeName, o.closureMonth);
+						return new ClosureItem(
+							o.closureHistories[0].closureId, 
+							o.closureHistories[0].closeName, 
+							o.closureMonth,
+							o.closureHistories[0].closureDate.closureDay,
+							o.closureHistories[0].closureDate.lastDayOfMonth);
 					}));
 					vm.employmentCDLst = data.listEmploymentCD;
 					if(params) {
@@ -232,6 +247,7 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 			}
 			// Ｂ画面(承認・確認状況の照会)を実行する
 			character.save('InitDisplayOfApprovalStatus', vm.initDisplayOfApprovalStatus).then(() => {
+				vm.fullWorkplaceInfo = vm.flattenWkpTree(_.cloneDeep($('#tree-grid').getDataList()));
 				let closureItem = _.find(vm.closureLst(), o => o.closureId == vm.selectedClosureId()),
 					startDate = vm.dateValue().startDate,
 					endDate = vm.dateValue().endDate,
@@ -279,11 +295,15 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 		closureId: number; 
 		closureName: string;
 		processingYm: number;
+		closureDay: number;
+		lastDayOfMonth: boolean;
 		
-		constructor(closureId: number, closureName: string, processingYm: number) {
+		constructor(closureId: number, closureName: string, processingYm: number, closureDay: number, lastDayOfMonth: boolean) {
 			this.closureId = closureId;
 			this.closureName = closureName;
 			this.processingYm = processingYm;
+			this.closureDay = closureDay;
+			this.lastDayOfMonth = lastDayOfMonth;
 		}
 	}
 	
@@ -317,11 +337,11 @@ module nts.uk.at.view.kaf018.a.viewmodel {
 	export class CheckBoxValue {
 		value: KnockoutObservable<boolean>;
 		enable: KnockoutObservable<boolean>;
-		text: string;
+		text: KnockoutObservable<string>;
 		constructor(value: boolean, enable: boolean, text: string) {
 			this.value = ko.observable(value);
 			this.enable = ko.observable(enable);
-			this.text = text;
+			this.text = ko.observable(text);
 		}
 	}
 

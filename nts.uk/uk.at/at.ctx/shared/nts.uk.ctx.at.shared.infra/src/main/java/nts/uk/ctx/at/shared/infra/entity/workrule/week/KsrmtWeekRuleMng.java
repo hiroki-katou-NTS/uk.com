@@ -10,7 +10,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.workrule.weekmanage.WeekRuleManagement;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * KSRMT_WEEK_RULE_MNG 週の管理
@@ -19,7 +19,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Table(name = "KSRMT_WEEK_RULE_MNG")
 @NoArgsConstructor
 @AllArgsConstructor
-public class KsrmtWeekRuleMng extends UkJpaEntity implements Serializable {
+public class KsrmtWeekRuleMng extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -32,10 +32,6 @@ public class KsrmtWeekRuleMng extends UkJpaEntity implements Serializable {
 	@Column(name = "START_OF_WEEK")
 	public int startOfWeek;
 	
-	/** 週割増時間を締め開始日から計算する */
-	@Column(name = "IS_CLOSING_START_DATE")
-	public int closingStartDate;
-	
 	/**
 	 * キー取得
 	 */
@@ -46,13 +42,12 @@ public class KsrmtWeekRuleMng extends UkJpaEntity implements Serializable {
 	
 	public WeekRuleManagement toDomain(){
 
-		return WeekRuleManagement.of(this.cid, this.startOfWeek, closingStartDate == 1);
+		return WeekRuleManagement.of(this.cid, this.startOfWeek);
 	}
 	
 	public void from(WeekRuleManagement domain){
 		
 		this.startOfWeek = domain.getWeekStart().value;
-		this.closingStartDate = domain.isCalcWeekPremFromClosureStart() ? 1 : 0;
 	}
 	
 	public static KsrmtWeekRuleMng map(WeekRuleManagement domain){

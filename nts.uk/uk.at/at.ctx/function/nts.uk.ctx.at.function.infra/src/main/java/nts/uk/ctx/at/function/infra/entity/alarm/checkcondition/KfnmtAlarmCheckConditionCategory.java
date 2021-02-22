@@ -43,7 +43,7 @@ import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.daily.KrcmtDaily
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.fourweekfourdayoff.KfnmtAlarmCheck4W4D;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.monthly.KfnmtMonAlarmCheckCon;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.multimonth.KfnmtMulMonAlarmCond;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -53,8 +53,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KFNMT_AL_CHECK_COND_CATE")
-public class KfnmtAlarmCheckConditionCategory extends UkJpaEntity implements Serializable {
+@Table(name = "KFNMT_ALST_CHK")
+public class KfnmtAlarmCheckConditionCategory extends ContractUkJpaEntity implements Serializable {
 
 	/**
 	 * 

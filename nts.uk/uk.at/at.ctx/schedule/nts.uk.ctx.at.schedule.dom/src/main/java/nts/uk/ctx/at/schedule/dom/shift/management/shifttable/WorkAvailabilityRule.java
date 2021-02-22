@@ -40,12 +40,11 @@ public interface WorkAvailabilityRule {
 	 * @param workAvailabilityList 一日の勤務希望リスト: 休日、シフト、時間帯の全部
 	 * @return
 	 */
-	boolean isOverHolidayMaxDays(List<WorkAvailabilityOfOneDay> workAvailabilityList);
+	boolean isOverHolidayMaxDays(Require require, List<WorkAvailabilityOfOneDay> workAvailabilityList);
 	
 	/**
 	 * 基準日に対応する締切日と期間を取得する
 	 * @param baseDate 基準日
-	 * @return
 	 */
 	DeadlineAndPeriodOfWorkAvailability getCorrespondingDeadlineAndPeriod(GeneralDate baseDate);
 	
@@ -55,5 +54,9 @@ public interface WorkAvailabilityRule {
 	 * @return
 	 */
 	DatePeriod getPeriodWhichIncludeAvailabilityDate(GeneralDate availabilityDate);
+	
+	public static interface Require extends WorkAvailabilityRuleDateSetting.Require{
+		
+	}
 	
 }

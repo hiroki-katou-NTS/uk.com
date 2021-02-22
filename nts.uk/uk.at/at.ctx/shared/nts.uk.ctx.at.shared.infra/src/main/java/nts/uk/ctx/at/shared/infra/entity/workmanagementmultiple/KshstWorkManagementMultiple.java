@@ -10,16 +10,16 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * author hieult
  */
 @Entity
-@Table(name = "KSHST_WORK_MANAGEMENT")
+@Table(name = "KSHMT_2WORK_MNG")
 @AllArgsConstructor
 @NoArgsConstructor
-public class KshstWorkManagementMultiple extends UkJpaEntity implements Serializable {
+public class KshstWorkManagementMultiple extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

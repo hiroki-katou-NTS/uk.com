@@ -3,7 +3,7 @@ module nts.uk.com.view.ccg013.k.viewmodel {
     export class ScreenModel {
         //combobox
         itemList: KnockoutObservableArray<ItemModel>;
-        selectedCode: KnockoutObservable<string>;
+        selectedCode: KnockoutObservable<number>;
         isEnable: KnockoutObservable<boolean>;
         //list
         listStandardMenu: KnockoutObservableArray<StandardMenu>;
@@ -16,7 +16,7 @@ module nts.uk.com.view.ccg013.k.viewmodel {
             self.id = ko.observable(null);
             //combobox
             self.itemList = ko.observableArray([]);
-            self.selectedCode = ko.observable('0');
+            self.selectedCode = ko.observable(0);
             self.isEnable = ko.observable(true);
 
             // list
@@ -24,7 +24,13 @@ module nts.uk.com.view.ccg013.k.viewmodel {
             self.list = ko.observableArray([]);
             self.columns = [
                 {headerText:'id', key: 'id', width: 20, hidden: true},
-                { headerText: nts.uk.resource.getText("CCG013_51"), key: 'code', width: 80 },
+                { headerText: nts.uk.resource.getText("CCG013_51"), key: 'code', width: 80, hidden: true },
+                { 
+                    headerText: nts.uk.resource.getText("CCG013_51"),
+                    key: 'displayOrder',
+                    width: 80,
+                    template: '<div style="text-align: right">${displayOrder}</div>',
+                },
                 { headerText: nts.uk.resource.getText("CCG013_52"), key: 'targetItems', width: 150 },
                 {
                     headerText: nts.uk.resource.getText("CCG013_53"), key: 'displayName', formatter: _.escape, width: 150
@@ -39,16 +45,30 @@ module nts.uk.com.view.ccg013.k.viewmodel {
         }
 
         /** get data number "value" in list **/
-        getListStandardMenu(value) {
+        getListStandardMenu(value: any) {
             let self = this;
             self.id(0);
             self.list([]);
             for (let i = 0; i < self.listStandardMenu().length; i++) {
-                if (self.listStandardMenu()[i].system == value){
-                    self.list.push(new StandardMenu(self.id(), self.listStandardMenu()[i].code, self.listStandardMenu()[i].targetItems, self.listStandardMenu()[i].displayName, self.listStandardMenu()[i].system, self.listStandardMenu()[i].classification));
+                if (self.listStandardMenu()[i].webMenuSetting !== WebMenuSetting.Display
+                    || self.listStandardMenu()[i].classification === Menu_Cls.TopPage
+                    || self.listStandardMenu()[i].classification === Menu_Cls.OfficeHelper
+                ) {
+                    continue;
+                }
+                if (value === 5) {
+                    self.list.push(new StandardMenu(i + 1, self.id(),self.listStandardMenu()[i].order, self.listStandardMenu()[i].code, self.listStandardMenu()[i].targetItems, self.listStandardMenu()[i].displayName, self.listStandardMenu()[i].system, self.listStandardMenu()[i].classification, self.listStandardMenu()[i].displayOrder, self.listStandardMenu()[i].webMenuSetting));
+                    self.id(self.id()+1);
+                } else if (self.listStandardMenu()[i].system == value){
+                    self.list.push(new StandardMenu(i + 1, self.id(),self.listStandardMenu()[i].order, self.listStandardMenu()[i].code, self.listStandardMenu()[i].targetItems, self.listStandardMenu()[i].displayName, self.listStandardMenu()[i].system, self.listStandardMenu()[i].classification, self.listStandardMenu()[i].displayOrder, self.listStandardMenu()[i].webMenuSetting));
                     self.id(self.id()+1);
                 }
             }
+            const listOrder = _.orderBy(self.list(), ['system', 'displayOrder', 'code'], ['asc', 'asc', 'asc']);
+            const list001 = _.forEach(listOrder, (item, index) => {
+                item.index = index + 1;
+            })
+            self.list(list001);
         }
 
         /** get data when start dialog **/
@@ -56,6 +76,7 @@ module nts.uk.com.view.ccg013.k.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             $.when(self.getAllStandardMenu(), self.getSystemEnum()).done(function(){
+                self.selectedCode(5);
                 dfd.resolve();   
             }).fail(function() {
                 dfd.reject();    
@@ -71,11 +92,10 @@ module nts.uk.com.view.ccg013.k.viewmodel {
             // Get List StandrdMenu
             service.getAllStandardMenu().done(function(listStandardMenu: Array<viewmodel.StandardMenu>) {
                 listStandardMenu = _.orderBy(listStandardMenu, ["code"], ["asc"]);
-                _.each(listStandardMenu, function(obj: viewmodel.StandardMenu) {
-                    self.listStandardMenu.push(new StandardMenu(self.id(), obj.code, obj.targetItems, obj.displayName, obj.system, obj.classification));
+                _.each(listStandardMenu, function(obj: viewmodel.StandardMenu, index) {
+                    self.listStandardMenu.push(new StandardMenu(index + 1, self.id(), obj.order, obj.code, obj.targetItems, obj.displayName, obj.system, obj.classification, obj.displayOrder, obj.webMenuSetting));
                     self.id(self.id()+1);
                 });
-                self.getListStandardMenu("0");
                 
                 self.initGrid();
                 dfd.resolve();
@@ -92,9 +112,12 @@ module nts.uk.com.view.ccg013.k.viewmodel {
            
             /** Get EditMenuBar*/
             service.getEditMenuBar().done(function(editMenuBar: any) {
+                var newItemList = [];
+                newItemList.push(new ItemModel(5, nts.uk.resource.getText("CCG013_137")));
                 _.forEach(editMenuBar.listSystem, function(item) {
-                    self.itemList.push(new ItemModel(item.value.toString(), item.localizedName));
-                }); 
+                   newItemList.push(new ItemModel(item.value, item.localizedName));
+                });
+                self.itemList(newItemList.filter(x => x.code !== System.OFFICE_HELPER));
                 dfd.resolve();
             }).fail(function(error) {
                 dfd.reject();
@@ -143,6 +166,7 @@ module nts.uk.com.view.ccg013.k.viewmodel {
                             if ($("#search").find('input.ntsSearchBox').val()) {
                                 $("button.search-btn").trigger("click");
                             }
+                            self.closeDialog();
                         });                       
 //                        _.remove(self.listStandardMenu(), function(item){                              
 //                            return item.system == parseInt(self.selectedCode());                         
@@ -217,28 +241,63 @@ module nts.uk.com.view.ccg013.k.viewmodel {
     }
 
     class ItemModel {
-        code: string;
+        code: number;
         name: string;
-        constructor(code: string, name: string) {
+        constructor(code: number, name: string) {
             this.code = code;
             this.name = name;
         }
     }
 
+    enum Menu_Cls {
+        Standard = 0,
+        OptionalItemApplication = 1,
+        MobilePhone = 2,
+        Tablet = 3,
+        CodeName = 4,
+        GroupCompanyMenu = 5,
+        Customize = 6,
+        OfficeHelper = 7,
+        TopPage = 8,
+        SmartPhone = 9
+    }
+
+    enum WebMenuSetting {
+        Notdisplay = 0,
+        Display = 1
+    }
+
+    enum System {
+        COMMON = 0,
+        TIME_SHEET = 1,
+        OFFICE_HELPER = 2,
+        KYUYOU = 3,
+        JINJIROU= 4,
+        ALL = 5
+    }
+
     export class StandardMenu {
+        index: number;
         id: number;
         code: string;
         targetItems: string;
         displayName: string;
         system: number;
         classification: number;
-        constructor(id: number, code: string, targetItems: string, displayName: string, system: number, classification: number) {
+        order:number;
+        displayOrder: number;
+        webMenuSetting: number
+        constructor(index: number, id: number, order: number, code: string, targetItems: string, displayName: string, system: number, classification: number, displayOrder: number, webMenuSetting: number) {
+            this.index = index;
             this.id = id;
+            this.order = order;
             this.code = code;
             this.targetItems = targetItems;
             this.displayName = displayName;
             this.system = system;
             this.classification = classification;
+            this.displayOrder = displayOrder;
+            this.webMenuSetting = webMenuSetting;
         }
     }
 }

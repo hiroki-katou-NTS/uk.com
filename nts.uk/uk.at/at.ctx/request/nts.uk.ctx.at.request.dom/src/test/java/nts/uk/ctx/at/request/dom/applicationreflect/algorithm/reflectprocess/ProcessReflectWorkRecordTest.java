@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import nts.uk.ctx.at.request.dom.applicationreflect.object.PreApplicationWorkScheReflectAttr;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -83,7 +84,7 @@ public class ProcessReflectWorkRecordTest {
 			{
 				require.findAppReflectExecCond(companyId);
 				result = Optional
-						.of(new AppReflectExecutionCondition(companyId, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.USE));// 勤務実績が確定状態でも反映する
+						.of(new AppReflectExecutionCondition(companyId, PreApplicationWorkScheReflectAttr.NOT_REFLECT, NotUseAtr.NOT_USE, NotUseAtr.USE));// 勤務実績が確定状態でも反映する
 
 				require.processWork((ExecutionType)any, (ApplicationShare)any, dateRefer, (ReflectStatusResultShare) any);
 				result = Pair.of(new ReflectStatusResultShare(ReflectedStateShare.REFLECTED, null, null),
@@ -122,7 +123,7 @@ public class ProcessReflectWorkRecordTest {
 			{
 				require.findAppReflectExecCond(companyId);
 				result = Optional
-						.of(new AppReflectExecutionCondition(companyId, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE));// 勤務実績が確定状態でも反映する
+						.of(new AppReflectExecutionCondition(companyId, PreApplicationWorkScheReflectAttr.NOT_REFLECT, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE));// 勤務実績が確定状態でも反映する
 
 				PreCheckProcessWorkRecord.preCheck(require, companyId, stamp, closureId, anyBoolean,
 						(ReflectStatusResult) any, dateRefer);
@@ -160,7 +161,7 @@ public class ProcessReflectWorkRecordTest {
 			{
 				require.findAppReflectExecCond(companyId);
 				result = Optional
-						.of(new AppReflectExecutionCondition(companyId, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE));// 勤務実績が確定状態でも反映する
+						.of(new AppReflectExecutionCondition(companyId, PreApplicationWorkScheReflectAttr.NOT_REFLECT, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE));// 勤務実績が確定状態でも反映する
 
 				PreCheckProcessWorkRecord.preCheck(require, companyId, stamp, closureId, anyBoolean,
 						(ReflectStatusResult) any, dateRefer);

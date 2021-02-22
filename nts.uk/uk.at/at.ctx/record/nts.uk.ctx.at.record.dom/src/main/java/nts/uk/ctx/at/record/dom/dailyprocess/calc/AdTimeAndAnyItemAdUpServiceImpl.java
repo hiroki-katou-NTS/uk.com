@@ -11,20 +11,18 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
-import nts.uk.ctx.at.record.dom.attendanceitem.StoredProcedureFactory;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.AttendanceLeavingGateOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
-import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 日別実績の勤怠時間と任意項目を同時更新し、ストアドを実行するためのサービス
@@ -55,10 +53,6 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 	@Inject
 	private TimeLeavingOfDailyPerformanceRepository timeLeave;
 	
-	/*任意項目ストアド*/
-	@Inject
-	private StoredProcedureFactory dbStoredProcess;
-	
 	@Override
 	public void addAndUpdate(String empId ,GeneralDate ymd,
 							Optional<AttendanceTimeOfDailyPerformance> attendanceTime, Optional<AnyItemValueOfDaily> anyItem) {
@@ -76,7 +70,7 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 					pc.isPresent()?Optional.of(pc.get().getTimeZone()):Optional.empty(),//pcLogOnInfo
 					new ArrayList<>(),//employeeError
 					Optional.empty(),//outingTime
-					Optional.empty(),//breakTime
+					new BreakTimeOfDailyAttd(),//breakTime
 					attendanceTime.isPresent()?Optional.of(attendanceTime.get().getTime()):Optional.empty(),//attendanceTimeOfDailyPerformance
 					tl.isPresent()?Optional.of(tl.get().getAttendance()):Optional.empty(),//attendanceLeave
 					Optional.empty(), //shortTime
@@ -103,8 +97,6 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 
 	@Override
 	public List<IntegrationOfDaily> saveOnly(List<IntegrationOfDaily> daily) {
-		String comId = AppContexts.user().companyId();
-		
 		daily.stream().forEach(d -> {
 			//勤怠時間更新
 			d.getAttendanceTimeOfDailyPerformance().ifPresent(at -> {
@@ -115,12 +107,6 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 			d.getAnyItemValue().ifPresent(ai -> {
 				anyItemValueOfDailyRepo.persistAndUpdate(new AnyItemValueOfDaily(d.getEmployeeId(), d.getYmd(), ai));
 			});
-			Optional<AttendanceTimeOfDailyPerformance> attdTimeOfDailyPer = d
-					.getAttendanceTimeOfDailyPerformance().isPresent()
-							? Optional.of(new AttendanceTimeOfDailyPerformance(d.getEmployeeId(), d.getYmd(),
-									d.getAttendanceTimeOfDailyPerformance().get()))
-							: Optional.empty(); 
-			dbStoredProcess.runStoredProcedure(comId, attdTimeOfDailyPer, new WorkInfoOfDailyPerformance(d.getEmployeeId(), d.getYmd(), d.getWorkInformation()) );
 		});
 		return daily;
 	}

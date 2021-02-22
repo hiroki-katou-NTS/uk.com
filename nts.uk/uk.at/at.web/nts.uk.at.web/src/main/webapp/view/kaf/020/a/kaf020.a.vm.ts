@@ -1,5 +1,7 @@
 ///<reference path="../../../../lib/nittsu/viewcontext.d.ts"/>
 module nts.uk.at.view.kaf020.a {
+    import AppInitParam = nts.uk.at.view.kaf000.shr.viewmodel.AppInitParam;
+
     const PATH_API = {
         optionalSetting: 'ctx/at/request/application/optionalitem/optionalItemAppSetting',
     };
@@ -7,33 +9,40 @@ module nts.uk.at.view.kaf020.a {
     @bean()
     export class Kaf020AViewModel extends ko.ViewModel {
         optionalItemAppSet: KnockoutObservableArray<OptionalItemAppSet> = ko.observableArray([]);
-        constructor(props: any) {
-            super();
-        }
+        empLst: Array<string> = [];
+        dateLst: Array<string> = [];
+        baseDate: string;
+        isAgentMode: KnockoutObservable<boolean> = ko.observable(false);
 
-        initScreen() {
+
+        created(params: AppInitParam) {
             const vm = this;
+
+            if (!_.isEmpty(params)) {
+                if (!_.isEmpty(params.employeeIds)) {
+                    vm.empLst = params.employeeIds;
+                }
+                if (!_.isEmpty(params.baseDate)) {
+                    vm.baseDate = params.baseDate;
+                    let paramDate = moment(params.baseDate).format('YYYY/MM/DD');
+                    vm.dateLst = [paramDate];
+                }
+                if (params.isAgentMode) {
+                    vm.isAgentMode(params.isAgentMode);
+                }
+            }
+
             vm.$ajax(PATH_API.optionalSetting).done((data: Array<OptionalItemAppSet>) => {
                 if (data.length == 0) {
                     vm.$dialog.error({messageId: "Msg_1694"});
-                } else if (data.length == 1) {
-                    vm.detail(vm, data[0]);
+                } else if (data.length == 1 && (!params || !params.fromB)) {
+                    vm.detail(data[0]);
                 } else {
+                    data = _.sortBy(data, ["code"]);
                     vm.optionalItemAppSet(data);
                     $('#fixed-table').focus();
                 }
             });
-        }
-
-
-        check(){
-            return this;
-        }
-
-        created() {
-            const vm = this
-            vm.initScreen();
-            vm.$ajax
         }
 
         mounted() {
@@ -44,8 +53,20 @@ module nts.uk.at.view.kaf020.a {
         }
 
 
-        detail(parent: any, optionalItem: any) {
-            parent.$jump('../b/index.xhtml', optionalItem);
+        detail(optionalItem: any) {
+            const vm = this;
+            vm.$jump('../b/index.xhtml', {
+                optionalItem: optionalItem,
+                empLst: vm.empLst,
+                dateLst: vm.dateLst,
+                isAgentMode: vm.isAgentMode(),
+                baseDate: vm.baseDate
+            });
+        }
+
+        goBack() {
+            const vm = this;
+            vm.$jump('../../001/a/index.xhtml');
         }
     }
 

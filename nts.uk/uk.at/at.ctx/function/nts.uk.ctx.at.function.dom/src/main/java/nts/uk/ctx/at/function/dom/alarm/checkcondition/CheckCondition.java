@@ -28,9 +28,9 @@ public class CheckCondition  extends DomainObject {
 	 * Extraction Range abstract class
 	 */
 	private List<ExtractionRangeBase> extractPeriodList;
-	
+
 	public CheckCondition(AlarmCategory alarmCategory,
-			List<String> checkConditionList, List<ExtractionRangeBase>  extractPeriodList) {
+	                      List<String> checkConditionList, List<ExtractionRangeBase>  extractPeriodList) {
 		super();
 		this.alarmCategory = alarmCategory;
 		this.checkConditionList = checkConditionList;
@@ -43,7 +43,7 @@ public class CheckCondition  extends DomainObject {
 	public boolean isDaily() {
 		return this.alarmCategory == AlarmCategory.DAILY;
 	}
-	
+
 	/**
 	 * 月次
 	 * @return

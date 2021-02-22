@@ -79,7 +79,7 @@ module nts.uk.pr.view.kmf001.f {
             inputOverAll: any;
             inputWorkAll: any;
             manageDeadline: KnockoutObservable<number> = ko.observable( 0 );
-            managementClassification: KnockoutObservable<number> = ko.observable( 0 );
+            managementClassification: KnockoutObservable<number> = ko.observable( 1 );
             
             deleteEnable: KnockoutObservable<boolean>;
             enableF2_18: KnockoutObservable<boolean>;
@@ -88,7 +88,7 @@ module nts.uk.pr.view.kmf001.f {
                 self.compenManage = ko.observable(1);
                 self.compenPreApply = ko.observable(1);
                 self.compenTimeManage = ko.observable(1);
-                self.compenDeadlCheckMonth = ko.observable(1);
+                self.compenDeadlCheckMonth = ko.observable(0);
                 self.expirationDateCode = ko.observable(0);
                 self.timeUnitCode = ko.observable(0);
                 self.checkWorkTime = ko.observable(true);
@@ -640,37 +640,39 @@ module nts.uk.pr.view.kmf001.f {
                 var self = this;
                 return {
                     companyId: "",
-                    isManaged: self.compenManage(),
+                    isManaged: 0,
                     compensatoryAcquisitionUse: {
-                        expirationTime: self.expirationDateCode(),
-                        preemptionPermit: self.compenPreApply()
+                        expirationTime: 0,
+                        preemptionPermit: 0
                     },
                     compensatoryDigestiveTimeUnit: {
-                        isManageByTime: self.compenTimeManage(),
-                        digestiveUnit: self.timeUnitCode()
+                        isManageByTime: 0,
+                        digestiveUnit: 0
                     },
-                    compensatoryOccurrenceSetting: [
-                        {
-                            occurrenceType: OccurrenceDivision.OverTime,
-                            transferSetting: {
-                                certainTime: self.overAll(),
-                                useDivision: self.checkOverTime(),
-                                oneDayTime: self.overOneDay(),
-                                halfDayTime: self.overHalfDay(),
-                                transferDivision: self.selectedOfOverTime()
-                            }
+                    substituteHolidaySetting: {
+                        holidayWorkHourRequired: {
+                            timeSetting: {
+                                certainPeriodofTime: 0,
+                                designatedTime: {
+                                    halfDayTimeValue: 0,
+                                    oneDayTimeValue: 0
+                                },
+                                enumTimeDivision: 0
+                            },
+                            useAtr : true
                         },
-                        {
-                            occurrenceType: OccurrenceDivision.DayOffTime,
-                            transferSetting: {
-                                certainTime: self.workAll(),
-                                useDivision: self.checkWorkTime(),
-                                oneDayTime: self.workOneDay(),
-                                halfDayTime: self.workHalfDay(),
-                                transferDivision: self.selectedOfWorkTime()
-                            }
-                        }
-                    ]
+                      overtimeHourRequired :{
+                            timeSetting: {
+                                certainPeriodofTime: 0,
+                                designatedTime: {
+                                    halfDayTimeValue: 0,
+                                    oneDayTimeValue: 0
+                                },
+                                enumTimeDivision: 0
+                            },
+                            useAtr : true
+                          }  
+                    }
                 };
             }
 

@@ -17,6 +17,7 @@ import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -51,7 +52,7 @@ public class TimeLeaveUpdateByWorkInfoChangeHandler extends CommandHandlerWithRe
 				Optional.empty(), //pcLogOnInfo
 				new ArrayList<>(), //employeeError
 				Optional.empty(), //outingTime
-				Optional.empty(), //breakTime
+				new BreakTimeOfDailyAttd(), //breakTime
 				Optional.empty(), //attendanceTimeOfDailyPerformance
 				timeLeavingOfDailyAttd, //attendanceLeave
 				Optional.empty(), //shortTime

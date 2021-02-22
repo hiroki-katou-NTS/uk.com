@@ -7,7 +7,7 @@ import nts.uk.ctx.pereg.dom.roles.functionauth.authsetting.PersonInfoAuthority;
 import nts.uk.shr.com.permit.RestoreAvailabilityPermission;
 import nts.uk.shr.infra.permit.data.JpaEntityOfAvailabilityPermissionBase;
 
-@Table(name = "PPEMT_PER_INFO_AUTH")
+@Table(name = "PPEMT_ROLE_AUTH")
 @Entity
 public class PpemtPersonInfoAuth extends JpaEntityOfAvailabilityPermissionBase<PersonInfoAuthority>
 		implements RestoreAvailabilityPermission {

@@ -5,25 +5,30 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.hdworkapply.HdWorkAppReflect;
 
-@Data
-@NoArgsConstructor
+/**
+ * Refactor5
+ * @author huylq
+ *
+ */
 @AllArgsConstructor
+@NoArgsConstructor
+@Data
 public class HdWorkAppReflectDto {
-    private int reflectActualHolidayWorkAtr;
-    private int workReflect;
-    private int reflectPaytime;
-//    private int reflectOptional;
-    private int reflectDivergence;
-    private int reflectBreakOuting;
 
+	/**
+     * 事前
+     */
+    private BeforeHdWorkAppReflectDto before;
+    
+    /**
+     * 事後
+     */
+    private AfterHdWorkAppReflectDto after;
+    
     public static HdWorkAppReflectDto fromDomain(HdWorkAppReflect domain) {
         return new HdWorkAppReflectDto(
-                domain.getBefore().getReflectActualHolidayWorkAtr().value,
-                domain.getAfter().getWorkReflect().value,
-                domain.getAfter().getOthersReflect().getReflectPaytimeAtr().value,
-//                domain.getAfter().getOthersReflect().getReflectOptionalItemsAtr().value,
-                domain.getAfter().getOthersReflect().getReflectDivergentReasonAtr().value,
-                domain.getAfter().getBreakLeaveApplication().getBreakReflectAtr().value
-        );
+        		BeforeHdWorkAppReflectDto.fromDomain(domain.getBefore()),
+        		AfterHdWorkAppReflectDto.fromDomain(domain.getAfter())
+        		);
     }
 }

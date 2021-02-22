@@ -31,32 +31,32 @@ public class ApprSttExecutionDto {
 	/**
 	 * 対象人数
 	 */
-	private int countEmp;
+	private Integer countEmp;
 	
 	/**
 	 * 申請未承認人数
 	 */
-	private int countUnApprApp;
+	private Integer countUnApprApp;
 	
 	/**
 	 * 日別未確認人数
 	 */
-	private int countUnConfirmDay;
+	private Integer countUnConfirmDay;
 	
 	/**
 	 * 日別未承認人数
 	 */
-	private int countUnApprDay;
+	private Integer countUnApprDay;
 	
 	/**
 	 * 月別未確認人数
 	 */
-	private int countUnConfirmMonth;
+	private Integer countUnConfirmMonth;
 	
 	/**
 	 * 月別未承認人数
 	 */
-	private int countUnApprMonth;
+	private Integer countUnApprMonth;
 	
 	/**
 	 * 確定表示

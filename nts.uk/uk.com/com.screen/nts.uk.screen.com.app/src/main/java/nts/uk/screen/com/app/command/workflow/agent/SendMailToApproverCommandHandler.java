@@ -4,8 +4,8 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.gul.mail.send.MailContents;
-import nts.uk.ctx.sys.gateway.dom.login.adapter.MailDestinationAdapter;
-import nts.uk.ctx.sys.gateway.dom.login.dto.MailDestinationImport;
+import nts.uk.ctx.sys.gateway.dom.loginold.adapter.MailDestinationAdapter;
+import nts.uk.ctx.sys.gateway.dom.loginold.dto.MailDestinationImport;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.mail.MailSender;
@@ -36,9 +36,15 @@ public class SendMailToApproverCommandHandler extends CommandHandler<SendEmailCo
             throw new BusinessException("Msg_791");
         }
         //代行承認者へ代行依頼メールを送信する
+        try {
         lstApplicantMail.getOutGoingMails().forEach(email -> {
             mailSender.sendFromAdmin(email,
                     new MailContents(TextResource.localize("CMM044_41"), commandHandlerContext.getCommand().getEmailContent()));
         });
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BusinessException("Msg_1057");
+        }
+
     }
 }

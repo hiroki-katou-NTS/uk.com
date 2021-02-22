@@ -278,7 +278,9 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
                         });
                         break;
                     }
-                    case "Msg_1685": {
+                    case "Msg_1685":
+                    case "Msg_1912":
+                    case "Msg_1913": {
                         let id = '#' + err.parameterIds[0].replace(/\//g, "") + '-tmCode';
                         vm.$errors({
                             [id]: err

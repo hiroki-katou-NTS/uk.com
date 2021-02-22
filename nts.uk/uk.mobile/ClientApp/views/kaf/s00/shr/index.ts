@@ -64,7 +64,7 @@ export class KafS00ShrComponent extends Vue {
                 }    
             });
 
-            return false;
+            return true;
         }).catch((res: any) => {
             if (res.messageId == 'Msg_426') {
                 self.$modal.error('Msg_426').then(() => {

@@ -28,15 +28,15 @@ import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyReposi
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly_Old;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
-import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMng;
-import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMngRepository;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.AppHdsubRec;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.AppHdsubRecRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.SyncState;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentAppRepository;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork_Old;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository_Old;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
@@ -50,6 +50,7 @@ import nts.uk.ctx.at.shared.dom.relationship.Relationship;
 import nts.uk.ctx.at.shared.dom.relationship.repository.RelationshipRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.BPTimeItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.timeitem.BonusPayTimeItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
@@ -79,7 +80,7 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository {
 	@Inject
 	private OvertimeWorkFrameRepository repoOverTimeFr;
 	@Inject
-	private AppHolidayWorkRepository repoHolidayWork;
+	private AppHolidayWorkRepository_Old repoHolidayWork;
 	@Inject
 	private WorkTypeRepository repoWorkType;
 	@Inject
@@ -99,7 +100,7 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository {
 	@Inject
 	private ApplicationRepository repoApp;
 	@Inject
-	private CompltLeaveSimMngRepository compLeaveRepo;
+	private AppHdsubRecRepository compLeaveRepo;
 
 	/**
 	 * 残業申請 get Application Over Time Info appType = 0;
@@ -110,8 +111,8 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository {
 	 */
 	@Override
 	public AppOverTimeInfoFull getAppOverTimeInfo(String companyId, String appId) {
-		Map<String, AppOverTime> appOtOp = repoOverTime.getListAppOvertimeFrame(companyId, Arrays.asList(appId));
-		AppOverTime appOt = appOtOp.get(appId);
+		Map<String, AppOverTime_Old> appOtOp = repoOverTime.getListAppOvertimeFrame(companyId, Arrays.asList(appId));
+		AppOverTime_Old appOt = appOtOp.get(appId);
 		List<OverTimeInput> lstOverTimeInput = appOt.getOverTimeInput();
 		List<OverTimeFrame> lstFrame = new ArrayList<>();
 		for (OverTimeInput overTime : lstOverTimeInput) {
@@ -216,8 +217,8 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository {
 	@Override
 	public AppHolidayWorkFull getAppHolidayWorkInfo(String companyId, String appId, List<WorkType> lstWkType,
 			List<WorkTimeSetting> lstWkTime) {
-		Map<String, AppHolidayWork> appHdWork = repoHolidayWork.getListAppHdWorkFrame(companyId, Arrays.asList(appId));
-		AppHolidayWork hdWork = appHdWork.get(appId);
+		Map<String, AppHolidayWork_Old> appHdWork = repoHolidayWork.getListAppHdWorkFrame(companyId, Arrays.asList(appId));
+		AppHolidayWork_Old hdWork = appHdWork.get(appId);
 		List<HolidayWorkInput> lstHdWkInput = hdWork.getHolidayWorkInputs();
 		List<OverTimeFrame> lstFrame = new ArrayList<>();
 		for (HolidayWorkInput hdwk : lstHdWkInput) {
@@ -339,7 +340,8 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository {
 		// get 特別休暇申請
 		Optional<AppForSpecLeave_Old> appSpec = repoAppLeaveSpec.getAppForSpecLeaveById(companyId, appId);
 		if (appSpec.isPresent()) {
-			appAbsence.setAppForSpecLeave(appSpec.get());
+			// -PhuongDV domain fix pending-
+			//appAbsence.setAppForSpecLeave(appSpec.get());
 		}
 		String workTimeName = "";
 		if (appAbsence.getWorkTimeCode() != null) {
@@ -358,7 +360,10 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository {
 		String endTime2 = appAbsence.getEndTime2() == null ? ""
 				: appAbsence.getEndTime2().getDayDivision().description
 						+ appAbsence.getEndTime2().getInDayTimeWithFormat();
-		AppForSpecLeave_Old appForSpec = appAbsence.getAppForSpecLeave();
+		// KAF006: -PhuongDV domain fix pending-
+		//AppForSpecLeave_Old appForSpec = appAbsence.getAppForSpecLeave();
+		AppForSpecLeave_Old appForSpec = null;
+		// -PhuongDV-
 		String relaCode = appForSpec == null ? ""
 				: appForSpec.getRelationshipCD() == null ? "" : appForSpec.getRelationshipCD().v();
 		String relaName = "";
@@ -392,19 +397,15 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository {
 		if (type == 0) {// xin nghi
 			AbsenceLeaveApp abs = absRepo.findByAppId(appId).get();
 			return new AppCompltLeaveFull(abs.getAppID(), type,
-					this.findWorkTypeName(lstWkType, abs.getWorkTypeCD().v()), // 勤務就業名称を作成
-																				// -
-																				// WorkType
-					abs.getWorkTime1() == null ? null : this.convertTime(abs.getWorkTime1().getStartTime().v()),
-					abs.getWorkTime1() == null ? null : this.convertTime(abs.getWorkTime1().getEndTime().v()));
+					this.findWorkTypeName(lstWkType, abs.getWorkInformation().getWorkTypeCode().v()), // 勤務就業名称を作成
+					abs.getWorkTime(new WorkNo(1)).map(c -> this.convertTime(c.getTimeZone().getStartTime().v())).orElse(null),
+					abs.getWorkTime(new WorkNo(1)).map(c -> this.convertTime(c.getTimeZone().getEndTime().v())).orElse(null));
 		}
 		// di lam
 		RecruitmentApp rec = recRepo.findByAppId(appId).get();
-		return new AppCompltLeaveFull(rec.getAppID(), type, this.findWorkTypeName(lstWkType, rec.getWorkTypeCD().v()), // 勤務就業名称を作成
-																														// -
-																														// WorkType
-				this.convertTime(rec.getWorkTime1().getStartTime().v()),
-				this.convertTime(rec.getWorkTime1().getEndTime().v()));
+		return new AppCompltLeaveFull(rec.getAppID(), type, this.findWorkTypeName(lstWkType, rec.getWorkInformation().getWorkTypeCode().v()), // 勤務就業名称を作成
+				this.convertTime(rec.getWorkTime(new WorkNo(1)).get().getTimeZone().getStartTime().v()),
+				this.convertTime(rec.getWorkTime(new WorkNo(1)).get().getTimeZone().getEndTime().v()));
 	}
 
 	/**
@@ -442,9 +443,9 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository {
 		// 3.残業時間 - NORMALOVERTIME
 		List<OvertimeWorkFrame> lstOtWork = repoOverTimeFr.getAllOvertimeWorkFrame(companyId);
 		// get list appOverTime detail
-		Map<String, AppOverTime> mapOvFrame = repoOverTime.getListAppOvertimeFrame(companyId, lstAppId);
+		Map<String, AppOverTime_Old> mapOvFrame = repoOverTime.getListAppOvertimeFrame(companyId, lstAppId);
 		for (String appId : lstAppId) {
-			AppOverTime appOt = mapOvFrame.get(appId);
+			AppOverTime_Old appOt = mapOvFrame.get(appId);
 			List<OverTimeInput> lstOverTimeInput = appOt.getOverTimeInput();
 			List<OverTimeFrame> lstFrame = new ArrayList<>();
 			for (OverTimeInput overTime : lstOverTimeInput) {
@@ -525,13 +526,13 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository {
 		// 3.残業時間 - NORMALOVERTIME
 		List<OvertimeWorkFrame> lstOtWork = repoOverTimeFr.getAllOvertimeWorkFrame(companyId);
 		// get list appHoliday detail
-		Map<String, AppHolidayWork> mapHdFrame = repoHolidayWork.getListAppHdWorkFrame(companyId, lstAppId);
+		Map<String, AppHolidayWork_Old> mapHdFrame = repoHolidayWork.getListAppHdWorkFrame(companyId, lstAppId);
 		if (mapHdFrame.isEmpty()) {
 			return new ArrayList<>();
 		}
 		Map<String, String> mapWorkTimeName = new HashMap<>();
 		for (String appId : lstAppId) {
-			AppHolidayWork hdWork = mapHdFrame.get(appId);
+			AppHolidayWork_Old hdWork = mapHdFrame.get(appId);
 			List<HolidayWorkInput> lstHdInput = hdWork.getHolidayWorkInputs();
 			List<OverTimeFrame> lstFrame = new ArrayList<>();
 			for (HolidayWorkInput hd : lstHdInput) {
@@ -758,7 +759,7 @@ public class AppDetailInfoImpl implements AppDetailInfoRepository {
 	@Override
 	public AppCompltLeaveSyncOutput getAppComplementLeaveSync(String companyId, String appId) {
 		Optional<AbsenceLeaveApp> abs = absRepo.findByAppId(appId);
-		Optional<CompltLeaveSimMng> sync = null;
+		Optional<AppHdsubRec> sync = null;
 		String absId = "";
 		String recId = "";
 		boolean synced = false;

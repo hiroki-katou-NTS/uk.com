@@ -2,6 +2,7 @@ package nts.uk.screen.at.app.shift.management.workavailability;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -83,6 +84,7 @@ public class Ksu001gScreenQuerry {
 		if (CollectionUtil.isEmpty(availabilityOfOneDays)) {
 			return new ArrayList<WorkAvailabilityInfoDto>();
 		/** 3: List<一日分の勤務希望>.size >0*/
+		//          一日分の勤務希望の表示情報	
 		} else {
 			Require require = new Require(workTypeRepository, workTimeSettingRepository, basicService, workTimeService,
 					shiftMasterRepo);
@@ -90,6 +92,7 @@ public class Ksu001gScreenQuerry {
 				availabilityDisplayInfoOfOneDays.add(x.getDisplayInformation(require));
 			});
 			List<WorkAvailabilityInfoDto> dtos = new ArrayList<>();
+			
 			availabilityDisplayInfoOfOneDays.forEach(x -> {
 				String method = "";
 				if (x.getDisplayInfo().getMethod().value == 0) {
@@ -101,15 +104,28 @@ public class Ksu001gScreenQuerry {
 				if (x.getDisplayInfo().getMethod().value == 2) {
 					method = TextResource.localize("KSU001_4036");
 				}
-
-				if (x.getDisplayInfo().getNameList().size() >= 1) {
-					for (int i = 0; i < x.getDisplayInfo().getNameList().size(); i++) {
+				List<String> shiftNameList = new ArrayList<>();
+				//
+				Map<ShiftMasterCode, Optional<String>>  nameList =  x.getDisplayInfo().getShiftList();
+				nameList.forEach((k,v)->{
+					if(v.isPresent()){
+						shiftNameList.add(v.get());
+					}else{
+						shiftNameList.add(k.v() +TextResource.localize("KSU001_4054"));
+					}
+				});
+			/*	List<String> shiftNameList = x.getDisplayInfo().getShiftList().values().stream()
+						.filter(c -> c.isPresent())
+						.map(c -> c.get())
+						.collect(Collectors.toList());*/
+				if (shiftNameList.size() >= 1) {
+					for (int i = 0; i < shiftNameList.size(); i++) {
 						if (x.getDisplayInfo().getTimeZoneList().size() >= 1) {
 							for (int j = 0; j < x.getDisplayInfo().getTimeZoneList().size(); j++) {
 								dtos.add(new WorkAvailabilityInfoDto(x.getAvailabilityDate().toString("yyyy/MM/dd"),
 										syEmployeePub.getEmpBasicBySId(x.getEmployeeId()).getEmployeeCode() + " "
 												+ syEmployeePub.getEmpBasicBySId(x.getEmployeeId()).getBusinessName(),
-										method, x.getDisplayInfo().getNameList().get(i),
+										method, shiftNameList.get(i),
 										x.getDisplayInfo().getTimeZoneList().get(j).getStart().getInDayTimeWithFormat()
 												+ TextResource.localize("KSU001_4055") + x.getDisplayInfo().getTimeZoneList().get(j).getEnd()
 														.getInDayTimeWithFormat(),
@@ -119,7 +135,7 @@ public class Ksu001gScreenQuerry {
 							dtos.add(new WorkAvailabilityInfoDto(x.getAvailabilityDate().toString("yyyy/MM/dd"),
 									syEmployeePub.getEmpBasicBySId(x.getEmployeeId()).getEmployeeCode() + " "
 											+ syEmployeePub.getEmpBasicBySId(x.getEmployeeId()).getBusinessName(),
-									method, x.getDisplayInfo().getNameList().get(i),
+									method, shiftNameList.get(i),
 									"",
 									x.getMemo().v()));
 						}

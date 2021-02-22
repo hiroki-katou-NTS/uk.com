@@ -87,7 +87,7 @@ module nts.uk.pr.view.kmf001.c {
                     new C535Model(1, nts.uk.resource.getText('KMF001_344'))
                 ]);
                  self.selectC535  = ko.observable(0);
-                self.uniformTime = ko.observable("0:00");
+                self.uniformTime = ko.observable('0:00');
                 
                 // 年休取得の設定
                 self.annualPriorityList = ko.observableArray([]);
@@ -141,6 +141,7 @@ module nts.uk.pr.view.kmf001.c {
                     return self.selectC531() == 0;
                 }); 
                 
+                
                 // subscribe
                 self.selectedMaxManageSemiVacation.subscribe(function(value) {
                     if (value == 0) {
@@ -162,6 +163,7 @@ module nts.uk.pr.view.kmf001.c {
                         $('#time-max-day-company').ntsError('clear');
                     }
                 });
+
             }
             
             public startPage(): JQueryPromise<any> {
@@ -247,8 +249,8 @@ module nts.uk.pr.view.kmf001.c {
                 command.roundProcessClassific = self.enableTimeMaxNumberCompany() ? self.selectedroundProcessClassific() : dataBackup.roundProcessClassific;
                 //http://localhost:8080/nts.uk.at.web/view/ksm/007/a/index.xhtml
                 command.timeOfDayReference =  self.selectC531();
-                command.uniformTime = self.requiredC533() ? self.uniformTime() : null;
-                command.contractTimeRound = self.requiredC535() ? self.selectC535() : null;
+                command.uniformTime =  self.uniformTime() ;
+                command.contractTimeRound =  self.selectC535() ;
                 
                 return command;
             }
@@ -284,7 +286,7 @@ module nts.uk.pr.view.kmf001.c {
                 self.timeMaxNumberCompany(res.maxTimeDay);
                 self.selectedroundProcessClassific(res.roundProcessClassific);
                 self.selectC531(res.timeOfDayReference);
-                self.uniformTime(res.unifromTime);
+                self.uniformTime(res.unifromTime ==  null ? '0:00' :  res.unifromTime);
                 self.selectC535(res.contractTimeRound);
                 
             }
@@ -348,6 +350,8 @@ module nts.uk.pr.view.kmf001.c {
                 $('#number-year-retain').ntsError('clear');
                 $('#time-max-day-company').ntsError('clear');
                 $('#yearLy-number-days').ntsError('clear');
+                 $('#time-max-day-company').ntsError('clear');
+                
             }
             
             // find enumeration ManageDistinct

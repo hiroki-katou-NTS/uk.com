@@ -1,30 +1,35 @@
 package nts.uk.ctx.sys.auth.dom.adapter.employee.service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.sys.auth.dom.adapter.person.EmployeeBasicInforAuthImport;
-import nts.uk.ctx.sys.auth.dom.adapter.person.PersonAdapter;
-import nts.uk.ctx.sys.auth.dom.adapter.workplace.AffWorkplaceHistImport;
-import nts.uk.ctx.sys.auth.dom.adapter.workplace.AffiliationWorkplace;
-import nts.uk.ctx.sys.auth.dom.adapter.workplace.WorkplaceAdapter;
-import nts.uk.ctx.sys.auth.dom.algorithm.EmpReferenceRangeService;
-import nts.uk.ctx.sys.auth.dom.role.EmployeeReferenceRange;
-import nts.uk.ctx.sys.auth.dom.role.Role;
-import nts.uk.ctx.sys.auth.dom.user.User;
-import nts.uk.ctx.sys.auth.dom.user.UserRepository;
-import nts.uk.ctx.sys.auth.dom.wkpmanager.WorkplaceManager;
-import nts.uk.ctx.sys.auth.dom.wkpmanager.WorkplaceManagerRepository;
-import nts.uk.shr.com.context.AppContexts;
+import nts.uk.ctx.sys.auth.dom.adapter.employee.employeeinfo.EmployeeInformationImport;
+import javax.ejb.Stateless;
 
 @Stateless
+/**
+ *UKDesign.ドメインモデル.NittsuSystem.UniversalK.システム.権限管理.ユーザ.社員情報を取得する
+ */
 public class EmployeeService {
-	
 
+	/**
+	 * [1] 取得する
+	 * @param require
+	 * @param employeeId
+	 * @param baseDate
+	 * @return 対象組織識別情報 (EmployeeInformationImport)
+	 */
+    public EmployeeInformationImport getEmployeeInformation(Require require, String employeeId, GeneralDate baseDate) {
+        return require.findEmployeeInformation(employeeId, baseDate);
+    }
+    
+    public static interface Require {
+    	/**
+    	 * [R-1] 社員の情報を取得する
+    	 * [社員の情報Adapter.取得する( 年月日, 社員ID)
+    	 * @param employeeId
+    	 * @param baseDate
+    	 * @return EmployeeInformationImport
+    	 */
+    	public EmployeeInformationImport findEmployeeInformation(String employeeId, GeneralDate baseDate);
+    }
 }
+

@@ -1,9 +1,8 @@
 package nts.uk.ctx.at.request.dom.application.common.ovetimeholiday;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,5 +20,8 @@ public class ActualStatusCheckResult {
 	public String workTime; // 退勤時刻
 	public Integer startTime; // 勤務種類
 	public Integer endTime; // 就業時間帯
-	public List<OvertimeColorCheck> actualLst;
+	/**
+	 * 申請時間
+	 */
+	public ApplicationTime applicationTime;
 }

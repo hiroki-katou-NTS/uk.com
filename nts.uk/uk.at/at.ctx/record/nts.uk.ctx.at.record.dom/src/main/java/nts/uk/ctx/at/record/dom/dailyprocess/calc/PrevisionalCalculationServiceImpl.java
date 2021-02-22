@@ -194,7 +194,7 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 				Optional.empty(), //pcLogOnInfo
 				Collections.emptyList(), //employeeError
 				goOutTimeSheet.map(c -> c.getOutingTime()), //outingTime
-				breakTimeSheet.map(c -> c.getTimeZone()), //breakTime
+				breakTimeSheet.map(c -> c.getTimeZone()).orElse(new BreakTimeOfDailyAttd()), //breakTime
 				attendanceTime.map(c -> c.getTime()), //attendanceTimeOfDailyPerformance
 				Optional.of(timeAttendance.getAttendance()),// attendanceLeave
 				Optional.empty(), //shortTime
@@ -213,7 +213,7 @@ public class PrevisionalCalculationServiceImpl implements ProvisionalCalculation
 			List<ShortWorkingTimeSheet> shortWorkingTimeSheets, String employeeId, GeneralDate ymd) {
 
 		provisionalRecord.setOutingTime(Optional.of(new OutingTimeOfDailyAttd(outingTimeSheets)));
-		provisionalRecord.setBreakTime(Optional.of(new BreakTimeOfDailyAttd(breakTimeSheets)));
+		provisionalRecord.setBreakTime(new BreakTimeOfDailyAttd(breakTimeSheets));
 		provisionalRecord.setShortTime(Optional.of(new ShortTimeOfDailyAttd(shortWorkingTimeSheets)));
 
 		return provisionalRecord;

@@ -38,6 +38,8 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.ApprovalStat
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.InitDisplayOfApprovalStatus;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApplicationsListOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttComfirmSet;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttConfirmEmp;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttConfirmEmpMonthDay;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprSttEmp;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalStatusEmployeeOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppDetail;
@@ -49,6 +51,7 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.SendM
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnApprovalSendMail;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnConfrSendMailParam;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.WorkplaceInfor;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeEmailImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalBehaviorAtrImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailholidayinstruction.Content;
@@ -75,6 +78,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
+import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 @Stateless
 /**
@@ -697,8 +701,9 @@ public class ApprovalStatusFinder {
 		DatePeriod period = new DatePeriod(GeneralDate.fromString(param.getStartDate(), "yyyy/MM/dd"), GeneralDate.fromString(param.getEndDate(), "yyyy/MM/dd"));
 		List<DisplayWorkplace> displayWorkplaceLst = param.getWkpInfoLst();
 		List<String> employmentCDLst = param.getEmploymentCDLst();
+		ClosureDate closureDate = new ClosureDate(param.getClosureDay(), param.isLastDayOfMonth());
 		return ApprSttSendMailInfoDto.fromDomain(
-				appSttService.getApprSttSendMailInfo(mailType, closureId, processingYm, period, displayWorkplaceLst, employmentCDLst), 
+				appSttService.getApprSttSendMailInfo(mailType, closureId, processingYm, period, displayWorkplaceLst, employmentCDLst, closureDate), 
 				param.getMailType());
 	}
 	
@@ -714,5 +719,32 @@ public class ApprovalStatusFinder {
 				new Subject(command.getMailSubject()), 
 				new Content(command.getMailContent()));
 		return appSttService.sendMailToDestination(approvalStatusMailTemp, param.getWkpEmpMailLst());
+	}
+	
+	public List<ApprSttConfirmEmp> getConfirmApprSttByEmp(ConfirmSttEmpParam param) {
+		return appSttService.getConfirmApprSttByEmp(
+				param.getWkpID(), 
+				new DatePeriod(GeneralDate.fromString(param.getStartDate(), "yyyy/MM/dd"), GeneralDate.fromString(param.getEndDate(), "yyyy/MM/dd")), 
+				param.getEmpPeriodLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+				param.getApprSttComfirmSet(), 
+				new YearMonth(param.getYearMonth()), 
+				EnumAdaptor.valueOf(param.getClosureId(), ClosureId.class), 
+				new ClosureDate(param.getClosureDay(), param.isLastDayOfMonth()));
+	}
+	
+	public ApprSttConfirmEmpMonthDayDto getConfirmApprSttByEmpMonthDay(ConfirmSttEmpMonthDayParam param) {
+		ApprSttConfirmEmpMonthDay apprSttConfirmEmpMonthDay = appSttService.getConfirmApprSttContent(
+				param.getWkpID(), 
+				param.getEmpID(), 
+				new DatePeriod(GeneralDate.fromString(param.getStartDate(), "yyyy/MM/dd"), GeneralDate.fromString(param.getEndDate(), "yyyy/MM/dd")), 
+				param.getApprSttComfirmSet(), 
+				new YearMonth(param.getYearMonth()), 
+				EnumAdaptor.valueOf(param.getClosureId(), ClosureId.class), 
+				new ClosureDate(param.getClosureDay(), param.isLastDayOfMonth()));
+		return ApprSttConfirmEmpMonthDayDto.fromDomain(apprSttConfirmEmpMonthDay);
+	}
+	
+	public List<EmployeeEmailImport> getEmploymentConfirmInfo(String wkpID) {
+		return appSttService.getEmploymentConfirmInfo(wkpID);
 	}
 }

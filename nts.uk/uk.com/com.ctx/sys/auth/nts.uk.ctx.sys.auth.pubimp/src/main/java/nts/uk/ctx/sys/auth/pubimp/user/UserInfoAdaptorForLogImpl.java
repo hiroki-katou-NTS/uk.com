@@ -9,7 +9,8 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeBasicInfoExport;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
-import nts.uk.ctx.sys.auth.dom.user.UserRepository;
+import nts.uk.ctx.sys.shared.dom.user.UserRepository;
+import nts.uk.ctx.sys.shared.dom.user.builtin.BuiltInUser;
 import nts.uk.shr.com.security.audittrail.UserInfoAdaptorForLog;
 import nts.uk.shr.com.security.audittrail.correction.content.UserInfo;
 
@@ -28,6 +29,12 @@ public class UserInfoAdaptorForLogImpl implements UserInfoAdaptorForLog {
 	@Override
 	public UserInfo findByEmployeeId(String employeeId) {
 		
+		if (employeeId != null && employeeId.equals(BuiltInUser.EMPLOYEE_ID)) {
+			return new UserInfo(
+					BuiltInUser.USER_ID,
+					BuiltInUser.EMPLOYEE_ID,
+					"");
+		}
 		val employee = this.employeePub.findBySId(employeeId);
 		if (employee == null) {
 			throw new RuntimeException("employee not found: " + employeeId);

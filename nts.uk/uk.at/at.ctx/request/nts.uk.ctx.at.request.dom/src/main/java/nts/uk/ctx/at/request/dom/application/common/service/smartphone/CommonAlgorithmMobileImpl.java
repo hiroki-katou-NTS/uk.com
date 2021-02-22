@@ -341,7 +341,7 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 			// 基準申請日の決定
 			GeneralDate recDate = appDateLst.size() >= 1 ? appDateLst.get(0) : null;
 			GeneralDate absDate = appDateLst.size() >= 2 ? appDateLst.get(1) : null;
-			refDate = Optional.of(holidayShipmentService.detRefDate(recDate, absDate));
+			refDate = holidayShipmentService.detRefDate(Optional.ofNullable(recDate), Optional.ofNullable(absDate));
 		} else {
 			// 申請対象日リストから基準日を取得する
 			refDate = CollectionUtil.isEmpty(appDateLst) ? Optional.empty() : Optional.of(appDateLst.get(0));

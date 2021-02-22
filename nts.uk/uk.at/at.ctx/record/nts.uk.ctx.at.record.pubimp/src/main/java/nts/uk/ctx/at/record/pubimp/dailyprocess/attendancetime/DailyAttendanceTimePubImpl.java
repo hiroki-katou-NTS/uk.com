@@ -21,10 +21,14 @@ import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.DailyAttendanceTimeP
 import nts.uk.ctx.at.record.pub.dailyprocess.attendancetime.DailyAttendanceTimePubLateLeaveExport;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkMidNightTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.LateTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
@@ -74,15 +78,8 @@ public class DailyAttendanceTimePubImpl implements DailyAttendanceTimePub{
 	 */
 	private List<IntegrationOfDaily> calcDailyAttendanceTime(DailyAttendanceTimePubImport imp) {
 
-		if(imp.getEmployeeid() == null || imp.getYmd() == null || imp.getLstTimeZone().isEmpty() || imp.getWorkTypeCode() == null)
+		if(imp.getEmployeeid() == null || imp.getYmd() == null || imp.getTimeZoneMap().isEmpty() || imp.getWorkTypeCode() == null)
 			return Collections.emptyList();
-		
-		//時間帯の作成
-		Map<Integer, TimeZone> timeZoneMap = new HashMap<Integer, TimeZone>();
-		for(int i = 0;i<imp.getLstTimeZone().size();i++) {
-			TimeZone timeZone = imp.getLstTimeZone().get(i+1);
-			timeZoneMap.put(i+1, timeZone);
-		}
 		
 		//休憩時間帯の作成
 		List<BreakTimeSheet> breakTimeSheets = new ArrayList<>();
@@ -95,16 +92,20 @@ public class DailyAttendanceTimePubImpl implements DailyAttendanceTimePub{
 							imp.getBreakEndTime().get(frameNo - 1).minusMinutes(imp.getBreakStartTime().get(frameNo - 1).valueAsMinutes())));
 			}
 		}
-		
-		
-		return provisionalCalculationService.calculation(Arrays.asList(new PrevisionalForImp(imp.getEmployeeid(), 
-																											imp.getYmd(),
-				  																							timeZoneMap, 
-				  																							imp.getWorkTypeCode(), 
-				  																							imp.getWorkTimeCode(), 
-				  																							breakTimeSheets, 
-				  																							Collections.emptyList(), 
-				  																							Collections.emptyList())));
+
+
+        return provisionalCalculationService.calculation(Arrays.asList(
+                new PrevisionalForImp(
+                        imp.getEmployeeid(),
+                        imp.getYmd(),
+                        imp.getTimeZoneMap(),
+                        imp.getWorkTypeCode(),
+                        imp.getWorkTimeCode(),
+                        breakTimeSheets,
+                        Collections.emptyList(), // imp.getOutingTimeSheets(), => List<OutingTimeZoneImport>
+                        Collections.emptyList() // imp.getShortWorkingTimeSheets() => => List<ChildCareTimeZoneImport>
+                )
+        ));
 	}
 	
 	/**
@@ -125,6 +126,18 @@ public class DailyAttendanceTimePubImpl implements DailyAttendanceTimePub{
 		AttendanceTime calOvertimeMidnight = new AttendanceTime(0);
 		//計算休出深夜時間
 		Map<StaturoryAtrOfHolidayWork,AttendanceTime> calHolidayMidnight  = new HashMap<StaturoryAtrOfHolidayWork,AttendanceTime>();
+		//遅刻時間1
+		AttendanceTime lateTime1 = new AttendanceTime(0);
+		//早退時間1
+		AttendanceTime earlyLeaveTime1 = new AttendanceTime(0);
+		//遅刻時間2
+		AttendanceTime lateTime2 = new AttendanceTime(0);
+		//早退時間2
+		AttendanceTime earlyLeaveTime2 = new AttendanceTime(0);
+		//私用外出時間
+		AttendanceTime privateOutingTime = new AttendanceTime(0);
+		//組合外出時間
+		AttendanceTime unionOutingTime = new AttendanceTime(0);
 		
 		if(integrationOfDaily.getAttendanceTimeOfDailyPerformance().isPresent()) {
 			if(integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily() != null){
@@ -155,7 +168,34 @@ public class DailyAttendanceTimePubImpl implements DailyAttendanceTimePub{
 							}
 						}
 						
-						
+					}
+					//日別勤怠の勤怠時間．勤務時間．総労働時間．遅刻時間．遅刻時間
+					List<LateTimeOfDaily> lateTimeOfDaily = integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getLateTimeOfDaily();
+					for(LateTimeOfDaily lt : lateTimeOfDaily) {
+						if(lt.getWorkNo().v() == 1) {
+							lateTime1 = lt.getLateTime().getCalcTime();
+						} else if(lt.getWorkNo().v() == 2) {
+							lateTime2 = lt.getLateTime().getCalcTime();
+						}
+					}
+					//日別勤怠の勤怠時間．勤務時間．総労働時間．早退時間．早退時間
+					List<LeaveEarlyTimeOfDaily> leaveEarlyTimeOfDaily = integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getLeaveEarlyTimeOfDaily();
+					for(LeaveEarlyTimeOfDaily let : leaveEarlyTimeOfDaily) {
+						if(let.getWorkNo().v() == 1) {
+							earlyLeaveTime1 = let.getLeaveEarlyTime().getCalcTime();
+						}else if(let.getWorkNo().v() == 2) {
+							earlyLeaveTime2 = let.getLeaveEarlyTime().getCalcTime();
+						}
+					}
+					
+					//日別勤怠の勤怠時間．勤務時間．総労働時間．外出時間
+					List<OutingTimeOfDaily> outingTimeOfDailyPer = integrationOfDaily.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime().getOutingTimeOfDailyPerformance(); 
+					for(OutingTimeOfDaily ot : outingTimeOfDailyPer) {
+						if(ot.getReason() == GoingOutReason.PRIVATE) {
+							privateOutingTime = ot.getRecordTotalTime().getTotalTime().getCalcTime();
+						}else if(ot.getReason() == GoingOutReason.UNION) {
+							unionOutingTime = ot.getRecordTotalTime().getTotalTime().getCalcTime();
+						}
 					}
 				}
 			}
@@ -214,7 +254,10 @@ public class DailyAttendanceTimePubImpl implements DailyAttendanceTimePub{
 				excessTimeMidNightTime,
 				timeOutSideMidnight,
 				calOvertimeMidnight,
-				calHolidayMidnight
+				calHolidayMidnight,
+				lateTime1,earlyLeaveTime1,
+				lateTime2,earlyLeaveTime2,
+				privateOutingTime,unionOutingTime
 			);
 	}
 
@@ -233,6 +276,18 @@ public class DailyAttendanceTimePubImpl implements DailyAttendanceTimePub{
 		AttendanceTime calOvertimeMidnight = new AttendanceTime(0);
 		// 計算休出深夜時間
 		Map<StaturoryAtrOfHolidayWork, AttendanceTime> calHolidayMidnight  = new HashMap<StaturoryAtrOfHolidayWork,AttendanceTime>();
+		//遅刻時間1
+		AttendanceTime lateTime1 = new AttendanceTime(0);
+		//早退時間1
+		AttendanceTime earlyLeaveTime1 = new AttendanceTime(0);
+		//遅刻時間2
+		AttendanceTime lateTime2 = new AttendanceTime(0);
+		//早退時間2
+		AttendanceTime earlyLeaveTime2 = new AttendanceTime(0);
+		//私用外出時間
+		AttendanceTime privateOutingTime = new AttendanceTime(0);
+		//組合外出時間
+		AttendanceTime unionOutingTime = new AttendanceTime(0);
 		for(int loopNumber = 1 ; loopNumber <=10 ; loopNumber++ ) {
 			//残業
 			overTimeFrames.put(new OverTimeFrameNo(loopNumber), TimeWithCalculation.sameTime(new AttendanceTime(0)));
@@ -251,7 +306,10 @@ public class DailyAttendanceTimePubImpl implements DailyAttendanceTimePub{
 												TimeWithCalculation.sameTime(new AttendanceTime(0)),
 												timeOutSideMidnight,
 												calOvertimeMidnight,
-												calHolidayMidnight
+												calHolidayMidnight,
+												lateTime1,earlyLeaveTime1,
+												lateTime2,earlyLeaveTime2,
+												privateOutingTime,unionOutingTime
 											);
 	}
 	

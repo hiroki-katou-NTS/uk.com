@@ -1,7 +1,6 @@
 package nts.uk.ctx.sys.portal.dom.placement.service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,8 +8,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.sys.portal.dom.layout.Layout;
-import nts.uk.ctx.sys.portal.dom.layout.LayoutRepository;
 import nts.uk.ctx.sys.portal.dom.placement.Placement;
 import nts.uk.ctx.sys.portal.dom.placement.PlacementRepository;
 import nts.uk.ctx.sys.portal.dom.placement.externalurl.ExternalUrl;
@@ -22,8 +19,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class DefaultPlacementService implements PlacementService {
 	
-	@Inject
-	private LayoutRepository layoutRepository;
+	
 	
 	@Inject
 	PlacementRepository placementRepository;
@@ -32,21 +28,6 @@ public class DefaultPlacementService implements PlacementService {
 	public boolean isExist(String placementID) {
 		Optional<Placement> placement = placementRepository.find(placementID);
 		return placement.isPresent();
-	}
-
-	@Override
-	public List<String> copyPlacementByLayout(String sourceLayoutID, String targetLayoutID) {
-		Optional<Layout> layout = layoutRepository.find(sourceLayoutID);
-		if (!layout.isPresent())
-			return Collections.emptyList();
-		
-		List<Placement> placements = placementRepository.findByLayout(sourceLayoutID);
-		List<String> placementIDs = new ArrayList<String>();
-		for (Placement placement : placements) {
-			String placementID = copyPlacement(placement.getPlacementID(), targetLayoutID);
-			placementIDs.add(placementID);
-		}
-		return placementIDs;
 	}
 
 	@Override
