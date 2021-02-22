@@ -90,6 +90,15 @@ module nts.uk.ui.chart {
                         pDec = { left: nearestLine * chart.unitToPx, start: nearestLine, end: self.slideTrigger.end + step };
                     if (chart.limitStartMin > pDec.start || chart.limitStartMax < pDec.start 
                         || chart.limitEndMin > pDec.end || chart.limitEndMax < pDec.end) return;
+                    let lineCharts = self.gcChart[chart.lineNo];
+                    if (_(lineCharts).keys().find(k => {
+                        let sameLineChart: GanttChart = lineCharts[k];
+                        return (sameLineChart.id !== chart.id && _.isNil(sameLineChart.parent) 
+                                && !sameLineChart.bePassedThrough
+                                && ((nearestLine > chart.start && pDec.end > sameLineChart.start && pDec.start < sameLineChart.start)
+                                || (nearestLine < chart.start && pDec.start < sameLineChart.end && pDec.end > sameLineChart.end)));
+                    })) return;
+                    
                     if (parentChart && ((diff > 0 && pDec.end > parentChart.end) || (diff < 0 && pDec.start < parentChart.start))) return;
                     
                     if (parentChart && _.find(parentChart.children, (child: GanttChart) => {
@@ -124,6 +133,13 @@ module nts.uk.ui.chart {
                     if (pDec.start + self._getSnatchInterval(chart) > chart.end
                         || (parentChart && !self.slideTrigger.overlap && pDec.start < parentChart.start)) return;
                     self.slideTrigger.ltr = nearestLine > chart.start;
+                    let lineCharts = self.gcChart[chart.lineNo];
+                    if (_(lineCharts).keys().find(k => {
+                        let sameLineChart: GanttChart = lineCharts[k];
+                        return (sameLineChart.id !== chart.id && _.isNil(sameLineChart.parent) 
+                                && !sameLineChart.bePassedThrough
+                                && (nearestLine < chart.start && pDec.start < sameLineChart.end && chart.end > sameLineChart.end));
+                    })) return;
                     
                     _.forEach(chart.children, (child: GanttChart) => {
                         let childSlide = _.find(self.slideTrigger.children, c => c.id === child.id);
@@ -141,7 +157,11 @@ module nts.uk.ui.chart {
                                         self.slideTrigger.edgeCharts.push(child);
                                     }
                                 } else if (nearestLine < child.start) {
-                                    if (!self.chartArea.contains(child.html)) return;
+                                    if (!self.chartArea.contains(child.html)) {
+                                        if (self.slideTrigger.start <= child.end) return;
+                                        self.chartArea.appendChild(child.html);
+                                    }
+                                    
                                     let maxWidth = (Math.min(child.end, chart.end) - child.start) * child.unitToPx - 1,
                                         currentWidth = parseFloat(child.html.style.width);
                                     if (currentWidth !== maxWidth) {
@@ -178,6 +198,13 @@ module nts.uk.ui.chart {
                     if (chart.start + self._getSnatchInterval(chart) > pDec.end
                         || (parentChart && !self.slideTrigger.overlap && pDec.end > parentChart.end)) return;
                     self.slideTrigger.ltr = nearestLine > chart.end;
+                    let lineCharts = self.gcChart[chart.lineNo];
+                    if (_(lineCharts).keys().find(k => {
+                        let sameLineChart: GanttChart = lineCharts[k];
+                        return (sameLineChart.id !== chart.id && _.isNil(sameLineChart.parent) 
+                                && !sameLineChart.bePassedThrough
+                                && (nearestLine > chart.end && pDec.end > sameLineChart.start && chart.start < sameLineChart.start));
+                    })) return;
                     
                     _.forEach(chart.children, (child: GanttChart) => {
                         let childSlide = _.find(self.slideTrigger.children, c => c.id === child.id);
@@ -195,6 +222,11 @@ module nts.uk.ui.chart {
                                         self.slideTrigger.edgeCharts.push(child);
                                     }
                                 } else if (nearestLine > child.end) {
+                                    if (!self.chartArea.contains(child.html)) {
+                                        if (self.slideTrigger.end > child.start) return;
+                                        self.chartArea.appendChild(child.html);
+                                    }
+                                    
                                     let maxWidth = (child.end - Math.max(child.start, chart.start)) * child.unitToPx - 1,
                                         currentWidth = parseFloat(child.html.style.width);
                                     if (currentWidth !== maxWidth) {
@@ -369,7 +401,16 @@ module nts.uk.ui.chart {
         getHoldPos(chart: GanttChart) {
             let self = this;
             if (self.lineLock[chart.lineNo] /*|| chart.fixed === CHART_FIXED.BOTH*/) return HOLD_POS.OUT;
-            if (chart.fixed !== CHART_FIXED.START && event.offsetX < chart.drawerSize) {
+            let parentChart;
+            if (chart.parent) {
+                parentChart = self.gcChart[chart.lineNo][chart.parent];
+            }
+            
+            if (chart.fixed === CHART_FIXED.BOTH && parentChart 
+                && chart.start > parentChart.start && chart.end < parentChart.end
+                && (event.offsetX < chart.drawerSize || parseFloat(chart.html.style.width) - chart.drawerSize < event.offsetX)) {
+                return HOLD_POS.BODY;
+            } else if (chart.fixed !== CHART_FIXED.START && event.offsetX < chart.drawerSize) {
                 return HOLD_POS.START;
             } else if (chart.fixed !== CHART_FIXED.END
                 && parseFloat(chart.html.style.width)/*(chart.end - chart.start) * chart.unitToPx*/ - chart.drawerSize < event.offsetX) {
@@ -486,7 +527,7 @@ module nts.uk.ui.chart {
                 parentChart = (self.gcChart[lineNo] || {})[chart.parent];
             }
             
-            if (!_.isNil(start)) {
+            if (!_.isNil(start) && start !== chart.start) {
                 self.slideTrigger = {
                     length: parseFloat(chart.html.style.width),
                     start: chart.start,
@@ -494,7 +535,7 @@ module nts.uk.ui.chart {
                     children: _.map(chart.children, c => ({ id: c.id, start: c.start, end: c.end, length: parseFloat(c.html.style.width), left: parseFloat(c.html.style.left) }))
                 };
                 
-                if (start % self._getSnatchInterval(chart) !== 0 || start === chart.start) return;
+                //if (start % self._getSnatchInterval(chart) !== 0) return;
                 let pDec = { width: self.slideTrigger.length + (self.slideTrigger.start - start) * chart.unitToPx, left: start * chart.unitToPx, start: start };
                 if (chart.limitStartMin > pDec.start || chart.limitStartMax < pDec.start) return;
                 if (pDec.start + self._getSnatchInterval(chart) > chart.end
@@ -533,7 +574,7 @@ module nts.uk.ui.chart {
                 chart.reposition(pDec);
             }
             
-            if (!_.isNil(end)) {
+            if (!_.isNil(end) && end !== chart.end) {
                 self.slideTrigger = {
                     length: parseFloat(chart.html.style.width),
                     start: chart.start,
@@ -541,7 +582,7 @@ module nts.uk.ui.chart {
                     children: _.map(chart.children, c => ({ id: c.id, start: c.start, end: c.end, length: parseFloat(c.html.style.width), left: parseFloat(c.html.style.left) }))
                 };
                 
-                if (end % self._getSnatchInterval(chart) !== 0 || end === chart.end) return;
+                //if (end % self._getSnatchInterval(chart) !== 0) return;
                 let pDec = { width: self.slideTrigger.length + (end - self.slideTrigger.end) * chart.unitToPx, end: end };
                 if (chart.limitEndMax < pDec.end || chart.limitEndMin > pDec.end) return;
                 if (chart.start + self._getSnatchInterval(chart) > pDec.end
