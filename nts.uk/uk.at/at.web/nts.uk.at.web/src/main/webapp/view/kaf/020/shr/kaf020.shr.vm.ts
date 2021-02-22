@@ -71,7 +71,7 @@ module nts.uk.at.view.kaf020.shr.viewmodel {
                         <div style="margin-top: 10px" class="label" data-bind="text: unit"></div>
                     </td>
                     <td>
-                        <div data-bind="text: description" style="white-space: normal"></div>
+                        <div data-bind="text: description" style="white-space: normal; word-break: break-all;"></div>
                         <div data-bind="if:lowerCheck || upperCheck || unit">
                             <span class="label" style="margin-top: 6px">
                                 <span data-bind="if:lowerCheck || upperCheck || unit">
@@ -105,10 +105,18 @@ module nts.uk.at.view.kaf020.shr.viewmodel {
                                         <span data-bind="text: amountUpper"></span>
                                     </span>
                                 </span>
+                                <span data-bind="if: lowerCheck || upperCheck">
+                                    <span data-bind="text: '、'"></span>
+                                </span>
                                 <span data-bind="if: unit">
-                                    <span data-bind="text: $vm.$i18n('KAF020_28')"></span>
                                     <span data-bind="text: inputUnitOfTimeItem"></span>
-                                    <span data-bind="text: unit"></span>
+                                    <span data-bind="if: optionalItemAtr == 0">
+                                        <span data-bind="text: $vm.$i18n('KAF020_32')"></span>
+                                    </span>
+                                    <span data-bind="ifnot: optionalItemAtr == 0">
+                                        <span data-bind="text: unit"></span>
+                                    </span>
+                                    <span data-bind="text: $vm.$i18n('KAF020_28')"></span>
                                 </span>
                                 <span data-bind="if:lowerCheck || upperCheck || unit ">
                                     <span data-bind="text: $vm.$i18n('KAF020_29')"></span>

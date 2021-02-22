@@ -97,14 +97,20 @@
                       {{ item.amountUpper }}
                     </span>
                   </span>
+                  <span v-if="item.lowerCheck || item.upperCheck">
+                    {{'、'}}
+                  </span>
                   <span v-if="item.unit">
-                    {{'KAF020_28' | i18n}}
                     <span>
                       {{item.inputUnitOfTimeItem}}
                     </span>
-                    <span>
+                    <span v-if="item.optionalItemAtr == 0">
+                      {{'KAF020_32' | i18n}}
+                    </span>
+                    <span v-else>
                       {{item.unit}}
                     </span>
+                    {{'KAF020_28' | i18n}}
                   </span>
                   <span v-if="item.lowerCheck || item.upperCheck || item.unit">
                     {{'KAF020_29' | i18n}}

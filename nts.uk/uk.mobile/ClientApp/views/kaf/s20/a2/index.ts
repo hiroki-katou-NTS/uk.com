@@ -194,20 +194,11 @@ export class KafS20A2Component extends KafS00ShrComponent {
             const { application } = appDetail;
             const { optionalItems } = application;
 
-            optionalItems.forEach((item) => {
-                let optionalItem = appDetail.optionalItems.find((optionalItem) => {
-
-                    return optionalItem.optionalItemNo == item.itemNo;
-                });
-                let controlAttendance = appDetail.controlOfAttendanceItems.find((controlAttendance) => {
-
-                    return item.itemNo == controlAttendance.itemDailyID - 640;
-                });
-
+            appDetail.optionalItems.forEach((optionalItem: any) => {
+                let item = _.find(optionalItems, {itemNo: optionalItem.optionalItemNo});
+                let controlAttendance = _.find(appDetail.controlOfAttendanceItems, {itemDailyID: optionalItem.optionalItemNo + 640});
                 const { calcResultRange, optionalItemAtr, optionalItemName, optionalItemNo, unit, description, dispOrder } = optionalItem;
                 const { lowerCheck, upperCheck, amountLower, amountUpper, numberLower, numberUpper, timeLower, timeUpper } = calcResultRange;
-
-                const { amount, times, time } = item;
 
                 vm.optionalItemApplication.push({
                     lowerCheck,
@@ -218,9 +209,9 @@ export class KafS20A2Component extends KafS00ShrComponent {
                     numberUpper,
                     timeLower,
                     timeUpper,
-                    amount,
-                    number: times,
-                    time,
+                    amount: item ? item.amount : null,
+                    number: item ? item.times : null,
+                    time: item ? item.time : null,
                     inputUnitOfTimeItem: controlAttendance ? controlAttendance.inputUnitOfTimeItem : null,
                     optionalItemAtr,
                     optionalItemName,
