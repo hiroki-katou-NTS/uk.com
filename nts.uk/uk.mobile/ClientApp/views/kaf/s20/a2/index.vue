@@ -127,7 +127,7 @@
               v-if="item.optionalItemAtr == 0"
               v-bind:show-title="false"
               v-bind:record-id="index"
-              time-input-type="time-with-day"
+              time-input-type="time-duration"
               v-bind:columns="{ input: 'col-10' }"
             />
             <nts-number-editor
