@@ -35,7 +35,7 @@ public class JpaShiftMasterImpl extends JpaRepository implements ShiftMasterRepo
 			+ " new nts.uk.ctx.at.shared.dom.workrule.shiftmaster.dto.ShiftMasterDto(c.kshmtShiftMaterPK.companyId, c.name, c.kshmtShiftMaterPK.shiftMaterCode, c.color, c.remarks, c.workTypeCd, wt.name, wt.kshmtWorkTypePK.companyId, c.workTimeCd, wts.name, wts.kshmtWorkTimeSetPK.cid,c.colorMobile ) "
 			+ " FROM KshmtShiftMater c "
 			+ " LEFT JOIN KshmtWorkType wt on c.workTypeCd = wt.kshmtWorkTypePK.workTypeCode and c.kshmtShiftMaterPK.companyId = wt.kshmtWorkTypePK.companyId "
-			+ " LEFT JOIN KshmtWorkTimeSet wts on c.workTimeCd = wts.kshmtWorkTimeSetPK.worktimeCd and c.kshmtShiftMaterPK.companyId = wts.kshmtWorkTimeSetPK.cid "
+			+ " LEFT JOIN KshmtWt wts on c.workTimeCd = wts.kshmtWorkTimeSetPK.worktimeCd and c.kshmtShiftMaterPK.companyId = wts.kshmtWorkTimeSetPK.cid "
 			+ " WHERE c.kshmtShiftMaterPK.companyId = :companyId ";
 
 	private static final String SELECT_BY_CID = SELECT_ALL

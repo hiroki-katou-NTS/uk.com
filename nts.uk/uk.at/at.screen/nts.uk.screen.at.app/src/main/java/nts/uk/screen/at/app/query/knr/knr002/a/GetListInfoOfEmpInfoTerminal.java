@@ -60,6 +60,10 @@ public class GetListInfoOfEmpInfoTerminal {
 		
 		// 1: get*(契約コード)：　就業情報端末<List>
 		List<EmpInfoTerminal> listEmpInfo = empInfoTerminalRepository.get(contractCode);
+		
+		if (listEmpInfo.isEmpty()) {
+			return new InfoOfEmpInfoTerminalDto();
+		}
 				
 		List<String> listWorkLocationCd = listEmpInfo.stream().filter(e -> e.getCreateStampInfo().getWorkLocationCd().isPresent())
 															  .map(e -> e.getCreateStampInfo().getWorkLocationCd().get().v())
@@ -81,7 +85,8 @@ public class GetListInfoOfEmpInfoTerminal {
 					e.getEmpInfoTerCode().v(),
 					e.getEmpInfoTerName().v(),
 					e.getModelEmpInfoTer().value,
-					e.getCreateStampInfo().getWorkLocationCd().get().v(),
+					e.getCreateStampInfo().getWorkLocationCd().isPresent() ?
+										  e.getCreateStampInfo().getWorkLocationCd().get().v() : "",
 					e.getCreateStampInfo().getWorkLocationCd().isPresent() ? mapWorkLocationCodeAndName.get(e.getCreateStampInfo().getWorkLocationCd().get().v()) : "",
 					mapByCode.get(e.getEmpInfoTerCode())
 											.getSignalLastTime()

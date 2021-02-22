@@ -154,6 +154,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         hasChangeModeBg = false; 
         listCellUpdatedWhenChangeModeBg = [];
         
+        // listWorkTypecombobox
+        listWorkTypeInfo = [];
+        
         constructor() {
             let self = this;
 
@@ -929,6 +932,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         return;
                     }
                     
+                    if (strTime == '' || endTime == '') {
+                        self.checkExitCellUpdated();
+                        return;
+                    }
+                    
                     nts.uk.ui.block.grayout();
                     let param = {
                         workType: dataCell.originalEvent.detail.value.workTypeCode,
@@ -989,7 +997,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         nts.uk.ui.dialog.alertError(error);
                         dfd.reject();
                     });
-                    self.checkExitCellUpdated((strTime == '' || endTime == '') ? true : false);
+                    self.checkExitCellUpdated();
                 } else {
                     self.checkExitCellUpdated();
                 }
@@ -1123,6 +1131,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.tooltipShare = data.listDateInfo;
             
             self.listTimeDisable = [];
+            self.listWorkTypeInfo = data.listWorkTypeInfo;
             
             for (let i = 0; i < data.listEmpInfo.length; i++) {
                 let rowId = i+'';
@@ -1866,9 +1875,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             console.log(cellsGroup);
 
-            let dataReg = self.buidDataReg(userInfor.disPlayFormat, cellsGroup);
+            let data = self.buidDataReg(userInfor.disPlayFormat, cellsGroup);
+            // check trường hợp starttime|end == ''  thì return luôn. 
+            let validData = self.validData(data);
+            if (validData  == false) {
+                nts.uk.ui.block.clear();
+                return;
+            }
 
-            service.regWorkSchedule(dataReg).done((rs) => {
+            service.regWorkSchedule(data).done((rs) => {
                 console.log(rs);
                 if (rs.hasError == false) {
 
@@ -1893,7 +1908,29 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             });
             return dfd.promise();
         }
-        
+
+        // 6666 check truong hop mode time, worktype la required la khong co starttime or endtime
+        validData(data: any) {
+            let self = this;
+            if (data.length == 0) {
+                console.log('data length = 0');
+                return false;
+            }
+
+            let check = true;
+            _.forEach(data, function(cell) {
+                let exit = _.filter(self.listTimeDisable, function(o) { return o.rowId + '' == cell.rowIndex && o.columnId == cell.columnKey });
+                if (exit.length == 0) {
+                    if (cell.startTime == null || cell.endTime == null) {
+                        console.log('startTime or endTime = null. Please check data...');
+                        check = false;
+                        return false;
+                    }
+                }
+            });
+            return check;
+        }
+
         buidDataReg(viewMode, cellsGroup) {
             let self = this;
             let dataReg = [];
@@ -1929,7 +1966,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             workTimeCd: cell.value.workTimeCode,
                             startTime : startTime,
                             endTime   : endTime,
-                            isChangeTime: isChangeTime
+                            isChangeTime: isChangeTime,
+                            rowIndex : cell.rowIndex,
+                            columnKey: cell.columnKey
                         }
                         dataReg.push(dataCell);
                     }
@@ -1972,7 +2011,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     dataReg.push(dataCell);
                 });
             }
-            console.log(dataReg);
             return dataReg;
         }
         
@@ -2237,6 +2275,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 if (startTime >= endTime) {
                     let messInfo = nts.uk.resource.getMessage('Msg_54');
                     return { isValid: false, message: messInfo };
+                }
+                
+                if (innerIdx === 2 && value == '') {
+                    return { isValid: false };
+                } else if (innerIdx === 3 && value == '') {
+                    return { isValid: false };
                 }
 
                 if (innerIdx === 2) {

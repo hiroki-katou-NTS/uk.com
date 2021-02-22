@@ -17,6 +17,15 @@ module nts.uk.at.view.kdl053 {
             const self = this;
             self.loadScheduleRegisterErr(); 
         }
+        mounted(){
+            const self = this;
+            if(self.hasError()){
+                self.$window.size(540, 820);
+            } else {
+                self.$window.size(500, 820);
+            }
+        }
+
         loadScheduleRegisterErr(): void {
             const self = this;
             let data = getShared('dataShareDialogKDL053');           
@@ -35,7 +44,8 @@ module nts.uk.at.view.kdl053 {
                 errorRegistrationList = _.union(errorRegistrationList, _.sortBy(temp, item => item.date));
             });
 
-            self.hasError(data.isRegistered == 1);            
+            self.hasError(data.isRegistered == 1); 
+
             _.each(errorRegistrationList, errorLog => {
                 switch (self.getDayfromDate(errorLog.date)) {
                     case 0:
@@ -65,46 +75,50 @@ module nts.uk.at.view.kdl053 {
             let listIds: Array<any> = _.map(errorRegistrationList, item => { return item.attendanceItemId }); 
 
             this.$blockui("invisible");
-            self.$ajax(Paths.GET_ATENDANCENAME_BY_IDS,listIds).done((data: Array<any>)=>{
-                if(data && data.length > 0){
-                    let index = 0, idx = 0;                   
-                    _.each(errorRegistrationList, item => {
-                        item.id = idx;
+            self.$ajax(Paths.GET_ATENDANCENAME_BY_IDS, listIds).done((data: Array<any>) => {
+                if (data && data.length > 0) {
+                    let index = 0, idx = 0;
+                    _.each(errorRegistrationList, item => {                        
                         idx++;
-                        _.each(data, itemName =>{
-                            if(item.attendanceItemId == itemName.attendanceItemId ){
-                                errorRegistrationList[index].errName = itemName.attendanceItemName;                                
+                        _.each(data, itemName => {
+                            if (item.attendanceItemId == itemName.attendanceItemId) {
+                                errorRegistrationList[index].errName = itemName.attendanceItemName;
                                 index++;
-                            }                           
+                            }
                         })
-                    })      
+                    })
                     self.registrationErrorListCsv(errorRegistrationList);
-                    self.registrationErrorList(errorRegistrationList);          
+                    self.registrationErrorList(errorRegistrationList);
+                } else {
+                    _.each(errorRegistrationList, item => {
+                        item.errName = "";
+                    })
+                    self.registrationErrorListCsv(errorRegistrationList);
+                    self.registrationErrorList(errorRegistrationList);
+                }
 
-                }                
                 $("#grid").igGrid({
                     width: "780px",
                     height: "330px",
                     dataSource: self.registrationErrorList(),
                     dataSourceType: "json",
                     primaryKey: "id",
-                    autoGenerateColumns: false,                        
+                    autoGenerateColumns: false,
                     responseDatakey: "results",
-                    columns: [
-                        { headerText: "STT", key: "id", dataType: "number", hidden: true },
-                        { headerText: getText('KDL053_5'), key: "employeeCdName", dataType: "string", width: "25%" },                          
+                    columns: [                        
+                        { headerText: getText('KDL053_5'), key: "employeeCdName", dataType: "string", width: "30%" },
                         { headerText: getText('KDL053_6'), key: "dateCss", dataType: "string", width: "16%" },
                         { headerText: getText('KDL053_7'), key: "errName", dataType: "string", width: "18%" },
-                        { headerText: getText('KDL053_8'), key: "errorMessage", width:"35%" }                                   
+                        { headerText: getText('KDL053_8'), key: "errorMessage", width: "34%" }
                     ],
                     features: [
                         {
-                            name : 'Paging',
+                            name: 'Paging',
                             type: "local",
-                            pageSize : 10
+                            pageSize: 10
                         },
                         {
-                            name : 'Resizing',
+                            name: 'Resizing',
                             columnSettings: [
                                 { columnKey: "employeeCdName", allowResizing: true },
                                 { columnKey: "dateCss", allowResizing: true },
@@ -117,10 +131,10 @@ module nts.uk.at.view.kdl053 {
                 $('#btnClose').focus();
                 self.$blockui("hide");
             })
-            .always(() => {
-                self.$blockui("hide");
-            });
-        }
+                .always(() => {
+                    self.$blockui("hide");
+                });
+        }  
         exportCsv(): void {
             const self = this;
             self.$blockui("invisible"); 
@@ -137,8 +151,6 @@ module nts.uk.at.view.kdl053 {
         getDayfromDate(fromDate: string): number {
             let date = new Date(fromDate);
             return date.getDay();
-        }
-
-        
+        }        
     }
 }

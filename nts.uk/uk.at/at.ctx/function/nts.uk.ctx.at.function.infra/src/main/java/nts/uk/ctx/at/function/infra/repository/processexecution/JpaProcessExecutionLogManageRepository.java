@@ -40,7 +40,7 @@ implements ProcessExecutionLogManageRepository{
 	
 	private static final String SELECT_BY_PK_AND_DATETIME = SELECT_BY_PK
 			+ "AND pel.lastExecDateTime = :lastExecDateTime ";
-	private static final String SELECT_All_BY_CID_NATIVE = " SELECT * FROM KFNMT_PRO_EXE_LOG_MANAGE as pel WITH (READUNCOMMITTED)"
+	private static final String SELECT_All_BY_CID_NATIVE = " SELECT * FROM KFNDT_AUTOEXEC_MNG as pel WITH (READUNCOMMITTED)"
 			+ "WHERE pel.CID = ? ORDER BY pel.EXEC_ITEM_CD ASC ";
 	
 	/*

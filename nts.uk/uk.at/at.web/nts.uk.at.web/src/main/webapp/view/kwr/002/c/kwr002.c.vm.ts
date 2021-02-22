@@ -474,18 +474,21 @@ module nts.uk.com.view.kwr002.c.viewmodel {
             let attendanceRecExpSetName: any = getShared('attendanceRecExpSetName');
             let sealStamp: any = getShared('sealStamp');
             let useSeal: any = getShared('useSeal');
+            let monthlyConfirmedDisplay: any = getShared('monthlyConfirmedDisplay');
             const fontSzie = getShared('exportFontSize');
             const selectionType = getShared('selectionType');
             const layoutId = getShared('layoutId');
             self.layoutId(layoutId);
-
+            
             // Update Ver25
             $.when(service.getApprovalProcessingUseSetting(), service.getAttendanceRecordExportSetting(attendanceRecExpSetCode, selectionType))
                 .then((aPUS: any, aRES: any) => {
                     if (aPUS !== null) {
                         self.useMonthApproverConfirm(aPUS.useMonthApproverConfirm);
                     }
-                    if (aRES.monthlyConfirmedDisplay !== null) {
+                    if (!_.isNil(monthlyConfirmedDisplay)) {
+                        self.monthlyConfirmedDisplay(monthlyConfirmedDisplay);
+                    } else if (aRES.monthlyConfirmedDisplay !== null) {
                         self.monthlyConfirmedDisplay(aRES.monthlyConfirmedDisplay);
                     } else {
                         self.monthlyConfirmedDisplay(0);

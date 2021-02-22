@@ -1509,7 +1509,7 @@ public class ProgramIdConsts {
 
 	public static final String KDL048 = "KDL048";
 	
-	public static final String KDL049 = "KDL049";
+	public static final String KDL049A = "KDL049A";
 	/** KDL047 */
 	public static final String KDL047 = "KDL047";
 	/** CCG003B */
