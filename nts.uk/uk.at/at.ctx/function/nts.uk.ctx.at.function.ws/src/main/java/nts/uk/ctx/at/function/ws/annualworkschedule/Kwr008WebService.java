@@ -16,6 +16,7 @@ import nts.uk.ctx.at.function.app.command.annualworkschedule.SetOutItemsWoScComm
 import nts.uk.ctx.at.function.app.command.annualworkschedule.SetOutItemsWoScCommandSaveHandler;
 import nts.uk.ctx.at.function.app.export.annualworkschedule.AnnualWorkScheduleExportQuery;
 import nts.uk.ctx.at.function.app.export.annualworkschedule.AnnualWorkScheduleExportService;
+import nts.uk.ctx.at.function.app.find.annualworkschedule.AnnualWorkScheduleDuplicateDto;
 import nts.uk.ctx.at.function.app.find.annualworkschedule.ItemOutTblBookDto;
 import nts.uk.ctx.at.function.app.find.annualworkschedule.PeriodDto;
 import nts.uk.ctx.at.function.app.find.annualworkschedule.PeriodFinder;
@@ -24,6 +25,7 @@ import nts.uk.ctx.at.function.app.find.annualworkschedule.RoleWhetherLoginFinder
 import nts.uk.ctx.at.function.app.find.annualworkschedule.SetOutItemsWoScDto;
 import nts.uk.ctx.at.function.app.find.annualworkschedule.SetOutputItemOfAnnualWorkSchDto;
 import nts.uk.ctx.at.function.app.find.annualworkschedule.SettingOutputItemOfAnnualWorkScheduleFinder;
+import nts.uk.ctx.at.function.app.find.attendancerecord.duplicate.AttendanceRecordDuplicateDto;
 import nts.uk.ctx.at.function.dom.annualworkschedule.enums.OutputAgreementTime;
 import nts.uk.ctx.at.function.dom.annualworkschedule.enums.PageBreakIndicator;
 import nts.uk.ctx.at.function.dom.annualworkschedule.enums.ValueOuputFormat;
@@ -168,5 +170,11 @@ public class Kwr008WebService extends WebService {
 	@Path("/getAtdItemsByDisplayFormat/{displayFormat}")
 	public List<AttendanceItemDto> getAtdItemsByDisplayFormat(@PathParam("displayFormat") int displayFormat) {
 		return this.settingFinder.getAtdItemsByType(displayFormat);
+	}
+	
+	@Path("executeCopy")
+	@POST
+	public void executeCopy(AnnualWorkScheduleDuplicateDto dto) {
+		this.settingFinder.executeCopy(dto);
 	}
 }
