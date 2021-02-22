@@ -139,8 +139,8 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             if (KWR008BParam) {
                 self.selectedPrintForm(KWR008BParam.printFormat);
                 selectionType = KWR008BParam.selectionType;
-                debugger
                 self.currentSetOutputSettingCode().settingType(KWR008BParam.selectionType);
+                self.currentSetOutputSettingCode().printForm(KWR008BParam.printFormat);
             }
 
             $.when(service.getValueOutputFormat()
@@ -545,7 +545,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             if (param) {
                 self.layoutId(param.layoutId || '');
                 self.layoutIdSelect = self.layoutId();
-                self.settingType(param.settingType != null ? param.settingType : 0);
+                self.settingType(param.settingType !== null ? param.settingType : 0);
                 self.cd(param.cd || '');
                 self.displayCode = self.cd();
                 self.name(param.name || '');

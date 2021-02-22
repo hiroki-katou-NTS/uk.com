@@ -13,8 +13,8 @@ import lombok.Setter;
 import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.AgreementTimeByPeriodImport;
 import nts.uk.ctx.at.function.dom.adapter.monthlyattendanceitem.AttendanceItemValueImport;
 import nts.uk.ctx.at.function.dom.adapter.monthlyattendanceitem.MonthlyAttendanceResultImport;
-import nts.uk.ctx.at.function.dom.annualworkschedule.CalcFormulaItem;
-import nts.uk.ctx.at.function.dom.annualworkschedule.ItemOutTblBook;
+import nts.uk.ctx.at.function.dom.annualworkschedule.CalculationFormulaOfItem;
+import nts.uk.ctx.at.function.dom.annualworkschedule.ItemsOutputToBookTable;
 import nts.uk.ctx.at.function.dom.annualworkschedule.enums.ValueOuputFormat;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.PeriodAtrOfAgreement;
@@ -395,10 +395,11 @@ public class AnnualWorkScheduleData {
 		return this.getColor(this.period7th);
 	}
 
-	public static AnnualWorkScheduleData fromMonthlyAttendanceList(ItemOutTblBook itemOut,
-			List<MonthlyAttendanceResultImport> monthlyAttendanceResult, YearMonth startYm) {
+	public static AnnualWorkScheduleData fromMonthlyAttendanceList(ItemsOutputToBookTable itemOut
+																 , List<MonthlyAttendanceResultImport> monthlyAttendanceResult
+																 , YearMonth startYm) {
 		final Map<Integer, Integer> operationMap = itemOut.getListOperationSetting().stream()
-				.collect(Collectors.toMap(CalcFormulaItem::getAttendanceItemId, CalcFormulaItem::getOperation));
+				.collect(Collectors.toMap(CalculationFormulaOfItem::getAttendanceItemId, CalculationFormulaOfItem::getOperation));
 
 		AnnualWorkScheduleData annualWorkScheduleData = new AnnualWorkScheduleData();
 		annualWorkScheduleData.setHeadingName(itemOut.getHeadingName().v());
@@ -438,7 +439,7 @@ public class AnnualWorkScheduleData {
 		return new ItemData(sum, null);
 	}
 
-	public static AnnualWorkScheduleData fromAgreementTimeList(ItemOutTblBook itemOut,
+	public static AnnualWorkScheduleData fromAgreementTimeList(ItemsOutputToBookTable itemOut,
 			List<AgreementTimeByPeriodImport> listAgreementTimeBymonth,
 			List<AgreementTimeByPeriodImport> listAgreementTimeByYear,
 			List<AgreementTimeByPeriodImport> listExcesMonths, YearMonth startYm, Integer monthsExceeded,
