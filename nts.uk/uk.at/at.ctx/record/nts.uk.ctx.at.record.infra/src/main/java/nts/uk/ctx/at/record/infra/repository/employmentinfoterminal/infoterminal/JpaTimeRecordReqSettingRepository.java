@@ -15,6 +15,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
 import lombok.SneakyThrows;
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.TimeRecordReqSetting;
@@ -32,6 +33,9 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 public class JpaTimeRecordReqSettingRepository extends JpaRepository implements TimeRecordReqSettingRepository {
 
 	private static final String GET_BY_KEY;
+	
+	private static final String GET_BY_MASTER_TYPE;
+	private static final String GET_TR_REQUEST;
 
 	private static final String GET_CONTRACTCD_LISTCODE = "SELECT m FROM KrcmtTrRequest m WHERE m.pk.contractCode = :contractCode AND m.pk.timeRecordCode IN :listCode";
 
@@ -59,7 +63,29 @@ public class JpaTimeRecordReqSettingRepository extends JpaRepository implements 
 
 		builderString.append(" WHERE a.CONTRACT_CD = ? AND a.TIMERECORDER_CD = ?");
 		GET_BY_KEY = builderString.toString();
-
+		
+		StringBuilder getTrRequest = new StringBuilder();
+		getTrRequest.append("SELECT a.CONTRACT_CD, a.CID, a.COMPANY_CD, a.TIMERECORDER_CD, a.SEND_OVERTIME_NAME,");
+		getTrRequest.append(
+				"a.SEND_SID, a.SEND_RESERVATION, a.SEND_WORKTYPE, SEND_WORKTIME, a.REMOTE_SETTING, a.REBOOT, ");
+		getTrRequest.append(
+				"a.SEND_REASON_APP, a.SEND_SERVERTIME, a.RECV_ALL_STAMP, a.RECV_ALL_RESERVATION, a.RECV_ALL_APPLICATION");
+		getTrRequest.append(" FROM KRCMT_TR_REQUEST a");
+		getTrRequest.append(" WHERE a.CONTRACT_CD = ? AND a.TIMERECORDER_CD = ?");
+		GET_TR_REQUEST = getTrRequest.toString();
+		
+		StringBuilder getByMasterTypeBuilder = new StringBuilder();
+		getByMasterTypeBuilder.append("SELECT a.CONTRACT_CD, a.CID, a.COMPANY_CD, a.TIMERECORDER_CD, a.SEND_OVERTIME_NAME,");
+		getByMasterTypeBuilder.append(
+				"a.SEND_SID, a.SEND_RESERVATION, a.SEND_WORKTYPE, SEND_WORKTIME, a.REMOTE_SETTING, a.REBOOT, ");
+		getByMasterTypeBuilder.append(
+				"a.SEND_REASON_APP, a.SEND_SERVERTIME, a.RECV_ALL_STAMP, a.RECV_ALL_RESERVATION, a.RECV_ALL_APPLICATION");
+		getByMasterTypeBuilder.append(", @MASTER_COLUMN");
+		getByMasterTypeBuilder.append(" FROM KRCMT_TR_REQUEST a");
+		getByMasterTypeBuilder.append(
+				" LEFT JOIN @MASTER_TABLE b ON a.CONTRACT_CD = b.CONTRACT_CD AND a.TIMERECORDER_CD = b.TIMERECORDER_CD ");
+		getByMasterTypeBuilder.append(" WHERE a.CONTRACT_CD = ? AND a.TIMERECORDER_CD = ?");
+		GET_BY_MASTER_TYPE = getByMasterTypeBuilder.toString();
 	}
 
 	@Override
@@ -76,6 +102,127 @@ public class JpaTimeRecordReqSettingRepository extends JpaRepository implements 
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
+	}
+	
+	@Override
+	public Optional<TimeRecordReqSetting> getTrRequest(EmpInfoTerminalCode terCode, ContractCode contractCode) {
+		try (PreparedStatement stm = this.connection().prepareStatement(GET_TR_REQUEST)) {
+			stm.setString(1, contractCode.v());
+			stm.setString(2,  terCode.v());
+			List<TimeRecordReqSetting> listFullData = createTimeReqSettingResult(stm.executeQuery(), 0);
+			if (listFullData.isEmpty()) return Optional.empty();
+			return getOneByList(listFullData);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	@Override
+	public Optional<TimeRecordReqSetting> getTimeRecordEmployee(EmpInfoTerminalCode terCode, ContractCode contractCode) {
+		String queryStr = GET_BY_MASTER_TYPE.replaceFirst("@MASTER_COLUMN", "b.SID as EMPLOYEE")
+							.replaceFirst("@MASTER_TABLE", "KRCMT_TR_SEND_EMPLOYEE"); 
+		try (PreparedStatement stm = this.connection().prepareStatement(queryStr)) {
+			stm.setString(1, contractCode.v());
+			stm.setString(2,  terCode.v());
+			List<TimeRecordReqSetting> listFullData = createTimeReqSettingResult(stm.executeQuery(), 1);
+			if (listFullData.isEmpty()) return Optional.empty();
+			return getOneByList(listFullData);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	@Override
+	public Optional<TimeRecordReqSetting> getTimeRecordWorkType(EmpInfoTerminalCode terCode, ContractCode contractCode) {
+		String queryStr = GET_BY_MASTER_TYPE.replaceFirst("@MASTER_COLUMN", "b.WORKTYPE_CD")
+				.replaceFirst("@MASTER_TABLE", "KRCMT_TR_SEND_WORKTYPE"); 
+		try (PreparedStatement stm = this.connection().prepareStatement(queryStr)) {
+			stm.setString(1, contractCode.v());
+			stm.setString(2,  terCode.v());
+			List<TimeRecordReqSetting> listFullData = createTimeReqSettingResult(stm.executeQuery(), 2);
+			if (listFullData.isEmpty()) return Optional.empty();
+			return getOneByList(listFullData);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	@Override
+	public Optional<TimeRecordReqSetting> getTimeRecordWorkTime(EmpInfoTerminalCode terCode, ContractCode contractCode) {
+		String queryStr = GET_BY_MASTER_TYPE.replaceFirst("@MASTER_COLUMN", "b.WORKTIME_CD")
+				.replaceFirst("@MASTER_TABLE", "KRCMT_TR_SEND_WORKTIME"); 
+		try (PreparedStatement stm = this.connection().prepareStatement(queryStr)) {
+			stm.setString(1, contractCode.v());
+			stm.setString(2,  terCode.v());
+			List<TimeRecordReqSetting> listFullData = createTimeReqSettingResult(stm.executeQuery(), 3);
+			if (listFullData.isEmpty()) return Optional.empty();
+			return getOneByList(listFullData);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	@Override
+	public Optional<TimeRecordReqSetting> getTimeRecordReservation(EmpInfoTerminalCode terCode, ContractCode contractCode) {
+		String queryStr = GET_BY_MASTER_TYPE.replaceFirst("@MASTER_COLUMN", "b.RESERVE_FRAME_NO")
+				.replaceFirst("@MASTER_TABLE", "KRCMT_TR_SEND_RESERVATION"); 
+		try (PreparedStatement stm = this.connection().prepareStatement(queryStr)) {
+			stm.setString(1, contractCode.v());
+			stm.setString(2,  terCode.v());
+			List<TimeRecordReqSetting> listFullData = createTimeReqSettingResult(stm.executeQuery(), 4);
+			if (listFullData.isEmpty()) return Optional.empty();
+			return getOneByList(listFullData);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	/**
+	 * @param rs
+	 * @param masterType
+	 * 			1: employee,
+	 * 			2: workType
+	 * 			3: workTime
+	 * 			4: reservation
+	 * @return
+	 */
+	@SneakyThrows
+	private List<TimeRecordReqSetting> createTimeReqSettingResult(ResultSet rs, int masterType) {
+		List<TimeRecordReqSetting> listFullData = new ArrayList<>();
+		while (rs.next()) {
+			val reqBuilder = new TimeRecordReqSetting.ReqSettingBuilder(
+					new EmpInfoTerminalCode(rs.getString("TIMERECORDER_CD")),
+					new ContractCode(rs.getString("CONTRACT_CD")), new CompanyId(rs.getString("CID")),
+					String.valueOf(rs.getString("COMPANY_CD")),
+					masterType != 1 || rs.getString("EMPLOYEE") == null ? Collections.emptyList()
+							: Arrays.asList(new EmployeeId(rs.getString("EMPLOYEE"))),
+					masterType != 4 || rs.getString("RESERVE_FRAME_NO") == null ? Collections.emptyList()
+							: Arrays.asList(Integer.parseInt(rs.getString("RESERVE_FRAME_NO"))),
+					masterType != 2 || rs.getString("WORKTYPE_CD") == null ? Collections.emptyList()
+							: Arrays.asList(new WorkTypeCode(rs.getString("WORKTYPE_CD"))))
+									.overTimeHoliday(rs.getInt("SEND_OVERTIME_NAME") == 1)
+									.applicationReason(rs.getInt("SEND_REASON_APP") == 1)
+									.stampReceive(rs.getInt("RECV_ALL_STAMP") == 1)
+									.reservationReceive(rs.getInt("RECV_ALL_RESERVATION") == 1)
+									.applicationReceive(rs.getInt("RECV_ALL_APPLICATION") == 1)
+									.timeSetting(rs.getInt("SEND_SERVERTIME") == 1)
+									.sendEmployeeId(rs.getInt("SEND_SID") == 1)
+									.sendBentoMenu(rs.getInt("SEND_RESERVATION") == 1)
+									.sendWorkType(rs.getInt("SEND_WORKTYPE") == 1)
+									.sendWorkTime(rs.getInt("SEND_WORKTIME") == 1)
+									.remoteSetting(rs.getInt("REMOTE_SETTING") == 1).reboot(rs.getInt("REBOOT") == 1);
+			reqBuilder.workTime(masterType != 3 || rs.getString("WORKTIME_CD") == null 
+					? Collections.emptyList() : Arrays.asList(new WorkTimeCode(rs.getString("WORKTIME_CD"))));
+											
+			TimeRecordReqSetting req = reqBuilder.build();
+			listFullData.add(req);
+		}
+
+		if (listFullData.isEmpty()) {
+			return Collections.emptyList();
+		}
+		
+		return listFullData;
 	}
 
 	@SneakyThrows
@@ -216,24 +363,9 @@ public class JpaTimeRecordReqSettingRepository extends JpaRepository implements 
 //		}
 //	}
 
-	private Optional<TimeRecordReqSetting> getByContractCodeAndCode(ContractCode contractCode, EmpInfoTerminalCode code) {
-		try (PreparedStatement statement = this.connection().prepareStatement(GET_BY_KEY)) {
-			statement.setString(1, contractCode.v());
-			statement.setString(2, code.v());
-			List<TimeRecordReqSetting> listFullData = createTimeReqSetting(statement.executeQuery());
-			Optional<TimeRecordReqSetting> timeRecordReqSetting = getOneByList(listFullData);
-			if (!timeRecordReqSetting.isPresent()) {
-				return Optional.empty();
-			}
-			return timeRecordReqSetting;
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
 	@Override
 	public List<EmployeeId> getEmployeeIdList(ContractCode contractCode, EmpInfoTerminalCode code) {
-		Optional<TimeRecordReqSetting> timeRecordReqSetting = getByContractCodeAndCode(contractCode, code);
+		Optional<TimeRecordReqSetting> timeRecordReqSetting = getTimeRecordEmployee(code, contractCode);
 		if (!timeRecordReqSetting.isPresent()) {
 			return Collections.emptyList();
 		}
@@ -242,7 +374,7 @@ public class JpaTimeRecordReqSettingRepository extends JpaRepository implements 
 
 	@Override
 	public List<WorkTypeCode> getWorkTypeCodeList(ContractCode contractCode, EmpInfoTerminalCode code) {
-		Optional<TimeRecordReqSetting> timeRecordReqSetting = getByContractCodeAndCode(contractCode, code);
+		Optional<TimeRecordReqSetting> timeRecordReqSetting = getTimeRecordWorkType(code, contractCode);
 		if (!timeRecordReqSetting.isPresent()) {
 			return Collections.emptyList();
 		}
@@ -251,7 +383,7 @@ public class JpaTimeRecordReqSettingRepository extends JpaRepository implements 
 
 	@Override
 	public List<WorkTimeCode> getWorkTimeCodeList(ContractCode contractCode, EmpInfoTerminalCode code) {
-		Optional<TimeRecordReqSetting> timeRecordReqSetting = getByContractCodeAndCode(contractCode, code);
+		Optional<TimeRecordReqSetting> timeRecordReqSetting = getTimeRecordWorkTime(code, contractCode);
 		if (!timeRecordReqSetting.isPresent()) {
 			return Collections.emptyList();
 		}
@@ -260,7 +392,7 @@ public class JpaTimeRecordReqSettingRepository extends JpaRepository implements 
 
 	@Override
 	public List<Integer> getbentoMenuFrameNumbers(ContractCode contractCode, EmpInfoTerminalCode code) {
-		Optional<TimeRecordReqSetting> timeRecordReqSetting = getByContractCodeAndCode(contractCode, code);
+		Optional<TimeRecordReqSetting> timeRecordReqSetting = getTimeRecordReservation(code, contractCode);
 		if (!timeRecordReqSetting.isPresent()) {
 			return Collections.emptyList();
 		}

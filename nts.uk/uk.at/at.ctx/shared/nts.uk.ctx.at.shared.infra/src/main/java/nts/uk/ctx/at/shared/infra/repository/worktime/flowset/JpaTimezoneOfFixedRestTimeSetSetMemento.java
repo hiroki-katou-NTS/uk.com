@@ -13,9 +13,9 @@ import java.util.stream.Collectors;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSetSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowFixedRtSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloBrFiAllTs;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowFixedRtSetPK;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowRtSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloBrFl;
 
 /**
  * The Class JpaTimezoneOfFixedRestTimeSetSetMemento.
@@ -23,7 +23,7 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowRtSet;
 public class JpaTimezoneOfFixedRestTimeSetSetMemento implements TimezoneOfFixedRestTimeSetSetMemento {
 
 	/** The entity. */
-	private KshmtFlowRtSet entity;
+	private KshmtWtFloBrFl entity;
 
 	/** The company id. */
 	private String companyId;
@@ -40,7 +40,7 @@ public class JpaTimezoneOfFixedRestTimeSetSetMemento implements TimezoneOfFixedR
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaTimezoneOfFixedRestTimeSetSetMemento(KshmtFlowRtSet entity) {
+	public JpaTimezoneOfFixedRestTimeSetSetMemento(KshmtWtFloBrFl entity) {
 		super();
 		this.entity = entity;
 		if (CollectionUtil.isEmpty(this.entity.getLstKshmtFlowFixedRtSet())) {
@@ -64,17 +64,17 @@ public class JpaTimezoneOfFixedRestTimeSetSetMemento implements TimezoneOfFixedR
 			return;
 		}
 
-		List<KshmtFlowFixedRtSet> lstEntity = this.entity.getLstKshmtFlowFixedRtSet();
+		List<KshmtWtFloBrFiAllTs> lstEntity = this.entity.getLstKshmtFlowFixedRtSet();
 		if (CollectionUtil.isEmpty(lstEntity)) {
 			lstEntity = new ArrayList<>();
 		}
 
 		// convert map entity
-     	Map<KshmtFlowFixedRtSetPK, KshmtFlowFixedRtSet> mapEntity = lstEntity.stream()
-     			.collect(Collectors.toMap(KshmtFlowFixedRtSet::getKshmtFlowFixedRtSetPK, Function.identity()));
+     	Map<KshmtFlowFixedRtSetPK, KshmtWtFloBrFiAllTs> mapEntity = lstEntity.stream()
+     			.collect(Collectors.toMap(KshmtWtFloBrFiAllTs::getKshmtFlowFixedRtSetPK, Function.identity()));
 		
 		// set list entity
-		List<KshmtFlowFixedRtSet> newListEntity = new ArrayList<>();
+		List<KshmtWtFloBrFiAllTs> newListEntity = new ArrayList<>();
 		int periodNo = 1;
 		for (DeductionTime domain : timzones) {
 			KshmtFlowFixedRtSetPK pk = new KshmtFlowFixedRtSetPK();
@@ -84,9 +84,9 @@ public class JpaTimezoneOfFixedRestTimeSetSetMemento implements TimezoneOfFixedR
 			pk.setPeriodNo(periodNo);
 
 			// find entity if existed, else new entity
-			KshmtFlowFixedRtSet entity = mapEntity.get(pk);
+			KshmtWtFloBrFiAllTs entity = mapEntity.get(pk);
  			if (entity == null) {
- 				entity = new KshmtFlowFixedRtSet();
+ 				entity = new KshmtWtFloBrFiAllTs();
  				entity.setKshmtFlowFixedRtSetPK(pk);
  			}
 

@@ -16,18 +16,18 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.publicholiday.PublicHolidayRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.publicholiday.PublicHolidayRemainRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.publicholiday.RemainNumber;
-import nts.uk.ctx.at.shared.infra.entity.remainingnumber.publicholiday.KrcmtPubHolidayRemain;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.publicholiday.KrcdtPubHolidayRemain;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaPublicHolidayRemainRepo extends JpaRepository implements PublicHolidayRemainRepository{
 
-	private PublicHolidayRemain toDomain(KrcmtPubHolidayRemain entity){
+	private PublicHolidayRemain toDomain(KrcdtPubHolidayRemain entity){
 		return new PublicHolidayRemain(entity.cid, entity.employeeId, entity.remainNumber);
 	}
 	
-	private KrcmtPubHolidayRemain toEntity(PublicHolidayRemain domain){
-		KrcmtPubHolidayRemain entity = new KrcmtPubHolidayRemain();
+	private KrcdtPubHolidayRemain toEntity(PublicHolidayRemain domain){
+		KrcdtPubHolidayRemain entity = new KrcdtPubHolidayRemain();
 		entity.employeeId = domain.getSID();
 		entity.cid = domain.getCID();
 		entity.remainNumber = domain.getRemainNumber().v();
@@ -36,7 +36,7 @@ public class JpaPublicHolidayRemainRepo extends JpaRepository implements PublicH
 	
 	@Override
 	public Optional<PublicHolidayRemain> get(String sid) {
-		Optional<KrcmtPubHolidayRemain> pubHoli = this.queryProxy().find(sid, KrcmtPubHolidayRemain.class);
+		Optional<KrcdtPubHolidayRemain> pubHoli = this.queryProxy().find(sid, KrcdtPubHolidayRemain.class);
 		
 		if (pubHoli.isPresent()){
 			return Optional.of(toDomain(pubHoli.get()));
@@ -57,7 +57,7 @@ public class JpaPublicHolidayRemainRepo extends JpaRepository implements PublicH
 
 	@Override
 	public void delete(String sid) {
-		this.commandProxy().remove(KrcmtPubHolidayRemain.class, sid);
+		this.commandProxy().remove(KrcdtPubHolidayRemain.class, sid);
 		
 	}
 
@@ -66,17 +66,17 @@ public class JpaPublicHolidayRemainRepo extends JpaRepository implements PublicH
 	 */
 	@Override
 	public List<PublicHolidayRemain> getAll(String cid, List<String> sids) {
-		List<KrcmtPubHolidayRemain> entities = new ArrayList<>();
+		List<KrcdtPubHolidayRemain> entities = new ArrayList<>();
 		CollectionUtil.split(sids, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			String sql = "SELECT * FROM KRCMT_PUB_HOLIDAY_REMAIN WHERE  CID = ? AND SID IN ("
+			String sql = "SELECT * FROM KRCDT_PUB_HOLIDAY_REMAIN WHERE  CID = ? AND SID IN ("
 					+ NtsStatement.In.createParamsString(subList) + ")";
 			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 				stmt.setString(1, cid);
 				for (int i = 0; i < subList.size(); i++) {
 					stmt.setString(2 + i, subList.get(i));
 				}
-				List<KrcmtPubHolidayRemain> result = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
-					KrcmtPubHolidayRemain entity = new KrcmtPubHolidayRemain();
+				List<KrcdtPubHolidayRemain> result = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+					KrcdtPubHolidayRemain entity = new KrcdtPubHolidayRemain();
 					entity.cid = rec.getString("CID");
 					entity.employeeId = rec.getString("SID");
 					entity.remainNumber = rec.getBigDecimal("REMAIN_NUMBER");
@@ -94,7 +94,7 @@ public class JpaPublicHolidayRemainRepo extends JpaRepository implements PublicH
 
 	@Override
 	public void addAll(List<PublicHolidayRemain> domains) {
-		String INS_SQL = "INSERT INTO KRCMT_PUB_HOLIDAY_REMAIN (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
+		String INS_SQL = "INSERT INTO KRCDT_PUB_HOLIDAY_REMAIN (INS_DATE, INS_CCD , INS_SCD , INS_PG,"
 				+ " UPD_DATE , UPD_CCD , UPD_SCD , UPD_PG," 
 				+ " CID, SID, REMAIN_NUMBER)"
 				+ " VALUES (INS_DATE_VAL, INS_CCD_VAL, INS_SCD_VAL, INS_PG_VAL,"
@@ -133,7 +133,7 @@ public class JpaPublicHolidayRemainRepo extends JpaRepository implements PublicH
 
 	@Override
 	public void updateAll(List<PublicHolidayRemain> domains) {
-		String UP_SQL = "UPDATE KRCMT_PUB_HOLIDAY_REMAIN SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
+		String UP_SQL = "UPDATE KRCDT_PUB_HOLIDAY_REMAIN SET UPD_DATE = UPD_DATE_VAL, UPD_CCD = UPD_CCD_VAL, UPD_SCD = UPD_SCD_VAL, UPD_PG = UPD_PG_VAL,"
 				+ " REMAIN_NUMBER = REMAIN_NUMBER_VAL"
 				+ " WHERE SID = SID_VAL AND CID = CID_VAL;";
 		String updCcd = AppContexts.user().companyCode();

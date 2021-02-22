@@ -63,8 +63,8 @@ module nts.uk.com.view.ccg008.a.screenModel {
               character.restore("cache").then((obj: any) => {
                 if (obj) {
                   let endDate = moment.utc(obj.endDate, "YYYY/MM/DD").add(vm.topPageSetting.switchingDate, 'days').format("YYYY/MM/DD");
-                  if (moment.utc(endDate, "YYYY/MM/DD")
-                      .isBefore(moment.utc(new Date(), "YYYY/MM/DD"))
+                  if (moment.utc(endDate, 'YYYY/MM/DD')
+                      .isBefore(moment.utc(moment.utc().format('YYYY/MM/DD'), 'YYYY/MM/DD'))
                   ) {
                     vm.selectedSwitch(2);
                     obj.currentOrNextMonth = 2;
@@ -107,9 +107,11 @@ module nts.uk.com.view.ccg008.a.screenModel {
         let minutes = vm.getMinutes(data);
         let miliSeconds = minutes * MINUTESTOMILISECONDS;
           clearInterval(vm.reload);
-          if (data !== 0 && vm.paramWidgetLayout2().length > 0 ||  vm.paramWidgetLayout3().length > 0) {
+          if (data !== 0) {
             vm.reload =  setInterval(() => {
-              vm.callApiTopPage(vm);
+              if (vm.paramWidgetLayout2().length > 0 ||  vm.paramWidgetLayout3().length > 0) {
+                vm.callApiTopPage(vm);
+              }
             }, miliSeconds);
           }
       });

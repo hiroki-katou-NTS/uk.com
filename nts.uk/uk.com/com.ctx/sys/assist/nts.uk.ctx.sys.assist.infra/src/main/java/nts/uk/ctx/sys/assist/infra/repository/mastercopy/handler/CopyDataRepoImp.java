@@ -29,7 +29,7 @@ public class CopyDataRepoImp implements CopyDataRepository {
     ErAlWorkRecordCopyAdapter erAlWorkRecordCopyAdapter;
 
     @Override
-    public void copy(String companyId, TargetTableInfo targetTableInfo, Integer copyMethod) {
+    public void copy(String contractCode, String companyId, TargetTableInfo targetTableInfo, Integer copyMethod) {
         String tableName = targetTableInfo.getTableName().v().trim();
         KeyInformation keyInformation = targetTableInfo.getKey();
         List<String> keys = new ArrayList<>();
@@ -45,18 +45,18 @@ public class CopyDataRepoImp implements CopyDataRepository {
 
         switch (targetTableInfo.getCopyAttribute()) {
             case COPY_WITH_COMPANY_ID:
-                repository.doCopy(tableName, keys, CopyMethod.valueOf(copyMethod), companyId, true);
+                repository.doCopy(tableName, keys, CopyMethod.valueOf(copyMethod), contractCode, companyId, true);
                 break;
             case COPY_MORE_COMPANY_ID:
-                repository.doCopy(tableName, keys, CopyMethod.valueOf(copyMethod), companyId, false);
+                repository.doCopy(tableName, keys, CopyMethod.valueOf(copyMethod), contractCode, companyId, false);
                 break;
             case COPY_OTHER:
                 //using adapter
                 switch (tableName) {
-                    case "KRCMT_ERAL_SET":
+                    case "KRCMT_ERAL_DAY_SET":
                         erAlWorkRecordCopyAdapter.copy(companyId, copyMethod);
                         break;
-                    case "PPEMT_PER_INFO_CTG":
+                    case "PPEMT_CTG":
                         personalInfoDataCopyAdapter.personalInfoDefCopy(companyId, copyMethod);
                         break;
                     default:

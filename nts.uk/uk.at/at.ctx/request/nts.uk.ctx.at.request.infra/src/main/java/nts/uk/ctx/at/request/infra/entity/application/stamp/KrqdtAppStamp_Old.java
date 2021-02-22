@@ -14,7 +14,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 /**
  * 
  * @author Doan Duy Hung
@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name="KRQDT_APP_STAMP")
 @Builder
-public class KrqdtAppStamp_Old extends UkJpaEntity {
+public class KrqdtAppStamp_Old extends ContractUkJpaEntity {
 	
 	@EmbeddedId
 	public KrqdpAppStamp krqdpAppStampPK;
@@ -40,7 +40,7 @@ public class KrqdtAppStamp_Old extends UkJpaEntity {
 	public Integer appTime;
 	
 	@OneToMany(targetEntity=KrqdtAppStampDetail.class, cascade = CascadeType.ALL, mappedBy = "krqdtAppStamp", orphanRemoval = true)
-	@JoinTable(name = "KRQDT_APP_STAMP_DETAILS")
+	@JoinTable(name = "KRQDT_APP_STAMP_DETAIL")
 	public List<KrqdtAppStampDetail> krqdtAppStampDetails;
 	
 	@Override

@@ -50,6 +50,30 @@ module nts.uk.at.view.kmf001.a.viewmodel {
             nts.uk.request.jump("/view/kmf/001/m/index.xhtml", {});
         }
         
+       public openKMK007B(): void {
+           var self = this;
+            nts.uk.ui.windows.setShared("KMK007_ITEM_ID", 5);      
+             nts.uk.ui.windows.sub.modal("/view/kmk/007/b/index.xhtml", {});
+           
+        }
+        public openKMK007(): void {
+           var self = this;
+            nts.uk.ui.windows.setShared("KMK007_ITEM_ID", 4);      
+             nts.uk.ui.windows.sub.modal("/view/kmk/007/b/index.xhtml", {});
+           
+        }
+       public openKMK004A(): void {
+            nts.uk.request.jump("/view/kmk/004/a/index.xhtml", {});
+        }
+       public openKMK004I(): void {
+            nts.uk.request.jump("/view/kmf/004/i/index.xhtml", {});
+        } 
+       
+       public openKMF003(): void {
+           nts.uk.request.jump("/view/kmf/003/a/index.xhtml", {});
+       }
+
+
         // Export Excel
         public exportExcel() {
             nts.uk.at.view.kmf001.a.service.exportExcel().done(function(data) {

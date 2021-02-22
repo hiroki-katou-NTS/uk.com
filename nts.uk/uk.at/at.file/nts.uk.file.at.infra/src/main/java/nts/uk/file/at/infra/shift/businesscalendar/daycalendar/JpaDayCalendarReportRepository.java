@@ -24,23 +24,23 @@ import nts.uk.shr.com.i18n.TextResource;
 public class JpaDayCalendarReportRepository extends JpaRepository implements DayCalendarReportRepository{
 
 //	private static final String GET_BEGIN_MONTH_COMPANY = "SELECT a.MONTH_STR FROM BCMMT_COMPANY a WHERE  a.CID = ?companyId";
-	private static final String SELECT_COMPANY_CALENDAR_BY_DATE = " SELECT c.CID, c.YMD_K, c.WORKING_DAY_ATR, c1.EVENT_NAME FROM KSMMT_CALENDAR_COMPANY c LEFT JOIN KSMMT_COMPANY_EVENT c1 on c.CID = c1.CID and c.YMD_K = c1.YMD_K" 
+	private static final String SELECT_COMPANY_CALENDAR_BY_DATE = " SELECT c.CID, c.YMD_K, c.WORKING_DAY_ATR, c1.EVENT_NAME FROM KSCMT_CALENDAR_COM c LEFT JOIN KSCMT_EVENT_COM c1 on c.CID = c1.CID and c.YMD_K = c1.YMD_K" 
 			+ " WHERE c.CID = ?companyId"
 			+ " AND c.YMD_K >= ?startDate "
 			+ " AND c.YMD_K <= ?endDate";
 	
 	private static final String GET_WORKSPACE_CALENDAR_BY_DATE = "SELECT"
 			+ " s.WKPID, w.WKP_CD, s.YMD_K, s.WORKING_DAY_ATR, w.WKP_NAME, e.EVENT_NAME "
-			+ "	FROM KSMMT_CALENDAR_WORKPLACE s"
+			+ "	FROM KSCMT_CALENDAR_WKP s"
 			+ " LEFT JOIN BSYMT_WKP_INFO w ON w.CID = ?companyId "
 			+ "	and w.WKP_ID = s.WKPID"
-			+ "	LEFT JOIN KSMMT_WORKPLACE_EVENT e ON s.WKPID = e.WKPID AND s.YMD_K = e.YMD_K"
+			+ "	LEFT JOIN KSCMT_EVENT_WKP e ON s.WKPID = e.WKPID AND s.YMD_K = e.YMD_K"
 			+ " WHERE s.YMD_K >= ?startYm"
 			+ " AND s.YMD_K <= ?endYm";
 	
 	private static final String GET_CLASS_CALENDAR_BY_DATE = "SELECT"
 			+ " w.CLSNAME, s.CLSCD, s.YMD_K, s.WORKING_DAY_ATR "
-			+ "	FROM KSMMT_CALENDAR_CLASS s"
+			+ "	FROM KSCMT_CALENDAR_CLS s"
 			+ " LEFT JOIN BSYMT_CLASSIFICATION w ON w.CID = s.CID "
 			+ "	and w.CLSCD = s.CLSCD"
 			+ " WHERE s.YMD_K >= ?startYm"
