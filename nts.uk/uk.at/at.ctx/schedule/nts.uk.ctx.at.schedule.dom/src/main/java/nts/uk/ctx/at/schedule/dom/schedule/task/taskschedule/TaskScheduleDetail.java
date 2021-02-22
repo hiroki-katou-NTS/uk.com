@@ -52,4 +52,16 @@ public class TaskScheduleDetail implements DomainValue, Comparable<TaskScheduleD
 				.map( notDuplicatedTimeSpan -> new TaskScheduleDetail(this.taskCode, notDuplicatedTimeSpan ))
 				.collect(Collectors.toList());
 	}
+	
+	/**
+	 * 同じコードと連続か
+	 * check whether @This is same task code and continuous right after the @other
+	 * @param other 
+	 * @return
+	 */
+	public boolean isSameTaskCodeAndContinuous (TaskScheduleDetail other) {
+		
+		return this.getTaskCode().equals(other.getTaskCode()) &&
+				this.getTimeSpan().getStart().equals(other.getTimeSpan().getEnd());
+	}
 }

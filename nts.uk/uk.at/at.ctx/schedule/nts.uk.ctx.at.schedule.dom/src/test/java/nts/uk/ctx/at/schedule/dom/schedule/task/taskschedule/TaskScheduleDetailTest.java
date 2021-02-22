@@ -101,4 +101,34 @@ public class TaskScheduleDetailTest {
 				tuple( "code1", TimeWithDayAttr.hourMinute(8, 0), TimeWithDayAttr.hourMinute(12, 0)));
 	}
 	
+	@Test
+	public void testIsSameTaskCodeAndContinuous_false_deferent_Code() {
+		
+		TaskScheduleDetail other = TaskScheduleDetailTestHelper.create("code2", 13, 0, 15, 0);
+		
+		boolean result = target.isSameTaskCodeAndContinuous(other);
+		
+		assertThat( result ).isFalse();
+	}
+	
+	@Test
+	public void testIsSameTaskCodeAndContinuous_false_not_continuous() {
+		
+		TaskScheduleDetail other = TaskScheduleDetailTestHelper.create("code1", 13, 0, 15, 0);
+		
+		boolean result = target.isSameTaskCodeAndContinuous(other);
+		
+		assertThat( result ).isFalse();
+	}
+	
+	@Test
+	public void testIsSameTaskCodeAndContinuous_true() {
+		
+		TaskScheduleDetail other = TaskScheduleDetailTestHelper.create("code1", 6, 0, 8, 0);
+		
+		boolean result = target.isSameTaskCodeAndContinuous(other);
+		
+		assertThat( result ).isTrue();
+	}
+	
 }
