@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,6 +16,7 @@ import nts.uk.ctx.at.aggregation.dom.scheduletable.OneRowOutputItem;
 import nts.uk.ctx.at.aggregation.dom.scheduletable.ScheduleTableAttendanceItem;
 import nts.uk.ctx.at.aggregation.dom.scheduletable.ScheduleTableOutputSetting;
 import nts.uk.ctx.at.aggregation.dom.scheduletable.ScheduleTablePersonalInfoItem;
+import nts.uk.shr.com.context.AppContexts;
 /**
  * 
  * @author quytb
@@ -25,6 +27,7 @@ import nts.uk.ctx.at.aggregation.dom.scheduletable.ScheduleTablePersonalInfoItem
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class ScheduleTableOutputSettingDto {
 	private String code;
 	private String name;
@@ -36,9 +39,11 @@ public class ScheduleTableOutputSettingDto {
 	private List<Integer> attendanceItem;
 	private List<Integer> workplaceCounterCategories;
 	private List<Integer> personalCounterCategories;
+	private Boolean isAttendance;
 	
 	
 	public static ScheduleTableOutputSettingDto setData(ScheduleTableOutputSetting domain) {
+		
 		List<OneRowOutputItem> list = domain.getOutputItem().getDetails();
 		List<Integer> personalInfos = new ArrayList<Integer>();
 		List<Integer> additionalInfos = new ArrayList<Integer>();
@@ -62,12 +67,23 @@ public class ScheduleTableOutputSettingDto {
 			attendanceCodeItems.add(item.getAttendanceItem().isPresent() ? item.getAttendanceItem().get().value : null);
 
 		});
-
-
-		return new ScheduleTableOutputSettingDto(domain.getCode().v(), domain.getName().v(),
-				domain.getOutputItem().getAdditionalColumnUseAtr().value,
-				domain.getOutputItem().getShiftBackgroundColorUseAtr().value,
-				domain.getOutputItem().getDailyDataDisplayAtr().value, personalInfos, additionalInfos, attendanceCodeItems,
-				personalCounterCategories, workplaceCounterCategories);
-	}
+//		
+//		return new ScheduleTableOutputSettingDto(domain.getCode().v(), domain.getName().v(),
+//				domain.getOutputItem().getAdditionalColumnUseAtr().value,
+//				domain.getOutputItem().getShiftBackgroundColorUseAtr().value,
+//				domain.getOutputItem().getDailyDataDisplayAtr().value, personalInfos, additionalInfos,
+//				attendanceCodeItems, personalCounterCategories, workplaceCounterCategories);
+		return ScheduleTableOutputSettingDto.builder().code(domain.getCode().v())
+				.name(domain.getName().v())
+				.additionalColumn(domain.getOutputItem().getAdditionalColumnUseAtr().value)
+				.shiftBackgroundColor(domain.getOutputItem().getShiftBackgroundColorUseAtr().value)
+				.dailyDataDisplay(domain.getOutputItem().getDailyDataDisplayAtr().value)
+				.personalInfo(personalInfos)
+				.additionalInfo(additionalInfos)
+				.attendanceItem(attendanceCodeItems)
+				.personalCounterCategories(personalCounterCategories)
+				.workplaceCounterCategories(workplaceCounterCategories)
+				.build();
+	}	
+	
 }

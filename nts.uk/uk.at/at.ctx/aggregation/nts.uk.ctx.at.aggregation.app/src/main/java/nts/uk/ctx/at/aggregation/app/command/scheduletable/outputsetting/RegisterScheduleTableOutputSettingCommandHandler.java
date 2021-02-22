@@ -30,6 +30,7 @@ public class RegisterScheduleTableOutputSettingCommandHandler extends CommandHan
 	protected void handle(CommandHandlerContext<ScheduleTableOutputSettingSaveCommand> context) {
 		ScheduleTableOutputSettingSaveCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
+//		AppContexts.user().roles().
 		
 		/**1: exist(ログイン会社ID, 出力設定コード)*/
 		Boolean exist = repository.exists(companyId, new  OutputSettingCode(command.getCode()));
@@ -39,11 +40,7 @@ public class RegisterScheduleTableOutputSettingCommandHandler extends CommandHan
 		} else {
 			/** 3:create(コード, 名称, 出力項目, 職場計カテゴリ一覧, 個人計カテゴリ): スケジュール表の出力設定*/
 			ScheduleTableOutputSetting domain =  ScheduleTableOutputSettingSaveCommand.toDomain(command);
-//			ScheduleTableOutputSetting domain = new ScheduleTableOutputSetting(domainTmp.getCode(),
-//															domainTmp.getName(), 
-//															domainTmp.getOutputItem(), 
-//															domainTmp.getWorkplaceCounterCategories(), 
-//															domainTmp.getPersonalCounterCategories());
+			
 			/** 4:persist() */		
 			this.repository.insert(companyId, domain);
 		}

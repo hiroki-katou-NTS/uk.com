@@ -22,12 +22,22 @@ module nts.uk.at.view.ksu005.a {
             self.$blockui("invisible");			
             self.$ajax(Paths.GET_SCHEDULE_TABLE_OUTPUT_SETTING_BY_CID).done((data: Array<IScheduleTableOutputSetting>) => {
                 if(data && data.length > 0){
-                    _.each(data, item =>{
-                        dataList.push(new ItemModel(item.code, item.name));
-                    });
-                } else {
-                    self.openDialog();
-                }
+                    if(data[0].isAttendance == null){
+                        _.each(data, item =>{
+                            dataList.push(new ItemModel(item.code, item.name));
+                        });
+                    } else if(data[0].isAttendance){
+                        self.$dialog.info({ messageId: 'Msg_1766'}).then(() => {
+                            self.openDialog();
+                        });
+                        
+                    } else {
+                        self.$dialog.info({ messageId: 'Msg_1970'}).then(() => {
+                            self.closeDialog();
+                        });
+                    }            
+                    
+                } 
                 self.itemList(dataList);
             }).always(() => {
                 self.$blockui("hide");
@@ -40,10 +50,7 @@ module nts.uk.at.view.ksu005.a {
         }
 
         openDialog(): void {
-            let self = this;	
-            let request:any = {};
-            request.code = self.selectedCode();
-            // request.name = 'AAAAAAAAAA';
+            let self = this;            
             let code = self.selectedCode();
             setShare('dataShareKSU005a', code);
             self.currentScreen = nts.uk.ui.windows.sub.modal('/view/ksu/005/b/index.xhtml');
@@ -61,12 +68,14 @@ module nts.uk.at.view.ksu005.a {
         attendanceItem: Array<number>;
         workplaceCounterCategories: Array<number>;
         personalCounterCategories: Array<number>;
+        isAttendance: boolean;
  
     }
     class ScheduleTableOutputSetting {
         code: KnockoutObservable<string> = ko.observable('');
         name: KnockoutObservable<string> = ko.observable('');
         additionalColumn: KnockoutObservable<number> = ko.observable();
+        isAttendance: KnockoutObservable<boolean> = ko.observable(true);
         shiftBackgroundColor: KnockoutObservable<number> = ko.observable();
         dailyDataDisplay: KnockoutObservable<number> = ko.observable();
         personalInfo: KnockoutObservableArray<number> = ko.observableArray([]);
@@ -87,12 +96,10 @@ module nts.uk.at.view.ksu005.a {
                 self.attendanceItem(params.attendanceItem);
                 self.workplaceCounterCategories(params.workplaceCounterCategories);
                 self.personalCounterCtegories(params.personalInfo);
+                self.isAttendance(params.isAttendance);
             }
-        }
- 
+        } 
     }
-
-
 
     class ItemModel {
         code: string;

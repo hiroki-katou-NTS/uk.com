@@ -1,5 +1,6 @@
 module nts.uk.at.view.ksu005.c {
     import getText = nts.uk.resource.getText;
+    import setShare = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
 
     const Paths = {        
@@ -8,6 +9,7 @@ module nts.uk.at.view.ksu005.c {
 
     @bean()
     class Ksu005cViewModel extends ko.ViewModel {
+        currentScreen: any = null;
         copySourceCode: KnockoutObservable<string> = ko.observable('');
         copySourceName: KnockoutObservable<string> = ko.observable('');
         newCode:KnockoutObservable<string> = ko.observable('');
@@ -15,11 +17,7 @@ module nts.uk.at.view.ksu005.c {
       
         constructor(params: any) {
             super();
-            const self = this;
-            // self.copySourceCode = ko.observable("03");
-            // self.copySourceName = ko.observable("切り捨て");
-            // self.newCode = ko.observable("04");
-            // self.newName = ko.observable("切り捨て04");
+            const self = this;            
             self.loadData();
         }
 
@@ -32,24 +30,30 @@ module nts.uk.at.view.ksu005.c {
 
         copy(): void {
             const self = this;
-            self.$blockui('invisible');
-            // if (self.validateAll()) {
-            //     return;
-            // }
-
+            self.$blockui('invisible');          
             let request: any = {
 				copySourceCode : self.copySourceCode(),
                 newCode : self.newCode(),
                 newName: self.newName()
 			}
             self.$ajax(Paths.COPY_SCHEDULE_TABLE_OUTPUT_SETTING, request).done(() => {
-                self.$dialog.info({messageId: "Msg_15"});
-                self.$blockui('hide');
+                self.$dialog.info({messageId: "Msg_15"}).then(function() {
+                    self.closeDialog();
+                    self.openDialog();
+                });                                
             })
             .always(() => {
                 self.$blockui('hide');
             });
         }
+
+        openDialog(): void {
+            const self = this;		
+            let newCode = self.newCode();             
+            setShare('dataShareKSU005c', newCode);
+            self.currentScreen = nts.uk.ui.windows.sub.modal('/view/ksu/005/b/index.xhtml');
+        }
+
         closeDialog(): void {
             const vm = this;
             vm.$window.close();
