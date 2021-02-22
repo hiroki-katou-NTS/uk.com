@@ -41,7 +41,7 @@ module nts.uk.at.view.ccg005.d.screenModel {
     ]);
 
     //mode
-    mode: KnockoutObservable<number> = ko.observable(Mode.UPDATE);
+    mode: KnockoutObservable<number> = ko.observable(Mode.INSERT);
     enableDeleteBtn: KnockoutObservable<boolean> = ko.computed(() => this.mode() === Mode.UPDATE);
 
     mounted() {
@@ -49,10 +49,11 @@ module nts.uk.at.view.ccg005.d.screenModel {
       vm.$blockui("grayout");
       vm.$ajax(API.getFavoriteInformation).then((data: FavoriteSpecifyData[]) => {
         vm.favoriteList(data);
-        if (data) {
+        if (!(_.isEmpty(data))) {
           const firstOrder = data[0].order;
           vm.selectedFavoriteOrder(firstOrder);
           vm.bindingData(firstOrder);
+          vm.mode(Mode.UPDATE);
         }
         vm.$blockui("clear");
       })

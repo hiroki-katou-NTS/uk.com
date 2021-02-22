@@ -1098,13 +1098,6 @@ module nts.uk.at.view.ccg005.a.screenModel {
         wkspNames: []
       });
       vm.favoriteSpecifyData([favoriteSpecify]);
-      vm.$blockui('show');
-      vm.$ajax(API.saveFavorite, [favoriteSpecify])
-        .then(() => {
-          vm.favoriteInputDate(inputDate);
-          vm.saveCharacteristic(inputDate);
-        })
-        .always(() => vm.$blockui('clear'));
     }
 
     /**
