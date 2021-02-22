@@ -253,9 +253,8 @@ public class WorkTimeReportService_New {
                     cells.get(startIndex, columnIndex).setValue(endTime2 != null ? 
                             getInDayTimeWithFormat(endTime2) : "");
                 }
-                
-                columnIndex += 3;
             }
+            columnIndex += 3;
         }
         
         // コアタイム時間帯

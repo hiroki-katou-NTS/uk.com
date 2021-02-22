@@ -57,20 +57,20 @@ public class JpaFixedWorkRestSetSetMemento<T extends ContractUkJpaEntity> implem
 	 * @see nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkRestSetSetMemento#
 	 * setIsPlanActualNotMatchMasterRefer(boolean)
 	 */
-	@Override
-	public void setIsPlanActualNotMatchMasterRefer(boolean isPlanActualNotMatchMasterRefer) {
-		if (this.entity instanceof KshmtWtFix) {
-			((KshmtWtFix) this.entity)
-					.setIsPlanActualNotMatchMasterRefe(BooleanGetAtr.getAtrByBoolean(isPlanActualNotMatchMasterRefer));
-			return;
-		}
-		if (this.entity instanceof KshmtWtDif) {
-			((KshmtWtDif) this.entity)
-					.setDtIsPlanActualNotMatchMasterRefe(BooleanGetAtr.getAtrByBoolean(isPlanActualNotMatchMasterRefer));
-			return;
-		}
-		throw new IllegalStateException("entity type is not valid");
-	}
+//	@Override
+//	public void setIsPlanActualNotMatchMasterRefer(boolean isPlanActualNotMatchMasterRefer) {
+//		if (this.entity instanceof KshmtWtFix) {
+//			((KshmtWtFix) this.entity)
+//					.setIsPlanActualNotMatchMasterRefe(BooleanGetAtr.getAtrByBoolean(isPlanActualNotMatchMasterRefer));
+//			return;
+//		}
+//		if (this.entity instanceof KshmtWtDif) {
+//			((KshmtWtDif) this.entity)
+//					.setDtIsPlanActualNotMatchMasterRefe(BooleanGetAtr.getAtrByBoolean(isPlanActualNotMatchMasterRefer));
+//			return;
+//		}
+//		throw new IllegalStateException("entity type is not valid");
+//	}
 
 	/*
 	 * (non-Javadoc)
@@ -79,17 +79,17 @@ public class JpaFixedWorkRestSetSetMemento<T extends ContractUkJpaEntity> implem
 	 * #setCalculateMethod(nts.uk.ctx.at.shared.dom.worktime.common.
 	 * FixedRestCalculateMethod)
 	 */
-	@Override
-	public void setCalculateMethod(FixedRestCalculateMethod method) {
-		if (this.entity instanceof KshmtWtFix) {
-			((KshmtWtFix) this.entity).setCalcMethod(method.value);
-			return;
-		}
-		if (this.entity instanceof KshmtWtDif) {
-			((KshmtWtDif) this.entity).setDtCalcMethod(method.value);
-			return;
-		}
-		throw new IllegalStateException("entity type is not valid");
-	}
+//	@Override
+//	public void setCalculateMethod(FixedRestCalculateMethod method) {
+//		if (this.entity instanceof KshmtWtFix) {
+//			((KshmtWtFix) this.entity).setCalcMethod(method.value);
+//			return;
+//		}
+//		if (this.entity instanceof KshmtWtDif) {
+//			((KshmtWtDif) this.entity).setDtCalcMethod(method.value);
+//			return;
+//		}
+//		throw new IllegalStateException("entity type is not valid");
+//	}
 
 }

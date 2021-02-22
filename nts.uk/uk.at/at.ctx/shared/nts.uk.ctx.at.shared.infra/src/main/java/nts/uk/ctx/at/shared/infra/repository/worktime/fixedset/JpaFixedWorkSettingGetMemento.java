@@ -121,10 +121,10 @@ public class JpaFixedWorkSettingGetMemento implements FixedWorkSettingGetMemento
 	 * nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingGetMemento#
 	 * getFixedWorkRestSetting()
 	 */
-	@Override
-	public FixedWorkRestSet getFixedWorkRestSetting() {
-		return new FixedWorkRestSet(new JpaFixedWorkRestSetGetMemento<KshmtWtFix>(this.entity));
-	}
+//	@Override
+//	public FixedWorkRestSet getFixedWorkRestSetting() {
+//		return new FixedWorkRestSet(new JpaFixedWorkRestSetGetMemento<KshmtWtFix>(this.entity));
+//	}
 
 	/*
 	 * (non-Javadoc)

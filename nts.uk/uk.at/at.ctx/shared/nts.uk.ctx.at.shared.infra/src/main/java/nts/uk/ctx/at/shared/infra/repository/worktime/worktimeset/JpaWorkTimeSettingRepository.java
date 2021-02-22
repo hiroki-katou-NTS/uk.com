@@ -133,7 +133,7 @@ public class JpaWorkTimeSettingRepository extends JpaRepository implements WorkT
 			KshmtWt wkTime;
 			if (results.isEmpty()) {
 				wkTime = new KshmtWt(new KshmtWorkTimeSetPK(companyID, code), 0,
-						TextResource.localize("KAL003_120"), TextResource.localize("KAL003_120"), "", 0, 0, 0, "", "",
+						TextResource.localize("KAL003_120"), TextResource.localize("KAL003_120"), 0, 0, 0, "",
 						"");
 			} else {
 				wkTime = results.get(0);

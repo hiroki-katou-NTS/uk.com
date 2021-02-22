@@ -144,10 +144,10 @@ public class JpaFixedWorkSettingSetMemento implements FixedWorkSettingSetMemento
 	 * setFixedWorkRestSetting(nts.uk.ctx.at.shared.dom.worktime.common.
 	 * FixedWorkRestSet)
 	 */
-	@Override
-	public void setFixedWorkRestSetting(FixedWorkRestSet fixedWorkRestSetting) {
-		fixedWorkRestSetting.saveToMemento(new JpaFixedWorkRestSetSetMemento<KshmtWtFix>(this.entity));
-	}
+//	@Override
+//	public void setFixedWorkRestSetting(FixedWorkRestSet fixedWorkRestSetting) {
+//		fixedWorkRestSetting.saveToMemento(new JpaFixedWorkRestSetSetMemento<KshmtWtFix>(this.entity));
+//	}
 
 	/*
 	 * (non-Javadoc)
