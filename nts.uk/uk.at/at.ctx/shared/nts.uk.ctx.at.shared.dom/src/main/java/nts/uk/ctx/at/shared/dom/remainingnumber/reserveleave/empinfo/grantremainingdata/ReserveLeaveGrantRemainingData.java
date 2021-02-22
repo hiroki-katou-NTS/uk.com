@@ -12,56 +12,60 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemainingData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
 
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
-// domain name CS00038: 積立年休付与残数データ 
-public class ReserveLeaveGrantRemainingData extends AggregateRoot {
-	
-	/**
-	 * 積立年休付与残数データID
-	 */
-	private String rsvLeaID;
+//@NoArgsConstructor
+//@AllArgsConstructor
+// domain name CS00038: 積立年休付与残数データ
+public class ReserveLeaveGrantRemainingData extends LeaveGrantRemainingData {
 
-	/**
-	 * 社員ID
-	 */
-	private String employeeId;
-
-	/**
-	 * 付与日
-	 */
-	private GeneralDate grantDate;
-
-	/**
-	 * 期限日
-	 */
-	private GeneralDate deadline;
-
-	/**
-	 * 期限切れ状態
-	 */
-	@Setter
-	private LeaveExpirationStatus expirationStatus;
-
-	/**
-	 * 登録種別
-	 */
-	private GrantRemainRegisterType registerType;
-
-	/**
-	 * 明細
-	 */
-	private ReserveLeaveNumberInfo details;
+//	/**
+//	 * 積立年休付与残数データID
+//	 */
+//	private String rsvLeaID;
+//
+//	/**
+//	 * 社員ID
+//	 */
+//	private String employeeId;
+//
+//	/**
+//	 * 付与日
+//	 */
+//	private GeneralDate grantDate;
+//
+//	/**
+//	 * 期限日
+//	 */
+//	private GeneralDate deadline;
+//
+//	/**
+//	 * 期限切れ状態
+//	 */
+//	@Setter
+//	private LeaveExpirationStatus expirationStatus;
+//
+//	/**
+//	 * 登録種別
+//	 */
+//	private GrantRemainRegisterType registerType;
+//
+//	/**
+//	 * 明細
+//	 */
+//	private ReserveLeaveNumberInfo details;
 
 	public static ReserveLeaveGrantRemainingData createFromJavaType(String id, String employeeId, GeneralDate grantDate,
 			GeneralDate deadline, int expirationStatus, int registerType, double grantDays, double usedDays,
 			Double overLimitDays, double remainDays) {
-		
+
 		ReserveLeaveGrantRemainingData domain = new ReserveLeaveGrantRemainingData();
-		domain.rsvLeaID = id;
+		domain.leaveID = id;
 		domain.employeeId = employeeId;
 		domain.grantDate = grantDate;
 		domain.deadline = deadline;
@@ -79,46 +83,49 @@ public class ReserveLeaveGrantRemainingData extends AggregateRoot {
 	 */
 	// 2018.7.15 add shuichi_ishida
 	public double digest(double usedDays, boolean isForcibly){
-		
+
 		// 「積立年休使用日数」を所得
 		if (usedDays <= 0.0) return 0.0;
 		double remainingDays = usedDays;
-		
+
 		// 積立年休残数が足りているかチェック
 		boolean isSubtractRemain = false;
-		double remainingNumber = this.details.getRemainingNumber().v();
+//		double remainingNumber = this.details.getRemainingNumber().v();
+		double remainingNumber = this.details.getRemainingNumber().getDays().v();
 		if (remainingNumber >= remainingDays) isSubtractRemain = true;
 		// 「強制的に消化する」をチェック
 		else if (isForcibly) isSubtractRemain = true;
-		
+
 		if (isSubtractRemain){
-			
+
 			// 積立年休残数から減算
 			double newRemain = remainingNumber - remainingDays;
-			this.details.setRemainingNumber(new ReserveLeaveRemainingDayNumber(newRemain));
-			
+			this.details.setRemainingNumber(new LeaveRemainingNumber(newRemain, 0));
+
 			// 積立年休使用数に加算
-			this.details.addDaysToUsedNumber(remainingDays);
-			
+//			this.details.addDaysToUsedNumber(remainingDays);
+			this.details.getUsedNumber().add(new LeaveUsedNumber(remainingDays, 0) );
+
 			// 積立年休使用残を0にする
 			remainingDays = 0.0;
 		}
 		else {
-			
+
 			// 積立年休使用残から減算
 			remainingDays -= remainingNumber;
-			
+
 			// 積立年休使用数に加算
-			this.details.addDaysToUsedNumber(remainingNumber);
-			
+			// this.details.addDaysToUsedNumber(remainingNumber);
+			this.details.getUsedNumber().add(new LeaveUsedNumber(remainingDays, 0) );
+
 			// 積立年休残数を0にする
-			this.details.setRemainingNumber(new ReserveLeaveRemainingDayNumber(0.0));
+			this.details.setRemainingNumber(new LeaveRemainingNumber());
 		}
-		
+
 		// 積立年休使用残を返す
 		return remainingDays;
 	}
-	
+
 	public static void validate(ReserveLeaveGrantRemainingData domain) {
 		if ((domain.getDetails().getGrantNumber() != null) || (domain.getDetails().getUsedNumber().getDays() != null)
 				|| (domain.getDetails().getRemainingNumber() != null)) {
@@ -136,7 +143,7 @@ public class ReserveLeaveGrantRemainingData extends AggregateRoot {
 			throw new BusinessException("Msg_1023");
 		}
 	}
-	
+
 	// hàm validate cho domain để khi add command hay ghi log cho domain thì sẽ xem xét xem có được add hay không
 	public static boolean validate(GeneralDate grantDate, GeneralDate deadlineDate,
 			BigDecimal grantDays, BigDecimal usedDays, BigDecimal remainDays , String grantDateItemName, String  deadlineDateItemName) {

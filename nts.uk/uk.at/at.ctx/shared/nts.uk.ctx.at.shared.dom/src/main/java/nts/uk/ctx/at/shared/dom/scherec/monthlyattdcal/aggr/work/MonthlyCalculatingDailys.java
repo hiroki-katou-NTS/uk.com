@@ -39,7 +39,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workschedul
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.ActualWorkingTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.TotalWorkingTime;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remain.ReserveLeaveGrantRemaining;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 
@@ -70,7 +69,7 @@ public class MonthlyCalculatingDailys {
 	/** 年休付与残数データリスト */
 	private List<AnnualLeaveGrantRemainingData> grantRemainingDatas;
 	/** 積立年休付与残数データリスト */
-	private List<ReserveLeaveGrantRemaining> rsvGrantRemainingDatas;
+	private List<ReserveLeaveGrantRemainingData> rsvGrantRemainingDatas;
 	/** 日別実績の所属情報 */
 	private Map<GeneralDate, AffiliationInforOfDailyAttd> affiInfoOfDailyMap;
 
@@ -510,8 +509,7 @@ public class MonthlyCalculatingDailys {
 		// 年休付与残数データリスト
 		this.grantRemainingDatas = require.annualLeaveGrantRemainingData(employeeId);
 		// 積立年休付与残数データリスト
-		this.rsvGrantRemainingDatas = require.reserveLeaveGrantRemainingData(employeeId, null).stream()
-						.map(c -> new ReserveLeaveGrantRemaining(c)).collect(Collectors.toList());
+		this.rsvGrantRemainingDatas = require.reserveLeaveGrantRemainingData(employeeId, null);
 
 		// 日別実績の所属情報
 		val workTypes = require.dailyAffiliationInfors(employeeIds, period);
