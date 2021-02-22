@@ -35,7 +35,7 @@ module nts.uk.at.view.ktg026.a {
             xAxes: [{
                 ticks: {
                     min: 0,
-                    max: Math.min(max, 6000),
+                    max: 6000,// Math.min(max, 6000),
                     display: true,
                     beginAtZero: true,
                     callback: function (value: number, index: number, data: number[]) {
@@ -165,7 +165,8 @@ module nts.uk.at.view.ktg026.a {
                                 .chain(data)
                                 .reduce((p, c) => {
                                     const { time } = c;
-                                    const { tt } = time;
+                                    const { ot, wh } = time;
+                                    const tt = ot + wh;
 
                                     return p >= tt ? p : tt;
                                 }, 0)
@@ -199,14 +200,62 @@ module nts.uk.at.view.ktg026.a {
         }
     }
 
+    @handler({
+        bindingName: 'ktg-chart',
+        validatable: true,
+        virtual: false
+    })
+    export class Ktg0267ChartBindingHandler implements KnockoutBindingHandler {
+        init(element: HTMLTableCellElement, valueAccessor: () => KnockoutObservableArray<DataRow>, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: any, bindingContext: KnockoutBindingContext): { controlsDescendantBindings: boolean; } {
+            element.removeAttribute('data-bind');
+
+            if (element.tagName !== 'TD') {
+                element.innerText = 'This binding work with only [TD] tag.';
+
+                return { controlsDescendantBindings: false };
+            }
+
+            const data = valueAccessor();
+            const index = bindingContext.$index();
+
+            if (index !== 0) {
+                element.classList.add('hidden');
+
+                return { controlsDescendantBindings: false };
+            }
+
+            const canvas = $('<canvas>').appendTo(element).get(0);
+
+            ko.applyBindingsToNode(canvas, { 'ktg-026-chart': data, type: 'body' }, bindingContext);
+
+            ko.computed({
+                read: () => {
+                    const rows = ko.unwrap<DataRow[]>(data);
+
+                    element.rowSpan = rows.length;
+                },
+                disposeWhenNodeIsRemoved: element
+            });
+
+            return { controlsDescendantBindings: true };
+        }
+    }
+
     @component({
         name: 'ktg-026-a',
         template: `
             <div class="ktg-026-a widget-title">
                 <table>
+                    <colgroup>
+                        <col width="auto" />
+                        <col width="32px" />
+                    </colgroup>
                     <thead>
                         <tr>
                             <th data-bind="i18n: 'KTG026_5'"></th>
+                            <th>
+                                <button class="hidden" data-bind="click: $component.close, i18n: 'KTG026_8'"></button>
+                            </th>
                         </tr>
                     </thead>
                 </table>
@@ -271,11 +320,7 @@ module nts.uk.at.view.ktg026.a {
                             <tr>
                                 <td data-bind="text: row.date"></td>
                                 <td class="text-right" data-bind="time: row.time.tt, css: row.state"></td>
-                                <!-- ko if: $index() === 0 -->
-                                <td data-bind="attr: { rowspan: $component.dataTable().length }">
-                                    <canvas data-bind="ktg-026-chart: $component.dataTable, type: 'body'"></canvas>
-                                </td>
-                                <!-- /ko -->
+                                <td data-bind="ktg-chart: $component.dataTable"></td>
                             </tr>
                         </tbody>
                     </table>
@@ -372,8 +417,17 @@ module nts.uk.at.view.ktg026.a {
 
         employeesOvertime!: any;
 
-        constructor(private cache: { currentOrNextMonth: number; } | null) {
+        constructor(private cache: { currentOrNextMonth: 1 | 2; } | null) {
             super();
+
+            if (!this.cache) {
+                this.cache = { currentOrNextMonth: 1 };
+            } else {
+                if (typeof this.cache.currentOrNextMonth === 'undefined') {
+                    this.cache.currentOrNextMonth = 1;
+                }
+            }
+
             const vm = this;
 
             vm.chartStyle = ko.computed({
@@ -505,16 +559,16 @@ module nts.uk.at.view.ktg026.a {
                         .chain(ymOvertimes)
                         .map(({ yearMonth, agreeTime }) => {
                             const date = moment(yearMonth, 'YYYYMM').format('YYYY/MM');
-                            const { agreMax: tt, agreementTime: wh, state } = agreeTime;
+                            const { agreMax: am, agreementTime: at, state } = agreeTime;
 
                             return {
                                 date,
                                 time: {
                                     // tt =  ot + wh
                                     // total = overtime + work with holiday
-                                    tt: wh.agreementTime || 0,
-                                    ot: (wh.agreementTime || 0) - (tt.agreementTime || 0),
-                                    wh: (tt.agreementTime || 0)
+                                    tt: at.agreementTime || 0,
+                                    ot: Math.min(6000, at.agreementTime),
+                                    wh: at.agreementTime >= 6000 ? 0 : Math.max((am.agreementTime || 0) - (at.agreementTime || 0), 0)
                                 },
                                 state: timeStyle(state)
                             };
@@ -527,6 +581,12 @@ module nts.uk.at.view.ktg026.a {
 
                 vm.$nextTick(() => $('.ktg-026-a.ui-resizable').trigger('wg.resize'));
             });
+        }
+
+        close() {
+            const vm = this;
+
+            vm.$window.close();
         }
     }
 

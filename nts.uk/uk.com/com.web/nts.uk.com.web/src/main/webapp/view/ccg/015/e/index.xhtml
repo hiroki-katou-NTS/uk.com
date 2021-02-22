@@ -12,9 +12,15 @@
       <com:scriptfile set="IGNITE" />
       <com:stylefile path="ccg015.e.style.css" />
       <com:scriptfile path="ccg015.e.vm.js" />
-      <com:scriptfile path="/view/ktg/026/a/ktg026component.a.vm.js" of="nts.uk.at.web" />
-      <com:scriptfile path="/view/ktg/027/a/ktg027.a.vm.js" of="nts.uk.at.web" />
-      <com:scriptfile path="/view/ktg/031/a/ktg031.a.vm.js" />
+
+      <com:scriptfile path="/view/ktg/027/a/ktg027.a.component.js" of="nts.uk.at.web" />
+      <com:scriptfile path="/view/ktg/026/a/ktg026.a.component.js" of="nts.uk.at.web" />
+      <com:scriptfile path="/view/ktg/001/a/ktg001.a.component.js" of="nts.uk.at.web" />
+      <com:scriptfile path="/view/ktg/005/a/ktg005.a.component.js" of="nts.uk.at.web" />
+      <com:scriptfile path="/view/ktg/004/a/ktg004.a.component.js" of="nts.uk.at.web" />
+      
+      <com:scriptfile path="/view/ktg/031/a/ktg031.a.component.js"/>
+      
       <script>var dialogSize = { width: 800, height: 660 };</script>
     </ui:define>
     <ui:define name="content">
@@ -83,22 +89,35 @@
                   <div class="iframe-wrap">
                     <com:ko tag="if" bind="isComponent()">
                       <com:ko tag="if" bind="isKTG026()">
-                        <ktg026-component></ktg026-component>
+                        <div data-bind="widget: 'ktg-026-a'"></div>
                       </com:ko>
                       <com:ko tag="if" bind="isKTG027()">
-                        <ktg027-component></ktg027-component>
+                        <div data-bind="widget: 'ktg-027-a'"></div>
                       </com:ko>
                       <com:ko tag="if" bind="isKTG031()">
-                        <ktg031-component></ktg031-component>
+                        <div data-bind="widget: 'ktg031-component'"></div>
                       </com:ko>
                       <com:ko tag="if" bind="isCCG005()">
-                        <ccg005-component></ccg005-component>
+                        <div data-bind="widget: 'ccg005-component'"></div>
+                      </com:ko>
+                      <com:ko tag="if" bind ="$vm.isRender()">
+                        <com:ko tag="if" bind="isKTG001()">
+                          <div data-bind="widget: 'ktg-001-a'"></div>
+                        </com:ko>
+                      </com:ko>
+                      <com:ko tag="if" bind ="$vm.isRender()">
+                        <com:ko tag="if" bind="isKTG005()">
+                          <div data-bind="widget: 'ktg-005-a'"></div>
+                        </com:ko>
+                      </com:ko>
+                      <com:ko tag="if" bind ="$vm.isRender()">
+                        <com:ko tag="if" bind="isKTG004()">
+                          <div data-bind="widget: 'ktg-004-a'"></div>
+                        </com:ko>
                       </com:ko>
                     </com:ko>
                     <com:ko tag="ifnot" bind="isComponent()">
-                      <com:ko tag="if" bind ="$vm.isRender()">
                         <iframe class="widget-frame" data-bind="attr:{ src: url }" />
-                      </com:ko>
                     </com:ko>
                   </div>
                 </div>
