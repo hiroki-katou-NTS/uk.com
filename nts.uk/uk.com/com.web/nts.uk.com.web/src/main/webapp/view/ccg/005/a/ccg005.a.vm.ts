@@ -18,7 +18,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
 
   @component({
     name: 'ccg005-component',
-    template: `<div data-bind="widget-content: 290, default: 410" id="ccg005-watching">
+    template: `<div data-bind="widget-content: 290, default: 505" id="ccg005-watching">
     <div id="ccg005-content">
       <div>
         <div class="grade-header-top">
@@ -146,7 +146,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
                   <div class="ccg005-w100">
                     <!-- A4_2 -->
                     <label
-                      data-bind="text: attendanceDetailDto.workName, attr:{ class: 'limited-label work-name-class-'+sid }"
+                      data-bind="text: attendanceDetailDto.workName, attr:{ class: 'limited-label '+ attendanceDetailDto.workColorClass }"
                       style="max-width: 80px; width: auto !important;" />
                     <!-- A4_4 -->
                     <i tabindex=14
@@ -156,9 +156,9 @@ module nts.uk.at.view.ccg005.a.screenModel {
                     <!-- A4_3 -->
                     <span class="limited-label" style="max-width: 120px;">
                       <label id="check-in-out"
-                        data-bind="text: attendanceDetailDto.checkInTime, attr:{ class: 'check-in-class-'+sid }" />
+                        data-bind="text: attendanceDetailDto.checkInTime, attr:{ class: attendanceDetailDto.checkInColorClass }" />
                       <label id="check-in-out"
-                        data-bind="text: attendanceDetailDto.checkOutTime, attr:{ class: 'check-out-class-'+sid }" />
+                        data-bind="text: attendanceDetailDto.checkOutTime, attr:{ class: attendanceDetailDto.checkOutColorClass }" />
                     </span>
                   </div>
                 </td>
@@ -897,26 +897,16 @@ module nts.uk.at.view.ccg005.a.screenModel {
       const checkOutColorClass = vm.getClassNameColor(attendanceDetailDto.checkOutColor);
       const checkInColorClass = vm.getClassNameColor(attendanceDetailDto.checkInColor);
 
-      $(`.work-name-class-${sid}`).ready(() => {
-        $(`.work-name-class-${sid}`).addClass(workColorClass);
-      });
-      $(`.check-out-class-${sid}`).ready(() => {
-        $(`.check-out-class-${sid}`).addClass(checkOutColorClass);
-      });
-      $(`.check-in-class-${sid}`).ready(() => {
-        $(`.check-in-class-${sid}`).addClass(checkInColorClass);
-        if (!attendanceDetailDto.checkInTime) {
-          $(`.check-in-class-${sid}`).addClass("pd-left-35");
-        }
-      });
-
       //handle ' - '
       const checkOutTime = attendanceDetailDto.checkOutTime === ""  ? "" :  ('- ' + attendanceDetailDto.checkOutTime);
 
       return new AttendanceDetailViewModel({
         workName: attendanceDetailDto.workName,
+        workColorClass: workColorClass,
         checkOutTime: checkOutTime,
+        checkOutColorClass: checkOutColorClass,
         checkInTime: attendanceDetailDto.checkInTime,
+        checkInColorClass: checkInColorClass,
         workDivision: attendanceDetailDto.workDivision,
       });
     }
@@ -1462,10 +1452,12 @@ module nts.uk.at.view.ccg005.a.screenModel {
 
   class AttendanceDetailViewModel {
     workName: string; // 勤務名
+    workColorClass: string;
     checkOutTime: string; // 終了時刻
+    checkOutColorClass: string;
     checkInTime: string; // 開始時刻
+    checkInColorClass: string;
     workDivision: number; // 勤務区分
-
     constructor(init?: Partial<AttendanceDetailViewModel>) {
       $.extend(this, init);
     }
