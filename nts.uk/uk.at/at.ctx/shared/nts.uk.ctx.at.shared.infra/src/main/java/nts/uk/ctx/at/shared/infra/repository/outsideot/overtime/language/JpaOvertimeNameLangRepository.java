@@ -23,7 +23,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.OvertimeNo;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.language.OvertimeNameLang;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.language.OvertimeNameLangRepository;
-import nts.uk.ctx.at.shared.infra.entity.outside.overtime.language.KshstOverTimeNameLang;
+import nts.uk.ctx.at.shared.infra.entity.outside.overtime.language.KshmtOutsideLang;
 import nts.uk.ctx.at.shared.infra.entity.outside.overtime.language.KshstOverTimeNameLangPK_;
 import nts.uk.ctx.at.shared.infra.entity.outside.overtime.language.KshstOverTimeNameLang_;
 
@@ -50,12 +50,12 @@ public class JpaOvertimeNameLangRepository extends JpaRepository
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		// call KSHST_OVER_TIME_LANG_NAME (KshstOverTimeNameLang SQL)
-		CriteriaQuery<KshstOverTimeNameLang> cq = criteriaBuilder
-				.createQuery(KshstOverTimeNameLang.class);
+		// call KSHST_OVER_TIME_LANG_NAME (KshmtOutsideLang SQL)
+		CriteriaQuery<KshmtOutsideLang> cq = criteriaBuilder
+				.createQuery(KshmtOutsideLang.class);
 
 		// root data
-		Root<KshstOverTimeNameLang> root = cq.from(KshstOverTimeNameLang.class);
+		Root<KshmtOutsideLang> root = cq.from(KshmtOutsideLang.class);
 
 		// select root
 		cq.select(root);
@@ -80,7 +80,7 @@ public class JpaOvertimeNameLangRepository extends JpaRepository
 				.get(KshstOverTimeNameLangPK_.overTimeNo)));
 
 		// create query
-		TypedQuery<KshstOverTimeNameLang> query = em.createQuery(cq);
+		TypedQuery<KshmtOutsideLang> query = em.createQuery(cq);
 
 		// exclude select
 		return query.getResultList().stream().map(entity -> this.toDomain(entity))
@@ -115,10 +115,10 @@ public class JpaOvertimeNameLangRepository extends JpaRepository
 				}, Function.identity()));
 		
 		// entity add all
-		List<KshstOverTimeNameLang> entityAddAll = new ArrayList<>();
+		List<KshmtOutsideLang> entityAddAll = new ArrayList<>();
 		
 		// entity update all
-		List<KshstOverTimeNameLang> entityUpdateAll = new ArrayList<>();
+		List<KshmtOutsideLang> entityUpdateAll = new ArrayList<>();
 		
 		
 		// for each data overtime language name
@@ -144,7 +144,7 @@ public class JpaOvertimeNameLangRepository extends JpaRepository
 	 * @param entity the entity
 	 * @return the overtime lang name
 	 */
-	private OvertimeNameLang toDomain(KshstOverTimeNameLang entity) {
+	private OvertimeNameLang toDomain(KshmtOutsideLang entity) {
 		return new OvertimeNameLang(new JpaOvertimeNameLangGetMemento(entity));
 	}
 	
@@ -154,8 +154,8 @@ public class JpaOvertimeNameLangRepository extends JpaRepository
 	 * @param domain the domain
 	 * @return the kshst over time lang name
 	 */
-	private KshstOverTimeNameLang toEntity(OvertimeNameLang domain){
-		KshstOverTimeNameLang entity = new KshstOverTimeNameLang();
+	private KshmtOutsideLang toEntity(OvertimeNameLang domain){
+		KshmtOutsideLang entity = new KshmtOutsideLang();
 		domain.saveToMemento(new JpaOvertimeNameLangSetMemento(entity));
 		return entity;
 	}

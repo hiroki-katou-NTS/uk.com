@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCMT_TALLY_BYWKP_LABOR_COST")
+@Table(name = "KAGMT_TALLY_BYWKP_LABOR_COST")
 public class KscmtTallyByWkpLaborCost extends ContractUkJpaEntity implements Serializable {
 
 	@EmbeddedId

@@ -16,8 +16,9 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.arc.task.schedule.ScheduledJobUserData;
 import nts.arc.task.schedule.cron.CronSchedule;
+import nts.arc.task.schedule.job.jobdata.ScheduledJobUserData;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.function.app.find.processexecution.dto.ExecutionTaskSettingDto;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecutionService;
@@ -123,7 +124,7 @@ public class ChangeExecutionTaskSettingCommandHandler
 	}
 
 	private void unschedule(String scheduleId) {
-		this.scheduler.unscheduleOnCurrentCompany(SortingProcessScheduleJob.class, scheduleId);
+		this.scheduler.unscheduleOnCurrentCompany(scheduleId);
 	}
 
 	private void performRegister(ExecutionTaskSetting domain, SaveExecutionTaskSettingCommand command)

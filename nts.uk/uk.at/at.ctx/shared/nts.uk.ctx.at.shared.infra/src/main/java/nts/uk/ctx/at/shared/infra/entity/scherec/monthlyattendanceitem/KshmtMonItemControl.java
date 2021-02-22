@@ -12,13 +12,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.HeaderBackgroundColor;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.ControlOfMonthlyItems;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Getter
 @Entity
 @NoArgsConstructor
 @Table(name = "KSHMT_MON_ITEM_CONTROL")
-public class KshmtMonItemControl   extends UkJpaEntity implements Serializable{
+public class KshmtMonItemControl   extends ContractUkJpaEntity implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 

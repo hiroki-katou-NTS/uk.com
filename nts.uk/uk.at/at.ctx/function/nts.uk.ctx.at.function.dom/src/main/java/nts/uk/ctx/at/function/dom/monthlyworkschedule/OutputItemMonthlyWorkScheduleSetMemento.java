@@ -54,7 +54,7 @@ public interface OutputItemMonthlyWorkScheduleSetMemento {
 	 *
 	 * @param employeeID the new employeeID
 	 */
-	void setEmployeeID(String employeeID);
+	void setSid(String sid);
 	
 	/**
 	 * Sets the character size.

@@ -20,7 +20,7 @@ import nts.uk.ctx.bs.employee.dom.setting.code.EmployeeCESetting;
 import nts.uk.ctx.bs.employee.dom.setting.code.IEmployeeCESettingRepository;
 import nts.uk.ctx.pereg.dom.usesetting.UserSetting;
 import nts.uk.ctx.pereg.dom.usesetting.UserSettingRepository;
-import nts.uk.ctx.sys.auth.dom.user.UserRepository;
+import nts.uk.ctx.sys.shared.dom.user.UserRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless

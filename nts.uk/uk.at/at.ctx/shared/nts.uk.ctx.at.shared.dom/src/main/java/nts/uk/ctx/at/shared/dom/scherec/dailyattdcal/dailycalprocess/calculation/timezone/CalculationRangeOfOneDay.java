@@ -1050,8 +1050,6 @@ public class CalculationRangeOfOneDay {
 	/**
 	 * 計算範囲を判断（フレックス）
 	 * @param todayWorkType 勤務種類
-	 * @param integrationOfDaily 日別実績(Work)
-	 * @param flowWorkSetting 流動勤務設定
 	 * @param timeLeavingWork 出退勤
 	 * @param predetermineTimeSet 計算用所定時間設定
 	 * @return 就業時間内時間枠

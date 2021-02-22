@@ -1,9 +1,14 @@
 package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting;
 
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.apache.commons.lang3.tuple.Pair;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import lombok.val;
 import mockit.Expectations;
-import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
@@ -12,11 +17,6 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.ExcessState;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthErrorAlarmTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthTime;
-import org.apache.commons.lang3.tuple.Pair;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 
 @RunWith(JMockit.class)

@@ -27,8 +27,7 @@ public class AgreementOneMonth {
 	}
 	
 	/** エラーチェック */
-	public AgreementTimeStatusOfMonthly check(AttendanceTimeMonth agreementTarget,
-			AttendanceTimeMonth legalLimitTarget, boolean isEmployeeSet) {
+	public AgreementTimeStatusOfMonthly check(AttendanceTimeMonth agreementTarget, AttendanceTimeMonth legalLimitTarget) {
 		/** エラーチェック */
 		val legalState = this.specConditionLimit.check(legalLimitTarget);
 		
@@ -52,18 +51,15 @@ public class AgreementOneMonth {
 		/** 月別実績の36協定時間状態を判断 */
 		if (agreementState == ExcessState.ALARM_OVER) {
 			
-			return isEmployeeSet ? AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM_SP
-					: AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM;
+			return AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM;
 		}
 		if (agreementState == ExcessState.ERROR_OVER 
 				|| agreementState == ExcessState.UPPER_LIMIT_OVER) {
 			
-			return isEmployeeSet ? AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP
-					: AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR;
+			return AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR;
 		}
 		
-		return isEmployeeSet ? AgreementTimeStatusOfMonthly.NORMAL_SPECIAL
-				: AgreementTimeStatusOfMonthly.NORMAL;
+		return AgreementTimeStatusOfMonthly.NORMAL;
 	}
 
 

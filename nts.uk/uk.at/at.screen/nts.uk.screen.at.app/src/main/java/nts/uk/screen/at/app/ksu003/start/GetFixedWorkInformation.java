@@ -109,6 +109,7 @@ public class GetFixedWorkInformation {
 						type.get().getAbbreviationName().v(), null, null, null, null, true, workTimeSetting.name());
 				inforDtos.add(inforDto);
 			} else {
+				if(dayAttr != AttendanceDayAttr.HOLIDAY)
 				lstNo = workInformation.getChangeableWorkingTimezones(impl);
 			}
 
