@@ -4,17 +4,19 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.flexset;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.val;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
+
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * The Class FlexOffdayWorkTime.
@@ -41,6 +43,18 @@ public class FlexOffdayWorkTime extends WorkTimeDomainObject implements Cloneabl
 	public FlexOffdayWorkTime(FlexOffdayWorkTimeGetMemento memento) {
 		this.lstWorkTimezone = memento.getLstWorkTimezone();
 		this.restTimezone = memento.getRestTimezone();
+	}
+
+	/**
+	 * 新規作成する
+	 * @param memento Memento
+	 * @param useDoubleWork is use double work?
+	 */
+	public FlexOffdayWorkTime(FlexOffdayWorkTimeGetMemento memento, boolean useDoubleWork){
+		this.lstWorkTimezone = memento.getLstWorkTimezone();
+		this.restTimezone = memento.getRestTimezone();
+		if (checkLstWorkTimezoneContinue(useDoubleWork))
+			this.bundledBusinessExceptions.addMessage("Msg_1918");
 	}
 
 	/**
@@ -150,5 +164,26 @@ public class FlexOffdayWorkTime extends WorkTimeDomainObject implements Cloneabl
 			throw new RuntimeException("FlexOffdayWorkTime clone error.");
 		}
 		return cloned;
+	}
+
+	/**
+	 * 時間帯の連続性を確認
+	 *
+	 * @param useDoubleWork is use double work?
+	 * @return status
+	 */
+	private boolean checkLstWorkTimezoneContinue(boolean useDoubleWork){
+		val discontinueTimes = this.lstWorkTimezone
+				.stream()
+				.sorted(Comparator.comparing(HDWorkTimeSheetSetting::getWorkTimeNo))
+				.filter(wt -> {
+					val nextWt = lstWorkTimezone.get(lstWorkTimezone.indexOf(wt));
+					return !wt.getTimezone().getEnd().equals(nextWt.getTimezone().getStart());
+				}).count();
+		if (!useDoubleWork && discontinueTimes >= 1)
+			return false;
+		if (useDoubleWork && discontinueTimes > 1)
+			return false;
+		return true;
 	}
 }
