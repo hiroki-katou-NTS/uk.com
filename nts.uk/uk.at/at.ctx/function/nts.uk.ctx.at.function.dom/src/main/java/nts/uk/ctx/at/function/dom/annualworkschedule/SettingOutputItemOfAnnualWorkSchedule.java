@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
@@ -27,6 +28,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class SettingOutputItemOfAnnualWorkSchedule extends AggregateRoot {
 	
 	/** 項目設定ID. */
+	@Setter
 	private String layoutId;
 	
 	/** 会社ID. */
@@ -36,9 +38,11 @@ public class SettingOutputItemOfAnnualWorkSchedule extends AggregateRoot {
 	private Optional<EmployeeId> sid;
 
 	/** コード. */
+	@Setter
 	private OutItemsWoScCode cd;
 	
 	/** 名称. */
+	@Setter
 	private OutItemsWoScName name;
 	
 	/**  出力する項目一覧. */

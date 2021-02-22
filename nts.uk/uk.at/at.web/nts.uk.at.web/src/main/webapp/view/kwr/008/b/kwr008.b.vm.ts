@@ -48,6 +48,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
 
         attendanceItem: share.model.AttendanceItemDto[] = [];
 
+
         constructor() {
             let self = this;
 
@@ -326,7 +327,9 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             const self = this;
             const param = {
                 selectCode: self.currentSetOutputSettingCode().cd(),
-                selectName: self.currentSetOutputSettingCode().name()
+                selectName: self.currentSetOutputSettingCode().name(),
+                layoutId: self.selectedLayoutId(),
+                settingType: self.currentSetOutputSettingCode().settingType()
             };
             nts.uk.ui.windows.setShared("KWR008CParam", param);
             nts.uk.ui.windows.sub.modal("at", "/view/kwr/008/c/index.xhtml").onClosed(() => {
