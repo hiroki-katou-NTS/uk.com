@@ -898,11 +898,23 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 	private String genHolidayText(AnnualHolidayGrantDetail detail, AnnualLeaveAcquisitionDate dateType) {
 		String format = dateType.equals(AnnualLeaveAcquisitionDate.YMD) ? "yy/MM/dd" : "MM/dd";
 		String result = detail.getYmd().toString(format);
-		if (detail.getAmPmAtr() == AmPmAtr.AM) {
-			result += "A";
-		}
-		if (detail.getAmPmAtr() == AmPmAtr.PM) {
-			result += "P";
+		if (detail.isFlexFlag()) {
+			switch (detail.getAmPmAtr()) {
+			// １日分表記の場合
+			case ONE_DAY:
+				result += TextResource.localize("KDR002_69");
+				break;
+			// 半日分表記の場合
+			default: 
+				result += TextResource.localize("KDR002_70");
+			}
+		} else {
+			if (detail.getAmPmAtr() == AmPmAtr.AM) {
+				result += "A";
+			}
+			if (detail.getAmPmAtr() == AmPmAtr.PM) {
+				result += "P";
+			}
 		}
 		return this.formatApplicationOrSchedule(result, detail.getReferenceAtr());
 	}

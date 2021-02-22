@@ -26,4 +26,6 @@ public class AnnualHolidayGrantDetail {
 	ReferenceAtr referenceAtr;
 	/**午前午後区分	 */
 	private AmPmAtr amPmAtr;
+	/** フレックス補填フラグ */
+	private boolean isFlexFlag;
 }

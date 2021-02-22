@@ -65,7 +65,8 @@ public class AnnualHolidayGrantDetailInforImpl implements AnnualHolidayGrantDeta
 							x.isReferenceFlg() ? ReferenceAtr.RECORD 
 									: ((y.getCreatorAtr() == CreateAtr.RECORD || y.getCreatorAtr() == CreateAtr.FLEXCOMPEN) 
 											? ReferenceAtr.RECORD : ReferenceAtr.APP_AND_SCHE),
-							AmPmAtr.valueOf(vacation));
+							AmPmAtr.valueOf(vacation),
+							x.isReferenceFlg() ? false : y.getCreatorAtr() == CreateAtr.FLEXCOMPEN);
 					lstOutputData.add(annDetail);
 				}
 			});
