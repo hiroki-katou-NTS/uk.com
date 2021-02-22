@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.schedule.dom.schedule.task.taskschedule;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -44,7 +45,7 @@ public class TaskSchedule implements DomainValue {
 		}
 		
 		Collections.sort(details);
-		details = TaskSchedule.mergeTaskScheduleDetail(details, 0);
+		details = TaskSchedule.mergeTaskScheduleDetail(details);
 		
 		return new TaskSchedule(details);
 	}
@@ -76,35 +77,49 @@ public class TaskSchedule implements DomainValue {
 	 * @param startIndex チェックのスタート位置
 	 * @return
 	 */
-	private static List<TaskScheduleDetail> mergeTaskScheduleDetail(List<TaskScheduleDetail> details, int startIndex) {
+	private static List<TaskScheduleDetail> mergeTaskScheduleDetail(List<TaskScheduleDetail> details) {
 		
-		for ( int index = startIndex; index < details.size() - 1; index++) {
+		List<List<TaskScheduleDetail>> listOfListDetail = new ArrayList<>();
+		
+		details.forEach( detail -> {
 			
-			TaskScheduleDetail indexTask= details.get(index);
-			TaskScheduleDetail indexPlus1Task= details.get(index + 1);
-			
-			if ( indexTask.getTaskCode().equals( indexPlus1Task.getTaskCode() ) 
-					&& indexTask.getTimeSpan().getEnd().equals( indexPlus1Task.getTimeSpan().getStart())) {
+			// listOfListDetail is empty
+			if ( listOfListDetail.isEmpty() ) {
 				
-				TaskScheduleDetail mergedTask = new TaskScheduleDetail(
-						indexTask.getTaskCode(), 
-						new TimeSpanForCalc(
-								indexTask.getTimeSpan().getStart(), 
-								indexPlus1Task.getTimeSpan().getEnd()) );
-				
-				List<TaskScheduleDetail> beforeIndex = details.subList(0, index);
-				List<TaskScheduleDetail> afterIndexPlus1 = details.subList(index + 2, details.size());
-				
-				List<TaskScheduleDetail> newList = new ArrayList<>();
-				newList.addAll(beforeIndex);
-				newList.add(mergedTask);
-				newList.addAll(afterIndexPlus1);
-				
-				return TaskSchedule.mergeTaskScheduleDetail(newList, index);
+				listOfListDetail.add( new ArrayList<>( Arrays.asList( detail ) ) );
+				return;
 			}
-		}
+			
+			List<TaskScheduleDetail> theLastList = listOfListDetail.get( listOfListDetail.size() - 1 );
+			
+			// the task code is not same
+			if ( !detail.getTaskCode().equals( 
+					theLastList.get(0).getTaskCode()) ) {
+				
+				listOfListDetail.add( new ArrayList<>( Arrays.asList( detail ) ) );
+				return;
+			}
+			
+			// the periods are not continuous
+			if ( !detail.getTimeSpan().getStart().equals( 
+					theLastList.get( theLastList.size() -1 ).getTimeSpan().getEnd() ) ) {
+				
+				listOfListDetail.add( new ArrayList<>( Arrays.asList( detail ) ) );
+				return;
+			}
+			
+			// the task code is same and the periods are continuous
+			theLastList.add(detail);
+		});
+			
 		
-		return details;
+		return listOfListDetail.stream().map( list -> 
+			new TaskScheduleDetail(
+					list.get(0).getTaskCode(),
+					new TimeSpanForCalc(
+							list.get(0).getTimeSpan().getStart(),
+							list.get( list.size() - 1).getTimeSpan().getEnd() ))
+		).collect(Collectors.toList());
 		
 	}
 	
