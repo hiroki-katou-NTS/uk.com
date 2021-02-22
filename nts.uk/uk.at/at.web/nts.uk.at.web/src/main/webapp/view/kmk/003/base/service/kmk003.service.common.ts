@@ -65,7 +65,7 @@ module nts.uk.at.view.kmk003.a {
 
                 export interface FlowFixedRestSetDto {
                     calculateMethod: number;
-                    calculateFromSchedule: ScheduleBreakCalculationDto;
+                   // calculateFromSchedule: ScheduleBreakCalculationDto;
                     calculateFromStamp: StampBreakCalculationDto;
                 }
 

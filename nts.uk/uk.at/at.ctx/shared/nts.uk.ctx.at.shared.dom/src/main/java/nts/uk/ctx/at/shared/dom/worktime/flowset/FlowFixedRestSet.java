@@ -51,7 +51,7 @@ public class FlowFixedRestSet extends WorkTimeDomainObject implements Cloneable{
 	 *            the memento
 	 */
 	public FlowFixedRestSet(FlowFixedRestSetGetMemento memento) {
-//		this.calculateMethod = memento.getCalculateMethod();
+		this.calculateMethod = FlowFixedRestCalcMethod.REFER_MASTER;
 		this.calculateFromStamp = memento.getCalculateFromStamp();
 	}
 

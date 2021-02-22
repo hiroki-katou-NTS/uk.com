@@ -4,25 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.fixedset;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
-import org.apache.commons.lang3.tuple.ImmutablePair;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.val;
+import lombok.*;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanDuplication;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
@@ -31,22 +13,19 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.
 import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZonePerNo;
 import nts.uk.ctx.at.shared.dom.worktime.WorkSetting;
-import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
-import nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSetting;
-import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneNo;
-import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkRestSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
-import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
-import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.*;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeAggregateRoot;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * 固定勤務設定
@@ -84,7 +63,7 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
     //共通の休憩設定
     private CommonRestSetting commonRestSet; 
 
-//	/** The fixed work rest setting. */
+//	/** The fixed work rest setting. *
 //	// 固定勤務の休憩設定
 //	private FixedWorkRestSet fixedWorkRestSetting;
 
@@ -399,15 +378,11 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 	 * @return 残業時間帯リスト(午前午後区分指定)
 	 */
 	public List<TimeSpanForCalc> getTimeZoneOfOvertimeWorkByAmPmAtr(AmPmAtr atr) {
-
 		// 勤務時間帯設定を取得する
-		// ※半日用シフトを使用しない場合は1日を利用する
-		val timezoneSetting = this.lstHalfDayWorkTimezone.stream()
-								.filter( e -> e.getDayAtr() == ((this.useHalfDayShift) ? atr : AmPmAtr.ONE_DAY) )
-								.findFirst().get();
-
-		return timezoneSetting.getWorkTimezone().getOvertimeWorkingTimezonesForCalc();
-
+		val timeZoneSetting = lstHalfDayWorkTimezone.stream()
+				.filter(timeZone -> timeZone.getDayAtr() == atr)
+				.findFirst().get();
+		return timeZoneSetting.getRestTimezone().getRestTimezonesForCalc();
 	}
 
 	/**
@@ -525,6 +500,25 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 
 		return BreakTimeZone.createAsFixed(fixedRestTimezone.getRestTimezonesForCalc());
 
+	}
+
+	/**
+	 * inv-1
+	 */
+	private boolean inv1(){
+		val onlyOneAllDay = this.lstHalfDayWorkTimezone
+				.stream()
+				.filter(tz -> tz.getDayAtr() == AmPmAtr.ONE_DAY)
+				.count() == 1;
+		val onlyOneAM = this.lstHalfDayWorkTimezone
+				.stream()
+				.filter(tz -> tz.getDayAtr() == AmPmAtr.AM)
+				.count() == 1;
+		val onlyOnePM = this.lstHalfDayWorkTimezone
+				.stream()
+				.filter(tz -> tz.getDayAtr() == AmPmAtr.PM)
+				.count() == 1;
+		return onlyOneAllDay && onlyOneAM && onlyOnePM;
 	}
 
 

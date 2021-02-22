@@ -4,14 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,10 +12,14 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 /**
  * 固定勤務時間帯設定
  * The Class FixedWorkTimezoneSet.
- *
+ * <p>
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared.就業規則.就業時間帯.固定勤務設定.固定勤務の勤務時間帯.固定勤務時間帯設定
  */
 @Getter
@@ -59,6 +55,21 @@ public class FixedWorkTimezoneSet extends WorkTimeDomainObject implements Clonea
 	public FixedWorkTimezoneSet(FixedWorkTimezoneSetGetMemento memento) {
 		this.lstWorkingTimezone = memento.getLstWorkingTimezone();
 		this.lstOTTimezone = memento.getLstOTTimezone();
+	}
+
+	/**
+	 * [C-1] 新規作成する
+	 *
+	 * @param memento Memento
+	 * @param useDoubleWork use double work?
+	 */
+	public FixedWorkTimezoneSet(FixedWorkTimezoneSetGetMemento memento, boolean useDoubleWork){
+		this.lstWorkingTimezone = memento.getLstWorkingTimezone();
+		this.lstOTTimezone = memento.getLstOTTimezone();
+		if (checkWorkingTimezoneContinue(useDoubleWork))
+			this.bundledBusinessExceptions.addMessage("Msg_1919");
+		if (checkOTTimeZoneContinue(useDoubleWork))
+			this.bundledBusinessExceptions.addMessage("Msg_1920");
 	}
 
 	/**
@@ -127,6 +138,50 @@ public class FixedWorkTimezoneSet extends WorkTimeDomainObject implements Clonea
 
 		return this.lstOTTimezone.stream()
 				.anyMatch(ot -> this.lstWorkingTimezone.stream().anyMatch(em -> ot.getTimezone().isOverlap(em.getTimezone())));
+	}
+
+	/**
+	 * 就業時間帯の連続性を確認
+	 * Check the continuity of working timezone
+	 *
+	 * @param useDoubleWork do you use double work?
+	 * @return status
+	 */
+	private boolean checkWorkingTimezoneContinue(boolean useDoubleWork){
+		long discontinueTimes = lstWorkingTimezone.stream()
+				.sorted(Comparator.comparing(EmTimeZoneSet::getEmploymentTimeFrameNo))
+				.filter(wt -> {
+					val nextWt = lstWorkingTimezone.get(lstWorkingTimezone.indexOf(wt));
+					return !wt.getTimezone().getEnd().equals(nextWt.getTimezone().getStart());
+				})
+				.count();
+		if (!useDoubleWork && discontinueTimes >= 1)
+			return false;
+		if (useDoubleWork && discontinueTimes > 1)
+			return false;
+		return true;
+	}
+
+	/**
+	 * 残業時間帯の連続性を確認
+	 * Check the continuity of overtime hours
+	 *
+	 * @param useDoubleWork do you use double work?
+	 * @return status
+	 */
+	private boolean checkOTTimeZoneContinue(boolean useDoubleWork){
+		long discontinueTimes = lstOTTimezone.stream()
+				.sorted(Comparator.comparing(OverTimeOfTimeZoneSet::getWorkTimezoneNo))
+				.filter(ot -> {
+					val nextOT = lstWorkingTimezone.get(lstWorkingTimezone.indexOf(ot));
+					return !ot.getTimezone().getEnd().equals(nextOT.getTimezone().getStart());
+				})
+				.count();
+		if (!useDoubleWork && discontinueTimes >= 1)
+			return false;
+		if (useDoubleWork && discontinueTimes > 1)
+			return false;
+		return true;
 	}
 
 	/**

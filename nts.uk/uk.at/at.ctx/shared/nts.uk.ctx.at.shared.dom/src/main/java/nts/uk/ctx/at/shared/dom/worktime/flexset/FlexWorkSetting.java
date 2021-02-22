@@ -4,17 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.flexset;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.tuple.ImmutablePair;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.val;
@@ -26,13 +15,7 @@ import nts.uk.ctx.at.shared.dom.workrule.BreakTimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZonePerNo;
 import nts.uk.ctx.at.shared.dom.worktime.WorkSetting;
-import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
-import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
-import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.*;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeAggregateRoot;
@@ -40,6 +23,12 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * フレックス勤務設定
@@ -263,9 +252,6 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 
 		val oneDay = this.createTimeZoneByAmPmCls(require, workingTimezone, AmPmAtr.ONE_DAY);
 		val workOnDayOff = this.createWorkOnDayOffTime(require);
-		if (!this.isUseHalfDayShift()) {
-			return ChangeableWorkingTimeZone.createWithoutSeparationOfHalfDay(oneDay, workOnDayOff);
-		}
 
 		val morning = this.createTimeZoneByAmPmCls(require, workingTimezone, AmPmAtr.AM);
 		val evening = this.createTimeZoneByAmPmCls(require, workingTimezone, AmPmAtr.PM);

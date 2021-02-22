@@ -77,8 +77,8 @@ module nts.uk.at.view.kmk003.a {
 
                 toDto(): DesignatedTimeDto {
                     var dataDTO: DesignatedTimeDto = {
-                        oneDayTime: nts.uk.util.isNullOrEmpty(this.oneDayTime()) ? 0 : this.oneDayTime(),
-                        halfDayTime: nts.uk.util.isNullOrEmpty(this.halfDayTime()) ? 0 : this.halfDayTime()
+                        oneDayTime: this.oneDayTime() ?? 0,
+                        halfDayTime: this.halfDayTime() ?? 0
                     };
                     return dataDTO;
                 }
@@ -474,25 +474,25 @@ module nts.uk.at.view.kmk003.a {
 
             export class FlowFixedRestSetModel {
                 calculateMethod: KnockoutObservable<number>;
-                calculateFromSchedule: ScheduleBreakCalculationModel;
+               // calculateFromSchedule: ScheduleBreakCalculationModel;
                 calculateFromStamp: StampBreakCalculationModel;
 
                 constructor() {
                     this.calculateMethod = ko.observable(0);
-                    this.calculateFromSchedule = new ScheduleBreakCalculationModel();
+                 //   this.calculateFromSchedule = new ScheduleBreakCalculationModel();
                     this.calculateFromStamp = new StampBreakCalculationModel();
                 }
 
                 updatedData(data: FlowFixedRestSetDto) {
                     this.calculateMethod(data.calculateMethod);
-                    this.calculateFromSchedule.updatedData(data.calculateFromSchedule);
+                  //  this.calculateFromSchedule.updatedData(data.calculateFromSchedule);
                     this.calculateFromStamp.updatedData(data.calculateFromStamp);
                 }
 
                 toDto(): FlowFixedRestSetDto {
                     var dataDTO: FlowFixedRestSetDto = {
                         calculateMethod: this.calculateMethod(),
-                        calculateFromSchedule: this.calculateFromSchedule.toDto(),
+                      //  calculateFromSchedule: this.calculateFromSchedule.toDto(),
                         calculateFromStamp: this.calculateFromStamp.toDto()
                     };
                     return dataDTO;
@@ -500,7 +500,7 @@ module nts.uk.at.view.kmk003.a {
 
                 resetData() {
                     this.calculateMethod(0);
-                    this.calculateFromSchedule.resetData();
+                   // this.calculateFromSchedule.resetData();
                     this.calculateFromStamp.resetData();
                 }
             }

@@ -4,17 +4,18 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.fixedset;
 
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
+
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 固定勤務の休日出勤用勤務時間帯
@@ -42,6 +43,18 @@ public class FixOffdayWorkTimezone extends WorkTimeDomainObject implements Clone
 	public FixOffdayWorkTimezone(FixOffdayWorkTimezoneGetMemento memento) {
 		this.restTimezone = memento.getRestTimezone();
 		this.lstWorkTimezone = memento.getLstWorkTimezone();
+	}
+
+	/**
+	 * 新規作成する
+	 * @param memento Memento
+	 * @param useDoubleWork is use double work?
+	 */
+	public FixOffdayWorkTimezone(FixOffdayWorkTimezoneGetMemento memento, boolean useDoubleWork){
+		this.restTimezone = memento.getRestTimezone();
+		this.lstWorkTimezone = memento.getLstWorkTimezone();
+		if (checkLstWorkTimezoneContinue(useDoubleWork))
+			this.bundledBusinessExceptions.addMessage("Msg_1918");
 	}
 
 	/**
@@ -157,4 +170,24 @@ public class FixOffdayWorkTimezone extends WorkTimeDomainObject implements Clone
 		return TimeSpanForCalc.join( this.getOffdayWorkTimezonesForCalc() ).get();
 	}
 
+	/**
+	 * 時間帯の連続性を確認
+	 *
+	 * @param useDoubleWork is use double work?
+	 * @return status
+	 */
+	private boolean checkLstWorkTimezoneContinue(boolean useDoubleWork){
+		val discontinueTimes = this.lstWorkTimezone
+				.stream()
+				.sorted(Comparator.comparing(HDWorkTimeSheetSetting::getWorkTimeNo))
+				.filter(wt -> {
+					val nextWt = lstWorkTimezone.get(lstWorkTimezone.indexOf(wt));
+					return !wt.getTimezone().getEnd().equals(nextWt.getTimezone().getStart());
+				}).count();
+		if (!useDoubleWork && discontinueTimes >= 1)
+			return false;
+		if (useDoubleWork && discontinueTimes > 1)
+			return false;
+		return true;
+	}
 }
