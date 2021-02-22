@@ -51,13 +51,9 @@ public interface HospitalBusinessOfficeInfoHistoryRepository {
 
 	/**
 	 * update(病棟・事業所情報)
-	 * @param hospitalBusinessOfficeInfo
+	 * @param hospitalBusinessOfficeInfo 病棟・事業所情報
 	 */
 	void updateHospitalBusinessOfficeInfo(HospitalBusinessOfficeInfo hospitalBusinessOfficeInfo);
-	/**
-	 * update(病棟・事業所情報)
-	 * @param hospitalInfo 病棟・事業所情報
-	 */
 	/**
 	 * delete(職場グルーブID, 履歴ID)
 	 * @param workplaceGroupId 職場グルーブID
