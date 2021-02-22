@@ -3,9 +3,10 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremai
 import java.util.Optional;
 
 import lombok.Getter;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedNumber;
 
 @Getter
-public class ReserveLeaveUsedNumber {
+public class ReserveLeaveUsedNumber extends LeaveUsedNumber {
 
 	/**
 	 * 日数

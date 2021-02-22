@@ -102,9 +102,9 @@ public class GetRsvLeaNumCriteriaDateImpl implements GetRsvLeaNumCriteriaDate {
 			grantRemainingList.add(new RsvLeaGrantRemainingExport(
 					grantRemaining.getGrantDate(),
 					grantRemaining.getDeadline(),
-					grantRemaining.getDetails().getGrantNumber(),
+					grantRemaining.getDetails().getGrantNumber().getDays(),
 					grantRemaining.getDetails().getUsedNumber(),
-					grantRemaining.getDetails().getRemainingNumber()));
+					grantRemaining.getDetails().getRemainingNumber().getDays()));
 		}
 
 		// 「暫定積立年休管理データ」を取得する
