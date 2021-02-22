@@ -133,9 +133,9 @@ public class GetPeriodFromPreviousToNextGrantDateImpl implements GetPeriodFromPr
 			// Acquire the annual leave grant date that exists within the one-year elapsed period (From-To) (if there are multiple, obtain the largest grant date)
 			List<GeneralDate> lstGrantDate = lstAnnGrantDate.stream().map(item -> item.getGrantDate()).collect(Collectors.toList());
 			List<GeneralDate> lstGeneraDate = new ArrayList<>();
-			GeneralDate startDate;
+			Optional<GeneralDate> startDate;
 			for (GeneralDate gd : lstGrantDate) { 
-				if(gd.after(fromTo.get().start()) && gd.before(fromTo.get().end())) {
+				if(gd.afterOrEquals(fromTo.get().start()) && gd.beforeOrEquals(fromTo.get().end())) {
 					lstGeneraDate.add(gd);
 				}
 			}
@@ -143,10 +143,9 @@ public class GetPeriodFromPreviousToNextGrantDateImpl implements GetPeriodFromPr
 				return Optional.empty();
 			}
 //			(if there are multiple, obtain the largest grant date)
-			startDate = lstGeneraDate.get(0);
+			startDate = lstGeneraDate.stream().max(GeneralDate::compareTo);
 			// 前回年休付与日＋１年 - Last year's holiday payment and day + 1 year
-			GeneralDate nextYear = startDate.addYears(+1);
-			return Optional.of(new DatePeriod(startDate, nextYear));
+			return startDate.map(date -> new DatePeriod(date, date.addYears(+1)));
 		}
 		
 	}

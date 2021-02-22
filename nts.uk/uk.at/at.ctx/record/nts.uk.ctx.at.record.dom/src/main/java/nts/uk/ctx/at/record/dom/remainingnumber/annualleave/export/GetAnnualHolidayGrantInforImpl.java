@@ -228,13 +228,8 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 		
 		if(periodOutput == AFTER_1_YEAR) {
 			//条件に合わない<OUTPUT>年休付与を削除する
-			List<AnnualHolidayGrant> lstGrant =  getAnnualHolidayGrantInforDto.getAnnualHolidayGrantInfor().get().getLstGrantInfor();
-			lstGrant.stream().forEach(i -> {
-				if(dateInforFormPeriod.after(i.getYmd()) && i.getYmd().before(period.end())) {
-					lstGrant.remove(i);
-				}
-			});
-			getAnnualHolidayGrantInforDto.getAnnualHolidayGrantInfor().get().setLstGrantInfor(lstGrant);
+			output.getLstGrantInfor().removeIf(i -> !(dateInforFormPeriod.afterOrEquals(i.getYmd()) 
+					&& i.getYmd().beforeOrEquals(period.end())));
 		}
 		
 		getAnnualHolidayGrantInforDto.setAnnualHolidayGrantInfor(Optional.of(output));

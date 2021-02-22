@@ -605,7 +605,6 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 						cells.get(holidayInfoRow, GRANT_REMAINDAY_COL).setValue("0.0");
 					}
 				} else {
-					cells.get(holidayInfoRow, GRANT_DAYS_COL).setValue("0.0");
 					cells.get(holidayInfoRow, GRANT_USEDAY_COL).setValue("0.0");
 					cells.get(holidayInfoRow, GRANT_REMAINDAY_COL).setValue("0.0");
 				}
@@ -663,7 +662,6 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 							cells.get(holidayInfoRow, GRANT_REMAINDAY_COL).setValue("0:00");
 						}
 					} else {
-						cells.get(holidayInfoRow, GRANT_DAYS_COL).setValue("0:00");
 						cells.get(holidayInfoRow, GRANT_USEDAY_COL).setValue("0:00");
 						cells.get(holidayInfoRow, GRANT_REMAINDAY_COL).setValue("0:00");
 					}
