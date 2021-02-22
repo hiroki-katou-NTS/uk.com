@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.Value;
 import nts.arc.layer.dom.objecttype.DomainValue;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
@@ -40,87 +42,16 @@ public class TaskSchedule implements DomainValue {
 	 */
 	public static TaskSchedule create(List<TaskScheduleDetail> details) {
 		
-		if ( TaskSchedule.checkDuplicate(details) ) {
+		TaskScheduleDetailList detailList = new TaskScheduleDetailList(details);
+		
+		if ( detailList.checkDuplicate() ) {
 			throw new RuntimeException("Creating Task Schedule: The time spans of task schedule details is duplicated!!");
 		}
 		
-		Collections.sort(details);
-		details = TaskSchedule.mergeTaskScheduleDetail(details);
+		detailList.sort();
+		detailList.merge();
 		
-		return new TaskSchedule(details);
-	}
-	
-	/**
-	 * 重複チェックする
-	 * @param details 対象の詳細リスト
-	 * @return 
-	 * true: if any time spans in list 'details' is duplicate 対象の詳細リストの中の要素が重複
-	 * false: all time spans in list 'details' are not duplicate 対象の詳細リストの中の要素が全て非重複  
-	 */
-	private static boolean checkDuplicate(List<TaskScheduleDetail> details) {
-		
-		List<TimeSpanForCalc> timeSpans = details.stream()
-				.map(d -> d.getTimeSpan())
-				.collect(Collectors.toList());
-		
-		AtomicInteger index = new AtomicInteger(0);
-		
-		return timeSpans.stream().anyMatch( base -> {
-			return timeSpans.subList(index.incrementAndGet(), timeSpans.size()).stream()
-					.anyMatch( target -> base.checkDuplication( target ).isDuplicated() );
-		});
-	}
-	
-	/**
-	 * マージ
-	 * @param details 対象の詳細リスト
-	 * @param startIndex チェックのスタート位置
-	 * @return
-	 */
-	private static List<TaskScheduleDetail> mergeTaskScheduleDetail(List<TaskScheduleDetail> details) {
-		
-		List<List<TaskScheduleDetail>> listOfListDetail = new ArrayList<>();
-		
-		details.forEach( detail -> {
-			
-			// listOfListDetail is empty
-			if ( listOfListDetail.isEmpty() ) {
-				
-				listOfListDetail.add( new ArrayList<>( Arrays.asList( detail ) ) );
-				return;
-			}
-			
-			List<TaskScheduleDetail> theLastList = listOfListDetail.get( listOfListDetail.size() - 1 );
-			
-			// the task code is not same
-			if ( !detail.getTaskCode().equals( 
-					theLastList.get(0).getTaskCode()) ) {
-				
-				listOfListDetail.add( new ArrayList<>( Arrays.asList( detail ) ) );
-				return;
-			}
-			
-			// the periods are not continuous
-			if ( !detail.getTimeSpan().getStart().equals( 
-					theLastList.get( theLastList.size() -1 ).getTimeSpan().getEnd() ) ) {
-				
-				listOfListDetail.add( new ArrayList<>( Arrays.asList( detail ) ) );
-				return;
-			}
-			
-			// the task code is same and the periods are continuous
-			theLastList.add(detail);
-		});
-			
-		
-		return listOfListDetail.stream().map( list -> 
-			new TaskScheduleDetail(
-					list.get(0).getTaskCode(),
-					new TimeSpanForCalc(
-							list.get(0).getTimeSpan().getStart(),
-							list.get( list.size() - 1).getTimeSpan().getEnd() ))
-		).collect(Collectors.toList());
-		
+		return new TaskSchedule( detailList.getDetails() );
 	}
 	
 	/**
@@ -137,6 +68,110 @@ public class TaskSchedule implements DomainValue {
 		
 		notDuplicatedDetailList.add( newDetail );
 		return TaskSchedule.create(notDuplicatedDetailList);
+	}
+	
+	@AllArgsConstructor
+	private static class TaskScheduleDetailList {
+		
+		@Getter
+		private List<TaskScheduleDetail> details;
+		
+		/**
+		 * initial TaskScheduleDetailList with one element
+		 * @param detail
+		 * @return
+		 */
+		private static TaskScheduleDetailList init( TaskScheduleDetail detail ) {
+			return new TaskScheduleDetailList( new ArrayList<>( Arrays.asList( detail ) ) );
+		}
+		
+		/**
+		 * return the first element of @details
+		 * @return
+		 */
+		public TaskScheduleDetail first() {
+			return details.get(0);
+		}
+		
+		/**
+		 * return the last element of @details
+		 * @return
+		 */
+		public TaskScheduleDetail last() {
+			return details.get( details.size() - 1 );
+		}
+		
+		/**
+		 * add a new element to @details
+		 * @param e
+		 */
+		public void add(TaskScheduleDetail e) {
+			this.details.add(e);
+		}
+		
+		/**
+		 * 重複チェックする
+		 * true: if any time spans in @details is duplicate 対象の詳細リストの中の要素が重複
+		 * false: all time spans in @details are not duplicate 対象の詳細リストの中の要素が全て非重複  
+		 */
+		public boolean checkDuplicate() {
+			
+			List<TimeSpanForCalc> timeSpans = this.details.stream()
+					.map(d -> d.getTimeSpan())
+					.collect(Collectors.toList());
+			
+			AtomicInteger index = new AtomicInteger(0);
+			
+			return timeSpans.stream().anyMatch( base -> {
+				return timeSpans.subList(index.incrementAndGet(), timeSpans.size()).stream()
+						.anyMatch( target -> base.checkDuplication( target ).isDuplicated() );
+			});
+		}
+		
+		/**
+		 * sort @details by start-time
+		 */
+		public void sort() {
+			Collections.sort(this.details);
+		}
+		
+		/**
+		 * マージ
+		 * merge @details if 2 element are same task code and continuous
+		 * @return
+		 */
+		public void merge() {
+			
+			List<TaskScheduleDetailList> listOfDetailList = new ArrayList<>();
+			
+			this.details.forEach( detail -> {
+				
+				if ( listOfDetailList.isEmpty() ) {
+					
+					listOfDetailList.add( TaskScheduleDetailList.init(detail) );
+					return;
+				}
+				
+				TaskScheduleDetailList theLastList = listOfDetailList.get( listOfDetailList.size() - 1 );
+				
+				if ( detail.isSameTaskCodeAndContinuous( theLastList.last())) {
+					theLastList.add(detail);
+				} else {
+					listOfDetailList.add( TaskScheduleDetailList.init(detail) );
+				}
+				
+			});
+			
+			this.details =  listOfDetailList.stream().map( list -> 
+				new TaskScheduleDetail(
+						list.first().getTaskCode(),
+						new TimeSpanForCalc(
+								list.first().getTimeSpan().getStart(),
+								list.last().getTimeSpan().getEnd() ))
+			).collect(Collectors.toList());
+			
+		}
+		
 	}
 
 }
