@@ -1546,5 +1546,10 @@ public class ProgramIdConsts {
 	public static final String KNR002K = "KNR002K";
 
 	public static final String CDL010A = "CDL010A";
+	
+	/**
+	 * CCGS03
+	 */
+	public static final String CCGS03A = "CCGS03A";
 
 }
