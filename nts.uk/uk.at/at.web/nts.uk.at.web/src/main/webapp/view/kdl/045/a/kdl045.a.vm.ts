@@ -223,6 +223,7 @@ module nts.uk.at.view.kdl045.a {
                     self.isEnableA5_9(false);
                 }
                 
+				
                 self.timeRange1Value.subscribe(value => {
                     console.log("TU");
 
@@ -431,6 +432,7 @@ module nts.uk.at.view.kdl045.a {
                     }
                     self.displayByWorkStyle(style);
                 });
+				self.displayByIncludingWorkType(self.includingWorkType());
             }
             
             displayByWorkStyle(style: number):void{

@@ -81,7 +81,7 @@ public class JpaWorkplaceEventRepository extends JpaRepository implements Workpl
 
 	private KscmtEventWkp fromDomain(WorkplaceEvent domain) {
 		return new KscmtEventWkp(new KsmmtWorkplaceEventPK(domain.getWorkplaceId(), domain.getDate()),
-				domain.getEventName().v());
+				domain.getEventName().v(), AppContexts.user().companyId());
 	}
 
 }
