@@ -215,11 +215,11 @@ module nts.uk.com.view.ccg020.a {
             return;
           }
           if (vm.valueSearch() !== '') {
-            vm.addHistoryResult();
             vm.treeMenuResult(vm.filterItems(vm.valueSearch(), vm.treeMenu()));
             const $tableResult = $('<div/>').attr('id', 'list-box');
             const list = vm.treeMenuResult();
             if (list.length > 0) {
+              vm.addHistoryResult();
               $tableResult.append(
                 $('<p/>')
                   .addClass('result-search custom-limited-label')
