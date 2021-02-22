@@ -26,7 +26,7 @@ public class ReflectHolidayDetail {
 
 		// 日別勤怠(work）の該当する[休出枠時間をチェック
 		if (!dailyApp.getAttendanceTimeOfDailyPerformance().isPresent()
-				|| dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
+				|| !dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
 						.getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime().isPresent()) {
 			return lstId;
 

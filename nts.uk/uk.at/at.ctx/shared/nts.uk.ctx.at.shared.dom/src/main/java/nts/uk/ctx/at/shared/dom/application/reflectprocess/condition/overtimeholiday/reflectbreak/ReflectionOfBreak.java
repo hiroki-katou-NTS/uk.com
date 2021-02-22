@@ -25,8 +25,11 @@ public class ReflectionOfBreak {
 
 			// 日別勤怠(work）の該当する[休憩時間帯]をチェック
 			BreakTimeSheet breakSheet = dailyApp.getBreakTime().getBreakTimeSheets().stream()
-					.filter(x -> x.getBreakFrameNo().v() == breakTime.getWorkNo().v()).findFirst()
-					.orElse(BreakTimeSheet.createDefaultWithNo(breakTime.getWorkNo().v()));
+					.filter(x -> x.getBreakFrameNo().v() == breakTime.getWorkNo().v()).findFirst().orElse(null);
+			if(breakSheet == null) {
+				breakSheet = BreakTimeSheet.createDefaultWithNo(breakTime.getWorkNo().v());
+				dailyApp.getBreakTime().getBreakTimeSheets().add(breakSheet);
+			}
 
 			///該当の休憩枠NOをキーにした[休憩時間帯]を作成する
 			breakSheet.setStartTime(breakTime.getTimeZone().getStartTime());

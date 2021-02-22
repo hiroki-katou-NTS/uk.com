@@ -24,7 +24,7 @@ public class TranferOvertimeCompensatory {
 		List<MaximumTime> maxTime = new ArrayList<>();
 		List<MaximumTime> timeAfterReflectApp = new ArrayList<>();
 		if (!dailyRecordNew.getAttendanceTimeOfDailyPerformance().isPresent()
-				|| dailyRecordNew.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
+				|| !dailyRecordNew.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily()
 						.getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork().isPresent()) {
 			return ;
 		}
@@ -53,7 +53,7 @@ public class TranferOvertimeCompensatory {
 		List<MaximumTime> lstMaxTime = SubstituteTransferProcess.process(maxTimeZone, maxTime, timeAfterReflectApp);
 
 		// [振替をした後の時間(List）]のすべての内容を[日別勤怠(work）]にセットする
-		dailyRecordNew.getAttendanceTimeOfDailyPerformance().get()
+		dailyRecord.getAttendanceTimeOfDailyPerformance().get()
 		.getActualWorkingTimeOfDaily().getTotalWorkingTime().getExcessOfStatutoryTimeOfDaily().getOverTimeWork()
 		.ifPresent(overtimeOld -> {
 			overtimeOld.getOverTimeWorkFrameTime().stream().map(x -> {

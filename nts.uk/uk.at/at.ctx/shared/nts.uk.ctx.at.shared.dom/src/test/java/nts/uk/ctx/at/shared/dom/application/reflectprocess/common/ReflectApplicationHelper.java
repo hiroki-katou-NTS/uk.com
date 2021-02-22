@@ -4,11 +4,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.apache.commons.lang3.tuple.Pair;
+
+import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.WorkInfoAndTimeZone;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.application.common.ApplicationDateShare;
@@ -16,6 +21,14 @@ import nts.uk.ctx.at.shared.dom.application.common.ApplicationShare;
 import nts.uk.ctx.at.shared.dom.application.common.ApplicationTypeShare;
 import nts.uk.ctx.at.shared.dom.application.common.PrePostAtrShare;
 import nts.uk.ctx.at.shared.dom.application.common.ReflectionStatusShare;
+import nts.uk.ctx.at.shared.dom.application.overtime.AppOverTimeShare;
+import nts.uk.ctx.at.shared.dom.application.overtime.ApplicationTimeShare;
+import nts.uk.ctx.at.shared.dom.application.overtime.AttendanceTypeShare;
+import nts.uk.ctx.at.shared.dom.application.overtime.DivergenceReasonShare;
+import nts.uk.ctx.at.shared.dom.application.overtime.OverTimeShiftNightShare;
+import nts.uk.ctx.at.shared.dom.application.overtime.OvertimeAppAtrShare;
+import nts.uk.ctx.at.shared.dom.application.overtime.OvertimeApplicationSettingShare;
+import nts.uk.ctx.at.shared.dom.application.overtime.ReasonDivergenceShare;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.cancellation.AttendanceBeforeApplicationReflect;
@@ -29,11 +42,14 @@ import nts.uk.ctx.at.shared.dom.application.stamp.TimeStampAppEnumShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.TimeStampAppOtherShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.TimeStampAppShare;
 import nts.uk.ctx.at.shared.dom.application.stamp.TimeZoneStampClassificationShare;
+import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.FuriClassifi;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.NumberOfDaySuspension;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.UsedDays;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.ExcessOfStatutoryMidNightTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.ExcessOfStatutoryTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TemporaryTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
@@ -49,6 +65,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
@@ -56,8 +73,18 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.time
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DiverdenceReasonCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DivergenceTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DivergenceTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime.LeaveEarlyTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkFrameTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.LateTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehours.ExcessOverTimeWorkMidNightTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehours.clearovertime.OverTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.BonusPayTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.RaiseSalaryTimeOfDailyPerfor;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime.PremiumTimeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ChildCareAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimFrameNo;
@@ -67,16 +94,30 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.o
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.TimeSheetOfAttendanceEachOuenSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.WorkContent;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.record.WorkplaceOfWorkEachOuen;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.AbsenceOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.AnnualOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.HolidayOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.OverSalaryOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.SpecialHolidayOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.SubstituteHolidayOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.TimeDigestOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.TransferHolidayOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.YearlyReservedOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.ActualWorkingTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.ConstraintTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.TotalWorkingTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.IntervalExemptionTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.WithinOutingTotalTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeFrameTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeFrameTimeSheet;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.shr.com.time.AttendanceClock;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.com.time.TimeZone;
@@ -141,7 +182,93 @@ public class ReflectApplicationHelper {
 		return new DailyRecordOfApplication(new ArrayList<>(), classification, domainDaily);
 	}
 
-	public static DailyRecordOfApplication createRCWithTimeLeavFull(ScheduleRecordClassifi classification, int no) {
+	public static DailyRecordOfApplication createRCWithTimeLeavFull(ScheduleRecordClassifi classification, Integer no) {
+		
+		////日別実績の所定外時間
+		List<OverTimeFrameTime> overTimeWorkFrameTime = new ArrayList<OverTimeFrameTime>();
+		if(no != null) {
+			overTimeWorkFrameTime.add(OverTimeFrameTime.createDefaultWithNo(no));
+		}
+		
+		List<OverTimeFrameTimeSheet> frameTimeSheetList = new ArrayList<OverTimeFrameTimeSheet>();
+		
+		return createRCWithTimeLeavOverTime(classification, no, overTimeWorkFrameTime, frameTimeSheetList);
+	}
+	
+	public static DailyRecordOfApplication createRCWithTimeLeavOverTime() {
+
+		List<OverTimeFrameTime> overTimeWorkFrameTime = new ArrayList<OverTimeFrameTime>();
+		overTimeWorkFrameTime.add(OverTimeFrameTime.createDefaultWithNo(1));
+		new OverTimeFrameTime(new OverTimeFrameNo(1), 
+				TimeDivergenceWithCalculation.sameTime(new AttendanceTime(555)), 
+				TimeDivergenceWithCalculation.sameTime(new AttendanceTime(666)), 
+				new AttendanceTime(556), 
+				new AttendanceTime(557));
+
+		List<OverTimeFrameTimeSheet> frameTimeSheetList = new ArrayList<OverTimeFrameTimeSheet>();
+		frameTimeSheetList.add(new OverTimeFrameTimeSheet(
+				new TimeSpanForDailyCalc(new TimeWithDayAttr(444), new TimeWithDayAttr(1111)), new OverTimeFrameNo(1)));
+		return createRCWithTimeLeavOverTime(ScheduleRecordClassifi.RECORD, 1, overTimeWorkFrameTime,
+				frameTimeSheetList);
+	}
+
+	public static DailyRecordOfApplication createSimpleAttLeav(ScheduleRecordClassifi classification, int no, 
+			Function<Integer, List<Pair<Integer, Integer>>> pairAttLeav, String location) {
+		List<Pair<Integer, Integer>> allAttLeav = pairAttLeav.apply(no);
+		List<TimeLeavingWork> timeLeavingWorks = new ArrayList<TimeLeavingWork>();
+		int index = 1;
+		for (Pair<Integer, Integer> attLeav : allAttLeav) {
+			TimeLeavingWork work = new TimeLeavingWork(new WorkNo(index), null, null);
+			work.setAttendanceStamp(Optional.of(new TimeActualStamp(null,
+					new WorkStamp(new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, null),
+							new TimeWithDayAttr(attLeav.getLeft())), Optional.of(new WorkLocationCD("001"))),
+					0)));
+
+			work.setLeaveStamp(Optional.of(new TimeActualStamp(null,
+					new WorkStamp(new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, null),
+							new TimeWithDayAttr(attLeav.getRight())), Optional.of(new WorkLocationCD("001"))),
+					0)));
+
+			timeLeavingWorks.add(work);
+			index++;
+		}
+		Optional<TimeLeavingOfDailyAttd> attendanceLeave = Optional
+				.of(new TimeLeavingOfDailyAttd(timeLeavingWorks, new WorkTimes(1)));
+
+		IntegrationOfDaily domainDaily = new IntegrationOfDaily(
+				new WorkInfoOfDailyAttendance(new WorkInformation("001", "001"), CalculationState.No_Calculated,
+						NotUseAttribute.Not_use, NotUseAttribute.Not_use, DayOfWeek.FRIDAY, new ArrayList<>()),
+				null, null, Optional.empty(), new ArrayList<>(), Optional.empty(), new BreakTimeOfDailyAttd(),
+				Optional.empty(), attendanceLeave, Optional.empty(), Optional.empty(), Optional.empty(),
+				Optional.empty(), new ArrayList<>(), Optional.empty(), new ArrayList<>(), Optional.empty());
+		return new DailyRecordOfApplication(new ArrayList<>(), classification, domainDaily);
+	}
+
+	public static DailyRecordOfApplication addTimeLeavNo(int no) {
+		return addTimeLeavNo(no, createRCWithTimeLeavOverTime());
+	}
+	
+	public static DailyRecordOfApplication addTimeLeavNo(int no,  DailyRecordOfApplication daily) {
+		// 日別勤怠の出退勤
+		TimeLeavingWork work = new TimeLeavingWork(new WorkNo(no), null, null);
+		work.setAttendanceStamp(Optional.of(new TimeActualStamp(null,
+				new WorkStamp(new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, null),
+						new TimeWithDayAttr(1201)), Optional.empty()),
+				0)));
+
+		work.setLeaveStamp(Optional.of(new TimeActualStamp(null,
+				new WorkStamp(new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, null),
+						new TimeWithDayAttr(1300)), Optional.empty()),
+				0)));
+
+		daily.getAttendanceLeave().ifPresent(x -> {
+			x.getTimeLeavingWorks().add(work);
+		});
+		return daily;
+	}
+	
+	public static DailyRecordOfApplication createRCWithTimeLeavOverTime(ScheduleRecordClassifi classification, Integer no,
+		List<OverTimeFrameTime> overTimeWorkFrameTime, List<OverTimeFrameTimeSheet> frameTimeSheetList) {
 
 		// 日別勤怠の出退勤
 		TimeLeavingWork work = new TimeLeavingWork(new WorkNo(no), null, null);
@@ -231,10 +358,51 @@ public class ReflectApplicationHelper {
 				OutingTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
 						WithinOutingTotalTime.sameTime(TimeWithCalculation.sameTime(new AttendanceTime(0))),
 						TimeWithCalculation.sameTime(new AttendanceTime(0))), lstSheet));
-		AttendanceTimeOfDailyAttendance attTime = new AttendanceTimeOfDailyAttendance(null,
-				ActualWorkingTimeOfDaily.of(new TotalWorkingTime(null, null, null, null, null, lateTimeOfDaily,
-						leaveEarlyTimeOfDaily, null, outingTimeOfDailyPerformance, null, null, null, null, null, null), 0, 0, 0, 0),
-				null, null, null, null);
+		
+		//日別実績の所定外時間
+		
+		List<HolidayWorkFrameTime> holidayWorkFrameTime = new ArrayList<HolidayWorkFrameTime>();
+		if(no != null) {
+			holidayWorkFrameTime.add(HolidayWorkFrameTime.createDefaultWithNo(no));
+		}
+		ExcessOfStatutoryTimeOfDaily excessOfStatutory = new ExcessOfStatutoryTimeOfDaily(
+				new ExcessOfStatutoryMidNightTime(TimeDivergenceWithCalculation.defaultValue(), new AttendanceTime(0)),
+				Optional.of(new OverTimeOfDaily(frameTimeSheetList, overTimeWorkFrameTime,
+						Finally.of(new ExcessOverTimeWorkMidNightTime(TimeDivergenceWithCalculation.defaultValue())))),
+				Optional.of(new HolidayWorkTimeOfDaily(new ArrayList<>(), holidayWorkFrameTime, Finally.empty(),
+						new AttendanceTime(0))));
+		// 加給時間
+		List<BonusPayTime> raisingSalaryTimes = new ArrayList<BonusPayTime>();
+		// 特定日加給時間
+		List<BonusPayTime> autoCalRaisingSalarySettings = new ArrayList<BonusPayTime>();
+		if(no != null) {
+			raisingSalaryTimes.add(BonusPayTime.createDefaultWithNo(no));
+			autoCalRaisingSalarySettings.add(BonusPayTime.createDefaultWithNo(no));
+		}
+		
+		List<DivergenceTime> divergenceTime = new ArrayList<DivergenceTime>();
+		if(no != null) {
+			divergenceTime.add(DivergenceTime.createDefaultWithNo(no));
+		}
+		
+		HolidayOfDaily holiday = new HolidayOfDaily(new AbsenceOfDaily(new AttendanceTime(0)),
+				new TimeDigestOfDaily(new AttendanceTime(0), new AttendanceTime(0)),
+				new YearlyReservedOfDaily(new AttendanceTime(0)),
+				new SubstituteHolidayOfDaily(new AttendanceTime(0), new AttendanceTime(0)),
+				new OverSalaryOfDaily(new AttendanceTime(0), new AttendanceTime(0)),
+				new SpecialHolidayOfDaily(new AttendanceTime(0), new AttendanceTime(0)),
+				new AnnualOfDaily(new AttendanceTime(0), new AttendanceTime(0)),
+				new TransferHolidayOfDaily(new AttendanceTime(0)));
+		val actualWork = new ActualWorkingTimeOfDaily(AttendanceTime.ZERO, ConstraintTime.defaultValue(),
+				AttendanceTime.ZERO,
+				new TotalWorkingTime(null, null, null, null, excessOfStatutory, lateTimeOfDaily, leaveEarlyTimeOfDaily,
+						null, outingTimeOfDailyPerformance,
+						new RaiseSalaryTimeOfDailyPerfor(raisingSalaryTimes, autoCalRaisingSalarySettings), null, null,
+						null, holiday, null),
+				new DivergenceTimeOfDaily(divergenceTime), new PremiumTimeOfDailyPerformance(new ArrayList<>()));
+
+		AttendanceTimeOfDailyAttendance attTime = new AttendanceTimeOfDailyAttendance(null, actualWork, null, null,
+				null, null);
 
 		IntegrationOfDaily domainDaily = new IntegrationOfDaily(
 				new WorkInfoOfDailyAttendance(new WorkInformation("001", "001"),
@@ -398,4 +566,103 @@ public class ReflectApplicationHelper {
 				Optional.of(GoingOutReason.PUBLIC), app);
 	}
 	
+	public static AppOverTimeShare createOverTimeAppNone() {
+		return createOverTimeAppBeforeAfter(PrePostAtrShare.NONE);
+	}
+	
+	public static AppOverTimeShare createOverTimeAppBeforeAfter(PrePostAtrShare type) {
+		ApplicationShare app = ReflectApplicationHelper.createAppShare(ApplicationTypeShare.OVER_TIME_APPLICATION,
+				type, GeneralDate.ymd(2020, 1, 1));
+		AppOverTimeShare createOverTimeApp = createOverTimeApp(0);
+		createOverTimeApp.setApplication(app);
+		return createOverTimeApp;
+	}
+	
+	public static AppOverTimeShare createOverTimeApp(int midNightOutSide) {
+		return createOverTimeAppWorkHours(midNightOutSide, 0, 0);
+	}
+
+	public static AppOverTimeShare createOverTimeAppWorkHours(int startTime, int endTime) {
+		return createOverTimeAppWorkHours(0, startTime, endTime);
+	}
+	
+	public static AppOverTimeShare createOverTimeAppWorkHours(int midNightOutSide, int startTime, int endTime) {
+		List<TimeZoneWithWorkNo> breakTimeOp = new ArrayList<>();
+		breakTimeOp.add(new TimeZoneWithWorkNo(1, 482, 1082));
+		
+		List<TimeZoneWithWorkNo> workHours = new ArrayList<>();
+		workHours.add(new TimeZoneWithWorkNo(1, startTime, endTime));
+		
+		Optional<WorkInformation> workInfoOp = Optional.of(new WorkInformation("003", "003"));
+
+		AppOverTimeShare overTime = new AppOverTimeShare(
+				OvertimeAppAtrShare.NORMAL_OVERTIME, new ApplicationTimeShare(new ArrayList<>(), Optional.empty(), //
+						Optional.of(new OverTimeShiftNightShare(new ArrayList<>(), new AttendanceTime(midNightOutSide),
+								new AttendanceTime(midNightOutSide))), //
+						new ArrayList<>(), new ArrayList<>()),
+				breakTimeOp, // 休憩時間帯
+				workHours, //
+				workInfoOp, // 勤務情報
+				Optional.empty());
+		overTime.setPrePostAtr(PrePostAtrShare.PREDICT);
+		return overTime;
+	}
+	
+	public static AppOverTimeShare createOverTime(AttendanceTypeShare attendanceType,
+			Integer applicationTime) {
+		List<TimeZoneWithWorkNo> breakTimeOp = new ArrayList<>();
+		breakTimeOp.add(new TimeZoneWithWorkNo(1, 482, 1082));
+		
+		List<TimeZoneWithWorkNo> workHours = new ArrayList<>();
+		Optional<WorkInformation> workInfoOp = Optional.of(new WorkInformation("003", "003"));
+		 List<OvertimeApplicationSettingShare> applicationTimes = new ArrayList<>();
+		 applicationTimes.add(new OvertimeApplicationSettingShare(1, attendanceType, applicationTime));
+		
+
+		AppOverTimeShare overTime = new AppOverTimeShare(
+				OvertimeAppAtrShare.NORMAL_OVERTIME, new ApplicationTimeShare(applicationTimes, Optional.empty(), //
+						Optional.of(new OverTimeShiftNightShare(new ArrayList<>(), new AttendanceTime(0),
+								new AttendanceTime(0))), //
+						new ArrayList<>(), new ArrayList<>()),
+				breakTimeOp, // 休憩時間帯
+				workHours, //
+				workInfoOp, // 勤務情報
+				Optional.empty());
+		overTime.setPrePostAtr(PrePostAtrShare.PREDICT);
+		return overTime;
+	}
+	
+	public static AppOverTimeShare createOverTimeReason(String reason, String reasonCode, Integer no) {
+		List<TimeZoneWithWorkNo> breakTimeOp = new ArrayList<>();
+		breakTimeOp.add(new TimeZoneWithWorkNo(1, 482, 1082));
+
+		List<TimeZoneWithWorkNo> workHours = new ArrayList<>();
+		Optional<WorkInformation> workInfoOp = Optional.of(new WorkInformation("003", "003"));
+		List<ReasonDivergenceShare> reasonDissociation = new ArrayList<>();
+		reasonDissociation.add(
+				new ReasonDivergenceShare(new DivergenceReasonShare(reason), new DiverdenceReasonCode(reasonCode), no));
+
+		AppOverTimeShare overTime = new AppOverTimeShare(
+				OvertimeAppAtrShare.NORMAL_OVERTIME, new ApplicationTimeShare(new ArrayList<>(), Optional.empty(), //
+						Optional.of(new OverTimeShiftNightShare(new ArrayList<>(), new AttendanceTime(0),
+								new AttendanceTime(0))), //
+						new ArrayList<>(), reasonDissociation),
+				breakTimeOp, // 休憩時間帯
+				workHours, //
+				workInfoOp, // 勤務情報
+				Optional.empty());
+		overTime.setPrePostAtr(PrePostAtrShare.PREDICT);
+		return overTime;
+	}
+	
+	public static OvertimeApplicationSettingShare createAppSettingShare(AttendanceTypeShare attendanceType,
+			Integer applicationTime) {
+		return  createAppSettingShare(0, attendanceType, applicationTime);
+	}
+	public static OvertimeApplicationSettingShare createAppSettingShare(Integer no, AttendanceTypeShare attendanceType,
+			Integer applicationTime) {
+
+		return new OvertimeApplicationSettingShare(no, attendanceType, applicationTime);
+
+	}
 }
