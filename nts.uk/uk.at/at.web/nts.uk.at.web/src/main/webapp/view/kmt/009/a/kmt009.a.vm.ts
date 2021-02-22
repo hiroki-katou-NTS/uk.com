@@ -197,8 +197,8 @@ module nts.uk.at.view.kmt09.a {
     openDialogKDL012() {
       const vm = this;
 
-      vm.$window.modal('/view/kdl/012/a/index.xhtml').done((data) => {
-        
+      vm.$window.modal('/view/kdl/012/index.xhtml').done((data) => {
+        console.log(data);
       });
     }
 
