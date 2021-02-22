@@ -330,4 +330,14 @@ public class OutingTimeOfDaily {
 		return result;
 	}
 	
+	public static OutingTimeOfDaily createDefaultWithReason(GoingOutReason reason) {
+		return new OutingTimeOfDaily(new BreakTimeGoOutTimes(0), reason, TimevacationUseTimeOfDaily.defaultValue(),
+				OutingTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
+						WithinOutingTotalTime.sameTime(TimeWithCalculation.sameTime(new AttendanceTime(0))),
+						TimeWithCalculation.sameTime(new AttendanceTime(0))),
+				OutingTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
+						WithinOutingTotalTime.sameTime(TimeWithCalculation.sameTime(new AttendanceTime(0))),
+						TimeWithCalculation.sameTime(new AttendanceTime(0))),
+				new ArrayList<>());
+	}
 }

@@ -16,7 +16,6 @@ import nts.uk.ctx.at.request.dom.applicationreflect.algorithm.reflectprocess.Pro
 import nts.uk.ctx.at.request.dom.applicationreflect.algorithm.reflectprocess.ProcessReflectWorkSchedule;
 import nts.uk.ctx.at.request.dom.applicationreflect.object.OneDayReflectStatusOutput;
 import nts.uk.ctx.at.request.dom.applicationreflect.object.ReflectStatusResult;
-import nts.uk.ctx.at.request.dom.applicationreflect.service.workschedule.ExecutionType;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 
 /**
@@ -28,7 +27,7 @@ public class ReflectionProcess {
 
 	// 反映処理
 	public static Pair<Optional<OneDayReflectStatusOutput>, Optional<AtomTask>> process(Require require,
-			String companyId, Application application, ExecutionType execType, boolean isCalWhenLock,
+			String companyId, Application application, boolean isCalWhenLock,
 			GeneralDate targetDate, SEmpHistImport empHist) {
 
 		// 対象日の反映状態を<output>1日の反映状態にセット
@@ -49,14 +48,14 @@ public class ReflectionProcess {
 		List<AtomTask> tasks = new ArrayList<>();
 		// 勤務予定への反映処理-- in processing
 		Pair<ReflectStatusResult, Optional<AtomTask>> reflectSchedule = ProcessReflectWorkSchedule.processReflect(
-				require, companyId, closureEmpOpt.get().getClosureId(), application, execType, isCalWhenLock,
+				require, companyId, closureEmpOpt.get().getClosureId(), application, isCalWhenLock,
 				targetDate, result.getStatusWorkSchedule());
 		result.setStatusWorkSchedule(reflectSchedule.getLeft());
 		reflectSchedule.getRight().ifPresent(x -> tasks.add(x));
 
 		// 勤務実績への反映処理-- in processing
 		Pair<ReflectStatusResult, Optional<AtomTask>> resultRecord = ProcessReflectWorkRecord.processReflect(require,
-				companyId, closureEmpOpt.get().getClosureId(), application, execType, isCalWhenLock, targetDate,
+				companyId, closureEmpOpt.get().getClosureId(), application, isCalWhenLock, targetDate,
 				result.getStatusWorkRecord());
 		result.setStatusWorkRecord(resultRecord.getLeft());
 		resultRecord.getRight().ifPresent(x -> tasks.add(x));

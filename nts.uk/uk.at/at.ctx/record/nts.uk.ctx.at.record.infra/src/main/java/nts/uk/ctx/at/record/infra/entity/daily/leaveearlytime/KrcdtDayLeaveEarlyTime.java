@@ -124,7 +124,7 @@ public class KrcdtDayLeaveEarlyTime  extends UkJpaEntity implements Serializable
 			/*特別休暇枠No*/
 			this.specialHdFrameNo = vacationUse.getSpecialHolidayFrameNo().map(c -> c.v()).orElse(null);
 			/*子の看護休暇使用時間*/
-			this.childCareUseTime = vacationUse.getTimeChildCareHolidayUseTime() == null ? 0 : vacationUse.getTimeCareHolidayUseTime().valueAsMinutes();
+			this.childCareUseTime = vacationUse.getTimeChildCareHolidayUseTime() == null ? 0 : vacationUse.getTimeChildCareHolidayUseTime().valueAsMinutes();
 			/*介護休暇使用時間*/
 			this.careUseTime = vacationUse.getTimeCareHolidayUseTime() == null ? 0 : vacationUse.getTimeCareHolidayUseTime().valueAsMinutes();
 		}

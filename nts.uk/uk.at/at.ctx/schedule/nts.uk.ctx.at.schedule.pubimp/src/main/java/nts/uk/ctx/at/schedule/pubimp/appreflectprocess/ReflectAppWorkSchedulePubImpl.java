@@ -126,7 +126,7 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 	private TimeLeaveAppReflectRepository timeLeaveAppReflectRepository;
 
 	@Override
-	public Pair<Object, AtomTask> process(int type, Object application, GeneralDate date, Object reflectStatus, int preAppWorkScheReflectAttr) {
+	public Pair<Object, AtomTask> process(Object application, GeneralDate date, Object reflectStatus, int preAppWorkScheReflectAttr) {
 		String companyId = AppContexts.user().companyId();
 		
 		RequireImpl impl = new RequireImpl(companyId, workTypeRepo, workTimeSettingRepository, service,
@@ -136,8 +136,8 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 				goBackReflectRepository, stampAppReflectRepository, lateEarlyCancelReflectRepository,
 				reflectWorkChangeAppRepository, timeLeaveAppReflectRepository);
 		Pair<ReflectStatusResultShare, AtomTask> result = ReflectApplicationWorkSchedule.process(impl, companyId,
-				EnumAdaptor.valueOf(type, ExecutionType.class), (ApplicationShare) application, date,
-				(ReflectStatusResultShare) reflectStatus, preAppWorkScheReflectAttr);
+				(ApplicationShare) application, date, (ReflectStatusResultShare) reflectStatus,
+				preAppWorkScheReflectAttr);
 		return Pair.of(result.getLeft(), result.getRight());
 	}
 

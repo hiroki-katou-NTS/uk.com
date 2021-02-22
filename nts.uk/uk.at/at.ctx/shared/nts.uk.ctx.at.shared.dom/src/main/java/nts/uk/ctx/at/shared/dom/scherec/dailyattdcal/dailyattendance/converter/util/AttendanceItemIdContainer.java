@@ -723,8 +723,12 @@ public class AttendanceItemIdContainer implements ItemConst {
 		
 		temp.put(1131, join(totalLabol, LEAVE_EARLY, HOLIDAY + USAGE, joinNS(SPECIAL, NUMBER_1)));
 		temp.put(1132, join(totalLabol, LEAVE_EARLY, HOLIDAY + USAGE, joinNS(SPECIAL+FRAME, NUMBER_1)));
+		temp.put(1133, join(totalLabol, LEAVE_EARLY, HOLIDAY + USAGE, joinNS(CHILD_CARE, NUMBER_1)));
+		temp.put(1134, join(totalLabol, LEAVE_EARLY, HOLIDAY + USAGE, joinNS(CARE, NUMBER_1)));
 		temp.put(1135, join(totalLabol, LEAVE_EARLY, HOLIDAY + USAGE, joinNS(SPECIAL, NUMBER_2)));
 		temp.put(1136, join(totalLabol, LEAVE_EARLY, HOLIDAY + USAGE, joinNS(SPECIAL+FRAME, NUMBER_2)));
+		temp.put(1137, join(totalLabol, LEAVE_EARLY, HOLIDAY + USAGE, joinNS(CHILD_CARE, NUMBER_2)));
+		temp.put(1138, join(totalLabol, LEAVE_EARLY, HOLIDAY + USAGE, joinNS(CARE, NUMBER_2)));
 		
 		temp.put(609, join(totalLabol, LEAVE_EARLY, HOLIDAY + USAGE, joinNS(COMPENSATORY, NUMBER_1)));
 		temp.put(615, join(totalLabol, LEAVE_EARLY, HOLIDAY + USAGE, joinNS(COMPENSATORY, NUMBER_2)));
@@ -741,8 +745,12 @@ public class AttendanceItemIdContainer implements ItemConst {
 		
 		temp.put(1123, join(totalLabol, LATE, HOLIDAY + USAGE, joinNS(SPECIAL, NUMBER_1)));
 		temp.put(1124, join(totalLabol, LATE, HOLIDAY + USAGE, joinNS(SPECIAL+FRAME, NUMBER_1)));
+		temp.put(1125, join(totalLabol, LATE, HOLIDAY + USAGE, joinNS(CHILD_CARE, NUMBER_1)));
+		temp.put(1126, join(totalLabol, LATE, HOLIDAY + USAGE, joinNS(CARE, NUMBER_1)));
 		temp.put(1127, join(totalLabol, LATE, HOLIDAY + USAGE, joinNS(SPECIAL, NUMBER_2)));
 		temp.put(1128, join(totalLabol, LATE, HOLIDAY + USAGE, joinNS(SPECIAL+FRAME, NUMBER_2)));
+		temp.put(1129, join(totalLabol, LATE, HOLIDAY + USAGE, joinNS(CHILD_CARE, NUMBER_2)));
+		temp.put(1130, join(totalLabol, LATE, HOLIDAY + USAGE, joinNS(CARE, NUMBER_2)));
 		
 		
 		temp.put(597, join(totalLabol, LATE, HOLIDAY + USAGE, joinNS(COMPENSATORY, NUMBER_1)));
@@ -781,6 +789,8 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(503, join(totalLabol, GO_OUT, HOLIDAY + USAGE, joinNS(EXCESS, DEFAULT_ENUM_SEPERATOR, E_SUPPORT)));
 		temp.put(504, join(totalLabol, GO_OUT, HOLIDAY + USAGE, joinNS(SPECIAL, DEFAULT_ENUM_SEPERATOR, E_SUPPORT)));
 		temp.put(1145, join(totalLabol, GO_OUT, HOLIDAY + USAGE, joinNS(SPECIAL+FRAME, DEFAULT_ENUM_SEPERATOR, E_SUPPORT)));
+		temp.put(1140, join(totalLabol, GO_OUT, HOLIDAY + USAGE, joinNS(CHILD_CARE, DEFAULT_ENUM_SEPERATOR, E_SUPPORT)));
+		temp.put(1141, join(totalLabol, GO_OUT, HOLIDAY + USAGE, joinNS(CARE, DEFAULT_ENUM_SEPERATOR, E_SUPPORT)));
 		
 		temp.put(505, join(totalLabol, GO_OUT, HOLIDAY + USAGE, joinNS(COMPENSATORY, DEFAULT_ENUM_SEPERATOR, E_SUPPORT)));
 		temp.put(506, join(totalLabol, GO_OUT, HOLIDAY + USAGE, joinNS(ANNUNAL_LEAVE, DEFAULT_ENUM_SEPERATOR, E_UNION)));
@@ -795,6 +805,8 @@ public class AttendanceItemIdContainer implements ItemConst {
 		temp.put(515, join(totalLabol, GO_OUT, HOLIDAY + USAGE, joinNS(EXCESS, DEFAULT_ENUM_SEPERATOR, E_OFFICAL)));
 		temp.put(516, join(totalLabol, GO_OUT, HOLIDAY + USAGE, joinNS(SPECIAL, DEFAULT_ENUM_SEPERATOR, E_OFFICAL)));
 		temp.put(1146, join(totalLabol, GO_OUT, HOLIDAY + USAGE, joinNS(SPECIAL+FRAME, DEFAULT_ENUM_SEPERATOR, E_OFFICAL)));
+		temp.put(1142, join(totalLabol, GO_OUT, HOLIDAY + USAGE, joinNS(CHILD_CARE, DEFAULT_ENUM_SEPERATOR, E_OFFICAL)));
+		temp.put(1143, join(totalLabol, GO_OUT, HOLIDAY + USAGE, joinNS(CARE, DEFAULT_ENUM_SEPERATOR, E_OFFICAL)));
 		
 		temp.put(517, join(totalLabol, GO_OUT, HOLIDAY + USAGE, joinNS(COMPENSATORY, DEFAULT_ENUM_SEPERATOR, E_OFFICAL)));
 		temp.put(466, join(totalLabol, GO_OUT, CALC + OUT_CORE, joinNS(TIME, DEFAULT_ENUM_SEPERATOR, E_SUPPORT)));

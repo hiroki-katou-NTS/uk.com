@@ -48,7 +48,7 @@ public class ReflectTimeDigestTimeVacationTest {
 
 		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getLateTimeOfDaily().get(0).getTimePaidUseTime()
 				.getSixtyHourExcessHolidayUseTime().v()).isEqualTo(60);
-		assertThat(result).isEqualTo(Arrays.asList(595, 596, 597, 1123, 1124));
+		assertThat(result).isEqualTo(Arrays.asList(595, 596, 597, 1123, 1124, 1125, 1126));
 
 	}
 
@@ -83,7 +83,7 @@ public class ReflectTimeDigestTimeVacationTest {
 
 		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getLeaveEarlyTimeOfDaily().get(0)
 				.getTimePaidUseTime().getSixtyHourExcessHolidayUseTime().v()).isEqualTo(60);
-		assertThat(result).isEqualTo(Arrays.asList(607, 608, 609, 1131, 1132));
+		assertThat(result).isEqualTo(Arrays.asList(607, 608, 609, 1131, 1132, 1133, 1134));
 
 	}
 
@@ -118,7 +118,7 @@ public class ReflectTimeDigestTimeVacationTest {
 
 		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getOutingTimeOfDaily().get(0)
 				.getTimeVacationUseOfDaily().getSixtyHourExcessHolidayUseTime().v()).isEqualTo(60);
-		assertThat(result).isEqualTo(Arrays.asList(502, 503, 504, 1145, 505));
+		assertThat(result).isEqualTo(Arrays.asList(502, 503, 504, 1145, 505, 1140, 1141));
 
 	}
 

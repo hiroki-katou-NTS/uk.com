@@ -43,6 +43,16 @@ public class CheckConditionReflectAppTimeLeave {
 			timeDigestInit.setOvertime60H(timeDigestApplication.getOvertime60H());
 		}
 
+		// [子看護]をチェック
+		if (condition.getChildNursing()== NotUseAtr.USE) {
+			timeDigestInit.setChildTime(timeDigestApplication.getChildTime());
+		}
+
+		// [介護]をチェック
+		if (condition.getNursing() == NotUseAtr.USE) {
+			timeDigestInit.setNursingTime(timeDigestApplication.getNursingTime());
+		}
+
 		return timeDigestInit;
 	}
 }

@@ -121,7 +121,7 @@ public class KrcdtDayLateTime extends UkJpaEntity implements Serializable {
 			/*特別休暇枠No*/
 			this.specialHdFrameNo = vacation.getSpecialHolidayFrameNo().map(c -> c.v()).orElse(null);
 			/*子の看護休暇使用時間*/
-			this.childCareUseTime = vacation.getTimeChildCareHolidayUseTime() == null ? 0 : vacation.getTimeCareHolidayUseTime().valueAsMinutes();
+			this.childCareUseTime = vacation.getTimeChildCareHolidayUseTime() == null ? 0 : vacation.getTimeChildCareHolidayUseTime().valueAsMinutes();
 			/*介護休暇使用時間*/
 			this.careUseTime = vacation.getTimeCareHolidayUseTime() == null ? 0 : vacation.getTimeCareHolidayUseTime().valueAsMinutes();
 		}

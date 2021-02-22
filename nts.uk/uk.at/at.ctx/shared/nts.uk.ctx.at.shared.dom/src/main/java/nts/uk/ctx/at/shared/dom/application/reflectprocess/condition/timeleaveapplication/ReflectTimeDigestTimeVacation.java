@@ -7,16 +7,11 @@ import java.util.List;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.UpdateEditSttCreateBeforeAppReflect;
 import nts.uk.ctx.at.shared.dom.application.timeleaveapplication.TimeDigestApplicationShare;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.AppTimeType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.TimevacationUseTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakTimeGoOutTimes;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTotalTime;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.LateTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.WithinOutingTotalTime;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHdFrameNo;
 
@@ -34,51 +29,37 @@ public class ReflectTimeDigestTimeVacation {
 		List<Integer> lstItemId = new ArrayList<>();
 		if (appTimeType == AppTimeType.ATWORK || appTimeType == AppTimeType.ATWORK2) {
 			dailyApp.getAttendanceTimeOfDailyPerformance().ifPresent(x -> {
+				if (x.getLateTimeOfDaily().isEmpty()) {
+					x.getLateTimeOfDaily().add(LateTimeOfDaily.createDefaultWithNo(1));
+				}
 				// [input. 時間消化申請(work)]を 日別勤怠(work）の遅刻時間へセット
 				for (LateTimeOfDaily data : x.getLateTimeOfDaily()) {
 					if (data.getWorkNo().v() == 1 && appTimeType == AppTimeType.ATWORK) {
-						data.getTimePaidUseTime().setTimeAnnualLeaveUseTime(timeDigest.getTimeAnnualLeave());
-						data.getTimePaidUseTime().setTimeCompensatoryLeaveUseTime(timeDigest.getTimeOff());
-						data.getTimePaidUseTime().setTimeSpecialHolidayUseTime(timeDigest.getTimeSpecialVacation());
-						data.getTimePaidUseTime().setSpecialHolidayFrameNo(
-								timeDigest.getSpecialVacationFrameNO().map(y -> new SpecialHdFrameNo(y)));
-						data.getTimePaidUseTime().setSixtyHourExcessHolidayUseTime(timeDigest.getOvertime60H());
-						lstItemId.addAll(Arrays.asList(595, 596, 597, 1123, 1124));
+						updateVacationTime(data.getTimePaidUseTime(), timeDigest);
+						lstItemId.addAll(Arrays.asList(595, 596, 597, 1123, 1124, 1125, 1126));
 					}
 
 					if (data.getWorkNo().v() == 2 && appTimeType == AppTimeType.ATWORK2) {
-						data.getTimePaidUseTime().setTimeAnnualLeaveUseTime(timeDigest.getTimeAnnualLeave());
-						data.getTimePaidUseTime().setTimeCompensatoryLeaveUseTime(timeDigest.getTimeOff());
-						data.getTimePaidUseTime().setTimeSpecialHolidayUseTime(timeDigest.getTimeSpecialVacation());
-						data.getTimePaidUseTime().setSpecialHolidayFrameNo(
-								timeDigest.getSpecialVacationFrameNO().map(y -> new SpecialHdFrameNo(y)));
-						data.getTimePaidUseTime().setSixtyHourExcessHolidayUseTime(timeDigest.getOvertime60H());
-						lstItemId.addAll(Arrays.asList(601, 602, 603, 1127, 1128));
+						updateVacationTime(data.getTimePaidUseTime(), timeDigest);
+						lstItemId.addAll(Arrays.asList(601, 602, 603, 1127, 1128, 1129,1130));
 					}
 				}
 			});
 		} else if (appTimeType == AppTimeType.OFFWORK || appTimeType == AppTimeType.OFFWORK2) {
 			// [input. 時間消化申請(work)]を 日別勤怠(work）の早退時間へセット
 			dailyApp.getAttendanceTimeOfDailyPerformance().ifPresent(x -> {
+				if (x.getLeaveEarlyTimeOfDaily().isEmpty()) {
+					x.getLeaveEarlyTimeOfDaily().add(LeaveEarlyTimeOfDaily.createDefaultWithNo(1));
+				}
 				for (LeaveEarlyTimeOfDaily data : x.getLeaveEarlyTimeOfDaily()) {
 					if (data.getWorkNo().v() == 1 && appTimeType == AppTimeType.OFFWORK) {
-						data.getTimePaidUseTime().setTimeAnnualLeaveUseTime(timeDigest.getTimeAnnualLeave());
-						data.getTimePaidUseTime().setTimeCompensatoryLeaveUseTime(timeDigest.getTimeOff());
-						data.getTimePaidUseTime().setTimeSpecialHolidayUseTime(timeDigest.getTimeSpecialVacation());
-						data.getTimePaidUseTime().setSpecialHolidayFrameNo(
-								timeDigest.getSpecialVacationFrameNO().map(y -> new SpecialHdFrameNo(y)));
-						data.getTimePaidUseTime().setSixtyHourExcessHolidayUseTime(timeDigest.getOvertime60H());
-						lstItemId.addAll(Arrays.asList(607, 608, 609, 1131, 1132));
+						updateVacationTime(data.getTimePaidUseTime(), timeDigest);
+						lstItemId.addAll(Arrays.asList(607, 608, 609, 1131, 1132, 1133, 1134));
 					}
 
 					if (data.getWorkNo().v() == 2 && appTimeType == AppTimeType.OFFWORK2) {
-						data.getTimePaidUseTime().setTimeAnnualLeaveUseTime(timeDigest.getTimeAnnualLeave());
-						data.getTimePaidUseTime().setTimeCompensatoryLeaveUseTime(timeDigest.getTimeOff());
-						data.getTimePaidUseTime().setTimeSpecialHolidayUseTime(timeDigest.getTimeSpecialVacation());
-						data.getTimePaidUseTime().setSpecialHolidayFrameNo(
-								timeDigest.getSpecialVacationFrameNO().map(y -> new SpecialHdFrameNo(y)));
-						data.getTimePaidUseTime().setSixtyHourExcessHolidayUseTime(timeDigest.getOvertime60H());
-						lstItemId.addAll(Arrays.asList(613, 614, 615, 1135, 1136));
+						updateVacationTime(data.getTimePaidUseTime(), timeDigest);
+						lstItemId.addAll(Arrays.asList(613, 614, 615, 1135, 1136, 1137, 1138));
 					}
 				}
 			});
@@ -86,41 +67,21 @@ public class ReflectTimeDigestTimeVacation {
 			dailyApp.getAttendanceTimeOfDailyPerformance().ifPresent(x -> {
 				// [input.時間消化申請(work）を日別勤怠(work）の外出時間]へセット
 				if (x.getOutingTimeOfDaily().isEmpty()) {
-					x.getOutingTimeOfDaily().add(new OutingTimeOfDaily(new BreakTimeGoOutTimes(0),
-							appTimeType == AppTimeType.PRIVATE ? GoingOutReason.PRIVATE : GoingOutReason.UNION,
-							TimevacationUseTimeOfDaily.defaultValue(),
-							OutingTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
-									WithinOutingTotalTime.sameTime(TimeWithCalculation.sameTime(new AttendanceTime(0))),
-									TimeWithCalculation.sameTime(new AttendanceTime(0))),
-							OutingTotalTime.of(TimeWithCalculation.sameTime(new AttendanceTime(0)),
-									WithinOutingTotalTime.sameTime(TimeWithCalculation.sameTime(new AttendanceTime(0))),
-									TimeWithCalculation.sameTime(new AttendanceTime(0))),
-							new ArrayList<>()));
+					x.getOutingTimeOfDaily().add(OutingTimeOfDaily.createDefaultWithReason(
+							appTimeType == AppTimeType.PRIVATE ? GoingOutReason.PRIVATE : GoingOutReason.UNION));
 				}
-				
+
 				for (OutingTimeOfDaily data : x.getOutingTimeOfDaily()) {
 					if (appTimeType == AppTimeType.PRIVATE) {
 						data.setReason(GoingOutReason.PRIVATE);
-						data.getTimeVacationUseOfDaily().setTimeAnnualLeaveUseTime(timeDigest.getTimeAnnualLeave());
-						data.getTimeVacationUseOfDaily().setTimeCompensatoryLeaveUseTime(timeDigest.getTimeOff());
-						data.getTimeVacationUseOfDaily()
-								.setTimeSpecialHolidayUseTime(timeDigest.getTimeSpecialVacation());
-						data.getTimeVacationUseOfDaily().setSpecialHolidayFrameNo(
-								timeDigest.getSpecialVacationFrameNO().map(y -> new SpecialHdFrameNo(y)));
-						data.getTimeVacationUseOfDaily().setSixtyHourExcessHolidayUseTime(timeDigest.getOvertime60H());
-						lstItemId.addAll(Arrays.asList(502, 503, 504, 1145, 505));
+						updateVacationTime(data.getTimeVacationUseOfDaily(), timeDigest);
+						lstItemId.addAll(Arrays.asList(502, 503, 504, 1145, 505, 1140, 1141));
 					}
 
 					if (appTimeType == AppTimeType.UNION) {
 						data.setReason(GoingOutReason.UNION);
-						data.getTimeVacationUseOfDaily().setTimeAnnualLeaveUseTime(timeDigest.getTimeAnnualLeave());
-						data.getTimeVacationUseOfDaily().setTimeCompensatoryLeaveUseTime(timeDigest.getTimeOff());
-						data.getTimeVacationUseOfDaily()
-								.setTimeSpecialHolidayUseTime(timeDigest.getTimeSpecialVacation());
-						data.getTimeVacationUseOfDaily().setSpecialHolidayFrameNo(
-								timeDigest.getSpecialVacationFrameNO().map(y -> new SpecialHdFrameNo(y)));
-						data.getTimeVacationUseOfDaily().setSixtyHourExcessHolidayUseTime(timeDigest.getOvertime60H());
-						lstItemId.addAll(Arrays.asList(514, 515, 516, 1146, 517));
+						updateVacationTime(data.getTimeVacationUseOfDaily(), timeDigest);
+						lstItemId.addAll(Arrays.asList(514, 515, 516, 1146, 517, 1142, 1143));
 					}
 				}
 			});
@@ -132,4 +93,14 @@ public class ReflectTimeDigestTimeVacation {
 		return lstItemId;
 	}
 
+	// 日別勤怠の時間休暇使用時間を更新する
+	private static void updateVacationTime(TimevacationUseTimeOfDaily data, TimeDigestApplicationShare timeDigest) {
+		data.setTimeAnnualLeaveUseTime(timeDigest.getTimeAnnualLeave());
+		data.setTimeCompensatoryLeaveUseTime(timeDigest.getTimeOff());
+		data.setTimeSpecialHolidayUseTime(timeDigest.getTimeSpecialVacation());
+		data.setSpecialHolidayFrameNo(timeDigest.getSpecialVacationFrameNO().map(y -> new SpecialHdFrameNo(y)));
+		data.setSixtyHourExcessHolidayUseTime(timeDigest.getOvertime60H());
+		data.setTimeChildCareHolidayUseTime(timeDigest.getChildTime());
+		data.setTimeCareHolidayUseTime(timeDigest.getNursingTime());
+	}
 }
