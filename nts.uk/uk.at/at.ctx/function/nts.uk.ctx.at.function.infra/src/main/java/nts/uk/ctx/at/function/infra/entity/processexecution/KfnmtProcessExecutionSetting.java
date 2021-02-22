@@ -39,18 +39,18 @@ import nts.uk.ctx.at.function.dom.processexecution.personalschedule.CreationPeri
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.PersonalScheduleCreation;
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.PersonalScheduleCreationPeriod;
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.TargetDate;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class KfnmtProcessExecutionSetting.
  */
 @Data
 @Entity
-@Table(name = "KFNMT_PROC_EXEC_SETTING")
+@Table(name = "KFNMT_AUTOEXEC_SETTEING")
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Serializable {
+public class KfnmtProcessExecutionSetting extends ContractUkJpaEntity implements Serializable {
 
 	/**
 	 * The Constant serialVersionUID.
@@ -69,12 +69,6 @@ public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Seriali
 	 */
 	@EmbeddedId
 	public KfnmtProcessExecutionSettingPK kfnmtProcExecSetPK;
-
-	/**
-	 * The contract code.
-	 */
-	@Column(name = "CONTRACT_CD")
-	public String contractCode;
 
 	/**
 	 * The personal schedule creation classification.<br>
@@ -359,7 +353,6 @@ public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Seriali
 	                                    int recreateTransfer, int recreateLeaveSya, int indexReorgArt, int updStatisticsArt) {
 		super();
 		this.kfnmtProcExecSetPK = kfnmtProcExecSetPK;
-		this.contractCode = contractCode;
 		this.perScheduleCls = perScheduleCls;
 		this.targetMonth = targetMonth;
 		this.targetDate = targetDate;
@@ -415,7 +408,6 @@ public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Seriali
 		}
 		KfnmtProcessExecutionSetting entity = new KfnmtProcessExecutionSetting();
 		entity.kfnmtProcExecSetPK = new KfnmtProcessExecutionSettingPK(companyId, execItemCode);
-		entity.contractCode = contractCode;
 		entity.perScheduleCls = domain.getPerScheduleCreation().getPerScheduleCls().value;
 		entity.targetMonth = domain.getPerScheduleCreation().getPerSchedulePeriod().getTargetMonth().value;
 		entity.targetDate = domain.getPerScheduleCreation().getPerSchedulePeriod().getTargetDate()

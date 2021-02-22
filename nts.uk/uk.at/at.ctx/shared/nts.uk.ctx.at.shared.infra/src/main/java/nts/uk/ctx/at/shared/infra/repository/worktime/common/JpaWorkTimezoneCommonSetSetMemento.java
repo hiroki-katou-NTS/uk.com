@@ -24,11 +24,11 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneMedicalSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneShortTimeWorkSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSet;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtMedicalTimeSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComMedical;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtMedicalTimeSetPK;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtSubstitutionSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtComHdcom;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtSubstitutionSetPK;
-import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtCom;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSetPK;
 
 /**
@@ -37,14 +37,14 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSetP
 public class JpaWorkTimezoneCommonSetSetMemento implements WorkTimezoneCommonSetSetMemento {
 
 	/** The entity. */
-	private KshmtWorktimeCommonSet entity;
+	private KshmtWtCom entity;
 
 	/**
 	 * Instantiates a new jpa work timezone common set set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaWorkTimezoneCommonSetSetMemento(KshmtWorktimeCommonSet entity) {
+	public JpaWorkTimezoneCommonSetSetMemento(KshmtWtCom entity) {
 		super();
 		if (entity.getKshmtWorktimeCommonSetPK() == null) {
 			entity.setKshmtWorktimeCommonSetPK(new KshmtWorktimeCommonSetPK());
@@ -93,17 +93,17 @@ public class JpaWorkTimezoneCommonSetSetMemento implements WorkTimezoneCommonSet
 			this.entity.setKshmtSubstitutionSets(new ArrayList<>());
 		}
 
-		Map<KshmtSubstitutionSetPK, KshmtSubstitutionSet> existShtSet = this.entity.getKshmtSubstitutionSets().stream()
-				.collect(Collectors.toMap(KshmtSubstitutionSet::getKshmtSubstitutionSetPK, Function.identity()));
+		Map<KshmtSubstitutionSetPK, KshmtWtComHdcom> existShtSet = this.entity.getKshmtSubstitutionSets().stream()
+				.collect(Collectors.toMap(KshmtWtComHdcom::getKshmtSubstitutionSetPK, Function.identity()));
 
 		shtSet.forEach(domain -> {
 			KshmtSubstitutionSetPK pk = new KshmtSubstitutionSetPK(this.entity.getKshmtWorktimeCommonSetPK().getCid(),
 					this.entity.getKshmtWorktimeCommonSetPK().getWorktimeCd(),
 					this.entity.getKshmtWorktimeCommonSetPK().getWorkFormAtr(),
 					this.entity.getKshmtWorktimeCommonSetPK().getWorktimeSetMethod(), domain.getOriginAtr().value);
-			KshmtSubstitutionSet entity = existShtSet.get(pk);
+			KshmtWtComHdcom entity = existShtSet.get(pk);
 			if (entity == null) {
-				entity = new KshmtSubstitutionSet();
+				entity = new KshmtWtComHdcom();
 			}
 
 			domain.saveToMemento(new JpaWorkTimezoneOtherSubHolTimeSetSetMemento(entity));
@@ -129,18 +129,18 @@ public class JpaWorkTimezoneCommonSetSetMemento implements WorkTimezoneCommonSet
 			this.entity.setKshmtMedicalTimeSets(new ArrayList<>());
 		}
 
-		Map<KshmtMedicalTimeSetPK, KshmtMedicalTimeSet> existShtSet = this.entity.getKshmtMedicalTimeSets().stream()
-				.collect(Collectors.toMap(KshmtMedicalTimeSet::getKshmtMedicalTimeSetPK, Function.identity()));
+		Map<KshmtMedicalTimeSetPK, KshmtWtComMedical> existShtSet = this.entity.getKshmtMedicalTimeSets().stream()
+				.collect(Collectors.toMap(KshmtWtComMedical::getKshmtMedicalTimeSetPK, Function.identity()));
 
 		list.forEach(domain -> {
 			KshmtMedicalTimeSetPK pk = new KshmtMedicalTimeSetPK(this.entity.getKshmtWorktimeCommonSetPK().getCid(),
 					this.entity.getKshmtWorktimeCommonSetPK().getWorktimeCd(),
 					this.entity.getKshmtWorktimeCommonSetPK().getWorkFormAtr(),
 					this.entity.getKshmtWorktimeCommonSetPK().getWorktimeSetMethod(), domain.getWorkSystemAtr().value);
-			KshmtMedicalTimeSet entity = existShtSet.get(pk);
+			KshmtWtComMedical entity = existShtSet.get(pk);
 
 			if (entity == null) {
-				entity = new KshmtMedicalTimeSet();
+				entity = new KshmtWtComMedical();
 			}
 
 			domain.saveToMemento(new JpaWorkTimezoneMedicalSetSetMemento(entity));

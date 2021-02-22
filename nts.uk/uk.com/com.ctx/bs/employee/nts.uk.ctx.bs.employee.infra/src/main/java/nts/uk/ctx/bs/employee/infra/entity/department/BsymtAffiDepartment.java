@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class BcmmtAffiDepartment.
@@ -27,7 +27,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name = "BSYMT_AFFI_DEPARTMENT")
-public class BsymtAffiDepartment extends UkJpaEntity {
+public class BsymtAffiDepartment extends ContractUkJpaEntity {
 
 	/** The id. */
 	@Id

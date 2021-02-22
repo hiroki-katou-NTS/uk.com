@@ -47,6 +47,7 @@ module nts.uk.knockout.binding.widget {
     })
     export class WidgetResizeContentBindingHandler implements KnockoutBindingHandler {
         init(element: HTMLDivElement, valueAccessor: () => number | undefined | KnockoutObservable<number | undefined>, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: { widget: string; }, bindingContext: KnockoutBindingContext): { controlsDescendantBindings: boolean; } {
+            const $el = $(element);
             const { widget } = viewModel;
             const WG_SIZE = 'WIDGET_SIZE';
             const mkv = new ko.ViewModel();
@@ -54,6 +55,11 @@ module nts.uk.knockout.binding.widget {
             const key = ko.unwrap<string>(widget);
 
             const src: string | undefined = allBindingsAccessor.get('src');
+            const def: number | undefined = allBindingsAccessor.get('default');
+
+            if (def) {
+                element.style.maxHeight = `${def}px`;
+            }
 
             if (element.tagName !== 'DIV') {
                 element.innerText = 'Please use [div] tag with [widget-content] binding';
@@ -84,11 +90,15 @@ module nts.uk.knockout.binding.widget {
                 element.appendChild(frame);
             }
 
-            $(element)
+            $el
                 .removeAttr('data-bind')
                 .addClass('widget-content')
                 .resizable({
                     handles: 's',
+                    start: () => {
+                        // clear max height if resize by enduser
+                        element.style.maxHeight = '';
+                    },
                     stop: () => {
                         const { offsetHeight } = element;
 
@@ -106,6 +116,23 @@ module nts.uk.knockout.binding.widget {
                                     mkv.$window.storage(WG_SIZE, size);
                                 });
                         }
+                    },
+                    resize: () => $el.trigger('wg.resize')
+                })
+                .on('wg.resize', () => {
+                    const scr = $el.find('div').first();
+                    const ctn = $el.closest('.widget-container');
+
+                    if (scr) {
+                        const { offsetHeight, scrollHeight } = scr.get(0);
+
+                        if (offsetHeight < scrollHeight) {
+                            ctn.addClass('has-scroll');
+                        } else {
+                            ctn.removeClass('has-scroll');
+                        }
+                    } else {
+                        ctn.removeClass('has-scroll');
                     }
                 })
                 .find('.ui-resizable-s')
@@ -130,7 +157,8 @@ module nts.uk.knockout.binding.widget {
                             size[key] = { set: !fx, value };
 
                             mkv.$window.storage(WG_SIZE, size);
-                        });
+                        })
+                        .always(() => $el.trigger('wg.resize'));
                 });
 
             if (widget) {

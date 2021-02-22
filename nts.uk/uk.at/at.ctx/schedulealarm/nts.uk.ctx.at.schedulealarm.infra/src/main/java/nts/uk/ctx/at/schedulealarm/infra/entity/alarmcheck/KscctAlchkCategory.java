@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.at.schedulealarm.dom.alarmcheck.AlarmCheckConditionSchedule;
 import nts.uk.ctx.at.schedulealarm.dom.alarmcheck.AlarmCheckConditionScheduleOrder;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
  * 勤務予定のアラームチェック条件
  * @author lan_lt
@@ -20,7 +20,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KSCCT_ALCHK_CATEGORY")
-public class KscctAlchkCategory extends ContractUkJpaEntity{
+public class KscctAlchkCategory extends UkJpaEntity{
 	
 	public static final JpaEntityMapper<KscctAlchkCategory> MAPPER = new JpaEntityMapper<>(KscctAlchkCategory.class);
 	

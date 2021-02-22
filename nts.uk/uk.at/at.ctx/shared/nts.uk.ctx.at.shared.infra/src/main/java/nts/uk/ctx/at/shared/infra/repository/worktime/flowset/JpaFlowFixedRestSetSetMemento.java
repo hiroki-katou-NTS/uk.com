@@ -6,7 +6,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktime.flowset;
 
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestSetSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.StampBreakCalculation;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtFlowRestSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flowset.KshmtWtFloBrFlAll;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaStampBreakCalculationSetMemento;
 
 /**
@@ -15,7 +15,7 @@ import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaStampBreakCalcul
 public class JpaFlowFixedRestSetSetMemento implements FlowFixedRestSetSetMemento {
 
 	/** The entity. */
-	KshmtFlowRestSet entity;
+	KshmtWtFloBrFlAll entity;
 
 	/**
 	 * Instantiates a new jpa flow fixed rest set set memento.
@@ -23,7 +23,7 @@ public class JpaFlowFixedRestSetSetMemento implements FlowFixedRestSetSetMemento
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaFlowFixedRestSetSetMemento(KshmtFlowRestSet entity) {
+	public JpaFlowFixedRestSetSetMemento(KshmtWtFloBrFlAll entity) {
 		super();
 		this.entity = entity;
 	}
@@ -50,7 +50,7 @@ public class JpaFlowFixedRestSetSetMemento implements FlowFixedRestSetSetMemento
 	 */
 	@Override
 	public void setCalculateFromStamp(StampBreakCalculation val) {
-		val.saveToMemento(new JpaStampBreakCalculationSetMemento<KshmtFlowRestSet>(this.entity));
+		val.saveToMemento(new JpaStampBreakCalculationSetMemento<KshmtWtFloBrFlAll>(this.entity));
 	}
 
 }

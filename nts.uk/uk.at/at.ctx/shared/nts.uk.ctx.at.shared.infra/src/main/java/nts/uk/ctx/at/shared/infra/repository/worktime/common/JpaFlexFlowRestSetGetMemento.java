@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.RestClockManageAtr;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestClockCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSetGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexRestSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFl;
 
 /**
  * The Class JpaFlexFlowRestSetGetMemento.
@@ -16,14 +16,14 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexRestSet;
 public class JpaFlexFlowRestSetGetMemento implements FlowRestSetGetMemento {
 
 	/** The entity. */
-	private KshmtFlexRestSet entity;
+	private KshmtWtFleBrFl entity;
 	
 	/**
 	 * Instantiates a new jpa flex flow rest set get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaFlexFlowRestSetGetMemento(KshmtFlexRestSet entity) {
+	public JpaFlexFlowRestSetGetMemento(KshmtWtFleBrFl entity) {
 		super();
 		this.entity = entity;
 	}
