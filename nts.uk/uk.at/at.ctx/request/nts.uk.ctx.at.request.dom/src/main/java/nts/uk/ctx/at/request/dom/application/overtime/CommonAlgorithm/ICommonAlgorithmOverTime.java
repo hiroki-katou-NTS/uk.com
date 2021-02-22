@@ -201,11 +201,10 @@ public interface ICommonAlgorithmOverTime {
 	 * @param mode
 	 * @return
 	 */
-	public AppOverTime check36Limit(
+	public void check36Limit(
 			String companyId,
 			AppOverTime appOverTime,
-			Boolean isProxy,
-			Integer mode
+			DisplayInfoOverTime displayInfoOverTime
 			);
 	/**
 	 * Refactor5 申請日の矛盾チェック
