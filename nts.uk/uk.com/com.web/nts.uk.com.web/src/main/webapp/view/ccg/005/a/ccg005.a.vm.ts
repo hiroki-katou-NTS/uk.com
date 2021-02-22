@@ -18,14 +18,15 @@ module nts.uk.at.view.ccg005.a.screenModel {
 
   @component({
     name: 'ccg005-component',
-    template: `<div data-bind="widget-content: 200, default: 440" style="display: flex; position: relative; overflow: hidden;" id="ccg005-watching">
-    <div  id="ccg005-content">
-      <div style="margin: 0 10px;">
+    template: `<div data-bind="widget-content: 290, default: 410" id="ccg005-watching">
+    <div id="ccg005-content">
+      <div>
         <div class="grade-header-top">
           <!-- A0 -->
           <span data-bind="i18n: 'CCG005_1'" class="ccg005-bold"></span>
           <!-- A1_5 -->
-          <i tabindex=3 data-bind="visible: $component.inCharge, ntsIcon: {no: 5, width: 25, height: 25}, click: $component.openScreenCCG005B"></i>
+          <i tabindex=3
+            data-bind="visible: $component.inCharge, ntsIcon: {no: 5, width: 25, height: 25}, click: $component.openScreenCCG005B"></i>
           &#160;
           <!-- A1_6 -->
           <i tabindex=4 data-bind="click: $component.resetLastestData, ntsIcon: {no: 194, width: 25, height: 25}"></i>
@@ -33,11 +34,12 @@ module nts.uk.at.view.ccg005.a.screenModel {
         <div class="grade-header-center" style="padding-bottom: 5px;">
           <table>
             <tr>
-              <td>
+              <td class="ccg005-bottom-unset">
                 <!-- A1_1 -->
-                <div id="ccg005-avatar-change" tabindex=1 data-bind="click: $component.onClickAvatar.bind($component, loginSid)"></div>
+                <div id="ccg005-avatar-change" tabindex=1
+                  data-bind="click: $component.onClickAvatar.bind($component, loginSid)"></div>
               </td>
-              <td style="padding-left: 5px; width: 370px;">
+              <td class="ccg005-bottom-unset" style="padding-left: 5px; width: 370px;">
                 <!-- A1_2 -->
                 <span class="ccg005-bold" data-bind="text: $component.businessName()"></span>
                 <div class="ccg005-flex none-enter-icon">
@@ -45,24 +47,28 @@ module nts.uk.at.view.ccg005.a.screenModel {
                   <i class="ccg005-currentEmoji"></i>
                   <div style="position: relative;" class="CCG005-A1_4-border">
                     <!-- A1_4 -->
-                    <input tabindex=2 id="CCG005-A1_4" style="border: none !important; padding-right: 30px; background: none !important;" data-bind="ntsTextEditor: {
-                      enterkey: $component.registerComment,
-                      value: $component.comment,
-                      enable: $component.isBaseDate,
-                      option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                        textmode: 'text',
-                        width: '250px',
-                        placeholder: $component.$i18n('CCG005_35')
-                      }))
-                    }, visible: $component.isSameOrBeforeBaseDate"/>
-                    <i class="ccg005-clearbtn" style="position: absolute; right: 5px; display: none;" data-bind="click: $component.deleteComment(), ntsIcon: {no: 198, width: 20, height: 28}"></i>
+                    <input tabindex=2 id="CCG005-A1_4"
+                      style="border: none !important; padding-right: 30px; background: none !important;" data-bind="ntsTextEditor: {
+                          enterkey: $component.registerComment,
+                          value: $component.comment,
+                          enable: $component.isBaseDate,
+                          option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+                            textmode: 'text',
+                            width: '250px',
+                            placeholder: $component.$i18n('CCG005_35')
+                          }))
+                        }, visible: $component.isSameOrBeforeBaseDate" />
+                    <i class="ccg005-clearbtn" style="position: absolute; right: 5px; display: none;"
+                      data-bind="click: $component.deleteComment(), ntsIcon: {no: 198, width: 20, height: 28}"></i>
                   </div>
                 </div>
               </td>
-              <td>
+              <td class="ccg005-bottom-unset">
                 <!-- A1_7 -->
-                <i tabindex=5 class="ccg005-status-img-A1_7" data-bind="ntsIcon: { no: $component.activityStatusIcon(), width: 20, height: 20 }, visible: $component.isBaseDate"></i>
-                <i data-bind="click: $component.openFutureScreenCCG005E.bind($component, true, '', '') ,ntsIcon: { no: 191, width: 20, height: 20 }, visible: $component.isAfter"></i>
+                <i tabindex=5 class="ccg005-status-img-A1_7"
+                  data-bind="ntsIcon: { no: $component.activityStatusIcon(), width: 20, height: 20 }, visible: $component.isBaseDate"></i>
+                <i
+                  data-bind="click: $component.openFutureScreenCCG005E.bind($component, true, '', '') ,ntsIcon: { no: 191, width: 20, height: 20 }, visible: $component.isAfter"></i>
               </td>
             </tr>
           </table>
@@ -70,137 +76,141 @@ module nts.uk.at.view.ccg005.a.screenModel {
         <div class="grade-header-bottom ccg005-flex" style="position: relative;">
           <!-- A2_3 -->
           <div tabindex=6 data-bind="ntsDatePicker: {
-            name: '#[CCG005_36]',
-            value: selectedDate,
-            dateFormat: 'YYYY/MM/DD',
-            fiscalMonthsMode: true,
-            showJumpButtons: true
-          }"></div>
+                name: '#[CCG005_36]',
+                value: selectedDate,
+                dateFormat: 'YYYY/MM/DD',
+                fiscalMonthsMode: true,
+                showJumpButtons: true
+              }"></div>
           <!-- A2_1 -->
-          <button tabindex=11 id="ccg005-legends" style="margin-left: 5px;" data-bind="visible: $component.isBaseDate, ntsLegendButton: legendOptions"></button>
+          <button tabindex=11 id="ccg005-legends" style="margin-left: 5px;"
+            data-bind="visible: $component.isBaseDate, ntsLegendButton: legendOptions"></button>
           <div style="right: 0; position: absolute; display: flex; align-items: center;">
             <!-- A3_2 -->
-            <i tabindex=9 id="ccg005-star-img" style="margin-right: 5px;" data-bind="ntsIcon: {no: 184, width: 20, height: 20}"></i>
+            <i tabindex=9 id="ccg005-star-img" style="margin-right: 5px;"
+              data-bind="ntsIcon: {no: 184, width: 20, height: 20}"></i>
             <!-- A3_1 -->
             <div tabindex=10 data-bind="ntsComboBox: {
-              width: '120px',
-              options: favoriteSpecifyData,
-              editable: true,
-              visibleItemsCount: 5,
-              value: favoriteInputDate,
-              selectFirstIfNull: false,
-              optionsValue: 'inputDate',
-              optionsText: 'favoriteName',
-              required: true,
-              columns: [
-                { prop: 'favoriteName' }
-              ]}"></div>
+                  width: '120px',
+                  options: favoriteSpecifyData,
+                  editable: true,
+                  visibleItemsCount: 5,
+                  value: favoriteInputDate,
+                  selectFirstIfNull: false,
+                  optionsValue: 'inputDate',
+                  optionsText: 'favoriteName',
+                  required: true,
+                  columns: [
+                    { prop: 'favoriteName' }
+                  ]}"></div>
           </div>
         </div>
         <div class="grade-body-top" style="padding-top: 5px;">
           <table style="width: 100%;">
             <tr>
-              <td style="width: 35px;"></td>
+              <td class="ccg005-bottom-unset" style="width: 35px;"></td>
               <!-- A2_5 -->
-              <td class="ccg005-w100 ccg005-pl-5">
+              <td class="ccg005-w100 ccg005-pl-5 ccg005-bottom-unset">
                 <span class="ccg005-bold" data-bind="i18n: 'CCG005_41'"></span>
               </td>
               <!-- A2_6 -->
-              <td class="ccg005-w100 ccg005-pl-5">
+              <td class="ccg005-w100 ccg005-pl-5 ccg005-bottom-unset">
                 <span class="ccg005-bold" data-bind="i18n: 'CCG005_42'"></span>
               </td>
-              <td></td>
-              <td></td>
+              <td class="ccg005-bottom-unset"></td>
+              <td class="ccg005-bottom-unset"></td>
             </tr>
           </table>
         </div>
         <!-- A5 -->
-        <div class="grade-body-bottom" style="min-height: 55px; height: 255px;">
+        <div class="grade-body-bottom" style="min-height: 55px; height: 55px">
           <table style="width: 100%; border-collapse: separate; border-spacing: 0 5px">
-          <tbody data-bind="foreach: attendanceInformationDtosDisplay">
-
-
-
-
-
-
-
-            <tr style="height: 45px;" class="ccg005-tr-background" data-bind="attr:{ id: backgroundColor }">
-              <td style="padding-right: 5px; width: 30px; background-color: white;" class="ccg005-apply-binding-avatar">
-                <!-- A4_1 -->
-                <div tabindex=10 data-bind="attr:{ id: 'ccg005-avatar-change-'+sid }, click: $component.onClickAvatar.bind($component, sid)" />
-              </td>
-              <td class="ccg005-w100 ccg005-pl-5 ccg005-border-groove ccg005-right-unset">
-                <!-- A4_8 -->
-                <label class="limited-label ccg005-w100" style="display: inline-block;" data-bind="text: businessName"/>
-                <!-- A4_5 -->
-                <div>
-                  <i tabindex=13 data-bind="ntsIcon: {no: emojiIconNo, width: 20, height: 15}"></i>
-                </div>
-              </td>
-              <td class="ccg005-w100 ccg005-pl-5 ccg005-border-groove ccg005-right-unset ccg005-left-unset">
-                <div class="ccg005-w100">
-                  <!-- A4_2 -->
-                  <label data-bind="text: attendanceDetailDto.workName, attr:{ class: 'limited-label work-name-class-'+sid }" style="max-width: 80px; width: auto !important;" />
-                  <!-- A4_4 -->
-                  <i tabindex=14 data-bind="visible: displayAppIcon, click: $component.initPopupA4_4InList.bind($component, $index, sid), attr:{ class: 'A4-4-application-icon-'+sid }, ntsIcon: {no: 190, width: 13, height: 13}"></i>
-                </div>
-                <div style="height: 20px;">
-                <!-- A4_3 -->
-                  <span class="limited-label" style="max-width: 120px;">
-                    <label id="check-in-out" data-bind="text: attendanceDetailDto.checkInTime, attr:{ class: 'check-in-class-'+sid }"/>
-                    <label id="check-in-out" data-bind="text: attendanceDetailDto.checkOutTime, attr:{ class: 'check-out-class-'+sid }"/>
+            <tbody data-bind="foreach: attendanceInformationDtosDisplay">
+              <tr style="height: 45px;" class="ccg005-tr-background" data-bind="attr:{ id: backgroundColor }">
+                <td style="padding-right: 5px; width: 30px; background-color: white;"
+                  class="ccg005-apply-binding-avatar ccg005-bottom-unset">
+                  <!-- A4_1 -->
+                  <div tabindex=10
+                    data-bind="attr:{ id: 'ccg005-avatar-change-'+sid }, click: $component.onClickAvatar.bind($component, sid)" />
+                </td>
+                <td class="ccg005-w100 ccg005-pl-5 ccg005-border-groove ccg005-right-unset">
+                  <!-- A4_8 -->
+                  <label class="limited-label ccg005-w100" style="display: inline-block;"
+                    data-bind="text: businessName" />
+                  <!-- A4_5 -->
+                  <div>
+                    <i tabindex=13 data-bind="ntsIcon: {no: emojiIconNo, width: 20, height: 15}"></i>
+                  </div>
+                </td>
+                <td class="ccg005-w100 ccg005-pl-5 ccg005-border-groove ccg005-right-unset ccg005-left-unset">
+                  <div class="ccg005-w100">
+                    <!-- A4_2 -->
+                    <label
+                      data-bind="text: attendanceDetailDto.workName, attr:{ class: 'limited-label work-name-class-'+sid }"
+                      style="max-width: 80px; width: auto !important;" />
+                    <!-- A4_4 -->
+                    <i tabindex=14
+                      data-bind="visible: displayAppIcon, click: $component.initPopupA4_4InList.bind($component, $index, sid), attr:{ class: 'A4-4-application-icon-'+sid }, ntsIcon: {no: 190, width: 13, height: 13}"></i>
+                  </div>
+                  <div style="height: 20px;">
+                    <!-- A4_3 -->
+                    <span class="limited-label" style="max-width: 120px;">
+                      <label id="check-in-out"
+                        data-bind="text: attendanceDetailDto.checkInTime, attr:{ class: 'check-in-class-'+sid }" />
+                      <label id="check-in-out"
+                        data-bind="text: attendanceDetailDto.checkOutTime, attr:{ class: 'check-out-class-'+sid }" />
+                    </span>
+                  </div>
+                </td>
+                <td class="ccg005-pl-5 ccg005-border-groove ccg005-right-unset ccg005-left-unset">
+                  <!-- A4_7 -->
+                  <span class="ccg005-flex">
+                    <i tabindex=15 class="ccg005-status-img"
+                      data-bind="click: $component.initPopupInList.bind($component, $index, sid, businessName), ntsIcon: {no: activityStatusIconNo, width: 20, height: 20}, visible: $component.isBaseDate"></i>
+                    <i
+                      data-bind="click: $component.openFutureScreenCCG005E.bind($component, false, sid, businessName) ,ntsIcon: { no: 191, width: 20, height: 20 }, visible: $component.isAfter"></i>
                   </span>
-                </div>
-              </td>
-              <td class="ccg005-pl-5 ccg005-border-groove ccg005-right-unset ccg005-left-unset">
-                <!-- A4_7 -->
-                <span class="ccg005-flex">
-                  <i tabindex=15 class="ccg005-status-img" data-bind="click: $component.initPopupInList.bind($component, $index, sid, businessName), ntsIcon: {no: activityStatusIconNo, width: 20, height: 20}, visible: $component.isBaseDate"></i>
-                  <i data-bind="click: $component.openFutureScreenCCG005E.bind($component, false, sid, businessName) ,ntsIcon: { no: 191, width: 20, height: 20 }, visible: $component.isAfter"></i>
-                </span>
-              </td>
-              <td class="ccg005-pl-5 ccg005-border-groove ccg005-left-unset">
-                <!-- A4_6 time -->
-                <p style="max-width: 125px;" data-bind="text: goOutDto.goOutPeriod, visible: $component.goOutDisplay()"/>
-                <!-- A4_6 text go out reason -->
-                <p style="max-width: 125px;" class="limited-label" data-bind="text: goOutDto.goOutReason, visible: $component.goOutDisplay()"/>
-                <!-- A4_6 text comment -->
-                <p style="max-width: 125px;" class="limited-label" data-bind="text: comment, visible: $component.commentDisplay()"/>
-              </td>
-            </tr>
-
-
-
-
-
-
-
-
+                </td>
+                <td class="ccg005-pl-5 ccg005-border-groove ccg005-left-unset">
+                  <!-- A4_6 time -->
+                  <p style="max-width: 125px;"
+                    data-bind="text: goOutDto.goOutPeriod, visible: $component.goOutDisplay()" />
+                  <!-- A4_6 text go out reason -->
+                  <p style="max-width: 125px;" class="limited-label"
+                    data-bind="text: goOutDto.goOutReason, visible: $component.goOutDisplay()" />
+                  <!-- A4_6 text comment -->
+                  <p style="max-width: 125px;" class="limited-label"
+                    data-bind="text: comment, visible: $component.commentDisplay()" />
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
-        <div class="grade-bottom ccg005-flex" style="width: 100%; align-items: center; position: relative; margin-top: 5px; margin-bottom: 10px;">
+        <div class="grade-bottom ccg005-flex"
+          style="width: 100%; align-items: center; position: relative; margin-top: 5px;">
           <table style="width: 100%;">
             <tr>
-              <td>
+              <td class="ccg005-bottom-unset">
                 <div class="ccg005-pagination ccg005-flex">
                   <!-- A5_1 -->
-                  <i tabindex=16 class="ccg005-pagination-btn" data-bind="ntsIcon: {no: 193, width: 15, height: 20}, click: $component.previousPage"></i>
+                  <i tabindex=16 class="ccg005-pagination-btn"
+                    data-bind="ntsIcon: {no: 193, width: 15, height: 20}, click: $component.previousPage"></i>
                   <!-- A5_2 -->
-                  <span style="white-space: nowrap; width: 70px; text-align: center;" data-bind="text: $component.paginationText()"></span>
+                  <span style="white-space: nowrap; width: 70px; text-align: center;"
+                    data-bind="text: $component.paginationText()"></span>
                   <!-- A5_3 -->
-                  <i tabindex=17 class="ccg005-pagination-btn" data-bind="ntsIcon: {no: 192, width: 15, height: 20}, click: $component.nextPage"></i>
+                  <i tabindex=17 class="ccg005-pagination-btn"
+                    data-bind="ntsIcon: {no: 192, width: 15, height: 20}, click: $component.nextPage"></i>
                 </div>
               </td>
-              <td style="width: 100%">
+              <td class="ccg005-bottom-unset" style="width: 100%">
                 <div class="ccg005-switch-btn" style="float: right;">
                   <!-- A5_4 -->
                   <div tabindex=18 class="cf ccg005-switch" data-bind="ntsSwitchButton: {
-                    options: contentSelections,
-                    optionsValue: 'code',
-                    optionsText: 'name',
-                    value: contentSelected }"></div>
+                        options: contentSelections,
+                        optionsValue: 'code',
+                        optionsText: 'name',
+                        value: contentSelected }"></div>
                 </div>
               </td>
             </tr>
@@ -214,21 +224,22 @@ module nts.uk.at.view.ccg005.a.screenModel {
         <table>
           <tr>
             <td style="text-align: right;">
-              <a style="color: blue; text-decoration: underline; cursor: pointer;" data-bind="i18n: 'CCG005_34', click: $component.openScreenCCG005D"></a>
+              <a style="color: blue; text-decoration: underline; cursor: pointer;"
+                data-bind="i18n: 'CCG005_34', click: $component.openScreenCCG005D"></a>
             </td>
           </tr>
           <tr>
             <td style="padding-top: 10px;">
               <!-- A3_2.2 -->
               <input data-bind="ntsTextEditor: {
-                value: searchValue,
-                enterkey: $component.onSearchEmployee,
-                option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                  textmode: 'text',
-                  width: '190px',
-                  placeholder: $component.$i18n('CCG005_45')
-                }))
-              }"></input>
+                    value: searchValue,
+                    enterkey: $component.onSearchEmployee,
+                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+                      textmode: 'text',
+                      width: '190px',
+                      placeholder: $component.$i18n('CCG005_45')
+                    }))
+                  }"></input>
             </td>
           </tr>
           <tr>
@@ -236,7 +247,8 @@ module nts.uk.at.view.ccg005.a.screenModel {
               <!-- A3_2.3 -->
               <button data-bind="i18n: 'CCG005_32', click: $component.openCDL008"></button>
               <!-- A3_2.4 -->
-              <label class="limited-label" style="max-width: 125px;" data-bind="text: $component.workplaceNameFromCDL008"></label>
+              <label class="limited-label" style="max-width: 125px;"
+                data-bind="text: $component.workplaceNameFromCDL008"></label>
             </td>
           </tr>
         </table>
@@ -260,7 +272,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
             </td>
             <!-- A1_7.2 -->
             <td>
-            <i data-bind="ntsIcon: {no: 195, width: 20, height: 20}"></i>
+              <i data-bind="ntsIcon: {no: 195, width: 20, height: 20}"></i>
             </td>
             <td data-bind="i18n: 'CCG005_22'"></td>
           </tr>
@@ -270,7 +282,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
             </td>
             <!-- A1_7.3 -->
             <td>
-            <i data-bind="ntsIcon: {no: 191, width: 20, height: 20}"></i>
+              <i data-bind="ntsIcon: {no: 191, width: 20, height: 20}"></i>
             </td>
             <td data-bind="i18n: 'CCG005_39'"></td>
           </tr>
@@ -280,7 +292,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
             </td>
             <!-- A1_7.4 -->
             <td>
-            <i data-bind="ntsIcon: {no: 196, width: 20, height: 20}"></i>
+              <i data-bind="ntsIcon: {no: 196, width: 20, height: 20}"></i>
             </td>
             <td data-bind="i18n: 'CCG005_44'"></td>
           </tr>
@@ -290,73 +302,99 @@ module nts.uk.at.view.ccg005.a.screenModel {
             </td>
             <!-- A1_7.5 -->
             <td>
-            <i data-bind="ntsIcon: {no: 197, width: 20, height: 20}"></i>
+              <i data-bind="ntsIcon: {no: 197, width: 20, height: 20}"></i>
             </td>
             <td data-bind="i18n: 'CCG005_40'"></td>
           </tr>
         </table>
       </div>
-    </div>
-    <!-- A4_4 popup -->
-    <div id="ccg005-A4-4-popup">
-      <div data-bind="foreach: $component.applicationNameDisplayBySid">
-        <p data-bind="text: $data" />
+      <!-- A4_4 popup -->
+      <div id="ccg005-A4-4-popup">
+        <div data-bind="foreach: $component.applicationNameDisplayBySid">
+          <p data-bind="text: $data" />
+        </div>
       </div>
     </div>
   </div>
   <!--------------------------------------- CSS --------------------------------------->
   <style>
+
+    .widget-container > #ccg005-watching > #ccg005-content table tr td {
+      border-width: 1px !important;
+      // border-bottom: none !important;
+    } 
+
+    .ccg005-border-groove {
+      border: 1px groove !important;
+    }
+
+    .ccg005-right-unset {
+      border-right: none !important;
+    }
+
+    .ccg005-left-unset {
+      border-left: none !important;
+    }
+
+    .ccg005-bottom-unset {
+      border-bottom: none !important;
+    }
+
     .ccg005-w100 {
       width: 100px;
     }
+
     .ccg005-bold {
       font-weight: bold;
     }
+
     .ccg005-pl-5 {
       padding-left: 5px;
     }
-    .ccg005-border-groove {
-      border: 1px groove;
-    }
-    .ccg005-right-unset {
-      border-right: none;
-    }
-    .ccg005-left-unset {
-      border-left: none;
-    }
+
     .ccg005-flex {
       display: flex;
     }
+
     .grade-header-top {
       display: flex;
       margin-top: 5px;
     }
+
     .grade-header-top span {
       width: 390px;
     }
+
     .bg-white-ccg005 {
       background-color: #FFFFFF;
     }
+
     .bg-green-ccg005 {
       background-color: #99FF99
     }
+
     .bg-yellow-ccg005 {
       background-color: #FFFF00
     }
+
     .bg-gray-ccg005 {
       background-color: #D9D9D9
     }
+
     #ccg005-content {
-      width: calc(100% - 5px);
-      border: 1px groove black;
+      width: 100%;
+      overflow: hidden;
     }
+
     #ccg005-status-popup table tr,
     #ccg005-content i, #ccg005-content img {
       cursor: pointer;
     }
+
     #ccg005-status-popup table tr td {
       padding-right: 5px;
     }
+
     #CCG005_A1_1 {
       max-height: 40px;
       max-width: 40px;
@@ -364,6 +402,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       min-width: 40px;
       border-radius: 50%;
     }
+
     #CCG005_A1_1_small {
       max-height: 30px;
       max-width: 30px;
@@ -371,6 +410,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       min-width: 30px;
       border-radius: 50%;
     }
+
     #CCG005_no_avatar {
       display: flex;
       align-items: center;
@@ -381,6 +421,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       width: 40px;
       height: 40px;
     }
+
     #CCG005_no_avatar_small {
       cursor: pointer;
       display: flex;
@@ -392,9 +433,11 @@ module nts.uk.at.view.ccg005.a.screenModel {
       width: 30px;
       height: 30px;
     }
+
     .ccg005-switch > .nts-switch-button {
       width: 80px;
     }
+
     #check-in-out {
       font-size: 80%;
     }
@@ -427,6 +470,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
   })
 
   export class ViewModel extends ko.ViewModel {
+    widget: string = 'CCG_005';
     selectedDate: KnockoutObservable<string> = ko.observable('');
     legendOptions: any = {
       items: [
@@ -450,7 +494,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
 
     // Pagination
     currentPage: KnockoutObservable<number> = ko.observable(1);
-    perPage: KnockoutObservable<number> = ko.observable(0);
+    perPage: KnockoutObservable<number> = ko.observable(1);
     totalElement: KnockoutObservable<number> = ko.observable(0);
     totalRow: KnockoutComputed<number> = ko.computed(() =>
       this.perPage() * this.currentPage() > this.totalElement()
