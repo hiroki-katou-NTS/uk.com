@@ -37,7 +37,9 @@
 										<th id="Q4_3" class="table-col-border">#{i18n.getText('KMK013_558')}</th>
 										<th id="Q4_4" class="table-col-border">#{i18n.getText('KMK013_559')}</th>
 										<th id="Q4_5" class="table-col-border">
-											<span>#{i18n.getText('KMK013_560')}</span>
+											<div id="Q4_5_label">#{i18n.getText('KMK013_560')}</div>
+										</th>
+										<th>
 											<button data-bind="ntsHelpButton: {image: 'img/IMG_KMK013_23.PNG', position: 'right center', enable: true }">?</button>
 										</th>
 									</tr>
@@ -45,7 +47,7 @@
 										<tr>
 											<td data-bind="text: overtimeNo"></td>
 											<td data-bind="text: overtimeName"></td>
-											<td colspan="3">
+											<td colspan="4">
 												<div tabindex="6" data-bind=" ntsRadioBoxGroup: {
 															options: $parent.itemListQ5_5,
 															optionsValue: 'id',
@@ -83,7 +85,9 @@
                                         <th id="Q4_3" class="table-col-border">#{i18n.getText('KMK013_558')}</th>
                                         <th id="Q4_4" class="table-col-border">#{i18n.getText('KMK013_559')}</th>
                                         <th id="Q4_5" class="table-col-border">
-											<span>#{i18n.getText('KMK013_560')}</span>
+											<div id="Q4_5_label">#{i18n.getText('KMK013_560')}</div>
+										</th>
+										<th>
 											<button data-bind="ntsHelpButton: {image: 'img/IMG_KMK013_23.PNG', position: 'right center', enable: true }">?</button>
 										</th>
                                     </tr>
@@ -91,7 +95,7 @@
                                         <tr >
                                             <td data-bind="text: HDFrameNo"></td>
                                             <td data-bind="text: HDFrameName"></td>
-                                            <td colspan="3">
+                                            <td colspan="4">
                                                 <div tabindex="9" data-bind="ntsRadioBoxGroup: {
 															options: $parent.itemListQ13_5,
 															optionsValue: 'id',

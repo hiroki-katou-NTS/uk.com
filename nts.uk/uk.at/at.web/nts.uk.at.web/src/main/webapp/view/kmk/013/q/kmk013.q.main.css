@@ -222,8 +222,11 @@
 }
 
 #Q4_5 {
-	width: 150px;
-	text-align: center;
+	width: 125px;
+}
+
+#Q4_5_label {
+	padding-left: 50%;
 }
 
 #Q6_1 {
@@ -236,4 +239,8 @@
 
 #Q6_3 {
 	padding-left: 30px;
+}
+
+.ntsRadioBox span.box {
+	margin-left: 3px;
 }
