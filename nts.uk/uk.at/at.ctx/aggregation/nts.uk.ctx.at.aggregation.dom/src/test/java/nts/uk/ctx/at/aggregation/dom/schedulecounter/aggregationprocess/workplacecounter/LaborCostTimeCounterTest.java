@@ -36,15 +36,11 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.Target
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @RunWith(JMockit.class)
-public class CountLaborCostTimeCtgServiceTest {
+public class LaborCostTimeCounterTest {
 	
 	@Injectable
-	private CountLaborCostTimeCtgService.Require require;
+	private LaborCostTimeCounterService.Require require;
 	
-	/**
-	 * 予算を取得する
-	 * input: @Injectable
-	 */
 	@Test
 	public void getBudget_budget_of_laborCostAndTime_all_not_use(@Injectable TargetOrgIdenInfor targetOrg
 			,	@Injectable List<GeneralDate> targetDays) {
@@ -61,18 +57,11 @@ public class CountLaborCostTimeCtgServiceTest {
 			
 		};
 		
-		val instance = new CountLaborCostTimeCtgService();
-		
+		val instance = new LaborCostTimeCounterService();
 		Map<GeneralDate, BigDecimal>  result = NtsAssert.Invoke.privateMethod(instance, "getBudget", require, targetOrg, targetLabor, targetDays);
-		
 		assertThat(result).isEmpty();
 	}
 	
-	
-	/**
-	 * 予算を取得する
-	 * input: @Injectable
-	 */
 	@Test
 	public void getBudget_budget_of_laborCostAndTime_all_empty(@Injectable TargetOrgIdenInfor targetOrg
 			,	@Injectable List<GeneralDate> targetDays) {
@@ -89,17 +78,13 @@ public class CountLaborCostTimeCtgServiceTest {
 			
 		};
 		
-		val instance = new CountLaborCostTimeCtgService();
+		val instance = new LaborCostTimeCounterService();
 		
 		Map<GeneralDate, BigDecimal>  result = NtsAssert.Invoke.privateMethod(instance, "getBudget", require, targetOrg, targetLabor, targetDays);
 		
 		assertThat(result).isEmpty();
 	}
 	
-	/**
-	 * 予算を取得する
-	 * input: @Injectable
-	 */
 	@Test
 	public void getBudget_get_budget_empty(@Injectable TargetOrgIdenInfor targetOrg) {
 		
@@ -128,7 +113,7 @@ public class CountLaborCostTimeCtgServiceTest {
 			}
 		};
 		
-		val instance = new CountLaborCostTimeCtgService();
+		val instance = new LaborCostTimeCounterService();
 		
 		Map<GeneralDate, BigDecimal>  result = NtsAssert.Invoke.privateMethod(instance, "getBudget", require, targetOrg, targetLabor, targetDays);
 		
@@ -181,7 +166,7 @@ public class CountLaborCostTimeCtgServiceTest {
 			}
 		};
 		
-		val instance = new CountLaborCostTimeCtgService();
+		val instance = new LaborCostTimeCounterService();
 		
 		Map<GeneralDate, BigDecimal>  result = NtsAssert.Invoke.privateMethod(instance, "getBudget", require, targetOrg, targetLabor, targetDays);
 		
@@ -221,7 +206,7 @@ public class CountLaborCostTimeCtgServiceTest {
 			}
 		};
 		
-		val instance = new CountLaborCostTimeCtgService();
+		val instance = new LaborCostTimeCounterService();
 		
 		Map<AggregationLaborCostUnitOfWkpCounter, BigDecimal>  result = NtsAssert.Invoke.privateMethod(instance, "countEachItemType"
 				,	targets
@@ -274,7 +259,7 @@ public class CountLaborCostTimeCtgServiceTest {
 			}
 		};
 		
-		val instance = new CountLaborCostTimeCtgService();
+		val instance = new LaborCostTimeCounterService();
 		
 		Map<AggregationLaborCostUnitOfWkpCounter, BigDecimal>  result = NtsAssert.Invoke.privateMethod(instance, "countEachItemType"
 				,	targets
@@ -327,7 +312,7 @@ public class CountLaborCostTimeCtgServiceTest {
 			}
 		};
 		
-		val instance = new CountLaborCostTimeCtgService();
+		val instance = new LaborCostTimeCounterService();
 		
 		Map<AggregationLaborCostUnitOfWkpCounter, BigDecimal>  result = NtsAssert.Invoke.privateMethod(instance, "countLaborCost"
 				,	targetLaborCost
@@ -405,7 +390,7 @@ public class CountLaborCostTimeCtgServiceTest {
 			}
 		};
 		
-		val instance = new CountLaborCostTimeCtgService();
+		val instance = new LaborCostTimeCounterService();
 		
 		Map<GeneralDate, Map<AggregationLaborCostUnitOfWkpCounter, BigDecimal>>  result = NtsAssert.Invoke.privateMethod(instance, "countLaborCost"
 				,	targetLaborCost
@@ -545,7 +530,7 @@ public void count(@Injectable TargetOrgIdenInfor targetOrg
 		}
 	};
 	
-	val result = CountLaborCostTimeCtgService.count(require, targetOrg, targetLaborCost, dailyWorks);
+	val result = LaborCostTimeCounterService.count(require, targetOrg, targetLaborCost, dailyWorks);
 	
 	assertThat(result).hasSize(3);
 	

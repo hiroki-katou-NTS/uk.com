@@ -35,10 +35,63 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomat
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 
 @RunWith(JMockit.class)
-public class CountNoOfPeopleCtgByAttributeServiceTest {
+public class NoOfPeopleByAttributeCounterServiceTest {
 	
 	@Injectable
-	private CountNoOfPeopleCtgByAttributeService.Require require;
+	private NoOfPeopleByAttributeCounterService.Require require;
+	
+	/**
+	 * 属性別に集計する	
+	 * input: 日別勤怠リスト = empty
+	 * output: empty
+	 */
+	@Test
+	public void countingEachAttribute_empty() {
+		val instance = new NoOfPeopleByAttributeCounterService();
+		//雇用場合
+		Map<GeneralDate, Map<String, BigDecimal>>  result = NtsAssert.Invoke.privateMethod(instance, "countingEachAttribute", require, AggregationUnitOfEmployeeAttribute.EMPLOYMENT, Collections.emptyList());
+		assertThat(result).isEmpty();
+		//分類場合
+		result = NtsAssert.Invoke.privateMethod(instance, "countingEachAttribute", require, AggregationUnitOfEmployeeAttribute.CLASSIFICATION, Collections.emptyList());
+		assertThat(result).isEmpty();
+		//職位場合
+		result = NtsAssert.Invoke.privateMethod(instance, "countingEachAttribute", require, AggregationUnitOfEmployeeAttribute.JOB_TITLE, Collections.emptyList());
+		assertThat(result).isEmpty();
+	}
+	
+	/**
+	 * 属性別に集計する	
+	 * input: 日別勤怠リスト = [ [2021, 1, 1], 001], [[2021, 1, 2], 001] ]
+	 * output: [([2021, 1, 1], empty]), ([2021, 1, 2], empty])]
+	 */
+	@Test
+	public void countingEachAttributeByClassification_empty() {
+		val dailyWorks = Arrays.asList(
+				Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 1), Helper.createAffiliationInfoByCls("001"))
+			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 2), Helper.createAffiliationInfoByCls("001"))
+				);
+		
+		new MockUp<NumberOfEmployeesByAttributeCountingService>() {
+			@Mock
+			public Map<AggregationKey<?>, BigDecimal> count(Require require, AggregationUnitOfEmployeeAttribute unit,
+					List<WorkInfoWithAffiliationInfo> values) {
+				return Collections.emptyMap();
+			}
+		};
+		
+		val instance = new NoOfPeopleByAttributeCounterService();
+		Map<GeneralDate, Map<AggregationKey<?>, BigDecimal>>  result = NtsAssert.Invoke.privateMethod(instance, "countingEachAttribute", require, AggregationUnitOfEmployeeAttribute.CLASSIFICATION, dailyWorks);
+		
+		assertThat(result).hasSize(2);
+		assertThat(result.keySet())
+				.containsAnyElementsOf(Arrays.asList(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 1, 2)));
+		
+		Map<AggregationKey<?>, BigDecimal> value1 = result.get(GeneralDate.ymd(2021, 1, 1));
+		assertThat(value1).isEmpty();
+		
+		Map<AggregationKey<?>, BigDecimal> value2 = result.get(GeneralDate.ymd(2021, 1, 2));
+		assertThat(value2).isEmpty();
+	}
 	
 	/**
 	 * 雇用別に集計する	
@@ -46,12 +99,12 @@ public class CountNoOfPeopleCtgByAttributeServiceTest {
 	 */
 	@Test
 	public void countingEachEmployments() {
-		List<IntegrationOfDaily> dailyWorks = Arrays.asList(
+		val dailyWorks = Arrays.asList(
 				Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 1), Helper.createAffiliationInfoByEmployment("empl_01"))
 			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 2), Helper.createAffiliationInfoByEmployment("empl_02"))
 			);
 		
-		Map<AggregationKey<?>, BigDecimal> noEmpByEmplCd = new HashMap<AggregationKey<?>, BigDecimal>() {
+		val noEmpByEmplCd = new HashMap<AggregationKey<?>, BigDecimal>() {
 			private static final long serialVersionUID = 1L;
 			{
 				put(new AggregationKey<EmploymentCode>(new EmploymentCode("empl_01")), new BigDecimal("10"));
@@ -67,24 +120,24 @@ public class CountNoOfPeopleCtgByAttributeServiceTest {
 			}
 		};
 		
-		Map<GeneralDate, Map<AggregationKey<EmploymentCode>, BigDecimal>> result = CountNoOfPeopleCtgByAttributeService.countingEachEmployments(require, dailyWorks);
+		val result = NoOfPeopleByAttributeCounterService.countingEachEmployments(require, dailyWorks);
 		assertThat(result).hasSize(2);
 		assertThat(result.keySet())
 				.containsAnyElementsOf(Arrays.asList(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 1, 2)));
 		
-		Map<AggregationKey<EmploymentCode>, BigDecimal> value1 = result.get(GeneralDate.ymd(2021, 1, 1));
+		val value1 = result.get(GeneralDate.ymd(2021, 1, 1));
 		assertThat(value1.entrySet())
 				.extracting(d -> (EmploymentCode) d.getKey().getValue(), d -> d.getValue())
 				.containsExactlyInAnyOrder(
-						tuple(new EmploymentCode("empl_01"), new BigDecimal("10"))
-					,	tuple(new EmploymentCode("empl_02"), new BigDecimal("20")));
+						tuple(new EmploymentCode("empl_01"), BigDecimal.valueOf(10))
+					,	tuple(new EmploymentCode("empl_02"), BigDecimal.valueOf(20)));
 		
 		Map<AggregationKey<EmploymentCode>, BigDecimal> value2 = result.get(GeneralDate.ymd(2021, 1, 2));
 		assertThat(value2.entrySet())
 				.extracting(d -> (EmploymentCode) d.getKey().getValue(), d -> d.getValue())
 				.containsExactlyInAnyOrder(
-						tuple(new EmploymentCode("empl_01"), new BigDecimal("10"))
-					,	tuple(new EmploymentCode("empl_02"), new BigDecimal("20"))
+						tuple(new EmploymentCode("empl_01"), BigDecimal.valueOf(10))
+					,	tuple(new EmploymentCode("empl_02"), BigDecimal.valueOf(20))
 						);
 	}
 	
@@ -94,12 +147,12 @@ public class CountNoOfPeopleCtgByAttributeServiceTest {
 	 */
 	@Test
 	public void countingEachClassification() {
-		List<IntegrationOfDaily> dailyWorks = Arrays.asList(
+		val dailyWorks = Arrays.asList(
 				Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 1), Helper.createAffiliationInfoByCls("cls_01"))
 			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 2), Helper.createAffiliationInfoByCls("cls_02"))
 			);
 		
-		Map<AggregationKey<?>, BigDecimal> noEmpByClsCd = new HashMap<AggregationKey<?>, BigDecimal>() {
+		val noEmpByClsCd = new HashMap<AggregationKey<?>, BigDecimal>() {
 			private static final long serialVersionUID = 1L;
 			{
 				put(new AggregationKey<ClassificationCode>(new ClassificationCode("cls_01")), new BigDecimal("10"));
@@ -115,16 +168,16 @@ public class CountNoOfPeopleCtgByAttributeServiceTest {
 			}
 		};
 		
-		Map<GeneralDate, Map<AggregationKey<ClassificationCode>, BigDecimal>> result = CountNoOfPeopleCtgByAttributeService.countingEachClassification(require, dailyWorks);
+		val result = NoOfPeopleByAttributeCounterService.countingEachClassification(require, dailyWorks);
 		
-		Map<AggregationKey<ClassificationCode>, BigDecimal> value1 = result.get(GeneralDate.ymd(2021, 1, 1));
+		val value1 = result.get(GeneralDate.ymd(2021, 1, 1));
 		assertThat(value1.entrySet())
 				.extracting(d -> (ClassificationCode) d.getKey().getValue(), d -> d.getValue())
 				.containsExactlyInAnyOrder(
 						tuple(new ClassificationCode("cls_01"), new BigDecimal("10"))
 					,	tuple(new ClassificationCode("cls_02"), new BigDecimal("20")));
 
-		Map<AggregationKey<ClassificationCode>, BigDecimal> value2 = result.get(GeneralDate.ymd(2021, 1, 2));
+		val value2 = result.get(GeneralDate.ymd(2021, 1, 2));
 		assertThat(value2.entrySet())
 				.extracting(d -> (ClassificationCode) d.getKey().getValue(), d -> d.getValue())
 				.containsExactlyInAnyOrder(
@@ -144,7 +197,7 @@ public class CountNoOfPeopleCtgByAttributeServiceTest {
 				,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 2), Helper.createAffiliationInfoByJobTitle("jobTitle_02"))
 			);
 		
-		Map<AggregationKey<?>, BigDecimal> noEmpByJobTilte = new HashMap<AggregationKey<?>, BigDecimal>() {
+		val noByJobTilte = new HashMap<AggregationKey<?>, BigDecimal>() {
 			private static final long serialVersionUID = 1L;
 			{
 				put(new AggregationKey<String>("jobTitle_01"), new BigDecimal("10"));
@@ -156,20 +209,20 @@ public class CountNoOfPeopleCtgByAttributeServiceTest {
 			@Mock
 			public Map<AggregationKey<?>, BigDecimal> count(Require require, AggregationUnitOfEmployeeAttribute unit,
 					List<WorkInfoWithAffiliationInfo> values) {
-				return unit == AggregationUnitOfEmployeeAttribute.JOB_TITLE? noEmpByJobTilte: Collections.emptyMap();
+				return unit == AggregationUnitOfEmployeeAttribute.JOB_TITLE? noByJobTilte: Collections.emptyMap();
 			}
 		};
 		
-		Map<GeneralDate, Map<AggregationKey<String>, BigDecimal>> result = CountNoOfPeopleCtgByAttributeService.countingEachJobTitle(require, dailyWorks);
+		val result = NoOfPeopleByAttributeCounterService.countingEachJobTitle(require, dailyWorks);
 		
-		Map<AggregationKey<String>, BigDecimal> value1 = result.get(GeneralDate.ymd(2021, 1, 1));
+		val value1 = result.get(GeneralDate.ymd(2021, 1, 1));
 		assertThat(value1.entrySet())
 				.extracting(d -> (String) d.getKey().getValue(), d -> d.getValue())
 				.containsExactlyInAnyOrder(
 						tuple("jobTitle_01", new BigDecimal("10"))
 					,	tuple("jobTitle_02", new BigDecimal("20")));
 		
-		Map<AggregationKey<String>, BigDecimal> value2 = result.get(GeneralDate.ymd(2021, 1, 2));
+		val value2 = result.get(GeneralDate.ymd(2021, 1, 2));
 		assertThat(value2.entrySet())
 				.extracting(d -> (String) d.getKey().getValue(), d -> d.getValue())
 				.containsExactlyInAnyOrder(
@@ -177,52 +230,7 @@ public class CountNoOfPeopleCtgByAttributeServiceTest {
 					,	tuple("jobTitle_02", new BigDecimal("20"))
 						);		
 	}
-	
-	/**
-	 * 属性別に集計する	
-	 * input: 日別勤怠リスト = empty
-	 * output: empty
-	 */
-	@Test
-	public void countingEachAttribute_empty() {
-		val instance = new CountNoOfPeopleCtgByAttributeService();
-		Map<GeneralDate, Map<String, BigDecimal>>  result = NtsAssert.Invoke.privateMethod(instance, "countingEachAttribute", require, AggregationUnitOfEmployeeAttribute.EMPLOYMENT, Collections.emptyList());
-		assertThat(result).isEmpty();
-	}
-	
-	/**
-	 * 属性別に集計する	
-	 * input: 日別勤怠リスト = [ [2021, 1, 1], 001], [[2021, 1, 2], 001] ]
-	 * output: [([2021, 1, 1], empty]), ([2021, 1, 2], empty])]
-	 */
-	@Test
-	public void countingEachAttributeByClassification_empty() {
-		List<IntegrationOfDaily> dailyWorks = Arrays.asList(
-				Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 1), Helper.createAffiliationInfoByCls("001"))
-			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 2), Helper.createAffiliationInfoByCls("001"))
-				);
-		
-		new MockUp<NumberOfEmployeesByAttributeCountingService>() {
-			@Mock
-			public Map<AggregationKey<?>, BigDecimal> count(Require require, AggregationUnitOfEmployeeAttribute unit,
-					List<WorkInfoWithAffiliationInfo> values) {
-				return Collections.emptyMap();
-			}
-		};
-		
-		val instance = new CountNoOfPeopleCtgByAttributeService();
-		Map<GeneralDate, Map<AggregationKey<?>, BigDecimal>>  result = NtsAssert.Invoke.privateMethod(instance, "countingEachAttribute", require, AggregationUnitOfEmployeeAttribute.CLASSIFICATION, dailyWorks);
-		
-		assertThat(result).hasSize(2);
-		assertThat(result.keySet())
-				.containsAnyElementsOf(Arrays.asList(GeneralDate.ymd(2021, 1, 1), GeneralDate.ymd(2021, 1, 2)));
-		
-		Map<AggregationKey<?>, BigDecimal> value1 = result.get(GeneralDate.ymd(2021, 1, 1));
-		assertThat(value1).isEmpty();
-		
-		Map<AggregationKey<?>, BigDecimal> value2 = result.get(GeneralDate.ymd(2021, 1, 2));
-		assertThat(value2).isEmpty();
-	}
+
 	
 	/**
 	 * 属性別に集計する	
@@ -230,7 +238,7 @@ public class CountNoOfPeopleCtgByAttributeServiceTest {
 	 */
 	@Test
 	public void countingEachAttribute() {
-		List<IntegrationOfDaily> dailyWorks = Arrays.asList(
+		val dailyWorks = Arrays.asList(
 				Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 1), Helper.createAffiliationInfoByCls("cls_01"))
 			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 1), Helper.createAffiliationInfoByCls("cls_02"))
 			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 1), Helper.createAffiliationInfoByEmployment("empl_02"))
@@ -239,7 +247,7 @@ public class CountNoOfPeopleCtgByAttributeServiceTest {
 			,	Helper.createDailyWorks(GeneralDate.ymd(2021, 1, 2), Helper.createAffiliationInfoByJobTitle("jobTitle_02"))
 			);
 		
-		Map<AggregationKey<?>, BigDecimal> noEmpByClsCd = new HashMap<AggregationKey<?>, BigDecimal>() {
+		val noEmpByClsCd = new HashMap<AggregationKey<?>, BigDecimal>() {
 			private static final long serialVersionUID = 1L;
 			{
 				put(new AggregationKey<ClassificationCode>(new ClassificationCode("cls_01")), new BigDecimal("10"));
@@ -247,7 +255,7 @@ public class CountNoOfPeopleCtgByAttributeServiceTest {
 			}
 		};
 		
-		Map<AggregationKey<?>, BigDecimal> noEmpByEmplCd = new HashMap<AggregationKey<?>, BigDecimal>() {
+		val noEmpByEmplCd = new HashMap<AggregationKey<?>, BigDecimal>() {
 			private static final long serialVersionUID = 1L;
 			{
 				put(new AggregationKey<EmploymentCode>(new EmploymentCode("empl_01")), new BigDecimal("10"));
@@ -255,7 +263,7 @@ public class CountNoOfPeopleCtgByAttributeServiceTest {
 			}
 		};
 		
-		Map<AggregationKey<?>, BigDecimal> noEmpByJobTilte = new HashMap<AggregationKey<?>, BigDecimal>() {
+		val noEmpByJobTilte = new HashMap<AggregationKey<?>, BigDecimal>() {
 			private static final long serialVersionUID = 1L;
 			{
 				put(new AggregationKey<String>("jobTitle_01"), new BigDecimal("10"));
@@ -277,7 +285,7 @@ public class CountNoOfPeopleCtgByAttributeServiceTest {
 		};
 		
 		/**　分類コードで集計　**/
-		val instance = new CountNoOfPeopleCtgByAttributeService();
+		val instance = new NoOfPeopleByAttributeCounterService();
 		Map<GeneralDate, Map<AggregationKey<?>, BigDecimal>>  result = NtsAssert.Invoke.privateMethod(instance, "countingEachAttribute", require, AggregationUnitOfEmployeeAttribute.CLASSIFICATION, dailyWorks);
 		
 		assertThat(result).hasSize(2);

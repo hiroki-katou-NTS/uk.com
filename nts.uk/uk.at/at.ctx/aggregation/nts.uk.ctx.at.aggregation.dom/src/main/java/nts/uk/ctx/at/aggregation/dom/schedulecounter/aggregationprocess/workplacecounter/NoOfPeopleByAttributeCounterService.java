@@ -24,8 +24,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCod
  */
 @SuppressWarnings("unchecked")
 @Stateless
-public class CountNoOfPeopleCtgByAttributeService {
-	
+public class NoOfPeopleByAttributeCounterService{
 	/**
 	 * 雇用別に集計する	
 	 * @param require
@@ -40,7 +39,8 @@ public class CountNoOfPeopleCtgByAttributeService {
 				.collect(Collectors.toMap(Map.Entry::getKey, entry -> {
 					return entry.getValue()
 							.entrySet().stream()
-							.collect(Collectors.toMap(c -> (AggregationKey<EmploymentCode>) c.getKey(), c -> c.getValue()));
+							.collect(Collectors.toMap(c -> 
+							(AggregationKey<EmploymentCode>) c.getKey(), c -> c.getValue()));
 				}));
 	}
 	
@@ -52,7 +52,6 @@ public class CountNoOfPeopleCtgByAttributeService {
 	 */
 	public static Map<GeneralDate, Map<AggregationKey<ClassificationCode>, BigDecimal>> countingEachClassification(Require require
 			,	List<IntegrationOfDaily> dailyWorks){
-		
 		return countingEachAttribute(require, AggregationUnitOfEmployeeAttribute.CLASSIFICATION, dailyWorks)
 				.entrySet().stream()
 				.collect(Collectors.toMap(Map.Entry::getKey, entry -> {
@@ -70,7 +69,6 @@ public class CountNoOfPeopleCtgByAttributeService {
 	 */
 	public static Map<GeneralDate, Map<AggregationKey<String>, BigDecimal>> countingEachJobTitle(Require require
 			,	List<IntegrationOfDaily> dailyWorks){
-		
 		return countingEachAttribute(require, AggregationUnitOfEmployeeAttribute.JOB_TITLE, dailyWorks)
 				.entrySet().stream()
 				.collect(Collectors.toMap(Map.Entry::getKey, entry -> {
@@ -90,7 +88,6 @@ public class CountNoOfPeopleCtgByAttributeService {
 	private static <T> Map<GeneralDate, Map<AggregationKey<?>, BigDecimal>> countingEachAttribute(Require require
 			,	AggregationUnitOfEmployeeAttribute unit
 			,	List<IntegrationOfDaily> dailyWorks) {
-		
 		return dailyWorks.stream()
 				.collect(Collectors.groupingBy(IntegrationOfDaily::getYmd))
 				.entrySet().stream()
@@ -107,7 +104,4 @@ public class CountNoOfPeopleCtgByAttributeService {
 public static interface Require extends NumberOfEmployeesByAttributeCountingService.Require{
 
 }
-
 }
-
-

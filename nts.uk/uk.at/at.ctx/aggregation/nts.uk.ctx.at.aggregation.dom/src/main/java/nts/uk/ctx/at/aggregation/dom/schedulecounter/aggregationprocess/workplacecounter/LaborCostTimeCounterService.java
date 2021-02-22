@@ -28,7 +28,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  *
  */
 @Stateless
-public class CountLaborCostTimeCtgService {
+public class LaborCostTimeCounterService {
 	/**
 	 * 集計する
 	 * @param require
