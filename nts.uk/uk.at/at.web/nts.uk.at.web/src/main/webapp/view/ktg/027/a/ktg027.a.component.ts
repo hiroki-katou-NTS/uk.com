@@ -210,23 +210,24 @@ module nts.uk.at.view.ktg027.a {
                             const ps = _.find(personalSubor, ({ employeeId }) => employeeId === emp.employeeId);
 
                             if (os) {
-                                const { agreementTime, agreMax, state } = os;
+                                const { agreementTime: at, agreMax: am, state } = os;
 
                                 return _.extend(emp, {
                                     // title of chart
                                     date: emp.businessName,
                                     time: {
-                                        tt: agreMax.agreementTime,
-                                        ot: agreementTime.agreementTime,
-                                        wh: agreMax.agreementTime - agreementTime.agreementTime
+                                        tt: at.agreementTime || 0,
+                                        ot: Math.min(6000, at.agreementTime),
+                                        wh: at.agreementTime >= 6000 ? 0 : Math.max((am.agreementTime || 0) - (at.agreementTime || 0), 0)
                                     },
                                     state: `color: ${genTextColor(state)}; background-color: ${genBackgroundColor(state)}`
                                 });
                             }
 
-                            return _.extend(emp, { time: { tt: 120, ot: 0, wh: 0 }, state: '' });
+                            return _.extend(emp, { time: { tt: 0, ot: 0, wh: 0 }, state: '' });
                         })
-                        .filter(() => overtimeSubor.length)
+                        // trigger rerender table & chart
+                        .filter(() => employees.length && overtimeSubor.length && personalSubor.length)
                         .value();
                 }
             });
