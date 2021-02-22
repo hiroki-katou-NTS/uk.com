@@ -248,8 +248,12 @@ module nts.uk.at.view.kmk003.a {
                 })
 
                 self.mainSettingModel.workTimeSetting.isFlex.subscribe(v => {
-                    //change text tab a2 to 317 if flex mode
-                    let tabA2 = _.find(self.tabs(),['id', TabID.TAB2]);
+                    //change text tab a2 to KMK003_317
+                    if (self.isDetailMode()){
+
+                    }else {
+
+                    }
                 })
 
                 self.mainSettingModel.workTimeSetting.workTimeDivision.workTimeDailyAtr.subscribe(() => {

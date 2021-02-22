@@ -456,7 +456,7 @@ module a5 {
                         //休憩中に退勤した場合の休憩時間の計算方法
                         calcMethod: self.mainSettingModel.flowWorkSetting.restSetting.commonRestSetting.calculateMethod() ?? 0,
                         //固定の場合の実績の休憩計算方法
-                        fixedCalcMethod: self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowRestSetting.calculateMethod() ?? 0,
+                        fixedCalcMethod: self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateMethod() ?? 0,
                         //私用外出の計上方法
                         usePrivateGoOutRest: self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromStamp.usePrivateGoOutRest(),
                         //組合外出の計上方法
@@ -471,7 +471,7 @@ module a5 {
                         useRest: self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.usePluralWorkRestTime() ? 1 : 0,
                         roundUnit: self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.roundingBreakMultipleWork.roundingTime(),
                         roundType: self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.roundingBreakMultipleWork.rounding(),
-                        fixedCalcMethod: self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowRestSetting.calculateMethod() ?? 0,
+                        fixedCalcMethod: self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateMethod() ?? 0,
                         calcMethod: self.mainSettingModel.flexWorkSetting.restSetting.commonRestSetting.calculateMethod() ?? 0,
                         usePrivateGoOutRest: self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromStamp.usePrivateGoOutRest(),
                         useAssoGoOutRest: self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromStamp.useAssoGoOutRest()
@@ -489,7 +489,7 @@ module a5 {
                         self.mainSettingModel.flexWorkSetting.restSetting.commonRestSetting.calculateMethod(returnObject.calcMethod);
                         self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromStamp.usePrivateGoOutRest(returnObject.usePrivateGoOutRest);
                         self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromStamp.useAssoGoOutRest(returnObject.useAssoGoOutRest);
-                        self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowRestSetting.calculateMethod(returnObject.fixedCalcMethod);
+                        self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateMethod(returnObject.fixedCalcMethod);
                     } else//case flow
                     {
                         self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.usePluralWorkRestTime(returnObject.useRest == 1);
@@ -498,7 +498,7 @@ module a5 {
                         self.mainSettingModel.flowWorkSetting.restSetting.commonRestSetting.calculateMethod(returnObject.calcMethod);
                         self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromStamp.usePrivateGoOutRest(returnObject.usePrivateGoOutRest);
                         self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromStamp.useAssoGoOutRest(returnObject.useAssoGoOutRest);
-                        self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowRestSetting.calculateMethod(returnObject.fixedCalcMethod);
+                        self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateMethod(returnObject.fixedCalcMethod);
                     }
                 });
             } else//difftime or fixed
