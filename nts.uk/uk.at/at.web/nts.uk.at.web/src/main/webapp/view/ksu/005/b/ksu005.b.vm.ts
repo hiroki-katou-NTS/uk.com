@@ -1,20 +1,30 @@
 module nts.uk.at.view.ksu005.b {
     import getText = nts.uk.resource.getText;
+    import setShare = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
+    const Paths = {
+        GET_SCHEDULE_TABLE_OUTPUT_SETTING_BY_CID:"ctx/at/schedule/scheduletable/getall",
+        GET_SCHEDULE_TABLE_OUTPUT_SETTING_BY_CODE:"ctx/at/schedule/scheduletable/getone", 
+        REGISTER_SCHEDULE_TABLE_OUTPUT_SETTING:"ctx/at/schedule/scheduletable/register",
+        UPDATE_SCHEDULE_TABLE_OUTPUT_SETTING:"ctx/at/schedule/scheduletable/update",
+        DELETE_SCHEDULE_TABLE_OUTPUT_SETTING:"ctx/at/schedule/scheduletable/delete",
+    };
 
     @bean()
     class Ksu005bViewModel extends ko.ViewModel {
         currentScreen: any = null;
-        items: KnockoutObservableArray<any>;
-        persons: KnockoutObservableArray<any>;
+        items: KnockoutObservableArray<ItemModel> =  ko.observableArray([]);
+        persons: KnockoutObservableArray<any> = ko.observableArray([]);;
         columns: KnockoutObservableArray<NtsGridListColumn>;
         columns3: KnockoutObservableArray<NtsGridListColumn>;
-        selectedCode: KnockoutObservable<any> = ko.observable();
+        selectedCode: KnockoutObservable<string>= ko.observable('');
         selectedPerson: KnockoutObservable<any> = ko.observable();
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
         selectedTab: KnockoutObservable<string>;
-        addSelected: any;
-        outputSettingModel: KnockoutObservable<OutputSettingModel> = ko.observable(new OutputSettingModel());
+        addSelected: any;        
         lstAddColInfo: KnockoutObservableArray<any>;
+        isEditing: KnockoutObservable<boolean> = ko.observable(false);
+        enableDelete: KnockoutObservable<boolean> = ko.observable(true);
 
         itemsSwap: KnockoutObservableArray<any> = ko.observableArray([]);
         columns2: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
@@ -23,26 +33,34 @@ module nts.uk.at.view.ksu005.b {
         lstWorkInfo: KnockoutObservableArray<any>;
         workSelected: any;
         checked: KnockoutObservable<boolean>;
+        isShiftBackgroundColor: KnockoutObservable<boolean> = ko.observable(false);
 
-        itemList: KnockoutObservableArray<ScreenItem>;
+        itemList: KnockoutObservableArray<ScreenItem> = ko.observableArray([]);
 
         countNumberRow: number = 1;
         checkAll: KnockoutObservable<any> = ko.observable(false); 
+        screenItem: KnockoutObservableArray<ScreenItem> = ko.observableArray([]);
+
+        personalInfoItems: KnockoutObservableArray<any> =  ko.observableArray(__viewContext.enums.ScheduleTablePersonalInfoItem); 
+	    attendanceItems: KnockoutObservableArray<any> =  ko.observableArray(__viewContext.enums.ScheduleTableAttendanceItem);
+        workplaceCounterCategories: KnockoutObservableArray<any> =  ko.observableArray(__viewContext.enums.WorkplaceCounterCategory);
+        personalCounterCategory: KnockoutObservableArray<any> =  ko.observableArray(__viewContext.enums.PersonalCounterCategory);
+        
+        selectedPersonalInfoItem: KnockoutObservable<string> = ko.observable("");        
+        selectedAdditionalInfoItem: KnockoutObservable<string> = ko.observable("");
+        selectedAttendanceItem: KnockoutObservable<string> = ko.observable("");
+
+        isEnableAddBtn :KnockoutObservable<boolean> = ko.observable(true);
+        isEnableAdditionInfo :KnockoutObservable<boolean> = ko.observable(true);
+
+        scheduleTableOutputSetting: KnockoutObservable<ScheduleTableOutputSetting> = ko.observable(new ScheduleTableOutputSetting());
 
         constructor() {            
             super();
             const self = this;
-            self.items = ko.observableArray([
-                { code: "1", name: '四捨五入' },
-                { code: "2", name: '切り上げ' },
-                { code: "3", name: '切り捨て' }
-            ]);
-
-            self.persons = ko.observableArray([
-                { id: "1", name: '四捨五入' },
-                { id: "2", name: '切り上げ' },
-                { id: "3", name: '切り捨て' }
-            ]);
+          
+            self.personalInfoItems.push({value: -1, name:getText('KSU005_68')});
+            self.attendanceItems.push({value: -1 , name:getText('KSU005_68')});
 
             self.columns = ko.observableArray([
                 { headerText: getText('KSU005_18'), key: 'code', width: 60 },
@@ -50,12 +68,12 @@ module nts.uk.at.view.ksu005.b {
             ]);
 
             self.columns2 = ko.observableArray([
-                { headerText: getText('KSU005_43'), key: 'name', width: 130 },
-                { headerText: 'No', key: 'id', width: 50, hidden: true }, 
+                { headerText: getText('KSU005_43'), key: 'name', width: 160 },
+                { headerText: 'No', key: 'value', width: 50, hidden: true }, 
             ]);
  
             self.columns3 = ko.observableArray([     
-                { headerText: "", key: 'id', width: 30},          
+                { headerText: "", key: 'id', width: 30, hidden: true},          
                 { headerText: getText('KSU005_48'), key: 'name', width: 150}
             ]);
 
@@ -66,22 +84,15 @@ module nts.uk.at.view.ksu005.b {
             
             ]);
 
-            let arr = [
-                {id:1, name:getText('KSU005_73')},
-                {id:2, name:getText('KSU005_73')},
-                {id:3, name:getText('KSU005_73')},
-                {id:4, name:getText('KSU005_73')},
-                {id:5, name:getText('KSU005_73')}
-            ]
-
-            self.itemsSwap(arr);
             self.selectedTab = ko.observable('tab-1');
 
             self.lstAddColInfo = ko.observableArray([
-                { code: '0', name: getText('KSU005_27') },
-                { code: '1', name: getText('KSU005_28') }
+                { code: '1', name: getText('KSU005_27') },
+                { code: '0', name: getText('KSU005_28') }
             ]);
+
             self.addSelected = ko.observable(0);
+
             self.checked = ko.observable(false);
 
             self.lstWorkInfo = ko.observableArray([
@@ -89,13 +100,23 @@ module nts.uk.at.view.ksu005.b {
                 { code: '1', name: getText('KSU005_74') }
             ]);
             self.workSelected = ko.observable(0);
-            $("#fixed-table").ntsFixedTable({ height: 400, width: 500 });        
-            
-            self.itemList = ko.observableArray([
-                new ScreenItem(true, self.countNumberRow)
-                
-                
-            ]);
+
+            $("#fixed-table").ntsFixedTable({ height: 400, width: 660 }); 
+
+            self.scheduleTableOutputSetting().shiftBackgroundColor.subscribe((value)=>{
+                if(value ==1 ){
+                    self.isShiftBackgroundColor(true);
+                } else {
+                    self.isShiftBackgroundColor(false);
+                }
+            });
+            self.isShiftBackgroundColor.subscribe((value) => {      
+                if(self.countNumberRow < 10){
+                    value ? self.isEnableAddBtn(false): self.isEnableAddBtn(true);
+                } else {
+                    self.isEnableAddBtn(false)
+                }      
+            });
 
             self.checkAll.subscribe((value) =>{
                 let temp = self.itemList();
@@ -110,26 +131,284 @@ module nts.uk.at.view.ksu005.b {
                     }
                     self.itemList(temp);
                 }
+            });
 
+            self.scheduleTableOutputSetting().additionalColumn.subscribe((value) => {
+                if(value == 1 ){
+                    self.isEnableAdditionInfo(true);
+                } else {
+                    self.isEnableAdditionInfo(false);
+                }
+            });
+            self.selectedCode.subscribe((code: string) => {
+                self.$blockui("invisible");
+                if (_.isEmpty(code)) {
+                    self.clearData();
+                } else {
+                    self.$ajax(Paths.GET_SCHEDULE_TABLE_OUTPUT_SETTING_BY_CODE + "/" + code).done((data: IScheduleTableOutputSetting) => {
+                        self.countNumberRow = 1;
+                        if (!_.isNull(data) && !_.isEmpty(data)) {
+                            self.clearError();                            
+                            let personalInfoItemsSize = data.personalInfo.length;
+                            let additionalItemsSize = data.attendanceItem.length;
+                            let attendanceItemSize = data.attendanceItem.length;
+                            let maxLength = Math.max(personalInfoItemsSize, additionalItemsSize, attendanceItemSize);
+                            let datas = [];
+                            let tempSelected: Array<any> = [];
+
+                            self.scheduleTableOutputSetting().updateData(data);
+                            self.scheduleTableOutputSetting().isEnableCode(false);
+                            self.isEnableAddBtn(data.shiftBackgroundColor == 0);
+
+                            datas.push(new ScreenItem(true, self.countNumberRow, data.personalInfo[0] != null ? data.personalInfo[0].toString() : null,
+                                data.attendanceItem[0] != null ? data.attendanceItem[0].toString() : null,
+                                data.attendanceItem[0] != null ? data.attendanceItem[0].toString() : null));
+                            for (let i = 1; i < maxLength; i++) {
+                                self.countNumberRow = self.countNumberRow + 1;
+                                if(self.countNumberRow >= 10) {
+                                    self.isEnableAddBtn(false);
+                                }
+                                datas.push(new ScreenItem(false, self.countNumberRow, data.personalInfo[i] != null ? data.personalInfo[i].toString() : null,
+                                    data.attendanceItem[i] != null ? data.attendanceItem[i].toString() : null,
+                                    data.attendanceItem[i] != null ? data.attendanceItem[i].toString() : null));                                    
+
+                            }
+                            self.itemList(datas);
+
+                            self.itemsSwap(self.workplaceCounterCategories());
+
+                            _.each(data.workplaceCounterCategories, code => {
+                                _.each(self.itemsSwap(), y => {
+                                    if (y.value == code) {
+                                        tempSelected.push(new SwapModel(y.value, y.name));
+                                    }
+                                })
+                            });
+
+                            self.currentCodeListSwap(tempSelected);
+                            self.persons(self.personalCounterCategory());
+                            self.selectedPerson(data.personalCounterCategories);
+                            self.isEditing(true);
+                            self.enableDelete(true);
+                            $('#outputSettingName').focus();
+                        }
+                    }).always(() => {
+                        self.$blockui("hide");
+                    })
+                }
+                self.$blockui("hide");
+            });        
+            self.loadData();
+        }
+
+        initialData(): void {
+            const self = this;
+            let data = [];
+            self.countNumberRow = 1;
+            data.push(new ScreenItem(true, self.countNumberRow, self.personalInfoItems()[0].name, self.attendanceItems()[0].name, self.attendanceItems()[0].name));
+            self.itemList (data);
+
+            self.itemsSwap(self.workplaceCounterCategories());
+            self.currentCodeListSwap([]);
+
+            self.persons(self.personalCounterCategory());
+            self.selectedPerson([]);
+        }
+
+        public registerOrUpdate(): void {
+            const self = this;
+            self.$blockui("invisible");
+            if (self.validateAll()) {
+                return;
+            }
+            let personalInfo: Array<string> = [],
+                additionalInfo: Array<string> = [],
+                attendanceItem: Array<string> = [];
+
+            let command:any  = {
+                code: self.scheduleTableOutputSetting().code(),
+                name: self.scheduleTableOutputSetting().name(),
+                additionalColumn: self.scheduleTableOutputSetting().additionalColumn(),
+                shiftBackgroundColor: self.scheduleTableOutputSetting().shiftBackgroundColor(),
+                dailyDataDisplay: self.scheduleTableOutputSetting().dailyDataDisplay(),
+                // personalInfo: self.scheduleTableOutputSetting().additionalInfo(),
+                // additionalInfo: self.scheduleTableOutputSetting().additionalItems(),
+                // attendanceItem: self.scheduleTableOutputSetting().attendanceItem(),
+                workplaceCounterCategories: self.currentCodeListSwap(),
+                personalCounterCategories: self.selectedPerson()
+            }
+
+            _.each(self.itemList(), x => {
+                personalInfo.push(x.personalInfo());
+                additionalInfo.push(x.additionInfo());
+                attendanceItem.push(x.attendanceItem());
+            })
+
+            command.personalInfo = personalInfo;
+            command.additionalInfo = additionalInfo;
+            command.attendanceItem = attendanceItem;
+            if(!self.isEditing()){
+                self.$ajax(Paths.REGISTER_SCHEDULE_TABLE_OUTPUT_SETTING, command).done(() =>{
+                    self.$dialog.info({messageId: 'Msg_15'}).then(() => {
+                        self.selectedCode(command.code);
+                        self.reloadData();
+                    });                    
+                }).fail((res) => {
+                    if(res.messageId == 'Msg_3'){
+                        self.selectedCode('');
+                        $('#outputSettingCode').focus();
+                    }
+                }).always(() =>{
+                    self.$blockui("hide");
+                });
+            } else {              
+
+                let tmp = ko.toJSON(self.scheduleTableOutputSetting);
+                self.$ajax(Paths.UPDATE_SCHEDULE_TABLE_OUTPUT_SETTING, command).done(() =>{
+                    self.selectedCode(command.code);
+                    self.reloadData();
+                    self.$dialog.info({messageId: "Msg_15"}).then(function() {
+                        $('#outputSettingName').focus();
+                    }); 
+                }).fail((res) => {
+                    self.$dialog.alert({messageId: res.messageId});
+                }).always(() =>{
+                    self.$blockui("hide");
+                });
+            }
+            self.$blockui("hide");
+        }
+
+        public remove(): void {
+            const self = this;
+            self.$dialog.confirm({messageId: "Msg_18"}).then((result: 'no' | 'yes') =>{
+                self.$blockui("invisible");
+                let command: any = {
+                    code: self.scheduleTableOutputSetting().code()
+                }
+                
+                if(result === 'yes'){
+                    self.$ajax(Paths.DELETE_SCHEDULE_TABLE_OUTPUT_SETTING, command).done(() =>{
+                        self.$dialog.info({messageId: "Msg_16"}).then(() =>{
+                            if(self.items().length == 1) {
+                                self.items([]);
+                                self.selectedCode('');
+                            } else {
+                                let indexSelected: number;
+                                for(let index = 0; index < self.items().length; index++){
+                                    if(self.items()[index].code == self.selectedCode()) {
+                                        indexSelected = (index == self.items().length - 1)? index -1: index;
+                                        self.items.splice(index, 1);
+                                        break;
+                                    }
+                                }
+                                self.enableDelete(true);
+                                self.selectedCode(self.items()[indexSelected].code);
+                            }
+                        });
+                    }).always(() =>{
+                        self.$blockui("hide");
+                    });    
+                    self.$blockui("hide");                
+                }
+                if(result === 'no'){
+                    self.$blockui("hide");
+                    $('#outputSettingName').focus();
+                }
+            });            
+        }
+
+        loadData(): void {
+            const self = this;
+            let dataList: Array<ItemModel> = [];
+            // let infoItems: Array<ItemModel> = [];
+            // let attendanceItems: Array<ItemModel> = [];
+            let code = getShared('dataShareKSU005a');
+            // infoItems.push(new ItemModel('', getText('KSU005_68')));
+            // attendanceItems.push(new ItemModel('', getText('KSU005_68')));
+            self.$blockui("invisible");
+            self.$ajax(Paths.GET_SCHEDULE_TABLE_OUTPUT_SETTING_BY_CID).done((data: Array<IScheduleTableOutputSetting>) => {
+                if(data && data.length > 0){
+                    _.each(data, item =>{
+                        dataList.push(new ItemModel(item.code, item.name));
+                    });            
+                    self.items(dataList);
+                    self.selectedCode(code);       
+                } else {
+                    self.clearData();
+                }
+                
+            }).always(() => {
+                self.$blockui("hide");
+            });
+        }
+
+        reloadData(): void {
+            const self = this;
+            let dataList: Array<ItemModel> = [];
+            let infoItems: Array<ItemModel> = [];
+            let attendanceItems: Array<ItemModel> = [];
+            infoItems.push(new ItemModel('', getText('KSU005_68')));
+            attendanceItems.push(new ItemModel('', getText('KSU005_68')));
+            self.$blockui("invisible");
+            self.$ajax(Paths.GET_SCHEDULE_TABLE_OUTPUT_SETTING_BY_CID).done((data: Array<IScheduleTableOutputSetting>) => {
+                if(data && data.length > 0){
+                    _.each(data, item =>{
+                        dataList.push(new ItemModel(item.code, item.name));
+                    });            
+                    self.items(dataList);
+                    // self.selectedCode(code);       
+                } else {
+                    self.clearData();
+                }                
+            }).always(() => {
+                self.$blockui("hide");
             });
         }
 
         addItem(){
-            var self = this;
+            let self = this;
             self.countNumberRow = self.countNumberRow + 1;
+            if(self.countNumberRow >= 10) {
+                self.isEnableAddBtn(false);
+            }
             self.itemList.push(new ScreenItem(false, self.countNumberRow));    
         }
         
         removeItem(){
-            var self = this;
-            var evens = _.remove(self.itemList(), function(n) {
+            let self = this;
+            let evens = _.remove(self.itemList(), function(n) {
                 return !n.checked();
               });
               for (let i = 0; i < evens.length; i++) {
-                evens[i].text(i + 1);
+                evens[i].rowNo(i + 1);
               }
             self.countNumberRow = evens.length;
             self.itemList(evens);    
+        }
+
+        clearData(): void {
+            let self = this;
+            self.selectedCode("");         
+            self.scheduleTableOutputSetting().resetData();  
+            self.isEditing(false);
+            self.enableDelete(false);
+            self.initialData();
+            self.clearError();
+            $('#outputSettingCode').focus();              
+        }
+
+        private validateAll(): boolean {
+            $('#outputSettingCode').ntsEditor('validate');
+            $('#outputSettingName').ntsEditor('validate');         
+            if (nts.uk.ui.errors.hasError()) {                    
+                return true;
+            }
+            return false;
+        }
+        clearError(): void {
+            $('#outputSettingCode').ntsError('clear');
+            $('#outputSettingName').ntsError('clear');
         }
 
         closeDialog(): void {
@@ -138,7 +417,12 @@ module nts.uk.at.view.ksu005.b {
         }
 
         openDialog(): void {
-            let self = this;				
+            const self = this;		
+            let request: any = {};
+            request.copySourceCode = self.scheduleTableOutputSetting().code();
+            request.copySourceName = self.scheduleTableOutputSetting().name();
+
+            setShare('dataShareKSU005b', request);
             self.currentScreen = nts.uk.ui.windows.sub.modal('/view/ksu/005/c/index.xhtml');
         }
 
@@ -148,44 +432,35 @@ module nts.uk.at.view.ksu005.b {
     }
 
     class ScreenItem {
-        text: KnockoutObservable<number>;
+        rowNo: KnockoutObservable<number>;
         checked: KnockoutObservable<boolean>;
         
-        itemList: KnockoutObservableArray<ItemModel>;
+        personalInfos: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
+        attendanceItems: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
         selectedCode: KnockoutObservable<string>;
         isNumberOne: KnockoutObservable<boolean> = ko.observable(false);
+        personalInfo: KnockoutObservable<string> = ko.observable("-1");
+        additionInfo: KnockoutObservable<string> = ko.observable("-1");
+        attendanceItem: KnockoutObservable<string> = ko.observable("-1");
         
-        constructor(isNumberOne: any, text: number) {
+        constructor(isNumberOne: any, rowNo: number, personalInfo?: string, additionInfo?: string, attendanceItem?: string) {
             var self = this;
-            self.text = ko.observable(text);
+            self.rowNo = ko.observable(rowNo);
             self.checked = ko.observable(false);
-            self.isNumberOne = ko.observable(isNumberOne);
-            self.itemList = ko.observableArray([
-                new ItemModel('1', '基本給'),
-                new ItemModel('2', '役職手当'),
-                new ItemModel('3', '基本給')
-            ]);
-            self.selectedCode = ko.observable('1');
-        }
-    }
-
-    interface IOutputSettingModel {
-        code: string;
-        name: string;
-    }
-    class OutputSettingModel {
-        code: KnockoutObservable<string> = ko.observable('');
-        name: KnockoutObservable<string> = ko.observable('');
-
-        constructor(params?: IOutputSettingModel){
-            const self = this;
-            if(params) {
-                self.code(params.code);
-                self.name(params.name);
+            self.isNumberOne = ko.observable(isNumberOne);            
+            self.selectedCode = ko.observable('1'); 
+            if(personalInfo) {            
+                self.personalInfo = ko.observable(personalInfo);
+            }
+            if(additionInfo) {                
+                self.additionInfo = ko.observable(additionInfo);
+            }
+            if(attendanceItem) {
+                self.attendanceItem = ko.observable(attendanceItem);
             }
         }
     }
-
+   
     class ItemModel {
         code: string;
         name: string;
@@ -194,5 +469,87 @@ module nts.uk.at.view.ksu005.b {
             this.code = code;
             this.name = name;
         }
+    }
+    
+    class SwapModel {
+        value: string;
+        name: string;
+
+        constructor(code: string, name: string) {
+            this.value = code;
+            this.name = name;
+        }
+    }
+
+    interface IScheduleTableOutputSetting {
+        code: string;
+        name: string;
+        additionalColumn: number;
+        shiftBackgroundColor: number;
+        dailyDataDisplay: number;
+        personalInfo: Array<number>;
+        additionalInfo: Array<number>;
+        attendanceItem: Array<number>;
+
+        personalInfoItems: Array<ItemModel>;
+        additionalItems: Array<ItemModel>;
+        workplaceCounterCategories: Array<number>;
+        personalCounterCategories: Array<number>;
+ 
+    }
+    class ScheduleTableOutputSetting {
+        code: KnockoutObservable<string> = ko.observable('');
+        name: KnockoutObservable<string> = ko.observable('');
+        additionalColumn: KnockoutObservable<number> = ko.observable();
+        shiftBackgroundColor: KnockoutObservable<number> = ko.observable();
+        dailyDataDisplay: KnockoutObservable<number> = ko.observable();
+        personalInfo: KnockoutObservableArray<number> = ko.observableArray([]);
+        additionalInfo: KnockoutObservableArray<number> = ko.observableArray([]);
+        attendanceItem: KnockoutObservableArray<number> = ko.observableArray([]);
+
+        personalInfoItems: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
+        additionalItems: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
+
+        workplaceCounterCategories: KnockoutObservableArray<number> = ko.observableArray([]);
+        personalCounterCtegories: KnockoutObservableArray<number> = ko.observableArray([]);
+
+        isEnableCode: KnockoutObservable<boolean> = ko.observable(false);
+        constructor(params?: IScheduleTableOutputSetting) {
+            const self = this;
+            if(params){
+                self.code(params.code);
+                self.name(params.name);
+                self.additionalColumn(params.additionalColumn);
+                self.shiftBackgroundColor(params.shiftBackgroundColor);
+                self.dailyDataDisplay(params.dailyDataDisplay);
+                self.personalInfo(params.personalInfo);
+                self.additionalInfo(params.additionalInfo);
+                self.attendanceItem(params.attendanceItem);
+                self.additionalItems(params.additionalItems);
+                self.personalInfoItems(params.personalInfoItems);
+                self.workplaceCounterCategories(params.workplaceCounterCategories);
+                self.personalCounterCtegories(params.personalInfo);
+            }
+        }
+
+        public resetData() {
+            let self = this;
+            self.code("");
+            self.name("");
+            self.isEnableCode(true);
+        }
+        public updateData(param: IScheduleTableOutputSetting){
+            const self = this;
+            self.code(param.code);
+            self.name(param.name);
+            self.additionalColumn(param.additionalColumn);
+            self.additionalInfo(param.additionalInfo);
+            self.attendanceItem(param.attendanceItem);
+            self.dailyDataDisplay(param.dailyDataDisplay);
+            self.shiftBackgroundColor(param.shiftBackgroundColor);
+            self.personalInfo(param.personalInfo);
+            self.personalCounterCtegories(param.personalCounterCategories);
+            self.workplaceCounterCategories(param.workplaceCounterCategories);
+        } 
     }
 }

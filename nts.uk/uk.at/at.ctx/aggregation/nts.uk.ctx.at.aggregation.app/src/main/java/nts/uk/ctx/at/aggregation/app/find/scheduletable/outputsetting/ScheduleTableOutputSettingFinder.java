@@ -24,9 +24,7 @@ public class ScheduleTableOutputSettingFinder {
 	
 	public ScheduleTableOutputSettingDto findByCidAndCode(String code) {
 		Optional<ScheduleTableOutputSetting> optional = repository.get(AppContexts.user().companyId(), new OutputSettingCode(code));
-//		ScheduleTableOutputSetting optional1 = repository.getOne(AppContexts.user().companyId(), new OutputSettingCode(code));
 		return optional.isPresent() ? ScheduleTableOutputSettingDto.setData(optional.get()): new ScheduleTableOutputSettingDto();
-//		return ScheduleTableOutputSettingDto.setData(optional1);
 	}
 	
 	public List<ScheduleTableOutputSettingDto> findByCid(){

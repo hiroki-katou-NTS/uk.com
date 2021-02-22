@@ -18,14 +18,13 @@
 		</ui:define>
 
 		<!-- PAGE CONTENT -->
-        <ui:define name="content">
-        
+        <ui:define name="content">        
             <div id="contents-area">
                 <div class="container-custom">
                     <!--C1-1-->
                     <div data-bind="ntsFormLabel:{}">#{i18n.getText('KSU005_49')} </div>    
-                    <span style="margin-top: 8px; margin-left: 20px;" data-bind="text: code"></span>     
-                    <span style="margin-top: 8px; margin-left: 60px;" data-bind="text: name"></span>  
+                    <span style="margin-top: 8px; margin-left: 20px;" data-bind="text: copySourceCode"></span>     
+                    <span style="margin-top: 8px; margin-left: 60px;" data-bind="text: copySourceName"></span>  
                 </div>        
                 <div class="container-custom">
                     <!--C2-1-->
@@ -39,7 +38,7 @@
                                 width: '20px',
                                 textalign: 'left'
                             })),                  
-                            value: valueCode 
+                            value: newCode 
                         }" />
                     </div>
 
@@ -53,7 +52,7 @@
                                 width: '180px',
                                 textalign: 'left'
                             })),            
-                            value: valueName             
+                            value: newName             
                         }" />
                     </div>
                 </div>                
@@ -61,7 +60,7 @@
         
             <div id="functions-area-bottom">
                 <!--c3-1-->
-                <button tabindex="1" class="x-large proceed" id="C3_1" data-bind="click: closeDialog">#{i18n.getText('KSU005_53')}</button>
+                <button tabindex="1" class="x-large proceed" id="C3_1" data-bind="click: copy">#{i18n.getText('KSU005_53')}</button>
                 <!--C3-2-->
                 <button tabindex="1"  id="C3_2" data-bind="click: closeDialog">#{i18n.getText('KSU005_54')}</button>                        
             </div>	 

@@ -1,9 +1,12 @@
 package nts.uk.ctx.at.aggregation.infra.repository.scheduletable.outputsetting;
 
 import java.util.ArrayList;
-
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -33,7 +36,7 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
- * 
+ * 	
  * @author quytb
  *
  */
@@ -53,8 +56,55 @@ public class JpaScheduleTableOutputSettingItemRepository extends JpaRepository
 			+ "LEFT JOIN KagmtRptScheduleTallyByPerson c ON a.pk.companyId = c.pk.companyId AND a.pk.code = c.pk.code "
 			+ "LEFT JOIN KagmtRptScheduleTallyByWkp d ON a.pk.companyId = d.pk.companyId AND a.pk.code = d.pk.code "
 			+ "WHERE a.pk.companyId = :companyId";
+
+	private ScheduleTableOutputSetting toDomainFromEntity(KagmtRptSchedule kagmtRptSchedule,
+			List<KagmtRptScheduleItem> kagmtRptScheduleItems, List<KagmtRptScheduleTallyByPerson> kagmtRptScheduleTallyByPersons,
+			List<KagmtRptScheduleTallyByWkp> kagmtRptScheduleTallyByWkps) {
+		List<OneRowOutputItem> oneRowOutputItems = new ArrayList<OneRowOutputItem>();
+		List<PersonalCounterCategory> personalCounterCategories = new ArrayList<PersonalCounterCategory>();
+		List<WorkplaceCounterCategory> workplaceCounterCategories = new ArrayList<WorkplaceCounterCategory>();
+		if(!kagmtRptScheduleTallyByPersons.isEmpty()) {
+			kagmtRptScheduleTallyByPersons.stream().forEach(x -> {
+				if(x.pk.categoryNo != null) {
+					personalCounterCategories.add(PersonalCounterCategory.of(x.pk.categoryNo));
+				}	
+			});
+		}		
+		
+		if(!kagmtRptScheduleTallyByPersons.isEmpty()) {
+			kagmtRptScheduleTallyByPersons.stream().forEach(x -> {
+				if(x.pk.categoryNo != null) {
+					workplaceCounterCategories.add(WorkplaceCounterCategory.of(x.pk.categoryNo));
+				}	
+			});			
+		}
+		
+		kagmtRptScheduleItems.stream().forEach(x -> {
+			if (x.personalItem == null && x.additionalPersonalItem == null && x.attendanceItem == null) {
+				oneRowOutputItems.add(OneRowOutputItem.create(
+						Optional.of(EnumAdaptor.valueOf(0, ScheduleTablePersonalInfoItem.class)),
+						Optional.of(EnumAdaptor.valueOf(4, ScheduleTablePersonalInfoItem.class)),
+						Optional.of(EnumAdaptor.valueOf(0, ScheduleTableAttendanceItem.class))));
+			} else {
+				OneRowOutputItem item = OneRowOutputItem.create(
+						Optional.ofNullable(x.personalItem != null ? EnumAdaptor.valueOf(x.personalItem, ScheduleTablePersonalInfoItem.class) : null),
+						Optional.ofNullable(x.additionalPersonalItem != null ? EnumAdaptor.valueOf(x.additionalPersonalItem, ScheduleTablePersonalInfoItem.class): null),
+						Optional.ofNullable(x.attendanceItem != null ? EnumAdaptor.valueOf(x.attendanceItem, ScheduleTableAttendanceItem.class): null));
+				oneRowOutputItems.add(item);
+			}			
+		});
+		
+		OutputItem outputItem = new OutputItem(NotUseAtr.valueOf(kagmtRptSchedule.additionalColumUseAtr),
+				NotUseAtr.valueOf(kagmtRptSchedule.shiftBackColorUseAtr), NotUseAtr.valueOf(kagmtRptSchedule.recordDispAtr),
+				oneRowOutputItems);
 	
-	private ScheduleTableOutputSetting toDomainFromListObj(List<Object[]> objects) {
+		return ScheduleTableOutputSetting.create(new OutputSettingCode(kagmtRptSchedule.pk.code), new OutputSettingName(kagmtRptSchedule.name), outputItem,
+				workplaceCounterCategories, personalCounterCategories);
+	}
+	private ScheduleTableOutputSetting toDomainFromObjByCode(List<Object[]> objects) {
+		if(objects.isEmpty()) {
+			return ScheduleTableOutputSetting.create(null, null, null, null, null);
+		}
 		List<PersonalCounterCategory> personalCounterCategories = new ArrayList<PersonalCounterCategory>();
 		List<WorkplaceCounterCategory> workplaceCounterCategories = new ArrayList<WorkplaceCounterCategory>();
 		List<ScheduleTableOutputSettingTemp> list = new ArrayList<>();
@@ -62,27 +112,38 @@ public class JpaScheduleTableOutputSettingItemRepository extends JpaRepository
 		KagmtRptSchedule entity = (KagmtRptSchedule) objects.get(0)[0];
 		String code = entity.pk.code;
 		String name = entity.name;
-		int personalInfo = (Integer) objects.get(0)[1];
-		int additionalInfo = (Integer) objects.get(0)[2];
-		int attendanceItem = (Integer) objects.get(0)[3];
-		int personalCatergoryNo = (Integer) objects.get(0)[4];
-		int workplaceCatergoryNo = (Integer) objects.get(0)[5];
-		
+		Integer personalInfo = objects.get(0) != null ?(Integer) objects.get(0)[1]: null;
+		Integer additionalInfo =objects.get(0)!= null ? (Integer) objects.get(0)[2]: null;
+		Integer attendanceItem = objects.get(0)!=null ? (Integer) objects.get(0)[3]: null;
+		Integer personalCatergoryNo = (Integer) objects.get(0)[4];
+		Integer workplaceCatergoryNo = (Integer) objects.get(0)[5];
+
 		objects.stream().forEach(object -> {
 			list.add(new ScheduleTableOutputSettingTemp(code, name, personalInfo, additionalInfo, attendanceItem,
-					personalCatergoryNo, workplaceCatergoryNo));
+					personalCatergoryNo, workplaceCatergoryNo, entity));
 		});
-		
+
 		list.stream().forEach(x -> {
-			personalCounterCategories.add(PersonalCounterCategory.of(x.getPersonalCatergoryNo()));
-			workplaceCounterCategories.add(WorkplaceCounterCategory.of(x.getWorkplaceCatergoryNo()));
+			if(x.getPersonalCatergoryNo() != null) {
+				personalCounterCategories.add(PersonalCounterCategory.of(x.getPersonalCatergoryNo()));
+			}			
+			if(x.getWorkplaceCatergoryNo() != null) {
+				workplaceCounterCategories.add(WorkplaceCounterCategory.of(x.getWorkplaceCatergoryNo()));
+			}
 			
-			OneRowOutputItem item = OneRowOutputItem.create(Optional.of(EnumAdaptor.valueOf(personalInfo, ScheduleTablePersonalInfoItem.class)),
-					Optional.of(EnumAdaptor.valueOf(additionalInfo, ScheduleTablePersonalInfoItem.class)),
-					Optional.of(EnumAdaptor.valueOf(attendanceItem, ScheduleTableAttendanceItem.class)));			
-			oneRowOutputItems.add(item);
-		});		
-		
+			if (personalInfo == null && additionalInfo == null && attendanceItem == null) {
+				oneRowOutputItems.add(OneRowOutputItem.create(
+						Optional.of(EnumAdaptor.valueOf(0, ScheduleTablePersonalInfoItem.class)),
+						Optional.of(EnumAdaptor.valueOf(4, ScheduleTablePersonalInfoItem.class)),
+						Optional.of(EnumAdaptor.valueOf(0, ScheduleTableAttendanceItem.class))));
+			} else {
+				OneRowOutputItem item = OneRowOutputItem.create(
+						Optional.ofNullable(personalInfo != null ? EnumAdaptor.valueOf(personalInfo, ScheduleTablePersonalInfoItem.class) : null),
+						Optional.ofNullable(additionalInfo != null ? EnumAdaptor.valueOf(additionalInfo, ScheduleTablePersonalInfoItem.class): null),
+						Optional.ofNullable(attendanceItem != null ? EnumAdaptor.valueOf(attendanceItem, ScheduleTableAttendanceItem.class): null));
+				oneRowOutputItems.add(item);
+			}			
+		});
 
 		OutputItem outputItem = new OutputItem(NotUseAtr.valueOf(entity.additionalColumUseAtr),
 				NotUseAtr.valueOf(entity.shiftBackColorUseAtr), NotUseAtr.valueOf(entity.recordDispAtr),
@@ -91,93 +152,115 @@ public class JpaScheduleTableOutputSettingItemRepository extends JpaRepository
 		return new ScheduleTableOutputSetting(new OutputSettingCode(code), new OutputSettingName(name), outputItem,
 				workplaceCounterCategories, personalCounterCategories);
 	}
-	
-	private ScheduleTableOutputSetting toDomainFromObj(Object[] object) {
-		List<PersonalCounterCategory> personalCounterCategories = new ArrayList<PersonalCounterCategory>();
-		List<WorkplaceCounterCategory> workplaceCounterCategories = new ArrayList<WorkplaceCounterCategory>();
+
+	private List<ScheduleTableOutputSetting> toDomainFromObj(List<Object[]> objects) {
+		if(objects.isEmpty()) {
+			return new ArrayList<ScheduleTableOutputSetting>();
+		}
+		List<ScheduleTableOutputSetting> results = new ArrayList<ScheduleTableOutputSetting>();
 		List<ScheduleTableOutputSettingTemp> list = new ArrayList<>();
-		List<OneRowOutputItem> oneRowOutputItems = new ArrayList<OneRowOutputItem>();
+		Set<String> listCode = new HashSet<String>();
+		objects.stream().forEach(object -> {
+			KagmtRptSchedule entity = (KagmtRptSchedule) object[0];
+			String code = entity.pk.code;
+			String name = entity.name;
+			Integer personalInfo = object[1]!=null ? (Integer) object[1]: null;
+			Integer additionalInfo = object[2] !=null? (Integer) object[2] : null;
+			Integer attendanceItem = object[3] !=null ? (Integer) object[3]:null;
+			Integer personalCatergoryNo = (Integer) object[4];
+			Integer workplaceCatergoryNo = (Integer) object[5];
 
-		KagmtRptSchedule entity = (KagmtRptSchedule) object[0];
-		String code = entity.pk.code;
-		String name = entity.name;
-		int personalInfo = (Integer) object[1];
-		int additionalInfo = (Integer) object[2];
-		int attendanceItem = (Integer) object[3];
-		int personalCatergoryNo = (Integer) object[4];
-		int workplaceCatergoryNo = (Integer) object[5];
+			list.add(new ScheduleTableOutputSettingTemp(code, name, personalInfo, additionalInfo, attendanceItem,
+					personalCatergoryNo, workplaceCatergoryNo, entity));
+			listCode.add(code);		
+		});
 
-		list.add(new ScheduleTableOutputSettingTemp(code, name, personalInfo, additionalInfo, attendanceItem,
-				personalCatergoryNo, workplaceCatergoryNo));
-		list.stream().forEach(x -> {
-			personalCounterCategories.add(PersonalCounterCategory.of(x.getPersonalCatergoryNo()));
-			workplaceCounterCategories.add(WorkplaceCounterCategory.of(x.getWorkplaceCatergoryNo()));
-			
-			OneRowOutputItem item = OneRowOutputItem.create(Optional.of(EnumAdaptor.valueOf(personalInfo, ScheduleTablePersonalInfoItem.class)),
-					Optional.of(EnumAdaptor.valueOf(additionalInfo, ScheduleTablePersonalInfoItem.class)),
-					Optional.of(EnumAdaptor.valueOf(attendanceItem, ScheduleTableAttendanceItem.class)));			
-			oneRowOutputItems.add(item);
-		});		
+		Map<String, List<ScheduleTableOutputSettingTemp>> listData = list.stream()
+				.collect(Collectors.groupingBy(ScheduleTableOutputSettingTemp::getCode));	
 		
-		OutputItem outputItem = new OutputItem(NotUseAtr.valueOf(entity.additionalColumUseAtr),
-				NotUseAtr.valueOf(entity.shiftBackColorUseAtr), NotUseAtr.valueOf(entity.recordDispAtr),
-				oneRowOutputItems);
+		listCode.stream().forEach(code -> {
+			results.add(this.convertToDomainFromTmp(listData.get(code)));
 
-		return new ScheduleTableOutputSetting(new OutputSettingCode(code), new OutputSettingName(name), outputItem,
-				workplaceCounterCategories, personalCounterCategories);
-	}
-	private List<ScheduleTableOutputSetting> toListDomainFromListObj(List<Object []> objects){
-		List<ScheduleTableOutputSetting> scheduleTableOutputSettings = new ArrayList<ScheduleTableOutputSetting>();
-		objects.stream().forEach(obj -> {
-			scheduleTableOutputSettings.add(this.toDomainFromObj(obj));
 		});
-		return scheduleTableOutputSettings;		
-	}
-	
-	private KagmtRptSchedule toKagmtRptScheduleEntity(ScheduleTableOutputSetting domain) {
-		return new KagmtRptSchedule(
-				new KagmtRptSchedulePk(AppContexts.user().companyId(),
-						domain.getCode().v()),
-				domain.getName().v(),
-				domain.getOutputItem().getAdditionalColumnUseAtr().value,
-				domain.getOutputItem().getShiftBackgroundColorUseAtr().value,
-				domain.getOutputItem().getDailyDataDisplayAtr().value );				
-	}
-	
-	private List<KagmtRptScheduleItem> toKagmtRptScheduleItemEntity(ScheduleTableOutputSetting domain) {
-		List<KagmtRptScheduleItem> results = new ArrayList<KagmtRptScheduleItem>();
-		List<OneRowOutputItem> list = domain.getOutputItem().getDetails();
-		list.stream().forEach(row -> {
-			results.add(new KagmtRptScheduleItem(
-					new KagmtRptScheduleItemPk(AppContexts.user().companyId(),
-							domain.getCode().v(),
-							domain.getOutputItem().getDailyDataDisplayAtr().value),
-					row.getPersonalInfo().get().value,
-					row.getAdditionalInfo().get().value,
-					row.getAttendanceItem().get().value
-					));
-		});
-	
-		return results;		
-	}
-	
-	private List<KagmtRptScheduleTallyByPerson> toKagmtRptScheduleTallyByPersonEntity(ScheduleTableOutputSetting domain) {
-		List<KagmtRptScheduleTallyByPerson> results = new ArrayList<KagmtRptScheduleTallyByPerson>();
-		List<PersonalCounterCategory> list = domain.getPersonalCounterCategories();
-		list.stream().forEach(item -> {
-			results.add(new KagmtRptScheduleTallyByPerson(new KagmtRptScheduleTallyByPersonPk(
-					AppContexts.user().companyId(), domain.getCode().v(), item.value)));
-		});
+
 		return results;
 	}
 	
+	private ScheduleTableOutputSetting convertToDomainFromTmp(List<ScheduleTableOutputSettingTemp> list) {
+		List<PersonalCounterCategory> personalCounterCategories = new ArrayList<PersonalCounterCategory>();
+		List<WorkplaceCounterCategory> workplaceCounterCategories = new ArrayList<WorkplaceCounterCategory>();
+		List<OneRowOutputItem> oneRowOutputItems = new ArrayList<OneRowOutputItem>();
+
+		list.stream().forEach(x -> {
+			if(x.getPersonalCatergoryNo() != null) {
+				personalCounterCategories.add(PersonalCounterCategory.of(x.getPersonalCatergoryNo()));
+			}
+			if(x.getWorkplaceCatergoryNo() != null) {
+				workplaceCounterCategories.add(WorkplaceCounterCategory.of(x.getWorkplaceCatergoryNo()));
+			}			
+
+			OneRowOutputItem item = OneRowOutputItem.create(
+					Optional.ofNullable(x.getPersonalInfo() != null ? EnumAdaptor.valueOf(x.getPersonalInfo(), ScheduleTablePersonalInfoItem.class) : null),
+					Optional.ofNullable(x.getAdditionalInfo() != null ? EnumAdaptor.valueOf(x.getAdditionalInfo(), ScheduleTablePersonalInfoItem.class): null),
+					Optional.ofNullable(x.getAttendanceItem() != null ? EnumAdaptor.valueOf(x.getAttendanceItem(), ScheduleTableAttendanceItem.class): null));				
+			oneRowOutputItems.add(item);
+		});
+
+		OutputItem outputItem = new OutputItem(
+				NotUseAtr.valueOf(list.get(0).getKagmtRptSchedule().additionalColumUseAtr),
+				NotUseAtr.valueOf(list.get(0).getKagmtRptSchedule().shiftBackColorUseAtr),
+				NotUseAtr.valueOf(list.get(0).getKagmtRptSchedule().recordDispAtr), oneRowOutputItems);
+		return new ScheduleTableOutputSetting(new OutputSettingCode(list.get(0).getCode()),
+				new OutputSettingName(list.get(0).getName()), outputItem, workplaceCounterCategories,
+				personalCounterCategories);
+	}
+
+
+	private KagmtRptSchedule toKagmtRptScheduleEntity(ScheduleTableOutputSetting domain) {
+		return new KagmtRptSchedule(new KagmtRptSchedulePk(AppContexts.user().companyId(), domain.getCode().v()),
+				domain.getName().v(), domain.getOutputItem().getAdditionalColumnUseAtr().value,
+				domain.getOutputItem().getShiftBackgroundColorUseAtr().value,
+				domain.getOutputItem().getDailyDataDisplayAtr().value);
+	}
+
+	private List<KagmtRptScheduleItem> toKagmtRptScheduleItemEntity(ScheduleTableOutputSetting domain) {
+		List<KagmtRptScheduleItem> results = new ArrayList<KagmtRptScheduleItem>();
+		List<OneRowOutputItem> list = domain.getOutputItem().getDetails();
+		int idx = 1;
+		for(int i = 0; i < list.size(); i++) {
+			results.add(new KagmtRptScheduleItem(
+					new KagmtRptScheduleItemPk(AppContexts.user().companyId(), domain.getCode().v(),
+							idx++),
+					list.get(i).getPersonalInfo().isPresent() ?list.get(i).getPersonalInfo().get().value : null, 
+					list.get(i).getAdditionalInfo().isPresent() ? list.get(i).getAdditionalInfo().get().value : null,
+					list.get(i).getAttendanceItem().isPresent() ? list.get(i).getAttendanceItem().get().value : null));
+		}
+
+		return results;
+	}
+
+	private List<KagmtRptScheduleTallyByPerson> toKagmtRptScheduleTallyByPersonEntity(
+			ScheduleTableOutputSetting domain) {
+		List<KagmtRptScheduleTallyByPerson> results = new ArrayList<KagmtRptScheduleTallyByPerson>();
+		List<PersonalCounterCategory> list = domain.getPersonalCounterCategories();
+		if(!list.isEmpty()) {
+			list.stream().forEach(item -> {
+				results.add(new KagmtRptScheduleTallyByPerson(new KagmtRptScheduleTallyByPersonPk(
+						AppContexts.user().companyId(), domain.getCode().v(), item.value)));
+			});
+		}		
+		return results;
+	}
+
 	private List<KagmtRptScheduleTallyByWkp> toKagmtRptScheduleTallyByWkpEntity(ScheduleTableOutputSetting domain) {
 		List<KagmtRptScheduleTallyByWkp> results = new ArrayList<KagmtRptScheduleTallyByWkp>();
 		List<WorkplaceCounterCategory> list = domain.getWorkplaceCounterCategories();
-		list.stream().forEach(item -> {
-			results.add(new KagmtRptScheduleTallyByWkp(new KagmtRptScheduleTallyByWkpPk(
-					AppContexts.user().companyId(), domain.getCode().v(), item.value)));
-		});
+		if(!list.isEmpty()) {
+			list.stream().forEach(item -> {
+				results.add(new KagmtRptScheduleTallyByWkp(new KagmtRptScheduleTallyByWkpPk(AppContexts.user().companyId(),
+						domain.getCode().v(), item.value)));
+			});
+		}		
 		return results;
 	}
 
@@ -185,58 +268,144 @@ public class JpaScheduleTableOutputSettingItemRepository extends JpaRepository
 	public void insert(String companyId, ScheduleTableOutputSetting domain) {
 		this.commandProxy().insert(this.toKagmtRptScheduleEntity(domain));
 		this.commandProxy().insertAll(this.toKagmtRptScheduleItemEntity(domain));
-		this.commandProxy().insertAll(this.toKagmtRptScheduleTallyByPersonEntity(domain));
-		this.commandProxy().insertAll(this.toKagmtRptScheduleTallyByWkpEntity(domain));		
+		
+		if(!this.toKagmtRptScheduleTallyByPersonEntity(domain).isEmpty()) {
+			this.commandProxy().insertAll(this.toKagmtRptScheduleTallyByPersonEntity(domain));
+		}
+		
+		if(!this.toKagmtRptScheduleTallyByWkpEntity(domain).isEmpty()) {
+			this.commandProxy().insertAll(this.toKagmtRptScheduleTallyByWkpEntity(domain));
+		}		
 	}
 
 	@Override
-	public void update(String companyId, ScheduleTableOutputSetting domain) {
-		Optional<ScheduleTableOutputSetting> kagmtRptSchedule = this.get(companyId, domain.getCode());
-		if(kagmtRptSchedule.isPresent()) {
-			this.commandProxy().update(this.toKagmtRptScheduleEntity(kagmtRptSchedule.get()));
-			this.commandProxy().updateAll(this.toKagmtRptScheduleItemEntity(kagmtRptSchedule.get()));
-			this.commandProxy().updateAll(this.toKagmtRptScheduleTallyByPersonEntity(kagmtRptSchedule.get()));
-			this.commandProxy().updateAll(this.toKagmtRptScheduleTallyByWkpEntity(kagmtRptSchedule.get()));
+	public void update(String companyId, ScheduleTableOutputSetting domain) {		
+		String sql1 = "SELECT a From KagmtRptSchedule a WHERE a.pk.companyId = :companyId AND a.pk.code = :code";
+		String sql2 = "SELECT a From KagmtRptScheduleItem a WHERE a.pk.companyId = :companyId AND a.pk.code = :code";	
+		String sql3 = "SELECT a From KagmtRptScheduleTallyByPerson a WHERE a.pk.companyId = :companyId AND a.pk.code = :code";		
+		String sql4 = "SELECT a From KagmtRptScheduleTallyByWkp a WHERE a.pk.companyId = :companyId AND a.pk.code = :code";
+		
+		Optional<KagmtRptSchedule> results1 = this.queryProxy().query(sql1, KagmtRptSchedule.class).setParameter("companyId", companyId)
+				.setParameter("code", domain.getCode().v()).getSingle();
+		if(results1.isPresent()) {
+			results1.get().name =domain.getName().v();
+			results1.get().additionalColumUseAtr = domain.getOutputItem().getAdditionalColumnUseAtr().value;
+			results1.get().shiftBackColorUseAtr = domain.getOutputItem().getShiftBackgroundColorUseAtr().value;
+			results1.get().recordDispAtr = domain.getOutputItem().getDailyDataDisplayAtr().value;
 		}
+	
+		List<KagmtRptScheduleItem> results2 = this.queryProxy().query(sql2, KagmtRptScheduleItem.class).setParameter("companyId", companyId)
+				.setParameter("code", domain.getCode().v()).getList();
+		if(!results2.isEmpty()) {
+			this.commandProxy().removeAll(results2);
+		}
+		
+		List<KagmtRptScheduleTallyByPerson> results3 = this.queryProxy().query(sql3, KagmtRptScheduleTallyByPerson.class).setParameter("companyId", companyId)
+				.setParameter("code", domain.getCode().v()).getList();		
+		if(!results3.isEmpty()) {
+			this.commandProxy().removeAll(results3);
+		}
+		
+		List<KagmtRptScheduleTallyByWkp> results4 = this.queryProxy().query(sql4, KagmtRptScheduleTallyByWkp.class).setParameter("companyId", companyId)
+				.setParameter("code", domain.getCode().v()).getList();
+		if(!results4.isEmpty()) {
+			this.commandProxy().removeAll(results4);
+		}
+		
+		Optional<ScheduleTableOutputSetting> kagmtRptSchedule = this.get(companyId, domain.getCode());
+		if (kagmtRptSchedule.isPresent()) {			
+			this.commandProxy().updateAll(this.toKagmtRptScheduleItemEntity(domain));	
+			this.commandProxy().updateAll(this.toKagmtRptScheduleTallyByPersonEntity(domain));
+			this.commandProxy().updateAll(this.toKagmtRptScheduleTallyByWkpEntity(domain));
+		}
+		this.commandProxy().update(results1.get());
 	}
 
 	@Override
 	public void delete(String companyId, OutputSettingCode code) {
-		Optional<ScheduleTableOutputSetting> domainOpt = this.get(companyId, code);
-		if(domainOpt.isPresent()) {
-			this.commandProxy().remove(this.toKagmtRptScheduleEntity(domainOpt.get()));
-			this.commandProxy().removeAll(this.toKagmtRptScheduleItemEntity(domainOpt.get()));
-			this.commandProxy().removeAll(this.toKagmtRptScheduleTallyByPersonEntity(domainOpt.get()));
-			this.commandProxy().removeAll(this.toKagmtRptScheduleTallyByWkpEntity(domainOpt.get()));				
+		String sql1 = "SELECT a From KagmtRptSchedule a WHERE a.pk.companyId = :companyId AND a.pk.code = :code";
+		String sql2 = "SELECT a From KagmtRptScheduleItem a WHERE a.pk.companyId = :companyId AND a.pk.code = :code";	
+		String sql3 = "SELECT a From KagmtRptScheduleTallyByPerson a WHERE a.pk.companyId = :companyId AND a.pk.code = :code";		
+		String sql4 = "SELECT a From KagmtRptScheduleTallyByWkp a WHERE a.pk.companyId = :companyId AND a.pk.code = :code";
+		
+		Optional<KagmtRptSchedule> results1 = this.queryProxy().query(sql1, KagmtRptSchedule.class).setParameter("companyId", companyId)
+				.setParameter("code", code).getSingle();
+		
+		List<KagmtRptScheduleItem> results2 = this.queryProxy().query(sql2, KagmtRptScheduleItem.class).setParameter("companyId", companyId)
+				.setParameter("code", code).getList();
+		
+		List<KagmtRptScheduleTallyByPerson> results3 = this.queryProxy().query(sql3, KagmtRptScheduleTallyByPerson.class).setParameter("companyId", companyId)
+				.setParameter("code", code).getList();
+		
+		List<KagmtRptScheduleTallyByWkp> results4 = this.queryProxy().query(sql4, KagmtRptScheduleTallyByWkp.class).setParameter("companyId", companyId)
+				.setParameter("code", code).getList();
+		
+		if(results1.isPresent()) {
+			this.commandProxy().remove(results1.get());
+		}		
+		if(!results2.isEmpty()) {
+			this.commandProxy().removeAll(results2);
+		}
+		
+		if(!results3.isEmpty()) {
+			this.commandProxy().removeAll(results3);
+		}
+		
+		if(!results4.isEmpty()) {
+			this.commandProxy().removeAll(results4);
 		}
 	}
 
 	@Override
 	public Optional<ScheduleTableOutputSetting> get(String companyId, OutputSettingCode code) {
-		List<Object[]> results = this.queryProxy().query(GET_BY_CID_AND_CODE)
-				.setParameter("companyId", companyId)
-				.setParameter("code", code.v())
-				.getList();	
-
-//		String c = code.v();
-//		List<ScheduleTableOutputSetting> a = this.toListDomainFromListObj(results);	
-		return Optional.of(this.toDomainFromListObj(results));		
-
+//		List<Object[]> results = this.queryProxy().query(GET_BY_CID_AND_CODE).setParameter("companyId", companyId)
+//				.setParameter("code", code.v()).getList();
+//		if(results.isEmpty()) {
+//			return Optional.ofNullable(null);
+//		} else {
+//			return Optional.of(this.toDomainFromObjByCode(results));
+//		}
+		
+		String sql1 = "SELECT a From KagmtRptSchedule a WHERE a.pk.companyId = :companyId AND a.pk.code = :code";
+		String sql2 = "SELECT a From KagmtRptScheduleItem a WHERE a.pk.companyId = :companyId AND a.pk.code = :code";	
+		String sql3 = "SELECT a From KagmtRptScheduleTallyByPerson a WHERE a.pk.companyId = :companyId AND a.pk.code = :code";		
+		String sql4 = "SELECT a From KagmtRptScheduleTallyByWkp a WHERE a.pk.companyId = :companyId AND a.pk.code = :code";
+		
+		Optional<KagmtRptSchedule> results1 = this.queryProxy().query(sql1, KagmtRptSchedule.class).setParameter("companyId", companyId)
+				.setParameter("code", code).getSingle();
+		
+		List<KagmtRptScheduleItem> kagmtRptScheduleItems = this.queryProxy().query(sql2, KagmtRptScheduleItem.class).setParameter("companyId", companyId)
+				.setParameter("code", code).getList();
+		
+		List<KagmtRptScheduleTallyByPerson> kagmtRptScheduleTallyByPersons = this.queryProxy().query(sql3, KagmtRptScheduleTallyByPerson.class).setParameter("companyId", companyId)
+				.setParameter("code", code).getList();
+		
+		List<KagmtRptScheduleTallyByWkp> kagmtRptScheduleTallyByWkps = this.queryProxy().query(sql4, KagmtRptScheduleTallyByWkp.class).setParameter("companyId", companyId)
+				.setParameter("code", code).getList();
+		
+		if(results1.isPresent()) {
+			KagmtRptSchedule kagmtRptSchedule = results1.get();
+			return Optional.of(this.toDomainFromEntity(kagmtRptSchedule, kagmtRptScheduleItems, kagmtRptScheduleTallyByPersons, kagmtRptScheduleTallyByWkps));
+		} else {
+			return Optional.ofNullable(null);
+		}		
 	}
 
 	@Override
 	public List<ScheduleTableOutputSetting> getList(String companyId) {
-		List<Object[]> results = this.queryProxy().query(GET_BY_CID)
-				.setParameter("companyId", companyId)
-				.getList();		
-		
-		return this.toListDomainFromListObj(results);
+		List<Object[]> results = this.queryProxy().query(GET_BY_CID).setParameter("companyId", companyId).getList();
+		if(!results.isEmpty()) {
+			return this.toDomainFromObj(results);
+		} else {
+			return new ArrayList<ScheduleTableOutputSetting>();
+		}
+	
 	}
 
 	@Override
 	public boolean exists(String companyId, OutputSettingCode code) {
 		Optional<ScheduleTableOutputSetting> domainOpt = this.get(companyId, code);
-		return domainOpt.isPresent() ? true: false;
+		return domainOpt.isPresent() ? true : false;
 	}
 
 }

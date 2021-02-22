@@ -8,6 +8,9 @@
     <ui:composition template="../../../../master/dialog.xhtml">
         <ui:define name="htmlHead">	
             <script>var dialogSize = { width: 1100, height: 620 };</script>
+            <com:ValidatorScript>
+                nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.AgreementApprovalComments
+			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ksu005.a.style.css" />		
 			<com:scriptfile path="ksu005.a.vm.js" />
@@ -44,9 +47,9 @@
 
                 <!--A2-3-->
                 <button style="margin: 0px 35px 0px 10px;" tabindex="1" id="A2_3" data-bind="click: openDialog">#{i18n.getText('KSU005_9')}</button>
-
+              
                 <!--A3-1-->
-                <div data-bind="ntsFormLabel:{required: false}">#{i18n.getText('KSU005_11')} </div> 
+                <div data-bind="ntsFormLabel:{required: true, constraint:['AgreementApprovalComments']}">#{i18n.getText('KSU005_11')} </div> 
 
                 <!--A3-2-->
                 <div>
