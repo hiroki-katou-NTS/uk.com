@@ -75,7 +75,18 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 if (layoutId) {
                     service.findByLayoutId(layoutId).then((res: any) => {
                         self.currentSetOutputSettingCode(new SetOutputItemOfAnnualWorkSchDto(res));
-                        self.outputItem(self.currentSetOutputSettingCode().listItemsOutput());
+                        self.currentSetOutputSettingCode().listItemsOutput().forEach((item, index) => {
+                            self.outputItem()[item.sortBy() - 1].updateData(
+                                item.sortBy(),
+                                item.itemOutCd(),
+                                item.useClass(),
+                                item.headingName(),
+                                item.valOutFormat(),
+                                item.listOperationSetting(),
+                                self.buildcalculationExpression(item.listOperationSetting())
+                            )
+                        });
+                        $("#B3_3").focus();
                     });
                     block.clear();
                 } else {
@@ -128,6 +139,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             if (KWR008BParam) {
                 self.selectedPrintForm(KWR008BParam.printFormat);
                 selectionType = KWR008BParam.selectionType;
+                debugger
                 self.currentSetOutputSettingCode().settingType(KWR008BParam.selectionType);
             }
 
@@ -191,8 +203,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         //mode update
         updateMode(code: string) {
             let self = this;
-
-
+            self.isNewMode(false);
         }
 
         //mode register
@@ -235,7 +246,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
 
             //insert item 36
             if (itemOutByName[0].listOperationSetting().length == 0) {
-                itemOutByName[0].listOperationSetting.push(
+                itemOutByName[0].listOperationSetting().push(
                     new CalculationFormulaOfItem(
                         202,    //attendanceItemId
                         1,      // operation
@@ -244,7 +255,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 );
             }
             if (itemOutByName[1].listOperationSetting().length == 0) {
-                itemOutByName[1].listOperationSetting.push(
+                itemOutByName[1].listOperationSetting().push(
                     new CalculationFormulaOfItem(
                         202,    //attendanceItemId
                         1,      // operation
@@ -253,7 +264,6 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 );
             }
             self.currentSetOutputSettingCode().printForm(self.selectedPrintForm());
-            debugger
             self.currentSetOutputSettingCode().buildListItemOutput(ko.toJS(itemOutByName));
             let data: model.SetOutputItemOfAnnualWorkSchDto = ko.toJS(self.currentSetOutputSettingCode);
             data.settingType = self.currentSetOutputSettingCode().settingType();
@@ -389,9 +399,10 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         buildOutputItemByOper(lstItems: Array<any>, index: number) {
             let vm = this;
             let operationName = '';
+            vm.outputItem()[index].listOperationSetting([]);
             if (!!lstItems) {
                 _.forEach(lstItems, (item) => {
-                    const attendanceItems: model.AttendanceItemDto[] = vm.attendanceItem.filter((item) => item.attendanceItemId === item.attendanceItemId);
+                    const attendanceItems: model.AttendanceItemDto[] = vm.attendanceItem.filter((atdItem) => atdItem.attendanceItemId === item.itemId);
                     const targetItem = attendanceItems.length > 0 ? attendanceItems[0] : null;
                     if (targetItem) {
                         if (operationName) {
@@ -400,13 +411,36 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                             operationName = targetItem.attendanceItemName;
                         }
                     }
+                    vm.outputItem()[index].listOperationSetting().push(new CalculationFormulaOfItem(
+                        item.itemId,
+                        item.operator === '+' ? 1 : 0,
+                        targetItem.attendanceItemName
+                    ));
                 });
-                vm.outputItem()[index].buildOutputTargetItem(lstItems);
-                console.log(vm.outputItem()[index].listOperationSetting());
             }
             vm.outputItem()[index].calculationExpression(operationName);
         }
-
+        
+        buildcalculationExpression(lstItems: CalculationFormulaOfItem[]) {
+            let vm = this;
+            let operationName = '';
+            if (!!lstItems) {
+                _.forEach(lstItems, (item) => {
+                    const attendanceItems: model.AttendanceItemDto[] = vm.attendanceItem.filter((atdItem) => atdItem.attendanceItemId === item.attendanceItemId());
+                    const targetItem = attendanceItems.length > 0 ? attendanceItems[0] : null;
+                    if (targetItem) {
+                        if (operationName) {
+                            operationName = operationName + " "
+                                          + (item.operation() === 1 ? ADDITION : SUBTRACTION)
+                                          + " " + targetItem.attendanceItemName;
+                        } else {
+                            operationName = targetItem.attendanceItemName;
+                        }
+                    }
+                });
+            }
+            return operationName;
+        }
     }
 
     export class CalculationFormulaOfItem {
@@ -480,7 +514,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             if (listOperationSetting && listOperationSetting.length > 0) {
                 for (var i = 0; i < listOperationSetting.length; i++) {
                     self.listOperationSetting.push(new CalculationFormulaOfItem(
-                        listOperationSetting[i].itemId,
+                        listOperationSetting[i].attendanceItemId,
                         listOperationSetting[i].operation,
                         listOperationSetting[i].name));
                 }
@@ -492,6 +526,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
 
     export class SetOutputItemOfAnnualWorkSchDto {
         layoutId: KnockoutObservable<string> = ko.observable('');
+        layoutIdSelect: string = '';
         settingType: KnockoutObservable<number> = ko.observable(1);
         cd: KnockoutObservable<string> = ko.observable('');
         displayCode: string;
@@ -509,7 +544,8 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             let self = this;
             if (param) {
                 self.layoutId(param.layoutId || '');
-                self.settingType(param.settingType || 0);
+                self.layoutIdSelect = self.layoutId();
+                self.settingType(param.settingType != null ? param.settingType : 0);
                 self.cd(param.cd || '');
                 self.displayCode = self.cd();
                 self.name(param.name || '');
@@ -522,22 +558,22 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 });
                 self.totalAverageDisplay(param.totalAverageDisplay || 1);
                 self.multiMonthDisplay(param ? param.multiMonthDisplay : false);
-                self.buildListItemOutput(param.listItemOutput);
+                self.buildListItemOutput(param.listItemsOutput);
             }
         }
 
         buildListItemOutput(listItemOutput: Array<any>) {
-            let self = this;
+            const self = this;
             if (listItemOutput && listItemOutput.length > 0) {
                 self.listItemsOutput([]);
-                for (var i = 0; i < listItemOutput.length; i++) {
-                    var outputItemData = new ItemsOutputToBookTable(
+                for (let i = 0; i < listItemOutput.length; i++) {
+                    let outputItemData = new ItemsOutputToBookTable(
                         i + 1,
                         listItemOutput[i].cd,
                         listItemOutput[i].useClass,
                         listItemOutput[i].headingName,
                         listItemOutput[i].valOutFormat);
-                    if (listItemOutput[i].calculationExpression) {
+                    if (listItemOutput[i].listOperationSetting.length > 0) {
                         outputItemData.buildOutputTargetItem(listItemOutput[i].listOperationSetting);
                     }
                     self.listItemsOutput.push(outputItemData);

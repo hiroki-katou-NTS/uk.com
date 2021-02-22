@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.app.find.annualworkschedule;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Data;
 import nts.uk.ctx.at.function.dom.annualworkschedule.CalculationFormulaOfItem;
@@ -29,8 +30,12 @@ public class ItemsOutputToBookTableDto implements  ItemsOutputToBookTable.Mement
 
 	@Override
 	public void setListOperationSetting(List<CalculationFormulaOfItem> listOperationSetting) {
-		// TODO Auto-generated method stub
-		
+		this.listOperationSetting = listOperationSetting.stream().map(t -> {
+			return CalculationFormulaOfItemDto.builder()
+					.attendanceItemId(t.getAttendanceItemId())
+					.operation(t.getOperation())
+					.build();
+		}).collect(Collectors.toList());
 	}
 
 }

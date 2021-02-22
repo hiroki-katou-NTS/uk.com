@@ -117,12 +117,12 @@ public class KfnmtRptWkYearSet extends ContractUkJpaEntity implements Serializab
 	public void setListItemsOutput(List<ItemsOutputToBookTable> listItemsOutput) {
 		this.lstKfnmtRptWkYearItems = listItemsOutput.stream().map(t -> {
 			KfnmtRptWkYearItem kfnmtRptWkYearItem = new KfnmtRptWkYearItem();
-			t.setMemento(kfnmtRptWkYearItem);
 			kfnmtRptWkYearItem.setCid(this.cid);
 			if (kfnmtRptWkYearItem.kfnmtRptWkYearItemPK == null) {
 				kfnmtRptWkYearItem.kfnmtRptWkYearItemPK = new KfnmtRptWkYearItemPK();
 			}
 			kfnmtRptWkYearItem.kfnmtRptWkYearItemPK.layoutId = this.layoutId;
+			t.setMemento(kfnmtRptWkYearItem);
 			return kfnmtRptWkYearItem;
 		}).collect(Collectors.toList());
 	}

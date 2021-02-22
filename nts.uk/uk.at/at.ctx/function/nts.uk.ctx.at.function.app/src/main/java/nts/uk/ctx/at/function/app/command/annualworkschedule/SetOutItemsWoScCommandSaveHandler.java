@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.app.command.annualworkschedule;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -43,6 +44,7 @@ public class SetOutItemsWoScCommandSaveHandler extends CommandHandler<SetOutItem
 				// #Msg_3
 				throw new BusinessException("Msg_3");
 			}
+			command.setLayoutId(UUID.randomUUID().toString());
 			repository.add(SettingOutputItemOfAnnualWorkSchedule.createFromMemento(command));
 		} else {
 			repository.update(SettingOutputItemOfAnnualWorkSchedule.createFromMemento(command));

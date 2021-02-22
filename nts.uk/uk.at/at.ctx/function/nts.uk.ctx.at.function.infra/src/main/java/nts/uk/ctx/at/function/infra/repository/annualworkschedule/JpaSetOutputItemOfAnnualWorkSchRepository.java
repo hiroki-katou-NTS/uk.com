@@ -2,14 +2,15 @@ package nts.uk.ctx.at.function.infra.repository.annualworkschedule;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.function.dom.annualworkschedule.SettingOutputItemOfAnnualWorkSchedule;
 import nts.uk.ctx.at.function.dom.annualworkschedule.repository.SetOutputItemOfAnnualWorkSchRepository;
+import nts.uk.ctx.at.function.infra.entity.annualworkschedule.KfnmtRptWkYearItem;
 import nts.uk.ctx.at.function.infra.entity.annualworkschedule.KfnmtRptWkYearSet;
+import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtRptWkDaiOutatd;
 
 @Stateless
 public class JpaSetOutputItemOfAnnualWorkSchRepository extends JpaRepository implements SetOutputItemOfAnnualWorkSchRepository {
@@ -30,7 +31,10 @@ public class JpaSetOutputItemOfAnnualWorkSchRepository extends JpaRepository imp
 											 + "  AND st.cd = :cd";
 
 	/** The Constant FIND_BY_SETTING_ID. */
-	private static final String FIND_BY_SETTING_ID = "SELECT st FROM KfnmtRptWkYearSet st WHERE st.layoutId = :layoutId";
+	private static final String FIND_BY_LAYOUT_ID = "SELECT st FROM KfnmtRptWkYearSet st WHERE st.layoutId = :layoutId";
+	
+	/** The Constant FIND_SET_ITEM_BY_SETTING_ID. */
+	private static final String FIND_SET_ITEM_BY_SETTING_ID = "SELECT st FROM KfnmtRptWkYearItem st WHERE st.kfnmtRptWkYearItemPK.layoutId = :layoutId";
 
 	/**
 	 * (non-Javadoc)
@@ -75,7 +79,6 @@ public class JpaSetOutputItemOfAnnualWorkSchRepository extends JpaRepository imp
 	@Override
 	public void add(SettingOutputItemOfAnnualWorkSchedule domain) {
 		KfnmtRptWkYearSet entity = new KfnmtRptWkYearSet();
-		entity.setLayoutId(UUID.randomUUID().toString());
 		domain.setMemento(entity);
 		// Insert
 		this.commandProxy().insert(entity);
@@ -88,6 +91,15 @@ public class JpaSetOutputItemOfAnnualWorkSchRepository extends JpaRepository imp
 	 */
 	@Override
 	public void update(SettingOutputItemOfAnnualWorkSchedule domain) {
+		
+		// get all attendance display item by layoutId
+		List<KfnmtRptWkYearItem> lstRptWkYearItems = this.queryProxy()
+				.query(FIND_SET_ITEM_BY_SETTING_ID, KfnmtRptWkYearItem.class)
+				.setParameter("layoutId", domain.getLayoutId())
+				.getList();
+		this.commandProxy().removeAll(lstRptWkYearItems);
+		this.getEntityManager().flush();
+
 		// get entity by setting id
 		Optional<KfnmtRptWkYearSet> oEntity = this.getByLayoutId(domain.getLayoutId());
 		
@@ -112,7 +124,7 @@ public class JpaSetOutputItemOfAnnualWorkSchRepository extends JpaRepository imp
 
 	private Optional<KfnmtRptWkYearSet> getByLayoutId(String layoutId) {
 		return this.queryProxy()
-				.query(FIND_BY_SETTING_ID, KfnmtRptWkYearSet.class)
+				.query(FIND_BY_LAYOUT_ID, KfnmtRptWkYearSet.class)
 				.setParameter("layoutId", layoutId)
 				.getSingle();
 	}

@@ -90,12 +90,12 @@ public class SettingOutputItemOfAnnualWorkSchedule extends AggregateRoot {
 	}
 
 	public void setMemento(MementoSetter memento) {
+		memento.setLayoutId(this.layoutId);
 		memento.setCid(AppContexts.user().companyId());
 		memento.setCd(this.cd.v());
 		memento.setName(this.name.v());
 		memento.setListItemsOutput(this.listItemsOutput);
 		memento.setSid(this.sid.map(EmployeeId::v).orElse(null));
-		memento.setLayoutId(this.layoutId);
 		memento.setPrintForm(this.printForm.value);
 		memento.setSettingType(this.settingType.value);
 		memento.setOutNumExceedTime36Agr(this.outNumExceedTime36Agr);

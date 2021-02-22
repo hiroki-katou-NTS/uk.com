@@ -108,8 +108,11 @@ public class KfnmtRptWkYearItem extends ContractUkJpaEntity implements Serializa
 			KfnmtRptWkYearCalcPK id = new KfnmtRptWkYearCalcPK();
 			id.attandanceItemId = t.getAttendanceItemId();
 			id.layoutId = this.kfnmtRptWkYearItemPK.layoutId;
+			id.itemOutCd = this.kfnmtRptWkYearItemPK.itemOutCd;
 			KfnmtRptWkYearCalc calItem = new KfnmtRptWkYearCalc();
+			calItem.setId(id);
 			calItem.setOperator(t.getOperation());
+			calItem.setCid(this.cid);
 			return calItem;
 		}).collect(Collectors.toList());
 	}

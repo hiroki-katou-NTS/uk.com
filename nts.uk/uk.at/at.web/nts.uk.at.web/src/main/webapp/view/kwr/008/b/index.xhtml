@@ -51,7 +51,7 @@
                              comId: 'multi-list',
                              items: listStandardImportSetting,
                              selected: selectedLayoutId,
-                             selectedKey: 'code', fields: ['name', 'code'],
+                             selectedKey: 'cd', fields: ['name', 'cd'],
                              mode: 'igGrid'}" />
                         <div id="B2_1">
                             <!-- B2_2 -->
@@ -59,10 +59,11 @@
                                 rows: 15,
                                 columns: [
                                     { headerText: '#{i18n.getText('KWR008_22')}', key: 'displayCode', width: 60, formatter: _.escape },
-                                    { headerText: '#{i18n.getText('KWR008_23')}', key: 'displayName', width: 260, formatter: _.escape }
+                                    { headerText: '#{i18n.getText('KWR008_23')}', key: 'displayName', width: 260, formatter: _.escape },
+                                    { headerText: '#{i18n.getText('KWR008_23')}', key: 'layoutIdSelect', hidden: true , formatter: _.escape },
                                 ],
                                 dataSource: listStandardImportSetting,
-                                primaryKey: 'layoutId', 
+                                primaryKey: 'layoutIdSelect', 
                                 multiple: false,
                                 value: selectedLayoutId
                             }">
