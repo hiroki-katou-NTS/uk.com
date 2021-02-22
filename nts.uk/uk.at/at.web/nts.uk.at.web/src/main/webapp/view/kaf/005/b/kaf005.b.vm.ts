@@ -703,6 +703,33 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					item.limitTime = ko.observable(timeLimit);
 					item.actualTime = ko.observable(timeActual);
 				}
+				const currentTimeMonth = res.infoNoBaseDate.agreeOverTimeOutput.currentTimeMonth;
+				// 正常
+				if (currentTimeMonth.status == AgreementTimeStatusOfMonthly.NORMAL) {
+					
+				// 限度アラーム時間超過	
+				} else if (currentTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM) {
+					item.backgroundColor(COLOR_36.alarm);
+					item.textColor(COLOR_36.alarm_character);
+				// 限度エラー時間超過	
+				} else if (currentTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR) {
+					item.backgroundColor(COLOR_36.error);
+					item.textColor(COLOR_36.error_letter);
+				// 正常（特例あり）	
+				} else if (currentTimeMonth.status == AgreementTimeStatusOfMonthly.NORMAL_SPECIAL) {
+					
+				} else if (currentTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM_SP) {
+					item.backgroundColor(COLOR_36.exceptions);
+				} else if (currentTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP) {
+					item.backgroundColor(COLOR_36.exceptions);
+				} else if (currentTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM) {
+					item.backgroundColor(COLOR_36.alarm);
+					item.textColor(COLOR_36.alarm_character);
+				} else if (currentTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR) {
+					item.backgroundColor(COLOR_36.error);
+					item.textColor(COLOR_36.error_letter);
+				}
+				
 				
 				overTimeWorks.push(item);
 			}
@@ -721,6 +748,33 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					let timeActual = res.infoNoBaseDate.agreeOverTimeOutput.nextTimeMonth.agreementTime.agreementTime;
 					item.limitTime = ko.observable(timeLimit);
 					item.actualTime = ko.observable(timeActual);
+				}
+				
+				const nextTimeMonth = res.infoNoBaseDate.agreeOverTimeOutput.nextTimeMonth;
+				// 正常
+				if (nextTimeMonth.status == AgreementTimeStatusOfMonthly.NORMAL) {
+					
+				// 限度アラーム時間超過	
+				} else if (nextTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM) {
+					item.backgroundColor(COLOR_36.alarm);
+					item.textColor(COLOR_36.alarm_character);
+				// 限度エラー時間超過	
+				} else if (nextTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR) {
+					item.backgroundColor(COLOR_36.error);
+					item.textColor(COLOR_36.error_letter);
+				// 正常（特例あり）	
+				} else if (nextTimeMonth.status == AgreementTimeStatusOfMonthly.NORMAL_SPECIAL) {
+					
+				} else if (nextTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM_SP) {
+					item.backgroundColor(COLOR_36.exceptions);
+				} else if (nextTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP) {
+					item.backgroundColor(COLOR_36.exceptions);
+				} else if (nextTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM) {
+					item.backgroundColor(COLOR_36.alarm);
+					item.textColor(COLOR_36.alarm_character);
+				} else if (nextTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR) {
+					item.backgroundColor(COLOR_36.error);
+					item.textColor(COLOR_36.error_letter);
 				}
 				overTimeWorks.push(item);
 			}
@@ -2853,7 +2907,20 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 			// 事前超過
 			bgC4: '#ffc0cb'
 			
-		}
+	}
+	const COLOR_36 = {
+		// 36協定エラー
+		error: '#FD4D4D',
+		// 36協定アラーム
+		alarm: '#F6F636',
+		// 36協定特例
+		exceptions: '#eb9152',
+		// 36協定エラー文字
+		error_letter: '#ffffff',
+		// 36協定アラーム文字
+		alarm_character: '#ff0000'
+		
+	}
 	export enum MODE {
 		VIEW,
 		EDIT
@@ -3303,6 +3370,26 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 	enum ACTION {
 		CHANGE_DATE,
 		CHANGE_WORK,
+	}
+	enum AgreementTimeStatusOfMonthly {
+		/** 正常 */
+		NORMAL,
+		/** 限度エラー時間超過 */
+		EXCESS_LIMIT_ERROR,
+		/** 限度アラーム時間超過 */
+		EXCESS_LIMIT_ALARM,
+		/** 特例限度エラー時間超過 */
+		EXCESS_EXCEPTION_LIMIT_ERROR,
+		/** 特例限度アラーム時間超過 */
+		EXCESS_EXCEPTION_LIMIT_ALARM,
+		/** 正常（特例あり） */
+		NORMAL_SPECIAL,
+		/** 限度エラー時間超過（特例あり） */
+		EXCESS_LIMIT_ERROR_SP,
+		/** 限度アラーム時間超過（特例あり） */
+		EXCESS_LIMIT_ALARM_SP,
+		/** 特別条項の上限時間超過 */
+		EXCESS_BG_GRAY
 	}
 
 }
