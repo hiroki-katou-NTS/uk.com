@@ -827,7 +827,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		bindOverTimeWorks(res: DisplayInfoOverTime) {
 			const self = this;
 			if (_.isNil(_.get(res, 'infoNoBaseDate.agreeOverTimeOutput'))) {
-				self.visibleModel.c6(false);
+				// self.visibleModel.c6(false);
 				return;	
 			}
 			let overTimeWorks = [];
@@ -2347,10 +2347,10 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			visibleModel.c2(c2);
 			// 
 			let c6 = self.mode() != MODE.MULTiPLE_AGENT;
-			if (_.isNil(_.get(res, 'infoNoBaseDate.agreeOverTimeOutput'))) {
+			if (_.isNil(_.get(res, 'infoNoBaseDate.overTimeAppSet.overtimeLeaveAppCommonSetting.extratimeDisplayAtr'))) {
 				self.visibleModel.c6(false);
 			} else {
-				visibleModel.c6(c6);				
+				self.visibleModel.c6(c6 && (_.get(res, 'infoNoBaseDate.overTimeAppSet.overtimeLeaveAppCommonSetting.extratimeDisplayAtr') == NotUseAtr.USE));				
 			}
 
 			// 「残業申請の表示情報．基準日に関係しない情報．残業申請設定．申請詳細設定．時刻計算利用区分」= する
