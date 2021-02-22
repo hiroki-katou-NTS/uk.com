@@ -34,7 +34,7 @@ public class WorkLedgerOutputItemTest {
      * - method checkDuplicateStandardSelections: is true
      */
     @Test
-    public void testDuplicateStandardSelection() {
+    public void testCheckDuplicateStandardSelection() {
         val code = new OutputItemSettingCode("OutputItemSettingCode01");
         new Expectations() {{
             require.standardCheck(code);
@@ -49,7 +49,7 @@ public class WorkLedgerOutputItemTest {
      * - method checkDuplicateFreeSettings: is true
      */
     @Test
-    public void testDuplicateFreeSettings() {
+    public void testCheckDuplicateFreeSettings() {
         val code = new OutputItemSettingCode("OutputItemSettingCode02");
 
         new Expectations() {{
