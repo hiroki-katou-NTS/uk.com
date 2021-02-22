@@ -29,6 +29,7 @@ module nts.uk.at.view.ksu005.b {
         itemsSwap: KnockoutObservableArray<any> = ko.observableArray([]);
         columns2: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
         currentCodeListSwap: KnockoutObservableArray<any> = ko.observableArray([]);
+        selectedCodeListSwap: KnockoutObservableArray<any> = ko.observableArray([]);
 
         lstWorkInfo: KnockoutObservableArray<any>;
         workSelected: any;
@@ -155,10 +156,12 @@ module nts.uk.at.view.ksu005.b {
                             let maxLength = Math.max(personalInfoItemsSize, additionalItemsSize, attendanceItemSize);
                             let datas = [];
                             let tempSelected: Array<any> = [];
+                            let tempSelectedCode: Array<any> = [];
 
                             self.scheduleTableOutputSetting().updateData(data);
                             self.scheduleTableOutputSetting().isEnableCode(false);
                             self.isEnableAddBtn(data.shiftBackgroundColor == 0);
+                            self.isShiftBackgroundColor(data.shiftBackgroundColor == 1);
 
                             datas.push(new ScreenItem(true, self.countNumberRow, data.personalInfo[0] != null ? data.personalInfo[0].toString() : null,
                                 data.attendanceItem[0] != null ? data.attendanceItem[0].toString() : null,
@@ -181,11 +184,13 @@ module nts.uk.at.view.ksu005.b {
                                 _.each(self.itemsSwap(), y => {
                                     if (y.value == code) {
                                         tempSelected.push(new SwapModel(y.value, y.name));
+                                        tempSelectedCode.push(y.value);
                                     }
                                 })
                             });
 
                             self.currentCodeListSwap(tempSelected);
+                            self.selectedCodeListSwap(tempSelectedCode);
                             self.persons(self.personalCounterCategory());
                             self.selectedPerson(data.personalCounterCategories);
                             self.isEditing(true);
@@ -229,12 +234,9 @@ module nts.uk.at.view.ksu005.b {
                 code: self.scheduleTableOutputSetting().code(),
                 name: self.scheduleTableOutputSetting().name(),
                 additionalColumn: self.scheduleTableOutputSetting().additionalColumn(),
-                shiftBackgroundColor: self.scheduleTableOutputSetting().shiftBackgroundColor(),
+                shiftBackgroundColor: self.isShiftBackgroundColor() ? 1 : 0,
                 dailyDataDisplay: self.scheduleTableOutputSetting().dailyDataDisplay(),
-                // personalInfo: self.scheduleTableOutputSetting().additionalInfo(),
-                // additionalInfo: self.scheduleTableOutputSetting().additionalItems(),
-                // attendanceItem: self.scheduleTableOutputSetting().attendanceItem(),
-                workplaceCounterCategories: self.currentCodeListSwap(),
+                workplaceCounterCategories: self.selectedCodeListSwap(),
                 personalCounterCategories: self.selectedPerson()
             }
 
@@ -256,7 +258,7 @@ module nts.uk.at.view.ksu005.b {
                 }).fail((res) => {
                     if(res.messageId == 'Msg_3'){
                         self.selectedCode('');
-                        $('#outputSettingCode').focus();
+                        $('#outputSettingCode').ntsError('set',{messageId: res.messageId});
                     }
                 }).always(() =>{
                     self.$blockui("hide");
@@ -321,11 +323,8 @@ module nts.uk.at.view.ksu005.b {
         loadData(): void {
             const self = this;
             let dataList: Array<ItemModel> = [];
-            // let infoItems: Array<ItemModel> = [];
-            // let attendanceItems: Array<ItemModel> = [];
             let code = getShared('dataShareKSU005a');
-            // infoItems.push(new ItemModel('', getText('KSU005_68')));
-            // attendanceItems.push(new ItemModel('', getText('KSU005_68')));
+            let newCode = getShared('dataShareKSU005c');
             self.$blockui("invisible");
             self.$ajax(Paths.GET_SCHEDULE_TABLE_OUTPUT_SETTING_BY_CID).done((data: Array<IScheduleTableOutputSetting>) => {
                 if(data && data.length > 0){
@@ -333,7 +332,7 @@ module nts.uk.at.view.ksu005.b {
                         dataList.push(new ItemModel(item.code, item.name));
                     });            
                     self.items(dataList);
-                    self.selectedCode(code);       
+                    newCode ? self.selectedCode(newCode) : self.selectedCode(code);       
                 } else {
                     self.clearData();
                 }
