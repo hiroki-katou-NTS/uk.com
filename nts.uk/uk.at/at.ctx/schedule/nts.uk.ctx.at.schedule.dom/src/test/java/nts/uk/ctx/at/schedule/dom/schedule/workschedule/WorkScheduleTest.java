@@ -1258,7 +1258,40 @@ public class WorkScheduleTest {
 		
 	}
 	
-	
+	@Test
+	public void testUpdateTaskSchedule(
+			@Injectable WorkInfoOfDailyAttendance workInfo,
+			@Injectable BreakTimeOfDailyAttd breakTime,
+			@Injectable TimeLeavingOfDailyAttd timeLeaving,
+			@Injectable ShortTimeOfDailyAttd shortTimeWork,
+			@Injectable TimevacationUseTimeOfDaily timevacationUseTimeOfDaily,
+			@Injectable TaskSchedule newTaskSchedule) {
+		
+		WorkSchedule workSchedule = Helper.createWithParams(workInfo, breakTime, timeLeaving, shortTimeWork);
+		
+		new Expectations(workSchedule) {{
+			workInfo.isAttendanceRate(require);
+			result = true;
+			
+			workSchedule.getTimeVacation();
+			result = new HashMap<>();
+			
+			timeLeaving.isIncludeInWorkTimeSpan( (TimeSpanForCalc) any );
+			result = true;
+			
+			breakTime.isDuplicatedWithBreakTime( (TimeSpanForCalc) any );
+			result = false;
+			
+			shortTimeWork.isDuplicatedWithShortTime( (TimeSpanForCalc) any );
+			result = false;
+		}};
+		
+		
+		workSchedule.updateTaskSchedule(require, newTaskSchedule);
+		
+		assertThat( workSchedule.getTaskSchedule() ).isEqualTo( newTaskSchedule );
+		
+	}
 	
 	@Test
 	public void testGetTimeSpansWhichNotDuplicatedWithTheNotWorkingTimeSpan_breakTime() {
