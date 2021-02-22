@@ -41,10 +41,16 @@ module nts.uk.at.view.ccg005.b.screenModel {
       const vm = this;
       vm.$blockui("grayout");
       vm.$ajax(API.getPermissionSettings).then((data: PermissionSettingDto) => {
+        if(_.isEmpty(data.role)) {
+          return vm.$dialog.error({messageId: 'Msg_2078'}).then(() => vm.$window.close());
+        }
+        if(_.isEmpty(data.jobTitle)) {
+          return vm.$dialog.error({messageId: 'Msg_2079'}).then(() => vm.$window.close());
+        }
         vm.lstRole(data.role);
         vm.listJobTitle(data.jobTitle);
         vm.listSpecifyAuthInquiry(data.specifyAuthInquiry);
-        if (data.role.length > 0 && !vm.selectedRole()) {
+        if (!vm.selectedRole()) {
           const selectedRoleId = data.role[0].roleId;
           vm.selectedRole(selectedRoleId);
           vm.initGrid(selectedRoleId);
