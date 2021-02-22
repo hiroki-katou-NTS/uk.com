@@ -35,7 +35,7 @@ module nts.uk.at.view.ktg026.a {
             xAxes: [{
                 ticks: {
                     min: 0,
-                    max: Math.min(max, 6000),
+                    max: 6000,// Math.min(max, 6000),
                     display: true,
                     beginAtZero: true,
                     callback: function (value: number, index: number, data: number[]) {
@@ -165,7 +165,8 @@ module nts.uk.at.view.ktg026.a {
                                 .chain(data)
                                 .reduce((p, c) => {
                                     const { time } = c;
-                                    const { tt } = time;
+                                    const { ot, wh } = time;
+                                    const tt = ot + wh;
 
                                     return p >= tt ? p : tt;
                                 }, 0)
@@ -558,16 +559,16 @@ module nts.uk.at.view.ktg026.a {
                         .chain(ymOvertimes)
                         .map(({ yearMonth, agreeTime }) => {
                             const date = moment(yearMonth, 'YYYYMM').format('YYYY/MM');
-                            const { agreMax: tt, agreementTime: wh, state } = agreeTime;
+                            const { agreMax: am, agreementTime: at, state } = agreeTime;
 
                             return {
                                 date,
                                 time: {
                                     // tt =  ot + wh
                                     // total = overtime + work with holiday
-                                    tt: wh.agreementTime || 0,
-                                    ot: (wh.agreementTime || 0) - (tt.agreementTime || 0),
-                                    wh: (tt.agreementTime || 0)
+                                    tt: at.agreementTime || 0,
+                                    ot: Math.min(6000, at.agreementTime),
+                                    wh: at.agreementTime >= 6000 ? 0 : Math.max((am.agreementTime || 0) - (at.agreementTime || 0), 0)
                                 },
                                 state: timeStyle(state)
                             };
