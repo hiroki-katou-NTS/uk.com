@@ -47,16 +47,22 @@ module nts.uk.at.view.ccg005.e.screenModel {
 
     created(props: createProps) {
       const vm = this;
+
+      //binding data
       vm.sid(props.sid);
       vm.disableBusinessName(!(props.sid === __viewContext.user.employeeId));
       vm.businessName(props.businessName);
       vm.goOutDate(props.goOutDate);
+
+      //call API
       vm.$blockui('grayout');
       vm.$ajax(API.getGoOutInformation, {
         sid: props.sid,
         date: moment(props.goOutDate),
       }).then((data: GoOutEmployeeInformationDto) => {
-        if(data) {
+
+        //if data present -> bind data to UI
+        if(data.goOutDate) {
           vm.enableDeleteBtn(true);
           vm.goOutReason(data.goOutReason);
           vm.goOutTime(data.goOutTime);
@@ -64,6 +70,7 @@ module nts.uk.at.view.ccg005.e.screenModel {
         }
       }).always(() => {
         vm.$blockui('clear');
+        $('#E5_1').focus();
       });
     }
 
@@ -81,29 +88,43 @@ module nts.uk.at.view.ccg005.e.screenModel {
             goOutDate: moment(vm.goOutDate()),
             sid: vm.sid(),
           });
+
+          //call API
           vm.$blockui('grayout');
           vm.$ajax(API.delete, gouOutInfo)
             .then(() => {
+              vm.createNew();
               vm.$blockui('clear');
-              vm.goOutReason("");
-              vm.goOutTime(undefined);
-              vm.comebackTime(undefined);
               return vm.$dialog.info({ messageId: "Msg_16" });
             })
             .always(() => {
               vm.$blockui('clear');
+              $('#E5_1').focus();
             });
         }
       });
     }
 
+    private createNew() {
+      const vm = this;
+      vm.enableDeleteBtn(false);
+      vm.goOutReason("");
+      vm.goOutTime(undefined);
+      vm.comebackTime(undefined);
+    }
+
     public saveGoOut() {
       const vm = this;
       vm.$validate().then((valid: boolean) => {
+        //check validate
         if (valid) {
+
+          //check that go out time must before comeback time
           if(vm.goOutTime() > vm.comebackTime()) {
             return vm.$dialog.error({ messageId: "Msg_2075" });
           }
+
+          //if go out time is after now, notice user
           if(vm.goOutTime() > Number(moment.utc().hours()*60 + moment.utc().minutes())) {
             vm.$dialog.info({ messageId: "Msg_2074" }).then(() => {
               const gouOutInfo = new GoOutEmployeeInformation({
@@ -113,6 +134,8 @@ module nts.uk.at.view.ccg005.e.screenModel {
                 comebackTime: vm.comebackTime(),
                 sid: vm.sid(),
               });
+
+              //call API
               vm.$blockui('grayout');
               vm.$ajax(API.saveOrUpdate, gouOutInfo)
                 .then(() => {
