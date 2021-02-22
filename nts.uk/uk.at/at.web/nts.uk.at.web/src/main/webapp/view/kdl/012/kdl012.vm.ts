@@ -63,10 +63,12 @@ module nts.uk.at.view.kdl012 {
 
     proceed() {
       const vm = this;
-      if( vm.currentCodeList().length === 0 ) {
+
+      let selectionList: Array<any> = _.filter(vm.items(), (x) => { return _.includes(vm.currentCodeList(), x.code)});      
+
+      if( selectionList.length === 0 ) {
         vm.$dialog.error({ messageId: 'Msg_1629'}).then(() => { });
       } else {
-        let selectionList: Array<any> = _.filter(vm.items(), (x) => { return _.includes(vm.currentCodeList(), x.code)});
         vm.$window.close({ setShareKDL012: selectionList });
       }
     }

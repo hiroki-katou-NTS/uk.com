@@ -28,7 +28,7 @@
 				<div id="functions-area">
           <a tabindex="1" class="goback" data-bind="ntsLinkButton: { jump: gobackLink }, text: $vm.$i18n('KMT009_2')"></a>					
 					<button tabindex="1" class="proceed" data-bind="text: $vm.$i18n('KMT009_3'), click: saveRegistrationWork, enable: $root.errors.isEmpty" />
-					<button tabindex="2" class="danger" data-bind="text: $vm.$i18n('KMT009_4'), click: deleteRegistrationWork" />
+					<button tabindex="2" class="danger" data-bind="text: $vm.$i18n('KMT009_4'), click: deleteRegistrationWork, enable: registrationWorkList().length &gt; 0" />
 					<button tabindex="3" data-bind="text: $vm.$i18n('KMT009_5'), click: openDialogCDL023" />
 				</div>
 				<div id="contents-area">

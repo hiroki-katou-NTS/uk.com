@@ -56,9 +56,10 @@ module nts.uk.at.view.kmt09.a {
 
       //init mode      
       vm.model(new ModelItem());
+      vm.addNewRegistrationWork();
+
       vm.getWorkList(); //作業
-      vm.getRegistrationWorkList();   //作業一覧
-      //vm.addNewRegistrationWork();
+      vm.getRegistrationWorkList();   //作業一覧      
            
       //condition 1 - ※１
       //vm.gobackLink('....');
@@ -320,7 +321,7 @@ module nts.uk.at.view.kmt09.a {
       this.listOfRefinedItems(listOfRefinedItems);
     }
 
-    update(code?: string, name?: string, expStartDate?: string, expEndDate?: string, listOfRefinedItems?: Array<RefinedItem>) {
+    update(code?: string, name?: string, expStartDate?: string, expEndDate?: string, listOfRefinedItems: Array<RefinedItem> = []) {
       this.code(code);
       this.name(name);
       this.expStartDate(expStartDate);
