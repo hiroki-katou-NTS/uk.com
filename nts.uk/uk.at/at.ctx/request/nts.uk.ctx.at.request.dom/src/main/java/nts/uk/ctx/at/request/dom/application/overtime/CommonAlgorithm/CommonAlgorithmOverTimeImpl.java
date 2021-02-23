@@ -530,6 +530,7 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 		}
 		// 「開始時刻」の昇順にソートする(in excel)
 		output.setTimeZones(output.getTimeZones().stream().sorted(Comparator.comparing(DeductionTime::getStart)).collect(Collectors.toList()));
+		output.setCalculatedFlag(CalculatedFlag.UNCALCULATED);
 		return output;
 		
 	}

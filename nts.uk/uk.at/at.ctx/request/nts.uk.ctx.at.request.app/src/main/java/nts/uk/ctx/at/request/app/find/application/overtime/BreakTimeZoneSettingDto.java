@@ -14,6 +14,8 @@ public class BreakTimeZoneSettingDto {
 	// 時間帯
 	public List<DeductionTimeDto> timeZones = Collections.emptyList();
 	
+	public int calculatedFlag;
+	
 	public static BreakTimeZoneSettingDto fromDomain(BreakTimeZoneSetting breakTimeZoneSetting) {
 		if (breakTimeZoneSetting == null) return null;
 		
@@ -21,6 +23,8 @@ public class BreakTimeZoneSettingDto {
 				breakTimeZoneSetting.getTimeZones()
 					.stream()
 					.map(x -> DeductionTimeDto.fromDomain(x))
-					.collect(Collectors.toList()));
+					.collect(Collectors.toList()),
+					breakTimeZoneSetting.getCalculatedFlag().value	
+				);
 	}
 }

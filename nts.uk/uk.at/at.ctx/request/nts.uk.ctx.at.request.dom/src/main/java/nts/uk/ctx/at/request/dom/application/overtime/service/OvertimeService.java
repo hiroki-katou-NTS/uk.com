@@ -95,7 +95,9 @@ public interface OvertimeService {
 			OvertimeLeaveAppCommonSet overtimeLeaveAppCommonSet,
 			ApplicationTime advanceApplicationTime, 
 			ApplicationTime achieveApplicationTime,
-			WorkContent workContent);
+			WorkContent workContent,
+			OvertimeAppSet overtimeAppSet
+			);
 	/**
 	 * Refactor5 19_計算処理
 	 * UKDesign.UniversalK.就業.KAF_申請.KAF005_残業申請.A：残業申請（新規登録）.アルゴリズム.19_計算処理
@@ -117,7 +119,8 @@ public interface OvertimeService {
 			OvertimeLeaveAppCommonSet overtimeLeaveAppCommonSet,
 			ApplicationTime advanceApplicationTime, 
 			ApplicationTime achieveApplicationTime,
-			WorkContent workContent);
+			WorkContent workContent,
+			OvertimeAppSet overtimeAppSet);
 	
 	/**
 	 * Refactor5 01_初期起動の処理

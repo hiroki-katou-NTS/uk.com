@@ -215,7 +215,9 @@ public class AppOvertimeFinder {
 				param.overtimeLeaveAppCommonSet.toDomain(),
 				param.advanceApplicationTime == null ? null : param.advanceApplicationTime.toDomain(),
 				param.achieveApplicationTime == null ? null : param.achieveApplicationTime.toDomain(),
-				param.workContent.toDomain());
+				param.workContent.toDomain(),
+				param.overtimeAppSetCommand.toDomain(companyId)
+				);
 		
 		
 		return DisplayInfoOverTimeDto.fromDomainCalculation(output);
@@ -274,7 +276,7 @@ public class AppOvertimeFinder {
 					));
 			
 		} else {
-			return new BreakTimeZoneSettingDto();
+			return null;
 		}
 	}	
 	/**

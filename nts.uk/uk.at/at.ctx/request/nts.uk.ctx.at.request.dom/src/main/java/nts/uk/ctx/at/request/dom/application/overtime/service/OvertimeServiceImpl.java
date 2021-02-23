@@ -96,6 +96,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
@@ -422,7 +423,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 			OvertimeLeaveAppCommonSet overtimeLeaveAppCommonSet,
 			ApplicationTime advanceApplicationTime,
 			ApplicationTime achieveApplicationTime,
-			WorkContent workContent) {
+			WorkContent workContent,
+			OvertimeAppSet overtimeAppSet) {
 		DisplayInfoOverTime output = new DisplayInfoOverTime();
 		output.setCalculatedFlag(CalculatedFlag.UNCALCULATED);
 		// 計算処理
@@ -434,7 +436,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 				overtimeLeaveAppCommonSet,
 				advanceApplicationTime,
 				achieveApplicationTime,
-				workContent);
+				workContent,
+				overtimeAppSet);
 		// 取得した「休出枠<List>」を「残業申請の表示情報」にセットする
 		if (caculationOutput != null) {
 			output.setWorkdayoffFrames(caculationOutput.getWorkdayoffFrames());
@@ -454,13 +457,16 @@ public class OvertimeServiceImpl implements OvertimeService {
 			OvertimeLeaveAppCommonSet overtimeLeaveAppCommonSet,
 			ApplicationTime advanceApplicationTime,
 			ApplicationTime achieveApplicationTime,
-			WorkContent workContent) {
+			WorkContent workContent,
+			OvertimeAppSet overtimeAppSet) {
 		CaculationOutput ouput = new CaculationOutput();
 		// INPUTをチェックする
 		if (	!dateOp.isPresent() 
 				|| !workContent.getWorkTypeCode().isPresent()
 				|| !workContent.getWorkTimeCode().isPresent() 
-				|| CollectionUtil.isEmpty(workContent.getTimeZones())) return null;
+				|| CollectionUtil.isEmpty(workContent.getTimeZones())
+				|| overtimeAppSet.getApplicationDetailSetting().getTimeCalUse() == NotUseAtr.NOT_USE
+				) return null;
 		// 06_計算処理
 		List<ApplicationTime> applicationTimes = commonOvertimeHoliday.calculator(
 				companyId,
@@ -1052,7 +1058,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 					output.getInfoWithDateApplicationOp()
 					.map(x -> x.getApplicationTime().orElse(null))
 					.orElse(null),
-					workContent);
+					workContent,
+					output.getInfoNoBaseDate().getOverTimeAppSet()
+					);
 			output.setWorkdayoffFrames(temp.getWorkdayoffFrames());
 			output.setCalculationResultOp(temp.getCalculationResultOp());
 			output.setCalculatedFlag(temp.getCalculatedFlag());
@@ -1152,7 +1160,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 				output.getInfoWithDateApplicationOp()
 					.map(x -> x.getApplicationTime().orElse(null))
 					.orElse(null),
-				workContent);
+				workContent,
+				overtimeAppSet
+				);
 		output.setCalculationResultOp(displayInfoOverTimeTemp.getCalculationResultOp());
 		output.setWorkdayoffFrames(displayInfoOverTimeTemp.getWorkdayoffFrames());
 		output.setCalculatedFlag(displayInfoOverTimeTemp.getCalculatedFlag());
@@ -1235,7 +1245,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 					.map(z -> z.getApplicationTime())
 					.orElse(null),
 					selectWorkOutput.getApplicationTime(),
-				workContent);
+				workContent,
+				overtimeAppSet
+				);
 		displayInfoOverTimeTemp.setAppDispInfoStartup(appDispInfoStartupOutput);
 		InfoWithDateApplication infoWithDateApplication = new InfoWithDateApplication();
 		infoWithDateApplication.setApplicationTime(Optional.ofNullable(selectWorkOutput.getApplicationTime()));
@@ -1478,7 +1490,9 @@ public class OvertimeServiceImpl implements OvertimeService {
 					displayInfoOverTime.getInfoWithDateApplicationOp()
 						.map(x -> x.getApplicationTime().orElse(null))
 						.orElse(null),
-					workContent);
+					workContent,
+					displayInfoOverTime.getInfoNoBaseDate().getOverTimeAppSet()
+					);
 			displayInfoOverTime.setCalculationResultOp(temp.getCalculationResultOp());
 			displayInfoOverTime.setWorkdayoffFrames(temp.getWorkdayoffFrames());
 		}
