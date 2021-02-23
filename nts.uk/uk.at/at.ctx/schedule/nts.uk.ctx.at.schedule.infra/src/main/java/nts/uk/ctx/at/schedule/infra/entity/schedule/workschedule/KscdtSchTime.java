@@ -30,15 +30,19 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.WithinStatu
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakTimeGoOutTimes;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTotalTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.DeductionTotalTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculationMinusExist;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DivergenceTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime.LeaveEarlyTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkFrameTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkFrameTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.interval.IntervalTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.LateTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehours.ExcessOverTimeWorkMidNightTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehours.clearovertime.FlexTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehours.clearovertime.OverTimeOfDaily;
@@ -48,6 +52,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime.PremiumTimeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.TemporaryTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.AbsenceOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.AnnualOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationusetime.HolidayOfDaily;
@@ -60,6 +65,9 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.vacationuse
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.ActualWorkingTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.ConstraintTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.TotalWorkingTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.IntervalExemptionTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.WithinOutingTotalTime;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
 import nts.uk.shr.com.time.AttendanceClock;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
@@ -246,6 +254,18 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 	@OneToMany(targetEntity = KscdtSchShortTime.class, mappedBy = "kscdtSchTime", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinTable(name = "KSCDT_SCH_SHORTTIME")
 	public List<KscdtSchShortTime> shortTimes;
+	
+	@OneToMany(targetEntity = KscdtSchComeLate.class, mappedBy = "kscdtSchTime", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@JoinTable(name = "KSCDT_SCH_COME_LATE")
+	public List<KscdtSchComeLate> kscdtSchComeLate;
+	
+	@OneToMany(targetEntity = KscdtSchGoingOut.class, mappedBy = "kscdtSchTime", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@JoinTable(name = "KSCDT_SCH_GOING_OUT")
+	public List<KscdtSchGoingOut> kscdtSchGoingOut;
+	
+	@OneToMany(targetEntity = KscdtSchLeaveEarly.class, mappedBy = "kscdtSchTime", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@JoinTable(name = "KSCDT_SCH_LEAVE_EARLY")
+	public List<KscdtSchLeaveEarly> kscdtSchLeaveEarly;
 
 	/**
 	 * 
@@ -365,7 +385,16 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 				}
 			}
 		}
+		//#114431
+		List<KscdtSchComeLate> listKscdtSchComeLate = timeOfDailys.getTotalWorkingTime().getLateTimeOfDaily()
+		.stream().map(c-> KscdtSchComeLate.toEntity(sID, yMD, cID, c.getWorkNo().v(), c.getTimePaidUseTime())).collect(Collectors.toList());
+		
+		List<KscdtSchGoingOut> listKscdtSchGoingOut = timeOfDailys.getTotalWorkingTime().getOutingTimeOfDailyPerformance()
+			.stream().map(c-> KscdtSchGoingOut.toEntity(sID, yMD, cID, c.getReason().value , c.getTimeVacationUseOfDaily())).collect(Collectors.toList());
 
+		List<KscdtSchLeaveEarly> listKscdtSchLeaveEarly = timeOfDailys.getTotalWorkingTime().getLeaveEarlyTimeOfDaily()
+				.stream().map(c-> KscdtSchLeaveEarly.toEntity(sID, yMD, cID, c.getWorkNo().v(), c.getTimePaidUseTime())).collect(Collectors.toList());
+		
 		KscdtSchTime kscdtSchTime = new KscdtSchTime(pk, cID, // cid
 				workingTime.getWorkTimes() == null ? 0 : workingTime.getWorkTimes().v(), // count
 				workingTime.getWorkTimes() == null ? 0 : workingTime.getTotalTime().v(), // totalTime
@@ -402,7 +431,8 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 				holidayOfDaily.getAbsence() == null ? 0 : holidayOfDaily.getAbsence().getUseTime().v(), // absenceTime
 				workingTime.getVacationAddTime() == null ? 0 : workingTime.getVacationAddTime().v(), // vacationAddTime
 				timeOfDailys.getTimeDifferenceWorkingHours() == null ? 0 :timeOfDailys.getTimeDifferenceWorkingHours().v(), // staggeredWhTime
-				kscdtSchOvertimeWork, kscdtSchHolidayWork, kscdtSchBonusPay, kscdtSchPremium, kscdtSchShortTime);
+				kscdtSchOvertimeWork, kscdtSchHolidayWork, kscdtSchBonusPay, kscdtSchPremium, kscdtSchShortTime,
+				listKscdtSchComeLate,listKscdtSchGoingOut,listKscdtSchLeaveEarly);
 		return kscdtSchTime;
 
 	}
@@ -485,6 +515,54 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 
 		ActualWorkingTimeOfDaily workingTimeOfDaily = new ActualWorkingTimeOfDaily(constraintDiffTime, constraintTime,
 				timeDiff, totalWorkingTime, divTime, premiumTime);
+		
+		//#114431
+		List<LateTimeOfDaily> lateTimeOfDaily = new ArrayList<>();
+		for(KscdtSchComeLate scl : kscdtSchComeLate) {
+			LateTimeOfDaily temp = new LateTimeOfDaily(
+					TimeWithCalculation.sameTime(AttendanceTime.ZERO), // value default
+					TimeWithCalculation.sameTime(AttendanceTime.ZERO), // value default
+					new WorkNo(scl.pk.workNo), 
+					scl.toDomain(), 
+					IntervalExemptionTime.defaultValue());// value default
+			lateTimeOfDaily.add(temp);
+		}
+		workingTimeOfDaily.getTotalWorkingTime().setLateTimeOfDaily(lateTimeOfDaily);
+		
+		List<OutingTimeOfDaily> lateOutingTimeOfDaily = new ArrayList<>();
+		for(KscdtSchGoingOut sgo : kscdtSchGoingOut) {
+			OutingTimeOfDaily temp = new OutingTimeOfDaily(
+					new BreakTimeGoOutTimes(0), // value default
+					GoingOutReason.valueOf(sgo.pk.reasonAtr), 
+					sgo.toDomain(), 
+					OutingTotalTime.of(TimeWithCalculation.sameTime(AttendanceTime.ZERO), // value default
+							WithinOutingTotalTime.of(TimeWithCalculation.sameTime(AttendanceTime.ZERO),// value default
+									TimeWithCalculation.sameTime(AttendanceTime.ZERO), // value default
+									TimeWithCalculation.sameTime(AttendanceTime.ZERO)),// value default
+							TimeWithCalculation.sameTime(AttendanceTime.ZERO)), // value default
+					OutingTotalTime.of(TimeWithCalculation.sameTime(AttendanceTime.ZERO), // value default
+							WithinOutingTotalTime.of(TimeWithCalculation.sameTime(AttendanceTime.ZERO),// value default
+									TimeWithCalculation.sameTime(AttendanceTime.ZERO), // value default
+									TimeWithCalculation.sameTime(AttendanceTime.ZERO)),// value default
+							TimeWithCalculation.sameTime(AttendanceTime.ZERO)), // value default
+					new ArrayList<>());// value default
+			lateOutingTimeOfDaily.add(temp);
+		}
+		workingTimeOfDaily.getTotalWorkingTime().setOutingTimeOfDailyPerformance(lateOutingTimeOfDaily);
+		
+		
+		List<LeaveEarlyTimeOfDaily> leaveEarlyTimeOfDaily = new ArrayList<>();
+		for(KscdtSchLeaveEarly scl : kscdtSchLeaveEarly) {
+			LeaveEarlyTimeOfDaily temp = new LeaveEarlyTimeOfDaily(
+					TimeWithCalculation.sameTime(AttendanceTime.ZERO), // value default
+					TimeWithCalculation.sameTime(AttendanceTime.ZERO), // value default
+					new WorkNo(scl.pk.workNo), 
+					scl.toDomain(), 
+					IntervalExemptionTime.defaultValue());// value default
+			leaveEarlyTimeOfDaily.add(temp);
+		}
+		workingTimeOfDaily.getTotalWorkingTime().setLeaveEarlyTimeOfDaily(leaveEarlyTimeOfDaily);
+		
 		return workingTimeOfDaily;
 	}
 
@@ -502,7 +580,7 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 			int hdspHourlyTime, int hdstkTime, int hdHourlyTime, int hdHourlyShortageTime, int absenceTime,
 			int vacationAddTime, int staggeredWhTime, List<KscdtSchOvertimeWork> overtimeWorks,
 			List<KscdtSchHolidayWork> holidayWorks, List<KscdtSchBonusPay> bonusPays, List<KscdtSchPremium> premiums,
-			List<KscdtSchShortTime> shortTimes) {
+			List<KscdtSchShortTime> shortTimes,List<KscdtSchComeLate> kscdtSchComeLate,List<KscdtSchGoingOut> kscdtSchGoingOut,List<KscdtSchLeaveEarly> kscdtSchLeaveEarly) {
 		super();
 		this.pk = pk;
 		this.cid = cid;
@@ -546,5 +624,9 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 		this.bonusPays = bonusPays;
 		this.premiums = premiums;
 		this.shortTimes = shortTimes;
+		this.kscdtSchComeLate = kscdtSchComeLate;
+		this.kscdtSchGoingOut = kscdtSchGoingOut;
+		this.kscdtSchLeaveEarly = kscdtSchLeaveEarly;
+		
 	}
 }

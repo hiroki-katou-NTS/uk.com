@@ -71,8 +71,8 @@ public class JpaScheduleTableOutputSettingItemRepository extends JpaRepository
 			});
 		}		
 		
-		if(!kagmtRptScheduleTallyByPersons.isEmpty()) {
-			kagmtRptScheduleTallyByPersons.stream().forEach(x -> {
+		if(!kagmtRptScheduleTallyByWkps.isEmpty()) {
+			kagmtRptScheduleTallyByWkps.stream().forEach(x -> {
 				if(x.pk.categoryNo != null) {
 					workplaceCounterCategories.add(WorkplaceCounterCategory.of(x.pk.categoryNo));
 				}	

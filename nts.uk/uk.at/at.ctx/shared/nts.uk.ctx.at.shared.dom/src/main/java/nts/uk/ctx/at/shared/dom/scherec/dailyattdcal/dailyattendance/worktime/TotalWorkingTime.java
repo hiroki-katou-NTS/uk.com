@@ -138,15 +138,18 @@ public class TotalWorkingTime {
 	private ExcessOfStatutoryTimeOfDaily excessOfStatutoryTimeOfDaily;
 	
 	//日別実績の遅刻時間
+	@Setter
 	private List<LateTimeOfDaily> lateTimeOfDaily = Collections.emptyList();
 	
 	//日別実績の早退時間
+	@Setter
 	private List<LeaveEarlyTimeOfDaily> leaveEarlyTimeOfDaily = Collections.emptyList(); 
 	
 	//日別実績の休憩時間
 	private BreakTimeOfDaily breakTimeOfDaily;
 	
-	//日別実績の外出時間	
+	//日別実績の外出時間
+	@Setter
 	private List<OutingTimeOfDaily> outingTimeOfDailyPerformance;
 		
 	//加給時間

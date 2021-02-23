@@ -14,7 +14,7 @@ public enum PersonalCounterCategory {
     MONTHLY_EXPECTED_SALARY(0, "月間想定給与額 "),
 
     /** 累計想定給与額  */
-    CUMULATIVE_ESTIMATED_SALARY(1, "累計想定給与額"),
+    CUMULATIVE_ESTIMATED_SALARY(1, "年間想定給与額"),
 
     /** 基準労働時間比較 */
     STANDARD_WORKING_HOURS_COMPARISON(2, "基準労働時間比較"),

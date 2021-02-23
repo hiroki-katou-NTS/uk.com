@@ -1294,6 +1294,8 @@ public class ProgramIdConsts {
 	public static final String KAFS08B = "KAFS08B";
 	public static final String KAFS08C = "KAFS08C";
 	public static final String KAFS08D = "KAFS08D";
+	
+	public static final String KSUS02A = "KSUS02A";
 
 	/** CPS013 */
 	public static final String CPS013A = "CPS013A";

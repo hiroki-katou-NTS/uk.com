@@ -8,7 +8,6 @@ import { CalendarBComponent } from 'views/ksu/s02/component/b';
 
 @component({
     // name: 'calendarksus02',
-    route: '/ksu/s02/calendar',
     template: require('./index.vue'),
     constraints: [],
     components: {
