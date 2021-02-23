@@ -505,7 +505,6 @@ module nts.uk.at.view.kmk013.b_ref {
                 var self = this;
                 var dfd = $.Deferred();
                 self.initData().done(() => {
-                    $( "#B3_3" ).focus();
                     dfd.resolve(); 
                 });
                 return dfd.promise();
@@ -889,8 +888,9 @@ module nts.uk.at.view.kmk013.b_ref {
                 
                 service.save(obj).done(() => {
                     self.initData();
-                    nts.uk.ui.dialog.info({messageId: 'Msg_15'});
-                    $( "#B3_3" ).focus();
+                    nts.uk.ui.dialog.info({messageId: 'Msg_15'}).then(() => {
+                        $( "#B3_3" ).focus();
+                    });
                 }).fail((error) => {
                    nts.uk.ui.dialog.alertError(error);
                 }).always(() => {

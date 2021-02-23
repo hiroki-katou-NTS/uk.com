@@ -20,9 +20,8 @@ module nts.uk.at.view.kmk013.a {
 
                     self.isManageFlexTime(data.flexWorkManagement == 1 ? true : false);
                     self.isModifiedLabor(data.useAggDeformedSetting == 1 ? true : false);
-                    $( "#a2_4" ).focus();
                     dfd.resolve();    
-                })
+                });
                 return dfd.promise();
             }
             
