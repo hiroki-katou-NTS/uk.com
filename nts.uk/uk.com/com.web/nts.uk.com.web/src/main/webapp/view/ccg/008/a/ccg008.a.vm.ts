@@ -444,9 +444,17 @@ module nts.uk.com.view.ccg008.a.screenModel {
 
 							if (topPageUrl !== res.trim()) {
 								if (_.includes(url, ".at.")) {
-									vm.$jump('at', `/${res}`);
+                  if(!!standardMenu.queryString && standardMenu.queryString.length > 0) {
+									  vm.$jump('at', `/${res}?${standardMenu.queryString}`);
+                  } else {
+                    vm.$jump('at', `/${res}`);
+                  }
 								} else {
-									vm.$jump('com', `/${res}`);
+                  if(!!standardMenu.queryString && standardMenu.queryString.length > 0) {
+                    vm.$jump('com', `/${res}?${standardMenu.queryString}`);
+                  } else {
+								  	vm.$jump('com', `/${res}`);
+                  }
 								}
 							}
 						}
@@ -546,6 +554,7 @@ module nts.uk.com.view.ccg008.a.screenModel {
 		logStartDisplay: number;
 		logUpdateDisplay: number;
 		logSettingDisplay: LogSettingDisplayDto;
+    queryString:string;
 		constructor(init?: Partial<StandardMenuDto>) {
 			$.extend(this, init);
 		}

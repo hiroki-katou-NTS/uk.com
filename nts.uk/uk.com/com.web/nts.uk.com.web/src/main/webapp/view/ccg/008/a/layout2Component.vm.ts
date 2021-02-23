@@ -107,8 +107,8 @@ module nts.uk.com.view.ccg008.a.Layout2ComponentViewModel {
           name = "ktg-027-a";
           break;
         case 5:
-          url = "/nts.uk.at.web/view/kdp/001/a/index.xhtml";
-          name = "";
+          url = "/view/ktg/027/a/kdp001.a.component.js";
+          name = "kdp-001-a";
           break;
         case 6:
           url = "/view/ktg/031/a/ktg031.a.vm.js";
