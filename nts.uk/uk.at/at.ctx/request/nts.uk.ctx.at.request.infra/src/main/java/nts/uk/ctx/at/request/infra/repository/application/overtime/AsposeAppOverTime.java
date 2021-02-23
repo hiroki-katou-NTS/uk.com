@@ -48,8 +48,10 @@ public class AsposeAppOverTime {
 	public static final String EMPTY_STRING = "";
 	public static final String SPLIT_TIME = "、";
 	public static final String TILDLE_STRING = " ～ ";
-	private static final String TIME_ZERO = new TimeWithDayAttr(0).getInDayTimeWithFormat();
 	
+	public String getInDayTimeWithFormat(AttendanceTime time){
+		return time.hour() + ":" + (time.minute() < 10 ? "0" + time.minute() : time.minute());
+	}
 	
 	public StringBuilder getContentReason (Optional<DetailOutput> opDetailOutput, int frame, boolean c1, boolean c2) {
 		StringBuilder d31 = new StringBuilder("");
@@ -416,7 +418,7 @@ public class AsposeAppOverTime {
 			IntStream.range(0, holidayList.size())
 			         .forEach(x -> {
 			        	 OverTimeObject object = holidayListTemp2.get(x);
-			        	 String time = new TimeWithDayAttr(object.getTime()).getInDayTimeWithFormat();
+			        	 String time = this.getInDayTimeWithFormat(new AttendanceTime(object.getTime()));
 			        	 if (x == 0) {
 			        		 cellD19.setValue(object.getName());
 			        		 cellF19.setValue(time);
@@ -470,40 +472,40 @@ public class AsposeAppOverTime {
 			        	 OverTimeObject object = overTimeListTemp2.get(x);
 			        	 if (x == 0) {
 			        		 cellD13.setValue(object.getName());
-			        		 cellF13.setValue(new TimeWithDayAttr(object.getTime()).getInDayTimeWithFormat());
+			        		 cellF13.setValue(this.getInDayTimeWithFormat(new AttendanceTime(object.getTime())));
 			        	 } else if (x == 1) {
 			        		 cellH13.setValue(object.getName());
-			        		 cellJ13.setValue(new TimeWithDayAttr(object.getTime()).getInDayTimeWithFormat());
+			        		 cellJ13.setValue(this.getInDayTimeWithFormat(new AttendanceTime(object.getTime())));
 			        	 } else if (x == 2) {
 			        		 cellD14.setValue(object.getName());
-			        		 cellF14.setValue(new TimeWithDayAttr(object.getTime()).getInDayTimeWithFormat());
+			        		 cellF14.setValue(this.getInDayTimeWithFormat(new AttendanceTime(object.getTime())));
 			        	 } else if (x == 3) {
 			        		 cellH14.setValue(object.getName());
-			        		 cellJ14.setValue(new TimeWithDayAttr(object.getTime()).getInDayTimeWithFormat());
+			        		 cellJ14.setValue(this.getInDayTimeWithFormat(new AttendanceTime(object.getTime())));
 			        	 }  else if (x == 4) {
 			        		 cellD15.setValue(object.getName());
-			        		 cellF15.setValue(new TimeWithDayAttr(object.getTime()).getInDayTimeWithFormat());
+			        		 cellF15.setValue(this.getInDayTimeWithFormat(new AttendanceTime(object.getTime())));
 			        	 } else if (x == 5) {
 			        		 cellH15.setValue(object.getName());
-			        		 cellJ15.setValue(new TimeWithDayAttr(object.getTime()).getInDayTimeWithFormat());
+			        		 cellJ15.setValue(this.getInDayTimeWithFormat(new AttendanceTime(object.getTime())));
 			        	 }  else if (x == 6) {
 			        		 cellD16.setValue(object.getName());
-			        		 cellF16.setValue(new TimeWithDayAttr(object.getTime()).getInDayTimeWithFormat());
+			        		 cellF16.setValue(this.getInDayTimeWithFormat(new AttendanceTime(object.getTime())));
 			        	 } else if (x == 7) {
 			        		 cellH16.setValue(object.getName());
-			        		 cellJ16.setValue(new TimeWithDayAttr(object.getTime()).getInDayTimeWithFormat());
+			        		 cellJ16.setValue(this.getInDayTimeWithFormat(new AttendanceTime(object.getTime())));
 			        	 }  else if (x == 8) {
 			        		 cellD17.setValue(object.getName());
-			        		 cellF17.setValue(new TimeWithDayAttr(object.getTime()).getInDayTimeWithFormat());
+			        		 cellF17.setValue(this.getInDayTimeWithFormat(new AttendanceTime(object.getTime())));
 			        	 } else if (x == 9) {
 			        		 cellH17.setValue(object.getName());
-			        		 cellJ17.setValue(new TimeWithDayAttr(object.getTime()).getInDayTimeWithFormat());
+			        		 cellJ17.setValue(this.getInDayTimeWithFormat(new AttendanceTime(object.getTime())));
 			        	 } else if (x == 10) {
 			        		 cellD18.setValue(object.getName());
-			        		 cellF18.setValue(new TimeWithDayAttr(object.getTime()).getInDayTimeWithFormat());
+			        		 cellF18.setValue(this.getInDayTimeWithFormat(new AttendanceTime(object.getTime())));
 			        	 } else if (x == 11) {
 			        		 cellH18.setValue(object.getName());
-			        		 cellJ18.setValue(new TimeWithDayAttr(object.getTime()).getInDayTimeWithFormat());
+			        		 cellJ18.setValue(this.getInDayTimeWithFormat(new AttendanceTime(object.getTime())));
 			        	 }
 			        	 
 			         });
