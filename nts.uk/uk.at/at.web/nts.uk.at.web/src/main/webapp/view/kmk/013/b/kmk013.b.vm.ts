@@ -879,10 +879,13 @@ module nts.uk.at.view.kmk013.b_ref {
                 if (nts.uk.ui.errors.hasError()) {
                     return;
                 }
-                
-                // blockUI.grayout();
 
-                console.log(obj);
+                if (!self.validate()) {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_2041" });
+                    return;
+                }
+                
+                blockUI.grayout();
                 
                 service.save(obj).done(() => {
                     self.initData();
@@ -902,6 +905,58 @@ module nts.uk.at.view.kmk013.b_ref {
                     nts.uk.ui.block.clear();
                 });
             }
+
+            validate() {
+
+                let check = true;
+
+                let self = this;
+                if (self.selectedB74() == 1 && self.enableB74()) {
+                    if (!self.screenBCheckTime(self.checkedB510(), self.checkedB59(), self.checkedB710(), self.checkedB79())) {
+                        check = false;
+                    }
+                }
+                if (self.selectedB104() == 1 && self.enableB104()) {
+                    if (!self.screenBCheckTime(self.checkedB810(), self.checkedB89(), self.checkedB1010(), self.checkedB109())) {
+                        check = false;
+                    }
+                }
+                if (self.selectedB134() == 1 && self.enableB134()) {
+                    if (!self.screenBCheckTime(self.checkedB1110(), self.checkedB119(), self.checkedB1310(), self.checkedB139())) {
+                        check = false;
+                    }
+                }
+                if (self.selectedB164() == 1 && self.enableB164()) {
+                    if (!self.screenBCheckTime(self.checkedB1410(), self.checkedB149(), self.checkedB1610(), self.checkedB169())) {
+                        check = false;
+                    }
+                }
+
+                return check;
+            }
+
+            /*
+                「画面B：就業時間の加算設定」の「B4_1 労働時間に加算する時間」の登録時チェックについて
+             */
+            screenBCheckTime(intervalTime: boolean,
+                             deductLaveAndEarly: boolean,
+                             intervalTime2: boolean,
+                             deductLaveAndEarly2: boolean) {
+                // a）「遅刻・早退を控除する」＝☑チェックありで、「インターバル免除時間」＝□チェックなしの場合、
+                if (!intervalTime && deductLaveAndEarly) {
+                    return false;
+                }
+                // b）割増時間のみ、「遅刻・早退を控除する」＝☑チェックありで、「インターバル免除時間」＝□チェックなしの場合、
+                if (intervalTime && deductLaveAndEarly) {
+                    if (!intervalTime2 && deductLaveAndEarly2) {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+
+
         }
         
         const lastTabIndexTabPanel1 = 28;
