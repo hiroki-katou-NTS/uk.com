@@ -112,11 +112,11 @@ module nts.uk.ui.chart {
                             childSlide = _.find(self.slideTrigger.children, c => c.id === child.id);
                             if (!childSlide) return;
                             child.reposition({ start: childSlide.start + step, end: childSlide.end + step, left: childSlide.left + step * child.unitToPx });
-                        } else if (diff > 0 && child.start < pDec.start) {
+                        } else if (diff > 0 && child.start < pDec.start && !child.pin) {
                             childSlide = _.find(self.slideTrigger.children, c => c.id === child.id);
                             if (!childSlide) return;
                             child.reposition({ width: childSlide.length + (childSlide.start - pDec.start) * child.unitToPx, left: pDec.start * child.unitToPx, start: pDec.start });
-                        } else if (diff < 0 && child.end > pDec.end) {
+                        } else if (diff < 0 && child.end > pDec.end && !child.pin) {
                             childSlide = _.find(self.slideTrigger.children, c => c.id === child.id);
                             if (!childSlide) return;
                             child.reposition({ width: childSlide.length + (pDec.end - childSlide.end) * child.unitToPx, end: pDec.end });
@@ -490,6 +490,7 @@ module nts.uk.ui.chart {
                 children: _.map(chart.children, c => ({ id: c.id, start: c.start, end: c.end, length: parseFloat(c.html.style.width), left: parseFloat(c.html.style.left) }))
             };
             
+            let diff = start - chart.start;
             let pDec = { left: start * chart.unitToPx, start: start, end: chart.end + start - chart.start };
             if (chart.limitStartMin > pDec.start || chart.limitStartMax < pDec.start 
                 || chart.limitEndMin > pDec.end || chart.limitEndMax < pDec.end) return;
