@@ -79,12 +79,18 @@ public class ScheduleTableOutputSettingSaveCommand {
 					Optional.of(EnumAdaptor.valueOf(4, ScheduleTablePersonalInfoItem.class)),
 					Optional.of(EnumAdaptor.valueOf(0, ScheduleTableAttendanceItem.class))));
 		} else {
-			for(int i = 0; i < size; i++) {				
-				OneRowOutputItem oneRowOutputItem = OneRowOutputItem.create(Optional.ofNullable(i < command.getPersonalInfo().size()  ? EnumAdaptor.valueOf(command.getPersonalInfo().get(i), ScheduleTablePersonalInfoItem.class): null), 
-						Optional.ofNullable(i < command.getAdditionalInfo().size() ? EnumAdaptor.valueOf(command.getAdditionalInfo().get(i), ScheduleTablePersonalInfoItem.class): null),
-						Optional.ofNullable(i < command.getAttendanceItem().size() ? EnumAdaptor.valueOf(command.getAttendanceItem().get(i), ScheduleTableAttendanceItem.class) : null));
-				details.add(oneRowOutputItem);
-			}	
+			for(int i = 0; i < size; i++) {			
+				if(command.getPersonalInfo().get(i) != -1 || command.getAdditionalInfo().get(i) != -1 || command.getAttendanceItem().get(i) != -1) {
+					OneRowOutputItem oneRowOutputItem = OneRowOutputItem.create(
+							Optional.ofNullable(i < command.getPersonalInfo().size() && command.getPersonalInfo().get(i) != -1 ? 
+									EnumAdaptor.valueOf(command.getPersonalInfo().get(i), ScheduleTablePersonalInfoItem.class): null), 
+							Optional.ofNullable(i < command.getAdditionalInfo().size() && command.getAdditionalInfo().get(i) != -1 ? 
+									EnumAdaptor.valueOf(command.getAdditionalInfo().get(i), ScheduleTablePersonalInfoItem.class): null),
+							Optional.ofNullable(i < command.getAttendanceItem().size() && command.getAttendanceItem().get(i) != -1 ? 
+									EnumAdaptor.valueOf(command.getAttendanceItem().get(i), ScheduleTableAttendanceItem.class) : null));
+					details.add(oneRowOutputItem);
+				}				
+			}			
 		}
 		
 		OutputItem outputItem = new OutputItem(NotUseAtr.valueOf(command.getAdditionalColumn()), 
