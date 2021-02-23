@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.aggregation.app.find.scheduletable.outputsetting;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -24,14 +25,19 @@ public class ScheduleTableOutputSettingFinder {
 	
 	public ScheduleTableOutputSettingDto findByCidAndCode(String code) {
 		Optional<ScheduleTableOutputSetting> optional = repository.get(AppContexts.user().companyId(), new OutputSettingCode(code));
-//		ScheduleTableOutputSetting optional1 = repository.getOne(AppContexts.user().companyId(), new OutputSettingCode(code));
 		return optional.isPresent() ? ScheduleTableOutputSettingDto.setData(optional.get()): new ScheduleTableOutputSettingDto();
-//		return ScheduleTableOutputSettingDto.setData(optional1);
 	}
-	
-	public List<ScheduleTableOutputSettingDto> findByCid(){
-		List<ScheduleTableOutputSetting> scheduleTableOutputSettings = repository.getList(AppContexts.user().companyId());
-		return scheduleTableOutputSettings.stream().map(item -> ScheduleTableOutputSettingDto.setData(item))
-				.collect(Collectors.toList());		
+
+	public List<ScheduleTableOutputSettingDto> findByCid() {
+		List<ScheduleTableOutputSetting> scheduleTableOutputSettings = repository
+				.getList(AppContexts.user().companyId());
+		if (scheduleTableOutputSettings.isEmpty()) {
+			List<ScheduleTableOutputSettingDto> results = new ArrayList<ScheduleTableOutputSettingDto>();
+			results.add(ScheduleTableOutputSettingDto.builder().isAttendance(true).build());
+			return results;			
+		} else {
+			return scheduleTableOutputSettings.stream().map(item -> ScheduleTableOutputSettingDto.setData(item))
+					.collect(Collectors.toList());
+		}
 	}
 }

@@ -27,6 +27,11 @@
 
 .tab-content-fixsize{
 	width: 630px;
+	height: 320px;
+}
+
+.tab1-content-fixsize{
+	width: 630px;
 	height: 600px;
 }
 
