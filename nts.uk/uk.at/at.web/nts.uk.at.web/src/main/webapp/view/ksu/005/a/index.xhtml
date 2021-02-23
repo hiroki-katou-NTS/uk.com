@@ -54,7 +54,10 @@
                 <!--A3-2-->
                 <div>
 					<textarea class="inputValue" rows="3" cols="60"
-						data-bind="ntsMultilineEditor: { value: comments, constraint:'AgreementApprovalComments' }" />
+						data-bind="ntsMultilineEditor: { 
+                            value: comments, 
+                            constraint:'AgreementApprovalComments',
+                            required: true }" />
 				</div>
             </div>
         </div>            

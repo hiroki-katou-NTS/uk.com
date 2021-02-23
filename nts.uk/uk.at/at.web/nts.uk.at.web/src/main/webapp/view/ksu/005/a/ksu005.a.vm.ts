@@ -1,6 +1,7 @@
 module nts.uk.at.view.ksu005.a {
     import setShare = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import character = nts.uk.characteristics;
 
     const Paths = {
         GET_SCHEDULE_TABLE_OUTPUT_SETTING_BY_CID:"ctx/at/schedule/scheduletable/getall"
@@ -9,11 +10,15 @@ module nts.uk.at.view.ksu005.a {
     class Ksu005aViewModel extends ko.ViewModel {
         currentScreen: any = null;
         itemList: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
-        selectedCode: KnockoutObservable<string> = ko.observable('');
+        selectedCode: KnockoutObservable<string> = ko.observable();
         comments: KnockoutObservable<string>;
+        characteristics: Characteristics = {};
         constructor() {
             super();
-            const self = this;           
+            const self = this;   
+            // self.selectedCode.subscribe((value) => {
+
+            // });        
             self.comments = ko.observable("並び順社員リスト 社員情報　対象期間...");
             self.loadScheduleOutputSetting();
         }
@@ -21,7 +26,6 @@ module nts.uk.at.view.ksu005.a {
         loadScheduleOutputSetting(): void {
             const self = this;
             let dataList: Array<ItemModel> = [];
-            // let exitKsu005b = getShared('ksu005b-result');
             self.$blockui("invisible");			
             self.$ajax(Paths.GET_SCHEDULE_TABLE_OUTPUT_SETTING_BY_CID).done((data: Array<IScheduleTableOutputSetting>) => {
                 if(data && data.length > 0){
@@ -29,13 +33,16 @@ module nts.uk.at.view.ksu005.a {
                         _.each(data, item =>{
                             dataList.push(new ItemModel(item.code, item.name));
                         });
+                        character.restore('characterKsu005a').done((obj: Characteristics) => {
+                            self.selectedCode(obj.code);
+                        })
                     } else if(data[0].isAttendance){                       
                             self.openDialog();                    
                     } else {
                         self.$dialog.info({ messageId: 'Msg_1970'}).then(() => {
                             self.closeDialog();
                         });
-                    }            
+                    } 
                     
                 } 
                 self.itemList(dataList);
@@ -55,13 +62,17 @@ module nts.uk.at.view.ksu005.a {
             setShare('dataShareKSU005a', code);
             self.currentScreen = nts.uk.ui.windows.sub.modal('/view/ksu/005/b/index.xhtml').onClosed(() => {
                 let dataList: Array<ItemModel> = [];
+                let currentCode = getShared('dataShareCloseKSU005b');
                 self.$blockui("invisible");
                 self.$ajax(Paths.GET_SCHEDULE_TABLE_OUTPUT_SETTING_BY_CID).done((data: Array<IScheduleTableOutputSetting>) => {
                     if (data && data.length > 0) {
                         if (data[0].isAttendance == null) {
                             _.each(data, item => {
-                                dataList.push(new ItemModel(item.code, item.name));
+                                dataList.push(new ItemModel(item.code, item.name));                                
                             });
+                            self.characteristics.code = currentCode;
+                            character.save('characterKsu005a', self.characteristics);
+                            self.loadScheduleOutputSetting();
                         } else if (data[0].isAttendance) {
                             self.$dialog.info({ messageId: 'Msg_1766' }).then(() => {
                                 self.openDialog();
@@ -78,6 +89,10 @@ module nts.uk.at.view.ksu005.a {
                 });
             });
         }
+    }
+
+    interface Characteristics {
+        code: string;
     }
 
     interface IScheduleTableOutputSetting {

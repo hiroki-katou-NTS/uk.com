@@ -427,6 +427,7 @@ module nts.uk.at.view.ksu005.b {
 
         closeDialog(): void {
             const self = this;
+            setShare('dataShareCloseKSU005b', self.selectedCode());
             self.$window.close();
             // setShare('ksu005b-result', self.exitStatus());
             // self.currentScreen = nts.uk.ui.windows.sub.modal('/view/ksu/005/a/index.xhtml');
