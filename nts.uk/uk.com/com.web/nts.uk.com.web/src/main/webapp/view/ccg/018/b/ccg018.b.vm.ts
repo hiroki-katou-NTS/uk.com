@@ -88,7 +88,6 @@ module ccg018.b.viewmodel {
             });
 
             self.listSwitchDate(self.getSwitchDateLists());
-            self.findByCId();
         }
 
         initCCG001(): void {

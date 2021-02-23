@@ -336,7 +336,7 @@ module nts.uk.com.view.ccg015.e {
     }
 
     public isComponent() {
-      return this.isKTG026() || this.isKTG027() || this.isKTG031() || this.isCCG005() || this.isKTG001() || this.isKTG005 || this.isKTG004; 
+      return this.isKTG026() || this.isKTG027() || this.isKTG031() || this.isCCG005() || this.isKTG001() || this.isKTG005 || this.isKTG004 || this.isKDP001(); 
     }
     public isKTG026() {
       return this.itemType === MenuPartType.PART_KTG_026;
@@ -358,6 +358,9 @@ module nts.uk.com.view.ccg015.e {
     }
     public isKTG005() {
       return this.itemType === MenuPartType.PART_KTG_005;
+    }
+    public isKDP001() {
+      return this.itemType === MenuPartType.PART_KDP_001;
     }
   }
 }

@@ -28,24 +28,13 @@
     </ui:define>
     <ui:define name="content">
       <div id="functions-area">
-        <div tabindex="2" data-bind="ntsComboBox: {
-            name: '#[CCG008_16]',
-            options: lstClosure,
-            optionsValue: 'closureId',
-            visibleItemsCount: 5,
-            value: $vm.closureId,
-            optionsText: 'closureName',
-            editable: false,
-            required: true,
-            selectFirstIfNull: true,
-            columns: [
-              { prop: 'closureId', length: 4 },
-              { prop: 'closureName', length: 8 },
-            ]
-          },
-          css: {
-            hidden: !$vm.isShowClosure()
-          }"></div>
+          <div style="height: 30px;
+              display: inline;">
+              <label id="A1_5" data-bind="text: itemLayoutA1_7,
+                css: {
+                  hidden: !$vm.isShowSwitch()
+                }"></label>
+          </div>
         <div tabindex="3" data-bind="ntsSwitchButton: {
             name: '#[CCG008_13]',
             options: dateSwitch,
