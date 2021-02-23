@@ -17,7 +17,7 @@ module nts.uk.at.view.ksu005.b {
         persons: KnockoutObservableArray<any> = ko.observableArray([]);;
         columns: KnockoutObservableArray<NtsGridListColumn>;
         columns3: KnockoutObservableArray<NtsGridListColumn>;
-        selectedCode: KnockoutObservable<string>= ko.observable('');
+        selectedCode: KnockoutObservable<string>= ko.observable();
         selectedPerson: KnockoutObservable<any> = ko.observable();
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
         selectedTab: KnockoutObservable<string>;
@@ -55,13 +55,18 @@ module nts.uk.at.view.ksu005.b {
         isEnableAdditionInfo :KnockoutObservable<boolean> = ko.observable(true);
 
         scheduleTableOutputSetting: KnockoutObservable<ScheduleTableOutputSetting> = ko.observable(new ScheduleTableOutputSetting());
+        exitStatus: KnockoutObservable<string> = ko.observable("Close"); 
+        clonedata  : any;
 
         constructor() {            
             super();
             const self = this;
           
+            self.clonedata  = self.workplaceCounterCategories();
             self.personalInfoItems.push({value: -1, name:getText('KSU005_68')});
             self.attendanceItems.push({value: -1 , name:getText('KSU005_68')});
+            // self.personalCounterCategory.push({value: -1 , name:getText('KSU005_68')});
+            self.personalCounterCategory.splice(0, 0, {value: -1 , name:getText('KSU005_68')})
 
             self.columns = ko.observableArray([
                 { headerText: getText('KSU005_18'), key: 'code', width: 60 },
@@ -74,7 +79,7 @@ module nts.uk.at.view.ksu005.b {
             ]);
  
             self.columns3 = ko.observableArray([     
-                { headerText: "", key: 'id', width: 30, hidden: true},          
+                { headerText: "", key: 'value', width: 30, hidden: true},          
                 { headerText: getText('KSU005_48'), key: 'name', width: 150}
             ]);
 
@@ -141,71 +146,78 @@ module nts.uk.at.view.ksu005.b {
                     self.isEnableAdditionInfo(false);
                 }
             });
-            self.selectedCode.subscribe((code: string) => {
-                self.$blockui("invisible");
+            self.selectedCode.subscribe((code: string) => {                
                 if (_.isEmpty(code)) {
                     self.clearData();
                 } else {
-                    self.$ajax(Paths.GET_SCHEDULE_TABLE_OUTPUT_SETTING_BY_CODE + "/" + code).done((data: IScheduleTableOutputSetting) => {
-                        self.countNumberRow = 1;
-                        if (!_.isNull(data) && !_.isEmpty(data)) {
-                            self.clearError();                            
-                            let personalInfoItemsSize = data.personalInfo.length;
-                            let additionalItemsSize = data.attendanceItem.length;
-                            let attendanceItemSize = data.attendanceItem.length;
-                            let maxLength = Math.max(personalInfoItemsSize, additionalItemsSize, attendanceItemSize);
-                            let datas = [];
-                            let tempSelected: Array<any> = [];
-                            let tempSelectedCode: Array<any> = [];
-
-                            self.scheduleTableOutputSetting().updateData(data);
-                            self.scheduleTableOutputSetting().isEnableCode(false);
-                            self.isEnableAddBtn(data.shiftBackgroundColor == 0);
-                            self.isShiftBackgroundColor(data.shiftBackgroundColor == 1);
-
-                            datas.push(new ScreenItem(true, self.countNumberRow, data.personalInfo[0] != null ? data.personalInfo[0].toString() : null,
-                                data.attendanceItem[0] != null ? data.attendanceItem[0].toString() : null,
-                                data.attendanceItem[0] != null ? data.attendanceItem[0].toString() : null));
-                            for (let i = 1; i < maxLength; i++) {
-                                self.countNumberRow = self.countNumberRow + 1;
-                                if(self.countNumberRow >= 10) {
-                                    self.isEnableAddBtn(false);
-                                }
-                                datas.push(new ScreenItem(false, self.countNumberRow, data.personalInfo[i] != null ? data.personalInfo[i].toString() : null,
-                                    data.attendanceItem[i] != null ? data.attendanceItem[i].toString() : null,
-                                    data.attendanceItem[i] != null ? data.attendanceItem[i].toString() : null));                                    
-
-                            }
-                            self.itemList(datas);
-
-                            self.itemsSwap(self.workplaceCounterCategories());
-
-                            _.each(data.workplaceCounterCategories, code => {
-                                _.each(self.itemsSwap(), y => {
-                                    if (y.value == code) {
-                                        tempSelected.push(new SwapModel(y.value, y.name));
-                                        tempSelectedCode.push(y.value);
-                                    }
-                                })
-                            });
-
-                            self.currentCodeListSwap(tempSelected);
-                            self.selectedCodeListSwap(tempSelectedCode);
-                            self.persons(self.personalCounterCategory());
-                            self.selectedPerson(data.personalCounterCategories);
-                            self.isEditing(true);
-                            self.enableDelete(true);
-                            $('#outputSettingName').focus();
-                        }
-                    }).always(() => {
-                        self.$blockui("hide");
-                    })
+                    self.findDetail(code);
                 }
                 self.$blockui("hide");
             });        
             self.loadData();
         }
 
+        findDetail(code: string): void {
+            const self = this;
+            self.$blockui("invisible");
+            // self.workplaceCounterCategories(__viewContext.enums.WorkplaceCounterCategory);
+            self.$ajax(Paths.GET_SCHEDULE_TABLE_OUTPUT_SETTING_BY_CODE + "/" + code).done((data: IScheduleTableOutputSetting) => {
+                self.countNumberRow = 1;
+                if (!_.isNull(data) && !_.isEmpty(data)) {
+                    self.clearError();                            
+                    let personalInfoItemsSize = data.personalInfo.length;
+                    let additionalItemsSize = data.attendanceItem.length;
+                    let attendanceItemSize = data.attendanceItem.length;
+                    let maxLength = Math.max(personalInfoItemsSize, additionalItemsSize, attendanceItemSize);
+                    let datas = [];
+                    let tempSelected: Array<any> = [];
+                    let tempSelectedCode: Array<any> = [];
+                    // let workplaceCounterCategories = self.workplaceCounterCategories();
+
+                    self.scheduleTableOutputSetting().updateData(data);
+                    self.scheduleTableOutputSetting().isEnableCode(false);
+                    self.isEnableAddBtn(data.shiftBackgroundColor == 0);
+                    self.isShiftBackgroundColor(data.shiftBackgroundColor == 1);
+
+                    datas.push(new ScreenItem(true, self.countNumberRow, data.personalInfo[0] != null ? data.personalInfo[0].toString() : null,
+                        data.attendanceItem[0] != null ? data.attendanceItem[0].toString() : null,
+                        data.attendanceItem[0] != null ? data.attendanceItem[0].toString() : null));
+                    for (let i = 1; i < maxLength; i++) {
+                        self.countNumberRow = self.countNumberRow + 1;
+                        if(self.countNumberRow >= 10) {
+                            self.isEnableAddBtn(false);
+                        }
+                        datas.push(new ScreenItem(false, self.countNumberRow, data.personalInfo[i] != null ? data.personalInfo[i].toString() : null,
+                            data.attendanceItem[i] != null ? data.attendanceItem[i].toString() : null,
+                            data.attendanceItem[i] != null ? data.attendanceItem[i].toString() : null));                                    
+
+                    }
+                    self.itemList(datas);
+                    self.itemsSwap.removeAll();
+                    self.currentCodeListSwap.removeAll();
+                    self.itemsSwap((_.cloneDeep(self.workplaceCounterCategories())));
+
+                    _.each(data.workplaceCounterCategories, code => {
+                        _.each(self.itemsSwap(), y => {
+                            if (y.value == code) {
+                                tempSelected.push(new SwapModel(y.value, y.name));
+                                tempSelectedCode.push(y.value);
+                            }
+                        })
+                    });
+
+                    self.currentCodeListSwap(tempSelected);
+                    self.selectedCodeListSwap(tempSelectedCode);
+                    self.persons(self.personalCounterCategory());
+                    self.selectedPerson(data.personalCounterCategories);
+                    self.isEditing(true);
+                    self.enableDelete(true);
+                    $('#outputSettingName').focus();
+                }
+            }).always(() => {
+                self.$blockui("hide");
+            })
+        }
         initialData(): void {
             const self = this;
             let data = [];
@@ -213,7 +225,8 @@ module nts.uk.at.view.ksu005.b {
             data.push(new ScreenItem(true, self.countNumberRow, self.personalInfoItems()[0].name, self.attendanceItems()[0].name, self.attendanceItems()[0].name));
             self.itemList (data);
 
-            self.itemsSwap(self.workplaceCounterCategories());
+            self.itemsSwap.removeAll();
+            self.itemsSwap((_.cloneDeep(self.workplaceCounterCategories())));
             self.currentCodeListSwap([]);
 
             self.persons(self.personalCounterCategory());
@@ -228,7 +241,9 @@ module nts.uk.at.view.ksu005.b {
             }
             let personalInfo: Array<string> = [],
                 additionalInfo: Array<string> = [],
-                attendanceItem: Array<string> = [];
+                attendanceItem: Array<string> = [],
+                personalCounterCategories: Array<number> = [],
+                workplaceCounterCategories: Array<number> = [];
 
             let command:any  = {
                 code: self.scheduleTableOutputSetting().code(),
@@ -237,15 +252,21 @@ module nts.uk.at.view.ksu005.b {
                 shiftBackgroundColor: self.isShiftBackgroundColor() ? 1 : 0,
                 dailyDataDisplay: self.scheduleTableOutputSetting().dailyDataDisplay(),
                 workplaceCounterCategories: self.selectedCodeListSwap(),
-                personalCounterCategories: self.selectedPerson()
             }
+            _.each(self.currentCodeListSwap(), x => {
+                workplaceCounterCategories.push(Math.floor(x.value));
+            })
 
+            personalCounterCategories.push(Math.floor(self.selectedPerson()));
+            
             _.each(self.itemList(), x => {
                 personalInfo.push(x.personalInfo());
                 additionalInfo.push(x.additionInfo());
                 attendanceItem.push(x.attendanceItem());
             })
 
+            command.personalCounterCategories = personalCounterCategories;
+            command.workplaceCounterCategories = workplaceCounterCategories;
             command.personalInfo = personalInfo;
             command.additionalInfo = additionalInfo;
             command.attendanceItem = attendanceItem;
@@ -253,7 +274,7 @@ module nts.uk.at.view.ksu005.b {
                 self.$ajax(Paths.REGISTER_SCHEDULE_TABLE_OUTPUT_SETTING, command).done(() =>{
                     self.$dialog.info({messageId: 'Msg_15'}).then(() => {
                         self.selectedCode(command.code);
-                        self.reloadData();
+                        self.reloadData(command.code);
                     });                    
                 }).fail((res) => {
                     if(res.messageId == 'Msg_3'){
@@ -264,11 +285,9 @@ module nts.uk.at.view.ksu005.b {
                     self.$blockui("hide");
                 });
             } else {              
-
-                let tmp = ko.toJSON(self.scheduleTableOutputSetting);
                 self.$ajax(Paths.UPDATE_SCHEDULE_TABLE_OUTPUT_SETTING, command).done(() =>{
                     self.selectedCode(command.code);
-                    self.reloadData();
+                    self.reloadData(command.code);
                     self.$dialog.info({messageId: "Msg_15"}).then(function() {
                         $('#outputSettingName').focus();
                     }); 
@@ -342,13 +361,9 @@ module nts.uk.at.view.ksu005.b {
             });
         }
 
-        reloadData(): void {
+        reloadData(code: string): void {
             const self = this;
             let dataList: Array<ItemModel> = [];
-            let infoItems: Array<ItemModel> = [];
-            let attendanceItems: Array<ItemModel> = [];
-            infoItems.push(new ItemModel('', getText('KSU005_68')));
-            attendanceItems.push(new ItemModel('', getText('KSU005_68')));
             self.$blockui("invisible");
             self.$ajax(Paths.GET_SCHEDULE_TABLE_OUTPUT_SETTING_BY_CID).done((data: Array<IScheduleTableOutputSetting>) => {
                 if(data && data.length > 0){
@@ -356,7 +371,7 @@ module nts.uk.at.view.ksu005.b {
                         dataList.push(new ItemModel(item.code, item.name));
                     });            
                     self.items(dataList);
-                    // self.selectedCode(code);       
+                    self.selectedCode(code);       
                 } else {
                     self.clearData();
                 }                
@@ -411,8 +426,10 @@ module nts.uk.at.view.ksu005.b {
         }
 
         closeDialog(): void {
-            const vm = this;
-            vm.$window.close();
+            const self = this;
+            self.$window.close();
+            // setShare('ksu005b-result', self.exitStatus());
+            // self.currentScreen = nts.uk.ui.windows.sub.modal('/view/ksu/005/a/index.xhtml');
         }
 
         openDialog(): void {
@@ -422,7 +439,10 @@ module nts.uk.at.view.ksu005.b {
             request.copySourceName = self.scheduleTableOutputSetting().name();
 
             setShare('dataShareKSU005b', request);
-            self.currentScreen = nts.uk.ui.windows.sub.modal('/view/ksu/005/c/index.xhtml');
+            self.currentScreen = nts.uk.ui.windows.sub.modal('/view/ksu/005/c/index.xhtml').onClosed(() =>{
+                let newCode = getShared('dataShareKSU005c');
+                self.reloadData(newCode);
+            });
         }
 
         mounted(){
@@ -511,7 +531,8 @@ module nts.uk.at.view.ksu005.b {
 
         workplaceCounterCategories: KnockoutObservableArray<number> = ko.observableArray([]);
         personalCounterCtegories: KnockoutObservableArray<number> = ko.observableArray([]);
-
+        listWkpCounterCategories : KnockoutObservableArray<any> =  ko.observableArray(__viewContext.enums.WorkplaceCounterCategory);
+       
         isEnableCode: KnockoutObservable<boolean> = ko.observable(false);
         constructor(params?: IScheduleTableOutputSetting) {
             const self = this;
@@ -528,6 +549,7 @@ module nts.uk.at.view.ksu005.b {
                 self.personalInfoItems(params.personalInfoItems);
                 self.workplaceCounterCategories(params.workplaceCounterCategories);
                 self.personalCounterCtegories(params.personalInfo);
+               
             }
         }
 
