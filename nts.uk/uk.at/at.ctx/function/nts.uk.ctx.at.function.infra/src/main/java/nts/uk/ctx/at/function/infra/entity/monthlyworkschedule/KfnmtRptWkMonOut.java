@@ -85,7 +85,7 @@ public class KfnmtRptWkMonOut extends UkJpaEntity
 	/** The lst kfnmt rpt mon outtd . */
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "LAYOUT_ID", referencedColumnName = "LAYOUT_ID")
-	private List<KfnmtRptWkMonOutAtd> lstKfnmtRptWkMonOuttds;
+	private List<KfnmtRptWkMonOutAtd> lstKfnmtRptWkMonOutAtds;
 	
 	@Override
 	protected Object getKey() {
@@ -104,7 +104,7 @@ public class KfnmtRptWkMonOut extends UkJpaEntity
 
 	@Override
 	public void setLstDisplayedAttendance(List<MonthlyAttendanceItemsDisplay> lstDisplayAttendance) {
-		this.lstKfnmtRptWkMonOuttds = lstDisplayAttendance.stream().map(item -> {
+		this.lstKfnmtRptWkMonOutAtds = lstDisplayAttendance.stream().map(item -> {
 			KfnmtRptWkMonOutAtdPK kfnmtRptWkMonOutAtdPK = new KfnmtRptWkMonOutAtdPK();
 			kfnmtRptWkMonOutAtdPK.setOrderNo(item.getOrderNo());
 			kfnmtRptWkMonOutAtdPK.setLayoutID(this.layoutID);
@@ -154,7 +154,7 @@ public class KfnmtRptWkMonOut extends UkJpaEntity
 	@Override
 	public List<MonthlyAttendanceItemsDisplay> getLstDisplayedAttendance() {
 		List<MonthlyAttendanceItemsDisplay> monthlyAttendanceItemsDisplays = new ArrayList<>();
-		monthlyAttendanceItemsDisplays = this.lstKfnmtRptWkMonOuttds.stream()
+		monthlyAttendanceItemsDisplays = this.lstKfnmtRptWkMonOutAtds.stream()
 				.map(item -> {
 					MonthlyAttendanceItemsDisplay monthlyAttendanceItemsDisplay = new MonthlyAttendanceItemsDisplay();
 					monthlyAttendanceItemsDisplay.setAttendanceDisplay(item.getAtdDisplay());

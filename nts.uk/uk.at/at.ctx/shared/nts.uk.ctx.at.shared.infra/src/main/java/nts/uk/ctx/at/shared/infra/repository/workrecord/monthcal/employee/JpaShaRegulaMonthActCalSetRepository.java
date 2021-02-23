@@ -13,7 +13,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.sha.ShaRegulaMonthActCalSet;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.sha.ShaRegulaMonthActCalSetRepo;
-import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.employee.KrcstShaRegMCalSet;
+import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.employee.KrcmtCalcMSetRegSya;
 import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.employee.KrcstShaRegMCalSetPK;
 
 /**
@@ -22,7 +22,7 @@ import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.employee.KrcstShaRe
 @Stateless
 public class JpaShaRegulaMonthActCalSetRepository extends JpaRepository implements ShaRegulaMonthActCalSetRepo {
 
-	private static final String SELECT_BY_CID = "SELECT c FROM KrcstShaRegMCalSet c"
+	private static final String SELECT_BY_CID = "SELECT c FROM KrcmtCalcMSetRegSya c"
 			+ " WHERE c.krcstShaRegMCalSetPK.cid = :cid";
 	
 	/*
@@ -35,7 +35,7 @@ public class JpaShaRegulaMonthActCalSetRepository extends JpaRepository implemen
 	@Override
 	public void add(ShaRegulaMonthActCalSet domain) {
 		// Create new entity
-		KrcstShaRegMCalSet entity = new KrcstShaRegMCalSet();
+		KrcmtCalcMSetRegSya entity = new KrcmtCalcMSetRegSya();
 
 		// Transfer data
 		entity.transfer(domain);
@@ -60,7 +60,7 @@ public class JpaShaRegulaMonthActCalSetRepository extends JpaRepository implemen
 		KrcstShaRegMCalSetPK pk = new KrcstShaRegMCalSetPK(domain.getComId(),
 				domain.getEmployeeId());
 		
-		this.queryProxy().find(pk, KrcstShaRegMCalSet.class).ifPresent(e -> {
+		this.queryProxy().find(pk, KrcmtCalcMSetRegSya.class).ifPresent(e -> {
 			
 			e.transfer(domain);
 			
@@ -81,7 +81,7 @@ public class JpaShaRegulaMonthActCalSetRepository extends JpaRepository implemen
 		// Get info
 		KrcstShaRegMCalSetPK pk = new KrcstShaRegMCalSetPK(cid, sid);
 		
-		return this.queryProxy().find(pk, KrcstShaRegMCalSet.class).map(c -> toDomain(c));
+		return this.queryProxy().find(pk, KrcmtCalcMSetRegSya.class).map(c -> toDomain(c));
 	}
 
 	/*
@@ -93,13 +93,13 @@ public class JpaShaRegulaMonthActCalSetRepository extends JpaRepository implemen
 	 */
 	@Override
 	public void remove(String cid, String sId) {
-		Optional<KrcstShaRegMCalSet> optEntity = this.queryProxy().find(new KrcstShaRegMCalSetPK(cid, sId),
-				KrcstShaRegMCalSet.class);
-		KrcstShaRegMCalSet entity = optEntity.get();
+		Optional<KrcmtCalcMSetRegSya> optEntity = this.queryProxy().find(new KrcstShaRegMCalSetPK(cid, sId),
+				KrcmtCalcMSetRegSya.class);
+		KrcmtCalcMSetRegSya entity = optEntity.get();
 		this.commandProxy().remove(entity);
 	}
 
-	private ShaRegulaMonthActCalSet toDomain (KrcstShaRegMCalSet e) {
+	private ShaRegulaMonthActCalSet toDomain (KrcmtCalcMSetRegSya e) {
 		
 		return ShaRegulaMonthActCalSet.of(e.getKrcstShaRegMCalSetPK().getSid(), 
 				e.getKrcstShaRegMCalSetPK().getCid(), 
@@ -109,7 +109,7 @@ public class JpaShaRegulaMonthActCalSetRepository extends JpaRepository implemen
 
 	@Override
 	public List<ShaRegulaMonthActCalSet> findRegulaMonthActCalSetByCid(String cid) {
-		List<KrcstShaRegMCalSet> entitys = this.queryProxy().query(SELECT_BY_CID, KrcstShaRegMCalSet.class)
+		List<KrcmtCalcMSetRegSya> entitys = this.queryProxy().query(SELECT_BY_CID, KrcmtCalcMSetRegSya.class)
 				.setParameter("cid", cid).getList();
 		return entitys.stream().map(m -> {
 			return toDomain(m);

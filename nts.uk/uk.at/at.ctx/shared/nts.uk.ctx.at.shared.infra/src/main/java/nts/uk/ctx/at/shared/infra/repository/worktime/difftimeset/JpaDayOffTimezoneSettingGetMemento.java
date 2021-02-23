@@ -9,14 +9,14 @@ import nts.uk.ctx.at.shared.dom.worktime.common.BooleanGetAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
-import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtDiffTimeHolSet;
+import nts.uk.ctx.at.shared.infra.entity.worktime.difftimeset.KshmtWtDifHolTs;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 public class JpaDayOffTimezoneSettingGetMemento implements HDWorkTimeSheetSettingGetMemento {
 
-	private KshmtDiffTimeHolSet entity;
+	private KshmtWtDifHolTs entity;
 
-	public JpaDayOffTimezoneSettingGetMemento(KshmtDiffTimeHolSet item) {
+	public JpaDayOffTimezoneSettingGetMemento(KshmtWtDifHolTs item) {
 		this.entity = item;
 	}
 

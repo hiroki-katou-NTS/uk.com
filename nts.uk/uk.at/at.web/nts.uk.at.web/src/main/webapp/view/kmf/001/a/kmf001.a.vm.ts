@@ -68,7 +68,12 @@ module nts.uk.at.view.kmf001.a.viewmodel {
        public openKMK004I(): void {
             nts.uk.request.jump("/view/kmf/004/i/index.xhtml", {});
         } 
-        
+       
+       public openKMF003(): void {
+           nts.uk.request.jump("/view/kmf/003/a/index.xhtml", {});
+       }
+
+
         // Export Excel
         public exportExcel() {
             nts.uk.at.view.kmf001.a.service.exportExcel().done(function(data) {

@@ -1315,7 +1315,7 @@ public class CommonOvertimeHolidayImpl implements CommonOvertimeHoliday {
 				date,
 				workTypeCode.orElse(null),
 				workTimeCode.orElse(null),
-				timeZones,
+				Collections.emptyMap(), //timeZones,
 				breakTimes.stream().map(x -> x.getStartTime().v()).collect(Collectors.toList()),
 				breakTimes.stream().map(x -> x.getEndTime().v()).collect(Collectors.toList()),
 				Collections.emptyList(),

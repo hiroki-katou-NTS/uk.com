@@ -10,8 +10,8 @@ import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.mutilmonth.AverageMonth;
-import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtCheckCondition;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtAlstPtnDeftm;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * アラームリストのパターン設定 既定期間(基準月)
@@ -22,7 +22,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "KFNMT_ALST_PTN_DEFTMBSMON")
 @NoArgsConstructor
-public class KfnmtAlstPtnDeftmbsmon extends UkJpaEntity implements Serializable{
+public class KfnmtAlstPtnDeftmbsmon extends ContractUkJpaEntity implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -40,7 +40,7 @@ public class KfnmtAlstPtnDeftmbsmon extends UkJpaEntity implements Serializable{
 	
 	
 	@OneToOne(mappedBy = "alstPtnDeftmbsmon", orphanRemoval = true)
-	public KfnmtCheckCondition checkCondition;
+	public KfnmtAlstPtnDeftm checkCondition;
 	
 	public void fromEntity(KfnmtAlstPtnDeftmbsmon newEntity) {
 		this.strMonth = newEntity.strMonth;

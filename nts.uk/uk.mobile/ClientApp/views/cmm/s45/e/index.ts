@@ -123,7 +123,7 @@ export class CmmS45EComponent extends Vue {
 
 const servicePath = {
     getAppInfoByAppID: 'at/request/application/getAppInfoForRemandByAppId',
-    remand: 'at/request/application/remandapp'
+    remand: 'at/request/app/smartphone/remandapp'
 };
 
 interface IApproverInfo {

@@ -188,23 +188,26 @@ module nts.uk.at.view.kaf012.a.viewmodel {
             vm.applyTimeData().forEach((row : DataModel) => {
                 if (row.display() && row.timeZones.filter(i => !!i.startTime() || i.endTime()).length > 0) {
                     if (row.appTimeType < 4) {
-                        details.push({
-                            appTimeType: row.appTimeType,
-                            timeZones: [{
-                                workNo: row.appTimeType == AppTimeType.ATWORK || row.appTimeType == AppTimeType.OFFWORK ? 1 : 2,
-                                startTime: row.appTimeType == AppTimeType.ATWORK || row.appTimeType == AppTimeType.ATWORK2 ? row.timeZones[0].startTime() : null,
-                                endTime: row.appTimeType == AppTimeType.ATWORK || row.appTimeType == AppTimeType.ATWORK2 ? null : row.timeZones[0].startTime(),
-                            }],
-                            applyTime: {
-                                substituteAppTime: vm.leaveType() == LeaveType.SUBSTITUTE || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[0].substituteAppTime() : 0,
-                                annualAppTime: vm.leaveType() == LeaveType.ANNUAL || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[0].annualAppTime() : 0,
-                                childCareAppTime: vm.leaveType() == LeaveType.CHILD_NURSING || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[0].childCareAppTime() : 0,
-                                careAppTime: vm.leaveType() == LeaveType.NURSING || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[0].careAppTime() : 0,
-                                super60AppTime: vm.leaveType() == LeaveType.SUPER_60H || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[0].super60AppTime() : 0,
-                                specialAppTime: vm.leaveType() == LeaveType.SPECIAL || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[0].specialAppTime() : 0,
-                                specialLeaveFrameNo: vm.leaveType() == LeaveType.SPECIAL || (vm.leaveType() == LeaveType.COMBINATION && row.applyTime[0].specialAppTime() > 0) ? vm.specialLeaveFrame() : null,
-                            }
-                        });
+                        const applyTime = {
+                            substituteAppTime: vm.leaveType() == LeaveType.SUBSTITUTE || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[0].substituteAppTime() : 0,
+                            annualAppTime: vm.leaveType() == LeaveType.ANNUAL || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[0].annualAppTime() : 0,
+                            childCareAppTime: vm.leaveType() == LeaveType.CHILD_NURSING || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[0].childCareAppTime() : 0,
+                            careAppTime: vm.leaveType() == LeaveType.NURSING || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[0].careAppTime() : 0,
+                            super60AppTime: vm.leaveType() == LeaveType.SUPER_60H || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[0].super60AppTime() : 0,
+                            specialAppTime: vm.leaveType() == LeaveType.SPECIAL || vm.leaveType() == LeaveType.COMBINATION ? row.applyTime[0].specialAppTime() : 0,
+                            specialLeaveFrameNo: vm.leaveType() == LeaveType.SPECIAL || (vm.leaveType() == LeaveType.COMBINATION && row.applyTime[0].specialAppTime() > 0) ? vm.specialLeaveFrame() : null,
+                        };
+                        if (applyTime.substituteAppTime > 0 || applyTime.annualAppTime > 0 || applyTime.childCareAppTime > 0 || applyTime.careAppTime > 0 || applyTime.super60AppTime > 0 || applyTime.specialAppTime > 0) {
+                            details.push({
+                                appTimeType: row.appTimeType,
+                                timeZones: [{
+                                    workNo: row.appTimeType == AppTimeType.ATWORK || row.appTimeType == AppTimeType.OFFWORK ? 1 : 2,
+                                    startTime: row.appTimeType == AppTimeType.ATWORK || row.appTimeType == AppTimeType.ATWORK2 ? row.timeZones[0].startTime() : null,
+                                    endTime: row.appTimeType == AppTimeType.ATWORK || row.appTimeType == AppTimeType.ATWORK2 ? null : row.timeZones[0].startTime(),
+                                }],
+                                applyTime: applyTime
+                            });
+                        }
                     } else {
                         const privateTimeZones = row.timeZones.filter(z => z.appTimeType() == AppTimeType.PRIVATE && z.display() && (!!z.startTime() || !!z.endTime()));
                         if (privateTimeZones.length > 0) {

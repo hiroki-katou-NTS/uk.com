@@ -3,12 +3,12 @@ package nts.uk.ctx.at.shared.infra.repository.ot.autocalsetting.use;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.usecls.ApplyAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.use.UseUnitAutoCalSettingSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.use.KshmtAutoUseUnitSet;
+import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.use.KrcmtCalcSetUnitSet;
 
 public class JpaUseUnitAutoCalSettingSetMemento implements UseUnitAutoCalSettingSetMemento {
 
 	/** The entity. */
-	private KshmtAutoUseUnitSet entity;
+	private KrcmtCalcSetUnitSet entity;
 
 	/**
 	 * Instantiates a new jpa wkp auto cal setting set memento.
@@ -16,7 +16,7 @@ public class JpaUseUnitAutoCalSettingSetMemento implements UseUnitAutoCalSetting
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaUseUnitAutoCalSettingSetMemento(KshmtAutoUseUnitSet entity) {
+	public JpaUseUnitAutoCalSettingSetMemento(KrcmtCalcSetUnitSet entity) {
 		this.entity = entity;
 	}
 
