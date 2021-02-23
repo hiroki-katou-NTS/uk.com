@@ -4,14 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.office.dom.favorite.FavoriteSpecify;
 import nts.uk.ctx.office.dom.favorite.FavoriteSpecifyRepository;
 import nts.uk.ctx.office.infra.entity.favorite.FavoriteSpecifyEntity;
-import nts.uk.ctx.office.infra.entity.favorite.FavoriteSpecifyEntityDetail;
 import nts.uk.ctx.office.infra.entity.favorite.FavoriteSpecifyEntityPK;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -42,6 +40,7 @@ public class FavoriteSpecifyRepositoryImpl extends JpaRepository implements Favo
 	@Override
 	public void insert(FavoriteSpecify domain) {
 		FavoriteSpecifyEntity entity = FavoriteSpecifyRepositoryImpl.toEntity(domain);
+		entity.setVersion(0);
 		entity.setContractCd(AppContexts.user().contractCode());
 		this.commandProxy().insert(entity);
 	}
@@ -50,6 +49,7 @@ public class FavoriteSpecifyRepositoryImpl extends JpaRepository implements Favo
 	public void insertAll(List<FavoriteSpecify> domains) {
 		List<FavoriteSpecifyEntity> entities = domains.stream().map(domain -> {
 			FavoriteSpecifyEntity entity = FavoriteSpecifyRepositoryImpl.toEntity(domain);
+			entity.setVersion(0);
 			entity.setContractCd(AppContexts.user().contractCode());
 			return entity;
 		}).collect(Collectors.toList());
@@ -63,7 +63,6 @@ public class FavoriteSpecifyRepositoryImpl extends JpaRepository implements Favo
 	public void updateAll(List<FavoriteSpecify> domains) {
 		List<String> creatorIds = new ArrayList<>();
 		List<GeneralDateTime> inputDates = new ArrayList<>();
-		List<FavoriteSpecifyEntityDetail> listDelDetail = new ArrayList<>();
 		
 		//all of entity from client
 		List<FavoriteSpecifyEntity> entities = domains.stream().map(domain -> {
@@ -104,7 +103,8 @@ public class FavoriteSpecifyRepositoryImpl extends JpaRepository implements Favo
 					if(entity.isPresent()){
 						this.commandProxy().removeAll(oldEntity.getListFavoriteSpecifyEntityDetail());
 						this.getEntityManager().flush();
-//						listDelDetail.addAll(oldEntity.getListFavoriteSpecifyEntityDetail());
+						oldEntity.setListFavoriteSpecifyEntityDetail(entity.get().getListFavoriteSpecifyEntityDetail());
+						oldEntity.setVersion(entity.get().getVersion() + 1);
 						oldEntity.setFavoriteName(entity.get().getFavoriteName());
 						oldEntity.setOrder(entity.get().getOrder());
 						oldEntity.setTargetSelection(entity.get().getTargetSelection());
@@ -114,11 +114,8 @@ public class FavoriteSpecifyRepositoryImpl extends JpaRepository implements Favo
 				})
 				.collect(Collectors.toList());
 
-		//remove favorite detail
-//		this.commandProxy().removeAll(listDelDetail);
-//		this.getEntityManager().flush();
 		// update all
-		this.commandProxy().updateAllWithCharPrimaryKey(updateEntities);
+		this.commandProxy().updateAll(updateEntities);
 	}
 
 	@Override

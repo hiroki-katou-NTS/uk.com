@@ -18,12 +18,12 @@ public class ActivityStatusRepositoryImpl extends JpaRepository implements Activ
 	private static final String SELECT_BY_DATE_AND_IDS = "SELECT a From ActivityStatusEntity a WHERE a.pk.sid IN :listId and a.date =:date";
 	
 	private static final String SELECT_BY_DATE_AND_ID = "SELECT a From ActivityStatusEntity a WHERE a.pk.sid = :sId and a.date = :date";
-	
-	private static final String SELECT_BY_ID = "SELECT a From ActivityStatusEntity a WHERE a.pk.sid = :sId";
+
 	@Override
 	public void insert(ActivityStatus domain) {
 		ActivityStatusEntity entity = new ActivityStatusEntity();
 		domain.setMemento(entity);
+		entity.setVersion(0);
 		entity.setContractCd(AppContexts.user().contractCode());
 		this.commandProxy().insert(entity);
 	}
@@ -35,10 +35,12 @@ public class ActivityStatusRepositoryImpl extends JpaRepository implements Activ
 	    Optional<ActivityStatusEntity> oldEntity = this.queryProxy().find(entity.getPk(), ActivityStatusEntity.class);
 	    if(oldEntity.isPresent()) {
 	    	ActivityStatusEntity updateEntity = oldEntity.get();
+	    	updateEntity.setVersion(updateEntity.getVersion() + 1);
 	    	updateEntity.setActivity(entity.getActivity());
 	    	updateEntity.setDate(entity.getDate());
 	    	this.commandProxy().update(updateEntity);
 	    } else {
+	    	entity.setVersion(0);
 	    	entity.setContractCd(AppContexts.user().contractCode());
 			this.commandProxy().insert(entity);
 	    }
@@ -59,12 +61,4 @@ public class ActivityStatusRepositoryImpl extends JpaRepository implements Activ
 				.setParameter("date", date)
 				.getSingle(ActivityStatus::createFromMemento);
 	}
-	
-	private  Optional<ActivityStatus> getBySid(String sid) {
-		return this.queryProxy().query(SELECT_BY_ID, ActivityStatusEntity.class)
-				.setParameter("sId", sid)
-				.getSingle(ActivityStatus::createFromMemento);
-	}
-
-
 }

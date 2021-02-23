@@ -1,7 +1,6 @@
 package nts.uk.ctx.office.infra.entity.favorite;
 
 import java.io.Serializable;
-
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -10,7 +9,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
-import javax.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -38,7 +36,6 @@ public class FavoriteSpecifyEntityDetail extends UkJpaEntity implements Serializ
 	private static final long serialVersionUID = 1L;
 
 	// column 排他バージョン
-	@Version
 	@Column(name = "EXCLUS_VER")
 	private long version;
 
@@ -68,6 +65,7 @@ public class FavoriteSpecifyEntityDetail extends UkJpaEntity implements Serializ
 		this.pk.setCreatorId(creatorId);
 		this.pk.setInputDate(inputDate);
 		this.pk.setTargetSelection(targetSelection);
+		this.setVersion(0);
 		this.setContractCd(AppContexts.user().contractCode());
 	}
 }

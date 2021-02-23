@@ -7,9 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import nts.arc.enums.EnumAdaptor;
@@ -34,7 +32,6 @@ public class EmojiStateMngEntity extends UkJpaEntity
 	*/
 	private static final long serialVersionUID = 1L;
 	// column 排他バージョン
-	@Version
 	@Column(name = "EXCLUS_VER")
 	private long version;
 

@@ -33,6 +33,7 @@ public class GoOutEmployeeInformationRepositoryImpl extends JpaRepository
 	@Override
 	public void insert(GoOutEmployeeInformation domain) {
 		GoOutEmployeeInformationEntity entity = GoOutEmployeeInformationRepositoryImpl.toEntity(domain);
+		entity.setVersion(0);
 		entity.setContractCd(AppContexts.user().contractCode());
 		this.commandProxy().insert(entity);
 	}
@@ -43,6 +44,7 @@ public class GoOutEmployeeInformationRepositoryImpl extends JpaRepository
 		Optional<GoOutEmployeeInformationEntity> oldEntity = this.queryProxy().find(entity.getPk(),
 				GoOutEmployeeInformationEntity.class);
 		oldEntity.ifPresent(updateEntity -> {
+			updateEntity.setVersion(updateEntity.getVersion() + 1);
 			updateEntity.setGoOutTime(entity.getGoOutTime());
 			updateEntity.setComebackTime(entity.getComebackTime());
 			updateEntity.setGoOutReason(entity.getGoOutReason());

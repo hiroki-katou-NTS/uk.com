@@ -1,9 +1,7 @@
 package nts.uk.ctx.health.infra.api.repository.emoji.manage;
 
 import java.util.Optional;
-
 import javax.ejb.Stateless;
-
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.health.dom.emoji.manage.EmojiStateMng;
 import nts.uk.ctx.health.dom.emoji.manage.EmojiStateMngRepository;
@@ -27,6 +25,7 @@ public class EmojiStateMngRepositoryImpl extends JpaRepository implements EmojiS
 	@Override
 	public void insert(EmojiStateMng domain) {
 		EmojiStateMngEntity entity = EmojiStateMngRepositoryImpl.toEntity(domain);
+		entity.setVersion(0);
 		entity.setContractCd(AppContexts.user().contractCode());
 		this.commandProxy().insert(entity);
 
@@ -37,6 +36,7 @@ public class EmojiStateMngRepositoryImpl extends JpaRepository implements EmojiS
 		EmojiStateMngEntity entity = EmojiStateMngRepositoryImpl.toEntity(domain);
 		Optional<EmojiStateMngEntity> oldEntity = this.queryProxy().find(entity.getPk(), EmojiStateMngEntity.class);
 		oldEntity.ifPresent(updateEntity -> {
+			updateEntity.setVersion(updateEntity.getVersion() + 1);
 			updateEntity.setManageEmojiState(entity.getManageEmojiState());
 			updateEntity.setWearyMoodName(entity.getWearyMoodName());
 			updateEntity.setSadMoodName(entity.getSadMoodName());

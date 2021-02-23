@@ -30,7 +30,7 @@ public class SpecifyAuthInquiryRepositoryImpl extends JpaRepository implements S
 	
 	@Override
 	public void insert(SpecifyAuthInquiry domain) {
-		List<SpecifyAuthInquiryEntity> entities = this.toEntity(domain);
+		List<SpecifyAuthInquiryEntity> entities = this.toNewListEntity(domain);
 		this.commandProxy().insertAll(entities);
 	}
 
@@ -68,13 +68,14 @@ public class SpecifyAuthInquiryRepositoryImpl extends JpaRepository implements S
 		return this.toListDomain(entities);
 	}
 	
-	private List<SpecifyAuthInquiryEntity> toEntity(SpecifyAuthInquiry domain) {
+	private List<SpecifyAuthInquiryEntity> toNewListEntity(SpecifyAuthInquiry domain) {
 		return domain.getPositionIdSeen().stream().map(mapper -> {
 			SpecifyAuthInquiryEntity entity = new SpecifyAuthInquiryEntity();
 			SpecifyAuthInquiryEntityPK pk = new SpecifyAuthInquiryEntityPK();
 			pk.setCid(AppContexts.user().companyId());
 			pk.setEmploymentRoleId(domain.getEmploymentRoleId());
 			pk.setPositionIdSeen(mapper);
+			entity.setVersion(0);
 			entity.setContractCd(AppContexts.user().contractCode());
 			entity.setPk(pk);
 			return entity;

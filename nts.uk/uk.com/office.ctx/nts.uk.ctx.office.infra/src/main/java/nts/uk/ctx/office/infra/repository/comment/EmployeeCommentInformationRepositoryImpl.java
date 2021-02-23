@@ -42,6 +42,7 @@ public class EmployeeCommentInformationRepositoryImpl extends JpaRepository
 	@Override
 	public void insert(EmployeeCommentInformation domain) {
 		EmployeeCommentInformationEntity entity = EmployeeCommentInformationRepositoryImpl.toEntity(domain);
+		entity.setVersion(0);
 		entity.setContractCd(AppContexts.user().contractCode());
 		this.commandProxy().insert(entity);
 	}
@@ -52,6 +53,7 @@ public class EmployeeCommentInformationRepositoryImpl extends JpaRepository
 		Optional<EmployeeCommentInformationEntity> oldEntity = this.queryProxy().find(entity.getPk(),
 				EmployeeCommentInformationEntity.class);
 		oldEntity.ifPresent(updateEntity -> {
+			updateEntity.setVersion(updateEntity.getVersion() + 1);
 			updateEntity.setComment(entity.getComment());
 			this.commandProxy().update(updateEntity);
 		});
