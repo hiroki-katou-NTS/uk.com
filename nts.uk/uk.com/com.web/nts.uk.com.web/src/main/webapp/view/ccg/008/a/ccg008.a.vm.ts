@@ -118,7 +118,6 @@ module nts.uk.com.view.ccg008.a.screenModel {
 		paramIframe1: KnockoutObservable<DisplayInTopPage> = ko.observable();
 		topPageSetting: any;
 
-		isShowClosure: KnockoutObservable<boolean> = ko.observable(false);
 		isShowSwitch: KnockoutObservable<boolean> = ko.observable(false);
 		isShowButtonRefresh: KnockoutObservable<boolean> = ko.observable(false);
 		isShowButtonSetting: KnockoutObservable<boolean> = ko.observable(false);
@@ -133,6 +132,13 @@ module nts.uk.com.view.ccg008.a.screenModel {
 		widgetRight: KnockoutObservableArray<WIDGET> = ko.observableArray([]);
 
 		classLayoutName!: KnockoutComputed<string>;
+    startDateInClosure: KnockoutObservable<string> = ko.observable(''); 
+    startDate : KnockoutObservable<string> = ko.observable('');
+    endDate: KnockoutObservable<string> = ko.observable('');
+
+    itemLayoutA1_7 = ko.computed(() => {
+      return this.$i18n('CCG008_17', [`${this.startDate()}`, `${this.endDate()}`]);
+    });
 
 		reload: number | null = null;
 
@@ -166,6 +172,15 @@ module nts.uk.com.view.ccg008.a.screenModel {
 							})
 							.then((cache: any) => vm.$window.shared('cache', cache));
 
+              const dataProcess = currentOrNextMonth && currentOrNextMonth == 1 ? parseInt(vm.startDateInClosure()) : parseInt(vm.startDateInClosure()) + 1
+              const params: any = {
+                closureId:  closureId,
+                processDate : dataProcess
+              };
+              vm.$ajax("com", API.getClosure, params).then((data:any) => {
+                vm.startDate(moment.utc(data.startDate).format('MM/DD'));
+                vm.endDate(moment.utc(data.endDate).format('MM/DD'));
+              })
 						vm.callApiTopPage();
 					}
 				});
@@ -197,14 +212,15 @@ module nts.uk.com.view.ccg008.a.screenModel {
 			const { isEmployee } = vm.$user;
 
 			const GLOGIN = vm.$ajax("com", API.getLoginUser);
-			const GCLOSURE = vm.$ajax('com', API.getClosure);
 
 			const GCAHCE = isEmployee ? vm.$ajax("com", API.getCache) : $.Deferred().resolve(null);
 			const GSETTING = isEmployee ? vm.$ajax("com", API.getSetting) : $.Deferred().resolve(null);
 
+      const { value: transferData } = __viewContext.transferred || { value: undefined };
+      const { screen, topPageCode } = transferData || { screen: 'other', topPageCode: '' };
 			vm.$blockui('grayout')
-				.then(() => $.when(GLOGIN, GSETTING, GCAHCE, GCLOSURE))
-				.then((user, setting, cache, closure) => {
+				.then(() => $.when(GLOGIN, GSETTING, GCAHCE))
+				.then((user, setting, cache) => {
 					if (setting) {
 						if (setting.reloadInterval) {
 							vm.reloadInterval(setting.reloadInterval);
@@ -218,40 +234,68 @@ module nts.uk.com.view.ccg008.a.screenModel {
 					}
 
 					//var fromScreen = "login"; 
-					if (cache) {
-						vm.$window
-							.storage("cache", cache)
-							.then(() => {
-								vm.$window
-									.storage('cache')
-									.then((obj: any) => {
-										if (obj) {
-											const { switchingDate } = vm.topPageSetting;
-											const endDate = moment.utc(obj.endDate, D_FORMAT).add(switchingDate, 'day').startOf('day');
+            if (cache) {
+              if(screen == 'login') {
 
-											if (endDate.isBefore(moment().startOf('day'))) {
-												vm.currentOrNextMonth(2);
-
-												obj.currentOrNextMonth = 2;
-											} else {
-												vm.currentOrNextMonth(1);
-											}
-
-											vm.closureId(obj.closureId);
-
-											vm.$window.shared('cache', obj);
-										} else {
-											vm.closureId(1);
-											vm.currentOrNextMonth(null);
-										}
-									});
-							});
-					}
-
-					vm.dataToppage(null);
-
-					// 会社の締めを取得する - Lấy closure company
-					vm.lstClosure(closure);
+                vm.$window
+                  .storage("cache", cache)
+                  .then(() => {
+                    vm.$window
+                      .storage('cache')
+                      .then((obj: any) => {
+                        if (obj) {
+                          const { switchingDate } = vm.topPageSetting;
+                          const endDate = moment.utc(obj.endDate, D_FORMAT).add(switchingDate, 'day').startOf('day');
+    
+                          if (endDate.isBefore(moment().startOf('day'))) {
+                            vm.currentOrNextMonth(2);
+    
+                            obj.currentOrNextMonth = 2;
+                          } else {
+                            vm.currentOrNextMonth(1);
+                          }
+    
+                          vm.closureId(obj.closureId);
+    
+                          vm.$window.shared('cache', obj);
+                        } else {
+                          vm.closureId(1);
+                          vm.currentOrNextMonth(null);
+                        }
+                      });
+                      vm.dataToppage(null);
+                      vm.startDateInClosure(cache.startDate);
+                      const dataProcess = vm.currentOrNextMonth() && vm.currentOrNextMonth() === 1 ? parseInt(cache.startDate) : parseInt(cache.startDate) + 1
+                      const params: any = {
+                        closureId:  cache.closureId,
+                        processDate : dataProcess
+                      };
+                      vm.$ajax("com", API.getClosure, params).then((data:any) => {
+                        vm.startDate(moment.utc(data.startDate).format('MM/DD'));
+                        vm.endDate(moment.utc(data.endDate).format('MM/DD'));
+                      })
+                  });
+                } else {
+                    vm.$window.storage("cache").then((obj: any) => {
+                      console.log(obj);
+                      vm.dataToppage(null);
+                      vm.startDateInClosure(cache.startDate);
+                      vm.closureId(obj.closureId);
+                      vm.currentOrNextMonth(obj.currentOrNextMonth);
+                      const dataProcess = vm.currentOrNextMonth() && vm.currentOrNextMonth() == 1 ? parseInt(cache.startDate) : parseInt(cache.startDate) + 1
+                      const params: any = {
+                        closureId:  cache.closureId,
+                        processDate : dataProcess
+                      };
+                      vm.$ajax("com", API.getClosure, params).then((data:any) => {
+                        vm.startDate(moment.utc(data.startDate).format('MM/DD'));
+                        vm.endDate(moment.utc(data.endDate).format('MM/DD'));
+                      })
+                 })
+            }
+          } 
+          
+					
 				})
 				.always(() => vm.$blockui("clear"));
 
@@ -362,10 +406,7 @@ module nts.uk.com.view.ccg008.a.screenModel {
 
 				if (layout2) {
 					const showSwitch = _.filter(layout2, ({ widgetType }) => [0, 1, 2, 3, 4].indexOf(widgetType) > -1);
-					const showClosure = _.filter(layout2, ({ widgetType }) => widgetType === 1);
-
 					vm.isShowSwitch(!!showSwitch.length);
-					vm.isShowClosure(!!showClosure.length);
 				}
 
 				if (layout3) {
@@ -377,10 +418,6 @@ module nts.uk.com.view.ccg008.a.screenModel {
 						vm.isShowSwitch(!!showSwitch.length);
 					}
 
-					// not overwrite value of layout2
-					if (ko.unwrap<boolean>(vm.isShowClosure) === false) {
-						vm.isShowClosure(!!showClosure.length);
-					}
 				}
 			};
 

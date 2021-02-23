@@ -92,7 +92,7 @@ module nts.uk.com.view.ccg008.a.Layout2ComponentViewModel {
           break;
         case 1:
           url = "/view/ktg/001/a/ktg001.a.component.js";
-          name = "kgt-001-a";
+          name = "ktg-001-a";
           break;
         case 2:
           url = "/view/ktg/004/a/ktg004.a.component.js";
