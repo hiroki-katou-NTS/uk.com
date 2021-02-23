@@ -124,7 +124,7 @@ module a5 {
             input.lstEnum = self.enumSetting;
             if (self.isFlex()) {
                 //休憩中に退勤した場合の休憩時間の計算方法
-                input.calcMethod = self.mainSettingModel.flexWorkSetting.restSetting.commonRestSetting.calculateMethod() ?? 0;
+                input.calcMethod = self.mainSettingModel.flexWorkSetting.restSetting.commonRestSetting.calculateMethod();
                 //流動休憩設定
                 input.useStamp = self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowRestSetting.useStamp();
                 //外出の計上方法
@@ -139,7 +139,7 @@ module a5 {
                 input.roundType = self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.roundingBreakMultipleWork.rounding();
             }
             if (self.isFlow()) {
-                input.calcMethod = self.mainSettingModel.flowWorkSetting.restSetting.commonRestSetting.calculateMethod() ?? 0;
+                input.calcMethod = self.mainSettingModel.flowWorkSetting.restSetting.commonRestSetting.calculateMethod();
                 input.useStamp = self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowRestSetting.useStamp();
                 input.useStampCalcMethod = self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowRestSetting.useStampCalcMethod();
                 input.timeManagerSetAtr = self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowRestSetting.timeManagerSetAtr();
@@ -454,9 +454,9 @@ module a5 {
                         //休憩として扱う場合の端数処理
                         roundType: self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.roundingBreakMultipleWork.rounding(),
                         //休憩中に退勤した場合の休憩時間の計算方法
-                        calcMethod: self.mainSettingModel.flowWorkSetting.restSetting.commonRestSetting.calculateMethod() ?? 0,
+                        calcMethod: self.mainSettingModel.flowWorkSetting.restSetting.commonRestSetting.calculateMethod(),
                         //固定の場合の実績の休憩計算方法
-                        fixedCalcMethod: self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateMethod() ?? 0,
+                        fixedCalcMethod: self.mainSettingModel.flowWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateMethod(),
                         //私用外出の計上方法
                         usePrivateGoOutRest: self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromStamp.usePrivateGoOutRest(),
                         //組合外出の計上方法
@@ -471,8 +471,8 @@ module a5 {
                         useRest: self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.usePluralWorkRestTime() ? 1 : 0,
                         roundUnit: self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.roundingBreakMultipleWork.roundingTime(),
                         roundType: self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.roundingBreakMultipleWork.rounding(),
-                        fixedCalcMethod: self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateMethod() ?? 0,
-                        calcMethod: self.mainSettingModel.flexWorkSetting.restSetting.commonRestSetting.calculateMethod() ?? 0,
+                        fixedCalcMethod: self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateMethod(),
+                        calcMethod: self.mainSettingModel.flexWorkSetting.restSetting.commonRestSetting.calculateMethod(),
                         usePrivateGoOutRest: self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromStamp.usePrivateGoOutRest(),
                         useAssoGoOutRest: self.mainSettingModel.flexWorkSetting.restSetting.flowRestSetting.flowFixedRestSetting.calculateFromStamp.useAssoGoOutRest()
                     }
@@ -509,13 +509,13 @@ module a5 {
                         workForm: EnumWorkForm.REGULAR,
                         settingMethod: SettingMethod.DIFFTIME,
                         //休憩中に退勤した場合の休憩時間の計算方法
-                        calcMethod: self.mainSettingModel.fixedWorkSetting.commonRestSet.calculateMethod() ?? 0
+                        calcMethod: self.mainSettingModel.fixedWorkSetting.commonRestSet.calculateMethod()
                     }
                 } else {//fixed
                     dataFixedDiff = {
                         workForm: EnumWorkForm.REGULAR,
                         settingMethod: SettingMethod.FIXED,
-                        calcMethod: self.mainSettingModel.diffWorkSetting.restSet.commonRestSet.calculateMethod() ?? 0
+                        calcMethod: self.mainSettingModel.diffWorkSetting.restSet.commonRestSet.calculateMethod()
                     }
                 }
                 nts.uk.ui.windows.setShared('KMK003_DIALOG_G_INPUT_DATA', dataFixedDiff);

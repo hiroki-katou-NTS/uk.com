@@ -77,8 +77,8 @@ module nts.uk.at.view.kmk003.a {
 
                 toDto(): DesignatedTimeDto {
                     var dataDTO: DesignatedTimeDto = {
-                        oneDayTime: this.oneDayTime() ?? 0,
-                        halfDayTime: this.halfDayTime() ?? 0
+                        oneDayTime: this.oneDayTime() ? this.oneDayTime() : 0,
+                        halfDayTime: this.halfDayTime() ? this.oneDayTime() : 0
                     };
                     return dataDTO;
                 }
