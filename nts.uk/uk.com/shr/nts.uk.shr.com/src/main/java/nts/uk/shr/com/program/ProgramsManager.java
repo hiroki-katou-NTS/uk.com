@@ -2833,6 +2833,8 @@ public class ProgramsManager {
             "/view/kdp/003/k/index.xhtml");
     public static final Program KDP003S = new Program(WebAppId.AT, ProgramIdConsts.KDP003S, "KDP002_22",
             "/view/kdp/003/s/index.xhtml");
+    public static final Program KDP003M = new Program(WebAppId.AT, ProgramIdConsts.KDP003M, "KDP002_16",
+            "/view/kdp/003/m/index.xhtml");
 
     /**
      * KDP004

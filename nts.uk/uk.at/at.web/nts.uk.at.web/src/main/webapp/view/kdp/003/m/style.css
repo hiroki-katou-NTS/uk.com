@@ -1,0 +1,50 @@
+.view-m {
+    padding: 20px;
+    height: 331px;
+}
+
+.view-m .title {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.view-m .content {
+    margin-top: 20px;
+}
+
+.view-m .content .btn-back {
+    float: left;
+    padding-top: 125px;
+    padding-bottom: 143px;
+}
+
+.view-m .content .btn-next {
+    padding-top: 125px;
+}
+
+.view-m .content .workplaces {
+    float: left;
+    height: 288px;
+    width: 501px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.view-m .content .workplaces .row:not(:last-child) {
+    padding-bottom: 10px;
+}
+
+
+.view-m .content .workplaces .row button {
+    width: calc((100% - 30px) / 3);
+    box-sizing: border-box;
+    height: 85px;
+    white-space: normal;
+    overflow: hidden;
+    font-size: 18px;
+    vertical-align: middle;
+}
+
+.view-m .content .workplaces .row button:not(:first-child) {
+    margin-left: 10px;
+}
