@@ -205,6 +205,14 @@ module nts.uk.com.view.ccg008.a.screenModel {
 						}, miliSeconds);
 					}
 				});
+
+			// fix bug when not show currentOrNextMonth button
+			vm.isShowSwitch
+				.subscribe((s: boolean) => {
+					if (!s) {
+						vm.callApiTopPage();
+					}
+				});
 		}
 
 		created() {
@@ -363,7 +371,7 @@ module nts.uk.com.view.ccg008.a.screenModel {
 							name: getWidgetName(widgetType),
 							params: {
 								closureId: ko.unwrap<number>(closureId),
-								currentOrNextMonth: ko.unwrap<1 | 2>(currentOrNextMonth)
+								currentOrNextMonth: ko.unwrap<1 | 2>(currentOrNextMonth) || 1
 							}
 						}))
 						.value();

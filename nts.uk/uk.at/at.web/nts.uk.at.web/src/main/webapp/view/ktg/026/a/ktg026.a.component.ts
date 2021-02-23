@@ -36,6 +36,7 @@ module nts.uk.at.view.ktg026.a {
                 ticks: {
                     min: 0,
                     max: 6000,// Math.min(max, 6000),
+                    maxTicksLimit: 4,
                     display: true,
                     beginAtZero: true,
                     callback: function (value: number, index: number, data: number[]) {
@@ -45,15 +46,11 @@ module nts.uk.at.view.ktg026.a {
                             return '0';
                         }
 
-                        if (value === 2700) {
-                            return '45:00';
-                        }
+                        // if (value === 2700) {
+                        //     return '45:00';
+                        // }
 
-                        if (index === data.length - 1) {
-                            return format.byId('Clock_Short_HM', value);
-                        }
-
-                        return '';
+                        return format.byId('Clock_Short_HM', value);
                     },
                     stepSize: 2700,
                     fontSize: 14,
