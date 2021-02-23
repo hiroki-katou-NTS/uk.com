@@ -83,6 +83,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.SystemFixedErrorAlarm;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
@@ -682,35 +683,39 @@ public class OvertimeServiceImpl implements OvertimeService {
 			// エラーメッセージを表示する
 			String errorMessage = "";
 			if(opIntegrationOfDaily.isPresent()) {
-				List<SystemFixedErrorAlarm> fixedErrorAlarmCodeLst = new ArrayList<>();
+				List<EmployeeDailyPerError> employeeDailyPerErrorLst = new ArrayList<>();
 				if(appType==ApplicationType.HOLIDAY_WORK_APPLICATION) {
-					fixedErrorAlarmCodeLst.add(SystemFixedErrorAlarm.DIVERGENCE_ERROR_3);
+					employeeDailyPerErrorLst = opIntegrationOfDaily.get().getEmployeeError().stream()
+						.filter(x -> x.getErrorAlarmWorkRecordCode().equals(new ErrorAlarmWorkRecordCode("D005")))
+						.collect(Collectors.toList());
 				}
 				if(appType==ApplicationType.OVER_TIME_APPLICATION) {
 					if(appOverOptional.isPresent()) {
 						if(appOverOptional.get().getOverTimeClf()==OvertimeAppAtr.EARLY_OVERTIME) {
-							fixedErrorAlarmCodeLst.add(SystemFixedErrorAlarm.DIVERGENCE_ERROR_1);
+							employeeDailyPerErrorLst = opIntegrationOfDaily.get().getEmployeeError().stream()
+								.filter(x -> x.getErrorAlarmWorkRecordCode().equals(new ErrorAlarmWorkRecordCode("D001")))
+								.collect(Collectors.toList());
 						}
 					}
 				}
 				if(appType==ApplicationType.OVER_TIME_APPLICATION) {
 					if(appOverOptional.isPresent()) {
 						if(appOverOptional.get().getOverTimeClf()==OvertimeAppAtr.NORMAL_OVERTIME) {
-							fixedErrorAlarmCodeLst.add(SystemFixedErrorAlarm.DIVERGENCE_ERROR_2);
+							employeeDailyPerErrorLst = opIntegrationOfDaily.get().getEmployeeError().stream()
+								.filter(x -> x.getErrorAlarmWorkRecordCode().equals(new ErrorAlarmWorkRecordCode("D003")))
+								.collect(Collectors.toList());
 						}
 					}
 				}
 				if(appType==ApplicationType.OVER_TIME_APPLICATION) {
 					if(appOverOptional.isPresent()) {
 						if(appOverOptional.get().getOverTimeClf()==OvertimeAppAtr.EARLY_NORMAL_OVERTIME) {
-							fixedErrorAlarmCodeLst.add(SystemFixedErrorAlarm.DIVERGENCE_ERROR_1);
-							fixedErrorAlarmCodeLst.add(SystemFixedErrorAlarm.DIVERGENCE_ERROR_2);
+							employeeDailyPerErrorLst = opIntegrationOfDaily.get().getEmployeeError().stream()
+								.filter(x -> x.getErrorAlarmWorkRecordCode().equals(new ErrorAlarmWorkRecordCode("D001")) 
+										|| x.getErrorAlarmWorkRecordCode().equals(new ErrorAlarmWorkRecordCode("D003")))
+								.collect(Collectors.toList());
 						}
 					}
-				}
-				List<EmployeeDailyPerError> employeeDailyPerErrorLst = new ArrayList<>();
-				for(SystemFixedErrorAlarm fixedErrorAlarmCode : fixedErrorAlarmCodeLst) {
-					employeeDailyPerErrorLst.addAll(opIntegrationOfDaily.get().getDeclareErrorList(fixedErrorAlarmCode));
 				}
 				if(!CollectionUtil.isEmpty(employeeDailyPerErrorLst)) {
 					if(employeeDailyPerErrorLst.get(0).getErrorAlarmMessage().isPresent()) {
