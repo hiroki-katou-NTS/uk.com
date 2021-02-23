@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.infra.repository.worklocation;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -61,7 +62,10 @@ public class JpaWorkLocationRepository extends JpaRepository implements WorkLoca
 
 	@Override
 	public Map<String, String> getNameByCode(String companyId, List<String> listWorkLocationCd) {
-		return this.queryProxy()
+		if(listWorkLocationCd.isEmpty()) {
+			return new HashMap<String, String>();
+		}
+		 return this.queryProxy()
 				.query(SELECT_CODE_AND_NAME, Object[].class)
 				.setParameter("companyID", companyId)
 				.setParameter("workLocationCDs", listWorkLocationCd)

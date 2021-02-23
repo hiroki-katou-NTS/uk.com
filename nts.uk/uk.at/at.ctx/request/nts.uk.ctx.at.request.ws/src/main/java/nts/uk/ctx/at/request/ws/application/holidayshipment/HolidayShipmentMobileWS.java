@@ -244,9 +244,11 @@ public class HolidayShipmentMobileWS extends WebService {
 					companyID, 
 					command.getWorkTypeNew().getWorkTypeCode(), 
 					command.getWorkTimeCD());
-			for(TimezoneUse timezoneUse : predetermineTimeSetForCalc.getTimezones()) {
-				if(timezoneUse.isUsed()) {
-					timeZoneLst.add(new TimeZoneWithWorkNoDto(timezoneUse.getWorkNo(), new TimeZone_NewDto(timezoneUse.getStart().v(), timezoneUse.getEnd().v())));
+			if(predetermineTimeSetForCalc!=null) {
+				for(TimezoneUse timezoneUse : predetermineTimeSetForCalc.getTimezones()) {
+					if(timezoneUse.isUsed()) {
+						timeZoneLst.add(new TimeZoneWithWorkNoDto(timezoneUse.getWorkNo(), new TimeZone_NewDto(timezoneUse.getStart().v(), timezoneUse.getEnd().v())));
+					}
 				}
 			}
 		}
