@@ -14,6 +14,9 @@ import javax.persistence.Version;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -22,10 +25,11 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * @author LienPTK
  *
  */
-@Data
 @Entity
 @Table(name = "KFNMT_RPT_WK_YEAR_CALC")
-@EqualsAndHashCode(callSuper = true)
+@Getter
+@Setter
+@NoArgsConstructor
 public class KfnmtRptWkYearCalc extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
