@@ -42,6 +42,17 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		outputMode: KnockoutObservable<Boolean> = ko.observable(true);
 		
 		
+		workHoursTemp: any;
+		restTemp: Array<any>;
+		
+		// flag to call getBreakTime
+		justChangeDate: boolean = false;
+		justSelectWork: boolean = false;
+		
+		
+		
+		
+		
 		created(params: AppInitParam) {
 			// new 
 			const vm = this;
@@ -175,6 +186,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						vm.bindOverTime(vm.dataSource, 1);
 						vm.bindMessageInfo(vm.dataSource);
 						vm.assginTimeTemp();
+						vm.assignWorkHourAndRest();
 						// 勤務種類リストと就業時間帯リストがない場合エラーを返す
 						if (_.isEmpty(vm.dataSource.infoBaseDateOutput.worktypes)) {
 							// msg_1567
@@ -201,6 +213,15 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 					vm.$blockui("hide");						
 					$('#kaf000-a-component4-singleDate').focus();
 				});
+		}
+		
+		assignWorkHourAndRest(isChangeDate?: boolean) {
+			const self = this;
+			
+			self.restTemp = ko.toJS(self.restTime);
+			if (!isChangeDate) {
+				self.workHoursTemp = ko.toJS(self.workInfo().workHours1);				
+			}
 		}
 		
 		// detect screen go this page
@@ -331,9 +352,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				item.end = ko.observable(null);
 				restTimeArray.push(item);
 			}
+			
 			restTime(restTimeArray);
 		}
-
 		createHolidayTime(holidayTime: KnockoutObservableArray<RestTime>) {
 			const self = this;
 			let holidayTimeArray = [];
@@ -370,8 +391,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		}
 
 		changeDate() {
-			console.log('change date');
 			const self = this;
+			
+			self.justChangeDate = true;
 			let param1 = {
 
 			} as FirstParam;
@@ -410,6 +432,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 					self.bindHolidayTime(self.dataSource, 1);
 					self.bindOverTime(self.dataSource, 1);
 					self.assginTimeTemp();
+					self.assignWorkHourAndRest(true);
 
 				})
 				.fail((res: any) => {
@@ -673,6 +696,22 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			
 			return isEqual.length > 0;
 		}
+		
+		// detect editting breaktime
+		isEditBreakTime(restTime: Array<RestTime>, restTimeTemp: Array<any>) {
+			let result = false;
+			_.forEach(restTime, (el) => {
+				_.forEach(restTimeTemp, (item) => {
+					if (el.frameNo == item.frameNo) {
+						if(el.start() != item.start || el.end() != item.end) {
+							result = true;
+						}
+					}
+				})
+			});
+			
+			return result;
+		}
 
 		register() {
 			const vm = this;
@@ -690,6 +729,11 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			// handle when edit input time
 			
 			if (vm.handleEditInputTime(vm.timeTemp)) {
+				vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED;
+			}
+			
+			// handle when edit rest time
+			if (vm.isEditBreakTime(vm.restTime(), vm.restTemp)) {
 				vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED;
 			}
 
@@ -935,11 +979,21 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				let workType = {} as Work;
 				let workTime = {} as Work;
 				let workHours1 = {} as WorkHours;
-				workHours1.start = ko.observable(null).extend({notify: 'always', rateLimit: 500});;
-				workHours1.end = ko.observable(null).extend({notify: 'always', rateLimit: 500});;
+				workHours1.start = ko.observable(null).extend({notify: 'always', rateLimit: 200});;
+				workHours1.end = ko.observable(null).extend({notify: 'always', rateLimit: 200});;
 				ko.computed(() => {
-					if (_.isNumber(workHours1.start()) && _.isNumber(workHours1.end())) {
+					if (self.justChangeDate || self.justSelectWork) {
+						self.justChangeDate = false;
+						self.justSelectWork = false;
+						
 						return self.getBreakTimes();
+					}
+					if (_.isNumber(workHours1.start()) && _.isNumber(workHours1.end())) {
+						if (!(self.workHoursTemp.start == workHours1.start() && self.workHoursTemp.end == workHours1.end())) {
+							return self.getBreakTimes();							
+						} else {
+							return;
+						}
 					}	
 				}, self).extend({notify: 'always', rateLimit: 500});
 				let workHours2 = {} as WorkHours;
@@ -2319,6 +2373,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 
 		openDialogKdl003() {
 			const self = this;
+			
 			nts.uk.ui.windows.setShared( 'parentCodes', {
                 workTypeCodes: _.map( _.uniqBy( self.dataSource.infoBaseDateOutput.worktypes, e => e.workTypeCode ), (item: any) => item.workTypeCode ),
                 selectedWorkTypeCode: self.workInfo().workType().code,
@@ -2333,10 +2388,18 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 					let workType = {} as Work;
 					workType.code = childData.selectedWorkTypeCode;
 					workType.name = childData.selectedWorkTypeName;
-					self.workInfo().workType(workType);
 					let workTime = {} as Work;
                     workTime.code = childData.selectedWorkTimeCode;
 					workTime.name = childData.selectedWorkTimeName;
+					
+					if (workType.code == self.workInfo().workType().code
+					 	&& workTime.code == self.workInfo().workTime().code) {
+						
+						return;
+					}
+					
+					
+					self.workInfo().workType(workType);
 					self.workInfo().workTime(workTime);
 					
 					let prePost = self.application().prePostAtr();
@@ -2367,10 +2430,12 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						
 								self.bindOverTimeWorks(self.dataSource);
 								self.bindWorkInfo(self.dataSource, ACTION.CHANGE_WORK);
+								self.justSelectWork = true;
 								self.bindRestTime(self.dataSource);
 								self.bindHolidayTime(self.dataSource, 1);
 								self.bindOverTime(self.dataSource, 1);
 								self.assginTimeTemp();
+								self.dataSource.calculatedFlag = res.calculatedFlag;
 							}
 						})
 						.fail(res => {
@@ -2578,7 +2643,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		
 		getBreakTimes() {
 			const self = this;
-			self.$blockui("show");
+			self.$blockui("show")
 			let command = {} as ParamBreakTime;
 			command.companyId = self.$user.companyId;
 			command.workTypeCode = self.workInfo().workType().code;
@@ -2605,6 +2670,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 								}
 							});
 						}
+						
+						self.dataSource.calculatedFlag = res.calculatedFlag;
+						self.assignWorkHourAndRest();
 					}
 				})
 				.fail((res: any) => {
@@ -2616,7 +2684,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						}
 					});
 				})
-				.always(() => self.$blockui('hide'));
+				.always(() => self.$blockui("hide"));
 		}
 
 		calculate() {
@@ -2624,6 +2692,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			self.$blockui("show");
 			console.log('calculate');
 			let command = {} as ParamCalculationCMD;
+			command.overtimeAppSetCommand = self.dataSource.infoNoBaseDate.overTimeAppSet;
 			command.companyId = self.$user.companyId;
 			command.employeeId = self.$user.employeeId;
 			command.dateOp = ko.toJS(self.application).appDate;
@@ -2700,6 +2769,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						self.bindOverTime(self.dataSource, 1);
 						self.bindHolidayTime(self.dataSource, 1);
 						self.assginTimeTemp();
+						self.assignWorkHourAndRest();
 					}
 				})
 				.fail((res: any) => {
@@ -2837,6 +2907,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		advanceApplicationTime: ApplicationTime;
 		achieveApplicationTime: ApplicationTime;
 		workContent: WorkContent;
+		overtimeAppSetCommand: OvertimeAppSet;
 	}
 	export interface DisplayInfoOverTime {
 		infoBaseDateOutput: InfoBaseDateOutput;
@@ -2909,6 +2980,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 	}
 	export interface BreakTimeZoneSetting {
 		timeZones?: Array<TimeZone>;
+		calculatedFlag: CalculatedFlag;
 	}
 	export interface TimeZone {
 		frameNo: number;
