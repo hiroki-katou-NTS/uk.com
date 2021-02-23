@@ -8,9 +8,13 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.Year;
 import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.AgreMaxAverageTimeImport;
 import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.AgreMaxAverageTimeMultiImport;
+import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.AgreTimeOfMonthlyImport;
 import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.AgreementTimeByPeriodAdapter;
+import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.AgreementTimeYearImport;
+import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.OneTimeImport;
 import nts.uk.ctx.at.record.pub.monthly.agreement.AgreementTimeByPeriodPub;
 
 /**
@@ -35,5 +39,19 @@ public class AgreementTimeByPeriodAcFinder implements AgreementTimeByPeriodAdapt
 											.collect(Collectors.toList())));
 	}
 	
-
+	@Override
+	public Optional<AgreementTimeYearImport> timeYear(String employeeId, GeneralDate criteria, Year year) {
+		return this.agreementTimeByPeriodPub.timeYear(employeeId, criteria, year)
+				.map(t -> new AgreementTimeYearImport(
+						new AgreTimeOfMonthlyImport(t.getLimitTime().getAgreementTime(), new OneTimeImport(
+								t.getLimitTime().getThreshold().getErrorTime(),
+								t.getLimitTime().getThreshold().getAlarmTime(),
+								t.getLimitTime().getThreshold().getUpperLimit())),
+						new AgreTimeOfMonthlyImport(t.getRecordTime().getAgreementTime(), new OneTimeImport(
+								t.getRecordTime().getThreshold().getErrorTime(),
+								t.getRecordTime().getThreshold().getAlarmTime(),
+								t.getRecordTime().getThreshold().getUpperLimit())),
+						t.getStatus()
+				));
+	}
 }
