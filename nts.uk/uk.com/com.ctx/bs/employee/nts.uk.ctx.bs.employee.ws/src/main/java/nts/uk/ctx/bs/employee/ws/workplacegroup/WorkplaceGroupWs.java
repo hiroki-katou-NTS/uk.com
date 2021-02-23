@@ -58,6 +58,9 @@ public class WorkplaceGroupWs extends WebService {
     @Inject
     private UpdateHospitalBusinessOfficeHistCommandHandler updateHospitalCommandHandler;
 
+    @Inject
+    private AcquireWardOfficeInfoReferenceQuery acquireWardOfficeInfoReferenceQuery;
+
     /**
      * Get all team setting
      *
@@ -112,7 +115,9 @@ public class WorkplaceGroupWs extends WebService {
         return workplaceGroupEmployeeQuery.getWorkplaceGroupOfEmployee(date.toDate());
     }
 
-    // Update KSM007 TODO CHINH.HM
+    /**
+     *  Update KSM007 TODO CHINH.HM
+     */
     // A
     @POST
     @Path("optioninformation")
@@ -120,6 +125,12 @@ public class WorkplaceGroupWs extends WebService {
         return getOptionInformationQuery.getInfor();
     }
 
+    @POST
+    @Path("getnightshiftinfor")
+    public HospitalBusinessOfficeInfoDto getNightShiftInfor(DateAndWplIdDto request) {
+        return acquireWardOfficeInfoReferenceQuery
+                .getHospitalBusinessOfficeInfo(request.getWorkplaceGroupId(),request.toDate());
+    }
 
     //B INIT SCREEN
     @POST
@@ -127,17 +138,11 @@ public class WorkplaceGroupWs extends WebService {
     public HospitalBusinessOfficeInfoDto getNightShiftInformation(PramsDto prams) {
         return getNightShiftInformationQuery.getHospitalBusinessOfficeInfo(prams.getId());
     }
-
+    //B
     @POST
     @Path("getlistnightshiftinforhist")
     public List<HospitalBusinessOfficeInfoHistoryDto> getHospitalBusinessOfficeInfo(PramsDto prams) {
         return getAListOfNightShiftHistoryQuery.getHospitalBusinessHistory(prams.getId());
-    }
-
-    @POST
-    @Path("register")
-    public void registOfNightShiftInfor(RegistOfNightShiftInforCommand command) {
-        registOfNightShiftInforCommandHandler.handle(command);
     }
 
     //C
@@ -147,14 +152,14 @@ public class WorkplaceGroupWs extends WebService {
         addHospitalCommandHandler.handle(command);
     }
 
-    //C
+    //D
     @POST
     @Path("deletehospitalbusinessofficehist")
     public void deleteHospitalBusinessOfficeHist(DeleteHospitalBusinessOfficeHistCommand command) {
         deleteHospitalCommandHandler.handle(command);
     }
 
-    //C
+    //D
     @POST
     @Path("updatehospitalbusinessofficehist")
     public void updateHospitalBusinessOfficeHist(UpdateHospitalBusinessOfficeHistCommand command) {

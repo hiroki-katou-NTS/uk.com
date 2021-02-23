@@ -1,16 +1,20 @@
 package repository.workplacegroup;
 
 import entity.workplacegroup.BsymtMedcareNightShiftRuleHist;
+import entity.workplacegroup.BsymtMedcareNightShiftRuleHistPk;
 import entity.workplacegroup.metamodel.BsymtMedcareNightShiftRuleHistPk_;
 import entity.workplacegroup.metamodel.BsymtMedcareNightShiftRuleHist_;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.clock.ClockHourMinuteSpan;
 import nts.uk.ctx.bs.employee.dom.workplace.group.hospitalofficeinfo.HospitalBusinessOfficeInfo;
 import nts.uk.ctx.bs.employee.dom.workplace.group.hospitalofficeinfo.HospitalBusinessOfficeInfoHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.group.hospitalofficeinfo.HospitalBusinessOfficeInfoHistoryRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.group.hospitalofficeinfo.NightShiftOperationRule;
 import nts.uk.shr.com.context.AppContexts;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -21,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Stateless
 public class JpaHospitalBusinessOfficeInfoHistoryRepository extends JpaRepository implements HospitalBusinessOfficeInfoHistoryRepository {
     @Override
     public Optional<HospitalBusinessOfficeInfo> get(String workplaceGroupId, GeneralDate baseDate) {
@@ -103,21 +108,88 @@ public class JpaHospitalBusinessOfficeInfoHistoryRepository extends JpaRepositor
 
     @Override
     public void insert(HospitalBusinessOfficeInfo hospitalInfo, HospitalBusinessOfficeInfoHistory hospitalHist) {
+        val cid = AppContexts.user().companyId();
+        val cd = AppContexts.user().contractCode();
+        val wplgId = hospitalInfo.getWorkplaceGroupId();
+        val histId = hospitalInfo.getHistoryId();
+        NightShiftOperationRule rule = hospitalInfo.getNightShiftOpeRule();
+        Optional<ClockHourMinuteSpan> optionalSpan = rule.getShiftTime();
+        val histNewOpt = hospitalHist.getHistoryItems().stream().filter(x -> x.identifier().equals(histId)).findFirst();
+        if (histNewOpt.isPresent()) {
+            val histNew = histNewOpt.get();
+            val histUpdateOpt = hospitalHist.getHistoryItems().stream().filter(x -> x.end().equals(histNew.start())).findFirst();
+            BsymtMedcareNightShiftRuleHist entity = new BsymtMedcareNightShiftRuleHist(
+                    new BsymtMedcareNightShiftRuleHistPk(cid, wplgId, histId),
+                    cd,
+                    histNew.start(),
+                    histNew.end(),
+                    rule.getNightShiftOperationAtr().value,
+                    optionalSpan.isPresent() ? optionalSpan.get().start().v() : null,
+                    optionalSpan.isPresent() ? optionalSpan.get().end().v() : null
+            );
+            this.commandProxy().insert(entity);
+            if (histUpdateOpt.isPresent()) {
+                val histUpdate = histUpdateOpt.get();
+                val entityUpdateOpt = this.queryProxy()
+                        .find(new BsymtMedcareNightShiftRuleHistPk(cid, wplgId, histUpdate.identifier()), BsymtMedcareNightShiftRuleHist.class);
+                if (entityUpdateOpt.isPresent()) {
+                    BsymtMedcareNightShiftRuleHist entityUpdate = entityUpdateOpt.get();
+                    entityUpdate.ENDDATE = (histUpdate.end());
+                    this.commandProxy().update(entityUpdate);
+                }
+            }
+
+        }
 
     }
 
     @Override
     public void updateHospitalInfoHistory(HospitalBusinessOfficeInfoHistory hospitalHist) {
+        val cid = AppContexts.user().companyId();
+        val wplgId = hospitalHist.getWorkplaceGroupId();
+        val histEndOpt = hospitalHist.getHistoryItems().stream().filter(e -> e.end().equals(GeneralDate.max())).findFirst();
+        if (histEndOpt.isPresent()) {
+            val histEnd = histEndOpt.get();
+            val entityUpdateOpt = this.queryProxy().find(new BsymtMedcareNightShiftRuleHistPk(
+                    cid,
+                    wplgId,
+                    histEnd.identifier()
+            ), BsymtMedcareNightShiftRuleHist.class);
+            if (entityUpdateOpt.isPresent()) {
+                val entityUpdate = entityUpdateOpt.get();
+                entityUpdate.ENDDATE =(histEnd.end());
+                entityUpdate.STARTDATE = (histEnd.start());
+                this.commandProxy().update(entityUpdate);
+            }
+        }
 
     }
 
     @Override
     public void updateHospitalBusinessOfficeInfo(HospitalBusinessOfficeInfo hospitalBusinessOfficeInfo) {
-
+        val cid = AppContexts.user().companyId();
+        val wplgId = hospitalBusinessOfficeInfo.getWorkplaceGroupId();
+        val histId = hospitalBusinessOfficeInfo.getHistoryId();
+        NightShiftOperationRule rule = hospitalBusinessOfficeInfo.getNightShiftOpeRule();
+        Optional<ClockHourMinuteSpan> optionalSpan = rule.getShiftTime();
+        val entityOpt = this.queryProxy().find(new BsymtMedcareNightShiftRuleHistPk(cid, wplgId, histId), BsymtMedcareNightShiftRuleHist.class);
+        if (entityOpt.isPresent()) {
+            val entity = entityOpt.get();
+            Integer STARTCLOCK = optionalSpan.isPresent() ? optionalSpan.get().start().v() : null;
+            Integer ENDCLOCK = optionalSpan.isPresent() ? optionalSpan.get().end().v() : null;
+            entity.NIGHTSHIFTUSEATR = (rule.getNightShiftOperationAtr().value);
+            entity.ENDCLOCK = (ENDCLOCK);
+            entity.STARTCLOCK = (STARTCLOCK);
+        }
     }
 
     @Override
     public void delete(String workplaceGroupId, String historyId) {
-
+        val cid = AppContexts.user().companyId();
+        this.commandProxy().remove(BsymtMedcareNightShiftRuleHist.class, new BsymtMedcareNightShiftRuleHistPk(
+                cid,
+                workplaceGroupId,
+                historyId
+        ));
     }
 }

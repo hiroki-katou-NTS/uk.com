@@ -14,26 +14,29 @@ import nts.uk.ctx.bs.employee.dom.workplace.group.hospitalofficeinfo.NursingCare
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
+
 @Entity
 @Table(name = "BSYMT_MEDCARE_NIGHTSHIFT_RULE_HIST")
-public class BsymtMedcareNightShiftRuleHist extends ContractUkJpaEntity implements Serializable {
-    private final long serialVersionUID = 1L;
-    @Embedded
-    private BsymtMedcareNightShiftRuleHistPk pK;
+@NoArgsConstructor
+@AllArgsConstructor
+public class BsymtMedcareNightShiftRuleHist extends UkJpaEntity implements Serializable {
+    private static final long serialVersionUID = 1L;
 
+    @EmbeddedId
+    public BsymtMedcareNightShiftRuleHistPk pK;
+
+    //	契約コード
+    @Column(name = "CONTRACT_CD")
+    public String contractCode;
 
     /**
      * 開始日	: 病棟・事業所情報履歴.履歴.期間.開始日
@@ -69,14 +72,14 @@ public class BsymtMedcareNightShiftRuleHist extends ContractUkJpaEntity implemen
     }
 
     public static HospitalBusinessOfficeInfo toDomainInFo(BsymtMedcareNightShiftRuleHist entity) {
-        NotUseAtr nightShiftOperationAtr = EnumAdaptor.valueOf(entity.getNIGHTSHIFTUSEATR(), NotUseAtr.class);
+        NotUseAtr nightShiftOperationAtr = EnumAdaptor.valueOf(entity.NIGHTSHIFTUSEATR, NotUseAtr.class);
         Optional<ClockHourMinuteSpan> shiftTime = Optional.empty();
         Optional<NursingCareEstablishmentInfo> nursingCareEstInfo = Optional.empty();
 
-        if (entity.getENDCLOCK() != null && entity.getSTARTCLOCK() != null) {
+        if (entity.ENDCLOCK != null && entity.STARTCLOCK != null) {
 
-            ClockHourMinute clockHourMinuteStart = new ClockHourMinute(entity.getSTARTCLOCK());
-            ClockHourMinute clockHourMinuteEnd = new ClockHourMinute(entity.getENDCLOCK());
+            ClockHourMinute clockHourMinuteStart = new ClockHourMinute(entity.STARTCLOCK);
+            ClockHourMinute clockHourMinuteEnd = new ClockHourMinute(entity.ENDCLOCK);
             ClockHourMinuteSpan clockHourMinuteSpan = ClockHourMinuteSpan.create(clockHourMinuteStart, clockHourMinuteEnd);
             shiftTime = Optional.of(clockHourMinuteSpan);
         }
@@ -101,7 +104,7 @@ public class BsymtMedcareNightShiftRuleHist extends ContractUkJpaEntity implemen
                     e,
                     items.stream().map(j -> new DateHistoryItem(
                             j.pK.HISTID,
-                            new DatePeriod(j.getSTARTDATE(), j.ENDDATE)
+                            new DatePeriod(j.STARTDATE, j.ENDDATE)
                     )).collect(Collectors.toList())
             ));
         });

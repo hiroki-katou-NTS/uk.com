@@ -12,12 +12,16 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Optional;
 
 
+
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class UpdateHospitalBusinessOfficeHistCommandHandler extends CommandHandler<UpdateHospitalBusinessOfficeHistCommand> {
 
 

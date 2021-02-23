@@ -9,11 +9,15 @@ import nts.uk.ctx.bs.employee.dom.workplace.group.hospitalofficeinfo.HospitalBus
 import nts.uk.shr.com.history.DateHistoryItem;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import java.util.Optional;
 
 
+
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class DeleteHospitalBusinessOfficeHistCommandHandler extends CommandHandler<DeleteHospitalBusinessOfficeHistCommand> {
     @Inject
     HospitalBusinessOfficeInfoHistoryRepository infoHistoryRepository;

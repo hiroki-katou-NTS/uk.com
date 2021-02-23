@@ -13,6 +13,8 @@ import nts.uk.ctx.bs.employee.dom.workplace.group.hospitalofficeinfo.*;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import java.time.LocalTime;
 import java.util.Optional;
@@ -20,7 +22,9 @@ import java.util.Optional;
 /**
  * 夜勤時間帯履歴情報追加
  */
+
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class AddHospitalBusinessOfficeHistCommandHandler extends CommandHandler<AddHospitalBusinessOfficeHistCommand> {
 
     @Inject
