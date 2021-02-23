@@ -182,6 +182,11 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 
 	@Override
 	public void generate(FileGeneratorContext generatorContext, OutputYearHolidayManagementQuery query) {
+		if (query.getSelectedDateType().equals(PeriodToOutput.AFTER_1_YEAR)) {
+			query.setSelectedReferenceType(ReferenceAtr.APP_AND_SCHE.value);
+		} else if (query.getSelectedDateType().equals(PeriodToOutput.PAST)) {
+			query.setSelectedReferenceType(ReferenceAtr.RECORD.value);
+		}
 		try (AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE)) {
 			Workbook workbook = reportContext.getWorkbook();
 
@@ -600,11 +605,12 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 						}
 					} else {
 						cells.get(holidayInfoRow, GRANT_DATE_COL).setValue("");
-						cells.get(holidayInfoRow, GRANT_DAYS_COL).setValue("0.0");
+						cells.get(holidayInfoRow, GRANT_DAYS_COL).setValue("");
 						cells.get(holidayInfoRow, GRANT_USEDAY_COL).setValue("0.0");
 						cells.get(holidayInfoRow, GRANT_REMAINDAY_COL).setValue("0.0");
 					}
 				} else {
+					cells.get(holidayInfoRow, GRANT_DATE_COL).setValue("");
 					cells.get(holidayInfoRow, GRANT_USEDAY_COL).setValue("0.0");
 					cells.get(holidayInfoRow, GRANT_REMAINDAY_COL).setValue("0.0");
 				}
@@ -657,11 +663,12 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 							}
 						} else {
 							cells.get(holidayInfoRow, GRANT_DATE_COL).setValue("");
-							cells.get(holidayInfoRow, GRANT_DAYS_COL).setValue("0:00");
+							cells.get(holidayInfoRow, GRANT_DAYS_COL).setValue("");
 							cells.get(holidayInfoRow, GRANT_USEDAY_COL).setValue("0:00");
 							cells.get(holidayInfoRow, GRANT_REMAINDAY_COL).setValue("0:00");
 						}
 					} else {
+						cells.get(holidayInfoRow, GRANT_DATE_COL).setValue("");
 						cells.get(holidayInfoRow, GRANT_USEDAY_COL).setValue("0:00");
 						cells.get(holidayInfoRow, GRANT_REMAINDAY_COL).setValue("0:00");
 					}

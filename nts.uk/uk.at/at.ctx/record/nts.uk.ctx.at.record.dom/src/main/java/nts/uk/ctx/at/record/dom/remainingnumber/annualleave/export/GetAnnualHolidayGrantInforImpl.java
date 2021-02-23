@@ -129,7 +129,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 		Closure closureOfEmp = ClosureService.getClosureDataByEmployee(require, cacheCarrier, sid, ymd);
 		// 指定月の締め開始日を取得 - 3 4
 		// 対象期間区分が１年経過時点の場合、指定月←取得した期間．開始日の年月部分
-		YearMonth ymStartDateByClosure = periodOutput == AFTER_1_YEAR ? optPeriod.get().start().yearMonth() : ym;
+		YearMonth ymStartDateByClosure = periodOutput == AFTER_1_YEAR ? period.start().yearMonth() : ym;
 		Optional<GeneralDate> optStartDate = this.getStartDateByClosure(sid, ymStartDateByClosure, closureOfEmp.getClosureMonth().getProcessingYm(), ymd);
 		if(!optStartDate.isPresent()) {
 			getAnnualHolidayGrantInforDto.setAnnualHolidayGrantInfor(Optional.ofNullable(output));
@@ -237,10 +237,10 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 		List<AnnualHolidayGrant> newGrant =  getAnnualHolidayGrantInforDto.getAnnualHolidayGrantInfor().get().getLstGrantInfor();
 		if (exCondition) {
 			//アルゴリズム「抽出条件での絞り込みを行う」を実行する
-			boolean getByExtrac = this.getByExtractionConditions(sid, optPeriod.get().start(), newGrant, exConditionDays, exComparison);
-			if (getByExtrac == false ) {
+			boolean getByExtrac = this.getByExtractionConditions(sid, period.start(), newGrant, exConditionDays, exComparison);
+			if (!getByExtrac) {
 				getAnnualHolidayGrantInforDto.setAnnualHolidayGrantInfor(Optional.empty());
-				getAnnualHolidayGrantInforDto.setEmployeeExtracted(false);
+				getAnnualHolidayGrantInforDto.setEmployeeExtracted(getByExtrac);
 			}
 		}
 		// 年休付与情報に 取得した期間、ダブルトラック開始日をセットする
@@ -517,6 +517,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 	}
 	
 	/**
+	 * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.残数管理.定期的に付与する休暇.年休管理.Export.Query.[NO.550]年休付与情報を取得.アルゴリズム.抽出条件での絞り込みを行う.抽出条件での絞り込みを行う
 	 * @param employeeId - 社員ID
 	 * @param lastGrantDate - 前回年休付与日
 	 * @param lstHolidayGrant - 年休付与(List)
