@@ -1,17 +1,14 @@
 package nts.uk.file.at.app.export.calculationsetting;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.record.app.find.divergence.time.DivergenceAttendanceItemFinder;
 import nts.uk.ctx.at.record.dom.actualworkinghours.daily.midnight.MidnightTimeSheetRepo;
+import nts.uk.ctx.at.record.dom.divergence.time.service.attendance.AttendanceNameDivergenceDto;
 import nts.uk.ctx.at.record.dom.workrecord.goout.OutManage;
 import nts.uk.ctx.at.record.dom.workrecord.goout.OutManageRepository;
 import nts.uk.ctx.at.record.dom.workrecord.temporarywork.ManageWorkTemporary;
@@ -22,7 +19,6 @@ import nts.uk.ctx.at.shared.dom.entranceexit.ManageEntryExit;
 import nts.uk.ctx.at.shared.dom.entranceexit.ManageEntryExitRepository;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
-import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemRepository;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
@@ -110,7 +106,7 @@ public class CalculationSettingExportImpl implements MasterListData {
     private HolidayAddtionRepository holidayAddtionRepo;
 
 	@Inject
-	private MonthlyAttendanceItemRepository monthlyAttendanceItemRepo;
+	private DivergenceAttendanceItemFinder monthlyAttendanceItemRepo;
 
 	@Inject
 	private RoundingSetOfMonthlyRepository roundingSetOfMonthlyRepo;
@@ -636,14 +632,17 @@ public class CalculationSettingExportImpl implements MasterListData {
 	private List<MasterData> getSheet4MasterDatas() {
 		String companyId = AppContexts.user().companyId();
 		List<MasterData> data = new ArrayList<>();
-		List<MonthlyAttendanceItem> monthlyAttendanceItems = monthlyAttendanceItemRepo.findAll(companyId);
 		Optional<RoundingSetOfMonthly> roundingSetOfMonthly = roundingSetOfMonthlyRepo.find(companyId);
+		List<AttendanceNameDivergenceDto> monthlyAttendanceItems = roundingSetOfMonthly.isPresent()
+				? monthlyAttendanceItemRepo.getMonthlyAtName(new ArrayList<>(roundingSetOfMonthly.get().getItemRoundingSet().keySet()))
+				: new ArrayList<>();
+		monthlyAttendanceItems.sort(Comparator.comparing(AttendanceNameDivergenceDto::getAttendanceItemDisplayNumber));
 		for (int row = 0; row < monthlyAttendanceItems.size(); row++) {
-			MonthlyAttendanceItem item = monthlyAttendanceItems.get(row);
+			AttendanceNameDivergenceDto item = monthlyAttendanceItems.get(row);
 			Map<String, MasterCellData> rowData = new HashMap<>();
 			for (int col = 0; col < 3; col++) {
 				String value = "";
-				if (col == 0) value = item.getAttendanceName().v();
+				if (col == 0) value = item.getAttendanceItemName();
 				else if (col == 1 && roundingSetOfMonthly.isPresent() && roundingSetOfMonthly.get().getItemRoundingSet().get(item.getAttendanceItemId()) != null)
 					value = TextResource.localize(roundingSetOfMonthly.get().getItemRoundingSet().get(item.getAttendanceItemId()).getRoundingSet().getRoundingTime().nameId);
 				else if (col == 2 && roundingSetOfMonthly.isPresent() && roundingSetOfMonthly.get().getItemRoundingSet().get(item.getAttendanceItemId()) != null)
@@ -997,15 +996,15 @@ public class CalculationSettingExportImpl implements MasterListData {
                     else if (col == 1) value = TextResource.localize("KMK013_507");
                     else if (stampReflectionMng.isPresent())
                         value = stampReflectionMng.get().getGoBackOutCorrectionClass().value == 1
-                                ? TextResource.localize("KMK013_210")
-                                : TextResource.localize("KMK013_209");
+                                ? TextResource.localize("KMK013_209")
+                                : TextResource.localize("KMK013_210");
                 } else if (row == 4){
                     if (col == 0) value = TextResource.localize("KMK013_508");
                     else if (col == 1) value = TextResource.localize("KMK013_509");
                     else if (stampReflectionMng.isPresent())
                         value = stampReflectionMng.get().getReflectWorkingTimeClass().value == 1
-                                ? TextResource.localize("KMK013_210")
-                                : TextResource.localize("KMK013_209");
+                                ? TextResource.localize("KMK013_209")
+                                : TextResource.localize("KMK013_210");
                 } else {
                     if (col == 0) value = TextResource.localize("KMK013_302");
                     else if (col == 2 && stampReflectionMng.isPresent())
