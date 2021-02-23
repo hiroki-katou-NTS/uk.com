@@ -61,25 +61,28 @@
                     v-on:touchend="handleTouchEnd"
                     v-show="rowFocus == null || rowFocus == item.rowNumber"
                 >
-                    <div v-show="item.isActive" style="height: 100%; display: flex; justify-content: flex-start; flex-direction: column;">
+                    <div style="height: 100%; display: flex; justify-content: flex-start; flex-direction: column;">
                         <div style="display: flex; justify-content: space-between">
                             <!-- A1_3_1 -->
                             <span v-if="today == item.date" class="uk-bg-schedule-that-day" style="border-radius: 50%;">{{item.formatedDate}}</span>
                             <span v-else>{{item.formatedDate}}</span>
                             <!-- A1_3_2 -->
-                            <span v-show="item.displayData.workDesireStatus != undefined && item.displayData.workDesireStatus != 0">
+                            <span v-show="workDesiredOpAtr && item.displayData.workDesireStatus != undefined && item.displayData.workDesireStatus != 0">
                                 <i class="far fa-star uk-text-holiday" v-if="item.displayData.workDesireStatus == 1"></i>
                                 <i class="far fa-star uk-text-attendance" v-else></i>
                             </span>
                         </div>
                         <!-- A1_3_3 -->
-                        <div style="text-align: center; margin: 2em 0">
-                            <span v-show="item.displayData.workScheduleAtr != undefined" 
+                        <div v-show="item.isActive" style="text-align: center; margin: 2em 0">
+                            <span v-if="item.displayData.workScheduleAtr >= 1 && item.displayData.workScheduleAtr <= 3 && item.displayData.workScheduleName.length > 0" 
                                 v-bind:style="item.workScheduleStyle"
                             >
-                                <span class="uk-text-holiday" v-if="item.displayData.workScheduleAtr == 0">{{item.displayData.workScheduleName}}</span>
+                                <!-- <span class="uk-text-holiday" v-if="item.displayData.workScheduleAtr == 0">{{item.displayData.workScheduleName}}</span> -->
                                 <span class="uk-text-half-day-work" v-if="item.displayData.workScheduleAtr == 1 || item.displayData.workScheduleAtr == 2">{{item.displayData.workScheduleName}}</span>
-                                <span class="uk-text-attendance" v-if="item.displayData.workScheduleAtr == 3">{{item.displayData.workScheduleName}}</span>
+                                <span class="uk-text-attendance" v-else-if="item.displayData.workScheduleAtr == 3">{{item.displayData.workScheduleName}}</span>
+                            </span>
+                            <span v-else-if="item.displayData.workScheduleAtr != 0" class="uk-bg-gray" v-bind:style="item.workScheduleStyle">
+                                <span style='color: black;'>{{ "KSUS01_21" | i18n }}</span>
                             </span>
                         </div>
                     </div>
@@ -107,16 +110,19 @@
             </div>
             <div class="detail-spacing detail-indent">
                 <!-- A4_3 -->
-                <span v-bind:style="detailCell && detailCell.workScheduleStyle + ' font-size: large;'">
-                    <span style="margin: 0" class="uk-text-holiday" v-if="detailCell && (detailCell.displayData.workScheduleAtr == 0 || detailCell.displayData.workScheduleAtr == undefined)">
+                <span v-if="detailCell && detailCell.displayData.workScheduleName && detailCell.displayData.workScheduleName.length > 0" v-bind:style="detailCell && detailCell.workScheduleStyle + ' font-size: large;'">
+                    <span style="margin: 0;" class="uk-text-holiday" v-if="detailCell && (detailCell.displayData.workScheduleAtr == 0 || detailCell.displayData.workScheduleAtr == undefined)">
                         {{detailCell && detailCell.displayData.workScheduleName}}
                     </span>
-                    <span style="margin: 0" class="uk-text-half-day-work" v-if="detailCell && (detailCell.displayData.workScheduleAtr == 1 || detailCell.displayData.workScheduleAtr == 2)">
+                    <span style="margin: 0;" class="uk-text-half-day-work" v-if="detailCell && (detailCell.displayData.workScheduleAtr == 1 || detailCell.displayData.workScheduleAtr == 2)">
                         {{detailCell && detailCell.displayData.workScheduleName}}
                     </span>
-                    <span style="margin: 0" class="uk-text-attendance" v-if="detailCell && detailCell.displayData.workScheduleAtr == 3">
+                    <span style="margin: 0;" class="uk-text-attendance" v-if="detailCell && detailCell.displayData.workScheduleAtr == 3">
                         {{detailCell && detailCell.displayData.workScheduleName}}
                     </span>
+                </span>
+                <span v-else class="uk-bg-gray" v-bind:style="detailCell && detailCell.workScheduleStyle + ' font-size: large;'">
+                    <span style='margin: 0; color: black;'>{{ "KSUS01_21" | i18n }}</span>
                 </span>
                 <!-- A4_4 A4_5-->
                 <span 
@@ -148,35 +154,43 @@
                 <!-- A4_11 -->
                 <span style="color: #999">{{ "KSUS01_12" | i18n }}</span>
             </div>
-            <div class="detail-spacing detail-indent">
-                <div v-if="detailCell && (detailCell.displayData.workDesireStatus == undefined || detailCell.displayData.workDesireStatus == 0 || detailCell.displayData.workDesireAtr == undefined)">
+            <div v-if="detailCell && detailCell.displayData.listWorkDesire.length == 0" class="detail-spacing detail-indent">
+                <div>
                     <span style="font-weight: bold;">{{ "KSUS01_22" | i18n }}</span>
                 </div>
-                <div v-else>
-                    <!-- A4_12 -->
-                    <span v-bind:style="detailCell && detailCell.workDesireStyle">
-                        <span style="margin: 0" class="uk-text-holiday" v-if="detailCell && detailCell.displayData.workDesireAtr == 0">
-                            {{detailCell && detailCell.displayData.workDesireName}}
+            </div>
+            <div v-else>
+                <div class="detail-spacing detail-indent" 
+                    v-for="(item, index) in detailCell && detailCell.displayData.listWorkDesire" 
+                    v-bind:key="index"
+                    :value="index"
+                >
+                    <div>
+                        <!-- A4_12 -->
+                        <span v-bind:style="item.workDesireStyle">
+                            <span style="margin: 0" class="uk-text-holiday" v-if="item.workDesireAtr == 0">
+                                {{item.workDesireName}}
+                            </span>
+                            <span style="margin: 0" class="uk-text-half-day-work" v-if="item.workDesireAtr == 1 || item.workDesireAtr == 2">
+                                {{item.workDesireName}}
+                            </span>
+                            <span style="margin: 0" class="uk-text-attendance" v-if="item.workDesireAtr == 3">
+                                {{item.workDesireName}}
+                            </span>
                         </span>
-                        <span style="margin: 0" class="uk-text-half-day-work" v-if="detailCell && (detailCell.displayData.workDesireAtr == 1 || detailCell.displayData.workDesireAtr == 2)">
-                            {{detailCell && detailCell.displayData.workDesireName}}
+                        <!-- <span style="padding: 0.25em 1em; font-weight: bold; border-radius: 0.25rem; background-color: red">
+                            勤務希望
+                        </span> -->
+                        <!-- A4_13 A4_14 -->
+                        <span 
+                            v-for="(timeZone, timeZoneIndex) in item.workDesireTimeZone" 
+                            v-bind:key="timeZoneIndex"
+                            :value="timeZoneIndex"
+                            style="font-weight: bold;"
+                        >
+                            {{timeZone.start}}~{{timeZone.end}}
                         </span>
-                        <span style="margin: 0" class="uk-text-attendance" v-if="detailCell && detailCell.displayData.workDesireAtr == 3">
-                            {{detailCell && detailCell.displayData.workDesireName}}
-                        </span>
-                    </span>
-                    <!-- <span style="padding: 0.25em 1em; font-weight: bold; border-radius: 0.25rem; background-color: red">
-                        勤務希望
-                    </span> -->
-                    <!-- A4_13 A4_14 -->
-                    <span 
-                        v-for="(item, index) in detailCell && detailCell.displayData.workDesireTimeZone" 
-                        v-bind:key="index"
-                        :value="index"
-                        style="font-weight: bold;"
-                    >
-                        {{item.start}}~{{item.end}}
-                    </span>
+                    </div>
                 </div>
             </div>
             <div class="detail-spacing">
