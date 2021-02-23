@@ -311,13 +311,13 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					let end2 = vm.workInfo().workHours2.end();
 					
 					// ・開始時刻1 > 終了時刻1　の場合エラーメッセージ(Msg_307)を表示する
-					if (start1 > end1) {
+					if (start1 > end1 && vm.visibleModel.c7()) {
 						vm.$errors('#inpStartTime1', 'Msg_307');
 						vm.$errors('#inpEndTime1', 'Msg_307');
 						return false;
 					}
 					// ・開始時刻2 > 終了時刻2　の場合エラーメッセージ(Msg_307)を表示する
-					if (inpStartTime2 && inpEndTime2 && _.isNumber(start2) && _.isNumber(end2)) {
+					if (inpStartTime2 && inpEndTime2 && _.isNumber(start2) && _.isNumber(end2) && vm.visibleModel.c29()) {
 						if (start2 > end2) {
 							vm.$errors('#inpStartTime2', 'Msg_307');
 							vm.$errors('#inpEndTime2', 'Msg_307');
@@ -326,7 +326,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					}
 					
 					// ・終了時刻1 > 開始時刻2　の場合エラーメッセージ(Msg_581)を表示する
-					if (_.isNumber(start2) && inpStartTime2) {
+					if (_.isNumber(start2) && inpStartTime2 && vm.visibleModel.c29()) {
 						if (start2 < end1) {
 							vm.$errors('#inpEndTime1', 'Msg_581');
 							vm.$errors('#inpStartTime2', 'Msg_581');
@@ -334,7 +334,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 						}
 					}
 					// ・開始時刻2、終了時刻2　の片方しか入力してない場合エラーメッセージ(Msg_307)を表示する
-					if (inpStartTime2 && inpEndTime2) {
+					if (inpStartTime2 && inpEndTime2 && vm.visibleModel.c7()) {
 						if (!(_.isNumber(start2) && _.isNumber(end2))) {
 							if (!_.isNumber(start2) && _.isNumber(end2)) {
 								vm.$errors('#inpStartTime2', 'Msg_307');
