@@ -28,7 +28,7 @@ public class OutputSettingOfArbitraryTest {
      * - method checkDuplicateBoilerplateSelection: is true
      */
     @Test
-    public void testDuplicateBoilerplateSelection() {
+    public void testCheckDuplicateBoilerplateSelection() {
         val code = new OutputItemSettingCode("OutputItemSettingCode01");
         new Expectations() {{
             require.checkTheFixedForm(code);
@@ -43,7 +43,7 @@ public class OutputSettingOfArbitraryTest {
      * - method checkDuplicateFreeSettings: is true
      */
     @Test
-    public void testDuplicateFreeSettings() {
+    public void testCheckDuplicateFreeSettings() {
         val code = new OutputItemSettingCode("OutputItemSettingCode02");
 
         new Expectations() {{
