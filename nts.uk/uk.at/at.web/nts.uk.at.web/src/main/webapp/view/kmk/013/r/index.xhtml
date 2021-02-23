@@ -12,7 +12,7 @@
         <com:scriptfile path="/view/kmk/013/r/kmk013.r.vm.js" />
         <com:stylefile path="/view/kmk/013/r/kmk013.r.css" />
         <com:ValidatorScript>
-            nts.uk.ctx.at.shared.dom.common.DailyTime
+            nts.uk.ctx.at.shared.dom.worktime.common.OneDayTime
         </com:ValidatorScript>
     </ui:define>
 
@@ -27,7 +27,7 @@
                     <!--R1_3-->
                     <input id="R1_3" tabindex="1" data-bind="ntsTimeEditor: {
 										value: oneDayTime,
-										constraint: 'DailyTime',
+										constraint: 'OneDayTime',
 										enable: true,
 										inputFormat: 'time',
 										mode: 'time',
@@ -40,7 +40,7 @@
                     <!--R1_5-->
                     <input tabindex="2" data-bind="ntsTimeEditor: {
 										value: firstHalfTime,
-										constraint: 'DailyTime',
+										constraint: 'OneDayTime',
 										enable: true,
 										inputFormat: 'time',
 										mode: 'time',
@@ -53,7 +53,7 @@
                     <!--R1_7-->
                     <input tabindex="3" data-bind="ntsTimeEditor: {
 										value: secondHalfTime,
-										constraint: 'DailyTime',
+										constraint: 'OneDayTime',
 										enable: true,
 										inputFormat: 'time',
 										mode: 'time',

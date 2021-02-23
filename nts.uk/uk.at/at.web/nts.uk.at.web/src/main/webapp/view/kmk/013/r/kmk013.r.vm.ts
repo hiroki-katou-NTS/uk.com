@@ -68,11 +68,19 @@ module nts.uk.at.view.kmk013.r.viewmodel {
                 personSetRef: vm.specifiedTimeRefSelected() == 2 ? vm.personvalSetRefSelected() : null
             };
 
+
             vm.$blockui("grayout");
-            vm.$ajax(API.SAVE, command).done((res) => {
-                vm.$dialog.info({ messageId: "Msg_15" });
-            }).fail((err) => {
-                vm.$dialog.error(err);
+            vm.$validate([
+                '.ntsControl',
+                '.nts-input'
+            ]).then(valid => {
+                if (valid) {
+                    vm.$ajax(API.SAVE, command).done((res) => {
+                        vm.$dialog.info({ messageId: "Msg_15" });
+                    }).fail((err) => {
+                        vm.$dialog.error(err);
+                    })
+                }
             }).always(() => vm.$blockui("clear"));
 
         }
