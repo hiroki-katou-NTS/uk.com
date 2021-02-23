@@ -1877,7 +1877,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             let data = self.buidDataReg(userInfor.disPlayFormat, cellsGroup);
             // check trường hợp starttime|end == ''  thì return luôn. 
-            let validData = self.validData(data);
+            let validData = self.validData(data, userInfor.disPlayFormat);
             if (validData  == false) {
                 nts.uk.ui.block.clear();
                 return;
@@ -1910,12 +1910,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         }
 
         // 6666 check truong hop mode time, worktype la required la khong co starttime or endtime
-        validData(data: any) {
+        validData(data: any, vMode : any) {
             let self = this;
             if (data.length == 0) {
                 console.log('data length = 0');
                 return false;
             }
+            
+            if (vMode != 'time')
+                return true;
 
             let check = true;
             _.forEach(data, function(cell) {
