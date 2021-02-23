@@ -429,9 +429,8 @@ module nts.uk.ui.chart {
             
             if (chartType) {
                 _.forEach(_.keys(chartType), key => {
-                    let assignedKey = key === "name" ? "definedType" : key; 
-                    if (_.isNil(options[assignedKey]) && !_.isNil(chartType[key])) {
-                        options[assignedKey] = chartType[key];
+                    if (chartType[key] !== undefined) {
+                        options[key === "name" ? "definedType" : key] = chartType[key];
                     }
                 });
             }
