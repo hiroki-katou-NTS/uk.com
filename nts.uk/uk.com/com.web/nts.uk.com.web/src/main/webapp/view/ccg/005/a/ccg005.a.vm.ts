@@ -569,7 +569,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       vm.paginationText.subscribe(() => {
         vm.attendanceInformationDtosDisplay(_.slice(vm.attendanceInformationDtosDisplayClone(), vm.startPage() - 1, vm.endPage()));
         clearTimeout(reloadAvatar);
-        reloadAvatar = setTimeout(() => { vm.setAvatarInLoop(); }, 1);
+        reloadAvatar = setTimeout(() => { vm.bindingLoopData(); }, 1);
       });
       (ko.bindingHandlers.ntsIcon as any).init($('.ccg005-status-img-A1_7'), () => ({ no: vm.activityStatusIcon(), width: 20, height: 20 }));
     }
@@ -838,10 +838,12 @@ module nts.uk.at.view.ccg005.a.screenModel {
         .always(() => vm.$blockui('clear'));
     }
 
-    //handle avatar in loop by jquery
-    private setAvatarInLoop() {
+    //handle loop by jquery
+    private bindingLoopData() {
       const vm = this;
-      _.forEach(vm.attendanceInformationDtosDisplay(), item => {
+      _.forEach(vm.attendanceInformationDtosDisplay(), (item, index) => {
+
+        //handle avatar
         if (_.isEmpty($(`#ccg005-avatar-change-${item.sid}`).children())) {
           if (item.avatarDto && item.avatarDto.fileId) {
             $(`#ccg005-avatar-change-${item.sid}`)
@@ -861,6 +863,10 @@ module nts.uk.at.view.ccg005.a.screenModel {
             });
           }
         }
+
+        //handle status icon
+        const element = $('.ccg005-status-img')[index];
+        (ko.bindingHandlers.ntsIcon as any).init(element, () => ({ no: vm.initActivityStatus(item.status), width: 20, height: 20 }));
       });
     }
 
@@ -1301,6 +1307,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       vm.$ajax(API.saveStatus, params).then(() => {
         $('#ccg005-status-popup').ntsPopup('hide');
         if (vm.indexUpdateItem() > -1) {
+          //This case for now
           const element = $('.ccg005-status-img')[vm.indexUpdateItem()];
           (ko.bindingHandlers.ntsIcon as any).init(element, () => ({ no: activityStatusIcon, width: 20, height: 20 }));
         } else {
@@ -1309,9 +1316,20 @@ module nts.uk.at.view.ccg005.a.screenModel {
       });
       //update view model
       if (vm.currentIndex() !== -1) {
+        //This case for now
         vm.attendanceInformationDtosDisplay()[vm.currentIndex()].status = selectedStatus;
         const newBgClass = vm.getBackgroundColorClass(selectedStatus);
         $('.ccg005-tr-background')[vm.currentIndex()].id = newBgClass;
+
+        //This case for change page or resize
+        const updateSid = vm.attendanceInformationDtosDisplay()[vm.currentIndex()].sid;
+        _.map(vm.attendanceInformationDtosDisplay(), (item) => {
+          if(item.sid === updateSid) {
+            item.status = selectedStatus;
+            item.backgroundColor = vm.getBackgroundColorClass(selectedStatus);
+          }
+        });
+        ko.applyBindings(vm, $('.ccg005-tr-background')[vm.currentIndex()]);
       } else {
         vm.activityStatus(selectedStatus);
       }
