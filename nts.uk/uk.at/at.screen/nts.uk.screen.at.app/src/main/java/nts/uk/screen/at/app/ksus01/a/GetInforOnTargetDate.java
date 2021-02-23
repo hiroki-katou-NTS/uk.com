@@ -112,7 +112,7 @@ public class GetInforOnTargetDate {
 	@Inject
 	private ShiftMasterRepository shiftMasterRepository;
 	
-    final static String DATE_TIME_FORMAT = "YYYY/MM/DD";
+    final static String DATE_TIME_FORMAT = "yyyy/MM/dd";
     
     public InforOnTargetDateDto handle(int desiredSubmissionStatus, int workHolidayClassification,String targetDate) {
 		
