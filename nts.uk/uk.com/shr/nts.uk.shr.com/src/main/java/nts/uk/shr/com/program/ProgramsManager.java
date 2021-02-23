@@ -3066,6 +3066,11 @@ public class ProgramsManager {
             "/kdp/s01/t");
 
     /**
+     * KSUS02
+     */
+    public static final Program KSUS02A = new Program(WebAppId.MOBI, ProgramIdConsts.KSUS02A, "KSUS02_23",
+            "/ksu/s02");
+    /**
      * CPS013
      */
     public static final Program CPS013A = new Program(WebAppId.COM, ProgramIdConsts.CPS013A, "CPS013_34",

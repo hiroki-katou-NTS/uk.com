@@ -1,5 +1,6 @@
 package nts.uk.screen.at.app.ksus02;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
@@ -30,9 +31,12 @@ public class FirstInformationDto {
 	private List<WorkAvailabilityOfOneDayDto> displayInfoListWorkOneDay;
 	//シフト情報リスト
 	private List<ShiftMasterAndWorkInfoScheTime> listShiftInfor;
+	
+	private List<String> listDateIsHoliday = new ArrayList<>();
+
 	public FirstInformationDto(int specifyWorkPre, int shiftWorkUnit, String deadlineForWork, String startWork,
 			String endWork, List<WorkAvailabilityOfOneDayDto> displayInfoListWorkOneDay,
-			List<ShiftMasterAndWorkInfoScheTime> listShiftInfor) {
+			List<ShiftMasterAndWorkInfoScheTime> listShiftInfor, List<String> listDateIsHoliday) {
 		super();
 		this.specifyWorkPre = specifyWorkPre;
 		this.shiftWorkUnit = shiftWorkUnit;
@@ -41,6 +45,8 @@ public class FirstInformationDto {
 		this.endWork = endWork;
 		this.displayInfoListWorkOneDay = displayInfoListWorkOneDay;
 		this.listShiftInfor = listShiftInfor;
+		this.listDateIsHoliday = listDateIsHoliday;
 	}
+	
 	
 }

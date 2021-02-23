@@ -56,7 +56,7 @@ export class Ksus02Component extends Vue {
         self.$http.post('at', servicePath.getWorkRequest, { startDate: dataFromChild.startDate, endDate: dataFromChild.endDate }).then((result: any) => {
             let year = new Date(dataFromChild.startDate).getFullYear();
             let month = new Date(dataFromChild.startDate).getMonth() + 1;
-            if (year > new Date().getFullYear() || year == new Date().getFullYear() && month >= (new Date().getMonth() + 1)) {
+            if (year > new Date().getFullYear() || year == new Date().getFullYear() && month > (new Date().getMonth() + 1)) {
                 self.isCurrentMonth = true;
             } else {
                 self.isCurrentMonth = false;
@@ -208,7 +208,8 @@ export class Ksus02Component extends Vue {
             startWork: '2021/01/11',
             endWork: '2021/01/17',
             displayInfoListWorkOneDay: workAvailabilityOfOneDays,
-            listShiftInfor: listShiftInforData
+            listShiftInfor: listShiftInforData,
+            listDateIsHoliday: []
         };
         self.dataCalendar = {
             data: screenData
@@ -340,7 +341,8 @@ export class Ksus02Component extends Vue {
             startWork: dataFromChild.startDate,
             endWork: dataFromChild.endDate,
             displayInfoListWorkOneDay: workAvailabilityOfOneDays,
-            listShiftInfor: listShiftInforData
+            listShiftInfor: listShiftInforData,
+            listDateIsHoliday: []
         };
         self.dataCalendar = {
             data: screenData
@@ -483,7 +485,8 @@ export class Ksus02Component extends Vue {
             startWork: '2021/01/11',
             endWork: '2021/01/17',
             displayInfoListWorkOneDay: workAvailabilityOfOneDays,
-            listShiftInfor: listShiftInforData
+            listShiftInfor: listShiftInforData,
+            listDateIsHoliday: []
         };
         self.dataCalendar = {
             data: screenData
@@ -614,7 +617,8 @@ export class Ksus02Component extends Vue {
             startWork: dataFromChild.startDate,
             endWork: dataFromChild.endDate,
             displayInfoListWorkOneDay: workAvailabilityOfOneDays,
-            listShiftInfor: listShiftInforData
+            listShiftInfor: listShiftInforData,
+            listDateIsHoliday: []
         };
         self.dataCalendar = {
             data: screenData
@@ -628,7 +632,10 @@ export class Ksus02Component extends Vue {
         self.$mask('show');
         self.$http.post('at', servicePath.getInforinitialStartup, { baseDate: moment(new Date()).format('YYYY/MM/DD') }).then((result: any) => {
             self.dataStartPage = result.data;
-            self.alarmMsg = this.$i18n('KSUS02_1', (self.dataStartPage.shiftWorkUnit == 0 ? this.$i18n('KSUS02_19') : this.$i18n('KSUS02_20')) + self.dataStartPage.deadlineForWork.substring(8, 10));
+            let startDate = new Date(result.data.deadlineForWork);
+            let dateOfWeek = moment(moment(startDate).format('YYYY/MM/DD')).format('dd');   
+            self.alarmMsg = this.$i18n('KSUS02_1', (self.dataStartPage.shiftWorkUnit == 1 ? this.$i18n('KSUS02_19') + self.dataStartPage.deadlineForWork.substring(8, 10) + '日' :
+                this.$i18n('KSUS02_20') + dateOfWeek + '曜日'));
             self.loadData();
             console.log(result);
             self.$mask('hide');

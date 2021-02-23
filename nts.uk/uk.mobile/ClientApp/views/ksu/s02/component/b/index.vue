@@ -28,7 +28,7 @@
                 </div>
               </td>
               <td style="border: 0px solid #dee2e6 !important">
-                <div style="margin-top: -6px; width: 130px">
+                <div style="margin-top: -4px; width: 130px">
                   <nts-year-month
                     v-bind:showTitle="false"
                     v-model="yearMonth"
@@ -62,21 +62,21 @@
               <tr style="">
                 <td
                   class="uk-bg-schedule-sunday"
-                  style="width: 51px; height: 18px;text-align: center;"
+                  style="width: 51px; height: 18px;text-align: center; color:#FF0000;"
                 >
                   {{'KSUS02_3' | i18n}}
                 </td>
-                <td class="uk-bg-disable" style="width: 51px; height: 18px;text-align: center;">
+                <td class="uk-bg-disable" style="width: 51px; height: 18px;text-align: center; color:#404040;">
                   {{'KSUS02_4' | i18n}}
                 </td>
-                <td class="uk-bg-disable" style="width: 51px;text-align: center;">{{'KSUS02_5' | i18n}}</td>
-                <td class="uk-bg-disable" style="width: 51px;text-align: center;">{{'KSUS02_6' | i18n}}</td>
-                <td class="uk-bg-disable" style="width: 51px;text-align: center;">{{'KSUS02_7' | i18n}}</td>
-                <td class="uk-bg-disable" style="width: 51px;text-align: center;">{{'KSUS02_8' | i18n}}</td>
+                <td class="uk-bg-disable" style="width: 51px;text-align: center; color:#404040;">{{'KSUS02_5' | i18n}}</td>
+                <td class="uk-bg-disable" style="width: 51px;text-align: center; color:#404040;">{{'KSUS02_6' | i18n}}</td>
+                <td class="uk-bg-disable" style="width: 51px;text-align: center; color:#404040;">{{'KSUS02_7' | i18n}}</td>
+                <td class="uk-bg-disable" style="width: 51px;text-align: center; color:#404040;">{{'KSUS02_8' | i18n}}</td>
                 <td
                   id="d-1"
                   class="uk-bg-schedule-saturday"
-                  style="width: 51px;text-align: center;"
+                  style="width: 51px;text-align: center; color:#0000FF;"
                 >
                   {{'KSUS02_9' | i18n}}
                 </td>
@@ -88,7 +88,7 @@
                   v-bind:key="index"
                   v-on="{ click: item.disable || !item.canUpdateCell? () =>{}: cellFocus }"
                   :id="item.id"
-                  :class="item.disable ? 'uk-bg-white-smoke w-51' : 'w-51'"
+                  :class="item.disable ? 'uk-bg-white-smoke w-51' : !item.canUpdateCell ? 'uk-bg-silver w-51': 'w-51'"
                 >
                   <div
                     v-if="item.disable == true"
@@ -120,7 +120,7 @@
                   v-bind:key="index"
                   v-on="{ click: item.disable || !item.canUpdateCell? () =>{}: cellFocus }"
                   :id="item.id"
-                  :class="item.disable ? 'uk-bg-white-smoke w-51' : 'w-51'"
+                  :class="item.disable ? 'uk-bg-white-smoke w-51' : !item.canUpdateCell ? 'uk-bg-silver w-51': 'w-51'"
                 >
                   <div
                     v-if="item.disable == true"
@@ -152,7 +152,7 @@
                   v-bind:key="index"
                   v-on="{ click: item.disable || !item.canUpdateCell? () =>{}: cellFocus }"
                   :id="item.id"
-                  :class="item.disable ? 'uk-bg-white-smoke w-51' : 'w-51'"
+                  :class="item.disable ? 'uk-bg-white-smoke w-51' : !item.canUpdateCell ? 'uk-bg-silver w-51': 'w-51'"
                 >
                   <div
                     v-if="item.disable == true"
@@ -184,7 +184,7 @@
                   v-bind:key="index"
                   v-on="{ click: item.disable || !item.canUpdateCell? () =>{}: cellFocus }"
                   :id="item.id"
-                  :class="item.disable ? 'uk-bg-white-smoke w-51' : 'w-51'"
+                  :class="item.disable ? 'uk-bg-white-smoke w-51' : !item.canUpdateCell ? 'uk-bg-silver w-51': 'w-51'"
                 >
                   <div
                     v-if="item.disable == true"
@@ -216,7 +216,7 @@
                   v-bind:key="index"
                   v-on="{ click: item.disable || !item.canUpdateCell? () =>{}: cellFocus }"
                   :id="item.id"
-                  :class="item.disable ? 'uk-bg-white-smoke w-51' : 'w-51'"
+                  :class="item.disable ? 'uk-bg-white-smoke w-51' : !item.canUpdateCell ? 'uk-bg-silver w-51': 'w-51'"
                 >
                   <div
                     v-if="item.disable == true"
@@ -248,7 +248,7 @@
                   v-bind:key="index"
                   v-on="{ click: item.disable || !item.canUpdateCell? () =>{}: cellFocus }"
                   :id="item.id"
-                  :class="item.disable ? 'uk-bg-white-smoke w-51' : 'w-51'"
+                  :class="item.disable ? 'uk-bg-white-smoke w-51' : !item.canUpdateCell ? 'uk-bg-silver w-51': 'w-51'"
                 >
                   <div
                     v-if="item.disable == true"
