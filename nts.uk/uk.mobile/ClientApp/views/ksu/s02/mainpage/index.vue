@@ -1,5 +1,5 @@
 <template>
-  <div id="app_uk_mobile">
+<div class="ksus02">
     <div class="wrapper">
       <div
         class="container-fluid px-3"
@@ -47,5 +47,5 @@
         </div>
       </div>
     </div>
-  </div>
+</div>
 </template>
