@@ -75,7 +75,7 @@ public class GetInforOnTargetPeriod {
 	@Inject
 	private WorkTypeRepository workTypeRepo;
 	
-	final static String DATE_TIME_FORMAT = "YYYY/MM/DD";
+	final static String DATE_TIME_FORMAT = "yyyy/MM/dd";
 	
 	public InforOnTargetPeriodDto handle(InforOnTargetPeriodInput input) {
 		
@@ -85,23 +85,24 @@ public class GetInforOnTargetPeriod {
 		GetCombinationrAndWorkHolidayAtrRequireImpl getComAndWorkHolidayAtrRequire = new GetCombinationrAndWorkHolidayAtrRequireImpl(companyId, shiftMasterRepo, workTypeRepo);
 		
 		if (!(input.getDesiredPeriodWork().getStart().length() > 0) || !(input.getDesiredPeriodWork().getEnd().length() > 0)) {
-			return null;
+			return new InforOnTargetPeriodDto();
 		}
 		
 		List<DesiredSubmissionStatusByDate> listDesiredSubmissionStatusByDate = new ArrayList<DesiredSubmissionStatusByDate>();
 		DatePeriod desiredPeriodWork = new DatePeriod(GeneralDate.fromString(input.getDesiredPeriodWork().getStart(), DATE_TIME_FORMAT), GeneralDate.fromString(input.getDesiredPeriodWork().getEnd(), DATE_TIME_FORMAT));
 		
 		// 1: [Optional<勤務希望期間>．isPresent]: <call>()
-		desiredPeriodWork.forEach(e -> {
-			
+		for (GeneralDate currentStart = desiredPeriodWork.start();
+				currentStart.beforeOrEquals(desiredPeriodWork.end());
+				currentStart = currentStart.increase()) {
 			// 1.1: 取得する(require, 社員ID, 年月日): 希望提出状況
-			DesiredSubmissionStatus status = GetStatusSubmissionWishes.get(getStatusSubmissionWishesRequire, empId, e);    
-			DesiredSubmissionStatusByDate item = new DesiredSubmissionStatusByDate(e.toString(), status.value);
+			DesiredSubmissionStatus status = GetStatusSubmissionWishes.get(getStatusSubmissionWishesRequire, empId, currentStart);    
+			DesiredSubmissionStatusByDate item = new DesiredSubmissionStatusByDate(currentStart.toString(), status.value);
 			listDesiredSubmissionStatusByDate.add(item);
-		});
+		}
 		
 		if (!(input.getScheduledWorkingPeriod().getStart().length() > 0) || !(input.getScheduledWorkingPeriod().getEnd().length() > 0)) {
-			return null;
+			return new InforOnTargetPeriodDto();
 		}
 		
 		DatePeriod scheduledWorkingPeriod = new DatePeriod(GeneralDate.fromString(input.getScheduledWorkingPeriod().getStart(), DATE_TIME_FORMAT), GeneralDate.fromString(input.getScheduledWorkingPeriod().getEnd(), DATE_TIME_FORMAT));
@@ -126,7 +127,6 @@ public class GetInforOnTargetPeriod {
 				boolean check = false;
 				List<AttendanceDto> listAttendaceDto = new ArrayList<AttendanceDto>();
 				
-				
     			Optional<TimeLeavingOfDailyAttd> optTimeLeaving = workSchedule.getOptTimeLeaving();
     			
     			if (optTimeLeaving.isPresent()) {
@@ -134,7 +134,6 @@ public class GetInforOnTargetPeriod {
     																												e.getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get().getInDayTimeWithFormat())).collect(Collectors.toList());
     			}
 	    		
-				
 				// map by workTimeCode and workTypeCode
 				if (k.getWorkTypeCode().v() == workSchedule.getWorkInfo().getRecordInfo().getWorkTypeCode().v()) {
 					
