@@ -19,6 +19,9 @@ import javax.persistence.Version;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.uk.ctx.at.function.dom.annualworkschedule.CalculationFormulaOfItem;
 import nts.uk.ctx.at.function.dom.annualworkschedule.ItemsOutputToBookTable;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
@@ -28,10 +31,11 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * 
  * @author LienPTK
  */
-@Data
 @Entity
 @Table(name = "KFNMT_RPT_WK_YEAR_ITEM")
-@EqualsAndHashCode(callSuper = true)
+@Getter
+@Setter
+@NoArgsConstructor
 public class KfnmtRptWkYearItem extends ContractUkJpaEntity implements Serializable
 															 , ItemsOutputToBookTable.MementoSetter
 															 , ItemsOutputToBookTable.MementoGetter {

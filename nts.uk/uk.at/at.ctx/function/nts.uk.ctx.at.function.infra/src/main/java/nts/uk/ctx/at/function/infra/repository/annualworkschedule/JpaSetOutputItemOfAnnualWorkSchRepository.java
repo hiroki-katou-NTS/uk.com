@@ -10,7 +10,6 @@ import nts.uk.ctx.at.function.dom.annualworkschedule.SettingOutputItemOfAnnualWo
 import nts.uk.ctx.at.function.dom.annualworkschedule.repository.SetOutputItemOfAnnualWorkSchRepository;
 import nts.uk.ctx.at.function.infra.entity.annualworkschedule.KfnmtRptWkYearItem;
 import nts.uk.ctx.at.function.infra.entity.annualworkschedule.KfnmtRptWkYearSet;
-import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtRptWkDaiOutatd;
 
 @Stateless
 public class JpaSetOutputItemOfAnnualWorkSchRepository extends JpaRepository implements SetOutputItemOfAnnualWorkSchRepository {

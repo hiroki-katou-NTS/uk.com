@@ -14,6 +14,8 @@ import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.function.app.command.annualworkschedule.SetOutItemsWoScCommand;
 import nts.uk.ctx.at.function.app.command.annualworkschedule.SetOutItemsWoScCommandSaveHandler;
+import nts.uk.ctx.at.function.app.command.annualworkschedule.SetOutItemsWoScDeleteCommand;
+import nts.uk.ctx.at.function.app.command.annualworkschedule.SetOutItemsWoScDeleteCommandHandler;
 import nts.uk.ctx.at.function.app.export.annualworkschedule.AnnualWorkScheduleExportQuery;
 import nts.uk.ctx.at.function.app.export.annualworkschedule.AnnualWorkScheduleExportService;
 import nts.uk.ctx.at.function.app.find.annualworkschedule.AnnualWorkScheduleDuplicateDto;
@@ -25,7 +27,6 @@ import nts.uk.ctx.at.function.app.find.annualworkschedule.RoleWhetherLoginFinder
 import nts.uk.ctx.at.function.app.find.annualworkschedule.SetOutItemsWoScDto;
 import nts.uk.ctx.at.function.app.find.annualworkschedule.SetOutputItemOfAnnualWorkSchDto;
 import nts.uk.ctx.at.function.app.find.annualworkschedule.SettingOutputItemOfAnnualWorkScheduleFinder;
-import nts.uk.ctx.at.function.app.find.attendancerecord.duplicate.AttendanceRecordDuplicateDto;
 import nts.uk.ctx.at.function.dom.annualworkschedule.enums.OutputAgreementTime;
 import nts.uk.ctx.at.function.dom.annualworkschedule.enums.PageBreakIndicator;
 import nts.uk.ctx.at.function.dom.annualworkschedule.enums.ValueOuputFormat;
@@ -56,6 +57,9 @@ public class Kwr008WebService extends WebService {
 	
 	@Inject
 	private SetOutItemsWoScCommandSaveHandler saveHandler;
+	
+	@Inject
+	private SetOutItemsWoScDeleteCommandHandler removeHandler;
 
 	@POST
 	@Path("getCurrentLoginerRole")
@@ -127,8 +131,8 @@ public class Kwr008WebService extends WebService {
 	 */
 	@POST
 	@Path("delete/outputitemsetting")
-	public void deleteOutputItemSetting(SetOutItemsWoScCommand command){
-//		this.rmOutputItemSetting.handle(command);
+	public void deleteOutputItemSetting(SetOutItemsWoScDeleteCommand command){
+		this.removeHandler.handle(command);
 	}
 	
 	@POST

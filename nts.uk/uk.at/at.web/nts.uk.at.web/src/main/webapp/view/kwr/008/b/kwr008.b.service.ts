@@ -30,7 +30,7 @@ module nts.uk.at.view.kwr008.b.service{
     }
     
     export function deleteOutputItemSetting(command : any): JQueryPromise<any>{
-        return ajax(paths.deleteOutputItemSetting, command);
+        return ajax('at', paths.deleteOutputItemSetting, command);
     }
     
     export function getValueOutputFormat(): JQueryPromise<Array<share.EnumConstantDto>>{

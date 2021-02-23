@@ -294,9 +294,11 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             confirm({ messageId: 'Msg_18' }).ifYes(() => {
 
                 let selectedIndex = _.findIndex(vm.listStandardImportSetting(), (obj) => { return obj.layoutId() == vm.selectedLayoutId(); });
-
-                let data = ko.toJS(vm.listStandardImportSetting()[selectedIndex]);
-                vm.listStandardImportSetting.remove((item: any) => { return item.layoutId() == data.layoutId; });
+                let setOutItemsWoScDeleteCommand: any = {
+                    'layoutId': vm.selectedLayoutId()
+                }
+                let data = ko.toJS(setOutItemsWoScDeleteCommand);
+                
                 // send request remove item
                 service.deleteOutputItemSetting(data).done(() => {
                     info({ messageId: 'Msg_16' }).then(() => {
@@ -310,6 +312,8 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                             }
                         }
                     });
+                }).always(() => {
+                    vm.listStandardImportSetting.remove((item: any) => { return item.layoutId() == data.layoutId; });
                 });
 
             });
@@ -332,7 +336,21 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             };
             nts.uk.ui.windows.setShared("KWR008CParam", param);
             nts.uk.ui.windows.sub.modal("at", "/view/kwr/008/c/index.xhtml").onClosed(() => {
-               // TODO
+                block.invisible();
+                let kwr008CData = nts.uk.ui.windows.getShared("KWR008CDATA");
+                if (kwr008CData) {
+                    service.findAllBySettingType(kwr008CData.settingType, this.selectedPrintForm())
+                    .done((res) => {
+                        self.listStandardImportSetting = ko.observableArray([]);
+                        var dataSorted = _.sortBy(res, ['cd']);
+                        for (let i = 0, count = res.length; i < count; i++) {
+                            self.listStandardImportSetting.push(new SetOutputItemOfAnnualWorkSchDto(dataSorted[i]));
+                        }
+                    })
+                    .always(() => block.clear());
+
+                }
+                
             });
         }
 

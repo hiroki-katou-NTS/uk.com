@@ -8,13 +8,18 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.uk.ctx.at.function.dom.annualworkschedule.ItemsOutputToBookTable;
 import nts.uk.ctx.at.function.dom.annualworkschedule.SettingOutputItemOfAnnualWorkSchedule;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
@@ -25,10 +30,11 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  * @author LienPTK
  *
  */
-@Data
 @Entity
 @Table(name = "KFNMT_RPT_WK_YEAR_SET")
-@EqualsAndHashCode(callSuper = true)
+@Getter
+@Setter
+@NoArgsConstructor
 public class KfnmtRptWkYearSet extends ContractUkJpaEntity implements Serializable
 															, SettingOutputItemOfAnnualWorkSchedule.MementoSetter
 															, SettingOutputItemOfAnnualWorkSchedule.MementoGetter {
@@ -98,7 +104,8 @@ public class KfnmtRptWkYearSet extends ContractUkJpaEntity implements Serializab
 	@Column(name = "SUM_AVG_DISP")
 	private Integer totalAverageDisplay;
 
-	@OneToMany(mappedBy = "kfnmtRptWkYearSet", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(cascade=CascadeType.ALL, mappedBy = "kfnmtRptWkYearSet", orphanRemoval = true, fetch = FetchType.LAZY)
+	@JoinColumn(name="LAYOUT_ID", referencedColumnName="LAYOUT_ID")
 	private List<KfnmtRptWkYearItem> lstKfnmtRptWkYearItems;
 
 	@Override
