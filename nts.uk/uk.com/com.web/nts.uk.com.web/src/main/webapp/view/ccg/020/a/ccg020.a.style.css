@@ -37,8 +37,8 @@
   display: block !important;
   line-height: 2;
   padding-left: 10px;
-  padding-right: 10px;
-  width: 235px;
+  padding-right: 5px;
+  width: 220px;
 }
 #popup-result, #popup-search {
   min-width: 182px;
