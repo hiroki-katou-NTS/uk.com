@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreMaxAverageTimeMulti;
+import nts.arc.time.calendar.Year;
 
 public interface AgreementTimeByPeriodAdapter {
 	
@@ -20,4 +20,14 @@ public interface AgreementTimeByPeriodAdapter {
 	Optional<AgreMaxAverageTimeMultiImport> maxAverageTimeMulti(String companyId, String employeeId, GeneralDate criteria,
 			YearMonth yearMonth);
 
+	/**
+	 * 指定年36協定年間時間の取得
+	 * @param companyId 会社ID
+	 * @param employeeId 社員ID
+	 * @param criteria 基準日
+	 * @param year 年度
+	 * @return 36協定年間時間
+	 */
+	// RequestList549
+	Optional<AgreementTimeYearImport> timeYear(String employeeId, GeneralDate criteria, Year year);
 }
