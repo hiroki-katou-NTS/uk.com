@@ -600,6 +600,8 @@ module nts.uk.at.view.ccg005.a.screenModel {
         //set characteristic
         if (vm.favoriteInputDateCharacter()) {
           vm.favoriteInputDate(vm.favoriteInputDateCharacter());
+        } else {
+          vm.favoriteInputDate(vm.favoriteSpecifyData()[0].inputDate);
         }
       }).always(() => vm.$blockui('clear'));
     }
@@ -1090,14 +1092,16 @@ module nts.uk.at.view.ccg005.a.screenModel {
             .attr("src", (nts.uk.request as any).liveView(atdInfo.avatarDto.fileId))
           );
       } else {
-        $(`#${ID_AVATAR_CHANGE}`).ready(() => {
-          $(`#${ID_AVATAR_CHANGE}`).append(
-            `<div id='CCG005_no_avatar'>
-              <p style="text-align: center; margin: 0 auto; font-size: 15px">
-                ${vm.businessName().replace(/\s/g, '').substring(0, 2)}
-              </p>
-            </div>`
-          );
+        vm.$nextTick(() => {
+          $(`#${ID_AVATAR_CHANGE}`).ready(() => {
+            $(`#${ID_AVATAR_CHANGE}`).append(
+              `<div id='CCG005_no_avatar'>
+                <p style="text-align: center; margin: 0 auto; font-size: 15px">
+                  ${vm.businessName().replace(/\s/g, '').substring(0, 2)}
+                </p>
+              </div>`
+            );
+          });
         });
       }
       // 表示初期の在席データDTO.在席情報DTO.在席のステータス

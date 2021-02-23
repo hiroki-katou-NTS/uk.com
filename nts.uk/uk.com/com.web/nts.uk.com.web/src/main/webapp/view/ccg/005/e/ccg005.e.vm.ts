@@ -62,7 +62,7 @@ module nts.uk.at.view.ccg005.e.screenModel {
       }).then((data: GoOutEmployeeInformationDto) => {
 
         //if data present -> bind data to UI
-        if(data.goOutDate) {
+        if (data.goOutDate) {
           vm.enableDeleteBtn(true);
           vm.goOutReason(data.goOutReason);
           vm.goOutTime(data.goOutTime);
@@ -120,37 +120,47 @@ module nts.uk.at.view.ccg005.e.screenModel {
         if (valid) {
 
           //check that go out time must before comeback time
-          if(vm.goOutTime() > vm.comebackTime()) {
+          if (vm.goOutTime() > vm.comebackTime()) {
             return vm.$dialog.error({ messageId: "Msg_2075" });
           }
 
           //if go out time is after now, notice user
-          if(vm.goOutTime() > Number(moment.utc().hours()*60 + moment.utc().minutes())) {
-            vm.$dialog.info({ messageId: "Msg_2074" }).then(() => {
-              const gouOutInfo = new GoOutEmployeeInformation({
-                goOutTime: vm.goOutTime(),
-                goOutReason: vm.goOutReason(),
-                goOutDate: moment(vm.goOutDate()),
-                comebackTime: vm.comebackTime(),
-                sid: vm.sid(),
-              });
-
-              //call API
-              vm.$blockui('grayout');
-              vm.$ajax(API.saveOrUpdate, gouOutInfo)
-                .then(() => {
-                  vm.$blockui('clear');
-                  vm.$dialog.info({ messageId: "Msg_15" });
-                  vm.isGoOut(true);
-                  vm.$window.close(vm.isGoOut());
-                })
-                .always(() => {
-                  vm.$blockui('clear');
-                });
-            })
+          const afterToday = moment(vm.goOutDate()).isAfter(moment());
+          const now = Number(moment().hours() * 60 + moment().minutes());
+          
+          if (afterToday) {
+            return vm.$dialog.info({ messageId: "Msg_2074" }).then(() => vm.insertGoOut());
           }
+          if (vm.goOutTime() > now) {
+            return vm.$dialog.info({ messageId: "Msg_2074" }).then(() => vm.insertGoOut());
+          }
+          return vm.insertGoOut();
         }
       });
+    }
+
+    private insertGoOut() {
+      const vm = this;
+      const gouOutInfo = new GoOutEmployeeInformation({
+        goOutTime: vm.goOutTime(),
+        goOutReason: vm.goOutReason(),
+        goOutDate: moment(vm.goOutDate()),
+        comebackTime: vm.comebackTime(),
+        sid: vm.sid(),
+      });
+
+      //call API
+      vm.$blockui('grayout');
+      vm.$ajax(API.saveOrUpdate, gouOutInfo)
+        .then(() => {
+          vm.$blockui('clear');
+          vm.$dialog.info({ messageId: "Msg_15" });
+          vm.isGoOut(true);
+          vm.$window.close(vm.isGoOut());
+        })
+        .always(() => {
+          vm.$blockui('clear');
+        });
     }
   }
 
