@@ -34,6 +34,8 @@ module nts.uk.at.view.kmk013.c {
             roundingC612: KnockoutObservableArray<any>;
             selectedC612: any;
 
+            itemListC2_3: KnockoutObservableArray<any>;
+
             //c8
             itemsC8: KnockoutObservableArray<GridItem>;
             //c9
@@ -120,6 +122,12 @@ module nts.uk.at.view.kmk013.c {
                     { code: 1, name: nts.uk.resource.getText('KMK013_96') },
                     { code: 0, name: nts.uk.resource.getText('KMK013_97') },
                 ]);
+
+                self.itemListC2_3 = ko.observableArray([
+                    { code: 1, name: nts.uk.resource.getText('KMK013_91') },
+                    { code: 0, name: nts.uk.resource.getText('KMK013_92') },
+                ]);
+
                 self.selectedC612 = ko.observable(1);
                 self.selectedValueC23.subscribe(newValue => {
                     if (newValue == 1) {
@@ -296,11 +304,11 @@ module nts.uk.at.view.kmk013.c {
                 service.save(data).done(() => {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     blockUI.clear();
-                    $(".radio-btn-left-content").focus();
+                    $('#C2_3').focus();
                 }).fail((error) => {
                     console.log(error);
                     blockUI.clear();
-                    $(".radio-btn-left-content").focus();
+                    $('#C2_3').focus();
                 });
             }
             initData(): JQueryPromise<any> {

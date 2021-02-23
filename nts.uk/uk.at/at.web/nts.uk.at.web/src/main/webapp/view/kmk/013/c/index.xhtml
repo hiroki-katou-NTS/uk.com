@@ -27,17 +27,14 @@
 						<td class="left-contents">
 							<div class="name-label"
 								data-bind="ntsFormLabel: {required: true,inline: inline }">#{i18n.getText('KMK013_89')}</div>
-							<div>
-								<hr />
-							</div>
-							<div tabindex="3" class="radio-btn-left-content">
-								<label class="ntsRadioBox"> <input type="radio"
-									name="textRadioC23"
-									data-bind="checkedValue: 1, checked: selectedValueC23" />
-									<span class="box"></span>
-									<span class="label"
-									data-bind="text: '#{i18n.getText('KMK013_91')}'"></span>
-								</label>
+							<div  class="radio-btn-left-content">
+								<div tabindex="3" id="C2_3" data-bind="ntsRadioBoxGroup: {
+													options: itemListC2_3,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: selectedValueC23,
+													enable: true,
+													name: '#KMK013_90'}"></div>
 								<div id="c3_1">#{i18n.getText('KMK013_93')}</div>
 								<hr />
 								<div class="group-label-switch">
@@ -190,13 +187,6 @@
 											value: selectedC612 }">
 									</div>
 								</div>
-								<label class="ntsRadioBox"> <input type="radio"
-									name="textRadioC23"
-									data-bind="checkedValue: 0, checked: selectedValueC23" />
-									<span class="box"></span>
-									<span class="label"
-									data-bind="text: '#{i18n.getText('KMK013_92')}'"></span>
-								</label> 
 							</div>
 						</td>
 						<td class="right-contents">
