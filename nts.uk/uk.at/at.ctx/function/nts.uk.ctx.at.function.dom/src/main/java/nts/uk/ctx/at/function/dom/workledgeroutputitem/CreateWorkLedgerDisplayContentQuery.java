@@ -132,11 +132,13 @@ public class CreateWorkLedgerDisplayContentQuery {
                         val primitiveValue = attributeMonthly.getPrimitiveValue().isPresent() ? attributeMonthly.getPrimitiveValue().get() : null;
                         String nameDisplay = "";
                         if (valueSub != null) {
-                            if (primitiveValue != null && valueSub.booleanOrDefault()) {
-                                val key = valueSub.value().toString();
+                            if (primitiveValue != null ) {
+                                val key = valueSub.getValue();
                                 val name = allDataMaster.getOrDefault(primitiveValue.value, null);
                                 if (name != null) {
-                                    nameDisplay = name.get(key) != null ? name.get(key).getName() : valueSub.value();
+                                    nameDisplay = name.get(key) != null ? name.get(key).getName() : key;
+                                }else {
+                                    nameDisplay = key;
                                 }
                             }
                             monthlyValues.add(new MonthlyValue(

@@ -44,6 +44,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.company.CompanyBsImport;
+import nts.uk.screen.at.app.dailyperformance.correction.dto.type.TypeLink;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
@@ -107,13 +108,15 @@ public class WorkLedgerOutputItemService extends ExportService<WorkLedgerOutputI
     @Inject
     private GetMaterData getMaterData;
 
-    private static final int WORKPLACE = 5;
+    private static final int WORKPLACE = 10;
 
-    private static final int EMPLOYMENT = 8;
+    private static final int EMPLOYMENT = 7;
 
-    private static final int POSITION = 7;
+    private static final int POSITION = 9;
 
-    private static final int CLASSIFICATION = 6;
+    private static final int CLASSIFICATION = 8;
+
+    private static final int BUSINESS_TYPE = 21;
 
     @Override
     protected void handle(ExportServiceContext<WorkLedgerOutputItemFileQuery> context) {
@@ -258,10 +261,11 @@ public class WorkLedgerOutputItemService extends ExportService<WorkLedgerOutputI
             val data = getMaterData.getAllDataMaster(companyId, dateReference, lstDivNO);
             Map<Integer, Map<String, CodeNameInfoDto>> rs = new HashMap<>();
             Map<Integer, Map<String, CodeNameInfo>> listItem = new HashMap<>();
-            listItem.put(WORKPLACE, data.getOrDefault(WORKPLACE, null));
-            listItem.put(EMPLOYMENT, data.getOrDefault(EMPLOYMENT, null));
-            listItem.put(POSITION, data.getOrDefault(POSITION, null));
-            listItem.put(CLASSIFICATION, data.getOrDefault(CLASSIFICATION, null));
+            listItem.put(WORKPLACE, data.getOrDefault(TypeLink.WORKPLACE.value, null));
+            listItem.put(EMPLOYMENT, data.getOrDefault(TypeLink.EMPLOYMENT.value, null));
+            listItem.put(POSITION, data.getOrDefault(TypeLink.POSSITION.value, null));
+            listItem.put(CLASSIFICATION, data.getOrDefault(TypeLink.CLASSIFICATION.value, null));
+            listItem.put(BUSINESS_TYPE, data.getOrDefault(TypeLink.BUSINESS_TYPE.value, null));
 
             listItem.forEach((k, e) -> {
                 Map<String, CodeNameInfoDto> item = new HashMap<>();
