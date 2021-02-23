@@ -839,9 +839,13 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 						} else {
 							return;
 						}
-					} else if (_.isNumber(workHours1.start()) && _.isNumber(workHours1.end()) && self.isBindFirstBreakTime) {
+					} 
+					//else if (_.isNumber(workHours1.start()) && _.isNumber(workHours1.end()) && self.isBindFirstBreakTime) {
+					//	self.isBindFirstBreakTime = false;
+					// }	
+					else {
 						self.isBindFirstBreakTime = false;
-					}	
+					}
 				}, self).extend({notify: 'always', rateLimit: 200});
 				let workHours2 = {} as WorkHours;
 				workHours2.start = ko.observable(null);
@@ -855,6 +859,11 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 				return;
 			}
 			
+			// next app , so clear text
+			self.workInfo().workHours1.start(null);
+			self.workInfo().workHours1.end(null);
+			self.workInfo().workHours2.start(null);
+			self.workInfo().workHours2.end(null);
 			
 			// bind data when action 
 			if (!self.isStart) {
@@ -1149,6 +1158,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 		
 		createRestTime(restTime: KnockoutObservableArray<RestTime>) {
 			const self = this;
+			
 			let restTimeArray = [];
 			let length = 10;
 			for (let i = 1; i < length + 1; i++) {
@@ -2687,6 +2697,11 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 						
 						self.dataSource.calculatedFlag = res.calculatedFlag;
 						self.assignWorkHourAndRest();
+					} else {
+						_.forEach(self.restTime(), (item: RestTime) => {
+								item.start(null);
+								item.end(null);
+						});
 					}
 				})
 				.fail((res: any) => {
