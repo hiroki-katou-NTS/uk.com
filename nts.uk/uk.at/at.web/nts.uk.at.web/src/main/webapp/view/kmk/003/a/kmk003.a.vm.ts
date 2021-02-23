@@ -495,8 +495,8 @@ module nts.uk.at.view.kmk003.a {
             private setFlexOptionVisibility(): void {
                 let self = this;
                 if (!self.flexWorkManaging) {
-                    self.settingEnum.workTimeDailyAtr = _.filter(self.settingEnum.workTimeDailyAtr, item => item.fieldName != 'FLEX_WORK');
-                    self.workTimeSettingLoader.workTimeAtrEnums = _.filter(self.workTimeSettingLoader.workTimeAtrEnums, item => item.fieldName != 'FLEX_WORK');
+                    // self.settingEnum.workTimeDailyAtr = _.filter(self.settingEnum.workTimeDailyAtr, item => item.fieldName != 'FLEX_WORK');
+                    // self.workTimeSettingLoader.workTimeAtrEnums = _.filter(self.workTimeSettingLoader.workTimeAtrEnums, item => item.fieldName != 'FLEX_WORK');
                 }
             }
 
