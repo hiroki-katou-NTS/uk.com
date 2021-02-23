@@ -97,6 +97,7 @@ module nts.uk.at.view.kmk013.j {
                     nts.uk.ui.dialog.alertError({ messageId: err.messageId });
                 }).always(() => {
                     nts.uk.ui.block.clear();
+                    $('#J3_2').focus();
                 });
                 return dfd.promise();
             }
@@ -161,7 +162,7 @@ module nts.uk.at.view.kmk013.j {
 
                 $.when(service.registerVertical(data)).done(()=>{
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                                $('#trans-attend').focus();
+                                $('#J3_2').focus();
                     });
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message);

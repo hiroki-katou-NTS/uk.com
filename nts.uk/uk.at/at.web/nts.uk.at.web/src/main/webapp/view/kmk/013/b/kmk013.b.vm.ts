@@ -902,6 +902,7 @@ module nts.uk.at.view.kmk013.b_ref {
                 let self = this;
 
                 nts.uk.ui.windows.sub.modal("/view/kmk/013/r/index.xhtml").onClosed(() => {
+                    self.initData();
                     nts.uk.ui.block.clear();
                 });
             }
