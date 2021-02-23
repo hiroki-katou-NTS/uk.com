@@ -25,8 +25,8 @@ export class KSUS01AComponent extends Vue {
 
     public yearMonthOldVal: string = moment().format('YYYYMM');
     public yearMonth: string = moment().format('YYYYMM');
-    public startDate: string = moment().format('YYYY/MM/DD');
-    public endDate: string = moment().format('YYYY/MM/DD');
+    public startDate: string = '';
+    public endDate: string = '';
     public publicOpAtr: boolean = false;
     public workDesiredOpAtr: boolean = false;
     public endDatePublicationPeriod: string = null;
@@ -249,7 +249,7 @@ export class KSUS01AComponent extends Vue {
                 color: 'add8e6',
             };
             let data: InforOnTargetDateDto = {
-                businessNames: ['test1', 'test2', 'test3', '名前例1', '名前例2'],
+                businessNames: ['test1', 'test2', 'test3', '名前例1', '名前例2', '名前例3', '名前例4', '名前例5', 'test1', 'test2', 'test3', '名前例1', '名前例2', '名前例3', '名前例4', '名前例5'],
                 listWorkInforAndTimeZone: [restDesire, earlyHalfDesire, lateHalfDesire, workDesire],
                 memo: 'demo memo',
                 listAttendanceDto: []
@@ -303,6 +303,7 @@ export class KSUS01AComponent extends Vue {
         let self = this;
         self.$mask('show');
         self.fakeDataInit().then((data: InitInformation) => {
+        // self.$http.post('at', API.start).then((data: InitInformation) => {
             self.startDate = data.start;
             self.endDate = data.end;
             self.endDatePublicationPeriod = data.endDatePublicationPeriod;
@@ -356,6 +357,7 @@ export class KSUS01AComponent extends Vue {
         };
         console.log(command, 'command');
         self.fakeDataDatePeriod(command).then((data: InforOnTargetPeriodDto) => {
+        // self.$http.post('at', API.changeDatePeriod, command).then((data: InforOnTargetPeriodDto) => {
             self.listWorkSchedule = data.listWorkSchedule;
             self.listDesiredSubmissionStatusByDate = data.listDesiredSubmissionStatusByDate;
             self.bindDateCellList();
@@ -549,6 +551,7 @@ export class KSUS01AComponent extends Vue {
         };
 
         self.fakeDataDateTarget(command).then((data: InforOnTargetDateDto) => {
+        // self.$http.post('at', API.getDateDetail, command).then((data: InforOnTargetDateDto) => {
             self.detailCell.displayData.otherStaffs = data.businessNames.join(', ');
             self.detailCell.displayData.workDesireMemo = data.memo;
             self.detailCell.displayData.workScheduleTimeZone = data.listAttendanceDto;
