@@ -68,8 +68,7 @@ public class EmpInfoTerminalTest {
 	public void testCreateReservRecord() {
 
 		StampRecord recordExpect = new StampRecord(new ContractCode(""), new StampNumber("1"),
-				GeneralDateTime.ymdhms(2020, 03, 03, 01, 01, 01), new StampTypeDisplay(""),
-				Optional.of(new EmpInfoTerminalCode("1")));
+				GeneralDateTime.ymdhms(2020, 03, 03, 01, 01, 01), new StampTypeDisplay(""));
 
 		ReservationReceptionData receptionData = new ReservationReceptionData("1", "A", "200303", "010101", "2");
 
