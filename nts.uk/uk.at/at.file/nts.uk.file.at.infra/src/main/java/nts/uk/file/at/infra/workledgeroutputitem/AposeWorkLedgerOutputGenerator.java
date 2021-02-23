@@ -260,10 +260,11 @@ public class AposeWorkLedgerOutputGenerator extends AsposeCellsReportGenerator i
 
     private boolean checkCode( Integer primitive) {
         val listAtt = Arrays.asList(
-                PrimitiveValueOfAttendanceItem.WORK_HOURS_CD,
-                PrimitiveValueOfAttendanceItem.POSITION_CD,
                 PrimitiveValueOfAttendanceItem.EMP_CTG_CD,
-                PrimitiveValueOfAttendanceItem.CLASSIFICATION_CD);
+                PrimitiveValueOfAttendanceItem.CLASSIFICATION_CD,
+                PrimitiveValueOfAttendanceItem.POSITION_CD,
+                PrimitiveValueOfAttendanceItem.WORKPLACE_CD,
+                PrimitiveValueOfAttendanceItem.WORK_TYPE_DIFFERENT_CD);
         return primitive != null && listAtt.stream().anyMatch(x -> x.value == primitive);
     }
 }
