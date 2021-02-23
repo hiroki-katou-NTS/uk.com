@@ -166,7 +166,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 	            }
             }).fail((res: any) => {
                 vm.handlerExecuteErrorMsg(res);
-            }).always(() => vm.$blockui("hide"));
+            });
         }
 
 		getAppType(key: string) {
@@ -446,7 +446,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 });
                 break;
             case "Msg_1691":
-                vm.$dialog.error({ messageId: res.messageId, messageParams: res.parameterIds });
+                vm.$dialog.error({ messageId: res.messageId, messageParams: res.parameterIds }).then(() => {
+					vm.$blockui("hide");
+				});
                 break;
             case "Msg_1692":
             case "Msg_1693": {
@@ -480,7 +482,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             case 'Msg_1686':
             case 'Msg_1706':
             case 'Msg_1983':
-				vm.$dialog.error({ messageId: res.messageId, messageParams: res.parameterIds });
+				vm.$dialog.error({ messageId: res.messageId, messageParams: res.parameterIds }).then(() => {
+					vm.$blockui("hide");
+				});
 				break;
             default:
                 vm.$dialog.error(res.message).then(() => {
