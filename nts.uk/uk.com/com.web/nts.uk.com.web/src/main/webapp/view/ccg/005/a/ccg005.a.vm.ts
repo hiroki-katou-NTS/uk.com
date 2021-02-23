@@ -222,14 +222,14 @@ module nts.uk.at.view.ccg005.a.screenModel {
       <div id="ccg005-star-popup" style="width: 212px;">
         <!-- A3_2.1 -->
         <table>
-          <tr>
-            <td style="text-align: right;">
+          <tr style="height: 25px">
+            <td class="ccg005-bottom-unset" style="text-align: right;">
               <a style="color: blue; text-decoration: underline; cursor: pointer;"
                 data-bind="i18n: 'CCG005_34', click: $component.openScreenCCG005D"></a>
             </td>
           </tr>
           <tr>
-            <td style="padding-top: 10px;">
+            <td class="ccg005-bottom-unset">
               <!-- A3_2.2 -->
               <input data-bind="ntsTextEditor: {
                     value: searchValue,
@@ -243,7 +243,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
             </td>
           </tr>
           <tr>
-            <td style="padding-top: 10px;">
+            <td class="ccg005-bottom-unset">
               <!-- A3_2.3 -->
               <button data-bind="i18n: 'CCG005_32', click: $component.openCDL008"></button>
               <!-- A3_2.4 -->
@@ -256,55 +256,55 @@ module nts.uk.at.view.ccg005.a.screenModel {
       <!-- A1_7 & A4_7 Popup -->
       <div id="ccg005-status-popup">
         <table>
-          <tr data-bind="click: $component.registerAttendanceStatus.bind($component, 0, 196)">
-            <td>
+          <tr style="height: 30px" data-bind="click: $component.registerAttendanceStatus.bind($component, 0, 196)">
+            <td class="ccg005-bottom-unset">
               <i data-bind="visible: $component.visibleNotPresent(), ntsIcon: {no: 78, width: 15, height: 25}"></i>
             </td>
             <!-- A1_7.1 -->
-            <td>
+            <td class="ccg005-bottom-unset">
               <i data-bind="ntsIcon: {no: 196, width: 20, height: 20}"></i>
             </td>
-            <td data-bind="i18n: 'CCG005_43'"></td>
+            <td class="ccg005-bottom-unset" data-bind="i18n: 'CCG005_43'"></td>
           </tr>
-          <tr data-bind="click: $component.registerAttendanceStatus.bind($component, 1, 195)">
-            <td>
+          <tr style="height: 30px" data-bind="click: $component.registerAttendanceStatus.bind($component, 1, 195)">
+            <td class="ccg005-bottom-unset">
               <i data-bind="visible: $component.visiblePresent(), ntsIcon: {no: 78, width: 15, height: 25}"></i>
             </td>
             <!-- A1_7.2 -->
-            <td>
+            <td class="ccg005-bottom-unset">
               <i data-bind="ntsIcon: {no: 195, width: 20, height: 20}"></i>
             </td>
-            <td data-bind="i18n: 'CCG005_22'"></td>
+            <td class="ccg005-bottom-unset" data-bind="i18n: 'CCG005_22'"></td>
           </tr>
-          <tr data-bind="click: $component.openScreenCCG005E">
-            <td>
+          <tr style="height: 30px" data-bind="click: $component.openScreenCCG005E">
+            <td class="ccg005-bottom-unset">
               <i data-bind="visible: $component.visibleGoOut(), ntsIcon: {no: 78, width: 15, height: 25}"></i>
             </td>
             <!-- A1_7.3 -->
-            <td>
+            <td class="ccg005-bottom-unset">
               <i data-bind="ntsIcon: {no: 191, width: 20, height: 20}"></i>
             </td>
-            <td data-bind="i18n: 'CCG005_39'"></td>
+            <td class="ccg005-bottom-unset" data-bind="i18n: 'CCG005_39'"></td>
           </tr>
-          <tr data-bind="click: $component.registerAttendanceStatus.bind($component,3, 196)">
-            <td>
+          <tr style="height: 30px" data-bind="click: $component.registerAttendanceStatus.bind($component,3, 196)">
+            <td class="ccg005-bottom-unset">
               <i data-bind="visible: $component.visibleGoHome(), ntsIcon: {no: 78, width: 15, height: 25}"></i>
             </td>
             <!-- A1_7.4 -->
-            <td>
+            <td class="ccg005-bottom-unset">
               <i data-bind="ntsIcon: {no: 196, width: 20, height: 20}"></i>
             </td>
-            <td data-bind="i18n: 'CCG005_44'"></td>
+            <td class="ccg005-bottom-unset" data-bind="i18n: 'CCG005_44'"></td>
           </tr>
-          <tr data-bind="click: $component.registerAttendanceStatus.bind($component, 4, 197)">
-            <td>
+          <tr style="height: 30px" data-bind="click: $component.registerAttendanceStatus.bind($component, 4, 197)">
+            <td class="ccg005-bottom-unset">
               <i data-bind="visible: $component.visibleHoliday(), ntsIcon: {no: 78, width: 15, height: 25}"></i>
             </td>
             <!-- A1_7.5 -->
-            <td>
+            <td class="ccg005-bottom-unset">
               <i data-bind="ntsIcon: {no: 197, width: 20, height: 20}"></i>
             </td>
-            <td data-bind="i18n: 'CCG005_40'"></td>
+            <td class="ccg005-bottom-unset" data-bind="i18n: 'CCG005_40'"></td>
           </tr>
         </table>
       </div>
@@ -554,7 +554,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       let reloadAvatar: any;
       $('#ccg005-legends').click(() => {
         $('.nts-legendbutton-panel').css('padding', '5px 10px');
-        $('.legend-item-symbol').first().css('border', '1px groove');
+        $('.legend-item-symbol').first().css('border', '1px groove').height(16).width(16);
         $('.legend-item').css('margin-bottom', '5px');
       });
       vm.selectedDate(moment.utc().format('YYYYMMDD'));
