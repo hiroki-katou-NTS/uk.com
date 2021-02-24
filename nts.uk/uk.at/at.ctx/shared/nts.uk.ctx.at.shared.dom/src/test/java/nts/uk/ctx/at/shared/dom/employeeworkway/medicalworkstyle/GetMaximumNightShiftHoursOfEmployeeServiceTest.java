@@ -1,9 +1,5 @@
 package nts.uk.ctx.at.shared.dom.employeeworkway.medicalworkstyle;
-/**
- * UTコード：社員の夜勤上限時間を取得する
- * @author lan_lt
- *
- */
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Optional;
@@ -16,7 +12,11 @@ import mockit.Injectable;
 import mockit.Mocked;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-
+/**
+ * UTコード：社員の夜勤上限時間を取得する
+ * @author lan_lt
+ *
+ */
 public class GetMaximumNightShiftHoursOfEmployeeServiceTest {
 	@Injectable
 	private GetMaximumNightShiftHoursOfEmployeeService.Require require;
