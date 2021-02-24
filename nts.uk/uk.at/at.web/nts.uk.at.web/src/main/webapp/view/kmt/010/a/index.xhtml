@@ -8,9 +8,10 @@
 		<ui:composition template="../../../../master/base.xhtml">
 			<ui:define name="htmlHead">
         <com:scriptfile set="IGNITE" />			
+				<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
 
-				<com:stylefile path="kmt010.tabs.main.css" />
-				<com:scriptfile path="tabs/tab1/kmt010.tab1.vm.js" />
+				<com:stylefile path="tabs/kmt010.tab.main.css" />
+				<com:scriptfile path="tabs/kmt010.tab.vm.js" />
 
 				<com:stylefile path="kmt010.a.css" />
 				<com:scriptfile path="kmt010.a.vm.js" />
@@ -18,33 +19,100 @@
 			
 			<ui:define name="content">
 				<div id="functions-area">
-          Ok
+					<a tabindex="1" class="goback" data-bind="ntsLinkButton: { jump: gobackLink }, text: $vm.$i18n('KMT009_2')"></a>					
+					<button tabindex="2" class="proceed" data-bind="text: $vm.$i18n('KMT009_3'), click: saveRegistrationWork, enable: $root.errors.isEmpty" />
+					<button tabindex="3" class="danger" data-bind="text: $vm.$i18n('KMT009_4'), click: deleteRegistrationWork" />
+					<button tabindex="4" data-bind="text: $vm.$i18n('KMT009_5'), click: openDialogCDL023" />
 				</div>
 				<div id="contents-area">
           <div class="pull-left">
-
-					</div>>
+						<div class="kcp004">
+							<div id="kcp004"></div>
+						</div>
+					</div>
 					<div class="pull-left">
-						<div class="table">
-							<div class="cell">
-								sdfsd
+						<div class="kcp004">
+							<div class="table">
+								<div class="cell">
+									<span data-bind="text: workplaceName"></span>
+								</div>								
+							</div>
+							<hr />
+							<div tabindex="6" id="tab-panel" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
+								
+								<div class="tab-content-1" data-bind="with: tabWorkSettings()[0]">
+									<com:ko-if bind="!!$parent.tabs()[0]">
+									<div
+										data-bind="component: { 
+											name: 'kmt010-tab-work', 
+											params: {
+												listOfWorkItems: $parent.tabWorkSettings,
+												workFrameNoSelection: $parent.workFrameNoSelection,
+												index: 0
+											}
+										}"
+									></div></com:ko-if>
+								</div>
+								
+								<div class="tab-content-2" data-bind="with: tabWorkSettings()[1]">
+									<com:ko-if bind="!!$parent.tabs()[1]">
+									<div
+										data-bind="component: { 
+											name: 'kmt010-tab-work', 
+											params: {
+												listOfWorkItems: $parent.tabWorkSettings,
+												workFrameNoSelection: $parent.workFrameNoSelection,
+												index: 1
+											}
+										}"
+									></div></com:ko-if>
+								</div>
+
+								<div class="tab-content-3" data-bind="with: tabWorkSettings()[2]">
+									<com:ko-if bind="!!$parent.tabs()[2]">
+									<div
+										data-bind="component: { 
+											name: 'kmt010-tab-work', 
+											params: {
+												listOfWorkItems: $parent.tabWorkSettings,
+												workFrameNoSelection: $parent.workFrameNoSelection,
+												index: 2
+											}
+										}"
+									></div></com:ko-if>
+								</div>
+
+								<div class="tab-content-4" data-bind="with: tabWorkSettings()[3]">
+									<com:ko-if bind="!!$parent.tabs()[3]">
+									<div
+										data-bind="component: { 
+											name: 'kmt010-tab-work', 
+											params: {
+												listOfWorkItems: $parent.tabWorkSettings,
+												workFrameNoSelection: $parent.workFrameNoSelection,
+												index: 3
+											}
+										}"
+									></div></com:ko-if>
+								</div>
+
+								<div class="tab-content-5" data-bind="with: tabWorkSettings()[4]">
+									<com:ko-if bind="!!$parent.tabs()[4]">
+									<div
+										data-bind="component: { 
+											name: 'kmt010-tab-work', 
+											params: {
+												listOfWorkItems: $parent.tabWorkSettings,
+												workFrameNoSelection: $parent.workFrameNoSelection,
+												index: 4
+											}
+										}"
+									></div></com:ko-if>
+								</div>
+
 							</div>
 						</div>
-						<div id="tab-panel" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
-							<div class="tab-content-1">
-								<span>Tab Content 1</span><br/>
-							</div>
-							<div class="tab-content-2">
-								<span>Tab Content 2</span><br/>
-							</div>
-							<div class="tab-content-3">
-								<span>Tab Content 3</span><br/>
-							</div>
-							<div class="tab-content-4">
-								<span>Tab Content 4</span><br/>
-							</div>
-						</div>
-					</div>>
+					</div>
 				</div>
 			</ui:define>
 		</ui:composition>
