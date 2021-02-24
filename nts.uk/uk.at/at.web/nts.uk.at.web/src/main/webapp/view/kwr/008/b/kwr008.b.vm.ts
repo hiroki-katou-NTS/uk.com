@@ -402,9 +402,9 @@ module nts.uk.at.view.kwr008.b.viewmodel {
 
             let selectedLst: any[] = [];
             if (!!dataNode.calculationExpression()) {
-                selectedLst = _.map(dataNode.listOperationSetting(), (item) => new share.model.SelectedTimeItem({
-                    itemId: item.toString(),
-                    operator: item.operation() === 1 ? ADDITION : SUBTRACTION
+                selectedLst = _.map(ko.toJS(dataNode.listOperationSetting()), (item: any) => new share.model.SelectedTimeItem({
+                    itemId: item.attendanceItemId,
+                    operator: item.operation === 1 ? ADDITION : SUBTRACTION
                 }));
             }
             attendanceItemTransfer.selectedTimeList = selectedLst;
