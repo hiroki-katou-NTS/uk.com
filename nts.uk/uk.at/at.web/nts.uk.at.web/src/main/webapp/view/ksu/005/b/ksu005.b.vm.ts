@@ -9,15 +9,15 @@ module nts.uk.at.view.ksu005.b {
         UPDATE_SCHEDULE_TABLE_OUTPUT_SETTING:"ctx/at/schedule/scheduletable/update",
         DELETE_SCHEDULE_TABLE_OUTPUT_SETTING:"ctx/at/schedule/scheduletable/delete",
     };
-
+    let checkbox : KnockoutObservable<boolean>= ko.observable(false);
     @bean()
     class Ksu005bViewModel extends ko.ViewModel {
         currentScreen: any = null;
         items: KnockoutObservableArray<ItemModel> =  ko.observableArray([]);
-        persons: KnockoutObservableArray<any> = ko.observableArray([]);;
+        persons: KnockoutObservableArray<any> = ko.observableArray([]);
         columns: KnockoutObservableArray<NtsGridListColumn>;
         columns3: KnockoutObservableArray<NtsGridListColumn>;
-        selectedCode: KnockoutObservable<string>= ko.observable();
+        selectedCode: KnockoutObservable<string>= ko.observable('');
         selectedPerson: KnockoutObservable<any> = ko.observable();
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
         selectedTab: KnockoutObservable<string>;
@@ -52,20 +52,16 @@ module nts.uk.at.view.ksu005.b {
         selectedAttendanceItem: KnockoutObservable<string> = ko.observable("");
 
         isEnableAddBtn :KnockoutObservable<boolean> = ko.observable(true);
+        isEnableDelBtn :KnockoutObservable<boolean> = ko.observable(false);
         isEnableAdditionInfo :KnockoutObservable<boolean> = ko.observable(true);
 
         scheduleTableOutputSetting: KnockoutObservable<ScheduleTableOutputSetting> = ko.observable(new ScheduleTableOutputSetting());
-        exitStatus: KnockoutObservable<string> = ko.observable("Close"); 
-        clonedata  : any;
-
+        
         constructor() {            
             super();
             const self = this;
-          
-            self.clonedata  = self.workplaceCounterCategories();
             self.personalInfoItems.push({value: -1, name:getText('KSU005_68')});
-            self.attendanceItems.push({value: -1 , name:getText('KSU005_68')});
-            // self.personalCounterCategory.push({value: -1 , name:getText('KSU005_68')});
+            self.attendanceItems.push({value: -1 , name:getText('KSU005_68')});           
             self.personalCounterCategory.splice(0, 0, {value: -1 , name:getText('KSU005_68')})
 
             self.columns = ko.observableArray([
@@ -139,6 +135,31 @@ module nts.uk.at.view.ksu005.b {
                 }
             });
 
+            self.checked.subscribe((value) => {
+                self.isEnableDelBtn(value);
+            });
+
+            checkbox.subscribe((v) => {
+                let evens = _.filter(self.itemList(), function (n) {
+                    return n.checked();
+                });
+                if (v) {
+                    if (evens.length > 0) {
+                        self.isEnableDelBtn(true);
+                    }
+                    if(evens.length == self.itemList().length - 1){
+                        self.checkAll(true);
+                    }
+                    checkbox(false);
+                };
+                if (!v) {
+                    if (evens.length == 0) {
+                        self.isEnableDelBtn(false);
+                        self.checkAll(false);
+                    }
+                };
+            });
+
             self.scheduleTableOutputSetting().additionalColumn.subscribe((value) => {
                 if(value == 1 ){
                     self.isEnableAdditionInfo(true);
@@ -146,11 +167,13 @@ module nts.uk.at.view.ksu005.b {
                     self.isEnableAdditionInfo(false);
                 }
             });
+            
             self.selectedCode.subscribe((code: string) => {                
                 if (_.isEmpty(code)) {
                     self.clearData();
                 } else {
                     self.findDetail(code);
+                    self.isEnableDelBtn(false);
                 }
                 self.$blockui("hide");
             });        
@@ -159,8 +182,7 @@ module nts.uk.at.view.ksu005.b {
 
         findDetail(code: string): void {
             const self = this;
-            self.$blockui("invisible");
-            // self.workplaceCounterCategories(__viewContext.enums.WorkplaceCounterCategory);
+            self.$blockui("invisible");            
             self.$ajax(Paths.GET_SCHEDULE_TABLE_OUTPUT_SETTING_BY_CODE + "/" + code).done((data: IScheduleTableOutputSetting) => {
                 self.countNumberRow = 1;
                 if (!_.isNull(data) && !_.isEmpty(data)) {
@@ -172,7 +194,6 @@ module nts.uk.at.view.ksu005.b {
                     let datas = [];
                     let tempSelected: Array<any> = [];
                     let tempSelectedCode: Array<any> = [];
-                    // let workplaceCounterCategories = self.workplaceCounterCategories();
 
                     self.scheduleTableOutputSetting().updateData(data);
                     self.scheduleTableOutputSetting().isEnableCode(false);
@@ -348,7 +369,9 @@ module nts.uk.at.view.ksu005.b {
             self.$ajax(Paths.GET_SCHEDULE_TABLE_OUTPUT_SETTING_BY_CID).done((data: Array<IScheduleTableOutputSetting>) => {
                 if(data && data.length > 0){
                     _.each(data, item =>{
-                        dataList.push(new ItemModel(item.code, item.name));
+                        if(item.code){
+                            dataList.push(new ItemModel(item.code, item.name));
+                        }                        
                     });            
                     self.items(dataList);
                     newCode ? self.selectedCode(newCode) : self.selectedCode(code);       
@@ -407,6 +430,7 @@ module nts.uk.at.view.ksu005.b {
             self.scheduleTableOutputSetting().resetData();  
             self.isEditing(false);
             self.enableDelete(false);
+            self.isEnableDelBtn(false);
             self.initialData();
             self.clearError();
             $('#outputSettingCode').focus();              
@@ -427,10 +451,12 @@ module nts.uk.at.view.ksu005.b {
 
         closeDialog(): void {
             const self = this;
-            setShare('dataShareCloseKSU005b', self.selectedCode());
-            self.$window.close();
-            // setShare('ksu005b-result', self.exitStatus());
-            // self.currentScreen = nts.uk.ui.windows.sub.modal('/view/ksu/005/a/index.xhtml');
+            let request: any = {
+                code: self.selectedCode(),
+                name: self.scheduleTableOutputSetting().name()
+            };
+            setShare('dataShareCloseKSU005b', request);
+            self.$window.close();            
         }
 
         openDialog(): void {
@@ -467,8 +493,11 @@ module nts.uk.at.view.ksu005.b {
             var self = this;
             self.rowNo = ko.observable(rowNo);
             self.checked = ko.observable(false);
+            self.checked.subscribe(()=> {
+                checkbox(true);
+            });
             self.isNumberOne = ko.observable(isNumberOne);            
-            self.selectedCode = ko.observable('1'); 
+            self.selectedCode = ko.observable('1');             
             if(personalInfo) {            
                 self.personalInfo = ko.observable(personalInfo);
             }
