@@ -155,6 +155,7 @@ module nts.uk.at.view.ksu005.b {
                 if (!v) {
                     if (evens.length == 0) {
                         self.isEnableDelBtn(false);
+                        self.checkAll(false);
                     }
                 };
             });
@@ -450,7 +451,11 @@ module nts.uk.at.view.ksu005.b {
 
         closeDialog(): void {
             const self = this;
-            setShare('dataShareCloseKSU005b', self.selectedCode());
+            let request: any = {
+                code: self.selectedCode(),
+                name: self.scheduleTableOutputSetting().name()
+            };
+            setShare('dataShareCloseKSU005b', request);
             self.$window.close();            
         }
 
