@@ -161,6 +161,21 @@ public class JpaHospitalBusinessOfficeInfoHistoryRepository extends JpaRepositor
                 entityUpdate.STARTDATE = (histEnd.start());
                 this.commandProxy().update(entityUpdate);
             }
+            val histBeforeOpt = hospitalHist.immediatelyBefore(histEnd);
+            if(histBeforeOpt.isPresent()){
+                val histBefore = histBeforeOpt.get();
+                val entityUpdateBeforeOpt = this.queryProxy().find(new BsymtMedcareNightShiftRuleHistPk(
+                        cid,
+                        wplgId,
+                        histBefore.identifier()
+                ), BsymtMedcareNightShiftRuleHist.class);
+                if (entityUpdateBeforeOpt.isPresent()) {
+                    val entityUpdateBefore = entityUpdateBeforeOpt.get();
+                    entityUpdateBefore.STARTDATE = (histBefore.start());
+                    entityUpdateBefore.ENDDATE =(histBefore.end());
+                    this.commandProxy().update(entityUpdateBefore);
+                }
+            }
         }
 
     }
