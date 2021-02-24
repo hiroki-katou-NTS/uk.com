@@ -81,6 +81,7 @@ public class EstimateAmountList implements DomainValue {
 				.sorted(Comparator.comparing( EstimateAmountByCondition::getEstimateAmountNo ))
 				.collect(Collectors.toList());
 
+
 		// 未超過金額を取得
 		val unexceeded = sortedPrices.stream()
 				.filter( e -> e.getEstimateAmount().greaterThan( target ) )
@@ -88,13 +89,14 @@ public class EstimateAmountList implements DomainValue {
 
 		if( !unexceeded.isPresent() ) {
 			// 未超過金額なし
-			return StepOfEstimateAmount.createWithoutUnexceeded( require, sortedPrices.stream().reduce((first, second) -> second).get() );
+			return StepOfEstimateAmount.createWithoutUnexceeded( require, sortedPrices.get(sortedPrices.size()-1) );
 		} else if( unexceeded.get().getEstimateAmountNo().v() == 1 ) {
 			// 超過済み金額なし
 			return StepOfEstimateAmount.createWithoutExceeded( require, unexceeded.get() );
 		}
 
 
+		// 超過済み金額を取得
 		val exceeded = sortedPrices.stream()
 				.filter( e -> e.getEstimateAmountNo().v() == (unexceeded.get().getEstimateAmountNo().v() - 1) )
 				.findFirst().get();

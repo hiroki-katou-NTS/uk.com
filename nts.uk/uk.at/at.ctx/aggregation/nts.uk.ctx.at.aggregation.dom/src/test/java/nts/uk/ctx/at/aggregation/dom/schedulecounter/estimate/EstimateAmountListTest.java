@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -160,14 +161,20 @@ public class EstimateAmountListTest {
 			);
 
 		// 該当枠Noあり
-		val resultNo3 = amountList.getEstimateAmountByNo( new EstimateAmountNo( 3 ) );
-		assertThat( resultNo3 ).isPresent();
-		assertThat( resultNo3.get().getEstimateAmountNo().v() ).isEqualTo( 3 );
-		assertThat( resultNo3.get().getEstimateAmount() ).isEqualTo( new EstimateAmount( 3 * 500 ) );
+		{
+			val result = amountList.getEstimateAmountByNo( new EstimateAmountNo( 3 ) );
+
+			assertThat( result ).isPresent();
+			assertThat( result.get().getEstimateAmountNo().v() ).isEqualTo( 3 );
+			assertThat( result.get().getEstimateAmount() ).isEqualTo( new EstimateAmount( 3 * 500 ) );
+		}
 
 		// 該当枠Noなし
-		val resultNo4 = amountList.getEstimateAmountByNo( new EstimateAmountNo( 4 ) );
-		assertThat( resultNo4 ).isEmpty();
+		{
+			val result = amountList.getEstimateAmountByNo( new EstimateAmountNo( 4 ) );
+
+			assertThat( result ).isEmpty();
+		}
 
 	}
 
@@ -199,9 +206,9 @@ public class EstimateAmountListTest {
 
 
 		// Execute
-		val result = expected.keySet().stream()
-				.collect(Collectors.toMap( e -> e
-								, e -> instance.getStepOfEstimateAmount( require, new EstimateAmount( e ) )
+		val result = expected.entrySet().stream()
+				.collect(Collectors.toMap( Map.Entry::getKey
+								, entry -> instance.getStepOfEstimateAmount( require, new EstimateAmount( entry.getKey() ) )
 							));
 
 

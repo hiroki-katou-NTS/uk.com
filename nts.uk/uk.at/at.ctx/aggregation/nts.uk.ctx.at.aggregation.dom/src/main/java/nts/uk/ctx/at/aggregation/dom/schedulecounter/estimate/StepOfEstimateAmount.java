@@ -32,7 +32,11 @@ public class StepOfEstimateAmount {
 	 * @param unexceeded 未超過金額
 	 * @return 目安金額の段階
 	 */
-	public static StepOfEstimateAmount create(Require require, EstimateAmountNo no, EstimateAmount exceeded, Optional<EstimateAmount> unexceeded) {
+	public static StepOfEstimateAmount create(Require require
+			, EstimateAmountNo no
+			, EstimateAmount exceeded
+			, Optional<EstimateAmount> unexceeded
+	) {
 
 		// 不変条件：超過済み金額＜未超過金額
 		if( unexceeded.isPresent() && unexceeded.get().lessThanOrEqualTo( exceeded ) ) {
@@ -40,10 +44,12 @@ public class StepOfEstimateAmount {
 		}
 
 		// 該当枠の設定を取得する
-		val handling = require.getHandling();
+		// ※『目安金額の扱い』は初期データのため常に存在する
+		val handling = require.getHandling().get();
 		val background = handling.getHandleFrameNoList().stream()
-								.filter( e -> e.getEstimateAmountNo().v() == no.v() ).findFirst()
-								.map( o -> o.getBackgroundColor() );
+								.filter( e -> e.getEstimateAmountNo().v() == no.v() )
+								.findFirst()
+									.map( o -> o.getBackgroundColor() );
 
 		return new StepOfEstimateAmount( no, exceeded, unexceeded, background );
 
@@ -124,7 +130,13 @@ public class StepOfEstimateAmount {
 
 
 	public static interface Require {
-		public HandingOfEstimateAmount getHandling();
+
+		/**
+		 * 目安金額の扱いを取得する
+		 * @return 目安金額の扱い
+		 */
+		public Optional<HandingOfEstimateAmount> getHandling();
+
 	}
 
 }

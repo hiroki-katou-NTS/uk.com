@@ -29,7 +29,9 @@ public class EstimateAmountForEmployeeGettingService {
 	 */
 	public static EstimateAmountDetail get(Require require, EmployeeId empId, GeneralDate date) {
 
-		val usageStg = require.getUsageSetting();
+		// 目安利用区分を取得する
+		// ※『目安利用区分』は初期データのため常に存在する
+		val usageStg = require.getUsageSetting().get();
 		if( usageStg.getEmployMentUse() == NotUseAtr.USE ) {
 			// 基準日時点の雇用を取得
 			val employmentInfo = require.getEmploymentHistory( empId, date );
@@ -44,7 +46,9 @@ public class EstimateAmountForEmployeeGettingService {
 			}
 		}
 
-		val estimate = require.getEstimateAmountForCompany();
+		// 会社の目安金額を取得する
+		// ※『会社の目安金額』は初期データのため常に存在する
+		val estimate = require.getEstimateAmountForCompany().get();
 		return estimate.getDetail();
 
 	}
@@ -57,13 +61,13 @@ public class EstimateAmountForEmployeeGettingService {
 		 * 目安利用区分を取得する
 		 * @return 目安利用区分
 		 */
-		public EstimateAmountUsageSetting getUsageSetting();
+		public Optional<EstimateAmountUsageSetting> getUsageSetting();
 
 		/**
 		 * 会社の目安金額を取得する
 		 * @return 会社の目安金額
 		 */
-		public EstimateAmountForCompany getEstimateAmountForCompany();
+		public Optional<EstimateAmountForCompany> getEstimateAmountForCompany();
 
 		/**
 		 * 雇用の目安金額を取得する
