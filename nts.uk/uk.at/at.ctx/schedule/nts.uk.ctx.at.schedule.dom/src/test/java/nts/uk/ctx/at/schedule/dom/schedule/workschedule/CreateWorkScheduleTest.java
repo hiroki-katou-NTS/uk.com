@@ -189,7 +189,7 @@ public class CreateWorkScheduleTest {
 	}
 	
 	@Test
-	public <T> void testCreate_Exception_430(
+	public <T> void testCreate_BusinessException(
 			@Injectable WorkInformation workInformation,
 			@Mocked BusinessException businessException,
 			@Mocked Builder builder) {
@@ -198,11 +198,8 @@ public class CreateWorkScheduleTest {
 			require.getWorkSchedule(anyString, (GeneralDate) any);
 			//result = empty
 			
-			businessException.getMessageId();
-			result = "Msg_430";
-			
-			builder.build().buildMessage();
-			result = "content 430";
+			businessException.getMessage();
+			result = "message content";
 		}};
 
 		ResultOfRegisteringWorkSchedule result = CreateWorkSchedule.create(
@@ -225,75 +222,7 @@ public class CreateWorkScheduleTest {
 					"empId", 
 					GeneralDate.ymd(2020, 11, 1), 
 					Optional.empty(), 
-					"content 430"));
-		
-	}
-	@Test
-	public <T> void testCreate_Exception_2119(
-			@Injectable WorkInformation workInformation,
-			@Mocked BusinessException businessException,
-			@Mocked Builder builder) {
-		
-		new Expectations() {{
-			require.getWorkSchedule(anyString, (GeneralDate) any);
-			//result = empty
-			
-			businessException.getMessageId();
-			result = "Msg_2119";
-			
-			builder.build().buildMessage();
-			result = "content 2119";
-		}};
-
-		ResultOfRegisteringWorkSchedule result = CreateWorkSchedule.create(
-				require, 
-				"empId", 
-				GeneralDate.ymd(2020, 11, 1), 
-				workInformation, 
-				new ArrayList<>(),
-				new HashMap<>());
-		
-		assertThat( result.getAtomTask() ).isEmpty();
-		assertThat( result.getErrorInformation())
-			.extracting( 
-					e -> e.getEmployeeId(),
-					e -> e.getDate(),
-					e -> e.getAttendanceItemId(),
-					e -> e.getErrorMessage())
-			.containsExactly( 
-				tuple(
-					"empId", 
-					GeneralDate.ymd(2020, 11, 1), 
-					Optional.empty(), 
-					"content 2119"));
-		
-	}
-	
-	@Test
-	public <T> void testCreate_Exception_different430(@Injectable WorkInformation workInformation) {
-		
-		new Expectations() {{
-			require.getWorkSchedule(anyString, (GeneralDate) any);
-			//result = empty
-		}};
-		
-		new MockUp<WorkSchedule>() {
-			@Mock
-			public WorkSchedule createByHandCorrectionWithWorkInformation(Require require,
-					String employeeId,
-					GeneralDate date,
-					WorkInformation workInformation) {
-				throw new BusinessException("Msg_x");
-			}
-		};
-		
-		NtsAssert.businessException("Msg_x", () -> CreateWorkSchedule.create(
-				require, 
-				"empId", 
-				GeneralDate.ymd(2020, 11, 1), 
-				workInformation, 
-				new ArrayList<>(),
-				new HashMap<>()));
+					"message content"));
 		
 	}
 	

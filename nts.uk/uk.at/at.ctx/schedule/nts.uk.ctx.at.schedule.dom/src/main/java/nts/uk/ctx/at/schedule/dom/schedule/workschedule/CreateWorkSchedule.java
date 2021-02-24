@@ -51,12 +51,7 @@ public class CreateWorkSchedule {
 			try {
 				workSchedule = WorkSchedule.createByHandCorrectionWithWorkInformation(require, employeeId, date, workInformation);
 			} catch (BusinessException e) {
-				if (e.getMessageId().equals("Msg_430") || e.getMessageId().equals("Msg_2119") ) {
-					String message = I18NText.main(e.getMessageId()).build().buildMessage();
-					return ResultOfRegisteringWorkSchedule.createWithError(employeeId, date, message);
-				}
-				
-				throw e; // else
+				return ResultOfRegisteringWorkSchedule.createWithError( employeeId, date, e.getMessage() );
 			}
 		} else {
 			workSchedule = registedWorkSchedule.get();
