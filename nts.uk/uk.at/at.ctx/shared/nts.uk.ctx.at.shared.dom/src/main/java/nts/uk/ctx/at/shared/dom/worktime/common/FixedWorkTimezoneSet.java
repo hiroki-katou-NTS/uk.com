@@ -61,14 +61,14 @@ public class FixedWorkTimezoneSet extends WorkTimeDomainObject implements Clonea
 	 * [C-1] 新規作成する
 	 *
 	 * @param memento Memento
-	 * @param useDoubleWork use double work?
+	 * @param useShiftTwo use double work?
 	 */
-	public FixedWorkTimezoneSet(FixedWorkTimezoneSetGetMemento memento, boolean useDoubleWork){
+	public FixedWorkTimezoneSet(FixedWorkTimezoneSetGetMemento memento, boolean useShiftTwo){
 		this.lstWorkingTimezone = memento.getLstWorkingTimezone();
 		this.lstOTTimezone = memento.getLstOTTimezone();
-		if (checkWorkingTimezoneContinue(useDoubleWork))
+		if (checkWorkingTimezoneContinue(useShiftTwo))
 			this.bundledBusinessExceptions.addMessage("Msg_1919");
-		if (checkOTTimeZoneContinue(useDoubleWork))
+		if (checkOTTimeZoneContinue(useShiftTwo))
 			this.bundledBusinessExceptions.addMessage("Msg_1920");
 	}
 
@@ -144,10 +144,10 @@ public class FixedWorkTimezoneSet extends WorkTimeDomainObject implements Clonea
 	 * 就業時間帯の連続性を確認
 	 * Check the continuity of working timezone
 	 *
-	 * @param useDoubleWork do you use double work?
+	 * @param useShiftTwo do you use double work?
 	 * @return status
 	 */
-	private boolean checkWorkingTimezoneContinue(boolean useDoubleWork){
+	private boolean checkWorkingTimezoneContinue(boolean useShiftTwo){
 		long discontinueTimes = lstWorkingTimezone.stream()
 				.sorted(Comparator.comparing(EmTimeZoneSet::getEmploymentTimeFrameNo))
 				.filter(wt -> {
@@ -155,9 +155,9 @@ public class FixedWorkTimezoneSet extends WorkTimeDomainObject implements Clonea
 					return !wt.getTimezone().getEnd().equals(nextWt.getTimezone().getStart());
 				})
 				.count();
-		if (!useDoubleWork && discontinueTimes >= 1)
+		if (!useShiftTwo && discontinueTimes >= 1)
 			return false;
-		if (useDoubleWork && discontinueTimes > 1)
+		if (useShiftTwo && discontinueTimes > 1)
 			return false;
 		return true;
 	}
@@ -166,10 +166,10 @@ public class FixedWorkTimezoneSet extends WorkTimeDomainObject implements Clonea
 	 * 残業時間帯の連続性を確認
 	 * Check the continuity of overtime hours
 	 *
-	 * @param useDoubleWork do you use double work?
+	 * @param useShiftTwo do you use double work?
 	 * @return status
 	 */
-	private boolean checkOTTimeZoneContinue(boolean useDoubleWork){
+	private boolean checkOTTimeZoneContinue(boolean useShiftTwo){
 		long discontinueTimes = lstOTTimezone.stream()
 				.sorted(Comparator.comparing(OverTimeOfTimeZoneSet::getWorkTimezoneNo))
 				.filter(ot -> {
@@ -177,9 +177,9 @@ public class FixedWorkTimezoneSet extends WorkTimeDomainObject implements Clonea
 					return !ot.getTimezone().getEnd().equals(nextOT.getTimezone().getStart());
 				})
 				.count();
-		if (!useDoubleWork && discontinueTimes >= 1)
+		if (!useShiftTwo && discontinueTimes >= 1)
 			return false;
-		if (useDoubleWork && discontinueTimes > 1)
+		if (useShiftTwo && discontinueTimes > 1)
 			return false;
 		return true;
 	}

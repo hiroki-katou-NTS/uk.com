@@ -28,6 +28,7 @@ module nts.uk.at.view.kmk003.a {
     
     import WorkTimezoneCommonSetDto = service.model.common.WorkTimezoneCommonSetDto;
     import SubHolTransferSetDto = service.model.common.SubHolTransferSetDto;
+    import NotUseAtr = nts.uk.at.view.kmk003.a.viewmodel.common.NotUseAtr;
     
     export module viewmodel {
 
@@ -71,6 +72,7 @@ module nts.uk.at.view.kmk003.a {
             isLoading: KnockoutObservable<boolean>;
             
             flexWorkManaging: boolean;
+            workMultiple: KnockoutObservable<boolean>;
             overTimeWorkFrameOptions: KnockoutObservableArray<any>;
             //update for storage tab 11
             backupCommonSetting: WorkTimezoneCommonSetDto
@@ -90,6 +92,8 @@ module nts.uk.at.view.kmk003.a {
 
                 //initial otsuka mode
                 self.otsukaMode = ko.observable(false);
+
+                self.workMultiple = ko.observable(false);
 
                 self.initComputedValue();
 
@@ -177,6 +181,12 @@ module nts.uk.at.view.kmk003.a {
                         });
                     });
                 });
+
+                //work multiple
+                service.findSettingWorkMultiple().done(rs => {
+                    self.workMultiple(rs.workMultiple == NotUseAtr.USE)
+                })
+
                 return dfd.promise();
             }
 
@@ -342,7 +352,7 @@ module nts.uk.at.view.kmk003.a {
             /**
             * find data WorkTypeLanguage
             */
-            private findWorkTimeLanguage(): void {
+            private findWorkTimeLanguage(): JQueryPromise<any> {
                 let self = this,
                     dfd = $.Deferred<void>();
 
@@ -1041,6 +1051,14 @@ module nts.uk.at.view.kmk003.a {
                     self.isInterlockDialogJ(true);
                     self.updateStampValue();
                 }
+
+                //auto generate data for data source morning and afternoon in a2 if it was hidden
+                //check hidden
+                if (self.workTimeSetting.isFlex() && self.useHalfDay()){
+                    let morningEnd = self.predetemineTimeSetting.prescribedTimezoneSetting.morningEndTime();
+                    let afterStart = self.predetemineTimeSetting.prescribedTimezoneSetting.afternoonStartTime();
+                }
+
 
                 if (self.workTimeSetting.isFlex()) {
                     service.saveFlexWorkSetting(self.toFlexCommannd())

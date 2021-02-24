@@ -48,12 +48,12 @@ public class FlexOffdayWorkTime extends WorkTimeDomainObject implements Cloneabl
 	/**
 	 * 新規作成する
 	 * @param memento Memento
-	 * @param useDoubleWork is use double work?
+	 * @param useShiftTwo is use double work?
 	 */
-	public FlexOffdayWorkTime(FlexOffdayWorkTimeGetMemento memento, boolean useDoubleWork){
+	public FlexOffdayWorkTime(FlexOffdayWorkTimeGetMemento memento, boolean useShiftTwo){
 		this.lstWorkTimezone = memento.getLstWorkTimezone();
 		this.restTimezone = memento.getRestTimezone();
-		if (checkLstWorkTimezoneContinue(useDoubleWork))
+		if (checkLstWorkTimezoneContinue(useShiftTwo))
 			this.bundledBusinessExceptions.addMessage("Msg_1918");
 	}
 
@@ -169,10 +169,10 @@ public class FlexOffdayWorkTime extends WorkTimeDomainObject implements Cloneabl
 	/**
 	 * 時間帯の連続性を確認
 	 *
-	 * @param useDoubleWork is use double work?
+	 * @param useShiftTwo is use double work?
 	 * @return status
 	 */
-	private boolean checkLstWorkTimezoneContinue(boolean useDoubleWork){
+	private boolean checkLstWorkTimezoneContinue(boolean useShiftTwo){
 		val discontinueTimes = this.lstWorkTimezone
 				.stream()
 				.sorted(Comparator.comparing(HDWorkTimeSheetSetting::getWorkTimeNo))
@@ -180,9 +180,9 @@ public class FlexOffdayWorkTime extends WorkTimeDomainObject implements Cloneabl
 					val nextWt = lstWorkTimezone.get(lstWorkTimezone.indexOf(wt));
 					return !wt.getTimezone().getEnd().equals(nextWt.getTimezone().getStart());
 				}).count();
-		if (!useDoubleWork && discontinueTimes >= 1)
+		if (!useShiftTwo && discontinueTimes >= 1)
 			return false;
-		if (useDoubleWork && discontinueTimes > 1)
+		if (useShiftTwo && discontinueTimes > 1)
 			return false;
 		return true;
 	}

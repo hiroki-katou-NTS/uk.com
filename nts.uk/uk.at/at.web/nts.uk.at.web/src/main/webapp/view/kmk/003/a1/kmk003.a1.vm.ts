@@ -42,6 +42,7 @@ module a1 {
 
         linkedWithDialogF: KnockoutObservable<boolean>;
         isNewMode: KnockoutObservable<boolean>;
+        isWorkMultiple: KnockoutObservable<boolean>;
 
         condition30: KnockoutComputed<boolean>;
         condition31: KnockoutComputed<boolean>;
@@ -52,6 +53,7 @@ module a1 {
             let self = this;
             self.selectedTab = input.selectedTab;
             self.isNewMode = input.isNewMode;
+            self.isWorkMultiple = input.workMultiple;
 
             self.loadDataFromMainScreen(input);
             self.isTimezoneTwoEnabled = ko.computed(() => {
@@ -153,9 +155,8 @@ module a1 {
                 return self.isDetailMode() && !self.isFlowMode() && !self.isFlexMode();
             }, this);
             //A7_13, A7_14, A7_16 display condition
-            //TODO missing 複数回勤務管理.使用区分 ＝ true
             self.condition30 = ko.computed(() => {
-                return !self.isFlexMode() && !self.isDiffTimeMode();
+                return self.isWorkMultiple() && !self.isFlexMode() && !self.isDiffTimeMode();
             },this);
 
             self.condition31 = ko.computed(() => {

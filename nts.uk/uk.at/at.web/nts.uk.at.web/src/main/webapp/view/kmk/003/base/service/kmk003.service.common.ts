@@ -8,6 +8,10 @@ module nts.uk.at.view.kmk003.a {
                     flexWorkManaging: number;
                 }
 
+                export interface SettingWorkMultipleDto {
+                    workMultiple: number;
+                }
+
                 export interface CommonRestSettingDto {
                     calculateMethod: number;
                 }

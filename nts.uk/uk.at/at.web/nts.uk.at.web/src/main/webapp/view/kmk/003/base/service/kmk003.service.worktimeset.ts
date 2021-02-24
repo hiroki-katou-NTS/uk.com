@@ -70,8 +70,6 @@ module nts.uk.at.view.kmk003.a {
                     calcMethodExceededPredAddVacation: EnumConstantDto[];
                     roundingTimeUnit: EnumConstantDto[];
                 }
-
-
                 
                 // Worktime Setting Enum
                 export enum WorkTimeDailyAtr {

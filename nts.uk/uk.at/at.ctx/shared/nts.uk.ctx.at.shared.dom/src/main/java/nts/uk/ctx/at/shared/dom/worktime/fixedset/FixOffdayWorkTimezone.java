@@ -48,12 +48,12 @@ public class FixOffdayWorkTimezone extends WorkTimeDomainObject implements Clone
 	/**
 	 * 新規作成する
 	 * @param memento Memento
-	 * @param useDoubleWork is use double work?
+	 * @param useShiftTwo 2回勤務を使用するか?
 	 */
-	public FixOffdayWorkTimezone(FixOffdayWorkTimezoneGetMemento memento, boolean useDoubleWork){
+	public FixOffdayWorkTimezone(FixOffdayWorkTimezoneGetMemento memento, boolean useShiftTwo){
 		this.restTimezone = memento.getRestTimezone();
 		this.lstWorkTimezone = memento.getLstWorkTimezone();
-		if (checkLstWorkTimezoneContinue(useDoubleWork))
+		if (checkLstWorkTimezoneContinue(useShiftTwo))
 			this.bundledBusinessExceptions.addMessage("Msg_1918");
 	}
 
@@ -173,10 +173,10 @@ public class FixOffdayWorkTimezone extends WorkTimeDomainObject implements Clone
 	/**
 	 * 時間帯の連続性を確認
 	 *
-	 * @param useDoubleWork is use double work?
+	 * @param useShiftTwo is use double work?
 	 * @return status
 	 */
-	private boolean checkLstWorkTimezoneContinue(boolean useDoubleWork){
+	private boolean checkLstWorkTimezoneContinue(boolean useShiftTwo){
 		val discontinueTimes = this.lstWorkTimezone
 				.stream()
 				.sorted(Comparator.comparing(HDWorkTimeSheetSetting::getWorkTimeNo))
@@ -184,9 +184,9 @@ public class FixOffdayWorkTimezone extends WorkTimeDomainObject implements Clone
 					val nextWt = lstWorkTimezone.get(lstWorkTimezone.indexOf(wt));
 					return !wt.getTimezone().getEnd().equals(nextWt.getTimezone().getStart());
 				}).count();
-		if (!useDoubleWork && discontinueTimes >= 1)
+		if (!useShiftTwo && discontinueTimes >= 1)
 			return false;
-		if (useDoubleWork && discontinueTimes > 1)
+		if (useShiftTwo && discontinueTimes > 1)
 			return false;
 		return true;
 	}
