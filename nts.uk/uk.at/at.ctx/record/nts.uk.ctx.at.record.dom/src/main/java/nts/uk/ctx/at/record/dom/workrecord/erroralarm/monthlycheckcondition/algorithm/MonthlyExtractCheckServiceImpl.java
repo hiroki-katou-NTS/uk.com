@@ -1074,8 +1074,8 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 				sid, 
 				workplaceId,
 				checkedValue,
-				anyCond.getDisplayMessage().isPresent() ? anyCond.getDisplayMessage().get().v() : "",
-						periodDate);
+				alarmDescription,
+				periodDate);
 	}
 	private String getNameErrorAlarm(List<MonthlyAttendanceItemNameDto> attendanceItemNames ,int type,String nameErrorAlarm){
 		if(!CollectionUtil.isEmpty(attendanceItemNames)) {
