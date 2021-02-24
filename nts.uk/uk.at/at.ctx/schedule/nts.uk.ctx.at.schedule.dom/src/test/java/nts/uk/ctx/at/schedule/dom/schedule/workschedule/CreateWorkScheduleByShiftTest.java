@@ -14,7 +14,7 @@ import mockit.Injectable;
 import mockit.Mock;
 import mockit.MockUp;
 import mockit.Mocked;
-import nts.arc.i18n.I18NText.Builder;
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.CreateWorkSchedule.Require;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
@@ -29,14 +29,14 @@ public class CreateWorkScheduleByShiftTest {
 	
 	@Test
 	public void testCreate_hasError(
-			@Mocked Builder builder) {
+			@Mocked BusinessException exception) {
 		
 		new Expectations() {{
 			
 			require.getShiftMaster( (ShiftMasterCode) any );
 			// result = empty
 			
-			builder.build().buildMessage();
+			exception.getMessage();
 			result = "content 1705";
 		}};
 		
