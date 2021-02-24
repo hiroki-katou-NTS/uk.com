@@ -216,19 +216,32 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 	private void print(RangeCustom range, EmployeeData emp, boolean isPrintWorkplace,
 			List<ExportItem> itemBooks, boolean isOutNumExceedTime36Agr) {
 		if (isPrintWorkplace) {
-			String workplace = emp.getEmployeeInfo().getWorkplaceName();
+			String workplace = TextResource.localize("KWR008_50") + " " // D1_1
+							 + emp.getEmployeeInfo().getWorkplaceCode() // D1_3
+						   	 + "　"
+						   	 + emp.getEmployeeInfo().getWorkplaceName(); // D1_2
 			range.cell("workplace").putValue(workplace);
 		}
 		// print employee info
 		if (itemBooks.size() >= 1) {
-			range.cell("empName")
-					.setValue(emp.getEmployeeInfo().getEmployeeCode() + " " + emp.getEmployeeInfo().getEmployeeName());
+			range.cell("empName").setValue(
+					emp.getEmployeeInfo().getEmployeeCode()		// D2_1
+					+ " "
+					+ emp.getEmployeeInfo().getEmployeeName()); // D2_2
 		}
 		if (itemBooks.size() >= 2) {
-			range.cell("employmentName").setValue(emp.getEmployeeInfo().getEmploymentName());
+			range.cell("employmentName").setValue(
+					emp.getEmployeeInfo().getEmploymentCode() 	// D2_6
+					+ " "
+					+ emp.getEmployeeInfo().getEmploymentName() // D2_3
+			);
 		}
 		if (itemBooks.size() >= 3) {
-			range.cell("jobTitle").setValue(emp.getEmployeeInfo().getJobTitle());
+			range.cell("jobTitle").setValue(
+					emp.getEmployeeInfo().getJobTitleCode()		// D2_7
+					+ " "
+					+ emp.getEmployeeInfo().getJobTitle()		// D2_4
+			);
 		}
 
 		int rowOffset = 0;
