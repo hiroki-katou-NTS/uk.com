@@ -3477,6 +3477,12 @@ public class ProgramsManager {
      */
     public static final Program KSM007A = new Program(WebAppId.AT, ProgramIdConsts.KSM007A, "KSM007_1",
             "/view/ksm/007/a/index.xhtml");
+    public static final Program KSM007B = new Program(WebAppId.AT, ProgramIdConsts.KSM007B, "KSM007_18",
+            "/view/ksm/007/b/index.xhtml");
+    public static final Program KSM007C = new Program(WebAppId.AT, ProgramIdConsts.KSM007C, "KSM007_19",
+            "/view/ksm/007/c/index.xhtml");
+    public static final Program KSM007D = new Program(WebAppId.AT, ProgramIdConsts.KSM007D, "KSM007_20",
+            "/view/ksm/007/d/index.xhtml");
 
     /**
      * KDL047
@@ -3642,6 +3648,11 @@ public class ProgramsManager {
     /** CDL010 */
     public static final Program CDL010A = new Program(WebAppId.COM, ProgramIdConsts.CDL010A, "CDL010_1",
     		"/view/cdl/010/a/index.xhtml");
+
+
+
+
+
 
     /**
      * All programs map.
