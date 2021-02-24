@@ -51045,12 +51045,17 @@ var nts;
                         function WidgetResizeContentBindingHandler() {
                         }
                         WidgetResizeContentBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                            var $el = $(element);
                             var widget = viewModel.widget;
                             var WG_SIZE = 'WIDGET_SIZE';
                             var mkv = new ko.ViewModel();
                             var minHeight = valueAccessor();
                             var key = ko.unwrap(widget);
                             var src = allBindingsAccessor.get('src');
+                            var def = allBindingsAccessor.get('default');
+                            if (def) {
+                                element.style.maxHeight = def + "px";
+                            }
                             if (element.tagName !== 'DIV') {
                                 element.innerText = 'Please use [div] tag with [widget-content] binding';
                                 return { controlsDescendantBindings: false };
@@ -51073,11 +51078,15 @@ var nts;
                                 frame.src = src;
                                 element.appendChild(frame);
                             }
-                            $(element)
+                            $el
                                 .removeAttr('data-bind')
                                 .addClass('widget-content')
                                 .resizable({
                                 handles: 's',
+                                start: function () {
+                                    // clear max height if resize by enduser
+                                    element.style.maxHeight = '';
+                                },
                                 stop: function () {
                                     var offsetHeight = element.offsetHeight;
                                     if (key) {
@@ -51093,6 +51102,23 @@ var nts;
                                             mkv.$window.storage(WG_SIZE, size);
                                         });
                                     }
+                                },
+                                resize: function () { return $el.trigger('wg.resize'); }
+                            })
+                                .on('wg.resize', function () {
+                                var scr = $el.find('div').first();
+                                var ctn = $el.closest('.widget-container');
+                                if (scr) {
+                                    var _a = scr.get(0), offsetHeight = _a.offsetHeight, scrollHeight = _a.scrollHeight;
+                                    if (offsetHeight < scrollHeight) {
+                                        ctn.addClass('has-scroll');
+                                    }
+                                    else {
+                                        ctn.removeClass('has-scroll');
+                                    }
+                                }
+                                else {
+                                    ctn.removeClass('has-scroll');
                                 }
                             })
                                 .find('.ui-resizable-s')
@@ -51114,7 +51140,8 @@ var nts;
                                     }
                                     size[key] = { set: !fx, value: value };
                                     mkv.$window.storage(WG_SIZE, size);
-                                });
+                                })
+                                    .always(function () { return $el.trigger('wg.resize'); });
                             });
                             if (widget) {
                                 mkv

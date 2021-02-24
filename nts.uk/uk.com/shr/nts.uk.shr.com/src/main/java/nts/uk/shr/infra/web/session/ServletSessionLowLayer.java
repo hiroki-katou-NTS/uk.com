@@ -21,7 +21,12 @@ public class ServletSessionLowLayer implements SessionLowLayer {
 
 	@Override
 	public void loggedIn() {
+		// セッションが無い場合にchangeSessionIdを呼ぶとIllegalStateExceptionなので、事前に作る
+		request.getSession(true);
+		
+		// Session Fixation 対策
 		request.changeSessionId();
+		
 		request.getSession().setAttribute(LOGGED_IN_FLAG, true);
 		CsrfToken.loggedIn();
 	}
