@@ -440,7 +440,7 @@ module nts.uk.at.view.kmk013.c {
             textAfter?: string;
             constructor(code: number, col2: number, textBefore?: string, textAfter?: string, col3?: number, col4?: number) {
                 this.code = code;
-                this.col1 = (code > 9) ? textBefore + code + '  ' + textAfter : textBefore + code + '   ' + textAfter;
+                this.col1 = textAfter;
                 this.col2 = ko.observable(col2);
                 this.col3 = ko.observable(col3);
                 this.col4 = ko.observable(col4);
