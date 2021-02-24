@@ -48,6 +48,8 @@ module nts.uk.at.view.kwr008.b.viewmodel {
 
         attendanceItem: share.model.AttendanceItemDto[] = [];
 
+        settingType: number = share.model.SelectionClassification.STANDARD;
+
 
         constructor() {
             let self = this;
@@ -89,6 +91,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                         });
                         $("#B3_3").focus();
                     });
+                    self.updateMode(layoutId);
                     block.clear();
                 } else {
                     block.clear();
@@ -140,6 +143,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             if (KWR008BParam) {
                 self.selectedPrintForm(KWR008BParam.printFormat);
                 selectionType = KWR008BParam.selectionType;
+                self.settingType = selectionType;
                 self.currentSetOutputSettingCode().settingType(KWR008BParam.selectionType);
                 self.currentSetOutputSettingCode().printForm(KWR008BParam.printFormat);
             }
@@ -211,7 +215,12 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         registerMode() {
             let self = this;
             self.isNewMode(true);
-            self.currentSetOutputSettingCode(new SetOutputItemOfAnnualWorkSchDto(null));
+            const currentSetOutputSettingCode: SetOutputItemOfAnnualWorkSchDto = new SetOutputItemOfAnnualWorkSchDto(null);
+            currentSetOutputSettingCode.settingType(self.settingType);
+            const randomId = nts.uk.util.randomId();
+            currentSetOutputSettingCode.layoutId(randomId);
+            currentSetOutputSettingCode.layoutIdSelect = randomId;
+            self.currentSetOutputSettingCode(currentSetOutputSettingCode);
             self.selectedLayoutId('');
             for (var i = 0; i < self.outputItem().length; i++) {
                 self.outputItem()[i].updateData(
@@ -276,6 +285,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 self.listStandardImportSetting_Sort();
                 info({ messageId: 'Msg_15' }).then(() => {
                     self.selectedLayoutId(self.currentSetOutputSettingCode().layoutId());
+                    self.selectedLayoutId.valueHasMutated();
                 });
             }).fail(err => {
                 alertError({ messageId: err.messageId });

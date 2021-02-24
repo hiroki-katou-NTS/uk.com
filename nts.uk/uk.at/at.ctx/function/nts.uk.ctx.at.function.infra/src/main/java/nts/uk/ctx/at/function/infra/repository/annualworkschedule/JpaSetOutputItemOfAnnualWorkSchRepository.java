@@ -17,7 +17,7 @@ public class JpaSetOutputItemOfAnnualWorkSchRepository extends JpaRepository imp
 	/** The Constant FIND_ALL. */
 	private static final String FIND_ALL = "SELECT st FROM KfnmtRptWkYearSet st"
 										 + " WHERE st.cid = :cid"
-										 + "  AND st.sid = :sid"
+										 + "  AND (st.sid = :sid OR :sid IS NULL)"
 										 + "  AND st.settingType = :settingType"
 										 + "  AND st.printForm = :printForm";
 
@@ -25,7 +25,7 @@ public class JpaSetOutputItemOfAnnualWorkSchRepository extends JpaRepository imp
 	/** The Constant FIND_BY_CODE. */
 	private static final String FIND_BY_CODE = "SELECT st FROM KfnmtRptWkYearSet st"
 											 + " WHERE st.cid = :cid"
-											 + "  AND st.sid = :sid"
+											 + "  AND (st.sid = :sid OR :sid IS NULL)"
 											 + "  AND st.settingType = :settingType"
 											 + "  AND st.cd = :cd";
 

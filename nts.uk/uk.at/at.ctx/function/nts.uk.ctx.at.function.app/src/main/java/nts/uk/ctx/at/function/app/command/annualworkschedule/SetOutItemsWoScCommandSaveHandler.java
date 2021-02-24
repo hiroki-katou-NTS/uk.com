@@ -44,7 +44,9 @@ public class SetOutItemsWoScCommandSaveHandler extends CommandHandler<SetOutItem
 				// #Msg_3
 				throw new BusinessException("Msg_3");
 			}
-			command.setLayoutId(UUID.randomUUID().toString());
+			if (command.getLayoutId().isEmpty()) {
+				command.setLayoutId(UUID.randomUUID().toString());
+			}
 			repository.add(SettingOutputItemOfAnnualWorkSchedule.createFromMemento(command));
 		} else {
 			repository.update(SettingOutputItemOfAnnualWorkSchedule.createFromMemento(command));
