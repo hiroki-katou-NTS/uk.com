@@ -38,8 +38,8 @@ module nts.uk.at.view.kmk013.q {
                 self.roleFrameList = ko.observableArray([]);
                 
                 self.itemListQ5_5 = ko.observableArray([
-                    new BoxModel(0, getText("KMK013_389")),
-                    new BoxModel(1, getText("KMK013_390")),
+                    new BoxModel(1, getText("KMK013_389")),
+                    new BoxModel(0, getText("KMK013_390")),
                     new BoxModel(2, getText("KMK013_391"))
                 ]);
                 
