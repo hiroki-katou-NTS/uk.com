@@ -347,21 +347,19 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             };
             nts.uk.ui.windows.setShared("KWR008CParam", param);
             nts.uk.ui.windows.sub.modal("at", "/view/kwr/008/c/index.xhtml").onClosed(() => {
-                block.invisible();
                 let kwr008CData = nts.uk.ui.windows.getShared("KWR008CDATA");
                 if (kwr008CData) {
+                    block.invisible();
                     service.findAllBySettingType(kwr008CData.settingType, this.selectedPrintForm())
                     .done((res) => {
-                        self.listStandardImportSetting = ko.observableArray([]);
+                        self.listStandardImportSetting([]);
                         var dataSorted = _.sortBy(res, ['cd']);
-                        for (let i = 0, count = res.length; i < count; i++) {
-                            self.listStandardImportSetting.push(new SetOutputItemOfAnnualWorkSchDto(dataSorted[i]));
-                        }
+                        const copiedLayoutId = _.find(dataSorted, data => data.cd === kwr008CData.code).layoutId;
+                        self.listStandardImportSetting(_.map(dataSorted, data => new SetOutputItemOfAnnualWorkSchDto(data)));
+                        self.selectedLayoutId(copiedLayoutId);
                     })
                     .always(() => block.clear());
-
                 }
-                
             });
         }
 
