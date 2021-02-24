@@ -32,11 +32,12 @@ module nts.uk.at.view.kdl053 {
             let errorRegistrationListTmp = data.errorRegistrationList;
             let employeeIds = data.employeeIds;
             let errorRegistrationList: any = [], errorRegistrationListCsv: any =[];
+            let countNo: number = 1;
 
             _.each(employeeIds, id =>{      
                 let temp: any = [];
-                _.each(errorRegistrationListTmp, err => {
-                    if(err.sid == id) {
+                _.each(errorRegistrationListTmp, err => {                   
+                    if(err.sid == id) {                        
                         err.employeeCdName = err.scd + " " + err.empName;
                         temp.push(err);
                     }
@@ -47,6 +48,7 @@ module nts.uk.at.view.kdl053 {
             self.hasError(data.isRegistered == 1); 
 
             _.each(errorRegistrationList, errorLog => {
+                errorLog.id = countNo;
                 switch (self.getDayfromDate(errorLog.date)) {
                     case 0:
                         errorLog.dateCss = '<span>' + errorLog.date + '<span style="color:red">' + " (" + moment.weekdaysShort(0) + ')</span></span>';
@@ -70,6 +72,7 @@ module nts.uk.at.view.kdl053 {
                         errorLog.dateCss = '<span>' + errorLog.date + '<span style="color:blue">'+ " (" + moment.weekdaysShort(6) + ')</span></span>';
                         break;
                 }
+                countNo = countNo + 1;
             })
 
             let listIds: Array<any> = _.map(errorRegistrationList, item => { return item.attendanceItemId }); 
@@ -105,7 +108,8 @@ module nts.uk.at.view.kdl053 {
                     primaryKey: "id",
                     autoGenerateColumns: false,
                     responseDatakey: "results",
-                    columns: [                        
+                    columns: [    
+                        { headerText: "", key: "id", dataType: "string", hidden: true },          
                         { headerText: getText('KDL053_5'), key: "employeeCdName", dataType: "string", width: "30%" },
                         { headerText: getText('KDL053_6'), key: "dateCss", dataType: "string", width: "16%" },
                         { headerText: getText('KDL053_7'), key: "errName", dataType: "string", width: "18%" },
