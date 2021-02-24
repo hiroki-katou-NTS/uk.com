@@ -8,10 +8,13 @@ import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.勤務実績.日別実績.実績データから在席状態を判断する.実績データから在席状態を判断する
@@ -19,24 +22,58 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 public class JudgingStatusDomainService {
 	
 	private JudgingStatusDomainService() {}
-	
-	//$出勤時刻
-	private static Optional<Integer> attendanceTime = Optional.empty();
-	
-	//$退勤時刻
-	private static Optional<Integer> leaveTime = Optional.empty();
-	
-	//$勤務区分
-	private static Optional<String> workDivision = Optional.empty();
-	
-	//$直行区分
-	private static Optional<Boolean> directDivision = Optional.empty();
-	
+
 	//出勤
 	private static final String WORK = "出勤";
 	
 	//休み
 	private static final String NOT_WORK = "休み";
+	
+	private static Optional<Integer> defineAttendanceTime(Optional<TimeLeavingWork> time) {
+		if(time.isPresent()) {
+			Optional<TimeActualStamp> attendance = time.get().getAttendanceStamp();
+			if(attendance.isPresent()) {
+				Optional<WorkStamp> stamp = attendance.get().getStamp();
+				if(stamp.isPresent()) {
+					Optional<TimeWithDayAttr> timeWithDay = stamp.get().getTimeDay().getTimeWithDay();
+					if(timeWithDay.isPresent()) {
+						return Optional.ofNullable(timeWithDay.get().v());
+					}
+				}
+			}
+		}
+		return Optional.empty();
+	}
+	
+	private static Optional<Integer> defineLeaveTime(Optional<TimeLeavingWork> time) {
+		if(time.isPresent()) {
+			Optional<TimeActualStamp> attendance = time.get().getLeaveStamp();
+			if(attendance.isPresent()) {
+				Optional<WorkStamp> stamp = attendance.get().getStamp();
+				if(stamp.isPresent()) {
+					Optional<TimeWithDayAttr> timeWithDay = stamp.get().getTimeDay().getTimeWithDay();
+					if(timeWithDay.isPresent()) {
+						return Optional.ofNullable(timeWithDay.get().v());
+					}
+				}
+			}
+		}
+		return Optional.empty();
+	}
+	
+	private static Optional<String> defineWorkDivision(Optional<Boolean> workingNow) {
+		if(workingNow.isPresent()) {
+			return workingNow.get() ? Optional.ofNullable(WORK) : Optional.ofNullable(NOT_WORK);
+		}
+		return Optional.empty();
+	}
+	
+	private static Optional<Boolean> defineDirectDivision(Optional<WorkInfoOfDailyPerformance> dailyActualWorkInfo) {
+		if(dailyActualWorkInfo.isPresent()) {
+			return Optional.ofNullable(dailyActualWorkInfo.get().getWorkInformation().getGoStraightAtr().value == 1);
+		}
+		return Optional.empty();
+	}
 	
 	public static AttendanceAccordActualData JudgingStatus(Require rq, String sid) {
 
@@ -66,29 +103,29 @@ public class JudgingStatusDomainService {
 				workingNow = Optional.ofNullable(judgePresenceStatus(workType.get().getDailyWork()));
 			}
 		}
-
+		
 		// 作成する
+		// $出勤時刻
+		Optional<Integer> attendanceTime = Optional.empty();
+		
+		// $退勤時刻
+		Optional<Integer> leaveTime = Optional.empty();
+
+		// $勤務区分
+		Optional<String> workDivision = Optional.empty();
+
+		// $直行区分
+		Optional<Boolean> directDivision = Optional.empty();
+		
 		if (dailyAttendanceAndDeparture.isPresent()) {
 			Optional<TimeLeavingWork> time = dailyAttendanceAndDeparture.get().getAttendance().getTimeLeavingWorks()
 					.stream().filter(fil -> fil.getWorkNo().v() == 1).findFirst();
-
-			// $出勤時刻
-			time.ifPresent(item -> item.getAttendanceStamp().ifPresent(i -> i.getStamp().ifPresent(it -> it.getTimeDay()
-					.getTimeWithDay().ifPresent(m -> attendanceTime = Optional.ofNullable(m.v())))));
-			// $退勤時刻
-			time.ifPresent(item -> item.getLeaveStamp().ifPresent(i -> i.getStamp().ifPresent(
-					it -> it.getTimeDay().getTimeWithDay().ifPresent(m -> leaveTime = Optional.ofNullable(m.v())))));
-
-			// $勤務区分
-			workingNow.ifPresent(bool -> {
-				workDivision = bool ? Optional.ofNullable(WORK) : Optional.ofNullable(NOT_WORK);
-			});
-
-			// $直行区分
-			dailyActualWorkInfo.ifPresent(consumer -> {
-				directDivision = Optional.ofNullable(consumer.getWorkInformation().getGoStraightAtr().value == 1);
-			});
+			attendanceTime = defineAttendanceTime(time);
+			leaveTime = defineLeaveTime(time);
+			workDivision = defineWorkDivision(workingNow);
+			directDivision = defineDirectDivision(dailyActualWorkInfo);
 		}
+		
 		Integer now = GeneralDateTime.now().hours() * 60 + GeneralDateTime.now().minutes();
 		
 		// case 1
@@ -169,20 +206,6 @@ public class JudgingStatusDomainService {
 			return false;
 		}
 		return true;
-	}
-	
-	public static void clearStaticVariable() {
-		// $出勤時刻
-		attendanceTime = Optional.empty();
-
-		// $退勤時刻
-		leaveTime = Optional.empty();
-
-		// $勤務区分
-		workDivision = Optional.empty();
-
-		// $直行区分
-		directDivision = Optional.empty();
 	}
 
 	public interface Require {

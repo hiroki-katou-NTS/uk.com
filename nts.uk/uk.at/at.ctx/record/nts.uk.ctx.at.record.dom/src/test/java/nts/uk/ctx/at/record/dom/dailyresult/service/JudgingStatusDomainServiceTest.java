@@ -2,7 +2,6 @@ package nts.uk.ctx.at.record.dom.dailyresult.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Optional;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import mockit.Expectations;
@@ -23,11 +22,6 @@ public class JudgingStatusDomainServiceTest {
 
 	@Injectable
 	private Require require;
-
-	@Before
-	public void before() {
-		JudgingStatusDomainService.clearStaticVariable();
-	}
 
 	/**
 	 * case 1
