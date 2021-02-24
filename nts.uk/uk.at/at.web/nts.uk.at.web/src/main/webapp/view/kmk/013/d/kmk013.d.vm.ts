@@ -134,9 +134,9 @@ module nts.uk.at.view.kmk013.d {
                 
                 if (!$('.nts-input').ntsError('hasError')) {
                     let data: any = {};
-                    data.premiumCalcHd = self.checkedD34() ? 1 : 0;
+                    data.premiumCalcHd = (self.enableD34() && self.checkedD34()) ? 1 : 0;
                     data.missCalcHd = self.selectedD310();
-                    data.premiumCalcSubhd = self.checkedD44() ? 1 : 0;
+                    data.premiumCalcSubhd = (self.enableD44() && self.checkedD44()) ? 1 : 0;
                     data.missCalcSubhd = self.selectedD410();
                     data.flexDeductTimeCalc = self.selectedD52();
                     data.flexNonworkingDayCalc = self.selectedD62();
