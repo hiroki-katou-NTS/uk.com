@@ -10,7 +10,7 @@ module nts.uk.at.view.ksu005.a {
     class Ksu005aViewModel extends ko.ViewModel {
         currentScreen: any = null;
         itemList: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
-        selectedCode: KnockoutObservable<string> = ko.observable();
+        selectedCode: KnockoutObservable<string> = ko.observable('');
         comments: KnockoutObservable<string>;
         characteristics: Characteristics = {};
         constructor() {

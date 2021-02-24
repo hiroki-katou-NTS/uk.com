@@ -23,14 +23,17 @@
                 <div class="container-custom">
                     <!--C1-1-->
                     <div data-bind="ntsFormLabel:{}">#{i18n.getText('KSU005_49')} </div>    
+                    <!--C1-2-->
                     <span style="margin-top: 8px; margin-left: 20px;" data-bind="text: copySourceCode"></span>     
+                    <!--C1-3-->
                     <span style="margin-top: 8px; margin-left: 60px;" data-bind="text: copySourceName"></span>  
                 </div>        
                 <div class="container-custom">
                     <!--C2-1-->
                     <div data-bind="ntsFormLabel:{}">#{i18n.getText('KSU005_50')} </div>
+                    <!--C2-2-->
                     <div style="margin-left: 8px;">
-                        <input id="outputSettingCode" data-bind="ntsTextEditor:{
+                        <input tabindex="1" id="outputSettingCode" data-bind="ntsTextEditor:{
                             name:'#[KSU005_51]',
                             required: true,
                             constraint: 'OutputSettingCode',
@@ -42,9 +45,9 @@
                         }" />
                     </div>
 
-                    <!--B3-3-->
+                    <!--C2-3-->
                     <div style="margin-left: 20px;">
-                        <input id="outputSettingName" data-bind="ntsTextEditor:{
+                        <input tabindex="2" id="outputSettingName" data-bind="ntsTextEditor:{
                             name:'#[KSU005_52]',
                             required: true,
                             constraint: 'OutputSettingName',
@@ -56,13 +59,12 @@
                         }" />
                     </div>
                 </div>                
-            </div>        
-        
+            </div>    
             <div id="functions-area-bottom">
-                <!--c3-1-->
-                <button tabindex="1" class="x-large proceed" id="C3_1" data-bind="click: copy">#{i18n.getText('KSU005_53')}</button>
+                <!--C3-1-->
+                <button tabindex="3" class="x-large proceed" id="C3_1" data-bind="click: copy">#{i18n.getText('KSU005_53')}</button>
                 <!--C3-2-->
-                <button tabindex="1"  id="C3_2" data-bind="click: closeDialog">#{i18n.getText('KSU005_54')}</button>                        
+                <button tabindex="4"  id="C3_2" data-bind="click: closeDialog">#{i18n.getText('KSU005_54')}</button>                        
             </div>	 
 		</ui:define>
 	</ui:composition>
