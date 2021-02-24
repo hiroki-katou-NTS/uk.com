@@ -213,17 +213,17 @@ public class ReflectApplicationHelper {
 
 		// 日別勤怠の勤怠時間
 		List<LateTimeOfDaily> lateTimeOfDaily = new ArrayList<>();
-		lateTimeOfDaily.add(new LateTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(111)),
-				TimeWithCalculation.sameTime(new AttendanceTime(111)), new WorkNo(no),
-				new TimevacationUseTimeOfDaily(new AttendanceTime(111), new AttendanceTime(111),
-						new AttendanceTime(111), new AttendanceTime(111), Optional.empty(), new AttendanceTime(111), new AttendanceTime(111)),
-				new IntervalExemptionTime(new AttendanceTime(111))));
+		lateTimeOfDaily.add(new LateTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(0)),
+				TimeWithCalculation.sameTime(new AttendanceTime(0)), new WorkNo(no),
+				new TimevacationUseTimeOfDaily(new AttendanceTime(0), new AttendanceTime(0),
+						new AttendanceTime(0), new AttendanceTime(0), Optional.empty(), new AttendanceTime(0), new AttendanceTime(0)),
+				new IntervalExemptionTime(new AttendanceTime(0))));
 		List<LeaveEarlyTimeOfDaily> leaveEarlyTimeOfDaily = new ArrayList<>();
-		leaveEarlyTimeOfDaily.add(new LeaveEarlyTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(111)),
-				TimeWithCalculation.sameTime(new AttendanceTime(111)), new WorkNo(no),
-				new TimevacationUseTimeOfDaily(new AttendanceTime(111), new AttendanceTime(111),
-						new AttendanceTime(111), new AttendanceTime(111), Optional.empty(), new AttendanceTime(111), new AttendanceTime(111)),
-				new IntervalExemptionTime(new AttendanceTime(111))));
+		leaveEarlyTimeOfDaily.add(new LeaveEarlyTimeOfDaily(TimeWithCalculation.sameTime(new AttendanceTime(0)),
+				TimeWithCalculation.sameTime(new AttendanceTime(0)), new WorkNo(no),
+				new TimevacationUseTimeOfDaily(new AttendanceTime(0), new AttendanceTime(0),
+						new AttendanceTime(0), new AttendanceTime(0), Optional.empty(), new AttendanceTime(0), new AttendanceTime(0)),
+				new IntervalExemptionTime(new AttendanceTime(0))));
 		List<OutingTimeOfDaily> outingTimeOfDailyPerformance = new ArrayList<OutingTimeOfDaily>();
 		outingTimeOfDailyPerformance.add(new OutingTimeOfDaily(new BreakTimeGoOutTimes(no), GoingOutReason.PRIVATE,
 				TimevacationUseTimeOfDaily.defaultValue(),

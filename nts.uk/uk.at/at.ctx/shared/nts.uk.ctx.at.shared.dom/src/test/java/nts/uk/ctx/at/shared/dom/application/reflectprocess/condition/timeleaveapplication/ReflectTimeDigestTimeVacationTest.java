@@ -48,7 +48,58 @@ public class ReflectTimeDigestTimeVacationTest {
 
 		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getLateTimeOfDaily().get(0).getTimePaidUseTime()
 				.getSixtyHourExcessHolidayUseTime().v()).isEqualTo(60);
+
+		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getLateTimeOfDaily().get(0).getTimePaidUseTime()
+				.getTimeCareHolidayUseTime().v()).isEqualTo(60);
+
+		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getLateTimeOfDaily().get(0).getTimePaidUseTime()
+				.getTimeChildCareHolidayUseTime().v()).isEqualTo(60);
+
 		assertThat(result).isEqualTo(Arrays.asList(595, 596, 597, 1123, 1124, 1125, 1126));
+
+		// 日別勤怠の早退時間の値が変わらない
+		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getLeaveEarlyTimeOfDaily().get(0)
+				.getTimePaidUseTime().getTimeAnnualLeaveUseTime().v()).isEqualTo(0);
+
+		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getLeaveEarlyTimeOfDaily().get(0)
+				.getTimePaidUseTime().getTimeCompensatoryLeaveUseTime().v()).isEqualTo(0);
+
+		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getLeaveEarlyTimeOfDaily().get(0)
+				.getTimePaidUseTime().getTimeSpecialHolidayUseTime().v()).isEqualTo(0);
+
+		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getLeaveEarlyTimeOfDaily().get(0)
+				.getTimePaidUseTime().getSpecialHolidayFrameNo()).isEqualTo(Optional.empty());
+
+		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getLeaveEarlyTimeOfDaily().get(0)
+				.getTimePaidUseTime().getSixtyHourExcessHolidayUseTime().v()).isEqualTo(0);
+
+		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getLeaveEarlyTimeOfDaily().get(0)
+				.getTimePaidUseTime().getTimeCareHolidayUseTime().v()).isEqualTo(0);
+
+		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getLeaveEarlyTimeOfDaily().get(0)
+				.getTimePaidUseTime().getTimeChildCareHolidayUseTime().v()).isEqualTo(0);
+
+		// 日別実績の外出時間の値が変わらない
+		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getOutingTimeOfDaily().get(0)
+				.getTimeVacationUseOfDaily().getTimeAnnualLeaveUseTime().v()).isEqualTo(0);
+
+		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getOutingTimeOfDaily().get(0)
+				.getTimeVacationUseOfDaily().getTimeCompensatoryLeaveUseTime().v()).isEqualTo(0);
+
+		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getOutingTimeOfDaily().get(0)
+				.getTimeVacationUseOfDaily().getTimeSpecialHolidayUseTime().v()).isEqualTo(0);
+
+		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getOutingTimeOfDaily().get(0)
+				.getTimeVacationUseOfDaily().getSpecialHolidayFrameNo()).isEqualTo(Optional.empty());
+
+		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getOutingTimeOfDaily().get(0)
+				.getTimeVacationUseOfDaily().getSixtyHourExcessHolidayUseTime().v()).isEqualTo(0);
+
+		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getOutingTimeOfDaily().get(0)
+				.getTimeVacationUseOfDaily().getTimeCareHolidayUseTime().v()).isEqualTo(0);
+
+		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getOutingTimeOfDaily().get(0)
+				.getTimeVacationUseOfDaily().getTimeChildCareHolidayUseTime().v()).isEqualTo(0);
 
 	}
 
@@ -83,7 +134,57 @@ public class ReflectTimeDigestTimeVacationTest {
 
 		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getLeaveEarlyTimeOfDaily().get(0)
 				.getTimePaidUseTime().getSixtyHourExcessHolidayUseTime().v()).isEqualTo(60);
+		
+		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getLeaveEarlyTimeOfDaily().get(0)
+				.getTimePaidUseTime().getTimeCareHolidayUseTime().v()).isEqualTo(60);
+
+		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getLeaveEarlyTimeOfDaily().get(0)
+				.getTimePaidUseTime().getTimeChildCareHolidayUseTime().v()).isEqualTo(60);
 		assertThat(result).isEqualTo(Arrays.asList(607, 608, 609, 1131, 1132, 1133, 1134));
+
+		// 日別勤怠の遅刻時間の値が変わらない
+		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getLateTimeOfDaily().get(0).getTimePaidUseTime()
+				.getTimeAnnualLeaveUseTime().v()).isEqualTo(0);
+
+		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getLateTimeOfDaily().get(0).getTimePaidUseTime()
+				.getTimeCompensatoryLeaveUseTime().v()).isEqualTo(0);
+
+		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getLateTimeOfDaily().get(0).getTimePaidUseTime()
+				.getTimeSpecialHolidayUseTime().v()).isEqualTo(0);
+
+		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getLateTimeOfDaily().get(0).getTimePaidUseTime()
+				.getSpecialHolidayFrameNo()).isEqualTo(Optional.empty());
+
+		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getLateTimeOfDaily().get(0).getTimePaidUseTime()
+				.getSixtyHourExcessHolidayUseTime().v()).isEqualTo(0);
+		
+		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getLateTimeOfDaily().get(0).getTimePaidUseTime()
+				.getTimeCareHolidayUseTime().v()).isEqualTo(0);
+
+		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getLateTimeOfDaily().get(0).getTimePaidUseTime()
+				.getTimeChildCareHolidayUseTime().v()).isEqualTo(0);
+
+		// 日別実績の外出時間の値が変わらない
+		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getOutingTimeOfDaily().get(0)
+				.getTimeVacationUseOfDaily().getTimeAnnualLeaveUseTime().v()).isEqualTo(0);
+
+		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getOutingTimeOfDaily().get(0)
+				.getTimeVacationUseOfDaily().getTimeCompensatoryLeaveUseTime().v()).isEqualTo(0);
+
+		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getOutingTimeOfDaily().get(0)
+				.getTimeVacationUseOfDaily().getTimeSpecialHolidayUseTime().v()).isEqualTo(0);
+
+		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getOutingTimeOfDaily().get(0)
+				.getTimeVacationUseOfDaily().getSpecialHolidayFrameNo()).isEqualTo(Optional.empty());
+
+		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getOutingTimeOfDaily().get(0)
+				.getTimeVacationUseOfDaily().getSixtyHourExcessHolidayUseTime().v()).isEqualTo(0);
+		
+		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getOutingTimeOfDaily().get(0)
+				.getTimeVacationUseOfDaily().getTimeCareHolidayUseTime().v()).isEqualTo(0);
+
+		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getOutingTimeOfDaily().get(0)
+				.getTimeVacationUseOfDaily().getTimeChildCareHolidayUseTime().v()).isEqualTo(0);
 
 	}
 
@@ -118,10 +219,61 @@ public class ReflectTimeDigestTimeVacationTest {
 
 		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getOutingTimeOfDaily().get(0)
 				.getTimeVacationUseOfDaily().getSixtyHourExcessHolidayUseTime().v()).isEqualTo(60);
+		
+		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getOutingTimeOfDaily().get(0)
+				.getTimeVacationUseOfDaily().getTimeCareHolidayUseTime().v()).isEqualTo(60);
+
+		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getOutingTimeOfDaily().get(0)
+				.getTimeVacationUseOfDaily().getTimeChildCareHolidayUseTime().v()).isEqualTo(60);
 		assertThat(result).isEqualTo(Arrays.asList(502, 503, 504, 1145, 505, 1140, 1141));
+
+		// 日別勤怠の早退時間の値が変わらない
+		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getLeaveEarlyTimeOfDaily().get(0)
+				.getTimePaidUseTime().getTimeAnnualLeaveUseTime().v()).isEqualTo(0);
+
+		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getLeaveEarlyTimeOfDaily().get(0)
+				.getTimePaidUseTime().getTimeCompensatoryLeaveUseTime().v()).isEqualTo(0);
+
+		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getLeaveEarlyTimeOfDaily().get(0)
+				.getTimePaidUseTime().getTimeSpecialHolidayUseTime().v()).isEqualTo(0);
+
+		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getLeaveEarlyTimeOfDaily().get(0)
+				.getTimePaidUseTime().getSpecialHolidayFrameNo()).isEqualTo(Optional.empty());
+
+		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getLeaveEarlyTimeOfDaily().get(0)
+				.getTimePaidUseTime().getSixtyHourExcessHolidayUseTime().v()).isEqualTo(0);
+		
+		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getLeaveEarlyTimeOfDaily().get(0)
+				.getTimePaidUseTime().getTimeCareHolidayUseTime().v()).isEqualTo(0);
+
+		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getLeaveEarlyTimeOfDaily().get(0)
+				.getTimePaidUseTime().getTimeChildCareHolidayUseTime().v()).isEqualTo(0);
+
+		// 日別勤怠の遅刻時間の値が変わらない
+		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getLateTimeOfDaily().get(0).getTimePaidUseTime()
+				.getTimeAnnualLeaveUseTime().v()).isEqualTo(0);
+
+		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getLateTimeOfDaily().get(0).getTimePaidUseTime()
+				.getTimeCompensatoryLeaveUseTime().v()).isEqualTo(0);
+
+		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getLateTimeOfDaily().get(0).getTimePaidUseTime()
+				.getTimeSpecialHolidayUseTime().v()).isEqualTo(0);
+
+		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getLateTimeOfDaily().get(0).getTimePaidUseTime()
+				.getSpecialHolidayFrameNo()).isEqualTo(Optional.empty());
+
+		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getLateTimeOfDaily().get(0).getTimePaidUseTime()
+				.getSixtyHourExcessHolidayUseTime().v()).isEqualTo(0);
+
+		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getLateTimeOfDaily().get(0).getTimePaidUseTime()
+				.getTimeCareHolidayUseTime().v()).isEqualTo(0);
+
+		assertThat(dailyApp.getAttendanceTimeOfDailyPerformance().get().getLateTimeOfDaily().get(0).getTimePaidUseTime()
+				.getTimeChildCareHolidayUseTime().v()).isEqualTo(0);
 
 	}
 
+	// 時間消化申請
 	private TimeDigestApplicationShare createDigest() {
 		AttendanceTime timeCommon = new AttendanceTime(60);
 		return new TimeDigestApplicationShare(timeCommon, timeCommon, timeCommon, timeCommon, timeCommon, timeCommon,
