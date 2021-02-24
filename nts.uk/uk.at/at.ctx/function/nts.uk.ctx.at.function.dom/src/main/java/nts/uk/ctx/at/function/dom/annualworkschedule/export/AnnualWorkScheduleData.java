@@ -10,12 +10,12 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.function.dom.adapter.actualmultiplemonth.MonthlyRecordValueImport;
 import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.AgreementTimeByPeriodImport;
-import nts.uk.ctx.at.function.dom.adapter.monthlyattendanceitem.AttendanceItemValueImport;
-import nts.uk.ctx.at.function.dom.adapter.monthlyattendanceitem.MonthlyAttendanceResultImport;
 import nts.uk.ctx.at.function.dom.annualworkschedule.CalculationFormulaOfItem;
 import nts.uk.ctx.at.function.dom.annualworkschedule.ItemsOutputToBookTable;
 import nts.uk.ctx.at.function.dom.annualworkschedule.enums.ValueOuputFormat;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.PeriodAtrOfAgreement;
 
@@ -396,9 +396,11 @@ public class AnnualWorkScheduleData {
 	}
 
 	public static AnnualWorkScheduleData fromMonthlyAttendanceList(ItemsOutputToBookTable itemOut
-																 , List<MonthlyAttendanceResultImport> monthlyAttendanceResult
-																 , YearMonth startYm) {
+																 , List<MonthlyRecordValueImport> monthlyAttendanceResult
+																 , YearMonth startYm
+																 , List<Integer> lstAtdCanBeAggregate) {
 		final Map<Integer, Integer> operationMap = itemOut.getListOperationSetting().stream()
+				.filter(t -> lstAtdCanBeAggregate.contains(t.getAttendanceItemId())) // 集計可能な勤怠項目IDかどうかチェックをする
 				.collect(Collectors.toMap(CalculationFormulaOfItem::getAttendanceItemId, CalculationFormulaOfItem::getOperation));
 
 		AnnualWorkScheduleData annualWorkScheduleData = new AnnualWorkScheduleData();
@@ -409,18 +411,19 @@ public class AnnualWorkScheduleData {
 		annualWorkScheduleData.setAgreementTime(false);
 		monthlyAttendanceResult.forEach(m -> {
 			annualWorkScheduleData.setMonthlyData(
-					AnnualWorkScheduleData.sumAttendanceData(operationMap, m.getAttendanceItems()),
-					YearMonth.of(m.getYearMonth().year(), m.getYearMonth().month()));
+					AnnualWorkScheduleData.sumAttendanceData(operationMap
+														   , m.getItemValues())
+					, YearMonth.of(m.getYearMonth().year(), m.getYearMonth().month()));
 		});
 		return annualWorkScheduleData;
 	}
 
-	private static ItemData sumAttendanceData(Map<Integer, Integer> operationMap,
-			List<AttendanceItemValueImport> attendanceItemsValue) {
+	private static ItemData sumAttendanceData(Map<Integer, Integer> operationMap
+											, List<ItemValue> attendanceItemsValue) {
 		BigDecimal sum = BigDecimal.valueOf(0);
-		for (AttendanceItemValueImport attendanceItem : attendanceItemsValue) {
+		for (ItemValue attendanceItem : attendanceItemsValue) {
 			// 0: integer, 2 decimal
-			if (attendanceItem.isNumber()) {
+			if (attendanceItem.getValueType().isInteger() || attendanceItem.getValueType().isDouble()) {
 				BigDecimal val;
 				try {
 					val = new BigDecimal(attendanceItem.getValue());
@@ -499,7 +502,7 @@ public class AnnualWorkScheduleData {
 		return annualWorkScheduleData;
 	}
 	
-	private void calcNumMonthFromAttendance(List<MonthlyAttendanceResultImport> listMonthlyAttendance) {
+	private void calcNumMonthFromAttendance(List<MonthlyRecordValueImport> listMonthlyAttendance) {
 		this.numMonth = listMonthlyAttendance.stream().map(x -> x.getYearMonth().v()).distinct()
 				.collect(Collectors.toList()).size();
 	}
