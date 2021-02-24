@@ -23,7 +23,7 @@ public class BreakTimeZoneSetting {
 	// 時間帯
 	private List<DeductionTime> timeZones = Collections.emptyList();
 	
-	private CalculatedFlag calculatedFlag;
+	private CalculatedFlag calculatedFlag = CalculatedFlag.UNCALCULATED;
 	
 	public BreakTimeZoneSetting(List<DeductionTime> timeZones) {
 		this.timeZones = timeZones;
