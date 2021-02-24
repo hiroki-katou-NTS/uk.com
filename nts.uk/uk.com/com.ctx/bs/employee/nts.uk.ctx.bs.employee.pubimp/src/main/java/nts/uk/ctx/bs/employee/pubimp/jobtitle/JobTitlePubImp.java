@@ -466,7 +466,7 @@ public class JobTitlePubImp implements SyJobTitlePub {
                 EmployeeJobHistExport data = EmployeeJobHistExport.builder().employeeId(s)
 													                        .jobTitleID(jobInfo.getJobTitleId())
 													                        .jobTitleName(jobInfo.getJobTitleName().v())
-													                        .sequenceCode(jobInfo.getSequenceCode().v())
+													                        .sequenceCode(jobInfo.getSequenceCode() == null ? null : jobInfo.getSequenceCode().v())
 													                        .startDate(jobHis.start())
 													                        .endDate(jobHis.end())
 													                        .jobTitleCode(jobInfo.getJobTitleCode() != null ? jobInfo.getJobTitleCode().v() : null)
