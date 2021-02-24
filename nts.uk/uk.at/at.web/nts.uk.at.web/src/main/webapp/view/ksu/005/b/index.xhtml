@@ -28,13 +28,13 @@
                 <!--B1-1-->
                 <button tabindex="1" id="B1_1" data-bind="click: clearData">#{i18n.getText('KSU005_12')}</button>
                 <!--B1-2-->
-                <button tabindex="1" class="proceed" id="B1_2" data-bind="click: registerOrUpdate, enable: $root.errors.isEmpty">#{i18n.getText('KSU005_13')}</button>
+                <button tabindex="2" class="proceed" id="B1_2" data-bind="click: registerOrUpdate, enable: $root.errors.isEmpty">#{i18n.getText('KSU005_13')}</button>
                 <!--B1-3-->
-                <button tabindex="1" class="danger" id="B1_3" data-bind="click: remove, enable: enableDelete()">#{i18n.getText('KSU005_15')}</button>
+                <button tabindex="3" class="danger" id="B1_3" data-bind="click: remove, enable: enableDelete()">#{i18n.getText('KSU005_15')}</button>
                 <!--B1-4-->
-                <button tabindex="1" id="B1_4" data-bind="click: openDialog">#{i18n.getText('KSU005_14')}</button>
+                <button tabindex="4" id="B1_4" data-bind="click: openDialog, enable: enableDelete()">#{i18n.getText('KSU005_14')}</button>
                 <!--B1-5-->
-                <button tabindex="1" id="B1_5" data-bind="click: closeDialog">#{i18n.getText('KSU005_16')}</button>
+                <button tabindex="5" id="B1_5" data-bind="click: closeDialog">#{i18n.getText('KSU005_16')}</button>
             </div>
             <div id="contents-area">
                 <div id="left-content" class="fixed-flex-layout-left">                    
@@ -43,7 +43,7 @@
                         <div class="custom">
                             <i class="icon icon-searchbox"></i>
                         </div>
-                        <div style="width: 222px" tabindex="9"
+                        <div style="width: 222px" tabindex="6"
                             data-bind="ntsSearchBox: {targetKey: 'code', comId: 'single-list', searchMode: 'highlight', 
                                             items: items, selected: selectedCode, selectedKey: 'code', fields: ['code','name'], mode: 'igGrid'}" />
                         <table id="single-list" data-bind="ntsGridList: {								
@@ -66,7 +66,7 @@
 
                         <!--B3-2-->
                         <div>
-                            <input id="outputSettingCode" data-bind="ntsTextEditor:{
+                            <input tabindex="7" id="outputSettingCode" data-bind="ntsTextEditor:{
                                 name:'#[KSU005_21]',
                                 required: true,
                                 constraint: 'OutputSettingCode',
@@ -82,7 +82,7 @@
 
                         <!--B3-3-->
                         <div style="margin-left: 8px;">
-                            <input id="outputSettingName" data-bind="ntsTextEditor:{
+                            <input tabindex="8" id="outputSettingName" data-bind="ntsTextEditor:{
                                 name:'#[KSU005_22]',
                                 required: true,
                                 constraint: 'OutputSettingName',
@@ -96,28 +96,28 @@
                     </div>
 
                     <div style="margin-top:10px" >
-                        <div id="tab-panel" data-bind="ntsTabPanel: { width: 250, dataSource: tabs, active: selectedTab}">
+                        <div id="tab-panel" tabindex="9" data-bind="ntsTabPanel: { width: 250, dataSource: tabs, active: selectedTab}">
                             <div class="tab-content-1 tab1-content-fixsize">                             
                                 <div class="container-tab-custom">
                                     <!--B5-1-->
                                     <div data-bind="ntsFormLabel:{required: false}"> #{i18n.getText('KSU005_26')}</div>
                                     <div style="width: 90px;"></div>
                                     <!--B5-2-->
-                                    <div class="cf" data-bind="ntsSwitchButton: {
-                                    name: '#[KSU005_26]',
-                                    options: $vm.lstAddColInfo,
-                                    optionsValue: 'code',
-                                    optionsText: 'name',
-                                    value: $vm.scheduleTableOutputSetting().additionalColumn,
-                                    required: true,
-                                    enable: true }"></div>
+                                    <div class="cf" tabindex="10" data-bind="ntsSwitchButton: {
+                                                                    name: '#[KSU005_26]',
+                                                                    options: $vm.lstAddColInfo,
+                                                                    optionsValue: 'code',
+                                                                    optionsText: 'name',
+                                                                    value: $vm.scheduleTableOutputSetting().additionalColumn,
+                                                                    required: true,
+                                                                    enable: true }"></div>
                                 </div>
                                 <div class="container-tab-custom">
                                     <!--B6-1-->
                                     <div data-bind="ntsFormLabel:{required: false}"> #{i18n.getText('KSU005_29')}</div>
                                     <div style="width: 98px;"></div>
                                     <!--B6-2-->
-                                    <div data-bind="ntsCheckBox: { checked: isShiftBackgroundColor}">#{i18n.getText('KSU005_30')}
+                                    <div tabindex="11" data-bind="ntsCheckBox: { checked: isShiftBackgroundColor}">#{i18n.getText('KSU005_30')}
                                     </div>
                                 </div>
                                 <div class="container-tab-custom">
@@ -125,29 +125,31 @@
                                     <div data-bind="ntsFormLabel:{required: false}"> #{i18n.getText('KSU005_72')}</div>
                                     <div style="width: 106px;"></div>
                                     <!--B7-2-->
-                                    <div class="cf" data-bind="ntsSwitchButton: {
-                                    name: '#[KSU005_72]',
-                                    options: $vm.lstWorkInfo,
-                                    optionsValue: 'code',
-                                    optionsText: 'name',
-                                    value: $vm.scheduleTableOutputSetting().dailyDataDisplay,
-                                    required: true,
-                                    enable: true }"></div>
+                                    <div class="cf" tabindex="12" data-bind="ntsSwitchButton: {
+                                                                                                    name: '#[KSU005_72]',
+                                                                                                    options: $vm.lstWorkInfo,
+                                                                                                    optionsValue: 'code',
+                                                                                                    optionsText: 'name',
+                                                                                                    value: $vm.scheduleTableOutputSetting().dailyDataDisplay,
+                                                                                                    required: true,
+                                                                                                    enable: true }"></div>
                                 </div>
-
-                                <!-- <div class="container-tab-custom"> -->
-                                    <div>
+                                <div>
                                     <!--B8-1-->
-                                    <div data-bind="ntsFormLabel:{required: true}"> #{i18n.getText('KSU005_31')}</div>                                   
-
+                                    <div data-bind="ntsFormLabel:{required: true}"> #{i18n.getText('KSU005_31')}</div>
+                                
                                     <!--B8-2-->
-                                    <button tabindex="1" id="B8_2" data-bind="click: addItem, enable:isEnableAddBtn" >#{i18n.getText('KSU005_32')}</button>
-
+                                    <button tabindex="13" id="B8_2"
+                                        data-bind="click: addItem, enable:isEnableAddBtn">#{i18n.getText('KSU005_32')}</button>
+                                
                                     <!--B8-3-->
-                                    <button tabindex="1" id="B8_3" class="danger" data-bind="click: removeItem">#{i18n.getText('KSU005_33')}</button>                                   
+                                    <button tabindex="14" id="B8_3" class="danger"
+                                        data-bind="click: removeItem, enable:isEnableDelBtn">#{i18n.getText('KSU005_33')}</button>
                                 </div>
-                                <div style="margin: 15px 0px 0px 80px;">                                    
-                                    <table id="fixed-table">
+                                 
+                                <div style="margin: 15px 0px 0px 80px;">   
+                                     <!--B8-4-->                                 
+                                    <table tabindex="15" id="fixed-table">
                                         <colgroup>
                                             <col width="30px" />
                                             <col width="40px" />
@@ -158,24 +160,35 @@
                                         <thead>
                                             <tr>
                                                 <th class="ui-widget-header" rowspan="2"></th>
+
+                                                 <!--B8-5--> 
                                                 <th class="ui-widget-header" rowspan="2"><div data-bind="ntsCheckBox: { checked: checkAll }"></div></th>
+
+                                                 <!--B8-6--> 
                                                 <th class="ui-widget-header" rowspan="2">#{i18n.getText('KSU005_34')}</th>
+
+                                                 <!--B8-7--> 
                                                 <th class="ui-widget-header" rowspan="2">#{i18n.getText('KSU005_35')}</th>
+
+                                                 <!--B8-8--> 
                                                 <th class="ui-widget-header" rowspan="2">#{i18n.getText('KSU005_36')}</th>                                
                                             </tr>
                                         </thead>
                                         <tbody data-bind="foreach: itemList">
                                             <tr>   
-                                                <td role="rowheader" data-bind="text: rowNo"></td>    
-
-                                                <td  data-bind="visible: isNumberOne"></td>                                                
-                                                <td  data-bind="visible: isNumberOne">基本給</td>   
-
-                                                <td data-bind="visible: !isNumberOne()" style="text-align: center;">
+                                                <td role="rowheader" data-bind="text: rowNo"></td> 
+                                                <td  data-bind="visible: isNumberOne"></td>  
+                                                
+                                                 <!--B8-12--> 
+                                                 <td tabindex="18" data-bind="visible: !isNumberOne()" style="text-align: center;">
                                                     <div data-bind="ntsCheckBox: {checked: checked}"></div>
                                                 </td>
 
-                                                <td data-bind="visible: !isNumberOne()"><div id="combo-box" data-bind="ntsComboBox: {
+                                                 <!--B8-9-->                                            
+                                                <td  data-bind="visible: isNumberOne">基本給</td>
+
+                                                <!--B8-13--> 
+                                                <td  data-bind="visible: !isNumberOne()"><div tabindex="19" id="combo-box" data-bind="ntsComboBox: {
                                                     options: $parent.personalInfoItems,
                                                     width: 150,
                                                     optionsValue: 'value',
@@ -187,7 +200,8 @@
                                                         ]}"></div>
                                                 </td>
 
-                                                <td><div id="combo-box" data-bind="ntsComboBox: {
+                                                <!--B8-10--> 
+                                                <td><div tabindex="16" id="combo-box" data-bind="ntsComboBox: {
                                                     options: $parent.personalInfoItems,
                                                     width: 150,
                                                     optionsValue: 'value',
@@ -199,7 +213,9 @@
                                                             { prop: 'name', length: 10 },
                                                         ]}"></div>
                                                 </td>
-                                                <td><div id="combo-box" data-bind="ntsComboBox: {
+
+                                                <!--B8-11--> 
+                                                <td><div tabindex="17" id="combo-box" data-bind="ntsComboBox: {
                                                     options: $parent.attendanceItems,
                                                     width: 150,
                                                     optionsValue: 'value',
@@ -220,7 +236,7 @@
                                     <!--B9-1-->
                                     <div data-bind="ntsFormLabel:{required: false}"> #{i18n.getText('KSU005_38')}</div>
                             
-                                    <div style="margin-top: 12px;" id="swap-list" data-bind="ntsSwapList: {
+                                    <div tabindex="21" style="margin-top: 12px;" id="swap-list" data-bind="ntsSwapList: {
                                                                                                     showSearchBox: { showLeft : false, showRight: false},
                                                                                                     height: 300,
                                                                                                     dataSource: itemsSwap,                                   
@@ -250,7 +266,7 @@
                             
                                     <!--B10-2-->
                                     <div style="margin-top: 12px; margin-left: 10px;">
-                                    <table id="person-list" data-bind="ntsGridList: {								
+                                    <table tabindex="23" id="person-list" data-bind="ntsGridList: {								
                                                                 height: 250,
                                                                 dataSource: persons,
                                                                 primaryKey: 'value',

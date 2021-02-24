@@ -9,7 +9,7 @@
         <ui:define name="htmlHead">	
             <script>var dialogSize = { width: 1100, height: 620 };</script>
             <com:ValidatorScript>
-                nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.AgreementApprovalComments
+                nts.uk.ctx.at.aggregation.dom.scheduletable.PersonalScheduleComments
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ksu005.a.style.css" />		
@@ -22,9 +22,9 @@
                 <!--A1-1-->
                 <button tabindex="1" id="A1_1">#{i18n.getText('KSU005_4')}</button>
                 <!--A1-2-->
-                <button tabindex="1" id="A1_2">#{i18n.getText('KSU005_5')}</button>
+                <button tabindex="2" id="A1_2">#{i18n.getText('KSU005_5')}</button>
                 <!--A1-3-->
-                <button tabindex="1" id="A1_3" data-bind="click: closeDialog">#{i18n.getText('KSU005_6')}</button>	
+                <button tabindex="3" id="A1_3" data-bind="click: closeDialog">#{i18n.getText('KSU005_6')}</button>	
             </div>	
             
 			<div id="contents-area">
@@ -33,7 +33,7 @@
                 <div data-bind="ntsFormLabel:{required: true}">#{i18n.getText('KSU005_7')} </div>                
 
                 <!--A2-2-->
-                <div style="margin-left: 35px;" id="combo-box" data-bind="ntsComboBox: {options: itemList,
+                <div tabindex="4" style="margin-left: 35px;" id="combo-box" data-bind="ntsComboBox: {options: itemList,
                         width: 230,
                         optionsValue: 'code',
                         visibleItemsCount: 5,
@@ -46,17 +46,17 @@
                 </div>
 
                 <!--A2-3-->
-                <button style="margin: 0px 35px 0px 10px;" tabindex="1" id="A2_3" data-bind="click: openDialog">#{i18n.getText('KSU005_9')}</button>
+                <button style="margin: 0px 35px 0px 10px;" tabindex="5" id="A2_3" data-bind="click: openDialog">#{i18n.getText('KSU005_9')}</button>
               
                 <!--A3-1-->
-                <div data-bind="ntsFormLabel:{required: false, constraint:['AgreementApprovalComments']}">#{i18n.getText('KSU005_11')} </div> 
+                <div data-bind="ntsFormLabel:{required: false, constraint:['PersonalScheduleComments']}">#{i18n.getText('KSU005_11')} </div> 
 
                 <!--A3-2-->
                 <div>
-					<textarea class="inputValue" rows="3" cols="60"
+					<textarea tabindex="7" class="inputValue" rows="3" cols="60"
 						data-bind="ntsMultilineEditor: { 
                             value: comments, 
-                            constraint:'AgreementApprovalComments',
+                            constraint:'PersonalScheduleComments',
                             required: true }" />
 				</div>
             </div>

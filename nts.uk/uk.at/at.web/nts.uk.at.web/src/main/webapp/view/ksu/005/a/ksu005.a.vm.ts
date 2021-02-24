@@ -10,16 +10,13 @@ module nts.uk.at.view.ksu005.a {
     class Ksu005aViewModel extends ko.ViewModel {
         currentScreen: any = null;
         itemList: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
-        selectedCode: KnockoutObservable<string> = ko.observable();
+        selectedCode: KnockoutObservable<string> = ko.observable('');
         comments: KnockoutObservable<string>;
         characteristics: Characteristics = {};
         constructor() {
             super();
-            const self = this;   
-            // self.selectedCode.subscribe((value) => {
-
-            // });        
-            self.comments = ko.observable("並び順社員リスト 社員情報　対象期間...");
+            const self = this; 
+            self.comments = ko.observable("");
             self.loadScheduleOutputSetting();
         }
 
@@ -62,7 +59,7 @@ module nts.uk.at.view.ksu005.a {
             setShare('dataShareKSU005a', code);
             self.currentScreen = nts.uk.ui.windows.sub.modal('/view/ksu/005/b/index.xhtml').onClosed(() => {
                 let dataList: Array<ItemModel> = [];
-                let currentCode = getShared('dataShareCloseKSU005b');
+                let res = getShared('dataShareCloseKSU005b');
                 self.$blockui("invisible");
                 self.$ajax(Paths.GET_SCHEDULE_TABLE_OUTPUT_SETTING_BY_CID).done((data: Array<IScheduleTableOutputSetting>) => {
                     if (data && data.length > 0) {
@@ -70,7 +67,9 @@ module nts.uk.at.view.ksu005.a {
                             _.each(data, item => {
                                 dataList.push(new ItemModel(item.code, item.name));                                
                             });
-                            self.characteristics.code = currentCode;
+                            self.characteristics.code = res.code;
+                            self.characteristics.name = res.name;
+                            self.characteristics.comments = self.comments();
                             character.save('characterKsu005a', self.characteristics);
                             self.loadScheduleOutputSetting();
                         } else if (data[0].isAttendance) {
@@ -93,6 +92,8 @@ module nts.uk.at.view.ksu005.a {
 
     interface Characteristics {
         code: string;
+        name: string;
+        comments: string;
     }
 
     interface IScheduleTableOutputSetting {

@@ -39,7 +39,6 @@ module nts.uk.at.view.ksu005.c {
             self.$ajax(Paths.COPY_SCHEDULE_TABLE_OUTPUT_SETTING, request).done(() => {
                 self.$dialog.info({messageId: "Msg_15"}).then(function() {
                     self.closeDialog();
-                    // self.openDialog();
                     setShare('dataShareKSU005c', self.newCode());
                 });                 
 
@@ -48,13 +47,6 @@ module nts.uk.at.view.ksu005.c {
                 self.$blockui('hide');
             });
         }
-
-        // openDialog(): void {
-        //     const self = this;		
-        //     let newCode = self.newCode();             
-        //     setShare('dataShareKSU005c', newCode);
-        //     self.currentScreen = nts.uk.ui.windows.sub.modal('/view/ksu/005/b/index.xhtml');
-        // }
 
         closeDialog(): void {
             const vm = this;
