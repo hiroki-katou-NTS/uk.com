@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
 
+import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
@@ -28,7 +29,9 @@ public class CreateWorkScheduleByShift {
 		Optional<ShiftMaster> shiftMaster = require.getShiftMaster(shiftMasterCode);
 		
 		if (! shiftMaster.isPresent()) {
-			return ResultOfRegisteringWorkSchedule.createWithError(employeeId, date, "Msg_1705");
+			
+			String message = I18NText.main("Msg_1705").build().buildMessage();
+			return ResultOfRegisteringWorkSchedule.createWithError(employeeId, date, message);
 		}
 		
 		return CreateWorkSchedule.create(require, employeeId, date, shiftMaster.get(), new ArrayList<>(), new HashMap<>());

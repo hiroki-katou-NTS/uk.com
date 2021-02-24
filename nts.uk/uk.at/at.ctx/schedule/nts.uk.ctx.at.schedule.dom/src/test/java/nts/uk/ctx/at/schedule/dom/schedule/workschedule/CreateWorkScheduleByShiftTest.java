@@ -13,6 +13,8 @@ import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Mock;
 import mockit.MockUp;
+import mockit.Mocked;
+import nts.arc.i18n.I18NText.Builder;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.CreateWorkSchedule.Require;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
@@ -26,12 +28,16 @@ public class CreateWorkScheduleByShiftTest {
 	CreateWorkScheduleByShift.Require require;
 	
 	@Test
-	public void testCreate_hasError() {
+	public void testCreate_hasError(
+			@Mocked Builder builder) {
 		
 		new Expectations() {{
 			
 			require.getShiftMaster( (ShiftMasterCode) any );
 			// result = empty
+			
+			builder.build().buildMessage();
+			result = "content 1705";
 		}};
 		
 		ResultOfRegisteringWorkSchedule result = 
@@ -50,7 +56,7 @@ public class CreateWorkScheduleByShiftTest {
 					"empId",
 					GeneralDate.ymd(2020, 11, 1),
 					Optional.empty(),
-					"Msg_1705"));
+					"content 1705"));
 		
 	}
 	
