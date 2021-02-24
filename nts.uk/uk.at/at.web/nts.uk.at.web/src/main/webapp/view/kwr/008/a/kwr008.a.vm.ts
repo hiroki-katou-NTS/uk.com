@@ -133,6 +133,10 @@ module nts.uk.at.view.kwr008.a {
 
                 self.printFormat.subscribe(item => {
                     nts.uk.ui.errors.clearAll();
+                    $.when(self.findAllStandardSetting(), self.findAllFreeSetting()).done(() => {
+                        self.selectedOutputItem(null);
+                        self.selectedOutputItemFree(null);
+                    });
                     if (self.selectAverage() && self.printFormat() === share.AnnualWorkSheetPrintingForm.AGREEMENT_CHECK_36) {
                         self.getCurentMonth();
                     }
@@ -259,6 +263,11 @@ module nts.uk.at.view.kwr008.a {
                 nts.uk.ui.windows.sub.modal("at", "/view/kwr/008/b/index.xhtml").onClosed(() => {
                     //reload A4_2
                     let resultData = nts.uk.ui.windows.getShared("KWR008_B_Result");
+                    if (resultData.selectedCd && self.selectionType() === share.SelectionClassification.STANDARD) {
+                        self.findAllStandardSetting().done(() => self.selectedOutputItem(resultData.selectedCd));
+                    } else if (self.selectionType() === share.SelectionClassification.FREE_SETTING) {
+                        self.findAllFreeSetting().done(() => self.selectedOutputItemFree(resultData.selectedCd));
+                    }
                 });
             }
 
@@ -532,7 +541,7 @@ module nts.uk.at.view.kwr008.a {
                 const dfd = $.Deferred();
                 service.findAllBySettingType(share.SelectionClassification.STANDARD, self.printFormat())
                   .done((dataArr: Array<share.SetOutputItemOfAnnualWorkSchDto>) => {
-                    self.outputItem(dataArr);
+                    self.outputItem(_.orderBy(dataArr, ['cd'], ['asc']));
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -543,7 +552,7 @@ module nts.uk.at.view.kwr008.a {
                 const dfd = $.Deferred();
                 service.findAllBySettingType(share.SelectionClassification.FREE_SETTING, self.printFormat())
                 .done((dataArr: Array<share.SetOutputItemOfAnnualWorkSchDto>) => {
-                    self.outputItemsFreeSetting(dataArr);
+                    self.outputItemsFreeSetting(_.orderBy(dataArr, ['cd'], ['asc']));
                     dfd.resolve();
                 });
                 return dfd.promise();
