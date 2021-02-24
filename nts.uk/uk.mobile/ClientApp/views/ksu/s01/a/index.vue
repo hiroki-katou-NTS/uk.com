@@ -23,7 +23,7 @@
                 <!-- A1_1_4 -->
                 <span 
                     v-on:click="backCurrentMonth()"
-                    style="background-color: yellow; padding: 0.5em; margin: 0 1em"
+                    style="min-width: 5.75em; background-color: yellow; padding: 0.5em; margin: 0 1em"
                 >
                     {{ "KSUS01_2" | i18n }}
                 </span>
@@ -73,7 +73,7 @@
                             </span>
                         </div>
                         <!-- A1_3_3 -->
-                        <div v-show="item.isActive" style="text-align: center; margin: 2em 0">
+                        <div v-show="item.isActive" style="text-align: center; margin: 1.5em 0">
                             <span v-if="item.displayData.workScheduleAtr >= 1 && item.displayData.workScheduleAtr <= 3 && item.displayData.workScheduleName.length > 0" 
                                 v-bind:style="item.workScheduleStyle"
                             >
@@ -110,7 +110,8 @@
             </div>
             <div class="detail-spacing detail-indent">
                 <!-- A4_3 -->
-                <span v-if="detailCell && detailCell.displayData.workScheduleName && detailCell.displayData.workScheduleName.length > 0" v-bind:style="detailCell && detailCell.workScheduleStyle + ' font-size: large;'">
+                <span v-if="detailCell && detailCell.displayData.workScheduleName && detailCell.displayData.workScheduleName.length > 0" 
+                    v-bind:style="detailCell && detailCell.workScheduleStyle + ' font-size: 4.5vw;'">
                     <span style="margin: 0;" class="uk-text-holiday" v-if="detailCell && (detailCell.displayData.workScheduleAtr == 0 || detailCell.displayData.workScheduleAtr == undefined)">
                         {{detailCell && detailCell.displayData.workScheduleName}}
                     </span>
@@ -121,7 +122,7 @@
                         {{detailCell && detailCell.displayData.workScheduleName}}
                     </span>
                 </span>
-                <span v-else class="uk-bg-gray" v-bind:style="detailCell && detailCell.workScheduleStyle + ' font-size: large;'">
+                <span v-else class="uk-bg-gray" v-bind:style="detailCell && detailCell.workScheduleStyle + ' font-size: 4.5vw;'">
                     <span style='margin: 0; color: black;'>{{ "KSUS01_21" | i18n }}</span>
                 </span>
                 <!-- A4_4 A4_5-->

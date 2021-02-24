@@ -1,8 +1,16 @@
 .ksus01a {
     margin-top: -1rem;
 
+    .card-body {
+        font-size: 3vw;
+    }
+
     #year-month-component {
         width: 14em;
+    }
+
+    #year-month-component .col-md-12 {
+        padding: 0;
     }
 
     #year-month-component input {
@@ -15,12 +23,13 @@
 
     #year-month-component .form-group {
         margin: 0;
+        width: 9.25em;
     }
 
     #detail-component {
         position: fixed;
         bottom: 0;
-        height: 73vh;
+        height: 70vh;
         width: 100vw;
     }
 
@@ -52,6 +61,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        font-weight: bold;
     }
 
     .date-cell-container {
@@ -60,7 +70,7 @@
     }
 
     .date-cell {
-        height: 13vh;
+        height: 13.86vh;
         width: calc(100vw/7);
         padding: 0.5rem;
         border: 1px solid #D9D9D9;
@@ -101,4 +111,5 @@
     .uk-bg-schedule-saturday {
         background-color: #8BD8FF !important; 
     }
+    
 }

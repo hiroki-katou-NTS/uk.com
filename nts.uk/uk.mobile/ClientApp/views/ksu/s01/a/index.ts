@@ -70,7 +70,7 @@ export class KSUS01AComponent extends Vue {
     }
 
     public mounted() {
-
+        
     }
 
     public fakeDataInit() {
@@ -302,8 +302,10 @@ export class KSUS01AComponent extends Vue {
     public initData() {
         let self = this;
         self.$mask('show');
-        self.fakeDataInit().then((data: InitInformation) => {
-        // self.$http.post('at', API.start).then((data: InitInformation) => {
+        // self.fakeDataInit().then((data: InitInformation) => {
+        self.$http.post('at', API.start).then((res: any) => {
+            let data: InitInformation = res.data;
+
             self.startDate = data.start;
             self.endDate = data.end;
             self.endDatePublicationPeriod = data.endDatePublicationPeriod;
@@ -356,8 +358,10 @@ export class KSUS01AComponent extends Vue {
             scheduledWorkingPeriod
         };
         console.log(command, 'command');
-        self.fakeDataDatePeriod(command).then((data: InforOnTargetPeriodDto) => {
-        // self.$http.post('at', API.changeDatePeriod, command).then((data: InforOnTargetPeriodDto) => {
+        // self.fakeDataDatePeriod(command).then((data: InforOnTargetPeriodDto) => {
+        self.$http.post('at', API.changeDatePeriod, command).then((res: any) => {
+            let data: InforOnTargetPeriodDto = res.data;
+
             self.listWorkSchedule = data.listWorkSchedule;
             self.listDesiredSubmissionStatusByDate = data.listDesiredSubmissionStatusByDate;
             self.bindDateCellList();
@@ -384,7 +388,7 @@ export class KSUS01AComponent extends Vue {
                 rowNumber: Math.floor(index / 7),
                 weekDayIndex: index % 7,
                 displayData: {} as DisplayData,
-                workScheduleStyle: 'padding: 0.25em 1em; font-weight: bold; border-radius: 0.25rem; display: inline-block;'
+                workScheduleStyle: 'padding: 0.25em 0.4em; font-weight: bold; border-radius: 0.25rem; display: inline-block;'
             });
         }
     }
@@ -484,7 +488,7 @@ export class KSUS01AComponent extends Vue {
                 rowNumber: el.rowNumber,
                 weekDayIndex: el.weekDayIndex,
                 displayData: {} as DisplayData,
-                workScheduleStyle: 'padding: 0.25em 1em; font-weight: bold; border-radius: 0.25rem; display: inline-block;'
+                workScheduleStyle: 'padding: 0.25em 0.4em; font-weight: bold; border-radius: 0.25rem; display: inline-block;'
             };
             if (!isFirstDay && el.weekDayIndex == moment(self.startDate).day()) {
                 isActive = true;
@@ -550,8 +554,10 @@ export class KSUS01AComponent extends Vue {
             targetDate: self.detailCell.date
         };
 
-        self.fakeDataDateTarget(command).then((data: InforOnTargetDateDto) => {
-        // self.$http.post('at', API.getDateDetail, command).then((data: InforOnTargetDateDto) => {
+        // self.fakeDataDateTarget(command).then((data: InforOnTargetDateDto) => {
+        self.$http.post('at', API.getDateDetail, command).then((res: any) => {
+            let data: InforOnTargetDateDto = res.data;
+
             self.detailCell.displayData.otherStaffs = data.businessNames.join(', ');
             self.detailCell.displayData.workDesireMemo = data.memo;
             self.detailCell.displayData.workScheduleTimeZone = data.listAttendanceDto;
