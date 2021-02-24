@@ -6,6 +6,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.tran.AtomTask;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.clock.ClockHourMinute;
 import nts.arc.time.clock.ClockHourMinuteSpan;
@@ -50,7 +51,7 @@ public class AddHospitalBusinessOfficeHistCommandHandler extends CommandHandler<
                 nightShiftOperationAtr,
                 shiftTime
         );
-        DatePeriod datePeriod = new DatePeriod(command.getStartDate(), command.getEndDate());
+        DatePeriod datePeriod = new DatePeriod(command.getStartDate(), GeneralDate.max());
 
         RequireImpl require = new RequireImpl(infoHistoryRepository);
         AtomTask persist = AddHospitalBusinessOfficeHistory

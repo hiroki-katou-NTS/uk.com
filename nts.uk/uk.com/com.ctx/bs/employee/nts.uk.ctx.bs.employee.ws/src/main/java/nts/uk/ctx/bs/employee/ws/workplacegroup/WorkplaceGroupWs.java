@@ -145,6 +145,12 @@ public class WorkplaceGroupWs extends WebService {
         return getAListOfNightShiftHistoryQuery.getHospitalBusinessHistory(prams.getId());
     }
 
+    //B
+    @POST
+    @Path("addnightshiftinfor")
+    public void addHospitalBusinessOfficeHist(RegistOfNightShiftInforCommand command) {
+        registOfNightShiftInforCommandHandler.handle(command);
+    }
     //C
     @POST
     @Path("addhospitalbusinessofficehist")

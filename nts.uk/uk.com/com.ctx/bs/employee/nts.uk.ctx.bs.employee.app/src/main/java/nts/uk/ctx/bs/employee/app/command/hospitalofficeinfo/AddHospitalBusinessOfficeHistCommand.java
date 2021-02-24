@@ -9,9 +9,6 @@ import nts.arc.time.GeneralDate;
 @Getter
 public class AddHospitalBusinessOfficeHistCommand {
     private  String workplaceGroupId;
-    // 履歴ID: .
-    private  String historyId;
-    // 夜勤運用ルール: 夜勤運用ルール.
 
     private int nightShiftOperationAtr;
 
@@ -21,5 +18,4 @@ public class AddHospitalBusinessOfficeHistCommand {
 
     private GeneralDate startDate;
 
-    private GeneralDate endDate;
 }

@@ -117,7 +117,7 @@ public class JpaHospitalBusinessOfficeInfoHistoryRepository extends JpaRepositor
         val histNewOpt = hospitalHist.getHistoryItems().stream().filter(x -> x.identifier().equals(histId)).findFirst();
         if (histNewOpt.isPresent()) {
             val histNew = histNewOpt.get();
-            val histUpdateOpt = hospitalHist.getHistoryItems().stream().filter(x -> x.end().equals(histNew.start())).findFirst();
+            val histUpdateOpt = hospitalHist.immediatelyBefore(histNew);
             BsymtMedcareNightShiftRuleHist entity = new BsymtMedcareNightShiftRuleHist(
                     new BsymtMedcareNightShiftRuleHistPk(cid, wplgId, histId),
                     cd,
