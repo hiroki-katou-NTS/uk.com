@@ -16,6 +16,10 @@ public class AddHospitalBusinessOfficeHistCommand {
 
     private String ClockHourMinuteEnd; // HH:mm
 
-    private GeneralDate startDate;
+    private String startDate;
+
+    public GeneralDate toDate() {
+        return GeneralDate.fromString(startDate, "yyyy/MM/dd");
+    }
 
 }

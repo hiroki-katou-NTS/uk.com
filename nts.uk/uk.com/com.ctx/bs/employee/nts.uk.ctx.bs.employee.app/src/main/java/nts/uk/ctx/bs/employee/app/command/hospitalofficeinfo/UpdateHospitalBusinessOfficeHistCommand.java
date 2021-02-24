@@ -8,6 +8,11 @@ import nts.arc.time.GeneralDate;
 @AllArgsConstructor
 @Getter
 public class UpdateHospitalBusinessOfficeHistCommand {
-    private GeneralDate startDate;
+    private String startDate;
     private String workplaceGroupId;
-    private String historyId;}
+    private String historyId;
+    public GeneralDate toDate() {
+        return GeneralDate.fromString(startDate, "yyyy/MM/dd");
+    }
+
+}

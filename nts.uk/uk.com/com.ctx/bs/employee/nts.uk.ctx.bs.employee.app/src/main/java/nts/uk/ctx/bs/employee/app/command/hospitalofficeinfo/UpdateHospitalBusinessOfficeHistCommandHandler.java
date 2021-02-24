@@ -31,7 +31,7 @@ public class UpdateHospitalBusinessOfficeHistCommandHandler extends CommandHandl
     @Override
     protected void handle(CommandHandlerContext<UpdateHospitalBusinessOfficeHistCommand> commandHandlerContext) {
         val command = commandHandlerContext.getCommand();
-        GeneralDate generalDate = command.getStartDate();
+        GeneralDate generalDate = command.toDate();
         String historyId = command.getHistoryId();
         String workplaceGroupId = command.getWorkplaceGroupId();
         // List all Hist

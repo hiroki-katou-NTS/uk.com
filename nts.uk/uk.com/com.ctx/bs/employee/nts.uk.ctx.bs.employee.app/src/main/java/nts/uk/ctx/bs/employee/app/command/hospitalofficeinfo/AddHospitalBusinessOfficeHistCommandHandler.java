@@ -51,7 +51,7 @@ public class AddHospitalBusinessOfficeHistCommandHandler extends CommandHandler<
                 nightShiftOperationAtr,
                 shiftTime
         );
-        DatePeriod datePeriod = new DatePeriod(command.getStartDate(), GeneralDate.max());
+        DatePeriod datePeriod = new DatePeriod(command.toDate(), GeneralDate.max());
 
         RequireImpl require = new RequireImpl(infoHistoryRepository);
         AtomTask persist = AddHospitalBusinessOfficeHistory
