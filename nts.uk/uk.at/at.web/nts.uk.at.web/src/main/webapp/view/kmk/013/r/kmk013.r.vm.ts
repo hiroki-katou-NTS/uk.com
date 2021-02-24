@@ -29,6 +29,17 @@ module nts.uk.at.view.kmk013.r.viewmodel {
             vm.enablePersonalSet = ko.computed(() => {
                 return vm.specifiedTimeRefSelected() == 2;
             })
+
+            vm.firstHalfTime.subscribe(value => {
+                $("#R1_5").ntsError("clear");
+                $("#R1_7").ntsError("clear");
+            });
+
+            vm.secondHalfTime.subscribe(value => {
+                $("#R1_5").ntsError("clear");
+                $("#R1_7").ntsError("clear");
+            });
+
         }
 
         mounted() {
@@ -78,7 +89,18 @@ module nts.uk.at.view.kmk013.r.viewmodel {
                     vm.$ajax(API.SAVE, command).done((res) => {
                         vm.$dialog.info({ messageId: "Msg_15" });
                     }).fail((err) => {
-                        vm.$dialog.error(err);
+                        if (err && err.messageId) {
+                            if (err.messageId == "Msg_143") {
+                                vm.$errors({
+                                    "#R1_5": err
+                                });
+                                vm.$errors({
+                                    "#R1_7": err
+                                });
+                            }
+                        } else {
+                            vm.$dialog.error(err);
+                        }
                     })
                 }
             }).always(() => vm.$blockui("clear"));
