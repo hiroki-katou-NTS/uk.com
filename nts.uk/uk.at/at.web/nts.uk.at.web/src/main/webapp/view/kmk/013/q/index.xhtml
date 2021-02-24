@@ -45,8 +45,8 @@
 									</tr>
 									<com:ko-foreach bind="overtimeList">
 										<tr>
-											<td data-bind="text: overtimeNo"></td>
 											<td data-bind="text: overtimeName"></td>
+											<td></td>
 											<td colspan="4">
 												<div tabindex="6" data-bind=" ntsRadioBoxGroup: {
 															options: $parent.itemListQ5_5,
@@ -93,8 +93,8 @@
                                     </tr>
                                     <com:ko-foreach bind="roleFrameList">
                                         <tr >
-                                            <td data-bind="text: HDFrameNo"></td>
-                                            <td data-bind="text: HDFrameName"></td>
+                                            <td colspan="" data-bind="text: HDFrameName"></td>
+                                            <td></td>
                                             <td colspan="4">
                                                 <div tabindex="9" data-bind="ntsRadioBoxGroup: {
 															options: $parent.itemListQ13_5,

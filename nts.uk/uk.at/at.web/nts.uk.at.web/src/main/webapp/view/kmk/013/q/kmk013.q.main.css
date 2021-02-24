@@ -4,16 +4,17 @@
 
 .overtimeListQ5_1 tr > td:nth-child(3) > div > label{
 	border-left: 1px solid black;
+	padding: 3px 0;
 }
 
 .overtimeListQ5_1 tr > td:nth-child(1){
 	background-color: #CFF1A5;
-	width: 70px;
+	width: 120px;
 }
 
 .overtimeListQ5_1 tr > td:nth-child(2){
 	background-color: #CFF1A5;
-	width: 115px;
+	width: 60px;
 }
 
 .overtimeListQ5_1 tr > td:nth-child(3){
