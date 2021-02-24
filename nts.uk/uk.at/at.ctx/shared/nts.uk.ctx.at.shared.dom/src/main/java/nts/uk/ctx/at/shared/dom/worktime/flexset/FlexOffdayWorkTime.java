@@ -50,10 +50,10 @@ public class FlexOffdayWorkTime extends WorkTimeDomainObject implements Cloneabl
 	 * @param memento Memento
 	 * @param useShiftTwo is use double work?
 	 */
-	public FlexOffdayWorkTime(FlexOffdayWorkTimeGetMemento memento, boolean useShiftTwo){
-		this.lstWorkTimezone = memento.getLstWorkTimezone();
-		this.restTimezone = memento.getRestTimezone();
-		if (checkLstWorkTimezoneContinue(useShiftTwo))
+	public FlexOffdayWorkTime(List<HDWorkTimeSheetSetting> lstWorkTimezone, FlowWorkRestTimezone restTimezone, boolean useShiftTwo){
+		this.lstWorkTimezone = lstWorkTimezone;
+		this.restTimezone = restTimezone;
+		if (!checkLstWorkTimezoneContinue(useShiftTwo))
 			this.bundledBusinessExceptions.addMessage("Msg_1918");
 	}
 
@@ -177,8 +177,12 @@ public class FlexOffdayWorkTime extends WorkTimeDomainObject implements Cloneabl
 				.stream()
 				.sorted(Comparator.comparing(HDWorkTimeSheetSetting::getWorkTimeNo))
 				.filter(wt -> {
-					val nextWt = lstWorkTimezone.get(lstWorkTimezone.indexOf(wt));
-					return !wt.getTimezone().getEnd().equals(nextWt.getTimezone().getStart());
+					int nextIndex = this.lstWorkTimezone.indexOf(wt) + 1;
+					if (nextIndex < this.lstWorkTimezone.size()){
+						val nextWt = this.lstWorkTimezone.get(nextIndex);
+						return !wt.getTimezone().getEnd().equals(nextWt.getTimezone().getStart());
+					}
+					else return false;
 				}).count();
 		if (!useShiftTwo && discontinueTimes >= 1)
 			return false;

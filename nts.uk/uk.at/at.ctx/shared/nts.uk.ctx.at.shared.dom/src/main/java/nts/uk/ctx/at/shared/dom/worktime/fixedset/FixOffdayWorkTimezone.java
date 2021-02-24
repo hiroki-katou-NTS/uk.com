@@ -50,10 +50,10 @@ public class FixOffdayWorkTimezone extends WorkTimeDomainObject implements Clone
 	 * @param memento Memento
 	 * @param useShiftTwo 2回勤務を使用するか?
 	 */
-	public FixOffdayWorkTimezone(FixOffdayWorkTimezoneGetMemento memento, boolean useShiftTwo){
-		this.restTimezone = memento.getRestTimezone();
-		this.lstWorkTimezone = memento.getLstWorkTimezone();
-		if (checkLstWorkTimezoneContinue(useShiftTwo))
+	public FixOffdayWorkTimezone(FixRestTimezoneSet restTimezoneSet, List<HDWorkTimeSheetSetting> lstWorkTimezone, boolean useShiftTwo){
+		this.restTimezone = restTimezoneSet;
+		this.lstWorkTimezone = lstWorkTimezone;
+		if (!checkLstWorkTimezoneContinue(useShiftTwo))
 			this.bundledBusinessExceptions.addMessage("Msg_1918");
 	}
 
@@ -181,8 +181,12 @@ public class FixOffdayWorkTimezone extends WorkTimeDomainObject implements Clone
 				.stream()
 				.sorted(Comparator.comparing(HDWorkTimeSheetSetting::getWorkTimeNo))
 				.filter(wt -> {
-					val nextWt = lstWorkTimezone.get(lstWorkTimezone.indexOf(wt));
-					return !wt.getTimezone().getEnd().equals(nextWt.getTimezone().getStart());
+					int nextIndex = this.lstWorkTimezone.indexOf(wt) + 1;
+					if (nextIndex < this.lstWorkTimezone.size()){
+						val nextWt = this.lstWorkTimezone.get(nextIndex);
+						return !wt.getTimezone().getEnd().equals(nextWt.getTimezone().getStart());
+					}
+					else return false;
 				}).count();
 		if (!useShiftTwo && discontinueTimes >= 1)
 			return false;

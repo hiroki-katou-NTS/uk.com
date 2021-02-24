@@ -63,12 +63,12 @@ public class FixedWorkTimezoneSet extends WorkTimeDomainObject implements Clonea
 	 * @param memento Memento
 	 * @param useShiftTwo use double work?
 	 */
-	public FixedWorkTimezoneSet(FixedWorkTimezoneSetGetMemento memento, boolean useShiftTwo){
-		this.lstWorkingTimezone = memento.getLstWorkingTimezone();
-		this.lstOTTimezone = memento.getLstOTTimezone();
-		if (checkWorkingTimezoneContinue(useShiftTwo))
+	public FixedWorkTimezoneSet(List<EmTimeZoneSet> lstWorkingTimezone, List<OverTimeOfTimeZoneSet> lstOTTimezone, boolean useShiftTwo){
+		this.lstWorkingTimezone = lstWorkingTimezone;
+		this.lstOTTimezone = lstOTTimezone;
+		if (!checkWorkingTimezoneContinue(useShiftTwo))
 			this.bundledBusinessExceptions.addMessage("Msg_1919");
-		if (checkOTTimeZoneContinue(useShiftTwo))
+		if (!checkOTTimeZoneContinue(useShiftTwo))
 			this.bundledBusinessExceptions.addMessage("Msg_1920");
 	}
 
@@ -148,11 +148,15 @@ public class FixedWorkTimezoneSet extends WorkTimeDomainObject implements Clonea
 	 * @return status
 	 */
 	private boolean checkWorkingTimezoneContinue(boolean useShiftTwo){
-		long discontinueTimes = lstWorkingTimezone.stream()
+		long discontinueTimes = this.lstWorkingTimezone.stream()
 				.sorted(Comparator.comparing(EmTimeZoneSet::getEmploymentTimeFrameNo))
 				.filter(wt -> {
-					val nextWt = lstWorkingTimezone.get(lstWorkingTimezone.indexOf(wt));
-					return !wt.getTimezone().getEnd().equals(nextWt.getTimezone().getStart());
+					int nextIndex = this.lstWorkingTimezone.indexOf(wt) + 1;
+					if (nextIndex < this.lstWorkingTimezone.size()){
+						val nextWt = this.lstWorkingTimezone.get(nextIndex);
+						return !wt.getTimezone().getEnd().equals(nextWt.getTimezone().getStart());
+					}
+					else return false;
 				})
 				.count();
 		if (!useShiftTwo && discontinueTimes >= 1)
@@ -173,8 +177,12 @@ public class FixedWorkTimezoneSet extends WorkTimeDomainObject implements Clonea
 		long discontinueTimes = lstOTTimezone.stream()
 				.sorted(Comparator.comparing(OverTimeOfTimeZoneSet::getWorkTimezoneNo))
 				.filter(ot -> {
-					val nextOT = lstWorkingTimezone.get(lstWorkingTimezone.indexOf(ot));
-					return !ot.getTimezone().getEnd().equals(nextOT.getTimezone().getStart());
+					int nextIndex = this.lstOTTimezone.indexOf(ot) + 1;
+					if (nextIndex < this.lstOTTimezone.size()){
+						val nextOt = this.lstOTTimezone.get(nextIndex);
+						return !ot.getTimezone().getEnd().equals(nextOt.getTimezone().getStart());
+					}
+					else return false;
 				})
 				.count();
 		if (!useShiftTwo && discontinueTimes >= 1)
