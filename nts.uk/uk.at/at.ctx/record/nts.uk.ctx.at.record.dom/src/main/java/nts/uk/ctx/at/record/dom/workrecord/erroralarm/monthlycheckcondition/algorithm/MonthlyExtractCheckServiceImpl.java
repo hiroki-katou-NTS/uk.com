@@ -768,6 +768,7 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 					String.valueOf(anyCond.getSortBy()),
 					new ArrayList<>());
 			resultCon.getLstResultDetail().add(detail);
+			lstResultCondition.add(resultCon);
 		} else {
 			ResultOfEachCondition ex = result.get(0);
 			lstResultCondition.remove(ex);
@@ -980,7 +981,7 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 								startValueDays + TextResource.localize("KAL010_292"),
 								compareOperatorText.getCompareLeft(),
 								nameErrorAlarm,
-								compareOperatorText.getCompareright(),
+								compareOperatorText.getCompareright() + 
 								endValueDays + TextResource.localize("KAL010_292")
 								);	
 					}else {
@@ -988,8 +989,7 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 								nameErrorAlarm,
 								compareOperatorText.getCompareLeft(),
 								startValueDays + TextResource.localize("KAL010_292") + "," + endValueDays + TextResource.localize("KAL010_292"),
-								compareOperatorText.getCompareright(),
-								nameErrorAlarm
+								compareOperatorText.getCompareright() + nameErrorAlarm
 								);
 					}
 				}
