@@ -20,12 +20,4 @@ public enum FuncCtrlCompletionExecutionMethod {
 		this.value = value;
 	}
 	
-	/**
-	 * 事前に設定するか
-	 * @return
-	 */
-	public boolean isSettingBefore() {
-		return this == FuncCtrlCompletionExecutionMethod.SettingBefore;
-	}
-
 }

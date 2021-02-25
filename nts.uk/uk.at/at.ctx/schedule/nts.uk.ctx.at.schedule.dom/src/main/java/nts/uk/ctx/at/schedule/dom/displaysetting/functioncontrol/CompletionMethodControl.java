@@ -46,7 +46,7 @@ public class CompletionMethodControl implements DomainValue {
 			throw new RuntimeException();
 		}
 		
-		if ( completionExecutionMethod.isSettingBefore()  ) {
+		if ( completionExecutionMethod == FuncCtrlCompletionExecutionMethod.SettingBefore ) {
 			
 			if ( completionMethodControl.isEmpty() ) {
 				throw new BusinessException("Msg_1690", "KSM011_82");
