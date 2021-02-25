@@ -21,11 +21,11 @@ import nts.uk.ctx.pereg.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.pereg.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.pereg.dom.person.info.category.dto.DateRangeDto;
 import nts.uk.ctx.pereg.dom.person.info.daterangeitem.DateRangeItem;
-import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtItemDateRange;
 import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtCtg;
 import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtCtgCommon;
-import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtgCmPK;
 import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtCtgSort;
+import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtItemDateRange;
+import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtgCmPK;
 import nts.uk.ctx.pereg.infra.entity.person.info.ctg.PpemtPerInfoCtgPK;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -140,6 +140,7 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 			+ " FROM  PpemtCtg ca, PpemtCtgCommon co"
 			+ " WHERE ca.contractCd = co.ppemtPerInfoCtgCmPK.contractCd"
 			+ " AND ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd"
+			+ " AND co.ppemtPerInfoCtgCmPK.contractCd = :contractCd"
 			+ " AND ca.categoryCd = :categoryCd"
 			+ " AND ca.cid = :cid";
 
@@ -524,11 +525,13 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 	}
 
 	// vinhpx: end
-
 	@Override
 	public Optional<PersonInfoCategory> getPerInfoCategoryByCtgCD(String categoryCD, String companyID) {
 		return this.queryProxy().query(SELECT_CATEGORY_BY_CATEGORY_CD_QUERY, Object[].class)
-				.setParameter("categoryCd", categoryCD).setParameter("cid", companyID).getSingle(c -> {
+				.setParameter("contractCd", AppContexts.user().contractCode())
+				.setParameter("categoryCd", categoryCD)
+				.setParameter("cid", companyID)
+				.getSingle(c -> {
 					return createDomainFromEntity(c);
 				});
 	}
