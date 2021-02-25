@@ -158,13 +158,13 @@ public class ScheFunctionCtrlByWorkplaceTest {
 					);
 		
 		// assert
-		assertThat( result.getUseDisplayPeriod() ).containsExactly(
+		assertThat( result.getUseDisplayPeriod() ).containsOnly(
 				FuncCtrlDisplayPeriod.TwentyEightDayCycle, 
 				FuncCtrlDisplayPeriod.LastDayUtil);
-		assertThat( result.getUseDisplayFormat() ).containsExactly(
+		assertThat( result.getUseDisplayFormat() ).containsOnly(
 				FuncCtrlDisplayFormat.AbbreviatedName,
 				FuncCtrlDisplayFormat.Shift);
-		assertThat( result.getPageCanBeStarted() ).containsExactly( FuncCtrlStartControl.ByDate );
+		assertThat( result.getPageCanBeStarted() ).containsOnly( FuncCtrlStartControl.ByDate );
 		assertThat( result.getUseCompletionAtr() ).isEqualTo( NotUseAtr.USE );
 		assertThat( result.getCompletionMethodControl().get() ).isEqualTo( completionMethodControl );
 		
