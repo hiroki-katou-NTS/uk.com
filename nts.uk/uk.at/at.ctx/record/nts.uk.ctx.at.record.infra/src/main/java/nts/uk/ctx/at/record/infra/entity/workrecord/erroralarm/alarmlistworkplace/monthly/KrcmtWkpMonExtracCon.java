@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.ExtractionMonthlyCon;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.monthly.enums.AverageRatio;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.alarmlistworkplace.ToCheckConditions;
-import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlAtdTarget;
+import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcmtEralstCndexprange;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlCompareRange;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlCompareSingle;
 import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attendanceitem.KrcstErAlSingleFixed;
@@ -100,7 +100,7 @@ public class KrcmtWkpMonExtracCon extends UkJpaEntity implements Serializable {
      * @param compareRange
      * @param singleFixed
      */
-    public ExtractionMonthlyCon toDomain(Optional<KrcstErAlCompareSingle> compareSingle, Optional<KrcstErAlCompareRange> compareRange, Optional<KrcstErAlSingleFixed> singleFixed, List<KrcstErAlAtdTarget> targetItem) {
+    public ExtractionMonthlyCon toDomain(Optional<KrcstErAlCompareSingle> compareSingle, Optional<KrcstErAlCompareRange> compareRange, Optional<KrcstErAlSingleFixed> singleFixed, List<KrcmtEralstCndexprange> targetItem) {
         List<Integer> additions = targetItem.stream().filter(ti -> ti.targetAtr == 0)
                 .map(ti -> ti.krcstErAlAtdTargetPK.attendanceItemId).collect(Collectors.toList());
         List<Integer> substractions = targetItem.stream()
