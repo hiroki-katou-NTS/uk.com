@@ -48,6 +48,8 @@ module nts.uk.at.view.kwr008.b.viewmodel {
 
         attendanceItem: share.model.AttendanceItemDto[] = [];
 
+        settingType: number = share.model.SelectionClassification.STANDARD;
+
 
         constructor() {
             let self = this;
@@ -89,6 +91,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                         });
                         $("#B3_3").focus();
                     });
+                    self.updateMode(layoutId);
                     block.clear();
                 } else {
                     block.clear();
@@ -140,6 +143,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             if (KWR008BParam) {
                 self.selectedPrintForm(KWR008BParam.printFormat);
                 selectionType = KWR008BParam.selectionType;
+                self.settingType = selectionType;
                 self.currentSetOutputSettingCode().settingType(KWR008BParam.selectionType);
                 self.currentSetOutputSettingCode().printForm(KWR008BParam.printFormat);
             }
@@ -211,7 +215,12 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         registerMode() {
             let self = this;
             self.isNewMode(true);
-            self.currentSetOutputSettingCode(new SetOutputItemOfAnnualWorkSchDto(null));
+            const currentSetOutputSettingCode: SetOutputItemOfAnnualWorkSchDto = new SetOutputItemOfAnnualWorkSchDto(null);
+            currentSetOutputSettingCode.settingType(self.settingType);
+            const randomId = nts.uk.util.randomId();
+            currentSetOutputSettingCode.layoutId(randomId);
+            currentSetOutputSettingCode.layoutIdSelect = randomId;
+            self.currentSetOutputSettingCode(currentSetOutputSettingCode);
             self.selectedLayoutId('');
             for (var i = 0; i < self.outputItem().length; i++) {
                 self.outputItem()[i].updateData(
@@ -272,10 +281,13 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             service.saveOutputItemSetting(data).done(() => {
                 self.currentSetOutputSettingCode().displayCode = self.currentSetOutputSettingCode().cd();
                 self.currentSetOutputSettingCode().displayName = self.currentSetOutputSettingCode().name();
-                self.listStandardImportSetting.push(self.currentSetOutputSettingCode());
-                self.listStandardImportSetting_Sort();
+                if (self.isNewMode()) {
+                    self.listStandardImportSetting.push(self.currentSetOutputSettingCode());
+                    self.listStandardImportSetting_Sort();
+                }
                 info({ messageId: 'Msg_15' }).then(() => {
                     self.selectedLayoutId(self.currentSetOutputSettingCode().layoutId());
+                    self.selectedLayoutId.valueHasMutated();
                 });
             }).fail(err => {
                 alertError({ messageId: err.messageId });
@@ -337,21 +349,19 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             };
             nts.uk.ui.windows.setShared("KWR008CParam", param);
             nts.uk.ui.windows.sub.modal("at", "/view/kwr/008/c/index.xhtml").onClosed(() => {
-                block.invisible();
                 let kwr008CData = nts.uk.ui.windows.getShared("KWR008CDATA");
                 if (kwr008CData) {
+                    block.invisible();
                     service.findAllBySettingType(kwr008CData.settingType, this.selectedPrintForm())
                     .done((res) => {
-                        self.listStandardImportSetting = ko.observableArray([]);
+                        self.listStandardImportSetting([]);
                         var dataSorted = _.sortBy(res, ['cd']);
-                        for (let i = 0, count = res.length; i < count; i++) {
-                            self.listStandardImportSetting.push(new SetOutputItemOfAnnualWorkSchDto(dataSorted[i]));
-                        }
+                        const copiedLayoutId = _.find(dataSorted, data => data.cd === kwr008CData.code).layoutId;
+                        self.listStandardImportSetting(_.map(dataSorted, data => new SetOutputItemOfAnnualWorkSchDto(data)));
+                        self.selectedLayoutId(copiedLayoutId);
                     })
                     .always(() => block.clear());
-
                 }
-                
             });
         }
 
@@ -392,9 +402,9 @@ module nts.uk.at.view.kwr008.b.viewmodel {
 
             let selectedLst: any[] = [];
             if (!!dataNode.calculationExpression()) {
-                selectedLst = _.map(dataNode.listOperationSetting(), (item) => new share.model.SelectedTimeItem({
-                    itemId: item.toString(),
-                    operator: item.operation() === 1 ? ADDITION : SUBTRACTION
+                selectedLst = _.map(ko.toJS(dataNode.listOperationSetting()), (item: any) => new share.model.SelectedTimeItem({
+                    itemId: item.attendanceItemId,
+                    operator: item.operation === 1 ? ADDITION : SUBTRACTION
                 }));
             }
             attendanceItemTransfer.selectedTimeList = selectedLst;

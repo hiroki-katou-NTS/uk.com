@@ -99,7 +99,7 @@ module nts.uk.at.view.kwr008.share.model {
     }
 
     export class SelectedTimeItem {
-        itemId: string;
+        itemId: any;
         operator: string;
 
         constructor(init?: Partial<SelectedTimeItem>) {

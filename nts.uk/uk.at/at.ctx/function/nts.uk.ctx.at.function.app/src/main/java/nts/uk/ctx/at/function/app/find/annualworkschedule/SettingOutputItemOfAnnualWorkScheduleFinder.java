@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.function.app.find.annualworkschedule;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -10,7 +9,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.uk.ctx.at.function.app.command.annualworkschedule.SetOutItemsWoScCommand;
 import nts.uk.ctx.at.function.dom.annualworkschedule.SettingOutputItemOfAnnualWorkSchedule;
 import nts.uk.ctx.at.function.dom.annualworkschedule.enums.AnnualWorkSheetPrintingForm;
 import nts.uk.ctx.at.function.dom.annualworkschedule.enums.TotalAverageDisplay;
@@ -21,6 +19,7 @@ import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
 import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemDto;
 import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameService;
 import nts.uk.ctx.at.function.dom.dailyattendanceitem.FormCanUsedForTime;
+import nts.uk.ctx.at.function.dom.employmentfunction.commonform.SettingClassification;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -100,10 +99,9 @@ public class SettingOutputItemOfAnnualWorkScheduleFinder {
 	 */
 	public List<SetOutputItemOfAnnualWorkSchDto> getAllAnnualSetting(int settingType, int printForm) {
 		// 自由設定の場合のみ
-//		Optional<String> employeeId = settingType == SettingClassification.FREE_SETTING.value
-//										? Optional.of(AppContexts.user().employeeId())
-//										: Optional.empty();
-		Optional<String> employeeId = Optional.of(AppContexts.user().employeeId());
+		Optional<String> employeeId = settingType == SettingClassification.FREE_SETTING.value
+										? Optional.of(AppContexts.user().employeeId())
+										: Optional.empty();
 		// Get all setting
 		return this.setOutputItemOfAnnualWorkSchRepository
 				.findAllSeting(AppContexts.user().companyId(), employeeId, printForm, settingType).stream()
