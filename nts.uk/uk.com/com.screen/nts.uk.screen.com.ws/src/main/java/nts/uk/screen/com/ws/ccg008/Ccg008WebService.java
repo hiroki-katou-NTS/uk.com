@@ -19,6 +19,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
+import nts.uk.ctx.sys.shared.dom.user.builtin.BuiltInUser;
 import nts.uk.ctx.sys.portal.app.command.toppagesetting.AddTopPageReloadSettingCommandHandler;
 import nts.uk.ctx.sys.portal.app.command.toppagesetting.ToppageReloadSettingCommand;
 import nts.uk.ctx.sys.portal.app.find.toppagesetting.TopPageSettingFinder;
@@ -72,6 +73,11 @@ public class Ccg008WebService {
 	@POST
 	@Path("get-cache")
 	public Ccg008Dto cache() {
+		
+		if (BuiltInUser.USER_ID.equals(AppContexts.user().userId())) {
+			return Ccg008Dto.forBuiltInUser();
+		}
+		
 		String employeeID = AppContexts.user().employeeId();
 		GeneralDate systemDate = GeneralDate.today();
 		Closure closure = ClosureService.getClosureDataByEmployee(

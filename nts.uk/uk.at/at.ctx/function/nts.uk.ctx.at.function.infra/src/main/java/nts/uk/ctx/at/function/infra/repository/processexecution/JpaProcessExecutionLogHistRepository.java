@@ -58,7 +58,6 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository implemen
 	private static KfnmtProcessExecutionLogHistory toEntity(ProcessExecutionLogHistory domain) {
 		KfnmtProcessExecutionLogHistory entity = new KfnmtProcessExecutionLogHistory();
 		domain.setMemento(entity);
-		entity.contractCode = AppContexts.user().contractCode();
 		return entity;
 	}
 
@@ -70,7 +69,7 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository implemen
 				.setParameter("execId", execId)
 				.getSingle(ProcessExecutionLogHistory::createFromMemento);
 	}
-
+	
 	@Override
 	public void insert(ProcessExecutionLogHistory domain) {
 		Optional<KfnmtProcessExecutionLogHistory> data = this.queryProxy().query(SELECT_All_BY_CID_EXECCD_EXECID, KfnmtProcessExecutionLogHistory.class)
@@ -90,7 +89,7 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository implemen
 	public void update(ProcessExecutionLogHistory domain) {
 		KfnmtProcessExecutionLogHistory newEntity = JpaProcessExecutionLogHistRepository.toEntity(domain);
 		try {
-			String updateTableSQL = " UPDATE KFNMT_PROC_EXEC_LOG_HIST SET"
+			String updateTableSQL = " UPDATE KFNDT_AUTOEXEC_LOG_HIST SET"
 					+ " OVERALL_STATUS = ?" 
 					+ " ,ERROR_DETAIL = ? "
 					+ " ,LAST_EXEC_DATETIME = ? " 
@@ -110,17 +109,17 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository implemen
 				ps.setInt(1, newEntity.overallStatus);
 				ps.setString(2, newEntity.overallError == null ? null : newEntity.overallError.toString());
 				ps.setString(3, newEntity.lastExecDateTime.toString());
-				ps.setDate(4, newEntity.schCreateStart == null ? null : Date.valueOf(newEntity.schCreateStart.localDate()));
-				ps.setDate(5, newEntity.schCreateEnd == null ? null : Date.valueOf(newEntity.schCreateEnd.localDate()));
-				ps.setDate(6, newEntity.dailyCreateStart == null ? null : Date.valueOf(newEntity.dailyCreateStart.localDate()));
-				ps.setDate(7, newEntity.dailyCreateEnd == null ? null : Date.valueOf(newEntity.dailyCreateEnd.localDate()));
-				ps.setDate(8, newEntity.dailyCalcStart == null ? null : Date.valueOf(newEntity.dailyCalcStart.localDate()));
-				ps.setDate(9, newEntity.dailyCalcEnd == null ? null : Date.valueOf(newEntity.dailyCalcEnd.localDate()));
-				ps.setDate(10, newEntity.reflectApprovalResultStart == null ? null : Date.valueOf(newEntity.reflectApprovalResultStart.localDate()));
-				ps.setDate(11, newEntity.reflectApprovalResultEnd == null ? null : Date.valueOf(newEntity.reflectApprovalResultEnd.localDate()));
-				ps.setString(12, newEntity.lastEndExecDateTime == null ? null : newEntity.lastEndExecDateTime.toString());
-				ps.setString(13, newEntity.errorSystem == null ? null : (newEntity.errorSystem ==1?"1" : "0"));
-				ps.setString(14, newEntity.errorBusiness == null ? null : (newEntity.errorBusiness == 1 ? "1" : "0"));
+				ps.setDate(4, newEntity.schCreateStart ==null?null: Date.valueOf(newEntity.schCreateStart.localDate()));
+				ps.setDate(5, newEntity.schCreateEnd ==null?null: Date.valueOf(newEntity.schCreateEnd.localDate()));
+				ps.setDate(6, newEntity.dailyCreateStart ==null?null: Date.valueOf(newEntity.dailyCreateStart.localDate()));
+				ps.setDate(7, newEntity.dailyCreateEnd ==null?null: Date.valueOf(newEntity.dailyCreateEnd.localDate()));
+				ps.setDate(8, newEntity.dailyCalcStart ==null?null: Date.valueOf(newEntity.dailyCalcStart.localDate()));
+				ps.setDate(9, newEntity.dailyCalcEnd ==null?null: Date.valueOf(newEntity.dailyCalcEnd.localDate()));
+				ps.setDate(10, newEntity.reflectApprovalResultStart ==null?null: Date.valueOf(newEntity.reflectApprovalResultStart.localDate()));
+				ps.setDate(11, newEntity.reflectApprovalResultEnd ==null?null: Date.valueOf(newEntity.reflectApprovalResultEnd.localDate()));
+				ps.setString(12, newEntity.lastEndExecDateTime ==null?null:newEntity.lastEndExecDateTime.toString());
+				ps.setString(13, newEntity.errorSystem == null?null:(newEntity.errorSystem ==1?"1":"0"));
+				ps.setString(14, newEntity.errorBusiness == null?null:(newEntity.errorBusiness ==1?"1":"0"));
 				ps.setString(15, domain.getCompanyId());
 				ps.setString(16, domain.getExecItemCd().v());
 				ps.setString(17, domain.getExecId());
@@ -132,7 +131,7 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository implemen
 		
 		try {
 			for(KfnmtExecutionTaskLog kfnmtExecutionTaskLog : newEntity.taskLogList) {
-				String updateTableSQL = " UPDATE KFNMT_EXEC_TASK_LOG SET"
+				String updateTableSQL = " UPDATE KFNDT_AUTOEXEC_TASK_LOG SET"
 						+ " STATUS = ?"
 						+ " ,LAST_END_EXEC_DATETIME = ?"
 						+ " ,ERROR_SYSTEM = ?"
@@ -167,7 +166,7 @@ public class JpaProcessExecutionLogHistRepository extends JpaRepository implemen
 				this.commandProxy().removeAll(list);
 			}
 	}
-
+	
 	@Override
 	public List<ProcessExecutionLogHistory> getByDate(String companyId, String execItemCd,
 			GeneralDateTime lastExecDateTime) {
