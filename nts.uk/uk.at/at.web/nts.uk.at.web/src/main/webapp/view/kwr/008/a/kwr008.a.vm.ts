@@ -104,6 +104,8 @@ module nts.uk.at.view.kwr008.a {
 
             baseMonth: KnockoutObservable<number> = ko.observable(0);
             
+            enableAuthority: KnockoutObservable<boolean> = ko.observable(false);
+            
             constructor() {
                 var self = this;
 
@@ -134,18 +136,27 @@ module nts.uk.at.view.kwr008.a {
                 self.printFormat.subscribe(item => {
                     nts.uk.ui.errors.clearAll();
                     $.when(self.findAllStandardSetting(), self.findAllFreeSetting()).done(() => {
-                        self.selectedOutputItem(null);
-                        self.selectedOutputItemFree(null);
+                        self.selectedOutputItem(_.isEmpty(self.outputItem()) ? null : self.outputItem()[0].layoutId);
+                        self.selectedOutputItemFree(_.isEmpty(self.outputItemsFreeSetting()) ? null : self.outputItemsFreeSetting()[0].layoutId);
                     });
                     if (self.selectAverage() && self.printFormat() === share.AnnualWorkSheetPrintingForm.AGREEMENT_CHECK_36) {
                         self.getCurentMonth();
                     }
                 });
-                self.selectedOutputItem.subscribe(settingId => {
+                const outputSubsFunc = (settingId: any, selectionType: number) => {
+                    if (selectionType !== self.selectionType()) {
+                        return;
+                    }
                     self.checkAverage(settingId);
                     if (self.selectAverage() && self.printFormat() === share.AnnualWorkSheetPrintingForm.AGREEMENT_CHECK_36) {
                         self.getCurentMonth();
                     }
+                };
+                self.selectedOutputItemFree.subscribe(settingId => {
+                    outputSubsFunc(settingId, share.SelectionClassification.FREE_SETTING);
+                });
+                self.selectedOutputItem.subscribe(settingId => {
+                    outputSubsFunc(settingId, share.SelectionClassification.STANDARD);
                 });
                 self.selectAverage.subscribe(() => {
                     if (self.selectAverage() && self.printFormat() === share.AnnualWorkSheetPrintingForm.AGREEMENT_CHECK_36) {
@@ -168,6 +179,8 @@ module nts.uk.at.view.kwr008.a {
                 self.selectionType.subscribe((value) => {
                     self.enabledStandardMode(value === share.SelectionClassification.STANDARD);
                     self.enabledFreeMode(value === share.SelectionClassification.FREE_SETTING);
+                    self.selectedOutputItem.valueHasMutated();
+                    self.selectedOutputItemFree.valueHasMutated();
                     nts.uk.ui.errors.clearAll();
                 });
             }
@@ -439,10 +452,17 @@ module nts.uk.at.view.kwr008.a {
                     console.log(`fail : ${enumError}`);
                 });
 
+                var getAuthorityOfWorkPerformance = service.getAuthorityOfWorkPerformance().done(dto => {
+                    if (!_.isNil(dto)) {
+                        self.enableAuthority(dto.freeSetting);
+                    }
+                })
+
                 $.when(getCurrentLoginerRole,
                     getPeriod,
                     restoreOutputConditionAnnualWorkSchedule,
-                    getPageBreakSelection).done(() => {
+                    getPageBreakSelection,
+                    getAuthorityOfWorkPerformance).done(() => {
                         dfd.resolve(self);
                         $('#A1_1').focus();
                     });

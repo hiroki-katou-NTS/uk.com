@@ -3,6 +3,8 @@ module nts.uk.at.view.kwr008.b.viewmodel {
     import getText = nts.uk.resource.getText;
     import confirm = nts.uk.ui.dialog.confirm;
     import alertError = nts.uk.ui.dialog.alertError;
+    import alert = nts.uk.ui.dialog.alert;
+    import close = nts.uk.ui.windows.close;
     import info = nts.uk.ui.dialog.info;
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
@@ -371,7 +373,8 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             service.getAtdItemsByDisplayFormat(displayFormat).done((result) => {
                 self.attendanceItem = result;
                 dfd.resolve();
-            });
+            })
+            .fail(err => alert(err).then(() => close()));
             return dfd.promise();
         }
 

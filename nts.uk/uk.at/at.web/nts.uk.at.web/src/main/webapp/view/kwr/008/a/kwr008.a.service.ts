@@ -8,7 +8,8 @@ module nts.uk.at.view.kwr008.a.service{
         getPageBreakSelection : "at/function/annualworkschedule/get/enum/pagebreak",
         getOutputItemSetting : "at/function/annualworkschedule/get/outputitemsetting",
         getCurrentLoginerRole: "at/function/annualworkschedule/getCurrentLoginerRole",
-        findAllBySettingType: "at/function/annualworkschedule/findAll/"
+        findAllBySettingType: "at/function/annualworkschedule/findAll/",
+        getAuthorityOfWorkPerformance: "com/function/attendancerecord/export/setting/getAuthorityOfWorkPerformance"
     }
 
     export function getCurrentLoginerRole() : JQueryPromise<any> {
@@ -37,5 +38,9 @@ module nts.uk.at.view.kwr008.a.service{
 
     export function findAllBySettingType(settingType: number, printForm: number): JQueryPromise<Array<share.SetOutputItemOfAnnualWorkSchDto>> {
         return nts.uk.request.ajax(paths.findAllBySettingType + settingType + '/' + printForm);
+    }
+
+    export function getAuthorityOfWorkPerformance() : JQueryPromise<any>{
+        return nts.uk.request.ajax("at", paths.getAuthorityOfWorkPerformance);
     }
 }

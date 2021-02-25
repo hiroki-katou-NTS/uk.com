@@ -49,3 +49,6 @@ html {
 .switch-btn-custom .nts-switch-button {
 	width: 80px;
 }
+.custom-form-label-w50 {
+	width: 50px !important;
+}
