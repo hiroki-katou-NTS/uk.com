@@ -39,7 +39,8 @@ module nts.uk.at.view.ksu005.b {
         itemList: KnockoutObservableArray<ScreenItem> = ko.observableArray([]);
 
         countNumberRow: number = 1;
-        checkAll: KnockoutObservable<any> = ko.observable(false); 
+        checkAll: KnockoutObservable<boolean> = ko.observable(false); 
+        checkOne: KnockoutObservable<boolean> = ko.observable(false); 
         screenItem: KnockoutObservableArray<ScreenItem> = ko.observableArray([]);
 
         personalInfoItems: KnockoutObservableArray<any> =  ko.observableArray(__viewContext.enums.ScheduleTablePersonalInfoItem); 
@@ -59,10 +60,10 @@ module nts.uk.at.view.ksu005.b {
         
         constructor() {            
             super();
-            const self = this;
-            self.personalInfoItems.push({value: -1, name:getText('KSU005_68')});
-            self.attendanceItems.push({value: -1 , name:getText('KSU005_68')});           
-            self.personalCounterCategory.splice(0, 0, {value: -1 , name:getText('KSU005_68')})
+            const self = this;                    
+            self.personalInfoItems.splice(0, 0, {value: -1 , name:getText('KSU005_68')})
+            self.attendanceItems.splice(0, 0, {value: -1 , name:getText('KSU005_68')}) 
+            self.personalCounterCategory.splice(0, 0, {value: -1 , name:getText('KSU005_68')});
 
             self.columns = ko.observableArray([
                 { headerText: getText('KSU005_18'), key: 'code', width: 60 },
@@ -121,6 +122,7 @@ module nts.uk.at.view.ksu005.b {
             });
 
             self.checkAll.subscribe((value) =>{
+                self.checkOne(false);
                 let temp = self.itemList();
                 if (value) {
                     for (let i = 1; i < temp.length; i++) {
@@ -128,32 +130,36 @@ module nts.uk.at.view.ksu005.b {
                     }
                     self.itemList(temp);
                 } else {
-                    for (let i = 1; i < temp.length; i++) {
-                        temp[i].checked(false);
-                    }
-                    self.itemList(temp);
+                    if(self.checkOne()){
+                        for (let i = 1; i < temp.length; i++) {
+                            temp[i].checked(false);
+                        }
+                        self.itemList(temp);
+                    } 
                 }
             });
 
-            self.checked.subscribe((value) => {
-                self.isEnableDelBtn(value);
-            });
+            // self.checked.subscribe((value) => {
+            //     self.isEnableDelBtn(value);
+            // });
 
             checkbox.subscribe((v) => {
                 let evens = _.filter(self.itemList(), function (n) {
                     return n.checked();
                 });
+                self.checkOne(true);
+
                 if (v) {
                     if (evens.length > 0) {
                         self.isEnableDelBtn(true);
                     }
                     if(evens.length == self.itemList().length - 1){
                         self.checkAll(true);
-                    }
+                    } 
                     checkbox(false);
                 };
                 if (!v) {
-                    if (evens.length == 0) {
+                    if (evens.length == 0 || evens.length < self.itemList().length -1) {                        
                         self.isEnableDelBtn(false);
                         self.checkAll(false);
                     }
@@ -422,6 +428,8 @@ module nts.uk.at.view.ksu005.b {
               }
             self.countNumberRow = evens.length;
             self.itemList(evens);    
+            self.checkAll(false);
+            self.isEnableDelBtn(false);
         }
 
         clearData(): void {
@@ -580,6 +588,19 @@ module nts.uk.at.view.ksu005.b {
                 self.workplaceCounterCategories(params.workplaceCounterCategories);
                 self.personalCounterCtegories(params.personalInfo);
                
+            } else {
+                self.code('');
+                self.name('');
+                self.additionalColumn(1);
+                self.shiftBackgroundColor(0);
+                self.dailyDataDisplay(0);
+                self.personalInfo([]);
+                self.additionalInfo([]);
+                self.attendanceItem([]);
+                self.additionalItems([]);
+                self.personalInfoItems([]);
+                self.workplaceCounterCategories([]);
+                self.personalCounterCtegories([]);
             }
         }
 
