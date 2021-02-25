@@ -7,6 +7,7 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.error.BusinessException;
+import nts.arc.i18n.I18NText;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -73,11 +74,11 @@ public class ScheFunctionCtrlByWorkplace implements DomainAggregate {
 		}
 		
 		if ( useDisplayFormat.isEmpty() ) {
-			throw new BusinessException("Msg_1690", "KSM011_76");
+			throw new BusinessException("Msg_1690", I18NText.getText("KSM011_76"));
 		}
 		
 		if ( useCompletionAtr.isUse() && !completionMethodControl.isPresent() ) {
-			throw new BusinessException("Msg_1690", "KSM011_78");
+			throw new BusinessException("Msg_1690", I18NText.getText("KSM011_78"));
 		}
 		
 		return new ScheFunctionCtrlByWorkplace(useDisplayPeriod, useDisplayFormat, pageCanBeStarted, useCompletionAtr, completionMethodControl);

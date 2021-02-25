@@ -5,6 +5,7 @@ import java.util.List;
 
 import lombok.Value;
 import nts.arc.error.BusinessException;
+import nts.arc.i18n.I18NText;
 import nts.arc.layer.dom.objecttype.DomainValue;
 
 /**
@@ -49,12 +50,12 @@ public class CompletionMethodControl implements DomainValue {
 		if ( completionExecutionMethod == FuncCtrlCompletionExecutionMethod.SettingBefore ) {
 			
 			if ( completionMethodControl.isEmpty() ) {
-				throw new BusinessException("Msg_1690", "KSM011_82");
+				throw new BusinessException("Msg_1690", I18NText.getText("KSM011_82"));
 			}
 			
 			if ( completionMethodControl.contains(FuncCtrlCompletionMethod.AlarmCheck) && 
 					alarmCheckCodeList.isEmpty() ) {
-				throw new BusinessException("Msg_1690", "KSM011_87");
+				throw new BusinessException("Msg_1690", I18NText.getText("KSM011_87"));
 			}
 		}
 		

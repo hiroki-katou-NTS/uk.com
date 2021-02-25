@@ -6,6 +6,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.error.BusinessException;
+import nts.arc.i18n.I18NText;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeForm;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
@@ -56,7 +57,7 @@ public class ScheFunctionControl implements DomainAggregate {
 		}
 		
 		if ( displayWorkTypeControl.isUse() && displayableWorkTypeCodeList.isEmpty() ) {
-			throw new BusinessException("Msg_1690", "KSM011_47");
+			throw new BusinessException("Msg_1690", I18NText.getText("KSM011_47"));
 		}
 		
 		return new ScheFunctionControl(lstChangeable, displayAcual, displayWorkTypeControl, displayableWorkTypeCodeList);
