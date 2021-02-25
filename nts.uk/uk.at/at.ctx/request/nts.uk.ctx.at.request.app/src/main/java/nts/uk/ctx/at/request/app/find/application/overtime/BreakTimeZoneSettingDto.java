@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.app.find.application.overtime;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
@@ -24,7 +25,7 @@ public class BreakTimeZoneSettingDto {
 					.stream()
 					.map(x -> DeductionTimeDto.fromDomain(x))
 					.collect(Collectors.toList()),
-					breakTimeZoneSetting.getCalculatedFlag().value	
+				Optional.ofNullable(breakTimeZoneSetting.getCalculatedFlag()).map(x -> x.value).orElse(0)	
 				);
 	}
 }
