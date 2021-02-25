@@ -8,17 +8,16 @@ package nts.uk.ctx.at.schedule.dom.displaysetting.functioncontrol;
  */
 public enum FuncCtrlCompletionMethod {
 	
-	Confirm(0, "確定"),
+	/** 確定 */
+	Confirm(0),
 
-	AlarmCheck(1, "アラームチェック");
+	/** アラームチェック */
+	AlarmCheck(1);
 
 	public int value;
 	
-	public String description;
-	
-	private FuncCtrlCompletionMethod(int value, String description) {
+	private FuncCtrlCompletionMethod(int value) {
 		this.value = value;
-		this.description = description;
 	}
 
 }

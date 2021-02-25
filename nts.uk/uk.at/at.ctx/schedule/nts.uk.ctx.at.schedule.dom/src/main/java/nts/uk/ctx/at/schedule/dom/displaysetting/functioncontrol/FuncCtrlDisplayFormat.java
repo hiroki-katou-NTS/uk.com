@@ -8,19 +8,19 @@ package nts.uk.ctx.at.schedule.dom.displaysetting.functioncontrol;
  */
 public enum FuncCtrlDisplayFormat {
 	
-	AbbreviatedName(0, "略名"),
+	/** 略名 */
+	AbbreviatedName(0),
 
-	WorkInfo(1, "勤務"),
+	/** 勤務 */
+	WorkInfo(1),
 	
-	Shift(0, "シフト");
+	/** シフト */
+	Shift(0);
 
 	public int value;
 	
-	public String description;
-	
-	private FuncCtrlDisplayFormat(int value, String description) {
+	private FuncCtrlDisplayFormat(int value) {
 		this.value = value;
-		this.description = description;
 	}
 
 }

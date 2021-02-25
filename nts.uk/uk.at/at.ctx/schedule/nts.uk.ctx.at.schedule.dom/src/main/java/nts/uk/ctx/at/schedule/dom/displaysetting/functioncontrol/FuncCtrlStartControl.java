@@ -8,17 +8,16 @@ package nts.uk.ctx.at.schedule.dom.displaysetting.functioncontrol;
  */
 public enum FuncCtrlStartControl {
 	
-	ByDate(0, "日付別"),
+	/** 日付別 */
+	ByDate(0),
 
-	ByPerson(1, "個人別");
+	/** 個人別 */
+	ByPerson(1);
 
 	public int value;
 	
-	public String description;
-	
-	private FuncCtrlStartControl(int value, String description) {
+	private FuncCtrlStartControl(int value) {
 		this.value = value;
-		this.description = description;
 	}
 
 }

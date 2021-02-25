@@ -8,17 +8,16 @@ package nts.uk.ctx.at.schedule.dom.displaysetting.functioncontrol;
  */
 public enum FuncCtrlCompletionExecutionMethod {
 	
-	SelectAtRuntime(0, "実行時に選択する"),
+	/** 実行時に選択する */
+	SelectAtRuntime(0),
 
-	SettingBefore(1, "事前に設定する");
+	/** 事前に設定する */
+	SettingBefore(1);
 
 	public int value;
 	
-	public String description;
-	
-	private FuncCtrlCompletionExecutionMethod(int value, String description) {
+	private FuncCtrlCompletionExecutionMethod(int value) {
 		this.value = value;
-		this.description = description;
 	}
 	
 	/**

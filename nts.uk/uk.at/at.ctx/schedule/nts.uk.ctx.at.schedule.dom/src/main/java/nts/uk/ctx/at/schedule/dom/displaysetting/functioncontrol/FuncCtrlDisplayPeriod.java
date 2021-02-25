@@ -8,17 +8,16 @@ package nts.uk.ctx.at.schedule.dom.displaysetting.functioncontrol;
  */
 public enum FuncCtrlDisplayPeriod {
 	
-	TwentyEightDayCycle(0, "28日周期"),
+	/** 28日周期 */
+	TwentyEightDayCycle(0),
 
-	LastDayUtil(1, "末日までの1ヶ月間");
+	/** 末日までの1ヶ月間 */
+	LastDayUtil(1);
 
 	public int value;
 	
-	public String description;
-	
-	private FuncCtrlDisplayPeriod(int value, String description) {
+	private FuncCtrlDisplayPeriod(int value) {
 		this.value = value;
-		this.description = description;
 	}
 
 }
