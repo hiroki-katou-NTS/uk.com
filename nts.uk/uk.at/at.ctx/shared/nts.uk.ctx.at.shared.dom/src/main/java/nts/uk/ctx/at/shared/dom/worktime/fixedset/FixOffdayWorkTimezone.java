@@ -172,6 +172,7 @@ public class FixOffdayWorkTimezone extends WorkTimeDomainObject implements Clone
 
 	/**
 	 * 時間帯の連続性を確認
+	 * Check the continuity of working timezone
 	 *
 	 * @param useShiftTwo is use double work?
 	 * @return status

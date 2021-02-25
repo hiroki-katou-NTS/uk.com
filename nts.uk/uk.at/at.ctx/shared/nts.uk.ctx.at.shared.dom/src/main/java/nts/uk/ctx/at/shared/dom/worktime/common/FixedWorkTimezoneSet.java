@@ -148,7 +148,8 @@ public class FixedWorkTimezoneSet extends WorkTimeDomainObject implements Clonea
 	 * @return status
 	 */
 	private boolean checkWorkingTimezoneContinue(boolean useShiftTwo){
-		long discontinueTimes = this.lstWorkingTimezone.stream()
+		long discontinueTimes = this.lstWorkingTimezone
+				.stream()
 				.sorted(Comparator.comparing(EmTimeZoneSet::getEmploymentTimeFrameNo))
 				.filter(wt -> {
 					int nextIndex = this.lstWorkingTimezone.indexOf(wt) + 1;

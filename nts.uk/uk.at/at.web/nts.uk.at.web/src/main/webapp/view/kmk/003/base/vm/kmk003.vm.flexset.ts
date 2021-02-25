@@ -365,11 +365,7 @@ module nts.uk.at.view.kmk003.a {
                 
                 toDto(commonSetting: WorkTimezoneCommonSetModel): FlexWorkSettingDto{
                     let lstHalfDayWorkTimezone: Array<FlexHalfDayWorkTimeDto> = [];
-                    if (this.displayMode() == TabMode.DETAIL && this.useHalfDayShift()) {
-                        lstHalfDayWorkTimezone = _.map(this.lstHalfDayWorkTimezone, item => item.toDto());
-                    } else {
-                        lstHalfDayWorkTimezone = this.getHDWtzOneday().toListDto();
-                    }
+                    lstHalfDayWorkTimezone = _.map(this.lstHalfDayWorkTimezone, item => item.toDto());
 
                     let lstStampReflectTimezone = _.chain(this.lstStampReflectTimezone).filter((dataModel) => dataModel.startTime() != null && dataModel.endTime() != null).map((dataModel) => dataModel.toDto()).value();
                    

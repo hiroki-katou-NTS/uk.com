@@ -1,18 +1,15 @@
 package nts.uk.ctx.at.shared.dom.worktime.common;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Getter
 @NoArgsConstructor
@@ -42,10 +39,11 @@ public class RoundingTime {
 		super();
 		this.attendanceMinuteLaterCalculate = memento.getAttendanceMinuteLaterCalculate();
 		this.leaveWorkMinuteAgoCalculate = memento.getLeaveWorkMinuteAgoCalculate();
-		this.roundingSets = Arrays.asList(new RoundingSet(new InstantRounding(FontRearSection.AFTER, RoundingTimeUnit.FIFTEEN), Superiority.ATTENDANCE),
-				new RoundingSet(new InstantRounding(FontRearSection.AFTER, RoundingTimeUnit.FIFTEEN), Superiority.GO_OUT),
-				new RoundingSet(new InstantRounding(FontRearSection.AFTER, RoundingTimeUnit.FIFTEEN), Superiority.OFFICE_WORK),
-				new RoundingSet(new InstantRounding(FontRearSection.AFTER, RoundingTimeUnit.FIFTEEN), Superiority.TURN_BACK));//memento.getRoundingSets();
+//		this.roundingSets = Arrays.asList(new RoundingSet(new InstantRounding(FontRearSection.AFTER, RoundingTimeUnit.FIFTEEN), Superiority.ATTENDANCE),
+//				new RoundingSet(new InstantRounding(FontRearSection.AFTER, RoundingTimeUnit.FIFTEEN), Superiority.GO_OUT),
+//				new RoundingSet(new InstantRounding(FontRearSection.AFTER, RoundingTimeUnit.FIFTEEN), Superiority.OFFICE_WORK),
+//				new RoundingSet(new InstantRounding(FontRearSection.AFTER, RoundingTimeUnit.FIFTEEN), Superiority.TURN_BACK));
+		this.roundingSets = memento.getRoundingSets();
 	}
 
 	/**

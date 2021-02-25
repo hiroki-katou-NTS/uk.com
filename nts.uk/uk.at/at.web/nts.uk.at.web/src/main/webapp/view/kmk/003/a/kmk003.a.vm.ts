@@ -32,6 +32,8 @@ module nts.uk.at.view.kmk003.a {
     
     export module viewmodel {
 
+        import EmTimeZoneSetDto = nts.uk.at.view.kmk003.a.service.model.common.EmTimeZoneSetDto;
+
         export class ScreenModel {
             
             workTimeSettings: KnockoutObservableArray<SimpleWorkTimeSettingDto>;
@@ -1052,16 +1054,8 @@ module nts.uk.at.view.kmk003.a {
                     self.updateStampValue();
                 }
 
-                //auto generate data for data source morning and afternoon in a2 if it was hidden
-                //check hidden
-                if (self.workTimeSetting.isFlex() && self.useHalfDay()){
-                    let morningEnd = self.predetemineTimeSetting.prescribedTimezoneSetting.morningEndTime();
-                    let afterStart = self.predetemineTimeSetting.prescribedTimezoneSetting.afternoonStartTime();
-                }
-
-
                 if (self.workTimeSetting.isFlex()) {
-                    service.saveFlexWorkSetting(self.toFlexCommannd())
+                    service.saveFlexWorkSetting(self.toFlexCommand())
                         .done(() => self.onSaveSuccess(dfd))
                         .fail(err => dfd.reject(err))
                         .always(() => _.defer(() => nts.uk.ui.block.clear()));
@@ -1101,7 +1095,38 @@ module nts.uk.at.view.kmk003.a {
                     fixedWorkSetting: _self.fixedWorkSetting.toDto(_self.commonSetting),
                     screenMode: _self.tabMode()
                 };
-                return command;  
+                //auto generate data for lstTimezone morning and afternoon in a2 if it was hidden
+                if (!_self.useHalfDay()){
+                    let presSetting = _self.predetemineTimeSetting.prescribedTimezoneSetting;
+                    let morningEnd = presSetting.morningEndTime();
+                    let afterStart = presSetting.afternoonStartTime();
+
+                    //morning
+                    let timeZoneAMDto : EmTimeZoneSetDto = {
+                        employmentTimeFrameNo : 1,
+                        timezone : {
+                            start: presSetting.shiftOne.start(),
+                            end: morningEnd,
+                            rounding: {rounding: 0, roundingTime: 0}
+                        }
+                    }
+                    command.fixedWorkSetting.lstHalfDayWorkTimezone[1].workTimezone.lstWorkingTimezone = [];
+                    command.fixedWorkSetting.lstHalfDayWorkTimezone[1].workTimezone.lstWorkingTimezone.push(timeZoneAMDto);
+
+                    //afternoon
+                    let timeZonePMDto : EmTimeZoneSetDto = {
+                        employmentTimeFrameNo : 1,
+                        timezone : {
+                            start: afterStart,
+                            end: presSetting.shiftTwo.useAtr() ? presSetting.shiftTwo.end() : presSetting.shiftOne.end(),
+                            rounding: {rounding: 0, roundingTime: 0}
+                        }
+                    }
+
+                    command.fixedWorkSetting.lstHalfDayWorkTimezone[2].workTimezone.lstWorkingTimezone = [];
+                    command.fixedWorkSetting.lstHalfDayWorkTimezone[2].workTimezone.lstWorkingTimezone.push(timeZonePMDto);
+                }
+                return command;
             }
 
             toFlowCommand(): FlowWorkSettingSaveCommand {
@@ -1119,7 +1144,7 @@ module nts.uk.at.view.kmk003.a {
             /**
              * Collect flex data and convert to command dto
              */
-            toFlexCommannd(): FlexWorkSettingSaveCommand {
+            toFlexCommand(): FlexWorkSettingSaveCommand {
                 let self = this;
                 let command: FlexWorkSettingSaveCommand;
                 const oneDayFlex = _.map(self.flexWorkSetting.getHDWtzOneday().workTimezone.lstWorkingTimezone(),item=>item.toDto());
@@ -1132,6 +1157,39 @@ module nts.uk.at.view.kmk003.a {
                     predseting: self.predetemineTimeSetting.toDto(),
                     worktimeSetting: self.workTimeSetting.toDto(),
                 };
+
+                //auto generate data for lstTimezone morning and afternoon in a2 if it was hidden
+                if (!self.useHalfDay() && self.addMode()){
+                    let presSetting = self.predetemineTimeSetting.prescribedTimezoneSetting;
+                    let morningEnd = presSetting.morningEndTime();
+                    let afterStart = presSetting.afternoonStartTime();
+
+                    //default timeZone
+                    let timeZoneAMDto : EmTimeZoneSetDto = {
+                        employmentTimeFrameNo : 1,
+                        timezone : {
+                            start: presSetting.shiftOne.start(),
+                            end: morningEnd,
+                            rounding: {rounding: 0, roundingTime: 0}
+                        }
+                    }
+                    //morning
+                    command.flexWorkSetting.lstHalfDayWorkTimezone[1].workTimezone.lstWorkingTimezone = [];
+                    command.flexWorkSetting.lstHalfDayWorkTimezone[1].workTimezone.lstWorkingTimezone.push(timeZoneAMDto);
+
+                    //afternoon
+                    let timeZonePMDto : EmTimeZoneSetDto = {
+                        employmentTimeFrameNo : 1,
+                        timezone : {
+                            start: afterStart,
+                            end: presSetting.shiftTwo.useAtr() ? presSetting.shiftTwo.end() : presSetting.shiftOne.end(),
+                            rounding: {rounding: 0, roundingTime: 0}
+                        }
+                    }
+
+                    command.flexWorkSetting.lstHalfDayWorkTimezone[2].workTimezone.lstWorkingTimezone = [];
+                    command.flexWorkSetting.lstHalfDayWorkTimezone[2].workTimezone.lstWorkingTimezone.push(timeZonePMDto);
+                }
                 return command;
             }
             

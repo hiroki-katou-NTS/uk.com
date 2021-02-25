@@ -248,11 +248,7 @@ module nts.uk.at.view.kmk003.a {
                 
                 toDto(commonSetting: WorkTimezoneCommonSetModel): FixedWorkSettingDto {
                     let lstHalfDayWorkTimezone: Array<FixHalfDayWorkTimezoneDto>;
-                    if (this.displayMode() == TabMode.DETAIL && this.useHalfDayShift()) {
-                        lstHalfDayWorkTimezone = _.map(this.lstHalfDayWorkTimezone, item => item.toDto());
-                    } else {
-                        lstHalfDayWorkTimezone = this.getHDWtzOneday().toListDto();
-                    }
+                    lstHalfDayWorkTimezone = _.map(this.lstHalfDayWorkTimezone, item => item.toDto());
 
                     let lstStampReflectTimezone: Array<StampReflectTimezoneDto> = _.chain(this.lstStampReflectTimezone).filter((dataModel) => dataModel.startTime() != null && dataModel.endTime() != null).map((dataModel) => dataModel.toDto()).value();
                     
