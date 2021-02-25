@@ -12,6 +12,7 @@ import com.aspose.cells.Cells;
 
 import nts.uk.ctx.at.shared.app.find.workdayoff.frame.WorkdayoffFrameFindDto;
 import nts.uk.ctx.at.shared.app.find.workdayoff.frame.WorkdayoffFrameFinder;
+import nts.uk.ctx.at.shared.app.find.worktime.common.dto.DeductionTimeDto;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.EmTimeZoneSetDto;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.OverTimeOfTimeZoneSetDto;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.PrioritySettingDto;
@@ -30,6 +31,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.RoundingSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.RoundingTimeUnit;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampPiorityAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.Superiority;
+import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixHalfDayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.DisplayMode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
@@ -111,7 +113,7 @@ public class WorkTimeReportService_New {
         
         List<WorkdayoffFrameFindDto> otFrameFind = this.finder.findAllUsed();
         
-        Boolean useHalfDayShift = data.getFixedWorkSetting().getUseHalfDayShift();
+        Boolean useHalfDayShiftOverTime = data.getFixedWorkSetting().getUseHalfDayShift();
         Integer legalOTSetting = data.getFixedWorkSetting().getLegalOTSetting();
         
         if (displayMode.equals(DisplayMode.DETAIL.value)) {
@@ -119,7 +121,7 @@ public class WorkTimeReportService_New {
              * R4_261
              * 半日勤務を設定する
              */
-            cells.get("AD" + (startIndex + 1)).setValue(useHalfDayShift ? "する" : "しない");
+            cells.get("AD" + (startIndex + 1)).setValue(useHalfDayShiftOverTime ? "する" : "しない");
             
             /*
              * R4_98
@@ -199,7 +201,7 @@ public class WorkTimeReportService_New {
                 }
             }
             
-            if (useHalfDayShift) {
+            if (useHalfDayShiftOverTime) {
                 
                 // Morning
                 if (fixHalfDayWorkMorningOpt.isPresent()) {
@@ -637,10 +639,87 @@ public class WorkTimeReportService_New {
         
         // 5        タブグ:                休憩時間帯
         
-        /*
-         * R4_262
-         * 半日勤務を設定する
-         */
+        Boolean useHalfDayShiftBreakTime = data.getFixedWorkSetting().getUseHalfDayShift();
+        if (displayMode.equals(DisplayMode.DETAIL.value)) {
+            /*
+             * R4_262
+             * 半日勤務を設定する
+             */
+            cells.get("CB" + (startIndex + 1)).setValue(useHalfDayShiftBreakTime ? "する" : "しない");
+        }
+        
+        List<FixHalfDayWorkTimezoneDto> lstHalfDayWorkTimezone = data.getFixedWorkSetting().getLstHalfDayWorkTimezone();
+        Optional<FixHalfDayWorkTimezoneDto> halfDayWorkTimezoneOneDayOpt = lstHalfDayWorkTimezone.stream()
+                .filter(x -> x.getDayAtr().equals(AmPmAtr.ONE_DAY.value)).findFirst();
+        Optional<FixHalfDayWorkTimezoneDto> halfDayWorkTimezoneMorningOpt = lstHalfDayWorkTimezone.stream()
+                .filter(x -> x.getDayAtr().equals(AmPmAtr.AM.value)).findFirst();
+        Optional<FixHalfDayWorkTimezoneDto> halfDayWorkTimezoneAfternoonOpt = lstHalfDayWorkTimezone.stream()
+                .filter(x -> x.getDayAtr().equals(AmPmAtr.PM.value)).findFirst();
+        
+        if (halfDayWorkTimezoneOneDayOpt.isPresent()) {
+            List<DeductionTimeDto> deductionTimes = halfDayWorkTimezoneOneDayOpt.get().getRestTimezone().getTimezones();
+            for (int i = 0; i < deductionTimes.size(); i++) {
+                /*
+                 * R4_145
+                 * 1日勤務用.開始時間
+                 */
+                cells.get("CC" + ((startIndex + 1) + i)).setValue(getInDayTimeWithFormat(deductionTimes.get(i).getStart()));
+                
+                /*
+                 * R4_146
+                 * 1日勤務用.終了時間
+                 */
+                cells.get("CD" + ((startIndex + 1) + i)).setValue(getInDayTimeWithFormat(deductionTimes.get(i).getEnd()));
+            }
+        }
+        
+        if (displayMode.equals(DisplayMode.DETAIL.value)) {
+            if (useHalfDayShiftBreakTime) {
+                if (halfDayWorkTimezoneMorningOpt.isPresent()) {
+                    List<DeductionTimeDto> deductionTimes = halfDayWorkTimezoneMorningOpt.get().getRestTimezone().getTimezones();
+                    for (int i = 0; i < deductionTimes.size(); i++) {
+                        /*
+                         * R4_147
+                         * 午前勤務用.開始時間
+                         */
+                        cells.get("CE" + ((startIndex + 1) + i)).setValue(getInDayTimeWithFormat(deductionTimes.get(i).getStart()));
+                        
+                        /*
+                         * R4_148
+                         * 午前勤務用.終了時間
+                         */
+                        cells.get("CF" + ((startIndex + 1) + i)).setValue(getInDayTimeWithFormat(deductionTimes.get(i).getEnd()));
+                    }
+                }
+                
+                if (halfDayWorkTimezoneAfternoonOpt.isPresent()) {
+                    List<DeductionTimeDto> deductionTimes = halfDayWorkTimezoneAfternoonOpt.get().getRestTimezone().getTimezones();
+                    for (int i = 0; i < deductionTimes.size(); i++) {
+                        /*
+                         * R4_149
+                         * 午後勤務用.開始時間
+                         */
+                        cells.get("CG" + ((startIndex + 1) + i)).setValue(getInDayTimeWithFormat(deductionTimes.get(i).getStart()));
+                        
+                        /*
+                         * R4_150
+                         * 午後勤務用.終了時間
+                         */
+                        cells.get("CH" + ((startIndex + 1) + i)).setValue(getInDayTimeWithFormat(deductionTimes.get(i).getEnd()));
+                    }
+                }
+            }
+            
+            /*
+             * R4_152
+             * 休憩計算設定.休憩中に退勤した場合の休憩時間の計算方法
+             */
+            Integer calculateMethod = data.getFixedWorkSetting().getCommonRestSet().getCalculateMethod();
+            cells.get("CI" + (startIndex + 1)).setValue(getCalculatedMethodAtr(calculateMethod));
+        }
+        
+        // 6        タブグ:                休出時間帯
+        
         
     }
     
@@ -1076,6 +1155,22 @@ public class WorkTimeReportService_New {
         for (int i = 0; i <= priorityAtr.length; i++) {
             if (priority == i) {
                 return priorityAtr[i];
+            }
+        }
+        
+        return "";
+    }
+    
+    /**
+     * 固定勤務の休憩設定.休憩時間中に退勤した場合の計算方法
+     * @param calculatedMethod
+     * @return
+     */
+    private static String getCalculatedMethodAtr(int calculatedMethod) {
+        String[] calculatedMethodAtr = {"休憩を計算しない", "退勤までの休憩時間を計算する(丸めを適用する)", "退勤以降も含め休憩時間を全て計上する"};
+        for (int i = 0; i <= calculatedMethodAtr.length; i++) {
+            if (calculatedMethod == i) {
+                return calculatedMethodAtr[i];
             }
         }
         
