@@ -142,10 +142,11 @@ public class GetPeriodFromPreviousToNextGrantDateImpl implements GetPeriodFromPr
 			if(lstGeneraDate.isEmpty()) {
 				return Optional.empty();
 			}
-//			(if there are multiple, obtain the largest grant date)
-			startDate = lstGeneraDate.stream().max(GeneralDate::compareTo);
-			// 前回年休付与日＋１年 - Last year's holiday payment and day + 1 year
-			return startDate.map(date -> new DatePeriod(date, date.addYears(+1)));
+			// (if there are multiple, obtain the largest grant date)
+			// 前回年休付与日＋１年
+			startDate = lstGeneraDate.stream().max(GeneralDate::compareTo).map(date -> date.addYears(1));
+			return startDate.map(date -> new DatePeriod(date, lstGrantDate.stream()
+					.filter(d -> d.after(date)).min(GeneralDate::compareTo).map(d -> d.addDays(-1)).orElse(null)));
 		}
 		
 	}

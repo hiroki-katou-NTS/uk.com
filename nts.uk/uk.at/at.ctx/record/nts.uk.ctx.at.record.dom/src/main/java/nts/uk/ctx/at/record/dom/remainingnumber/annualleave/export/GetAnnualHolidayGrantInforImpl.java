@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -204,7 +205,8 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 						a.getDetails().getRemainingNumber().getMinutes().orElse(new LeaveRemainingTime(0)));				
 				lstAnnHolidayGrant.add(grantData);
 			}
-			output.setLstGrantInfor(lstAnnHolidayGrant);
+			output.setLstGrantInfor(lstAnnHolidayGrant.stream().sorted(Comparator.comparing(AnnualHolidayGrant::getYmd))
+					.collect(Collectors.toList()));
 		}
 		
 		//ダブルトラック開始日を取得する

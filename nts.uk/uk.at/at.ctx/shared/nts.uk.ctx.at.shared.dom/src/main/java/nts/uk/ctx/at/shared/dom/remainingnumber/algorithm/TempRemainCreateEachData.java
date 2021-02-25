@@ -45,8 +45,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.subst.SubstVacationSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
-public class
-TempRemainCreateEachData {
+public class TempRemainCreateEachData {
 	/**
 	 * 残数作成元情報から暫定年休管理データを作成する
 	 * @param inforData
