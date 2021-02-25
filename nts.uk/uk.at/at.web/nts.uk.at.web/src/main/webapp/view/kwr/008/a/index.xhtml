@@ -252,7 +252,7 @@
 
 						<!-- A11 -->
 						<div
-							data-bind="visible: printFormat() == 1"
+							data-bind="visible: selectAverage() &amp;&amp; printFormat() == 1"
 							class="valign-center">
 							<div data-bind="ntsFormLabel: { required:false }">#{i18n.getText('KWR008_67')}</div>
 							<div data-bind="with: standardMonth" class="date-range-picker">
