@@ -143,8 +143,8 @@ module nts.uk.at.view.ccg005.a.screenModel {
                   <label class="limited-label ccg005-w100" style="display: inline-block;"
                     data-bind="text: businessName" />
                   <!-- A4_5 -->
-                  <div>
-                    <i tabindex=13 data-bind="ntsIcon: {no: emojiIconNo, width: 20, height: 15}"></i>
+                  <div style="height: 20px;">
+                    <i tabindex=13 data-bind="ntsIcon: {no: emojiIconNo, width: 20, height: 15}, visible: emojiVisitable"></i>
                   </div>
                 </td>
                 <td class="ccg005-w100 ccg005-pl-5 ccg005-border-groove ccg005-right-unset ccg005-left-unset">
@@ -884,6 +884,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
         if (personalInfo) {
           businessName = personalInfo.businessName;
         }
+        const emojiVisitable = item.emojiDto.emojiType !== null;
         return new AttendanceInformationViewModel({
           applicationDtos: item.applicationDtos,
           sid: item.sid,
@@ -894,6 +895,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
           comment: item.commentDto.comment,
           goOutDto: vm.getGoOutViewModel(item.goOutDto),
           emojiIconNo: vm.initEmojiType(item.emojiDto.emojiType),
+          emojiVisitable: emojiVisitable,
           businessName: businessName,
           displayAppIcon: (item.applicationDtos.length > 0),
           backgroundColor: vm.getBackgroundColorClass(item.activityStatusDto)
@@ -1118,7 +1120,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       // 表示初期の在席データDTO.在席情報DTO.在席のステータス
       vm.activityStatus(atdInfo.activityStatusDto);
       // A1_3 表示初期の在席データDTO.在席情報DTO.社員の外出情報.感情種類
-      if (atdInfo.emojiDto && atdInfo.emojiDto.emojiType) {
+      if (atdInfo.emojiDto && atdInfo.emojiDto.emojiType !== null) {
         (ko.bindingHandlers.ntsIcon as any)
           .init($('.ccg005-currentEmoji')[0], () => ({ no: vm.initEmojiType(atdInfo.emojiDto.emojiType), width: 20, height: 30 }));
       }
@@ -1449,6 +1451,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
     comment: string;
     goOutDto: GoOutEmployeeInformationViewModel;
     emojiIconNo: number;
+    emojiVisitable: boolean;
     businessName: string;
     displayAppIcon: boolean;
     backgroundColor: string;
