@@ -358,14 +358,17 @@ export class KSUS01AComponent extends Vue {
             scheduledWorkingPeriod
         };
         console.log(command, 'command');
+        self.$mask('show');
         // self.fakeDataDatePeriod(command).then((data: InforOnTargetPeriodDto) => {
         self.$http.post('at', API.changeDatePeriod, command).then((res: any) => {
             let data: InforOnTargetPeriodDto = res.data;
-
+            console.log(data, 'changeDatePeriod');
             self.listWorkSchedule = data.listWorkSchedule;
             self.listDesiredSubmissionStatusByDate = data.listDesiredSubmissionStatusByDate;
             self.bindDateCellList();
-        });
+        }).catch((error: any) => {
+            self.errorHandler(error);
+        }).then(() => self.$mask('hide'));
     }
 
     public createDateHeaderList() {
@@ -554,10 +557,12 @@ export class KSUS01AComponent extends Vue {
             targetDate: self.detailCell.date
         };
 
+        console.log(command, 'getDateDetail command');
+        self.$mask('show');
         // self.fakeDataDateTarget(command).then((data: InforOnTargetDateDto) => {
         self.$http.post('at', API.getDateDetail, command).then((res: any) => {
             let data: InforOnTargetDateDto = res.data;
-
+            console.log(data, 'getDateDetail');
             self.detailCell.displayData.otherStaffs = data.businessNames.join(', ');
             self.detailCell.displayData.workDesireMemo = data.memo;
             self.detailCell.displayData.workScheduleTimeZone = data.listAttendanceDto;
@@ -579,7 +584,9 @@ export class KSUS01AComponent extends Vue {
             });
 
             self.memo = self.detailCell.displayData.workDesireMemo;
-        });
+        }).catch((error: any) => {
+            self.errorHandler(error);
+        }).then(() => self.$mask('hide'));
         
         console.log(dateCell, ' detail ', dateCell.formatedDate);
     }

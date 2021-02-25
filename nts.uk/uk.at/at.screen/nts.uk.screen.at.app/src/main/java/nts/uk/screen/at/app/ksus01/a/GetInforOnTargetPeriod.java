@@ -1,9 +1,12 @@
 package nts.uk.screen.at.app.ksus01.a;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -117,15 +120,16 @@ public class GetInforOnTargetPeriod {
 		List<WorkInformation> lstWorkInformation = listWorkSchedule.stream().map(e -> e.getWorkInfo().getRecordInfo()).collect(Collectors.toList());
 		
 		// 3: 勤務情報で取得する(require, 会社ID, 勤務情報リスト): Map<シフトマスタ, Optional<出勤休日区分>>
-		Map<ShiftMaster,Optional<WorkStyle>> mapByWorkInfo = GetCombinationrAndWorkHolidayAtrService.getbyWorkInfo(getComAndWorkHolidayAtrRequire, companyId, lstWorkInformation);
+		Map<ShiftMaster, Optional<WorkStyle>> mapByWorkInfo = GetCombinationrAndWorkHolidayAtrService.getbyWorkInfo(getComAndWorkHolidayAtrRequire, companyId, lstWorkInformation);
 		
 		List<WorkScheduleDto> listWorkScheduleDto = new ArrayList<WorkScheduleDto>();
 		
 		for (WorkSchedule workSchedule : listWorkSchedule) {
-			mapByWorkInfo.forEach((k, v) -> {
-				
-				boolean check = false;
-				List<AttendanceDto> listAttendaceDto = new ArrayList<AttendanceDto>();
+			boolean check = false;
+			for (Map.Entry<ShiftMaster, Optional<WorkStyle>> entry : mapByWorkInfo.entrySet()) {
+				ShiftMaster k = entry.getKey();
+				Optional<WorkStyle> v = entry.getValue();
+			    List<AttendanceDto> listAttendaceDto = new ArrayList<AttendanceDto>();
 				
     			Optional<TimeLeavingOfDailyAttd> optTimeLeaving = workSchedule.getOptTimeLeaving();
     			
@@ -135,7 +139,7 @@ public class GetInforOnTargetPeriod {
     			}
 	    		
 				// map by workTimeCode and workTypeCode
-				if (k.getWorkTypeCode().v() == workSchedule.getWorkInfo().getRecordInfo().getWorkTypeCode().v()) {
+				if (k.getWorkTypeCode().v().equals(workSchedule.getWorkInfo().getRecordInfo().getWorkTypeCode().v())) {
 					
 					if (k.getWorkTimeCode() != null) {
 						if (k.getWorkTimeCode().v().equals(workSchedule.getWorkInfo().getRecordInfo().getWorkTimeCode().v())) {
@@ -148,17 +152,66 @@ public class GetInforOnTargetPeriod {
 					}
 				}
 				
-				if (check == true) {
+				if (check) {
 					
 					WorkScheduleDto workScheduleDto = new WorkScheduleDto(workSchedule.getYmd().toString(), new ShiftMasterDto(k.getDisplayInfor().getName().v(), k.getDisplayInfor().getColor().v()),
 																			v.isPresent() ? v.get().value : null, listAttendaceDto);
 					listWorkScheduleDto.add(workScheduleDto);
-				} else {
-					WorkScheduleDto workScheduleDto = new WorkScheduleDto(workSchedule.getYmd().toString(), new ShiftMasterDto("", ""),
-																			v.isPresent() ? v.get().value : null, listAttendaceDto);
-					listWorkScheduleDto.add(workScheduleDto);
-				}
-			});
+					break;
+				} 
+			}
+			if (!check) {
+				WorkScheduleDto workScheduleDto = new WorkScheduleDto(workSchedule.getYmd().toString(), new ShiftMasterDto("", ""),
+																		null, Collections.emptyList());
+				listWorkScheduleDto.add(workScheduleDto);
+			}
+//			AtomicBoolean check = new AtomicBoolean(false);
+//			mapByWorkInfo.forEach((k, v) -> {
+//
+//				List<AttendanceDto> listAttendaceDto = new ArrayList<AttendanceDto>();
+//				
+//    			Optional<TimeLeavingOfDailyAttd> optTimeLeaving = workSchedule.getOptTimeLeaving();
+//    			
+//    			if (optTimeLeaving.isPresent()) {
+//    				listAttendaceDto = optTimeLeaving.get().getTimeLeavingWorks().stream().map(e -> new AttendanceDto(e.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get().getInDayTimeWithFormat(), 
+//    																												e.getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get().getInDayTimeWithFormat())).collect(Collectors.toList());
+//    			}
+//	    		
+//				if (!check.get()) {
+//					// map by workTimeCode and workTypeCode
+//					if (k.getWorkTypeCode().v().equals(workSchedule.getWorkInfo().getRecordInfo().getWorkTypeCode().v())) {
+//						
+//						if (k.getWorkTimeCode() != null) {
+//							if (k.getWorkTimeCode().v().equals(workSchedule.getWorkInfo().getRecordInfo().getWorkTimeCode().v())) {
+//								check.set(true);
+//							}
+//						} else {
+//							if (workSchedule.getWorkInfo().getRecordInfo().getWorkTimeCode() == null) {
+//								check.set(true);
+//							}
+//						}
+//					}
+//				} else {
+//					return;
+//				}
+//				
+//				if (check.get()) {
+//					
+//					WorkScheduleDto workScheduleDto = new WorkScheduleDto(workSchedule.getYmd().toString(), new ShiftMasterDto(k.getDisplayInfor().getName().v(), k.getDisplayInfor().getColor().v()),
+//																			v.isPresent() ? v.get().value : null, listAttendaceDto);
+//					listWorkScheduleDto.add(workScheduleDto);
+//				} 
+////				else {
+////					WorkScheduleDto workScheduleDto = new WorkScheduleDto(workSchedule.getYmd().toString(), new ShiftMasterDto("", ""),
+////							v.isPresent() ? v.get().value : null, listAttendaceDto);
+////					listWorkScheduleDto.add(workScheduleDto);
+////				}
+//			});
+//			if (!check.get()) {
+//				WorkScheduleDto workScheduleDto = new WorkScheduleDto(workSchedule.getYmd().toString(), new ShiftMasterDto("", ""),
+//																		null, Collections.emptyList());
+//				listWorkScheduleDto.add(workScheduleDto);
+//			}
 		}
 		
 		return new InforOnTargetPeriodDto(listWorkScheduleDto, listDesiredSubmissionStatusByDate);

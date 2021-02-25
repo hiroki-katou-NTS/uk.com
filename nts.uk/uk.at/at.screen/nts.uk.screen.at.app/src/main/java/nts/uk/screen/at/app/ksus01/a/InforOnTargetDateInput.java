@@ -11,7 +11,7 @@ public class InforOnTargetDateInput {
 
 	private int desiredSubmissionStatus;
 	
-	private int workHolidayClassification;
+	private int workHolidayAtr;
 	
 	private String targetDate;
 }

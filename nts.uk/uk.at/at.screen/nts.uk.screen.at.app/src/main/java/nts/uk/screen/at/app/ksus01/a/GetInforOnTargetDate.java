@@ -114,7 +114,7 @@ public class GetInforOnTargetDate {
 	
     final static String DATE_TIME_FORMAT = "yyyy/MM/dd";
     
-    public InforOnTargetDateDto handle(int desiredSubmissionStatus, int workHolidayClassification,String targetDate) {
+    public InforOnTargetDateDto handle(int desiredSubmissionStatus, int workHolidayAtr,String targetDate) {
 		
     	String companyId = AppContexts.user().companyId();
     	String sid = AppContexts.user().employeeId();
@@ -134,7 +134,7 @@ public class GetInforOnTargetDate {
     	
     	
     	// [出勤休日区分＜＞休日]
-    	if (workHolidayClassification != WorkStyle.ONE_DAY_REST.value) {
+    	if (workHolidayAtr != WorkStyle.ONE_DAY_REST.value) {
     		
     		// [出勤休日区分＜＞休日]: 取得する（require, 社員ID, 基準日）：　List<社員ID>
     		List<String> listEmpId = GetWorkTogetherEmpOnDayBySpecEmpService.get(require, sid, baseDate);

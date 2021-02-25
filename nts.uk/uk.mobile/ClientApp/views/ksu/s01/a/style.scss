@@ -1,6 +1,10 @@
 .ksus01a {
     margin-top: -1rem;
 
+    .card-label {
+        font-size: 3.75vw;
+    }
+
     .card-body {
         font-size: 3vw;
     }
@@ -19,6 +23,11 @@
         border: none;   
         border-radius: 0;
         font-weight: bold;
+        font-size: 3.5vw;
+    }
+
+    #year-month-component .input-group-text {
+        font-size: 3.75vw;
     }
 
     #year-month-component .form-group {

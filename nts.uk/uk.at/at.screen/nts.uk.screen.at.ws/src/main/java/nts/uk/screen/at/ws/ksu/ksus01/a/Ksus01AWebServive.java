@@ -49,7 +49,7 @@ public class Ksus01AWebServive {
 	@POST
 	@Path("getinfortargetdate")
 	public InforOnTargetDateDto getInfoTargetDate(InforOnTargetDateInput input) {
-		return this.getInforOnTargetDate.handle(input.getDesiredSubmissionStatus(), input.getWorkHolidayClassification(), input.getTargetDate());
+		return this.getInforOnTargetDate.handle(input.getDesiredSubmissionStatus(), input.getWorkHolidayAtr(), input.getTargetDate());
 	}
 	
 }
