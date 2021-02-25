@@ -10,19 +10,19 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class KrcmtCalcItemSelection_.
  */
-@StaticMetamodel(KrcmtCalcItemSelection.class)
+@StaticMetamodel(KrcmtAnyfItemSelect.class)
 public class KrcmtCalcItemSelection_ {
 
 	/** The krcmt calc item selection PK. */
-	public static volatile SingularAttribute<KrcmtCalcItemSelection, KrcmtCalcItemSelectionPK> krcmtCalcItemSelectionPK;
+	public static volatile SingularAttribute<KrcmtAnyfItemSelect, KrcmtCalcItemSelectionPK> krcmtCalcItemSelectionPK;
 
 	/** The calc atr. */
-	public static volatile SingularAttribute<KrcmtCalcItemSelection, Integer> calcAtr;
+	public static volatile SingularAttribute<KrcmtAnyfItemSelect, Integer> calcAtr;
 
 	/** The minus segment. */
-	public static volatile SingularAttribute<KrcmtCalcItemSelection, Integer> minusSegment;
+	public static volatile SingularAttribute<KrcmtAnyfItemSelect, Integer> minusSegment;
 
 	/** The operator. */
-	public static volatile SingularAttribute<KrcmtCalcItemSelection, Integer> operator;
+	public static volatile SingularAttribute<KrcmtAnyfItemSelect, Integer> operator;
 
 }

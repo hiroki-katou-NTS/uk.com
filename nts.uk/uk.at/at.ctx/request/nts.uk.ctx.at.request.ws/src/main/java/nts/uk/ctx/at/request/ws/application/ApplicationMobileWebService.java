@@ -17,11 +17,20 @@ import org.apache.logging.log4j.util.Strings;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.request.app.command.application.common.AppDetailBehaviorCmd;
+import nts.uk.ctx.at.request.app.command.application.common.ApproveAppMobileHandler;
+import nts.uk.ctx.at.request.app.command.application.common.DenyAppMobileHandler;
+import nts.uk.ctx.at.request.app.command.application.common.ReleaseAppMobileHandler;
+import nts.uk.ctx.at.request.app.command.application.common.RemandAppMobileHandler;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.request.app.find.application.common.service.smartphone.output.RequestMsgInfoDto;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.RemandCommand;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.DetailAppCommonSetService;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.MailSenderResult;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ApproveProcessResult;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.smartphone.CommonAlgorithmMobile;
@@ -47,6 +56,18 @@ public class ApplicationMobileWebService {
 	
 	@Inject
 	private DetailAppCommonSetService detailAppCommonSetService;
+	
+	@Inject
+	private ApproveAppMobileHandler approveAppMobileHandler;
+	
+	@Inject
+	private ReleaseAppMobileHandler releaseAppMobileHandler;
+	
+	@Inject
+	private DenyAppMobileHandler denyAppMobileHandler;
+
+	@Inject
+	private RemandAppMobileHandler remandAppMobileHandler;
 	
 	@POST
 	@Path("requestmsg")
@@ -102,6 +123,30 @@ public class ApplicationMobileWebService {
 		String companyID = AppContexts.user().companyId();
 		AppDispInfoStartupOutput appDispInfoStartupOutput = detailAppCommonSetService.getCommonSetBeforeDetail(companyID, appID);
 		return AppDispInfoStartupDto.fromDomain(appDispInfoStartupOutput);
+	}
+	
+	@POST
+	@Path("approveapp")
+	public ApproveProcessResult approveApp(AppDetailBehaviorCmd command){
+		return approveAppMobileHandler.handle(command);
+	}
+	
+	@POST
+	@Path("releaseapp")
+	public ProcessResult releaseApp(AppDispInfoStartupDto command){
+		return releaseAppMobileHandler.handle(command);
+	}
+	
+	@POST
+	@Path("denyapp")
+	public ProcessResult denyApp(AppDetailBehaviorCmd command){
+		return denyAppMobileHandler.handle(command);
+	}
+	
+	@POST
+	@Path("remandapp")
+	public MailSenderResult remandApp(RemandCommand command){
+		return remandAppMobileHandler.handle(command);
 	}
 	
 }

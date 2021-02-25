@@ -1,9 +1,8 @@
 module nts.uk.at.view.kaf005.shr.viewmodel {
-	import AttendanceType = nts.uk.at.view.kaf005.a.viewmodel.AttendanceType;
 	const template = `
 <div class="container cf" data-bind="with: $parent">
 	<div class="cf valign-top control-group"
-		data-bind="visible: visibleModel.c18()">
+		data-bind="visible: visibleModel.c7()">
 		<!--A5_1 休憩時間ラベル-->
 		<div class="cm-column" style="display: inline-block; width: 100px">
 			<div class="lblTitle pull-left"
@@ -38,7 +37,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 									name: '#[KAF005_337]', 
 									value: start, 
 									constraint:'TimeWithDayAttr', 
-									enable: $parent.outputMode(),
+									enable: ($parent.visibleModel.c7() && $parent.outputMode()),
 									option: {width: '85px', timeWithDay: true}}" /></td>
 						<!--A5_7 終了時刻-->
 						<td><input class="right-content"
@@ -47,7 +46,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 									name: '#[KAF005_338]', 
 									value: end, 
 									constraint:'TimeWithDayAttr', 
-									enable: $parent.outputMode(),
+									enable: ($parent.visibleModel.c7() && $parent.outputMode()),
 									option: {width: '85px', timeWithDay: true}}" /></td>
 					</tr>
 				</tbody>
@@ -111,6 +110,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 									option: {width: '85px', timeWithDay: true},
 									inputFormat: 'time',
 									mode: 'time',
+									name: $component.getNameByType(type),
 									constraint:'OvertimeAppPrimitiveTime',
 									enable: $parent.visibleModel.c28() && $parent.outputMode()}" />
 						</td>
@@ -157,6 +157,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 									option: {width: '85px', timeWithDay: true},
 									inputFormat: 'time',
 									mode: 'time',
+									name: $component.getNameByType(type),
 									constraint:'OvertimeAppPrimitiveTime',
 									enable: $parent.visibleModel.c28() && $parent.outputMode()}" />
 						</td>
@@ -214,7 +215,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 							data-bind="
 								style: {'background-color': backgroundColor()},
 								ntsTimeEditor: {
-									name: '#[KAF005_337]', 
+									name: $component.getNameByType(type), 
 									value: start, 
 									constraint:'OvertimeAppPrimitiveTime',
 									inputFormat: 'time',
@@ -257,7 +258,7 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 							data-bind="
 								style: {'background-color': backgroundColor()},
 								ntsTimeEditor: {
-									name: '#[KAF005_337]', 
+									name: $component.getNameByType(type), 
 									value: start, 
 									constraint:'OvertimeAppPrimitiveTime',
 									inputFormat: 'time',
@@ -280,7 +281,6 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 
 
 </div>
-
 
 
 
@@ -359,6 +359,56 @@ module nts.uk.at.view.kaf005.shr.viewmodel {
 			})
 			
 		}
+		
+		public getNameByType(appType: AttendanceType) {
+			const self = this;
+			
+			if (appType === AttendanceType.NORMALOVERTIME) {
+				
+				return self.$i18n('KAF005_55');
+			} else if (appType === AttendanceType.MIDNIGHT_OUTSIDE) {
+				
+				return self.$i18n('KAF005_64');
+				
+			} else if (appType === AttendanceType.FLEX_OVERTIME) {
+				
+				return self.$i18n('KAF005_66');
+			} else if (appType === AttendanceType.BREAKTIME) {
+				
+				return self.$i18n('KAF005_70');
+				
+			} else if (appType === AttendanceType.MIDDLE_BREAK_TIME) {
+				
+				return self.$i18n('KAF005_341');
+				
+			} else if (appType === AttendanceType.MIDDLE_EXORBITANT_HOLIDAY) {
+				
+				return self.$i18n('KAF005_342');
+				
+			} else if (appType === AttendanceType.MIDDLE_HOLIDAY_HOLIDAY) {
+				
+				return self.$i18n('KAF005_343');
+				
+			} else {
+				
+				return '';
+			}
+			
+		}
+	}
+	enum AttendanceType {
+
+		NORMALOVERTIME,
+		BREAKTIME,
+		BONUSPAYTIME,
+		BONUSSPECIALDAYTIME,
+		MIDNIGHT,
+		SHIFTNIGHT,
+		MIDDLE_BREAK_TIME,
+		MIDDLE_EXORBITANT_HOLIDAY,
+		MIDDLE_HOLIDAY_HOLIDAY,
+		FLEX_OVERTIME,
+		MIDNIGHT_OUTSIDE		
 	}
 	export interface OverTime {
 		frameNo: string;

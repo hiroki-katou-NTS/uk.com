@@ -36,6 +36,7 @@ public class RemoveWebMenuCommandHander extends CommandHandler<RemoveWebMenuComm
 		}
 		
 		webMenuRepository.remove(companyId, command.getWebMenuCd());
+
 	}
 	
 

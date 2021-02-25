@@ -33,7 +33,7 @@ public class KrcdtTrRemoteBackupPK implements Serializable {
 	 */
 	@NotNull
 	@Column(name = "TIMERECORDER_CD")
-	public int timeRecordCode;
+	public String timeRecordCode;
 	
 	/**
 	 * 変数名
