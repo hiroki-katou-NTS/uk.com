@@ -26,15 +26,15 @@
 
 		<div class="pull-right">
 			<com:ko tag="ifnot" bind="isFlow() || isFlex()">
-				<button tabindex="69"  data-bind="click: openDialogG, visible: isDetailMode">#{i18n.getText('KMK003_192')}</button>
+				<button tabindex="71"  data-bind="click: openDialogG, visible: isDetailMode">#{i18n.getText('KMK003_192')}</button>
 			</com:ko>
 			<com:ko tag="if" bind="isFlow() || isFlex()">
-				<button tabindex="69" data-bind="click: openDialogG,
+				<button tabindex="71" data-bind="click: openDialogG,
 				 visible: isDetailMode,
 				 enable: isFlexTimezone() || isFlowTimezone()">#{i18n.getText('KMK003_225')}</button>
 			</com:ko>
 			<com:ko tag="if" bind="isFlow() || isFlex()">
-				<button tabindex="69" data-bind="click: openFlowBreakSetting,
+				<button tabindex="71" data-bind="click: openFlowBreakSetting,
 				 visible: isDetailMode,
 				 enable: isFlexRestTime() || isFlowRestTime()">#{i18n.getText('KMK003_227')}</button>
 			</com:ko>
@@ -48,7 +48,7 @@
 			<com:ko tag="if" bind="isFlow() || isFlex()">
 				<button style="margin-right: 30px" data-bind="ntsHelpButton: {textId: 'KMK003_323', position: 'right center' }">?</button>
 			</com:ko>
-			<div tabindex ="69" class="cf" data-bind="ntsSwitchButton: {
+			<div tabindex ="71" class="cf" data-bind="ntsSwitchButton: {
 					name: '#[KMK003_141]',
 					options: switchDs,
 					optionsValue: 'code',
@@ -63,7 +63,7 @@
 			<com:ko tag="if" bind="isFlow() || isFlex()">
 				<button style="margin-right: 30px" data-bind="ntsHelpButton: {textId: 'KMK003_323', position: 'right center' }">?</button>
 			</com:ko>
-			<div tabindex ="69" class="cf" data-bind="ntsSwitchButton: {
+			<div tabindex ="71" class="cf" data-bind="ntsSwitchButton: {
 					name: '#[KMK003_141]',
 					options: switchDs,
 					optionsValue: 'code',
@@ -372,7 +372,7 @@
 			<div id="flowRt" data-bind="ntsFixTableCustom: {option: flowRestSetOption}"></div>
 
 			<com:ko tag="with" bind="flowRestSet">
-				<div tabindex="86" class="tab_5_checkbox" data-bind="ntsCheckBox: {
+				<div tabindex="88" class="tab_5_checkbox" data-bind="ntsCheckBox: {
 					checked: useHereAfterRestSet,
 					enable: true,
 					text: nts.uk.resource.getText('KMK003_144') }"></div>
@@ -384,7 +384,7 @@
 					</tr>
 					<tr>
 						<td>
-							<input tabindex="87" data-bind="ntsTimeEditor: {
+							<input tabindex="89" data-bind="ntsTimeEditor: {
 								name: '#[KMK003_174]',
 								option: {textalign: 'center'},
 								constraint: 'AttendanceTime',
@@ -395,7 +395,7 @@
 								enable: useHereAfterRestSet }" />
 						</td>
 						<td>
-							<input tabindex="87" data-bind="ntsTimeEditor: {
+							<input tabindex="89" data-bind="ntsTimeEditor: {
 								name: '#[KMK003_176]',
 								option: {textalign: 'center'},
 								constraint: 'AttendanceTime',

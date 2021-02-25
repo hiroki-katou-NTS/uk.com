@@ -4,20 +4,23 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.worktime.flexset;
 
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
-
+import lombok.val;
 import nts.arc.error.BundledBusinessException;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.app.command.worktime.common.WorkTimeCommonSaveCommandHandler;
+import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSet;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexOffdayWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.policy.FlexWorkSettingPolicy;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 import nts.uk.shr.com.context.AppContexts;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 /**
  * The Class FlexWorkSettingSaveCommandHandler.
@@ -100,6 +103,15 @@ public class FlexWorkSettingSaveCommandHandler extends CommandHandler<FlexWorkSe
 
 		// Check domain
 		try {
+			val isUseShiftTwo = command.getPredseting().getPrescribedTimezoneSetting().isUseShiftTwo();
+			//check FlexOffDayWorkTimezone
+			val offDay = flexWorkSetting.getOffdayWorkTime();
+			new FlexOffdayWorkTime(offDay.getLstWorkTimezone(), offDay.getRestTimezone(), isUseShiftTwo);
+			//check List<FixHalfDayWorkTimezone>
+			flexWorkSetting.getLstHalfDayWorkTimezone().forEach(halfDay -> {
+				new FixedWorkTimezoneSet(halfDay.getWorkTimezone().getLstWorkingTimezone(), halfDay.getWorkTimezone().getLstOTTimezone(), isUseShiftTwo);
+			});
+
 			flexWorkSetting.validate();
 		} catch (BundledBusinessException e) {
 			bundledBusinessExceptions.addMessage(e.cloneExceptions());

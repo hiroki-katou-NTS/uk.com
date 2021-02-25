@@ -48,12 +48,12 @@ public class FlexOffdayWorkTime extends WorkTimeDomainObject implements Cloneabl
 	/**
 	 * 新規作成する
 	 * @param memento Memento
-	 * @param useDoubleWork is use double work?
+	 * @param useShiftTwo is use double work?
 	 */
-	public FlexOffdayWorkTime(FlexOffdayWorkTimeGetMemento memento, boolean useDoubleWork){
-		this.lstWorkTimezone = memento.getLstWorkTimezone();
-		this.restTimezone = memento.getRestTimezone();
-		if (checkLstWorkTimezoneContinue(useDoubleWork))
+	public FlexOffdayWorkTime(List<HDWorkTimeSheetSetting> lstWorkTimezone, FlowWorkRestTimezone restTimezone, boolean useShiftTwo){
+		this.lstWorkTimezone = lstWorkTimezone;
+		this.restTimezone = restTimezone;
+		if (!checkLstWorkTimezoneContinue(useShiftTwo))
 			this.bundledBusinessExceptions.addMessage("Msg_1918");
 	}
 
@@ -169,20 +169,24 @@ public class FlexOffdayWorkTime extends WorkTimeDomainObject implements Cloneabl
 	/**
 	 * 時間帯の連続性を確認
 	 *
-	 * @param useDoubleWork is use double work?
+	 * @param useShiftTwo is use double work?
 	 * @return status
 	 */
-	private boolean checkLstWorkTimezoneContinue(boolean useDoubleWork){
+	private boolean checkLstWorkTimezoneContinue(boolean useShiftTwo){
 		val discontinueTimes = this.lstWorkTimezone
 				.stream()
 				.sorted(Comparator.comparing(HDWorkTimeSheetSetting::getWorkTimeNo))
 				.filter(wt -> {
-					val nextWt = lstWorkTimezone.get(lstWorkTimezone.indexOf(wt));
-					return !wt.getTimezone().getEnd().equals(nextWt.getTimezone().getStart());
+					int nextIndex = this.lstWorkTimezone.indexOf(wt) + 1;
+					if (nextIndex < this.lstWorkTimezone.size()){
+						val nextWt = this.lstWorkTimezone.get(nextIndex);
+						return !wt.getTimezone().getEnd().equals(nextWt.getTimezone().getStart());
+					}
+					else return false;
 				}).count();
-		if (!useDoubleWork && discontinueTimes >= 1)
+		if (!useShiftTwo && discontinueTimes >= 1)
 			return false;
-		if (useDoubleWork && discontinueTimes > 1)
+		if (useShiftTwo && discontinueTimes > 1)
 			return false;
 		return true;
 	}
