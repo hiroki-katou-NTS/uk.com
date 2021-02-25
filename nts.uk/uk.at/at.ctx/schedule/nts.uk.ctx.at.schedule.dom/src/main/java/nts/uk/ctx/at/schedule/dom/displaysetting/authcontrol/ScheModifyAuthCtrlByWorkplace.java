@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol;
 
+import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.uk.shr.com.permit.AvailabilityPermissionBase;
 
 /**
@@ -8,7 +9,7 @@ import nts.uk.shr.com.permit.AvailabilityPermissionBase;
  * @author dan_pv
  *
  */
-public class ScheModifyAuthCtrlByWorkplace extends AvailabilityPermissionBase {
+public class ScheModifyAuthCtrlByWorkplace extends AvailabilityPermissionBase implements DomainAggregate {
 
 	/**
 	 * @param companyId 会社ID
