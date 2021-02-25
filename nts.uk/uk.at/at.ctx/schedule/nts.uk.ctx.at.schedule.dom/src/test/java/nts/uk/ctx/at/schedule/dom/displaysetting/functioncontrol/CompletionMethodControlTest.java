@@ -61,8 +61,8 @@ public class CompletionMethodControlTest {
 					Arrays.asList( "001") );
 		
 		assertThat( result.getCompletionExecutionMethod() ).isEqualTo( FuncCtrlCompletionExecutionMethod.SettingBefore );
-		assertThat( result.getCompletionMethodControl() ).containsExactly( FuncCtrlCompletionMethod.AlarmCheck );
-		assertThat( result.getAlarmCheckCodeList() ).containsExactly( "001" );
+		assertThat( result.getCompletionMethodControl() ).containsOnly( FuncCtrlCompletionMethod.AlarmCheck );
+		assertThat( result.getAlarmCheckCodeList() ).containsOnly( "001" );
 		
 	}
 	
