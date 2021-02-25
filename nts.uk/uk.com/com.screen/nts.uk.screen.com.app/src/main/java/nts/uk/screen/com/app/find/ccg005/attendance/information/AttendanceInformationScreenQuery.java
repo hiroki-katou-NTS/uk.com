@@ -215,34 +215,38 @@ public class AttendanceInformationScreenQuery {
 			// １．勤務区分
 			Integer workDivision = null;
 			//システム日の場合：
-			if(activityStatus != null) {
-				if(activityStatus.getWorkingNow().isPresent()) {
-					if (activityStatus.getWorkingNow().get()) {
-						workDivision = WorkDivision.WORK.value;
-					} else {
-						workDivision = WorkDivision.HOLIDAY.value;
+			if(baseDate.equals(GeneralDate.today())) {
+				if(activityStatus != null) {
+					if(activityStatus.getWorkingNow().isPresent()) {
+						if (activityStatus.getWorkingNow().get()) {
+							workDivision = WorkDivision.WORK.value;
+						} else {
+							workDivision = WorkDivision.HOLIDAY.value;
+						}
 					}
 				}
-			}
-			//システム日ではない場合
-			if(workInformation.getWorkTypeDto().getDailyWork() != null) {
-				List<Integer> notIn = new ArrayList<>();
-				notIn.add(WorkTypeClassification.Attendance.value);
-				notIn.add(WorkTypeClassification.HolidayWork.value);
-				notIn.add(WorkTypeClassification.Shooting.value);
-				notIn.add(WorkTypeClassification.ContinuousWork.value);
-				DailyWorkDto daily = workInformation.getWorkTypeDto().getDailyWork();
-				// 1日場合、「出勤、休日出勤、振出、連続勤務」 → 出勤 || その他 → 休み
-				if (workInformation.getWorkTypeDto().getDailyWork().getWorkTypeUnit() == WorkTypeUnit.OneDay.value && !notIn.stream().anyMatch(item -> item == daily.getOneDay())) {
-					workDivision = WorkDivision.HOLIDAY.value;
+			} else {
+				//システム日ではない場合
+				if(workInformation.getWorkTypeDto().getDailyWork() != null) {
+					List<Integer> notIn = new ArrayList<>();
+					notIn.add(WorkTypeClassification.Attendance.value);
+					notIn.add(WorkTypeClassification.HolidayWork.value);
+					notIn.add(WorkTypeClassification.Shooting.value);
+					notIn.add(WorkTypeClassification.ContinuousWork.value);
+					DailyWorkDto daily = workInformation.getWorkTypeDto().getDailyWork();
+					// 1日場合、「出勤、休日出勤、振出、連続勤務」 → 出勤 || その他 → 休み
+					if (workInformation.getWorkTypeDto().getDailyWork().getWorkTypeUnit() == WorkTypeUnit.OneDay.value && !notIn.stream().anyMatch(item -> item == daily.getOneDay())) {
+						workDivision = WorkDivision.HOLIDAY.value;
+					}
+					// 午前と午後の場合、午前が休み AND 午後が休み → 休み || その他 → 出勤
+					if (daily.getWorkTypeUnit() == WorkTypeUnit.MonringAndAfternoon.value && !notIn.stream().anyMatch(item -> item == daily.getMorning())
+							&& !notIn.stream().anyMatch(item -> item == daily.getAfternoon())) {
+						workDivision = WorkDivision.HOLIDAY.value;
+					}
+					workDivision = WorkDivision.WORK.value;
 				}
-				// 午前と午後の場合、午前が休み AND 午後が休み → 休み || その他 → 出勤
-				if (daily.getWorkTypeUnit() == WorkTypeUnit.MonringAndAfternoon.value && !notIn.stream().anyMatch(item -> item == daily.getMorning())
-						&& !notIn.stream().anyMatch(item -> item == daily.getAfternoon())) {
-					workDivision = WorkDivision.HOLIDAY.value;
-				}
-				workDivision = WorkDivision.WORK.value;
 			}
+			
 			// 2.勤務色
 			Integer workColor = DisplayColor.ACHIEVEMENT.value;
 			if (baseDate.after(GeneralDate.today())) {
