@@ -46,13 +46,14 @@
                         <!-- C2_2 -->
                     <div style="width: 340px"
                          data-bind="ntsSearchBox: {
-                             searchMode: 'highlight',
-                             targetKey: 'code',
-                             comId: 'multi-list',
-                             items: listStandardImportSetting,
-                             selected: selectedLayoutId,
-                             selectedKey: 'cd', fields: ['name', 'cd'],
-                             mode: 'igGrid'}" />
+                            items: listStandardImportSetting,
+                            searchMode: 'highlight',
+                            targetKey: 'layoutIdSelect',
+                            comId: 'listStandardImportSetting',
+                            selected: selectedLayoutId,
+                            selectedKey: 'layoutIdSelect',
+                            fields: ['displayCode', 'displayName'],
+                            mode: 'igGrid'}"></div>
                         <div id="B2_1">
                             <!-- B2_2 -->
                             <table tabindex="5" id="listStandardImportSetting" data-bind="ntsGridList: {
