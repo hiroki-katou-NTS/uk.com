@@ -18,7 +18,8 @@ module nts.uk.at.view.ccg005.a.screenModel {
 
   @component({
     name: 'ccg005-component',
-    template: `<div data-bind="widget-content: 290, default: 505" id="ccg005-watching">
+    template: 
+    `<div data-bind="widget-content: 290, default: 505" id="ccg005-watching">
     <div id="ccg005-content">
       <div>
         <div class="grade-header-top">
@@ -47,10 +48,14 @@ module nts.uk.at.view.ccg005.a.screenModel {
                   <i class="ccg005-currentEmoji"></i>
                   <div style="position: relative;" class="CCG005-A1_4-border">
                     <!-- A1_4 -->
-                    <input tabindex=2 id="CCG005-A1_4"
-                      style="border: none !important; padding-right: 30px; background: none !important;" data-bind="ntsTextEditor: {
+                    <input 
+                      tabindex=2 
+                      id="CCG005-A1_4"
+                      style="border: none !important; padding-right: 30px; background: none !important;" 
+                      data-bind="ntsTextEditor: {
                           enterkey: $component.registerComment,
                           value: $component.comment,
+                          constraint: 'DailyContactComment',
                           enable: $component.isBaseDate,
                           option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                             textmode: 'text',
