@@ -1,8 +1,9 @@
 /// <reference path="../../../lib/nittsu/viewcontext.d.ts" />
 module nts.uk.at.view.kdl012 {
   
-  const CONCAT_DATE = ' ～ ';
+  import getShared = nts.uk.ui.windows.getShared;
 
+  const CONCAT_DATE = ' ～ ';
   const PATH = {
     getWorkFrame: ''
   };
@@ -24,14 +25,16 @@ module nts.uk.at.view.kdl012 {
     constructor(params: any) {
       super();
       const vm = this;
+   
+      let object: any = getShared('KDL012') ? getShared('KDL012') : params;
 
-      if( params ) {
-        vm.isMultiple = params.isMultiple; //選択モード single or multiple
-        vm.isShowExpireDate(params.showExpireDate); //表示モード	show/hide expire date
-        vm.referenceDate(params.referenceDate ? params.referenceDate : moment().format('YYYY/MM/DD')); //システム日付        
-        vm.workFrameNoSelection(params.workFrameNoSelection);//作業枠NO選択        
-        vm.selectionCodeList(params.selectionCodeList);
-        vm.currentCodeList(params.selectionCodeList); //初期選択コードリスト
+      if( object ) {
+        vm.isMultiple = object.isMultiple; //選択モード single or multiple
+        vm.isShowExpireDate(object.showExpireDate); //表示モード	show/hide expire date
+        vm.referenceDate(object.referenceDate ? object.referenceDate : moment().format('YYYY/MM/DD')); //システム日付        
+        vm.workFrameNoSelection(object.workFrameNoSelection);//作業枠NO選択        
+        vm.selectionCodeList(object.selectionCodeList);
+        vm.currentCodeList(object.selectionCodeList); //初期選択コードリスト
       }      
 
       if( vm.isShowExpireDate() ) {
@@ -69,12 +72,18 @@ module nts.uk.at.view.kdl012 {
       if( selectionList.length === 0 ) {
         vm.$dialog.error({ messageId: 'Msg_1629'}).then(() => { });
       } else {
+        //using for CDL023
+        let currentCodeList: Array<string> = [];
+        _.forEach(selectionList, (x: any) => { currentCodeList.push(x.code); });
+        nts.uk.ui.windows.setShared('currentCodeList', currentCodeList); 
+        //new
         vm.$window.close({ setShareKDL012: selectionList });
       }
     }
 
     closeDialog() {
       const vm = this;
+      nts.uk.ui.windows.setShared('KDL012Cancel', null); //using for CDL023
       vm.$window.close({ setShareKDL012: null });
     }
 
