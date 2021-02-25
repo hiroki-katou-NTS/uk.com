@@ -48,7 +48,7 @@ public class RegisterWorkAvailability {
 		
 		datePeriod.stream().forEach(date ->{
 			if(shiftTableSetting.isOverDeadline(date)) {
-				if(workAvailabilityDates.contains(date) && require.existWorkAvailabilityOfOneDay(sid, date)) {
+				if(workAvailabilityDates.contains(date) || require.existWorkAvailabilityOfOneDay(sid, date)) {
 					throw new BusinessException("Msg_2050");
 				}
 			}
