@@ -180,7 +180,7 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 			for(int i = 0; i < timeZone.size(); i++) {
 				this.scheduleTimeSheets.add(new ScheduleTimeSheet(i + 1, 
 																	timeZone.get(i).getStart().valueAsMinutes(), 
-																	timeZone.get(0).getEnd().valueAsMinutes()));
+																	timeZone.get(i).getEnd().valueAsMinutes()));
 			}
 //			List<TimeZone> lstTimeZone = workInfoTimeZone.getTimeZones().stream()
 //					.sorted((x, y) -> x.getStart().v() - y.getStart().v()).collect(Collectors.toList());
