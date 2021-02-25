@@ -18,13 +18,9 @@ module nts.uk.at.view.kdl044.a {
             gridFields: Array<String>;
             constructor() {
                 let self = this;
-                let holders = getText('KDL044_2') + '・'
-                    + getText('KDL044_3') + '・'
-                    + getText('KDL044_4') + '・'
-                    + getText('KDL044_5') + '・'
-                    + getText('KDL044_6') + '・'
-                    + getText('KDL044_8') + 'で検索…';
-                self.placeHolders = holders.replace("１", "");
+                let holders = getText('KDL044_2') + '・' + getText('KDL044_3') + '・' + getText('KDL044_6') + '・'
+                    + getText('KDL044_7') + '・' + getText('KDL044_8') +  'で検索…';
+                self.placeHolders = holders;
             }
 
             startPage(): JQueryPromise<any> {
@@ -44,10 +40,12 @@ module nts.uk.at.view.kdl044.a {
                         paras = { targetUnit: null, workplaceIds: null, workplaceGroupId: null };
                         break;
                     }
+					// lấy bằng workplaceID
                     case 1: {
                         paras = { targetUnit: 0, workplaceId: data.filterIDs[0], workplaceGroupId: null };
                         break;
                     }
+					// lấy bằng workplaceGroupId
                     case 2: {
                         paras = { targetUnit: 1, workplaceId: null, workplaceGroupId: data.filterIDs[0] };
                         break;
@@ -82,9 +80,14 @@ module nts.uk.at.view.kdl044.a {
                                 }   
                             }
                             self.listShifuto();
+                            let differentFromCurrents = null;
+                            if (data.isMultiSelect == true) {
+								differentFromCurrents = _.differenceWith(result, data.shiftCodeExpel, (a, b) => { return a.shiftMasterCode === b });
+							} else {
+								differentFromCurrents = _.filter(result, (val) => { return val.shiftMasterCode != data.shiftCodeExpel });
+                            }
                             
-							let differentFromCurrents = _.differenceWith(result, data.shiftCodeExpel, (a, b) => { return a.shiftMasterCode === b });
-							self.listShifuto(_.sortBy(differentFromCurrents, 'shiftMasterCode'));
+                            self.listShifuto(_.sortBy(differentFromCurrents, 'shiftMasterCode'));
                             if (data.shifutoCodes != null) {
                                 self.selectedCodes(data.shifutoCodes);
                             }
@@ -103,23 +106,23 @@ module nts.uk.at.view.kdl044.a {
                 let self = this;
                 if (!isUse) {
                     self.columns = ko.observableArray([
-                        { headerText: getText('KDL044_2'), key: "shiftMasterCode", dataType: "string", width: 50 },
-                        { headerText: getText('KDL044_3'), key: "shiftMasterName", dataType: "string", width: 70 },
+                        { headerText: getText('KDL044_2'), key: "shiftMasterCode", dataType: "string", width: 50, formatter: _.escape},
+                        { headerText: getText('KDL044_3'), key: "shiftMasterName", dataType: "string", width: 70 , formatter: _.escape},
 /*                        { headerText: getText('KDL044_4'), key: "workTypeName", dataType: "string", width: 100 },
                         { headerText: getText('KDL044_5'), key: "workTimeName", dataType: "string", width: 100 },*/
-                        { headerText: getText('KDL044_6'), key: "workTime1", dataType: "string", width: 300 },
-                        { headerText: getText('KDL044_8'), key: "remark", dataType: "string", width: 300 }
+                        { headerText: getText('KDL044_6'), key: "workTime1", dataType: "string", width: 300 , formatter: _.escape},
+                        { headerText: getText('KDL044_8'), key: "remark", dataType: "string", width: 300 , formatter: _.escape}
                     ]);
                     self.gridFields = ["shiftMasterCode", "shiftMasterName", "workTypeName", "workTimeName", "workTime1", "remark"];
                 } else {
                     self.columns = ko.observableArray([
-                        { headerText: getText('KDL044_2'), key: "shiftMasterCode", dataType: "string", width: 50 },
-                        { headerText: getText('KDL044_3'), key: "shiftMasterName", dataType: "string", width: 70 },
+                        { headerText: getText('KDL044_2'), key: "shiftMasterCode", dataType: "string", width: 50 , formatter: _.escape},
+                        { headerText: getText('KDL044_3'), key: "shiftMasterName", dataType: "string", width: 70 , formatter: _.escape},
 /*                        { headerText: getText('KDL044_4'), key: "workTypeName", dataType: "string", width: 100 },
                         { headerText: getText('KDL044_5'), key: "workTimeName", dataType: "string", width: 100 },*/
-                        { headerText: getText('KDL044_6'), key: "workTime1", dataType: "string", width: 200 },
-                        { headerText: getText('KDL044_7'), key: "workTime2", dataType: "string", width: 200 },
-                        { headerText: getText('KDL044_8'), key: "remark", dataType: "string", width: 200 }
+                        { headerText: getText('KDL044_6'), key: "workTime1", dataType: "string", width: 200 , formatter: _.escape},
+                        { headerText: getText('KDL044_7'), key: "workTime2", dataType: "string", width: 200 , formatter: _.escape},
+                        { headerText: getText('KDL044_8'), key: "remark", dataType: "string", width: 200 , formatter: _.escape}
                     ]);
                     self.gridFields = ["shiftMasterCode", "shiftMasterName", "workTypeName", "workTimeName", "workTime1", "workTime2", "remark"];
                 }

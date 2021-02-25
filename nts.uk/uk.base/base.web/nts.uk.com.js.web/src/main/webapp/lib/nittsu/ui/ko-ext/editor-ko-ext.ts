@@ -533,9 +533,11 @@ module nts.uk.ui.koExtentions {
                     start = target.selectionStart,
                     end = target.selectionEnd;
 
-                $input.data(_kc, evt);
-                $input.data(_rg, { start, end });
-                $input.data(_val, target.value);
+                if (!$input.data(_kc)) {
+                    $input.data(_kc, evt);
+                    $input.data(_rg, { start, end });
+                    $input.data(_val, target.value);
+                }
             });
 
             $input.on('paste', (evt: any) => {
@@ -547,7 +549,7 @@ module nts.uk.ui.koExtentions {
                     if (str.match(/^(-?)(\d+\.\d+|\d+)$/)) {
                         if (constraint) {
                             let numb = Number(str),
-                                primitive = window['__viewContext'].primitiveValueConstraints[constraint];
+                                primitive = __viewContext.primitiveValueConstraints[constraint];
 
                             if (primitive) {
                                 let min = primitive.min,
@@ -659,23 +661,17 @@ module nts.uk.ui.koExtentions {
                     }
 
                     if (dval) {
-                        if (ival.match(/^(-?)(\d+\.\d+|\d+)$/)) {
-                            ival = ival;
-                        } else if (ival.match(/^\-+$/)) {
+                        if (ival.match(/^\-+$/)) {
                             ival = '-';
                         } else if (ival.match(/^\.+$/)) {
                             ival = '0.';
                         } else if (ival.match(/^\-+(0*)\.+$/)) {
                             ival = '-0.';
-                        } else {
-                            ival = ival;
                         }
-                    } else if (ival.match(/(-?)(\d*)(\.*)(\d*)/)) {
-                        ival = ival;
                     }
 
                     if (constraint) {
-                        let primitive = window['__viewContext'].primitiveValueConstraints[constraint];
+                        let primitive = __viewContext.primitiveValueConstraints[constraint];
 
                         if (primitive) { // if primitive is avaiable
                             let min = primitive.min,
@@ -839,14 +835,16 @@ module nts.uk.ui.koExtentions {
                             $input.val(ival);
                         }
                     } else {
-                        // check length & decimal length
-                        let dlen = rd.option.decimallength;
+                        if (rd.option) {
+                            // check length & decimal length
+                            let dlen = rd.option.decimallength;
 
-                        if (dlen) {
-                            let match = ival.match(/\.\d+$/);
+                            if (dlen) {
+                                let match = ival.match(/\.\d+$/);
 
-                            if (match && match[0].length > dlen + 1) {
-                                ival = dval;
+                                if (match && match[0].length > dlen + 1) {
+                                    ival = dval;
+                                }
                             }
                         }
 
@@ -882,6 +880,10 @@ module nts.uk.ui.koExtentions {
                         }
                     }, 0);
                 }
+
+                $input.data(_kc, null);
+                $input.data(_rg, null);
+                $input.data(_val, null);
             });
 
             $input.on('blur', (evt) => {

@@ -5,11 +5,9 @@ import nts.arc.task.data.TaskDataSetter;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymonthlyprocessing.SetInforReflAprResultImport;*/
 
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
-import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.applicationreflect.service.ProcessStateReflect;
-import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymonthlyprocessing.ExecutionTypeExImport;
-import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymonthlyprocessing.ExecutionTypeExImport;
 
 public interface AppReflectManagerFromRecord {
 	/**
@@ -28,16 +26,16 @@ public interface AppReflectManagerFromRecord {
 	 * @param datePeriod
 	 * @return
 	 */
-	void reflectAppOfEmployee(String workId, String sid, DatePeriod datePeriod, RequestSetting requesSetting,
-			ExecutionTypeExImport refAppResult, InformationSettingOfEachApp reflectSetting );
+	void reflectAppOfEmployee(String workId, String sid, DatePeriod datePeriod,
+			ExecutionTypeExImport refAppResult);
 	/**
-	 * 申請の取得
+	 * 申請の取得_OLD
 	 * @param sid 社員ID
 	 * @param datePeriod 期間
 	 * @param exeType 実行種別
 	 * @return
 	 */
-	List<Application_New> getApps(String sid, DatePeriod datePeriod, ExecutionTypeExImport exeType);
+	List<Application> getApps(String sid, DatePeriod datePeriod, ExecutionTypeExImport exeType);
 	/**
 	 * 社員の申請を反映
 	 * @param workId
@@ -46,8 +44,16 @@ public interface AppReflectManagerFromRecord {
 	 * @return
 	 */
 	ProcessStateReflect reflectAppOfEmployeeTotal(String workId, String sid, DatePeriod datePeriod);
-	void reflectAppOfAppDate(String workId, String sid, ExecutionTypeExImport refAppResult,
-			InformationSettingOfEachApp reflectSetting, DatePeriod appDatePeriod);
+
+	void reflectAppOfAppDate(String workId, String sid, ExecutionTypeExImport refAppResult, DatePeriod appDatePeriod);
 	
 	void reflectApplication(List<String> lstID);
+	/**
+	 * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.申請承認.申請反映.申請反映Mgrクラス.アルゴリズム.申請の取得.申請の取得
+	 * @param sid
+	 * @param datePeriod
+	 * @param exeType
+	 * @return
+	 */
+	List<Application> getAppsForReflect(String sid, DatePeriod datePeriod, ExecutionTypeExImport exeType);
 }

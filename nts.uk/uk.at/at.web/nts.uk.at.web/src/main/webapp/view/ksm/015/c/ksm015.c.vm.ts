@@ -15,6 +15,7 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 		forAttendent: KnockoutObservable<Boolean>;
 		workplaceName: KnockoutObservable<String>;
 		isWorkplaceAlreadySetting: KnockoutObservable<Boolean>;
+		isEnable: KnockoutObservable<Boolean>;
 
 		constructor() {
 			let self = this;
@@ -22,6 +23,7 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 			self.baseDate = ko.observable(new Date());
 			self.selectedWorkplaceId = ko.observableArray("");
 			self.workplaceName = ko.observable('');
+			self.isEnable = ko.observable(false);
 
 			self.alreadySettingList = ko.observableArray([]);
 			self.treeGrid = {
@@ -50,6 +52,7 @@ module nts.uk.at.view.ksm015.c.viewmodel {
                 }
             });
 
+
 			let ksm015Data = new Ksm015Data();
 			self.shiftItems = ko.observableArray([]);
 			self.shiftColumns = ko.observableArray(ksm015Data.shiftGridColumns);
@@ -61,6 +64,11 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 					self.selectedWorkplaceId.subscribe((val) => {
 						if (val) {
 							let lwps = $('#tree-grid').getDataList();
+							if(lwps.length > 0){
+								self.isEnable(true);
+							} else {
+								self.isEnable(false);
+							}
 							let rstd = $('#tree-grid').getRowSelected();
 							let flwps = flat(_.cloneDeep(lwps), "children");
 							let wkp = _.find(flwps, wkp => wkp.id == _.head(rstd).id);
@@ -78,10 +86,13 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 										self.isWorkplaceAlreadySetting(data && data.length > 0);
 									});
 							}
+							self.isEnable(true);
 						}
-
+						nts.uk.ui.errors.clearAll();
 					});
 					self.selectedWorkplaceId.valueHasMutated();
+					nts.uk.ui.errors.clearAll();
+					$('#add-new-shift').focus();
 				});
 		}
 
@@ -91,7 +102,7 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 			nts.uk.ui.block.invisible();
 			service.startPage(TargetUnit.WORKPLACE)
 				.done((data) => {
-					self.forAttendent(!_.isNull(data.forAttendent));
+					self.forAttendent(data.forAttendent);
 					if (data.alreadyConfigWorkplaces) {
 						let alreadySettings = []
 						_.forEach(data.alreadyConfigWorkplaces, (wp) => {
@@ -99,7 +110,6 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 						});
 						self.alreadySettingList(alreadySettings);
 					}
-
 					dfd.resolve(data);
 				}).fail(function(error) {
 					nts.uk.ui.dialog.alertError({ messageId: error.messageId });
@@ -111,6 +121,12 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 
 		public registerOrd() {
 			let self = this;
+			
+			if (nts.uk.util.isNullOrEmpty(self.shiftItems())) {
+				let KSM015_12 = nts.uk.resource.getText('KSM015_12');
+				$('#register-btn').ntsError('set', nts.uk.resource.getMessage("MsgB_2", [KSM015_12]), "MsgB_2");
+				return;
+			};
 
 			let param = {
 				targetUnit: TargetUnit.WORKPLACE,
@@ -130,6 +146,8 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 				}).fail(function(error) {
 					nts.uk.ui.dialog.alertError({ messageId: error.messageId });
 				}).always(function() {
+					$('#add-new-shift').focus();
+					$('#add-new-shift').focus();
 					nts.uk.ui.block.clear();
 				});
 		}
@@ -163,7 +181,7 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 				self.shiftItems(_.filter(self.shiftItems(), (val) => { return self.selectedShiftMaster().indexOf(val.shiftMasterCode) === -1 }));
 				self.selectedShiftMaster([]);
 			} else {
-				nts.uk.ui.dialog.info({ messageId: "Msg_85" });
+				//nts.uk.ui.dialog.info({ messageId: "Msg_85" });
 			}
 		}
 
@@ -190,6 +208,9 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 					currents = currents.concat(differentFromCurrents);
 					currents = _.sortBy(currents, 'shiftMasterCode');
 					self.shiftItems(currents);
+					if(!nts.uk.util.isNullOrEmpty(self.shiftItems())){
+					nts.uk.ui.errors.clearAll();	
+					}
 				}
 			});
 		}
@@ -247,7 +268,7 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 								
 								bundledErrors.push({
 	                            message: dataWkp.code + ' ' + dataWkp.name,
-	                            messageId: status,
+	                            messageId: nts.uk.resource.getText('KSM015_26'),
 	                            supplements: {}
                       			});
 							});

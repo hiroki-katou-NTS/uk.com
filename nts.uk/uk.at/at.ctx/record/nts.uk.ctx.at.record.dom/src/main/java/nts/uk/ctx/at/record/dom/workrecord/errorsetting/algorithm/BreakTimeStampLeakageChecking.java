@@ -2,15 +2,16 @@ package nts.uk.ctx.at.record.dom.workrecord.errorsetting.algorithm;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
-import nts.uk.ctx.at.shared.dom.breakorgoout.primitivevalue.BreakFrameNo;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
 
 /*
  * 休憩系打刻漏れをチェックする
@@ -18,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.ErrorAla
 @Stateless
 public class BreakTimeStampLeakageChecking {
 
-	public EmployeeDailyPerError breakTimeStampLeakageChecking(String companyID, String employeeID,
+	public Optional<EmployeeDailyPerError> breakTimeStampLeakageChecking(String companyID, String employeeID,
 			GeneralDate processingDate, BreakTimeOfDailyPerformance breakTimeOfDailyPerformance) {
 
 		EmployeeDailyPerError employeeDailyPerError = null;
@@ -99,7 +100,7 @@ public class BreakTimeStampLeakageChecking {
 						new ErrorAlarmWorkRecordCode("S001"), attendanceItemIDList);
 			}
 		}
-		return employeeDailyPerError;
+		return Optional.ofNullable(employeeDailyPerError);
 	}
 
 }

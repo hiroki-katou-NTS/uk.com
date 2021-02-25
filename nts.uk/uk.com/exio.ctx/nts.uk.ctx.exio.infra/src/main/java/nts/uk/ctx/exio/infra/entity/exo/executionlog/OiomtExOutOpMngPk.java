@@ -25,7 +25,7 @@ public class OiomtExOutOpMngPk implements Serializable
     * 
     */
     @Basic(optional = false)
-    @Column(name = "EX_OUT_PRO_ID")
+    @Column(name = "PRO_ID")
     public String exOutProId;
     
 }

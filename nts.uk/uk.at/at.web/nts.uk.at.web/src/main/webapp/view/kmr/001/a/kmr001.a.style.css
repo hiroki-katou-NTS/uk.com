@@ -1,0 +1,16 @@
+
+button.x-large {
+	width: 250px;
+}
+button.caret-right:after {
+	color: #97D155;
+}
+.row1 {
+	display: flex;
+	margin: 40px 60px;
+}
+
+.row2 {
+	display: inline-flex;
+	margin: 10px 60px;
+}

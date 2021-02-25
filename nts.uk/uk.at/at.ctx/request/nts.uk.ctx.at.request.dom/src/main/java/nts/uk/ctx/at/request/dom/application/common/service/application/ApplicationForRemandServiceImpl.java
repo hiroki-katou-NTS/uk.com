@@ -7,8 +7,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.jobtitle.AtJobTitleAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.jobtitle.dto.AffJobTitleHistoryImport;
@@ -22,7 +22,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class ApplicationForRemandServiceImpl implements IApplicationForRemandService{
 	
 	@Inject
-	private ApplicationRepository_New applicationRepository;
+	private ApplicationRepository applicationRepository;
 	
 	@Inject
 	private ApprovalRootStateAdapter apprRootStt;
@@ -44,11 +44,11 @@ public class ApplicationForRemandServiceImpl implements IApplicationForRemandSer
 		String sidLogin = AppContexts.user().employeeId();
 		String appID = lstAppID.get(0);
 		//申請IDをキーにドメインモデル「申請」「承認フェーズ」「承認枠」を取得する
-		Optional<Application_New> application_New = this.applicationRepository.findByID(companyID, appID);
-		if (!application_New.isPresent()){
+		Optional<Application> application = this.applicationRepository.findByID(companyID, appID);
+		if (!application.isPresent()){
 			return null;
 		}
-		Application_New app = application_New.get();
+		Application app = application.get();
 		//Imported（承認申請）「差し戻し対象者一覧を取得」
 		List<ApproverRemandImport> lstRemand = apprRootStt.getListApproverRemand(appID);
 		
@@ -57,13 +57,13 @@ public class ApplicationForRemandServiceImpl implements IApplicationForRemandSer
 		for (ApproverRemandImport remand : lstRemand) {
 			String sID = remand.getSID();
 			phaseLogin = sID.equals(sidLogin) ? remand.getPhaseOrder() : phaseLogin;
-			Optional<AffJobTitleHistoryImport> approverJobTitle = jobTitleAdapter.getJobTitlebBySIDAndDate(sID, app.getAppDate());
+			Optional<AffJobTitleHistoryImport> approverJobTitle = jobTitleAdapter.getJobTitlebBySIDAndDate(sID, app.getAppDate().getApplicationDate());
 			String jobTitle = approverJobTitle.isPresent() ? approverJobTitle.get().getJobTitleName() : "";
 			String approverName = employeeRequestAdapter.getEmployeeName(sID);
 			lstApprover.add(new RemandInfoKDL034(remand.getPhaseOrder(), sID, approverName, jobTitle, remand.isAgent()));
 		}
 		String applicantName = employeeRequestAdapter.getEmployeeName(app.getEmployeeID());
-		Optional<AffJobTitleHistoryImport> job = jobTitleAdapter.getJobTitlebBySIDAndDate(app.getEmployeeID(), app.getAppDate());
+		Optional<AffJobTitleHistoryImport> job = jobTitleAdapter.getJobTitlebBySIDAndDate(app.getEmployeeID(), app.getAppDate().getApplicationDate());
 		String applicantJob = job.isPresent() ? job.get().getJobTitleName() : "";
 		return new ApplicationForRemandOutput(appID, app.getVersion(),
 									app.getEmployeeID(), applicantName, applicantJob,

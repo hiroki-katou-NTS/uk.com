@@ -7,7 +7,7 @@ import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 import nts.uk.shr.com.primitive.ZeroPaddedCode;
 
-@StringMaxLength(3)
+@StringMaxLength(5)
 @StringCharType(CharType.NUMERIC)
 @ZeroPaddedCode
 public class ConditionSettingCd  extends StringPrimitiveValue<PrimitiveValue<String>>  {

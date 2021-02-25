@@ -16,9 +16,6 @@
     padding: 0px 0px 10px 0px;
     margin: -14px 0px 14px 0px;
 }
-#register-btn{
-	 margin-left: 45px !important;
-}
 
 .form-label{
 	width: 65px !important;;
@@ -29,4 +26,8 @@
 }
 .contents-area{
 	    overflow-x: hidden!important;
+}
+
+#nts-component-tree{
+	padding-left: 16px !important;
 }

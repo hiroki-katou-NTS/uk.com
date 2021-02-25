@@ -1,17 +1,20 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.DeductionTotalTime;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.DeductionTotalTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 
 /** 控除合計時間 */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TotalDeductionTimeDto implements ItemConst {
+public class TotalDeductionTimeDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 所定外合計時間 */
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = EXCESS_STATUTORY)
@@ -24,6 +27,47 @@ public class TotalDeductionTimeDto implements ItemConst {
 	/** 合計時間 */
 	@AttendanceItemLayout(layout = LAYOUT_C, jpPropertyName = TOTAL)
 	private CalcAttachTimeDto totalTime;
+	
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+		case EXCESS_STATUTORY:
+		case (WITHIN_STATUTORY):
+		case (TOTAL):
+			return new CalcAttachTimeDto();
+		default:
+		}
+		return AttendanceItemDataGate.super.newInstanceOf(path);
+	}
+
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		switch (path) {
+		case (EXCESS_STATUTORY):
+			return Optional.ofNullable(excessOfStatutoryTotalTime);
+		case (WITHIN_STATUTORY):
+			return Optional.ofNullable(withinStatutoryTotalTime);
+		case (TOTAL):
+			return Optional.ofNullable(totalTime);
+		default:
+		}
+		return AttendanceItemDataGate.super.get(path);
+	}
+	
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		switch (path) {
+		case (EXCESS_STATUTORY):
+			excessOfStatutoryTotalTime = (CalcAttachTimeDto) value;
+			break;
+		case (WITHIN_STATUTORY):
+			withinStatutoryTotalTime = (CalcAttachTimeDto) value;
+			break;
+		case (TOTAL):
+			totalTime = (CalcAttachTimeDto) value;
+		default:
+		}
+	}
 
 	public static TotalDeductionTimeDto getDeductionTime(DeductionTotalTime domain) {
 		return domain == null ? null : new TotalDeductionTimeDto(

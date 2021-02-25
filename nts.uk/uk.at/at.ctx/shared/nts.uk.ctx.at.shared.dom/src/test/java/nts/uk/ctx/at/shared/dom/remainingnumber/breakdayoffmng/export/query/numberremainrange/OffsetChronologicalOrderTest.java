@@ -81,7 +81,7 @@ public class OffsetChronologicalOrderTest {
 												Optional.of(new AttendanceTime(120))))
 										.build(),
 						new AttendanceTime(0), new AttendanceTime(0)),
-				new AccuVacationBuilder(SID, new CompensatoryDayoffDate(true, Optional.empty()),
+				new AccuVacationBuilder(SID, new CompensatoryDayoffDate(false, Optional.empty()),
 						OccurrenceDigClass.DIGESTION, MngDataStatus.RECORD, "adda6a46-2cbe-48c8-85f8-c04ca554cccc")
 								.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
 										Optional.of(new AttendanceTime(120))))
@@ -98,7 +98,7 @@ public class OffsetChronologicalOrderTest {
 								.build(),
 				new UnbalanceVacation(GeneralDate.ymd(2019, 12, 8), DigestionAtr.UNUSED,
 						Optional.of(GeneralDate.ymd(2019, 12, 30)),
-						new AccuVacationBuilder(SID, new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 04, 7))),
+						new AccuVacationBuilder(SID, new CompensatoryDayoffDate(false, Optional.empty()),
 								OccurrenceDigClass.OCCURRENCE, MngDataStatus.RECORD,
 								"adda6a46-2cbe-48c8-85f8-c04ca554ddde")
 										.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
@@ -134,7 +134,6 @@ public class OffsetChronologicalOrderTest {
 										.build(),
 						new AttendanceTime(480), new AttendanceTime(240)));
 		TypeOffsetJudgment typeJudgment = TypeOffsetJudgment.REAMAIN;
-		lstAccAbse.sort(new AccumulationAbsenceDetailComparator());
 		Pair<Optional<DayOffError>, List<SeqVacationAssociationInfo>> resultActual = OffsetChronologicalOrder
 				.process(require, SID, lstTimeLap, lstAccAbse, typeJudgment);
 		assertThat(resultActual.getRight()).isEqualTo(new ArrayList<>());
@@ -169,7 +168,7 @@ public class OffsetChronologicalOrderTest {
 												Optional.of(new AttendanceTime(120))))
 										.build(),
 						new AttendanceTime(480), new AttendanceTime(240)),
-				new AccuVacationBuilder(SID, new CompensatoryDayoffDate(true, Optional.empty()),
+				new AccuVacationBuilder(SID, new CompensatoryDayoffDate(false, Optional.empty()),
 						OccurrenceDigClass.DIGESTION, MngDataStatus.RECORD, "adda6a46-2cbe-48c8-85f8-c04ca554cccc")
 								.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
 										Optional.of(new AttendanceTime(120))))
@@ -227,7 +226,6 @@ public class OffsetChronologicalOrderTest {
 			}
 
 		};
-		lstAccAbse.sort(new AccumulationAbsenceDetailComparator());
 		Pair<Optional<DayOffError>, List<SeqVacationAssociationInfo>> resultActual = OffsetChronologicalOrder
 				.process(require, SID, lstTimeLap, lstAccAbse, typeJudgment);
 		assertThat(resultActual.getRight()).isEqualTo(new ArrayList<>());
@@ -263,7 +261,7 @@ public class OffsetChronologicalOrderTest {
 												Optional.of(new AttendanceTime(120))))
 										.build(),
 						new AttendanceTime(480), new AttendanceTime(240)),
-				new AccuVacationBuilder(SID, new CompensatoryDayoffDate(true, Optional.empty()),
+				new AccuVacationBuilder(SID, new CompensatoryDayoffDate(false, Optional.empty()),
 						OccurrenceDigClass.DIGESTION, MngDataStatus.RECORD, "adda6a46-2cbe-48c8-85f8-c04ca554cccc")
 								.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
 										Optional.of(new AttendanceTime(120))))
@@ -280,7 +278,7 @@ public class OffsetChronologicalOrderTest {
 								.build(),
 				new UnbalanceVacation(GeneralDate.ymd(2019, 12, 8), DigestionAtr.UNUSED,
 						Optional.of(GeneralDate.ymd(2019, 12, 30)),
-						new AccuVacationBuilder(SID, new CompensatoryDayoffDate(false,  Optional.of(GeneralDate.ymd(2019, 04, 8))),
+						new AccuVacationBuilder(SID, new CompensatoryDayoffDate(false, Optional.empty()),
 								OccurrenceDigClass.OCCURRENCE, MngDataStatus.RECORD,
 								"adda6a46-2cbe-48c8-85f8-c04ca554ddde")
 										.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
@@ -308,7 +306,6 @@ public class OffsetChronologicalOrderTest {
 			}
 
 		};
-		lstAccAbse.sort(new AccumulationAbsenceDetailComparator());
 		Pair<Optional<DayOffError>, List<SeqVacationAssociationInfo>> resultActual = OffsetChronologicalOrder
 				.process(require, SID, lstTimeLap, lstAccAbse, typeJudgment);
 
@@ -341,7 +338,6 @@ public class OffsetChronologicalOrderTest {
 			}
 
 		};
-		lstAccAbse.sort(new AccumulationAbsenceDetailComparator());
 		Pair<Optional<DayOffError>, List<SeqVacationAssociationInfo>> resultActual = OffsetChronologicalOrder
 				.process(require, SID, lstTimeLap, lstAccAbse, typeJudgment);
 		assertThat(resultActual.getRight()).isEqualTo(new ArrayList<>());
@@ -377,7 +373,7 @@ public class OffsetChronologicalOrderTest {
 												Optional.of(new AttendanceTime(120))))
 										.build(),
 						new AttendanceTime(0), new AttendanceTime(0)),
-				new AccuVacationBuilder(SID, new CompensatoryDayoffDate(true, Optional.empty()),
+				new AccuVacationBuilder(SID, new CompensatoryDayoffDate(false, Optional.empty()),
 						OccurrenceDigClass.DIGESTION, MngDataStatus.RECORD, "adda6a46-2cbe-48c8-85f8-c04ca554cccc")
 								.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
 										Optional.of(new AttendanceTime(120))))
@@ -407,7 +403,7 @@ public class OffsetChronologicalOrderTest {
 				new UnbalanceVacation(GeneralDate.ymd(2019, 6, 8), DigestionAtr.UNUSED,
 						Optional.of(GeneralDate.ymd(2019, 12, 30)),
 						new AccuVacationBuilder(SID,
-								new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 04, 9))),
+								new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 04, 10))),
 								OccurrenceDigClass.OCCURRENCE, MngDataStatus.RECORD,
 								"adda6a46-2cbe-48c8-85f8-c04ca554dddf")
 										.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
@@ -419,7 +415,7 @@ public class OffsetChronologicalOrderTest {
 				new UnbalanceVacation(GeneralDate.ymd(2019, 6, 8), DigestionAtr.UNUSED,
 						Optional.of(GeneralDate.ymd(2019, 12, 30)),
 						new AccuVacationBuilder(SID,
-								new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 11, 5))),
+								new CompensatoryDayoffDate(false, Optional.of(GeneralDate.ymd(2019, 11, 4))),
 								OccurrenceDigClass.OCCURRENCE, MngDataStatus.RECORD,
 								"adda6a46-2cbe-48c8-85f8-c04ca554eaaa")
 										.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
@@ -429,17 +425,14 @@ public class OffsetChronologicalOrderTest {
 										.build(),
 						new AttendanceTime(480), new AttendanceTime(240)));
 		TypeOffsetJudgment typeJudgment = TypeOffsetJudgment.REAMAIN;
-		lstAccAbse.sort(new AccumulationAbsenceDetailComparator());
+
 		Pair<Optional<DayOffError>, List<SeqVacationAssociationInfo>> resultActual = OffsetChronologicalOrder
 				.process(require, SID, lstTimeLap, lstAccAbse, typeJudgment);
 		assertThat(resultActual.getRight())
 				.extracting(x -> x.getDateOfUse(), x -> x.getDayNumberUsed(), x -> x.getOutbreakDay(),
 						x -> x.getTargetSelectionAtr())
-				.contains(
-						Tuple.tuple(GeneralDate.ymd(2019, 04, 04), new ReserveLeaveRemainingDayNumber(1.0),
-								GeneralDate.ymd(2019, 4, 9), TargetSelectionAtr.AUTOMATIC),
-						Tuple.tuple(GeneralDate.ymd(2019, 04, 04), new ReserveLeaveRemainingDayNumber(0.5),
-								GeneralDate.ymd(2019, 4, 10), TargetSelectionAtr.AUTOMATIC));
+				.contains(Tuple.tuple(GeneralDate.ymd(2019, 04, 04), new ReserveLeaveRemainingDayNumber(1.0),
+						GeneralDate.ymd(2019, 11, 04), TargetSelectionAtr.AUTOMATIC));
 	}
 
 	// 相殺判定の返すパラメータ
@@ -471,7 +464,7 @@ public class OffsetChronologicalOrderTest {
 												Optional.of(new AttendanceTime(120))))
 										.build(),
 						new AttendanceTime(480), new AttendanceTime(240)),
-				new AccuVacationBuilder(SID, new CompensatoryDayoffDate(true, Optional.empty()),
+				new AccuVacationBuilder(SID, new CompensatoryDayoffDate(false, Optional.empty()),
 						OccurrenceDigClass.DIGESTION, MngDataStatus.RECORD, "adda6a46-2cbe-48c8-85f8-c04ca554cccc")
 								.numberOccurren(new NumberConsecuVacation(new ManagementDataRemainUnit(1.0),
 										Optional.of(new AttendanceTime(120))))
@@ -523,7 +516,7 @@ public class OffsetChronologicalOrderTest {
 										.build(),
 						new AttendanceTime(480), new AttendanceTime(240)));
 		TypeOffsetJudgment typeJudgment = TypeOffsetJudgment.REAMAIN;
-		lstAccAbse.sort(new AccumulationAbsenceDetailComparator());
+
 		Pair<Optional<DayOffError>, List<SeqVacationAssociationInfo>> resultActual = OffsetChronologicalOrder
 				.process(require, SID, lstTimeLap, lstAccAbse, typeJudgment);
 		assertThat(resultActual.getRight()).isEqualTo(new ArrayList<>());
@@ -566,6 +559,7 @@ public class OffsetChronologicalOrderTest {
 										Optional.of(new AttendanceTime(480))))
 								.build(),
 				new AttendanceTime(480), new AttendanceTime(240));
+
 		Pair<OffsetJudgment, Optional<SeqVacationAssociationInfo>> returnValue = (Pair<OffsetJudgment, Optional<SeqVacationAssociationInfo>>) privateMethod
 				.invoke(OffsetChronologicalOrder.class, setting, dig, occ, TypeOffsetJudgment.REAMAIN);
 

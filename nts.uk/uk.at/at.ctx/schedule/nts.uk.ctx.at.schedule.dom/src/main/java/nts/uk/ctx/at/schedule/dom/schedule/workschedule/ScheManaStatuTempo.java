@@ -1,14 +1,11 @@
 package nts.uk.ctx.at.schedule.dom.schedule.workschedule;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveWorkPeriodImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmployeeLeaveJobPeriodImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.TempAbsenceFrameNo;
@@ -19,9 +16,9 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.em
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
 
 /**
- * 社員の予定管理状態
+ * 社員の予定管理状態 TP
  * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.勤務予定.勤務予定.勤務予定
- * 
+ *
  * @author HieuLt
  *
  */
@@ -45,84 +42,76 @@ public class ScheManaStatuTempo {
 
 	/**
 	 * [C-1] 作成する
-	 * 
+	 *
 	 * @param require
 	 * @param employeeID
 	 * @param date
 	 * @return
 	 */
 	public static ScheManaStatuTempo create(Require require, String employeeID, GeneralDate date) {
-		// ScheManaStatuTempo result = new ArrayList<>();
-		
-		boolean enrolled = enrolled(require, employeeID, date);
-		/*
-		 * if not [S-1] 在籍中か( require, 社員ID, 年月日 )
-		 * 
-		 * @予定管理状態 = 予定管理状態．在籍していない return this
-		 */
-		// trường hợp trước khi vào cty
-		if (!enrolled) {
-			return new ScheManaStatuTempo(employeeID, date, ScheManaStatus.NOT_ENROLLED,
-					Optional.empty(), Optional.empty());		
-		}
-		/*
-		 * @雇用コード = [S-2] 雇用コードを取得する( require, 社員ID, 年月日 ) if @雇用コード.isEmpty()
-		 * 
-		 * @予定管理状態 = 予定管理状態．データ不正 return this
-		 */
-		Optional<EmploymentCode> zEmpployeeCd = ScheManaStatuTempo.getEmplomentCd(require, employeeID, date);
-		// nằm ngoài khoảng lịch sử employment
-		if (!zEmpployeeCd.isPresent()) {
-			return new ScheManaStatuTempo(employeeID, date, ScheManaStatus.INVALID_DATA, Optional.empty(),
-					Optional.empty());
-		}
-		Optional<ManageAtr> zScheduleManaCategory = getManageAtr(require, employeeID, date);
 
-		/*
-		 * $予定管理区分 = [S-3] 予定管理区分を取得する( require, 社員ID, 年月日 ) if
-		 * $予定管理区分.isEmpty()
-		 * 
-		 * @予定管理状態 = 予定管理状態．データ不正 return this else if $予定管理区分 == 予定管理区分．管理しない
-		 * 
-		 * @予定管理状態 = 予定管理状態．予定管理しない return this
-		 */
-		// nằm ngoài khoảng thời gian của workcondition
-		if (!zScheduleManaCategory.isPresent()) {
-			return new ScheManaStatuTempo(employeeID, date, ScheManaStatus.INVALID_DATA, Optional.empty(),
-					Optional.empty());
-		// SCHE_MANAGEMENT_ATR của KSHMT_WORKING_COND_ITEM = 0 
-		} else if (zScheduleManaCategory.get().value == ManageAtr.NOTUSE.value) {
-			return new ScheManaStatuTempo(employeeID, date, ScheManaStatus.DO_NOT_MANAGE_SCHEDULE,
-					Optional.empty(), Optional.empty());
+		// 休業枠
+		Optional<TempAbsenceFrameNo> frameNo = Optional.empty();
+		// 雇用コード
+		Optional<EmploymentCode> employmentCd = Optional.empty();
+
+
+		// 在籍中かを判定
+		if (!enrolled(require, employeeID, date)) {
+			// 在籍中ではない
+			// 予定管理状態 -> 在籍していない
+			return new ScheManaStatuTempo(employeeID, date, ScheManaStatus.NOT_ENROLLED, frameNo, employmentCd);
 		}
-		// SCHE_MANAGEMENT_ATR của KSHMT_WORKING_COND_ITEM = 1
-		/*
-		 * if [S-4] 休職中か( require, 社員ID, 年月日 )
-		 * 
-		 * @予定管理状態 = 予定管理状態．休職中 return this
-		 */
+
+
+		// 雇用コード取得
+		employmentCd = ScheManaStatuTempo.getEmplomentCd(require, employeeID, date);
+		if (!employmentCd.isPresent()) {
+			// 雇用コードがない
+			// 予定管理状態 -> データ不正
+			return new ScheManaStatuTempo(employeeID, date, ScheManaStatus.INVALID_DATA, frameNo, employmentCd);
+		}
+
+
+		// 予定管理区分取得
+		val scheManegedAtr = getManageAtr(require, employeeID, date);
+		if (!scheManegedAtr.isPresent()) {
+			// 予定管理区分がない
+			// 予定管理状態 -> データ不正
+			return new ScheManaStatuTempo(employeeID, date, ScheManaStatus.INVALID_DATA, frameNo, employmentCd);
+		} else if (scheManegedAtr.get() == ManageAtr.NOTUSE) {
+			// 予定管理区分 == 管理しない
+			// 予定管理状態 -> 予定管理しない
+			return new ScheManaStatuTempo(employeeID, date, ScheManaStatus.DO_NOT_MANAGE_SCHEDULE, frameNo, employmentCd);
+		}
+
+
+		// 休職中かを判定
 		if (onLeave(require, employeeID, date)) {
-			return new ScheManaStatuTempo(employeeID, date, ScheManaStatus.ON_LEAVE, Optional.empty(),
-					Optional.empty());
+			// 休職中である
+			// 予定管理状態 -> 休職中
+			return new ScheManaStatuTempo(employeeID, date, ScheManaStatus.ON_LEAVE, frameNo, employmentCd);
 		}
-		/*
-		 * @休業枠NO = [S-5] 休業枠NOを取得する( require, 社員ID, 年月日 ) if
-		 * not @休業枠NO.isEmpty()
-		 * 
-		 * @予定管理状態 = 予定管理状態．休業中 return this
-		 */
-		Optional<TempAbsenceFrameNo> optTempAbsenceFrameNo = getTempAbsenceFrameNo(require, employeeID, date);
-		if (optTempAbsenceFrameNo.isPresent()) {
-			return  new ScheManaStatuTempo(employeeID, date, ScheManaStatus.CLOSED, Optional.empty(),
-					Optional.empty());
-		
+
+
+		// 休業枠NOを取得
+		frameNo = getTempAbsenceFrameNo(require, employeeID, date);
+		if (frameNo.isPresent()) {
+			// 休業枠NOがある⇒休業中である
+			// 予定管理状態 -> 休業中
+			return new ScheManaStatuTempo(employeeID, date, ScheManaStatus.CLOSED, frameNo, employmentCd);
+
 		}
-		return new ScheManaStatuTempo(employeeID, date, ScheManaStatus.SCHEDULE_MANAGEMENT, Optional.empty(), Optional.empty());
+
+
+		// 予定管理状態 -> 予定管理する
+		return new ScheManaStatuTempo(employeeID, date, ScheManaStatus.SCHEDULE_MANAGEMENT, frameNo, employmentCd);
+
 	}
 
 	/**
 	 * [S-1] 在籍中か
-	 * 
+	 *
 	 * @param require
 	 * @param employeeID
 	 * @param date
@@ -130,128 +119,131 @@ public class ScheManaStatuTempo {
 	 */
 	private static boolean enrolled(Require require, String employeeID, GeneralDate date) {
 
-		DatePeriod datePeriod = new DatePeriod(date, date);
-
 		//return require.在籍期間を取得する( 社員ID, 年月日 ).isPresent()
-		return require.getAffCompanyHistByEmployee(Arrays.asList(employeeID), datePeriod).isPresent();
+		return require.getAffCompanyHistByEmployee(employeeID, date).isPresent();
+
 	}
 
 	/**
 	 * [S-2] 雇用コードを取得する
-	 * 
+	 *
 	 * @param require
 	 * @param employeeID
 	 * @param date
 	 * @return
 	 */
 	private static Optional<EmploymentCode> getEmplomentCd(Require require, String employeeID, GeneralDate date) {
-;
-		DatePeriod datePeriod = new DatePeriod(date, date);
-		// $雇用履歴項目 = require.雇用履歴を取得する( list: 社員ID, 期間( 年月日, 年月日 ) ): findFirst
-		// ・・
-		val lstEmpHistItem = require.getEmploymentHistory(Arrays.asList(employeeID), datePeriod);
-		if(lstEmpHistItem.isPresent())
-		{
-			EmploymentPeriodImported employmentPeriod  = lstEmpHistItem.get();
-			return 	Optional.ofNullable(new EmploymentCode(employmentPeriod.getEmploymentCd()));
-		}
-		return Optional.empty();
+
+		// $雇用履歴項目 = require.雇用履歴を取得する( 社員ID, 年月日 )
+		val empHistItem = require.getEmploymentHistory(employeeID, date);
+		// return $雇用履歴項目: map $.履歴項目.雇用コード
+		// 			none Optional.empty
+		return empHistItem.map( t -> new EmploymentCode(t.getEmploymentCd()) );
 	}
 
 	/**
 	 * [S-3] 予定管理区分を取得する
-	 * 
+	 *
 	 * @param require
 	 * @param employeeID
 	 * @param date
 	 * @return
 	 */
 	private static Optional<ManageAtr> getManageAtr(Require require, String employeeID, GeneralDate date) {
-		Optional<WorkingConditionItem> zWorkingConditionIDtem = require.getBySidAndStandardDate(employeeID, date);
+
+		// $労働条件項目 = require.労働条件履歴を取得する( 社員ID, 年月日 )
+		val zWorkingConditionIDtem = require.getBySidAndStandardDate(employeeID, date);
+		// return $労働条件項目: map $.予定管理区分
+		// 			none Optional.empty
 		return zWorkingConditionIDtem.map(c -> c.getScheduleManagementAtr());
+
 	}
 
 	/**
 	 * [S-4] 休職中か
-	 * 
+	 *
 	 * @param require
 	 * @param employeeID
 	 * @param date
 	 * @return
 	 */
 	private static boolean onLeave(Require require, String employeeID, GeneralDate date) {
-		DatePeriod datePeriod = new DatePeriod(date, date);
-		val lstEmployeeLeaveJobPeriodImport = require.getByDatePeriod(Arrays.asList(employeeID), datePeriod);
-		return lstEmployeeLeaveJobPeriodImport.isPresent();		
+
+		// return require.休職期間を取得する( 社員ID, 年月日 ).isPresent()
+		return require.getByDatePeriod(employeeID, date).isPresent();
 
 	}
 
 	/**
 	 * [S-5] 休業枠NOを取得する
-	 * 
+	 *
 	 * @param require
 	 * @param employeeID
 	 * @param date
 	 * @return Optional<休職休業枠NO>
 	 */
-	private static Optional<TempAbsenceFrameNo> getTempAbsenceFrameNo(Require require, String employeeID,
-			GeneralDate date) {
+	private static Optional<TempAbsenceFrameNo> getTempAbsenceFrameNo(Require require, String employeeID, GeneralDate date) {
 
-		DatePeriod datePeriod = new DatePeriod(date, date);
-		val lstEmpLeaveWorkPeriodImport = require.specAndGetHolidayPeriod(Arrays.asList(employeeID), datePeriod);
-		if(!lstEmpLeaveWorkPeriodImport.isPresent()){
-			return Optional.empty();
-		}
-		EmpLeaveWorkPeriodImport data = lstEmpLeaveWorkPeriodImport.get();
-		return Optional.ofNullable(data.getTempAbsenceFrNo());
+		// $休業期間 = require.休業期間を取得する( 社員ID, 年月日 )
+		val empLeaveWkPeriod = require.specAndGetHolidayPeriod(employeeID, date);
+		// return $休業期間: map $.枠NO
+		// 			none Optional.empty
+		return empLeaveWkPeriod.map( t -> t.getTempAbsenceFrNo() );
+
 	}
+
 
 	public static interface Require  {
 
-		// @Inject
-		// private WorkingConditionRepository repo;
-
 		/**
+		 * 在籍期間を取得する
 		 * [R-1] 在籍期間を取得する( 社員ID, 年月日 ) : Optional
-		 * 社員の所属会社履歴Adapter.期間を指定して在籍期間を取得する
+		 *
+		 * @param employeeId 社員ID
+		 * @param date 年月日
+		 * @return 年月日時点の在籍情報
 		 */
-		Optional<EmpEnrollPeriodImport> getAffCompanyHistByEmployee(List<String> sids, DatePeriod datePeriod);
+		Optional<EmpEnrollPeriodImport> getAffCompanyHistByEmployee(String employeeId, GeneralDate date);
 
 		/**
-		 * [R-2] 労働条件履歴を取得する 労働条件Repository.社員を指定して年月日時点の履歴項目を取得する
+		 * 労働条件履歴を取得する
+		 * [R-2] 労働条件履歴を取得する
+		 *
+		 * @param employeeId 社員ID
+		 * @param date 年月日
+		 * @return 年月日時点の労働条件履歴
 		 */
-
-		// Optional<WorkingCondition> repo.getBy getBySidAndStandardDate(String
-		// companyId, String employeeId, GeneralDate baseDate);
-		Optional<WorkingConditionItem> getBySidAndStandardDate(String employeeId, GeneralDate baseDate);
+		Optional<WorkingConditionItem> getBySidAndStandardDate(String employeeId, GeneralDate date);
 
 		/**
+		 * 休職期間を取得する
 		 * [R-3] 休職期間を取得する( 社員ID, 年月日 ) : Optional
-		 * 社員の休職履歴Adapter.期間を指定して休職期間を取得する( list: 社員ID, 期間: 年月日 )
-		 * 
+		 *
+		 * @param employeeId 社員ID
+		 * @param date 年月日
+		 * @return 年月日時点の休職情報
 		 */
-		Optional<EmployeeLeaveJobPeriodImport> getByDatePeriod(List<String> lstEmpID, DatePeriod datePeriod);
+		Optional<EmployeeLeaveJobPeriodImport> getByDatePeriod(String employeeId, GeneralDate date);
 
 		/**
-		 * 
-		 * [R-4] 休業期間を取得する(Get ''closedPeriod/khoảng thời gian nghỉ kinh
-		 * doanh'') 社員の休業履歴Adapter.期間を指定して休業期間を取得する( 社員IDリスト, 期間 )
-		 * 
-		 * @param lstEmpID
-		 * @param datePeriod
-		 * @return
+		 * 休業期間を取得する
+		 * [R-4] 休業期間を取得する( 社員ID, 年月日 ) : Optional
+		 *
+		 * @param employeeId 社員ID
+		 * @param date 年月日
+		 * @return 年月日時点の休業情報
 		 */
-		Optional<EmpLeaveWorkPeriodImport> specAndGetHolidayPeriod(List<String> lstEmpID, DatePeriod datePeriod);
+		Optional<EmpLeaveWorkPeriodImport> specAndGetHolidayPeriod(String employeeId, GeneralDate date);
 
 		/**
-		 * [R-5] 雇用履歴を取得する(Get EmploymentHistory)
-		 * 社員の雇用履歴Adapter.期間を指定して雇用履歴を取得する( 社員IDリスト, 期間 )
-		 * 
-		 * @param lstEmpID
-		 * @param datePeriod
-		 * @return List EmploymentPeriod
+		 * 雇用履歴を取得する
+		 * [R-5] 雇用履歴を取得する( 社員ID, 年月日 ) : Optional
+		 *
+		 * @param employeeId 社員ID
+		 * @param date 年月日
+		 * @return 年月日時点の雇用履歴
 		 */
-		Optional<EmploymentPeriodImported> getEmploymentHistory(List<String> lstEmpID, DatePeriod datePeriod);
+		Optional<EmploymentPeriodImported> getEmploymentHistory(String employeeId, GeneralDate date);
 
 	}
 

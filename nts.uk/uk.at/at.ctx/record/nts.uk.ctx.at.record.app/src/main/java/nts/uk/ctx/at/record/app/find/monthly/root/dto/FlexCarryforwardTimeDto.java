@@ -1,21 +1,25 @@
 package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
-import nts.uk.ctx.at.shared.dom.monthly.calc.flex.FlexCarryforwardTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.flex.FlexCarryforwardTime;
 
 @Data
 /** フレックス繰越時間 */
 @NoArgsConstructor
 @AllArgsConstructor
-public class FlexCarryforwardTimeDto implements ItemConst {
+public class FlexCarryforwardTimeDto implements ItemConst, AttendanceItemDataGate {
 
 	/** フレックス繰越勤務時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.TIME)
@@ -56,5 +60,47 @@ public class FlexCarryforwardTimeDto implements ItemConst {
 
 	private static Integer from(AttendanceTimeMonthWithMinus domain) {
 		return domain == null ? 0 : domain.valueAsMinutes();
+	}
+	
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case WORKING_TIME:
+			return Optional.of(ItemValue.builder().value(flexCarryforwardWorkTime).valueType(ValueType.TIME));
+		case TIME:
+			return Optional.of(ItemValue.builder().value(flexCarryforwardTime).valueType(ValueType.TIME));
+		case SHORTAGE:
+			return Optional.of(ItemValue.builder().value(flexCarryforwardShortageTime).valueType(ValueType.TIME));
+		default:
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case WORKING_TIME:
+		case TIME:
+		case SHORTAGE:
+			return PropType.VALUE;
+		default:
+			return PropType.OBJECT;
+		}
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case WORKING_TIME:
+			flexCarryforwardWorkTime = value.valueOrDefault(0);
+			break;
+		case TIME:
+			flexCarryforwardTime = value.valueOrDefault(0);
+			break;
+		case SHORTAGE:
+			flexCarryforwardShortageTime = value.valueOrDefault(0);
+			break;
+		default:
+		}
 	}
 }

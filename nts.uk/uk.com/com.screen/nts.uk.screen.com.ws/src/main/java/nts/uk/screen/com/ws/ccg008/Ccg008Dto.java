@@ -14,5 +14,9 @@ public class Ccg008Dto {
 
 	/** 表示年月 */
 	private int currentOrNextMonth;
+	
+	private String startDate;
+	
+	private String endDate;
 
 }

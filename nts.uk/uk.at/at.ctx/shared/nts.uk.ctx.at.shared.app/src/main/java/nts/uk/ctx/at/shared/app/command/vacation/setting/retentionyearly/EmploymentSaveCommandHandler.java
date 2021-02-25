@@ -59,8 +59,6 @@ public class EmploymentSaveCommandHandler extends CommandHandler<EmploymentSaveC
 			EmploymentSettingDto emptSettingDto = command.getEmploymentSetting();
 			emptSettingDto.setEmploymentCode(emptRetentionDB.getEmploymentCode());
 			emptSettingDto.setManagementCategory(emptRetentionDB.getManagementCategory().value);
-			emptSettingDto.getUpperLimitSetting().setMaxDaysCumulation(emptRetentionDB.getUpperLimitSetting().getMaxDaysCumulation().v());
-			emptSettingDto.getUpperLimitSetting().setRetentionYearsAmount(emptRetentionDB.getUpperLimitSetting().getRetentionYearsAmount().v());
 		}
 		// Convert to Domain
 		EmptYearlyRetentionSetting emptRetentionSetting = command.toDomain(companyId);

@@ -60,7 +60,7 @@ public class SysEmployeeAdapterImpl implements SysEmployeeAdapter {
 			EmployeeInfoDtoExport employee = opEmployee.get();
 			// convert dto
 			EmployeeImport em = new EmployeeImport(employee.getCompanyId(), employee.getPersonId(),
-					employee.getEmployeeId(), employee.getEmployeeCode());
+					employee.getEmployeeId(), employee.getEmployeeCode(), employee.getPerName());
 			return Optional.of(em);
 		}
 

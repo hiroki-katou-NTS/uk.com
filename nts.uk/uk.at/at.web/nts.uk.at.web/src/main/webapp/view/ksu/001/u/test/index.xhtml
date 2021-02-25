@@ -28,7 +28,15 @@
 			</div>
 			<div id="content-area">
 				<div id="left-content">
-					<div data-bind="ntsDatePicker: {value: date, dateType:'date', dateFormat:'YYYY/MM/DD' }"></div>
+					<!-- <div data-bind="ntsDatePicker: {value: date, dateType:'date', dateFormat:'YYYY/MM/DD' }"></div> -->
+					<div style="margin-top: 20px; margin-left: 20px;"
+					id="daterangepicker" tabindex="1"
+					data-bind="ntsDateRangePicker: { 
+						required: required, 
+						enable: enable, 
+						showNextPrevious: true, 
+						value: dateValue, 
+						maxRange: 'oneMonth'}" />
 					<div
 						data-bind="ntsCheckBox: { checked: workPlace, enable: isWorkPlace, text: 'WorkPlace' }"></div>					|
 					<div

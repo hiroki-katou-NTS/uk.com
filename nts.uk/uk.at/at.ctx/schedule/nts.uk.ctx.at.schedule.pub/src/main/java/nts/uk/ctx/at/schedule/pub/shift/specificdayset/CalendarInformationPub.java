@@ -14,4 +14,8 @@ public interface CalendarInformationPub {
 	//RQ651：稼働日区分を取得する
 	public Integer getWorkingDayAtr(String companyID, String workplaceID, String classCD, GeneralDate date);
 
+	BasicWorkSettingExport getBasicWorkSetting(String companyID, String workplaceID, String classCD,
+			Integer workingDayAtr);
+
+
 }

@@ -44,7 +44,7 @@ public class KshstOverTimePK implements Serializable {
      * @param cid the cid
      * @param overTimeNo the over time no
      */
-    public KshstOverTimePK(String cid, short overTimeNo) {
+    public KshstOverTimePK(String cid, int overTimeNo) {
         this.cid = cid;
         this.overTimeNo = overTimeNo;
     }

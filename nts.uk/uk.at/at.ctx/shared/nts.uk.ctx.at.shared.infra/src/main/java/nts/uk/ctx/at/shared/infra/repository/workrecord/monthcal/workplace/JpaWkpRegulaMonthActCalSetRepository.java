@@ -4,13 +4,15 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.workrecord.monthcal.workplace;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.wkp.WkpRegulaMonthActCalSet;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.wkp.WkpRegulaMonthActCalSetRepo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.wkp.WkpRegulaMonthActCalSet;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.wkp.WkpRegulaMonthActCalSetRepo;
 import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.workplace.KrcstWkpRegMCalSet;
 import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.workplace.KrcstWkpRegMCalSetPK;
 
@@ -20,6 +22,9 @@ import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.workplace.KrcstWkpR
 @Stateless
 public class JpaWkpRegulaMonthActCalSetRepository extends JpaRepository implements WkpRegulaMonthActCalSetRepo {
 
+	private static final String SELECT_BY_CID = "SELECT c FROM KrcstWkpRegMCalSet c"
+			+ " WHERE c.krcstWkpRegMCalSetPK.cid = :cid";
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -101,6 +106,16 @@ public class JpaWkpRegulaMonthActCalSetRepository extends JpaRepository implemen
 				e.getKrcstWkpRegMCalSetPK().getCid(), 
 				e.getAggregateTimeSet(), 
 				e.getExcessOutsideTimeSet());
+	}
+
+	@Override
+	public List<WkpRegulaMonthActCalSet> findWkpRegulaMonthAll(String cid) {
+		List<KrcstWkpRegMCalSet> entitys = this.queryProxy().query(SELECT_BY_CID, KrcstWkpRegMCalSet.class)
+				.setParameter("cid", cid).getList();
+		
+		return entitys.stream().map(m -> {
+			return toDomain(m);
+		}).collect(Collectors.toList());
 	}
 
 }

@@ -58,7 +58,7 @@ public class JpaCalendarWorkPlaceRepository extends JpaRepository implements Cal
 		entity.ksmmtCalendarWorkplacePK = new KsmmtCalendarWorkplacePK(
 															domain.getWorkPlaceId(),
 															domain.getDate());
-		entity.workingDayAtr = domain.getWorkingDayAtr().value;
+		entity.workingDayAtr = domain.getWorkDayDivision().value;
 		return entity;
 	}
 	/**
@@ -99,7 +99,7 @@ public class JpaCalendarWorkPlaceRepository extends JpaRepository implements Cal
 		KsmmtCalendarWorkplace clendarWork = toEntityCalendarWorkplace(calendarWorkplace);
 		KsmmtCalendarWorkplace workplaceUpdate = this.queryProxy()
 				.find(clendarWork.ksmmtCalendarWorkplacePK, KsmmtCalendarWorkplace.class).get();
-		workplaceUpdate.workingDayAtr = calendarWorkplace.getWorkingDayAtr().value;
+		workplaceUpdate.workingDayAtr = calendarWorkplace.getWorkDayDivision().value;
 		this.commandProxy().update(workplaceUpdate);
 		
 	}

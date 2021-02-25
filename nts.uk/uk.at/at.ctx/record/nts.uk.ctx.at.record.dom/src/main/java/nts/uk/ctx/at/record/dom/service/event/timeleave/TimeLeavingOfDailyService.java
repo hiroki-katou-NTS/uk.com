@@ -12,7 +12,6 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.service.event.common.CorrectEventConts;
@@ -21,17 +20,18 @@ import nts.uk.ctx.at.record.dom.service.event.common.EventHandleResult.EventHand
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
-import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemIdContainer;
-import nts.uk.ctx.at.shared.dom.attendance.util.enu.DailyDomainGroup;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordToAttendanceItemConverter;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeActualStamp;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.editstate.EditStateSetting;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ReflectWorkInforDomainService;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.service.AttendanceItemConvertFactory;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemIdContainer;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.enu.DailyDomainGroup;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkAtr;
@@ -85,7 +85,7 @@ public class TimeLeavingOfDailyService {
 		 DailyRecordToAttendanceItemConverter converter = convertFactory.createDailyConverter()
 																		.employeeId(wi.getEmployeeId())
 																		.workingDate(wi.getYmd())
-																		.withTimeLeaving(wi.getEmployeeId(), wi.getYmd(),tlo.getAttendance());
+																		.withTimeLeaving(tlo !=null ? tlo.getAttendance():null);
 		
 		List<Integer> canbeCorrectedItem = AttendanceItemIdContainer.getItemIdByDailyDomains(DailyDomainGroup.ATTENDACE_LEAVE);
 		List<ItemValue> beforeCorrectItemValues = converter.convert(canbeCorrectedItem);
@@ -171,12 +171,12 @@ public class TimeLeavingOfDailyService {
 			TimeLeavingOfDailyPerformance correctedTlo, boolean directToDB,
 			DailyRecordToAttendanceItemConverter converter, List<Integer> canbeCorrectedItem, 
 			List<ItemValue> beforeCorrectItemValues) {
-		working.setAttendanceLeave(Optional.ofNullable(correctedTlo.getAttendance()));
+		working.setAttendanceLeave(Optional.ofNullable(correctedTlo == null?null:correctedTlo.getAttendance()));
 
-		List<ItemValue> afterCorrectItemValues = converter.withTimeLeaving(working.getEmployeeId(), working.getYmd(), correctedTlo.getAttendance()).convert(canbeCorrectedItem);
-		List<Integer> itemIds = beforeCorrectItemValues.stream().map(i -> i.getItemId()).collect(Collectors.toList());
-		afterCorrectItemValues.removeIf(i -> itemIds.contains(i.getItemId()));
-		List<Integer> correctedItemIds = afterCorrectItemValues.stream().map(iv -> iv.getItemId()).collect(Collectors.toList());
+		List<ItemValue> afterCorrectItemValues = converter.withTimeLeaving(correctedTlo ==null?null: correctedTlo.getAttendance()).convert(canbeCorrectedItem);
+		List<Integer> itemIds = beforeCorrectItemValues.stream().map(i -> i.itemId()).collect(Collectors.toList());
+		afterCorrectItemValues.removeIf(i -> itemIds.contains(i.itemId()));
+		List<Integer> correctedItemIds = afterCorrectItemValues.stream().map(iv -> iv.itemId()).collect(Collectors.toList());
 		working.getEditState().removeIf(es -> correctedItemIds.contains(es.getAttendanceItemId()));
 		
 		if(directToDB){
@@ -278,12 +278,15 @@ public class TimeLeavingOfDailyService {
 	private TimeLeavingOfDailyPerformance updateTimeLeave(String companyId, WorkInfoOfDailyPerformance workInfo,
 			TimeLeavingOfDailyPerformance timeLeave, Optional<WorkingConditionItem> workConditionItem, String empId,
 			GeneralDate target) {
-		/** 自動打刻セットする */
-		timeLeave = new TimeLeavingOfDailyPerformance(workInfo.getEmployeeId(), workInfo.getYmd(), reflectService.createStamp(companyId, workInfo.getWorkInformation(), workConditionItem, timeLeave.getAttendance(), empId, target, null));
-		if (timeLeave != null) {
-			timeLeave.getAttendance().setWorkTimes(new WorkTimes(countTime(timeLeave)));
+		if(timeLeave == null) {
+			return timeLeave;
 		}
-		return timeLeave;
+		/** 自動打刻セットする */
+		val attendance = reflectService.createStamp(companyId, workInfo.getWorkInformation(), workConditionItem, timeLeave.getAttendance(), empId, target, null);
+		if (attendance != null) {
+			attendance.setWorkTimes(new WorkTimes(countTime(timeLeave)));
+		}
+		return new TimeLeavingOfDailyPerformance(empId, target, attendance);
 	}
 
 	/** 出退勤回数の計算 */

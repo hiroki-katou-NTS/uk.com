@@ -75,12 +75,12 @@ public class JpaShiftMaterOrgImpl extends JpaRepository implements ShiftMasterOr
 				+ " and o.kshmtShiftMaterOrgPK.targetId = :targetId "
 				+ "  and o.kshmtShiftMaterOrgPK.shiftMaterCode IN :shiftMaterCode";
 		if (!listToDel.isEmpty()) {			
-			this.queryProxy().query(delete).setParameter("companyId", shiftMater.getCompanyId())
+			this.getEntityManager().createQuery(delete).setParameter("companyId", shiftMater.getCompanyId())
 			.setParameter("targetUnit", shiftMater.getTargetOrg().getUnit().value)
 			.setParameter("targetId", shiftMater.getTargetOrg().getUnit().value == 0 ? 
 					shiftMater.getTargetOrg().getWorkplaceId().get()
 					: shiftMater.getTargetOrg().getWorkplaceGroupId().get())
-			.setParameter("shiftMaterCode", listToDel);
+			.setParameter("shiftMaterCode", listToDel).executeUpdate();
 		}
 		
 		List<String> listToInsert = shiftMasterCodes.stream().filter(e-> !result.contains(e)).collect(Collectors.toList());

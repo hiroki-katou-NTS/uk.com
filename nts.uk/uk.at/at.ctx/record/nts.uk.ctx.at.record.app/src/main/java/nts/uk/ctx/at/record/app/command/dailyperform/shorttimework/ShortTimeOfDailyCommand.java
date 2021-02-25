@@ -6,7 +6,7 @@ import lombok.Getter;
 import nts.uk.ctx.at.record.app.find.dailyperform.shorttimework.dto.ShortTimeOfDailyDto;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortTimeOfDailyPerformance;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ConvertibleAttendanceItem;
 
 public class ShortTimeOfDailyCommand extends DailyWorkCommonCommand {
 
@@ -15,6 +15,10 @@ public class ShortTimeOfDailyCommand extends DailyWorkCommonCommand {
 
 	@Override
 	public void setRecords(ConvertibleAttendanceItem item) {
+		if (item == null) {
+			this.data = Optional.empty();
+			return;
+		}
 		ShortTimeOfDailyPerformance shortTimeOfDailyPerformance = item !=null? new ShortTimeOfDailyPerformance(getEmployeeId(),
 				getWorkDate(), ((ShortTimeOfDailyDto) item).toDomain(getEmployeeId(), getWorkDate())):null;
 		this.data = item == null || !item.isHaveData() ? Optional.empty() 

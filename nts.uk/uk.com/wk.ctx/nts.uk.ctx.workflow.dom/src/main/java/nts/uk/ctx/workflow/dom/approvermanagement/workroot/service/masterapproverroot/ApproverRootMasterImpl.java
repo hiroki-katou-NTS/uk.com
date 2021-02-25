@@ -146,8 +146,8 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 					root.getApprRoot().getApplicationType() == null ? 0: root.getApprRoot().getApplicationType().value,
 					root.getApprRoot().getHistoryItems().get(0).start(), 
 					root.getApprRoot().getHistoryItems().get(0).end(), 
-					root.getApprRoot().getBranchId(), 
-					root.getApprRoot().getAnyItemApplicationId(),
+					// root.getApprRoot().getBranchId(), 
+					// root.getApprRoot().getAnyItemApplicationId(),
 					root.getApprRoot().getConfirmationRootType() == null ? 0: root.getApprRoot().getConfirmationRootType().value,
 					root.getApprRoot().getEmploymentRootAtr().value,
 					root.getApprRoot().getNoticeId(), 
@@ -199,8 +199,8 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 					root.getApprRoot().getApplicationType() == null ? 0:  root.getApprRoot().getApplicationType().value,
 					root.getApprRoot().getHistoryItems().get(0).start(), 
 					root.getApprRoot().getHistoryItems().get(0).end(), 
-					root.getApprRoot().getBranchId(), 
-					root.getApprRoot().getAnyItemApplicationId(),
+					// root.getApprRoot().getBranchId(), 
+					// root.getApprRoot().getAnyItemApplicationId(),
 					root.getApprRoot().getConfirmationRootType()  == null ? 0:  root.getApprRoot().getConfirmationRootType().value,
 					root.getApprRoot().getEmploymentRootAtr().value,
 					root.getApprRoot().getNoticeId(), 
@@ -412,10 +412,6 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 			return null;
 		}
 		for (CompanyApprovalRoot comRoot : lstComs) {
-			//TH don 36 bo qua
-			if(comRoot.isApplication() && comRoot.getApprRoot().getApplicationType().equals(ApplicationType.APPLICATION_36)){
-				continue;
-			}
 			//convert data
 			ApprovalForApplication comApprover = this.getApproval(comRoot, companyID, lstName);
 			comApproverRoots.add(comApprover);

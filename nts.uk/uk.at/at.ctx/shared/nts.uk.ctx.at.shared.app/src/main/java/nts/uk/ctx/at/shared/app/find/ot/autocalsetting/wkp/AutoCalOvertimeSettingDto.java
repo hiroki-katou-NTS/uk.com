@@ -6,8 +6,8 @@ package nts.uk.ctx.at.shared.app.find.ot.autocalsetting.wkp;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSettingSetMemento;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalOvertimeSettingSetMemento;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.AutoCalSetting;
 
 /**
  * Gets the legal mid ot time.

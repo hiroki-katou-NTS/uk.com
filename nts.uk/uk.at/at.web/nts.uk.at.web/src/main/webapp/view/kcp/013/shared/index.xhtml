@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+    <ui:composition template="/master/dialog.xhtml">
+        <ui:define name="htmlHead">
+            <script type='text/javascript'>
+                var dialogSize = {
+                    width: 1200,
+                    height: 600
+                };
+            </script>
+            <com:scriptfile set="IGNITE" />
+            <com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+
+            <com:scriptfile path="kcp013.vm.js" />
+
+            <!-- library for test screen -->
+            <com:scriptfile path="prettify.js" />
+            <com:scriptfile path="kcp013.test.vm.js" />
+            <com:stylefile path="kcp013.test.style.css" />
+        </ui:define>
+        <ui:define name="content">
+            <div id="functions-area">
+                <button class="procced" data-bind="click: $vm.processDialog">
+                    <com:ko-if bind="!isDialog()">Show in dialog</com:ko-if>
+                    <com:ko-if bind="isDialog()">Close dialog</com:ko-if>
+                </button>
+            </div>
+            <div id="contents-area" class="kcp-013-test cf">
+                <div class="controls-panel">
+                    <div class="ntsControl">
+                        <div data-bind="ntsFormLabel: { text: 'Options' }"></div>
+                        <div class="cf" data-bind="ntsSwitchButton: {
+                            name: 'Show mode',
+                            options: [{
+                                code: 0,
+                                name: 'Not set'
+                            }, {
+                                code: 1,
+                                name: 'Show none'
+                            }, {
+                                code: 2,
+                                name: 'Show deffered'
+                            }, {
+                                code: 3,
+                                name: 'Show none, deffered'
+                            }],
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: $vm.otherParams.showMode,
+                            required: false,
+                            enable: true
+                        }"></div>
+                    </div>
+                    <div class="ntsControl">
+                        <div data-bind="ntsCheckBox: { checked: $vm.otherParams.filter }">Filter</div>
+                        <div data-bind="ntsCheckBox: { checked: $vm.otherParams.disabled }">Disabled</div>
+                    </div>
+                    <div class="ntsControl">
+                        <div data-bind="ntsFormLabel: { text: 'Selected code' }"></div>
+                        <input data-bind="ntsTextEditor: {value: $vm.workTime.selected }" />
+                    </div>
+                </div>
+                <div class="component-panel cf">
+                    <div id="tree-grid" class="left-panel"></div>
+                    <div class="right-panel">
+                        <div data-bind="
+                            kcp013: $vm.workTime.selected,
+                            workplace-id: $vm.otherParams.workplaceId,
+                            dataSources: $vm.workTime.dataSources,
+                            filter: $vm.otherParams.filter,
+                            disabled: $vm.otherParams.disabled,
+                            show-mode: $vm.otherParams.showMode,
+                            tabindex: 0,
+                            width: $vm.otherParams.width,
+                        "></div>
+                        <div class="code-view">
+                            <div data-bind="ntsFormLabel: { text: 'Work place id' }"></div>
+                            <pre data-bind="text: $vm.otherParams.workplaceId"></pre>
+                        </div>
+                        <div class="code-view">
+                            <div data-bind="ntsFormLabel: { text: 'Selected work time' }"></div>
+                            <pre data-bind="text: ko.toJSON(currentWorkTime, null, 4)"></pre>
+                        </div>
+                    </div>
+                </div>
+                <pre data-bind="prettify: 'js', code: codes.vm"></pre>
+                <pre data-bind="prettify: 'xml', code: codes.view"></pre>
+            </div>
+        </ui:define>
+    </ui:composition>
+</body>
+
+</html>

@@ -24,44 +24,52 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "KTVMT_TIME_ANNUAL_SET")
 public class KtvmtTimeAnnualSet extends UkJpaEntity implements Serializable {
-    
+
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
-    
+
     /** The cid. */
     @Id
     @Basic(optional = false)
     @Column(name = "CID")
     private String cid;
-    
+
     /** The time manage atr. */
     @Column(name = "TIME_MANAGE_ATR")
     private Integer timeManageAtr;
-    
+
     /** The time unit. */
     @Column(name = "TIME_UNIT")
     private Integer timeUnit;
-    
+
     /** The time max day manage atr. */
     @Column(name = "TIME_MAX_DAY_MANAGE_ATR")
     private Integer timeMaxDayManageAtr;
-    
+
     /** The time max day reference. */
     @Column(name = "TIME_MAX_DAY_REFERENCE")
     private Integer timeMaxDayReference;
-    
+
     /** The time max day unif comp. */
     @Column(name = "TIME_MAX_DAY_UNIF_COMP")
     private Integer timeMaxDayUnifComp;
-    
-    /** The is enough time one day. */
-    @Column(name = "IS_ENOUGH_TIME_ONE_DAY")
-    private Integer isEnoughTimeOneDay;
-    
-    /** The Round Processing Classification. */
-    @Column(name = "ROUND_PRO_CLA")
-    private Integer roundProcessCla;
 
+    /** The Round Processing Classification. */
+    @Column(name = "ROUND_PROC_CLA")
+    private Integer roundProcessCla;
+     
+    /** 1日の時間年休時間参照先**/
+    @Column(name = "TIME_OF_DAY_REFERENCE")
+    private int timeOfDayRef;
+    
+    /** 全社一律の時間 **/
+    @Column (name = "UNIFORM_TIME")
+    private Integer uniformTime;
+    
+    /** 契約時間丸め **/
+    @Column(name = "CONTRACT_TIME_ROUND")
+    private Integer contractTimeRound;
+   
     /**
      * Instantiates a new ktvmt time vacation set.
      */

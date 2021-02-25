@@ -24,9 +24,9 @@ import nts.uk.ctx.at.record.dom.shorttimework.repo.ShortTimeOfDailyPerformanceRe
 import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDaiShortWorkTime;
 import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDaiShortWorkTimePK;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ChildCareAttribute;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimFrameNo;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ChildCareAttribute;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.arc.time.calendar.period.DatePeriod;
 
@@ -46,7 +46,7 @@ public class JpaShortTimeOfDailyPerformanceRepo extends JpaRepository implements
 	private ShortWorkingTimeSheet shortWorkTime(KrcdtDaiShortWorkTime c) {
 		return new ShortWorkingTimeSheet(new ShortWorkTimFrameNo(c.krcdtDaiShortWorkTimePK.shortWorkTimeFrameNo),
 				EnumAdaptor.valueOf(c.childCareAtr, ChildCareAttribute.class), new TimeWithDayAttr(c.startTime),
-				new TimeWithDayAttr(c.endTime), new AttendanceTime(c.deductionTime), new AttendanceTime(c.time));
+				new TimeWithDayAttr(c.endTime));
 	}
 
 	@Override
@@ -84,9 +84,7 @@ public class JpaShortTimeOfDailyPerformanceRepo extends JpaRepository implements
 	private KrcdtDaiShortWorkTime newEntities(String employeeId, GeneralDate ymd, ShortWorkingTimeSheet c) {
 		return new KrcdtDaiShortWorkTime(new KrcdtDaiShortWorkTimePK(employeeId, ymd, c.getShortWorkTimeFrameNo().v()),
 				c.getStartTime() == null ? 0 : c.getStartTime().valueAsMinutes(),
-				c.getEndTime() == null ? 0 : c.getEndTime().valueAsMinutes(), c.getChildCareAttr().value,
-				c.getShortTime() == null ? 0 : c.getShortTime().valueAsMinutes(),
-				c.getDeductionTime() == null ? 0 : c.getDeductionTime().valueAsMinutes());
+				c.getEndTime() == null ? 0 : c.getEndTime().valueAsMinutes(), c.getChildCareAttr().value);
 	}
 
 	private TypedQueryWrapper<KrcdtDaiShortWorkTime> findEntities(String employeeId, GeneralDate ymd) {
@@ -107,7 +105,8 @@ public class JpaShortTimeOfDailyPerformanceRepo extends JpaRepository implements
 		query.append("WHERE a.krcdtDaiShortWorkTimePK.sid IN :employeeId ");
 		query.append("AND a.krcdtDaiShortWorkTimePK.ymd <= :end AND a.krcdtDaiShortWorkTimePK.ymd >= :start");
 		TypedQueryWrapper<KrcdtDaiShortWorkTime> tQuery=  this.queryProxy().query(query.toString(), KrcdtDaiShortWorkTime.class);
-			result.addAll(tQuery.setParameter("employeeId", employeeId)
+		CollectionUtil.split(employeeId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, empIds -> {
+			result.addAll(tQuery.setParameter("employeeId", empIds)
 								.setParameter("start", ymd.start())
 								.setParameter("end", ymd.end()).getList().stream()
 								.collect(Collectors.groupingBy(
@@ -117,6 +116,7 @@ public class JpaShortTimeOfDailyPerformanceRepo extends JpaRepository implements
 												c.getValue().stream().map(x -> shortWorkTime(x)).collect(Collectors.toList()),
 												c.getValue().get(0).krcdtDaiShortWorkTimePK.ymd))
 								.collect(Collectors.toList()));
+		});
 		return result;
 	}
 
@@ -145,10 +145,11 @@ public class JpaShortTimeOfDailyPerformanceRepo extends JpaRepository implements
 		query.append("WHERE a.krcdtDaiShortWorkTimePK.sid IN :employeeId ");
 		query.append("AND a.krcdtDaiShortWorkTimePK.ymd IN :date");
 		TypedQueryWrapper<KrcdtDaiShortWorkTime> tQuery=  this.queryProxy().query(query.toString(), KrcdtDaiShortWorkTime.class);
-			result.addAll(tQuery.setParameter("employeeId", param.keySet())
-								.setParameter("date", param.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
+		CollectionUtil.split(param, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, p -> {
+			result.addAll(tQuery.setParameter("employeeId", p.keySet())
+								.setParameter("date", p.values().stream().flatMap(List::stream).collect(Collectors.toSet()))
 								.getList().stream()
-								.filter(c -> param.get(c.krcdtDaiShortWorkTimePK.sid).contains(c.krcdtDaiShortWorkTimePK.ymd))
+								.filter(c -> p.get(c.krcdtDaiShortWorkTimePK.sid).contains(c.krcdtDaiShortWorkTimePK.ymd))
 								.collect(Collectors.groupingBy(
 										c -> c.krcdtDaiShortWorkTimePK.sid + c.krcdtDaiShortWorkTimePK.ymd.toString()))
 								.entrySet().stream()
@@ -156,6 +157,7 @@ public class JpaShortTimeOfDailyPerformanceRepo extends JpaRepository implements
 												c.getValue().stream().map(x -> shortWorkTime(x)).collect(Collectors.toList()),
 												c.getValue().get(0).krcdtDaiShortWorkTimePK.ymd))
 								.collect(Collectors.toList()));
+		});
 		return result;
 	}
 

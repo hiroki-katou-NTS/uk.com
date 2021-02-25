@@ -7,12 +7,15 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ErrMessageResource;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.function.algorithm.ChangeDailyAttendance;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrorMessageInfo;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
@@ -28,12 +31,14 @@ import nts.uk.shr.com.i18n.TextResource;
  *
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class ChangeWorkToHalfdayLeave {
 	
 	@Inject
 	private WorkTypeRepository workTypeRepository;
 	
-	public List<ErrorMessageInfo> changeWork(Stamp stamp,IntegrationOfDaily integrationOfDaily,List<WorkType> listWorkType) {
+	public List<ErrorMessageInfo> changeWork(Stamp stamp,IntegrationOfDaily integrationOfDaily,
+			List<WorkType> listWorkType, ChangeDailyAttendance changeDailyAtt) {
 		List<ErrorMessageInfo> listErrorMessageInfo = new ArrayList<>();
 		String companyId = AppContexts.user().companyId();
 		//「打刻。勤務種類を半休に変更するを確認する」
@@ -70,6 +75,9 @@ public class ChangeWorkToHalfdayLeave {
 		}
 		//取得できた勤務種類を確認する
 		integrationOfDaily.getWorkInformation().getRecordInfo().setWorkTypeCode(workType.get().getWorkTypeCode());
+		changeDailyAtt.setFixBreakCorrect(true);
+		changeDailyAtt.setWorkInfo(true);
+		
 		return listErrorMessageInfo;
 	}
 

@@ -10,7 +10,6 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.PublicManagementShiftTable;
 import nts.uk.ctx.at.schedule.dom.shift.management.shifttable.PublicManagementShiftTableRepository;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
-import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 
 /**
  * 対象組織公開情報を登録する
@@ -28,10 +27,14 @@ public class RegisterShiftTableCommandHandler extends CommandHandler<ShiftTableS
 	@Override
 	protected void handle(CommandHandlerContext<ShiftTableSaveCommand> context) {
 		ShiftTableSaveCommand command = context.getCommand();
-		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(
-				TargetOrganizationUnit.valueOf(command.getUnit()), Optional.ofNullable(command.getWorkplaceId()),
-				Optional.ofNullable(command.getWorkplaceGroupId()));
-	
+//		TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(
+//				TargetOrganizationUnit.valueOf(command.getUnit()), Optional.ofNullable(command.getWorkplaceId()),
+//				Optional.ofNullable(command.getWorkplaceGroupId()));
+		
+		TargetOrgIdenInfor targetOrgIdenInfor = command.getUnit() == 0
+				? TargetOrgIdenInfor.creatIdentifiWorkplace(command.getWorkplaceId())
+				: TargetOrgIdenInfor.creatIdentifiWorkplaceGroup(command.getWorkplaceGroupId());
+
 		/** 1: get(対象組織): シフト表の公開管理 **/
 		Optional<PublicManagementShiftTable> optShiftTable = shiftTableRepository.get(targetOrgIdenInfor);
 		

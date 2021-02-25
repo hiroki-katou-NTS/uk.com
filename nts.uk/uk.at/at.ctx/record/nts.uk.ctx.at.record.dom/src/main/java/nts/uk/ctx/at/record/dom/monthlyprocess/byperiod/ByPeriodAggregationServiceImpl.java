@@ -28,12 +28,12 @@ import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.Aggr
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.periodexcution.ExecutionStatus;
 import nts.uk.ctx.at.record.dom.executionstatusmanage.optionalperiodprocess.periodinfor.ErrorMess;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
-import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.OptionalAggrPeriod;
-import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.OptionalAggrPeriodRepository;
-import nts.uk.ctx.at.shared.dom.byperiod.AttendanceTimeOfAnyPeriodRepository;
-import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
-import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
-import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
+import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.AnyAggrPeriod;
+import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.AnyAggrPeriodRepository;
+import nts.uk.ctx.at.shared.dom.scherec.byperiod.AttendanceTimeOfAnyPeriodRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.MonthlyAggregationErrorInfo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrCompanySettings;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrEmployeeSettings;
 
 /**
  * 実装：任意期間集計Mgr
@@ -47,7 +47,7 @@ public class ByPeriodAggregationServiceImpl implements ByPeriodAggregationServic
 	private AggrPeriodExcutionRepository executionRepo;
 	/** 任意集計期間 */
 	@Inject
-	private OptionalAggrPeriodRepository aggrPeriodRepo;
+	private AnyAggrPeriodRepository aggrPeriodRepo;
 	/** 任意期間集計対象者 */
 	@Inject
 	private AggrPeriodTargetRepository targetRepo;
@@ -80,13 +80,13 @@ public class ByPeriodAggregationServiceImpl implements ByPeriodAggregationServic
 		val executionPeriod = executionPeriodOpt.get();
 
 		// 「任意集計期間」を取得
-		Optional<OptionalAggrPeriod> optionalPeriodOpt = this.aggrPeriodRepo.find(
+		Optional<AnyAggrPeriod> optionalPeriodOpt = this.aggrPeriodRepo.findOneByCompanyIdAndFrameCode(
 				companyId, executionPeriod.getAggrFrameCode().v());
 		if (!optionalPeriodOpt.isPresent()) return;
 		val optionalPeriod = optionalPeriodOpt.get();
 
 		// 期間の判断
-		DatePeriod period = new DatePeriod(optionalPeriod.getStartDate(), optionalPeriod.getEndDate());
+		DatePeriod period = optionalPeriod.getPeriod();
 
 		// ログ情報（実行ログ）を更新する
 		this.executionRepo.updateExe(executionPeriod, ExecutionStatus.PROCESSING.value, GeneralDateTime.now());
@@ -159,7 +159,7 @@ public class ByPeriodAggregationServiceImpl implements ByPeriodAggregationServic
 	@Override
 	public ProcessState aggregate(
 			AsyncCommandHandlerContext async, String companyId, String employeeId, DatePeriod period,
-			String executeId, OptionalAggrPeriod optionalPeriod, MonAggrCompanySettings companySets) {
+			String executeId, AnyAggrPeriod optionalPeriod, MonAggrCompanySettings companySets) {
 		val require = requireService.createRequire();
 		val cacheCarrier = new CacheCarrier();
 	

@@ -6,8 +6,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.FlexSet;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.FlexSetRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worklabor.flex.FlexSet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worklabor.flex.FlexSetRepository;
 import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstFlexSet;
 import nts.uk.ctx.at.shared.infra.entity.calculation.holiday.KshstFlexSetPK;
 /**

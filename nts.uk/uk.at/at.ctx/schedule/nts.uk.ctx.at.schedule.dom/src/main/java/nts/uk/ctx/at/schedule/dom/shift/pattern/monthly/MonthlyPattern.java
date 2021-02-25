@@ -18,17 +18,28 @@ public class MonthlyPattern extends AggregateRoot {
 
 	/** The company id. */
 	//会社ID
-	private CompanyId companyId;
+	private final CompanyId companyId;
 	
 	/** The monthly pattern code. */
 	//月間パターンコード
-	private MonthlyPatternCode monthlyPatternCode;
+	private final MonthlyPatternCode monthlyPatternCode;
 	
 	/** The monthly pattern name. */
 	// 月間パターン名称
 	private MonthlyPatternName monthlyPatternName;
-	
-	
+
+	/**
+	 * [C-0] 月間パターン(会社ID, 月間パターンコード, 月間パターン名称)
+	 * @param companyId
+	 * @param monthlyPatternCode
+	 * @param monthlyPatternName
+	 */
+	public MonthlyPattern(CompanyId companyId, MonthlyPatternCode monthlyPatternCode, MonthlyPatternName monthlyPatternName) {
+		this.companyId = companyId;
+		this.monthlyPatternCode = monthlyPatternCode;
+		this.monthlyPatternName = monthlyPatternName;
+	}
+
 	/**
 	 * Instantiates a new monthly pattern.
 	 *
@@ -49,6 +60,7 @@ public class MonthlyPattern extends AggregateRoot {
 		memento.setCompanyId(this.companyId);
 		memento.setMonthlyPatternCode(this.monthlyPatternCode);
 		memento.setMonthlyPatternName(this.monthlyPatternName);
+		memento.setContractCd();
 	}
 
 	/* (non-Javadoc)

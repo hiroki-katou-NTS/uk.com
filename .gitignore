@@ -46,3 +46,5 @@ nts.uk/uk.repo/*
 **/main-server*
 **/wwwroot/*
 **/.DS_Store
+
+*.log

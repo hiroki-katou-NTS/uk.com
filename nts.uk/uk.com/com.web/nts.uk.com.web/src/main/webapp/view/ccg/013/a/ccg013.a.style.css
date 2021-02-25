@@ -1,11 +1,15 @@
-@CHARSET "UTF-8";
-
 .fixed-flex-layout-left {
 	width: 340px;
+	min-width: 340px;
 	height: 328px;
 }
 
-#single-list>tbody>tr>td:first-child {
+.fixed-flex-layout-right {
+	width: calc(100% - 340px - 20px);
+	min-width: 530px;
+}
+
+#single-list > tbody > tr > td:first-child {
 	text-align: center;
 }
 
@@ -32,11 +36,16 @@
 	width: 80px;
 }
 
-#A_LBL_002, #A_LBL_003, #A_LBL_005, #A_LBL_006, #A_LBL_010 {
+#A_LBL_002,
+#A_LBL_003,
+#A_LBL_005,
+#A_LBL_006,
+#A_LBL_010 {
 	margin: 0px 0px 20px 40px;
 }
 
-#A_LBL_009, #A_LBL_011 {
+#A_LBL_009,
+#A_LBL_011 {
 	margin: 0px 0px 20px 93px;
 }
 
@@ -44,7 +53,11 @@
 	margin: 13px 0px 20px 40px;
 }
 
-#A_INP_002, #A_INP_003, #A_INP_004, #A_INP_005, #A_INP_006 {
+#A_INP_002,
+#A_INP_003,
+#A_INP_004,
+#A_INP_005,
+#A_INP_006 {
 	border-radius: 5px;
 }
 
@@ -68,16 +81,11 @@ button.search-btn {
 	margin-bottom: 15px;
 }
 
-.button-add {
-	border-radius: 5px;
-	height: 50px;
-	width: 145px;
-	margin-left: 3px;
-}
-
 #menu_container {
-	width: 940px;
-	height: 430px;
+	width: 100%;
+	/* width: calc(100% - 300px); */
+	height: calc(100% - 90px);
+	min-height: 260px;
 	padding: 10px;
 	overflow: auto;
 	box-sizing: border-box;
@@ -85,9 +93,11 @@ button.search-btn {
 }
 
 #menubar-tabs {
-	float: left;
-	padding: 0 10px 0 0;
-	min-width: 910px;
+	display: flex;
+	flex-direction: column;
+	padding: 0;
+	width: 100%;
+	height: 100%;
 	white-space: nowrap;
 }
 
@@ -95,35 +105,35 @@ button.search-btn {
 	float: none;
 	display: inline-block;
 	vertical-align: top;
-	width: 140px;
-	height: 48px;
+	width: 100px;
+	height: 40px;
 	border: 1px dashed #666;
-	margin-right: 25px;
+	margin-right: 10px;
 	box-sizing: border-box;
 }
 
-#menubar-tabs .button-add-menubar {
-	display: inline-block;
-	vertical-align: top;
+#menubar-tabs .menubar-header {
+	display: flex;
+	flex-direction: row;
 }
 
 #menubar-tabs .menubar-navigation {
+	line-height: 1;
 	padding: 0px;
-	display: inline-block;
 	vertical-align: top;
-	white-space: nowrap;
-	font-size: 0px;
+	background: transparent;
+	border: none;
 }
 
 #menubar-tabs .menubar-navigation li.context-menu-bar {
 	float: none;
 	display: inline-block;
 	border-radius: 0px;
-	margin: 0 25px 0 0;
+	margin: 0 10px 0 0;
 	padding: 0;
-	margin-bottom: -1px;
+	margin-bottom: -2px;
 	border-width: 1px;
-	height: 80px;
+	height: 60px;
 	background-color: transparent;
 	border-color: #fff;
 	border-bottom-width: 0px;
@@ -131,33 +141,17 @@ button.search-btn {
 
 #menubar-tabs .menubar-navigation li.ui-tabs-active {
 	background-color: #e2efda;
-	border-color: #B1B1B1;
-}
-
-#menubar-tabs .menubar-navigation li.context-menu-bar a {
-	background-color: rgb(112, 173, 71);
-	width: 140px;
-	height: 48px;
-	padding: 15px 0px;
-	margin: -1px;
-	text-align: center;
-	box-sizing: border-box;
-	overflow: hidden;
-	box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2) inset;
-	text-align: center;
+	border-color: #b1b1b1;
 }
 
 #menubar-tabs .menubar-container {
+	flex: 1;
+	box-sizing: border-box;
+	overflow: auto;
 	border-radius: 0px;
-	border: 1px solid #B1B1B1;
+	border: 1px solid #b1b1b1;
 	background-color: #e2efda;
-	padding: 5px 0;
-}
-
-#menubar-tabs .menubar-container .title-menu {
-	min-height: 308px;
-	font-size: 0;
-	white-space: nowrap;
+	padding: 5px;
 }
 
 #menubar-tabs .menubar-container .title-menu .titlemenu-placeholder {
@@ -174,24 +168,7 @@ button.search-btn {
 }
 
 #menubar-tabs .menubar-container .title-menu .title-menu-container {
-	font-size: 0;
-	white-space: nowrap;
-	display: inline-block;
-}
-
-#menubar-tabs .title-menu .title-menu-column {
-	display: inline-block;
-	width: 140px;
-	padding: 0 3px;
-	margin-right: 25px;
-	margin-bottom: 15px;
-	box-sizing: border-box;
-	vertical-align: top;
-}
-
-#menubar-tabs .title-menu .title-menu-name {
-	padding: 20px 15px;
-	border-radius: 10px;
+	display: block;
 }
 
 #menubar-tabs .title-menu .title-menu-column .tree-menu {
@@ -209,11 +186,9 @@ button.search-btn {
 	white-space: nowrap;
 	overflow: hidden;
 	box-sizing: border-box;
-	margin-top: -1px;
 }
 
-#menubar-tabs .title-menu .title-menu-column .tree-menu .treemenu-placeholder
-	{
+#menubar-tabs .title-menu .title-menu-column .tree-menu .treemenu-placeholder {
 	height: 40px;
 	width: 100%;
 	border: 1px dashed #666;
@@ -244,7 +219,9 @@ button.search-btn {
 	vertical-align: middle;
 }
 
-.caret-bottom:after, .caret-top:after, .caret-left:after {
+.caret-bottom:after,
+.caret-top:after,
+.caret-left:after {
 	margin-bottom: 5px !important;
 	margin-left: 40px !important;
 }
@@ -256,17 +233,13 @@ button.search-btn {
 }
 
 #contents-area:after {
-	content: '';
+	content: "";
 	display: block;
 	clear: both;
 }
 
 div.label {
 	width: 95% !important;
-}
-
-.text-align {
-	text-align: center;
 }
 
 #add-icon-treemenu {
@@ -280,8 +253,87 @@ div.label {
 	margin-right: -2px;
 }
 
-.limited-label{
-    display: block !important;
-    width: auto !important;
+#menubar-tabs .menubar-navigation li.context-menu-bar a {
+	width: 100px;
+	height: 40px;
+	box-sizing: border-box;
 }
 
+/* Menu tab */
+#menubar-tabs .tab-item {
+	padding: 10px 4px;
+	font-size: 12px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+#menubar-tabs .tab-item .tab-item-content {
+	flex: 1;
+	overflow: hidden;
+	text-overflow: clip !important;
+	/* margin-right: 10px; */
+}
+
+/* Menu item */
+#menubar-tabs .title-menu {
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+	height: 100%;
+}
+
+#menubar-tabs .title-menu .title-menu-name {
+	padding: 10px 4px;
+	border-radius: 10px;
+	font-size: 12px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+#menubar-tabs .title-menu .title-menu-name .title-menu-content {
+	flex: 1;
+	overflow: hidden;
+	/* text-overflow: ellipsis; */
+	/* margin-right: 10px; */
+}
+
+#menubar-tabs .title-menu .title-menu-column {
+	display: inline-block;
+	padding: 0;
+	width: 140px;
+	margin-right: 10px;
+	margin-bottom: 15px;
+	box-sizing: border-box;
+	vertical-align: top;
+}
+
+.button-add {
+	border-radius: 5px;
+	margin: 0;
+	height: 40px;
+	width: 150px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+#menubar-tabs .title-menu .title-menu-column .tree-menu li {
+	padding: 6px 3px;
+	height: 30px;
+	width: 100%;
+	float: left;
+	background-color: #e2efda;
+	border: 1px solid #80a468;
+	white-space: nowrap;
+	overflow: hidden;
+	box-sizing: border-box;
+	margin-top: -1px;
+}
+
+.context-menu-tree {
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.menubar-header>ul>li {
+	text-align: center;
+}

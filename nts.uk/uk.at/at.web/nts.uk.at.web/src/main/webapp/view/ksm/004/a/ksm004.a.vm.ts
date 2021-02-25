@@ -24,7 +24,9 @@ module nts.uk.at.view.ksm004.a {
                 eventDisplay: ko.observable(true),
                 eventUpdatable: ko.observable(true),
                 holidayDisplay: ko.observable(true),
-                cellButtonDisplay: ko.observable(false)
+                cellButtonDisplay: ko.observable(false),
+				reloadOnSameYM: true,
+				hidden: false
             }
             calendarPanel1: ICalendarPanel = {
                 optionDates: ko.observableArray([]),
@@ -37,7 +39,9 @@ module nts.uk.at.view.ksm004.a {
                 eventDisplay: ko.observable(true),
                 eventUpdatable: ko.observable(true),
                 holidayDisplay: ko.observable(true),
-                cellButtonDisplay: ko.observable(false)
+                cellButtonDisplay: ko.observable(false),
+				reloadOnSameYM: true,
+				hidden: true
             }
             calendarPanel2: ICalendarPanel = {
                 optionDates: ko.observableArray([]),
@@ -50,7 +54,9 @@ module nts.uk.at.view.ksm004.a {
                 eventDisplay: ko.observable(true),
                 eventUpdatable: ko.observable(false),
                 holidayDisplay: ko.observable(true),
-                cellButtonDisplay: ko.observable(false)
+                cellButtonDisplay: ko.observable(false),
+				reloadOnSameYM: true,
+				hidden: true
             }
             kcpTreeGrid: ITreeGrid = {
                 treeType: 1,
@@ -239,6 +245,9 @@ module nts.uk.at.view.ksm004.a {
                                 // select tab Work Place
                                 self.removeFlg(true);
                                 self.isShowDatepicker = false;
+								self.calendarPanel1.hidden = false;
+								self.calendarPanel.hidden = true;
+								self.calendarPanel2.hidden = true;
                                 self.yearMonthPicked1(Number(moment(new Date()).format('YYYY01')));
                                 self.yearMonthPicked1.valueHasMutated();
                                 self.changeWorkingDayAtr(null);
@@ -247,6 +256,9 @@ module nts.uk.at.view.ksm004.a {
                                 // select tab Class
                                 self.removeFlg(true);
                                 self.isShowDatepicker = false;
+								self.calendarPanel2.hidden = false;
+								self.calendarPanel.hidden = true;
+								self.calendarPanel1.hidden = true;
                                 self.yearMonthPicked2(Number(moment(new Date()).format('YYYY01')));
                                 self.yearMonthPicked2.valueHasMutated();
                                 self.changeWorkingDayAtr(null);
@@ -255,6 +267,9 @@ module nts.uk.at.view.ksm004.a {
                                 // select tab Company
                                 self.removeFlg(false);
                                 self.isShowDatepicker = false;
+								self.calendarPanel.hidden = false;
+								self.calendarPanel1.hidden = true;
+								self.calendarPanel2.hidden = true;
                                 self.yearMonthPicked(Number(moment(new Date()).format('YYYY01')));
                                 self.yearMonthPicked.valueHasMutated();
                                 self.changeWorkingDayAtr(null);
@@ -886,11 +901,15 @@ module nts.uk.at.view.ksm004.a {
                 change Style when change selected Working Day
             */
             changeWorkingDayAtr(value){
-                var self = this;
-                $('.labelSqr').css("border","2px solid #B1B1B1");
+                $('.panel-frame-btn').css("background-color","white");
+                const self = this;
                 if(value!=null) {
+                    if (value == 1) {
+                        $('.button-sqr1').css("background-color","#DCE6F2");
+                    } else {
+                        $('.button-sqr'+value).css("background-color","#FDEADA");
+                    }
                     self.currentWorkingDayAtr = value-1;
-                    $('.labelSqr'+value).css("border","2px dashed #008000");
                 } else {
                     self.currentWorkingDayAtr = value;   
                 }
@@ -908,14 +927,15 @@ module nts.uk.at.view.ksm004.a {
                 });
                 nts.uk.ui.windows.sub.modal("/view/ksm/004/c/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
                     self.isShowDatepicker = false;
-                    $.when(self.getCalendarCompanySet(), self.getAllCalendarCompany())
-                    .done(()=>{
-                        self.isShowDatepicker = true;
-                        nts.uk.ui.block.clear(); 
-                    })
-                    .fail((res) => {
-                        nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});
-                    });      
+					self.yearMonthPicked.valueHasMutated();
+//                    $.when(self.getCalendarCompanySet(), self.getAllCalendarCompany())
+//                    .done(()=>{
+//                        self.isShowDatepicker = true;
+//                        nts.uk.ui.block.clear(); 
+//                    })
+//                    .fail((res) => {
+//                        nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});
+//                    });      
                 });  
             }
             
@@ -992,6 +1012,42 @@ module nts.uk.at.view.ksm004.a {
                     }); 
                 }
             }
+
+            public openDialogF(value) {
+                const vm = this;
+                nts.uk.ui.block.invisible();
+                if(value == 1) {
+                    nts.uk.ui.windows.setShared('KSM004_F_PARAM',
+                        {
+                            classification: value,
+                            yearMonth: vm.yearMonthPicked1(),
+                            workPlaceId: vm.currentCalendarWorkPlace().key()
+                        });
+                    nts.uk.ui.windows.sub.modal("/view/ksm/004/f/index.xhtml", { title: "hello", dialogClass: "no-close" }).onClosed(function() {
+                        vm.isShowDatepicker = false;
+                    });
+                } else if(value == 2) {
+                    nts.uk.ui.windows.setShared('KSM004_F_PARAM',
+                        {
+                            classification: value,
+                            yearMonth: vm.yearMonthPicked2(),
+                            classId: vm.currentCalendarClass().key()
+                        });
+                    nts.uk.ui.windows.sub.modal("/view/ksm/004/f/index.xhtml", { title: "hello", dialogClass: "no-close" }).onClosed(function() {
+                        vm.isShowDatepicker = false;
+                    });
+                } else {
+                    nts.uk.ui.windows.setShared('KSM004_F_PARAM',
+                        {
+                            classification: value,
+                            yearMonth: vm.yearMonthPicked(),
+                        });
+                    nts.uk.ui.windows.sub.modal("/view/ksm/004/f/index.xhtml", { title: "hello", dialogClass: "no-close" }).onClosed(function() {
+                        vm.isShowDatepicker = false;
+                    });
+                }
+                nts.uk.ui.block.clear();
+            }
             
             //Init blank calendar option date
             getBlankOptionDate(): any{
@@ -1015,8 +1071,8 @@ module nts.uk.at.view.ksm004.a {
                     $("#print-button_3").show();
                 }
             }
-            
-             /**
+
+            /**
              * closeDialog
              */
             public opencdl028Dialog() {
@@ -1025,17 +1081,15 @@ module nts.uk.at.view.ksm004.a {
                     date: moment(new Date()).toDate(),
                     mode: 2 //YEAR_PERIOD_FINANCE
                 };
-    
                 nts.uk.ui.windows.setShared("CDL028_INPUT", params);
-    
                 nts.uk.ui.windows.sub.modal("com", "/view/cdl/028/a/index.xhtml").onClosed(function() {
                     var params = nts.uk.ui.windows.getShared("CDL028_A_PARAMS");
                     if (params.status) {
                         self.exportExcel(params.mode, params.startDateFiscalYear, params.endDateFiscalYear);
-                     }
+                    }
                 });
-            }                                                           
-        
+            }
+
             /**
              * Print file excel
              */
@@ -1063,6 +1117,8 @@ module nts.uk.at.view.ksm004.a {
             eventUpdatable: KnockoutObservable<boolean>;
             holidayDisplay: KnockoutObservable<boolean>;
             cellButtonDisplay: KnockoutObservable<boolean>;  
+			reloadOnSameYM?: boolean; 
+			hidden?: boolean;
         }
         
         interface ITreeGrid {
@@ -1109,15 +1165,15 @@ module nts.uk.at.view.ksm004.a {
                 this.backgroundColor = 'white';
                 switch(listText) {
                     case 1:
-                        this.textColor = '#FF3B3B';
+                        this.textColor = '#FF0000'; //RBG(255,0,0)
                         this.listText = [WorkingDayAtr.WorkingDayAtr_WorkPlace.toString()];
                         break;
                     case 2:
-                        this.textColor = '#FF3B3B';
+                        this.textColor = '#FF0000'; //RBG(255,0,0)
                         this.listText = [WorkingDayAtr.WorkingDayAtr_Class.toString()];
                         break;
                     default:
-                        this.textColor = '#31859C';
+                        this.textColor = '#558ED5'; //RBG(85,142,213)
                         this.listText = [WorkingDayAtr.WorkingDayAtr_Company.toString()];
                         break;
                 }
@@ -1126,15 +1182,15 @@ module nts.uk.at.view.ksm004.a {
             changeListText(value: number){
                 switch(value) {
                     case 1:
-                        this.textColor = '#FF3B3B';
+                        this.textColor = '#FF0000'; //RBG(255,0,0)
                         this.listText = [WorkingDayAtr.WorkingDayAtr_WorkPlace.toString()];
                         break;
                     case 2:
-                        this.textColor = '#FF3B3B';
+                        this.textColor = '#FF0000'; //RBG(255,0,0)
                         this.listText = [WorkingDayAtr.WorkingDayAtr_Class.toString()];
                         break;
                     default:
-                        this.textColor = '#31859C';
+                        this.textColor = '#558ED5'; //RBG(85,142,213)
                         this.listText = [WorkingDayAtr.WorkingDayAtr_Company.toString()];
                         break;
                 }
@@ -1144,8 +1200,8 @@ module nts.uk.at.view.ksm004.a {
         
         export enum WorkingDayAtr {
             WorkingDayAtr_Company = '稼働日',
-            WorkingDayAtr_WorkPlace = '非稼働日\n（法内）',
-            WorkingDayAtr_Class = '非稼働日\n（法外）'
+            WorkingDayAtr_WorkPlace = '法定休日',
+            WorkingDayAtr_Class = '法定外休日'
         }
     }
 }

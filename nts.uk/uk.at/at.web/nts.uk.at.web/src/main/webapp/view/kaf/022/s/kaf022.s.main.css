@@ -6,7 +6,7 @@
 }
 
 #app-type{
-	width: 140px;
+	width: 180px;
 }
 
 #disp-order{
@@ -28,11 +28,11 @@
 	margin-top: 20px;
 }
 
-#default-flg{
-	margin-top: 20px;
+#grid-test-single > tbody > tr> td:nth-child(1){
+	text-align: right !important;
 }
 
-#grid-test-single > tbody > tr> td:nth-child(1){
+#grid-test-single > tbody > tr> td:nth-child(3){
 	text-align: center !important;
 }
 

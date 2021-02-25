@@ -33,7 +33,7 @@
 }
 
 .btn-panel {
-	justify-content: space-evenly;
+	justify-content: space-around;
 	width: 550px;
 	align-items: flex-end;
 }

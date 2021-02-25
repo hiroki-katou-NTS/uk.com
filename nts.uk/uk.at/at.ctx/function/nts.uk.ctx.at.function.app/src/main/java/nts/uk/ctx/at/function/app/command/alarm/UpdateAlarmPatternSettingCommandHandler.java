@@ -34,7 +34,7 @@ public class UpdateAlarmPatternSettingCommandHandler extends CommandHandler<AddA
 
 	@Inject
 	private AlarmPatternSettingRepository repo;
-	
+
 	@Inject
 	private CreateAverage createAverage;
 
@@ -43,24 +43,24 @@ public class UpdateAlarmPatternSettingCommandHandler extends CommandHandler<AddA
 
 		AddAlarmPatternSettingCommand c = context.getCommand();
 		String companyId = AppContexts.user().companyId();
-		
+
 //		List<CheckCondition> listWorkTypeCode = checkConList.stream().filter(x-> x.getAlarmCategory().equals(AlarmCategory.AGREEMENT)).collect(Collectors.toList());
 //		List<ExtractionRangeBase> baseTemp = listWorkTypeCode.stream().flatMap(x -> x.getExtractPeriodList().stream()).filter(x -> (x instanceof AverageMonth)).collect(Collectors.toList());
 //		ExtractionRangeBase month = baseTemp.get(0);
-		
-		
+
+
 		// find domain
 		AlarmPatternSetting domain = repo.findByAlarmPatternCode(companyId, c.getAlarmPatternCD()).get();
 		List<CheckCondition> listWorkTypeCode2 = domain.getCheckConList().stream().filter(x-> x.getAlarmCategory().equals(AlarmCategory.AGREEMENT)).collect(Collectors.toList());
 		List<ExtractionRangeBase> baseTemp2 = listWorkTypeCode2.stream().flatMap(x -> x.getExtractPeriodList().stream()).filter(x -> (x instanceof ExtractionPeriodMonth)).collect(Collectors.toList());
 		if(!baseTemp2.isEmpty()){
-		ExtractionRangeBase month21 = baseTemp2.get(0);
-		
-		Optional<AverageMonth> monthFind = repo.findAverageMonth(month21.getExtractionId());
-		if(!monthFind.isPresent()){
-			AverageMonth month2 = new AverageMonth(month21.getExtractionId(), 4, 0);
-			createAverage.createAver(month2);
-		}
+			ExtractionRangeBase month21 = baseTemp2.get(0);
+
+			Optional<AverageMonth> monthFind = repo.findAverageMonth(month21.getExtractionId());
+			if(!monthFind.isPresent()){
+				AverageMonth month2 = new AverageMonth(month21.getExtractionId(), 4, 0);
+				createAverage.createAver(month2);
+			}
 		}
 
 		AlarmPermissionSetting alarmPerSet = new AlarmPermissionSetting(c.getAlarmPatternCD(), companyId,
@@ -69,16 +69,16 @@ public class UpdateAlarmPatternSettingCommandHandler extends CommandHandler<AddA
 		List<CheckCondition> checkConList = c.getCheckConditonList().stream()
 				.map(x ->convertToCheckCondition(x, c.getAlarmPatternCD()))
 				.collect(Collectors.toList());
-		// set update property  
+		// set update property
 		domain.setAlarmPerSet(alarmPerSet);
 		domain.setCheckConList(checkConList);
 		domain.setAlarmPatternName(c.getAlarmPatterName());
-		
+
 		//AverageMonth
 		// check domain logic
 		if (domain.selectedCheckCodition()) {
 			// アラームリストのパターンを更新する (Update pattern of alarm list )
-			
+
 			repo.update(domain);
 		}
 
@@ -96,24 +96,24 @@ public class UpdateAlarmPatternSettingCommandHandler extends CommandHandler<AddA
 
 			extractionList.add(command.getExtractionPeriodUnit().toDomain());
 
-		} else if (command.getAlarmCategory() == AlarmCategory.MONTHLY.value || 
+		} else if (command.getAlarmCategory() == AlarmCategory.MONTHLY.value ||
 				command.getAlarmCategory() == AlarmCategory.MULTIPLE_MONTH.value ) {
 
 			command.getListExtractionMonthly().forEach(e -> {
 				extractionList.add(e.toDomain());
 			});
 		} else if(command.getAlarmCategory() == AlarmCategory.AGREEMENT.value) {
-			
+
 			extractionList.add(command.getExtractionPeriodDaily().toDomain());
 			command.getListExtractionMonthly().forEach(e -> {
 				extractionList.add(e.toDomain());
 			});
-			
+
 			Optional<AlarmPatternSetting> dataExtra =  repo.findByAlarmPatternCode(companyId, code);
 			AYear extractYear = command.getExtractionYear().toDomain();
 			extractYear.setExtractionRange(ExtractionRange.YEAR);
 			extractionList.add(extractYear);
-			
+
 			// Add averageMonth to extractionList
 			AverageMonth averageMonth = command.getExtractionAverMonth().toDomain();
 			averageMonth.setExtractionRange(ExtractionRange.DES_STANDARD_MONTH);
@@ -125,8 +125,8 @@ public class UpdateAlarmPatternSettingCommandHandler extends CommandHandler<AddA
 				e.setExtractionRange(averageMonth.getExtractionRange());
 			});
 		}
-		
+
 		return new CheckCondition(EnumAdaptor.valueOf(command.getAlarmCategory(), AlarmCategory.class), command.getCheckConditionCodes(), extractionList);
 	}
-	
+
 }

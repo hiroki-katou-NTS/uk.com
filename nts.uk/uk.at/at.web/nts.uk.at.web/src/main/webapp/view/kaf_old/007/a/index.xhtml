@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+					nts.uk.ctx.at.request.dom.application.AppReason
+					nts.uk.shr.com.time.TimeWithDayAttr
+			</com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="../../007/share/kaf007.share.style.css" />
+			<com:stylefile path="../../000/a/kaf000.a.main.css" />
+			<com:scriptfile path="../../000/shr/kaf000.shr.vm.js" />
+			<com:scriptfile path="../../007/share/kaf007.share.vm.js" />
+			<com:scriptfile path="../../007/share/kaf007.share.service.js" />
+			<com:scriptfile path="kaf007.a.start.js" />
+			<com:scriptfile path="../../000/a/kaf000.a.service.js" />
+			<com:scriptfile path="../../000/a/kaf000.a.vm.js" />
+			<com:scriptfile path="kaf007.a.start.js" />
+			<com:scriptfile path="kaf007.a.vm.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area">
+				<div style ="display: flex;">
+					<!--A1_1 登録--> 
+					<button class="proceed" data-bind="enable: $root.errors.isEmpty, click: registerClick">#{i18n.getText('KAF007_54')}</button>
+					<!--A1_2 印刷（PDF）--> 
+					<button id="btnSpecSetting" data-bind=" visible: false">#{i18n.getText('KAF007_55')}</button>
+					<!--A1_3 実績参照--> 
+					<button data-bind="click: openKDL004Click,visible: false">#{i18n.getText('KAF007_56')}</button>		
+					<!--A1_4 承認者変更ボタン--> 				
+					<button data-bind="click: openCMM018Click,visible: false">#{i18n.getText('KAF005_12')}</button>				
+					<!--A1_5 登録時にメールを送信するしない区分--> 
+					<!--A1_5_1 登録時にメールを送信する--> 
+					<div class="btnSendMail"
+						data-bind="visible: enableSendMail, ntsCheckBox: { checked: checkBoxValue, enable: enableSendMail, text: '#{i18n.getText('KAF007_45')}' }">
+					</div>
+				</div>
+			</div>
+			<div id="contents-area"> 
+					<!-- Message area -->
+					<div data-bind="with: kaf000_a">
+						<ui:include src="../../000/a/index1.xhtml" />
+					</div>
+					<!-- Main -->
+					<div class="mainScreen cf">
+						<ui:include src="../share/index.xhtml"></ui:include>
+					</div>
+					<!-- Footer -->
+					<div class="lstApprover" data-bind="with: kaf000_a"  style="margin-bottom: 20px;">
+						<ui:include src="../../000/a/index2_New.xhtml" />
+					</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

@@ -1,15 +1,32 @@
-body {
-	overflow-y: hidden ;
-}
-
 #table-top {
-	margin-top: 13px;
-	margin-left: 76px;
+	width: 440px;
+	margin-left: 7px;
+	margin-top: 7px;
 }
 
-#table-bottom {
-	margin-left: 170px;
-	margin-top: 5px;
+#table-top tr td:nth-child(1){
+	width: 80px;
+}
+#table-top tr td:nth-child(2){
+	width: 360px;
+}
+
+#table-top .ntsCheckBox{
+	margin-top: 1px;
+	padding-left: 0px;
+}
+
+#daterangepicker .ntsControl.nts-datepicker-wrapper{
+	display: block;
+}
+
+.nts-fixed-table{
+	margin-left: 87px;
+	margin-top: 4px;
+}
+
+.nts-fixed-table th{
+	height: 37px;
 }
 
 .tbDay {
@@ -33,7 +50,7 @@ body {
 }
 
 .nts-first-radio>.ntsRadioBox:first-child {
-	background-color: #CCFFFF;
+	background-color: #D5FFFF;
 	
 }
 .nts-second-radio>.ntsRadioBox:nth-child(2) {
@@ -41,7 +58,7 @@ body {
 	
 }
 .nts-thirt-radio>.ntsRadioBox:nth-child(3) {
-	background-color: #DAEEF3;
+	background-color: #FDEADA;
 	
 }
 .ntsRadioBox{
@@ -49,14 +66,17 @@ body {
     padding: 5px;
 }
 .ntsCheckBox-label-bottom{
-	background-color: #F7EFD4;
-    padding: 3px;
-    margin: 10px;
+    margin: 5px 0 12px 0;
 }
 
-div.form-label{
-	height: 30px;
-}
 #functions-area-bottom{
-	    height: 110px;
+	 height: 110px;
+}
+
+.nts-fixed-table table.fixed-table > tbody > tr:hover > td {
+	background-color: #FFFFFF;
+}
+
+.nts-fixed-table table.fixed-table > tbody > tr > td:nth-child(2):hover {
+	background-color: #c5f1f7;
 }

@@ -1,8 +1,8 @@
 package nts.uk.ctx.at.record.dom.divergence.time.history;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.workrule.businesstype.BusinessTypeCode;
 
 /**
  * The Interface WorkTypeDivergenceReferenceTimeHistoryRepository.

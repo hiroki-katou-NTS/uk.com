@@ -5,18 +5,15 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeYear;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxAverageTimeMulti;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxTimeStatusOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreTimeYearStatusOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOutput;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeYear;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.ScheRecAtr;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeYear;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreMaxAverageTimeMulti;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreTimeYearStatusOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeYear;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.ScheRecAtr;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 /**
  * 
  * @author Doan Duy Hung
@@ -24,13 +21,14 @@ import nts.arc.time.calendar.period.YearMonthPeriod;
  */
 public interface AgreementTimeAdapter {
 	
-	public List<AgreementTimeImport> getAgreementTime(String companyId, List<String> employeeIds, YearMonth yearMonth, ClosureId closureId);
+	public List<AgreementTimeImport_Old> getAgreementTime(String companyId, List<String> employeeIds, YearMonth yearMonth, ClosureId closureId);
 	
 	public Optional<AgreeTimeYearImport> getYear(String companyId, String employeeId, YearMonthPeriod period, GeneralDate criteria);
 	
 	public AgreTimeYearStatusOfMonthly timeYear(AgreementTimeYear agreementTimeYear, Optional<AttendanceTimeYear> requestTimeOpt);
 	
-	public AgreMaxTimeStatusOfMonthly maxTime(AttendanceTimeMonth agreementTime, LimitOneMonth maxTime, Optional<AttendanceTimeMonth> requestTimeOpt);
+	/** TODO: 36協定時間対応により、コメントアウトされた */
+//	public AgreMaxTimeStatusOfMonthly maxTime(AttendanceTimeMonth agreementTime, AgreementOneMonth maxTime, Optional<AttendanceTimeMonth> requestTimeOpt);
 	
 	public AgreMaxAverageTimeMulti maxAverageTimeMulti(
 			String companyId,
@@ -42,7 +40,39 @@ public interface AgreementTimeAdapter {
 	
 //	public Optional<YearMonthPeriod> containsDate(String companyID, GeneralDate criteria);
 	
-	public AgreementTimeOutput getAverageAndYear(String companyId, String employeeId, YearMonth averageMonth,
-			GeneralDate criteria, ScheRecAtr scheRecAtr);
+	/** TODO: 36協定時間対応により、コメントアウトされた */
+//	public AgreementTimeOutput getAverageAndYear(String companyId, String employeeId, YearMonth averageMonth,
+//			GeneralDate criteria, ScheRecAtr scheRecAtr);
+	
+	/**
+	 * Refactor5 36協定時間の取得
+	 * rql 333
+	 * @param sid
+	 * @param ym
+	 * @param dailyRecord
+	 * @param baseDate
+	 * @param scheRecAtr
+	 * @return
+	 */
+	public AgreementTimeOfManagePeriod getAgreementTimeOfManagePeriod(
+			String sid,
+			YearMonth ym,
+			List<IntegrationOfDaily> dailyRecord,
+			GeneralDate baseDate,
+			ScheRecAtr scheRecAtr
+			);
+	
+	/**
+	 * RequestList599
+	 * refactor 5
+	 * @param companyId
+	 * @param employeeId
+	 * @param averageMonth
+	 * @param criteria
+	 * @param scheRecAtr
+	 * @return
+	 */
+	public AgreementTimeImport getAverageAndYear(String companyId, String employeeId, YearMonth averageMonth,
+				GeneralDate criteria, ScheRecAtr scheRecAtr);
 	
 }

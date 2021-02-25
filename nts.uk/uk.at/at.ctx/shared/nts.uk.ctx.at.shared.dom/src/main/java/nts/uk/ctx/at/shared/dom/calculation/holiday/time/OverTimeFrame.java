@@ -8,8 +8,6 @@ package nts.uk.ctx.at.shared.dom.calculation.holiday.time;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.OvertimeFrameName;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.TransferFrameName;
 
 /**
  * The Class OverTimeFrame.

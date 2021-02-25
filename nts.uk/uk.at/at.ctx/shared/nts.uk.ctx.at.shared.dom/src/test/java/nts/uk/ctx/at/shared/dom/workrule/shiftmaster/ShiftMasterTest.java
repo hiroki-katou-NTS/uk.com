@@ -40,7 +40,7 @@ public class ShiftMasterTest {
 		ShiftMaster shiftMater = new ShiftMaster("companyId",new ShiftMasterCode(shiftMasterCode), displayInfor, workTypeCode,workTimeCode);
 		new Expectations() {
 			{
-				requireWorkInfo.findByPK(shiftMater.getWorkTypeCode().v());
+				requireWorkInfo.getWorkType(shiftMater.getWorkTypeCode().v());
 			}
 		};
 		NtsAssert.businessException("Msg_1608", () -> shiftMater.checkError(requireWorkInfo));
@@ -55,13 +55,13 @@ public class ShiftMasterTest {
 		ShiftMaster shiftMater = new ShiftMaster("companyId",new ShiftMasterCode(shiftMasterCode), displayInfor, workTypeCode,workTimeCode);
 		new Expectations() {
 			{
-				requireWorkInfo.findByPK(shiftMater.getWorkTypeCode().v());
+				requireWorkInfo.getWorkType(shiftMater.getWorkTypeCode().v());
 				result = Optional.of(new WorkType());
 				
 				requireWorkInfo.checkNeededOfWorkTimeSetting(shiftMater.getWorkTypeCode().v());
 				result = SetupType.REQUIRED;
 				
-				requireWorkInfo.findByCode(workTimeCode);
+				requireWorkInfo.getWorkTime(workTimeCode);
 				
 			}
 		};
@@ -76,10 +76,10 @@ public class ShiftMasterTest {
 		String workTimeCode = "workTimeCode";
 		ShiftMasterDisInfor displayInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"), null);
 		ShiftMaster shiftMater = new ShiftMaster("companyId",new ShiftMasterCode(shiftMasterCode), displayInfor, workTypeCode,workTimeCode);
-		shiftMater.setWorkTimeCode(null);
+		shiftMater.removeWorkTimeInHolydayWorkType();
 		new Expectations() {
 			{
-				requireWorkInfo.findByPK(shiftMater.getWorkTypeCode().v());
+				requireWorkInfo.getWorkType(shiftMater.getWorkTypeCode().v());
 				result = Optional.of(new WorkType());
 				
 				requireWorkInfo.checkNeededOfWorkTimeSetting(shiftMater.getWorkTypeCode().v());
@@ -98,7 +98,7 @@ public class ShiftMasterTest {
 		ShiftMaster shiftMater = new ShiftMaster("companyId",new ShiftMasterCode(shiftMasterCode), displayInfor, workTypeCode,workTimeCode);
 		new Expectations() {
 			{
-				requireWorkInfo.findByPK(shiftMater.getWorkTypeCode().v());
+				requireWorkInfo.getWorkType(shiftMater.getWorkTypeCode().v());
 				result = Optional.of(new WorkType());
 				
 				requireWorkInfo.checkNeededOfWorkTimeSetting(shiftMater.getWorkTypeCode().v());
@@ -114,7 +114,7 @@ public class ShiftMasterTest {
 		String shiftMasterCode = "shiftMasterCode";
 		String workTypeCode = "workTypeCode";
 		String workTimeCode = "workTimeCode";
-		WorkInformation workInfor =new WorkInformation("workTimeCode123", "workTypeCode123");
+		WorkInformation workInfor =new WorkInformation("workTypeCode123", "workTimeCode123");
 		ShiftMasterDisInfor displayInfor = new ShiftMasterDisInfor(
 				new ShiftMasterName("name1"),//dummy
 				new ColorCodeChar6("color1"),//dummy 

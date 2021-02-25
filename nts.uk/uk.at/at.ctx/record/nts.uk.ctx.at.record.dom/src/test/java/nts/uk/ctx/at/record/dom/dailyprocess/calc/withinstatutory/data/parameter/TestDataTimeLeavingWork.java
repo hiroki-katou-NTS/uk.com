@@ -4,14 +4,12 @@ import java.util.Map;
 import java.util.function.Function;
 
 import lombok.val;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
-import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
-import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
-import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
-import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
-import nts.uk.ctx.at.shared.dom.common.time.CsvParameter;
-import nts.uk.ctx.at.shared.dom.common.time.TestDataCsvRecord;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
+import nts.uk.ctx.at.shared.dom.worktime.enums.StampSourceInfo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -24,7 +22,7 @@ public class TestDataTimeLeavingWork {
 				"/testdata/WithinWorkTimeSheetTest/parameter/TimeLeavingWork.csv",
 				buildTimeLeavingWork,
 				TimeLeavingWork.class);
-		
+
 	}
 
 	/**
@@ -32,12 +30,13 @@ public class TestDataTimeLeavingWork {
 	 */
 	static Function<TestDataCsvRecord, WorkStamp> buildWorkStamp = record -> {
 		return new WorkStamp(
-				record.asInt("AfterRoundingTime", v -> new TimeWithDayAttr(v)),
 				record.asInt("timeWithDay", v -> new TimeWithDayAttr(v)),
 				record.asStrOpt("locationCode").map(v -> new WorkLocationCD(v)).orElse(null),
-				record.asEnum("stampSourceInfo", StampSourceInfo.class));
+				null, null);
+//				record.asEnum("timeChangeMeans", TimeChangeMeans.class),
+//				record.asEnum("engravingMethod", EngravingMethod.class));
 	};
-	
+
 	/**
 	 * TimeActualStamp
 	 */
@@ -46,7 +45,7 @@ public class TestDataTimeLeavingWork {
 		val stamp = record.child("stamp", buildWorkStamp).get();
 		return new TimeActualStamp(actualStamp, stamp, record.asInt("numberOfReflectionStamp"));
 	};
-	
+
 	/**
 	 * TimeLeavingWork
 	 */

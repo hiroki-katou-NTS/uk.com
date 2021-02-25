@@ -4,10 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.app.find.optitem;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -16,19 +13,6 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.record.app.find.optitem.calculation.FormulaDto;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemRepository;
-import nts.uk.ctx.at.shared.dom.optitem.OptionalItem;
-import nts.uk.ctx.at.shared.dom.optitem.OptionalItemName;
-import nts.uk.ctx.at.shared.dom.optitem.OptionalItemNameOther;
-import nts.uk.ctx.at.shared.dom.optitem.OptionalItemNameOtherRepository;
-import nts.uk.ctx.at.shared.dom.optitem.OptionalItemRepository;
-import nts.uk.ctx.at.shared.dom.optitem.PerformanceAtr;
-import nts.uk.ctx.at.shared.dom.optitem.calculation.CalculationAtr;
-import nts.uk.ctx.at.shared.dom.optitem.calculation.Formula;
-import nts.uk.ctx.at.shared.dom.optitem.calculation.FormulaId;
-import nts.uk.ctx.at.shared.dom.optitem.calculation.FormulaRepository;
-import nts.uk.ctx.at.shared.dom.optitem.calculation.OperatorAtr;
-import nts.uk.ctx.at.shared.dom.optitem.calculation.disporder.FormulaDispOrder;
-import nts.uk.ctx.at.shared.dom.optitem.calculation.disporder.FormulaDispOrderRepository;
 //import nts.uk.ctx.at.shared.dom.scherec.attendanceitemname.AttendanceItemName;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
@@ -36,7 +20,22 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttenda
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AtItemNameAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.TypeOfItemImport;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.ControlOfAttendanceItemsRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.ControlOfMonthlyItemsRepository;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemName;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemNameOther;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemNameOtherRepository;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.PerformanceAtr;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.CalculationAtr;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.Formula;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.FormulaId;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.FormulaRepository;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.OperatorAtr;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.disporder.FormulaDispOrder;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.disporder.FormulaDispOrderRepository;
 //import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.MonthlyAttendanceItemNameAdapter;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.LanguageConsts;
@@ -81,6 +80,15 @@ public class OptionalItemFinder {
 	@Inject
 	private OptionalItemNameOtherRepository optItemNameOtherRepository;
 	
+	@Inject
+	private ControlOfMonthlyItemsRepository monthlyControlRepository;
+	
+	@Inject
+	private ControlOfAttendanceItemsRepository dailyControlRepository;
+	
+	@Inject
+	private OptionalItemService optionalItemService;
+	
 	/**
 	 * Find.
 	 *
@@ -96,6 +104,33 @@ public class OptionalItemFinder {
 		dto.setFormulas(this.getFormulas(optionalItem));
 
 		return dto;
+	}
+
+	/**
+	 * Find By List No.
+	 *
+	 * @param optionalItemNos the list optional item no
+	 * @return the list optional item dto
+	 */
+	public List<OptionalItemDto> findByListNo(List<Integer> optionalItemNos) {
+		List<OptionalItemDto> result = new ArrayList<>();
+		List<OptionalItem> optionalItems = this.repository.findByListNos(AppContexts.user().companyId(), optionalItemNos);
+		List<Formula> formulas = this.formulaRepo.find(AppContexts.user().companyId());
+		optionalItems.forEach(item -> {
+			OptionalItemDto dto = new OptionalItemDto();
+			item.saveToMemento(dto);
+			// Set list formula.
+			List<FormulaDto> formulaDtos = formulas.stream().filter(
+					formula -> formula.getOptionalItemNo().equals(item)
+			).map(formula -> {
+				FormulaDto formulaDto = new FormulaDto();
+				formula.saveToMemento(formulaDto);
+				return formulaDto;
+			}).collect(Collectors.toList());
+			dto.setFormulas(formulaDtos);
+			result.add(dto);
+		});
+		return result;
 	}
 
 	/**
@@ -247,12 +282,16 @@ public class OptionalItemFinder {
 		return listDto;
 	}
 	
-	public OptionalItemDto findWithLang(Integer optionalItemNo, String langId) {
+	public OutputOptItemWithControl findWithLang(Integer optionalItemNo, String langId) {
 		OptionalItemDto dto = new OptionalItemDto();
 		OptionalItem optionalItem = this.repository.find(AppContexts.user().companyId(), optionalItemNo);
 		optionalItem.saveToMemento(dto);
 		// Set list formula.
-		dto.setFormulas(this.getFormulas(optionalItem));
+		List<FormulaDto> formulaLst = this.getFormulas(optionalItem);
+		dto.setFormulas(formulaLst);
+//		if (formulaLst.size() > 0) {
+//		    formulaLst.get(0).getItemSelection().getAttendanceItems().size() > 0 ? formulaLst.get(0).getItemSelection().getAttendanceItems()[0]
+//		}
 		if(!langId.equals(LanguageConsts.DEFAULT_LANGUAGE_ID)) {
 			Optional<OptionalItemNameOther> nameOtherOpt = optItemNameOtherRepository.findByKey(AppContexts.user().companyId(), optionalItemNo, langId);
 			if(nameOtherOpt.isPresent()) {
@@ -262,7 +301,7 @@ public class OptionalItemFinder {
 			}
 		}
 
-		return dto;
+		return new OutputOptItemWithControl(dto, this.optionalItemService.getItemControl(dto.getPerformanceAtr(), optionalItemNo));
 	}
 	
 	public List<OptionalItemHeaderDto> findAllWithLang(String langId) {

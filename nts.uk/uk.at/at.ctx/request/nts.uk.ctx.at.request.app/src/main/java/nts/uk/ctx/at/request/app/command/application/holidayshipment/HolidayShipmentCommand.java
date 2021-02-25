@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 public class HolidayShipmentCommand {
 	private String absAppID;
 	private String recAppID;
-	private Long appVersion;
+	private int appVersion;
 	private String memo;
 	private String comboBoxReason;
     private String textAreaReason;

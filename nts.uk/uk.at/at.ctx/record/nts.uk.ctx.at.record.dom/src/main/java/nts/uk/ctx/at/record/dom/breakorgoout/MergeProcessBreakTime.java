@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.record.dom.breakorgoout;
 
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 
 /**
  * @author ThanhNX

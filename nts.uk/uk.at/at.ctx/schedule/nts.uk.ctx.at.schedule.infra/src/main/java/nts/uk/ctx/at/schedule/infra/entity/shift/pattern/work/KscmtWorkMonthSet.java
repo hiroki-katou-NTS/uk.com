@@ -6,10 +6,8 @@ package nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -21,7 +19,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSCMT_WORK_MONTH_SET")
+@Table(name = "KSCMT_MONTHLY_PATTERN_DTL")
 public class KscmtWorkMonthSet extends UkJpaEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -31,13 +29,18 @@ public class KscmtWorkMonthSet extends UkJpaEntity implements Serializable {
     protected KscmtWorkMonthSetPK kscmtWorkMonthSetPK;
     
     /** The work type cd. */
-    @Column(name = "WORK_TYPE_CD")
+    @Column(name = "WKTP_CD")
     private String workTypeCd;
     
     /** The working cd. */
-    @Column(name = "WORKING_CD")
+    @Column(name = "WKTM_CD")
     private String workingCd;
-
+    /**
+     * 契約コード
+     */
+    @NotNull
+    @Column(name = "CONTRACT_CD")
+    private String contractCd;
     /**
      * Instantiates a new kscmt work month set.
      */

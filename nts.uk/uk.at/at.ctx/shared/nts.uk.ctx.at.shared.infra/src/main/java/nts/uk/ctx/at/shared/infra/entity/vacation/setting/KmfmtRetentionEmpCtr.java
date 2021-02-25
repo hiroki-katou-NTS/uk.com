@@ -15,6 +15,7 @@ import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -24,8 +25,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Setter
 @Getter
-@Table(name = "KMFMT_RETENTION_EMP_CTR")
-public class KmfmtRetentionEmpCtr extends UkJpaEntity implements Serializable {
+@Table(name = "KSHMT_HDSTK_EMP")
+public class KmfmtRetentionEmpCtr extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -33,22 +34,12 @@ public class KmfmtRetentionEmpCtr extends UkJpaEntity implements Serializable {
 	@EmbeddedId
 	protected KmfmtRetentionEmpCtrPK kmfmtRetentionEmpCtrPK;
 
-	/** The year amount. */
-	@Basic(optional = false)
-	@NotNull
-	@Column(name = "NUMBER_OF_YEAR")
-	private short yearAmount;
 
-	/** The max days retention. */
-	@Basic(optional = false)
-	@NotNull
-	@Column(name = "MAX_NUMBER_OF_DAYS")
-	private short maxDaysRetention;
 
 	/** The management ctr atr. */
 	@Basic(optional = false)
 	@NotNull
-	@Column(name = "MANAGEMENT_CTR_ATR")
+	@Column(name = "MANAGE_ATR")
 	private short managementCtrAtr;
 
 	/*

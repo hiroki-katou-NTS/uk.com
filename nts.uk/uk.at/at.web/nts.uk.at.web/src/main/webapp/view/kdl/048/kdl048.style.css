@@ -1,0 +1,97 @@
+#totalTable {
+	width: 250px;
+}
+
+#content-left {
+  float: left;
+  margin-top: 35px;
+  width: 350px;
+}
+
+#content-mid {
+  float: left;
+  margin-top: 215px;
+  margin-left: 15px;
+  width: 60px;
+  height: 300px;
+}
+
+#button {
+  margin-top: 40px;
+}
+
+#button-plus {
+  margin-left: 15px;
+}
+
+#button-minus {
+  margin-left: 15px;
+  margin-top: 40px;
+}
+
+.ntsPanel {
+  width: 350px;
+  height: 450px;
+}
+
+.combo {
+  height: 55px;
+}
+
+.combo-box {
+  float: right;
+  width: 140px;
+  margin-top: 4px;
+  margin-right: 95px;
+}
+
+.input {
+  margin-left: 40px;
+  width: 150px;
+  margin-top: 5px;
+}
+
+.text-input {
+display: inline-flex;
+}
+
+#content-right {
+  float: left;
+  margin-left: 15px;
+  margin-top: 160px;
+}
+#content-top {
+  float: top;
+  height: 40px;
+}
+
+#contents-area {
+  padding-top: 15px !important;
+  padding-bottom: 15px !important;
+  padding-left: 30px !important;
+  padding-right: 30px !important;
+}
+
+#table-Hd-Grant td {
+	padding-left: 5px !important; 
+}
+
+.float-right {
+	float: right !important;
+}
+
+hr {
+	clear: both;
+}
+
+#message-area {
+	padding: 10px;
+}
+
+.bold {
+	font-weight: bold;
+}
+
+.text-center {
+  text-align: center;
+}

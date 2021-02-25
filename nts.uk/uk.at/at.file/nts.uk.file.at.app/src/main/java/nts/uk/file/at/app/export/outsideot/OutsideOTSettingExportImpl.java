@@ -16,18 +16,17 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSetting;
-import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSettingRepository;
-import nts.uk.ctx.at.shared.dom.outsideot.breakdown.BreakdownItemNo;
-import nts.uk.ctx.at.shared.dom.outsideot.breakdown.language.OutsideOTBRDItemLangRepository;
-import nts.uk.ctx.at.shared.dom.outsideot.holiday.PremiumExtra60HRate;
-import nts.uk.ctx.at.shared.dom.outsideot.holiday.SuperHD60HConMed;
-import nts.uk.ctx.at.shared.dom.outsideot.holiday.SuperHD60HConMedRepository;
-import nts.uk.ctx.at.shared.dom.outsideot.overtime.Overtime;
-import nts.uk.ctx.at.shared.dom.outsideot.overtime.OvertimeNo;
-import nts.uk.ctx.at.shared.dom.outsideot.overtime.language.OvertimeNameLangRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.BreakdownItemNo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.language.OutsideOTBRDItemLangRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.SuperHD60HConMed;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.SuperHD60HConMedRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.Overtime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.OvertimeNo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.language.OvertimeNameLangRepository;
 import nts.uk.file.at.app.export.outsideot.data.OutsideOTBRDItemNameLangData;
 import nts.uk.file.at.app.export.outsideot.data.OvertimeNameLanguageData;
 import nts.uk.shr.com.context.AppContexts;
@@ -405,16 +404,16 @@ public class OutsideOTSettingExportImpl implements MasterListData {
 					overtime.isSuperHoliday60HOccurs() ? TRUE_SETTING_RATE : FALSE_SETTING_RATE);
 		});
 		masterDatas.add(new MasterData(dataA121, null, ""));
-		List<PremiumExtra60HRate> lstExtra60Rate = this.superHD60HConMedRepository.findAllPremiumRate(companyId);
+//		List<PremiumExtra60HRate> lstExtra60Rate = this.outsideOTSettingRepository.fin(companyId);
 		this.outsideOTSettingRepository.findAllBRDItem(companyId).forEach(breakdownItem -> {
 			Map<String, Object> dataA141 = new HashMap<>();
 			dataA141.put(NUMBER_COLS_START, breakdownItem.getName().v());
 			if (breakdownItem.isUseClass()) {
-				lstExtra60Rate.forEach(extraRate -> {
-					if (extraRate.getBreakdownItemNo() == breakdownItem.getBreakdownItemNo()) {
+				breakdownItem.getPremiumExtra60HRates().forEach(extraRate -> {
+//					if (extraRate.get == breakdownItem.getBreakdownItemNo()) {
 						dataA141.put(NUMBER_COLS + extraRate.getOvertimeNo().value,
 								this.toPercent(extraRate.getPremiumRate().v()));
-					}
+//					}
 				});
 			}
 			masterDatas.add(new MasterData(dataA141, null, ""));

@@ -61,9 +61,10 @@ public class Ksu001LaScreenQuery {
 		
 		if(!CollectionUtil.isEmpty(employeeAffiliations)) {
 			lstEmpId = employeeAffiliations.stream().map(x -> x.getEmployeeID()).collect(Collectors.toList());
-		} else {	
-			return null;
-		}
+		} 
+//		else {	
+//			return null;
+//		}
 		if(!CollectionUtil.isEmpty(lstEmpId)) {		
 			/** 2. 取得する(Require, List<社員ID>): List<社員所属チーム情報> **/
 			empTeamInfors = GetScheduleTeamInfoService.get(getScheduleTeamInfoImpl, lstEmpId);			

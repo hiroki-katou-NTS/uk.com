@@ -16,7 +16,6 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class WorkType.
@@ -86,6 +85,7 @@ public class WorkType extends AggregateRoot implements Cloneable, Serializable{
 		}
 	}
 	
+	
 	/** 取得したドメインモデル「勤務種類．一日の勤務．一日」をチェックする */
 	public boolean isWokingDay() {
 		if(dailyWork == null) { return false; }
@@ -141,6 +141,7 @@ public class WorkType extends AggregateRoot implements Cloneable, Serializable{
 		this.dailyWork = dailyWork;
 		this.deprecate = deprecate;
 		this.calculateMethod = calculateMethod;
+		this.workTypeSetList = new ArrayList<>();
 	}
 	
 	public WorkType(WorkTypeCode workTypeCode, WorkTypeSymbolicName symbolicName, WorkTypeName name,
@@ -152,6 +153,7 @@ public class WorkType extends AggregateRoot implements Cloneable, Serializable{
 		this.abbreviationName = abbreviationName;
 		this.memo = memo;
 		this.dailyWork = dailyWork;
+		this.workTypeSetList = new ArrayList<>();
 	}
 
 	/**
@@ -301,11 +303,7 @@ public class WorkType extends AggregateRoot implements Cloneable, Serializable{
 	 * @return the work type set by atr
 	 */
 	public Optional<WorkTypeSet> getWorkTypeSetByAtr(WorkAtr atr) {
-		if (!atr.equals("the atr")) {
-			return this.getWorkTypeSetList().stream().filter(item -> item.getWorkAtr() == atr).findFirst();
-		} else {
-			return Optional.empty();
-		}
+		return this.getWorkTypeSetList().stream().filter(item -> item.getWorkAtr() == atr).findFirst();
 	}
 	
 	public WorkTypeSet getWorkTypeSetAvailable() {
@@ -514,5 +512,44 @@ public class WorkType extends AggregateRoot implements Cloneable, Serializable{
 
 	public void setDeprecate(DeprecateClassification deprecate) {
 		this.deprecate = deprecate;
+	}
+	
+	/** 時間消化休暇日数を取得する */
+	public double calcTimeConsumpVacationDays () {
+		
+		if (dailyWork.getWorkTypeUnit() == WorkTypeUnit.OneDay) {
+			if (dailyWork.getOneDay() == WorkTypeClassification.TimeDigestVacation) {
+				return 1;
+			}
+		} else {
+			if (dailyWork.getMorning() == WorkTypeClassification.TimeDigestVacation) {
+				return 0.5;
+			}
+		
+			if (dailyWork.getAfternoon() == WorkTypeClassification.TimeDigestVacation) {
+				return 0.5;
+			}
+		}
+		
+		return 0;
+	}
+
+	public void setWorkTypeCode(WorkTypeCode workTypeCode) {
+		this.workTypeCode = workTypeCode;
+	}
+
+	public void setDailyWork(DailyWork dailyWork) {
+		this.dailyWork = dailyWork;
+	}
+	
+	/**
+	 * 休出かどうかの判断
+	 * @return true=休出,false=休出ではない
+	 */
+	public boolean isHolidayWork(){
+		if (this.isOneDay()){
+			if (this.dailyWork.getOneDay() == WorkTypeClassification.HolidayWork) return true;
+		}
+		return false;
 	}
 }

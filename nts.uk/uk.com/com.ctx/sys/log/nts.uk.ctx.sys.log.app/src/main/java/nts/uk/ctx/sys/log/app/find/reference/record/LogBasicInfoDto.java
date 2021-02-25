@@ -55,11 +55,14 @@ public class LogBasicInfoDto {
 	private String methodName;
 	private String loginStatus;
 	
+	//programId
+	private String programId;
 	public static LogBasicInfoDto fromDomain(LogBasicInformation domain) {
 		
 		return new LogBasicInfoDto("",
 				domain.getOperationId(),domain.getUserInfo().getUserName(),null,null,null,null,null,null,
-				domain.getModifiedDateTime().toString("yyyy/MM/dd HH:mm:ss"),null,null,null,null,null,null,null,null);
+				domain.getModifiedDateTime().toString("yyyy/MM/dd HH:mm:ss"),null,null,null,null,null,null,null,null,
+				domain.getTargetProgram().getProgramId());
 	}
 
 }

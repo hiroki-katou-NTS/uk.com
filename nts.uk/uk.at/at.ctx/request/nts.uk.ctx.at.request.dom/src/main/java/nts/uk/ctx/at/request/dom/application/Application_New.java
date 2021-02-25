@@ -93,7 +93,7 @@ public class Application_New extends DomainObject {
 		return this.appType  == ApplicationType.GO_RETURN_DIRECTLY_APPLICATION;
 	}
 	public boolean isAppHdWork(){
-		return this.appType  == ApplicationType.BREAK_TIME_APPLICATION;
+		return this.appType  == ApplicationType.HOLIDAY_WORK_APPLICATION;
 	}
 	public boolean isAppWkChange(){
 		return this.appType  == ApplicationType.WORK_CHANGE_APPLICATION;
@@ -115,17 +115,5 @@ public class Application_New extends DomainObject {
 	}
 	public boolean isAppEarlyLeaveCancel(){
 		return this.appType  == ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION;
-	}
-	public boolean isAppStempNrApplication(){
-		return this.appType  == ApplicationType.STAMP_NR_APPLICATION;
-	}
-	public boolean isAppLongBusinessTrip(){
-		return this.appType  == ApplicationType.LONG_BUSINESS_TRIP_APPLICATION;
-	}
-	public boolean isAppBusinessTripAppHelper(){
-		return this.appType  == ApplicationType.BUSINESS_TRIP_APPLICATION_OFFICE_HELPER;
-	}
-	public boolean isApp_36(){
-		return this.appType  == ApplicationType.APPLICATION_36;
 	}
 }

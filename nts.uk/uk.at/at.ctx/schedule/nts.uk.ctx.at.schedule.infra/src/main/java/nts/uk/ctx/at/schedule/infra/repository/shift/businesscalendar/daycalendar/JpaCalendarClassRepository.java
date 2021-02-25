@@ -47,7 +47,7 @@ public class JpaCalendarClassRepository extends JpaRepository implements Calenda
 												domain.getCompanyId(),
 												domain.getClassId().v(),
 												domain.getDate());
-		entity.workingDayAtr = domain.getWorkingDayAtr().value;
+		entity.workingDayAtr = domain.getWorkDayDivision().value;
 		return entity;
 	}
 	
@@ -86,7 +86,7 @@ public class JpaCalendarClassRepository extends JpaRepository implements Calenda
 		KsmmtCalendarClass clendarCla = toEntityCalendarClass(calendarClass);
 		KsmmtCalendarClass classUpdate = this.queryProxy()
 				.find(clendarCla.ksmmtCalendarClassPK, KsmmtCalendarClass.class).get();
-		classUpdate.workingDayAtr = calendarClass.getWorkingDayAtr().value;
+		classUpdate.workingDayAtr = calendarClass.getWorkDayDivision().value;
 		this.commandProxy().update(classUpdate);
 		
 	}

@@ -9,55 +9,68 @@ module nts.uk.at.view.ksu001.a.service {
         getDataScheduleDisplayControl: "screen/at/schedule/basicschedule/getScheduleDisplayControl",
         getDataWorkEmpCombine: "screen/at/schedule/basicschedule/getWorkEmpCombine",
         getDataSpecDateAndHoliday: "screen/at/schedule/basicschedule/getDataSpecDateAndHoliday",
-        getDataComPattern: "screen/at/schedule/basicschedule/getDataComPattern",
-        getDataWkpPattern: "screen/at/schedule/basicschedule/getDataWkpPattern",
         findWorkPlaceById: "bs/employee/workplace/info/findDetail",
+        getDataComPattern: "at/schedule/shift/management/getListShijtPalletsByCom",
+        getDataWkpPattern: "at/schedule/shift/management/shiftpalletorg/getbyWorkplaceId",
+
+        // lai start
+        getSendingPeriod: "screen/at/schedule/schedule/start/getSendingPeriod",
+
+        getDataStartScreen: "screen/at/schedule/start",
+        getDataOfShiftMode: "screen/at/schedule/shift",
+        getDataOfShortNameMode: "screen/at/schedule/shortname",
+        getDataOfTimeMode: "screen/at/schedule/time",
+        getDataChangeMonth: "screen/at/schedule/change-month",
+        getDataWhenChangeModePeriod: "screen/at/schedule/change-mode-period",
+        orderEmployee: "screen/at/schedule/order-employee",
+        validWhenPaste: "screen/at/schedule/valid-when-paste",
+        validWhenEditTime: "screen/at/schedule/valid-when-edit-time",
+        changeWokPlace: "screen/at/schedule/change-workplace"
     }
 
-    export function getDataBasicSchedule(obj): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.getDataBasicSchedule, obj);
+    export function getDataStartScreen(param): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getDataStartScreen, param);
     }
 
-    export function registerData(obj): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.registerData, obj);
+    export function getDataOfShiftMode(param): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getDataOfShiftMode, param);
     }
 
-    export function getShiftCondition(): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.getShiftCondition);
+    export function getDataOfShortNameMode(param): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getDataOfShortNameMode, param);
     }
 
-    export function getShiftConditionCategory(): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.getShiftConditionCategory);
-    }
-    
-    export function buildTreeShiftCondition(): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.buildTreeShiftCondition);
+    export function getDataOfTimeMode(param): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getDataOfTimeMode, param);
     }
 
-    export function getDataWorkScheduleState(obj): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.getDataWorkScheduleState, obj);
+    export function getSendingPeriod(obj): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getSendingPeriod, obj);
     }
 
-    export function getDataScheduleDisplayControl(): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.getDataScheduleDisplayControl);
+    export function getDataChangeMonth(obj): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getDataChangeMonth, obj);
     }
 
-    export function getDataWorkEmpCombine(obj): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.getDataWorkEmpCombine, obj);
+    export function getDataWhenChangeModePeriod(obj): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getDataWhenChangeModePeriod, obj);
     }
 
-    export function getDataSpecDateAndHoliday(obj): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.getDataSpecDateAndHoliday, obj);
+    export function getListEmpIdSorted(obj): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.orderEmployee, obj);
     }
 
-    export function getDataComPattern(): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.getDataComPattern);
+    export function validWhenPaste(obj): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.validWhenPaste, obj);
     }
 
-    export function getDataWkpPattern(obj): JQueryPromise<any> {
-        return nts.uk.request.ajax("at", paths.getDataWkpPattern, obj);
+    export function validWhenEditTime(obj): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.validWhenEditTime, obj);
     }
-    export function getWorkPlaceById(data: any): JQueryPromise<any> {
-        return nts.uk.request.ajax("com", paths.findWorkPlaceById, data);
+
+    export function changeWokPlace(obj): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.changeWokPlace, obj);
     }
+
+
 }

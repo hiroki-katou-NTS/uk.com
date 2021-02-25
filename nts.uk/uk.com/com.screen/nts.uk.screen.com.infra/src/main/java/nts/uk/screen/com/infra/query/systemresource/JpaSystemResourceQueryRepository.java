@@ -44,7 +44,8 @@ public class JpaSystemResourceQueryRepository extends JpaRepository implements S
 										  "Com_Contract", "Com_User", "Com_Project", "Com_AdHocWork",
 										  "Com_BindingTime", "Com_AttendanceDays", "Com_AbsenceDays", "Com_PaidHoliday",
 										  "Com_FundedPaidHoliday", "Com_SubstituteWork", "Com_CompensationHoliday", "Com_ExsessHoliday",
-										  "Com_PlanedPaidHoliday","Com_SubstituteHoliday");
+										  "Com_PlanedPaidHoliday","Com_SubstituteHoliday", "Workplace_Group",
+										  "Work_Name", "Work_Name1", "Work_Name2", "Work_Name3", "Work_Name4", "Work_Name5");
 		
 		List<CismtI18NResourceCus> listResource = this.queryProxy().query(QUERY_STRING_CUS, CismtI18NResourceCus.class)
 										.setParameter("languageId", languageId)
@@ -67,7 +68,8 @@ public class JpaSystemResourceQueryRepository extends JpaRepository implements S
 				  "Com_Contract", "Com_User", "Com_Project", "Com_AdHocWork",
 				  "Com_BindingTime", "Com_AttendanceDays", "Com_AbsenceDays", "Com_PaidHoliday",
 				  "Com_FundedPaidHoliday", "Com_SubstituteWork", "Com_CompensationHoliday", "Com_ExsessHoliday",
-				  "Com_PlanedPaidHoliday","Com_SubstituteHoliday");
+				  "Com_PlanedPaidHoliday","Com_SubstituteHoliday","Workplace_Group",
+				  "Work_Name", "Work_Name1", "Work_Name2", "Work_Name3", "Work_Name4", "Work_Name5");
 
 		List<CisctI18NResource> listResource = this.queryProxy().query(QUERY_STRING, CisctI18NResource.class)
 						.setParameter("resourceIdList", list).getList();
@@ -120,4 +122,5 @@ public class JpaSystemResourceQueryRepository extends JpaRepository implements S
 		
 		return data;
 	}
+
 }

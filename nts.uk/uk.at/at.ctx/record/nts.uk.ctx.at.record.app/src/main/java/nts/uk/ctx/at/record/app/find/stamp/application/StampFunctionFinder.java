@@ -5,6 +5,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.record.dom.stamp.application.StampResultDisplay;
 import nts.uk.ctx.at.record.dom.stamp.application.StampResultDisplayRepository;
 import nts.uk.shr.com.context.AppContexts;
 /**
@@ -19,10 +20,10 @@ public class StampFunctionFinder {
 
 	public StampFunctionDto getStampSet(){
 		String companyId = AppContexts.user().companyId();
-		Optional<StampFunctionDto> stampSet = repo.getStampSet(companyId).map(mapper->StampFunctionDto.fromDomain(mapper));
-		if(!stampSet.isPresent())
+		Optional<StampResultDisplay> domain = repo.getStampSet(companyId);
+		if(!domain.isPresent())
 			return null;
 		
-	return stampSet.get();
+	return StampFunctionDto.fromDomain(domain.get());
 	}
 }

@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 public class AddAlarmPatternSettingCommand {
-	
+
 	/**
 	 * アラームリストパターンコード
 	 */
@@ -18,10 +18,10 @@ public class AddAlarmPatternSettingCommand {
 	/**
 	 * アラームリスト権限設定
 	 */
-	private AlarmPermissionSettingCommand alarmPerSet; 
+	private AlarmPermissionSettingCommand alarmPerSet;
 	/**
 	 * チェック条件
 	 */
 	private List<CheckConditionCommand> checkConditonList;
-	
+
 }

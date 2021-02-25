@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.request.app.find.setting.company.request.stamp.dto;
 
 import lombok.AllArgsConstructor;
-import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampRequestSetting;
+import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampRequestSetting_Old;
 /**
  * 
  * @author Doan Duy Hung
@@ -48,7 +48,7 @@ public class StampRequestSettingDto {
 	
 	public Integer stampGoOutAtr_Union_Disp;
 	
-	public static StampRequestSettingDto fromDomain(StampRequestSetting stampRequestSetting){
+	public static StampRequestSettingDto fromDomain(StampRequestSetting_Old stampRequestSetting){
 		return new StampRequestSettingDto(
 				stampRequestSetting.getCompanyID(), 
 				stampRequestSetting.getTopComment().getComment().v(), 

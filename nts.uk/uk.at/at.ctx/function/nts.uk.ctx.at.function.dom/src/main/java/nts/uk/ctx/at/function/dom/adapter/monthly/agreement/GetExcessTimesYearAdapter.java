@@ -3,7 +3,8 @@ package nts.uk.ctx.at.function.dom.adapter.monthly.agreement;
 import java.util.List;
 import java.util.Map;
 
-import nts.uk.ctx.at.shared.dom.common.Year;
+import nts.arc.time.calendar.Year;
+
 
 public interface GetExcessTimesYearAdapter {
 	/**

@@ -12,17 +12,16 @@
 }
 #register-form-d {
     margin-top: 35px;
+    margin-left: -10px;
 }
 .ntsRadioBox{
     margin-right: 10px;
 }
 
 #workplace-group-pannel{
-	margin-top: 0px !important;
-}
-
-#workplace-group-pannel{
 	height: 458px !important;
+	width: 410px !important;
+	margin-top: 0px !important;
 }
 
 #form-title-d {

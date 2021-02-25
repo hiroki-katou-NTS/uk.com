@@ -25,8 +25,8 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enu
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExeStateOfCalAndSum;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionStatus;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ErrMessageResource;
-import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
-import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.MonthlyAggregationErrorInfo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
@@ -120,6 +120,12 @@ public class MonthlyAggregationService {
 		// 社員の数だけループ　（並列処理対象）
 		StateHolder stateHolder = new StateHolder(employeeIds.size());
 		require.parallelContext().forEach(employeeIds, employeeId -> {
+			
+			Optional<GeneralDate> date = require.getProcessingDate(employeeId, criteriaDate);
+            if(!date.isPresent()) {
+                return;
+            }
+            
 			if (stateHolder.isInterrupt()) return;
 		
 			ConcurrentStopwatches.start("10000:社員ごと：" + employeeId);
@@ -127,7 +133,7 @@ public class MonthlyAggregationService {
 			// 社員1人分の処理　（社員の月別実績を集計する）
 			MonthlyAggregationEmployeeService.AggregationResult aggrStatus = MonthlyAggregationEmployeeService.aggregate(
 					require, cacheCarrier, asyncContext,
-					companyId, employeeId, criteriaDate, empCalAndSumExecLogID, reAggrAtr, companySets);
+					companyId, employeeId, date.get(), empCalAndSumExecLogID, reAggrAtr, companySets);
 			ProcessState coStatus = aggrStatus.getStatus().getState();
 			atomTasks.addAll(aggrStatus.getAtomTasks());
 			stateHolder.add(coStatus);
@@ -252,6 +258,8 @@ public class MonthlyAggregationService {
 
 	public static interface RequireM1 extends MonAggrCompanySettings.RequireM6, RequireM2,
 		MonthlyAggregationEmployeeService.RequireM1 {
+		
+		Optional<GeneralDate> getProcessingDate(String employeeId, GeneralDate date);
 		
 		void updateLogInfo(String empCalAndSumExecLogID,int executionContent, int processStatus);
 		

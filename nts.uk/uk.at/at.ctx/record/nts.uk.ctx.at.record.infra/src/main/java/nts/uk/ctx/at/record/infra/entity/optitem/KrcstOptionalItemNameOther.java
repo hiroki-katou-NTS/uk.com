@@ -12,9 +12,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.optitem.OptionalItemName;
-import nts.uk.ctx.at.shared.dom.optitem.OptionalItemNameOther;
-import nts.uk.ctx.at.shared.dom.optitem.OptionalItemNo;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemName;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemNameOther;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemNo;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Getter

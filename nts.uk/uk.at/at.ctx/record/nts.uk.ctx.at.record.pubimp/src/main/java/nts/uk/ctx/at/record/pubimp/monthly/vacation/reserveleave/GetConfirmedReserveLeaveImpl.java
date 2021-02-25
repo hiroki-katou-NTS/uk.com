@@ -17,10 +17,10 @@ import nts.uk.ctx.at.record.dom.monthly.mergetable.RemainMerge;
 import nts.uk.ctx.at.record.pub.monthly.vacation.reserveleave.GetConfirmedReserveLeave;
 import nts.uk.ctx.at.record.pub.monthly.vacation.reserveleave.ReserveLeaveUsageExport;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
-import nts.uk.ctx.at.shared.dom.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
-import nts.uk.ctx.at.shared.dom.monthly.vacation.reserveleave.RsvLeaRemNumEachMonthRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveUsedDayNumber;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.RsvLeaRemNumEachMonthRepository;
 
 /**
  * 実装：社員の月毎の確定済み年休を取得する
@@ -55,7 +55,7 @@ public class GetConfirmedReserveLeaveImpl implements GetConfirmedReserveLeave {
 			val yearMonth = data.getYearMonth();
 			val reserveLeave = data.getReserveLeave();
 			val usedNumber = reserveLeave.getUsedNumber();
-			val remNumber = reserveLeave.getRemainingNumber();
+			val remNumber = reserveLeave.getRemainingNumberInfo().getRemainingNumber();
 			
 			ReserveLeaveUsedDayNumber usedDays =
 					new ReserveLeaveUsedDayNumber(usedNumber.getUsedDays().v());
@@ -114,7 +114,7 @@ public class GetConfirmedReserveLeaveImpl implements GetConfirmedReserveLeave {
 				val yearMonth = data.getYearMonth();
 				val reserveLeave = data.getReserveLeave();
 				val usedNumber = reserveLeave.getUsedNumber();
-				val remNumber = reserveLeave.getRemainingNumber();
+				val remNumber = reserveLeave.getRemainingNumberInfo().getRemainingNumber();
 				
 				ReserveLeaveUsedDayNumber usedDays = new ReserveLeaveUsedDayNumber(usedNumber.getUsedDays().v());
 				ReserveLeaveRemainingDayNumber remainingDays = new ReserveLeaveRemainingDayNumber(remNumber.getTotalRemainingDays().v());

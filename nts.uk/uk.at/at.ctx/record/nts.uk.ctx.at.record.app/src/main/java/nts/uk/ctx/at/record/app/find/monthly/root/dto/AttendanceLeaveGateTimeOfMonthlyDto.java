@@ -1,20 +1,24 @@
 package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.attendanceleave.AttendanceLeaveGateTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.attendanceleave.AttendanceLeaveGateTimeOfMonthly;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 /** 月別実績の入退門時間 */
-public class AttendanceLeaveGateTimeOfMonthlyDto implements ItemConst {
+public class AttendanceLeaveGateTimeOfMonthlyDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 出勤前時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.TIME)
@@ -57,5 +61,48 @@ public class AttendanceLeaveGateTimeOfMonthlyDto implements ItemConst {
 	private AttendanceTimeMonth toAttendanceTimeMonth(Integer time) {
 		return new AttendanceTimeMonth(time);
 	}
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case ATTENDANCE:
+			return Optional.of(ItemValue.builder().value(timeBeforeAttendance).valueType(ValueType.TIME));
+		case STAYING:
+			return Optional.of(ItemValue.builder().value(stayingTime).valueType(ValueType.TIME));
+		case LEAVE:
+			return Optional.of(ItemValue.builder().value(timeAfterLeaveWork).valueType(ValueType.TIME));
+		case UNEMPLOYED:
+			return Optional.of(ItemValue.builder().value(unemployedTime).valueType(ValueType.TIME));
+		default:
+			return Optional.empty();
+		}
+	}
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case ATTENDANCE:
+		case STAYING:
+		case LEAVE:
+		case UNEMPLOYED:
+			return PropType.VALUE;
+		default:
+			return PropType.OBJECT;
+		}
+	}
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case ATTENDANCE:
+			timeBeforeAttendance = value.valueOrDefault(0); break;
+		case STAYING:
+			stayingTime = value.valueOrDefault(0); break;
+		case LEAVE:
+			timeAfterLeaveWork = value.valueOrDefault(0); break;
+		case UNEMPLOYED:
+			unemployedTime = value.valueOrDefault(0); break;
+		default:
+		}
+	}
+
+
 }
 

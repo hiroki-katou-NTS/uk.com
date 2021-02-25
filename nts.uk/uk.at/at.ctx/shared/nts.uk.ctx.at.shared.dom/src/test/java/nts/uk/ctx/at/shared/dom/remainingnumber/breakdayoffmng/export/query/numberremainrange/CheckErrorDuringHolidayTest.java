@@ -28,12 +28,17 @@ public class CheckErrorDuringHolidayTest {
 	public void setUp() throws Exception {
 	}
 
+	 /* 　テストしたい内容
+	 * 　　残日数, 残時間 <0の場合はエラー
+	 *        残日数 <0 →日単位代休残数不足エラー
+	 *        残時間 <0→　 相殺できないエラー
+	 */
 	@Test
 	public void test() {
 
 		List<DayOffError> lstError = new ArrayList<>();
 		SubstituteHolidayAggrResult param = new SubstituteHolidayAggrResult(new VacationDetails(new ArrayList<>()),
-				new ReserveLeaveRemainingDayNumber(-1.0), new RemainingMinutes(-480),
+				new ReserveLeaveRemainingDayNumber(-1.0), new RemainingMinutes(-480),//残日数, 残時間
 				new ReserveLeaveRemainingDayNumber(1.0), new RemainingMinutes(480),
 				new ReserveLeaveRemainingDayNumber(4.0), new RemainingMinutes(960),
 				new ReserveLeaveRemainingDayNumber(1.0), new RemainingMinutes(0),

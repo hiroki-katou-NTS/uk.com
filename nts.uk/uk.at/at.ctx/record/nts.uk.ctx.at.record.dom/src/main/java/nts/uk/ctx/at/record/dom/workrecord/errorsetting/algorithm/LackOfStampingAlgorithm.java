@@ -10,12 +10,12 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /*
@@ -27,7 +27,7 @@ public class LackOfStampingAlgorithm {
 	@Inject
 	private BasicScheduleService basicScheduleService;
 
-	public EmployeeDailyPerError lackOfStamping(String companyID, String employeeID, GeneralDate processingDate,
+	public Optional<EmployeeDailyPerError> lackOfStamping(String companyID, String employeeID, GeneralDate processingDate,
 			WorkInfoOfDailyPerformance workInfoOfDailyPerformance,
 			TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance) {
 
@@ -46,7 +46,7 @@ public class LackOfStampingAlgorithm {
 			// timeLeavingOfDailyPerformanceRepository.findByKey(employeeID,
 			// processingDate).get();
 
-			if (timeLeavingOfDailyPerformance != null
+			if (timeLeavingOfDailyPerformance != null && timeLeavingOfDailyPerformance.getAttendance()!=null
 					&& !timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks().isEmpty()) {
 				List<TimeLeavingWork> timeLeavingWorkList = timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks();
 				List<Integer> attendanceItemIDList = new ArrayList<>();
@@ -117,7 +117,7 @@ public class LackOfStampingAlgorithm {
 			}
 		}
 
-		return employeeDailyPerError;
+		return Optional.ofNullable(employeeDailyPerError);
 	}
 
 }

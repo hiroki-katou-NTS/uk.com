@@ -8,6 +8,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryAcquisitionUseGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.DeadlCheckMonth;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.TermManagement;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KclmtAcquisitionCom;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KclmtAcquisitionEmp;
 
@@ -82,6 +83,12 @@ public class JpaCompensAcquisitionUseGetMemento implements CompensatoryAcquisiti
 	@Override
 	public DeadlCheckMonth getDeadlCheckMonth() {
 		return DeadlCheckMonth.valueOf(this.entityCom == null ? this.entityEmp.getDeadlCheckMonth() : this.entityCom.getDeadlCheckMonth());
+	}
+
+	@Override
+	public TermManagement termManagement() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

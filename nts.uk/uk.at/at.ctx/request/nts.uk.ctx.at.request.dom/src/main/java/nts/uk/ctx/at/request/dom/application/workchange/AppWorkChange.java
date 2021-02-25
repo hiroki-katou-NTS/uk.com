@@ -1,116 +1,66 @@
 package nts.uk.ctx.at.request.dom.application.workchange;
 
-import lombok.AllArgsConstructor;
+import java.util.List;
+import java.util.Optional;
+
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
-* 勤務変更申請
-*/
-@AllArgsConstructor
+ * refactor 4
+ * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.申請承認.申請.勤務変更申請.勤務変更申請
+ * @author Doan Duy Hung
+ *
+ */
 @Getter
 @Setter
-public class AppWorkChange extends AggregateRoot
-{
-    
-    /**
-    * 会社ID
-    */
-    private String cid;
-    
-    /**
-    * 申請ID
-    */
-    private String appId;
-    
-    /**
-    * 勤務種類コード
-    */
-    private String workTypeCd;
-    
-    /**
-    * 就業時間帯コード
-    */
-    private String workTimeCd;
-    
-    /**
-    * 休日を除外する
-    */
-    private Integer excludeHolidayAtr;
-    
-    /**
-    * 勤務を変更する
-    */
-    private Integer workChangeAtr;
-    
-    /**
-    * 勤務直行1
-    */
-    private Integer goWorkAtr1;
-    
-    /**
-    * 勤務直帰1
-    */
-    private Integer backHomeAtr1;
-    
-    /**
-    * 休憩時間開始1
-    */
-    private Integer breakTimeStart1;
-    
-    /**
-    * 休憩時間終了1
-    */
-    private Integer breakTimeEnd1;
-    
-    /**
-    * 勤務時間開始1
-    */
-    private Integer workTimeStart1;
-    
-    /**
-    * 勤務時間終了1
-    */
-    private Integer workTimeEnd1;
-    
-    /**
-    * 勤務時間開始2
-    */
-    private Integer workTimeStart2;
-    
-    /**
-    * 勤務時間終了2
-    */
-    private Integer workTimeEnd2;
-    
-    /**
-    * 勤務直行2
-    */
-    private Integer goWorkAtr2;
-    
-    /**
-    * 勤務直帰2
-    */
-    private Integer backHomeAtr2;
-    
-    /**
-     * 勤務種類名
-     */
-    private String workTypeName;
-    
-    /**
-     * 就業時間帯名
-     */
-    private String workTimeName;
-    
-	public static AppWorkChange createFromJavaType(String cid, String appId, String workTypeCd, String workTimeCd,
-			Integer excludeHolidayAtr, Integer workChangeAtr, Integer goWorkAtr1, Integer backHomeAtr1, Integer breakTimeStart1,
-			Integer breakTimeEnd1, Integer workTimeStart1, Integer workTimeEnd1, Integer workTimeStart2, Integer workTimeEnd2,
-			Integer goWorkAtr2, Integer backHomeAtr2) {
-		return new AppWorkChange(cid, appId, workTypeCd, workTimeCd, excludeHolidayAtr, workChangeAtr, goWorkAtr1,
-				backHomeAtr1, breakTimeStart1, breakTimeEnd1, workTimeStart1, workTimeEnd1, workTimeStart2,
-				workTimeEnd2, goWorkAtr2, backHomeAtr2, null, null);
-	}
 
+public class AppWorkChange extends Application {
+
+	/**
+	 * 直行区分
+	 */
+	private NotUseAtr straightGo;
+	
+	/**
+	 * 直帰区分
+	 */
+	private NotUseAtr straightBack;
+	
+	/**
+	 * 勤務種類コード
+	 */
+	private Optional<WorkTypeCode> opWorkTypeCD;
+	
+	/**
+	 * 就業時間帯コード
+	 */
+	private Optional<WorkTimeCode> opWorkTimeCD;
+	
+	/**
+	 * 勤務時間帯
+	 */
+	private List<TimeZoneWithWorkNo> timeZoneWithWorkNoLst;
+	
+	public AppWorkChange(NotUseAtr straightGo, NotUseAtr straightBack,
+		Optional<WorkTypeCode> opWorkTypeCD, Optional<WorkTimeCode> opWorkTimeCD,
+		List<TimeZoneWithWorkNo> timeZoneWithWorkNoLst, Application application) {
+		super(application);
+		this.straightGo = straightGo;
+		this.straightBack = straightBack;
+		this.opWorkTypeCD = opWorkTypeCD;
+		this.opWorkTimeCD = opWorkTimeCD;
+		this.timeZoneWithWorkNoLst = timeZoneWithWorkNoLst;
+	}
+	
+	
+	public AppWorkChange(Application application) {
+		super(application);
+	}
+	
 }

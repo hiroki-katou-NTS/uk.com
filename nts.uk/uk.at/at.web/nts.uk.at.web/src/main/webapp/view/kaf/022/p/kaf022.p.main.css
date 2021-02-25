@@ -1,0 +1,23 @@
+.form-label {
+    width: 178.11px;
+}
+
+#swap-up-down {
+    height: 268px !important;
+}
+
+#swap-list_container {
+    height: 268px !important;
+}
+
+.upDown-container {
+    height: 268px !important;
+}
+
+.grid-col-text-right {
+    text-align: right;
+}
+
+.ui-iggrid .ui-iggrid-tablebody td {
+    height: 22px;
+}

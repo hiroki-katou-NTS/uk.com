@@ -30,5 +30,10 @@ public class KshstOvertimeFrame_ {
     
     /** The ot fr name. */
     public static volatile SingularAttribute<KshstOvertimeFrame, String> otFrName;
-
+    
+    /** The role. */
+    public static volatile SingularAttribute<KshstOvertimeFrame, Short> role;
+    
+    /** The transfer atr. */
+    public static volatile SingularAttribute<KshstOvertimeFrame, Short> transferAtr;
 }

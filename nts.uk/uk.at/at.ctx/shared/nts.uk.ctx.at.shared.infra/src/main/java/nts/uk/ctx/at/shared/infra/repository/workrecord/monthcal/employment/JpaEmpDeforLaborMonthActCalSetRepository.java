@@ -4,14 +4,16 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.workrecord.monthcal.employment;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.emp.EmpDeforLaborMonthActCalSet;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.emp.EmpDeforLaborMonthActCalSetRepo;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.emp.EmpDeforLaborMonthActCalSet;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.emp.EmpDeforLaborMonthActCalSetRepo;
 import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.employment.KrcstEmpDeforMCalSet;
 import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.employment.KrcstEmpDeforMCalSetPK;
 
@@ -22,6 +24,9 @@ import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.employment.KrcstEmp
 public class JpaEmpDeforLaborMonthActCalSetRepository extends JpaRepository
 		implements EmpDeforLaborMonthActCalSetRepo {
 
+	private static final String SELECT_BY_CID = "SELECT c FROM KrcstEmpDeforMCalSet c"
+			+ " WHERE c.krcstEmpDeforMCalSetPK.cid = :cid";
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -105,6 +110,16 @@ public class JpaEmpDeforLaborMonthActCalSetRepository extends JpaRepository
 				e.getAggregateTimeSet(), e.getExcessOutsideTimeSet(),
 				e.deforLaborCalSetting(),
 				e.deforLaborSettlementPeriod());
+	}
+
+	@Override
+	public List<EmpDeforLaborMonthActCalSet> findEmpDeforLabor(String cid) {
+		List<KrcstEmpDeforMCalSet> entitys = this.queryProxy().query(SELECT_BY_CID, KrcstEmpDeforMCalSet.class)
+				.setParameter("cid", cid).getList();
+		
+		return entitys.stream().map(m -> {
+			return toDomain(m);
+		}).collect(Collectors.toList());
 	}
 
 }

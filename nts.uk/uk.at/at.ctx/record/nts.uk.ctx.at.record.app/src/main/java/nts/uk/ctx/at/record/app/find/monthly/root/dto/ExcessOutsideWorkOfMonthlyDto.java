@@ -1,24 +1,28 @@
 package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
-import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
-import nts.uk.ctx.at.shared.dom.monthly.excessoutside.ExcessOutsideWorkOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.excessoutside.ExcessOutsideWorkOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.excessoutside.SuperHD60HConTime;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 /** 月別実績の時間外超過 */
-public class ExcessOutsideWorkOfMonthlyDto implements ItemConst {
+public class ExcessOutsideWorkOfMonthlyDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 月割増合計時間: 勤怠月間時間 */
 	@AttendanceItemValue(type = ValueType.TIME)
@@ -39,12 +43,31 @@ public class ExcessOutsideWorkOfMonthlyDto implements ItemConst {
 	@AttendanceItemLayout(jpPropertyName = IRREGULAR + CARRY_FORWARD, layout = LAYOUT_D)
 	private int deformationCarryforwardTime;
 	
+	/** 付与時間: 勤怠月間時間 */
+	@AttendanceItemValue(type = ValueType.TIME)
+	@AttendanceItemLayout(jpPropertyName = SUPER_60 + GRANT, layout = LAYOUT_E)
+	private int superHD60GrantTime;
+	
+	/** 精算時間: 勤怠月間時間 */
+	@AttendanceItemValue(type = ValueType.TIME)
+	@AttendanceItemLayout(jpPropertyName = SUPER_60 + CALC, layout = LAYOUT_F)
+	private int superHD60PayoffTime;
+	
+	/** 換算時間: 勤怠月間時間 */
+	@AttendanceItemValue(type = ValueType.TIME)
+	@AttendanceItemLayout(jpPropertyName = SUPER_60 + TRANSFER, layout = LAYOUT_G)
+	private int superHD60ConversionTime;
+	
+	
 	public ExcessOutsideWorkOfMonthly toDomain() {
 		return ExcessOutsideWorkOfMonthly.of(
 						new AttendanceTimeMonth(weeklyTotalPremiumTime), 
 						new AttendanceTimeMonth(monthlyTotalPremiumTime), 
 						new AttendanceTimeMonthWithMinus(deformationCarryforwardTime), 
-						ConvertHelper.mapTo(time, c -> c.toDomain()));
+						ConvertHelper.mapTo(time, c -> c.toDomain()),
+						SuperHD60HConTime.of(new AttendanceTimeMonth(superHD60GrantTime), 
+											new AttendanceTimeMonth(superHD60PayoffTime), 
+											new AttendanceTimeMonth(superHD60ConversionTime)));
 	}
 	
 	public static ExcessOutsideWorkOfMonthlyDto from(ExcessOutsideWorkOfMonthly domain) {
@@ -57,7 +80,107 @@ public class ExcessOutsideWorkOfMonthlyDto implements ItemConst {
 			dto.setWeeklyTotalPremiumTime(domain.getWeeklyTotalPremiumTime() == null 
 					? 0 : domain.getWeeklyTotalPremiumTime().valueAsMinutes());
 			dto.setTime(ExcessOutsideWorkDto.from(domain.getTime()));
+			dto.superHD60PayoffTime = domain.getSuperHD60Time().getPayoffTime().valueAsMinutes();
+			dto.superHD60GrantTime = domain.getSuperHD60Time().getGrantTime().valueAsMinutes();
+			dto.superHD60ConversionTime = domain.getSuperHD60Time().getConversionTime().valueAsMinutes();
 		}
 		return dto;
 	}
+
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case MONTHLY_PREMIUM:
+			return Optional.of(ItemValue.builder().value(monthlyTotalPremiumTime).valueType(ValueType.TIME));
+		case WEEKLY_PREMIUM:
+			return Optional.of(ItemValue.builder().value(weeklyTotalPremiumTime).valueType(ValueType.TIME));
+		case (IRREGULAR + CARRY_FORWARD):
+			return Optional.of(ItemValue.builder().value(deformationCarryforwardTime).valueType(ValueType.TIME));
+		case (SUPER_60 + GRANT):
+			return Optional.of(ItemValue.builder().value(superHD60GrantTime).valueType(ValueType.TIME));
+		case (SUPER_60 + CALC):
+			return Optional.of(ItemValue.builder().value(superHD60PayoffTime).valueType(ValueType.TIME));
+		case (SUPER_60 + TRANSFER):
+			return Optional.of(ItemValue.builder().value(superHD60ConversionTime).valueType(ValueType.TIME));
+		default:
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		if (TIME.equals(path)) {
+			return new ExcessOutsideWorkDto();
+		}
+		return AttendanceItemDataGate.super.newInstanceOf(path);
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case MONTHLY_PREMIUM:
+		case WEEKLY_PREMIUM:
+		case (IRREGULAR + CARRY_FORWARD):
+		case (SUPER_60 + GRANT):
+		case (SUPER_60 + CALC):
+		case (SUPER_60 + TRANSFER):
+			return PropType.VALUE;
+		case TIME:
+			return PropType.IDX_LIST;
+		default:
+		}
+		return AttendanceItemDataGate.super.typeOf(path);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T extends AttendanceItemDataGate> List<T> gets(String path) {
+		if (TIME.equals(path)){
+			return (List<T>) time;
+		}
+		return AttendanceItemDataGate.super.gets(path);
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case MONTHLY_PREMIUM:
+			monthlyTotalPremiumTime = value.valueOrDefault(0);
+			break;
+		case WEEKLY_PREMIUM:
+			weeklyTotalPremiumTime = value.valueOrDefault(0);
+			break;
+		case (IRREGULAR + CARRY_FORWARD):
+			deformationCarryforwardTime = value.valueOrDefault(0);
+			break;
+		case (SUPER_60 + GRANT):
+			superHD60GrantTime = value.valueOrDefault(0);
+			break;
+		case (SUPER_60 + CALC):
+			superHD60PayoffTime = value.valueOrDefault(0);
+			break;
+		case (SUPER_60 + TRANSFER):
+			superHD60ConversionTime = value.valueOrDefault(0);
+			break;
+		default:
+		}
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends AttendanceItemDataGate> void set(String path, List<T> value) {
+		if (TIME.equals(path)){
+			time = (List<ExcessOutsideWorkDto>) value;
+		}
+	}
+
+	@Override
+	public int size(String path) {
+		if (TIME.equals(path)){
+			return 50;
+		}
+		return AttendanceItemDataGate.super.size(path);
+	}
+
+	
 }

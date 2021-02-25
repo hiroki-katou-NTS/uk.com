@@ -4,15 +4,19 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
+import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.AppDateContradictionAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.CalcStampMiss;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.OverrideSet;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.AppDateContradictionAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 public interface PreActualColorCheck {
 	
@@ -32,7 +36,7 @@ public interface PreActualColorCheck {
 	 */
 	public PreActualColorResult preActualColorCheck(UseAtr preExcessDisplaySetting, AppDateContradictionAtr performanceExcessAtr,
 			ApplicationType appType, PrePostAtr prePostAtr, List<OvertimeInputCaculation> calcTimeList, List<OvertimeColorCheck> overTimeLst, 
-			Optional<Application_New> opAppBefore, boolean beforeAppStatus, List<OvertimeColorCheck> actualLst, ActualStatus actualStatus);
+			Optional<Application> opAppBefore, boolean beforeAppStatus, List<OvertimeColorCheck> actualLst, ActualStatus actualStatus);
 	
 	/**
 	 * 07-01_事前申請状態チェック
@@ -137,7 +141,7 @@ public interface PreActualColorCheck {
 	 * @param overtimeColorCheck 対象枠, 入力値
 	 * @param opAppBefore 事前申請
 	 */
-	public void preAppErrorCheck(ApplicationType appType, OvertimeColorCheck overtimeColorCheck, Optional<Application_New> opAppBefore, UseAtr preAppSetCheck);
+	public void preAppErrorCheck(ApplicationType appType, OvertimeColorCheck overtimeColorCheck, Optional<Application> opAppBefore, UseAtr preAppSetCheck);
 	
 	/**
 	 * 07-02-3_枠別実績超過チェック
@@ -145,4 +149,35 @@ public interface PreActualColorCheck {
 	 * @param actualLst 実績
 	 */
 	public void actualErrorCheck(OvertimeColorCheck overtimeColorCheck, List<OvertimeColorCheck> actualLst, AppDateContradictionAtr actualSetCheck);
+	
+	/**
+	 * Refactor5 07-02_実績取得・状態チェック
+	 * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム(残業・休出).07-02_実績取得・状態チェック
+	 * @param companyId
+	 * @param employeeId
+	 * @param date
+	 * @param appType
+	 * @param workTypeCode
+	 * @param workTimeCode
+	 * @param overrideSet
+	 * @param calOptional
+	 * @param breakTimes
+	 * @param acuActualContentDisplay
+	 * @return
+	 */
+	public ApplicationTime checkStatus(
+			String companyId,
+			String employeeId,
+			GeneralDate date,
+			ApplicationType appType,
+			WorkTypeCode workTypeCode,
+			WorkTimeCode workTimeCode,
+			OverrideSet overrideSet,
+			Optional<CalcStampMiss> calOptional,
+			List<DeductionTime> breakTimes,
+			Optional<ActualContentDisplay> acuActualContentDisplay
+			
+			);
+	
+	
 }

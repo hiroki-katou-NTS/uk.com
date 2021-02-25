@@ -3,12 +3,15 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc.attendancetime.reflectwork;
 import java.util.List;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ProcessTimeOutput;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.workinfo.timereflectfromworkinfo.StampReflectRangeOutput;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.workinfo.timereflectfromworkinfo.StampReflectTimezoneOutput;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.StampReflectRangeOutput;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.StampReflectTimezoneOutput;
+import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -18,6 +21,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class CheckRangeReflectAttd {
 	
 	public OutputCheckRangeReflectAttd checkRangeReflectAttd(Stamp stamp,StampReflectRangeOutput stampReflectRangeOutput,IntegrationOfDaily integrationOfDaily) {
@@ -41,7 +45,7 @@ public class CheckRangeReflectAttd {
 			if (stampReflectTimezone.getStartTime().v().intValue() <= processTimeOutput.getTimeOfDay().v().intValue()
 					&& stampReflectTimezone.getEndTime().v().intValue() >= processTimeOutput.getTimeOfDay().v()
 							.intValue()
-					&& stampReflectTimezone.getClassification().value == 0) {
+					&& stampReflectTimezone.getClassification() == GoLeavingWorkAtr.GO_WORK) {
 				if (stampReflectTimezone.getWorkNo().v().intValue() == 1) {
 					return OutputCheckRangeReflectAttd.FIRST_TIME;
 				}

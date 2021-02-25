@@ -15,13 +15,14 @@ import nts.uk.ctx.at.record.app.find.dailyperform.optionalitem.dto.OptionalItemV
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
-import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
-import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
-import nts.uk.ctx.at.shared.dom.monthly.anyitem.AnyItemOfMonthly;
-import nts.uk.ctx.at.shared.dom.optitem.OptionalItem;
-import nts.uk.ctx.at.shared.dom.optitem.OptionalItemAtr;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil.AttendanceItemType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemRoot;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.anyitem.AnyItemOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
 @Data
@@ -79,6 +80,15 @@ public class AnyItemOfMonthlyDto extends MonthlyItemCommon {
 	public YearMonth yearMonth() {
 		return yearMonth;
 	}
+	
+	public void correctItems(Map<Integer, OptionalItem> optionalMaster) {
+		values.stream().filter(item -> item != null).forEach(item -> {
+//			if(item.isNeedCorrect()) {
+				item.correctItem(getAttrFromMaster(optionalMaster, item.getNo()));
+//			}
+		});
+		values.removeIf(item -> item == null || !item.isHaveData());
+	}
 
 	public static AnyItemOfMonthlyDto from(AnyItemOfMonthly domain) {
 		return from(domain, null);
@@ -100,7 +110,7 @@ public class AnyItemOfMonthlyDto extends MonthlyItemCommon {
 			dto.setEmployeeId(domain.get(0).getEmployeeId());
 			dto.setYearMonth(domain.get(0).getYearMonth());
 			domain.stream().forEach(d -> {
-				dto.getValues().add(OptionalItemValueDto.from(d, getAttrFromMaster(master, d)));
+				dto.getValues().add(OptionalItemValueDto.from(d, getAttrFromMaster(master, d.getAnyItemId())));
 			});
 			dto.exsistData();
 		}
@@ -122,8 +132,8 @@ public class AnyItemOfMonthlyDto extends MonthlyItemCommon {
 		return dto;
 	}
 
-	private static OptionalItemAtr getAttrFromMaster(Map<Integer, OptionalItem> master, AnyItemOfMonthly c) {
-		OptionalItem optItem = master == null ? null : master.get(c.getAnyItemId());
+	private static OptionalItemAtr getAttrFromMaster(Map<Integer, OptionalItem> master, int itemNo) {
+		OptionalItem optItem = master == null ? null : master.get(itemNo);
 		OptionalItemAtr attr = null;
 		if(optItem != null){
 			attr = optItem.getOptionalItemAtr();
@@ -133,5 +143,56 @@ public class AnyItemOfMonthlyDto extends MonthlyItemCommon {
 	
 	private static OptionalItemAtr getAttrFromMasterWith(Map<Integer, OptionalItemAtr> master, AnyItemOfMonthly c) {
 		return master == null ? null : master.get(c.getAnyItemId());
+	}
+
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		if (OPTIONAL_ITEM_VALUE.equals(path)) {
+			return new OptionalItemValueDto();
+		}
+		return super.newInstanceOf(path);
+	}
+
+	@Override
+	public int size(String path) {
+		if (OPTIONAL_ITEM_VALUE.equals(path)) {
+			return 200;
+		}
+		return super.size(path);
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		if (OPTIONAL_ITEM_VALUE.equals(path)) {
+			return PropType.IDX_LIST;
+		}
+		return super.typeOf(path);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T extends AttendanceItemDataGate> List<T> gets(String path) {
+		if (OPTIONAL_ITEM_VALUE.equals(path)) {
+			return (List<T>) values;
+		}
+		return super.gets(path);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T extends AttendanceItemDataGate> void set(String path, List<T> value) {
+		if (OPTIONAL_ITEM_VALUE.equals(path)) {
+			values = (List<OptionalItemValueDto>) value;
+		}
+	}
+	
+	@Override
+	public boolean isRoot() {
+		return true;
+	}
+
+	@Override
+	public String rootName() {
+		return MONTHLY_OPTIONAL_ITEM_NAME;
 	}
 }

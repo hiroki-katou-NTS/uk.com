@@ -13,9 +13,9 @@ import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.remainnumberprocess.
 import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.remainnumberprocess.annualleave.updateremainnum.RemainAnnualLeaveUpdating;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.remainnumberprocess.annualleave.updatereserveannual.RemainReserveAnnualLeaveUpdating;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
-import nts.uk.ctx.at.shared.dom.monthly.AttendanceTimeOfMonthly;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.export.param.AggrResultOfAnnAndRsvLeave;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 
 /**
  * 
@@ -30,7 +30,7 @@ public class AnnualLeaveProcess {
 	 * @param interimRemainMngMap 暫定管理データリスト
 	 * @param attTimeMonthly 月別実績の勤怠時間
 	 */
-	public static AtomTask annualHolidayProcess(RequireM1 require, CacheCarrier cacheCarrier,
+	public static AtomTask annualHolidayProcess(RequireM1 require, CacheCarrier cacheCarrier, String cid, 
 			AggrPeriodEachActualClosure period, String empId,
 			Map<GeneralDate, DailyInterimRemainMngData> interimRemainMngMap, AttendanceTimeOfMonthly attTimeMonthly) {
 		
@@ -45,7 +45,7 @@ public class AnnualLeaveProcess {
 		
 		// 年休残数更新
 		if (output.getAnnualLeave().isPresent())
-			atomTask.add(RemainAnnualLeaveUpdating.updateRemainAnnualLeave(require, output.getAnnualLeave().get(), period, empId));
+			atomTask.add(RemainAnnualLeaveUpdating.updateRemainAnnualLeave(require, cid, output.getAnnualLeave().get(), period, empId));
 		
 //		// Fix bug 109524
 //		atomTask.add(AtomTask.of(() -> require.deleteTmpAnnualHolidayMng(mngId)));

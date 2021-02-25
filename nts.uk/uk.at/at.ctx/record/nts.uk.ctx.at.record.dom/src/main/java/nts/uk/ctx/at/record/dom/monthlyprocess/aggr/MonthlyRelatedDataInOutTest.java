@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthlyprocess.aggr;
 
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.AggregateMonthlyRecordValue;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.AggregateMonthlyRecordValue;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.arc.time.calendar.period.DatePeriod;

@@ -4,8 +4,8 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 
 /**
  * 時間帯枠（Temporary）
@@ -61,8 +61,8 @@ public class TimeFrame {
 	public void setNumberOfReflections(int numberOfReflections) {
 		this.numberOfReflections = numberOfReflections;
 	}
-	
-	
-	
-	
+
+	public void setStart(Optional<TimeActualStamp> start) {
+		this.start = start;
+	}
 }

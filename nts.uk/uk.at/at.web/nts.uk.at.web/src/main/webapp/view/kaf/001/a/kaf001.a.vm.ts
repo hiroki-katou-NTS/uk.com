@@ -4,16 +4,23 @@ module kaf001.a.viewmodel {
     import jump   = nts.uk.request.jump;
     import getText = nts.uk.resource.getText;
     import modal = nts.uk.ui.windows.sub.modal;
+	import AppInitParam = nts.uk.at.view.kaf000.shr.viewmodel.AppInitParam;
     export class ScreenModel {
+
+        selectedDate: KnockoutObservable<moment.Moment> = ko.observable(moment());
+
         //_____CCG001________
         ccg001ComponentOption : GroupOption;
-        selectedEmployee      : KnockoutObservableArray<EmployeeSearchDto>      = ko.observableArray([]);;
+        selectedEmployee      : KnockoutObservableArray<EmployeeSearchDto>      = ko.observableArray([]);
         //_____KCP005________
         kcp005ComponentOption: any;
         selectedEmployeeCode : KnockoutObservableArray<string>                  = ko.observableArray([]);
         alreadySettingList   : KnockoutObservableArray<UnitAlreadySettingModel> = ko.observableArray([]);
         employeeList         : KnockoutObservableArray<UnitModel>               = ko.observableArray([]);
-        isVisiableAppWindow  : KnockoutObservable<boolean>                      = ko.observable(false);
+        isVisiableAppWindow           : KnockoutObservable<boolean>                      = ko.observable(false);
+        isVisiableOverTimeEarly       : KnockoutObservable<boolean>             = ko.observable(false);
+        isVisiableOverTimeNormal      : KnockoutObservable<boolean>             = ko.observable(false);
+        isVisiableOverTimeEarlyNormal : KnockoutObservable<boolean>             = ko.observable(false);
         isVisiableOverTimeApp         : KnockoutObservable<boolean>             = ko.observable(false);
         isVisiableAbsenceApp          : KnockoutObservable<boolean>             = ko.observable(false);
         isVisiableWorkChangeApp       : KnockoutObservable<boolean>             = ko.observable(false);
@@ -24,6 +31,8 @@ module kaf001.a.viewmodel {
         isVisiableEarlyLeaveCanceApp  : KnockoutObservable<boolean>             = ko.observable(false);
         isVisiableComplementLeaveApp  : KnockoutObservable<boolean>             = ko.observable(false);
         isVisiableStampApp            : KnockoutObservable<boolean>             = ko.observable(false);
+        isVisiableStampAppOnlMode     : KnockoutObservable<boolean>             = ko.observable(false);
+        isVisiableOptionalItemApp     : KnockoutObservable<boolean>             = ko.observable(false);
         //app Name
         appNameDis: KnockoutObservable<ObjNameDis> = ko.observable(null);
         constructor() {
@@ -43,7 +52,7 @@ module kaf001.a.viewmodel {
                 periodFormatYM: false,
 
                 /** Required parameter */
-                baseDate: moment().toISOString(),
+                baseDate: self.selectedDate,
                 periodStartDate: moment().toISOString(),
                 periodEndDate: moment().toISOString(),
                 inService: true,
@@ -72,6 +81,7 @@ module kaf001.a.viewmodel {
                 returnDataFromCcg001: function(data: Ccg001ReturnedData) {
                     self.applyKCP005ContentSearch(data.listEmployee);
                     self.selectedEmployee(data.listEmployee);
+                    self.selectedDate(data.baseDate);
                 }
             };
 
@@ -99,7 +109,7 @@ module kaf001.a.viewmodel {
             self.employeeList(employeeSearchs);
             self.kcp005ComponentOption = {
                 isShowAlreadySet: false,
-                isMultiSelect: false,
+                isMultiSelect: true,
                 listType: ListType.EMPLOYEE,
                 employeeInputList: self.employeeList,
                 selectType: SelectType.SELECT_BY_SELECTED_CODE,
@@ -120,193 +130,211 @@ module kaf001.a.viewmodel {
             let dfd = $.Deferred();
             block.invisible();
             self.getAllProxyApplicationSetting();
-            self.getNameDisplay();
             block.clear();
             dfd.resolve();
+            $("#A4_2").focus();
             return dfd.promise();
         }
-        //hoatt
-        getNameDisplay(){
-            let self = this;
-            service.getListNameDis().done(function(data){
-                let obj: ObjNameDis = new ObjNameDis('','','','','','','','','',''); 
-                _.each(data, function(app){
-                    switch (app.appType) {
-                        case 0: {
-                            obj.overTime = getText('KAF001_12', [app.dispName]);
-                            break;
-                        }
-                        case 1: {
-                            obj.absence = getText('KAF001_12', [app.dispName]);
-                            break;
-                        }
-                        case 2: {
-                            obj.workChange = getText('KAF001_12', [app.dispName]);
-                            break;
-                        }
-                        case 3: {
-                            obj.businessTrip = getText('KAF001_12', [app.dispName]);
-                            break;
-                        }
-                        case 4: {
-                            obj.goBack = getText('KAF001_12', [app.dispName]);
-                            break;
-                        }
-                        case 6: {
-                            obj.holiday = getText('KAF001_12', [app.dispName]);
-                            break;
-                        }
-                        case 8: {
-                            obj.annualHd = getText('KAF001_12', [app.dispName]);
-                            break;
-                        }
-                        case 9: {
-                            obj.earlyLeaveCancel = getText('KAF001_12', [app.dispName]);
-                            break;
-                        }
-                        case 10: {
-                            obj.complt = getText('KAF001_12', [app.dispName]);
-                            break;
-                        }
-                        case 11: {
-                            obj.stamp = getText('KAF001_12', [app.dispName]);
-                            break;
-                        }
-                    }
-                });
-                self.appNameDis(obj);
-            });
-        }
+
+
         getAllProxyApplicationSetting() {
             let self = this;
-            service.getAllProxyApplicationSetting().done((result) => {
-                if(result){
-                    _.each(result, x => {
-                        switch (x.appType) {
-                            case ApplicationType.OVER_TIME_APPLICATION: {
-                                self.isVisiableOverTimeApp(true);
+            service.getAppDispName().done((res) => {
+                let obj: ObjNameDis = new ObjNameDis('', '', '',
+                    '', '', '', '',
+                    '', '', '', '', '', '','');
+                if(res) {
+                    _.each(res, function(app){
+                        switch (app.programId) {
+                            case ApplicationScreenID.OVER_TIME_APPLICATION : {
+                                if (app.queryString.split("=")[1] == 0) {
+                                    self.isVisiableOverTimeEarly(true);
+                                    obj.overTimeEarly = app.displayName;
+                                }
+                                if (app.queryString.split("=")[1] == 1) {
+                                    self.isVisiableOverTimeNormal(true);
+                                    obj.overTimeNormal = app.displayName;
+                                }
+                                if (app.queryString.split("=")[1] == 2) {
+                                    self.isVisiableOverTimeEarlyNormal(true);
+                                    obj.overTimeEarlyDepart = app.displayName;
+                                }
                                 break;
                             }
-                            case ApplicationType.ABSENCE_APPLICATION: {
+                            case ApplicationScreenID.ABSENCE_APPLICATION : {
                                 self.isVisiableAbsenceApp(true);
+                                obj.absence = app.displayName;
                                 break;
                             }
-                            case ApplicationType.WORK_CHANGE_APPLICATION: {
+                            case ApplicationScreenID.WORK_CHANGE_APPLICATION : {
                                 self.isVisiableWorkChangeApp(true);
+                                obj.workChange = app.displayName;
                                 break;
                             }
-                            case ApplicationType.BUSINESS_TRIP_APPLICATION: {
+                            case ApplicationScreenID.BUSINESS_TRIP_APPLICATION : {
                                 self.isVisiableBusinessTripApp(true);
+                                obj.businessTrip = app.displayName;
                                 break;
                             }
-                            case ApplicationType.GO_RETURN_DIRECTLY_APPLICATION: {
+                            case ApplicationScreenID.GO_RETURN_DIRECTLY_APPLICATION : {
                                 self.isVisiableGoReturnDirectlyApp(true);
+                                obj.goBack = app.displayName;
                                 break;
                             }
-                            case ApplicationType.BREAK_TIME_APPLICATION: {
+                            case ApplicationScreenID.BREAK_TIME_APPLICATION : {
                                 self.isVisiableBreakTimeApp(true);
+                                obj.holiday = app.displayName;
                                 break;
                             }
-                            case ApplicationType.ANNUAL_HOLIDAY_APPLICATION: {
-                                self.isVisiableAnnualHolidayApp(true);
-                                break;
-                            }
-                            case ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION: {
-                                self.isVisiableEarlyLeaveCanceApp(true);
-                                break;
-                            }
-                            case ApplicationType.COMPLEMENT_LEAVE_APPLICATION: {
+                            case ApplicationScreenID.COMPLEMENT_LEAVE_APPLICATION : {
                                 self.isVisiableComplementLeaveApp(true);
+                                obj.complt = app.displayName;
                                 break;
                             }
-                            case ApplicationType.STAMP_APPLICATION: {
-                                self.isVisiableStampApp(true);
+                            case ApplicationScreenID.ANNUAL_HOLIDAY_APPLICATION : {
+                                self.isVisiableAnnualHolidayApp(true);
+                                obj.annualHd = app.displayName;
                                 break;
                             }
+                            case ApplicationScreenID.EARLY_LEAVE_CANCEL_APPLICATION : {
+                                self.isVisiableEarlyLeaveCanceApp(true);
+                                obj.earlyLeaveCancel = app.displayName;
+                                break;
+                            }
+                            case ApplicationScreenID.STAMP_APPLICATION : {
+                                if (app.screenId == "A") {
+                                    self.isVisiableStampApp(true);
+                                    obj.stamp = app.displayName;
+                                }
+                                if (app.screenId == "B") {
+                                    self.isVisiableStampAppOnlMode(true);
+                                    obj.stampOnline = app.displayName;
+                                }
+                                break;
+                            }
+                            case ApplicationScreenID.OPTIONAL_ITEM_APPLICATION : {
+                                self.isVisiableOptionalItemApp(true);
+                                obj.optionalItem = app.displayName;
+                            }
+
                         }
                     });
                 }
+                self.appNameDis(obj);
+            }).fail((err) => {
+                dialog.alertError(err).then(function () {
+                    nts.uk.request.jump("com", "view/ccg/008/a/index.xhtml");
+                });
             });
         }
 
         /**
          * 申請種類選択
          */
-        selectApplicationByType(applicationType: number) {
+        selectApplicationByType(applicationType: number, mode? : number) {
             block.invisible();
+
             let self = this;
+            let vm = new ko.ViewModel();
             let employeeIds : Array<string> = [];
-//            _.each(self.selectedEmployeeCode(), x => {
-//                let employee = _.find(self.selectedEmployee(), x1 => { return x1.employeeCode === x });
-//                if (employee) {
-//                    employeeIds.push(employee.employeeId);
-//                }
-//            })
-            //Chuyen multi -> single
-            let employee = _.find(self.selectedEmployee(), x1 => { return x1.employeeCode === self.selectedEmployeeCode()});
-            if (employee) {
-                employeeIds.push(employee.employeeId);
-            }
-            if (employeeIds.length > 0) {
-                let paramFind = {
-                    employeeIds: employeeIds,
-                    applicationType: applicationType
-                }
-                service.selectApplicationByType(paramFind).done(() => {
-                    let transfer = {
-                       uiType: 0,
-                       employeeIDs: employeeIds
-                    };
-                    switch (applicationType) {
-                        case ApplicationType.OVER_TIME_APPLICATION: {
-                            //open dialog B
-                            jump("at", "/view/kaf/001/b/index.xhtml", { employeeIds: employeeIds});
-                            break;
+
+            _.each(self.selectedEmployeeCode(), x => {
+               let employee = _.find(self.selectedEmployee(), x1 => { return x1.employeeCode === x });
+               if (employee) {
+                   employeeIds.push(employee.employeeId);
+               }
+            });
+
+            let employeeParamCheck = {
+                appType: applicationType,
+                baseDate: moment(self.selectedDate()).isValid() ? self.selectedDate() : null,
+                lstEmployeeId: employeeIds
+            };
+
+            service.checkEmployee(employeeParamCheck).done(() => {
+                let transfer: AppInitParam = {
+                    appType: applicationType,
+                    employeeIds,
+                    baseDate: self.selectedDate().toISOString(),
+					isAgentMode: true
+                };
+                switch (applicationType) {
+                    case ApplicationType.OVER_TIME_APPLICATION: {
+                        if (mode != null) {
+                            switch (mode) {
+                                case 0:
+                                    //KAF005-残業申請（早出）
+                                    vm.$jump("/view/kaf/005/a/index.xhtml?overworkatr=0", transfer);
+                                    break;
+
+                                case 1:
+                                    //KAF005-残業申請（通常）
+                                    vm.$jump("/view/kaf/005/a/index.xhtml?overworkatr=1", transfer);
+                                    break;
+
+                                case 2:
+                                    //KAF005-残業申請（早出・通常）
+                                    vm.$jump("/view/kaf/005/a/index.xhtml?overworkatr=2", transfer);
+                                    break;
+                            }
                         }
-                        case ApplicationType.ABSENCE_APPLICATION: {
-                            jump("at", "/view/kaf/006/a/index.xhtml", transfer);
-                            break;
-                        }
-                        case ApplicationType.WORK_CHANGE_APPLICATION: {
-                            jump("at", "/view/kaf/007/a/index.xhtml", { employeeIds: employeeIds });
-                            break;
-                        }
-                        case ApplicationType.BUSINESS_TRIP_APPLICATION: {
-                            jump("at", "/view/kaf/008/a/index.xhtml", { employeeIds: employeeIds });
-                            break;
-                        }
-                        case ApplicationType.GO_RETURN_DIRECTLY_APPLICATION: {
-                            jump("at", "/view/kaf/009/a/index.xhtml", { employeeIds: employeeIds });
-                            break;
-                        }
-                        case ApplicationType.BREAK_TIME_APPLICATION: {
-                            jump("at", "/view/kaf/010/a/index.xhtml", transfer);
-                            break;
-                        }
-                        case ApplicationType.ANNUAL_HOLIDAY_APPLICATION: {
-                            jump("at", "/view/kaf/012/a/index.xhtml", { employeeIds: employeeIds });
-                            break;
-                        }
-                        case ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION: {
-                            jump("at", "/view/kaf/004/a/index.xhtml", { employeeIds: employeeIds });
-                            break;
-                        }
-                        case ApplicationType.COMPLEMENT_LEAVE_APPLICATION: {
-                            jump("at", "/view/kaf/011/a/index.xhtml", { employeeIds: employeeIds });
-                            break;
-                        }
-                        case ApplicationType.STAMP_APPLICATION: {
-                            jump("at", "/view/kaf/002/a/index.xhtml", { employeeIds: employeeIds });
-                            break;
-                        }
+                        break;
                     }
-                }).fail(error => {
-                    dialog.alertError(error);
-                }).always(()=>{
-                    block.clear();
-                });
-            }
-            block.clear();
+                    case ApplicationType.ABSENCE_APPLICATION: {
+                        vm.$jump("/view/kaf/006/a/index.xhtml", transfer);
+                        break;
+                    }
+                    case ApplicationType.WORK_CHANGE_APPLICATION: {
+                        vm.$jump("/view/kaf/007/a/index.xhtml", transfer);
+                        break;
+                    }
+                    case ApplicationType.BUSINESS_TRIP_APPLICATION: {
+                        vm.$jump("/view/kaf/008/a/index.xhtml", transfer);
+                        // jump("at", "/view/kaf/008/a/index.xhtml", {success : true});
+                        break;
+                    }
+                    case ApplicationType.GO_RETURN_DIRECTLY_APPLICATION: {
+                        vm.$jump("/view/kaf/009/a/index.xhtml", transfer);
+                        break;
+                    }
+                    case ApplicationType.BREAK_TIME_APPLICATION: {
+                        vm.$jump("/view/kaf/010/a/index.xhtml", transfer);
+                        break;
+                    }
+                    case ApplicationType.ANNUAL_HOLIDAY_APPLICATION: {
+                        vm.$jump("/view/kaf/012/a/index.xhtml", transfer);
+                        break;
+                    }
+                    case ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION: {
+                        vm.$jump("/view/kaf/004/a/index.xhtml", transfer);
+                        break;
+                    }
+                    case ApplicationType.COMPLEMENT_LEAVE_APPLICATION: {
+                        vm.$jump("/view/kaf/011/a/index.xhtml", transfer);
+                        break;
+                    }
+                    case ApplicationType.STAMP_APPLICATION: {
+                        if (mode == 0) {
+                            vm.$jump("/view/kaf/002/a/index.xhtml", transfer);
+                        }
+                        if (mode == 1) {
+                            vm.$jump("/view/kaf/002/b/index.xhtml", transfer);
+                        }
+                        break;
+                    }
+                    case ApplicationType.OPTIONAL_ITEM_APPLICATION: {
+                        vm.$jump("/view/kaf/020/a/index.xhtml", transfer);
+                        break;
+                    }
+                }
+            }).fail((err) => {
+
+                dialog.alertError(err);
+
+            }).always(() => {
+                block.clear();
+            });
+
         }
     }
 
@@ -325,6 +353,25 @@ module kaf001.a.viewmodel {
         LONG_BUSINESS_TRIP_APPLICATION          = 12,   /**連続出張申請*/
         BUSINESS_TRIP_APPLICATION_OFFICE_HELPER = 13,   /**出張申請オフィスヘルパー*/
         APPLICATION_36                          = 14,   /**３６協定時間申請*/
+        OPTIONAL_ITEM_APPLICATION               = 15,   /**任意項目申請*/
+    }
+
+    export enum ApplicationScreenID {
+        OVER_TIME_APPLICATION                   = "KAF005",    /**残業申請*/
+        ABSENCE_APPLICATION                     = "KAF006",    /**休暇申請*/
+        WORK_CHANGE_APPLICATION                 = "KAF007",    /**勤務変更申請*/
+        BUSINESS_TRIP_APPLICATION               = "KAF008",    /**出張申請*/
+        GO_RETURN_DIRECTLY_APPLICATION          = "KAF009",    /**直行直帰申請*/
+        BREAK_TIME_APPLICATION                  = "KAF010",    /**休出時間申請*/
+        STAMP_APPLICATION                       = "KAF002",    /**打刻申請*/
+        ANNUAL_HOLIDAY_APPLICATION              = "KAF012",    /**時間年休申請*/
+        EARLY_LEAVE_CANCEL_APPLICATION          = "KAF004",    /**遅刻早退取消申請*/
+        COMPLEMENT_LEAVE_APPLICATION            = "KAF011",   /**振休振出申請*/
+        STAMP_NR_APPLICATION                    = "",   /**打刻申請（NR形式）*/
+        LONG_BUSINESS_TRIP_APPLICATION          = "",   /**連続出張申請*/
+        BUSINESS_TRIP_APPLICATION_OFFICE_HELPER = "",   /**出張申請オフィスヘルパー*/
+        APPLICATION_36                          = "KAF021",   /**３６協定時間申請*/
+        OPTIONAL_ITEM_APPLICATION               = "KAF020"     /**任意項目申請*/
     }
 
     //Interfaces
@@ -410,6 +457,9 @@ module kaf001.a.viewmodel {
         isAlreadySetting: boolean;
     }
     export class ObjNameDis{
+        overTimeEarly : string;
+        overTimeNormal: string;
+        overTimeEarlyDepart: string;
         overTime: string;//A2_2
         absence: string;//A2_3
         workChange: string;//A2_4
@@ -420,19 +470,26 @@ module kaf001.a.viewmodel {
         earlyLeaveCancel: string;//A2_9
         complt: string;//A2_10
         stamp: string;//A2_11
-        constructor(overTime: string,absence: string,workChange: string,
-            businessTrip: string, goBack: string, holiday: string, 
-            annualHd: string, earlyLeaveCancel: string,complt: string,stamp: string){
-            this.overTime = overTime;
+        stampOnline: string;
+        optionalItem: string;
+        constructor(overTimeEarly: string, overTimeNormal: string, overTimeEarlyDepart: string,
+                    absence: string, workChange: string,
+                    businessTrip: string, goBack: string, holiday: string,
+                    annualHd: string, earlyLeaveCancel: string, complt: string, stamp: string, stampOnline: string, optionalItem: string) {
+            this.overTimeEarly = overTimeEarly;
+            this.overTimeNormal = overTimeNormal;
+            this.overTimeEarlyDepart = overTimeEarlyDepart;
             this.absence = absence;
             this.workChange = workChange;
             this.businessTrip = businessTrip;
             this.goBack = goBack;
             this.holiday = holiday;
-            this.annualHd =  annualHd;
+            this.annualHd = annualHd;
             this.earlyLeaveCancel = earlyLeaveCancel;
             this.complt = complt;
             this.stamp = stamp;
+            this.stampOnline = stampOnline;
+            this.optionalItem = optionalItem;
         }
     }
 }

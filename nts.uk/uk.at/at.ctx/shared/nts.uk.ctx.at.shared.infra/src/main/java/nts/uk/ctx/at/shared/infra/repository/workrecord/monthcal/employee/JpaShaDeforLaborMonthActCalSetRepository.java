@@ -4,13 +4,15 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.workrecord.monthcal.employee;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.sha.ShaDeforLaborMonthActCalSet;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.sha.ShaDeforLaborMonthActCalSetRepo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.sha.ShaDeforLaborMonthActCalSet;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.sha.ShaDeforLaborMonthActCalSetRepo;
 import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.employee.KrcstShaDeforMCalSet;
 import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.employee.KrcstShaDeforMCalSetPK;
 
@@ -21,6 +23,10 @@ import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.employee.KrcstShaDe
 public class JpaShaDeforLaborMonthActCalSetRepository extends JpaRepository
 		implements ShaDeforLaborMonthActCalSetRepo {
 
+	
+	private static final String SELECT_BY_CID = "SELECT c FROM KrcstShaDeforMCalSet c"
+			+ " WHERE c.krcstShaDeforMCalSetPK.cid = :cid";
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -103,6 +109,15 @@ public class JpaShaDeforLaborMonthActCalSetRepository extends JpaRepository
 				e.getAggregateTimeSet(), e.getExcessOutsideTimeSet(),
 				e.deforLaborCalSetting(),
 				e.deforLaborSettlementPeriod());
+	}
+
+	@Override
+	public List<ShaDeforLaborMonthActCalSet> findByCid(String cid) {
+		List<KrcstShaDeforMCalSet> entitys = this.queryProxy().query(SELECT_BY_CID, KrcstShaDeforMCalSet.class)
+				.setParameter("cid", cid).getList();
+		return entitys.stream().map(m -> {
+			return toDomain(m);
+		}).collect(Collectors.toList());
 	}
 
 }

@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.find.monthly.root;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -9,17 +11,19 @@ import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.DatePeriodDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
-import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
-import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.Day;
-import nts.uk.ctx.at.shared.dom.monthly.information.care.MonCareHdMinutes;
-import nts.uk.ctx.at.shared.dom.monthly.information.care.MonCareHdNumber;
-import nts.uk.ctx.at.shared.dom.monthly.information.care.MonCareHdRemain;
-import nts.uk.ctx.at.shared.dom.monthly.vacation.ClosureStatus;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil.AttendanceItemType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemRoot;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.care.MonCareHdMinutes;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.care.MonCareHdNumber;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.information.care.MonCareHdRemain;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.ClosureStatus;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
 /** 介護休暇月別残数データ */
@@ -71,17 +75,17 @@ public class MonthlyCareHdRemainDto extends MonthlyItemCommon {
 
 	/** 使用時間 */
 	@AttendanceItemLayout(jpPropertyName = USAGE + TIME, layout = LAYOUT_E)
-	@AttendanceItemValue(type = ValueType.COUNT_WITH_DECIMAL)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer usedMinutes;
 	
 	/** 使用時間付与前 */
 	@AttendanceItemLayout(jpPropertyName = USAGE + TIME + BEFORE, layout = LAYOUT_F)
-	@AttendanceItemValue(type = ValueType.COUNT_WITH_DECIMAL)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer usedMinutesBefore;
 	
 	/** 使用時間付与後 */
 	@AttendanceItemLayout(jpPropertyName = USAGE + TIME + AFTER, layout = LAYOUT_G)
-	@AttendanceItemValue(type = ValueType.COUNT_WITH_DECIMAL)
+	@AttendanceItemValue(type = ValueType.TIME)
 	private Integer usedMinutesAfter;
 	
 	@Override
@@ -131,4 +135,88 @@ public class MonthlyCareHdRemainDto extends MonthlyItemCommon {
 		}
 		return dto;
 	}
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case (USAGE + DAYS):
+			return Optional.of(ItemValue.builder().value(usedDays).valueType(ValueType.COUNT_WITH_DECIMAL));
+		case (USAGE + DAYS + BEFORE):
+			return Optional.of(ItemValue.builder().value(usedDaysBefore).valueType(ValueType.COUNT_WITH_DECIMAL));
+		case (USAGE + DAYS + AFTER):
+			return Optional.of(ItemValue.builder().value(usedDaysAfter).valueType(ValueType.COUNT_WITH_DECIMAL));
+		case (USAGE + TIME):
+			return Optional.of(ItemValue.builder().value(usedMinutes).valueType(ValueType.TIME));
+		case (USAGE + TIME + BEFORE):
+			return Optional.of(ItemValue.builder().value(usedMinutesBefore).valueType(ValueType.TIME));
+		case (USAGE + TIME + AFTER):
+			return Optional.of(ItemValue.builder().value(usedMinutesAfter).valueType(ValueType.TIME));
+		default:
+			break;
+		}
+		return super.valueOf(path);
+	}
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		if (PERIOD.equals(path)) {
+			return new DatePeriodDto();
+		} 
+		return super.newInstanceOf(path);
+	}
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		if (PERIOD.equals(path)) {
+			return Optional.ofNullable(datePeriod);
+		} 
+		return super.get(path);
+	}
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case (USAGE + DAYS):
+		case (USAGE + DAYS + BEFORE):
+		case (USAGE + DAYS + AFTER):
+		case (USAGE + TIME):
+		case (USAGE + TIME + BEFORE):
+		case (USAGE + TIME + AFTER):
+			return PropType.VALUE;
+		default:
+			break;
+		}
+		return super.typeOf(path);
+	}
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case (USAGE + DAYS):
+			usedDays = value.valueOrDefault(null); break;
+		case (USAGE + DAYS + BEFORE):
+			usedDaysBefore = value.valueOrDefault(null); break;
+		case (USAGE + DAYS + AFTER):
+			usedDaysAfter = value.valueOrDefault(null); break;
+		case (USAGE + TIME):
+			usedMinutes = value.valueOrDefault(null); break;
+		case (USAGE + TIME + BEFORE):
+			usedMinutesBefore = value.valueOrDefault(null); break;
+		case (USAGE + TIME + AFTER):
+			usedMinutesAfter = value.valueOrDefault(null); break;
+		default:
+			break;
+		}
+	}
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		if (PERIOD.equals(path)) {
+			datePeriod = (DatePeriodDto) value;
+		} 
+	}
+	@Override
+	public boolean isRoot() {
+		return true;
+	}
+	@Override
+	public String rootName() {
+		return MONTHLY_CARE_HD_REMAIN_NAME;
+	}
+
+	
 }

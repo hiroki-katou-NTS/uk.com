@@ -6,5 +6,5 @@ package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before
  *
  */
 public interface BeforeProcessDenial {
-	public void detailedScreenProcessBeforeDenial(String companyId, String appId, Long version);
+	public void detailedScreenProcessBeforeDenial(String companyId, String appId, int version);
 }

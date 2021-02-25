@@ -11,6 +11,7 @@ import nts.uk.shr.com.time.calendar.MonthDay;
 @NoArgsConstructor
 @Data
 public class AgeStandard {
+	
 	/** 年齢基準年区分 */
 	private AgeBaseYear ageCriteriaCls;
 	

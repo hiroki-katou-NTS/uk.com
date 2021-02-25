@@ -6,23 +6,28 @@ module nts.uk.at.view.kwr001.c {
         var paths = {
            getDataStartPage: "at/function/dailyworkschedule/find",
            save: "at/function/dailyworkschedule/save",
-           remove: "at/function/dailyworkschedule/delete",
+           remove: "at/function/dailyworkschedule/delete/{0}/{1}",
            getEnumName: "at/function/dailyworkschedule/enumName",
            getEnumRemarkContentChoice: "at/function/dailyworkschedule/enumRemarkContentChoice",
            getEnumRemarkInputContent: "at/function/dailyworkschedule/enumRemarkInputContent",
            findByCode: "at/function/dailyworkschedule/findByCode",
         }
         
-        export function getDataStartPage(): JQueryPromise<any> {
-            return nts.uk.request.ajax('at', paths.getDataStartPage);
+        export function getDataStartPage(selectionType: number, code: string): JQueryPromise<any> {
+            const dto = {
+                selectTionType: selectionType,
+                code: code
+            };
+            return nts.uk.request.ajax('at', paths.getDataStartPage, dto);
         }
         
         export function save(command: any): JQueryPromise<any> {
             return nts.uk.request.ajax('at', paths.save, command);
         }
         
-        export function remove(code: string): JQueryPromise<any> {
-            return nts.uk.request.ajax('at', paths.remove + SLASH + code);
+        export function remove(layoutId: string, selectionType: string): JQueryPromise<any> {
+            let _path = nts.uk.text.format(paths.remove, layoutId, selectionType);
+            return nts.uk.request.ajax('at', _path);
         }
         
         export function getEnumName(): JQueryPromise<any> {
@@ -37,8 +42,8 @@ module nts.uk.at.view.kwr001.c {
             return nts.uk.request.ajax('at', paths.getEnumRemarkInputContent);
         }
         
-        export function findByCode(code: string): JQueryPromise<any> {
-            return nts.uk.request.ajax('at', paths.findByCode + SLASH + code);
+        export function findByCode(code: string, selectionType: number): JQueryPromise<any> {
+            return nts.uk.request.ajax('at', paths.findByCode + SLASH + code + SLASH + selectionType);
         }
     }
 }

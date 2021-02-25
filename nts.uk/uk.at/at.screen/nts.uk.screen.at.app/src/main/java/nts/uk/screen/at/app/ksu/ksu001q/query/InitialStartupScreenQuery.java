@@ -13,7 +13,6 @@ import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudget;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetRepository;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.DisplayInfoOrganization;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
-import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.WorkplaceInfo;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.WorkplaceGroupAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.WorkplaceGroupImport;
@@ -59,23 +58,16 @@ public class InitialStartupScreenQuery {
 		RequireImpl require = new RequireImpl(workplaceGroupAdapter, serviceAdapter, wplAdapter);
 
 		// 1. 組織の表示情報を取得する(Require, 年月日)
-		if (Integer.parseInt(target.getUnit()) == 1) {
-			TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(
-					TargetOrganizationUnit.valueOf(Integer.parseInt(target.getUnit())), Optional.empty(),
-					Optional.of(target.getId()));
+		if (("1").equals(target.getUnit())) {
+			TargetOrgIdenInfor targetOrgIdenInfor = TargetOrgIdenInfor.creatIdentifiWorkplaceGroup(target.getId());
 			DisplayInfoOrganization infoOrganization = targetOrgIdenInfor.getDisplayInfor(require,
 					GeneralDate.fromString(target.getEndDate(), "yyyy/MM/dd"));
-			dto.setOrgName(infoOrganization.getName());
-
-		}
-
-		if (Integer.parseInt(target.getUnit()) == 0) {
-			TargetOrgIdenInfor targetOrgIdenInfor = new TargetOrgIdenInfor(
-					TargetOrganizationUnit.valueOf(Integer.parseInt(target.getUnit())), Optional.of(target.getId()),
-					Optional.empty());
+			dto.setOrgName(infoOrganization.getDisplayName());
+		} else {
+			TargetOrgIdenInfor targetOrgIdenInfor = TargetOrgIdenInfor.creatIdentifiWorkplace(target.getId());
 			DisplayInfoOrganization infoOrganization = targetOrgIdenInfor.getDisplayInfor(require,
 					GeneralDate.fromString(target.getEndDate(), "yyyy/MM/dd"));
-			dto.setOrgName(infoOrganization.getName());
+			dto.setOrgName(infoOrganization.getDisplayName());
 		}
 
 		// 2. 取得する
@@ -86,7 +78,7 @@ public class InitialStartupScreenQuery {
 			budgetItem.setCode(x.getExternalBudgetCd().v());
 			budgetItem.setName(x.getExternalBudgetName().v());
 			budgetItem.setAttribute(x.getBudgetAtr().toName());
-			budgetItem.setUnit(x.getUnitAtr().toName());
+		//	budgetItem.setUnit(x.getUnitAtr().toName());
 			return budgetItem;
 		}).sorted((o1, o2) -> o1.getCode().compareTo(o2.getCode())).collect(Collectors.toList());
 

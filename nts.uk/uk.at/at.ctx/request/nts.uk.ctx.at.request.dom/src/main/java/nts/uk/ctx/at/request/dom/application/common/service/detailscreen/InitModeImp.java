@@ -1,18 +1,12 @@
 package nts.uk.ctx.at.request.dom.application.common.service.detailscreen;
 
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.request.dom.application.ReflectPlanPerState;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailScreenInitModeOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.OutputMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.User;
-import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
-import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class InitModeImp implements InitMode {
@@ -21,37 +15,22 @@ public class InitModeImp implements InitMode {
 	ApplicationSettingRepository applicationSettingRepository;
 
 	@Override
-	public DetailScreenInitModeOutput getDetailScreenInitMode(User user, Integer reflectPerState) {
-		String companyID = AppContexts.user().companyId();
+	public OutputMode getDetailScreenInitMode(User user, Integer reflectPerState) {
 		
 		OutputMode outputMode;
 
-		Optional<ApplicationSetting> applicationSetting = applicationSettingRepository
-				.getApplicationSettingByComID(companyID);
-
 		if (user.equals(User.APPROVER)) {
-			/**
-			 * Domain model "approval setting". You can change the contents of
-			 * the application at the time of approval but false
+			/*
+			 * ステータスが
+			 * 99:過去申請(passApp)、4:反映済(reflected),3:取消待ち(waiCancellation),2:
+			 * 取消済( canceled) ,
 			 */
-			/** 0 = Display Mode */
-			if (applicationSetting.get().getAppContentChangeFlg().equals(AppCanAtr.NOTCAN)) {
-
+			if (reflectPerState.equals(ReflectPlanPerState.PASTAPP.value) || 
+					reflectPerState.equals(ReflectPlanPerState.REFLECTED.value) || 
+					reflectPerState.equals(ReflectPlanPerState.CANCELED.value)) {
 				outputMode = OutputMode.DISPLAYMODE;
 			} else {
-				/*
-				 * ステータスが
-				 * 99:過去申請(passApp)、4:反映済(reflected),3:取消待ち(waiCancellation),2:
-				 * 取消済( canceled) ,
-				 */
-				if (reflectPerState.equals(ReflectPlanPerState.PASTAPP.value) || 
-						reflectPerState.equals(ReflectPlanPerState.REFLECTED.value) || 
-						reflectPerState.equals(ReflectPlanPerState.WAITCANCEL.value) || 
-						reflectPerState.equals(ReflectPlanPerState.CANCELED.value)) {
-					outputMode = OutputMode.DISPLAYMODE;
-				} else {
-					outputMode = OutputMode.EDITMODE;
-				}
+				outputMode = OutputMode.EDITMODE;
 			}
 
 		} else {
@@ -66,7 +45,7 @@ public class InitModeImp implements InitMode {
 				outputMode = OutputMode.DISPLAYMODE;
 			}
 		}
-		return new DetailScreenInitModeOutput(outputMode);
+		return outputMode;
 	}
 
 }

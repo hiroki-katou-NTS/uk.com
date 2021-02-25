@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.CalculationState;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
 
 
 /** @author lamdt */
@@ -29,10 +29,10 @@ public class WorkInfoOfDailyPerformanceDto {
 	private String recordWorkWorktimeCode;
 
 	// 勤務予定の勤務情報. 勤務種類コード
-	private String scheduleWorkWorktypeCode;
+//	private String scheduleWorkWorktypeCode;
 
 	// 勤務予定の勤務情報. 勤務種類コード
-	private String scheduleWorkWorktimeCode;
+//	private String scheduleWorkWorktimeCode;
 
 	private Boolean krcdtWorkScheduleTime;
 	
@@ -51,7 +51,7 @@ public class WorkInfoOfDailyPerformanceDto {
 	
 	public boolean isItemNoEmpty() {
 		return StringUtils.isEmpty(recordWorkWorktypeCode) && StringUtils.isEmpty(recordWorkWorktimeCode)
-				&& StringUtils.isEmpty(scheduleWorkWorktypeCode) && StringUtils.isEmpty(scheduleWorkWorktimeCode)
+//				&& StringUtils.isEmpty(scheduleWorkWorktypeCode) && StringUtils.isEmpty(scheduleWorkWorktimeCode)
 				&& krcdtWorkScheduleTime;
 	}
 }

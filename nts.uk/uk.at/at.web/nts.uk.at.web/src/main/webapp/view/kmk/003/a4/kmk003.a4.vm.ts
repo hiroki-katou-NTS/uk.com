@@ -169,20 +169,21 @@ module a4 {
                         dataObject.stampGoWork1End = workEnd;
                         dataObject.stampLeavingWork1Start = workStart;
                         dataObject.stampLeavingWork1End = workEnd;
-                        dataObject.stampGoWork2Start = 0;
-                        dataObject.stampGoWork2End = 1440;
-                        dataObject.stampLeavingWork2Start = 0;
-                        dataObject.stampLeavingWork2End = 1440;
+                        dataObject.stampGoWork2Start = null;
+						dataObject.stampGoWork2End = null;
+						dataObject.stampLeavingWork2Start = null;
+						dataObject.stampLeavingWork2End = null;
                     }                    
                 } else {
                     dataObject.stampGoWork1Start = _self.mainSettingModel.fixedWorkSetting.getGoWork1Stamp().startTime();
                     dataObject.stampGoWork1End = _self.mainSettingModel.fixedWorkSetting.getGoWork1Stamp().endTime();
                     dataObject.stampLeavingWork1Start = _self.mainSettingModel.fixedWorkSetting.getLeaveWork1Stamp().startTime();
                     dataObject.stampLeavingWork1End = _self.mainSettingModel.fixedWorkSetting.getLeaveWork1Stamp().endTime();
-                    dataObject.stampGoWork2Start = _self.mainSettingModel.fixedWorkSetting.getGoWork2Stamp().startTime();
-                    dataObject.stampGoWork2End = _self.mainSettingModel.fixedWorkSetting.getGoWork2Stamp().endTime();
-                    dataObject.stampLeavingWork2Start = _self.mainSettingModel.fixedWorkSetting.getLeaveWork2Stamp().startTime();
-                    dataObject.stampLeavingWork2End = _self.mainSettingModel.fixedWorkSetting.getLeaveWork2Stamp().endTime();
+                    dataObject.stampGoWork2Start = isFixedAndUseTime2?_self.mainSettingModel.fixedWorkSetting.getGoWork2Stamp().startTime():null;
+                    dataObject.stampGoWork2End = isFixedAndUseTime2?_self.mainSettingModel.fixedWorkSetting.getGoWork2Stamp().endTime():null;
+                    dataObject.stampLeavingWork2Start = isFixedAndUseTime2?_self.mainSettingModel.fixedWorkSetting.getLeaveWork2Stamp().startTime():null;
+                    dataObject.stampLeavingWork2End = isFixedAndUseTime2?_self.mainSettingModel.fixedWorkSetting.getLeaveWork2Stamp().endTime():null;
+						
                 }                              
             }
             if (_self.mainSettingModel.workTimeSetting.isDiffTime()) {
@@ -192,19 +193,20 @@ module a4 {
                     dataObject.stampGoWork1End = oneDayEndTime;
                     dataObject.stampLeavingWork1Start = _self.mainSettingModel.predetemineTimeSetting.startDateClock();
                     dataObject.stampLeavingWork1End = oneDayEndTime;
-                    dataObject.stampGoWork2Start = 0;
-                    dataObject.stampGoWork2End = 1440;
-                    dataObject.stampLeavingWork2Start = 0;
-                    dataObject.stampLeavingWork2End = 1440;
+                    dataObject.stampGoWork2Start = null;
+					dataObject.stampGoWork2End = null;
+					dataObject.stampLeavingWork2Start = null;
+					dataObject.stampLeavingWork2End = null;
                 } else {
                     dataObject.stampGoWork1Start = _self.mainSettingModel.diffWorkSetting.stampReflectTimezone.getGoWork1Stamp().startTime();
                     dataObject.stampGoWork1End = _self.mainSettingModel.diffWorkSetting.stampReflectTimezone.getGoWork1Stamp().endTime();
                     dataObject.stampLeavingWork1Start = _self.mainSettingModel.diffWorkSetting.stampReflectTimezone.getLeaveWork1Stamp().startTime();
                     dataObject.stampLeavingWork1End = _self.mainSettingModel.diffWorkSetting.stampReflectTimezone.getLeaveWork1Stamp().endTime();
-                    dataObject.stampGoWork2Start = _self.mainSettingModel.diffWorkSetting.stampReflectTimezone.getGoWork2Stamp().startTime();
-                    dataObject.stampGoWork2End = _self.mainSettingModel.diffWorkSetting.stampReflectTimezone.getGoWork2Stamp().endTime();
-                    dataObject.stampLeavingWork2Start = _self.mainSettingModel.diffWorkSetting.stampReflectTimezone.getLeaveWork2Stamp().startTime();
-                    dataObject.stampLeavingWork2End = _self.mainSettingModel.diffWorkSetting.stampReflectTimezone.getLeaveWork2Stamp().endTime();
+                    dataObject.stampGoWork2Start = isFixedAndUseTime2?_self.mainSettingModel.diffWorkSetting.stampReflectTimezone.getGoWork2Stamp().startTime():null;
+                    dataObject.stampGoWork2End = isFixedAndUseTime2?_self.mainSettingModel.diffWorkSetting.stampReflectTimezone.getGoWork2Stamp().endTime():null;
+                    dataObject.stampLeavingWork2Start = isFixedAndUseTime2?_self.mainSettingModel.diffWorkSetting.stampReflectTimezone.getLeaveWork2Stamp().startTime():null;
+                    dataObject.stampLeavingWork2End = isFixedAndUseTime2?_self.mainSettingModel.diffWorkSetting.stampReflectTimezone.getLeaveWork2Stamp().endTime():null;
+					
                 }                
             } 
             if (_self.mainSettingModel.workTimeSetting.isFlex()) {
@@ -214,19 +216,19 @@ module a4 {
                     dataObject.stampGoWork1End = oneDayEndTime;
                     dataObject.stampLeavingWork1Start = _self.mainSettingModel.predetemineTimeSetting.startDateClock();
                     dataObject.stampLeavingWork1End = oneDayEndTime;
-                    dataObject.stampGoWork2Start = 0;
-                    dataObject.stampGoWork2End = 1440;
-                    dataObject.stampLeavingWork2Start = 0;
-                    dataObject.stampLeavingWork2End = 1440;
+                    dataObject.stampGoWork2Start = null;
+					dataObject.stampGoWork2End = null;
+					dataObject.stampLeavingWork2Start = null;
+					dataObject.stampLeavingWork2End = null;
                 } else {
                     dataObject.stampGoWork1Start = _self.mainSettingModel.flexWorkSetting.getGoWork1Stamp().startTime();
                     dataObject.stampGoWork1End = _self.mainSettingModel.flexWorkSetting.getGoWork1Stamp().endTime();
                     dataObject.stampLeavingWork1Start = _self.mainSettingModel.flexWorkSetting.getLeaveWork1Stamp().startTime();
                     dataObject.stampLeavingWork1End = _self.mainSettingModel.flexWorkSetting.getLeaveWork1Stamp().endTime();
-                    dataObject.stampGoWork2Start = _self.mainSettingModel.flexWorkSetting.getGoWork2Stamp().startTime();
-                    dataObject.stampGoWork2End = _self.mainSettingModel.flexWorkSetting.getGoWork2Stamp().endTime();
-                    dataObject.stampLeavingWork2Start = _self.mainSettingModel.flexWorkSetting.getLeaveWork2Stamp().startTime();
-                    dataObject.stampLeavingWork2End = _self.mainSettingModel.flexWorkSetting.getLeaveWork2Stamp().endTime();
+                    dataObject.stampGoWork2Start = isFixedAndUseTime2?_self.mainSettingModel.flexWorkSetting.getGoWork2Stamp().startTime():null;
+                    dataObject.stampGoWork2End = isFixedAndUseTime2?_self.mainSettingModel.flexWorkSetting.getGoWork2Stamp().endTime():null;
+                    dataObject.stampLeavingWork2Start = isFixedAndUseTime2?_self.mainSettingModel.flexWorkSetting.getLeaveWork2Stamp().startTime():null;
+                    dataObject.stampLeavingWork2End = isFixedAndUseTime2?_self.mainSettingModel.flexWorkSetting.getLeaveWork2Stamp().endTime():null;
                 }
             } 
             // Set object

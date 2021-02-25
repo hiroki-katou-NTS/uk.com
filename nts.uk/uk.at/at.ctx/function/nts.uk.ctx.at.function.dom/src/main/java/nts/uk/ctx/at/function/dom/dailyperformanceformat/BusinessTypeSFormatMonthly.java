@@ -2,7 +2,7 @@ package nts.uk.ctx.at.function.dom.dailyperformanceformat;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.function.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
+import nts.uk.ctx.at.shared.dom.workrule.businesstype.BusinessTypeCode;
 
 
 /**

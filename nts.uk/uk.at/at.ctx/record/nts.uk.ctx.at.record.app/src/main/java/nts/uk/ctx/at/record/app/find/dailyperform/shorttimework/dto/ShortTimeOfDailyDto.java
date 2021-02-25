@@ -12,15 +12,16 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortTimeOfDailyPerformance;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
-import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ChildCareAttribute;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimFrameNo;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemRoot;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.AttendanceItemCommon;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ChildCareAttribute;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Data
@@ -28,6 +29,8 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @AttendanceItemRoot(rootName = ItemConst.DAILY_SHORT_TIME_NAME)
 public class ShortTimeOfDailyDto extends AttendanceItemCommon {
 
+	@Override
+	public String rootName() { return DAILY_SHORT_TIME_NAME; }
 	/***/
 	private static final long serialVersionUID = 1L;
 	
@@ -53,9 +56,7 @@ public class ShortTimeOfDailyDto extends AttendanceItemCommon {
 					(c) -> new ShortWorkTimeSheetDto(c.getShortWorkTimeFrameNo().v(), 
 														c.getChildCareAttr() == null ? 0 : c.getChildCareAttr().value,
 														c.getStartTime() == null ? null : c.getStartTime().valueAsMinutes(),
-														c.getEndTime() == null ? null : c.getEndTime().valueAsMinutes(),
-														c.getDeductionTime() == null ? null : c.getDeductionTime().valueAsMinutes(),
-														c.getShortTime() == null ? null : c.getShortTime().valueAsMinutes())));
+														c.getEndTime() == null ? null : c.getEndTime().valueAsMinutes())));
 			result.exsistData();
 		}
 		return result;
@@ -69,9 +70,7 @@ public class ShortTimeOfDailyDto extends AttendanceItemCommon {
 					(c) -> new ShortWorkTimeSheetDto(c.getShortWorkTimeFrameNo().v(), 
 														c.getChildCareAttr() == null ? 0 : c.getChildCareAttr().value,
 														c.getStartTime() == null ? null : c.getStartTime().valueAsMinutes(),
-														c.getEndTime() == null ? null : c.getEndTime().valueAsMinutes(),
-														c.getDeductionTime() == null ? null : c.getDeductionTime().valueAsMinutes(),
-														c.getShortTime() == null ? null : c.getShortTime().valueAsMinutes())));
+														c.getEndTime() == null ? null : c.getEndTime().valueAsMinutes())));
 			result.exsistData();
 		}
 		return result;
@@ -124,8 +123,7 @@ public class ShortTimeOfDailyDto extends AttendanceItemCommon {
 									.map(c -> new ShortWorkingTimeSheet(new ShortWorkTimFrameNo(c.getNo()),
 												c.getAttr() == ChildCareAttribute.CHILD_CARE.value 
 														? ChildCareAttribute.CHILD_CARE : ChildCareAttribute.CARE,
-												createTimeWithDayAttr(c.getStartTime()), createTimeWithDayAttr(c.getEndTime()),
-												createAttendanceTime(c.getDeductionTime()), createAttendanceTime(c.getShortTime())))
+												createTimeWithDayAttr(c.getStartTime()), createTimeWithDayAttr(c.getEndTime())))
 									.collect(Collectors.toList());
 						
 	}
@@ -136,5 +134,47 @@ public class ShortTimeOfDailyDto extends AttendanceItemCommon {
 	
 	private AttendanceTime createAttendanceTime(Integer c) {
 		return c == null ? AttendanceTime.ZERO : new AttendanceTime(c);
+	}
+
+	@Override
+	public int size(String path) {
+		return 2;
+	}
+
+	@Override
+	public boolean isRoot() { return true; }
+	
+
+	@Override
+	public PropType typeOf(String path) {
+		if (path.equals(TIME_ZONE)) {
+			return PropType.IDX_ENUM_LIST;
+		}
+		return super.typeOf(path);
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends AttendanceItemDataGate> List<T> gets(String path) {
+		if (path.equals(TIME_ZONE)) {
+			return (List<T>) this.shortWorkingTimeSheets;
+		}
+		return new ArrayList<>();
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends AttendanceItemDataGate> void set(String path, List<T> value) {
+		if (path.equals(TIME_ZONE)) {
+			this.shortWorkingTimeSheets = (List<ShortWorkTimeSheetDto>) value;
+		}
+	}
+	
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		if (path.equals(TIME_ZONE)) {
+			return new ShortWorkTimeSheetDto();
+		}
+		return null;
 	}
 }

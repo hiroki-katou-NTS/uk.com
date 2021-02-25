@@ -38,7 +38,8 @@ public class GetHdDayInPeriodService {
 		int a = period.start().daysTo(period.end()) + 1;
 		for (int i = 1; i <= a; i ++) {
 			//実績の取得-(lấy Performance-kết quả thực tế) 13.実績を取得する
-			AchievementOutput ach = collectAchievement.getAchievement(companyID, employeeID, date);
+			/*AchievementOutput ach = collectAchievement.getAchievement(companyID, employeeID, date);*/
+			AchievementOutput ach = null;
 			if(Strings.isBlank(ach.getWorkType().getWorkTypeCode())){
 				date = period.start().addDays(i);
 				continue;

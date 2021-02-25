@@ -9,8 +9,8 @@
 		<ui:define name="htmlHead">
 			<script>
 				                var dialogSize = {
-				                    width : 570,
-				                    height : 400
+				                    width : 470,
+				                    height : 420
 				                };
             				</script>
 			<com:scriptfile set="IGNITE" />
@@ -26,34 +26,31 @@
 		<ui:define name="content">
 			<div id="contents-area">
 				<div>
-					<span id="H1_1">#{i18n.getText('CLI003_41')}&#160;&#160;</span> <span
+					<div id="H1_1" data-bind="ntsFormLabel: {}">#{i18n.getText('CLI003_41')}&#160;&#160;</div> <span
 						id="H1_2"></span>
 				</div>
-				<br />
 				<div class="table" id="condition-set-div">
 					<table id="H2_1">
 						<thead>
-							<tr>
-								<th></th>
+							<tr>	
 								<th>#{i18n.getText('CLI003_48')}</th>
 								<th>#{i18n.getText('CLI003_49')}</th>
 							</tr>
 						</thead>
 						<tbody data-bind="foreach: conditionSets">
 							<tr>
-								<td><div
-										data-bind="ntsCheckBox: { checked: isUseCondFlg, enable: true}"></div></td>
 								<td>
-									<div id="combo-box"
+									<div id="combo-box" class="cell"
 										data-bind="ntsComboBox: {
 									options: $parent.itemListCbb,
 									optionsValue: 'code',
-									visibleItemsCount: 3,
+									visibleItemsCount: 15,
 									value: symbolStr,
+									width: '85px',
 									optionsText: 'name',
 									editable: false,
 									required: true,
-									enable: isUseCondFlg,
+									enable: true,
 									selectFirstIfNull: true,
 									columns: $parent.comboColumns}"></div>
 								</td>
@@ -66,18 +63,17 @@
 										value: condition,
 										constraint: 'LogDetailCondition',
 										option: { width: '200px' },
-										enable: isUseCondFlg}" />
+										enable: true}" />
 									</div>
 								</td>
 							</tr>
 						</tbody>
 					</table>
 				</div>
-				<hr />
 			</div>
 			<div id="functions-area-bottom">
 				<button id="H3_1" data-bind="click : submit"
-					class="x-large proceed ">#{i18n.getText('CLI003_50')}</button>
+					class="large proceed">&#160;&#160;#{i18n.getText('CLI003_50')}&#160;&#160;</button>
 				<button id="H3_2" data-bind="click : closePopup" class="large">#{i18n.getText('CLI003_51')}</button>
 			</div>
 		</ui:define>

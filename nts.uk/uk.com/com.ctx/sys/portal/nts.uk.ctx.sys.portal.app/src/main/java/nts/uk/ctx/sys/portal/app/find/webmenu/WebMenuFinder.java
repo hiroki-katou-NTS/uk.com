@@ -349,10 +349,7 @@ public class WebMenuFinder {
 		List<EnumConstant> listSystem = EnumAdaptor.convertToValueNameList(nts.uk.ctx.sys.portal.dom.enums.System.class, internationalization);
 		List<EnumConstant> listMenuClassification = EnumAdaptor.convertToValueNameList(MenuClassification.class);
 		String companyID = AppContexts.user().companyId();
-		int webMenuSetting = 1;
-		int menuAtr = 0;
-		//List<StandardMenuDto> listStandardMenu = standardMenuRepository.findByAtr(companyID, WebMenuSetting.Display.value, MenuAtr.Menu.value)
-		List<StandardMenuDto> listStandardMenu = standardMenuRepository.findByAtr(companyID, webMenuSetting, menuAtr)
+		List<StandardMenuDto> listStandardMenu = standardMenuRepository.findAllDisplay(companyID)
 				.stream().map(item -> StandardMenuDto.fromDomain(item))
 				.collect(Collectors.toList());
 		return new EditMenuBarDto(listSelectedAtr, listSystem, listMenuClassification, listStandardMenu);

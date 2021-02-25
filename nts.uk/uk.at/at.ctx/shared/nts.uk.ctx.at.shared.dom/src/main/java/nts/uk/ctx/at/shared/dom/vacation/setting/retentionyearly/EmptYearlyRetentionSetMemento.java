@@ -26,13 +26,6 @@ public interface EmptYearlyRetentionSetMemento {
 	void setEmploymentCode(String employmentCode); 
 	
 	/**
-	 * Sets the upper limit setting.
-	 *
-	 * @param upperLimitSetting the new upper limit setting
-	 */
-	void setUpperLimitSetting(UpperLimitSetting upperLimitSetting);
-	
-	/**
 	 * Sets the management category.
 	 *
 	 * @param managementCategory the new management category

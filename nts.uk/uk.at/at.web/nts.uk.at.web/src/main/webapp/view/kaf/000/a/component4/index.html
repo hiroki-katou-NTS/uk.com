@@ -1,0 +1,32 @@
+<div id="kaf000-a-component4">
+	<div class="table">
+		<div class="cell col-1">
+			<div class="cell valign-center" data-bind="ntsFormLabel:{ required:true }, text: $i18n('KAF000_49')"></div>
+		</div>
+		<div class="cell valign-top">
+			<div class="table">
+				<div class="cell valign-top" data-bind="if: dispCheckBox">
+					<div data-bind="i18n: 'KAF000_50', ntsCheckBox: { checked: checkBoxValue }"></div>
+				</div>
+				<div class="cell valign-top" data-bind="if: dispSingleDate">
+					<div id="kaf000-a-component4-singleDate"
+						data-bind="ntsDatePicker: {name: $i18n('KAF000_49'),
+												required:true,
+												value: appDate }">
+					</div>
+				</div>
+				<div class="cell valign-top" data-bind="if: !dispSingleDate()">
+					<div id="kaf000-a-component4-rangeDate"
+						data-bind="ntsDateRangePicker: {
+												name: $i18n('KAF000_49'),
+												startName: $i18n('KAF000_49'),
+												endName: $i18n('KAF000_49'),
+												required: true,
+												value: dateValue }">
+					</div>
+				</div>
+			</div>
+			<span data-bind="text: $vm.comment, visible: $vm.application().appType === 2"></span>
+		</div>
+	</div>
+</div>

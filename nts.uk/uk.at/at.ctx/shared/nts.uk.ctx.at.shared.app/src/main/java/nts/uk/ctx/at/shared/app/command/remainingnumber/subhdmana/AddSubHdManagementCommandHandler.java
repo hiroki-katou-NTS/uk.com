@@ -32,10 +32,10 @@ public class AddSubHdManagementCommandHandler
 				command.getCheckedHoliday(), command.getDateHoliday(), command.getSelectedCodeHoliday(),
 				command.getDuedateHoliday(), command.getCheckedSubHoliday(), command.getDateSubHoliday(),
 				command.getSelectedCodeSubHoliday(), command.getCheckedSplit(), command.getDateOptionSubHoliday(),
-				command.getSelectedCodeOptionSubHoliday(), command.getDayRemaining(), command.getClosureId());
+				command.getSelectedCodeOptionSubHoliday(), command.getDayRemaining(), command.getClosureId(), command.getLstLinkingDate());
 
 		// 代休管理データの新規追加処理
-		List<String> errors = serviceAddSub.addProcessOfSHManagement(subHdManagementData);
+		List<String> errors = serviceAddSub.addProcessOfSHManagement(subHdManagementData, command.getLinkingDate(), command.getDisplayRemainDays());
 		return errors;
 	}
 }

@@ -5,7 +5,7 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.CommandFacade;
-import nts.uk.ctx.at.shared.dom.monthly.remarks.RemarksMonthlyRecordRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.remarks.RemarksMonthlyRecordRepository;
 
 @Stateless
 public class MonthlyRemarksCommandHandler extends CommandFacade<MonthlyRemarksCommand> {
@@ -16,11 +16,10 @@ public class MonthlyRemarksCommandHandler extends CommandFacade<MonthlyRemarksCo
 
 	@Override
 	protected void handle(CommandHandlerContext<MonthlyRemarksCommand> context) {
-		if(!context.getCommand().getData().isEmpty()) {
-			context.getCommand().toDomain().stream().forEach(d -> {
-				repo.persistAndUpdate(d);
-			});
-		}
+		
+		context.getCommand().toDomain().stream().forEach(d -> {
+			repo.persistAndUpdate(d);
+		});
 		
 	}
 }

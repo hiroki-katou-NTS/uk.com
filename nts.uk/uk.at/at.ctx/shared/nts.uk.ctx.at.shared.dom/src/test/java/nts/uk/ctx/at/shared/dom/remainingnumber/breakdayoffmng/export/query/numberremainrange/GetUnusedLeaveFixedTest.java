@@ -23,11 +23,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.FixedManagementDataMonth;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMng;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataManagementAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.SelectedAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
 
 @RunWith(JMockit.class)
@@ -48,6 +43,14 @@ public class GetUnusedLeaveFixedTest {
 	public void setUp() throws Exception {
 	}
 
+	/*
+	 * 　テストしたい内容
+	 * 　　データを作成しない
+	 * 
+	 * 　準備するデータ
+	 * 　　確定データがない
+	 * 　　　
+	 * */
 	@Test
 	public void testUnbalanceUnusedEmpty() {
 
@@ -58,34 +61,58 @@ public class GetUnusedLeaveFixedTest {
 		assertThat(actualResult).isEqualTo(new ArrayList<>());
 	}
 
+	/*
+	 * 　テストしたい内容
+	 * 　　未使用数のデータだけが取得できるか。
+	 * 
+	 * 　準備するデータ
+	 * 　　未使用数のデータ
+	 * 　　　→紐づけがなくて残ってるやつ
+	 * 　　　→紐づけしても残ってるやつ
+	 * 　　相殺済みのデータ
+	 * 　　　→最初から残ってない
+	 * 　　　→紐づけしたら残ってない
+
+	 * */
 	@Test
 	public void testUnbalanceUnused() {
 
+		//休出管理データ
 		List<LeaveManagementData> lstLeavMock = new ArrayList<>();
 
-		lstLeavMock.add(new LeaveManagementData("adda6a46-2cbe-48c8-85f8-c04ca554e134", CID, SID, false,
+		lstLeavMock.add(new LeaveManagementData("k1", CID, SID, false,
 				GeneralDate.ymd(2019, 11, 11), GeneralDate.max(), 1.0, 240, 1.0, 240, DigestionAtr.UNUSED.value, 0, 0));
-		lstLeavMock.add(new LeaveManagementData("adda6a46-2cbe-48c8-85f8-c04ca554e133", CID, SID, false,
+		lstLeavMock.add(new LeaveManagementData("k2", CID, SID, false,
 				GeneralDate.ymd(2019, 11, 13), GeneralDate.max(), 1.0, 240, 1.0, 240, DigestionAtr.UNUSED.value, 0, 0));
+		lstLeavMock.add(new LeaveManagementData("k3", CID, SID, false,
+				GeneralDate.ymd(2019, 11, 14), GeneralDate.max(), 1.0, 240, 0.0, 0, DigestionAtr.UNUSED.value, 0, 0));
+		lstLeavMock.add(new LeaveManagementData("k4", CID, SID, false,
+				GeneralDate.ymd(2019, 11, 15), GeneralDate.max(), 1.0, 240, 1.0, 240, DigestionAtr.UNUSED.value, 0, 0));
 
 		new Expectations() {
 			{
-				// LeaveManaDataRepository DigestionAtr.UNUSED
-				// List<LeaveManagementData>
+
 				require.getBySidYmd(CID, SID, (GeneralDate) any, (DigestionAtr) any);
 				result = lstLeavMock;
 
-				require.getBreakByIdAndDataAtr(DataManagementAtr.CONFIRM, DataManagementAtr.INTERIM,
-						"adda6a46-2cbe-48c8-85f8-c04ca554e134");
-				result = Arrays.asList(
-						new InterimBreakDayOffMng("", DataManagementAtr.CONFIRM, "adda6a46-2cbe-48c8-85f8-c04ca554e134",
-								DataManagementAtr.INTERIM, new UseTime(240), new UseDay(1.0), SelectedAtr.AUTOMATIC));
-
-				require.getBreakByIdAndDataAtr(DataManagementAtr.CONFIRM, DataManagementAtr.INTERIM,
-						"adda6a46-2cbe-48c8-85f8-c04ca554e133");
-				result = Arrays.asList(
-						new InterimBreakDayOffMng("", DataManagementAtr.CONFIRM, "adda6a46-2cbe-48c8-85f8-c04ca554e133",
-								DataManagementAtr.INTERIM, new UseTime(120), new UseDay(0.5), SelectedAtr.AUTOMATIC));
+				//暫定休出代休紐付け管理
+//				require.getBreakByIdAndDataAtr(DataManagementAtr.CONFIRM, DataManagementAtr.INTERIM,
+//						"k1");
+//				result = Arrays.asList(
+//						new InterimBreakDayOffMng("", DataManagementAtr.CONFIRM, "k1",
+//								DataManagementAtr.INTERIM, new UseTime(240), new UseDay(1.0), SelectedAtr.AUTOMATIC));
+//
+//				require.getBreakByIdAndDataAtr(DataManagementAtr.CONFIRM, DataManagementAtr.INTERIM,
+//						"k2");
+//				result = Arrays.asList(
+//						new InterimBreakDayOffMng("", DataManagementAtr.CONFIRM, "k2",
+//								DataManagementAtr.INTERIM, new UseTime(120), new UseDay(0.5), SelectedAtr.AUTOMATIC));
+				
+				require.getByLeaveID(SID, GeneralDate.ymd(2019, 11, 11));
+				result = Arrays.asList(DaikyuFurikyuHelper.createLeavComDayOff(GeneralDate.ymd(2019, 11, 11), GeneralDate.ymd(2019, 11, 18),  1.0));
+				
+				require.getByLeaveID(SID, GeneralDate.ymd(2019, 11, 13));
+				result = Arrays.asList(DaikyuFurikyuHelper.createLeavComDayOff(GeneralDate.ymd(2019, 11, 13), GeneralDate.ymd(2019, 11, 19), 0.5));
 
 			}
 		};
@@ -95,14 +122,25 @@ public class GetUnusedLeaveFixedTest {
 				new FixedManagementDataMonth(new ArrayList<>(), new ArrayList<>()));
 
 		assertThat(actualResult)
-				.extracting(x -> x.getManageId(), x -> x.getEmployeeId(), x -> x.getDataAtr(),
-						x -> x.getDateOccur().isUnknownDate(), x -> x.getDateOccur().getDayoffDate(),
-						x -> x.getNumberOccurren().getDay().v(), x -> x.getNumberOccurren().getTime(),
-						x -> x.getOccurrentClass(), x -> x.getUnbalanceNumber().getDay().v(),
-						x -> x.getUnbalanceNumber().getTime())
-				.containsExactly(Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554e133", SID, MngDataStatus.CONFIRMED,
+				.extracting(x -> x.getManageId(), 
+						x -> x.getDataAtr(),//状態
+						x -> x.getDateOccur().isUnknownDate(), x -> x.getDateOccur().getDayoffDate(),//年月日
+						x -> x.getNumberOccurren().getDay().v(), x -> x.getNumberOccurren().getTime(),//発生数
+						x -> x.getOccurrentClass(), //発生消化区分
+						x -> x.getUnbalanceNumber().getDay().v(), x -> x.getUnbalanceNumber().getTime())//未相殺数
+				.containsExactly(
+						Tuple.tuple("k1",  MngDataStatus.CONFIRMED,
+								false, Optional.of(GeneralDate.ymd(2019, 11, 11)), 1.0, Optional.of(new AttendanceTime(240)),
+								OccurrenceDigClass.OCCURRENCE, 0.0, Optional.of(new AttendanceTime(240))),
+						
+						Tuple.tuple("k2",  MngDataStatus.CONFIRMED,
 						false, Optional.of(GeneralDate.ymd(2019, 11, 13)), 1.0, Optional.of(new AttendanceTime(240)),
-						OccurrenceDigClass.OCCURRENCE, 0.5, Optional.of(new AttendanceTime(120))));
+						OccurrenceDigClass.OCCURRENCE, 0.5, Optional.of(new AttendanceTime(240))),
+						
+						Tuple.tuple("k4",  MngDataStatus.CONFIRMED,
+								false, Optional.of(GeneralDate.ymd(2019, 11, 15)), 1.0, Optional.of(new AttendanceTime(240)),
+								OccurrenceDigClass.OCCURRENCE, 1.0, Optional.of(new AttendanceTime(240)))
+						);
 	}
 
 }

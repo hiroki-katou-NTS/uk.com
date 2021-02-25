@@ -4,8 +4,8 @@ import java.time.YearMonth;
 import java.util.List;
 import java.util.Optional;
 
+import nts.arc.time.calendar.Year;
 import nts.uk.ctx.at.function.dom.annualworkschedule.Employee;
-import nts.uk.ctx.at.shared.dom.common.Year;
 
 public interface AnnualWorkScheduleRepository {
 	/**

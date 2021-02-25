@@ -12,11 +12,11 @@ import javax.persistence.Table;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.entranceandexit.AttendanceLeavingGate;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.AttendanceLeavingGate;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -108,9 +108,9 @@ public class KrcdtDayLeaveGate extends UkJpaEntity implements Serializable {
 
 	public AttendanceLeavingGate toDomain() {
 		return new AttendanceLeavingGate(new WorkNo(id.alNo),
-				new WorkStamp(toTimeWithDay(attendanceTime), toTimeWithDay(attendanceTime),
+				new WorkStamp(toTimeWithDay(attendanceTime),
 						toWorkLocationCD(attendancePlaceCode), toWorkLocationCD(attendanceStampSource)),
-				new WorkStamp(toTimeWithDay(leaveTime), toTimeWithDay(leaveTime), toWorkLocationCD(leavePlaceCode),
+				new WorkStamp(toTimeWithDay(leaveTime), toWorkLocationCD(leavePlaceCode),
 						toWorkLocationCD(leaveStampSource)));
 	}
 

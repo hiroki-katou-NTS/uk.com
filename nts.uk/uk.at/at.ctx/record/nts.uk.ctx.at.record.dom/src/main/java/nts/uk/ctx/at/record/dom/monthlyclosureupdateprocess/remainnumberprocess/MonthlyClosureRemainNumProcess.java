@@ -11,8 +11,8 @@ import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.remainnumberprocess.
 import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.remainnumberprocess.specialholiday.SpecialHolidayProcess;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.remainnumberprocess.substitutionholiday.SubstitutionHolidayProcess;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
-import nts.uk.ctx.at.shared.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.DailyInterimRemainMngData;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -28,7 +28,7 @@ public class MonthlyClosureRemainNumProcess {
 	 * @param empId 社員ID
 	 * @param attTimeMonthly 月別実績の勤怠時間
 	 */
-	public static AtomTask remainNumberProcess(RequireM1 require, CacheCarrier cacheCarrier,
+	public static AtomTask remainNumberProcess(RequireM1 require, CacheCarrier cacheCarrier,  String cid, 
 			AggrPeriodEachActualClosure period, String empId,
 			AttendanceTimeOfMonthly attTimeMonthly) {
 
@@ -39,7 +39,7 @@ public class MonthlyClosureRemainNumProcess {
 				require.monthInterimRemainData(cacheCarrier, companyId, empId, period.getPeriod());
 		
 		// 年休（・積立年休）処理
-		return AnnualLeaveProcess.annualHolidayProcess(require, cacheCarrier, period, empId, interimRemainMngMap, attTimeMonthly)
+		return AnnualLeaveProcess.annualHolidayProcess(require, cacheCarrier, cid, period, empId, interimRemainMngMap, attTimeMonthly)
 				// 振休処理
 				.then(SubstitutionHolidayProcess.substitutionHolidayProcess(require, cacheCarrier, period, empId, interimRemainMngMap))
 				// 代休処理

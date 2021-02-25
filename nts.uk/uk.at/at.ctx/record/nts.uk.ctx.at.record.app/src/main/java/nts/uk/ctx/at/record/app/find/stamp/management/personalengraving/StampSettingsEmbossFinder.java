@@ -64,7 +64,7 @@ public class StampSettingsEmbossFinder {
 
 	@Inject
 	private StampCardRepository stampCardRepo;
-	
+
 	@Inject
 	private StampRecordRepository stampRecordRepo;
 
@@ -73,12 +73,6 @@ public class StampSettingsEmbossFinder {
 
 	@Inject
 	protected PredetemineTimeSettingRepository predetemineTimeSettingRepo;
-	
-	@Inject
-	protected WorkingConditionRepository workingConditionRepo;
-	
-	@Inject
-	protected WorkingConditionItemRepository workingConditionItemRepo;
 
 	@Inject
 	private SettingsSmartphoneStampRepository settingsSmartphoneStampRepo;
@@ -89,13 +83,25 @@ public class StampSettingsEmbossFinder {
 	@Inject
 	private ConfirmUseOfStampEmbossCommandHandler confirmHandler;
 
-	//
+	@Inject
+	protected WorkingConditionRepository workingConditionRepo;
+	
+	@Inject
+	protected WorkingConditionItemRepository workingConditionItemRepo;
+
 	public KDP002AStartPageOutput getSettings() {
 
 		String companyId = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
 		
 		this.confirmHandler.handle(new ConfirmUseOfStampEmbossCommand());
+		//StampFunctionAvailableRequiredImpl checkFuncRq = new StampFunctionAvailableRequiredImpl();
+		
+		//boolean isAvailable = StampFunctionAvailableService.decide(checkFuncRq, employeeId);
+		
+		//if(!isAvailable) {
+		//	throw new BusinessException("Msg_1619");
+		//}
 		
 		// 1
 		Optional<StampSettingPerson> stampSetting = stampSetPerRepo.getStampSetting(companyId);
@@ -177,7 +183,7 @@ public class StampSettingsEmbossFinder {
 
 		@Override
 		public List<StampRecord> getStampRecord(List<StampNumber> stampNumbers, GeneralDate date) {
-			return stampRecordRepo.get(stampNumbers, date);
+			return stampRecordRepo.get(AppContexts.user().contractCode(), stampNumbers, date);
 		}
 
 		@Override
@@ -185,11 +191,11 @@ public class StampSettingsEmbossFinder {
 			return stampDakokuRepo.get(AppContexts.user().contractCode(),stampNumbers, date);
 		}
 
-	}
+	} 
 
 	private class StampTypeToSuppressRequiredImpl extends EmpStampDataRequiredImpl
 			implements GetStampTypeToSuppressService.Require, WorkingConditionService.RequireM1 {
-		
+
 		@Inject
 		protected StampSetPerRepository stampSetPerRepo;
 		
@@ -198,7 +204,7 @@ public class StampSettingsEmbossFinder {
 		
 		@Inject
 		protected WorkingConditionItemRepository workingConditionItemRepo;
-		
+
 		@Inject
 		protected PredetemineTimeSettingRepository predetemineTimeSettingRepo;
 		
@@ -223,7 +229,7 @@ public class StampSettingsEmbossFinder {
 			this.workingConditionItemRepo = workingConditionItemRepo;
 			this.workingConditionRepo = workingConditionRepo;
 		}
-		
+
 		@Override
 		public Optional<WorkingConditionItem> findWorkConditionByEmployee(String employeeId, GeneralDate baseDate) {
 			return WorkingConditionService.findWorkConditionByEmployee(this, employeeId, baseDate);
@@ -236,20 +242,23 @@ public class StampSettingsEmbossFinder {
 		}
 		
 		@Override
-		public Optional<StampSettingPerson> getStampSet(String companyId) {
+		public Optional<StampSettingPerson> getStampSet() {
+			String companyId = AppContexts.user().companyId();
 			return this.stampSetPerRepo.getStampSet(companyId);
 		}
 		
 		@Override
-		public Optional<SettingsSmartphoneStamp> getSettingsSmartphone(String companyId) {
+		public Optional<SettingsSmartphoneStamp> getSettingsSmartphone() {
+			String companyId = AppContexts.user().companyId();
 			return this.settingsSmartphoneStampRepo.get(companyId);
 		}
-		
+
 		@Override
-		public Optional<PortalStampSettings> getPotalSettings(String comppanyID) {
-			return this.portalStampSettingsrepo.get(comppanyID);
+		public Optional<PortalStampSettings> getPotalSettings() {
+			String companyId = AppContexts.user().companyId();
+			return this.portalStampSettingsrepo.get(companyId);
 		}
-		
+
 		@Override
 		public Optional<WorkingCondition> workingCondition(String companyId, String employeeId, GeneralDate baseDate) {
 			return this.workingConditionRepo.getBySidAndStandardDate(companyId, employeeId, baseDate);
@@ -259,17 +268,5 @@ public class StampSettingsEmbossFinder {
 		public Optional<WorkingConditionItem> workingConditionItem(String historyId) {
 			return this.workingConditionItemRepo.getByHistoryId(historyId);
 		}
-		
-		}
-		
-		//@AllArgsConstructor
-		//private class StampFunctionAvailableRequiredImpl implements StampFunctionAvailableService.Require {
-		
-		//	@Override
-		//	public List<StampCard> getListStampCard(String sid) {
-		//		return stampCardRepo.getListStampCard(sid);
-		//	}
-		
-		//}
-		
-		}
+	}
+}

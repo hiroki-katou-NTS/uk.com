@@ -112,18 +112,22 @@
 								multiple: false,
 								value: currentCode
 							}"></table>
-							<div id = "text-b20">
-					<span id="text-b20-1" data-bind="visible : permissionCheck() &amp;&amp; displayButton">#{i18n.getText('KDP002_61')}</span>
-
-					<span id="text-b20-2" data-bind= "visible : !permissionCheck() &amp;&amp; displayButton">
-						#{i18n.getText('KDP002_99')}</span>
+					<div id="text-b20">
+						<!-- C21_1 -->
+						<span id="text-b20-1"
+							data-bind="visible : permissionCheck() &amp;&amp; displayButton &amp;&amp; !isNoData()">#{i18n.getText('KDP002_61')}</span>
+						<!-- C21_2 -->
+						<span id="text-b20-2"
+							data-bind="visible : (!permissionCheck() &amp;&amp; displayButton) 	&#124;&#124; (isNoData() &amp;&amp; displayButton) ">
+							#{i18n.getText('KDP002_99')}</span>
 					</div>
-					
+
 				</div>
 			</div>
 			<div id="functions-area-bottom">
+			<!-- C30_1 -->
 				<button class="proceed x-large" tabindex="9" id="close-button"
-					data-bind="click: registerDailyIdentify, disable : !permissionCheck(), visible: displayButton">#{i18n.getText('KDP002_62')}</button>
+					data-bind="click: registerDailyIdentify, disable : (!permissionCheck() &#124;&#124; isNoData() ), visible: displayButton ">#{i18n.getText('KDP002_62')}</button>
 
 				<button tabindex="9" id="close-button"
 					data-bind="click: closeDialog">#{i18n.getText('KDP002_63')}</button>

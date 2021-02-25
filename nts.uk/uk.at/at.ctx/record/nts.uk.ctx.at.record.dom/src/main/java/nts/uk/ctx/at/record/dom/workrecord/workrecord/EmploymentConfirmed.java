@@ -36,17 +36,17 @@ public class EmploymentConfirmed implements DomainAggregate  {
 	private final ClosureId closureId;
 	
 	/**
-	 * 年月
+	 * 処理年月
 	 */
 	private final YearMonth processYM;
 	
 	/**
-	 * 社員ID
+	 * 確定者
 	 */
 	private final String employeeId;
 		
 	/**
-	 * 日時
+	 * 確定日時
 	 */
 	private final GeneralDateTime date;
 	

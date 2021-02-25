@@ -18,6 +18,6 @@ public class CalendarCompanyDto {
 		return new CalendarCompanyDto(
 				domain.getCompanyId(),
 				domain.getDate(),
-				domain.getWorkingDayAtr().value);
+				domain.getWorkDayDivision().value);
 	}
 }

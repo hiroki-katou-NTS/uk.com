@@ -6,21 +6,23 @@ package nts.uk.ctx.at.shared.app.find.outsideot.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.outsideot.UseClassification;
-import nts.uk.ctx.at.shared.dom.outsideot.breakdown.BreakdownItemName;
-import nts.uk.ctx.at.shared.dom.outsideot.breakdown.BreakdownItemNo;
-import nts.uk.ctx.at.shared.dom.outsideot.breakdown.OutsideOTBRDItemSetMemento;
-import nts.uk.ctx.at.shared.dom.outsideot.breakdown.ProductNumber;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.UseClassification;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.BreakdownItemName;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.BreakdownItemNo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.OutsideOTBRDItem;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.ProductNumber;
 
 /**
  * The Class OutsideOTBRDItemDto.
  */
 @Getter
 @Setter
-public class OutsideOTBRDItemDto implements OutsideOTBRDItemSetMemento{
+public class OutsideOTBRDItemDto {
 	
 	/** The use classification. */
 	private Boolean useClassification;
@@ -37,75 +39,45 @@ public class OutsideOTBRDItemDto implements OutsideOTBRDItemSetMemento{
 	/** The attendance item ids. */
 	private List<Integer> attendanceItemIds;
 	
-	public void defaultData(int breakdownItemNo){
+	/** The premium extra 60 H rates. */
+	private List<PremiumExtra60HRateDto> premiumExtra60HRates;
+	
+	public OutsideOTBRDItemDto(){
+		
+		this(0);
+	}
+	
+	public OutsideOTBRDItemDto(int breakdownItemNo){
 		this.useClassification = true;
 		this.breakdownItemNo = breakdownItemNo;
 		this.name = "";
 		this.productNumber = breakdownItemNo;
 		this.attendanceItemIds = new ArrayList<>();
+		this.premiumExtra60HRates = new ArrayList<>();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.at.shared.dom.overtime.breakdown.OvertimeBRDItemSetMemento#
-	 * setUseClassification(nts.uk.ctx.at.shared.dom.overtime.UseClassification)
-	 */
-	@Override
-	public void setUseClassification(UseClassification useClassification) {
-		this.useClassification = (useClassification.value == UseClassification.UseClass_Use.value); 
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.at.shared.dom.overtime.breakdown.OvertimeBRDItemSetMemento#
-	 * setBreakdownItemNo(nts.uk.ctx.at.shared.dom.overtime.breakdown.
-	 * BreakdownItemNo)
-	 */
-	@Override
-	public void setBreakdownItemNo(BreakdownItemNo breakdownItemNo) {
-		this.breakdownItemNo = breakdownItemNo.value;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.at.shared.dom.overtime.breakdown.OvertimeBRDItemSetMemento#
-	 * setName(nts.uk.ctx.at.shared.dom.overtime.breakdown.BreakdownItemName)
-	 */
-	@Override
-	public void setName(BreakdownItemName name) {
-		this.name = name.v();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.at.shared.dom.overtime.breakdown.OvertimeBRDItemSetMemento#
-	 * setProductNumber(nts.uk.ctx.at.shared.dom.overtime.ProductNumber)
-	 */
-	@Override
-	public void setProductNumber(ProductNumber productNumber) {
-		this.productNumber = productNumber.value;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.at.shared.dom.overtime.breakdown.OvertimeBRDItemSetMemento#
-	 * setAttendanceItemIds(java.util.List)
-	 */
-	@Override
-	public void setAttendanceItemIds(List<Integer> attendanceItemIds) {
-		this.attendanceItemIds = attendanceItemIds;
+	public static OutsideOTBRDItemDto of(OutsideOTBRDItem domain) {
+		OutsideOTBRDItemDto dto = new OutsideOTBRDItemDto();
+		dto.useClassification = domain.getUseClassification() == UseClassification.UseClass_Use;
+		dto.breakdownItemNo = domain.getBreakdownItemNo().value;
+		dto.name = domain.getName().v();
+		dto.productNumber = domain.getProductNumber().value;
+		dto.attendanceItemIds = domain.getAttendanceItemIds();
+		dto.premiumExtra60HRates = domain.getPremiumExtra60HRates().stream().map(c -> new PremiumExtra60HRateDto(
+																								domain.getBreakdownItemNo().value, 
+																								c.getPremiumRate().v(), 
+																								c.getOvertimeNo().value))
+																	.collect(Collectors.toList());
 		
+		return dto;
 	}
-
+	
+	public OutsideOTBRDItem domain() {
+		
+		return new OutsideOTBRDItem(useClassification ? UseClassification.UseClass_Use : UseClassification.UseClass_NotUse,
+				EnumAdaptor.valueOf(breakdownItemNo, BreakdownItemNo.class), 
+				new BreakdownItemName(name), EnumAdaptor.valueOf(productNumber, ProductNumber.class),
+				attendanceItemIds, 
+				premiumExtra60HRates.stream().map(c -> c.domain()).collect(Collectors.toList()));
+	}
 }

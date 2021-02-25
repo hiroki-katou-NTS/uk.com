@@ -112,7 +112,7 @@ hr {
 }
 
 #output-setting-content {
-	height: 445px
+	height: 578px
 }
 
 #btnSetErrorAlarmCd {
@@ -150,4 +150,11 @@ html {
 .work-place-accum {
     width:330px;
     margin-left:35px;
+}
+button.nts-switch-button {
+	width: 80px;
+}
+
+.mt-20 {
+	margin-top: 20px !important;
 }

@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.applicationlatearrival;
 
 import lombok.AllArgsConstructor;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationlatearrival.LateEarlyRequest;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationlatearrival.LateEarlyRequest_Old;
 
 @AllArgsConstructor
 public class LateEarlyRequestDto {
@@ -16,7 +16,7 @@ public class LateEarlyRequestDto {
 	 * @param lateEarlyRequest
 	 * @return
 	 */
-	public static LateEarlyRequestDto fromDomain(LateEarlyRequest lateEarlyRequest){
+	public static LateEarlyRequestDto fromDomain(LateEarlyRequest_Old lateEarlyRequest){
 		return new LateEarlyRequestDto(
 				lateEarlyRequest.getCompanyId(), 
 				lateEarlyRequest.getShowResult().value);

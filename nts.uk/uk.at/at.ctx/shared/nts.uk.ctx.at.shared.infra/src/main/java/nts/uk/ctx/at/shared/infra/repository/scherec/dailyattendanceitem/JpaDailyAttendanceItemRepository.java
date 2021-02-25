@@ -36,6 +36,8 @@ public class JpaDailyAttendanceItemRepository extends JpaRepository implements D
 	
 	private static final String FIND_BY_ATRS;
 
+	private static final String FIND_BY_ATTENDANCE_IDS;
+
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT a ");
@@ -78,6 +80,14 @@ public class JpaDailyAttendanceItemRepository extends JpaRepository implements D
 		builderString.append("WHERE a.krcmtDailyAttendanceItemPK.companyId = :companyId ");
 		builderString.append("AND a.dailyAttendanceAtr IN :dailyAttendanceAtrs ");
 		FIND_BY_ATRS = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT a ");
+		builderString.append("FROM KrcmtDailyAttendanceItem a ");
+		builderString.append("WHERE a.krcmtDailyAttendanceItemPK.attendanceItemId IN :dailyAttendanceItemIds ");
+		builderString.append("AND a.krcmtDailyAttendanceItemPK.companyId = :companyId ");
+		builderString.append("ORDER BY a.displayNumber ASC ");
+		FIND_BY_ATTENDANCE_IDS = builderString.toString();
 	}
 
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -209,6 +219,20 @@ public class JpaDailyAttendanceItemRepository extends JpaRepository implements D
 	@Override
 	public void update(DailyAttendanceItem domain) {
 		this.commandProxy().update(KrcmtDailyAttendanceItem.toEntity(domain));
+	}
+
+	@Override
+	public List<DailyAttendanceItem> findByADailyAttendanceItems(List<Integer> attendanceItemIds, String companyId) {
+		List<DailyAttendanceItem> result = new ArrayList<>();
+		if (!attendanceItemIds.isEmpty()) {
+			CollectionUtil.split(attendanceItemIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+				result.addAll(this.queryProxy().query(FIND_BY_ATTENDANCE_IDS, KrcmtDailyAttendanceItem.class)
+						.setParameter("dailyAttendanceItemIds", subList)
+						.setParameter("companyId", companyId)
+						.getList(f -> toDomain(f)));
+			});
+		}
+		return result;
 	}
 
 }

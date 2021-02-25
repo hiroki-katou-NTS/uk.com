@@ -1530,7 +1530,7 @@ module nts.uk.at.view.kmk003.a {
 
                 updateData(data: WorkTimezoneStampSetDto) {
                     var self = this;
-                    data.roundingSets.forEach((dataRoundingDTO, index) => {
+                    data.roundingTime.roundingSets.forEach((dataRoundingDTO, index) => {
                         let currentItem: RoundingSetModel = _.find(self.roundingSets, p => p.section() == dataRoundingDTO.section);
                         if (!nts.uk.util.isNullOrUndefined(currentItem)) {
                             currentItem.updateData(dataRoundingDTO);

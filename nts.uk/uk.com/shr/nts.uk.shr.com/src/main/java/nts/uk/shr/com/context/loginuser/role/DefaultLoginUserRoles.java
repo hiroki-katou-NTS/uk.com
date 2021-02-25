@@ -15,6 +15,10 @@ public class DefaultLoginUserRoles implements LoginUserRoles, Serializable {
 	private String forSystemAdmin = null;
 	private String forCompanyAdmin = null;
 	private String forGroupCompaniesAdmin = null;
+	private boolean isInChargeAttendance = false;
+	private boolean isInChargePayroll = false;
+	private boolean isInChargePersonnel = false;
+	private boolean isInChargePersonalInfo = false;
 	
 	@Override
 	public String forAttendance() {
@@ -50,11 +54,33 @@ public class DefaultLoginUserRoles implements LoginUserRoles, Serializable {
 	public String forCompanyAdmin() {
 		return this.forCompanyAdmin;
 	}
-
+	
 	@Override
 	public String forGroupCompaniesAdmin() {
 		return this.forGroupCompaniesAdmin;
 	}
+
+	@Override
+	public boolean isInChargeAttendance() {
+		return this.isInChargeAttendance;
+	}
+	
+	@Override
+	public boolean isInChargePayroll() {
+		return this.isInChargePayroll;
+	}
+	
+	@Override
+	public boolean isInChargePersonnel() {
+		return this.isInChargePersonnel;
+	}
+	
+	@Override
+	public boolean isInChargePersonalInfo() {
+		return this.isInChargePersonalInfo;
+	}
+
+
 
 	public void setRoleIdForAttendance(String roleId) {
 		this.forAttendance = roleId;
@@ -88,6 +114,22 @@ public class DefaultLoginUserRoles implements LoginUserRoles, Serializable {
 		this.forGroupCompaniesAdmin = roleId;
 	}
 	
+	public void setIsInChargeAttendance(boolean isInCharge) {
+		this.isInChargeAttendance = isInCharge;
+	}
+
+	public void setIsInChargePayroll(boolean isInCharge) {
+		this.isInChargePayroll = isInCharge;
+	}
+
+	public void setIsInChargePersonnel(boolean isInCharge) {
+		this.isInChargePersonnel = isInCharge;
+	}
+
+	public void setIsInChargePersonalInfo(boolean isInCharge) {
+		this.isInChargePersonalInfo = isInCharge;
+	}
+
 	public void restore(LoginUserRoles source) {
 		this.forAttendance = source.forAttendance();
 		this.forPayroll = source.forPayroll();
@@ -97,6 +139,10 @@ public class DefaultLoginUserRoles implements LoginUserRoles, Serializable {
 		this.forSystemAdmin = source.forSystemAdmin();
 		this.forCompanyAdmin = source.forCompanyAdmin();
 		this.forGroupCompaniesAdmin = source.forGroupCompaniesAdmin();
+		this.isInChargeAttendance = source.isInChargeAttendance();
+		this.isInChargePayroll = source.isInChargePayroll();
+		this.isInChargePersonnel = source.isInChargePersonnel();
+		this.isInChargePersonalInfo = source.isInChargePersonalInfo();
 	}
 	
 	public static DefaultLoginUserRoles cloneFrom(LoginUserRoles source){

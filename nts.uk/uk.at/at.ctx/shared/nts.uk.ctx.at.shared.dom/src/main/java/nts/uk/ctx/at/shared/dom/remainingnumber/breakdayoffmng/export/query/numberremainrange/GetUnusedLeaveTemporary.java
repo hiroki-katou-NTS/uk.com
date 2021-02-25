@@ -13,9 +13,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.MngDataStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.GetTightSetting;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.GetTightSetting.GetTightSettingResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ProcessDataTemporary;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.SettingExpirationDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataRemainUnit;
@@ -24,13 +22,11 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numb
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail.NumberConsecuVacation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.BreakDayOffRemainMngRefactParam;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.UnbalanceVacation;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataManagementAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
-import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
+import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.SettingSubstituteHolidayProcess;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.SubstitutionHolidayOutput;
 
@@ -98,26 +94,25 @@ public class GetUnusedLeaveTemporary {
 			Pair<InterimRemain, InterimBreakMng> interimData, GeneralDate aggEndDate,
 			SubstitutionHolidayOutput subsHolidaySetting, String cid, String sid) {
 
-		// ドメインモデル「暫定休出代休紐付け管理」を取得する
-		List<InterimBreakDayOffMng> lstInterimBreakDay = require
-				.getBreakDayOffMng(interimData.getLeft().getRemainManaID(), true, DataManagementAtr.INTERIM);
+		// ドメインモデル「休出代休紐付け管理」を取得する(get domain model 「休出代休紐付け管理」)
+		List<LeaveComDayOffManagement> lstInterimBreakDay = require
+				.getByLeaveID(interimData.getLeft().getSID(), interimData.getLeft().getYmd());
 
 		Integer unUseTimes = interimData.getRight().getUnUsedTimes().v();
 		double unUseDays = interimData.getRight().getUnUsedDays().v();
-		for (InterimBreakDayOffMng interimBreakData : lstInterimBreakDay) {
-			unUseTimes -= interimBreakData.getUseTimes().v();
-			unUseDays -= interimBreakData.getUseDays().v();
+		for (LeaveComDayOffManagement interimBreakData : lstInterimBreakDay) {
+			unUseDays -= interimBreakData.getAssocialInfo().getDayNumberUsed().v();
 		}
 
-		// 締め設定を取得する
-		Optional<GetTightSettingResult> tightSettingResult = GetTightSetting.getTightSetting(require, cid, sid,
-				aggEndDate, ExpirationTime.valueOf(subsHolidaySetting.getExpirationOfsubstiHoliday()),
-				interimData.getLeft().getYmd());
-
-		// 使用期限を設定
-		GeneralDate dateSettingExp = SettingExpirationDate.settingExp(
-				ExpirationTime.valueOf(subsHolidaySetting.getExpirationOfsubstiHoliday()), tightSettingResult,
-				interimData.getLeft().getYmd());
+//		// 締め設定を取得する
+//		Optional<GetTightSettingResult> tightSettingResult = GetTightSetting.getTightSetting(require, cid, sid,
+//				aggEndDate, ExpirationTime.valueOf(subsHolidaySetting.getExpirationOfsubstiHoliday()),
+//				interimData.getLeft().getYmd());
+//
+//		// 使用期限を設定
+//		GeneralDate dateSettingExp = SettingExpirationDate.settingExp(
+//				ExpirationTime.valueOf(subsHolidaySetting.getExpirationOfsubstiHoliday()), tightSettingResult,
+//				interimData.getLeft().getYmd());
 
 		MngDataStatus dataAtr = MngDataStatus.NOTREFLECTAPP;
 		if (interimData.getLeft().getCreatorAtr() == CreateAtr.SCHEDULE) {
@@ -135,7 +130,7 @@ public class GetUnusedLeaveTemporary {
 						.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(unUseDays),
 								Optional.of(new AttendanceTime(unUseTimes))))
 						.build();
-		return new UnbalanceVacation(dateSettingExp, DigestionAtr.USED, Optional.empty(), detail,
+		return new UnbalanceVacation(interimData.getRight().getExpirationDate(), DigestionAtr.USED, Optional.empty(), detail,
 				interimData.getRight().getOnedayTime(), interimData.getRight().getHaftDayTime());
 
 	}
@@ -149,8 +144,9 @@ public class GetUnusedLeaveTemporary {
 		// InterimBreakDayOffMngRepository
 		List<InterimBreakMng> getBySidPeriod(String sid, DatePeriod period);
 
-		// InterimBreakDayOffMngRepository
-		List<InterimBreakDayOffMng> getBreakDayOffMng(String mngId, boolean breakDay, DataManagementAtr mngAtr);
+		//ドメインモデル「休出代休紐付け管理」を取得する
+		 //LeaveComDayOffManaRepository
+		List<LeaveComDayOffManagement> getByLeaveID(String sid, GeneralDate occDate);
 
 	}
 

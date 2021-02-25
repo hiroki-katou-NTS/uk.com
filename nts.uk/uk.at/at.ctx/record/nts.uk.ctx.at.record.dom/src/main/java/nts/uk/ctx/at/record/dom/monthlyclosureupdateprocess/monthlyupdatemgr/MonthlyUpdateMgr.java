@@ -20,7 +20,7 @@ import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClo
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.CalcPeriodForClosureProcValue;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.CalcPeriodForClosureProcess;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.ClosurePeriod;
-import nts.uk.ctx.at.shared.dom.monthly.AttendanceTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
@@ -34,7 +34,7 @@ import nts.uk.shr.com.time.calendar.date.ClosureDate;
 public class MonthlyUpdateMgr {
 
 	// 社員毎に実行される処理
-	public static AtomTask processEmployee(RequireM4 require, CacheCarrier cacheCarrier,
+	public static AtomTask processEmployee(RequireM4 require, CacheCarrier cacheCarrier,  String cid, 
 			String monthlyClosureLogId, String empId, int closureId, YearMonth ym,
 			ClosureDate closureDate, DatePeriod period) {
 		List<AtomTask> atomTask = new ArrayList<>();
@@ -48,7 +48,7 @@ public class MonthlyUpdateMgr {
 			ClosurePeriod closurePeriod = calculatedResult.getClosurePeriod().get();
 			MonthlyClosureUpdatePersonLog personLog = new MonthlyClosureUpdatePersonLog(empId, monthlyClosureLogId,
 					null, MonthlyClosurePersonExecutionStatus.INCOMPLETE);
-			atomTask.add(executeProcess(require, cacheCarrier, monthlyClosureLogId, empId, closurePeriod));
+			atomTask.add(executeProcess(require, cacheCarrier, cid, monthlyClosureLogId, empId, closurePeriod));
 			atomTask.add(MonthlyClosureUpdateLogProcess.monthlyClosureUpdatePersonLogProcess(require, 
 					monthlyClosureLogId, empId, personLog));
 			break;
@@ -68,7 +68,7 @@ public class MonthlyUpdateMgr {
 	}
 
 	// 各処理の実行
-	private static AtomTask executeProcess(RequireM3 require, CacheCarrier cacheCarrier, String monthlyClosureLogId, String empId, ClosurePeriod period) {
+	private static AtomTask executeProcess(RequireM3 require, CacheCarrier cacheCarrier,  String cid, String monthlyClosureLogId, String empId, ClosurePeriod period) {
 		List<AtomTask> persist = new ArrayList<>();
 		
 		for (AggrPeriodEachActualClosure p : period.getAggrPeriods()) {
@@ -78,7 +78,7 @@ public class MonthlyUpdateMgr {
 			if (attTimeMontly == null)
 				continue;
 			
-			persist.add(monthlyClosureUpdateProc(require, cacheCarrier, p, empId, attTimeMontly));
+			persist.add(monthlyClosureUpdateProc(require, cacheCarrier, cid, p, empId, attTimeMontly));
 			// アルゴリズム「月別実績バックアップ」を実行する: not cover this time
 		}
 		
@@ -106,12 +106,12 @@ public class MonthlyUpdateMgr {
 	}
 
 	// 月締め更新処理
-	private static AtomTask monthlyClosureUpdateProc(RequireM1 require, CacheCarrier cacheCarrier,
+	private static AtomTask monthlyClosureUpdateProc(RequireM1 require, CacheCarrier cacheCarrier, String cid, 
 			AggrPeriodEachActualClosure period, String empId,
 			AttendanceTimeOfMonthly attTimeMonthly) {
 		
 		return AtomTask.of(() -> {})
-					.then(MonthlyClosureRemainNumProcess.remainNumberProcess(require, cacheCarrier, period, empId, attTimeMonthly))
+					.then(MonthlyClosureRemainNumProcess.remainNumberProcess(require, cacheCarrier, cid, period, empId, attTimeMonthly))
 					.then(ClosureStatusMng.closureStatusManage(require, period, empId));
 	}
 	
@@ -121,10 +121,10 @@ public class MonthlyUpdateMgr {
 		void deleteMonthlyClosureUpdatePersonLog(String monthlyLogId, String empId);
 	}
 	
-	private static interface RequireM3 extends RequireM1, RequireM2 {
+	public static interface RequireM3 extends RequireM1, RequireM2 {
 	}
 
-	private static interface RequireM2 {
+	public static interface RequireM2 {
 		
 		Optional<AttendanceTimeOfMonthly> attendanceTimeOfMonthly(String employeeId, YearMonth yearMonth,
 				ClosureId closureId, ClosureDate closureDate);
@@ -132,7 +132,7 @@ public class MonthlyUpdateMgr {
 		void addMonthlyClosureUpdateErrorInfor(MonthlyClosureUpdateErrorInfor domain);
 	}
 	
-	private static interface RequireM1 extends ClosureStatusMng.RequireM1,
+	public static interface RequireM1 extends ClosureStatusMng.RequireM1,
 		MonthlyClosureRemainNumProcess.RequireM1 {
 		
 	}

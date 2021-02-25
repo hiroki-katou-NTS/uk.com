@@ -59,7 +59,7 @@ public class JpaCalendarCompanyRepository  extends JpaRepository implements Cale
 		entity.ksmmtCalendarCompanyPK = new KsmmtCalendarCompanyPK(
 												domain.getCompanyId(),
 												domain.getDate());
-		entity.workingDayAtr = domain.getWorkingDayAtr().value;
+		entity.workingDayAtr = domain.getWorkDayDivision().value;
 		return entity;
 	}
 	
@@ -100,7 +100,7 @@ public class JpaCalendarCompanyRepository  extends JpaRepository implements Cale
 		KsmmtCalendarCompany calendarCom = toEntityCalendarCompany(calendarCompany);
 		KsmmtCalendarCompany companyUpdate = this.queryProxy()
 				.find(calendarCom.ksmmtCalendarCompanyPK, KsmmtCalendarCompany.class).get();
-		companyUpdate.workingDayAtr = calendarCompany.getWorkingDayAtr().value;
+		companyUpdate.workingDayAtr = calendarCompany.getWorkDayDivision().value;
 		this.commandProxy().update(companyUpdate);
 		
 	}

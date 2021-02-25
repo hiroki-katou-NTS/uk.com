@@ -7,12 +7,9 @@ module nts.uk.pr.view.kmf001.b {
             categoryEnums: KnockoutObservableArray<Enum>;
             selectedPriority: KnockoutObservable<number>;
             enableInputPriority: KnockoutObservable<boolean>;
-            
             priorityPause: KnockoutObservable<boolean>;
             prioritySubstitute: KnockoutObservable<boolean>;
             sixtyHoursOverrideHoliday: KnockoutObservable<boolean>;
-            priorityOverpaid: KnockoutObservable<boolean>;
-            sixtyHoursTimeOverrideHoliday: KnockoutObservable<boolean>;
 
             constructor() {
 
@@ -28,8 +25,6 @@ module nts.uk.pr.view.kmf001.b {
                 self.priorityPause = ko.observable(false);
                 self.prioritySubstitute = ko.observable(false);
                 self.sixtyHoursOverrideHoliday = ko.observable(false);
-                self.priorityOverpaid = ko.observable(false);
-                self.sixtyHoursTimeOverrideHoliday = ko.observable(false);
             }
 
             public startPage(): JQueryPromise<any> {
@@ -87,8 +82,6 @@ module nts.uk.pr.view.kmf001.b {
                     self.priorityPause(res.annualHolidayShow.priorityPause);
                     self.prioritySubstitute(res.annualHolidayShow.prioritySubstitute);
                     self.sixtyHoursOverrideHoliday(res.annualHolidayShow.sixtyHoursOverrideHoliday);
-                    self.priorityOverpaid(res.hoursHolidayShow.priorityOverpaid);
-                    self.sixtyHoursTimeOverrideHoliday(res.hoursHolidayShow.sixtyHoursOverrideHoliday);                       
                 } else {
                     //if find data null
                     //Selected default button is "No Setting"
@@ -96,9 +89,7 @@ module nts.uk.pr.view.kmf001.b {
                     
                     self.priorityPause(false);
                     self.prioritySubstitute(false);
-                    self.sixtyHoursOverrideHoliday(false);
-                    self.priorityOverpaid(false);
-                    self.sixtyHoursTimeOverrideHoliday(false);
+                    self.sixtyHoursOverrideHoliday(false);     
                 }
 
                 //when change button Select
@@ -149,10 +140,7 @@ module nts.uk.pr.view.kmf001.b {
                 annualHoliday.prioritySubstitute = self.prioritySubstitute();
                 annualHoliday.sixtyHoursOverrideHoliday = self.sixtyHoursOverrideHoliday();
                 
-                let hoursHoliday: any = {};
-                hoursHoliday.priorityOverpaid = self.priorityOverpaid();
-                hoursHoliday.sixtyHoursOverrideHoliday = self.sixtyHoursTimeOverrideHoliday();
-
+                let hoursHoliday: any = {};  
                 command.annualHoliday = annualHoliday;
                 command.hoursHoliday = hoursHoliday;
                 

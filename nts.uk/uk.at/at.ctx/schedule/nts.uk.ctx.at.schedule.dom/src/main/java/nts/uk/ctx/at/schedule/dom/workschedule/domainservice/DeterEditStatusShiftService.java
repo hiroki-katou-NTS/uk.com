@@ -4,8 +4,8 @@ import java.util.Optional;
 
 import lombok.val;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.editstate.EditStateSetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
 
 /**
  * シフトの編集状態を判断する
@@ -68,6 +68,10 @@ public class DeterEditStatusShiftService {
 		}
 		val workTypeStt = workTypeStatus.get().getEditStateSetting();
 		val workHourStt = workingHourStatus.get().getEditStateSetting();
+		
+		if(workTypeStt == EditStateSetting.IMPRINT && workHourStt == EditStateSetting.IMPRINT ) {
+			return Optional.empty();
+		}
 		
 		if(workTypeStt == EditStateSetting.REFLECT_APPLICATION || workHourStt == EditStateSetting.REFLECT_APPLICATION ) {
 			return Optional.of(EditStateSetting.REFLECT_APPLICATION);

@@ -11,7 +11,6 @@ module nts.uk.com.view.cli003.a.viewmodel {
                 nts.uk.request.jump("/view/cli/003/b/index.xhtml");
             }
             
-            
             func_Screen_g(): void {
                 nts.uk.request.jump("/view/cli/003/g/index.xhtml");
             }

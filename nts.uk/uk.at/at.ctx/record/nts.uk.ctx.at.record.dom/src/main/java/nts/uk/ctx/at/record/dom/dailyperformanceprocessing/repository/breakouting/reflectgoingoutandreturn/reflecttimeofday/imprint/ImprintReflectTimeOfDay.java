@@ -3,14 +3,16 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.breakouti
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.breakouting.reflectgoingoutandreturn.TimeFrame;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.breakouting.reflectgoingoutandreturn.reflecttimeofday.ReflectActualStampAndStamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeActualStamp;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 
 /**
@@ -20,6 +22,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
  *
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class ImprintReflectTimeOfDay {
 	
 	@Inject
@@ -34,7 +37,7 @@ public class ImprintReflectTimeOfDay {
 	 * @param workTimeCode 処理中の年月日の就業時間帯コード
 	 * @param ymd  処理中の年月日
 	 */
-	public void imprint(boolean isStartTime,TimeFrame timeFrame,Optional<TimeFrame> timeFrameNext,Stamp stamp,
+	public TimeActualStamp imprint(boolean isStartTime,TimeFrame timeFrame,Optional<TimeFrame> timeFrameNext,Stamp stamp,
 			Optional<TimeActualStamp> end,WorkTimeCode workTimeCode,GeneralDate ymd) {
 		if(end.isPresent()) {
 			boolean isOverWritten =  false;
@@ -48,25 +51,25 @@ public class ImprintReflectTimeOfDay {
 				if(isStartTime) {
 					//⁂開始時刻か＝True
 					//True＝反映先時間帯枠（Temporary）。終了。時刻＞＝打刻。時刻
-					if(timeFrame.getEnd().isPresent() && !timeFrame.getEnd().get().getStamp().isPresent()
-							&& timeFrame.getEnd().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()
-							&& timeFrame.getEnd().get().getStamp().get().getTimeDay().getTimeWithDay().get().valueAsMinutes() 
+					if(!timeFrame.getEnd().isPresent() || !timeFrame.getEnd().get().getStamp().isPresent()
+							|| !timeFrame.getEnd().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()
+							|| timeFrame.getEnd().get().getStamp().get().getTimeDay().getTimeWithDay().get().valueAsMinutes() 
 								>= stamp.getStampDateTime().clockHourMinute().valueAsMinutes()) {
 						check = true;
 					}
 				}else {
 					//⁂開始時刻か＝False
 					//True＝次の時間帯枠（Temporary）。開始。時刻＞打刻。時刻
-					if(timeFrameNext.isPresent() && timeFrameNext.get().getStart().isPresent() && timeFrameNext.get().getStart().get().getStamp().isPresent()
-							&& timeFrameNext.get().getStart().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()
-							&& timeFrameNext.get().getStart().get().getStamp().get().getTimeDay().getTimeWithDay().get().valueAsMinutes() 
+					if(!timeFrameNext.isPresent() || !timeFrameNext.get().getStart().isPresent() || !timeFrameNext.get().getStart().get().getStamp().isPresent()
+							|| !timeFrameNext.get().getStart().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()
+							|| timeFrameNext.get().getStart().get().getStamp().get().getTimeDay().getTimeWithDay().get().valueAsMinutes() 
 								> stamp.getStampDateTime().clockHourMinute().valueAsMinutes()) {
 						check = true;
 					}
 				}
 				if(check) {
 					//実打刻と打刻反映する
-					reflectActualStampAndStamp.reflect(end.get(), stamp, true, timeFrame, ymd, workTimeCode);
+					return reflectActualStampAndStamp.reflect(end.get(), stamp, true, timeFrame, ymd, workTimeCode);
 				}
 				
 			}else {
@@ -76,18 +79,17 @@ public class ImprintReflectTimeOfDay {
 						&& end.get().getStamp().get().getTimeDay().getTimeWithDay().get().valueAsMinutes() 
 							== stamp.getStampDateTime().clockHourMinute().valueAsMinutes()) {
 					//実打刻と打刻反映する
-					reflectActualStampAndStamp.reflect(end.get(), stamp, false, timeFrame, ymd, workTimeCode);
+					return reflectActualStampAndStamp.reflect(end.get(), stamp, false, timeFrame, ymd, workTimeCode);
 				}
 			}
 			
 			
-		}else {
+		}
 			//勤怠打刻(実打刻付き)を作成する
 			TimeActualStamp newTimeActualStamp = new TimeActualStamp(Optional.empty(), Optional.empty(), 0, Optional.empty(), Optional.empty());
 			end = Optional.of(newTimeActualStamp);
 			//実打刻と打刻反映する
-			reflectActualStampAndStamp.reflect(end.get(), stamp, true, timeFrame, ymd, workTimeCode);
-		}
+			return reflectActualStampAndStamp.reflect(end.get(), stamp, true, timeFrame, ymd, workTimeCode);
 		
 	}
 

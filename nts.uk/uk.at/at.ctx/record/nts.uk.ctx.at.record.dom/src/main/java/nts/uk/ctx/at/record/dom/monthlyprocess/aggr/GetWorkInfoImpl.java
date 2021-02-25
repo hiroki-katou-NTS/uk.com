@@ -13,8 +13,8 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
-import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.export.workinfo.WorkInfoList;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.export.workinfo.WorkInfoList;
 import nts.uk.ctx.at.shared.dom.scherec.workinfo.GetWorkInfo;
 
 /**
@@ -34,25 +34,11 @@ public class GetWorkInfoImpl implements GetWorkInfo {
 		return initWorkInfoList(cacheCarrier, employeeId, new DatePeriod(ymd, ymd)).getRecord(ymd);
 	}
 	
-	/** 予定の勤務情報を取得する */
-	public Optional<WorkInformation> getSchedule(CacheCarrier cacheCarrier, 
-			String employeeId, GeneralDate ymd) {
-		
-		return initWorkInfoList(cacheCarrier, employeeId, new DatePeriod(ymd, ymd)).getSchedule(ymd);
-	}
-	
 	/** 実績の勤務情報を取得する */
 	public Map<GeneralDate, WorkInformation> getRecordMap(CacheCarrier cacheCarrier, 
 			String employeeId, DatePeriod period) {
 
 		return initWorkInfoList(cacheCarrier, employeeId, period).getRecordMap();
-	}
-	
-	/** 予定の勤務情報を取得する */
-	public Map<GeneralDate, WorkInformation> getScheduleMap(CacheCarrier cacheCarrier, 
-			String employeeId, DatePeriod period) {
-
-		return initWorkInfoList(cacheCarrier, employeeId, period).getScheduleMap();
 	}
 	
 	private WorkInfoList initWorkInfoList(CacheCarrier cacheCarrier, 

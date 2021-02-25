@@ -348,20 +348,39 @@ module nts.uk.at.view.ktg029.a.viewmodel {
                 var strDate = self.conVerDate(self.currentMonth().strMonth);
                 var endDate = self.conVerDate(self.currentMonth().endMonth);
             }
-            let paramSave = {  
-                startDate: strDate,
-                endDate: endDate,
-                appListAtr: 0,
-                appType: -1,
-                unapprovalStatus: true,
-                approvalStatus: false,
-                denialStatus: false,
-                agentApprovalStatus: false,
-                remandStatus: false,
-                cancelStatus: false,
-                appDisplayAtr: 0,
-                listEmployeeId: [],
-                empRefineCondition: ""
+            let paramSave = {
+				/** 期間開始日 */
+				periodStartDate: strDate,
+				/** 期間終了日 */
+				periodEndDate: endDate,
+				/** 事後出力 */
+				postOutput: true,
+				/** 事前出力 */
+				preOutput: true,
+				/** 申請一覧区分 */
+				appListAtr: 0,
+				/** 申請表示順 */
+				appDisplayOrder: 0,
+				/** 表の幅登録 */
+				tableWidthRegis: false,
+				/** 社員IDリスト */
+				opListEmployeeID: [],
+				/** 承認状況＿差戻 */
+				opRemandStatus: false,
+				/** 承認状況＿取消 */
+				opCancelStatus: false,
+				/** 承認状況＿承認済 */
+				opApprovalStatus: false,
+				/** 承認状況＿代行承認済 */
+				opAgentApprovalStatus: false,
+				/** 承認状況＿否認 */
+				opDenialStatus: false,
+				/** 承認状況＿未承認 */
+				opUnapprovalStatus: true,
+				/** 申請種類 */
+				opAppTypeLst: [],
+				/** 申請種類リスト */
+				opListOfAppTypes: []
             };
             nts.uk.characteristics.remove("AppListExtractCondition").done(function() {
                 parent.nts.uk.characteristics.save('AppListExtractCondition', paramSave).done(function() {
@@ -472,7 +491,11 @@ module nts.uk.at.view.ktg029.a.viewmodel {
             var employeeIds = [];
             employeeIds.push(__viewContext.user.employeeId);
             parent.nts.uk.ui.windows.setShared('KDL020A_PARAM', { baseDate: endDate, employeeIds:  employeeIds});
-            parent.nts.uk.ui.windows.sub.modal('at','/view/kdl/020/a/index.xhtml').onClosed(function(): any {});
+            if(employeeIds.length > 1 ) {
+              parent.nts.uk.ui.windows.sub.modal("/view/kdl/020/a/multi.xhtml");
+            } else {
+              parent.nts.uk.ui.windows.sub.modal("/view/kdl/020/a/single.xhtml");
+            }
         }
     }
     export class period{

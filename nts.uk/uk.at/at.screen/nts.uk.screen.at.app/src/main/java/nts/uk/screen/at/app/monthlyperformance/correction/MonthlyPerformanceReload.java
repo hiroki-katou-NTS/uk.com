@@ -39,6 +39,7 @@ import nts.uk.ctx.at.record.dom.workrecord.actualsituation.confirmstatusmonthly.
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.confirmstatusmonthly.ConfirmStatusMonthly;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.confirmstatusmonthly.ConfirmStatusResult;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.confirmstatusmonthly.MonthlyModifyResultDto;
+import nts.uk.ctx.at.record.dom.workrecord.actualsituation.confirmstatusmonthly.MonthlyPerformaceLockStatus;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.confirmstatusmonthly.ReleasedAtr;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.confirmstatusmonthly.StatusConfirmMonthDto;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
@@ -63,12 +64,11 @@ import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.MonthlyItemControlB
 import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.MonthlyItemControlByAuthFinder;
 import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobTitleHisImport;
 import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobtitleHisAdapter;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
-import nts.uk.ctx.at.shared.dom.monthly.AttendanceTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.AttendanceTimeOfMonthlyRepository;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.calc.MonthlyCalculation;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthlyRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.calc.MonthlyCalculation;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
@@ -94,7 +94,6 @@ import nts.uk.screen.at.app.monthlyperformance.correction.dto.MPText;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyAttendanceItemDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceCorrectionDto;
 import nts.uk.screen.at.app.monthlyperformance.correction.dto.MonthlyPerformanceEmployeeDto;
-import nts.uk.screen.at.app.monthlyperformance.correction.param.MonthlyPerformaceLockStatus;
 import nts.uk.screen.at.app.monthlyperformance.correction.param.MonthlyPerformanceParam;
 import nts.uk.screen.at.app.monthlyperformance.correction.param.PAttendanceItem;
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQueryProcessor;
@@ -668,33 +667,34 @@ public class MonthlyPerformanceReload {
 								MonthlyCalculation monthlyCalculation = optAttendanceTimeOfMonthly.get()
 										.getMonthlyCalculation();
 								if (monthlyCalculation != null) {
-									AgreementTimeOfMonthly agreementTime = monthlyCalculation.getAgreementTime();
-									if (agreementTime != null) {
-										switch (agreementTime.getStatus().value) {
-										// 限度アラーム時間超過
-										case 2:
-											// 特例限度アラーム時間超過
-										case 4:
-											screenDto.setStateCell(attendanceKey, employeeId, STATE_ALARM);
-											break;
-										// 限度エラー時間超過
-										case 1:
-											// 特例限度エラー時間超過
-										case 3:
-											screenDto.setStateCell(attendanceKey, employeeId, STATE_ERROR);
-											break;
-										// 正常（特例あり）
-										case 5:
-											// 限度アラーム時間超過（特例あり）
-										case 7:
-											// 限度エラー時間超過（特例あり）
-										case 6:
-											screenDto.setStateCell(attendanceKey, employeeId, STATE_SPECIAL);
-											break;
-										default:
-											break;
-										}
-									}
+									/** TODO: 36協定時間対応により、コメントアウトされた */
+//									AgreementTimeOfMonthly agreementTime = monthlyCalculation.getAgreementTime();
+//									if (agreementTime != null) {
+//										switch (agreementTime.getStatus().value) {
+//										// 限度アラーム時間超過
+//										case 2:
+//											// 特例限度アラーム時間超過
+//										case 4:
+//											screenDto.setStateCell(attendanceKey, employeeId, STATE_ALARM);
+//											break;
+//										// 限度エラー時間超過
+//										case 1:
+//											// 特例限度エラー時間超過
+//										case 3:
+//											screenDto.setStateCell(attendanceKey, employeeId, STATE_ERROR);
+//											break;
+//										// 正常（特例あり）
+//										case 5:
+//											// 限度アラーム時間超過（特例あり）
+//										case 7:
+//											// 限度エラー時間超過（特例あり）
+//										case 6:
+//											screenDto.setStateCell(attendanceKey, employeeId, STATE_SPECIAL);
+//											break;
+//										default:
+//											break;
+//										}
+//									}
 								}
 							}
 						}

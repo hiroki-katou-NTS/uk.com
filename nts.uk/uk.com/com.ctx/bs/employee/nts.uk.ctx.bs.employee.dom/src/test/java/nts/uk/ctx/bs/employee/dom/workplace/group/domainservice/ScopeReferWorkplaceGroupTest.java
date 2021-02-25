@@ -1,9 +1,13 @@
 package nts.uk.ctx.bs.employee.dom.workplace.group.domainservice;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
+
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.junit.Test;
 
+import lombok.val;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.bs.employee.dom.employee.service.EmployeeReferenceRangeImport;
 
@@ -14,32 +18,40 @@ public class ScopeReferWorkplaceGroupTest {
 		ScopeReferWorkplaceGroup data = ScopeReferWorkplaceGroup.of(0);
 		NtsAssert.invokeGetters(data);
 	}
-	
-	@Test
-	public void test() {
-		ScopeReferWorkplaceGroup data = ScopeReferWorkplaceGroup.of(0);
-		assertThat(data).isEqualTo(ScopeReferWorkplaceGroup.ALL_EMPLOYEE);
-		data = ScopeReferWorkplaceGroup.of(1);
-		assertThat(data).isEqualTo(ScopeReferWorkplaceGroup.ONLY_ME);
-	}
+
 	/**
-	 * 社員参照範囲  == EmployeeReferenceRangeImport.ONLY_MYSELF
+	 * Target	: of
+	 */
+	@Test
+	public void testOf() {
+
+		// Assertion
+		assertThat( ScopeReferWorkplaceGroup.of(0) ).isEqualTo( ScopeReferWorkplaceGroup.ALL_EMPLOYEE );
+		assertThat( ScopeReferWorkplaceGroup.of(1) ).isEqualTo( ScopeReferWorkplaceGroup.ONLY_ME );
+
+	}
+
+	/**
+	 * Target	: 参照範囲を判定する
 	 */
 	@Test
 	public void testDetermineTheReferenceRange() {
-		EmployeeReferenceRangeImport employeeReferenceRange = EmployeeReferenceRangeImport.ONLY_MYSELF;
-		ScopeReferWorkplaceGroup data = ScopeReferWorkplaceGroup.of(0);
-		assertThat(data.determineTheReferenceRange(employeeReferenceRange)).isEqualTo(ScopeReferWorkplaceGroup.ONLY_ME);
-	}
-	
-	/**
-	 * 社員参照範囲  != EmployeeReferenceRangeImport.ONLY_MYSELF
-	 */
-	@Test
-	public void testDetermineTheReferenceRange_1() {
-		EmployeeReferenceRangeImport employeeReferenceRange = EmployeeReferenceRangeImport.DEPARTMENT_ONLY;
-		ScopeReferWorkplaceGroup data = ScopeReferWorkplaceGroup.of(0);
-		assertThat(data.determineTheReferenceRange(employeeReferenceRange)).isEqualTo(ScopeReferWorkplaceGroup.ALL_EMPLOYEE);
-	}
 
+		// Execute
+		val result = Stream.of( EmployeeReferenceRangeImport.values() )
+						.collect(Collectors.toMap(
+								e -> e
+							,	e -> ScopeReferWorkplaceGroup.determineTheReferenceRange( e )
+						));
+
+		// Assertion
+		assertThat( result.get( EmployeeReferenceRangeImport.ONLY_MYSELF ) )
+			.isEqualTo( ScopeReferWorkplaceGroup.ONLY_ME );
+
+		assertThat( result.entrySet() )
+			.filteredOn( e -> e.getKey() != EmployeeReferenceRangeImport.ONLY_MYSELF )
+			.extracting( e -> e.getValue() )
+			.containsOnly( ScopeReferWorkplaceGroup.ALL_EMPLOYEE );
+
+	}
 }

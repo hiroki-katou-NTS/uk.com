@@ -28,7 +28,7 @@ public class SendReasonApplicationPubImpl implements SendNRDataPub<List<SendReas
 	private ApplicationReasonRcAdapter applicationReasonRcAdapter;
 
 	@Override
-	public List<SendReasonApplicationExport> send(Integer empInfoTerCode, String contractCode) {
+	public List<SendReasonApplicationExport> send(String empInfoTerCode, String contractCode) {
 
 		RequireImpl requireImpl = new RequireImpl(timeRecordReqSettingRepository, applicationReasonRcAdapter);
 

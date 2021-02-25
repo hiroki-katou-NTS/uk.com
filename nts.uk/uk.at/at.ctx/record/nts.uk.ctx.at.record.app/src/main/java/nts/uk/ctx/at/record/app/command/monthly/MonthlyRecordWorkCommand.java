@@ -18,8 +18,8 @@ import nts.uk.ctx.at.record.app.command.monthly.reserveleave.RsvLeaRemNumEachMon
 import nts.uk.ctx.at.record.app.command.monthly.specialholiday.SpecialHolidayRemainMonthlyCommand;
 import nts.uk.ctx.at.record.app.find.monthly.root.MonthlyRecordWorkDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 
 public class MonthlyRecordWorkCommand extends MonthlyWorkCommonCommand {
 	
@@ -72,37 +72,37 @@ public class MonthlyRecordWorkCommand extends MonthlyWorkCommonCommand {
 	public MonthlyWorkCommonCommand getCommand(String group){
 		MonthlyWorkCommonCommand command = null;
 		switch (group) {
-		case MONTHLY_AFFILIATION_INFO_CODE:
+		case MONTHLY_AFFILIATION_INFO_NAME:
 			command = this.affiliationInfo;
 			break;
-		case MONTHLY_ATTENDANCE_TIME_CODE:
+		case MONTHLY_ATTENDANCE_TIME_NAME:
 			command = this.attendanceTime;
 			break;
-		case MONTHLY_OPTIONAL_ITEM_CODE:
+		case MONTHLY_OPTIONAL_ITEM_NAME:
 			command = this.anyItem;
 			break;
-		case MONTHLY_ANNUAL_LEAVING_REMAIN_CODE:
+		case MONTHLY_ANNUAL_LEAVING_REMAIN_NAME:
 			command = this.annualLeave;
 			break;
-		case MONTHLY_RESERVE_LEAVING_REMAIN_CODE:
+		case MONTHLY_RESERVE_LEAVING_REMAIN_NAME:
 			command = this.reserveLeave;
 			break;
-		case MONTHLY_ABSENCE_LEAVE_REMAIN_CODE:
+		case MONTHLY_ABSENCE_LEAVE_REMAIN_NAME:
 			command = this.absence;
 			break;
-		case MONTHLY_SPECIAL_HOLIDAY_REMAIN_CODE:
+		case MONTHLY_SPECIAL_HOLIDAY_REMAIN_NAME:
 			command = this.specialHoliday;
 			break;
-		case MONTHLY_OFF_REMAIN_CODE:
+		case MONTHLY_OFF_REMAIN_NAME:
 			command = this.dayOff;
 			break;
-		case MONTHLY_REMARKS_CODE:
+		case MONTHLY_REMARKS_NAME:
 			command = this.remarks;
 			break;
-		case MONTHLY_CARE_HD_REMAIN_CODE:
+		case MONTHLY_CARE_HD_REMAIN_NAME:
 			command = this.care;
 			break;
-		case MONTHLY_CHILD_CARE_HD_REMAIN_CODE:
+		case MONTHLY_CHILD_CARE_HD_REMAIN_NAME:
 			command = this.childCare;
 			break;
 		default:
@@ -119,10 +119,10 @@ public class MonthlyRecordWorkCommand extends MonthlyWorkCommonCommand {
 		this.anyItem.setRecords(fullDto.getAnyItem());
 		this.annualLeave.setRecords(fullDto.getAnnLeave());
 		this.reserveLeave.setRecords(fullDto.getRsvLeave());
-		fullDto.getSpecialHoliday().stream().forEach(d -> this.specialHoliday.setRecords(d));
+		this.specialHoliday.setRecords(fullDto.getSpecialHoliday());
 		this.dayOff.setRecords(fullDto.getDayOff());
 		this.absence.setRecords(fullDto.getAbsenceLeave());
-		fullDto.getRemarks().stream().forEach(d -> this.remarks.setRecords(d));
+		this.remarks.setRecords(fullDto.getRemarks());
 		this.care.setRecords(fullDto.getCare());
 		this.childCare.setRecords(fullDto.getChildCare());
 	}

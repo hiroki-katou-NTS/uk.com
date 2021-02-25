@@ -11,6 +11,8 @@ import org.junit.Test;
 
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.GetWorkInforUsedDailyAttenRecordService;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import static org.assertj.core.api.Assertions.tuple;
@@ -19,12 +21,12 @@ public class GetListWorkInforUsedDailyAttendanceRecordTest {
 
 	@Test
 	public void testGetListWorkInfo() {
-		WorkInformation recordInfo1 = new WorkInformation("ti1", "ty1");
-		WorkInformation recordInfo2 = new WorkInformation("ti2", "ty2");
-		WorkInformation recordInfo3 = new WorkInformation(null, "ty3");
-		WorkInformation recordInfo4 = new WorkInformation("ti3", "ty2");
-		WorkInformation recordInfo5 = new WorkInformation("ti2", "ty2");
-		WorkInformation recordInfo6 = new WorkInformation("ti2", "ty3");
+		WorkInformation recordInfo1 = new WorkInformation("ty1", "ti1");
+		WorkInformation recordInfo2 = new WorkInformation("ty2", "ti2");
+		WorkInformation recordInfo3 = new WorkInformation("ty3", null);
+		WorkInformation recordInfo4 = new WorkInformation("ty2", "ti3");
+		WorkInformation recordInfo5 = new WorkInformation("ty2", "ti2");
+		WorkInformation recordInfo6 = new WorkInformation("ty3", "ti2");
 		List<WorkInfoOfDailyAttendance> lstWorkInfoOfDailyAttendance = Arrays.asList(
 				WorkInfoOfDailyAttendanceHelper.getData(recordInfo1),
 				WorkInfoOfDailyAttendanceHelper.getData(recordInfo2),
@@ -34,13 +36,13 @@ public class GetListWorkInforUsedDailyAttendanceRecordTest {
 				WorkInfoOfDailyAttendanceHelper.getData(recordInfo6));
 		
 		List<WorkInformation> listWorkInformation= GetWorkInforUsedDailyAttenRecordService.getListWorkInfo(lstWorkInfoOfDailyAttendance);
-		assertThat(listWorkInformation).extracting(d->d.getWorkTimeCode(), d->d.getWorkTypeCode())
+		assertThat(listWorkInformation).extracting(d->d.getWorkTypeCode(), d->d.getWorkTimeCode())
 				.containsExactly(
-						tuple( new WorkTimeCode("ti1"), new WorkTypeCode("ty1")),
-						tuple( new WorkTimeCode("ti2"), new WorkTypeCode("ty2")),
-						tuple( null, new WorkTypeCode("ty3")),
-						tuple( new WorkTimeCode("ti3"), new WorkTypeCode("ty2")),
-						tuple( new WorkTimeCode("ti2"), new WorkTypeCode("ty3")));
+						tuple(new WorkTypeCode("ty1"), new WorkTimeCode("ti1")),
+						tuple(new WorkTypeCode("ty2"), new WorkTimeCode("ti2")),
+						tuple(new WorkTypeCode("ty3"), null),
+						tuple(new WorkTypeCode("ty2"), new WorkTimeCode("ti3")),
+						tuple(new WorkTypeCode("ty3"), new WorkTimeCode("ti2")));
 
 	}
 	

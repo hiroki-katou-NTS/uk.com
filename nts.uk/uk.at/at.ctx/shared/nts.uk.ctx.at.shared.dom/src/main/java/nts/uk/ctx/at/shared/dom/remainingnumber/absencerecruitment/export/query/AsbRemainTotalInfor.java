@@ -14,7 +14,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class AsbRemainTotalInfor {
-	/**繰越日数	 */
+	/**	繰越日数	 */
 	private double carryForwardDays;
 	/**	実績使用日数 */
 	private double recordUseDays;
@@ -24,6 +24,17 @@ public class AsbRemainTotalInfor {
 	private double scheUseDays;
 	/**	予定発生日数 */
 	private double scheOccurrenceDays;
+	/**	予定発生時間数  */
+	private Double scheHours;
+	/**	予定使用時間数  */
+	private Double scheUseHours;
+	/**	実績発生時間数  */
+	private Double recordOccurrenceHours;
+	/**	実績使用時間数  */
+	private Double actualNumberOfHourUsed;
+	/**	繰越時間数  */
+	private Double carryForwardHours;
+	
 	/**
 	 * 繰越・実績内残日数を取得する
 	 * @return

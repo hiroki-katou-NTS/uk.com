@@ -103,10 +103,10 @@ module nts.uk.at.view.ksm015 {
             let container = $("<div id='" + id + "' class='bundled-errors-alert'/>"), 
                 functionArea = $("<div id='functions-area-bottom'/>"),
 				span = $(`<span id = 'span-info'>`+ nts.uk.resource.getMessage('Msg_15') + `</span>`),
-                errorBoard = $(`<div id='error-board'>    <table style='margin-top: 10px;'> <thead> <tr>    <th style='width: auto;'>`
-                     + nts.uk.resource.getText('KSM015_102') + `</th><th style='display: none;'/>    <th style='width: 60px; text-align: center'>`
+                errorBoard = $(`<div id='error-board' style='margin-top: 10px;'>    <table > <thead> <tr>    <th style='width: auto;'>`
+                     + nts.uk.resource.getText('KSM015_102') + `</th><th style='display: none;'/>    <th style='width: 60px; text-align: left'>`
                      + nts.uk.resource.getText('KSM015_103') + `</th>   </tr>   </thead>    <tbody/>    </table> </div>`),
-                closeButton = $("<button class='ntsButton ntsClose large'/>");
+                closeButton = $("<button class='ntsButton ntsClose large' style='margin-left: 0px !important;'/>");
             
             let errorBody = errorBoard.find("tbody");
             if($.isArray(errors["errors"])) {
@@ -135,7 +135,7 @@ module nts.uk.at.view.ksm015 {
                     maxHeight: 500,
                     closeOnEscape: false,
                     open: function() {
-                        errorBoard.css({"overflow": "auto", "max-height" : "300px", "margin-bottom": "65px"});
+                        errorBoard.css({"overflow": "auto", "max-height" : "289px", "margin-bottom": "65px"});
                         functionArea.css({"left": "0px"});
                         closeButton.text(nts.uk.resource.getText('KSM015_104')).click(function(evt){
                             container.dialog("destroy");  

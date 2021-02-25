@@ -5,82 +5,78 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../../master/base.xhtml">
+	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 900,
+					height : 600
+				};
+			</script>
+			<com:ValidatorScript>
+				nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailholidayinstruction.Content
+				nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailholidayinstruction.Subject
+			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="kaf018.c.main.css" />
-			<com:scriptfile path="../share/model.js" />
-			<com:scriptfile path="kaf018.c.start.js" />
-			<com:scriptfile path="kaf018.c.service.js" />
-			<com:scriptfile path="kaf018.c.vm.js" />
+			<com:stylefile path="/view/kaf/018/c/kaf018.c.css" />
+			<com:scriptfile path="/view/kaf/018/shr/model.js" />
+			<com:scriptfile path="/view/kaf/018/c/kaf018.c.vm.js" />
 		</ui:define>
-
 		<ui:define name="content">
-			<div id="functions-area">
-				<!-- C1_1条件選択に戻る -->
-				<a class="goback"
-					data-bind="ntsLinkButton: { action: goBackA }">#{i18n.getText('KAF018_17')}</a>
-				<!-- C1_2一覧へ戻る-->
-				<button id="buttonC" tabindex="1" data-bind="click: backToB">#{i18n.getText('KAF018_26')}</button>
-			</div>
 			<div id="contents-area">
-				<table class="tbl-control">
-					<colgroup>
-						<col width="200px" />
-						<col />
-					</colgroup>
-					<tr>
-						<td>
-							<!-- C2_1前へ -->
-							<button class="auto-height"
-								data-bind="click: preWkp, enable: enablePre" tabindex="2">
-								#{i18n.getText('KAF018_27')}<i class="img-icon icon-prev"></i>
-							</button> <!-- C2_2次へ-->
-							<button class="auto-height"
-								data-bind="click: nextWkp, enable: enableNext"  tabindex="3">
-								#{i18n.getText('KAF018_28')}<i class="img-icon icon-next"></i>
-							</button>
-						</td>
-						<td>
-							<!-- C2_3職場名-->
-							<div class= "label" data-bind= "text: displayWkp()"></div>
-						</td>
-					</tr>
-				</table>
-				<table class="tbl-control">
-					<colgroup>
-						<col width="100px" />
-						<col width="70px" />
-						<col width="410px" />
-						<col width="600px" />
-					</colgroup>
-					<tr>
-						<td>
-							<!-- C3対象締め（ラベル） -->
-							<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF018_10')}</div>
-						</td>
-						<td>
-							<!-- C3_1対象締め -->
-							<div class="label" style="width: 90px;"
-								data-bind="text: closureName"></div>
-						</td>
-						<td>
-							<!-- C4対象年月--> <!-- C4_1対象期間 -->
-							<div class="label" style="width: 280px;">
-								<span data-bind="text: processingYm"></span> (<span
-									data-bind="text: startDateFormat"></span> ~ <span
-									data-bind="text: endDateFormat"></span>)
-							</div>
-						</td>
-						<td class="align-right">
-							<!-- C6説明ラベル -->
-							<lable>#{i18n.getText('KAF018_30')}</lable>
-						</td>
-					</tr>
-				</table>
-				<!--C5社員一覧 -->
-				<div id="extable"  tabindex="4"></div>
-				
+				<div class="table" style="margin-left: 5px">
+					<div class="cell valign-center" style="width: 225px;">
+						<div class="cell valign-center" data-bind="ntsFormLabel: {required: true}, text: name"></div>
+					</div>
+					<div class="cell valign-center">
+						<div class="cell valign-center limited-label label" style="width: 300px;" data-bind="text: description"></div>
+					</div>
+				</div>
+				<div class="table" style="margin-left: 5px; margin-top: 5px;">
+					<div id="cGrid"></div>
+				</div>
+				<div class="table" style="margin-left: 5px; margin-top: 10px;">
+					<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF018_353')}</div>
+				</div>
+				<div class="table" style="margin-left: 5px; margin-top: 5px;">
+					<input id="kaf018-c-input" data-bind="ntsTextEditor: { 
+										name: '#{i18n.getText('KAF018_354')}',
+										value: mailSubject,
+										constraint: 'Subject' }" />
+				</div>
+				<div class="table" style="margin-left: 5px; margin-top: 10px;">
+					<div class="cell">
+						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF018_355')}</div>
+					</div>
+					<div class="cell">#{i18n.getText('KAF018_356')}</div>
+				</div>
+				<div class="table" style="margin-left: 5px; margin-top: 5px;">
+					<textarea id="kaf018-c-textarea" data-bind="ntsMultilineEditor: { 
+										name: '#{i18n.getText('KAF018_357')}',
+										value: mailContent,
+										constraint: 'Content' }" />
+				</div>
+				<div class="table" style="margin-left: 5px; margin-top: 10px;">
+					<div data-bind="if: displayUrlApprovalEmbed">
+						<div data-bind="ntsCheckBox: { checked: urlApprovalEmbed }">#{i18n.getText('KAF018_362')}</div>
+					</div>
+					<div data-bind="if: displayUrlDayEmbed">
+						<div data-bind="ntsCheckBox: { checked: urlDayEmbed }">#{i18n.getText('KAF018_363')}</div>
+					</div>
+					<div data-bind="if: displayUrlMonthEmbed">
+						<div data-bind="ntsCheckBox: { checked: urlMonthEmbed }">#{i18n.getText('KAF018_364')}</div>
+					</div>
+				</div>
+				<div class="table" style="margin-left: 5px; margin-top: 10px;">
+					<div class="cell" style="width: 60px">
+						<button data-bind="click: updateMailTemplate, enable: $root.errors.isEmpty">#{i18n.getText('KAF018_358')}</button>
+					</div>
+					<div class="cell" style="padding-left: 10px">#{i18n.getText('KAF018_359')}</div>
+				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<button class="x-large proceed" data-bind="click: sendMail, enable: $root.errors.isEmpty">#{i18n.getText('KAF018_360')}</button>
+				<button data-bind="click: close">#{i18n.getText('KAF018_361')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

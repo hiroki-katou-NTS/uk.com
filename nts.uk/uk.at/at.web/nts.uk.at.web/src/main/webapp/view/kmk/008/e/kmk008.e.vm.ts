@@ -1,367 +1,420 @@
 module nts.uk.at.view.kmk008.e {
     import getText = nts.uk.resource.getText;
     import alertError = nts.uk.ui.dialog.alertError;
+	import master = nts.uk.at.view.kmk008.b;
 
     export module viewmodel {
-
-        export class ScreenModel {
-            timeOfWorkPlace: KnockoutObservable<TimeOfWorkPlaceModel>;
+        export class ScreenModel  extends ko.ViewModel{
+            timeOfClassification: KnockoutObservable<ClsTimeSetting>;
             isUpdate: boolean;
             laborSystemAtr: number = 0;
-            currentWorkplaceName: KnockoutObservable<string>;
+            currentItemDispName: KnockoutObservable<string>;
+			currentItemName: KnockoutObservable<string>;
             textOvertimeName: KnockoutObservable<string>;
 
-            maxRows: number;
-            selectedWorkplaceId: KnockoutObservable<string>;
-            selectedRowWorkplace: RowSelection;
-            baseDate: KnockoutObservable<Date>;
-            alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
-            treeGrid: any;
-            workplaceGridList: KnockoutObservableArray<UnitModel>;
-            isRemove: KnockoutObservable<boolean>;
+            listComponentOption: any;
+            selectedCode: KnockoutObservable<string>;
             isShowAlreadySet: KnockoutObservable<boolean>;
-
-            nameErrorWeek: KnockoutObservable<string> = ko.observable(getText("KMK008_22") + getText("KMK008_42"));
-            nameAlarmWeek: KnockoutObservable<string> = ko.observable(getText("KMK008_22") + getText("KMK008_43"));
-            nameLimitWeek: KnockoutObservable<string> = ko.observable(getText("KMK008_22") + getText("KMK008_44"));
-            nameErrorTwoWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_23") + getText("KMK008_42"));
-            nameAlarmTwoWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_23") + getText("KMK008_43"));
-            nameLimitTwoWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_23") + getText("KMK008_44"));
-            nameErrorFourWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_24") + getText("KMK008_42"));
-            nameAlarmFourWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_24") + getText("KMK008_43"));
-            nameLimitFourWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_24") + getText("KMK008_44"));
-            nameErrorOneMonth: KnockoutObservable<string> = ko.observable(getText("KMK008_25") + getText("KMK008_42"));
-            nameAlarmOneMonth: KnockoutObservable<string> = ko.observable(getText("KMK008_25") + getText("KMK008_43"));
-            nameLimitOneMonth: KnockoutObservable<string> = ko.observable(getText("KMK008_25") + getText("KMK008_44"));
-            nameErrorTwoMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_26") + getText("KMK008_42"));
-            nameAlarmTwoMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_26") + getText("KMK008_43"));
-            nameLimitTwoMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_26") + getText("KMK008_44"));
-            nameErrorThreeMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_27") + getText("KMK008_42"));
-            nameAlarmThreeMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_27") + getText("KMK008_43"));
-            nameLimitThreeMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_27") + getText("KMK008_44"));
-            nameErrorOneYear: KnockoutObservable<string> = ko.observable(getText("KMK008_28") + getText("KMK008_42"));
-            nameAlarmOneYear: KnockoutObservable<string> = ko.observable(getText("KMK008_28") + getText("KMK008_43"));
-            nameLimitOneYear: KnockoutObservable<string> = ko.observable(getText("KMK008_28") + getText("KMK008_44"));
-            nameUpperMonth: KnockoutObservable<string> = ko.observable(getText("KMK008_120"));
-            nameUpperMonthAverage: KnockoutObservable<string> = ko.observable(getText("KMK008_122"));
+            alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
+            isDialog: KnockoutObservable<boolean>;
+            isShowNoSelectRow: KnockoutObservable<boolean>;
+            isMultiSelect: KnockoutObservable<boolean>;
+            classificationList: KnockoutObservableArray<UnitModel>;
+            isRemove: KnockoutObservable<boolean>;
 
             constructor(laborSystemAtr: number) {
+                super();
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;
                 self.isUpdate = true;
-                self.timeOfWorkPlace = ko.observable(new TimeOfWorkPlaceModel(null));
-                self.currentWorkplaceName = ko.observable("");
-                self.textOvertimeName = ko.observable(getText("KMK008_12", ['#KMK008_8', '#Com_Workplace']));
+                self.timeOfClassification = ko.observable(new ClsTimeSetting(null));
+                self.currentItemDispName = ko.observable("");
+				self.currentItemName = ko.observable("");
+                self.textOvertimeName = ko.observable(getText("KMK008_12", ['#KMK008_8', '#Com_Class']));
 
-                self.workplaceGridList = ko.observableArray([]);
-                self.baseDate = ko.observable(new Date());
-                self.selectedWorkplaceId = ko.observable("");
+                self.selectedCode = ko.observable("");
+                self.isShowAlreadySet = ko.observable(true);
                 self.alreadySettingList = ko.observableArray([]);
                 self.isRemove = ko.observable(false);
-                self.isShowAlreadySet = ko.observable(true);
 
-                self.treeGrid = {
-                    maxRows: 15,
-                    isShowAlreadySet: self.isShowAlreadySet,
-                    isMultiSelect: false,
-                    treeType: 1,
-                    selectedId: self.selectedWorkplaceId,
-                    baseDate: self.baseDate,
+                self.isDialog = ko.observable(false);
+                self.isShowNoSelectRow = ko.observable(false);
+                self.isMultiSelect = ko.observable(false);
+                self.listComponentOption = {
+                    maxRows: 12,
+                    isShowAlreadySet: self.isShowAlreadySet(),
+                    isMultiSelect: self.isMultiSelect(),
+                    listType: 2,
                     selectType: 1,
-                    isShowSelectButton: true,
-                    isDialog: false,
-                    alreadySettingList: self.alreadySettingList,
-                    systemType: 2
+                    selectedCode: self.selectedCode,
+                    isDialog: self.isDialog(),
+                    isShowNoSelectRow: self.isShowNoSelectRow(),
+                    alreadySettingList: self.alreadySettingList
                 };
+                self.classificationList = ko.observableArray<UnitModel>([]);
+                self.selectedCode.subscribe(newValue => {
+					if (master.hasNoMeaningValue(newValue)) {
+						self.getDetail(null);
+						self.currentItemDispName('');
+						self.currentItemName('');
+						self.isRemove(false);
+						return;
+					}
 
-                self.selectedWorkplaceId.subscribe(newValue => {
-                    if (nts.uk.text.isNullOrEmpty(newValue)) return;
                     self.getDetail(newValue);
-                    let WorkplaceSelect = self.findUnitModelByWorkplaceId(self.workplaceGridList(), newValue);
-                    if (WorkplaceSelect) {
-                        self.currentWorkplaceName(WorkplaceSelect.name);
-                        self.isRemove(WorkplaceSelect.isAlreadySetting);
+                    let selectedItem = _.find(self.classificationList(), emp => {
+                        return emp.code == newValue;
+                    });
+                    if (selectedItem) {
+						self.currentItemDispName(selectedItem.code + '　' + selectedItem.name);
+						self.currentItemName(selectedItem.name);
+						if (selectedItem.isAlreadySetting === true) {
+							self.isRemove(true);
+						} else {
+							self.isRemove(false);
+						}
                     }
+					self.initFocus();
                 });
             }
 
-            startPage(): JQueryPromise<any> {
+            startPage(reInitComponent?: boolean): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
 
-                $('#work-place-base-date').prop('tabIndex', -1);
-                $(document).ready(function() {
-                    $('tabindex').removeAttr("tabindex");
-                });
-
+                nts.uk.ui.errors.clearAll();
                 if (self.laborSystemAtr == 0) {
-                    self.textOvertimeName(getText("KMK008_12", ['{#KMK008_8}', '{#Com_Workplace}']));
+                    self.textOvertimeName(getText("KMK008_12", ['{#KMK008_8}', '{#Com_Class}']));
                 } else {
-                    self.textOvertimeName(getText("KMK008_12", ['{#KMK008_9}', '{#Com_Workplace}']));
+                    self.textOvertimeName(getText("KMK008_12", ['{#KMK008_9}', '{#Com_Class}']));
                 }
-                self.selectedWorkplaceId('');
-                $('#tree-grid-screen-e').ntsTreeComponent(self.treeGrid).done(function() {
-                    self.getAlreadySettingList();
-                    // self.workplaceGridList($('#tree-grid-screen-e').getDataList());
-                    if (self.workplaceGridList().length > 0) {
-                        self.selectedWorkplaceId(self.workplaceGridList()[0].workplaceId);
-                    }
-                    dfd.resolve();
-                });
+
+				if (reInitComponent) {
+					self.selectedCode("");
+					$('#empt-list-setting-screen-e').ntsListComponent(self.listComponentOption).done(function () {
+						self.refreshComponentData();
+						dfd.resolve();
+					});
+				} else {
+					self.refreshComponentData();
+					dfd.resolve();
+				}
                 return dfd.promise();
             }
 
+			refreshComponentData() {
+				let self = this;
+				self.classificationList($('#empt-list-setting-screen-e').getDataList());
+				self.getAlreadySettingList();
+				if (self.classificationList().length > 0 && master.hasNoMeaningValue(self.selectedCode())) {
+					self.selectedCode(self.classificationList()[0].code);
+				}
+			}
+
             getAlreadySettingList() {
                 let self = this;
-                self.alreadySettingList([]);
                 new service.Service().getList(self.laborSystemAtr).done(data => {
-                    if (data.workPlaceIds.length > 0) {
-                        self.alreadySettingList(_.map(data.workPlaceIds, item => { return new UnitAlreadySettingModel(item.toString(), true); }));
-                        _.defer(() => self.workplaceGridList($('#tree-grid-screen-e').getDataList()));
-                    }
-                    if (self.workplaceGridList().length > 0) {
-                        self.selectedWorkplaceId(self.workplaceGridList()[0].workplaceId);
-                    }
-                })
-                self.isRemove(self.isShowAlreadySet());
-            }
-
-            findUnitModelByWorkplaceId(workplaceGridList: Array<UnitModel>, workplaceId: string): UnitModel {
-                let self = this;
-                for (let item of workplaceGridList) {
-                    if (item.workplaceId == workplaceId) {
-                        return item;
-                    }
-                    if (item.childs.length > 0) {
-                        let WorkplaceChild = this.findUnitModelByWorkplaceId(item.childs, workplaceId);
-                        if (WorkplaceChild != null) {
-                            return WorkplaceChild;
-                        }
-                    }
-                }
-                return null;
-            }
-
-            addUpdateWorkPlace() {
-                let self = this;
-                
-                if(self.workplaceGridList().length == 0) return;
-                
-                let indexCodealreadySetting = _.findIndex(self.alreadySettingList(), item => { return item.workplaceId == self.selectedWorkplaceId() });
-                let timeOfWorkPlaceNew = new UpdateInsertTimeOfWorkPlaceModel(self.timeOfWorkPlace(), self.laborSystemAtr, self.selectedWorkplaceId());
-                nts.uk.ui.block.invisible();
-                if (indexCodealreadySetting != -1) {
-                    new service.Service().updateAgreementTimeOfWorkplace(timeOfWorkPlaceNew).done(listError => {
-                        if (listError.length > 0) {
-                            self.showDialogError(listError);
-                            nts.uk.ui.block.clear();
-                            return;
-                        }
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                        self.getDetail(self.selectedWorkplaceId());
-                        nts.uk.ui.block.clear();
-                    });
-                    return;
-                }
-                new service.Service().addAgreementTimeOfWorkPlace(timeOfWorkPlaceNew).done(listError => {
-                    if (listError.length > 0) {
-                        self.showDialogError(listError);
-                        nts.uk.ui.block.clear();
-                        return;
-                    }
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                    self.getAlreadySettingList();
-                    self.getDetail(self.selectedWorkplaceId());
+                    if (data.classificationCodes.length > 0) {
+                        self.alreadySettingList(_.map(data.classificationCodes, item => {
+                        	return new UnitAlreadySettingModel(item.toString(), true);
+                        }));
+                    } else {
+						self.alreadySettingList([]);
+					}
+					self.classificationList($('#empt-list-setting-screen-e').getDataList());
+					self.selectedCode.valueHasMutated();
+					self.initFocus();
                 });
-                nts.uk.ui.block.clear();
             }
 
-            removeDataWorkPlace() {
+            persisData() {
                 let self = this;
-                nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage("Msg_18", []))
-                    .ifYes(() => {
-                        let deleteModel = new DeleteTimeOfWorkPlaceModel(self.laborSystemAtr, self.selectedWorkplaceId());
-                        new service.Service().removeAgreementTimeOfWorkplace(deleteModel).done(function() {
-                            self.getAlreadySettingList();
-                            self.getDetail(self.selectedWorkplaceId());
-                            self.isRemove(false);
-                        });
-                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_16", []));
-                    });
-                nts.uk.ui.block.clear();
 
-            }
+                if(self.classificationList().length == 0) return;
+				if (master.hasNoMeaningValue(self.selectedCode())) return;
 
-            getDetail(workPlaceIds: string) {
-                let self = this;
-                new service.Service().getDetail(self.laborSystemAtr, workPlaceIds).done(data => {
-                    self.timeOfWorkPlace(new TimeOfWorkPlaceModel(data));
-                }).fail(error => {});
-            }
-            
-            showDialogError(listError: any) {
-                let errorCode = _.split(listError[0], ',');
-                if (errorCode[0] === 'Msg_59') {
-                    let periodName = getText(errorCode[1]);
-                    let param1 = "期間: " + getText(errorCode[1]) + "<br>" + getText(errorCode[2]);
-                    alertError({ messageId: errorCode[0], messageParams: [param1, getText(errorCode[3])] });
-                } else {
-                    alertError({ messageId: errorCode[0], messageParams: [getText(errorCode[1]), getText(errorCode[2]), getText(errorCode[3])] });
+                let clsTimeSettingForPersis = new ClsTimeSettingForPersis(
+                	self.timeOfClassification(),
+					self.laborSystemAtr,
+					self.selectedCode()
+				);
+
+				let validateErr = master.validateTimeSetting(clsTimeSettingForPersis);
+				if (validateErr) {
+					alertError(validateErr).then(()=>{
+						$("#E4_" + validateErr.errorPosition + " input").focus();
+					});
+					return;
+				}
+
+                nts.uk.ui.block.invisible();
+                if (self.selectedCode() != "") {
+                    new service.Service().addAgreementTimeOfClassification(clsTimeSettingForPersis).done(() => {
+						self.startPage();
+						nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+							self.initFocus();
+						});
+                    }).fail((error)=>{
+						alertError({ messageId: error.messageId, messageParams: error.parameterIds});
+					}).always(() => {
+						nts.uk.ui.block.clear();
+					});
                 }
             }
+
+            removeData() {
+                let self = this;
+                nts.uk.ui.dialog.confirm({ messageId: "Msg_18" })
+					.ifYes(() => {
+						let deleteModel = new ClsTimeSettingForDelete(self.laborSystemAtr, self.selectedCode());
+						new service.Service().removeAgreementTimeOfEmployment(deleteModel).done(function() {
+							self.startPage();
+							nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(()=>{
+								self.initFocus();
+							});
+						});
+					});
+            }
+
+			initFocus() {
+				setTimeout(function(){
+					_.defer(()=> {
+						$('#E4_14 input').focus();
+					});
+				}, master.FOCUS_DELAY);
+			}
+
+            getDetail(classificationCode: string) {
+                let self = this;
+
+                self.$errors("clear");
+
+				if (!classificationCode) {
+					self.timeOfClassification(new ClsTimeSetting(null));
+					return;
+				}
+
+                new service.Service().getDetail(self.laborSystemAtr, classificationCode).done(data => {
+                    self.timeOfClassification(new ClsTimeSetting(data));
+                }).fail(error => {
+					alertError({ messageId: error.messageId, messageParams: error.parameterIds});
+					nts.uk.ui.block.clear();
+                });
+            }
+
+			copySetting() {
+				let self = this;
+
+				const listSetting = _.map(self.alreadySettingList(), function (item: any) {
+					return item.code;
+				});
+
+				//CDL023：複写ダイアログを起動する
+				let param = {
+					code: self.selectedCode(),
+					name: self.currentItemName(),
+					targetType: 2, // 分類 - CLASSIFICATION
+					itemListSetting: listSetting
+				};
+				nts.uk.ui.windows.setShared("CDL023Input", param);
+				nts.uk.ui.windows.sub.modal("com", "/view/cdl/023/a/index.xhtml").onClosed(() => {
+					let data = nts.uk.ui.windows.getShared("CDL023Output");
+					if (!nts.uk.util.isNullOrUndefined(data)) {
+						nts.uk.ui.block.invisible();
+						self.callCopySettingAPI(data).done(() => {
+							self.startPage();
+							nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(() => {
+								self.initFocus();
+							});
+						}).fail((error) => {
+							alertError(error);
+						}).always(() => {
+							nts.uk.ui.block.clear();
+						});
+					}
+				});
+			}
+
+			callCopySettingAPI(cds:string[]): JQueryPromise<any> {
+				let self = this;
+
+				let dfd = $.Deferred();
+				let command = {
+					classificationCdTarget: cds,
+					classificationCdSource: self.selectedCode(),
+					laborSystemAtr: self.laborSystemAtr
+				};
+
+				new service.Service().copySetting(command).done((result) => {
+					dfd.resolve(result);
+				}).fail((error:any) => {
+					dfd.reject(error);
+				});
+
+				return dfd.promise();
+			}
         }
 
-        export class TimeOfWorkPlaceModel {
-            alarmWeek: KnockoutObservable<string> = ko.observable(null);
-            errorWeek: KnockoutObservable<string> = ko.observable(null);
-            limitWeek: KnockoutObservable<string> = ko.observable(null);
-            alarmTwoWeeks: KnockoutObservable<string> = ko.observable(null);
-            errorTwoWeeks: KnockoutObservable<string> = ko.observable(null);
-            limitTwoWeeks: KnockoutObservable<string> = ko.observable(null);
-            alarmFourWeeks: KnockoutObservable<string> = ko.observable(null);
-            errorFourWeeks: KnockoutObservable<string> = ko.observable(null);
-            limitFourWeeks: KnockoutObservable<string> = ko.observable(null);
-            alarmOneMonth: KnockoutObservable<string> = ko.observable(null);
-            errorOneMonth: KnockoutObservable<string> = ko.observable(null);
-            limitOneMonth: KnockoutObservable<string> = ko.observable(null);
-            alarmTwoMonths: KnockoutObservable<string> = ko.observable(null);
-            errorTwoMonths: KnockoutObservable<string> = ko.observable(null);
-            limitTwoMonths: KnockoutObservable<string> = ko.observable(null);
-            alarmThreeMonths: KnockoutObservable<string> = ko.observable(null);
-            errorThreeMonths: KnockoutObservable<string> = ko.observable(null);
-            limitThreeMonths: KnockoutObservable<string> = ko.observable(null);
-            alarmOneYear: KnockoutObservable<string> = ko.observable(null);
-            errorOneYear: KnockoutObservable<string> = ko.observable(null);
-            limitOneYear: KnockoutObservable<string> = ko.observable(null);
-            upperMonth: KnockoutObservable<string> = ko.observable(null);
-            upperMonthAverage: KnockoutObservable<string> = ko.observable(null);
+        export class ClsTimeSetting {
+            overMaxTimes: KnockoutObservable<string> = ko.observable(null);
+
+			limitOneMonth: KnockoutObservable<string> = ko.observable(null);
+			alarmOneMonth: KnockoutObservable<string> = ko.observable(null);
+			errorOneMonth: KnockoutObservable<string> = ko.observable(null);
+
+			limitTwoMonths: KnockoutObservable<string> = ko.observable(null);
+			alarmTwoMonths: KnockoutObservable<string> = ko.observable(null);
+			errorTwoMonths: KnockoutObservable<string> = ko.observable(null);
+
+			alarmOneYear: KnockoutObservable<string> = ko.observable(null);
+			errorOneYear: KnockoutObservable<string> = ko.observable(null);
+
+			limitOneYear: KnockoutObservable<string> = ko.observable(null);
+			errorTwoYear: KnockoutObservable<string> = ko.observable(null);
+			alarmTwoYear: KnockoutObservable<string> = ko.observable(null);
+
+			errorMonthAverage: KnockoutObservable<string> = ko.observable(null);
+            errorMonthAverage2: KnockoutObservable<string> = ko.observable(null);
+            isSubscribe: boolean = false;
+            isSubscribe2: boolean = false;
+
+            alarmMonthAverage: KnockoutObservable<string> = ko.observable(null);
 
             constructor(data: any) {
                 let self = this;
-                if (!data) return;
-                self.alarmWeek(data.alarmWeek);
-                self.errorWeek(data.errorWeek);
-                self.limitWeek(data.limitWeek);
-                self.alarmTwoWeeks(data.alarmTwoWeeks);
-                self.errorTwoWeeks(data.errorTwoWeeks);
-                self.limitTwoWeeks(data.limitTwoWeeks);
-                self.alarmFourWeeks(data.alarmFourWeeks);
-                self.errorFourWeeks(data.errorFourWeeks);
-                self.limitFourWeeks(data.limitFourWeeks);
+				if (!data) {
+					data = master.INIT_DEFAULT;
+				}
+				self.overMaxTimes(data.overMaxTimes);
+
+				self.limitOneMonth(data.limitOneMonth);
                 self.alarmOneMonth(data.alarmOneMonth);
                 self.errorOneMonth(data.errorOneMonth);
-                self.limitOneMonth(data.limitOneMonth);
+
+                self.limitTwoMonths(data.limitTwoMonths);
                 self.alarmTwoMonths(data.alarmTwoMonths);
                 self.errorTwoMonths(data.errorTwoMonths);
-                self.limitTwoMonths(data.limitTwoMonths);
-                self.alarmThreeMonths(data.alarmThreeMonths);
-                self.errorThreeMonths(data.errorThreeMonths);
-                self.limitThreeMonths(data.limitThreeMonths);
+
                 self.alarmOneYear(data.alarmOneYear);
                 self.errorOneYear(data.errorOneYear);
-                self.limitOneYear(data.limitOneYear);
-                self.upperMonth(data.upperMonth);
-                self.upperMonthAverage(data.upperMonthAverage);
+
+				self.limitOneYear(data.limitOneYear);
+				self.errorTwoYear(data.errorTwoYear);
+				self.alarmTwoYear(data.alarmTwoYear);
+
+				self.errorMonthAverage(data.errorMonthAverage);
+                self.errorMonthAverage2(data.errorMonthAverage);
+
+                self.errorMonthAverage.subscribe(newValue => {
+                    if (self.isSubscribe) {
+                        self.isSubscribe = false;
+                        return;
+                    }
+                    self.isSubscribe2 = true;
+
+                    if ($("#E4_33").ntsError("hasError")) {
+                        self.errorMonthAverage2(null);
+                        return;
+                    }
+
+                    $('#E4_34').ntsError('clear');
+                    self.errorMonthAverage2(newValue);
+                });
+                self.errorMonthAverage2.subscribe(newValue => {
+                    if (self.isSubscribe2) {
+                        self.isSubscribe2 = false;
+                        return;
+                    }
+                    self.isSubscribe = true;
+
+                    if ($("#E4_34").ntsError("hasError")) {
+                        self.errorMonthAverage(null);
+                        return;
+                    }
+
+                    $('#E4_33').ntsError('clear');
+                    self.errorMonthAverage(newValue);
+                });
+
+				self.alarmMonthAverage(data.alarmMonthAverage);
             }
         }
 
-        export class UpdateInsertTimeOfWorkPlaceModel {
+		export class ClsTimeSettingForPersis {
             laborSystemAtr: number = 0;
-            workPlaceId: string = "";
-            alarmWeek: number = 0;
-            errorWeek: number = 0;
-            limitWeek: number = 0;
-            alarmTwoWeeks: number = 0;
-            errorTwoWeeks: number = 0;
-            limitTwoWeeks: number = 0;
-            alarmFourWeeks: number = 0;
-            errorFourWeeks: number = 0;
-            limitFourWeeks: number = 0;
-            alarmOneMonth: number = 0;
+			overMaxTimes: number = 0;
+			classificationCode: string = "";
+
+			limitOneMonth: number = 0;
+			alarmOneMonth: number = 0;
             errorOneMonth: number = 0;
-            limitOneMonth: number = 0;
+
+			limitTwoMonths: number = 0;
             alarmTwoMonths: number = 0;
             errorTwoMonths: number = 0;
-            limitTwoMonths: number = 0;
-            alarmThreeMonths: number = 0;
-            errorThreeMonths: number = 0;
-            limitThreeMonths: number = 0;
+
             alarmOneYear: number = 0;
             errorOneYear: number = 0;
-            limitOneYear: number = 0;
-            upperMonth: number = 0;
-            upperMonthAverage: number = 0;
 
-            constructor(data: TimeOfWorkPlaceModel, laborSystemAtr: number, workPlaceId: string) {
+			limitOneYear: number = 0;
+			errorTwoYear: number = 0;
+			alarmTwoYear: number = 0;
+
+			upperMonthAverageError: number = 0;
+			upperMonthAverageAlarm: number = 0;
+
+            constructor(data: ClsTimeSetting, laborSystemAtr: number, classificationCode: string) {
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;
-                self.workPlaceId = workPlaceId;
-                if (!data) return;
-                self.alarmWeek = +data.alarmWeek() || 0;
-                self.errorWeek = +data.errorWeek() || 0;
-                self.limitWeek = +data.limitWeek() || 0;
-                self.alarmTwoWeeks = +data.alarmTwoWeeks() || 0;
-                self.errorTwoWeeks = +data.errorTwoWeeks() || 0;
-                self.limitTwoWeeks = +data.limitTwoWeeks() || 0;
-                self.alarmFourWeeks = +data.alarmFourWeeks() || 0;
-                self.errorFourWeeks = +data.errorFourWeeks() || 0;
-                self.limitFourWeeks = +data.limitFourWeeks() || 0;
+				self.classificationCode = classificationCode;
+				if (!data) return;
+
+				self.overMaxTimes = +data.overMaxTimes()||0;
+
+				self.limitOneMonth = +data.limitOneMonth() || 0;
                 self.alarmOneMonth = +data.alarmOneMonth() || 0;
                 self.errorOneMonth = +data.errorOneMonth() || 0;
-                self.limitOneMonth = +data.limitOneMonth() || 0;
+
+				self.limitTwoMonths = +data.limitTwoMonths() || 0;
                 self.alarmTwoMonths = +data.alarmTwoMonths() || 0;
                 self.errorTwoMonths = +data.errorTwoMonths() || 0;
-                self.limitTwoMonths = +data.limitTwoMonths() || 0;
-                self.alarmThreeMonths = +data.alarmThreeMonths() || 0;
-                self.errorThreeMonths = +data.errorThreeMonths() || 0;
-                self.limitThreeMonths = +data.limitThreeMonths() || 0;
+
                 self.alarmOneYear = +data.alarmOneYear() || 0;
                 self.errorOneYear = +data.errorOneYear() || 0;
-                self.limitOneYear = +data.limitOneYear() || 0;
-                self.upperMonth = +data.upperMonth() || 0;
-                self.upperMonthAverage = +data.upperMonthAverage() || 0;
+
+				self.limitOneYear = +data.limitOneYear() || 0;
+				self.errorTwoYear = +data.errorTwoYear() || 0;
+				self.alarmTwoYear = +data.alarmTwoYear() || 0;
+
+				self.upperMonthAverageError = +data.errorMonthAverage() || 0;
+				self.upperMonthAverageAlarm = +data.alarmMonthAverage() || 0;
             }
         }
 
-        export class DeleteTimeOfWorkPlaceModel {
+        export class ClsTimeSettingForDelete {
             laborSystemAtr: number = 0;
-            workPlaceId: string;
-            constructor(laborSystemAtr: number, workPlaceId: string) {
+			classificationCode: string;
+            constructor(laborSystemAtr: number, classificationCode: string) {
                 let self = this;
                 self.laborSystemAtr = laborSystemAtr;
-                self.workPlaceId = workPlaceId;
+                self.classificationCode = classificationCode;
             }
         }
 
         export interface UnitModel {
-            workplaceId: string;
             code: string;
-            name: string;
-            nodeText: string;
-            level: number;
-            heirarchyCode: string;
-            settingType: number;
+            name?: string;
+            affiliationName?: string;
             isAlreadySetting?: boolean;
-            childs: Array<UnitModel>;
-        }
-
-        export class RowSelection {
-            workplaceId: KnockoutObservable<string>;
-            workplaceCode: KnockoutObservable<string>;
-            constructor(workplaceId: string, workplaceCode: string) {
-                let self = this;
-                self.workplaceId = ko.observable(workplaceId);
-                self.workplaceCode = ko.observable(workplaceCode);
-            }
         }
 
         export class UnitAlreadySettingModel {
-            workplaceId: string;
-            isAlreadySetting: boolean = true;
-            constructor(workplaceId: string, isAlreadySetting: boolean) {
-                this.workplaceId = workplaceId;
+            code: string;
+            isAlreadySetting: boolean;
+            constructor(code: string, isAlreadySetting: boolean) {
+                this.code = code;
+                this.isAlreadySetting = isAlreadySetting;
             }
         }
-
     }
 }

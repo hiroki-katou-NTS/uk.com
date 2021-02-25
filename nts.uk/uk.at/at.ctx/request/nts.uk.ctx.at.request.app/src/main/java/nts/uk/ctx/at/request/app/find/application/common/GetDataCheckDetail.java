@@ -27,7 +27,8 @@ public class GetDataCheckDetail {
 	 * @return
 	 */
 	public OutputDetailCheckDto getDataCheckDetail(InputGetDetailCheck inputGetDetailCheck) {
-		String companyID = AppContexts.user().companyId();
+		// error EA refactor 4
+		/*String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
 		//14-2
 		OutputDetailCheckDto outputDetailCheckDto = OutputDetailCheckDto.fromDomain(beforePreBootMode.judgmentDetailScreenMode(
@@ -39,7 +40,8 @@ public class GetDataCheckDetail {
 		outputDetailCheckDto.setInitMode(initMode.getDetailScreenInitMode(
 				EnumAdaptor.valueOf(outputDetailCheckDto.getUser(), User.class), 
 				outputDetailCheckDto.getReflectPlanState()).getOutputMode().value);
-		return outputDetailCheckDto;
+		return outputDetailCheckDto;*/
+		return null;
 	}
 	
 	

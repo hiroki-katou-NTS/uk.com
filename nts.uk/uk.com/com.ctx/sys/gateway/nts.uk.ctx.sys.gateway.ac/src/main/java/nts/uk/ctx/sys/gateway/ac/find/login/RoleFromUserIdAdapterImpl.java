@@ -1,5 +1,7 @@
 package nts.uk.ctx.sys.gateway.ac.find.login;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -17,18 +19,27 @@ public class RoleFromUserIdAdapterImpl implements RoleFromUserIdAdapter {
 	@Inject
 	private RoleFromUserIdPub roleFromUserIdPub;
 
+
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.sys.gateway.dom.login.adapter.RoleFromUserIdAdapter#getRoleFromUser(java.lang.String, java.lang.Integer, nts.arc.time.GeneralDate)
 	 */
 	@Override
 	public String getRoleFromUser(String userId, Integer roleType, GeneralDate baseDate) {
-		String roleId = roleFromUserIdPub.getRoleFromUserId(userId, roleType, baseDate);
-		return roleId;
+        return roleFromUserIdPub.getRoleFromUserId(userId, roleType, baseDate);
 	}
 	
 	@Override
 	public String getRoleFromUser(String userId, Integer roleType, GeneralDate baseDate, String comId) {
-		String roleId = roleFromUserIdPub.getRoleFromUserId(userId, roleType, baseDate, comId);
-		return roleId;
+        return roleFromUserIdPub.getRoleFromUserId(userId, roleType, baseDate, comId);
 	}
+	
+	
+
+
+    @Override
+    public Optional<RoleInfoImport> getRoleInfoFromUser(String userId, int roleType, GeneralDate baseDate, String comId) {
+        return roleFromUserIdPub.getRoleInfoFromUserId(userId, roleType, baseDate, comId)
+        		.map(roleInfo -> new RoleInfoImport(roleInfo.isInCharge(), roleInfo.getRoleId()));
+    }
+
 }

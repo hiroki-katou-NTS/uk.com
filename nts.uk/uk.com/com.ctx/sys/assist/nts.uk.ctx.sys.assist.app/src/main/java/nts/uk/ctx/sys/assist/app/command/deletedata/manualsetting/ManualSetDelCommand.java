@@ -19,6 +19,8 @@ import nts.uk.ctx.sys.assist.dom.deletedata.EmployeeDeletion;
 import nts.uk.ctx.sys.assist.dom.deletedata.ManualSetDeletion;
 import nts.uk.ctx.sys.assist.dom.deletedata.PasswordCompressFileEncrypt;
 import nts.uk.ctx.sys.assist.dom.deletedata.SupplementExplanation;
+import nts.uk.ctx.sys.assist.dom.storage.PatternCode;
+import nts.uk.ctx.sys.assist.dom.storage.StorageClassification;
 
 /**
  * @author hiep.th
@@ -30,7 +32,6 @@ public class ManualSetDelCommand {
 	
 	private String delName;
 	private String suppleExplanation;
-	private int systemType;
 	private GeneralDate referenceDate;
 	private GeneralDateTime executionDateAndTime;
 	private GeneralDate dayStartDate;
@@ -45,6 +46,7 @@ public class ManualSetDelCommand {
 	private int isExistCompressPasswordFlg;
 	private String passwordForCompressFile;
 	private int haveEmployeeSpecifiedFlg;
+	private String delPattern;
 	private List<EmployeesDeletionCommand> employees;
 	private List<CategoryDeletionCommand> categories;
 	
@@ -52,14 +54,15 @@ public class ManualSetDelCommand {
 		boolean isSaveBeforeDeleteFlg = this.isSaveBeforeDeleteFlg == 1;
 		boolean isExistCompressPasswordFlg = this.isExistCompressPasswordFlg == 1;
 		boolean haveEmployeeSpecifiedFlg = this.haveEmployeeSpecifiedFlg == 1;
-		return new ManualSetDeletion(delId, cid, systemType, new DelName(delName), isSaveBeforeDeleteFlg, 
+		return new ManualSetDeletion(delId, cid, new DelName(delName), isSaveBeforeDeleteFlg, 
 				isExistCompressPasswordFlg, Optional.ofNullable(new PasswordCompressFileEncrypt(passwordForCompressFile)), 
 				haveEmployeeSpecifiedFlg, 
 				sid, Optional.ofNullable(new SupplementExplanation(suppleExplanation)),
 				Optional.ofNullable(referenceDate), executionDateAndTime, 
 				Optional.ofNullable(dayStartDate), Optional.ofNullable(dayEndDate), 
 				Optional.ofNullable(monthStartDate), Optional.ofNullable(monthEndDate), 
-				Optional.ofNullable(startYear), Optional.ofNullable(endYear));			
+				Optional.ofNullable(startYear), Optional.ofNullable(endYear),
+				StorageClassification.MANUAL, new PatternCode(delPattern), null);			
 	}
 	
 	public List<EmployeeDeletion> getEmployees(String delId) {
@@ -72,7 +75,7 @@ public class ManualSetDelCommand {
 	
 	public List<CategoryDeletion> getCategories(String delId) {
 		return categories.stream().map(x -> {
-			return new CategoryDeletion(delId, x.getCategoryId(), x.getPeriodDeletion());
+			return new CategoryDeletion(delId, x.getCategoryId(), x.getPeriodDeletion(), x.getSystemType());
 		}).collect(Collectors.toList());
 	}
 }

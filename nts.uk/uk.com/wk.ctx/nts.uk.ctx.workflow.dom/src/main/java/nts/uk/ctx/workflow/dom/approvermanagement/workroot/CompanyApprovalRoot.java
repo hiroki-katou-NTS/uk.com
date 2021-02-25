@@ -28,8 +28,8 @@ public class CompanyApprovalRoot extends AggregateRoot{
 	
 	public static CompanyApprovalRoot createSimpleFromJavaType(String companyId,
 			String approvalId, String historyId, Integer applicationType,
-			String startDate, String endDate, String branchId,
-			String anyItemApplicationId, Integer confirmationRootType,
+			String startDate, String endDate, 
+			Integer confirmationRootType,
 			int employmentRootAtr, int sysAtr, Integer noticeId, String busEventId){
 		List<EmploymentAppHistoryItem>  employmentAppHistorys = new ArrayList<>();
 		EmploymentAppHistoryItem employmentAppHistory = new EmploymentAppHistoryItem(historyId,new DatePeriod(GeneralDate.fromString(startDate, "yyyy-MM-dd"), GeneralDate.fromString(endDate, "yyyy-MM-dd")));
@@ -38,15 +38,15 @@ public class CompanyApprovalRoot extends AggregateRoot{
 			approvalId,
 			new ApprovalRoot(EnumAdaptor.valueOf(sysAtr, SystemAtr.class),
 					EnumAdaptor.valueOf(employmentRootAtr, EmploymentRootAtr.class),
-					branchId, employmentAppHistorys,
+					employmentAppHistorys,
 					applicationType == null ? null : EnumAdaptor.valueOf(applicationType, ApplicationType.class), 
 					confirmationRootType == null ? null : EnumAdaptor.valueOf(confirmationRootType, ConfirmationRootType.class),
-					anyItemApplicationId, noticeId, busEventId));
+					noticeId, busEventId));
 	}
 	public static CompanyApprovalRoot convert(String companyId,
 			String approvalId, String historyId, Integer applicationType,
-			GeneralDate startDate, GeneralDate endDate, String branchId,
-			String anyItemApplicationId, Integer confirmationRootType,
+			GeneralDate startDate, GeneralDate endDate, 
+			Integer confirmationRootType,
 			int employmentRootAtr, int sysAtr, Integer noticeId, String busEventId){
 		List<EmploymentAppHistoryItem>  employmentAppHistorys = new ArrayList<>();
 		EmploymentAppHistoryItem employmentAppHistory = new EmploymentAppHistoryItem(historyId,new DatePeriod(startDate,endDate));
@@ -55,10 +55,10 @@ public class CompanyApprovalRoot extends AggregateRoot{
 			approvalId,
 			new ApprovalRoot(EnumAdaptor.valueOf(sysAtr, SystemAtr.class),
 					EnumAdaptor.valueOf(employmentRootAtr, EmploymentRootAtr.class),
-					branchId, employmentAppHistorys,
+					employmentAppHistorys,
 					applicationType == null ? null : EnumAdaptor.valueOf(applicationType, ApplicationType.class), 
 					confirmationRootType == null ? null : EnumAdaptor.valueOf(confirmationRootType, ConfirmationRootType.class),
-					anyItemApplicationId, noticeId, busEventId));
+					noticeId, busEventId));
 	}
 	public static CompanyApprovalRoot updateEdate(CompanyApprovalRoot comApprovalRoot, String eDate){
 		CompanyApprovalRoot com = comApprovalRoot;

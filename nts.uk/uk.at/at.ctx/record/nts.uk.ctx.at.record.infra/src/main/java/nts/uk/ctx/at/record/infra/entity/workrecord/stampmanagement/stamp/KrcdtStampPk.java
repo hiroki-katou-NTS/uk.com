@@ -27,6 +27,14 @@ public class KrcdtStampPk implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
+	 * 契約コード
+	 * ver2　属性追加
+	 */
+	@Basic(optional = false)
+	@Column(name = "CONTRACT_CD")
+	public String contractCode;
+	
+	/**
 	 * 打刻カード番号
 	 */
 	@Basic(optional = false)
@@ -39,4 +47,11 @@ public class KrcdtStampPk implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "STAMP_DATE_TIME")
 	public GeneralDateTime stampDateTime;
+	
+	/**
+	 * 時刻変更区分  (Enum :ChangeClockArt)
+	 */
+	@Basic(optional = false)
+	@Column(name = "CHANGE_CLOCK_ART")
+	public int changeClockArt;
 }

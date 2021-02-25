@@ -8,7 +8,7 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationlatearrival.LateEarlyRequest;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationlatearrival.LateEarlyRequest_Old;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationlatearrival.LateEarlyRequestRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -27,8 +27,8 @@ public class UpdateLateEarReqHandler extends CommandHandler<LateEarlyRequestComm
 	protected void handle(CommandHandlerContext<LateEarlyRequestCommand> context) {
 		String companyId = AppContexts.user().companyId();
 		LateEarlyRequestCommand command = context.getCommand();
-		Optional<LateEarlyRequest> lateEarlyRequest = repository.getLateEarlyRequest();
-		LateEarlyRequest data = LateEarlyRequest.createFromJavaType(
+		Optional<LateEarlyRequest_Old> lateEarlyRequest = repository.getLateEarlyRequest();
+		LateEarlyRequest_Old data = LateEarlyRequest_Old.createFromJavaType(
 				companyId, 
 				command.getShowResult()
 		);

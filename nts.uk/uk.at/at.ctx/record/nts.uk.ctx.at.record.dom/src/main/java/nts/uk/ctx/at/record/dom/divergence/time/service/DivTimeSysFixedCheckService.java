@@ -19,13 +19,6 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
 import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
-import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConvertFactory;
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmployee;
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmployeeHistory;
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.repository.BusinessTypeEmpOfHistoryRepository;
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.businesstype.repository.BusinessTypeOfEmployeeRepository;
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
-import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
 import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeHistory;
 import nts.uk.ctx.at.record.dom.divergence.time.history.CompanyDivergenceReferenceTimeHistoryRepository;
@@ -50,12 +43,19 @@ import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanc
 import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus;
 import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus.MasterShareContainer;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.enums.SystemFixedErrorAlarm;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmMessage;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.DivergenceTimeRoot;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.DivergenceTime;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployee;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.BusinessTypeOfEmployeeHistory;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.repository.BusinessTypeEmpOfHistoryRepository;
+import nts.uk.ctx.at.shared.dom.employeeworkway.businesstype.employee.repository.BusinessTypeOfEmployeeRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.service.AttendanceItemConvertFactory;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DivergenceTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmMessage;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.SystemFixedErrorAlarm;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
+import nts.uk.ctx.at.shared.dom.workrule.businesstype.BusinessTypeCode;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.history.DateHistoryItem;
@@ -208,27 +208,27 @@ public class DivTimeSysFixedCheckService {
 	
 	/** 乖離時間（確認解除） */
 	public List<EmployeeDailyPerError> divergenceTimeCheckBySystemFixed(String comId, String empId, 
-			GeneralDate tarD, List<nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.DivergenceTime> divTime){
+			GeneralDate tarD, List<nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DivergenceTime> divTime){
 		return divergenceTimeCheckBySystemFixed(comId, empId, tarD, divTime, null, Optional.empty());
 	}
 	
 	/** 乖離時間（確認解除） */
 	public List<EmployeeDailyPerError> divergenceTimeCheckBySystemFixed(String comId, String empId, 
-			GeneralDate tarD, List<nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.DivergenceTime> divTime, 
+			GeneralDate tarD, List<nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DivergenceTime> divTime, 
 			Optional<TimeLeavingOfDailyPerformance> tl){
 		return divergenceTimeCheckBySystemFixed(comId, empId, tarD, divTime, null, tl);
 	}
 	
 	/** 乖離時間（確認解除） */
 	public List<EmployeeDailyPerError> divergenceTimeCheckBySystemFixed(String comId, String empId, 
-			GeneralDate tarD, List<nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.DivergenceTime> divTime, 
+			GeneralDate tarD, List<nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DivergenceTime> divTime, 
 			Optional<TimeLeavingOfDailyPerformance> tl, List<ErrorAlarmWorkRecord> erAls){
 		return divergenceTimeCheckBySystemFixed(comId, empId, tarD, divTime, null, tl, erAls);
 	}
 	
 	/** 乖離時間（確認解除） */
 	public List<EmployeeDailyPerError> divergenceTimeCheckBySystemFixed(String comId, String empId, 
-			GeneralDate tarD, List<nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.DivergenceTime> divTime, 
+			GeneralDate tarD, List<nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DivergenceTime> divTime, 
 			Optional<TimeLeavingOfDailyPerformance> tl, List<ErrorAlarmWorkRecord> erAls,
 			List<DivergenceTimeRoot> divTimeErAlMs){
 		return divergenceTimeCheckBySystemFixed(comId, empId, tarD, divTime, tl, erAls, divTimeErAlMs, null);
@@ -248,14 +248,14 @@ public class DivTimeSysFixedCheckService {
 	
 	/** 乖離時間（確認解除） */
 	public List<EmployeeDailyPerError> divergenceTimeCheckBySystemFixed(String comId, String empId, 
-			GeneralDate tarD, List<nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.DivergenceTime> divTime,
+			GeneralDate tarD, List<nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DivergenceTime> divTime,
 			IdentityProcessUseSet iPUS, Optional<TimeLeavingOfDailyPerformance> tl){
 		return divergenceTimeCheckBySystemFixed(comId, empId, tarD, divTime, iPUS, tl, null);
 	}
 	
 	/** 乖離時間（確認解除） */
 	public List<EmployeeDailyPerError> divergenceTimeCheckBySystemFixed(String comId, String empId,
-			GeneralDate tarD, List<nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.DivergenceTime> divTime, 
+			GeneralDate tarD, List<nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DivergenceTime> divTime, 
 			IdentityProcessUseSet iPUS, Optional<TimeLeavingOfDailyPerformance> tl, 
 			List<ErrorAlarmWorkRecord> erAls){
 		return divergenceTimeCheckBySystemFixed(comId, empId, tarD, divTime, iPUS, tl, erAls, null);
@@ -263,7 +263,7 @@ public class DivTimeSysFixedCheckService {
 	
 	/** 乖離時間（確認解除） */
 	public List<EmployeeDailyPerError> divergenceTimeCheckBySystemFixed(String comId, String empId,
-			GeneralDate tarD, List<nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.DivergenceTime> divTime, 
+			GeneralDate tarD, List<nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DivergenceTime> divTime, 
 			IdentityProcessUseSet iPUS, Optional<TimeLeavingOfDailyPerformance> tl, 
 			List<ErrorAlarmWorkRecord> erAls, List<DivergenceTimeRoot> divTimeErAlMs){
 		MasterShareContainer<String> shareContainer = MasterShareBus.open();
@@ -275,7 +275,7 @@ public class DivTimeSysFixedCheckService {
 	
 	/** 乖離時間（確認解除） */
 	public List<EmployeeDailyPerError> divergenceTimeCheckBySystemFixed(String comId, String empId,
-			GeneralDate tarD, List<nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.DivergenceTime> divTime, 
+			GeneralDate tarD, List<nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DivergenceTime> divTime, 
 			IdentityProcessUseSet iPUS, Optional<TimeLeavingOfDailyPerformance> tl, 
 			List<ErrorAlarmWorkRecord> erAls, List<DivergenceTimeRoot> divTimeErAlMs,
 			MasterShareContainer<String> shareContainer){
@@ -352,7 +352,7 @@ public class DivTimeSysFixedCheckService {
 	
 	/** システム固定エラー：　乖離時間をチェックする */
 	private List<EmployeeDailyPerError> check(String comId, String empId, GeneralDate tarD,
-			List<nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.DivergenceTime> divTime, 
+			List<nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DivergenceTime> divTime, 
 			Optional<TimeLeavingOfDailyPerformance> tl, List<ErrorAlarmWorkRecord> erAls,
 			List<DivergenceTimeRoot> divTimeErAlMs, MasterShareContainer<String> shareContainer) {
 		boolean checkByWT = shareContainer.getShared(join(WORK_TYPE_SETTING, SEPERATOR, comId),
@@ -466,7 +466,7 @@ public class DivTimeSysFixedCheckService {
 	}
 
 	private int getDivTimeValue(String empId, GeneralDate tarD, Optional<TimeLeavingOfDailyPerformance> tl,
-			nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.DivergenceTime dt, boolean isPcDivergence,
+			nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DivergenceTime dt, boolean isPcDivergence,
 			MasterShareContainer<String> shareContainer) {
 		if(isPcDivergence) {
 			return calcCurrentDivergenceTime(empId, tarD, tl, shareContainer);
@@ -488,7 +488,7 @@ public class DivTimeSysFixedCheckService {
 		/** 勤怠項目ID　34（退勤時刻1） */
 		if(timeLeave.isPresent()) {
 			val valued = shareContainer.getShared(CONVERTER_KEY, () -> convertHelper.createDailyConverter())
-					.withTimeLeaving(employeeId, workingDate, timeLeave.get().getAttendance()).convert(TIME_LEAVE_ITEM);
+					.withTimeLeaving(timeLeave.get().getAttendance()).convert(TIME_LEAVE_ITEM);
 			if(valued.isPresent() && valued.get().value() != null) {
 				GeneralDateTime now = shareContainer.getShared(TIME_NOW_KEY, () -> GeneralDateTime.now());
 				int currentTime = now.hours() * 60 + now.minutes();
@@ -575,7 +575,7 @@ public class DivTimeSysFixedCheckService {
 	/** 乖離時間のチェック */
 	private InternalCheckStatus evaluateDivTime(int divNo, boolean isAlarm, boolean isCheckByWorkType, String history, 
 			BusinessTypeCode bsCode, DivergenceTimeRoot divTimeEr, MasterShareContainer<String> shareContainer, 
-			nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.DivergenceTime divTime, int divergenceTime){
+			nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DivergenceTime divTime, int divergenceTime){
 		if(divTime == null){
 			return InternalCheckStatus.NO_ERROR;
 		}
@@ -624,7 +624,7 @@ public class DivTimeSysFixedCheckService {
 	/** 勤務種別ごとの乖離基準時間でチェックする */
 	private InternalCheckStatus evaluateByWorkType(int divNo, String history, int divergenceTime, 
 			boolean isAlarm, BusinessTypeCode bsCode, DivergenceTimeRoot divTimeEr, 
-			nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.DivergenceTime divTime, 
+			nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DivergenceTime divTime, 
 			MasterShareContainer<String> shareContainer){
 		
 		WorkTypeDivergenceReferenceTime divTimeBaseByWT = getWTDivRefTime(divNo, history, bsCode, shareContainer);
@@ -639,7 +639,7 @@ public class DivTimeSysFixedCheckService {
 
 	/** 会社の履歴項目でチェックする */
 	private InternalCheckStatus evaluateByCompany(int divNo,  int divergenceTime, boolean isAlarm, String history,
-			DivergenceTimeRoot divTimeEr, nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.DivergenceTime divTime, 
+			DivergenceTimeRoot divTimeEr, nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DivergenceTime divTime, 
 			MasterShareContainer<String> shareContainer){
 		
 		CompanyDivergenceReferenceTime divTimeBaseByCom = getComDivRefTime(divNo, history, shareContainer);
@@ -667,7 +667,7 @@ public class DivTimeSysFixedCheckService {
 
 	/** 乖離時間を判定する */
 	private InternalCheckStatus evaluate(int divergenceTime, boolean isAlarm, boolean isUse, DivergenceReferenceTimeValue standard, 
-			DivergenceTimeRoot divTimeEr, nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.DivergenceTime divTime){
+			DivergenceTimeRoot divTimeEr, nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DivergenceTime divTime){
 		if(!isUse || standard == null){
 			return evaluateReasonOnNoError(divTime);
 		}
@@ -699,15 +699,15 @@ public class DivTimeSysFixedCheckService {
 		return standard.getErrorTime().orElse(null);
 	}
 
-	private boolean isReasonSelected(nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.DivergenceTime divTime) {
+	private boolean isReasonSelected(nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DivergenceTime divTime) {
 		return divTime.getDivResonCode() != null && divTime.getDivResonCode().isPresent() && !divTime.getDivResonCode().get().v().isEmpty();
 	}
 
-	private boolean isReasonInputed(nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.DivergenceTime divTime) {
+	private boolean isReasonInputed(nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DivergenceTime divTime) {
 		return divTime.getDivReason() != null && divTime.getDivReason().isPresent() && !divTime.getDivReason().get().v().isEmpty();
 	}
 	
-	private InternalCheckStatus evaluateReasonOnNoError(nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.DivergenceTime divTime) {
+	private InternalCheckStatus evaluateReasonOnNoError(nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DivergenceTime divTime) {
 		if(isReasonInputed(divTime) || isReasonSelected(divTime)){
 			
 			return InternalCheckStatus.NO_ERROR_WITH_REASON;

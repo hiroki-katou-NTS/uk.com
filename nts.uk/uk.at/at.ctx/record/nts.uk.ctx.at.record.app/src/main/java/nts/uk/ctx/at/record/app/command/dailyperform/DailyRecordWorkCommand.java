@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.command.dailyperform.affiliationInfor.AffiliationInforOfDailyPerformCommand;
-import nts.uk.ctx.at.record.app.command.dailyperform.affiliationInfor.BusinessTypeOfDailyPerformCommand;
 import nts.uk.ctx.at.record.app.command.dailyperform.attendanceleavinggate.AttendanceLeavingGateOfDailyCommand;
 import nts.uk.ctx.at.record.app.command.dailyperform.attendanceleavinggate.PCLogInfoOfDailyCommand;
 import nts.uk.ctx.at.record.app.command.dailyperform.attendancetime.AttendanceTimeOfDailyPerformCommand;
@@ -21,37 +20,28 @@ import nts.uk.ctx.at.record.app.command.dailyperform.goout.OutingTimeOfDailyPerf
 import nts.uk.ctx.at.record.app.command.dailyperform.optionalitem.OptionalItemOfDailyPerformCommand;
 import nts.uk.ctx.at.record.app.command.dailyperform.remark.RemarkOfDailyCommand;
 import nts.uk.ctx.at.record.app.command.dailyperform.shorttimework.ShortTimeOfDailyCommand;
+import nts.uk.ctx.at.record.app.command.dailyperform.snapshot.SnapshotOfDailyPerformCommand;
 import nts.uk.ctx.at.record.app.command.dailyperform.specificdatetttr.SpecificDateAttrOfDailyCommand;
 import nts.uk.ctx.at.record.app.command.dailyperform.temporarytime.TemporaryTimeOfDailyPerformanceCommand;
 import nts.uk.ctx.at.record.app.command.dailyperform.workinfo.WorkInformationOfDailyPerformCommand;
 import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.AttendanceTimeByWorkOfDailyCommand;
 import nts.uk.ctx.at.record.app.command.dailyperform.workrecord.TimeLeavingOfDailyPerformanceCommand;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
-import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.actualworkinghours.daily.workrecord.AttendanceTimeByWorkOfDaily;
-import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
-import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
-import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
-import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
-import nts.uk.ctx.at.record.dom.shorttimework.ShortTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.DailyWorkCommonCommand;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ConvertibleAttendanceItem;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TemporaryTimeOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.entranceandexit.AttendanceLeavingGateOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.entranceandexit.PCLogOnInfoOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemValueOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.paytime.SpecificDateAttrOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TemporaryTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ConvertibleAttendanceItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.AttendanceLeavingGateOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.PCLogOnInfoOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemValueOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.SpecificDateAttrOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.snapshot.SnapShot;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 
 public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 	
@@ -69,9 +59,9 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 	@Getter
 	private final AffiliationInforOfDailyPerformCommand affiliationInfo = new AffiliationInforOfDailyPerformCommand();
 	
-	/** 所属情報： 日別実績の所属情報 */
+	/** スナップショット */
 	@Getter
-	private final BusinessTypeOfDailyPerformCommand businessType = new BusinessTypeOfDailyPerformCommand();
+	private final SnapshotOfDailyPerformCommand snapshot = new SnapshotOfDailyPerformCommand();
 
 	/** エラー一覧： 社員の日別実績エラー一覧 */
 	// TODO: list?
@@ -130,41 +120,41 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 	@Getter
 	private final RemarkOfDailyCommand remarks = new RemarkOfDailyCommand();
 
-	public DailyWorkCommonCommand getCommand(String layout) {
-		switch (layout) {
-		case DAILY_WORK_INFO_CODE:
+	public DailyWorkCommonCommand getCommand(String domain) {
+		switch (domain) {
+		case DAILY_WORK_INFO_NAME:
 			return this.workInfo;
-		case DAILY_CALCULATION_ATTR_CODE:
+		case DAILY_CALCULATION_ATTR_NAME:
 			return this.calcAttr;
-		case DAILY_AFFILIATION_INFO_CODE:
+		case DAILY_AFFILIATION_INFO_NAME:
 			return this.affiliationInfo;
-		case DAILY_BUSINESS_TYPE_CODE:
-			return this.businessType;
-		case DAILY_OUTING_TIME_CODE:
+		case DAILY_SNAPSHOT_NAME:
+			return this.snapshot;
+		case DAILY_OUTING_TIME_NAME:
 			return this.outingTime;
-		case DAILY_BREAK_TIME_CODE:
+		case DAILY_BREAK_TIME_NAME:
 			return this.breakTime;
-		case DAILY_ATTENDANCE_TIME_CODE:
+		case DAILY_ATTENDANCE_TIME_NAME:
 			return this.attendanceTime;
-		case DAILY_ATTENDANCE_TIME_BY_WORK_CODE:
+		case DAILY_ATTENDANCE_TIME_BY_WORK_NAME:
 			return this.attendanceTimeByWork;
-		case DAILY_ATTENDACE_LEAVE_CODE:
+		case DAILY_ATTENDACE_LEAVE_NAME:
 			return this.timeLeaving;
-		case DAILY_SHORT_TIME_CODE:
+		case DAILY_SHORT_TIME_NAME:
 			return this.shortWorkTime;
-		case DAILY_SPECIFIC_DATE_ATTR_CODE:
+		case DAILY_SPECIFIC_DATE_ATTR_NAME:
 			return this.specificDateAttr;
-		case DAILY_ATTENDANCE_LEAVE_GATE_CODE:
+		case DAILY_ATTENDANCE_LEAVE_GATE_NAME:
 			return this.attendanceLeavingGate;
-		case DAILY_OPTIONAL_ITEM_CODE:
+		case DAILY_OPTIONAL_ITEM_NAME:
 			return this.optionalItem;
-		case DAILY_EDIT_STATE_CODE:
+		case DAILY_EDIT_STATE_NAME:
 			return this.editState;
-		case DAILY_TEMPORARY_TIME_CODE:
+		case DAILY_TEMPORARY_TIME_NAME:
 			return this.temporaryTime;
-		case DAILY_PC_LOG_INFO_CODE:
+		case DAILY_PC_LOG_INFO_NAME:
 			return this.pcLogInfo;
-		case DAILY_REMARKS_CODE:
+		case DAILY_REMARKS_NAME:
 			return this.remarks;
 		default:
 			return null;
@@ -172,11 +162,11 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 	}
 	
 	public List<String> getAvailableLayout(){
-		return Arrays.asList(DAILY_WORK_INFO_CODE, DAILY_CALCULATION_ATTR_CODE, DAILY_AFFILIATION_INFO_CODE,
-				DAILY_BUSINESS_TYPE_CODE, DAILY_OUTING_TIME_CODE, DAILY_BREAK_TIME_CODE, DAILY_ATTENDANCE_TIME_CODE,
-				DAILY_ATTENDANCE_TIME_BY_WORK_CODE, DAILY_ATTENDACE_LEAVE_CODE, DAILY_SHORT_TIME_CODE,
-				DAILY_SPECIFIC_DATE_ATTR_CODE, DAILY_ATTENDANCE_LEAVE_GATE_CODE, DAILY_OPTIONAL_ITEM_CODE,
-				DAILY_EDIT_STATE_CODE, DAILY_TEMPORARY_TIME_CODE, DAILY_PC_LOG_INFO_CODE, DAILY_REMARKS_CODE);
+		return Arrays.asList(DAILY_WORK_INFO_NAME, DAILY_CALCULATION_ATTR_NAME, DAILY_AFFILIATION_INFO_NAME,
+				DAILY_SNAPSHOT_NAME, DAILY_OUTING_TIME_NAME, DAILY_BREAK_TIME_NAME, DAILY_ATTENDANCE_TIME_NAME,
+				DAILY_ATTENDANCE_TIME_BY_WORK_NAME, DAILY_ATTENDACE_LEAVE_NAME, DAILY_SHORT_TIME_NAME,
+				DAILY_SPECIFIC_DATE_ATTR_NAME, DAILY_ATTENDANCE_LEAVE_GATE_NAME, DAILY_OPTIONAL_ITEM_NAME,
+				DAILY_EDIT_STATE_NAME, DAILY_TEMPORARY_TIME_NAME, DAILY_PC_LOG_INFO_NAME, DAILY_REMARKS_NAME);
 	}
 
 	@Override
@@ -187,8 +177,7 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 		this.affiliationInfo.setRecords(fullDto.getAffiliationInfo());
 		fullDto.getErrors().stream().forEach(c -> this.errors.setRecords(c));
 		this.outingTime.setRecords(fullDto.getOutingTime().orElse(null));
-		this.businessType.setRecords(fullDto.getBusinessType().orElse(null));
-		fullDto.getBreakTime().stream().forEach(c -> this.breakTime.setRecords(c));
+		this.breakTime.setRecords(fullDto.getBreakTime().orElse(null));
 		this.attendanceTime.setRecords(fullDto.getAttendanceTime().orElse(null));
 		this.attendanceTimeByWork.setRecords(fullDto.getAttendanceTimeByWork().orElse(null));
 		this.timeLeaving.setRecords(fullDto.getTimeLeaving().orElse(null));
@@ -199,7 +188,8 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 		fullDto.getEditStates().stream().forEach(c -> this.editState.setRecords(c));
 		this.temporaryTime.setRecords(fullDto.getTemporaryTime().orElse(null));
 		this.pcLogInfo.setRecords(fullDto.getPcLogInfo().orElse(null));
-		fullDto.getRemarks().stream().forEach(c -> this.remarks.setRecords(c));
+		this.remarks.setRecords(fullDto.getRemarks());
+		this.snapshot.setRecords(fullDto.getSnapshot().orElse(null));
 	}
 
 	@Override
@@ -209,7 +199,7 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 		this.workInfo.forEmployee(employeId);
 		this.calcAttr.forEmployee(employeId);
 		this.affiliationInfo.forEmployee(employeId);
-		this.businessType.forEmployee(employeId);
+		this.snapshot.forEmployee(employeId);
 		this.errors.forEmployee(employeId);
 		this.outingTime.forEmployee(employeId);
 		this.breakTime.forEmployee(employeId);
@@ -232,7 +222,7 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 		this.workInfo.withDate(date);
 		this.calcAttr.withDate(date);
 		this.affiliationInfo.withDate(date);
-		this.businessType.withDate(date);
+		this.snapshot.withDate(date);
 		this.errors.withDate(date);
 		this.outingTime.withDate(date);
 		this.breakTime.withDate(date);
@@ -250,7 +240,7 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 
 	public DailyRecordDto toDto() {
 		return DailyRecordDto.builder()
-				.breakTime(breakTime.toDto())
+				.breakTimeO(breakTime.toDto())
 				.editStates(editState.toDto())
 				.attendanceLeavingGateO(attendanceLeavingGate.toDto())
 				.attendanceTimeO(attendanceTime.toDto())
@@ -269,7 +259,7 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 //				.withErrors(errors.getData())
 				.withWorkInfo(workInfo.toDto())
 				.workingDate(getWorkDate())
-				.withBusinessTypeO(businessType.toDto())
+				.withSnapshot(snapshot.toDto().orElse(null))
 				.complete();
 	}
 
@@ -304,74 +294,47 @@ public class DailyRecordWorkCommand extends DailyWorkCommonCommand {
 	}
 	
 	public IntegrationOfDaily toDomain() {
-		Optional<PCLogOnInfoOfDaily> pCLogOnInfoOfDaily = this.getPcLogInfo().toDomain();
-		Optional<PCLogOnInfoOfDailyAttd> pCLogOnInfoOfDailyAttd = pCLogOnInfoOfDaily.isPresent()
-				? Optional.of(pCLogOnInfoOfDaily.get().getTimeZone())
-				: Optional.empty();
+		Optional<PCLogOnInfoOfDailyAttd> pC = this.getPcLogInfo().toDomain().map(c -> c.getTimeZone());
 				
-		Optional<OutingTimeOfDailyPerformance> outingTimeOfDailyPerformance = this.getOutingTime().toDomain();
-		Optional<OutingTimeOfDailyAttd> outingTimeOfDailyAttd = outingTimeOfDailyPerformance.isPresent()
-				? Optional.of(outingTimeOfDailyPerformance.get().getOutingTime())
-				: Optional.empty();
+		Optional<OutingTimeOfDailyAttd> outing = this.getOutingTime().toDomain().map(c -> c.getOutingTime());
 				
-		List<BreakTimeOfDailyPerformance> breakTimeOfDailyPerformance = this.getBreakTime().toDomain();
-		List<BreakTimeOfDailyAttd> breakTimeOfDailyAttd = breakTimeOfDailyPerformance.stream().map(c->c.getTimeZone()).collect(Collectors.toList());
+		BreakTimeOfDailyAttd breakTime = this.getBreakTime().toDomain().map(c -> c.getTimeZone()).orElse(new BreakTimeOfDailyAttd());
 				
-		Optional<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyPer = this.getAttendanceTime().toDomain();
-		Optional<AttendanceTimeOfDailyAttendance> attendanceTimeOfDailyAttd = attendanceTimeOfDailyPer.isPresent()
-				? Optional.of(attendanceTimeOfDailyPer.get().getTime())
-				: Optional.empty();
+		Optional<AttendanceTimeOfDailyAttendance> attendanceTime = this.getAttendanceTime().toDomain().map(c -> c.getTime());
 				
-		Optional<TimeLeavingOfDailyPerformance> timeLeavingOfDailyPerformance = this.getTimeLeaving().toDomain();
-		Optional<TimeLeavingOfDailyAttd> timeLeavingOfDailyAttd = timeLeavingOfDailyPerformance.isPresent()
-				? Optional.of(timeLeavingOfDailyPerformance.get().getAttendance())
-				: Optional.empty();
+		Optional<TimeLeavingOfDailyAttd> timeLeaving = this.getTimeLeaving().toDomain().map(c -> c.getAttendance());
 				
-		Optional<ShortTimeOfDailyPerformance> shortTimeOfDailyPerformance = this.getShortWorkTime().toDomain();
-		Optional<ShortTimeOfDailyAttd> shortTimeOfDailyAttd = shortTimeOfDailyPerformance.isPresent()
-				? Optional.of(shortTimeOfDailyPerformance.get().getTimeZone())
-				: Optional.empty();
+		Optional<ShortTimeOfDailyAttd> shortTime = this.getShortWorkTime().toDomain().map(c -> c.getTimeZone());
 				
-		Optional<SpecificDateAttrOfDailyPerfor> specificDateAttrOfDailyPerfor = this.getSpecificDateAttr().toDomain();
-		Optional<SpecificDateAttrOfDailyAttd> specificDateAttrOfDailyAttd = specificDateAttrOfDailyPerfor.isPresent()
-				? Optional.of(specificDateAttrOfDailyPerfor.get().getSpecificDay())
-				: Optional.empty();
+		Optional<SpecificDateAttrOfDailyAttd> specificDate = this.getSpecificDateAttr().toDomain().map(c -> c.getSpecificDay());
 				
-		Optional<AttendanceLeavingGateOfDaily> attendanceLeavingGateOfDaily = this.getAttendanceLeavingGate().toDomain();
-		Optional<AttendanceLeavingGateOfDailyAttd> attendanceLeavingGateOfDailyAttd = attendanceLeavingGateOfDaily.isPresent()
-				? Optional.of(attendanceLeavingGateOfDaily.get().getTimeZone())
-				: Optional.empty();
+		Optional<AttendanceLeavingGateOfDailyAttd> attendanceLeavingGate = this.getAttendanceLeavingGate().toDomain().map(c -> c.getTimeZone());
 				
-		Optional<AnyItemValueOfDaily> anyItemValueOfDaily = this.getOptionalItem().toDomain();
-		Optional<AnyItemValueOfDailyAttd> anyItemValueOfDailyAttd = anyItemValueOfDaily.isPresent()
-				? Optional.of(anyItemValueOfDaily.get().getAnyItem())
-				: Optional.empty();
+		Optional<AnyItemValueOfDailyAttd> anyItem = this.getOptionalItem().toDomain().map(c -> c.getAnyItem());
 				
-		Optional<TemporaryTimeOfDailyPerformance> temporaryTimeOfDailyPerformance = this.getTemporaryTime().toDomain();
-		Optional<TemporaryTimeOfDailyAttd> temporaryTimeOfDailyAttd = temporaryTimeOfDailyPerformance.isPresent()
-				? Optional.of(temporaryTimeOfDailyPerformance.get().getAttendance())
-				: Optional.empty();
+		Optional<TemporaryTimeOfDailyAttd> temporaryTime = this.getTemporaryTime().toDomain().map(c -> c.getAttendance());
+				
+		Optional<SnapShot> snapshot = this.getSnapshot().toDomain();
 		return new IntegrationOfDaily(
 										this.getAffiliationInfo().getEmployeeId(),
 										this.getAffiliationInfo().getWorkDate(),
 										this.getWorkInfo().toDomain().getWorkInformation(), 
 										this.getCalcAttr().toDomain().getCalcategory(), 
 										this.getAffiliationInfo().toDomain().getAffiliationInfor(),
-//										this.getBusinessType().toDomain(), 
-										pCLogOnInfoOfDailyAttd, //pcLogOnInfo
+										pC, //pcLogOnInfo
 										this.getErrors().toDomain(), //employeeError
-										outingTimeOfDailyAttd, //outingTime
-										breakTimeOfDailyAttd, //breakTime
-										attendanceTimeOfDailyAttd, //attendanceTimeOfDailyPerformance
-//										this.getAttendanceTimeByWork().toDomain(), 
-										timeLeavingOfDailyAttd, //attendanceLeave
-										shortTimeOfDailyAttd, //shortTime
-										specificDateAttrOfDailyAttd, //specDateAttr
-										attendanceLeavingGateOfDailyAttd, //attendanceLeavingGate
-										anyItemValueOfDailyAttd, //anyItemValue
+										outing, //outingTime
+										breakTime, //breakTime
+										attendanceTime, //attendanceTimeOfDailyPerformance
+										timeLeaving, //attendanceLeave
+										shortTime, //shortTime
+										specificDate, //specDateAttr
+										attendanceLeavingGate, //attendanceLeavingGate
+										anyItem, //anyItemValue
 										this.getEditState().toDomain().stream().map(c->c.getEditState()).collect(Collectors.toList()), 
-										temporaryTimeOfDailyAttd,
-										this.getRemarks().toDomain().stream().map(c->c.getRemarks()).collect(Collectors.toList()));
+										temporaryTime,
+										this.getRemarks().toDomain().stream().map(c->c.getRemarks()).collect(Collectors.toList()),
+										snapshot);
 	}
 
 	public List<ItemValue> itemValues() {

@@ -1,15 +1,20 @@
 package nts.uk.file.at.app.export.worktype;
 
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.shr.com.i18n.TextResource;
-import nts.uk.shr.infra.file.report.masterlist.data.*;
-
-import javax.ejb.Stateless;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.ejb.Stateless;
+
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.shr.com.i18n.TextResource;
+import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
+import nts.uk.shr.infra.file.report.masterlist.data.MasterCellData;
+import nts.uk.shr.infra.file.report.masterlist.data.MasterCellStyle;
+import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
+import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
 
 @Stateless
 public class PreparationBeforeApplyExport {
@@ -164,7 +169,7 @@ public class PreparationBeforeApplyExport {
         if(value == ApplicationType.GO_RETURN_DIRECTLY_APPLICATION.value) {
             return TextResource.localize("KAF022_7");
         }
-        if(value == ApplicationType.BREAK_TIME_APPLICATION.value) {
+        if(value == ApplicationType.HOLIDAY_WORK_APPLICATION.value) {
             return TextResource.localize("KAF022_8");
         }
         if(value == ApplicationType.STAMP_APPLICATION.value) {
@@ -179,6 +184,7 @@ public class PreparationBeforeApplyExport {
         if(value == ApplicationType.COMPLEMENT_LEAVE_APPLICATION.value) {
             return TextResource.localize("KAF022_12");
         }
+        /*
         if(value == ApplicationType.STAMP_NR_APPLICATION.value) {
             return TextResource.localize("KAF022_55");
         }
@@ -188,6 +194,7 @@ public class PreparationBeforeApplyExport {
         if(value == ApplicationType.APPLICATION_36.value) {
             return TextResource.localize("KAF022_13");
         }
+        */
         return "";
     }
 

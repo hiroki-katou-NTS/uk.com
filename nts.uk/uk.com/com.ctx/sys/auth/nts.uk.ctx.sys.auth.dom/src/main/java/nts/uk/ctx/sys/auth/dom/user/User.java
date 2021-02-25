@@ -56,6 +56,7 @@ public class User extends AggregateRoot {
 	// パスワード状態
 	/** PasswordStatus **/
 	private PassStatus passStatus;
+	
 
 	public static User createFromJavatype(String userID, Boolean defaultUser, String password, String loginID,
 			String contractCode, GeneralDate expirationDate, int specialUser, int multiCompanyConcurrent,

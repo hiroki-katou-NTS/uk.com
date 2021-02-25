@@ -51,7 +51,7 @@ public class SwapEmpOnScheduleTeamServiceTest {
 	public void testReplace_1() {
 		ScheduleTeam scheduleTeam = new ScheduleTeam("WKPGRPID", new ScheduleTeamCd("ScheduleTeamCd"),
 				new ScheduleTeamName("ScheduleTeamName"), Optional.empty());
-		List<String> lstEmpID = Arrays.asList("emp1", "emp2");
+		List<String> lstEmpID = Arrays.asList("emp1", "emp2", "emp3", "emp4", "emp5");
 		
 		new Expectations() {
 			{
@@ -59,7 +59,17 @@ public class SwapEmpOnScheduleTeamServiceTest {
 				result = true;
 
 				require.empBelongTeam("emp2");
+				result = false;
+				
+				require.empBelongTeam("emp3");
+				result = false;
+
+				require.empBelongTeam("emp4");
 				result = true;
+				
+				require.empBelongTeam("emp5");
+				result = false;
+
 			}
 		};
 		AtomTask atomTask = SwapEmpOnScheduleTeamService.replace(require, scheduleTeam, lstEmpID);
@@ -79,6 +89,15 @@ public class SwapEmpOnScheduleTeamServiceTest {
 				
 				require.empBelongTeam("emp2");
 				times = 0;
+				
+				require.empBelongTeam("emp3");
+				times = 0;
+				
+				require.empBelongTeam("emp4");
+				times = 0;
+				
+				require.empBelongTeam("emp5");
+				times = 0;
 			}
 		};
 		atomTask.run();
@@ -91,12 +110,21 @@ public class SwapEmpOnScheduleTeamServiceTest {
 				times = 1;
 				
 				require.insert((BelongScheduleTeam)any);
-				times = 2;
+				times = 5;
 
 				require.delete(anyString);
 				times = 2;
 				
 				require.empBelongTeam("emp2");
+				times = 1;
+				
+				require.empBelongTeam("emp3");
+				times = 1;
+				
+				require.empBelongTeam("emp4");
+				times = 1;
+				
+				require.empBelongTeam("emp5");
 				times = 1;
 			}
 		};

@@ -108,6 +108,9 @@ include 'com.file:nts.uk.file.com.ws'
 include 'com.file:nts.uk.file.com.app'
 include 'com.file:nts.uk.file.com.infra'
 
+include 'com.nrl:nts.uk.nrl.ws'
+include 'com.nrl:nts.uk.nrl.app'
+
 include 'pereg.ctx:nts.uk.ctx.pereg.app'
 include 'pereg.ctx:nts.uk.ctx.pereg.dom'
 include 'pereg.ctx:nts.uk.ctx.pereg.infra'
@@ -121,6 +124,8 @@ include 'exio.ctx:nts.uk.ctx.exio.dom'
 include 'exio.ctx:nts.uk.ctx.exio.infra'
 include 'exio.ctx:nts.uk.ctx.exio.ws'
 include 'exio.ctx:nts.uk.ctx.exio.ac'
+include 'exio.ctx:nts.uk.ctx.exio.pub'
+include 'exio.ctx:nts.uk.ctx.exio.pubimp'
 
 include 'query:nts.uk.query.app'
 include 'query:nts.uk.query.model'

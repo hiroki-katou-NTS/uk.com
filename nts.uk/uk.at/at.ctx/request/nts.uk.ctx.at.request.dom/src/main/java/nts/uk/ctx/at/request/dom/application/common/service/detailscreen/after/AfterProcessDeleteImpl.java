@@ -1,26 +1,17 @@
 package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.time.GeneralDate;
-import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.ProcessDeleteResult;
-import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.MailResult;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
-import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 
@@ -32,70 +23,49 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRe
 public class AfterProcessDeleteImpl implements AfterProcessDelete {
 	
 	@Inject
-	private AppTypeDiscreteSettingRepository  appTypeDiscreteSettingRepo;
-	
-	@Inject
-	private ApplicationRepository_New applicationRepo;
-	
-	@Inject
 	private ApprovalRootStateAdapter approvalRootStateAdapter;
 	
 	@Inject
-	private ApplicationApprovalService_New applicationApprovalService;
+	private ApplicationApprovalService applicationApprovalService;
 	
-	@Inject
-	private OtherCommonAlgorithm otherCommonAlgorithm;
-	
-	@Inject
-	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
+	/*@Inject
+	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;*/
 	
 	@Override
-	public ProcessDeleteResult screenAfterDelete(String companyID,String appID, Long version) {
-		boolean isProcessDone = true;
-		boolean isAutoSendMail = false;
-		List<String> autoSuccessMail = new ArrayList<>();
-		List<String> autoFailMail = new ArrayList<>();
-		Application_New application = applicationRepo.findByID(companyID, appID).get();
-		ApplicationType appType = application.getAppType();
-		AppCanAtr sendMailWhenApprovalFlg = appTypeDiscreteSettingRepo.getAppTypeDiscreteSettingByAppType(companyID, appType.value)
-				.get().getSendMailWhenRegisterFlg();
-		List<String> converList = new ArrayList<String>();
-		
-		// ドメインモデル「申請種類別設定」．新規登録時に自動でメールを送信するをチェックする(kiểm tra
-		// 「申請種類別設定」．新規登録時に自動でメールを送信する)//
-		if (sendMailWhenApprovalFlg == AppCanAtr.CAN) {
-			isAutoSendMail = true;
-			converList = approvalRootStateAdapter.getMailNotifierList(companyID, appID);
-			if(!CollectionUtil.isEmpty(converList)){
-				MailResult mailResult = otherCommonAlgorithm.sendMailApproverDelete(converList, application);
-				autoSuccessMail = mailResult.getSuccessList();
-				autoFailMail = mailResult.getFailList();
-			}
+	public List<String> screenAfterDelete(String appID, Application application, AppDispInfoStartupOutput appDispInfoStartupOutput) {
+		String companyID = AppContexts.user().companyId();
+		List<String> destinationLst = new ArrayList<>();
+		// ノートのIF文を参照
+		AppTypeSetting appTypeSetting = appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings()
+				.stream().filter(x -> x.getAppType() == application.getAppType()).findAny().get();
+		boolean condition = appDispInfoStartupOutput.getAppDispInfoNoDateOutput().isMailServerSet() && 
+				appTypeSetting.isSendMailWhenRegister();
+		if(condition) {
+			// アルゴリズム「削除時のメール通知者を取得する」を実行する ( Thực hiện thuật toán 「削除時のメール通知者を取得するLấy người thông báo mail khi delete」
+			destinationLst = approvalRootStateAdapter.getMailNotifierList(companyID, appID);
 		}
-		//TODO delete domaim Application
-		applicationApprovalService.delete(companyID, appID, version, appType);
+		// アルゴリズム「申請を削除する」を実行する (Thực hiện thuật toán"Delete application" )
+		applicationApprovalService.delete(appID);
 		//TODO hien thi thong tin Msg_16 
 		/*if (converList != null) {
 			//TODO Hien thi thong tin 392
 		}*/
 		
-		// 暫定データの登録
-		List<GeneralDate> lstDate = new ArrayList<>();
-		if(application.getStartDate().isPresent() && application.getEndDate().isPresent()) {
-			GeneralDate startDate = application.getStartDate().get();
-			GeneralDate endDate = application.getEndDate().get();
-			for(GeneralDate loopDate = startDate; loopDate.beforeOrEquals(endDate); loopDate = loopDate.addDays(1)){
-				lstDate.add(loopDate);
-			}	
-		}
-		
-		interimRemainDataMngRegisterDateChange.registerDateChange(
+		// 暫定データの登録(Đăng ký dữ liệu tạm thời)
+//		List<GeneralDate> lstDate = new ArrayList<>();
+//		if(application.getOpAppStartDate().isPresent() && application.getOpAppEndDate().isPresent()) {
+//			GeneralDate startDate = application.getOpAppStartDate().get().getApplicationDate();
+//			GeneralDate endDate = application.getOpAppEndDate().get().getApplicationDate();
+//			for(GeneralDate loopDate = startDate; loopDate.beforeOrEquals(endDate); loopDate = loopDate.addDays(1)){
+//				lstDate.add(loopDate);
+//			}	
+//		}
+		// refactor 4
+		/*interimRemainDataMngRegisterDateChange.registerDateChange(
 				companyID, 
 				application.getEmployeeID(), 
-				lstDate.isEmpty() ? Arrays.asList(application.getAppDate()) : lstDate);
-		return new ProcessDeleteResult(
-				new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, appID,""),
-				appType);
+				lstDate.isEmpty() ? Arrays.asList(application.getAppDate().getApplicationDate()) : lstDate);*/
+		return destinationLst;
 	}
 
 }

@@ -6,8 +6,8 @@ package nts.uk.ctx.at.record.app.find.optitem.calculation;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.optitem.calculation.AddSubOperator;
-import nts.uk.ctx.at.shared.dom.optitem.calculation.SelectedAttendanceItemSetMemento;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.AddSubOperator;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.SelectedAttendanceItemSetMemento;
 
 /**
  * The Class SelectedAttendanceItemDto.

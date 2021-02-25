@@ -7,13 +7,12 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.workrecord.identificationstatus.IdentificationAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalStatusForEmployeeImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApproveRootStatusForEmpImPort;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.applimitset.AppLimitSetting;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 日別確認済みかのチェック
@@ -29,8 +28,10 @@ public class DayActualConfirmDoneCheckImpl implements DayActualConfirmDoneCheck 
 	private IdentificationAdapter identificationAdapter;
 
 	@Override
-	public boolean check(AppLimitSetting appLimitSetting, String companyID, String employeeID, GeneralDate appDate) {
-		if (!appLimitSetting.getCanAppAchievementConfirm()) {
+	public boolean check(boolean canAppAchievementConfirm, String companyID, String employeeID, GeneralDate appDate) {
+		// INPUT．日別実績が確認済なら申請できないをチェックする
+		if (!canAppAchievementConfirm) {
+			// 承認ルート状況．上司確認をチェックする
 			List<ApproveRootStatusForEmpImPort> approveRootStatus = Collections.emptyList();
 			try {
 				approveRootStatus = this.approvalRootStateAdapter.getApprovalByEmplAndDate(appDate, appDate, employeeID, companyID, 1);
@@ -47,10 +48,10 @@ public class DayActualConfirmDoneCheckImpl implements DayActualConfirmDoneCheck 
 					break;
 				}
 			}
-			//「Imported(申請承認)「実績確定状態」．日別実績が確認済をチェックする(check 「Imported(申請承認)「実績確定状態」．日別実績が確認済)
 			if(isConfirm){
 				return true;
 			}
+			// 対象期間内で本人確認をした日をチェックする
 			List<GeneralDate> identificationDateLst = identificationAdapter.getProcessingYMD(companyID, employeeID, new DatePeriod(appDate, appDate));
 			if(!CollectionUtil.isEmpty(identificationDateLst)){
 				return true;

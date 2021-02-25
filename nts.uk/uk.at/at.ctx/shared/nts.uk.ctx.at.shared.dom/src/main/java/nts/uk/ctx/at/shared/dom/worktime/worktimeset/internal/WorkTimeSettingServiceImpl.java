@@ -8,15 +8,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.JoggingWorkTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.caltimediff.CalculateTimeDiffService;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.difftimecorrection.DiffTimeCorrectionService;
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSetting;
@@ -90,7 +92,7 @@ public class WorkTimeSettingServiceImpl implements WorkTimeSettingService {
 	 */
 	@Override
 	public List<StampReflectTimezone> getStampReflectTimezone(String companyId, String workTimeCode, Integer start1,
-			Integer start2, Integer end1, Integer end2) {
+			Integer end1, Integer start2, Integer end2) {
 
 		Optional<WorkTimeSetting> optWorkTimeSetting = workTimeSettingRepo.findByCode(companyId, workTimeCode);
 		if (!optWorkTimeSetting.isPresent()) {
@@ -118,28 +120,48 @@ public class WorkTimeSettingServiceImpl implements WorkTimeSettingService {
 	// 所定時間帯を取得する
 	public PredetermineTimeSetForCalc getPredeterminedTimezone(String companyId, String workTimeCd, String workTypeCd,
 			Integer workNo) {
+
 		PredetemineTimeSetting predTime = this.predetemineTimeRepo.findByWorkTimeCode(companyId, workTimeCd).get();
 		PrescribedTimezoneSetting presTime = predTime.getPrescribedTimezoneSetting();
 		WorkType workType = this.workTypeRepo.findByPK(companyId, workTypeCd).get();
 
-		List<TimezoneUse> timeZones = new ArrayList<>();
-		if (workNo != null) {
-			presTime.getMatchWorkNoTimeSheet(workNo).ifPresent(pt -> timeZones.add(pt));
-		} else {
-			timeZones.addAll(presTime.getLstTimezone());
+		List<TimezoneUse> timeZones;
+//		if (workNo != null) {
+//			presTime.getMatchWorkNoTimeSheet(workNo).ifPresent(pt -> timeZones.add(pt));
+//		} else {
+//			timeZones.addAll(presTime.getLstTimezone());
+//		}
+		switch (workType.getDailyWork().decisionNeedPredTime()) {
+		case FULL_TIME:
+			timeZones = predTime.getTimezoneByAmPmAtr(AmPmAtr.ONE_DAY)
+									.stream().filter(c -> workNo == null ? true : workNo == c.getWorkNo())
+									.collect(Collectors.toList());
+			break;
+		case MORNING:
+			timeZones = predTime.getTimezoneByAmPmAtr(AmPmAtr.AM)
+									.stream().filter(c -> workNo == null ? true : workNo == c.getWorkNo())
+									.collect(Collectors.toList());
+			break;
+		case AFTERNOON:
+			timeZones = predTime.getTimezoneByAmPmAtr(AmPmAtr.PM)
+									.stream().filter(c -> workNo == null ? true : workNo == c.getWorkNo())
+									.collect(Collectors.toList());
+			break;
+		default:
+			timeZones = new ArrayList<>();
+			break;
 		}
-
 		// Update timezone
-		AttendanceHolidayAttr attdAtr = workType.getDailyWork().decisionNeedPredTime();
-		if (attdAtr == AttendanceHolidayAttr.MORNING) {
-			timeZones.forEach(timeZone -> {
-				timeZone.setEnd(presTime.getMorningEndTime());
-			});
-		} else if (attdAtr == AttendanceHolidayAttr.AFTERNOON) {
-			timeZones.forEach(timeZone -> {
-				timeZone.setStart(presTime.getAfternoonStartTime());
-			});
-		}
+//		AttendanceHolidayAttr attdAtr = workType.getDailyWork().decisionNeedPredTime();
+//		if (attdAtr == AttendanceHolidayAttr.MORNING) {
+//			timeZones.forEach(timeZone -> {
+//				timeZone.setEnd(presTime.getMorningEndTime());
+//			});
+//		} else if (attdAtr == AttendanceHolidayAttr.AFTERNOON) {
+//			timeZones.forEach(timeZone -> {
+//				timeZone.setStart(presTime.getAfternoonStartTime());
+//			});
+//		}
 
 		PredetermineTimeSetForCalc rs = new PredetermineTimeSetForCalc();
 		rs.setTimezones(timeZones);
@@ -216,17 +238,17 @@ public class WorkTimeSettingServiceImpl implements WorkTimeSettingService {
 
 			// 打刻反映時間帯でループ
 			flowWorkSetting.getStampReflectTimezone().getStampReflectTimezones().forEach(item -> {
-				// start = start, end = 2
-				StampReflectTimezone v = StampReflectTimezone.builder().workNo(new WorkNo(1))
-						.classification(item.getClassification()).startTime(item.getStartTime())
-						.endTime(new TimeWithDayAttr(start)).build();
-
-				// start = 2, end = end
-				StampReflectTimezone v2 = StampReflectTimezone.builder().workNo(new WorkNo(2))
-						.classification(item.getClassification()).startTime(new TimeWithDayAttr(start))
-						.endTime(item.getEndTime()).build();
-				rs.add(v);
-				rs.add(v2);
+					// start = start, end = 2
+					StampReflectTimezone v = StampReflectTimezone.builder().workNo(new WorkNo(1))
+							.classification(item.getClassification()).startTime(item.getStartTime())
+							.endTime(new TimeWithDayAttr(start)).build();
+					rs.add(v);
+					// start = 2, end = end
+					StampReflectTimezone v2 = StampReflectTimezone.builder().workNo(new WorkNo(2))
+							.classification(item.getClassification()).startTime(new TimeWithDayAttr(start))
+							.endTime(item.getEndTime()).build();
+					
+					rs.add(v2);
 			});
 
 			return rs;

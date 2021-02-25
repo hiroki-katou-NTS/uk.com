@@ -1,0 +1,40 @@
+.kcp-013-test  {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.kcp-013-test .controls-panel {
+    margin-bottom: 15px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: #ddd;
+    padding: 5px;
+}
+
+.kcp-013-test .component-panel {
+    margin-top: 20px;
+    padding-left: 15px;
+}
+
+.kcp-013-test .left-panel {
+    width: 450px;
+    float: left;
+}
+
+.kcp-013-test .right-panel {
+    margin-left: 25px;
+    float: left;
+    overflow: hidden;
+}
+
+.kcp-013-test .right-panel pre {
+    margin-top: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #ddd;
+    padding: 10px;
+}
+
+.kcp-013-test .right-panel .code-view {
+    margin-top: 10px;
+}

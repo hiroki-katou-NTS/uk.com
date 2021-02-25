@@ -1,598 +1,383 @@
-module nts.uk.at.view.kaf005.share {
-    export module common {
-        /**
-         * 
-         */
-        export class Application {
-            applicationID: KnockoutObservable<string>; // 申請ID
-            inputDate: KnockoutObservable<string>; // 入力日
-            enteredPerson: KnockoutObservable<string>; // 入力者
-            appDate: KnockoutObservable<string>; // 申請日
-            titleReason: KnockoutObservable<string>;
-            contentReason: KnockoutObservable<string>;
-            employeeID: KnockoutObservable<string>; // 申請者
-            constructor(
-                applicationID: string,
-                inputDate: string,
-                enteredPerson: string,
-                appDate: string,
-                titleReason: string,
-                contentReason: string,
-                employeeID: string) {
-                this.applicationID = ko.observable(applicationID);
-                this.inputDate = ko.observable(inputDate);
-                this.enteredPerson = ko.observable(enteredPerson);
-                this.appDate = ko.observable(appDate);
-                this.titleReason = ko.observable(titleReason);
-                this.contentReason = ko.observable(contentReason);
-                this.employeeID = ko.observable(employeeID);
-            }
-        }
-        /**
-         * 理由
-         */
-        export class ReasonDto {
-            companyId: string;
-            appType: number;
-            reasonID: string;
-            displayOrder: number;
-            reasonTemp: string;
-            constructor(companyId: string, appType: number, reasonID: string, displayOrder: number, reasonTemp: string) {
-                var self = this;
-                self.companyId = companyId;
-                self.appType = appType;
-                self.reasonID = reasonID;
-                self.displayOrder = displayOrder;
-                self.reasonTemp = reasonTemp;
-            }
+module nts.uk.at.view.kaf005.shr.viewmodel {
+	import AttendanceType = nts.uk.at.view.kaf005.a.viewmodel.AttendanceType;
+	const template = `
+<div class="container cf" data-bind="with: $parent">
+	<div class="cf valign-top control-group"
+		data-bind="visible: visibleModel.c18()">
+		<!--A5_1 休憩時間ラベル-->
+		<div class="cm-column" style="display: inline-block; width: 100px">
+			<div class="lblTitle pull-left"
+				data-bind="text: $i18n('KAF005_40'), ntsFormLabel: {}"></div>
+		</div>
+		<div class="table-time">
+			<table id="fixed-table">
+				<colgroup>
+					<col width="109px" />
+					<col width="115px" />
+					<col width="115px" />
+				</colgroup>
+				<thead>
+					<tr>
+						<th class="ui-widget-header" rowspan="2"></th>
+						<!--A5_3 開始ラベル-->
+						<th class="ui-widget-header" rowspan="2"
+							data-bind="text: $i18n('KAF005_41')"></th>
+						<!--A5_4 終了ラベル-->
+						<th class="ui-widget-header" rowspan="2"
+							data-bind="text: $i18n('KAF005_42')"></th>
+					</tr>
+				</thead>
+				<tbody data-bind="foreach: restTime">
+					<tr>
+						<!--A5_5 休憩時間順序-->
+						<td class="header" data-bind="text: String(frameNo)"></td>
+						<!--A5_6 開始時刻-->
+						<td><input class="right-content"
+							data-bind="
+								ntsTimeWithDayEditor: {
+									name: '#[KAF005_337]', 
+									value: start, 
+									constraint:'TimeWithDayAttr', 
+									enable: $parent.outputMode(),
+									option: {width: '85px', timeWithDay: true}}" /></td>
+						<!--A5_7 終了時刻-->
+						<td><input class="right-content"
+							data-bind="
+								ntsTimeWithDayEditor: {
+									name: '#[KAF005_338]', 
+									value: end, 
+									constraint:'TimeWithDayAttr', 
+									enable: $parent.outputMode(),
+									option: {width: '85px', timeWithDay: true}}" /></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
 
-        };
-        /**
-         * 
-         */
-        export class ComboReason {
-            reasonId: string;
-            reasonName: string;
-            constructor(reasonId: string, reasonName: string) {
-                this.reasonId = reasonId;
-                this.reasonName = reasonName;
-            }
-        }
-        /**
-         * Application detail
-         */
-        export class ApplicationCommand {
-            applicationID: string;
-            appReasonID: string;
-            prePostAtr: number;
-            inputDate: string;
-            enteredPersonSID: string;
-            reversionReason: string;
-            applicationDate: string;
-            applicationReason: string;
-            applicationType: number;
-            applicantSID: string;
-            reflectPlanScheReason: number;
-            reflectPlanTime: string;
-            reflectPlanState: number;
-            reflectPlanEnforce: number;
-            reflectPerScheReason: number;
-            reflectPerTime: string;
-            reflectPerState: number;
-            reflectPerEnforce: number;
-            startDate: string;
-            endDate: string;
-            listPhase: any;
-            constructor(
-                appReasonID: string,
-                prePostAtr: number,
-                inputDate: string,
-                enteredPersonSID: string,
-                reversionReason: string,
-                applicationDate: string,
-                applicationReason: string,
-                applicantSID: string,
-                reflectPlanTime: string,
-                reflectPerTime: string,
-                startDate: string,
-                endDate: string) {
-                this.applicationID = "";
-                this.appReasonID = appReasonID;
-                this.prePostAtr = prePostAtr;
-                this.inputDate = moment.utc(inputDate, "YYYY/MM/DD").toISOString();
-                this.enteredPersonSID = enteredPersonSID;
-                this.reversionReason = reversionReason;
-                this.applicationDate = moment.utc(applicationDate, "YYYY/MM/DD").toISOString();
-                this.applicationReason = applicationReason;
-                this.applicationType = 4;
-                this.applicantSID = applicantSID;
-                this.reflectPlanScheReason = 1;
-                this.reflectPlanTime = moment.utc(reflectPlanTime, "YYYY/MM/DD").toISOString();
-                this.reflectPlanState = 1;
-                this.reflectPlanEnforce = 1;
-                this.reflectPerScheReason = 1;
-                this.reflectPerTime = moment.utc(reflectPerTime, "YYYY/MM/DD").toISOString();
-                this.reflectPerState = 1;
-                this.reflectPerEnforce = 1;
-                this.startDate = moment.utc(startDate, "YYYY/MM/DD").toISOString();
-                this.endDate = moment.utc(endDate, "YYYY/MM/DD").toISOString();
-                this.listPhase = null;
-            }
-        }
-        /**
-         * 
-         */
-        export class AppApprovalPhase {
-            phaseID: string;
-            approvalForm: number;
-            dispOrder: number;
-            approvalATR: number;
-            approvalFrameCmds: Array<ApprovalFrame>;
-            constructor(phaseID: string, approvalForm: number, dispOrder: number, approvalATR: number, approvalFrameCmds: Array<ApprovalFrame>) {
-                this.phaseID = phaseID;
-                this.approvalForm = approvalForm;
-                this.dispOrder = dispOrder;
-                this.approvalATR = approvalATR;
-                this.approvalFrameCmds = approvalFrameCmds;
-            }
-        }
-        /**
-         * 
-         */
-        export class ApprovalFrame {
-            frameID: string;
-            dispOrder: number;
-            approveAcceptedCmds: Array<ApproveAccepted>;
-            constructor(frameID: string, dispOrder: number, approveAcceptedCmds: Array<ApproveAccepted>) {
-                this.frameID = frameID;
-                this.dispOrder = dispOrder;
-                this.approveAcceptedCmds = approveAcceptedCmds;
-            }
-        }
-        export class EmployeeOT{
-            id: string;
-            name: string;
-            constructor(id: string, name: string){
-                this.id = id;
-                this.name = name;
-            }    
-        }
-        /**
-         * 
-         */
-        export class ApproveAccepted {
-            appAcceptedID: string;
-            approverSID: string;
-            approvalATR: number;
-            confirmATR: number;
-            approvalDate: string;
-            reason: string;
-            representerSID: string;
-            constructor(appAcceptedID: string, approverSID: string, approvalATR: number,
-                confirmATR: number, approvalDate: string, reason: string, representerSID: string) {
-                this.appAcceptedID = appAcceptedID;
-                this.approverSID = approverSID;
-                this.approvalATR = approvalATR;
-                this.confirmATR = confirmATR;
-                this.approvalDate = approvalDate;
-                this.reason = reason;
-                this.representerSID = representerSID;
-            }
-        }
-        export class AppOverTime {
-            companyID: string;
-            appID: string;
-            applicationDate: string;
-            prePostAtr: number;
-            applicantSID: string;
-            applicationReason: string;
-            workType: string;
-            siftType: string;
-            workClockFrom1: number;
-            workClockTo1: number;
-            workClockFrom2: number;
-            workClockTo2: number;
-            bonusTimes: Array<any>;
-            breakTimes: Array<any>;
-            overtimeHours: Array<any>;
-            restTime: Array<any>;
-            overtimeAtr: number;
-            overTimeShiftNight: number;
-            flexExessTime: number;
-            divergenceReasonContent: string;
-            sendMail:boolean;
-            calculateFlag: number;
-            appReasonID: string;
-        }
-        export class OverTimeInput {
-            companyID: KnockoutObservable<string>;
-            appID: KnockoutObservable<string>;
-            attendanceID: KnockoutObservable<number>;
-            attendanceName: KnockoutObservable<string>;
-            frameNo: KnockoutObservable<number>;
-            timeItemTypeAtr: KnockoutObservable<number>;
-            frameName: KnockoutObservable<string>;
-            startTime: KnockoutObservable<number>;
-            endTime: KnockoutObservable<number>;
-            applicationTime: KnockoutObservable<number>;
-            nameID: KnockoutObservable<string>;
-            
-            constructor(
-                companyID: string,
-                appID: string,
-                attendanceID: number,
-                attendanceName: string,
-                frameNo: number,
-                timeItemTypeAtr: number,
-                frameName: string,
-                startTime: number,
-                endTime: number,
-                applicationTime: number,
-                nameID: string) {
-                this.companyID = ko.observable(companyID);
-                this.appID = ko.observable(appID);
-                this.attendanceID = ko.observable(attendanceID);
-                this.attendanceName = ko.observable(attendanceName);
-                this.frameNo = ko.observable(frameNo);
-                this.timeItemTypeAtr = ko.observable(timeItemTypeAtr);
-                this.frameName = ko.observable(frameName);
-                this.startTime = ko.observable(startTime);
-                this.endTime = ko.observable(endTime);
-                this.applicationTime = ko.observable(applicationTime);
-                this.nameID = ko.observable(nameID);
-                
-            }
-        } 
-        export class OvertimeCaculation{
-            companyID: KnockoutObservable<string>;
-            appID: KnockoutObservable<string>;
-            attendanceID: KnockoutObservable<number>;
-            attendanceName: KnockoutObservable<string>;
-            frameNo: KnockoutObservable<number>;
-            timeItemTypeAtr: KnockoutObservable<number>;
-            frameName: KnockoutObservable<string>;
-            applicationTime: KnockoutObservable<number>;
-            preAppTime: KnockoutObservable<string>;
-            caculationTime: KnockoutObservable<string>;
-            nameID: KnockoutObservable<string>;
-            itemName: string;
-            color : KnockoutObservable<string>;
-            constructor(
-                companyID: string,
-                appID: string,
-                attendanceID: number,
-                attendanceName: string,
-                frameNo: number,
-                timeItemTypeAtr: number,
-                frameName: string,
-                applicationTime: number,
-                preAppTime: string,
-                caculationTime: string,
-                nameID: string,
-                itemName: string,
-                color :string) {
-                this.companyID = ko.observable(companyID);
-                this.appID = ko.observable(appID);
-                this.attendanceID = ko.observable(attendanceID);
-                this.attendanceName = ko.observable(attendanceName);
-                this.frameNo = ko.observable(frameNo);
-                this.timeItemTypeAtr = ko.observable(timeItemTypeAtr);
-                this.frameName = ko.observable(frameName);
-                this.applicationTime = ko.observable(applicationTime);
-                this.preAppTime = ko.observable(preAppTime);
-                this.caculationTime = ko.observable(caculationTime);
-                this.nameID = ko.observable(nameID);
-                this.itemName = nts.uk.resource.getText("KAF005_85",[frameName]);
-                this.color = ko.observable(color);
-            }
-        }  
-		export class OvertimeWork {
-            yearMonth: KnockoutObservable<string>;
-            limitTime: KnockoutObservable<number>;
-            actualTime: KnockoutObservable<number>;
-            appTime: KnockoutObservable<number>;
-            totalTime: KnockoutObservable<number>;
-            backgroundColor: KnockoutObservable<string>;
-            textColor: KnockoutObservable<string>;
-            constructor(yearMonth: string, limitTime: number, actualTime: number, appTime: number,  
-                totalTime: number, backgroundColor: string, textColor: string) {
-                this.yearMonth = ko.observable(yearMonth);
-                this.limitTime = ko.observable(limitTime);
-                this.actualTime = ko.observable(actualTime);
-                this.appTime = ko.observable(appTime);
-                this.totalTime = ko.observable(totalTime);
-                this.backgroundColor = ko.observable(backgroundColor);
-                this.textColor = ko.observable(textColor);
-            }
-        }
-        
-        export class AppOvertimePre{
-           companyID: KnockoutObservable<string>;
-            appID: KnockoutObservable<string>;
-            attendanceID: KnockoutObservable<number>;
-            attendanceName: KnockoutObservable<string>;
-            frameNo: KnockoutObservable<number>;
-            timeItemTypeAtr: KnockoutObservable<number>;
-            frameName: KnockoutObservable<string>;
-            startTime: KnockoutObservable<number>;
-            endTime: KnockoutObservable<number>;
-            applicationTime: KnockoutObservable<string>;
-            nameID: KnockoutObservable<string>;
-            constructor(
-                companyID: string,
-                appID: string,
-                attendanceID: number,
-                attendanceName: string,
-                frameNo: number,
-                timeItemTypeAtr: number,
-                frameName: string,
-                startTime: number,
-                endTime: number,
-                applicationTime: string,
-                nameID: string) {
-                this.companyID = ko.observable(companyID);
-                this.appID = ko.observable(appID);
-                this.attendanceID = ko.observable(attendanceID);
-                this.attendanceName = ko.observable(attendanceName);
-                this.frameNo = ko.observable(frameNo);
-                this.timeItemTypeAtr = ko.observable(timeItemTypeAtr);
-                this.frameName = ko.observable(frameName);
-                this.startTime = ko.observable(startTime);
-                this.endTime = ko.observable(endTime);
-                this.applicationTime = ko.observable(applicationTime);
-                this.nameID = ko.observable(nameID);
-            }
-        }
-        /**
-         * 勤務内容
-         */
-         export class WorkContent{
-             //申請日
-             applicationDate: string;
-             //勤務種類
-             workType: string;
-             //就業時間帯
-             siftType: string;
-             //勤務時間
-             workClockFrom1: number;
-             workClockTo1: number;
-             workClockFrom2: number;
-             workClockTo2: number;
-             //休憩時間
-             breakTimes: Array<any>;
-            constructor(
-                applicationDate: string,
-                workType: string,
-                siftType: string,
-                workClockFrom1: number,
-                workClockTo1: number,
-                workClockFrom2: number,
-                workClockTo2: number,
-                breakTimes: Array<any>) {
-                this.applicationDate = applicationDate;
-                this.workType = workType;
-                this.breakTimes = breakTimes;
-                this.workClockFrom1 = workClockFrom1;
-                this.workClockTo1 = workClockTo1;
-                this.workClockFrom2 = workClockFrom2;
-                this.workClockTo2 = workClockTo2;
-            }
-        }
-        
-        export class OvertimeAgreement {
-            detailCurrentMonth: AgreementTimeDetail;
-            detailNextMonth: AgreementTimeDetail;
-            currentMonth: string;
-            nextMonth: string;
-        }
-        
-        export class AgreementTimeDetail {
-            employeeID: string;   
-            confirmed: AgreementTimeOfMonthly;
-            afterAppReflect: AgreementTimeOfMonthly;
-            errorMessage: string;
-        }
-        
-        export enum AgreementTimeStatusOfMonthly {
-            /** 正常 */
-            NORMAL = 0,
-            /** 限度エラー時間超過 */
-            EXCESS_LIMIT_ERROR =  1,
-            /** 限度アラーム時間超過 */
-            EXCESS_LIMIT_ALARM = 2,
-            /** 特例限度エラー時間超過 */
-            EXCESS_EXCEPTION_LIMIT_ERROR = 3,
-            /** 特例限度アラーム時間超過 */
-            EXCESS_EXCEPTION_LIMIT_ALARM = 4,
-            /** 正常（特例あり） */
-            NORMAL_SPECIAL = 5,
-            /** 限度エラー時間超過（特例あり） */
-            EXCESS_LIMIT_ERROR_SP = 6,
-            /** 限度アラーム時間超過（特例あり） */
-            EXCESS_LIMIT_ALARM_SP = 7,
-        }
-        
-        export enum Color {
-            // 36協定アラーム
-            ALARM = "#F6F636",
-            // 36協定アラーム文字
-            ALARM_TEXT = "#ff0000",
-            // 36協定エラー
-            ERROR = "#FD4D4D",
-            // 36協定エラー文字
-            ERROR_TEXT = "#ffffff",
-            // 36協定特例
-            EXCEPTION = "#eb9152",
-        }
-        
-        export class Process {
-            public static setOvertimeWork(overtimeAgreement: common.OvertimeAgreement, self: any): void {
-                let overtimeWork1 = new common.OvertimeWork("",0,0,0,0,"","");
-                let overtimeWork2 = new common.OvertimeWork("",0,0,0,0,"","");
-                
-                overtimeWork1.yearMonth(overtimeAgreement.currentMonth);
-                let exceptionLimitErrorTime1 = overtimeAgreement.detailCurrentMonth.confirmed.exceptionLimitErrorTime;   
-                if(!nts.uk.util.isNullOrUndefined(exceptionLimitErrorTime1)){
-                    overtimeWork1.limitTime(Process.convertTime(exceptionLimitErrorTime1));             
-                } else {
-                    let limitErrorTime1 = overtimeAgreement.detailCurrentMonth.confirmed.limitErrorTime;
-                    overtimeWork1.limitTime(Process.convertTime(limitErrorTime1));        
-                }
-                let agreementTime1 = overtimeAgreement.detailCurrentMonth.confirmed.agreementTime;
-                overtimeWork1.actualTime(Process.convertTime(agreementTime1));
-                let appTime1 = 0;
-                overtimeWork1.appTime(Process.convertTime(appTime1));
-                overtimeWork1.totalTime(Process.convertTime(agreementTime1+appTime1));
-                switch(overtimeAgreement.detailCurrentMonth.confirmed.status){
-                    case common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM: {
-                        overtimeWork1.backgroundColor(common.Color.ALARM);
-                        overtimeWork1.textColor(common.Color.ALARM_TEXT);
-                        break;
-                    }   
-                    case common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR: {
-                        overtimeWork1.backgroundColor(common.Color.ERROR);
-                        overtimeWork1.textColor(common.Color.ERROR_TEXT);
-                        break;
-                    } 
-                    case common.AgreementTimeStatusOfMonthly.NORMAL_SPECIAL: {
-                        break;    
-                    }
-                    case common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM_SP: {
-                        overtimeWork1.backgroundColor(common.Color.EXCEPTION);
-                        break;
-                    }
-                    case common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP: {
-                        overtimeWork1.backgroundColor(common.Color.EXCEPTION);
-                        break;        
-                    }
-                    case common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM: {
-                        overtimeWork1.backgroundColor(common.Color.ALARM);
-                        overtimeWork1.textColor(common.Color.ALARM_TEXT);
-                        break;
-                    }     
-                    case common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR: {
-                        overtimeWork1.backgroundColor(common.Color.ERROR);
-                        overtimeWork1.textColor(common.Color.ERROR_TEXT);
-                        break;
-                    }  
-                    default: break;
-                }
-                
-                overtimeWork2.yearMonth(overtimeAgreement.nextMonth);
-                let exceptionLimitErrorTime2 = overtimeAgreement.detailNextMonth.confirmed.exceptionLimitErrorTime;   
-                if(!nts.uk.util.isNullOrUndefined(exceptionLimitErrorTime2)){
-                    overtimeWork2.limitTime(Process.convertTime(exceptionLimitErrorTime2));             
-                } else {
-                    let limitErrorTime2 = overtimeAgreement.detailNextMonth.confirmed.limitErrorTime;
-                    overtimeWork2.limitTime(Process.convertTime(limitErrorTime2));        
-                }
-                let agreementTime2 = overtimeAgreement.detailNextMonth.confirmed.agreementTime;
-                overtimeWork2.actualTime(Process.convertTime(agreementTime2));
-                let appTime2 = 0;
-                overtimeWork2.appTime(Process.convertTime(appTime2));
-                overtimeWork2.totalTime(Process.convertTime(agreementTime2+appTime2));
-                switch(overtimeAgreement.detailNextMonth.confirmed.status){
-                    case common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM: {
-                        overtimeWork2.backgroundColor(common.Color.ALARM);
-                        overtimeWork2.textColor(common.Color.ALARM_TEXT);
-                        break;
-                    }   
-                    case common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR: {
-                        overtimeWork2.backgroundColor(common.Color.ERROR);
-                        overtimeWork2.textColor(common.Color.ERROR_TEXT);
-                        break;
-                    } 
-                    case common.AgreementTimeStatusOfMonthly.NORMAL_SPECIAL: {
-                        break;    
-                    }
-                    case common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM_SP: {
-                        overtimeWork2.backgroundColor(common.Color.EXCEPTION);
-                        break;
-                    }
-                    case common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP: {
-                        overtimeWork2.backgroundColor(common.Color.EXCEPTION);
-                        break;        
-                    }
-                    case common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM: {
-                        overtimeWork2.backgroundColor(common.Color.ALARM);
-                        overtimeWork2.textColor(common.Color.ALARM_TEXT);
-                        break;
-                    }     
-                    case common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR: {
-                        overtimeWork2.backgroundColor(common.Color.ERROR);
-                        overtimeWork2.textColor(common.Color.ERROR_TEXT);
-                        break;
-                    }  
-                    default: break;
-                }
-                
-                self.overtimeWork.removeAll();
-                self.overtimeWork.push(overtimeWork1);
-                self.overtimeWork.push(overtimeWork2);
-            } 
-            
-            public static setOvertimeWorkDetail(appOvertimeDetailDto: any, self: any, status: any): void {
-                let overtimeWork = new common.OvertimeWork("",0,0,0,0,"","");
-                
-                overtimeWork.yearMonth(nts.uk.time.formatYearMonth(appOvertimeDetailDto.yearMonth));
-                if(!nts.uk.util.isNullOrUndefined(appOvertimeDetailDto.exceptionLimitErrorTime)){
-                    overtimeWork.limitTime(Process.convertTime(appOvertimeDetailDto.exceptionLimitErrorTime));    
-                } else {
-                    overtimeWork.limitTime(Process.convertTime(appOvertimeDetailDto.limitErrorTime));    
-                }
-                overtimeWork.actualTime(Process.convertTime(appOvertimeDetailDto.actualTime));
-                overtimeWork.appTime(Process.convertTime(appOvertimeDetailDto.applicationTime));
-                overtimeWork.totalTime(Process.convertTime(appOvertimeDetailDto.actualTime + appOvertimeDetailDto.applicationTime));
-                switch(status){
-                    case common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM: {
-                        overtimeWork.backgroundColor(common.Color.ALARM);
-                        overtimeWork.textColor(common.Color.ALARM_TEXT);
-                        break;
-                    }   
-                    case common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR: {
-                        overtimeWork.backgroundColor(common.Color.ERROR);
-                        overtimeWork.textColor(common.Color.ERROR_TEXT);
-                        break;
-                    } 
-                    case common.AgreementTimeStatusOfMonthly.NORMAL_SPECIAL: {
-                        break;    
-                    }
-                    case common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM_SP: {
-                        overtimeWork.backgroundColor(common.Color.EXCEPTION);
-                        break;
-                    }
-                    case common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP: {
-                        overtimeWork.backgroundColor(common.Color.EXCEPTION);
-                        break;        
-                    }
-                    case common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM: {
-                        overtimeWork.backgroundColor(common.Color.ALARM);
-                        overtimeWork.textColor(common.Color.ALARM_TEXT);
-                        break;
-                    }     
-                    case common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR: {
-                        overtimeWork.backgroundColor(common.Color.ERROR);
-                        overtimeWork.textColor(common.Color.ERROR_TEXT);
-                        break;
-                    }  
-                    default: break;
-                }
-                
-                self.overtimeWork.removeAll();
-                self.overtimeWork.push(overtimeWork);
-            }
-            
-            public static convertTime(minutes: number){
-                if(minutes < 0){
-                    return "-" + nts.uk.time.format.byId("Time_Short_HM", -minutes);    
-                } else {
-                    return nts.uk.time.format.byId("Time_Short_HM", minutes);    
-                }   
-            }
-            
-            public static setNulltoZero(param: number){
-                return param;        
-            }
-        }
-    }
+
+
+	<!-- calculate button A5_8-->
+	<div data-bind="if: visibleModel.c7()" style="margin-bottom: 20px">
+		<button style="width: 100px; margin-left: 200px"
+			data-bind="text: $i18n('KAF005_43'), click: calculate, enable: outputMode()"
+			class="caret-bottom caret-inline"></button>
+	</div>
+
+
+
+	<!-- over time hours -->
+	<div class="cf valign-top control-group" data-bind="visible: true">
+		<!--A6_1 残業時間ラベル-->
+		<div class="cm-column" style="display: inline-block; width: 100px">
+			<div class="lblTitle pull-left"
+				data-bind="text: $i18n('KAF005_50'), ntsFormLabel: {required: true}"></div>
+		</div>
+		<div class="table-time overTime1">
+			<table id="fixed-overtime-hour-table">
+				<colgroup>
+					<col width="109px" />
+					<col width="115px" />
+					<col width="115px" />
+					<col width="115px" />
+				</colgroup>
+				<thead>
+					<tr>
+						<th class="ui-widget-header" rowspan="2"></th>
+						<!--A6_3 申請時間ラベル-->
+						<th class="ui-widget-header" rowspan="2"
+							data-bind="text: $i18n('KAF005_51')"></th>
+						<!--A6_4 事前申請ラベル-->
+						<th class="ui-widget-header hoangnd" rowspan="2"
+							data-bind="text: $i18n('KAF005_52')"></th>
+						<!--A6_6 実績時間ラベル-->
+						<th class="ui-widget-header" rowspan="2"
+							data-bind="text: $i18n('KAF005_54')"></th>
+					</tr>
+				</thead>
+				<tbody data-bind="foreach: overTime">
+					<tr data-bind="if: visible()">
+						<!--A6_7 残業時間名称-->
+						<td class="header" data-bind="text: displayNo"></td>
+						<!--A6_8 残業申請時間入力-->
+						<td data-bind="style: {'background-color': backgroundColor()}"><input
+							class="right-content overtimeHoursCheck"
+							data-bind=" 
+								style: {'background-color': backgroundColor()},
+								ntsTimeEditor: { 
+									value: applicationTime,
+									option: {width: '85px', timeWithDay: true},
+									inputFormat: 'time',
+									mode: 'time',
+									constraint:'OvertimeAppPrimitiveTime',
+									enable: $parent.visibleModel.c28() && $parent.outputMode()}" />
+						</td>
+						<!--A6_9 残業事前申請時間-->
+						<td class="right-content hoangnd"
+							data-bind="text: $parent.getFormatTime(ko.toJS(preTime))"></td>
+						<!--A6_11 実績時間-->
+						<td class="right-content"
+							data-bind="text: $parent.getFormatTime(ko.toJS(actualTime))"></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+
+
+		<div class="table-time overTime2">
+			<table id="fixed-overtime-hour-table-1">
+				<colgroup>
+					<col width="109px" />
+					<col width="115px" />
+				</colgroup>
+				<thead>
+					<tr>
+						<th class="ui-widget-header" rowspan="2"></th>
+						<!--A6_3 申請時間ラベル-->
+						<th class="ui-widget-header" rowspan="2"
+							data-bind="text: $i18n('KAF005_51')"></th>
+					</tr>
+				</thead>
+				<tbody data-bind="foreach: overTime">
+					<tr data-bind="if: visible()">
+						<!--A6_7 残業時間名称-->
+						<td class="header" data-bind="text: displayNo"></td>
+						<!--A6_8 残業申請時間入力-->
+						<td data-bind="style: {'background-color': backgroundColor()}"><input
+							class="right-content overtimeHoursCheck"
+							data-bind=" 
+								style: {'background-color': backgroundColor()},
+								ntsTimeEditor: { 
+									value: applicationTime,
+									option: {width: '85px', timeWithDay: true},
+									inputFormat: 'time',
+									mode: 'time',
+									constraint:'OvertimeAppPrimitiveTime',
+									enable: $parent.visibleModel.c28() && $parent.outputMode()}" />
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+
+
+
+
+	</div>
+
+
+	<!-- holiday time -->
+	<div class="cf valign-top control-group"
+		data-bind="visible: visibleModel.c30()">
+		<!--A5_1 休憩時間ラベル-->
+		<div class="cm-column" style="display: inline-block; width: 100px">
+			<div class="lblTitle pull-left"
+				data-bind="text: $i18n('KAF005_70'), ntsFormLabel: {required: true}"></div>
+		</div>
+
+		<div class="table-time holidayTime1">
+			<table id="fixed-table-holiday">
+				<colgroup>
+					<col width="109px" />
+					<col width="115px" />
+					<col width="115px" />
+					<col width="115px" />
+				</colgroup>
+				<thead>
+					<tr>
+						<th class="ui-widget-header" rowspan="2"></th>
+						<!--A5_3 開始ラベル-->
+						<th class="ui-widget-header" rowspan="2"
+							data-bind="text: $i18n('KAF005_71')"></th>
+						<!--A5_4 終了ラベル-->
+						<th class="ui-widget-header" rowspan="2"
+							data-bind="text: $i18n('KAF005_72')"></th>
+						<th class="ui-widget-header" rowspan="2"
+							data-bind="text: $i18n('KAF005_54')"></th>
+					</tr>
+				</thead>
+				<tbody data-bind="foreach: holidayTime">
+					<tr data-bind="if: visible()">
+						<!--A5_5 休憩時間順序-->
+						<td class="header" data-bind="text: displayNo"></td>
+						<!--A5_6 開始時刻-->
+						<td data-bind="style: {'background-color': backgroundColor()}">
+						<input class="right-content"
+							data-bind="
+								style: {'background-color': backgroundColor()},
+								ntsTimeEditor: {
+									name: '#[KAF005_337]', 
+									value: start, 
+									constraint:'OvertimeAppPrimitiveTime',
+									inputFormat: 'time',
+									enable: $parent.visibleModel.c28() && $parent.outputMode(),
+									mode: 'time',
+									option: {width: '85px', timeWithDay: true}}" /></td>
+						<!--A5_7 終了時刻-->
+						<td class="right-content"
+							data-bind="text: $parent.getFormatTime(ko.toJS(preApp))"></td>
+						<td class="right-content"
+							data-bind="text: $parent.getFormatTime(ko.toJS(actualTime))"></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<div class="table-time holidayTime2">
+			<table id="fixed-table-holiday-1">
+				<colgroup>
+					<col width="109px" />
+					<col width="115px" />
+				</colgroup>
+				<thead>
+					<tr>
+						<th class="ui-widget-header" rowspan="2"></th>
+						<!--A5_3 開始ラベル-->
+						<th class="ui-widget-header" rowspan="2"
+							data-bind="text: $i18n('KAF005_71')"></th>
+					</tr>
+				</thead>
+				<tbody data-bind="foreach: holidayTime">
+					<tr data-bind="if: visible()">
+						<!--A5_5 休憩時間順序-->
+						<td class="header" data-bind="text: displayNo"></td>
+						<!--A5_6 開始時刻-->
+						<td data-bind="style: {'background-color': backgroundColor()}">
+						<input class="right-content"
+							data-bind="
+								style: {'background-color': backgroundColor()},
+								ntsTimeEditor: {
+									name: '#[KAF005_337]', 
+									value: start, 
+									constraint:'OvertimeAppPrimitiveTime',
+									inputFormat: 'time',
+									enable: $parent.visibleModel.c28() && $parent.outputMode(),
+									mode: 'time',
+									option: {width: '85px', timeWithDay: true}}" />
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+
+
+
+	</div>
+
+
+
+
+
+</div>
+
+
+
+	`
+	@component({
+        name: 'kaf005-share',
+		template: template
+    })
+	class KAF005ShrModel extends ko.ViewModel {
+		
+		// restTime: KnockoutObservableArray<RestTime> = ko.observableArray([]);
+		
+		// holidayTime: KnockoutObservableArray<HolidayTime> = ko.observableArray([]);
+		
+		// overTime: KnockoutObservableArray<OverTime> = ko.observableArray([]);
+		visibleModel: any;
+		overtTimeMountTable1: boolean = false;
+		overtTimeMountTable2: boolean = false;
+		
+		holidayTimeMountTable1: boolean = false;
+		holidayTimeMountTable2: boolean = false;
+		
+		backgroundColor: KnockoutObservable<Boolean> = ko.observable(false);
+		
+		created(params: any) {
+			const self = this;
+			self.visibleModel = params.visibleModel;
+			// self.restTime = params.restTime;
+			// self.holidayTime = params.holidayTime;
+			// self.overTime = params.overTime;
+			
+		}
+		
+		mounted() {
+			const self = this;
+			$(".overTime2").hide();
+			$(".overTime1").hide();
+			$("#fixed-table").ntsFixedTable({ height: 120 });
+			self.visibleModel.c15_3.subscribe((value: any) => {
+				if (!_.isNil(value)) {
+					if (value) {
+						
+						$(".overTime2").hide();
+						$(".overTime1").show();
+						$(".holidayTime2").hide();
+						$(".holidayTime1").show();
+						
+						if (!self.overtTimeMountTable1) {
+							$("#fixed-overtime-hour-table").ntsFixedTable({ height: 216 });
+							self.overtTimeMountTable1 = true;
+						}
+						if (!self.holidayTimeMountTable1) {
+							$("#fixed-table-holiday").ntsFixedTable({ height: 120 });
+							self.holidayTimeMountTable1 = true;
+						}
+						
+					} else {
+						
+						$(".overTime1").hide();
+						$(".overTime2").show();
+						$(".holidayTime1").hide();
+						$(".holidayTime2").show();
+						
+						if (!self.overtTimeMountTable2) {
+							$("#fixed-overtime-hour-table-1").ntsFixedTable({ height: 216 });
+							self.overtTimeMountTable2 = true;
+						}
+						
+						if (!self.holidayTimeMountTable2) {
+							$("#fixed-table-holiday-1").ntsFixedTable({ height: 120 });
+							self.holidayTimeMountTable2 = true;
+						}
+						
+					}
+				}
+			})
+			
+		}
+	}
+	export interface OverTime {
+		frameNo: string;
+		displayNo: KnockoutObservable<string>;
+		applicationTime?: KnockoutObservable<number>;
+		preTime?: KnockoutObservable<number>;
+		actualTime?: KnockoutObservable<number>;
+		type: AttendanceType;
+		visible: KnockoutObservable<Boolean>;
+		backgroundColor: KnockoutObservable<string>;
+	}
+	export interface RestTime {
+		frameNo: string;
+		displayNo: KnockoutObservable<string>;
+		start?: KnockoutObservable<number>;
+		end?: KnockoutObservable<number>;
+	}
+	
+	export interface HolidayTime {
+		frameNo: string;
+		displayNo: KnockoutObservable<string>;
+		start?: KnockoutObservable<number>;
+		preApp?: KnockoutObservable<number>;
+		actualTime?: KnockoutObservable<number>;
+		type: AttendanceType;
+		visible: KnockoutObservable<Boolean>;
+		backgroundColor: KnockoutObservable<string>;
+	}
+	
+	
 }

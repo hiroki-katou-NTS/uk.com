@@ -1,8 +1,41 @@
 #rightTable {
-	margin: 4px 20px 20px 87px;
+	display: inline-block;
 }
 
 #leftPanel {
 	margin: 73px 20px 20px 536px;
 	display: inline-block;
+}
+.rightComponent {
+	display: inline-block; 
+	position: absolute; 
+	top: 100px; 
+	left: 700px
+}
+
+.N3Component {
+	position: relative; 
+	display: inline-block; 
+	top: 70px; 
+	left: 100px	
+}
+.rightButton {
+	margin-bottom: 20px; 
+	margin-left: 375px; 
+	display: inline-block
+}
+.rightButtonKCP005 {
+	margin-bottom: 20px; 
+	margin-left: 560px; 
+	display: inline-block
+}
+.N21Button {
+	margin-bottom: 20px; 
+	display: inline-block
+}
+.controlTop {
+	display: inline-block; 
+	position: absolute; 
+	top: 43px; 
+	left: 130px
 }

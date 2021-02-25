@@ -6,8 +6,8 @@ package nts.uk.ctx.at.schedule.infra.repository.pattern.work;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
-import nts.uk.ctx.at.schedule.dom.shift.pattern.work.DayOfWeek;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WeeklyWorkSettingGetMemento;
+import nts.uk.ctx.at.schedule.dom.shift.weeklywrkday.DayOfWeek;
 import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work.KscmtWeeklyWorkSet;
 import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work.KscmtWeeklyWorkSetPK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
@@ -53,8 +53,7 @@ public class JpaWeeklyWorkSettingGetMemento implements WeeklyWorkSettingGetMemen
 	 */
 	@Override
 	public DayOfWeek getDayOfWeek() {
-		return EnumAdaptor.valueOf(this.entity.getKscmtWeeklyWorkSetPK().getDayOfWeek(),
-				DayOfWeek.class);
+		return DayOfWeek.valueOf(this.entity.getKscmtWeeklyWorkSetPK().getDayOfWeek());
 	}
 
 	/*
@@ -66,7 +65,12 @@ public class JpaWeeklyWorkSettingGetMemento implements WeeklyWorkSettingGetMemen
 	 */
 	@Override
 	public WorkdayDivision getWorkdayDivision() {
-		return EnumAdaptor.valueOf(this.entity.getWorkDayAtr(), WorkdayDivision.class);
+		return WorkdayDivision.valuesOf(this.entity.getWorkDayAtr());
+	}
+
+	@Override
+	public String getContractCode() {
+		return this.entity.getContractCode();
 	}
 
 }

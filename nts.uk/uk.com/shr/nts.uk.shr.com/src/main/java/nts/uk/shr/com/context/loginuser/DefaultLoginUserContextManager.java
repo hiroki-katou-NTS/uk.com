@@ -134,6 +134,27 @@ public class DefaultLoginUserContextManager implements LoginUserContextManager {
 				roles.setRoleIdforGroupCompaniesAdmin(roleId);
 				return this;
 			}
+			@Override
+			public RoleIdSetter isInChargeAttendance(boolean isInCharge) {
+				roles.setIsInChargeAttendance(isInCharge);
+				return this;
+			}
+			@Override
+			public RoleIdSetter isInChargePayroll(boolean isInCharge) {
+				roles.setIsInChargePayroll(isInCharge);
+				return this;
+			}
+			@Override
+			public RoleIdSetter isInChargePersonnel(boolean isInCharge) {
+				roles.setIsInChargePersonnel(isInCharge);
+				return this;
+			}
+			@Override
+			public RoleIdSetter isInChargePersonalInfo(boolean isInCharge) {
+				roles.setIsInChargePersonalInfo(isInCharge);
+				return this;
+			}
+
 		};
 	}
 

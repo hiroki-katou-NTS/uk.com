@@ -6,6 +6,7 @@ import java.util.List;
 
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.era.name.SystemType;
 
 /**
  * 組織を指定して参照可能な社員を取得する		
@@ -76,7 +77,7 @@ public class GetEmpCanReferBySpecOrganizationService {
 		query.setReferenceRange(0);
 		query.setFilterByWorkplace(true);
 		query.setWorkplaceIds(Arrays.asList(workplaceId));
-		query.setSystemType(0);
+		query.setSystemType(2); // // 就業 EMPLOYMENT
 		// $ロールID = require.ロールIDを取得する( 年月日, 社員ID )
 		String roleId = require.getRoleID(referenceDate, epmloyeeId);
 		// return require.社員を検索する( $検索条件, $ロールID )

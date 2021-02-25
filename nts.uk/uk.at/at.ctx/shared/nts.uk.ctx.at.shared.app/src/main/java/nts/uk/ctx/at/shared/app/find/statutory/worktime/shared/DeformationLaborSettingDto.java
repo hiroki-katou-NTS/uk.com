@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Data;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSet;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.WorkingTimeSetting;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.monunit.MonthlyWorkTimeSet;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.WorkingTimeSetting;
 
 /**
  * The Class DeformationLaborSettingDto.
@@ -28,7 +28,6 @@ public class DeformationLaborSettingDto {
 		
 		DeformationLaborSettingDto dto = new DeformationLaborSettingDto();
 		
-		dto.setWeekStart(week.getWeeklyTime().getStart().value);
 		dto.setStatutorySetting(new WorkingTimeSettingDto(
 				week.getDailyTime().getDailyTime().valueAsMinutes(),
 				workTime.stream()

@@ -3,11 +3,10 @@ package nts.uk.ctx.at.record.pub.monthly.agreement;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.Year;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
-import nts.uk.ctx.at.shared.dom.common.Year;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementOperationSetting;
-import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementOperationSetting;
 
 /**
  * 36協定期間を取得
@@ -24,17 +23,16 @@ public interface GetAgreementPeriodPub {
 	 * @return 期間
 	 */
 	// RequestList554
-	Optional<DatePeriod> byYear(String companyId, String employeeId, GeneralDate criteria, Year year);
+	Optional<DatePeriod> byYear(String companyId, Year year);
 	
 	/**
 	 * 指定日を含む年期間を取得
 	 * @param companyId 会社ID
-	 * @param criteria 指定年月日
+	 * @param baseDate 指定年月日
 	 * @param agreementOperationSet 36協定運用設定
-	 * @param closure 締め
 	 * @return 年月期間
 	 */
 	// RequestList579
-	Optional<YearMonthPeriod> containsDate(String companyId, GeneralDate criteria,
-			Optional<AgreementOperationSetting> agreementOperationSet, Closure closure);
+	Optional<YearMonthPeriod> containsDate(String companyId, GeneralDate baseDate, 
+			Optional<AgreementOperationSetting> agreementOperationSet);
 }

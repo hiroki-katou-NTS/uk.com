@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 
 /**
  * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.勤務予定.勤務予定.勤務予定
- * 予定管理状態
+ * 予定管理状態 Enum
  * @author HieuLt
  *
  */

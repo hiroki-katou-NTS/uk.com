@@ -8,7 +8,7 @@ import nts.arc.primitive.TimeDurationPrimitiveValue;
 import nts.arc.primitive.constraint.TimeRange;
 
 /**
- * The Class ConditionThresholdLimit.
+ * 回数集計条件閾値
  */
 @TimeRange(max = "24:00", min = "00:00")
 public class ConditionThresholdLimit extends TimeDurationPrimitiveValue<ConditionThresholdLimit> {

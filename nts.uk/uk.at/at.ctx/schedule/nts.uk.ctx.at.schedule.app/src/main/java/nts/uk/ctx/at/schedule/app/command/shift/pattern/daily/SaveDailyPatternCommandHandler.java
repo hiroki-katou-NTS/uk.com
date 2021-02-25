@@ -14,8 +14,8 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.gul.text.StringUtil;
-import nts.uk.ctx.at.schedule.dom.shift.pattern.daily.DailyPattern;
-import nts.uk.ctx.at.schedule.dom.shift.pattern.daily.DailyPatternRepository;
+import nts.uk.ctx.at.schedule.dom.shift.workcycle.DailyPatternRepository;
+import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycle;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
@@ -60,7 +60,7 @@ public class SaveDailyPatternCommandHandler extends CommandHandler<DailyPatternC
 		DailyPatternCommand command = context.getCommand();
 		String patternCd = command.getPatternCode();
 
-		Optional<DailyPattern> result = this.dailyPatternRepo.findByCode(companyId, patternCd);
+		Optional<WorkCycle> result = this.dailyPatternRepo.getByCidAndCode(companyId, patternCd);
 
 		// Check duplicate code in new mode.
 		if (!command.getIsEditting() && result.isPresent()) {
@@ -111,7 +111,7 @@ public class SaveDailyPatternCommandHandler extends CommandHandler<DailyPatternC
 
 		});
 
-		DailyPattern dailyPattern = command.toDomain(companyId);
+		WorkCycle dailyPattern = command.toDomain(companyId);
 
 		// check add or update
 		if (!result.isPresent()) {

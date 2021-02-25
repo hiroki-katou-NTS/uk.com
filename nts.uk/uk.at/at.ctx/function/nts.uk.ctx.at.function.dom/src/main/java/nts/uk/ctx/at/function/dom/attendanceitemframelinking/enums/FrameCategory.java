@@ -96,7 +96,10 @@ public enum FrameCategory {
 	Company(21),
 
 	/** 予約 */
-	Reservation(22);
+	Reservation(22),
+
+	/** 週次超過時間 */
+	Week_ExcessTime(23);
 
 	/** The value. */
 	public final int value;

@@ -6,7 +6,7 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampRequestSetting;
+import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampRequestSetting_Old;
 import nts.uk.ctx.at.request.dom.setting.company.request.stamp.StampRequestSettingRepository;
 import nts.uk.ctx.at.request.infra.entity.setting.company.request.stamp.KrqstStampRequestSetting;
 import nts.uk.shr.com.context.AppContexts;
@@ -15,7 +15,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaStampRequestSettingRepository extends JpaRepository implements StampRequestSettingRepository {
 
 	@Override
-	public Optional<StampRequestSetting> findByCompanyID(String companyID) {
+	public Optional<StampRequestSetting_Old> findByCompanyID(String companyID) {
 		return this.queryProxy().find(companyID, KrqstStampRequestSetting.class)
 				.map(x -> x.toDomain());
 	}
@@ -25,7 +25,7 @@ public class JpaStampRequestSettingRepository extends JpaRepository implements S
 	 * @return
 	 * @author yennth
 	 */
-	private KrqstStampRequestSetting toEntity(StampRequestSetting domain){
+	private KrqstStampRequestSetting toEntity(StampRequestSetting_Old domain){
 		val entity = new KrqstStampRequestSetting();
 		String companyId = AppContexts.user().companyId();
 		entity.bottomComment = domain.getBottomComment().getComment().v();
@@ -49,7 +49,7 @@ public class JpaStampRequestSettingRepository extends JpaRepository implements S
 		entity.topCommentFontWeight = domain.getTopComment().getFontWeight() == true ? 1 : 0;
 		return entity;
 	}
-//	private StampRequestSetting toDomain(KrqstStampRequestSetting entity){
+//	private StampRequestSetting toDomainApplicationSetting(KrqstStampRequestSetting entity){
 //		StampRequestSetting stamp = StampRequestSetting.createFromJavaType(entity.companyID, entity.topComment, entity.topCommentFontColor, 
 //																entity.topCommentFontWeight == 1 ? true : false, entity.bottomComment, 
 //																entity.bottomCommentFontColor, 
@@ -66,7 +66,7 @@ public class JpaStampRequestSettingRepository extends JpaRepository implements S
 	 * @author yennth
 	 */
 	@Override
-	public void updateStamp(StampRequestSetting stamp) {
+	public void updateStamp(StampRequestSetting_Old stamp) {
 		KrqstStampRequestSetting entity = toEntity(stamp);
 		KrqstStampRequestSetting oldEntity = this.queryProxy().find(entity.companyID, KrqstStampRequestSetting.class).get();
 		oldEntity.bottomComment = entity.bottomComment;
@@ -94,7 +94,7 @@ public class JpaStampRequestSettingRepository extends JpaRepository implements S
 	 * @author yennth
 	 */
 	@Override
-	public void insertStamp(StampRequestSetting stamp) {
+	public void insertStamp(StampRequestSetting_Old stamp) {
 		KrqstStampRequestSetting entity = toEntity(stamp);
 		this.commandProxy().insert(entity);
 	}

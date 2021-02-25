@@ -33,7 +33,20 @@
 						valueType: 'String',
 						maxLength: 12,
 				};
+
+				__viewContext.primitiveValueConstraints.WorkplaceGroup = {
+						valueType: 'String',
+						maxLength: 40,
+				};
+				__viewContext.primitiveValueConstraints.WorkName = {
+						valueType: 'String',
+						maxLength: 12,
+				};
 			</script>
+			<!--Tab CMM007_104-->
+			<com:stylefile path="../i/cmm007.i.main.css" />
+			<com:scriptfile path="../i/cmm007.i.service.js" />
+			<com:scriptfile path="../i/cmm007.i.vm.js" />
 
 			<com:stylefile path="../g/cmm007.g.main.css" />
 			<com:scriptfile path="../g/cmm007.g.service.js" />
@@ -74,6 +87,9 @@
 					href="#tabpanel-4" role="tab-navigator">#{i18n.getText('CMM007_49')}</a></li>
 				<li data-bind="click: onSelectTabG"><a tabindex="-1"
 					href="#tabpanel-5" role="tab-navigator">#{i18n.getText('CMM007_73')}</a></li>
+				<!--Tab CMM007_104-->
+				<li data-bind="click: onSelectTabI"><a tabindex="-1"
+					href="#tabpanel-6" role="tab-navigator">#{i18n.getText('CMM007_104')}</a></li>
 			</ul>
 		</ui:define>
 		<ui:define name="sidebar-content">
@@ -98,6 +114,10 @@
 			</div>
 			<div id="tabpanel-5" role="tabpanel" data-bind="with: workdayoffFr()">
 				<ui:include src="../g/index.xhtml" />
+			</div>
+			<!--Tab CMM007_104-->
+			<div id="tabpanel-6" role="tabpanel" data-bind="with: workName()">
+				<ui:include src="../i/index.xhtml" />
 			</div>
 		</ui:define>
 	</ui:composition>

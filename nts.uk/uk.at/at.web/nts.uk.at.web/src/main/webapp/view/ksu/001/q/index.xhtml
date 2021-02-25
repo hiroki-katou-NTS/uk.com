@@ -15,8 +15,9 @@
 			</com:ValidatorScript>
 			<script type='text/javascript'>
 				var dialogSize = {
-					width : 460,
-					height : 490
+					width : 440,
+					// height : 495
+					height : 520
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -31,7 +32,7 @@
 			<div id="functions-area">
 				<button class="proceed" tabindex="1"
 					data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('KSU001_3702')}</button>
-				<button id="close" tabindex="2" style="margin-left: 270px;"
+				<button id="close" tabindex="3"
 					data-bind="click: closeDialog">#{i18n.getText('KSU001_3703')}</button>
 			</div>
 			<div id="content-area" style="width: 430px">
@@ -41,7 +42,8 @@
 					</div>
 					<div>
 						<div>
-							<div class="label" style="margin-left: 30px; margin-top: 10px">
+							<div class="label"
+								style="margin-left: 30px; margin-top: 10px; width: 60%;">
 								<span data-bind="text: organizationName"></span>
 							</div>
 						</div>
@@ -49,7 +51,7 @@
 						<div style="display: flex;">
 							<div style="margin-left: 40px; margin-top: 10px"
 								data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_3704')}</div>
-							<div style="margin-left: 30px; margin-top: 20px"
+							<div tabindex="4" style="margin-left: 20px; margin-top: 15px"
 								data-bind="ntsComboBox: {
 										options: externalBudgetModel().externalBudgetItems,
 										optionsValue: 'code',
@@ -63,29 +65,29 @@
 										columns: [
 											{ prop: 'code', length: 1 },
 											{ prop: 'name', length: 1 },
-											{ prop: 'attribute', length: 1 },
-											{ prop: 'unit', length: 1 }
+											{ prop: 'attribute', length: 1 }
 										]}"></div>
 						</div>
 						<div style="display: flex;">
 							<div style="margin-left: 40px; margin-top: 10px"
 								data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_3705')}</div>
-							<div style="margin-left: 30px; margin-top: 20px">
-
-								<table id="wrapper" style="width: 265px;">
-									<thead style="background-color: rgb(234, 230, 233);">
+							<div style="margin-left: 20px; margin-top: 15px">
+								
+								<table style="border-bottom: 1px solid #A9A9A9 !important;">
+									<thead>
 										<tr>
-											<th><pre>#{i18n.getText('KSU001_3706')}</pre></th>
-											<th data-bind="text: labelQ32"></th>
+											<th style="font-weight: bold;"><pre>#{i18n.getText('KSU001_3706')}</pre></th>
+											<th style="font-weight: bold;" data-bind="text: labelQ32"></th>
 										</tr>
 									</thead>
-									<tbody data-bind="foreach: listperiods">
-										<tr>
-											<td data-bind="text: date"></td>
-											<td
-												data-bind="visible: $parent.check, with: $parent.yearmontheditor"><input
-												style="padding-right: 10px; padding-left: 0px; padding: 0px 0px; border: 0px solid #999999; overflow: visible; width: 121px; height: 20px; border-radius: 0px;"
+									<tbody data-bind="foreach: listperiods" >
+										<tr data-bind="if: date() != ''">
+											<td style="background-color: #d9d9d9;" data-bind="text: date"></td>
+											<td  
+												data-bind="visible: $parent.check, with: $parent.yearmontheditor"><input id ="extBudgetTime"
+												style="padding: 0px 2px 0px 0px; border: 0px solid #999999; width: 121px; height: 24px; border-radius: 0px;"
 												data-bind="ntsTimeEditor: {
+													name: '#[KSU001_3707]',
 													value: $parent.value,
 													constraint: 'ExtBudgetTime',
 													option: option,
@@ -93,43 +95,49 @@
 													enable: true,
 													inputFormat: 'time',
 													mode: 'time',
-													readonly: false}" /></td>
-											<td
-												data-bind="visible: $parent.check1, with: $parent.currencyeditor"><input
-												style="padding-right: 10px; padding-left: 0px; padding: 0px 0px; border: 0px solid #999999; overflow: visible; width: 121px; height: 20px; border-radius: 0px;"
+													readonly:  $parent.date() == '' }" /></td>										
+											<td 
+												data-bind="visible: $parent.check1, with: $parent.currencyeditor"><input id = "extBudgetMoney"
+												style="text-align: right; border: 0px solid #999999; width: 121px; height: 24px; border-radius: 0px;"
 												data-bind="ntsNumberEditor: {
+													name: '#[KSU001_3708]',
 													value: $parent.value,
 													constraint: 'ExtBudgetMoney',
 													option: option,
 													required: false,
 													enable: true,
-													readonly: false}" /></td>
-											<td
-												data-bind="visible: $parent.check2, with: $parent.numbereditor"><input
-												style="padding-right: 10px; padding-left: 0px; padding: 0px 0px; border: 0px solid #999999; overflow: visible; width: 121px; height: 20px; border-radius: 0px;"
+													readonly: $parent.date() == '' }" /></td>													
+											<td 
+												data-bind="visible: $parent.check2, with: $parent.numbereditor"><input id = "extBudgetNumberPerson"
+												style="padding: 0px 2px 0px 0px; border: 0px solid #999999; width: 121px; height: 24px; border-radius: 0px;"
 												data-bind="ntsNumberEditor: {
+													name: '#[KSU001_3709]',
 													value: $parent.value,
 													constraint: 'ExtBudgetNumberPerson',
 													option: option,
 													required: false,
 													enable: true,
-													readonly: false}" /></td>
-											<td
-												data-bind="visible: $parent.check3, with: $parent.numbereditor"><input
-												style="padding-right: 10px; padding-left: 0px; padding: 0px 0px; border: 0px solid #999999; overflow: visible; width: 121px; height: 20px; border-radius: 0px;"
+													readonly: $parent.date() == '' }" /></td>
+											<td 
+												data-bind="visible: $parent.check3, with: $parent.numbereditor"><input id = "extBudgetNumericalVal"
+												style="padding: 0px 2px 0px 0px; border: 0px solid #999999; width: 121px; height: 24px; border-radius: 0px;"
 												data-bind="ntsNumberEditor: {
+													name: '#[KSU001_3710]',
 													value: $parent.value,
 													constraint: 'ExtBudgetNumericalVal',
 													option: option,
 													required: false,
 													enable: true,
-													readonly: false}" /></td>
+													readonly: $parent.date() == '' }" /></td>
 										</tr>
-									</tbody>
+										<tr data-bind="if: date() == ''" >
+											<td style="border: 1.2px solid; border-color: #F1F1F1 #F1F1F1 #F1F1F1 #A9A9A9;  background-color: #F1F1F1 !important;" colspan="2"></td>
+											<!-- <td style="border: none; background-color: #F1F1F1;"></td> -->
+										</tr>
+									</tbody>								
 								</table>
 							</div>
-						</div>
-						<div></div>
+						</div>						
 					</div>
 				</div>
 

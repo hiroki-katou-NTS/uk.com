@@ -15,7 +15,6 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.serialize.binary.ObjectBinaryFile;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.AffiliationInforOfDailyPerforRepository;
-import nts.uk.ctx.at.record.dom.affiliationinformation.repository.WorkTypeOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
 import nts.uk.ctx.at.record.dom.raisesalarytime.repo.SpecificDateAttrOfDailyPerforRepo;
@@ -23,13 +22,13 @@ import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationReposi
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
-import nts.uk.ctx.at.shared.dom.monthly.AttendanceTimeOfMonthlyRepository;
-import nts.uk.ctx.at.shared.dom.monthly.anyitem.AnyItemOfMonthlyRepository;
-import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSettingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionRepository;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.com.ComFlexMonthActCalSetRepo;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.com.ComDeforLaborMonthActCalSetRepo;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.com.ComRegulaMonthActCalSetRepo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.flex.com.ComFlexMonthActCalSetRepo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.com.ComDeforLaborMonthActCalSetRepo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.com.ComRegulaMonthActCalSetRepo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthlyRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.anyitem.AnyItemOfMonthlyRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSettingRepository;
 
 /**
  * テスト用バイナリデータ出力
@@ -58,9 +57,6 @@ public class OutputBinaryForTest implements OutputBinaryForTestInterface {
 	
 	// 日別実績
 	
-	/** 日別実績の勤務種別の取得 */
-	@Inject
-	private WorkTypeOfDailyPerforRepository workTypeOfDaily;
 	/** 日別実績の勤怠時間の取得 */
 	@Inject
 	private AttendanceTimeRepository attendanceTimeOfDaily;
@@ -145,9 +141,9 @@ public class OutputBinaryForTest implements OutputBinaryForTestInterface {
 		List<String> empIds = new ArrayList<>();
 		empIds.add(empId);
 		
-		val workTypes = this.workTypeOfDaily.finds(empIds, period);
-		if (workTypes.isEmpty()) throw new RuntimeException("勤務種別が取得できません。");
-		map.put("WorkTypeOfDay", workTypes);
+//		val workTypes = this.workTypeOfDaily.finds(empIds, period);
+//		if (workTypes.isEmpty()) throw new RuntimeException("勤務種別が取得できません。");
+//		map.put("WorkTypeOfDay", workTypes);
 		
 		val affiliations = this.affiliationInfoOfDaily.finds(empIds, period);
 		if (affiliations.isEmpty()) throw new RuntimeException("日別実績の所属情報が取得できません。");

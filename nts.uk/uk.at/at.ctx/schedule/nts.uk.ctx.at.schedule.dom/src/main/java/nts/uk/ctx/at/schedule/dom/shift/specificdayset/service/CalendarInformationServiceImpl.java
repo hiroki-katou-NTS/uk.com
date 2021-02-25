@@ -15,6 +15,7 @@ import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.ClassifiBasicWorkRepos
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.ClassificationBasicWork;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.CompanyBasicWork;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.CompanyBasicWorkRepository;
+import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceBasicWork;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceBasicWorkRepository;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarClass;
@@ -23,7 +24,6 @@ import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarCom
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarCompanyRepository;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarWorkPlaceRepository;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarWorkplace;
-import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.UseSet;
 /**
  * 
  * @author Doan Duy Hung
@@ -55,7 +55,7 @@ public class CalendarInformationServiceImpl implements ICalendarInformationServi
 	@Override
 	public CalendarInformationOutput getCalendarInformation(String companyID, String workplaceID, String classCD, GeneralDate date) {
 		// 稼働日区分を取得する
-		UseSet workingDayAtr = this.getWorkingDayAtr(companyID, workplaceID, classCD, date);
+		WorkdayDivision workingDayAtr = this.getWorkingDayAtr(companyID, workplaceID, classCD, date);
 		if(workingDayAtr != null){
 			// 基本勤務設定を取得する
 			BasicWorkSetting basicWorkSetting = this.getBasicWorkSetting(companyID, workplaceID, classCD, workingDayAtr.value);
@@ -74,20 +74,21 @@ public class CalendarInformationServiceImpl implements ICalendarInformationServi
 	 * @param date
 	 * @return UseSet
 	 */
-	public UseSet getWorkingDayAtr(String companyID, String workplaceID, String classCD, GeneralDate date){
+	@Override
+	public WorkdayDivision getWorkingDayAtr(String companyID, String workplaceID, String classCD, GeneralDate date){
 		Optional<CalendarCompany> opCalendarCompany = calendarCompanyRepository.findCalendarCompanyByDate(companyID, date);
 		if(opCalendarCompany.isPresent()){
-			return opCalendarCompany.get().getWorkingDayAtr();
+			return opCalendarCompany.get().getWorkDayDivision();
 		}
 		
 		Optional<CalendarWorkplace> opCalendarWorkplace = calendarWorkPlaceRepository.findCalendarWorkplaceByDate(workplaceID, date);
 		if(opCalendarWorkplace.isPresent()){
-			return opCalendarWorkplace.get().getWorkingDayAtr();
+			return opCalendarWorkplace.get().getWorkDayDivision();
 		}
 		
 		Optional<CalendarClass> opCalendarClass = calendarClassRepository.findCalendarClassByDate(companyID, classCD, date);
 		if(opCalendarClass.isPresent()){
-			return opCalendarClass.get().getWorkingDayAtr();
+			return opCalendarClass.get().getWorkDayDivision();
 		}
 		
 		return null;
@@ -101,7 +102,7 @@ public class CalendarInformationServiceImpl implements ICalendarInformationServi
 	 * @param workingDayAtr
 	 * @return List<BasicWorkSetting>
 	 */
-	private BasicWorkSetting getBasicWorkSetting(String companyID, String workplaceID, String classCD, Integer workingDayAtr){
+	public BasicWorkSetting getBasicWorkSetting(String companyID, String workplaceID, String classCD, Integer workingDayAtr){
 		Optional<CompanyBasicWork> opCompanyBasicWork = companyBasicWorkRepository.findById(companyID, workingDayAtr);
 		if(opCompanyBasicWork.isPresent()){
 			CompanyBasicWork companyBasicWork = opCompanyBasicWork.get();

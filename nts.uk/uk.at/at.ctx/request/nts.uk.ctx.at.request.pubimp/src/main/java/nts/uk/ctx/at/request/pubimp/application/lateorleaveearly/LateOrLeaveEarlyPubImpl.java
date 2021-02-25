@@ -12,8 +12,8 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarlyRepository;
 import nts.uk.ctx.at.request.pub.application.lateorleaveearly.LateOrLeaveEarlyExport;
 import nts.uk.ctx.at.request.pub.application.lateorleaveearly.LateOrLeaveEarlyPub;
@@ -27,7 +27,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class LateOrLeaveEarlyPubImpl implements LateOrLeaveEarlyPub {
 	
 	@Inject
-	private ApplicationRepository_New applicationRepository;
+	private ApplicationRepository applicationRepository;
 	
 	@Inject
 	private LateOrLeaveEarlyRepository lateOrLeaveEarlyRepository;
@@ -36,17 +36,18 @@ public class LateOrLeaveEarlyPubImpl implements LateOrLeaveEarlyPub {
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<LateOrLeaveEarlyExport> engravingCancelLateorLeaveearly(String employeeID, GeneralDate startDate,
 			GeneralDate endDate) {
-		String companyID = AppContexts.user().companyId();
-		List<Application_New> listApp = applicationRepository.getListLateOrLeaveEarly(companyID, employeeID, startDate, endDate);
-		if(CollectionUtil.isEmpty(listApp)){
-			return Collections.emptyList();
-		}
-		List<String> listAppID = listApp.stream().map(x -> x.getAppID()).collect(Collectors.toList());
-		return lateOrLeaveEarlyRepository.findByActualCancelAtr(listAppID, 1).stream()
-				.map(x -> {
-					GeneralDate appDate = listApp.stream().filter(y -> y.getAppID().equals(x.getApplication().getAppID())).findFirst().get().getAppDate();
-					return new LateOrLeaveEarlyExport(appDate, x.getEarly1().value, x.getLate1().value, x.getEarly2().value, x.getLate2().value);
-				}).collect(Collectors.toList());
+//		String companyID = AppContexts.user().companyId();
+//		List<Application> listApp = applicationRepository.getListLateOrLeaveEarly(companyID, employeeID, startDate, endDate);
+//		if(CollectionUtil.isEmpty(listApp)){
+//			return Collections.emptyList();
+//		}
+//		List<String> listAppID = listApp.stream().map(x -> x.getAppID()).collect(Collectors.toList());
+//		return lateOrLeaveEarlyRepository.findByActualCancelAtr(listAppID, 1).stream()
+//				.map(x -> {
+//					GeneralDate appDate = listApp.stream().filter(y -> y.getAppID().equals(x.getApplication().getAppID())).findFirst().get().getAppDate().getApplicationDate();
+//					return new LateOrLeaveEarlyExport(appDate, x.getEarly1().value, x.getLate1().value, x.getEarly2().value, x.getLate2().value);
+//				}).collect(Collectors.toList());
+		return Collections.emptyList();
 	}
 	
 }

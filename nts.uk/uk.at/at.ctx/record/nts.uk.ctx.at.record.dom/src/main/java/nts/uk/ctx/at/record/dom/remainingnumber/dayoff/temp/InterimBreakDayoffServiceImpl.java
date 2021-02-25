@@ -21,9 +21,6 @@ import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.monthly.WorkTypeDaysCountTable;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.GetVacationAddSet;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.VacationAddSet;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
@@ -40,6 +37,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnOffset
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnOffsetTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnUsedDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnUsedTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.WorkTypeDaysCountTable;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.GetVacationAddSet;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.VacationAddSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.DesignatedTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.subholtransferset.GetDesignatedTime;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -134,8 +134,7 @@ public class InterimBreakDayoffServiceImpl implements InterimBreakDayoffService 
 						employeeId,
 						targetWorkInfo.getYmd(),
 						CreateAtr.RECORD,
-						RemainType.SUBHOLIDAY,
-						RemainAtr.SINGLE);
+						RemainType.SUBHOLIDAY);
 				InterimDayOffMng dayoffMng = new InterimDayOffMng(
 						dayoffGuid,
 						new RequiredTime(0),
@@ -202,8 +201,7 @@ public class InterimBreakDayoffServiceImpl implements InterimBreakDayoffService 
 							employeeId,
 							targetWorkInfo.getYmd(),
 							CreateAtr.RECORD,
-							RemainType.BREAK,
-							RemainAtr.SINGLE);
+							RemainType.BREAK);
 					InterimBreakMng breakMng = new InterimBreakMng(
 							breakGuid,
 							new AttendanceTime(designatedTime.getOneDayTime().v()),

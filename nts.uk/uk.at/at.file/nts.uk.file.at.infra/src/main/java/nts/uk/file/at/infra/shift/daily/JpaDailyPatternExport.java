@@ -11,6 +11,7 @@ import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterCellData;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterCellStyle;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.ejb.Stateless;
 import java.sql.PreparedStatement;
@@ -31,12 +32,12 @@ public class JpaDailyPatternExport extends JpaRepository implements DailyPattern
             +" TABLE_RESULT.WORKING_CD, "
             +" TABLE_RESULT.WORK_TYPE_CD, "
             +" TABLE_RESULT.DAYS FROM("
-            +" SELECT T1.PATTERN_CD,T1.PATTERN_NAME,T3.NAME,T4.NAME AS NAMET4,T2.WORKING_CD,T2.DAYS,T2.WORK_TYPE_CD, "
-            +" ROW_NUMBER() OVER (PARTITION BY T1.PATTERN_CD ORDER BY T1.PATTERN_CD, T1.PATTERN_NAME,T2.DISP_ORDER) AS ROW_NUMBER "
-            +" FROM KSCMT_DAILY_PATTERN_SET T1 "
-            +" INNER JOIN KSCMT_DAILY_PATTERN_VAL T2 ON T1.PATTERN_CD = T2.PATTERN_CD AND T2.CID = T1.CID  "
-            +" LEFT JOIN KSHMT_WORKTYPE T3 ON T2.WORK_TYPE_CD = T3.CD AND T3.CID = T1.CID"
-            +" LEFT JOIN KSHMT_WORK_TIME_SET T4 ON T2.WORKING_CD = T4.WORKTIME_CD AND T4.CID = T1.CID "
+            +" SELECT T1.CD AS PATTERN_CD,T1.NAME AS PATTERN_NAME,T3.NAME,T4.NAME AS NAMET4,T2.WKTM_CD AS WORKING_CD,T2.REPEAT_DAYS AS DAYS,T2.WKTP_CD AS WORK_TYPE_CD, "
+            +" ROW_NUMBER() OVER (PARTITION BY T1.CD ORDER BY T1.CD, T1.NAME,T2.CYCLE_ORDER) AS ROW_NUMBER "
+            +" FROM KSCMT_WORKING_CYCLE T1 "
+            +" INNER JOIN KSCMT_WORKING_CYCLE_DTL T2 ON T1.CD = T2.CD AND T2.CID = T1.CID  "
+            +" LEFT JOIN KSHMT_WORKTYPE T3 ON T2.WKTP_CD = T3.CD AND T3.CID = T1.CID"
+            +" LEFT JOIN KSHMT_WORK_TIME_SET T4 ON T2.WKTM_CD = T4.WORKTIME_CD AND T4.CID = T1.CID "
             +" WHERE T1.CID = ? ) "
             +" TABLE_RESULT;";
 
@@ -75,7 +76,7 @@ public class JpaDailyPatternExport extends JpaRepository implements DailyPattern
                 .build());
         data.put(DailyPatternExportImpl.KSM003_41, MasterCellData.builder()
                 .columnId(DailyPatternExportImpl.KSM003_41)
-                .value(  r.getString("NAMET4") == null ?  (r.getString("WORKING_CD").equals("   ") ? null : r.getString("WORKING_CD")+"マスタ未登録") : (r.getString("WORKING_CD").equals("   ") ? null : r.getString("WORKING_CD")+r.getString("NAMET4")))
+                .value(  r.getString("NAMET4") == null ?  (StringUtils.isBlank(r.getString("WORKING_CD")) ? null : r.getString("WORKING_CD")+"マスタ未登録") : (StringUtils.isBlank(r.getString("WORKING_CD")) ? null : r.getString("WORKING_CD")+r.getString("NAMET4")))
                 .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
                 .build());
         data.put(DailyPatternExportImpl.KSM003_42, MasterCellData.builder()

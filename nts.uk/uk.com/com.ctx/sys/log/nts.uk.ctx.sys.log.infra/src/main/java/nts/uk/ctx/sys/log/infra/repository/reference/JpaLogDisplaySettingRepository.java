@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.sys.log.dom.enums.SystemTypeEnum;
 import nts.uk.ctx.sys.log.dom.reference.DataTypeEnum;
 import nts.uk.ctx.sys.log.dom.reference.LogDisplaySetting;
 import nts.uk.ctx.sys.log.dom.reference.LogDisplaySettingRepository;
@@ -47,7 +48,8 @@ public class JpaLogDisplaySettingRepository extends JpaRepository implements Log
 
 	@Override
 	public List<LogDisplaySetting> getAllLogDisplaySet(String cid) {
-		return this.queryProxy().query(SELECT_BY_CID_STRING, SrcdtLogDisplaySetting.class).setParameter("cid", cid)
+		return this.queryProxy().query(SELECT_BY_CID_STRING, SrcdtLogDisplaySetting.class)
+				.setParameter("cid", cid)
 				.getList(c -> c.toDomain()).stream()
 				.sorted(new Comparator<LogDisplaySetting>() {
 					@Override
@@ -65,11 +67,11 @@ public class JpaLogDisplaySettingRepository extends JpaRepository implements Log
 				.getQuery().getResultList();	
 		return objects.stream().map(x -> {
 			Object[] values = (Object[])x;
-			LogDisplaySetting logDisplaySetting = new LogDisplaySetting(String.valueOf(values[0]), String.valueOf(values[1]),
+			return new LogDisplaySetting(String.valueOf(values[0]), String.valueOf(values[1]),
 					 new LogSettingCode(String.valueOf(values[2])), new LogSettingName(String.valueOf(values[3]))
 							 ,Objects.isNull(values[4])?null:DataTypeEnum.valueOf(Integer.valueOf(String.valueOf(values[4]) ))
-							 ,RecordTypeEnum.valueOf(Integer.valueOf(String.valueOf(values[5])) ) );			
-			return logDisplaySetting;
+							 ,RecordTypeEnum.valueOf(Integer.valueOf(String.valueOf(values[5])))
+							 ,SystemTypeEnum.valueOf(Integer.valueOf(String.valueOf(values[6]))));			
 		}).collect(Collectors.toList());
 		
 		
@@ -86,11 +88,11 @@ public class JpaLogDisplaySettingRepository extends JpaRepository implements Log
 				.getQuery().getResultList();	
 		return objects.stream().map(x -> {
 			Object[] values = (Object[])x;
-			LogDisplaySetting logDisplaySetting = new LogDisplaySetting(String.valueOf(values[0]), String.valueOf(values[1]),
+			return new LogDisplaySetting(String.valueOf(values[0]), String.valueOf(values[1]),
 					 new LogSettingCode(String.valueOf(values[2])), new LogSettingName(String.valueOf(values[3]))
 							 ,Objects.isNull(values[4])?null:DataTypeEnum.valueOf(Integer.valueOf(String.valueOf(values[4]) ))
-							 ,RecordTypeEnum.valueOf(Integer.valueOf(String.valueOf(values[5])) ) );			
-			return logDisplaySetting;
+							 ,RecordTypeEnum.valueOf(Integer.valueOf(String.valueOf(values[5])))
+							 ,SystemTypeEnum.valueOf(Integer.valueOf(String.valueOf(values[6]))));			
 		}).collect(Collectors.toList());
 	}
 

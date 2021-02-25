@@ -16,6 +16,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLog;
@@ -24,6 +25,7 @@ import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscdtScheExeLog;
 import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscdtScheExeLogPK;
 import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscdtScheExeLogPK_;
 import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscdtScheExeLog_;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class JpaScheduleExecutionLogRepository.
@@ -105,7 +107,10 @@ public class JpaScheduleExecutionLogRepository extends JpaRepository implements 
 	public void add(ScheduleExecutionLog domain) {
 		this.commandProxy().insert(this.toEntity(domain));
 	}
-
+	@Override
+	public void addNew(ScheduleExecutionLog domain) {
+		this.commandProxy().insert(this.toEntityNew(domain));
+	}
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -127,7 +132,16 @@ public class JpaScheduleExecutionLogRepository extends JpaRepository implements 
 	 */
 	private KscdtScheExeLog toEntity(ScheduleExecutionLog domain) {
 		KscdtScheExeLog entity = new KscdtScheExeLog();
+
 		domain.saveToMemento(new JpaScheduleExecutionLogSetMemento(entity));
+		return entity;
+	}
+	private KscdtScheExeLog toEntityNew(ScheduleExecutionLog domain) {
+		val cd = AppContexts.user().contractCode();
+		KscdtScheExeLog entity = new KscdtScheExeLog();
+		domain.saveToMemento(new JpaScheduleExecutionLogSetMemento(entity));
+		// Update contractCode - 27/8/2020
+		entity.setContractCD(cd);
 		return entity;
 	}
 

@@ -1,0 +1,17 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:com="http://xmlns.jcp.org/jsf/component"
+                xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <div class="fixed-flex-layout-left">
+        <div id="wkp-list"/>
+    </div>
+    <div id="right-content" class="fixed-flex-layout-right">
+        <div class="control-group valign-center">
+            <div data-bind="ntsFormLabel: {}"> <span data-bind="text: nts.uk.resource.getText('KAF022_276',[ nts.uk.resource.getText('Com_Workplace')])"/></div>
+            <div style="margin-left: 30px; display: inline">
+                <label data-bind="text : workplaceName"/>
+            </div>
+        </div>
+        <ui:include src="../table.xhtml" />
+    </div>
+</ui:composition>

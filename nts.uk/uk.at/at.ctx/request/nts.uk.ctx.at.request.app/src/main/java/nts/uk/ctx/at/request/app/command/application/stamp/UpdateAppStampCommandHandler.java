@@ -1,144 +1,53 @@
 package nts.uk.ctx.at.request.app.command.application.stamp;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
-import org.apache.logging.log4j.util.Strings;
-
-import nts.arc.enums.EnumAdaptor;
-import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.uk.ctx.at.request.app.command.application.stamp.command.AppStampCmd;
-import nts.uk.ctx.at.request.dom.application.AppReason;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
+import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppRecordImageDto;
+import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampDto;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
+import nts.uk.ctx.at.request.dom.application.stamp.AppCommonDomainServiceRegister;
+import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImage;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStampAtr;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStampCancel;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStampCombinationAtr;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStampDetailDomainService;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStampGoOutAtr;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStampGoOutPermit;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStampOnlineRecord;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStampWork;
-import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
-import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.time.TimeWithDayAttr;
-/**
- * 
- * @author Doan Duy Hung
- *
- */
+@Transactional
 @Stateless
-public class UpdateAppStampCommandHandler extends CommandHandlerWithResult<AppStampCmd, ProcessResult>{
-	
-	//private static final String DATE_FORMAT = "yyyy/MM/dd";
+public class UpdateAppStampCommandHandler extends CommandHandlerWithResult<RegisterOrUpdateAppStampParam, ProcessResult>{
 	
 	@Inject
-	private AppStampDetailDomainService applicationStampDetailDomainService;
+	private AppCommonDomainServiceRegister appCommonDomainServiceRegister;
 	
-	@Inject
-	private ApplicationRepository_New applicationRepository;
-	
+	public static final String DATE_FORMAT = "yyyy/MM/dd";
 	@Override
-	protected ProcessResult handle(CommandHandlerContext<AppStampCmd> context) {
-		String companyID = AppContexts.user().companyId();
-		AppStampCmd appStampCmd = context.getCommand();
-		String applicationReason = "";
-		if(!appStampCmd.getTitleReason().isEmpty() || !appStampCmd.getDetailReason().isEmpty()) {
-			applicationReason = !appStampCmd.getTitleReason().isEmpty()? appStampCmd.getTitleReason() + System.lineSeparator() + appStampCmd.getDetailReason() : appStampCmd.getDetailReason();
+	protected ProcessResult handle(CommandHandlerContext<RegisterOrUpdateAppStampParam> context) {
+		RegisterOrUpdateAppStampParam param = context.getCommand();
+		ApplicationDto applicationDto = param.getApplicationDto();
+		AppStampDto appStampDto = param.getAppStampDto();
+		AppRecordImageDto appRecordImageDto = param.getAppRecordImageDto();
+		Optional<AppStamp> asOp = Optional.empty();
+		Optional<AppRecordImage> arOp = Optional.empty();
+		if (appStampDto != null) {
+			AppStamp as = appStampDto.toDomain();
+			as.setAppID(applicationDto.getAppID());
+			asOp = Optional.of(as);
 		}
-		StampRequestMode stampRequestMode = EnumAdaptor.valueOf(appStampCmd.getStampRequestMode(), StampRequestMode.class);
-		Optional<Application_New> optApplication = applicationRepository.findByID(companyID, appStampCmd.getAppID());
-		if(!optApplication.isPresent()){
-			throw new BusinessException("Msg_198");
+		if (appRecordImageDto != null) {
+			AppRecordImage ar = appRecordImageDto.toDomain();
+			ar.setAppID(applicationDto.getAppID());
+			arOp = Optional.of(ar);			
 		}
-		Application_New application = optApplication.get();
-		application.setAppReason(new AppReason(applicationReason));
-		List<AppStampGoOutPermit> appStampGoOutPermits = Collections.emptyList();
-		List<AppStampWork> appStampWorks = Collections.emptyList();
-		List<AppStampCancel> appStampCancels = Collections.emptyList();
-		Optional<AppStampOnlineRecord> appStampOnlineRecord = Optional.empty();
-		switch (stampRequestMode) {
-		case STAMP_GO_OUT_PERMIT:
-			appStampGoOutPermits = appStampCmd.getAppStampGoOutPermitCmds()
-			.stream()
-			.filter(x -> x.getStartTime()!=null||x.getEndTime()!=null||Strings.isNotBlank(x.getStartLocation()))
-			.map(x -> new AppStampGoOutPermit(
-							EnumAdaptor.valueOf(x.getStampAtr(), AppStampAtr.class), 
-							x.getStampFrameNo(), 
-							EnumAdaptor.valueOf(x.getStampGoOutAtr(), AppStampGoOutAtr.class), 
-							Optional.ofNullable(x.getStartTime()).map(p -> new TimeWithDayAttr(p)), 
-							Optional.ofNullable(x.getStartLocation()), 
-							Optional.ofNullable(x.getEndTime()).map(p -> new TimeWithDayAttr(p)), 
-							Optional.ofNullable(x.getEndLocation())))
-			.collect(Collectors.toList());
-			break;
-		case STAMP_WORK:
-			appStampWorks = appStampCmd.getAppStampWorkCmds()
-			.stream()
-			.filter(x -> x.getStartTime()!=null||x.getEndTime()!=null||Strings.isNotBlank(x.getStartLocation()))
-			.map(
-					x -> new AppStampWork(
-							EnumAdaptor.valueOf(x.getStampAtr(), AppStampAtr.class), 
-							x.getStampFrameNo(), 
-							EnumAdaptor.valueOf(x.getStampGoOutAtr(), AppStampGoOutAtr.class), 
-							Optional.ofNullable(x.getSupportCard()), 
-							Optional.ofNullable(x.getSupportLocation()), 
-							Optional.ofNullable(x.getStartTime()).map(p -> new TimeWithDayAttr(p)), 
-							Optional.ofNullable(x.getStartLocation()), 
-							Optional.ofNullable(x.getEndTime()).map(p -> new TimeWithDayAttr(p)), 
-							Optional.ofNullable(x.getEndLocation())))
-			.collect(Collectors.toList());
-			break;
-		case STAMP_CANCEL:
-			appStampCancels = appStampCmd.getAppStampCancelCmds().stream().map(
-					x -> new AppStampCancel(
-							EnumAdaptor.valueOf(x.getStampAtr(), AppStampAtr.class), 
-							x.getStampFrameNo(), 
-							x.getCancelAtr())	
-				).collect(Collectors.toList());
-			break;
-		case STAMP_ONLINE_RECORD:
-			appStampOnlineRecord = Optional.of(new AppStampOnlineRecord(
-					EnumAdaptor.valueOf(appStampCmd.getAppStampOnlineRecordCmd().getStampCombinationAtr(), AppStampCombinationAtr.class),
-					appStampCmd.getAppStampOnlineRecordCmd().getAppTime()));
-			break;
-		case OTHER:
-			appStampWorks = appStampCmd.getAppStampWorkCmds()
-			.stream()
-			.filter(x -> x.getStartTime()!=null||x.getEndTime()!=null||Strings.isNotBlank(x.getStartLocation()))
-			.map(
-					x -> new AppStampWork(
-							EnumAdaptor.valueOf(x.getStampAtr(), AppStampAtr.class), 
-							x.getStampFrameNo(), 
-							EnumAdaptor.valueOf(x.getStampGoOutAtr(), AppStampGoOutAtr.class), 
-							Optional.ofNullable(x.getSupportCard()), 
-							Optional.ofNullable(x.getSupportLocation()), 
-							Optional.ofNullable(x.getStartTime()).map(p -> new TimeWithDayAttr(p)), 
-							Optional.ofNullable(x.getStartLocation()), 
-							Optional.ofNullable(x.getEndTime()).map(p -> new TimeWithDayAttr(p)), 
-							Optional.ofNullable(x.getEndLocation())))
-			.collect(Collectors.toList());
-			break;
-		default:
-			break;
-		}
-		AppStamp appStamp = new AppStamp(
-				stampRequestMode, 
-				application, 
-				appStampGoOutPermits, 
-				appStampWorks, 
-				appStampCancels, 
-				appStampOnlineRecord);
-		appStamp.setVersion(appStampCmd.getVersion());
-		return applicationStampDetailDomainService.appStampUpdate(applicationReason, appStamp);
+		return appCommonDomainServiceRegister.updateAppStamp(
+				applicationDto.toDomain(),
+				asOp,
+				arOp,
+				param.getRecoderFlag(),
+				param.getAppStampOutputDto().appDispInfoStartupOutput.toDomain());
 	}
+	
+
 }

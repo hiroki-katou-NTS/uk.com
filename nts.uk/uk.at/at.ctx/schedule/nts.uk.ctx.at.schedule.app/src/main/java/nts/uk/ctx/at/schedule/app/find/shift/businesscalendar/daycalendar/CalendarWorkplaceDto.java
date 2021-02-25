@@ -17,6 +17,6 @@ public class CalendarWorkplaceDto {
 		return new CalendarWorkplaceDto(
 				domain.getWorkPlaceId(),
 				domain.getDate(),
-				domain.getWorkingDayAtr().value);
+				domain.getWorkDayDivision().value);
 	} 
 }

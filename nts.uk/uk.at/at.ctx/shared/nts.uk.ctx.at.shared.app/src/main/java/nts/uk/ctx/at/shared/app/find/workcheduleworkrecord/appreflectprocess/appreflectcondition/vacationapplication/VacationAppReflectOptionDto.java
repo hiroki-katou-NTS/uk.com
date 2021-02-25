@@ -1,0 +1,40 @@
+package nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.VacationAppReflectOption;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.ReflectWorkHourCondition;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class VacationAppReflectOptionDto {
+    /**
+     * 1日休暇の場合は出退勤を削除
+     */
+    private int oneDayLeaveDeleteAttendance;
+
+    /**
+     * 出退勤を反映する
+     */
+    private int reflectAttendance;
+
+    /**
+     * 就業時間帯を反映する
+     */
+    private int reflectWorkHour;
+    
+    public static VacationAppReflectOptionDto fromDomain(VacationAppReflectOption domain) {
+    	return new VacationAppReflectOptionDto(domain.getOneDayLeaveDeleteAttendance().value, domain.getReflectAttendance().value, domain.getReflectWorkHour().value);
+    }
+    
+    public VacationAppReflectOption toDomain() {
+        return new VacationAppReflectOption(
+                EnumAdaptor.valueOf(oneDayLeaveDeleteAttendance, NotUseAtr.class), 
+                EnumAdaptor.valueOf(reflectAttendance, NotUseAtr.class), 
+                EnumAdaptor.valueOf(reflectWorkHour, ReflectWorkHourCondition.class));
+    }
+}

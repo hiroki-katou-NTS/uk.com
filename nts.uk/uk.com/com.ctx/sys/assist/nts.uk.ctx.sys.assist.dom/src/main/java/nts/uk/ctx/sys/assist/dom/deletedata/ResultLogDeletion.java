@@ -33,7 +33,7 @@ public class ResultLogDeletion extends AggregateRoot {
 
 	// 処理内容
 	/** The processing content. */
-	private ProcessingContent processingContent;;
+	private ProcessingContent processingContent;
 
 	// エラー内容
 	/** The error content. */

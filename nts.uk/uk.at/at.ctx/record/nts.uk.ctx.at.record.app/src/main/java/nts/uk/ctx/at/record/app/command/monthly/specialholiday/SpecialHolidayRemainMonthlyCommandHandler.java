@@ -5,7 +5,7 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.CommandFacade;
-import nts.uk.ctx.at.shared.dom.monthly.vacation.specialholiday.monthremaindata.SpecialHolidayRemainDataRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialHolidayRemainDataRepository;
 
 @Stateless
 public class SpecialHolidayRemainMonthlyCommandHandler extends CommandFacade<SpecialHolidayRemainMonthlyCommand> {
@@ -15,11 +15,11 @@ public class SpecialHolidayRemainMonthlyCommandHandler extends CommandFacade<Spe
 
 	@Override
 	protected void handle(CommandHandlerContext<SpecialHolidayRemainMonthlyCommand> context) {
-		if(!context.getCommand().getData().isEmpty()) {
+//		if(!context.getCommand().getData().isEmpty()) {
 			context.getCommand().toDomain().stream().forEach(d -> {
 				repo.persistAndUpdate(d);
 			});
-		}
+//		}
 		
 	}
 }

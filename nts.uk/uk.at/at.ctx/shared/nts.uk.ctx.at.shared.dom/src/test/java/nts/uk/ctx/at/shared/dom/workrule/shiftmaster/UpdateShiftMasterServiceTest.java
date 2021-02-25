@@ -34,7 +34,7 @@ public class UpdateShiftMasterServiceTest {
 				require.getByShiftMaterCd(anyString);
 				result = Optional.of(ShiftMasterInstanceHelper.getShiftMaterEmpty());
 
-				requireWorkInfo.findByPK(anyString);
+				requireWorkInfo.getWorkType(anyString);
 				result = Optional.of(new WorkType());
 				
 				requireWorkInfo.checkNeededOfWorkTimeSetting(anyString);
@@ -57,14 +57,14 @@ public class UpdateShiftMasterServiceTest {
 		String shiftMasterCode = "shiftMasterCode";
 		String workTypeCode = "workTypeCode";
 		ShiftMasterDisInfor displayInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"), null);
-		WorkInformation workInformation = new WorkInformation("workTimeCode", "workTypeCode");
+		WorkInformation workInformation = new WorkInformation("workTypeCode", "workTimeCode");
 
 		new Expectations() {
 			{
 				require.getByShiftMaterCd(anyString);
 				result = Optional.of(ShiftMasterInstanceHelper.getShiftMaterEmpty());
 
-				requireWorkInfo.findByPK(workTypeCode);
+				requireWorkInfo.getWorkType(workTypeCode);
 			}
 		};
 
@@ -80,20 +80,20 @@ public class UpdateShiftMasterServiceTest {
 		String shiftMasterCode = "shiftMasterCode";
 		String workTypeCode = "workTypeCode";
 		ShiftMasterDisInfor displayInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"), null);
-		WorkInformation workInformation = new WorkInformation("workTimeCode", "workTypeCode");
+		WorkInformation workInformation = new WorkInformation("workTypeCode", "workTimeCode");
 
 		new Expectations() {
 			{
 				require.getByShiftMaterCd(shiftMasterCode);
 				result = Optional.of(ShiftMasterInstanceHelper.getShiftMaterEmpty());
 				
-				requireWorkInfo.findByPK(workTypeCode);
+				requireWorkInfo.getWorkType(workTypeCode);
 				result = Optional.of(new WorkType());
 				
 				requireWorkInfo.checkNeededOfWorkTimeSetting(workTypeCode);
 				result = SetupType.REQUIRED;
 				
-				requireWorkInfo.findByCode(workInformation.getWorkTimeCode().v());
+				requireWorkInfo.getWorkTime(workInformation.getWorkTimeCode().v());
 			}
 		};
 
@@ -106,7 +106,7 @@ public class UpdateShiftMasterServiceTest {
 
 	@Test
 	public void testUpdateShiftMater_throw_Msg_435() {
-		WorkInformation workInformation = new WorkInformation(null, "workTypeCode");
+		WorkInformation workInformation = new WorkInformation("workTypeCode", null);
 		String shiftMasterCode = "shiftMasterCode";
 		String workTypeCode = "workTypeCode";
 		ShiftMasterDisInfor displayInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"), null);
@@ -115,7 +115,7 @@ public class UpdateShiftMasterServiceTest {
 				require.getByShiftMaterCd(shiftMasterCode);
 				result = Optional.of(ShiftMasterInstanceHelper.getShiftMaterEmpty());
 				
-				requireWorkInfo.findByPK(workTypeCode);
+				requireWorkInfo.getWorkType(workTypeCode);
 				result = Optional.of(new WorkType());
 
 				requireWorkInfo.checkNeededOfWorkTimeSetting(workTypeCode);
@@ -135,14 +135,14 @@ public class UpdateShiftMasterServiceTest {
 		String shiftMasterCode = "shiftMasterCode";
 		String workTypeCode = "workTypeCode";
 		ShiftMasterDisInfor displayInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"), null);
-		WorkInformation workInformation = new WorkInformation("workTimeCode", "workTypeCode");
+		WorkInformation workInformation = new WorkInformation("workTypeCode", "workTimeCode");
 
 		new Expectations() {
 			{
 				require.getByShiftMaterCd(shiftMasterCode);
 				result = Optional.of(ShiftMasterInstanceHelper.getShiftMaterEmpty());
 				
-				requireWorkInfo.findByPK(workTypeCode);
+				requireWorkInfo.getWorkType(workTypeCode);
 				result = Optional.of(new WorkType());
 				
 				requireWorkInfo.checkNeededOfWorkTimeSetting(workTypeCode);
@@ -163,14 +163,14 @@ public class UpdateShiftMasterServiceTest {
 		String shiftMasterCode = "shiftMasterCode";
 		String workTypeCode = "workTypeCode";
 		ShiftMasterDisInfor displayInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name"),new ColorCodeChar6("color"), null);
-		WorkInformation workInformation = new WorkInformation(null, "workTypeCode");
+		WorkInformation workInformation = new WorkInformation("workTypeCode", null);
 		ShiftMaster shiftMaster = new ShiftMaster("companyId",new ShiftMasterCode(shiftMasterCode), displayInfor, workTypeCode, null);
 		new Expectations() {
 			{
 				require.getByShiftMaterCd(anyString);
 				result = Optional.of(ShiftMasterInstanceHelper.getShiftMaterEmpty());
 				
-				requireWorkInfo.findByPK(anyString);
+				requireWorkInfo.getWorkType(anyString);
 				result = Optional.of(new WorkType());
 				
 				requireWorkInfo.checkNeededOfWorkTimeSetting(anyString);

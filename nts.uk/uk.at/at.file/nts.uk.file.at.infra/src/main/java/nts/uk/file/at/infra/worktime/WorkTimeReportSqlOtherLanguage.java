@@ -2758,22 +2758,22 @@ public class WorkTimeReportSqlOtherLanguage {
 				" 	CASE WHEN WORKTIME_DISP_MODE.DISP_MODE != ?detailMode OR FLOW_RT_SET2.FIX_REST_TIME = ?isFalse THEN NULL ");
 		sqlFlow.append(
 				" 		 WHEN TEMP.ROW_ID = 1 AND FLOW_REST_SET.FIXED_REST_CALC_METHOD = ?restCalcMethodReferMaster THEN ?restCalcMethodReferMasterText");
-		sqlFlow.append(
-				" 		 WHEN TEMP.ROW_ID = 1 AND FLOW_REST_SET.FIXED_REST_CALC_METHOD = ?restCalcMethodReferSchedule THEN ?restCalcMethodReferScheduleText");
+//		sqlFlow.append(
+//				" 		 WHEN TEMP.ROW_ID = 1 AND FLOW_REST_SET.FIXED_REST_CALC_METHOD = ?restCalcMethodReferSchedule THEN ?restCalcMethodReferScheduleText");
 		sqlFlow.append(
 				" 		 WHEN TEMP.ROW_ID = 1 AND FLOW_REST_SET.FIXED_REST_CALC_METHOD = ?restCalcMethodWithoutRefer THEN ?restCalcMethodWithoutReferText");
 		sqlFlow.append(" 		 ELSE NULL");
 		sqlFlow.append(" 	END,");
 		// R2_121 休憩時間帯.固定休憩設定（休憩時間の固定する）.予定と実績の勤務が一致しな場合はマスタを参照する
-		sqlFlow.append(
-				" 	IIF(TEMP.ROW_ID = 1 AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode AND FLOW_RT_SET2.FIX_REST_TIME = ?isTrue AND FLOW_REST_SET.FIXED_REST_CALC_METHOD = ?restCalcMethodReferSchedule, ");
-		sqlFlow.append(
-				" 		IIF(FLOW_REST_SET.IS_CALC_FROM_SCHEDULE = ?isTrue, ?isCalcFromSchedule, ?isNotCalcFromSchedule), NULL),");
+//		sqlFlow.append(
+//				" 	IIF(TEMP.ROW_ID = 1 AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode AND FLOW_RT_SET2.FIX_REST_TIME = ?isTrue AND FLOW_REST_SET.FIXED_REST_CALC_METHOD = ?restCalcMethodReferSchedule, ");
+//		sqlFlow.append(
+//				" 		IIF(FLOW_REST_SET.IS_CALC_FROM_SCHEDULE = ?isTrue, ?isCalcFromSchedule, ?isNotCalcFromSchedule), NULL),");
 		// R2_122 休憩時間帯.固定休憩設定（休憩時間の固定する）.休憩時刻が無い場合はマスタから休憩時刻を参照する
-		sqlFlow.append(
-				" 	IIF(TEMP.ROW_ID = 1 AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode AND FLOW_RT_SET2.FIX_REST_TIME = ?isTrue AND FLOW_REST_SET.FIXED_REST_CALC_METHOD = ?restCalcMethodReferSchedule, ");
-		sqlFlow.append(
-				" 		IIF(FLOW_REST_SET.IS_REFER_REST_TIME = ?isTrue, ?isReferRestTime, ?isNotReferRestTime), NULL),");
+//		sqlFlow.append(
+//				" 	IIF(TEMP.ROW_ID = 1 AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode AND FLOW_RT_SET2.FIX_REST_TIME = ?isTrue AND FLOW_REST_SET.FIXED_REST_CALC_METHOD = ?restCalcMethodReferSchedule, ");
+//		sqlFlow.append(
+//				" 		IIF(FLOW_REST_SET.IS_REFER_REST_TIME = ?isTrue, ?isReferRestTime, ?isNotReferRestTime), NULL),");
 		// R2_123 休憩時間帯.固定休憩設定（休憩時間の固定する）.私用外出を休憩として扱う
 		sqlFlow.append(
 				" 	IIF(TEMP.ROW_ID = 1 AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode AND FLOW_RT_SET2.FIX_REST_TIME = ?isTrue AND FLOW_REST_SET.FIXED_REST_CALC_METHOD = ?restCalcMethodWithoutRefer, ");
@@ -4508,22 +4508,22 @@ public class WorkTimeReportSqlOtherLanguage {
 				" 	CASE WHEN WORKTIME_DISP_MODE.DISP_MODE != ?detailMode OR FLEX_HA_RT_SET1.FIX_REST_TIME = ?isFalse THEN NULL ");
 		sqlFlex.append(
 				" 		 WHEN TEMP.ROW_ID = 1 AND FLEX_REST_SET.FIXED_REST_CALC_METHOD = ?restCalcMethodReferMaster THEN ?restCalcMethodReferMasterText");
-		sqlFlex.append(
-				" 		 WHEN TEMP.ROW_ID = 1 AND FLEX_REST_SET.FIXED_REST_CALC_METHOD = ?restCalcMethodReferSchedule THEN ?restCalcMethodReferScheduleText");
+//		sqlFlex.append(
+//				" 		 WHEN TEMP.ROW_ID = 1 AND FLEX_REST_SET.FIXED_REST_CALC_METHOD = ?restCalcMethodReferSchedule THEN ?restCalcMethodReferScheduleText");
 		sqlFlex.append(
 				" 		 WHEN TEMP.ROW_ID = 1 AND FLEX_REST_SET.FIXED_REST_CALC_METHOD = ?restCalcMethodWithoutRefer THEN ?restCalcMethodWithoutReferText");
 		sqlFlex.append(" 		 ELSE NULL");
 		sqlFlex.append(" 	END,");
 		// R3_161 休憩時間帯.固定休憩設定（休憩時間の固定する）.予定と実績の勤務が一致しな場合はマスタを参照する
-		sqlFlex.append(
-				" 	IIF(TEMP.ROW_ID = 1 AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode AND FLEX_HA_RT_SET1.FIX_REST_TIME = ?isTrue AND FLEX_REST_SET.FIXED_REST_CALC_METHOD = ?restCalcMethodReferSchedule, ");
-		sqlFlex.append(
-				" 		IIF(FLEX_REST_SET.IS_CALC_FROM_SCHEDULE = ?isTrue, ?isCalcFromSchedule, ?isNotCalcFromSchedule), NULL),");
+//		sqlFlex.append(
+//				" 	IIF(TEMP.ROW_ID = 1 AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode AND FLEX_HA_RT_SET1.FIX_REST_TIME = ?isTrue AND FLEX_REST_SET.FIXED_REST_CALC_METHOD = ?restCalcMethodReferSchedule, ");
+//		sqlFlex.append(
+//				" 		IIF(FLEX_REST_SET.IS_CALC_FROM_SCHEDULE = ?isTrue, ?isCalcFromSchedule, ?isNotCalcFromSchedule), NULL),");
 		// R3_162 休憩時間帯.固定休憩設定（休憩時間の固定する）.休憩時刻が無い場合はマスタから休憩時刻を参照する
-		sqlFlex.append(
-				" 	IIF(TEMP.ROW_ID = 1 AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode AND FLEX_HA_RT_SET1.FIX_REST_TIME = ?isTrue AND FLEX_REST_SET.FIXED_REST_CALC_METHOD = ?restCalcMethodReferSchedule, ");
-		sqlFlex.append(
-				" 		IIF(FLEX_REST_SET.IS_REFER_REST_TIME = ?isTrue, ?isReferRestTime, ?isNotReferRestTime), NULL),");
+//		sqlFlex.append(
+//				" 	IIF(TEMP.ROW_ID = 1 AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode AND FLEX_HA_RT_SET1.FIX_REST_TIME = ?isTrue AND FLEX_REST_SET.FIXED_REST_CALC_METHOD = ?restCalcMethodReferSchedule, ");
+//		sqlFlex.append(
+//				" 		IIF(FLEX_REST_SET.IS_REFER_REST_TIME = ?isTrue, ?isReferRestTime, ?isNotReferRestTime), NULL),");
 		// R3_163 休憩時間帯.固定休憩設定（休憩時間の固定する）.私用外出を休憩として扱う
 		sqlFlex.append(
 				" 	IIF(TEMP.ROW_ID = 1 AND WORKTIME_DISP_MODE.DISP_MODE = ?detailMode AND FLEX_HA_RT_SET1.FIX_REST_TIME = ?isTrue AND FLEX_REST_SET.FIXED_REST_CALC_METHOD = ?restCalcMethodWithoutRefer, ");

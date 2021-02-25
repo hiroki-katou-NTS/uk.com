@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.holidayworktime.service;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport_Old;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 
 public interface HolidayThreeProcess {
@@ -32,7 +32,7 @@ public interface HolidayThreeProcess {
 	 * @param recordWorkInfoImport
 	 * @return
 	 */
-	public CaculationTime checkOutSideTimeTheDay(String companyID,String employeeID,String appDate, String siftCD,CaculationTime breakTime,RecordWorkInfoImport recordWorkInfoImport,Integer calTime,String employeeName);
+	public CaculationTime checkOutSideTimeTheDay(String companyID,String employeeID,String appDate, String siftCD,CaculationTime breakTime,RecordWorkInfoImport_Old recordWorkInfoImport,Integer calTime,String employeeName);
 	/**
 	 * 03-02-2-1_当日以外_休日出勤の場合
 	 * @param companyID
@@ -44,7 +44,7 @@ public interface HolidayThreeProcess {
 	 * @param recordWorkInfoImport
 	 * @return
 	 */
-	public CaculationTime checkOutSideTimeTheDayForHoliday(String companyID,String employeeID,String appDate, String siftCD,CaculationTime breakTime,RecordWorkInfoImport recordWorkInfoImport,Integer calTime,String employeeName);
+	public CaculationTime checkOutSideTimeTheDayForHoliday(String companyID,String employeeID,String appDate, String siftCD,CaculationTime breakTime,RecordWorkInfoImport_Old recordWorkInfoImport,Integer calTime,String employeeName);
 	/**
 	 * 03-02-2-2_当日以外_休日の場合
 	 * @param companyID
@@ -56,7 +56,7 @@ public interface HolidayThreeProcess {
 	 * @param calTime
 	 * @return
 	 */
-	public CaculationTime checkOutSideTimeTheDayNoForHoliday(String companyID,String employeeID,String appDate, String siftCD,CaculationTime breakTime,RecordWorkInfoImport recordWorkInfoImport,Integer calTime,String employeeName);
+	public CaculationTime checkOutSideTimeTheDayNoForHoliday(String companyID,String employeeID,String appDate, String siftCD,CaculationTime breakTime,RecordWorkInfoImport_Old recordWorkInfoImport,Integer calTime,String employeeName);
 	/**
 	 * 03-02-3_当日の場合
 	 * checkHolidayWorkOnDay
@@ -70,7 +70,7 @@ public interface HolidayThreeProcess {
 	 * @param actualExceedConfirm
 	 * @return
 	 */
-	public CaculationTime checkHolidayWorkOnDay(String companyID,String employeeID,String appDate, String siftCD,CaculationTime breakTimes,RecordWorkInfoImport recordWorkInfoImport,Integer calTime,String employeeName, boolean actualExceedConfirm);
+	public CaculationTime checkHolidayWorkOnDay(String companyID,String employeeID,String appDate, String siftCD,CaculationTime breakTimes,RecordWorkInfoImport_Old recordWorkInfoImport,Integer calTime,String employeeName, boolean actualExceedConfirm);
 	/**
 	 * 03-02-3-1_当日_休日出勤の場合
 	 * @param companyID
@@ -81,7 +81,7 @@ public interface HolidayThreeProcess {
 	 * @param recordWorkInfoImport
 	 * @param calTime
 	 */
-	public void checkOnDayTheDayForHolidayWork(String companyID,String employeeID,String appDate, String siftCD,CaculationTime breakTimes,RecordWorkInfoImport recordWorkInfoImport,Integer calTime,String employeeName, boolean actualExceedConfirm);
+	public void checkOnDayTheDayForHolidayWork(String companyID,String employeeID,String appDate, String siftCD,CaculationTime breakTimes,RecordWorkInfoImport_Old recordWorkInfoImport,Integer calTime,String employeeName, boolean actualExceedConfirm);
 	/**
 	 * 03-02-3-2_当日_休日の場合
 	 * @param companyID
@@ -92,7 +92,7 @@ public interface HolidayThreeProcess {
 	 * @param recordWorkInfoImport
 	 * @param calTime
 	 */
-	public void checkDayIsHoliday(String companyID,String employeeID,String appDate, String siftCD,CaculationTime breakTimes,RecordWorkInfoImport recordWorkInfoImport,Integer calTime,String employeeName);
+	public void checkDayIsHoliday(String companyID,String employeeID,String appDate, String siftCD,CaculationTime breakTimes,RecordWorkInfoImport_Old recordWorkInfoImport,Integer calTime,String employeeName);
 	/**
 	 * 03-02-a_実績超過チェック（承認者）	
 	 * @param prePostAtr

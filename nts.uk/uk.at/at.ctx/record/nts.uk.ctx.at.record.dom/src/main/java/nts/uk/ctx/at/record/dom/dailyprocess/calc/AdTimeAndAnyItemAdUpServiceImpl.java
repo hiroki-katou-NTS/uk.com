@@ -18,12 +18,16 @@ import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.AttendanceLeavi
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
+import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.CalculationState;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -59,6 +63,10 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 	@Inject
 	private StoredProcedureFactory dbStoredProcess;
 	
+	/*日別実績の編集状態*/
+	@Inject
+	private EditStateOfDailyPerformanceRepository editState;
+	
 	@Override
 	public void addAndUpdate(String empId ,GeneralDate ymd,
 							Optional<AttendanceTimeOfDailyPerformance> attendanceTime, Optional<AnyItemValueOfDaily> anyItem) {
@@ -68,13 +76,15 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 			Optional<TimeLeavingOfDailyPerformance> tl = timeLeave.findByKey(empId, ymd);
 			wi.changeCalcState(CalculationState.Calculated);
 			IntegrationOfDaily daily = new IntegrationOfDaily(
+					empId,
+					ymd,
 					wi.getWorkInformation(), //workInformation
 					null, //calAttr
 					null, //affiliationInfor
 					pc.isPresent()?Optional.of(pc.get().getTimeZone()):Optional.empty(),//pcLogOnInfo
 					new ArrayList<>(),//employeeError
 					Optional.empty(),//outingTime
-					new ArrayList<>(),//breakTime
+					new BreakTimeOfDailyAttd(),//breakTime
 					attendanceTime.isPresent()?Optional.of(attendanceTime.get().getTime()):Optional.empty(),//attendanceTimeOfDailyPerformance
 					tl.isPresent()?Optional.of(tl.get().getAttendance()):Optional.empty(),//attendanceLeave
 					Optional.empty(), //shortTime
@@ -83,9 +93,8 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 					anyItem.isPresent()?Optional.of(anyItem.get().getAnyItem()):Optional.empty(), //anyItemValue
 					new ArrayList<>(),//editState
 					Optional.empty(), //tempTime
-					new ArrayList<>());//remarks
-			daily.setEmployeeId(empId);
-			daily.setYmd(ymd);
+					new ArrayList<>(),//remarks
+					Optional.empty());//snapshot
 			addAndUpdate(daily);
 		});
 	}
@@ -120,6 +129,13 @@ public class AdTimeAndAnyItemAdUpServiceImpl implements AdTimeAndAnyItemAdUpServ
 									d.getAttendanceTimeOfDailyPerformance().get()))
 							: Optional.empty(); 
 			dbStoredProcess.runStoredProcedure(comId, attdTimeOfDailyPer, new WorkInfoOfDailyPerformance(d.getEmployeeId(), d.getYmd(), d.getWorkInformation()) );
+			// 編集状態更新
+			List<EditStateOfDailyPerformance> editStateList = new ArrayList<>();
+			for (EditStateOfDailyAttd editState : d.getEditState()){
+				editStateList.add(new EditStateOfDailyPerformance(d.getEmployeeId(), d.getYmd(), editState));
+			}
+			this.editState.updateByKey(editStateList);
+			this.editState.deleteExclude(editStateList);
 		});
 		return daily;
 	}

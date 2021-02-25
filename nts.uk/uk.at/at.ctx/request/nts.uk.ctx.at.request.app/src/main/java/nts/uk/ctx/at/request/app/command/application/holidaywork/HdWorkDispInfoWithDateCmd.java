@@ -4,107 +4,102 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.ActualStatus;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
+import nts.uk.ctx.at.request.app.command.application.overtime.ApplicationTimeCommand;
+import nts.uk.ctx.at.request.app.command.application.overtime.BreakTimeZoneSettingCommand;
+import nts.uk.ctx.at.request.app.command.application.overtime.WorkHoursCommand;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkDispInfoWithDateOutput;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HolidayWorkInstruction;
-import nts.uk.ctx.at.shared.app.command.worktime.common.dto.DeductionTimeDto;
-import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
-import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
+import nts.uk.ctx.at.shared.app.command.worktype.WorkTypeCommandBase;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeStatusOfMonthly;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeName;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeName;
+import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * Refactor5
+ * @author huylq
+ *
+ */
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 public class HdWorkDispInfoWithDateCmd {
 	
 	/**
 	 * 代休管理区分
 	 */
-	public boolean subHdManage;
+	private boolean subHdManage;
 	
 	/**
-	 * 休出申請指示
+	 * 勤務時間
 	 */
-	public HolidayWorkInstruction appHdWorkInstruction;
-	
-	/**
-	 * 初期選択勤務種類
-	 */
-	public String workTypeCD;
-	
-	/**
-	 * 初期選択就業時間帯
-	 */
-	public String workTimeCD;
-	
-	/**
-	 * 開始時刻
-	 */
-	public Integer startTime;
-	
-	/**
-	 * 終了時刻
-	 */
-	public Integer endTime;
-	
-	/**
-	 * 表示する実績内容
-	 */
-	public List<AchievementOutput> achievementOutputLst;
-	
-	/**
-	 * 実績状態
-	 */
-	public Integer actualStatus;
-	
-	/**
-	 * 勤怠時間の超過状態
-	 */
-	public String overtimeStatus;
-	
-	/**
-	 * 月別実績の36協定時間状態
-	 */
-	public Integer agreementTimeStatusOfMonthly;
-	
-	/**
-	 * 初期選択勤務種類名称
-	 */
-	public String workTypeName;
-	
-	/**
-	 * 初期選択就業時間帯名称
-	 */
-	public String workTimeName;
-	
-	/**
-	 * 勤務種類リスト
-	 */
-	public List<WorkTypeDto> workTypeLst;
+	private WorkHoursCommand workHours;
 	
 	/**
 	 * 休憩時間帯設定リスト
 	 */
-	public List<DeductionTimeDto> deductionTimeLst;
+	private BreakTimeZoneSettingCommand breakTimeZoneSettingList;
+	
+	/**
+	 * 勤務種類リスト
+	 */
+	private List<WorkTypeCommandBase> workTypeList;
+	
+	/**
+	 * 初期選択勤務種類
+	 */
+	private String initWorkType;
+	
+	/**
+	 * 初期選択勤務種類名称
+	 */
+	private String initWorkTypeName;
+	
+	/**
+	 * 初期選択就業時間帯
+	 */
+	private String initWorkTime;
+	
+	/**
+	 *初期選択就業時間帯名称
+	 */
+	private String initWorkTimeName;
+
+	/**
+	 * 勤怠時間の超過状態
+	 */
+	private OvertimeStatusCommand overtimeStatus;
+	
+	/**
+	 * 実績の申請時間
+	 */
+	private ApplicationTimeCommand actualApplicationTime;
+	
+	/**
+	 * 月別実績の36協定時間状態
+	 */
+	private Integer actualMonthlyAgreeTimeStatus;
 	
 	public HdWorkDispInfoWithDateOutput toDomain() {
-		HdWorkDispInfoWithDateOutput result = new HdWorkDispInfoWithDateOutput();
-		result.setSubHdManage(subHdManage);
-		result.setAppHdWorkInstruction(appHdWorkInstruction);
-		result.setWorkTypeCD(workTypeCD);
-		result.setWorkTimeCD(workTimeCD);
-		result.setStartTime(startTime);
-		result.setEndTime(endTime);
-		result.setAchievementOutputLst(achievementOutputLst);
-		result.setActualStatus(actualStatus == null ? null : EnumAdaptor.valueOf(actualStatus, ActualStatus.class));
-		result.setOvertimeStatus(overtimeStatus);
-		result.setAgreementTimeStatusOfMonthly(agreementTimeStatusOfMonthly == null ? null : EnumAdaptor.valueOf(agreementTimeStatusOfMonthly, AgreementTimeStatusOfMonthly.class));
-		result.setWorkTypeName(workTypeName);
-		result.setWorkTimeName(workTimeName);
-		result.setWorkTypeLst(CollectionUtil.isEmpty(workTypeLst) ? Optional.empty() : Optional.of(workTypeLst.stream().map(x -> x.toDomain()).collect(Collectors.toList())));
-		result.setDeductionTimeLst(CollectionUtil.isEmpty(deductionTimeLst) ? Optional.empty() : 
-			Optional.of(deductionTimeLst.stream().map(x -> new DeductionTime(x)).collect(Collectors.toList())));
-		return result;
+		String companyId = AppContexts.user().companyId();
+		return new HdWorkDispInfoWithDateOutput(this.subHdManage, 
+				this.workHours != null ? this.workHours.toDomain() : null, 
+				Optional.ofNullable(this.breakTimeZoneSettingList != null ? this.breakTimeZoneSettingList.toDomain() : null), 
+				Optional.ofNullable(this.workTypeList != null ? 
+						this.workTypeList.stream().map(workTypeCmd -> workTypeCmd.toDomain(companyId)).collect(Collectors.toList()) : null), 
+				Optional.ofNullable(this.initWorkType != null ? new WorkTypeCode(this.initWorkType) : null), 
+				Optional.ofNullable(this.initWorkTypeName != null ? new WorkTypeName(this.initWorkTypeName) : null), 
+				Optional.ofNullable(this.initWorkTime != null ? new WorkTimeCode(this.initWorkTime) : null), 
+				Optional.ofNullable(this.initWorkTimeName != null ? new WorkTimeName(this.initWorkTimeName) : null), 
+				Optional.ofNullable(this.overtimeStatus != null ? this.overtimeStatus.toDomain() : null), 
+				Optional.ofNullable(this.actualApplicationTime != null ? this.actualApplicationTime.toDomain() : null),
+				Optional.ofNullable(this.actualMonthlyAgreeTimeStatus != null ? 
+						EnumAdaptor.valueOf(this.actualMonthlyAgreeTimeStatus, AgreementTimeStatusOfMonthly.class) : null)
+				);
 	}
-	
 }

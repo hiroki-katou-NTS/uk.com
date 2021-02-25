@@ -12,8 +12,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.app.find.outsideot.dto.OutsideOTSettingDto;
-import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSetting;
-import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -43,12 +43,7 @@ public class OutsideOTSettingFinder {
 		// call repository find data
 		Optional<OutsideOTSetting> overtimeSetting = this.repository.findById(companyId);
 
-		OutsideOTSettingDto dto = new OutsideOTSettingDto();
-		if (overtimeSetting.isPresent()) {
-			overtimeSetting.get().saveToMemento(dto);
-		}
-
-		return dto;
+		return overtimeSetting.map(c -> OutsideOTSettingDto.of(c)).orElse(new OutsideOTSettingDto());
 
 	}
 	
@@ -68,12 +63,7 @@ public class OutsideOTSettingFinder {
 		// call repository find data
 		Optional<OutsideOTSetting> overtimeSetting = this.repository.reportById(companyId);
 		
-		OutsideOTSettingDto dto = new OutsideOTSettingDto();
-		if (overtimeSetting.isPresent()) {
-			overtimeSetting.get().saveToMemento(dto);
-		}
-		
-		return dto;
+		return overtimeSetting.map(c -> OutsideOTSettingDto.of(c)).orElse(new OutsideOTSettingDto());
 		
 	}
 	

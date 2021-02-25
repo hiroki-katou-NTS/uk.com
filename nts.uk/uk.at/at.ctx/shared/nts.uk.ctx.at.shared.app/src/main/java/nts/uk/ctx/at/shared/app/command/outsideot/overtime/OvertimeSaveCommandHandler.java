@@ -12,8 +12,8 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSettingRepository;
-import nts.uk.ctx.at.shared.dom.outsideot.overtime.Overtime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.Overtime;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -47,7 +47,7 @@ public class OvertimeSaveCommandHandler extends CommandHandler<OvertimeSaveComma
 		OvertimeSaveCommand command = context.getCommand();
 		
 		// to domains
-		List<Overtime> domains = command.getOvertimes().stream().map(dto -> new Overtime(dto))
+		List<Overtime> domains = command.getOvertimes().stream().map(dto -> dto.domain())
 				.collect(Collectors.toList());
 		
 		// save all list overtime

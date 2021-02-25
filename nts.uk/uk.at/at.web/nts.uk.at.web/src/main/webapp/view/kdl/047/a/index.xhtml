@@ -1,0 +1,136 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<script>var dialogSize = { width: 520, height: 700 };</script>
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:ValidatorScript>
+				nts.uk.ctx.at.function.dom.attendancerecord.item.ItemName
+			</com:ValidatorScript>
+			<!-- kdl047 a-->
+			<com:stylefile path="kdl047.style.css" />
+			<com:scriptfile path="kdl047.a.vm.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div class="contents-area">
+				<div class="contents-header">
+					<!-- Visible A1_1, A1_2, A1_3. A1_4 by isVisibleA1 -->
+					<div data-bind="visible: isVisibleA1">
+						<div class="div-line">
+							<!-- A1_1 -->
+							<div id="A1_1" class="w-100" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL047_2')}</div>
+							<!-- A1_2 -->
+							<label id="A1_2" class="ml-10" data-bind="text: layoutCode"></label>
+							<!-- A1_3 -->
+							<label id="A1_3" class="ml-5" data-bind="text: layoutName"></label>
+							<!-- A1_4 -->
+							<label id="A1_4" class="ml-25" data-bind="text: comment"></label>
+						</div>
+					</div>
+					<hr/>
+					<!-- Visible A3_1, A3_2 by isVisibleA2 -->
+					<div class="contents-header-under" data-bind="visible: isVisibleA2">
+						<!-- A3_1 -->
+						<div id="A3_1" class="w-85" data-bind="ntsFormLabel: {constraint: 'ItemName'}">#{i18n.getText('KDL047_3')}</div>
+						<!-- A3_2 -->
+						<input id="A3_2" tabindex="1" class="ml-25 mt-5" data-bind="ntsTextEditor: {
+							name: '#[KDL047_3]',
+							value: attendanceRecordName,
+							constraint: 'ItemName',
+							option: {
+								textmode: 'text',
+								width: '155px',
+								textalign: 'left'
+							},
+							enable: isEnableTextEditor,
+							readonly: false
+						}" />
+					</div>
+				</div>
+				<div class="contents-body">
+					<!-- A4 -->
+					<div
+						class="margin-panel"
+						data-bind="ntsPanel: {
+							width: '400px',
+							height: '370px',
+							direction: 'none',
+							showIcon: true,
+							visible: true
+						}"
+					>
+						<div class="div-line flex mb-10">
+							<!-- A5_1 -->
+							<div id="A5_1" class="w-75" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDL047_4')}</div>
+							<!-- A5_2 -->
+							<div
+								id="combo-box"
+								tabindex="2"
+								data-bind="ntsComboBox: {
+									name: '#[KDL047_4]',
+									visibleItemsCount: 5,
+									value: selectedCode,
+									enable: isEnableComboBox,
+									options: itemList,
+									optionsValue: 'attendanceTypeCode',
+									optionsText: 'attendanceTypeName',
+									columns: [
+										{ prop: 'attendanceTypeName' }
+									]
+								}"
+							></div>
+						</div>
+						<!-- A5_3 -->
+						<div
+							id="A5_3"
+							tabindex="3"
+							style="width: 400px"
+							data-bind="ntsSearchBox:	{
+									items: tableDatas,
+									searchMode: 'filter',
+									targetKey: 'id',
+									comId: 'single-list',
+									selected: currentCode,
+									selectedKey: 'id',
+									fields: ['code', 'name'],
+									mode: 'igGrid'
+								}"
+						></div>
+						<!-- A6 -->
+						<table
+							id="single-list"
+							tabindex="4"
+							data-bind="ntsGridList: {
+								name: '#[KDL047_5]',
+								height: 400,
+								width: 400,
+								columns: tableColumns,
+								options: tableDatas,
+								optionsValue: 'id',
+								multiple: false,
+								value: currentCode,
+								rows: 10
+							}"
+						></table>
+					</div>
+				</div>
+			</div>
+			<div id="functions-area-bottom">
+				<!-- A8_1 -->
+				<button id="A8_1" tabindex="7" class="x-large proceed" data-bind="click: onClickDecision">#{i18n.getText('KDL047_8')}</button>
+				<!-- A8_2 -->
+				<button id="A8_2" tabindex="8" class="large" data-bind="click: onClickCancel">#{i18n.getText('KDL047_9')}</button>
+			</div>
+		</ui:define>
+
+	</ui:composition>
+
+</body>
+
+</html>

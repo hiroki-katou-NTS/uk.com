@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.organization.EmploymentHistoryImported;
@@ -16,7 +18,7 @@ import nts.uk.ctx.at.record.dom.organization.EmploymentHistoryImported;
  *
  */
 @Stateless
-
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class CheckProcessed {
 
 	public OutputCheckProcessed getCheckProcessed(GeneralDate date,

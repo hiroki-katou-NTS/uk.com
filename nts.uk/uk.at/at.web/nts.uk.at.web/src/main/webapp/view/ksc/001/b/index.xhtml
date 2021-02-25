@@ -12,8 +12,7 @@
 			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/ccg/share/ccg.service.js"
-				of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/kdl/023/base/kdl023.base.service.js" />
 			<com:scriptfile path="ksc001.b.start.js" />
@@ -32,17 +31,17 @@
 			<div tabindex="-1" id="contents-area" data-bind="visible: true"
 				style="display: none">
 				<div tabindex="-1" id="wizard"
-					data-bind="ntsWizard: {steps: stepList, theme: 'yellow'}, visible: true"
-					class="cf" style="width: 100%;">
+					data-bind="attr: { tabindex: -1 }, ntsWizard: {steps: stepList, theme: 'yellow'}, visible: true"
+					class="cf ksc001" style="width: 100%;">
 					<div class="header" tabindex="-1">
 						<div class="image" data-icon="20.png"></div>
 						<div class="content">#{i18n.getText('KSC001_41')}</div>
 					</div>
 					<div class="steps" tabindex="-1">
-						<div class="step-1">#{i18n.getText('KSC001_42')}</div>
-						<div class="step-2">#{i18n.getText('KSC001_43')}</div>
-						<div class="step-3">#{i18n.getText('KSC001_44')}</div>
-						<div class="end step-4">#{i18n.getText('KSC001_45')}</div>
+						<div tabindex="-1" class="step-1">#{i18n.getText('KSC001_42')}</div>
+						<div tabindex="-1" class="step-2">#{i18n.getText('KSC001_43')}</div>
+						<div tabindex="-1" class="step-3">#{i18n.getText('KSC001_44')}</div>
+						<div tabindex="-1" class="end step-4">#{i18n.getText('KSC001_45')}</div>
 					</div>
 					<div class="contents" tabindex="-1">
 						<div class="step-1" tabindex="-1">

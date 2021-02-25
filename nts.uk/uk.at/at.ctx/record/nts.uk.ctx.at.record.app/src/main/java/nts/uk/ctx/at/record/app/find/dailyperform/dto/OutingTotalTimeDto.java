@@ -1,19 +1,22 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeWithCalculation;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.OutingTotalTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTotalTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 
 /** 控除合計時間 */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OutingTotalTimeDto implements ItemConst {
+public class OutingTotalTimeDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 所定外合計時間 */
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = EXCESS_STATUTORY)
@@ -26,6 +29,48 @@ public class OutingTotalTimeDto implements ItemConst {
 	/** 合計時間 */
 	@AttendanceItemLayout(layout = LAYOUT_C, jpPropertyName = TOTAL)
 	private CalcAttachTimeDto totalTime;
+	
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+		case EXCESS_STATUTORY:
+		case (TOTAL):
+			return new CalcAttachTimeDto();
+		case (WITHIN_STATUTORY):
+			return new WithinOutingTotalTimeDto();
+		default:
+		}
+		return AttendanceItemDataGate.super.newInstanceOf(path);
+	}
+
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		switch (path) {
+		case (EXCESS_STATUTORY):
+			return Optional.ofNullable(excessOfStatutoryTotalTime);
+		case (WITHIN_STATUTORY):
+			return Optional.ofNullable(withinStatutoryTotalTime);
+		case (TOTAL):
+			return Optional.ofNullable(totalTime);
+		default:
+		}
+		return AttendanceItemDataGate.super.get(path);
+	}
+	
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		switch (path) {
+		case (EXCESS_STATUTORY):
+			excessOfStatutoryTotalTime = (CalcAttachTimeDto) value;
+			break;
+		case (WITHIN_STATUTORY):
+			withinStatutoryTotalTime = (WithinOutingTotalTimeDto) value;
+			break;
+		case (TOTAL):
+			totalTime = (CalcAttachTimeDto) value;
+		default:
+		}
+	}
 
 	public static OutingTotalTimeDto from(OutingTotalTime domain) {
 		return domain == null ? null : new OutingTotalTimeDto(

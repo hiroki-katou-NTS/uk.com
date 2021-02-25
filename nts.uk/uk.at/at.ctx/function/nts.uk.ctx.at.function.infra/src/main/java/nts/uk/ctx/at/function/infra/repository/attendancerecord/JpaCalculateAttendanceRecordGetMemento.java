@@ -8,8 +8,8 @@ import java.util.stream.Collectors;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecordGetMemento;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateItemAttributes;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.ItemName;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRec;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.item.KfnstAttndRecItem;
+import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnmtRptWkAtdOutframe;
+import nts.uk.ctx.at.function.infra.entity.attendancerecord.item.KfnmtRptWkAtdOutatd;
 
 /**
  * @author tuannt-nws
@@ -18,10 +18,10 @@ import nts.uk.ctx.at.function.infra.entity.attendancerecord.item.KfnstAttndRecIt
 public class JpaCalculateAttendanceRecordGetMemento implements CalculateAttendanceRecordGetMemento {
 
 	/** The kfnst attnd rec. */
-	private KfnstAttndRec kfnstAttndRec;
+	private KfnmtRptWkAtdOutframe kfnmtRptWkAtdOutframe;
 
 	/** The kfnst attnd rec item. */
-	private List<KfnstAttndRecItem> kfnstAttndRecItems;
+	private List<KfnmtRptWkAtdOutatd> kfnmtRptWkAtdOutatd;
 	
 	/** The add formular type. */
 	private final int ADD_FORMULA_TYPE = 1;
@@ -37,11 +37,11 @@ public class JpaCalculateAttendanceRecordGetMemento implements CalculateAttendan
 	 * @param kfnstAttndRecItem
 	 *            the kfnst attnd rec item
 	 */
-	public JpaCalculateAttendanceRecordGetMemento(KfnstAttndRec kfnstAttndRec,
-			List<KfnstAttndRecItem> kfnstAttndRecItems) {
+	public JpaCalculateAttendanceRecordGetMemento(KfnmtRptWkAtdOutframe kfnmtRptWkAtdOutframe,
+			List<KfnmtRptWkAtdOutatd> kfnmtRptWkAtdOutatd) {
 		super();
-		this.kfnstAttndRec = kfnstAttndRec;
-		this.kfnstAttndRecItems = kfnstAttndRecItems;
+		this.kfnmtRptWkAtdOutframe = kfnmtRptWkAtdOutframe;
+		this.kfnmtRptWkAtdOutatd = kfnmtRptWkAtdOutatd;
 	}
 
 	/* (non-Javadoc)
@@ -49,7 +49,7 @@ public class JpaCalculateAttendanceRecordGetMemento implements CalculateAttendan
 	 */
 	@Override
 	public CalculateItemAttributes getAttribute() {
-		return CalculateItemAttributes.valueOf(this.kfnstAttndRec.getAttribute().intValue());
+		return CalculateItemAttributes.valueOf(this.kfnmtRptWkAtdOutframe.getAttribute().intValue());
 	}
 
 	/* (non-Javadoc)
@@ -57,7 +57,7 @@ public class JpaCalculateAttendanceRecordGetMemento implements CalculateAttendan
 	 */
 	@Override
 	public ItemName getName() {
-		return new ItemName(this.kfnstAttndRec.getItemName());
+		return new ItemName(this.kfnmtRptWkAtdOutframe.getItemName());
 	}
 
 	/* (non-Javadoc)
@@ -65,9 +65,9 @@ public class JpaCalculateAttendanceRecordGetMemento implements CalculateAttendan
 	 */
 	@Override
 	public List<Integer> getAddedItem() {
-		if (this.kfnstAttndRecItems == null || this.kfnstAttndRecItems.isEmpty())
+		if (this.kfnmtRptWkAtdOutatd == null || this.kfnmtRptWkAtdOutatd.isEmpty())
 			return new ArrayList<Integer>();
-		List<Integer> result = this.kfnstAttndRecItems.stream()
+		List<Integer> result = this.kfnmtRptWkAtdOutatd.stream()
 				.filter(e -> e.getFormulaType().compareTo(new BigDecimal(ADD_FORMULA_TYPE)) == 0)
 				.map(e -> (int) e.getTimeItemId()).collect(Collectors.toList());
 		return result;
@@ -78,9 +78,9 @@ public class JpaCalculateAttendanceRecordGetMemento implements CalculateAttendan
 	 */
 	@Override
 	public List<Integer> getSubtractedItem() {
-		if (this.kfnstAttndRecItems == null || this.kfnstAttndRecItems.isEmpty())
+		if (this.kfnmtRptWkAtdOutatd == null || this.kfnmtRptWkAtdOutatd.isEmpty())
 			return new ArrayList<Integer>();
-		List<Integer> result = this.kfnstAttndRecItems.stream()
+		List<Integer> result = this.kfnmtRptWkAtdOutatd.stream()
 				.filter(e -> e.getFormulaType().compareTo(new BigDecimal(SUB_FORMULA_TYPE)) == 0)
 				.map(obj -> (int) obj.getTimeItemId()).collect(Collectors.toList());
 		return result;

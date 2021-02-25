@@ -17,14 +17,14 @@ import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanc
 import nts.uk.ctx.at.shared.dom.calculationsetting.GoBackOutCorrectionClass;
 import nts.uk.ctx.at.shared.dom.calculationsetting.StampReflectionManagement;
 import nts.uk.ctx.at.shared.dom.calculationsetting.repository.StampReflectionManagementRepository;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.OutingFrameNo;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeActualStamp;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
 
 /*
  * 外出系打刻漏れをチェックする
@@ -201,8 +201,7 @@ public class GoingOutStampLeakageChecking {
 							&& timeLeavingWork.getAttendanceStamp().get().getStamp().isPresent())
 							&& (timeLeavingWork.getLeaveStamp().get().getStamp() != null
 									&& timeLeavingWork.getLeaveStamp().get().getStamp().isPresent())
-							&& timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()
-							&& comeBack.get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()) {
+							&& timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()) {
 						if ((comeBack != null && comeBack.isPresent() && comeBack.get().getStamp() != null
 								&& comeBack.get().getStamp().isPresent()
 								&& timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get()
@@ -217,8 +216,6 @@ public class GoingOutStampLeakageChecking {
 									|| timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay()
 									.getReasonTimeChange().getTimeChangeMeans() == TimeChangeMeans.DIRECT_BOUNCE_APPLICATION) {
 								stamp = new WorkStamp(
-										timeLeavingWork.getAttendanceStamp().get().getStamp().get()
-												.getAfterRoundingTime(),
 										timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get(),
 										timeLeavingWork.getAttendanceStamp().get().getStamp().get().getLocationCode()
 												.isPresent()
@@ -264,7 +261,6 @@ public class GoingOutStampLeakageChecking {
 									|| leavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay()
 									.getReasonTimeChange().getTimeChangeMeans() == TimeChangeMeans.DIRECT_BOUNCE_APPLICATION) {
 								stamp = new WorkStamp(
-										leavingWork.getAttendanceStamp().get().getStamp().get().getAfterRoundingTime(),
 										leavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get(),
 										leavingWork.getAttendanceStamp().get().getStamp().get().getLocationCode()
 												.isPresent()
@@ -339,7 +335,6 @@ public class GoingOutStampLeakageChecking {
 								|| timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay()
 								.getReasonTimeChange().getTimeChangeMeans()  == TimeChangeMeans.DIRECT_BOUNCE_APPLICATION) {
 							stamp = new WorkStamp(
-									timeLeavingWork.getAttendanceStamp().get().getStamp().get().getAfterRoundingTime(),
 									timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get(),
 									timeLeavingWork.getAttendanceStamp().get().getStamp().get().getLocationCode()
 											.isPresent()
@@ -382,7 +377,6 @@ public class GoingOutStampLeakageChecking {
 									|| leavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay()
 									.getReasonTimeChange().getTimeChangeMeans() == TimeChangeMeans.DIRECT_BOUNCE_APPLICATION) {
 								stamp = new WorkStamp(
-										leavingWork.getAttendanceStamp().get().getStamp().get().getAfterRoundingTime(),
 										leavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get(),
 										leavingWork.getAttendanceStamp().get().getStamp().get().getLocationCode()
 												.isPresent()

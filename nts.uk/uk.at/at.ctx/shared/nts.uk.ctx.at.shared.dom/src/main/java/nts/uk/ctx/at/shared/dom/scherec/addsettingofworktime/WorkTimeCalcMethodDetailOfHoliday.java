@@ -161,6 +161,13 @@ public class WorkTimeCalcMethodDetailOfHoliday extends DomainObject implements S
 			}
 		}
 	}
-		
+	
+	/**
+	 * 育児・介護時間を含めて計算する
+	 * @return true：含める、false：含めない
+	 */
+	public boolean isCalculateIncludCareTime() {
+		return this.calculateIncludCareTime.equals(NotUseAtr.USE);
+	}
 }
 

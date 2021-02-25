@@ -2,7 +2,7 @@ package nts.uk.ctx.at.shared.infra.repository.ot.autocalsetting.use;
 
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.usecls.ApplyAtr;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.use.UseUnitAutoCalSettingSetMemento;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.use.UseUnitAutoCalSettingSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.use.KshmtAutoUseUnitSet;
 
 public class JpaUseUnitAutoCalSettingSetMemento implements UseUnitAutoCalSettingSetMemento {

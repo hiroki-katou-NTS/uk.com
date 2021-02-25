@@ -541,10 +541,8 @@ module nts.uk.at.view.kmk003.a {
                 }
                 
                 toDto(): DiffTimeWorkStampReflectTimezoneDto {
-                    var lstStamp: any = [];
-                    this.stampReflectTimezone().forEach(function(item, index) {
-                        lstStamp.push(item.toDto());
-                    });
+                    var lstStamp = _.chain(this.stampReflectTimezone()).filter(item=> item.startTime()!= null && item.endTime() != null).map(item => item.toDto()).value();
+
                     var dataDTO: DiffTimeWorkStampReflectTimezoneDto = {
                         stampReflectTimezone: lstStamp,
                         updateStartTime: this.isUpdateStartTime(),

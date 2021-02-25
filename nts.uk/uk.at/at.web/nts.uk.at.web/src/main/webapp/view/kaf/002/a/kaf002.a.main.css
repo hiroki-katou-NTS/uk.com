@@ -1,17 +1,188 @@
-.label {
-	margin-top: 15px;
-	margin-bottom: 15px;
+
+.titleColor {
+	background-color: #CFF1A5;
+}
+.disableFlag .box {
+	background-color: #888 !important;
+	border: 2px solid #2FCC71 !important;
+}
+
+input {
+	text-align: center !important;
+}
+.customeLink:hover {
+	text-decoration:underline;
+}
+.nts-combo-container {
+	height: 31px !important;
+	margin-top: 3px;
+}
+td .ntsCheckBox-label {
+	margin-top: 10px !important;
+}
+
+
+
+
+
+// common
+
+
+.control-group.valign-center>* {
+	vertical-align: middle;
+}
+#workSelect{
 	margin-left: 20px;
-	font-size: larger;
 }
 
-button.caret-right {
-	width: 300px;
+.valign-center.control-group {
+	margin: 5px 0px 0px 0px;
+}
+
+.row-cell-margin {
+	margin: 5px 0px 5px 5px;
+}
+
+.block {
+	display: block;
+	margin: 30px 0px 50px 30px;
+}
+
+.header {
+	border-bottom: 2px solid #808080;
+	padding-bottom: 10px;
+}
+/*Set margin button */
+.location-button-009 {
+	margin: 0px 0px 0px -130px;
+}
+
+.link-label {
+	margin-left: 70px;
+}
+/*Set Width*/
+input.nts-editor.nts-input.reset-element {
+	text-align: center;
+	width: 70px;
+}
+
+button.nts-switch-button {
+	width: 92px;
+}
+
+input#inputdate.nts-editor.nts-input.reset-element {
+	width: 85px;
+}
+/*Set Width*/
+input.col1.nts-editor.nts-input.reset-element {
+	margin-left: 22px;
+}
+
+input.col2.nts-editor.nts-input.reset-element {
+	margin-left: 21px;
+}
+
+label.applicant {
+	margin-left: 20px;
+}
+
+.ui-igcombo.ui-widget.ui-state-default.ui-corner-all.ui-unselecta
+div#combo-box.reset-element.ui-igcombo-wrapper {
+	margin-left: 17px;
+}
+
+textarea.nts-editor.nts-input.reset-element {
+	height: 150px;
+}
+
+#inpReason {
+	display: inline-block;
+}
+
+div.form-label.broken {
+	vertical-align: top;
+}
+
+.kaf009-panel {
+	float: right;
+	height: 300px;
+	width: 250px;
+	margin-top: 20px;
+}
+
+.left-contents-009 {
+	margin-top: 10px;
+	float: left;
+	width: 72%;
+}
+
+.right-contents {
+	margin-top: 10px;
+	float: left;
 	margin-left: 30px;
-	margin-bottom: 10px;	
-}
-button.caret-right:after {
-	color: #2FCC71 !important;
 }
 
+.lblTitleKAF009 {
+	width: 143px;
+}
 
+.btnSendMail {
+	margin-left: 15px;
+}
+
+.workGroup {
+	margin-left: 50px;
+}
+
+.mainScreen {
+	height:1000	px;
+}
+
+.lstApprover {
+}
+/*workType, Sift */
+.lblSiftCd, .lblWorkTypeCd {
+	line-height: 40px;
+	margin-left: 20px;
+}
+/*div cover label of comment*/
+.kaf009-lblComment {
+	width: 260px;
+}
+.clsWorkType{
+	margin-left: 50px !important;
+}
+
+.overlay-reason {
+	position: relative;
+	z-index: 1;
+}
+.mode-style{
+	display: inline-block;
+}
+.inputTime-kaf009 {
+	width: 85px !important;	
+}
+#inpReasonTextarea{
+	min-height: 100px;
+}
+#content{
+	width: 1200px;
+}
+.hrStyle {
+	width:50%;
+	text-align:left;
+	margin-left:0
+}
+.centerCheckBox {
+	display: block;
+}
+.centerCheckBox .title {
+	display: inline-block;
+}
+.centerCheckBox .firstCheckBox {
+	display: inline-block; margin-left: 4px
+}
+.centerCheckBox .secondCheckBox {
+	display: inline-block; margin-left: 88px
+}

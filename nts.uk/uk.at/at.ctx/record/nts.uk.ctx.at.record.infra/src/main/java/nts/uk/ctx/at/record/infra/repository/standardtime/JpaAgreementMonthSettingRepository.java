@@ -17,7 +17,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementMonthSettingRepository;
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgreementMonthSet;
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgreementMonthSetPK;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementMonthSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.exceptsetting.AgreementMonthSetting;
 
 @Stateless
 public class JpaAgreementMonthSettingRepository extends JpaRepository implements AgreementMonthSettingRepository {
@@ -33,6 +33,10 @@ public class JpaAgreementMonthSettingRepository extends JpaRepository implements
 	private static final String IS_EXIST_DATA;
 	
 	private static final String FIND_BY_ID;
+
+	private static final String FIND_BY_SID;
+
+	private static final String FIND_BY_LIST_SID;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -78,6 +82,19 @@ public class JpaAgreementMonthSettingRepository extends JpaRepository implements
 		builderString.append("AND a.kmkmtAgreementMonthSetPK.yearmonthValue = :yearmonthValue ");
 		builderString.append("ORDER BY a.kmkmtAgreementMonthSetPK.yearmonthValue DESC ");
 		FIND_BY_ID = builderString.toString();
+
+		builderString = new StringBuilder();
+		builderString.append("SELECT a ");
+		builderString.append("FROM KmkmtAgreementMonthSet a ");
+		builderString.append("WHERE a.kmkmtAgreementMonthSetPK.employeeId = :employeeId ");
+		builderString.append("ORDER BY a.kmkmtAgreementMonthSetPK.yearmonthValue DESC ");
+		FIND_BY_SID = builderString.toString();
+
+		builderString = new StringBuilder();
+		builderString.append("SELECT a ");
+		builderString.append("FROM KmkmtAgreementMonthSet a ");
+		builderString.append("WHERE a.kmkmtAgreementMonthSetPK.employeeId IN :employeeIds ");
+		FIND_BY_LIST_SID = builderString.toString();
 	}
 
 	@Override
@@ -130,10 +147,8 @@ public class JpaAgreementMonthSettingRepository extends JpaRepository implements
 		
 		if (entity.isPresent()) {
 			KmkmtAgreementMonthSet data = entity.get();
-			
-			data.alarmOneMonth = new BigDecimal(agreementMonthSetting.getAlarmOneMonth().valueAsMinutes());
-			data.errorOneMonth = new BigDecimal(agreementMonthSetting.getErrorOneMonth().valueAsMinutes());
-			
+			data.alarmOneMonth = agreementMonthSetting.getOneMonthTime().getAlarm().valueAsMinutes();
+			data.errorOneMonth = agreementMonthSetting.getOneMonthTime().getError().valueAsMinutes();
 			this.commandProxy().update(data);
 		}
 
@@ -155,17 +170,49 @@ public class JpaAgreementMonthSettingRepository extends JpaRepository implements
 	}
 
 	@Override
+	public void delete(AgreementMonthSetting agreementMonthSetting) {
+		this.commandProxy().remove(toEntity(agreementMonthSetting));
+	}
+
+	@Override
 	public boolean checkExistData(String employeeId, BigDecimal yearMonthValue) {
 		return this.queryProxy().query(IS_EXIST_DATA, long.class).setParameter("employeeId", employeeId)
 				.setParameter("yearmonthValue", yearMonthValue).getSingle().get() > 0;
 	}
 
+	@Override
+	public List<AgreementMonthSetting> getByEmployeeId(String employeeId) {
+		return this.queryProxy()
+				.query(FIND_BY_SID, KmkmtAgreementMonthSet.class)
+				.setParameter("employeeId", employeeId).getList(x -> toDomain(x));
+	}
+
+	@Override
+	public Optional<AgreementMonthSetting> getByEmployeeIdAndYm(String employeeId, YearMonth yearMonth) {
+		return this.queryProxy()
+				.query(FIND_BY_KEY, KmkmtAgreementMonthSet.class)
+				.setParameter("employeeId", employeeId)
+				.setParameter("yearmonthValue", yearMonth.v()).getSingle(x -> toDomain(x));
+	}
+
+	@Override
+	public List<AgreementMonthSetting> findByListEmployee(List<String> employeeIds) {
+		if (employeeIds == null || employeeIds.isEmpty())
+			return Collections.emptyList();
+		List<AgreementMonthSetting> result = new ArrayList<>();
+		CollectionUtil.split(employeeIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
+			result.addAll(this.queryProxy().query(FIND_BY_LIST_SID, KmkmtAgreementMonthSet.class)
+					.setParameter("employeeIds", splitData)
+					.getList(f -> toDomain(f)));
+		});
+		return result;
+	}
+
 	private static AgreementMonthSetting toDomain(KmkmtAgreementMonthSet kmkmtAgreementMonthSet) {
-		AgreementMonthSetting agreementMonthSetting = AgreementMonthSetting.createFromJavaType(
+		return AgreementMonthSetting.createFromJavaType(
 				kmkmtAgreementMonthSet.kmkmtAgreementMonthSetPK.employeeId,
 				kmkmtAgreementMonthSet.kmkmtAgreementMonthSetPK.yearmonthValue,
-				kmkmtAgreementMonthSet.errorOneMonth.intValue(), kmkmtAgreementMonthSet.alarmOneMonth.intValue());
-		return agreementMonthSetting;
+				kmkmtAgreementMonthSet.errorOneMonth, kmkmtAgreementMonthSet.alarmOneMonth);
 	}
 
 	private KmkmtAgreementMonthSet toEntity(AgreementMonthSetting agreementMonthSetting) {
@@ -174,9 +221,8 @@ public class JpaAgreementMonthSettingRepository extends JpaRepository implements
 		entity.kmkmtAgreementMonthSetPK = new KmkmtAgreementMonthSetPK();
 		entity.kmkmtAgreementMonthSetPK.employeeId = agreementMonthSetting.getEmployeeId();
 		entity.kmkmtAgreementMonthSetPK.yearmonthValue = new BigDecimal(agreementMonthSetting.getYearMonthValue().v());
-		entity.alarmOneMonth = new BigDecimal(agreementMonthSetting.getAlarmOneMonth().v());
-		entity.errorOneMonth = new BigDecimal(agreementMonthSetting.getErrorOneMonth().v());
-
+		entity.alarmOneMonth = agreementMonthSetting.getOneMonthTime().getAlarm().valueAsMinutes();
+		entity.errorOneMonth = agreementMonthSetting.getOneMonthTime().getError().valueAsMinutes();
 		return entity;
 	}
 }

@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * ドメインサービス：日別計算　（社員の日別実績を計算）
@@ -45,7 +45,6 @@ public interface DailyCalculationEmployeeService {
 	 */
 	@SuppressWarnings("rawtypes")
 	ProcessState calculateForOnePerson(String employeeId,DatePeriod datePeriod, Optional<Consumer<ProcessState>> counter,String executeLogId,Boolean isCalWhenLock );
-
 	
 	/**
 	 * 計算状態の更新

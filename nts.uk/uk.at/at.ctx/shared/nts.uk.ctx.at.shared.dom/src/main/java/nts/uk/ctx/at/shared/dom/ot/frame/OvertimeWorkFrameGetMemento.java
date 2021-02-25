@@ -30,7 +30,6 @@ public interface OvertimeWorkFrameGetMemento {
 	 */
 	NotUseAtr getUseClassification();
 	
-	
 	/**
 	 * Gets the transfer frame name.
 	 *
@@ -44,4 +43,18 @@ public interface OvertimeWorkFrameGetMemento {
 	 * @return the overtime work frame name
 	 */
 	OvertimeWorkFrameName getOvertimeWorkFrameName();
+
+	/**
+	 * Gets the role.
+	 * 
+	 * @return the role
+	 */
+	RoleOvertimeWork getRole();
+	
+	/**
+	 * Gets the transfer atr.
+	 *
+	 * @return the transfer atr
+	 */
+	NotUseAtr getTransferAtr();
 }

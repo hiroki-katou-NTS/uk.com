@@ -23,26 +23,26 @@ import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyTempo;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.anyitem.AnyItemNo;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.entranceandexit.PCLogOnNo;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTime;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTimes;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemValue;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.ActualWorkingTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.OverTimeFrameTime;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.TimeDivergenceWithCalculationMinusExist;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.overtimework.FlexTime;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.overtimework.OverTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.monthly.AttendanceTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.AttendanceTimeOfMonthlyRepository;
-import nts.uk.ctx.at.shared.dom.monthly.anyitem.AnyItemOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.anyitem.AnyItemOfMonthlyRepository;
+import nts.uk.ctx.at.shared.dom.scherec.anyitem.AnyItemNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculationMinusExist;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.PCLogOnNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTimes;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehours.clearovertime.FlexTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehours.clearovertime.OverTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.ActualWorkingTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeFrameTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthlyRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.anyitem.AnyItemOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.anyitem.AnyItemOfMonthlyRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
@@ -214,10 +214,10 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 		processCountOptionalItem(() -> dailyTime.value(t -> t.flag36), result, COUNT_ON, COUNT_OFF, 36);
 		
 		/** 任意項目19 */
-		processCountOptionalItem(() -> dailyTime.value(t -> t.flag19) > 0, result, BigDecimal.valueOf((long) dailyTime.value(t -> t.flag19)), COUNT_OFF, 19);
+		processCountOptionalItem(() -> dailyTime.value(t -> t.flag19) > 0, result, BigDecimal.valueOf((long) dailyTime.value(t -> t.flag19).longValue()), COUNT_OFF, 19);
 		
 		/** 任意項目21 */
-		processCountOptionalItem(() -> dailyTime.value(t -> t.flag21) > 0, result, BigDecimal.valueOf((long) dailyTime.value(t -> t.flag21)), COUNT_OFF, 21);
+		processCountOptionalItem(() -> dailyTime.value(t -> t.flag21) > 0, result, BigDecimal.valueOf((long) dailyTime.value(t -> t.flag21).longValue()), COUNT_OFF, 21);
 		
 		/** 任意項目37 processOptionalItem(() -> dailyTime.value(t -> t.flag37) > 0, result, BigDecimal.valueOf(dailyTime.value(t -> t.flag37)), COUNT_OFF, 37); */
 		
@@ -569,11 +569,11 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 			daily.getAttendanceLeavingGate().ifPresent(alg -> 
 				alg.getAttendanceLeavingGate(new WorkNo(1)).ifPresent(alw -> {
 					alw.getAttendance().ifPresent(as -> { 
-						int time = as.getTimeDay().getTimeWithDay() == null ? 0 : as.getTimeDay().getTimeWithDay().get().valueAsMinutes();
+						int time = as.getTimeDay().getTimeWithDay() == null ||  !as.getTimeDay().getTimeWithDay().isPresent() ? 0 : as.getTimeDay().getTimeWithDay().get().valueAsMinutes();
 						leaveGateStartTime.set(time); 
 						timeOn.set(time);
 					});
-					alw.getLeaving().ifPresent(as -> leaveGateEndTime.set(as.getTimeDay().getTimeWithDay() == null ? 0 : as.getTimeDay().getTimeWithDay().get().valueAsMinutes()));
+					alw.getLeaving().ifPresent(as -> leaveGateEndTime.set(as.getTimeDay().getTimeWithDay() == null ||  !as.getTimeDay().getTimeWithDay().isPresent() ? 0 : as.getTimeDay().getTimeWithDay().get().valueAsMinutes()));
 				})
 			);
 		}
@@ -590,8 +590,8 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 		private void calcAttendanceLeave(IntegrationOfDaily daily) {
 			daily.getAttendanceLeave().ifPresent(al -> 
 				al.getAttendanceLeavingWork(1).ifPresent(alw -> {
-					alw.getAttendanceStamp().ifPresent(as -> as.getStamp().ifPresent(s -> startTime.set(s.getTimeDay().getTimeWithDay() == null ? 0 : s.getTimeDay().getTimeWithDay().get().valueAsMinutes())));
-					alw.getLeaveStamp().ifPresent(as -> as.getStamp().ifPresent(s -> endTime.set(s.getTimeDay().getTimeWithDay() == null ? 0 : s.getTimeDay().getTimeWithDay().get().valueAsMinutes())));
+					alw.getAttendanceStamp().ifPresent(as -> as.getStamp().ifPresent(s -> startTime.set(!s.getTimeDay().getTimeWithDay().isPresent() || s.getTimeDay().getTimeWithDay() == null ? 0 : s.getTimeDay().getTimeWithDay().get().valueAsMinutes())));
+					alw.getLeaveStamp().ifPresent(as -> as.getStamp().ifPresent(s -> endTime.set(!s.getTimeDay().getTimeWithDay().isPresent() || s.getTimeDay().getTimeWithDay() == null ? 0 : s.getTimeDay().getTimeWithDay().get().valueAsMinutes())));
 				})
 			);
 		}
@@ -646,38 +646,36 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 		}
 
 		private void calc19And21Item(IntegrationOfDaily daily, int preSetAtten01, int preSetLeave01) {
-			if(daily.getWorkInformation().getScheduleInfo().getWorkTimeCode() != null) {
-				daily.getWorkInformation().getScheduleTimeSheet(new WorkNo(1)).ifPresent(scheTimeSheet -> {
-					int scheWorkAtten = scheTimeSheet.getAttendance().valueAsMinutes();
-					int scheWorkLeave = scheTimeSheet.getLeaveWork().valueAsMinutes();
-					
-					if(flag35.get() && have(t -> t.startTime) && preSetAtten01 > scheWorkAtten) {
-						if(startTime.get() >= scheWorkAtten) {
-							flag19.set(flag19.get() + 1);
-						}
-						if(startTime.get() < scheWorkAtten) {
-							flag21.set(flag21.get() + 1);
-						}
+			daily.getWorkInformation().getScheduleTimeSheet(new WorkNo(1)).ifPresent(scheTimeSheet -> {
+				int scheWorkAtten = scheTimeSheet.getAttendance().valueAsMinutes();
+				int scheWorkLeave = scheTimeSheet.getLeaveWork().valueAsMinutes();
+				
+				if(flag35.get() && have(t -> t.startTime) && preSetAtten01 > scheWorkAtten) {
+					if(startTime.get() >= scheWorkAtten) {
+						flag19.set(flag19.get() + 1);
 					}
-					
-					if(flag36.get() && have(t -> t.endTime) && preSetLeave01 < scheWorkLeave) {
-						if(endTime.get() <= scheWorkLeave) {
-							flag19.set(flag19.get() + 1);
-						}
-						if(endTime.get() > scheWorkLeave) {
-							flag21.set(flag21.get() + 1);
-						}
+					if(startTime.get() < scheWorkAtten) {
+						flag21.set(flag21.get() + 1);
 					}
-					/**
-					if (flag35.get() && preSetAtten01 <= scheWorkAtten) {
-						flag37.set(flag37.get() + 1);
+				}
+				
+				if(flag36.get() && have(t -> t.endTime) && preSetLeave01 < scheWorkLeave) {
+					if(endTime.get() <= scheWorkLeave) {
+						flag19.set(flag19.get() + 1);
 					}
-					if(flag36.get() && preSetLeave01 >= scheWorkLeave) {
-						flag37.set(flag37.get() + 1);
+					if(endTime.get() > scheWorkLeave) {
+						flag21.set(flag21.get() + 1);
 					}
-					*/
-				});
-			}
+				}
+				/**
+				if (flag35.get() && preSetAtten01 <= scheWorkAtten) {
+					flag37.set(flag37.get() + 1);
+				}
+				if(flag36.get() && preSetLeave01 >= scheWorkLeave) {
+					flag37.set(flag37.get() + 1);
+				}
+				*/
+			});
 		}
 
 		private int sumActualOvertime(OverTimeFrameTime otf) {

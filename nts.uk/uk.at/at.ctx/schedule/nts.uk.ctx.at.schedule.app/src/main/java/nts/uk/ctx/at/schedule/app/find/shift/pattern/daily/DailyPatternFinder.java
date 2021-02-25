@@ -6,17 +6,19 @@ package nts.uk.ctx.at.schedule.app.find.shift.pattern.daily;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.daily.dto.DailyPatternDetailDto;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.daily.dto.DailyPatternItemDto;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.daily.dto.DailyPatternValDto;
-import nts.uk.ctx.at.schedule.dom.shift.pattern.daily.DailyPattern;
-import nts.uk.ctx.at.schedule.dom.shift.pattern.daily.DailyPatternRepository;
+import nts.uk.ctx.at.schedule.dom.shift.workcycle.DailyPatternRepository;
+import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycle;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -38,15 +40,15 @@ public class DailyPatternFinder {
 	public List<DailyPatternItemDto> getAllPattCalendar() {
 		String companyId = AppContexts.user().companyId();
 
-		List<DailyPattern> listSetting = this.dailyPatternRepo.getAllPattCalendar(companyId);
+		List<WorkCycle> listSetting = this.dailyPatternRepo.getByCid(companyId);
 
 		if (CollectionUtil.isEmpty(listSetting)) {
 			return null;
 		}
 
 		// Pattern Calendar
-		return listSetting.stream().map(data -> new DailyPatternItemDto(data.getPatternCode().v(),
-				data.getPatternName().v())).collect(Collectors.toList());
+		return listSetting.stream().map(data -> new DailyPatternItemDto(data.getCode().v(),
+				data.getName().v())).collect(Collectors.toList());
 	}
 
 	/**
@@ -60,17 +62,20 @@ public class DailyPatternFinder {
 
 		LoginUserContext loginUserContext = AppContexts.user();
 		String companyId = loginUserContext.companyId();
-		Optional<DailyPattern> optDailyPattern = this.dailyPatternRepo.findByCode(companyId,
+		Optional<WorkCycle> optDailyPattern = this.dailyPatternRepo.getByCidAndCode(companyId,
 				patternCd);
 
 		if (!optDailyPattern.isPresent()) {
 			return null;
 		}
-
+		AtomicInteger index = new AtomicInteger();
 		// PATTERN Val
-		return optDailyPattern.get().getListDailyPatternVal().stream().map(data -> {
-			DailyPatternValDto patternValDto = new DailyPatternValDto();
-			data.saveToMemento(patternValDto);
+		return optDailyPattern.get().getInfos().stream().map(item -> {
+			DailyPatternValDto patternValDto = new DailyPatternValDto(index.incrementAndGet(),
+					item.getWorkInformation().getWorkTypeCode() != null? item.getWorkInformation().getWorkTypeCode().v(): null,
+					item.getWorkInformation().getWorkTimeCode()!= null? item.getWorkInformation().getWorkTimeCode().v(): null,
+					item.getDays()!= null? item.getDays().v():null);
+
 			return patternValDto;
 		}).collect(Collectors.toList());
 
@@ -86,7 +91,7 @@ public class DailyPatternFinder {
 	public DailyPatternDetailDto findByCode(String patternCd) {
 		String companyId = AppContexts.user().companyId();
 
-		Optional<DailyPattern> optDailyPattern = this.dailyPatternRepo.findByCode(companyId,
+		Optional<WorkCycle> optDailyPattern = this.dailyPatternRepo.getByCidAndCode(companyId,
 				patternCd);
 
 		if (!optDailyPattern.isPresent()) {
@@ -94,8 +99,14 @@ public class DailyPatternFinder {
 		}
 
 		// PATTERN
-		DailyPatternDetailDto patternCalendarDto = new DailyPatternDetailDto();
-		optDailyPattern.get().saveToMemento(patternCalendarDto);
+
+		AtomicInteger index = new AtomicInteger();
+        val lstDetail = optDailyPattern.get().getInfos().stream().map(item -> new DailyPatternValDto(index.incrementAndGet(),
+				item.getWorkInformation().getWorkTypeCode() != null? item.getWorkInformation().getWorkTypeCode().v(): null,
+                item.getWorkInformation().getWorkTimeCode()!= null? item.getWorkInformation().getWorkTimeCode().v(): null,
+				item.getDays()!= null? item.getDays().v():null)).collect(Collectors.toList());
+        DailyPatternDetailDto patternCalendarDto = new DailyPatternDetailDto(optDailyPattern.get().getCode().v(),
+                optDailyPattern.get().getName().v(),lstDetail);
 		return patternCalendarDto;
 	}
 

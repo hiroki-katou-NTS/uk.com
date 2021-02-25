@@ -1,278 +1,535 @@
+/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
+
 module nts.uk.at.view.kaf018.b.viewmodel {
-    import getText = nts.uk.resource.getText;
-    import getShared = nts.uk.ui.windows.getShared;
-    import formatDate = nts.uk.time.formatDate;
-    import info = nts.uk.ui.dialog.info;
-    import error = nts.uk.ui.dialog.alertError;
-    import shareModel = kaf018.share.model;
-    import confirm = nts.uk.ui.dialog.confirm;
-    import block = nts.uk.ui.block;
+	import character = nts.uk.characteristics;
+	import InitDisplayOfApprovalStatus = nts.uk.at.view.kaf018.a.viewmodel.InitDisplayOfApprovalStatus;
+	import DisplayWorkplace = nts.uk.at.view.kaf018.a.viewmodel.DisplayWorkplace;
+	import ClosureItem = nts.uk.at.view.kaf018.a.viewmodel.ClosureItem;
+	import KAF018DParam = nts.uk.at.view.kaf018.d.viewmodel.KAF018DParam;
+	import KAF018FParam = nts.uk.at.view.kaf018.f.viewmodel.KAF018FParam;
+	import KAF018HParam = nts.uk.at.view.kaf018.h.viewmodel.KAF018HParam;
+	import ApprovalStatusMailType = kaf018.share.model.ApprovalStatusMailType;
+	import KAF018CParam = nts.uk.at.view.kaf018.c.viewmodel.KAF018CParam;
+	
+	@bean()
+	class Kaf018BViewModel extends ko.ViewModel {
+		params: KAF018BParam = null;
+		appNameLst: Array<any> = [];
+		closureItem: ClosureItem;
+		startDate: string;
+		endDate: string;
+		dataSource: Array<ApprSttExecutionDto> = [];
+		selectWorkplaceInfo: Array<DisplayWorkplace> = [];
+		initDisplayOfApprovalStatus: InitDisplayOfApprovalStatus = {
+			// ページング行数
+			numberOfPage: 0,
+			// ユーザーID
+			userID: '',
+			// 会社ID
+			companyID: __viewContext.user.companyId,
+			// 月別実績の本人確認・上長承認の状況を表示する
+			confirmAndApprovalMonthFlg: false,
+			// 就業確定の状況を表示する
+			confirmEmploymentFlg: false,
+			// 申請の承認状況を表示する
+			applicationApprovalFlg: false,
+			// 日別実績の本人確認・上長承認の状況を表示する
+			confirmAndApprovalDailyFlg: false
+		};
+		pageData: Array<string> = [];
+		
+		created(params: KAF018BParam) {
+			const vm = this;
+			vm.params = params;
+			vm.$blockui('show');
+			vm.appNameLst = params.appNameLst;
+			vm.closureItem = params.closureItem;
+			vm.startDate = params.startDate;
+			vm.endDate = params.endDate;
+			vm.selectWorkplaceInfo = params.selectWorkplaceInfo;
+			vm.dataSource = _.map(vm.selectWorkplaceInfo, x => {
+				return {
+					wkpID: x.id,
+					wkpCD: x.code,
+					wkpName: x.name,
+					hierarchyCode: x.hierarchyCode,
+					empPeriodLst: [],
+					level: x.level,
+					countEmp: null,
+					countUnApprApp: null,
+					countUnConfirmDay: null,
+					countUnApprDay: null,
+					countUnConfirmMonth: null,
+					countUnApprMonth: null,
+					displayConfirm: null,
+					confirmPerson: null,
+					date: null,
+				} 
+			});
+			$("#bGrid").css('visibility','hidden');
+			vm.createIggrid(params.useSet);
+		}
+		
+		loadData(initFlg: boolean) {
+			const vm = this;
+			vm.$blockui('show');
+			let closureId = vm.closureItem.closureId,
+				processingYm = vm.closureItem.processingYm,
+				startDate = vm.startDate,
+				endDate = vm.endDate,
+				wkpInfoLst = _.filter(vm.selectWorkplaceInfo, o => _.includes(vm.pageData, o.id)),
+				initDisplayOfApprovalStatus = vm.initDisplayOfApprovalStatus,
+				employmentCDLst = vm.params.employmentCDLst,
+				apprSttComfirmSet = vm.params.useSet,
+				wsParam = { closureId, processingYm, startDate, endDate, wkpInfoLst, initDisplayOfApprovalStatus, employmentCDLst, apprSttComfirmSet };
+			vm.$ajax('at', API.getStatusExecution, wsParam)
+			.then((data: Array<ApprSttExecutionDto>) => {
+				_.forEach(vm.dataSource, x => {
+					let exist = _.find(data, y => y.wkpID == x.wkpID);
+					if(exist) {
+						x.wkpCD = exist.wkpCD;
+						x.wkpName = exist.wkpName;
+						x.empPeriodLst = exist.empPeriodLst;
+						x.countEmp = exist.countEmp;
+						x.countUnApprApp = exist.countUnApprApp;
+						x.countUnConfirmDay = exist.countUnConfirmDay;
+						x.countUnApprDay = exist.countUnApprDay;
+						x.countUnConfirmMonth = exist.countUnConfirmMonth;
+						x.countUnApprMonth = exist.countUnApprMonth;
+						x.displayConfirm = exist.displayConfirm;
+						x.confirmPerson = exist.confirmPerson;
+						x.date = exist.date;
+					}
+				});
+				$("#bGrid").igGrid("option", "dataSource", vm.dataSource);
+				$("#bGrid").css('visibility','visible');
+				if(initFlg) {
+					$(".ui-iggrid").focus();	
+				}
+			});
+		}
+		
+		createIggrid(useSet: any) {
+			const vm = this;
+			$("#bGrid").igGrid({
+				width: window.innerWidth - 24 < 1000 ? 1000 : window.innerWidth - 24,
+				height: window.innerHeight - 150,
+				dataSource: vm.dataSource,
+				primaryKey: 'wkpID',
+				primaryKeyDataType: 'string',
+				rowVirtualization: true,
+				virtualization: true,
+				virtualizationMode: 'continuous',
+				enter: 'right',
+				autoFitWindow: false,
+				hidePrimaryKey: true,
+				avgRowHeight: 25,
+				cellClick: (evt: any, ui: any) => {
+					vm.cellGridClick(evt, ui); 
+				},
+				dataRendered: () => {
+					vm.$nextTick(() => {
+						vm.$blockui('hide');
+					});
+				},
+				rendered: () => {
+					if($("#bGrid").css('visibility')=='hidden'){
+						vm.$nextTick(() => {
+							vm.$blockui('show');
+							character.restore('InitDisplayOfApprovalStatus').then((obj: InitDisplayOfApprovalStatus) => {
+								if(obj) {
+									vm.initDisplayOfApprovalStatus = obj;
+									if(!vm.initDisplayOfApprovalStatus.applicationApprovalFlg) {
+										$("#bGrid").igGrid("hideColumn", "countUnApprApp");
+									}
+									if(!useSet.usePersonConfirm || !vm.initDisplayOfApprovalStatus.confirmAndApprovalDailyFlg) {
+										$("#bGrid").igGrid("hideColumn", "countUnConfirmDay");
+									}
+									if(!useSet.useBossConfirm || !vm.initDisplayOfApprovalStatus.confirmAndApprovalDailyFlg) {
+										$("#bGrid").igGrid("hideColumn", "countUnApprDay");
+									}
+									if(!useSet.monthlyIdentityConfirm || !vm.initDisplayOfApprovalStatus.confirmAndApprovalMonthFlg) {
+										$("#bGrid").igGrid("hideColumn", "countUnConfirmMonth");	
+									}
+									if(!useSet.monthlyConfirm || !vm.initDisplayOfApprovalStatus.confirmAndApprovalMonthFlg) {
+										$("#bGrid").igGrid("hideColumn", "countUnApprMonth");
+									}
+									if(!useSet.employmentConfirm || !vm.initDisplayOfApprovalStatus.confirmEmploymentFlg) {
+										$("#bGrid").igGrid("hideColumn", "displayConfirm");
+										$("#bGrid").igGrid("hideColumn", "confirmPerson");
+										$("#bGrid").igGrid("hideColumn", "date");
+									}
+									vm.getPageData();
+									vm.loadData(true);
+								}
+							});
+						});
+					} else {
+						vm.$nextTick(() => {
+							vm.$blockui('hide');
+						});
+					}
+			    },
+				columns: [
+					{ 
+						headerText: '', 
+						key: 'wkpID', 
+						dataType: 'string',
+						hidden: true
+					},
+					{ 
+						headerText: vm.$i18n('KAF018_331'), 
+						key: 'wkpID',
+						dataType: 'string',
+						headerCssClass: 'kaf018-b-header-wkpName',
+						columnCssClass: 'kaf018-b-column-wkpName',
+						formatter: (key: string) => vm.getWkpInfo(key),
+					},
+					{ 
+						headerText: vm.$i18n('KAF018_332'), 
+						key: 'countEmp', 
+						dataType: 'number', 
+						width: '50px', 
+						headerCssClass: 'kaf018-b-header-countEmp',
+						columnCssClass: 'kaf018-b-column-countEmp',
+						formatter: (key: number) => {
+							if(!key) {
+								return "";
+							}
+							return key;
+						},
+					},
+					{ 
+						headerText: '<p style="text-align: center">' + vm.$i18n('KAF018_333') + '</p>' + vm.createButtonHtml(0), 
+						key: 'countUnApprApp', 
+						dataType: 'number', 
+						width: '75px', 
+						headerCssClass: 'kaf018-b-header-countUnApprApp',
+						columnCssClass: 'kaf018-b-column-count',
+						formatter: (key: number) => {
+							if(!key) {
+								return "";
+							}
+							return key;
+						},
+					},
+					{ 
+						headerText: vm.$i18n('KAF018_334'),
+						group: [
+							{ 
+								headerText: '<p style="text-align: center">' + vm.$i18n('KAF018_337') + '</p>' + vm.createButtonHtml(1), 
+								key: 'countUnConfirmDay', 
+								dataType: 'number', 
+								width: '75px', 
+								columnCssClass: 'kaf018-b-column-count',
+								formatter: (key: number) => {
+									if(!key) {
+										return "";
+									}
+									return key;
+								},
+							},
+							{ 
+								headerText: '<p style="text-align: center">' + vm.$i18n('KAF018_338') + '</p>' + vm.createButtonHtml(2), 
+								key: 'countUnApprDay', 
+								dataType: 'number', 
+								width: '75px', 
+								columnCssClass: 'kaf018-b-column-count',
+								formatter: (key: number) => {
+									if(!key) {
+										return "";
+									}
+									return key;
+								},
+							}
+						]
+					},
+					{ 
+						headerText: vm.$i18n('KAF018_335'),
+						group: [
+							{ 
+								headerText: '<p style="text-align: center">' + vm.$i18n('KAF018_339') + '</p>' + vm.createButtonHtml(5), 
+								key: 'countUnConfirmMonth', 
+								dataType: 'number', 
+								width: '75px', 
+								columnCssClass: 'kaf018-b-column-count',
+								formatter: (key: number) => {
+									if(!key) {
+										return "";
+									}
+									return key;
+								},
+							},
+							{ 
+								headerText: '<p style="text-align: center">' + vm.$i18n('KAF018_340') + '</p>' + vm.createButtonHtml(3), 
+								key: 'countUnApprMonth', 
+								dataType: 'number', 
+								width: '75px', 
+								columnCssClass: 'kaf018-b-column-count',
+								formatter: (key: number) => {
+									if(!key) {
+										return "";
+									}
+									return key;
+								},
+							}
+						]
+					},
+					{ 
+						headerText: vm.$i18n('KAF018_336'),
+						group: [
+							{ 
+								headerText: '<p style="text-align: center">' + vm.$i18n('KAF018_341') + '</p>' + vm.createButtonHtml(4), 
+								key: 'displayConfirm', 
+								dataType: 'boolean', 
+								width: '75px', 
+								columnCssClass: 'kaf018-b-column-count',
+								formatter: (key: boolean, object: any) => {
+									if(!object.countEmp) {
+										return "";
+									}
+									if(key) {
+										return vm.$i18n('KAF018_345');	
+									}
+									return vm.$i18n('KAF018_344');	
+								},
+							},
+							{ 
+								headerText: '<p style="text-align: center">' + vm.$i18n('KAF018_342') + '</p>', 
+								key: 'confirmPerson', 
+								dataType: 'string', 
+								width: '150px', 
+								headerCssClass: 'kaf018-b-header-emp-confirm',
+								formatter: (key: string) => {
+									if(!key) {
+										return "";
+									}
+									return key;
+								},
+							},
+							{ 
+								headerText: '<p style="text-align: center">' + vm.$i18n('KAF018_343') + '</p>', 
+								key: 'date', 
+								dataType: 'string', 
+								width: '100px', 
+								headerCssClass: 'kaf018-b-header-emp-confirm',
+								formatter: (key: any) => {
+									if(!key) {
+										return "";
+									}
+									return moment(key).format('YYYY/MM/DD');
+								},
+							}
+						]
+					}	
+				],
+				features: [
+					{
+						name: 'MultiColumnHeaders'
+					},
+					{
+						name: "Paging",
+						defaultDropDownWidth: 80,
+						pageCountLimit : 1,
+						pageSize: 100,
+						pageSizeList: [
+							vm.$i18n('KAF018_327'), 
+							vm.$i18n('KAF018_328'), 
+							vm.$i18n('KAF018_329'), 
+							vm.$i18n('KAF018_330')
+						],
+						locale: {
+							pagerRecordsLabelTooltip: "Current records",
+							pageSizeDropDownLabel: vm.$i18n('KAF018_325'),
+							pageSizeDropDownTrailingLabel: ""
+						},
+						pageIndexChanged: () => {
+							$(".ui-iggrid").focus();
+							vm.getPageData();
+							vm.loadData(false);
+						},
+						pageSizeChanged: () => {
+							$(".ui-iggrid").focus();
+							vm.getPageData();
+							vm.loadData(false);
+						}
+					},
+				],
+			});
+		}
+		
+		getPageData() {
+			const vm = this;
+			vm.pageData = _.map($('#bGrid').igGrid("allRows"), (o: any) => o.getAttribute("data-id"));
+		}
+		
+		createButtonHtml(mailType: ApprovalStatusMailType) {
+			return `<button class="kaf018-b-mailButton" data-bind="click: function() { $vm.buttonMailAction(` + mailType + `); }, text: $i18n('KAF018_346')"></button>`;
+		}
+		
+		getWkpInfo(key: string) {
+			const vm = this;
+			let currentWkpInfo = _.find(vm.dataSource, o => o.wkpID==key);
+			let displayWkpInfo = '<div style="width: 150px; display: inline-block;">' + currentWkpInfo.wkpCD + '</div>';
+			for(let i = 1; i < currentWkpInfo.level; i++) {
+				displayWkpInfo += '<div style="width: 10px; display: inline-block;"></div>';
+			}
+			displayWkpInfo += '<span>' + currentWkpInfo.wkpName + '</span>';
+			return displayWkpInfo;
+		}
+		
+		cellGridClick(evt: any, ui: any) {
+			const vm = this;
+			if(ui.colKey=="countUnApprApp") {
+				let countUnApprApp = _.find(vm.dataSource, o => o.wkpID == ui.rowKey).countUnApprApp;
+				if(!countUnApprApp) {
+					return;	
+				}
+				let closureItem = vm.closureItem,
+					startDate = vm.startDate,
+					endDate = vm.endDate,
+					apprSttExeDtoLst = _.filter(vm.dataSource, o => {
+						let countUnApprApp = o.countUnApprApp ? true : false;
+						return countUnApprApp && _.includes(vm.pageData, o.wkpID);
+					}),
+					currentWkpID = ui.rowKey,
+					appNameLst: Array<any> = vm.appNameLst,
+					dParam: KAF018DParam = { closureItem, startDate, endDate, apprSttExeDtoLst, currentWkpID, appNameLst };
+				vm.$window.modal('/view/kaf/018/d/index.xhtml', dParam);
+			}
+			
+			if(ui.colKey=="countUnConfirmDay" || ui.colKey=="countUnApprDay" || ui.colKey=="countUnConfirmMonth" || ui.colKey=="countUnApprMonth") {
+				let currentWkp = _.find(vm.dataSource, o => o.wkpID == ui.rowKey);
+				if(!(currentWkp.countUnConfirmDay || currentWkp.countUnApprDay || currentWkp.countUnConfirmMonth || currentWkp.countUnApprMonth)) {
+					return;	
+				}
+				let closureItem = vm.closureItem,
+					startDate = vm.startDate,
+					endDate = vm.endDate,
+					apprSttExeDtoLst = _.filter(vm.dataSource, o => {
+						let count = (o.countUnConfirmDay || o.countUnApprDay || o.countUnConfirmMonth || o.countUnApprMonth) ? true : false;
+						return count && _.includes(vm.pageData, o.wkpID);
+					}),
+					currentWkpID = ui.rowKey,
+					apprSttComfirmSet = vm.params.useSet,
+					fParam: KAF018FParam = { closureItem, startDate, endDate, apprSttExeDtoLst, currentWkpID, apprSttComfirmSet };
+				vm.$window.modal('/view/kaf/018/f/index.xhtml', fParam);
+			}
+			if(ui.colKey=="displayConfirm") {
+				let closureItem = vm.closureItem,
+					startDate = vm.startDate,
+					endDate = vm.endDate,
+					wkpInfo = _.find(vm.dataSource, o => o.wkpID==ui.rowKey),
+					displayConfirm = wkpInfo.displayConfirm,
+					confirmEmp = wkpInfo.confirmPerson,
+					confirmDate = wkpInfo.date,
+					hParam: KAF018HParam = { closureItem, startDate, endDate, wkpInfo, displayConfirm, confirmEmp, confirmDate };
+				vm.$window.modal('/view/kaf/018/h/index.xhtml', hParam).then((result: any) => {
+					if(result) {
+						if(result.isActiveConfirm) {
+							let closureId = closureItem.closureId,
+								processingYm = closureItem.processingYm,
+								wkpInfoLst = [_.find(vm.selectWorkplaceInfo, o => o.id==ui.rowKey)],
+								afterConfirmParam = {closureId, processingYm, wkpInfoLst};
+							vm.$blockui('show');
+							vm.$ajax('at', API.getEmploymentConfirmInfoAfter, afterConfirmParam).then((afterConfirmData: any) => {
+								_.forEach(vm.dataSource, x => {
+									if(x.wkpID!=ui.rowKey) {
+										return;	
+									}
+									if(afterConfirmData) {
+										x.displayConfirm = true;
+										x.confirmPerson = _.keys(afterConfirmData)[0];
+										x.date = _.values(afterConfirmData)[0].toString();
+									} else {
+										x.displayConfirm = false;
+										x.confirmPerson = '';
+										x.date = '';
+									}
+								});
+								$("#bGrid").igGrid("option", "dataSource", vm.dataSource);
+							});
+						}
+					}	
+				});
+			}
+		}
+		
+		buttonMailAction(mailTypeParam: ApprovalStatusMailType) {
+			const vm = this;
+			let height = window.innerHeight;
+			if(window.innerHeight > 820) {
+				height = 820
+			}
+			if(window.innerHeight < 600) {
+				height = 600;
+			}
+			let dialogSize = { width: 900, height: height },
+				existData = _.chain(vm.dataSource).filter(o => {
+					switch(mailTypeParam) {
+						case ApprovalStatusMailType.APP_APPROVAL_UNAPPROVED:
+							return o.countUnApprApp;
+						case ApprovalStatusMailType.DAILY_UNCONFIRM_BY_PRINCIPAL:
+							return o.countUnConfirmDay;
+						case ApprovalStatusMailType.DAILY_UNCONFIRM_BY_CONFIRMER:
+							return o.countUnApprDay;
+						case ApprovalStatusMailType.MONTHLY_UNCONFIRM_BY_PRINCIPAL:
+							return o.countUnConfirmMonth;
+						case ApprovalStatusMailType.MONTHLY_UNCONFIRM_BY_CONFIRMER:
+							return o.countUnApprMonth;
+						case ApprovalStatusMailType.WORK_CONFIRMATION:
+							return o.countEmp > 0 && !o.displayConfirm;
+						default:
+							return false;
+					}
+				}).map(o => o.wkpID).value(),
+				mailType = mailTypeParam,
+				closureItem = vm.closureItem,
+				startDate = vm.startDate,
+				endDate = vm.endDate,
+				selectWorkplaceInfo = _.filter(vm.selectWorkplaceInfo, o => _.includes(existData, o.id)),
+				employmentCDLst = vm.params.employmentCDLst,
+				cParam: KAF018CParam = { mailType, closureItem, startDate, endDate, selectWorkplaceInfo, employmentCDLst };
+			vm.$window.modal('/view/kaf/018/c/index.xhtml', cParam, dialogSize);
+		}
+		
+		goBackA() {
+			const vm = this;
+			vm.$jump('/view/kaf/018/a/index.xhtml', vm.params);
+		}
+	}
+	
+	export interface KAF018BParam {
+		closureItem: ClosureItem;
+		startDate: string;
+		endDate: string;
+		selectWorkplaceInfo: Array<DisplayWorkplace>;
+		appNameLst: Array<any>;
+		useSet: any;
+		initDisplayOfApprovalStatus: InitDisplayOfApprovalStatus;
+		employmentCDLst: Array<string>;
+	}
 
-    export class ScreenModel {
-        tempData: Array<model.ConfStatusDta> = [];
-        enable: KnockoutObservable<boolean> = ko.observable(true);
-        listWorkplaceId: KnockoutObservableArray<string> = ko.observableArray([]);
-        closureId: number;
-        closureName: string;
-        processingYm: string;
-        startDate: Date;
-        endDate: Date;
-        isDailyComfirm: boolean;
-        listEmployeeCode: Array<any>;
-        listWorkplace: Array<model.WorkplaceInfor>;
-        inputContent: any;
-        isCheckedAll: KnockoutObservable<boolean> = ko.observable(false);
-        constructor() { 
-        	window.onresize = function(event) {
-            	$("#gridB_scrollContainer").height(window.innerHeight - 269);
-            	$("#gridB_displayContainer").height(window.innerHeight - 269);
-            	$("#gridB_container").height(window.innerHeight - 240);
-            };
-        }
+	export interface ApprSttExecutionDto {
+		wkpID: string;
+		wkpCD: string;
+		wkpName: string;
+		hierarchyCode: string;
+		empPeriodLst: Array<any>;
+		level: number;
+		countEmp: number;
+		countUnApprApp: number;
+		countUnConfirmDay: number;
+		countUnApprDay: number;
+		countUnConfirmMonth: number;
+		countUnApprMonth: number;
+		displayConfirm: boolean;
+		confirmPerson: string;
+		date: string;
+	}	
 
-        startPage(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred();
-            block.invisible();
-            let params: model.IParam = nts.uk.ui.windows.getShared('KAF018BInput');
-            self.closureId = params.closureId;
-            self.closureName = params.closureName;
-            self.processingYm = params.processingYm;
-            self.startDate = params.startDate;
-            self.endDate = params.endDate;
-            self.listEmployeeCode = params.listEmployeeCode;
-            self.isDailyComfirm = params.isConfirmData;
-            self.listWorkplace = params.listWorkplace;
-            self.inputContent = params.inputContent;
-            
-            let obj = {
-                startDate: self.startDate,
-                endDate: self.endDate,
-                isConfirmData: self.isDailyComfirm,
-                listWorkplace: self.listWorkplace,
-                listEmpCd: self.listEmployeeCode
-            };
-            service.getAppSttByWorkpace(obj).done(function(data: any) {
-                _.forEach(data, function(item) {
-                    self.tempData.push(new model.ConfStatusDta(item.workplaceId, item.workplaceName,item.enabled, item.checked, 
-                            self.getRecord(item.approvedNumOfCase ? item.approvedNumOfCase : 0),
-                            self.getRecord1(item.numOfApp ? item.numOfApp : 0, item.numOfUnreflected ? item.numOfUnreflected : 0),
-                            self.getRecord(item.numOfUnapproval ? item.numOfUnapproval : 0),
-                            self.getRecord(item.numOfDenials ? item.numOfDenials : 0)));
-                })
-                self.initNtsGrid(self.listHidden());
-                dfd.resolve();
-                block.clear();
-            }).fail(function() {
-                block.clear();
-            })
-            return dfd.promise();
-        }
-
-        sendMails() {
-            var self = this;
-            block.invisible();
-            let confirmStatus: Array<model.UnApprovalSendMail> = [];
-            _.forEach(self.tempData, function(item) {
-                if (item.isChecked) {
-                    confirmStatus.push(new model.UnApprovalSendMail(item.workplaceId, item.isChecked));
-                }
-            });
-
-            service.getCheckSendMail(confirmStatus).done(function() {
-                confirm({ messageId: "Msg_795" }).ifYes(() => {
-                    block.invisible();
-                    let listWkpId = [];
-                    _.forEach(confirmStatus, function(item) {
-                        listWkpId.push(item.workplaceId);
-                    });
-                    let obj = {
-                        listWkpId: listWkpId,
-                        closureStart: self.startDate,
-                        closureEnd: self.endDate,
-                        listEmpCd: self.listEmployeeCode
-                    };
-                    service.exeSendUnconfirmedMail(obj).done(function(result: any) {
-                        shareModel.showMsgSendEmail(result);
-                    }).fail(function(err) {
-                        error({ messageId: err.messageId });
-                    }).always(function() {
-                        block.clear();
-                    });
-                })
-            }).fail(function(err) {
-                error({ messageId: err.messageId });
-            }).always(function() {
-                block.clear();
-            });
-        }
-
-        getRecord1(value1: number, value2: number): string {
-            let val2: string =  value2 > 0 ? value2 : "";
-            let val1: string = value1 > 0 ? value1 + "件" : "";
-            let symb = (val1 != "" && val2 != "") ? "/" : "";
-            return val2 + symb + val1;
-        }
-
-        getRecord(value?: number) {
-            return value ? value + "件" : "";
-        }
-
-        getTargetDate(): string {
-            var self = this;
-            let startDate = nts.uk.time.formatDate(new Date(self.startDate), 'yyyy/MM/dd');
-            let endDate = nts.uk.time.formatDate(new Date(self.endDate), 'yyyy/MM/dd');
-            return self.processingYm + " (" + startDate + " ～ " + endDate + ")";
-        }
-
-        goBackA() {
-            var self = this;
-            let params = {
-                inputContent: self.inputContent
-            };
-             nts.uk.request.jump('/view/kaf/018/a/index.xhtml', params);    
-        }
-
-        gotoC(id) {
-            var self = this;
-            let listWorkplace = [];
-            let indexs = null;
-            _.each(self.tempData, function(item, index) {
-                listWorkplace.push(new shareModel.ItemModel(item.workplaceId, item.workplaceName));
-                if(item.workplaceId == id){
-                    indexs = index;
-                }
-            });
-            let params = {
-                closureId: self.closureId,
-                closureName: self.closureName,
-                processingYm: self.processingYm,
-                startDate: self.startDate,
-                endDate: self.endDate,
-                listWorkplace: listWorkplace,
-                selectedWplIndex: indexs,
-                listEmployeeCode: self.listEmployeeCode,
-                inputContent: self.inputContent
-            };
-            nts.uk.request.jump('/view/kaf/018/c/index.xhtml', params);
-        }
-        listHidden(): Array<any>{
-            let self = this;
-            let lstHidden = [];
-             _.each(self.tempData, function(item, index) {
-                if(item.isEnabled == false){
-                    lstHidden.push(item.workplaceId);
-                }
-            });
-            return lstHidden;
-        }
-        initNtsGrid(lstHidden: Array<any>) {
-            var self = this;
-            $("#gridB").ntsGrid({
-                width: '850px',
-                height: window.innerHeight - 240 + 'px',
-                dataSource: self.tempData,
-                primaryKey: 'workplaceId',
-                rowVirtualization: true,
-                virtualization: true,
-                hidePrimaryKey: true,
-                virtualizationMode: 'continuous',
-                columns: [
-                    { headerText: getText('KAF018_20'), key: 'workplaceName', dataType: 'string', width: '310px', ntsControl: 'LinkLabel' },
-                    { headerText: getText('KAF018_21'), key: 'numOfUnreflected', dataType: 'string', width: '100px' },
-                    { headerText: getText('KAF018_22'), key: 'numOfUnapproval', dataType: 'string', width: '100px'},
-                    { headerText: getText('KAF018_23'), key: 'approvedNumOfCase', dataType: 'string', width: '100px'},
-                    { headerText: getText('KAF018_24'), key: 'numOfDenials', dataType: 'string', width: '100px'},
-                    { headerText: getText('KAF018_25'), key: 'isChecked', dataType: 'boolean', width: '120px', 
-                            showHeaderCheckbox: true, ntsControl: 'Checkbox',  hiddenRows: lstHidden},
-                    { headerText: 'ID', key: 'workplaceId', dataType: 'string', width: '0px', ntsControl: 'Label'}
-                ],
-                features: [
-                    {
-                        name: 'Selection',
-                        mode: 'row',
-                        multipleSelection: true
-                    }
-                ],
-                ntsControls: [{ name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox' },
-                    { name: 'LinkLabel' ,click: function(rowId){self.gotoC(rowId)}, controlType: 'LinkLabel' }],
-            });
-            $("#gridB").setupSearchScroll("igGrid", true);
-            $("#gridB").focus();
-        }
-    }
-
-    export module model {
-
-        export class UnApprovalSendMail {
-            workplaceId: string;
-            isChecked: boolean;
-            constructor(workplaceId: string, isChecked: boolean) {
-                this.workplaceId = workplaceId;
-                this.isChecked = isChecked;
-            }
-        }
-
-        export class IParam {
-            closureId: number;
-
-            /** The closure name. */
-            closureName: string;
-
-            /** The start date. */
-            startDate: Date;
-
-            /** The end date. */
-            endDate: Date;
-
-            /** The closure date. */
-            //処理年月
-            closureDate: number;
-
-            processingYm: string;
-
-            isConfirmData: boolean;
-
-            listEmployeeCode: Array<any>;
-
-            listWorkplace: Array<WorkplaceInfor>;
-        }
-
-        export class WorkplaceInfor {
-            // 職場ID
-            code: string;
-
-            name: string;
-            constructor(code: string, name: string) {
-                this.code = code;
-                this.name = name;
-            }
-        }
-        
-        export class ConfStatusDta {
-            workplaceId: string;
-            workplaceName: string;
-            isEnabled: boolean;
-            isChecked: boolean;
-            /**承認済件数*/
-            approvedNumOfCase: string;
-            /**未反映件数*/
-            numOfUnreflected: string;
-            /**未承認件数*/
-            numOfUnapproval: string;
-            /**否認件数*/
-            numOfDenials: string;
-            constructor(workplaceId: string, workplaceName: string,isEnabled: boolean, isChecked: boolean,
-                approvedNumOfCase: any, numOfUnreflected: any, numOfUnapproval: any, numOfDenials: any) {
-                this.workplaceId = workplaceId;
-                this.workplaceName = workplaceName;
-                this.isEnabled = isEnabled;
-                this.approvedNumOfCase = approvedNumOfCase;
-                this.numOfUnreflected = numOfUnreflected;
-                this.numOfUnapproval = numOfUnapproval;
-                this.numOfDenials = numOfDenials;
-                this.isChecked = isChecked;
-            }
-        }
-    }
+	const API = {
+		getStatusExecution: "at/request/application/approvalstatus/getStatusExecution",
+		getEmploymentConfirmInfoAfter: "at/request/application/approvalstatus/getEmploymentConfirmInfoAfter"
+	}
 }

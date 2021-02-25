@@ -27,12 +27,12 @@ public interface WorkPlaceAuthorityRepository {
 	Optional<WorkPlaceAuthority> getWorkPlaceAuthorityById(String companyId, String roleId,int functionNo);
 	/**
 	 * add new WorkPlaceAuthority
-	 * @param WorkPlaceAuthority
+	 * @param WorkPlaceAuthorityDto
 	 */
 	void addWorkPlaceAuthority(WorkPlaceAuthority workPlaceAuthotity);
 	/**
 	 * update WorkPlaceAuthority
-	 * @param WorkPlaceAuthority
+	 * @param WorkPlaceAuthorityDto
 	 */
 	void updateWorkPlaceAuthority(WorkPlaceAuthority workPlaceAuthotity);
 	/**

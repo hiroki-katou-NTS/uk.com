@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.schedule.dom.employeeinfo.rank;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -16,10 +18,10 @@ public class EmpRankInfor {
 	 /**社員ID **/
 	private final String empId;
 	/** ランクコード **/
-	private final RankCode rankCode;
+	private final Optional<RankCode> rankCode;
 	
 	/**ランク記号 **/
-	private final RankSymbol rankSymbol;
+	private final Optional<RankSymbol> rankSymbol;
 
 	/**
 	 * [C-1] ランクなしで作る
@@ -27,7 +29,7 @@ public class EmpRankInfor {
 	 * @return
 	 */
 	public static EmpRankInfor makeWithoutRank(String empId){
-		return new EmpRankInfor(empId, null, null);
+		return new EmpRankInfor(empId, Optional.empty(), Optional.empty());
 	}
 	/**
 	 * [C-2] 作る
@@ -37,7 +39,7 @@ public class EmpRankInfor {
 	 * @return
 	 */
 	public static EmpRankInfor create(String empId, RankCode rankCode , RankSymbol rankSymbol){
-		return new EmpRankInfor(empId, rankCode, rankSymbol);
+		return new EmpRankInfor(empId, Optional.ofNullable(rankCode), Optional.ofNullable(rankSymbol));
 	}
 	
 	

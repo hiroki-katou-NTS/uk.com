@@ -52,6 +52,13 @@ public interface InterimBreakDayOffMngRepository {
 	 * @return
 	 */
 	List<InterimBreakMng> getByPeriod(String sid, DatePeriod ymd, double unUseDays, DatePeriod dateData);
+
+	/**
+	 * KDL036 ドメインモデル「暫定休出管理データ」を取得する
+	 * @param mngIds
+	 * @return
+	 */
+	List<InterimBreakMng> getBreakByIds(List<String> mngIds);
 	
 	/**
 	 * 暫定休出管理データ 　を追加および更新

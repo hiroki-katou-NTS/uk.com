@@ -30,4 +30,6 @@ public interface MonthlyPatternSetMemento {
 	 * @param monthlyPatternName the new monthly pattern name
 	 */
 	public void setMonthlyPatternName(MonthlyPatternName monthlyPatternName);
+
+	public void setContractCd();
 }

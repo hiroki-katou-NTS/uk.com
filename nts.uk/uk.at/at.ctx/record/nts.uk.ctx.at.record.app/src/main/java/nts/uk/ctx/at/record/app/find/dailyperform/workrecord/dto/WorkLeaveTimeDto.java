@@ -1,22 +1,25 @@
 package nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.app.find.dailyperform.common.WithActualTimeStampDto;
-import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeActualStamp;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 
 @Data
 /** 出退勤時刻 */
 @AllArgsConstructor
 @NoArgsConstructor
-public class WorkLeaveTimeDto implements ItemConst {
+public class WorkLeaveTimeDto implements ItemConst, AttendanceItemDataGate {
 
-	private Integer no;
+	private int no;
 
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = ATTENDANCE)
 	private WithActualTimeStampDto working;
@@ -37,5 +40,47 @@ public class WorkLeaveTimeDto implements ItemConst {
 
 	private static TimeActualStamp toTimeActualStamp(WithActualTimeStampDto c) {
 		return c == null ? null : c.toDomain();
+	}
+
+	@Override
+	public boolean isNo(int idx) {
+		return idx == no;
+	}
+
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		switch (path) {
+		case ATTENDANCE:
+			return Optional.ofNullable(working);
+		case LEAVE:
+			return Optional.ofNullable(leave);
+		default:
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		switch (path) {
+		case ATTENDANCE:
+			working = (WithActualTimeStampDto) value;
+			break;
+		case LEAVE:
+			leave = (WithActualTimeStampDto) value;
+			break;
+		default:
+			break;
+		}
+	}
+	
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+		case ATTENDANCE:
+		case LEAVE:
+			return new WithActualTimeStampDto();
+		default:
+			return null;
+		}
 	}
 }

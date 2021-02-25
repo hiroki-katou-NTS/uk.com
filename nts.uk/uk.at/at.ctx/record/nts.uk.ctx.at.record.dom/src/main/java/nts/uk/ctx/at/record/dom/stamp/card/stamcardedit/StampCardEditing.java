@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 
@@ -16,6 +17,7 @@ import nts.arc.layer.dom.AggregateRoot;
  */
 @AllArgsConstructor
 @Getter
+@Setter
 public class StampCardEditing extends AggregateRoot {
 	
 	/**

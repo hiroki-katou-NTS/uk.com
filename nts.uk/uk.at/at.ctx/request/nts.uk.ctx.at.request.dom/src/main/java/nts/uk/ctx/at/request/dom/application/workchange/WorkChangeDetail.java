@@ -4,7 +4,7 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.common.datawork.DataWork;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.PrelaunchAppSetting;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailScreenInitModeOutput;
@@ -16,11 +16,11 @@ public class WorkChangeDetail {
 	/**
 	* 勤務変更申請
 	*/
-	AppWorkChange appWorkChange;		
+	AppWorkChange_Old appWorkChange;		
 	/**
 	 * 申請
 	 */
-	Application_New application;	
+	Application application;	
 	/**
 	 * 申請者名
 	 */

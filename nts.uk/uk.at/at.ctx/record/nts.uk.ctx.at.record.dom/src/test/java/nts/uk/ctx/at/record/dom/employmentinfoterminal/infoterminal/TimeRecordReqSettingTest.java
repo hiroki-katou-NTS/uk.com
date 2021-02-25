@@ -29,7 +29,7 @@ public class TimeRecordReqSettingTest {
 	@Test
 	public void getters() {
 
-		TimeRecordReqSetting target = new ReqSettingBuilder(new EmpInfoTerminalCode(1), new ContractCode("1"),
+		TimeRecordReqSetting target = new ReqSettingBuilder(new EmpInfoTerminalCode("1"), new ContractCode("1"),
 				new CompanyId(""), "", Collections.emptyList(), Collections.emptyList(), Collections.emptyList())
 						.workTime(Collections.emptyList()).overTimeHoliday(false).applicationReason(false)
 						.stampReceive(false).reservationReceive(false).applicationReason(false)

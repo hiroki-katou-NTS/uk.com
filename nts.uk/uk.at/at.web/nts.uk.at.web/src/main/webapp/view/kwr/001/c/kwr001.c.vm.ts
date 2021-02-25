@@ -6,6 +6,8 @@ module nts.uk.at.view.kwr001.c {
     export module viewmodel {
 
         const DEFAULT_DATA_FIRST = 0;
+        const LIMIT_BIG_SIZE = 48;
+        const LIMIT_SMALL_SIZE = 60;
 
         export class ScreenModel {
             data: KnockoutObservable<number>;
@@ -36,10 +38,13 @@ module nts.uk.at.view.kwr001.c {
             checkedManualInput: KnockoutObservable<boolean>;
             checkedNotCalculated: KnockoutObservable<boolean>;
             checkedExceedByApplication: KnockoutObservable<boolean>;
+            checkReasonForDivergence: KnockoutObservable<boolean>;
+            checkDeviationError: KnockoutObservable<boolean>;
+            checkDeviationAlarm: KnockoutObservable<boolean>;
 
             // start: variable global store data from service 
             allMainDom: KnockoutObservable<any>;
-            outputItemPossibleLst: KnockoutObservableArray<ItemModel>;
+            outputItemPossibleLst: KnockoutObservableArray<any>;
             // end: variable global store data from service
 
             // store map to convert id and code attendance item
@@ -50,9 +55,43 @@ module nts.uk.at.view.kwr001.c {
             enableCodeC3_2: KnockoutObservable<boolean>;
             storeCurrentCodeBeforeCopy: KnockoutObservable<string>;
 
-            remarkInputContents: KnockoutObservableArray<ItemModel>;
+            remarkInputContents: KnockoutObservableArray<ItemModel> = ko.observableArray([
+                new ItemModel('1', nts.uk.resource.getText("KWR001_118"), '', 0),
+                new ItemModel('2', nts.uk.resource.getText("KWR001_119"), '', 0),
+                new ItemModel('3', nts.uk.resource.getText("KWR001_120"), '', 0),
+                new ItemModel('4', nts.uk.resource.getText("KWR001_121"), '', 0),
+                new ItemModel('5', nts.uk.resource.getText("KWR001_122"), '', 0)
+            ]);
             currentRemarkInputContent: KnockoutObservable<string>;
             isEnableRemarkInputContents: KnockoutObservable<boolean>;
+
+            // switch btn A9_2
+            dataSizeClassificationType: KnockoutObservableArray<any> = ko.observableArray([
+                { code: 1, name: nts.uk.resource.getText("KWR001_153") },
+                { code: 0, name: nts.uk.resource.getText("KWR001_154") }
+            ]);
+            selectedSizeClassificationType: KnockoutObservable<number> = ko.observable(FontSizeEnum.BIG);
+
+            // combobox C5_1
+            itemProjectType: KnockoutObservableArray<any> = ko.observableArray([
+                { code: -1, name: nts.uk.resource.getText("KWR001_156") },
+                { code: 5, name: nts.uk.resource.getText("KWR001_157") },
+                { code: 2, name: nts.uk.resource.getText("KWR001_158") },
+                { code: 0, name: nts.uk.resource.getText("KWR001_159") },
+                { code: -2, name: nts.uk.resource.getText("KWR001_160") },
+            ]);
+            selectedProjectType: KnockoutObservable<number>;
+
+            // C7_13 label
+            sizeClassificationLabel: KnockoutObservable<string> = ko.observable(nts.uk.resource.getText("KWR001_65"));
+            limitAttendanceItem: any = {
+                right: LIMIT_BIG_SIZE
+            };
+            loadSwapLst: KnockoutObservable<boolean> = ko.observable(true);
+
+            layoutId: string;
+            selectionType: number;
+            employeeId?: string;
 
             constructor() {
                 var self = this;
@@ -69,11 +108,16 @@ module nts.uk.at.view.kwr001.c {
                 self.C3_2_value = ko.observable("");
                 self.C3_3_value = ko.observable("");
 
-                self.roundingRules = ko.observableArray([]);
+                self.roundingRules = ko.observableArray([
+                    { code: '0', name: nts.uk.resource.getText("KWR001_58") },
+                    { code: '1', name: nts.uk.resource.getText("KWR001_59") }
+                ]);
                 self.selectedRuleCode = ko.observable(0);
                 self.currentCodeListSwap = ko.observableArray([]);
+                self.selectedProjectType = ko.observable(-1);
 
                 self.currentCodeListSwap.subscribe(function(value) {
+                    self.fillterByAttendanceType(self.selectedProjectType());
                 })
 
                 self.items.subscribe(function(value) {
@@ -83,12 +127,13 @@ module nts.uk.at.view.kwr001.c {
                 self.enableCodeC3_2 = ko.observable(false);
 
                 self.currentCodeList.subscribe(function(value) {
+                    self.selectedProjectType(-1);
                     let codeChoose = _.find(self.allMainDom(), function(o: any) {
-                        return value == o.itemCode;
+                        return value == o.code;
                     });
                     if (!_.isUndefined(codeChoose) && !_.isNull(codeChoose)) {
                         blockUI.grayout();
-                        service.findByCode(self.currentCodeList()).done((outputItemDailyWorkSchedule) => {
+                        service.findByCode(self.currentCodeList(), self.selectionType).done((outputItemDailyWorkSchedule) => {
                             self.C3_2_value(outputItemDailyWorkSchedule.itemCode);
                             self.C3_3_value(outputItemDailyWorkSchedule.itemName);
                             self.getOutputItemDailyWorkSchedule(outputItemDailyWorkSchedule);
@@ -121,11 +166,11 @@ module nts.uk.at.view.kwr001.c {
                 self.checkedManualInput = ko.observable(false);
                 self.checkedNotCalculated = ko.observable(false);
                 self.checkedExceedByApplication = ko.observable(false);
+                self.checkReasonForDivergence = ko.observable(false);
+                self.checkDeviationError = ko.observable(false);
+                self.checkDeviationAlarm = ko.observable(false);
 
                 self.storeCurrentCodeBeforeCopy = ko.observable('');
-
-                self.remarkInputContents = ko.observableArray([]);
-
                 self.currentRemarkInputContent = ko.observable('1');
 
                 self.currentRemarkInputContent.subscribe(function(value) {
@@ -142,6 +187,28 @@ module nts.uk.at.view.kwr001.c {
                 self.isEnableRemarkInputContents = ko.observable(false);
                 self.mapIdCodeAtd = {};
                 self.mapCodeIdAtd = {};
+
+                self.selectedSizeClassificationType.subscribe(value => {
+                    self.loadSwapLst(false);
+                    if (value === FontSizeEnum.SMALL) {
+                        self.limitAttendanceItem = {
+                            right: LIMIT_SMALL_SIZE
+                        };
+                        self.sizeClassificationLabel(nts.uk.resource.getText("KWR001_142"));
+                    } else {
+                        self.limitAttendanceItem = {
+                            right: LIMIT_BIG_SIZE
+                        };
+                        self.sizeClassificationLabel(nts.uk.resource.getText("KWR001_65"));
+                    }
+                    setTimeout(() => {
+                        self.loadSwapLst(true);
+                    }, 10);
+                });
+
+                self.selectedProjectType.subscribe((value) => {
+                    self.fillterByAttendanceType(value);
+                });
             }
 
             /*
@@ -157,12 +224,15 @@ module nts.uk.at.view.kwr001.c {
                 self.currentCodeListSwap.removeAll();
                 _.forEach(data.lstDisplayedAttendance, function(value, index) {
                     if (value.attendanceName) {
-                        temp1.push({ code: self.mapIdCodeAtd[value.attendanceDisplay], name: value.attendanceName, id: value.attendanceDisplay });
+                        temp1.push({ code: self.mapIdCodeAtd[value.attendanceDisplay]
+                            , name: value.attendanceName
+                            , id: value.attendanceDisplay
+                            , att: value.attendanceItemAtt });
                     }
-                })
+                });
                 _.forEach(self.outputItemPossibleLst(), function(value) {
                     temp2.push(value);
-                })
+                });
                 // refresh data for C7_2
                 self.items(temp2);
                 // refresh data for C7_8
@@ -180,24 +250,33 @@ module nts.uk.at.view.kwr001.c {
                     self.checkedManualInput(self.convertNumToBool(data.lstRemarkContent[8].usedClassification));
                     self.checkedNotCalculated(self.convertNumToBool(data.lstRemarkContent[9].usedClassification));
                     self.checkedExceedByApplication(self.convertNumToBool(data.lstRemarkContent[10].usedClassification));
+                    self.checkReasonForDivergence(self.convertNumToBool(data.lstRemarkContent[11].usedClassification));
+                    self.checkDeviationError(self.convertNumToBool(data.lstRemarkContent[12].usedClassification));
+                    self.checkDeviationAlarm(self.convertNumToBool(data.lstRemarkContent[13].usedClassification));
                     self.selectedRuleCode(data.workTypeNameDisplay);
+                    self.selectedSizeClassificationType(data.fontSize);
+                    self.layoutId = data.layoutId;
                 } else {
                     self.setRemarksContentDefault();
                 }
-
+                self.fillterByAttendanceType(self.selectedProjectType());
             }
 
             public startPage(): JQueryPromise<void> {
                 var dfd = $.Deferred<void>();
                 let self = this;
 
-                $.when(self.getDataService(), self.getEnumName(), self.getEnumRemarkContentChoice(), self.getEnumRemarkInputContent()).done(function() {
-                    if (_.isUndefined(nts.uk.ui.windows.getShared('KWR001_C'))) {
+                let dataTransfer = nts.uk.ui.windows.getShared('KWR001_C');
+                self.layoutId = dataTransfer.layoutId ? dataTransfer.layoutId : '';
+                self.selectionType = dataTransfer.selection;
+
+                $.when(self.getDataService()).done(function() {
+                    if (!dataTransfer.codeChoose) {
+                        self.selectedSizeClassificationType(FontSizeEnum.BIG);
                         self.currentCodeList(null);
                     } else {
-                        self.currentCodeList(nts.uk.ui.windows.getShared('KWR001_C'));
+                        self.currentCodeList(dataTransfer.codeChoose);
                     }
-
                     dfd.resolve();
                 })
                 return dfd.promise();
@@ -209,80 +288,37 @@ module nts.uk.at.view.kwr001.c {
             private getDataService(): JQueryPromise<void> {
                 var dfd = $.Deferred<void>();
                 var self = this;
-                service.getDataStartPage().done(function(data: any) {
+                service.getDataStartPage(self.selectionType, self.C3_2_value()).then(function(data: any) {
                     // variable global store data from service 
                     self.allMainDom(data.outputItemDailyWorkSchedule);
 
                     // variable temporary 
                     let temp: any[] = [];
-                    _.forEach(data.dailyAttendanceItem, function(value) {
-                        temp.push(value);
-                    })
+                    if (data.selectedItem) {
+                        _.forEach(data.selectedItem.lstCanUsed, function(value) {
+                            temp.push(value);
+                        });
+                    }
+
                     self.outputItemPossibleLst(temp);
 
                     let arrCodeName: ItemModel[] = [];
                     _.forEach(data.outputItemDailyWorkSchedule, function(value, index) {
-                        arrCodeName.push({ code: value.itemCode + "", name: value.itemName, id: "" });
+                        arrCodeName.push({ code: value.code + "", name: value.name, id: "", att: value.attendanceItemAtt });
                     });
                     self.outputItemList(arrCodeName);
 
-                    _.forEach(data.dailyAttendanceItem, (value) => {
+                    _.forEach(data.selectedItem.lstCanUsed, (value) => {
                         self.mapCodeIdAtd[value.code] = value.id;
                         self.mapIdCodeAtd[value.id] = value.code;
                     })
 
-                    self.items(data.dailyAttendanceItem);
+                    self.items(data.selectedItem.lstCanUsed);
+                    self.employeeId = data.employeeId ? data.employeeId : undefined;
 
                     dfd.resolve();
                 })
 
-                return dfd.promise();
-            }
-
-            /*
-             * get enum name
-            */
-            private getEnumName(): JQueryPromise<void> {
-                let dfd = $.Deferred<void>();
-                let self = this;
-                service.getEnumName().done(function(data: any) {
-                    let arr: any[] = [];
-                    arr.push({ code: '0', name: data[0].localizedName });
-                    arr.push({ code: '1', name: data[1].localizedName });
-                    self.roundingRules(arr);
-                    dfd.resolve();
-                })
-                return dfd.promise();
-            }
-
-            /*
-             * get enum RemarksContentChoice
-            */
-            private getEnumRemarkContentChoice(): JQueryPromise<void> {
-                let dfd = $.Deferred<void>();
-                let self = this;
-                service.getEnumRemarkContentChoice().done(function(data: any) {
-                    dfd.resolve();
-                })
-                return dfd.promise();
-            }
-
-            /*
-             * get enum EnumRemarkInputContent
-            */
-            private getEnumRemarkInputContent(): JQueryPromise<void> {
-                let dfd = $.Deferred<void>();
-                let self = this;
-                service.getEnumRemarkInputContent().done(function(data: any) {
-                    let arr: ItemModel[] = [];
-                    arr.push(new ItemModel('1', nts.uk.resource.getText("KWR001_118"), ''));
-                    arr.push(new ItemModel('2', nts.uk.resource.getText("KWR001_119"), ''));
-                    arr.push(new ItemModel('3', nts.uk.resource.getText("KWR001_120"), ''));
-                    arr.push(new ItemModel('4', nts.uk.resource.getText("KWR001_121"), ''));
-                    arr.push(new ItemModel('5', nts.uk.resource.getText("KWR001_122"), ''));
-                    self.remarkInputContents(arr);
-                    dfd.resolve();
-                })
                 return dfd.promise();
             }
 
@@ -292,40 +328,43 @@ module nts.uk.at.view.kwr001.c {
             openScreenD() {
                 var self = this;
                 let dataScrD: any;
-                //                nts.uk.ui.windows.setShared('KWR001_D', self.outputItemPossibleLst(), true);
+                // update ver34 set shared data
+                nts.uk.ui.windows.setShared('KWR001_D', {
+                    fontSize: self.selectedSizeClassificationType(),
+                    selecttionType: self.selectionType,
+                }, true);
+
                 if (!_.isEmpty(self.currentCodeList())) {
                     self.storeCurrentCodeBeforeCopy(self.currentCodeList());
                 }
                 nts.uk.ui.windows.sub.modal('/view/kwr/001/d/index.xhtml').onClosed(function(): any {
                     nts.uk.ui.errors.clearAll();
+                    self.layoutId = '';
                     dataScrD = nts.uk.ui.windows.getShared('KWR001_D');
                     if (!_.isEmpty(dataScrD)) {
                         if (!_.isEmpty(dataScrD.error)) {
                             nts.uk.ui.dialog.alertError(dataScrD.error);
                         } else {
                             self.currentCodeList('');
-                            if (!_.isUndefined(dataScrD.lstAtdChoose) && !_.isEmpty(dataScrD.lstAtdChoose)) {
+                            if (!_.isUndefined(dataScrD.lstAtdChoose) && !_.isEmpty(dataScrD.lstAtdChoose.dataInforReturnDtos)) {
                                 $('#C3_3').focus();
                             } else {
                                 $('#C3_2').focus();
                             }
-
                             let arrTemp: any[] = [];
                             _.forEach(self.outputItemPossibleLst(), function(value) {
                                 arrTemp.push(value);
-                            })
-                            _.forEach(dataScrD.lstAtdChoose.dataInforReturnDtos, (value) => {
-                                value.code = self.mapIdCodeAtd[value.id];
-                            })
+                            });
                             self.currentCodeListSwap(dataScrD.lstAtdChoose.dataInforReturnDtos);
                             self.items(arrTemp);
                             self.C3_2_value(dataScrD.codeCopy);
                             self.C3_3_value(dataScrD.nameCopy);
+                            self.layoutId = null;
                             if (_.size(dataScrD.lstAtdChoose.msgErr)) {
                                 nts.uk.ui.dialog.error({ messageId: "Msg_1476" }).then(function() {
                                     self.saveData(dataScrD);
                                 });
-                            }else {
+                            } else {
                                 self.saveData(dataScrD);
                             }
 
@@ -366,8 +405,15 @@ module nts.uk.at.view.kwr001.c {
                 command.lstRemarkContent.push({ usedClassification: self.convertBoolToNum(self.checkedManualInput()), printItem: 8 });
                 command.lstRemarkContent.push({ usedClassification: self.convertBoolToNum(self.checkedNotCalculated()), printItem: 9 });
                 command.lstRemarkContent.push({ usedClassification: self.convertBoolToNum(self.checkedExceedByApplication()), printItem: 10 });
+                command.lstRemarkContent.push({ usedClassification: self.convertBoolToNum(self.checkReasonForDivergence()), printItem: 11 });
+                command.lstRemarkContent.push({ usedClassification: self.convertBoolToNum(self.checkDeviationError()), printItem: 12 });
+                command.lstRemarkContent.push({ usedClassification: self.convertBoolToNum(self.checkDeviationAlarm()), printItem: 13 });
                 command.workTypeNameDisplay = self.selectedRuleCode();
                 command.newMode = (_.isUndefined(self.currentCodeList()) || _.isNull(self.currentCodeList()) || _.isEmpty(self.currentCodeList())) ? true : false;
+                command.fontSize = self.selectedSizeClassificationType();
+                command.selectionType = self.selectionType;
+                command.layoutId = self.layoutId;
+                command.employeeId = self.employeeId;
 
                 // check to get data old from DB or current interface when it was disable
                 if (self.checkedRemarksInput()) {
@@ -379,8 +425,8 @@ module nts.uk.at.view.kwr001.c {
                     command.remarkInputNo = _.isEmpty(outputItemDailyWorkSchedule) ? DEFAULT_DATA_FIRST : outputItemDailyWorkSchedule.remarkInputNo;
                     self.currentRemarkInputContent(self.convertDBRemarkInputToValue(command.remarkInputNo));
                 }
-                service.save(command).done(function() {
-                    self.getDataService().done(function() {
+                service.save(command).then(function() {
+                    self.getDataService().then(function() {
                         self.currentCodeList(self.C3_2_value());
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function () {
                            $('#C3_3').focus(); 
@@ -406,11 +452,15 @@ module nts.uk.at.view.kwr001.c {
                 let self = this;
                 self.currentCodeList('');
                 self.C3_2_value('');
+                self.getDataService();
                 self.C3_3_value('');
                 $('#C3_2').focus();
+                self.selectedSizeClassificationType(FontSizeEnum.BIG);
                 self.getOutputItemDailyWorkSchedule([]);
                 self.enableBtnDel(false);
+                self.layoutId  = null;
                 self.selectedRuleCode(0);
+                self.selectedProjectType(-1);
                 _.delay(() => {
                     nts.uk.ui.errors.clearAll();
                 }, 400);
@@ -447,6 +497,9 @@ module nts.uk.at.view.kwr001.c {
                 self.checkedManualInput(false);
                 self.checkedNotCalculated(false);
                 self.checkedExceedByApplication(false);
+                self.checkReasonForDivergence(false);
+                self.checkDeviationError(false);
+                self.checkDeviationAlarm(false);
             }
 
             /*
@@ -456,7 +509,7 @@ module nts.uk.at.view.kwr001.c {
                 let self = this;
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                     blockUI.grayout();
-                    service.remove(self.currentCodeList()).done(function() {
+                    service.remove(self.layoutId, self.selectionType.toString()).done(function() {
                         let indexCurrentCode = _.findIndex(self.outputItemList(), function(value, index) {
                             return self.currentCodeList() == value.code;
                         })
@@ -500,16 +553,59 @@ module nts.uk.at.view.kwr001.c {
             private convertDBRemarkInputToValue(args: number): string {
                 return _.toString(args + 1);
             }
+
+            private fillterByAttendanceType(code: number) {
+                const vm = this;
+                const NOT_USE_ATR = 9;  // 日次の勤怠項目に関連するマスタの種類=9:するしない区分
+                const CODE = 0;         // 日次勤怠項目の属性=0:コード
+                const NUMBEROFTIME = 2; // 日次勤怠項目の属性=2:回数
+                const TIME = 5;         //日次勤怠項目の属性=5:時間
+                let lstResult: any[] = [];
+                let lstTemp: any[] = [];
+                _.forEach(vm.outputItemPossibleLst(), function(value) {
+                    lstTemp.push(value);
+                });
+                switch (code) {
+                    case -1:
+                        // 「全件」⓪の場合は、絞り込み不要とする。
+                       lstResult = lstTemp;
+                        break;
+                    case -2:
+                        // 「その他」④の場合は、「全体」⓪から時間①、回数②、計算項目③を除いたものを表示する。
+                        lstResult = _.filter(lstTemp, (item: any) => item.attendanceItemAtt !== NUMBEROFTIME
+                                                                                  || item.attendanceItemAtt !== TIME 
+                                                                                  || item.attendanceItemAtt !== CODE);
+                        break;
+                    case CODE:
+                        //「計算項目」③の場合は、日次勤怠項目の属性=0:コード　かつ　日次の勤怠項目に関連するマスタの種類=9:するしない区分
+                        lstResult = _.filter(lstTemp, (item: any) => item.attendanceItemAtt === CODE
+                                                                                  && item.masterType
+                                                                                  && item.masterType === NOT_USE_ATR);
+                    default:
+                        //「時間」①の場合は、日次勤怠項目の属性=5:時間
+                        //「回数」②の場合は、日次勤怠項目の属性=2:回数
+                        lstResult = _.filter(lstTemp, (item: any) => item.attendanceItemAtt === code);
+                        break;
+                }
+                vm.items(lstResult);
+            }
         }
         class ItemModel {
             code: string;
             name: string;
             id: string;
-            constructor(code: string, name: string, id: string) {
+            att: number;
+            constructor(code: string, name: string, id: string, att: number) {
                 this.code = code;
                 this.name = name;
                 this.id = id;
+                this.att = att;
             }
+        }
+
+        class FontSizeEnum {
+            static BIG = 1;
+            static SMALL = 0;
         }
     }
 }

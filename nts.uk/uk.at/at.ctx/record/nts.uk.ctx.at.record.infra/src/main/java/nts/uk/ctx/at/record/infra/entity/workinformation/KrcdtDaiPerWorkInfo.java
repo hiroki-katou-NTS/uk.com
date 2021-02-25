@@ -20,9 +20,10 @@ import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.CalculationState;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -48,14 +49,6 @@ public class KrcdtDaiPerWorkInfo extends UkJpaEntity implements Serializable {
 	// 勤務実績の勤務情報. 就業時間帯コード
 	@Column(name = "RECORD_WORK_WORKTIME_CODE")
 	public String recordWorkWorktimeCode;
-
-	// 勤務予定の勤務情報. 勤務種類コード
-	@Column(name = "SCHEDULE_WORK_WORKTYPE_CODE")
-	public String scheduleWorkWorktypeCode;
-
-	// 勤務予定の勤務情報. 勤務種類コード
-	@Column(name = "SCHEDULE_WORK_WORKTIME_CODE")
-	public String scheduleWorkWorktimeCode;
 
 	@Column(name = "CALCULATION_STATE")
 	public Integer calculationState;
@@ -94,8 +87,7 @@ public class KrcdtDaiPerWorkInfo extends UkJpaEntity implements Serializable {
 	
 	public static WorkInfoOfDailyPerformance toDomain(KrcdtDaiPerWorkInfo entity, List<KrcdtWorkScheduleTime> scheduleTimes) {
 		WorkInfoOfDailyPerformance domain = new WorkInfoOfDailyPerformance(entity.krcdtDaiPerWorkInfoPK.employeeId,
-												new WorkInformation(entity.recordWorkWorktimeCode, entity.recordWorkWorktypeCode),
-												new WorkInformation(entity.scheduleWorkWorktimeCode, entity.scheduleWorkWorktypeCode),
+												new WorkInformation(entity.recordWorkWorktypeCode, entity.recordWorkWorktimeCode),
 												EnumAdaptor.valueOf(entity.calculationState, CalculationState.class),
 												EnumAdaptor.valueOf(entity.goStraightAttribute, NotUseAttribute.class),
 												EnumAdaptor.valueOf(entity.backStraightAttribute, NotUseAttribute.class), 
@@ -108,22 +100,22 @@ public class KrcdtDaiPerWorkInfo extends UkJpaEntity implements Serializable {
 	}
 
 	public static KrcdtDaiPerWorkInfo toEntity(WorkInfoOfDailyPerformance workInfoOfDailyPerformance) {
+		WorkInfoOfDailyAttendance wki = workInfoOfDailyPerformance.getWorkInformation();
+		
 		return new KrcdtDaiPerWorkInfo(
 				new KrcdtDaiPerWorkInfoPK(workInfoOfDailyPerformance.getEmployeeId(),
 						workInfoOfDailyPerformance.getYmd()),
-				workInfoOfDailyPerformance.getWorkInformation().getRecordInfo().getWorkTypeCode() !=null ? workInfoOfDailyPerformance.getWorkInformation().getRecordInfo().getWorkTypeCode().v() : null,
-				workInfoOfDailyPerformance.getWorkInformation().getRecordInfo().getWorkTimeCode() != null ? workInfoOfDailyPerformance.getWorkInformation().getRecordInfo().getWorkTimeCode().v() : null,
-				workInfoOfDailyPerformance.getWorkInformation().getScheduleInfo().getWorkTypeCode() != null ? workInfoOfDailyPerformance.getWorkInformation().getScheduleInfo().getWorkTypeCode().v() : null,
-				workInfoOfDailyPerformance.getWorkInformation().getScheduleInfo().getWorkTimeCode() != null ? workInfoOfDailyPerformance.getWorkInformation().getScheduleInfo().getWorkTimeCode().v() : null,
-				workInfoOfDailyPerformance.getWorkInformation().getCalculationState() != null ? workInfoOfDailyPerformance.getWorkInformation().getCalculationState().value : null,
-				workInfoOfDailyPerformance.getWorkInformation().getGoStraightAtr() != null ? workInfoOfDailyPerformance.getWorkInformation().getGoStraightAtr().value : null,
-				workInfoOfDailyPerformance.getWorkInformation().getBackStraightAtr() != null ? workInfoOfDailyPerformance.getWorkInformation().getBackStraightAtr().value : null,
-				workInfoOfDailyPerformance.getWorkInformation().getDayOfWeek() != null ? workInfoOfDailyPerformance.getWorkInformation().getDayOfWeek().value : null,
-				workInfoOfDailyPerformance.getWorkInformation().getScheduleTimeSheets() != null ? 
-				workInfoOfDailyPerformance.getWorkInformation().getScheduleTimeSheets().stream().map(f -> KrcdtWorkScheduleTime
-						.toEntity(workInfoOfDailyPerformance.getEmployeeId(), workInfoOfDailyPerformance.getYmd(), f))
+				wki.getRecordInfo().getWorkTypeCode() != null ? wki.getRecordInfo().getWorkTypeCode().v() : null,
+				wki.getRecordInfo().getWorkTimeCodeNotNull().map(m -> m.v()).orElse(null),
+				wki.getCalculationState() != null ? wki.getCalculationState().value : null,
+				wki.getGoStraightAtr() != null ? wki.getGoStraightAtr().value : null,
+				wki.getBackStraightAtr() != null ? wki.getBackStraightAtr().value : null,
+				wki.getDayOfWeek() != null ? wki.getDayOfWeek().value : null,
+				wki.getScheduleTimeSheets() != null ? wki.getScheduleTimeSheets().stream()
+						.map(f -> KrcdtWorkScheduleTime.toEntity(workInfoOfDailyPerformance.getEmployeeId(),
+								workInfoOfDailyPerformance.getYmd(), f))
 						.collect(Collectors.toList()) : null,
-						workInfoOfDailyPerformance.getVersion());
+				workInfoOfDailyPerformance.getVersion());
 	}
 
 }

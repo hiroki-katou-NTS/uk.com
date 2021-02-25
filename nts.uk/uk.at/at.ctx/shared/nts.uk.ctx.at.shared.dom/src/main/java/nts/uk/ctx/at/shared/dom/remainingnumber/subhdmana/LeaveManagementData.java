@@ -99,7 +99,26 @@ public class LeaveManagementData extends AggregateRoot {
 		this.disapearDate = Optional.ofNullable(disapearDate);
 		
 	}
-	
+
+
+	public LeaveManagementData(String id2, String cid2, String sid2, boolean unknowDate, GeneralDate dayoffDate,
+			GeneralDate expiredDate2, ManagementDataDaysAtr occurredDays2, ManagementDataHours occurredTimes2,
+			Double unUsedDay, int unUsedTimes2, int subHDAtr2, AttendanceTime fullDayTime2,
+			AttendanceTime halfDayTime2, Optional<GeneralDate> disapearDate2) {
+		this.ID = id2;
+		this.cID = cid2;
+		this.sID = sid2;
+		this.ComDayOffDate = new CompensatoryDayoffDate(unknowDate, Optional.ofNullable(dayoffDate));
+		this.expiredDate = expiredDate2;
+		this.occurredDays = occurredDays2;
+		this.occurredTimes = occurredTimes2;
+		this.unUsedDays = new ManagementDataRemainUnit(unUsedDay);
+		this.unUsedTimes = new ManagementDataHours(unUsedTimes2);
+		this.subHDAtr = EnumAdaptor.valueOf(subHDAtr2, DigestionAtr.class);
+		this.fullDayTime = fullDayTime2;
+		this.halfDayTime = halfDayTime2;
+		this.disapearDate = disapearDate2;
+	}
 	
 	
 }

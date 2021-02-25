@@ -1,156 +1,274 @@
+ /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
+
 module nts.uk.at.view.kaf018.a.viewmodel {
-    import text = nts.uk.resource.getText;
-    import character = nts.uk.characteristics;
-    import service = nts.uk.at.view.kaf018.a.service;
-    import setShared = nts.uk.ui.windows.setShared;
-    import getShared = nts.uk.ui.windows.getShared;
-    import error = nts.uk.ui.dialog.alertError;
-    import block = nts.uk.ui.block;
-    var lstWkp = [];
-    export class ScreenModel {
-        targets: KnockoutObservableArray<any> = ko.observableArray([]);
-        selectTarget: KnockoutObservable<any>;
-        items: KnockoutObservableArray<any>;
-        selectedId: KnockoutObservable<number>;
-        enable: KnockoutObservable<boolean>;
-        checked: KnockoutObservable<boolean>;
-        selectedValue: KnockoutObservable<number> = ko.observable(0);
-        isDailyComfirm: KnockoutObservable<boolean>;
-        startDate: KnockoutObservable<Date>;
-        endDate: KnockoutObservable<Date>;
-        processingYm: KnockoutObservable<string> = ko.observable('');
-        processYm: KnockoutObservable<number> = ko.observable(0);
-        closureName: KnockoutObservable<string>;
-        listEmployeeCode: KnockoutObservableArray<any> = ko.observableArray([]);
-        isEnableDailyComfirm: KnockoutObservable<boolean> = ko.observable(true);
-        isVisibleComfirm: KnockoutObservable<boolean> = ko.observable(false);
-        //Control component
-        baseDate: KnockoutObservable<Date>;
-        selectType: KnockoutObservable<number> = ko.observable(1);
-        multiSelectedWorkplaceId: KnockoutObservableArray<string>;
-        alreadySettingList: KnockoutObservableArray<any>;
-        treeGrid: any;
-        isMultiSelect: KnockoutObservable<boolean> = ko.observable(true);
-        isBindingTreeGrid: KnockoutObservable<boolean>;
+	import character = nts.uk.characteristics;
+	import KAF018BParam = nts.uk.at.view.kaf018.b.viewmodel.KAF018BParam;
+	
+	@bean()
+	class Kaf018AViewModel extends ko.ViewModel {
+		appNameLst: Array<any> = [];
+		closureLst: KnockoutObservableArray<ClosureItem> = ko.observableArray([]);
+		selectedClosureId: KnockoutObservable<number> = ko.observable(0);
+		dateValue: KnockoutObservable<any> = ko.observable({});
+		applicationApprovalFlg: CheckBoxValue = null;
+		confirmAndApprovalDailyFlg: CheckBoxValue = null;
+		confirmAndApprovalMonthFlg: CheckBoxValue = null;
+		confirmEmploymentFlg: CheckBoxValue = null;
+		useSet: any = null;
+		initDisplayOfApprovalStatus: InitDisplayOfApprovalStatus = {
+			// ページング行数
+			numberOfPage: 0,
+			// ユーザーID
+			userID: __viewContext.user.employeeId,
+			// 会社ID
+			companyID: __viewContext.user.companyId,
+			// 月別実績の本人確認・上長承認の状況を表示する
+			confirmAndApprovalMonthFlg: false,
+			// 就業確定の状況を表示する
+			confirmEmploymentFlg: false,
+			// 申請の承認状況を表示する
+			applicationApprovalFlg: false,
+			// 日別実績の本人確認・上長承認の状況を表示する
+			confirmAndApprovalDailyFlg: false
+		};
+		fullWorkplaceInfo: Array<DisplayWorkplace> = [];
+		employmentCDLst: Array<string> = [];
+		treeGrid: any;
+		multiSelectedWorkplaceId: KnockoutObservableArray<string> = ko.observableArray([]);
+		baseDate: KnockoutObservable<Date> = ko.observable(new Date());
+		
+		created(params: KAF018BParam) {
+			const vm = this;
+			vm.applicationApprovalFlg = new CheckBoxValue(false, true, vm.$i18n('KAF018_318'));
+			vm.confirmAndApprovalDailyFlg = new CheckBoxValue(false, true, '');
+			vm.confirmAndApprovalMonthFlg = new CheckBoxValue(false, true, '');
+			vm.confirmEmploymentFlg = new CheckBoxValue(false, true, vm.$i18n('KAF018_321'));
+			vm.treeGrid = {
+				isShowAlreadySet: false,
+				isMultipleUse: false,
+				isMultiSelect: true,
+				treeType: 1,
+				selectedId: vm.multiSelectedWorkplaceId,
+				baseDate: vm.baseDate,
+				selectType: 1,
+				isShowSelectButton: true,
+				isDialog: true,
+				showIcon: true,
+				alreadySettingList: ko.observableArray([]),
+				maxRows: 15,
+				tabindex: 1,
+				systemType: 2
+			};
+			vm.dateValue.subscribe(value => {
+				vm.baseDate(new Date(value.endDate));
+			});
+			vm.applicationApprovalFlg.value.subscribe(value => vm.initDisplayOfApprovalStatus.applicationApprovalFlg = value);
+			vm.confirmAndApprovalDailyFlg.value.subscribe(value => vm.initDisplayOfApprovalStatus.confirmAndApprovalDailyFlg = value);
+			vm.confirmAndApprovalMonthFlg.value.subscribe(value => vm.initDisplayOfApprovalStatus.confirmAndApprovalMonthFlg = value);
+			vm.confirmEmploymentFlg.value.subscribe(value => vm.initDisplayOfApprovalStatus.confirmEmploymentFlg = value);
+			vm.$blockui('show');
+			vm.$ajax(API.getUseSetting).then((useSetResult: any) => {
+				if(useSetResult) {
+					if(useSetResult.usePersonConfirm && useSetResult.useBossConfirm) {
+						vm.confirmAndApprovalDailyFlg.text(vm.$i18n('KAF018_552'));
+					} else if(useSetResult.usePersonConfirm){
+						vm.confirmAndApprovalDailyFlg.text(vm.$i18n('KAF018_553'));
+					} else {
+						vm.confirmAndApprovalDailyFlg.text(vm.$i18n('KAF018_554'));
+					}
+					if(useSetResult.monthlyIdentityConfirm && useSetResult.monthlyConfirm) {
+						vm.confirmAndApprovalMonthFlg.text(vm.$i18n('KAF018_555'));		
+					} else if(useSetResult.monthlyIdentityConfirm){
+						vm.confirmAndApprovalMonthFlg.text(vm.$i18n('KAF018_556'));
+					} else {
+						vm.confirmAndApprovalMonthFlg.text(vm.$i18n('KAF018_557'));
+					}
+					if((useSetResult.usePersonConfirm) || (useSetResult.useBossConfirm)) {
+						vm.confirmAndApprovalDailyFlg.enable(true);
+					} else {
+						vm.confirmAndApprovalDailyFlg.enable(false);
+					}
+					if((useSetResult.monthlyIdentityConfirm) || (useSetResult.monthlyConfirm)) {
+						vm.confirmAndApprovalMonthFlg.enable(true);
+					} else {
+						vm.confirmAndApprovalMonthFlg.enable(false);
+					}
+					if(useSetResult.employmentConfirm) {
+						vm.confirmEmploymentFlg.enable(true);
+					} else {
+						vm.confirmEmploymentFlg.enable(false);
+					}
+				}
+				vm.useSet = useSetResult;
+				return character.restore('InitDisplayOfApprovalStatus');
+			}).then((obj: InitDisplayOfApprovalStatus) => {
+				if(obj) {
+					if(obj.applicationApprovalFlg) {
+						vm.applicationApprovalFlg.value(true);
+					} else {
+						vm.applicationApprovalFlg.value(false);
+					}
+					if(obj.confirmAndApprovalDailyFlg) {
+						vm.confirmAndApprovalDailyFlg.value(true);
+					} else {
+						vm.confirmAndApprovalDailyFlg.value(false);
+					}
+					if(obj.confirmAndApprovalMonthFlg) {
+						vm.confirmAndApprovalMonthFlg.value(true);
+					} else {
+						vm.confirmAndApprovalMonthFlg.value(false);
+					}
+					if(obj.confirmEmploymentFlg) {
+						vm.confirmEmploymentFlg.value(true);
+					} else {
+						vm.confirmEmploymentFlg.value(false);
+					}
+					vm.initDisplayOfApprovalStatus = obj;
+				} else {
+					vm.applicationApprovalFlg.value(true);
+					vm.confirmAndApprovalDailyFlg.value(true);
+					vm.confirmAndApprovalMonthFlg.value(true);
+					vm.confirmEmploymentFlg.value(true);
+				}
+				return vm.$ajax(API.getAppNameInAppList);
+			}).then((appNameLst: any) => {
+				vm.appNameLst = appNameLst;
+				return vm.$ajax(API.getApprovalStatusActivation);
+			}).then((data: any) => {
+				return $.Deferred((dfd) => {
+					vm.closureLst(_.map(data.closureList, (o: any) => {
+						return new ClosureItem(
+							o.closureHistories[0].closureId, 
+							o.closureHistories[0].closeName, 
+							o.closureMonth,
+							o.closureHistories[0].closureDate.closureDay,
+							o.closureHistories[0].closureDate.lastDayOfMonth);
+					}));
+					vm.employmentCDLst = data.listEmploymentCD;
+					if(params) {
+						vm.multiSelectedWorkplaceId(_.map(params.selectWorkplaceInfo, o => o.id));
+						vm.selectedClosureId(params.closureItem.closureId);
+						vm.dateValue().startDate = params.startDate;
+						vm.dateValue().endDate = params.endDate;
+						vm.dateValue.valueHasMutated();
+						if(params.initDisplayOfApprovalStatus.applicationApprovalFlg) {
+							vm.applicationApprovalFlg.value(true);
+						} else {
+							vm.applicationApprovalFlg.value(false);
+						}
+						if(params.initDisplayOfApprovalStatus.confirmAndApprovalDailyFlg) {
+							vm.confirmAndApprovalDailyFlg.value(true);
+						} else {
+							vm.confirmAndApprovalDailyFlg.value(false);
+						}
+						if(params.initDisplayOfApprovalStatus.confirmAndApprovalMonthFlg) {
+							vm.confirmAndApprovalMonthFlg.value(true);
+						} else {
+							vm.confirmAndApprovalMonthFlg.value(false);
+						}
+						if(params.initDisplayOfApprovalStatus.confirmEmploymentFlg) {
+							vm.confirmEmploymentFlg.value(true);
+						} else {
+							vm.confirmEmploymentFlg.value(false);
+						}
+						vm.initDisplayOfApprovalStatus = params.initDisplayOfApprovalStatus;
+						dfd.resolve();
+					} else {
+						return character.restore(__viewContext.user.employeeId + __viewContext.user.companyId).then((restoreData: any) => {
+							if(restoreData)	{
+								vm.selectedClosureId(restoreData.employmentInfo.selectedClosureId);	
+							} else {
+								vm.selectedClosureId(_.head(vm.closureLst()).closureId);	
+							}
+							vm.dateValue().startDate = data.startDate;
+							vm.dateValue().endDate = data.endDate;
+							vm.dateValue.valueHasMutated();
+							dfd.resolve();
+						})
+					}	
+				});
+			}).then(() => {
+				vm.initDisplayOfApprovalStatus.companyID = __viewContext.user.companyId;
+				vm.initDisplayOfApprovalStatus.userID = __viewContext.user.employeeId;
+				return character.save('InitDisplayOfApprovalStatus', vm.initDisplayOfApprovalStatus);
+			}).then(() => {
+				return $('#tree-grid').ntsTreeComponent(vm.treeGrid).done(() => {
+					vm.fullWorkplaceInfo = vm.flattenWkpTree(_.cloneDeep($('#tree-grid').getDataList()));
+					$('#multiple-tree-grid-tree-grid').igTreeGrid("option", "height", "392px");
+					vm.selectedClosureId.subscribe((value) => {
+						vm.$blockui('show');
+						vm.$ajax(`${API.changeClosure}/${value}`).then((changeDateData) => {
+							vm.employmentCDLst = changeDateData.listEmploymentCD;
+							vm.dateValue().startDate = changeDateData.startDate;
+							vm.dateValue().endDate = changeDateData.endDate;
+							vm.dateValue.valueHasMutated();	
+							$('#tree-grid').ntsTreeComponent(vm.treeGrid).done(() => {
+								vm.fullWorkplaceInfo = vm.flattenWkpTree(_.cloneDeep($('#tree-grid').getDataList()));
+								$('#multiple-tree-grid-tree-grid').igTreeGrid("option", "height", "392px");
+								$('#tree-grid').focusTreeGridComponent();
+								vm.$blockui('hide');
+							});
+						});
+					});
+				});
+			}).then(() => {
+				vm.$blockui('hide');
+				$('#tree-grid').focusTreeGridComponent();
+			});
+		}
+		
+		extraction() {
+			const vm = this;
+			// 画面情報を保持する。（再表示した際に使用するため）
+			
+			// アルゴリズム「職場選択チェック」を実行する(thực hiện thuật toán 「職場選択チェック」)
+			// 共通部品「KCP004_職場リスト」より選択職場を取得する(get workplace chọn từ commonComponent「KCP004_職場リスト」)
+			if(_.isEmpty(vm.multiSelectedWorkplaceId())) {
+				// メッセージ（Msg_786）を表示する(hiển thị message（Msg_786）)
+				vm.$dialog.error({ messageId: 'Msg_786' });
+				return;
+			}
+			// アルゴリズム「項目選択チェック」を実行する
+			// 画面の項目選択チェックボックスを判別する
+			if(!(vm.applicationApprovalFlg.value() || vm.confirmAndApprovalDailyFlg.value() || vm.confirmAndApprovalMonthFlg.value() || vm.confirmEmploymentFlg.value())) {
+				// メッセージ（Msg_1764）を表示する(hiển thị message（Msg_1764）)
+				vm.$dialog.error({ messageId: 'Msg_1764' });
+				return;
+			}
+			// Ｂ画面(承認・確認状況の照会)を実行する
+			character.save('InitDisplayOfApprovalStatus', vm.initDisplayOfApprovalStatus).then(() => {
+				let closureItem = _.find(vm.closureLst(), o => o.closureId == vm.selectedClosureId()),
+					startDate = vm.dateValue().startDate,
+					endDate = vm.dateValue().endDate,
+					selectWorkplaceInfo: Array<DisplayWorkplace> = _.chain(vm.fullWorkplaceInfo)
+																	.filter((o: DisplayWorkplace) => _.includes(vm.multiSelectedWorkplaceId(), o.id))
+																	.sortBy('hierarchyCode').value(),
+					appNameLst: Array<any> = vm.appNameLst,
+					useSet = vm.useSet,
+					initDisplayOfApprovalStatus = vm.initDisplayOfApprovalStatus,
+					employmentCDLst = vm.employmentCDLst,
+					bParam: KAF018BParam = { closureItem, startDate, endDate, selectWorkplaceInfo, appNameLst, useSet, initDisplayOfApprovalStatus, employmentCDLst };
+				vm.$jump("/view/kaf/018/b/index.xhtml", bParam);	
+			});
+		}
 
-        constructor() {
-            var self = this;
-            self.items = ko.observableArray([
-                { code: 0, name: text('KAF018_12') },
-            ]);
-
-
-            self.isDailyComfirm = ko.observable(false);
-            self.startDate = ko.observable(new Date());
-            self.endDate = ko.observable(new Date());
-            self.enable = ko.observable(true);
-            self.checked = ko.observable(false);
-            self.selectTarget = ko.observable(-1);
-            self.closureName = ko.observable('');
-
-            //Control component
-            self.baseDate = ko.observable(new Date());
-            self.multiSelectedWorkplaceId = ko.observableArray([]);
-            self.alreadySettingList = ko.observableArray([]);
-            self.treeGrid = {
-                isShowAlreadySet: false,
-                isMultipleUse: true,
-                isMultiSelect: self.isMultiSelect(),
-                treeType: 1,
-                selectedId: self.multiSelectedWorkplaceId,
-                baseDate: self.baseDate,
-                selectType: 1,
-                isShowSelectButton: true,
-                isDialog: true,
-                showIcon: true,
-                alreadySettingList: self.alreadySettingList,
-                maxRows: 10,
-                tabindex: 1,
-                systemType: 2
-            };
-            self.isBindingTreeGrid = ko.observable(true);
-
-            self.selectTarget.subscribe((value) => {
-                block.invisible();
-                self.multiSelectedWorkplaceId([]);
-                service.getApprovalStatusPerior(value).done((data: any) => {
-                    self.startDate(new Date(data.startDate));
-                    self.endDate(new Date(data.endDate));
-                    self.listEmployeeCode(data.employeesCode);
-                    self.baseDate(new Date(data.endDate));
-                    self.processingYm(nts.uk.time.formatYearMonth(data.yearMonth));
-                    self.closureName(data.closureName);
-                    $('#tree-grid').ntsTreeComponent(self.treeGrid).done(() => {
-                        self.reloadData().done(() => {
-                            block.clear();
-                        });
-                    });
-                });
-                service.saveSelectedClosureId(value);
-            });
-                        console.log(self.multiSelectedWorkplaceId());
-        }
-
-
-        startPage(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred();
-
-            let svClosure = service.findAllClosure();
-            let svUseSet = service.getUseSetting();
-
-            $.when(svClosure, svUseSet).done(function(closure: any, useSet: any) {
-                // findAllClosure
-                self.targets(closure.closuresDto);
-                let closures = _.find(self.targets(), x => { return x.closureId == closure.selectedClosureId });
-                self.startDate(new Date(closure.startDate));
-                self.endDate(new Date(closure.endDate));
-                self.processYm = closure.processingYm;
-                self.processingYm(nts.uk.time.formatYearMonth(closure.processingYm));
-                self.baseDate(new Date(closure.endDate));
-                self.listEmployeeCode(closure.employeesCode);
-
-                // getUseSetting
-                // Confirm checkbox A4_2_1
-                if ((useSet.monthlyConfirm || useSet.useBossConfirm || useSet.usePersonConfirm)) {
-                    self.items().push({ code: 1, name: text('KAF018_13') });
-                    self.isVisibleComfirm(true);
-                }
-
-                service.restoreSelectedClosureId().done(value => {
-                    if (value) {
-                        self.selectTarget(value);
-                    } else {
-                        self.selectTarget(1);
-                    }
-                    dfd.resolve();
-                }).then(() => {
-                    let params: Array<any> = nts.uk.ui.windows.getShared('KAF018AInput');
-                    if (params) {
-                        self.multiSelectedWorkplaceId(params.inputContent.multiSelectedWorkplaceId);
-                        self.selectedValue(params.inputContent.selectedValue);
-                        self.isDailyComfirm(params.inputContent.isConfirmData);
-                    }
-                });
-            });
-
-            return dfd.promise();
-        }
-
-        reloadData(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred();
-
-            lstWkp = self.flattenWkpTree(_.cloneDeep($('#tree-grid').getDataList()));
-            nts.uk.ui.block.invisible();
-            service.getAll(lstWkp.map((wkp) => { return wkp.id; })).done((dataResults: Array<model.IApplicationApprovalSettingWkp>) => {
-                self.alreadySettingList(dataResults.map((data) => { return { workplaceId: data.wkpId, isAlreadySetting: true }; }));
-                dfd.resolve();
-            });
-            return dfd.promise();
-        }
-
-        flattenWkpTree(wkpTree) {
+		emailSetting() {
+			const vm = this;
+			let height = screen.availHeight;
+			if(screen.availHeight > 475) {
+				height = 475
+			}
+			if(screen.availHeight < 400) {
+				height = 400;
+			}
+			let dialogSize = {
+				width: 850,
+				height: height
+			}
+			vm.$window.modal('/view/kaf/018/i/index.xhtml', {}, dialogSize);
+		}
+		
+		flattenWkpTree(wkpTree: Array<DisplayWorkplace>) {
             return wkpTree.reduce((wkp, x) => {
                 wkp = wkp.concat(x);
                 if (x.children && x.children.length > 0) {
@@ -160,100 +278,66 @@ module nts.uk.at.view.kaf018.a.viewmodel {
                 return wkp;
             }, []);
         }
+	}
 
-        gotoH() {
-            var self = this;
-            nts.uk.ui.windows.sub.modal("/view/kaf/018/h/index.xhtml");
-        }
+	export class ClosureItem {
+		closureId: number; 
+		closureName: string;
+		processingYm: number;
+		closureDay: number;
+		lastDayOfMonth: boolean;
+		
+		constructor(closureId: number, closureName: string, processingYm: number, closureDay: number, lastDayOfMonth: boolean) {
+			this.closureId = closureId;
+			this.closureName = closureName;
+			this.processingYm = processingYm;
+			this.closureDay = closureDay;
+			this.lastDayOfMonth = lastDayOfMonth;
+		}
+	}
+	
+	// 承認状況照会の初期表示
+	export class InitDisplayOfApprovalStatus {
+		// ページング行数
+		numberOfPage: number;
+		// ユーザーID
+		userID: string;
+		// 会社ID
+		companyID: string;
+		// 月別実績の本人確認・上長承認の状況を表示する
+		confirmAndApprovalMonthFlg: boolean;
+		// 就業確定の状況を表示する
+		confirmEmploymentFlg: boolean;
+		// 申請の承認状況を表示する
+		applicationApprovalFlg: boolean;
+		// 日別実績の本人確認・上長承認の状況を表示する
+		confirmAndApprovalDailyFlg: boolean;
+	}
+	
+	export interface DisplayWorkplace {
+		code: string;
+		id: string;
+		name: string;
+		hierarchyCode: string;
+		level: number;
+		children: Array<DisplayWorkplace>;
+	}
+	
+	export class CheckBoxValue {
+		value: KnockoutObservable<boolean>;
+		enable: KnockoutObservable<boolean>;
+		text: KnockoutObservable<string>;
+		constructor(value: boolean, enable: boolean, text: string) {
+			this.value = ko.observable(value);
+			this.enable = ko.observable(enable);
+			this.text = ko.observable(text);
+		}
+	}
 
-        choiceNextScreen() {
-            var self = this;
-            let listWorkplace = [];
-            _.forEach(self.multiSelectedWorkplaceId(), function(item) {
-                let data = _.find(lstWkp, (wkp) => { return wkp.id == item });
-                listWorkplace.push({hierarchyCode: data.hierarchyCode, code: data.id, name: data.nodeText });
-            })
-            let lstWorkplaces = _.sortBy(listWorkplace, o => o.hierarchyCode, 'asc')
-            let params = {
-                closureId: self.selectTarget,
-                processingYm: self.processingYm(),
-                startDate: self.startDate(),
-                endDate: self.endDate(),
-                closureName: self.closureName(),
-                listWorkplace: lstWorkplaces,
-                isConfirmData: self.isDailyComfirm(),
-                listEmployeeCode: self.listEmployeeCode(),
-                
-                inputContent: {
-                    multiSelectedWorkplaceId: self.multiSelectedWorkplaceId(),
-                    selectedValue: self.selectedValue(),
-                    isConfirmData: self.isDailyComfirm()
-                },
-                closureID: self.selectTarget()
-            };
-            if (self.multiSelectedWorkplaceId().length == 0) {
-                error({ messageId: 'Msg_786' });
-            } else {
-                if (self.selectedValue() == 0) {
-                    nts.uk.request.jump('/view/kaf/018/b/index.xhtml', params);
-                } else {
-                    nts.uk.request.jump('/view/kaf/018/e/index.xhtml', params);
-                }
-            }
-        }
-    }
-
-    export module model {
-        export interface IApplicationApprovalSettingWkp {
-            // 会社ID
-            companyId: string;
-            // 職場ID
-            wkpId: string;
-            // 選択
-            selectionFlg: number;
-            // 申請承認機能設定
-            approvalFunctionSettingDtoLst: Array<IApprovalFunctionSetting>;
-        }
-
-        export interface IApprovalFunctionSetting {
-            //申請種類
-            appType: number;
-            //備考
-            memo: string;
-            //利用区分
-            useAtr: number;
-            //休出時間申請の事前必須設定
-            prerequisiteForpauseFlg: number;
-            // 残業申請の事前必須設定
-            otAppSettingFlg: number;
-            //時間年休申請の時刻計算を利用する
-            holidayTimeAppCalFlg: number;
-            // 遅刻早退取消申請の実績取消
-            lateOrLeaveAppCancelFlg: number;
-            //遅刻早退取消申請の実績取消を申請時に選択
-            lateOrLeaveAppSettingFlg: number;
-            //休憩入力欄を表示する
-            breakInputFieldDisFlg: number;
-            //休憩時間を表示する
-            breakTimeDisFlg: number;
-            //出退勤時刻初期表示区分
-            atworkTimeBeginDisFlg: number;
-            //実績から外出を初期表示する
-            goOutTimeBeginDisFlg: number;
-            // 時刻計算利用区分
-            timeCalUseAtr: number;
-            //時間入力利用区分
-            timeInputUseAtr: number;
-            //退勤時刻初期表示区分
-            timeEndDispFlg: number;
-            //指示が必須
-            requiredInstructionFlg: number;
-            //指示利用設定 - 指示区分
-            instructionAtr: number;
-            //指示利用設定 - 備考
-            instructionMemo: string;
-            //指示利用設定 - 利用区分
-            instructionUseAtr: number;
-        }
-    }
+	const API = {
+		getAppNameInAppList: "at/request/application/screen/applist/getAppNameInAppList",
+		getApprovalStatusActivation: "at/request/application/approvalstatus/getApprovalStatusActivation",
+		getUseSetting: "at/record/application/realitystatus/getUseSetting",
+		changeClosure: "at/request/application/approvalstatus/changeClosure"
+	}
 }

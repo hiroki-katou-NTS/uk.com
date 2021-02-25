@@ -155,6 +155,7 @@ public class EmploymentHistoryFinder implements PeregFinder<EmploymentHistoryDto
 				List<PeregDomainDto> listPeregDomainDto = new ArrayList<>();
 				listHistItem.forEach(h -> {
 					EmploymentHistoryItem emptHisItem = (EmploymentHistoryItem) h[0];
+					@SuppressWarnings("unchecked")
 					Map<String, Integer> mapListEnum =  (Map<String, Integer>) h[1];
 					
 					Optional<DateHistoryItem> dateHistoryItem = histories.stream().filter(i -> i.identifier().equals(emptHisItem.getHistoryId())).findFirst();

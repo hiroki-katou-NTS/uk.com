@@ -63,44 +63,65 @@ table {
 	border-style: double;
 	border-color: darkgrey;
 	border-left: none;
+	width: 263px;
+	border-bottom: none;
 }
 
 th, td {
-	width: 121px;
+	width: 122px;
 	border: 1px solid black;
 	border-color: darkgrey;
 	padding-right: 0px;
-	height: 22px;
+	height: 24px;
+}
+
+thead {
+	background-color: #E9E9E9;
 }
 
 thead>tr {
 	position: relative;
-	display: inherit;
+	display: block;
 }
 
 thead>tr>th {
+	box-sizing: border-box;
 	background-color: lightgreen;
 	border-top: none;
 }
 
 input {
+	box-sizing: border-box;
 	border: 1px solid black;
 	border-color: darkgrey;
 }
 
 tbody {
 	display: block;
-	max-height: 231px;
-	overflow: auto;
+	max-height: 251px;
+	overflow: scroll;
+	overflow-x: hidden;
 	height: auto;
 }
-
+tbody>tr>td{
+	box-sizing: border-box;
+	width: 122px;
+}
 hr {
 	border-color: E0FFFF;
+	width: 390px;
+	margin: 9px 9px 9px 25px;
+}
+
+span {
 	width: 100%;
-	margin: 10px 12px 12px 10px;
+	height: 100%;
 }
 
 body {
 	overflow-y: hidden; /* Hide scrollbars */
+}
+
+.ntsControl.symbol:after {
+    top: 2px !important;
 }

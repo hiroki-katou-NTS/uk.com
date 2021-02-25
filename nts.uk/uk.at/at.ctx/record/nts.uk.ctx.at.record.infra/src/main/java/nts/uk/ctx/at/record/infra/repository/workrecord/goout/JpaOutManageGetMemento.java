@@ -1,9 +1,9 @@
 package nts.uk.ctx.at.record.infra.repository.workrecord.goout;
 
-import nts.uk.ctx.at.record.dom.workrecord.goout.GoingOutReason;
 import nts.uk.ctx.at.record.dom.workrecord.goout.MaxGoOut;
 import nts.uk.ctx.at.record.dom.workrecord.goout.OutManageGetMemento;
 import nts.uk.ctx.at.record.infra.entity.workrecord.goout.KrcstOutManage;
+import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 
 /**
  * The Class JpaOutManageGetMemento.

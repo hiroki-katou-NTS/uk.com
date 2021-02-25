@@ -4,19 +4,18 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.infra.repository.executionlog;
 
+import lombok.val;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.dom.executionlog.CreateMethodAtr;
-import nts.uk.ctx.at.schedule.dom.executionlog.ImplementAtr;
-import nts.uk.ctx.at.schedule.dom.executionlog.ProcessExecutionAtr;
-import nts.uk.ctx.at.schedule.dom.executionlog.ReCreateAtr;
-import nts.uk.ctx.at.schedule.dom.executionlog.RebuildTargetAtr;
-import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContentSetMemento;
+import nts.uk.ctx.at.schedule.dom.executionlog.*;
 import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscdtScheExeContent;
+
+import java.util.Optional;
 
 /**
  * The Class JpaExecutionContentSetMemento.
  */
 public class JpaScheduleCreateContentSetMemento implements ScheduleCreateContentSetMemento {
+	//TODO Sua domain: スケジュール作成内容 se tiep tuc khi co tai lieu moi cua man ksc001
 
 	// YYYYMMDD
 	/** The Constant MUL_YEAR. */
@@ -48,102 +47,52 @@ public class JpaScheduleCreateContentSetMemento implements ScheduleCreateContent
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.at.schedule.dom.executionlog.ExecutionContentSetMemento#
-	 * setCopyStartDate(nts.arc.time.GeneralDate)
-	 */
-	@Override
-	public void setCopyStartDate(GeneralDate copyStartDate) {
-		this.entity.setCopyStartYmd(copyStartDate);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.schedule.dom.executionlog.ExecutionContentSetMemento#
-	 * setCreateMethodAtr(nts.uk.ctx.at.schedule.dom.executionlog.
-	 * CreateMethodAtr)
-	 */
-	@Override
-	public void setCreateMethodAtr(CreateMethodAtr createMethodAtr) {
-		this.entity.setCreateMethodAtr(createMethodAtr.value);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.schedule.dom.executionlog.ExecutionContentSetMemento#
 	 * setConfirm(java.lang.Boolean)
 	 */
 	@Override
 	public void setConfirm(Boolean confirm) {
-		this.entity.setConfirm(confirm ? TRUE_VALUE : FALSE_VALUE);
+		this.entity.setBeConfirmed(confirm);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.schedule.dom.executionlog.ExecutionContentSetMemento#
-	 * setImplementAtr(nts.uk.ctx.at.schedule.dom.executionlog.ImplementAtr)
-	 */
 	@Override
-	public void setImplementAtr(ImplementAtr implementAtr) {
-		this.entity.setImplementAtr(implementAtr.value);
+	public void setcreationType(ImplementAtr creationType) {
+		this.entity.setCreationType(creationType.value);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.schedule.dom.executionlog.ExecutionContentSetMemento#
-	 * setProcessExecutionAtr(nts.uk.ctx.at.schedule.dom.executionlog.
-	 * ProcessExecutionAtr)
-	 */
 	@Override
-	public void setProcessExecutionAtr(ProcessExecutionAtr processExecutionAtr) {
-		this.entity.setProcessExeAtr(processExecutionAtr.value);
-	}
+	public void setSpecifyCreation(SpecifyCreation specifyCreation) {
+		this.entity.setCreationMethod(specifyCreation.getCreationMethod().value);
+		this.entity.setCopyStartYmd(specifyCreation.getCopyStartDate().orElse(null));
+		this.entity.setReferenceMaster(specifyCreation.getReferenceMaster().isPresent()
+				? specifyCreation.getReferenceMaster().get().value: null);
+		this.entity.setMonthlyPatternId(specifyCreation.getMonthlyPatternCode().isPresent()?
+				specifyCreation.getMonthlyPatternCode().get().v(): null);
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.schedule.dom.executionlog.ExecutionContentSetMemento#
-	 * setReCreateAtr(nts.uk.ctx.at.schedule.dom.executionlog.ReCreateAtr)
-	 */
-	@Override
-	public void setReCreateAtr(ReCreateAtr reCreateAtr) {
-		this.entity.setReCreateAtr(reCreateAtr.value);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.schedule.dom.executionlog.ExecutionContentSetMemento#
-	 * setResetMasterInfo(java.lang.Boolean)
-	 */
-	@Override
-	public void setResetMasterInfo(Boolean resetMasterInfo) {
-		this.entity.setReMasterInfo(resetMasterInfo ? TRUE_VALUE : FALSE_VALUE);
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.schedule.dom.executionlog.ExecutionContentSetMemento#
-	 * setResetWorkingHours(java.lang.Boolean)
-	 */
 	@Override
-	public void setResetWorkingHours(Boolean resetWorkingHours) {
-		this.entity.setReWorkingHours(resetWorkingHours ? TRUE_VALUE : FALSE_VALUE);
+	public void setRecreateCondition(Optional<RecreateCondition> recreateCondition) {
+		if (!recreateCondition.isPresent()){
+			return;
+		}
+		val newRecreateCondition = recreateCondition.get();
+		this.entity.setReTargetAtr(newRecreateCondition.getReTargetAtr());
+		this.entity.setReOverwriteConfirmed(newRecreateCondition.getReOverwriteConfirmed());
+		this.entity.setReOverwriteRevised(newRecreateCondition.getReOverwriteRevised());
+		if (newRecreateCondition.getNarrowingEmployees().isPresent()){
+			this.entity.setReTargetTransfer(newRecreateCondition.getNarrowingEmployees().get().isTransfer());
+			this.entity.setReTargetLeave(newRecreateCondition.getNarrowingEmployees().get().isLeaveOfAbsence());
+			this.entity.setReTargetShortWork(newRecreateCondition.getNarrowingEmployees().get().isShortWorkingHours());
+			this.entity.setReTargetLaborChange(newRecreateCondition.getNarrowingEmployees().get().isChangedWorkingConditions());
+
+		}
+
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.schedule.dom.executionlog.ExecutionContentSetMemento#
-	 * setResetTimeAssignment(java.lang.Boolean)
-	 */
 	@Override
-	public void setResetTimeAssignment(Boolean resetTimeAssignment) {
-		this.entity.setReTimeAssignment(resetTimeAssignment ? TRUE_VALUE : FALSE_VALUE);
+	public void setCopyStartDate(GeneralDate copyStartDate) {
+		this.entity.setCopyStartYmd(copyStartDate);
 	}
 
 	/*
@@ -158,44 +107,5 @@ public class JpaScheduleCreateContentSetMemento implements ScheduleCreateContent
 		this.entity.setExeId(executionId);
 	}
 
-	@Override
-	public void setResetStartEndTime(Boolean resetStartEndTime) {
-		this.entity.setReStartEndTime(resetStartEndTime ? TRUE_VALUE : FALSE_VALUE);
-	}
-
-	@Override
-	public void setRebuildTargetAtr(RebuildTargetAtr rebuildTargetAtr) {
-		this.entity.setReTargetAtr(rebuildTargetAtr.value);
-	}
-
-	@Override
-	public void setRecreateConverter(Boolean recreateConverter) {
-		this.entity.setReConverter(recreateConverter ? TRUE_VALUE : FALSE_VALUE);
-	}
-
-	@Override
-	public void setRecreateEmployeeOffWork(Boolean recreateEmployeeOffWork) {
-		this.entity.setReEmpOffWork(recreateEmployeeOffWork ? TRUE_VALUE : FALSE_VALUE);
-	}
-
-	@Override
-	public void setRecreateDirectBouncer(Boolean recreateDirectBouncer) {
-		this.entity.setReDirectBouncer(recreateDirectBouncer ? TRUE_VALUE : FALSE_VALUE);
-	}
-
-	@Override
-	public void setRecreateShortTermEmployee(Boolean recreateShortTermEmployee) {
-		this.entity.setReShortTermEmp(recreateShortTermEmployee ? TRUE_VALUE : FALSE_VALUE);
-	}
-
-	@Override
-	public void setRecreateWorkTypeChange(Boolean recreateWorkTypeChange) {
-		this.entity.setReWorkTypeChange(recreateWorkTypeChange ? TRUE_VALUE : FALSE_VALUE);
-	}
-
-	@Override
-	public void setProtectHandCorrection(Boolean protectHandCorrection) {
-		this.entity.setReProtectHandCorrect(protectHandCorrection ? TRUE_VALUE : FALSE_VALUE);
-	}
 
 }

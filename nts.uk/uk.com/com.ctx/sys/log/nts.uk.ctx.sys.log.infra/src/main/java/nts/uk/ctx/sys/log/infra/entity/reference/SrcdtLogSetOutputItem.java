@@ -9,6 +9,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -44,7 +45,7 @@ public class SrcdtLogSetOutputItem extends UkJpaEntity implements Serializable {
 	@JoinColumn(name="LOG_SET_ID", referencedColumnName="LOG_SET_ID", insertable = false, updatable = false)		
 	public SrcdtLogDisplaySetting logDisplaySetCond;
 	
-	@OneToMany(mappedBy = "logSetOutputItemCond", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "logSetOutputItemCond", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	private List<SrcdtLogSetItemDetail> listLogSetItemDetails;
 	
 	@Override

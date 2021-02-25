@@ -8,10 +8,10 @@ import javax.ejb.Stateless;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /*
@@ -20,7 +20,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Stateless
 public class MissingOfTemporaryStampChecking {
 
-	public EmployeeDailyPerError missingOfTemporaryStampChecking(String companyID, String employeeID,
+	public Optional<EmployeeDailyPerError> missingOfTemporaryStampChecking(String companyID, String employeeID,
 			GeneralDate processingDate, TemporaryTimeOfDailyPerformance temporaryTimeOfDailyPerformance) {
 
 		EmployeeDailyPerError employeeDailyPerError = null;
@@ -94,6 +94,6 @@ public class MissingOfTemporaryStampChecking {
 						new ErrorAlarmWorkRecordCode("S001"), attendanceItemIds);
 			}
 		}
-		return employeeDailyPerError;
+		return Optional.ofNullable(employeeDailyPerError);
 	}
 }

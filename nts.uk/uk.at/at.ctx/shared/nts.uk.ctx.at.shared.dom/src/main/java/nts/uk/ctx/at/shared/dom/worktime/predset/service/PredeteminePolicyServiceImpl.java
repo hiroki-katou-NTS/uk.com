@@ -50,8 +50,8 @@ public class PredeteminePolicyServiceImpl implements PredeteminePolicyService {
 
 		OneDayTime designatedHalfDayTime = designatedTime.getHalfDayTime();
 		OneDayTime designatedOneDayTime = designatedTime.getOneDayTime();
-		if (designatedHalfDayTime.greaterThanOrEqualTo(oneDayRange)
-				|| designatedOneDayTime.greaterThanOrEqualTo(oneDayRange)) {
+		if (designatedHalfDayTime.greaterThanOrEqualTo(oneDayRange.v())
+				|| designatedOneDayTime.greaterThanOrEqualTo(oneDayRange.v())) {
 			be.addMessage("Msg_781");
 		}
 	}

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.entity.weekly;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -14,8 +15,8 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyAmountMonth;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth;
-import nts.uk.ctx.at.shared.dom.monthly.anyitem.AggregateAnyItem;
-import nts.uk.ctx.at.shared.dom.weekly.AttendanceTimeOfWeeklyKey;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.anyitem.AggregateAnyItem;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.weekly.AttendanceTimeOfWeeklyKey;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -71,9 +72,9 @@ public class KrcdtWekAnyItemValue extends UkJpaEntity implements Serializable {
 		
 		return AggregateAnyItem.of(
 				this.PK.anyItemId,
-				(this.timeValue == null ? null : new AnyTimeMonth(this.timeValue)),
-				(this.countValue == null ? null : new AnyTimesMonth(this.countValue)),
-				(this.moneyValue == null ? null : new AnyAmountMonth(this.moneyValue)));
+				Optional.ofNullable(this.timeValue == null ? null : new AnyTimeMonth(this.timeValue)),
+				Optional.ofNullable(this.countValue == null ? null : new AnyTimesMonth(this.countValue)),
+				Optional.ofNullable(this.moneyValue == null ? null : new AnyAmountMonth(this.moneyValue)));
 	}
 	
 	/**

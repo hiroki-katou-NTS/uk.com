@@ -19,15 +19,12 @@ public class PositionImport {
 	private String jobCd;
 	/**職位名称 **/
 	private String jobName;
-	/**序列コード **/
-	private String sequenceCode;
 
-	public PositionImport(String jobId, String jobCd, String jobName,String sequenceCode) {
+	public PositionImport(String jobId, String jobCd, String jobName ) {
 		super();
 		this.jobId = jobId;
 		this.jobCd = jobCd;
 		this.jobName = jobName;
-		this.sequenceCode = sequenceCode;
 	}
 	
 }

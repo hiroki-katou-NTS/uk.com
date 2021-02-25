@@ -3,7 +3,7 @@ package nts.uk.ctx.at.request.dom.application.common.service.application.output;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalBehaviorAtrImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverStateImport_New;
 
@@ -26,7 +26,7 @@ public class ApprovalStateOutput {
 	
 	private String representerName;
 	
-	private GeneralDate approvalDate;
+	private GeneralDateTime approvalDate;
 	
 	private String approvalReason;
 	

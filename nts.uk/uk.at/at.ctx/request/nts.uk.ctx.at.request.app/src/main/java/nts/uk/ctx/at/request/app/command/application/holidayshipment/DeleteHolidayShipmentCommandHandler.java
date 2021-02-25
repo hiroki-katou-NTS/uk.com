@@ -9,8 +9,8 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.AfterProcessDelete;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
-import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMng;
-import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMngRepository;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.AppHdsubRec;
+import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.AppHdsubRecRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.SyncState;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -21,19 +21,19 @@ public class DeleteHolidayShipmentCommandHandler
 	@Inject
 	private AfterProcessDelete afterDelete;
 	@Inject
-	private CompltLeaveSimMngRepository CompLeaveRepo;
+	private AppHdsubRecRepository CompLeaveRepo;
 
 	@Override
 	protected ProcessResult	 handle(CommandHandlerContext<HolidayShipmentCommand> context) {
 		HolidayShipmentCommand command = context.getCommand();
 		String companyID = AppContexts.user().companyId();
-		Long version = command.getAppVersion();
+		int version = command.getAppVersion();
 		// アルゴリズム「振休振出申請の削除」を実行する
 		return deleteAppForPaidLeave(command, companyID, version);
 
 	}
 
-	private ProcessResult deleteAppForPaidLeave(HolidayShipmentCommand command, String companyID, Long version) {
+	private ProcessResult deleteAppForPaidLeave(HolidayShipmentCommand command, String companyID, int version) {
 
 		boolean isDeleteRec = command.getRecAppID() != null;
 		boolean isDeleteAbs = command.getAbsAppID() != null;
@@ -54,9 +54,9 @@ public class DeleteHolidayShipmentCommandHandler
 		} else {
 			if (isDeleteAbs) {
 				// ドメインモデル「振休振出同時申請管理」を1件更新する
-				Optional<CompltLeaveSimMng> compltLeaveSimMngOpt = CompLeaveRepo.findByAbsID(command.getAbsAppID());
+				Optional<AppHdsubRec> compltLeaveSimMngOpt = CompLeaveRepo.findByAbsID(command.getAbsAppID());
 				if (compltLeaveSimMngOpt.isPresent()) {
-					CompltLeaveSimMng compltLeaveSimMng = compltLeaveSimMngOpt.get();
+					AppHdsubRec compltLeaveSimMng = compltLeaveSimMngOpt.get();
 					compltLeaveSimMng.setSyncing(SyncState.ASYNCHRONOUS);
 					CompLeaveRepo.update(compltLeaveSimMng);
 				}
@@ -67,9 +67,11 @@ public class DeleteHolidayShipmentCommandHandler
 
 	}
 
-	private ProcessResult deleteProcess(String companyID, String appID, Long version) {
+	private ProcessResult deleteProcess(String companyID, String appID, int version) {
 		// アルゴリズム「詳細画面削除後の処理」を実行する
-		return this.afterDelete.screenAfterDelete(companyID, appID, version).getProcessResult();
+		// refactor 4 error
+		/*return this.afterDelete.screenAfterDelete(companyID, appID, version).getProcessResult();*/
+		return null;
 	}
 
 }

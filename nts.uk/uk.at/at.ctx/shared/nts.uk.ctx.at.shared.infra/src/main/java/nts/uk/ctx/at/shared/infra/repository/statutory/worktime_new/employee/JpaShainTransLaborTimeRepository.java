@@ -4,19 +4,19 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.statutory.worktime_new.employee;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.common.TimeOfDay;
 import nts.uk.ctx.at.shared.dom.common.WeeklyTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.DailyUnit;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.WeekStart;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.WeeklyUnit;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeSha;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeShaRepo;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.DailyUnit;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.WeeklyUnit;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.defor.DeforLaborTimeSha;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.defor.DeforLaborTimeShaRepo;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaTransLabTime;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaTransLabTimePK;
 
@@ -26,6 +26,9 @@ import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstSh
 @Stateless
 public class JpaShainTransLaborTimeRepository extends JpaRepository implements DeforLaborTimeShaRepo {
 
+	private static final String SELECT_BY_CID = "SELECT c FROM KshstShaTransLabTime c"
+			+ " WHERE c.kshstShaTransLabTimePK.cid = :cid";
+	
 	/* 
 	 * @see nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainSpeDeforLaborTimeRepository#add(nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainSpeDeforLaborTime)
 	 */
@@ -76,7 +79,6 @@ public class JpaShainTransLaborTimeRepository extends JpaRepository implements D
 
 		entity.setDailyTime(domain.getDailyTime().getDailyTime().v());
 		entity.setWeeklyTime(domain.getWeeklyTime().getTime().v());
-		entity.setWeekStr(domain.getWeeklyTime().getStart().value);
 		entity.setKshstShaTransLabTimePK(new KshstShaTransLabTimePK(domain.getComId(), domain.getEmpId()));
 		
 		return entity;
@@ -91,9 +93,16 @@ public class JpaShainTransLaborTimeRepository extends JpaRepository implements D
 	private DeforLaborTimeSha toDomain(KshstShaTransLabTime entity) {
 		return DeforLaborTimeSha.of(entity.getKshstShaTransLabTimePK().getCid(),
 				entity.getKshstShaTransLabTimePK().getSid(),
-				new WeeklyUnit(new WeeklyTime(entity.getWeeklyTime()), 
-								EnumAdaptor.valueOf(entity.getWeekStr(), WeekStart.class)), 
+				new WeeklyUnit(new WeeklyTime(entity.getWeeklyTime())), 
 				new DailyUnit(new TimeOfDay(entity.getDailyTime())));
 	}
 
+	@Override
+	public List<DeforLaborTimeSha> findDeforLaborTimeShaByCid(String cid) {
+		List<KshstShaTransLabTime> entitys = this.queryProxy().query(SELECT_BY_CID, KshstShaTransLabTime.class)
+				.setParameter("cid", cid).getList();
+		return entitys.stream().map(m -> {
+			return toDomain(m);
+		}).collect(Collectors.toList());
+	}
 }

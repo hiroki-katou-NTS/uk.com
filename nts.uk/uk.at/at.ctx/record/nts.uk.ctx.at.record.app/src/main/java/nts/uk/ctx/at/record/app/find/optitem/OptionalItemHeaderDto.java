@@ -4,18 +4,23 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.app.find.optitem;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.optitem.CalcResultRange;
-import nts.uk.ctx.at.shared.dom.optitem.EmpConditionAtr;
-import nts.uk.ctx.at.shared.dom.optitem.OptionalItemAtr;
-import nts.uk.ctx.at.shared.dom.optitem.OptionalItemName;
-import nts.uk.ctx.at.shared.dom.optitem.OptionalItemNo;
-import nts.uk.ctx.at.shared.dom.optitem.OptionalItemSetMemento;
-import nts.uk.ctx.at.shared.dom.optitem.OptionalItemUsageAtr;
-import nts.uk.ctx.at.shared.dom.optitem.PerformanceAtr;
-import nts.uk.ctx.at.shared.dom.optitem.UnitOfOptionalItem;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.CalcResultRange;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.CalculationClassification;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.DescritionOptionalItem;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.EmpConditionAtr;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.NoteOptionalItem;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemAtr;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemName;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemNo;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemSetMemento;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemUsageAtr;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.PerformanceAtr;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.UnitOfOptionalItem;
 
 /**
  * The Class OptionalItemHeaderDto.
@@ -35,6 +40,9 @@ public class OptionalItemHeaderDto implements OptionalItemSetMemento {
 
 	/** The usage classification. */
 	private int usageAtr;
+
+	/** The calculation atr. */
+	private int calcAtr;
 	
 	private String nameNotJP;
 
@@ -96,7 +104,6 @@ public class OptionalItemHeaderDto implements OptionalItemSetMemento {
 	public void setOptionalItemUsageAtr(OptionalItemUsageAtr optionalItemUsageClassification) {
 		this.usageAtr = optionalItemUsageClassification.value;
 	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -141,7 +148,25 @@ public class OptionalItemHeaderDto implements OptionalItemSetMemento {
 	 * ctx.at.record.dom.optitem.UnitOfOptionalItem)
 	 */
 	@Override
-	public void setUnit(UnitOfOptionalItem unit) {
+	public void setUnit(Optional<UnitOfOptionalItem> unit) {
 		// Not used.
 	}
+
+    @Override
+    public void setCalAtr(CalculationClassification calAtr) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void setNote(Optional<NoteOptionalItem> note) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void setDescription(Optional<DescritionOptionalItem> description) {
+        // TODO Auto-generated method stub
+        
+    }
 }

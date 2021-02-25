@@ -1,21 +1,24 @@
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice;
 
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.stamp.application.ErrorInformationApplication;
 import nts.uk.ctx.at.record.dom.stamp.application.StampPromptApplication;
-import nts.uk.ctx.at.record.dom.stamp.application.StampRecordDis;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErAlApplication;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonSettings;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettings;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingsSmartphoneStamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampButton;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSettingPerson;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * DS : 打刻後の日別勤怠エラー情報を確認する
@@ -33,45 +36,55 @@ public class CheckAttdErrorAfterStampService {
 	 * @param buttonDisNo
 	 * @return
 	 */
-	public static List<DailyAttdErrorInfo> get(Require require, String employeeId,StampButton c) {
-		if(!needCheckError(require,c)) {
+	public static List<DailyAttdErrorInfo> get(Require require, String employeeId, StampMeans stampMeans,
+			StampButton stampBtn) {
+		
+		// if not [prv-5] エラー確認する必要があるか(require, 打刻手段, 打刻ボタン)
+		if (!needCheckError(require, stampMeans, stampBtn)) {
+			// return List.emptyList
 			return Collections.emptyList();
 		}
-		
-		List<StampRecordDis> listStampRecordDis = getSettingPromptApp(require);
-		
-		if(listStampRecordDis.isEmpty()) {
+
+		// $申請促すエラーリスト = [prv-1] 申請促す設定を取得する()
+		List<ErrorInformationApplication> listStampRecordDis = getSettingPromptApp(require);
+		// if $申請促すエラーリスト.isEmpty()
+		if (listStampRecordDis.isEmpty()) {
+			// return List.emptyList
 			return Collections.emptyList();
 		}
-		
+		//	$期間 = [prv-2] エラーを確認対象期間を取得する(require, 社員ID)
 		Optional<DatePeriod> period = getErrorCheckPeriod(require, employeeId);
+		//	if $期間.isEmpty()
 		if(!period.isPresent()) {
+			//return List.emptyList
 			return Collections.emptyList();
 		}
-		
+		//$社員のエラーリスト = [prv-3] 指定期間の日別実績エラーを取得する(社員ID, $期間)
 		List<EmployeeDailyPerError> listEmployeeDailyPerError = getDailyErrorByPeriod(require, employeeId, period.get());
-		List<DailyAttdErrorInfo> listResult = new ArrayList<>();
-		for(StampRecordDis stampRecordDis :listStampRecordDis) {
-			Optional<DailyAttdErrorInfo> opt = createDailyErrorInfo(require, stampRecordDis, listEmployeeDailyPerError);
-			if(opt.isPresent()) {
-				listResult.add(opt.get());
-			}
-		}
-		return listResult;
+		//	return $申請促すエラーリスト:	 map [prv-4] 日別勤怠エラー情報を作成する(require, $, $社員のエラーリスト)
+		return listStampRecordDis.stream()
+				.map(x -> createDailyErrorInfo(require, x, listEmployeeDailyPerError))
+				.filter(x-> x.isPresent())
+				.map(x-> x.get())
+				.collect(Collectors.toList());
 	}
 	
 	/**
 	 * [prv-1] 申請促す設定を取得する
+	 * 
 	 * @param require
-	 * @return
+	 * @return List<ErrorInformationApplication>: List<申請促すエラー情報>
 	 */
-	private static List<StampRecordDis>  getSettingPromptApp(Require require) {
+	private static List<ErrorInformationApplication>  getSettingPromptApp(Require require) {
+		//	$打刻の申請促す設定 = require.打刻の申請促す設定を取得する()
 		Optional<StampPromptApplication> data =  require.getStampSet();
+		//	if $打刻の申請促す設定.isEmpty()
 		if(!data.isPresent()) {
+			//	return List.emptyList
 			return Collections.emptyList();
 		}
-		return data.get().getLstStampRecordDis().stream().filter(c -> c.getUseArt() == NotUseAtr.USE)
-				.collect(Collectors.toList());
+		//return $打刻の申請促す設定.申請促すエラーリストを取得する()
+		return data.get().getErrorListApply();
 	}
 	
 	/**
@@ -110,59 +123,114 @@ public class CheckAttdErrorAfterStampService {
 	}
 
 	/**
-	 * 	[prv-4] 日別勤怠エラー情報を作成する
+	 * [prv-4] 日別勤怠エラー情報を作成する
+	 * 
 	 * @param require
-	 * @param stampRecordDis
-	 * @param listEmployeeDailyPerError
-	 * @return
+	 * @param ErrorInformationApplication : 申請促すエラー情報
+	 * @param List<EmployeeDailyPerError> : 社員のエラーリスト
+	 * @return DailyAttdErrorInfo : Optional<日別勤怠エラー情報>
 	 */
-	private static Optional<DailyAttdErrorInfo> createDailyErrorInfo(Require require, StampRecordDis stampRecordDis,
-			List<EmployeeDailyPerError> listEmployeeDailyPerError) {
-		List<String> listError = stampRecordDis.getCheckErrorType().getErrorAlarm().stream().map(x-> x.v()).collect(Collectors.toList());
+	private static Optional<DailyAttdErrorInfo> createDailyErrorInfo(Require require,
+			ErrorInformationApplication errorInforApp, List<EmployeeDailyPerError> listEmployeeDailyPerError) {
 		
-		List<EmployeeDailyPerError> listDataError = new ArrayList<>();
 		
-		for(EmployeeDailyPerError employeeDailyPerError :listEmployeeDailyPerError) {
-			if(listError.contains(employeeDailyPerError.getErrorAlarmWorkRecordCode().v())) {
-				listDataError.add(employeeDailyPerError);
-			}
-		}
-		Optional<EmployeeDailyPerError> employeeDailyPerError  = listDataError.stream().sorted((x,y) -> y.getDate().compareTo(x.getDate())).findFirst();
+		// $対象エラー = 社員のエラーリスト : filter $エラーコード in 申請促すエラー情報.エラーコードリスト :
+		// anyMatch $エラーコード = $.勤務実績のエラーアラームコード sort $.処理年月日 DESC fisrt
 		
-		if(!employeeDailyPerError.isPresent()) {
+		Optional<EmployeeDailyPerError> targetErrorOpt = listEmployeeDailyPerError.stream().filter(x -> filterErrorCode(x, errorInforApp))
+				.sorted(Comparator.comparing(EmployeeDailyPerError::getDate).reversed())
+				.findFirst();
+		
+		//	if $対象エラー.isEmpty()
+		if(!targetErrorOpt.isPresent()) {
+			//return Optional.empty
 			return Optional.empty();
 		}
-		Optional<ErAlApplication> erAlApplication =  require.getAllErAlAppByEralCode(employeeDailyPerError.get().getErrorAlarmWorkRecordCode().v());
-			
-		return Optional.of(new DailyAttdErrorInfo(stampRecordDis.getCheckErrorType(),
-				stampRecordDis.getPromptingMssage().get(), employeeDailyPerError.get().getDate(),
-				erAlApplication.isPresent() ? erAlApplication.get().getAppType() : new ArrayList<>()));
+		EmployeeDailyPerError targetError = targetErrorOpt.get();
+		//	$申請設定 = require.エラー発生時に呼び出す申請一覧を取得する($対象エラー.勤務実績のエラーアラームコード)
+		Optional<ErAlApplication> appSetOpt = require.getAllErAlAppByEralCode(targetError.getErrorAlarmWorkRecordCode().v());
+		
+		//	if $申請設定.isEmpty()
+		if(!appSetOpt.isPresent()) {
+			//	return 日別勤怠エラー情報#日別勤怠エラー情報(申請促すエラー情報.エラー種類, 申請促すエラー情報.促すメッセージ, $対象エラー.処理年月日, emptyList())		
+			return Optional.ofNullable(new DailyAttdErrorInfo(
+					errorInforApp.getCheckErrorType(),
+					errorInforApp.getPromptingMessage().map(msg -> msg).orElse(null), 
+					targetError.getDate(),
+					Collections.emptyList()));
+		}
+		
+		//	return 日別勤怠エラー情報#日別勤怠エラー情報(申請促すエラー情報.エラー種類, 申請促すエラー情報.促すメッセージ, $対象エラー.処理年月日, $申請設定.呼び出す申請一覧)	
+		
+		return Optional.ofNullable(new DailyAttdErrorInfo(
+				errorInforApp.getCheckErrorType(),
+				errorInforApp.getPromptingMessage().map(msg -> msg).orElse(null), 
+				targetError.getDate(),
+				appSetOpt.map(appSet -> appSet.getAppType()).orElse(Collections.emptyList())));
+
+	}
+
+	private static boolean filterErrorCode(EmployeeDailyPerError dailyError, ErrorInformationApplication errorInforApp) {
+		
+		return errorInforApp.getErrorAlarmCode().stream()
+				.filter(x -> x.v().equals(dailyError.getErrorAlarmWorkRecordCode().v())).findFirst().isPresent();
 	}
 
 	/**
 	 * [prv-5] エラー確認する必要があるか
 	 * 
 	 * @param require
+	 * @param stampMeans 
 	 * @param pageNo
 	 * @param buttonDisNo
-	 * @return
+	 * @return boolean
 	 */
-	private static boolean needCheckError(Require require, StampButton stampButton) {
+	private static boolean needCheckError(Require require, StampMeans stampMeans, StampButton stampButton) {
 
-		/*
-		 * MutableValue<Boolean> flag = new MutableValue(false);
-		 * 
-		 * require.getStampSetPer().ifPresent( ssp -> ssp.getButtonSet(pageNo,
-		 * buttonDisNo).ifPresent( bs -> bs.getButtonType().getStampType().ifPresent( st
-		 * -> flag.set(st.getChangeClockArt().checkWorkingOut()) ) ) );
-		 * 
-		 * return flag.get();
-		 */
-		return require.getStampSetPer()
-				.flatMap(c -> c.getButtonSet(stampButton))
-				.flatMap(c -> c.getButtonType().getStampType())
-				.map(c -> c.getChangeClockArt().checkWorkingOut())
-				.orElse(false);
+		// if 打刻手段 <> 個人打刻 AND 打刻手段 <> ポータル打刻 AND 打刻手段 <> スマホ打刻
+		if (!stampMeans.equals(StampMeans.INDIVITION) && !stampMeans.equals(StampMeans.PORTAL)
+				&& !stampMeans.equals(StampMeans.SMART_PHONE)) {
+			return false;
+		}
+
+		Optional<ButtonSettings> btnSet = Optional.ofNullable(null);
+
+		// if 打刻手段 == 個人打刻
+		if (stampMeans.equals(StampMeans.INDIVITION)) {
+			// $打刻設定 = require.個人利用の打刻設定を取得する()
+			btnSet = require.getStampSetPer().map(set -> set.getButtonSet(stampButton))
+					.orElse(Optional.ofNullable(null));
+		}
+		// if 打刻手段 == ポータル打刻
+		if (stampMeans.equals(StampMeans.PORTAL)) {
+			// $打刻設定 = require.ポータルの打刻設定を取得する()
+			btnSet = require.getSettingPortal()
+					.map(set -> set.getDetailButtonSettings(stampButton.getButtonPositionNo()))
+					.orElse(Optional.ofNullable(null));
+		}
+		// if 打刻手段 == スマホ打刻
+		if (stampMeans.equals(StampMeans.SMART_PHONE)) {
+			// $打刻設定 = require.スマホ打刻の打刻設定を取得する()
+			btnSet = require.getSettingSmartPhone().map(set -> set.getDetailButtonSettings(stampButton))
+					.orElse(Optional.ofNullable(null));
+		}
+		// if $ボタン詳細設定.isEmpty()
+		if (!btnSet.isPresent()) {
+			// return false
+			return false;
+		}
+
+		// $ボタン詳細設定 = $打刻設定.ボタン詳細設定を取得する (打刻ボタン)
+		// if $ボタン詳細設定.isEmpty()
+		// làm ở bước trên rồi nhá
+
+		// if $ボタン詳細設定.ボタン種類.打刻種類.empty
+		if (!btnSet.get().getButtonType().getStampType().isPresent()) {
+		// return false
+			return false;
+		}
+		//	return $ボタン詳細設定.ボタン種類.打刻種類.時刻変更区分.打刻後のエラー確認する必要があるか()	
+		return btnSet.get().getButtonType().getStampType().get().getChangeClockArt().checkWorkingOut();
 	}
 
 	public static interface Require {
@@ -217,6 +285,22 @@ public class CheckAttdErrorAfterStampService {
 		 * @return
 		 */
 		Optional<StampSettingPerson> getStampSetPer();
+
+		/**
+		 * [R-7] スマホ打刻の打刻設定を取得する
+		 * 
+		 * @param
+		 * @return
+		 */
+		Optional<SettingsSmartphoneStamp> getSettingSmartPhone();
+
+		/**
+		 * [R-8] ポータルの打刻設定を取得する
+		 * 
+		 * @param
+		 * @return
+		 */
+		Optional<PortalStampSettings> getSettingPortal();
 
 	}
 }

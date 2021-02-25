@@ -9,7 +9,7 @@ import lombok.Getter;
 @Getter
 public class ApplicationForRemandOutput {
 	public String appId;
-	public Long version;
+	public int version;
 	private String applicantId;
 	private String applicantName;
 	public String applicantJob;

@@ -74,8 +74,7 @@ public class ApplicationSetting {
 	/** 予定時刻の反映時刻優先 */
 	private ApplyTimeSchedulePriority reflecTimeofSche;
 	
-	/**承認者の登録設定*/
-	private ApproverRegisterSet approverResSet;
+
 
 	public ApplicationSetting(String companyID, AppCanAtr appActLockFlg, AppCanAtr appEndWorkFlg,
 			AppCanAtr appActConfirmFlg, AppCanAtr appOvertimeNightFlg, AppCanAtr appActMonthConfirmFlg,
@@ -85,7 +84,7 @@ public class ApplicationSetting {
 			AppDisplayAtr otAdvanceDispAtr, AppDisplayAtr otActualDispAtr, NumDaysOfWeek warningDateDispAtr,
 			AppDisplayAtr appReasonDispAtr, AppCanAtr appContentChangeFlg,
 			ReflectionFlg scheReflectFlg, PriorityFLg priorityTimeReflectFlg, ReflectionFlg attendentTimeReflectFlg,
-			ClassifyScheAchieveAtr classScheAchi, ApplyTimeSchedulePriority reflecTimeofSche, ApproverRegisterSet approverResSet) {
+			ClassifyScheAchieveAtr classScheAchi, ApplyTimeSchedulePriority reflecTimeofSche) {
 		super();
 		this.companyID = companyID;
 		this.appActLockFlg = appActLockFlg;
@@ -112,7 +111,6 @@ public class ApplicationSetting {
 		this.attendentTimeReflectFlg = attendentTimeReflectFlg;
 		this.classScheAchi = classScheAchi;
 		this.reflecTimeofSche = reflecTimeofSche;
-		this.approverResSet = approverResSet;
 	}
 	public static ApplicationSetting createFromJavaType( String companyID, Integer appActLockFlg,
 														Integer appEndWorkFlg, Integer appActConfirmFlg,
@@ -147,8 +145,6 @@ public class ApplicationSetting {
 				EnumAdaptor.valueOf(priorityTimeReflectFlg, PriorityFLg.class), 
 				EnumAdaptor.valueOf(attendentTimeReflectFlg, ReflectionFlg.class),
 				EnumAdaptor.valueOf(classScheAchi, ClassifyScheAchieveAtr.class),
-				EnumAdaptor.valueOf(reflecTimeofSche, ApplyTimeSchedulePriority.class),
-				new ApproverRegisterSet(EnumAdaptor.valueOf(companyUnit, DisplayAtr.class),
-						EnumAdaptor.valueOf(workplaceUnit, DisplayAtr.class), EnumAdaptor.valueOf(employeeUnit, DisplayAtr.class)));
+				EnumAdaptor.valueOf(reflecTimeofSche, ApplyTimeSchedulePriority.class));
 	}		
 }

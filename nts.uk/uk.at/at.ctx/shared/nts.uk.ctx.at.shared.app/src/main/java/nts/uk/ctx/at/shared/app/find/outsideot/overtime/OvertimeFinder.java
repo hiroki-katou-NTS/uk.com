@@ -16,8 +16,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.app.find.outsideot.dto.OvertimeDto;
-import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSettingRepository;
-import nts.uk.ctx.at.shared.dom.outsideot.overtime.Overtime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.overtime.Overtime;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -47,11 +47,7 @@ public class OvertimeFinder {
 		// call repository find data
 		List<Overtime> overtimes = this.repository.findAllOvertime(companyId);
 
-		return overtimes.stream().map(domain -> {
-			OvertimeDto dto = new OvertimeDto();
-			domain.saveToMemento(dto);
-			return dto;
-		}).collect(Collectors.toList());
+		return overtimes.stream().map(domain ->  OvertimeDto.of(domain)).collect(Collectors.toList());
 
 	}
 	

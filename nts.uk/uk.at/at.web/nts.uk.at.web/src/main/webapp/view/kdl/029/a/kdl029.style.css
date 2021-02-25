@@ -10,35 +10,36 @@
 	padding: 10px !important;
 }
 
-#table_Hd_Grant td {
-	padding-left: 5px !important; 
+#table-hd-grant td {
+	padding-left: 5px !important;
 }
-#table_tmp td {
-	padding-left: 5px !important; 
+
+#table-tmp td {
+	padding-left: 5px !important;
 }
-.total_css{
+
+.total-css {
 	border-bottom: 1px solid #CCC;
 	border-left: 1px solid #CCC;
 	border-right: 1px solid #CCC;
 }
+
 .float-right {
 	float: right !important;
 }
 
-.display_flex {
-	display: flex;
-}
-
-.div_line {
+.div-line {
 	margin-top: 10px;
 	float: left;
 	clear: both;
 }
-.table_dta{
+
+.table-dta {
 	margin-top: 20px;
 	float: left;
 	clear: both;
 }
+
 hr {
 	clear: both;
 }
@@ -47,10 +48,44 @@ hr {
 	padding: 10px;
 }
 
-.text_line {
+.text-line {
 	line-height: 37px;
 }
 
 .bold {
 	font-weight: bold;
+}
+
+.line1 {
+	border-bottom: solid 1px #b1b1b1;
+	padding-bottom: 10px;
+	width: 535px;
+}
+
+.margin-top-20 {
+	margin-top: 20px;
+}
+
+.padding-top-10 {
+	padding-top: 10px;
+}
+
+.total-remain {
+	float: right;
+	padding-right: 65px;
+}
+
+.line-width-535 {
+	max-width: 535px;
+}
+
+.font-size-2rem {
+	font-size: 2rem;
+	font-weight: bold;
+}
+.mt-10 {
+	margin-top: 10px;
+}
+.mb-20 {
+	margin-bottom: 20px;
 }

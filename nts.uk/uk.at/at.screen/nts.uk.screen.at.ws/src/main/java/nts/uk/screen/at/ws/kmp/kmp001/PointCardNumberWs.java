@@ -17,14 +17,19 @@ import nts.uk.screen.at.app.query.kmp.kmp001.a.ExtractedEmployeeCardSetting;
 import nts.uk.screen.at.app.query.kmp.kmp001.a.ExtractedEmployeeCardSettingDto;
 import nts.uk.screen.at.app.query.kmp.kmp001.a.StampCardDigit;
 import nts.uk.screen.at.app.query.kmp.kmp001.a.StampCardDigitDto;
-import nts.uk.screen.at.app.query.kmp.kmp001.b.EmployeeInformationFromCardNo;
-import nts.uk.screen.at.app.query.kmp.kmp001.b.EmployeeInformationFromCardNoDto;
+import nts.uk.screen.at.app.query.kmp.kmp001.b.EmployeeInfoFromCardNo;
+import nts.uk.screen.at.app.query.kmp.kmp001.b.EmployeeInfoFromCardNoDto;
 import nts.uk.screen.at.app.query.kmp.kmp001.b.InformationEmployeeDtoViewB;
 import nts.uk.screen.at.app.query.kmp.kmp001.b.InformationEmployeeViewB;
+import nts.uk.screen.at.app.query.kmp.kmp001.b.StampCardEmployee;
+import nts.uk.screen.at.app.query.kmp.kmp001.b.StampCardEmployeeDto;
 import nts.uk.screen.at.app.query.kmp.kmp001.c.CardUnregistered;
 import nts.uk.screen.at.app.query.kmp.kmp001.c.CardUnregisteredDto;
 import nts.uk.screen.at.app.query.kmp.kmp001.c.InformationEmployeeDtoViewC;
 import nts.uk.screen.at.app.query.kmp.kmp001.c.InformationEmployeeViewC;
+import nts.uk.screen.at.app.query.kmp.kmp001.e.CardNumbersMassGenerated;
+import nts.uk.screen.at.app.query.kmp.kmp001.e.CardNumbersMassGeneratedDto;
+import nts.uk.screen.at.app.query.kmp.kmp001.e.CardNumbersMassGeneratedInput;
 
 @Path("screen/pointCardNumber")
 @Produces("application/json")
@@ -39,9 +44,8 @@ public class PointCardNumberWs extends WebService {
 	@Inject 
 	private InformationEmployeeViewC informationEmployeeViewC;
 	
-	
 	@Inject
-	private EmployeeInformationFromCardNo  getEmployeeInformationFromCardNo;
+	private EmployeeInfoFromCardNo  getEmployeeInformationFromCardNo;
 	
 	@Inject
 	private StampCardDigit stampCardDigit;
@@ -51,6 +55,12 @@ public class PointCardNumberWs extends WebService {
 	
 	@Inject
 	private EmployeeInfoCardNumber employeeInfoCardNumber;
+	
+	@Inject
+	private StampCardEmployee stampCardViewB;
+	
+	@Inject
+	private CardNumbersMassGenerated cardNumbersMassGenerated;
 	
 	@POST
 	@Path("getAllCardUnregister/{start}/{end}")
@@ -72,13 +82,13 @@ public class PointCardNumberWs extends WebService {
 	
 	@POST
 	@Path("getEmployeeFromCardNo/{cardNumber}")
-	public EmployeeInformationFromCardNoDto getEmployeeInformationFromCardNo (@PathParam("cardNumber") String cardnumber) {
-		return this.getEmployeeInformationFromCardNo.getEmployee(cardnumber);
+	public List<StampCardEmployeeDto> getEmployeeInformationFromCardNo (@PathParam("cardNumber") String cardnumber) {
+		return this.stampCardViewB.getStampCard(cardnumber);
 	}
 	
 	@POST
 	@Path("getAllEmployeeFromCardNo")
-	public List<EmployeeInformationFromCardNoDto> getAllEmployeeInformationFromCardNo() {
+	public EmployeeInfoFromCardNoDto getAllEmployeeInformationFromCardNo() {
 		return this.getEmployeeInformationFromCardNo.getAll();
 	}
 	
@@ -100,5 +110,11 @@ public class PointCardNumberWs extends WebService {
 																@PathParam("workplaceId") String workplaceId,
 																@PathParam("baseDate") String baseDate) {
 		return this.employeeInfoCardNumber.getInfoEmployeeandStamCard(employeeId, workplaceId, GeneralDate.fromString(baseDate, "yyyy-MM-dd"));
+	}
+	
+	@POST
+	@Path("getStampCardGenerated")
+	public List<CardNumbersMassGeneratedDto> getStampCardGenerated(CardNumbersMassGeneratedInput input) {
+		return this.cardNumbersMassGenerated.get(input);
 	}
 }

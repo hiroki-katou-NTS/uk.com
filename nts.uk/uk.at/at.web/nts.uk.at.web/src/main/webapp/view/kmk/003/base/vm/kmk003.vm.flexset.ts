@@ -346,7 +346,7 @@ module nts.uk.at.view.kmk003.a {
                 }
                 
                 updateListStamp(lstStampReflectTimezone: Array<StampReflectTimezoneDto>) {
-                    let self = this;
+
                     _.forEach(lstStampReflectTimezone, item => {
                         if (item.workNo == 1 && item.classification == 0) {
                             this.getGoWork1Stamp().updateData(item);
@@ -364,18 +364,16 @@ module nts.uk.at.view.kmk003.a {
                 }
                 
                 toDto(commonSetting: WorkTimezoneCommonSetModel): FlexWorkSettingDto{
-                    var lstHalfDayWorkTimezone: Array<FlexHalfDayWorkTimeDto> = [];
+                    let lstHalfDayWorkTimezone: Array<FlexHalfDayWorkTimeDto> = [];
                     if (this.displayMode() == TabMode.DETAIL && this.useHalfDayShift()) {
                         lstHalfDayWorkTimezone = _.map(this.lstHalfDayWorkTimezone, item => item.toDto());
                     } else {
                         lstHalfDayWorkTimezone = this.getHDWtzOneday().toListDto();
                     }
 
-                    var lstStampReflectTimezone: Array<StampReflectTimezoneDto> = [];
-                    for(var dataModelStamp of this.lstStampReflectTimezone){
-                        lstStampReflectTimezone.push(dataModelStamp.toDto());
-                    }
-                    var dataDTO: FlexWorkSettingDto = {
+                    let lstStampReflectTimezone = _.chain(this.lstStampReflectTimezone).filter((dataModel) => dataModel.startTime() != null && dataModel.endTime() != null).map((dataModel) => dataModel.toDto()).value();
+                   
+                    let dataDTO: FlexWorkSettingDto = {
                         workTimeCode: this.workTimeCode(),
                         useHalfDayShift: this.useHalfDayShift(),
                         coreTimeSetting: this.coreTimeSetting.toDto(),

@@ -7,19 +7,23 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.adapter.workschedule.snapshot.DailySnapshotWorkAdapter;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.snapshot.CreateNoScheduleSnapshotService;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.CalculationState;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ErrMessageResource;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrorMessageInfo;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 
 /**
@@ -32,10 +36,15 @@ public class CopyWorkTypeWorkTime {
 	
 	@Inject
 	private WorkingConditionItemRepository workingConditionItemRepository;
+	
+	@Inject
+	private DailySnapshotWorkAdapter snapshotAdapter;
 
-	public List<ErrorMessageInfo> copyWorkTypeWorkTime(String companyId, String employeeId, GeneralDate ymd,
-			WorkInfoOfDailyAttendance workInformation) {
+	public List<ErrorMessageInfo> copyWorkTypeWorkTime(IntegrationOfDaily integrationOfDaily) {
 		List<ErrorMessageInfo> listErrorMessageInfo = new ArrayList<>();
+		String companyId = AppContexts.user().companyId();
+		String employeeId = integrationOfDaily.getEmployeeId();
+		GeneralDate ymd = integrationOfDaily.getYmd();
 		//個人情報の休日の勤務種類を取得する
 		// ドメインモデル「労働条件項目」を取得する
 		Optional<WorkingConditionItem> optWorkingConditionItem = this.workingConditionItemRepository
@@ -46,15 +55,15 @@ public class CopyWorkTypeWorkTime {
 					new ErrMessageResource("012"), new ErrMessageContent(TextResource.localize("Msg_430"))));
 			return listErrorMessageInfo;
 		}
-		WorkTypeCode workTypeCode = optWorkingConditionItem.get().getWorkCategory().getHolidayTime().getWorkTypeCode()
-				.get();
-		WorkTimeCode workTimeCode = optWorkingConditionItem.get().getWorkCategory().getHolidayTime().getWorkTimeCode() !=null 
-				&& optWorkingConditionItem.get().getWorkCategory().getHolidayTime().getWorkTimeCode()
-				.isPresent() ? optWorkingConditionItem.get().getWorkCategory().getHolidayTime().getWorkTimeCode().get()
-						: null;
-		WorkInformation recordInfo = new WorkInformation(workTimeCode, workTypeCode);
+		WorkInfoOfDailyAttendance workInformation = integrationOfDaily.getWorkInformation();
+		WorkInformation recordInfo = optWorkingConditionItem.map(opt -> {
+			SingleDaySchedule sched = opt.getWorkCategory().getHolidayTime();
+			
+			return new WorkInformation(sched.getWorkTypeCode().orElse(null), sched.getWorkTimeCode().orElse(null));
+		}).orElse(null);
+		
 		//休日の勤務種類を勤務予定に写す
-		workInformation.setScheduleInfo(recordInfo);
+//		workInformation.setScheduleInfo(recordInfo);
 		//休日の勤務種類を勤務実績に写す
 		workInformation.setRecordInfo(recordInfo);
 		//set default 
@@ -65,6 +74,23 @@ public class CopyWorkTypeWorkTime {
 		//set 直帰区分
 		workInformation.setBackStraightAtr(NotUseAttribute.Not_use);
 		
+		createSnapshot(integrationOfDaily);
+		
 		return listErrorMessageInfo;
+	}
+	
+	/** スナップショットを作成する */
+	private void createSnapshot(IntegrationOfDaily integrationOfDaily) {
+		
+		/** スナップショットを取得する */
+		val oldSnapshot = this.snapshotAdapter.find(integrationOfDaily.getEmployeeId(), integrationOfDaily.getYmd());
+		
+		if (!oldSnapshot.isPresent()) {
+
+			/** スナップショットを作成する */
+			val snapshot = CreateNoScheduleSnapshotService.createForScheduleNoManaged(integrationOfDaily.getWorkInformation());
+			
+			integrationOfDaily.setSnapshot(snapshot);
+		}
 	}
 }

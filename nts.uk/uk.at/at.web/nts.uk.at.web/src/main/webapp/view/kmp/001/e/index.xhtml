@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition template="/master/base.xhtml">
+		<ui:define name="htmlHead">
+
+            <com:scriptfile set="IGNITE" />
+            
+            <com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js"
+				of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+
+			<com:stylefile path="../a/kmp001.main.css" />
+            <com:scriptfile path="../a/components/view-e.js" />
+            <com:scriptfile path="../a/components/ccg001.js" />
+			<com:scriptfile path="../a/kmp001.vm.js" />
+			<com:scriptfile path="./kmp001.e.vm.js" />
+
+		</ui:define>
+
+		<ui:define name="content">
+			<div data-bind="component: { name: 'view-e', params: {} }"></div>
+		</ui:define>
+
+	</ui:composition>
+</body>
+</html>

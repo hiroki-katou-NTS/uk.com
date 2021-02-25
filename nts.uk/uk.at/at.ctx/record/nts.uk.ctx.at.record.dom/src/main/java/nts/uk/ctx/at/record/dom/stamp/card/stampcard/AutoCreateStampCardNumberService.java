@@ -7,7 +7,6 @@ import java.util.Optional;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeDataMngInfoImport;
 import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditing;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampDataReflectProcessService;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyImport622;
@@ -120,10 +119,10 @@ public class AutoCreateStampCardNumberService {
 		}
 		// $登録済カード = require.打刻カードを取得する(契約コード, $打刻カード番号)
 
-		Optional<Stamp> stampOpt = require.get(contractCode, stampCardNumberOpt.get());
+		Optional<StampCard> StampCardOpt = require.getByCardNoAndContractCode(stampCardNumberOpt.get(), contractCode);
 
 		// if not $登録済カード.isEmpty
-		if (stampOpt.isPresent()) {
+		if (StampCardOpt.isPresent()) {
 			return Optional.empty();
 		}
 		return Optional.ofNullable(stampCardNumberOpt.get());
@@ -140,7 +139,7 @@ public class AutoCreateStampCardNumberService {
 		Optional<StampCardEditing> get(String companyId);
 
 		// [R-4] 打刻カードを取得する
-		Optional<Stamp> get(String contractCode, String stampNumber);
+		public Optional<StampCard> getByCardNoAndContractCode(String stampNumber, String contractCode);
 
 		// [R-5] 打刻カードを追加する
 		void add(StampCard domain);

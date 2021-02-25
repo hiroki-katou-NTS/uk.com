@@ -14,7 +14,7 @@ import nts.uk.ctx.at.record.dom.stamp.application.StampPromptAppRepository;
 import nts.uk.ctx.at.record.dom.stamp.application.StampPromptApplication;
 import nts.uk.ctx.at.record.dom.stamp.application.StampRecordDis;
 import nts.uk.ctx.at.record.dom.stamp.application.StampResultDisplay;
-import nts.uk.ctx.at.record.infra.entity.stamp.application.KrccpStampFunction;
+import nts.uk.ctx.at.record.infra.entity.stamp.application.KrcmtStampFunction;
 import nts.uk.ctx.at.record.infra.entity.stamp.application.KrcmtPromptApplication;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -69,7 +69,7 @@ public class JpaStamPromptAppRepository extends JpaRepository implements StampPr
 	 */
 	@Override
 	public Optional<StampResultDisplay> getStampSet(String companyId) {
-		return this.queryProxy().query(SELECT_BY_CID_TYPE, KrccpStampFunction.class)
+		return this.queryProxy().query(SELECT_BY_CID_TYPE, KrcmtStampFunction.class)
 				.setParameter("companyId", companyId)
 				.setParameter("errorType", 1)
 				.getSingle(c -> c.toDomain());

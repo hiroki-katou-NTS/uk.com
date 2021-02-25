@@ -2,7 +2,7 @@ package nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
-import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 
 /**
  * 
@@ -21,17 +21,25 @@ public class ApproverStateImport_New {
 	
 	private String approverName;
 	
+	private String agentName;
+	
 	private String representerID;
 	
 	private String representerName;
 	
-	private GeneralDate approvalDate;
+	private GeneralDateTime approvalDate;
 	
 	private String approvalReason;
 	
 	private String approverEmail;
 	
+	private String agentMail;
+	
 	private String representerEmail;
 	
 	private Integer approverInListOrder;
+	
+	public static ApproverStateImport_New createSimpleFromInstance(String approverID) {
+		return new ApproverStateImport_New(approverID, null, null, null, null, null, null, null, null, null, null, null, null);
+	}
 }

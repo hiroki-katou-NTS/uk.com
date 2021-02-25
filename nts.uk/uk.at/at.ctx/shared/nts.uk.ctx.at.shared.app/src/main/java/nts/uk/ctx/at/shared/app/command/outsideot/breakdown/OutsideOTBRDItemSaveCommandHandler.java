@@ -14,9 +14,9 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSettingRepository;
-import nts.uk.ctx.at.shared.dom.outsideot.UseClassification;
-import nts.uk.ctx.at.shared.dom.outsideot.breakdown.OutsideOTBRDItem;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.UseClassification;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.OutsideOTBRDItem;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -52,7 +52,7 @@ public class OutsideOTBRDItemSaveCommandHandler extends CommandHandler<OutsideOT
 
 		// to domains
 		List<OutsideOTBRDItem> domains = command.getOvertimeBRDItems().stream()
-				.map(dto -> new OutsideOTBRDItem(dto)).collect(Collectors.toList());
+				.map(dto -> dto.domain()).collect(Collectors.toList());
 		
 		if(CollectionUtil.isEmpty(domains)){
 			throw new BusinessException("Msg_485");

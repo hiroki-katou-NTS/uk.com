@@ -72,10 +72,10 @@ public interface DailyPerformanceScreenRepo {
 	/** Query select KALMT_ANNUAL_PAID_LEAVE by company id */
 //	YearHolidaySettingDto getYearHolidaySetting();
 
-	/** Query select KSVST_COM_SUBST_VACATION 振休（会社） by company id */
+	/** Query select KSHMT_HDSUB_CMP 振休（会社） by company id */
 //	SubstVacationDto getSubstVacationDto();
 
-	/** Query select KCLMT_COMPENS_LEAVE_COM 代休管理設定(会社) by company id */
+	/** Query select KSHMT_HDCOM_CMP 代休管理設定(会社) by company id */
 //	CompensLeaveComDto getCompensLeaveComDto();
 
 	/** Query select KSHST_COM_60H_VACATION 60H超休（会社） by company id */

@@ -4,13 +4,15 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.workrecord.monthcal.workplace;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.wkp.WkpDeforLaborMonthActCalSet;
-import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.wkp.WkpDeforLaborMonthActCalSetRepo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.wkp.WkpDeforLaborMonthActCalSet;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.calcmethod.calcmethod.other.wkp.WkpDeforLaborMonthActCalSetRepo;
 import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.workplace.KrcstWkpDeforMCalSet;
 import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.workplace.KrcstWkpDeforMCalSetPK;
 
@@ -21,6 +23,9 @@ import nts.uk.ctx.at.shared.infra.entity.workrecord.monthcal.workplace.KrcstWkpD
 public class JpaWkpDeforLaborMonthActCalSetRepository extends JpaRepository
 		implements WkpDeforLaborMonthActCalSetRepo {
 
+	private static final String SELECT_BY_CID = "SELECT c FROM KrcstWkpDeforMCalSet c"
+			+ " WHERE c.krcstWkpDeforMCalSetPK.cid = :cid";
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -102,6 +107,16 @@ public class JpaWkpDeforLaborMonthActCalSetRepository extends JpaRepository
 				e.getAggregateTimeSet(), e.getExcessOutsideTimeSet(),
 				e.deforLaborCalSetting(),
 				e.deforLaborSettlementPeriod());
+	}
+
+	@Override
+	public List<WkpDeforLaborMonthActCalSet> findAllByCid(String cid) {
+		List<KrcstWkpDeforMCalSet> entitys = this.queryProxy().query(SELECT_BY_CID, KrcstWkpDeforMCalSet.class)
+				.setParameter("cid", cid).getList();
+		
+		return entitys.stream().map(m -> {
+			return toDomain(m);
+		}).collect(Collectors.toList());
 	}
 
 }

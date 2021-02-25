@@ -11,17 +11,17 @@ public interface LateEarlyRequestRepository {
 	 * Find
 	 * @return
 	 */
-	Optional<LateEarlyRequest> getLateEarlyRequest();
+	Optional<LateEarlyRequest_Old> getLateEarlyRequest();
 	
 	/**
 	 * Add
 	 * @param withDrawalReqSet
 	 */
-	void addLateEarlyRequest(LateEarlyRequest lateEarlyRequest);
+	void addLateEarlyRequest(LateEarlyRequest_Old lateEarlyRequest);
 	
 	/**
 	 * Update
 	 * @param withDrawalReqSet
 	 */
-	void updateLateEarlyRequest(LateEarlyRequest lateEarlyRequest);
+	void updateLateEarlyRequest(LateEarlyRequest_Old lateEarlyRequest);
 }

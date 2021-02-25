@@ -6,9 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import org.apache.commons.lang3.tuple.Pair;
-
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.BelongScheduleTeam;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.ScheduleTeam;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.ScheduleTeamName;
@@ -68,7 +66,6 @@ public class GetScheduleTeamInfoService {
 		/**
 		 * BelongScheduleTeamRepository 所属スケジュールチームRepository.*get ( 会社ID,
 		 * List<社員ID> )
-		 * 
 		 * @param companyID
 		 * @param empID
 		 * @return
@@ -78,7 +75,6 @@ public class GetScheduleTeamInfoService {
 		/**
 		 * スケジュールチームRepository 指定された職場グループ内のスケジュールチームをすべて取得する (会社ID,
 		 * List<職場グループID>)
-		 * 
 		 * @param companyID
 		 * @param listWKPGRPID
 		 * @return

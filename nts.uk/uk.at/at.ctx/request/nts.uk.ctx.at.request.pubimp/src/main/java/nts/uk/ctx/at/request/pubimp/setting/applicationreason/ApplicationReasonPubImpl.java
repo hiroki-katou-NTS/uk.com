@@ -8,7 +8,10 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
+import org.apache.commons.lang3.tuple.Pair;
+
+import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppReasonStandard;
+import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppReasonStandardRepository;
 import nts.uk.ctx.at.request.pub.setting.applicationreason.ApplicationReasonExport;
 import nts.uk.ctx.at.request.pub.setting.applicationreason.ApplicationReasonPub;
 
@@ -17,13 +20,16 @@ import nts.uk.ctx.at.request.pub.setting.applicationreason.ApplicationReasonPub;
 public class ApplicationReasonPubImpl implements ApplicationReasonPub {
 
 	@Inject
-	private ApplicationReasonRepository appReasonRepo;
+	private AppReasonStandardRepository appReasonRepo;
 
 	@Override
 	public List<ApplicationReasonExport> getReasonByAppType(String companyId, List<Integer> lstAppType) {
-		return appReasonRepo.getReasonByAppType(companyId, lstAppType).stream()
-				.map(x -> new ApplicationReasonExport(companyId, x.getAppType().value, x.getReasonID(),
-						x.getDispOrder(), x.getReasonTemp().v(), x.getDefaultFlg().value))
+		List<AppReasonStandard> lstAppReason = appReasonRepo.findByListAppType(companyId, lstAppType);
+		return lstAppReason.stream()
+				.map(x -> new ApplicationReasonExport(companyId, x.getApplicationType().value,
+						x.getReasonTypeItemLst().stream()
+								.map(y -> Pair.of(y.getAppStandardReasonCD().v(), y.getReasonForFixedForm().v()))
+								.collect(Collectors.toList())))
 				.collect(Collectors.toList());
 	}
 

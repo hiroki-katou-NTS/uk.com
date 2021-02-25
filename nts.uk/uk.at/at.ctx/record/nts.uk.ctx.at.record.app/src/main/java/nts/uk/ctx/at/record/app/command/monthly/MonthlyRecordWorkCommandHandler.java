@@ -19,9 +19,9 @@ import nts.uk.ctx.at.record.app.command.monthly.remarks.MonthlyRemarksCommandHan
 import nts.uk.ctx.at.record.app.command.monthly.reserveleave.RsvLeaRemNumEachMonthCommandHandler;
 import nts.uk.ctx.at.record.app.command.monthly.specialholiday.SpecialHolidayRemainMonthlyCommandHandler;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.CommandFacade;
-import nts.uk.ctx.at.shared.dom.attendance.util.RecordHandler;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.RecordHandler;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 
 @Stateless
 public class MonthlyRecordWorkCommandHandler extends RecordHandler {
@@ -123,37 +123,37 @@ public class MonthlyRecordWorkCommandHandler extends RecordHandler {
 	private CommandFacade<?> getHandler(String group, boolean isUpdate) {
 		CommandFacade<?> handler = null;
 		switch (group) {
-		case MONTHLY_AFFILIATION_INFO_CODE:
+		case MONTHLY_AFFILIATION_INFO_NAME:
 			handler = this.affiliationHandler;
 			break;
-		case MONTHLY_ATTENDANCE_TIME_CODE:
+		case MONTHLY_ATTENDANCE_TIME_NAME:
 			handler = this.attendanceTimeHandler;
 			break;
-		case MONTHLY_OPTIONAL_ITEM_CODE:
+		case MONTHLY_OPTIONAL_ITEM_NAME:
 			handler = this.anyItem;
 			break;
-		case MONTHLY_ANNUAL_LEAVING_REMAIN_CODE:
+		case MONTHLY_ANNUAL_LEAVING_REMAIN_NAME:
 			handler = this.annualLeave;
 			break;
-		case MONTHLY_RESERVE_LEAVING_REMAIN_CODE:
+		case MONTHLY_RESERVE_LEAVING_REMAIN_NAME:
 			handler = this.reserveLeave;
 			break;
-		case MONTHLY_ABSENCE_LEAVE_REMAIN_CODE:
+		case MONTHLY_ABSENCE_LEAVE_REMAIN_NAME:
 			handler = this.absenceLeave;
 			break;
-		case MONTHLY_SPECIAL_HOLIDAY_REMAIN_CODE:
+		case MONTHLY_SPECIAL_HOLIDAY_REMAIN_NAME:
 			handler = this.specialHoliday;
 			break;
-		case MONTHLY_OFF_REMAIN_CODE:
+		case MONTHLY_OFF_REMAIN_NAME:
 			handler = this.dayOff;
 			break;
-		case MONTHLY_REMARKS_CODE:
+		case MONTHLY_REMARKS_NAME:
 			handler = this.remarks;
 			break;
-		case MONTHLY_CARE_HD_REMAIN_CODE:
+		case MONTHLY_CARE_HD_REMAIN_NAME:
 			handler = this.care;
 			break;
-		case MONTHLY_CHILD_CARE_HD_REMAIN_CODE:
+		case MONTHLY_CHILD_CARE_HD_REMAIN_NAME:
 			handler = this.childCare;
 			break;
 		default:
@@ -161,9 +161,4 @@ public class MonthlyRecordWorkCommandHandler extends RecordHandler {
 		}
 		return handler;
 	}
-
-	private String getGroup(ItemValue c) {
-		return String.valueOf(c.layoutCode().charAt(0));
-	}
-
 }

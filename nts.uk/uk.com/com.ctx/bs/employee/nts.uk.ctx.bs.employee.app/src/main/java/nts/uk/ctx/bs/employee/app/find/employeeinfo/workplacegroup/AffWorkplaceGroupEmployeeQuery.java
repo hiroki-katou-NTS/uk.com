@@ -2,11 +2,13 @@ package nts.uk.ctx.bs.employee.app.find.employeeinfo.workplacegroup;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.workplace.EmployeeAffiliation;
@@ -14,6 +16,7 @@ import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.group.AffWorkplaceGroup;
 import nts.uk.ctx.bs.employee.dom.workplace.group.AffWorkplaceGroupRespository;
+import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroup;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroupGettingService;
 import nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroupRespository;
 import nts.uk.shr.com.context.AppContexts;
@@ -44,20 +47,26 @@ public class AffWorkplaceGroupEmployeeQuery {
 		List<String> employeeIds = new ArrayList<String>();
 		employeeIds.add(employeeId);	
 		
+		/** 1: 取得する(年月日, 社員ID): 社員の所属組織**/
 		WorkplaceGroupGettingImpl require = new WorkplaceGroupGettingImpl(affWkpHistoryItemRepo, repoAffWorkplaceGroup);		
 		List<EmployeeAffiliation> employeeAffiliations = WorkplaceGroupGettingService.get(require, date, employeeIds);	
 		
-		if(!CollectionUtil.isEmpty(employeeAffiliations)) {
-			if(employeeAffiliations.get(0).getWorkplaceGroupID().isPresent()) {
-				String WKPGRPID = employeeAffiliations.get(0).getWorkplaceGroupID().get();	
-				String companyId = AppContexts.user().companyId();				
-				return workplaceGroupRespository.getById(companyId, WKPGRPID).map(x -> new AffWorkplaceGroupDto(x.getWKPGRPName().v(),
-						x.getWKPGRPID())).orElse(null);
+		if (!CollectionUtil.isEmpty(employeeAffiliations)
+				&& employeeAffiliations.get(0).getWorkplaceGroupID().isPresent()) {
+			String WKPGRPID = employeeAffiliations.get(0).getWorkplaceGroupID().get();
+			String companyId = AppContexts.user().companyId();
+			
+			/** 3:get(ログイン会社ID, 社員の所属組織.職場グループID): Optional<職場グループ> **/
+			Optional<WorkplaceGroup> workplaceGroupOptional = workplaceGroupRespository.getById(companyId, WKPGRPID);
+			if(workplaceGroupOptional.isPresent()) {
+				return new AffWorkplaceGroupDto(workplaceGroupOptional.get().getWKPGRPName().v(), workplaceGroupOptional.get().getWKPGRPID());				
 			} else {
-				return new AffWorkplaceGroupDto();
-			}			
+				/** 2: 社員の所属組織.isEmpty**/
+				throw new BusinessException("Msg_1867");
+			}						
 		} else {
-			return new AffWorkplaceGroupDto();
+			/** 2: 社員の所属組織.isEmpty**/
+			throw new BusinessException("Msg_1867");
 		}
 	}	
 	
@@ -74,7 +83,7 @@ public class AffWorkplaceGroupEmployeeQuery {
 		public String getAffWkpHistItemByEmpDate(String employeeID, GeneralDate date) {
 			List<AffWorkplaceHistoryItem> itemLst = affWkpHistoryItemRepo.getAffWrkplaHistItemByEmpIdAndDate(date, employeeID);
 			if(CollectionUtil.isEmpty(itemLst)) {
-				return null;
+				return new String();
 			} else {
 				return itemLst.get(0).getWorkplaceId();
 			}			

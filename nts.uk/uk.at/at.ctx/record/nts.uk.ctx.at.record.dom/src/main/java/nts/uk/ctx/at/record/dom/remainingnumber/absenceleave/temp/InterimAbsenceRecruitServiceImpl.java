@@ -18,9 +18,6 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.shared.dom.monthly.WorkTypeDaysCountTable;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.GetVacationAddSet;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.VacationAddSet;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbasMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
@@ -34,6 +31,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.Required
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnOffsetDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnUsedDay;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.WorkTypeDaysCountTable;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.GetVacationAddSet;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.VacationAddSet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
@@ -108,8 +108,7 @@ public class InterimAbsenceRecruitServiceImpl implements InterimAbsenceRecruitSe
 						employeeId,
 						targetWorkInfo.getYmd(),
 						CreateAtr.RECORD,
-						RemainType.PICKINGUP,
-						RemainAtr.SINGLE);
+						RemainType.PICKINGUP);
 				InterimRecMng recMng = new InterimRecMng(
 						recruitGuid,
 						GeneralDate.ymd(9999, 12, 31),
@@ -130,8 +129,7 @@ public class InterimAbsenceRecruitServiceImpl implements InterimAbsenceRecruitSe
 						employeeId,
 						targetWorkInfo.getYmd(),
 						CreateAtr.RECORD,
-						RemainType.PAUSE,
-						RemainAtr.SINGLE);
+						RemainType.PAUSE);
 				InterimAbsMng absMng = new InterimAbsMng(
 						absenceGuid,
 						new RequiredDay(absenceDays),

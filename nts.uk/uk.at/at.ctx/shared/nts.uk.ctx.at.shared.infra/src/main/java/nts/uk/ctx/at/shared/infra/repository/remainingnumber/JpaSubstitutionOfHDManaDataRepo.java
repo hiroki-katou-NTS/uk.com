@@ -18,19 +18,23 @@ import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManagementData;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.paymana.KrcmtSubOfHDManaData;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements SubstitutionOfHDManaDataRepository {
 	
 	private static final String QUERY_BY_SID_CID_HOLIDAYDATE = "SELECT p FROM KrcmtSubOfHDManaData p WHERE p.cID = :cid AND p.sID =:employeeId AND p.dayOff = :holidayDate";
 	
-	private static final String QUERY_BYSID = "SELECT s FROM KrcmtSubOfHDManaData s WHERE s.sID = :sid AND s.cID = :cid";
+	private static final String QUERY_BY_SID_LIST_HOLIDAYDATE = "SELECT p FROM KrcmtSubOfHDManaData p WHERE p.sID = :employeeId AND p.cID = :cID AND p.dayOff IN :holidayDate";
+	
+	private static final String QUERY_BYSID = "SELECT s FROM KrcmtSubOfHDManaData s WHERE s.sID = :sid AND s.cID = :cid ORDER BY s.dayOff";
+	
+	private static final String QUERY_BYSID_AND_ATR = "SELECT s FROM KrcmtSubOfHDManaData s WHERE s.sID = :sid AND s.cID = :cid AND s.remainDays <> 0.0 ORDER BY s.dayOff";
 
 	private static final String QUERY_BYSID_REM_COD = String.join(" ", QUERY_BYSID, "AND s.remainDays > 0");
 
@@ -39,7 +43,7 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 			+ "(SELECT ps.krcmtPayoutSubOfHDManaPK.subOfHDID FROM KrcmtPayoutSubOfHDMana ps WHERE ps.krcmtPayoutSubOfHDManaPK.payoutId =:payoutID))";
 
 	private static final String QUERY_BY_SID_REMAIN_AND_IN_PAYOUT = "SELECT s FROM KrcmtSubOfHDManaData s WHERE s.sID = :sid AND (s.remainDays <> 0 OR s.subOfHDID in "
-			+ "(SELECT ps.krcmtPayoutSubOfHDManaPK.subOfHDID FROM KrcmtPayoutSubOfHDMana ps inner join KrcmtPayoutManaData p on p.payoutId = ps.krcmtPayoutSubOfHDManaPK.payoutId where p.sID = :sid AND p.stateAtr = 0))";
+			+ "(SELECT ps.krcmtPayoutSubOfHDManaPK.subOfHDID FROM KrcmtPayoutSubOfHDMana ps inner join KrcmtPayoutManaData p on p.payoutId = ps.krcmtPayoutSubOfHDManaPK.payoutId where p.sID = :sid AND p.stateAtr = 0)) ORDER BY s.unknownDate, s.dayOff";
 
 	private static final String QUERY_BY_SID_PERIOD_AND_IN_PAYOUT = "SELECT s FROM KrcmtSubOfHDManaData s WHERE s.sID = :sid AND ((s.dayOff >= :startDate AND s.dayOff <= :endDate) OR s.subOfHDID in "
 			+ "(SELECT ps.krcmtPayoutSubOfHDManaPK.subOfHDID FROM KrcmtPayoutSubOfHDMana ps inner join KrcmtPayoutManaData p on p.payoutId = ps.krcmtPayoutSubOfHDManaPK.payoutId where p.sID = :sid AND p.dayOff >= :startDate AND p.dayOff <= :endDate))";
@@ -62,6 +66,11 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 			+ " AND s.sID = :sid"
 			+ " AND (s.dayOff < :dayOff OR s.dayOff is null)"
 			+ " AND s.remainDays > :remainDays";
+	
+	private static final String QUERY_BY_SID = "SELECT c FROM KrcmtSubOfHDManaData c WHERE  c.sID = :sid ORDER BY c.unknownDate, c.dayOff";
+	
+	private static final String QUERY_BY_LIST_ID = "SELECT c FROM KrcmtSubOfHDManaData c WHERE c.subOfHDID IN :subOfHDIDs";
+	
 	@Override
 	public List<SubstitutionOfHDManagementData> getBySidDate(String cid, String sid, GeneralDate ymd) {
 		List<KrcmtSubOfHDManaData> list = this.queryProxy().query(QUERY_BYSID_DATE, KrcmtSubOfHDManaData.class)
@@ -76,6 +85,13 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 	@Override
 	public List<SubstitutionOfHDManagementData> getBysiD(String cid, String sid) {
 		List<KrcmtSubOfHDManaData> list = this.queryProxy().query(QUERY_BYSID, KrcmtSubOfHDManaData.class)
+				.setParameter("sid", sid).setParameter("cid", cid).getList();
+		return list.stream().map(i -> toDomain(i)).collect(Collectors.toList());
+	}
+	
+	@Override
+	public List<SubstitutionOfHDManagementData> getBysiDAndAtr(String cid, String sid) {
+		List<KrcmtSubOfHDManaData> list = this.queryProxy().query(QUERY_BYSID_AND_ATR, KrcmtSubOfHDManaData.class)
 				.setParameter("sid", sid).setParameter("cid", cid).getList();
 		return list.stream().map(i -> toDomain(i)).collect(Collectors.toList());
 	}
@@ -176,6 +192,16 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 		return this.queryProxy().query(QUERY_BY_SID_CID_HOLIDAYDATE, KrcmtSubOfHDManaData.class).setParameter("cid", cID)
 				.setParameter("employeeId", sID).setParameter("holidayDate", holidayDate).getSingle().map(i -> toDomain(i));
 	}
+	
+	@Override
+	public List<SubstitutionOfHDManagementData> getBySidListHoliday(String cID, String sID, List<GeneralDate> holidayDate) {
+		return this.queryProxy().query(QUERY_BY_SID_LIST_HOLIDAYDATE, KrcmtSubOfHDManaData.class)
+				.setParameter("employeeId", sID)
+				.setParameter("cID", cID)
+				.setParameter("holidayDate", holidayDate).getList()
+				.stream().map(i -> toDomain(i)).collect(Collectors.toList());
+	}
+
 
 	@Override
 	public List<SubstitutionOfHDManagementData> getBySidAndDatePeriod(String sid, DatePeriod dateData) {
@@ -337,6 +363,28 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 		System.out.println(records);		
 	}
 
+
+	@Override
+	public List<SubstitutionOfHDManagementData> getAllBySid(String sid) {
+		List<KrcmtSubOfHDManaData> listDataResult = this.queryProxy().query(QUERY_BY_SID, KrcmtSubOfHDManaData.class)
+				.setParameter("sid", sid)
+				.getList();
+		return listDataResult.stream().map(i -> toDomain(i)).collect(Collectors.toList());
+	}
+	
+	@Override
+	public void delete(List<SubstitutionOfHDManagementData> listItem) {
+		String QUERY_DELETE_LIST_ID = "DELETE FROM KrcmtSubOfHDManaData a WHERE a.subOfHDID IN :subOfHDIDs";
+		List<String> subOfHDIDs = listItem.stream().map(x -> x.getSubOfHDID()).collect(Collectors.toList());
+		this.getEntityManager().createQuery(QUERY_DELETE_LIST_ID).setParameter("subOfHDIDs", subOfHDIDs).executeUpdate();
+	}
+	
+	@Override
+	public List<SubstitutionOfHDManagementData> getByListId(List<String> subOfHDIDs) {
+		return this.queryProxy().query(QUERY_BY_LIST_ID, KrcmtSubOfHDManaData.class)
+			.setParameter("subOfHDIDs", subOfHDIDs)
+			.getList(x -> toDomain(x));
+	}
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManaDataRepository#getAllBysiDRemCod(java.lang.String, java.util.List)

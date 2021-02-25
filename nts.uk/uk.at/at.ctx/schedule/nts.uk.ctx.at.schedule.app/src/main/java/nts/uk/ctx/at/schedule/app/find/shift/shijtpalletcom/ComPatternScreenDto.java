@@ -7,7 +7,7 @@ public class ComPatternScreenDto {
 	public String groupName;
 	public int groupUsageAtr;
 	public String note;
-	public List<PatternItemScreenDto> patternItem;
+	public List<PatternItemScreenDto> patternItem; // tu 1 den 20
 	public ComPatternScreenDto(int groupNo, String groupName, int groupUsageAtr, String note,
 			List<PatternItemScreenDto> patternItem) {
 		super();

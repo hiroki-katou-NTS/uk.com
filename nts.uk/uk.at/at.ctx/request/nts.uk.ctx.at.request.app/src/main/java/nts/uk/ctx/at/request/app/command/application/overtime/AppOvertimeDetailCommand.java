@@ -19,8 +19,8 @@ import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36AgreeUpperLim
 import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36AgreeUpperLimitPerMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeYear;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneYear;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.AgreementOneYearTime;
 
 /**
  * 時間外時間の詳細
@@ -117,22 +117,22 @@ public class AppOvertimeDetailCommand {
 						new AttendanceTimeMonth(applicationTime) , 
 						new Time36AgreeMonth(
 								new AttendanceTimeMonth(actualTime), 
-								new LimitOneMonth(limitAlarmTime), 
-								new LimitOneMonth(limitErrorTime), 
+								new AgreementOneMonthTime(limitAlarmTime), 
+								new AgreementOneMonthTime(limitErrorTime), 
 								new NumberOfMonth(numOfYear36Over), 
 								year36OverMonth.stream().map(x -> new YearMonth(x)).collect(Collectors.toList()), 
-								exceptionLimitAlarmTime==null ? Optional.empty() : Optional.ofNullable(new LimitOneMonth(exceptionLimitAlarmTime)), 
-								exceptionLimitErrorTime==null ? Optional.empty() : Optional.ofNullable(new LimitOneMonth(exceptionLimitErrorTime))), 
+								exceptionLimitAlarmTime == null ? Optional.empty() : Optional.of(new AgreementOneMonthTime(exceptionLimitAlarmTime)), 
+								exceptionLimitErrorTime == null ? Optional.empty() : Optional.of(new AgreementOneMonthTime(exceptionLimitErrorTime))), 
 						new Time36AgreeAnnual(
 								new AttendanceTimeYear(actualTimeAnnual), 
-								new LimitOneYear(limitTime))), 
+								new AgreementOneYearTime(limitTime))), 
 				new Time36AgreeUpperLimit(
 						new AttendanceTimeMonth(appTimeAgreeUpperLimit), 
 						new Time36AgreeUpperLimitMonth(
 								new AttendanceTimeMonth(overTime), 
-								new LimitOneMonth(upperLimitTimeMonth)), 
+								new AgreementOneMonthTime(upperLimitTimeMonth)), 
 						new Time36AgreeUpperLimitAverage(
 								averageTimeLst.stream().map(x -> new Time36AgreeUpperLimitPerMonth(x.periodYearStart, x.periodYearEnd, x.averageTime, x.totalTime)).collect(Collectors.toList()), 
-								new LimitOneMonth(upperLimitTimeAverage))));
+								new AgreementOneMonthTime(upperLimitTimeAverage))));
 	}
 }

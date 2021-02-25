@@ -29,7 +29,7 @@
 
 .C5, .C6 {
 	display: inline-block;
-	width: 41%;
+	width: 40%;
 }
 
 .C5 {
@@ -153,4 +153,34 @@ button.ntsUpButton, button.ntsDownButton {
 #combo-box-remarkInput {
 	margin-left: 42px;
 	width: 152px;
+}
+
+.ml-15 {
+	margin-left: 15px;
+}
+
+.ml-5 {
+	margin-left: 5px;
+}
+
+.ntsHelpButton .nts-help-button-image {
+	padding: 10px 10px !important;
+}
+.nts-help-button-image img {
+	width: 331px !important;
+}
+
+.c5_3 {
+	width: 40px;
+	display: inline-block;
+}
+
+.c5_4 {
+	width: 75px;
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.C5_1 {
+	width: 175px !important;
 }

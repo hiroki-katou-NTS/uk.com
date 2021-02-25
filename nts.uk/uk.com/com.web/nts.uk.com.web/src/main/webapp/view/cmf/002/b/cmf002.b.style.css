@@ -16,6 +16,8 @@
 
 .div-line {
 	margin-bottom: 10px;
+    display: flex;
+    align-items: center;
 }
 .column-1 {
 	width: 170px;
@@ -31,10 +33,10 @@
     position: absolute;
     right: 0;
 }
-	
+
 #B1_2{
 	margin-left: 200px !important;
-	
+
 }
 .clear {
 	clear: both;
@@ -48,7 +50,7 @@
 	margin-left: 10px !important;
 }
 body{
-	
+
 }
 #contents-area {
     position: relative;
@@ -56,4 +58,8 @@ body{
     overflow: hidden;
     overflow-y: auto;
 	overflow-x: auto;
+}
+
+.margin-left-15 {
+    margin-left: 15px;
 }

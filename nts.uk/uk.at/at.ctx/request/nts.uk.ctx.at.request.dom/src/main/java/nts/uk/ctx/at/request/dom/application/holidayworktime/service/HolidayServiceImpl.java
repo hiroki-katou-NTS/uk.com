@@ -1,1102 +1,645 @@
 package nts.uk.ctx.at.request.dom.application.holidayworktime.service;
 
-import static java.util.stream.Collectors.groupingBy;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
-import nts.gul.collection.CollectionUtil;
-import nts.gul.text.StringUtil;
-import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
-import nts.uk.ctx.at.request.dom.application.UseAtr;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.businesscalendar.specificdate.BusinessDayCalendarAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.businesscalendar.specificdate.dto.BusinessDayCalendarImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.shift.businesscalendar.specificdate.dto.HolidayClsImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpHistImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
-import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.ActualStatusCheckResult;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertimeHoliday;
-import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.OvertimeColorCheck;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorCheck;
-import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreActualColorResult;
-import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.PreAppCheckResult;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.DetailAppCommonSetService;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.User;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister_New;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.CheckBeforeRegisMultiEmpOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.other.AppDetailContent;
-import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.AgreeOverTimeOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.other.PreAppContentDisplay;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.OverTimeWorkHoursOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.brkoffsupchangemng.BrkOffSupChangeMng;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.brkoffsupchangemng.BrkOffSupChangeMngRepository;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.commonalgorithm.ICommonAlgorithmHolidayWork;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.AppHdWorkDispInfoOutput;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkBreakTimeSetOutput;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkCheckRegisterOutput;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.CalculatedFlag;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.CheckBeforeOutput;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.CheckBeforeOutputMulti;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdSelectWorkDispInfoOutput;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkDetailOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HdWorkDispInfoWithDateOutput;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HolidayWorkDetailOutput;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HolidayWorkInstruction;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.InitWorkTypeWorkTime;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.WorkTimeHolidayWork;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.WorkTypeHolidayWork;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
-import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
-import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
-import nts.uk.ctx.at.request.dom.application.overtime.service.CheckWorkingInfoResult;
-import nts.uk.ctx.at.request.dom.application.overtime.service.IOvertimePreProcess;
-import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeService;
-import nts.uk.ctx.at.request.dom.application.overtime.service.output.RecordWorkOutput;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.HolidayWorkCalculationResult;
+import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
+import nts.uk.ctx.at.request.dom.application.overtime.ExcessState;
+import nts.uk.ctx.at.request.dom.application.overtime.OverStateOutput;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
+import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.ICommonAlgorithmOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.InfoNoBaseDate;
+import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.QuotaOuput;
+import nts.uk.ctx.at.request.dom.application.overtime.CommonAlgorithm.ReasonDissociationOutput;
+import nts.uk.ctx.at.request.dom.application.overtime.service.OverTimeContent;
+import nts.uk.ctx.at.request.dom.application.overtime.service.WorkContent;
+import nts.uk.ctx.at.request.dom.application.overtime.service.WorkHours;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.PrePostInitAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.CalcStampMiss;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.HolidayWorkAppSet;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.HolidayWorkAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.OverrideSet;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSet;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSetRepository;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.AppDateContradictionAtr;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
-import nts.uk.ctx.at.request.dom.setting.company.divergencereason.DivergenceReason;
-import nts.uk.ctx.at.request.dom.setting.company.request.RequestSetting;
-import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmployWorkType;
-import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSetting;
-import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.WorkTypeObjAppHoliday;
-import nts.uk.ctx.at.request.dom.setting.workplace.ApprovalFunctionSetting;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeLeaveAppCommonSet;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.Time36AgreeCheckRegister;
+import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
+import nts.uk.ctx.at.request.dom.workrecord.dailyrecordprocess.dailycreationwork.BreakTimeZoneSetting;
+import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWork;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWorkRepository;
+import nts.uk.ctx.at.shared.dom.workdayoff.frame.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
-import nts.uk.ctx.at.shared.dom.workingcondition.PersonalWorkCategory;
-import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
+import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.time.TimeWithDayAttr;
+
 @Stateless
 public class HolidayServiceImpl implements HolidayService {
-	@Inject
-	private EmployeeRequestAdapter employeeAdapter;
-	@Inject
-	private OtherCommonAlgorithm otherCommonAlgorithm;
-	@Inject
-	private WorkTimeSettingRepository workTimeRepository;
-	@Inject
-	private WorkTypeRepository workTypeRepository;
-	@Inject
-	private ApplicationApprovalService_New appRepository;
-	@Inject
-	private AppHolidayWorkRepository appHolidayWorkRepository;
-	@Inject
-	private BusinessDayCalendarAdapter businessDayCalendarAdapter;
-	@Inject
-	private WorkplaceAdapter wkpAdapter;
-	@Inject 
-	private BrkOffSupChangeMngRepository brkOffSupChangeMngRepository;
-	@Inject
-	private ApplicationRepository_New applicationRepository;
-	@Inject
-	private InterimRemainDataMngRegisterDateChange interimRemainDataMngRegisterDateChange;
 	
 	@Inject
 	private CommonAlgorithm commonAlgorithm;
 	
 	@Inject
-	private CommonOvertimeHoliday commonOvertimeHoliday;
+	private CommonOvertimeHoliday commonOverTimeHoliday;
 	
 	@Inject
-	private HolidayPreProcess holidayPreProcess;
+	private ICommonAlgorithmHolidayWork commonHolidayWorkAlgorithm;
 	
 	@Inject
-	private WorkingConditionItemRepository workingConditionItemRepository;
+	private ICommonAlgorithmOverTime commonOverTimeAlgorithm;
 	
 	@Inject
-	private HolidayService holidayService;
+	private WorkdayoffFrameRepository workdayoffFrameRepository;
 	
 	@Inject
 	private PreActualColorCheck preActualColorCheck;
 	
 	@Inject
-	private WithdrawalAppSetRepository withdrawalAppSetRepository;
+	private NewBeforeRegister processBeforeRegister;
 	
 	@Inject
-	private IOvertimePreProcess iOvertimePreProcess;
+	private DetailBeforeUpdate detailBeforeProcessRegisterService;
 	
 	@Inject
-	private OvertimeRestAppCommonSetRepository overtimeRestAppCommonSetRepository;
+	private AppHolidayWorkRepository appHolidayWorkRepository;
 	
 	@Inject
-	private NewBeforeRegister_New newBeforeRegister;
+	private HolidayWorkAppSetRepository holidayWorkAppSetRepository;
 	
 	@Inject
-	private DetailAppCommonSetService detailAppCommonSetService;
+	private AppReflectOtHdWorkRepository appReflectOtHdWorkRepository;
 	
 	@Inject
-	private OvertimeService overtimeService;
+	private ApplicationRepository applicationRepository;
+	
+//	@Inject
+//	private OvertimeService overtimeService;
 	
 	@Inject
-	private DetailBeforeUpdate detailBeforeUpdate;
+	private BrkOffSupChangeMngRepository brkOffSupChangeMngRepository;
 	
-	@Override
-	public WorkTypeHolidayWork getWorkTypes(String companyID, String employeeID, List<AppEmploymentSetting> appEmploymentSettings,
-			GeneralDate baseDate,Optional<WorkingConditionItem> personalLablorCodition,boolean isChangeDate) {
-		WorkTypeHolidayWork workTypeHolidayWorks = new WorkTypeHolidayWork();
-		workTypeHolidayWorks = getListWorkType(companyID, employeeID, appEmploymentSettings, baseDate, personalLablorCodition);
-		// 勤務種類初期選択 :4_c.初期選択 : TODO
-		if(workTypeHolidayWorks.getWorkTypeCodes() == null){
-			return workTypeHolidayWorks;
-		}
-		getWorkType(companyID,workTypeHolidayWorks,baseDate,employeeID,personalLablorCodition,isChangeDate);
-		return workTypeHolidayWorks;
-	}
-	// 4_c.初期選択
-	@Override
-	public void getWorkType(String companyID,WorkTypeHolidayWork workTypes, GeneralDate appDate, String employeeID,Optional<WorkingConditionItem> personalLablorCodition,boolean isChangeDate){
-		
-		List<String> wptypes = workTypes.getWorkTypeCodes();
-		if(!personalLablorCodition.isPresent() || personalLablorCodition.get().getWorkCategory().getHolidayWork() == null){
-			// 先頭の勤務種類を選択する
-			if(!CollectionUtil.isEmpty(workTypes.getWorkTypeCodes())){
-				workTypes.setWorkTypeCode(workTypes.getWorkTypeCodes().get(0));
-			}
-		}else{
-			
-			
-			// 「申請日－法定外・法定内休日区分」をチェック　→Imported(申請承認)「対象日法定休日区分.法定休日区分」を取得する - req 253
-			String workTypeCode = personalLablorCodition.get().getWorkCategory().getHolidayWork().getWorkTypeCode().get().toString();
-			if (!isChangeDate) {
-                workTypeCode = getCode(wptypes, workTypeCode);
-			}else{
-				//Imported(申請承認)「職場ID」を取得する 
-				//アルゴリズム「社員から職場を取得する」を実行する - req #30
-				WkpHistImport wkp = wkpAdapter.findWkpBySid(employeeID, appDate);
-				String workplaceID = "";
-				if(wkp !=null){
-					workplaceID = wkp.getWorkplaceId();
-				}
-			Optional<BusinessDayCalendarImport> buOptional = this.businessDayCalendarAdapter.acquiredHolidayClsOfTargetDate(companyID, workplaceID, appDate);
-				if (buOptional.isPresent()) {
-                    PersonalWorkCategory personCategory = personalLablorCodition.get().getWorkCategory();
-                    switch (buOptional.get().holidayCls) {
-                    case STATUTORY_HOLIDAYS:
-                    	// 申請日＝＞法定内休日
-                        workTypeCode = getWorkTypeCode(personCategory.getInLawBreakTime(), workTypeCode);
-                        break;
-                    case NON_STATUTORY_HOLIDAYS:
-                        // 申請日＝＞法定外休日
-                        workTypeCode = getWorkTypeCode(personCategory.getOutsideLawBreakTime(), workTypeCode);
-                        break;
-                    case PUBLIC_HOLIDAY:
-                        // 申請日＝＞祝日
-                        workTypeCode = getWorkTypeCode(personCategory.getHolidayAttendanceTime(), workTypeCode);
-                        break;
-                    }
-                    workTypeCode = getInList(wptypes, workTypeCode);
-				} else {
-                    workTypeCode = getCode(wptypes, workTypeCode);
-				}
-			}
-            workTypes.setWorkTypeCode(workTypeCode);
-		}
-		
-		String wkTypeCD = workTypes.getWorkTypeCode();
-		//12.マスタ勤務種類、就業時間帯データをチェック
-		CheckWorkingInfoResult checkResult = otherCommonAlgorithm.checkWorkingInfo(companyID, wkTypeCD, null);
-		if (checkResult.isWkTypeError() && !CollectionUtil.isEmpty(workTypes.getWorkTypeCodes())) {
-			wkTypeCD = workTypes.getWorkTypeCodes().get(0);
-            workTypes.setWorkTypeCode(wkTypeCD);
-		}
-		Optional<WorkType> workType = workTypeRepository.findByPK(companyID, wkTypeCD);
-		if(workType.isPresent()){
-			workTypes.setWorkTypeName(workType.get().getName().toString());
-		}
-	}
+	@Inject
+	private WorkTypeRepository workTypeRepository;
 	
-    private String getCode(List<String> list, String defaultCode) {
-        if (!StringUtil.isNullOrEmpty(defaultCode, true)) {
-            return getInList(list, defaultCode);
-        } else {
-            return list.get(0);
-        }
-    }
-
-    private String getWorkTypeCode(Optional<SingleDaySchedule> singleDay, String wkTypeCode) {
-        if (singleDay.isPresent()) {
-            Optional<WorkTypeCode> wkTypeCodeOpt = singleDay.get().getWorkTypeCode();
-            return wkTypeCodeOpt.isPresent() ? wkTypeCodeOpt.get().v().toString() : wkTypeCode;
-        }
-        return wkTypeCode;
-    }
-
-	/** 5.就業時間帯を取得する */
-	@Override
-	public WorkTimeHolidayWork getWorkTimeHolidayWork(String companyID, String employeeID,
-			GeneralDate baseDate,Optional<WorkingConditionItem> personalLablorCodition,boolean isChangeDate) {
-		WorkTimeHolidayWork workTimeHolidayWork = new WorkTimeHolidayWork();
-		// 1.職場別就業時間帯を取得
-		List<String> listWorkTimeCodes = otherCommonAlgorithm.getWorkingHoursByWorkplace(companyID, employeeID,baseDate)
-				.stream().map(x -> x.getWorktimeCode().v()).collect(Collectors.toList());
-		List<String> workTimes = new ArrayList<>();
-		if(!CollectionUtil.isEmpty(listWorkTimeCodes)){
-			listWorkTimeCodes.forEach(x -> workTimes.add(x));
-		}
-		workTimeHolidayWork.setWorkTimeCodes(workTimes);
-		if(!personalLablorCodition.isPresent() || personalLablorCodition.get().getWorkCategory().getHolidayWork() == null){
-			// 先頭の勤務種類を選択する
-			if(!CollectionUtil.isEmpty(workTimeHolidayWork.getWorkTimeCodes())){
-				workTimeHolidayWork.setWorkTimeCode(workTimeHolidayWork.getWorkTimeCodes().get(0));
-			}
-		}else{
-
-
-			// ドメインモデル「個人勤務日区分別勤務.休日出勤時.就業時間帯コード」を選択する
-			String wkTimeCode = personalLablorCodition.get().getWorkCategory().getHolidayWork().getWorkTimeCode().get()
-					.toString();
-			if (!isChangeDate) {
-				if (!StringUtil.isNullOrEmpty(wkTimeCode, true)) {
-					boolean isInList = workTimes.indexOf(wkTimeCode) != -1;
-					if (isInList) {
-						workTimeHolidayWork.setWorkTimeCode(wkTimeCode);
-					} else {
-						workTimeHolidayWork.setWorkTimeCode(workTimes.get(0));
-					}
-
-				} else {
-					workTimeHolidayWork.setWorkTimeCode(workTimes.get(0));
-				}
-			} else {
-
-				wkTimeCode = personalLablorCodition.get().getWorkCategory().getHolidayWork().getWorkTimeCode().get()
-						.toString();
-				// Imported(申請承認)「職場ID」を取得する
-				// アルゴリズム「社員から職場を取得する」を実行する - req #30
-				WkpHistImport wkp = wkpAdapter.findWkpBySid(employeeID, baseDate);
-				String workplaceID = "";
-				if (wkp != null) {
-					workplaceID = wkp.getWorkplaceId();
-				}
-				Optional<BusinessDayCalendarImport> buOptional = this.businessDayCalendarAdapter
-						.acquiredHolidayClsOfTargetDate(companyID, workplaceID, baseDate);
-				if (buOptional.isPresent()) {
-					
-                    PersonalWorkCategory personCategory = personalLablorCodition.get().getWorkCategory();
-                    switch (buOptional.get().holidayCls) {
-                    case STATUTORY_HOLIDAYS:
-                        // 申請日＝＞法定内休日
-                        wkTimeCode = getWorkTimeCode(personCategory.getInLawBreakTime(), wkTimeCode);
-                        break;
-                    case NON_STATUTORY_HOLIDAYS:
-                        // 申請日＝＞法定外休日
-                        wkTimeCode = getWorkTimeCode(personCategory.getOutsideLawBreakTime(), wkTimeCode);
-                        break;
-                    case PUBLIC_HOLIDAY:
-                        // 申請日＝＞祝日
-                        wkTimeCode = getWorkTimeCode(personCategory.getHolidayAttendanceTime(), wkTimeCode);
-                        break;
-
-                    }
-                    wkTimeCode = getInList(workTimes, wkTimeCode);
-
-				} else {
-                    wkTimeCode = getCode(workTimes, wkTimeCode);
-				}
-			}
-            workTimeHolidayWork.setWorkTimeCode(wkTimeCode);
-		}
-
-		if (workTimeHolidayWork.getWorkTimeCode() != null) {
-			WorkTimeSetting workTime = workTimeRepository.findByCode(companyID, workTimeHolidayWork.getWorkTimeCode())
-					.orElseGet(() -> {
-						return workTimeRepository.findByCompanyId(companyID).get(0);
-					});
-			if (workTime != null) {
-				workTimeHolidayWork.setWorkTimeName(workTime.getWorkTimeDisplayName().getWorkTimeName().toString());
-			}
-
-			String wkTimeCode = workTimeHolidayWork.getWorkTimeCode();
-			// 12.マスタ勤務種類、就業時間帯データをチェック
-			CheckWorkingInfoResult checkResult = otherCommonAlgorithm.checkWorkingInfo(companyID, wkTimeCode, null);
-			if (checkResult.isWkTimeError()) {
-				workTimeHolidayWork.setWorkTimeCode(workTimeHolidayWork.getWorkTimeCodes().get(0));
-			}
-			if (workTimeHolidayWork.getWorkTimeCode() != null) {
-				workTimeRepository.findByCode(companyID, workTimeHolidayWork.getWorkTimeCode()).ifPresent(wkTime -> {
-					workTimeHolidayWork.setWorkTimeName(wkTime.getWorkTimeDisplayName().getWorkTimeName().toString());
-				});
-			}
-		}
-		return workTimeHolidayWork;
-		
-	}
-    private String getInList(List<String> list, String defaultCode) {
-        if(CollectionUtil.isEmpty(list)){
-            return defaultCode;
-        }
-        boolean isInList = list.indexOf(defaultCode) != -1;
-        if (isInList) {
-            return defaultCode;
-        } else {
-            return list.get(0);
-        }
-
-    }
-    private String getWorkTimeCode(Optional<SingleDaySchedule> singleDay, String defaultCode) {
-        if (singleDay.isPresent()) {
-            Optional<nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode> wkTimeCodeOpt = singleDay.get()
-                    .getWorkTimeCode();
-            return wkTimeCodeOpt.isPresent() ? wkTimeCodeOpt.get().v().toString() : defaultCode;
-        }
-        return defaultCode;
-    }
+	@Inject
+	private WorkTimeSettingRepository workTimeSettingRepository;
 
 	@Override
-	public void createHolidayWork(AppHolidayWork domain, Application_New newApp) {
-		//Register application
-		appRepository.insert(newApp);
-		// insert appHolidayWork,HolidayWorkInput
-		appHolidayWorkRepository.Add(domain);
-	}
-	@Override
-	public WorkTypeHolidayWork getListWorkType(String companyID, String employeeID,
-			List<AppEmploymentSetting> appEmploymentSettings, GeneralDate appDate,
-			Optional<WorkingConditionItem> personalLablorCodition) {
-		WorkTypeHolidayWork workTypeHolidayWorks = new WorkTypeHolidayWork();
-		// アルゴリズム「社員所属雇用履歴を取得」を実行する 
-		SEmpHistImport sEmpHistImport = employeeAdapter.getEmpHist(companyID, employeeID, GeneralDate.today());
-		List<String> workTypeCodes = new ArrayList<>();
-		if(sEmpHistImport != null && !CollectionUtil.isEmpty(appEmploymentSettings) && appEmploymentSettings.get(0) != null){
-			// ドメインモデル「申請別対象勤務種類」.勤務種類リストを表示する
-			AppEmploymentSetting appSet =  appEmploymentSettings.get(0);
-			List<AppEmployWorkType> lstEmploymentWorkType = CollectionUtil.isEmpty(appEmploymentSettings.get(0).getListWTOAH()) ? null : 
-				CollectionUtil.isEmpty(appEmploymentSettings.get(0).getListWTOAH().get(0).getWorkTypeList()) ? null :
-					appEmploymentSettings.get(0).getListWTOAH().get(0).getWorkTypeList()
-					.stream().map(x -> new AppEmployWorkType(companyID, employeeID, appEmploymentSettings.get(0).getListWTOAH().get(0).getAppType(),
-							appEmploymentSettings.get(0).getListWTOAH().get(0).getAppType().value == 10 ? appEmploymentSettings.get(0).getListWTOAH().get(0).getSwingOutAtr().get().value : appEmploymentSettings.get(0).getListWTOAH().get(0).getAppType().value == 1 ? appEmploymentSettings.get(0).getListWTOAH().get(0).getHolidayAppType().get().value : 9, x))
-					.collect(Collectors.toList());
-			boolean isDisplay = false;
-			if(!CollectionUtil.isEmpty(appSet.getListWTOAH())) {
-				isDisplay = appSet.getListWTOAH().get(0).getWorkTypeSetDisplayFlg();				
-			}
-			if(!CollectionUtil.isEmpty(lstEmploymentWorkType) && isDisplay) {
-                List<String> sortedCodes = this.workTypeRepository
-                        .getPossibleWorkTypeAndOrder(companyID,
-                                lstEmploymentWorkType.stream().map(x -> x.getWorkTypeCode())
-                                        .collect(Collectors.toList()))
-                        .stream().map(x -> x.getWorkTypeCode()).collect(Collectors.toList());
-                //Collections.sort(lstEmploymentWorkType, Comparator.comparing(AppEmployWorkType :: getWorkTypeCode));
-                sortedCodes.forEach(x -> {
-                    workTypeCodes.add(x);
-                });
-				workTypeHolidayWorks.setWorkTypeCodes(workTypeCodes);
-				return workTypeHolidayWorks;
-			}
-		}
-		////休出
-		int breakDay = 11;
-		// ドメインモデル「勤務種類」を取得
-		List<WorkType> workrTypes = this.workTypeRepository.findWorkOneDay(companyID, 0, breakDay);
-		List<String> sortedCodes = this.workTypeRepository
-				.getPossibleWorkTypeAndOrder(companyID,
-						workrTypes.stream().map(x -> x.getWorkTypeCode().v()).collect(Collectors.toList()))
-				.stream().map(x -> x.getWorkTypeCode()).collect(Collectors.toList());
-		if (!CollectionUtil.isEmpty(sortedCodes)) {
-			sortedCodes.forEach(x -> {
-				workTypeCodes.add(x);
-			});
-			workTypeHolidayWorks.setWorkTypeCodes(workTypeCodes);
-			return workTypeHolidayWorks;
-		}
-		return workTypeHolidayWorks;
-	}
-	@Override
-	// 4_a.勤務種類を取得する（法定内外休日）
-	public WorkTypeHolidayWork getWorkTypeForLeaverApp(String companyID, String employeeID,
-			List<AppEmploymentSetting> appEmploymentSettings, GeneralDate appDate,
-			Optional<WorkingConditionItem> personalLablorCodition,Integer paramholidayCls ) {
-		WorkTypeHolidayWork workTypeHolidayWorks = new WorkTypeHolidayWork();
-		workTypeHolidayWorks = this.getListWorkType(companyID, employeeID, appEmploymentSettings, appDate, personalLablorCodition);
-		if(CollectionUtil.isEmpty(workTypeHolidayWorks.getWorkTypeCodes())){
-			return workTypeHolidayWorks;
-		}
-		//アルゴリズム「社員から職場を取得する」を実行する - req #30
-		WkpHistImport wkp = wkpAdapter.findWkpBySid(employeeID, appDate);
-		String workplaceID = "";
-		if(wkp !=null){
-			workplaceID = wkp.getWorkplaceId();
-		}
-		List<WorkType> worktypes = this.workTypeRepository.findNotDeprecatedByListCode(companyID, workTypeHolidayWorks.getWorkTypeCodes());
-		// 「申請日－法定外・法定内休日区分」をチェック →Imported(申請承認)「対象日法定休日区分.法定休日区分」を取得する - req253
-		Optional<BusinessDayCalendarImport> buOptional = this.businessDayCalendarAdapter
-				.acquiredHolidayClsOfTargetDate(companyID, workplaceID, appDate);
-		List<WorkType> workTypeFilter  = new ArrayList<>();
-		if(buOptional.isPresent()) {
-			if (HolidayClsImport.STATUTORY_HOLIDAYS.equals(buOptional.get().holidayCls)) {
-				// 法定内休日 : filter for STATUTORY_HOLIDAYS
-				workTypeFilter = worktypes.stream().filter(x -> x.getWorkTypeSet().getHolidayAtr().equals(HolidayAtr.STATUTORY_HOLIDAYS)).collect(Collectors.toList());
-			} else if (HolidayClsImport.NON_STATUTORY_HOLIDAYS.equals(buOptional.get().holidayCls)) {
-				// 法定外休日
-				workTypeFilter = worktypes.stream().filter(x -> x.getWorkTypeSet().getHolidayAtr().equals(HolidayAtr.NON_STATUTORY_HOLIDAYS)).collect(Collectors.toList());
-			} else if (HolidayClsImport.PUBLIC_HOLIDAY.equals(buOptional.get().holidayCls)) {
-				// 祝日
-				workTypeFilter = worktypes.stream().filter(x -> x.getWorkTypeSet().getHolidayAtr().equals(HolidayAtr.PUBLIC_HOLIDAY)).collect(Collectors.toList());
-			}else{
-				// 取得できない場合
-				return getWorkTypeForLeaveApp(workTypeHolidayWorks,companyID);
-			}
-		}else {
-			// 取得できない場合
-			return getWorkTypeForLeaveApp(workTypeHolidayWorks,companyID);
-		}
-		WorkTypeHolidayWork result = new WorkTypeHolidayWork();
-		if(!CollectionUtil.isEmpty(workTypeFilter)){
-			List<String> workTypeCodes = new ArrayList<>();
-			workTypeCodes.forEach(x -> workTypeCodes.add(x));
-			result.setWorkTypeCodes(workTypeCodes);
-		}
-		if(!personalLablorCodition.isPresent() || personalLablorCodition.get().getWorkCategory().getHolidayWork() == null){
-			return getWorkTypeForLeaveApp(result,companyID);
-		}
-		if(paramholidayCls == null){
-			return getWorkTypeForLeaveApp(result,companyID);
-		}
-		// 「元の振出日－法定外・法定内休日区分」をチェック
-		String workTypeCode = personalLablorCodition.get().getWorkCategory().getHolidayWork().getWorkTypeCode().toString();
-		if (HolidayClsImport.STATUTORY_HOLIDAYS.value == paramholidayCls.intValue()) {
-			// 申請日＝＞法定内休日
-			if(personalLablorCodition.get().getWorkCategory().getInLawBreakTime().isPresent()){
-				workTypeCode = personalLablorCodition.get().getWorkCategory().getInLawBreakTime().get().getWorkTypeCode().toString();
-			}
-		} else if (HolidayClsImport.NON_STATUTORY_HOLIDAYS.value == paramholidayCls.intValue()) {
-			// 申請日＝＞法定外休日
-			if(personalLablorCodition.get().getWorkCategory().getOutsideLawBreakTime().isPresent()){
-				workTypeCode = personalLablorCodition.get().getWorkCategory().getOutsideLawBreakTime().get().getWorkTypeCode().toString();
-			}
-		} else if (HolidayClsImport.PUBLIC_HOLIDAY.value == paramholidayCls.intValue()) {
-			// 申請日＝＞祝日
-			if(personalLablorCodition.get().getWorkCategory().getHolidayAttendanceTime().isPresent()){
-				workTypeCode = personalLablorCodition.get().getWorkCategory().getHolidayAttendanceTime().get().getWorkTypeCode().toString();
-			}
-		}
-		result.setWorkTypeCode(workTypeCode);
-		Optional<WorkType> workType = workTypeRepository.findByPK(companyID, workTypeCode);
-		if(workType.isPresent()){
-			result.setWorkTypeName(workType.get().getName().toString());
-		}
-		return result;
-	}
-	private WorkTypeHolidayWork getWorkTypeForLeaveApp(WorkTypeHolidayWork workTypeHoliday,String companyID){
-		if(CollectionUtil.isEmpty(workTypeHoliday.getWorkTypeCodes())){
-			return workTypeHoliday;
-		}
-		workTypeHoliday.setWorkTypeCode(workTypeHoliday.getWorkTypeCodes().get(0));
-		Optional<WorkType> workType = workTypeRepository.findByPK(companyID, workTypeHoliday.getWorkTypeCode());
-		if(workType.isPresent()){
-			workTypeHoliday.setWorkTypeName(workType.get().getName().toString());
-		}
-		return workTypeHoliday;
-	}
-	@Override
-	public void delHdWorkByAbsLeaveChange(String appID) {
-		String companyID = AppContexts.user().companyId();
-		
-		// ドメインモデル「振休申請休出変更管理」を取得する
-		Optional<BrkOffSupChangeMng> opBrkOffSupChangeMng = brkOffSupChangeMngRepository.findHolidayAppID(appID);
-		if(!opBrkOffSupChangeMng.isPresent()){
-			return;
-		}
-		BrkOffSupChangeMng brkOffSupChangeMng = opBrkOffSupChangeMng.get();
-		
-		// アルゴリズム「振休申請復活」を実行する (9.振休申請復活)
-		Application_New application = applicationRepository.findByID(companyID, appID).get();
-		// 「振休振出申請.反映情報.実績反映状態(stateReflectionReal)」を「未反映(notReflected)」に更新する
-		application.getReflectionInformation().setStateReflectionReal(ReflectedState_New.NOTREFLECTED);
-		applicationRepository.update(application);
-		
-		// ドメインモデル「振休申請休出変更管理」を削除する
-		brkOffSupChangeMngRepository.remove(brkOffSupChangeMng.getRecAppID(), brkOffSupChangeMng.getAbsenceLeaveAppID());
-		
-		// 暫定データの登録
-		interimRemainDataMngRegisterDateChange.registerDateChange(
-				companyID, 
-				application.getEmployeeID(), 
-				Arrays.asList(application.getAppDate()));
-	}
-	@Override
-	public AppHdWorkDispInfoOutput getStartNew(String companyID, List<String> employeeIDLst, List<GeneralDate> dateLst) {
-		AppHdWorkDispInfoOutput result = new AppHdWorkDispInfoOutput();
-		// 起動時の申請表示情報を取得する
-		AppDispInfoStartupOutput appDispInfoStartupOutput = commonAlgorithm.getAppDispInfoStart( 
-				companyID, 
-				ApplicationType.BREAK_TIME_APPLICATION, 
-				employeeIDLst, 
-				dateLst, 
-				true);
-		// ドメインモデル「休出申請設定」を取得する
-		WithdrawalAppSet withdrawalAppSet = withdrawalAppSetRepository.getWithDraw().get();
-		
-		// 01-02_時間外労働を取得
-		Optional<AgreeOverTimeOutput> opAgreeOverTimeOutput = commonOvertimeHoliday.getAgreementTime(
-				companyID,
-				appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(), 
-				ApplicationType.BREAK_TIME_APPLICATION);
-		// 1-1.休日出勤申請（新規）起動時初期データを取得する
-		HdWorkDispInfoWithDateOutput hdWorkDispInfoWithDateOutput = this.initDataNew(
-				companyID, 
-				appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(), 
-				dateLst.stream().findFirst(), 
-				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getBaseDate(), 
-				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getPrePostAtr(), 
-				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getEmploymentSet(), 
-				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getWorkTimeLst(), 
-				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getApprovalFunctionSet(), 
-				appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getRequestSetting(), 
-				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getAchievementOutputLst());
-		// 01-03_休出時間枠を取得
-		List<WorkdayoffFrame> breaktimeFrames = iOvertimePreProcess.getBreaktimeFrame(companyID);
-		// 01-08_乖離定型理由を取得
-		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet = overtimeRestAppCommonSetRepository
-				.getOvertimeRestAppCommonSetting(companyID, ApplicationType.BREAK_TIME_APPLICATION.value);
-		List<DivergenceReason> divergenceReasonLst = commonOvertimeHoliday.getDivergenceReasonForm(
-				companyID, 
-				PrePostAtr.POSTERIOR, 
-				overtimeRestAppCommonSet.get().getDivergenceReasonFormAtr(), 
-				ApplicationType.BREAK_TIME_APPLICATION);
-		
-		result.setAppDispInfoStartupOutput(appDispInfoStartupOutput);
-		result.setWithdrawalAppSet(withdrawalAppSet);
-		result.setAgreeOverTimeOutput(opAgreeOverTimeOutput.orElse(null));
-		result.setHdWorkDispInfoWithDateOutput(hdWorkDispInfoWithDateOutput);
-		result.setBreaktimeFrames(breaktimeFrames);
-		result.setComboDivergenceReason(CollectionUtil.isEmpty(divergenceReasonLst) ? Optional.empty() : Optional.of(divergenceReasonLst));
-		result.setOvertimeRestAppCommonSetting(overtimeRestAppCommonSet.get());
-		return result;
-	}
-	@Override
-	public HdWorkDispInfoWithDateOutput initDataNew(String companyID, String employeeID, Optional<GeneralDate> appDate,
-			GeneralDate baseDate, PrePostAtr prePostAtr, AppEmploymentSetting appEmploymentSetting,
-			List<WorkTimeSetting> workTimeLst, ApprovalFunctionSetting approvalFunctionSet,
-			RequestSetting requestSetting, List<AchievementOutput> achievementOutputLst) {
-		HdWorkDispInfoWithDateOutput result = new HdWorkDispInfoWithDateOutput();
-		// 01-01_休出通知情報を取得
-		HolidayWorkInstruction holidayWorkInstruction = holidayPreProcess.getHolidayInstructionInformation(
-				approvalFunctionSet.getInstructionUseSetting().getInstructionUseDivision(), 
-				appDate.orElse(null), 
-				employeeID);
-		// 1-2.起動時勤務種類リストを取得する
-		List<WorkType> workTypeLst = this.getWorkTypeLstStart(companyID, appEmploymentSetting);
-		// 1-3.起動時勤務種類・就業時間帯の初期選択
-		InitWorkTypeWorkTime initWorkTypeWorkTime = this.initWorkTypeWorkTime(
-				companyID, 
-				employeeID, 
-				appDate, 
-				baseDate, 
-				workTypeLst, 
-				workTimeLst, 
-				achievementOutputLst, 
-				appEmploymentSetting);
-		// 01-14_勤務時間取得(01 - 14 _ Working hours acquired)
-		RecordWorkOutput recordWorkOutput = commonOvertimeHoliday.getWorkingHours(
-				companyID, 
-				employeeID, 
-				appDate.orElse(null),
-				approvalFunctionSet.getApplicationDetailSetting().get().getTimeCalUse(),
-				approvalFunctionSet.getApplicationDetailSetting().get().getAtworkTimeBeginDisp(),
-				ApplicationType.BREAK_TIME_APPLICATION,
-				initWorkTypeWorkTime.getWorkTimeCD(),
-				Optional.empty(),
-				Optional.empty(),
-				approvalFunctionSet);
-		// 01-01_休憩時間を取得する
-		HdWorkBreakTimeSetOutput hdWorkBreakTimeSetOutput = this.getBreakTime(
-				companyID, 
-				ApplicationType.BREAK_TIME_APPLICATION, 
-				initWorkTypeWorkTime.getWorkTypeCD(), 
-				initWorkTypeWorkTime.getWorkTimeCD(), 
-				Optional.empty(), 
-				Optional.empty(), 
-				approvalFunctionSet.getApplicationDetailSetting().get().getTimeCalUse(), 
-				approvalFunctionSet.getApplicationDetailSetting().get().getBreakInputFieldDisp());
-		/*// 01-04_加給時間を取得
-		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet = overtimeRestAppCommonSetRepository
-				.getOvertimeRestAppCommonSetting(companyID, ApplicationType.BREAK_TIME_APPLICATION.value);
-		List<BonusPayTimeItem> bonusPayTimeItems = commonOvertimeHoliday.getBonusTime(companyID,
-				employeeID,
-				appDate.orElse(null),
-				overtimeRestAppCommonSet.get().getBonusTimeDisplayAtr());*/
-		// INPUT．申請対象日をチェックする
-		ActualStatusCheckResult actualStatusCheckResult = null;
-		if(appDate.isPresent()) {
-			// 07-02_実績取得・状態チェック
-			WithdrawalAppSet withdrawalAppSet = withdrawalAppSetRepository.getWithDraw().get();
-			actualStatusCheckResult = preActualColorCheck.actualStatusCheck(
-					companyID, 
-					employeeID, 
-					appDate.get(), 
-					ApplicationType.BREAK_TIME_APPLICATION, 
-					initWorkTypeWorkTime.getWorkTypeCD(), 
-					initWorkTypeWorkTime.getWorkTimeCD(), 
-					withdrawalAppSet.getOverrideSet(), 
-					Optional.of(withdrawalAppSet.getCalStampMiss()),
-					hdWorkBreakTimeSetOutput.getDeductionTimeLst());
-		}
-		
-		result.setAppHdWorkInstruction(holidayWorkInstruction);
-		result.setWorkTypeLst(CollectionUtil.isEmpty(workTypeLst) ? Optional.empty() : Optional.of(workTypeLst));
-		result.setWorkTypeCD(initWorkTypeWorkTime.getWorkTypeCD());
-		result.setWorkTypeName(initWorkTypeWorkTime.getWorkTypeName());
-		result.setWorkTimeCD(initWorkTypeWorkTime.getWorkTimeCD());
-		result.setWorkTimeName(initWorkTypeWorkTime.getWorkTimeName());
-		result.setStartTime(recordWorkOutput.getStartTime1());
-		result.setEndTime(recordWorkOutput.getEndTime1());
-		result.setDeductionTimeLst(CollectionUtil.isEmpty(hdWorkBreakTimeSetOutput.getDeductionTimeLst()) ? Optional.empty() : Optional.of(hdWorkBreakTimeSetOutput.getDeductionTimeLst()));
-		result.setActualStatus(actualStatusCheckResult == null ? null : actualStatusCheckResult.actualStatus);
-		return result;
-	}
-	@Override
-	public List<WorkType> getWorkTypeLstStart(String companyID, AppEmploymentSetting appEmploymentSetting) {
-		if(appEmploymentSetting == null) {
-			// ドメインモデル「勤務種類」を取得
-			return workTypeRepository.findNotDeprecated(companyID);
-		}
-		// INPUT．雇用別申請承認設定．申請別対象勤務種類をチェックする
-		Optional<WorkTypeObjAppHoliday> opWorkTypeObjAppHoliday = appEmploymentSetting.getListWTOAH().stream()
-				.filter(x -> x.getAppType() == ApplicationType.BREAK_TIME_APPLICATION).findAny();
-		if(!opWorkTypeObjAppHoliday.isPresent()) {
-			// ドメインモデル「勤務種類」を取得して返す
-			return workTypeRepository.findNotDeprecated(companyID);
-		}
-		if(!opWorkTypeObjAppHoliday.get().getWorkTypeSetDisplayFlg() || CollectionUtil.isEmpty(opWorkTypeObjAppHoliday.get().getWorkTypeList())) {
-			// ドメインモデル「勤務種類」を取得して返す
-			return workTypeRepository.findNotDeprecated(companyID);
-		}
-		// INPUT．雇用別申請承認設定．申請別対象勤務種類．勤務種類リストを取得する
-		List<String> workTypeCDLst = opWorkTypeObjAppHoliday.get().getWorkTypeList();
-		// ドメインモデル「勤務種類」を取得
-		return workTypeRepository.findNotDeprecatedByListCode(companyID, workTypeCDLst);
-	}
-	@Override
-	public InitWorkTypeWorkTime initWorkTypeWorkTime(String companyID, String employeeID, Optional<GeneralDate> appDate,
-			GeneralDate baseDate, List<WorkType> workTypeLst, List<WorkTimeSetting> workTimeLst,
-			List<AchievementOutput> achievementOutputLst, AppEmploymentSetting appEmploymentSetting) {
-		InitWorkTypeWorkTime result = new InitWorkTypeWorkTime();
-		Optional<WorkingConditionItem> personalLablorCodition = workingConditionItemRepository.getBySidAndStandardDate(employeeID,baseDate);
-		// 4_c.初期選択
-		WorkTypeHolidayWork workTypes = holidayService.getWorkTypes(companyID, employeeID, Arrays.asList(appEmploymentSetting), baseDate,
-				personalLablorCodition, false);
-		if (workTypes != null) {
-			result.setWorkTypeCD(workTypes.getWorkTypeCode());
-			result.setWorkTypeName(workTypes.getWorkTypeName());
-		}
-		// 5.就業時間帯を取得する
-		WorkTimeHolidayWork workTimes = holidayService.getWorkTimeHolidayWork(companyID, employeeID, baseDate, 
-				personalLablorCodition, false);
-		if (workTimes != null) {
-			result.setWorkTimeCD(workTimes.getWorkTimeCode());
-			result.setWorkTimeName(workTimes.getWorkTimeName());
-		}
-		return result;
-	}
-	@Override
-	public HdWorkBreakTimeSetOutput getBreakTime(String companyID, ApplicationType appType, String workTypeCD,
-			String workTimeCD, Optional<TimeWithDayAttr> startTime, Optional<TimeWithDayAttr> endTime,
-			UseAtr timeCalUse, Boolean breakTimeDisp) {
-		HdWorkBreakTimeSetOutput result = new HdWorkBreakTimeSetOutput(false, Collections.emptyList());
-		// 01-17_休憩時間帯を表示するか判断
-		boolean displayRestTime = commonOvertimeHoliday.getRestTime(
-				companyID,
-				timeCalUse,
-				breakTimeDisp,
-				ApplicationType.BREAK_TIME_APPLICATION);
-		result.setDisplayRestTime(displayRestTime);
-		// 休憩時間帯表示区分をチェック 
-		if(displayRestTime) {
-			//休憩時間帯を取得する
-			List<DeductionTime> deductionTimeLst = commonOvertimeHoliday.getBreakTimes(companyID, workTypeCD, workTimeCD, startTime, endTime);
-			result.setDeductionTimeLst(deductionTimeLst);
-		}
-		return result;
-	}
-	
-	@Override
-	public HdWorkCheckRegisterOutput checkBeforeRegister(String companyID, AppHdWorkDispInfoOutput appHdWorkDispInfoOutput,
-			Application_New application, boolean agentAtr, AppHolidayWork holidayWorkDomain, int calculateFlg) {
-		HdWorkCheckRegisterOutput result = new HdWorkCheckRegisterOutput();
-		List<ConfirmMsgOutput> outputLst = new ArrayList<>();
-		// 申請全般登録時チェック処理
-		List<ConfirmMsgOutput> confirmMsgLst1 = newBeforeRegister.processBeforeRegister_New(
-				companyID, 
-				EmploymentRootAtr.APPLICATION, 
-				agentAtr, 
-				application, 
-				null, 
-				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getErrorFlag(), 
-				Collections.emptyList());
-		outputLst.addAll(confirmMsgLst1);
-		// 3.個別エラーチェック
-		HdWorkCheckRegisterOutput output = this.individualErrorCheck(
-				companyID, 
-				application.getEmployeeID(), 
-				application.getAppDate(), 
-				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getBaseDate(), 
-			 	ApplicationType.BREAK_TIME_APPLICATION, 
-				application, 
-				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getApprovalFunctionSet().getApplicationDetailSetting().get().getTimeCalUse(), 
-				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getApprovalFunctionSet().getApplicationDetailSetting().get().getTimeInputUse(), 
-				appHdWorkDispInfoOutput.getOvertimeRestAppCommonSetting().getAppDateContradictionAtr(), 
-				agentAtr, 
-				true, 
-				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getAchievementOutputLst(), 
-				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getAppDetailContentLst(), 
-				appHdWorkDispInfoOutput.getHdWorkDispInfoWithDateOutput().getAppHdWorkInstruction(), 
-				holidayWorkDomain, 
-				calculateFlg, 
-				appHdWorkDispInfoOutput);
-		outputLst.addAll(output.getConfirmMsgLst());
-		result.setConfirmMsgLst(outputLst);
-		result.setAppOvertimeDetailOtp(output.getAppOvertimeDetailOtp());
-		return result;
-	}
-	
-	@Override
-	public HdWorkCheckRegisterOutput individualErrorCheck(String companyID, String employeeID, GeneralDate appDate,
-			GeneralDate baseDate, ApplicationType appType, Application_New application, UseAtr timeCalUse,
-			UseAtr timeInputUse, AppDateContradictionAtr appDateContradictionAtr, boolean agentAtr, boolean mode,
-			List<AchievementOutput> achievementOutputLst, List<AppDetailContent> appDetailContentLst, HolidayWorkInstruction appHdWorkInstruction, 
-			AppHolidayWork holidayWorkDomain, int calculateFlg, AppHdWorkDispInfoOutput appHdWorkDispInfoOutput) {
-		HdWorkCheckRegisterOutput output = new HdWorkCheckRegisterOutput();
-		List<ConfirmMsgOutput> outputLst = new ArrayList<>();
-		// 勤務種類、就業時間帯チェックのメッセージを表示
-		CheckWorkingInfoResult checkWorkingInfoResult = otherCommonAlgorithm.checkWorkingInfo(
-				companyID, 
-				holidayWorkDomain.getWorkTypeCode().v(), 
-				holidayWorkDomain.getWorkTimeCode().v());
-		// 計算ボタン未クリックチェック
-		commonOvertimeHoliday.calculateButtonCheck(calculateFlg, timeCalUse);
-		// ノートの条件が満たすかチェックする
-		PreActualColorResult preActualColorResult = null;
-		if(timeCalUse != UseAtr.NOTUSE && timeInputUse == UseAtr.USE) {
-			// 07-01_事前申請状態チェック
-			PreAppCheckResult preAppCheckResult = preActualColorCheck.preAppStatusCheck(
-					companyID, 
-					application.getEmployeeID(), 
-					application.getAppDate(), 
-					ApplicationType.BREAK_TIME_APPLICATION);
-			// 07-02_実績取得・状態チェック
-			ActualStatusCheckResult actualStatusCheckResult = preActualColorCheck.actualStatusCheck(
-					companyID, 
-					application.getEmployeeID(), 
-					application.getAppDate(), 
-					ApplicationType.BREAK_TIME_APPLICATION, 
-					holidayWorkDomain.getWorkTypeCode() == null ? null : holidayWorkDomain.getWorkTypeCode().v(), 
-					holidayWorkDomain.getWorkTimeCode() == null ? null : holidayWorkDomain.getWorkTimeCode().v(), 
-					appHdWorkDispInfoOutput.getWithdrawalAppSet().getOverrideSet(), 
-					Optional.empty(),
-					Collections.emptyList());
-			// 07_事前申請・実績超過チェック(07_đơn xin trước. check vượt quá thực tế )
-			Map<AttendanceType, List<HolidayWorkInput>> findMap = holidayWorkDomain.getHolidayWorkInputs().stream()
-					.collect(groupingBy(HolidayWorkInput::getAttendanceType));
-			List<HolidayWorkInput> holidayWorkInputs = new ArrayList<>(); 
-			holidayWorkInputs.addAll(CollectionUtil.isEmpty(findMap.get(AttendanceType.BREAKTIME)) ? Collections.emptyList() : findMap.get(AttendanceType.BREAKTIME));
-			List<OvertimeColorCheck> holidayTimeLst = new ArrayList<>();
-			List<WorkdayoffFrame> breaktimeFrames = appHdWorkDispInfoOutput.getBreaktimeFrames();
-			for(WorkdayoffFrame breaktimeFrame :breaktimeFrames){
-				holidayTimeLst.add(OvertimeColorCheck.createApp(
-						AttendanceType.BREAKTIME.value, 
-						breaktimeFrame.getWorkdayoffFrNo().v().intValueExact(), 
-						null));
-			}
-			holidayTimeLst = holidayTimeLst.stream().map(x -> {
-				Integer value = holidayWorkInputs.stream()
-				.filter(y -> y.getAttendanceType().value==x.attendanceID && y.getFrameNo()==x.frameNo)
-				.findAny().map(z -> z.getApplicationTime().v()).orElse(null);
-				return OvertimeColorCheck.createApp(x.attendanceID, x.frameNo, value);
-			}).collect(Collectors.toList());
-			preActualColorResult = preActualColorCheck.preActualColorCheck(
-					appHdWorkDispInfoOutput.getOvertimeRestAppCommonSetting().getPreExcessDisplaySetting(), 
-					appHdWorkDispInfoOutput.getOvertimeRestAppCommonSetting().getPerformanceExcessAtr(), 
-					ApplicationType.BREAK_TIME_APPLICATION, 
-					application.getPrePostAtr(), 
-					Collections.emptyList(), 
-					holidayTimeLst,
-					preAppCheckResult.opAppBefore,
-					preAppCheckResult.beforeAppStatus,
-					actualStatusCheckResult.actualLst,
-					actualStatusCheckResult.actualStatus);
-		}
-		if(preActualColorResult!=null) {
-			// 03-01_事前申請超過チェック（＃108410）
-			List<ConfirmMsgOutput> outputLst1 = commonOvertimeHoliday.preAppExcessCheckHdApp(
-					appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst().stream().findFirst().get().getBussinessName(), 
-					appDate, 
-					preActualColorResult, 
-					appHdWorkDispInfoOutput.getBreaktimeFrames());
-			outputLst.addAll(outputLst1);
-			// 03-02_実績超過チェック（＃108410）
-			List<ConfirmMsgOutput> outputLst2 = commonOvertimeHoliday.achievementCheckHdApp(
-					appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst().stream().findFirst().get().getBussinessName(), 
-					appDate, 
-					appHdWorkDispInfoOutput.getOvertimeRestAppCommonSetting().getPerformanceExcessAtr(), 
-					preActualColorResult, 
-					appHdWorkDispInfoOutput.getBreaktimeFrames());
-			outputLst.addAll(outputLst2);
-		}
-		Optional<AppOvertimeDetail> appOvertimeDetailOtp = Optional.empty();
-		// INPUT．入力モードをチェックする
-		if(mode) {
-			// ３６協定時間上限チェック（月間）
-			appOvertimeDetailOtp = commonOvertimeHoliday.registerHdWorkCheck36TimeLimit(
-					companyID, 
-					application.getEmployeeID(), 
-					application.getAppDate(), 
-					holidayWorkDomain.getHolidayWorkInputs());
-			List<ConfirmMsgOutput> outputLst3 = commonOvertimeHoliday.inconsistencyCheck(
-					companyID, 
-					application.getEmployeeID(), 
-					application.getAppDate(),
-					ApplicationType.BREAK_TIME_APPLICATION,
-					appHdWorkDispInfoOutput.getOvertimeRestAppCommonSetting().getAppDateContradictionAtr());
-			outputLst.addAll(outputLst3);
-			
-		} else {
-			// ３６上限チェック(詳細)
-			appOvertimeDetailOtp = commonOvertimeHoliday.updateHdWorkCheck36TimeLimit(
-					companyID, 
-					application.getAppID(), 
-					application.getEnteredPersonID(), 
-					application.getEmployeeID(),
-					application.getAppDate(), 
-					holidayWorkDomain.getHolidayWorkInputs());
-		}
-		output.setConfirmMsgLst(outputLst);
-		output.setAppOvertimeDetailOtp(appOvertimeDetailOtp);
-		return output;
-	}
-	@Override
-	public HolidayWorkDetailOutput findDetailByID(String companyID, String appID) {
-		HolidayWorkDetailOutput result = new HolidayWorkDetailOutput();
+	public AppHdWorkDispInfoOutput startA(String companyId, Optional<List<String>> empList,
+			Optional<List<GeneralDate>> dateList, AppDispInfoStartupOutput appDispInfoStartupOutput) {
 		AppHdWorkDispInfoOutput appHdWorkDispInfoOutput = new AppHdWorkDispInfoOutput();
-		HdWorkDispInfoWithDateOutput hdWorkDispInfoWithDateOutput = new HdWorkDispInfoWithDateOutput();
-		// 詳細画面起動前申請共通設定を取得する
-		AppDispInfoStartupOutput appDispInfoStartupOutput = detailAppCommonSetService.getCommonSetBeforeDetail(companyID, appID);
-		// ドメインモデル「休日出勤申請」を取得する
-		Optional<AppHolidayWork> opAppHolidayWork = appHolidayWorkRepository.getFullAppHolidayWork(companyID, appID);
-		if(!opAppHolidayWork.isPresent()){
-			throw new BusinessException("Msg_198");
-		}
-		AppHolidayWork appHolidayWork = opAppHolidayWork.get();
-		// ドメインモデル「休出申請設定」を取得する
-		WithdrawalAppSet withdrawalAppSet = withdrawalAppSetRepository.getWithDraw().get();
-		OvertimeRestAppCommonSetting overtimeRestAppCommonSet = overtimeRestAppCommonSetRepository
-				.getOvertimeRestAppCommonSetting(companyID, ApplicationType.BREAK_TIME_APPLICATION.value).get();
-		// 申請表示情報(基準日関係あり)．事前事後区分=取得した「申請」．事前事後区分
-		appDispInfoStartupOutput.getAppDispInfoWithDateOutput().setPrePostAtr(appHolidayWork.getApplication().getPrePostAtr());
-		// 01-03_休出時間枠を取得
-		List<WorkdayoffFrame> breaktimeFrames = iOvertimePreProcess.getBreaktimeFrame(companyID);
-		// 01-01_休出通知情報を取得
-		HolidayWorkInstruction holidayWorkInstruction = holidayPreProcess.getHolidayInstructionInformation(
-				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getApprovalFunctionSet().getInstructionUseSetting().getInstructionUseDivision(), 
-				appHolidayWork.getApplication().getAppDate(), 
-				appHolidayWork.getApplication().getEmployeeID());
-		// 1-2.起動時勤務種類リストを取得する
-		List<WorkType> workTypeLst = this.getWorkTypeLstStart(
-				companyID, 
-				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getEmploymentSet());
-		// 起動時の36協定時間の状態を取得する
-		AgreementTimeStatusOfMonthly agreementTimeStatusOfMonthly = null;
-		if(appHolidayWork.getAppOvertimeDetail().isPresent()) {
-			agreementTimeStatusOfMonthly = overtimeService.getTime36Detail(appHolidayWork.getAppOvertimeDetail().get());
-		}
-		// 取得した「申請」．事前事後区分をチェックする
-		if(appHolidayWork.getApplication().getPrePostAtr() == PrePostAtr.POSTERIOR) {
-			List<DeductionTime> deductionTimeLst = appHolidayWork.getHolidayWorkInputs().stream()
-					.filter(x -> x.getAttendanceType() == AttendanceType.RESTTIME)
-					.map(x -> new DeductionTime(new TimeWithDayAttr(x.getStartTime().v()), new TimeWithDayAttr(x.getEndTime().v())))
-					.collect(Collectors.toList());
-			// 07-01_事前申請状態チェック
-			PreAppCheckResult preAppCheckResult = preActualColorCheck.preAppStatusCheck(
-					companyID, 
-					appHolidayWork.getApplication().getEmployeeID(), 
-					appHolidayWork.getApplication().getAppDate(), 
-					ApplicationType.BREAK_TIME_APPLICATION);
-			ActualStatusCheckResult actualStatusCheckResult = null;
-			// 取得した「申請詳細画面情報」．利用者をチェックする
-			User user = appDispInfoStartupOutput.getAppDetailScreenInfo().get().getUser();
-			if(user == User.APPROVER || user == User.OTHER) {
-				// 07-02_実績取得・状態チェック
-				actualStatusCheckResult = preActualColorCheck.actualStatusCheck(
-						companyID, 
-						appHolidayWork.getApplication().getEmployeeID(), 
-						appHolidayWork.getApplication().getAppDate(), 
-						ApplicationType.BREAK_TIME_APPLICATION, 
-						appHolidayWork.getWorkTypeCode() == null ? null : appHolidayWork.getWorkTypeCode().v(), 
-						appHolidayWork.getWorkTimeCode() == null ? null : appHolidayWork.getWorkTimeCode().v(), 
-						OverrideSet.TIME_OUT_PRIORITY, 
-						Optional.of(CalcStampMiss.CAN_NOT_REGIS),
-						deductionTimeLst);
-			} else {
-				// 07-02_実績取得・状態チェック
-				actualStatusCheckResult = preActualColorCheck.actualStatusCheck(
-						companyID, 
-						appHolidayWork.getApplication().getEmployeeID(), 
-						appHolidayWork.getApplication().getAppDate(), 
-						ApplicationType.BREAK_TIME_APPLICATION, 
-						appHolidayWork.getWorkTypeCode() == null ? null : appHolidayWork.getWorkTypeCode().v(), 
-						appHolidayWork.getWorkTimeCode() == null ? null : appHolidayWork.getWorkTimeCode().v(), 
-						withdrawalAppSet.getOverrideSet(), 
-						Optional.of(withdrawalAppSet.getCalStampMiss()),
-						deductionTimeLst);
-			}
-			// 07_事前申請・実績超過チェック(07_đơn xin trước. check vượt quá thực tế )
-			Map<AttendanceType, List<HolidayWorkInput>> findMap = appHolidayWork.getHolidayWorkInputs().stream()
-					.collect(groupingBy(HolidayWorkInput::getAttendanceType));
-			List<HolidayWorkInput> holidayWorkInputs = new ArrayList<>(); 
-			holidayWorkInputs.addAll(CollectionUtil.isEmpty(findMap.get(AttendanceType.BREAKTIME)) ? Collections.emptyList() : findMap.get(AttendanceType.BREAKTIME));
-			List<OvertimeColorCheck> holidayTimeLst = new ArrayList<>();
-			for(WorkdayoffFrame breaktimeFrame :breaktimeFrames){
-				holidayTimeLst.add(OvertimeColorCheck.createApp(
-						AttendanceType.BREAKTIME.value, 
-						breaktimeFrame.getWorkdayoffFrNo().v().intValueExact(), 
-						null));
-			}
-			holidayTimeLst = holidayTimeLst.stream().map(x -> {
-				Integer value = holidayWorkInputs.stream()
-				.filter(y -> y.getAttendanceType().value==x.attendanceID && y.getFrameNo()==x.frameNo)
-				.findAny().map(z -> z.getApplicationTime().v()).orElse(null);
-				return OvertimeColorCheck.createApp(x.attendanceID, x.frameNo, value);
-			}).collect(Collectors.toList());
-			PreActualColorResult preActualColorResult = preActualColorCheck.preActualColorCheck(
-					overtimeRestAppCommonSet.getPreExcessDisplaySetting(), 
-					overtimeRestAppCommonSet.getPerformanceExcessAtr(), 
-					ApplicationType.BREAK_TIME_APPLICATION, 
-					PrePostAtr.POSTERIOR, 
-					Collections.emptyList(), 
-					holidayTimeLst,
-					preAppCheckResult.opAppBefore,
-					preAppCheckResult.beforeAppStatus,
-					actualStatusCheckResult.actualLst,
-					actualStatusCheckResult.actualStatus);
-			boolean beforeAppStatus = preActualColorResult.beforeAppStatus;
-			Integer actualStatus = preActualColorResult.actualStatus;
-			List<CaculationTime> caculationTimes = preActualColorResult.resultLst.stream()
-					.map(x -> new CaculationTime(companyID, appID, x.attendanceID, x.frameNo, 0, "", x.appTime,
-							x.preAppTime == null ? null : x.preAppTime.toString(),
-							x.actualTime == null ? null : x.actualTime.toString(),
-							this.getErrorCode(x.calcError, x.preAppError, x.actualError), false,
-							beforeAppStatus, actualStatus == 3))
-					.collect(Collectors.toList());
-			result.setCaculationTimes(caculationTimes);
-			result.setPreActualColorResult(preActualColorResult);
-		}
-		
-		// 1-3.起動時勤務種類・就業時間帯の初期選択
-		InitWorkTypeWorkTime initWorkTypeWorkTime = this.initWorkTypeWorkTime(
-				appHolidayWork.getCompanyID(), 
-				appHolidayWork.getApplication().getEmployeeID(), 
-				Optional.of(appHolidayWork.getApplication().getAppDate()), 
-				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getBaseDate(), 
-				workTypeLst, 
-				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getWorkTimeLst(), 
-				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getAchievementOutputLst(), 
-				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getEmploymentSet());
-		hdWorkDispInfoWithDateOutput.setWorkTypeCD(initWorkTypeWorkTime.getWorkTypeCD());
-		hdWorkDispInfoWithDateOutput.setWorkTypeName(initWorkTypeWorkTime.getWorkTypeName());
-		hdWorkDispInfoWithDateOutput.setWorkTimeCD(initWorkTypeWorkTime.getWorkTimeCD());
-		hdWorkDispInfoWithDateOutput.setWorkTimeName(initWorkTypeWorkTime.getWorkTimeName());
-		
-		hdWorkDispInfoWithDateOutput.setAppHdWorkInstruction(holidayWorkInstruction);
-		hdWorkDispInfoWithDateOutput.setWorkTypeLst(CollectionUtil.isEmpty(workTypeLst) ? Optional.empty() : Optional.of(workTypeLst));
-		hdWorkDispInfoWithDateOutput.setAgreementTimeStatusOfMonthly(agreementTimeStatusOfMonthly);
-		
 		appHdWorkDispInfoOutput.setAppDispInfoStartupOutput(appDispInfoStartupOutput);
-		appHdWorkDispInfoOutput.setWithdrawalAppSet(withdrawalAppSet);
-		appHdWorkDispInfoOutput.setBreaktimeFrames(breaktimeFrames);
-		appHdWorkDispInfoOutput.setOvertimeRestAppCommonSetting(overtimeRestAppCommonSet);
+		
+		//	休出申請の設定を取得する
+		HolidayWorkAppSet holidayWorkSetting = commonHolidayWorkAlgorithm.getHolidayWorkSetting(companyId);
+		AppReflectOtHdWork hdWorkOvertimeReflect = commonHolidayWorkAlgorithm.getHdWorkOvertimeReflect(companyId);
+		appHdWorkDispInfoOutput.setHolidayWorkAppSet(holidayWorkSetting);
+		appHdWorkDispInfoOutput.setHdWorkOvertimeReflect(hdWorkOvertimeReflect);
+		
+		//01-02_時間外労働を取得
+		String employeeId = appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid();
+		Optional<OverTimeWorkHoursOutput> agreeOvertimeOutput = commonOverTimeHoliday.getAgreementTime(companyId, employeeId,
+				holidayWorkSetting.getOvertimeLeaveAppCommonSet().getExtratimeExcessAtr(),
+				holidayWorkSetting.getOvertimeLeaveAppCommonSet().getExtratimeDisplayAtr());
+		appHdWorkDispInfoOutput.setOtWorkHoursForApplication(agreeOvertimeOutput);
+		
+		//1-1.休日出勤申請（新規）起動時初期データを取得する
+		String applicantEmployeeId = empList.isPresent() ? (!empList.get().isEmpty() ? empList.get().get(0) : "") : "";
+		Optional<GeneralDate> applicationDate = dateList.isPresent() ? Optional.of(dateList.get().get(0)) : Optional.empty();
+		GeneralDate baseDate = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getBaseDate();
+		PrePostInitAtr prePostAtr = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getPrePostAtr();
+		AppEmploymentSet employmentSet = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpEmploymentSet().orElse(null);
+		List<WorkTimeSetting> workTimeList = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpWorkTimeLst().orElse(new ArrayList<>());
+		List<ActualContentDisplay> actualContentDisplayList = 
+				appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().orElse(new ArrayList<>());
+		  
+		HdWorkDispInfoWithDateOutput hdWorkDispInfoWithDateOutput = commonHolidayWorkAlgorithm.getHdWorkDispInfoWithDateOutput(companyId, applicantEmployeeId, 
+				applicationDate, baseDate, prePostAtr, employmentSet, workTimeList, holidayWorkSetting, hdWorkOvertimeReflect, actualContentDisplayList);
+		
 		appHdWorkDispInfoOutput.setHdWorkDispInfoWithDateOutput(hdWorkDispInfoWithDateOutput);
 		
-		result.setAppHdWorkDispInfoOutput(appHdWorkDispInfoOutput);
-		result.setAppHolidayWork(appHolidayWork);
-		return result;
+		//01-03_休出時間枠を取得
+		List<WorkdayoffFrame> workdayoffFrameList = workdayoffFrameRepository.getAllWorkdayoffFrame(companyId);
+		appHdWorkDispInfoOutput.setWorkdayoffFrameList(workdayoffFrameList);
+		
+		//	指定社員の申請残業枠を取得する 
+		InfoNoBaseDate infoNoBaseDate= commonOverTimeAlgorithm.getInfoNoBaseDate(companyId,
+				employeeId,
+				OvertimeAppAtr.EARLY_NORMAL_OVERTIME);
+		QuotaOuput quotaOutput = commonOverTimeAlgorithm.getOvertimeQuotaSetUse(companyId, employeeId, baseDate, 
+				OvertimeAppAtr.EARLY_NORMAL_OVERTIME, infoNoBaseDate.getOverTimeAppSet());
+		appHdWorkDispInfoOutput.setDispFlexTime(NotUseAtr.valueOf(quotaOutput.getFlexTimeClf() ? 1 : 0));
+		appHdWorkDispInfoOutput.setOvertimeFrameList(quotaOutput.getOverTimeQuotaList());
+		
+		//	乖離理由の表示区分を取得する
+		ReasonDissociationOutput reasonDissociationOutput = commonOverTimeAlgorithm.getInfoNoBaseDate(companyId, ApplicationType.HOLIDAY_WORK_APPLICATION, 
+				null, holidayWorkSetting.getOvertimeLeaveAppCommonSet());
+		if(reasonDissociationOutput != null) {
+			appHdWorkDispInfoOutput.setDivergenceTimeRoots(reasonDissociationOutput.getDivergenceTimeRoots());
+			appHdWorkDispInfoOutput.setDivergenceReasonInputMethod(reasonDissociationOutput.getDivergenceReasonInputMethod());
+		}
+//		if(!reasonDissociationOutput.getDivergenceReasonInputMethod().isEmpty()) {
+//			appHdWorkDispInfoOutput.setUseInputDivergenceReason(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).isDivergenceReasonInputed());
+//			appHdWorkDispInfoOutput.setUseComboDivergenceReason(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).isDivergenceReasonSelected());
+//			if(!reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).getReasons().isEmpty()) {
+//				appHdWorkDispInfoOutput.setComboDivergenceReason(Optional.of(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).getReasons()));
+//			} else {
+//				appHdWorkDispInfoOutput.setComboDivergenceReason(Optional.empty());
+//			}
+//		}	
+		
+		return appHdWorkDispInfoOutput;
+	}
+
+	@Override
+	public HolidayWorkCalculationResult calculate(String companyId, String employeeId, Optional<GeneralDate> date,
+			PrePostInitAtr prePostAtr, OvertimeLeaveAppCommonSet overtimeLeaveAppCommonSet,
+			ApplicationTime preApplicationTime, ApplicationTime actualApplicationTime, WorkContent workContent) {
+		//INPUTをチェックする
+		if(!date.isPresent() || !workContent.getWorkTypeCode().isPresent() || !workContent.getWorkTimeCode().isPresent() || workContent.getTimeZones().isEmpty()) {
+			return null;
+		}
+		//06_計算処理
+		List<ApplicationTime> applicationTimes = commonOverTimeHoliday.calculator(companyId, employeeId, date.get() , workContent.getWorkTypeCode(), workContent.getWorkTimeCode(), 
+				workContent.getTimeZones(), workContent.getBreakTimes());
+		//	事前申請・実績の時間超過をチェックする
+		OverStateOutput overStateOutput = overtimeLeaveAppCommonSet.checkPreApplication(
+				EnumAdaptor.valueOf(prePostAtr.value, PrePostInitAtr.class), 
+				Optional.ofNullable(preApplicationTime), 
+				!applicationTimes.isEmpty() ? Optional.ofNullable(applicationTimes.get(0)) : Optional.empty(), 
+				Optional.ofNullable(actualApplicationTime));
+		
+		
+		return new HolidayWorkCalculationResult(overStateOutput, !applicationTimes.isEmpty() ? applicationTimes.get(0) : null, CalculatedFlag.CALCULATED);
+	}
+
+	@Override
+	public AppHdWorkDispInfoOutput changeAppDate(String companyId, List<GeneralDate> dateList, ApplicationType applicationType,
+			AppHdWorkDispInfoOutput appHdWorkDispInfoOutput) {
+		AppDispInfoStartupOutput appDispInfoStartupOutput = appHdWorkDispInfoOutput.getAppDispInfoStartupOutput();
+		
+		//	申請日を変更する
+		AppDispInfoWithDateOutput appDispInfoWithDateOutput = commonAlgorithm.changeAppDateProcess(companyId, dateList, applicationType, appDispInfoStartupOutput.getAppDispInfoNoDateOutput(), 
+				appDispInfoStartupOutput.getAppDispInfoWithDateOutput(), Optional.empty());
+		appDispInfoStartupOutput.setAppDispInfoWithDateOutput(appDispInfoWithDateOutput);
+		appHdWorkDispInfoOutput.setAppDispInfoStartupOutput(appDispInfoStartupOutput);
+		
+		//	1-1.休日出勤申請（新規）起動時初期データを取得する
+		String employeeId = appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid();
+		
+		HdWorkDispInfoWithDateOutput hdWorkDispInfoWithDateOutput = commonHolidayWorkAlgorithm.getHdWorkDispInfoWithDateOutput(companyId, employeeId, 
+				Optional.of(dateList.get(0)), appDispInfoWithDateOutput.getBaseDate(), 
+				appDispInfoWithDateOutput.getPrePostAtr(), appDispInfoWithDateOutput.getOpEmploymentSet().orElse(null), 
+				appDispInfoWithDateOutput.getOpWorkTimeLst().orElse(Collections.emptyList()), 
+				appHdWorkDispInfoOutput.getHolidayWorkAppSet(), appHdWorkDispInfoOutput.getHdWorkOvertimeReflect(), 
+				appDispInfoWithDateOutput.getOpActualContentDisplayLst().orElse(Collections.emptyList()));
+		appHdWorkDispInfoOutput.setHdWorkDispInfoWithDateOutput(hdWorkDispInfoWithDateOutput);
+		
+		// 	計算（従業員）
+		WorkContent workContent = commonHolidayWorkAlgorithm.getWorkContent(hdWorkDispInfoWithDateOutput);
+		List<PreAppContentDisplay> preAppContentDisplayList = appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput()
+				.getOpPreAppContentDisplayLst().orElse(Collections.emptyList());
+		Optional<AppHolidayWork> appHolidayWork = !preAppContentDisplayList.isEmpty() ? preAppContentDisplayList.get(0).getAppHolidayWork() : Optional.empty();
+		
+		HolidayWorkCalculationResult calculationResult = this.calculate(companyId, employeeId, Optional.ofNullable(dateList.get(0)), 
+				appDispInfoWithDateOutput.getPrePostAtr(), appHdWorkDispInfoOutput.getHolidayWorkAppSet().getOvertimeLeaveAppCommonSet(), 
+				appHolidayWork.isPresent() ? appHolidayWork.get().getApplicationTime() : null, 
+				hdWorkDispInfoWithDateOutput.getActualApplicationTime().orElse(null), workContent);
+		appHdWorkDispInfoOutput.setCalculationResult(Optional.ofNullable(calculationResult));
+		
+		return appHdWorkDispInfoOutput;
+	}
+
+	@Override
+	public HdSelectWorkDispInfoOutput selectWork(String companyId, GeneralDate date, WorkTypeCode workType,
+			WorkTimeCode workTime, List<ActualContentDisplay> actualContentDisplayList,
+			AppDispInfoStartupOutput appDispInfoStartupOutput, HolidayWorkAppSet holidayWorkAppSet) {
+		HdSelectWorkDispInfoOutput hdSelectWorkDispInfoOutput = new HdSelectWorkDispInfoOutput();
+		
+		//	初期表示する出退勤時刻を取得する
+		OverTimeContent overTimeContent = commonHolidayWorkAlgorithm.getOverTimeContent(Optional.of(workType), Optional.of(workTime), 
+				actualContentDisplayList);
+		Optional<WorkHours> workHours = commonOverTimeAlgorithm.initAttendanceTime(companyId, Optional.ofNullable(date), overTimeContent, 
+				holidayWorkAppSet.getApplicationDetailSetting());
+		hdSelectWorkDispInfoOutput.setWorkHours(workHours.orElse(new WorkHours()));
+		
+		//	休憩時間帯を取得する
+		Optional<AchievementDetail> achievementDetail = !actualContentDisplayList.isEmpty() ? 
+				actualContentDisplayList.get(0).getOpAchievementDetail() : Optional.empty();
+		BreakTimeZoneSetting breakTimeZoneSettingList = commonOverTimeAlgorithm.selectWorkTypeAndTime(companyId, workType, 
+				workTime, 
+				workHours.isPresent() ? workHours.get().getStartTimeOp1() : Optional.empty(), 
+				workHours.isPresent() ? workHours.get().getEndTimeOp1() : Optional.empty(), 
+				achievementDetail);
+		hdSelectWorkDispInfoOutput.setBreakTimeZoneSettingList(Optional.ofNullable(breakTimeZoneSettingList));
+		
+		//07-02_実績取得・状態チェック
+		ApplicationTime actualApplicationTime = new ApplicationTime();
+		if(appDispInfoStartupOutput.getAppDetailScreenInfo().isPresent() 
+				&& (appDispInfoStartupOutput.getAppDetailScreenInfo().get().getUser().equals(User.APPROVER) 
+						|| appDispInfoStartupOutput.getAppDetailScreenInfo().get().getUser().equals(User.OTHER))) {
+			actualApplicationTime = preActualColorCheck.checkStatus(companyId, appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(), 
+					date, ApplicationType.HOLIDAY_WORK_APPLICATION, workType, workTime, OverrideSet.TIME_OUT_PRIORITY, 
+					Optional.of(CalcStampMiss.CAN_NOT_REGIS), breakTimeZoneSettingList.getTimeZones(), 
+					!actualContentDisplayList.isEmpty() ? Optional.of(actualContentDisplayList.get(0)): Optional.empty());
+		}
+		if(!appDispInfoStartupOutput.getAppDetailScreenInfo().isPresent() 
+				|| (appDispInfoStartupOutput.getAppDetailScreenInfo().get().getUser().equals(User.APPLICANT) 
+						|| appDispInfoStartupOutput.getAppDetailScreenInfo().get().getUser().equals(User.APPLICANT_APPROVER))) {
+			actualApplicationTime = preActualColorCheck.checkStatus(companyId, appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(), 
+					date, ApplicationType.HOLIDAY_WORK_APPLICATION, workType, workTime, holidayWorkAppSet.getOvertimeLeaveAppCommonSet().getOverrideSet(), 
+					Optional.of(holidayWorkAppSet.getCalcStampMiss()), breakTimeZoneSettingList.getTimeZones(), 
+					!actualContentDisplayList.isEmpty() ? Optional.of(actualContentDisplayList.get(0)): Optional.empty());
+		}
+		hdSelectWorkDispInfoOutput.setActualApplicationTime(actualApplicationTime);
+		
+		return hdSelectWorkDispInfoOutput;
+	}
+
+	@Override
+	public CheckBeforeOutput checkBeforeRegister(boolean require, String companyId, AppHdWorkDispInfoOutput appHdWorkDispInfoOutput,
+			AppHolidayWork appHolidayWork, boolean isProxy) {
+		CheckBeforeOutput checkBeforeOutput = new CheckBeforeOutput();
+		
+		//2-1.新規画面登録前の処理
+		List<ConfirmMsgOutput> confirmMsgOutputs = processBeforeRegister.processBeforeRegister_New(companyId, 
+				EmploymentRootAtr.APPLICATION,
+				isProxy, 
+				appHolidayWork.getApplication(), 
+				null,
+				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpErrorFlag().orElse(null),
+				Collections.emptyList(), 
+				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput());
+		
+		//3.個別エラーチェック
+		checkBeforeOutput = commonHolidayWorkAlgorithm.individualErrorCheck(require, companyId, appHdWorkDispInfoOutput, appHolidayWork, 0);	//mode new = 0
+		
+		checkBeforeOutput.getConfirmMsgOutputs().addAll(confirmMsgOutputs);
+		return checkBeforeOutput;
 	}
 	
-	private int getErrorCode(int calcError, int preAppError, int actualError){
-        if(actualError > preAppError) {
-            if(actualError > calcError) {
-                return actualError;
-            } else {
-                return calcError;
-            }
-        } else {
-            if(preAppError > calcError) {
-                return preAppError;
-            } else {
-                return calcError;
-            }
-        }
-    }
+
 	@Override
-	public HdWorkCheckRegisterOutput checkBeforeUpdate(String companyID, Application_New application, AppHdWorkDispInfoOutput appHdWorkDispInfoOutput,
-			int calculateFlg, AppHolidayWork holidayWorkDomain) {
-		HdWorkCheckRegisterOutput result = new HdWorkCheckRegisterOutput();
-		List<ConfirmMsgOutput> outputLst = new ArrayList<>();
-		// 4-1.詳細画面登録前の処理
-		detailBeforeUpdate.processBeforeDetailScreenRegistration(
-				companyID, 
-				application.getEmployeeID(), 
-				application.getAppDate(), 
-				1, 
-				application.getAppID(), 
-				application.getPrePostAtr(), 
-				application.getVersion(),
-				holidayWorkDomain.getWorkTypeCode() == null ? null : holidayWorkDomain.getWorkTypeCode().v(),
-				holidayWorkDomain.getWorkTimeCode() == null ? null : holidayWorkDomain.getWorkTimeCode().v());
-		// 3.個別エラーチェック
-		HdWorkCheckRegisterOutput output = this.individualErrorCheck(
-				companyID, 
-				application.getEmployeeID(), 
-				application.getAppDate(), 
-				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getBaseDate(), 
-			 	ApplicationType.BREAK_TIME_APPLICATION, 
-				application, 
-				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getApprovalFunctionSet().getApplicationDetailSetting().get().getTimeCalUse(), 
-				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getApprovalFunctionSet().getApplicationDetailSetting().get().getTimeInputUse(), 
-				appHdWorkDispInfoOutput.getOvertimeRestAppCommonSetting().getAppDateContradictionAtr(), 
-				false, 
-				false, 
-				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getAchievementOutputLst(), 
-				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getAppDetailContentLst(), 
-				appHdWorkDispInfoOutput.getHdWorkDispInfoWithDateOutput().getAppHdWorkInstruction(), 
-				holidayWorkDomain, 
-				calculateFlg, 
-				appHdWorkDispInfoOutput);
-		outputLst.addAll(output.getConfirmMsgLst());
-		result.setConfirmMsgLst(outputLst);
-		result.setAppOvertimeDetailOtp(output.getAppOvertimeDetailOtp());
-		return result;
+	public CheckBeforeOutputMulti checkBeforeRegisterMulti(boolean require, String companyId, List<String> empList,
+			AppHdWorkDispInfoOutput appHdWorkDispInfoOutput, AppHolidayWork appHolidayWork) {
+		CheckBeforeOutputMulti checkBeforeOutputMulti = new CheckBeforeOutputMulti();
+		
+		//2-1.新規画面登録前の処理(複数人) 
+		CheckBeforeRegisMultiEmpOutput checkBeforeRegisMultiEmpOutput = processBeforeRegister.processBeforeRegisterMultiEmp(companyId, 
+				empList, appHolidayWork.getApplication(), 
+				null, appHdWorkDispInfoOutput.getAppDispInfoStartupOutput());
+		checkBeforeOutputMulti.setApprovalRootContentMap(checkBeforeRegisMultiEmpOutput.getMapEmpContentAppr());
+		checkBeforeOutputMulti.setErrorEmpBusinessName(checkBeforeRegisMultiEmpOutput.getEmpErrorName());
+		
+		//3.個別エラーチェック(複数人)
+		checkBeforeOutputMulti.setConfirmMsgOutputMap(
+				commonHolidayWorkAlgorithm.individualErrorCheckMulti(require, companyId, empList, appHdWorkDispInfoOutput, appHolidayWork)
+				);
+		
+		return checkBeforeOutputMulti;
+	}
+
+	@Override
+	public HdWorkDetailOutput getDetail(String companyId, String applicationId,
+			AppDispInfoStartupOutput appDispInfoStartupOutput) {
+		HdWorkDetailOutput hdWorkDetailOutput = new HdWorkDetailOutput();
+		AppHdWorkDispInfoOutput appHdWorkDispInfoOutput = new AppHdWorkDispInfoOutput();
+		appHdWorkDispInfoOutput.setAppDispInfoStartupOutput(appDispInfoStartupOutput);
+		hdWorkDetailOutput.setAppHdWorkDispInfoOutput(appHdWorkDispInfoOutput);
+		
+		//	ドメインモデル「休日出勤申請」を取得する
+		Optional<AppHolidayWork> appHolidayWorkOp = appHolidayWorkRepository.find(companyId, applicationId);
+		if(!appHolidayWorkOp.isPresent()) {
+			return null;
+		}
+		AppHolidayWork appHolidayWork = appHolidayWorkOp.get();
+//		Application application = appDispInfoStartupOutput.getAppDetailScreenInfo().map(x -> x.getApplication()).orElse(null);
+		Optional<Application> applicationOp = applicationRepository.findByID(companyId, applicationId);
+		appHolidayWork.setApplication(applicationOp.orElse(appDispInfoStartupOutput.getAppDetailScreenInfo().map(x -> x.getApplication()).orElse(null)));
+		Application application = appHolidayWork.getApplication();
+		hdWorkDetailOutput.setAppHolidayWork(appHolidayWork);
+		
+		//	休出申請の設定を取得する
+		Optional<HolidayWorkAppSet> holidayWorkAppSet = holidayWorkAppSetRepository.findSettingByCompany(companyId);
+		appHdWorkDispInfoOutput.setHolidayWorkAppSet(holidayWorkAppSet.orElse(null));
+		Optional<AppReflectOtHdWork> appReflectOtHdWork = appReflectOtHdWorkRepository.findByCompanyId(companyId);
+		appHdWorkDispInfoOutput.setHdWorkOvertimeReflect(appReflectOtHdWork.orElse(null));
+		
+		//	申請表示情報(基準日関係あり)．事前事後区分=取得した「申請」．事前事後区分
+		appDispInfoStartupOutput.getAppDispInfoWithDateOutput().setPrePostAtr(EnumAdaptor.valueOf(application.getPrePostAtr().value, PrePostInitAtr.class));
+		
+		HdWorkDispInfoWithDateOutput hdWorkDispInfoWithDateOutput = new HdWorkDispInfoWithDateOutput();
+		
+		//	#113397
+		//	休日出勤申請起動時の表示情報(申請対象日関係あり)．初期選択勤務種類、初期選択就業時間帯＝取得した「休日出勤申請」．勤務情報．勤務種類コード、就業時間帯コード
+		hdWorkDispInfoWithDateOutput.setInitWorkType(Optional.ofNullable(appHolidayWork.getWorkInformation().getWorkTypeCode()));
+		hdWorkDispInfoWithDateOutput.setInitWorkTime(Optional.ofNullable(appHolidayWork.getWorkInformation().getWorkTimeCode()));
+		
+		//	#113397
+		//	ドメインモデル「勤務種類」を取得 
+		Optional<WorkType> workType = workTypeRepository.findNoAbolishByPK(companyId, appHolidayWork.getWorkInformation().getWorkTypeCode().v());
+		hdWorkDispInfoWithDateOutput.setInitWorkTypeName(workType.isPresent() ? Optional.of(workType.get().getName()) : Optional.empty());
+		
+		//	#113397
+		//	ドメインモデル「就業時間帯」を取得
+		Optional<WorkTimeSetting> workTime = workTimeSettingRepository.findByCode(companyId, appHolidayWork.getWorkInformation().getWorkTimeCode().v());
+		hdWorkDispInfoWithDateOutput.setInitWorkTimeName(workTime.isPresent() ? Optional.of(workTime.get().getWorkTimeDisplayName().getWorkTimeName()) : Optional.empty());
+		
+		//	01-03_休出時間枠を取得
+		List<WorkdayoffFrame> workdayoffFrameList = workdayoffFrameRepository.getAllWorkdayoffFrame(companyId);
+		appHdWorkDispInfoOutput.setWorkdayoffFrameList(workdayoffFrameList);
+		
+//		指定社員の申請残業枠を取得する 
+		InfoNoBaseDate infoNoBaseDate= commonOverTimeAlgorithm.getInfoNoBaseDate(companyId,
+				application.getEmployeeID(),
+				OvertimeAppAtr.EARLY_NORMAL_OVERTIME);
+		QuotaOuput quotaOutput = commonOverTimeAlgorithm.getOvertimeQuotaSetUse(companyId, application.getEmployeeID(), appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getBaseDate(), 
+				OvertimeAppAtr.EARLY_NORMAL_OVERTIME, infoNoBaseDate.getOverTimeAppSet());
+		appHdWorkDispInfoOutput.setDispFlexTime(NotUseAtr.valueOf(quotaOutput.getFlexTimeClf() ? 1 : 0));
+		appHdWorkDispInfoOutput.setOvertimeFrameList(quotaOutput.getOverTimeQuotaList());
+		
+//		乖離理由の表示区分を取得する
+		ReasonDissociationOutput reasonDissociationOutput = commonOverTimeAlgorithm.getInfoNoBaseDate(companyId, ApplicationType.HOLIDAY_WORK_APPLICATION, 
+				null, appHdWorkDispInfoOutput.getHolidayWorkAppSet().getOvertimeLeaveAppCommonSet());
+		if(reasonDissociationOutput != null) {
+			appHdWorkDispInfoOutput.setDivergenceTimeRoots(reasonDissociationOutput.getDivergenceTimeRoots());
+			appHdWorkDispInfoOutput.setDivergenceReasonInputMethod(reasonDissociationOutput.getDivergenceReasonInputMethod());
+		}
+//		if(!reasonDissociationOutput.getDivergenceReasonInputMethod().isEmpty()) {
+//			appHdWorkDispInfoOutput.setUseInputDivergenceReason(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).isDivergenceReasonInputed());
+//			appHdWorkDispInfoOutput.setUseComboDivergenceReason(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).isDivergenceReasonSelected());
+//			if(!reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).getReasons().isEmpty()) {
+//				appHdWorkDispInfoOutput.setComboDivergenceReason(Optional.of(reasonDissociationOutput.getDivergenceReasonInputMethod().get(0).getReasons()));
+//			} else {
+//				appHdWorkDispInfoOutput.setComboDivergenceReason(Optional.empty());
+//			}
+//		}
+		
+		//1-2.起動時勤務種類リストを取得する
+		List<WorkType> workTypeList = commonHolidayWorkAlgorithm.getWorkTypeList(companyId, appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpEmploymentSet().orElse(null));
+		hdWorkDispInfoWithDateOutput.setWorkTypeList(Optional.of(workTypeList));
+		
+//		//	起動時の36協定時間の状態を取得する 
+//		AgreementTimeStatusOfMonthly agreementTimeStatusOfMonthly = overtimeService.getTime36Detail(appHolidayWork.getAppOvertimeDetail().orElse(null));
+//		hdWorkDispInfoWithDateOutput.setActualMonthlyAgreeTimeStatus(Optional.ofNullable(agreementTimeStatusOfMonthly));
+		
+		//01-02_時間外労働を取得
+		String employeeId = appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid();
+		Optional<OverTimeWorkHoursOutput> agreeOvertimeOutput = commonOverTimeHoliday.getAgreementTime(companyId, employeeId,
+				holidayWorkAppSet.isPresent() ? holidayWorkAppSet.get().getOvertimeLeaveAppCommonSet().getExtratimeExcessAtr() : Time36AgreeCheckRegister.NOT_CHECK,
+				holidayWorkAppSet.isPresent() ? holidayWorkAppSet.get().getOvertimeLeaveAppCommonSet().getExtratimeDisplayAtr() : nts.uk.shr.com.enumcommon.NotUseAtr.NOT_USE);
+		appHdWorkDispInfoOutput.setOtWorkHoursForApplication(agreeOvertimeOutput);
+		
+		//	取得した「休日出勤申請」．「申請」．事前事後区分をチェックする
+		if(application.getPrePostAtr().value == PrePostInitAtr.POSTERIOR.value) {
+			//07-02_実績取得・状態チェック
+			ApplicationTime actualApplicationTime = new ApplicationTime();
+			List<ActualContentDisplay> actualContentDisplayList = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().orElse(Collections.emptyList());
+			List<DeductionTime> deductionTimeList = appHolidayWork.getBreakTimeList().orElse(Collections.emptyList()).stream()
+					.map(breakTime -> new DeductionTime(breakTime.getTimeZone().getStartTime(), breakTime.getTimeZone().getEndTime())).collect(Collectors.toList());
+			
+			if(appDispInfoStartupOutput.getAppDetailScreenInfo().isPresent() 
+					&& (appDispInfoStartupOutput.getAppDetailScreenInfo().get().getUser().equals(User.APPROVER) 
+							|| appDispInfoStartupOutput.getAppDetailScreenInfo().get().getUser().equals(User.OTHER))) {
+				actualApplicationTime = preActualColorCheck.checkStatus(companyId, appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(), 
+						application.getAppDate().getApplicationDate(), ApplicationType.HOLIDAY_WORK_APPLICATION, appHolidayWork.getWorkInformation().getWorkTypeCode(), 
+						appHolidayWork.getWorkInformation().getWorkTimeCode(), OverrideSet.TIME_OUT_PRIORITY, 
+						Optional.of(CalcStampMiss.CAN_NOT_REGIS), deductionTimeList, 
+						!actualContentDisplayList.isEmpty() ? Optional.of(actualContentDisplayList.get(0)): Optional.empty());
+			}
+			if(!appDispInfoStartupOutput.getAppDetailScreenInfo().isPresent() 
+					|| (appDispInfoStartupOutput.getAppDetailScreenInfo().get().getUser().equals(User.APPLICANT) 
+							|| appDispInfoStartupOutput.getAppDetailScreenInfo().get().getUser().equals(User.APPLICANT_APPROVER))) {
+				actualApplicationTime = preActualColorCheck.checkStatus(companyId, appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(), 
+						application.getAppDate().getApplicationDate(), ApplicationType.HOLIDAY_WORK_APPLICATION, appHolidayWork.getWorkInformation().getWorkTypeCode(), 
+						appHolidayWork.getWorkInformation().getWorkTimeCode(), appHdWorkDispInfoOutput.getHolidayWorkAppSet().getOvertimeLeaveAppCommonSet().getOverrideSet(), 
+						Optional.of(appHdWorkDispInfoOutput.getHolidayWorkAppSet().getCalcStampMiss()), deductionTimeList, 
+						!actualContentDisplayList.isEmpty() ? Optional.of(actualContentDisplayList.get(0)): Optional.empty());
+			}
+			hdWorkDispInfoWithDateOutput.setActualApplicationTime(Optional.ofNullable(actualApplicationTime));
+			
+			//	事前申請・実績の時間超過をチェックする
+			List<PreAppContentDisplay> preAppContentDisplayList = appDispInfoStartupOutput.getAppDispInfoWithDateOutput()
+					.getOpPreAppContentDisplayLst().orElse(Collections.emptyList());
+			Optional<AppHolidayWork> appHolidayWorkPre = !preAppContentDisplayList.isEmpty() ? preAppContentDisplayList.get(0).getAppHolidayWork() : Optional.empty();
+			
+			OverStateOutput overStateOutput = appHdWorkDispInfoOutput.getHolidayWorkAppSet().getOvertimeLeaveAppCommonSet().checkPreApplication(
+					EnumAdaptor.valueOf(appHolidayWork.getApplication().getPrePostAtr().value, PrePostInitAtr.class), 
+					Optional.ofNullable(appHolidayWorkPre.isPresent() ? appHolidayWorkPre.get().getApplicationTime() : null), 
+					Optional.ofNullable(appHolidayWork.getApplicationTime()),
+					Optional.ofNullable(actualApplicationTime)
+				);
+			if(appHdWorkDispInfoOutput.getCalculationResult().isPresent()) {  
+				appHdWorkDispInfoOutput.getCalculationResult().get().setActualOvertimeStatus(overStateOutput);
+				appHdWorkDispInfoOutput.getCalculationResult().get().setCalculatedFlag(CalculatedFlag.CALCULATED);
+			} else {
+				HolidayWorkCalculationResult calculationResult = new HolidayWorkCalculationResult();
+				calculationResult.setActualOvertimeStatus(overStateOutput);
+				calculationResult.setCalculatedFlag(CalculatedFlag.CALCULATED);
+				appHdWorkDispInfoOutput.setCalculationResult(Optional.of(calculationResult));
+			}
+		}
+		appHdWorkDispInfoOutput.setHdWorkDispInfoWithDateOutput(hdWorkDispInfoWithDateOutput);
+		
+		return hdWorkDetailOutput;
+	}
+
+	@Override
+	public CheckBeforeOutput checkBeforeUpdate(boolean require, String companyId,
+			AppHdWorkDispInfoOutput appHdWorkDispInfoOutput, AppHolidayWork appHolidayWork) {
+		CheckBeforeOutput checkBeforeOutput = new CheckBeforeOutput();
+		
+		//	4-1.詳細画面登録前の処理
+		detailBeforeProcessRegisterService.processBeforeDetailScreenRegistration(companyId, appHolidayWork.getApplication().getEmployeeID(), 
+				appHolidayWork.getAppDate().getApplicationDate(), 
+				EmploymentRootAtr.APPLICATION.value, 
+				appHolidayWork.getAppID(), 
+				appHolidayWork.getApplication().getPrePostAtr(), 
+				appHolidayWork.getApplication().getVersion(), 
+				appHolidayWork.getWorkInformation().getWorkTypeCode().v(), 
+				appHolidayWork.getWorkInformation().getWorkTimeCode().v(), 
+				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput());
+		
+		//3.個別エラーチェック
+		checkBeforeOutput = commonHolidayWorkAlgorithm.individualErrorCheck(require, companyId, appHdWorkDispInfoOutput, appHolidayWork, 1);	//mode update = 1
+
+		return checkBeforeOutput;
+	}
+
+	@Override
+	public void deleteHdChange(String applicationId) {
+		String companyId = AppContexts.user().companyId();
+		
+		Optional<BrkOffSupChangeMng> brkOffSupChangeMngOp = brkOffSupChangeMngRepository.findHolidayAppID(applicationId);
+		if(brkOffSupChangeMngOp.isPresent()) {
+			BrkOffSupChangeMng brkOffSupChangeMng = brkOffSupChangeMngOp.get();
+			
+			//	アルゴリズム「振休申請復活」を実行する
+				//	ドメインモデル「振休振出申請」を取得する
+			Application application = applicationRepository.findByID(companyId, applicationId).get();
+				//	「振休振出申請.反映情報.実績反映状態(stateReflectionReal)」を「未反映(notReflected)」に更新する
+			application.getReflectionStatus().getListReflectionStatusOfDay()
+				.forEach(state -> state.setActualReflectStatus(ReflectedState.NOTREFLECTED));
+			applicationRepository.update(application);
+			
+			//	ドメインモデル「振休申請休出変更管理」を削除する
+			brkOffSupChangeMngRepository.remove(brkOffSupChangeMng.getRecAppID(), brkOffSupChangeMng.getAbsenceLeaveAppID());
+			
+			//	暫定データの登録 	pending
+		}
+	}
+
+	@Override
+	public AppHdWorkDispInfoOutputMobile getStartMobile(Boolean mode, String companyId, Optional<String> employeeId,
+			Optional<GeneralDate> appDate, Optional<AppHdWorkDispInfoOutput> appHdWorkDispInfo,
+			Optional<AppHolidayWork> appHolidayWork, AppDispInfoStartupOutput appDispInfoStartupOutput) {
+		AppHdWorkDispInfoOutputMobile appHdWorkDispInfoOutputMobile = new AppHdWorkDispInfoOutputMobile();
+		if (!mode) { // 修正モード
+			// INPUT「休日出勤申請起動時の表示情報」と「休日出勤申請」を返す
+			appHdWorkDispInfoOutputMobile.setAppHdWorkDispInfo(appHdWorkDispInfo.get());
+			appHdWorkDispInfoOutputMobile.setAppHolidayWork(appHolidayWork);
+			return appHdWorkDispInfoOutputMobile;
+		}
+		AppHdWorkDispInfoOutput appHdWorkDispInfoOutput = this.startA(companyId, 
+				employeeId.isPresent() ? Optional.of(Arrays.asList(employeeId.get())) : Optional.empty(), 
+				appDate.isPresent() ? Optional.of(Arrays.asList(appDate.get())) : Optional.empty(), 
+				appDispInfoStartupOutput);
+		appHdWorkDispInfoOutputMobile.setAppHdWorkDispInfo(appHdWorkDispInfoOutput);
+		return appHdWorkDispInfoOutputMobile;
+	}
+
+	@Override
+	public AppHdWorkDispInfoOutput changeDateMobile(String companyId, GeneralDate appDate,
+			AppHdWorkDispInfoOutput appHdWorkDispInfo) {
+		//	申請表示情報(基準日関係あり)を取得する
+		AppDispInfoWithDateOutput appDispInfoWithDateOutput = commonAlgorithm.getAppDispInfoWithDate(
+				companyId,
+				ApplicationType.HOLIDAY_WORK_APPLICATION,
+				Arrays.asList(appDate),
+				appHdWorkDispInfo.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput(),
+				true,	// true = 新規モード
+				Optional.empty());
+		//	休日出勤申請起動時の表示情報．申請表示情報．申請表示情報(基準日関係あり) = 取得した「申請表示情報(基準日関係あり) 」
+		appHdWorkDispInfo.getAppDispInfoStartupOutput().setAppDispInfoWithDateOutput(appDispInfoWithDateOutput);
+		//	1-1.休日出勤申請（新規）起動時初期データを取得する
+		List<EmployeeInfoImport> empList = appHdWorkDispInfo.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst();
+		HdWorkDispInfoWithDateOutput hdWorkDispInfoWithDateOutput = commonHolidayWorkAlgorithm.getHdWorkDispInfoWithDateOutput(companyId, 
+										!empList.isEmpty() ? empList.get(0).getSid() : null, 
+										Optional.ofNullable(appDate), 
+										appDispInfoWithDateOutput.getBaseDate(), 
+										appDispInfoWithDateOutput.getPrePostAtr(), 
+										appDispInfoWithDateOutput.getOpEmploymentSet().orElse(null), 
+										appDispInfoWithDateOutput.getOpWorkTimeLst().orElse(Collections.emptyList()), 
+										appHdWorkDispInfo.getHolidayWorkAppSet(), 
+										appHdWorkDispInfo.getHdWorkOvertimeReflect(), 
+										appDispInfoWithDateOutput.getOpActualContentDisplayLst().orElse(Collections.emptyList()));
+		//	休日出勤申請起動時の表示情報．休日出勤申請起動時の表示情報(申請対象日関係あり)=上記取得した「休日出勤申請起動時の表示情報(申請対象日関係あり)」
+		appHdWorkDispInfo.setHdWorkDispInfoWithDateOutput(hdWorkDispInfoWithDateOutput);
+		return appHdWorkDispInfo;
+	}
+
+	@Override
+	public AppHdWorkDispInfoOutput calculateMobile(String companyId, AppHdWorkDispInfoOutput appHdWorkDispInfo,
+			AppHolidayWork appHolidayWork, Boolean mode, String employeeId, Optional<GeneralDate> appDate) {
+		//	勤務情報の申請内容をチェックする
+		commonHolidayWorkAlgorithm.checkContentApp(
+				companyId,
+				appHdWorkDispInfo,
+				appHolidayWork,
+				mode);
+		//	休日出勤申請起動時の表示情報．休出申請設定．申請詳細設定．時刻計算利用区分をチェックする
+		if(appHdWorkDispInfo.getHolidayWorkAppSet().getApplicationDetailSetting().getTimeCalUse().equals(nts.uk.shr.com.enumcommon.NotUseAtr.USE)) {
+			BreakTimeZoneSetting breakTimeZoneSettingList = new BreakTimeZoneSetting();
+			List<DeductionTime> timeZones = appHolidayWork.getBreakTimeList().isPresent() ? appHolidayWork.getBreakTimeList().get().stream()
+												.map(breakTime -> new DeductionTime(breakTime.getTimeZone().getStartTime(), breakTime.getTimeZone().getEndTime()))
+												.collect(Collectors.toList())
+												: Collections.emptyList();
+			breakTimeZoneSettingList.setTimeZones(timeZones);
+			appHdWorkDispInfo.getHdWorkDispInfoWithDateOutput().setBreakTimeZoneSettingList(Optional.ofNullable(breakTimeZoneSettingList));
+			WorkHours workHours = new WorkHours();
+			if(appHolidayWork.getWorkingTimeList().isPresent()) {
+				List<TimeZoneWithWorkNo> workingTimeList = appHolidayWork.getWorkingTimeList().get();
+				workingTimeList.stream().forEach(workingTime -> {
+					if(workingTime.getWorkNo().v() == 1) {
+						workHours.setStartTimeOp1(Optional.ofNullable(workingTime.getTimeZone().getStartTime()));
+						workHours.setEndTimeOp1(Optional.ofNullable(workingTime.getTimeZone().getEndTime()));
+					}
+					if(workingTime.getWorkNo().v() == 2) {
+						workHours.setStartTimeOp2(Optional.ofNullable(workingTime.getTimeZone().getStartTime()));
+						workHours.setEndTimeOp2(Optional.ofNullable(workingTime.getTimeZone().getEndTime()));
+					}
+				});
+			}
+			appHdWorkDispInfo.getHdWorkDispInfoWithDateOutput().setWorkHours(workHours);
+			WorkContent workContent = commonHolidayWorkAlgorithm.getWorkContent(appHdWorkDispInfo.getHdWorkDispInfoWithDateOutput());
+			
+			List<PreAppContentDisplay> preAppContentDisplayList = appHdWorkDispInfo.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput()
+					.getOpPreAppContentDisplayLst().orElse(Collections.emptyList());
+			Optional<AppHolidayWork> appHolidayWorkPre = !preAppContentDisplayList.isEmpty() ? preAppContentDisplayList.get(0).getAppHolidayWork() : Optional.empty();
+			List<EmployeeInfoImport> empList = appHdWorkDispInfo.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst();
+			//	6.計算する(従業員)
+			HolidayWorkCalculationResult calculationResult = this.calculate(companyId,
+					!empList.isEmpty() ? empList.get(0).getSid() : employeeId,
+					appDate,
+					appHdWorkDispInfo.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getPrePostAtr(),
+					appHdWorkDispInfo.getHolidayWorkAppSet().getOvertimeLeaveAppCommonSet(),
+					appHolidayWorkPre.isPresent() ? appHolidayWorkPre.get().getApplicationTime() : null,
+					appHdWorkDispInfo.getHdWorkDispInfoWithDateOutput().getActualApplicationTime().orElse(null),
+					workContent);
+			//	休日出勤申請起動時の表示情報．計算結果＝取得した「休日出勤の計算結果(従業員)」
+			appHdWorkDispInfo.setCalculationResult(Optional.ofNullable(calculationResult));
+			if(calculationResult != null && calculationResult.getActualOvertimeStatus().getAchivementStatus().equals(ExcessState.EXCESS_ERROR)) {
+				throw new BusinessException("Msg_1556");
+			}
+		}
+		return appHdWorkDispInfo;
 	}
 }

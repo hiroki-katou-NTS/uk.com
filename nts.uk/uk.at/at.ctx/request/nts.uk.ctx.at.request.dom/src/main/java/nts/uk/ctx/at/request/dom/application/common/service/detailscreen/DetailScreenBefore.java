@@ -6,7 +6,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.
 public interface DetailScreenBefore {
 	
 	/**
-	 * 15.詳細画面申請データを取得する
+	 * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム.15.詳細画面申請データを取得する(getApplicationData).15.詳細画面申請データを取得する
 	 * @param appID
 	 * @return
 	 */

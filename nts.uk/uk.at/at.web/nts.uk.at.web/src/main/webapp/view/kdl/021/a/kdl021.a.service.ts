@@ -1,7 +1,7 @@
 module kdl021.a.service {
     var paths = {
-        getPossibleAttendanceItem: "at/record/divergencetime/AttendanceDivergenceName",
-        getMonthlyAttendanceDivergenceName: "at/record/divergencetime/getMonthlyAttendanceDivergenceName"
+        getPossibleAttendanceItem: "at/record/divergencetime/setting/AttendanceDivergenceName",
+        getMonthlyAttendanceDivergenceName: "at/record/divergencetime/setting/getMonthlyAttendanceDivergenceName"
     }
     /**
     * get all divergence item id(id co the chon)

@@ -13,9 +13,9 @@ import javax.inject.Inject;
 
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.app.find.outsideot.dto.OutsideOTBRDItemDto;
-import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSettingRepository;
-import nts.uk.ctx.at.shared.dom.outsideot.breakdown.BreakdownItemNo;
-import nts.uk.ctx.at.shared.dom.outsideot.breakdown.OutsideOTBRDItem;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.BreakdownItemNo;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.breakdown.OutsideOTBRDItem;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -48,19 +48,14 @@ public class OutsideOTBRDItemFinder {
 		// check exist data
 		if(CollectionUtil.isEmpty(overtimeBRDItems)){
 			List<OutsideOTBRDItemDto> resData = new ArrayList<>();
-			for(int i = BreakdownItemNo.ONE.value; i <=BreakdownItemNo.TEN.value ; i++){
-				OutsideOTBRDItemDto dto = new OutsideOTBRDItemDto();
-				dto.defaultData(i);
-				resData.add(dto);
+			for(int i = BreakdownItemNo.ONE.value; i <=BreakdownItemNo.TEN.value ; i++) {
+				
+				resData.add(new OutsideOTBRDItemDto(i));
 			}
 			return resData;
 		}
 		// return data by find repository
-		return overtimeBRDItems.stream().map(domain -> {
-			OutsideOTBRDItemDto dto = new OutsideOTBRDItemDto();
-			domain.saveToMemento(dto);
-			return dto;
-		}).collect(Collectors.toList());
+		return overtimeBRDItems.stream().map(domain -> OutsideOTBRDItemDto.of(domain)).collect(Collectors.toList());
 
 	}
 	

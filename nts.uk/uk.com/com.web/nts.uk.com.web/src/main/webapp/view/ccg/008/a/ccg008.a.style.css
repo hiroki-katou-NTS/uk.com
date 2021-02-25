@@ -11,6 +11,14 @@
 	cursor: pointer;
 }
 
+.reload-img {
+	width: 30px;
+	float: right;
+	margin-top: -42px;
+	margin-right: 25px;
+	cursor: pointer;
+}
+
 .preview-area-2 {
 	height: 500px;
 }
@@ -29,7 +37,9 @@
 	position: relative;
 	height: 45px;
 }
-
+#functions-area {
+  border: none !important;
+}
 .placement-container {
 	overflow: auto;
 }
@@ -38,7 +48,7 @@
 	min-width: 85px;
 }
 
-#ver4{
+#ver4 {
     z-index: 1;
     margin-left: calc(100vw - 300px);
     position: absolute;
@@ -46,11 +56,77 @@
 
 #setting{
 	margin-top: 40px;
-    margin-right: -250px;
-    float: right;
+  margin-right: -250px;
+  float: right;
+}
+
+
+#reload{
+  margin-top: 40px;
+  margin-right: -220px;
+  float: right;
 }
 
 #closure{
-	margin-right: 30px;
-    outline: none;
+  margin-right: 30px;
+  height: 30px;
+  outline: none;
+}
+.content {
+  padding: 10px;
+  margin-top: -35px;
+  height: 100%;
+}
+.content-top {
+  border: 2px solid #B1B1B1;
+  border-radius: 7px;
+  height: 100%;
+  padding: 10px;
+  margin-top: 20px;
+}
+.contents_layout {
+  display: inline-flex;
+  width: 100%;
+  height: 100%;
+}
+
+.contents_2 {
+  height: 98%;
+  padding: 5px 5px 0px 0px;
+  min-width: 458px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.contents_3 {
+  height: 98%;
+  padding: 5px 5px 0px 0px;
+  min-width: 458px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.widget_contents {
+  width: 446px;
+}
+
+.contents_1 {
+  padding: 5px 5px 0px 5px;
+  overflow-y: auto;
+  width: 100%;
+  height: 99%;
+}
+
+.iframe_fix {
+  width: 100%;
+}
+#ccg008-contents-area {
+  padding: 7px; 
+  height: calc(100vh - 200px)
+}
+#functon-area {
+  height: 40px;
+  display: inline-table;
+  width: 100%;
+  position: inherit;
 }

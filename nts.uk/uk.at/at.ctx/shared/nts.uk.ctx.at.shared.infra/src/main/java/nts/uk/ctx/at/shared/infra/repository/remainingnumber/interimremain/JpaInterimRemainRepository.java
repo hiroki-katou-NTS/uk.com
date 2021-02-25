@@ -70,8 +70,7 @@ public class JpaInterimRemainRepository extends JpaRepository  implements Interi
 				record.getString("SID"),
 				record.getGeneralDate("YMD"),
 				record.getEnum("CREATOR_ATR", CreateAtr.class),
-				record.getEnum("REMAIN_TYPE", RemainType.class),
-				record.getEnum("REMAIN_ATR", RemainAtr.class));
+				record.getEnum("REMAIN_TYPE", RemainType.class));
 	}
 	
 	private InterimRemain convertToDomainSet(KrcmtInterimRemainMng c) {		
@@ -79,8 +78,7 @@ public class JpaInterimRemainRepository extends JpaRepository  implements Interi
 				c.sId, 
 				c.ymd, 
 				EnumAdaptor.valueOf(c.createrAtr, CreateAtr.class), 
-				EnumAdaptor.valueOf(c.remainType, RemainType.class),
-				EnumAdaptor.valueOf(c.remainAtr, RemainAtr.class));
+				EnumAdaptor.valueOf(c.remainType, RemainType.class));
 	}
 	
 	@Override
@@ -104,7 +102,7 @@ public class JpaInterimRemainRepository extends JpaRepository  implements Interi
 			entity.ymd = domain.getYmd();
 			entity.createrAtr = domain.getCreatorAtr().value;
 			entity.remainType = domain.getRemainType().value;
-			entity.remainAtr = domain.getRemainAtr().value;
+			entity.remainAtr = 0;//domain.getRemainAtr().value;
 			this.getEntityManager().persist(entity);
 		}
 		else {
@@ -112,7 +110,7 @@ public class JpaInterimRemainRepository extends JpaRepository  implements Interi
 			entity.ymd = domain.getYmd();
 			entity.createrAtr = domain.getCreatorAtr().value;
 			entity.remainType = domain.getRemainType().value;
-			entity.remainAtr = domain.getRemainAtr().value;
+			entity.remainAtr = 0;//domain.getRemainAtr().value;
 			this.commandProxy().update(entity);
 		}
 		this.getEntityManager().flush();

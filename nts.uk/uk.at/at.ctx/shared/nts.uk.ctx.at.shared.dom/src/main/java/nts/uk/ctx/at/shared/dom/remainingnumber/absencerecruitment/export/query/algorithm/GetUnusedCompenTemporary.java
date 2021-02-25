@@ -12,12 +12,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.AbsRecMngInPeriodRefactParamInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.UnbalanceCompensation;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.GetTightSetting;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.GetTightSetting.GetTightSettingResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ProcessDataTemporary;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.SettingExpirationDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataRemainUnit;
@@ -26,9 +23,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numb
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail.NumberConsecuVacation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataManagementAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
-import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.GetSettingCompensaLeave;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.LeaveSetOutput;
 
@@ -80,15 +76,13 @@ public class GetUnusedCompenTemporary {
 				input.getDateData().end());
 
 		// 取得した件数をチェックする
-		List<String> mapId = lstRecMng.stream().map(x -> x.getRecruitmentMngId()).collect(Collectors.toList());
-		List<InterimRecAbsMng> lstInterimRecAbsMng = require.getRecOrAbsMngs(mapId, false, DataManagementAtr.INTERIM);
 		for (InterimRecMng interimRecMng : lstRecMng) {
 			InterimRemain remainData = lstInterimMngOfRec.stream()
 					.filter(x -> x.getRemainManaID().equals(interimRecMng.getRecruitmentMngId()))
 					.collect(Collectors.toList()).get(0);
 			// アルゴリズム「振休と紐付けをしない振出を取得する」を実行する
 			lstOutput.add(getNotTypeRec(require, interimRecMng, remainData, input.getCid(), input.getSid(),
-					input.getDateData().end(), leaveSetOut, lstInterimRecAbsMng));
+					input.getDateData().end(), leaveSetOut));
 		}
 		return lstOutput;
 
@@ -96,32 +90,30 @@ public class GetUnusedCompenTemporary {
 
 	// 4-1.振休と紐付けをしない振出を取得する
 	public static AccumulationAbsenceDetail getNotTypeRec(Require require, InterimRecMng recMng,
-			InterimRemain remainData, String cid, String sid, GeneralDate aggEndDate, LeaveSetOutput leaveSetOut,
-			List<InterimRecAbsMng> lstInterimRecAbsMng) {
+			InterimRemain remainData, String cid, String sid, GeneralDate aggEndDate, LeaveSetOutput leaveSetOut) {
 		// ドメインモデル「暫定振出振休紐付け管理」を取得する
-		List<InterimRecAbsMng> lstInterimMng = lstInterimRecAbsMng.stream()
-				.filter(x -> x.getRecruitmentMngId().equals(recMng.getRecruitmentMngId())).collect(Collectors.toList());
+		List<PayoutSubofHDManagement> lstInterimMng = require.getByPayoutId(remainData.getSID(), remainData.getYmd());
 
 		// 未使用日数←SELF.発生日数
 		double unUseDays = recMng.getOccurrenceDays().v();
 		if (!lstInterimMng.isEmpty()) {
-			for (InterimRecAbsMng interimMng : lstInterimMng) {
+			for (PayoutSubofHDManagement interimMng : lstInterimMng) {
 				// 未使用日数：INPUT.暫定振出管理データ.発生日数－合計(暫定振出振休紐付け管理.使用日数)
-				unUseDays -= interimMng.getUseDays().v();
+				unUseDays -= interimMng.getAssocialInfo().getDayNumberUsed().v();
 			}
 		}
 
 		// 「逐次発生の休暇明細」．未使用数=未使用数
 		// INPUT．暫定振出管理データを「逐次発生の休暇明細」に追加する
 
-		// 締め設定を取得する
-		Optional<GetTightSettingResult> tightSettingResult = GetTightSetting.getTightSetting(require, cid, sid,
-				aggEndDate, ExpirationTime.valueOf(leaveSetOut.getExpirationOfLeave()), remainData.getYmd());
-
-		// 使用期限日を設定
-		GeneralDate dateSettingExp = SettingExpirationDate.settingExp(
-				ExpirationTime.valueOf(leaveSetOut.getExpirationOfLeave()), tightSettingResult,
-				remainData.getYmd());
+//		// 締め設定を取得する
+//		Optional<GetTightSettingResult> tightSettingResult = GetTightSetting.getTightSetting(require, cid, sid,
+//				aggEndDate, ExpirationTime.valueOf(leaveSetOut.getExpirationOfLeave()), remainData.getYmd());
+//
+//		// 使用期限日を設定
+//		GeneralDate dateSettingExp = SettingExpirationDate.settingExp(
+//				ExpirationTime.valueOf(leaveSetOut.getExpirationOfLeave()), tightSettingResult,
+//				remainData.getYmd());
 
 		CompensatoryDayoffDate date = new CompensatoryDayoffDate(false, Optional.of(remainData.getYmd()));
 		MngDataStatus dataAtr = MngDataStatus.NOTREFLECTAPP;
@@ -138,7 +130,7 @@ public class GetUnusedCompenTemporary {
 						.unbalanceNumber(
 								new NumberConsecuVacation(new ManagementDataRemainUnit(unUseDays), Optional.empty()))
 						.build();
-		return new UnbalanceCompensation(detail, dateSettingExp, DigestionAtr.USED, Optional.empty(),
+		return new UnbalanceCompensation(detail, recMng.getExpirationDate(), DigestionAtr.USED, Optional.empty(),
 				recMng.getStatutoryAtr());
 	}
 
@@ -150,8 +142,8 @@ public class GetUnusedCompenTemporary {
 		// InterimRecAbasMngRepository
 		List<InterimRecMng> getRecBySidDatePeriod(String sid, DatePeriod period);
 
-		// InterimRecAbasMngRepository
-		List<InterimRecAbsMng> getRecOrAbsMngs(List<String> interimIds, boolean isRec, DataManagementAtr mngAtr);
+		// PayoutSubofHDManaRepository
+		List<PayoutSubofHDManagement> getByPayoutId(String sid, GeneralDate occDate);
 	}
 
 }

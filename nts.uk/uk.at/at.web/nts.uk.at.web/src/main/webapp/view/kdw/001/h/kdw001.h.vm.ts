@@ -95,7 +95,7 @@ module nts.uk.at.view.kdw001.h {
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
-
+                // ドメインモデル「エラーメッセージ情報」を取得する
                 let dfdGetAllErrMessageInfoByEmpID = self.getAllErrMessageInfoByEmpID(self.empCalAndSumExecLogID);
                 $.when(dfdGetAllErrMessageInfoByEmpID)
                     .done((dfdGetAllErrMessageInfoByEmpIDData) => {
@@ -107,6 +107,8 @@ module nts.uk.at.view.kdw001.h {
 
             /**
              * getAllErrMessageInfoByEmpID
+             * ドメインモデル「エラーメッセージ情報」を取得する
+             * param 就業計算と集計実行ログIDに一致する
              */
             getAllErrMessageInfoByEmpID(empCalAndSumExeLogId: string) {
                 let self = this;
@@ -133,7 +135,10 @@ module nts.uk.at.view.kdw001.h {
                             temp.push(item);
                         }
                     }
+                    // 社員コードの昇順
+                    // エラーメッセージ情報．年月日の昇順
                     self.listErrMessageInfo(_.orderBy(temp, ["employeeID", "disposalDay"], ["asc", "asc"]));
+                    // Imported「社員」を取得する
                     self.getListPersonInforLog(self.listSid).done(function(){
                         dfd.resolve();    
                     });
@@ -145,7 +150,8 @@ module nts.uk.at.view.kdw001.h {
             }
             
             /**
-             * get all person info 
+             * get all person info
+             * Imported「社員」を取得する 
              */
             getListPersonInforLog(listSid:Array<string>){
                 let self = this;

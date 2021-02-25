@@ -34,7 +34,7 @@ public class AppDeadlineSettingDto {
 		appDeadlineSettingDto.closureId = appDeadlineSetting.getClosureId();
 		appDeadlineSettingDto.userAtr = appDeadlineSetting.getUserAtr().value;
 		appDeadlineSettingDto.deadline = appDeadlineSetting.getDeadline().v();
-		appDeadlineSettingDto.deadlineCriteria = appDeadlineSetting.getDeadlineCriteria().value;
+		// appDeadlineSettingDto.deadlineCriteria = appDeadlineSetting.getDeadlineCriteria().value;
 		return appDeadlineSettingDto;
 	}
 	

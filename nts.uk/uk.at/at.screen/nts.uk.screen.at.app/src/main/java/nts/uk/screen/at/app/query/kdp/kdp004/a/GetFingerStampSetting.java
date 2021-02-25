@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.StampResultDisplayDto;
 import nts.uk.ctx.at.record.dom.stamp.application.StampResultDisplayRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunalRepository;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetPerRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -25,19 +26,40 @@ public class GetFingerStampSetting {
 	@Inject
 	private StampResultDisplayRepository stampResulRepo;
 
-	public FingerStampSettingDto getFingerStampSetting() {
-		FingerStampSettingDto result = new FingerStampSettingDto();
-		String comppanyID = AppContexts.user().companyId();
+	// @Inject
+	// private StampSetPerRepository stampSetPerRepo;
+
+	public GetFingerStampSettingDto getFingerStampSetting() {
+		String companyId = AppContexts.user().companyId();
+		return getFingerStampSetting(companyId);
+	}
+
+	/**
+	 * Get stamp setting with companyId
+	 * @param companyId
+	 * @return
+	 */
+	public GetFingerStampSettingDto getFingerStampSetting(String companyId) {
+		GetFingerStampSettingDto result = new GetFingerStampSettingDto();
+		
 		// 1:get 会社ID
-		this.stampSetCommunalRepo.gets(comppanyID).ifPresent(setComu -> {
-			result.setStampSetting(new StampSetCommunalDto(setComu));
-		});
+		this.stampSetCommunalRepo.gets(companyId)
+			.ifPresent(setComu -> {
+				result.setStampSetting(new StampSetCommunalDto(setComu));
+				
+				// fix shit code
+				// stampSetPerRepo.getStampSetting(companyId)
+				//	.ifPresent(c -> {
+				//		result.getStampSetting().setButtonEmphasisArt(c.isButtonEmphasisArt());
+				//	});
+			});
+		
 		// 2:get 会社ID
-		this.stampResulRepo.getStampSet(comppanyID).ifPresent(stampRes -> {
-			result.setStampResultDisplay(new StampResultDisplayDto(Optional.ofNullable(stampRes)));
-		});
+		this.stampResulRepo.getStampSet(companyId)
+			.ifPresent(stampRes -> {
+				result.setStampResultDisplay(new StampResultDisplayDto(Optional.ofNullable(stampRes)));
+			});
 
 		return result;
-
-	}
+	}	
 }

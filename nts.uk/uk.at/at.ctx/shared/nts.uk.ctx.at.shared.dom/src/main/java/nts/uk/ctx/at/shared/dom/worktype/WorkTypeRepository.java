@@ -255,7 +255,7 @@ public interface WorkTypeRepository {
 	
 	/**
 	 * Find by deprecated.
-	 *
+	 * <<Public>> 指定した勤務種類をすべて取得する
 	 * @param companyId the company id
 	 * @param workTypeCd the work type cd
 	 * @return the optional
@@ -348,6 +348,11 @@ public interface WorkTypeRepository {
 	List<WorkType> findListByCid(String companyId);
 	
 	List<WorkType> findByCidAndWorkTypeCodes(String companyId, List<String> workTypeCodes);
+
+	List<WorkType> findForAppKAF008(String companyId, int deprecateAtr, int worktypeAtr, List<Integer> hdType);
+
+	List<WorkType> findByDepreacateAtrAndWorkTypeAtr(String companyId, int deprecateAtr, int worktypeAtr);
 	
+	List<WorkType> getAllWorkTypeNotAbolished(String companyId);
 	
 }

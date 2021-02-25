@@ -40,6 +40,10 @@
 	margin-left: 90px;
 }
 
+#app-resize.with-ccg001 {
+	margin-left: 90px;
+}
+
 #app-grid-container .nts-fixed-header-container,
 #app-grid-container .nts-fixed-body-container {
 	background: #f3f3f3;
@@ -87,10 +91,10 @@
 }
 .saturdayCell{
 	color: #0000ff;
-}	
+}
 .sundayCell{
 	color: #ff0000;
-}	
+}
 .rec{
 	height: auto;
 }
@@ -133,5 +137,24 @@
 	overflow: auto;
 }
 html {
-    overflow: hidden;
+    overflow: auto;
+}
+.grid-text-label {
+	padding-top: 10px;
+	vertical-align: top;
+}
+.reflectionStatus, .opApprovalStatusInquiry {
+	text-align: center;
+}
+.applicantName, .appDate, .appContent, .inputDate {
+	padding-left: 5px !important;
+}
+th.ui-iggrid-rowselector-header> .ui-igcheckbox-normal> span {
+	left: 0;
+}
+td.appType {
+	white-space: normal !important;
+}
+td.appContent {
+	min-width: 75px;
 }

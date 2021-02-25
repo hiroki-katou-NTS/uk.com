@@ -4,20 +4,19 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.outsideot.setting;
 
-import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSetting;
-import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSettingRepository;
-import nts.uk.ctx.at.shared.dom.outsideot.holiday.PremiumExtra60HRate;
-import nts.uk.ctx.at.shared.dom.outsideot.holiday.SuperHD60HConMed;
-import nts.uk.ctx.at.shared.dom.outsideot.holiday.SuperHD60HConMedRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.SuperHD60HConMed;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.SuperHD60HConMedRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Com60HourVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.sixtyhours.Com60HourVacationRepository;
@@ -88,29 +87,16 @@ public class OutsideOTSettingSaveCommandHandler extends CommandHandler<OutsideOT
 	 */
 	private void checkDomainSettingAndSuper(OutsideOTSetting domainSetting,
 			SuperHD60HConMed domainSupper) {
-		domainSetting.getOvertimes().forEach(overtime->{
-			if (overtime.isSuperHoliday60HOccurs() && this.checkSettingSupper(
-					domainSupper.getPremiumExtra60HRates(), overtime.getOvertimeNo().value)) {
-				throw new BusinessException("Msg_491");
-			}
+		domainSetting.getBreakdownItems().stream().forEach(bd -> {
+			
+			bd.getPremiumExtra60HRates().stream().forEach(per -> {
+				
+				val ot = domainSetting.getOvertimes().stream().filter(c -> c.getOvertimeNo() == per.getOvertimeNo()).findFirst();
+				if (ot.get().isSuperHoliday60HOccurs() && per.getPremiumRate().v() <= BEGIN_RATE_ZERO) {
+					throw new BusinessException("Msg_491");
+				}
+			});
 		});
-	}
-	
-	/**
-	 * Check setting supper.
-	 *
-	 * @param premiumExtra60HRates the premium extra 60 H rates
-	 * @param overtimeNo the overtime no
-	 * @return true, if successful
-	 */
-	private boolean checkSettingSupper(List<PremiumExtra60HRate> premiumExtra60HRates,
-			int overtimeNo) {
-		for(PremiumExtra60HRate rate: premiumExtra60HRates){
-			if(rate.getOvertimeNo().value == overtimeNo  && rate.getPremiumRate().v() > BEGIN_RATE_ZERO){
-				return false;
-			}
-		}
-		return true;
 	}
 
 }

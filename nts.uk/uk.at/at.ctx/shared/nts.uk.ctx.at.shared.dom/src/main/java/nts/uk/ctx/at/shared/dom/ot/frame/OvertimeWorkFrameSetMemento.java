@@ -43,4 +43,18 @@ public interface OvertimeWorkFrameSetMemento {
 	 * @param overtimeWorkFrName the new overtime work frame name
 	 */
 	public void setOvertimeWorkFrameName(OvertimeWorkFrameName overtimeWorkFrName);
+
+	/**
+	 * Sets the role.
+	 * 
+	 * @param role the role
+	 */
+	public void setRole(RoleOvertimeWork role);
+	
+	/**
+	 * Sets the transfer atr.
+	 *
+	 * @param transferAtr the transfer atr
+	 */
+	public void setTransferAtr(NotUseAtr transferAtr);
 }

@@ -3,6 +3,11 @@ package nts.uk.ctx.at.schedule.dom.employeeinfo.rank;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -20,19 +25,18 @@ public class EmpRankInforTest {
 	public void testMakeWithoutRank() {
 		EmpRankInfor infor = EmpRankInfor.makeWithoutRank("1");
 		
-		assertEquals(infor.getEmpId(), "1");
-		assertNull(infor.getRankCode());
-		assertNull(infor.getRankSymbol());
+		assertThat(infor.getEmpId()).isEqualTo("1");
+		assertThat(infor.getRankCode()).isNotPresent();
+		assertThat(infor.getRankSymbol()).isNotPresent();
 		
 	}
 	
 	@Test
 	public void testCreateRank() {
 		EmpRankInfor infor = EmpRankInfor.create("1", new RankCode("01"), new RankSymbol("2"));
-		
-		assertEquals(infor.getEmpId(), "1");
-		assertEquals(infor.getRankCode(), new RankCode("01"));
-		assertEquals(infor.getRankSymbol(), new RankSymbol("2"));
+		assertThat(infor)
+		.extracting(d->d.getEmpId(),d->d.getRankCode(), d->d.getRankSymbol())
+		.containsExactly("1", Optional.ofNullable(new RankCode("01")), Optional.ofNullable(new RankSymbol("2")));
 		
 	}
 }

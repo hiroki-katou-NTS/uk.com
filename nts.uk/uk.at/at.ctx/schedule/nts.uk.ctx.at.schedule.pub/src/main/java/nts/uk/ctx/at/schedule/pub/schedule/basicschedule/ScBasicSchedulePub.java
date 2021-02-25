@@ -33,6 +33,13 @@ public interface ScBasicSchedulePub {
 	 * @return
 	 */
 	public Optional<ScWorkScheduleExport> findByIdNew(String employeeId, GeneralDate baseDate);
+	/**
+	 * TEAMD reqlist4 9/10/2020
+	 * @param employeeId
+	 * @param baseDate
+	 * @return
+	 */
+	public Optional<ScWorkScheduleExport_New> findByIdNewV2(String employeeId, GeneralDate baseDate);
 	
 	public List<ScBasicScheduleExport> findById(List<String> employeeID, DatePeriod date);
 
@@ -56,4 +63,13 @@ public interface ScBasicSchedulePub {
 	 * @return GeneralDate
 	 */
 	public GeneralDate acquireMaxDateBasicSchedule(List<String> sIds);
+	
+	/**
+	 * 
+	 * 勤務予定の確定状態を取得する
+	 * @param employeeID
+	 * @param date
+	 * @return
+	 */
+	public List<BasicScheduleConfirmExport> findConfirmById(List<String> employeeID, DatePeriod date);
 }

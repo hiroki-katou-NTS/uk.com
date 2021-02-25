@@ -1,14 +1,15 @@
 package nts.uk.ctx.at.shared.infra.repository.bonuspay;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
-import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPSettingRepository;
-import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.BPSettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpmtBonusPaySetting;
 import nts.uk.ctx.at.shared.infra.entity.bonuspay.KbpmtBonusPaySettingPK;
 
@@ -18,6 +19,11 @@ public class JpaBonusPaySettingRepository extends JpaRepository implements BPSet
 	private static final String SELECT_BY_COMPANYID = "SELECT c FROM KbpmtBonusPaySetting c WHERE c.kbpmtBonusPaySettingPK.companyId = :companyId ORDER BY c.kbpmtBonusPaySettingPK.code ASC";
 	
 	private static final String IS_EXISTED = "SELECT COUNT(c) FROM KbpmtBonusPaySetting c WHERE c.kbpmtBonusPaySettingPK.companyId = :companyId AND c.kbpmtBonusPaySettingPK.code = :code";
+	
+	private static final String SELECT_BY_COMPANYID_AND_CODE = "SELECT c FROM KbpmtBonusPaySetting c"
+			+ " WHERE c.kbpmtBonusPaySettingPK.companyId = :companyId"
+			+ "		AND c.kbpmtBonusPaySettingPK.code = :codeLst"
+			+ " ORDER BY c.kbpmtBonusPaySettingPK.code ASC";
 	
 	@Override
 	public List<BonusPaySetting> getAllBonusPaySetting(String companyId) {
@@ -77,6 +83,17 @@ public class JpaBonusPaySettingRepository extends JpaRepository implements BPSet
 				.setParameter("companyId", companyId)
 				.setParameter("code", code.v())
 				.getSingle().get() > 0;
+	}
+
+	@Override
+	public List<BonusPaySetting> findByCompanyAndCode(String companyId, List<String> bonusPaySettingCodeLst) {
+		if (bonusPaySettingCodeLst.isEmpty()) {
+			return new ArrayList<BonusPaySetting>();
+		}
+		return this.queryProxy().query(SELECT_BY_COMPANYID_AND_CODE, KbpmtBonusPaySetting.class)
+				.setParameter("companyId", companyId)
+				.setParameter("codeLst", bonusPaySettingCodeLst)
+				.getList(t -> toBonusPaySettingDomain(t));
 	}
 
 }

@@ -87,5 +87,13 @@ public class PremiumCalcMethodDetailOfHoliday extends DomainObject{
 				workTimeCalcMethod.get().getNotDeductLateLeaveEarly(),
 				workTimeCalcMethod.get().getCalculateIncludIntervalExemptionTime().value));
 	}
+	
+	/**
+	 * 育児・介護時間を含めて計算する
+	 * @return true：含める、false：含めない
+	 */
+	public boolean isCalculateIncludCareTime() {
+		return this.calculateIncludCareTime.equals(NotUseAtr.USE);
+	}
 }
 

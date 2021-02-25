@@ -1,20 +1,15 @@
 package nts.uk.ctx.at.function.app.command.monthlyworkschedule;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-/**
- * The Class OutputItemMonthlyWorkScheduleCopyCommand.
- */
-@Getter
-@NoArgsConstructor
-@Setter
+import lombok.Data;
+@Data
 public class OutputItemMonthlyWorkScheduleCopyCommand {
 
-	/** The code. */
-	private String code;
+	private String codeCopy;
+	
+	private String codeSourceSerivce;
+	
+	private int itemType;
+	
+	private int fontSize;
 
-	/** The name. */
-	private String name;
 }

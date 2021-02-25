@@ -2,29 +2,32 @@ package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
-import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
-import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
-import nts.uk.ctx.at.shared.dom.breakorgoout.primitivevalue.BreakFrameNo;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.DeductionTotalTime;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.breaktimegoout.BreakTimeGoOutTimes;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.breaktimegoout.BreakTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakTimeGoOutTimes;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.DeductionTotalTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /** 日別実績の休憩時間 */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BreakTimeSheetDailyPerformDto implements ItemConst {
+public class BreakTimeSheetDailyPerformDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 計上用合計時間: 控除合計時間 */
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = CALC)
@@ -47,6 +50,108 @@ public class BreakTimeSheetDailyPerformDto implements ItemConst {
 	@AttendanceItemLayout(layout = LAYOUT_E, jpPropertyName = COUNT)
 	@AttendanceItemValue(type = ValueType.COUNT)
 	private Integer breakTimes;
+	
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case WORKING_TIME:
+			return Optional.of(ItemValue.builder().value(duringWork).valueType(ValueType.TIME));
+		case (COUNT):
+			return Optional.of(ItemValue.builder().value(breakTimes).valueType(ValueType.COUNT));
+		default:
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+		case CALC:
+		case (DEDUCTION):
+			return new TotalDeductionTimeDto();
+		case (AFTER_CORRECTED):
+			return new BreakTimeSheetDto();
+		default:
+		}
+		return AttendanceItemDataGate.super.newInstanceOf(path);
+	}
+
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		switch (path) {
+		case (CALC):
+			return Optional.ofNullable(toRecordTotalTime);
+		case (DEDUCTION):
+			return Optional.ofNullable(deductionTotalTime);
+		default:
+		}
+		return AttendanceItemDataGate.super.get(path);
+	}
+
+	@Override
+	public int size(String path) {
+		if (AFTER_CORRECTED.equals(path)) {
+			return 10;
+		}
+		return AttendanceItemDataGate.super.size(path);
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case WORKING_TIME:
+		case (COUNT):
+			return PropType.VALUE;
+		case AFTER_CORRECTED:
+			return PropType.IDX_LIST;
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.typeOf(path);
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends AttendanceItemDataGate> List<T> gets(String path) {
+		if (AFTER_CORRECTED.equals(path)) {
+			return (List<T>) correctedTimeSheet;
+		}
+		return AttendanceItemDataGate.super.gets(path);
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case WORKING_TIME:
+			duringWork = value.valueOrDefault(null);
+			break;
+		case (COUNT):
+			breakTimes = value.valueOrDefault(null);
+			break;
+		default:
+			break;
+		}
+	}
+
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		switch (path) {
+		case (CALC):
+			toRecordTotalTime = (TotalDeductionTimeDto ) value;
+			break;
+		case (DEDUCTION):
+			deductionTotalTime = (TotalDeductionTimeDto ) value;
+		default:
+		}
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends AttendanceItemDataGate> void set(String path, List<T> value) {
+		if (AFTER_CORRECTED.equals(path)) {
+			correctedTimeSheet = (List<BreakTimeSheetDto>) value;
+		}
+	}
 
 	public static BreakTimeSheetDailyPerformDto fromBreakTimeOfDaily(BreakTimeOfDaily domain) {
 		return domain == null ? null : new BreakTimeSheetDailyPerformDto(

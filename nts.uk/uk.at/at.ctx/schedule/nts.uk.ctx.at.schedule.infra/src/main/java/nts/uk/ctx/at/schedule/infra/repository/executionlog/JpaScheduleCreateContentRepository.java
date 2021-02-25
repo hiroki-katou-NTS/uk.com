@@ -8,10 +8,12 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContent;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContentRepository;
 import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscdtScheExeContent;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class JpaScheduleCreateContentRepository.
@@ -56,6 +58,12 @@ public class JpaScheduleCreateContentRepository extends JpaRepository
 		this.commandProxy().update(this.toEntityUpdate(domain));
 
 	}
+
+	@Override
+	public void addNew(ScheduleCreateContent domain) {
+		this.commandProxy().insert(this.toEntityNew(domain));
+	}
+
 	/**
 	 * To entity.
 	 *
@@ -65,7 +73,21 @@ public class JpaScheduleCreateContentRepository extends JpaRepository
 	private KscdtScheExeContent toEntity(ScheduleCreateContent domain){
 		KscdtScheExeContent entity = new KscdtScheExeContent();
 		domain.saveToMemento(new JpaScheduleCreateContentSetMemento(entity));
+
 		return entity;
+	}
+
+	/**
+	 * To entity use : Domain KscdtScheExeContent, cid, cd.
+	 * @param domain
+	 * @return
+	 */
+	private KscdtScheExeContent toEntityNew(ScheduleCreateContent domain){
+		KscdtScheExeContent entity = new KscdtScheExeContent();
+		val cid = AppContexts.user().companyId();
+		val cd = AppContexts.user().contractCode();
+		val rs = entity.toEntityNew(domain,cid,cd);
+		return rs;
 	}
 	/**
 	 * To entity.

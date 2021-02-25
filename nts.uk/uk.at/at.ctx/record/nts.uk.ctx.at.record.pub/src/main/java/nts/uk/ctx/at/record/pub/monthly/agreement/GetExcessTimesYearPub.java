@@ -2,11 +2,11 @@ package nts.uk.ctx.at.record.pub.monthly.agreement;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
-import nts.uk.ctx.at.record.dom.monthly.agreement.export.AgreementExcessInfo;
-import nts.uk.ctx.at.shared.dom.common.Year;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementOperationSetting;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.Year;
+import nts.uk.ctx.at.record.pub.monthly.agreement.export.AgreementExcessInfoExport;
 
 /**
  * 年間超過回数の取得
@@ -21,7 +21,7 @@ public interface GetExcessTimesYearPub {
 	 * @return 年間超過回数
 	 */
 	// RequestList458
-	AgreementExcessInfo algorithm(String employeeId, Year year);
+	AgreementExcessInfoExport algorithm(String employeeId, Year year);
 	
 	
 	/**
@@ -30,7 +30,7 @@ public interface GetExcessTimesYearPub {
 	 * @param year 年度
 	 * @return 年間超過回数
 	 */
-	Map<String,AgreementExcessInfo> algorithm(List<String> employeeId, Year year);
+	Map<String, AgreementExcessInfoExport> algorithm(List<String> employeeId, Year year);
 	
 	/**
 	 * 年間超過回数と残数の取得
@@ -40,6 +40,8 @@ public interface GetExcessTimesYearPub {
 	 * @return 年間超過回数
 	 */
 	// RequestList555
-	AgreementExcessInfo andRemainTimes(String employeeId, Year year,
-			Optional<AgreementOperationSetting> agreementOperationSetting);
+	AgreementExcessInfoExport andRemainTimes(String employeeId, Year year, GeneralDate baseDate);
+	
+	// RequestList605
+	AgreementExcessInfoExport getDataRq605(String employeeID, YearMonth ym);
 }

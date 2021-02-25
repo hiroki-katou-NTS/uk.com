@@ -29,6 +29,9 @@ public class EmployeeImport {
 	//社員コード
 	/** The employee code. */
 	private String employeeCode;
+	
+	// KDP003F: EmployeeName
+	private String employeeName;
 
 	/**
 	 * @param companyId
@@ -41,5 +44,17 @@ public class EmployeeImport {
 		this.personalId = personalId;
 		this.employeeId = employeeId;
 		this.employeeCode = employeeCode;
+	}
+
+	/**
+	 * @param companyId
+	 * @param personalId
+	 * @param employeeId
+	 * @param employeeCode
+	 */
+	public EmployeeImport(String companyId, String personalId, String employeeId, String employeeCode, String employeeName) {
+		this(companyId, personalId, employeeId, employeeCode);
+		
+		this.employeeName = employeeName;
 	}
 }

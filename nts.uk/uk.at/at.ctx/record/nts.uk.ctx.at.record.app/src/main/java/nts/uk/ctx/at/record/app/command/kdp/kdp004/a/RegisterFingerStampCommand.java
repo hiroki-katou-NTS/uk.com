@@ -26,7 +26,7 @@ public class RegisterFingerStampCommand {
 	private String datetime;
 
 	// 打刻ボタン
-	private StampButtonComamnd stampButton;
+	private StampButtonCommand stampButton;
 
 	// 実績への反映内容
 	private RefectActualResultCommand refActualResult;
@@ -35,7 +35,7 @@ public class RegisterFingerStampCommand {
 	private Integer authcMethod;
 
 	public GeneralDateTime getStampDatetime() {
-		return GeneralDateTime.fromString(this.datetime, "yyyy/MM/dd HH:mm:ss");
+		return GeneralDateTime.now();
 	}
 
 	public StampButton getStampButton() {

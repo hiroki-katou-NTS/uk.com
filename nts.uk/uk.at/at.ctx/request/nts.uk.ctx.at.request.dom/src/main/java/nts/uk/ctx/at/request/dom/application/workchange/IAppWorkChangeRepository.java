@@ -4,18 +4,18 @@ import java.util.List;
 import java.util.Optional;
 
 /**
-* 勤務変更申請
+* 古い勤務変更申請 「古いクラス → 削除予定 → 使わないでください (Old Class → Delete plan → Please don't use it)
 */
 public interface IAppWorkChangeRepository
 {
 
-    List<AppWorkChange> getAllAppWorkChange();
+    List<AppWorkChange_Old> getAllAppWorkChange();
     
-    Optional<AppWorkChange> getAppworkChangeById(String cid, String appId);
+    Optional<AppWorkChange_Old> getAppworkChangeById(String cid, String appId);
     
-    void add(AppWorkChange domain);
+    void add(AppWorkChange_Old domain);
 
-    void update(AppWorkChange domain);
+    void update(AppWorkChange_Old domain);
     
     void delete(String cid, String appId);
     /**
@@ -25,5 +25,5 @@ public interface IAppWorkChangeRepository
      * @param lstAppId
      * @return
      */
-    List<AppWorkChange> getListAppWorkChangeByID(String companyID, List<String> lstAppId);
+    List<AppWorkChange_Old> getListAppWorkChangeByID(String companyID, List<String> lstAppId);
 }

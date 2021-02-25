@@ -2,44 +2,29 @@ package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.app
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.layer.dom.objecttype.DomainAggregate;
 
 /**
- * * TanLV 
- * 遅刻早退取消申請設定
+ * refactor 4
+ * @author anhnm
+ * 
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.申請承認.設定.会社別.申請承認設定.遅刻早退申請.遅刻早退申請
  *
  */
+
+//遅刻早退取消申請設定
 @Getter
 @Setter
-public class LateEarlyRequest extends AggregateRoot {
-	/** * 会社ID */
+public class LateEarlyRequest implements DomainAggregate {
+	
+	//	会社ID
 	private String companyId;
 	
-	/** * 実績を表示する */
-	private DisplayAtr showResult;
-
-	/**
-	 * Contructor
-	 * 
-	 * @param companyId
-	 * @param showResult
-	 */
-	public LateEarlyRequest(String companyId, int showResult) {
-		
-		this.companyId = companyId;
-		this.showResult = EnumAdaptor.valueOf(showResult, DisplayAtr.class);;
-	}
+	//	取り消す設定
+	private CancelCategory cancelCategory;
 	
-	/**
-	 * Create From Java Type
-	 * 
-	 * @param companyId
-	 * @param showResult
-	 * @return
-	 */
-	public static LateEarlyRequest createFromJavaType(String companyId, int showResult) {
-
-		return new LateEarlyRequest(companyId, showResult);
+	public LateEarlyRequest(String companyId, String cancelCategory) {
+		this.companyId = companyId;
+		this.cancelCategory = CancelCategory.valueOf(cancelCategory);
 	}
 }

@@ -47,6 +47,6 @@ public class KrcdtTopAlDetailStampPk implements Serializable {
 	 */
 	@Basic(optional = false)
 	@Column(name= "SERIAL_NO")
-	public String serial_no;
+	public int serial_no;
 
 }

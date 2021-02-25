@@ -1,7 +1,5 @@
 package nts.uk.ctx.sys.log.dom.reference;
 
-import java.util.Optional;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,22 +28,22 @@ public class LogSetItemDetail {
 	/** The Frame */
 	private int frame;
 	
-	// 使用区分
-	/** The Using Condition Flag */
-	private boolean isUseCondFlg;
-	
 	// 条件
 	/** The Log Condition */
-	private Optional<LogCondition> condition;
+	private LogCondition condition;
 	
 	// 記号
 	/** The Symbol Condition */
-	private Optional<SymbolEnum> symbol;
+	private SymbolEnum symbol;
 	
+	/**
+	 * 会社ID
+	 */
+	private String cid;
 	
 	public static LogSetItemDetail createFromJavatype(String logSetId, int itemNo, 
-			int frame, boolean isUseCondFlg, String condition, int symbol) {
-		return new LogSetItemDetail(logSetId, itemNo, frame, isUseCondFlg, 
-				Optional.of(new LogCondition(condition)), Optional.of(SymbolEnum.valueOf(symbol)));
+			int frame, String condition, int symbol, String cid) {
+		return new LogSetItemDetail(logSetId, itemNo, frame, 
+				new LogCondition(condition), SymbolEnum.valueOf(symbol), cid);
 	}
 }

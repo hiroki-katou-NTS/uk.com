@@ -1,13 +1,14 @@
 package nts.uk.ctx.workflow.dom.approverstatemanagement;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 
 /**
- * 
+ *
  * @author Doan Duy Hung
  *
  */
@@ -43,7 +44,7 @@ public interface ApprovalRootStateRepository {
 
 	/**
 	 * 対象者と期間から承認ルートインスタンスを取得する
-	 * 
+	 *
 	 * @param startDate
 	 * @param endDate
 	 * @param employeeID
@@ -55,7 +56,7 @@ public interface ApprovalRootStateRepository {
 
 	/**
 	 * 対象者と期間から承認ルートインスタンスを取得する(for List EmployeeID)
-	 * 
+	 *
 	 * @param startDate
 	 * @param endDate
 	 * @param employeeID
@@ -67,7 +68,7 @@ public interface ApprovalRootStateRepository {
 
 	/**
 	 * 対象者リストと日付リストから承認ルートインスタンスを取得する
-	 * 
+	 *
 	 * @param approvalRecordDates
 	 * @param employeeIDs
 	 * @param rootType
@@ -95,7 +96,7 @@ public interface ApprovalRootStateRepository {
 
 	/**
 	 * ドメインモデル「承認フェーズインスタンス」から最大の承認済フェーズを取得
-	 * 
+	 *
 	 * @param appID
 	 * @return
 	 */
@@ -110,12 +111,12 @@ public interface ApprovalRootStateRepository {
 
 	/**
 	 * RQ309 -> doi ung cho CMM045
-	 * 
+	 *
 	 * @param rootStateIDs
 	 * @param approverID
 	 * @return
 	 */
-	public List<ApprovalRootState> findEmploymentAppCMM045(List<String> lstApproverID, DatePeriod period,
+	public List<ApprovalRootState> findEmploymentAppCMM045(String approverID, List<String> agentLst, DatePeriod period,
 			boolean unapprovalStatus, boolean approvalStatus, boolean denialStatus, boolean agentApprovalStatus,
 			boolean remandStatus, boolean cancelStatus);
 
@@ -124,4 +125,15 @@ public interface ApprovalRootStateRepository {
 
 	public boolean resultKTG002(GeneralDate startDate, GeneralDate endDate, String approverID, Integer rootType,
 			String companyID);
+
+	/**
+	 * refactor 4
+	 * @param approvalRootState
+	 */
+	public void insertApp(ApprovalRootState approvalRootState);
+
+	/**
+	 * refactor 4
+	 */
+	public Map<String, List<ApprovalPhaseState>> getApprovalPhaseByID(List<String> appIDLst);
 }

@@ -11,32 +11,48 @@ import javax.inject.Inject;
 
 import org.apache.logging.log4j.util.Strings;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport_Old;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculationImport;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.TrackRecordAtr;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository_Old;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork_Old;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
+import nts.uk.ctx.at.request.dom.application.overtime.ApplicationTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType_Update;
+import nts.uk.ctx.at.request.dom.application.overtime.FrameNo;
+import nts.uk.ctx.at.request.dom.application.overtime.HolidayMidNightTime;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
+import nts.uk.ctx.at.request.dom.application.overtime.OverTimeShiftNight;
+import nts.uk.ctx.at.request.dom.application.overtime.OvertimeApplicationSetting;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.AppDateContradictionAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.CalcStampMiss;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.OverrideSet;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.AppDateContradictionAtr;
-import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.RangeOfDayTimeZoneService;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
+import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.RangeOfDayTimeZoneService;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -47,7 +63,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 	private CommonOvertimeHoliday commonOvertimeHoliday;
 	
 	@Inject
-	private ApplicationRepository_New applicationRepository;
+	private ApplicationRepository applicationRepository;
 	
 	@Inject
 	public RangeOfDayTimeZoneService rangeOfDayTimeZoneService;
@@ -62,12 +78,12 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 	private OvertimeRepository overtimeRepository;
 	
 	@Inject
-	private AppHolidayWorkRepository appHolidayWorkRepository;
+	private AppHolidayWorkRepository_Old appHolidayWorkRepository;
 
 	@Override
 	public PreActualColorResult preActualColorCheck(UseAtr preExcessDisplaySetting, AppDateContradictionAtr performanceExcessAtr,
 			ApplicationType appType, PrePostAtr prePostAtr, List<OvertimeInputCaculation> calcTimeList, List<OvertimeColorCheck> overTimeLst,
-			Optional<Application_New> opAppBefore, boolean beforeAppStatus, List<OvertimeColorCheck> actualLst, ActualStatus actualStatus) {
+			Optional<Application> opAppBefore, boolean beforeAppStatus, List<OvertimeColorCheck> actualLst, ActualStatus actualStatus) {
 		PreActualColorResult result = new PreActualColorResult();
 		// アルゴリズム「チェック条件」を実行する
 		UseAtr preAppSetCheck = commonOvertimeHoliday.preAppSetCheck(prePostAtr, preExcessDisplaySetting);
@@ -108,23 +124,23 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 	public PreAppCheckResult preAppStatusCheck(String companyID, String employeeID, GeneralDate appDate, ApplicationType appType) {
 		PreAppCheckResult preAppCheckResult = new PreAppCheckResult();
 		// ドメインモデル「申請」を取得(lây domain "đơn xin")
-		List<Application_New> appBeforeLst = applicationRepository.getBeforeApplication(companyID, employeeID, appDate, appType.value, PrePostAtr.PREDICT.value);
-		Optional<Application_New> opAppBefore = CollectionUtil.isEmpty(appBeforeLst) ? Optional.empty() : Optional.of(appBeforeLst.get(0)); 
-		// 事前申請漏れチェック
-		if(!opAppBefore.isPresent()){
-			preAppCheckResult.beforeAppStatus = true;
-			preAppCheckResult.opAppBefore = Optional.empty();
-			return preAppCheckResult;
-		}
-		preAppCheckResult.opAppBefore = opAppBefore;
-		Application_New appBefore = opAppBefore.get();
-		ReflectedState_New refPlan = appBefore.getReflectionInformation()
-				.getStateReflectionReal();
-		// 事前申請否認チェック
-		if (refPlan.equals(ReflectedState_New.DENIAL) || refPlan.equals(ReflectedState_New.REMAND)) {
-			preAppCheckResult.beforeAppStatus = true;
-			return preAppCheckResult;
-		}
+//		List<Application_New> appBeforeLst = applicationRepository.getBeforeApplication(companyID, employeeID, appDate, appType.value, PrePostAtr.PREDICT.value);
+//		Optional<Application_New> opAppBefore = CollectionUtil.isEmpty(appBeforeLst) ? Optional.empty() : Optional.of(appBeforeLst.get(0)); 
+//		// 事前申請漏れチェック
+//		if(!opAppBefore.isPresent()){
+//			preAppCheckResult.beforeAppStatus = true;
+//			preAppCheckResult.opAppBefore = Optional.empty();
+//			return preAppCheckResult;
+//		}
+//		preAppCheckResult.opAppBefore = opAppBefore;
+//		Application_New appBefore = opAppBefore.get();
+//		ReflectedState_New refPlan = appBefore.getReflectionInformation()
+//				.getStateReflectionReal();
+//		// 事前申請否認チェック
+//		if (refPlan.equals(ReflectedState_New.DENIAL) || refPlan.equals(ReflectedState_New.REMAND)) {
+//			preAppCheckResult.beforeAppStatus = true;
+//			return preAppCheckResult;
+//		}
 		return preAppCheckResult;
 	}
 
@@ -133,9 +149,9 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 			String workType, String workTime, OverrideSet overrideSet, Optional<CalcStampMiss> calStampMiss, List<DeductionTime> deductionTimeLst) {
 		List<OvertimeColorCheck> actualLst = new ArrayList<>();
 		// Imported(申請承認)「勤務実績」を取得する
-		RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID, appDate);
+		RecordWorkInfoImport_Old recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID, appDate);
 		if(Strings.isBlank(recordWorkInfoImport.getWorkTypeCode())){
-			return new ActualStatusCheckResult(ActualStatus.NO_ACTUAL, "", "", null, null, Collections.emptyList());
+			return new ActualStatusCheckResult(ActualStatus.NO_ACTUAL, "", "", null, null, null);
 		}
 		// アルゴリズム「勤務分類変更の判定」を実行する
 		JudgmentWorkTypeResult judgmentWorkTypeResult = judgmentWorkTypeChange(companyID, appType, recordWorkInfoImport.getWorkTypeCode(), workType);
@@ -167,15 +183,16 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 			
 			// アルゴリズム「1日分の勤怠時間を仮計算」を実行する
 			DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = 
-					dailyAttendanceTimeCaculation.getCalculation(
-							employeeID, 
-							appDate, 
-							judgmentWorkTypeResult.getCalcWorkType(), 
-							judgmentWorkTimeResult.getCalcWorkTime(), 
-							recordWorkInfoImport.getAttendanceStampTimeFirst(), 
-							judgmentStampResult.getCalcLeaveStamp(), 
-							breakStartTime, 
-							breakEndTime);
+					new DailyAttendanceTimeCaculationImport();
+//					dailyAttendanceTimeCaculation.getCalculation(
+//							employeeID, 
+//							appDate, 
+//							judgmentWorkTypeResult.getCalcWorkType(), 
+//							judgmentWorkTimeResult.getCalcWorkTime(), 
+//							recordWorkInfoImport.getAttendanceStampTimeFirst(), 
+//							judgmentStampResult.getCalcLeaveStamp(), 
+//							breakStartTime, 
+//							breakEndTime);
 			if(appType==ApplicationType.OVER_TIME_APPLICATION) {
 				actualLst.addAll(dailyAttendanceTimeCaculationImport.getOverTime().entrySet()
 						.stream().map(x -> OvertimeColorCheck.createActual(1, x.getKey(), x.getValue().getCalTime())).collect(Collectors.toList()));
@@ -192,7 +209,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 						.stream().map(x -> OvertimeColorCheck.createActual(3, x.getKey(), x.getValue())).collect(Collectors.toList()));
 			}
 		} else {
-			if(appType==ApplicationType.OVER_TIME_APPLICATION) {
+			/*if(appType==ApplicationType_Old.OVER_TIME_APPLICATION) {
 				actualLst.addAll(recordWorkInfoImport.getOvertimeCaculation().stream()
 						.map(x -> OvertimeColorCheck.createActual(x.getAttendanceID(), x.getFrameNo(), x.getResultCaculation())).collect(Collectors.toList()));
 				actualLst.add(OvertimeColorCheck.createActual(1, 11, recordWorkInfoImport.getShiftNightCaculation()));
@@ -200,7 +217,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 			} else {
 				actualLst.addAll(recordWorkInfoImport.getOvertimeHolidayCaculation().stream()
 						.map(x -> OvertimeColorCheck.createActual(x.getAttendanceID(), x.getFrameNo(), x.getResultCaculation())).collect(Collectors.toList()));
-			}
+			}*/
 		}
 		return new ActualStatusCheckResult(
 				actualStatus, 
@@ -208,7 +225,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 				judgmentWorkTimeResult.getCalcWorkTime(),
 				recordWorkInfoImport.getAttendanceStampTimeFirst(),
 				judgmentStampResult.getCalcLeaveStamp(),
-				actualLst);
+				null);
 	}
 
 	@Override
@@ -396,15 +413,15 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 	}
 
 	@Override
-	public void preAppErrorCheck(ApplicationType appType, OvertimeColorCheck overtimeColorCheck, Optional<Application_New> opAppBefore, UseAtr preAppSetCheck) {
+	public void preAppErrorCheck(ApplicationType appType, OvertimeColorCheck overtimeColorCheck, Optional<Application> opAppBefore, UseAtr preAppSetCheck) {
 		String companyID = AppContexts.user().companyId();
 		int compareValue = 0;
 		// 事前申請をチェックする
 		if(null != opAppBefore && opAppBefore.isPresent()){
-			Application_New appBefore = opAppBefore.get();
+			Application appBefore = opAppBefore.get();
 			// 申請種類をチェックする
 			if(appType==ApplicationType.OVER_TIME_APPLICATION){
-				AppOverTime appOverTime = overtimeRepository.getFullAppOvertime(companyID, appBefore.getAppID()).get();
+				AppOverTime_Old appOverTime = overtimeRepository.getFullAppOvertime(companyID, appBefore.getAppID()).get();
 				List<OverTimeInput> overTimeInputLst = appOverTime.getOverTimeInput();
 				if(!CollectionUtil.isEmpty(overTimeInputLst)) {
 					Optional<OverTimeInput> opOverTimeInput = overTimeInputLst
@@ -418,7 +435,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 					}
 				}
 			} else {
-				AppHolidayWork appHolidayWork = appHolidayWorkRepository.getFullAppHolidayWork(companyID, appBefore.getAppID()).get();
+				AppHolidayWork_Old appHolidayWork = appHolidayWorkRepository.getFullAppHolidayWork(companyID, appBefore.getAppID()).get();
 				List<HolidayWorkInput> holidayWorkInputLst = appHolidayWork.getHolidayWorkInputs();
 				if(!CollectionUtil.isEmpty(holidayWorkInputLst)) {
 					Optional<HolidayWorkInput> holidayWorkInput = holidayWorkInputLst
@@ -472,6 +489,300 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 				overtimeColorCheck.actualError = PreActualError.NO_ERROR.value;
 			}
 		}
+	}
+
+	@Override
+	public ApplicationTime checkStatus(
+			String companyId,
+			String employeeId,
+			GeneralDate date,
+			ApplicationType appType,
+			WorkTypeCode workTypeCode,
+			WorkTimeCode workTimeCode,
+			OverrideSet overrideSet,
+			Optional<CalcStampMiss> calOptional,
+			List<DeductionTime> breakTimes,
+			Optional<ActualContentDisplay> acuActualContentDisplay) {
+		Optional<ApplicationTime> output = Optional.empty();
+		// INPUT．「表示する実績内容．実績詳細」をチェックする
+		Optional<AchievementDetail> opAchievementDetail = acuActualContentDisplay.map(x -> x.getOpAchievementDetail()).orElse(Optional.empty());
+		
+		if (!(opAchievementDetail.isPresent() && opAchievementDetail.get().getTrackRecordAtr() == TrackRecordAtr.DAILY_RESULTS)) {
+			
+			return null;
+		}
+		AchievementDetail achievementDetail = opAchievementDetail.get();
+		// INPUT．「表示する実績内容．実績詳細」 <> empty　AND　INPUT．「表示する実績内容．実績詳細．実績スケ区分」 = 日別実績 -> true
+		// アルゴリズム「勤務分類変更の判定」を実行する
+		JudgmentWorkTypeResult judgmentWorkTypeResult = this.judgmentWorkTypeChange(companyId, appType, achievementDetail.getWorkTypeCD(), Optional.ofNullable(workTypeCode).map(x -> x.v()).orElse(null));
+		// アルゴリズム「就業時間帯変更の判定」を実行する
+		JudgmentWorkTimeResult judgmentWorkTimeResult = this.judgmentWorkTimeChange(achievementDetail.getWorkTimeCD(), Optional.ofNullable(workTimeCode).map(x -> x.v()).orElse(null));
+		
+		// アルゴリズム「当日判定」を実行する
+		Boolean isJudgmentToday = this.judgmentToday(date, Optional.ofNullable(workTimeCode).map(x -> x.v()).orElse(null));
+		// アルゴリズム「打刻漏れと退勤打刻補正の判定」を実行する
+		JudgmentStampResult judgmentStampResult = this.judgmentStamp(isJudgmentToday, overrideSet, calOptional, achievementDetail.getOpWorkTime().orElse(null), achievementDetail.getOpLeaveTime().orElse(null), date);
+		// アルゴリズム「実績状態の判定」を実行する
+		ActualStatus actualStatus = this.judgmentActualStatus(judgmentStampResult.isMissStamp(), judgmentStampResult.isStampLeaveChange());
+		// アルゴリズム「仮計算実行の判定」を実行する
+		Boolean isJudgmentCalculation =  this.judgmentCalculation(actualStatus,
+				judgmentWorkTypeResult.isWorkTypeChange(),
+				judgmentStampResult.isStampLeaveChange(),
+				judgmentWorkTimeResult.isWorkTimeChange());
+		
+		if (!isJudgmentCalculation) { // 仮計算実行＝しない
+			// 「申請時間<List>」をセットして返す
+			Optional<OverTimeShiftNight> overTimeShiftNightOp = Optional.empty();
+			// 表示する実績内容．実績詳細．7勤怠時間．4勤怠種類 = 残業時間
+			
+			if (achievementDetail.getOpOvertimeLeaveTimeLst().isPresent()) {
+				List<OvertimeLeaveTime> overTimeLeaveTimes = achievementDetail.getOpOvertimeLeaveTimeLst().get().stream()
+						//.filter(x -> x.getAttendanceType() == AttendanceType_Update.NORMALOVERTIME.value || x.getAttendanceType() == AttendanceType_Update.BREAKTIME.value)
+						.collect(Collectors.toList());
+				List<OvertimeApplicationSetting> overTimeApplicationTimes = new ArrayList<>();
+				overTimeLeaveTimes.forEach(item -> {
+					if (item.getFrameNo() <= 10 && item.getTime() > 0) {
+						OvertimeApplicationSetting overtimeApplicationSetting = new OvertimeApplicationSetting();
+						overtimeApplicationSetting.setAttendanceType(EnumAdaptor.valueOf(item.getAttendanceType(), AttendanceType_Update.class));
+						overtimeApplicationSetting.setFrameNo(new FrameNo(item.getFrameNo()));
+						overtimeApplicationSetting.setApplicationTime(new TimeWithDayAttr(item.getTime()));
+						overTimeApplicationTimes.add(overtimeApplicationSetting);
+						
+					}
+					
+				});
+				
+				if (!CollectionUtil.isEmpty(overTimeApplicationTimes)) {
+					if (!output.isPresent()) output = Optional.of(new ApplicationTime());
+					output.get().setApplicationTime(overTimeApplicationTimes);
+				}
+				/*
+				・INPUT．「表示する実績内容．実績詳細．計算フレックス」がある場合：
+　					申請時間．フレックス超過時間 = 実績詳細．計算フレックス
+				*/
+
+				if (achievementDetail.getOpFlexTime().isPresent()) {
+					if (!output.isPresent()) output = Optional.of(new ApplicationTime());
+					output.get().setFlexOverTime(achievementDetail.getOpFlexTime());
+				}
+				/*
+				 *・INPUT．「表示する実績内容．実績詳細．残業深夜時間」がある場合：
+　					申請時間．就業時間外深夜時間．残業深夜時間 = 表示する実績内容．実績詳細．残業深夜時間
+				 */
+				if (achievementDetail.getOpOvertimeMidnightTime().isPresent()) {
+					if (!overTimeShiftNightOp.isPresent()) {
+						overTimeShiftNightOp = Optional.of(new OverTimeShiftNight());
+					}
+					overTimeShiftNightOp.get().setOverTimeMidNight(achievementDetail.getOpOvertimeMidnightTime().orElse(null));
+					if (!output.isPresent()) output = Optional.of(new ApplicationTime());
+					output.get().setOverTimeShiftNight(overTimeShiftNightOp);
+				}
+				
+				
+			}
+			List<HolidayMidNightTime> midNightHolidayTimes = new ArrayList<HolidayMidNightTime>();
+			/**
+			 * ・INPUT．「表示する実績内容．実績詳細．法内休出深夜時間」がある場合：
+　				申請時間．就業時間外深夜時間．休出深夜時間．法定区分 = 法定内休出
+　				申請時間．就業時間外深夜時間．休出深夜時間．時間 = 実績詳細．法内休出深夜時間
+
+			 */
+			if (achievementDetail.getOpInlawHolidayMidnightTime().isPresent()) {
+				HolidayMidNightTime holidayMidNightTime = new HolidayMidNightTime(
+						achievementDetail.getOpInlawHolidayMidnightTime().get(),
+						StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork);
+				midNightHolidayTimes.add(holidayMidNightTime);
+			}
+			/**
+			 * ・INPUT．「表示する実績内容．実績詳細．法外休出深夜時間」がある場合：
+　				申請時間．就業時間外深夜時間．休出深夜時間．法定区分 = 法定外休出
+　				申請時間．就業時間外深夜時間．休出深夜時間．時間 = 実績詳細．法外休出深夜時間
+
+			 */
+			if (achievementDetail.getOpOutlawHolidayMidnightTime().isPresent()) {
+				HolidayMidNightTime holidayMidNightTime = new HolidayMidNightTime(
+						achievementDetail.getOpOutlawHolidayMidnightTime().get(),
+						StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork);
+				midNightHolidayTimes.add(holidayMidNightTime);
+			}
+			
+			/**
+			 * 
+				・INPUT．「表示する実績内容．実績詳細．祝日休出深夜時間」がある場合：
+　				申請時間．就業時間外深夜時間．休出深夜時間．法定区分 = 祝日休出
+　				申請時間．就業時間外深夜時間．休出深夜時間．時間 = 実績詳細．祝日休出深夜時間
+			 */
+			
+			if (achievementDetail.getOpPublicHolidayMidnightTime().isPresent()) {
+				HolidayMidNightTime holidayMidNightTime = new HolidayMidNightTime(
+						achievementDetail.getOpPublicHolidayMidnightTime().get(),
+						StaturoryAtrOfHolidayWork.PublicHolidayWork);
+				midNightHolidayTimes.add(holidayMidNightTime);
+			}
+			if (!output.isPresent()) {
+				output = Optional.of(new ApplicationTime());
+				
+			}
+			if (!output.get().getOverTimeShiftNight().isPresent()) {
+				output.get().setOverTimeShiftNight(Optional.of(new OverTimeShiftNight()));
+			}
+			if (output.get().getOverTimeShiftNight().isPresent()) {
+				output.get().getOverTimeShiftNight().get().setMidNightHolidayTimes(midNightHolidayTimes);
+			}
+		} else { // 仮計算実行＝する
+			List<DeductionTime> breakTimeList =  new ArrayList<DeductionTime>();
+			// INPUT．休憩時間帯(List)をチェックする
+			if (breakTimes.isEmpty()) {
+				// 計算用の休憩時間帯=休憩時間帯を取得する
+				breakTimeList = commonOvertimeHoliday.getBreakTimes(companyId, workTypeCode.v(), workTimeCode.v(), Optional.empty(), Optional.empty());
+			} else {
+				// 計算用の休憩時間帯=INPUT．休憩時間帯(List)
+				for (int i = 0; i < breakTimes.stream().count(); i++) {
+					DeductionTime duTime = new DeductionTime();
+					duTime.setStart(breakTimes.get(i).getStart());
+					duTime.setEnd(breakTimes.get(i).getEnd());
+					breakTimeList.add(duTime);
+					
+				}
+				
+			}
+			// アルゴリズム「1日分の勤怠時間を仮計算」を実行する
+			List<TimeZone> timeZones = new ArrayList<TimeZone>();
+			Optional<AchievementDetail> opAcOptional = acuActualContentDisplay.map(x -> x.getOpAchievementDetail()).orElse(Optional.empty());
+			// 1 QA
+			timeZones.add(new TimeZone(
+					new TimeWithDayAttr(opAcOptional.map(x -> x.getOpWorkTime().orElse(0)).orElse(0)),
+					new TimeWithDayAttr(opAcOptional.map(x -> x.getOpLeaveTime().orElse(0)).orElse(0))));
+			//2
+			timeZones.add(new TimeZone(
+					new TimeWithDayAttr(opAcOptional.map(x -> x.getOpWorkTime2().orElse(0)).orElse(0)),
+					new TimeWithDayAttr(opAcOptional.map(x -> x.getOpDepartureTime2().orElse(0)).orElse(0))));
+			
+			// 1日分の勤怠時間を仮計算 (RQ23)
+			List<ApplicationTime> outputList = convertApplicationList(
+					companyId,
+					employeeId,
+					date,
+					workTypeCode == null ? Optional.empty() : Optional.of(workTimeCode.v()),
+					workTimeCode == null ? Optional.empty() : Optional.ofNullable(workTimeCode.v()),
+					timeZones,
+					breakTimes);
+			if (CollectionUtil.isEmpty(outputList)) {
+				output = null;
+			} else {
+				output = Optional.of(outputList.get(0));
+			}
+			
+		}
+		
+		return output.orElse(null);
+		
+	}
+	public List<ApplicationTime> convertApplicationList(
+			String companyId,
+			String employeeId,
+			GeneralDate date,
+			Optional<String> workTypeCode,
+			Optional<String> workTimeCode,
+			List<TimeZone> timeZones,
+			List<DeductionTime> breakTimes
+			) {
+		
+		// 1日分の勤怠時間を仮計算 (RQ23)
+		List<ApplicationTime> output = new ArrayList<>();
+		ApplicationTime applicationTime = new ApplicationTime();
+		DailyAttendanceTimeCaculationImport dailyAttendanceTimeCaculationImport = dailyAttendanceTimeCaculation.getCalculation(
+				employeeId,
+				date,
+				workTypeCode.orElse(null),
+				workTimeCode.orElse(null),
+				timeZones,
+				breakTimes.stream().map(x -> x.getStart().v()).collect(Collectors.toList()),
+				breakTimes.stream().map(x -> x.getEnd().v()).collect(Collectors.toList()),
+				Collections.emptyList(),
+				Collections.emptyList());
+		// 「申請時間」をセットして返す
+		
+		List<OvertimeApplicationSetting> overtimeApplicationSetting = new ArrayList<OvertimeApplicationSetting>();
+		
+		List<OvertimeApplicationSetting> overTimes = dailyAttendanceTimeCaculationImport.getOverTime()
+																   .entrySet()
+																   .stream()
+																   .map(x -> x.getValue().getCalTime() > 0  ? new OvertimeApplicationSetting(
+																									   x.getKey(),
+																									   AttendanceType_Update.NORMALOVERTIME,
+																									   x.getValue().getTime())
+																		   		: null )
+																   .filter(y -> y != null)
+																   .collect(Collectors.toList());
+
+		overtimeApplicationSetting.addAll(overTimes);
+		
+		List<OvertimeApplicationSetting> holidayTimes = dailyAttendanceTimeCaculationImport.getHolidayWorkTime()
+																   .entrySet()
+																   .stream()
+																   .map(x -> x.getValue().getCalTime() > 0 ? new OvertimeApplicationSetting(
+																									   x.getKey(),
+																									   AttendanceType_Update.BREAKTIME,
+																									   x.getValue().getTime())
+																		   		: null )
+																   .filter(y -> y != null)
+																   .collect(Collectors.toList());
+		overtimeApplicationSetting.addAll(holidayTimes);
+		
+		
+		List<OvertimeApplicationSetting> bonusPayTimes = dailyAttendanceTimeCaculationImport.getBonusPayTime()
+				   .entrySet()
+				   .stream()
+				   .map(x -> x.getValue() > 0 ? new OvertimeApplicationSetting(
+								   x.getKey(),
+								   AttendanceType_Update.BONUSPAYTIME,
+								   x.getValue())
+						   : null
+						   		)
+				   .filter(y -> y != null)
+				   .collect(Collectors.toList());
+		
+		overtimeApplicationSetting.addAll(bonusPayTimes);
+		
+		List<OvertimeApplicationSetting> specBonusPayTimes = dailyAttendanceTimeCaculationImport.getSpecBonusPayTime()
+				   .entrySet()
+				   .stream()
+				   .map(x -> x.getValue() > 0 ? new OvertimeApplicationSetting(
+								   x.getKey(),
+								   AttendanceType_Update.BONUSSPECIALDAYTIME,
+								   x.getValue())
+						   : null
+						   		)
+				   .filter(y -> y != null)
+				   .collect(Collectors.toList());
+		
+		overtimeApplicationSetting.addAll(specBonusPayTimes);
+		
+		applicationTime.setApplicationTime(overtimeApplicationSetting);
+		
+		
+		
+		applicationTime.setFlexOverTime(Optional.of(new AttendanceTimeOfExistMinus(dailyAttendanceTimeCaculationImport.getFlexTime().getCalTime())));
+		
+		
+		OverTimeShiftNight overTimeShiftNight = new OverTimeShiftNight();
+		
+		overTimeShiftNight.setMidNightOutSide(dailyAttendanceTimeCaculationImport.getTimeOutSideMidnight());
+		overTimeShiftNight.setOverTimeMidNight(dailyAttendanceTimeCaculationImport.getCalOvertimeMidnight());
+		
+		List<HolidayMidNightTime> midNightHolidayTimes = dailyAttendanceTimeCaculationImport.getCalHolidayMidnight()
+										   .entrySet()
+										   .stream()
+										   .map(x -> new HolidayMidNightTime(
+												   x.getValue(),
+												   StaturoryAtrOfHolidayWork.deicisionAtrByHolidayAtr(EnumAdaptor.valueOf(x.getKey(), HolidayAtr.class))))
+										   .collect(Collectors.toList());
+		
+		overTimeShiftNight.setMidNightHolidayTimes(midNightHolidayTimes);
+		applicationTime.setOverTimeShiftNight(Optional.of(overTimeShiftNight));
+		output.add(applicationTime);
+		return output;
 	}
 
 }

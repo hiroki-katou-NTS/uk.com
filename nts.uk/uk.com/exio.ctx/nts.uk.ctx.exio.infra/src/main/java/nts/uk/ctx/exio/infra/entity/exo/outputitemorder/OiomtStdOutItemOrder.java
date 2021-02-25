@@ -18,12 +18,12 @@ import nts.uk.ctx.exio.dom.exo.outputitemorder.StandardOutputItemOrder;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * 出力項目並び順(定型)
+ * 外部出力出力項目並び順(定型)
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "OIOMT_STD_OUT_ITEM_ORDER")
+@Table(name = "OIOMT_EX_OUT_ITEM_SORT")
 public class OiomtStdOutItemOrder extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 

@@ -30,7 +30,7 @@ module nts.uk.at.view.ksm004.c.viewmodel {
             self.columns = ko.observableArray([
                 { headerText: nts.uk.resource.getText("KSM004_23"), key: 'date', hidden: true },
                 { headerText: nts.uk.resource.getText("KSM004_23"), key: 'displayDate', width: 85 },
-                { headerText: nts.uk.resource.getText("KSM004_24"), key: 'holidayName', width: 240 }
+                { headerText: nts.uk.resource.getText("KSM004_24"), key: 'holidayName', width: 240, formatter: _.escape }
             ]);
             // Holiday Details
             self.selectedPublicHoliday = ko.observable(new PublicHolidayObs("", ""));
@@ -262,7 +262,7 @@ module nts.uk.at.view.ksm004.c.viewmodel {
         }
 
         toPublicHoliday(): PublicHoliday {
-            return new PublicHoliday(this.date(), _.escape(this.holidayName()));
+            return new PublicHoliday(this.date(), this.holidayName());
         }
     }
 

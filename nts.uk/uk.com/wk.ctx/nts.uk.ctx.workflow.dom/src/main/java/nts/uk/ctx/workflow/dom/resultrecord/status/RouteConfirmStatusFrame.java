@@ -3,9 +3,11 @@ package nts.uk.ctx.workflow.dom.resultrecord.status;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import nts.uk.ctx.workflow.dom.agent.output.AgentInfoOutput;
 import nts.uk.ctx.workflow.dom.resultrecord.AppFrameConfirm;
 import nts.uk.ctx.workflow.dom.resultrecord.AppFrameInstance;
 
@@ -75,8 +77,13 @@ public class RouteConfirmStatusFrame {
 	 * @param approverId
 	 * @return
 	 */
-	public boolean isApprover(String approverId) {
-		return employeeIds.contains(approverId);
+	public boolean isApprover(String approverId, List<AgentInfoOutput> representRequesterIds) {
+		boolean isAgentApprover = false;
+		Optional<AgentInfoOutput> agentInfoOutput = representRequesterIds.stream().filter(x -> x.getApproverID().equals(approverId)).findAny();
+		if(agentInfoOutput.isPresent()) {
+			isAgentApprover = employeeIds.contains(agentInfoOutput.get().getAgentID());
+		}
+		return employeeIds.contains(approverId) || isAgentApprover;
 	}
 	
 	/**
@@ -101,8 +108,19 @@ public class RouteConfirmStatusFrame {
 	 * 代行者に承認された
 	 * @return
 	 */
-	public boolean hasConfirmedByRepresenter(String representerId) {
-		return isRepresent && approvedEmployeeId.get().equals(representerId);
+	public boolean hasConfirmedByRepresenter(String approverId, List<AgentInfoOutput> representRequesterIds) {
+		if(!isRepresent) {
+			return false;
+		}
+		List<String> approverIDLst = representRequesterIds.stream().filter(x -> approverId.equals(x.getApproverID()))
+				.map(x -> x.getAgentID()).collect(Collectors.toList());
+		
+		boolean isLoginIsRepresenter = approverIDLst.stream().filter(x -> employeeIds.contains(x)).findAny().isPresent();
+		if(!isLoginIsRepresenter) {
+			return false;
+		}
+		
+		return hasApproved() && approvedEmployeeId.get().equals(approverId);
 	}
 	
 	public boolean hasApprovedByOther(String approverId) {
@@ -114,7 +132,10 @@ public class RouteConfirmStatusFrame {
 	 * @param approverId
 	 * @return
 	 */
-	private boolean hasApprovedBy(String approverId) {
-		return hasApproved() && employeeIds.contains(approverId);
+	public boolean hasApprovedByApprover(String approverId) {
+		if(isRepresent) {
+			return false;
+		}
+		return hasApproved() && approvedEmployeeId.get().equals(approverId);
 	}
 }

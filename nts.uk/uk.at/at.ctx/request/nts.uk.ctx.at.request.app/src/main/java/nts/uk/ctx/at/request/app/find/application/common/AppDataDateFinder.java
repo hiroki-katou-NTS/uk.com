@@ -1,37 +1,18 @@
 package nts.uk.ctx.at.request.app.find.application.common;
 
-import java.util.stream.Collectors;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.logging.log4j.util.Strings;
-
-import nts.arc.enums.EnumAdaptor;
-import nts.arc.error.BusinessException;
-import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationMetaDto;
-import nts.uk.ctx.at.request.app.find.application.common.dto.ApprovalPhaseStateForAppDto;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.GetDataAppCfDetailFinder;
-import nts.uk.ctx.at.request.app.find.application.requestofearch.OutputMessageDeadline;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootContentImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.DetailScreenBefore;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.CollectApprovalRootPatternService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.init.StartupErrorCheckService;
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 
@@ -51,7 +32,7 @@ public class AppDataDateFinder {
 	private StartupErrorCheckService startupErrorCheckService;
 	
 	@Inject
-	private ApplicationRepository_New applicationRepository_New;
+	private ApplicationRepository applicationRepository_New;
 	
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithm;
@@ -74,7 +55,7 @@ public class AppDataDateFinder {
 	private static final String DATE_FORMAT = "yyyy/MM/dd";
 	
 	public AppDateDataDto getAppDataByDate(Integer appTypeValue, String appDate, Boolean isStartUp, String appID,String employeeID, int overtimeAtr){
-		String companyID = AppContexts.user().companyId();
+		/*String companyID = AppContexts.user().companyId();
 		if(Strings.isEmpty(employeeID)){
 			 employeeID = AppContexts.user().employeeId();
 		}
@@ -83,7 +64,7 @@ public class AppDataDateFinder {
         AchievementOutput achievementOutput = collectAchievement.getAchievement(companyID, employeeID, appGeneralDate); 
 		ApprovalRootContentImport_New approvalRootContentImport = null;
 		ApplicationDto_New applicationDto = null;
-		PrePostAtr defaultPrePostAtr = otherCommonAlgorithm.preliminaryJudgmentProcessing(EnumAdaptor.valueOf(appTypeValue, ApplicationType.class), appGeneralDate,0);
+		PrePostAtr_Old defaultPrePostAtr = otherCommonAlgorithm.preliminaryJudgmentProcessing(EnumAdaptor.valueOf(appTypeValue, ApplicationType_Old.class), appGeneralDate,0);
 		if(Strings.isNotBlank(appID)){
 			Application_New application = applicationRepository_New.findByID(companyID, appID).get();
 			SEmpHistImport empHistImport = employeeAdaptor.getEmpHist(
@@ -97,7 +78,7 @@ public class AppDataDateFinder {
 					companyID, 
 					employeeID, 
 					EmploymentRootAtr.APPLICATION, 
-					EnumAdaptor.valueOf(appTypeValue, ApplicationType.class), 
+					EnumAdaptor.valueOf(appTypeValue, ApplicationType_Old.class), 
 					appGeneralDate,
 					appID,
 					false).getApprovalRootContentImport();
@@ -130,7 +111,7 @@ public class AppDataDateFinder {
 						companyID, 
 						employeeID, 
 						EmploymentRootAtr.APPLICATION, 
-						EnumAdaptor.valueOf(appTypeValue, ApplicationType.class), 
+						EnumAdaptor.valueOf(appTypeValue, ApplicationType_Old.class), 
 						appGeneralDate,
 						appID,
 						true).getApprovalRootContentImport();
@@ -160,7 +141,8 @@ public class AppDataDateFinder {
 				applicationDto,
 				approvalRootContentImport == null ? null : approvalRootContentImport.getErrorFlag().value,
 				defaultPrePostAtr.value,
-				authorCmt);
+				authorCmt);*/
+		return null;
 	}
 	
 }

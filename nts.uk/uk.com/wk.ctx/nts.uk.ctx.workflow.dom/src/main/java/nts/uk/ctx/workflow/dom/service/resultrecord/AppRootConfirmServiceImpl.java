@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
@@ -152,6 +154,10 @@ public class AppRootConfirmServiceImpl implements AppRootConfirmService {
 			// 中間データから承認フェーズインスタンスに変換する
 			AppPhaseConfirm appPhaseConfirm = opAppPhaseConfirm.get();
 			ApprovalPhaseState approvalPhaseState = this.convertPhaseInsToPhaseState(appPhaseInstance, appPhaseConfirm);
+			// 解除できるかチェックする
+			if(!this.canCancelCheck(approvalPhaseState, approverID)) {
+				break;
+			}
 			List<ApprovalFrame> confirmFrameLst = approvalPhaseState.getListApprovalFrame().stream().filter(x -> x.getConfirmAtr()==ConfirmPerson.CONFIRM).collect(Collectors.toList());
 			// 承認形態と確定区分をチェックする
 			if((approvalPhaseState.getApprovalForm()==ApprovalForm.SINGLE_APPROVED)&&confirmFrameLst.isEmpty()){
@@ -254,32 +260,62 @@ public class AppRootConfirmServiceImpl implements AppRootConfirmService {
 		// 解除できるフラグ = false(初期化)
 		boolean canCancel = false;
 		// 「承認フェーズインスタンス」．承認形態をチェックする
-//		if(approvalPhaseState.getApprovalForm()==ApprovalForm.EVERYONE_APPROVED){
-//			// 指定する社員が承認を行った承認者かチェックする
-//			Optional<ApprovalFrame> opApprovalFrame = approvalPhaseState.getListApprovalFrame().stream()
-//					.filter(frame -> (Strings.isNotBlank(frame.getApproverID())&&frame.getApproverID().equals(employeeID)) || 
-//							(Strings.isNotBlank(frame.getRepresenterID())&&frame.getRepresenterID().equals(employeeID))).findAny();
-//			if(opApprovalFrame.isPresent()){
-//				// 解除できるフラグ = true
-//				canCancel = true;
-//			}
-//		} else {
-//			// 確定者を設定したかチェックする(kiểm tra có cài đặt 確定者 hay không)
-//			Optional<ApprovalFrame> opFrameConfirm = approvalPhaseState.getListApprovalFrame().stream()
-//					.filter(frame -> frame.getConfirmAtr()==ConfirmPerson.CONFIRM).findAny();
-//			if(opFrameConfirm.isPresent()){
-//				// 指定する社員が確定者として承認を行ったかチェックする
-//				ApprovalFrame approvalFrame = opFrameConfirm.get();
-//				if(approvalFrame.getApproverID().equals(employeeID) || approvalFrame.getRepresenterID().equals(employeeID)){
-//					canCancel = true;
-//				}
-//			} else {
-//				// 指定する社員が承認を解除できるか
-//				if (approvalPhaseState.canRelease(employeeID)) {
-//					canCancel = true;
-//				}
-//			}
-//		}
+		if(approvalPhaseState.getApprovalForm()==ApprovalForm.EVERYONE_APPROVED){
+			// 指定する社員が承認を行った承認者かチェックする
+			Optional<ApproverInfor> opApproverInfor = Optional.empty();
+			List<ApprovalFrame> approvalFrameApprovedLst = approvalPhaseState.getListApprovalFrame().stream()
+					.filter(frame -> frame.isApproved(approvalPhaseState.getApprovalForm())).collect(Collectors.toList());
+			for(ApprovalFrame approvalFrame : approvalFrameApprovedLst) {
+				Optional<ApproverInfor> opApproverInforApproved = approvalFrame.getLstApproverInfo().stream()
+						.filter(approverInfor -> approverInfor.isApproved() && 
+								((Strings.isNotBlank(approverInfor.getApproverID())&&approverInfor.getApproverID().equals(employeeID)) || 
+								(Strings.isNotBlank(approverInfor.getAgentID())&&approverInfor.getAgentID().equals(employeeID))))
+						.findAny();
+				if(opApproverInforApproved.isPresent()) {
+					opApproverInfor = opApproverInforApproved;
+				}
+			}
+			if(opApproverInfor.isPresent()){
+				// 解除できるフラグ = true
+				canCancel = true;
+			}
+		} else {
+			// 確定者を設定したかチェックする(kiểm tra có cài đặt 確定者 hay không)
+			Optional<ApprovalFrame> opFrameConfirm = approvalPhaseState.getListApprovalFrame().stream()
+					.filter(frame -> frame.getConfirmAtr()==ConfirmPerson.CONFIRM).findAny();
+			if(opFrameConfirm.isPresent()){
+				// 指定する社員が確定者として承認を行ったかチェックする
+				ApprovalFrame approvalFrame = opFrameConfirm.get();
+				Optional<ApproverInfor> opApproverInforApproved = approvalFrame.getLstApproverInfo().stream()
+						.filter(approverInfor -> approverInfor.isApproved() && 
+								((Strings.isNotBlank(approverInfor.getApproverID())&&approverInfor.getApproverID().equals(employeeID)) || 
+								(Strings.isNotBlank(approverInfor.getAgentID())&&approverInfor.getAgentID().equals(employeeID))))
+						.findAny();
+				if(opApproverInforApproved.isPresent()) {
+					// 解除できるフラグ = true
+					canCancel = true;
+				}
+			} else {
+				// 指定する社員が承認を行った承認者かチェックする
+				Optional<ApproverInfor> opApproverInfor = Optional.empty();
+				List<ApprovalFrame> approvalFrameApprovedLst = approvalPhaseState.getListApprovalFrame().stream()
+						.filter(frame -> frame.isApproved(approvalPhaseState.getApprovalForm())).collect(Collectors.toList());
+				for(ApprovalFrame approvalFrame : approvalFrameApprovedLst) {
+					Optional<ApproverInfor> opApproverInforApproved = approvalFrame.getLstApproverInfo().stream()
+							.filter(approverInfor -> approverInfor.isApproved() && 
+									((Strings.isNotBlank(approverInfor.getApproverID())&&approverInfor.getApproverID().equals(employeeID)) || 
+									(Strings.isNotBlank(approverInfor.getAgentID())&&approverInfor.getAgentID().equals(employeeID))))
+							.findAny();
+					if(opApproverInforApproved.isPresent()) {
+						opApproverInfor = opApproverInforApproved;
+					}
+				}
+				if(opApproverInfor.isPresent()){
+					// 解除できるフラグ = true
+					canCancel = true;
+				}
+			}
+		}
 		return canCancel;
 	}
 

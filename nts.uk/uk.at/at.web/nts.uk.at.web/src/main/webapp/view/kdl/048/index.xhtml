@@ -1,0 +1,140 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+
+	<ui:composition template="../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+      <script>var dialogSize = { width: 885 , height: 740};</script>
+      <com:ValidatorScript>
+				nts.uk.ctx.at.function.dom.attendancerecord.item.ItemName
+      </com:ValidatorScript>
+			<!-- kdl029 a-->
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+			<com:stylefile path="kdl048.style.css" />
+			<com:scriptfile path="kdl048.vm.js" />
+		</ui:define>
+		<ui:define name="content">
+      <div id="contents-area">
+			  <div id="content-top">
+          <com:ko-if bind="titleLine().displayFlag">
+            <div>
+              <!-- A1_1 -->
+              <div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL048_2')}</div>
+              <!-- A1_2 -->
+              <label style="margin-left: 20px" data-bind="text: titleLine().layoutCode" ></label>
+              <!-- A1_3 -->
+              <label data-bind="text: titleLine().layoutName"></label>
+              <!-- A1_4 -->
+              <label style="margin-left: 100px" data-bind="text: titleLine().directText"></label>
+            </div>
+         </com:ko-if>
+        </div>
+        <!-- A2 -->
+        <hr/>
+        <div>
+          <com:ko-if bind="itemNameLine().displayFlag">
+            <div class="text-input">
+              <!-- A3_1 -->
+              <div data-bind="ntsFormLabel: {constraint: 'ItemName'}" >#{i18n.getText('KDL048_3')}</div>
+              <!-- A3_2 -->
+              <input id ="A3_2" data-bind="ntsTextEditor: {
+                name: '#[KDL048_3]',
+                value: attendanceRecordName,
+                constraint: 'ItemName',
+                option: ko.mapping.fromJS(
+                  new nts.uk.ui.option.TextEditorOption({
+                    textmode: 'text',
+                    width: '100px',
+                    textalign: 'left',
+                  })
+                ),
+                enable: itemNameLine().displayInputCategory === 2,
+                readonly: itemNameLine().displayInputCategory !== 2,
+              }" class="input"/>
+            </div>
+          </com:ko-if>
+        </div>
+        <div id="content-left">
+          <!-- A4 -->
+            <div class="ntsPanel" data-bind="ntsPanel: {
+              direction: 'none',
+              showIcon: true,
+              visible: true,
+              }">
+             <!-- A5_1 -->
+             <div class="combo">
+              <div data-bind="ntsFormLabel: {required: true}" >#{i18n.getText('KDL048_4')}</div>
+              <!-- A5_2 -->
+              <div id="A5_2" data-bind="ntsComboBox: {
+                name: '#[KDL048_4]',
+                options: attributeObject().attributeList,
+                optionsValue: 'attendanceTypeCode',
+                visibleItemsCount: 4,
+                value: valueCb,
+                optionsText: 'attendanceTypeName',
+                enable: attributeObject().selectionCategory === 2,
+                columns: [{ prop: 'attendanceTypeName', length: 10 }],
+              }" class="combo-box"></div>
+             </div>
+            <!-- A5_3 -->
+            <div style="width: 250" data-bind="ntsSearchBox: {
+              searchMode: 'filter',
+              targetKey: 'id',
+              comId: 'multi-list',
+              items: diligenceData,
+              selected: currentCodeList,
+              selectedKey: 'id',
+              fields: ['name', 'indicatesNumber'],
+              mode: 'igGrid',
+            }"></div>
+            <!-- A6 -->
+            <table id="multi-list"
+                    data-bind="ntsGridList:{
+                      name: '#[KDL048_5]',
+                      height: 300,
+                      options: diligenceData,
+                      optionsValue: 'id',
+                      columns: columns,
+                      multiple: true,
+                      value: currentCodeList,
+                      rows: 10
+                    }">
+              </table>
+          </div>
+        </div>
+        <div id="content-mid">
+          <button id="button-plus"  class="small"  data-bind="click: onClickPlus">#{i18n.getText('KDL048_8')}</button>
+          <button id="button-minus" class="small"  data-bind="click: onClickMinus">#{i18n.getText('KDL048_9')}</button>
+          <button id="button"  class="small" data-bind="click: onClickPrevAll"><i class="img-icon icon-prev-all"></i></button>
+        </div>
+        <div id="content-right">
+          <!-- A9 -->
+          <table id="table-Hd-Grant"
+            data-bind="ntsGridList: {
+              name: '#[KDL048_10]',
+              options: dataSelectedItemList,
+              optionsValue: 'itemId',
+              columns: columnSelectedItemList,
+              multiple: true,
+              value: currentCodeList2,
+              rows: 10
+            }"></table>
+        </div>
+      </div>
+			<div id="functions-area-bottom">
+        <!-- A11_1 -->
+        <button class="x-large proceed" data-bind="click: onClickOk">#{i18n.getText('KDL048_13')}</button>
+        <!-- A11_2 -->
+        <button class="large" data-bind="click: closeDialog">#{i18n.getText('KDL048_14')}</button>
+      </div>
+    </ui:define>
+  </ui:composition>
+
+</body>
+</html>

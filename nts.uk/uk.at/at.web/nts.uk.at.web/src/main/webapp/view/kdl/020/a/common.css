@@ -18,12 +18,29 @@
 	float: left;
 	padding: 5px;
 }
+div.form-label.broken {
+	vertical-align: top;
+}
+
+#tbl td {
+	padding: 5px 0px;
+}
+#tbl td.back {
+	padding-left: 5px !important;
+}
 
 .div_line {
 	margin-top: 10px;
 	float: left;
 	clear: both;
 	width: 100%;
+}
+
+#holiday-use_table {
+  margin-top: 5px;
+}
+#holiday-info_table {
+  margin-top: -5px;
 }
 
 .toggle_div {
@@ -42,12 +59,15 @@ hr {
 	padding: 10px;
 }
 
-.div_line>* {
+.div_line > * {
 	float: left;
 }
-
+.div_line_er {
+  margin-top: 10px;
+  clear: both;
+}
 .text_line {
-	line-height: 37px;
+	line-height: 35px;
 }
 
 .bold {

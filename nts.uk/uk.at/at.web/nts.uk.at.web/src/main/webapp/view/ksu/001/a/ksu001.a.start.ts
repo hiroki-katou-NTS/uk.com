@@ -1,120 +1,150 @@
 module nts.uk.at.view.ksu001.a {
     let __viewContext: any = window["__viewContext"] || {};
-
     __viewContext.ready(function() {
         __viewContext.viewModel = {
-            viewO: new ksu001.o.viewmodel.ScreenModel(),
-            viewQ: new ksu001.q.viewmodel.ScreenModel(),
+            viewAB: new ksu001.ab.viewmodel.ScreenModel(),
+            viewAC: new ksu001.ac.viewmodel.ScreenModel(),
             viewA: new ksu001.a.viewmodel.ScreenModel()
         };
+        
         nts.uk.ui.block.grayout();
-        __viewContext.viewModel.viewA.startKSU001().done(() => {
+        __viewContext.viewModel.viewA.startPage().done(() => {
             __viewContext.bind(__viewContext.viewModel);
-            __viewContext.viewModel.viewA.initCCG001().done(() => {
-                nts.uk.ui.block.clear();
+
+            // set icon Employee
+            let iconEmpPath = nts.uk.request.location.siteRoot.mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/").mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/").mergeRelativePath("7.png").serialize();
+            $('.icon-leftmost').css('background-image', 'url(' + iconEmpPath + ')');
+
+            // set backgound image icon header
+            let iconEventPath = nts.uk.request.location.siteRoot.mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/").mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/").mergeRelativePath("120.png").serialize();
+            $('.header-image-event').css('background-image', 'url(' + iconEventPath + ')');
+
+            let iconNoEventPath = nts.uk.request.location.siteRoot.mergeRelativePath(nts.uk.request.WEB_APP_NAME["comjs"] + "/").mergeRelativePath("lib/nittsu/ui/style/stylesheets/images/icons/numbered/").mergeRelativePath("121.png").serialize();
+            $('.header-image-no-event').css('background-image', 'url(' + iconNoEventPath + ')');
+
+            if (__viewContext.viewModel.viewAC.listPageComIsEmpty == true) {
+                $('.ntsButtonTableButton').addClass('nowithContent');
+            } 
+
+            if (__viewContext.viewModel.viewAC.listPageWkpIsEmpty == true) {
+                $('.ntsButtonTableButton').addClass('nowithContent');
+            }
+            
+            let item = uk.localStorage.getItem('nts.uk.characteristics.ksu001Data');
+            let userInfor = JSON.parse(item.get());
+            if (userInfor.updateMode == 'copyPaste') {
+                setTimeout(() => {
+                    __viewContext.viewModel.viewA.setCoppyStyler();
+                }, 800);
+            }
+            
+            __viewContext.viewModel.viewA.setWidthButtonnInPopupA1_12();
+            
+            $(window).resize(function() {
+                __viewContext.viewModel.viewA.setPositionButonDownAndHeightGrid();
+                __viewContext.viewModel.viewA.setPositionButonToRight();
+                __viewContext.viewModel.viewA.setHeightScreen();
             });
+
+            nts.uk.ui.block.clear();
         });
 
         initEvent();
     });
-
+    
     function initEvent(): void {
         // Fire event.
         $("#multi-list").on('itemDeleted', (function(e: Event) {
             alert("Item is deleted in multi grid is " + e["detail"]["target"]);
         }));
 
-        //popup 1
-        $('#popup-area2').ntsPopup({
+        //A1_7_1 click btn7
+        $('#A1_7_1').ntsPopup({
             position: {
                 my: 'left top',
                 at: 'left bottom+3',
-                of: $('.create')
+                of: $('#A1_7')
             }
         });
 
-        $('.create').click(function() {
-            $('#popup-area2').ntsPopup("toggle");
+        $('#A1_7').click(function() {
+            $('#A1_7_1').ntsPopup("toggle");
+        });
+        
+
+        // A1_12_1 click btn12
+        $('#A1_12_1').ntsPopup({
+            position: {
+                my: 'right top',
+                at: 'right bottom+3',
+                of: $('#A1_12')
+            }
         });
 
-        //popup 2
-        $('#popup-area3').ntsPopup({
+        $('#A1_12').click(function() {
+            $('#A1_12_1').ntsPopup("toggle");
+        });
+
+        $('#A4_1_popup').ntsPopup("init", {
             position: {
                 my: 'left top',
                 at: 'left bottom+3',
-                of: $('.check')
+                of: $('#A4')
+            },
+            dismissible: false
+        });
+        
+        $(window).on("mousedown.popup", function(e) {
+            let control = $('#A4_1_popup');
+            let combo = $('.nts-combo-column-0');
+
+            if ($(e.target).is(combo[1]) || $(e.target).is(combo[2])) {
+                console.log('not hide');
+            } else if (!$(e.target).is(control) // Target isn't Popup
+                && control.has(e.target).length === 0) { // Target isn't Trigger element
+                hide(control);
             }
         });
 
-        $('.check').click(function() {
-            $('#popup-area3').ntsPopup("toggle");
+        function hide(control: JQuery): JQuery {
+            control.css({
+                visibility: 'hidden',
+                top: "-9999px",
+                left: "-9999px"
+            });
+            return control;
+        }
+        
+        $('#A4').click(function() {
+            $('#A4_1_popup').ntsPopup("toggle");
         });
-
-        //popup 3
-        $('#popup-area4').ntsPopup({
+        
+        
+        //click btnA5
+        $('#A5_1').ntsPopup({
             position: {
                 my: 'left top',
                 at: 'left bottom+3',
-                of: $('.vacation')
+                of: $('#A5')
             }
         });
 
-        $('.vacation').click(function() {
-            $('#popup-area4').ntsPopup("toggle");
+        $('#A5').click(function() {
+            $('#A5_1').ntsPopup("toggle");
         });
 
-        //popup 4
-        $('#popup-area5').ntsPopup({
+        
+        //popup setting grid
+        $('#A16').ntsPopup({
             position: {
                 my: 'left top',
                 at: 'left bottom+3',
-                of: $('.setting')
+                of: $('.settingHeightGrid')
             }
         });
 
-        $('.setting').click(function() {
-            $('#popup-area5').ntsPopup("toggle");
+        $('.settingHeightGrid').click(function() {
+            $('#A16').ntsPopup("toggle");
         });
-
-        //popup A3-20
-        $('#popup-area6').ntsPopup({
-            position: {
-                my: 'left top',
-                at: 'left bottom+3',
-                of: $('.setting-button')
-            }
-        });
-
-        $('.setting-button').click(function() {
-            $('#popup-area6').ntsPopup("toggle");
-        });
-
-        //popup A2-2
-        $('#popup-area7').ntsPopup({
-            position: {
-                my: 'left top',
-                at: 'left bottom+3',
-                of: $('.done')
-            }
-        });
-
-        $('.done').click(function() {
-            $('#popup-area7').ntsPopup("toggle");
-        });
-
-
-        //popup A3-24
-        $('#popup-area9').ntsPopup({
-            position: {
-                my: 'left top',
-                at: 'left bottom+3',
-                of: $('.color-button')
-            }
-        });
-
-        $('.color-button').click(function() {
-            $('#popup-area9').ntsPopup("toggle");
-        });
-
     }
 }

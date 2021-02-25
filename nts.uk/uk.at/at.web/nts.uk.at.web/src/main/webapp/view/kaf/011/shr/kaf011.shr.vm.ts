@@ -1,580 +1,579 @@
-module nts.uk.at.view.kaf011.shr {
+module nts.uk.at.view.kaf011 {
+	import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
+	import ApplicationCommon = nts.uk.at.view.kaf000.shr.viewmodel.Application;
+	import getText = nts.uk.resource.getText;
+	import block = nts.uk.ui.block;
+	import ajax = nts.uk.request.ajax;
+	import windows = nts.uk.ui.windows;
+	
+	/** 振出申請 */
+	export class RecruitmentApp {
+		appType: number; //0: Rec-振出, 1: Abs-振休
+		application: Application = new Application();
+		applicationInsert: Application = this.application;
+		applicationUpdate: Application = this.application;
+		workInformation: WorkInformation = new WorkInformation();
+		workingHours: KnockoutObservableArray<TimeZoneWithWorkNo> = ko.observableArray([new TimeZoneWithWorkNo(1)]);
 
-    import dialog = nts.uk.ui.dialog.info;
-    import text = nts.uk.resource.getText;
-    import formatDate = nts.uk.time.formatDate;
-    import block = nts.uk.ui.block;
-    import alError = nts.uk.ui.dialog.alertError;
-
-    export module common {
-
-
-        export interface IWorkingHour {
-            startTime: Date;
-            endTime: Date;
-            startType: number;
-            endType: number;
-        }
-        export class WorkingHour {
-            startTime: KnockoutObservable<number> = ko.observable(null);
-            startTimeDisplay: KnockoutObservable<number> = ko.observable(null);
-            endTime: KnockoutObservable<number> = ko.observable(null);
-            endTimeDisplay: KnockoutObservable<number> = ko.observable(null);
-            startTypes: KnockoutObservableArray<any> = ko.observableArray([
-                { code: 1, text: text('KAF011_39') },
-                { code: 0, text: text('KAF011_40') }
-            ]);
-            startType: KnockoutObservable<number> = ko.observable(0);
-            endTypes: KnockoutObservableArray<any> = ko.observableArray([
-                { code: 1, text: text('KAF011_42') },
-                { code: 0, text: text('KAF011_43') }
-            ]);
-            endType: KnockoutObservable<number> = ko.observable(0);
-
-
-            timeOption = ko.mapping.fromJS({
-                timeWithDay: true,
-                width: "70px"
-            });
-            constructor(IWorkingHour?) {
-                if (IWorkingHour) {
-                    let startTime = IWorkingHour.startTime || null,
-                        endTime = IWorkingHour.endTime || null;
-                    this.startTime(startTime);
-                    this.endTime(endTime);
-                    this.startType(IWorkingHour.startType != undefined ? IWorkingHour.startType : 1);
-                    this.endType(IWorkingHour.endType != undefined ? IWorkingHour.endType : 1);
-                    this.startTimeDisplay(startTime);
-                    this.endTimeDisplay(endTime);
-                }
-            }
-            clearData() {
-                this.startTime(null);
-                this.endTime(null);
-                this.startTimeDisplay(null);
-                this.endTimeDisplay(null);
-            }
-            updateData(param) {
-                if (param) {
-                    let startTime = param.startTime,
-                        endTime = param.endTime;
-                    this.startTime(startTime);
-                    this.endTime(endTime);
-                    this.startTimeDisplay(startTime);
-                    this.endTimeDisplay(endTime);
-                }
-            }
-        }
-        export interface IWorkTime {
-            selectedWorkTypeCode: string;
-            first: any;
-            second: any;
-            selectedWorkTimeCode: string;
-            selectedWorkTimeName: string;
-
-        }
-
-        export interface IHolidayShipment {
-            applicationSetting: any;
-            appEmploymentSettings: Array<any>;
-            approvalFunctionSetting: any;
-            refDate: string;
-            recWkTypes: Array<any>;
-            absWkTypes: Array<any>;
-            preOrPostType: any;
-            appReasonComboItems: Array<any>;
-            employeeID: string;
-            employeeName: string;
-            drawalReqSet: any;
-            appTypeSet: any;
-            absApp: any;
-            application: any;
-            recApp: any;
-            transferDate: any;
-        }
-
-        export interface IAppTypeSet {
-            appType: number;
-            canClassificationChange: number;
-            companyId: string;
-            displayAppReason: number;
-            displayFixedReason: number;
-            displayInitialSegment: number;
-            sendMailWhenApproval: number;
-            sendMailWhenRegister: number;
-
-        }
-
-        export class AppTypeSet {
-            appType: KnockoutObservable<number> = ko.observable(0);
-            canClassificationChange: KnockoutObservable<number> = ko.observable(0);
-            companyId: KnockoutObservable<string> = ko.observable('');
-            displayAppReason: KnockoutObservable<number> = ko.observable(0);
-            displayFixedReason: KnockoutObservable<number> = ko.observable(0);
-            displayInitialSegment: KnockoutObservable<number> = ko.observable(0);
-            sendMailWhenApproval: KnockoutObservable<number> = ko.observable(0);
-            sendMailWhenRegister: KnockoutObservable<number> = ko.observable(0);
-            constructor(data: IAppTypeSet) {
-                if (data) {
-                    this.appType(data.appType);
-                    this.canClassificationChange(data.canClassificationChange);
-                    this.companyId(data.companyId);
-                    this.displayAppReason(data.displayAppReason);
-                    this.displayFixedReason(data.displayFixedReason);
-                    this.displayInitialSegment(data.displayInitialSegment);
-                    this.sendMailWhenApproval(data.sendMailWhenApproval);
-                    this.sendMailWhenRegister(data.sendMailWhenRegister);
-                }
-
-            }
-        }
-
-        export interface IWorkType {
-            /* 勤務種類コード */
-            workTypeCode: string;
-            /* 勤務種類名称 */
-            name: string;
-        }
-        export interface ICallerParameter {
-            workTypeCodes: Array<string>;
-            selectedWorkTypeCode: string;
-            workTimeCodes: Array<string>;
-            selectedWorkTimeCode: string;
-        }
-
-        export class DrawalReqSet {
-            deferredComment: KnockoutObservable<string> = ko.observable('');
-            deferredBold: KnockoutObservable<boolean> = ko.observable(false);
-            deferredLettleColor: KnockoutObservable<string> = ko.observable('');
-            pickUpComment: KnockoutObservable<string> = ko.observable('');
-            pickUpBold: KnockoutObservable<boolean> = ko.observable(false);
-            pickUpLettleColor: KnockoutObservable<string> = ko.observable('');
-            deferredWorkTimeSelect: KnockoutObservable<number> = ko.observable(0);
-            simulAppliReq: KnockoutObservable<number> = ko.observable(0);
-            permissionDivision: KnockoutObservable<any> = ko.observable(null);
-            constructor(drawalReqSet) {
-                if (drawalReqSet) {
-                    this.deferredComment(drawalReqSet.deferredComment || '');
-                    this.deferredBold(drawalReqSet.deferredBold || false);
-                    this.pickUpComment(drawalReqSet.pickUpComment || '');
-                    this.pickUpBold(drawalReqSet.pickUpBold || false);
-                    this.deferredWorkTimeSelect(drawalReqSet.deferredWorkTimeSelect || 0);
-                    this.simulAppliReq(drawalReqSet.simulAppliReq || 0);
-                    this.permissionDivision(drawalReqSet.permissionDivision != undefined ? drawalReqSet.permissionDivision : 1);
-                    this.deferredLettleColor(drawalReqSet.deferredLettleColor);
-                    this.pickUpLettleColor(drawalReqSet.pickUpLettleColor);
-                    let comItems;
-                    if (this.simulAppliReq() == 1) {
-                        comItems = [
-                            { code: 0, text: text('KAF011_19') }
-                        ]
-
-                    } else {
-                        comItems = [
-                            { code: 0, text: text('KAF011_19') },
-                            { code: 1, text: text('KAF011_20') },
-                            { code: 2, text: text('KAF011_21') },
-                        ]
-
-                    }
-
-                    let vm: nts.uk.at.view.kaf011.a.screenModel.ViewModel = __viewContext['viewModel'];
-                    vm.appComItems(comItems);
-                }
-            }
-        }
-        export class AppItems {
-            appID: KnockoutObservable<string> = ko.observable(null);
-            wkTypes: KnockoutObservableArray<IWorkType> = ko.observableArray([]);
-            wkType: KnockoutObservable<WkType> = ko.observable(new WkType(null));
-            wkTypeCD: KnockoutObservable<string> = ko.observable(null);
-            wkTimeCD: KnockoutObservable<string> = ko.observable(null);
-            wkTimeName: KnockoutObservable<string> = ko.observable('');
-            workTimeCDs: KnockoutObservableArray<IWorkType> = ko.observableArray([]);
-            wkTime1: KnockoutObservable<WorkingHour> = ko.observable(new WorkingHour());
-            wkTime2: KnockoutObservable<WorkingHour> = ko.observable(new WorkingHour());
-            wkText: KnockoutObservable<string> = ko.observable('');
-            appDate: KnockoutObservable<Date> = ko.observable(null);
-            changeWorkHoursType: KnockoutObservable<any> = ko.observable(false);
-
-            showAbsWorkTimeZone = ko.computed(() => {
-                let self = this, vm: nts.uk.at.view.kaf011.a.screenModel.ViewModel = __viewContext['viewModel'],
-                    workAtr = self.wkType().workAtr();
-                if (!vm || !vm.drawalReqSet) {
-                    return false;
-                }
-                    let wkTimeSelect = vm.drawalReqSet().deferredWorkTimeSelect();
-
-                    //利用しない
-                    if (workAtr == 0 || wkTimeSelect == 0) {
-                        return false;
-                    }
-
-                    let morningType = self.wkType().morningCls(),
-                        afternoonType = self.wkType().afternoonCls(),
-                        Pause = 8,
-                        Attendance = 0;
-                    //利用する
-                    if (wkTimeSelect == 1) {
-                        //午前と午後
-                        if (workAtr == 1) {
-                            let isAHalfWorkDay = (afternoonType == Attendance && morningType == Pause) || (afternoonType == Pause && morningType == Attendance);
-                            if (isAHalfWorkDay) {
-                                return true;
-                            } else {
-                                let wkType = "1234569",
-                                    isAHalfDayOff = (wkType.indexOf(afternoonType) != -1 && morningType == Pause) || (wkType.indexOf(morningType) != -1 && afternoonType == Pause);
-                                if (isAHalfDayOff) {
-                                    return true;
-                                } else {
-                                    return false;
-                                }
-
-                            }
-                        }
-                    }
-                    //半休時のみ利用する
-                    if (wkTimeSelect == 2) {
-                        //午前と午後
-                        if (workAtr == 1) {
-                            if (self.isBothTypeNotAttendance(afternoonType, morningType)) {
-                                return false;
-                            }
-                        } else {
-                            return false;
-                        }
-                    }
-                    return true;
-                
-            });
-
-            showWorkingTime1 = ko.computed(() => {
-                let self = this, vm: nts.uk.at.view.kaf011.a.screenModel.ViewModel = __viewContext['viewModel'],
-                    workAtr = self.wkType().workAtr();
-                if (!vm || !vm.drawalReqSet) {
-                    return false;
-                }
-                let wkTimeSelect = vm.drawalReqSet().deferredWorkTimeSelect();
-                ////利用しない
-                if (workAtr == 0 || wkTimeSelect == 0) {
-                    return false;
-                }
-                let morningType = self.wkType().morningCls(),
-                    afternoonType = self.wkType().afternoonCls(),
-                    Pause = 8,
-                    Attendance = 0;
-                //半休時のみ利用する
-                //利用する
-                let isWkTimeIsHoliday = wkTimeSelect == 1 || wkTimeSelect == 2;
-                if (isWkTimeIsHoliday) {
-                    if (workAtr == 1) {
-                        if (self.isBothTypeNotAttendance(afternoonType, morningType)) {
-                            return false;
-                        }
-                    } else {
-                        return false;
-                    }
-                }
-                return true;
-
-            });
-
-            constructor(data) {
-                let self = this;
-                if (data) {
-                    self.appID(data.appID);
-                    self.wkTypeCD(data.wkTypeCD);
-                    self.wkTimeCD(data.wkTimeCD);
-                    self.wkTime1(new WorkingHour(data.wkTime1));
-                    self.wkTime2(new WorkingHour(data.wkTime2));
-                    self.appDate(data.appDate);
-                    self.changeWorkHoursType(data.changeWorkHoursType);
-                }
-                self.wkTimeCD.subscribe((newWkTimeCD) => {
-                    let self = this,
-                        vm: nts.uk.at.view.kaf011.a.screenModel.ViewModel = __viewContext['viewModel'],
-                        changeWkTypeParam = {
-                            wkTypeCD: self.wkTypeCD(),
-                            wkTimeCD: newWkTimeCD
-                        };
-                    if (newWkTimeCD && !vm.firstLoad()) {
-                        block.invisible();
-                        service.getSelectedWorkingHours(changeWkTypeParam).done((data: IChangeWorkType) => {
-                            self.setDataFromWkDto(data);
-                        }).fail(() => {
-
-                        }).always(() => {
-                            self.updateWorkingText();
-                            block.clear();
-                        });
-                    }
-
-                });
-                self.wkTypeCD.subscribe((newWkType) => {
-                    let vm: nts.uk.at.view.kaf011.a.screenModel.ViewModel = __viewContext['viewModel'];
-                    
-                    if (!_.isEmpty(newWkType)) {
-                        
-                        let changeWkTypeParam = {
-                            wkTypeCD: newWkType,
-                            wkTimeCD: self.wkTimeCD()
-                        };
-                        
-                        if (newWkType && !vm.firstLoad()) {
-                            
-                            block.invisible();
-                            service.changeWkType(changeWkTypeParam).done((data: IChangeWorkType) => {
-                                self.setDataFromWkDto(data);
-                            }).always(() => { block.clear(); });
-                        }
-                    }
-                });
-
-                self.wkTypes.subscribe((items) => {
-                    if (items.length && !(_.find(items, ['workTypeCode', self.wkTypeCD()]))) {
-                        self.wkTypeCD(items[0].workTypeCode);
-                    }
-
-                });
-            }
-            setDataFromWkDto(data) {
-                let self = this,
-                    vm: nts.uk.at.view.kaf011.a.screenModel.ViewModel = __viewContext['viewModel'];
-
-                if (data) {
-                    if (!vm.firstLoad()) {
-                        if (data.timezoneUseDtos) {
-                            $("#recTime1Start").ntsError("clear");
-                            $("#recTime1End").ntsError("clear");
-                            let timeZone1 = _.find(data.timezoneUseDtos, ['workNo', 1]);
-                            let timeZone2 = _.find(data.timezoneUseDtos, ['workNo', 2]);
-
-                            timeZone1 ? self.wkTime1().updateData(timeZone1) : self.wkTime1().clearData();
-
-                            timeZone2 ? self.wkTime2().updateData(timeZone2) : self.wkTime2().clearData();
-
-                        } else {
-                            self.wkTime1().clearData();
-                            self.wkTime2().clearData();
-                        }
-                    }
-                    if (data.wkType) {
-                        self.wkType().workAtr(data.wkType.workAtr);
-                        self.wkType().morningCls(data.wkType.morningCls);
-                        self.wkType().afternoonCls(data.wkType.afternoonCls);
-                    }
-                }
-            }
-            setWkTypes(wkTypeDtos: Array<any>) {
-                let self = this;
-                this.wkTypes(_.map(wkTypeDtos, wkType => {
-                    return { workTypeCode: wkType.workTypeCode, name: wkType.workTypeCode + ' ' + wkType.name };
-                }));
-
-
-            }
-
-            enableWkTime() {
-                let self = this, vm: nts.uk.at.view.kaf011.a.screenModel.ViewModel = __viewContext['viewModel'];
-                if (!self.changeWorkHoursType() || vm.drawalReqSet().permissionDivision() == 0) {
-                    return false;
-                }
-
-                return true;
-
-            }
-            isBothTypeNotAttendance(afternoonType, morningType) {
-                let Attendance = 0;
-                return afternoonType != Attendance && morningType != Attendance;
-            }
-
-            parseTime(value) {
-                return nts.uk.time.parseTime(value, true).format()
-            }
-            updateWorkingText() {
-                let self = this,
-                    wkTimeCDText = self.wkTimeCD() || "",
-                    wkTimeNameText = self.wkTimeName() || text('KAF011_68'),
-                    wkText = self.wkTimeName() ? text('KAF011_70', [wkTimeCDText, wkTimeNameText, '', '', '']) : text('KAF011_68', [wkTimeCDText]);
-                self.wkText(wkText);
-            }
-
-            changeAbsDateToHoliday() {
-                let self = __viewContext['viewModel'], saveCmd: common.ISaveHolidayShipmentCommand = {
-                    recCmd: ko.mapping.toJS(self.recWk()),
-                    absCmd: ko.mapping.toJS(self.absWk()),
-                    comType: self.appComSelectedCode(),
-                    usedDays: 1,
-                    appCmd: {
-                        appReasonText: self.appReasonSelectedID(),
-                        applicationReason: self.reason(),
-                        prePostAtr: self.prePostSelectedCode(),
-                        enteredPersonSID: self.employeeID(),
-                        appVersion: self.version(),
-                    }
-                };
-                block.invisible();
-                service.changeAbsDateToHoliday(saveCmd).done((payoutType) => {
-                    nts.uk.request.jump("/view/kaf/010/a/index.xhtml", { appID: self.absWk().appID(), appDate: self.absWk().appDate(), payoutType: payoutType, applicant: [self.employeeID()], uiType: 1 });
-                }).fail((error) => {
-                    alError({ messageId: error.messageId, messageParams: error.parameterIds });
-                }).always(() => {
-                    block.clear();
-                });
-
-
-            }
-
-
-            openCDialog() {
-                let self = this,
-                    vm = nts.uk.at.view.kaf011.a.screenModel.ViewModel = __viewContext['viewModel'];
-                nts.uk.ui.windows.setShared('KAF_011_PARAMS', {
-                    prePostSelectedCode: vm.prePostSelectedCode(),
-                    appReasons: vm.appReasons(),
-                    reason: vm.reason(),
-                    appReasonSelectedID: vm.appReasonSelectedID(),
-                    absApp: ko.mapping.toJS(vm.absWk()),
-                    version: vm.version,
-                    employeeID: vm.employeeID()
-                }, true);
-
-                nts.uk.ui.windows.sub.modal('/view/kaf/011/c/index.xhtml').onClosed(function(): any {
-
-                    let newAbsAppID = nts.uk.ui.windows.getShared('KAF_011_C_PARAMS');
-                    if (newAbsAppID) {
-                        if (newAbsAppID != 'Msg_198') {
-                            vm.startPage(newAbsAppID, true);
-                        } else {
-                            nts.uk.request.jump('../../../cmm/045/a/index.xhtml');
-                        }
-                    }
-
-                });
-
-            }
-
-
-
-            openKDL003() {
-                let self = this,
-                    selectedWorkTypeCode = self.wkTypeCD(),
-                    WorkTimeCd = self.wkTimeCD();
-
-                nts.uk.ui.windows.setShared('parentCodes', {
-                    workTypeCodes: [selectedWorkTypeCode],
-                    selectedWorkTypeCode: selectedWorkTypeCode,
-                    workTimeCodes: _.map(self.workTimeCDs(), o => o.workTypeCode) ,
-                    selectedWorkTimeCode: WorkTimeCd,
-                }, true);
-
-
-                nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml').onClosed(function(): any {
-                    //view all code of selected item 
-                    var childData: IWorkTime = nts.uk.ui.windows.getShared('childData');
-                    if (childData) {
-                        let oldCD = self.wkTimeCD();
-                        self.wkTimeCD(childData.selectedWorkTimeCode);
-                        if (oldCD == self.wkTimeCD()) {
-                            self.wkTimeCD.valueHasMutated();
-                        }
-                        if (childData.first) {
-                            $("#recTime1Start").ntsError("clear");
-                            $("#recTime1End").ntsError("clear");
-                            self.wkTimeName(childData.selectedWorkTimeName);
-                        }
-                        if (childData.selectedWorkTimeCode && childData.selectedWorkTimeName) {
-                            self.updateWorkingText();
-                        }
-                    }
-                });
-
-            }
-        }
-        export class WkType {
-            workAtr: KnockoutObservable<any> = ko.observable(null);
-            afternoonCls: KnockoutObservable<any> = ko.observable(null);
-            morningCls: KnockoutObservable<any> = ko.observable(null);
-            constructor(wkType?) {
-                if (wkType) {
-                    this.workAtr(wkType.workAtr);
-                    this.afternoonCls(wkType.afternoonCls);
-                    this.morningCls(wkType.morningCls);
-                }
-            }
-        }
-        export interface ISaveHolidayShipmentCommand {
-            recCmd: IRecruitmentAppCommand;
-            absCmd: IAbsenceLeaveAppCommand;
-            comType: number;
-            usedDays: number;
-            appCmd: IApplicationCommand;
-        }
-
-        export interface IRecruitmentAppCommand {
-            appDate: string;
-            wkTypeCD: string;
-            workLocationCD: string;
-            wkTime1: IWkTimeCommand;
-            wkTime2: IWkTimeCommand;
-        }
-        export interface IWkTimeCommand {
-            startTime: number;
-            startType: number;
-            endTime: number;
-            endType: number;
-            wkTimeCD: string;
-        }
-
-        export interface IAbsenceLeaveAppCommand {
-            appDate: string;
-            wkTypeCD: string;
-            changeWorkHoursType: number;
-            workLocationCD: string;
-            wkTime1: IWkTimeCommand;
-            wkTime2: IWkTimeCommand;
-        }
-
-        export interface IApplicationCommand {
-            appReasonText: string;
-            applicationReason: string;
-            prePostAtr: number;
-            enteredPersonSID: string;
-            appVersion: number;
-        }
-        export interface IChangeWorkType {
-            timezoneUseDtos: Array<ITimezoneUse>;
-            wkType: any;
-        }
-
-        export interface ITimezoneUse {
-            useAtr: number;
-            workNo: number;
-            start: number;
-            end: number;
-        }
-
-
-        export interface IApprovalSetting {
-            bottomComment: boolean;
-            bottomCommentFontColor: string;
-            bottomCommentFontWeight: boolean;
-            companyID: string;
-            resultDisp: number;
-            stampAtr_Care_Disp: number;
-            stampAtr_Child_Care_Disp: number;
-            stampAtr_GoOut_Disp: number;
-            stampAtr_Sup_Disp: number;
-            stampAtr_Work_Disp: number;
-            stampGoOutAtr_Compensation_Disp: number;
-            stampGoOutAtr_Private_Disp: number;
-            stampGoOutAtr_Public_Disp: number;
-            stampGoOutAtr_Union_Disp: number;
-            stampPlaceDisp: number;
-            supFrameDispNO: number;
-            topComment: string;
-            topCommentFontColor: string;
-            topCommentFontWeight: boolean;
-        }
+		leaveComDayOffMana: KnockoutObservableArray<SubWorkSubHolidayLinkingMng> = ko.observableArray([]);
+		leaveComDayOffManaOld: KnockoutObservableArray<SubWorkSubHolidayLinkingMng> = ko.observableArray([]);		
+		
+		workTypeSelected = new WorkTypeSelected();
+		workTypeList = ko.observableArray([]);
+		workTimeDisplay: KnockoutObservable<string> = ko.observable();
+		displayInforWhenStarting: any = null;
+		
+		//điều kiện hiển thị ※H1
+		dk1: KnockoutObservable<boolean> = ko.observable(false);
+		// điều kiện hiển thị ※E1
+		dk2: KnockoutObservable<boolean> = ko.observable(false);
+		// điều kiện hiển thị ※E1-1
+		dk3: KnockoutObservable<boolean> = ko.observable(false);
+		//
+		dk4: KnockoutObservable<boolean> = ko.observable(false);
+		
+		started: boolean = false;
+		
+		isAScreen: KnockoutObservable<boolean> = ko.observable(true); //true: screen A, false: screen B
+		outputMode: KnockoutObservable<number> = ko.observable(1); //DISPLAYMODE(0),EDITMODE(1);
+		
+		constructor(appType: number, isAScreen?: boolean){
+			let self = this;
+			if(isAScreen != undefined){
+				self.isAScreen(isAScreen);
+			}
+			self.appType = appType;
+			self.workInformation.workType.subscribe((data: string)=>{
+				if(data){
+					let workTypeAfter = _.find(self.workTypeList(), {'workTypeCode': data});
+					self.workTypeSelected.update(workTypeAfter);
+					self.checkDisplay();
+					//only Rec-振出
+					if(self.appType == 0 && self.started){
+						let workTypeBefore = _.find(self.workTypeList(), {'workTypeCode': self.displayInforWhenStarting.applicationForWorkingDay.workType});
+						let payoutSubofHDManagements: any[] = [];
+						let command = {
+							workTypeBefore: workTypeBefore, 
+							workTypeAfter: workTypeAfter, 
+							workTimeCode: self.workInformation.workTime(),
+							leaveComDayOffMana: self.leaveComDayOffMana(),
+							payoutSubofHDManagements: payoutSubofHDManagements,
+						}
+						block.invisible();
+						ajax("at/request/application/holidayshipment/changeWorkType", command).done((data:any) => {
+							if(data.clearManageSubsHoliday){
+								self.leaveComDayOffMana([]);
+							}
+							let w1 = _.find(self.workingHours(), {'workNo': 1});
+							let w1n:any = _.find(data.workingHours, {'workNo': 1});
+							if(w1n){
+								w1.update(w1n.timeZone);	
+							}else{
+								w1.update({startTime: null, endTime: null});
+							}
+							let w2 = _.find(self.workingHours(), {'workNo': 2});
+							let w2n:any = _.find(data.workingHours, {'workNo': 2});
+							if(w2n){
+								if(w2){
+									w2.update(w2n.timeZone);	
+								}else{
+									let tg = new TimeZoneWithWorkNo(2);
+									tg.update(w2n.timeZone);
+									self.workingHours.push(tg);									
+								}
+							}else if(w2){
+								self.workingHours.remove(c => {
+							        return c.workNo== 2;
+							    });
+							}
+						}).always(() => {
+	                        block.clear();
+	                    });
+					}
+				}
+			});
+		}
+		
+		bindingScreenA(data: any, displayInforWhenStarting: any){
+			let self = this;
+			self.started = false;
+			_.orderBy(data.workTypeList, ['code'], ['asc'])
+			self.workTypeList(data.workTypeList);
+			self.workInformation.update(data);
+			self.displayInforWhenStarting = displayInforWhenStarting;
+			
+			let w1 = _.find(self.workingHours(), {'workNo': 1});
+			w1.update({startTime: data.startTime, endTime: data.endTime});
+			if(data.startTime2 && data.endTime2){
+				let w2 = new TimeZoneWithWorkNo(2);
+				w2.update({startTime: data.startTime2, endTime: data.endTime2});
+				self.workingHours.push(w2);	
+			}else{
+				self.workingHours.remove(c => {
+			        return c.workNo== 2;
+			    });
+			}
+			if(data.workTime){
+				let workTime: any = _.find(displayInforWhenStarting.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst, {'worktimeCode': data.workTime});
+				self.workTimeDisplay(data.workTime + ' ' + 
+									(workTime?(workTime.workTimeDisplayName.workTimeName + ' ') : '' )+ 
+									moment(Math.floor(data.startTime / 60),'mm').format('mm') + ":" + moment(data.startTime % 60,'mm').format('mm') + getText('KAF011_37') + moment(Math.floor(data.endTime / 60),'mm').format('mm') + ":" + moment(data.endTime % 60,'mm').format('mm'));	
+			}
+			self.checkDisplay();
+			self.started = true;
+			
+		}
+		
+		bindingScreenB(param: any, workTypeList:[], displayInforWhenStarting: any){
+			let self = this;
+			self.application.update(param.application);
+			self.workTypeList(workTypeList);
+			self.workInformation.update(param.workInformation);
+			self.leaveComDayOffMana(_.map(param.leaveComDayOffMana, (c) =>new SubWorkSubHolidayLinkingMng(c)));
+			self.leaveComDayOffManaOld(self.leaveComDayOffMana());
+			
+			self.displayInforWhenStarting = displayInforWhenStarting;
+			
+			let w1 = _.find(self.workingHours(), {'workNo': 1});
+			let time1:any = _.find(param.workingHours, { 'workNo': 1});
+			if(time1){
+				w1.update(time1.timeZone);
+			}
+			let w2:any = _.find(param.workingHours, { 'workNo': 2});
+			if(w2) {
+				let tg = new TimeZoneWithWorkNo(2);
+				tg.update(w2.timeZone)
+				self.workingHours.push(tg);		
+			}else{
+				self.workingHours.remove(c => {
+			        return c.workNo == 2;
+			    });
+			} 
+			if(param.workInformation.workTime != null && time1 != undefined){
+				let workTime: any = _.find(displayInforWhenStarting.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst, {'worktimeCode': param.workInformation.workTime});
+				self.workTimeDisplay(param.workInformation.workTime + ' ' + 
+									(workTime?(workTime.workTimeDisplayName.workTimeName + ' ') : '' )+ 
+									moment(Math.floor(time1.timeZone.startTime / 60),'mm').format('mm') + ":" + moment(time1.timeZone.startTime % 60,'mm').format('mm') + getText('KAF011_37') + moment(Math.floor(time1.timeZone.endTime / 60),'mm').format('mm') + ":" + moment(time1.timeZone.endTime % 60,'mm').format('mm'));	
+			}
+			self.checkDisplay();
+			self.started = true;
+		}
+		
+		convertTimeToString(data: any){ 
+			let self = this;
+			if(data.first && data.first.start){
+				self.workTimeDisplay(data.selectedWorkTimeCode + ' ' + 
+									data.selectedWorkTimeName + ' ' + 
+									moment(Math.floor(data.first.start / 60),'mm').format('mm') + ":" + moment(data.first.start % 60,'mm').format('mm') + getText('KAF011_37') + moment(Math.floor(data.first.end / 60),'mm').format('mm') + ":" + moment(data.first.end % 60,'mm').format('mm'));
+			}else{
+				self.workTimeDisplay("");
+			}         
+		}
+		
+		checkDisplay(){
+			let self = this;
+			if(self.displayInforWhenStarting){
+				//điều kiện hiển thị ※H1
+				self.dk1(self.displayInforWhenStarting.substituteManagement == 1 && self.workTypeSelected.checkH1Ver19());
+				// điều kiện hiển thị ※E1
+				self.dk2(self.checkE1Common() || (self.workTypeSelected.workAtr == 1 && self.workTypeSelected.checkE12() && self.displayInforWhenStarting.workInfoAttendanceReflect.reflectWorkHour == 1));
+				// điều kiện hiển thị ※E1-1
+				self.dk3(self.checkE1Common());
+				if(self.displayInforWhenStarting && self.displayInforWhenStarting.appDispInfoStartup.appDetailScreenInfo){
+					self.outputMode(self.displayInforWhenStarting.appDispInfoStartup.appDetailScreenInfo.outputMode);
+				}
+			}
+			
+		}
+		/**就業時間帯を反映する※1(Phản ánh worktime ※1) 勤務種類：1日の勤務区分//worktype: phân loại đi làm 1 ngày */
+		checkE1Common(): boolean{
+			let self = this;
+			return self.workTypeSelected.workAtr == 1 && self.workTypeSelected.checkE11()
+					&& (self.displayInforWhenStarting.workInfoAttendanceReflect.reflectWorkHour == 1 
+						|| self.displayInforWhenStarting.workInfoAttendanceReflect.reflectWorkHour == 2) 
+		}
+				
+		openKDL003() {
+			let self = this;
+			windows.setShared('parentCodes',{
+										workTypeCodes: _.map(self.workTypeList(),'workTypeCode'),
+										selectedWorkTypeCode: self.workInformation.workType(), 
+										selectedWorkTimeCode: self.workInformation.workTime()
+									});
+			windows.sub.modal( '/view/kdl/003/a/index.xhtml').onClosed(() => {
+				let data = windows.getShared('childData');
+					if(data){
+						
+						self.workInformation.workType(data.selectedWorkTypeCode);
+						self.workInformation.workTime(data.selectedWorkTimeCode);
+						
+						let w1 = _.find(self.workingHours(), {'workNo': 1});
+						w1.update(data.first);
+						if(data.second.start && data.second.end){
+							let w2 = _.find(self.workingHours(), {'workNo': 2});
+							if(w2){
+								w2.update(data.second);
+							}else{
+								let tg = new TimeZoneWithWorkNo(2);
+								tg.update(data.second)
+								self.workingHours.push(tg);	
+							}
+						}else{
+							self.workingHours.remove(c => {
+						        return c.workNo== 2;
+						    });
+						}
+						
+						self.convertTimeToString(data);
+					}
+			});
+		}
+		
+		openKDL036() {
+			let self = this;
+			if(self.application.appDate() == "" ){
+				if(self.appType == 0){
+					$("#recAppDate").trigger("validate");	
+				}else{
+					$("#absAppDate").trigger("validate");	
+				}
+			}else{
+				windows.setShared('KDL036_PARAMS', {
+					employeeId: self.application.employeeIDLst()[0],
+					period: {
+						startDate: moment(self.application.appDate()).format('YYYY/MM/DD'),
+						endDate: moment(self.application.appDate()).format('YYYY/MM/DD')
+					},
+					daysUnit: self.workTypeSelected.workAtr == 0 ? 1: 0.5,
+					targetSelectionAtr: 1, //申請
+					actualContentDisplayList: self.displayInforWhenStarting.appDispInfoStartup.appDispInfoWithDateOutput.opActualContentDisplayLst,
+					managementData: self.leaveComDayOffMana()
+				});
+				windows.sub.modal( '/view/kdl/036/a/index.xhtml').onClosed(() => {
+					let data = windows.getShared('KDL036_RESULT');
+					if(data){
+						let tg: SubWorkSubHolidayLinkingMng[] = [];
+						_.forEach(data, item =>{
+							tg.push(new SubWorkSubHolidayLinkingMng(item));	
+						});
+						self.leaveComDayOffMana(tg);
+					}
+				});
+			}
+		}
+		
+	}
+	
+	/** 振休申請 */	
+	export class AbsenceLeaveApp extends RecruitmentApp {
+		workChangeUse: KnockoutObservable<boolean> = ko.observable(false);
+		changeSourceHoliday: KnockoutObservable<string> = ko.observable();
+		payoutSubofHDManagements: KnockoutObservableArray<SubWorkSubHolidayLinkingMng> = ko.observableArray([]);
+		payoutSubofHDManagementsOld: KnockoutObservableArray<SubWorkSubHolidayLinkingMng> = ko.observableArray([]);
+		
+		constructor(appType: number, isAScreen?: boolean){
+			super(appType, isAScreen);
+			let self = this;
+			self.workInformation.workType.subscribe((data: string)=>{
+				//only Abs-振休
+				if(data && self.appType == 1 && self.started){
+					let workTypeAfter = _.find(self.workTypeList(), {'workTypeCode': data});
+					let workTypeBefore = _.find(self.workTypeList(), {'workTypeCode': self.displayInforWhenStarting.applicationForHoliday.workType});
+					let command = {
+						workTypeBefore: workTypeBefore, 
+						workTypeAfter: workTypeAfter, 
+						workTimeCode: self.workInformation.workTime(),
+						leaveComDayOffMana: self.leaveComDayOffMana(),
+						payoutSubofHDManagements: self.payoutSubofHDManagements(),
+					}
+					block.invisible();
+					ajax("at/request/application/holidayshipment/changeWorkType", command).done((data:any) => {
+						if(data.clearManageSubsHoliday){
+							self.leaveComDayOffMana([]);
+						}
+						if(data.clearManageHolidayString){
+							self.payoutSubofHDManagements([]);
+						}
+						let w1 = _.find(self.workingHours(), {'workNo': 1});
+						let w1n:any = _.find(data.workingHours, {'workNo': 1});
+						if(w1n){
+							w1.update(w1n.timeZone);	
+						}else{
+							w1.update({startTime: null, endTime: null});
+						}
+						let w2 = _.find(self.workingHours(), {'workNo': 2});
+						let w2n:any = _.find(data.workingHours, {'workNo': 2});
+						if(w2n){
+							if(w2){
+								w2.update(w2n.timeZone);	
+							}else{
+								let tg = new TimeZoneWithWorkNo(2);
+								tg.update(w2n.timeZone);
+								self.workingHours.push(tg);									
+							}
+						}else if(w2){
+							self.workingHours.remove(c => {
+						        return c.workNo== 2;
+						    });
+						}
+					}).always(() => {
+                        block.clear();
+                    });;
+				}
+			});
+		}
+		
+		bindingScreenBAbs(param: any, workTypeList: [], displayInforWhenStarting: any){
+			let self = this;
+			super.bindingScreenB(param, workTypeList, displayInforWhenStarting);
+			self.payoutSubofHDManagements(_.map(param.payoutSubofHDManagements, (c) =>new SubWorkSubHolidayLinkingMng(c)));
+			self.payoutSubofHDManagementsOld(self.payoutSubofHDManagements());
+			self.workChangeUse(param.workChangeUse);
+			self.changeSourceHoliday(param.changeSourceHoliday);
+		}
+		
+		openKDL035() {
+			let self = this;
+			if(self.application.appDate() == "" ){
+				$("#absAppDate").trigger("validate");	
+			}else{
+				windows.setShared('KDL035_PARAMS', {
+					employeeId: self.application.employeeIDLst()[0],
+					period: {
+						startDate: moment(self.application.appDate()).format('YYYY/MM/DD'),
+						endDate: moment(self.application.appDate()).format('YYYY/MM/DD')
+					},
+					daysUnit: self.workTypeSelected.workAtr == 0 ? 1: 0.5,
+					targetSelectionAtr: 1,
+					actualContentDisplayList: self.displayInforWhenStarting.appDispInfoStartup.appDispInfoWithDateOutput.opActualContentDisplayLst,
+					managementData: self.payoutSubofHDManagements()
+				});
+				windows.sub.modal( '/view/kdl/035/a/index.xhtml').onClosed(() => {
+					let data = windows.getShared('KDL035_RESULT');
+					if(data){
+						let tg: SubWorkSubHolidayLinkingMng[] = [];
+						_.forEach(data, item =>{
+							tg.push(new SubWorkSubHolidayLinkingMng(item));	
+						});
+						self.payoutSubofHDManagements(tg);
+					}
+				});
+			}
+		}
+		openKAF011C() {
+			let self = this;
+			windows.setShared('KAF011C',self.displayInforWhenStarting);
+			windows.sub.modal( '/view/kaf/011/c/index.xhtml').onClosed(() => {
+				let data = windows.getShared('KAF011C_RESLUT');
+				let viewModelParent: any = nts.uk.ui._viewModel.content;
+				if(data){
+					let cacheLst = __viewContext.transferred.value.listAppMeta,
+						index = _.indexOf(cacheLst, viewModelParent.currentApp()) + 1,
+					 	preLst = _.slice(cacheLst, 0, index),
+						afterLst = _.slice(cacheLst, index);
+					__viewContext.transferred.value.listAppMeta = _.concat(_.concat(preLst, [data.appID]), afterLst);
+					viewModelParent.listApp(__viewContext.transferred.value.listAppMeta);
+					viewModelParent.currentApp(data.appID);
+					viewModelParent.loadData();
+				}
+				console.log(data);
+			});
+		}
+	}
+	
+	export class Application extends ApplicationCommon{
+		constructor(){
+			super(AppType.COMPLEMENT_LEAVE_APPLICATION);
+		}
+		update(param: any){
+			let self = this;
+			self.appID(param.appID);
+            self.prePostAtr(param.prePostAtr);
+            self.employeeIDLst([param.employeeID]);
+            self.appDate(param.appDate);
+            self.opAppReason(param.opAppReason);
+            self.opAppStandardReasonCD(param.opAppStandardReasonCD);
+            self.opReversionReason(param.opReversionReason);
+            self.opAppStartDate(param.opAppStartDate);
+            self.opAppEndDate(param.opAppEndDate);
+            self.opStampRequestMode(param.opStampRequestMode);
+		}
+	}
+	
+	export class WorkInformation {
+		workType: KnockoutObservable<string> = ko.observable();
+		workTime: KnockoutObservable<string> = ko.observable();
+		constructor(){}
+		update(param: any){
+			let self = this;
+			self.workType(param.workType);
+			self.workTime(param.workTime);
+		}
+	}
+	
+	export class TimeZoneWithWorkNo {
+		workNo: number;
+		timeZone: TimeZone = new TimeZone();
+		constructor(workNo: number){
+			let self = this;
+			self.workNo = workNo;
+		}
+		update(timeZone: any) {
+			if(timeZone){
+				let self = this;
+				self.timeZone.update(timeZone);	
+			}
+		}
+		
+	}
+	
+	export class TimeZone {
+		startTime: KnockoutObservable<number> = ko.observable();
+		endTime: KnockoutObservable<number> = ko.observable();
+		constructor(){
+		}
+		update(param: any){
+			let self = this;
+			self.startTime(param.startTime || param.start);
+			self.endTime(param.endTime || param.end);
+		}
+		
+	}
+	
+	export class Comment {
+		subHolidayComment: KnockoutObservable<string> = ko.observable();
+	    subHolidayColor: KnockoutObservable<string> = ko.observable();
+	    subHolidayBold: KnockoutObservable<boolean> = ko.observable(false);
+	    subWorkComment: KnockoutObservable<string> = ko.observable();
+	    subWorkColor: KnockoutObservable<string> = ko.observable();
+	    subWorkBold: KnockoutObservable<boolean> = ko.observable(false);
+		constructor(){}
+		update(param: any){
+			let self = this;
+			self.subHolidayComment(param.subHolidayComment);
+			self.subHolidayColor(param.subHolidayColor);
+			self.subHolidayBold(param.subHolidayBold);
+			self.subWorkComment(param.subWorkComment);
+			self.subWorkColor(param.subWorkColor);
+			self.subWorkBold(param.subWorkBold);
+		}
+	}
+	
+	export class SubWorkSubHolidayLinkingMng {
+        // 社員ID
+        sid: string;
+        // 逐次休暇の紐付け情報 . 発生日
+        outbreakDay: Date;
+        // 逐次休暇の紐付け情報 . 使用日
+        dateOfUse: Date;
+        // 逐次休暇の紐付け情報 . 使用日数
+        dayNumberUsed: number;
+        // 逐次休暇の紐付け情報 . 対象選択区分
+        targetSelectionAtr: number;
+		constructor(param: any){
+			let self = this;
+			self.sid = param.employeeId || param.sid;
+			self.outbreakDay = new Date(param.outbreakDay);
+			self.dateOfUse = new Date(param.dateOfUse);
+			self.dayNumberUsed = param.dayNumberUsed;
+			self.targetSelectionAtr = param.targetSelectionAtr;
+		}
     }
+
+	export class WorkTypeSelected {
+		workAtr: number;
+		morningCls: number;
+		afternoonCls: number;
+		constructor(){}
+		update(param: any){
+			let self = this;
+			if(param){
+				self.workAtr = param.workAtr;
+				self.morningCls = param.morningCls;
+				self.afternoonCls = param.afternoonCls;	
+			}
+		}
+		checkH1Ver19(): boolean{
+			let self = this;
+			return self.workAtr == 1 && (self.morningCls == 6 || self.afternoonCls == 6);
+		}
+		/** 半日振休＋出勤系 */
+		checkE11():boolean{
+			let self = this;
+			return (self.morningCls == 8 && self.afternoonCls == 0) || (self.morningCls == 0 && self.afternoonCls == 8)
+		}
+		/** 半日振休＋休暇系 */
+		checkE12():boolean{
+			let self = this;
+			return (self.morningCls == 8 && (
+											self.afternoonCls == 1 
+											|| self.afternoonCls == 2
+											|| self.afternoonCls == 3
+											|| self.afternoonCls == 4
+											|| self.afternoonCls == 5
+											|| self.afternoonCls == 6
+											|| self.afternoonCls == 9 
+										)
+					)
+				|| (self.afternoonCls == 8 && (
+											self.morningCls == 1
+											|| self.morningCls == 2
+											|| self.morningCls == 3
+											|| self.morningCls == 4
+											|| self.morningCls == 5
+											|| self.morningCls == 6
+											|| self.morningCls == 9
+										)
+					)
+		}
+    }
+
+	export class DisplayInforWhenStarting {
+		//振出申請起動時の表示情報
+		applicationForWorkingDay: any;
+		//申請表示情報
+		appDispInfoStartup: any;
+		//振休申請起動時の表示情報
+		applicationForHoliday: any;
+		//振休残数情報
+		remainingHolidayInfor: any;
+		//振休振出申請設定
+		substituteHdWorkAppSet: any;
+		//振休紐付け管理区分
+		holidayManage: number;
+		//代休紐付け管理区分
+		substituteManagement: number;
+		//振休申請の反映
+		workInfoAttendanceReflect: any;
+		//振出申請の反映
+		substituteWorkAppReflect: any;
+		//振休申請
+		abs: any;
+		//振出申請
+		rec: any;
+		represent: boolean;
+		constructor(param: any){
+			let self = this;
+			self.applicationForWorkingDay = param.applicationForWorkingDay;
+			self.appDispInfoStartup = param.appDispInfoStartup;
+			self.applicationForHoliday = param.applicationForHoliday;
+			self.remainingHolidayInfor = param.remainingHolidayInfor;
+			self.substituteHdWorkAppSet = param.substituteHdWorkAppSet;
+			self.holidayManage = param.holidayManage;
+			self.substituteManagement = param.substituteManagement;
+			self.workInfoAttendanceReflect = param.workInfoAttendanceReflect;
+			self.substituteWorkAppReflect = param.substituteWorkAppReflect;
+			self.abs = param.abs;
+			self.rec = param.rec;
+			self.represent = param.represent;
+			if(param.abs){
+				self.abs.leaveComDayOffMana = _.map(param.abs.leaveComDayOffMana, (c) => new SubWorkSubHolidayLinkingMng(c));
+				self.abs.payoutSubofHDManagements = _.map(param.abs.payoutSubofHDManagements, (c) => new SubWorkSubHolidayLinkingMng(c));	
+			}
+			if(param.rec){
+				self.rec.leaveComDayOffMana = _.map(param.rec.leaveComDayOffMana, (c) =>new SubWorkSubHolidayLinkingMng(c));
+			}
+		}
+	}
+
 }

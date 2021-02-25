@@ -17,15 +17,13 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.common.TimeOfDay;
 import nts.uk.ctx.at.shared.dom.common.WeeklyTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.DailyUnit;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.WeekStart;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.WeeklyUnit;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeSha;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeShaRepo;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.DailyUnit;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.WeeklyUnit;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.regular.RegularLaborTimeSha;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.regular.RegularLaborTimeShaRepo;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaRegLaborTime;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaRegLaborTimePK;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshstShaRegLaborTimePK_;
@@ -95,7 +93,6 @@ public class JpaShainRegularLaborTimeRepository extends JpaRepository implements
 
 		entity.setDailyTime(domain.getDailyTime().getDailyTime().v());
 		entity.setWeeklyTime(domain.getWeeklyTime().getTime().v());
-		entity.setWeekStr(domain.getWeeklyTime().getStart().value);
 		entity.setKshstShaRegLaborTimePK(new KshstShaRegLaborTimePK(domain.getComId(), domain.getEmpId()));
 		
 		return entity;
@@ -111,8 +108,7 @@ public class JpaShainRegularLaborTimeRepository extends JpaRepository implements
 	private RegularLaborTimeSha toDomain(KshstShaRegLaborTime entity) {
 		return RegularLaborTimeSha.of(entity.getKshstShaRegLaborTimePK().getCid(),
 				entity.getKshstShaRegLaborTimePK().getSid(),
-				new WeeklyUnit(new WeeklyTime(entity.getWeeklyTime()), 
-								EnumAdaptor.valueOf(entity.getWeekStr(), WeekStart.class)), 
+				new WeeklyUnit(new WeeklyTime(entity.getWeeklyTime())), 
 				new DailyUnit(new TimeOfDay(entity.getDailyTime())));
 	}
 	
@@ -127,13 +123,7 @@ public class JpaShainRegularLaborTimeRepository extends JpaRepository implements
 			return Collections.emptyList();
 		}
 		
-		return entities.stream().map(entity -> {
-			return RegularLaborTimeSha.of(entity.getKshstShaRegLaborTimePK().getCid(),
-				entity.getKshstShaRegLaborTimePK().getSid(),
-				new WeeklyUnit(new WeeklyTime(entity.getWeeklyTime()), 
-								EnumAdaptor.valueOf(entity.getWeekStr(), WeekStart.class)), 
-				new DailyUnit(new TimeOfDay(entity.getDailyTime())));
-		}).collect(Collectors.toList());
+		return entities.stream().map(entity -> toDomain(entity)).collect(Collectors.toList());
 	}
 
 	/* (non-Javadoc)

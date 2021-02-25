@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.ac.role.workplace;
 
-
 import java.util.OptionalInt;
 
 import javax.ejb.Stateless;
@@ -52,7 +51,7 @@ public class SyRoleAdapterImpl implements SyRoleAdapter {
 
 		return workplaceIDImport;
 	}
-
+	
 	@Override
 	public EmployeeReferenceRangeImport getRangeByRoleID(String roleID) {
 		OptionalInt data = roleExportRepo.findEmpRangeByRoleID(roleID);

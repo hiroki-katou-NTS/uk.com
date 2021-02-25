@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.tuple;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.junit.Test;
@@ -54,7 +55,9 @@ public class GetEmRankInforServiceTest {
 		List<EmpRankInfor> result =  GetEmRankInforService.get(require, listEmpId);
 		assertThat(result).extracting(x-> x.getEmpId(), x-> x.getRankCode(),
 				x-> x.getRankSymbol())
-		.containsExactly(tuple("003",null,null), tuple("004",null,null));
+		.containsExactly(
+				tuple("003",Optional.empty(),Optional.empty()), 
+				tuple("004",Optional.empty(),Optional.empty()));
 		}
 
 	
@@ -90,7 +93,9 @@ public class GetEmRankInforServiceTest {
 		List<EmpRankInfor> result  = GetEmRankInforService.get(require, listEmpId);
 		assertThat(result).extracting(x-> x.getEmpId(), x-> x.getRankCode(),
 				x-> x.getRankSymbol())
-		.containsExactly(tuple("11",new RankCode("11"), new RankSymbol("11")), tuple("12",new RankCode("12"), new RankSymbol("12")));
+		.containsExactly(
+				tuple("11",Optional.of(new RankCode("11")), Optional.of(new RankSymbol("11"))), 
+				tuple("12",Optional.of(new RankCode("12")), Optional.of(new RankSymbol("12"))));
 	}
 	
 	@Test
@@ -125,6 +130,8 @@ public class GetEmRankInforServiceTest {
 		List<EmpRankInfor> result = GetEmRankInforService.get(require, listEmpId);
 		assertThat(result).extracting(x-> x.getEmpId(), x-> x.getRankCode(),
 				x-> x.getRankSymbol())
-		.containsExactly(tuple("001",null,null), tuple("002",null,null));
+		.containsExactly(
+				tuple("001",Optional.empty(),Optional.empty()), 
+				tuple("002",Optional.empty(),Optional.empty()));
 	}
 }

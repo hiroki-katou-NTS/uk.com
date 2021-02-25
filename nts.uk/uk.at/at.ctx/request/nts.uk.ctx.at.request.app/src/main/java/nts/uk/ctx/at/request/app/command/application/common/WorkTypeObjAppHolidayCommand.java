@@ -22,11 +22,13 @@ public class WorkTypeObjAppHolidayCommand {
 	private Boolean workTypeSetDisplayFlg;
 	
 //	休暇申請種類
-	private int holidayAppType;
+	private Integer holidayAppType;
 	
 //	休暇種類を利用しない
-	private Boolean holidayTypeUseFlg;
+	private Integer holidayTypeUseFlg;
 	
 //	振休振出区分
-	private int swingOutAtr;
+	private Integer swingOutAtr;
+
+	private Integer businessTripAtr;
 }

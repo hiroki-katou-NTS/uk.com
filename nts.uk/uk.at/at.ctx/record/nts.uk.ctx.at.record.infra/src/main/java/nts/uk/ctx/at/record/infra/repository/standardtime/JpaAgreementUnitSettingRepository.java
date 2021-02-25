@@ -10,7 +10,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementUnitSettingRepository;
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgeementUnitSetting;
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgeementUnitSettingPK;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementUnitSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementUnitSetting;
 
 @Stateless
 public class JpaAgreementUnitSettingRepository extends JpaRepository implements AgreementUnitSettingRepository {

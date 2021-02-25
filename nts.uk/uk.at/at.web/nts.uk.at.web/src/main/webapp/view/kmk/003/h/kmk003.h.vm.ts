@@ -4,8 +4,8 @@ module nts.uk.at.view.kmk003.h {
 
         export class ScreenModel {
 
-            isCalcFromSchedule: KnockoutObservable<boolean>;
-            isReferRestTime: KnockoutObservable<boolean>;
+//            isCalcFromSchedule: KnockoutObservable<boolean>;
+//            isReferRestTime: KnockoutObservable<boolean>;
             usePrivateGoOutRest: KnockoutObservable<boolean>;
             useAssoGoOutRest: KnockoutObservable<boolean>;
             useStamp: KnockoutObservable<boolean>;
@@ -17,8 +17,8 @@ module nts.uk.at.view.kmk003.h {
             option:KnockoutObservableArray<any>;
             constructor() {
                 let self = this;
-                self.isCalcFromSchedule = ko.observable(false);
-                self.isReferRestTime = ko.observable(false);
+//                self.isCalcFromSchedule = ko.observable(false);
+//                self.isReferRestTime = ko.observable(false);
                 self.usePrivateGoOutRest = ko.observable(false);
                 self.useAssoGoOutRest = ko.observable(false);
                 self.useStamp = ko.observable(false);
@@ -29,8 +29,8 @@ module nts.uk.at.view.kmk003.h {
                 
                 self.option = ko.observableArray([
                     { value: 0, text: nts.uk.resource.getText('KMK003_241')},
-                    { value: 1, text: nts.uk.resource.getText('KMK003_242')},
-                    { value: 2, text: nts.uk.resource.getText('KMK003_243')}
+//                    { value: 1, text: nts.uk.resource.getText('KMK003_242')},
+                    { value: 1, text: nts.uk.resource.getText('KMK003_243')}
                 ]);
             }
 
@@ -64,8 +64,8 @@ module nts.uk.at.view.kmk003.h {
                 let self = this;
                 let dto: DialogHParam = nts.uk.ui.windows.getShared("KMK003_DIALOG_H_INPUT");
                 
-                self.isCalcFromSchedule(dto.isCalcFromSchedule ? dto.isCalcFromSchedule : false);
-                self.isReferRestTime(dto.isReferRestTime ? dto.isReferRestTime : false);
+//                self.isCalcFromSchedule(dto.isCalcFromSchedule ? dto.isCalcFromSchedule : false);
+//                self.isReferRestTime(dto.isReferRestTime ? dto.isReferRestTime : false);
                 self.usePrivateGoOutRest(dto.usePrivateGoOutRest ? dto.usePrivateGoOutRest : false);
                 self.useAssoGoOutRest(dto.useAssoGoOutRest ? dto.useAssoGoOutRest : false);
                 self.useStamp(dto.useStamp ? dto.useStamp : false);
@@ -83,8 +83,8 @@ module nts.uk.at.view.kmk003.h {
                 let self = this;
 
                 let dto: DialogHParam = {
-                    isCalcFromSchedule: self.isCalcFromSchedule(),
-                    isReferRestTime: self.isReferRestTime(),
+//                    isCalcFromSchedule: self.isCalcFromSchedule(),
+//                    isReferRestTime: self.isReferRestTime(),
                     usePrivateGoOutRest: self.usePrivateGoOutRest(),
                     useAssoGoOutRest: self.useAssoGoOutRest(),
                     useStamp: self.useStamp(),

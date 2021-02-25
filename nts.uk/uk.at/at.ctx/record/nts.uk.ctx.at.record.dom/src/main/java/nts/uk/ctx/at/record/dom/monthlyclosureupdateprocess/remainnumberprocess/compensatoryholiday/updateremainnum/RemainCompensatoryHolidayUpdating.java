@@ -186,7 +186,7 @@ public class RemainCompensatoryHolidayUpdating {
 		void deleteCompensatoryDayOffManaData(List<String> dayOffId);
 	}
 	
-	private static interface RequireM2 {
+	public static interface RequireM2 {
 		
 		Optional<LeaveManagementData> leaveManagementData(String comDayOffId);
 		
@@ -195,7 +195,7 @@ public class RemainCompensatoryHolidayUpdating {
 		void createLeaveManagementData(LeaveManagementData leaveMng);
 	}
 	
-	private static interface RequireM1 {
+	public static interface RequireM1 {
 		
 		Optional<CompensatoryDayOffManaData> compensatoryDayOffManaData(String comDayOffId);
 		

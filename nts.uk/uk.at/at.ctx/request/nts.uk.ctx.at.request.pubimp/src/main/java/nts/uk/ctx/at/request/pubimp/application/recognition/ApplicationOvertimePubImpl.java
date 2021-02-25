@@ -15,15 +15,15 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
-import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork_Old;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepository_Old;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkInput;
-import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
+import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
@@ -34,13 +34,13 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class ApplicationOvertimePubImpl implements ApplicationOvertimePub {
 	@Inject
-	private ApplicationRepository_New repoApplication;
+	private ApplicationRepository repoApplication;
 	
 	@Inject
 	private OvertimeRepository repoOvertime;
 	
 	@Inject
-	private AppHolidayWorkRepository appHdWorkRepository;
+	private AppHolidayWorkRepository_Old appHdWorkRepository;
 	
 	/**
 	 * Request list No.236
@@ -50,33 +50,33 @@ public class ApplicationOvertimePubImpl implements ApplicationOvertimePub {
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<ApplicationOvertimeExport> acquireTotalApplicationOverTimeHours(String sId, GeneralDate startDate, GeneralDate endDate) {
 		String companyId = AppContexts.user().companyId();
-		Map<String, AppHolidayWork> mapHd = new HashMap<>();
-		Map<String, AppOverTime> mapOt = new HashMap<>();
+		Map<String, AppHolidayWork_Old> mapHd = new HashMap<>();
+		Map<String, AppOverTime_Old> mapOt = new HashMap<>();
 		List<ApplicationOvertimeExport> results = new ArrayList<>();
 		//条件を元に、ドメインモデル「残業申請」を取得する
-		List<Application_New> appOt = repoApplication.getListAppByType(companyId, sId, startDate, endDate, PrePostAtr.POSTERIOR.value,
-				ApplicationType.OVER_TIME_APPLICATION.value, Arrays.asList(ReflectedState_New.NOTREFLECTED.value,ReflectedState_New.WAITREFLECTION.value));
+		List<Application> appOt = repoApplication.getListAppByType(companyId, sId, startDate, endDate, PrePostAtr.POSTERIOR.value,
+				ApplicationType.OVER_TIME_APPLICATION.value, Arrays.asList(ReflectedState.NOTREFLECTED.value,ReflectedState.WAITREFLECTION.value));
 		//条件を元に、ドメインモデル「休日出勤申請」を取得する
-		List<Application_New> appHdw = repoApplication.getListAppByType(companyId, sId, startDate, endDate, PrePostAtr.POSTERIOR.value,
-				ApplicationType.BREAK_TIME_APPLICATION.value, Arrays.asList(ReflectedState_New.NOTREFLECTED.value,ReflectedState_New.WAITREFLECTION.value));
+		List<Application> appHdw = repoApplication.getListAppByType(companyId, sId, startDate, endDate, PrePostAtr.POSTERIOR.value,
+				ApplicationType.HOLIDAY_WORK_APPLICATION.value, Arrays.asList(ReflectedState.NOTREFLECTED.value,ReflectedState.WAITREFLECTION.value));
 		List<String> lstIdOt = new ArrayList<>();
 		List<String> lstIdHdw = new ArrayList<>();
 		Map<GeneralDate, String> mapAppOt = new HashMap<>();
 		Map<GeneralDate, String> mapAppHdw = new HashMap<>();
 		////※同じ申請日の残業申請が２件あった場合、入力日が後のもの（latest）だけSetする
-		for (Application_New app : appOt) {
-			if(mapAppOt.containsKey(app.getAppDate())){
+		for (Application app : appOt) {
+			if(mapAppOt.containsKey(app.getAppDate().getApplicationDate())){
 				continue;
 			}
-			mapAppOt.put(app.getAppDate(), app.getAppID());
+			mapAppOt.put(app.getAppDate().getApplicationDate(), app.getAppID());
 			lstIdOt.add(app.getAppID());
 		}
 		//※同じ申請日の休日出勤申請が２件あった場合、入力日が後のもの（latest）だけ集計する
-		for (Application_New app : appHdw) {
-			if(mapAppHdw.containsKey(app.getAppDate())){
+		for (Application app : appHdw) {
+			if(mapAppHdw.containsKey(app.getAppDate().getApplicationDate())){
 				continue;
 			}
-			mapAppHdw.put(app.getAppDate(), app.getAppID());
+			mapAppHdw.put(app.getAppDate().getApplicationDate(), app.getAppID());
 			lstIdHdw.add(app.getAppID());
 		}
 		//get detail overtime
@@ -85,7 +85,7 @@ public class ApplicationOvertimePubImpl implements ApplicationOvertimePub {
 		mapHd = appHdWorkRepository.getListAppHdWorkFrame(companyId, lstIdHdw);
 		//tinh thoi gian over night the Don lam them.
 		for(Map.Entry<GeneralDate, String> entry : mapAppOt.entrySet()) {
-			AppOverTime otDetail = mapOt.get(entry.getValue());
+			AppOverTime_Old otDetail = mapOt.get(entry.getValue());
 			List<OverTimeInput> oTWorkInput = otDetail.getOverTimeInput();
 			int cal = 0;
 			//残業申請．残業時間1～10
@@ -99,7 +99,7 @@ public class ApplicationOvertimePubImpl implements ApplicationOvertimePub {
 		List<ApplicationOvertimeExport> bonus = new ArrayList<>();
 		//tinh thoi gian over night bo sung theo Don lam ngay nghi
 		for(Map.Entry<GeneralDate, String> entry : mapAppHdw.entrySet()) {
-			AppHolidayWork hdDetail = mapHd.get(entry.getValue());
+			AppHolidayWork_Old hdDetail = mapHd.get(entry.getValue());
 			List<HolidayWorkInput> hdWorkInput = hdDetail.getHolidayWorkInputs();
 			int cal = 0;
 			//休日出勤申請．残業時間1～10

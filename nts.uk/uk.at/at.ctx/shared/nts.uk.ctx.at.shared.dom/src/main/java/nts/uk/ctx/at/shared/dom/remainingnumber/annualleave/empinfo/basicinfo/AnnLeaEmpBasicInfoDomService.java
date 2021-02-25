@@ -16,6 +16,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.va
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnLeaGrantRemDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingTime;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
@@ -55,7 +56,7 @@ public class AnnLeaEmpBasicInfoDomService{
 		int remainingMinutes = 0;
 		if (useTimeAnnualLeave) {
 			for (AnnualLeaveGrantRemainingData data : listData) {
-				Optional<AnnualLeaveRemainingTime> minutes = data.getDetails().getRemainingNumber().getMinutes();
+				Optional<LeaveRemainingTime> minutes = data.getDetails().getRemainingNumber().getMinutes();
 				remainingMinutes += minutes.isPresent() ? minutes.get().v() : 0;
 			}
 		}
@@ -82,7 +83,7 @@ public class AnnLeaEmpBasicInfoDomService{
 		   
 			if (useTimeAnnualLeave) {
 				for (AnnualLeaveGrantRemainingData data : listData) {
-					Optional<AnnualLeaveRemainingTime> minutes = data.getDetails().getRemainingNumber().getMinutes();
+					Optional<LeaveRemainingTime> minutes = data.getDetails().getRemainingNumber().getMinutes();
 					remainingMinutes += minutes.isPresent() ? minutes.get().v() : 0;
 				}
 			}

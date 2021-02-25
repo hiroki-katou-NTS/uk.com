@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.junit.Test;
 
 import nts.arc.testing.assertion.NtsAssert;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkTypeWorkTimeUseDailyAttendanceRecord;
 
 public class WorkTypeWorkTimeUseDailyAttendanceRecordTest {
 

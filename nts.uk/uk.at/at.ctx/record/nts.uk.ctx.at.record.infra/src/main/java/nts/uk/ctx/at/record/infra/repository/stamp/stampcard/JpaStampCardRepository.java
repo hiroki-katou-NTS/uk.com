@@ -16,6 +16,7 @@ import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
@@ -35,7 +36,7 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 	
 //	private static final String GET_LST_STAMPCARD_BY_LST_SID= "SELECT a FROM KwkdtStampCard a WHERE a.sid IN :sids";
 	
-	private static final String GET_BY_SID_AND_CARD_NO = "SELECT a FROM KwkdtStampCard a WHERE a.sid IN :sids AND a.cardNo = :cardNo";
+	private static final String GET_BY_SID_AND_CARD_NO = "SELECT a FROM KwkdtStampCard a WHERE a.sid = :sid AND a.cardNo = :cardNo";
 
 	private static final String GET_LST_STAMPCARD_BY_LST_SID_CONTRACT_CODE= "SELECT a FROM KwkdtStampCard a WHERE a.sid IN :sids AND a.contractCd = :contractCode ";
 
@@ -46,14 +47,18 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 	private static final String GET_BY_CARD_NO_AND_CONTRACT_CODE = "SELECT a FROM KwkdtStampCard a"
 			+ " WHERE a.cardNo = :cardNo and a.contractCd = :contractCd";
 	
+	private static final String GET_BY_CARD_NO_AND_CONTRACT_CODE_AND_EMPLOYEE_ID = "SELECT a FROM KwkdtStampCard a"
+			+ " WHERE a.cardNo = :cardNo and a.contractCd = :contractCd and a.sid = :sid";
+	
 	public static final String GET_LAST_CARD_NO = "SELECT c.cardNo FROM KwkdtStampCard c"
 			+ " WHERE c.contractCd = :contractCode AND c.cardNo LIKE CONCAT(:cardNo, '%')"
 			+ " ORDER BY c.cardNo DESC";
 	
 	private static final String GET_LST_STAMP_BY_SIDS = "SELECT sc.CARD_ID, sc.SID, sc.CARD_NUMBER, sc.REGISTER_DATE, sc.CONTRACT_CODE FROM KWKDT_STAMP_CARD sc WHERE sc.SID IN ('{sids}') ORDER BY sc.SID, sc.REGISTER_DATE ASC, sc.CARD_NUMBER ASC";
 
-	private static final String GET_ALL_BY_SID_CONTRACT_CODE = "SELECT a FROM KwkdtStampCard a WHERE a.sid = :sid and a.contractCd = :contractCd ORDER BY a.INS_DATE DESC, a.registerDate DESC";
+	private static final String GET_ALL_BY_SID_CONTRACT_CODE = "SELECT a FROM KwkdtStampCard a WHERE a.sid = :sid and a.contractCd = :contractCd ORDER BY a.insDate DESC, a.registerDate DESC";
 
+	private static final String GET_BY_STAMPCARD = "SELECT a FROM KwkdtStampCard a WHERE a.cardNo = :cardNo";
 	
 	@Override
 	public List<StampCard> getListStampCard(String sid) {
@@ -212,7 +217,9 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 			@SuppressWarnings("unchecked")
 			List<Object[]> result = this.getEntityManager().createNativeQuery(query).getResultList();
 			result.forEach(f -> {
-				domains.add(new StampCard(f[4].toString(), f[2].toString(), f[1].toString()));
+				domains.add(new StampCard(new ContractCode(f[4].toString()), new StampNumber(f[2].toString()), f[1].toString(),
+						GeneralDate.fromString(f[3].toString(), "yyyy-MM-dd"), f[0].toString()));
+				// domains.add(new StampCard(f[4].toString(), f[2].toString(), f[1].toString()));
 			});
 		});
 
@@ -393,13 +400,36 @@ public class JpaStampCardRepository extends JpaRepository implements StampCardRe
 	}
 
 	@Override
-	public Optional<StampCard> getStampCardByEmployeeCardNumber(String employeeId, String CardNumber) {
+	public Optional<StampCard> getStampCardByEmployeeCardNumber(String employeeId, String cardNumber) {
 		Optional<StampCard> domain = this.queryProxy().query(GET_BY_SID_AND_CARD_NO, KwkdtStampCard.class)
-				.setParameter("sid", employeeId).setParameter("cardNo", CardNumber).getSingle(x -> toDomain(x));
+				.setParameter("sid", employeeId).setParameter("cardNo", cardNumber).getSingle(x -> toDomain(x));
 		if (domain.isPresent())
 			return domain;
 		else
 			return Optional.empty();
+	}
+
+	@Override
+	public Optional<StampCard> getStampCardByContractCdEmployeeCardNumber(String contractCd, String employeeId,
+			String cardNumber) {
+		Optional<StampCard> domain = this.queryProxy().query(GET_BY_CARD_NO_AND_CONTRACT_CODE_AND_EMPLOYEE_ID, KwkdtStampCard.class)
+				.setParameter("cardNo", cardNumber).setParameter("contractCd", contractCd).setParameter("sid", employeeId).getSingle(x -> toDomain(x));
+		if (domain.isPresent())
+			return domain;
+		else
+			return Optional.empty();
+	}
+
+	@Override
+	public List<StampCard> getListStampCardByCardNumber(String cardNos) {
+		List<KwkdtStampCard> entities = this.queryProxy().query(GET_BY_STAMPCARD, KwkdtStampCard.class)
+				.setParameter("cardNo", cardNos).getList();
+		if (entities.isEmpty())
+			return Collections.emptyList();
+		
+		return entities.stream()
+				.map(x -> toDomain(x))
+				.collect(Collectors.toList());
 	}
 
 }

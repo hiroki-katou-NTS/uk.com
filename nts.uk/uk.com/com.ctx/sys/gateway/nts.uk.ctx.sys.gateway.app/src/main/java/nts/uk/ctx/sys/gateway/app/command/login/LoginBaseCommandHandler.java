@@ -49,6 +49,7 @@ import nts.uk.ctx.sys.gateway.dom.login.LoginStatus;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.CompanyInformationAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleFromUserIdAdapter;
+import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleFromUserIdAdapter.RoleInfoImport;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleIndividualGrantAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleType;
 import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeAdapter;
@@ -368,7 +369,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
        manager.loggedInAsEmployee(user.getUserId(), em.getPersonalId(), user.getContractCode(), em.getCompanyId(),
                companyCode, em.getEmployeeId(), em.getEmployeeCode());
        //権限（ロール）情報を取得、設定する 
-       this.setRoleId(user.getUserId());
+       this.setRoleInfo(user.getUserId());
    }
    
    public void initSessionC(UserImportNew user, EmployeeImport em, String companyCode, LoginUserRoles roles) {
@@ -414,7 +415,7 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 			}
 		}
 		//権限（ロール）情報を取得、設定する(Acquire and set authority (role) information)
-		this.setRoleId(user.getUserId());
+		this.setRoleInfo(user.getUserId());
 	}
 	/**
 	 * ログイン後チェック
@@ -502,26 +503,34 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 	 * @return the check change pass dto
 	 */
 	// set roll id into login user context
-	public CheckChangePassDto setRoleId(String userId) {
-		String humanResourceRoleId = this.getRoleId(userId, RoleType.HUMAN_RESOURCE);
-		String employmentRoleId = this.getRoleId(userId, RoleType.EMPLOYMENT);
-		String salaryRoleId = this.getRoleId(userId, RoleType.SALARY);
-		String officeHelperRoleId = this.getRoleId(userId, RoleType.OFFICE_HELPER);
+    public CheckChangePassDto setRoleInfo(String userId) {
+        Optional<RoleInfoImport> employmentRole = this.getRoleInfo(userId, RoleType.EMPLOYMENT);
+        Optional<RoleInfoImport> salaryRole = this.getRoleInfo(userId, RoleType.SALARY);
+        Optional<RoleInfoImport> humanResourceRole = this.getRoleInfo(userId, RoleType.HUMAN_RESOURCE);
+        Optional<RoleInfoImport> personalInfoRole = this.getRoleInfo(userId, RoleType.PERSONAL_INFO);
+        String officeHelperRoleId = this.getRoleId(userId, RoleType.OFFICE_HELPER);
+        String groupCompanyManagerRoleId = this.getRoleId(userId, RoleType.GROUP_COMAPNY_MANAGER);
 		String companyManagerRoleId = this.getRoleId(userId, RoleType.COMPANY_MANAGER);
 		String systemManagerRoleId = this.getRoleId(userId, RoleType.SYSTEM_MANAGER);
-		String personalInfoRoleId = this.getRoleId(userId, RoleType.PERSONAL_INFO);
-		String groupCompanyManagerRoleId = this.getRoleId(userId, RoleType.GROUP_COMAPNY_MANAGER);
 		// 就業
-		if (employmentRoleId != null) {
-			manager.roleIdSetter().forAttendance(employmentRoleId);
+        if (employmentRole.isPresent()) {
+            manager.roleIdSetter().forAttendance(employmentRole.get().getRoleId());
+            manager.roleIdSetter().isInChargeAttendance(employmentRole.get().isInCharge());            
 		}
 		// 給与
-		if (salaryRoleId != null) {
-			manager.roleIdSetter().forPayroll(salaryRoleId);
+        if (salaryRole.isPresent()) {
+            manager.roleIdSetter().forPayroll(salaryRole.get().getRoleId());
+            manager.roleIdSetter().isInChargePayroll(salaryRole.get().isInCharge());    
 		}
 		// 人事
-		if (humanResourceRoleId != null) {
-			manager.roleIdSetter().forPersonnel(humanResourceRoleId);
+        if (humanResourceRole.isPresent()) {
+            manager.roleIdSetter().forPersonnel(humanResourceRole.get().getRoleId());
+            manager.roleIdSetter().isInChargePersonnel(humanResourceRole.get().isInCharge());    
+        }
+        // 個人情報
+        if (personalInfoRole.isPresent()) {
+            manager.roleIdSetter().forPersonalInfo(personalInfoRole.get().getRoleId());
+            manager.roleIdSetter().isInChargePersonalInfo(personalInfoRole.get().isInCharge());    
 		}
 		// オフィスヘルパー
 		if (officeHelperRoleId != null) {
@@ -541,35 +550,39 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		if (systemManagerRoleId != null) {
 			manager.roleIdSetter().forSystemAdmin(systemManagerRoleId);
 		}
-		// 個人情報
-		if (personalInfoRoleId != null) {
-			manager.roleIdSetter().forPersonalInfo(personalInfoRoleId);
-		}
 
 		return new CheckChangePassDto(false, null, false);
 	}
 	
 	public LoginUserRoles checkRole(String userId, String comId) {
-		DefaultLoginUserRoles roles = new DefaultLoginUserRoles();
-		String humanResourceRoleId = this.getRoleId(userId, RoleType.HUMAN_RESOURCE, comId);
-		String employmentRoleId = this.getRoleId(userId, RoleType.EMPLOYMENT, comId);
-		String salaryRoleId = this.getRoleId(userId, RoleType.SALARY, comId);
-		String officeHelperRoleId = this.getRoleId(userId, RoleType.OFFICE_HELPER, comId);
-		String companyManagerRoleId = this.getRoleId(userId, RoleType.COMPANY_MANAGER, comId);
-		String systemManagerRoleId = this.getRoleId(userId, RoleType.SYSTEM_MANAGER, comId);
-		String personalInfoRoleId = this.getRoleId(userId, RoleType.PERSONAL_INFO, comId);
-		String groupCompanyManagerRoleId = this.getRoleId(userId, RoleType.GROUP_COMAPNY_MANAGER, comId);
+        DefaultLoginUserRoles roles = new DefaultLoginUserRoles();
+        Optional<RoleInfoImport> employmentRole = this.getRoleInfo(userId, RoleType.EMPLOYMENT);
+        Optional<RoleInfoImport> salaryRole = this.getRoleInfo(userId, RoleType.SALARY);
+        Optional<RoleInfoImport> humanResourceRole = this.getRoleInfo(userId, RoleType.HUMAN_RESOURCE);
+        Optional<RoleInfoImport> personalInfoRole = this.getRoleInfo(userId, RoleType.PERSONAL_INFO);
+        String officeHelperRoleId = this.getRoleId(userId, RoleType.OFFICE_HELPER, comId);
+        String groupCompanyManagerRoleId = this.getRoleId(userId, RoleType.GROUP_COMAPNY_MANAGER, comId);
+        String companyManagerRoleId = this.getRoleId(userId, RoleType.COMPANY_MANAGER, comId);
+        String systemManagerRoleId = this.getRoleId(userId, RoleType.SYSTEM_MANAGER, comId);
 		// 就業
-		if (employmentRoleId != null) {
-			roles.setRoleIdForAttendance(employmentRoleId);
+		if (employmentRole.isPresent()) {
+			roles.setRoleIdForAttendance(employmentRole.get().getRoleId());
+			roles.setIsInChargeAttendance(employmentRole.get().isInCharge());
 		}
 		// 給与
-		if (salaryRoleId != null) {
-			roles.setRoleIdForPayroll(salaryRoleId);
+		if (salaryRole.isPresent()) {
+			roles.setRoleIdForPayroll(salaryRole.get().getRoleId());
+			roles.setIsInChargePayroll(salaryRole.get().isInCharge());
 		}
 		// 人事
-		if (humanResourceRoleId != null) {
-			roles.setRoleIdForPersonnel(humanResourceRoleId);
+		if (humanResourceRole.isPresent()) {
+			roles.setRoleIdForPersonnel(humanResourceRole.get().getRoleId());
+			roles.setIsInChargePersonnel(humanResourceRole.get().isInCharge());
+		}
+		// 個人情報
+		if (personalInfoRole.isPresent()) {
+			roles.setRoleIdforPersonalInfo(personalInfoRole.get().getRoleId());
+			roles.setIsInChargePersonalInfo(personalInfoRole.get().isInCharge());
 		}
 		// オフィスヘルパー
 		if (officeHelperRoleId != null) {
@@ -588,10 +601,6 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		// システム管理者
 		if (systemManagerRoleId != null) {
 			roles.setRoleIdforSystemAdmin(systemManagerRoleId);
-		}
-		// 個人情報
-		if (personalInfoRoleId != null) {
-			roles.setRoleIdforPersonalInfo(personalInfoRoleId);
 		}
 
 		return roles;
@@ -622,7 +631,20 @@ public abstract class LoginBaseCommandHandler<T> extends CommandHandlerWithResul
 		return roleId;
 	}
 	
-	/**
+    /**
+     * Gets the role info.
+     *
+     * @param userId
+     *            the user id
+     * @param roleType
+     *            the role type
+     * @return the role info
+     */
+    protected Optional<RoleInfoImport> getRoleInfo(String userId, RoleType roleType) {
+        return roleFromUserIdAdapter.getRoleInfoFromUser(userId, roleType.value, GeneralDate.today(), AppContexts.user().companyId());
+    }
+
+    /**
 	 * Compare hash password.
 	 *
 	 * @param user

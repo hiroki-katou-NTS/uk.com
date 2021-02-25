@@ -186,6 +186,14 @@ function routeData(success, urlID){
             nts.uk.request.jump("at", "/view/kdw/004/a/index.xhtml");  
             break;   
         } 
+		case "kmw003": {
+			let normalMode = success.urlTaskValueList["activeMode"]=="normal" ? true : false;
+			if(normalMode) {
+				nts.uk.request.jump("at", "/view/kmw/003/a/index.xhtml?initmode=0");	
+			} else {
+				nts.uk.request.jump("at", "/view/kmw/003/a/index.xhtml?initmode=2");	
+			}
+		}
         default: nts.uk.request.jump("com", "/view/ccg/007/d/index.xhtml");
     }        
 }

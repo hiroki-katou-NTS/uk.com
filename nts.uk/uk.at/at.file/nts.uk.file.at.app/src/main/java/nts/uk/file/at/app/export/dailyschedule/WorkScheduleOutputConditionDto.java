@@ -14,7 +14,7 @@ public class WorkScheduleOutputConditionDto {
 	
 	// 会社ID
 	private CompanyId companyId;
-	
+
 	// ユーザID
 	private String userId;
 	
@@ -35,4 +35,25 @@ public class WorkScheduleOutputConditionDto {
 	
 	// 勤務実績のエラーアラームコード
 	private List<String> errorAlarmCode;
+
+	// 項目選択区分
+	private int selectionType;
+
+	// 定型選択_出力レイアウトID
+	private String standardSelectionLayoutId;
+
+	// 自由設定_出力レイアウトID
+	private String freeSettingLayoutId;
+
+	// 自由設定_コード
+	private String freeSettingCode;
+
+	// ゼロ表示区分
+	private int zeroDisplayType;
+
+	// 項目表示切替
+	private int switchItemDisplay;
+
+	// 条件指定
+	private OutputConditionSpecification outputConditionSpecification;
 }

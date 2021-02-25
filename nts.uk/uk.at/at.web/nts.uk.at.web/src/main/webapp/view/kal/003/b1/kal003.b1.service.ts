@@ -9,7 +9,7 @@ module nts.uk.at.view.kal003.b1.service {
             getAttendCompound:              "at/record/attendanceitem/daily/getattendcompound/{0}",
             getAttendNameByIds:             "at/record/attendanceitem/daily/getattendnamebyids",
             getErrorAlarmCondition:         "at/record/attendanceitem/daily/geterroralarmcondition/{0}",
-            getAttendanceItemByCodes:       "at/record/divergencetime/AttendanceDivergenceName",
+            getAttendanceItemByCodes:       "at/record/divergencetime/setting/AttendanceDivergenceName",
             findWorkTypeByCodes:            "at/share/worktype/findNotDeprecatedByListCode",
             getAttendanceItemByAtr:         "at/record/businesstype/attendanceItem/getListByAttendanceAtr/",
 

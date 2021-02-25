@@ -18,12 +18,12 @@ import nts.uk.ctx.at.record.dom.monthly.mergetable.RemainMerge;
 import nts.uk.ctx.at.record.pub.monthly.vacation.annualleave.AnnualLeaveUsageExport;
 import nts.uk.ctx.at.record.pub.monthly.vacation.annualleave.GetConfirmedAnnualLeave;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
-import nts.uk.ctx.at.shared.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
-import nts.uk.ctx.at.shared.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonthRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedMinutes;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnLeaRemNumEachMonthRepository;
 
 /**
  * 実装：社員の月毎の確定済み年休を取得する
@@ -57,14 +57,14 @@ public class GetConfirmedAnnualLeaveImpl implements GetConfirmedAnnualLeave {
 			
 			val yearMonth = data.getYearMonth();
 			val annualLeave = data.getAnnualLeave();
-			val usedNumber = annualLeave.getUsedNumber();
-			val remNumber = annualLeave.getRemainingNumber();
+			val usedNumber = annualLeave.getUsedNumberInfo().getUsedNumber();
+			val remNumber = annualLeave.getRemainingNumberInfo().getRemainingNumber();
 			
 			AnnualLeaveUsedDayNumber usedDays =
-					new AnnualLeaveUsedDayNumber(usedNumber.getUsedDays().getUsedDays().v());
+					new AnnualLeaveUsedDayNumber(usedNumber.getUsedDays().map(c -> c.v()).orElse(0d));
 			UsedMinutes usedTime = null;
 			if (usedNumber.getUsedTime().isPresent()){
-				usedTime = new UsedMinutes(usedNumber.getUsedTime().get().getUsedTime().v());
+				usedTime = new UsedMinutes(usedNumber.getUsedTime().get().valueAsMinutes());
 			}
 			AnnualLeaveRemainingDayNumber remainingDays =
 					new AnnualLeaveRemainingDayNumber(remNumber.getTotalRemainingDays().v());
@@ -138,14 +138,14 @@ public class GetConfirmedAnnualLeaveImpl implements GetConfirmedAnnualLeave {
 				// 「締め済」でないデータは、除く
 				val yearMonth = data.getYearMonth();
 				val annualLeave = data.getAnnualLeave();
-				val usedNumber = annualLeave.getUsedNumber();
-				val remNumber = annualLeave.getRemainingNumber();
+				val usedNumber = annualLeave.getUsedNumberInfo().getUsedNumber();
+				val remNumber = annualLeave.getRemainingNumberInfo().getRemainingNumber();
 				
 				AnnualLeaveUsedDayNumber usedDays =
-						new AnnualLeaveUsedDayNumber(usedNumber.getUsedDays().getUsedDays().v());
+						new AnnualLeaveUsedDayNumber(usedNumber.getUsedDays().map(c -> c.v()).orElse(0d));
 				UsedMinutes usedTime = null;
 				if (usedNumber.getUsedTime().isPresent()){
-					usedTime = new UsedMinutes(usedNumber.getUsedTime().get().getUsedTime().v());
+					usedTime = new UsedMinutes(usedNumber.getUsedTime().get().valueAsMinutes());
 				}
 				AnnualLeaveRemainingDayNumber remainingDays =
 						new AnnualLeaveRemainingDayNumber(remNumber.getTotalRemainingDays().v());

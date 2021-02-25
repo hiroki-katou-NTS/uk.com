@@ -72,18 +72,5 @@ public class JpaAcquisitionRuleSetMemento implements AcquisitionRuleSetMemento {
 		}
 	}
 
-	@Override
-	public void setHoursHoliday(HoursHoliday hoursHoliday) {
-		if(!hoursHoliday.isPriorityOverpaid()) {
-			this.typeValue.setExcessHoliday(0);
-		} else {
-			this.typeValue.setExcessHoliday(1);
-		}
-		
-		if(!hoursHoliday.isSixtyHoursOverrideHoliday()) {
-			this.typeValue.setOverrideHoliday(0);
-		} else {
-			this.typeValue.setOverrideHoliday(1);
-		}
-	}
+	
 }

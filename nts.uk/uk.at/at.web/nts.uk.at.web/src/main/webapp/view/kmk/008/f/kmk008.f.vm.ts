@@ -1,369 +1,366 @@
+/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
+
 module nts.uk.at.view.kmk008.f {
-    import getText = nts.uk.resource.getText;
-    import alertError = nts.uk.ui.dialog.alertError;
+    import Ccg001ReturnedData = nts.uk.com.view.ccg.share.ccg.service.model.Ccg001ReturnedData;
 
-    
-    export module viewmodel {
-        export class ScreenModel {
-            timeOfClassification: KnockoutObservable<TimeOfClassificationModel>;
-            isUpdate: boolean;
-            laborSystemAtr: number = 0;
-            currentClassificationName: KnockoutObservable<string>;
-            textOvertimeName: KnockoutObservable<string>;
+    const PATH_API = {
+        getAllMonth: "screen/at/kmk008/f/getAllMonthSetting",
+        getAllYear: "screen/at/kmk008/f/getAllYearSetting",
+    };
 
-            maxRows: number;
-            listComponentOption: any;
-            selectedCode: KnockoutObservable<string>;
-            isShowAlreadySet: KnockoutObservable<boolean>;
-            alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
-            isDialog: KnockoutObservable<boolean>;
-            isShowNoSelectRow: KnockoutObservable<boolean>;
-            isMultiSelect: KnockoutObservable<boolean>;
-            classificationList: KnockoutObservableArray<UnitModel>;
-            isRemove: KnockoutObservable<boolean>;
-            
-            nameErrorWeek: KnockoutObservable<string> = ko.observable(getText("KMK008_22") + getText("KMK008_42"));
-            nameAlarmWeek: KnockoutObservable<string> = ko.observable(getText("KMK008_22") + getText("KMK008_43"));
-            nameLimitWeek: KnockoutObservable<string> = ko.observable(getText("KMK008_22") + getText("KMK008_44"));
-            nameErrorTwoWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_23") + getText("KMK008_42"));
-            nameAlarmTwoWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_23") + getText("KMK008_43"));
-            nameLimitTwoWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_23") + getText("KMK008_44"));
-            nameErrorFourWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_24") + getText("KMK008_42"));
-            nameAlarmFourWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_24") + getText("KMK008_43"));
-            nameLimitFourWeeks: KnockoutObservable<string> = ko.observable(getText("KMK008_24") + getText("KMK008_44"));
-            nameErrorOneMonth: KnockoutObservable<string> = ko.observable(getText("KMK008_25") + getText("KMK008_42"));
-            nameAlarmOneMonth: KnockoutObservable<string> = ko.observable(getText("KMK008_25") + getText("KMK008_43"));
-            nameLimitOneMonth: KnockoutObservable<string> = ko.observable(getText("KMK008_25") + getText("KMK008_44"));
-            nameErrorTwoMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_26") + getText("KMK008_42"));
-            nameAlarmTwoMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_26") + getText("KMK008_43"));
-            nameLimitTwoMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_26") + getText("KMK008_44"));
-            nameErrorThreeMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_27") + getText("KMK008_42"));
-            nameAlarmThreeMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_27") + getText("KMK008_43"));
-            nameLimitThreeMonths: KnockoutObservable<string> = ko.observable(getText("KMK008_27") + getText("KMK008_44"));
-            nameErrorOneYear: KnockoutObservable<string> = ko.observable(getText("KMK008_28") + getText("KMK008_42"));
-            nameAlarmOneYear: KnockoutObservable<string> = ko.observable(getText("KMK008_28") + getText("KMK008_43"));
-            nameLimitOneYear: KnockoutObservable<string> = ko.observable(getText("KMK008_28") + getText("KMK008_44"));
-            nameUpperMonth: KnockoutObservable<string> = ko.observable(getText("KMK008_120"));
-            nameUpperMonthAverage: KnockoutObservable<string> = ko.observable(getText("KMK008_122"));
-            
-            constructor(laborSystemAtr: number) {
-                let self = this;
-                self.laborSystemAtr = laborSystemAtr;
-                self.isUpdate = true;
-                self.timeOfClassification = ko.observable(new TimeOfClassificationModel(null));
-                self.currentClassificationName = ko.observable("");
-                self.textOvertimeName = ko.observable(getText("KMK008_12", ['#KMK008_8', '#Com_Class']));
+    @bean()
+    export class KMK008FViewModel extends ko.ViewModel {
+        selectedTab: KnockoutObservable<string> = ko.observable('tab-1');
 
-                self.selectedCode = ko.observable("");
-                self.isShowAlreadySet = ko.observable(true);
-                self.alreadySettingList = ko.observableArray([]);
-                self.isRemove = ko.observable(false);
+        items: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
+        items2: KnockoutObservableArray<ItemModel2> = ko.observableArray([]);
+        currentCode: KnockoutObservable<any> = ko.observable();
 
-                self.isDialog = ko.observable(false);
-                self.isShowNoSelectRow = ko.observable(false);
-                self.isMultiSelect = ko.observable(false);
-                self.listComponentOption = {
-                    maxRows: 15,
-                    isShowAlreadySet: self.isShowAlreadySet(),
-                    isMultiSelect: self.isMultiSelect(),
-                    listType: 2,
-                    selectType: 1,
-                    selectedCode: self.selectedCode,
-                    isDialog: self.isDialog(),
-                    isShowNoSelectRow: self.isShowNoSelectRow(),
-                    alreadySettingList: self.alreadySettingList
-                };
-                self.classificationList = ko.observableArray<UnitModel>([]);
-                self.selectedCode.subscribe(newValue => {
-                    if (nts.uk.text.isNullOrEmpty(newValue)) return;
-                    self.getDetail(newValue);
-                    let empSelect = _.find(self.classificationList(), emp => {
-                        return emp.code == newValue;
-                    });
-                    if (empSelect) {
-                        self.currentClassificationName(empSelect.name);
-                        self.isRemove(empSelect.isAlreadySetting);
-                    }
+        isShowButton: KnockoutObservable<boolean> = ko.observable(true);
 
-                });
-            }
+        employeeName: KnockoutObservable<string> = ko.observable("");
+        selectedId: KnockoutObservable<string> = ko.observable("");
 
-            startPage(): JQueryPromise<any> {
-                let self = this;
-                let dfd = $.Deferred();
-                nts.uk.ui.errors.clearAll();
-                if (self.laborSystemAtr == 0) {
-                    self.textOvertimeName(getText("KMK008_12", ['{#KMK008_8}', '{#Com_Class}']));
-                } else {
-                    self.textOvertimeName(getText("KMK008_12", ['{#KMK008_9}', '{#Com_Class}']));
-                }
-                self.selectedCode('');
-                self.getalreadySettingList();
-                $('#empt-list-setting-screen-f').ntsListComponent(self.listComponentOption).done(function() {
-                    self.classificationList($('#empt-list-setting-screen-f').getDataList());
-                    if (self.classificationList().length > 0) {
-                        self.selectedCode(self.classificationList()[0].code);
-                    }
-                    dfd.resolve();
-                });
-                return dfd.promise();
-            }
+        //list
+        listComponentOption: any;
+        selectedEmpCode: KnockoutObservable<string> = ko.observable('');
+        employeeList: KnockoutObservableArray<UnitModel> = ko.observableArray<UnitModel>([]);
+        alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel> = ko.observableArray([]);
 
-            getalreadySettingList() {
-                let self = this;
-                self.alreadySettingList([]);
-                new service.Service().getList(self.laborSystemAtr).done(data => {
-                    if (data.classificationCodes.length > 0) {
-                        self.alreadySettingList(_.map(data.classificationCodes, item => { return new UnitAlreadySettingModel(item.toString(), true); }));
-                        _.defer(() => self.classificationList($('#empt-list-setting-screen-f').getDataList()));
-                    }
-                })
-                self.isRemove(self.isShowAlreadySet());
-            }
+        //search
+        ccg001ComponentOption: any;
 
-            addUpdateDataClassification() {
-                let self = this;
-                
-                if(self.classificationList().length == 0) return;
-                
-                let indexCodealreadySetting = _.findIndex(self.alreadySettingList(), item => { return item.code == self.selectedCode() });
-                let timeOfClassificationNew = new UpdateInsertTimeOfClassificationModel(self.timeOfClassification(), self.laborSystemAtr, self.selectedCode());
-                nts.uk.ui.block.invisible();
-                if (self.selectedCode() != "") {
-                    if (indexCodealreadySetting != -1) {
-                        new service.Service().updateAgreementTimeOfClassification(timeOfClassificationNew).done(listError => {
-                            if (listError.length > 0) {
-                                self.showDialogError(listError);
-                                nts.uk.ui.block.clear();
-                                return;
-                            }
-                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                            self.getDetail(self.selectedCode());
-                            nts.uk.ui.block.clear();
+        constructor() {
+            super();
+            const vm = this;
+            //list
+            vm.listComponentOption = {
+                isShowAlreadySet: true,
+                alreadySettingList: vm.alreadySettingList,
+                isMultiSelect: false,
+                listType: 4,
+                employeeInputList: vm.employeeList,
+                selectType: 1,
+                selectedCode: vm.selectedEmpCode,
+                isDialog: false,
+                isShowNoSelectRow: false,
+                isShowWorkPlaceName: true,
+                isShowSelectAllButton: false,
+                disableSelection: false,
+                maxRows: 12,
+                maxWidth: 410
+            };
 
+            vm.reloadCcg001();
+        }
+
+        reloadCcg001() {
+            const vm = this;
+
+            vm.ccg001ComponentOption = {
+                /** Common properties */
+                systemType: 2, // システム区分
+                showEmployeeSelection: false, // 検索タイプ
+                showQuickSearchTab: false, // クイック検索
+                showAdvancedSearchTab: true, // 詳細検索
+                showBaseDate: true, // 基準日利用
+                showClosure: false, // 就業締め日利用
+                showAllClosure: false, // 全締め表示
+                showPeriod: false, // 対象期間利用
+                periodFormatYM: true, // 対象期間精度
+
+                /** Required parameter */
+                baseDate: moment().toISOString(), // 基準日
+                inService: true, // 在職区分
+                leaveOfAbsence: false, // 休職区分
+                closed: false, // 休業区分
+                retirement: false, // 退職区分
+
+                /** Quick search tab options */
+                showAllReferableEmployee: false, // 参照可能な社員すべて
+                showOnlyMe: false, // 自分だけ
+                showSameWorkplace: false, // 同じ職場の社員
+                showSameWorkplaceAndChild: false, // 同じ職場とその配下の社員
+
+                /** Advanced search properties */
+                showEmployment: true, // 雇用条件
+                showDepartment: false, // 部門条件
+                showWorkplace: true, // 職場条件
+                showClassification: true, // 分類条件
+                showJobTitle: true, // 職位条件
+                showWorktype: true, // 勤種条件
+                isMutipleCheck: true, // 選択モード
+
+                /** Return data */
+                returnDataFromCcg001: function (data: Ccg001ReturnedData) {
+                    //remove duplicate item
+                    let newListItems = [];
+                    if(!_.isEmpty(data.listEmployee)){
+                        newListItems = _.filter(data.listEmployee, (element, index, self) => {
+                            return index === _.findIndex(self, (x) => { return x.employeeCode === element.employeeCode; });
                         });
-                        return;
                     }
-                    new service.Service().addAgreementTimeOfClassification(timeOfClassificationNew).done(listError => {
-                        if (listError.length > 0) {
-                            self.showDialogError(listError);
-                            nts.uk.ui.block.clear();
-                            return;
+
+                    //map data
+                    vm.employeeList.removeAll();
+                    vm.employeeList(_.map(newListItems, item => {
+                        return new UnitModel(item.employeeCode, item.employeeName, item.affiliationName, item.employeeId);
+                    }));
+
+                    //select first data
+                    if (!_.isEmpty(vm.employeeList())) {
+                        vm.initData().done(() => {
+                            vm.selectedEmpCode(vm.employeeList()[0].code);
+                        });
+                    }
+                }
+            }
+        }
+
+        initData(): JQueryPromise<any> {
+            const vm = this;
+            let dfd = $.Deferred();
+
+            let employeeIds = _.map(vm.employeeList(), item => {
+                return item.employeeId;
+            });
+
+            let monthQuery = vm.$ajax(PATH_API.getAllMonth, {employeeIds: employeeIds});
+            let yearQuery = vm.$ajax(PATH_API.getAllYear, {employeeIds: employeeIds});
+
+            vm.$blockui("invisible");
+            $.when(monthQuery, yearQuery)
+                .done((monthDataList: any, yearDataList: any) => {
+                    let newUnitModel: UnitModel;
+                    let monthData: Array<ItemModel> = [];
+                    let yearData: Array<ItemModel> = [];
+                    let monthData2: Array<ItemModel2> = [];
+                    let yearData2: Array<ItemModel2> = [];
+                    let settingDtos: Array<any> = [];
+                    let newEmployeeList: Array<UnitModel> = [];
+                    let newAlreadySettingList: Array<UnitAlreadySettingModel> = [];
+
+                    _.forEach(vm.employeeList(), (oldUnitModel) => {
+                        monthData = [];
+                        yearData = [];
+                        monthData2 = [];
+                        yearData2 = [];
+
+                        settingDtos = _.find(monthDataList, item => {
+                            return item.employeeId === oldUnitModel.employeeId;
+                        }).settingDtos;
+                        settingDtos = _.orderBy(settingDtos, ['yearMonthValue'], ['desc']);
+                        if (!_.isEmpty(settingDtos)) {
+                            _.forEach(settingDtos, (value) => {
+                                monthData.push(new ItemModel(
+                                    nts.uk.time.parseYearMonth(value.yearMonthValue).format(),
+                                    nts.uk.time.parseTime(value.errorOneMonth, true).format(),
+                                    nts.uk.time.parseTime(value.alarmOneMonth, true).format()));
+
+                                monthData2.push(new ItemModel2(value.yearMonthValue, value.errorOneMonth, value.alarmOneMonth));
+                            });
                         }
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                        self.getalreadySettingList();
-                        self.getDetail(self.selectedCode());
-                        nts.uk.ui.block.clear();
-                    });
-                }
-            }
 
-            removeDataClassification() {
-                let self = this;
-                nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage("Msg_18", []))
-                    .ifYes(() => {
-                        let deleteModel = new DeleteTimeOfClassificationModel(self.laborSystemAtr, self.selectedCode());
-                        new service.Service().removeAgreementTimeOfEmployment(deleteModel).done(function() {
-                            self.getalreadySettingList();
-                            self.getDetail(self.selectedCode());
-                            self.isRemove(false);
+                        settingDtos = _.find(yearDataList, item => {
+                            return item.employeeId === oldUnitModel.employeeId;
+                        }).settingDtos;
+                        settingDtos = _.orderBy(settingDtos, ['yearValue'], ['desc']);
+                        if (!_.isEmpty(settingDtos)) {
+                            _.forEach(settingDtos, (value) => {
+                                yearData.push(new ItemModel(
+                                    value.yearValue.toString(),
+                                    nts.uk.time.parseTime(value.errorOneYear, true).format(),
+                                    nts.uk.time.parseTime(value.alarmOneYear, true).format()));
+
+                                yearData2.push(new ItemModel2(value.yearValue, value.errorOneYear, value.alarmOneYear));
+                            });
+                        }
+
+                        newUnitModel = new UnitModel(
+                            oldUnitModel.code,
+                            oldUnitModel.name,
+                            oldUnitModel.affiliationName,
+                            oldUnitModel.employeeId,
+                            monthData,
+                            yearData,
+                            monthData2,
+                            yearData2
+                        );
+
+                        newEmployeeList.push(newUnitModel);
+                        newAlreadySettingList.push(new UnitAlreadySettingModel(oldUnitModel.code, !_.isEmpty(monthData2) || !_.isEmpty(yearData2)));
+                    });
+
+                    vm.employeeList(newEmployeeList);
+                    vm.alreadySettingList(newAlreadySettingList);
+                    dfd.resolve();
+                })
+                .fail((err1: any, err2: any) => {
+                    if (err1) {
+                        vm.$dialog.error(err1).then(() => {
                         });
-                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_16", []));
-                    });
+                    }
+                    if (err2) {
+                        vm.$dialog.error(err1).then(() => {
+                        });
+                    }
+                    dfd.reject();
+                })
+                .always(() => vm.$blockui("clear"));
 
-            }
+            return dfd.promise();
+        }
 
-            getDetail(classificationCode: string) {
-                let self = this;
-                new service.Service().getDetail(self.laborSystemAtr, classificationCode).done(data => {
-                    self.timeOfClassification(new TimeOfClassificationModel(data));
-                }).fail(error => {
-
-                });
-            }
-
-            setSelectCodeAfterRemove(currentSelectCode: string) {
-                let self = this;
-                let empLength = self.classificationList().length;
-                if (empLength == 0) {
-                    self.selectedCode("");
-                    return;
-                }
-                let empSelectIndex = _.findIndex(self.classificationList(), emp => {
-                    return emp.code == self.selectedCode();
-                });
-                if (empSelectIndex == -1) {
-                    self.selectedCode("");
-                    return;
-                }
-                if (empSelectIndex == 0 && empLength == 1) {
-                    self.getDetail(currentSelectCode);
-                    return;
-                }
-                if (empSelectIndex == 0 && empLength > 1) {
-                    self.selectedCode(self.classificationList()[empSelectIndex + 1].code);
-                    return;
-                }
-
-                if (empSelectIndex < empLength - 1) {
-                    self.selectedCode(self.classificationList()[empSelectIndex + 1].code);
-                    return;
-                }
-                if (empSelectIndex == empLength - 1) {
-                    self.selectedCode(self.classificationList()[empSelectIndex - 1].code);
-                    return;
-                }
-            }
-            
-            showDialogError(listError: any) {
-                let errorCode = _.split(listError[0], ',');
-                if (errorCode[0] === 'Msg_59') {
-                    let periodName = getText(errorCode[1]);
-                    let param1 = "期間: " + getText(errorCode[1]) + "<br>" + getText(errorCode[2]);
-                    alertError({ messageId: errorCode[0], messageParams: [param1, getText(errorCode[3])] });
+        created() {
+            const vm = this;
+            vm.selectedTab.subscribe(x => {
+                if (vm.selectedId()) {
+                    return vm.getDetail(vm.selectedEmpCode());
                 } else {
-                    alertError({ messageId: errorCode[0], messageParams: [getText(errorCode[1]), getText(errorCode[2]), getText(errorCode[3])] });
+                    vm.items([]);
+                    vm.items2([]);
                 }
+            });
+
+            vm.selectedEmpCode.subscribe(newValue => {
+                if (!nts.uk.text.isNullOrEmpty(newValue)) {
+                    vm.getDetail(vm.selectedEmpCode());
+                } else {
+                    vm.selectedId("");
+                    vm.employeeName("");
+                    vm.items([]);
+                    vm.items2([]);
+                }
+            });
+
+            if (!vm.selectedEmpCode()) {
+                vm.isShowButton(false);
+            }
+
+            $('#ccgcomponent').ntsGroupComponent(vm.ccg001ComponentOption);
+            $('#component-items-list').ntsListComponent(vm.listComponentOption);
+        }
+
+        openDiaglog() {
+            const vm = this;
+            const data = {
+                employeeCode: vm.selectedEmpCode(),
+                employeeId: vm.selectedId(),
+                employeeName: vm.employeeName(),
+                isYearMonth: vm.selectedTab() == "tab-2",
+                itemData: vm.items2()
+            };
+
+            vm.$window.modal('../../../kmk/008/k/index.xhtml', data).then(() => {
+                vm.initData().done(() => {
+                    if (vm.selectedEmpCode()) {
+                        vm.getDetail(vm.selectedEmpCode());
+                    }
+                });
+            });
+        }
+
+        getDetail(employmentCategoryCode: string) {
+            const vm = this;
+            vm.isShowButton(true);
+
+            let employeeModel: UnitModel = _.find(vm.employeeList(), item => {
+                return item.code === employmentCategoryCode;
+            });
+
+            vm.selectedId(employeeModel.employeeId);
+            vm.employeeName(employeeModel.name);
+
+            vm.items([]);
+            vm.items2([]);
+            if (vm.selectedTab() == "tab-2") {
+                vm.items(employeeModel.monthSettingList);
+                vm.items2(employeeModel.monthSettingList2);
+            } else {
+                vm.items(employeeModel.yearSettingList);
+                vm.items2(employeeModel.yearSettingList2);
             }
         }
 
-        export class TimeOfClassificationModel {
-            alarmWeek: KnockoutObservable<string> = ko.observable(null);
-            errorWeek: KnockoutObservable<string> = ko.observable(null);
-            limitWeek: KnockoutObservable<string> = ko.observable(null);
-            alarmTwoWeeks: KnockoutObservable<string> = ko.observable(null);
-            errorTwoWeeks: KnockoutObservable<string> = ko.observable(null);
-            limitTwoWeeks: KnockoutObservable<string> = ko.observable(null);
-            alarmFourWeeks: KnockoutObservable<string> = ko.observable(null);
-            errorFourWeeks: KnockoutObservable<string> = ko.observable(null);
-            limitFourWeeks: KnockoutObservable<string> = ko.observable(null);
-            alarmOneMonth: KnockoutObservable<string> = ko.observable(null);
-            errorOneMonth: KnockoutObservable<string> = ko.observable(null);
-            limitOneMonth: KnockoutObservable<string> = ko.observable(null);
-            alarmTwoMonths: KnockoutObservable<string> = ko.observable(null);
-            errorTwoMonths: KnockoutObservable<string> = ko.observable(null);
-            limitTwoMonths: KnockoutObservable<string> = ko.observable(null);
-            alarmThreeMonths: KnockoutObservable<string> = ko.observable(null);
-            errorThreeMonths: KnockoutObservable<string> = ko.observable(null);
-            limitThreeMonths: KnockoutObservable<string> = ko.observable(null);
-            alarmOneYear: KnockoutObservable<string> = ko.observable(null);
-            errorOneYear: KnockoutObservable<string> = ko.observable(null);
-            limitOneYear: KnockoutObservable<string> = ko.observable(null);
-            upperMonth: KnockoutObservable<string> = ko.observable(null);
-            upperMonthAverage: KnockoutObservable<string> = ko.observable(null);
-            
-            constructor(data: any) {
-                let self = this;
-                if (!data) return;
-                self.alarmWeek(data.alarmWeek);
-                self.errorWeek(data.errorWeek);
-                self.limitWeek(data.limitWeek);
-                self.alarmTwoWeeks(data.alarmTwoWeeks);
-                self.errorTwoWeeks(data.errorTwoWeeks);
-                self.limitTwoWeeks(data.limitTwoWeeks);
-                self.alarmFourWeeks(data.alarmFourWeeks);
-                self.errorFourWeeks(data.errorFourWeeks);
-                self.limitFourWeeks(data.limitFourWeeks);
-                self.alarmOneMonth(data.alarmOneMonth);
-                self.errorOneMonth(data.errorOneMonth);
-                self.limitOneMonth(data.limitOneMonth);
-                self.alarmTwoMonths(data.alarmTwoMonths);
-                self.errorTwoMonths(data.errorTwoMonths);
-                self.limitTwoMonths(data.limitTwoMonths);
-                self.alarmThreeMonths(data.alarmThreeMonths);
-                self.errorThreeMonths(data.errorThreeMonths);
-                self.limitThreeMonths(data.limitThreeMonths);
-                self.alarmOneYear(data.alarmOneYear);
-                self.errorOneYear(data.errorOneYear);
-                self.limitOneYear(data.limitOneYear);
-                self.upperMonth(data.upperMonth);
-                self.upperMonthAverage(data.upperMonthAverage);
-            }
+        close() {
+            const vm = this;
+            vm.$window.close();
         }
+    }
 
-        export class UpdateInsertTimeOfClassificationModel {
-            laborSystemAtr: number = 0;
-            classificationCode: string = "";
-            alarmWeek: number = 0;
-            errorWeek: number = 0;
-            limitWeek: number = 0;
-            alarmTwoWeeks: number = 0;
-            errorTwoWeeks: number = 0;
-            limitTwoWeeks: number = 0;
-            alarmFourWeeks: number = 0;
-            errorFourWeeks: number = 0;
-            limitFourWeeks: number = 0;
-            alarmOneMonth: number = 0;
-            errorOneMonth: number = 0;
-            limitOneMonth: number = 0;
-            alarmTwoMonths: number = 0;
-            errorTwoMonths: number = 0;
-            limitTwoMonths: number = 0;
-            alarmThreeMonths: number = 0;
-            errorThreeMonths: number = 0;
-            limitThreeMonths: number = 0;
-            alarmOneYear: number = 0;
-            errorOneYear: number = 0;
-            limitOneYear: number = 0;
-            upperMonth: number = 0;
-            upperMonthAverage: number = 0;
-            
-            constructor(data: TimeOfClassificationModel, laborSystemAtr: number, classificationCode: string) {
-                let self = this;
-                self.laborSystemAtr = laborSystemAtr;
-                self.classificationCode = classificationCode;
-                if (!data) return;
-                self.alarmWeek = +data.alarmWeek() || 0;
-                self.errorWeek = +data.errorWeek() || 0;
-                self.limitWeek = +data.limitWeek() || 0;
-                self.alarmTwoWeeks = +data.alarmTwoWeeks() || 0;
-                self.errorTwoWeeks = +data.errorTwoWeeks() || 0;
-                self.limitTwoWeeks = +data.limitTwoWeeks() || 0;
-                self.alarmFourWeeks = +data.alarmFourWeeks() || 0;
-                self.errorFourWeeks = +data.errorFourWeeks() || 0;
-                self.limitFourWeeks = +data.limitFourWeeks() || 0;
-                self.alarmOneMonth = +data.alarmOneMonth() || 0;
-                self.errorOneMonth = +data.errorOneMonth() || 0;
-                self.limitOneMonth = +data.limitOneMonth() || 0;
-                self.alarmTwoMonths = +data.alarmTwoMonths() || 0;
-                self.errorTwoMonths = +data.errorTwoMonths() || 0;
-                self.limitTwoMonths = +data.limitTwoMonths() || 0;
-                self.alarmThreeMonths = +data.alarmThreeMonths() || 0;
-                self.errorThreeMonths = +data.errorThreeMonths() || 0;
-                self.limitThreeMonths = +data.limitThreeMonths() || 0;
-                self.alarmOneYear = +data.alarmOneYear() || 0;
-                self.errorOneYear = +data.errorOneYear() || 0;
-                self.limitOneYear = +data.limitOneYear() || 0;
-                self.upperMonth = +data.upperMonth() || 0;
-                self.upperMonthAverage = +data.upperMonthAverage() || 0;
-            }
+    export class ItemModel {
+        year: string;
+        error: string;
+        alarm: string;
+
+        constructor(year: string, error: string, alarm: string) {
+            this.year = year;
+            this.error = error;
+            this.alarm = alarm;
         }
+    }
 
-        export class DeleteTimeOfClassificationModel {
-            laborSystemAtr: number = 0;
-            classificationCode: string;
-            constructor(laborSystemAtr: number, classificationCode: string) {
-                let self = this;
-                self.laborSystemAtr = laborSystemAtr;
-                self.classificationCode = classificationCode;
-            }
+    export class ItemModel2 {
+        year: number;
+        error: number;
+        alarm: number;
+
+        constructor(year: number, error: number, alarm: number) {
+            this.year = year;
+            this.error = error;
+            this.alarm = alarm;
         }
+    }
 
-        export interface UnitModel {
-            code: string;
-            name?: string;
-            affiliationName?: string;
-            isAlreadySetting?: boolean;
+    export class UnitModel {
+        code: string;
+        name: string;
+        affiliationName: string;
+        employeeId: string;
+
+        monthSettingList: Array<ItemModel>;
+        yearSettingList: Array<ItemModel>;
+        monthSettingList2: Array<ItemModel2>;
+        yearSettingList2: Array<ItemModel2>;
+
+        constructor(code: string, name: string,
+                    affiliationName: string,
+                    employeeId: string,
+                    monthSettingList: Array<ItemModel> = [],
+                    yearSettingList: Array<ItemModel> = [],
+                    monthSettingList2: Array<ItemModel2> = [],
+                    yearSettingList2: Array<ItemModel2> = []) {
+            this.code = code;
+            this.name = name;
+            this.affiliationName = affiliationName;
+            this.employeeId = employeeId;
+
+            this.monthSettingList = monthSettingList;
+            this.yearSettingList = yearSettingList;
+            this.monthSettingList2 = monthSettingList2;
+            this.yearSettingList2 = yearSettingList2;
         }
+    }
 
+    export class UnitAlreadySettingModel {
+        code: string;
+        isAlreadySetting: boolean;
 
-        export class UnitAlreadySettingModel {
-            code: string;
-            isAlreadySetting: boolean;
-            constructor(code: string, isAlreadySetting: boolean) {
-                this.code = code;
-                this.isAlreadySetting = isAlreadySetting;
-            }
+        constructor(code: string, isAlreadySetting: boolean) {
+            this.code = code;
+            this.isAlreadySetting = isAlreadySetting;
         }
+    }
+
+    export class MonthDto {
+        yearMonthValue: number; //３６協定年月設定.年月
+        errorOneMonth: number; //３６協定年月設定.1ヶ月のエラーアラーム時間.エラー時間
+        alarmOneMonth: number; //３６協定年月設定.1ヶ月のエラーアラーム時間.アラーム時間
+    }
+
+    export class YearDto {
+        yearValue: number; //３６協定年度設定.年度
+        errorOneYear: number; //３６協定年度設定.1年間のエラーアラーム時間.エラー時間
+        alarmOneYear: number; //３６協定年度設定.1年間のエラーアラーム時間.アラーム時間
     }
 }

@@ -64,4 +64,21 @@ public enum RoleAtr {
 		// Not found.
 		return null;
 	}
+    /**
+     * Checks if is general.
+     *
+     * @return true, if is general
+     */
+    public boolean isGeneral() {
+        return GENERAL.equals(this);
+    }
+    
+    /**
+     * Checks if is inCharge.
+     *
+     * @return true, if is general
+     */
+    public boolean isInCharge() {
+        return INCHARGE.equals(this);
+    }
 }

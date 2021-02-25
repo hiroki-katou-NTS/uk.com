@@ -4,19 +4,19 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.statutory.worktime_new.workplace;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.common.TimeOfDay;
 import nts.uk.ctx.at.shared.dom.common.WeeklyTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.DailyUnit;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.WeekStart;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.WeeklyUnit;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeWkp;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeWkpRepo;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.DailyUnit;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.WeeklyUnit;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.defor.DeforLaborTimeWkp;
+import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.defor.DeforLaborTimeWkpRepo;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.workingplace.KshstWkpTransLabTime;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.workingplace.KshstWkpTransLabTimePK;
 
@@ -26,6 +26,9 @@ import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.workingplace.Ksh
 @Stateless
 public class JpaWkpTransLaborTimeRepository extends JpaRepository
 		implements DeforLaborTimeWkpRepo {
+	
+	private static final String SELECT_BY_CID = "SELECT c FROM KshstWkpTransLabTime c"
+			+ " WHERE c.kshstWkpTransLabTimePK.cid = :cid";
 
 	/*
 	 * (non-Javadoc)
@@ -62,7 +65,6 @@ public class JpaWkpTransLaborTimeRepository extends JpaRepository
 
 		entity.setDailyTime(domain.getDailyTime().getDailyTime().v());
 		entity.setWeeklyTime(domain.getWeeklyTime().getTime().v());
-		entity.setWeekStr(domain.getWeeklyTime().getStart().value);
 		entity.setKshstWkpTransLabTimePK(new KshstWkpTransLabTimePK(domain.getComId(), 
 													domain.getWorkplaceId()));
 		
@@ -96,7 +98,6 @@ public class JpaWkpTransLaborTimeRepository extends JpaRepository
 		
 		entity.setDailyTime(domain.getDailyTime().getDailyTime().v());
 		entity.setWeeklyTime(domain.getWeeklyTime().getTime().v());
-		entity.setWeekStr(domain.getWeeklyTime().getStart().value);
 		
 		this.commandProxy().update(entity);
 	}
@@ -108,8 +109,17 @@ public class JpaWkpTransLaborTimeRepository extends JpaRepository
 	private DeforLaborTimeWkp toDomain(KshstWkpTransLabTime entity) {
 		return DeforLaborTimeWkp.of(entity.getKshstWkpTransLabTimePK().getCid(),
 				entity.getKshstWkpTransLabTimePK().getCid(),
-				new WeeklyUnit(new WeeklyTime(entity.getWeeklyTime()), 
-								EnumAdaptor.valueOf(entity.getWeekStr(), WeekStart.class)), 
+				new WeeklyUnit(new WeeklyTime(entity.getWeeklyTime())), 
 				new DailyUnit(new TimeOfDay(entity.getDailyTime())));
+	}
+
+	@Override
+	public List<DeforLaborTimeWkp> findDeforLaborTimeWkpByCid(String cid) {
+		List<KshstWkpTransLabTime> entitys = this.queryProxy().query(SELECT_BY_CID, KshstWkpTransLabTime.class)
+				.setParameter("cid", cid).getList();
+		
+		return entitys.stream().map(m -> {
+			return toDomain(m);
+		}).collect(Collectors.toList());
 	}
 }

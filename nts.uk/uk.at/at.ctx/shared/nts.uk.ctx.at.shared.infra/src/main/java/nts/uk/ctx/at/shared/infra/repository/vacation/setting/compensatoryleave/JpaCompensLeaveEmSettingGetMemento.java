@@ -6,7 +6,6 @@ package nts.uk.ctx.at.shared.infra.repository.vacation.setting.compensatoryleave
 
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryAcquisitionUse;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryDigestiveTimeUnit;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.KclmtCompensLeaveEmp;
@@ -61,26 +60,9 @@ public class JpaCompensLeaveEmSettingGetMemento implements CompensatoryLeaveEmSe
         return ManageDistinct.valueOf(this.entity.getManageAtr());
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.
-     * CompensatoryLeaveEmSettingGetMemento#getCompensatoryAcquisitionUse()
-     */
-    @Override
-    public CompensatoryAcquisitionUse getCompensatoryAcquisitionUse() {
-        return new CompensatoryAcquisitionUse(new JpaCompensAcquisitionUseGetMemento(this.entity.getKclmtAcquisitionEmp()));
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.
-     * CompensatoryLeaveEmSettingGetMemento#getCompensatoryDigestiveTimeUnit()
-     */
-    @Override
-    public CompensatoryDigestiveTimeUnit getCompensatoryDigestiveTimeUnit() {
-        return new CompensatoryDigestiveTimeUnit(new JpaCompensDigestiveTimeUnitGetMemento(this.entity.getKctmtDigestTimeEmp()));
-    }
-
+	@Override
+	public CompensatoryAcquisitionUse getCompensatoryAcquisitionUse() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

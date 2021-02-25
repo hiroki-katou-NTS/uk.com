@@ -9,7 +9,7 @@ module nts.uk.at.view.kal003.b.service {
             getAttendCompound:              "at/record/attendanceitem/daily/getattendcompound/{0}",
             getAttendNameByIds:             "at/record/attendanceitem/daily/getattendnamebyids",
             getErrorAlarmCondition:         "at/record/attendanceitem/daily/geterroralarmcondition/{0}",
-            getAttendanceItemByCodes:       "at/record/divergencetime/AttendanceDivergenceName",
+            getAttendanceItemByCodes:       "at/record/divergencetime/setting/AttendanceDivergenceName",
             findWorkTypeByCodes:            "at/share/worktype/findNotDeprecatedByListCode",
             //update #100050 daily
             getAttendanceItemByAtr:         "at/record/businesstype/attendanceItem/getListByAttendanceAtr/",
@@ -32,7 +32,7 @@ module nts.uk.at.view.kal003.b.service {
             getSpecialHoliday : "shared/specialholiday/findByCid",
             //End Update ticket #101187
             
-            getMonthlyAttendanceItemByCodes: "at/record/divergencetime/getMonthlyAttendanceDivergenceName",
+            getMonthlyAttendanceItemByCodes: "at/record/divergencetime/setting/getMonthlyAttendanceDivergenceName",
             getListMonthlyByAtrPrimitive: "at/record/businesstype/attendanceItem/getListMonthlyByAtrPrimitive/",
             getMonthlyOptItemByAtr: "at/record/attendanceitem/monthly/getattendcomparison/",
             

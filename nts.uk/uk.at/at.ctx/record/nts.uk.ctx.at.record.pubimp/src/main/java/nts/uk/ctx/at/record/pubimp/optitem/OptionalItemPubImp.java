@@ -12,7 +12,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.optitem.OptionalItemRepository;
+import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
 import optitem.OptionalItemExport;
 import optitem.OptionalItemPub;
 
@@ -37,7 +37,7 @@ public class OptionalItemPubImp implements OptionalItemPub {
 	public List<OptionalItemExport> getOptionalItems(String companyId, List<Integer> optionalItemNos) {
 		return this.optItemRepo.findByListNos(companyId, optionalItemNos).stream()
 				.map(optItem -> OptionalItemExport.builder().optionalItemName(optItem.getOptionalItemName().v())
-						.optionalItemNo(optItem.getOptionalItemNo().v()).optionalItemUnit(optItem.getUnit().v()).build())
+						.optionalItemNo(optItem.getOptionalItemNo().v()).optionalItemUnit(optItem.getUnit().isPresent() ? optItem.getUnit().get().v() : null).build())
 				.collect(Collectors.toList());
 	}
 

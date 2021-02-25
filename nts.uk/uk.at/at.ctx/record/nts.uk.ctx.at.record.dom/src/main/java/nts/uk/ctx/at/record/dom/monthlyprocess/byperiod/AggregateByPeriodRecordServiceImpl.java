@@ -8,19 +8,19 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
-import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.OptionalAggrPeriod;
+import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.AnyAggrPeriod;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
-import nts.uk.ctx.at.shared.dom.byperiod.AgreementTimeByPeriod;
-import nts.uk.ctx.at.shared.dom.byperiod.AnyItemByPeriod;
-import nts.uk.ctx.at.shared.dom.byperiod.AttendanceTimeOfAnyPeriod;
-import nts.uk.ctx.at.shared.dom.byperiod.ExcessOutsideByPeriod;
-import nts.uk.ctx.at.shared.dom.byperiod.MonthlyCalculationByPeriod;
-import nts.uk.ctx.at.shared.dom.byperiod.anyaggrperiod.AnyAggrFrameCode;
-import nts.uk.ctx.at.shared.dom.monthly.totalcount.TotalCountByPeriod;
-import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.VerticalTotalOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
-import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
-import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
+import nts.uk.ctx.at.shared.dom.scherec.byperiod.AgreementTimeByPeriod;
+import nts.uk.ctx.at.shared.dom.scherec.byperiod.AnyItemByPeriod;
+import nts.uk.ctx.at.shared.dom.scherec.byperiod.AttendanceTimeOfAnyPeriod;
+import nts.uk.ctx.at.shared.dom.scherec.byperiod.ExcessOutsideByPeriod;
+import nts.uk.ctx.at.shared.dom.scherec.byperiod.MonthlyCalculationByPeriod;
+import nts.uk.ctx.at.shared.dom.scherec.byperiod.anyaggrperiod.AnyAggrFrameCode;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrCompanySettings;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonAggrEmployeeSettings;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.aggr.work.MonthlyCalculatingDailys;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.totalcount.TotalCountByPeriod;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.VerticalTotalOfMonthly;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
@@ -39,7 +39,7 @@ public class AggregateByPeriodRecordServiceImpl implements AggregateByPeriodReco
 	/** アルゴリズム */
 	@Override
 	public AggregateByPeriodRecordValue algorithm(String companyId, String employeeId, DatePeriod period,
-			OptionalAggrPeriod optionalPeriod,
+			AnyAggrPeriod optionalPeriod,
 			MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets) {
 		val require = requireService.createRequire();
 		

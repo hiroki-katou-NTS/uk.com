@@ -6,19 +6,20 @@ package nts.uk.ctx.at.shared.app.command.outsideot.setting;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.app.command.outsideot.holiday.SuperHD60HConMedSaveDto;
-import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSetting;
-import nts.uk.ctx.at.shared.dom.outsideot.holiday.SuperHD60HConMed;
+import nts.uk.ctx.at.shared.app.find.outsideot.dto.OutsideOTSettingDto;
+import nts.uk.ctx.at.shared.app.find.outsideot.dto.SuperHD60HConMedDto;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.OutsideOTSetting;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.outsideot.holiday.SuperHD60HConMed;
 
 @Getter
 @Setter
 public class OutsideOTSettingSaveCommand {
 
 	/** The setting. */
-	private OutsideOTSettingSaveDto setting;
+	private OutsideOTSettingDto setting;
 	
 	/** The superholiday convert method. */
-	private SuperHD60HConMedSaveDto superholidayConvertMethod;
+	private SuperHD60HConMedDto superholidayConvertMethod;
 	
 	/**
 	 * To domain setting.
@@ -27,8 +28,7 @@ public class OutsideOTSettingSaveCommand {
 	 * @return the outside OT setting
 	 */
 	public OutsideOTSetting toDomainSetting(String companyId){
-		setting.setCompanyId(companyId);
-		return new OutsideOTSetting(setting);
+		return setting.domain();
 	}
 	
 	/**
@@ -38,7 +38,7 @@ public class OutsideOTSettingSaveCommand {
 	 * @return the super HD 60 H con med
 	 */
 	public SuperHD60HConMed toDomainSuper(String companyId) {
-		superholidayConvertMethod.setCompanyId(companyId);
-		return new SuperHD60HConMed(superholidayConvertMethod);
+		
+		return superholidayConvertMethod.domain();
 	}
 }

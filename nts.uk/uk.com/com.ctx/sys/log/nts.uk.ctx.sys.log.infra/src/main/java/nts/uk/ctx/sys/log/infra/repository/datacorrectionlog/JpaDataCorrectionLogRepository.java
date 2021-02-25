@@ -452,7 +452,7 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 						final String executeSQL = sql;
 						CollectionUtil.split(operationIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIdList -> {
 							entities.addAll(new NtsStatement(executeSQL, this.jdbcProxy())
-							  .paramString("operationIds", operationIds)
+							  .paramString("operationIds", subIdList)
 							  .paramInt("targetDataType", targetDataType.value)
 							  	.getList(rec -> {return new SrcdtDataCorrectionLog(new SrcdtDataCorrectionLogPk(rec.getString("OPERATION_ID"), 
 											rec.getString("USER_ID"), 
@@ -823,7 +823,7 @@ public class JpaDataCorrectionLogRepository extends JpaRepository
 						final String executeSQL = sql;
 						CollectionUtil.split(operationIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subIdList -> {
 							entities.addAll(new NtsStatement(executeSQL, this.jdbcProxy())
-							  .paramString("operationIds", operationIds)
+							  .paramString("operationIds", subIdList)
 							  .paramInt("targetDataType", targetDataType.value)
 							  	.getList(rec -> {return new SrcdtDataCorrectionLog(new SrcdtDataCorrectionLogPk(rec.getString("OPERATION_ID"), 
 											rec.getString("USER_ID"), 

@@ -3,8 +3,8 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck;
 import java.util.List;
 import java.util.Optional;
 
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 
 /**
  * 元々日別作成側に存在していたエラーアラーム処理
@@ -24,7 +24,7 @@ public interface DailyRecordCreateErrorAlermService {
 	//打刻順序不正
 	public List<EmployeeDailyPerError> stampIncorrectOrderAlgorithm(IntegrationOfDaily integrationOfDaily);
 	//打刻順序不正(出退勤打刻のみ)
-	public EmployeeDailyPerError stampIncorrect(IntegrationOfDaily integrationOfDaily);
+	public Optional<EmployeeDailyPerError> stampIncorrect(IntegrationOfDaily integrationOfDaily);
 	//打刻順序不正(出退勤打刻以外)
 	public List<EmployeeDailyPerError> stampIncorrectOrderAlgorithmOtherStamp(IntegrationOfDaily integrationOfDaily);
 	//打刻二重チェック

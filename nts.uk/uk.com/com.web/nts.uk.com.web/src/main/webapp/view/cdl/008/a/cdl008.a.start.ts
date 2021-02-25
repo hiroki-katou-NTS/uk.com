@@ -5,14 +5,18 @@ module nts.uk.com.view.cdl008.a {
         let id = screenModel.workplaces.startMode == 1 ? 'departmentList' : 'workplaceList';
         $('#' + id).ntsTreeComponent(screenModel.workplaces).done(function() {
             $('#' + id).focusTreeGridComponent();
+            
+            // get list data to display
+            screenModel.listDataDisplay = screenModel.workplaces.listDataDisplay;
+            
             // Check selected code.
-
             if (screenModel.isMultipleSelect && screenModel.selectedMulWorkplace().length > 0) {
                 let selectedCodes = $('#' + id).find('#multiple-tree-grid-' + id).igTreeGrid("selectedRows");
                 let selectedCodesExist = selectedCodes.filter(item => item.index > -1).map(item => item.id);
                 screenModel.selectedMulWorkplace(selectedCodesExist);
                 return;
             }
+            
             if (!screenModel.selectedSelWorkplace()) {
                 return;
             }

@@ -1,1251 +1,1518 @@
-module nts.uk.at.view.kaf006.a.viewmodel {
-    import common = nts.uk.at.view.kaf006.share.common;
-    import service = nts.uk.at.view.kaf006.shr.service;
-    import dialog = nts.uk.ui.dialog;
-    import appcommon = nts.uk.at.view.kaf000.shr.model;
-    import setShared = nts.uk.ui.windows.setShared;
-    import modal = nts.uk.ui.windows.sub.modal;
-    import getText = nts.uk.resource.getText;
-    export class ScreenModel {
-        DATE_FORMAT: string = "YYYY/MM/DD";
-        //kaf000
-        kaf000_a: kaf000.a.viewmodel.ScreenModel;
-        checkBoxValue: KnockoutObservable<boolean> = ko.observable(false);
-        enableSendMail: KnockoutObservable<boolean> = ko.observable(false);
-        mailFlag: KnockoutObservable<boolean> = ko.observable(true);
-        screenModeNew: KnockoutObservable<boolean> = ko.observable(true);
-        displayEndDateFlg: KnockoutObservable<boolean> = ko.observable(false);
-        enableDisplayEndDate: KnockoutObservable<boolean> = ko.observable(true);
-        //current Data
-        //        curentGoBackDirect: KnockoutObservable<common.GoBackDirectData>;
-        //申請者
-        employeeName: KnockoutObservable<string> = ko.observable("");
-        employeeList :KnockoutObservableArray<common.EmployeeOT> = ko.observableArray([]);
-        selectedEmplCodes: KnockoutObservable<string> = ko.observable(null);
-        employeeFlag: KnockoutObservable<boolean> = ko.observable(false);
-        totalEmployee: KnockoutObservable<string> = ko.observable(null);
-        //Pre-POST
-        prePostSelected: KnockoutObservable<number> = ko.observable(3);
-        workState: KnockoutObservable<boolean> = ko.observable(true);
-        typeSiftVisible: KnockoutObservable<boolean> = ko.observable(true);
-        // 申請日付
-        startAppDate: KnockoutObservable<string> = ko.observable('');
-        // 申請日付
-        endAppDate: KnockoutObservable<string> = ko.observable('');
-        dateValue: KnockoutObservable<any> = ko.observable({ startDate: '', endDate: '' });
-        appDate: KnockoutObservable<string> = ko.observable('');
-        selectedAllDayHalfDayValue: KnockoutObservable<number> = ko.observable(0);
-        holidayTypes: KnockoutObservableArray<common.HolidayType> = ko.observableArray([]);
-        holidayTypeCode: KnockoutObservable<number> = ko.observable(0);
-        typeOfDutys: KnockoutObservableArray<common.TypeOfDuty> = ko.observableArray([]);
-        selectedTypeOfDuty: KnockoutObservable<any> = ko.observable(null);
-        displayHalfDayValue: KnockoutObservable<boolean> = ko.observable(false);
-        changeWorkHourValue: KnockoutObservable<boolean> = ko.observable(false);
-        changeWorkHourValueFlg: KnockoutObservable<boolean> = ko.observable(false);
-        //        displayChangeWorkHour:  KnockoutObservable<boolean> = ko.observable(false);
-        displayStartFlg: KnockoutObservable<boolean> = ko.observable(false);
-        contentFlg: KnockoutObservable<boolean> = ko.observable(true);
-        eblTimeStart1: KnockoutObservable<boolean> = ko.observable(false);
-        eblTimeEnd1: KnockoutObservable<boolean> = ko.observable(false);
-        workTimeCodes: KnockoutObservableArray<string> = ko.observableArray([]);
-        workTypecodes: KnockoutObservableArray<string> = ko.observableArray([]);
-        displayWorkTimeName: KnockoutObservable<string> = ko.observable(null);
-        //TIME LINE 1
-        timeStart1: KnockoutObservable<number> = ko.observable(null);
-        timeEnd1: KnockoutObservable<number> = ko.observable(null);
-        //TIME LINE 2
-        timeStart2: KnockoutObservable<number> = ko.observable(null);
-        timeEnd2: KnockoutObservable<number> = ko.observable(null);
-        //勤務種類
-        workTimeCode: KnockoutObservable<string> = ko.observable('');
-        workTimeName: KnockoutObservable<string> = ko.observable('');
-        //comboBox 定型理由
-        reasonCombo: KnockoutObservableArray<common.ComboReason> = ko.observableArray([]);
-        selectedReason: KnockoutObservable<string> = ko.observable('');
-        //MultilineEditor
-        requiredReason: KnockoutObservable<boolean> = ko.observable(false);
-        multilContent: KnockoutObservable<string> = ko.observable('');
+/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
-        //Approval 
-        // approvalSource: Array<common.AppApprovalPhase> = [];
-        employeeID: KnockoutObservable<string> = ko.observable('');
-        //menu-bar 
-        prePostDisp: KnockoutObservable<boolean> = ko.observable(true);
-        prePostEnable: KnockoutObservable<boolean> = ko.observable(true);
-        useMulti: KnockoutObservable<boolean> = ko.observable(true);
+import Kaf000AViewModel = nts.uk.at.view.kaf000.a.viewmodel.Kaf000AViewModel;
+import AppInitParam = nts.uk.at.view.kaf000.shr.viewmodel.AppInitParam;
+import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
+import Application = nts.uk.at.view.kaf000.shr.viewmodel.Application;
+import ApplicationDto = nts.uk.at.view.kaf006.shr.viewmodel.ApplicationDto;
+import WorkType = nts.uk.at.view.kaf006.shr.viewmodel.WorkType;
+import Kaf006ShrViewModel = nts.uk.at.view.kaf006.shr.viewmodel.Kaf006ShrViewModel;
 
-        displayPrePostFlg: KnockoutObservable<boolean> = ko.observable(true);
+module nts.uk.at.view.kaf006_ref.a.viewmodel {
 
-        typicalReasonDisplayFlg: KnockoutObservable<boolean> = ko.observable(true);
-        displayAppReasonContentFlg: KnockoutObservable<boolean> = ko.observable(true);
-        // enable
-        enbAllDayHalfDayFlg: KnockoutObservable<boolean> = ko.observable(true);
-        enbWorkType: KnockoutObservable<boolean> = ko.observable(true);
-        enbHalfDayFlg: KnockoutObservable<boolean> = ko.observable(true);
-        enbChangeWorkHourFlg: KnockoutObservable<boolean> = ko.observable(true);
-        enbbtnWorkTime: KnockoutObservable<boolean> = ko.observable(true);
-        enbReasonCombo: KnockoutObservable<boolean> = ko.observable(true);
-        enbContentReason: KnockoutObservable<boolean> = ko.observable(true);
-        employeeIDs: KnockoutObservableArray<string> = ko.observableArray([]);
-        targetDate: any = moment(new Date()).format(this.DATE_FORMAT);
-        //ver15
-        selectedRelation: KnockoutObservable<any> = ko.observable('');
-        relationCombo: KnockoutObservableArray<any> = ko.observableArray([]);
-        relaReason: KnockoutObservable<any> = ko.observable('');
-        mournerDis: KnockoutObservable<boolean> = ko.observable(false);
-        isCheck: KnockoutObservable<boolean> = ko.observable(false);
-        fix: KnockoutObservable<boolean> = ko.observable(false);
-        maxDayDis: KnockoutObservable<boolean> = ko.observable(false);
-        maxDayline1: KnockoutObservable<string> = ko.observable('');
-        maxDayline2: KnockoutObservable<string> = ko.observable('');
-        requiredRela: KnockoutObservable<boolean> = ko.observable(true);
-        //上限日数
-        maxDay: KnockoutObservable<number> = ko.observable(0);
-        //喪主加算日数
-        dayOfRela: KnockoutObservable<number> = ko.observable(0);
-        relaEnable: KnockoutObservable<boolean> = ko.observable(true);
-        relaMourner: KnockoutObservable<boolean> = ko.observable(true);
-        relaRelaReason: KnockoutObservable<boolean> = ko.observable(true);
-        displayReasonLst: Array<common.DisplayReason> = []; 
-        //No.65 + No.376
-        pridigCheck: KnockoutObservable<boolean> = ko.observable(true);
-        numberSubHd: KnockoutObservable<number> = ko.observable(0);
-        numberSubVaca: KnockoutObservable<number> = ko.observable(0);
-        settingNo65: KnockoutObservable<common.SettingNo65> = ko.observable(null);
-        yearRemain: KnockoutObservable<string> = ko.observable('0日');//年休残数
-        subHdRemain: KnockoutObservable<string> = ko.observable('0日');//代休残数
-        subVacaRemain: KnockoutObservable<string> = ko.observable('0日');//振休残数
-        stockRemain: KnockoutObservable<string> = ko.observable('0日');//ストック休暇残数
-        numberRemain: KnockoutObservableArray<any> = ko.observableArray([]);
-        yearDis: KnockoutObservable<boolean> = ko.observable(false);
-        subHdDis: KnockoutObservable<boolean> = ko.observable(false);
-        subVacaDis: KnockoutObservable<boolean> = ko.observable(false);
-        stockDis: KnockoutObservable<boolean> = ko.observable(false);
-        //ver20
-        disAll: KnockoutObservable<boolean> = ko.observable(false);
-        //ver21
-        relaResonDis: KnockoutObservable<boolean> = ko.observable(true);
-        hdTypeDis: KnockoutObservable<boolean> = ko.observable(false);
-        dataMax: KnockoutObservable<boolean> = ko.observable(false);
-        appAbsenceStartInfoDto: any;
-        dayDispSet: KnockoutObservable<boolean> = ko.observable(false);
-        constructor(transferData :any) {
+    @bean()
+    export class Kaf006AViewModel extends Kaf000AViewModel {
+        appType: KnockoutObservable<number> = ko.observable(AppType.ABSENCE_APPLICATION);
+        isAgentMode: KnockoutObservable<boolean> = ko.observable(false);
+        isSendMail: KnockoutObservable<Boolean> = ko.observable(false);
+        application: KnockoutObservable<Application> = ko.observable(new Application(this.appType()));
+        data: any = null;
+        hdAppSet: KnockoutObservableArray<any> = ko.observableArray([]);
+        hdAppSetTmp: KnockoutObservableArray<any> = ko.observableArray([]);
+        selectedType: KnockoutObservable<any> = ko.observable();
+        workTypeLst: KnockoutObservableArray<any> = ko.observableArray([]);
+        selectedWorkTypeCD: KnockoutObservable<string> = ko.observable(null);
+        selectedWorkType: KnockoutObservable<WorkType> = ko.observable(new WorkType({workTypeCode: '', name: ''}));
+        selectedWorkTimeCD: KnockoutObservable<string> = ko.observable();
+        selectedWorkTimeName: KnockoutObservable<string> = ko.observable();
+        selectedWorkTimeDisp: KnockoutComputed<string>;
+        dateSpecHdRelationLst: KnockoutObservableArray<any> = ko.observableArray([]);
+        selectedDateSpec: KnockoutObservable<any> = ko.observable();
+        relationshipReason: KnockoutObservable<string> = ko.observable();
+        maxNumberOfDay: KnockoutComputed<any>;
+        specAbsenceDispInfo: KnockoutObservable<any> = ko.observable();
+        isDispMourn: any = ko.observable(false);
+        isCheckMourn: any = ko.observable(false);
+        requiredVacationTime: KnockoutObservable<number> = ko.observable(0);
+        timeRequired: KnockoutObservable<string> = ko.observable();
+        leaveComDayOffManas: KnockoutObservableArray<any> = ko.observableArray([]);
+        payoutSubofHDManagements: KnockoutObservable<any> = ko.observableArray([]);
+        workTypeBefore: KnockoutObservable<any> = ko.observable();
+        workTypeAfter: KnockoutObservable<any> = ko.observable();
+        isFromOther: boolean = false;
+        isEnableSwitchBtn: boolean = true;
+        updateMode: KnockoutObservable<boolean> = ko.observable(true);
+        isDispTime2ByWorkTime: KnockoutObservable<boolean> = ko.observable(false);
 
-            let self = this;
-            $(document).ajaxStart(function() {
-                nts.uk.ui.block.invisible();
-            }).ajaxStop(function() {
-                nts.uk.ui.block.clear();
-            });
-            if(transferData != null){
-                self.appDate(transferData.appDate);
-                self.employeeIDs(transferData.employeeIDs);
-                self.employeeID(transferData.employeeID); 
-                if(!_.isEmpty(self.employeeIDs())) {
-                    self.employeeFlag(true);                
+        yearRemain: KnockoutObservable<number> = ko.observable();
+        subHdRemain: KnockoutObservable<number> = ko.observable();
+        subVacaRemain: KnockoutObservable<number> = ko.observable();
+        remainingHours: KnockoutObservable<number> = ko.observable();
+
+        over60HHourRemain: KnockoutObservable<string> = ko.observable();
+        subVacaHourRemain: KnockoutObservable<string> = ko.observable();
+        timeYearLeave: KnockoutObservable<string> = ko.observable();
+        childNursingRemain: KnockoutObservable<string> = ko.observable();
+        nursingRemain: KnockoutObservable<string> = ko.observable();
+        isChangeWorkHour: KnockoutObservable<boolean> = ko.observable(false);
+        startTime1: KnockoutObservable<number> = ko.observable();
+        endTime1: KnockoutObservable<number> = ko.observable();
+        startTime2: KnockoutObservable<number> = ko.observable();
+        endTime2: KnockoutObservable<number> = ko.observable();
+
+        // 60H超休
+        over60H: KnockoutObservable<number> = ko.observable();
+        // 時間代休
+        timeOff: KnockoutObservable<number> = ko.observable();
+        // 時間年休
+        annualTime: KnockoutObservable<number> = ko.observable();
+        // 子の看護
+        childNursing: KnockoutObservable<number> = ko.observable();
+        // 介護時間
+        nursing: KnockoutObservable<number> = ko.observable();
+
+        // Condition
+        condition11: KnockoutObservable<boolean> = ko.observable(true);
+        condition30: KnockoutObservable<boolean> = ko.observable(true);
+        condition12: KnockoutObservable<boolean> = ko.observable(true);
+        condition19Over60: KnockoutObservable<boolean> = ko.observable(true);
+        condition19Substitute: KnockoutObservable<boolean> = ko.observable(true);
+        condition19Annual: KnockoutObservable<boolean> = ko.observable(true);
+        condition19ChildNursing: KnockoutObservable<boolean> = ko.observable(true);
+        condition19Nursing: KnockoutObservable<boolean> = ko.observable(true);
+        condition14: KnockoutObservable<boolean> = ko.observable(true);
+        condition15: KnockoutObservable<boolean> = ko.observable(true);
+        condition21: KnockoutObservable<boolean> = ko.observable(true);
+        condition22: KnockoutObservable<boolean> = ko.observable(true);
+        condition23: KnockoutObservable<boolean> = ko.observable(true);
+        condition24: KnockoutObservable<boolean> = ko.observable(true);
+
+        condition1_0: KnockoutObservable<boolean> = ko.observable(true);
+        condition1_1: KnockoutObservable<boolean> = ko.observable(true);
+        condition1_2: KnockoutObservable<boolean> = ko.observable(true);
+        condition1_3: KnockoutObservable<boolean> = ko.observable(true);
+        condition1_4: KnockoutObservable<boolean> = ko.observable(true);
+        condition1_5: KnockoutObservable<boolean> = ko.observable(true);
+        condition1_6: KnockoutObservable<boolean> = ko.observable(true);
+
+        condition6: KnockoutObservable<boolean> = ko.observable(true);
+        condition7: KnockoutObservable<boolean> = ko.observable(true);
+        condition8: KnockoutObservable<boolean> = ko.observable(true);
+        condition9: KnockoutObservable<boolean> = ko.observable(true);
+        condition10Substi: KnockoutObservable<boolean> = ko.observable(false);
+        condition10Annual: KnockoutObservable<boolean> = ko.observable(false);
+        condition10Accum: KnockoutObservable<boolean> = ko.observable(false);
+    ;
+
+        created(params: AppInitParam) {
+            const vm = this;
+            let dataTransfer: DataTransfer;
+            if (_.isNil(params)) {
+                dataTransfer = __viewContext.transferred.value; // from spr
+            }
+            if (!_.isNil(__viewContext.transferred.value)) {
+                vm.isFromOther = true;
+            }
+            sessionStorage.removeItem('nts.uk.request.STORAGE_KEY_TRANSFER_DATA');
+            let empLst: Array<string> = [],
+                dateLst: Array<string> = [];
+            if (!_.isNil(_.get(dataTransfer, 'appDate'))) {
+                dateLst.push(dataTransfer.appDate);
+            }
+            if (!_.isEmpty(params)) {
+                if (!_.isEmpty(params.employeeIds)) {
+                    empLst = params.employeeIds;
                 }
-                if(!nts.uk.util.isNullOrUndefined(transferData.appDate)){
-                    self.targetDate = transferData.appDate;        
+                if (!_.isEmpty(params.baseDate)) {
+                    let paramDate = moment(params.baseDate).format('YYYY/MM/DD');
+                    dateLst = [paramDate];
+                    vm.application().appDate(paramDate);
+                    vm.application().opAppStartDate(paramDate);
+                    vm.application().opAppEndDate(paramDate);
+                }
+                if (params.isAgentMode) {
+                    vm.isAgentMode(params.isAgentMode);
                 }
             }
-            //KAF000_A
-            self.kaf000_a = new kaf000.a.viewmodel.ScreenModel();
-            //startPage 006a AFTER start 000_A
-            self.startPage();
-            self.selectedRelation.subscribe(function(codeChange){
-                if(codeChange === undefined || codeChange == null || codeChange.length == 0){
+
+            if (!_.isNil(dataTransfer)) {
+                vm.application().appDate(dataTransfer.appDate);
+                vm.application().opAppStartDate(dataTransfer.appDate);
+                vm.application().opAppEndDate(dataTransfer.appDate);
+            }
+            if (!_.isNil(params)) {
+                if (!_.isNil(params.baseDate)) {
+                    vm.application().appDate(moment(params.baseDate).format('YYYY/MM/DD'));
+                }
+            }
+
+            // Load data common
+            vm.$blockui("show");
+            vm.loadData(empLst, dateLst, vm.appType())
+                .then((loadDataFlag: any) => {
+                    if (loadDataFlag) {
+                        let appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput);
+                        return vm.$ajax(API.startNew, appDispInfoStartupOutput);
+                    }
+                }).then((successData: any) => {
+                if (successData) {
+                    vm.data = successData;
+                    let hdAppSetInput: any[] = vm.data.hdAppSet.dispNames;
+                    if (hdAppSetInput && hdAppSetInput.length > 0) {
+                        vm.hdAppSetTmp(hdAppSetInput);
+                    }
+
+                    vm.checkCondition(vm.data);
+                    vm.hdAppSet(ko.toJS(vm.hdAppSetTmp));
+                }
+            }).fail((error: any) => {
+                if (error) {
+                    vm.$dialog.error({messageId: error.messageId, messageParams: error.parameterIds});
+                }
+            }).always(() => {
+                vm.$blockui("hide");
+            });
+        }
+
+        mounted() {
+            const vm = this;
+
+            vm.maxNumberOfDay = ko.computed(() => {
+                let data = vm.$i18n("KAF006_44").concat("\n");
+                if (vm.specAbsenceDispInfo()) {
+                    if (vm.isDispMourn() && vm.isCheckMourn()) {
+                        let param = vm.specAbsenceDispInfo().maxDay + vm.specAbsenceDispInfo().dayOfRela;
+                        data = data + vm.$i18n("KAF006_46", param.toString());
+                    } else {
+                        let param = vm.specAbsenceDispInfo().maxDay;
+                        data = data + vm.$i18n("KAF006_46", param.toString());
+                    }
+
+                }
+                return data;
+            });
+
+            vm.selectedWorkTimeDisp = ko.computed(() => {
+                const vm = this;
+
+                if (vm.selectedWorkTimeCD()) {
+                    return vm.selectedWorkTimeCD() + " " + vm.selectedWorkTimeName();
+                }
+
+                return vm.$i18n("KAF006_21");
+            });
+
+            vm.selectedDateSpec.subscribe(() => {
+                if (vm.selectedType() !== 3 || vm.dateSpecHdRelationLst().length === 0) {
                     return;
                 }
-                $('#relaReason').ntsError('clear');
-                service.changeRelaCD({
-                        frameNo: self.appAbsenceStartInfoDto.specAbsenceDispInfo.frameNo,
-                        specHdEvent: self.appAbsenceStartInfoDto.specAbsenceDispInfo.specHdEvent,
-                        relationCD: codeChange
-                    }).done(function(data){
-                    //上限日数表示エリア(vùng hiển thị số ngày tối đa)
-                    let line1 = getText('KAF006_44');
-                    let maxDay = 0;
-                    if(self.mournerDis() && self.isCheck()){//・ 画面上喪主チェックボックス(A10_3)が表示される　AND チェックあり ⇒ 上限日数　＋　喪主加算日数
-                        maxDay = data.maxDayObj == null ? 0 :  data.maxDayObj.maxDay + data.maxDayObj.dayOfRela;
-                    }else{//・その以外 ⇒ 上限日数
-                        maxDay = data.maxDayObj == null ? 0 : data.maxDayObj.maxDay;
-                    }
-                    if(data.maxDayObj != null){
-                        self.maxDay(data.maxDayObj.maxDay);
-                        self.dayOfRela(data.maxDayObj.dayOfRela);
-                        self.dataMax(true);  
-                    }else{
-                        self.dataMax(false);    
-                    }
-                    let line2 = getText('KAF006_46',[maxDay]);
-                    //bug #110129
-                    self.appAbsenceStartInfoDto.specAbsenceDispInfo.maxDay = self.maxDay();
-                    self.appAbsenceStartInfoDto.specAbsenceDispInfo.dayOfRela = self.dayOfRela();
-                        
-                    self.maxDayline1(line1);
-                    self.maxDayline2(line2);
-                    //ver21
-                    let relaS = self.findRelaSelected(codeChange);
-                    self.relaResonDis(relaS == undefined ? false : relaS.threeParentOrLess);
-                });
-            });
-            self.isCheck.subscribe(function(checkChange){
-                if(self.mournerDis()){
-                    //上限日数表示エリア(vùng hiển thị số ngày tối đa)
-                    let line1 = getText('KAF006_44');
-                    let maxDay = 0;
-                    if(self.mournerDis() && self.isCheck()){//・ 画面上喪主チェックボックス(A10_3)が表示される　AND チェックあり ⇒ 上限日数　＋　喪主加算日数
-                        maxDay = self.maxDay() + self.dayOfRela();
-                    }else{//・その以外 ⇒ 上限日数
-                        maxDay = self.maxDay();
-                    }
-                    let line2 = getText('KAF006_46',[maxDay]);
-                    
-                    self.maxDayline1(line1);
-                    self.maxDayline2(line2);
-                }
-            });
-        }
-        findRelaSelected(relaCD: string): any{
-            let self = this;
-            return _.find(self.relationCombo(), function(rela){
-                return rela.relationCd == relaCD;
-            });
-        }
-        /**
-         * 
-         */
-        startPage(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred();
-            nts.uk.ui.block.invisible();
-            service.getAppForLeaveStart({
-                appDate: nts.uk.util.isNullOrEmpty(self.startAppDate()) ? null : moment(self.startAppDate()).format(self.DATE_FORMAT),
-                employeeID: null,
-                employeeIDs: nts.uk.util.isNullOrEmpty(self.employeeIDs()) ? null : self.employeeIDs()
-            }).done((data) => {
-                self.appAbsenceStartInfoDto = data; 
-                self.kaf000_a.initData({
-                    errorFlag: self.appAbsenceStartInfoDto.appDispInfoStartupOutput.appDispInfoWithDateOutput.errorFlag,
-                    listApprovalPhaseStateDto: self.appAbsenceStartInfoDto.appDispInfoStartupOutput.appDispInfoWithDateOutput.listApprovalPhaseState,
-                    isSystemDate: self.appAbsenceStartInfoDto.appDispInfoStartupOutput.appDispInfoNoDateOutput.requestSetting.applicationSetting.recordDate     
-                });
-                // self.approvalSource = self.kaf000_a.approvalList;
-                $("#inputdate").focus();
-                //No.65
-                let appEmpSet = data.appDispInfoStartupOutput.appDispInfoWithDateOutput.employmentSet;
-                let subVacaTypeUseFlg = false;
-                let subHdTypeUseFlg = false;
-                let numberRemain = data.remainVacationInfo;
-                if(!nts.uk.util.isNullOrUndefined(appEmpSet)) {
-                    if(appEmpSet.holidayOrPauseType == 7){//振休
-                        subVacaTypeUseFlg = appEmpSet.holidayTypeUseFlg;
-                    }   
-                    if(appEmpSet.holidayOrPauseType == 1){//代休
-                        subHdTypeUseFlg = appEmpSet.holidayTypeUseFlg;
-                    } 
-                }
-                self.settingNo65(
-                    new common.SettingNo65(
-                    undefined,
-                    undefined, 
-                    data.hdAppSet.pridigCheck,
-                    numberRemain.subVacaManage, 
-                    subVacaTypeUseFlg, 
-                    numberRemain.subHdManage, 
-                    subHdTypeUseFlg));
-                
-                //No.376
-                if(numberRemain != null){
-                    if(numberRemain.yearRemain != null){//年休残数
-                        self.yearRemain(numberRemain.yearRemain + '日');
-                        self.yearDis(true);
-                    }
-                    if(numberRemain.subHdRemain != null){//代休残数
-                        self.subHdRemain(numberRemain.subHdRemain + '日');
-                        self.numberSubHd(numberRemain.subHdRemain);
-                        self.subHdDis(true);
-                    }
-                    if(numberRemain.subVacaRemain != null){//振休残数
-                        self.subVacaRemain(numberRemain.subVacaRemain + '日');
-                        self.numberSubVaca(numberRemain.subVacaRemain);
-                        self.subVacaDis(true);
-                    }
-                    if(numberRemain.stockRemain != null){//ストック休暇残数
-                        self.stockRemain(numberRemain.stockRemain + '日');
-                        self.stockDis(true);
-                    }
-                }
-                if(self.yearDis() || self.subHdDis() || self.subVacaDis() || self.stockDis()){
-                    self.disAll(true);
-                }
-                self.initData(data);
-                //ver16
-                let listAppTypeSet = data.appDispInfoStartupOutput.appDispInfoNoDateOutput.requestSetting.applicationSetting.listAppTypeSetting;
-                let appTypeSet = _.find(listAppTypeSet, o => o.appType == 1);
-                self.prePostEnable(appTypeSet.canClassificationChange);
-                self.holidayTypeCode.subscribe(function(value) {
-                    let currentDisplay = _.find(self.displayReasonLst, (o) => o.typeLeave==value);
-                    if(nts.uk.util.isNullOrUndefined(currentDisplay)){
-                        self.typicalReasonDisplayFlg(false);
-                        self.displayAppReasonContentFlg(false);        
-                    } else {
-                        self.typicalReasonDisplayFlg(currentDisplay.displayFixedReason);
-                        self.displayAppReasonContentFlg(currentDisplay.displayAppReason);     
-                    }
-                    self.checkDisplayEndDate(self.displayEndDateFlg());
-                    if (self.checkStartDate()) {
-                        return;
-                    }
-                    if (!nts.uk.util.isNullOrEmpty(self.selectedAllDayHalfDayValue())) {
-                        var dfd = $.Deferred();
-                        service.getAllAppForLeave({
-                            startAppDate: nts.uk.util.isNullOrEmpty(self.startAppDate()) ? null : moment(self.startAppDate()).format(self.DATE_FORMAT),
-                            endAppDate: nts.uk.util.isNullOrEmpty(self.endAppDate()) ? null : moment(self.endAppDate()).format(self.DATE_FORMAT),
-                            employeeID: nts.uk.util.isNullOrEmpty(self.employeeID()) ? null : self.employeeID(),
-                            displayHalfDayValue: self.displayHalfDayValue(),
-                            holidayType: value,
-                            alldayHalfDay: self.selectedAllDayHalfDayValue(),
-                            relationCD: self.selectedRelation(),
-                            appAbsenceStartInfoDto: self.appAbsenceStartInfoDto
-                        }).done((data) => {
-                            //hoatt 2018.08.09
-//                            self.changeForSpecHd(data);
-                            self.appAbsenceStartInfoDto = data;
-                            self.displayStartFlg(true);
-                            self.changeWorkHourValueFlg(data.workHoursDisp);
-                            if (nts.uk.util.isNullOrEmpty(data.workTypeLst)) {
-                                self.typeOfDutys([]);
-                                self.workTypecodes([]);
-                                self.selectedTypeOfDuty(null);
-                            } else {
-                                let a = [];
-                                self.workTypecodes.removeAll();
-                                for (let i = 0; i < data.workTypeLst.length; i++) {
-                                    a.push(new common.TypeOfDuty(data.workTypeLst[i].workTypeCode, data.workTypeLst[i].workTypeCode + "　" + data.workTypeLst[i].name));
-                                    self.workTypecodes.push(data.workTypeLst[i].workTypeCode);
-                                }
-                                self.typeOfDutys(a);
-                                let contain = _.find(a, (o) => { return o.typeOfDutyID == self.selectedTypeOfDuty(); });
-                                if (nts.uk.util.isNullOrUndefined(contain)){
-                                    self.selectedTypeOfDuty('');
-                                }
-                                
-                            }
-                            $("#workTypes").find("input:first").focus();
-                            dfd.resolve(data);
-                        }).fail((res) => {
-                            dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
-                                .then(function() { nts.uk.ui.block.clear(); });
-                            dfd.reject(res);
-                        });
-                        return dfd.promise();
-                    }
-                });
-                self.selectedAllDayHalfDayValue.subscribe(function(value) {
-                    if (value == 0) {
-                        self.enbHalfDayFlg(true);
-                    } else {
-                        self.enbHalfDayFlg(false);
-                    }
-                });
-
-
-                //find by change AllDayHalfDay
-                self.selectedAllDayHalfDayValue.subscribe((value) => {
-                    self.findChangeAllDayHalfDay(value);
-                });
-                // find change value A5_3
-                self.displayHalfDayValue.subscribe((value) => {
-                    self.findChangeDisplayHalfDay(value);
-                });
-                self.selectedTypeOfDuty.subscribe((value) => {
-                    if(nts.uk.util.isNullOrUndefined(value)||nts.uk.util.isNullOrEmpty(value)){
-                        self.changeWorkHourValueFlg(false);
-                        self.maxDayDis(false); 
-                        self.hdTypeDis(false);
-                    } else {
-                        self.findChangeWorkType(value);
-                        if(self.holidayTypeCode() == 3){
-                            self.hdTypeDis(true);
-                        }else{
-                            self.hdTypeDis(false);
-                        }
-                    }
-                });
-                self.displayWorkTimeName.subscribe((value) => {
-                    self.changeDisplayWorkime();
-                });
-                // find changeDate
-                self.appDate.subscribe(function(value) {
-                    if(value == null || value == '' || value ==  undefined){
-                        return;
-                    }
-                    self.findChangeAppDate(value);
-                });
-                self.displayEndDateFlg.subscribe((value) => {
-                    nts.uk.ui.errors.clearAll();
-                    if (value) {
-                        $('.ntsStartDatePicker').focus();
-                        self.dateValue({ startDate: self.appDate(), endDate: "" });
-                        self.dateValue.subscribe(function() {
-                            if ($("#daterangepicker").find(".ntsDateRangeComponent").ntsError("hasError")) {
-                                return;
-                            }
-                            if(self.dateValue().startDate != '' && self.dateValue().endDate != ''){
-                                self.findChangeAppDate(self.dateValue().startDate);
-                            }
-                            
-                        })
-                    } else {
-                        self.appDate(self.dateValue().startDate);
-                        self.endAppDate('');
-                        $("#inputdate").focus();
-                    }
-                    if(self.relaReason() != ''){
-                        $("#relaReason").trigger("validate");
-                    }
-                });
-                self.changeWorkHourValue.subscribe((value) =>{
-                    self.changeDisplayWorkime();
-                });
-                nts.uk.ui.block.clear();
-                dfd.resolve(data);
-            }).fail((res) => {
-                if (res.messageId == 'Msg_426') {
-                    dialog.alertError({ messageId: res.messageId }).then(function() {
-                        nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
-                        nts.uk.ui.block.clear();                        
-                    });
-                } else if (res.messageId == 'Msg_473') {
-                    dialog.alertError({ messageId: res.messageId }).then(function() {
-                        nts.uk.ui.block.clear();
-                    });
-                } else {
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() {
-                        nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
-                        nts.uk.ui.block.clear();
-                    });
-                }
-                dfd.reject(res);
-            });
-            return dfd.promise();
-
-        }
-        changeForSpecHd(data: any){
-            let self = this;
-            let specAbsenceDispInfo = data.specAbsenceDispInfo;
-            if(nts.uk.util.isNullOrUndefined(specAbsenceDispInfo)) {
-                self.fix(false);
-                self.maxDayDis(false);
-                self.dataMax(false);
-                return;        
-            }
-             //hoatt 2018.08.09
-            //relationship list
-            self.relationCombo([]);
-            let lstRela = [];
-            let lstRelaOutput = [];
-            if(!nts.uk.util.isNullOrEmpty(specAbsenceDispInfo.dateSpecHdRelationLst)) {
-                lstRelaOutput = specAbsenceDispInfo.dateSpecHdRelationLst;    
-            }  
-            _.each(lstRelaOutput, function(rela){
-                lstRela.push({relationCd: rela.relationCD, relationName: rela.relationName, 
-                        maxDate: rela.maxDate, threeParentOrLess: rela.threeParentOrLess});
-            });
-            self.relationCombo(lstRela);
-            let fix = false;
-            if(specAbsenceDispInfo.specHdForEventFlag){
-                fix = specAbsenceDispInfo.specHdEvent.maxNumberDay == 2 ? true : false;
-            }
-            if(!fix && self.relaReason() != ''){
-                $('#relaReason').ntsError('clear');
-            }
-            $("#relaCD-combo").ntsError('clear');
-            self.fix(fix);
-            if(!fix){
-                self.requiredRela(false);
-            }else{
-                self.requiredRela(true);
-            }
-            self.maxDayDis(specAbsenceDispInfo.specHdForEventFlag);
-            if(specAbsenceDispInfo.specHdForEventFlag && specAbsenceDispInfo.specHdEvent.maxNumberDay == 2 && specAbsenceDispInfo.specHdEvent.makeInvitation == 1){
-                self.mournerDis(true);
-            }else{
-               self.mournerDis(false);
-            }
-            if(self.holidayTypeCode() == 3){
-                //上限日数表示エリア(vùng hiển thị số ngày tối đa)
-                let line1 = getText('KAF006_44');
-                let maxDay = 0;
-                if(self.mournerDis() && self.isCheck()){//・ 画面上喪主チェックボックス(A10_3)が表示される　AND チェックあり ⇒ 上限日数　＋　喪主加算日数
-                    maxDay = specAbsenceDispInfo.maxDay + specAbsenceDispInfo.dayOfRela;
-                }else{//・その以外 ⇒ 上限日数
-                    maxDay = specAbsenceDispInfo.maxDay;
-                }
-                if(maxDay != null){
-                    self.maxDay(specAbsenceDispInfo.maxDay);
-                    self.dayOfRela(specAbsenceDispInfo.dayOfRela);
-                    self.dataMax(true);  
-                }else{
-                    self.dataMax(false);    
-                }
-                let line2 = getText('KAF006_46',[maxDay]);
-                
-                self.maxDayline1(line1);
-                self.maxDayline2(line2);
-            }
-        }
-        // change by appDate
-        findChangeAppDate(data: any) {
-            let self = this;
-            self.checkDisplayEndDate(self.displayEndDateFlg());
-            if (self.checkStartDate()) {
-                return;
-            }
-            let dfd = $.Deferred();
-            service.findByChangeAppDate({
-                startAppDate: nts.uk.util.isNullOrEmpty(data) ? null : moment(data).format(self.DATE_FORMAT),
-                employeeID: nts.uk.util.isNullOrEmpty(self.employeeID()) ? null : self.employeeID(),
-                displayHalfDayValue: self.displayHalfDayValue(),
-                holidayType: self.holidayTypeCode(),
-                prePostAtr: self.prePostSelected(),
-                workTypeCode: self.selectedTypeOfDuty(),
-                alldayHalfDay: self.selectedAllDayHalfDayValue(),
-                appAbsenceStartInfoDto:  self.appAbsenceStartInfoDto
-            }).done((result) => {
-                //fix bug  when changing typeDate 110129
-                let specTemp = self.appAbsenceStartInfoDto.specAbsenceDispInfo;
-                self.appAbsenceStartInfoDto = result;
-                if (specTemp != null){
-                    result.specAbsenceDispInfo = specTemp;   
-                }
-                self.kaf000_a.initData({
-                    errorFlag: self.appAbsenceStartInfoDto.appDispInfoStartupOutput.appDispInfoWithDateOutput.errorFlag,
-                    listApprovalPhaseStateDto: self.appAbsenceStartInfoDto.appDispInfoStartupOutput.appDispInfoWithDateOutput.listApprovalPhaseState,
-                    isSystemDate: self.appAbsenceStartInfoDto.appDispInfoStartupOutput.appDispInfoNoDateOutput.requestSetting.applicationSetting.recordDate        
-                });
-                if (!nts.uk.util.isNullOrEmpty(result.workTypeLst)) {
-                    let a = [];
-                    self.workTypecodes.removeAll();
-                    for (let i = 0; i < result.workTypeLst.length; i++) {
-                        a.push(new common.TypeOfDuty(result.workTypeLst[i].workTypeCode, result.workTypeLst[i].workTypeCode + "　" + result.workTypeLst[i].name));
-                        self.workTypecodes.push(result.workTypeLst[i].workTypeCode);
-                    }
-                    self.typeOfDutys(a);
-                    let contain = _.find(a, (o) => { return o.typeOfDutyID == self.selectedTypeOfDuty(); });
-                    if (nts.uk.util.isNullOrUndefined(contain)){
-                        self.selectedTypeOfDuty('');
-                    }
-                }
-                // self.prePostSelected(result.application.prePostAtr);
-                // self.displayPrePostFlg(result.prePostFlg);
-                //ver13 hoatt - 2018.07.31
-                // self.convertListHolidayType(result.holidayAppTypeName, result.checkDis);
-                self.convertListHolidayType(result.holidayAppTypeName, result.remainVacationInfo);
-                dfd.resolve(result);
-            }).fail((res) => {
-                dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
-                        .then(function() { nts.uk.ui.block.clear(); });
-                dfd.reject(res);
-            });
-            return dfd.promise();
-        }
-        // change by switch button AllDayHalfDay(A3_12)
-        findChangeAllDayHalfDay(value: any) {
-            let self = this;
-            self.checkDisplayEndDate(self.displayEndDateFlg());
-            if (self.checkStartDate()) {
-                return;
-            }
-            let dfd = $.Deferred();
-            
-
-            service.findChangeAllDayHalfDay({
-                startAppDate: nts.uk.util.isNullOrEmpty(self.startAppDate()) ? null : moment(self.startAppDate()).format(self.DATE_FORMAT),
-                endAppDate: nts.uk.util.isNullOrEmpty(self.endAppDate()) ? null : moment(self.endAppDate()).format(self.DATE_FORMAT),
-                employeeID: nts.uk.util.isNullOrEmpty(self.employeeID()) ? null : self.employeeID(),
-                displayHalfDayValue: self.displayHalfDayValue(),
-                holidayType: nts.uk.util.isNullOrEmpty(self.holidayTypeCode()) ? null : self.holidayTypeCode(),
-                alldayHalfDay: value,
-                appAbsenceStartInfoDto: self.appAbsenceStartInfoDto
-            }).done((result) => {
-                self.appAbsenceStartInfoDto = result;
-                self.changeWorkHourValueFlg(result.workHoursDisp);
-                if (nts.uk.util.isNullOrEmpty(result.workTypeLst)) {
-                    self.typeOfDutys([]);
-                    self.workTypecodes([]);
-                    self.selectedTypeOfDuty(null);
-                    self.fix(false);
-                    self.mournerDis(false);
-                    self.maxDayDis(false);
-                    self.isCheck(false);
-                    self.relaReason('');
-                } else {
-                    let a = [];
-                    self.workTypecodes.removeAll();
-                    for (let i = 0; i < result.workTypeLst.length; i++) {
-                        a.push(new common.TypeOfDuty(result.workTypeLst[i].workTypeCode, result.workTypeLst[i].workTypeCode + "　" + result.workTypeLst[i].name));
-                        self.workTypecodes.push(result.workTypeLst[i].workTypeCode);
-                    }
-                    self.typeOfDutys(a);
-                    let contain = _.find(a, (o) => { return o.typeOfDutyID == self.selectedTypeOfDuty(); });
-                    if (nts.uk.util.isNullOrUndefined(contain)){
-                        self.selectedTypeOfDuty('');
-                    }
-                }
-                if (!nts.uk.util.isNullOrEmpty(result.workTimeLst)) {
-                    self.workTimeCodes.removeAll();
-                    self.workTimeCodes(result.workTimeLst);
-                }
-                dfd.resolve(result);
-            }).fail((res) => {
-                dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
-                        .then(function() { nts.uk.ui.block.clear(); });
-                dfd.reject(res);
-            });
-            return dfd.promise();
-        }
-        // change by switch button DisplayHalfDay(A5_3)
-        findChangeDisplayHalfDay(value: any) {
-            let self = this;
-            self.checkDisplayEndDate(self.displayEndDateFlg());
-            if (self.checkStartDate()) {
-                return;
-            }
-            let dfd = $.Deferred();
-            service.getChangeDisplayHalfDay({
-                startAppDate: nts.uk.util.isNullOrEmpty(self.startAppDate()) ? null : moment(self.startAppDate()).format(self.DATE_FORMAT),
-                endAppDate: nts.uk.util.isNullOrEmpty(self.endAppDate()) ? null : moment(self.endAppDate()).format(self.DATE_FORMAT),
-                employeeID: nts.uk.util.isNullOrEmpty(self.employeeID()) ? null : self.employeeID(),
-                displayHalfDayValue: self.displayHalfDayValue(),
-                holidayType: nts.uk.util.isNullOrEmpty(self.holidayTypeCode()) ? null : self.holidayTypeCode(),
-                workTypeCode: self.selectedTypeOfDuty(),
-                alldayHalfDay: self.selectedAllDayHalfDayValue(),
-                appAbsenceStartInfoDto: self.appAbsenceStartInfoDto
-            }).done((result) => {
-                self.appAbsenceStartInfoDto = result;
-                self.changeWorkHourValueFlg(result.workHoursDisp);
-                if (nts.uk.util.isNullOrEmpty(result.workTypeLst)) {
-                    self.typeOfDutys([]);
-                    self.workTypecodes([]);
-                    self.selectedTypeOfDuty(null);
-                    self.fix(false);
-                    self.mournerDis(false);
-                    self.maxDayDis(false);
-                    self.isCheck(false);
-                    self.relaReason('');
-                } else {
-                    let a = [];
-                    self.workTypecodes.removeAll();
-                    for (let i = 0; i < result.workTypeLst.length; i++) {
-                        a.push(new common.TypeOfDuty(result.workTypeLst[i].workTypeCode, result.workTypeLst[i].workTypeCode + "　" + result.workTypeLst[i].name));
-                        self.workTypecodes.push(result.workTypeLst[i].workTypeCode);
-                    }
-                    self.typeOfDutys(a);
-                    let contain = _.find(a, (o) => { return o.typeOfDutyID == self.selectedTypeOfDuty(); });
-                    if (nts.uk.util.isNullOrUndefined(contain)){
-                        self.selectedTypeOfDuty('');
-                    }
-                }
-                if (!nts.uk.util.isNullOrEmpty(result.workTimeLst)) {
-                    self.workTimeCodes.removeAll();
-                    self.workTimeCodes(result.workTimeLst);
-                }
-                dfd.resolve(result);
-            }).fail((res) => {
-                dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
-                        .then(function() { nts.uk.ui.block.clear(); });
-                dfd.reject(res);
-            });
-            return dfd.promise();
-        }
-        /**
-         * when change by workType A5_2
-         */
-        findChangeWorkType(value: any) {
-            let self = this;
-            self.checkDisplayEndDate(self.displayEndDateFlg());
-            if (self.checkStartDate()) {
-                return;
-            }
-            let dfd = $.Deferred();
-            self.appAbsenceStartInfoDto.selectedWorkTimeCD = self.workTimeCode();
-            self.appAbsenceStartInfoDto.selectedWorkTypeCD = self.selectedTypeOfDuty();
-            service.getChangeWorkType({
-                startAppDate: nts.uk.util.isNullOrEmpty(self.startAppDate()) ? null : moment(self.startAppDate()).format(self.DATE_FORMAT),
-                employeeID: nts.uk.util.isNullOrEmpty(self.employeeID()) ? null : self.employeeID(),
-                holidayType: nts.uk.util.isNullOrEmpty(self.holidayTypeCode()) ? null : self.holidayTypeCode(),
-                workTypeCode: self.selectedTypeOfDuty(),
-                workTimeCode: self.workTimeCode(),
-                appAbsenceStartInfoDto: self.appAbsenceStartInfoDto
-            }).done((result) => {
-                //hoatt 2018.08.09
-                self.appAbsenceStartInfoDto = result;
-                self.isCheck(false);
-                self.changeForSpecHd(result);
-                self.changeWorkHourValueFlg(result.workHoursDisp);
-                if (result.workTimeLst != null && result.workTimeLst.length >=1 ) {
-                    if (result.workTimeLst[0].startTime != null) {
-                        self.timeStart1(result.workTimeLst[0].startTime);
-                    }
-                    if (result.workTimeLst[0].endTime != null) {
-                        self.timeEnd1(result.workTimeLst[0].endTime)
-                    }
-                    
-                }else {
-                    self.timeStart1(null);
-                    self.timeEnd1(null)
-                }
-                dfd.resolve(result);
-            }).fail((res) => {
-                dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
-                        .then(function() { nts.uk.ui.block.clear(); });
-                dfd.reject(res);
-            });
-            return dfd.promise();
-        }
-        initData(data: any) {
-            let self = this;
-            let listAppTypeSet = data.appDispInfoStartupOutput.appDispInfoNoDateOutput.requestSetting.applicationSetting.listAppTypeSetting;
-            let appTypeSet = _.find(listAppTypeSet, o => o.appType == 1);
-            _.forEach(data.displayReasonLst, (o) => {
-                self.displayReasonLst.push(new common.DisplayReason(o.typeOfLeaveApp, o.displayFixedReason==1?true:false, o.displayAppReason==1?true:false));     
-            });
-            self.checkBoxValue(data.appDispInfoStartupOutput.appDispInfoNoDateOutput.requestSetting.applicationSetting.appDisplaySetting.manualSendMailAtr == 1 ? true : false);
-            self.enableSendMail(!appTypeSet.sendMailWhenRegister);
-            self.employeeName(data.appDispInfoStartupOutput.appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName);
-            self.employeeID(data.appDispInfoStartupOutput.appDispInfoNoDateOutput.employeeInfoLst[0].sid);
-            self.prePostSelected(data.appDispInfoStartupOutput.appDispInfoWithDateOutput.prePostAtr);
-            self.convertListHolidayType(data.holidayAppTypeName, data.remainVacationInfo);
-            self.holidayTypeCode(null);
-            self.displayPrePostFlg(data.appDispInfoStartupOutput.appDispInfoNoDateOutput.requestSetting.applicationSetting.appDisplaySetting.prePostAtrDisp == 1 ? true : false);
-            self.displayWorkTimeName(nts.uk.resource.getText("KAF006_21"));
-            self.mailFlag(appTypeSet.sendMailWhenRegister);
-            self.requiredReason(data.appDispInfoStartupOutput.appDispInfoNoDateOutput.requestSetting.applicationSetting.appLimitSetting.requiredAppReason);
-            let appReasonLst = data.appDispInfoStartupOutput.appDispInfoNoDateOutput.appReasonLst;
-            if (appReasonLst != null && appReasonLst.length > 0) {
-                let lstReasonCombo = _.map(appReasonLst, o => { return new common.ComboReason(o.reasonID, o.reasonTemp); });
-                self.reasonCombo(lstReasonCombo);
-                let reasonID = _.find(appReasonLst, o => { return o.defaultFlg == 1 }).reasonID;
-                self.selectedReason(reasonID);
-
-                // self.multilContent(data.application.applicationReason);
-            }
-            let employeeInfoLst = data.appDispInfoStartupOutput.appDispInfoNoDateOutput.employeeInfoLst;
-            if(!nts.uk.util.isNullOrEmpty(employeeInfoLst)){
-                for(let i= 0; i < employeeInfoLst.length; i++){
-                    self.employeeList.push(new common.EmployeeOT(employeeInfoLst[i].sid,employeeInfoLst[i].bussinessName));
-                }
-                let total = employeeInfoLst.length;
-                self.totalEmployee(nts.uk.resource.getText("KAF006_65",total.toString()));
-            }
-            self.dayDispSet(data.hdAppSet.dayDispSet==1?true:false);
-        }
-        /**
-         * when click button A1_1 - 登録
-         */
-        registerClick() {
-            let self = this;
-            self.checkDisplayEndDate(self.displayEndDateFlg());
-            if (self.displayEndDateFlg()) {
-               $('#daterangepicker').find(".nts-input").trigger('validate');
-            } else {
-                $("#inputdate").trigger("validate");
-            }
-            $("#switch_prePost").trigger("validate");
-            $("#relaReason").trigger("validate");
-            if(self.holidayTypeCode() == 3 && self.fix()){
-                $("#relaCD-combo").trigger("validate");
-            }
-            $("#hdType").trigger('validate');
-            $("#workTypes").trigger('validate');
-            if (!self.validate()) { return; }
-            if (nts.uk.ui.errors.hasError()) { return; }
-            nts.uk.ui.block.invisible();
-            if(self.holidayTypeCode() != 0){
-                self.registerApp();
-            }else{
-                let setNo65 = {
-                                    pridigCheck: self.settingNo65() == null ? 0 : self.settingNo65().pridigCheck,
-                                    subVacaManage: self.settingNo65() == null ? false : self.settingNo65().subVacaManage,
-                                    subVacaTypeUseFlg: self.settingNo65() == null ? false : self.settingNo65().subVacaTypeUseFlg,
-                                    subHdManage: self.settingNo65() == null ? false : self.settingNo65().subHdManage,
-                                    subHdTypeUseFlg: self.settingNo65() == null ? false : self.settingNo65().subHdTypeUseFlg,
-                }
-                let paramCheck = {
-                                    setNo65: setNo65,
-                                    numberSubHd: self.numberSubHd(),//代休残数
-                                    numberSubVaca: self.numberSubVaca()//振休残数
-                                };
-                //アルゴリズム「代休振休優先消化チェック」を実行する (Thực hiện thuật toán [check sử dụng độ ưu tiên nghi bù])
-                service.checkRegister(paramCheck).done(()=>{
-                    self.registerApp();
-                }).fail((res)=>{
-                    if (res.messageId == 'Msg_1392' || res.messageId == 'Msg_1394') {//エラーメッセージがある場合(t/h có error message)
-                        dialog.alertError({ messageId: res.messageId }).then(function() {
-                            nts.uk.ui.block.clear();
-                            return;
-                        });
-                    } 
-                    //確認メッセージがある場合(t/h có confirm message)
-                    //確認メッセージを表示する (Hiển thị confirm message)
-                    if(res.messageId == 'Msg_1393' || res.messageId == 'Msg_1395'){
-                        dialog.confirm({ messageId: res.messageId }).ifYes(() => {
-                            self.registerApp();
-                        }).ifCancel(() => {
-                            nts.uk.ui.block.clear();
-                        });
-                    }
-                });
-            }
-        }
-        registerApp(){
-            let self = this;
-            let comboBoxReason: string = appcommon.CommonProcess.getComboBoxReason(self.selectedReason(), self.reasonCombo(), self.typicalReasonDisplayFlg());
-            let textAreaReason: string = appcommon.CommonProcess.getTextAreaReason(self.multilContent(), self.displayAppReasonContentFlg(), true); 
-            let appReason: string;
-            if (!appcommon.CommonProcess.checklenghtReason(comboBoxReason+":"+textAreaReason, "#appReason")) {
-                return;
-            }
-            if (!self.changeWorkHourValueFlg()) {
-                self.changeWorkHourValue(false);
-                self.timeStart1(null);
-                self.timeEnd1(null);
-                self.timeStart2(null);
-                self.timeEnd2(null);
-                self.workTimeCode(null);
-            }
-            let specHd = null;
-            if(self.holidayTypeCode() == 3 && self.fix()){
-                specHd = {  relationCD: self.selectedRelation(),
-                            mournerCheck: self.isCheck(),
-                            relaReason: self.relaReason()
-                        }
-            }
-            let paramInsert = {
-                prePostAtr: self.prePostSelected(),
-                startDate: nts.uk.util.isNullOrEmpty(self.startAppDate()) ? null : moment(self.startAppDate()).format(self.DATE_FORMAT),
-                endDate: nts.uk.util.isNullOrEmpty(self.endAppDate()) ? moment(self.startAppDate()).format(self.DATE_FORMAT) : moment(self.endAppDate()).format(self.DATE_FORMAT),
-                employeeID: self.employeeID(),
-                appReasonID: comboBoxReason,
-                applicationReason: textAreaReason,
-                holidayAppType: nts.uk.util.isNullOrEmpty(self.holidayTypeCode()) ? null : self.holidayTypeCode(),
-                workTypeCode: self.selectedTypeOfDuty(),
-                workTimeCode: nts.uk.util.isNullOrEmpty(self.workTimeCode()) ? null : self.workTimeCode(),
-                halfDayFlg: self.displayHalfDayValue(),
-                changeWorkHour: self.changeWorkHourValue(),
-                allDayHalfDayLeaveAtr: self.selectedAllDayHalfDayValue(),
-                startTime1: self.timeStart1(),
-                endTime1: self.timeEnd1(),
-                startTime2: self.timeStart2(),
-                endTime2: self.timeEnd2(),
-                displayEndDateFlg: self.displayEndDateFlg(),
-                specHd: specHd,
-                checkOver1Year: true,
-                checkContradiction: false
-                
-                
-            };
-            service.createAbsence(paramInsert).done((data) => {
-                self.sendMail(data);
-            }).fail((res) => {
-                if(res.messageId == "Msg_1518"){//confirm
-                    dialog.confirm({messageId: res.messageId}).ifYes(() => {
-                        paramInsert.checkOver1Year = false;
-                             service.createAbsence(paramInsert).done((data) => {
-                                self.sendMail(data);
-                            }).fail((res) => {
-                                self.registerFailOver1Year(res, paramInsert);
-                            });
-                        }).ifNo(() => {
-                            nts.uk.ui.block.clear();
-                        });
-                    
-                }else{
-                    self.registerFailOver1Year(res, paramInsert);
-                }
-            });    
-        }
-        //#107682
-        registerFailOver1Year(res, paramInsert) {
-            let self = this;
-            if (res.messageId == "Msg_1520" || res.messageId == "Msg_1522") {
-                dialog.confirm({ messageId: res.messageId, messageParams: res.parameterIds }).ifYes(() => {
-                    paramInsert.checkContradiction = true;
-                    service.createAbsence(paramInsert).done((data) => {
-                        self.sendMail(data);
-                    }).fail((res) => {
-                        dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
-                            .then(function() { nts.uk.ui.block.clear(); });
-                    });
-                }).ifNo(() => {
-                    nts.uk.ui.block.clear();
-                });
-            } else {
-                dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
-                    .then(function() { nts.uk.ui.block.clear(); });
-            }
-        }
-        sendMail(data){
-            let self = this;
-            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                    if(data.autoSendMail){
-                        appcommon.CommonProcess.displayMailResult(data);   
-                    } else {
-                        if(self.checkBoxValue()){
-                            appcommon.CommonProcess.openDialogKDL030(data.appID);   
-                        } else {
-                            location.reload();
-                        }   
-                    }
-                });
-        }
-        getReason(inputReasonID: string, inputReasonList: Array<common.ComboReason>, detailReason: string): string {
-            let appReason = '';
-            let inputReason: string = '';
-            if (!nts.uk.util.isNullOrEmpty(inputReasonID)) {
-                inputReason = _.find(inputReasonList, o => { return o.reasonId == inputReasonID; }).reasonName;
-            }
-            if (!nts.uk.util.isNullOrEmpty(inputReason) && !nts.uk.util.isNullOrEmpty(detailReason)) {
-                appReason = inputReason + ":" + detailReason;
-            } else if (!nts.uk.util.isNullOrEmpty(inputReason) && nts.uk.util.isNullOrEmpty(detailReason)) {
-                appReason = inputReason;
-            } else if (nts.uk.util.isNullOrEmpty(inputReason) && !nts.uk.util.isNullOrEmpty(detailReason)) {
-                appReason = detailReason;
-            }
-            return appReason;
-        }
-        btnSelectWorkTimeZone() {
-            let self = this;
-            self.getListWorkTime().done(() => {
-                nts.uk.ui.windows.setShared('parentCodes', {
-                    workTypeCodes: self.workTypecodes(),
-                    selectedWorkTypeCode: self.selectedTypeOfDuty(),
-                    workTimeCodes: self.workTimeCodes(),
-                    selectedWorkTimeCode: self.workTimeCode()
-                }, true);
-
-                nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml').onClosed(function(): any {
-                    //view all code of selected item 
-                    var childData = nts.uk.ui.windows.getShared('childData');
-                    if (childData) {
-                        self.selectedTypeOfDuty(childData.selectedWorkTypeCode);
-                        self.workTimeCode(childData.selectedWorkTimeCode);
-                        self.workTimeName(childData.selectedWorkTimeName);
-                        self.displayWorkTimeName(childData.selectedWorkTimeCode + "　" + childData.selectedWorkTimeName);
-                        service.getWorkingHours(
-                            {
-                                holidayType: nts.uk.util.isNullOrEmpty(self.holidayTypeCode()) ? null : self.holidayTypeCode(),
-                                workTypeCode: self.selectedTypeOfDuty(),
-                                workTimeCode: self.workTimeCode(),
-                                appAbsenceStartInfoDto: self.appAbsenceStartInfoDto
-                            }
-                        ).done(data => {
-                            if(nts.uk.util.isNullOrEmpty(data)){
-                                self.timeStart1(null);    
-                                self.timeEnd1(null);
-                            } else {
-                                if(nts.uk.util.isNullOrUndefined(data[0])){
-                                    self.timeStart1(childData.first.start);    
-                                    self.timeEnd1(childData.first.end);    
-                                } else {
-                                    self.timeStart1(data[0].startTime == null ? childData.first.start : data[0].startTime);
-                                    self.timeEnd1(data[0].endTime == null ? childData.first.end : data[0].endTime);        
-                                }
-                            }
-                        }).fail(() => {
-                            self.timeStart1(childData.first.start);    
-                            self.timeEnd1(childData.first.end);
-                        });
-                    }
-                });
-            });
-        }
-        changeDisplayWorkime() {
-            let self = this;
-            self.eblTimeStart1(self.changeWorkHourValue() && (self.displayWorkTimeName() != nts.uk.resource.getText('KAF006_21')));
-            self.eblTimeEnd1(self.changeWorkHourValue() && (self.displayWorkTimeName() != nts.uk.resource.getText('KAF006_21')));
-        }
-        getListWorkTime() {
-            let self = this;
-            let dfd = $.Deferred();
-            service.getListWorkTime({
-                startAppDate: nts.uk.util.isNullOrEmpty(self.startAppDate()) ? null : moment(self.startAppDate()).format(self.DATE_FORMAT),
-                employeeID: nts.uk.util.isNullOrEmpty(self.employeeID()) ? null : self.employeeID(),
-            }).done((value) => {
-                self.workTimeCodes(value);
-                dfd.resolve(value);
-            }).fail((res) => {
-                dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
-                        .then(function() { nts.uk.ui.block.clear(); });
-                dfd.reject(res);
-            })
-            return dfd.promise();
-        }
-        convertListHolidayType(data: any, checkDis: any) {
-            let self = this;
-            let lstHdName = [];
-            self.holidayTypes([]);
-            for (let i = 0; i < data.length; i++) {
-                //ver new
-                if(self.checkDisplay(checkDis, data[i].holidayAppTypeCode)){
-                    lstHdName.push(new common.HolidayType(data[i].holidayAppTypeCode, data[i].holidayAppTypeName));
-                }
-            }
-            self.holidayTypes(lstHdName);
-        }
-        checkDisplay(checkDis: any, hdType: any): boolean{
-            if(checkDis == null){
-                return true;
-            }
-            if(hdType == 0){
-                return checkDis.yearManage;
-            }
-            if(hdType == 1){
-                return checkDis.subHdManage;
-            }
-            if(hdType == 7){
-                return checkDis.subVacaManage;
-            }
-            if(hdType == 4){
-                return checkDis.retentionManage;
-            }
-            return true;
-        }
-        checkStartDate(): boolean {
-            let self = this;
-            if (!nts.uk.util.isNullOrEmpty(self.startAppDate())) {
-                if (!self.displayEndDateFlg()) {
-                    nts.uk.ui.errors.clearAll();
-                    $('#inputdate').trigger("validate");
-                    if (nts.uk.ui.errors.hasError()) { return true; }
-                } else {
-                    nts.uk.ui.errors.clearAll();
-                    $('.ntsStartDatePicker').trigger("validate");
-                    if (nts.uk.ui.errors.hasError()) { return true; }
-                }
-            }
-            if(self.relaReason() != ''){
-                $("#relaReason").trigger("validate");
-            }
-            return false;
-        }
-        private checkDisplayEndDate(data) {
-            let self = this;
-            if (data) {
-                self.startAppDate(self.dateValue().startDate);
-                self.endAppDate(self.dateValue().endDate);
-            } else {
-                self.startAppDate(self.appDate());
-            }
-        }
-        validate(): boolean {
-            let self = this;
-            //勤務時間
-            if (!nts.uk.util.isNullOrEmpty(self.timeStart1())) {
-                if (!self.validateTime(self.timeStart1(), self.timeEnd1(), '#inpStartTime1')) {
-                    return false;
+                let command = {
+                    frameNo: vm.specAbsenceDispInfo() ? vm.specAbsenceDispInfo().frameNo : null,
+                    specHdEvent: vm.specAbsenceDispInfo() ? vm.specAbsenceDispInfo().specHdEvent : null,
+                    relationCD: vm.selectedDateSpec()
                 };
+
+                vm.$blockui("show");
+                vm.$ajax(API.changeRela, command).done((success) => {
+                    if (success) {
+                        if (vm.specAbsenceDispInfo()) {
+                            vm.specAbsenceDispInfo().maxDay = success.maxDayObj.maxDay;
+                            vm.specAbsenceDispInfo().dayOfRela = success.maxDayObj.dayOfRela;
+                            vm.specAbsenceDispInfo.valueHasMutated();
+                        }
+                    }
+                }).fail((error) => {
+                    if (error) {
+                        vm.$dialog.error({messageId: error.messageId, messageParams: error.parameterIds});
+                    }
+                }).always(() => {
+                    vm.$blockui("hide");
+                })
+            });
+
+            // check selected item
+            vm.selectedType.subscribe(() => {
+                vm.selectedWorkTimeCD(null);
+                vm.selectedWorkTimeName(null);
+                vm.startTime1(null);
+                vm.startTime2(null);
+                vm.endTime1(null);
+                vm.endTime2(null);
+
+                // vm.$errors("clear");
+                nts.uk.ui.errors.clearAll()
+
+                let appDates = [];
+                // if (!_.isNil(vm.application().opAppStartDate())) {
+                // 	appDates.push(vm.application().opAppStartDate());
+                // }
+                // if (!_.isNil(vm.application().opAppEndDate()) && vm.application().opAppStartDate() !== vm.application().opAppEndDate()) {
+                // 	appDates.push(vm.application().opAppEndDate());
+                // }
+
+                if (vm.checkTimeValid(vm.application().opAppStartDate)) {
+                    appDates.push(vm.application().opAppStartDate());
+                }
+                if (vm.checkTimeValid(vm.application().opAppEndDate) && vm.application().opAppStartDate() !== vm.application().opAppEndDate()) {
+                    appDates.push(vm.application().opAppEndDate());
+                }
+
+                let command = {
+                    companyID: __viewContext.user.companyId,
+                    appDates: appDates,
+                    startInfo: vm.data,
+                    holidayAppType: vm.selectedType()
+                };
+
+                command.startInfo.leaveComDayOffManas = _.map(command.startInfo.leaveComDayOffManas, (x: any) => {
+                    x.dateOfUse = new Date(x.dateOfUse).toISOString();
+                    x.outbreakDay = new Date(x.outbreakDay).toISOString();
+                    return x;
+                });
+                command.startInfo.payoutSubofHDManas = _.map(command.startInfo.payoutSubofHDManas, (x: any) => {
+                    x.dateOfUse = new Date(x.dateOfUse).toISOString();
+                    x.outbreakDay = new Date(x.outbreakDay).toISOString();
+                    return x;
+                });
+
+                vm.$blockui("show");
+                vm.$ajax(API.getAllAppForLeave, command).done((result) => {
+                    vm.specAbsenceDispInfo(result.specAbsenceDispInfo);
+                    return result;
+                }).then((data) => {
+                    if (data) {
+                        $("#work-type-combobox").focus()
+                        vm.fetchData(data);
+                        vm.appDispInfoStartupOutput(data.appDispInfoStartupOutput);
+                        return data;
+                    }
+                }).then((data) => {
+                    if (data) {
+                        vm.checkCondition(data);
+                        return data;
+                    }
+                }).then((data) => {
+                    if (data) {
+                        vm.selectedWorkTypeCD(vm.data.selectedWorkTypeCD);
+
+                        return data;
+                    }
+                }).fail((error) => {
+                    if (error) {
+                        vm.$dialog.error({messageId: error.messageId, messageParams: error.parameterIds});
+                    }
+                }).always(() => {
+                    vm.$blockui("hide");
+                })
+            });
+
+            // Subscribe workType value after change
+            vm.selectedWorkTypeCD.subscribe(() => {
+                if (_.isNil(vm.selectedWorkTypeCD()) || _.isEmpty(vm.workTypeLst())) {
+                    return;
+                }
+
+                // return;
+                let commandCheckTyingManage = {
+                    wtBefore: vm.workTypeBefore(),
+                    wtAfter: vm.workTypeAfter(),
+                    leaveComDayOffMana: vm.leaveComDayOffManas(),
+                    payoutSubofHDManagements: vm.payoutSubofHDManagements()
+                };
+
+                commandCheckTyingManage.leaveComDayOffMana = _.map(commandCheckTyingManage.leaveComDayOffMana, (x: any) => {
+                    x.dateOfUse = new Date(x.dateOfUse).toISOString();
+                    x.outbreakDay = new Date(x.outbreakDay).toISOString();
+                    return x;
+                });
+                commandCheckTyingManage.payoutSubofHDManagements = _.map(commandCheckTyingManage.payoutSubofHDManagements, (x: any) => {
+                    x.dateOfUse = new Date(x.dateOfUse).toISOString();
+                    x.outbreakDay = new Date(x.outbreakDay).toISOString();
+                    return x;
+                });
+
+                // Check vacation tying manage
+                // 休暇紐付管理をチェックする
+                vm.$blockui("show");
+                vm.$ajax(API.checkVacationTyingManage, commandCheckTyingManage)
+                    .done((success) => {
+                        if (success) {
+                            if (success.clearManageSubsHoliday) {
+                                vm.leaveComDayOffManas([]);
+                                vm.data.leaveComDayOffManas = [];
+                            }
+                            if (success.clearManageHolidayString) {
+                                vm.payoutSubofHDManagements([]);
+                                vm.data.payoutSubofHDManas = [];
+                            }
+                        }
+                    }).fail((error) => {
+                    if (error) {
+                        vm.$dialog.error({messageId: error.messageId, messageParams: error.parameterIds});
+                    }
+                }).always(() => {
+                    vm.$blockui("hide");
+                });
+
+                let dates = [];
+                if (vm.application().opAppStartDate()) {
+                    dates.push(vm.application().opAppStartDate());
+                }
+                if (vm.application().opAppEndDate() && (vm.application().opAppEndDate() !== vm.application().opAppStartDate())) {
+                    dates.push(vm.application().opAppEndDate());
+                }
+
+                let commandChangeWorkType = {
+                    appDates: dates,
+                    startInfo: vm.data,
+                    holidayAppType: vm.selectedType(),
+                    workTypeCd: vm.selectedWorkTypeCD()
+                };
+
+                commandChangeWorkType.startInfo.leaveComDayOffManas = _.map(commandChangeWorkType.startInfo.leaveComDayOffManas, (x: any) => {
+                    x.dateOfUse = new Date(x.dateOfUse).toISOString();
+                    x.outbreakDay = new Date(x.outbreakDay).toISOString();
+                    return x;
+                });
+                commandChangeWorkType.startInfo.payoutSubofHDManas = _.map(commandChangeWorkType.startInfo.payoutSubofHDManas, (x: any) => {
+                    x.dateOfUse = new Date(x.dateOfUse).toISOString();
+                    x.outbreakDay = new Date(x.outbreakDay).toISOString();
+                    return x;
+                });
+                // Process change workType
+                // 勤務種類変更時処理
+                vm.$blockui("show");
+                vm.$ajax(API.changeWorkType, commandChangeWorkType)
+                    .done((success) => {
+                        if (success) {
+                            vm.specAbsenceDispInfo(success.specAbsenceDispInfo);
+                            return success;
+                        }
+                    }).then((data) => {
+                    if (data) {
+                        vm.fetchData(data);
+
+                        let workTimeLst = data.workTimeLst;
+                        if (workTimeLst.length > 0) {
+                            if (_.filter(workTimeLst, {'workNo': 1}).length > 0) {
+                                let workTime1: any = _.filter(workTimeLst, {'workNo': 1})[0];
+                                vm.startTime1(workTime1.startTime);
+                                vm.endTime1(workTime1.endTime);
+                            }
+                            if (_.filter(workTimeLst, {'workNo': 2}).length > 0) {
+                                let workTime2: any = _.filter(workTimeLst, {'workNo': 2})[0];
+                                if (workTime2.useAtr === 0) {
+                                    vm.isDispTime2ByWorkTime(false);
+                                } else {
+                                    vm.isDispTime2ByWorkTime(true);
+                                    vm.startTime2(workTime2.startTime);
+                                    vm.endTime2(workTime2.endTime);
+                                }
+                            } else {
+                                vm.isDispTime2ByWorkTime(false);
+                            }
+                        } else {
+                            vm.startTime1(null);
+                            vm.endTime1(null);
+                            vm.startTime2(null);
+                            vm.endTime2(null);
+                        }
+                        return data;
+                    }
+                }).then((data) => {
+                    if (data) {
+                        vm.checkCondition(data);
+                        return data;
+                    }
+                }).fail((error) => {
+                    if (error) {
+                        vm.$dialog.error({messageId: error.messageId, messageParams: error.parameterIds});
+                    }
+                }).always(() => {
+                    vm.$blockui("hide");
+                });
+            });
+
+            // Subscribe work time after change
+            vm.selectedWorkTimeCD.subscribe(() => {
+                if (_.isNil(vm.selectedWorkTimeCD())) {
+                    return;
+                }
+
+                let commandChangeWorkTime = {
+                    date: vm.application().appDate(),
+                    workTypeCode: vm.selectedWorkTypeCD(),
+                    workTimeCode: vm.selectedWorkTimeCD(),
+                    appAbsenceStartInfoDto: vm.data
+                };
+
+                commandChangeWorkTime.appAbsenceStartInfoDto.leaveComDayOffManas = _.map(commandChangeWorkTime.appAbsenceStartInfoDto.leaveComDayOffManas, (x: any) => {
+                    x.dateOfUse = new Date(x.dateOfUse).toISOString();
+                    x.outbreakDay = new Date(x.outbreakDay).toISOString();
+                    return x;
+                });
+                commandChangeWorkTime.appAbsenceStartInfoDto.payoutSubofHDManas = _.map(commandChangeWorkTime.appAbsenceStartInfoDto.payoutSubofHDManas, (x: any) => {
+                    x.dateOfUse = new Date(x.dateOfUse).toISOString();
+                    x.outbreakDay = new Date(x.outbreakDay).toISOString();
+                    return x;
+                });
+
+                vm.$blockui("show");
+                vm.$ajax(API.changeWorkTime, commandChangeWorkTime)
+                    .done((success) => {
+                        if (success) {
+                            vm.specAbsenceDispInfo(success.specAbsenceDispInfo);
+                            return success;
+                        }
+                    }).then((data) => {
+                    if (data) {
+                        vm.fetchData(data);
+                        vm.timeRequired(nts.uk.time.format.byId("Clock_Short_HM", vm.requiredVacationTime()));
+
+                        let workTimeLst = data.workTimeLst;
+                        if (workTimeLst.length > 0) {
+                            if (_.filter(workTimeLst, {'workNo': 1}).length > 0) {
+                                let workTime1: any = _.filter(workTimeLst, {'workNo': 1})[0];
+                                vm.startTime1(workTime1.startTime);
+                                vm.endTime1(workTime1.endTime);
+                            }
+                            if (_.filter(workTimeLst, {'workNo': 2}).length > 0) {
+                                let workTime2: any = _.filter(workTimeLst, {'workNo': 2})[0];
+                                if (workTime2.useAtr === 0) {
+                                    vm.isDispTime2ByWorkTime(false);
+                                } else {
+                                    vm.isDispTime2ByWorkTime(true);
+                                    vm.startTime2(workTime2.startTime);
+                                    vm.endTime2(workTime2.endTime);
+                                }
+                            } else {
+                                vm.isDispTime2ByWorkTime(false);
+                            }
+                        }
+                        return data;
+                    }
+                }).then((data) => {
+                    if (data) {
+                        vm.checkCondition(data);
+                        return data;
+                    }
+                }).fail((error) => {
+                    if (error) {
+                        vm.$dialog.error({messageId: error.messageId, messageParams: error.parameterIds});
+                    }
+                }).always(() => {
+                    vm.$blockui("hide");
+                });
+            });
+
+            vm.timeRequired(nts.uk.time.format.byId("Clock_Short_HM", vm.requiredVacationTime()));
+
+
+            // disply condtion for item A10_3
+            vm.isDispMourn = ko.computed(() => {
+                if (vm.specAbsenceDispInfo()) {
+                    if (vm.specAbsenceDispInfo().specHdForEventFlag && vm.specAbsenceDispInfo().specHdEvent.maxNumberDay === 2 && vm.specAbsenceDispInfo().specHdEvent.makeInvitation === 1) {
+                        return true;
+                    }
+                }
+
+                return false;
+            });
+
+            // change appDate for app type
+            vm.application.subscribe(app => {
+                if (app) {
+                    let startDate = app.opAppStartDate();
+                    let endDate = app.opAppEndDate();
+                    let checkFormat = vm.validateAppDate(startDate, endDate);
+
+                    if (checkFormat) {
+                        vm.changeAppDate();
+                    }
+                }
+            });
+        }
+
+        fetchData(data: any) {
+            const vm = this;
+            let workTypeLstOutput = data.workTypeLst;
+
+            // Get value workType before change workType List
+            let workTypesBefore = _.filter(vm.data.workTypeLst, {'workTypeCode': vm.selectedWorkTypeCD()});
+            vm.workTypeBefore(workTypesBefore.length > 0 ? workTypesBefore[0] : null);
+
+            vm.data = data;
+            vm.workTypeLst(_.map(workTypeLstOutput, item => new WorkType({
+                workTypeCode: item.workTypeCode,
+                name: item.workTypeCode + ' ' + item.name
+            })));
+
+            let workTypesAfter = _.filter(vm.data.workTypeLst, {'workTypeCode': data.selectedWorkTypeCD});
+            vm.workTypeAfter(workTypesAfter.length > 0 ? workTypesAfter[0] : null);
+
+            // vm.selectedWorkTypeCD(data.selectedWorkTypeCD);
+
+
+            // vm.appDispInfoStartupOutput(data.appDispInfoStartupOutput);
+
+            if (data.requiredVacationTime) {
+                vm.requiredVacationTime(data.requiredVacationTime);
             }
-            //            if ( !nts.uk.util.isNullOrEmpty(self.timeStart2()) && self.timeStart2() != "") {
-            //                if ( !self.validateTime( self.timeStart2(), self.timeEnd2(), '#inpStartTime2' ) ) {
-            //                    return false;
-            //                };
-            //            }   
+
+            if (data.remainVacationInfo) {
+                vm.yearRemain(data.remainVacationInfo.yearRemain);
+                vm.subHdRemain(data.remainVacationInfo.subHdRemain);
+                vm.subVacaRemain(data.remainVacationInfo.subVacaRemain);
+                vm.remainingHours(data.remainVacationInfo.remainingHours);
+                vm.fetchRemainTime(data.remainVacationInfo);
+            }
+
+            vm.requiredVacationTime(data.requiredVacationTime);
+
+            // vm.specAbsenceDispInfo(data.specAbsenceDispInfo);
+            if (vm.specAbsenceDispInfo()) {
+                vm.dateSpecHdRelationLst(vm.specAbsenceDispInfo().dateSpecHdRelationLst ? vm.specAbsenceDispInfo().dateSpecHdRelationLst : []);
+
+                if (vm.dateSpecHdRelationLst() && vm.dateSpecHdRelationLst().length > 0) {
+                    vm.selectedDateSpec(vm.dateSpecHdRelationLst()[0].relationCD);
+                }
+            }
+        }
+
+        checkCondition(data: any) {
+            const vm = this;
+
+            vm.checkCondition10(data);
+            vm.checkCondition11(data);
+            vm.checkCondition12(data);
+            vm.checkCondition30(data);
+            vm.checkCondition19(data);
+            vm.checkCondition14(data);
+            vm.checkCondition15(data);
+            vm.checkCondition21(data);
+            vm.checkCondition22(data);
+            vm.checkCondition23(data);
+            vm.checkCondition24(data);
+            vm.checkCondition1(data);
+
+            if (vm.selectedType() === 3) {
+                vm.checkCondition6(data);
+                vm.checkCondition7(data);
+                vm.checkCondition8(data);
+                vm.checkCondition9(data);
+            }
+        }
+
+        // Register data
+        register() {
+            const vm = this;
+
+            // validate
+            if (!vm.validate()) {
+                return;
+            }
+
+            // Update appAbsenceStartInfo
+            vm.updateAppAbsenceStartInfo();
+
+            // Create data Vacation Request/ 休暇申請
+            // vm.createDataVacationApp();
+            let appDates = [];
+            if (vm.application().opAppStartDate()) {
+                appDates.push(vm.application().opAppStartDate());
+            }
+            ;
+            if (vm.application().opAppEndDate()) {
+                appDates.push(vm.application().opAppEndDate());
+            }
+            ;
+
+            let holidayAppDates = [];
+
+            let application: ApplicationDto = new ApplicationDto(
+                null,
+                null,
+                ko.toJS(vm.application().prePostAtr),
+                vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst[0].sid,
+                ko.toJS(vm.application().appType),
+                ko.toJS(vm.application().appDate),
+                null,
+                null,
+                null,
+                null,
+                ko.toJS(vm.application().opReversionReason),
+                ko.toJS(vm.application().opAppStartDate),
+                ko.toJS(vm.application().opAppEndDate),
+                ko.toJS(vm.application().opAppReason),
+                ko.toJS(vm.application().opAppStandardReasonCD));
+
+            let commandCheckRegister = {
+                appAbsenceStartInfoDto: vm.data,
+                applyForLeave: this.createDataVacationApp(),
+                agentAtr: false,
+                application: application
+            };
+
+            commandCheckRegister.appAbsenceStartInfoDto.leaveComDayOffManas = _.map(commandCheckRegister.appAbsenceStartInfoDto.leaveComDayOffManas, (x: any) => {
+                x.dateOfUse = new Date(x.dateOfUse).toISOString();
+                x.outbreakDay = new Date(x.outbreakDay).toISOString();
+                return x;
+            });
+            commandCheckRegister.appAbsenceStartInfoDto.payoutSubofHDManas = _.map(commandCheckRegister.appAbsenceStartInfoDto.payoutSubofHDManas, (x: any) => {
+                x.dateOfUse = new Date(x.dateOfUse).toISOString();
+                x.outbreakDay = new Date(x.outbreakDay).toISOString();
+                return x;
+            });
+
+            let appTypeSettingLst = vm.data.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting;
+            let qr = _.filter(appTypeSettingLst, {'appType': vm.application().appType});
+
+
+            let commandRegister = {
+                applyForLeave: this.createDataVacationApp(),
+                appDates: appDates,
+                leaveComDayOffMana: _.map(vm.leaveComDayOffManas(), (x: any) => {
+                    x.dateOfUse = new Date(x.dateOfUse).toISOString();
+                    x.outbreakDay = new Date(x.outbreakDay).toISOString();
+                    return x;
+                }),
+                payoutSubofHDManagements: _.map(vm.payoutSubofHDManagements(), (x: any) => {
+                    x.dateOfUse = new Date(x.dateOfUse).toISOString();
+                    x.outbreakDay = new Date(x.outbreakDay).toISOString();
+                    return x;
+                }),
+                mailServerSet: vm.data.appDispInfoStartupOutput.appDispInfoNoDateOutput.mailServerSet,
+                application: application,
+                approvalRoot: vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.opListApprovalPhaseState,
+                apptypeSetting: qr.length > 0 ? qr[0] : null
+            };
+
+			vm.$blockui("show");
+			// validate chung KAF000
+            vm.$validate('#kaf000-a-component4 .nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason', '#kaf000-a-component5-textReason', '#work-type-combobox')
+            .then((valid) => {
+                if (valid) {
+                    if (vm.selectedType() === 3 && vm.condition6()) {
+                        return vm.$validate('#relation-list');
+                    }
+                    return true;
+                }
+            }).then((valid) => {
+				if (valid) {
+					if (vm.selectedType() === 6) {
+						return 	vm.$validate('#over60H', '#timeOff', '#annualTime', '#childNursing', '#nursing');
+					} else {
+						return true;
+					}
+				}
+			}).then((isValid) => {
+				if (isValid) {
+					// validate riêng cho màn hình
+					return true;
+				}
+			}).then((result) => {
+				// check trước khi đăng kí
+				if(result) {
+					return vm.$ajax('at', API.checkBeforeRegister, commandCheckRegister);
+				}
+			}).then((result) => {
+				if (result) {
+					holidayAppDates = result.holidayDateLst;
+					commandRegister.appDates = holidayAppDates;
+					// xử lý confirmMsg
+					return vm.handleConfirmMessage(result.confirmMsgLst);
+				}
+			}).then((result) => {
+				if(result) {
+					// đăng kí 
+					return vm.$ajax('at', API.register, commandRegister);
+				}
+			}).done((result) => {
+				if (result) {
+					return vm.$dialog.info({ messageId: "Msg_15"}).then(() => {
+						window.location.reload();
+						return true;
+					});	
+				}
+			}).then((result) => {
+				if(result) {
+					// gửi mail sau khi đăng kí
+					// return vm.$ajax('at', API.sendMailAfterRegisterSample);
+					return true;
+				}	
+			}).fail((failData) => {
+				// xử lý lỗi nghiệp vụ riêng
+				vm.handleErrorCustom(failData).then((result: any) => {
+					if(result) {
+						// xử lý lỗi nghiệp vụ chung
+						vm.handleErrorCommon(failData);
+					}
+				});
+			}).always(() => {
+				vm.$blockui("hide");	
+			});
+		}
+
+        validate() {
+            const vm = this;
+            if (vm.condition11()) {
+                if (vm.isChangeWorkHour() && vm.selectedWorkTimeCD()) {
+                    if (!vm.checkTimeValid(vm.startTime1) && !vm.checkTimeValid(vm.endTime1)) {
+                        vm.$dialog.error({messageId: "Msg_307"});
+                        return false;
+                    }
+                }
+                if (!vm.checkTimeValid(vm.startTime1) && vm.checkTimeValid(vm.endTime1)) {
+                    vm.$dialog.error({messageId: "Msg_307"});
+                    return false;
+                }
+                if (vm.checkTimeValid(vm.startTime1) && !vm.checkTimeValid(vm.endTime1)) {
+                    vm.$dialog.error({messageId: "Msg_307"});
+                    return false;
+                }
+                if (vm.startTime1() > vm.endTime1()) {
+                    vm.$dialog.error({messageId: "Msg_307"});
+                    return false;
+                }
+
+                if (vm.condition12()) {
+                    if (vm.startTime2() > vm.endTime2()) {
+                        vm.$dialog.error({messageId: "Msg_307"});
+                        return false;
+                    }
+                    if (vm.checkTimeValid(vm.startTime2) && vm.endTime1() > vm.startTime2()) {
+                        vm.$dialog.error({messageId: "Msg_581"});
+                        return false;
+                    }
+                    if (!vm.checkTimeValid(vm.startTime2) && vm.checkTimeValid(vm.endTime2)) {
+                        vm.$dialog.error({messageId: "Msg_307"});
+                        return false;
+                    }
+                    if (vm.checkTimeValid(vm.startTime2) && !vm.checkTimeValid(vm.endTime2)) {
+                        vm.$dialog.error({messageId: "Msg_307"});
+                        return false;
+                    }
+                }
+            }
+
             return true;
         }
-        //Validate input time
-        validateTime(startTime: number, endTime: number, elementId: string): boolean {
-            if (startTime >= endTime) {
-                dialog.alertError({ messageId: "Msg_307" })
-                $(elementId).focus();
+
+        private checkTimeValid(time: KnockoutObservable<number>): boolean {
+            if (_.isNil(time()) || time() === "") {
                 return false;
             }
             return true;
         }
 
         /**
-         * Jump to CMM018 Screen
+         * Create Data for for Vacation Application
          */
-        openCMM018() {
-            let self = this;
-            nts.uk.request.jump("com", "/view/cmm/018/a/index.xhtml", { screen: 'Application', employeeId: self.employeeID });
-        }
-        
-        //ver10
-        /**
-         * when click button A1_7: 年休参照ボタン
-         */
-        openKDL020(){
-            let self = this;
-            let lstid = [];
-            _.each(self.employeeList(), function(emp){
-                lstid.push(emp.id);
-            });
-            setShared('KDL020A_PARAM', { baseDate: moment(new Date()).toDate(), 
-                                            employeeIds: lstid.length > 0 ? lstid : [self.employeeID()] } );
-            modal('/view/kdl/020/a/index.xhtml')
-        }
-        /**
-         * when click button A1_8: 積休参照ボタン
-         */
-        openKDL029(){
-            let self = this;
-            let lstid = [];
-            _.each(self.employeeList(), function(emp){
-                lstid.push(emp.id);
-            });
-            let param = {employeeIds: lstid.length > 0 ? lstid : [self.employeeID()],
-                        baseDate: moment(new Date()).format("YYYY/MM/DD")}
-            setShared('KDL029_PARAM', param);
-            modal("/view/kdl/029/a/index.xhtml");
-        }
-        /**
-         * when click button A1_3: 代休参照ボタン
-         */
-        openKDL005(){
-            let self = this;
-            let lstid = [];
-            _.each(self.employeeList(), function(emp){
-                lstid.push(emp.id);
-            });
-            let data = {employeeIds: lstid.length > 0 ? lstid : [self.employeeID()],
-                        baseDate: moment(new Date()).format("YYYYMMDD")}
-            setShared('KDL005_DATA', data);
-            if(data.employeeIds.length > 1) {
-                modal("/view/kdl/005/a/multi.xhtml");
-            } else {
-                modal("/view/kdl/005/a/single.xhtml");
-            }
-        }
-        
-        checkBeforeRegister() {
-            let self = this;
-            self.checkDisplayEndDate(self.displayEndDateFlg());
-            if (self.displayEndDateFlg()) {
-               $('#daterangepicker').find(".nts-input").trigger('validate');
-            } else {
-                $("#inputdate").trigger("validate");
-            }
-            $("#switch_prePost").trigger("validate");
-            $("#relaReason").trigger("validate");
-            if(self.holidayTypeCode() == 3 && self.fix()){
-                $("#relaCD-combo").trigger("validate");
-            }
-            $("#hdType").trigger('validate');
-            $("#workTypes").trigger('validate');
-            if (!self.validate()) { return; }
-            if (nts.uk.ui.errors.hasError()) { return; }
-            nts.uk.ui.block.invisible();
-            let comboBoxReason: string = appcommon.CommonProcess.getComboBoxReason(self.selectedReason(), self.reasonCombo(), self.typicalReasonDisplayFlg());
-            let textAreaReason: string = appcommon.CommonProcess.getTextAreaReason(self.multilContent(), self.displayAppReasonContentFlg(), true); 
-            let appReason: string;
-            if (!appcommon.CommonProcess.checklenghtReason(comboBoxReason+":"+textAreaReason, "#appReason")) {
-                return;
-            }
-            if (!self.changeWorkHourValueFlg()) {
-                self.changeWorkHourValue(false);
-                self.timeStart1(null);
-                self.timeEnd1(null);
-                self.timeStart2(null);
-                self.timeEnd2(null);
-                self.workTimeCode(null);
-            }
-            let specHd = null;
-            if(self.holidayTypeCode() == 3 && self.fix()){
-                specHd = {  relationshipCD: self.selectedRelation(),
-                            mournerFlag: self.isCheck(),
-                            relationshipReason: self.relaReason()
-                        }
-            }
-            let paramInsert = {
-                //prePostAtr: self.prePostSelected(),
-                //startDate: nts.uk.util.isNullOrEmpty(self.startAppDate()) ? null : moment(self.startAppDate()).format(self.DATE_FORMAT),
-                //endDate: nts.uk.util.isNullOrEmpty(self.endAppDate()) ? moment(self.startAppDate()).format(self.DATE_FORMAT) : moment(self.endAppDate()).format(self.DATE_FORMAT),
-                //employeeID: self.employeeID(),
-                //appReasonID: comboBoxReason,
-                //applicationReason: textAreaReason,
-                //holidayAppType: nts.uk.util.isNullOrEmpty(self.holidayTypeCode()) ? null : self.holidayTypeCode(),
-                //workTypeCode: self.selectedTypeOfDuty(),
-                //workTimeCode: nts.uk.util.isNullOrEmpty(self.workTimeCode()) ? null : self.workTimeCode(),
-                //halfDayFlg: self.displayHalfDayValue(),
-                //changeWorkHour: self.changeWorkHourValue(),
-                //allDayHalfDayLeaveAtr: self.selectedAllDayHalfDayValue(),
-                //startTime1: self.timeStart1(),
-                //endTime1: self.timeEnd1(),
-                //startTime2: self.timeStart2(),
-                //endTime2: self.timeEnd2(),
-                //displayEndDateFlg: self.displayEndDateFlg(),
-                //specHd: specHd,
-                //checkOver1Year: true,
-                //checkContradiction: false,
-                appAbsenceStartInfoDto: self.appAbsenceStartInfoDto,
-                applicationCommand: self.getApplicationCommand(comboBoxReason, textAreaReason),
-                appAbsenceCommand: self.getAbsenceCommand(specHd),
-                alldayHalfDay: self.selectedAllDayHalfDayValue(),
-                mourningAtr: self.isCheck(),
-                holidayDateLst: [],
-            };
-            service.checkBeforeRegister(paramInsert).done((data) => {
-                self.processConfirmMsg(paramInsert, data, 0);
-            }).fail((res) => {
-                dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
-                        .then(function() { nts.uk.ui.block.clear(); });    
-            });    
-        }
-        
-        getApplicationCommand(comboBoxReason, textAreaReason) {
-            let self = this;
-            return {
-                prePostAtr: self.prePostSelected(),
-                appReasonID: comboBoxReason,
-                applicationReason: textAreaReason,
-                applicantSID: self.employeeID(),
-                startDate: nts.uk.util.isNullOrEmpty(self.startAppDate()) ? null : moment(self.startAppDate()).format(self.DATE_FORMAT),
-                endDate: nts.uk.util.isNullOrEmpty(self.endAppDate()) ? moment(self.startAppDate()).format(self.DATE_FORMAT) : moment(self.endAppDate()).format(self.DATE_FORMAT),  
-            }     
-        }
-        
-        getAbsenceCommand(specHd: any) {
-            let self = this;
-            return {
-                holidayAppType: nts.uk.util.isNullOrEmpty(self.holidayTypeCode()) ? null : self.holidayTypeCode(),
-                workTypeCode: self.selectedTypeOfDuty(),
-                workTimeCode: nts.uk.util.isNullOrEmpty(self.workTimeCode()) ? null : self.workTimeCode(),
-                halfDayFlg: self.displayHalfDayValue(),
-                changeWorkHour: self.changeWorkHourValue(),
-                allDayHalfDayLeaveAtr: self.selectedAllDayHalfDayValue(),
-                startTime1: self.timeStart1(),
-                endTime1: self.timeEnd1(),
-                startTime2: self.timeStart2(),
-                endTime2: self.timeEnd2(),
-                appForSpecLeave: specHd
-            }         
-        }
-        
-        processConfirmMsg(paramInsert: any, result: any, confirmIndex: number) {
-            let self = this;
-            let confirmMsgLst = result.confirmMsgLst;
-            let confirmMsg = confirmMsgLst[confirmIndex];
-            if(_.isUndefined(confirmMsg)) {
-                paramInsert.holidayDateLst = result.holidayDateLst;
-                service.createAbsence(paramInsert).done((data) => {
-                    self.sendMail(data);
-                }).fail((res) => {
-                    dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds })
-                        .then(function() { nts.uk.ui.block.clear(); });
+        createDataVacationApp(): any {
+            const vm = this;
+
+            // application common
+
+            // A4_2
+            // Holiday Type
+            let holidayAppType = vm.selectedType();
+
+            // A5_2
+            // List of workType
+            let workType = vm.selectedWorkTypeCD();
+
+            // A6_5
+            // worktTime
+            let workTime = vm.selectedWorkTimeCD();
+
+            // A6_1
+            let workChangeUse = vm.isChangeWorkHour();
+
+            let startTime1 = vm.startTime1();
+            let endTime1 = vm.endTime1();
+            let startTime2 = vm.startTime2();
+            let endTime2 = vm.endTime2();
+
+            let workingHours = [];
+
+            if (startTime1 !== null && endTime1 !== null) {
+                workingHours.push({
+                    workNo: 1,
+                    timeZone: {
+                        startTime: startTime1,
+                        endTime: endTime1
+                    }
                 });
-                return;
             }
-            
-            dialog.confirm({ messageId: confirmMsg.msgID, messageParams: confirmMsg.paramLst }).ifYes(() => {
-                self.processConfirmMsg(paramInsert, result, confirmIndex + 1);
-            }).ifNo(() => {
-                nts.uk.ui.block.clear();
+            if (startTime2 !== null && endTime2 !== null) {
+                workingHours.push({
+                    workNo: 2,
+                    timeZone: {
+                        startTime: startTime2,
+                        endTime: endTime2
+                    }
+                });
+            }
+
+            let timeDegestion = {};
+            if (vm.selectedType() === 6) {
+                timeDegestion = {
+                    overtime60H: vm.over60H(),
+                    nursingTime: vm.nursing(),
+                    childTime: vm.childNursing(),
+                    timeOff: vm.timeOff(),
+                    timeSpecialVacation: 0,
+                    timeAnualLeave: vm.annualTime(),
+                    specialVacationFrameNO: null
+                };
+            }
+
+            let applyForSpeLeaveOptional = null;
+            if (vm.selectedType() === 3) {
+                applyForSpeLeaveOptional = {
+                    mournerFlag: null,
+                    relationshipCD: null,
+                    relationshipReason: null
+                };
+                if (vm.condition6()) {
+                    applyForSpeLeaveOptional.relationshipCD = vm.selectedDateSpec();
+                }
+                if (vm.condition7()) {
+                    applyForSpeLeaveOptional.mournerFlag = vm.isCheckMourn();
+                }
+                if (vm.condition8()) {
+                    applyForSpeLeaveOptional.relationshipReason = vm.relationshipReason();
+                }
+            }
+
+
+            let appAbsence = {
+                reflectFreeTimeApp: {
+                    workingHours: workingHours,
+                    timeDegestion: timeDegestion,
+                    workInfo: {
+                        workType: workType,
+                        workTime: workTime
+                    },
+                    workChangeUse: workChangeUse ? 1 : 0
+                },
+                vacationInfo: {
+                    holidayApplicationType: holidayAppType,
+                    info: {
+                        datePeriod: null,
+                        applyForSpeLeave: applyForSpeLeaveOptional
+                    }
+                }
+            };
+
+            return appAbsence;
+        }
+
+
+        /**
+         * Update data for AppAbsenceStartInfo
+         */
+        updateAppAbsenceStartInfo() {
+            const vm = this;
+
+            if (vm.selectedType() === 1) {
+                if (vm.leaveComDayOffManas().length > 0) {
+                    vm.data.leaveComDayOffManas = _.map(vm.leaveComDayOffManas(), (x: any) => {
+                        x.dateOfUse = new Date(x.dateOfUse).toISOString();
+                        x.outbreakDay = new Date(x.outbreakDay).toISOString();
+                        return x;
+                    });
+                }
+                if (vm.payoutSubofHDManagements().length > 0) {
+                    vm.data.payoutSubofHDManas = _.map(vm.payoutSubofHDManagements(), (x: any) => {
+                        x.dateOfUse = new Date(x.dateOfUse).toISOString();
+                        x.outbreakDay = new Date(x.outbreakDay).toISOString();
+                        return x;
+                    });
+                }
+            }
+        }
+
+        handleErrorCustom(failData: any): any {
+            const vm = this;
+            if (failData.messageId == "Msg_26") {
+                vm.$dialog.error({messageId: failData.messageId, messageParams: failData.parameterIds})
+                    .then(() => {
+                        vm.$jump("com", "/view/ccg/008/a/index.xhtml");
+                    });
+                return $.Deferred().resolve(false);
+            }
+            if (failData.messageId === "Msg_478") {
+
+            }
+            return $.Deferred().resolve(true);
+        }
+
+        handleConfirmMessage(listMes: any): any {
+            const vm = this;
+            if (_.isEmpty(listMes)) {
+                return $.Deferred().resolve(true);
+            }
+            let msg = listMes[0];
+
+            return vm.$dialog.confirm({messageId: msg.msgID, messageParams: msg.paramLst})
+                .then((value) => {
+                    if (value === 'yes') {
+                        return vm.handleConfirmMessage(_.drop(listMes));
+                    } else {
+                        return $.Deferred().resolve(false);
+                    }
+                });
+        }
+
+        openKDL020() {
+            let vm = this;
+            var employeeIds = [];
+            employeeIds.push(__viewContext.user.employeeId);
+            nts.uk.ui.windows.setShared('KDL020A_PARAM', {baseDate: new Date(), employeeIds: employeeIds});
+            if (employeeIds.length > 1) {
+                nts.uk.ui.windows.sub.modal("/view/kdl/020/a/multi.xhtml");
+            } else {
+                nts.uk.ui.windows.sub.modal("/view/kdl/020/a/single.xhtml");
+            }
+        }
+
+        openKDL029() {
+            let vm = this;
+            let param = {
+                employeeIds: vm.application().employeeIDLst(),
+                baseDate: moment(new Date()).format("YYYY/MM/DD")
+            }
+            nts.uk.ui.windows.setShared('KDL029_PARAM', param);
+            nts.uk.ui.windows.sub.modal('/view/kdl/029/a/index.xhtml');
+        }
+
+        openKDL005() {
+            let vm = this;
+            let data = {
+                employeeIds: vm.application().employeeIDLst(),
+                baseDate: moment(new Date()).format("YYYYMMDD")
+            }
+            nts.uk.ui.windows.setShared('KDL005_DATA', data);
+            if (data.employeeIds.length > 1) {
+                nts.uk.ui.windows.sub.modal("/view/kdl/005/a/multi.xhtml");
+            } else {
+                nts.uk.ui.windows.sub.modal("/view/kdl/005/a/single.xhtml");
+            }
+        }
+
+        validateAppDate(start: string, end: string) {
+            let startDate = moment(start);
+            let endDate = moment(end);
+            if (startDate.isValid() && endDate.isValid()) {
+                return true;
+            }
+            return false;
+        }
+
+        changeAppDate() {
+            const vm = this;
+
+            let startDate = vm.application().opAppStartDate(),
+                endDate = vm.application().opAppEndDate();
+            let appDates = []
+            appDates.push(startDate, endDate);
+            let command = {
+                companyID: __viewContext.user.companyId,
+                appDates: appDates,
+                startInfo: vm.data,
+                holidayAppType: vm.selectedType(),
+                appWithDate: vm.appDispInfoStartupOutput().appDispInfoWithDateOutput
+            };
+            command.startInfo.leaveComDayOffManas = _.map(command.startInfo.leaveComDayOffManas, (x: any) => {
+                x.dateOfUse = new Date(x.dateOfUse).toISOString();
+                x.outbreakDay = new Date(x.outbreakDay).toISOString();
+                return x;
             });
-        } 
+            command.startInfo.payoutSubofHDManas = _.map(command.startInfo.payoutSubofHDManas, (x: any) => {
+                x.dateOfUse = new Date(x.dateOfUse).toISOString();
+                x.outbreakDay = new Date(x.outbreakDay).toISOString();
+                return x;
+            });
+
+            vm.$validate([
+                '#kaf000-a-component4 .nts-input'
+            ]).then((valid: boolean) => {
+                if (valid) {
+                    return vm.$blockui("show").then(() => vm.$ajax(API.changeAppDate, command));
+                }
+            }).done((res: any) => {
+                if (res) {
+                    vm.fetchData(res);
+                }
+            }).fail(err => {
+                if (err.messageId === "Msg_43") {
+                    vm.$dialog.error(err).then(() => {
+                        vm.$jump("com", "/view/ccg/008/a/index.xhtml");
+                    });
+
+                } else {
+                    vm.$dialog.error(err);
+                }
+            }).always(() => vm.$blockui("hide"));
+        }
+
+        fetchRemainTime(remainVacationInfo: any) {
+            const vm = this;
+
+            // set over60HHourRemain
+            if (remainVacationInfo.over60HHourRemain) {
+                vm.over60HHourRemain(nts.uk.time.format.byId("Clock_Short_HM", remainVacationInfo.over60HHourRemain));
+            }
+
+            // set subVacaHourRemain
+            if (remainVacationInfo.subVacaHourRemain) {
+                vm.subVacaHourRemain(nts.uk.time.format.byId("Clock_Short_HM", remainVacationInfo.subVacaHourRemain));
+            }
+
+            // set yearRemain
+            if (remainVacationInfo.yearRemain && remainVacationInfo.yearRemain > 0) {
+                if (remainVacationInfo.yearHourRemain && remainVacationInfo.yearHourRemain > 0) {
+                    vm.timeYearLeave(remainVacationInfo.yearRemain.toString().concat("日と").concat(nts.uk.time.format.byId("Clock_Short_HM", remainVacationInfo.yearHourRemain)));
+                } else {
+                    vm.timeYearLeave(remainVacationInfo.yearRemain.toString().concat("日"));
+                }
+            } else {
+                vm.timeYearLeave(nts.uk.time.format.byId("Clock_Short_HM", remainVacationInfo.yearHourRemain));
+            }
+
+            // set childNursingRemain
+            if (remainVacationInfo.childNursingRemain && remainVacationInfo.childNursingRemain > 0) {
+                if (remainVacationInfo.childNursingHourRemain && remainVacationInfo.childNursingHourRemain > 0) {
+                    vm.childNursingRemain(remainVacationInfo.childNursingRemain.toString().concat("日と").concat(nts.uk.time.format.byId("Clock_Short_HM", remainVacationInfo.childNursingHourRemain)));
+                } else {
+                    vm.childNursingRemain(remainVacationInfo.childNursingRemain.toString().concat("日"));
+                }
+            } else {
+                vm.childNursingRemain(nts.uk.time.format.byId("Clock_Short_HM", remainVacationInfo.childNursingHourRemain));
+            }
+
+            // set nursingRemain
+            if (remainVacationInfo.nursingRemain && remainVacationInfo.nursingRemain > 0) {
+                if (remainVacationInfo.nursingRemain && remainVacationInfo.nirsingHourRemain > 0) {
+                    vm.nursingRemain(remainVacationInfo.nursingRemain.toString().concat("日と").concat(nts.uk.time.format.byId("Clock_Short_HM", remainVacationInfo.nirsingHourRemain)));
+                } else {
+                    vm.nursingRemain(remainVacationInfo.nursingRemain.toString().concat("日"));
+                }
+            } else {
+                vm.nursingRemain(nts.uk.time.format.byId("Clock_Short_HM", remainVacationInfo.nirsingHourRemain));
+            }
+        }
+
+        checkCondition10(data: any) {
+            const vm = this;
+            if (vm.data && vm.data.remainVacationInfo) {
+                if (vm.data.remainVacationInfo.substituteLeaveManagement.substituteLeaveManagement === 1) {
+                    vm.condition10Substi(true);
+                } else {
+                    vm.condition10Substi(false);
+                }
+
+                if (vm.data.remainVacationInfo.annualLeaveManagement.annualLeaveManageDistinct === 1) {
+                    vm.condition10Annual(true);
+                } else {
+                    vm.condition10Annual(false);
+                }
+
+                if (vm.data.remainVacationInfo.accumulatedRestManagement.accumulatedManage === 1) {
+                    vm.condition10Accum(true);
+                } else {
+                    vm.condition10Accum(false);
+                }
+            }
+        }
+
+        checkCondition11(data: any) {
+            const vm = this;
+            if (vm.data && vm.data.workHoursDisp) {
+                vm.condition11(true);
+                return true;
+            }
+            vm.condition11(false);
+            return false;
+        }
+
+        checkCondition30(data: any) {
+            const vm = this;
+            if (vm.data && vm.data.vacationApplicationReflect && vm.data.vacationApplicationReflect.workAttendanceReflect.reflectAttendance === 1) {
+                vm.condition30(true);
+                return true;
+            }
+            vm.condition30(false);
+            return false;
+        }
+
+        checkCondition12(data: any) {
+            const vm = this;
+            if (vm.data && vm.data.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles && vm.selectedWorkTimeCD() && vm.isDispTime2ByWorkTime()) {
+                vm.condition12(true);
+                return true;
+            }
+            vm.condition12(false);
+            return false;
+        }
+
+        checkCondition19(data: any) {
+            const vm = this;
+            if (vm.selectedType() === 6 && vm.data && vm.data.vacationApplicationReflect) {
+                if (vm.data.vacationApplicationReflect.timeLeaveReflect.superHoliday60H === 1
+                    && vm.data.remainVacationInfo.overtime60hManagement.overrest60HManagement === 1) {
+                    vm.condition19Over60(true);
+                } else {
+                    vm.condition19Over60(false);
+                }
+                if (vm.data.vacationApplicationReflect.timeLeaveReflect.substituteLeaveTime === 1
+                    && vm.data.remainVacationInfo.substituteLeaveManagement.substituteLeaveManagement === 1) {
+                    vm.condition19Substitute(true);
+                } else {
+                    vm.condition19Substitute(false);
+                }
+                if (vm.data.vacationApplicationReflect.timeLeaveReflect.annualVacationTime === 1
+                    && vm.data.remainVacationInfo.annualLeaveManagement.timeAnnualLeaveManage === 1) {
+                    vm.condition19Annual(true);
+                } else {
+                    vm.condition19Annual(false);
+                }
+                if (vm.data.vacationApplicationReflect.timeLeaveReflect.childNursing === 1
+                    && vm.data.remainVacationInfo.nursingCareLeaveManagement.childNursingManagement === 1
+                    && vm.data.remainVacationInfo.nursingCareLeaveManagement.timeChildNursingManagement === 1) {
+                    vm.condition19ChildNursing(true);
+                } else {
+                    vm.condition19ChildNursing(false);
+                }
+                if (vm.data.vacationApplicationReflect.timeLeaveReflect.nursing === 1
+                    && vm.data.remainVacationInfo.nursingCareLeaveManagement.longTermCareManagement === 1
+                    && vm.data.remainVacationInfo.nursingCareLeaveManagement.timeCareManagement === 1) {
+                    vm.condition19Nursing(true);
+                } else {
+                    vm.condition19Nursing(false);
+                }
+            }
+        }
+
+        checkCondition15(data: any) {
+            const vm = this;
+            let workType = null;
+            if (!vm.selectedWorkTypeCD()) {
+                vm.condition15(false);
+                return false;
+            } else {
+                let workTypes = _.filter(vm.data.workTypeLst, {'workTypeCode': vm.selectedWorkTypeCD()});
+                if (workTypes.length > 0) {
+                    workType = workTypes[0];
+                }
+            }
+
+            if (vm.data && vm.data.remainVacationInfo.substituteLeaveManagement.linkingManagement === 1 && workType) {
+                if (workType.workAtr === 0 && workType.oneDayCls === 6) {
+                    vm.condition15(true);
+                    return true;
+                }
+                if (workType.workAtr === 1 && (workType.morningCls === 6 || workType.afternoonCls === 6)) {
+                    vm.condition15(true);
+                    return true;
+                }
+            }
+            vm.condition15(false);
+        }
+
+        checkCondition14(data: any) {
+            const vm = this;
+
+            let workType = null;
+            if (!vm.selectedWorkTypeCD()) {
+                vm.condition14(false);
+                return false;
+            } else {
+                let workTypes = _.filter(vm.data.workTypeLst, {'workTypeCode': vm.selectedWorkTypeCD()});
+                if (workTypes.length > 0) {
+                    workType = workTypes[0];
+                }
+            }
+
+            if (vm.data && vm.data.remainVacationInfo.holidayManagement.linkingManagement === 1 && workType) {
+                if (workType.workAtr === 0 && workType.oneDayCls === 8) {
+                    vm.condition14(true);
+                    return true;
+                }
+                if (workType.workAtr === 1 && (workType.morningCls === 8 || workType.afternoonCls === 8)) {
+                    vm.condition14(true);
+                    return true;
+                }
+            }
+            vm.condition14(false);
+        }
+
+        checkCondition21(data: any) {
+            const vm = this;
+            if (vm.data && vm.data.remainVacationInfo.annualLeaveManagement.annualLeaveManageDistinct === 1) {
+                vm.condition21(true);
+                return true;
+            }
+            vm.condition21(false);
+            vm.hdAppSetTmp(_.filter(vm.hdAppSetTmp(), (x) => {
+                return x.holidayAppType !== 0
+            }));
+        }
+
+        checkCondition22(data: any) {
+            const vm = this;
+            if (vm.data && vm.data.remainVacationInfo.substituteLeaveManagement.substituteLeaveManagement === 1) {
+                vm.condition22(true);
+                return true;
+            }
+            vm.condition22(false);
+            vm.hdAppSetTmp(_.filter(vm.hdAppSetTmp(), (x) => {
+                return x.holidayAppType !== 1
+            }));
+        }
+
+        checkCondition23(data: any) {
+            const vm = this;
+            if (vm.data && vm.data.remainVacationInfo.holidayManagement.holidayManagement === 1) {
+                vm.condition23(true);
+                return true;
+            }
+            vm.condition23(false);
+        }
+
+        checkCondition24(data: any) {
+            const vm = this;
+            if (vm.data && vm.data.remainVacationInfo.accumulatedRestManagement.accumulatedManage === 1) {
+                vm.condition24(true);
+                return true;
+            }
+            vm.condition24(false);
+            vm.hdAppSetTmp(_.filter(vm.hdAppSetTmp(), (x) => {
+                return x.holidayAppType !== 4
+            }));
+        }
+
+        checkCondition1(data: any) {
+            const vm = this;
+            if (vm.data && vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.opEmploymentSet && vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.opEmploymentSet.targetWorkTypeByAppLst) {
+                let targetWorkType = _.filter(vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.opEmploymentSet.targetWorkTypeByAppLst, {'appType': 1});
+                if (targetWorkType.length > 0) {
+                    if (_.filter(targetWorkType, {'opHolidayAppType': 0}).length > 0 && _.filter(targetWorkType, {'opHolidayAppType': 0})[0].opHolidayTypeUse) {
+                        vm.condition1_0(true);
+                    } else {
+                        vm.condition1_0(false);
+                        vm.hdAppSetTmp(_.filter(vm.hdAppSetTmp(), (x) => {
+                            return x.holidayAppType !== 0
+                        }));
+                    }
+
+                    if (_.filter(targetWorkType, {'opHolidayAppType': 1}).length > 0 && _.filter(targetWorkType, {'opHolidayAppType': 1})[0].opHolidayTypeUse) {
+                        vm.condition1_1(true);
+                    } else {
+                        vm.condition1_1(false);
+                        vm.hdAppSetTmp(_.filter(vm.hdAppSetTmp(), (x) => {
+                            return x.holidayAppType !== 1
+                        }));
+                    }
+
+                    if (_.filter(targetWorkType, {'opHolidayAppType': 2}).length > 0 && _.filter(targetWorkType, {'opHolidayAppType': 2})[0].opHolidayTypeUse) {
+                        vm.condition1_2(true);
+                    } else {
+                        vm.condition1_2(false);
+                        vm.hdAppSetTmp(_.filter(vm.hdAppSetTmp(), (x) => {
+                            return x.holidayAppType !== 2
+                        }));
+                    }
+
+                    if (_.filter(targetWorkType, {'opHolidayAppType': 3}).length > 0 && _.filter(targetWorkType, {'opHolidayAppType': 3})[0].opHolidayTypeUse) {
+                        vm.condition1_3(true);
+                    } else {
+                        vm.condition1_3(false);
+                        vm.hdAppSetTmp(_.filter(vm.hdAppSetTmp(), (x) => {
+                            return x.holidayAppType !== 3
+                        }));
+                    }
+
+                    if (_.filter(targetWorkType, {'opHolidayAppType': 4}).length > 0 && _.filter(targetWorkType, {'opHolidayAppType': 4})[0].opHolidayTypeUse) {
+                        vm.condition1_4(true);
+                    } else {
+                        vm.condition1_4(false);
+                        vm.hdAppSetTmp(_.filter(vm.hdAppSetTmp(), (x) => {
+                            return x.holidayAppType !== 4
+                        }));
+                    }
+
+                    if (_.filter(targetWorkType, {'opHolidayAppType': 5}).length > 0 && _.filter(targetWorkType, {'opHolidayAppType': 5})[0].opHolidayTypeUse) {
+                        vm.condition1_5(true);
+                    } else {
+                        vm.condition1_5(false);
+                        vm.hdAppSetTmp(_.filter(vm.hdAppSetTmp(), (x) => {
+                            return x.holidayAppType !== 5
+                        }));
+                    }
+
+                    if (_.filter(targetWorkType, {'opHolidayAppType': 6}).length > 0 && _.filter(targetWorkType, {'opHolidayAppType': 6})[0].opHolidayTypeUse) {
+                        vm.condition1_6(true);
+                    } else {
+                        vm.condition1_6(false);
+                        vm.hdAppSetTmp(_.filter(vm.hdAppSetTmp(), (x) => {
+                            return x.holidayAppType !== 6
+                        }));
+                    }
+
+                    // if (targetWorkType.opHolidayTypeUse) {
+                    // 	vm.condition1(false);
+                    // 	return false;
+                    // }
+                }
+            }
+            // vm.condition1(true);
+        }
+
+        checkCondition6(data: any) {
+            const vm = this;
+            if (vm.data && vm.data.specAbsenceDispInfo && vm.data.specAbsenceDispInfo.specHdForEventFlag && vm.data.specAbsenceDispInfo.specHdEvent.maxNumberDay === 2) {
+                vm.condition6(true);
+                return true;
+            }
+            vm.condition6(false);
+        }
+
+        checkCondition7(data: any) {
+            const vm = this;
+            if (vm.data && vm.data.specAbsenceDispInfo && vm.data.specAbsenceDispInfo.specHdForEventFlag && vm.data.specAbsenceDispInfo.specHdEvent.maxNumberDay === 2 && vm.data.specAbsenceDispInfo.specHdEvent.makeInvitation) {
+                vm.condition7(true);
+                return true;
+            }
+            vm.condition7(false);
+        }
+
+        checkCondition8(data: any) {
+            const vm = this;
+            if (vm.data && vm.data.specAbsenceDispInfo) {
+                let dateSpecHdRelationLst = vm.data.specAbsenceDispInfo.dateSpecHdRelationLst;
+                let selectedRela = _.filter(dateSpecHdRelationLst, {'relationCD': vm.selectedDateSpec()});
+
+                if (vm.selectedDateSpec() && selectedRela.length > 0 && selectedRela[0].threeParentOrLess) {
+                    vm.condition8(true);
+                    return true;
+                }
+            }
+            vm.condition8(false);
+        }
+
+        checkCondition9(data: any) {
+            const vm = this;
+            if (vm.data && vm.data.specAbsenceDispInfo && vm.data.specAbsenceDispInfo.specHdForEventFlag) {
+                vm.condition9(true);
+                return true;
+            }
+            vm.condition9(false);
+        }
+
+        public openKDL035() {
+            const vm = this;
+
+            let workType = _.filter(vm.data.workTypeLst, {'workTypeCode': vm.selectedWorkTypeCD()});
+
+            let params: any = {
+                // 社員ID
+                employeeId: __viewContext.user.employeeId,
+
+                // 申請期間
+                period: {startDate: vm.application().opAppStartDate(), endDate: vm.application().opAppEndDate()},
+
+                // 日数単位（1.0 / 0.5）
+                daysUnit: workType[0].workAtr === 0 ? 1.0 : 0.5,
+
+                // 対象選択区分（自動 / 申請 / 手動
+                targetSelectionAtr: 1,
+
+                // List<表示する実績内容>
+                actualContentDisplayList: vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst,
+
+                // List<振出振休紐付け管理>
+                managementData: ko.toJS(vm.payoutSubofHDManagements)
+            };
+            Kaf006ShrViewModel.openDialogKDL035(params, vm);
+            // vm.payoutSubofHDManagements(payoutMana);
+        }
+
+        public openKDL036() {
+            const vm = this;
+
+            let workType = _.filter(vm.data.workTypeLst, {'workTypeCode': vm.selectedWorkTypeCD()});
+
+            let params: any = {
+                // 社員ID
+                employeeId: __viewContext.user.employeeId,
+
+                // 申請期間
+                period: {startDate: vm.application().opAppStartDate(), endDate: vm.application().opAppEndDate()},
+
+                // 日数単位（1.0 / 0.5）
+                daysUnit: workType[0].workAtr === 0 ? 1.0 : 0.5,
+
+                // 対象選択区分（自動 / 申請 / 手動
+                targetSelectionAtr: 1,
+
+                // List<表示する実績内容>
+                actualContentDisplayList: vm.data.appDispInfoStartupOutput.appDispInfoWithDateOutput.opActualContentDisplayLst,
+
+                // List<振出振休紐付け管理>
+                managementData: ko.toJS(vm.leaveComDayOffManas)
+            };
+            Kaf006ShrViewModel.openDialogKDL036(params, vm);
+            // vm.leaveComDayOffManas(leaveMana);
+        }
+
+        public openKDL003() {
+            const vm = this;
+            let workTypeCodes = _.map(vm.data.workTypeLst, 'workTypeCode');
+            let workTimeCodes = _.map(vm.data.workTimeLst, 'workNo');
+
+            nts.uk.ui.windows.setShared('parentCodes', {
+                workTypeCodes: workTypeCodes,
+                selectedWorkTypeCode: vm.selectedWorkTypeCD(),
+                workTimeCodes: [],
+                selectedWorkTimeCode: vm.selectedWorkTimeCD(),
+            }, true);
+
+            nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml').onClosed(function (): any {
+                //view all code of selected item 
+                let childData = nts.uk.ui.windows.getShared('childData');
+                if (childData) {
+                    vm.selectedWorkTypeCD(childData.selectedWorkTypeCode);
+                    vm.selectedWorkTimeCD(childData.selectedWorkTimeCode);
+                    vm.selectedWorkTimeName(childData.selectedWorkTimeName);
+
+                    // vm.startTime1(childData.first.start);
+                    // vm.endTime1(childData.first.end);
+                    // vm.startTime2(childData.second.start);
+                    // vm.endTime2(childData.second.end);
+                }
+            });
+        }
     }
 
-}
+    const API = {
+        startNew: 'at/request/application/appforleave/getAppForLeaveStart',
+        getAllAppForLeave: 'at/request/application/appforleave/getAllAppForLeave',
+        changeAppDate: 'at/request/application/appforleave/findChangeAppdate',
+        checkBeforeRegister: 'at/request/application/appforleave/checkBeforeRegister',
+        register: 'at/request/application/appforleave/insert',
+        checkVacationTyingManage: 'at/request/application/appforleave/checkVacationTyingManage',
+        changeWorkType: 'at/request/application/appforleave/findChangeWorkType',
+        changeWorkTime: 'at/request/application/appforleave/findChangeWorkTime',
+        changeRela: 'at/request/application/appforleave/changeRela'
+    }
 
+    interface DataTransfer {
+        startTime: number;
+        endTime: number;
+        employeeID: string;
+        appDate: string;
+        applicationReason: string;
+    }
+}

@@ -20,12 +20,12 @@ import nts.uk.ctx.exio.dom.exo.outcnddetail.OutCndDetailItem;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
-* 出力条件詳細(定型)
+* 外部出力出力条件詳細(定型)
 */
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "OIOMT_OUT_CND_DETAIL")
+@Table(name = "OIOMT_EX_OUT_CND_DTL")
 public class OiomtOutCndDetail extends UkJpaEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;

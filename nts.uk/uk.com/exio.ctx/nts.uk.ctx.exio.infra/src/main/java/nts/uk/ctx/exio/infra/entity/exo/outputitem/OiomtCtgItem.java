@@ -17,12 +17,12 @@ import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * カテゴリ項目
+ * 外部出力カテゴリ項目
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "OIOMT_CTG_ITEM")
+@Table(name = "OIOMT_EX_OUT_CTG_ITEM")
 @Getter
 public class OiomtCtgItem extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -53,7 +53,7 @@ public class OiomtCtgItem extends UkJpaEntity implements Serializable {
 	@ManyToOne
 	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
 			@PrimaryKeyJoinColumn(name = "OUT_ITEM_CD", referencedColumnName = "OUT_ITEM_CD"),
-			@PrimaryKeyJoinColumn(name = "COND_SET_CD", referencedColumnName = "COND_SET_CD")})
+			@PrimaryKeyJoinColumn(name = "CND_SET_CD", referencedColumnName = "CND_SET_CD")})
 	private OiomtStdOutItem oiomtStdOutItem;
 
 	

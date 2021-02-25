@@ -160,6 +160,9 @@ public class RegisterEmbededURLImpl implements RegisterEmbededURL {
 			case BUSINESS_TRIP_APPLICATION_OFFICE_HELPER: {
 				return new EmbeddedUrlScreenID("KAF008", "E");
 			}
+			case OPTIONAL_ITEM_APPLICATION: {
+				return new EmbeddedUrlScreenID("KAF020", "B");
+			}
 			default:
 				return new EmbeddedUrlScreenID("", "");
 		}

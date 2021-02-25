@@ -1,8 +1,7 @@
 package nts.uk.ctx.at.record.dom.stamp.application;
 
+import java.util.List;
 import java.util.Optional;
-
-import nts.uk.ctx.at.record.dom.stamp.application.SettingsUsingEmbossing;
 
 /**
  * 
@@ -38,4 +37,12 @@ public interface SettingsUsingEmbossingRepository {
 	 *         打刻機能の利用設定を取得する
 	 */
 	public Optional<SettingsUsingEmbossing> get(String comppanyID);
+	
+	
+	/**
+	 * <<ScreenQuery>> 打刻入力の会社一覧を取得する
+	 * @param companyIds
+	 * @return List<SettingsUsingEmbossing>
+	 */
+	public List<SettingsUsingEmbossing> getSettingEmbossingByComIds(List<String> companyIds);
 }

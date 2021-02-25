@@ -6,21 +6,19 @@ package nts.uk.ctx.at.shared.app.find.scherec.totaltimes.dto;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.CountAtr;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.SummaryAtr;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.SummaryList;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalCondition;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesABName;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesName;
-import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesSetMemento;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.UseAtr;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.WorkTypeAtr;
+import nts.uk.ctx.at.shared.dom.scherec.totaltimes.memento.TotalTimesSetMemento;
 
 /**
  * The Class TotalTimesDetailDto.
@@ -60,7 +58,7 @@ public class TotalTimesDetailDto implements TotalTimesSetMemento {
 	 * setCompanyId(nts.uk.ctx.at.shared.dom.common.CompanyId)
 	 */
 	@Override
-	public void setCompanyId(CompanyId setCompanyId) {
+	public void setCompanyId(String setCompanyId) {
 		// Do nothing.
 	}
 
@@ -153,23 +151,21 @@ public class TotalTimesDetailDto implements TotalTimesSetMemento {
 	 * setSummaryList(java.util.Optional)
 	 */
 	@Override
-	public void setSummaryList(Optional<SummaryList> summaryList) {
+	public void setSummaryList(SummaryList summaryList) {
 		this.listTotalSubjects = new ArrayList<>();
-		summaryList.ifPresent(item -> {
-			if (!CollectionUtil.isEmpty(item.getWorkTimeCodes())) {
-				item.getWorkTimeCodes().stream().forEach(workTimeCode -> {
-					this.listTotalSubjects
-							.add(new TotalSubjectsDto(workTimeCode, WorkTypeAtr.WORKINGTIME.value));
-				});
-			}
+		if (!CollectionUtil.isEmpty(summaryList.getWorkTimeCodes())) {
+			summaryList.getWorkTimeCodes().stream().forEach(workTimeCode -> {
+				this.listTotalSubjects
+						.add(new TotalSubjectsDto(workTimeCode, WorkTypeAtr.WORKINGTIME.value));
+			});
+		}
 
-			if (!CollectionUtil.isEmpty(item.getWorkTypeCodes())) {
-				item.getWorkTypeCodes().stream().forEach(workTypeCode -> {
-					this.listTotalSubjects
-							.add(new TotalSubjectsDto(workTypeCode, WorkTypeAtr.WORKTYPE.value));
-				});
-			}
-		});
+		if (!CollectionUtil.isEmpty(summaryList.getWorkTypeCodes())) {
+			summaryList.getWorkTypeCodes().stream().forEach(workTypeCode -> {
+				this.listTotalSubjects
+						.add(new TotalSubjectsDto(workTypeCode, WorkTypeAtr.WORKTYPE.value));
+			});
+		}
 	}
 
 }

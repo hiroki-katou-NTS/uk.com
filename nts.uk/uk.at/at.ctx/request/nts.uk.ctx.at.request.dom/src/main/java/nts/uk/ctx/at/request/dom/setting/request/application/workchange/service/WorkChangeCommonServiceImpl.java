@@ -14,19 +14,17 @@ import nts.uk.ctx.at.request.dom.application.common.datawork.DataWork;
 import nts.uk.ctx.at.request.dom.application.common.datawork.IDataWorkService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
+import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeSetRepository;
 import nts.uk.ctx.at.request.dom.application.workchange.IWorkChangeRegisterService;
-import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
-import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
-import nts.uk.ctx.at.request.dom.setting.request.application.workchange.IAppWorkChangeSetRepository;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultiple;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultipleRepository;
 
 @Stateless
 public class WorkChangeCommonServiceImpl implements IWorkChangeCommonService {
 	@Inject
-	IAppWorkChangeSetRepository workChangeRepository;
-	@Inject
-	ApplicationReasonRepository appFormRepo;
+	AppWorkChangeSetRepository workChangeRepository;
+//	@Inject
+//	ApplicationReasonRepository appFormRepo;
 	@Inject
 	EmployeeRequestAdapter employeeAdapter;
 	@Inject
@@ -88,7 +86,7 @@ public class WorkChangeCommonServiceImpl implements IWorkChangeCommonService {
 		WorkChangeBasicData wcBasicData = new WorkChangeBasicData();
 
 		// ドメインモデル「勤務変更申請設定」より取得する
-		wcBasicData.setWorkChangeCommonSetting(workChangeRepository.findWorkChangeSetByID(cid));
+		wcBasicData.setWorkChangeCommonSetting(workChangeRepository.findByCompanyId(cid));
 
 		// アルゴリズム「社員IDから社員を取得する」を実行する
 		String employeeName = employeeAdapter.getEmployeeName(sid);
@@ -96,9 +94,9 @@ public class WorkChangeCommonServiceImpl implements IWorkChangeCommonService {
 		wcBasicData.setSID(sid);
 
 		// ドメインモデル「申請定型理由」を取得
-		List<ApplicationReason> listReason = appFormRepo.getReasonByAppType(cid,
-				ApplicationType.WORK_CHANGE_APPLICATION.value);
-		wcBasicData.setListAppReason(listReason);
+//		List<ApplicationReason> listReason = appFormRepo.getReasonByAppType(cid,
+//				ApplicationType.WORK_CHANGE_APPLICATION.value);
+//		wcBasicData.setListAppReason(listReason);
 
 		// 勤務変更申請基本データ
 		return wcBasicData;
