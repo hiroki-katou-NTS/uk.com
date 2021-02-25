@@ -124,10 +124,7 @@ public class HolidayAddtionFinder {
 			WorkTimeCalcMethodDetailOfHoliday advanceSetWork = workTimeHolidayCalcMethod.getAdvancedSet().get();
 			EmploymentCalcDetailedSetIncludeVacationAmount includeVacationSet = advanceSetWork.getIncludeVacationSet();
 
-			// TODO Hai.tt
-			// Fake use Atr
-//			regularWorkDto.setUseAtr(regularWork.getVacationCalcMethodSet().getUseAtr().value);
-			regularWorkDto.setUseAtr(1);
+			regularWorkDto.setUseAtr(regularWork.getVacationCalcMethodSet().getUseAtr().value);
 			regularWorkDto.setCalcActualOperationPre(premiumHolidayCalcMethod.getCalculateActualOperation().value);
 			regularWorkDto.setExemptTaxTimePre(advanceSetPre.getCalculateIncludIntervalExemptionTime().value);
 			regularWorkDto.setIncChildNursingCarePre(advanceSetPre.getCalculateIncludCareTime().value);
@@ -169,10 +166,8 @@ public class HolidayAddtionFinder {
 		WorkTimeHolidayCalcMethod workTimeHolidayCalcMethod = flexWork.getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday();
 		WorkTimeCalcMethodDetailOfHoliday advanceSetWork = workTimeHolidayCalcMethod.getAdvancedSet().get();
 		EmploymentCalcDetailedSetIncludeVacationAmount includeVacationSet = advanceSetWork.getIncludeVacationSet();
-		// TODO Hai.tt
-		// Fake use Atr
-//		flexWorkDto.setUseAtr(flexWork.getVacationCalcMethodSet().getUseAtr().value);
-		flexWorkDto.setUseAtr(1);
+
+		flexWorkDto.setUseAtr(flexWork.getVacationCalcMethodSet().getUseAtr().value);
 		flexWorkDto.setCalcActualOperationPre(premiumHolidayCalcMethod.getCalculateActualOperation().value);
 		flexWorkDto.setExemptTaxTimePre(advanceSetPre.getCalculateIncludIntervalExemptionTime().value);
 		flexWorkDto.setIncChildNursingCarePre(advanceSetPre.getCalculateIncludCareTime().value);
@@ -216,9 +211,7 @@ public class HolidayAddtionFinder {
 			WorkTimeCalcMethodDetailOfHoliday advanceSetWork = workTimeHolidayCalcMethod.getAdvancedSet().get();
 			EmploymentCalcDetailedSetIncludeVacationAmount includeVacationSet = advanceSetWork.getIncludeVacationSet();
 
-			// TODO Hai.tt
-			// Fake use Atr
-			laborDto.setUseAtr(1);
+			laborDto.setUseAtr(labor.getVacationCalcMethodSet().getUseAtr().value);
 			laborDto.setCalcActualOperationPre(premiumHolidayCalcMethod.getCalculateActualOperation().value);
 			laborDto.setExemptTaxTimePre(advanceSetPre.getCalculateIncludIntervalExemptionTime().value);
 			laborDto.setIncChildNursingCarePre(advanceSetPre.getCalculateIncludCareTime().value);
@@ -252,9 +245,7 @@ public class HolidayAddtionFinder {
 		WorkTimeCalcMethodDetailOfHoliday advanceSetWork = workTimeHolidayCalcMethod.getAdvancedSet().get();
 		EmploymentCalcDetailedSetIncludeVacationAmount includeVacationSet = advanceSetWork.getIncludeVacationSet();
 
-		// TODO Hai.tt
-		// Fake use Atr
-		dto.setUseAtr(1);
+		dto.setUseAtr(hourlyPaymentAdditionSet.getVacationCalcMethodSet().getUseAtr().value);
 		dto.setCalcPremiumVacation(premiumHolidayCalcMethod.getCalculateActualOperation().value);
 		dto.setAddition1(includeHolidaysPremiumCalcDetailSet.getAddition().value);
 		dto.setDeformatExcValue(includeHolidaysPremiumCalcDetailSet.getDeformationExceedsPredeterminedValue().get().value);

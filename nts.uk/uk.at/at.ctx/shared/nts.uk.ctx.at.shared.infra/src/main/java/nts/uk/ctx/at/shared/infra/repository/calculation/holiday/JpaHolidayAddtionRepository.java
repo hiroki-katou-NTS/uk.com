@@ -149,6 +149,8 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 		kshstRegularWorkSet.enableSetPerWorkHour2 = kshstRegularWorkSet.enableSetPerWorkHour1;
 		kshstRegularWorkSet.kshstRegularWorkSetPK = kshstRegularWorkSetPK;
 		kshstRegularWorkSet.deductByApplication = deductLeaveEarly.getDeduct().isDeductByApp() ? 1 : 0;
+		kshstRegularWorkSet.setPreCalcMethod = regularWork.getVacationCalcMethodSet().getUseAtr().value;
+
 		return kshstRegularWorkSet;
 	}
 
@@ -172,7 +174,8 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 					irregularWorkSet.incChildNursingCare2, 
 					irregularWorkSet.notDeductLateleave2,
 					irregularWorkSet.additionTime2,
-					irregularWorkSet.enableSetPerWorkHour1);
+					irregularWorkSet.enableSetPerWorkHour1,
+					irregularWorkSet.setPreCalcMethod);
 			return irregularWork;
 		}
 		return null;
@@ -200,7 +203,8 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 					flexWorkSet.predeterminDeficiency2, 
 					flexWorkSet.additionTime2,
 					flexWorkSet.enableSetPerWorkHour1,
-					flexWorkSet.additionWithinMonthlyStatutory);
+					flexWorkSet.additionWithinMonthlyStatutory,
+					flexWorkSet.setPreCalcMethod);
 			return flexWork;
 		}
 		return null;
@@ -225,7 +229,8 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 					regularWorkSet.incChildNursingCare2, 
 					regularWorkSet.notDeductLateleave2, 
 					regularWorkSet.additionTime2,
-					regularWorkSet.enableSetPerWorkHour1);
+					regularWorkSet.enableSetPerWorkHour1,
+					regularWorkSet.setPreCalcMethod);
 			return regularWork;
 		}
 		return null;
@@ -251,7 +256,8 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 					hourPayAaddSet.calculateIncludCareTime, 
 					hourPayAaddSet.notDeductLateLeaveEarly, 
 					hourPayAaddSet.calculateIncludeIntervalExemptionTime2, 
-					hourPayAaddSet.enableSetPerWorkHour1);
+					hourPayAaddSet.enableSetPerWorkHour1,
+					hourPayAaddSet.setPreCalcMethod);
 			return hourlyPaymentAdditionSet;
 		}
 		return null;
@@ -317,6 +323,8 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 			kshstWorkDepLaborSet.enableSetPerWorkHour2 = kshstWorkDepLaborSet.enableSetPerWorkHour1;
 			kshstWorkDepLaborSet.deductByApplication = deductLeaveEarly.getDeduct().isDeductByApp() ? 1 : 0;
 			kshstWorkDepLaborSet.kshstWorkDepLaborSetPK = kshstWorkDepLaborSetPK;
+			kshstWorkDepLaborSet.setPreCalcMethod = irregularWork.getVacationCalcMethodSet().getUseAtr().value;
+
 		return kshstWorkDepLaborSet;
 	}
 	
@@ -360,6 +368,8 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 		kshstHourPayAaddSet.enableSetPerWorkHour2 = kshstHourPayAaddSet.enableSetPerWorkHour1;
 		kshstHourPayAaddSet.kshstHourPayAaddSetPK = kshstHourPayAaddSetPK;
 		kshstHourPayAaddSet.deductByApplication = deductLeaveEarly.getDeduct().isDeductByApp() ? 1 : 0;
+		kshstHourPayAaddSet.setPreCalcMethod = hourlyPaymentAdditionSet.getVacationCalcMethodSet().getUseAtr().value;
+
 		return kshstHourPayAaddSet;
 }
 
@@ -405,6 +415,7 @@ public class JpaHolidayAddtionRepository extends JpaRepository implements Holida
 		kshstFlexWorkSet.enableSetPerWorkHour2 = kshstFlexWorkSet.enableSetPerWorkHour1;
 		kshstFlexWorkSet.additionWithinMonthlyStatutory = includeVacationSet.getAdditionWithinMonthlyStatutory().get().value;
 		kshstFlexWorkSet.deductByApplication = deductLeaveEarly.getDeduct().isDeductByApp() ? 1 : 0;
+		kshstFlexWorkSet.setPreCalcMethod = flexWork.getVacationCalcMethodSet().getUseAtr().value;
 
 		kshstFlexWorkSet.kshstFlexWorkSetPK = kshstFlexWorkSetPK;
 		return kshstFlexWorkSet;

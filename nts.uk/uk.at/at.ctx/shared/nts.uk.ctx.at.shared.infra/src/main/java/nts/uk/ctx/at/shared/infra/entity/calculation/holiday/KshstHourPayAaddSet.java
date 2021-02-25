@@ -85,6 +85,10 @@ public class KshstHourPayAaddSet extends UkJpaEntity implements Serializable{
 	// 申請により取り消した場合も控除する
 	@Column(name = "DEDUCT_BY_APPLICATION")
 	public int deductByApplication;
+
+	// 割増計算方法を設定する
+	@Column(name = "SET_PREMIUM_CALC_METHOD")
+	public int setPreCalcMethod;
 	
 	@OneToOne(optional = false)
 		@JoinColumn(name = "CID", referencedColumnName="CID", insertable = false, updatable = false)

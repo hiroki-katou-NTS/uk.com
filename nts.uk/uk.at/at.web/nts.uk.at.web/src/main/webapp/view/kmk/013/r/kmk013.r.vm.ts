@@ -48,6 +48,7 @@ module nts.uk.at.view.kmk013.r.viewmodel {
             $('#R1_3').focus();
         }
 
+        // 起動する
         init() {
             const vm = this;
 
@@ -67,6 +68,7 @@ module nts.uk.at.view.kmk013.r.viewmodel {
             });
         }
 
+        // 登録する
         register() {
 
             const vm = this;
@@ -107,14 +109,6 @@ module nts.uk.at.view.kmk013.r.viewmodel {
 
         }
 
-        clickDone() {
-            const vm = this;
-
-            vm.$window.close({
-                // data return to parent
-            });
-        }
-
         clickCancel() {
             const vm = this;
 
@@ -134,11 +128,11 @@ module nts.uk.at.view.kmk013.r.viewmodel {
     }
 
     interface VacationAddTimeSet {
-        oneDay: number;
-        morning: number;
-        afternoon: number;
-        refSet: number;
-        personSetRef: number;
+        oneDay: number; //  参照先.会社一律加算時間.1日
+        morning: number; // 参照先.会社一律加算時間.午前
+        afternoon: number;  // 参照先.会社一律加算時間.午後
+        refSet: number; // 参照先.参照先設定
+        personSetRef: number; // 参照先.個人別設定参照先
     }
 
     const API = {

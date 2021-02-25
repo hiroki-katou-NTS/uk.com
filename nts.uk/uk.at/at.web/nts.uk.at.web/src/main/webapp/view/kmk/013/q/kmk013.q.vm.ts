@@ -75,7 +75,8 @@ module nts.uk.at.view.kmk013.q {
                     }
                 });
             }
-            
+
+            // 起動する
             loadDataFirst(): JQueryPromise<any> {
                 let self = this;
                 var dfd = $.Deferred();
@@ -119,7 +120,8 @@ module nts.uk.at.view.kmk013.q {
                 });
                 return dfd.promise();
             }
-            
+
+            // 登録する
             saveData(): void {
                 let self = this;
                 

@@ -196,7 +196,8 @@ public class AddHolidayAddtimeCommand {
 				this.regularWork.getDeformatExcValuePre(), this.regularWork.getExemptTaxTimeWork(),
 				this.regularWork.getCalcActualOperationWork(), this.regularWork.getIncChildNursingCareWork(),
 				this.regularWork.getNotDeductLateleaveWork(), this.regularWork.getAdditionTimeWork(),
-				this.regularWork.getEnableSetPerWorkHour1());
+				this.regularWork.getEnableSetPerWorkHour1(),
+				this.regularWork.getUseAtr());
 	}
 
 	/**
@@ -217,7 +218,8 @@ public class AddHolidayAddtimeCommand {
 				this.flexWork.getIncChildNursingCareWork(), this.flexWork.getNotDeductLateleaveWork(),
 				this.flexWork.getPredeterminDeficiencyWork(), this.flexWork.getAdditionTimeWork(),
 				this.flexWork.getEnableSetPerWorkHour1(),
-				this.flexWork.getAdditionWithinMonthlyStatutory());
+				this.flexWork.getAdditionWithinMonthlyStatutory(),
+				this.flexWork.getUseAtr());
 	}
 
 	/**
@@ -235,7 +237,7 @@ public class AddHolidayAddtimeCommand {
 				this.irregularWork.getNotDeductLateleavePre(),this.irregularWork.getDeformatExcValue(), this.irregularWork.getExemptTaxTimeWork(),
 				this.irregularWork.getMinusAbsenceTimeWork(), this.irregularWork.getCalcActualOperationWork(),
 				this.irregularWork.getIncChildNursingCareWork(), this.irregularWork.getNotDeductLateleaveWork(),this.irregularWork.getAdditionTimeWork(),
-				this.irregularWork.getEnableSetPerWorkHour1());
+				this.irregularWork.getEnableSetPerWorkHour1(), this.irregularWork.getUseAtr());
 	}
 	
 	/**
@@ -253,6 +255,7 @@ public class AddHolidayAddtimeCommand {
 				this.hourlyPaymentAddCommand.getCalculateIncludeIntervalExemptionTime1(), 
 				this.hourlyPaymentAddCommand.getCalcWorkHourVacation() , this.hourlyPaymentAddCommand.getAddition2(), this.hourlyPaymentAddCommand.getCalculateIncludCareTime(), 
 				this.hourlyPaymentAddCommand.getNotDeductLateLeaveEarly(), 
-				this.hourlyPaymentAddCommand.getCalculateIncludeIntervalExemptionTime2(), this.hourlyPaymentAddCommand.getEnableSetPerWorkHour1());
+				this.hourlyPaymentAddCommand.getCalculateIncludeIntervalExemptionTime2(), this.hourlyPaymentAddCommand.getEnableSetPerWorkHour1(),
+				this.hourlyPaymentAddCommand.getUseAtr());
 	}
 }
