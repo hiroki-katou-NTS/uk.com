@@ -41,6 +41,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConvertCompareTypeTo
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ErrorAlarmConditionType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.LogicalOperator;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.WorkPlaceHistImportAl;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.WorkPlaceIdAndPeriodImportAl;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.ExtraResultMonthly;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.ExtraResultMonthlyRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.FixedExtraItemMon;
@@ -250,7 +251,7 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 					YearMonth endMonthTemp = mPeriod.end().addMonths(1);
 					GeneralDate endDateTemp = GeneralDate.ymd(endMonthTemp.year(), endMonthTemp.month(), 1);
 					GeneralDate enDate = endDateTemp.addDays(-1);
-					GeneralDate startDate = GeneralDate.ymd(mPeriod.start().year(), mPeriod.end().month(), 1);
+					GeneralDate startDate = GeneralDate.ymd(mPeriod.start().year(), mPeriod.start().month(), 1);
 					String checkValue = "";
 					String alarmContent = "";
 					switch (fixCond.getFixedExtraItemMonNo()) {
@@ -328,22 +329,21 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 							
 							int deadlCheckMonth = data.comLeaveSetting.getCompensatoryAcquisitionUse().getDeadlCheckMonth().value + 1; 
 							
-							List<Closure> closure = data.lstClosure.stream().filter(x -> x.getClosureId().value == cloEmp.getClosureId()
-									&& x.getClosureMonth().getProcessingYm().equals(ym)).collect(Collectors.toList());
+							List<Closure> closure = data.lstClosure.stream().filter(x -> x.getClosureId().value == cloEmp.getClosureId()).collect(Collectors.toList());
 							if(closure.isEmpty()) continue;
 							Closure emplOfClosure = closure.get(0);
 							//締めのアルゴリズム「当月の期間を算出する」を実行する
 							val closureOpt = Optional.ofNullable(emplOfClosure);
 							DatePeriod periodCurrentMonth = ClosureService.getClosurePeriod(emplOfClosure.getClosureId().value,
-									emplOfClosure.getClosureMonth().getProcessingYm(), closureOpt);
+									ym, closureOpt);
 							//代休期限アラーム基準日を決定する
-							DatePeriod periodCheckDealMonth = ClosureService.getClosurePeriod(emplOfClosure.getClosureId().value,
-									getDeadlCheckMonth(periodCurrentMonth, deadlCheckMonth), closureOpt);
+						/*	DatePeriod periodCheckDealMonth = ClosureService.getClosurePeriod(emplOfClosure.getClosureId().value,
+									getDeadlCheckMonth(periodCurrentMonth, deadlCheckMonth), closureOpt);*/
 						
 							//RequestList No.203 期間内の休出代休残数を取得する
 							//集計開始日
 							//集計終了日
-							DatePeriod newPeriod = new DatePeriod(periodCurrentMonth.start(), periodCurrentMonth.end().addYears(1));
+							DatePeriod newPeriod = new DatePeriod(periodCurrentMonth.start(), periodCurrentMonth.start().addYears(1).addDays(-1));
 							RequireImpl requireImpl = new RequireImpl.RequireImplBuilder(comDayOffManaDataRepository,
 									leaveManaDataRepository, shareEmploymentAdapter, compensLeaveEmSetRepository,
 									compensLeaveComSetRepository).interimRemainRepo(interimRemainRepository)
@@ -352,7 +352,7 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 											.leaveComDayOffManaRepository(leaveComDayOffManaRepository).build();
 							BreakDayOffRemainMngRefactParam param = new BreakDayOffRemainMngRefactParam(cid, sid, newPeriod,
 									true,
-									startDate,
+									periodCurrentMonth.end(),
 									false,
 									Collections.emptyList(),
 									Optional.empty(), 
@@ -365,7 +365,7 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 							List<AccumulationAbsenceDetail> lstAcctAbsenDetail = subsResult.getVacationDetails().getLstAcctAbsenDetail();
 							if(lstAcctAbsenDetail.isEmpty()) continue;
 							//代休期限アラーム基準日：締め期間.終了年月日－INPUT.代休管理設定.取得と使用方法.代休期限チェック月数(月計算)
-							GeneralDate dealineAlarm = periodCheckDealMonth.end().addMonths(-data.comLeaveSetting.getCompensatoryAcquisitionUse().getDeadlCheckMonth().value);
+							GeneralDate dealineAlarm = periodCurrentMonth.end().addMonths(-data.comLeaveSetting.getCompensatoryAcquisitionUse().getDeadlCheckMonth().value);
 							List<AccumulationAbsenceDetail> lstAcctAbsen = lstAcctAbsenDetail.stream()
 									.filter(x -> x.getOccurrentClass() == OccurrenceDigClass.OCCURRENCE
 											&& !x.getUnbalanceNumber().allFieldZero()
@@ -526,12 +526,15 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 				}
 			}
 			for(String sid : emps) {
-				String workplaceId = getWplByListSidAndPeriod.stream().filter(x -> x.getEmployeeId().equals(sid))
+				List<WorkPlaceIdAndPeriodImportAl> workplaceIds = getWplByListSidAndPeriod.stream().filter(x -> x.getEmployeeId().equals(sid))
 						.collect(Collectors.toList())
 						.get(0).getLstWkpIdAndPeriod().stream().filter(y -> y.getDatePeriod().start().beforeOrEquals(enDate) 
 								&& y.getDatePeriod().end().afterOrEquals(startDate))
-						.collect(Collectors.toList()).get(0).getWorkplaceId();
-				
+						.collect(Collectors.toList());
+				String workplaceId = "";
+				if(!workplaceIds.isEmpty()) {
+					workplaceId = workplaceIds.get(0).getWorkplaceId();
+				}
 				if(remainCond != null) {//残数チェック
 					if(!optCheckConMonthly.isPresent()) {
 						return;
