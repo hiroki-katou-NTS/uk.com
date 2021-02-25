@@ -10,16 +10,14 @@ import nts.uk.ctx.at.function.dom.adapter.wkpmanager.WkpManagerImport;
 import nts.uk.ctx.at.function.dom.alarm.mailsettings.*;
 import nts.uk.ctx.at.function.dom.alarm.sendemail.MailSettingsParamDto;
 import nts.uk.ctx.at.function.dom.alarm.sendemail.SendEmailService;
+import nts.uk.ctx.at.function.dom.alarmworkplace.sendemail.WorkplaceSendEmailService;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -40,6 +38,9 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
     @Inject
     private SendEmailService sendEmailService;
 
+    @Inject
+    private WorkplaceSendEmailService workplaceSendEmailService;
+
     @Override
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
     protected String handle(CommandHandlerContext<SendEmailAlarmListWorkPlaceCommand> context) {
@@ -48,7 +49,7 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
         String companyId = AppContexts.user().companyId();
 
         //エラーメッセージ(#Msg_719)を表示する
-        if (command.getWorkplaceIds().size() == 0){
+        if (command.getWorkplaceIds().size() == 0) {
             throw new BusinessException("Msg_719");
         }
 
@@ -59,7 +60,7 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
         }
 
         //ドメインモデル「メールサーバ」を取得する
-        boolean useAuthentication =  mailServerAdapter.findBy(companyId);
+        boolean useAuthentication = mailServerAdapter.findBy(companyId);
         //メール設定(本人宛)：アラームリスト通常用メール設定.本人宛メール設定
         Optional<MailSettings> mailSetting = mailSettingNormal.get().getMailSettings();
         //メール設定(管理者宛)：アラームリスト通常用メール設定.管理者宛メール設定
@@ -68,37 +69,24 @@ public class SendEmailAlarmListWorkPlaceCommandHandler extends CommandHandlerWit
 
         List<String> lstEmployeeId = new ArrayList<>();
 
-        //管理者を取得する。 TODO: QA 37555
-        command.getWorkplaceIds().forEach(x -> {
-            List<WkpManagerImport> wkpManagerImports = wkpManagerAdapter.findByPeriodAndBaseDate(x, GeneralDate.today());
-            lstEmployeeId.addAll(wkpManagerImports.stream().map(WkpManagerImport::getEmployeeId).collect(Collectors.toList()));
-        });
-
-        //アルゴリズム「メール送信処理」を実行する
-        return sendEmailService.alarmSendEmail(
-            companyId,
-            executeDate,
-            lstEmployeeId,
-            Arrays.asList(),
-            command.listValueExtractAlarmDto,
-            mailSettingsParamDto,
-            command.getCurrentAlarmCode(),
-            useAuthentication,
-            mailSetting,
-            mailSettingAdmins,
-            Optional.empty());
-
+        return workplaceSendEmailService.alarmWorkplacesendEmail(
+                command.getWorkplaceIds(),
+                command.listValueExtractAlarmDto,
+                mailSettingNormal.get(),
+                command.getCurrentAlarmCode(),
+                useAuthentication
+                );
     }
 
     private boolean isNotHaveMailSetting(Optional<MailSettingNormal> mailSetting) {
         return !mailSetting.isPresent() || !(mailSetting.get().getMailSettings().isPresent()
-            && mailSetting.get().getMailSettingAdmins().isPresent());
+                && mailSetting.get().getMailSettingAdmins().isPresent());
     }
 
     private MailSettingsParamDto buildMailSend(MailSettingNormal mailSetting) {
 
         Optional<MailSettings> mailSetings = mailSetting.getMailSettings(),
-            mailSetingAdmins = mailSetting.getMailSettingAdmins();
+                mailSetingAdmins = mailSetting.getMailSettingAdmins();
         String subject = "", text = "", subjectAdmin = "", textAdmin = "";
         if (mailSetings.isPresent()) {
             subject = mailSetings.get().getSubject().orElseGet(() -> new Subject("")).v();

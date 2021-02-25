@@ -30,7 +30,7 @@ public class JpaAlarmListExtractProcessStatusWorkplaceRepository extends JpaRepo
 
         builderString = new StringBuilder();
         builderString.append(SELECT);
-        builderString.append("WHERE a.status = :status AND a.companyID = :companyId ");
+        builderString.append("WHERE a.status = :status AND a.companyID = :companyId AND a.employeeID = :employeeID");
         SELECT_BY_CID_AND_STATUS = builderString.toString();
     }
 
@@ -44,10 +44,11 @@ public class JpaAlarmListExtractProcessStatusWorkplaceRepository extends JpaRepo
     }
 
     @Override
-    public List<AlarmListExtractProcessStatusWorkplace> getBy(String companyId, ExtractState status) {
+    public List<AlarmListExtractProcessStatusWorkplace> getBy(String companyId,String employeeId, ExtractState status) {
         return this.queryProxy().query(SELECT_BY_CID_AND_STATUS, KfnmtWkpAlexProStatus.class)
                 .setParameter("companyId", companyId)
                 .setParameter("status", status.value)
+                .setParameter("employeeID",employeeId)
                 .getList(KfnmtWkpAlexProStatus::toDomain);
     }
 

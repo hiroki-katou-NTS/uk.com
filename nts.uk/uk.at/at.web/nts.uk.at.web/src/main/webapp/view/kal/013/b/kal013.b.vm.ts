@@ -10,6 +10,7 @@ module nts.uk.at.view.kal013.b {
        GET_ENUM_OPERATOR: "at/record/alarmwrkp/screen/getEnumCompareType",
         GET_ATTENDANCEITEM: "at/record/businesstype/attendanceItem/getListMonthlyByAttendanceAtr/",
         GET_ATTENDANCEITEMNAME_BYCODE: "at/record/divergencetime/setting/AttendanceDivergenceName",
+        GET_BONUS_PAY_SET: "at/share/bonusPaySetting/getAllBonusPaySetting"
 
     };
 
@@ -32,12 +33,11 @@ module nts.uk.at.view.kal013.b {
             decimallength: 0,
             placeholder: ''
         }));
-        listZeroDecimalNum: Array<string> = ["NumberOfPeople","Amount","RatioComparison","AverageNumberTimes","AverageRatio"];
         listOneDecimalNum: Array<string> = ["AverageNumberDays"];
         monthlyTimeControl: Array<number> = [1,5];
         dailyTimeControl: Array<number> = [2];
-        dailyTimeControlB : Array<number> = [2, 5, 8];
         dailyContraint: Map<number,string> =new Map([
+            [0,"Comparison"],
             [1, "NumberOfPeople"],
             [2, "Time"],
             [3, "Amount"],
@@ -76,7 +76,6 @@ module nts.uk.at.view.kal013.b {
                vm.createConstraint(value);
 
                 // Change pattern
-
                 vm.createcontrastList(vm.category(), value);
             });
 
@@ -85,14 +84,9 @@ module nts.uk.at.view.kal013.b {
                     return;
                 }
                 nts.uk.ui.errors.clearAll();
-                vm.pattern().clearCheckCodB();
                 //Kind of control
                 vm.checkKindOfConrol(value,false);
-                // Constraint
-                vm.createConstraint(value,false);
             })
-
-
 
             vm.constraint.subscribe((value)=>{
                 const vm = this;
@@ -132,6 +126,17 @@ module nts.uk.at.view.kal013.b {
                         vm.pattern().updateTextDis(nameAdd,nameSub);
                     }).fail((error)=>{
                         vm.$dialog.error({ messageId: error.messageId });
+                    });
+
+                } else if (!_.isNil(vm.pattern().checkCond())){
+                    vm.$ajax(PATH_API.GET_BONUS_PAY_SET).done((data: Array<any>)=>{
+                        if (data) {
+                            let item  = _.find(data, i=>i.code == vm.pattern().checkCond());
+                            vm.pattern().updateCheckCondDis(_.isNil(item) ? "" : item.name)
+                        }else{
+                            vm.pattern().updateCheckCondDis(vm.pattern().checkCond());
+                        }
+
                     });
                 }
             });
@@ -236,17 +241,14 @@ module nts.uk.at.view.kal013.b {
                 // 月次 - 平均時間 ||  スケジュール／日次 - 時間対比
                 if ((vm.category() == WorkplaceCategory.MONTHLY && _.indexOf(vm.monthlyTimeControl,value) != -1)
                     || (vm.category() == WorkplaceCategory.SCHEDULE_DAILY
-                        && (_.indexOf(vm.dailyTimeControl,value) != -1
-                            || _.indexOf(vm.dailyTimeControlB, vm.pattern().checkCondB()) != -1))){
+                        && (_.indexOf(vm.dailyTimeControl,value) != -1))){
+                            // || _.indexOf(vm.dailyTimeControlB, vm.pattern().checkCondB()) != -1))
                     vm.timeControl(true);
                 } else{
                     vm.timeControl(false);
                 }
             } else if (vm.category() == WorkplaceCategory.SCHEDULE_DAILY ) {
                 vm.timeControl(false);
-                if (_.indexOf(vm.dailyTimeControlB, value) != -1) {
-                    vm.timeControl(true);
-                }
             }
         }
 
@@ -254,19 +256,9 @@ module nts.uk.at.view.kal013.b {
             const vm = this;
             // Contraint
             if (vm.category() == WorkplaceCategory.SCHEDULE_DAILY){
-                vm.constraint(_.isNil(vm.dailyContraint.get(value))? vm.dailyContraint.get(1) : vm.dailyContraint.get(value));
+                vm.constraint(_.isNil(vm.dailyContraint.get(value))? vm.dailyContraint.get(0) : vm.dailyContraint.get(value));
             } else{
                 vm.constraint(vm.monthlyContraint.get(value));
-            }
-
-            if (!isPatternA && vm.category() == WorkplaceCategory.SCHEDULE_DAILY){
-                if (_.indexOf([1, 4, 7], value) != -1) {
-                    vm.constraint(vm.dailyContraint.get(1));
-                } else if (_.indexOf(vm.dailyTimeControlB, value) != -1) {
-                    vm.constraint(vm.dailyContraint.get(2));
-                } else if (_.indexOf([3, 6, 9], value) != -1) {
-                    vm.constraint(vm.dailyContraint.get(3));
-                }
             }
 
         }
@@ -332,8 +324,18 @@ module nts.uk.at.view.kal013.b {
                 setShared('KDL007_PARAM', param, true);
                 nts.uk.ui.windows.sub.modal('/view/kdl/007/a/index.xhtml').onClosed(() => {
                     let listResult = getShared('KDL007_VALUES');
+                    vm.pattern().updateCheckCond("");
+                    if (listResult.selecteds[0].length > 0 ) {
+                        vm.$ajax(PATH_API.GET_BONUS_PAY_SET).done((data: Array<any>) => {
+                            if (data) {
+                                let item = _.find(data, i => i.code == vm.pattern().checkCond());
+                                vm.pattern().updateCheckCondDis(_.isNil(item) ? "" : item.name)
+                            }
+                        });
+                        vm.pattern().updateCheckCond(listResult.selecteds[0]);
+                    }
 
-                    vm.pattern().updateCheckCond(listResult.selecteds[0].length > 0 ? listResult.selecteds[0]: "");
+
                 });
             } else {
                 //Open dialog KDW007C
@@ -490,7 +492,10 @@ module nts.uk.at.view.kal013.b {
 
         updateCheckCond(checkCondItem: string){
             this.checkCond(checkCondItem);
-            this.checkCondDis(checkCondItem);
+        }
+
+        updateCheckCondDis(itemName: string){
+            this.checkCondDis(itemName);
         }
 
         updateCheckCondKdw007(addItems: Array<number>, subItems: Array<number>){

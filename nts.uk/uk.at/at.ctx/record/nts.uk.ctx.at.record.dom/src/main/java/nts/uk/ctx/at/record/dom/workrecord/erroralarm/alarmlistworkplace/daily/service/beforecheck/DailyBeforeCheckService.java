@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.alarmlistworkplace.daily.service.beforecheck;
 
+import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.budgetcontrol.budgetperformance.ExBudgetDailyAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workschedule.budgetcontrol.budgetperformance.ExBudgetDailyImport;
@@ -111,7 +112,15 @@ public class DailyBeforeCheckService {
             Map<String, List<Stamp>> stampsByEmpMap = new HashMap<>();
             // ドメインモデル「打刻」を取得する
             for (Map.Entry<String, StampNumber> stampCard : stampCards.entrySet()) {
-                List<Stamp> stamps = stampDakokuRepo.getByCardAndPeriod(cid, Collections.singletonList(stampCard.getValue().v()), period);
+//                List<Stamp> stamps = stampDakokuRepo.getByCardAndPeriod(cid, Collections.singletonList(stampCard.getValue().v()), period);
+                GeneralDateTime start = GeneralDateTime.ymdhms(period.start().year(), period.start().month(),
+                        period.start().day(), 0, 0, 0);
+
+                GeneralDateTime end = GeneralDateTime.ymdhms(period.end().year(), period.end().month(), period.end().day(), 23,
+                        59, 59);
+
+                List<Stamp> stamps = stampDakokuRepo.getByDateTimeperiod(Collections.singletonList(stampCard.getValue().v()),
+                        cid, start, end);
                 stampsByEmpMap.put(stampCard.getKey(), stamps);
             }
             data.setStampsByEmpMap(stampsByEmpMap);

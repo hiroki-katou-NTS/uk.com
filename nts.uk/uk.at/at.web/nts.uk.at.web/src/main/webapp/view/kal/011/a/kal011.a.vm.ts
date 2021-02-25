@@ -51,7 +51,9 @@ module nts.uk.at.kal011.a {
         created() {
             const vm = this;
             vm.$blockui("invisible");
-            $('#tree-grid').ntsTreeComponent(vm.treeGrid);
+            $('#tree-grid').ntsTreeComponent(vm.treeGrid).done(() => {
+                $('#tree-grid').focusTreeGridComponent();
+            });
             $("#fixed-table").ntsFixedTable({ width: 435 });
 
             vm.init().done(() => {
@@ -80,7 +82,6 @@ module nts.uk.at.kal011.a {
                 vm.$dialog.error(err);
             }).always(() => {
                 vm.$blockui("clear");
-                $("#tree-grid .ntsDatepicker").focus();
             });
 
             _.extend(window, { vm });
@@ -186,6 +187,10 @@ module nts.uk.at.kal011.a {
                 if (!valid) return;
                 if (_.isEmpty(vm.workplaceIds())) {
                     vm.$dialog.error({ messageId: "Msg_719" });
+                    return
+                }
+                if (!vm.alarmPatternCode()) {
+                    vm.$dialog.error({ messageId: "Msg_1167" });
                     return
                 }
                 let conditionSelecteds = _.filter(vm.conditions(), (condition: CheckCondition) => condition.isChecked());
