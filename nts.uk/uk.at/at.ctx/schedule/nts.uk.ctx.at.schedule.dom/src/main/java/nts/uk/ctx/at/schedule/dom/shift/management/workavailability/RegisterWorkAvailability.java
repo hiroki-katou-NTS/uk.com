@@ -26,7 +26,7 @@ public class RegisterWorkAvailability {
 	 * @param sid 社員ID
 	 * @param datePeriod 期間
 	 * @param workOneDay 一日分の勤務希望リスト
-	 * @return
+	 * @return.
 	 */
 	public static AtomTask register(Require require, String sid, DatePeriod datePeriod, List<WorkAvailabilityOfOneDay> workOneDays) {
 		val shiftRuleOpt = GetUsingShiftTableRuleOfEmployeeService.get(require, sid, datePeriod.end());
@@ -42,17 +42,16 @@ public class RegisterWorkAvailability {
 		// 勤務希望運用区分 == する場合は、必ず「シフト表の設定」emptyではないため。
 		val shiftTableSetting = shiftRule.getShiftTableSetting().get();
 		
+		List<GeneralDate> workAvailabilityDates = workOneDays.stream()
+				.map(WorkAvailabilityOfOneDay::getWorkAvailabilityDate)
+				.collect(Collectors.toList());
+		
 		datePeriod.stream().forEach(date ->{
 			if(shiftTableSetting.isOverDeadline(date)) {
-				List<GeneralDate> workAvailabilityDates = workOneDays.stream()
-						.map(WorkAvailabilityOfOneDay::getWorkAvailabilityDate)
-						.collect(Collectors.toList());
-				
 				if(workAvailabilityDates.contains(date) && require.existWorkAvailabilityOfOneDay(sid, date)) {
 					throw new BusinessException("Msg_2050");
 				}
 			}
-			
 		});
 		
 		if (shiftTableSetting.isOverHolidayMaxDays(require, workOneDays)) {
