@@ -93,7 +93,7 @@ module nts.uk.com.view.ccg008.a.screenModel {
 					const src = ko.unwrap<string | null>(url);
 
 					if (!src) {
-						element.innerHTML = 'NO_DATA_SETTING';
+						element.innerHTML = '';
 					} else {
 						element.innerHTML = `<iframe src="${src}" />`;
 					}

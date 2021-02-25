@@ -185,26 +185,35 @@ module nts.uk.com.view.ccg015.e {
         })
         .always(() => vm.$blockui("clear"));
     }
-
+   
+    
     saveData() {
       const vm = this;
       const sortedWidgetList: WidgetTypeModel[] = _.map(vm.itemList(), (item, index) => new WidgetTypeModel({
         order: index, // Set oder similar to list item order
         widgetType: Number(item.itemType),
       }));
+      const listItem: number[] = _.map(sortedWidgetList,(item: WidgetTypeModel) => item.widgetType);
       const requestParams: any = {
         topPageCode: vm.topPageCode(),
         layoutNo: vm.layoutNo(),
         layoutType: 3,
         widgetSettings: sortedWidgetList,
       };
-      vm.$blockui("grayout");
-      vm.$ajax('/toppage/saveLayoutWidget', requestParams)
-        .then(() => {
-          vm.$blockui("clear");
-          vm.$dialog.info({ messageId: "Msg_15" });
-        })
-        .always(() => vm.$blockui("clear"));
+      vm.$ajax('/toppage/checkData', listItem).then((flag: boolean) => {
+        if(flag) {
+          vm.$blockui("grayout");
+          vm.$ajax('/toppage/saveLayoutWidget', requestParams)
+            .then(() => {
+              vm.$blockui("clear");
+              vm.$dialog.info({ messageId: "Msg_15" });
+            })
+            .always(() => vm.$blockui("clear"));
+        } else {
+          vm.$dialog.error({ messageId: "Msg_2140"});
+        }
+      })
+     
     }
 
   }

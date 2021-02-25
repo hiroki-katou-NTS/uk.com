@@ -6,6 +6,11 @@
 <body>
   <ui:composition template="/master/base.xhtml">
     <ui:define name="htmlHead">
+
+      <com:ValidatorScript>
+        nts.uk.ctx.office.dom.comment.DailyContactComment
+      </com:ValidatorScript>
+
       <com:scriptfile set="IGNITE" />
 
       <com:stylefile path="ccg008.a.style.css" />
@@ -24,7 +29,6 @@
       
       <!-- old widget -->
       <com:scriptfile path="/view/ktg/031/a/ktg031.a.vm.js" of="nts.uk.at.web" />
-
     </ui:define>
     <ui:define name="content">
       <div id="functions-area">
