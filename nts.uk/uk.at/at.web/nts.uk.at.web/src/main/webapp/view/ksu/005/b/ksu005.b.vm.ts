@@ -122,26 +122,28 @@ module nts.uk.at.view.ksu005.b {
             });
 
             self.checkAll.subscribe((value) =>{
-                self.checkOne(false);
+                
                 let temp = self.itemList();
                 if (value) {
                     for (let i = 1; i < temp.length; i++) {
                         temp[i].checked(true);
                     }
                     self.itemList(temp);
+                    self.checkOne(false);
                 } else {
-                    if(self.checkOne()){
+                    if(!self.checkOne()){
                         for (let i = 1; i < temp.length; i++) {
                             temp[i].checked(false);
                         }
                         self.itemList(temp);
+                        self.checkOne(false);
                     } 
                 }
             });
 
-            // self.checked.subscribe((value) => {
-            //     self.isEnableDelBtn(value);
-            // });
+            self.checked.subscribe((value) => {
+                self.isEnableDelBtn(value);
+            });
 
             checkbox.subscribe((v) => {
                 let evens = _.filter(self.itemList(), function (n) {
@@ -159,8 +161,10 @@ module nts.uk.at.view.ksu005.b {
                     checkbox(false);
                 };
                 if (!v) {
-                    if (evens.length == 0 || evens.length < self.itemList().length -1) {                        
+                    if (evens.length == 0 ) {                        
                         self.isEnableDelBtn(false);
+                        self.checkAll(false);
+                    } else if(evens.length < self.itemList().length -1) {
                         self.checkAll(false);
                     }
                 };
@@ -266,9 +270,9 @@ module nts.uk.at.view.ksu005.b {
             if (self.validateAll()) {
                 return;
             }
-            let personalInfo: Array<string> = [],
-                additionalInfo: Array<string> = [],
-                attendanceItem: Array<string> = [],
+            let personalInfo: Array<number> = [],
+                additionalInfo: Array<number> = [],
+                attendanceItem: Array<number> = [],
                 personalCounterCategories: Array<number> = [],
                 workplaceCounterCategories: Array<number> = [];
 
@@ -282,15 +286,23 @@ module nts.uk.at.view.ksu005.b {
             }
             _.each(self.currentCodeListSwap(), x => {
                 workplaceCounterCategories.push(Math.floor(x.value));
-            })
-
-            personalCounterCategories.push(Math.floor(self.selectedPerson()));
+            });   
             
+            if(self.selectedPerson().length > 0 && self.selectedPerson() != -1){
+                personalCounterCategories.push(Math.floor(self.selectedPerson()));
+            }
+
             _.each(self.itemList(), x => {
-                personalInfo.push(x.personalInfo());
-                additionalInfo.push(x.additionInfo());
-                attendanceItem.push(x.attendanceItem());
-            })
+                if(parseInt(x.personalInfo()) != -1){
+                    personalInfo.push(parseInt(x.personalInfo()));
+                }
+                if(parseInt(x.additionInfo()) != -1){
+                    additionalInfo.push(parseInt(x.additionInfo()));
+                }
+                if(parseInt(x.attendanceItem()) != -1){
+                    attendanceItem.push(parseInt(x.attendanceItem()));
+                }                
+            });
 
             command.personalCounterCategories = personalCounterCategories;
             command.workplaceCounterCategories = workplaceCounterCategories;
