@@ -105,62 +105,41 @@ public class RegisterWorkAvailabilityTest {
 	}
 	
 	/**
-	 * かりに締め日 = 2021/02/15だとしたら
-	 * 期間 = (2021/02/01, 2021/02/28)
-	 * 勤務希望リスト = [2021/02/14]
-	 * 対象日 = 2021/02/16 
-	 * 	-> 期間中に締切日を過ぎているか = true 
-	 * 	-> 日分の勤務希望リスト .contains(対象日) = false
-	 * 	-> 勤務希望が存在する か= true
+	 * case : 削除対象日が、締切日を過ぎている場合
 	 * 期待値: Msg_2050
 	 */
 	@Test
 	public void  work_availability_date_over_deadline_and_exist_true() {
-		val targetDay = GeneralDate.ymd(2021, 02, 16);
-		val shiftMasterCode = new ShiftMasterCode("001");
-		val datePeriod = new DatePeriod(GeneralDate.ymd(2021, 2, 1), GeneralDate.ymd(2021, 2, 28));
 		
 		new Expectations() {
 			{
-				workRequire.shiftMasterIsExist(shiftMasterCode);
-				result = true;
-				
 				service.get(require, (String) any, (GeneralDate) any);
 				result = Optional.of(shiftRule);
 					
-			    shiftRule.getShiftTableSetting();
+				shiftRule.getShiftTableSetting();
 				result = Optional.of(setting);
 			
-				setting.isOverDeadline(targetDay);
+				setting.isOverDeadline(GeneralDate.ymd(2021, 02, 16));
 				result = true;
 				
-				require.existWorkAvailabilityOfOneDay((String) any, targetDay);
+				require.existWorkAvailabilityOfOneDay((String) any, GeneralDate.ymd(2021, 02, 16));
 				result = true;
 				
 			}
 		};
 		
-		val workOneDays = Arrays.asList(Helper.createWorkAvaiOfOneDay(workRequire, GeneralDate.ymd(2021, 02, 14), shiftMasterCode));
-		
 		NtsAssert.businessException("Msg_2050"
-				,	() -> RegisterWorkAvailability.register(require, "sid", datePeriod, workOneDays));
+				,	() -> RegisterWorkAvailability.register(require, "sid", this.datePeriod, Collections.emptyList()));
 	}
 	
 	/**
-	 * かりに締め日 = 2021/02/15だとしたら
-	 * 期間 = (2021/02/01, 2021/02/28)
-	 * 勤務希望リスト = [2021/02/16, 2021/02/17] ->
-	 * 対象日 = 2021/02/16 
-	 * -> 期間中に締切日を過ぎているか = true 
-	 * -> 日分の勤務希望リスト .contains(対象日) = true
-	 * -> 勤務希望が存在するか = false
+	 * case : 勤務希望を登録しようとしている日が締切日を過ぎている場合
 	 * 期待値: Msg_2050
 	 */	
 	@Test
 	public void  work_availability_date_over_deadline_and_exist_false() {
 		val targetDay = GeneralDate.ymd(2021, 02, 16);
 		val shiftMasterCode = new ShiftMasterCode("001");
-		val datePeriod = new DatePeriod(GeneralDate.ymd(2021, 2, 1), GeneralDate.ymd(2021, 2, 28));
 		
 		new Expectations() {
 			{
@@ -169,8 +148,8 @@ public class RegisterWorkAvailabilityTest {
 				
 				service.get(require, (String) any, (GeneralDate) any);
 				result = Optional.of(shiftRule);
-					
-			    shiftRule.getShiftTableSetting();
+				
+				shiftRule.getShiftTableSetting();
 				result = Optional.of(setting);
 			
 				setting.isOverDeadline(targetDay);
@@ -179,69 +158,20 @@ public class RegisterWorkAvailabilityTest {
 		};
 		
 		val workOneDays = Arrays.asList(
-						Helper.createWorkAvaiOfOneDay(workRequire, GeneralDate.ymd(2021, 02, 16), shiftMasterCode)
+						Helper.createWorkAvaiOfOneDay(workRequire, targetDay, shiftMasterCode)
 					,	Helper.createWorkAvaiOfOneDay(workRequire, GeneralDate.ymd(2021, 02, 17), shiftMasterCode));
 		
 		NtsAssert.businessException("Msg_2050"
-				,	() -> RegisterWorkAvailability.register(require, "sid", datePeriod, workOneDays));
+				,	() -> RegisterWorkAvailability.register(require, "sid", this.datePeriod, workOneDays));
 	}
 	
 	/**
-	 * 締め日 = 2021/02/15
-	 * 期間 = (2021/02/01, 2021/02/28)
-	 * 勤務希望リスト = [2021/02/16, 2021/02/17] 
-	 * 対象日 = 2021/03/01
-	 * -> 期間中に締切日を過ぎているか = true 
-	 * -> 日分の勤務希望リスト .contains(対象日) = true
-	 * -> 勤務希望が存在するか = true
-	 * 期待値: Msg_2050
-	 */		
-	@Test
-	public void  work_availability_date_over_deadline_and_contains_true_exits_true() {
-		val targetDay = GeneralDate.ymd(2021, 02, 28);
-		val shiftMasterCode = new ShiftMasterCode("001");
-		val datePeriod = new DatePeriod(GeneralDate.ymd(2021, 2, 1), GeneralDate.ymd(2021, 2, 28));
-		
-		new Expectations() {
-			{
-				workRequire.shiftMasterIsExist(shiftMasterCode);
-				result = true;
-				
-				service.get(require, (String) any, (GeneralDate) any);
-				result = Optional.of(shiftRule);
-					
-				shiftRule.getShiftTableSetting();
-				result = Optional.of(setting);
-			
-				setting.isOverDeadline(targetDay);
-				result = true;
-				
-				require.existWorkAvailabilityOfOneDay((String) any, targetDay);
-				result = true;
-			}
-		};
-		
-		val workOneDays = Arrays.asList(
-				Helper.createWorkAvaiOfOneDay(workRequire, GeneralDate.ymd(2021, 02, 16), shiftMasterCode)
-			,	Helper.createWorkAvaiOfOneDay(workRequire, GeneralDate.ymd(2021, 02, 17), shiftMasterCode));
-		
-		NtsAssert.businessException("Msg_2050"
-				,	() -> RegisterWorkAvailability.register(require, "sid", datePeriod, workOneDays));
-	}
-	
-	/**
-	 * かりに締め日 = 2021/02/15だとしたら
-	 * 期間 = (2021/02/01, 2021/02/28)
-	 * 勤務希望リスト = [2021/03/01, 2021/03/02]
-	 * 対象日 = 2021/02/16
-	 * -> 期間中に締切日を過ぎているか = true 
-	 * -> 日分の勤務希望リスト .contains(対象日) = false
-	 * -> 勤務希望が存在するか = false
-	 * 期待値: 登録できます。
+	 * case : 勤務希望を登録しようとしている日が締切日を過ぎていない && 削除対象日が締切日を過ぎていない
+	 * 期待値: 登録できます
 	 */	
 	@Test
-	public void  work_availability_date_over_deadline_and_contains_false_exit_false() {
-		val targetDay = GeneralDate.ymd(2021, 02, 16);		
+	public void work_availability_date_over_deadline_and_contains_false_exit_false() {
+		
 		new Expectations() {
 			{
 				service.get(require, (String) any, (GeneralDate) any);
@@ -250,19 +180,21 @@ public class RegisterWorkAvailabilityTest {
 				shiftRule.getShiftTableSetting();
 				result = Optional.of(setting);
 			
-				setting.isOverDeadline(targetDay);
+				// 2021/2/16は締切日を過ぎている
+				setting.isOverDeadline(GeneralDate.ymd(2021, 02, 16));
 				result = true;
-
+				// 2021/2/17,18は締切日を過ぎていない
 			}
 		};
 		
+		// 2021/2/17、2021/2/18の勤務希望を登録する
 		val workOneDays =  new ArrayList<WorkAvailabilityOfOneDay>(Arrays.asList(
-					Helper.createWorkAvaiHoliday(workRequire, GeneralDate.ymd(2021, 03, 01))
-				,	Helper.createWorkAvaiHoliday(workRequire, GeneralDate.ymd(2021, 03, 02))
+					Helper.createWorkAvaiHoliday(workRequire, GeneralDate.ymd(2021, 02, 17))
+				,	Helper.createWorkAvaiHoliday(workRequire, GeneralDate.ymd(2021, 02, 18))
 				));
 		
 		NtsAssert.atomTask(
-				() -> RegisterWorkAvailability.register(require, "sid", this.datePeriod, workOneDays), 
+				() -> RegisterWorkAvailability.register(require, "sid", this.datePeriod, workOneDays),
 				any -> require.deleteAllWorkAvailabilityOfOneDay(any.get(), any.get()),
 				any -> require.insertAllWorkAvailabilityOfOneDay(any.get()));
 	}
