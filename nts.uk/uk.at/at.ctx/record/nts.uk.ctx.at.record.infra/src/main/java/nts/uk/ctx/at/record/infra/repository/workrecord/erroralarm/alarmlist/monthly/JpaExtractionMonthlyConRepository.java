@@ -44,12 +44,12 @@ public class JpaExtractionMonthlyConRepository extends JpaRepository implements 
             " JOIN KrcmtWkpMonExtracCon b ON a.krcstEralSingleFixedPK.conditionGroupId = b.errorAlarmCheckID ";
     private static final String SELECT_SINGLE_FIXED_BY_ID;
 
-    private static final String SELECT_TARGET = " SELECT a FROM KrcstErAlAtdTarget a " +
+    private static final String SELECT_TARGET = " SELECT a FROM KrcmtEralstCndexprange a " +
             " JOIN KrcmtWkpMonExtracCon b ON a.krcstErAlAtdTargetPK.conditionGroupId = b.errorAlarmCheckID ";
     private static final String SELECT_TARGET_BY_ID;
 
 
-    private static final String DELETE_TARGET = " DELETE FROM KrcstErAlAtdTarget a " +
+    private static final String DELETE_TARGET = " DELETE FROM KrcmtEralstCndexprange a " +
             " WHERE a.krcstErAlAtdTargetPK.conditionGroupId in :ids ";
 
     static {
@@ -99,7 +99,7 @@ public class JpaExtractionMonthlyConRepository extends JpaRepository implements 
                 .setParameter("useAtr", useAtr)
                 .getList();
 
-        List<KrcstErAlAtdTarget> krcstErAlAtdTarget = this.queryProxy().query(SELECT_TARGET_BY_ID, KrcstErAlAtdTarget.class).setParameter("ids", ids).getList();
+        List<KrcmtEralstCndexprange> krcstErAlAtdTarget = this.queryProxy().query(SELECT_TARGET_BY_ID, KrcmtEralstCndexprange.class).setParameter("ids", ids).getList();
 
         return domains.stream().map(i -> i.toDomain(
                 krcstErAlCompareSingle.stream().filter(x -> x.krcstEralCompareSinglePK.conditionGroupId.equals(i.errorAlarmCheckID)).findFirst(),
@@ -122,7 +122,7 @@ public class JpaExtractionMonthlyConRepository extends JpaRepository implements 
         List<KrcmtWkpMonExtracCon> domains = this.queryProxy().query(GET_BY_IDS, KrcmtWkpMonExtracCon.class)
                 .setParameter("ids", ids)
                 .getList();
-        List<KrcstErAlAtdTarget> krcstErAlAtdTarget = this.queryProxy().query(SELECT_TARGET_BY_ID, KrcstErAlAtdTarget.class).setParameter("ids", ids).getList();
+        List<KrcmtEralstCndexprange> krcstErAlAtdTarget = this.queryProxy().query(SELECT_TARGET_BY_ID, KrcmtEralstCndexprange.class).setParameter("ids", ids).getList();
 
         return domains.stream().map(i -> i.toDomain(
                 krcstErAlCompareSingle.stream().filter(x -> x.krcstEralCompareSinglePK.conditionGroupId.equals(i.errorAlarmCheckID)).findFirst(),
@@ -138,7 +138,7 @@ public class JpaExtractionMonthlyConRepository extends JpaRepository implements 
         List<KrcstErAlCompareSingle> compareSingles = new ArrayList<>();
         List<KrcstErAlSingleFixed> singleFixeds = new ArrayList<>();
         List<KrcstErAlCompareRange> compareRanges = new ArrayList<>();
-        List<KrcstErAlAtdTarget> targetList = new ArrayList<>();
+        List<KrcmtEralstCndexprange> targetList = new ArrayList<>();
 
         System.out.println(domains);
 
@@ -216,11 +216,11 @@ public class JpaExtractionMonthlyConRepository extends JpaRepository implements 
                 listSub = value.getAddSubAttendanceItems().getSubstractionAttendanceItems();
                 listImtem.forEach(item -> {
                     val key = new KrcstErAlAtdTargetPK(i.getErrorAlarmCheckID(),0,item.intValue());
-                    targetList.add(new KrcstErAlAtdTarget(key,0));
+                    targetList.add(new KrcmtEralstCndexprange(key,0));
                 });
                 listSub.forEach(item -> {
                     val key = new KrcstErAlAtdTargetPK(i.getErrorAlarmCheckID(),0,item.intValue());
-                    targetList.add(new KrcstErAlAtdTarget(key,1));
+                    targetList.add(new KrcmtEralstCndexprange(key,1));
                 });
             }
 
