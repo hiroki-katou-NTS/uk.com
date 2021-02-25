@@ -1,6 +1,9 @@
 package nts.uk.ctx.at.shared.dom.workmanagement.workframe;
 
-import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 
 /**
@@ -9,6 +12,9 @@ import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
  *
  * @author chinh.hm
  */
+@AllArgsConstructor
+@Getter
+@Setter
 public class WorkFrameSetting {
     // 作業枠NO
     private TaskFrameNo taskFrameNo;
@@ -17,6 +23,6 @@ public class WorkFrameSetting {
     private WorkFrameName workFrameName;
 
     // するしない区分
-    private NotUseAtr useAtr;
+    private UseAtr useAtr;
 
 }
