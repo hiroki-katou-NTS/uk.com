@@ -17,7 +17,7 @@ module nts.uk.at.view.kal001.d.service {
                                                    _.map(listPeriodByCategory, (item) =>{ return new PeriodByCategoryCommand(item);}),statusId);
             
             let def = $.Deferred(), toStopForWriteData = ko.observable(false), secondForLoop = listEmployee.length > 50 ? 5000 : 1000;
-            
+            let w4mCategory = _.find(listPeriodByCategory, function(o) { return o.category == 2; });//スケジュール4週
             nts.uk.request.ajax("at", paths.extractAlarm, command).done(function(task){
                 taskId(task.id);
                 nts.uk.deferred.repeat(conf => conf.task(() => {
@@ -75,9 +75,15 @@ module nts.uk.at.view.kal001.d.service {
                                             empInfo = empMap[item[0]][0];
                                         }
                                         if(!_.isNil(empInfo)) {
+                                            let alarmDate = item[2];
+                                            if(item[8] == 2){ //スケジュール4週
+                                                alarmDate = alarmDate + "～"+ w4mCategory.endDate;
+                                            } else if (item[8] == 3 || item[8] == 7){ //スケジュール月次,月次
+                                               alarmDate = alarmDate.substr(0,7); 
+                                            }
                                             dataX.push(_.merge({
                                                 guid: item[1],
-                                                alarmValueDate: item[2],
+                                                alarmValueDate: alarmDate,
                                                 categoryName: item[3],
                                                 alarmItem: item[4],
                                                 alarmValueMessage: item[5],

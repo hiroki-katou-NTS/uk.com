@@ -40,8 +40,8 @@ public class ExtractEmployeeErAlData {
 	/** チェック対象値 */
 	private String checkedValue;
 	
-	public List<Object> toList(){
+	public List<Object> createToList(){
 		return Arrays.asList(employeeId, recordId, alarmTime, categoryName, 
-								alarmItem, alarmMes, comment,checkedValue);
+								alarmItem, alarmMes, comment,checkedValue,categoryCode);
 	}
 }

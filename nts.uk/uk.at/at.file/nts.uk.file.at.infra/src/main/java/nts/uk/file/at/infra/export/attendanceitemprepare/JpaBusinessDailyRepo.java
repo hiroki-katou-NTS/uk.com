@@ -17,8 +17,8 @@ import nts.uk.file.at.app.export.attendanceitemprepare.BusinessDailyRepo;
 public class JpaBusinessDailyRepo extends JpaRepository implements BusinessDailyRepo {
 
 	private static final String GET_ALL_BY_COMPANY = "select a.BUSINESS_TYPE_CD, a.ATTENDANCE_ITEM_ID, a.SHEET_NO, b.SHEET_NAME, a.ORDER_DAILY "
-			+ "from KRCMT_BUS_DAILY_ITEM a "
-			+ "join KRCMT_BUS_FORM_SHEET b "
+			+ "from KFNMT_DAY_FORM_BUS_DAY a "
+			+ "join KFNMT_DAY_FORM_BUS_SHEET b "
 			+ "on a.BUSINESS_TYPE_CD=b.BUSINESS_TYPE_CD and a.SHEET_NO=b.SHEET_NO  and a.CID = b.CID where a.CID=?companyId "
 			+ "";
 	@Override

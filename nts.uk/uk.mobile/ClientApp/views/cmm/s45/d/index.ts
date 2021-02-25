@@ -15,8 +15,10 @@ import {
     CmmS45ShrComponentsApp7Component,
     CmmS45ShrComponentsApp0Component,
     CmmS45ShrComponentsApp15Component,
+    CmmS45ShrComponentsApp10Component,
+    CmmS45ShrComponentsApp6Component,
+    CmmS45ShrComponentsApp8Component,
     Reason,
-    CmmS45ShrComponentsApp10Component
 } from 'views/cmm/s45/shr/components';
 import { CmmS45ShrComponentsApp1Component } from 'views/cmm/s45/shr/components/app1/index';
 @component({
@@ -38,10 +40,12 @@ import { CmmS45ShrComponentsApp1Component } from 'views/cmm/s45/shr/components/a
         'app4': CmmS45ComponentsApp4Component,
         'app5': CmmS45ComponentsApp5Component,
         'app7': CmmS45ShrComponentsApp7Component,
+        'app8': CmmS45ShrComponentsApp8Component,
         'app0': CmmS45ShrComponentsApp0Component,
         'app15': CmmS45ShrComponentsApp15Component,
         'app1': CmmS45ShrComponentsApp1Component,
         'app10': CmmS45ShrComponentsApp10Component,
+        'app6': CmmS45ShrComponentsApp6Component,
         'cmms45e': CmmS45EComponent,
         'cmms45f': CmmS45FComponent
     }
@@ -656,7 +660,7 @@ export class CmmS45DComponent extends Vue {
         }
         let appDate = vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.inputDate;
 
-        return vm.$dt(new Date(appDate), 'YYYY/MM/DD hh:mm'); 
+        return vm.$dt(new Date(appDate), 'YYYY/MM/DD HH:mm'); 
     }
 
     get comboReasonDisp() {
@@ -725,9 +729,9 @@ export enum ApprovalBehaviorAtr {
 
 const API = {
     getDetailMob: 'at/request/app/smartphone/getDetailMob',
-    approve: 'at/request/application/approveapp',
-    deny: 'at/request/application/denyapp',
-    release: 'at/request/application/releaseapp',
+    approve: 'at/request/app/smartphone/approveapp',
+    deny: 'at/request/app/smartphone/denyapp',
+    release: 'at/request/app/smartphone/releaseapp',
     reflectApp: 'at/request/application/reflect-app',
     checkVersion: 'at/request/application/checkVersion'
 };

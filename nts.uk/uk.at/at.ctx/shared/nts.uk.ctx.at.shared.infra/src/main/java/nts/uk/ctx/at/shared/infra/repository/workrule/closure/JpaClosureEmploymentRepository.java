@@ -26,7 +26,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmpClosureEmploymentPK;
 import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmpClosureEmploymentPK_;
-import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmtClosureEmployment;
+import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KshmtClosureEmp;
 import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmtClosureEmployment_;
 
 /**
@@ -37,9 +37,9 @@ import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmtClosureEmployment
 @Stateless
 public class JpaClosureEmploymentRepository extends JpaRepository implements ClosureEmploymentRepository {
 
-	private static final String DELETE_ALL = "DELETE FROM KclmtClosureEmployment c WHERE c.kclmpClosureEmploymentPK.companyId = :companyId";
+	private static final String DELETE_ALL = "DELETE FROM KshmtClosureEmp c WHERE c.kclmpClosureEmploymentPK.companyId = :companyId";
 	
-	private final String DELETE_CID_SCD = "DELETE FROM KclmtClosureEmployment c WHERE c.kclmpClosureEmploymentPK.companyId = :companyId "
+	private final String DELETE_CID_SCD = "DELETE FROM KshmtClosureEmp c WHERE c.kclmpClosureEmploymentPK.companyId = :companyId "
 																				+ "	AND c.kclmpClosureEmploymentPK.employmentCD = :employmentCD";
 	
 	private static final String FIND;
@@ -50,7 +50,7 @@ public class JpaClosureEmploymentRepository extends JpaRepository implements Clo
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT a ");
-		builderString.append("FROM KclmtClosureEmployment a ");
+		builderString.append("FROM KshmtClosureEmp a ");
 		builderString.append("WHERE a.kclmpClosureEmploymentPK.companyId = :companyId ");
 		builderString.append("AND a.kclmpClosureEmploymentPK.employmentCD IN :employmentCDs ");
 		FIND = builderString.toString();
@@ -62,8 +62,8 @@ public class JpaClosureEmploymentRepository extends JpaRepository implements Clo
 	@Override
 	public void addListClousureEmp(String companyID, List<ClosureEmployment> listClosureEmpDom) {
 		//List Clousure Employment to add new.
-		List<KclmtClosureEmployment> lstEntityAdd = listClosureEmpDom.stream().map(item -> {
-			return new KclmtClosureEmployment(new KclmpClosureEmploymentPK(companyID, item.getEmploymentCD()), item.getClosureId());
+		List<KshmtClosureEmp> lstEntityAdd = listClosureEmpDom.stream().map(item -> {
+			return new KshmtClosureEmp(new KclmpClosureEmploymentPK(companyID, item.getEmploymentCD()), item.getClosureId());
 		}).collect(Collectors.toList());
 		
 		//List Clousure Employment to delete all when size of listClosureEmpDom > 1
@@ -86,7 +86,7 @@ public class JpaClosureEmploymentRepository extends JpaRepository implements Clo
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public Optional<ClosureEmployment> findByEmploymentCD(String companyID, String employmentCD) {
 		return this.queryProxy()
-				.find(new KclmpClosureEmploymentPK(companyID, employmentCD), KclmtClosureEmployment.class)
+				.find(new KclmpClosureEmploymentPK(companyID, employmentCD), KshmtClosureEmp.class)
 				.map(x -> convertToDomain(x));
 	}
 
@@ -97,10 +97,10 @@ public class JpaClosureEmploymentRepository extends JpaRepository implements Clo
 	@Override
 	public List<ClosureEmployment> findListEmployment(String companyId,
 			List<String> employmentCDs) {
-		List<KclmtClosureEmployment> result = new ArrayList<>();
+		List<KshmtClosureEmp> result = new ArrayList<>();
 
 		CollectionUtil.split(employmentCDs, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
-			result.addAll(this.queryProxy().query(FIND, KclmtClosureEmployment.class)
+			result.addAll(this.queryProxy().query(FIND, KshmtClosureEmp.class)
 					.setParameter("companyId", companyId)
 					.setParameter("employmentCDs", splitData).getList());
 		});
@@ -114,7 +114,7 @@ public class JpaClosureEmploymentRepository extends JpaRepository implements Clo
 	 * @param kclmtClosureEmployment the kclmt closure employment
 	 * @return the closure employment
 	 */
-	private ClosureEmployment convertToDomain(KclmtClosureEmployment kclmtClosureEmployment) {
+	private ClosureEmployment convertToDomain(KshmtClosureEmp kclmtClosureEmployment) {
 		return new ClosureEmployment(kclmtClosureEmployment.kclmpClosureEmploymentPK.companyId,
 				kclmtClosureEmployment.kclmpClosureEmploymentPK.employmentCD, 
 				kclmtClosureEmployment.closureId);
@@ -129,10 +129,10 @@ public class JpaClosureEmploymentRepository extends JpaRepository implements Clo
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<KclmtClosureEmployment> cq = cb.createQuery(KclmtClosureEmployment.class);
+		CriteriaQuery<KshmtClosureEmp> cq = cb.createQuery(KshmtClosureEmp.class);
 		
 		// Root
-		Root<KclmtClosureEmployment> root = cq.from(KclmtClosureEmployment.class);
+		Root<KshmtClosureEmp> root = cq.from(KshmtClosureEmp.class);
 		cq.select(root);
 		
 		// Predicate where clause
@@ -148,7 +148,7 @@ public class JpaClosureEmploymentRepository extends JpaRepository implements Clo
 
 		// Create Query
 		cq.where(predicateList.toArray(new Predicate[] {}));
-		TypedQuery<KclmtClosureEmployment> query = em.createQuery(cq);
+		TypedQuery<KshmtClosureEmp> query = em.createQuery(cq);
 
 		return query.getResultList().stream().map(item -> this.convertToDomain(item)).collect(Collectors.toList());
 	}
@@ -165,10 +165,10 @@ public class JpaClosureEmploymentRepository extends JpaRepository implements Clo
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<KclmtClosureEmployment> cq = cb.createQuery(KclmtClosureEmployment.class);
+		CriteriaQuery<KshmtClosureEmp> cq = cb.createQuery(KshmtClosureEmp.class);
 
 		// Root
-		Root<KclmtClosureEmployment> root = cq.from(KclmtClosureEmployment.class);
+		Root<KshmtClosureEmp> root = cq.from(KshmtClosureEmp.class);
 		cq.select(root);
 		
 		// Predicate where clause
@@ -182,7 +182,7 @@ public class JpaClosureEmploymentRepository extends JpaRepository implements Clo
 		// Create Query.
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
-		List<KclmtClosureEmployment> resultList = em.createQuery(cq).getResultList();
+		List<KshmtClosureEmp> resultList = em.createQuery(cq).getResultList();
 		
 		return resultList.stream().map(item -> this.convertToDomain(item)).collect(Collectors.toList());
 	}
@@ -200,8 +200,8 @@ public class JpaClosureEmploymentRepository extends JpaRepository implements Clo
 
 	@Override
 	public List<ClosureEmployment> findAllByCid(String cid) {
-		List<KclmtClosureEmployment> result = new ArrayList<>();
-		result.addAll(this.queryProxy().query(FIND_ALL, KclmtClosureEmployment.class)
+		List<KshmtClosureEmp> result = new ArrayList<>();
+		result.addAll(this.queryProxy().query(FIND_ALL, KshmtClosureEmp.class)
 				.setParameter("cid", cid)
 				.getList());
 		return result.stream().map(f -> convertToDomain(f)).collect(Collectors.toList());

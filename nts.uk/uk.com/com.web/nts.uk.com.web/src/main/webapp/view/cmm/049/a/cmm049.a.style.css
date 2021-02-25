@@ -26,7 +26,7 @@
 
 table#A4_2 tr td {
   border-collapse: collapse;
-	padding: 5px;
+  padding: 5px;
 }
 
 #A4_2 tr td[rowspan] {
@@ -43,16 +43,36 @@ table#A4_2 tr td {
   overflow: hidden;
 }
 
-#A4 {
-  overflow-y: scroll;
-  height: 440px;
+/* fix bug 114010 */
+@media only screen and (max-height: 700px) {
+  #A4,
+  #A5,
+  #A6,
+  #A7,
+  #A8 {
+    overflow-y: auto;
+    height: 76vh;
+  }
 }
+
+@media only screen and (min-height: 700px) {
+  #A4,
+  #A5,
+  #A6,
+  #A7,
+  #A8 {
+    overflow-y: auto;
+    height: 81vh;
+  }
+}
+/* fix bug 114010 end */
 
 #A3 {
   margin: 0 15px 15px 15px !important;
 }
 
-td.style-normal, td.contactName {
+td.style-normal,
+td.contactName {
   border-top: 1px solid black;
 }
 

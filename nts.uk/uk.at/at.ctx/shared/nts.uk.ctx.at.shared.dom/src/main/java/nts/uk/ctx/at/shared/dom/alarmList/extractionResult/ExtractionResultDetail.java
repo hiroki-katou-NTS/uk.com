@@ -2,8 +2,6 @@ package nts.uk.ctx.at.shared.dom.alarmList.extractionResult;
 
 import java.util.Optional;
 
-import org.eclipse.persistence.jpa.jpql.parser.DateTime;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

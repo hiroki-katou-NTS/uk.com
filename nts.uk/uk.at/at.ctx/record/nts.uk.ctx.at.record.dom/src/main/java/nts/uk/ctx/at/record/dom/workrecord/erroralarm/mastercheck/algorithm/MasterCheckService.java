@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm;
 
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckInfor;
@@ -21,5 +23,6 @@ public interface MasterCheckService {
 	 */
 	public void extractMasterCheck(String cid, List<String> lstSid, DatePeriod dPeriod,	String errorMasterCheckId
 			,List<WorkPlaceHistImportAl> getWplByListSidAndPeriod,List<StatusOfEmployeeAdapterAl> lstStatusEmp
-			,List<ResultOfEachCondition> lstResultCondition,List<AlarmListCheckInfor> lstCheckType);
+			,List<ResultOfEachCondition> lstResultCondition,List<AlarmListCheckInfor> lstCheckType, Consumer<Integer> counter,
+			Supplier<Boolean> shouldStop);
 }

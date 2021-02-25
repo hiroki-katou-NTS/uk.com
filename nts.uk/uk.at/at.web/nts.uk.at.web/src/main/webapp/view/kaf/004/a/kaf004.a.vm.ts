@@ -32,6 +32,7 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
         isEnable3: KnockoutObservable<Boolean> = ko.observable(false);
         isEnable4: KnockoutObservable<Boolean> = ko.observable(false);
         cancalAppDispSet: boolean = true;
+        cancelAtr: KnockoutObservable<number>;
 		isFromOther: boolean = false;
 
         created(params: AppInitParam) {
@@ -83,12 +84,14 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
             }
             vm.loadData(empLst, dateLst, vm.appType())
                 .then((loadDataFlag: any) => {
-					vm.application().employeeIDLst(empLst);
-                    let appType = vm.appType,
-                        appDates = dates,
-                        appDispInfoStartupDto = ko.toJS(vm.appDispInfoStartupOutput),
-                        command = { appType, appDates, appDispInfoStartupDto };
-                    return vm.$ajax(API.initPage, command);
+                    if (loadDataFlag) {
+                        vm.application().employeeIDLst(empLst);
+                        let appType = vm.appType,
+                            appDates = dates,
+                            appDispInfoStartupDto = ko.toJS(vm.appDispInfoStartupOutput),
+                            command = { appType, appDates, appDispInfoStartupDto };
+                        return vm.$ajax(API.initPage, command);
+                    }
                 }).then((successData: any) => {
                     if (successData) {
                         if (successData.info) {
@@ -96,6 +99,7 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                         }
 
                         vm.cancalAppDispSet = successData.lateEarlyCancelAppSet.cancelAtr !== 0;
+                        vm.cancelAtr = ko.observable(successData.lateEarlyCancelAppSet.cancelAtr);
 
                         vm.arrivedLateLeaveEarlyInfo(successData);
                         vm.appDispInfoStartupOutput(successData.appDispInfoStartupOutput);
@@ -240,7 +244,12 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
 					}
                 }).fail((failData: any) => {
                     console.log(failData);
+                    if (failData.messageId === "Msg_43") {
+						vm.$dialog.error(failData).then(() => { vm.$jump("com", "/view/ccg/008/a/index.xhtml"); });
 
+					} else {
+						vm.$dialog.error(failData);
+					}
                 }).always(() => vm.$blockui("hide"));
 
             vm.application().appDate.subscribe(() => {
@@ -364,7 +373,7 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                         vm.isEnable1(false);
                     } else {
                         vm.lateOrEarlyInfo1().isActive(true);
-                        vm.isEnable1(true);
+                        vm.isEnable1(vm.cancelAtr() === 2);
                     }
                     if (vm.workManagement.leaveTime() === null || vm.workManagement.leaveTime() === "") {
                         vm.lateOrEarlyInfo2().isIndicated(true);
@@ -373,7 +382,7 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                         vm.isEnable2(false);
                     } else {
                         vm.lateOrEarlyInfo2().isActive(true);
-                        vm.isEnable2(true);
+                        vm.isEnable2(vm.cancelAtr() === 2);
                     }
                     if (vm.workManagement.workTime2() === null || vm.workManagement.workTime2() === "") {
                         vm.lateOrEarlyInfo3().isIndicated(true);
@@ -382,7 +391,7 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                         vm.isEnable3(false);
                     } else {
                         vm.lateOrEarlyInfo3().isActive(true);
-                        vm.isEnable3(true);
+                        vm.isEnable3(vm.cancelAtr() === 2);
                     }
                     if (vm.workManagement.leaveTime2() === null || vm.workManagement.leaveTime2() === "") {
                         vm.lateOrEarlyInfo4().isIndicated(true);
@@ -391,7 +400,7 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                         vm.isEnable4(false);
                     } else {
                         vm.lateOrEarlyInfo4().isActive(true);
-                        vm.isEnable4(true);
+                        vm.isEnable4(vm.cancelAtr() === 2);
                     }
 
                 }).fail((error: any) => {
@@ -458,30 +467,30 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                     vm.workManagement.leaveTime2(vm.workManagementTemp.leaveTime2());
 
                     if(vm.workManagementTemp.workTime() !== null && vm.workManagementTemp.workTime() !== "") {
-                        vm.isEnable1(true);
+                        vm.isEnable1(vm.cancelAtr() === 2);
                         vm.lateOrEarlyInfo1().isActive(true);
-                        vm.lateOrEarlyInfo1().isCheck(true);
+                        vm.lateOrEarlyInfo1().isCheck(vm.cancelAtr() === 2);
                     } else {
                         vm.isEnable1(false)
                     }
                     if(vm.workManagementTemp.leaveTime() !== null && vm.workManagementTemp.leaveTime() !== "") {
-                        vm.isEnable2(true);
+                        vm.isEnable2(vm.cancelAtr() === 2);
                         vm.lateOrEarlyInfo2().isActive(true);
-                        vm.lateOrEarlyInfo2().isCheck(true);
+                        vm.lateOrEarlyInfo2().isCheck(vm.cancelAtr() === 2);
                     } else {
                         vm.isEnable2(false)
                     }
                     if(vm.workManagementTemp.workTime2() !== null && vm.workManagementTemp.workTime2() !== "") {
-                        vm.isEnable3(true);
+                        vm.isEnable3(vm.cancelAtr() === 2);
                         vm.lateOrEarlyInfo3().isActive(true);
-                        vm.lateOrEarlyInfo3().isCheck(true);
+                        vm.lateOrEarlyInfo3().isCheck(vm.cancelAtr() === 2);
                     } else {
                         vm.isEnable3(false)
                     }
                     if(vm.workManagementTemp.leaveTime2() !== null && vm.workManagementTemp.leaveTime2() !== "") {
-                        vm.isEnable4(true);
+                        vm.isEnable4(vm.cancelAtr() === 2);
                         vm.lateOrEarlyInfo4().isActive(true);
-                        vm.lateOrEarlyInfo4().isCheck(true);
+                        vm.lateOrEarlyInfo4().isCheck(vm.cancelAtr() === 2);
                     } else {
                         vm.isEnable4(false)
                     }
@@ -701,20 +710,22 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
         private afterRegister(params?: any) {
             const vm = this;
 
-            if (ko.toJS(vm.application().prePostAtr) === 1) {
-                if (ko.toJS(vm.lateOrEarlyInfo1().isCheck)) {
-                    vm.workManagement.workTime(null);
-                }
-                if (ko.toJS(vm.lateOrEarlyInfo2().isCheck)) {
-                    vm.workManagement.leaveTime(null);
-                }
-                if (ko.toJS(vm.lateOrEarlyInfo3().isCheck)) {
-                    vm.workManagement.workTime2(null);
-                }
-                if (ko.toJS(vm.lateOrEarlyInfo4().isCheck)) {
-                    vm.workManagement.leaveTime2(null);
-                }
-            }
+            // let workManage = _.clone(vm.workManagement);
+
+            // if (ko.toJS(vm.application().prePostAtr) === 1) {
+            //     if (ko.toJS(vm.lateOrEarlyInfo1().isCheck)) {
+            //         workManage.workTime(null);
+            //     }
+            //     if (ko.toJS(vm.lateOrEarlyInfo2().isCheck)) {
+            //         workManage.leaveTime(null);
+            //     }
+            //     if (ko.toJS(vm.lateOrEarlyInfo3().isCheck)) {
+            //         workManage.workTime2(null);
+            //     }
+            //     if (ko.toJS(vm.lateOrEarlyInfo4().isCheck)) {
+            //         vm.workManagement.leaveTime2(null);
+            //     }
+            // }
 
             vm.arrivedLateLeaveEarlyInfo().earlyInfos = [];
             if(vm.cancalAppDispSet) {
@@ -904,23 +915,17 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
         }
 
         public showConfirmResult(messages: Array<any>, vm: any) {
-			return new Promise((resolve: any) => {
+
 				if(_.isEmpty(messages)) {
-					resolve(true);
+					return $.Deferred().resolve(true);
 				}
 				let msg = messages[0].value,
 					type = messages[0].type;
 				return vm.$dialog.confirm(msg).then((result: 'no' | 'yes' | 'cancel') => {
 					if (result === 'yes') {
-		            	return vm.showConfirmResult(_.slice(messages, 1), vm);
+		            	return $.Deferred().resolve(vm.showConfirmResult(_.slice(messages, 1), vm));
 		            }
-					resolve();
-	        	});	
-            }).then((data: any) => {
-				if(data) {
-
-                }		
-			});
+	        	});
 		}
     }
 

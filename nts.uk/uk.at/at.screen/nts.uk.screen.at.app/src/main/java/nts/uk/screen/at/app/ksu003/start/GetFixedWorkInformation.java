@@ -103,12 +103,13 @@ public class GetFixedWorkInformation {
 					workTimeSettingService, basicScheduleService, fixedWorkSet, flowWorkSet, flexWorkSet,
 					predetemineTimeSet);
 
-			// 1.5 出勤日区分 == 1日休日系
-			if (dayAttr == AttendanceDayAttr.HOLIDAY) {
+			// 1.5 必須任意不要区分 == 不要
+			if (workTimeSetting == SetupType.NOT_REQUIRED) {
 				inforDto = new FixedWorkInforDto(null, null, null, new ArrayList<>(), null, null,
 						type.get().getAbbreviationName().v(), null, null, null, null, true, workTimeSetting.name());
 				inforDtos.add(inforDto);
 			} else {
+				if(dayAttr != AttendanceDayAttr.HOLIDAY)
 				lstNo = workInformation.getChangeableWorkingTimezones(impl);
 			}
 

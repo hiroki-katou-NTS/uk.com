@@ -67,8 +67,8 @@ public class KfnmtRptWkMonOut extends UkJpaEntity
 	private int itemType;
 
 	// column 社員ID
-	@Column(name = "EMPLOYEE_ID")
-	private String employeeID;
+	@Column(name = "SID")
+	private String sid;
 
 	// column 文字の大きさ
 	@Column(name = "TEXT_SIZE")
@@ -85,7 +85,7 @@ public class KfnmtRptWkMonOut extends UkJpaEntity
 	/** The lst kfnmt rpt mon outtd . */
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "LAYOUT_ID", referencedColumnName = "LAYOUT_ID")
-	private List<KfnmtRptWkMonOuttd> lstKfnmtRptWkMonOuttds;
+	private List<KfnmtRptWkMonOutAtd> lstKfnmtRptWkMonOutAtds;
 	
 	@Override
 	protected Object getKey() {
@@ -104,17 +104,17 @@ public class KfnmtRptWkMonOut extends UkJpaEntity
 
 	@Override
 	public void setLstDisplayedAttendance(List<MonthlyAttendanceItemsDisplay> lstDisplayAttendance) {
-		this.lstKfnmtRptWkMonOuttds = lstDisplayAttendance.stream().map(item -> {
-			KfnmtRptWkMonOuttdPK kfnmtRptWkMonOuttdPK = new KfnmtRptWkMonOuttdPK();
-			kfnmtRptWkMonOuttdPK.setOrderNo(item.getOrderNo());
-			kfnmtRptWkMonOuttdPK.setLayoutID(this.layoutID);
-			KfnmtRptWkMonOuttd kfnmtRptWkMonOuttd = new KfnmtRptWkMonOuttd();
-			kfnmtRptWkMonOuttd.setAtdDisplay(item.getAttendanceDisplay());
-			kfnmtRptWkMonOuttd.setPk(kfnmtRptWkMonOuttdPK);
-			kfnmtRptWkMonOuttd.setCompanyID(this.companyID);
-			kfnmtRptWkMonOuttd.setContractCd(this.contractCd);
-			kfnmtRptWkMonOuttd.setVersion(0);
-			return kfnmtRptWkMonOuttd;
+		this.lstKfnmtRptWkMonOutAtds = lstDisplayAttendance.stream().map(item -> {
+			KfnmtRptWkMonOutAtdPK kfnmtRptWkMonOutAtdPK = new KfnmtRptWkMonOutAtdPK();
+			kfnmtRptWkMonOutAtdPK.setOrderNo(item.getOrderNo());
+			kfnmtRptWkMonOutAtdPK.setLayoutID(this.layoutID);
+			KfnmtRptWkMonOutAtd kfnmtRptWkMonOutAtd = new KfnmtRptWkMonOutAtd();
+			kfnmtRptWkMonOutAtd.setAtdDisplay(item.getAttendanceDisplay());
+			kfnmtRptWkMonOutAtd.setPk(kfnmtRptWkMonOutAtdPK);
+			kfnmtRptWkMonOutAtd.setCompanyID(this.companyID);
+			kfnmtRptWkMonOutAtd.setContractCd(this.contractCd);
+			kfnmtRptWkMonOutAtd.setVersion(0);
+			return kfnmtRptWkMonOutAtd;
 		}).collect(Collectors.toList());
 	}
 
@@ -154,7 +154,7 @@ public class KfnmtRptWkMonOut extends UkJpaEntity
 	@Override
 	public List<MonthlyAttendanceItemsDisplay> getLstDisplayedAttendance() {
 		List<MonthlyAttendanceItemsDisplay> monthlyAttendanceItemsDisplays = new ArrayList<>();
-		monthlyAttendanceItemsDisplays = this.lstKfnmtRptWkMonOuttds.stream()
+		monthlyAttendanceItemsDisplays = this.lstKfnmtRptWkMonOutAtds.stream()
 				.map(item -> {
 					MonthlyAttendanceItemsDisplay monthlyAttendanceItemsDisplay = new MonthlyAttendanceItemsDisplay();
 					monthlyAttendanceItemsDisplay.setAttendanceDisplay(item.getAtdDisplay());

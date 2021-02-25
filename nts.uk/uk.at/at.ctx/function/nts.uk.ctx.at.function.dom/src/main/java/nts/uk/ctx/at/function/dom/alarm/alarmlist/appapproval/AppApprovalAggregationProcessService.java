@@ -299,7 +299,9 @@ public class AppApprovalAggregationProcessService {
 						break;
 				}
 			});
-			
+			synchronized (this) {
+				counter.accept(empList.size());
+			}
 		});
 	}
 	/**

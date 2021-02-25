@@ -85,8 +85,8 @@ public class KrqdtAppHdSub extends ContractUkJpaEntity implements Serializable {
 		this.workChangeAtr = domain.getWorkChangeUse().value;
 		if(domain.getWorkInformation().getWorkTimeCodeNotNull().isPresent()) {
 			this.workTimeCd = domain.getWorkInformation().getWorkTimeCodeNotNull().get().v();
-			this.workTimeStart1 = domain.getWorkTime(new WorkNo(1)).get().getTimeZone().getStartTime().v();
-			this.workTimeEnd1 = domain.getWorkTime(new WorkNo(1)).get().getTimeZone().getEndTime().v();
+			this.workTimeStart1 = domain.getWorkTime(new WorkNo(1)).map(c-> c.getTimeZone().getStartTime().v()).orElse(null);
+			this.workTimeEnd1 = domain.getWorkTime(new WorkNo(1)).map(c-> c.getTimeZone().getEndTime().v()).orElse(null);
 			this.workTimeStart2 = domain.getWorkTime(new WorkNo(2)).isPresent() ? domain.getWorkTime(new WorkNo(2)).get().getTimeZone().getStartTime().v():null;
 			this.workTimeEnd2 = domain.getWorkTime(new WorkNo(2)).isPresent() ? domain.getWorkTime(new WorkNo(2)).get().getTimeZone().getEndTime().v():null;
 		}

@@ -8,12 +8,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
@@ -24,8 +27,6 @@ import nts.uk.ctx.at.record.dom.adapter.workflow.service.ApprovalStatusAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.AppRootSttMonthEmpImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.EmpPerformMonthParamImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalStatusForEmployee;
-import nts.uk.ctx.at.record.dom.monthly.TimeOfMonthlyRepository;
-import nts.uk.ctx.at.record.dom.monthly.mergetable.RemainMergeRepository;
 import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.export.AbsenceleaveCurrentMonthOfEmployee;
 import nts.uk.ctx.at.record.dom.monthly.vacation.absenceleave.export.MonthlyAbsenceleaveRemainExport;
 import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.export.DayoffCurrentMonthOfEmployee;
@@ -40,6 +41,7 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConvertCompareTypeTo
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ErrorAlarmConditionType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.LogicalOperator;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.WorkPlaceHistImportAl;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.WorkPlaceIdAndPeriodImportAl;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.ExtraResultMonthly;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.ExtraResultMonthlyRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.FixedExtraItemMon;
@@ -53,7 +55,6 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.Type
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.checkremainnumber.CheckOperatorType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.checkremainnumber.CheckRemainNumberMon;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.checkremainnumber.CheckRemainNumberMonRepository;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycondition.MonthlyCorrectConditionRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycondition.TimeItemCheckMonthly;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.CheckedTimeDuration;
 import nts.uk.ctx.at.record.dom.workrecord.export.WorkRecordExport;
@@ -80,12 +81,14 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremaini
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedMinutes;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.NumberRemainVacationLeaveRangeQuery;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.NumberRemainVacationLeaveRangeProcess.RequireImpl;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.NumberRemainVacationLeaveRangeQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.BreakDayOffRemainMngRefactParam;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.FixedManagementDataMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.SubstituteHolidayAggrResult;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.UnbalanceVacation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
@@ -93,10 +96,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremain
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.ComDayOffManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManaRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.service.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthlyRepository;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.anyitem.AnyItemOfMonthlyRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.editstate.EditStateOfMonthlyPerRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.editstate.EditStateOfMonthlyPerformance;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
@@ -120,8 +121,6 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 	private WorkRecordExport workRecordEx;
 	@Inject
 	private ExtraResultMonthlyRepository extCondMonRepo;
-	@Inject
-	private MonthlyCorrectConditionRepository correctCondRepo;
 	@Inject
 	private FixedExtraMonRepository fixCondRepo;
 	@Inject
@@ -191,21 +190,39 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 	private CompanyAdapter companyAdapter;
 	@Inject
 	private ShareEmploymentAdapter shareEmploymentAdapter;
+	@Inject
+	private ManagedParallelWithContext parallelManager;
 	@Override
 	public void extractMonthlyAlarm(String cid, List<String> lstSid, YearMonthPeriod mPeriod, String fixConId,
 			List<String> lstAnyConID, List<WorkPlaceHistImportAl> getWplByListSidAndPeriod,
-			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType) {
+			List<ResultOfEachCondition> lstResultCondition, List<AlarmListCheckInfor> lstCheckType, Consumer<Integer> counter,
+			Supplier<Boolean> shouldStop) {
 		DataCheck data = new DataCheck(cid, lstSid, mPeriod, fixConId, lstAnyConID);
 		// 任意抽出条件をチェック
 		data.lstAnyCondMon.stream().forEach(anyCond -> {
 			lstCheckType.add(new AlarmListCheckInfor(String.valueOf(anyCond.getSortBy()), AlarmListCheckType.FreeCheck));
-			this.extractAnyCondAlarm(lstSid, mPeriod, getWplByListSidAndPeriod, anyCond, lstResultCondition, data);
+			this.extractAnyCondAlarm(lstSid,
+					mPeriod,
+					getWplByListSidAndPeriod,
+					anyCond,
+					lstResultCondition,
+					data,
+					counter,
+					shouldStop);
 		});
 		
 		//固定チェック
 		data.lstFixCond.stream().forEach(fixCond -> {
 			lstCheckType.add(new AlarmListCheckInfor(String.valueOf(fixCond.getFixedExtraItemMonNo().value), AlarmListCheckType.FixCheck));
-			this.extractFixCondAlarm(cid, lstSid, mPeriod, getWplByListSidAndPeriod, fixCond, lstResultCondition, data);
+			this.extractFixCondAlarm(cid,
+					lstSid,
+					mPeriod,
+					getWplByListSidAndPeriod,
+					fixCond,
+					lstResultCondition,
+					data,
+					counter,
+					shouldStop);
 			
 		});
 	}
@@ -221,208 +238,219 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 	 */
 	private void extractFixCondAlarm(String cid, List<String> lstSid, YearMonthPeriod mPeriod, List<WorkPlaceHistImportAl> getWplByListSidAndPeriod,
 			FixedExtraMon fixCond,
-			List<ResultOfEachCondition> lstResultCondition, DataCheck data) {
-		for(String sid : lstSid) {
-			for (YearMonth ym : mPeriod.yearMonthsBetween()) {
-				YearMonth endMonthTemp = mPeriod.end().addMonths(1);
-				GeneralDate endDateTemp = GeneralDate.ymd(endMonthTemp.year(), endMonthTemp.month(), 1);
-				GeneralDate enDate = endDateTemp.addDays(-1);
-				GeneralDate startDate = GeneralDate.ymd(mPeriod.start().year(), mPeriod.end().month(), 1);
-				String checkValue = "";
-				String alarmContent = "";
-				switch (fixCond.getFixedExtraItemMonNo()) {
-				case MYSELF_UNCONFIRMED:
-					if(data.optIndentiry.isPresent()) {
-						IdentityProcess indentiry = data.optIndentiry.get();
-						if(indentiry.getUseMonthSelfCK() == 1) {
-							List<ConfirmationMonth> lstConfirM = data.lstMyselConfirm.stream()
-									.filter(x -> x.getEmployeeId().equals(sid) && x.getProcessYM().equals(ym))
-									.collect(Collectors.toList());
-							if(lstConfirM.isEmpty()) {
-								checkValue = TextResource.localize("KAL010_130");
-								alarmContent = TextResource.localize("KAL010_108");
-							}
-						}
-					}
-					break;
-				case ADMIN_UNCONFIRMED:
-					if(data.optApprovalSetting.isPresent()) {
-						ApprovalProcess approPro = data.optApprovalSetting.get();
-						if(approPro.getUseMonthBossChk() == 1) {
-							List<AttendanceTimeOfMonthly> lstAttendanceTime = data.lstAttendanceTime.stream()
-									.filter(x -> x.getEmployeeId().equals(sid) && x.getYearMonth().equals(ym))
-									.collect(Collectors.toList());
-							if(lstAttendanceTime.isEmpty()) {
-								continue;
-							}
-							
-							List<EmpPerformMonthParamImport> lstImportParam = lstAttendanceTime.stream()
-									.map(s -> new EmpPerformMonthParamImport(s.getYearMonth(),
-											s.getClosureId().value,
-											s.getClosureDate(),
-											s.getDatePeriod().end(),
-											s.getEmployeeId()))
-									.collect(Collectors.toList());
-							
-							List<AppRootSttMonthEmpImport> lstAppRoot = approvalAdapter.getAppRootStatusByEmpsMonth(lstImportParam);
-							if(lstAppRoot.isEmpty()) {
-								continue;
-							}
-							for(AppRootSttMonthEmpImport a : lstAppRoot) {
-								if(a.getApprovalStatus() != ApprovalStatusForEmployee.APPROVED) {
-									checkValue = TextResource.localize("KAL010_131");
-									alarmContent = TextResource.localize("KAL010_129");
+			List<ResultOfEachCondition> lstResultCondition, DataCheck data, Consumer<Integer> counter,
+			Supplier<Boolean> shouldStop) {
+		parallelManager.forEach(CollectionUtil.partitionBySize(lstSid, 100), emps -> {
+			synchronized (this) {
+				if (shouldStop.get()) {
+					return;
+				}
+			}
+			for(String sid : emps) {
+				for (YearMonth ym : mPeriod.yearMonthsBetween()) {
+					YearMonth endMonthTemp = mPeriod.end().addMonths(1);
+					GeneralDate endDateTemp = GeneralDate.ymd(endMonthTemp.year(), endMonthTemp.month(), 1);
+					GeneralDate enDate = endDateTemp.addDays(-1);
+					GeneralDate startDate = GeneralDate.ymd(mPeriod.start().year(), mPeriod.start().month(), 1);
+					String checkValue = "";
+					String alarmContent = "";
+					switch (fixCond.getFixedExtraItemMonNo()) {
+					case MYSELF_UNCONFIRMED:
+						if(data.optIndentiry.isPresent()) {
+							IdentityProcess indentiry = data.optIndentiry.get();
+							if(indentiry.getUseMonthSelfCK() == 1) {
+								List<ConfirmationMonth> lstConfirM = data.lstMyselConfirm.stream()
+										.filter(x -> x.getEmployeeId().equals(sid) && x.getProcessYM().equals(ym))
+										.collect(Collectors.toList());
+								if(lstConfirM.isEmpty()) {
+									checkValue = TextResource.localize("KAL010_130");
+									alarmContent = TextResource.localize("KAL010_108");
 								}
 							}
 						}
-					}
-					break;
-				case CHECK_DEADLINE_HOLIDAY:
-					List<SharedSidPeriodDateEmploymentImport> lstEmploymentHis = data.lstEmploymentHis.stream()
-						.filter(x -> x.getEmployeeId().equals(sid)).collect(Collectors.toList());
-					if(lstEmploymentHis.isEmpty()) continue;
-					
-					//所属期間と雇用コードを探す
-					List<AffPeriodEmpCodeImport> affPeriodEmpCodeExports = lstEmploymentHis.get(0)
-							.getAffPeriodEmpCodeExports().stream().filter(x -> x.getPeriod().start().beforeOrEquals(enDate) 
-									&& x.getPeriod().end().afterOrEquals(startDate)).collect(Collectors.toList());
-					if(affPeriodEmpCodeExports.isEmpty()) continue;
-					for(AffPeriodEmpCodeImport affEmp : affPeriodEmpCodeExports) {
-						//雇用に紐づく締めを取得する
-						List<ClosureEmployment> optCloEmp = data.lstCloEmp.stream()
-								.filter(x -> x.getEmploymentCD().equals(affEmp.getEmploymentCode()))
-								.collect(Collectors.toList());
-						if(optCloEmp.isEmpty()) continue;
-						
-						ClosureEmployment cloEmp = optCloEmp.get(0);
-						//代休管理設定を探す
-						List<CompensatoryLeaveEmSetting> lstCompenEmpSetting = data.lstCompenEmpSetting.stream()
-								.filter(x -> x.getEmploymentCode().equals(affEmp.getEmploymentCode())).collect(Collectors.toList());
-						if(!lstCompenEmpSetting.isEmpty() || lstCompenEmpSetting.get(0).getIsManaged() == ManageDistinct.NO) {
-							continue;
-						}
-						if(lstCompenEmpSetting.isEmpty() && !data.comLeaveSetting.isManaged()) continue;
-						int deadlCheckMonth = data.comLeaveSetting.getCompensatoryAcquisitionUse().getDeadlCheckMonth().value + 1;
-						
-						List<Closure> closure = data.lstClosure.stream().filter(x -> x.getClosureId().value == cloEmp.getClosureId()
-								&& x.getClosureMonth().getProcessingYm().equals(ym)).collect(Collectors.toList());
-						if(closure.isEmpty()) continue;
-						Closure emplOfClosure = closure.get(0);
-						//締めのアルゴリズム「当月の期間を算出する」を実行する
-						val closureOpt = Optional.ofNullable(emplOfClosure);
-						DatePeriod periodCurrentMonth = ClosureService.getClosurePeriod(emplOfClosure.getClosureId().value,
-								emplOfClosure.getClosureMonth().getProcessingYm(), closureOpt);
-						//代休期限アラーム基準日を決定する
-						DatePeriod periodCheckDealMonth = ClosureService.getClosurePeriod(emplOfClosure.getClosureId().value,
-								getDeadlCheckMonth(periodCurrentMonth, deadlCheckMonth), closureOpt);
-					
-						//RequestList No.203 期間内の休出代休残数を取得する
-						//集計開始日
-						//集計終了日
-						DatePeriod newPeriod = new DatePeriod(periodCurrentMonth.start(), periodCurrentMonth.end().addYears(1));
-						RequireImpl requireImpl = new RequireImpl.RequireImplBuilder(comDayOffManaDataRepository,
-								leaveManaDataRepository, shareEmploymentAdapter, compensLeaveEmSetRepository,
-								compensLeaveComSetRepository).interimRemainRepo(interimRemainRepository)
-										.interimBreakDayOffMngRepo(interimBreakDayOffMngRepository).companyAdapter(companyAdapter)
-										.closureEmploymentRepo(closureEmploymentRepo).closureRepo(closureRepo)
-										.leaveComDayOffManaRepository(leaveComDayOffManaRepository).build();
-						BreakDayOffRemainMngRefactParam param = new BreakDayOffRemainMngRefactParam(cid, sid, newPeriod,
-								true,
-								startDate,
-								false,
-								Collections.emptyList(),
-								Optional.empty(), 
-								Optional.empty(), 
-								Collections.emptyList(), 
-								Collections.emptyList(), 
-								Optional.empty(),
-								new FixedManagementDataMonth(Collections.emptyList(), Collections.emptyList()));
-						SubstituteHolidayAggrResult subsResult = NumberRemainVacationLeaveRangeQuery.getBreakDayOffMngInPeriod(requireImpl, param);
-						List<AccumulationAbsenceDetail> lstAcctAbsenDetail = subsResult.getVacationDetails().getLstAcctAbsenDetail();
-						if(lstAcctAbsenDetail.isEmpty()) continue;
-						
-						List<AccumulationAbsenceDetail> lstAcctAbsen = lstAcctAbsenDetail.stream()
-								.filter(x -> x.getOccurrentClass() == OccurrenceDigClass.OCCURRENCE
-										&& !x.getUnbalanceNumber().allFieldZero()
-										&& x.getDateOccur().getDayoffDate().isPresent() 
-										&& x.getDateOccur().getDayoffDate().get().beforeOrEquals(periodCheckDealMonth.end()))
-								.collect(Collectors.toList());
-						if(lstAcctAbsen.isEmpty()) continue;
-						
-						for(AccumulationAbsenceDetail detail : lstAcctAbsen) {
-							alarmContent = "\n" + TextResource.localize("KAL010_279",
-									String.valueOf(deadlCheckMonth), detail.getDateOccur().getDayoffDate().get().toString(),
-									String.valueOf(detail.getUnbalanceNumber().getDay().v()));
-							checkValue = "\n" + TextResource.localize("KAL010_305",
-									detail.getDateOccur().getDayoffDate().get().toString(),
-									String.valueOf(detail.getUnbalanceNumber().getDay().v()));
-							
-						}
-						if(!alarmContent.isEmpty()) {
-							alarmContent = alarmContent.substring(2);
-							checkValue = checkValue.substring(2);
-						}
-					}
-					break;
-				case MANUAL_INPUT:
-					List<EditStateOfMonthlyPerformance> lstEditState = data.lstEditState.stream()
-						.filter(x -> x.getEmployeeId().equals(sid) && x.getYm().equals(ym))
-						.collect(Collectors.toList());
-					if(lstEditState.isEmpty()) continue;
-					String itemName = "";
-					for(EditStateOfMonthlyPerformance editStare: lstEditState) {
-						List<String> lstItemName = data.lstItemMond.stream().filter(x -> x.getAttendanceItemId() == editStare.getAttendanceItemId())
-								.collect(Collectors.toList())
-								.stream().map(x -> x.getAttendanceItemName()).collect(Collectors.toList());
-						if(!lstItemName.isEmpty()) {
-							itemName = "、" + lstItemName.get(0);
-						}
-					}
-					if(!itemName.isEmpty()) {
-						itemName = itemName.substring(1);
-						alarmContent =  TextResource.localize("KAL010_606");
-						checkValue = itemName;
-					}
-					break;
-					default:
 						break;
-				}
-				if(!alarmContent.isEmpty()) {
-					List<FixedExtraItemMon> lstFixItemCond = data.lstFixItemCond.stream()
-							.filter(x -> x.getFixedExtraItemMonNo() == fixCond.getFixedExtraItemMonNo())
+					case ADMIN_UNCONFIRMED:
+						if(data.optApprovalSetting.isPresent()) {
+							ApprovalProcess approPro = data.optApprovalSetting.get();
+							if(approPro.getUseMonthBossChk() == 1) {
+								List<AttendanceTimeOfMonthly> lstAttendanceTime = data.lstAttendanceTime.stream()
+										.filter(x -> x.getEmployeeId().equals(sid) && x.getYearMonth().equals(ym))
+										.collect(Collectors.toList());
+								if(lstAttendanceTime.isEmpty()) {
+									continue;
+								}
+								
+								List<EmpPerformMonthParamImport> lstImportParam = lstAttendanceTime.stream()
+										.map(s -> new EmpPerformMonthParamImport(s.getYearMonth(),
+												s.getClosureId().value,
+												s.getClosureDate(),
+												s.getDatePeriod().end(),
+												s.getEmployeeId()))
+										.collect(Collectors.toList());
+								
+								List<AppRootSttMonthEmpImport> lstAppRoot = approvalAdapter.getAppRootStatusByEmpsMonth(lstImportParam);
+								if(lstAppRoot.isEmpty()) {
+									continue;
+								}
+								for(AppRootSttMonthEmpImport a : lstAppRoot) {
+									if(a.getApprovalStatus() != ApprovalStatusForEmployee.APPROVED) {
+										checkValue = TextResource.localize("KAL010_131");
+										alarmContent = TextResource.localize("KAL010_129");
+									}
+								}
+							}
+						}
+						break;
+					case CHECK_DEADLINE_HOLIDAY:
+						List<SharedSidPeriodDateEmploymentImport> lstEmploymentHis = data.lstEmploymentHis.stream()
+							.filter(x -> x.getEmployeeId().equals(sid)).collect(Collectors.toList());
+						if(lstEmploymentHis.isEmpty() || data.comLeaveSetting == null) continue;
+						
+						//所属期間と雇用コードを探す
+						List<AffPeriodEmpCodeImport> affPeriodEmpCodeExports = lstEmploymentHis.get(0)
+								.getAffPeriodEmpCodeExports().stream().filter(x -> x.getPeriod().start().beforeOrEquals(enDate) 
+										&& x.getPeriod().end().afterOrEquals(startDate)).collect(Collectors.toList());
+						if(affPeriodEmpCodeExports.isEmpty()) continue;
+						for(AffPeriodEmpCodeImport affEmp : affPeriodEmpCodeExports) {
+							//雇用に紐づく締めを取得する
+							List<ClosureEmployment> optCloEmp = data.lstCloEmp.stream()
+									.filter(x -> x.getEmploymentCD().equals(affEmp.getEmploymentCode()))
+									.collect(Collectors.toList());
+							if(optCloEmp.isEmpty()) continue;
+							
+							ClosureEmployment cloEmp = optCloEmp.get(0);
+							//代休管理設定を探す
+							List<CompensatoryLeaveEmSetting> lstCompenEmpSetting = data.lstCompenEmpSetting.stream()
+									.filter(x -> x.getEmploymentCode().equals(affEmp.getEmploymentCode())).collect(Collectors.toList());
+							if(!lstCompenEmpSetting.isEmpty() && lstCompenEmpSetting.get(0).getIsManaged() == ManageDistinct.NO) {
+								continue;
+							}
+							if(lstCompenEmpSetting.isEmpty() && data.comLeaveSetting != null && !data.comLeaveSetting.isManaged()) continue;
+							
+							int deadlCheckMonth = data.comLeaveSetting.getCompensatoryAcquisitionUse().getDeadlCheckMonth().value + 1; 
+							
+							List<Closure> closure = data.lstClosure.stream().filter(x -> x.getClosureId().value == cloEmp.getClosureId()).collect(Collectors.toList());
+							if(closure.isEmpty()) continue;
+							Closure emplOfClosure = closure.get(0);
+							//締めのアルゴリズム「当月の期間を算出する」を実行する
+							val closureOpt = Optional.ofNullable(emplOfClosure);
+							DatePeriod periodCurrentMonth = ClosureService.getClosurePeriod(emplOfClosure.getClosureId().value,
+									ym, closureOpt);
+							//代休期限アラーム基準日を決定する
+						/*	DatePeriod periodCheckDealMonth = ClosureService.getClosurePeriod(emplOfClosure.getClosureId().value,
+									getDeadlCheckMonth(periodCurrentMonth, deadlCheckMonth), closureOpt);*/
+						
+							//RequestList No.203 期間内の休出代休残数を取得する
+							//集計開始日
+							//集計終了日
+							DatePeriod newPeriod = new DatePeriod(periodCurrentMonth.start(), periodCurrentMonth.start().addYears(1).addDays(-1));
+							RequireImpl requireImpl = new RequireImpl.RequireImplBuilder(comDayOffManaDataRepository,
+									leaveManaDataRepository, shareEmploymentAdapter, compensLeaveEmSetRepository,
+									compensLeaveComSetRepository).interimRemainRepo(interimRemainRepository)
+											.interimBreakDayOffMngRepo(interimBreakDayOffMngRepository).companyAdapter(companyAdapter)
+											.closureEmploymentRepo(closureEmploymentRepo).closureRepo(closureRepo)
+											.leaveComDayOffManaRepository(leaveComDayOffManaRepository).build();
+							BreakDayOffRemainMngRefactParam param = new BreakDayOffRemainMngRefactParam(cid, sid, newPeriod,
+									true,
+									periodCurrentMonth.end(),
+									false,
+									Collections.emptyList(),
+									Optional.empty(), 
+									Optional.empty(), 
+									Collections.emptyList(), 
+									Collections.emptyList(), 
+									Optional.empty(),
+									new FixedManagementDataMonth(Collections.emptyList(), Collections.emptyList()));
+							SubstituteHolidayAggrResult subsResult = NumberRemainVacationLeaveRangeQuery.getBreakDayOffMngInPeriod(requireImpl, param);
+							List<AccumulationAbsenceDetail> lstAcctAbsenDetail = subsResult.getVacationDetails().getLstAcctAbsenDetail();
+							if(lstAcctAbsenDetail.isEmpty()) continue;
+							//代休期限アラーム基準日：締め期間.終了年月日－INPUT.代休管理設定.取得と使用方法.代休期限チェック月数(月計算)
+							GeneralDate dealineAlarm = periodCurrentMonth.end().addMonths(-data.comLeaveSetting.getCompensatoryAcquisitionUse().getDeadlCheckMonth().value);
+							List<AccumulationAbsenceDetail> lstAcctAbsen = lstAcctAbsenDetail.stream()
+									.filter(x -> x.getOccurrentClass() == OccurrenceDigClass.OCCURRENCE
+											&& !x.getUnbalanceNumber().allFieldZero()
+											&& ((UnbalanceVacation)x).getDeadline().beforeOrEquals(dealineAlarm) //年月日≦代休期限アラーム基準日
+											&& ((UnbalanceVacation)x).getDigestionCate() == DigestionAtr.UNUSED)
+									.collect(Collectors.toList());
+							if(lstAcctAbsen.isEmpty()) continue;
+							for(AccumulationAbsenceDetail detail : lstAcctAbsen) {
+								
+								checkValue += "\n" + TextResource.localize("KAL010_305",
+										detail.getDateOccur().getDayoffDate().get().toString(),
+										String.valueOf(detail.getUnbalanceNumber().getDay().v()));
+								
+							}
+							
+							if(!checkValue.isEmpty()) {
+								alarmContent += "\n" + TextResource.localize("KAL010_279",
+										String.valueOf(deadlCheckMonth), checkValue);
+							}
+						}
+						break;
+					case MANUAL_INPUT:
+						List<EditStateOfMonthlyPerformance> lstEditState = data.lstEditState.stream()
+							.filter(x -> x.getEmployeeId().equals(sid) && x.getYm().equals(ym))
 							.collect(Collectors.toList());
-					ExtractionAlarmPeriodDate date = new ExtractionAlarmPeriodDate(Optional.ofNullable(GeneralDate.ymd(ym.year(), ym.month(), 1)), Optional.empty());
-					String workplaceId = getWplByListSidAndPeriod.stream().filter(x -> x.getEmployeeId().equals(sid))
-							.collect(Collectors.toList())
-							.get(0).getLstWkpIdAndPeriod().stream().filter(y -> y.getDatePeriod().start().beforeOrEquals(enDate) 
-									&& y.getDatePeriod().end().afterOrEquals(startDate))
-							.collect(Collectors.toList()).get(0).getWorkplaceId();
-					ExtractionResultDetail exDetail = new ExtractionResultDetail(sid,
-							date,
-							lstFixItemCond.get(0).getFixedExtraItemMonName().v(),
-							alarmContent,
-							GeneralDateTime.now(),
-							Optional.ofNullable(workplaceId),
-							Optional.ofNullable(fixCond.getMessage().isPresent() ? fixCond.getMessage().get().v() : null),
-							Optional.ofNullable(checkValue));
-					List<ResultOfEachCondition> result = lstResultCondition.stream()
-							.filter(x -> x.getCheckType() == AlarmListCheckType.FixCheck && x.getNo().equals(String.valueOf(fixCond.getFixedExtraItemMonNo().value)))
-							.collect(Collectors.toList());
-					if(result.isEmpty()) {
-						ResultOfEachCondition resultCon = new ResultOfEachCondition(AlarmListCheckType.FixCheck,
-								String.valueOf(fixCond.getFixedExtraItemMonNo().value),
-								new ArrayList<>());
-						resultCon.getLstResultDetail().add(exDetail);
-						lstResultCondition.add(resultCon);
-					} else {
-						ResultOfEachCondition ex = result.get(0);
-						lstResultCondition.remove(ex);
-						ex.getLstResultDetail().add(exDetail);
-						lstResultCondition.add(ex);
+						if(lstEditState.isEmpty()) continue;
+						String itemName = "";
+						for(EditStateOfMonthlyPerformance editStare: lstEditState) {
+							List<String> lstItemName = data.lstItemMond.stream().filter(x -> x.getAttendanceItemId() == editStare.getAttendanceItemId())
+									.collect(Collectors.toList())
+									.stream().map(x -> x.getAttendanceItemName()).collect(Collectors.toList());
+							if(!lstItemName.isEmpty()) {
+								itemName = "、" + lstItemName.get(0);
+							}
+						}
+						if(!itemName.isEmpty()) {
+							itemName = itemName.substring(1);
+							alarmContent =  TextResource.localize("KAL010_606");
+							checkValue = itemName;
+						}
+						break;
+						default:
+							break;
+					}
+					if(!alarmContent.isEmpty()) {
+						List<FixedExtraItemMon> lstFixItemCond = data.lstFixItemCond.stream()
+								.filter(x -> x.getFixedExtraItemMonNo() == fixCond.getFixedExtraItemMonNo())
+								.collect(Collectors.toList());
+						ExtractionAlarmPeriodDate date = new ExtractionAlarmPeriodDate(Optional.ofNullable(GeneralDate.ymd(ym.year(), ym.month(), 1)), Optional.empty());
+						String workplaceId = getWplByListSidAndPeriod.stream().filter(x -> x.getEmployeeId().equals(sid))
+								.collect(Collectors.toList())
+								.get(0).getLstWkpIdAndPeriod().stream().filter(y -> y.getDatePeriod().start().beforeOrEquals(enDate) 
+										&& y.getDatePeriod().end().afterOrEquals(startDate))
+								.collect(Collectors.toList()).get(0).getWorkplaceId();
+						ExtractionResultDetail exDetail = new ExtractionResultDetail(sid,
+								date,
+								lstFixItemCond.get(0).getFixedExtraItemMonName().v(),
+								alarmContent,
+								GeneralDateTime.now(),
+								Optional.ofNullable(workplaceId),
+								Optional.ofNullable(fixCond.getMessage().isPresent() ? fixCond.getMessage().get().v() : null),
+								Optional.ofNullable(checkValue));
+						List<ResultOfEachCondition> result = lstResultCondition.stream()
+								.filter(x -> x.getCheckType() == AlarmListCheckType.FixCheck && x.getNo().equals(String.valueOf(fixCond.getFixedExtraItemMonNo().value)))
+								.collect(Collectors.toList());
+						if(result.isEmpty()) {
+							ResultOfEachCondition resultCon = new ResultOfEachCondition(AlarmListCheckType.FixCheck,
+									String.valueOf(fixCond.getFixedExtraItemMonNo().value),
+									new ArrayList<>());
+							resultCon.getLstResultDetail().add(exDetail);
+							lstResultCondition.add(resultCon);
+						} else {
+							ResultOfEachCondition ex = result.get(0);
+							lstResultCondition.remove(ex);
+							ex.getLstResultDetail().add(exDetail);
+							lstResultCondition.add(ex);
+						}
 					}
 				}
 			}
-		}
+			synchronized (this) {
+				counter.accept(emps.size());
+			}
+		});
+		
 			
 	}
 	/**
@@ -454,135 +482,172 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 	 * @param lstResultCondition
 	 * @param data
 	 */
-	private void extractAnyCondAlarm(List<String> lstSid, YearMonthPeriod mPeriod, List<WorkPlaceHistImportAl> getWplByListSidAndPeriod,
+	private void extractAnyCondAlarm(List<String> lstSid, YearMonthPeriod mPeriod, 
+			List<WorkPlaceHistImportAl> getWplByListSidAndPeriod,
 			ExtraResultMonthly anyCond,
-			List<ResultOfEachCondition> lstResultCondition, DataCheck data) {
+			List<ResultOfEachCondition> lstResultCondition, DataCheck data, Consumer<Integer> counter,
+			Supplier<Boolean> shouldStop) {
 		//残数チェック
 		Optional<CheckRemainNumberMon> optRemainCond = remainNumberRepos.getByEralCheckID(anyCond.getErrorAlarmCheckID());
 		Optional<AttendanceItemCondition> optCheckConMonthly = anyCond.getCheckConMonthly();
-		if(!optCheckConMonthly.isPresent()) {
-			return;
-		}
-		AttendanceItemCondition checkConMonthly = optCheckConMonthly.get();
-		CheckRemainNumberMon remainCond = null;
-		TypeCheckVacation checkVacation = TypeCheckVacation.ANNUAL_PAID_LEAVE;
-		if(optRemainCond.isPresent()) {
-			remainCond = optRemainCond.get();
-			checkVacation = remainCond.getCheckVacation(); //チェックする休暇
-			if(checkVacation == TypeCheckVacation.ANNUAL_PAID_LEAVE) {
-				//社員の月毎の確定済み年休を取得する
-				data.mapAnnLeaveData = getAnnLeaRemainData(lstSid, mPeriod);
-			}
-			if(checkVacation == TypeCheckVacation.YEARLY_RESERVED) {
-				data.mapReserveData = getReserveLeaRemain(lstSid, mPeriod);
-			}
-		}
 		YearMonth endMonthTemp = mPeriod.end().addMonths(1);
 		GeneralDate endDateTemp = GeneralDate.ymd(endMonthTemp.year(), endMonthTemp.month(), 1);
 		GeneralDate enDate = endDateTemp.addDays(-1);
 		GeneralDate startDate = GeneralDate.ymd(mPeriod.start().year(), mPeriod.end().month(), 1);
-		Map<String, AttendanceItemCondition> condition = new HashMap<>();
-		condition.put(anyCond.getErrorAlarmCheckID(), anyCond.getCheckConMonthly().get());
+		
 		Map<String, Map<YearMonth, Map<String,String>>> resultsData = new HashMap<>();
-		Map<String, Map<YearMonth, Map<String, Integer>>> checkPerTimeMonActualResult = new HashMap<>();
-		if(anyCond.getTypeCheckItem().value > 3) {
-			checkPerTimeMonActualResult = perTimeService.checkPerTimeMonActualResult(mPeriod, 
-					lstSid,
-					condition, 
-					resultsData);
-		}
-
-		for(String sid : lstSid) {
-			String workplaceId = getWplByListSidAndPeriod.stream().filter(x -> x.getEmployeeId().equals(sid))
-					.collect(Collectors.toList())
-					.get(0).getLstWkpIdAndPeriod().stream().filter(y -> y.getDatePeriod().start().beforeOrEquals(enDate) 
-							&& y.getDatePeriod().end().afterOrEquals(startDate))
-					.collect(Collectors.toList()).get(0).getWorkplaceId();
-			
-			if(remainCond != null) {//残数チェック
-				CompareOperatorText compareOperatorText = convertComparaToText.convertCompareType(
-						remainCond.getCheckOperatorType() == CheckOperatorType.SINGLE_VALUE 
-								? checkConMonthly.getGroup1().getLstErAlAtdItemCon().get(0).getCompareSingleValue().getConditionType().value
-								:checkConMonthly.getGroup1().getLstErAlAtdItemCon().get(0).getCompareRange().getCompareOperator().value);
-				switch (checkVacation) {
-				case ANNUAL_PAID_LEAVE:
-					List<AnnualLeaveUsageDto> lstAnn = data.mapAnnLeaveData.get(sid);
-					if(lstAnn.isEmpty()) {
-						continue;
-					}
-					for(AnnualLeaveUsageDto annaData : lstAnn) {
-						double remainingDays = annaData.getRemainingDays().v();
-						chkCheckValue(anyCond, lstResultCondition, checkConMonthly, remainCond, sid, workplaceId,
-								compareOperatorText, remainingDays, annaData.getYearMonth());							
-					}
-					break;
-				case SUB_HOLIDAY:
-					List<DayoffCurrentMonthOfEmployee> lstDayOffRemain = dayOffRemainExport.lstDayoffCurrentMonthOfEmployee(sid, mPeriod.start(), mPeriod.end());
-					if(lstDayOffRemain.isEmpty()) {
-						continue;
-					}
-					for(DayoffCurrentMonthOfEmployee dayOffRemain : lstDayOffRemain) {
-						double remainingDays = dayOffRemain.getRemainingDays();
-						chkCheckValue(anyCond, lstResultCondition, checkConMonthly, remainCond, sid, workplaceId,
-								compareOperatorText, remainingDays, dayOffRemain.getYm());
-					}
-					break;
-				case PAUSE:
-					List<AbsenceleaveCurrentMonthOfEmployee> lstPauseRemain = pauseRemainExport.getDataCurrentMonthOfEmployee(sid, mPeriod.start(), mPeriod.end());
-					if(lstPauseRemain.isEmpty()) {
-						continue;
-					}
-					
-					for(AbsenceleaveCurrentMonthOfEmployee pauseRemain: lstPauseRemain) {
-						double remainDays = pauseRemain.getRemainingDays();
-						chkCheckValue(anyCond, lstResultCondition, checkConMonthly, remainCond, sid, workplaceId,
-								compareOperatorText, remainDays, pauseRemain.getYm());
-					}
-					
-					break;
-				case YEARLY_RESERVED:
-					List<ReserveLeaveUsageDto> lstReserve = data.mapReserveData.get(sid);
-					if(lstReserve.isEmpty()) {
-						continue;
-					}
-					for(ReserveLeaveUsageDto reserve : lstReserve) {
-						double remaiDays = reserve.getRemainingDays().v();
-						chkCheckValue(anyCond, lstResultCondition, checkConMonthly, remainCond, sid, workplaceId,
-								compareOperatorText, remaiDays, reserve.getYearMonth());
-					}
-					break;
-				case SPECIAL_HOLIDAY:
-					List<Integer> listSpeCode = remainCond.getListAttdID().get();
-					List<SpecialHolidayRemainDataOutput> lstSpeHoliday = speHolidaySevice.getSpeHoliOfPeriodAndCodes(sid, mPeriod.start(), mPeriod.end(), listSpeCode);
-					if(lstSpeHoliday.isEmpty()) {
-						continue;
-					}
-					for(SpecialHolidayRemainDataOutput speHoliday : lstSpeHoliday) {
-						double remainDay = speHoliday.getRemainDays();
-						chkCheckValue(anyCond, lstResultCondition, checkConMonthly, remainCond, sid, workplaceId,
-								compareOperatorText, remainDay, speHoliday.getYm());
-					}
-					
-					default:
-						break;
+		
+		parallelManager.forEach(CollectionUtil.partitionBySize(lstSid, 100), emps -> {
+			synchronized (this) {
+				if (shouldStop.get()) {
+					return;
 				}
 			}
+			Map<String, Map<YearMonth, Map<String, Integer>>> checkPerTimeMonActualResult = new HashMap<>();
+			if(anyCond.getTypeCheckItem().value > 3) {
+				Map<String, AttendanceItemCondition> condition = new HashMap<>();
+				condition.put(anyCond.getErrorAlarmCheckID(), anyCond.getCheckConMonthly().get());
+				checkPerTimeMonActualResult = perTimeService.checkPerTimeMonActualResult(mPeriod, 
+						emps,
+						condition, 
+						resultsData);
+			}
+			CheckRemainNumberMon remainCond = null;
+			TypeCheckVacation checkVacation = TypeCheckVacation.ANNUAL_PAID_LEAVE;
+			if(optRemainCond.isPresent()) {
+				remainCond = optRemainCond.get();
+				checkVacation = remainCond.getCheckVacation(); //チェックする休暇
+				if(checkVacation == TypeCheckVacation.ANNUAL_PAID_LEAVE) {
+					//社員の月毎の確定済み年休を取得する
+					data.mapAnnLeaveData = getAnnLeaRemainData(emps, mPeriod);
+				}
+				if(checkVacation == TypeCheckVacation.YEARLY_RESERVED) {
+					data.mapReserveData = getReserveLeaRemain(emps, mPeriod);
+				}
+			}
+			for(String sid : emps) {
+				List<WorkPlaceIdAndPeriodImportAl> workplaceIds = getWplByListSidAndPeriod.stream().filter(x -> x.getEmployeeId().equals(sid))
+						.collect(Collectors.toList())
+						.get(0).getLstWkpIdAndPeriod().stream().filter(y -> y.getDatePeriod().start().beforeOrEquals(enDate) 
+								&& y.getDatePeriod().end().afterOrEquals(startDate))
+						.collect(Collectors.toList());
+				String workplaceId = "";
+				if(!workplaceIds.isEmpty()) {
+					workplaceId = workplaceIds.get(0).getWorkplaceId();
+				}
+				if(remainCond != null) {//残数チェック
+					if(!optCheckConMonthly.isPresent()) {
+						return;
+					}
+					AttendanceItemCondition checkConMonthly = optCheckConMonthly.get();
+					remainCheck(mPeriod, anyCond, lstResultCondition, data, checkConMonthly, remainCond, checkVacation,
+							sid, workplaceId);
+				}
+				if(anyCond.getTypeCheckItem() == TypeMonCheckItem.CERTAIN_DAY_OFF) {
+					//TODO 「期間内の公休残数を集計する」まだ完成してないから対応してない
+				}
+				if(anyCond.getTypeCheckItem().value > 3) { //チェック種類：時間、日数、回数、金額、複合条件
 
-			if(anyCond.getTypeCheckItem().value > 3) { //チェック種類：時間、日数、回数、金額、複合条件
-
-				for (YearMonth yearMonth : mPeriod.yearMonthsBetween()) {
-					if(isError(checkPerTimeMonActualResult, anyCond.getErrorAlarmCheckID(), sid, yearMonth)) {
-						if(anyCond.getTypeCheckItem() == TypeMonCheckItem.COMPOUND_CON) {
-							extractCompoun(lstResultCondition, anyCond, sid, yearMonth, resultsData, data, workplaceId);
-						} else {
-							extractTimeDayTimesMoney(lstResultCondition, anyCond, sid, yearMonth, resultsData, data, workplaceId);
+					for (YearMonth yearMonth : mPeriod.yearMonthsBetween()) {
+						if(isError(checkPerTimeMonActualResult, anyCond.getErrorAlarmCheckID(), sid, yearMonth)) {
+							if(anyCond.getTypeCheckItem() == TypeMonCheckItem.COMPOUND_CON) {
+								extractCompoun(lstResultCondition, anyCond, sid, yearMonth, resultsData, data, workplaceId);
+							} else {
+								extractTimeDayTimesMoney(lstResultCondition, anyCond, sid, yearMonth, resultsData, data, workplaceId);
+							}
 						}
 					}
+					
 				}
-				
+			}	
+			synchronized (this) {
+				counter.accept(emps.size());
 			}
-		}		
+		});
+			
 		
+	}
+	/**
+	 * 残数チェック
+	 * @param mPeriod
+	 * @param anyCond
+	 * @param lstResultCondition
+	 * @param data
+	 * @param checkConMonthly
+	 * @param remainCond
+	 * @param checkVacation
+	 * @param sid
+	 * @param workplaceId
+	 */
+	private void remainCheck(YearMonthPeriod mPeriod, ExtraResultMonthly anyCond,
+			List<ResultOfEachCondition> lstResultCondition, DataCheck data, AttendanceItemCondition checkConMonthly,
+			CheckRemainNumberMon remainCond, TypeCheckVacation checkVacation, String sid, String workplaceId) {
+		CompareOperatorText compareOperatorText = convertComparaToText.convertCompareType(
+				remainCond.getCheckOperatorType() == CheckOperatorType.SINGLE_VALUE 
+						? checkConMonthly.getGroup1().getLstErAlAtdItemCon().get(0).getCompareSingleValue().getConditionType().value
+						:checkConMonthly.getGroup1().getLstErAlAtdItemCon().get(0).getCompareRange().getCompareOperator().value);
+		switch (checkVacation) {
+		case ANNUAL_PAID_LEAVE:
+			List<AnnualLeaveUsageDto> lstAnn = data.mapAnnLeaveData.get(sid);
+			if(lstAnn.isEmpty()) {
+				return;
+			}
+			for(AnnualLeaveUsageDto annaData : lstAnn) {
+				double remainingDays = annaData.getRemainingDays().v();
+				chkCheckValue(anyCond, lstResultCondition, checkConMonthly, remainCond, sid, workplaceId,
+						compareOperatorText, remainingDays, annaData.getYearMonth());							
+			}
+			break;
+		case SUB_HOLIDAY:
+			List<DayoffCurrentMonthOfEmployee> lstDayOffRemain = dayOffRemainExport.lstDayoffCurrentMonthOfEmployee(sid, mPeriod.start(), mPeriod.end());
+			if(lstDayOffRemain.isEmpty()) {
+				return;
+			}
+			for(DayoffCurrentMonthOfEmployee dayOffRemain : lstDayOffRemain) {
+				double remainingDays = dayOffRemain.getRemainingDays();
+				chkCheckValue(anyCond, lstResultCondition, checkConMonthly, remainCond, sid, workplaceId,
+						compareOperatorText, remainingDays, dayOffRemain.getYm());
+			}
+			break;
+		case PAUSE:
+			List<AbsenceleaveCurrentMonthOfEmployee> lstPauseRemain = pauseRemainExport.getDataCurrentMonthOfEmployee(sid, mPeriod.start(), mPeriod.end());
+			if(lstPauseRemain.isEmpty()) {
+				return;
+			}
+			
+			for(AbsenceleaveCurrentMonthOfEmployee pauseRemain: lstPauseRemain) {
+				double remainDays = pauseRemain.getRemainingDays();
+				chkCheckValue(anyCond, lstResultCondition, checkConMonthly, remainCond, sid, workplaceId,
+						compareOperatorText, remainDays, pauseRemain.getYm());
+			}
+			
+			break;
+		case YEARLY_RESERVED:
+			List<ReserveLeaveUsageDto> lstReserve = data.mapReserveData.get(sid);
+			if(lstReserve.isEmpty()) {
+				return;
+			}
+			for(ReserveLeaveUsageDto reserve : lstReserve) {
+				double remaiDays = reserve.getRemainingDays().v();
+				chkCheckValue(anyCond, lstResultCondition, checkConMonthly, remainCond, sid, workplaceId,
+						compareOperatorText, remaiDays, reserve.getYearMonth());
+			}
+			break;
+		case SPECIAL_HOLIDAY:
+			List<Integer> listSpeCode = remainCond.getListAttdID().get();
+			List<SpecialHolidayRemainDataOutput> lstSpeHoliday = speHolidaySevice.getSpeHoliOfPeriodAndCodes(sid, mPeriod.start(), mPeriod.end(), listSpeCode);
+			if(lstSpeHoliday.isEmpty()) {
+				return;
+			}
+			for(SpecialHolidayRemainDataOutput speHoliday : lstSpeHoliday) {
+				double remainDay = speHoliday.getRemainDays();
+				chkCheckValue(anyCond, lstResultCondition, checkConMonthly, remainCond, sid, workplaceId,
+						compareOperatorText, remainDay, speHoliday.getYm());
+			}
+			
+			default:
+				break;
+		}
 	}
 	/**
 	 * 積立年休
@@ -703,6 +768,7 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 					String.valueOf(anyCond.getSortBy()),
 					new ArrayList<>());
 			resultCon.getLstResultDetail().add(detail);
+			lstResultCondition.add(resultCon);
 		} else {
 			ResultOfEachCondition ex = result.get(0);
 			lstResultCondition.remove(ex);
@@ -710,6 +776,16 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 			lstResultCondition.add(ex);
 		}
 	}
+	/**
+	 * 複合条件
+	 * @param lstResultCondition
+	 * @param anyCond
+	 * @param sid
+	 * @param yearMonth
+	 * @param resultsData
+	 * @param data
+	 * @param workplaceId
+	 */
 	private void extractCompoun(List<ResultOfEachCondition> lstResultCondition, ExtraResultMonthly anyCond,
 			String sid, YearMonth yearMonth, Map<String, Map<YearMonth, Map<String,String>>> resultsData, DataCheck data
 			, String workplaceId) {
@@ -905,7 +981,7 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 								startValueDays + TextResource.localize("KAL010_292"),
 								compareOperatorText.getCompareLeft(),
 								nameErrorAlarm,
-								compareOperatorText.getCompareright(),
+								compareOperatorText.getCompareright() + 
 								endValueDays + TextResource.localize("KAL010_292")
 								);	
 					}else {
@@ -913,8 +989,7 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 								nameErrorAlarm,
 								compareOperatorText.getCompareLeft(),
 								startValueDays + TextResource.localize("KAL010_292") + "," + endValueDays + TextResource.localize("KAL010_292"),
-								compareOperatorText.getCompareright(),
-								nameErrorAlarm
+								compareOperatorText.getCompareright() + nameErrorAlarm
 								);
 					}
 				}
@@ -1002,8 +1077,8 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 				sid, 
 				workplaceId,
 				checkedValue,
-				anyCond.getDisplayMessage().isPresent() ? anyCond.getDisplayMessage().get().v() : "",
-						periodDate);
+				alarmDescription,
+				periodDate);
 	}
 	private String getNameErrorAlarm(List<MonthlyAttendanceItemNameDto> attendanceItemNames ,int type,String nameErrorAlarm){
 		if(!CollectionUtil.isEmpty(attendanceItemNames)) {

@@ -193,7 +193,8 @@ module nts.uk.at.view.kal004.share.model {
         extractionAverMonth: ExtractionAverageMonthCommand;
         
         constructor(alarmCategory: number, checkConditionCodes: Array<string>, extractionPeriodDaily: ExtractionPeriodDailyCommand,
-            extractionPeriodUnit: PeriodUnitCommand, listExtractionMonthly: Array<ExtractionPeriodMonthlyCommand>, extractionYear:  ExtractionRangeYearCommand, extractionAverMonth: ExtractionAverageMonthCommand) {
+            extractionPeriodUnit: PeriodUnitCommand, listExtractionMonthly: Array<ExtractionPeriodMonthlyCommand>, 
+            extractionYear:  ExtractionRangeYearCommand, extractionAverMonth: ExtractionAverageMonthCommand) {
             this.alarmCategory = alarmCategory;
             this.checkConditionCodes = checkConditionCodes;
             

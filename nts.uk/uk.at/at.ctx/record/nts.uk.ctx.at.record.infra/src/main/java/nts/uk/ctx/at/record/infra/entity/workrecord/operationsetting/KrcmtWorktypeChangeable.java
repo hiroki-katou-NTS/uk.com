@@ -8,7 +8,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * @author danpv
@@ -16,7 +16,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  */
 @Entity
 @Table(name = "KRCMT_WORKTYPE_CHANGEABLE")
-public class KrcmtWorktypeChangeable extends UkJpaEntity {
+public class KrcmtWorktypeChangeable extends ContractUkJpaEntity {
 
 	@EmbeddedId
 	public KrcmtWorktypeChangeablePk pk;

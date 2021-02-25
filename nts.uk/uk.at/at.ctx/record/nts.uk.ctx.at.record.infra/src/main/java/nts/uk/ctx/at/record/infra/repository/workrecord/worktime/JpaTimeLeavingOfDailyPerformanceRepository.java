@@ -29,11 +29,11 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
-//import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtWorkScheduleTime;
+//import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtDayTsAtdSche;
 //import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtWorkScheduleTimePK;
-import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtDaiLeavingWork;
+import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtDayTsAtd;
 import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtDaiLeavingWorkPK;
-import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtTimeLeavingWork;
+import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtDayTsAtdStmp;
 import nts.uk.ctx.at.record.infra.entity.worktime.KrcdtTimeLeavingWorkPK;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
@@ -58,7 +58,7 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT a ");
-		builderString.append("FROM KrcdtDaiLeavingWork a ");
+		builderString.append("FROM KrcdtDayTsAtd a ");
 		builderString.append("WHERE a.krcdtDaiLeavingWorkPK.employeeId = :employeeId ");
 		builderString.append("AND a.krcdtDaiLeavingWorkPK.ymd = :ymd ");
 		FIND_BY_KEY = builderString.toString();
@@ -68,14 +68,14 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 	@Override
 	public void delete(String employeeId, GeneralDate ymd) {
 		try (val timeLeavingWorkStatement = this.connection().prepareStatement(
-					"delete from KRCDT_TIME_LEAVING_WORK where SID = ? and YMD = ? and TIME_LEAVING_TYPE = ?")) {
+					"delete from KRCDT_DAY_TS_ATD_STMP where SID = ? and YMD = ? and TIME_LEAVING_TYPE = ?")) {
 			timeLeavingWorkStatement.setString(1, employeeId);
 			timeLeavingWorkStatement.setDate(2, Date.valueOf(ymd.toLocalDate()));
 			timeLeavingWorkStatement.setInt(3, 0);
 			timeLeavingWorkStatement.execute();
 			
 			try (val statement = this.connection().prepareStatement(
-					"delete from KRCDT_DAI_LEAVING_WORK where SID = ? and YMD = ?")) {
+					"delete from KRCDT_DAY_TS_ATD where SID = ? and YMD = ?")) {
 				statement.setString(1, employeeId);
 				statement.setDate(2, Date.valueOf(ymd.toLocalDate()));
 				statement.execute();
@@ -88,7 +88,7 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public Optional<TimeLeavingOfDailyPerformance> findByKey(String employeeId, GeneralDate ymd) {
-		return this.queryProxy().query(FIND_BY_KEY, KrcdtDaiLeavingWork.class).setParameter("employeeId", employeeId)
+		return this.queryProxy().query(FIND_BY_KEY, KrcdtDayTsAtd.class).setParameter("employeeId", employeeId)
 				.setParameter("ymd", ymd).getSingle(f -> f.toDomain());
 	}
 
@@ -97,16 +97,16 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 	@SneakyThrows
 	public List<TimeLeavingOfDailyPerformance> findbyPeriodOrderByYmd(String employeeId, DatePeriod datePeriod) {
 
-		List<KrcdtTimeLeavingWork> scheduleTimes = new ArrayList<>();
+		List<KrcdtDayTsAtdStmp> scheduleTimes = new ArrayList<>();
 
 		try (PreparedStatement sqlSchedule = this.connection().prepareStatement(
-				"select * from KRCDT_TIME_LEAVING_WORK where SID = ? and YMD >= ? and YMD <= ? order by YMD ")) {
+				"select * from KRCDT_DAY_TS_ATD_STMP where SID = ? and YMD >= ? and YMD <= ? order by YMD ")) {
 			sqlSchedule.setString(1, employeeId);
 			sqlSchedule.setDate(2, Date.valueOf(datePeriod.start().localDate()));
 			sqlSchedule.setDate(3, Date.valueOf(datePeriod.end().localDate()));
 
 			scheduleTimes = new NtsResultSet(sqlSchedule.executeQuery()).getList(rec -> {
-				KrcdtTimeLeavingWork entity = new KrcdtTimeLeavingWork();
+				KrcdtDayTsAtdStmp entity = new KrcdtDayTsAtdStmp();
 				entity.krcdtTimeLeavingWorkPK = new KrcdtTimeLeavingWorkPK(rec.getString("SID"), rec.getInt("WORK_NO"),
 						rec.getGeneralDate("YMD"), rec.getInt("TIME_LEAVING_TYPE"));
 				entity.attendanceActualTime = rec.getInt("ATD_ACTUAL_TIME");
@@ -142,10 +142,10 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 			});
 		}
 
-		List<KrcdtTimeLeavingWork> newScheduleTimes = scheduleTimes;
+		List<KrcdtDayTsAtdStmp> newScheduleTimes = scheduleTimes;
 
 		try (PreparedStatement sqlScheduleNew = this.connection().prepareStatement(
-				"select * from KRCDT_DAI_LEAVING_WORK where SID = ? and YMD >= ? and YMD <= ? order by YMD ")) {
+				"select * from KRCDT_DAY_TS_ATD where SID = ? and YMD >= ? and YMD <= ? order by YMD ")) {
 			sqlScheduleNew.setString(1, employeeId);
 			sqlScheduleNew.setDate(2, Date.valueOf(datePeriod.start().localDate()));
 			sqlScheduleNew.setDate(3, Date.valueOf(datePeriod.end().localDate()));
@@ -160,7 +160,7 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 		}
 
 		// return this.queryProxy().query(FIND_BY_PERIOD_ORDER_BY_YMD,
-		// KrcdtDaiLeavingWork.class)
+		// KrcdtDayTsAtd.class)
 		// .setParameter("employeeId", employeeId).setParameter("start",
 		// datePeriod.start())
 		// .setParameter("end", datePeriod.end()).getList(f -> f.toDomain());
@@ -176,17 +176,17 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 		// this.getEntityManager().flush();
 	}
 
-	private void internalUpdate(TimeLeavingOfDailyPerformance domain,KrcdtDaiLeavingWork entity) {
-		List<KrcdtTimeLeavingWork> timeWorks = entity.timeLeavingWorks;
+	private void internalUpdate(TimeLeavingOfDailyPerformance domain,KrcdtDayTsAtd entity) {
+		List<KrcdtDayTsAtdStmp> timeWorks = entity.timeLeavingWorks;
 		entity.workTimes = domain.getAttendance().getWorkTimes() == null ? null : domain.getAttendance().getWorkTimes().v();
 		domain.getAttendance().getTimeLeavingWorks().stream().forEach(c -> {
-			KrcdtTimeLeavingWork krcdtTimeLeavingWork = timeWorks.stream()
+			KrcdtDayTsAtdStmp krcdtTimeLeavingWork = timeWorks.stream()
 					.filter(x -> x.krcdtTimeLeavingWorkPK.workNo == c.getWorkNo().v()
 							&& x.krcdtTimeLeavingWorkPK.timeLeavingType == 0)
 					.findFirst().orElse(null);
 			boolean isNew = krcdtTimeLeavingWork == null;
 			if (isNew) {
-				krcdtTimeLeavingWork = new KrcdtTimeLeavingWork();
+				krcdtTimeLeavingWork = new KrcdtDayTsAtdStmp();
 				krcdtTimeLeavingWork.krcdtTimeLeavingWorkPK = new KrcdtTimeLeavingWorkPK(domain.getEmployeeId(),
 						c.getWorkNo().v(), domain.getYmd(), 0);
 			}
@@ -305,14 +305,14 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 		// this.getEntityManager().flush();
 	}
 
-	private KrcdtDaiLeavingWork getDailyLeaving(String employee, GeneralDate date) {
+	private KrcdtDayTsAtd getDailyLeaving(String employee, GeneralDate date) {
 		try (val statement = this.connection().prepareStatement(
-					"select * FROM KRCDT_DAI_LEAVING_WORK where SID = ? and YMD = ?")) {
+					"select * FROM KRCDT_DAY_TS_ATD where SID = ? and YMD = ?")) {
 			statement.setString(1, employee);
 			statement.setDate(2, Date.valueOf(date.localDate()));
-			Optional<KrcdtDaiLeavingWork> krcdtDaiBreakTimes = new NtsResultSet(statement.executeQuery())
+			Optional<KrcdtDayTsAtd> krcdtDaiBreakTimes = new NtsResultSet(statement.executeQuery())
 					.getSingle(rec -> {
-						val entity = new KrcdtDaiLeavingWork();
+						val entity = new KrcdtDayTsAtd();
 						entity.krcdtDaiLeavingWorkPK = new KrcdtDaiLeavingWorkPK(employee, date);
 						entity.workTimes = rec.getInt("WORK_TIMES");
 						entity.timeLeavingWorks = getTimeLeavingWork(employee, date);
@@ -329,22 +329,22 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 		}
 	}
 
-	private KrcdtDaiLeavingWork getDefault(String employee, GeneralDate date) {
-		KrcdtDaiLeavingWork defaultV = new KrcdtDaiLeavingWork();
+	private KrcdtDayTsAtd getDefault(String employee, GeneralDate date) {
+		KrcdtDayTsAtd defaultV = new KrcdtDayTsAtd();
 		defaultV.krcdtDaiLeavingWorkPK = new KrcdtDaiLeavingWorkPK(employee, date);
 		defaultV.timeLeavingWorks = new ArrayList<>();
 		return defaultV;
 	}
 
-	private List<KrcdtTimeLeavingWork> getTimeLeavingWork(String employee, GeneralDate date) {
+	private List<KrcdtDayTsAtdStmp> getTimeLeavingWork(String employee, GeneralDate date) {
 		try (PreparedStatement statement = this.connection().prepareStatement(
-					"select * FROM KRCDT_TIME_LEAVING_WORK where SID = ? and YMD = ? and TIME_LEAVING_TYPE = ?")) {
+					"select * FROM KRCDT_DAY_TS_ATD_STMP where SID = ? and YMD = ? and TIME_LEAVING_TYPE = ?")) {
 
 			statement.setString(1, employee);
 			statement.setDate(2, Date.valueOf(date.localDate()));
 			statement.setInt(3, 0);
-			List<KrcdtTimeLeavingWork> krcdtTimeLeaveWorks = new NtsResultSet(statement.executeQuery()).getList(rec -> {
-				val entity = new KrcdtTimeLeavingWork();
+			List<KrcdtDayTsAtdStmp> krcdtTimeLeaveWorks = new NtsResultSet(statement.executeQuery()).getList(rec -> {
+				val entity = new KrcdtDayTsAtdStmp();
 				entity.krcdtTimeLeavingWorkPK = new KrcdtTimeLeavingWorkPK();
 				entity.krcdtTimeLeavingWorkPK.employeeId = employee;
 				entity.krcdtTimeLeavingWorkPK.ymd = date;
@@ -389,13 +389,13 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 		if (timeLeavingOfDailyPerformance == null) {
 			return;
 		}
-		// this.commandProxy().insert(KrcdtDaiLeavingWork.toEntity(timeLeavingOfDailyPerformance));
+		// this.commandProxy().insert(KrcdtDayTsAtd.toEntity(timeLeavingOfDailyPerformance));
 		// this.getEntityManager().flush();
 		try {
 			Connection con = this.getEntityManager().unwrap(Connection.class);
 			Statement statementI = con.createStatement();
 
-			String insertTableSQL = "INSERT INTO KRCDT_DAI_LEAVING_WORK ( SID , YMD , WORK_TIMES ) " + "VALUES( '"
+			String insertTableSQL = "INSERT INTO KRCDT_DAY_TS_ATD ( SID , YMD , WORK_TIMES ) " + "VALUES( '"
 					+ timeLeavingOfDailyPerformance.getEmployeeId() + "' , '" + timeLeavingOfDailyPerformance.getYmd()
 					+ "' , " + timeLeavingOfDailyPerformance.getAttendance().getWorkTimes().v() + " )";
 			statementI.executeUpdate(JDBCUtil.toInsertWithCommonField(insertTableSQL));
@@ -516,7 +516,7 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 						? timeLeavingWork.getLeaveStamp().get().getTimeVacation().get().getEnd().valueAsMinutes()
 						: null;
 
-				String insertTimeLeaving = "INSERT INTO KRCDT_TIME_LEAVING_WORK ( SID , WORK_NO , YMD , TIME_LEAVING_TYPE, ATD_ACTUAL_TIME , ATD_ACTUAL_PLACE_CODE , "
+				String insertTimeLeaving = "INSERT INTO KRCDT_DAY_TS_ATD_STMP ( SID , WORK_NO , YMD , TIME_LEAVING_TYPE, ATD_ACTUAL_TIME , ATD_ACTUAL_PLACE_CODE , "
 						+ " ATD_ACTUAL_SOURCE_INFO , ATD_STAMP_TIME , ATD_STAMP_PLACE_CODE, ATD_STAMP_SOURCE_INFO, ATD_NUMBER_STAMP, "
 						+ " LWK_ACTUAL_TIME, LWK_ACTUAL_PLACE_CODE , LWK_ACTUAL_SOURCE_INFO, LWK_STAMP_TIME, LWK_STAMP_PLACE_CODE , LWK_STAMP_SOURCE_INFO, LWK_NUMBER_STAMP , "
 						+ " ATD_OVERTIME, ATD_LATE_NIGHT_OVERTIME, ATD_BREAK_START,ATD_BREAK_END, LWK_OVERTIME, LWK_LATE_NIGHT_OVERTIME, LWK_BREAK_START, LWK_BREAK_END  ) "
@@ -539,14 +539,14 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 
 	@Override
 	public void add(TimeLeavingOfDailyPerformance timeLeaving) {
-		KrcdtDaiLeavingWork entity = KrcdtDaiLeavingWork.toEntity(timeLeaving);
+		KrcdtDayTsAtd entity = KrcdtDayTsAtd.toEntity(timeLeaving);
 		commandProxy().insert(entity);
 		commandProxy().insertAll(entity.timeLeavingWorks);
 	}
 	//
 	// @Override
 	// public void update(TimeLeavingOfDailyPerformance timeLeaving) {
-	// KrcdtDaiLeavingWork entity = KrcdtDaiLeavingWork.toEntity(timeLeaving);
+	// KrcdtDayTsAtd entity = KrcdtDayTsAtd.toEntity(timeLeaving);
 	// commandProxy().update(entity);
 	// commandProxy().updateAll(entity.timeLeavingWorks);
 	// }
@@ -567,7 +567,7 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 		String subIn = NtsStatement.In.createParamsString(subList);
 
 		Map<String, Map<GeneralDate, List<TimeLeavingWork>>> scheTimes = new HashMap<>(); 
-		try (val stmt = this.connection().prepareStatement("SELECT * FROM KRCDT_TIME_LEAVING_WORK WHERE YMD >= ? AND YMD <= ? AND TIME_LEAVING_TYPE = 0 AND SID IN (" + subIn + ")")){
+		try (val stmt = this.connection().prepareStatement("SELECT * FROM KRCDT_DAY_TS_ATD_STMP WHERE YMD >= ? AND YMD <= ? AND TIME_LEAVING_TYPE = 0 AND SID IN (" + subIn + ")")){
 			stmt.setDate(1, Date.valueOf(datePeriod.start().localDate()));
 			stmt.setDate(2, Date.valueOf(datePeriod.end().localDate()));
 			for (int i = 0; i < subList.size(); i++) {
@@ -586,7 +586,7 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 				return null;
 			});
 		};
-		try (val stmt = this.connection().prepareStatement("SELECT * FROM KRCDT_DAI_LEAVING_WORK WHERE YMD >= ? AND YMD <= ? AND SID IN (" + subIn + ")")){
+		try (val stmt = this.connection().prepareStatement("SELECT * FROM KRCDT_DAY_TS_ATD WHERE YMD >= ? AND YMD <= ? AND SID IN (" + subIn + ")")){
 			stmt.setDate(1, Date.valueOf(datePeriod.start().localDate()));
 			stmt.setDate(2, Date.valueOf(datePeriod.end().localDate()));
 			for (int i = 0; i < subList.size(); i++) {
@@ -693,7 +693,7 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
     	String subInDate = NtsStatement.In.createParamsString(subListDate);
 
 		Map<String, Map<GeneralDate, List<TimeLeavingWork>>> scheTimes = new HashMap<>(); 
-		try (val stmt = this.connection().prepareStatement("SELECT * FROM KRCDT_TIME_LEAVING_WORK WHERE SID IN (" + subEmp + ")" + " AND YMD IN (" + subInDate + ")" + "AND TIME_LEAVING_TYPE = 0 ")){
+		try (val stmt = this.connection().prepareStatement("SELECT * FROM KRCDT_DAY_TS_ATD_STMP WHERE SID IN (" + subEmp + ")" + " AND YMD IN (" + subInDate + ")" + "AND TIME_LEAVING_TYPE = 0 ")){
 			for (int i = 0; i < subList.size(); i++) {
 				stmt.setString(i + 1, subList.get(i));
 			}
@@ -715,7 +715,7 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 				return null;
 			});
 		};
-		try (val stmt = this.connection().prepareStatement("SELECT * FROM KRCDT_DAI_LEAVING_WORK  WHERE SID IN (" + subEmp + ")" + " AND YMD IN (" + subInDate + ")")){
+		try (val stmt = this.connection().prepareStatement("SELECT * FROM KRCDT_DAY_TS_ATD  WHERE SID IN (" + subEmp + ")" + " AND YMD IN (" + subInDate + ")")){
 			for (int i = 0; i < subList.size(); i++) {
 				stmt.setString(i + 1, subList.get(i));
 			}
@@ -735,10 +735,10 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 //		return result.stream()
 //				.collect(Collectors.groupingBy(c1 -> c1[0],
 //						Collectors.collectingAndThen(Collectors.toList(),
-//								list -> list.stream().filter(c -> c[1] != null).map(c -> (KrcdtTimeLeavingWork) c[1])
+//								list -> list.stream().filter(c -> c[1] != null).map(c -> (KrcdtDayTsAtdStmp) c[1])
 //										.collect(Collectors.toList()))))
 //				.entrySet().stream()
-//				.map(e -> KrcdtDaiLeavingWork.toDomain((KrcdtDaiLeavingWork) e.getKey(), e.getValue()))
+//				.map(e -> KrcdtDayTsAtd.toDomain((KrcdtDayTsAtd) e.getKey(), e.getValue()))
 //				.collect(Collectors.toList());
 //	}
 }

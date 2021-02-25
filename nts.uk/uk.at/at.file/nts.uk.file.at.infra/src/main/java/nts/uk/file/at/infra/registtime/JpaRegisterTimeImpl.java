@@ -4,11 +4,9 @@ import java.math.BigDecimal;
 import java.util.*;
 
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.i18n.I18NText;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.daily.dailyperformance.classification.DoWork;
@@ -22,11 +20,8 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterCellStyle;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 
 @Stateless
-public class JpaRegisterTimeImpl implements RegistTimeRepository {
-
-	@PersistenceContext
-	private EntityManager entityManager;
-
+public class JpaRegisterTimeImpl extends JpaRepository implements RegistTimeRepository {
+	
 	private static final String END_MONTH = "12";
 
 	private static final String SQL_EXPORT_SHEET_1 = "SELECT "
@@ -41,7 +36,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 
 	private static final String SQL_EXPORT_SHEET_2 = "SELECT aa.EMPLOYMENT_USE_ATR,aa.WORKPLACE_USE_ATR,aa.CLASSIFICATION_USE_ATR "
 			+ "FROM  "
-			+ "KMKMT_AGREEMENT_UNIT_SET aa "
+			+ "KRCMT_36AGR_UNIT aa "
 			+ "WHERE aa.CID = ?1 ";
 
 	private static final String SQL_EXPORT_SHEET_3 = "SELECT aa.WKP_USE_ATR "
@@ -151,8 +146,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 //			+ " 		SELECT"
 //			+ " 			aa.LIMIT_WEEK"
 //			+ " 		FROM"
-//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 			KRCMT_36AGR_BASIC aa"
+//			+ " 		JOIN KRCMT_36AGR_TIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
 //			+ " 		WHERE"
 //			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
 //			+ " 	),"
@@ -162,8 +157,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 //			+ " 		SELECT"
 //			+ " 			aa.LIMIT_TWO_WEEKS"
 //			+ " 		FROM"
-//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 			KRCMT_36AGR_BASIC aa"
+//			+ " 		JOIN KRCMT_36AGR_TIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
 //			+ " 		WHERE"
 //			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
 //			+ " 	),"
@@ -173,8 +168,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 //			+ " 		SELECT"
 //			+ " 			aa.LIMIT_FOUR_WEEKS"
 //			+ " 		FROM"
-//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 			KRCMT_36AGR_BASIC aa"
+//			+ " 		JOIN KRCMT_36AGR_TIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
 //			+ " 		WHERE"
 //			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
 //			+ " 	),"
@@ -184,8 +179,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 //			+ " 		SELECT"
 //			+ " 			aa.LIMIT_ONE_MONTH"
 //			+ " 		FROM"
-//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 			KRCMT_36AGR_BASIC aa"
+//			+ " 		JOIN KRCMT_36AGR_TIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
 //			+ " 		WHERE"
 //			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
 //			+ " 	),"
@@ -195,8 +190,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 //			+ " 		SELECT"
 //			+ " 			aa.LIMIT_TWO_MONTH"
 //			+ " 		FROM"
-//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 			KRCMT_36AGR_BASIC aa"
+//			+ " 		JOIN KRCMT_36AGR_TIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
 //			+ " 		WHERE"
 //			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
 //			+ " 	),"
@@ -206,8 +201,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 //			+ " 		SELECT"
 //			+ " 			aa.LIMIT_THREE_MONTH"
 //			+ " 		FROM"
-//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 			KRCMT_36AGR_BASIC aa"
+//			+ " 		JOIN KRCMT_36AGR_TIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
 //			+ " 		WHERE"
 //			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
 //			+ " 	),"
@@ -217,8 +212,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 //			+ " 		SELECT"
 //			+ " 			aa.LIMIT_YEARLY"
 //			+ " 		FROM"
-//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 			KRCMT_36AGR_BASIC aa"
+//			+ " 		JOIN KRCMT_36AGR_TIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
 //			+ " 		WHERE"
 //			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
 //			+ " 	),"
@@ -226,8 +221,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 //			+ "		bb.UPPER_MONTH,"
 //			+ "		bb.UPPER_MONTH_AVERAGE"
 //			+ " FROM"
-//			+ " 	KMKMT_BASIC_AGREEMENT_SET aa"
-//			+ " JOIN KMKMT_AGREEMENTTIME_WPL bb "
+//			+ " 	KRCMT_36AGR_BASIC aa"
+//			+ " JOIN KRCMT_36AGR_TIME_WKP bb "
 //			+ " ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
 //			+ " JOIN BSYMT_WKP_INFO kk "
 //			+ " ON bb.WKPCD = kk.WKP_ID"
@@ -259,8 +254,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 //			+ " 		SELECT"
 //			+ " 			aa.LIMIT_WEEK"
 //			+ " 		FROM"
-//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 			KRCMT_36AGR_BASIC aa"
+//			+ " 		JOIN KRCMT_36AGR_TIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
 //			+ " 		WHERE"
 //			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
 //			+ " 	),"
@@ -270,8 +265,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 //			+ " 		SELECT"
 //			+ " 			aa.LIMIT_TWO_WEEKS"
 //			+ " 		FROM"
-//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 			KRCMT_36AGR_BASIC aa"
+//			+ " 		JOIN KRCMT_36AGR_TIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
 //			+ " 		WHERE"
 //			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
 //			+ " 	),"
@@ -281,8 +276,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 //			+ " 		SELECT"
 //			+ " 			aa.LIMIT_FOUR_WEEKS"
 //			+ " 		FROM"
-//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 			KRCMT_36AGR_BASIC aa"
+//			+ " 		JOIN KRCMT_36AGR_TIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
 //			+ " 		WHERE"
 //			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
 //			+ " 	),"
@@ -292,8 +287,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 //			+ " 		SELECT"
 //			+ " 			aa.LIMIT_ONE_MONTH"
 //			+ " 		FROM"
-//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 			KRCMT_36AGR_BASIC aa"
+//			+ " 		JOIN KRCMT_36AGR_TIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
 //			+ " 		WHERE"
 //			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
 //			+ " 	),"
@@ -303,8 +298,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 //			+ " 		SELECT"
 //			+ " 			aa.LIMIT_TWO_MONTH"
 //			+ " 		FROM"
-//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 			KRCMT_36AGR_BASIC aa"
+//			+ " 		JOIN KRCMT_36AGR_TIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
 //			+ " 		WHERE"
 //			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
 //			+ " 	),"
@@ -314,8 +309,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 //			+ " 		SELECT"
 //			+ " 			aa.LIMIT_THREE_MONTH"
 //			+ " 		FROM"
-//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 			KRCMT_36AGR_BASIC aa"
+//			+ " 		JOIN KRCMT_36AGR_TIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
 //			+ " 		WHERE"
 //			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
 //			+ " 	),"
@@ -325,16 +320,16 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 //			+ " 		SELECT"
 //			+ " 			aa.LIMIT_YEARLY"
 //			+ " 		FROM"
-//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 			KRCMT_36AGR_BASIC aa"
+//			+ " 		JOIN KRCMT_36AGR_TIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
 //			+ " 		WHERE"
 //			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0"
 //			+ " 	),"
 //			+ "		bb.UPPER_MONTH,"
 //			+ "		bb.UPPER_MONTH_AVERAGE"
 //			+ " FROM"
-//			+ " 	KMKMT_BASIC_AGREEMENT_SET aa"
-//			+ " JOIN KMKMT_AGREEMENTTIME_CLASS bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 	KRCMT_36AGR_BASIC aa"
+//			+ " JOIN KRCMT_36AGR_TIME_CLS bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
 //			+ " Left JOIN BSYMT_CLASSIFICATION kk ON bb.CLSCD = kk.CLSCD AND kk.CID = ?cid "
 //			+ " WHERE"
 //			+ " 	bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 0 "
@@ -349,9 +344,9 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 //			+ "aa.ERROR_YEARLY,aa.ALARM_YEARLY,aa.LIMIT_YEARLY, "
 //			+ "bb.UPPER_MONTH, bb.UPPER_MONTH_AVERAGE "
 //			+ "FROM  "
-//			+ "KMKMT_BASIC_AGREEMENT_SET aa "
+//			+ "KRCMT_36AGR_BASIC aa "
 //			+ "JOIN  "
-//			+ "KMKMT_AGREEMENTTIME_COM bb "
+//			+ "KRCMT_36AGR_TIME_COM bb "
 //			+ "ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID "
 //			+ "WHERE bb.CID = ?1 and bb.LABOR_SYSTEM_ATR = 1";
 
@@ -364,8 +359,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 //			+ " SELECT"
 //			+ " aa.LIMIT_WEEK"
 //			+ " FROM"
-//			+ " KMKMT_BASIC_AGREEMENT_SET aa"
-//			+ " JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " KRCMT_36AGR_BASIC aa"
+//			+ " JOIN KRCMT_36AGR_TIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
 //			+ " WHERE"
 //			+ " bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
 //			+ " ),"
@@ -375,8 +370,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 //			+ " SELECT"
 //			+ " aa.LIMIT_TWO_WEEKS"
 //			+ " FROM"
-//			+ " KMKMT_BASIC_AGREEMENT_SET aa"
-//			+ " JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " KRCMT_36AGR_BASIC aa"
+//			+ " JOIN KRCMT_36AGR_TIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
 //			+ " WHERE"
 //			+ " bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
 //			+ " ),"
@@ -386,8 +381,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 //			+ " SELECT"
 //			+ " aa.LIMIT_FOUR_WEEKS"
 //			+ " FROM"
-//			+ " KMKMT_BASIC_AGREEMENT_SET aa"
-//			+ " JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " KRCMT_36AGR_BASIC aa"
+//			+ " JOIN KRCMT_36AGR_TIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
 //			+ " WHERE"
 //			+ " bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
 //			+ " ),"
@@ -397,8 +392,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 //			+ " SELECT"
 //			+ " aa.LIMIT_ONE_MONTH"
 //			+ " FROM"
-//			+ " KMKMT_BASIC_AGREEMENT_SET aa"
-//			+ " JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " KRCMT_36AGR_BASIC aa"
+//			+ " JOIN KRCMT_36AGR_TIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
 //			+ " WHERE"
 //			+ " bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
 //			+ " ),"
@@ -408,8 +403,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 //			+ " SELECT"
 //			+ " aa.LIMIT_TWO_MONTH"
 //			+ " FROM"
-//			+ " KMKMT_BASIC_AGREEMENT_SET aa"
-//			+ " JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " KRCMT_36AGR_BASIC aa"
+//			+ " JOIN KRCMT_36AGR_TIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
 //			+ " WHERE"
 //			+ " bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
 //			+ " ),"
@@ -419,8 +414,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 //			+ " SELECT"
 //			+ " aa.LIMIT_THREE_MONTH"
 //			+ " FROM"
-//			+ " KMKMT_BASIC_AGREEMENT_SET aa"
-//			+ " JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " KRCMT_36AGR_BASIC aa"
+//			+ " JOIN KRCMT_36AGR_TIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
 //			+ " WHERE"
 //			+ " bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
 //			+ " ),"
@@ -430,16 +425,16 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 //			+ " SELECT"
 //			+ " aa.LIMIT_YEARLY"
 //			+ " FROM"
-//			+ " KMKMT_BASIC_AGREEMENT_SET aa"
-//			+ " JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " KRCMT_36AGR_BASIC aa"
+//			+ " JOIN KRCMT_36AGR_TIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
 //			+ " WHERE"
 //			+ " bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
 //			+ " ),"
 //			+ "	bb.UPPER_MONTH,"
 //			+ "	bb.UPPER_MONTH_AVERAGE"
 //			+ " FROM"
-//			+ " KMKMT_BASIC_AGREEMENT_SET aa"
-//			+ " JOIN KMKMT_AGREEMENTTIME_EMP bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " KRCMT_36AGR_BASIC aa"
+//			+ " JOIN KRCMT_36AGR_TIME_EMP bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
 //			+ " LEFT JOIN BSYMT_EMPLOYMENT kk"
 //			+ " ON bb.EMP_CTG_CODE = kk.CODE AND kk.CID = ?cid"
 //			+ " WHERE"
@@ -456,8 +451,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 //			+ " 		SELECT"
 //			+ " 			aa.LIMIT_WEEK"
 //			+ " 		FROM"
-//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 			KRCMT_36AGR_BASIC aa"
+//			+ " 		JOIN KRCMT_36AGR_TIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
 //			+ " 		WHERE"
 //			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
 //			+ " 	),"
@@ -467,8 +462,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 //			+ " 		SELECT"
 //			+ " 			aa.LIMIT_TWO_WEEKS"
 //			+ " 		FROM"
-//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 			KRCMT_36AGR_BASIC aa"
+//			+ " 		JOIN KRCMT_36AGR_TIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
 //			+ " 		WHERE"
 //			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
 //			+ " 	),"
@@ -478,8 +473,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 //			+ " 		SELECT"
 //			+ " 			aa.LIMIT_FOUR_WEEKS"
 //			+ " 		FROM"
-//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 			KRCMT_36AGR_BASIC aa"
+//			+ " 		JOIN KRCMT_36AGR_TIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
 //			+ " 		WHERE"
 //			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
 //			+ " 	),"
@@ -489,8 +484,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 //			+ " 		SELECT"
 //			+ " 			aa.LIMIT_ONE_MONTH"
 //			+ " 		FROM"
-//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 			KRCMT_36AGR_BASIC aa"
+//			+ " 		JOIN KRCMT_36AGR_TIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
 //			+ " 		WHERE"
 //			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
 //			+ " 	),"
@@ -500,8 +495,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 //			+ " 		SELECT"
 //			+ " 			aa.LIMIT_TWO_MONTH"
 //			+ " 		FROM"
-//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 			KRCMT_36AGR_BASIC aa"
+//			+ " 		JOIN KRCMT_36AGR_TIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
 //			+ " 		WHERE"
 //			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
 //			+ " 	),"
@@ -511,8 +506,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 //			+ " 		SELECT"
 //			+ " 			aa.LIMIT_THREE_MONTH"
 //			+ " 		FROM"
-//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 			KRCMT_36AGR_BASIC aa"
+//			+ " 		JOIN KRCMT_36AGR_TIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
 //			+ " 		WHERE"
 //			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
 //			+ " 	),"
@@ -522,8 +517,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 //			+ " 		SELECT"
 //			+ " 			aa.LIMIT_YEARLY"
 //			+ " 		FROM"
-//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 			KRCMT_36AGR_BASIC aa"
+//			+ " 		JOIN KRCMT_36AGR_TIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
 //			+ " 		WHERE"
 //			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
 //			+ " 	), "
@@ -531,8 +526,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 //			+ "	bb.UPPER_MONTH,"
 //			+ "	bb.UPPER_MONTH_AVERAGE"
 //			+ " FROM"
-//			+ " 	KMKMT_BASIC_AGREEMENT_SET aa"
-//			+ " JOIN KMKMT_AGREEMENTTIME_WPL bb "
+//			+ " 	KRCMT_36AGR_BASIC aa"
+//			+ " JOIN KRCMT_36AGR_TIME_WKP bb "
 //			+ " ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
 //			+ " JOIN BSYMT_WKP_INFO kk "
 //			+ " ON bb.WKPCD = kk.WKP_ID"
@@ -564,8 +559,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 //			+ " 		SELECT"
 //			+ " 			aa.LIMIT_WEEK"
 //			+ " 		FROM"
-//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 			KRCMT_36AGR_BASIC aa"
+//			+ " 		JOIN KRCMT_36AGR_TIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
 //			+ " 		WHERE"
 //			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
 //			+ " 	),"
@@ -575,8 +570,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 //			+ " 		SELECT"
 //			+ " 			aa.LIMIT_TWO_WEEKS"
 //			+ " 		FROM"
-//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 			KRCMT_36AGR_BASIC aa"
+//			+ " 		JOIN KRCMT_36AGR_TIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
 //			+ " 		WHERE"
 //			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
 //			+ " 	),"
@@ -586,8 +581,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 //			+ " 		SELECT"
 //			+ " 			aa.LIMIT_FOUR_WEEKS"
 //			+ " 		FROM"
-//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 			KRCMT_36AGR_BASIC aa"
+//			+ " 		JOIN KRCMT_36AGR_TIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
 //			+ " 		WHERE"
 //			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
 //			+ " 	),"
@@ -597,8 +592,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 //			+ " 		SELECT"
 //			+ " 			aa.LIMIT_ONE_MONTH"
 //			+ " 		FROM"
-//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 			KRCMT_36AGR_BASIC aa"
+//			+ " 		JOIN KRCMT_36AGR_TIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
 //			+ " 		WHERE"
 //			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
 //			+ " 	),"
@@ -608,8 +603,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 //			+ " 		SELECT"
 //			+ " 			aa.LIMIT_TWO_MONTH"
 //			+ " 		FROM"
-//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 			KRCMT_36AGR_BASIC aa"
+//			+ " 		JOIN KRCMT_36AGR_TIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
 //			+ " 		WHERE"
 //			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
 //			+ " 	),"
@@ -619,8 +614,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 //			+ " 		SELECT"
 //			+ " 			aa.LIMIT_THREE_MONTH"
 //			+ " 		FROM"
-//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 			KRCMT_36AGR_BASIC aa"
+//			+ " 		JOIN KRCMT_36AGR_TIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
 //			+ " 		WHERE"
 //			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
 //			+ " 	),"
@@ -630,16 +625,16 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 //			+ " 		SELECT"
 //			+ " 			aa.LIMIT_YEARLY"
 //			+ " 		FROM"
-//			+ " 			KMKMT_BASIC_AGREEMENT_SET aa"
-//			+ " 		JOIN KMKMT_AGREEMENTTIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 			KRCMT_36AGR_BASIC aa"
+//			+ " 		JOIN KRCMT_36AGR_TIME_COM bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
 //			+ " 		WHERE"
 //			+ " 			bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1"
 //			+ " 	),"
 //			+ "		bb.UPPER_MONTH,"
 //			+ "		bb.UPPER_MONTH_AVERAGE"
 //			+ " FROM"
-//			+ " 	KMKMT_BASIC_AGREEMENT_SET aa"
-//			+ " JOIN KMKMT_AGREEMENTTIME_CLASS bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
+//			+ " 	KRCMT_36AGR_BASIC aa"
+//			+ " JOIN KRCMT_36AGR_TIME_CLS bb ON aa.BASIC_SETTING_ID = bb.BASIC_SETTING_ID"
 //			+ " Left JOIN BSYMT_CLASSIFICATION kk ON bb.CLSCD = kk.CLSCD AND kk.CID = ?cid "
 //			+ " WHERE"
 //			+ " 	bb.CID = ?cid AND bb.LABOR_SYSTEM_ATR = 1 "
@@ -677,8 +672,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ "  					aa.YM_K " 
 			+ "  			) AS ROW_NUMBER1" 
 			+ " 	FROM" 
-			+ "  			KMKMT_AGREEMENT_MONTH_SET aa" 
-			+ "  		JOIN BSYMT_EMP_DTA_MNG_INFO cc ON aa.SID = cc.SID" 
+			+ "  			KRCMT_36AGR_MONTH aa" 
+			+ "  		JOIN BSYMT_SYAIN cc ON aa.SID = cc.SID" 
 			+ "  		JOIN BPSMT_PERSON dd ON cc.PID = dd.PID" 
 			+ "  		WHERE" 
 			+ "  		aa.YM_K >= ?startYM" 
@@ -700,8 +695,8 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 			+ " 					bb.Y_K " 
 			+ "  			) AS ROW_NUMBER2" 
 			+ " FROM" 
-			+ "  		KMKMT_AGREEMENT_YEAR_SET bb " 
-			+ "  		JOIN BSYMT_EMP_DTA_MNG_INFO cc ON bb.SID = cc.SID" 
+			+ "  		KRCMT_36AGR_YEAR bb " 
+			+ "  		JOIN BSYMT_SYAIN cc ON bb.SID = cc.SID" 
 			+ "  		JOIN BPSMT_PERSON dd ON cc.PID = dd.PID" 
 			+ "  		WHERE" 
 			+ "  			bb.Y_K >= ?startY" 
@@ -720,7 +715,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 	public List<MasterData> getDataExportSheet1() {
 		List<MasterData> datas = new ArrayList<>();
 		String cid = AppContexts.user().companyId();
-		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_1.toString()).setParameter(1, cid);
+		Query query = getEntityManager().createNativeQuery(SQL_EXPORT_SHEET_1.toString()).setParameter(1, cid);
 		try {
 			Object[] data = (Object[]) query.getSingleResult();
 			for (int i = 0; i <= 3; i++) {
@@ -788,7 +783,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 	public List<MasterData> getDataExportSheet2() {
 		List<MasterData> datas = new ArrayList<>();
 		String cid = AppContexts.user().companyId();
-		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_2.toString()).setParameter(1, cid);
+		Query query = getEntityManager().createNativeQuery(SQL_EXPORT_SHEET_2.toString()).setParameter(1, cid);
 		try {
 			Object[] data = (Object[]) query.getSingleResult();
 			for (int i = 0; i < data.length; i++) {
@@ -849,7 +844,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 	public List<MasterData> getDataExportSheet3() {
 		List<MasterData> datas = new ArrayList<>();
 		String cid = AppContexts.user().companyId();
-		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_3.toString()).setParameter(1, cid);
+		Query query = getEntityManager().createNativeQuery(SQL_EXPORT_SHEET_3.toString()).setParameter(1, cid);
 		try {
 			BigDecimal data = (BigDecimal) query.getSingleResult();
 			datas.add(toDataSheet3(data));
@@ -916,7 +911,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		List<MasterData> datas = new ArrayList<>();
 		String cid = AppContexts.user().companyId();
 		int laborSystemAtr = 0;
-		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_4_8.toString()).
+		Query query = getEntityManager().createNativeQuery(SQL_EXPORT_SHEET_4_8.toString()).
 				setParameter("cid", cid).
 				setParameter("laborSystemAtr", laborSystemAtr);
 		try {
@@ -1086,7 +1081,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		List<MasterData> datas = new ArrayList<>();
 		String cid = AppContexts.user().companyId();
 		int laborSystemAtr = 0;
-		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_5_9.toString()).
+		Query query = getEntityManager().createNativeQuery(SQL_EXPORT_SHEET_5_9.toString()).
 				setParameter("cid", cid).
 				setParameter("laborSystemAtr", laborSystemAtr);
 
@@ -1202,7 +1197,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		List<MasterData> datas = new ArrayList<>();
 		String cid = AppContexts.user().companyId();
 		int laborSystemAtr = 0;
-		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_6_10.toString()).
+		Query query = getEntityManager().createNativeQuery(SQL_EXPORT_SHEET_6_10.toString()).
 				setParameter("cid", cid).
 				setParameter("laborSystemAtr", laborSystemAtr);
 
@@ -1319,7 +1314,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		List<MasterData> datas = new ArrayList<>();
 		String cid = AppContexts.user().companyId();
 		int laborSystemAtr = 0;
-		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_7_11.toString()).
+		Query query = getEntityManager().createNativeQuery(SQL_EXPORT_SHEET_7_11.toString()).
 				setParameter("cid", cid).
 				setParameter("laborSystemAtr", laborSystemAtr);
 
@@ -1436,7 +1431,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		List<MasterData> datas = new ArrayList<>();
 		String cid = AppContexts.user().companyId();
 		int laborSystemAtr = 1;
-		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_4_8.toString()).
+		Query query = getEntityManager().createNativeQuery(SQL_EXPORT_SHEET_4_8.toString()).
 				setParameter("cid", cid).
 				setParameter("laborSystemAtr", laborSystemAtr);
 		try {
@@ -1499,10 +1494,11 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		List<MasterData> datas = new ArrayList<>();
 		String cid = AppContexts.user().companyId();
 		int laborSystemAtr = 1;
-		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_5_9.toString()).
+		Query query = getEntityManager().createNativeQuery(SQL_EXPORT_SHEET_5_9.toString()).
 				setParameter("cid", cid).
 				setParameter("laborSystemAtr", laborSystemAtr);
 
+		@SuppressWarnings("unchecked")
 		List<Object[]> data =  query.getResultList();
 		try {
 			for (Object[] objects : data) {
@@ -1575,7 +1571,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		List<MasterData> datas = new ArrayList<>();
 		String cid = AppContexts.user().companyId();
 		int laborSystemAtr = 1;
-		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_6_10.toString()).
+		Query query = getEntityManager().createNativeQuery(SQL_EXPORT_SHEET_6_10.toString()).
 				setParameter("cid", cid).
 				setParameter("laborSystemAtr", laborSystemAtr);
 
@@ -1651,7 +1647,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		List<MasterData> datas = new ArrayList<>();
 		String cid = AppContexts.user().companyId();
 		int laborSystemAtr = 1;
-		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_7_11.toString()).
+		Query query = getEntityManager().createNativeQuery(SQL_EXPORT_SHEET_7_11.toString()).
 				setParameter("cid", cid).
 				setParameter("laborSystemAtr", laborSystemAtr);
 
@@ -1731,7 +1727,7 @@ public class JpaRegisterTimeImpl implements RegistTimeRepository {
 		if(!endYM.substring(4, endYM.length()).equals(END_MONTH))
 			endY = endY-1;
 		String cid = AppContexts.user().companyId();
-		Query query = entityManager.createNativeQuery(SQL_EXPORT_SHEET_12.toString()).
+		Query query = getEntityManager().createNativeQuery(SQL_EXPORT_SHEET_12.toString()).
 				setParameter("cid", cid).
 				setParameter("startY", startY).
 				setParameter("endY", endY).

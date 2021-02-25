@@ -2,9 +2,6 @@ package nts.uk.ctx.at.function.dom.alarm.extractionrange;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -16,6 +13,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.AllArgsConstructor;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
@@ -35,16 +33,14 @@ import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.SpecifyStartMonth;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.month.mutilmonth.AverageMonth;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.periodunit.ExtractionPeriodUnit;
 import nts.uk.ctx.at.function.dom.alarm.extractionrange.year.AYear;
-import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfPublicHoliday;
-import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHoliday;
-import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidayGrantDate;
-import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidayManagementClassification;
-import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidayPeriod;
-import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidaySetting;
-import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.PublicHolidaySettingRepository;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.treatmentholiday.HolidayNumberManagement;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.treatmentholiday.TreatmentHoliday;
+import nts.uk.ctx.at.shared.dom.holidaymanagement.treatmentholiday.TreatmentHolidayRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
+import nts.uk.ctx.at.shared.dom.workrule.weekmanage.WeekRuleManagement;
+import nts.uk.ctx.at.shared.dom.workrule.weekmanage.WeekRuleManagementRepo;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 
@@ -58,11 +54,11 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 	@Inject
 	private ClosureEmploymentRepository closureEmploymentRepo;
 	@Inject
-	private PublicHolidaySettingRepository publicHolidaySettingRepo;
-	@Inject
 	private AgreementOperationSettingAdapter agreementOperationSettingAdapter;
-	
-
+	@Inject
+	private TreatmentHolidayRepository treatHolidayRepo;
+	@Inject
+	private WeekRuleManagementRepo weekRuleManagementRepo;
 	@Override
 	public List<CheckConditionTimeDto> getPeriodByCategory(String alarmCode, String companyId, int closureId,
 			Integer processingYm) {
@@ -317,108 +313,55 @@ public class DefaultExtractionRangeService implements ExtractionRangeService {
 	}
 	
 	//http://192.168.50.4:3000/issues/112749
-	//周期単位の期間を算出する
+	/**
+	 * 周期単位の期間を算出する
+	 * @param c
+	 * @param closureId
+	 * @param yearMonth
+	 * @param companyId
+	 * @return
+	 */
 	public CheckConditionTimeDto get4WeekTime(CheckCondition c, int closureId, YearMonth yearMonth, String companyId) {
-		LocalDate sDate = null;
-		LocalDate eDate = null;
 
 		ExtractionPeriodUnit periodUnit = (ExtractionPeriodUnit) c.getExtractPeriodList().get(0);
+		//ドメインモデル「休日の扱い」を取得
+		Optional<TreatmentHoliday> optTreatHolidaySet = treatHolidayRepo.get(companyId);
+		if(!optTreatHolidaySet.isPresent()) {
+			return new CheckConditionTimeDto(c.getAlarmCategory().value,
+					EnumAdaptor.convertToValueName(c.getAlarmCategory()).getLocalizedName(), null, null, null, null);
+		}
+		TreatmentHoliday treatHolidaySet = optTreatHolidaySet.get();
+		//休日取得数と管理期間を取得する
+		RequireImpl require = new RequireImpl(weekRuleManagementRepo);
+		HolidayNumberManagement holidays = treatHolidaySet.getNumberHoliday(require, GeneralDate.today());
 		
-		LocalDate countingDate;
-		boolean isYMD;
+		switch (periodUnit.getSegmentationOfCycle()) {
+		case TheNextCycle:
+			GeneralDate date = holidays.getPeriod().end().addDays(1);
+			holidays = treatHolidaySet.getNumberHoliday(require, date);
+			break;
+		case ThePreviousCycle:
+			GeneralDate datePre = holidays.getPeriod().start().addDays(-1);
+			holidays = treatHolidaySet.getNumberHoliday(require, datePre);
+			break;
+		default:
+			break;
+		}
+		DatePeriod period = holidays.getPeriod();
 		
-		// Get from PublicHolidaySetting domain
-//		Optional<PublicHolidaySetting> publicHolidaySettingOpt = publicHolidaySettingRepo.findByCID(companyId);
-//		if (!publicHolidaySettingOpt.isPresent())
-//			return new CheckConditionTimeDto(c.getAlarmCategory().value,
-//					EnumAdaptor.convertToValueName(c.getAlarmCategory()).getLocalizedName(), null, null, null, null);
-		
-//		if(publicHolidaySettingOpt.get().getPublicHdManagementClassification()==PublicHolidayManagementClassification._1_MONTH) {
-//			PublicHolidayGrantDate publicHolidayGrantDate = (PublicHolidayGrantDate)publicHolidaySettingOpt.get().getPublicHdManagementStartDate();
-//			
-//			if(publicHolidayGrantDate.getPeriod()==PublicHolidayPeriod.FIRST_DAY_TO_LAST_DAY) {
-//				String processingMonth = yearMonth.toString();				
-//				sDate = LocalDate.of(Integer.valueOf(processingMonth.substring(0, 4)).intValue(), Integer.valueOf(processingMonth.substring(4, 6)).intValue(), 1);
-//				eDate = sDate.plusMonths(1);
-//				eDate = eDate.minusDays(1);
-//				
-//			}else {
-//				DatePeriod datePeriod = ClosureService.getClosurePeriod(
-//															ClosureService.createRequireM1(closureRepo, closureEmploymentRepo),
-//															closureId, yearMonth);
-//				sDate = datePeriod.start().localDate();
-//				eDate = datePeriod.end().localDate();								
-//			}
-//			
-//		}else {
-//			PublicHoliday publicHoliday = (PublicHoliday) publicHolidaySettingOpt.get().getPublicHdManagementStartDate();
-//			if (publicHoliday.getDetermineStartDate() == DayOfPublicHoliday.DESIGNATE_BY_YEAR_MONTH_DAY) {
-//				countingDate= publicHoliday.getDate().localDate();
-//				isYMD = true;
-//			}else {			
-//				String dayMonth= publicHoliday.getDayMonth().toString();
-//				if(dayMonth.length()<4) dayMonth ="0" +dayMonth;
-//				countingDate = LocalDate.of(LocalDate.now().getYear(), Integer.valueOf(dayMonth.substring(0, 2)).intValue(),
-//						Integer.valueOf(dayMonth.substring(2, 4)).intValue());
-//				isYMD= false;
-//			}
-//			LocalDate currentDate = LocalDate.now();
-//			if (isYMD) {
-//				long totalDays = ChronoUnit.DAYS.between(countingDate, currentDate);
-//				long index = totalDays / 28;
-//	
-//				switch (periodUnit.getSegmentationOfCycle()) {
-//				case ThePreviousCycle:
-//					index--;
-//				case Period:
-//					break;
-//				case TheNextCycle:
-//					index++;
-//				default:
-//					break;
-//				}
-//				if (index == -1)
-//					throw new RuntimeException("1周期目の期間がシステム日付を含む期間となりますが周期の区分 は 実行日を含む周期の前周期！");
-//	
-//				sDate = countingDate.plusDays(index * 28);
-//				eDate = sDate.plusDays(27);
-//	
-//			} else {
-//				long totalDays = ChronoUnit.DAYS.between(countingDate, currentDate);
-//				long index = totalDays / 28;
-//	
-//				switch (periodUnit.getSegmentationOfCycle()) {
-//				case ThePreviousCycle:
-//					index--;
-//				case Period:
-//					break;
-//				case TheNextCycle:
-//					index++;
-//				default:
-//					break;
-//				}
-//	
-//				if (index == -1) {
-//					countingDate.minusYears(1);
-//					index = 13;
-//					sDate = countingDate.plusDays(index * 28);
-//					eDate = LocalDate.of(countingDate.getYear(), 12, 31);
-//				} else if (index == 14) {
-//					countingDate.plusYears(1);
-//					index = 0;
-//					sDate = countingDate.plusDays(index * 28);
-//					eDate = sDate.plusDays(27);
-//				} else {
-//					sDate = countingDate.plusDays(index * 28);
-//					eDate = sDate.plusDays(27);
-//				}
-//	
-//			}
-//		}
 		return new CheckConditionTimeDto(c.getAlarmCategory().value,
 				EnumAdaptor.convertToValueName(c.getAlarmCategory()).getLocalizedName(),
-				null,
-				null, null, null);
+				period.start().toString(),
+				period.end().toString(), null, null);
 	}
-
+	@AllArgsConstructor
+	private static class RequireImpl implements TreatmentHoliday.Require{
+		private WeekRuleManagementRepo weekRuleManagementRepo;
+		@Override
+		public WeekRuleManagement find() {
+			String companyID = AppContexts.user().companyId();
+			return weekRuleManagementRepo.find(companyID).get();
+		}
+		
+	}
 }

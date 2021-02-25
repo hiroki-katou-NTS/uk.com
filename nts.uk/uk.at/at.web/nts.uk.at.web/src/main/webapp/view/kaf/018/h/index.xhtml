@@ -19,31 +19,33 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="contents-area">
-				<div class="table kaf018-h-table">
-					<div class="cell kaf018-h-cell1" data-bind="text: closureItem.closureName"></div>
-					<div class="cell">
-						<span data-bind="text: startDate"></span>
-						<span>#{i18n.getText('KAF018_371')}</span>
-						<span data-bind="text: endDate"></span>
+				<div style="height: 285px;">
+					<div class="table kaf018-h-table">
+						<div class="cell kaf018-h-cell1" data-bind="text: closureItem.closureName"></div>
+						<div class="cell">
+							<span data-bind="text: startDate"></span>
+							<span>#{i18n.getText('KAF018_371')}</span>
+							<span data-bind="text: endDate"></span>
+						</div>
+					</div>
+					<div class="table kaf018-h-table">
+						<div class="cell kaf018-h-cell1" data-bind="text: wkpInfo.wkpCD"></div>
+						<div class="cell" data-bind="text: wkpInfo.wkpName"></div>
+					</div>
+					<div class="table kaf018-h-table">
+						<div class="cell kaf018-h-cell1">#{i18n.getText('KAF018_441')}</div>
+						<div class="cell" data-bind="text: empLstStr"></div>
+					</div>
+					<div class="table kaf018-h-table">
+						<div class="cell kaf018-h-cell1">#{i18n.getText('KAF018_442')}</div>
+						<div class="cell" data-bind="if: !confirmMode()">#{i18n.getText('KAF018_540')}</div>
+						<div class="cell" data-bind="if: confirmMode()">
+							<div data-bind="text: confirmEmp"></div>
+							<div data-bind="text: confirmDate"></div>
+						</div>
 					</div>
 				</div>
-				<div class="table kaf018-h-table">
-					<div class="cell kaf018-h-cell1" data-bind="text: wkpInfo.wkpCD"></div>
-					<div class="cell" data-bind="text: wkpInfo.wkpName"></div>
-				</div>
-				<div class="table kaf018-h-table">
-					<div class="cell kaf018-h-cell1">#{i18n.getText('KAF018_441')}</div>
-					<div class="cell" data-bind="text: empLstStr"></div>
-				</div>
-				<div class="table kaf018-h-table">
-					<div class="cell kaf018-h-cell1">#{i18n.getText('KAF018_442')}</div>
-					<div class="cell" data-bind="if: !confirmMode()">#{i18n.getText('KAF018_540')}</div>
-					<div class="cell" data-bind="if: confirmMode()">
-						<div data-bind="text: confirmEmp"></div>
-						<div data-bind="text: confirmDate"></div>
-					</div>
-				</div>
-				<div class="table" style="margin-top: 80px;">
+				<div class="table">
 					<div style="margin-left: 100px;" data-bind="if: !confirmMode()">#{i18n.getText('KAF018_541')}</div>
 					<div style="margin-left: 100px;" data-bind="if: confirmMode()">#{i18n.getText('KAF018_542')}</div>
 				</div>

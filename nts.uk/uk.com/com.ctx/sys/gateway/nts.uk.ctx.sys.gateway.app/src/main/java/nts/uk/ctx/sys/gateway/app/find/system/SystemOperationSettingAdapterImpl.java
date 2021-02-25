@@ -7,7 +7,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.sys.gateway.app.command.systemsuspend.SystemSuspendOutput;
 import nts.uk.ctx.sys.gateway.app.command.systemsuspend.SystemSuspendService;
-import nts.uk.ctx.sys.gateway.dom.login.adapter.RoleAdapter;
+import nts.uk.ctx.sys.gateway.dom.loginold.adapter.RoleAdapter;
 import nts.uk.ctx.sys.gateway.dom.stopbycompany.StopByCompany;
 import nts.uk.ctx.sys.gateway.dom.stopbycompany.StopByCompanyRepository;
 import nts.uk.ctx.sys.gateway.dom.stopbycompany.StopModeType;
@@ -73,8 +73,10 @@ public class SystemOperationSettingAdapterImpl implements SystemOperationSetting
 		if(com.isPresent()){
 			msgCom = com.get().getUsageStopMessage().v();
 		}
-		String msgFull = msgSys + "<br/><br/>" + msgCom;
-		
+		String msgFull = msgSys + msgCom;
+		if (!msgSys.isEmpty() && !msgCom.isEmpty()) {
+			msgFull = msgSys + "\n\n" + msgCom;
+		}
 		return SystemOperationSetting.setting(SystemStopType.COMPANY, SystemOperationMode.IN_PROGRESS, SystemStopMode.ADMIN_MODE, null, msgFull, true);
 	}
 

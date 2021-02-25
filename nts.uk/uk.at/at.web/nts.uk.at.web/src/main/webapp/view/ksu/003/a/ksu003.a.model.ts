@@ -266,7 +266,7 @@ module nts.uk.at.view.ksu003.a.model {
 		listTimeVacationAndType: Array<TimeVacationAndType> //Map<時間休暇種類, 時間休暇>
 		shiftCode: string;//シフトコード
 		shiftName: string;//シフト名称
-		shortTime: Array<TimeZoneDto>;//List<育児介護短時間帯>
+		shortTime: Array<TimeShortDto>;//List<育児介護短時間帯>
 	}
 
 	//対象社員の社員勤務情報dto - 社員勤務情報dto
@@ -284,7 +284,7 @@ module nts.uk.at.view.ksu003.a.model {
 		listTimeVacationAndType: Array<TimeVacationAndType> //Map<時間休暇種類, 時間休暇>
 		shiftCode: string;//シフトコード
 		shiftName: string;//シフト名称
-		shortTime: Array<TimeZoneDto>;//List<育児介護短時間帯>
+		shortTime: Array<TimeShortDto>;//List<育児介護短時間帯>
 		constructor(param: IEmployeeWorkInfoDto) {
 			let self = this;
 			self.isCheering = param.isCheering;
@@ -322,6 +322,22 @@ module nts.uk.at.view.ksu003.a.model {
 			endTime: TimeOfDayDto) {
 			this.startTime = startTime;
 			this.endTime = endTime;
+		}
+	}
+	
+	export class TimeShortDto {
+		startTime: number;//開始時刻 
+		endTime: number;//終了時刻
+		dayDivision : number;
+		workNo : number;
+		constructor(startTime: number,
+			endTime: number,
+			dayDivision : number,
+			workNo : number) {
+			this.startTime = startTime;
+			this.endTime = endTime;
+			this.dayDivision = dayDivision;
+			this.workNo = workNo;
 		}
 	}
 
@@ -470,7 +486,7 @@ module nts.uk.at.view.ksu003.a.model {
 		workTypeName: string;//勤務種類名称
 		startTimeRange2: TimeZoneDto; //日付開始時刻範囲時間帯2
 		endTimeRange2: TimeZoneDto;//日付終了時刻範囲時間帯2
-		fixBreakTime: number; //休憩時間帯を固定にする (0:false 1:true)
+		fixBreakTime: any; //休憩時間帯を固定にする (0:false 1:true)
 		workType: number;//勤務タイプ : WorkTimeForm
 		isHoliday: boolean;// 休日か : SetupType
 		isNeedWorkTime: string;// 就業時間帯が不要 : 
@@ -498,7 +514,7 @@ module nts.uk.at.view.ksu003.a.model {
 		workTypeName: string;//勤務種類名称
 		startTimeRange2: TimeZoneDto; //日付開始時刻範囲時間帯2
 		endTimeRange2: TimeZoneDto;//日付終了時刻範囲時間帯2
-		fixBreakTime: number; //休憩時間帯を固定にする (0:false 1:true)
+		fixBreakTime: any; //休憩時間帯を固定にする (0:false 1:true)
 		workType: number;//勤務タイプ : WorkTimeForm
 		isHoliday: boolean; // 休日か : SetupType
 		isNeedWorkTime: string; 
@@ -724,7 +740,7 @@ module nts.uk.at.view.ksu003.a.model {
 	export interface IShortTime {
 		empId: string;
 		color: string;
-		listShortTime: Array<TimeZoneDto>;
+		listShortTime: Array<TimeShortDto>;
 	}
 	
 

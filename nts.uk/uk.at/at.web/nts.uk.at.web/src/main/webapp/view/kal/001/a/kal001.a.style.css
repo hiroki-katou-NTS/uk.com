@@ -29,9 +29,10 @@
 }
 
 #textHoliday {
-	float: right;
+	display: inline-block;
 	padding-top: 7px;
 	padding-right: 110px;
+	margin-left: 20px;
 }
 #fixed-table::before {
 	height: 350px !important;

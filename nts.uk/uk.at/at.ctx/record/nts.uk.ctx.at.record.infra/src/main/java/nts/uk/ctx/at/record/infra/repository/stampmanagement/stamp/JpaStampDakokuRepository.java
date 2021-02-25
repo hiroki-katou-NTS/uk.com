@@ -56,7 +56,7 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 			+ " where s.pk.contractCode = :contractCode" + " and s.pk.cardNumber = :cardNumbers " + " order by s.pk.cardNumber asc, s.pk.stampDateTime asc";
 	
 	
-	private static final String GET_NOT_STAMP_NUMBER = "select s from KrcdtStamp s left join KwkdtStampCard k on s.pk.cardNumber = k.cardNo"
+	private static final String GET_NOT_STAMP_NUMBER = "select s from KrcdtStamp s left join KrcmtStampCard k on s.pk.cardNumber = k.cardNo"
 			+ " where k.cardNo is NULL " +" and s.pk.contractCode = :contractCode" + " and s.pk.stampDateTime >= :startStampDate "
 			+ " and s.pk.stampDateTime <= :endStampDate " + " order by s.pk.cardNumber asc, s.pk.stampDateTime asc";
 
@@ -64,7 +64,7 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 			+ " where s.pk.cardNumber in  :cardNumbers ";
 	
 	private static final String GET_STAMP_BY_DATEPERIOD = "select d.workLocationName, s from KrcdtStamp s "
-			+ " LEFT JOIN KwlmtWorkLocation d ON s.stampPlace = d.kwlmtWorkLocationPK.workLocationCD"
+			+ " LEFT JOIN KrcmtWorkLocation d ON s.stampPlace = d.kwlmtWorkLocationPK.workLocationCD"
 			+ " AND d.kwlmtWorkLocationPK.companyID = :cid"
 			+ " where s.pk.stampDateTime >= :startStampDate "
 			+ " and s.pk.stampDateTime <= :endStampDate " 
@@ -72,16 +72,16 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 			+ " order by s.pk.cardNumber asc, s.pk.stampDateTime asc";
 	
 	private static final String GET_STAMP_BY_DATEPERIOD_AND_CARDS = "select  e.sid, d.workLocationName from KrcdtStamp s "
-			+ " LEFT JOIN KwlmtWorkLocation d ON s.stampPlace = d.kwlmtWorkLocationPK.workLocationCD"
+			+ " LEFT JOIN KrcmtWorkLocation d ON s.workLocationCd = d.kwlmtWorkLocationPK.workLocationCD"
 			+ " AND d.kwlmtWorkLocationPK.companyID = :cid"
-			+ " INNER JOIN KwkdtStampCard e ON e.cardNo = s.pk.cardNumber"
+			+ " INNER JOIN KrcmtStampCard e ON e.cardNo = s.pk.cardNumber"
 			+ " where s.pk.stampDateTime >= :startStampDate "
 			+ " and s.pk.stampDateTime <= :endStampDate " 
 			+ " and s.cid = :cid"
 			+ " and s.pk.cardNumber in :listCard"
 			+ " order by s.pk.cardNumber asc, s.pk.stampDateTime asc";
 	private static final String GET_STAMP_BY_DATEPERIOD_AND_CARDS_2 = "select s from KrcdtStamp s "
-			+ " INNER JOIN KwkdtStampCard e ON e.cardNo = s.pk.cardNumber"
+			+ " INNER JOIN KrcmtStampCard e ON e.cardNo = s.pk.cardNumber"
 			+ " where s.pk.stampDateTime >= :startStampDate "
 			+ " and s.pk.stampDateTime <= :endStampDate " 
 			+ " and s.cid = :cid"

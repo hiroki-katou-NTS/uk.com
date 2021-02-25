@@ -28,7 +28,7 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.workplace.Workpl
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.workplace.WorkplaceMonthDaySettingRepository;
 //import nts.uk.ctx.at.shared.infra.entity.holidaysetting.company.KshmtComMonthDaySetPK_;
 //import nts.uk.ctx.at.shared.infra.entity.holidaysetting.company.KshmtComMonthDaySet_;
-import nts.uk.ctx.at.shared.infra.entity.holidaysetting.workplace.KshmtWkpMonthDaySet;
+import nts.uk.ctx.at.shared.infra.entity.holidaysetting.workplace.KshmtHdpubDPerMWkp;
 import nts.uk.ctx.at.shared.infra.entity.holidaysetting.workplace.KshmtWkpMonthDaySetPK_;
 import nts.uk.ctx.at.shared.infra.entity.holidaysetting.workplace.KshmtWkpMonthDaySet_;
 
@@ -43,8 +43,7 @@ public class JpaWorkplaceMonthDaySettingRepository extends JpaRepository impleme
 	 */
 	@Override
 	public Optional<WorkplaceMonthDaySetting> findByYear(CompanyId companyId, String workplaceId, Year year) {
-		List<KshmtWkpMonthDaySet> result = this.findBy(companyId, workplaceId, year, null, null);
-		
+		List<KshmtHdpubDPerMWkp> result = this.findBy(companyId, workplaceId, year, null, null);
 		// Check exist
 		if (result.isEmpty()) {
 			return Optional.empty();
@@ -58,12 +57,12 @@ public class JpaWorkplaceMonthDaySettingRepository extends JpaRepository impleme
 	@Override
 	public List<WorkplaceMonthDaySetting> findByWorkplaceIds(CompanyId companyId, List<String> workplaceIds) {
 		if (CollectionUtil.isEmpty(workplaceIds)) return new ArrayList<>();
-		List<KshmtWkpMonthDaySet> result = this.findBy(companyId, null, null, null, workplaceIds);
+		List<KshmtHdpubDPerMWkp> result = this.findBy(companyId, null, null, null, workplaceIds);
 		// Check exist
 		if (result.isEmpty()) {
 			return new ArrayList<>();
 		}
-		Map<Integer, List<KshmtWkpMonthDaySet>> entityAll = result.stream()
+		Map<Integer, List<KshmtHdpubDPerMWkp>> entityAll = result.stream()
 				.collect(Collectors.groupingBy(x -> x.getKshmtWkpMonthDaySetPK().getManageYear(), Collectors.toList()));
 		return entityAll.entrySet().stream().map(x -> new WorkplaceMonthDaySetting(new JpaWorkplaceMonthDaySettingGetMemento(x.getValue())))
 				.collect(Collectors.toList());
@@ -74,7 +73,7 @@ public class JpaWorkplaceMonthDaySettingRepository extends JpaRepository impleme
 	 */
 	@Override
 	public void add(WorkplaceMonthDaySetting domain) {
-		List<KshmtWkpMonthDaySet> entities = new ArrayList<>();
+		List<KshmtHdpubDPerMWkp> entities = new ArrayList<>();
 		domain.saveToMemento(new JpaWorkplaceMonthDaySettingSetMemento(entities));
 		this.commandProxy().insertAll(entities);
 	}
@@ -84,7 +83,7 @@ public class JpaWorkplaceMonthDaySettingRepository extends JpaRepository impleme
 	 */
 	@Override
 	public void update(WorkplaceMonthDaySetting domain) {
-		List<KshmtWkpMonthDaySet> entities = this.findBy(domain.getCompanyId(), domain.getWorkplaceId(),
+		List<KshmtHdpubDPerMWkp> entities = this.findBy(domain.getCompanyId(), domain.getWorkplaceId(),
 				domain.getManagementYear(), null, null);
 		domain.saveToMemento(new JpaWorkplaceMonthDaySettingSetMemento(entities));
 		this.commandProxy().updateAll(entities);
@@ -95,7 +94,7 @@ public class JpaWorkplaceMonthDaySettingRepository extends JpaRepository impleme
 	 */
 	@Override
 	public void remove(CompanyId companyId, String workplaceId, Year year) {
-		List<KshmtWkpMonthDaySet> result = this.findBy(companyId, workplaceId, year, null, null);
+		List<KshmtHdpubDPerMWkp> result = this.findBy(companyId, workplaceId, year, null, null);
 		this.commandProxy().removeAll(result);
 	}
 	
@@ -108,15 +107,15 @@ public class JpaWorkplaceMonthDaySettingRepository extends JpaRepository impleme
 	 * @param month the month
 	 * @return the list
 	 */
-	private List<KshmtWkpMonthDaySet> findBy(CompanyId companyId, String workplaceId, Year year, Integer month, List<String> workplaceIds) {
+	private List<KshmtHdpubDPerMWkp> findBy(CompanyId companyId, String workplaceId, Year year, Integer month, List<String> workplaceIds) {
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		CriteriaQuery<KshmtWkpMonthDaySet> cq = criteriaBuilder.createQuery(KshmtWkpMonthDaySet.class);
+		CriteriaQuery<KshmtHdpubDPerMWkp> cq = criteriaBuilder.createQuery(KshmtHdpubDPerMWkp.class);
 
 		// root data
-		Root<KshmtWkpMonthDaySet> root = cq.from(KshmtWkpMonthDaySet.class);
+		Root<KshmtHdpubDPerMWkp> root = cq.from(KshmtHdpubDPerMWkp.class);
 
 		// select root
 		cq.select(root);
@@ -157,7 +156,7 @@ public class JpaWorkplaceMonthDaySettingRepository extends JpaRepository impleme
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		// creat query
-		TypedQuery<KshmtWkpMonthDaySet> query = em.createQuery(cq);
+		TypedQuery<KshmtHdpubDPerMWkp> query = em.createQuery(cq);
 
 		return query.getResultList();
 	}
@@ -167,8 +166,8 @@ public class JpaWorkplaceMonthDaySettingRepository extends JpaRepository impleme
 	 */
 	@Override
 	public List<String> findWkpRegisterByYear(CompanyId companyId, Year year) {
-		List<KshmtWkpMonthDaySet> result = this.findBy(companyId, null, year, null, null);
-		
+		List<KshmtHdpubDPerMWkp> result = this.findBy(companyId, null, year, null,null);
+
 		// Check exist
 		if (result.isEmpty()) {
 			return new ArrayList<>();

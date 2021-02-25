@@ -22,7 +22,7 @@ import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.workschedulebr
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.workscheduletime.KscdtScheTime;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.schedulemaster.KscdtScheMasterInfo;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedulestate.KscdtScheState;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 勤務予定基本情報 -The Class KscdtBasicSchedule.
@@ -35,7 +35,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name = "KSCDT_SCHE_BASIC")
-public class KscdtBasicSchedule extends UkJpaEntity implements Serializable {
+public class KscdtBasicSchedule extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

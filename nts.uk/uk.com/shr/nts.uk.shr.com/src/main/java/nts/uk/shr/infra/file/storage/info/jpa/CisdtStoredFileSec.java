@@ -8,13 +8,13 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.val;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 import nts.uk.shr.infra.file.storage.info.StoredFileOwner;
 import nts.uk.shr.infra.file.storage.info.StoredFileSecurityInfo;
 
 @Entity
 @Table(name="CISDT_STORED_FILE_SEC")
-public class CisdtStoredFileSec extends UkJpaEntity {
+public class CisdtStoredFileSec extends ContractUkJpaEntity {
 
 	@Id
 	@Column(name = "FILE_ID")
