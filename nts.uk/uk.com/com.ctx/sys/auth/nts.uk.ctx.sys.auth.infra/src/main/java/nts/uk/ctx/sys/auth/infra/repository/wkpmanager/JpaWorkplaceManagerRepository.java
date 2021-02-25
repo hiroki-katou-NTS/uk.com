@@ -216,7 +216,7 @@ public class JpaWorkplaceManagerRepository extends JpaRepository implements Work
 	public List<WorkplaceManager> findByPeriodAndWkpIds(List<String> wkpIds, DatePeriod datePeriod) {
 		List<WorkplaceManager> resultList = new ArrayList<>();
 		CollectionUtil.split(wkpIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			resultList.addAll(this.queryProxy().query(FIND_BY_PERIOD_AND_WKPS, SacmtWorkplaceManager.class)
+			resultList.addAll(this.queryProxy().query(FIND_BY_PERIOD_AND_WKPS, SacmtWkpManager.class)
 				.setParameter("startDate", datePeriod.start())
 				.setParameter("endDate", datePeriod.end())
 				.setParameter("lstWkpId", subList).getList(c -> c.toDomain()));
@@ -227,7 +227,7 @@ public class JpaWorkplaceManagerRepository extends JpaRepository implements Work
 	@Override
 	public List<WorkplaceManager> findByPeriodAndBaseDate(String wkpId, GeneralDate baseDate) {
 
-			return this.queryProxy().query(FIND_BY_WKP_AND_BASEDATE, SacmtWorkplaceManager.class)
+			return this.queryProxy().query(FIND_BY_WKP_AND_BASEDATE, SacmtWkpManager.class)
 				.setParameter("workplaceId", wkpId)
 				.setParameter("baseDate", baseDate)
 				.getList(c -> c.toDomain());
