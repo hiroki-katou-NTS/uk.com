@@ -18,7 +18,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  */
 @AllArgsConstructor
 @Getter
-public class FunctionCtrlByWorkplace implements DomainAggregate {
+public class ScheFunctionCtrlByWorkplace implements DomainAggregate {
 	
 	/**
 	 * 使用する表示期間
@@ -53,7 +53,7 @@ public class FunctionCtrlByWorkplace implements DomainAggregate {
 	 * @param completionMethodControl 完了方法制御
 	 * @return
 	 */
-	public static FunctionCtrlByWorkplace create(
+	public static ScheFunctionCtrlByWorkplace create(
 			List<FuncCtrlDisplayPeriod> useDisplayPeriod,
 			List<FuncCtrlDisplayFormat> useDisplayFormat,
 			List<FuncCtrlStartControl> pageCanBeStarted,
@@ -80,7 +80,7 @@ public class FunctionCtrlByWorkplace implements DomainAggregate {
 			throw new BusinessException("Msg_1690", "KSM011_78");
 		}
 		
-		return new FunctionCtrlByWorkplace(useDisplayPeriod, useDisplayFormat, pageCanBeStarted, useCompletionAtr, completionMethodControl);
+		return new ScheFunctionCtrlByWorkplace(useDisplayPeriod, useDisplayFormat, pageCanBeStarted, useCompletionAtr, completionMethodControl);
 		
 	}
 

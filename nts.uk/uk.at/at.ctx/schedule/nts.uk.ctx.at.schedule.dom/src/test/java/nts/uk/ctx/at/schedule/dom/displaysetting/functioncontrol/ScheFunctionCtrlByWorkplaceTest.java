@@ -12,7 +12,7 @@ import org.junit.Test;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
-public class FunctionCtrlByWorkplaceTest {
+public class ScheFunctionCtrlByWorkplaceTest {
 	
 	@Test
 	public void testGetter() {
@@ -22,7 +22,7 @@ public class FunctionCtrlByWorkplaceTest {
 				Arrays.asList(FuncCtrlCompletionMethod.AlarmCheck), 
 				Arrays.asList("001", "002"));
 		
-		FunctionCtrlByWorkplace target = new FunctionCtrlByWorkplace(
+		ScheFunctionCtrlByWorkplace target = new ScheFunctionCtrlByWorkplace(
 				Arrays.asList( FuncCtrlDisplayPeriod.LastDayUtil ), 
 				Arrays.asList( FuncCtrlDisplayFormat.Shift ), 
 				Arrays.asList( FuncCtrlStartControl.ByDate ), 
@@ -42,7 +42,7 @@ public class FunctionCtrlByWorkplaceTest {
 		List<FuncCtrlStartControl> pageCanBeStarted = Arrays.asList(FuncCtrlStartControl.ByDate);
 		
 		NtsAssert.systemError(() -> {
-			FunctionCtrlByWorkplace.create(
+			ScheFunctionCtrlByWorkplace.create(
 					useDisplayPeriod, 
 					useDisplayFormat, 
 					pageCanBeStarted, 
@@ -63,7 +63,7 @@ public class FunctionCtrlByWorkplaceTest {
 		List<FuncCtrlStartControl> pageCanBeStarted = Arrays.asList(FuncCtrlStartControl.ByDate);
 		
 		NtsAssert.systemError(() -> {
-			FunctionCtrlByWorkplace.create(
+			ScheFunctionCtrlByWorkplace.create(
 					useDisplayPeriod, 
 					useDisplayFormat, 
 					pageCanBeStarted, 
@@ -84,7 +84,7 @@ public class FunctionCtrlByWorkplaceTest {
 					FuncCtrlStartControl.ByDate);
 		
 		NtsAssert.systemError(() -> {
-			FunctionCtrlByWorkplace.create(
+			ScheFunctionCtrlByWorkplace.create(
 					useDisplayPeriod, 
 					useDisplayFormat, 
 					pageCanBeStarted, 
@@ -103,7 +103,7 @@ public class FunctionCtrlByWorkplaceTest {
 		List<FuncCtrlStartControl> pageCanBeStarted = Arrays.asList(FuncCtrlStartControl.ByDate);
 		
 		NtsAssert.businessException( "Msg_1690" ,() -> {
-			FunctionCtrlByWorkplace.create(
+			ScheFunctionCtrlByWorkplace.create(
 					useDisplayPeriod, 
 					useDisplayFormat, 
 					pageCanBeStarted, 
@@ -122,7 +122,7 @@ public class FunctionCtrlByWorkplaceTest {
 		List<FuncCtrlStartControl> pageCanBeStarted = Arrays.asList(FuncCtrlStartControl.ByDate);
 		
 		NtsAssert.businessException( "Msg_1690" ,() -> {
-			FunctionCtrlByWorkplace.create(
+			ScheFunctionCtrlByWorkplace.create(
 					useDisplayPeriod, 
 					useDisplayFormat, 
 					pageCanBeStarted, 
@@ -149,7 +149,7 @@ public class FunctionCtrlByWorkplaceTest {
 				Arrays.asList("001", "002"));
 		
 		// execute
-		FunctionCtrlByWorkplace result = FunctionCtrlByWorkplace.create(
+		ScheFunctionCtrlByWorkplace result = ScheFunctionCtrlByWorkplace.create(
 					useDisplayPeriod, 
 					useDisplayFormat, 
 					pageCanBeStarted, 

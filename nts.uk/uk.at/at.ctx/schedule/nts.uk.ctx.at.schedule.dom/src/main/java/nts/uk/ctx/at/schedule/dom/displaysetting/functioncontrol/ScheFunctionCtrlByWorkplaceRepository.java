@@ -2,24 +2,24 @@ package nts.uk.ctx.at.schedule.dom.displaysetting.functioncontrol;
 
 import java.util.Optional;
 
-public interface FunctionCtrlByWorkplaceRepository {
+public interface ScheFunctionCtrlByWorkplaceRepository {
 
 	/**
 	 * @param companyId 会社ID
 	 * @return
 	 */
-	Optional<FunctionCtrlByWorkplace> get(String companyId);
+	Optional<ScheFunctionCtrlByWorkplace> get(String companyId);
 	
 	/**
 	 * @param companyId 会社ID
 	 * @param domain スケジュール修正職場別の機能制御
 	 */
-	void insert(String companyId, FunctionCtrlByWorkplace domain);
+	void insert(String companyId, ScheFunctionCtrlByWorkplace domain);
 	
 	/**
 	 * @param companyId 会社ID
 	 * @param domain スケジュール修正職場別の機能制御
 	 */
-	void update(String companyId, FunctionCtrlByWorkplace domain);
+	void update(String companyId, ScheFunctionCtrlByWorkplace domain);
 	
 }
