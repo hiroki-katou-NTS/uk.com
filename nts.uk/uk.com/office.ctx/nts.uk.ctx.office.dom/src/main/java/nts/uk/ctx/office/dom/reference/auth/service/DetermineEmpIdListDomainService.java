@@ -37,9 +37,13 @@ public class DetermineEmpIdListDomainService {
 		// 社員の職位を取得する
 		Map<String, EmployeeJobHistImport> map = require.getPositionBySidsAndBaseDate(sids, baseDate);
 		return sids.stream()
-				.filter(
-					sid -> !sid.equalsIgnoreCase(loginSid) && 
-					positionIdSeen.contains(map.get(sid).getJobTitleID()))
+				.filter(sid -> {
+					if(map.get(sid) == null) {
+						return false;
+					}
+					return !sid.equalsIgnoreCase(loginSid) && 
+					positionIdSeen.contains(map.get(sid).getJobTitleID());
+				})
 				.collect(Collectors.toList());
 	}
 

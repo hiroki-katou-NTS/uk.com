@@ -1082,6 +1082,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
       vm.attendanceInformationDtos([]);
       vm.attendanceInformationDtosDisplay([]);
       vm.attendanceInformationDtosDisplayClone([]);
+      vm.workplaceNameFromCDL008('');
       vm.selectedDate(moment.utc().format('YYYYMMDD'));
       vm.currentPage(0);
       vm.totalElement(0);
@@ -1210,13 +1211,13 @@ module nts.uk.at.view.ccg005.a.screenModel {
         selectedSystemType: SystemType.EMPLOYMENT,
         isrestrictionOfReferenceRange: false
       };
+      $('#ccg005-star-popup').ntsPopup('hide');
       setShared('inputCDL008', inputCDL008);
       vm.$window.modal('/view/cdl/008/a/index.xhtml').then(() => {
         if (getShared('CDL008Cancel')) {
           setShared('CDL008Cancel', null);
           return;
         }
-        $('#ccg005-star-popup').ntsPopup('hide');
         const workplaceInfor = getShared('workplaceInfor');
         vm.workplaceNameFromCDL008(_.map(workplaceInfor, (wkp: any) => wkp.displayName).join('、'));
         // 職場を選択する時
@@ -1245,6 +1246,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
           baseDate: vm.selectedDate(),
           emojiUsage: vm.emojiUsage()
         };
+        $('#ccg005-star-popup').ntsPopup('hide');
         vm.$blockui('show');
         vm.$ajax('com', API.searchForEmployee, param)
           .then((res: object.DisplayInformationDto) => {
