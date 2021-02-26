@@ -42,7 +42,7 @@ module nts.uk.at.view.ksu005.a {
                     } 
                     
                 } 
-                self.itemList(dataList);
+                self.itemList(_.sortBy(dataList, item => item.code));
             }).always(() => {
                 self.$blockui("hide");
             });

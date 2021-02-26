@@ -114,12 +114,18 @@ module nts.uk.at.view.ksu005.b {
                 }
             });
             self.isShiftBackgroundColor.subscribe((value) => {      
+                if(value){
+                    self.itemList.removeAll();
+                    self.initialData();
+                } else {
+                    self.findDetail(self.selectedCode());
+                }
                 if(self.countNumberRow < 10){
                     value ? self.isEnableAddBtn(false): self.isEnableAddBtn(true);
                 } else {
                     self.isEnableAddBtn(false)
                 }      
-            });
+            });            
 
             self.checkAll.subscribe((value) =>{
                 
@@ -253,7 +259,8 @@ module nts.uk.at.view.ksu005.b {
             const self = this;
             let data = [];
             self.countNumberRow = 1;
-            data.push(new ScreenItem(true, self.countNumberRow, self.personalInfoItems()[0].name, self.attendanceItems()[0].name, self.attendanceItems()[0].name));
+            data.push(new ScreenItem(true, self.countNumberRow, self.personalInfoItems()[1].value, self.attendanceItems()[1].value, self.attendanceItems()[1].value));
+            self.itemList.removeAll();
             self.itemList (data);
 
             self.itemsSwap.removeAll();
@@ -287,22 +294,35 @@ module nts.uk.at.view.ksu005.b {
             _.each(self.currentCodeListSwap(), x => {
                 workplaceCounterCategories.push(Math.floor(x.value));
             });   
-            
+
             if(self.selectedPerson().length > 0 && self.selectedPerson() != -1){
                 personalCounterCategories.push(Math.floor(self.selectedPerson()));
             }
 
-            _.each(self.itemList(), x => {
-                if(parseInt(x.personalInfo()) != -1){
-                    personalInfo.push(parseInt(x.personalInfo()));
-                }
-                if(parseInt(x.additionInfo()) != -1){
-                    additionalInfo.push(parseInt(x.additionInfo()));
-                }
-                if(parseInt(x.attendanceItem()) != -1){
-                    attendanceItem.push(parseInt(x.attendanceItem()));
-                }                
+            _.each(self.itemList(), x => {              
+                    personalInfo.push(x.personalInfo());                
+                    additionalInfo.push(x.additionInfo());               
+                    attendanceItem.push(x.attendanceItem());               
             });
+
+            // _.each(self.itemList(), x => {
+            //     if(parseInt(x.personalInfo()) != -1){
+            //         personalInfo.push(parseInt(x.personalInfo()));
+            //     } else {
+            //         personalInfo.push(null);
+            //     }
+            //     if(parseInt(x.additionInfo()) != -1){
+            //         additionalInfo.push(parseInt(x.additionInfo()));
+            //     } else {
+            //         additionalInfo.push(null);
+            //     }
+            //     if(parseInt(x.attendanceItem()) != -1){
+            //         attendanceItem.push(parseInt(x.attendanceItem()));
+            //     } else {
+            //         attendanceItem.push(null);
+            //     }               
+            // });
+
 
             command.personalCounterCategories = personalCounterCategories;
             command.workplaceCounterCategories = workplaceCounterCategories;
@@ -391,7 +411,7 @@ module nts.uk.at.view.ksu005.b {
                             dataList.push(new ItemModel(item.code, item.name));
                         }                        
                     });            
-                    self.items(dataList);
+                    self.items(_.sortBy(dataList, item => item.code));
                     newCode ? self.selectedCode(newCode) : self.selectedCode(code);       
                 } else {
                     self.clearData();
@@ -411,7 +431,7 @@ module nts.uk.at.view.ksu005.b {
                     _.each(data, item =>{
                         dataList.push(new ItemModel(item.code, item.name));
                     });            
-                    self.items(dataList);
+                    self.items(_.sortBy(dataList, item => item.code));
                     self.selectedCode(code);       
                 } else {
                     self.clearData();
@@ -442,6 +462,7 @@ module nts.uk.at.view.ksu005.b {
             self.itemList(evens);    
             self.checkAll(false);
             self.isEnableDelBtn(false);
+            self.isEnableAddBtn(true);
         }
 
         clearData(): void {
@@ -451,6 +472,7 @@ module nts.uk.at.view.ksu005.b {
             self.isEditing(false);
             self.enableDelete(false);
             self.isEnableDelBtn(false);
+            self.isEnableAddBtn(true);
             self.initialData();
             self.clearError();
             $('#outputSettingCode').focus();              
@@ -488,7 +510,7 @@ module nts.uk.at.view.ksu005.b {
             setShare('dataShareKSU005b', request);
             self.currentScreen = nts.uk.ui.windows.sub.modal('/view/ksu/005/c/index.xhtml').onClosed(() =>{
                 let newCode = getShared('dataShareKSU005c');
-                self.reloadData(newCode);
+                newCode ? self.reloadData(newCode) : self.reloadData(self.scheduleTableOutputSetting().code());
             });
         }
 
@@ -505,11 +527,14 @@ module nts.uk.at.view.ksu005.b {
         attendanceItems: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
         selectedCode: KnockoutObservable<string>;
         isNumberOne: KnockoutObservable<boolean> = ko.observable(false);
-        personalInfo: KnockoutObservable<string> = ko.observable("-1");
-        additionInfo: KnockoutObservable<string> = ko.observable("-1");
-        attendanceItem: KnockoutObservable<string> = ko.observable("-1");
+        // personalInfo: KnockoutObservable<string> = ko.observable("-1");
+        // additionInfo: KnockoutObservable<string> = ko.observable("-1");
+        // attendanceItem: KnockoutObservable<string> = ko.observable("-1");
+        personalInfo: KnockoutObservable<number>;
+        additionInfo: KnockoutObservable<number>;
+        attendanceItem: KnockoutObservable<number>;
         
-        constructor(isNumberOne: any, rowNo: number, personalInfo?: string, additionInfo?: string, attendanceItem?: string) {
+        constructor(isNumberOne: any, rowNo: number, personalInfo?: number, additionInfo?: number, attendanceItem?: number) {
             var self = this;
             self.rowNo = ko.observable(rowNo);
             self.checked = ko.observable(false);
@@ -517,16 +542,29 @@ module nts.uk.at.view.ksu005.b {
                 checkbox(true);
             });
             self.isNumberOne = ko.observable(isNumberOne);            
-            self.selectedCode = ko.observable('1');             
-            if(personalInfo) {            
-                self.personalInfo = ko.observable(personalInfo);
+            self.selectedCode = ko.observable('1');     
+            if(isNumberOne)        {
+                self.personalInfo = ko.observable(0);
+                self.additionInfo = ko.observable(0);
+                self.attendanceItem = ko.observable(0);
+            } else {
+                if(personalInfo || personalInfo == 0) {            
+                    self.personalInfo = ko.observable(personalInfo);
+                } else {
+                    self.personalInfo = ko.observable(-1);
+                }
+                if(additionInfo || additionInfo == 0) {                
+                    self.additionInfo = ko.observable(additionInfo);
+                } else {
+                    self.additionInfo = ko.observable(-1);
+                }
+                if(attendanceItem || attendanceItem == 0) {
+                    self.attendanceItem = ko.observable(attendanceItem);
+                } else {
+                    self.attendanceItem = ko.observable(-1);
+                }
             }
-            if(additionInfo) {                
-                self.additionInfo = ko.observable(additionInfo);
-            }
-            if(attendanceItem) {
-                self.attendanceItem = ko.observable(attendanceItem);
-            }
+            
         }
     }
    
