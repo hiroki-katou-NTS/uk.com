@@ -294,35 +294,22 @@ module nts.uk.at.view.ksu005.b {
             _.each(self.currentCodeListSwap(), x => {
                 workplaceCounterCategories.push(Math.floor(x.value));
             });   
-
+            
             if(self.selectedPerson().length > 0 && self.selectedPerson() != -1){
                 personalCounterCategories.push(Math.floor(self.selectedPerson()));
             }
 
-            _.each(self.itemList(), x => {              
-                    personalInfo.push(x.personalInfo());                
-                    additionalInfo.push(x.additionInfo());               
-                    attendanceItem.push(x.attendanceItem());               
+            _.each(self.itemList(), x => {
+                // if(parseInt(x.personalInfo()) != -1){
+                    personalInfo.push(parseInt(x.personalInfo()));
+                // }
+                // if(parseInt(x.additionInfo()) != -1){
+                    additionalInfo.push(parseInt(x.additionInfo()));
+                // }
+                // if(parseInt(x.attendanceItem()) != -1){
+                    attendanceItem.push(parseInt(x.attendanceItem()));
+                // }                
             });
-
-            // _.each(self.itemList(), x => {
-            //     if(parseInt(x.personalInfo()) != -1){
-            //         personalInfo.push(parseInt(x.personalInfo()));
-            //     } else {
-            //         personalInfo.push(null);
-            //     }
-            //     if(parseInt(x.additionInfo()) != -1){
-            //         additionalInfo.push(parseInt(x.additionInfo()));
-            //     } else {
-            //         additionalInfo.push(null);
-            //     }
-            //     if(parseInt(x.attendanceItem()) != -1){
-            //         attendanceItem.push(parseInt(x.attendanceItem()));
-            //     } else {
-            //         attendanceItem.push(null);
-            //     }               
-            // });
-
 
             command.personalCounterCategories = personalCounterCategories;
             command.workplaceCounterCategories = workplaceCounterCategories;
@@ -527,14 +514,11 @@ module nts.uk.at.view.ksu005.b {
         attendanceItems: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
         selectedCode: KnockoutObservable<string>;
         isNumberOne: KnockoutObservable<boolean> = ko.observable(false);
-        // personalInfo: KnockoutObservable<string> = ko.observable("-1");
-        // additionInfo: KnockoutObservable<string> = ko.observable("-1");
-        // attendanceItem: KnockoutObservable<string> = ko.observable("-1");
-        personalInfo: KnockoutObservable<number>;
-        additionInfo: KnockoutObservable<number>;
-        attendanceItem: KnockoutObservable<number>;
+        personalInfo: KnockoutObservable<string> = ko.observable("-1");
+        additionInfo: KnockoutObservable<string> = ko.observable("-1");
+        attendanceItem: KnockoutObservable<string> = ko.observable("-1");
         
-        constructor(isNumberOne: any, rowNo: number, personalInfo?: number, additionInfo?: number, attendanceItem?: number) {
+        constructor(isNumberOne: any, rowNo: number, personalInfo?: string, additionInfo?: string, attendanceItem?: string) {
             var self = this;
             self.rowNo = ko.observable(rowNo);
             self.checked = ko.observable(false);
@@ -542,32 +526,18 @@ module nts.uk.at.view.ksu005.b {
                 checkbox(true);
             });
             self.isNumberOne = ko.observable(isNumberOne);            
-            self.selectedCode = ko.observable('1');     
-            if(isNumberOne)        {
-                self.personalInfo = ko.observable(0);
-                self.additionInfo = ko.observable(0);
-                self.attendanceItem = ko.observable(0);
-            } else {
-                if(personalInfo || personalInfo == 0) {            
-                    self.personalInfo = ko.observable(personalInfo);
-                } else {
-                    self.personalInfo = ko.observable(-1);
-                }
-                if(additionInfo || additionInfo == 0) {                
-                    self.additionInfo = ko.observable(additionInfo);
-                } else {
-                    self.additionInfo = ko.observable(-1);
-                }
-                if(attendanceItem || attendanceItem == 0) {
-                    self.attendanceItem = ko.observable(attendanceItem);
-                } else {
-                    self.attendanceItem = ko.observable(-1);
-                }
+            self.selectedCode = ko.observable('1');             
+            if(personalInfo) {            
+                self.personalInfo = ko.observable(personalInfo);
             }
-            
+            if(additionInfo) {                
+                self.additionInfo = ko.observable(additionInfo);
+            }
+            if(attendanceItem) {
+                self.attendanceItem = ko.observable(attendanceItem);
+            }
         }
     }
-   
     class ItemModel {
         code: string;
         name: string;

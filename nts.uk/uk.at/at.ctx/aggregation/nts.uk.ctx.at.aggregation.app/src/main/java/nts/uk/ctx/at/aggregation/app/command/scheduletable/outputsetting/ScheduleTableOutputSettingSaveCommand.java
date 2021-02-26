@@ -77,10 +77,14 @@ public class ScheduleTableOutputSettingSaveCommand {
 			details.add(OneRowOutputItem.create(
 					Optional.of(EnumAdaptor.valueOf(0, ScheduleTablePersonalInfoItem.class)),
 					Optional.of(EnumAdaptor.valueOf(4, ScheduleTablePersonalInfoItem.class)),
-					Optional.of(EnumAdaptor.valueOf(0, ScheduleTableAttendanceItem.class))));
+					Optional.of(EnumAdaptor.valueOf(1, ScheduleTableAttendanceItem.class))));
 		} else {
-			for(int i = 0; i < 10; i++) {	
-				while(i <= size) {
+			details.add(OneRowOutputItem.create(
+					Optional.of(EnumAdaptor.valueOf(0, ScheduleTablePersonalInfoItem.class)),
+					Optional.of(EnumAdaptor.valueOf(4, ScheduleTablePersonalInfoItem.class)),
+					Optional.of(EnumAdaptor.valueOf(1, ScheduleTableAttendanceItem.class))));
+			for(int i = 1; i < 10; i++) {	
+				if(i < size) {
 					if((i < command.getPersonalInfo().size() ? command.getPersonalInfo().get(i) != -1 : true)
 							||(i < command.getAdditionalInfo().size() ? command.getAdditionalInfo().get(i) != -1 : true) 
 							||(i < command.getAttendanceItem().size() ? command.getAttendanceItem().get(i) != -1 : true)) {
