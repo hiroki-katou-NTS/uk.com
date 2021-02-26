@@ -1,13 +1,5 @@
 package nts.uk.ctx.at.shared.dom.worktime.flexset;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,74 +12,19 @@ import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.common.usecls.ApplyAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
-import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
-import nts.uk.ctx.at.shared.dom.worktime.common.BreakFrameNo;
-import nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSetting;
-import nts.uk.ctx.at.shared.dom.worktime.common.CompensatoryOccurrenceDivision;
-import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
-import nts.uk.ctx.at.shared.dom.worktime.common.DesignatedTime;
-import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeFrameNo;
-import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneNo;
-import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTimeRoundingMethod;
-import nts.uk.ctx.at.shared.dom.worktime.common.GoOutTimezoneRoundingSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
-import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSettingGetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.common.HolidayCalculation;
-import nts.uk.ctx.at.shared.dom.worktime.common.IntervalTimeGetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.common.OTFrameNo;
-import nts.uk.ctx.at.shared.dom.worktime.common.OneDayTime;
-import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSetGetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.common.PrioritySetting;
-import nts.uk.ctx.at.shared.dom.worktime.common.RestClockManageAtr;
-import nts.uk.ctx.at.shared.dom.worktime.common.RestTimeOfficeWorkCalcMethod;
-import nts.uk.ctx.at.shared.dom.worktime.common.RoundingTime;
-import nts.uk.ctx.at.shared.dom.worktime.common.SettlementOrder;
-import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSetAtr;
-import nts.uk.ctx.at.shared.dom.worktime.common.SubHolTransferSetGetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
-import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.TotalRoundingSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkSystemAtr;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSetGetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneExtraordTimeSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneGoOutSetGetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneLateEarlySet;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneLateNightTimeSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneMedicalSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneMedicalSetGetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSetGetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneShortTimeWorkSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSetGetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestCalcMethod;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowFixedRestSet;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestClockCalcMethod;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSet;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSetGetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestSetting;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowRestTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSetting;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSettingDetail;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSettingDetailGetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSettingGetMemento;
-import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
-import nts.uk.ctx.at.shared.dom.worktime.predset.BreakDownTimeDay;
-import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktime.predset.PredetermineTime;
-import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
-import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
-import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.*;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.*;
+import nts.uk.ctx.at.shared.dom.worktime.predset.*;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.HalfDayWorkSet;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
+
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class FlexWorkSettingHelper {
 	 
@@ -834,7 +771,7 @@ public class FlexWorkSettingHelper {
 		@Override
 		public CoreTimeSetting getCoreTimeSetting() {
 			return new CoreTimeSetting(new TimeSheet(new TimeWithDayAttr(480), new TimeWithDayAttr(960))
-										 , coreSettingApplyAtr, new AttendanceTime(3000));
+										 , coreSettingApplyAtr, new AttendanceTime(3000), new OutingCalcWithinCoreTime(NotUseAtr.USE, NotUseAtr.USE));
 		}
 
 		@Override
