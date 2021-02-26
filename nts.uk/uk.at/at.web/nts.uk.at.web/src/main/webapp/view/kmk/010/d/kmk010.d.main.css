@@ -1,6 +1,6 @@
 
 table.fixed-table tbody tr td:first-child {
-  width: 280px;
+  width: 230px;
 }
 table.fixed-table thead th {
   font-weight: normal;
@@ -73,5 +73,5 @@ table.fixed-table tr:first-child th:first-child {
 }
 #KMK010_84 {
   min-width: 100px;
-  width: auto;
+  width: 170px;
 }

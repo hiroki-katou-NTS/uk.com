@@ -6,7 +6,7 @@
 }
 
 .lableDetail:first-child {
-	margin-bottom: 15px;
+	margin-bottom: 10px;
 	overflow: hidden;
 }
 
@@ -82,8 +82,9 @@
 }
 
 .sixtySetting {	
-	margin-top: 20px;
+	margin-top: 10px;
 	max-width: 860px;
+	margin-left: 12px;
 }
 .sixtySetting thead td {
 	padding-top: 7px;
@@ -240,5 +241,13 @@ html {
 
 .rounding-setting-overtime-hours {
 	margin-top: 30px;
-	padding-bottom: 50px;
+}
+
+.methodSelect .ntsRadioBox {
+	margin-right: 24px;
+}
+
+.lableDetail .overtimeNote {
+	width: 380px !important;
+	height: 60px;
 }
