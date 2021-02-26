@@ -208,14 +208,14 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 					SptdtInfoMessage entity = new SptdtInfoMessage();
 					SptdtInfoMessagePK entityPk = new SptdtInfoMessagePK();
 					entityPk.setSid(item[11].toString());
-					entityPk.setInputDate(GeneralDateTime.fromString(item[12].toString(), "yyyy-MM-dd HH:mm:ss.S"));
+					entityPk.setInputDate(GeneralDateTime.fromString(item[12].toString().substring(0, 21), "yyyy-MM-dd HH:mm:ss.S"));
 					entity.setPk(entityPk);
 					entity.setVersion(Long.parseLong(item[8].toString()));
 					entity.setContractCd(item[9].toString());
 					entity.setCompanyId(item[10].toString());
-					entity.setStartDate(GeneralDate.fromString(item[13].toString(), "yyyy-MM-dd hh:mm:ss.S"));
-					entity.setEndDate(GeneralDate.fromString(item[14].toString(), "yyyy-MM-dd hh:mm:ss.S"));
-					entity.setUpdateDate(GeneralDateTime.fromString(item[15].toString(), "yyyy-MM-dd HH:mm:ss.S"));
+					entity.setStartDate(GeneralDate.fromString(item[13].toString().substring(0, 21), "yyyy-MM-dd hh:mm:ss.S"));
+					entity.setEndDate(GeneralDate.fromString(item[14].toString().substring(0, 21), "yyyy-MM-dd hh:mm:ss.S"));
+					entity.setUpdateDate(GeneralDateTime.fromString(item[15].toString().substring(0, 21), "yyyy-MM-dd HH:mm:ss.S"));
 					entity.setMessage(item[16].toString());
 					entity.setDestination(Integer.parseInt(item[17].toString()));
 					MessageNotice domain = new MessageNotice();
