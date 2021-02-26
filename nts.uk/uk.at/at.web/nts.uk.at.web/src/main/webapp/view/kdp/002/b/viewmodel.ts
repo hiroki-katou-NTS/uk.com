@@ -50,7 +50,7 @@ class KDP002BViewModel extends ko.ViewModel {
 
             vm.$window.shared( "infoEmpToScreenB" ).done( infoEmp => {
 
-                vm.infoEmpFromScreenA( infoEmp );
+                vm.infoEmpFromScreenA = infoEmp ;
                 vm.disableResultDisplayTime( vm.resultDisplayTime() > 0 ? true : false );
 
                 vm.columns2 = ko.observableArray( [
