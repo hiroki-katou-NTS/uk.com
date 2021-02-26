@@ -32,7 +32,7 @@ class KDP002BViewModel extends ko.ViewModel {
 
     listStampRecord: KnockoutObservableArray<any> = ko.observableArray( [] );
     currentDate: KnockoutObservable<string> = ko.observable( moment( new Date() ).add( -3, 'days' ).format( "YYYY/MM/DD" ) + " ～ " + moment( new Date() ).format( "YYYY/MM/DD" ) );
-    currentStampData: KnockoutObservable<any> = ko.observable();
+    currentStampData: KnockoutObservable<any> = ko.observable( { stampDate: null, stampTime: null, stampArtName: null, cardNumberSupport: null, workLocationCD: null } );
     resultDisplayTime: KnockoutObservable<number> = ko.observable( 0 );
     disableResultDisplayTime: KnockoutObservable<boolean> = ko.observable( true );
     interval: KnockoutObservable<number> = ko.observable( 0 );
