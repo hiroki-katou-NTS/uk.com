@@ -34,7 +34,6 @@ public enum ScheduleTablePersonalInfoItem {
 	
 	public int value;
 	public String nameId;
-	public String description;
 	
 	private ScheduleTablePersonalInfoItem (int value, String nameId) {
 		this.value = value;
