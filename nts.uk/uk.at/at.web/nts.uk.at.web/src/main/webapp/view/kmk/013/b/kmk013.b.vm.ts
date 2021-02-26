@@ -821,6 +821,7 @@ module nts.uk.at.view.kmk013.b_ref {
                 // フレックス勤務の加算設定.休暇の計算方法の設定.休暇の就業時間計算方法.詳細設定.遅刻・早退を控除する.就業時間から控除する設定.就業時間から控除する
                 obj.flexWork.notDeductLateleaveWork = self.enableB119() ? convertToInt(self.checkedB119()) : 0;
                 // フレックス勤務の加算設定.休暇の計算方法の設定.休暇の就業時間計算方法.詳細設定.遅刻・早退を控除する.就業時間帯毎の設定を可能とする
+                obj.flexWork.enableSetPerWorkHour1 = self.enableB1191() ? convertToInt(self.checkedB1191()) : 0;
                 obj.flexWork.enableSetPerWorkHour2 = self.enableB1191() ? convertToInt(self.checkedB1191()) : 0;
                 // フレックス勤務の加算設定.休暇の計算方法の設定.割増計算方法を設定する
                 obj.flexWork.useAtr = self.enableB121() ? convertToInt(self.checkedB121()) : 0;
@@ -850,6 +851,7 @@ module nts.uk.at.view.kmk013.b_ref {
                 // 変形労働勤務の加算設定.休暇の計算方法の設定.休暇の就業時間計算方法.詳細設定.遅刻・早退を控除する.就業時間から控除する設定.就業時間から控除する
                 obj.irregularWork.notDeductLateleaveWork = self.enableB149() ? convertToInt(self.checkedB149()) : 0;
                 // 変形労働勤務の加算設定.休暇の計算方法の設定.休暇の就業時間計算方法.詳細設定.遅刻・早退を控除する.就業時間帯毎の設定を可能とする
+                obj.irregularWork.enableSetPerWorkHour1 = self.enableB1491() ? convertToInt(self.checkedB1491()) : 0;
                 obj.irregularWork.enableSetPerWorkHour2 = self.enableB1491() ? convertToInt(self.checkedB1491()) : 0;
                 // 変形労働勤務の加算設定.休暇の計算方法の設定.割増計算方法を設定する
                 obj.irregularWork.useAtr = self.enableB151() ? convertToInt(self.checkedB151()) : 0;
