@@ -1,3 +1,6 @@
+
+/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
+
 const requestUrl = {
 
         getAllStampingResult: "at/record/workrecord/stamp/management/getAllStampingResult/",
@@ -33,6 +36,9 @@ class KDP002BViewModel extends ko.ViewModel {
     infoEmpFromScreenA: any;
     constructor() {
         super();
+    }
+    
+    created() {
         const vm = this;
         vm.$window.shared( "resultDisplayTime" ).done( displayTime => {
             vm.resultDisplayTime( displayTime );
@@ -50,13 +56,13 @@ class KDP002BViewModel extends ko.ViewModel {
                 ] );
             } );
         } );
-        
+        vm.startPage();
     }
     
     /**
      * start page  
      */
-    public startPage(): JQueryPromise<any> {
+    startPage(): JQueryPromise<any> {
         let self = this,
             dfd = $.Deferred();
         let dfdGetAllStampingResult = self.getAllStampingResult();
@@ -72,6 +78,7 @@ class KDP002BViewModel extends ko.ViewModel {
         } );
         return dfd.promise();
     }
+    
     getDataById( id: any ) {
         let self = this;
         for ( let j = 0; j < _.size( self.items() ); j++ ) {
