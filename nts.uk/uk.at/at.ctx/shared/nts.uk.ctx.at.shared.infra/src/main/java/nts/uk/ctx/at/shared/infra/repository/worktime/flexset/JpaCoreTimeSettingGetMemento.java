@@ -70,5 +70,4 @@ public class JpaCoreTimeSettingGetMemento implements CoreTimeSettingGetMemento {
 				NotUseAtr.valueOf(this.entity.getEspecialCalc()));
 	}
 
-
 }

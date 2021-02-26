@@ -56,6 +56,7 @@ public class CoreTimeSetting extends WorkTimeDomainObject implements Cloneable{
 		this.coreTimeSheet = memento.getCoreTimeSheet();
 		this.timesheet = memento.getTimesheet();
 		this.minWorkTime = memento.getMinWorkTime();
+		this.goOutCalc = memento.getGoOutCalc();
 	}
 
 	/**
@@ -68,6 +69,7 @@ public class CoreTimeSetting extends WorkTimeDomainObject implements Cloneable{
 		memento.setCoreTimeSheet(this.coreTimeSheet);
 		memento.setTimesheet(this.timesheet);
 		memento.setMinWorkTime(this.minWorkTime);
+		memento.setGoOutCalc(this.goOutCalc);
 	}
 
 	/*
@@ -160,6 +162,7 @@ public class CoreTimeSetting extends WorkTimeDomainObject implements Cloneable{
 			cloned.coreTimeSheet = this.coreTimeSheet.clone();
 			cloned.timesheet = ApplyAtr.valueOf(this.timesheet.value);
 			cloned.minWorkTime = new AttendanceTime(this.minWorkTime.v());
+			cloned.goOutCalc = new OutingCalcWithinCoreTime(this.goOutCalc.getRemoveFromWorkTime(), this.goOutCalc.getEspecialCalc());
 		}
 		catch (Exception e){
 			throw new RuntimeException("CoreTimeSetting clone error.");
