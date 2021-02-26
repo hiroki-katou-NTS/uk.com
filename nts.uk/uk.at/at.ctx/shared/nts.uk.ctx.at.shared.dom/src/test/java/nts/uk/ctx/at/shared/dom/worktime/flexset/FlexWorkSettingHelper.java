@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.worktime.flexset;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -92,7 +93,11 @@ public class FlexWorkSettingHelper {
 	 
 	public static FlexWorkSetting createFlexOffRestTimeZone(FlowWorkRestTimezone offRestTimeZone) {
 		val offdayWorkTimeImpl = new FlexOffdayWorkTimeGetMementoImpl(Arrays.asList(new HDWorkTimeSheetSetting()), offRestTimeZone);
-		return new FlexWorkSetting(new FlexWorkSettingImpl(ApplyAtr.USE, Collections.emptyList()
+		return new FlexWorkSetting(new FlexWorkSettingImpl(ApplyAtr.USE
+//		        , Collections.emptyList()
+		        , Arrays.asList(new FlexHalfDayWorkTime(null, null, AmPmAtr.ONE_DAY), 
+		                        new FlexHalfDayWorkTime(null, null, AmPmAtr.AM),
+		                        new FlexHalfDayWorkTime(null, null, AmPmAtr.PM))
 				, new FlexOffdayWorkTime(offdayWorkTimeImpl), new HalfDayWorkSet(true, true, true)));
 	}
 	
@@ -139,6 +144,11 @@ public class FlexWorkSettingHelper {
 						, Arrays.asList(
 								 EmTimeZoneSetHelper.createWorkingTimezoneList(new EmTimeFrameNo(2) , TimeWithDayAttr.hourMinute( 5,  0 ), TimeWithDayAttr.hourMinute( 12, 0 ))
 						))
+				, FlexHalfDayWorkTimeHelper.createWorkTime(AmPmAtr.PM, flexHalfRestTimezone
+                        ,  OverTimeOfTimeZoneSetHelper.createOverTimeList(overTimes)
+                        , Arrays.asList(
+                                 EmTimeZoneSetHelper.createWorkingTimezoneList(new EmTimeFrameNo(2) , TimeWithDayAttr.hourMinute( 13,  0 ), TimeWithDayAttr.hourMinute( 17, 0 ))
+                        ))
 				);
 		return new FlexWorkSetting(new FlexWorkSettingImpl(ApplyAtr.NOT_USE, flexHalfDayWorkTimes, new FlexOffdayWorkTime(), new HalfDayWorkSet(true, true, true)));
 	}
@@ -232,7 +242,12 @@ public class FlexWorkSettingHelper {
 		
 		val offdayWorkTimeImpl = new FlexOffdayWorkTimeGetMementoImpl(lstWorkTimezone, offRestTimeZone);
 		
-		val flexWorkSetting = new FlexWorkSetting(new FlexWorkSettingImpl(ApplyAtr.USE, Collections.emptyList(), new FlexOffdayWorkTime(offdayWorkTimeImpl), new HalfDayWorkSet(false, false, false)));
+		val flexWorkSetting = new FlexWorkSetting(new FlexWorkSettingImpl(ApplyAtr.USE
+//		        , Collections.emptyList()
+		        , Arrays.asList(new FlexHalfDayWorkTime(null, null, AmPmAtr.ONE_DAY), 
+		                        new FlexHalfDayWorkTime(null, null, AmPmAtr.AM),
+		                        new FlexHalfDayWorkTime(null, null, AmPmAtr.PM))
+		        , new FlexOffdayWorkTime(offdayWorkTimeImpl), new HalfDayWorkSet(false, false, false)));
 
 		return flexWorkSetting;
 	}
