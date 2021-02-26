@@ -46,13 +46,14 @@
                         <!-- C2_2 -->
                     <div style="width: 340px"
                          data-bind="ntsSearchBox: {
-                             searchMode: 'highlight',
-                             targetKey: 'code',
-                             comId: 'multi-list',
-                             items: listStandardImportSetting,
-                             selected: selectedLayoutId,
-                             selectedKey: 'cd', fields: ['name', 'cd'],
-                             mode: 'igGrid'}" />
+                            items: listStandardImportSetting,
+                            searchMode: 'highlight',
+                            targetKey: 'layoutIdSelect',
+                            comId: 'listStandardImportSetting',
+                            selected: selectedLayoutId,
+                            selectedKey: 'layoutIdSelect',
+                            fields: ['displayCode', 'displayName'],
+                            mode: 'igGrid'}"></div>
                         <div id="B2_1">
                             <!-- B2_2 -->
                             <table tabindex="5" id="listStandardImportSetting" data-bind="ntsGridList: {
@@ -158,9 +159,13 @@
 	                        <!-- B5_1 -->
 	                        <div tabindex="10" class="" data-bind="ntsCheckBox: { checked: outNumExceedTime36Agr  }">${i18n.getText('KWR008_35')}</div>
 	                        <br/>
-	                        <!-- B5_9 -->
-	                        <div tabindex="11" class="" data-bind="ntsCheckBox: { checked: multiMonthDisplay  }">${i18n.getText('KWR008_63')}</div>
-	                    </div>
+                            <div style="display: inline-flex;">
+                                <!-- B5_9 -->
+                                <div tabindex="11" class="" data-bind="ntsCheckBox: { checked: multiMonthDisplay  }">${i18n.getText('KWR008_63')}</div>
+                                <!-- B5_10 -->
+                                <div style="padding: 2px 20px;" data-bind="visible: multiMonthDisplay">${i18n.getText('KWR008_65')}</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
