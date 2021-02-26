@@ -96,10 +96,9 @@ import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 //import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.DailyCalculationPersonalInformation;
 //import nts.uk.ctx.at.shared.dom.workrule.waytowork.PersonalLaborCondition;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
-//import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 //import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
 //import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexCalcSetting;
@@ -745,7 +744,7 @@ public class TotalWorkingTime {
 	 * @return
 	 */
 	public TotalWorkingTime reCalcLateLeave(Optional<WorkTimezoneCommonSet> workTimeZone,
-			Optional<FixRestTimezoneSet> fixRestTimeZoneSet, List<EmTimeZoneSet> fixWoSetting,
+			Optional<TimezoneOfFixedRestTimeSet> fixRestTimeZoneSet, List<EmTimeZoneSet> fixWoSetting,
 			Optional<TimeLeavingOfDailyAttd> attendanceLeave, AttendanceTime actualPredTime, WorkType workType) {
 		if (workType.getDailyWork().decisionNeedPredTime() != AttendanceHolidayAttr.FULL_TIME) {
 			offSetRestTime(workTimeZone,fixRestTimeZoneSet,fixWoSetting,attendanceLeave);	
@@ -759,7 +758,7 @@ public class TotalWorkingTime {
 	 * 大塚モード(欠勤控除)時の休暇加算時間との相殺処理
 	 */
 	private void offSetRestTime(Optional<WorkTimezoneCommonSet> workTimeZone,
-			Optional<FixRestTimezoneSet> fixRestTimeZoneSet, List<EmTimeZoneSet> fixWoSetting,
+			Optional<TimezoneOfFixedRestTimeSet> fixRestTimeZoneSet, List<EmTimeZoneSet> fixWoSetting,
 			Optional<TimeLeavingOfDailyAttd> attendanceLeave) {		
 		//休暇時に計算する設定かどうか判断
 		if(!workTimeZone.isPresent()
@@ -801,7 +800,7 @@ public class TotalWorkingTime {
 	/**
 	 * 大塚モード(欠勤控除)時の休憩未取得時間との相殺処理
 	 */
-	private void offSetUnUseBreakTime(Optional<WorkTimezoneCommonSet> workTimeZone, Optional<FixRestTimezoneSet> fixRestTimeZoneSet, List<EmTimeZoneSet> fixWoSetting, Optional<TimeLeavingOfDailyAttd> attendanceLeave,
+	private void offSetUnUseBreakTime(Optional<WorkTimezoneCommonSet> workTimeZone, Optional<TimezoneOfFixedRestTimeSet> fixRestTimeZoneSet, List<EmTimeZoneSet> fixWoSetting, Optional<TimeLeavingOfDailyAttd> attendanceLeave,
 									AttendanceTime actualPredTime) {
 		AttendanceTime unBreakTime = new AttendanceTime(0);
 		//休憩未取得を計算するためのチェック
@@ -815,7 +814,7 @@ public class TotalWorkingTime {
 		int withinBreakTime = 0;
 		//就業時間帯に設定されている休憩のループ
 		if(fixRestTimeZoneSet.isPresent()) {
-			for(DeductionTime breakTImeSheet : fixRestTimeZoneSet.get().getLstTimezone()) {
+			for(DeductionTime breakTImeSheet : fixRestTimeZoneSet.get().getTimezones()) {
 				//就業時間帯に設定されている勤務時間帯のstream
 				withinBreakTime += fixWoSetting.stream().filter(tc -> tc.getTimezone().isOverlap(breakTImeSheet))
 													  .map(tt -> tt.getTimezone().getDuplicatedWith(breakTImeSheet.timeSpan()).get().lengthAsMinutes())

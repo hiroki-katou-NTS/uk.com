@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.worktime.flexset;
 
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.val;
@@ -21,6 +22,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 //フレックス勤務の平日出勤用勤務時間帯
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class FlexHalfDayWorkTime extends WorkTimeDomainObject implements Cloneable{
 
 	/** The rest timezone. */

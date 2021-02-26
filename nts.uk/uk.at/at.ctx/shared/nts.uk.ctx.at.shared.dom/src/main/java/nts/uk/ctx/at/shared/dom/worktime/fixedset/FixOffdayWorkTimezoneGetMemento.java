@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.worktime.fixedset;
 import java.util.List;
 
 import nts.uk.ctx.at.shared.dom.worktime.common.HDWorkTimeSheetSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
 
 /**
  * The Interface FixOffdayWorkTimezoneGetMemento.
@@ -18,7 +19,7 @@ public interface FixOffdayWorkTimezoneGetMemento {
 	 *
 	 * @return the rest timezone
 	 */
-	FixRestTimezoneSet getRestTimezone();
+    TimezoneOfFixedRestTimeSet getRestTimezone();
 
 	/**
 	 * Gets the lst work timezone.

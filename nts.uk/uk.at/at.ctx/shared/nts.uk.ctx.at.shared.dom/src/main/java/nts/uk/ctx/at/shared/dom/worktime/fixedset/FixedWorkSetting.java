@@ -493,7 +493,7 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 	public BreakTimeZone getBreakTimeZone(boolean isWorkingOnDayOff, AmPmAtr amPmAtr) {
 
 		// 固定勤務の休憩時間帯を取得する
-		FixRestTimezoneSet fixedRestTimezone;
+	    TimezoneOfFixedRestTimeSet fixedRestTimezone;
 		if (isWorkingOnDayOff) {
 			// 休出
 			fixedRestTimezone = this.offdayWorkTimezone.getRestTimezone();

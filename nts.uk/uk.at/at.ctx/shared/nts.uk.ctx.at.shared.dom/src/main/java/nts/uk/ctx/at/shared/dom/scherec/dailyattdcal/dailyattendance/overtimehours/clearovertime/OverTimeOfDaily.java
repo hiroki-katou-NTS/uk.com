@@ -53,10 +53,10 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.ExceededPredAddVacationCalc;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.OverTimeCalcNoBreak;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
@@ -514,7 +514,7 @@ public class OverTimeOfDaily {
 									AttendanceTime annualAddTime,AttendanceTime predTime,
 									Optional<FixedWorkCalcSetting> ootsukaFixedCalcSet,
 									AutoCalOvertimeSetting autoCalcSet, DailyUnit dailyUnit, 
-									Optional<FixRestTimezoneSet> restTimeSheet, 
+									Optional<TimezoneOfFixedRestTimeSet> restTimeSheet, 
 									Finally<WithinWorkTimeSheet> withinWorkTimeSheet, PredetermineTimeSetForCalc predetermineTimeSetForCalc) {
 		if(ootsukaFixedCalcSet != null && ootsukaFixedCalcSet.isPresent() ) {
 			//休憩未取得時間から残業時間計算
@@ -609,7 +609,7 @@ public class OverTimeOfDaily {
 	private void calcOverTimeFromOverPredTime(AttendanceTime actualWorkTime, AttendanceTime unUseBreakTime,
 											  AttendanceTime annualAddTime, AttendanceTime oneDayPredTime,
 											  ExceededPredAddVacationCalc ootsukaFixedCalcSet,
-											  AutoCalOvertimeSetting autoCalcSet, Optional<FixRestTimezoneSet> restTimeSheet, 
+											  AutoCalOvertimeSetting autoCalcSet, Optional<TimezoneOfFixedRestTimeSet> restTimeSheet, 
 											  Finally<WithinWorkTimeSheet> withinWorkTimeSheet){
 		//AttendanceTime breakTimeInWithinTimeSheet = getBreakTimeInWithin(withinWorkTimeSheet,restTimeSheet);
 		
@@ -678,13 +678,13 @@ public class OverTimeOfDaily {
 	 */
 	@SuppressWarnings("unused")
 	private AttendanceTime getBreakTimeInWithin(Finally<WithinWorkTimeSheet> withinWorkTimeSheet,
-			Optional<FixRestTimezoneSet> restTimeSheetSet) {
+			Optional<TimezoneOfFixedRestTimeSet> restTimeSheetSet) {
 		if(!restTimeSheetSet.isPresent()
 		  ||withinWorkTimeSheet == null
 		  ||!withinWorkTimeSheet.isPresent())
 			return new AttendanceTime(0);
 		AttendanceTime restTime = new AttendanceTime(0);
-		for(DeductionTime restTimeSheet :restTimeSheetSet.get().getLstTimezone()) {
+		for(DeductionTime restTimeSheet :restTimeSheetSet.get().getTimezones()) {
 			restTime = restTime.addMinutes(withinWorkTimeSheet.get().getDupRestTime(restTimeSheet).valueAsMinutes());
 		}
 		return restTime;

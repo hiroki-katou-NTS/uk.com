@@ -112,7 +112,7 @@ public class FixedWorkSettingPolicyImpl implements FixedWorkSettingPolicy {
 		});
 
 		// Check #Msg_516 domain FixRestTimezoneSet
-		fixedWorkSetting.getOffdayWorkTimezone().getRestTimezone().getLstTimezone().forEach(setting -> {
+		fixedWorkSetting.getOffdayWorkTimezone().getRestTimezone().getTimezones().forEach(setting -> {
 			if (this.predService.validateOneDay(predetemineTimeSet, setting.getStart(), setting.getEnd())) {
 				be.addMessage("Msg_516", "KMK003_21");
 			}
