@@ -44,7 +44,7 @@ public class ReflectOneEntranceAndExit {
 	public Optional<WorkStamp> reflect(Optional<WorkStamp> workStamp,Stamp stamp,GeneralDate ymd) {
 		String cid = AppContexts.user().companyId();
 		//データがあるかどうか確認する
-		if(!workStamp.isPresent()) {
+		if(!workStamp.isPresent() || !workStamp.get().getTimeDay().getTimeWithDay().isPresent()) {
 			//勤怠打刻を生成する
 			WorkTimeInformation timeDayNew = new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.REAL_STAMP, Optional.of(EngravingMethod.TIME_RECORD_ID_INPUT)), null);
 			workStamp = Optional.of(new WorkStamp(timeDayNew,Optional.empty())); //丸め後の時刻 để tạm là 0
