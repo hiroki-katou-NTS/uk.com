@@ -20,7 +20,6 @@ module nts.uk.at.view.kmt09.a {
     externalCodeList: KnockoutObservableArray<any> = ko.observableArray([]);
     externalCode: Array<any> = [];
     workList: KnockoutObservable<any> = ko.observable([]);
-    gobackLink: KnockoutObservable<string> = ko.observable('#');
     model: KnockoutObservable<ModelItem> = ko.observable(null);
     isNewMode: KnockoutObservable<boolean> = ko.observable(true);
     listOfRefinedItems: KnockoutObservableArray<RefinedItem> = ko.observableArray([]);
@@ -303,6 +302,11 @@ module nts.uk.at.view.kmt09.a {
       });
       // check has close dialog
       //nts.uk.ui.windows.setShared("CDL023Cancel", true);
+    }
+
+    goback() {
+      const vm = this;
+      vm.$jump("/view/kmt/011/a/index.xhtml", {screen: "KMT009"});
     }
   }
 

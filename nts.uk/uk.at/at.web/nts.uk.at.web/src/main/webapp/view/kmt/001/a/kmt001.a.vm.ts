@@ -173,6 +173,11 @@ module nts.uk.at.view.kmt001.a {
       }
     }
 
+    goback() {
+      const vm = this;
+      vm.$jump("/view/kmt/011/a/index.xhtml", {screen: "KMT001"});
+    }
+
   }
 
   export class ModelItem {

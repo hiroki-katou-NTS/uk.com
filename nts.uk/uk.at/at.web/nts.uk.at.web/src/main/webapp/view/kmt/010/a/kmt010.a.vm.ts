@@ -13,7 +13,6 @@ module nts.uk.at.view.kmt010.a {
 		alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel> = ko.observableArray([]);
 		treeGrid: TreeComponentOption;
 
-    gobackLink: KnockoutObservable<string> = ko.observable('#');
     workplaceName: KnockoutObservable<string> = ko.observable(null);
     workplaceDataSource: KnockoutObservableArray<UnitModel> = ko.observableArray([]);
 
@@ -142,6 +141,11 @@ module nts.uk.at.view.kmt010.a {
     getAlreadySettingList() {
       const vm = this;
       vm.alreadySettingList.push({ workplaceId: vm.multiSelectedId(), isAlreadySetting: true });      
+    }
+
+    goback() {
+      const vm = this;
+      vm.$jump("/view/kmt/011/a/index.xhtml", {screen: "KMT010"});
     }
   }
 
