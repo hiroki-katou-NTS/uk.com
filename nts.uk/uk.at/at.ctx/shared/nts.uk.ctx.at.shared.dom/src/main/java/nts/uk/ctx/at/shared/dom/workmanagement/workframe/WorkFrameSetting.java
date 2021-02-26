@@ -14,7 +14,6 @@ import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
  */
 @AllArgsConstructor
 @Getter
-@Setter
 public class WorkFrameSetting {
     // 作業枠NO
     private TaskFrameNo taskFrameNo;
