@@ -25,22 +25,22 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class InterimSpecialHolidayMng extends InterimRemain{
-	
+
 	/** 特別休暇暫定ID */
 	private String specialHolidayId;
-	
+
 	/**	特別休暇コード */
 	private int specialHolidayCode;
-	
+
 	/**	予定実績区分 */
 	private ManagermentAtr mngAtr;
-	
+
 	/**時間特休使用 */
 	private Optional<UseTime> useTimes;
-	
+
 	/**	特休使用 */
 	private Optional<UseDay> useDays;
-	
+
 	/**
 	 * 親クラス（RemainAtr）の値をセット
 	 * @param interimRemain
@@ -53,7 +53,7 @@ public class InterimSpecialHolidayMng extends InterimRemain{
 		this.setCreatorAtr(interimRemain.getCreatorAtr());
 		this.setRemainType(interimRemain.getRemainType());
 //		this.setRemainAtr(interimRemain.getRemainAtr());
-		this.useTimes = Optional.empty();
-		this.useDays = Optional.empty();
+//		this.useTimes = Optional.empty();
+//		this.useDays = Optional.empty();
 	}
 }
