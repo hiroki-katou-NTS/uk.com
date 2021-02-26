@@ -29,7 +29,7 @@
               </td>
               <td style="border: 0px solid #dee2e6 !important">
                 <div style="margin-top: -4px; width: 130px">
-                  <nts-year-month
+                  <nts-year-month  id="yearmonth-cmm"
                     v-bind:showTitle="false"
                     v-model="yearMonth"
                     name="対象月"
@@ -62,21 +62,21 @@
               <tr style="">
                 <td
                   class="uk-bg-schedule-sunday"
-                  style="width: 51px; height: 18px;text-align: center; color:#FF0000;"
+                  style="width: 51px; height: 18px;text-align: center; color:#FF0000;font-weight: bold;font-size: 2vh;"
                 >
                   {{'KSUS02_3' | i18n}}
                 </td>
-                <td class="uk-bg-disable" style="width: 51px; height: 18px;text-align: center; color:#404040;">
+                <td class="uk-bg-disable" style="width: 51px; height: 18px;text-align: center; color:#404040;font-weight: bold;font-size: 2vh;">
                   {{'KSUS02_4' | i18n}}
                 </td>
-                <td class="uk-bg-disable" style="width: 51px;text-align: center; color:#404040;">{{'KSUS02_5' | i18n}}</td>
-                <td class="uk-bg-disable" style="width: 51px;text-align: center; color:#404040;">{{'KSUS02_6' | i18n}}</td>
-                <td class="uk-bg-disable" style="width: 51px;text-align: center; color:#404040;">{{'KSUS02_7' | i18n}}</td>
-                <td class="uk-bg-disable" style="width: 51px;text-align: center; color:#404040;">{{'KSUS02_8' | i18n}}</td>
+                <td class="uk-bg-disable" style="width: 51px;text-align: center; color:#404040;font-weight: bold;font-size: 2vh;">{{'KSUS02_5' | i18n}}</td>
+                <td class="uk-bg-disable" style="width: 51px;text-align: center; color:#404040;font-weight: bold;font-size: 2vh;">{{'KSUS02_6' | i18n}}</td>
+                <td class="uk-bg-disable" style="width: 51px;text-align: center; color:#404040;font-weight: bold;font-size: 2vh;">{{'KSUS02_7' | i18n}}</td>
+                <td class="uk-bg-disable" style="width: 51px;text-align: center; color:#404040;font-weight: bold;font-size: 2vh;">{{'KSUS02_8' | i18n}}</td>
                 <td
                   id="d-1"
                   class="uk-bg-schedule-saturday"
-                  style="width: 51px;text-align: center; color:#0000FF;"
+                  style="width: 51px;text-align: center; color:#0000FF;font-weight: bold;font-size: 2vh;"
                 >
                   {{'KSUS02_9' | i18n}}
                 </td>

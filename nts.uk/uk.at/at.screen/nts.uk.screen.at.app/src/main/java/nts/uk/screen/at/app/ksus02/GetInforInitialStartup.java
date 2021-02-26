@@ -2,6 +2,7 @@ package nts.uk.screen.at.app.ksus02;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -194,7 +195,11 @@ public class GetInforInitialStartup {
 			GetCombinationrAndWorkHolidayAtrService.Require require = new RequireImpl(shiftMasterRepo, service,
 					workTypeRepo, workTimeSettingRepository, fixedWorkSet, flowWorkSet, flexWorkSet,
 					predetemineTimeSet);
-			Map<ShiftMaster,Optional<WorkStyle>> dataMapWorkstyle = GetCombinationrAndWorkHolidayAtrService.getCode(require, employeeId, listShiftMasterDto.stream().map(c->c.getShiftMasterCode()).collect(Collectors.toList()));
+			Map<ShiftMaster,Optional<WorkStyle>> dataMapWorkstyle = new HashMap<>();
+			if (!listShiftMasterDto.isEmpty()) {
+				dataMapWorkstyle = GetCombinationrAndWorkHolidayAtrService.getCode(require, employeeId,
+						listShiftMasterDto.stream().map(c -> c.getShiftMasterCode()).collect(Collectors.toList()));
+			}
 			for(ShiftMasterDto shiftMasterDto : listShiftMasterDto) {
 				dataMapWorkstyle.forEach((key, value) -> {
 					if(key.getShiftMasterCode().v().equals(shiftMasterDto.getShiftMasterCode())) {

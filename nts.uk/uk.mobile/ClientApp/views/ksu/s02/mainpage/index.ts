@@ -52,6 +52,9 @@ export class Ksus02Component extends Vue {
     public dataChange(dataFromChild) {
         let self = this;
         let d = dataFromChild;
+        if (dataFromChild.startDate == 'Invalid date' || dataFromChild.endDate == 'Invalid date') {
+            return;
+        }
         self.$mask('show');
         self.$http.post('at', servicePath.getWorkRequest, { startDate: dataFromChild.startDate, endDate: dataFromChild.endDate }).then((result: any) => {
             let year = new Date(dataFromChild.startDate).getFullYear();
