@@ -8,15 +8,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.arc.enums.EnumAdaptor;
-import nts.arc.enums.EnumConstant;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.PersonalCounterCategory;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.WorkplaceCounterCategory;
 import nts.uk.ctx.at.aggregation.dom.scheduletable.OneRowOutputItem;
-import nts.uk.ctx.at.aggregation.dom.scheduletable.ScheduleTableAttendanceItem;
 import nts.uk.ctx.at.aggregation.dom.scheduletable.ScheduleTableOutputSetting;
-import nts.uk.ctx.at.aggregation.dom.scheduletable.ScheduleTablePersonalInfoItem;
-import nts.uk.shr.com.context.AppContexts;
 /**
  * 
  * @author quytb
@@ -67,12 +62,7 @@ public class ScheduleTableOutputSettingDto {
 			attendanceCodeItems.add(item.getAttendanceItem().isPresent() ? item.getAttendanceItem().get().value : null);
 
 		});
-//		
-//		return new ScheduleTableOutputSettingDto(domain.getCode().v(), domain.getName().v(),
-//				domain.getOutputItem().getAdditionalColumnUseAtr().value,
-//				domain.getOutputItem().getShiftBackgroundColorUseAtr().value,
-//				domain.getOutputItem().getDailyDataDisplayAtr().value, personalInfos, additionalInfos,
-//				attendanceCodeItems, personalCounterCategories, workplaceCounterCategories);
+
 		return ScheduleTableOutputSettingDto.builder().code(domain.getCode().v())
 				.name(domain.getName().v())
 				.additionalColumn(domain.getOutputItem().getAdditionalColumnUseAtr().value)

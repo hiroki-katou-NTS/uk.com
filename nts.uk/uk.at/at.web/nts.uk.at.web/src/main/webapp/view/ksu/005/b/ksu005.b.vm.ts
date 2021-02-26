@@ -217,17 +217,18 @@ module nts.uk.at.view.ksu005.b {
                     self.isShiftBackgroundColor(data.shiftBackgroundColor == 1);
 
                     datas.push(new ScreenItem(true, self.countNumberRow, data.personalInfo[0] != null ? data.personalInfo[0].toString() : null,
-                        data.attendanceItem[0] != null ? data.attendanceItem[0].toString() : null,
+                        data.additionalInfo[0] != null ? data.additionalInfo[0].toString() : null,
                         data.attendanceItem[0] != null ? data.attendanceItem[0].toString() : null));
-                    for (let i = 1; i < maxLength; i++) {
-                        self.countNumberRow = self.countNumberRow + 1;
-                        if(self.countNumberRow >= 10) {
-                            self.isEnableAddBtn(false);
-                        }
-                        datas.push(new ScreenItem(false, self.countNumberRow, data.personalInfo[i] != null ? data.personalInfo[i].toString() : null,
-                            data.attendanceItem[i] != null ? data.attendanceItem[i].toString() : null,
-                            data.attendanceItem[i] != null ? data.attendanceItem[i].toString() : null));                                    
-
+                    for (let i = 1; i < 10; i++) {
+                        if(i < maxLength){
+                            self.countNumberRow = self.countNumberRow + 1;
+                            if(self.countNumberRow >= 10) {
+                                self.isEnableAddBtn(false);
+                            }
+                            datas.push(new ScreenItem(false, self.countNumberRow, data.personalInfo[i] != null ? data.personalInfo[i].toString() : null,
+                                data.additionalInfo[i] != null ? data.additionalInfo[i].toString() : null,
+                                data.attendanceItem[i] != null ? data.attendanceItem[i].toString() : null));   
+                        } 
                     }
                     self.itemList(datas);
                     self.itemsSwap.removeAll();
