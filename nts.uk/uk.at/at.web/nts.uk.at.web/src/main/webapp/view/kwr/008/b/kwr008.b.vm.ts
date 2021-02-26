@@ -570,7 +570,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
         monthsInTotalDisplay: KnockoutObservable<number> = ko.observable(1);
         listItemsOutput: KnockoutObservableArray<ItemsOutputToBookTable> = ko.observableArray([]);
         printForm: KnockoutObservable<number> = ko.observable(0);
-        totalAverageDisplay: KnockoutObservable<number> = ko.observable(1);
+        totalAverageDisplay: KnockoutObservable<number> = ko.observable(2);
         multiMonthDisplay: KnockoutObservable<boolean> = ko.observable(false);
         newMode: boolean = false;
 
@@ -590,7 +590,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 self.printForm.subscribe(data => {
                     self.printForm(data);
                 });
-                self.totalAverageDisplay(param.totalAverageDisplay || 1);
+                self.totalAverageDisplay(param.totalAverageDisplay || 2);
                 self.multiMonthDisplay(param ? param.multiMonthDisplay : false);
                 self.buildListItemOutput(param.listItemsOutput);
             }

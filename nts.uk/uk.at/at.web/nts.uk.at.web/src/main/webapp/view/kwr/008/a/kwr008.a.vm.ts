@@ -187,6 +187,10 @@ module nts.uk.at.view.kwr008.a {
             
             checkAverage(settingId: string) {
                 var self = this;
+                if (_.isNil(settingId) || _.isEmpty(settingId)) {
+                    self.selectAverage(false)
+                    return;
+                }
                 block.invisible();
                 service.checkAverage(settingId).done(data => {
                     self.selectAverage(data);
