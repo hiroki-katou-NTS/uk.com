@@ -19,7 +19,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
   @component({
     name: 'ccg005-component',
     template: 
-    `<div data-bind="widget-content: 290, default: 505" id="ccg005-watching">
+    `<div data-bind="widget-content: 290, default: 510" id="ccg005-watching">
     <div id="ccg005-content">
       <div>
         <div class="grade-header-top">
