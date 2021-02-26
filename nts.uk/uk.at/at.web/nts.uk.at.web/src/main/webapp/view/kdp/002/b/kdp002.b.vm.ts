@@ -27,9 +27,8 @@ module nts.uk.at.view.kdp002.b {
             disableResultDisplayTime: KnockoutObservable<boolean> = ko.observable( true );
             interval: KnockoutObservable<number> = ko.observable( 0 );
             infoEmpFromScreenA: any;
-
-            created( params: any ) {
-
+            constructor() {
+                super();
                 const self = this;
 
                 self.$window.shared( "resultDisplayTime" ).then( displayTime => {
@@ -48,7 +47,7 @@ module nts.uk.at.view.kdp002.b {
                         ] );
                     } );
                 } );
-
+                
             }
 
             /**
