@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.workmanagement.operationsettings;
+package nts.uk.ctx.at.shared.dom.scherec.taskmanagement.operationsetting;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
@@ -10,11 +10,11 @@ import nts.arc.layer.dom.AggregateRoot;
  * @author : chinh.hm
  */
 @Getter
-public class WorkOperationSetting extends AggregateRoot {
+public class TaskOperationSetting extends AggregateRoot {
     // 作業運用方法
-    private WorkOperationMethod workOperationMethod;
+    private TaskOperationMethod taskOperationMethod;
 
-    public WorkOperationSetting(int operationMethod) {
-        this.workOperationMethod = EnumAdaptor.valueOf(operationMethod, WorkOperationMethod.class);
+    public TaskOperationSetting(int operationMethod) {
+        this.taskOperationMethod = EnumAdaptor.valueOf(operationMethod, TaskOperationMethod.class);
     }
 }

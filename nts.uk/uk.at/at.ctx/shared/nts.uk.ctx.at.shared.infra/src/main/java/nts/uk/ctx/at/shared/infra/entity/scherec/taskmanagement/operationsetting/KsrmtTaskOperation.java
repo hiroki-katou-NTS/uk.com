@@ -1,8 +1,8 @@
-package nts.uk.ctx.at.shared.infra.entity.workmanagement.operationsettings;
+package nts.uk.ctx.at.shared.infra.entity.scherec.taskmanagement.operationsetting;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.workmanagement.operationsettings.WorkOperationSetting;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.operationsetting.TaskOperationSetting;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 import javax.persistence.Column;
@@ -27,7 +27,7 @@ public class KsrmtTaskOperation extends ContractUkJpaEntity {
         return null;
     }
 
-    public WorkOperationSetting toDomain() {
-        return new WorkOperationSetting(this.useATR);
+    public TaskOperationSetting toDomain() {
+        return new TaskOperationSetting(this.useATR);
     }
 }

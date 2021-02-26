@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.workmanagement.operationsettings;
+package nts.uk.ctx.at.shared.dom.scherec.taskmanagement.operationsetting;
 
 
 /**
@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.dom.workmanagement.operationsettings;
  *
  * @author chinh.hm
  */
-public enum WorkOperationMethod {
+public enum TaskOperationMethod {
     // 予定で利用
     USE_ON_SCHEDULE(0),
     // 実績で利用
@@ -17,7 +17,7 @@ public enum WorkOperationMethod {
 
     public final int value;
 
-    WorkOperationMethod(int value) {
+    TaskOperationMethod(int value) {
         this.value = value;
     }
 
