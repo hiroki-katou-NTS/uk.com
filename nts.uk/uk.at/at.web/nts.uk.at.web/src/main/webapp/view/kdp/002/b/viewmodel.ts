@@ -36,7 +36,7 @@ class KDP002BViewModel extends ko.ViewModel {
     resultDisplayTime: KnockoutObservable<number> = ko.observable( 0 );
     disableResultDisplayTime: KnockoutObservable<boolean> = ko.observable( true );
     interval: KnockoutObservable<number> = ko.observable( 0 );
-    infoEmpFromScreenA: any;
+    infoEmpFromScreenA: any ;
 
     constructor() {
         super();
@@ -59,9 +59,10 @@ class KDP002BViewModel extends ko.ViewModel {
                     { headerText: "<div style='text-align: center;'>" + nts.uk.resource.getText( "KDP002_46" ) + "</div>", key: 'stampHowAndTime', width: 90 },
                     { headerText: "<div style='text-align: center;'>" + nts.uk.resource.getText( "KDP002_47" ) + "</div>", key: 'timeStampType', width: 180 }
                 ] );
+                vm.startPage();
             } );
         } );
-        vm.startPage();
+        
         
     }
     
@@ -100,6 +101,9 @@ class KDP002BViewModel extends ko.ViewModel {
     getAllStampingResult(): JQueryPromise<any> {
         const vm = this;
         let dfd = $.Deferred();
+        if ( !vm.infoEmpFromScreenA ) {
+            return;
+        }
         let sid = vm.infoEmpFromScreenA.employeeId;
         
         vm.$ajax(kDP002RequestUrl.getAllStampingResult +  sid).then( function( data ) {
@@ -166,6 +170,9 @@ class KDP002BViewModel extends ko.ViewModel {
     getEmpInfo(): JQueryPromise<any> {
         const vm = this;
         let dfd = $.Deferred();
+        if ( !vm.infoEmpFromScreenA ) {
+            return;
+        }
         let employeeId = vm.infoEmpFromScreenA.employeeId;
         vm.$ajax(kDP002RequestUrl.getInfo +  employeeId).done( function( data ) {
             vm.employeeCodeName( data.employeeCode + " " + data.personalName );
