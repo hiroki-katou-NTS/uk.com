@@ -80,9 +80,9 @@ public class ScheduleTableOutputSettingSaveCommand {
 					Optional.of(EnumAdaptor.valueOf(1, ScheduleTableAttendanceItem.class))));
 		} else {
 			details.add(OneRowOutputItem.create(
-					Optional.of(EnumAdaptor.valueOf(0, ScheduleTablePersonalInfoItem.class)),
-					Optional.of(EnumAdaptor.valueOf(4, ScheduleTablePersonalInfoItem.class)),
-					Optional.of(EnumAdaptor.valueOf(1, ScheduleTableAttendanceItem.class))));
+					Optional.of(command.getPersonalInfo().get(0) == -1 ? EnumAdaptor.valueOf(0, ScheduleTablePersonalInfoItem.class) : EnumAdaptor.valueOf(command.getPersonalInfo().get(0), ScheduleTablePersonalInfoItem.class)),
+					Optional.of(command.getAdditionalInfo().get(0) == -1 ? EnumAdaptor.valueOf(4, ScheduleTablePersonalInfoItem.class) : EnumAdaptor.valueOf(command.getAdditionalInfo().get(0), ScheduleTablePersonalInfoItem.class)),
+					Optional.of(command.getAttendanceItem().get(0) == -1 ? EnumAdaptor.valueOf(1, ScheduleTableAttendanceItem.class) : EnumAdaptor.valueOf(command.getAttendanceItem().get(0), ScheduleTableAttendanceItem.class) )));
 			for(int i = 1; i < 10; i++) {	
 				if(i < size) {
 					if((i < command.getPersonalInfo().size() ? command.getPersonalInfo().get(i) != -1 : true)

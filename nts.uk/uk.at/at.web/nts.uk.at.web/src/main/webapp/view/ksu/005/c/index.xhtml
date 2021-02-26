@@ -30,7 +30,7 @@
                 </div>        
                 <div class="container-custom">
                     <!--C2-1-->
-                    <div data-bind="ntsFormLabel:{}">#{i18n.getText('KSU005_50')} </div>
+                    <div data-bind="ntsFormLabel:{required: true, constraint:['OutputSettingCode']}">#{i18n.getText('KSU005_50')} </div>
                     <!--C2-2-->
                     <div style="margin-left: 8px;">
                         <input tabindex="1" id="outputSettingCopyCode" data-bind="ntsTextEditor:{
