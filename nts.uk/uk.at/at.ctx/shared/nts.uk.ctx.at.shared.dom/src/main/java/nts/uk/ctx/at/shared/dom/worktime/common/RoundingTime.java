@@ -53,7 +53,7 @@ public class RoundingTime {
 	public void saveToMemento(RoundingTimeSetMemento memento) {
 		memento.setAttendanceMinuteLaterCalculate(this.attendanceMinuteLaterCalculate);
 		memento.setLeaveWorkMinuteAgoCalculate(this.leaveWorkMinuteAgoCalculate);
-		memento.getRoundingSets(this.roundingSets);
+		memento.setRoundingSets(this.roundingSets);
 	}
 
 	/*

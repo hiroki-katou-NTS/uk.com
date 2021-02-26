@@ -1,42 +1,26 @@
 package nts.uk.file.at.infra.worktime;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
 import com.aspose.cells.Cells;
-
 import nts.uk.ctx.at.shared.app.find.workdayoff.frame.WorkdayoffFrameFindDto;
 import nts.uk.ctx.at.shared.app.find.workdayoff.frame.WorkdayoffFrameFinder;
-import nts.uk.ctx.at.shared.app.find.worktime.common.dto.DeductionTimeDto;
-import nts.uk.ctx.at.shared.app.find.worktime.common.dto.EmTimeZoneSetDto;
-import nts.uk.ctx.at.shared.app.find.worktime.common.dto.OverTimeOfTimeZoneSetDto;
-import nts.uk.ctx.at.shared.app.find.worktime.common.dto.PrioritySettingDto;
-import nts.uk.ctx.at.shared.app.find.worktime.common.dto.StampReflectTimezoneDto;
+import nts.uk.ctx.at.shared.app.find.worktime.common.dto.*;
 import nts.uk.ctx.at.shared.app.find.worktime.dto.WorkTimeSettingInfoDto;
 import nts.uk.ctx.at.shared.app.find.worktime.fixedset.dto.FixHalfDayWorkTimezoneDto;
 import nts.uk.ctx.at.shared.app.find.worktime.predset.dto.TimezoneDto;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.common.usecls.ApplyAtr;
-import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
-import nts.uk.ctx.at.shared.dom.worktime.common.FontRearSection;
-import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
-import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
-import nts.uk.ctx.at.shared.dom.worktime.common.MultiStampTimePiorityAtr;
-import nts.uk.ctx.at.shared.dom.worktime.common.RoundingSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.RoundingTimeUnit;
-import nts.uk.ctx.at.shared.dom.worktime.common.StampPiorityAtr;
-import nts.uk.ctx.at.shared.dom.worktime.common.Superiority;
-import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixHalfDayWorkTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.common.*;
 import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.DisplayMode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
 
 @Stateless
 public class WorkTimeReportService_New {
@@ -438,26 +422,26 @@ public class WorkTimeReportService_New {
             }
         }
         
-        List<RoundingSet> roundingSets = data.getFixedWorkSetting().getCommonSetting().getStampSet().getRoundingTime().getRoundingSets();
-        Optional<RoundingSet> roundingAttendanceSetOpt = roundingSets.stream().filter(x -> x.getSection().equals(Superiority.ATTENDANCE)).findFirst();
-        Optional<RoundingSet> roundingOfficeSetOpt = roundingSets.stream().filter(x -> x.getSection().equals(Superiority.OFFICE_WORK)).findFirst();
-        Optional<RoundingSet> roundingGoOutSetOpt = roundingSets.stream().filter(x -> x.getSection().equals(Superiority.GO_OUT)).findFirst();
-        Optional<RoundingSet> roundingTurnBackSetOpt = roundingSets.stream().filter(x -> x.getSection().equals(Superiority.TURN_BACK)).findFirst();
+        List<RoundingSetDto> roundingSets = data.getFixedWorkSetting().getCommonSetting().getStampSet().getRoundingTime().getRoundingSets();
+        Optional<RoundingSetDto> roundingAttendanceSetOpt = roundingSets.stream().filter(x -> x.getSection() == Superiority.ATTENDANCE.value).findFirst();
+        Optional<RoundingSetDto> roundingOfficeSetOpt = roundingSets.stream().filter(x -> x.getSection() == Superiority.OFFICE_WORK.value).findFirst();
+        Optional<RoundingSetDto> roundingGoOutSetOpt = roundingSets.stream().filter(x -> x.getSection() == Superiority.GO_OUT.value).findFirst();
+        Optional<RoundingSetDto> roundingTurnBackSetOpt = roundingSets.stream().filter(x -> x.getSection() == Superiority.TURN_BACK.value).findFirst();
 
         if (roundingAttendanceSetOpt.isPresent()) {
             /*
              * R4_125
              * 打刻丸め.出勤
              */
-            RoundingTimeUnit roundingTimeUnit = roundingAttendanceSetOpt.get().getRoundingSet().getRoundingTimeUnit();
-            cells.get("BF" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(roundingTimeUnit.value));
+            Integer roundingTimeUnit = roundingAttendanceSetOpt.get().getRoundingSet().getRoundingTimeUnit();
+            cells.get("BF" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(roundingTimeUnit));
             
             /*
              * R4_126
              * 打刻丸め.出勤前後設定
              */
-            FontRearSection fontRearSection = roundingAttendanceSetOpt.get().getRoundingSet().getFontRearSection();
-            cells.get("BG" + (startIndex + 1)).setValue(fontRearSection.description);
+            Integer fontRearSection = roundingAttendanceSetOpt.get().getRoundingSet().getFontRearSection();
+            cells.get("BG" + (startIndex + 1)).setValue(FontRearSection.valueOf(fontRearSection).description);
         }
         
         if (roundingOfficeSetOpt.isPresent()) {
@@ -465,15 +449,15 @@ public class WorkTimeReportService_New {
              * R4_127
              * 打刻丸め.退勤
              */
-            RoundingTimeUnit roundingTimeUnit = roundingOfficeSetOpt.get().getRoundingSet().getRoundingTimeUnit();
-            cells.get("BH" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(roundingTimeUnit.value));
+            Integer roundingTimeUnit = roundingOfficeSetOpt.get().getRoundingSet().getRoundingTimeUnit();
+            cells.get("BH" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(roundingTimeUnit));
             
             /*
              * R4_128
              * 打刻丸め.退勤前後設定
              */
-            FontRearSection fontRearSection = roundingOfficeSetOpt.get().getRoundingSet().getFontRearSection();
-            cells.get("BI" + (startIndex + 1)).setValue(fontRearSection.description);
+            Integer fontRearSection = roundingOfficeSetOpt.get().getRoundingSet().getFontRearSection();
+            cells.get("BI" + (startIndex + 1)).setValue(FontRearSection.valueOf(fontRearSection).description);
         }
         
         if (displayMode.equals(DisplayMode.DETAIL.value)) {
@@ -595,15 +579,15 @@ public class WorkTimeReportService_New {
                  * R4_141
                  * 打刻丸め.外出
                  */
-                RoundingTimeUnit roundingTimeUnit = roundingGoOutSetOpt.get().getRoundingSet().getRoundingTimeUnit();
-                cells.get("BV" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(roundingTimeUnit.value));
+                Integer roundingTimeUnit = roundingGoOutSetOpt.get().getRoundingSet().getRoundingTimeUnit();
+                cells.get("BV" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(roundingTimeUnit));
                 
                 /*
                  * R4_142
                  * 打刻丸め.外出前後ずらし
                  */
-                FontRearSection fontRearSection = roundingGoOutSetOpt.get().getRoundingSet().getFontRearSection();
-                cells.get("BW" + (startIndex + 1)).setValue(fontRearSection.value == 0 ? "前にずらす" : "後ろにずらす");
+                Integer fontRearSection = roundingGoOutSetOpt.get().getRoundingSet().getFontRearSection();
+                cells.get("BW" + (startIndex + 1)).setValue(fontRearSection == 0 ? "前にずらす" : "後ろにずらす");
             }
             
             if (roundingTurnBackSetOpt.isPresent()) {
@@ -611,30 +595,30 @@ public class WorkTimeReportService_New {
                  * R4_143
                  * 打刻丸め.戻り
                  */
-                RoundingTimeUnit roundingTimeUnit = roundingTurnBackSetOpt.get().getRoundingSet().getRoundingTimeUnit();
-                cells.get("BX" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(roundingTimeUnit.value));
+                Integer roundingTimeUnit = roundingTurnBackSetOpt.get().getRoundingSet().getRoundingTimeUnit();
+                cells.get("BX" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(roundingTimeUnit));
                 
                 /*
                  * R4_144
                  * 打刻丸め.戻り前後ずらし
                  */
-                FontRearSection fontRearSection = roundingTurnBackSetOpt.get().getRoundingSet().getFontRearSection();
-                cells.get("BY" + (startIndex + 1)).setValue(fontRearSection.value == 0 ? "前にずらす" : "後ろにずらす");
+                Integer fontRearSection = roundingTurnBackSetOpt.get().getRoundingSet().getFontRearSection();
+                cells.get("BY" + (startIndex + 1)).setValue(fontRearSection == 0 ? "前にずらす" : "後ろにずらす");
             }
             
             /*
              * R4_264
              * 計算設定.出勤を1分後から計算する
              */
-            NotUseAtr attendanceMinuteLaterCalculate = data.getFixedWorkSetting().getCommonSetting().getStampSet().getRoundingTime().getAttendanceMinuteLaterCalculate();
-            cells.get("BZ" + (startIndex + 1)).setValue(attendanceMinuteLaterCalculate.equals(NotUseAtr.NOT_USE) ? "-" : "○");
+            Integer attendanceMinuteLaterCalculate = data.getFixedWorkSetting().getCommonSetting().getStampSet().getRoundingTime().getAttendanceMinuteLaterCalculate();
+            cells.get("BZ" + (startIndex + 1)).setValue((attendanceMinuteLaterCalculate == 0) ? "-" : "○");
             
             /*
              * R4_265
              * 計算設定.退勤を1分前まで計算する
              */
-            NotUseAtr leaveWorkMinuteAgoCalculate = data.getFixedWorkSetting().getCommonSetting().getStampSet().getRoundingTime().getLeaveWorkMinuteAgoCalculate();
-            cells.get("CA" + (startIndex + 1)).setValue(leaveWorkMinuteAgoCalculate.equals(NotUseAtr.NOT_USE) ? "-" : "○");
+            Integer leaveWorkMinuteAgoCalculate = data.getFixedWorkSetting().getCommonSetting().getStampSet().getRoundingTime().getLeaveWorkMinuteAgoCalculate();
+            cells.get("CA" + (startIndex + 1)).setValue(leaveWorkMinuteAgoCalculate == 0 ? "-" : "○");
         }
         
         // 5        タブグ:                休憩時間帯
