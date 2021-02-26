@@ -23,7 +23,6 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDate;
@@ -47,11 +46,8 @@ import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.AgreMaxAverageTimeMu
 import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.AgreementTimeByPeriodAdapter;
 import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.AgreementTimeByPeriodImport;
 import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.AgreementTimeYearImport;
-import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.GetExcessTimesYearAdapter;
-import nts.uk.ctx.at.function.dom.adapter.monthlyattendanceitem.MonthlyAttendanceItemAdapter;
 import nts.uk.ctx.at.function.dom.adapter.standardtime.AgreementOperationSettingAdapter;
 import nts.uk.ctx.at.function.dom.adapter.standardtime.AgreementOperationSettingImport;
-import nts.uk.ctx.at.function.dom.adapter.standardtime.GetAgreementPeriodFromYearAdapter;
 import nts.uk.ctx.at.function.dom.adapter.standardtime.TimeOverLimitTypeImport;
 import nts.uk.ctx.at.function.dom.annualworkschedule.CalculationFormulaOfItem;
 import nts.uk.ctx.at.function.dom.annualworkschedule.Employee;
@@ -69,21 +65,19 @@ import nts.uk.ctx.at.function.dom.annualworkschedule.export.ExportItem;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.HeaderData;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.PrintFormat;
 import nts.uk.ctx.at.function.dom.annualworkschedule.repository.SetOutputItemOfAnnualWorkSchRepository;
+import nts.uk.ctx.at.record.dom.monthly.agreement.export.AgreementExcessInfo;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetAgreementTimeOfMngPeriod;
+import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetExcessTimesYear;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
 import nts.uk.ctx.at.record.dom.workrecord.export.WorkRecordExport;
 import nts.uk.ctx.at.record.dom.workrecord.export.dto.EmpAffInfoExport;
-import nts.uk.ctx.at.shared.dom.common.Month;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeYear;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.aggregate.MonthlyAttItemCanAggregateRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreMaxTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeStatusOfMonthly;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.PeriodAtrOfAgreement;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementOperationSetting;
-import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.company.CompanyAdapter;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
@@ -95,15 +89,11 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 	@Inject
 	private AgreementOperationSettingAdapter agreementOperationSettingAdapter;
 	@Inject
-	private MonthlyAttendanceItemAdapter monthlyAttendanceItemAdapter;
-	@Inject
 	private EmployeeInformationAdapter employeeInformationAdapter;
 	@Inject
 	private CompanyAdapter companyAdapter;
 	@Inject
 	private RegulationInfoEmployeeAdapter employeeAdapter;
-	@Inject
-	private GetAgreementPeriodFromYearAdapter getAgreementPeriodFromYearPub;
 	@Inject
 	private AgreementTimeByPeriodAdapter agreementTimeByPeriodAdapter;
 	@Inject
@@ -112,8 +102,6 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 	private AgreementOperationSettingRepository agreementOperationSettingRepository;
 	@Inject
 	private WorkRecordExport workRecordExport;
-	@Inject
-	private GetExcessTimesYearAdapter getExcessTimesYearAdapter;
 	@Inject
 	private RecordDomRequireService requireService;
 	@Inject
@@ -528,34 +516,45 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 	}
 	
 	/**
-	 * 1ヶ月の36協定上限時間を取得する
+	 * 36協定複数月項目の作成
 	 * @param yearMonthPeriod 対象期間
 	 * @param employeeId 社員ID
 	 * @param outNumExceedTime36Agr 超過月数出力するか
 	 *            
 	 */
-	private Map<String, AnnualWorkScheduleData> create36MaximumAgreementTimeForOneMonth(String cid
-																					  , YearMonthPeriod yearMonthPeriodRQL554
-																					  , String employeeId
-																					  , ItemsOutputToBookTable outputAgreementTime36
-																					  , Year fiscalYear
-																					  , YearMonth startYm
-																					  , boolean average
-																					  , PeriodAtrOfAgreement periodAtr
-																					  , Integer monthLimit
-																					  , List<String> header
-																					  , GeneralDate endDate
-																					  , Integer baseMonth) {
+	private Map<String, AnnualWorkScheduleData> create36AgreementTimeMultipleMonth(String employeeId
+														  		 	, SettingOutputItemOfAnnualWorkSchedule setting
+														  		 	, ItemsOutputToBookTable outputAgreementTime36
+														  		 	, Year fiscalYear
+														  		 	, YearMonthPeriod yearMonthPeriodRQL554
+														  		 	, List<String> header
+														  		 	, GeneralDate baseDate
+														  		 	, GeneralDate endDate
+														  		 	, Integer baseMonth) {
 		// 複数月表示をチェック
 		Integer monthsExceeded = 0;
-		
+		val require = requireService.createRequire();
+
+		// 超過月数を出力するか
+		if (setting.isOutNumExceedTime36Agr()) {
+			// 年間超過回数と残数の取得
+			AgreementExcessInfo agreementExcessInfo = GetExcessTimesYear.getWithRemainTimes(require, employeeId, fiscalYear, baseDate);
+		}
+
 		List<AgreementTimeByPeriodImport> listAgreMaxAverageTime = new ArrayList<>();
-		if (average) {
+		
+		// 複数月表示をチェック
+		if (setting.isMultiMonthDisplay()) {
 			//暦上の年月変換処理
 			nts.arc.time.YearMonth specifiedYearMonth = this.converYearMonth(yearMonthPeriodRQL554, baseMonth);
 
 			//36協定上限時間の複数月平均を取得する
-			List<AgreMaxAverageTimeImport> listAgreMaxAverageTimeImport = this.createMonthlyAverage(cid, employeeId, endDate, specifiedYearMonth);
+			List<AgreMaxAverageTimeImport> listAgreMaxAverageTimeImport = this.createMonthlyAverage(
+					AppContexts.user().companyId(),
+					employeeId,
+					endDate,
+					specifiedYearMonth
+			);
 			for (AgreMaxAverageTimeImport agreMaxAverage: listAgreMaxAverageTimeImport) {
 				AgreementTimeByPeriodImport item = new AgreementTimeByPeriodImport(
 						agreMaxAverage.getPeriod().start()
@@ -572,6 +571,7 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 				listAgreMaxAverageTime.add(item);
 			}
 		}
+
 		Map<String, AnnualWorkScheduleData> data = new HashMap<>();
 		// アルゴリズム「月平均の算出」を実行する
 //		data.put(outputAgreementTime36.getItemOutCd().v(), 
@@ -801,25 +801,6 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 
 		return new AnnualWorkScheduleData();
 
-	}
-
-	/**
-	 * 2・3ヶ月の36協定時間の作成
-	 */
-	private List<AgreementTimeByPeriodImport> create36AgreementFewMonth(String cid, String employeeId, Year fiscalYear, YearMonth startYm, PeriodAtrOfAgreement periodAtr) {
-		// アルゴリズム「2・3ヶ月の36協定時間の作成」を実行する
-		Closure closure = ClosureService.getClosureDataByEmployee(requireService.createRequire(), new CacheCarrier(), employeeId, GeneralDate.today());
-		// 年度から集計期間を取得
-		Optional<DatePeriod> datePeriod = getAgreementPeriodFromYearPub.algorithm(fiscalYear, closure);
-		// ドメイン「３６協定運用設定」を取得する
-		Month startMonth;
-		startMonth = new Month(startYm.getMonthValue());
-		// 基準日 = 「年度から集計期間を取得する」のOutputのenddate
-		GeneralDate criteria = datePeriod.get().end();
-		// 指定期間36協定時間の取得
-		/** TODO: 36協定時間対応により、コメントアウトされた */
-		return new ArrayList<>();
-//		return agreementTimeByPeriodAdapter.algorithm(cid, employeeId, criteria, startMonth, fiscalYear, periodAtr);
 	}
 
 	/**
