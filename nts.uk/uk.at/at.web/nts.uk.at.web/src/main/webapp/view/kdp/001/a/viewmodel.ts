@@ -356,7 +356,7 @@ class KDP001AViewModel extends ko.ViewModel {
 					vm.$window.storage('KDP010_2T', res);
 
 					nts.uk.ui.windows.sub.modal('/view/kdp/002/t/index.xhtml').onClosed(function(): any {
-					    vm.$window.shared('KDP010_T').then(returnData=>{
+                        vm.$window.shared( 'KDP010_T' ).then( returnData =>{
 					        if (!returnData.isClose && returnData.errorDate) {
 
 	                            let transfer = returnData.btn.transfer;

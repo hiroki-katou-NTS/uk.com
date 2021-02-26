@@ -31,10 +31,10 @@ module nts.uk.at.view.kdp002.b {
                 super();
                 const self = this;
 
-                self.$window.shared( "resultDisplayTime" ).then( displayTime => {
+                self.$window.shared( "resultDisplayTime" ).done( displayTime => {
                     self.resultDisplayTime( displayTime );
 
-                    self.$window.shared( "infoEmpToScreenB" ).then( infoEmp => {
+                    self.$window.shared( "infoEmpToScreenB" ).done( infoEmp => {
 
                         self.infoEmpFromScreenA( infoEmp );
                         self.disableResultDisplayTime( self.resultDisplayTime() > 0 ? true : false );
