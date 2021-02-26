@@ -12,15 +12,15 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 /**
  * 休暇加算時間設定
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSHST_HOLIDAY_ADDTION_SET")
-public class KshstHolidayAdditionSet  extends UkJpaEntity implements Serializable{
+@Table(name = "KSHMT_CALC_C_ADD_HD_OS")
+public class KshstHolidayAdditionSet  extends ContractUkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	/** 主キー */
 	@EmbeddedId
@@ -63,10 +63,10 @@ public class KshstHolidayAdditionSet  extends UkJpaEntity implements Serializabl
 	public int yearlyReserved;
 	
 	@OneToOne(cascade = CascadeType.ALL, mappedBy="holidayAddtimeSet", orphanRemoval = true)
-	public KshstWorkRegularSet regularWorkSet;
+	public KshmtCalcCAddHdReg regularWorkSet;
 	
 	@OneToOne(cascade = CascadeType.ALL, mappedBy="holidayAddtimeSet", orphanRemoval = true)
-	public KshstWorkFlexSet flexWorkSet;
+	public KshmtCalcCAddHdFle flexWorkSet;
 	
 	@OneToOne(cascade = CascadeType.ALL, mappedBy="holidayAddtimeSet", orphanRemoval = true)
 	public KshstWorkDepLaborSet irregularWorkSet;

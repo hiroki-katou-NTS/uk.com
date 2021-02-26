@@ -94,7 +94,7 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 	@Override
 	public void delete(String employeeId, GeneralDate ymd) {
 		try (val statement = this.connection().prepareStatement(
-					"delete from KRCDT_DAI_BREAK_TIME_TS where SID = ? and YMD = ?")) {
+					"delete from KRCDT_DAY_TS_BREAKTIME where SID = ? and YMD = ?")) {
 			statement.setString(1, employeeId);
 			statement.setDate(2, Date.valueOf(ymd.toLocalDate()));
 			statement.execute();
@@ -131,7 +131,7 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 	private List<KrcdtDaiBreakTime> findEntities(String employeeId, GeneralDate ymd) {
 		List<KrcdtDaiBreakTime> krcdtDaiBreakTimes = null; 
 
-		try (val statement = this.connection().prepareStatement("select * FROM KRCDT_DAI_BREAK_TIME_TS where SID = ? and YMD = ?")) {
+		try (val statement = this.connection().prepareStatement("select * FROM KRCDT_DAY_TS_BREAKTIME where SID = ? and YMD = ?")) {
 			statement.setString(1, employeeId);
 			statement.setDate(2, Date.valueOf(ymd.toLocalDate()));
 			krcdtDaiBreakTimes = new NtsResultSet(statement.executeQuery()).getList(rec -> {
@@ -182,7 +182,7 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 		try {
 			Statement statementI = con.createStatement();
 			for(BreakTimeSheet breakTimeSheet : breakTimes.getTimeZone().getBreakTimeSheets()){
-				String insertTableSQL = "INSERT INTO KRCDT_DAI_BREAK_TIME_TS (SID, YMD, BREAK_FRAME_NO, STR_STAMP_TIME, END_STAMP_TIME) "
+				String insertTableSQL = "INSERT INTO KRCDT_DAY_TS_BREAKTIME (SID, YMD, BREAK_FRAME_NO, STR_STAMP_TIME, END_STAMP_TIME) "
 						+ "VALUES( '" + breakTimes.getEmployeeId() + "' , '"
 						+ breakTimes.getYmd() + "' , "
 //						+ breakTimes.getTimeZone().getBreakType().value + " , "
@@ -251,7 +251,7 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 	@SneakyThrows
 	private List<BreakTimeOfDailyPerformance> internalQuery(DatePeriod baseDate, List<String> empIds) {
 		String subEmp = NtsStatement.In.createParamsString(empIds);
-		StringBuilder query = new StringBuilder("SELECT YMD, SID, BREAK_FRAME_NO, STR_STAMP_TIME, END_STAMP_TIME FROM KRCDT_DAI_BREAK_TIME_TS  ");
+		StringBuilder query = new StringBuilder("SELECT YMD, SID, BREAK_FRAME_NO, STR_STAMP_TIME, END_STAMP_TIME FROM KRCDT_DAY_TS_BREAKTIME  ");
 		query.append(" WHERE YMD <= ? AND YMD >= ? ");
 		query.append(" AND SID IN (" + subEmp + ")");
 		try (val stmt = this.connection().prepareStatement(query.toString())){
@@ -343,7 +343,7 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
     	String subEmp = NtsStatement.In.createParamsString(subList);
     	String subInDate = NtsStatement.In.createParamsString(subListDate);
     	
-		StringBuilder query = new StringBuilder("SELECT YMD, SID, BREAK_FRAME_NO, STR_STAMP_TIME, END_STAMP_TIME FROM KRCDT_DAI_BREAK_TIME_TS  ");
+		StringBuilder query = new StringBuilder("SELECT YMD, SID, BREAK_FRAME_NO, STR_STAMP_TIME, END_STAMP_TIME FROM KRCDT_DAY_TS_BREAKTIME  ");
 		query.append(" WHERE SID IN (" + subEmp + ")");
 		query.append(" AND YMD IN (" + subInDate + ")");
 		try (val stmt = this.connection().prepareStatement(query.toString())){
@@ -376,7 +376,7 @@ public class JpaBreakTimeOfDailyPerformanceRepository extends JpaRepository
 		try {
 			for(BreakTimeSheet breakTimeSheet : breakTime.getTimeZone().getBreakTimeSheets()){
 			
-				String updateTableSQL = " UPDATE KRCDT_DAI_BREAK_TIME_TS SET STR_STAMP_TIME = "
+				String updateTableSQL = " UPDATE KRCDT_DAY_TS_BREAKTIME SET STR_STAMP_TIME = "
 						+ breakTimeSheet.getStartTime().valueAsMinutes() + " , END_STAMP_TIME = "
 						+ breakTimeSheet.getEndTime().valueAsMinutes() + " WHERE SID = '" + breakTime.getEmployeeId()
 						+ "' AND YMD = '" + breakTime.getYmd() + "'" 

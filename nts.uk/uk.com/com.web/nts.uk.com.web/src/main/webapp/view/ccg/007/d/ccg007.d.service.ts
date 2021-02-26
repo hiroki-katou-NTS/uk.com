@@ -5,11 +5,14 @@ module nts.uk.pr.view.ccg007.d {
         // Service paths.
         var servicePath = {
             checkContract: "ctx/sys/gateway/login/checkcontract",
-            submitLogin: "ctx/sys/gateway/login/submit/form3",
+            //submitLogin: "ctx/sys/gateway/login/submit/form3",
             getAllCompany: "ctx/sys/gateway/login/getcompany/",
             getEmployeeLoginSetting: "ctx/sys/gateway/login/emlogsettingform3",
             account: "ctx/sys/gateway/login/account",
-            ver: "ctx/sys/gateway/login/build_info_time"
+            ver: "ctx/sys/gateway/login/build_info_time", 
+            
+            submitLogin: "ctx/sys/gateway/login/password",
+            samlLogin: "ctx/sys/gateway/singlesignon/saml/authenticate"
         }
 
         /**
@@ -29,6 +32,11 @@ module nts.uk.pr.view.ccg007.d {
         export function submitLogin(data: any): JQueryPromise<string> {
             return nts.uk.request.ajax(servicePath.submitLogin + location.search, data);
         }
+
+        export function samlLogin(data: any): JQueryPromise<AuthenticateInfo> {
+            return nts.uk.request.ajax(servicePath.samlLogin, data);
+        }
+
         
         export function account(): JQueryPromise<any> {
             return nts.uk.request.ajax(servicePath.account);
@@ -60,5 +68,11 @@ module nts.uk.pr.view.ccg007.d {
             msgErrorId: string;
             showContract: boolean;
         }
+
+        export interface AuthenticateInfo {
+            useSamlSso: boolean;
+            authenUrl: string;
+        }
+    
     }
 }

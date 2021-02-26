@@ -68,6 +68,11 @@ include 'com.ctx:sys:share:nts.uk.ctx.sys.shared.pub'
 include 'com.ctx:sys:share:nts.uk.ctx.sys.shared.pubimp'
 include 'com.ctx:sys:share:nts.uk.ctx.sys.shared.ws'
 
+include 'com.ctx:sys:tenant:nts.uk.ctx.sys.tenant.ac'
+include 'com.ctx:sys:tenant:nts.uk.ctx.sys.tenant.app'
+include 'com.ctx:sys:tenant:nts.uk.ctx.sys.tenant.dom'
+include 'com.ctx:sys:tenant:nts.uk.ctx.sys.tenant.ws'
+
 include 'wk.ctx:nts.uk.ctx.workflow.app'
 include 'wk.ctx:nts.uk.ctx.workflow.dom'
 include 'wk.ctx:nts.uk.ctx.workflow.infra'

@@ -3,7 +3,7 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem;
 /**
  * 
  * @author Doan Duy Hung
- *
+ * enum : 単価
  */
 
 public enum UnitPrice {

@@ -22,18 +22,21 @@ public class PremiumTime {
 
 	// 割増時間
 	private AttendanceTime premitumTime;
-	
+
 	/** 割増金額 */
 	private AttendanceAmountDaily premiumAmount;
-	
-	
+
+	/** 単価 **/
+	private PriceUnit unitPrice;
+
+
 	/**
 	 * 全て0で作成する
 	 * @param premiumTimeNo 割増時間NO
 	 * @return 割増時間
 	 */
 	public static PremiumTime createAllZero(Integer premiumTimeNo) {
-		return new PremiumTime(premiumTimeNo, AttendanceTime.ZERO, AttendanceAmountDaily.ZERO);
+		return new PremiumTime(premiumTimeNo, AttendanceTime.ZERO, AttendanceAmountDaily.ZERO, PriceUnit.ZERO);
 	}
 	
 	/**
@@ -47,7 +50,7 @@ public class PremiumTime {
 	public static PremiumTime create(DailyRecordToAttendanceItemConverter dailyRecordDto,
 			PriceUnit priceUnit, PersonCostRoundingSetting roundingSet, PremiumSetting premiumSetting) {
 		if(premiumSetting.getAttendanceItems().isEmpty()) {
-			return PremiumTime.createAllZero(premiumSetting.getDisplayNumber());
+			return PremiumTime.createAllZero(premiumSetting.getID().value);
 		}
 		
 		//割増時間
@@ -59,7 +62,7 @@ public class PremiumTime {
 		//割増金額
 		AttendanceAmountDaily amount = calcPremiumAmount(priceUnit, premiumSetting.getRate(), time, roundingSet);
 		
-		return new PremiumTime(premiumSetting.getDisplayNumber(), time, amount);
+		return new PremiumTime(premiumSetting.getID().value, time, amount, priceUnit);
 	}
 	
 	/**
@@ -73,7 +76,7 @@ public class PremiumTime {
 	public static PremiumTime createForSupport(DailyRecordToAttendanceItemConverter dailyRecordDto,
 			PriceUnit priceUnit, PersonCostRoundingSetting roundingSet, PremiumSetting premiumSetting) {
 		if(premiumSetting.getAttendanceItems().isEmpty()) {
-			return PremiumTime.createAllZero(premiumSetting.getDisplayNumber());
+			return PremiumTime.createAllZero(premiumSetting.getID().value);
 		}
 		
 		final int FLEX_TIME_ITEM_ID = 556; //フレックス時間（勤怠項目ID）
@@ -87,7 +90,7 @@ public class PremiumTime {
 		//割増金額
 		AttendanceAmountDaily amount = calcPremiumAmount(priceUnit, premiumSetting.getRate(), time, roundingSet);
 		
-		return new PremiumTime(premiumSetting.getDisplayNumber(), time, amount);
+		return new PremiumTime(premiumSetting.getID().value, time, amount, priceUnit);
 	}
 	
 	/**

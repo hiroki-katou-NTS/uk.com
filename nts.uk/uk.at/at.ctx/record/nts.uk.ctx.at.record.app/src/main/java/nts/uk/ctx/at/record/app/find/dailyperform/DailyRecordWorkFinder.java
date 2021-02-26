@@ -50,6 +50,8 @@ import nts.uk.ctx.at.record.app.find.dailyperform.workrecord.TimeLeavingOfDailyP
 import nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto.AttendanceTimeByWorkOfDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto.OuenWorkTimeOfDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto.TimeLeavingOfDailyPerformanceDto;
+import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.FinderFacade;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ConvertibleAttendanceItem;
 
@@ -114,6 +116,9 @@ public class DailyRecordWorkFinder extends FinderFacade {
 	@Inject
 	private SnapshotFinder snapshotFinder;
 
+	@Inject
+	private WorkInformationRepository workInfoRepo;
+	
 	@Override
 	public FinderFacade getFinder(String layout) {
 		switch (layout) {
@@ -161,8 +166,12 @@ public class DailyRecordWorkFinder extends FinderFacade {
 	@SuppressWarnings("unchecked")
 	@Override
 	public DailyRecordDto find(String employeeId, GeneralDate baseDate) {
+		Optional<WorkInfoOfDailyPerformance> workInfo = this.workInfoRepo.find(employeeId, baseDate);
+		if (!workInfo.isPresent())
+			return null;
+		
 		return DailyRecordDto.builder().employeeId(employeeId).workingDate(baseDate)
-				.withWorkInfo(workInfoFinder.find(employeeId, baseDate))
+				.withWorkInfo(WorkInformationOfDailyDto.getDto(workInfo.get()))
 				.withCalcAttr(calcAttrFinder.find(employeeId, baseDate))
 				.withAffiliationInfo(affiliInfoFinder.find(employeeId, baseDate))
 				.withErrors(errorFinder.finds(employeeId, baseDate))

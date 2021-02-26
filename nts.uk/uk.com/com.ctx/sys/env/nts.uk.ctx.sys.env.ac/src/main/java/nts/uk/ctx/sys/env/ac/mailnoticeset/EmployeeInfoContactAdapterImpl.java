@@ -5,6 +5,7 @@
 package nts.uk.ctx.sys.env.ac.mailnoticeset;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -35,8 +36,20 @@ public class EmployeeInfoContactAdapterImpl implements EmployeeInfoContactAdapte
 	@Override
 	public List<EmployeeInfoContactImport> getListContact(List<String> employeeIds) {
 		List<EmployeeContactObject> listContact = this.employeeContactPub.getList(employeeIds);
-		return listContact.stream().map(item -> new EmployeeInfoContactImport(item.getSid(), item.getMailAddress(),
-				item.getPhoneMailAddress(), item.getCellPhoneNo())).collect(Collectors.toList());
+		return listContact.stream()
+				.map(item -> 
+					new EmployeeInfoContactImport(item.getSid(),
+							item.getMailAddress(),
+							item.getPhoneMailAddress(),
+							item.getCellPhoneNo(),
+							item.getSeatDialIn(),
+							item.getSeatExtensionNo(),
+							Optional.of(item.isMailAddressDisplay()),
+							Optional.of(item.isMobileMailAddressDisplay()),
+							Optional.of(item.isCellPhoneNumberDisplay()),
+							Optional.of(item.isSeatDialInDisplay()),
+							Optional.of(item.isSeatExtensionNumberDisplay()))
+					).collect(Collectors.toList());
 	}
 
 	/*
@@ -51,6 +64,26 @@ public class EmployeeInfoContactAdapterImpl implements EmployeeInfoContactAdapte
 	public void register(EmployeeInfoContactImport employee) {
 		this.employeeContactPub.register(employee.getEmployeeId(), employee.getMailAddress(),
 				employee.getMobileMailAddress(), employee.getCellPhoneNo());
+	}
+	
+	@Override
+	public Optional<EmployeeInfoContactImport> get(String employeeId) {
+		EmployeeContactObject item = this.employeeContactPub.get(employeeId);
+		EmployeeInfoContactImport employeeInfoContactImport = null;
+		if (item != null) {
+			employeeInfoContactImport = new EmployeeInfoContactImport(item.getSid(),
+					item.getMailAddress(),
+					item.getPhoneMailAddress(),
+					item.getCellPhoneNo(),
+					item.getSeatDialIn(),
+					item.getSeatExtensionNo(),
+					Optional.of(item.isMailAddressDisplay()),
+					Optional.of(item.isMobileMailAddressDisplay()),
+					Optional.of(item.isCellPhoneNumberDisplay()),
+					Optional.of(item.isSeatDialInDisplay()),
+					Optional.of(item.isSeatExtensionNumberDisplay()));
+		}
+		return Optional.ofNullable(employeeInfoContactImport);
 	}
 
 }

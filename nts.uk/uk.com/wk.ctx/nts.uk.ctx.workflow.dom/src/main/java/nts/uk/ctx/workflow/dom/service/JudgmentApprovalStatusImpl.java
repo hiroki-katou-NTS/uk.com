@@ -512,4 +512,43 @@ public class JudgmentApprovalStatusImpl implements JudgmentApprovalStatusService
 		}
 		return new ApproverPersonOutput(authorFlag, approvalAtr, expirationAgentFlag);
 	}
+
+	@Override
+	public Boolean checkLoopApprovalPhase(ApprovalRootState approvalRootState, ApprovalPhaseState currentPhase,
+			Boolean pastPhaseFlg) {
+		// 過去フェーズフラグ＝trueの場合
+		if(pastPhaseFlg) {
+			return false;
+		}
+		
+		// パラメータのループ中のフェーズ番号をチェックする
+		if(approvalRootState.getListApprovalPhaseState().size()==1) {
+			if(approvalRootState.getListApprovalPhaseState().get(0).getApprovalAtr()==ApprovalBehaviorAtr.ORIGINAL_REMAND){
+				return false;
+			}
+			return true;
+		}
+		if(currentPhase.getPhaseOrder()==1){
+			if(currentPhase.getApprovalAtr()==ApprovalBehaviorAtr.ORIGINAL_REMAND){
+				return false;
+			}
+			return true;
+		}
+		ApprovalPhaseState lowestPhase = approvalRootState.getListApprovalPhaseState()
+				.stream().sorted(Comparator.comparing(ApprovalPhaseState::getPhaseOrder))
+				.findFirst().get();
+		if(lowestPhase.getPhaseOrder()==currentPhase.getPhaseOrder()){
+			return true;
+		}
+		
+		// ループ中のフェーズの番号-１から、降順にループする
+		ApprovalPhaseState lowerPhase = approvalRootState.getListApprovalPhaseState()
+				.stream().filter(x -> x.getPhaseOrder()<currentPhase.getPhaseOrder())
+				.sorted(Comparator.comparing(ApprovalPhaseState::getPhaseOrder).reversed())
+				.findFirst().get();
+		if(lowerPhase.getApprovalAtr().equals(ApprovalBehaviorAtr.APPROVED)){
+			return true;
+		}
+		return false;
+	}
 }

@@ -11,9 +11,10 @@ import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PremiumItemLanguage;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PremiumName;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PremiumItemLanguage;
+import nts.uk.ctx.at.schedule.infra.entity.budget.premium.KscmtPremiumItem;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 
@@ -24,7 +25,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name = "KMNMT_PREMIUM_ITEM_LANG")
-public class KmnmtPremiumItemLanguage extends UkJpaEntity {
+public class KmnmtPremiumItemLanguage extends ContractUkJpaEntity {
 	@EmbeddedId
 	public KmnmtPremiumItemLanguagePK kmnmtPremiumItemLanguagePK;
 
@@ -34,7 +35,7 @@ public class KmnmtPremiumItemLanguage extends UkJpaEntity {
 	@OneToOne
 	@PrimaryKeyJoinColumns(value = { @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
 			@PrimaryKeyJoinColumn(name = "PREMIUM_NO", referencedColumnName = "PREMIUM_NO") })
-	public KmnmtPremiumItem kmnmtPremiumItem;
+	public KscmtPremiumItem kmnmtPremiumItem;
 
 	@Override
 	protected Object getKey() {

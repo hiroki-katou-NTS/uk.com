@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.shr.com.primitive.Memo;
 /**
  * 
@@ -11,33 +12,16 @@ import nts.uk.shr.com.primitive.Memo;
  */
 public interface PersonCostCalculationDomainService {
 	
-	/**
-	 * create new Person Cost Calculation by auto generate history ID
-	 * @param companyID companyID
-	 * @param startDate start date
-	 * @param unitPrice unit price
-	 * @param memo memo
-	 * @param premiumSettings list 10 Premium Setting
-	 * @return Person Cost Calculation
-	 */
-	public PersonCostCalculation createPersonCostCalculationFromJavaType(String companyID, GeneralDate startDate, 
-			UnitPrice unitPrice, Memo memo, List<PremiumSetting> premiumSettings, PersonCostRoundingSetting roundingSet);
-	
-	/**
-	 * insert Person Cost Calculation include validate start date and update interdependent
-	 * @param personCostCalculation Person Cost Calculation
-	 */
-	public void insertPersonCostCalculation(PersonCostCalculation personCostCalculation);
-	
-	/**
-	 * update Person Cost Calculation include validate start date and update interdependent
-	 * @param personCostCalculation Person Cost Calculation
-	 */
-	public void updatePersonCostCalculation(PersonCostCalculation personCostCalculation);
-	
-	/**
-	 * delete Person Cost Calculation include validate start date and update interdependent
-	 * @param personCostCalculation Person Cost Calculation
-	 */
-	public void deletePersonCostCalculation(PersonCostCalculation personCostCalculation);
+
+	public void deletePersonCostCalculation(String companyId, String histotyId);
+
+	public void updateHistPersonCalculation(PersonCostCalculation domain,String histotyId, GeneralDate generalDate);
+
+	public void registerLaborCalculationSetting(PersonCostCalculation domain, GeneralDate date);
+
+
+
+
+
+
 }

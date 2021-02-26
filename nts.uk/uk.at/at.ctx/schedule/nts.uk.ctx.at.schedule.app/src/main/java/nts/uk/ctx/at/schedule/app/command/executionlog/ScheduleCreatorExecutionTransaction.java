@@ -411,9 +411,8 @@ public class ScheduleCreatorExecutionTransaction {
 			return result;
 		}
 		ScheManaStatuTempo employmentInfo = optEmploymentInfo.get();
-		// 「データ不正」　OR　「予定管理しない」
-		if (employmentInfo.getScheManaStatus() == ScheManaStatus.INVALID_DATA
-				|| employmentInfo.getScheManaStatus() == ScheManaStatus.DO_NOT_MANAGE_SCHEDULE) {
+		// 「予定管理しない」 - fix bug 113922
+		if ( employmentInfo.getScheManaStatus() == ScheManaStatus.DO_NOT_MANAGE_SCHEDULE) {
 
 			// return 社員の当日在職状態＝Null 社員の当日労働条件＝Null エラー＝Null 勤務予定＝Null 処理状態＝次の日へ
 			DataProcessingStatusResult result = new DataProcessingStatusResult(null, null,
@@ -1019,7 +1018,7 @@ public class ScheduleCreatorExecutionTransaction {
 					.getCreationMethod().value == CreationMethod.PERSONAL_INFO.value) {
 				// 「労働条件。予定作成方法。 基本作成方法」を確認する
 				Optional<WorkCondItemDto> itemDto = masterCache.getListWorkingConItem().stream()
-						.filter(x -> x.getDatePeriod().contains(dateInPeriod)).findFirst();
+						.filter(x -> x.getEmployeeId().equals(creator.getEmployeeId())).findFirst();
 				// call 営業日カレンダーで勤務予定作成する, 月間パターンで勤務予定を作成する, 個人曜日別で勤務予定作成する
 				prepareWorkOutput = this.getPersonalInfo(itemDto, command, dateInPeriod, masterCache, creator);
 			}
@@ -1307,6 +1306,9 @@ public class ScheduleCreatorExecutionTransaction {
 		Optional<BasicWorkSetting> basicWorkSetting = this.getBasicWorkSetting(command, masterCache, workplaceHistItem,
 				referenceBasicWork, dateInPeriod, masterCache.getEmpGeneralInfo().getClassificationDto(),
 				masterCache.getEmpGeneralInfo().getWorkplaceDto(), creator);
+		// fix bug 113909
+		if(!basicWorkSetting.isPresent())
+			return new PrepareWorkOutput(null, null, null, Optional.empty());
 
 		// 勤務種類一覧から勤務種類を取得する
 		List<WorkType> lstWorkTypes = masterCache.getListWorkType();
@@ -1539,11 +1541,14 @@ public class ScheduleCreatorExecutionTransaction {
 								creator.getEmployeeId(), new ScheduleErrorLogGeterCommand(command.getExecutionId(),
 										command.getCompanyId(), dateInPeriod),
 								workplaceIds);
-
 						workdayDivisions.setWorkplaceIds(workplaceIds);
 						// return basic work setting - 職場の稼働日区分を取得する
 						Optional<Integer> workdayDivision = basicWorkSettingHandler
 								.getWorkdayDivisionByWkp(workdayDivisions);
+						// fix bug 113909
+						if(!workdayDivision.isPresent())
+							return Optional.empty();
+						
 						// 「基本勤務設定」を取得する
 						Optional<BasicWorkSetting> basicWorkSettings = this.getWorkSettingBasic(geterCommand, command,
 								dateInPeriod, creator, workdayDivision, referenceBasicWork,
@@ -1580,6 +1585,10 @@ public class ScheduleCreatorExecutionTransaction {
 										.getClassificationItems().get(0).getClassificationCode());
 						Optional<Integer> workdayDivision = basicWorkSettingHandler
 								.getWorkdayDivisionByClass(baseGetter);
+						// fix bug 113909
+						if(!workdayDivision.isPresent())
+							return Optional.empty();
+						
 						Optional<BasicWorkSetting> basicWorkSettings = this.getWorkSettingBasic(geterCommand, command,
 								dateInPeriod, creator, workdayDivision, referenceBasicWork, new ArrayList<>(), null,
 								optClassificationHistItem.get().getClassificationItems().get(0)

@@ -1,22 +1,22 @@
-#contents {
+.ktg-004-a #contents {
     width: 305px;
     margin: 0 auto;
-    height: 587px;
     border: 1px solid #B1B1B1;
     border-top: 0;
+    background: white;
 }
 
-.header{
+.ktg-004-a .header{
 	border-bottom: 1px solid #B1B1B1;
 }
 
-.header div.form-label {
+.ktg-004-a .header div.form-label {
 	width: 259px;
     border-color: #10A5F5;
     margin: 2px;
 }
 
-.header .setting {
+.ktg-004-a .header .setting {
 	width: 25px;
     height: 25px;
     padding: 0;
@@ -25,32 +25,27 @@
     top: 6px;
 }
 
-.scroll {
-    overflow-y: scroll;
-    height: 545px;
-}
-
-.widget-table {
+.ktg-004-a .widget-table {
 	width: 225px;
 	margin: 0 auto;
 	table-layout: fixed;
 }
 
-.widget-table tr {
+.ktg-004-a .widget-table tr {
     border-bottom: 1px solid #B1B1B1;
 }
 
-.widget-table td {
+.ktg-004-a .widget-table td {
     height: 38px;
     width: 272px;
 }
 
-.widget-table .row-name{
+.ktg-004-a .widget-table .row-name{
 	float: left;
     margin-left: 3px;
 }
 
-.widget-table .row-data{
+.ktg-004-a .widget-table .row-data{
     float: right;
     margin-right: 5px;
     height: 18px;
@@ -58,20 +53,20 @@
     position: relative;
 }
 
-.widget-table .row-data .go-button {
+.ktg-004-a .widget-table .row-data .go-button {
     width: 32px;
     position: absolute;
     top: -6px;
     right: 31px;;
 }
 
-.widget-table .row-data .go-button button {
+.ktg-004-a .widget-table .row-data .go-button button {
     width: 25px;
     border: 0;
     box-shadow: none;
     padding: 0;
 }
 
-#scrollTable table:last-child tr:last-child {
+.ktg-004-a #scrollTable table:last-child tr:last-child {
 	border: 0;
 }

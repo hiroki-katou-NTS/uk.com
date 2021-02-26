@@ -29,7 +29,7 @@ import nts.uk.ctx.at.shared.infra.entity.scherec.dailyattdcal.premiumitem.KmnmtP
 @Stateless
 public class JpaPremiumItemRepository extends JpaRepository implements PremiumItemRepository{
 
-	private static final String FIND_ALL = "SELECT a FROM KmnmtPremiumItem a WHERE a.kmnmpPremiumItemPK.companyID = :CID";
+	private static final String FIND_ALL = "SELECT a FROM KscmtPremiumItem a WHERE a.kmnmpPremiumItemPK.companyID = :CID";
 	
 	private static final String FIND_BY_LIST_DISPLAY_NUMBER = FIND_ALL + " AND a.kmnmpPremiumItemPK.displayNumber IN :displayNumbers";
 	
@@ -39,8 +39,8 @@ public class JpaPremiumItemRepository extends JpaRepository implements PremiumIt
 	
 	@Override
 	public void update(PremiumItem premiumItem) {
-		KmnmtPremiumItem item = this.queryProxy().find(new KmnmpPremiumItemPK(premiumItem.getCompanyID(),
-				premiumItem.getDisplayNumber()), KmnmtPremiumItem.class).get();
+		KscmtPremiumItem item = this.queryProxy().find(new KmnmpPremiumItemPK(premiumItem.getCompanyID(),
+				premiumItem.getDisplayNumber()), KscmtPremiumItem.class).get();
 		
 		if(premiumItem.getUseAtr() == UseAttribute.Use){
 			item.setUseAtr(premiumItem.getUseAtr().value);
@@ -54,7 +54,7 @@ public class JpaPremiumItemRepository extends JpaRepository implements PremiumIt
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<PremiumItem> findByCompanyID(String companyID) {
-		return this.queryProxy().query(FIND_ALL, KmnmtPremiumItem.class).setParameter("CID", companyID)
+		return this.queryProxy().query(FIND_ALL, KscmtPremiumItem.class).setParameter("CID", companyID)
 				.getList(x -> convertToDomain(x));
 	}
 	
@@ -63,7 +63,7 @@ public class JpaPremiumItemRepository extends JpaRepository implements PremiumIt
 	public List<PremiumItem> findByCompanyIDAndDisplayNumber(String companyID, List<Integer> displayNumbers) {
 		List<PremiumItem> resultList = new ArrayList<>();
 		CollectionUtil.split(displayNumbers, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			resultList.addAll(this.queryProxy().query(FIND_BY_LIST_DISPLAY_NUMBER, KmnmtPremiumItem.class)
+			resultList.addAll(this.queryProxy().query(FIND_BY_LIST_DISPLAY_NUMBER, KscmtPremiumItem.class)
 								  .setParameter("CID", companyID)
 								  .setParameter("displayNumbers", subList)
 								  .getList(x -> convertToDomain(x)));
@@ -79,7 +79,7 @@ public class JpaPremiumItemRepository extends JpaRepository implements PremiumIt
 		}
 		List<PremiumItem> resultList = new ArrayList<>();
 		CollectionUtil.split(premiumNo, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			resultList.addAll(this.queryProxy().query(FIND_BY_LIST_PREMIUM_NO_IS_USE, KmnmtPremiumItem.class)
+			resultList.addAll(this.queryProxy().query(FIND_BY_LIST_PREMIUM_NO_IS_USE, KscmtPremiumItem.class)
 								  .setParameter("CID", companyID)
 								  .setParameter("displayNumbers", subList)
 								  .setParameter("useAtr", UseAttribute.Use.value)
@@ -91,16 +91,16 @@ public class JpaPremiumItemRepository extends JpaRepository implements PremiumIt
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	@Override
 	public List<PremiumItem> findAllIsUse (String companyID) {
-//		return this.queryProxy().query(FIND_ALL_IS_USE, KmnmtPremiumItem.class)
+//		return this.queryProxy().query(FIND_ALL_IS_USE, KscmtPremiumItem.class)
 //				.setParameter("CID", companyID)
 //				.setParameter("useAtr", UseAttribute.Use.value)
 //				.getList(x -> convertToDomain(x));
 		
-		try (val statement = this.connection().prepareStatement("select * FROM KMNMT_PREMIUM_ITEM where CID = ? and USE_ATR = ?")) {
+		try (val statement = this.connection().prepareStatement("select * FROM KSCMT_PREMIUM_ITEM where CID = ? and USE_ATR = ?")) {
 			statement.setString(1, companyID);
 			statement.setInt(2, UseAttribute.Use.value);
 			return new NtsResultSet(statement.executeQuery()).getList(rec -> {
-				val entity = new KmnmtPremiumItem();
+				val entity = new KscmtPremiumItem();
 				entity.kmnmpPremiumItemPK = new KmnmpPremiumItemPK();
 				entity.kmnmpPremiumItemPK.companyID = companyID;
 				entity.kmnmpPremiumItemPK.displayNumber = rec.getInt("PREMIUM_NO");
@@ -118,7 +118,7 @@ public class JpaPremiumItemRepository extends JpaRepository implements PremiumIt
 	 * @param kmnmtPremiumItem PremiumItem Entity Object
 	 * @return PremiumItem Domain Object
 	 */ 
-	private PremiumItem convertToDomain(KmnmtPremiumItem kmnmtPremiumItem){
+	private PremiumItem convertToDomain(KscmtPremiumItem kmnmtPremiumItem){
 		return new PremiumItem(
 				kmnmtPremiumItem.kmnmpPremiumItemPK.companyID, 
 				kmnmtPremiumItem.kmnmpPremiumItemPK.displayNumber,

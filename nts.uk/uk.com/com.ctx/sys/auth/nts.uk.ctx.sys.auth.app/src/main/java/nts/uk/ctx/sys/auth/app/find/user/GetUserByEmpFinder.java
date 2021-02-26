@@ -8,9 +8,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.sys.auth.dom.adapter.employee.employeeinfo.EmpInfoImport;
-import nts.uk.ctx.sys.auth.dom.user.User;
-import nts.uk.ctx.sys.auth.dom.user.UserRepository;
 import nts.uk.ctx.sys.auth.dom.wkpmanager.EmpInfoAdapter;
+import nts.uk.ctx.sys.shared.dom.user.User;
+import nts.uk.ctx.sys.shared.dom.user.UserRepository;
 
 @Stateless
 public class GetUserByEmpFinder {

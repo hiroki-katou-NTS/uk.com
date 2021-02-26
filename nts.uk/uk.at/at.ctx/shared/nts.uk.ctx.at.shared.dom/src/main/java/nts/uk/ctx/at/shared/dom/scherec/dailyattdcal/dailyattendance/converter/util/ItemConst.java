@@ -321,4 +321,7 @@ public interface ItemConst extends Cloneable {
 	public final String SUPER_60 = "60H超休";
 	public final String DAY_SHIFT = "常勤";
 	public final String NIGHT_SHIFT = "夜勤";
+	public final String CUR_MONTH = "当月";
+	public final String NO = "不可";
+	public final String STANDARD = "基準";
 }

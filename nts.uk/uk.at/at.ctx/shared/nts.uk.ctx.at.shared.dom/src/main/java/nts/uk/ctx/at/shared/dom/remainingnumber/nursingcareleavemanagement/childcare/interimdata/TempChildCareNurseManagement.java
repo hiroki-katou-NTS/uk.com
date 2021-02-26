@@ -7,7 +7,6 @@ import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.nursingcareleavemanagement.ChildCareNurseUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.DigestionHourlyTimeType;
@@ -28,17 +27,17 @@ public class TempChildCareNurseManagement extends InterimRemain{
 	/**
 	 * コンストラクタ
 	 */
-	public TempChildCareNurseManagement(String remainManaID, String sID, GeneralDate ymd, CreateAtr creatorAtr, RemainType remainType, RemainAtr remainAtr){
-		super(remainManaID, sID, ymd, creatorAtr, remainType, remainAtr);
+	public TempChildCareNurseManagement(String remainManaID, String sID, GeneralDate ymd, CreateAtr creatorAtr, RemainType remainType){
+		super(remainManaID, sID, ymd, creatorAtr, remainType);
 		this.usedNumber = new ChildCareNurseUsedNumber();
 		this.appTimeType = Optional.empty();
 	}
 	/**
 	 * コンストラクタ
 	 */
-	public TempChildCareNurseManagement(String remainManaID, String sID, GeneralDate ymd, CreateAtr creatorAtr, RemainType remainType, RemainAtr remainAtr,
+	public TempChildCareNurseManagement(String remainManaID, String sID, GeneralDate ymd, CreateAtr creatorAtr, RemainType remainType,
 			ChildCareNurseUsedNumber usedNumber, Optional<DigestionHourlyTimeType> appTimeType){
-		super(remainManaID, sID, ymd, creatorAtr, remainType, remainAtr);
+		super(remainManaID, sID, ymd, creatorAtr, remainType);
 		this.usedNumber = usedNumber;
 		this.appTimeType = appTimeType;
 	}
@@ -50,11 +49,11 @@ public class TempChildCareNurseManagement extends InterimRemain{
 	 * @return 暫定子の看護管理データ
 	 */
 	public static TempChildCareNurseManagement of(
-			String remainManaID, String sID, GeneralDate ymd, CreateAtr creatorAtr, RemainType remainType, RemainAtr remainAtr,
+			String remainManaID, String sID, GeneralDate ymd, CreateAtr creatorAtr, RemainType remainType,
 			ChildCareNurseUsedNumber usedNumber,
 			Optional<DigestionHourlyTimeType>  appTimeType) {
 
-		TempChildCareNurseManagement domain = new TempChildCareNurseManagement(remainManaID, sID ,ymd, creatorAtr, remainType, remainAtr);
+		TempChildCareNurseManagement domain = new TempChildCareNurseManagement(remainManaID, sID ,ymd, creatorAtr, remainType);
 		domain.usedNumber = usedNumber;
 		domain.appTimeType = appTimeType;
 		return domain;

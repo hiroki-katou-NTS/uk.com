@@ -37,9 +37,9 @@ public class JpaAnnPaidLeaveRepository extends JpaRepository implements AnnPaidL
 			" tas.TIME_OF_DAY_REFERENCE, " +
 			" tas.UNIFORM_TIME, " +
 			" tas.CONTRACT_TIME_ROUND " +
-			"FROM (SELECT MANAGE_ATR,PRIORITY_TYPE,CID FROM KALMT_ANNUAL_PAID_LEAVE WHERE KALMT_ANNUAL_PAID_LEAVE.CID = ? )  as pl " +
-			"INNER JOIN KMAMT_MNG_ANNUAL_SET mas on pl.CID = mas.CID " +
-			"INNER JOIN KTVMT_TIME_ANNUAL_SET tas on mas.CID = tas.CID ";
+			"FROM (SELECT MANAGE_ATR,PRIORITY_TYPE,CID FROM KSHMT_HDPAID_SET WHERE KSHMT_HDPAID_SET.CID = ? )  as pl " +
+			"INNER JOIN KSHMT_HDPAID_SET_MNG mas on pl.CID = mas.CID " +
+			"INNER JOIN KSHMT_HDPAID_TIME_SET tas on mas.CID = tas.CID ";
 	private static final int NOT_MANAGER = 0;
 
 	@Override
@@ -340,5 +340,5 @@ public class JpaAnnPaidLeaveRepository extends JpaRepository implements AnnPaidL
         return (Integer.parseInt(value)/60) +":"+(Integer.parseInt(value)%60 < 10? "0" + Integer.parseInt(value)%60 : Integer.parseInt(value)%60 );
     }
 
-	
+
 }

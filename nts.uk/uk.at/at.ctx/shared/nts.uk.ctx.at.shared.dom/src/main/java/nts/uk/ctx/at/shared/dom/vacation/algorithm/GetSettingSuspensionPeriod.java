@@ -59,7 +59,7 @@ public class GetSettingSuspensionPeriod {
 					comSub.getSetting().getExpirationDate().value,
 					comSub.getSetting().getAllowPrepaidLeave().value == 1, Optional.empty(), Optional.empty()));*/
 		}
-		return null;
+		return Optional.empty();
 
 	}
 

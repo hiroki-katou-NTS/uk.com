@@ -11,12 +11,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity      
-@Table(name = "KFNMT_MUL_MON_CHECK_PK")
-public class KfnmtMulMonAlarmCode extends UkJpaEntity implements Serializable {
+@Table(name = "KFNMT_ALST_CHKMLT_UDKEY")
+public class KfnmtMulMonAlarmCode extends ContractUkJpaEntity implements Serializable {
 
 
 	private static final long serialVersionUID = 1L;
