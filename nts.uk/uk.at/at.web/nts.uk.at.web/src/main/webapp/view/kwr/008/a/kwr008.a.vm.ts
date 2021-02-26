@@ -281,9 +281,15 @@ module nts.uk.at.view.kwr008.a {
                     //reload A4_2
                     let resultData = nts.uk.ui.windows.getShared("KWR008_B_Result");
                     if (resultData.selectedCd && self.selectionType() === share.SelectionClassification.STANDARD) {
-                        self.findAllStandardSetting().done(() => self.selectedOutputItem(resultData.selectedCd));
+                        self.findAllStandardSetting().done(() => {
+                            self.selectedOutputItem(resultData.selectedCd);
+                            self.selectedOutputItem.valueHasMutated();
+                        });
                     } else if (self.selectionType() === share.SelectionClassification.FREE_SETTING) {
-                        self.findAllFreeSetting().done(() => self.selectedOutputItemFree(resultData.selectedCd));
+                        self.findAllFreeSetting().done(() => {
+                            self.selectedOutputItemFree(resultData.selectedCd);
+                            self.selectedOutputItemFree.valueHasMutated();
+                        });
                     }
                 });
             }
