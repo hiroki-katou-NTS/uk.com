@@ -1,19 +1,15 @@
 module nts.uk.at.view.kmk003.a {
-    import EmTimeZoneSetDto = service.model.common.EmTimeZoneSetDto;
-    import OverTimeOfTimeZoneSetDto = service.model.common.OverTimeOfTimeZoneSetDto;
-    import FlowWorkRestTimezoneDto = service.model.common.FlowWorkRestTimezoneDto;
+
     import HDWorkTimeSheetSettingDto = service.model.common.HDWorkTimeSheetSettingDto;
     import StampReflectTimezoneDto = service.model.common.StampReflectTimezoneDto;
-    import FixedWorkTimezoneSetDto = service.model.common.FixedWorkTimezoneSetDto;
 
     import TimeSheetDto = service.model.flexset.TimeSheetDto;
+    import NotUseAtr = nts.uk.at.view.kmk003.a.viewmodel.common.NotUseAtr;
     import CoreTimeSettingDto = service.model.flexset.CoreTimeSettingDto;
     import FlexHalfDayWorkTimeDto = service.model.flexset.FlexHalfDayWorkTimeDto;
     import FlexCalcSettingDto = service.model.flexset.FlexCalcSettingDto;
     import FlexOffdayWorkTimeDto = service.model.flexset.FlexOffdayWorkTimeDto;
 
-    import EmTimeZoneSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.EmTimeZoneSetModel;
-    import OverTimeOfTimeZoneSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.OverTimeOfTimeZoneSetModel;
     import FlowWorkRestTimezoneModel = nts.uk.at.view.kmk003.a.viewmodel.common.FlowWorkRestTimezoneModel;
     import HDWorkTimeSheetSettingModel = nts.uk.at.view.kmk003.a.viewmodel.common.HDWorkTimeSheetSettingModel;
     import StampReflectTimezoneModel = nts.uk.at.view.kmk003.a.viewmodel.common.StampReflectTimezoneModel;
@@ -27,6 +23,37 @@ module nts.uk.at.view.kmk003.a {
     
     export module viewmodel {
         export module flexset {
+
+            import OutingCalcDto = nts.uk.at.view.kmk003.a.service.model.flexset.OutingCalcDto;
+
+            export class OutingCalcModel {
+                removeFromWorkTime : KnockoutObservable<boolean>;
+                especialCalc: KnockoutObservable<boolean>
+
+                constructor() {
+                    this.removeFromWorkTime = ko.observable(false);
+                    this.especialCalc = ko.observable(false);
+                }
+
+                public resetData() : void {
+                    let self = this;
+                    self.removeFromWorkTime(false);
+                    self.especialCalc(false);
+                }
+
+                updateData(data: OutingCalcDto) {
+                    this.removeFromWorkTime(data.removeFromWorkTime == NotUseAtr.USE);
+                    this.especialCalc(data.especialCalc == NotUseAtr.USE);
+                }
+
+                toDto() : OutingCalcDto {
+                    let self = this;
+                    return {
+                        removeFromWorkTime: self.removeFromWorkTime() ? NotUseAtr.USE : NotUseAtr.NOT_USE,
+                        especialCalc: self.especialCalc() ? NotUseAtr.USE : NotUseAtr.NOT_USE
+                    }
+                }
+            }
             
             export class TimeSheetModel {
                 startTime: KnockoutObservable<number>;
@@ -60,11 +87,13 @@ module nts.uk.at.view.kmk003.a {
                 coreTimeSheet: TimeSheetModel;
                 timesheet: KnockoutObservable<number>;
                 minWorkTime: KnockoutObservable<number>;
+                goOutCalc: OutingCalcModel;
 
                 constructor() {
                     this.coreTimeSheet = new TimeSheetModel();
                     this.timesheet = ko.observable(1); // initial value = 利用する
                     this.minWorkTime = ko.observable(0);
+                    this.goOutCalc = new OutingCalcModel();
                 }
 
                 public resetData(): void {
@@ -72,19 +101,22 @@ module nts.uk.at.view.kmk003.a {
                     self.coreTimeSheet.resetData();
                     self.timesheet(1);
                     self.minWorkTime(0);
+                    self.goOutCalc.resetData();
                 }
 
                 updateData(data: CoreTimeSettingDto) {
                     this.coreTimeSheet.updateData(data.coreTimeSheet);
                     this.timesheet(data.timesheet);
                     this.minWorkTime(data.minWorkTime);
+                    this.goOutCalc.updateData(data.goOutCalc);
                 }
 
                 toDto(): CoreTimeSettingDto {
                     var dataDTO: CoreTimeSettingDto = {
                         coreTimeSheet: this.coreTimeSheet.toDto(),
                         timesheet: this.timesheet(),
-                        minWorkTime: this.minWorkTime()
+                        minWorkTime: this.minWorkTime(),
+                        goOutCalc: this.goOutCalc.toDto()
                     };
                     return dataDTO;
                 }

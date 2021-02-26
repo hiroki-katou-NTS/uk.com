@@ -11,7 +11,7 @@
 
 .setting_rows {
 	margin-top: 10px;
-	width: 105%;
+	width: 100%;
 }
 
 .setting_time {
@@ -26,6 +26,15 @@
 }
 .height-30 {
 	height: 30px;
+}
+
+.ml-24 {
+	margin-left: 24px;
+}
+
+.fr-150 {
+	float: right;
+	margin-right: 150px;
 }
 
 .mt-10 {

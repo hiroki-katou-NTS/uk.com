@@ -1,5 +1,4 @@
 module nts.uk.at.view.kmk003.a {
-    import common = nts.uk.at.view.kmk003.a.service.model.common;
     export module service {
         export module model {
             export module flexset {
@@ -14,6 +13,12 @@ module nts.uk.at.view.kmk003.a {
                     coreTimeSheet: TimeSheetDto;
                     timesheet: number;
                     minWorkTime: number;
+                    goOutCalc: OutingCalcDto
+                }
+
+                export interface OutingCalcDto {
+                    removeFromWorkTime: number;
+                    especialCalc: number;
                 }
 
                 export interface FlexCalcSettingDto {
