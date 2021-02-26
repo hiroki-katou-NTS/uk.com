@@ -18,6 +18,7 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.DisplayMode;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.HalfDayWorkSet;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -43,7 +44,7 @@ public class OverTimeOfTimeZoneSetPolicyImpl implements OverTimeOfTimeZoneSetPol
 	 */
 	@Override
 	public void validate(BundledBusinessException be, PredetemineTimeSetting predTime, OverTimeOfTimeZoneSet otSet,
-			DisplayMode displayMode, AmPmAtr dayAtr, boolean useHalfDayShift) {
+			DisplayMode displayMode, AmPmAtr dayAtr) {
 		TimeZoneRounding otTimezone = otSet.getTimezone();
 		TimezoneUse shift1Timezone = predTime.getPrescribedTimezoneSetting().getTimezoneShiftOne();
 		TimezoneUse shift2Timezone = predTime.getPrescribedTimezoneSetting().getTimezoneShiftTwo();
@@ -71,14 +72,14 @@ public class OverTimeOfTimeZoneSetPolicyImpl implements OverTimeOfTimeZoneSetPol
 			}
 		}
 		if (!predTime.isPredetermine() && AmPmAtr.AM.equals(dayAtr) && !otSet.isEarlyOTUse() && !presTz.isUseShiftTwo()
-				&& DisplayMode.DETAIL.equals(displayMode) && useHalfDayShift) {
+				&& DisplayMode.DETAIL.equals(displayMode)) {
 			if (((otTimezone.getStart().lessThan(presTz.getMorningEndTime())
 					|| otTimezone.getEnd().lessThan(presTz.getMorningEndTime())))) {
 				be.addMessage("Msg_779");
 			}
 		}
 		if (!predTime.isPredetermine() && AmPmAtr.AM.equals(dayAtr) && !otSet.isEarlyOTUse() && presTz.isUseShiftTwo()
-				&& DisplayMode.DETAIL.equals(displayMode) && useHalfDayShift) {
+				&& DisplayMode.DETAIL.equals(displayMode)) {
 			TimeWithDayAttr startTime1 = shift1Timezone.getStart();
 			TimeWithDayAttr endTime1 = shift1Timezone.getEnd();
 			TimeWithDayAttr startTime2 = shift2Timezone.getStart();
@@ -98,14 +99,14 @@ public class OverTimeOfTimeZoneSetPolicyImpl implements OverTimeOfTimeZoneSetPol
 			}
 		}
 		if (!predTime.isPredetermine() && AmPmAtr.PM.equals(dayAtr) && !otSet.isEarlyOTUse() && !presTz.isUseShiftTwo()
-				&& DisplayMode.DETAIL.equals(displayMode) && useHalfDayShift) {
+				&& DisplayMode.DETAIL.equals(displayMode)) {
 			if (((otTimezone.getStart().lessThan(shift1Timezone.getEnd())
 					|| otTimezone.getEnd().lessThan(shift1Timezone.getEnd())))) {
 				be.addMessage("Msg_779");
 			}
 		}
 		if (!predTime.isPredetermine() && AmPmAtr.PM.equals(dayAtr) && !otSet.isEarlyOTUse() && presTz.isUseShiftTwo()
-				&& DisplayMode.DETAIL.equals(displayMode) && useHalfDayShift) {
+				&& DisplayMode.DETAIL.equals(displayMode)) {
 			TimeWithDayAttr startTime1 = shift1Timezone.getStart();
 			TimeWithDayAttr endTime1 = shift1Timezone.getEnd();
 			TimeWithDayAttr startTime2 = shift2Timezone.getStart();
@@ -131,14 +132,13 @@ public class OverTimeOfTimeZoneSetPolicyImpl implements OverTimeOfTimeZoneSetPol
 				be.addMessage("Msg_780");
 			}
 		}
-		if (AmPmAtr.AM.equals(dayAtr) && !predTime.isPredetermine() && otSet.isEarlyOTUse() && DisplayMode.DETAIL.equals(displayMode) && useHalfDayShift) {
+		if (AmPmAtr.AM.equals(dayAtr) && !predTime.isPredetermine() && otSet.isEarlyOTUse() && DisplayMode.DETAIL.equals(displayMode)) {
 			if (((otTimezone.getStart().greaterThan(shift1Timezone.getStart())
 					|| otTimezone.getEnd().greaterThan(shift1Timezone.getStart())))) {
 				be.addMessage("Msg_780");
 			}
 		}
-		if (AmPmAtr.PM.equals(dayAtr) && !predTime.isPredetermine() && otSet.isEarlyOTUse() && DisplayMode.DETAIL.equals(displayMode)
-				&& useHalfDayShift) {
+		if (AmPmAtr.PM.equals(dayAtr) && !predTime.isPredetermine() && otSet.isEarlyOTUse() && DisplayMode.DETAIL.equals(displayMode)) {
 			//update #91541
 			if (((otTimezone.getStart().greaterThan(presTz.getAfternoonStartTime())
 					|| otTimezone.getEnd().greaterThan(presTz.getAfternoonStartTime())))) {
@@ -147,8 +147,7 @@ public class OverTimeOfTimeZoneSetPolicyImpl implements OverTimeOfTimeZoneSetPol
 		}
 		
 		// check Msg_1035
-		if (!predTime.isPredetermine() && AmPmAtr.AM.equals(dayAtr) && DisplayMode.DETAIL.equals(displayMode)
-				&& useHalfDayShift) {
+		if (!predTime.isPredetermine() && AmPmAtr.AM.equals(dayAtr) && DisplayMode.DETAIL.equals(displayMode)) {
 			
 			// case MorningEndTime in shift1 + not use shift 2
 			if (presTz.getMorningEndTime().greaterThanOrEqualTo(shift1Timezone.getStart())
@@ -192,8 +191,7 @@ public class OverTimeOfTimeZoneSetPolicyImpl implements OverTimeOfTimeZoneSetPol
 		}
 		
 		//check msg_1036 
-		if (!predTime.isPredetermine() && AmPmAtr.PM.equals(dayAtr) && DisplayMode.DETAIL.equals(displayMode)
-				&& useHalfDayShift) {
+		if (!predTime.isPredetermine() && AmPmAtr.PM.equals(dayAtr) && DisplayMode.DETAIL.equals(displayMode)) {
 			
 			// case AfternoonStartTime in shift1 + not use shift 2
 			if (presTz.getAfternoonStartTime().greaterThanOrEqualTo(shift1Timezone.getStart())

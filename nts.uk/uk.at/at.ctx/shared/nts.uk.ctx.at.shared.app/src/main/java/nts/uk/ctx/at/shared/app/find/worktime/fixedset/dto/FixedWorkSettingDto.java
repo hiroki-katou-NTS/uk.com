@@ -25,6 +25,7 @@ import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixHalfDayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixOffdayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.HalfDayWorkSet;
 
 /**
  * The Class FixedWorkSettingDto.
@@ -43,7 +44,7 @@ public class FixedWorkSettingDto implements FixedWorkSettingSetMemento {
 	private WorkTimezoneCommonSetDto commonSetting;
 
 	/** The use half day shift. */
-	private Boolean useHalfDayShift;
+	private HalfDayWorkSet useHalfDayShift;
 	
 	/** The common rest set. */
     private CommonRestSettingDto commonRestSet;
@@ -127,7 +128,7 @@ public class FixedWorkSettingDto implements FixedWorkSettingSetMemento {
 	 * setUseHalfDayShift(java.lang.Boolean)
 	 */
 	@Override
-	public void setUseHalfDayShift(Boolean useHalfDayShift) {
+	public void setUseHalfDayShift(HalfDayWorkSet useHalfDayShift) {
 		this.useHalfDayShift = useHalfDayShift;
 	}
 	

@@ -21,6 +21,7 @@ import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixHalfDayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixOffdayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingGetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.HalfDayWorkSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtCom;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtWtFix;
 import nts.uk.ctx.at.shared.infra.repository.worktime.common.JpaFixedWorkCalcSettingGetMemento;
@@ -105,8 +106,11 @@ public class JpaFixedWorkSettingGetMemento implements FixedWorkSettingGetMemento
 	 * getUseHalfDayShift()
 	 */
 	@Override
-	public Boolean getUseHalfDayShift() {
-		return BooleanGetAtr.getAtrByInteger(this.entity.getUseHalfDay());
+	public HalfDayWorkSet getUseHalfDayShift() {
+	    return new HalfDayWorkSet(
+	            BooleanGetAtr.getAtrByInteger(this.entity.getUseHalfDay()), 
+	            BooleanGetAtr.getAtrByInteger(this.entity.getUseHalfDayOverTime()), 
+	            BooleanGetAtr.getAtrByInteger(this.entity.getUseHalfDayBreakTime()));
 	}
 	
 	@Override

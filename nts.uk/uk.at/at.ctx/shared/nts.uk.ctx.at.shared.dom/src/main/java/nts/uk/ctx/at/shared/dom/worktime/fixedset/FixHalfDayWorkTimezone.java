@@ -94,7 +94,7 @@ public class FixHalfDayWorkTimezone extends WorkTimeDomainObject implements Clon
 	 */
 	private void restoreDetailMode(FixedWorkSetting fixedWorkSet, FixHalfDayWorkTimezone other) {
 		// restore data of dayAtr = AM, PM
-		if (!fixedWorkSet.getUseHalfDayShift() && other.getDayAtr() != AmPmAtr.ONE_DAY) {
+		if (other.getDayAtr() != AmPmAtr.ONE_DAY) {
 			this.restTimezone.restoreData(other.getRestTimezone());
 			this.workTimezone.restoreData(other.getWorkTimezone());
 		}

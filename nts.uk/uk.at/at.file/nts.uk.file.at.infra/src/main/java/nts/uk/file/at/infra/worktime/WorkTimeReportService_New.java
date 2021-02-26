@@ -97,7 +97,7 @@ public class WorkTimeReportService_New {
         
         List<WorkdayoffFrameFindDto> otFrameFind = this.finder.findAllUsed();
         
-        Boolean useHalfDayShiftOverTime = data.getFixedWorkSetting().getUseHalfDayShift();
+        Boolean useHalfDayShiftOverTime = data.getFixedWorkSetting().getUseHalfDayShift().isOverTime();
         Integer legalOTSetting = data.getFixedWorkSetting().getLegalOTSetting();
         
         if (displayMode.equals(DisplayMode.DETAIL.value)) {
@@ -623,7 +623,7 @@ public class WorkTimeReportService_New {
         
         // 5        タブグ:                休憩時間帯
         
-        Boolean useHalfDayShiftBreakTime = data.getFixedWorkSetting().getUseHalfDayShift();
+        Boolean useHalfDayShiftBreakTime = data.getFixedWorkSetting().getUseHalfDayShift().isBreakTime();
         if (displayMode.equals(DisplayMode.DETAIL.value)) {
             /*
              * R4_262

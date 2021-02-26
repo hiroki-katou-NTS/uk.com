@@ -156,11 +156,11 @@ public class FlexHalfDayWorkTime extends WorkTimeDomainObject implements Cloneab
 	 */
 	private void restoreDetailMode(ScreenMode screenMode,FlexWorkSetting flexWorkSet, FlexHalfDayWorkTime oldDomain) {
 		// restore worktime data of dayAtr = AM, PM
-		if (!flexWorkSet.isUseHalfDayShift() && oldDomain.getAmpmAtr() != AmPmAtr.ONE_DAY) {
+		if (oldDomain.getAmpmAtr() != AmPmAtr.ONE_DAY) {
 			this.workTimezone.restoreData(oldDomain.getWorkTimezone());
 		}
 		// restore rest time data of dayAtr = AM, PM
-		if (!flexWorkSet.isUseHalfDayShift() && oldDomain.getAmpmAtr() != AmPmAtr.ONE_DAY) {
+		if (oldDomain.getAmpmAtr() != AmPmAtr.ONE_DAY) {
 			this.restTimezone = oldDomain.getRestTimezone();
 			Optional<FlexHalfDayWorkTime> oneDay = flexWorkSet.getLstHalfDayWorkTimezone().stream()
 					.filter(half -> half.ampmAtr.equals(AmPmAtr.ONE_DAY)).findFirst();

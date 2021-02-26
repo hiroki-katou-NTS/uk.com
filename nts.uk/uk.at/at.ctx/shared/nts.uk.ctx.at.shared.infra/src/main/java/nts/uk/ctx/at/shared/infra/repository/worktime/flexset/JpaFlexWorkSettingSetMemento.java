@@ -21,6 +21,7 @@ import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexHalfDayWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexOffdayWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.HalfDayWorkSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtCom;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSetPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtWtFleBrFlWek;
@@ -160,8 +161,10 @@ public class JpaFlexWorkSettingSetMemento implements FlexWorkSettingSetMemento {
 	 * setUseHalfDayShift(boolean)
 	 */
 	@Override
-	public void setUseHalfDayShift(boolean useHalfDayShift) {
-		this.entity.setUseHalfdayShift(BooleanGetAtr.getAtrByBoolean(useHalfDayShift));
+	public void setUseHalfDayShift(HalfDayWorkSet useHalfDayShift) {
+		this.entity.setUseHalfdayShift(BooleanGetAtr.getAtrByBoolean(useHalfDayShift.isWorkingTimes()));
+		this.entity.setUseHalfDayOverTime(BooleanGetAtr.getAtrByBoolean(useHalfDayShift.isOverTime()));
+		this.entity.setUseHalfDayBreakTime(BooleanGetAtr.getAtrByBoolean(useHalfDayShift.isBreakTime()));
 	}
 
 	/*

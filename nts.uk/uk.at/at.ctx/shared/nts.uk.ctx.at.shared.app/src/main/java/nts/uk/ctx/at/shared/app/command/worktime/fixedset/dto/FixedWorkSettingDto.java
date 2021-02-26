@@ -25,6 +25,7 @@ import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixHalfDayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixOffdayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingGetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.HalfDayWorkSet;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -43,7 +44,7 @@ public class FixedWorkSettingDto implements FixedWorkSettingGetMemento {
 	private WorkTimezoneCommonSetDto commonSetting;
 
 	/** The use half day shift. */
-	private Boolean useHalfDayShift;
+	private HalfDayWorkSet useHalfDayShift;
 	
 	/** The common rest set. */
     private CommonRestSettingDto commonRestSet;
@@ -119,7 +120,7 @@ public class FixedWorkSettingDto implements FixedWorkSettingGetMemento {
 	 * getUseHalfDayShift()
 	 */
 	@Override
-	public Boolean getUseHalfDayShift() {
+	public HalfDayWorkSet getUseHalfDayShift() {
 		return this.useHalfDayShift;
 	}
 	

@@ -50,6 +50,12 @@ public class KshmtWtFix extends ContractUkJpaEntity implements Serializable {
 	/** The use half day. */
 	@Column(name = "USE_HALF_DAY")
 	private int useHalfDay;
+	
+	@Column(name = "USE_HALF_DAY_OVERTIME")
+	private int useHalfDayOverTime;
+	
+	@Column(name = "USE_HALF_DAY_BREAKTIME")
+	private int useHalfDayBreakTime;
 
 	/** The legal ot set. */
 	@Column(name = "LEGAL_OT_SET")

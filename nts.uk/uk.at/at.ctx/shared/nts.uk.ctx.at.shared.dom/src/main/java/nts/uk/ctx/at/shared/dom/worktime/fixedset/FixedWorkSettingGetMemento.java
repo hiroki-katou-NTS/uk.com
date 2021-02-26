@@ -12,6 +12,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.HalfDayWorkSet;
 
 /**
  * The Interface FixedWorkSettingGetMemento.
@@ -51,7 +52,7 @@ public interface FixedWorkSettingGetMemento {
 	 *
 	 * @return the use half day shift
 	 */
-	Boolean getUseHalfDayShift();
+	HalfDayWorkSet getUseHalfDayShift();
 	
 	/**
      * Gets the fixed common rest setting.

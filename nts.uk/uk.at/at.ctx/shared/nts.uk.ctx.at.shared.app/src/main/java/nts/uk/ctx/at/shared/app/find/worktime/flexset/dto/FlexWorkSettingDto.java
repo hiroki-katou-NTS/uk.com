@@ -22,6 +22,7 @@ import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexHalfDayWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexOffdayWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.HalfDayWorkSet;
 
 /**
  * The Class FlexWorkSettingDto.
@@ -45,7 +46,7 @@ public class FlexWorkSettingDto implements FlexWorkSettingSetMemento {
 	private WorkTimezoneCommonSetDto commonSetting;
 
 	/** The use half day shift. */
-	private boolean useHalfDayShift;
+	private HalfDayWorkSet useHalfDayShift;
 
 	/** The lst half day work timezone. */
 	private List<FlexHalfDayWorkTimeDto> lstHalfDayWorkTimezone;
@@ -199,7 +200,7 @@ public class FlexWorkSettingDto implements FlexWorkSettingSetMemento {
 	 * setUseHalfDayShift(boolean)
 	 */
 	@Override
-	public void setUseHalfDayShift(boolean useHalfDayShift) {
+	public void setUseHalfDayShift(HalfDayWorkSet useHalfDayShift) {
 		this.useHalfDayShift = useHalfDayShift;
 	}
 

@@ -19,6 +19,7 @@ import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixHalfDayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixOffdayWorkTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingSetMemento;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.HalfDayWorkSet;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWtCom;
@@ -127,8 +128,10 @@ public class JpaFixedWorkSettingSetMemento implements FixedWorkSettingSetMemento
 	 * setUseHalfDayShift(java.lang.Boolean)
 	 */
 	@Override
-	public void setUseHalfDayShift(Boolean useHalfDayShift) {
-		this.entity.setUseHalfDay(BooleanGetAtr.getAtrByBoolean(useHalfDayShift));
+	public void setUseHalfDayShift(HalfDayWorkSet useHalfDayShift) {
+	    this.entity.setUseHalfDay(BooleanGetAtr.getAtrByBoolean(useHalfDayShift.isWorkingTimes()));
+	    this.entity.setUseHalfDayOverTime(BooleanGetAtr.getAtrByBoolean(useHalfDayShift.isOverTime()));
+	    this.entity.setUseHalfDayBreakTime(BooleanGetAtr.getAtrByBoolean(useHalfDayShift.isBreakTime()));
 	}
 	
 	@Override

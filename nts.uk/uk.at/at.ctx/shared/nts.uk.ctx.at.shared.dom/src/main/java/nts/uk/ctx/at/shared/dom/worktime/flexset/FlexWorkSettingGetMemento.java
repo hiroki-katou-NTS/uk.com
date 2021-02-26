@@ -10,6 +10,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.HalfDayWorkSet;
 
 /**
  * The Interface FlexWorkSettingGetMemento.
@@ -63,7 +64,7 @@ public interface FlexWorkSettingGetMemento {
 	 *
 	 * @return the use half day shift
 	 */
-	 boolean getUseHalfDayShift();
+	 HalfDayWorkSet getUseHalfDayShift();
 
 	/**
 	 * Gets the lst half day work timezone.
