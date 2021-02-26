@@ -23,14 +23,14 @@ public class GetMaximumNightShiftHoursOfEmployeeService {
 	 * @return
 	 */
 	public static Optional<AttendanceTimeMonth> get(Require require, String sid, GeneralDate baseDate) {
-		Optional<EmpMedicalWorkFormHisItem> empHistItem = require.getEmpMedicalWorkFormHisItem(sid, baseDate);
+		Optional<EmpMedicalWorkFormHisItem> medicalWorkHisItem = require.getEmpMedicalWorkFormHisItem(sid, baseDate);
 
-		if (!empHistItem.isPresent())
+		if (!medicalWorkHisItem.isPresent())
 			return Optional.empty();
 
 		NightShiftUpperLimitTime maxNightShiftHours = require.getNightShiftUpperLimitTime();
 
-		if (empHistItem.get().isNightShiftFullTime())
+		if (medicalWorkHisItem.get().isNightShiftFullTime())
 			return Optional.of(maxNightShiftHours.getNightShiftWorker());
 
 		return Optional.of(maxNightShiftHours.getRegularWorker());

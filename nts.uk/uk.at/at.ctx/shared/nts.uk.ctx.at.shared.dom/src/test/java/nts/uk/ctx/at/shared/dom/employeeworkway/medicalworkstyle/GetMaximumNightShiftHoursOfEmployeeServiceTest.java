@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 
+import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Mocked;
@@ -56,7 +57,7 @@ public class GetMaximumNightShiftHoursOfEmployeeServiceTest {
 	 */
 	@Test
 	public void getNightShiftWorkerHours(@Mocked EmpMedicalWorkFormHisItem empMedicalHisItem) {
-		NightShiftUpperLimitTime maxNightShiftHours = Helper.createNightShiftWorkerHours(new AttendanceTimeMonth(720));
+		val maxNightShiftHours = new NightShiftUpperLimitTime("contractCode", new AttendanceTimeMonth(720), new AttendanceTimeMonth(360));
 		
 		new Expectations() {
 			{
@@ -85,7 +86,7 @@ public class GetMaximumNightShiftHoursOfEmployeeServiceTest {
 	 */
 	@Test
 	public void getRegularWorkerHours(@Mocked EmpMedicalWorkFormHisItem empMedicalHisItem) {
-		NightShiftUpperLimitTime maxNightShiftHours = Helper.createRegularWorkerHours(new AttendanceTimeMonth(360));
+		val maxNightShiftHours = new NightShiftUpperLimitTime("contractCode", new AttendanceTimeMonth(720), new AttendanceTimeMonth(360));
 		
 		new Expectations() {
 			{
@@ -106,26 +107,5 @@ public class GetMaximumNightShiftHoursOfEmployeeServiceTest {
 		
 		assertThat(result.get()).isEqualTo(maxNightShiftHours.getRegularWorker());
 		
-	}
-	
-	
-	public static class Helper{
-		/**
-		 * 夜勤上限時間を作る
-		 * @param nightShiftWorker 夜勤専従者時間
-		 * @return
-		 */
-		public static NightShiftUpperLimitTime createNightShiftWorkerHours(AttendanceTimeMonth nightShiftWorker) {
-			return new NightShiftUpperLimitTime("contractCode", nightShiftWorker, new AttendanceTimeMonth(360));
-		}
-		
-		/**
-		 * 夜勤上限時間を作る
-		 * @param regularWorker  夜勤専従者以外時間
-		 * @return
-		 */
-		public static NightShiftUpperLimitTime createRegularWorkerHours(AttendanceTimeMonth regularWorker) {
-			return new NightShiftUpperLimitTime("contractCode", new AttendanceTimeMonth(720), regularWorker);
-		}
 	}
 }
