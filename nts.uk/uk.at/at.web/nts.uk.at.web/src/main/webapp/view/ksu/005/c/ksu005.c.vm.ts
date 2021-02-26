@@ -18,21 +18,22 @@ module nts.uk.at.view.ksu005.c {
         constructor() {
             super();
             const self = this;            
-            self.loadData();
-            $('#outputSettingCopyCode').focus();
+            self.loadData();            
+        }
+
+        mounted() {
+            $('#outputSettingCopyCode').focus(); 
         }
 
         loadData(): void {
             const self = this;
-            let data = getShared('dataShareKSU005b');
-            $('#outputSettingCopyCode').focus(); 
+            let data = getShared('dataShareKSU005b');            
             self.copySourceCode(data.copySourceCode);
             self.copySourceName(data.copySourceName);
-            
         }
 
         copy(): void {
-            const self = this;                       
+            const self = this;                                
             if (self.validateAll()) {
                 return;
             }
