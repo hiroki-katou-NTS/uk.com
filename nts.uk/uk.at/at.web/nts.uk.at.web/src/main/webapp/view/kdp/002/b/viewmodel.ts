@@ -101,9 +101,6 @@ class KDP002BViewModel extends ko.ViewModel {
     getAllStampingResult(): JQueryPromise<any> {
         const vm = this;
         let dfd = $.Deferred();
-        if ( !vm.infoEmpFromScreenA ) {
-            return;
-        }
         let sid = vm.infoEmpFromScreenA.employeeId;
         
         vm.$ajax(kDP002RequestUrl.getAllStampingResult +  sid).then( function( data ) {
@@ -170,9 +167,6 @@ class KDP002BViewModel extends ko.ViewModel {
     getEmpInfo(): JQueryPromise<any> {
         const vm = this;
         let dfd = $.Deferred();
-        if ( !vm.infoEmpFromScreenA ) {
-            return;
-        }
         let employeeId = vm.infoEmpFromScreenA.employeeId;
         vm.$ajax(kDP002RequestUrl.getInfo +  employeeId).done( function( data ) {
             vm.employeeCodeName( data.employeeCode + " " + data.personalName );
