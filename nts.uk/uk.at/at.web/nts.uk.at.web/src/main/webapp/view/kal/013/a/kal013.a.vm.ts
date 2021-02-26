@@ -77,7 +77,7 @@ module nts.uk.at.view.kal013.a {
                         if (typeof hasClicked == 'undefined' || hasClicked === 'false') {
                             $("#fixedTableCCDT")
                                 .attr('data-clicked', 'true')
-                                .ntsFixedTable({height: 250});
+                                // .ntsFixedTable({height: 250});
                         }
                         break;
                 }
