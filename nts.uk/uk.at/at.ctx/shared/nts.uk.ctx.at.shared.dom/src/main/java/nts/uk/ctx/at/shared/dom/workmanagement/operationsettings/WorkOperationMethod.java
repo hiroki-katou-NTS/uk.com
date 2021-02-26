@@ -10,10 +10,10 @@ package nts.uk.ctx.at.shared.dom.workmanagement.operationsettings;
 public enum WorkOperationMethod {
     // 予定で利用
     USE_ON_SCHEDULE(0),
-    // 利用しない
-    DO_NOT_USE(1),
     // 実績で利用
-    USED_IN_ACHIEVENTS(2);
+    USED_IN_ACHIEVENTS(1),
+    // 利用しない
+    DO_NOT_USE(2);
 
     public final int value;
 

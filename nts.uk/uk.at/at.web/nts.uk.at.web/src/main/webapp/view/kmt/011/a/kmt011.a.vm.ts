@@ -9,6 +9,16 @@ module nts.uk.at.view.kmt011.a.viewmodel {
             if (params && params.screen) {
                 self.backFromScreen = params.screen;
             }
+            self.$blockui("show");
+            self.$ajax("at/shared/workmanagement/operationsettings/find").fail(error => {
+                self.$dialog.error(error).then(() => {
+                    if (error.businessException) {
+                        nts.uk.request.jumpToTopPage();
+                    }
+                });
+            }).always(() => {
+                self.$blockui("hide");
+            });
         }
 
         mounted() {
