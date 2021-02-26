@@ -169,6 +169,7 @@ public class AttendanceInformationScreenQuery {
 			
 			// 14: create()
 			List<ApplicationDto> applicationDtos = applications.stream().map(item -> ApplicationDto.toDto(item, listAppOverTime))
+					.collect(Collectors.toMap(ApplicationDto::getAppType, p -> p, (p, q) -> p)).values().stream()
 					.collect(Collectors.toList());
 			
 			// 6: create() - start
@@ -362,7 +363,7 @@ public class AttendanceInformationScreenQuery {
 					.findFirst();
 			EmployeeEmojiStateDto emojiDto = EmployeeEmojiStateDto.builder().build();
 			emojiDomain.ifPresent(consumer -> consumer.setMemento(emojiDto));
-			
+
 			return AttendanceInformationDto.builder()
 					.applicationDtos(applicationDtos)
 					.sid(empId.getSid())
