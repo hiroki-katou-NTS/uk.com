@@ -2,11 +2,12 @@
 
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
-const requestUrl = {
+const kDP002RequestUrl = {
 
         getAllStampingResult: "at/record/workrecord/stamp/management/getAllStampingResult/",
         getInfo: 'ctx/sys/auth/grant/rolesetperson/getempinfo/'
 }
+
 @bean()
 class KDP002BViewModel extends ko.ViewModel {
 
@@ -101,7 +102,7 @@ class KDP002BViewModel extends ko.ViewModel {
         let dfd = $.Deferred();
         let sid = vm.infoEmpFromScreenA.employeeId;
         
-        vm.$ajax(requestUrl.getAllStampingResult +  sid).then( function( data ) {
+        vm.$ajax(kDP002RequestUrl.getAllStampingResult +  sid).then( function( data ) {
             _.forEach( data, ( a ) => {
                 let items = _.orderBy( a.stampDataOfEmployeesDto.stampRecords, ['stampTimeWithSec'], ['desc'] );
                 _.forEach( items, ( sr ) => {
@@ -166,7 +167,7 @@ class KDP002BViewModel extends ko.ViewModel {
         const vm = this;
         let dfd = $.Deferred();
         let employeeId = vm.infoEmpFromScreenA.employeeId;
-        vm.$ajax(requestUrl.getInfo +  employeeId).done( function( data ) {
+        vm.$ajax(kDP002RequestUrl.getInfo +  employeeId).done( function( data ) {
             vm.employeeCodeName( data.employeeCode + " " + data.personalName );
             dfd.resolve();
         } );
@@ -179,7 +180,7 @@ class KDP002BViewModel extends ko.ViewModel {
 
 }
 
-export class ItemModels {
+class ItemModels {
     id: string;
     stampDate: string;
     stampHowAndTime: string;
