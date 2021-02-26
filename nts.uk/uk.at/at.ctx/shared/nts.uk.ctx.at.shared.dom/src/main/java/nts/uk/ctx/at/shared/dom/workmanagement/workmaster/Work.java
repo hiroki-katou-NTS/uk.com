@@ -70,7 +70,7 @@ public class Work extends AggregateRoot {
     }
 
     // 	[1] 有効期限内か
-    boolean checkexpirationDate(GeneralDate targetDate) {
+    boolean checkExpirationDate(GeneralDate targetDate) {
         return this.expirationDate.contains(targetDate);
     }
 
