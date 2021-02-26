@@ -41,4 +41,8 @@ public class ToppageSettingDto {
 	 * 	ログインメニューコード 
 	 **/
 	private String loginMenuCode;
+	
+	public static ToppageSettingDto forBuiltInUser() {
+		return ToppageSettingDto.builder().build();
+	}
 }
