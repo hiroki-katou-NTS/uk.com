@@ -205,8 +205,8 @@ module nts.uk.at.view.kwr008.a {
                 block.invisible();
                 var data = new model.EmployeeDto();
                 if (self.printFormat() == 0) {
-                    data.startYearMonth = self.dateValue().startDate;
-                    data.endYearMonth = self.dateValue().endDate;
+                    data.startYearMonth = moment.utc(self.dateValue().startDate, 'YYYYMM').format('YYYY/MM');
+                    data.endYearMonth = moment.utc(self.dateValue().endDate, 'YYYYMM').format('YYYY/MM');
                 } else {
                     let year = self.fiscalYear();
                     if (year.match(/\d{4}/)) {

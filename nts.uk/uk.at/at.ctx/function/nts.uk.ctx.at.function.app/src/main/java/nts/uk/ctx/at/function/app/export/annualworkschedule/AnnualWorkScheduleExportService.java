@@ -788,7 +788,7 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 		);
 
 		// すべての勤怠項目の取得データをチェックする
-		if (monthlyValue.get(employeeId).size() > 0) {
+		if (monthlyValue.containsKey(employeeId) && monthlyValue.get(employeeId).size() > 0) {
 
 			// アルゴリズム「月平均の算出」を実行する
 			return AnnualWorkScheduleData.fromMonthlyAttendanceList(
