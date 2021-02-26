@@ -119,7 +119,7 @@ public class AttendanceInformationScreenQuery {
 		List<String> errorAlarmCodeLst = new ArrayList<>();
 		errorAlarmCodeLst.add("S007");
 		errorAlarmCodeLst.add("S008");
-		List<EmployeeDailyPerError> employeeDailyErrorList = employeeErrorRepo.findsByCodeLst(sids, datePeriod, errorAlarmCodeLst);
+		List<EmployeeDailyPerError> employeeDailyErrorList = employeeErrorRepo.findsByCodeLstForCcg005(sids, datePeriod, errorAlarmCodeLst);
 		
 		// 4: get(社員IDリスト　＝　パラメータ社員のIDリスト.社員ID, 基準日):  List<勤務予定>
 		List<String> allSids = new ArrayList<String>();

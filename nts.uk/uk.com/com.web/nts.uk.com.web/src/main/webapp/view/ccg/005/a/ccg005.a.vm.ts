@@ -350,7 +350,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
     }
 
     .ccg005-w105 {
-      width: 100px;
+      width: 105px;
     }
 
     .ccg005-bold {
