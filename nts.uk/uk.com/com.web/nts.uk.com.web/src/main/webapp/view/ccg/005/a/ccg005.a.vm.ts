@@ -994,6 +994,8 @@ module nts.uk.at.view.ccg005.a.screenModel {
       const vm = this;
       if (vm.currentPage() * vm.perPage() < vm.totalElement()) {
         vm.currentPage(vm.currentPage() + 1);
+        $('.ccg005-pagination-btn').css('cursor', 'wait');
+        setTimeout(() =>  $('.ccg005-pagination-btn').css('cursor', 'pointer'), 300);
       }
     }
 
@@ -1001,6 +1003,8 @@ module nts.uk.at.view.ccg005.a.screenModel {
       const vm = this;
       if (vm.currentPage() > 1) {
         vm.currentPage(vm.currentPage() - 1);
+        $('.ccg005-pagination-btn').css('cursor', 'wait');
+        setTimeout(() =>  $('.ccg005-pagination-btn').css('cursor', 'pointer'), 300);
       }
     }
 
