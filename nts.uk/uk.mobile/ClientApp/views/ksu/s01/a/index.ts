@@ -82,7 +82,7 @@ export class KSUS01AComponent extends Vue {
                 start: '2021/02/22',
                 end: '2021/03/21'
             };
-            resolve(data);
+            resolve({data});
         });
     }
 
@@ -177,7 +177,7 @@ export class KSUS01AComponent extends Vue {
                 }
                 if (index % workScheRandom == 0) {
                     workSchedule.shiftMaster = {
-                        shiftMasterName: '出勤', 
+                        shiftMasterName: '出12', 
                         color: 'add8e6'
                     };
                     workSchedule.workAtr = 3;
@@ -211,7 +211,7 @@ export class KSUS01AComponent extends Vue {
                 };
                 data.listDesiredSubmissionStatusByDate.push(desiredSubmissionStatusByDate);
             }
-            resolve(data);
+            resolve({data});
         });
     }
 
@@ -295,14 +295,14 @@ export class KSUS01AComponent extends Vue {
                     }
                 ];
             }
-            resolve(data);
+            resolve({data});
         });
     }
 
     public initData() {
         let self = this;
         self.$mask('show');
-        // self.fakeDataInit().then((data: InitInformation) => {
+        // self.fakeDataInit().then((res: any) => {
         self.$http.post('at', API.start).then((res: any) => {
             let data: InitInformation = res.data;
 
@@ -359,7 +359,7 @@ export class KSUS01AComponent extends Vue {
         };
         console.log(command, 'command');
         self.$mask('show');
-        // self.fakeDataDatePeriod(command).then((data: InforOnTargetPeriodDto) => {
+        // self.fakeDataDatePeriod(command).then((res: any) => {
         self.$http.post('at', API.changeDatePeriod, command).then((res: any) => {
             let data: InforOnTargetPeriodDto = res.data;
             console.log(data, 'changeDatePeriod');
@@ -391,7 +391,7 @@ export class KSUS01AComponent extends Vue {
                 rowNumber: Math.floor(index / 7),
                 weekDayIndex: index % 7,
                 displayData: {} as DisplayData,
-                workScheduleStyle: 'padding: 0.25em 0.4em; font-weight: bold; border-radius: 0.25rem; display: inline-block;'
+                workScheduleStyle: 'padding: 0.25em 1em; font-weight: bold; border-radius: 0.25rem; display: inline-block;'
             });
         }
     }
@@ -491,7 +491,7 @@ export class KSUS01AComponent extends Vue {
                 rowNumber: el.rowNumber,
                 weekDayIndex: el.weekDayIndex,
                 displayData: {} as DisplayData,
-                workScheduleStyle: 'padding: 0.25em 0.4em; font-weight: bold; border-radius: 0.25rem; display: inline-block;'
+                workScheduleStyle: 'padding: 0.25em 1em; font-weight: bold; border-radius: 0.25rem; display: inline-block;'
             };
             if (!isFirstDay && el.weekDayIndex == moment(self.startDate).day()) {
                 isActive = true;
@@ -559,7 +559,7 @@ export class KSUS01AComponent extends Vue {
 
         console.log(command, 'getDateDetail command');
         self.$mask('show');
-        // self.fakeDataDateTarget(command).then((data: InforOnTargetDateDto) => {
+        // self.fakeDataDateTarget(command).then((res: any) => {
         self.$http.post('at', API.getDateDetail, command).then((res: any) => {
             let data: InforOnTargetDateDto = res.data;
             console.log(data, 'getDateDetail');

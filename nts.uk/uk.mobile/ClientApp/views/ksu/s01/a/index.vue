@@ -2,8 +2,8 @@
 <div class="ksus01a">
     <div class="card card-label">
         <!-- A1_1 -->
-        <div class="card-header uk-bg-green" style="border-color: #E0F59E">
-            <div id="year-month-component" class="flex-center-vert">
+        <div class="card-header uk-bg-green" >
+            <div id="year-month-component" class="flex-center-vert" style="border-color: #E0F59E;">
                 <!-- A1_1_1 -->
                 <span v-on:click="changeYearMonth(false)">
                     <i class="fas fa-arrow-alt-circle-left"></i>
@@ -22,10 +22,13 @@
             <div class="flex-center-vert">
                 <!-- A1_1_4 -->
                 <span 
+                    id="backCurrentMonth"
                     v-on:click="backCurrentMonth()"
-                    style="min-width: 5.75em; background-color: yellow; padding: 0.5em; margin: 0 1em"
+                    class="uk-bg-green"
                 >
-                    {{ "KSUS01_2" | i18n }}
+                    <!-- {{ "KSUS01_2" | i18n }} -->
+                    今月<!-- huytodo -->
+                    <i class="fas fa-undo" style="margin-left: 2vw;"></i>
                 </span>
                 <!-- A1_1_5 -->
                 <span v-on:click="openKSUS01B()">
@@ -35,7 +38,7 @@
         </div>
 
         <!-- Calendar -->
-        <div class="card-body" style="margin: -0.5rem -1rem 0 -1rem;">
+        <div id="calendar" class="card-body">
             <div class="date-header-container">
                 <!-- A1_2 -->
                 <div
@@ -61,8 +64,8 @@
                     v-on:touchend="handleTouchEnd"
                     v-show="rowFocus == null || rowFocus == item.rowNumber"
                 >
-                    <div style="height: 100%; display: flex; justify-content: flex-start; flex-direction: column;">
-                        <div style="display: flex; justify-content: space-between">
+                    <div class="date-cell-content">
+                        <div class="date-cell-top">
                             <!-- A1_3_1 -->
                             <span v-if="today == item.date" class="uk-bg-schedule-that-day" style="border-radius: 50%;">{{item.formatedDate}}</span>
                             <span v-else>{{item.formatedDate}}</span>
@@ -73,15 +76,15 @@
                             </span>
                         </div>
                         <!-- A1_3_3 -->
-                        <div v-show="item.isActive" style="text-align: center; margin: 1.5em 0">
+                        <div v-show="item.isActive" style="text-align: center; margin: 3.5vh 0">
                             <span v-if="item.displayData.workScheduleAtr >= 1 && item.displayData.workScheduleAtr <= 3 && item.displayData.workScheduleName.length > 0" 
-                                v-bind:style="item.workScheduleStyle"
+                                v-bind:style="item.workScheduleStyle + 'width: 100%; padding: 0.25em 0;'"
                             >
                                 <!-- <span class="uk-text-holiday" v-if="item.displayData.workScheduleAtr == 0">{{item.displayData.workScheduleName}}</span> -->
                                 <span class="uk-text-half-day-work" v-if="item.displayData.workScheduleAtr == 1 || item.displayData.workScheduleAtr == 2">{{item.displayData.workScheduleName}}</span>
                                 <span class="uk-text-attendance" v-else-if="item.displayData.workScheduleAtr == 3">{{item.displayData.workScheduleName}}</span>
                             </span>
-                            <span v-else-if="item.displayData.workScheduleAtr != 0" class="uk-bg-gray" v-bind:style="item.workScheduleStyle">
+                            <span v-else-if="item.displayData.workScheduleAtr != 0" class="uk-bg-gray" v-bind:style="item.workScheduleStyle + 'width: 100%; padding: 0.25em 0;'">
                                 <span style='color: black;'>{{ "KSUS01_21" | i18n }}</span>
                             </span>
                         </div>
