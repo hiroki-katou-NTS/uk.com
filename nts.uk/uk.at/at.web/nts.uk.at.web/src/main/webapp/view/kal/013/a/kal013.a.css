@@ -58,3 +58,7 @@ table td.text-center {
 #fixedTableCCDT .nts-switch-button {
   width: 60px;
 }
+
+.tab-content-2 .nts-fixed-table .nts-fixed-body-wrapper {
+  overflow-x: hidden;
+}

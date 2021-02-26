@@ -5,6 +5,7 @@ module nts.uk.at.view.kal013.a.tab {
 
         checkConditions: KnockoutObservable<boolean> = ko.observable(false);
         checkConditionsList: KnockoutObservableArray<common.CheckConditionDto> = ko.observableArray([]);
+        currentRowSelected: KnockoutObservable<number> = ko.observable(0);
 
         selectedAll: KnockoutObservable<boolean> = ko.observable(false);
         roundingRules: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -57,6 +58,24 @@ module nts.uk.at.view.kal013.a.tab {
                 owner: self
             });
 
+            vm.currentRowSelected.subscribe((data) => {
+                if (vm.category == 9) {
+                    $("#fixedTableCCDT tr").removeClass("ui-state-active");
+                    $("#fixedTableCCDT tr[data-id='" + data + "']").addClass("ui-state-active");
+                } else {
+                    $("#fixedTableCCDT tr").removeClass("ui-state-active");
+                    $("#fixedTableCCDT tr[data-id='" + data + "']").addClass("ui-state-active");
+                }
+            });
+
+
+            $(function() {
+                $("#fixedTableCCDT").on("click", "tr", function() {
+                    let id = $(this).attr("data-id");
+                    vm.currentRowSelected(Number(id));
+                })
+            });
+
         }
 
         /**
@@ -73,6 +92,8 @@ module nts.uk.at.view.kal013.a.tab {
                 vm.checkConditionsList.valueHasMutated();
             });
             vm.checkConditionsList.push(item);
+            $("#fixedTableCCDT tr")[vm.checkConditionsList().length - 1].scrollIntoView();
+            vm.currentRowSelected(vm.checkConditionsList().length);
         }
 
         addNewCheckCondition() {
@@ -114,6 +135,12 @@ module nts.uk.at.view.kal013.a.tab {
             });
             vm.$dialog.info({ messageId: "Msg_16" }).then(() => {
                 vm.checkConditionsList(afterRemoveLst);
+                if (afterRemoveLst.length > 0) {
+                    if (vm.currentRowSelected() > afterRemoveLst.length) {
+                        vm.currentRowSelected(afterRemoveLst.length);
+                    }
+                    vm.currentRowSelected.valueHasMutated();
+                }
             });
             // vm.isEnableRemove(false);
         }
@@ -157,3 +184,5 @@ module nts.uk.at.view.kal013.a.tab {
         }
     }
 }
+
+

@@ -18,7 +18,7 @@
           <col width="150px" />                   
           <col width="70px" />
           <col width="250px" />
-          <col width="150px" />
+          <col width="140px" />
         </colgroup>
         <thead>
           <tr>
@@ -48,7 +48,7 @@
           </tr>
         </thead>
         <tbody data-bind="foreach: checkConditionsList">
-          <tr>
+          <tr data-bind="attr: { 'data-id': no }">
             <td class="text-center">
               <div data-bind="ntsCheckBox: { checked: isCheck }"></div>
             </td>
