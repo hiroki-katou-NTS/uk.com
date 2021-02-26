@@ -147,7 +147,7 @@ module nts.uk.at.view.ccg005.a.screenModel {
                     <i tabindex=13 data-bind="ntsIcon: {no: emojiIconNo, width: 20, height: 15}, visible: emojiVisitable"></i>
                   </div>
                 </td>
-                <td class="ccg005-w100 ccg005-pl-5 ccg005-border-groove ccg005-right-unset ccg005-left-unset">
+                <td class="ccg005-w105 ccg005-pl-5 ccg005-border-groove ccg005-right-unset ccg005-left-unset">
                   <div class="ccg005-w100">
                     <!-- A4_2 -->
                     <label
@@ -346,6 +346,10 @@ module nts.uk.at.view.ccg005.a.screenModel {
     }
 
     .ccg005-w100 {
+      width: 100px;
+    }
+
+    .ccg005-w105 {
       width: 100px;
     }
 
@@ -1079,14 +1083,26 @@ module nts.uk.at.view.ccg005.a.screenModel {
 
     public resetLastestData() {
       const vm = this;
+      //reset attendance information
       vm.attendanceInformationDtos([]);
       vm.attendanceInformationDtosDisplay([]);
       vm.attendanceInformationDtosDisplayClone([]);
+
+      //reset search value
       vm.workplaceNameFromCDL008('');
+      vm.searchValue('');
+
+      //reset selected date to today
       vm.selectedDate(moment.utc().format('YYYYMMDD'));
+
+      //reset pagination
       vm.currentPage(0);
       vm.totalElement(0);
+
+      //re-start screen (binding again)
       vm.toStartScreen();
+
+      //re-subscribe favorite (with characteristics)
       vm.subscribeFavorite();
     }
 
@@ -1176,9 +1192,6 @@ module nts.uk.at.view.ccg005.a.screenModel {
      */
     public deleteComment() {
       const vm = this;
-
-      // $('#CCG005-A1_4').blur();
-
       if (_.isEmpty(vm.comment())) {
         return;
       }
