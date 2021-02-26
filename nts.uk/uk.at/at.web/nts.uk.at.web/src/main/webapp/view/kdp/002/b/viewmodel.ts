@@ -1,4 +1,5 @@
 
+
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 const requestUrl = {
@@ -6,9 +7,10 @@ const requestUrl = {
         getAllStampingResult: "at/record/workrecord/stamp/management/getAllStampingResult/",
         getInfo: 'ctx/sys/auth/grant/rolesetperson/getempinfo/'
 }
-
 @bean()
 class KDP002BViewModel extends ko.ViewModel {
+
+
     // B2_2
     employeeCodeName: KnockoutObservable<string> = ko.observable( "基本給" );
     // B3_2
@@ -22,7 +24,7 @@ class KDP002BViewModel extends ko.ViewModel {
     // G6_2
     laceName: KnockoutObservable<string> = ko.observable( "基本給" );
 
-    items: KnockoutObservableArray<model.ItemModels> = ko.observableArray( [] );
+    items: KnockoutObservableArray<ItemModels> = ko.observableArray( [] );
     columns2: KnockoutObservableArray<any>;
     currentCode: KnockoutObservable<any> = ko.observable();
     currentCodeList: KnockoutObservableArray<any>;
@@ -34,11 +36,13 @@ class KDP002BViewModel extends ko.ViewModel {
     disableResultDisplayTime: KnockoutObservable<boolean> = ko.observable( true );
     interval: KnockoutObservable<number> = ko.observable( 0 );
     infoEmpFromScreenA: any;
+
     constructor() {
         super();
     }
-    
-    created() {
+
+    created(params: any) {
+
         const vm = this;
         vm.$window.shared( "resultDisplayTime" ).done( displayTime => {
             vm.resultDisplayTime( displayTime );
@@ -57,11 +61,9 @@ class KDP002BViewModel extends ko.ViewModel {
             } );
         } );
         vm.startPage();
+        
     }
     
-    /**
-     * start page  
-     */
     startPage(): JQueryPromise<any> {
         let self = this,
             dfd = $.Deferred();
@@ -93,6 +95,7 @@ class KDP002BViewModel extends ko.ViewModel {
             }
         }
     }
+    
     getAllStampingResult(): JQueryPromise<any> {
         const vm = this;
         let dfd = $.Deferred();
@@ -120,7 +123,7 @@ class KDP002BViewModel extends ko.ViewModel {
                         dateDisplay = "<span class='color-schedule-sunday'>" + dateDisplay + "</span>";
                         sr.stampDate = "<span class='color-schedule-sunday'>" + sr.stampDate + "</span>";
                     }
-                    vm.items.push( new model.ItemModels(
+                    vm.items.push( new ItemModels(
                         dateDisplay,
                         "<div class='inline-bl'>" + sr.stampHow + "</div>" + sr.stampTime,
                         changeClockArtDisplay,
@@ -139,13 +142,13 @@ class KDP002BViewModel extends ko.ViewModel {
         } );
         return dfd.promise();
     }
-
+    
     getTextAlign( sr: any ): string {
 
         let value = sr.buttonValueType;
         if ( ButtonType.GOING_TO_WORK == value || ButtonType.RESERVATION_SYSTEM == value ) {
 
-            return `<div class='full-width' style='text-align: left'>` + sr.stampArtName + '</div>';
+            return `<div class='full-width' style='text-align: left' >`  + sr.stampArtName + '</div>';
 
         }
 
@@ -158,7 +161,7 @@ class KDP002BViewModel extends ko.ViewModel {
         return sr.stampArtName ? `<div class='full-width' style='text-align: center'>` + sr.stampArtName + '</div>' : '';
 
     }
-
+    
     getEmpInfo(): JQueryPromise<any> {
         const vm = this;
         let dfd = $.Deferred();
@@ -169,15 +172,30 @@ class KDP002BViewModel extends ko.ViewModel {
         } );
         return dfd.promise();
     }
-
-    /**
-     * Close dialog
-     */
+    
     public closeDialog(): void {
         nts.uk.ui.windows.close();
     }
-    
+
 }
+
+export class ItemModels {
+    id: string;
+    stampDate: string;
+    stampHowAndTime: string;
+    timeStampType: string;
+    date: string;
+    time: string
+    constructor( stampDate: string, stampHowAndTime: string, timeStampType: string, date: string, time: string ) {
+        this.id = nts.uk.util.randomId();
+        this.stampDate = stampDate;
+        this.stampHowAndTime = stampHowAndTime;
+        this.timeStampType = timeStampType;
+        this.date = date;
+        this.time = time;
+    }
+}
+
 enum ButtonType {
     // 系
 
@@ -194,23 +212,4 @@ enum ButtonType {
     // 予約系
 
     RESERVATION_SYSTEM = 5
-}
-export module model {
-
-    export class ItemModels {
-        id: string;
-        stampDate: string;
-        stampHowAndTime: string;
-        timeStampType: string;
-        date: string;
-        time: string
-        constructor( stampDate: string, stampHowAndTime: string, timeStampType: string, date: string, time: string ) {
-            this.id = nts.uk.util.randomId();
-            this.stampDate = stampDate;
-            this.stampHowAndTime = stampHowAndTime;
-            this.timeStampType = timeStampType;
-            this.date = date;
-            this.time = time;
-        }
-    }
 }
