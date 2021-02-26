@@ -226,8 +226,8 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 export interface RoundingTimeDto {
-                    attendanceMinuteLaterCalculate: any;
-                    leaveWorkMinuteAgoCalculate: any;
+                    attendanceMinuteLaterCalculate: number;
+                    leaveWorkMinuteAgoCalculate: number;
                     roundingSets: RoundingSetDto[];
                 }
 

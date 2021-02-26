@@ -38,6 +38,10 @@ public class CoreTimeSetting extends WorkTimeDomainObject implements Cloneable{
 	// 最低勤務時間
 	private AttendanceTime minWorkTime;
 
+	/** The Outing Calculation within Core Time. */
+	//外出計算
+	private OutingCalcWithinCoreTime goOutCalc;
+
 	/** The Constant ZERO_MINUTES. */
 	// 00:00
 	public static final int ZERO_MINUTES = 0;
@@ -146,7 +150,7 @@ public class CoreTimeSetting extends WorkTimeDomainObject implements Cloneable{
 	 * @return
 	 */
 	public CoreTimeSetting changeZeroMinWorkTime() {
-		return new CoreTimeSetting(this.coreTimeSheet,this.timesheet,new AttendanceTime(0));
+		return new CoreTimeSetting(this.coreTimeSheet,this.timesheet,new AttendanceTime(0), this.goOutCalc);
 	}
 	
 	@Override

@@ -162,7 +162,7 @@
             </div>
 
         </div>
-        <div class="mt-25" style=" margin-left: 135px">
+        <div class="setting_rows mt-25" style=" margin-left: 135px">
             <span>#{i18n.getText('KMK003_318')}</span>
             <input id="coreTimeStart" tabindex="37" data-bind="ntsTimeWithDayEditor: {
 				name: '#[KMK003_163]',
@@ -189,9 +189,19 @@
 				readonly: false,
 				immediate: false}"
             />
-
+            <!-- ver 14 add A7_39, A7_40-->
+                <div tabindex="39" class="ml-24"
+                     data-bind="ntsCheckBox: {
+                         checked: coreTimeSettingModel.goOutCalc.especialCalc,
+                         enable: coreTimeSettingModel.timesheet() == 1
+                     }">#{i18n.getText('KMK003_307')}</div>
+                <div tabindex="40" class="fr-150"
+                     data-bind="ntsCheckBox: {
+                         checked: coreTimeSettingModel.goOutCalc.removeFromWorkTime,
+                         enable: coreTimeSettingModel.timesheet() == 1
+                     }">#{i18n.getText('KMK003_308')}</div>
         </div>
-        <div class="setting_rows mt-25">
+        <div class="setting_rows mt-35">
             <div class="setting_header_tab1"
                  data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK003_184')}</div>
             <input tabindex="39" data-bind="ntsTimeEditor: {
