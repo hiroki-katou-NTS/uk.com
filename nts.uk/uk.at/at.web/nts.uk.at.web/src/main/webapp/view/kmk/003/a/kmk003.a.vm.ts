@@ -46,7 +46,6 @@ module nts.uk.at.view.kmk003.a {
 
             //use half day
             useHalfDayOptions: KnockoutObservableArray<any>;
-            useHalfDay: KnockoutObservable<boolean>;
             useHalfDayWorking: KnockoutObservable<boolean>;
             useHalfDayOvertime: KnockoutObservable<boolean>;
             useHalfDayBreak: KnockoutObservable<boolean>;
@@ -104,13 +103,12 @@ module nts.uk.at.view.kmk003.a {
                     { code: true, name: nts.uk.resource.getText("KMK003_321") },
                     { code: false, name: nts.uk.resource.getText("KMK003_322") }
                 ]);
-                self.useHalfDay = ko.observable(false); // initial value = false
                 self.useHalfDayWorking = ko.observable(false); // A19_1_2 initial value = false
                 self.useHalfDayOvertime = ko.observable(false); // A19_2_2 initial value = false
                 self.useHalfDayBreak = ko.observable(false); // A19_3_2 initial value = false
 
 
-                self.mainSettingModel = new MainSettingModel(self.tabMode, self.isNewOrCopyMode, self.useHalfDayOptions);
+                self.mainSettingModel = new MainSettingModel(self.tabMode, self.isNewOrCopyMode, self.useHalfDayOptions, self.useHalfDayWorking, self.useHalfDayOvertime, self.useHalfDayBreak);
                 self.selectedWorkTimeCode = ko.observable('');
                 self.workTimeSettingLoader = new WorkTimeSettingLoader(self.mainSettingModel.workTimeSetting.worktimeCode);
                 self.workTimeSettings = ko.observableArray([]);
@@ -218,11 +216,6 @@ module nts.uk.at.view.kmk003.a {
                     { code: TabMode.DETAIL, name: nts.uk.resource.getText("KMK003_191") }
                 ]);
 
-                self.useHalfDayOptions = ko.observableArray([
-                    { code: true, name: nts.uk.resource.getText("KMK003_49") },
-                    { code: false, name: nts.uk.resource.getText("KMK003_50") }
-                ]);
-
                 // tabs data source
                 self.tabs = ko.observableArray([
                     new TabItem(TabID.TAB1, nts.uk.resource.getText("KMK003_17"), '.tab-a1', true, true),
@@ -293,15 +286,39 @@ module nts.uk.at.view.kmk003.a {
                     }   
                 });
 
-                self.useHalfDay.subscribe(useHalfDay => {
+                self.useHalfDayWorking.subscribe(newVal => {
                     if (self.mainSettingModel.workTimeSetting.isFlex()) {
-                        self.mainSettingModel.flexWorkSetting.useHalfDayShift(useHalfDay);
+                        self.mainSettingModel.flexWorkSetting.halfDayWorkSet.workingTime(newVal);
                     }
                     if (self.mainSettingModel.workTimeSetting.isFixed()) {
-                        self.mainSettingModel.fixedWorkSetting.useHalfDayShift(useHalfDay);
+                        self.mainSettingModel.fixedWorkSetting.halfDayWorkSet.workingTime(newVal);
                     }
                     if (self.mainSettingModel.workTimeSetting.isDiffTime()) {
-                        self.mainSettingModel.diffWorkSetting.isUseHalfDayShift(useHalfDay);
+                        self.mainSettingModel.diffWorkSetting.halfDayWorkSet.workingTime(newVal);
+                    }
+                });
+
+                self.useHalfDayOvertime.subscribe(newVal => {
+                    if (self.mainSettingModel.workTimeSetting.isFlex()) {
+                        self.mainSettingModel.flexWorkSetting.halfDayWorkSet.overTime(newVal);
+                    }
+                    if (self.mainSettingModel.workTimeSetting.isFixed()) {
+                        self.mainSettingModel.fixedWorkSetting.halfDayWorkSet.overTime(newVal);
+                    }
+                    if (self.mainSettingModel.workTimeSetting.isDiffTime()) {
+                        self.mainSettingModel.diffWorkSetting.halfDayWorkSet.overTime(newVal);
+                    }
+                });
+
+                self.useHalfDayBreak.subscribe(newVal => {
+                    if (self.mainSettingModel.workTimeSetting.isFlex()) {
+                        self.mainSettingModel.flexWorkSetting.halfDayWorkSet.breakingTime(newVal);
+                    }
+                    if (self.mainSettingModel.workTimeSetting.isFixed()) {
+                        self.mainSettingModel.fixedWorkSetting.halfDayWorkSet.breakingTime(newVal);
+                    }
+                    if (self.mainSettingModel.workTimeSetting.isDiffTime()) {
+                        self.mainSettingModel.diffWorkSetting.halfDayWorkSet.breakingTime(newVal);
                     }
                 });
 
@@ -990,18 +1007,26 @@ module nts.uk.at.view.kmk003.a {
             
             isChangeItemTable: KnockoutObservable<boolean>;
             useHalfDayOptions: KnockoutObservable<any>
-            useHalfDay: KnockoutObservable<boolean>;
+            useHalfDayWorking: KnockoutObservable<boolean>;
+            useHalfDayOverTime: KnockoutObservable<boolean>;
+            useHalfDayBreak: KnockoutObservable<boolean>;
             tabMode: KnockoutObservable<number>;
             addMode: KnockoutComputed<boolean>;
             
             // Interlock dialog J
             isInterlockDialogJ: KnockoutObservable<boolean>;
             
-            constructor(tabMode: KnockoutObservable<number>, isNewOrCopyMode: KnockoutComputed<boolean>, useHalfDayOptions: KnockoutObservable<any>) {
+            constructor(tabMode: KnockoutObservable<number>, isNewOrCopyMode: KnockoutComputed<boolean>,
+                        useHalfDayOptions: KnockoutObservable<any>,
+                        halfDayWorking: KnockoutObservable<boolean>,
+                        halfDayOverTime: KnockoutObservable<boolean>,
+                        halfDayBreak: KnockoutObservable<boolean>) {
                 let self = this;
                 self.isChangeItemTable = ko.observable(false);
                 self.useHalfDayOptions = useHalfDayOptions;
-                self.useHalfDay = ko.observable(true); // bind to useHalfDay of main screen
+                self.useHalfDayWorking = halfDayWorking;
+                self.useHalfDayOverTime = halfDayOverTime;
+                self.useHalfDayBreak = halfDayBreak;
                 self.isInterlockDialogJ = ko.observable(true);
                 self.tabMode = tabMode;
                 
@@ -1096,7 +1121,7 @@ module nts.uk.at.view.kmk003.a {
                     screenMode: _self.tabMode()
                 };
                 //auto generate data for lstTimezone morning and afternoon in a2 if it was hidden
-                if (!_self.useHalfDay()){
+                if (!_self.useHalfDayWorking()){
                     let presSetting = _self.predetemineTimeSetting.prescribedTimezoneSetting;
                     let morningEnd = presSetting.morningEndTime();
                     let afterStart = presSetting.afternoonStartTime();
@@ -1159,7 +1184,7 @@ module nts.uk.at.view.kmk003.a {
                 };
 
                 //auto generate data for lstTimezone morning and afternoon in a2 if it was hidden
-                if (!self.useHalfDay() && self.addMode()){
+                if (!self.useHalfDayWorking() && self.addMode()){
                     let presSetting = self.predetemineTimeSetting.prescribedTimezoneSetting;
                     let morningEnd = presSetting.morningEndTime();
                     let afterStart = presSetting.afternoonStartTime();
@@ -1228,7 +1253,9 @@ module nts.uk.at.view.kmk003.a {
                     self.commonSetting.updateData(worktimeSettingInfo.flexWorkSetting.commonSetting);
 
                     // set useHalfDay to mainScreen model
-                    self.useHalfDay(worktimeSettingInfo.flexWorkSetting.useHalfDayShift);
+                    self.useHalfDayWorking(worktimeSettingInfo.flexWorkSetting.halfDayWorkSet.workingTimes);
+                    self.useHalfDayOverTime(worktimeSettingInfo.flexWorkSetting.halfDayWorkSet.overTime);
+                    self.useHalfDayBreak(worktimeSettingInfo.flexWorkSetting.halfDayWorkSet.breakingTime);
 
                     // reset data of other mode
                     self.flowWorkSetting.resetData();
@@ -1249,7 +1276,9 @@ module nts.uk.at.view.kmk003.a {
                     self.commonSetting.updateData(worktimeSettingInfo.fixedWorkSetting.commonSetting);
 
                     // set useHalfDay to mainScreen model
-                    self.useHalfDay(worktimeSettingInfo.fixedWorkSetting.useHalfDayShift);
+                    self.useHalfDayWorking(worktimeSettingInfo.fixedWorkSetting.halfDayWorkSet.workingTimes);
+                    self.useHalfDayOverTime(worktimeSettingInfo.fixedWorkSetting.halfDayWorkSet.overTime);
+                    self.useHalfDayBreak(worktimeSettingInfo.fixedWorkSetting.halfDayWorkSet.breakingTime);
 
                     // reset data of other mode
                     self.flowWorkSetting.resetData();
@@ -1262,7 +1291,9 @@ module nts.uk.at.view.kmk003.a {
                     self.commonSetting.updateData(worktimeSettingInfo.diffTimeWorkSetting.commonSet);
 
                     // set useHalfDay to mainScreen model
-                    self.useHalfDay(worktimeSettingInfo.diffTimeWorkSetting.useHalfDayShift);
+                    self.useHalfDayWorking(worktimeSettingInfo.diffTimeWorkSetting.halfDayWorkSet.workingTimes);
+                    self.useHalfDayOverTime(worktimeSettingInfo.diffTimeWorkSetting.halfDayWorkSet.overTime);
+                    self.useHalfDayBreak(worktimeSettingInfo.diffTimeWorkSetting.halfDayWorkSet.breakingTime);
 
                     // reset data of other mode
                     self.flowWorkSetting.resetData();
@@ -1277,7 +1308,9 @@ module nts.uk.at.view.kmk003.a {
             
             resetData(isNewMode?: boolean) {
                 let self = this;
-                self.useHalfDay(false);                
+                self.useHalfDayWorking(false);
+                self.useHalfDayOverTime(false);
+                self.useHalfDayBreak(false);
                 self.fixedWorkSetting.resetData(isNewMode);
                 self.flowWorkSetting.resetData();
                 self.flexWorkSetting.resetData();

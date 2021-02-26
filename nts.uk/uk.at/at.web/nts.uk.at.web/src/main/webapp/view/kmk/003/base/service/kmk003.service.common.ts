@@ -4,6 +4,12 @@ module nts.uk.at.view.kmk003.a {
         export module model {
             export module common {
 
+                export interface HalfDayWorkSetDto {
+                    workingTimes: boolean,
+                    overTime: boolean,
+                    breakingTime: boolean
+                }
+
                 export interface SettingFlexWorkDto {
                     flexWorkManaging: number;
                 }

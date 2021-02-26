@@ -43,7 +43,7 @@ module nts.uk.at.view.kmk003.a {
                     restSetting: common.FlowWorkRestSettingDto;
                     offdayWorkTime: FlexOffdayWorkTimeDto;
                     commonSetting: common.WorkTimezoneCommonSetDto;
-                    useHalfDayShift: boolean;
+                    halfDayWorkSet: common.HalfDayWorkSetDto;
                     lstHalfDayWorkTimezone: FlexHalfDayWorkTimeDto[];
                     lstStampReflectTimezone: common.StampReflectTimezoneDto[];
                     calculateSetting: FlexCalcSettingDto;
