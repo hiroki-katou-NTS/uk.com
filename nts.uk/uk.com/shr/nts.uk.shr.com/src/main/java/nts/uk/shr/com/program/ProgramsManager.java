@@ -513,6 +513,13 @@ public class ProgramsManager {
      */
     public static final Program KML001D = new Program(WebAppId.AT, ProgramIdConsts.KML001D, "KML001_56",
             "/view/kml/001/d/index.xhtml");
+
+    /**
+     * KMT011A
+     */
+    public static final Program KMT011A = new Program(WebAppId.AT, ProgramIdConsts.KMT011A, "KMT011_1",
+            "/view/kmt/011/a/index.xhtml");
+
     /**
      * KDL001A
      */
