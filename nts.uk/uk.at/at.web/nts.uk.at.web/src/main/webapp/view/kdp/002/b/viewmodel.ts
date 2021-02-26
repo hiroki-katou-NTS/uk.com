@@ -103,7 +103,7 @@ class KDP002BViewModel extends ko.ViewModel {
         let dfd = $.Deferred();
         let sid = vm.infoEmpFromScreenA.employeeId;
         
-        vm.$ajax(kDP002RequestUrl.getAllStampingResult +  sid).then( function( data ) {
+        vm.$ajax( "at", kDP002RequestUrl.getAllStampingResult + sid ).then( function( data ) {
             _.forEach( data, ( a ) => {
                 let items = _.orderBy( a.stampDataOfEmployeesDto.stampRecords, ['stampTimeWithSec'], ['desc'] );
                 _.forEach( items, ( sr ) => {
@@ -168,7 +168,7 @@ class KDP002BViewModel extends ko.ViewModel {
         const vm = this;
         let dfd = $.Deferred();
         let employeeId = vm.infoEmpFromScreenA.employeeId;
-        vm.$ajax(kDP002RequestUrl.getInfo +  employeeId).done( function( data ) {
+        vm.$ajax('com',kDP002RequestUrl.getInfo +  employeeId).done( function( data ) {
             vm.employeeCodeName( data.employeeCode + " " + data.personalName );
             dfd.resolve();
         } );
