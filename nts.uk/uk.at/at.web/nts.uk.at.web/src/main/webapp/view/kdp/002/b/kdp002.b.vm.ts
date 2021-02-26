@@ -29,17 +29,18 @@ module nts.uk.at.view.kdp002.b {
             infoEmpFromScreenA: any;
             constructor() {
                 super();
-                const self = this;
+                
+                const vm = this;
 
-                self.$window.shared( "resultDisplayTime" ).done( displayTime => {
-                    self.resultDisplayTime( displayTime );
+                vm.$window.shared( "resultDisplayTime" ).done( displayTime => {
+                    vm.resultDisplayTime( displayTime );
 
-                    self.$window.shared( "infoEmpToScreenB" ).done( infoEmp => {
+                    vm.$window.shared( "infoEmpToScreenB" ).done( infoEmp => {
 
-                        self.infoEmpFromScreenA( infoEmp );
-                        self.disableResultDisplayTime( self.resultDisplayTime() > 0 ? true : false );
+                        vm.infoEmpFromScreenA( infoEmp );
+                        vm.disableResultDisplayTime( vm.resultDisplayTime() > 0 ? true : false );
 
-                        self.columns2 = ko.observableArray( [
+                        vm.columns2 = ko.observableArray( [
                             { headerText: "id", key: 'id', width: 100, hidden: true },
                             { headerText: "<div style='text-align: center;'>" + nts.uk.resource.getText( "KDP002_45" ) + "</div>", key: 'stampDate', width: 130 },
                             { headerText: "<div style='text-align: center;'>" + nts.uk.resource.getText( "KDP002_46" ) + "</div>", key: 'stampHowAndTime', width: 90 },

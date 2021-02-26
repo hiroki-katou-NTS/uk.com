@@ -297,7 +297,7 @@ class KDP001AViewModel extends ko.ViewModel {
 
 	public openDialogB(dateParam, buttonDisNo) {
 
-		let vm = this;
+		const vm = this;
 		
         vm.$window.shared( "resultDisplayTime", vm.resultDisplayTime() )
         vm.$window.shared( "infoEmpToScreenB", {
