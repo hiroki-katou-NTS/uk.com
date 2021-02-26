@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.at.schedule.dom.displaysetting.functioncontrol.ScheFunctionControl;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeForm;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -97,6 +98,10 @@ public class KscmtFuncCtr extends ContractUkJpaEntity implements Serializable {
 		if (this.changeableFluid == 1)
 			lstWork.add(WorkTimeForm.FLOW);
 		
-		return new ScheFunctionControl (lstWork, (this.displayActual == 1));
+		return new ScheFunctionControl (
+				lstWork, 
+				(this.displayActual == 1),
+				NotUseAtr.NOT_USE, // TODO: team VN implement!
+				new ArrayList<>() ); // TODO: team VN implement!
 	}
 }
