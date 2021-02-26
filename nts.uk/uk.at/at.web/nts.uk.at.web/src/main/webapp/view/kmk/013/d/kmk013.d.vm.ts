@@ -109,7 +109,7 @@ module nts.uk.at.view.kmk013.d {
                     }
 
                     if (setting) {
-                        self.otsukaMode(setting.optionLicenseCustomize);
+                        self.otsukaMode(!setting.optionLicenseCustomize);
                     }
 
                 }).always(() => {
