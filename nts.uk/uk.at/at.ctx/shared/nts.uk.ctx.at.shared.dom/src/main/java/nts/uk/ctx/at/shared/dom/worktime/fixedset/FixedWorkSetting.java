@@ -511,15 +511,15 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 	 * inv-1
 	 */
 	private boolean validateHalfDayWorkTime(List<FixHalfDayWorkTimezone> lstHalfDayWorkTimezone){
-		val onlyOneAllDay = this.lstHalfDayWorkTimezone
+		val onlyOneAllDay = lstHalfDayWorkTimezone
 				.stream()
 				.filter(tz -> tz.getDayAtr() == AmPmAtr.ONE_DAY)
 				.count() == 1;
-		val onlyOneAM = this.lstHalfDayWorkTimezone
+		val onlyOneAM = lstHalfDayWorkTimezone
 				.stream()
 				.filter(tz -> tz.getDayAtr() == AmPmAtr.AM)
 				.count() == 1;
-		val onlyOnePM = this.lstHalfDayWorkTimezone
+		val onlyOnePM = lstHalfDayWorkTimezone
 				.stream()
 				.filter(tz -> tz.getDayAtr() == AmPmAtr.PM)
 				.count() == 1;
