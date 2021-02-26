@@ -20,11 +20,11 @@ module nts.uk.at.view.kmk003.a {
     import TimezoneModel = nts.uk.at.view.kmk003.a.viewmodel.predset.TimezoneModel;
 
     import FlexWorkSettingDto = service.model.flexset.FlexWorkSettingDto;
-    
+    import OutingCalcDto = nts.uk.at.view.kmk003.a.service.model.flexset.OutingCalcDto;
+    import HalfDayWorkSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.HalfDayWorkSetModel;
+
     export module viewmodel {
         export module flexset {
-
-            import OutingCalcDto = nts.uk.at.view.kmk003.a.service.model.flexset.OutingCalcDto;
 
             export class OutingCalcModel {
                 removeFromWorkTime : KnockoutObservable<boolean>;
@@ -249,7 +249,7 @@ module nts.uk.at.view.kmk003.a {
 
             export class FlexWorkSettingModel {
                 workTimeCode: KnockoutObservable<string>;
-                useHalfDayShift: KnockoutObservable<boolean>;
+                halfDayWorkSet: HalfDayWorkSetModel;
                 coreTimeSetting: CoreTimeSettingModel;
                 restSetting: FlowWorkRestSettingModel;
                 offdayWorkTime: FlexOffdayWorkTimeModel;
@@ -264,7 +264,7 @@ module nts.uk.at.view.kmk003.a {
                     var self = this;
                     self.displayMode = displayMode;
                     self.workTimeCode = ko.observable('');
-                    self.useHalfDayShift = ko.observable(false);
+                    self.halfDayWorkSet = new HalfDayWorkSetModel();
                     self.coreTimeSetting = new CoreTimeSettingModel();
                     self.restSetting = new FlowWorkRestSettingModel();
                     self.offdayWorkTime = new FlexOffdayWorkTimeModel();
@@ -312,7 +312,7 @@ module nts.uk.at.view.kmk003.a {
 
                 public resetData(): void {
                     let self = this;
-                    self.useHalfDayShift(false);
+                    self.halfDayWorkSet.reset();
                     self.coreTimeSetting.resetData();
                     self.restSetting.resetData();
                     self.offdayWorkTime.resetData();
@@ -367,7 +367,7 @@ module nts.uk.at.view.kmk003.a {
 
                 updateData(data: FlexWorkSettingDto) {
                     this.workTimeCode(data.workTimeCode);
-                    this.useHalfDayShift(data.useHalfDayShift);
+                    this.halfDayWorkSet.update(data.halfDayWorkSet)
                     this.coreTimeSetting.updateData(data.coreTimeSetting);
                     this.restSetting.updateData(data.restSetting);
                     this.offdayWorkTime.updateData(data.offdayWorkTime);
@@ -403,7 +403,7 @@ module nts.uk.at.view.kmk003.a {
                    
                     let dataDTO: FlexWorkSettingDto = {
                         workTimeCode: this.workTimeCode(),
-                        useHalfDayShift: this.useHalfDayShift(),
+                        halfDayWorkSet: this.halfDayWorkSet.toDto(),
                         coreTimeSetting: this.coreTimeSetting.toDto(),
                         restSetting: this.restSetting.toDto(),
                         offdayWorkTime: this.offdayWorkTime.toDto(),

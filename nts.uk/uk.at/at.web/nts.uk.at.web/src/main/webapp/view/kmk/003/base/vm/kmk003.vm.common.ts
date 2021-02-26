@@ -57,9 +57,42 @@ module nts.uk.at.view.kmk003.a {
     import Superiority = service.model.common.Superiority;
     import TimezoneModel = nts.uk.at.view.kmk003.a.viewmodel.predset.TimezoneModel;
     import RoundingTimeDto = nts.uk.at.view.kmk003.a.service.model.common.RoundingTimeDto;
+    import HalfDayWorkSetDto = nts.uk.at.view.kmk003.a.service.model.common.HalfDayWorkSetDto;
 
     export module viewmodel {
         export module common {
+
+            export class HalfDayWorkSetModel {
+                workingTime: KnockoutObservable<boolean>;
+                overTime: KnockoutObservable<boolean>;
+                breakingTime: KnockoutObservable<boolean>
+
+                constructor() {
+                    this.workingTime = ko.observable(false);
+                    this.overTime = ko.observable(false);
+                    this.breakingTime = ko.observable(false);
+                }
+
+                update(data : HalfDayWorkSetDto): void {
+                    this.workingTime = ko.observable(data.workingTimes);
+                    this.overTime = ko.observable(data.overTime);
+                    this.breakingTime = ko.observable(data.breakingTime);
+                }
+
+                reset(): void{
+                    this.workingTime = ko.observable(false);
+                    this.overTime = ko.observable(false);
+                    this.breakingTime = ko.observable(false);
+                }
+
+                toDto(): HalfDayWorkSetDto {
+                    return {
+                        workingTimes: this.workingTime(),
+                        overTime: this.overTime(),
+                        breakingTime: this.breakingTime()
+                    }
+                }
+            }
 
             export class DesignatedTimeModel {
                 oneDayTime: KnockoutObservable<number>;

@@ -36,6 +36,8 @@ module nts.uk.at.view.kmk003.a {
     export module viewmodel {
         export module difftimeset {
 
+            import HalfDayWorkSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.HalfDayWorkSetModel;
+
             export class DayOffTimezoneSettingModel extends HDWorkTimeSheetSettingModel {
                 isUpdateStartTime: KnockoutObservable<boolean>;
 
@@ -601,7 +603,7 @@ module nts.uk.at.view.kmk003.a {
                 restSet: FixedWorkRestSetModel;
                 dayoffWorkTimezone: DiffTimeDayOffWorkTimezoneModel;
                 commonSet: WorkTimezoneCommonSetModel;
-                isUseHalfDayShift: KnockoutObservable<boolean>;
+                halfDayWorkSet: HalfDayWorkSetModel;
                 changeExtent: EmTimezoneChangeExtentModel;
                 halfDayWorkTimezones: DiffTimeHalfDayWorkTimezoneModel[];
                 stampReflectTimezone: DiffTimeWorkStampReflectTimezoneModel;
@@ -615,7 +617,7 @@ module nts.uk.at.view.kmk003.a {
                     this.restSet = new FixedWorkRestSetModel();
                     this.dayoffWorkTimezone = new DiffTimeDayOffWorkTimezoneModel();
                     this.commonSet = new WorkTimezoneCommonSetModel();
-                    this.isUseHalfDayShift = ko.observable(false);
+                    this.halfDayWorkSet = new HalfDayWorkSetModel();
                     this.changeExtent = new EmTimezoneChangeExtentModel();
                     this.halfDayWorkTimezones = DiffTimeHalfDayWorkTimezoneModel.getDefaultData(this.displayMode);
                     this.stampReflectTimezone = new DiffTimeWorkStampReflectTimezoneModel();
@@ -649,7 +651,7 @@ module nts.uk.at.view.kmk003.a {
                     self.restSet.resetData();
                     self.dayoffWorkTimezone.resetData();
                     self.commonSet.resetData();
-                    self.isUseHalfDayShift(false);
+                    self.halfDayWorkSet.reset();
                     self.changeExtent.resetData();
                     self.halfDayWorkTimezones.forEach(function(item: DiffTimeHalfDayWorkTimezoneModel, index: number) {
                         item.resetData();
@@ -667,7 +669,7 @@ module nts.uk.at.view.kmk003.a {
                     this.restSet.updateData(data.restSet);
                     this.dayoffWorkTimezone.updateData(data.dayoffWorkTimezone);
                     this.commonSet.updateData(data.commonSet);
-                    this.isUseHalfDayShift(data.useHalfDayShift);
+                    this.halfDayWorkSet.update(data.halfDayWorkSet)
                     this.changeExtent.updateData(data.changeExtent);
                     this.updateListHalfDay(data.halfDayWorkTimezones);
                     this.stampReflectTimezone.updateData(data.stampReflectTimezone);
@@ -685,7 +687,7 @@ module nts.uk.at.view.kmk003.a {
 
                 toDto(commonSetting: WorkTimezoneCommonSetModel): DiffTimeWorkSettingDto {
                     var halfDayWorkTimezones: DiffTimeHalfDayWorkTimezoneDto[] = [];
-                    if (this.displayMode() == TabMode.DETAIL && this.isUseHalfDayShift()) {
+                    if (this.displayMode() == TabMode.DETAIL && this.halfDayWorkSet.workingTime()) {
                         halfDayWorkTimezones = _.map(this.halfDayWorkTimezones, item => item.toDto());
                     } else {
                         halfDayWorkTimezones = this.getHDWtzOneday().toListDto();
@@ -696,7 +698,7 @@ module nts.uk.at.view.kmk003.a {
                         restSet: this.restSet.toDto(),
                         dayoffWorkTimezone: this.dayoffWorkTimezone.toDto(),
                         commonSet: commonSetting.toDto(),
-                        useHalfDayShift: this.isUseHalfDayShift(),
+                        halfDayWorkSet: this.halfDayWorkSet.toDto(),
                         changeExtent: this.changeExtent.toDto(),
                         halfDayWorkTimezones: halfDayWorkTimezones,
                         stampReflectTimezone: this.stampReflectTimezone.toDto(),
