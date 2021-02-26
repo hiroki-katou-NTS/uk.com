@@ -350,6 +350,11 @@ public class SubmitWorkRequest extends CommandHandler<SubmitWorkRequestCmd> {
 			return shiftMasterRepo.checkExistsByCd(companyId, shiftMasterCode.v());
 		}
 
+		@Override
+		public boolean existWorkAvailabilityOfOneDay(String sid, GeneralDate date) {
+			return workAvailabilityOfOneDayRepo.exists(sid, date);
+		}
+
 	}
 
 }
