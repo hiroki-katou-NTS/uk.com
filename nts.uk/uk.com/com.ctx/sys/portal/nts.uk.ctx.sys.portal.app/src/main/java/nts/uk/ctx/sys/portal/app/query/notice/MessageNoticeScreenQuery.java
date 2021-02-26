@@ -27,6 +27,7 @@ import nts.uk.ctx.sys.portal.dom.notice.adapter.RoleImport;
 import nts.uk.ctx.sys.portal.dom.notice.adapter.WorkplaceInfoImport;
 import nts.uk.ctx.sys.portal.dom.notice.service.MessageNoticeService;
 import nts.uk.ctx.sys.portal.dom.notice.service.MessageNoticeService.MessageNoticeRequire;
+import nts.uk.ctx.sys.shared.dom.user.builtin.BuiltInUser;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -107,6 +108,11 @@ public class MessageNoticeScreenQuery {
 	 * @return
 	 */
 	public EmployeeNotificationDto getEmployeeNotification(DatePeriod period) {
+		
+		if (BuiltInUser.EMPLOYEE_ID.equals(AppContexts.user().employeeId())) {
+			return EmployeeNotificationDto.forBuiltInUser();
+		}
+		
 		String roleId = AppContexts.user().roles().forAttendance();
 		// 1. ログイン者就業のロールID
 		Optional<RoleImport> role = messageNoticeAdapter.findByRoleId(roleId);
@@ -201,8 +207,15 @@ public class MessageNoticeScreenQuery {
 	 * @return true, if is new msg
 	 */
 	public boolean isNewMsg() {
-		MessageNoticeRequireImpl require = new MessageNoticeRequireImpl(messageNoticeAdapter, messageNoticeRepository);
+		
 		String sid = AppContexts.user().employeeId();
+		
+		if (BuiltInUser.EMPLOYEE_ID.equals(sid)) {
+			return false;
+		}
+		
+		MessageNoticeRequireImpl require = new MessageNoticeRequireImpl(messageNoticeAdapter, messageNoticeRepository);
+		
 		// 新メッセージがあるか
 		boolean isNewMsg = MessageNoticeService.isNewMsg(require, sid);
 		// 新記念日があるか
