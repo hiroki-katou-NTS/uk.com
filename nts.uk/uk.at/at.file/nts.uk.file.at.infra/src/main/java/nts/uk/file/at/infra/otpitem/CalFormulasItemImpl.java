@@ -356,7 +356,7 @@ public class CalFormulasItemImpl extends JpaRepository implements CalFormulasIte
 	      exportSQL.append("            cis.MINUS_SEGMENT as FORMULAR");
 	      exportSQL.append("         FROM");
 	      exportSQL.append("          KRCMT_ANYV oi");
-	      exportSQL.append("          LEFT JOIN KRCMT_CALC_RESULT_RANGE crr ON oi.CID = crr.CID AND oi.OPTIONAL_ITEM_NO = crr.OPTIONAL_ITEM_NO");
+	      exportSQL.append("          LEFT JOIN KRCMT_ANYF_RESULT_RANGE crr ON oi.CID = crr.CID AND oi.OPTIONAL_ITEM_NO = crr.OPTIONAL_ITEM_NO");
 	      exportSQL.append("          LEFT JOIN KRCMT_ANYF_ROUND fr_day ON oi.CID = fr_day.CID AND oi.OPTIONAL_ITEM_NO = fr_day.OPTIONAL_ITEM_NO AND fr_day.ROUNDING_ATR = 1");
 	      exportSQL.append("          LEFT JOIN KRCMT_ANYF_ROUND fr_month ON oi.CID = fr_month.CID AND oi.OPTIONAL_ITEM_NO = fr_month.OPTIONAL_ITEM_NO AND fr_month.ROUNDING_ATR = 2 AND fr_day.FORMULA_ID = fr_month.FORMULA_ID");
 	      exportSQL.append("          LEFT JOIN KRCMT_ANYF oif ON oi.CID = oif.CID AND oi.OPTIONAL_ITEM_NO = oif.OPTIONAL_ITEM_NO AND fr_day.FORMULA_ID = oif.FORMULA_ID");
