@@ -781,6 +781,24 @@ public class WorkTimeReportService_New {
             cells.get("CP" + (startIndex + lstWorkTimezone.get(i).getWorkTimeNo()))
             .setValue(getRoundingEnum(lstWorkTimezone.get(i).getTimezone().getRounding().getRounding()));
         }
+        
+        // 7        タブグ:                休出休憩
+        
+        List<DeductionTimeDto> timeZones = data.getFixedWorkSetting().getOffdayWorkTimezone().getRestTimezone().getTimezones();
+        
+        for (int i = 0; i < timeZones.size(); i++) {
+            /*
+             * R4_160
+             * 休出休憩.開始時間
+             */
+            cells.get("CQ" + ((startIndex + 1) + i)).setValue(getInDayTimeWithFormat(timeZones.get(i).getStart()));
+            
+            /*
+             * R4_161
+             * 休出休憩.終了時間
+             */
+            cells.get("CR" + ((startIndex + 1) + i)).setValue(getInDayTimeWithFormat(timeZones.get(i).getEnd()));
+        }
     }
     
     /**
