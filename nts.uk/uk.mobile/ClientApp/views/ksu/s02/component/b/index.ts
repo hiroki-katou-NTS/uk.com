@@ -184,7 +184,7 @@ export class CalendarBComponent extends Vue {
                 classDisplayToDay = 'class=\"uk-bg-schedule-focus\"';
                 console.log(moment().format('YYYY/MM/DD'));
             }
-            let dateDisplayD = (date.getDate() == 1 && date.getMonth() > startDateClone.getMonth()) ?
+            let dateDisplayD = (date.getDate() == 1 && ((date.getMonth() > startDateClone.getMonth()) || (date.getMonth() == 0 && startDateClone.getMonth() == 11))) ?
                 (date.getMonth() + 1).toString() + '/' +
                 date.getDate().toString() : date.getDate().toString();
 
@@ -234,7 +234,7 @@ export class CalendarBComponent extends Vue {
                     classDisplayToDay = 'class=\"uk-bg-schedule-focus\"';
                     console.log(moment().format('YYYY/MM/DD'));
                 }
-                let dateDisplayD = (date.getDate() == 1 && date.getMonth() > startDateClone.getMonth()) ?
+                let dateDisplayD = (date.getDate() == 1 && ((date.getMonth() > startDateClone.getMonth()) || (date.getMonth() == 0 && startDateClone.getMonth() == 11))) ?
                     (date.getMonth() + 1).toString() + '/' +
                     date.getDate().toString() : date.getDate().toString();
                 let isHoliday = _.find(self.dataStartPage.listDateIsHoliday, function (o) { return o == moment(date).format('YYYY/MM/DD'); });

@@ -203,7 +203,7 @@
 
 .tbody-border
 {
-  border-bottom: 1px solid #dee2e6;
+  border-bottom: 2px solid #dee2e6;
 }
 
 .large-button{
@@ -499,4 +499,15 @@ font-size:5px;
   height: 0;
   vertical-align: middle;
   font-size: 1em;
+}
+
+.table-bordered th, .table-bordered td{
+  border: 2px solid #dee2e6;
+}
+
+.fa-calendar-alt{
+  font-weight: bold;
+}
+#yearmonth-cmm input{
+  font-weight: bold;
 }
