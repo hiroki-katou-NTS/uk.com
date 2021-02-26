@@ -4,8 +4,8 @@
 
 const kDP002RequestUrl = {
 
-        getAllStampingResult: "at/record/workrecord/stamp/management/getAllStampingResult/",
-        getInfo: 'ctx/sys/auth/grant/rolesetperson/getempinfo/'
+    getAllStampingResult: "at/record/workrecord/stamp/management/getAllStampingResult/",
+    getInfo: 'ctx/sys/auth/grant/rolesetperson/getempinfo/'
 }
 
 @bean()
@@ -26,7 +26,12 @@ class KDP002BViewModel extends ko.ViewModel {
     laceName: KnockoutObservable<string> = ko.observable( "基本給" );
 
     items: KnockoutObservableArray<ItemModels> = ko.observableArray( [] );
-    columns2: KnockoutObservableArray<any>;
+    columns2: KnockoutObservableArray<any> = ko.observableArray( [
+        { headerText: "id", key: 'id', width: 100, hidden: true },
+        { headerText: "<div style='text-align: center;'>" + nts.uk.resource.getText( "KDP002_45" ) + "</div>", key: 'stampDate', width: 130 },
+        { headerText: "<div style='text-align: center;'>" + nts.uk.resource.getText( "KDP002_46" ) + "</div>", key: 'stampHowAndTime', width: 90 },
+        { headerText: "<div style='text-align: center;'>" + nts.uk.resource.getText( "KDP002_47" ) + "</div>", key: 'timeStampType', width: 180 }
+    ] );
     currentCode: KnockoutObservable<any> = ko.observable();
     currentCodeList: KnockoutObservableArray<any>;
 
@@ -36,13 +41,13 @@ class KDP002BViewModel extends ko.ViewModel {
     resultDisplayTime: KnockoutObservable<number> = ko.observable( 0 );
     disableResultDisplayTime: KnockoutObservable<boolean> = ko.observable( true );
     interval: KnockoutObservable<number> = ko.observable( 0 );
-    infoEmpFromScreenA: any ;
+    infoEmpFromScreenA: any;
 
     constructor() {
         super();
     }
 
-    created(params: any) {
+    created( params: any ) {
 
         const vm = this;
         vm.$window.shared( "resultDisplayTime" ).done( displayTime => {
@@ -50,22 +55,16 @@ class KDP002BViewModel extends ko.ViewModel {
 
             vm.$window.shared( "infoEmpToScreenB" ).done( infoEmp => {
 
-                vm.infoEmpFromScreenA = infoEmp ;
+                vm.infoEmpFromScreenA = infoEmp;
                 vm.disableResultDisplayTime( vm.resultDisplayTime() > 0 ? true : false );
 
-                vm.columns2 = ko.observableArray( [
-                    { headerText: "id", key: 'id', width: 100, hidden: true },
-                    { headerText: "<div style='text-align: center;'>" + nts.uk.resource.getText( "KDP002_45" ) + "</div>", key: 'stampDate', width: 130 },
-                    { headerText: "<div style='text-align: center;'>" + nts.uk.resource.getText( "KDP002_46" ) + "</div>", key: 'stampHowAndTime', width: 90 },
-                    { headerText: "<div style='text-align: center;'>" + nts.uk.resource.getText( "KDP002_47" ) + "</div>", key: 'timeStampType', width: 180 }
-                ] );
                 vm.startPage();
             } );
         } );
-        
-        
+
+
     }
-    
+
     startPage(): JQueryPromise<any> {
         let self = this,
             dfd = $.Deferred();
@@ -82,7 +81,7 @@ class KDP002BViewModel extends ko.ViewModel {
         } );
         return dfd.promise();
     }
-    
+
     getDataById( id: any ) {
         let self = this;
         for ( let j = 0; j < _.size( self.items() ); j++ ) {
@@ -97,12 +96,12 @@ class KDP002BViewModel extends ko.ViewModel {
             }
         }
     }
-    
+
     getAllStampingResult(): JQueryPromise<any> {
         const vm = this;
         let dfd = $.Deferred();
         let sid = vm.infoEmpFromScreenA.employeeId;
-        
+
         vm.$ajax( "at", kDP002RequestUrl.getAllStampingResult + sid ).then( function( data ) {
             _.forEach( data, ( a ) => {
                 let items = _.orderBy( a.stampDataOfEmployeesDto.stampRecords, ['stampTimeWithSec'], ['desc'] );
@@ -144,13 +143,13 @@ class KDP002BViewModel extends ko.ViewModel {
         } );
         return dfd.promise();
     }
-    
+
     getTextAlign( sr: any ): string {
 
         let value = sr.buttonValueType;
         if ( ButtonType.GOING_TO_WORK == value || ButtonType.RESERVATION_SYSTEM == value ) {
 
-            return `<div class='full-width' style='text-align: left' >`  + sr.stampArtName + '</div>';
+            return `<div class='full-width' style='text-align: left' >` + sr.stampArtName + '</div>';
 
         }
 
@@ -163,18 +162,18 @@ class KDP002BViewModel extends ko.ViewModel {
         return sr.stampArtName ? `<div class='full-width' style='text-align: center'>` + sr.stampArtName + '</div>' : '';
 
     }
-    
+
     getEmpInfo(): JQueryPromise<any> {
         const vm = this;
         let dfd = $.Deferred();
         let employeeId = vm.infoEmpFromScreenA.employeeId;
-        vm.$ajax('com',kDP002RequestUrl.getInfo +  employeeId).done( function( data ) {
+        vm.$ajax( 'com', kDP002RequestUrl.getInfo + employeeId ).done( function( data ) {
             vm.employeeCodeName( data.employeeCode + " " + data.personalName );
             dfd.resolve();
         } );
         return dfd.promise();
     }
-    
+
     public closeDialog(): void {
         nts.uk.ui.windows.close();
     }
