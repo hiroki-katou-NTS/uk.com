@@ -4,13 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.worktime;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
 import nts.uk.ctx.at.shared.app.find.breaktime.dto.BreakTimeDayDto;
 import nts.uk.ctx.at.shared.app.find.entranceexit.ManageEntryExitDto;
 import nts.uk.ctx.at.shared.app.find.worktime.difftimeset.dto.DiffTimeWorkSettingDto;
@@ -44,6 +37,12 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * The Class WorkTimeSettingInfoFinder.
@@ -165,7 +164,6 @@ public class WorkTimeSettingInfoFinder {
 				flexWorkSetting.saveToMemento(flexWorkSettingDto);
 			}
 		}
-
 		return new WorkTimeSettingInfoDto(predetemineTimeSettingDto, workTimeSettingDto, displayModeDto,
 				flexWorkSettingDto, fixedWorkSettingDto, flowWorkSettingDto, diffTimeWorkSettingDto,
 				manageEntryExitDto, modeOtsuka);

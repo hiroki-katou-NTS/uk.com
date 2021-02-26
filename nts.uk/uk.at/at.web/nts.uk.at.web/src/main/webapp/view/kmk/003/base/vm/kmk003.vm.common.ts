@@ -1384,6 +1384,7 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 updateData(data: InstantRoundingDto) {
+                    console.log("init")
                     this.fontRearSection(data.fontRearSection);
                     this.roundingTimeUnit(data.roundingTimeUnit);
                 }
@@ -1479,7 +1480,10 @@ module nts.uk.at.view.kmk003.a {
                 updateData(data: WorkTimezoneStampSetDto) {
                     let self = this;
                     data.roundingTime.roundingSets.forEach((dataRoundingDTO, index) => {
-                        let currentItem: RoundingSetModel = _.find(self.roundingTime.roundingSets, p => p.section() == dataRoundingDTO.section);
+                        let currentItem: RoundingSetModel = _.find(self.roundingTime.roundingSets, p => {
+                            console.log(typeof dataRoundingDTO.section);
+                            return p.section() == dataRoundingDTO.section;
+                        });
                         if (!nts.uk.util.isNullOrUndefined(currentItem)) {
                             currentItem.updateData(dataRoundingDTO);
                         }
