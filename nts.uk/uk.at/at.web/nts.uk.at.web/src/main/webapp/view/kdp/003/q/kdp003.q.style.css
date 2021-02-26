@@ -1,0 +1,43 @@
+.top-panel {
+	padding: 10px 0 20px 10px;
+}
+
+.top-panel>div:first-child {
+	float: left;
+	padding-left: 20px;
+}
+
+#lbl-range {	
+	padding-right: 30px;
+	padding-top: 5px;
+}
+
+#txt-area-notice {
+    padding: 15px;
+}
+
+#update-date {
+	padding-top: 5px;
+}
+
+#lbl-update-date {
+	margin-left: 30px;
+}
+
+.footer-content {
+	padding-top: 40px;
+	text-align: center;
+}
+
+#master-wrapper div#contents-area{
+	padding: 0 !important;
+}
+
+#lbl-wkp{
+	padding-left: 20px;
+}
+
+.btn-footer{
+	margin: 0 20px;
+	padding: 0 20px;
+}
