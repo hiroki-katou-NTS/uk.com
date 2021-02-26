@@ -34,8 +34,8 @@ public class ReflectTimeVacationOffsetDeductTimeTest {
 	 */
 	@Test
 	public void testCase1() {
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
-				1, true);
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
+				1);
 		List<TimeLeaveApplicationDetailShare> appTimeLeavDetail = createAppTimeLeav(AppTimeType.ATWORK, 1);
 		TimeLeaveAppReflectCondition condition = createCondi();
 		List<Integer> lstResult = ReflectTimeVacationOffsetDeductTime.process(appTimeLeavDetail, dailyApp, condition,
@@ -56,7 +56,7 @@ public class ReflectTimeVacationOffsetDeductTimeTest {
 				.getSixtyHourExcessHolidayUseTime().v()).isEqualTo(60);
 
 		assertThat(dailyApp.getAttendanceLeave().get().getTimeLeavingWorks().get(0).getAttendanceStamp().get()
-				.getStamp().get().getTimeDay().getTimeWithDay().get().v()).isEqualTo(495);//勤怠打刻
+				.getStamp().get().getTimeDay().getTimeWithDay().get().v()).isEqualTo(1080);//勤怠打刻
 		assertThat(dailyApp.getAttendanceLeave().get().getTimeLeavingWorks().get(0).getAttendanceStamp().get()
 				.getStamp().get().getTimeDay().getReasonTimeChange().getTimeChangeMeans()).isEqualTo(TimeChangeMeans.APPLICATION);//時刻変更手段
 
@@ -77,8 +77,8 @@ public class ReflectTimeVacationOffsetDeductTimeTest {
 	 * 
 	 */@Test
 	public void testCase２() {
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
-				1, true);
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
+				1);
 		List<TimeLeaveApplicationDetailShare> appTimeLeavDetail = createAppTimeLeav(AppTimeType.ATWORK, 1);
 		TimeLeaveAppReflectCondition condition = createCondi();
 		List<Integer> lstResult = ReflectTimeVacationOffsetDeductTime.process(appTimeLeavDetail, dailyApp, condition,

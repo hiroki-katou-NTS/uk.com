@@ -15,6 +15,10 @@ import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionClassification;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
@@ -140,5 +144,18 @@ public class OutingTimeSheet extends DomainObject {
 		}
 		
 		return Optional.empty();
+	}
+	
+	// NOとデフォルトを作成する
+	public static OutingTimeSheet createDefaultWithNo(int no, GoingOutReason reason) {
+		return new OutingTimeSheet(new OutingFrameNo(no), Optional.of(new TimeActualStamp(null,
+				new WorkStamp(new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.APPLICATION, null), null),
+						Optional.empty()),
+				0)), new AttendanceTime(0), new AttendanceTime(0), reason,
+				Optional.of(new TimeActualStamp(null,
+						new WorkStamp(
+								new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.APPLICATION, null), null),
+								Optional.empty()),
+						0)));
 	}
 }

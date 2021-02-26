@@ -141,8 +141,7 @@ public class ReflectApplicationHelper {
 		return new DailyRecordOfApplication(new ArrayList<>(), classification, domainDaily);
 	}
 
-	public static DailyRecordOfApplication createRCWithTimeLeav(ScheduleRecordClassifi classification, int no,
-			boolean hasAttGoutExt) {
+	public static DailyRecordOfApplication createRCWithTimeLeavFull(ScheduleRecordClassifi classification, int no) {
 
 		// 日別勤怠の出退勤
 		TimeLeavingWork work = new TimeLeavingWork(new WorkNo(no), null, null);

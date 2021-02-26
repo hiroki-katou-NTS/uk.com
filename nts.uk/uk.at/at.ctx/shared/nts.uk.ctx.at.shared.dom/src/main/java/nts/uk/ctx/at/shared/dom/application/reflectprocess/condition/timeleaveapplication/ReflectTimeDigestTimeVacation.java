@@ -29,11 +29,15 @@ public class ReflectTimeDigestTimeVacation {
 		List<Integer> lstItemId = new ArrayList<>();
 		if (appTimeType == AppTimeType.ATWORK || appTimeType == AppTimeType.ATWORK2) {
 			dailyApp.getAttendanceTimeOfDailyPerformance().ifPresent(x -> {
-				if (x.getLateTimeOfDaily().isEmpty()) {
-					x.getLateTimeOfDaily().add(LateTimeOfDaily.createDefaultWithNo(1));
-				}
 				// [input. 時間消化申請(work)]を 日別勤怠(work）の遅刻時間へセット
-				for (LateTimeOfDaily data : x.getLateTimeOfDaily()) {
+				for (int i = 1; i <= 2; i++) {
+					int z = i;
+					LateTimeOfDaily data = x.getLateTimeOfDaily().stream().filter(y -> y.getWorkNo().v() == z)
+							.findFirst().orElse(null);
+					if (data == null) {
+						data = LateTimeOfDaily.createDefaultWithNo(i);
+						x.getLateTimeOfDaily().add(data);
+					}
 					if (data.getWorkNo().v() == 1 && appTimeType == AppTimeType.ATWORK) {
 						updateVacationTime(data.getTimePaidUseTime(), timeDigest);
 						lstItemId.addAll(Arrays.asList(595, 596, 597, 1123, 1124, 1125, 1126));
@@ -41,17 +45,21 @@ public class ReflectTimeDigestTimeVacation {
 
 					if (data.getWorkNo().v() == 2 && appTimeType == AppTimeType.ATWORK2) {
 						updateVacationTime(data.getTimePaidUseTime(), timeDigest);
-						lstItemId.addAll(Arrays.asList(601, 602, 603, 1127, 1128, 1129,1130));
+						lstItemId.addAll(Arrays.asList(601, 602, 603, 1127, 1128, 1129, 1130));
 					}
 				}
 			});
 		} else if (appTimeType == AppTimeType.OFFWORK || appTimeType == AppTimeType.OFFWORK2) {
 			// [input. 時間消化申請(work)]を 日別勤怠(work）の早退時間へセット
 			dailyApp.getAttendanceTimeOfDailyPerformance().ifPresent(x -> {
-				if (x.getLeaveEarlyTimeOfDaily().isEmpty()) {
-					x.getLeaveEarlyTimeOfDaily().add(LeaveEarlyTimeOfDaily.createDefaultWithNo(1));
-				}
-				for (LeaveEarlyTimeOfDaily data : x.getLeaveEarlyTimeOfDaily()) {
+				for (int i = 1; i <= 2; i++) {
+					int z = i;
+					LeaveEarlyTimeOfDaily data = x.getLeaveEarlyTimeOfDaily().stream()
+							.filter(y -> y.getWorkNo().v() == z).findFirst().orElse(null);
+					if (data == null) {
+						data = LeaveEarlyTimeOfDaily.createDefaultWithNo(i);
+						x.getLeaveEarlyTimeOfDaily().add(data);
+					}
 					if (data.getWorkNo().v() == 1 && appTimeType == AppTimeType.OFFWORK) {
 						updateVacationTime(data.getTimePaidUseTime(), timeDigest);
 						lstItemId.addAll(Arrays.asList(607, 608, 609, 1131, 1132, 1133, 1134));

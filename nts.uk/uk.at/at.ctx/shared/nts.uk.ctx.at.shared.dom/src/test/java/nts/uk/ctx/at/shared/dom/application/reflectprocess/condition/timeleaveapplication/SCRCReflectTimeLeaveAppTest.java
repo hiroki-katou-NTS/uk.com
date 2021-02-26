@@ -53,74 +53,114 @@ public class SCRCReflectTimeLeaveAppTest {
 		
 		// 出勤を反映する
 		TimeLeaveApplicationShare appTimeLeav = createAppTimeLeav(AppTimeType.ATWORK, 1);// 時間休暇種類 =出勤前
-		TimeLeaveApplicationReflect reflectTimeLeav = setting(AppTimeType.ATWORK);//時間休暇の反映先.出勤前 =　する
+		TimeLeaveApplicationReflect reflectTimeLeav = setting(AppTimeType.ATWORK);// 時間休暇の反映先.出勤前 = する
 		List<Integer> lstResult = SCRCReflectTimeLeaveApp.reflect(appTimeLeav, dailyApp, reflectTimeLeav);
-        assertThat(lstResult).isEqualTo(Arrays.asList(31));
+		assertThat(dailyApp.getAttendanceLeave().get().getAttendanceLeavingWork(1).get().getAttendanceTime().get().v())
+				.isEqualTo(1088);
+		assertThat(lstResult).isEqualTo(Arrays.asList(31));
 		// 出勤を反映しない
+		dailyApp = ReflectApplicationHelper.createDailyRecord(ScheduleRecordClassifi.RECORD,
+				2);
     	reflectTimeLeav = setting(null);//時間休暇の反映先.出勤前 = しない
 		lstResult = SCRCReflectTimeLeaveApp.reflect(appTimeLeav, dailyApp, reflectTimeLeav);
-        assertThat(lstResult).isEmpty();
+		assertThat(dailyApp.getAttendanceLeave()).isEqualTo(Optional.empty());
+		assertThat(lstResult).isEmpty();
 
 		// 出勤２を反映する
-        appTimeLeav = createAppTimeLeav(AppTimeType.ATWORK2, 1);// 時間休暇種類 =出勤前
+		dailyApp = ReflectApplicationHelper.createDailyRecord(ScheduleRecordClassifi.RECORD,
+				2);
+        appTimeLeav = createAppTimeLeav(AppTimeType.ATWORK2, 2);// 時間休暇種類 =出勤前
         reflectTimeLeav = setting(AppTimeType.ATWORK2);//時間休暇の反映先.出勤前2 = する
 		lstResult = SCRCReflectTimeLeaveApp.reflect(appTimeLeav, dailyApp, reflectTimeLeav);
+		assertThat(dailyApp.getAttendanceLeave().get().getAttendanceLeavingWork(2).get().getAttendanceTime().get().v())
+				.isEqualTo(1088);
         assertThat(lstResult).isEqualTo(Arrays.asList(41));
 
 		// 出勤２を反映しない
-        appTimeLeav = createAppTimeLeav(AppTimeType.ATWORK2, 1);// 時間休暇種類 =出勤前2
+        dailyApp = ReflectApplicationHelper.createDailyRecord(ScheduleRecordClassifi.RECORD,
+				2);
+        appTimeLeav = createAppTimeLeav(AppTimeType.ATWORK2, 2);// 時間休暇種類 =出勤前2
         reflectTimeLeav = setting(null);//時間休暇の反映先.出勤前2 = しない
 		lstResult = SCRCReflectTimeLeaveApp.reflect(appTimeLeav, dailyApp, reflectTimeLeav);
+		assertThat(dailyApp.getAttendanceLeave()).isEqualTo(Optional.empty());
         assertThat(lstResult).isEmpty();
 
 		// 退勤を反映する
+        dailyApp = ReflectApplicationHelper.createDailyRecord(ScheduleRecordClassifi.RECORD,
+				2);
         appTimeLeav = createAppTimeLeav(AppTimeType.OFFWORK, 1);// 時間休暇種類 =退勤後 
         reflectTimeLeav = setting(AppTimeType.OFFWORK);//時間休暇の反映先.退勤後  = する
 		lstResult = SCRCReflectTimeLeaveApp.reflect(appTimeLeav, dailyApp, reflectTimeLeav);
+		assertThat(dailyApp.getAttendanceLeave().get().getAttendanceLeavingWork(1).get().getLeaveTime().get().v())
+				.isEqualTo(488);
         assertThat(lstResult).isEqualTo(Arrays.asList(34));
 
 		// 退勤を反映しない
+        dailyApp = ReflectApplicationHelper.createDailyRecord(ScheduleRecordClassifi.RECORD,
+				2);
         appTimeLeav = createAppTimeLeav(AppTimeType.OFFWORK, 1);// 時間休暇種類 =退勤後 
         reflectTimeLeav = setting(null);//時間休暇の反映先.退勤後  = しない
 		lstResult = SCRCReflectTimeLeaveApp.reflect(appTimeLeav, dailyApp, reflectTimeLeav);
+		assertThat(dailyApp.getAttendanceLeave()).isEqualTo(Optional.empty());
         assertThat(lstResult).isEmpty();
 
 		// 退勤２を反映する
-        appTimeLeav = createAppTimeLeav(AppTimeType.OFFWORK2, 1);// 時間休暇種類 =退勤後2
+        dailyApp = ReflectApplicationHelper.createDailyRecord(ScheduleRecordClassifi.RECORD,
+				2);
+        appTimeLeav = createAppTimeLeav(AppTimeType.OFFWORK2, 2);// 時間休暇種類 =退勤後2
         reflectTimeLeav = setting(AppTimeType.OFFWORK2);//時間休暇の反映先.退勤後2  = する
 		lstResult = SCRCReflectTimeLeaveApp.reflect(appTimeLeav, dailyApp, reflectTimeLeav);
+		assertThat(dailyApp.getAttendanceLeave().get().getAttendanceLeavingWork(2).get().getLeaveTime().get().v())
+		.isEqualTo(488);
         assertThat(lstResult).isEqualTo(Arrays.asList(44));
 
 		// 退勤２を反映しない
-        appTimeLeav = createAppTimeLeav(AppTimeType.OFFWORK2, 1);// 時間休暇種類 =退勤後2
+        dailyApp = ReflectApplicationHelper.createDailyRecord(ScheduleRecordClassifi.RECORD,
+				2);
+        appTimeLeav = createAppTimeLeav(AppTimeType.OFFWORK2, 2);// 時間休暇種類 =退勤後2
         reflectTimeLeav = setting(null);//時間休暇の反映先.退勤後2  = しない
 		lstResult = SCRCReflectTimeLeaveApp.reflect(appTimeLeav, dailyApp, reflectTimeLeav);
+		assertThat(dailyApp.getAttendanceLeave()).isEqualTo(Optional.empty());
         assertThat(lstResult).isEmpty();
 
 		// 私用外出を反映する
+        dailyApp = ReflectApplicationHelper.createDailyRecord(ScheduleRecordClassifi.RECORD,
+				2);
         appTimeLeav = createAppTimeLeav(AppTimeType.PRIVATE, 1);// 時間休暇種類 =私用外出
         reflectTimeLeav = setting(AppTimeType.PRIVATE);//時間休暇の反映先.私用外出 = する
 		lstResult = SCRCReflectTimeLeaveApp.reflect(appTimeLeav, dailyApp, reflectTimeLeav);
 		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(0).getReasonForGoOut()).isEqualTo(GoingOutReason.PRIVATE);
+		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(0).getGoOut().get().getStamp().get().getTimeDay().getTimeWithDay().get().v()).isEqualTo(488);
+		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(0).getComeBack().get().getStamp().get().getTimeDay().getTimeWithDay().get().v()).isEqualTo(1088);
         assertThat(lstResult).isEqualTo(Arrays.asList(88, 91, 86));//外出時刻1,戻り時刻1,外出区分1
 
 		// 私用外出を反映しない
+        dailyApp = ReflectApplicationHelper.createDailyRecord(ScheduleRecordClassifi.RECORD,
+				2);
         appTimeLeav = createAppTimeLeav(AppTimeType.PRIVATE, 1);// 時間休暇種類 =私用外出
         reflectTimeLeav = setting(null);//時間休暇の反映先.私用外出 = しない
 		lstResult = SCRCReflectTimeLeaveApp.reflect(appTimeLeav, dailyApp, reflectTimeLeav);
+		assertThat(dailyApp.getOutingTime()).isEqualTo(Optional.empty());
         assertThat(lstResult).isEmpty();
 
 		// 組合外出を反映する
+        dailyApp = ReflectApplicationHelper.createDailyRecord(ScheduleRecordClassifi.RECORD,
+				2);
         appTimeLeav = createAppTimeLeav(AppTimeType.UNION, 1);// 時間休暇種類 =私用外出
         reflectTimeLeav = setting(AppTimeType.UNION);//時間休暇の反映先.私用外出 = する
 		lstResult = SCRCReflectTimeLeaveApp.reflect(appTimeLeav, dailyApp, reflectTimeLeav);
 		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(0).getReasonForGoOut()).isEqualTo(GoingOutReason.UNION);
+		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(0).getGoOut().get().getStamp().get().getTimeDay().getTimeWithDay().get().v()).isEqualTo(488);
+		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(0).getComeBack().get().getStamp().get().getTimeDay().getTimeWithDay().get().v()).isEqualTo(1088);
         assertThat(lstResult).isEqualTo(Arrays.asList(88, 91, 86));//外出時刻1,戻り時刻1,外出区分1
 
 		// 組合外出を反映しない
+        dailyApp = ReflectApplicationHelper.createDailyRecord(ScheduleRecordClassifi.RECORD,
+				2);
         appTimeLeav = createAppTimeLeav(AppTimeType.UNION, 1);// 時間休暇種類 =私用外出
         reflectTimeLeav = setting(null);//時間休暇の反映先.私用外出 = しない
 		lstResult = SCRCReflectTimeLeaveApp.reflect(appTimeLeav, dailyApp, reflectTimeLeav);
+		assertThat(dailyApp.getOutingTime()).isEqualTo(Optional.empty());
         assertThat(lstResult).isEmpty();
 		
 	}
@@ -130,7 +170,7 @@ public class SCRCReflectTimeLeaveAppTest {
 		AttendanceTime timeCommon = new AttendanceTime(60);
 		TimeDigestApplicationShare digest = new TimeDigestApplicationShare(timeCommon, timeCommon, timeCommon,
 				timeCommon, timeCommon, timeCommon, Optional.of(1));
-		TimeZoneWithWorkNo timeZone = new TimeZoneWithWorkNo(no, 480, 1080);
+		TimeZoneWithWorkNo timeZone = new TimeZoneWithWorkNo(no, 488, 1088);
 		TimeLeaveApplicationDetailShare detail = new TimeLeaveApplicationDetailShare(appTimeType,
 				Arrays.asList(timeZone), digest);
 		return new TimeLeaveApplicationShare(ReflectApplicationHelper.createAppShare(

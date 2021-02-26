@@ -31,7 +31,6 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAd
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.getapp.GetApplicationForReflect;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.getapp.GetApplicationRequireImpl;
-import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.closurestatus.ClosureStatusManagementRequestImport;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymonthlyprocessing.ExeStateOfCalAndSumImport;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymonthlyprocessing.ExecutionLogRequestImport;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymonthlyprocessing.ExecutionTypeExImport;
@@ -47,8 +46,6 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 	private TargetPersonRequestImport targetPerson;
 	@Inject
 	private ExecutionLogRequestImport execuLog;
-	@Inject
-	private ClosureStatusManagementRequestImport closureStatusImport;
 	@Inject
 	private ApplicationRepository applicationRepo;
 	@Inject
@@ -132,25 +129,43 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 			ExecutionTypeExImport refAppResult) {
 		// ドメインモデル「締め状態管理」を取得する
 		List<DatePeriod> lstPeriodMag = closureStatusManagementRepository.getAllByEmpId(sid).stream()
-				.map(x -> x.getPeriod()).collect(Collectors.toList());
-		lstPeriodMag.forEach(closureDatePeriod -> {
-			// 「申請期間」を作成する
-			// 申請期間 ← パラメータ.期間のうちドメインモデル「締め状態管理.期間」に含まれている期間を削除した期間
-			DatePeriod appDatePeriod = datePeriod;
-			if (datePeriod.start().beforeOrEquals(closureDatePeriod.end())
-					&& closureDatePeriod.end().before(datePeriod.end())) {
-				appDatePeriod = new DatePeriod(closureDatePeriod.end().addDays(1), datePeriod.end());
-			} else if (closureDatePeriod.end().beforeOrEquals(datePeriod.start())
-					&& datePeriod.end().after(closureDatePeriod.end())) {
-				GeneralDate sDate = datePeriod.start();
-				if (closureDatePeriod.end().equals(datePeriod.start())) {
-					sDate = datePeriod.start().addDays(1);
-				}
-				appDatePeriod = new DatePeriod(sDate, datePeriod.end());
-			}
-			this.reflectAppOfAppDate(workId, sid, refAppResult, appDatePeriod);
-		});
+				.map(x -> x.getPeriod()).sorted((x, y) -> x.end().compareTo(y.end())).collect(Collectors.toList());
+		if(lstPeriodMag.isEmpty()) {
+			this.reflectAppOfAppDate(workId, sid, refAppResult, datePeriod);
+		}
 		
+		for(DatePeriod datePeriodCls : lstPeriodMag) {
+			DatePeriod dateProcess = null;
+			/**
+			 * Input :      |*****************| 
+			 * 
+			 * closure |**********************|
+			 */
+			if (datePeriod.start().afterOrEquals(datePeriodCls.start())
+					&& datePeriod.end().beforeOrEquals(datePeriodCls.end())) {
+				continue;
+			}
+			
+			/**
+			 * Input :                        |*************************************| 
+			 * 
+			 * closure |**********************|
+			 */
+			if (datePeriod.start().before(datePeriodCls.end()) && datePeriod.end().after(datePeriodCls.end())) {
+				dateProcess = new DatePeriod(datePeriodCls.end().addDays(1), datePeriod.end());
+			}
+			
+			/**
+			 * Input :  |*****************|                                              |*****************| 
+			 * 
+			 * closure                                  |**********************|
+			 */
+			if (datePeriod.start().after(datePeriodCls.end()) || datePeriod.end().before(datePeriodCls.start())) {
+				dateProcess = datePeriod;
+			}
+			
+			this.reflectAppOfAppDate(workId, sid, refAppResult, dateProcess);
+		}
 	}
 	@Override
 	public void reflectAppOfAppDate(String workId, String sid, ExecutionTypeExImport refAppResult,
