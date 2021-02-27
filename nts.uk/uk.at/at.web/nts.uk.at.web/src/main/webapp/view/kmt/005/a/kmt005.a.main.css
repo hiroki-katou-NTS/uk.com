@@ -1,0 +1,12 @@
+.valign-top .control-group {
+    height: 37px;
+}
+
+.valign-top .control-group div {
+    width: 67px;
+    display: inline-block;
+}
+
+.form-label {
+    width: 140px;
+}

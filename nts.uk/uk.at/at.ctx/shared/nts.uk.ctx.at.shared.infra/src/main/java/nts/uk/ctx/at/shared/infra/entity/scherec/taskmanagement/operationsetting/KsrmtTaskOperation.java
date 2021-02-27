@@ -17,14 +17,14 @@ import javax.persistence.Table;
 public class KsrmtTaskOperation extends ContractUkJpaEntity {
     @Id
     @Column(name = "CID")
-    public String companyID;
+    public String companyId;
 
     @Column(name = "OPE_ATR")
     public int useATR;
 
     @Override
     protected Object getKey() {
-        return null;
+        return this.companyId;
     }
 
     public TaskOperationSetting toDomain() {

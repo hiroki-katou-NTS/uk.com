@@ -150,6 +150,8 @@ public class ProgramIdConsts {
 
 	public static final String KML001D = "KML001D";
 
+	public static final String KMT005A = "KMT005A";
+
 	public static final String KMT011A = "KMT011A";
 
 	public static final String KDL024A = "KDL024A";

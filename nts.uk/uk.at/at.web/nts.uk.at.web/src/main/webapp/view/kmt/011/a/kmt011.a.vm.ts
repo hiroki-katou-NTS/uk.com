@@ -52,7 +52,7 @@ module nts.uk.at.view.kmt011.a.viewmodel {
             const self = this;
             switch (screen) {
                 case "KMT005":
-                    self.$jump("/view/kmt/005/a/index.xhtml");
+                    self.$jump("/view/kmt/005/a/index.xhtml", {fromKMT011: true});
                     break;
                 case "KMT001":
                     self.$jump("/view/kmt/001/a/index.xhtml");
