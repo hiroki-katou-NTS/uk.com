@@ -9,10 +9,14 @@ import nts.uk.ctx.at.shared.app.find.worktime.fixedset.dto.FixHalfDayWorkTimezon
 import nts.uk.ctx.at.shared.app.find.worktime.predset.dto.TimezoneDto;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.common.usecls.ApplyAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.BPSettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.*;
 import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.DisplayMode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 import javax.ejb.Stateless;
@@ -32,6 +36,9 @@ public class WorkTimeReportService_New {
     
     @Inject
     private WorkdayoffFrameFinder finder;
+    
+    @Inject
+    private BPSettingRepository bpSettingRepository;
     
     /**
      * 勤務形態 通常
@@ -1166,6 +1173,28 @@ public class WorkTimeReportService_New {
                  */
                 boolean includeWorkingHour = otherEarly.get().getGraceTimeSet().isIncludeWorkingHour();
                 cells.get("EH" + (startIndex + 1)).setValue(includeWorkingHour ? "○" : "-");
+            }
+        }
+        
+        // 10       タブグ:                加給
+        
+        /*
+         * R4_206
+         * コード
+         */
+        String raisingSalarySetCode = data.getFixedWorkSetting().getCommonSetting().getRaisingSalarySet();
+        cells.get("EI" + (startIndex + 1)).setValue(raisingSalarySetCode != null ? raisingSalarySetCode : "");
+        
+        /*
+         * R4_207
+         * 名称
+         */
+        if (raisingSalarySetCode != null) {
+            Optional<BonusPaySetting> bonusPaySettingOpt = this.bpSettingRepository
+                    .getBonusPaySetting(AppContexts.user().companyId(), new BonusPaySettingCode(raisingSalarySetCode));
+            if (bonusPaySettingOpt.isPresent()) {
+                String raisingSalaryName = bonusPaySettingOpt.get().getName().v();
+                cells.get("EJ" + (startIndex + 1)).setValue(raisingSalaryName);
             }
         }
     }
