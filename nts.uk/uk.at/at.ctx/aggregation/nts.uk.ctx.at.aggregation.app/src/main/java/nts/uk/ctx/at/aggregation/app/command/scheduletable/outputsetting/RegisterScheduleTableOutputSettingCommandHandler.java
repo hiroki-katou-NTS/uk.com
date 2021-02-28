@@ -30,7 +30,6 @@ public class RegisterScheduleTableOutputSettingCommandHandler extends CommandHan
 	protected void handle(CommandHandlerContext<ScheduleTableOutputSettingSaveCommand> context) {
 		ScheduleTableOutputSettingSaveCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
-//		AppContexts.user().roles().
 		
 		/**1: exist(ログイン会社ID, 出力設定コード)*/
 		Boolean exist = repository.exists(companyId, new  OutputSettingCode(command.getCode()));

@@ -11,6 +11,7 @@ module nts.uk.at.view.ksu005.a {
         currentScreen: any = null;
         itemList: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
         selectedCode: KnockoutObservable<string> = ko.observable('');
+        enableSetting: KnockoutObservable<boolean> = ko.observable(true);
         comments: KnockoutObservable<string>;
         characteristics: Characteristics = {};
         constructor() {
@@ -20,12 +21,22 @@ module nts.uk.at.view.ksu005.a {
             self.loadScheduleOutputSetting();
         }
 
+        mounted() {
+            $('#exportExcel').focus();
+        }
+
         loadScheduleOutputSetting(): void {
             const self = this;
             let dataList: Array<ItemModel> = [];
             self.$blockui("invisible");			
             self.$ajax(Paths.GET_SCHEDULE_TABLE_OUTPUT_SETTING_BY_CID).done((data: Array<IScheduleTableOutputSetting>) => {
                 if(data && data.length > 0){
+                    if(data[0].hasAttendance){
+                        self.enableSetting(true);
+                    } else {
+                        self.enableSetting(false);
+                    }
+
                     if(data[0].isAttendance == null){
                         _.each(data, item =>{
                             dataList.push(new ItemModel(item.code, item.name));
@@ -33,7 +44,7 @@ module nts.uk.at.view.ksu005.a {
                         character.restore('characterKsu005a').done((obj: Characteristics) => {
                             self.selectedCode(obj.code);
                         })
-                    } else if(data[0].isAttendance){                       
+                    } else if(data[0].isAttendance){ 
                             self.openDialog();                    
                     } else {
                         self.$dialog.info({ messageId: 'Msg_1970'}).then(() => {
@@ -72,12 +83,12 @@ module nts.uk.at.view.ksu005.a {
                             self.characteristics.comments = self.comments();
                             character.save('characterKsu005a', self.characteristics);
                             self.loadScheduleOutputSetting();
-                        } else if (data[0].isAttendance) {
+                        } else if (data[0].isAttendance) {                            
                             self.$dialog.info({ messageId: 'Msg_1766' }).then(() => {
                                 self.openDialog();
                             });
                         } else {
-                            self.$dialog.info({ messageId: 'Msg_1970' }).then(() => {
+                            self.$dialog.info({ messageId: 'Msg_1970' }).then(() => {                                
                                 self.closeDialog();
                             });
                         }
@@ -108,6 +119,7 @@ module nts.uk.at.view.ksu005.a {
         workplaceCounterCategories: Array<number>;
         personalCounterCategories: Array<number>;
         isAttendance: boolean;
+        hasAttendance: boolean;
  
     }
     class ScheduleTableOutputSetting {
@@ -115,6 +127,7 @@ module nts.uk.at.view.ksu005.a {
         name: KnockoutObservable<string> = ko.observable('');
         additionalColumn: KnockoutObservable<number> = ko.observable();
         isAttendance: KnockoutObservable<boolean> = ko.observable(true);
+        hasAttendance: KnockoutObservable<boolean> = ko.observable(true);
         shiftBackgroundColor: KnockoutObservable<number> = ko.observable();
         dailyDataDisplay: KnockoutObservable<number> = ko.observable();
         personalInfo: KnockoutObservableArray<number> = ko.observableArray([]);
@@ -136,6 +149,7 @@ module nts.uk.at.view.ksu005.a {
                 self.workplaceCounterCategories(params.workplaceCounterCategories);
                 self.personalCounterCtegories(params.personalInfo);
                 self.isAttendance(params.isAttendance);
+                self.hasAttendance(params.hasAttendance);
             }
         } 
     }

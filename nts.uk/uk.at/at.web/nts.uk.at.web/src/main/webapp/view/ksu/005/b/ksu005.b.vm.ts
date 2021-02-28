@@ -127,8 +127,7 @@ module nts.uk.at.view.ksu005.b {
                 }      
             });            
 
-            self.checkAll.subscribe((value) =>{
-                
+            self.checkAll.subscribe((value) => {                
                 let temp = self.itemList();
                 if (value) {
                     for (let i = 1; i < temp.length; i++) {
@@ -273,11 +272,26 @@ module nts.uk.at.view.ksu005.b {
         }
 
         public registerOrUpdate(): void {
-            const self = this;
-            self.$blockui("invisible");
+            const self = this;            
             if (self.validateAll()) {
                 return;
             }
+            if(self.condition1()) {
+                self.$dialog.info({messageId: 'Msg_1130'});
+                return;                                
+            }
+
+            if(self.condition2()) {
+                self.$dialog.info({messageId: 'Msg_1972'});
+                return;                                
+            }
+
+            if(self.condition3()) {
+                self.$dialog.info({messageId: 'Msg_1973'});
+                return;                                
+            }
+
+            self.$blockui("invisible");
             let personalInfo: Array<number> = [],
                 additionalInfo: Array<number> = [],
                 attendanceItem: Array<number> = [],
@@ -300,16 +314,11 @@ module nts.uk.at.view.ksu005.b {
                 personalCounterCategories.push(Math.floor(self.selectedPerson()));
             }
 
-            _.each(self.itemList(), x => {
-                // if(parseInt(x.personalInfo()) != -1){
+
+            _.each(self.itemList(), x => {                
                     personalInfo.push(parseInt(x.personalInfo()));
-                // }
-                // if(parseInt(x.additionInfo()) != -1){
                     additionalInfo.push(parseInt(x.additionInfo()));
-                // }
-                // if(parseInt(x.attendanceItem()) != -1){
                     attendanceItem.push(parseInt(x.attendanceItem()));
-                // }                
             });
 
             command.personalCounterCategories = personalCounterCategories;
@@ -324,7 +333,7 @@ module nts.uk.at.view.ksu005.b {
                         self.reloadData(command.code);
                     });                    
                 }).fail((res) => {
-                    if(res.messageId == 'Msg_3'){
+                    if(res.messageId == 'Msg_3' || res.messageId == 'Msg_1971'){
                         self.selectedCode('');
                         $('#outputSettingCode').ntsError('set',{messageId: res.messageId});
                     }
@@ -361,6 +370,7 @@ module nts.uk.at.view.ksu005.b {
                             if(self.items().length == 1) {
                                 self.items([]);
                                 self.selectedCode('');
+                                $('#outputSettingCode').focus();
                             } else {
                                 let indexSelected: number;
                                 for(let index = 0; index < self.items().length; index++){
@@ -372,6 +382,7 @@ module nts.uk.at.view.ksu005.b {
                                 }
                                 self.enableDelete(true);
                                 self.selectedCode(self.items()[indexSelected].code);
+                                $('#outputSettingName').focus();
                             }
                         });
                     }).always(() =>{
@@ -424,6 +435,7 @@ module nts.uk.at.view.ksu005.b {
                 } else {
                     self.clearData();
                 }                
+                $('#outputSettingName').focus();
             }).always(() => {
                 self.$blockui("hide");
             });
@@ -474,6 +486,58 @@ module nts.uk.at.view.ksu005.b {
             }
             return false;
         }
+
+        private condition1(): boolean {
+            const self = this;
+            let count: number = 0; 
+            if(self.itemList().length > 1){
+                _.each(self.itemList(), x => {
+                    if (parseInt(x.personalInfo()) == -1 && parseInt(x.additionInfo()) == -1 && parseInt(x.attendanceItem()) == -1) {
+                        count = count + 1;
+                    }               
+                });
+            }
+            
+            if(count >= 1){
+                return true;
+            }
+            return false;
+        }
+
+        private condition2(): boolean {
+            const self = this;
+            let count: number = 0; 
+            for (let i = 0; i < self.itemList().length - 1; i++) {
+                for (let j = i + 1; j < self.itemList().length; j++) {
+                    if (self.itemList()[i].personalInfo() == self.itemList()[j].personalInfo() 
+                        && self.itemList()[i].additionInfo() == self.itemList()[j].additionInfo()) {
+                        count = count + 1;
+                    }
+                }
+            }           
+            if(count >= 1){
+                return true;
+            }
+            return false;
+        }
+
+        
+        private condition3(): boolean {
+            const self = this;
+            let count: number = 0; 
+            for (let i = 0; i < self.itemList().length - 1; i++) {
+                for (let j = i + 1; j < self.itemList().length; j++) {
+                    if (self.itemList()[i].attendanceItem() == self.itemList()[j].attendanceItem()) {
+                        count = count + 1;
+                    }
+                }
+            }           
+            if(count >= 1){
+                return true;
+            }
+            return false;
+        }
+
         clearError(): void {
             $('#outputSettingCode').ntsError('clear');
             $('#outputSettingName').ntsError('clear');

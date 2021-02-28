@@ -36,7 +36,7 @@ public class KagmtRptSchedule extends ContractUkJpaEntity implements Serializabl
 	public Integer shiftBackColorUseAtr;
 	
 	@Column(name = "RECORD_DISP_ATR")
-	public Integer recordDispAtr;
+	public Integer recordDispAtr;	
 
 	@Override
 	protected Object getKey() {	

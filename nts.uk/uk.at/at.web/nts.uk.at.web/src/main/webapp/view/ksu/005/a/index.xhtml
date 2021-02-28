@@ -20,7 +20,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
                 <!--A1-1-->
-                <button tabindex="1" id="A1_1">#{i18n.getText('KSU005_4')}</button>
+                <button tabindex="1" id="exportExcel">#{i18n.getText('KSU005_4')}</button>
                 <!--A1-2-->
                 <button tabindex="2" id="A1_2">#{i18n.getText('KSU005_5')}</button>
                 <!--A1-3-->
@@ -46,7 +46,7 @@
                 </div>
 
                 <!--A2-3-->
-                <button style="margin: 0px 35px 0px 10px;" tabindex="5" id="A2_3" data-bind="click: openDialog">#{i18n.getText('KSU005_9')}</button>
+                <button style="margin: 0px 35px 0px 10px;" tabindex="5" id="A2_3" data-bind="click: openDialog, enable: enableSetting">#{i18n.getText('KSU005_9')}</button>
               
                 <!--A3-1-->
                 <div data-bind="ntsFormLabel:{required: false, constraint:['PersonalScheduleComments']}">#{i18n.getText('KSU005_11')} </div> 

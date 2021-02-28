@@ -65,5 +65,6 @@ td[role ="rowheader"]{
 }
 
 .ui-iggrid table .ui-igcheckbox-normal-on {
-    position: unset!important;
+    top: 0px;
+	left: 0px;
 }

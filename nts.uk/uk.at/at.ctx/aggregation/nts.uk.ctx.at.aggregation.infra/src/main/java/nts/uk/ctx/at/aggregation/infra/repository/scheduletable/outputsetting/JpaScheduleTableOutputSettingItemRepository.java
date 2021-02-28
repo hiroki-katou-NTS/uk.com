@@ -1,11 +1,9 @@
 package nts.uk.ctx.at.aggregation.infra.repository.scheduletable.outputsetting;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -44,18 +42,11 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class JpaScheduleTableOutputSettingItemRepository extends JpaRepository
 		implements ScheduleTableOutputSettingRepository {
-
-	private static final String GET_BY_CID_AND_CODE = "SELECT a, b.personalItem, b.additionalPersonalItem, b.attendanceItem, c.pk.categoryNo, d.pk.categoryNo FROM KagmtRptSchedule a "
-			+ "LEFT JOIN KagmtRptScheduleItem b ON a.pk.companyId = b.pk.companyId AND a.pk.code = b.pk.code "
-			+ "LEFT JOIN KagmtRptScheduleTallyByPerson c ON a.pk.companyId = c.pk.companyId AND a.pk.code = c.pk.code "
-			+ "LEFT JOIN KagmtRptScheduleTallyByWkp d ON a.pk.companyId = d.pk.companyId AND a.pk.code = d.pk.code "
-			+ "WHERE a.pk.companyId = :companyId " + "AND a.pk.code = :code";
-
-	private static final String GET_BY_CID = "SELECT a, b.personalItem, b.additionalPersonalItem, b.attendanceItem, c.pk.categoryNo, d.pk.categoryNo FROM KagmtRptSchedule a "
-			+ "LEFT JOIN KagmtRptScheduleItem b ON a.pk.companyId = b.pk.companyId AND a.pk.code = b.pk.code "
-			+ "LEFT JOIN KagmtRptScheduleTallyByPerson c ON a.pk.companyId = c.pk.companyId AND a.pk.code = c.pk.code "
-			+ "LEFT JOIN KagmtRptScheduleTallyByWkp d ON a.pk.companyId = d.pk.companyId AND a.pk.code = d.pk.code "
-			+ "WHERE a.pk.companyId = :companyId";
+	
+	private static final String sql1 = "SELECT a FROM KagmtRptSchedule a WHERE a.pk.companyId = :companyId AND a.pk.code = :code";
+	private static final String sql2 = "SELECT a FROM KagmtRptScheduleItem a WHERE a.pk.companyId = :companyId AND a.pk.code = :code";	
+	private static final String sql3 = "SELECT a FROM KagmtRptScheduleTallyByPerson a WHERE a.pk.companyId = :companyId AND a.pk.code = :code";		
+	private static final String sql4 = "SELECT a FROM KagmtRptScheduleTallyByWkp a WHERE a.pk.companyId = :companyId AND a.pk.code = :code";
 
 	private ScheduleTableOutputSetting toDomainFromEntity(KagmtRptSchedule kagmtRptSchedule,
 			List<KagmtRptScheduleItem> kagmtRptScheduleItems, List<KagmtRptScheduleTallyByPerson> kagmtRptScheduleTallyByPersons,
@@ -63,7 +54,7 @@ public class JpaScheduleTableOutputSettingItemRepository extends JpaRepository
 		List<OneRowOutputItem> oneRowOutputItems = new ArrayList<OneRowOutputItem>();
 		List<PersonalCounterCategory> personalCounterCategories = new ArrayList<PersonalCounterCategory>();
 		List<WorkplaceCounterCategory> workplaceCounterCategories = new ArrayList<WorkplaceCounterCategory>();
-		if(!kagmtRptScheduleTallyByPersons.isEmpty()) {
+		if(kagmtRptScheduleTallyByPersons != null && !kagmtRptScheduleTallyByPersons.isEmpty()) {
 			kagmtRptScheduleTallyByPersons.stream().forEach(x -> {
 				if(x.pk.categoryNo != null) {
 					personalCounterCategories.add(PersonalCounterCategory.of(x.pk.categoryNo));
@@ -71,7 +62,7 @@ public class JpaScheduleTableOutputSettingItemRepository extends JpaRepository
 			});
 		}		
 		
-		if(!kagmtRptScheduleTallyByWkps.isEmpty()) {
+		if(kagmtRptScheduleTallyByWkps != null && !kagmtRptScheduleTallyByWkps.isEmpty()) {
 			kagmtRptScheduleTallyByWkps.stream().forEach(x -> {
 				if(x.pk.categoryNo != null) {
 					workplaceCounterCategories.add(WorkplaceCounterCategory.of(x.pk.categoryNo));
@@ -83,7 +74,7 @@ public class JpaScheduleTableOutputSettingItemRepository extends JpaRepository
 			if (x.personalItem == null && x.additionalPersonalItem == null && x.attendanceItem == null) {
 				oneRowOutputItems.add(OneRowOutputItem.create(
 						Optional.of(EnumAdaptor.valueOf(0, ScheduleTablePersonalInfoItem.class)),
-						Optional.of(EnumAdaptor.valueOf(4, ScheduleTablePersonalInfoItem.class)),
+						Optional.of(EnumAdaptor.valueOf(0, ScheduleTablePersonalInfoItem.class)),
 						Optional.of(EnumAdaptor.valueOf(0, ScheduleTableAttendanceItem.class))));
 			} else {
 				OneRowOutputItem item = OneRowOutputItem.create(
@@ -101,120 +92,30 @@ public class JpaScheduleTableOutputSettingItemRepository extends JpaRepository
 		return ScheduleTableOutputSetting.create(new OutputSettingCode(kagmtRptSchedule.pk.code), new OutputSettingName(kagmtRptSchedule.name), outputItem,
 				workplaceCounterCategories, personalCounterCategories);
 	}
-	private ScheduleTableOutputSetting toDomainFromObjByCode(List<Object[]> objects) {
-		if(objects.isEmpty()) {
-			return ScheduleTableOutputSetting.create(null, null, null, null, null);
-		}
-		List<PersonalCounterCategory> personalCounterCategories = new ArrayList<PersonalCounterCategory>();
-		List<WorkplaceCounterCategory> workplaceCounterCategories = new ArrayList<WorkplaceCounterCategory>();
-		List<ScheduleTableOutputSettingTemp> list = new ArrayList<>();
-		List<OneRowOutputItem> oneRowOutputItems = new ArrayList<OneRowOutputItem>();
-		KagmtRptSchedule entity = (KagmtRptSchedule) objects.get(0)[0];
-		String code = entity.pk.code;
-		String name = entity.name;
-		Integer personalInfo = objects.get(0) != null ?(Integer) objects.get(0)[1]: null;
-		Integer additionalInfo =objects.get(0)!= null ? (Integer) objects.get(0)[2]: null;
-		Integer attendanceItem = objects.get(0)!=null ? (Integer) objects.get(0)[3]: null;
-		Integer personalCatergoryNo = (Integer) objects.get(0)[4];
-		Integer workplaceCatergoryNo = (Integer) objects.get(0)[5];
-
-		objects.stream().forEach(object -> {
-			list.add(new ScheduleTableOutputSettingTemp(code, name, personalInfo, additionalInfo, attendanceItem,
-					personalCatergoryNo, workplaceCatergoryNo, entity));
-		});
-
-		list.stream().forEach(x -> {
-			if(x.getPersonalCatergoryNo() != null) {
-				personalCounterCategories.add(PersonalCounterCategory.of(x.getPersonalCatergoryNo()));
-			}			
-			if(x.getWorkplaceCatergoryNo() != null) {
-				workplaceCounterCategories.add(WorkplaceCounterCategory.of(x.getWorkplaceCatergoryNo()));
-			}
-			
-			if (personalInfo == null && additionalInfo == null && attendanceItem == null) {
-				oneRowOutputItems.add(OneRowOutputItem.create(
-						Optional.of(EnumAdaptor.valueOf(0, ScheduleTablePersonalInfoItem.class)),
-						Optional.of(EnumAdaptor.valueOf(4, ScheduleTablePersonalInfoItem.class)),
-						Optional.of(EnumAdaptor.valueOf(0, ScheduleTableAttendanceItem.class))));
-			} else {
-				OneRowOutputItem item = OneRowOutputItem.create(
-						Optional.ofNullable(personalInfo != null ? EnumAdaptor.valueOf(personalInfo, ScheduleTablePersonalInfoItem.class) : null),
-						Optional.ofNullable(additionalInfo != null ? EnumAdaptor.valueOf(additionalInfo, ScheduleTablePersonalInfoItem.class): null),
-						Optional.ofNullable(attendanceItem != null ? EnumAdaptor.valueOf(attendanceItem, ScheduleTableAttendanceItem.class): null));
-				oneRowOutputItems.add(item);
-			}			
-		});
-
-		OutputItem outputItem = new OutputItem(NotUseAtr.valueOf(entity.additionalColumUseAtr),
-				NotUseAtr.valueOf(entity.shiftBackColorUseAtr), NotUseAtr.valueOf(entity.recordDispAtr),
-				oneRowOutputItems);
-
-		return new ScheduleTableOutputSetting(new OutputSettingCode(code), new OutputSettingName(name), outputItem,
-				workplaceCounterCategories, personalCounterCategories);
-	}
-
-	private List<ScheduleTableOutputSetting> toDomainFromObj(List<Object[]> objects) {
-		if(objects.isEmpty()) {
-			return new ArrayList<ScheduleTableOutputSetting>();
-		}
-		List<ScheduleTableOutputSetting> results = new ArrayList<ScheduleTableOutputSetting>();
-		List<ScheduleTableOutputSettingTemp> list = new ArrayList<>();
-		Set<String> listCode = new HashSet<String>();
-		objects.stream().forEach(object -> {
-			KagmtRptSchedule entity = (KagmtRptSchedule) object[0];
-			String code = entity.pk.code;
-			String name = entity.name;
-			Integer personalInfo = object[1]!=null ? (Integer) object[1]: null;
-			Integer additionalInfo = object[2] !=null? (Integer) object[2] : null;
-			Integer attendanceItem = object[3] !=null ? (Integer) object[3]:null;
-			Integer personalCatergoryNo = (Integer) object[4];
-			Integer workplaceCatergoryNo = (Integer) object[5];
-
-			list.add(new ScheduleTableOutputSettingTemp(code, name, personalInfo, additionalInfo, attendanceItem,
-					personalCatergoryNo, workplaceCatergoryNo, entity));
-			listCode.add(code);		
-		});
-
-		Map<String, List<ScheduleTableOutputSettingTemp>> listData = list.stream()
-				.collect(Collectors.groupingBy(ScheduleTableOutputSettingTemp::getCode));	
-		
-		listCode.stream().forEach(code -> {
-			results.add(this.convertToDomainFromTmp(listData.get(code)));
-
-		});
-
-		return results;
-	}
 	
-	private ScheduleTableOutputSetting convertToDomainFromTmp(List<ScheduleTableOutputSettingTemp> list) {
-		List<PersonalCounterCategory> personalCounterCategories = new ArrayList<PersonalCounterCategory>();
-		List<WorkplaceCounterCategory> workplaceCounterCategories = new ArrayList<WorkplaceCounterCategory>();
-		List<OneRowOutputItem> oneRowOutputItems = new ArrayList<OneRowOutputItem>();
-
-		list.stream().forEach(x -> {
-			if(x.getPersonalCatergoryNo() != null) {
-				personalCounterCategories.add(PersonalCounterCategory.of(x.getPersonalCatergoryNo()));
-			}
-			if(x.getWorkplaceCatergoryNo() != null) {
-				workplaceCounterCategories.add(WorkplaceCounterCategory.of(x.getWorkplaceCatergoryNo()));
-			}			
-
-			OneRowOutputItem item = OneRowOutputItem.create(
-					Optional.ofNullable(x.getPersonalInfo() != null ? EnumAdaptor.valueOf(x.getPersonalInfo(), ScheduleTablePersonalInfoItem.class) : null),
-					Optional.ofNullable(x.getAdditionalInfo() != null ? EnumAdaptor.valueOf(x.getAdditionalInfo(), ScheduleTablePersonalInfoItem.class): null),
-					Optional.ofNullable(x.getAttendanceItem() != null ? EnumAdaptor.valueOf(x.getAttendanceItem(), ScheduleTableAttendanceItem.class): null));				
-			oneRowOutputItems.add(item);
-		});
-
-		OutputItem outputItem = new OutputItem(
-				NotUseAtr.valueOf(list.get(0).getKagmtRptSchedule().additionalColumUseAtr),
-				NotUseAtr.valueOf(list.get(0).getKagmtRptSchedule().shiftBackColorUseAtr),
-				NotUseAtr.valueOf(list.get(0).getKagmtRptSchedule().recordDispAtr), oneRowOutputItems);
-		return new ScheduleTableOutputSetting(new OutputSettingCode(list.get(0).getCode()),
-				new OutputSettingName(list.get(0).getName()), outputItem, workplaceCounterCategories,
-				personalCounterCategories);
-	}
-
+	
+	private List<ScheduleTableOutputSetting> toListDomainFromEntity(List<KagmtRptSchedule> kagmtRptSchedules,
+			List<KagmtRptScheduleItem> kagmtRptScheduleItems, List<KagmtRptScheduleTallyByPerson> kagmtRptScheduleTallyByPersons,
+			List<KagmtRptScheduleTallyByWkp> kagmtRptScheduleTallyByWkps) {
+		
+		List<ScheduleTableOutputSetting> results = new ArrayList<ScheduleTableOutputSetting>();
+		
+		Map<String, List<KagmtRptScheduleItem>> listKagmtRptScheduleItem = kagmtRptScheduleItems.stream()
+				.collect(Collectors.groupingBy(KagmtRptScheduleItem::getCode));	
+		
+		Map<String, List<KagmtRptScheduleTallyByPerson>> listKagmtRptScheduleTallyByPerson = kagmtRptScheduleTallyByPersons.stream()
+				.collect(Collectors.groupingBy(KagmtRptScheduleTallyByPerson::getCode));	
+		
+		
+		Map<String, List<KagmtRptScheduleTallyByWkp>> listKagmtRptScheduleTallyByWkp = kagmtRptScheduleTallyByWkps.stream()
+				.collect(Collectors.groupingBy(KagmtRptScheduleTallyByWkp::getCode));	
+		
+		kagmtRptSchedules.stream().forEach(x -> {
+			results.add(this.toDomainFromEntity(x, listKagmtRptScheduleItem.get(x.pk.code),
+					listKagmtRptScheduleTallyByPerson.get(x.pk.code), listKagmtRptScheduleTallyByWkp.get(x.pk.code)));
+		});		
+		return results;
+	}	
 
 	private KagmtRptSchedule toKagmtRptScheduleEntity(ScheduleTableOutputSetting domain) {
 		return new KagmtRptSchedule(new KagmtRptSchedulePk(AppContexts.user().companyId(), domain.getCode().v()),
@@ -280,11 +181,6 @@ public class JpaScheduleTableOutputSettingItemRepository extends JpaRepository
 
 	@Override
 	public void update(String companyId, ScheduleTableOutputSetting domain) {		
-		String sql1 = "SELECT a From KagmtRptSchedule a WHERE a.pk.companyId = :companyId AND a.pk.code = :code";
-		String sql2 = "SELECT a From KagmtRptScheduleItem a WHERE a.pk.companyId = :companyId AND a.pk.code = :code";	
-		String sql3 = "SELECT a From KagmtRptScheduleTallyByPerson a WHERE a.pk.companyId = :companyId AND a.pk.code = :code";		
-		String sql4 = "SELECT a From KagmtRptScheduleTallyByWkp a WHERE a.pk.companyId = :companyId AND a.pk.code = :code";
-		
 		Optional<KagmtRptSchedule> results1 = this.queryProxy().query(sql1, KagmtRptSchedule.class).setParameter("companyId", companyId)
 				.setParameter("code", domain.getCode().v()).getSingle();
 		if(results1.isPresent()) {
@@ -322,12 +218,7 @@ public class JpaScheduleTableOutputSettingItemRepository extends JpaRepository
 	}
 
 	@Override
-	public void delete(String companyId, OutputSettingCode code) {
-		String sql1 = "SELECT a From KagmtRptSchedule a WHERE a.pk.companyId = :companyId AND a.pk.code = :code";
-		String sql2 = "SELECT a From KagmtRptScheduleItem a WHERE a.pk.companyId = :companyId AND a.pk.code = :code";	
-		String sql3 = "SELECT a From KagmtRptScheduleTallyByPerson a WHERE a.pk.companyId = :companyId AND a.pk.code = :code";		
-		String sql4 = "SELECT a From KagmtRptScheduleTallyByWkp a WHERE a.pk.companyId = :companyId AND a.pk.code = :code";
-		
+	public void delete(String companyId, OutputSettingCode code) {		
 		Optional<KagmtRptSchedule> results1 = this.queryProxy().query(sql1, KagmtRptSchedule.class).setParameter("companyId", companyId)
 				.setParameter("code", code).getSingle();
 		
@@ -357,24 +248,13 @@ public class JpaScheduleTableOutputSettingItemRepository extends JpaRepository
 	}
 
 	@Override
-	public Optional<ScheduleTableOutputSetting> get(String companyId, OutputSettingCode code) {
-//		List<Object[]> results = this.queryProxy().query(GET_BY_CID_AND_CODE).setParameter("companyId", companyId)
-//				.setParameter("code", code.v()).getList();
-//		if(results.isEmpty()) {
-//			return Optional.ofNullable(null);
-//		} else {
-//			return Optional.of(this.toDomainFromObjByCode(results));
-//		}
-		
-		String sql1 = "SELECT a From KagmtRptSchedule a WHERE a.pk.companyId = :companyId AND a.pk.code = :code";
-		String sql2 = "SELECT a From KagmtRptScheduleItem a WHERE a.pk.companyId = :companyId AND a.pk.code = :code";	
-		String sql3 = "SELECT a From KagmtRptScheduleTallyByPerson a WHERE a.pk.companyId = :companyId AND a.pk.code = :code";		
-		String sql4 = "SELECT a From KagmtRptScheduleTallyByWkp a WHERE a.pk.companyId = :companyId AND a.pk.code = :code";
+	public Optional<ScheduleTableOutputSetting> get(String companyId, OutputSettingCode code) {	
+		String sql = sql2 + " ORDER BY a.pk.rowNo ASC ";	
 		
 		Optional<KagmtRptSchedule> results1 = this.queryProxy().query(sql1, KagmtRptSchedule.class).setParameter("companyId", companyId)
 				.setParameter("code", code).getSingle();
 		
-		List<KagmtRptScheduleItem> kagmtRptScheduleItems = this.queryProxy().query(sql2, KagmtRptScheduleItem.class).setParameter("companyId", companyId)
+		List<KagmtRptScheduleItem> kagmtRptScheduleItems = this.queryProxy().query(sql, KagmtRptScheduleItem.class).setParameter("companyId", companyId)
 				.setParameter("code", code).getList();
 		
 		List<KagmtRptScheduleTallyByPerson> kagmtRptScheduleTallyByPersons = this.queryProxy().query(sql3, KagmtRptScheduleTallyByPerson.class).setParameter("companyId", companyId)
@@ -390,16 +270,22 @@ public class JpaScheduleTableOutputSettingItemRepository extends JpaRepository
 			return Optional.ofNullable(null);
 		}		
 	}
-
 	@Override
 	public List<ScheduleTableOutputSetting> getList(String companyId) {
-		List<Object[]> results = this.queryProxy().query(GET_BY_CID).setParameter("companyId", companyId).getList();
-		if(!results.isEmpty()) {
-			return this.toDomainFromObj(results);
-		} else {
-			return new ArrayList<ScheduleTableOutputSetting>();
-		}
+		String query1 = "SELECT a FROM KagmtRptSchedule a WHERE a.pk.companyId = :companyId";
+		String query2 = "SELECT a FROM KagmtRptScheduleItem a WHERE a.pk.companyId = :companyId ORDER BY a.pk.rowNo ASC";	
+		String query3 = "SELECT a FROM KagmtRptScheduleTallyByPerson a WHERE a.pk.companyId = :companyId";		
+		String query4 = "SELECT a FROM KagmtRptScheduleTallyByWkp a WHERE a.pk.companyId = :companyId";
+		
+		List<KagmtRptSchedule> kagmtRptSchedules = this.queryProxy().query(query1, KagmtRptSchedule.class).setParameter("companyId", companyId).getList();
+		
+		List<KagmtRptScheduleItem> kagmtRptScheduleItems = this.queryProxy().query(query2, KagmtRptScheduleItem.class).setParameter("companyId", companyId).getList();
+		
+		List<KagmtRptScheduleTallyByPerson> kagmtRptScheduleTallyByPersons = this.queryProxy().query(query3, KagmtRptScheduleTallyByPerson.class).setParameter("companyId", companyId).getList();
+		
+		List<KagmtRptScheduleTallyByWkp> kagmtRptScheduleTallyByWkps = this.queryProxy().query(query4, KagmtRptScheduleTallyByWkp.class).setParameter("companyId", companyId).getList();
 	
+		return this.toListDomainFromEntity(kagmtRptSchedules, kagmtRptScheduleItems, kagmtRptScheduleTallyByPersons, kagmtRptScheduleTallyByWkps);
 	}
 
 	@Override

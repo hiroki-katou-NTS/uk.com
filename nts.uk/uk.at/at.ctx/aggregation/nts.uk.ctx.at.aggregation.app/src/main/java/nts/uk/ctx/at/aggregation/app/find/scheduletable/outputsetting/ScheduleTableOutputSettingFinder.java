@@ -33,7 +33,9 @@ public class ScheduleTableOutputSettingFinder {
 				.getList(AppContexts.user().companyId());
 		if (scheduleTableOutputSettings.isEmpty()) {
 			List<ScheduleTableOutputSettingDto> results = new ArrayList<ScheduleTableOutputSettingDto>();
-			results.add(ScheduleTableOutputSettingDto.builder().isAttendance(AppContexts.user().roles().isInChargeAttendance()).build());
+			results.add(ScheduleTableOutputSettingDto.builder()
+					.isAttendance(AppContexts.user().roles().isInChargeAttendance())
+					.hasAttendance(AppContexts.user().roles().isInChargeAttendance()).build());
 			return results;			
 		} else {
 			return scheduleTableOutputSettings.stream().map(item -> ScheduleTableOutputSettingDto.setData(item))
