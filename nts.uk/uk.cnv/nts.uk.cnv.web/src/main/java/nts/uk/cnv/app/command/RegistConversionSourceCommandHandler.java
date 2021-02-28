@@ -6,8 +6,8 @@ import javax.inject.Inject;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.cnv.app.dto.AddSourceResult;
-import nts.uk.cnv.dom.conversiontable.ConversionSource;
-import nts.uk.cnv.dom.conversiontable.ConversionSourcesRepository;
+import nts.uk.cnv.dom.cnv.conversiontable.ConversionSource;
+import nts.uk.cnv.dom.cnv.conversiontable.ConversionSourcesRepository;
 
 @Stateless
 public class RegistConversionSourceCommandHandler extends CommandHandlerWithResult<RegistConversionSourceCommand, AddSourceResult>{

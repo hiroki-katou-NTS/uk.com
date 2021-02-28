@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import nts.uk.cnv.dom.categorypriority.CategoryPriorityRepository;
+import nts.uk.cnv.dom.cnv.categorypriority.CategoryPriorityRepository;
 
 public class CategoryPriorityFinder {
 

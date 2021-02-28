@@ -5,9 +5,9 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.cnv.dom.conversiontable.ConversionTableRepository;
-import nts.uk.cnv.dom.conversiontable.OneColumnConversion;
-import nts.uk.cnv.dom.conversiontable.pattern.ConversionPatternFactory;
+import nts.uk.cnv.dom.cnv.conversiontable.ConversionTableRepository;
+import nts.uk.cnv.dom.cnv.conversiontable.OneColumnConversion;
+import nts.uk.cnv.dom.cnv.conversiontable.pattern.ConversionPatternFactory;
 
 @Stateless
 public class RegistConversionTableCommandHandler extends CommandHandler<RegistConversionTableCommand>{

@@ -5,7 +5,7 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.cnv.dom.categorypriority.CategoryPriorityRepository;
+import nts.uk.cnv.dom.cnv.categorypriority.CategoryPriorityRepository;
 
 @Stateless
 public class RegistCategoryPriorityCommandHandler  extends CommandHandler<RegistCategoryPriorityCommand>{

@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import nts.uk.cnv.dom.tabledefinetype.DataType;
-import nts.uk.cnv.dom.tabledesign.ColumnDesign;
+import nts.uk.cnv.dom.td.tabledefinetype.DataType;
+import nts.uk.cnv.dom.td.tabledesign.ColumnDesign;
 
 public final class Constants {
 

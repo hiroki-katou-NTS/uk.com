@@ -35,15 +35,15 @@ import nts.uk.cnv.app.dto.GetUkTablesResultDto;
 import nts.uk.cnv.app.dto.ImportFromFileDto;
 import nts.uk.cnv.app.dto.ImportFromFileResult;
 import nts.uk.cnv.app.dto.TableDesignExportDto;
-import nts.uk.cnv.dom.conversiontable.ConversionTableRepository;
-import nts.uk.cnv.dom.conversiontable.OneColumnConversion;
-import nts.uk.cnv.dom.service.ExportDdlService;
-import nts.uk.cnv.dom.service.ExportDdlServiceResult;
-import nts.uk.cnv.dom.tabledefinetype.UkDataType;
-import nts.uk.cnv.dom.tabledefinetype.databasetype.SqlServerSpec;
-import nts.uk.cnv.dom.tabledesign.ErpTableDesignRepository;
-import nts.uk.cnv.dom.tabledesign.TableDesign;
-import nts.uk.cnv.dom.tabledesign.UkTableDesignRepository;
+import nts.uk.cnv.dom.cnv.conversiontable.ConversionTableRepository;
+import nts.uk.cnv.dom.cnv.conversiontable.OneColumnConversion;
+import nts.uk.cnv.dom.td.service.ExportDdlService;
+import nts.uk.cnv.dom.td.service.ExportDdlServiceResult;
+import nts.uk.cnv.dom.td.tabledefinetype.UkDataType;
+import nts.uk.cnv.dom.td.tabledefinetype.databasetype.SqlServerSpec;
+import nts.uk.cnv.dom.td.tabledesign.ErpTableDesignRepository;
+import nts.uk.cnv.dom.td.tabledesign.TableDesign;
+import nts.uk.cnv.dom.td.tabledesign.UkTableDesignRepository;
 
 @Stateless
 public class TableDesignerService {

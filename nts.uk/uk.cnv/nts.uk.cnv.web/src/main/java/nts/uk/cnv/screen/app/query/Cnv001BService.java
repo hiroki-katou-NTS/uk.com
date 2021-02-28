@@ -6,8 +6,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.cnv.dom.conversiontable.ConversionCategoryTableRepository;
-import nts.uk.cnv.dom.tabledesign.UkTableDesignRepository;
+import nts.uk.cnv.dom.cnv.conversiontable.ConversionCategoryTableRepository;
+import nts.uk.cnv.dom.td.tabledesign.UkTableDesignRepository;
 import nts.uk.cnv.screen.app.query.dto.Cnv001BLoadDataDto;
 import nts.uk.cnv.screen.app.query.dto.Cnv001BLoadParamDto;
 

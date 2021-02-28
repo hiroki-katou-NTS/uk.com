@@ -4,17 +4,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
 
+import nts.uk.cnv.dom.cnv.conversionsql.ColumnName;
+import nts.uk.cnv.dom.cnv.conversionsql.Join;
+import nts.uk.cnv.dom.cnv.conversionsql.JoinAtr;
+import nts.uk.cnv.dom.cnv.conversionsql.OnSentence;
+import nts.uk.cnv.dom.cnv.conversionsql.TableName;
+import nts.uk.cnv.dom.cnv.conversiontable.ConversionTable;
+import nts.uk.cnv.dom.cnv.conversiontable.OneColumnConversion;
+import nts.uk.cnv.dom.cnv.conversiontable.pattern.CodeToIdPattern;
+import nts.uk.cnv.dom.cnv.conversiontable.pattern.FixedValuePattern;
+import nts.uk.cnv.dom.cnv.conversiontable.pattern.NotChangePattern;
+import nts.uk.cnv.dom.cnv.conversiontable.pattern.ParentJoinPattern;
 import nts.uk.cnv.dom.constants.Constants;
-import nts.uk.cnv.dom.conversionsql.ColumnName;
-import nts.uk.cnv.dom.conversionsql.Join;
-import nts.uk.cnv.dom.conversionsql.JoinAtr;
-import nts.uk.cnv.dom.conversionsql.OnSentence;
-import nts.uk.cnv.dom.conversionsql.TableName;
-import nts.uk.cnv.dom.conversiontable.pattern.CodeToIdPattern;
-import nts.uk.cnv.dom.conversiontable.pattern.FixedValuePattern;
-import nts.uk.cnv.dom.conversiontable.pattern.NotChangePattern;
-import nts.uk.cnv.dom.conversiontable.pattern.ParentJoinPattern;
-import nts.uk.cnv.dom.service.ConversionInfo;
+import nts.uk.cnv.dom.cnv.service.ConversionInfo;
 
 public class ConversionTableTestHelper {
 

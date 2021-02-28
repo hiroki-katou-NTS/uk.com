@@ -8,9 +8,12 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import nts.arc.time.GeneralDateTime;
-import nts.uk.cnv.dom.tabledefinetype.DataType;
-import nts.uk.cnv.dom.tabledefinetype.DatabaseSpec;
-import nts.uk.cnv.dom.tabledefinetype.databasetype.DatabaseType;
+import nts.uk.cnv.dom.td.tabledefinetype.DataType;
+import nts.uk.cnv.dom.td.tabledefinetype.DatabaseSpec;
+import nts.uk.cnv.dom.td.tabledefinetype.databasetype.DatabaseType;
+import nts.uk.cnv.dom.td.tabledesign.ColumnDesign;
+import nts.uk.cnv.dom.td.tabledesign.Indexes;
+import nts.uk.cnv.dom.td.tabledesign.TableDesign;
 
 public class TableDesignTest {
 

@@ -10,9 +10,9 @@ import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.tran.AtomTask;
-import nts.uk.cnv.dom.service.TableDesignImportService;
-import nts.uk.cnv.dom.tabledesign.ErpTableDesignRepository;
-import nts.uk.cnv.dom.tabledesign.TableDesign;
+import nts.uk.cnv.dom.td.service.TableDesignImportService;
+import nts.uk.cnv.dom.td.tabledesign.ErpTableDesignRepository;
+import nts.uk.cnv.dom.td.tabledesign.TableDesign;
 
 @Stateless
 public class ErpTableDesignImportCommandHandler extends CommandHandler<ErpTableDesignImportCommand> {

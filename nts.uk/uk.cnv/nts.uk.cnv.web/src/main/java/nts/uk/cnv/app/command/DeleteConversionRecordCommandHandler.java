@@ -5,7 +5,7 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.cnv.dom.conversiontable.ConversionRecordRepository;
+import nts.uk.cnv.dom.cnv.conversiontable.ConversionRecordRepository;
 
 @Stateless
 public class DeleteConversionRecordCommandHandler extends CommandHandler<DeleteConversionRecordCommand> {

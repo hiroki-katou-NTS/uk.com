@@ -5,8 +5,8 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.cnv.dom.conversiontable.ConversionCategoryTable;
-import nts.uk.cnv.dom.conversiontable.ConversionCategoryTableRepository;
+import nts.uk.cnv.dom.cnv.conversiontable.ConversionCategoryTable;
+import nts.uk.cnv.dom.cnv.conversiontable.ConversionCategoryTableRepository;
 
 @Stateless
 public class RegistConversionCategoryCommandHandler extends CommandHandler<RegistConversionCategoryCommand>{

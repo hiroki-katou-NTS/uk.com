@@ -7,8 +7,9 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import nts.uk.cnv.dom.service.ConversionInfo;
-import nts.uk.cnv.dom.tabledefinetype.databasetype.DatabaseType;
+import nts.uk.cnv.dom.cnv.conversionsql.ConversionSQL;
+import nts.uk.cnv.dom.cnv.service.ConversionInfo;
+import nts.uk.cnv.dom.td.tabledefinetype.databasetype.DatabaseType;
 
 /**
  * @author ai_muto

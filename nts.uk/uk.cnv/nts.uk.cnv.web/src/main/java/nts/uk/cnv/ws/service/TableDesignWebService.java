@@ -20,7 +20,7 @@ import nts.uk.cnv.app.dto.ImportFromFileDto;
 import nts.uk.cnv.app.dto.ImportFromFileResult;
 import nts.uk.cnv.app.dto.TableDesignExportDto;
 import nts.uk.cnv.app.service.TableDesignerService;
-import nts.uk.cnv.dom.service.ExportDdlServiceResult;
+import nts.uk.cnv.dom.td.service.ExportDdlServiceResult;
 
 @Path("cnv/tabledesign")
 @Produces("application/json")

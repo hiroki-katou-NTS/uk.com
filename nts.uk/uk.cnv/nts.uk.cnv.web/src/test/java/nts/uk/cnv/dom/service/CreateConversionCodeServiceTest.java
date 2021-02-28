@@ -15,12 +15,14 @@ import mockit.Injectable;
 import mockit.Tested;
 import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
-import nts.uk.cnv.dom.conversiontable.ConversionRecord;
-import nts.uk.cnv.dom.conversiontable.ConversionTable;
+import nts.uk.cnv.dom.cnv.conversiontable.ConversionRecord;
+import nts.uk.cnv.dom.cnv.conversiontable.ConversionTable;
+import nts.uk.cnv.dom.cnv.conversiontable.pattern.manager.AdditionalConversionCode;
+import nts.uk.cnv.dom.cnv.conversiontable.pattern.manager.ParentJoinPatternManager;
+import nts.uk.cnv.dom.cnv.service.ConversionInfo;
+import nts.uk.cnv.dom.cnv.service.CreateConversionCodeService;
 import nts.uk.cnv.dom.conversiontable.ConversionTableTestHelper;
-import nts.uk.cnv.dom.conversiontable.pattern.manager.AdditionalConversionCode;
-import nts.uk.cnv.dom.conversiontable.pattern.manager.ParentJoinPatternManager;
-import nts.uk.cnv.dom.tabledefinetype.databasetype.DatabaseType;
+import nts.uk.cnv.dom.td.tabledefinetype.databasetype.DatabaseType;
 
 @RunWith(JMockit.class)
 public class CreateConversionCodeServiceTest {

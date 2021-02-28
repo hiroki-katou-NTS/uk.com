@@ -10,7 +10,8 @@ import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import net.sf.jsqlparser.JSQLParserException;
 import nts.arc.task.tran.AtomTask;
-import nts.uk.cnv.dom.tabledesign.TableDesign;
+import nts.uk.cnv.dom.td.service.TableDesignImportService;
+import nts.uk.cnv.dom.td.tabledesign.TableDesign;
 
 @RunWith(JMockit.class)
 public class TableDesignImportServiceTest {
