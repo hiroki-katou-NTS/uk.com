@@ -94,7 +94,7 @@ public class WorkTimeReportService_New {
                 
                 /*
                  * R4_89
-                 * 1日勤務用.端数
+                 * 1日勤務用.端数L
                  */
                 Integer rounding = lstWorkingTimezone.get(i).getTimezone().getRounding().getRounding();
                 String roundingString = getRoundingEnum(rounding);
@@ -1197,6 +1197,267 @@ public class WorkTimeReportService_New {
                 cells.get("EJ" + (startIndex + 1)).setValue(raisingSalaryName);
             }
         }
+        
+        // 11       タブグ:                代休
+        
+        List<WorkTimezoneOtherSubHolTimeSetDto> subHolTimeSet = data.getFixedWorkSetting().getCommonSetting().getSubHolTimeSet();
+        Optional<WorkTimezoneOtherSubHolTimeSetDto> subHolTimeWorkDayOffSet = subHolTimeSet.stream()
+                .filter(x -> x.getOriginAtr().equals(CompensatoryOccurrenceDivision.WorkDayOffTime.value)).findFirst();
+        Optional<WorkTimezoneOtherSubHolTimeSetDto> subHolTimeOverTimeOffSet = subHolTimeSet.stream()
+                .filter(x -> x.getOriginAtr().equals(CompensatoryOccurrenceDivision.FromOverTime.value)).findFirst();
+        if (displayMode.equals(DisplayMode.DETAIL.value)) {
+            
+            if (subHolTimeWorkDayOffSet.isPresent()) {
+                /*
+                 * R4_47
+                 * 代休発生に必要な時間.休日出勤
+                 */
+                boolean useDivision = subHolTimeWorkDayOffSet.get().getSubHolTimeSet().isUseDivision();
+                cells.get("EK" + (startIndex + 1)).setValue(useDivision ? "○" : "-");
+                
+                /*
+                 * R4_208
+                 * 代休発生に必要な時間.時間
+                 */
+                Integer subHolTransferSetAtr = subHolTimeWorkDayOffSet.get().getSubHolTimeSet().getSubHolTransferSetAtr();
+                cells.get("EL" + (startIndex + 1)).setValue(subHolTransferSetAtr == 0 ? "指定時間" : "一定時間");
+            }
+        }
+        
+        if (subHolTimeWorkDayOffSet.isPresent()) {
+            /*
+             * R4_209
+             * 代休発生に必要な時間.１日
+             */
+            Integer oneDayTime = subHolTimeWorkDayOffSet.get().getSubHolTimeSet().getDesignatedTime().getOneDayTime();
+            cells.get("EM" + (startIndex + 1)).setValue(getInDayTimeWithFormat(oneDayTime));
+            
+            /*
+             * R4_210
+             * 代休発生に必要な時間.半日
+             */
+            Integer halfDayTime = subHolTimeWorkDayOffSet.get().getSubHolTimeSet().getDesignatedTime().getHalfDayTime();
+            cells.get("EN" + (startIndex + 1)).setValue(getInDayTimeWithFormat(halfDayTime));
+        }
+        
+        if (displayMode.equals(DisplayMode.DETAIL.value)) {
+            if (subHolTimeWorkDayOffSet.isPresent()) {
+                /*
+                 * R4_211
+                 * 代休発生に必要な時間.一定時間
+                 */
+                Integer certainTime = subHolTimeWorkDayOffSet.get().getSubHolTimeSet().getCertainTime();
+                cells.get("EO" + (startIndex + 1)).setValue(getInDayTimeWithFormat(certainTime));
+            }
+            
+            if (subHolTimeOverTimeOffSet.isPresent()) {
+                /*
+                 * R4_48
+                 * 代休発生に必要な時間.残業
+                 */
+                boolean useDivision = subHolTimeOverTimeOffSet.get().getSubHolTimeSet().isUseDivision();
+                cells.get("EP" + (startIndex + 1)).setValue(useDivision ? "○" : "-");
+                
+                /*
+                 * R4_212
+                 * 代休発生に必要な時間.時間
+                 */
+                Integer subHolTransferSetAtr = subHolTimeOverTimeOffSet.get().getSubHolTimeSet().getSubHolTransferSetAtr();
+                cells.get("EQ" + (startIndex + 1)).setValue(subHolTransferSetAtr == 0 ? "指定時間" : "一定時間");
+                
+                /*
+                 * R4_213
+                 * 代休発生に必要な時間.１日
+                 */
+                Integer oneDayTime = subHolTimeOverTimeOffSet.get().getSubHolTimeSet().getDesignatedTime().getOneDayTime();
+                cells.get("ER" + (startIndex + 1)).setValue(getInDayTimeWithFormat(oneDayTime));
+                
+                /*
+                 * R4_214
+                 * 代休発生に必要な時間.半日
+                 */
+                Integer halfDayTime = subHolTimeOverTimeOffSet.get().getSubHolTimeSet().getDesignatedTime().getHalfDayTime();
+                cells.get("ES" + (startIndex + 1)).setValue(getInDayTimeWithFormat(halfDayTime));
+                
+                /*
+                 * R4_215
+                 * 代休発生に必要な時間.一定時間
+                 */
+                Integer certainTime = subHolTimeOverTimeOffSet.get().getSubHolTimeSet().getCertainTime();
+                cells.get("ET" + (startIndex + 1)).setValue(getInDayTimeWithFormat(certainTime));
+            }
+        }
+        
+        // 12       タブグ:                深夜
+        
+        /*
+         * R4_216
+         * 深夜.深夜時間丸め
+         */
+        Integer unit = data.getFixedWorkSetting().getCommonSetting().getLateNightTimeSet().getRoundingSetting().getRoundingTime();
+        cells.get("EU" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unit));
+        
+        /*
+         * R4_217
+         * 深夜.深夜時間端数
+         */
+        Integer rounding = data.getFixedWorkSetting().getCommonSetting().getLateNightTimeSet().getRoundingSetting().getRounding();
+        cells.get("EV" + (startIndex + 1)).setValue(getRoundingEnum(rounding));
+        
+        // 13       タブグ:                臨時
+        
+        /*
+         * R4_218
+         * 臨時.臨時丸め
+         */
+        Integer unitExtraord = data.getFixedWorkSetting().getCommonSetting().getExtraordTimeSet().getTimeRoundingSet().getRoundingTime();
+        cells.get("EW" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitExtraord));
+        
+        /*
+         * R4_219
+         * 臨時.臨時端数
+         */
+        Integer roundingExtraord = data.getFixedWorkSetting().getCommonSetting().getExtraordTimeSet().getTimeRoundingSet().getRounding();
+        cells.get("EX" + (startIndex + 1)).setValue(getRoundingEnum(roundingExtraord));
+        
+        // 14       タブグ:                育児
+        
+        /*
+         * R4_220
+         * 育児.育児時間帯に勤務した場合の扱い
+         */
+        boolean childCareWorkUse = data.getFixedWorkSetting().getCommonSetting().getShortTimeWorkSet().isChildCareWorkUse();
+        cells.get("EY" + (startIndex + 1)).setValue(childCareWorkUse ? "育児時間を減算する" : "育児時間を減算しない");
+        
+        /*
+         * R4_221
+         * 育児.介護時間帯に勤務した場合の扱い
+         */
+        boolean nursTimezoneWorkUse = data.getFixedWorkSetting().getCommonSetting().getShortTimeWorkSet().isNursTimezoneWorkUse();
+        cells.get("EZ" + (startIndex + 1)).setValue(nursTimezoneWorkUse ? "育児時間を減算する" : "育児時間を減算しない");
+        
+        // 15       タブグ:                医療
+        
+        List<WorkTimezoneMedicalSetDto> medicalSets = data.getFixedWorkSetting().getCommonSetting().getMedicalSet();
+        Optional<WorkTimezoneMedicalSetDto> medicalDaySet = medicalSets.stream()
+                .filter(x -> x.getWorkSystemAtr().equals(WorkSystemAtr.DAY_SHIFT.value)).findFirst();
+        Optional<WorkTimezoneMedicalSetDto> medicalNightSet = medicalSets.stream()
+                .filter(x -> x.getWorkSystemAtr().equals(WorkSystemAtr.NIGHT_SHIFT.value)).findFirst();
+
+        if (medicalDaySet.isPresent()) {
+            /*
+             * R4_222
+             * 医療.日勤申し送り時間
+             */
+            Integer applicationTime = medicalDaySet.get().getApplicationTime();
+            cells.get("FA" + (startIndex + 1)).setValue(getInDayTimeWithFormat(applicationTime));
+        }
+        
+        if (medicalNightSet.isPresent()) {
+            /*
+             * R4_223
+             * 医療.夜勤申し送り時間
+             */
+            Integer applicationTime = medicalNightSet.get().getApplicationTime();
+            cells.get("FB" + (startIndex + 1)).setValue(getInDayTimeWithFormat(applicationTime));
+        }
+        
+        if (medicalDaySet.isPresent()) {
+            /*
+             * R4_224
+             * 医療.日勤勤務時間.丸め
+             */
+            Integer unitDay = medicalDaySet.get().getRoundingSet().getRoundingTime();
+            cells.get("FC" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitDay));
+            
+            /*
+             * R4_225
+             * 医療.日勤勤務時間.端数
+             */
+            Integer roundingDay = medicalDaySet.get().getRoundingSet().getRounding();
+            cells.get("FD" + (startIndex + 1)).setValue(getRoundingEnum(roundingDay));
+        }
+        
+        if (medicalNightSet.isPresent()) {
+            /*
+             * R4_226
+             * 医療.夜勤勤務時間.丸め
+             */
+            Integer unitNight = medicalNightSet.get().getRoundingSet().getRoundingTime();
+            cells.get("FE" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitNight));
+            
+            /*
+             * R4_227
+             * 医療.夜勤勤務時間.端数
+             */
+            Integer roundingNight = medicalNightSet.get().getRoundingSet().getRounding();
+            cells.get("FF" + (startIndex + 1)).setValue(getRoundingEnum(roundingNight));
+        }
+        
+        // 16       タブグ:                0時跨ぎ
+        
+        /*
+         * R4_228
+         * ０時跨ぎ.0時跨ぎ計算
+         */
+        boolean zeroHStraddCalculateSet = data.getFixedWorkSetting().getCommonSetting().isZeroHStraddCalculateSet();
+        cells.get("FG" + (startIndex + 1)).setValue(zeroHStraddCalculateSet ? "する" : "しない");
+        
+        // 17       タブグ:                その地
+        
+        /*
+         * R4_229
+         * その他.勤務種類が休暇の場合に就業時間を計算するか
+         */
+        Integer isCalculate = data.getFixedWorkSetting().getCommonSetting().getHolidayCalculation().getIsCalculate();
+        cells.get("FH" + (startIndex + 1)).setValue(getUseAtr(isCalculate));
+        
+        FixedWorkCalcSettingDto calculationSetting = data.getFixedWorkSetting().getCalculationSetting();
+        if (calculationSetting != null) {
+            /*
+             * R4_57
+             * その他.休暇加算時間を加算する場合に就業時間として加算するか.しない
+             */
+            Integer calcMethod = calculationSetting.getExceededPredAddVacationCalc().getCalcMethod();
+            cells.get("FI" + (startIndex + 1)).setValue(getUseAtr(calcMethod));
+            
+            /*
+             * R4_231
+             * その他.休暇加算時間を加算する場合に就業時間として加算するか.残業枠
+             */
+            Integer otFrameNo = calculationSetting.getExceededPredAddVacationCalc().getOtFrameNo();
+            Optional<WorkdayoffFrameFindDto> otFrame = otFrameFind.stream().filter(x -> x.getWorkdayoffFrNo() == otFrameNo).findFirst();
+            if (otFrame.isPresent()) {
+                cells.get("FJ" + (startIndex + 1)).setValue(otFrame.get().getWorkdayoffFrName());
+            }
+            
+            /*
+             * R4_58
+             * その他.休憩未取得時に就業時間として計算するか
+             */
+            Integer calcMethodOt = calculationSetting.getOverTimeCalcNoBreak().getCalcMethod();
+            cells.get("FK" + (startIndex + 1)).setValue(getUseAtr(calcMethodOt));
+            
+            /*
+             * R4_232
+             * その他.休憩未取得時に就業時間として計算するか.法定内残業枠
+             */
+            Integer inLawOT = calculationSetting.getOverTimeCalcNoBreak().getInLawOT();
+            Optional<WorkdayoffFrameFindDto> otFrameInLaw = otFrameFind.stream().filter(x -> x.getWorkdayoffFrNo() == inLawOT).findFirst();
+            if (otFrameInLaw.isPresent()) {
+                cells.get("FL" + (startIndex + 1)).setValue(otFrameInLaw.get().getWorkdayoffFrName());
+            }
+            
+            /*
+             * R4_233
+             * その他.休憩未取得時に就業時間として計算するか.法定外残業枠
+             */
+            Integer notInLawOT = calculationSetting.getOverTimeCalcNoBreak().getInLawOT();
+            Optional<WorkdayoffFrameFindDto> otFrameNotInLaw = otFrameFind.stream().filter(x -> x.getWorkdayoffFrNo() == notInLawOT).findFirst();
+            if (otFrameNotInLaw.isPresent()) {
+                cells.get("FM" + (startIndex + 1)).setValue(otFrameNotInLaw.get().getWorkdayoffFrName());
+            }
+        }
     }
     
     /**
@@ -1646,7 +1907,7 @@ public class WorkTimeReportService_New {
         }
         
         String[] priorityAtr = {"最初", "最後"};
-        for (int i = 0; i <= priorityAtr.length; i++) {
+        for (int i = 0; i < priorityAtr.length; i++) {
             if (priority == i) {
                 return priorityAtr[i];
             }
@@ -1666,7 +1927,7 @@ public class WorkTimeReportService_New {
         }
         
         String[] calculatedMethodAtr = {"休憩を計算しない", "退勤までの休憩時間を計算する(丸めを適用する)", "退勤以降も含め休憩時間を全て計上する"};
-        for (int i = 0; i <= calculatedMethodAtr.length; i++) {
+        for (int i = 0; i < calculatedMethodAtr.length; i++) {
             if (calculatedMethod == i) {
                 return calculatedMethodAtr[i];
             }
@@ -1686,7 +1947,7 @@ public class WorkTimeReportService_New {
         }
         
         String[] frameRoundings = {"合算した後に丸める", "休憩枠毎に丸める"};
-        for (int i = 0; i <= frameRoundings.length; i++) {
+        for (int i = 0; i < frameRoundings.length; i++) {
             if (frameRoundingAtr == i) {
                 return frameRoundings[i];
             }
@@ -1706,9 +1967,29 @@ public class WorkTimeReportService_New {
         }
         
         String[] approTimeRoundings = {"時間帯の丸めを逆に適用する", "丸めを設定する"};
-        for (int i = 0; i <= approTimeRoundings.length; i++) {
+        for (int i = 0; i < approTimeRoundings.length; i++) {
             if (approTimeRoundingAtr == i) {
                 return approTimeRoundings[i];
+            }
+        }
+        
+        return "";
+    }
+    
+    /**
+     * するしない区分
+     * @param useAtr
+     * @return
+     */
+    private static String getUseAtr(Integer useAtr) {
+        if (useAtr == null) {
+            return "";
+        }
+        
+        String[] uses = {"しない", "する"};
+        for (int i = 0; i < uses.length; i++) {
+            if (useAtr == i) {
+                return uses[i];
             }
         }
         
