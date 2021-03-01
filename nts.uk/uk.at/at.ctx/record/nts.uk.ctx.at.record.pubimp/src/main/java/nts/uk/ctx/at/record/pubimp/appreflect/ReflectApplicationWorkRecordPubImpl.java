@@ -58,6 +58,8 @@ import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.apprefle
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.stampapplication.StampAppReflectRepository;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectRepository;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveApplicationReflect;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.VacationApplicationReflect;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.VacationApplicationReflectRepository;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeAppRepository;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrorMessageInfo;
@@ -155,6 +157,9 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 	
 	@Inject
 	private AppReflectOtHdWorkRepository appReflectOtHdWorkRepository;
+	
+	@Inject
+	private VacationApplicationReflectRepository vacationApplicationReflectRepository;
 
 	@Override
 	public Pair<ReflectStatusResultShare, Optional<AtomTask>> process(Object application, GeneralDate date,
@@ -167,7 +172,7 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 				requestSettingAdapter, flexWorkSettingRepository, predetemineTimeSettingRepository,
 				fixedWorkSettingRepository, flowWorkSettingRepository, goBackReflectRepository,
 				stampAppReflectRepository, lateEarlyCancelReflectRepository, reflectWorkChangeAppRepository,
-				timeLeaveAppReflectRepository, appReflectOtHdWorkRepository);
+				timeLeaveAppReflectRepository, appReflectOtHdWorkRepository, vacationApplicationReflectRepository);
 		return ReflectApplicationWorkRecord.process(impl ,(ApplicationShare) application, date, reflectStatus);
 	}
 
@@ -227,6 +232,8 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
         private final TimeLeaveAppReflectRepository timeLeaveAppReflectRepository;
         
         private final AppReflectOtHdWorkRepository appReflectOtHdWorkRepository;
+        
+    	private final VacationApplicationReflectRepository vacationApplicationReflectRepository;
 
 		@Override
 		public List<StampCard> getLstStampCardBySidAndContractCd(String sid) {
@@ -403,6 +410,11 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 				List<IntegrationOfDaily> integrationOfDaily, Optional<ManagePerCompanySet> companySet,
 				ExecutionType reCalcAtr) {
 			return calculateForSchedule(calcOption, integrationOfDaily, companySet, reCalcAtr);
+		}
+
+		@Override
+		public Optional<VacationApplicationReflect> findVacationApp(String companyId) {
+			return vacationApplicationReflectRepository.findReflectByCompanyId(companyId);
 		}
 
 	}

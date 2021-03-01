@@ -40,6 +40,8 @@ import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.apprefle
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.stampapplication.StampAppReflectRepository;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectRepository;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveApplicationReflect;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.VacationApplicationReflect;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.VacationApplicationReflectRepository;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeAppRepository;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
@@ -117,6 +119,9 @@ public class GetApplicationReflectionResultPubImpl implements GetApplicationRefl
 
 	@Inject
 	private AppReflectOtHdWorkRepository appReflectOtHdWorkRepository;
+	
+	@Inject
+	private VacationApplicationReflectRepository vacationApplicationReflectRepository;
 
 	@Override
 	public Optional<IntegrationOfDaily> getApp(String companyId, Object application, GeneralDate baseDate,
@@ -126,7 +131,8 @@ public class GetApplicationReflectionResultPubImpl implements GetApplicationRefl
 				flexWorkSettingRepository, predetemineTimeSettingRepository, fixedWorkSettingRepository,
 				flowWorkSettingRepository, goBackReflectRepository, stampAppReflectRepository,
 				lateEarlyCancelReflectRepository, reflectWorkChangeAppRepository, correctionAfterTimeChange,
-				timeLeaveAppReflectRepository, dailyRecordConverter, appReflectOtHdWorkRepository);
+				timeLeaveAppReflectRepository, dailyRecordConverter, appReflectOtHdWorkRepository,
+				vacationApplicationReflectRepository);
 		return GetApplicationReflectionResult.getApp(impl, companyId, (ApplicationShare) application, baseDate,
 				dailyData);
 	}
@@ -173,6 +179,8 @@ public class GetApplicationReflectionResultPubImpl implements GetApplicationRefl
 		private final DailyRecordConverter dailyRecordConverter;
 		
 		private final AppReflectOtHdWorkRepository appReflectOtHdWorkRepository;
+		
+		private final VacationApplicationReflectRepository vacationApplicationReflectRepository;
 
 		@Override
 		public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
@@ -303,6 +311,11 @@ public class GetApplicationReflectionResultPubImpl implements GetApplicationRefl
 		@Override
 		public Optional<AppReflectOtHdWork> findOvertime(String companyId) {
 			return appReflectOtHdWorkRepository.findByCompanyId(companyId);
+		}
+
+		@Override
+		public Optional<VacationApplicationReflect> findVacationApp(String companyId) {
+			return vacationApplicationReflectRepository.findReflectByCompanyId(companyId);
 		}
 
 	}

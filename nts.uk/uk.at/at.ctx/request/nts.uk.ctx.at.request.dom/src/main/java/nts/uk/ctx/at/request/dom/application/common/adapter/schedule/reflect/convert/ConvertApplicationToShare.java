@@ -9,6 +9,8 @@ import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.DailyAttendanceUpdateStatus;
 import nts.uk.ctx.at.request.dom.application.ReflectionStatus;
+import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeave;
+import nts.uk.ctx.at.request.dom.application.appabsence.apptimedigest.TimeDigestApplication;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarly;
@@ -20,6 +22,14 @@ import nts.uk.ctx.at.request.dom.application.stamp.DestinationTimeApp;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplication;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
+import nts.uk.ctx.at.shared.dom.application.appabsence.ApplyForLeaveShare;
+import nts.uk.ctx.at.shared.dom.application.appabsence.ApplyforSpecialLeaveShare;
+import nts.uk.ctx.at.shared.dom.application.appabsence.HolidayAppTypeShare;
+import nts.uk.ctx.at.shared.dom.application.appabsence.ReflectFreeTimeAppShare;
+import nts.uk.ctx.at.shared.dom.application.appabsence.RelationshipCDPrimitiveShare;
+import nts.uk.ctx.at.shared.dom.application.appabsence.RelationshipReasonPrimitiveShare;
+import nts.uk.ctx.at.shared.dom.application.appabsence.SupplementInfoVacationShare;
+import nts.uk.ctx.at.shared.dom.application.appabsence.VacationRequestInfoShare;
 import nts.uk.ctx.at.shared.dom.application.bussinesstrip.BusinessTripInfoShare;
 import nts.uk.ctx.at.shared.dom.application.bussinesstrip.BusinessTripShare;
 import nts.uk.ctx.at.shared.dom.application.common.AppReasonShare;
@@ -171,8 +181,24 @@ public class ConvertApplicationToShare {
 			return overShare;
 
 		case ABSENCE_APPLICATION:
-			// TODO: wait new domain
-			return appShare;
+			ApplyForLeave appAbsence= (ApplyForLeave) application;
+			val reflectFreeTimeDom = appAbsence.getReflectFreeTimeApp();
+			ReflectFreeTimeAppShare reflectFreeTimeApp = new ReflectFreeTimeAppShare(
+					reflectFreeTimeDom.getWorkingHours().orElse(new ArrayList<>()),
+					reflectFreeTimeDom.getTimeDegestion().map(x -> convertTimeDigest(x)), 
+					reflectFreeTimeDom.getWorkInfo(), 
+					reflectFreeTimeDom.getWorkChangeUse());
+			val vacationInfoDom = appAbsence.getVacationInfo();
+			
+			VacationRequestInfoShare vacationInfo = new VacationRequestInfoShare(
+					EnumAdaptor.valueOf(vacationInfoDom.getHolidayApplicationType().value, HolidayAppTypeShare.class),
+					new SupplementInfoVacationShare(vacationInfoDom.getInfo().getDatePeriod(),
+							vacationInfoDom.getInfo().getApplyForSpeLeaveOptional().map(x -> {
+								return new ApplyforSpecialLeaveShare(x.isMournerFlag(), 
+										x.getRelationshipCD().map(y -> new RelationshipCDPrimitiveShare(y.v())),
+										x.getRelationshipReason().map(y -> new RelationshipReasonPrimitiveShare(y.v())));
+							})));
+			return new ApplyForLeaveShare(appShare, reflectFreeTimeApp, vacationInfo);
 
 		case WORK_CHANGE_APPLICATION:
 			AppWorkChange appWCh = (AppWorkChange) application;
@@ -237,12 +263,7 @@ public class ConvertApplicationToShare {
 
 			return new TimeLeaveApplicationShare(appShare, appTimeLeav.getLeaveApplicationDetails().stream().map(x -> {
 				return new TimeLeaveApplicationDetailShare(x.getAppTimeType(), x.getTimeZoneWithWorkNoLst(),
-						new TimeDigestApplicationShare(x.getTimeDigestApplication().getOvertime60H(),
-								x.getTimeDigestApplication().getNursingTime(),
-								x.getTimeDigestApplication().getChildTime(), x.getTimeDigestApplication().getTimeOff(),
-								x.getTimeDigestApplication().getTimeSpecialVacation(),
-								x.getTimeDigestApplication().getTimeAnnualLeave(),
-								x.getTimeDigestApplication().getSpecialVacationFrameNO()));
+						convertTimeDigest(x.getTimeDigestApplication()));
 			}).collect(Collectors.toList()));
 
 		case EARLY_LEAVE_CANCEL_APPLICATION:
@@ -289,5 +310,11 @@ public class ConvertApplicationToShare {
 										x.calculationAverageTime(), x.getTotalTime()))
 								.collect(Collectors.toList()),
 						dom.getAgreeUpperLimitAverage().getUpperLimitTime()));
+	}
+	
+	private static TimeDigestApplicationShare convertTimeDigest(TimeDigestApplication data) {
+		return new TimeDigestApplicationShare(data.getOvertime60H(), data.getNursingTime(), data.getChildTime(),
+				data.getTimeOff(), data.getTimeSpecialVacation(), data.getTimeAnnualLeave(),
+				data.getSpecialVacationFrameNO());
 	}
 }

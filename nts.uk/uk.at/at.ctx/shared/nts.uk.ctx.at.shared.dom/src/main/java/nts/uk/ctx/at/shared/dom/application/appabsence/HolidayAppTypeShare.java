@@ -1,15 +1,15 @@
-package nts.uk.ctx.at.request.dom.application.appabsence;
+package nts.uk.ctx.at.shared.dom.application.appabsence;
 
 import lombok.AllArgsConstructor;
 
 /**
+ * refactor 4
  * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.申請承認.申請.休暇申請.休暇申請の種類
- * 
- * @author thanhnx
+ * @author Doan Duy Hung
  *
  */
 @AllArgsConstructor
-public enum HolidayAppType {
+public enum HolidayAppTypeShare {
 	/**
 	 * 年次有休
 	 */
@@ -38,8 +38,8 @@ public enum HolidayAppType {
 	 * 時間消化
 	 */
 	DIGESTION_TIME(6, "時間消化");
-
+	
 	public final int value;
-
+	
 	public final String name;
 }

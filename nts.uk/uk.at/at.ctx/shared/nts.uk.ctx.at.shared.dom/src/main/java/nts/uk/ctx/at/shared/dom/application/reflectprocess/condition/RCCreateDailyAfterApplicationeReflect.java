@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.application.appabsence.ApplyForLeaveShare;
 import nts.uk.ctx.at.shared.dom.application.bussinesstrip.BusinessTripShare;
 import nts.uk.ctx.at.shared.dom.application.common.ApplicationShare;
 import nts.uk.ctx.at.shared.dom.application.common.StampRequestModeShare;
@@ -16,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.SCCreateDai
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.businesstrip.ReflectBusinessTripApp;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.businesstrip.record.RCReflectBusinessTripApp;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.gobackdirectly.schedulerecord.SCRCReflectGoBackDirectlyApp;
+import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.groupappabsence.appabsence.schedule.RCReflectApplyForLeaveApp;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.lateleaveearly.record.RCReflectArrivedLateLeaveEarlyApp;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.overtimeholiday.RCReflectOvertimeApp;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.stamp.record.RCReflectWorkStampApp;
@@ -29,6 +31,7 @@ import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.apprefle
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWork;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveApplicationReflect;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.VacationApplicationReflect;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
 
 /**
@@ -52,8 +55,9 @@ public class RCCreateDailyAfterApplicationeReflect {
 					(AppReflectOtHdWork) domainSetReflect));
 			break;
 		case ABSENCE_APPLICATION:
-			// TODO: 1：休暇申請を反映する(勤務予定）
-			break;
+			// 1：休暇申請を反映する(勤務予定）
+			return RCReflectApplyForLeaveApp.process(require, (ApplyForLeaveShare) application, dailyApp,
+					(VacationApplicationReflect) domainSetReflect);
 		case WORK_CHANGE_APPLICATION:
 			// 2：勤務変更申請を反映する(勤務予定）
 			itemIds.addAll(RCReflectWorkChangeApp.reflect(require, (AppWorkChangeShare) application, dailyApp,
@@ -106,7 +110,8 @@ public class RCCreateDailyAfterApplicationeReflect {
 	}
 
 	public static interface Require extends GetDomainReflectModelApp.Require, RCReflectWorkChangeApp.Require,
-			SCRCReflectGoBackDirectlyApp.Require, RCReflectWorkStampApp.Require, RCReflectBusinessTripApp.Require, RCReflectOvertimeApp.Require {
+			SCRCReflectGoBackDirectlyApp.Require, RCReflectWorkStampApp.Require, RCReflectBusinessTripApp.Require, 
+			RCReflectOvertimeApp.Require, RCReflectApplyForLeaveApp.Require {
 
 	}
 }

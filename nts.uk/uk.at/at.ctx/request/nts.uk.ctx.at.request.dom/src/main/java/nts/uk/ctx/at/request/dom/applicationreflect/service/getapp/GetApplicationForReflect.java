@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeave;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarly;
@@ -27,8 +28,11 @@ public class GetApplicationForReflect {
 				return x;
 			}).orElse(null);
 		case ABSENCE_APPLICATION:
-			// TODO: 1：休暇申請の反映
-			return null;
+			//1：休暇申請の反映
+			return require.findApplyForLeave(companyId, appID).map(x -> {
+				x.setApplication(app);
+				return x;
+			}).orElse(null);
 		case WORK_CHANGE_APPLICATION:
 			// 2：勤務変更申請
 			return require.findAppWorkCg(companyId, appID, app).orElse(null);
@@ -87,5 +91,7 @@ public class GetApplicationForReflect {
 		public Optional<TimeLeaveApplication> findTimeLeavById(String companyId, String appId);
 		
 		public Optional<AppOverTime> findOvertime(String companyId, String appId);
+		
+		public Optional<ApplyForLeave> findApplyForLeave(String CID, String appId);
 	}
 }

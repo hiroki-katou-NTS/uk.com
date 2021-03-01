@@ -7,6 +7,8 @@ import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeave;
+import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeaveRepository;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripRepository;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
@@ -43,11 +45,13 @@ public class GetApplicationRequireImpl {
 	private TimeLeaveApplicationRepository timeLeaveApplicationRepository;
 	@Inject
 	private AppOverTimeRepository appOverTimeRepository;
+	@Inject
+	private ApplyForLeaveRepository applyForLeaveRepository;
 
 	public RequireImpl createImpl() {
 
 		return new RequireImpl(repoGoBack, repoBusTrip, repoLateLeave, repoStamp, repoWorkChange, repoRecordImg,
-				timeLeaveApplicationRepository, appOverTimeRepository);
+				timeLeaveApplicationRepository, appOverTimeRepository, applyForLeaveRepository);
 	}
 
 	@AllArgsConstructor
@@ -68,6 +72,8 @@ public class GetApplicationRequireImpl {
 		private final TimeLeaveApplicationRepository timeLeaveApplicationRepository;
 		
 		private final AppOverTimeRepository appOverTimeRepository;
+		
+		private final ApplyForLeaveRepository applyForLeaveRepository;
 
 		@Override
 		public Optional<AppWorkChange> findAppWorkCg(String companyId, String appID, Application app) {
@@ -110,6 +116,11 @@ public class GetApplicationRequireImpl {
 		@Override
 		public Optional<AppOverTime> findOvertime(String companyId, String appId) {
 			return appOverTimeRepository.find(companyId, appId);
+		}
+
+		@Override
+		public Optional<ApplyForLeave> findApplyForLeave(String CID, String appId) {
+			return applyForLeaveRepository.findApplyForLeave(CID, appId);
 		}
 
 	}

@@ -25,6 +25,8 @@ import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeave;
+import nts.uk.ctx.at.request.dom.application.appabsence.ApplyForLeaveRepository;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripRepository;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeStatusAdapter;
@@ -160,6 +162,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 	private GetApplicationReflectionResultAdapter getApplicationReflectionResultAdapter;
 	@Inject
 	private TimeLeaveApplicationRepository timeLeaveApplicationRepo;
+	@Inject
+	private ApplyForLeaveRepository applyForLeaveRepository;
 	
 	@Override
 	public int checkOvertimeAtr(String url) {
@@ -781,6 +785,11 @@ public class OvertimeServiceImpl implements OvertimeService {
 			@Override
 			public Optional<AppOverTime> findOvertime(String companyId, String appId) {
 				return appOverTimeRepository.find(companyId, appId);
+			}
+
+			@Override
+			public Optional<ApplyForLeave> findApplyForLeave(String CID, String appId) {
+				return applyForLeaveRepository.findApplyForLeave(CID, appId);
 			}
 		};
 	}

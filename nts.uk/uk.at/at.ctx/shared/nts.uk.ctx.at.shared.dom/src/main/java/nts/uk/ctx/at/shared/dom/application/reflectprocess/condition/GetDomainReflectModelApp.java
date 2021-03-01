@@ -10,6 +10,7 @@ import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.apprefle
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.AppReflectOtHdWork;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveApplicationReflect;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.VacationApplicationReflect;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
 
 /**
@@ -28,8 +29,8 @@ public class GetDomainReflectModelApp {
 			// 0：残業申請の反映
 			return require.findOvertime(companyId).orElse(null);
 		case ABSENCE_APPLICATION:
-			// TODO: 1：休暇申請の反映
-			return null;
+			// 1：休暇申請の反映
+			return require.findVacationApp(companyId).orElse(null);
 		case WORK_CHANGE_APPLICATION:
 			// 2：勤務変更申請の反映
 			return require.findReflectWorkCg(companyId).orElse(null);
@@ -86,5 +87,7 @@ public class GetDomainReflectModelApp {
 		public Optional<TimeLeaveApplicationReflect> findReflectTimeLeav(String companyId);
 		
 		public Optional<AppReflectOtHdWork> findOvertime(String companyId);
+		
+		public Optional<VacationApplicationReflect> findVacationApp(String companyId);
 	}
 }

@@ -48,6 +48,8 @@ import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.apprefle
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.stampapplication.StampAppReflectRepository;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectRepository;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveApplicationReflect;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.VacationApplicationReflect;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.VacationApplicationReflectRepository;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeAppRepository;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
@@ -129,6 +131,9 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 	
 	@Inject
 	private AppReflectOtHdWorkRepository appReflectOtHdWorkRepository;
+	
+	@Inject
+	private VacationApplicationReflectRepository vacationApplicationReflectRepository;
 
 	@Override
 	public Pair<Object, AtomTask> process(Object application, GeneralDate date, Object reflectStatus, int preAppWorkScheReflectAttr) {
@@ -139,7 +144,8 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 				calculateDailyRecordServiceCenterNew, requestSettingAdapter, snapshotRepo, flexWorkSettingRepository,
 				predetemineTimeSettingRepository, fixedWorkSettingRepository, flowWorkSettingRepository,
 				goBackReflectRepository, stampAppReflectRepository, lateEarlyCancelReflectRepository,
-				reflectWorkChangeAppRepository, timeLeaveAppReflectRepository, appReflectOtHdWorkRepository);
+				reflectWorkChangeAppRepository, timeLeaveAppReflectRepository, appReflectOtHdWorkRepository,
+				vacationApplicationReflectRepository);
 		Pair<ReflectStatusResultShare, AtomTask> result = ReflectApplicationWorkSchedule.process(impl, companyId,
 				(ApplicationShare) application, date, (ReflectStatusResultShare) reflectStatus,
 				preAppWorkScheReflectAttr);
@@ -190,6 +196,8 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 		private final TimeLeaveAppReflectRepository timeLeaveAppReflectRepository;
 		
 		private final AppReflectOtHdWorkRepository appReflectOtHdWorkRepository;
+		
+		private final VacationApplicationReflectRepository vacationApplicationReflectRepository;
 
 		@Override
 		public Optional<WorkType> getWorkType(String workTypeCd) {
@@ -326,6 +334,11 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 		@Override
 		public Optional<AppReflectOtHdWork> findOvertime(String companyId) {
 			return appReflectOtHdWorkRepository.findByCompanyId(companyId);
+		}
+
+		@Override
+		public Optional<VacationApplicationReflect> findVacationApp(String companyId) {
+			return vacationApplicationReflectRepository.findReflectByCompanyId(companyId);
 		}
 
 	}

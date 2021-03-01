@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -97,5 +98,14 @@ public class WorkStamp extends DomainObject{
 				new WorkTimeInformation(
 						new ReasonTimeChange(TimeChangeMeans.APPLICATION, Optional.empty()), null),
 				Optional.empty());
+	}
+	
+    // 予定実績区分と 勤怠打刻をクリアする
+	public void cleanStamp(ScheduleRecordClassifi classification) {
+		this.locationCode = Optional.empty();
+		this.timeDay.setTimeWithDay(Optional.empty());
+		if (classification == ScheduleRecordClassifi.RECORD) {
+			this.timeDay.getReasonTimeChange().setTimeChangeMeans(TimeChangeMeans.APPLICATION);
+		}
 	}
 }
