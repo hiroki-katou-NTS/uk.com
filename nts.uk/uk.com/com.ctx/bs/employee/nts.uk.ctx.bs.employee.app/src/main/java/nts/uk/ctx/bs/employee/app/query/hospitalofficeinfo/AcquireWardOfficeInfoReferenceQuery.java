@@ -24,9 +24,9 @@ public class AcquireWardOfficeInfoReferenceQuery {
     @Inject
     HospitalBusinessOfficeInfoHistoryRepository infoHistoryRepository;
 
-    public HospitalBusinessOfficeInfoDto getHospitalBusinessOfficeInfo(String workplaceGroupId, GeneralDate baseDate) {
+    public HospitalBusinessOfficeInfoDto getHospitalBusinessOfficeInfo(String workplaceGroupId) {
 
-        Optional<HospitalBusinessOfficeInfo> optionalOfficeInfo = infoHistoryRepository.get(workplaceGroupId,baseDate);
+        Optional<HospitalBusinessOfficeInfo> optionalOfficeInfo = infoHistoryRepository.get(workplaceGroupId,GeneralDate.today());
         if (!optionalOfficeInfo.isPresent()) {
             return null;
         }else {

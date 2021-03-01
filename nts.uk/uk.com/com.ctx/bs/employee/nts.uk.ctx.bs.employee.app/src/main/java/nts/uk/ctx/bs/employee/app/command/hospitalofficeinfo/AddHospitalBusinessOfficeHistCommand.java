@@ -12,9 +12,9 @@ public class AddHospitalBusinessOfficeHistCommand {
 
     private int nightShiftOperationAtr;
 
-    private String ClockHourMinuteStart; // HH:mm
+    private Integer ClockHourMinuteStart; // HH:mm
 
-    private String ClockHourMinuteEnd; // HH:mm
+    private Integer ClockHourMinuteEnd; // HH:mm
 
     private String startDate;
 

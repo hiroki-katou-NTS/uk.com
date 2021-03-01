@@ -129,7 +129,7 @@ public class WorkplaceGroupWs extends WebService {
     @Path("getnightshiftinfor")
     public HospitalBusinessOfficeInfoDto getNightShiftInfor(DateAndWplIdDto request) {
         return acquireWardOfficeInfoReferenceQuery
-                .getHospitalBusinessOfficeInfo(request.getWorkplaceGroupId(),request.toDate());
+                .getHospitalBusinessOfficeInfo(request.getWorkplaceGroupId());
     }
 
     //B INIT SCREEN

@@ -31,11 +31,8 @@ public class RegistOfNightShiftInforCommandHandler extends CommandHandler<Regist
         Optional<ClockHourMinuteSpan> shiftTime = Optional.empty();
         Optional<NursingCareEstablishmentInfo> nursingCareEstInfo = Optional.empty();
         if (command.getClockHourMinuteStart() != null && command.getClockHourMinuteEnd() != null) {
-
-            LocalTime localTimeStart = LocalTime.parse(command.getClockHourMinuteStart());
-            LocalTime localTimeEnd = LocalTime.parse(command.getClockHourMinuteEnd());
-            ClockHourMinute clockHourMinuteStart = ClockHourMinute.hm(localTimeStart.getHour(), localTimeStart.getMinute());
-            ClockHourMinute clockHourMinuteEnd = ClockHourMinute.hm(localTimeEnd.getHour(), localTimeEnd.getMinute());
+            ClockHourMinute clockHourMinuteStart = new ClockHourMinute(command.getClockHourMinuteStart());
+            ClockHourMinute clockHourMinuteEnd = new ClockHourMinute(command.getClockHourMinuteEnd());
             ClockHourMinuteSpan clockHourMinuteSpan = ClockHourMinuteSpan.create(clockHourMinuteStart, clockHourMinuteEnd);
             shiftTime = Optional.of(clockHourMinuteSpan);
 
