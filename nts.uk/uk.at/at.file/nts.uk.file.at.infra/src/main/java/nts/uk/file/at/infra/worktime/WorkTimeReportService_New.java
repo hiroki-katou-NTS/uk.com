@@ -1907,7 +1907,7 @@ public class WorkTimeReportService_New {
         }
         
         String[] priorityAtr = {"最初", "最後"};
-        for (int i = 0; i <= priorityAtr.length; i++) {
+        for (int i = 0; i < priorityAtr.length; i++) {
             if (priority == i) {
                 return priorityAtr[i];
             }
@@ -1927,7 +1927,7 @@ public class WorkTimeReportService_New {
         }
         
         String[] calculatedMethodAtr = {"休憩を計算しない", "退勤までの休憩時間を計算する(丸めを適用する)", "退勤以降も含め休憩時間を全て計上する"};
-        for (int i = 0; i <= calculatedMethodAtr.length; i++) {
+        for (int i = 0; i < calculatedMethodAtr.length; i++) {
             if (calculatedMethod == i) {
                 return calculatedMethodAtr[i];
             }
@@ -1947,7 +1947,7 @@ public class WorkTimeReportService_New {
         }
         
         String[] frameRoundings = {"合算した後に丸める", "休憩枠毎に丸める"};
-        for (int i = 0; i <= frameRoundings.length; i++) {
+        for (int i = 0; i < frameRoundings.length; i++) {
             if (frameRoundingAtr == i) {
                 return frameRoundings[i];
             }
@@ -1967,7 +1967,7 @@ public class WorkTimeReportService_New {
         }
         
         String[] approTimeRoundings = {"時間帯の丸めを逆に適用する", "丸めを設定する"};
-        for (int i = 0; i <= approTimeRoundings.length; i++) {
+        for (int i = 0; i < approTimeRoundings.length; i++) {
             if (approTimeRoundingAtr == i) {
                 return approTimeRoundings[i];
             }
