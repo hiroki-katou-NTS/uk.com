@@ -44,7 +44,7 @@ public class OutputYearHolidayManagementQuery {
 	//selectedEmployees
 	List<EmployeeInfo>  selectedEmployees;
 	
-	List<ClosurePrintDto> closureData;
+	ClosurePrintDto closureData;
 	
 	String programName;
 	

@@ -51,7 +51,7 @@ public class OutputYearHolidayManagementQueryDto {
 	//selectedEmployees
 	private	List<EmployeeInfo>  selectedEmployees;
 		
-	private	List<ClosurePrintDto> closureData;
+	private	ClosurePrintDto closureData;
 	
 	
 	private int mode;

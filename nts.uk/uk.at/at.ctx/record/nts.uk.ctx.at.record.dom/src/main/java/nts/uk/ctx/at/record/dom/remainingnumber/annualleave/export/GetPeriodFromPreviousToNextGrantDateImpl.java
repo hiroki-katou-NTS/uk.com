@@ -102,7 +102,7 @@ public class GetPeriodFromPreviousToNextGrantDateImpl implements GetPeriodFromPr
 					sid, Optional.of(period));
 		}
 		lstAnnGrantDate.addAll(lstAnnGrantNotDate);
-		if(lstAnnGrantDate.isEmpty()) {
+		if(lstAnnGrantNotDate.isEmpty() || lstAnnGrantDate.isEmpty()) {
 			return Optional.empty();
 		}	
 		lstAnnGrantDate = lstAnnGrantDate.stream().sorted((a,b) -> a.getGrantDate().compareTo(b.getGrantDate())).collect(Collectors.toList());
@@ -110,43 +110,32 @@ public class GetPeriodFromPreviousToNextGrantDateImpl implements GetPeriodFromPr
 		// 対象期間区分=null or 現在 or 過去の場合 - Target period classification = null or present or past . CURRENT: 0 , PAST: 2
 		if(periodOutput == null || periodOutput == CURRENT || periodOutput == PAST)  {	
 			//INPUT．指定年月日から一番近い付与日を取得
-			GeneralDate nextDay = GeneralDate.today();
-			int count = 0;
-			
-			for (NextAnnualLeaveGrant a : lstAnnGrantDate) {
-				count += 1;
-				if(a.getGrantDate().after(ymd)) {
-					nextDay = a.getGrantDate();
-					break;
-				}
-			}
-			//取得した付与日の１つ前を取得
-			GeneralDate preDay = employeeInfor.getEntryDate();
-			if(count > 1) {
-				NextAnnualLeaveGrant preInfor = lstAnnGrantDate.get(count - 2);
-				preDay = preInfor.getGrantDate();
-			}
-			return Optional.of(new DatePeriod(preDay, nextDay.addDays(-1)));
+			Optional<GeneralDate> nextDay = lstAnnGrantDate.stream().map(NextAnnualLeaveGrant::getGrantDate)
+					.filter(date -> date.after(ymd))
+					.min(GeneralDate::compareTo);
+			// 取得した付与日の１つ前を取得
+			GeneralDate preDay = lstAnnGrantDate.stream().map(NextAnnualLeaveGrant::getGrantDate)
+					.filter(date -> date.beforeOrEquals(ymd))
+					.max(GeneralDate::compareTo)
+			// 取得できない場合
+			// 前回付与日←入社日
+					.orElse(employeeInfor.getEntryDate());
+			return nextDay.map(end -> new DatePeriod(preDay, end.addDays(-1)));
 		} else {
 			// 対象期間区分=１年経過時点の場合 ( AFTER_1_YEAR )
 			// １年経過用期間(From-To)内に存在する年休付与日を取得する（複数ある場合は、一番大きな付与日を取得する）
 			// Acquire the annual leave grant date that exists within the one-year elapsed period (From-To) (if there are multiple, obtain the largest grant date)
-			List<GeneralDate> lstGrantDate = lstAnnGrantDate.stream().map(item -> item.getGrantDate()).collect(Collectors.toList());
-			List<GeneralDate> lstGeneraDate = new ArrayList<>();
-			Optional<GeneralDate> startDate;
-			for (GeneralDate gd : lstGrantDate) { 
-				if(gd.afterOrEquals(fromTo.get().start()) && gd.beforeOrEquals(fromTo.get().end())) {
-					lstGeneraDate.add(gd);
-				}
-			}
-			if(lstGeneraDate.isEmpty()) {
+			List<GeneralDate> lstGrantDate = lstAnnGrantDate.stream()
+					.map(NextAnnualLeaveGrant::getGrantDate)
+					.filter(date -> date.afterOrEquals(fromTo.get().start()) && date.beforeOrEquals(fromTo.get().end()))
+					.collect(Collectors.toList());
+			if(lstGrantDate.isEmpty()) {
 				return Optional.empty();
 			}
 			// (if there are multiple, obtain the largest grant date)
-			// 前回年休付与日＋１年
-			startDate = lstGeneraDate.stream().max(GeneralDate::compareTo).map(date -> date.addYears(1));
-			return startDate.map(date -> new DatePeriod(date, lstGrantDate.stream()
-					.filter(d -> d.after(date)).min(GeneralDate::compareTo).map(d -> d.addDays(-1)).orElse(null)));
+			// 期間．終了日← 前回年休付与日＋１年 ー　1日
+			Optional<GeneralDate> startDate = lstGrantDate.stream().max(GeneralDate::compareTo);
+			return startDate.map(start -> new DatePeriod(start, start.addYears(1).addDays(-1)));
 		}
 		
 	}
