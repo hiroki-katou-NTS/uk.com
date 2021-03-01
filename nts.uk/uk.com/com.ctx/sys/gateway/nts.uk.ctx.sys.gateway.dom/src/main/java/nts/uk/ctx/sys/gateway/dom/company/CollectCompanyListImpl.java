@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.gateway.dom.loginold.service;
+package nts.uk.ctx.sys.gateway.dom.company;
 
 import java.util.ArrayList;
 import java.util.List;

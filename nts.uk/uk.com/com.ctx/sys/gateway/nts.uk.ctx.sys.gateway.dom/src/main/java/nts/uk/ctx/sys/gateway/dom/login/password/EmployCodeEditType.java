@@ -2,18 +2,24 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.sys.gateway.dom.loginold;
+package nts.uk.ctx.sys.gateway.dom.login.password;
 
 /**
- * The Enum InstallForm.
+ * The Enum EmployCodeEditType.
  */
-public enum InstallForm {
+public enum EmployCodeEditType {
 
-	/** The On pre. */
-	OnPre(0, "オンプレ", "オンプレ"),
+	/** The Zero before. */
+	ZeroBefore(0, "前ゼロ", "前ゼロ"),
 
-	/** The Cloud. */
-	Cloud(1, "クラウド", "クラウド");
+	/** The Zero after. */
+	ZeroAfter(1, "後ゼロ", "後ゼロ"),
+	
+	/** The Space before. */
+	SpaceBefore(2, "前スペース", "前スペース"),
+
+	/** The Space after. */
+	SpaceAfter(3, "後スペース", "後スペース");
 
 	/** The value. */
 	public int value;
@@ -25,16 +31,16 @@ public enum InstallForm {
 	public String description;
 
 	/** The Constant values. */
-	private final static InstallForm[] values = InstallForm.values();
+	private final static EmployCodeEditType[] values = EmployCodeEditType.values();
 
 	/**
-	 * Instantiates a new install form.
+	 * Instantiates a new employ code edit type.
 	 *
 	 * @param value the value
 	 * @param nameId the name id
 	 * @param description the description
 	 */
-	private InstallForm(int value, String nameId, String description) {
+	private EmployCodeEditType(int value, String nameId, String description) {
 		this.value = value;
 		this.nameId = nameId;
 		this.description = description;
@@ -44,20 +50,21 @@ public enum InstallForm {
 	 * Value of.
 	 *
 	 * @param value the value
-	 * @return the install form
+	 * @return the employ code edit type
 	 */
-	public static InstallForm valueOf(Integer value) {
+	public static EmployCodeEditType valueOf(Integer value) {
 		// Invalid object.
 		if (value == null) {
 			return null;
 		}
 
 		// Find value.
-		for (InstallForm val : InstallForm.values) {
+		for (EmployCodeEditType val : EmployCodeEditType.values) {
 			if (val.value == value) {
 				return val;
 			}
 		}
+
 		// Not found.
 		return null;
 	}

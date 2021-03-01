@@ -31,8 +31,6 @@ public class LockoutData extends AggregateRoot{
 	/** The ロック種別 */
 	private LockType logType;
 	
-
-	
 	/** The login method. */
 	private LoginMethod loginMethod;
 	

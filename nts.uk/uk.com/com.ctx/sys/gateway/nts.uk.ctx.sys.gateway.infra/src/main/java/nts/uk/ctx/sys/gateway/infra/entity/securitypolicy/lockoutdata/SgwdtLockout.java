@@ -15,6 +15,7 @@ import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.sys.gateway.dom.loginold.ContractCode;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockType;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockoutData;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LoginMethod;
 import nts.uk.ctx.sys.gateway.infra.entity.stopbycompany.SgwdtStopByCompanyPK;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
@@ -27,7 +28,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Setter
 @Entity
 @Table(name="SGWDT_LOCKOUT")
-public class SgwdtLockoutData extends ContractUkJpaEntity implements Serializable {
+public class SgwdtLockout extends ContractUkJpaEntity implements Serializable {
 	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -40,7 +41,10 @@ public class SgwdtLockoutData extends ContractUkJpaEntity implements Serializabl
 	@Column(name="LOCK_TYPE")
 	private Integer lockType;
 	
-	public static final JpaEntityMapper<SgwdtLockoutData> MAPPER = new JpaEntityMapper<>(SgwdtLockoutData.class);
+	@Column(name="LOGIN_METHOD")
+	private Integer loginMethod;
+	
+	public static final JpaEntityMapper<SgwdtLockout> MAPPER = new JpaEntityMapper<>(SgwdtLockout.class);
 	
 	@Override
 	protected Object getKey() {
@@ -52,7 +56,8 @@ public class SgwdtLockoutData extends ContractUkJpaEntity implements Serializabl
 				new ContractCode(this.sgwdtLockoutDataPK.getContractCd()), 
 				this.sgwdtLockoutDataPK.getUserId(), 
 				this.sgwdtLockoutDataPK.getLockoutDateTime(), 
-				LockType.valueOf(this.lockType));
+				LockType.valueOf(this.lockType), 
+				LoginMethod.valueOf(this.loginMethod));
 	}
 
 	/* (non-Javadoc)
@@ -77,7 +82,7 @@ public class SgwdtLockoutData extends ContractUkJpaEntity implements Serializabl
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		SgwdtLockoutData other = (SgwdtLockoutData) obj;
+		SgwdtLockout other = (SgwdtLockout) obj;
 		if (sgwdtLockoutDataPK == null) {
 			if (other.sgwdtLockoutDataPK != null)
 				return false;

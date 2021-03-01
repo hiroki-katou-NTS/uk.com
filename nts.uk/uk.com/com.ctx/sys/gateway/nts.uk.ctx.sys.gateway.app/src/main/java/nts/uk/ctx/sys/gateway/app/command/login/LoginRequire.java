@@ -134,11 +134,6 @@ public class LoginRequire {
 		}
 
 		@Override
-		public void addLockoutData(LockoutData lockoutData) {
-			lockOutDataRepository.add(lockoutData);
-		}
-
-		@Override
 		public void authorizeLoginSession(IdentifiedEmployeeInfo identified) {
 			val CompanyInforImport =  getCompanyInforImport(identified.getCompanyId());
 			loginUserContextManager.loggedInAsEmployee(

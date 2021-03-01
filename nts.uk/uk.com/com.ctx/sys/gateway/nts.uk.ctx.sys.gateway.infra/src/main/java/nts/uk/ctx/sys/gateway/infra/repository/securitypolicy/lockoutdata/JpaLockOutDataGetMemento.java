@@ -29,7 +29,7 @@ public class JpaLockOutDataGetMemento implements LockOutDataGetMemento {
 	 */
 	@Override
 	public String getUserId() {
-		return this.entity.getSgwmtLockoutDataPK().getUserId();
+		return this.entity.getSgwdtLockoutDataPK().getUserId();
 	}
 
 	/* (non-Javadoc)
@@ -37,7 +37,7 @@ public class JpaLockOutDataGetMemento implements LockOutDataGetMemento {
 	 */
 	@Override
 	public GeneralDateTime getLockOutDateTime() {
-		return this.entity.getSgwmtLockoutDataPK().getLockoutDateTime();
+		return this.entity.getSgwdtLockoutDataPK().getLockoutDateTime();
 	}
 
 	/* (non-Javadoc)
@@ -53,7 +53,7 @@ public class JpaLockOutDataGetMemento implements LockOutDataGetMemento {
 	 */
 	@Override
 	public ContractCode getContractCode() {
-		return new ContractCode(this.entity.getSgwmtLockoutDataPK().getContractCd());
+		return new ContractCode(this.entity.getSgwdtLockoutDataPK().getContractCd());
 	}
 
 	/* (non-Javadoc)

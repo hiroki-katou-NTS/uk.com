@@ -2,10 +2,9 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.sys.gateway.dom.loginold.dto;
+package nts.uk.ctx.sys.gateway.dom.login.password;
 
 import lombok.Getter;
-import nts.uk.ctx.sys.gateway.dom.loginold.EmployCodeEditType;
 
 /**
  * The Class EmployeeCodeSettingDto.

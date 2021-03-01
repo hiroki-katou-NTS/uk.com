@@ -24,7 +24,7 @@ import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockoutData;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockOutDataRepository;
-import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwdtLockoutData;
+import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwdtLockout;
 import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwdtLockoutDataPK;
 import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwmtLockoutDataPK_;
 import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwmtLockoutData_;
@@ -39,13 +39,14 @@ public class JpaLockOutDataRepository extends JpaRepository implements LockOutDa
 	
 	private final String BASIC_SELECT = "select * from SGWDT_LOCKOUT ";
 	
-	private SgwdtLockoutData toEntity(LockoutData domain) {
-		return new SgwdtLockoutData(
+	private SgwdtLockout toEntity(LockoutData domain) {
+		return new SgwdtLockout(
 				new SgwdtLockoutDataPK(
 						domain.getUserId(), 
 						domain.getContractCode().toString(), 
 						domain.getLockOutDateTime()), 
-				domain.getLogType().value);
+				domain.getLogType().value, 
+				domain.getLoginMethod().value);
 		
 	}
 	
@@ -64,8 +65,8 @@ public class JpaLockOutDataRepository extends JpaRepository implements LockOutDa
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-		CriteriaDelete<SgwdtLockoutData> cq = criteriaBuilder.createCriteriaDelete(SgwdtLockoutData.class);
-		Root<SgwdtLockoutData> root = cq.from(SgwdtLockoutData.class);
+		CriteriaDelete<SgwdtLockout> cq = criteriaBuilder.createCriteriaDelete(SgwdtLockout.class);
+		Root<SgwdtLockout> root = cq.from(SgwdtLockout.class);
 		
 		CollectionUtil.split(usersID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, splitData -> {
 			List<Predicate> lstpredicateWhere = new ArrayList<>();
@@ -88,7 +89,7 @@ public class JpaLockOutDataRepository extends JpaRepository implements LockOutDa
 				+ "where USER_ID = @userId ";
 		return new NtsStatement(query, this.jdbcProxy())
 				.paramString("userId", userId)
-				.getSingle(rec -> SgwdtLockoutData.MAPPER.toEntity(rec).toDomain());
+				.getSingle(rec -> SgwdtLockout.MAPPER.toEntity(rec).toDomain());
 	}
 	
 	@Override
@@ -97,6 +98,6 @@ public class JpaLockOutDataRepository extends JpaRepository implements LockOutDa
 				+ "where CONTRACT_CD = @contractCode ";
 		return new NtsStatement(query, this.jdbcProxy())
 				.paramString("contractCode", contractCode)
-				.getList(rec -> SgwdtLockoutData.MAPPER.toEntity(rec).toDomain());
+				.getList(rec -> SgwdtLockout.MAPPER.toEntity(rec).toDomain());
 	}
 }

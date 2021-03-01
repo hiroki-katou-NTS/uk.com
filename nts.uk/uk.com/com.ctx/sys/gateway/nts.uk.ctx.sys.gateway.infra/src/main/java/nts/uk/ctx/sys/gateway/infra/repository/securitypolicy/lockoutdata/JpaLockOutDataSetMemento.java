@@ -6,7 +6,7 @@ import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockOutDataSe
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockType;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LoginMethod;
 import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwdtLockout;
-import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwmtLockoutDataPK;
+import nts.uk.ctx.sys.gateway.infra.entity.securitypolicy.lockoutdata.SgwdtLockoutDataPK;
 
 /**
  * The Class JpaLockOutDataSetMemento.
@@ -22,8 +22,8 @@ public class JpaLockOutDataSetMemento implements LockOutDataSetMemento {
 	 * @param entity the entity
 	 */
 	public JpaLockOutDataSetMemento(SgwdtLockout entity) {
-		if (entity.getSgwmtLockoutDataPK() == null) {
-			entity.setSgwmtLockoutDataPK(new SgwmtLockoutDataPK());
+		if (entity.getSgwdtLockoutDataPK() == null) {
+			entity.setSgwdtLockoutDataPK(new SgwdtLockoutDataPK());
 		}
 		this.sgwmtLockoutData = entity;
 	}
@@ -35,7 +35,7 @@ public class JpaLockOutDataSetMemento implements LockOutDataSetMemento {
 	 */
 	@Override
 	public void setUserId(String userId) {
-		this.sgwmtLockoutData.getSgwmtLockoutDataPK().setUserId(userId);
+		this.sgwmtLockoutData.getSgwdtLockoutDataPK().setUserId(userId);
 	}
 
 	/**
@@ -45,7 +45,7 @@ public class JpaLockOutDataSetMemento implements LockOutDataSetMemento {
 	 */
 	@Override
 	public void setLogoutDateTime(GeneralDateTime logoutDateTime) {
-		this.sgwmtLockoutData.getSgwmtLockoutDataPK().setLockoutDateTime(logoutDateTime);;
+		this.sgwmtLockoutData.getSgwdtLockoutDataPK().setLockoutDateTime(logoutDateTime);;
 	}
 
 	/**
@@ -65,7 +65,7 @@ public class JpaLockOutDataSetMemento implements LockOutDataSetMemento {
 	 */
 	@Override
 	public void setContractCode(ContractCode contractCode) {
-		this.sgwmtLockoutData.getSgwmtLockoutDataPK().setContractCd(contractCode.v());
+		this.sgwmtLockoutData.getSgwdtLockoutDataPK().setContractCd(contractCode.v());
 	}
 
 	/**

@@ -14,12 +14,15 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 
+import org.apache.http.annotation.Contract;
+
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.security.hash.password.PasswordHash;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.gateway.app.command.login.password.CheckChangePassDto;
@@ -43,9 +46,8 @@ import nts.uk.ctx.sys.gateway.dom.adapter.user.CheckBeforeChangePass;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.PassStatus;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.user.UserImportNew;
-import nts.uk.ctx.sys.gateway.dom.loginold.Contract;
+import nts.uk.ctx.sys.gateway.dom.company.CollectCompanyList;
 import nts.uk.ctx.sys.gateway.dom.loginold.ContractCode;
-import nts.uk.ctx.sys.gateway.dom.loginold.ContractRepository;
 import nts.uk.ctx.sys.gateway.dom.loginold.LoginStatus;
 import nts.uk.ctx.sys.gateway.dom.loginold.adapter.RoleAdapter;
 import nts.uk.ctx.sys.gateway.dom.loginold.adapter.RoleIndividualGrantAdapter;
@@ -53,16 +55,15 @@ import nts.uk.ctx.sys.gateway.dom.loginold.dto.EmployeeGeneralInfoAdapter;
 import nts.uk.ctx.sys.gateway.dom.loginold.dto.EmployeeGeneralInfoImport;
 import nts.uk.ctx.sys.gateway.dom.loginold.dto.RoleImport;
 import nts.uk.ctx.sys.gateway.dom.loginold.dto.RoleIndividualGrantImport;
-import nts.uk.ctx.sys.gateway.dom.loginold.service.CollectCompanyList;
 import nts.uk.ctx.sys.gateway.dom.role.RoleFromUserIdAdapter;
 import nts.uk.ctx.sys.gateway.dom.role.RoleType;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicy;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.AccountLockPolicyRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.LockInterval;
-import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockoutData;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockOutDataDto;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockOutDataRepository;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockType;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockoutData;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LoginMethod;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.loginlog.LoginLog;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.loginlog.LoginLogDto;
@@ -92,7 +93,6 @@ import nts.uk.shr.com.context.loginuser.role.LoginUserRoles;
 import nts.uk.shr.com.enumcommon.Abolition;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.system.config.InstallationType;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class TimeStampLoginCommonHandler.
@@ -114,10 +114,6 @@ public abstract class LoginBaseTimeStampCommandHandler<T> extends CommandHandler
 	/** The manager. */
 	@Inject
 	private LoginUserContextManager manager;
-
-	/** The contract repository. */
-	@Inject
-	private ContractRepository contractRepository;
 
 	/** The role from user id adapter. */
 	@Inject
@@ -325,21 +321,21 @@ public abstract class LoginBaseTimeStampCommandHandler<T> extends CommandHandler
 	 *            the contract password
 	 */
 	private boolean contractAccAuth(String contractCode, String contractPassword) {
-		Optional<Contract> contract = contractRepository.getContract(contractCode);
-		if (contract.isPresent()) {
-			// check contract pass
-			if (!PasswordHash.verifyThat(contractPassword, contract.get().getContractCode().v())
-					.isEqualTo(contract.get().getPassword().v())) {
-				return false;
-			}
-			// check contract time
-			if (contract.get().getContractPeriod().start().after(GeneralDate.today())
-					|| contract.get().getContractPeriod().end().before(GeneralDate.today())) {
-				return false;
-			}
-		} else {
-			return false;
-		}
+//		Optional<Contract> contract = contractRepository.getContract(contractCode);
+//		if (contract.isPresent()) {
+//			// check contract pass
+//			if (!PasswordHash.verifyThat(contractPassword, contract.get().getContractCode().v())
+//					.isEqualTo(contract.get().getPassword().v())) {
+//				return false;
+//			}
+//			// check contract time
+//			if (contract.get().getContractPeriod().start().after(GeneralDate.today())
+//					|| contract.get().getContractPeriod().end().before(GeneralDate.today())) {
+//				return false;
+//			}
+//		} else {
+//			return false;
+//		}
 		return true;
 	}
 
