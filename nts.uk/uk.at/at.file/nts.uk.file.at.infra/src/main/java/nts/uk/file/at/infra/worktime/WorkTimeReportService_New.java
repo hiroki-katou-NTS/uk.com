@@ -1294,8 +1294,8 @@ public class WorkTimeReportService_New {
          * R4_216
          * 深夜.深夜時間丸め
          */
-        Integer roundingTime = data.getFixedWorkSetting().getCommonSetting().getLateNightTimeSet().getRoundingSetting().getRoundingTime();
-        cells.get("EU" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(roundingTime));
+        Integer unit = data.getFixedWorkSetting().getCommonSetting().getLateNightTimeSet().getRoundingSetting().getRoundingTime();
+        cells.get("EU" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unit));
         
         /*
          * R4_217
@@ -1303,6 +1303,22 @@ public class WorkTimeReportService_New {
          */
         Integer rounding = data.getFixedWorkSetting().getCommonSetting().getLateNightTimeSet().getRoundingSetting().getRounding();
         cells.get("EV" + (startIndex + 1)).setValue(getRoundingEnum(rounding));
+        
+        // 13       タブグ:                臨時
+        
+        /*
+         * R4_218
+         * 臨時.臨時丸め
+         */
+        Integer unitExtraord = data.getFixedWorkSetting().getCommonSetting().getExtraordTimeSet().getTimeRoundingSet().getRoundingTime();
+        cells.get("EW" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitExtraord));
+        
+        /*
+         * R4_219
+         * 臨時.臨時端数
+         */
+        Integer roundingExtraord = data.getFixedWorkSetting().getCommonSetting().getExtraordTimeSet().getTimeRoundingSet().getRounding();
+        cells.get("EX" + (startIndex + 1)).setValue(getRoundingEnum(roundingExtraord));
     }
     
     /**
