@@ -2,7 +2,7 @@
 <div class="ksus01a">
     <div class="card card-label">
         <!-- A1_1 -->
-        <div class="card-header uk-bg-green" >
+        <div class="card-header uk-bg-green" style="height: 6.5vh;">
             <div id="year-month-component" class="flex-center-vert" style="border-color: #E0F59E;">
                 <!-- A1_1_1 -->
                 <span v-on:click="changeYearMonth(false)">
@@ -84,7 +84,7 @@
                                 <span class="uk-text-half-day-work" v-if="item.displayData.workScheduleAtr == 1 || item.displayData.workScheduleAtr == 2">{{item.displayData.workScheduleName}}</span>
                                 <span class="uk-text-attendance" v-else-if="item.displayData.workScheduleAtr == 3">{{item.displayData.workScheduleName}}</span>
                             </span>
-                            <span v-else-if="item.displayData.workScheduleAtr != 0" class="uk-bg-gray" v-bind:style="item.workScheduleStyle + 'width: 100%; padding: 0.25em 0;'">
+                            <span v-else-if="item.displayData.workScheduleAtr >= 0 && item.displayData.workScheduleAtr <= 3 && (!item.displayData.workScheduleName || item.displayData.workScheduleName.length <= 0)" class="uk-bg-gray" v-bind:style="item.workScheduleStyle + 'width: 100%; padding: 0.25em 0;'">
                                 <span style='color: black;'>{{ "KSUS01_21" | i18n }}</span>
                             </span>
                         </div>

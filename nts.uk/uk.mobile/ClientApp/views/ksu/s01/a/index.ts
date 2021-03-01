@@ -527,6 +527,10 @@ export class KSUS01AComponent extends Vue {
                         el.displayData.workScheduleTimeZone = workSchedule.listAttendaceDto;
                         el.displayData.workScheduleName = workSchedule.shiftMaster.shiftMasterName;
                         el.displayData.workScheduleColor = workSchedule.shiftMaster.color;
+                    } else {
+                        el.displayData.workScheduleAtr = null;
+                        el.displayData.workScheduleName = self.$i18n('KSUS01_14');
+                        el.displayData.workScheduleColor = 'fabf8f';
                     }
                     el.workScheduleStyle = self.setWorkScheduleStyle(el);
                     // el.workDesireStyle = self.setWorkDesireStyle(el);
@@ -576,6 +580,7 @@ export class KSUS01AComponent extends Vue {
                 // 3: 勤務予定や勤務希望は休日の場合  ※1
                 if (detailWorkDesire.workDesireAtr == WorkHolidayAtr.ONE_DAY_REST) {
                     detailWorkDesire.workDesireName = self.$i18n('KSUS01_14');
+                    detailWorkDesire.workDesireColor = 'fabf8f';
                 }
                 detailWorkDesire.workDesireTimeZone = el.timezones;
                 detailWorkDesire.workDesireStyle = self.setWorkDesireStyle(detailWorkDesire);
@@ -651,11 +656,13 @@ export class KSUS01AComponent extends Vue {
         if (dateCell.isActive) {
             if (dateCell.isFocused) {
                 cellClass += 'uk-bg-schedule-focus ';
-            } else {
-                cellClass += 'uk-bg-silver ';
             }
         } else {
-            cellClass += 'uk-bg-white-smoke ';
+            if (dateCell.date && dateCell.date.length > 0) {
+                cellClass += 'uk-bg-silver ';
+            } else {
+                cellClass += 'uk-bg-white-smoke ';
+            }
         }
         switch (dateCell.weekDayIndex) {
             case WeekDay.SUN:
