@@ -1319,6 +1319,22 @@ public class WorkTimeReportService_New {
          */
         Integer roundingExtraord = data.getFixedWorkSetting().getCommonSetting().getExtraordTimeSet().getTimeRoundingSet().getRounding();
         cells.get("EX" + (startIndex + 1)).setValue(getRoundingEnum(roundingExtraord));
+        
+        // 14       タブグ:                育児
+        
+        /*
+         * R4_220
+         * 育児.育児時間帯に勤務した場合の扱い
+         */
+        boolean childCareWorkUse = data.getFixedWorkSetting().getCommonSetting().getShortTimeWorkSet().isChildCareWorkUse();
+        cells.get("EY" + (startIndex + 1)).setValue(childCareWorkUse ? "育児時間を減算する" : "育児時間を減算しない");
+        
+        /*
+         * R4_221
+         * 育児.介護時間帯に勤務した場合の扱い
+         */
+        boolean nursTimezoneWorkUse = data.getFixedWorkSetting().getCommonSetting().getShortTimeWorkSet().isNursTimezoneWorkUse();
+        cells.get("EZ" + (startIndex + 1)).setValue(nursTimezoneWorkUse ? "育児時間を減算する" : "育児時間を減算しない");
     }
     
     /**
