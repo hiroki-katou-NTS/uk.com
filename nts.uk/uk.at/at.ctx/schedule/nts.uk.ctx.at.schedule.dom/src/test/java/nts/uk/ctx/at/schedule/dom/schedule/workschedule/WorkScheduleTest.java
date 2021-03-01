@@ -1276,14 +1276,6 @@ public class WorkScheduleTest {
 			workSchedule.getTimeVacation();
 			result = new HashMap<>();
 			
-			timeLeaving.isIncludeInWorkTimeSpan( (TimeSpanForCalc) any );
-			result = true;
-			
-			breakTime.isDuplicatedWithBreakTime( (TimeSpanForCalc) any );
-			result = false;
-			
-			shortTimeWork.isDuplicatedWithShortTime( (TimeSpanForCalc) any );
-			result = false;
 		}};
 		
 		
