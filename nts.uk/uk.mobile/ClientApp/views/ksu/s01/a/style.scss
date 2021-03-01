@@ -93,7 +93,7 @@
     }
 
     .date-cell {
-        height: 13.86vh;
+        height: calc((100vh - 6.5vh - 4vh - 39px)/6);
         width: calc(100vw/7);
         padding: 0.2rem;
         border: 1px solid #D9D9D9;

@@ -2,7 +2,7 @@
 <div class="ksus01a">
     <div class="card card-label">
         <!-- A1_1 -->
-        <div class="card-header uk-bg-green" >
+        <div class="card-header uk-bg-green" style="height: 6.5vh;">
             <div id="year-month-component" class="flex-center-vert" style="border-color: #E0F59E;">
                 <!-- A1_1_1 -->
                 <span v-on:click="changeYearMonth(false)">
