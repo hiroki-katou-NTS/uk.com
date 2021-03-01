@@ -2,7 +2,8 @@
 module nts.uk.at.view.ksm007.c {
   const FORMAT_DAY = 'YYYY/MM/DD';
   const PATH = {
-    saveData: ''
+    saveData: 'bs/schedule/employeeinfo/workplacegroup/updatehospitalbusinessofficehist',
+    deleteData: 'bs/schedule/employeeinfo/workplacegroup/deletehospitalbusinessofficehist',
   }
 
   @bean()
@@ -38,7 +39,7 @@ module nts.uk.at.view.ksm007.c {
 
     saveData() {
       const vm = this;
-      let params = { ...vm.inputScreenD(), startDate: vm.startFromDate() };
+      let params = {};
      
       if( moment(vm.startFromDate()).format(FORMAT_DAY) >= '9999/12/31') {
         vm.$dialog.error({ messageId: 'Msg_917'}).then(() => {
@@ -47,15 +48,32 @@ module nts.uk.at.view.ksm007.c {
         return;
       }
 
-      vm.$blockui('grayout');
-      vm.$ajax(PATH.saveData, params).done(() => {
-        vm.$window.close({ isSave: true });
-        vm.$blockui('hide');
-      }).fail(() => {
-        vm.$window.close({ isSave: false });
-        vm.$blockui('hide');
-      });
+      let url = vm.selectedId() === 0 ? PATH.deleteData : PATH.saveData;
+      
+      if( vm.selectedId() === 0 ) {
+        params = { 
+          workplaceGroupId: vm.inputScreenD().wpGroupId,
+          historyId: vm.inputScreenD().historyId
+        };
+      } else {
+        params = { 
+          workplaceGroupId: vm.inputScreenD().wpGroupId,
+          historyId: vm.inputScreenD().historyId,
+          startDate: moment(vm.startFromDate()).format('YYYY/MM/DD')
+        };
+      }
 
+      vm.$blockui('grayout');
+      vm.$ajax('com', url, params).done(() => {
+        vm.$dialog.info({ messageId: 'Msg_15'}).then(() => {
+          vm.$window.close({ isSave: true });
+          vm.$blockui('hide');
+        });        
+      }).fail((error) => {
+        vm.$dialog.error({ messageId: error.messageId }).then(() => {
+          vm.$blockui('hide');
+        });        
+      });
     }
 
     getDataFromScreenC(params: any) {
@@ -74,7 +92,8 @@ module nts.uk.at.view.ksm007.c {
       if (params) {
         let beginStartDate = moment(params.startDate).add(+1, 'days').format(FORMAT_DAY);
         vm.startFromDate(beginStartDate);
-        vm.beginStartDate(beginStartDate);
+        let limitDate = moment(vm.inputScreenD().startDateLimit).add(+1, 'days').format(FORMAT_DAY);
+        vm.beginStartDate(limitDate);
       }
     }
   }

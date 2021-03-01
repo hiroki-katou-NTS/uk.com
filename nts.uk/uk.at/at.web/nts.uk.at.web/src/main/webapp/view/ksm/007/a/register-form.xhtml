@@ -77,7 +77,7 @@
             class="cell"
             data-bind="text: '#{i18n.getText('KSM007_47')}'"
           ></div>
-          <div class="cell">
+          <div class="cell" data-bind="if: !!registerForm().startTime() &amp;&amp; !!registerForm().endTime()">
             <label data-bind="text: registerForm().startTime"></label>
             <label>#{i18n.getText('KSM007_49')}</label>
             <label data-bind="text: registerForm().endTime"></label>

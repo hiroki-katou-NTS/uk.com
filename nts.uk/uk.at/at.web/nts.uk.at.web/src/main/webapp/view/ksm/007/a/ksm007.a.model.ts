@@ -13,12 +13,12 @@ class RegisterForm {
         { headerText: nts.uk.resource.getText('KSM007_13'), key: 'workplaceId', width: 100, hidden: true },
         { headerText: nts.uk.resource.getText('KSM007_13'), key: 'workplaceCode', width: 100, },
         { headerText: nts.uk.resource.getText('KSM007_14'), key: 'workplaceName', width: 170 },
-        { headerText: nts.uk.resource.getText('KSM007_15'), key: 'genericName', width: 890 }
+        { headerText: nts.uk.resource.getText('KSM007_15'), key: 'genericName', width: 330 }
     ]);
     selectedWorkplaces: KnockoutObservableArray<any> = ko.observableArray([]);
     //ver 10
-    startTime: KnockoutObservable<string> = ko.observable('10:00');
-    endTime: KnockoutObservable<string> = ko.observable('18:00');
+    startTime: KnockoutObservable<string> = ko.observable(null);
+    endTime: KnockoutObservable<string> = ko.observable(null);
 
     constructor() {
         let self = this;

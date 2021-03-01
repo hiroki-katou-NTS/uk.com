@@ -22,7 +22,7 @@
           <button
             tabindex="1"
             class="proceed"
-            data-bind="text: $vm.$i18n('KSM007_21'), click: saveData, enable: $root.errors.isEmpty"
+            data-bind="text: $vm.$i18n('KSM007_21'), click: saveData, enable: isEnableSave"
           />
           <button tabindex="2" data-bind="text: $vm.$i18n('KSM007_22'), click: closeDialog" />
         </div>
@@ -45,7 +45,8 @@
                   <button
                     tabindex="5"
                     class="normal"
-                    data-bind="text: $i18n('KSM007_26'), click: openDialogScreenD, enable: isLastItem"
+                    data-bind="text: $i18n('KSM007_26'), click: openDialogScreenD, 
+                      enable: isLastItem"
                   />
                 </div>
                 <table
@@ -54,9 +55,9 @@
                   data-bind="ntsGridList: {								
 										height: 255,
 										dataSource: historyListItems,
-										primaryKey: 'startDate',
+										primaryKey: 'historyId',
 										columns: ko.observableArray([
-                      { headerText: 'コード', key: 'startDate', hidden: true },
+                      { headerText: 'コード', key: 'historyId', hidden: true },
                       { headerText: 'コード', key: 'display' }
 										]),
 										multiple: false,
@@ -85,13 +86,14 @@
 										name: '#[KSM007_28]',
 										options: ko.observableArray([
 											{ code: 1, name: $i18n('KSM007_29') },
-											{ code: 2, name: $i18n('KSM007_30') },
+											{ code: 0, name: $i18n('KSM007_30') },
 										]),
 										optionsValue: 'code',
 										optionsText: 'name',
 										value: nightShiftOperation,
 										required: true,
-										enable: true }"
+										enable: historyListItems().length > 0
+                  }"
                   ></div>
                 </div>
               </div>
@@ -103,25 +105,27 @@
                 <div class="cell time-editor">
                   <div class="table">
                     <div class="cell valign-center">
-                      <input id="nightShiftHours1"
-                        data-bind="ntsTimeEditor: {
+                      <input id="nightShiftHours1" class="nightShiftHours"
+                        data-bind="ntsTimeWithDayEditor: {
 													value: nightShiftHours1, 
 													inputFormat: 'time', 
 													mode: 'time',
                           name: '#[KSM007_32]',
-                          required: true
+                          required: true,
+                          enable: parseInt(nightShiftOperation()) === 1 &amp;&amp; historyListItems().length > 0
 												}"
                       />
                     </div>
                     <div class="cell valign-center" data-bind="text:$i18n('KSM007_33')"></div>
                     <div class="cell valign-center">
-                      <input id="nightShiftHours2"
-                        data-bind="ntsTimeEditor: {
+                      <input id="nightShiftHours2" class="nightShiftHours"
+                        data-bind="ntsTimeWithDayEditor: {
 													value: nightShiftHours2, 
 													inputFormat: 'time', 
 													mode: 'time',
                           name: '#[KSM007_34]',
-                          required: true
+                          required: true,
+                          enable: parseInt(nightShiftOperation()) === 1 &amp;&amp; historyListItems().length > 0
 												}"
                       />
                     </div>

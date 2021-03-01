@@ -8,7 +8,9 @@ module nts.uk.at.view.ksm007.a {
             getListWorkplaceId: rootPath + "/getListWorkplaceId",
             registerWorkplaceGroup: rootPath + "/registerWorkplaceGroup",
             updateWorkplaceGroup: rootPath + "/updateWorkplaceGroup",
-            deleteWorkplaceGroup: rootPath + "/deleteWorkplaceGroup"
+            deleteWorkplaceGroup: rootPath + "/deleteWorkplaceGroup",
+            getOptionInformation: rootPath + "/optioninformation",
+            getNightShiftInfor: rootPath + "/getnightshiftinfor",
         }
         
         export function exportExcel(): JQueryPromise<any> {
@@ -39,6 +41,13 @@ module nts.uk.at.view.ksm007.a {
             return nts.uk.request.ajax("com", paths.deleteWorkplaceGroup, data);
         }
         
+        export function getOptionInformation(data): JQueryPromise<any> {
+            return nts.uk.request.ajax("com", paths.getOptionInformation, data);
+        }
+
+        export function getNightShiftInfor(data): JQueryPromise<any> {
+            return nts.uk.request.ajax("com", paths.getNightShiftInfor, data);
+        }
     }
 
 }

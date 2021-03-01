@@ -280,8 +280,12 @@ module nts.uk.at.view.ksm007.a {
                 wpGroupCode: self.registerForm().workplaceGroupCd(),
                 wpGroupName: self.registerForm().workplaceGroupName(),
              });
+
             modal('at', "/view/ksm/007/b/index.xhtml").onClosed(() => {                
-                let data = getShared('outputScreenB');                
+                let data = getShared('outputScreenB');         
+                if( data && data.isSave) {
+                    self.currentIds.valueHasMutated();
+                }
             });
         }
     }
