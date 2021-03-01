@@ -68,16 +68,16 @@ module nts.uk.at.view.kaf020.shr.viewmodel {
                     </td>
                     <td style="vertical-align: top">
                         <!--B4_3-->
-                        <div style="margin-top: 10px" class="label" data-bind="text: unit"></div>
+                        <div style="margin-top: 10px" class="label" data-bind="text: optionalItemAtr == 0 ? $vm.$i18n('KAF020_32') : unit"></div>
                     </td>
                     <td>
                         <div data-bind="text: description" style="white-space: normal; word-break: break-all;"></div>
-                        <div data-bind="if:lowerCheck || upperCheck || unit">
+                        <div data-bind="if: lowerCheck &#124;&#124; upperCheck &#124;&#124; unit &#124;&#124; optionalItemAtr == 0">
                             <span class="label" style="margin-top: 6px">
-                                <span data-bind="if:lowerCheck || upperCheck || unit">
+                                <span data-bind="if:lowerCheck &#124;&#124; upperCheck &#124;&#124; unit &#124;&#124; optionalItemAtr == 0">
                                     <span data-bind="text: $vm.$i18n('KAF020_25')"></span>
                                 </span>
-                                <span data-bind="if: lowerCheck || upperCheck">
+                                <span data-bind="if: lowerCheck &#124;&#124; upperCheck">
                                     <span data-bind="text: $vm.$i18n('KAF020_26')"></span>
                                 </span>
                                 <span data-bind="if: lowerCheck">
@@ -91,7 +91,7 @@ module nts.uk.at.view.kaf020.shr.viewmodel {
                                         <span data-bind="text: amountLower"></span>
                                     </span>
                                 </span>
-                                <span data-bind="if: lowerCheck || upperCheck">
+                                <span data-bind="if: lowerCheck &#124;&#124; upperCheck">
                                     <span data-bind="text: $vm.$i18n('KAF020_27')"></span>
                                 </span>
                                 <span data-bind="if: upperCheck">
@@ -105,10 +105,10 @@ module nts.uk.at.view.kaf020.shr.viewmodel {
                                         <span data-bind="text: amountUpper"></span>
                                     </span>
                                 </span>
-                                <span data-bind="if: lowerCheck || upperCheck">
+                                <span data-bind="if: lowerCheck &amp;&amp; upperCheck">
                                     <span data-bind="text: '、'"></span>
                                 </span>
-                                <span data-bind="if: unit">
+                                <span data-bind="if: unit &#124;&#124; optionalItemAtr == 0">
                                     <span data-bind="text: inputUnitOfTimeItem"></span>
                                     <span data-bind="if: optionalItemAtr == 0">
                                         <span data-bind="text: $vm.$i18n('KAF020_32')"></span>
@@ -118,7 +118,7 @@ module nts.uk.at.view.kaf020.shr.viewmodel {
                                     </span>
                                     <span data-bind="text: $vm.$i18n('KAF020_28')"></span>
                                 </span>
-                                <span data-bind="if:lowerCheck || upperCheck || unit ">
+                                <span data-bind="if:lowerCheck &#124;&#124; upperCheck &#124;&#124; unit &#124;&#124; optionalItemAtr == 0">
                                     <span data-bind="text: $vm.$i18n('KAF020_29')"></span>
                                 </span>
                             </span>

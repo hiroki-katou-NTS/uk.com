@@ -66,7 +66,7 @@
               <div class="collapse">
                 <div class="card-body">
                   <span>{{item.description}}</span><br>
-                  <span v-if="item.lowerCheck || item.upperCheck || item.unit">
+                  <span v-if="item.lowerCheck || item.upperCheck || item.unit || item.optionalItemAtr == 0">
                     {{ 'KAF020_25' | i18n }}
                   </span>
                   <span v-if="item.lowerCheck || item.upperCheck">
@@ -97,10 +97,10 @@
                       {{ item.amountUpper }}
                     </span>
                   </span>
-                  <span v-if="item.lowerCheck || item.upperCheck">
+                  <span v-if="item.lowerCheck && item.upperCheck">
                     {{'、'}}
                   </span>
-                  <span v-if="item.unit">
+                  <span v-if="item.unit || item.optionalItemAtr == 0">
                     <span>
                       {{item.inputUnitOfTimeItem}}
                     </span>
@@ -112,7 +112,7 @@
                     </span>
                     {{'KAF020_28' | i18n}}
                   </span>
-                  <span v-if="item.lowerCheck || item.upperCheck || item.unit">
+                  <span v-if="item.lowerCheck || item.upperCheck || item.unit || item.optionalItemAtr == 0">
                     {{'KAF020_29' | i18n}}
                   </span>
                 </div>
@@ -143,7 +143,7 @@
               v-bind:record-id="index"
               v-bind:columns="{ input: 'col-10' }"
             />
-            <span class="position-absolute">{{ item.unit }}</span>
+            <span class="position-absolute">{{(item.optionalItemAtr == 0 ? 'KAF020_32' : item.unit) | i18n }}</span>
           </div>
         </div>
       </div>
