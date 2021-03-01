@@ -121,6 +121,42 @@ public class WorkTest {
                 instance.changeChildWorkList(require,Helper.childWorkList));
     }
 
+    /**
+     * Test changeChildWorkList() :
+     *  + Require.checkExistenceWorkMaster : TRUE
+     */
+    @Test
+    public void testChangeChildWorkList_CheckExpirationDateIsFalse() {
+        val instance = Helper.createDomain(require);
+        new Expectations() {{
+            require.checkExistenceWorkMaster(new TaskFrameNo(instance.getTaskFrameNo().v() + 1), Helper.childWorkListChange);
+            result = true;
+
+        }};
+        instance.changeChildWorkList(require,Helper.childWorkListChange);
+
+        assertThat(instance.getChildWorkList()).extracting(d->d)
+                .containsExactlyInAnyOrderElementsOf(Helper.childWorkListChange);
+    }
+
+    /**
+     * Test changeChildWorkList() :
+     *  + Require.checkExistenceWorkMaster : TRUE
+     */
+    @Test
+    public void testChangeChildWorkList_instance() {
+        val instance = Helper.createDomain(require);
+        new Expectations() {{
+            require.checkExistenceWorkMaster(new TaskFrameNo(instance.getTaskFrameNo().v() + 1), Helper.childWorkListChange);
+            result = true;
+
+        }};
+        instance.changeChildWorkList(require,Helper.childWorkListChange);
+
+        assertThat(instance.getChildWorkList()).extracting(d->d)
+                .containsExactlyInAnyOrderElementsOf(Helper.childWorkListChange);
+    }
+
     public static class Helper
 
     {
@@ -151,6 +187,14 @@ public class WorkTest {
                 Optional.of(new ColorCode("ColorCode")),
                 Optional.of(new TaskNote("TaskNote"))
 
+        );
+
+        private static final List<TaskCode> childWorkListChange = Arrays.asList(
+                new TaskCode("CODE0_CHANGE1"),
+                new TaskCode("CODE0_CHANGE2"),
+                new TaskCode("CODE0_CHANGE3"),
+                new TaskCode("CODE0_CHANGE4"),
+                new TaskCode("CODE0_CHANGE5")
         );
 
         static Work createDomain(Work.Require require) {
