@@ -1,18 +1,48 @@
 package nts.uk.file.at.infra.worktime;
 
+import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
 import com.aspose.cells.Cells;
+
 import nts.uk.ctx.at.shared.app.find.workdayoff.frame.WorkdayoffFrameFindDto;
 import nts.uk.ctx.at.shared.app.find.workdayoff.frame.WorkdayoffFrameFinder;
-import nts.uk.ctx.at.shared.app.find.worktime.common.dto.*;
+import nts.uk.ctx.at.shared.app.find.worktime.common.dto.DeductionTimeDto;
+import nts.uk.ctx.at.shared.app.find.worktime.common.dto.EmTimeZoneSetDto;
+import nts.uk.ctx.at.shared.app.find.worktime.common.dto.FixedWorkCalcSettingDto;
+import nts.uk.ctx.at.shared.app.find.worktime.common.dto.HDWorkTimeSheetSettingDto;
+import nts.uk.ctx.at.shared.app.find.worktime.common.dto.OtherEmTimezoneLateEarlySetDto;
+import nts.uk.ctx.at.shared.app.find.worktime.common.dto.OverTimeOfTimeZoneSetDto;
+import nts.uk.ctx.at.shared.app.find.worktime.common.dto.PrioritySettingDto;
+import nts.uk.ctx.at.shared.app.find.worktime.common.dto.RoundingSetDto;
+import nts.uk.ctx.at.shared.app.find.worktime.common.dto.StampReflectTimezoneDto;
+import nts.uk.ctx.at.shared.app.find.worktime.common.dto.WorkTimezoneMedicalSetDto;
+import nts.uk.ctx.at.shared.app.find.worktime.common.dto.WorkTimezoneOtherSubHolTimeSetDto;
 import nts.uk.ctx.at.shared.app.find.worktime.dto.WorkTimeSettingInfoDto;
 import nts.uk.ctx.at.shared.app.find.worktime.fixedset.dto.FixHalfDayWorkTimezoneDto;
+import nts.uk.ctx.at.shared.app.find.worktime.flowset.dto.FlOTTimezoneDto;
 import nts.uk.ctx.at.shared.app.find.worktime.predset.dto.TimezoneDto;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.common.usecls.ApplyAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.BPSettingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.BonusPaySetting;
-import nts.uk.ctx.at.shared.dom.worktime.common.*;
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.CompensatoryOccurrenceDivision;
+import nts.uk.ctx.at.shared.dom.worktime.common.FontRearSection;
+import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.LateEarlyAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.MultiStampTimePiorityAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.StampPiorityAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.Superiority;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkSystemAtr;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FixedChangeAtr;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.PrePlanWorkTimeCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.DisplayMode;
@@ -20,15 +50,6 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
-import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
 
 @Stateless
 public class WorkTimeReportService_New {
@@ -1505,6 +1526,63 @@ public class WorkTimeReportService_New {
              */
             Integer fixedChangeAtr = data.getFlowWorkSetting().getFlowSetting().getOvertimeSetting().getFixedChangeAtr();
             cells.get("AB" + (startIndex + 1)).setValue(FixedChangeAtr.valueOf(fixedChangeAtr).description);
+        }
+        
+        // 3        タブグ:                残業時間帯
+        
+        List<WorkdayoffFrameFindDto> otFrameFind = this.finder.findAllUsed();
+        List<FlOTTimezoneDto> lstOTTimezone = data.getFlowWorkSetting().getHalfDayWorkTimezone().getWorkTimeZone().getLstOTTimezone();
+        for (int i = 0; i < lstOTTimezone.size(); i++) {
+            /*
+             * R5_83
+             * 残業時間帯.経過時間
+             */
+            Integer elapsedTime = lstOTTimezone.get(i).getFlowTimeSetting().getElapsedTime();
+            cells.get("AC" + ((startIndex + 1) + i)).setValue(getInDayTimeWithFormat(elapsedTime));
+            
+            /*
+             * R5_84
+             * 残業時間帯.丸め
+             */
+            Integer unitOtTime = lstOTTimezone.get(i).getFlowTimeSetting().getRounding().getRoundingTime();
+            cells.get("AD" + ((startIndex + 1) + i)).setValue(getRoundingTimeUnitEnum(unitOtTime));
+            
+            /*
+             * R5_85
+             * 残業時間帯.端数
+             */
+            Integer roundingOtTime = lstOTTimezone.get(i).getFlowTimeSetting().getRounding().getRounding();
+            cells.get("AE" + ((startIndex + 1) + i)).setValue(getRoundingEnum(roundingOtTime));
+            
+            /*
+             * R5_86
+             * 残業時間帯.残業枠
+             */
+            BigDecimal otFrameNo = lstOTTimezone.get(i).getOtFrameNo();
+            Optional<WorkdayoffFrameFindDto> otFrame = otFrameFind.stream()
+                    .filter(x -> BigDecimal.valueOf(x.getWorkdayoffFrNo()) == otFrameNo).findFirst();
+            if (otFrame.isPresent()) {
+                cells.get("AF" + ((startIndex + 1) + i)).setValue(otFrame.get().getWorkdayoffFrName());
+            }
+            
+            if (displayMode.equals(DisplayMode.DETAIL.value)) {
+                /*
+                 * R5_87
+                 * 残業時間帯.法定内残業枠
+                 */
+                BigDecimal inLegalOTFrameNo = lstOTTimezone.get(i).getInLegalOTFrameNo();
+                Optional<WorkdayoffFrameFindDto> legalOtFrame = otFrameFind.stream()
+                        .filter(x -> BigDecimal.valueOf(x.getWorkdayoffFrNo()) == inLegalOTFrameNo).findFirst();
+                if (legalOtFrame.isPresent()) {
+                    cells.get("AG" +((startIndex + 1) + i)).setValue(legalOtFrame.get().getWorkdayoffFrName());
+                }
+                
+                /*
+                 * R5_88
+                 * 残業時間帯.積残順序
+                 */
+                cells.get("AH" + ((startIndex + 1) + i)).setValue(getSetlementEnum(inLegalOTFrameNo.intValue()));
+            }
         }
     }
     
