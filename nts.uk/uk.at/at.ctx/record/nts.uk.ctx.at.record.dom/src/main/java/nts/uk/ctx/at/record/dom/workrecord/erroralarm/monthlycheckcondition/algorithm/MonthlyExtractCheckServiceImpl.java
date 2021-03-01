@@ -495,7 +495,7 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 		GeneralDate enDate = endDateTemp.addDays(-1);
 		GeneralDate startDate = GeneralDate.ymd(mPeriod.start().year(), mPeriod.end().month(), 1);
 		
-		Map<String, Map<YearMonth, Map<String,String>>> resultsData = new HashMap<>();
+		Map<String, Map<YearMonth, Map<String,List<String>>>> resultsData = new HashMap<>();
 		
 		parallelManager.forEach(CollectionUtil.partitionBySize(lstSid, 100), emps -> {
 			synchronized (this) {
@@ -787,41 +787,50 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 	 * @param workplaceId
 	 */
 	private void extractCompoun(List<ResultOfEachCondition> lstResultCondition, ExtraResultMonthly anyCond,
-			String sid, YearMonth yearMonth, Map<String, Map<YearMonth, Map<String,String>>> resultsData, DataCheck data
+			String sid, YearMonth yearMonth, Map<String, Map<YearMonth, Map<String, List<String>>>> resultsData, DataCheck data
 			, String workplaceId) {
-		String checkedValue = resultsData.get(sid).get(yearMonth).get(anyCond.getErrorAlarmCheckID());
-		String alarmDescription2 = "";
 		List<ErAlAttendanceItemCondition<?> > listErAlAtdItemCon = anyCond.getCheckConMonthly().get().getGroup1().getLstErAlAtdItemCon();
-		
+		List<String> lstData = resultsData.get(sid).get(yearMonth).get(anyCond.getErrorAlarmCheckID());
+		ExtractGroupValue alarmGroup2 = new ExtractGroupValue();
+		String checkedValue = "";
 		//group 1 
-		String alarmDescription1 = getDesGroup(anyCond, listErAlAtdItemCon, data);
+		ExtractGroupValue alarmGroup1 = getDesGroup(anyCond, listErAlAtdItemCon, data, lstData);
 		if(anyCond.getCheckConMonthly().get().isUseGroup2()) {
 			List<ErAlAttendanceItemCondition<?> > listErAlAtdItemCon2 = anyCond.getCheckConMonthly().get().getGroup2().getLstErAlAtdItemCon();
 			//group 2 
-			alarmDescription2 = getDesGroup(anyCond, listErAlAtdItemCon2, data);
+			alarmGroup2 = getDesGroup(anyCond, listErAlAtdItemCon2, data, lstData);
 		}
 		String alarmDescriptionValue= "";
 		if(anyCond.getCheckConMonthly().get().getOperatorBetweenGroups() == LogicalOperator.AND) {//AND
-			if(!alarmDescription2.equals("")) {
-				alarmDescriptionValue = "("+alarmDescription1+") AND ("+alarmDescription2+")";
+			if(alarmGroup2.getAlarmDescription() != null && !alarmGroup2.getAlarmDescription().equals("")) {
+				alarmDescriptionValue = "("+alarmGroup1.getAlarmDescription()+") AND ("+alarmGroup2.getAlarmDescription()+")";
 			}else {
-				alarmDescriptionValue = alarmDescription1;
+				alarmDescriptionValue = alarmGroup1.getAlarmDescription();
 			}
 		}else{
-			if(!alarmDescription2.equals("")) {
-				alarmDescriptionValue = "("+alarmDescription1+") OR ("+alarmDescription2+")";
+			if(alarmGroup2.getAlarmDescription() != null && !alarmGroup2.getAlarmDescription().equals("")) {
+				alarmDescriptionValue = "(" + alarmGroup1.getAlarmDescription() + ") OR (" + alarmGroup2.getAlarmDescription() + ")";
 			}else {
-				alarmDescriptionValue = alarmDescription1;
+				alarmDescriptionValue = alarmGroup1.getAlarmDescription();
 			}
+		}
+		if(alarmGroup2.getCheckedValue() != null && !alarmGroup2.getCheckedValue().isEmpty()) {
+			checkedValue = TextResource.localize("KAL010_276", alarmGroup1.getCheckedValue() + ", " +alarmGroup2.getCheckedValue());
+		} else {
+			checkedValue = TextResource.localize("KAL010_276",alarmGroup1.getCheckedValue());
 		}
 		ExtractionAlarmPeriodDate periodDate = new ExtractionAlarmPeriodDate();
 		periodDate.setStartDate(Optional.ofNullable(GeneralDate.ymd(yearMonth.year(), yearMonth.month(), 1)));
 		periodDate.setEndDate(Optional.empty());
 		setExtractAlarm(anyCond, lstResultCondition, sid, workplaceId, checkedValue, alarmDescriptionValue, periodDate);		
 	}
-	private String getDesGroup(ExtraResultMonthly anyCond, List<ErAlAttendanceItemCondition<?>> listErAlAtdItemConG1, DataCheck data) {
-		String alarmDescription = "";
+	private ExtractGroupValue getDesGroup(ExtraResultMonthly anyCond, List<ErAlAttendanceItemCondition<?>> listErAlAtdItemConG1, DataCheck data,
+			List<String> lstData) {
+		ExtractGroupValue result = new ExtractGroupValue("","");
+		int i = 0;
 		for(ErAlAttendanceItemCondition<?> erAlAtdItemCon : listErAlAtdItemConG1 ) {
+			String atai = lstData.get(i);
+			if(erAlAtdItemCon.getConditionAtr() == ConditionAtr.TIME_DURATION) atai = timeToString(Double.valueOf(atai).intValue());
 			int compare =  erAlAtdItemCon.getCompareSingleValue() != null ? erAlAtdItemCon.getCompareSingleValue().getCompareOpertor().value
 					: erAlAtdItemCon.getCompareRange().getCompareOperator().value;
 		    String startValue ="";
@@ -855,7 +864,7 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 					.filter(ati -> erAlAtdItemCon.getCountableTarget().getAddSubAttendanceItems().getSubstractionAttendanceItems()
 							.contains(ati.getAttendanceItemId())).collect(Collectors.toList());
 			nameErrorAlarm = getNameErrorAlarm(listAttdNameSub,1,nameErrorAlarm);//1 sub atd item
-
+			result.setCheckedValue(result.getCheckedValue() + ", " + nameErrorAlarm + ": " + atai);
 			CompareOperatorText compareOperatorText = convertComparaToText.convertCompareType(compare);
 			//0 : AND, 1 : OR
 			String compareAndOr = "";
@@ -864,11 +873,11 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 			}else {
 				compareAndOr = "OR";
 			}
-			if(!alarmDescription.equals("")) {
-				alarmDescription += compareAndOr +" ";
+			if(!result.getAlarmDescription().equals("")) {
+				result.setAlarmDescription(result.getAlarmDescription() + compareAndOr +" ");
 			}
 			if(compare<=5) {
-					alarmDescription +=  nameErrorAlarm + " " + compareOperatorText.getCompareLeft()+" "+ startValue+" ";											
+				result.setAlarmDescription(result.getAlarmDescription() +  nameErrorAlarm + " " + compareOperatorText.getCompareLeft()+" "+ startValue+" ");											
 																										
 			}else {
 				endValue = String.valueOf(erAlAtdItemCon.getCompareRange().getEndValue());
@@ -876,23 +885,25 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 					endValue =  this.timeToString(Integer.valueOf(erAlAtdItemCon.getCompareRange().getStartValue().toString())); 
 				}
 				if(compare>5 && compare<=7) {
-					alarmDescription += startValue +" "+
+					result.setAlarmDescription(result.getAlarmDescription() +  startValue +" "+
 							compareOperatorText.getCompareLeft()+ " "+
 							nameErrorAlarm+ " "+
 							compareOperatorText.getCompareright()+ " "+
-							endValue+ " ";	
+							endValue+ " ");	
 				}else {
-					alarmDescription += nameErrorAlarm + " "+
+					result.setAlarmDescription(result.getAlarmDescription() +  nameErrorAlarm + " "+
 							compareOperatorText.getCompareLeft()+ " "+
 							startValue + ","+endValue+ " "+
 							compareOperatorText.getCompareright()+ " "+
-							nameErrorAlarm+ " " ;
+							nameErrorAlarm+ " " );
 				}
 			}
-
-					
+			i += 1;
 		}
-		return alarmDescription;
+		if(!result.getCheckedValue().isEmpty()) {
+			result.setCheckedValue(result.getCheckedValue().substring(2));	
+		}		
+		return result;
 	}
 	/**
 	 * 時間、日数、回数、金額
@@ -905,9 +916,9 @@ public class MonthlyExtractCheckServiceImpl implements MonthlyExtractCheckServic
 	 * @param workplaceId
 	 */
 	private void extractTimeDayTimesMoney(List<ResultOfEachCondition> lstResultCondition, ExtraResultMonthly anyCond,
-			String sid, YearMonth yearMonth, Map<String, Map<YearMonth, Map<String,String>>> resultsData, DataCheck data
+			String sid, YearMonth yearMonth, Map<String, Map<YearMonth, Map<String,List<String>>>> resultsData, DataCheck data
 			, String workplaceId) {
-		String checkedValue = resultsData.get(sid).get(yearMonth).get(anyCond.getErrorAlarmCheckID());
+		String checkedValue = resultsData.get(sid).get(yearMonth).get(anyCond.getErrorAlarmCheckID()).get(0);
 		ErAlAttendanceItemCondition<?> erAlAtdItemConAdapterDto = anyCond.getCheckConMonthly().get().getGroup1().getLstErAlAtdItemCon().get(0);
 		int compare = erAlAtdItemConAdapterDto.getCompareSingleValue() != null ? erAlAtdItemConAdapterDto.getCompareSingleValue().getCompareOpertor().value
 				: erAlAtdItemConAdapterDto.getCompareRange().getCompareOperator().value;
