@@ -1393,6 +1393,15 @@ public class WorkTimeReportService_New {
             Integer roundingNight = medicalNightSet.get().getRoundingSet().getRounding();
             cells.get("FF" + (startIndex + 1)).setValue(getRoundingEnum(roundingNight));
         }
+        
+        // 16       タブグ:                0時跨ぎ
+        
+        /*
+         * R4_228
+         * ０時跨ぎ.0時跨ぎ計算
+         */
+        boolean zeroHStraddCalculateSet = data.getFixedWorkSetting().getCommonSetting().isZeroHStraddCalculateSet();
+        cells.get("FG" + (startIndex + 1)).setValue(zeroHStraddCalculateSet ? "する" : "しない");
     }
     
     /**
