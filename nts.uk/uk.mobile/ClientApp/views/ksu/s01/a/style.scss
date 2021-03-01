@@ -50,7 +50,7 @@
     #detail-component {
         position: fixed;
         bottom: 0;
-        height: 69.2vh;
+        height: calc(100vh - 6.5vh - 4vh - 39px - (100vh - 6.5vh - 4vh - 39px)/6);
         width: 100vw;
     }
 
