@@ -68,7 +68,7 @@
                         <div>
                             <input tabindex="7" id="outputSettingCode" data-bind="ntsTextEditor:{
                                 name:'#[KSU005_21]',
-                                required: false,
+                                required: true,
                                 constraint: 'OutputSettingCode',
                                 option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({                                        
                                     width: '20px',
@@ -84,7 +84,7 @@
                         <div style="margin-left: 8px;">
                             <input tabindex="8" id="outputSettingName" data-bind="ntsTextEditor:{
                                 name:'#[KSU005_22]',
-                                required: false,
+                                required: true,
                                 constraint: 'OutputSettingName',
                                 option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({                                        
                                     width: '100px',
@@ -222,6 +222,7 @@
                                                     visibleItemsCount: 5,
                                                     value: attendanceItem,
                                                     optionsText: 'name',
+                                                    enable: $parent.isEnableAttendanceItem,
                                                     columns: [
                                                             { prop: 'name', length: 10 },
                                                         ]}"></div>

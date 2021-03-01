@@ -55,7 +55,7 @@ module nts.uk.at.view.ksu005.b {
         isEnableAddBtn :KnockoutObservable<boolean> = ko.observable(true);
         isEnableDelBtn :KnockoutObservable<boolean> = ko.observable(false);
         isEnableAdditionInfo :KnockoutObservable<boolean> = ko.observable(true);
-
+        isEnableAttendanceItem :KnockoutObservable<boolean> = ko.observable(true);
         scheduleTableOutputSetting: KnockoutObservable<ScheduleTableOutputSetting> = ko.observable(new ScheduleTableOutputSetting());
         
         constructor() {            
@@ -117,8 +117,12 @@ module nts.uk.at.view.ksu005.b {
                 if(value){
                     self.itemList.removeAll();
                     self.initialData();
-                } else {
-                    self.findDetail(self.selectedCode());
+                    self.isEnableAttendanceItem(false);
+                    self.isEnableAddBtn(false);
+                } else {                    
+                    self.findDetail(self.selectedCode(), true, value);
+                    self.isEnableAttendanceItem(true);
+                    self.isEnableAddBtn(true);
                 }
                 if(self.countNumberRow < 10){
                     value ? self.isEnableAddBtn(false): self.isEnableAddBtn(true);
@@ -195,65 +199,67 @@ module nts.uk.at.view.ksu005.b {
             self.loadData();
         }
 
-        findDetail(code: string): void {
+        findDetail(code?: string, checkAddInfo?: boolean , checkShiftBgColor?: boolean): void {
             const self = this;
-            self.$blockui("invisible");            
-            self.$ajax(Paths.GET_SCHEDULE_TABLE_OUTPUT_SETTING_BY_CODE + "/" + code).done((data: IScheduleTableOutputSetting) => {
-                self.countNumberRow = 1;
-                if (!_.isNull(data) && !_.isEmpty(data)) {
-                    self.clearError();                            
-                    let personalInfoItemsSize = data.personalInfo.length;
-                    let additionalItemsSize = data.attendanceItem.length;
-                    let attendanceItemSize = data.attendanceItem.length;
-                    let maxLength = Math.max(personalInfoItemsSize, additionalItemsSize, attendanceItemSize);
-                    let datas = [];
-                    let tempSelected: Array<any> = [];
-                    let tempSelectedCode: Array<any> = [];
+            if (code != null && !_.isEmpty(code)) {
+                self.$blockui("invisible");
+                self.$ajax(Paths.GET_SCHEDULE_TABLE_OUTPUT_SETTING_BY_CODE + "/" + code).done((data: IScheduleTableOutputSetting) => {
+                    self.countNumberRow = 1;
+                    if (!_.isNull(data) && !_.isEmpty(data)) {
+                        self.clearError();
+                        let personalInfoItemsSize = data.personalInfo.length;
+                        let additionalItemsSize = data.attendanceItem.length;
+                        let attendanceItemSize = data.attendanceItem.length;
+                        let maxLength = Math.max(personalInfoItemsSize, additionalItemsSize, attendanceItemSize);
+                        let datas = [];
+                        let tempSelected: Array<any> = [];
+                        let tempSelectedCode: Array<any> = [];
 
-                    self.scheduleTableOutputSetting().updateData(data);
-                    self.scheduleTableOutputSetting().isEnableCode(false);
-                    self.isEnableAddBtn(data.shiftBackgroundColor == 0);
-                    self.isShiftBackgroundColor(data.shiftBackgroundColor == 1);
-
-                    datas.push(new ScreenItem(true, self.countNumberRow, data.personalInfo[0] != null ? data.personalInfo[0].toString() : null,
-                        data.additionalInfo[0] != null ? data.additionalInfo[0].toString() : null,
-                        data.attendanceItem[0] != null ? data.attendanceItem[0].toString() : null));
-                    for (let i = 1; i < 10; i++) {
-                        if(i < maxLength){
-                            self.countNumberRow = self.countNumberRow + 1;
-                            if(self.countNumberRow >= 10) {
-                                self.isEnableAddBtn(false);
+                        self.scheduleTableOutputSetting().updateData(data);
+                        self.scheduleTableOutputSetting().isEnableCode(false);
+                        checkAddInfo != null ? self.isEnableAddBtn(checkAddInfo) : self.isEnableAddBtn(data.shiftBackgroundColor == 0);
+                        checkShiftBgColor != null ? self.isShiftBackgroundColor(checkShiftBgColor) : self.isShiftBackgroundColor(data.shiftBackgroundColor == 1);
+                     
+                        datas.push(new ScreenItem(true, self.countNumberRow, data.personalInfo[0] != null ? data.personalInfo[0].toString() : null,
+                            data.additionalInfo[0] != null ? data.additionalInfo[0].toString() : null,
+                            data.attendanceItem[0] != null ? data.attendanceItem[0].toString() : null));
+                        for (let i = 1; i < 10; i++) {
+                            if (i < maxLength) {
+                                self.countNumberRow = self.countNumberRow + 1;
+                                if (self.countNumberRow >= 10) {
+                                    self.isEnableAddBtn(false);
+                                }
+                                datas.push(new ScreenItem(false, self.countNumberRow, data.personalInfo[i] != null ? data.personalInfo[i].toString() : null,
+                                    data.additionalInfo[i] != null ? data.additionalInfo[i].toString() : null,
+                                    data.attendanceItem[i] != null ? data.attendanceItem[i].toString() : null));
                             }
-                            datas.push(new ScreenItem(false, self.countNumberRow, data.personalInfo[i] != null ? data.personalInfo[i].toString() : null,
-                                data.additionalInfo[i] != null ? data.additionalInfo[i].toString() : null,
-                                data.attendanceItem[i] != null ? data.attendanceItem[i].toString() : null));   
-                        } 
+                        }
+                        self.itemList(datas);
+                        self.itemsSwap.removeAll();
+                        self.currentCodeListSwap.removeAll();
+                        self.itemsSwap((_.cloneDeep(self.workplaceCounterCategories())));
+
+                        _.each(data.workplaceCounterCategories, code => {
+                            _.each(self.itemsSwap(), y => {
+                                if (y.value == code) {
+                                    tempSelected.push(new SwapModel(y.value, y.name));
+                                    tempSelectedCode.push(y.value);
+                                }
+                            })
+                        });
+
+                        self.currentCodeListSwap(tempSelected);
+                        self.selectedCodeListSwap(tempSelectedCode);
+                        self.persons(self.personalCounterCategory());
+                        self.selectedPerson(data.personalCounterCategories);
+                        self.isEditing(true);
+                        self.enableDelete(true);
+                        $('#outputSettingName').focus();
                     }
-                    self.itemList(datas);
-                    self.itemsSwap.removeAll();
-                    self.currentCodeListSwap.removeAll();
-                    self.itemsSwap((_.cloneDeep(self.workplaceCounterCategories())));
-
-                    _.each(data.workplaceCounterCategories, code => {
-                        _.each(self.itemsSwap(), y => {
-                            if (y.value == code) {
-                                tempSelected.push(new SwapModel(y.value, y.name));
-                                tempSelectedCode.push(y.value);
-                            }
-                        })
-                    });
-
-                    self.currentCodeListSwap(tempSelected);
-                    self.selectedCodeListSwap(tempSelectedCode);
-                    self.persons(self.personalCounterCategory());
-                    self.selectedPerson(data.personalCounterCategories);
-                    self.isEditing(true);
-                    self.enableDelete(true);
-                    $('#outputSettingName').focus();
-                }
-            }).always(() => {
-                self.$blockui("hide");
-            })
+                }).always(() => {
+                    self.$blockui("hide");
+                })
+            }
         }
         initialData(): void {
             const self = this;
@@ -473,6 +479,8 @@ module nts.uk.at.view.ksu005.b {
             self.enableDelete(false);
             self.isEnableDelBtn(false);
             self.isEnableAddBtn(true);
+            self.isEnableAttendanceItem(true);
+            self.isShiftBackgroundColor(false);
             self.initialData();
             self.clearError();
             $('#outputSettingCode').focus();              
@@ -592,15 +600,24 @@ module nts.uk.at.view.ksu005.b {
             });
             self.isNumberOne = ko.observable(isNumberOne);            
             self.selectedCode = ko.observable('1');             
-            if(personalInfo) {            
+            if(personalInfo != null) {            
                 self.personalInfo = ko.observable(personalInfo);
             }
-            if(additionInfo) {                
+            if(additionInfo != null) {                
                 self.additionInfo = ko.observable(additionInfo);
             }
-            if(attendanceItem) {
+            if(attendanceItem != null) {
                 self.attendanceItem = ko.observable(attendanceItem);
             }
+            // if(personalInfo) {            
+            //     self.personalInfo = ko.observable(personalInfo);
+            // }
+            // if(additionInfo) {                
+            //     self.additionInfo = ko.observable(additionInfo);
+            // }
+            // if(attendanceItem) {
+            //     self.attendanceItem = ko.observable(attendanceItem);
+            // }
         }
     }
     class ItemModel {
@@ -693,6 +710,14 @@ module nts.uk.at.view.ksu005.b {
             let self = this;
             self.code("");
             self.name("");
+            self.additionalColumn(1);
+            self.additionalInfo();
+            self.attendanceItem();
+            self.dailyDataDisplay(0);
+            self.shiftBackgroundColor(0);
+            self.personalInfo();
+            self.personalCounterCtegories();
+            self.workplaceCounterCategories();
             self.isEnableCode(true);
         }
         public updateData(param: IScheduleTableOutputSetting){
