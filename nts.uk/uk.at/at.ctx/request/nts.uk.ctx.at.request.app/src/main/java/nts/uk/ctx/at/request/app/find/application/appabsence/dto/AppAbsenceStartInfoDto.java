@@ -14,7 +14,7 @@ import nts.uk.ctx.at.request.app.find.application.holidayshipment.dto.TimeZoneUs
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.applicationsetting.DisplayReasonDto;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSettingDto;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AppAbsenceStartInfoOutput;
-import nts.uk.ctx.at.shared.app.command.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.HolidayApplicationReflectCommand;
+import nts.uk.ctx.at.shared.app.command.scherec.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.HolidayApplicationReflectCommand;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.paymana.PayoutSubofHDManagementDto;
 import nts.uk.ctx.at.shared.app.find.remainingnumber.subhdmana.dto.LeaveComDayOffManaDto;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
