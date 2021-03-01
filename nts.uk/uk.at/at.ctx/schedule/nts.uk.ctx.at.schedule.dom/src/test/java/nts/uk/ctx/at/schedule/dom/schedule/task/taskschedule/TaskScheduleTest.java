@@ -9,6 +9,8 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.runners.Enclosed;
+import org.junit.runner.RunWith;
 
 import mockit.Injectable;
 import nts.arc.testing.assertion.NtsAssert;
@@ -16,6 +18,7 @@ import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
+@RunWith(Enclosed.class)
 public class TaskScheduleTest {
 	
 	@Test
@@ -27,7 +30,7 @@ public class TaskScheduleTest {
 		NtsAssert.invokeGetters(target);
 	}
 	
-	static class TaskScheduleTest_create {
+	public static class TaskScheduleTest_create {
 		
 		@Test
 		public void testCreate_duplicate_exception() {
@@ -135,7 +138,7 @@ public class TaskScheduleTest {
 	}
 	
 	
-	static class TaskScheduleTest_addTaskScheduleDetail_Single {
+	public static class TaskScheduleTest_addTaskScheduleDetail_Single {
 		
 		TaskSchedule target;
 		
@@ -418,7 +421,7 @@ public class TaskScheduleTest {
 		
 	}
 	
-	static class TaskScheduleTest_addTaskScheduleDetail_Multi {
+	public static class TaskScheduleTest_addTaskScheduleDetail_Multi {
 		
 		@Test
 		public void testAddTaskScheduleDetail_multi() {
