@@ -62,19 +62,9 @@ public class JpaOptionalItemApplicationRepository extends JpaRepository implemen
                 .setParameter("appId", domain.getAppID())
                 .getList().stream().collect(Collectors.toMap(x -> x.getKrqdtAppAnyvPk().anyvNo, x -> x));
         if (entityMap.size() > 0) {
-            List<KrqdtAppAnyv> removeEntity = new ArrayList<>();
-            domain.getOptionalItems().forEach(item -> {
-                if (!item.getTime().isPresent() && !item.getTimes().isPresent() && !item.getAmount().isPresent()) {
-                    removeEntity.add(entityMap.get(item.getItemNo().v()));
-                } else {
-                    KrqdtAppAnyv krqdtAppAnyv = entityMap.get(item.getItemNo().v());
-                    krqdtAppAnyv.setTimes(item.getTimes().isPresent() ? item.getTimes().get().v() : null);
-                    krqdtAppAnyv.setTime(item.getTime().isPresent() ? item.getTime().get().v() : null);
-                    krqdtAppAnyv.setMoneyValue(item.getAmount().isPresent() ? item.getAmount().get().v() : null);
-                }
-            });
-            this.commandProxy().updateAll(entityMap.values());
-            this.commandProxy().removeAll(removeEntity);
+            this.remove(domain);
+            this.getEntityManager().flush();
+            this.save(domain);
         }
 
     }
@@ -120,17 +110,19 @@ public class JpaOptionalItemApplicationRepository extends JpaRepository implemen
         String cid = AppContexts.user().companyId();
         List<KrqdtAppAnyv> entities = new ArrayList<>();
         domain.getOptionalItems().forEach(anyItemValue -> {
-            KrqdtAppAnyv entity = new KrqdtAppAnyv();
-            entity.setKrqdtAppAnyvPk(new KrqdtAppAnyvPk(
-                    cid,
-                    domain.getAppID(),
-                    domain.getCode().v(),
-                    anyItemValue.getItemNo().v()
-            ));
-            entity.setTimes(anyItemValue.getTimes().isPresent() ? anyItemValue.getTimes().get().v() : null);
-            entity.setTime(anyItemValue.getTime().isPresent() ? anyItemValue.getTime().get().v() : null);
-            entity.setMoneyValue(anyItemValue.getAmount().isPresent() ? anyItemValue.getAmount().get().v() : null);
-            entities.add(entity);
+            if (anyItemValue.getTimes().isPresent() || anyItemValue.getTime().isPresent() || anyItemValue.getAmount().isPresent()) {
+                KrqdtAppAnyv entity = new KrqdtAppAnyv();
+                entity.setKrqdtAppAnyvPk(new KrqdtAppAnyvPk(
+                        cid,
+                        domain.getAppID(),
+                        domain.getCode().v(),
+                        anyItemValue.getItemNo().v()
+                ));
+                entity.setTimes(anyItemValue.getTimes().isPresent() ? anyItemValue.getTimes().get().v() : null);
+                entity.setTime(anyItemValue.getTime().isPresent() ? anyItemValue.getTime().get().v() : null);
+                entity.setMoneyValue(anyItemValue.getAmount().isPresent() ? anyItemValue.getAmount().get().v() : null);
+                entities.add(entity);
+            }
         });
         return entities;
     }
