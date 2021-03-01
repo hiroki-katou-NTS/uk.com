@@ -1402,6 +1402,62 @@ public class WorkTimeReportService_New {
          */
         boolean zeroHStraddCalculateSet = data.getFixedWorkSetting().getCommonSetting().isZeroHStraddCalculateSet();
         cells.get("FG" + (startIndex + 1)).setValue(zeroHStraddCalculateSet ? "する" : "しない");
+        
+        // 17       タブグ:                その地
+        
+        /*
+         * R4_229
+         * その他.勤務種類が休暇の場合に就業時間を計算するか
+         */
+        Integer isCalculate = data.getFixedWorkSetting().getCommonSetting().getHolidayCalculation().getIsCalculate();
+        cells.get("FH" + (startIndex + 1)).setValue(getUseAtr(isCalculate));
+        
+        FixedWorkCalcSettingDto calculationSetting = data.getFixedWorkSetting().getCalculationSetting();
+        if (calculationSetting != null) {
+            /*
+             * R4_57
+             * その他.休暇加算時間を加算する場合に就業時間として加算するか.しない
+             */
+            Integer calcMethod = calculationSetting.getExceededPredAddVacationCalc().getCalcMethod();
+            cells.get("FI" + (startIndex + 1)).setValue(getUseAtr(calcMethod));
+            
+            /*
+             * R4_231
+             * その他.休暇加算時間を加算する場合に就業時間として加算するか.残業枠
+             */
+            Integer otFrameNo = calculationSetting.getExceededPredAddVacationCalc().getOtFrameNo();
+            Optional<WorkdayoffFrameFindDto> otFrame = otFrameFind.stream().filter(x -> x.getWorkdayoffFrNo() == otFrameNo).findFirst();
+            if (otFrame.isPresent()) {
+                cells.get("FJ" + (startIndex + 1)).setValue(otFrame.get().getWorkdayoffFrName());
+            }
+            
+            /*
+             * R4_58
+             * その他.休憩未取得時に就業時間として計算するか
+             */
+            Integer calcMethodOt = calculationSetting.getOverTimeCalcNoBreak().getCalcMethod();
+            cells.get("FK" + (startIndex + 1)).setValue(getUseAtr(calcMethodOt));
+            
+            /*
+             * R4_232
+             * その他.休憩未取得時に就業時間として計算するか.法定内残業枠
+             */
+            Integer inLawOT = calculationSetting.getOverTimeCalcNoBreak().getInLawOT();
+            Optional<WorkdayoffFrameFindDto> otFrameInLaw = otFrameFind.stream().filter(x -> x.getWorkdayoffFrNo() == inLawOT).findFirst();
+            if (otFrameInLaw.isPresent()) {
+                cells.get("FL" + (startIndex + 1)).setValue(otFrameInLaw.get().getWorkdayoffFrName());
+            }
+            
+            /*
+             * R4_233
+             * その他.休憩未取得時に就業時間として計算するか.法定外残業枠
+             */
+            Integer notInLawOT = calculationSetting.getOverTimeCalcNoBreak().getInLawOT();
+            Optional<WorkdayoffFrameFindDto> otFrameNotInLaw = otFrameFind.stream().filter(x -> x.getWorkdayoffFrNo() == notInLawOT).findFirst();
+            if (otFrameNotInLaw.isPresent()) {
+                cells.get("FM" + (startIndex + 1)).setValue(otFrameNotInLaw.get().getWorkdayoffFrName());
+            }
+        }
     }
     
     /**
@@ -1914,6 +1970,26 @@ public class WorkTimeReportService_New {
         for (int i = 0; i <= approTimeRoundings.length; i++) {
             if (approTimeRoundingAtr == i) {
                 return approTimeRoundings[i];
+            }
+        }
+        
+        return "";
+    }
+    
+    /**
+     * するしない区分
+     * @param useAtr
+     * @return
+     */
+    private static String getUseAtr(Integer useAtr) {
+        if (useAtr == null) {
+            return "";
+        }
+        
+        String[] uses = {"しない", "する"};
+        for (int i = 0; i < uses.length; i++) {
+            if (useAtr == i) {
+                return uses[i];
             }
         }
         
