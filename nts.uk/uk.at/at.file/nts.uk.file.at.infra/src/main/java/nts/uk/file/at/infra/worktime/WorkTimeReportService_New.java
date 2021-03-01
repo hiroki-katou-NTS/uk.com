@@ -1584,6 +1584,213 @@ public class WorkTimeReportService_New {
                 cells.get("AH" + ((startIndex + 1) + i)).setValue(getSetlementEnum(inLegalOTFrameNo.intValue()));
             }
         }
+        
+        // 4        タブグ:                打刻時間帯
+        
+        List<PrioritySettingDto> prioritySets = data.getFlowWorkSetting().getCommonSetting().getStampSet().getPrioritySets();
+        Optional<PrioritySettingDto> prioritySetGoingWorkOpt = prioritySets.stream()
+                .filter(x -> x.getStampAtr().equals(StampPiorityAtr.GOING_WORK.value)).findFirst();
+        Optional<PrioritySettingDto> prioritySetLeaveWorkOpt = prioritySets.stream()
+                .filter(x -> x.getStampAtr().equals(StampPiorityAtr.LEAVE_WORK.value)).findFirst();
+        Optional<PrioritySettingDto> prioritySetEnteringOpt = prioritySets.stream()
+                .filter(x -> x.getStampAtr().equals(StampPiorityAtr.ENTERING.value)).findFirst();
+        Optional<PrioritySettingDto> prioritySetExitOpt = prioritySets.stream()
+                .filter(x -> x.getStampAtr().equals(StampPiorityAtr.EXIT.value)).findFirst();
+        Optional<PrioritySettingDto> prioritySetPCLoginOpt = prioritySets.stream()
+                .filter(x -> x.getStampAtr().equals(StampPiorityAtr.PCLOGIN.value)).findFirst();
+        Optional<PrioritySettingDto> prioritySetPCLogoutOpt = prioritySets.stream()
+                .filter(x -> x.getStampAtr().equals(StampPiorityAtr.PC_LOGOUT.value)).findFirst();
+        if (displayMode.equals(DisplayMode.DETAIL.value)) {
+            if (prioritySetGoingWorkOpt.isPresent()) {
+                /*
+                 * R5_89
+                 * 打刻時間帯.優先設定.出勤
+                 */
+                Integer priorityAtr = prioritySetGoingWorkOpt.get().getPriorityAtr();
+                cells.get("AI" + (startIndex + 1)).setValue(MultiStampTimePiorityAtr.valueOf(priorityAtr).description);
+            }
+            
+            if (prioritySetLeaveWorkOpt.isPresent()) {
+                /*
+                 * R5_90
+                 * 打刻時間帯.優先設定.退勤
+                 */
+                Integer priorityAtr = prioritySetLeaveWorkOpt.get().getPriorityAtr();
+                cells.get("AJ" + (startIndex + 1)).setValue(MultiStampTimePiorityAtr.valueOf(priorityAtr).description);
+            }
+        }
+        
+        List<RoundingSetDto> roundingSets = data.getFlowWorkSetting().getCommonSetting().getStampSet().getRoundingTime().getRoundingSets();
+        Optional<RoundingSetDto> roundingAttendanceSetOpt = roundingSets.stream().filter(x -> x.getSection() == Superiority.ATTENDANCE.value).findFirst();
+        Optional<RoundingSetDto> roundingOfficeSetOpt = roundingSets.stream().filter(x -> x.getSection() == Superiority.OFFICE_WORK.value).findFirst();
+        Optional<RoundingSetDto> roundingGoOutSetOpt = roundingSets.stream().filter(x -> x.getSection() == Superiority.GO_OUT.value).findFirst();
+        Optional<RoundingSetDto> roundingTurnBackSetOpt = roundingSets.stream().filter(x -> x.getSection() == Superiority.TURN_BACK.value).findFirst();
+        
+        if (roundingAttendanceSetOpt.isPresent()) {
+            /*
+             * R5_91
+             * 打刻時間帯.打刻丸め.出勤
+             */
+            Integer roundingTimeUnit = roundingAttendanceSetOpt.get().getRoundingSet().getRoundingTimeUnit();
+            cells.get("AK" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(roundingTimeUnit));
+            
+            /*
+             * R5_92
+             * 打刻時間帯.打刻丸め.出勤前後設定
+             */
+            Integer fontRearSection = roundingAttendanceSetOpt.get().getRoundingSet().getFontRearSection();
+            cells.get("AL" + (startIndex + 1)).setValue(FontRearSection.valueOf(fontRearSection).description);
+        }
+        
+        if (roundingOfficeSetOpt.isPresent()) {
+            /*
+             * R5_93
+             * 打刻時間帯.打刻丸め.退勤
+             */
+            Integer roundingTimeUnit = roundingOfficeSetOpt.get().getRoundingSet().getRoundingTimeUnit();
+            cells.get("AM" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(roundingTimeUnit));
+            
+            /*
+             * R5_94
+             * 打刻時間帯.打刻丸め.退勤前後設定
+             */
+            Integer fontRearSection = roundingOfficeSetOpt.get().getRoundingSet().getFontRearSection();
+            cells.get("AN" + (startIndex + 1)).setValue(FontRearSection.valueOf(fontRearSection).description);
+        }
+        
+        if (displayMode.equals(DisplayMode.DETAIL.value)) {
+            List<StampReflectTimezoneDto> stampReflectTimezones = data.getFlowWorkSetting().getStampReflectTimezone().getStampReflectTimezones();
+            Optional<StampReflectTimezoneDto> lst1stGoWorkOpt = stampReflectTimezones.stream()
+                    .filter(x -> (x.getWorkNo() == 1 && x.getClassification().equals(GoLeavingWorkAtr.GO_WORK.value)))
+                    .findFirst();
+                
+                Optional<StampReflectTimezoneDto> lst1stLeavingWorkOpt = stampReflectTimezones.stream()
+                    .filter(x -> (x.getWorkNo() == 1 && x.getClassification().equals(GoLeavingWorkAtr.LEAVING_WORK.value)))
+                    .findFirst();
+                
+                if (lst1stGoWorkOpt.isPresent()) {
+                    /*
+                     * R5_95
+                     * 打刻詳細設定.出勤反映時間帯.開始時刻
+                     */
+                    Integer startTime = lst1stGoWorkOpt.get().getStartTime();
+                    cells.get("AO" + (startIndex + 1)).setValue(startTime != null ? getInDayTimeWithFormat(startTime) : "");
+                    
+                    /*
+                     * R5_96
+                     * 打刻詳細設定.出勤反映時間帯.終了時刻
+                     */
+                    Integer endTime = lst1stGoWorkOpt.get().getEndTime();
+                    cells.get("AP" + (startIndex + 1)).setValue(endTime != null ? getInDayTimeWithFormat(endTime) : "");
+                }
+                
+                /*
+                 * R5_97
+                 * 打刻詳細設定.出勤反映時間帯.2勤務目の開始（1勤務目の退勤から分けられる時間）
+                 */
+                Integer twoTimesWorkReflectBasicTime = data.getFlowWorkSetting().getStampReflectTimezone().getTwoTimesWorkReflectBasicTime();
+                cells.get("AQ" + (startIndex + 1)).setValue(getInDayTimeWithFormat(twoTimesWorkReflectBasicTime));
+                
+                if (lst1stLeavingWorkOpt.isPresent()) {
+                    /*
+                     * R5_98
+                     * 打刻詳細設定.退勤反映時間帯.開始時刻
+                     */
+                    Integer startTime = lst1stLeavingWorkOpt.get().getStartTime();
+                    cells.get("AR" + (startIndex + 1)).setValue(startTime != null ? getInDayTimeWithFormat(startTime) : "");
+                    
+                    /*
+                     * R5_99
+                     * 打刻詳細設定.退勤反映時間帯.終了時刻
+                     */
+                    Integer endTime = lst1stLeavingWorkOpt.get().getEndTime();
+                    cells.get("AS" + (startIndex + 1)).setValue(endTime != null ? getInDayTimeWithFormat(endTime) : "");
+                }
+                
+                /*
+                 * R5_100
+                 * 打刻詳細設定.優先設定.入門
+                 */
+                if (prioritySetEnteringOpt.isPresent()) {
+                    Integer priorityAtr = prioritySetEnteringOpt.get().getPriorityAtr();
+                    cells.get("AT" + (startIndex + 1)).setValue(getPrioritySetAtr(priorityAtr));
+                }
+                
+                /*
+                 * R5_101
+                 * 打刻詳細設定.優先設定.退門
+                 */
+                if (prioritySetExitOpt.isPresent()) {
+                    Integer priorityAtr = prioritySetExitOpt.get().getPriorityAtr();
+                    cells.get("AU" + (startIndex + 1)).setValue(getPrioritySetAtr(priorityAtr));
+                }
+                
+                /*
+                 * R5_102
+                 * 打刻詳細設定.優先設定.PCログオン
+                 */
+                if (prioritySetPCLoginOpt.isPresent()) {
+                    Integer priorityAtr = prioritySetPCLoginOpt.get().getPriorityAtr();
+                    cells.get("AV" + (startIndex + 1)).setValue(getPrioritySetAtr(priorityAtr));
+                }
+                
+                /*
+                 * R5_103
+                 * 打刻詳細設定.優先設定.PCログオフ
+                 */
+                if (prioritySetPCLogoutOpt.isPresent()) {
+                    Integer priorityAtr = prioritySetPCLogoutOpt.get().getPriorityAtr();
+                    cells.get("AW" + (startIndex + 1)).setValue(getPrioritySetAtr(priorityAtr));
+                }
+                
+                if (roundingGoOutSetOpt.isPresent()) {
+                    /*
+                     * R5_104
+                     * 打刻詳細設定.打刻丸め.外出
+                     */
+                    Integer unitGoOut = roundingGoOutSetOpt.get().getRoundingSet().getRoundingTimeUnit();
+                    cells.get("AX" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitGoOut));
+                    
+                    /*
+                     * R5_105
+                     * 打刻詳細設定.打刻丸め.外出前後設定
+                     */
+                    Integer fontRearSection = roundingGoOutSetOpt.get().getRoundingSet().getFontRearSection();
+                    cells.get("AY" + (startIndex + 1)).setValue(fontRearSection == 0 ? "前にずらす" : "後ろにずらす");
+                }
+                
+                if (roundingTurnBackSetOpt.isPresent()) {
+                    /*
+                     * R5_106
+                     * 打刻詳細設定.打刻丸め.戻り
+                     */
+                    Integer unitReturnBack = roundingTurnBackSetOpt.get().getRoundingSet().getRoundingTimeUnit();
+                    cells.get("AZ" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitReturnBack));
+                    
+                    /*
+                     * R5_107
+                     * 打刻詳細設定.打刻丸め.戻り前後設定
+                     */
+                    Integer fontRearSection = roundingTurnBackSetOpt.get().getRoundingSet().getFontRearSection();
+                    cells.get("BA" + (startIndex + 1)).setValue(fontRearSection == 0 ? "前にずらす" : "後ろにずらす");
+                }
+                
+                /*
+                 * R5_264
+                 * 打刻詳細設定.計算設定.時間丁度の打刻は遅刻とする
+                 */
+                Integer attendanceMinuteLaterCalculate = data.getFlowWorkSetting().getCommonSetting()
+                        .getStampSet().getRoundingTime().getAttendanceMinuteLaterCalculate();
+                cells.get("BB" + (startIndex + 1)).setValue(attendanceMinuteLaterCalculate == 0 ? "-" : "○");
+                
+                /*
+                 * R5_265
+                 * 打刻詳細設定.計算設定.時間丁度の打刻は早退とする
+                 */
+                Integer leaveWorkMinuteAgoCalculate = data.getFlowWorkSetting().getCommonSetting()
+                        .getStampSet().getRoundingTime().getLeaveWorkMinuteAgoCalculate();
+                cells.get("BC" + (startIndex + 1)).setValue(leaveWorkMinuteAgoCalculate == 0 ? "-" : "○");
+        }
     }
     
     /**
