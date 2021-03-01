@@ -32,6 +32,14 @@ public class AuthenticationFailuresLog implements DomainAggregate {
 	}
 	
 	/**
+	 * 記録されているすべての失敗回数を返す
+	 * @return
+	 */
+	public int countAll() {
+		return failureTimestamps.size();
+	}
+	
+	/**
 	 * 指定した日時以降の失敗回数を返す
 	 * @param from
 	 * @return

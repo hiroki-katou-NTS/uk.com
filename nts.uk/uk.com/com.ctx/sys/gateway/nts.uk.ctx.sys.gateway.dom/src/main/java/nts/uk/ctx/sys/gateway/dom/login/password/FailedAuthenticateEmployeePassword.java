@@ -20,7 +20,7 @@ public class FailedAuthenticateEmployeePassword {
 		String contractCode = require.getLoginUserContractCode();
 		
 		val lockOpt = require.getAccountLockPolicy(contractCode)
-				.flatMap(p -> p.validate(failuresLog));
+				.flatMap(p -> p.validateAuthenticate(failuresLog));
 		
 		return AtomTask.of(() -> {
 			

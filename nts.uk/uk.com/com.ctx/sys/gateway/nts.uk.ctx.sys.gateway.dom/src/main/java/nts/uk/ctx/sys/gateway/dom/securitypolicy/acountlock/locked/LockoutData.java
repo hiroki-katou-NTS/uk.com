@@ -31,17 +31,36 @@ public class LockoutData extends AggregateRoot{
 	/** The ロック種別 */
 	private LockType logType;
 	
-    /**
-     * Instantiates a new logout data.
-     *
-     * @param memento the memento
-     */
-    public LockoutData(LockOutDataGetMemento memento) {
-        this.userId = memento.getUserId();
-        this.lockOutDateTime = memento.getLockOutDateTime();
-        this.logType = memento.getLogType();
-        this.contractCode = memento.getContractCode();
-    }
+
+	
+	/** The login method. */
+	private LoginMethod loginMethod;
+	
+	/**
+	 * Instantiates a new logout data.
+	 *
+	 * @param memento the memento
+	 */
+	public LockoutData(LockOutDataGetMemento memento) {
+		this.userId = memento.getUserId();
+		this.lockOutDateTime = memento.getLockOutDateTime();
+		this.logType = memento.getLogType();
+		this.contractCode = memento.getContractCode();
+		this.loginMethod = memento.getLoginMethod();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(LockOutDataSetMemento memento) {
+		memento.setUserId(this.userId);
+		memento.setLogoutDateTime(this.lockOutDateTime);
+		memento.setLogType(this.logType);
+		memento.setContractCode(this.contractCode);
+		memento.setLoginMethod(this.loginMethod);
+	}
 
 	/**
 	 * 自動ロックをかける
@@ -49,16 +68,8 @@ public class LockoutData extends AggregateRoot{
 	 * @param contractCode
 	 * @return
 	 */
-	public static AtomTask autoLock(Require require, ContractCode contractCode, String userId) {
+	public static LockoutData autoLock(ContractCode contractCode, String userId, LoginMethod loginMethod) {
 		
-		return AtomTask.of(() -> {
-			require.addLockoutData(new LockoutData(contractCode, userId, GeneralDateTime.now(), LockType.AUTO_LOCK));
-		});
+		return new LockoutData(contractCode, userId, GeneralDateTime.now(), LockType.AUTO_LOCK, loginMethod);
 	}
-
-	public static interface Require {
-		void addLockoutData(LockoutData lockoutData);
-	}
-	
-
 }

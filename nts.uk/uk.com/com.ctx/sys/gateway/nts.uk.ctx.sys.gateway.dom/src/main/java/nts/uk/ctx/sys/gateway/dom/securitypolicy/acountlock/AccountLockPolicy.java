@@ -12,6 +12,7 @@ import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.gateway.dom.login.password.AuthenticationFailuresLog;
 import nts.uk.ctx.sys.gateway.dom.loginold.ContractCode;
 import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LockoutData;
+import nts.uk.ctx.sys.gateway.dom.securitypolicy.acountlock.locked.LoginMethod;
 
 @Getter
 public class AccountLockPolicy extends AggregateRoot {
@@ -63,24 +64,25 @@ public class AccountLockPolicy extends AggregateRoot {
 	 * @param userId
 	 * @return
 	 */
-	public Optional<AtomTask> validateAuthenticate(Require require, String tenantCode, String userId) {
+	public Optional<LockoutData> validateAuthenticate(AuthenticationFailuresLog failuresLog) {
 		int failureCount;
 		if(lockInterval.v() == 0) {
-			failureCount = require.getFailureLog(userId).size();
+			failureCount = failuresLog.countAll();
 		}
 		else {
 			val startDateTime = GeneralDateTime.now().addMinutes(-lockInterval.valueAsMinutes());
-			failureCount = require.getFailureLog(userId, startDateTime, GeneralDateTime.now()).size();
+			failureCount = failuresLog.countFrom(startDateTime);
 		}
+		
 		if(failureCount >= errorCount.v().intValue() - 1) {
-			return Optional.of(LockoutData.autoLock(require, new ContractCode(tenantCode), userId));
+			return Optional.of(LockoutData.autoLock(contractCode, failuresLog.getUserId(), LoginMethod.NORMAL_LOGIN));
 		}
 		else {
 			return Optional.empty();
 		}
 	}
 	
-	public static interface Require extends LockoutData.Require{
+	public static interface Require {
 		
 		Optional<LockoutData> getLockOutData(String userId);
 		
