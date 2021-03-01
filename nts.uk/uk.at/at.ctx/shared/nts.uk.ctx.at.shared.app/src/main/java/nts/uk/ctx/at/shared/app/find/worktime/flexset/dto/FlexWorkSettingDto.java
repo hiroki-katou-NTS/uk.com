@@ -4,10 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.worktime.flexset.dto;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import lombok.Getter;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.FlowWorkRestSettingDto;
@@ -17,12 +13,15 @@ import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexHalfDayWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexOffdayWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingSetMemento;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.HalfDayWorkSet;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * The Class FlexWorkSettingDto.
@@ -53,9 +52,6 @@ public class FlexWorkSettingDto implements FlexWorkSettingSetMemento {
 
 	/** The lst stamp reflect timezone. */
 	private List<StampReflectTimezoneDto> lstStampReflectTimezone;
-
-	/** The calculate setting. */
-	private FlexCalcSettingDto calculateSetting;
 
 	/*
 	 * (non-Javadoc)
@@ -176,21 +172,6 @@ public class FlexWorkSettingDto implements FlexWorkSettingSetMemento {
 			}).collect(Collectors.toList());
 		}
 		
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingSetMemento#
-	 * setCalculateSetting(nts.uk.ctx.at.shared.dom.worktime.flexset.
-	 * FlexCalcSetting)
-	 */
-	@Override
-	public void setCalculateSetting(FlexCalcSetting calculateSetting) {
-		if (calculateSetting != null) {
-			this.calculateSetting = new FlexCalcSettingDto();
-			calculateSetting.saveToMemento(this.calculateSetting);
-		}
 	}
 
 	/*

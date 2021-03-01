@@ -1,10 +1,5 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.DailyTime;
@@ -18,16 +13,17 @@ import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.DailyUnit;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.DailyCalculationPersonalInformation;
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
-import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.*;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.CoreTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexCalcSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexset.OutingCalcWithinCoreTime;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * 時間帯作成、時間計算で再取得が必要になっているクラスたちの管理クラス
@@ -250,11 +246,11 @@ public class ManageReGetClass {
 	 * フレックス計算設定を取得する
 	 * @return フレックス計算設定
 	 */
-	public Optional<FlexCalcSetting> getFlexCalcSetting() {
+	public Optional<OutingCalcWithinCoreTime> getGoOutCalc() {
 		if(!this.integrationOfWorkTime.isPresent() || !this.integrationOfWorkTime.get().getFlexWorkSetting().isPresent())
 			return Optional.empty();
 		
-		return Optional.of(this.integrationOfWorkTime.get().getFlexWorkSetting().get().getCalculateSetting());
+		return Optional.of(this.integrationOfWorkTime.get().getFlexWorkSetting().get().getCoreTimeSetting().getGoOutCalc());
 	}
 	
 	/**

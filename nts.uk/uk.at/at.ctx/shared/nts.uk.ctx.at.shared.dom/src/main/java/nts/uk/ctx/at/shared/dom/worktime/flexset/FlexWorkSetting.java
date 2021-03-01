@@ -76,10 +76,6 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 	// 打刻反映時間帯
 	private List<StampReflectTimezone> lstStampReflectTimezone;
 
-	/** The calculate setting. */
-	// 計算設定
-	private FlexCalcSetting calculateSetting;
-
 	/**
 	 * Instantiates a new flex work setting.
 	 *
@@ -94,7 +90,6 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 		this.commonSetting = memento.getCommonSetting();
 		this.useHalfDayShift = memento.getUseHalfDayShift();
 		this.lstStampReflectTimezone = memento.getLstStampReflectTimezone();
-		this.calculateSetting = memento.getCalculateSetting();
 		
 		if (!this.validateHalfDayWorkTime(memento.getLstHalfDayWorkTimezone())) {
 		    throw new BusinessException("Msg_2143");
@@ -122,7 +117,6 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 		memento.setUseHalfDayShift(this.useHalfDayShift);
 		memento.setLstHalfDayWorkTimezone(this.lstHalfDayWorkTimezone);
 		memento.setLstStampReflectTimezone(this.lstStampReflectTimezone);
-		memento.setCalculateSetting(this.calculateSetting);
 	}
 
 	/**
@@ -194,7 +188,6 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 					.collect(Collectors.toList());
 			cloned.lstStampReflectTimezone = this.lstStampReflectTimezone.stream().map(c -> c.clone())
 					.collect(Collectors.toList());
-			cloned.calculateSetting = this.calculateSetting.clone();
 		} catch (Exception e) {
 			throw new RuntimeException("AggregateTotalTimeSpentAtWork clone error.");
 		}

@@ -7,7 +7,6 @@ module nts.uk.at.view.kmk003.a {
     import NotUseAtr = nts.uk.at.view.kmk003.a.viewmodel.common.NotUseAtr;
     import CoreTimeSettingDto = service.model.flexset.CoreTimeSettingDto;
     import FlexHalfDayWorkTimeDto = service.model.flexset.FlexHalfDayWorkTimeDto;
-    import FlexCalcSettingDto = service.model.flexset.FlexCalcSettingDto;
     import FlexOffdayWorkTimeDto = service.model.flexset.FlexOffdayWorkTimeDto;
 
     import FlowWorkRestTimezoneModel = nts.uk.at.view.kmk003.a.viewmodel.common.FlowWorkRestTimezoneModel;
@@ -174,35 +173,6 @@ module nts.uk.at.view.kmk003.a {
                 }
             }
 
-            export class FlexCalcSettingModel {
-                removeFromWorkTime: KnockoutObservable<number>;
-                calculateSharing: KnockoutObservable<number>;
-
-                constructor() {
-                    this.removeFromWorkTime = ko.observable(0);
-                    this.calculateSharing = ko.observable(0);
-                }
-
-                public resetData(): void {
-                    let self = this;
-                    self.removeFromWorkTime(0);
-                    self.calculateSharing(0);
-                }
-
-                updateData(data: FlexCalcSettingDto) {
-                    this.removeFromWorkTime(data.removeFromWorkTime);
-                    this.calculateSharing(data.calculateSharing);
-                }
-
-                toDto(): FlexCalcSettingDto {
-                    var dataDTO: FlexCalcSettingDto = {
-                        removeFromWorkTime: this.removeFromWorkTime(),
-                        calculateSharing: this.calculateSharing()
-                    };
-                    return dataDTO;
-                }
-            }
-
             export class FlexOffdayWorkTimeModel extends OffdayWorkTimeConverter {
                 lstWorkTimezone: KnockoutObservableArray<HDWorkTimeSheetSettingModel>;
                 restTimezone: FlowWorkRestTimezoneModel;
@@ -256,7 +226,6 @@ module nts.uk.at.view.kmk003.a {
                 commonSetting: WorkTimezoneCommonSetModel;
                 lstHalfDayWorkTimezone: Array<FlexHalfDayWorkTimeModel>;
                 lstStampReflectTimezone: Array<StampReflectTimezoneModel>;
-                calculateSetting: FlexCalcSettingModel;
                 fixRestTime: KnockoutObservable<boolean>
                 displayMode: KnockoutObservable<number>;
                 
@@ -273,7 +242,6 @@ module nts.uk.at.view.kmk003.a {
                     self.lstHalfDayWorkTimezone = self.initListHalfDay(self.displayMode);
                     self.lstStampReflectTimezone = [];
                     self.initStampSets();
-                    self.calculateSetting = new FlexCalcSettingModel();                   
                 }
                 
                 initStampSets() {
@@ -320,7 +288,6 @@ module nts.uk.at.view.kmk003.a {
                     self.getHDWtzOneday().resetData();
                     self.getHDWtzMorning().resetData();
                     self.getHDWtzAfternoon().resetData();
-                    self.calculateSetting.resetData();
                     self.lstStampReflectTimezone.forEach(function(item, index) {
                         item.resetData();
                     });
@@ -374,7 +341,6 @@ module nts.uk.at.view.kmk003.a {
                     this.commonSetting.updateData(data.commonSetting);
                     this.updateListHalfDay(data.lstHalfDayWorkTimezone);
                     this.updateListStamp(data.lstStampReflectTimezone);
-                    this.calculateSetting.updateData(data.calculateSetting);
                 }
                 
                 updateListStamp(lstStampReflectTimezone: Array<StampReflectTimezoneDto>) {
@@ -410,7 +376,6 @@ module nts.uk.at.view.kmk003.a {
                         commonSetting: commonSetting.toDto(),
                         lstHalfDayWorkTimezone: lstHalfDayWorkTimezone,
                         lstStampReflectTimezone: lstStampReflectTimezone,
-                        calculateSetting: this.calculateSetting.toDto()
                     };
                     return dataDTO;    
                 }
