@@ -13,6 +13,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPa
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.BPSettingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.*;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FixedChangeAtr;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.PrePlanWorkTimeCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.worktimedisplay.DisplayMode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
@@ -1141,7 +1143,7 @@ public class WorkTimeReportService_New {
              * 遅刻早退詳細設定.控除時間.遅刻早退時間を就業時間から控除する
              */
             boolean isDelFromEmTime = data.getFixedWorkSetting().getCommonSetting().getLateEarlySet().getCommonSet().isDelFromEmTime();
-            cells.get("ED").setValue(isDelFromEmTime ?  "○" : "-");
+            cells.get("ED" + (startIndex + 1)).setValue(isDelFromEmTime ?  "○" : "-");
             
             if (otherLate.isPresent()) {
                 /*
@@ -1469,7 +1471,41 @@ public class WorkTimeReportService_New {
     public void insertDataOneLineFlow(WorkTimeSettingInfoDto data, Cells cells, int startIndex) {
         Integer displayMode = data.getDisplayMode().displayMode;
         
+        // 1        タブグ:                所定
+        
         this.printDataPrescribed(data, cells, startIndex, FLOW);
+        
+        // 2        タブグ:                勤務時間帯
+        
+        /*
+         * R5_79
+         * 勤務時間帯.就業時間帯丸め.丸め
+         */
+        Integer unit = data.getFlowWorkSetting().getHalfDayWorkTimezone().getWorkTimeZone().getWorkTimeRounding().getRoundingTime();
+        cells.get("Y" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unit));
+        
+        /*
+         * R5_80
+         * 勤務時間帯.就業時間帯丸め.端数
+         */
+        Integer rounding = data.getFlowWorkSetting().getHalfDayWorkTimezone().getWorkTimeZone().getWorkTimeRounding().getRounding();
+        cells.get("Z" + (startIndex + 1)).setValue(getRoundingEnum(rounding));
+        
+        /*
+         * R5_81
+         * 勤務時間帯.予定開始時刻より前に出勤した場合の計算方法
+         */
+        Integer calcStartTimeSet = data.getFlowWorkSetting().getFlowSetting().getCalculateSetting().getCalcStartTimeSet();
+        cells.get("AA" + (startIndex + 1)).setValue(PrePlanWorkTimeCalcMethod.valueOf(calcStartTimeSet).description);
+        
+        if (displayMode.equals(DisplayMode.DETAIL.value)) {
+            /*
+             * R5_82
+             * 勤務時間帯.所定時間に変更（予定開始・終了時刻の変更）があった場合、所定時間が終わり次第、残業を求める
+             */
+            Integer fixedChangeAtr = data.getFlowWorkSetting().getFlowSetting().getOvertimeSetting().getFixedChangeAtr();
+            cells.get("AB" + (startIndex + 1)).setValue(FixedChangeAtr.valueOf(fixedChangeAtr).description);
+        }
     }
     
     /**
