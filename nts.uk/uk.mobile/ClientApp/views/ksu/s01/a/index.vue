@@ -214,7 +214,7 @@
                 <!-- A4_16 -->
                 <span style="color: #999">{{ "KSUS01_13" | i18n }}</span>
             </div>
-            <div class="detail-spacing">
+            <div class="detail-spacing detail-indent">
                 <!-- A4_17 -->
                 <nts-text-area
                     v-model="memo"
