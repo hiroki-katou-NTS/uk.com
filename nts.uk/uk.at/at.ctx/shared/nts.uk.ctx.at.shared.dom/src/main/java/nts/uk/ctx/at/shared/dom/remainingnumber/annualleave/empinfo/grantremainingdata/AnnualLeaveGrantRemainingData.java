@@ -56,7 +56,7 @@ public class AnnualLeaveGrantRemainingData extends LeaveGrantRemainingData {
 	/**
 	 * 年休付与条件情報
 	 */
-	protected Optional<AnnualLeaveConditionInfo> annualLeaveConditionInfo;
+	protected Optional<AnnualLeaveConditionInfo> annualLeaveConditionInfo = Optional.empty();
 
 	public static AnnualLeaveGrantRemainingData createFromJavaType(String annLeavID, String employeeId,
 			GeneralDate grantDate, GeneralDate deadline, int expirationStatus, int registerType, double grantDays,

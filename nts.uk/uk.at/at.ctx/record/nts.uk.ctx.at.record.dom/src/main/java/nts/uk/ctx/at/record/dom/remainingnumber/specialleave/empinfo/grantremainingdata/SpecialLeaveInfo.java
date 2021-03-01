@@ -538,6 +538,9 @@ public class SpecialLeaveInfo implements Cloneable {
 
 		val listInterimSpecialHolidayMng = getRemainData(specialHolidayInterimMngData);
 
+		// ダミーデータリスト
+		List<LeaveGrantRemainingData> dummyDataList = new ArrayList<LeaveGrantRemainingData>();
+
 		for (val interimSpecialHolidayMng : listInterimSpecialHolidayMng) {
 			if (!aggregatePeriodWork.getPeriod().contains(interimSpecialHolidayMng.getYmd())) continue;
 
@@ -577,7 +580,8 @@ public class SpecialLeaveInfo implements Cloneable {
 						leaveUsedNumber,
 						companyId,
 						employeeId,
-						aggregatePeriodWork.getPeriod().start());
+						aggregatePeriodWork.getPeriod().start(),
+						Optional.of(dummyDataList));
 
 				// 時間休暇消化数を求める
 				int unDigestTime = 0;
@@ -609,6 +613,17 @@ public class SpecialLeaveInfo implements Cloneable {
 
 			}
 		}
+
+		// 型変換
+		List<SpecialLeaveGrantRemainingData> dummyGrantRemainingDataList
+			= new ArrayList<SpecialLeaveGrantRemainingData>();
+		dummyDataList.forEach(c->{
+			SpecialLeaveGrantRemainingData s = SpecialLeaveGrantRemainingData.of(c, -1);
+			dummyGrantRemainingDataList.add(s);
+		});
+
+		// 付与残数データにダミーデータリストを追加
+		this.grantRemainingDataList.addAll(dummyGrantRemainingDataList);
 
 		// 「特休の集計結果」を返す
 		return aggrResult;

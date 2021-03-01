@@ -315,11 +315,11 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 //			}
 		}
 
-		// ；年休集計期間を作成
+		// 年休集計期間を作成
 		List<AggregatePeriodWork> aggregateWork = createAggregatePeriod(
 				nextAnnualLeaveGrantList, aggrPeriod, grantRemainingDatas);
 
-		// 2暫定年休管理データを取得する
+		// 暫定年休管理データを取得する
 		val tempAnnualLeaveMngs = getTempAnnualLeaveMngs(
 				require, employeeId, aggrPeriod, mode,
 				isOverWriteOpt, forOverWriteListOpt);

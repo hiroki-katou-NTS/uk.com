@@ -119,7 +119,7 @@ public class AnnualLeaveInfo implements Cloneable {
 	@Override
 	public AnnualLeaveInfo clone() {
 		AnnualLeaveInfo cloned = new AnnualLeaveInfo();
-		try {
+//		try {
 			cloned.ymd = this.ymd;
 			cloned.remainingNumber = this.remainingNumber.clone();
 			for (val grantRemainingNumber : this.grantRemainingDataList){
@@ -180,10 +180,10 @@ public class AnnualLeaveInfo implements Cloneable {
 			// 以下は、cloneしなくてよい。
 			cloned.maxData = this.maxData;
 			cloned.annualPaidLeaveSet = this.annualPaidLeaveSet;
-		}
-		catch (Exception e){
-			throw new RuntimeException("AnnualLeaveInfo clone error.");
-		}
+//		}
+//		catch (Exception e){
+//			throw new RuntimeException("AnnualLeaveInfo clone error.");
+//		}
 		return cloned;
 	}
 
@@ -461,6 +461,9 @@ public class AnnualLeaveInfo implements Cloneable {
 		// 年休使用数WORK
 		AnnualLeaveUsedNumber usedNumber = new AnnualLeaveUsedNumber();
 
+		// ダミーデータリスト
+		List<LeaveGrantRemainingData> dummyDataList = new ArrayList<LeaveGrantRemainingData>();
+
 		// 「暫定年休管理データリスト」を取得する
 		tempAnnualLeaveMngs.sort((a, b) -> a.getYmd().compareTo(b.getYmd()));
 		for (val tempAnnualLeaveMng : tempAnnualLeaveMngs){
@@ -514,35 +517,48 @@ public class AnnualLeaveInfo implements Cloneable {
 						leaveUsedNumber,
 						companyId,
 						employeeId,
-						aggregatePeriodWork.getPeriod().start());
+						aggregatePeriodWork.getPeriod().start(),
+						Optional.of(dummyDataList));
 
-				// 残数不足で一部消化できなかったとき
-				if ( !remNumShiftListWork.getUnusedNumber().isZero() ){
-
-					// 消化できなかった休暇使用数をもとに、付与残数ダミーデータを作成する
-					// 「年休付与残数データ」を作成する
-					val dummyRemainData
-							= AnnualLeaveGrantRemainingData.createFromJavaType(
-							"", employeeId, tempAnnualLeaveMng.getYmd(), tempAnnualLeaveMng.getYmd(),
-							LeaveExpirationStatus.AVAILABLE.value, GrantRemainRegisterType.MONTH_CLOSE.value,
-							0.0, null,
-							0.0, null, null,
-							0.0, null,
-							0.0,
-							null, null, null);
-
-//					// 年休を指定日数消化する
-//					remainDaysWork = new ManagementDays(dummyRemainData.digest(remainDaysWork.v(), true));
-
-					// 付与残数データに追加
-					this.grantRemainingDataList.add(dummyRemainData);
-				}
+//				// 残数不足で一部消化できなかったとき
+//				if ( !remNumShiftListWork.getUnusedNumber().isZero() ){
+//
+//					// 消化できなかった休暇使用数をもとに、付与残数ダミーデータを作成する
+//					// 「年休付与残数データ」を作成する
+//					val dummyRemainData
+//							= AnnualLeaveGrantRemainingData.createFromJavaType(
+//							"", employeeId, tempAnnualLeaveMng.getYmd(), tempAnnualLeaveMng.getYmd(),
+//							LeaveExpirationStatus.AVAILABLE.value, GrantRemainRegisterType.MONTH_CLOSE.value,
+//							0.0, null,
+//							0.0, null, null,
+//							0.0, null,
+//							0.0,
+//							null, null, null);
+//
+////					// 年休を指定日数消化する
+////					remainDaysWork = new ManagementDays(dummyRemainData.digest(remainDaysWork.v(), true));
+//
+//					// 付与残数データに追加
+//					this.grantRemainingDataList.add(dummyRemainData);
+//				}
 			}
 		}
+
+		// 型変換
+		List<AnnualLeaveGrantRemainingData> dummyGrantRemainingDataList
+			= new ArrayList<AnnualLeaveGrantRemainingData>();
+		dummyDataList.forEach(c->{
+			AnnualLeaveGrantRemainingData s = new AnnualLeaveGrantRemainingData();
+			s.setAllValue(c);
+			dummyGrantRemainingDataList.add(s);
+		});
+
+		// 付与残数データにダミーデータリストを追加
+		this.grantRemainingDataList.addAll(dummyGrantRemainingDataList);
+
 		// 実年休（年休（マイナスあり））に使用数を加算する
 		this.getRemainingNumber().getAnnualLeaveWithMinus().addUsedNumber(
 				usedNumber, aggregatePeriodWork.getGrantPeriodAtr() == GrantPeriodAtr.AFTER_GRANT);
-
 
 		// 年休情報残数を更新
 		this.updateRemainingNumber(aggregatePeriodWork.getGrantPeriodAtr() == GrantPeriodAtr.AFTER_GRANT);
@@ -635,6 +651,10 @@ public class AnnualLeaveInfo implements Cloneable {
 		// 合計した「年休使用数」「年休残数」から年休付与残数を作成
 		AnnualLeaveGrantRemainingData annualLeaveGrantRemainingData
 			= new AnnualLeaveGrantRemainingData();
+
+		// 最初の1件目をコピー（共通クラスの変数）
+		annualLeaveGrantRemainingData.setAllValue(dummyRemainingList.stream().findFirst().get());
+
 		LeaveNumberInfo leaveNumberInfo = new LeaveNumberInfo();
 		// 明細．残数　←　合計した「年休残数」
 		leaveNumberInfo.setRemainingNumber(leaveRemainingNumberTotal);
