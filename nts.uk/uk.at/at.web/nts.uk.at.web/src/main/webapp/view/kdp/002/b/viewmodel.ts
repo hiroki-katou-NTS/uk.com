@@ -51,6 +51,7 @@ class KDP002BViewModel extends ko.ViewModel {
 
         const vm = this;
         vm.$window.shared( "resultDisplayTime" ).done( displayTime => {
+            debugger;
             vm.resultDisplayTime( displayTime );
 
             vm.$window.shared( "infoEmpToScreenB" ).done( infoEmp => {
