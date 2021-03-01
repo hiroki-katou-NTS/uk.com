@@ -193,7 +193,6 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 		if (workSchedule.getOptTimeLeaving().isPresent()) {
 			if (workSchedule.getOptTimeLeaving().get().getWorkTimes() != null) {
 				if (workSchedule.getOptTimeLeaving().get().getWorkTimes().v() == 1) {
-					kscdtEditStates = kscdtEditStates.stream().filter(i -> i.pk.atdItemId == 28 || i.pk.atdItemId == 29 || i.pk.atdItemId == 31 || i.pk.atdItemId == 34).collect(Collectors.toList());
 					kscdtSchAtdLvwTimes = kscdtSchAtdLvwTimes.stream().filter(i -> i.pk.workNo == 1).collect(Collectors.toList());
 				}
 			}
