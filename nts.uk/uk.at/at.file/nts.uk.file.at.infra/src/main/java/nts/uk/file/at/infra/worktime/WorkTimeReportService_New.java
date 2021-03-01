@@ -1287,6 +1287,22 @@ public class WorkTimeReportService_New {
                 cells.get("ET" + (startIndex + 1)).setValue(getInDayTimeWithFormat(certainTime));
             }
         }
+        
+        // 12       タブグ:                深夜
+        
+        /*
+         * R4_216
+         * 深夜.深夜時間丸め
+         */
+        Integer roundingTime = data.getFixedWorkSetting().getCommonSetting().getLateNightTimeSet().getRoundingSetting().getRoundingTime();
+        cells.get("EU" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(roundingTime));
+        
+        /*
+         * R4_217
+         * 深夜.深夜時間端数
+         */
+        Integer rounding = data.getFixedWorkSetting().getCommonSetting().getLateNightTimeSet().getRoundingSetting().getRounding();
+        cells.get("EV" + (startIndex + 1)).setValue(getRoundingEnum(rounding));
     }
     
     /**
