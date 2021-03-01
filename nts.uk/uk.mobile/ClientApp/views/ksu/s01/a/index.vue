@@ -163,7 +163,7 @@
                     <span style="font-weight: bold;">{{ "KSUS01_22" | i18n }}</span>
                 </div>
             </div>
-            <div v-else>
+            <div v-else-if="workDesireInputMode == 1">
                 <div class="detail-spacing detail-indent" 
                     v-for="(item, index) in detailCell && detailCell.displayData.listWorkDesire" 
                     v-bind:key="index"
@@ -195,6 +195,17 @@
                             {{timeZone.start}}~{{timeZone.end}}
                         </span>
                     </div>
+                </div>
+            </div>
+            <div v-else-if="workDesireInputMode == 0">
+                <div class="detail-spacing detail-indent" >
+                    <span
+                        style="padding: 0.25em 1em; font-weight: bold; border-radius: 0.25rem; display: inline-block;"
+                        class="uk-bg-schedule-sunday">
+                        <span style="margin: 0" class="uk-text-red">
+                            {{ "KSUS01_14" | i18n }}
+                        </span>
+                    </span>
                 </div>
             </div>
             <div class="detail-spacing">

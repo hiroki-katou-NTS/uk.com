@@ -36,6 +36,7 @@ export class KSUS01AComponent extends Vue {
     public dateCellList: Array<DateCell> = [];
     public listWorkSchedule: Array<WorkScheduleDto> = [];
     public listDesiredSubmissionStatusByDate: Array<DesiredSubmissionStatusByDate> = [];
+    public listPublicHolidayDto: Array<PublicHolidayDto> = [];
 
     public dateHeaderList: Array<DateHeader> = [];
 
@@ -48,6 +49,7 @@ export class KSUS01AComponent extends Vue {
     public yDown: number = null;
 
     public memo: string = '';
+    public workDesireInputMode: number = WorkDesireInputMode.SHIFT;
 
     @Watch('yearMonth')
     public subcribeYearMonth(value: string) {
@@ -124,7 +126,8 @@ export class KSUS01AComponent extends Vue {
 
             let data: InforOnTargetPeriodDto = {
                 listWorkSchedule: [],
-                listDesiredSubmissionStatusByDate: []
+                listDesiredSubmissionStatusByDate: [],
+                listPublicHolidayDto: [],
             };
 
             let restScheRandom = Math.floor(Math.random() * scheduleDiff);
@@ -211,6 +214,21 @@ export class KSUS01AComponent extends Vue {
                 };
                 data.listDesiredSubmissionStatusByDate.push(desiredSubmissionStatusByDate);
             }
+
+            let publicHoliday1 = Math.floor(Math.random() * scheduleDiff);
+            let publicHoliday2 = Math.floor(Math.random() * scheduleDiff);
+            let publicHoliday3 = Math.floor(Math.random() * scheduleDiff);
+            for (let index = 0; index <= scheduleDiff; index++) {
+                if (index == publicHoliday1 || index == publicHoliday2 || index == publicHoliday3) {
+                    let publicHoliday: PublicHolidayDto = {
+                        companyId: '000000000001-0002',
+                        date: moment(self.startDate, 'YYYY/MM/DD').add(index, 'days').format('YYYY/MM/DD'),
+                        holidayName: 'holiday'
+                    };
+                    data.listPublicHolidayDto.push(publicHoliday);
+                }
+            }
+
             resolve({data});
         });
     }
@@ -252,14 +270,17 @@ export class KSUS01AComponent extends Vue {
                 businessNames: ['test1', 'test2', 'test3', '名前例1', '名前例2', '名前例3', '名前例4', '名前例5', 'test1', 'test2', 'test3', '名前例1', '名前例2', '名前例3', '名前例4', '名前例5'],
                 listWorkInforAndTimeZone: [restDesire, earlyHalfDesire, lateHalfDesire, workDesire],
                 memo: 'demo memo',
-                listAttendanceDto: []
+                listAttendanceDto: [],
+                type: 0
             };
             if (command.desiredSubmissionStatus == 1) {
                 data.memo = 'rest demo';
                 data.listWorkInforAndTimeZone = [restDesire];
+                data.type = 0;
             } else if (command.desiredSubmissionStatus == 2) {
                 data.memo = 'work demo';
                 data.listWorkInforAndTimeZone = [earlyHalfDesire, lateHalfDesire, workDesire];
+                data.type = 1;
             } else {
                 data.memo = 'empty demo';
                 data.listWorkInforAndTimeZone = [];
@@ -353,9 +374,15 @@ export class KSUS01AComponent extends Vue {
             scheduledWorkingPeriod.end = self.endDate;
         }
 
+        let targetPeriod: PeriodCommand = {
+            start: self.startDate,
+            end: self.endDate
+        };
+
         let command: InforOnTargetPeriodInput = {
             desiredPeriodWork,
-            scheduledWorkingPeriod
+            scheduledWorkingPeriod,
+            targetPeriod
         };
         console.log(command, 'command');
         self.$mask('show');
@@ -365,6 +392,7 @@ export class KSUS01AComponent extends Vue {
             console.log(data, 'changeDatePeriod');
             self.listWorkSchedule = data.listWorkSchedule;
             self.listDesiredSubmissionStatusByDate = data.listDesiredSubmissionStatusByDate;
+            self.listPublicHolidayDto = data.listPublicHolidayDto;
             self.bindDateCellList();
         }).catch((error: any) => {
             self.errorHandler(error);
@@ -571,17 +599,13 @@ export class KSUS01AComponent extends Vue {
             self.detailCell.displayData.workDesireMemo = data.memo;
             self.detailCell.displayData.workScheduleTimeZone = data.listAttendanceDto;
             self.detailCell.displayData.listWorkDesire = [];
+            self.workDesireInputMode = data.type;
             data.listWorkInforAndTimeZone.map((el) => {
                 let detailWorkDesire: DetailWorkDesire = {};
 
                 detailWorkDesire.workDesireName = el.wishName;
                 detailWorkDesire.workDesireColor = el.color;
                 detailWorkDesire.workDesireAtr = el.workAtr;
-                // 3: 勤務予定や勤務希望は休日の場合  ※1
-                if (detailWorkDesire.workDesireAtr == WorkHolidayAtr.ONE_DAY_REST) {
-                    detailWorkDesire.workDesireName = self.$i18n('KSUS01_14');
-                    detailWorkDesire.workDesireColor = 'fabf8f';
-                }
                 detailWorkDesire.workDesireTimeZone = el.timezones;
                 detailWorkDesire.workDesireStyle = self.setWorkDesireStyle(detailWorkDesire);
 
@@ -652,6 +676,8 @@ export class KSUS01AComponent extends Vue {
     }
 
     public setCellColor(dateCell: DateCell) {
+        let self = this;
+
         let cellClass = 'date-cell ';
         if (dateCell.isActive) {
             if (dateCell.isFocused) {
@@ -663,6 +689,12 @@ export class KSUS01AComponent extends Vue {
             } else {
                 cellClass += 'uk-bg-white-smoke ';
             }
+        }
+        let publicHoliday = _.find(self.listPublicHolidayDto, (publicHoliday) => {
+            return publicHoliday.date == dateCell.date;
+        });
+        if (publicHoliday) {
+            return cellClass + 'uk-text-red';
         }
         switch (dateCell.weekDayIndex) {
             case WeekDay.SUN:
@@ -769,6 +801,11 @@ export enum WorkHolidayAtr {
     ONE_DAY_WORK
 }
 
+export enum WorkDesireInputMode {
+    HOLIDAY,
+    SHIFT
+}
+
 // api input
 export interface InforOnTargetDateInput {
     desiredSubmissionStatus: number;
@@ -779,6 +816,7 @@ export interface InforOnTargetDateInput {
 export interface InforOnTargetPeriodInput {
     desiredPeriodWork: PeriodCommand;
     scheduledWorkingPeriod: PeriodCommand;
+    targetPeriod: PeriodCommand;
 }
 
 export interface PeriodCommand {
@@ -798,6 +836,13 @@ export interface InitInformation {
 export interface InforOnTargetPeriodDto {
     listWorkSchedule: Array<WorkScheduleDto>;
     listDesiredSubmissionStatusByDate: Array<DesiredSubmissionStatusByDate>;
+    listPublicHolidayDto: Array<PublicHolidayDto>;
+}
+
+export interface PublicHolidayDto {
+    companyId: string;
+    date: string;
+    holidayName: string;
 }
 
 export interface WorkScheduleDto {
@@ -822,6 +867,7 @@ export interface InforOnTargetDateDto {
     listWorkInforAndTimeZone: Array<WorkInforAndTimeZoneByShiftMasterDto>;
     memo: string;
     listAttendanceDto: Array<AttendanceDto>;
+    type: number;
 }
 
 export interface WorkInforAndTimeZoneByShiftMasterDto {
