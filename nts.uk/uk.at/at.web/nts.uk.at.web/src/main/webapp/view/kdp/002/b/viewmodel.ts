@@ -70,7 +70,7 @@ class KDP002BViewModel extends ko.ViewModel {
             dfd = $.Deferred();
         let dfdGetAllStampingResult = self.getAllStampingResult();
         let dfdGetEmpInfo = self.getEmpInfo();
-        $.when( dfdGetAllStampingResult, dfdGetEmpInfo ).done( function( dfdGetAllStampingResultData, dfdGetEmpInfoData ) {
+        $.when( dfdGetAllStampingResult, dfdGetEmpInfo ).done( (dfdGetAllStampingResultData, dfdGetEmpInfoData) => {
             if ( self.resultDisplayTime() > 0 ) {
                 setInterval( self.closeDialog, self.resultDisplayTime() * 1000 );
                 setInterval(() => {
@@ -112,6 +112,7 @@ class KDP002BViewModel extends ko.ViewModel {
             if ( _.size( vm.listStampRecord() ) > 0 ) {
                 vm.laceName( data[0].workPlaceName );
                 vm.listStampRecord( _.orderBy( vm.listStampRecord(), ['stampTimeWithSec'], ['desc'] ) );
+                let items = vm.items();
                 _.forEach( vm.listStampRecord(), ( sr ) => {
 
                     let changeClockArtDisplay = vm.getTextAlign( sr );
@@ -124,14 +125,17 @@ class KDP002BViewModel extends ko.ViewModel {
                         dateDisplay = "<span class='color-schedule-sunday'>" + dateDisplay + "</span>";
                         sr.stampDate = "<span class='color-schedule-sunday'>" + sr.stampDate + "</span>";
                     }
-                    vm.items.push( new ItemModels(
-                        dateDisplay,
-                        "<div class='inline-bl'>" + sr.stampHow + "</div>" + sr.stampTime,
-                        changeClockArtDisplay,
-                        sr.stampDate,
-                        sr.stampTime
-                    ) );
+                    items.push(new ItemModels(
+                            dateDisplay,
+                            "<div class='inline-bl'>" + sr.stampHow + "</div>" + sr.stampTime,
+                            changeClockArtDisplay,
+                            sr.stampDate,
+                            sr.stampTime
+                        ));
+                  
                 } );
+                
+                vm.items(items);
                 vm.getDataById( vm.items()[0].id );
                 dfd.resolve();
             } else {
