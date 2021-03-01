@@ -669,7 +669,7 @@ module nts.uk.at.view.kmk003.a {
                     this.restSet.updateData(data.restSet);
                     this.dayoffWorkTimezone.updateData(data.dayoffWorkTimezone);
                     this.commonSet.updateData(data.commonSet);
-                    this.halfDayWorkSet.update(data.halfDayWorkSet)
+                    this.halfDayWorkSet.update(data.useHalfDayShift)
                     this.changeExtent.updateData(data.changeExtent);
                     this.updateListHalfDay(data.halfDayWorkTimezones);
                     this.stampReflectTimezone.updateData(data.stampReflectTimezone);
@@ -698,7 +698,7 @@ module nts.uk.at.view.kmk003.a {
                         restSet: this.restSet.toDto(),
                         dayoffWorkTimezone: this.dayoffWorkTimezone.toDto(),
                         commonSet: commonSetting.toDto(),
-                        halfDayWorkSet: this.halfDayWorkSet.toDto(),
+                        useHalfDayShift: this.halfDayWorkSet.toDto(),
                         changeExtent: this.changeExtent.toDto(),
                         halfDayWorkTimezones: halfDayWorkTimezones,
                         stampReflectTimezone: this.stampReflectTimezone.toDto(),

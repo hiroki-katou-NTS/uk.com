@@ -26,7 +26,7 @@ module nts.uk.at.view.kmk003.a {
                     workTimeCode: string;
                     offdayWorkTimezone: FixOffdayWorkTimezoneDto;
                     commonSetting: common.WorkTimezoneCommonSetDto;
-                    halfDayWorkSet: HalfDayWorkSetDto;
+                    useHalfDayShift: HalfDayWorkSetDto;
                     commonRestSet: common.CommonRestSettingDto;
                     // fixedWorkRestSetting: common.FixedWorkRestSetDto;
                     lstHalfDayWorkTimezone: FixHalfDayWorkTimezoneDto[];
