@@ -187,6 +187,18 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 					.collect(Collectors.toList());
 		}
 		
+		// fix bug #114419
+		// trường hợp chỉ có workNo = 1 thì chỉ insert item28,29,31,34. Nếu có
+		// workNo = 2 nữa thì mới insert thêm item 41,44
+		if (workSchedule.getOptTimeLeaving().isPresent()) {
+			if (workSchedule.getOptTimeLeaving().get().getWorkTimes() != null) {
+				if (workSchedule.getOptTimeLeaving().get().getWorkTimes().v() == 1) {
+					kscdtEditStates = kscdtEditStates.stream().filter(i -> i.pk.atdItemId == 28 || i.pk.atdItemId == 29 || i.pk.atdItemId == 31 || i.pk.atdItemId == 34).collect(Collectors.toList());
+					kscdtSchAtdLvwTimes = kscdtSchAtdLvwTimes.stream().filter(i -> i.pk.workNo == 1).collect(Collectors.toList());
+				}
+			}
+		}
+		
 		// 勤務予定．短時間勤務．時間帯
 		List<KscdtSchShortTimeTs> kscdtSchShortTimeTs = new ArrayList<>();
 		if (workSchedule.getOptSortTimeWork().isPresent()) {
