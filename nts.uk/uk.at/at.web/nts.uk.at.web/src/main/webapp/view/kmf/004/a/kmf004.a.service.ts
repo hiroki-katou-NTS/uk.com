@@ -14,7 +14,7 @@ module nts.uk.at.view.kmf004.a.service {
         findAllItemFrame: "shared/specialholiday/findAllItemFrame",
     }
 
-    export function findAllItemFrame(selectedCode): JQueryPromise<Array<any>> {
+    export function findAllItemFrame(): JQueryPromise<Array<any>> {
         var path = paths.findAllItemFrame;
         return nts.uk.request.ajax("at", path);
     }

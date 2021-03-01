@@ -131,7 +131,7 @@ table.exp-date-tbl {
 }
 
 div#tab-1, div#tab-2, div#tab-3 {
-    height: 370px;
+    height: 425px;
 }
 
 table.exp-date-options {
@@ -216,4 +216,21 @@ div.ageBaseDate {
 }
 #auto_grant .nts-switch-button {
 	width: 70px;
+}
+table.method1-tbl tr{
+    height: 35px;
+}
+table.method1-tbl td div.radioBtn{
+    margin-top: 3px;
+	vertical-align: top;
+	width: 77px;
+}
+table.method2-tbl tr{
+    height: 35px;
+}
+.div_line {
+	margin-bottom: 5px;
+	float: left;
+	clear: both;
+	width: 100%;
 }
