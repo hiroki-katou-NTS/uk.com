@@ -18,6 +18,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.common.amount.AttendanceAmountDaily;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime.PremiumTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PriceUnit;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
@@ -69,7 +70,7 @@ public class KscdtSchPremium extends ContractUkJpaEntity {
 		List<PremiumTime> result = new ArrayList<>();
 		if(!premiums.isEmpty()) {
 		premiums.stream().forEach( x ->{
-			PremiumTime time = new PremiumTime(x.getPk().getFrameNo(), new AttendanceTime(x.getPremiumTime()), AttendanceAmountDaily.ZERO);
+			PremiumTime time = new PremiumTime(x.getPk().getFrameNo(), new AttendanceTime(x.getPremiumTime()), AttendanceAmountDaily.ZERO, PriceUnit.ZERO);
 			result.add(time);
 		});
 		}

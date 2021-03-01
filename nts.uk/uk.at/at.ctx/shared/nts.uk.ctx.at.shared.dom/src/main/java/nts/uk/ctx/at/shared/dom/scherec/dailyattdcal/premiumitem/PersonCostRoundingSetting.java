@@ -5,22 +5,21 @@ import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.amountrounding.AmountRounding;
 import nts.uk.ctx.at.shared.dom.common.amountrounding.AmountRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.amountrounding.AmountUnit;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PersonCostRoundingSetting;
+
+import org.eclipse.persistence.internal.xr.ValueObject;
 
 /**
- * 人件費丸め設定
- * @author daiki_ichioka
- *
+ * VO: 人件費丸め設定
  */
-@Getter
 @AllArgsConstructor
-public class PersonCostRoundingSetting {
-	
-	/** 単価＊割増率の丸め */
-	private UnitPriceRoundingSetting unitPrice;
-	
-	/** 単価＊時間の丸め */
-	private AmountRoundingSetting cost;
-	
+@Getter
+public class PersonCostRoundingSetting extends ValueObject {
+    //1: 単価＊割増率の丸め:人件費単価丸め
+    private UnitPriceRoundingSetting roundingOfPremium;
+    //2: 単価＊時間の丸め :
+    private AmountRoundingSetting amountRoundingSetting;
+
 	/**
 	 * デフォルト値で作成する
 	 * @return 人件費丸め設定

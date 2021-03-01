@@ -1,11 +1,11 @@
-package nts.uk.ctx.at.schedule.dom.budget.premium.service;
+package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.service;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.at.schedule.dom.budget.premium.HistPersonCostCalculation;
-import nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostCalculation;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.HistPersonCostCalculation;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PersonCostCalculation;
 
 import java.util.List;
 

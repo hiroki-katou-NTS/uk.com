@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.infra.entity.budget.premium;
+package nts.uk.ctx.at.shared.infra.entity.scherec.dailyattdcal.premiumitem;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;

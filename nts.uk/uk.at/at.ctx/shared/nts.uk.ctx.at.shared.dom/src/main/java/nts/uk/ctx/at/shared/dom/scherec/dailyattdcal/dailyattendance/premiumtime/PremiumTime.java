@@ -30,6 +30,20 @@ public class PremiumTime {
 	private PriceUnit unitPrice;
 
 
+	public PremiumTime(Integer premiumTimeNo, AttendanceTime premitumTime) {
+		super();
+		this.premiumTimeNo = premiumTimeNo;
+		this.premitumTime = premitumTime;
+		this.premiumAmount = new AttendanceAmountDaily(0);
+	}
+
+	public PremiumTime(Integer premiumTimeNo, AttendanceTime premitumTime, AttendanceAmountDaily premiumAmount) {
+		super();
+		this.premiumTimeNo = premiumTimeNo;
+		this.premitumTime = premitumTime;
+		this.premiumAmount = premiumAmount;
+	}
+	
 	/**
 	 * 全て0で作成する
 	 * @param premiumTimeNo 割増時間NO
@@ -106,11 +120,11 @@ public class PremiumTime {
 		// A = 単価 * 割増率
 		int afterPremium = priceUnit.v() * premiumRate.v();
 		// Aを丸める
-		BigDecimal afterPremiumRounding = roundingSet.getUnitPrice().round(BigDecimal.valueOf(afterPremium));
+		BigDecimal afterPremiumRounding = roundingSet.getRoundingOfPremium().round(BigDecimal.valueOf(afterPremium));
 		// B = A * 割増時間
 		BigDecimal amount = afterPremiumRounding.multiply(BigDecimal.valueOf(premiumTime.valueAsMinutes()));
 		// Bを丸める
-		BigDecimal afterAmountRounding = roundingSet.getCost().round(amount);
+		BigDecimal afterAmountRounding = roundingSet.getAmountRoundingSetting().round(amount);
 		// Bを返す
 		return  new AttendanceAmountDaily(afterAmountRounding.intValue());
 	}

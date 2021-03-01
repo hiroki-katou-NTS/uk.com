@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.budget.premium;
+package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

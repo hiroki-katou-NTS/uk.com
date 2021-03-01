@@ -1282,8 +1282,6 @@ public class RecordDomRequireService {
 
 		private WeekRuleManagementRepo weekRuleManagementRepo;
 
-		private IntegrationOfDailyGetter integrationOfDailyGetter;
-
 		private SyCompanyRecordAdapter syCompanyRecordAdapter;
 		
 		private IntegrationOfDailyGetter integrationOfDailyGetter;

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.budget.premium.service;
+package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.service;
 
 import java.util.List;
 

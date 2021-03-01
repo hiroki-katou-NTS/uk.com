@@ -145,7 +145,8 @@ public class ManagePerCompanySet {
 	 */
 	public Optional<PersonCostCalculation> getPersonCostCalculation(GeneralDate baseDate) {
 		return this.personnelCostSettings.stream()
-			.filter(pcs -> pcs.getStartDate().afterOrEquals(baseDate) && pcs.getEndDate().beforeOrEquals(baseDate))
+//ichioka見直し 要修正
+//			.filter(pcs -> pcs.getStartDate().afterOrEquals(baseDate) && pcs.getEndDate().beforeOrEquals(baseDate))
 			.findFirst();
 	}
 }

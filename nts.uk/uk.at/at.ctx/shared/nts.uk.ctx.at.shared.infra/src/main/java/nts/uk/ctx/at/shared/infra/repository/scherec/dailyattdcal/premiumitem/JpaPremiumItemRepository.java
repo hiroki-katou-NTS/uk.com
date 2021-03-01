@@ -21,6 +21,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PremiumName;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.UseAttribute;
 import nts.uk.ctx.at.shared.infra.entity.scherec.dailyattdcal.premiumitem.KmnmpPremiumItemPK;
 import nts.uk.ctx.at.shared.infra.entity.scherec.dailyattdcal.premiumitem.KmnmtPremiumItem;
+import nts.uk.ctx.at.shared.infra.entity.scherec.dailyattdcal.premiumitem.KscmtPremiumItem;
 /**
  * 
  * @author Doan Duy Hung

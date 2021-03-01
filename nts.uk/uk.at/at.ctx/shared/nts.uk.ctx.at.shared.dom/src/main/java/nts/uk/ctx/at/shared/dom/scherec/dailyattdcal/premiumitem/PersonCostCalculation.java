@@ -61,7 +61,7 @@ public class PersonCostCalculation extends AggregateRoot {
     private String historyID;
 
     // 仮計算する
-    public List<AimItemsForLaborCosts> tentativeCalculation(int unitPrice, Map<Object, Object> workingHours) {
+    public List<?> tentativeCalculation(int unitPrice, Map<Object, Object> workingHours) {
         return null;
     }
 }

@@ -1,11 +1,11 @@
-package nts.uk.ctx.at.schedule.infra.entity.budget.premium;
+package nts.uk.ctx.at.shared.infra.entity.scherec.dailyattdcal.premiumitem;
 
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostCalculation;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PersonCostCalculation;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 import javax.persistence.Column;

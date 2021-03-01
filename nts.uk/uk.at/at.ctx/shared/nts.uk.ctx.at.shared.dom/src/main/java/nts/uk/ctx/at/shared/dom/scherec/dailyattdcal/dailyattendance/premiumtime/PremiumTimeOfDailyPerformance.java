@@ -65,7 +65,7 @@ public class PremiumTimeOfDailyPerformance {
 		//2020.8.24 ichioka ドメインが未確定の為、未実装。
 		PriceUnit priceUnit = new PriceUnit(0);
 		List<PremiumTime> times = personCostCalculation.getPremiumSettings().stream()
-			.map(pcc -> PremiumTime.create(dailyRecordDto, priceUnit, personCostCalculation.getRoundingSet(), pcc))
+			.map(pcc -> PremiumTime.create(dailyRecordDto, priceUnit, personCostCalculation.getRoundingSetting(), pcc))
 			.collect(Collectors.toList());
 
 		return new PremiumTimeOfDailyPerformance(times);
@@ -84,7 +84,7 @@ public class PremiumTimeOfDailyPerformance {
 		PriceUnit priceUnit = new PriceUnit(0);
 		//割増時間
 		List<PremiumTime> times = personCostCalculation.getPremiumSettings().stream()
-			.map(pcc -> PremiumTime.createForSupport(dailyRecordDto, priceUnit, personCostCalculation.getRoundingSet(), pcc))
+			.map(pcc -> PremiumTime.createForSupport(dailyRecordDto, priceUnit, personCostCalculation.getRoundingSetting(), pcc))
 			.collect(Collectors.toList());
 
 		return new PremiumTimeOfDailyPerformance(times);

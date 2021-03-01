@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.budget.premium;
+package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;

@@ -1,66 +1,25 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem;
 
 
+import lombok.AllArgsConstructor;
+import nts.uk.ctx.at.shared.dom.common.amountrounding.AmountRounding;
+
 /**
- * 人件費単価端数処理
- * @author daiki_ichioka
- *
+ * Enum: 人件費単価端数処理
  */
-public enum UnitPriceRounding {
-	// 切り捨て
-	TRUNCATION(0, "ENUM_ROUNDING_TRUNCATION"),
+@AllArgsConstructor
+public enum  UnitPriceRounding {
+    // 切り上げ
+    ROUND_UP(0, AmountRounding.ROUND_UP),
 
-	/** The round up. */
-	// 切り上げ
-	ROUND_UP(1, "ENUM_ROUNDING_ROUND_UP"),
+    //切り捨て
+    TRUNCATION(1, AmountRounding.TRUNCATION),
 
-	/** The down 4 up 5. */
-	// 四捨五入
-	DOWN_4_UP_5(2, "ENUM_ROUNDING_DOWN_4_UP_5");
-	
-	/** The value. */
-	public final int value;
+    //四捨五入
+    DOWN_4_UP_5(2, AmountRounding.DOWN_4_UP_5);
 
-	/** The name id. */
-	public final String nameId;
 
-	/** The Constant values. */
-	private final static UnitPriceRounding[] values = UnitPriceRounding.values();
+    public final int value;
 
-	/**
-	 * Instantiates a new rounding.
-	 *
-	 * @param value
-	 *            the value
-	 * @param nameId
-	 *            the name id
-	 */
-	private UnitPriceRounding(int value, String nameId) {
-		this.value = value;
-		this.nameId = nameId;
-	}
-	
-	/**
-	 * Value of.
-	 *
-	 * @param value
-	 *            the value
-	 * @return the rounding
-	 */
-	public static UnitPriceRounding valueOf(Integer value) {
-		// Invalid object.
-		if (value == null) {
-			return null;
-		}
-
-		// Find value.
-		for (UnitPriceRounding val : UnitPriceRounding.values) {
-			if (val.value == value) {
-				return val;
-			}
-		}
-
-		// Not found.
-		return null;
-	}
+	public AmountRounding amountRounding;
 }
