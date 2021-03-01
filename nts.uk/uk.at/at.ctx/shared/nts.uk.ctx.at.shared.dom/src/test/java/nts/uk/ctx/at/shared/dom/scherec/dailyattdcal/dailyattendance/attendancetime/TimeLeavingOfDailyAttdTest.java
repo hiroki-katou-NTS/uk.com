@@ -227,23 +227,21 @@ public class TimeLeavingOfDailyAttdTest {
 				new TimeZone(start2, end2));
 		WorkInfoAndTimeZone workInforAndTimezone = WorkInfoAndTimeZone.create(workType, workTime, timeZoneList);
 		
+		TimeLeavingWork timeLeavingWork1 = TimeLeavingWork.createFromTimeSpan(new WorkNo(1), new TimeSpanForCalc(start1, end1));
+		TimeLeavingWork timeLeavingWork2 = TimeLeavingWork.createFromTimeSpan(new WorkNo(2), new TimeSpanForCalc(start2, end2));
+		
 		// Expectation
-		new Expectations() { {
+		new Expectations(TimeLeavingWork.class) { {
 			
 			workInformation.getWorkInfoAndTimeZone(require);
 			result = Optional.of(workInforAndTimezone);
-		}};
-		
-		// Mock-up
-		TimeLeavingWork timeLeavingWork1 = TimeLeavingWork.createFromTimeSpan(new WorkNo(1), new TimeSpanForCalc(start1, end1));
-		TimeLeavingWork timeLeavingWork2 = TimeLeavingWork.createFromTimeSpan(new WorkNo(2), new TimeSpanForCalc(start2, end2));
-		new MockUp<TimeLeavingWork>() {
 			
-			@Mock
-			public TimeLeavingWork createFromTimeSpan(WorkNo workNo, TimeSpanForCalc timeSpan) {
-				return workNo.v() == 1 ? timeLeavingWork1 : timeLeavingWork2;
-			}
-		};
+			TimeLeavingWork.createFromTimeSpan(new WorkNo(1), (TimeSpanForCalc) any);
+			result = timeLeavingWork1;
+			
+			TimeLeavingWork.createFromTimeSpan(new WorkNo(2), (TimeSpanForCalc) any);
+			result = timeLeavingWork2;
+		}};
 		
 		// Action
 		TimeLeavingOfDailyAttd target = TimeLeavingOfDailyAttd.createByPredetermineZone(require, workInformation);
