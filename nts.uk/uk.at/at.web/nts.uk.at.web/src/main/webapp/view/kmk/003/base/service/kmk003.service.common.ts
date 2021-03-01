@@ -7,7 +7,7 @@ module nts.uk.at.view.kmk003.a {
                 export interface HalfDayWorkSetDto {
                     workingTimes: boolean,
                     overTime: boolean,
-                    breakingTime: boolean
+                    breakTime: boolean
                 }
 
                 export interface SettingFlexWorkDto {

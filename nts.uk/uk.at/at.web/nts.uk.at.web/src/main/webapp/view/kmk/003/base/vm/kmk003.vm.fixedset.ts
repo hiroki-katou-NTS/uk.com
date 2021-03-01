@@ -200,7 +200,7 @@ module nts.uk.at.view.kmk003.a {
                     this.workTimeCode(data.workTimeCode);                                        
                     this.offdayWorkTimezone.updateData(data.offdayWorkTimezone);
                     this.commonSetting.updateData(data.commonSetting);
-                    this.halfDayWorkSet.update(data.halfDayWorkSet);
+                    this.halfDayWorkSet.update(data.useHalfDayShift);
                     this.commonRestSet.updateData(data.commonRestSet);            
                     // this.fixedWorkRestSetting.updateData(data.fixedWorkRestSetting);                                       
                     this.updateListHalfDay(data.lstHalfDayWorkTimezone);
@@ -255,7 +255,7 @@ module nts.uk.at.view.kmk003.a {
                         workTimeCode: this.workTimeCode(),                       
                         offdayWorkTimezone: this.offdayWorkTimezone.toDto(),
                         commonSetting: commonSetting.toDto(),
-                        halfDayWorkSet: this.halfDayWorkSet.toDto(),
+                        useHalfDayShift: this.halfDayWorkSet.toDto(),
                         commonRestSet: this.commonRestSet.toDto(),
                         // fixedWorkRestSetting: this.fixedWorkRestSetting.toDto(),
                         lstHalfDayWorkTimezone: lstHalfDayWorkTimezone,

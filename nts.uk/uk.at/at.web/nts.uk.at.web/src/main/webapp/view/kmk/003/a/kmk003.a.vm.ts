@@ -1121,7 +1121,7 @@ module nts.uk.at.view.kmk003.a {
                     screenMode: _self.tabMode()
                 };
                 //auto generate data for lstTimezone morning and afternoon in a2 if it was hidden
-                if (!_self.useHalfDayWorking()){
+                if (!_self.useHalfDayWorking() && _self.addMode()){
                     let presSetting = _self.predetemineTimeSetting.prescribedTimezoneSetting;
                     let morningEnd = presSetting.morningEndTime();
                     let afterStart = presSetting.afternoonStartTime();
@@ -1253,9 +1253,9 @@ module nts.uk.at.view.kmk003.a {
                     self.commonSetting.updateData(worktimeSettingInfo.flexWorkSetting.commonSetting);
 
                     // set useHalfDay to mainScreen model
-                    self.useHalfDayWorking(worktimeSettingInfo.flexWorkSetting.halfDayWorkSet.workingTimes);
-                    self.useHalfDayOverTime(worktimeSettingInfo.flexWorkSetting.halfDayWorkSet.overTime);
-                    self.useHalfDayBreak(worktimeSettingInfo.flexWorkSetting.halfDayWorkSet.breakingTime);
+                    self.useHalfDayWorking(worktimeSettingInfo.flexWorkSetting.useHalfDayShift.workingTimes);
+                    self.useHalfDayOverTime(worktimeSettingInfo.flexWorkSetting.useHalfDayShift.overTime);
+                    self.useHalfDayBreak(worktimeSettingInfo.flexWorkSetting.useHalfDayShift.breakTime);
 
                     // reset data of other mode
                     self.flowWorkSetting.resetData();
@@ -1276,9 +1276,9 @@ module nts.uk.at.view.kmk003.a {
                     self.commonSetting.updateData(worktimeSettingInfo.fixedWorkSetting.commonSetting);
 
                     // set useHalfDay to mainScreen model
-                    self.useHalfDayWorking(worktimeSettingInfo.fixedWorkSetting.halfDayWorkSet.workingTimes);
-                    self.useHalfDayOverTime(worktimeSettingInfo.fixedWorkSetting.halfDayWorkSet.overTime);
-                    self.useHalfDayBreak(worktimeSettingInfo.fixedWorkSetting.halfDayWorkSet.breakingTime);
+                    self.useHalfDayWorking(worktimeSettingInfo.fixedWorkSetting.useHalfDayShift.workingTimes);
+                    self.useHalfDayOverTime(worktimeSettingInfo.fixedWorkSetting.useHalfDayShift.overTime);
+                    self.useHalfDayBreak(worktimeSettingInfo.fixedWorkSetting.useHalfDayShift.breakTime);
 
                     // reset data of other mode
                     self.flowWorkSetting.resetData();
@@ -1291,9 +1291,9 @@ module nts.uk.at.view.kmk003.a {
                     self.commonSetting.updateData(worktimeSettingInfo.diffTimeWorkSetting.commonSet);
 
                     // set useHalfDay to mainScreen model
-                    self.useHalfDayWorking(worktimeSettingInfo.diffTimeWorkSetting.halfDayWorkSet.workingTimes);
-                    self.useHalfDayOverTime(worktimeSettingInfo.diffTimeWorkSetting.halfDayWorkSet.overTime);
-                    self.useHalfDayBreak(worktimeSettingInfo.diffTimeWorkSetting.halfDayWorkSet.breakingTime);
+                    self.useHalfDayWorking(worktimeSettingInfo.diffTimeWorkSetting.useHalfDayShift.workingTimes);
+                    self.useHalfDayOverTime(worktimeSettingInfo.diffTimeWorkSetting.useHalfDayShift.overTime);
+                    self.useHalfDayBreak(worktimeSettingInfo.diffTimeWorkSetting.useHalfDayShift.breakTime);
 
                     // reset data of other mode
                     self.flowWorkSetting.resetData();

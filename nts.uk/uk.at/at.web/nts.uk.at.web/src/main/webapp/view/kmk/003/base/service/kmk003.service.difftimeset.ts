@@ -64,7 +64,7 @@ module nts.uk.at.view.kmk003.a {
                     restSet: FixedWorkRestSetDto;
                     dayoffWorkTimezone: DiffTimeDayOffWorkTimezoneDto;
                     commonSet: WorkTimezoneCommonSetDto;
-                    halfDayWorkSet: HalfDayWorkSetDto;
+                    useHalfDayShift: HalfDayWorkSetDto;
                     changeExtent: EmTimezoneChangeExtentDto;
                     halfDayWorkTimezones: DiffTimeHalfDayWorkTimezoneDto[];
                     stampReflectTimezone: DiffTimeWorkStampReflectTimezoneDto;

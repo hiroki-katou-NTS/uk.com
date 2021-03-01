@@ -367,7 +367,7 @@ module nts.uk.at.view.kmk003.a {
 
                 updateData(data: FlexWorkSettingDto) {
                     this.workTimeCode(data.workTimeCode);
-                    this.halfDayWorkSet.update(data.halfDayWorkSet)
+                    this.halfDayWorkSet.update(data.useHalfDayShift)
                     this.coreTimeSetting.updateData(data.coreTimeSetting);
                     this.restSetting.updateData(data.restSetting);
                     this.offdayWorkTime.updateData(data.offdayWorkTime);
@@ -403,7 +403,7 @@ module nts.uk.at.view.kmk003.a {
                    
                     let dataDTO: FlexWorkSettingDto = {
                         workTimeCode: this.workTimeCode(),
-                        halfDayWorkSet: this.halfDayWorkSet.toDto(),
+                        useHalfDayShift: this.halfDayWorkSet.toDto(),
                         coreTimeSetting: this.coreTimeSetting.toDto(),
                         restSetting: this.restSetting.toDto(),
                         offdayWorkTime: this.offdayWorkTime.toDto(),

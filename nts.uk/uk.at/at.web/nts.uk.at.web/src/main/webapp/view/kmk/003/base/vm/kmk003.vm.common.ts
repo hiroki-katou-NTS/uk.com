@@ -76,7 +76,7 @@ module nts.uk.at.view.kmk003.a {
                 update(data : HalfDayWorkSetDto): void {
                     this.workingTime = ko.observable(data.workingTimes);
                     this.overTime = ko.observable(data.overTime);
-                    this.breakingTime = ko.observable(data.breakingTime);
+                    this.breakingTime = ko.observable(data.breakTime);
                 }
 
                 reset(): void{
@@ -89,7 +89,7 @@ module nts.uk.at.view.kmk003.a {
                     return {
                         workingTimes: this.workingTime(),
                         overTime: this.overTime(),
-                        breakingTime: this.breakingTime()
+                        breakTime: this.breakingTime()
                     }
                 }
             }
@@ -1417,7 +1417,6 @@ module nts.uk.at.view.kmk003.a {
                 }
 
                 updateData(data: InstantRoundingDto) {
-                    console.log("init")
                     this.fontRearSection(data.fontRearSection);
                     this.roundingTimeUnit(data.roundingTimeUnit);
                 }
@@ -1514,7 +1513,6 @@ module nts.uk.at.view.kmk003.a {
                     let self = this;
                     data.roundingTime.roundingSets.forEach((dataRoundingDTO, index) => {
                         let currentItem: RoundingSetModel = _.find(self.roundingTime.roundingSets, p => {
-                            console.log(typeof dataRoundingDTO.section);
                             return p.section() == dataRoundingDTO.section;
                         });
                         if (!nts.uk.util.isNullOrUndefined(currentItem)) {
