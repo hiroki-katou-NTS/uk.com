@@ -133,9 +133,8 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 		if(lstPeriodMag.isEmpty()) {
 			this.reflectAppOfAppDate(workId, sid, refAppResult, datePeriod);
 		}
-		
+		DatePeriod dateProcess = null;
 		for(DatePeriod datePeriodCls : lstPeriodMag) {
-			DatePeriod dateProcess = null;
 			/**
 			 * Input :      |*****************| 
 			 * 
@@ -163,9 +162,9 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 			if (datePeriod.start().after(datePeriodCls.end()) || datePeriod.end().before(datePeriodCls.start())) {
 				dateProcess = datePeriod;
 			}
-			
-			this.reflectAppOfAppDate(workId, sid, refAppResult, dateProcess);
 		}
+		
+		this.reflectAppOfAppDate(workId, sid, refAppResult, dateProcess);
 	}
 	@Override
 	public void reflectAppOfAppDate(String workId, String sid, ExecutionTypeExImport refAppResult,

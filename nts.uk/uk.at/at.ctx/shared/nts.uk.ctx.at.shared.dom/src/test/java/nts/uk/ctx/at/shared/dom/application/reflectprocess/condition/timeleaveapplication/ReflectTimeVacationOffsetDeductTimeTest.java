@@ -36,7 +36,12 @@ public class ReflectTimeVacationOffsetDeductTimeTest {
 	public void testCase1() {
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
 				1);
-		List<TimeLeaveApplicationDetailShare> appTimeLeavDetail = createAppTimeLeav(AppTimeType.ATWORK, 1);
+		
+		List<TimeLeaveApplicationDetailShare> appTimeLeavDetail = createAppTimeLeav(AppTimeType.ATWORK, 1, //NO
+				60, //時間消化申請
+				495,//時間帯 開始時刻
+				1080);//時間帯 終了時刻
+		
 		TimeLeaveAppReflectCondition condition = createCondi();
 		List<Integer> lstResult = ReflectTimeVacationOffsetDeductTime.process(appTimeLeavDetail, dailyApp, condition,
 				NotUseAtr.USE);
@@ -79,7 +84,15 @@ public class ReflectTimeVacationOffsetDeductTimeTest {
 	public void testCase２() {
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
 				1);
-		List<TimeLeaveApplicationDetailShare> appTimeLeavDetail = createAppTimeLeav(AppTimeType.ATWORK, 1);
+		int attendanceBefore = dailyApp.getAttendanceLeave().get().getTimeLeavingWorks().get(0).getAttendanceStamp()
+				.get().getStamp().get().getTimeDay().getTimeWithDay().get().v();
+		TimeChangeMeans timeChangeMeansBefore = dailyApp.getAttendanceLeave().get().getTimeLeavingWorks().get(0)
+				.getAttendanceStamp().get().getStamp().get().getTimeDay().getReasonTimeChange().getTimeChangeMeans();
+		
+		List<TimeLeaveApplicationDetailShare> appTimeLeavDetail = createAppTimeLeav(AppTimeType.ATWORK, 1,
+				60, //時間消化申請
+				495,//時間帯 開始時刻
+				1080);//時間帯 終了時刻);
 		TimeLeaveAppReflectCondition condition = createCondi();
 		List<Integer> lstResult = ReflectTimeVacationOffsetDeductTime.process(appTimeLeavDetail, dailyApp, condition,
 				NotUseAtr.NOT_USE);
@@ -99,18 +112,20 @@ public class ReflectTimeVacationOffsetDeductTimeTest {
 				.getSixtyHourExcessHolidayUseTime().v()).isEqualTo(60);
 
 		assertThat(dailyApp.getAttendanceLeave().get().getTimeLeavingWorks().get(0).getAttendanceStamp().get()
-				.getStamp().get().getTimeDay().getTimeWithDay().get().v()).isEqualTo(480);//勤怠打刻
+				.getStamp().get().getTimeDay().getTimeWithDay().get().v()).isEqualTo(attendanceBefore);//勤怠打刻
 		assertThat(dailyApp.getAttendanceLeave().get().getTimeLeavingWorks().get(0).getAttendanceStamp().get()
-				.getStamp().get().getTimeDay().getReasonTimeChange().getTimeChangeMeans()).isEqualTo(TimeChangeMeans.AUTOMATIC_SET);//時刻変更手段
+				.getStamp().get().getTimeDay().getReasonTimeChange().getTimeChangeMeans()).isEqualTo(timeChangeMeansBefore);//時刻変更手段
 		assertThat(lstResult).isEqualTo(Arrays.asList(595, 596, 597, 1123, 1124, 1125, 1126));
 	}
 
-	private List<TimeLeaveApplicationDetailShare> createAppTimeLeav(AppTimeType appTimeType, int no) {
+	private List<TimeLeaveApplicationDetailShare> createAppTimeLeav(AppTimeType appTimeType, int no, int timeDigest,
+			int timeZoneStart, int timeZoneEnd) {
 
-		AttendanceTime timeCommon = new AttendanceTime(60);
+		//時間消化申請
+		AttendanceTime timeCommon = new AttendanceTime(timeDigest);
 		TimeDigestApplicationShare digest = new TimeDigestApplicationShare(timeCommon, timeCommon, timeCommon,
 				timeCommon, timeCommon, timeCommon, Optional.of(1));
-		TimeZoneWithWorkNo timeZone = new TimeZoneWithWorkNo(no, 495, 1080);
+		TimeZoneWithWorkNo timeZone = new TimeZoneWithWorkNo(no, timeZoneStart, timeZoneEnd);
 		TimeLeaveApplicationDetailShare detail = new TimeLeaveApplicationDetailShare(appTimeType,
 				Arrays.asList(timeZone), digest);
 		return Arrays.asList(detail);
