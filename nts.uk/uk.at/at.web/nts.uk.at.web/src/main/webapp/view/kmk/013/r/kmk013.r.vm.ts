@@ -28,7 +28,7 @@ module nts.uk.at.view.kmk013.r.viewmodel {
 
             vm.enablePersonalSet = ko.computed(() => {
                 return vm.specifiedTimeRefSelected() == 2;
-            })
+            });
 
             vm.firstHalfTime.subscribe(value => {
                 $("#R1_5").ntsError("clear");
@@ -59,7 +59,7 @@ module nts.uk.at.view.kmk013.r.viewmodel {
                     vm.firstHalfTime(res.morning);
                     vm.secondHalfTime(res.afternoon);
                     vm.specifiedTimeRefSelected(res.refSet);
-                    vm.personvalSetRefSelected(res.personSetRef);
+                    vm.personvalSetRefSelected(res.personSetRef || 0);
                 }
             }).fail((err) => {
                 vm.$dialog.error(err);

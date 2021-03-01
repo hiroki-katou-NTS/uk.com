@@ -404,19 +404,26 @@ public class CalculationSettingExportImpl implements MasterListData {
             Map<String, MasterCellData> rowData = new HashMap<>();
             for (int col = 0; col < 5; col++) {
                 String value = "";
+                ColumnTextAlign textAlign = ColumnTextAlign.LEFT;
                 if (row == 0) {
 					if (col == 0) value = TextResource.localize("KMK013_545");
 					else if (col == 1) value = TextResource.localize("KMK013_15");
-					else if (col == 4 && holidayAddtionSet.isPresent())
-					    value = new TimeWithDayAttr(holidayAddtionSet.get().getReference().getComUniformAdditionTime().getOneDay().v()).getRawTimeWithFormat();
+					else if (col == 4 && holidayAddtionSet.isPresent()) {
+                        value = new TimeWithDayAttr(holidayAddtionSet.get().getReference().getComUniformAdditionTime().getOneDay().v()).getRawTimeWithFormat();
+                        textAlign = ColumnTextAlign.RIGHT;
+                    }
 				} else if (row == 1) {
 					if (col == 1) value = TextResource.localize("KMK013_17");
-					else if (col == 4 && holidayAddtionSet.isPresent())
-						value = new TimeWithDayAttr(holidayAddtionSet.get().getReference().getComUniformAdditionTime().getMorning().v()).getRawTimeWithFormat();
+					else if (col == 4 && holidayAddtionSet.isPresent()) {
+                        value = new TimeWithDayAttr(holidayAddtionSet.get().getReference().getComUniformAdditionTime().getMorning().v()).getRawTimeWithFormat();
+                        textAlign = ColumnTextAlign.RIGHT;
+                    }
 				} else if (row == 2) {
 					if (col == 1) value = TextResource.localize("KMK013_19");
-					else if (col == 4 && holidayAddtionSet.isPresent())
-						value = new TimeWithDayAttr(holidayAddtionSet.get().getReference().getComUniformAdditionTime().getAfternoon().v()).getRawTimeWithFormat();
+					else if (col == 4 && holidayAddtionSet.isPresent()) {
+                        value = new TimeWithDayAttr(holidayAddtionSet.get().getReference().getComUniformAdditionTime().getAfternoon().v()).getRawTimeWithFormat();
+                        textAlign = ColumnTextAlign.RIGHT;
+                    }
 				} else if (row == 3) {
 					if (col == 0) value = TextResource.localize("KMK013_3");
 					else if (col == 4 && holidayAddtionSet.isPresent())
@@ -917,7 +924,7 @@ public class CalculationSettingExportImpl implements MasterListData {
                         MasterCellData.builder()
                                 .columnId(col + "")
                                 .value(value)
-                                .style(MasterCellStyle.build().horizontalAlign(ColumnTextAlign.LEFT))
+                                .style(MasterCellStyle.build().horizontalAlign(textAlign))
                                 .build());
             }
             data.add(MasterData.builder().rowData(rowData).build());
