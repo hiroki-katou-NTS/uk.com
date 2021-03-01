@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
@@ -12,19 +13,25 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 
 public class BreakTimeOfDailyAttdTest {
 	
-	@Test
-	public void testIsDuplicatedWithBreakTime_true1 () {
+	private BreakTimeOfDailyAttd target;
+	
+	@Before
+	public void init() {
 		
-		BreakTimeOfDailyAttd target = new BreakTimeOfDailyAttd(Arrays.asList(
+		target = new BreakTimeOfDailyAttd(Arrays.asList(
 				new BreakTimeSheet(
 						new BreakFrameNo(1), 
 							TimeWithDayAttr.hourMinute(12, 0), 
 							TimeWithDayAttr.hourMinute(13, 0)),
 				new BreakTimeSheet(
-						new BreakFrameNo(1), 
+						new BreakFrameNo(2), 
 							TimeWithDayAttr.hourMinute(15, 0), 
 							TimeWithDayAttr.hourMinute(15, 30))
 				));
+	}
+	
+	@Test
+	public void testIsDuplicatedWithBreakTime_true1 () {
 		
 		TimeSpanForCalc other = new TimeSpanForCalc(
 				TimeWithDayAttr.hourMinute(12, 0), 
@@ -37,17 +44,6 @@ public class BreakTimeOfDailyAttdTest {
 	@Test
 	public void testIsDuplicatedWithBreakTime_true2 () {
 		
-		BreakTimeOfDailyAttd target = new BreakTimeOfDailyAttd(Arrays.asList(
-				new BreakTimeSheet(
-						new BreakFrameNo(1), 
-							TimeWithDayAttr.hourMinute(12, 0), 
-							TimeWithDayAttr.hourMinute(13, 0)),
-				new BreakTimeSheet(
-						new BreakFrameNo(1), 
-							TimeWithDayAttr.hourMinute(15, 0), 
-							TimeWithDayAttr.hourMinute(15, 30))
-				));
-		
 		TimeSpanForCalc other = new TimeSpanForCalc(
 				TimeWithDayAttr.hourMinute(15, 0), 
 				TimeWithDayAttr.hourMinute(16, 0));
@@ -59,17 +55,6 @@ public class BreakTimeOfDailyAttdTest {
 	@Test
 	public void testIsDuplicatedWithBreakTime_true_allDuplicate () {
 		
-		BreakTimeOfDailyAttd target = new BreakTimeOfDailyAttd(Arrays.asList(
-				new BreakTimeSheet(
-						new BreakFrameNo(1), 
-							TimeWithDayAttr.hourMinute(12, 0), 
-							TimeWithDayAttr.hourMinute(13, 0)),
-				new BreakTimeSheet(
-						new BreakFrameNo(1), 
-							TimeWithDayAttr.hourMinute(15, 0), 
-							TimeWithDayAttr.hourMinute(15, 30))
-				));
-		
 		TimeSpanForCalc other = new TimeSpanForCalc(
 				TimeWithDayAttr.hourMinute(12, 0), 
 				TimeWithDayAttr.hourMinute(16, 0));
@@ -80,17 +65,6 @@ public class BreakTimeOfDailyAttdTest {
 	
 	@Test
 	public void testIsDuplicatedWithBreakTime_false () {
-		
-		BreakTimeOfDailyAttd target = new BreakTimeOfDailyAttd(Arrays.asList(
-				new BreakTimeSheet(
-						new BreakFrameNo(1), 
-							TimeWithDayAttr.hourMinute(12, 0), 
-							TimeWithDayAttr.hourMinute(13, 0)),
-				new BreakTimeSheet(
-						new BreakFrameNo(1), 
-							TimeWithDayAttr.hourMinute(15, 0), 
-							TimeWithDayAttr.hourMinute(15, 30))
-				));
 		
 		TimeSpanForCalc other = new TimeSpanForCalc(
 				TimeWithDayAttr.hourMinute(13, 0), 
