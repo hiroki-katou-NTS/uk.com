@@ -154,20 +154,20 @@ module nts.uk.com.view.cmm048.a {
     personId: KnockoutObservable<string> = ko.observable('');
 
     //#113902
-     isUseOfProfile: KnockoutObservable<boolean> = ko.observable(false);
-     isUseOfPassword: KnockoutObservable<boolean> = ko.observable(false);
-     isUseOfNotice: KnockoutObservable<boolean> = ko.observable(false);
-     isUseOfLanguage: KnockoutObservable<boolean> = ko.observable(false);
+    isUseOfProfile: KnockoutObservable<boolean> = ko.observable(false);
+    isUseOfPassword: KnockoutObservable<boolean> = ko.observable(false);
+    isUseOfNotice: KnockoutObservable<boolean> = ko.observable(false);
+    isUseOfLanguage: KnockoutObservable<boolean> = ko.observable(false);
 
-     //#113841
-     passwordPolicyVisible: KnockoutObservable<boolean> = ko.observable(false);
-     passPolicyLowestDigitsVisible: KnockoutObservable<boolean> = ko.observable(false);
-     passPolicyDigitVisible: KnockoutObservable<boolean> = ko.observable(false);
-     passPolicyAlphabetDigitVisible: KnockoutObservable<boolean> = ko.observable(false);
-     passPolicyNumberOfDigitsVisible: KnockoutObservable<boolean> = ko.observable(false);
-     passPolicySymbolCharactersVisible: KnockoutObservable<boolean> = ko.observable(true);
-     passPolicyHistoryCountVisible: KnockoutObservable<boolean> = ko.observable(false);
-     passPolicyValidityPeriodVisible: KnockoutObservable<boolean> = ko.observable(false);
+    //#113841
+    passwordPolicyVisible: KnockoutObservable<boolean> = ko.observable(false);
+    passPolicyLowestDigitsVisible: KnockoutObservable<boolean> = ko.observable(false);
+    passPolicyDigitVisible: KnockoutObservable<boolean> = ko.observable(false);
+    passPolicyAlphabetDigitVisible: KnockoutObservable<boolean> = ko.observable(false);
+    passPolicyNumberOfDigitsVisible: KnockoutObservable<boolean> = ko.observable(false);
+    passPolicySymbolCharactersVisible: KnockoutObservable<boolean> = ko.observable(true);
+    passPolicyHistoryCountVisible: KnockoutObservable<boolean> = ko.observable(false);
+    passPolicyValidityPeriodVisible: KnockoutObservable<boolean> = ko.observable(false);
 
     mounted() {
       const vm = this;
@@ -292,15 +292,15 @@ module nts.uk.com.view.cmm048.a {
       vm.passPolicyHistoryCount(vm.$i18n('CMM048_19', [String(historyCount)]));
       vm.passPolicyValidityPeriod(vm.$i18n('CMM048_21', [String(validityPeriod)]));
 
-       //#113841
-       vm.passwordPolicyVisible(data.passwordPolicy.isUse);
-       vm.passPolicyLowestDigitsVisible(lowestDigits > 0);
-       vm.passPolicyDigitVisible((alphabetDigit > 0) || (numberOfDigits > 0) || (symbolCharacters > 0));
-       vm.passPolicyAlphabetDigitVisible(alphabetDigit > 0);
-       vm.passPolicyNumberOfDigitsVisible(numberOfDigits > 0);
-       vm.passPolicySymbolCharactersVisible(symbolCharacters > 0);
-       vm.passPolicyHistoryCountVisible(historyCount > 0);
-       vm.passPolicyValidityPeriodVisible(validityPeriod > 0);
+      //#113841
+      vm.passwordPolicyVisible(data.passwordPolicy.isUse);
+      vm.passPolicyLowestDigitsVisible(lowestDigits > 0);
+      vm.passPolicyDigitVisible((alphabetDigit > 0) || (numberOfDigits > 0) || (symbolCharacters > 0));
+      vm.passPolicyAlphabetDigitVisible(alphabetDigit > 0);
+      vm.passPolicyNumberOfDigitsVisible(numberOfDigits > 0);
+      vm.passPolicySymbolCharactersVisible(symbolCharacters > 0);
+      vm.passPolicyHistoryCountVisible(historyCount > 0);
+      vm.passPolicyValidityPeriodVisible(validityPeriod > 0);
     }
 
     private setDataTabC(data: UserInformationDto) {
@@ -577,8 +577,27 @@ module nts.uk.com.view.cmm048.a {
 
     public save() {
       const vm = this;
+
       vm.$validate().then((valid: boolean) => {
         if (valid) {
+
+          //fix bug #114058 start
+          let checkEmptyAnniver = false;
+          _.map(vm.listAnniversary(), (item: AnniversaryNotificationViewModel, index: number) => {
+            if (item.anniversaryDay()) {
+              if (_.isEmpty(item.anniversaryName())) {
+                $(`#AnniversaryTitle-${index}`).ntsError('set', { messageId: "MsgB_1", messageParams:[vm.$i18n('CMM048_59')]});
+                checkEmptyAnniver = true;
+              }
+              if (_.isEmpty(item.anniversaryRemark())) {
+                $(`#NotificationMessage-${index}`).ntsError('set', { messageId: "MsgB_1", messageParams:[vm.$i18n('CMM048_74')]});
+                checkEmptyAnniver = true;
+              }
+            }
+          });
+          if (checkEmptyAnniver) return;
+          //fix bug #114058 end
+
           const userChange = vm.getUserCommand();
           const avatar = vm.getUserAvatarCommand();
           const listAnniversary = vm.getAnniversaryNoticeCommandList();
@@ -618,7 +637,7 @@ module nts.uk.com.view.cmm048.a {
       });
     }
   }
-  
+
   enum LANGUAGE {
     /**
    * 日本語

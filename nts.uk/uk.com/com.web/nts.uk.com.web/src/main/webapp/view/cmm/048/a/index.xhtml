@@ -27,7 +27,7 @@
       <div id="functions-area">
         <div class="container">
           <div class="btn-save">
-            <button id="button-save" tabindex="1" class="proceed" data-bind="click : save">
+            <button id="button-save" tabindex="1" class="proceed" data-bind="click : save, enable: $root.errors.isEmpty">
               #{i18n.getText('CMM048_3')}
             </button>
           </div>
@@ -579,7 +579,8 @@
                                         value: anniversaryDay, 
                                         enable: true
                                       }" />
-                            <input data-bind="ntsTextEditor: {
+                            <input data-bind="attr: {id: 'AnniversaryTitle-'+$index()},
+                                      ntsTextEditor: {
                                         name: '#[CMM048_59]',
                                         constraint: 'AnniversaryTitle',
                                         value: anniversaryName,
@@ -598,7 +599,8 @@
                         </tr>
                         <tr>
                           <td>
-                            <textarea id="C2_4" rows="4" data-bind="ntsTextEditor: {
+                            <textarea rows="4" data-bind="attr: {id: 'NotificationMessage-'+$index()},
+                                      ntsTextEditor: {
                                         name: '#[CMM048_74]',
                                         constraint: 'NotificationMessage',
                                         value: anniversaryRemark,
