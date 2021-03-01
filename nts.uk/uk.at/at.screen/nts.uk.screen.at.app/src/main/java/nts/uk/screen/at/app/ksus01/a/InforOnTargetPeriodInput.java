@@ -19,4 +19,9 @@ public class InforOnTargetPeriodInput {
 	 * 勤務予定期間
 	 */
 	private PeriodCommand scheduledWorkingPeriod;
+	
+	/**
+	 * 対象期間
+	 */
+	private PeriodCommand targetPeriod;
 }

@@ -20,6 +20,8 @@ import nts.uk.ctx.at.function.dom.adapter.RegulationInfoEmployeeAdapter;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.GetWorkTogetherEmpOnDayBySpecEmpService;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHoliday;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHolidayRepository;
 import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.DesiredSubmissionStatus;
 import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.GetStatusSubmissionWishes;
 import nts.uk.ctx.at.schedule.dom.shift.management.workavailability.WorkAvailabilityOfOneDay;
@@ -77,6 +79,9 @@ public class GetInforOnTargetPeriod {
 	
 	@Inject
 	private WorkTypeRepository workTypeRepo;
+	
+	@Inject
+	private PublicHolidayRepository publicHolidayRepository;
 	
 	final static String DATE_TIME_FORMAT = "yyyy/MM/dd";
 	
@@ -165,56 +170,12 @@ public class GetInforOnTargetPeriod {
 																		null, Collections.emptyList());
 				listWorkScheduleDto.add(workScheduleDto);
 			}
-//			AtomicBoolean check = new AtomicBoolean(false);
-//			mapByWorkInfo.forEach((k, v) -> {
-//
-//				List<AttendanceDto> listAttendaceDto = new ArrayList<AttendanceDto>();
-//				
-//    			Optional<TimeLeavingOfDailyAttd> optTimeLeaving = workSchedule.getOptTimeLeaving();
-//    			
-//    			if (optTimeLeaving.isPresent()) {
-//    				listAttendaceDto = optTimeLeaving.get().getTimeLeavingWorks().stream().map(e -> new AttendanceDto(e.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get().getInDayTimeWithFormat(), 
-//    																												e.getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get().getInDayTimeWithFormat())).collect(Collectors.toList());
-//    			}
-//	    		
-//				if (!check.get()) {
-//					// map by workTimeCode and workTypeCode
-//					if (k.getWorkTypeCode().v().equals(workSchedule.getWorkInfo().getRecordInfo().getWorkTypeCode().v())) {
-//						
-//						if (k.getWorkTimeCode() != null) {
-//							if (k.getWorkTimeCode().v().equals(workSchedule.getWorkInfo().getRecordInfo().getWorkTimeCode().v())) {
-//								check.set(true);
-//							}
-//						} else {
-//							if (workSchedule.getWorkInfo().getRecordInfo().getWorkTimeCode() == null) {
-//								check.set(true);
-//							}
-//						}
-//					}
-//				} else {
-//					return;
-//				}
-//				
-//				if (check.get()) {
-//					
-//					WorkScheduleDto workScheduleDto = new WorkScheduleDto(workSchedule.getYmd().toString(), new ShiftMasterDto(k.getDisplayInfor().getName().v(), k.getDisplayInfor().getColor().v()),
-//																			v.isPresent() ? v.get().value : null, listAttendaceDto);
-//					listWorkScheduleDto.add(workScheduleDto);
-//				} 
-////				else {
-////					WorkScheduleDto workScheduleDto = new WorkScheduleDto(workSchedule.getYmd().toString(), new ShiftMasterDto("", ""),
-////							v.isPresent() ? v.get().value : null, listAttendaceDto);
-////					listWorkScheduleDto.add(workScheduleDto);
-////				}
-//			});
-//			if (!check.get()) {
-//				WorkScheduleDto workScheduleDto = new WorkScheduleDto(workSchedule.getYmd().toString(), new ShiftMasterDto("", ""),
-//																		null, Collections.emptyList());
-//				listWorkScheduleDto.add(workScheduleDto);
-//			}
 		}
 		
-		return new InforOnTargetPeriodDto(listWorkScheduleDto, listDesiredSubmissionStatusByDate);
+		// 4: 取得する(対象期間): List<祝日>
+		List<PublicHoliday> listPublicHoliday = publicHolidayRepository.getpHolidayWhileDate(companyId, GeneralDate.fromString(input.getTargetPeriod().getStart(), DATE_TIME_FORMAT), GeneralDate.fromString(input.getTargetPeriod().getEnd(), DATE_TIME_FORMAT));
+		
+		return new InforOnTargetPeriodDto(listWorkScheduleDto, listDesiredSubmissionStatusByDate, listPublicHoliday.stream().map(e -> PublicHolidayDto.toDto(e)).collect(Collectors.toList()));
 	}
 	
 	

@@ -15,4 +15,6 @@ public class InforOnTargetPeriodDto {
 	private List<WorkScheduleDto> listWorkSchedule;
 	
 	private List<DesiredSubmissionStatusByDate> listDesiredSubmissionStatusByDate;
+	
+	private List<PublicHolidayDto> listPublicHolidayDto;
 }
