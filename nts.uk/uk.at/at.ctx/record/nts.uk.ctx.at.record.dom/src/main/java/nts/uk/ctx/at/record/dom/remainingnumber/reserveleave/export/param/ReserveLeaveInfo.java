@@ -470,7 +470,7 @@ public class ReserveLeaveInfo implements Cloneable {
 				for (val targetRemainingData : targetRemainingDatas){
 
 					// 積立年休を指定日数消化する
-					remainDaysWork = targetRemainingData.digest(remainDaysWork, false);
+					targetRemainingData.digest(remainDaysWork, false);
 				}
 
 				// 消化しきれなかった積立年休を消化する
@@ -491,7 +491,7 @@ public class ReserveLeaveInfo implements Cloneable {
 					//dummyRemainData.setDummyAtr(true);
 
 					// 積立年休を指定日数消化する
-					remainDaysWork = dummyRemainData.digest(remainDaysWork, true);
+					dummyRemainData.digest(remainDaysWork, true);
 
 					// 付与残数データに追加
 					this.grantRemainingList.add(dummyRemainData);
@@ -537,12 +537,20 @@ public class ReserveLeaveInfo implements Cloneable {
 	 */
 	public void createShortageData(Optional<Boolean> isOutputForShortage, boolean isCreate){
 
+		// ダミーデータを1件にまとめたもの
+		Optional<ReserveLeaveGrantRemainingData> reserveLeaveGrantRemainingDataOpt = Optional.empty();
+
 		if (isCreate){
 
 			// 「不足分付与残数データ出力区分」をチェック
 			boolean isOutput = false;
 			if (isOutputForShortage.isPresent()) isOutput = isOutputForShortage.get();
-			if (isOutput){
+			//if (isOutput){
+			{
+
+
+
+
 
 				// ダミーとして作成した「付与残数データ」を合計
 				ReserveLeaveGrantRemainingData dummyData = null;
@@ -569,9 +577,10 @@ public class ReserveLeaveInfo implements Cloneable {
 							null,
 							remainDays);
 					//dummyRemainData.setDummyAtr(false);
+					reserveLeaveGrantRemainingDataOpt = Optional.of(dummyRemainData) ;
 
-					// 付与残数データに追加
-					this.grantRemainingList.add(dummyRemainData);
+//					// 付与残数データに追加
+//					this.grantRemainingList.add(dummyRemainData);
 				}
 			}
 		}
@@ -582,6 +591,12 @@ public class ReserveLeaveInfo implements Cloneable {
 			val grantRemaining = itrGrantRemaining.next();
 			if (grantRemaining.isShortageRemain()) itrGrantRemaining.remove();
 		}
+
+		if ( reserveLeaveGrantRemainingDataOpt.isPresent() ) {
+			// 付与残数データに追加
+			this.grantRemainingList.add(reserveLeaveGrantRemainingDataOpt.get());
+		}
+
 	}
 
 	public static interface RequireM1 extends GetUpperLimitSetting.RequireM1 {
