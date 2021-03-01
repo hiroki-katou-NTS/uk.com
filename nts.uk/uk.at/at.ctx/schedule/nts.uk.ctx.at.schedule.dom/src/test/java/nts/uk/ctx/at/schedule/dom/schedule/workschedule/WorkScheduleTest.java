@@ -1264,10 +1264,13 @@ public class WorkScheduleTest {
 			@Injectable BreakTimeOfDailyAttd breakTime,
 			@Injectable TimeLeavingOfDailyAttd timeLeaving,
 			@Injectable ShortTimeOfDailyAttd shortTimeWork,
-			@Injectable TimevacationUseTimeOfDaily timevacationUseTimeOfDaily,
-			@Injectable TaskSchedule newTaskSchedule) {
+			@Injectable TimevacationUseTimeOfDaily timevacationUseTimeOfDaily) {
 		
 		WorkSchedule workSchedule = Helper.createWithParams(workInfo, breakTime, timeLeaving, shortTimeWork);
+		
+		TaskSchedule newTaskSchedule = new TaskSchedule(Arrays.asList(
+				TaskScheduleDetailTestHelper.create("code1", 9, 0, 10, 0),
+				TaskScheduleDetailTestHelper.create("code2", 13, 0, 14, 0)));
 		
 		new Expectations(workSchedule) {{
 			workInfo.isAttendanceRate(require);
@@ -1276,8 +1279,16 @@ public class WorkScheduleTest {
 			workSchedule.getTimeVacation();
 			result = new HashMap<>();
 			
+			timeLeaving.isIncludeInWorkTimeSpan( (TimeSpanForCalc) any );
+			result = true;
+			
+			breakTime.isDuplicatedWithBreakTime( (TimeSpanForCalc) any );
+			result = false;
+			
+			shortTimeWork.isDuplicatedWithShortTime( (TimeSpanForCalc) any );
+			result = false;
+			
 		}};
-		
 		
 		workSchedule.updateTaskSchedule(require, newTaskSchedule);
 		
