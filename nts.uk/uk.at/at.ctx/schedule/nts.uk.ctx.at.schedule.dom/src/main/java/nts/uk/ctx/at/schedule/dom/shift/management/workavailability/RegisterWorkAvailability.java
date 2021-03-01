@@ -20,14 +20,13 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  *
  */
 public class RegisterWorkAvailability {
-	
 	/**
 	 * 登録する
 	 * @param require
 	 * @param sid 社員ID
 	 * @param datePeriod 期間
 	 * @param workOneDay 一日分の勤務希望リスト
-	 * @return
+	 * @return.
 	 */
 	public static AtomTask register(Require require, String sid, DatePeriod datePeriod, List<WorkAvailabilityOfOneDay> workOneDays) {
 		val shiftRuleOpt = GetUsingShiftTableRuleOfEmployeeService.get(require, sid, datePeriod.end());
@@ -42,35 +41,29 @@ public class RegisterWorkAvailability {
 
 		// 勤務希望運用区分 == する場合は、必ず「シフト表の設定」emptyではないため。
 		val shiftTableSetting = shiftRule.getShiftTableSetting().get();
-		val deadline = shiftTableSetting.getCorrespondingDeadlineAndPeriod(GeneralDate.today()).getDeadline();
 		
-		if (deadline.before(datePeriod.start())) {
-			throw new BusinessException("Msg_2050");
-		}
-		
-		val outDeadlines = workOneDays.stream()
-				.filter(c -> c.getWorkAvailabilityDate().after(deadline))
+		List<GeneralDate> workAvailabilityDates = workOneDays.stream()
+				.map(WorkAvailabilityOfOneDay::getWorkAvailabilityDate)
 				.collect(Collectors.toList());
-
-		if(!CollectionUtil.isEmpty(outDeadlines)) {
-			throw new BusinessException("Msg_2050");
-		}
+		
+		datePeriod.stream().forEach(date ->{
+			if(shiftTableSetting.isOverDeadline(date)) {
+				if(workAvailabilityDates.contains(date) || require.existWorkAvailabilityOfOneDay(sid, date)) {
+					throw new BusinessException("Msg_2050");
+				}
+			}
+		});
 		
 		if (shiftTableSetting.isOverHolidayMaxDays(require, workOneDays)) {
 			throw new BusinessException("Msg_2051");
 		}
 		
-		val datePeriodEnd = datePeriod.end().before(deadline) ? datePeriod.end(): deadline;
-		
-		val targetPeriodRegister = new DatePeriod(datePeriod.start(), datePeriodEnd);
-		
 		return AtomTask.of(() -> {
-			require.deleteAllWorkAvailabilityOfOneDay(sid, targetPeriodRegister);
+			require.deleteAllWorkAvailabilityOfOneDay(sid, datePeriod);
 			
 			if(!CollectionUtil.isEmpty(workOneDays)) {
 				require.insertAllWorkAvailabilityOfOneDay(workOneDays);
 			}
-			
 		});
 		
 	}
@@ -78,7 +71,6 @@ public class RegisterWorkAvailability {
 	public static interface Require extends GetUsingShiftTableRuleOfEmployeeService.Require
 											, WorkAvailabilityOfOneDay.Require
 											, WorkAvailabilityRule.Require{
-		
 		/**
 		 * [R-1] 一日分の勤務希望を追加する
 		 */
@@ -91,5 +83,12 @@ public class RegisterWorkAvailability {
 		 */
 		void deleteAllWorkAvailabilityOfOneDay(String sid, DatePeriod datePeriod);
 		
+		/**
+		 * [R-3] 一日分の勤務希望が存在するか
+		 * @param sid 社員ID
+		 * @param date 年月日
+		 * @return
+		 */
+		boolean existWorkAvailabilityOfOneDay(String sid, GeneralDate date);
 	}
 }

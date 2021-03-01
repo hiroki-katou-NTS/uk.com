@@ -8,7 +8,6 @@ import java.util.stream.Stream;
 
 import lombok.RequiredArgsConstructor;
 import nts.arc.error.BusinessException;
-import nts.arc.i18n.I18NText;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.gul.util.OptionalUtil;
@@ -51,12 +50,7 @@ public class CreateWorkSchedule {
 			try {
 				workSchedule = WorkSchedule.createByHandCorrectionWithWorkInformation(require, employeeId, date, workInformation);
 			} catch (BusinessException e) {
-				if (e.getMessageId().equals("Msg_430")) {
-					String message = I18NText.main(e.getMessageId()).build().buildMessage();
-					return ResultOfRegisteringWorkSchedule.createWithError(employeeId, date, message);
-				}
-				
-				throw e; // else
+				return ResultOfRegisteringWorkSchedule.createWithError( employeeId, date, e.getMessage() );
 			}
 		} else {
 			workSchedule = registedWorkSchedule.get();
@@ -142,10 +136,11 @@ public class CreateWorkSchedule {
 			return Optional.empty();
 		}
 		
-		String errorMessage = I18NText.main("Msg_1781").addIds(
-				stateOfTime.getTimeSpan().get().getStart().getInDayTimeWithFormat(), 
-				stateOfTime.getTimeSpan().get().getEnd().getInDayTimeWithFormat())
-			.build().buildMessage();
+		String errorMessage = new BusinessException(
+					"Msg_1781", 
+					stateOfTime.getTimeSpan().get().getStart().getInDayTimeWithFormat(), 
+					stateOfTime.getTimeSpan().get().getEnd().getInDayTimeWithFormat()
+				).getMessage();
 		
 		return Optional.of(
 				ErrorInfoOfWorkSchedule.attendanceItemError(employeeId, date, workTimeZone.attendanceItemId, errorMessage));
