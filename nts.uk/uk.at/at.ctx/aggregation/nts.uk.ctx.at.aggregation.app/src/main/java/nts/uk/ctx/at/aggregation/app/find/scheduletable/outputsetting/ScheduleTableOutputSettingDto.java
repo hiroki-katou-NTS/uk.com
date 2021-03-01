@@ -12,6 +12,7 @@ import nts.uk.ctx.at.aggregation.dom.schedulecounter.PersonalCounterCategory;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.WorkplaceCounterCategory;
 import nts.uk.ctx.at.aggregation.dom.scheduletable.OneRowOutputItem;
 import nts.uk.ctx.at.aggregation.dom.scheduletable.ScheduleTableOutputSetting;
+import nts.uk.shr.com.context.AppContexts;
 /**
  * 
  * @author quytb
@@ -35,6 +36,7 @@ public class ScheduleTableOutputSettingDto {
 	private List<Integer> workplaceCounterCategories;
 	private List<Integer> personalCounterCategories;
 	private Boolean isAttendance;
+	private Boolean hasAttendance;
 	
 	
 	public static ScheduleTableOutputSettingDto setData(ScheduleTableOutputSetting domain) {
@@ -73,7 +75,9 @@ public class ScheduleTableOutputSettingDto {
 				.attendanceItem(attendanceCodeItems)
 				.personalCounterCategories(personalCounterCategories)
 				.workplaceCounterCategories(workplaceCounterCategories)
-				.build();
+				.hasAttendance(AppContexts.user().roles().isInChargeAttendance())
+				.build();		
+		
 	}	
 	
 }

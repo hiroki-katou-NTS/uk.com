@@ -72,35 +72,46 @@ public class ScheduleTableOutputSettingSaveCommand {
 		command.getPersonalCounterCategories().stream().forEach(x -> {
 			listPersonalCounterCategorie.add(PersonalCounterCategory.of(x));
 		});
-		
-		if (command.getPersonalInfo().isEmpty() && command.getAdditionalInfo().isEmpty() && command.getAttendanceItem().isEmpty()) {
-			details.add(OneRowOutputItem.create(
-					Optional.of(EnumAdaptor.valueOf(0, ScheduleTablePersonalInfoItem.class)),
-					Optional.of(EnumAdaptor.valueOf(4, ScheduleTablePersonalInfoItem.class)),
-					Optional.of(EnumAdaptor.valueOf(1, ScheduleTableAttendanceItem.class))));
-		} else {
-			details.add(OneRowOutputItem.create(
-					Optional.of(command.getPersonalInfo().get(0) == -1 ? EnumAdaptor.valueOf(0, ScheduleTablePersonalInfoItem.class) : EnumAdaptor.valueOf(command.getPersonalInfo().get(0), ScheduleTablePersonalInfoItem.class)),
-					Optional.of(command.getAdditionalInfo().get(0) == -1 ? EnumAdaptor.valueOf(4, ScheduleTablePersonalInfoItem.class) : EnumAdaptor.valueOf(command.getAdditionalInfo().get(0), ScheduleTablePersonalInfoItem.class)),
-					Optional.of(command.getAttendanceItem().get(0) == -1 ? EnumAdaptor.valueOf(1, ScheduleTableAttendanceItem.class) : EnumAdaptor.valueOf(command.getAttendanceItem().get(0), ScheduleTableAttendanceItem.class) )));
-			for(int i = 1; i < 10; i++) {	
-				if(i < size) {
-					if((i < command.getPersonalInfo().size() ? command.getPersonalInfo().get(i) != -1 : true)
-							||(i < command.getAdditionalInfo().size() ? command.getAdditionalInfo().get(i) != -1 : true) 
-							||(i < command.getAttendanceItem().size() ? command.getAttendanceItem().get(i) != -1 : true)) {
-						OneRowOutputItem oneRowOutputItem = OneRowOutputItem.create(
-								Optional.ofNullable(i < command.getPersonalInfo().size() && command.getPersonalInfo().get(i) != -1 ? 
-										EnumAdaptor.valueOf(command.getPersonalInfo().get(i), ScheduleTablePersonalInfoItem.class): null), 
-								Optional.ofNullable(i < command.getAdditionalInfo().size() && command.getAdditionalInfo().get(i) != -1 ? 
-										EnumAdaptor.valueOf(command.getAdditionalInfo().get(i), ScheduleTablePersonalInfoItem.class): null),
-								Optional.ofNullable(i < command.getAttendanceItem().size() && command.getAttendanceItem().get(i) != -1 ? 
-										EnumAdaptor.valueOf(command.getAttendanceItem().get(i), ScheduleTableAttendanceItem.class) : null));
-						details.add(oneRowOutputItem);
-					}						
-				}							
-			}			
+
+		details.add(
+				OneRowOutputItem.create(
+						Optional.ofNullable(command.getPersonalInfo().get(0) == -1
+								? EnumAdaptor.valueOf(0, ScheduleTablePersonalInfoItem.class)
+								: EnumAdaptor.valueOf(command.getPersonalInfo().get(0),
+										ScheduleTablePersonalInfoItem.class)),
+						Optional.ofNullable(command.getAdditionalInfo().get(0) == -1
+								? EnumAdaptor.valueOf(0, ScheduleTablePersonalInfoItem.class)
+								: EnumAdaptor.valueOf(command.getAdditionalInfo().get(0),
+										ScheduleTablePersonalInfoItem.class)),
+						Optional.ofNullable(command.getAttendanceItem().get(0) == -1
+								? EnumAdaptor.valueOf(0, ScheduleTableAttendanceItem.class)
+								: EnumAdaptor.valueOf(command.getAttendanceItem().get(0),
+										ScheduleTableAttendanceItem.class))));
+		for (int i = 1; i < 10; i++) {
+			if (i < size) {
+				if ((i < command.getPersonalInfo().size() ? command.getPersonalInfo().get(i) != -1 : true)
+						|| (i < command.getAdditionalInfo().size() ? command.getAdditionalInfo().get(i) != -1 : true)
+						|| (i < command.getAttendanceItem().size() ? command.getAttendanceItem().get(i) != -1 : true)) {
+					OneRowOutputItem oneRowOutputItem = OneRowOutputItem.create(
+							Optional.ofNullable(
+									i < command.getPersonalInfo().size() && command.getPersonalInfo().get(i) != -1
+											? EnumAdaptor.valueOf(command.getPersonalInfo().get(i),
+													ScheduleTablePersonalInfoItem.class)
+											: null),
+							Optional.ofNullable(
+									i < command.getAdditionalInfo().size() && command.getAdditionalInfo().get(i) != -1
+											? EnumAdaptor.valueOf(command.getAdditionalInfo().get(i),
+													ScheduleTablePersonalInfoItem.class)
+											: null),
+							Optional.ofNullable(
+									i < command.getAttendanceItem().size() && command.getAttendanceItem().get(i) != -1
+											? EnumAdaptor.valueOf(command.getAttendanceItem().get(i),
+													ScheduleTableAttendanceItem.class)
+											: null));
+					details.add(oneRowOutputItem);
+				}
+			}
 		}
-				
 		OutputItem outputItem = new OutputItem(NotUseAtr.valueOf(command.getAdditionalColumn()), 
 											NotUseAtr.valueOf(command.getShiftBackgroundColor()), 
 											NotUseAtr.valueOf(command.getDailyDataDisplay()), 

@@ -31,5 +31,8 @@ public class KagmtRptScheduleTallyByPerson extends ContractUkJpaEntity implement
 	protected Object getKey() {
 		return this.pk;
 	}
-
+	
+	public String getCode() {
+		return this.pk.code;
+	}
 }

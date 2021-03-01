@@ -32,4 +32,8 @@ public class KagmtRptScheduleTallyByWkp extends ContractUkJpaEntity implements S
 	protected Object getKey() {
 		return this.pk;
 	}
+	
+	public String getCode() {
+		return this.pk.code;
+	}
 }

@@ -40,4 +40,8 @@ public class KagmtRptScheduleItem extends ContractUkJpaEntity implements Seriali
 	protected Object getKey() {
 		return this.pk;
 	}
+	
+	public String getCode() {
+		return this.pk.code;
+	}
 }
