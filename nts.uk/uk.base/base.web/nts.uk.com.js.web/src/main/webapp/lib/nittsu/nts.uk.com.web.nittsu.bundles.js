@@ -51052,6 +51052,10 @@ var nts;
                             var minHeight = valueAccessor();
                             var key = ko.unwrap(widget);
                             var src = allBindingsAccessor.get('src');
+                            var def = allBindingsAccessor.get('default');
+                            if (def) {
+                                element.style.maxHeight = def + "px";
+                            }
                             if (element.tagName !== 'DIV') {
                                 element.innerText = 'Please use [div] tag with [widget-content] binding';
                                 return { controlsDescendantBindings: false };
@@ -51079,6 +51083,10 @@ var nts;
                                 .addClass('widget-content')
                                 .resizable({
                                 handles: 's',
+                                start: function () {
+                                    // clear max height if resize by enduser
+                                    element.style.maxHeight = '';
+                                },
                                 stop: function () {
                                     var offsetHeight = element.offsetHeight;
                                     if (key) {
