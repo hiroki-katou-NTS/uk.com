@@ -132,6 +132,7 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 				.map(x -> x.getPeriod()).sorted((x, y) -> x.end().compareTo(y.end())).collect(Collectors.toList());
 		if(lstPeriodMag.isEmpty()) {
 			this.reflectAppOfAppDate(workId, sid, refAppResult, datePeriod);
+			return;
 		}
 		DatePeriod dateProcess = null;
 		for(DatePeriod datePeriodCls : lstPeriodMag) {
