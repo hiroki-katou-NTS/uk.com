@@ -34,7 +34,6 @@ public class ScriptFile extends UIComponentBase {
             "/lib/generic/jquery/datepicker.js",
             "/lib/generic/jquery/datepicker.ja-JP.js",
             "/lib/generic/jquery/jquery.cookie.min.js",
-            "/lib/nittsu/iefix.js",
             "/lib/nittsu/nts.uk.com.web.nittsu.bundles.js"
     }));
     
@@ -45,11 +44,18 @@ public class ScriptFile extends UIComponentBase {
             "/lib/generic/igniteui/js/extensions/infragistics.ui.tree.knockout-extensions.js",
     }));
     
+    public static Set<String> FILES_FULLCALENDAR = new  LinkedHashSet<String>(Arrays.asList(new String[] {
+    	"/lib/generic/fullcalendar/main.min.js",
+    	"/lib/generic/fullcalendar/locales/ja.js",
+    	"/lib/generic/fullcalendar/locales/vi.js"
+    }));
+    
     @SuppressWarnings("serial")
     private static Map<String, Set<String>> FILE_SETS = new HashMap<String, Set<String>>() {
         {
             this.put("BASIC", FILES_BASIC);
             this.put("IGNITE", FILES_IGNITE);
+            this.put("FULLCALENDAR", FILES_FULLCALENDAR);
         }
     };
 
