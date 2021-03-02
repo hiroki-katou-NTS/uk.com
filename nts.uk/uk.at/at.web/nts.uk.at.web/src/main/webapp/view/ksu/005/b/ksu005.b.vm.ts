@@ -10,6 +10,7 @@ module nts.uk.at.view.ksu005.b {
         DELETE_SCHEDULE_TABLE_OUTPUT_SETTING:"ctx/at/schedule/scheduletable/delete",
     };
     let checkbox : KnockoutObservable<boolean>= ko.observable(false);
+    let isCheckAll: boolean = false;
     @bean()
     class Ksu005bViewModel extends ko.ViewModel {
         currentScreen: any = null;
@@ -56,8 +57,9 @@ module nts.uk.at.view.ksu005.b {
         isEnableDelBtn :KnockoutObservable<boolean> = ko.observable(false);
         isEnableAdditionInfo :KnockoutObservable<boolean> = ko.observable(true);
         isEnableAttendanceItem :KnockoutObservable<boolean> = ko.observable(true);
-        scheduleTableOutputSetting: KnockoutObservable<ScheduleTableOutputSetting> = ko.observable(new ScheduleTableOutputSetting());
-        
+        scheduleTableOutputSetting: KnockoutObservable<ScheduleTableOutputSetting> = ko.observable(new ScheduleTableOutputSetting());        
+        isReload :KnockoutObservable<boolean> = ko.observable(false);
+
         constructor() {            
             super();
             const self = this;                    
@@ -113,30 +115,42 @@ module nts.uk.at.view.ksu005.b {
                     self.isShiftBackgroundColor(false);
                 }
             });
-            self.isShiftBackgroundColor.subscribe((value) => {      
-                if(value){
-                    self.itemList.removeAll();
-                    self.initialData();
-                    self.isEnableAttendanceItem(false);
-                    self.isEnableAddBtn(false);
-                } else {                    
-                    self.findDetail(self.selectedCode(), true, value);
-                    self.isEnableAttendanceItem(true);
-                    self.isEnableAddBtn(true);
-                }
-                if(self.countNumberRow < 10){
-                    value ? self.isEnableAddBtn(false): self.isEnableAddBtn(true);
+            self.isShiftBackgroundColor.subscribe((value) => {     
+                if(self.isReload()) {
+                    self.isReload(false);
+                    return;
                 } else {
-                    self.isEnableAddBtn(false)
-                }      
+                    if(value){
+                        self.itemList.removeAll();
+                        if(self.selectedCode()== ""){
+                            self.initialData();
+                        } else {
+                            self.loadDetail(self.selectedCode(), false, true);
+                        }
+                        
+                        self.isEnableAttendanceItem(false);
+                        self.isEnableAddBtn(false);
+                    } else {                    
+                        self.loadDetail(self.selectedCode(), true, value);
+                        self.isEnableAttendanceItem(true);
+                        self.isEnableAddBtn(true);
+                    }
+                    if(self.countNumberRow < 10){
+                        value ? self.isEnableAddBtn(false): self.isEnableAddBtn(true);
+                    } else {
+                        self.isEnableAddBtn(false)
+                    }      
+                }                
             });            
 
-            self.checkAll.subscribe((value) => {                
+            self.checkAll.subscribe((value) => {     
+                isCheckAll = true;           
                 let temp = self.itemList();
                 if (value) {
                     for (let i = 1; i < temp.length; i++) {
                         temp[i].checked(true);
-                    }
+                    }                        
+                    self.isEnableDelBtn(true);
                     self.itemList(temp);
                     self.checkOne(false);
                 } else {
@@ -145,38 +159,40 @@ module nts.uk.at.view.ksu005.b {
                             temp[i].checked(false);
                         }
                         self.itemList(temp);
-                        self.checkOne(false);
+                        self.checkOne(false);                        
+                        self.isEnableDelBtn(false);
                     } 
                 }
+                isCheckAll = false; 
             });
 
             self.checked.subscribe((value) => {
                 self.isEnableDelBtn(value);
             });
 
-            checkbox.subscribe((v) => {
+            checkbox.subscribe((v) => {               
                 let evens = _.filter(self.itemList(), function (n) {
                     return n.checked();
                 });
                 self.checkOne(true);
+                
+                if (evens.length > 0) {
+                    self.isEnableDelBtn(true);
+                }
+                if(evens.length == self.itemList().length - 1){
+                    self.checkAll(true);
+                    isCheckAll = false;
+                } 
 
-                if (v) {
-                    if (evens.length > 0) {
-                        self.isEnableDelBtn(true);
-                    }
-                    if(evens.length == self.itemList().length - 1){
-                        self.checkAll(true);
-                    } 
-                    checkbox(false);
-                };
-                if (!v) {
-                    if (evens.length == 0 ) {                        
-                        self.isEnableDelBtn(false);
-                        self.checkAll(false);
-                    } else if(evens.length < self.itemList().length -1) {
-                        self.checkAll(false);
-                    }
-                };
+                if (evens.length < self.itemList().length -1) {
+                if (evens.length == 0 ) {                        
+                    self.isEnableDelBtn(false);
+                    self.checkAll(false);
+                    isCheckAll = false;
+                } else if(evens.length < self.itemList().length -1) {
+                    self.checkAll(false);
+                    isCheckAll = false;
+                }}
             });
 
             self.scheduleTableOutputSetting().additionalColumn.subscribe((value) => {
@@ -187,7 +203,7 @@ module nts.uk.at.view.ksu005.b {
                 }
             });
             
-            self.selectedCode.subscribe((code: string) => {                
+            self.selectedCode.subscribe((code: string) => { 
                 if (_.isEmpty(code)) {
                     self.clearData();
                 } else {
@@ -199,8 +215,9 @@ module nts.uk.at.view.ksu005.b {
             self.loadData();
         }
 
-        findDetail(code?: string, checkAddInfo?: boolean , checkShiftBgColor?: boolean): void {
+        findDetail(code: string): void {
             const self = this;
+            self.checkAll(false);                                
             if (code != null && !_.isEmpty(code)) {
                 self.$blockui("invisible");
                 self.$ajax(Paths.GET_SCHEDULE_TABLE_OUTPUT_SETTING_BY_CODE + "/" + code).done((data: IScheduleTableOutputSetting) => {
@@ -215,25 +232,78 @@ module nts.uk.at.view.ksu005.b {
                         let tempSelected: Array<any> = [];
                         let tempSelectedCode: Array<any> = [];
 
-                        self.scheduleTableOutputSetting().updateData(data);
+                        
                         self.scheduleTableOutputSetting().isEnableCode(false);
-                        checkAddInfo != null ? self.isEnableAddBtn(checkAddInfo) : self.isEnableAddBtn(data.shiftBackgroundColor == 0);
-                        checkShiftBgColor != null ? self.isShiftBackgroundColor(checkShiftBgColor) : self.isShiftBackgroundColor(data.shiftBackgroundColor == 1);
-                     
+                        self.isEnableAddBtn(data.shiftBackgroundColor == 0);
+                        if(self.isShiftBackgroundColor() != (data.shiftBackgroundColor ==1)){
+                            self.isReload(true);
+                            self.isShiftBackgroundColor(data.shiftBackgroundColor == 1);
+                        }                        
+    
                         datas.push(new ScreenItem(true, self.countNumberRow, data.personalInfo[0] != null ? data.personalInfo[0].toString() : null,
                             data.additionalInfo[0] != null ? data.additionalInfo[0].toString() : null,
                             data.attendanceItem[0] != null ? data.attendanceItem[0].toString() : null));
-                        for (let i = 1; i < 10; i++) {
-                            if (i < maxLength) {
-                                self.countNumberRow = self.countNumberRow + 1;
-                                if (self.countNumberRow >= 10) {
-                                    self.isEnableAddBtn(false);
-                                }
-                                datas.push(new ScreenItem(false, self.countNumberRow, data.personalInfo[i] != null ? data.personalInfo[i].toString() : null,
-                                    data.additionalInfo[i] != null ? data.additionalInfo[i].toString() : null,
-                                    data.attendanceItem[i] != null ? data.attendanceItem[i].toString() : null));
+                        for (let i = 1; i < maxLength; i++) {
+                            self.countNumberRow = self.countNumberRow + 1;
+                            if(self.countNumberRow >= 10) {
+                                self.isEnableAddBtn(false);
                             }
+                            datas.push(new ScreenItem(false, self.countNumberRow, data.personalInfo[i] != null ? data.personalInfo[i].toString() : null,
+                                data.additionalInfo[i] != null ? data.additionalInfo[i].toString() : null,
+                                data.attendanceItem[i] != null ? data.attendanceItem[i].toString() : null));                                    
+    
                         }
+                        self.itemList(datas);
+                        self.itemsSwap.removeAll();
+                        self.currentCodeListSwap.removeAll();
+                        self.itemsSwap((_.cloneDeep(self.workplaceCounterCategories())));
+
+                        _.each(data.workplaceCounterCategories, code => {
+                            _.each(self.itemsSwap(), y => {
+                                if (y.value == code) {
+                                    tempSelected.push(new SwapModel(y.value, y.name));
+                                    tempSelectedCode.push(y.value);
+                                }
+                            })
+                        });
+
+                        self.scheduleTableOutputSetting().updateData(data);
+                        self.currentCodeListSwap(tempSelected);
+                        self.selectedCodeListSwap(tempSelectedCode);
+                        self.persons(self.personalCounterCategory());
+                        self.selectedPerson(data.personalCounterCategories);
+                        self.isEditing(true);
+                        self.enableDelete(true);
+                        $('#outputSettingName').focus();
+                    }
+                }).always(() => {
+                    self.$blockui("hide");
+                })
+            }            
+        }
+
+        loadDetail(code?: string, checkAddInfo?: boolean , checkShiftBgColor?: boolean): void {
+            const self = this;
+            self.checkAll(false);
+            if (code != null && !_.isEmpty(code)) {
+                self.$blockui("invisible");
+                self.$ajax(Paths.GET_SCHEDULE_TABLE_OUTPUT_SETTING_BY_CODE + "/" + code).done((data: IScheduleTableOutputSetting) => {
+                    self.countNumberRow = 1;
+                    if (!_.isNull(data) && !_.isEmpty(data)) {
+                        self.clearError();                       
+                        let datas = [];
+                        let tempSelected: Array<any> = [];
+                        let tempSelectedCode: Array<any> = [];
+
+                        self.scheduleTableOutputSetting().updateData(data);
+                        self.scheduleTableOutputSetting().isEnableCode(false);
+                        self.isEnableAddBtn(checkAddInfo);
+                        self.isShiftBackgroundColor(checkShiftBgColor);
+
+                        datas.push(new ScreenItem(true, self.countNumberRow, data.personalInfo[0] != null ? data.personalInfo[0].toString() : null,
+                            data.additionalInfo[0] != null ? data.additionalInfo[0].toString() : null,
+                            data.attendanceItem[0] != null ? data.attendanceItem[0].toString() : null));
+
                         self.itemList(datas);
                         self.itemsSwap.removeAll();
                         self.currentCodeListSwap.removeAll();
@@ -483,6 +553,7 @@ module nts.uk.at.view.ksu005.b {
             self.isShiftBackgroundColor(false);
             self.initialData();
             self.clearError();
+            self.checkAll(false);
             $('#outputSettingCode').focus();              
         }
 
@@ -515,15 +586,21 @@ module nts.uk.at.view.ksu005.b {
         private condition2(): boolean {
             const self = this;
             let count: number = 0; 
-            for (let i = 0; i < self.itemList().length - 1; i++) {
-                for (let j = i + 1; j < self.itemList().length; j++) {
-                    if (self.itemList()[i].personalInfo() == self.itemList()[j].personalInfo() 
-                        && self.itemList()[i].additionInfo() == self.itemList()[j].additionInfo()) {
-                        count = count + 1;
-                    }
-                }
-            }           
-            if(count >= 1){
+            // for (let i = 0; i < self.itemList().length - 1; i++) {
+            //     for (let j = i + 1; j < self.itemList().length; j++) {
+            //         if (self.itemList()[i].personalInfo() == self.itemList()[j].personalInfo() 
+            //             && self.itemList()[i].additionInfo() == self.itemList()[j].additionInfo()) {
+            //             count = count + 1;
+            //         }
+            //     }
+            // }           
+
+            _.each(self.itemList(), x => {
+                if (parseInt(x.personalInfo()) == parseInt(x.additionInfo())) {
+                    count = count + 1;
+                }               
+            });
+            if(count == self.itemList().length){
                 return true;
             }
             return false;
@@ -535,7 +612,7 @@ module nts.uk.at.view.ksu005.b {
             let count: number = 0; 
             for (let i = 0; i < self.itemList().length - 1; i++) {
                 for (let j = i + 1; j < self.itemList().length; j++) {
-                    if (self.itemList()[i].attendanceItem() == self.itemList()[j].attendanceItem()) {
+                    if (self.itemList()[i].attendanceItem() == self.itemList()[j].attendanceItem() && parseInt(self.itemList()[i].attendanceItem()) != -1 ) {
                         count = count + 1;
                     }
                 }
@@ -595,8 +672,13 @@ module nts.uk.at.view.ksu005.b {
             var self = this;
             self.rowNo = ko.observable(rowNo);
             self.checked = ko.observable(false);
-            self.checked.subscribe(()=> {
-                checkbox(true);
+            self.checked.subscribe((value)=> {
+                if (isCheckAll) return;
+                if (checkbox()) {
+                    checkbox(false);
+                } else if (!checkbox()) {
+                    checkbox(true);
+                }
             });
             self.isNumberOne = ko.observable(isNumberOne);            
             self.selectedCode = ko.observable('1');             
@@ -608,16 +690,7 @@ module nts.uk.at.view.ksu005.b {
             }
             if(attendanceItem != null) {
                 self.attendanceItem = ko.observable(attendanceItem);
-            }
-            // if(personalInfo) {            
-            //     self.personalInfo = ko.observable(personalInfo);
-            // }
-            // if(additionInfo) {                
-            //     self.additionInfo = ko.observable(additionInfo);
-            // }
-            // if(attendanceItem) {
-            //     self.attendanceItem = ko.observable(attendanceItem);
-            // }
+            }            
         }
     }
     class ItemModel {
