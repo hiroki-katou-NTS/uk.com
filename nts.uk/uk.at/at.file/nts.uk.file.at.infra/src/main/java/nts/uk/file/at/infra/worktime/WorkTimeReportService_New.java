@@ -2076,6 +2076,267 @@ public class WorkTimeReportService_New {
             Integer flowRestTime = data.getFlowWorkSetting().getOffdayWorkTimezone().getRestTimeZone().getFlowRestTimezone().getHereAfterRestSet().getFlowRestTime();
             cells.get("CC" + (startIndex + 9)).setValue(getInDayTimeWithFormat(flowRestTime));
         }
+        
+        // 8        タブグ:                外出
+        
+        if (displayMode.equals(DisplayMode.DETAIL.value)) {
+            /*
+             * R5_143
+             * 外出.外出丸め設定.同じ枠内での丸め設定
+             */
+            Integer setSameFrameRounding = data.getFlowWorkSetting().getCommonSetting().getGoOutSet().getTotalRoundingSet().getSetSameFrameRounding();
+            cells.get("CD" + (startIndex + 1)).setValue(getFrameRoundingAtr(setSameFrameRounding));
+            
+            /*
+             * R5_144
+             * 外出.外出丸め設定.枠を跨る場合の丸め設定
+             */
+            Integer frameStraddRoundingSet = data.getFlowWorkSetting().getCommonSetting().getGoOutSet().getTotalRoundingSet().getFrameStraddRoundingSet();
+            cells.get("CE" + (startIndex + 1)).setValue(getFrameRoundingAtr(frameStraddRoundingSet));
+            
+            /*
+             * R5_145
+             * 外出.私用・組合外出時間.就業時間帯
+             */
+            Integer roundingMethodWorkPrivateAppro = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
+                    .getDiffTimezoneSetting().getWorkTimezone().getPrivateUnionGoOut()
+                    .getApproTimeRoundingSetting().getRoundingMethod();
+            cells.get("CF" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodWorkPrivateAppro));
+            
+            /*
+             * R5_146
+             * 外出.私用・組合外出時間.丸め設定
+             */
+            Integer unitWorkPrivateAppro = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
+                    .getDiffTimezoneSetting().getWorkTimezone().getPrivateUnionGoOut()
+                    .getApproTimeRoundingSetting().getRoundingSetting().getRoundingTime();
+            cells.get("CG" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitWorkPrivateAppro));
+            
+            /*
+             * R5_147
+             * 外出.私用・組合外出時間.丸め設定端数
+             */
+            Integer roundingWorkPrivateAppro = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
+                    .getDiffTimezoneSetting().getWorkTimezone().getPrivateUnionGoOut()
+                    .getApproTimeRoundingSetting().getRoundingSetting().getRounding();
+            cells.get("CH" + (startIndex + 1)).setValue(getRoundingEnum(roundingWorkPrivateAppro));
+            
+            /*
+             * R5_148
+             * 外出.私用・組合外出時間.残業時間帯
+             */
+            Integer roundingMethodOtPrivate = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
+                    .getDiffTimezoneSetting().getOttimezone().getPrivateUnionGoOut()
+                    .getApproTimeRoundingSetting().getRoundingMethod();
+            cells.get("CI" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodOtPrivate));
+            
+            /*
+             * R5_149
+             * 外出.私用・組合外出時間.丸め設定
+             */
+            Integer unitOtPrivateAppro = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
+                    .getDiffTimezoneSetting().getOttimezone().getPrivateUnionGoOut()
+                    .getApproTimeRoundingSetting().getRoundingSetting().getRoundingTime();
+            cells.get("CJ" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitOtPrivateAppro));
+            
+            /*
+             * R5_150
+             * 外出.私用・組合外出時間.丸め設定端数
+             */
+            Integer roundingOtPrivateAppro = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
+                    .getDiffTimezoneSetting().getOttimezone().getPrivateUnionGoOut()
+                    .getApproTimeRoundingSetting().getRoundingSetting().getRounding();
+            cells.get("CK" + (startIndex + 1)).setValue(getRoundingEnum(roundingOtPrivateAppro));
+            
+            /*
+             * R5_151
+             * 外出.私用・組合外出時間.休出時間帯
+             */
+            Integer roundingMethodHdPrivate = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
+                    .getDiffTimezoneSetting().getPubHolWorkTimezone().getPrivateUnionGoOut()
+                    .getApproTimeRoundingSetting().getRoundingMethod();
+            cells.get("CL" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodHdPrivate));
+            
+            /*
+             * R5_152
+             * 外出.私用・組合外出時間.丸め設定
+             */
+            Integer unitHdPrivate = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
+                    .getDiffTimezoneSetting().getPubHolWorkTimezone().getPrivateUnionGoOut()
+                    .getApproTimeRoundingSetting().getRoundingSetting().getRoundingTime();
+            cells.get("CM" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitHdPrivate));
+            
+            /*
+             * R5_153
+             * 外出.私用・組合外出時間.丸め設定端数
+             */
+            Integer roundingHdPrivate = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
+                    .getDiffTimezoneSetting().getPubHolWorkTimezone().getPrivateUnionGoOut()
+                    .getApproTimeRoundingSetting().getRoundingSetting().getRounding();
+            cells.get("CN" + (startIndex + 1)).setValue(getRoundingEnum(roundingHdPrivate));
+            
+            /*
+             * R5_154
+             * 外出.私用・組合外出控除時間.就業時間帯
+             */
+            Integer roundingMethodWorkPrivateDeduct = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
+                    .getDiffTimezoneSetting().getWorkTimezone().getPrivateUnionGoOut()
+                    .getDeductTimeRoundingSetting().getRoundingMethod();
+            cells.get("CO" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodWorkPrivateDeduct));
+            
+            /*
+             * R5_155
+             * 外出.私用・組合外出控除時間.丸め設定
+             */
+            Integer unitWorkPrivateDeduct = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
+                    .getDiffTimezoneSetting().getWorkTimezone().getPrivateUnionGoOut()
+                    .getDeductTimeRoundingSetting().getRoundingSetting().getRoundingTime();
+            cells.get("CP" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitWorkPrivateDeduct));
+            
+            /*
+             * R5_156
+             * 外出.私用・組合外出控除時間.丸め設定端数
+             */
+            Integer roundingWorkPrivateDeduct = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
+                    .getDiffTimezoneSetting().getWorkTimezone().getPrivateUnionGoOut()
+                    .getDeductTimeRoundingSetting().getRoundingSetting().getRounding();
+            cells.get("CQ" + (startIndex + 1)).setValue(getRoundingEnum(roundingWorkPrivateDeduct));
+            
+            /*
+             * R5_157
+             * 外出.私用・組合外出控除時間.残業時間帯
+             */
+            Integer roundingMethodOtPrivateDeduct = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
+                    .getDiffTimezoneSetting().getOttimezone().getPrivateUnionGoOut()
+                    .getDeductTimeRoundingSetting().getRoundingMethod();
+            cells.get("CR" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodOtPrivateDeduct));
+            
+            /*
+             * R5_158
+             * 外出.私用・組合外出控除時間.丸め設定
+             */
+            Integer unitOtPrivateDeduct = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
+                    .getDiffTimezoneSetting().getOttimezone().getPrivateUnionGoOut()
+                    .getDeductTimeRoundingSetting().getRoundingSetting().getRoundingTime();
+            cells.get("CS" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitOtPrivateDeduct));
+            
+            /*
+             * R5_159
+             * 外出.私用・組合外出控除時間.丸め設定端数
+             */
+            Integer roundingOtPrivateDeduct = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
+                    .getDiffTimezoneSetting().getOttimezone().getPrivateUnionGoOut()
+                    .getDeductTimeRoundingSetting().getRoundingSetting().getRounding();
+            cells.get("CT" + (startIndex + 1)).setValue(getRoundingEnum(roundingOtPrivateDeduct));
+            
+            /*
+             * R5_160
+             * 外出.私用・組合外出控除時間.休出時間帯
+             */
+            Integer roundingMethodHdPriateDeduct = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
+                    .getDiffTimezoneSetting().getPubHolWorkTimezone().getPrivateUnionGoOut()
+                    .getDeductTimeRoundingSetting().getRoundingMethod();
+            cells.get("CU" + (startIndex + 1)).setValue(roundingMethodHdPriateDeduct);
+            
+            /*
+             * R5_161
+             * 外出.私用・組合外出控除時間.丸め設定
+             */
+            Integer unitHdPrivateDeduct = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
+                    .getDiffTimezoneSetting().getPubHolWorkTimezone().getPrivateUnionGoOut()
+                    .getDeductTimeRoundingSetting().getRoundingSetting().getRoundingTime();
+            cells.get("CV" + (startIndex + 1)).setValue(unitHdPrivateDeduct);
+            
+            /*
+             * R5_162
+             * 外出.私用・組合外出控除時間.丸め設定端数
+             */
+            Integer roundingHdPrivateDeduct = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
+                    .getDiffTimezoneSetting().getPubHolWorkTimezone().getPrivateUnionGoOut()
+                    .getDeductTimeRoundingSetting().getRoundingSetting().getRounding();
+            cells.get("CW" + (startIndex + 1)).setValue(roundingHdPrivateDeduct);
+            
+            /*
+             * R5_163
+             * 外出.公用・有償外出時間.就業時間帯
+             */
+            Integer roundingMethodWorkOfficalAppro = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
+                    .getDiffTimezoneSetting().getWorkTimezone().getOfficalUseCompenGoOut()
+                    .getApproTimeRoundingSetting().getRoundingMethod();
+            cells.get("CX" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodWorkOfficalAppro));
+            
+            /*
+             * R5_164
+             * 外出.公用・有償外出時間.丸め設定
+             */
+            Integer unitWorkOfficalAppro = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
+                    .getDiffTimezoneSetting().getWorkTimezone().getOfficalUseCompenGoOut()
+                    .getApproTimeRoundingSetting().getRoundingSetting().getRoundingTime();
+            cells.get("CY" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitWorkOfficalAppro));
+            
+            /*
+             * R5_165
+             * 外出.公用・有償外出時間.丸め設定端数
+             */
+            Integer roundingWorkOfficalAppro = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
+                    .getDiffTimezoneSetting().getWorkTimezone().getOfficalUseCompenGoOut()
+                    .getApproTimeRoundingSetting().getRoundingSetting().getRounding();
+            cells.get("CZ" + (startIndex + 1)).setValue(getRoundingEnum(roundingWorkOfficalAppro));
+            
+            /*
+             * R5_166
+             * 外出.公用・有償外出時間.残業時間帯
+             */
+            Integer roundingMethodOtOfficalAppro = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
+                    .getDiffTimezoneSetting().getOttimezone().getOfficalUseCompenGoOut()
+                    .getApproTimeRoundingSetting().getRoundingMethod();
+            cells.get("DA" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodOtOfficalAppro));
+            
+            /*
+             * R5_167
+             * 外出.公用・有償外出時間.丸め設定
+             */
+            Integer unitOtOfficalAppro = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
+                    .getDiffTimezoneSetting().getOttimezone().getOfficalUseCompenGoOut()
+                    .getApproTimeRoundingSetting().getRoundingSetting().getRoundingTime();
+            cells.get("DB" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitOtOfficalAppro));
+            
+            /*
+             * R5_168
+             * 外出.公用・有償外出時間.丸め設定端数
+             */
+            Integer roundingOtOfficalAppro = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
+                    .getDiffTimezoneSetting().getOttimezone().getOfficalUseCompenGoOut()
+                    .getApproTimeRoundingSetting().getRoundingSetting().getRounding();
+            cells.get("DC" + (startIndex + 1)).setValue(getRoundingEnum(roundingOtOfficalAppro));
+            
+            /*
+             * R5_169
+             * 外出.公用・有償外出時間.休出時間帯
+             */
+            Integer roundingMethodHdOfficalAppro = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
+                    .getDiffTimezoneSetting().getPubHolWorkTimezone().getOfficalUseCompenGoOut()
+                    .getApproTimeRoundingSetting().getRoundingMethod();
+            cells.get("DD" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodHdOfficalAppro));
+            
+            /*
+             * R5_170
+             * 外出.公用・有償外出時間.丸め設定
+             */
+            Integer unitHdOfficalAppro = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
+                    .getDiffTimezoneSetting().getPubHolWorkTimezone().getOfficalUseCompenGoOut()
+                    .getApproTimeRoundingSetting().getRoundingSetting().getRoundingTime();
+            cells.get("DE" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitHdOfficalAppro));
+            
+            /*
+             * R5_171
+             * 外出.公用・有償外出時間.丸め設定端数
+             */
+            Integer roundingHdOfficalAppro = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
+                    .getDiffTimezoneSetting().getPubHolWorkTimezone().getOfficalUseCompenGoOut()
+                    .getApproTimeRoundingSetting().getRoundingSetting().getRounding();
+            cells.get("DF" + (startIndex + 1)).setValue(getRoundingEnum(roundingHdOfficalAppro));
+        }
     }
     
     /**
