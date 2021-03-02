@@ -2337,6 +2337,112 @@ public class WorkTimeReportService_New {
                     .getApproTimeRoundingSetting().getRoundingSetting().getRounding();
             cells.get("DF" + (startIndex + 1)).setValue(getRoundingEnum(roundingHdOfficalAppro));
         }
+        
+        // 9        タブグ:                遅刻早退
+        
+        List<OtherEmTimezoneLateEarlySetDto> otherClassSets = data.getFlowWorkSetting().getCommonSetting().getLateEarlySet().getOtherClassSets();
+        Optional<OtherEmTimezoneLateEarlySetDto> otherLate = otherClassSets.stream()
+                .filter(x -> x.getLateEarlyAtr().equals(LateEarlyAtr.LATE.value)).findFirst();
+        Optional<OtherEmTimezoneLateEarlySetDto> otherEarly = otherClassSets.stream()
+                .filter(x -> x.getLateEarlyAtr().equals(LateEarlyAtr.EARLY.value)).findFirst();
+        
+        if (otherLate.isPresent()) {
+            /*
+             * R5_172
+             * 遅刻早退.遅刻早退時間丸め.遅刻丸め
+             */
+            Integer unitRecordLate = otherLate.get().getRecordTimeRoundingSet().getRoundingTime();
+            cells.get("DG" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitRecordLate));
+            
+            /*
+             * R5_173
+             * 遅刻早退.遅刻早退時間丸め.遅刻端数
+             */
+            Integer roundingRecordlate = otherLate.get().getRecordTimeRoundingSet().getRounding();
+            cells.get("DH" + (startIndex + 1)).setValue(getRoundingEnum(roundingRecordlate));
+        }
+        
+        if (otherEarly.isPresent()) {
+            /*
+             * R5_174
+             * 遅刻早退.遅刻早退時間丸め.早退丸め
+             */
+            Integer unitRecordEarly = otherEarly.get().getRecordTimeRoundingSet().getRoundingTime();
+            cells.get("DI" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitRecordEarly));
+            
+            /*
+             * R5_175
+             * 遅刻早退.遅刻早退時間丸め.早退端数
+             */
+            Integer roundingRecordEarly = otherEarly.get().getRecordTimeRoundingSet().getRounding();
+            cells.get("DJ" + (startIndex + 1)).setValue(getRoundingEnum(roundingRecordEarly));
+        }
+        
+        if (otherLate.isPresent()) {
+            /*
+             * R5_176
+             * 遅刻早退.遅刻早退控除時間丸め.遅刻丸め
+             */
+            Integer unitDelLate = otherLate.get().getDelTimeRoundingSet().getRoundingTime();
+            cells.get("DK" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitDelLate));
+            
+            /*
+             * R5_177
+             * 遅刻早退.遅刻早退控除時間丸め.遅刻端数
+             */
+            Integer roundingDelLate = otherLate.get().getDelTimeRoundingSet().getRounding();
+            cells.get("DL" + (startIndex + 1)).setValue(getRoundingEnum(roundingDelLate));
+        }
+        
+        if (otherEarly.isPresent()) {
+            /*
+             * R5_178
+             * 遅刻早退.遅刻早退控除時間丸め.早退丸め
+             */
+            Integer unitDelEarly = otherEarly.get().getDelTimeRoundingSet().getRoundingTime();
+            cells.get("DM" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitDelEarly));
+            
+            /*
+             * R5_179
+             * 遅刻早退.遅刻早退控除時間丸め.早退端数
+             */
+            Integer roundingDelEarly = otherEarly.get().getDelTimeRoundingSet().getRounding();
+            cells.get("DN" + (startIndex + 1)).setValue(getRoundingEnum(roundingDelEarly));
+        }
+        
+        if (displayMode.equals(DisplayMode.DETAIL.value)) {
+            if (otherLate.isPresent()) {
+                /*
+                 * R5_182
+                 * 遅刻早退詳細設定.猶予時間.遅刻猶予時間
+                 */
+                Integer graceTime = otherLate.get().getGraceTimeSet().getGraceTime();
+                cells.get("DO" + (startIndex + 1)).setValue(getInDayTimeWithFormat(graceTime));
+                
+                /*
+                 * R5_183
+                 * 遅刻早退詳細設定.猶予時間.遅刻猶予時間を就業時間に含める
+                 */
+                boolean includeWorkHour = otherLate.get().getGraceTimeSet().isIncludeWorkingHour();
+                cells.get("DP" + (startIndex + 1)).setValue(includeWorkHour ? "○" : "-");
+            }
+            
+            if (otherEarly.isPresent()) {
+                /*
+                 * R5_184
+                 * 遅刻早退詳細設定.猶予時間.遅刻猶予時間
+                 */
+                Integer graceTime = otherEarly.get().getGraceTimeSet().getGraceTime();
+                cells.get("DQ" + (startIndex + 1)).setValue(getInDayTimeWithFormat(graceTime));
+                
+                /*
+                 * R5_185
+                 * 遅刻早退詳細設定.猶予時間.遅刻猶予時間を就業時間に含める
+                 */
+                boolean includeWorkHour = otherEarly.get().getGraceTimeSet().isIncludeWorkingHour();
+                cells.get("DR" + (startIndex + 1)).setValue(includeWorkHour ? "○" : "-");
+            }
+        }
     }
     
     /**
