@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.shared.dom.workmanagement.aggregateroot.workmaster;
 
 import lombok.val;
-import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
@@ -45,47 +44,12 @@ public class WorkTest {
     }
 
     /**
-     * Test case:
-     * Require.checkExistenceWorkMaster return False
-     */
-
-    @Test
-    public void testCheckExistenceWorkMaster_isFalse() {
-
-
-        new Expectations() {{
-            require.checkExistenceWorkMaster(new TaskFrameNo(Helper.taskFrameNo.v() + 1), Helper.childWorkList);
-            result = false;
-        }};
-        val instance = Helper.createDomain(require);
-        assertThat(instance.getChildWorkList()).isEqualTo(null);
-    }
-
-    /**
-     * Test case:
-     * Require.checkExistenceWorkMaster return true
-     */
-    @Test
-    public void testCheckExistenceWorkMaster_isTrue() {
-
-
-        new Expectations() {{
-            require.checkExistenceWorkMaster(new TaskFrameNo(Helper.taskFrameNo.v() + 1), Helper.childWorkList);
-            result = true;
-        }};
-        val instance = Helper.createDomain(require);
-        assertThat(instance.getChildWorkList()).extracting(d -> d)
-                .containsExactlyInAnyOrderElementsOf(Helper.childWorkList);
-
-    }
-
-    /**
      * Test case : 「@作業枠NO」== 1
      */
     @Test
     public void testCaseTaskFrameNo_is01() {
         val instance = Helper.createDomainTaskFrameNo01(require);
-        assertThat(instance.getDisplayInfo()).isEqualTo(null);
+        assertThat(instance.getDisplayInfo().getColor()).isEqualTo(Optional.empty());
     }
 
     /**
@@ -94,8 +58,8 @@ public class WorkTest {
     @Test
     public void testCheckExpirationDateIsTrue() {
         val instance = Helper.createDomainTaskFrameNo01(require);
-         GeneralDate date = GeneralDate.fromString("2021/02/01", Helper.DATE_FORMAT);
-         val ep = instance.checkExpirationDate(date);
+        GeneralDate date = GeneralDate.fromString("2021/02/01", Helper.DATE_FORMAT);
+        val ep = instance.checkExpirationDate(date);
         Assertions.assertThat(ep).isTrue();
     }
 
@@ -105,56 +69,44 @@ public class WorkTest {
     @Test
     public void testCheckExpirationDateIsFalse() {
         val instance = Helper.createDomainTaskFrameNo01(require);
-         GeneralDate date = GeneralDate.fromString("2023/02/01", Helper.DATE_FORMAT);
-         val ep = instance.checkExpirationDate(date);
+        GeneralDate date = GeneralDate.fromString("2023/02/01", Helper.DATE_FORMAT);
+        val ep = instance.checkExpirationDate(date);
         Assertions.assertThat(ep).isFalse();
     }
 
     /**
      * Test changeChildWorkList() :
-     *  throw  BusinessException("Msg_2066");
+     * throw  BusinessException("Msg_2066");
+     */
+    @Test
+    public void testChangeChildWorkLis_withFrameNo5() {
+        val instance = Helper.createDomainTaskFrameNo01(require);
+        NtsAssert.businessException("Msg_2066", () ->
+                instance.changeChildWorkList(require, Helper.childWorkList));
+    }
+
+    /**
+     * Test changeChildWorkList() :
+     * +
      */
     @Test
     public void testChangeChildWorkList() {
-        val instance = Helper.createDomainTaskFrameNo01(require);
-        NtsAssert.businessException("Msg_2066", () ->
-                instance.changeChildWorkList(require,Helper.childWorkList));
+
+        val instance = Helper.createDomain(require);
+        instance.changeChildWorkList(require, Helper.childWorkListChange);
+        assertThat(instance.getChildWorkList()).isEqualTo(Helper.childWorkListChange);
     }
 
     /**
      * Test changeChildWorkList() :
-     *  + Require.checkExistenceWorkMaster : TRUE
+     * +
      */
     @Test
-    public void testChangeChildWorkList_CheckExpirationDateIsFalse() {
+    public void testDeleteChildWorkList() {
         val instance = Helper.createDomain(require);
-        new Expectations() {{
-            require.checkExistenceWorkMaster(new TaskFrameNo(instance.getTaskFrameNo().v() + 1), Helper.childWorkListChange);
-            result = true;
-
-        }};
-        instance.changeChildWorkList(require,Helper.childWorkListChange);
-
-        assertThat(instance.getChildWorkList()).extracting(d->d)
-                .containsExactlyInAnyOrderElementsOf(Helper.childWorkListChange);
-    }
-
-    /**
-     * Test changeChildWorkList() :
-     *  + Require.checkExistenceWorkMaster : TRUE
-     */
-    @Test
-    public void testChangeChildWorkList_instance() {
-        val instance = Helper.createDomain(require);
-        new Expectations() {{
-            require.checkExistenceWorkMaster(new TaskFrameNo(instance.getTaskFrameNo().v() + 1), Helper.childWorkListChange);
-            result = true;
-
-        }};
-        instance.changeChildWorkList(require,Helper.childWorkListChange);
-
-        assertThat(instance.getChildWorkList()).extracting(d->d)
-                .containsExactlyInAnyOrderElementsOf(Helper.childWorkListChange);
+        instance.deleteChildWorkList();
+        assertThat(instance.getChildWorkList()).extracting(d -> d)
+                .containsExactlyInAnyOrderElementsOf(Collections.emptyList());
     }
 
     public static class Helper

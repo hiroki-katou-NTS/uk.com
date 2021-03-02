@@ -9,7 +9,9 @@ import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.ExternalCooperationInfo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskDisplayInfo;
+import nts.uk.ctx.at.shared.dom.workmanagement.domainservice.CheckExistenceMasterDomainService;
 
+import javax.inject.Inject;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -23,7 +25,6 @@ import java.util.Optional;
  */
 @Getter
 public class Work extends AggregateRoot {
-
     // コード
     private final TaskCode code;
 
@@ -51,22 +52,24 @@ public class Work extends AggregateRoot {
                 List<TaskCode> childWorkList) {
         //	[inv-2]	case 「@作業枠NO」== 5 の場合、「@子作業一覧」はisEmpty
         if (taskFrameNo.v() == 5) {
-            this.childWorkList = Collections.emptyList();
-        } else if (require.checkExistenceWorkMaster(new TaskFrameNo(taskFrameNo.v() + 1), childWorkList)) {
-            this.childWorkList = childWorkList;
+            childWorkList = Collections.emptyList();
         }
+        CheckExistenceMasterDomainService.checkExistenceWorkMaster(require, new TaskFrameNo(taskFrameNo.v() + 1), childWorkList);
         // 	[inv-1]	case 「@作業枠NO」 <> 1 の場合、「@表示情報．作業色」はisEmpty
-        else if (taskFrameNo.v() != 1) {
-            this.displayInfo = new TaskDisplayInfo(
+        if (taskFrameNo.v() != 1) {
+            displayInfo = new TaskDisplayInfo(
                     displayInfo.getTaskName(),
                     displayInfo.getTaskAbName(),
                     Optional.empty(),
                     displayInfo.getTaskNote());
         }
-        this.cooperationInfo = cooperationInfo;
-        this.expirationDate = expirationDate;
-        this.taskFrameNo = taskFrameNo;
         this.code = code;
+        this.taskFrameNo = taskFrameNo;
+        this.expirationDate = expirationDate;
+        this.cooperationInfo = cooperationInfo;
+        this.displayInfo = displayInfo;
+        this.childWorkList = childWorkList;
+
     }
 
     // 	[1] 有効期限内か
@@ -78,9 +81,10 @@ public class Work extends AggregateRoot {
     void changeChildWorkList(Require require, List<TaskCode> childWorkList) {
         if (this.taskFrameNo.v() == 5) {
             throw new BusinessException("Msg_2066");
-        } else if (require.checkExistenceWorkMaster(new TaskFrameNo(this.taskFrameNo.v() + 1), childWorkList)) {
-            this.childWorkList = childWorkList;
         }
+        CheckExistenceMasterDomainService.checkExistenceWorkMaster(require, new TaskFrameNo(taskFrameNo.v() + 1), childWorkList);
+        this.childWorkList = childWorkList;
+
     }
 
     // 	[3] 子作業設定を削除する
@@ -88,8 +92,6 @@ public class Work extends AggregateRoot {
         this.childWorkList = Collections.emptyList();
     }
 
-    public interface Require {
-         boolean checkExistenceWorkMaster(TaskFrameNo taskFrameNo, List<TaskCode> childWorkList);
+    public interface Require extends CheckExistenceMasterDomainService.Require {
     }
-
 }

@@ -5,6 +5,7 @@ import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
+import nts.uk.ctx.at.shared.dom.workmanagement.domainservice.CheckExistenceMasterDomainService;
 
 import java.util.List;
 
@@ -23,24 +24,20 @@ public class NarrowingDownWorkByWorkplace extends AggregateRoot {
     // 	[C-1] 絞込を作成する
 
     public NarrowingDownWorkByWorkplace(Require require, String workPlaceId, TaskFrameNo taskFrameNo, List<TaskCode> taskCodeList) {
-        if (require.checkExistenceWorkMaster(taskFrameNo, taskCodeList)) {
+        CheckExistenceMasterDomainService.checkExistenceWorkMaster(require,taskFrameNo, taskCodeList);
 
-        }
         this.workPlaceId = workPlaceId;
         this.taskCodeList = taskCodeList;
         this.taskFrameNo = taskFrameNo;
 
     }
 
-    public void changeCodeList(Require require, List<TaskCode> taskCodeList){
-        if(require.checkExistenceWorkMaster(this.taskFrameNo,taskCodeList)){
-            this.taskCodeList = taskCodeList;
-        }
+    public void changeCodeList(Require require, List<TaskCode> taskCodeList) {
+        CheckExistenceMasterDomainService.checkExistenceWorkMaster(require,taskFrameNo, taskCodeList);
+        this.taskCodeList = taskCodeList;
+
     }
 
-    public interface Require {
-        //	[1] 変更する
-        boolean checkExistenceWorkMaster(TaskFrameNo taskFrameNo, List<TaskCode> childWorkList);
+    public interface Require extends CheckExistenceMasterDomainService.Require {
     }
-
 }
