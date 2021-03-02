@@ -94,10 +94,12 @@ module nts.uk.at.view.ksu005.a {
                         }
                     }
                     self.itemList(dataList);
+                    $('#exportExcel').focus();
                 }).always(() => {
                     self.$blockui("hide");
                 });
             });
+            $('#exportExcel').focus();
         }
     }
 
