@@ -805,12 +805,6 @@ public class FlexWorkSettingHelper {
 			return Collections.emptyList();
 		}
 
-		@Override
-		public FlexCalcSetting getCalculateSetting() {
-			return new FlexCalcSetting();
-		}
-		
-
     }
 	
 }

@@ -21,11 +21,6 @@ module nts.uk.at.view.kmk003.a {
                     especialCalc: number;
                 }
 
-                export interface FlexCalcSettingDto {
-                    removeFromWorkTime: number;
-                    calculateSharing: number;
-                }
-
                 export interface FlexHalfDayWorkTimeDto {
                     restTimezone: common.FlowWorkRestTimezoneDto;
                     workTimezone: common.FixedWorkTimezoneSetDto;
@@ -46,7 +41,6 @@ module nts.uk.at.view.kmk003.a {
                     useHalfDayShift: common.HalfDayWorkSetDto;
                     lstHalfDayWorkTimezone: FlexHalfDayWorkTimeDto[];
                     lstStampReflectTimezone: common.StampReflectTimezoneDto[];
-                    calculateSetting: FlexCalcSettingDto;
                 }
 
             }

@@ -4,13 +4,13 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.flexset;
 
-import java.util.List;
-
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.HalfDayWorkSet;
+
+import java.util.List;
 
 /**
  * The Interface FlexWorkSettingGetMemento.
@@ -79,12 +79,5 @@ public interface FlexWorkSettingSetMemento {
 	 * @param stampReflectTimezone the new lst stamp reflect timezone
 	 */
 	void setLstStampReflectTimezone(List<StampReflectTimezone> stampReflectTimezone);
-
-	/**
-	 * Sets the calculate setting.
-	 *
-	 * @param calculateSetting the new calculate setting
-	 */
-	void setCalculateSetting(FlexCalcSetting calculateSetting);
 
 }
