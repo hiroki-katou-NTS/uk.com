@@ -1,11 +1,7 @@
 class RegisterForm {
     workplaceGroupCd: KnockoutObservable<string> = ko.observable('');
     workplaceGroupName: KnockoutObservable<string> = ko.observable('');
-    workplaceGroupTypes: KnockoutObservableArray<string> = ko.observableArray([
-        { value: 1, name: nts.uk.resource.getText('KSM007_9') },
-        { value: 2, name: nts.uk.resource.getText('KSM007_10') },
-        { value: 0, name: nts.uk.resource.getText('KSM007_17') }
-    ]);
+    workplaceGroupTypes: KnockoutObservableArray<any> = ko.observableArray([]);
     selectedWkpType: KnockoutObservable<number> = ko.observable(1);
     newMode: KnockoutObservable<any> = ko.observable(true);
     workplaces: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -76,7 +72,7 @@ class RegisterForm {
 
     }
 
-    public checkWorkplaceGroupTypes() {
+    public checkWorkplaceGroupTypes(showCase: any) {
         const self = this;
         //call api
         let wpGroupTypes = [
@@ -85,11 +81,12 @@ class RegisterForm {
             nts.uk.resource.getText('KSM007_10')
         ];
 
-        //let data = [1, 2]; //case 1
-        let data = [1]; //case 2
-        //let data = []; //case 3
-        if (data.length > 0) data.push(0);
-
+        let data = []; //case 1
+        if( showCase ) {
+            if( showCase.medical) data.push(1);
+            if( showCase.nursing) data.push(2);
+            if (data.length > 0) data.push(0);
+        }
         self.workplaceGroupTypes.removeAll();
         _.forEach(data, (x: any) => {
             self.workplaceGroupTypes.push({ value: x, name: wpGroupTypes[x] });

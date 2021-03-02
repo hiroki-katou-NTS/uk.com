@@ -21,14 +21,14 @@ module nts.uk.at.view.ksm007.b {
 
     startDate: KnockoutObservable<string> = ko.observable(moment().format('YYYY/MM/DD'));
     nightShiftOperation: KnockoutObservable<number> = ko.observable(1);
-    nightShiftHours1: KnockoutObservable<number> = ko.observable(null);//22h
-    nightShiftHours2: KnockoutObservable<number> = ko.observable(null); //05h next day
+    nightShiftHours1: KnockoutObservable<any> = ko.observable(null);//22h
+    nightShiftHours2: KnockoutObservable<any> = ko.observable(null); //05h next day
 
     isNewMode: KnockoutObservable<boolean> = ko.observable(true);
     inputScreenB: KnockoutObservable<any> = ko.observable(null);
     isLastItem: KnockoutObservable<boolean> = ko.observable(true);
     isEnableSave: KnockoutObservable<boolean> = ko.observable(false);
-    isSave:KnockoutObservable<boolean> = ko.observable(false);
+    isSave: KnockoutObservable<boolean> = ko.observable(false);
 
     constructor(params: any) {
       super();
@@ -38,14 +38,14 @@ module nts.uk.at.view.ksm007.b {
       vm.workplaceGroupCode(vm.inputScreenB().wpGroupCode);
       vm.workplaceGroupName(vm.inputScreenB().wpGroupName);
 
-      vm.getListNightShiftInfor();      
+      vm.getListNightShiftInfor();
 
       vm.historyCurrentItem.subscribe((historyId) => {
-        if( historyId === null) return;        
-        vm.getHistoryData( historyId );
+        if (historyId === null) return;
+        vm.getHistoryData(historyId);
       });
-      
-      vm.nightShiftOperation.subscribe( value => {
+
+      vm.nightShiftOperation.subscribe(value => {
         nts.uk.ui.errors.clearAll();
       });
     }
@@ -68,7 +68,7 @@ module nts.uk.at.view.ksm007.b {
       const vm = this;
 
       $('.nightShiftHours').trigger('validate');
-      if( nts.uk.ui.errors.hasError()) return;
+      if (nts.uk.ui.errors.hasError()) return;
 
       if (vm.nightShiftHours1() > vm.nightShiftHours2()) {
         vm.$dialog.error({ messageId: 'Msg_307' }).then(() => { });
@@ -80,7 +80,7 @@ module nts.uk.at.view.ksm007.b {
           $('#nightShiftHours1').focus();
         });
         return;
-      }      
+      }
 
       let params = {
         workplaceGroupId: vm.inputScreenB().wpGroupId, // 職場グループID: 職場グループID.
@@ -92,8 +92,8 @@ module nts.uk.at.view.ksm007.b {
 
       vm.$blockui('grayout');
       vm.$ajax('com', PATH.saveNightShiftInFor, params).done(() => {
-        vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {          
-          setShared('outputScreenB', { startDate: vm.nightShiftHours1(), endDate: vm.nightShiftHours2()});
+        vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
+          setShared('outputScreenB', { startDate: vm.nightShiftHours1(), endDate: vm.nightShiftHours2() });
           vm.isSave(true);
           vm.$blockui('hide');
         });
@@ -118,7 +118,7 @@ module nts.uk.at.view.ksm007.b {
 
       nts.uk.ui.errors.clearAll();
 
-      let lastItem = _.head(vm.historyListItems());      
+      let lastItem = _.head(vm.historyListItems());
 
       const params = {
         lastItem: vm.historyListItems().length > 0 ? lastItem : null,
@@ -130,7 +130,7 @@ module nts.uk.at.view.ksm007.b {
 
       vm.$window.modal('/view/ksm/007/c/index.xhtml', params).done((data) => {
         if (data && data.isSave) {
-          vm.getListNightShiftInfor();   
+          vm.getListNightShiftInfor();
         } else {
           $('#nightShiftHours1').focus();
         }
@@ -144,9 +144,9 @@ module nts.uk.at.view.ksm007.b {
       if (_.isNil(lastItem)) {
         lastItem = new HistoryItem(moment().format('YYYY/MM/DD'), '9999/12/31');
       }
-      
+
       let limitDate = lastItem.startDate;
-      if(vm.historyListItems().length > 1) {
+      if (vm.historyListItems().length > 1) {
         limitDate = vm.historyListItems()[1].startDate;
       }
 
@@ -159,8 +159,8 @@ module nts.uk.at.view.ksm007.b {
       };
 
       vm.$window.modal('/view/ksm/007/d/index.xhtml', params).done((data) => {
-        if( data && data.isSave) {
-          vm.getListNightShiftInfor(); 
+        if (data && data.isSave) {
+          vm.getListNightShiftInfor();
         }
       });
     }
@@ -171,28 +171,28 @@ module nts.uk.at.view.ksm007.b {
       return item;
     }
 
-    getHistoryData( historyId?: string) {
+    getHistoryData(historyId?: string) {
       const vm = this;
-      
+
       nts.uk.ui.errors.clearAll();
-      
-      let historyItem: any = _.find(vm.historyListItems(), (x) => { return x.historyId === historyId});
+
+      let historyItem: any = _.find(vm.historyListItems(), (x) => { return x.historyId === historyId });
       vm.historyCurrentObject(historyItem);
 
       let lastItem = _.head(vm.historyListItems());
-      vm.isLastItem( lastItem.historyId === historyItem.historyId);
+      vm.isLastItem(lastItem.historyId === historyItem.historyId);
 
       vm.$blockui('show');
-      vm.$ajax('com',PATH.getListNightShiftInformation, { historyId: historyId }).done((data) => {
-        if (data) {          
+      vm.$ajax('com', PATH.getListNightShiftInformation, { id: historyId }).done((data) => {
+        if (data) {
           vm.bindData(historyItem, data);
-        } else 
+        } else
           vm.clearData(historyItem.startDate);
 
         $('#nightShiftHours1').focus();
         vm.$blockui('hide');
       }).fail(error => {
-        vm.$dialog.error({ messageId: error.messageId}).then(() => {
+        vm.$dialog.error({ messageId: error.messageId }).then(() => {
           vm.$blockui('hide');
         });
       });
@@ -210,16 +210,16 @@ module nts.uk.at.view.ksm007.b {
 
       let lastItem = _.head(vm.historyListItems());
       if (historyId) {
-        vm.isLastItem(lastItem.historyId === historyId);                
+        vm.isLastItem(lastItem.historyId === historyId);
         vm.historyCurrentItem(historyId);
-      } else {        
+      } else {
         vm.isLastItem(true);
         historyId = lastItem.historyId;
         vm.historyCurrentItem(lastItem.historyId);
       }
-            
-      vm.getHistoryData(historyId);      
-        
+
+      vm.getHistoryData(historyId);
+
     }
 
     bindData(obj: HistoryItem, data?: any) {
@@ -227,10 +227,24 @@ module nts.uk.at.view.ksm007.b {
 
       vm.startDate(obj.startDate);
       vm.nightShiftOperation(data.nightShiftOperationAtr);
-      vm.nightShiftHours1(data.ClockHourMinuteStart);
-      vm.nightShiftHours2(data.ClockHourMinuteEnd);
+      
+      let time: any = null;
+      if (data.clockHourMinuteStart && data.clockHourMinuteStart.length > 0) {
+        time = data.clockHourMinuteStart;
+        time = _.split(time, ':');    
+        vm.nightShiftHours1(parseInt(time[0])*60 + parseInt(time[1]));
+      } else 
+        vm.nightShiftHours1(null);
 
+      if (data.clockHourMinuteEnd &&  data.clockHourMinuteEnd.length > 0 ) {
+        time = data.clockHourMinuteEnd;
+        time = _.split(time, ':');      
+        vm.nightShiftHours2(parseInt(time[0])*60 + parseInt(time[1]));
+      } else 
+        vm.nightShiftHours2(null);
+      
       $('#nightShiftHours1').focus();
+
     }
 
     getListNightShiftInformation() {
@@ -244,28 +258,28 @@ module nts.uk.at.view.ksm007.b {
 
     getListNightShiftInfor() {
       const vm = this;
-      
+
       vm.$blockui('grayout');
       vm.$ajax('com', PATH.getListNightShiftInforHist, { id: vm.inputScreenB().wpGroupId }).done((data) => {
-        if (data) {         
-          let historyItem: Array<HistoryItem> = [] ;
+        if (data) {
+          let historyItem: Array<HistoryItem> = [];
           _.forEach(data, (x) => {
-            historyItem.push( new HistoryItem(x.startDate, x.endDate, x.historyId, null, x.workplaceGroupId ));
+            historyItem.push(new HistoryItem(x.startDate, x.endDate, x.historyId, null, x.workplaceGroupId));
           });
 
           vm.historyListItems.removeAll();
           vm.historyListItems(_.orderBy(historyItem, 'startDate', 'desc'));
 
-          vm.isEnableSave( vm.historyListItems().length > 0);
+          vm.isEnableSave(vm.historyListItems().length > 0);
           //load detail
           vm.loadData();
           vm.$blockui('hide');
         }
-        
+
       }).fail(error => {
-         vm.$dialog.error({ messageId: error.messageId}).then(() => {
-           vm.$blockui('hide');
-         }); 
+        vm.$dialog.error({ messageId: error.messageId }).then(() => {
+          vm.$blockui('hide');
+        });
       });
     }
   }

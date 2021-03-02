@@ -10,7 +10,7 @@ module nts.uk.at.view.ksm007.a {
             updateWorkplaceGroup: rootPath + "/updateWorkplaceGroup",
             deleteWorkplaceGroup: rootPath + "/deleteWorkplaceGroup",
             getOptionInformation: rootPath + "/optioninformation",
-            getNightShiftInfor: rootPath + "/getnightshiftinfor",
+            getNightShiftInfor: rootPath + "/getnightshiftinfor"
         }
         
         export function exportExcel(): JQueryPromise<any> {
@@ -41,13 +41,12 @@ module nts.uk.at.view.ksm007.a {
             return nts.uk.request.ajax("com", paths.deleteWorkplaceGroup, data);
         }
         
-        export function getOptionInformation(data): JQueryPromise<any> {
-            return nts.uk.request.ajax("com", paths.getOptionInformation, data);
+        export function getOptionInformation(): JQueryPromise<any> {
+            return nts.uk.request.ajax("com", paths.getOptionInformation);
         }
 
         export function getNightShiftInfor(data): JQueryPromise<any> {
             return nts.uk.request.ajax("com", paths.getNightShiftInfor, data);
         }
     }
-
 }
