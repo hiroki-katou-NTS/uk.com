@@ -74,7 +74,7 @@ module nts.uk.com.view.cmm048.a {
       new ItemCbxModel({ code: REMIND_DATE.BEFORE_SEVEN_DAY, name: this.$i18n('Enum_NoticeDay_BEFORE_SEVEN_DAY') })
     ]);
     listAnniversary: KnockoutObservableArray<AnniversaryNotificationViewModel> = ko.observableArray([]);
-
+    monthDaysName: KnockoutObservable<string> = ko.observable(this.$i18n('CMM048_58'));
     //D
     language: KnockoutObservable<number> = ko.observable(0);
     languageOptions: KnockoutObservableArray<ItemCbxModel> = ko.observableArray([
@@ -483,8 +483,11 @@ module nts.uk.com.view.cmm048.a {
       vm.listAnniversary.push(new AnniversaryNotificationViewModel("", "", "", 0));
     }
 
-    public removeAnniversary(anniversary: AnniversaryNotificationViewModel) {
+    public removeAnniversary(anniversary: AnniversaryNotificationViewModel, index: number) {
       const vm = this;
+      $(`#month-day-${index}`).ntsError('clear');
+      $(`#anniversary-title-${index}`).ntsError('clear');
+      $(`#notification-message-${index}`).ntsError('clear');
       vm.listAnniversary.remove(anniversary);
     }
 
@@ -575,6 +578,32 @@ module nts.uk.com.view.cmm048.a {
       });
     }
 
+    private validateAnniversary(item: AnniversaryNotificationViewModel, index: number): boolean {
+      const vm = this;
+
+      let checkEmptyAnniver = false;
+
+      //「月・日・タイトル・内容」は１件以上が入力しました場合、他の件も入力しなければならない
+      if(Number(item.anniversaryDay()) !== 0 || (Number(item.anniversaryDay()) % 100 !== 0) || !(_.isEmpty(item.anniversaryName())) || !(_.isEmpty(item.anniversaryRemark()))) {
+
+        if(Number(item.anniversaryDay()) % 100 === 0) {
+          $(`#month-day-${index}`).trigger('validate');
+          checkEmptyAnniver = true;
+        }
+
+        if (_.isEmpty(item.anniversaryName())) {
+          $(`#anniversary-title-${index}`).ntsError('set', { messageId: "MsgB_1", messageParams:[vm.$i18n('CMM048_59')]});
+          checkEmptyAnniver = true;
+        }
+
+        if (_.isEmpty(item.anniversaryRemark())) {
+          $(`#notification-message-${index}`).ntsError('set', { messageId: "MsgB_1", messageParams:[vm.$i18n('CMM048_74')]});
+          checkEmptyAnniver = true;
+        }
+      }
+      return checkEmptyAnniver;
+    }
+
     public save() {
       const vm = this;
 
@@ -584,16 +613,8 @@ module nts.uk.com.view.cmm048.a {
           //fix bug #114058 start
           let checkEmptyAnniver = false;
           _.map(vm.listAnniversary(), (item: AnniversaryNotificationViewModel, index: number) => {
-            if (item.anniversaryDay()) {
-              if (_.isEmpty(item.anniversaryName())) {
-                $(`#AnniversaryTitle-${index}`).ntsError('set', { messageId: "MsgB_1", messageParams:[vm.$i18n('CMM048_59')]});
-                checkEmptyAnniver = true;
-              }
-              if (_.isEmpty(item.anniversaryRemark())) {
-                $(`#NotificationMessage-${index}`).ntsError('set', { messageId: "MsgB_1", messageParams:[vm.$i18n('CMM048_74')]});
-                checkEmptyAnniver = true;
-              }
-            }
+            const check = vm.validateAnniversary(item, index);
+            if(check) checkEmptyAnniver = true;
           });
           if (checkEmptyAnniver) return;
           //fix bug #114058 end

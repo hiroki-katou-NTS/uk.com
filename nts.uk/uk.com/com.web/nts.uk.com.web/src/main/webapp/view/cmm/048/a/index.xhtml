@@ -19,6 +19,7 @@
 
       <com:scriptfile set="IGNITE" />
       <com:scriptfile path="./resource/webcam.min.js" />
+      <com:scriptfile path="./month-day-picker.js" />
       <com:scriptfile path="cmm048.a.vm.js" />
       <com:stylefile path="cmm048.a.style.css" />
     </ui:define>
@@ -575,11 +576,14 @@
                       <table id="table-anniversary" class="tab-notification">
                         <tr>
                           <td id="C2_2">
-                            <div id="monthdays" data-bind="ntsMonthDays: {
-                                        value: anniversaryDay, 
-                                        enable: true
+                            <div data-bind="attr: {id: 'month-day-'+$index()},
+                                      month-day: {
+                                        name: '#[CMM048_58]',
+                                        value: anniversaryDay,
+                                        monthDaysName: $parent.monthDaysName,
+                                        index: $index()
                                       }" />
-                            <input data-bind="attr: {id: 'AnniversaryTitle-'+$index()},
+                            <input data-bind="attr: {id: 'anniversary-title-'+$index()},
                                       ntsTextEditor: {
                                         name: '#[CMM048_59]',
                                         constraint: 'AnniversaryTitle',
@@ -594,12 +598,12 @@
                           </td>
                           <td id="delete-icon">
                             <img src="./resource/remove.png" alt="delete" id="C3_1"
-                              data-bind="click: function() { $vm.removeAnniversary.apply($vm, [$data]) }" />
+                              data-bind="click: function() { $vm.removeAnniversary.apply($vm, [$data, $index()]) }" />
                           </td>
                         </tr>
                         <tr>
                           <td>
-                            <textarea rows="4" data-bind="attr: {id: 'NotificationMessage-'+$index()},
+                            <textarea rows="4" data-bind="attr: {id: 'notification-message-'+$index()},
                                       ntsTextEditor: {
                                         name: '#[CMM048_74]',
                                         constraint: 'NotificationMessage',
