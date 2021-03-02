@@ -4,11 +4,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
+import lombok.val;
+import nts.uk.ctx.at.shared.dom.WorkInfoAndTimeZone;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
+import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
+import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.SCCreateDailyAfterApplicationeReflect.DailyAfterAppReflectResult;
+import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.workchange.ReflectAttendance;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.workchange.schedule.SCReflectWorkChangeApp.WorkInfoDto;
+import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 
 /**
  * @author thanh_nx
@@ -44,6 +53,13 @@ public class ReflectWorkInformation {
 										workInfo.getWorkTimeCode().orElse(null)), 
 					changeWorkType.orElse(false), changeWorkTime.orElse(false));
 			
+			//申請の反映先をチェックする
+			if(dailyApp.getClassification() == ScheduleRecordClassifi.SCHEDULE) {
+				//予定に出退勤の反映
+				val resultLeav = reflectAttLeavSchedule(require, ScheduleRecordClassifi.RECORD, dailyApp);
+				lstItemId.addAll(resultLeav.getLstItemId());
+			}
+			
 			if(!lstItemId.isEmpty()) {
 
 				/// 申請反映状態にする
@@ -54,6 +70,26 @@ public class ReflectWorkInformation {
 		return lstItemId;
 	}
 
+	//予定に出退勤の反映
+	private static DailyAfterAppReflectResult reflectAttLeavSchedule(Require require, ScheduleRecordClassifi clasifi,
+			DailyRecordOfApplication dailyApp) {
+		//所定時間帯を取得する
+		Optional<WorkInfoAndTimeZone> timeZoneOpt = dailyApp.getWorkInformation().getRecordInfo()
+				.getWorkInfoAndTimeZone(require);
+		if (!timeZoneOpt.isPresent())
+			return new DailyAfterAppReflectResult(dailyApp, new ArrayList<Integer>());
+
+		List<TimeZoneWithWorkNo> timeZoneWithWorkNoLst = IntStream.range(0,timeZoneOpt.get().getTimeZones().size()).boxed().map(indx -> {
+			TimeZone timeZone = timeZoneOpt.get().getTimeZones().get(indx);
+			return new TimeZoneWithWorkNo(indx+1, timeZone.getStart().v(), timeZone.getEnd().v());
+		}).collect(Collectors.toList());
+		
+		//出退勤の反映
+		val lstItemId = ReflectAttendance.reflect(timeZoneWithWorkNoLst, clasifi, dailyApp, Optional.of(true),
+				Optional.of(true));
+		return new DailyAfterAppReflectResult(dailyApp, lstItemId);
+	}
+	
 	public static interface Require extends WorkInfoOfDailyAttendance.Require {
 
 	}
