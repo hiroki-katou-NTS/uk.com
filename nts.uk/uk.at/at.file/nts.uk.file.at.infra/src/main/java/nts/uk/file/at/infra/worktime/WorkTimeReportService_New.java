@@ -38,6 +38,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.BPSetti
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.CompensatoryOccurrenceDivision;
+import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.FontRearSection;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.LateEarlyAtr;
@@ -140,13 +141,13 @@ public class WorkTimeReportService_New {
              * R4_261
              * 半日勤務を設定する
              */
-            cells.get("AD" + (startIndex + 1)).setValue(useHalfDayShiftOverTime ? "する" : "しない");
+            cells.get("AD" + (startIndex + 1)).setValue(getUseAtrByBoolean(useHalfDayShiftOverTime));
             
             /*
              * R4_98
              * 法定内残業自動計算
              */
-            cells.get("AE" + (startIndex + 1)).setValue(legalOTSetting == 1 ? "する" : "しない");
+            cells.get("AE" + (startIndex + 1)).setValue(getUseAtrByInteger(legalOTSetting));
             
             // One day
             if (fixHalfDayWorkOneDayOpt.isPresent()) {
@@ -664,7 +665,7 @@ public class WorkTimeReportService_New {
              * R4_262
              * 半日勤務を設定する
              */
-            cells.get("CB" + (startIndex + 1)).setValue(useHalfDayShiftBreakTime ? "する" : "しない");
+            cells.get("CB" + (startIndex + 1)).setValue(getUseAtrByBoolean(useHalfDayShiftBreakTime));
         }
         
         List<FixHalfDayWorkTimezoneDto> lstHalfDayWorkTimezone = data.getFixedWorkSetting().getLstHalfDayWorkTimezone();
@@ -1427,7 +1428,7 @@ public class WorkTimeReportService_New {
          * ０時跨ぎ.0時跨ぎ計算
          */
         boolean zeroHStraddCalculateSet = data.getFixedWorkSetting().getCommonSetting().isZeroHStraddCalculateSet();
-        cells.get("FG" + (startIndex + 1)).setValue(zeroHStraddCalculateSet ? "する" : "しない");
+        cells.get("FG" + (startIndex + 1)).setValue(getUseAtrByBoolean(zeroHStraddCalculateSet));
         
         // 17       タブグ:                その地
         
@@ -1436,7 +1437,7 @@ public class WorkTimeReportService_New {
          * その他.勤務種類が休暇の場合に就業時間を計算するか
          */
         Integer isCalculate = data.getFixedWorkSetting().getCommonSetting().getHolidayCalculation().getIsCalculate();
-        cells.get("FH" + (startIndex + 1)).setValue(getUseAtr(isCalculate));
+        cells.get("FH" + (startIndex + 1)).setValue(getUseAtrByInteger(isCalculate));
         
         FixedWorkCalcSettingDto calculationSetting = data.getFixedWorkSetting().getCalculationSetting();
         if (calculationSetting != null) {
@@ -1445,7 +1446,7 @@ public class WorkTimeReportService_New {
              * その他.休暇加算時間を加算する場合に就業時間として加算するか.しない
              */
             Integer calcMethod = calculationSetting.getExceededPredAddVacationCalc().getCalcMethod();
-            cells.get("FI" + (startIndex + 1)).setValue(getUseAtr(calcMethod));
+            cells.get("FI" + (startIndex + 1)).setValue(getUseAtrByInteger(calcMethod));
             
             /*
              * R4_231
@@ -1462,7 +1463,7 @@ public class WorkTimeReportService_New {
              * その他.休憩未取得時に就業時間として計算するか
              */
             Integer calcMethodOt = calculationSetting.getOverTimeCalcNoBreak().getCalcMethod();
-            cells.get("FK" + (startIndex + 1)).setValue(getUseAtr(calcMethodOt));
+            cells.get("FK" + (startIndex + 1)).setValue(getUseAtrByInteger(calcMethodOt));
             
             /*
              * R4_232
@@ -1802,7 +1803,7 @@ public class WorkTimeReportService_New {
          * 休憩時間帯.休憩時間の固定
          */
         boolean fixRestTime = data.getFlowWorkSetting().getHalfDayWorkTimezone().getRestTimezone().isFixRestTime();
-        cells.get("BD" + (startIndex + 1)).setValue(fixRestTime ? "する" : "しない");
+        cells.get("BD" + (startIndex + 1)).setValue(getUseAtrByBoolean(fixRestTime));
         
         List<DeductionTimeDto> timezones = data.getFlowWorkSetting().getHalfDayWorkTimezone().getRestTimezone().getFixedRestTimezone().getTimezones();
         
@@ -2008,6 +2009,72 @@ public class WorkTimeReportService_New {
              */
             Integer roundingFlowSet = lstWorkTimezone.get(i).getFlowTimeSetting().getRounding().getRounding();
             cells.get("BX" + (startIndex + lstWorkTimezone.get(i).getWorktimeNo())).setValue(getRoundingEnum(roundingFlowSet));
+        }
+        
+        // 7        タブグ:                休出休憩
+        
+        boolean fixRestTimeOffDay = data.getFlowWorkSetting().getOffdayWorkTimezone().getRestTimeZone().isFixRestTime();
+        
+        /*
+         * R5_135
+         * 休出休憩.休憩時間の固定
+         */
+        cells.get("BY" + (startIndex + 1)).setValue(getUseAtrByBoolean(fixRestTimeOffDay));
+        
+        if (fixRestTimeOffDay) {
+            List<DeductionTimeDto> timezonesRest = data.getFlowWorkSetting().getOffdayWorkTimezone().getRestTimeZone().getFixedRestTimezone().getTimezones();
+            
+            for (int i = 0; i < timezonesRest.size(); i++) {
+                /*
+                 * R5_136
+                 * 休出休憩.固定する.開始時間
+                 */
+                cells.get("BZ" + ((startIndex + 1) + i)).setValue(getInDayTimeWithFormat(timezonesRest.get(i).getStart()));
+                
+                /*
+                 * R5_137
+                 * 休出休憩.固定する.終了時間
+                 */
+                cells.get("CA" + ((startIndex + 1) + i)).setValue(getInDayTimeWithFormat(timezonesRest.get(i).getEnd()));
+            }
+        } else {
+            List<FlowRestSettingDto> flowRestSetsOffDay = data.getFlowWorkSetting().getOffdayWorkTimezone().getRestTimeZone().getFlowRestTimezone().getFlowRestSets();
+            for (int i = 0; i < flowRestSetsOffDay.size(); i++) {
+                /*
+                 * R5_138
+                 * 休出休憩.固定しない.経過時間
+                 */
+                Integer flowPassageTime = flowRestSetsOffDay.get(i).getFlowPassageTime();
+                cells.get("CB" + ((startIndex + 1) + i)).setValue(getInDayTimeWithFormat(flowPassageTime));
+                
+                /*
+                 * R5_139
+                 * 休出休憩.固定しない.休憩時間
+                 */
+                Integer flowRestTime = flowRestSetsOffDay.get(i).getFlowRestTime();
+                cells.get("CC" + ((startIndex + 1) + i)).setValue(getInDayTimeWithFormat(flowRestTime));
+            }
+            
+            /*
+             * R5_140
+             * 休出休憩.固定しない.以降は下記の時間で繰り返す
+             */
+            boolean useHereAfterRestSet = data.getFlowWorkSetting().getOffdayWorkTimezone().getRestTimeZone().getFlowRestTimezone().isUseHereAfterRestSet();
+            cells.get("CC" + (startIndex + 7)).setValue(useHereAfterRestSet ? "○" : "-");
+            
+            /*
+             * R5_141
+             * 休出休憩.固定しない.経過時間
+             */
+            Integer flowPassageTime = data.getFlowWorkSetting().getOffdayWorkTimezone().getRestTimeZone().getFlowRestTimezone().getHereAfterRestSet().getFlowPassageTime();
+            cells.get("CB" + (startIndex + 9)).setValue(getInDayTimeWithFormat(flowPassageTime));
+            
+            /*
+             * R5_142
+             * 休出休憩.固定しない.休憩時間
+             */
+            Integer flowRestTime = data.getFlowWorkSetting().getOffdayWorkTimezone().getRestTimeZone().getFlowRestTimezone().getHereAfterRestSet().getFlowRestTime();
+            cells.get("CC" + (startIndex + 9)).setValue(getInDayTimeWithFormat(flowRestTime));
         }
     }
     
@@ -2520,7 +2587,7 @@ public class WorkTimeReportService_New {
      * @param useAtr
      * @return
      */
-    private static String getUseAtr(Integer useAtr) {
+    private static String getUseAtrByInteger(Integer useAtr) {
         if (useAtr == null) {
             return "";
         }
@@ -2533,6 +2600,24 @@ public class WorkTimeReportService_New {
         }
         
         return "";
+    }
+    
+    /**
+     * するしない区分
+     * @param useAtr
+     * @return
+     */
+    private static String getUseAtrByBoolean(Boolean useAtr) {
+        if (useAtr == null) {
+            return "";
+        }
+        
+        String[] uses = {"しない", "する"};
+        if (useAtr) {
+            return uses[1];
+        } else {
+            return uses[0];
+        }
     }
     
     /**
