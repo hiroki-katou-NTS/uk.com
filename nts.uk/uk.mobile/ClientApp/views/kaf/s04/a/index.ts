@@ -95,7 +95,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
     public time: ITime = { attendanceTime: null, leaveTime: null, attendanceTime2: null, leaveTime2: null };
     public conditionLateEarlyLeave2Show: boolean = true;
     public lateOrLeaveEarlies: ILateOrLeaveEarlies;
-    public application: IApplication = initAppData();
+    public application: any = initAppData();
     public infoOutPut: IInfoOutput = initInfoOutput();
     public paramsAComponent: IParams;
     public cancelAtr: number;
@@ -127,6 +127,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
 
         if (vm.params) {
             vm.mode = false;
+            vm.application = vm.params.appDispInfoStartupOutput.appDetailScreenInfo.application;
         }
 
         vm.fetchStart();
@@ -365,11 +366,10 @@ export class KafS04AComponent extends KafS00ShrComponent {
             const { params } = vm;
             const { appDispInfoStartupOutput } = params;
 
-            const { appDetailScreenInfo, appDispInfoNoDateOutput } = appDispInfoStartupOutput;
+            const { appDispInfoNoDateOutput } = appDispInfoStartupOutput;
             const { employeeInfoLst } = appDispInfoNoDateOutput;
-            const { application } = appDetailScreenInfo;
 
-            const { prePostAtr, opAppStartDate, opAppEndDate } = application;
+            const { prePostAtr, opAppStartDate, opAppEndDate } = vm.application;
 
             vm.kafS00BParams.detailModeContent = {
                 prePostAtr,
@@ -404,8 +404,8 @@ export class KafS04AComponent extends KafS00ShrComponent {
             appLimitSetting,
             // 選択中の定型理由
             // empty
-            opAppStandardReasonCD: vm.mode ? null : vm.params.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD,
-            opAppReason: vm.mode ? null : vm.params.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason,
+            opAppStandardReasonCD: vm.mode ? null : vm.application.opAppStandardReasonCD,
+            opAppReason: vm.mode ? null : vm.application.opAppReason,
         };
     }
 
@@ -505,7 +505,7 @@ export class KafS04AComponent extends KafS00ShrComponent {
             agentAtr: true,
             isNew: true,
             infoOutput: vm.infoOutPut,
-            application: vm.mode ? vm.application : vm.params.appDispInfoStartupOutput.appDetailScreenInfo.application,
+            application: vm.application,
         };
 
         vm.$mask('show');
@@ -604,21 +604,22 @@ export class KafS04AComponent extends KafS00ShrComponent {
 
     public handleChangeDate(paramsDate) {
         const vm = this;
-        let appDatesLst = [];
-
-        const startDate = vm.$dt(paramsDate.startDate, 'YYYY/MM/DD');
-
-        appDatesLst.push(startDate);
-
-        let params = {
-            appDates: appDatesLst,
-            appDispNoDate: vm.data.appDispInfoStartupOutput.appDispInfoNoDateOutput,
-            appDispWithDate: vm.appDispInfoStartupOutput.appDispInfoWithDateOutput,
-            appType: AppType.EARLY_LEAVE_CANCEL_APPLICATION,
-            baseDate: startDate,
-            setting: vm.infoOutPut.lateEarlyCancelAppSet
-        };
+        const appDatesLst = [vm.$dt(paramsDate.startDate, 'YYYY/MM/DD')];
         if (paramsDate.startDate) {
+            if (vm.mode) {
+                vm.application.appDate = appDatesLst[0];
+                vm.application.opAppStartDate = appDatesLst[0];
+                vm.application.opAppEndDate = appDatesLst[0];
+            }
+            let params = {
+                appDates: appDatesLst,
+                appDispNoDate: vm.data.appDispInfoStartupOutput.appDispInfoNoDateOutput,
+                appDispWithDate: vm.appDispInfoStartupOutput.appDispInfoWithDateOutput,
+                appType: AppType.EARLY_LEAVE_CANCEL_APPLICATION,
+                baseDate: appDatesLst[0],
+                setting: vm.infoOutPut.lateEarlyCancelAppSet
+            };
+            vm.$mask('show');
             vm.$http.post('at', API.changeAppDate, params).then((response: IResAppDate) => {
                 response.data.appDispInfoWithDateOutput.opActualContentDisplayLst.forEach((item) => {
                     if (item.opAchievementDetail == null || (item.opAchievementDetail.opWorkTime == null && item.opAchievementDetail.opWorkTime2 == null && item.opAchievementDetail.opLeaveTime == null && item.opAchievementDetail.opDepartureTime2 == null)) {
@@ -694,31 +695,8 @@ export class KafS04AComponent extends KafS00ShrComponent {
                         }
                     }
                 });
+                vm.$mask('hide');
             });
-        }
-
-        if (vm.mode) {
-            vm.application.appDate = startDate;
-            vm.application.prePostAtr;
-            vm.application.opAppStartDate = startDate;
-            vm.application.opAppEndDate = startDate;
-        } else {
-            vm.params.appDispInfoStartupOutput.appDetailScreenInfo.application;
-            const { params } = vm;
-            const { appDispInfoStartupOutput } = params;
-
-            const { appDetailScreenInfo } = appDispInfoStartupOutput;
-            const { application } = appDetailScreenInfo;
-
-            const { reflectionStatus, inputDate, appID, appDate, prePostAtr, opAppStartDate, opAppEndDate } = application;
-
-            vm.application.appDate = appDate;
-            vm.application.prePostAtr = prePostAtr;
-            vm.application.opAppStartDate = opAppStartDate;
-            vm.application.opAppEndDate = opAppEndDate;
-            vm.application.appID = appID;
-            vm.application.inputDate = inputDate;
-            vm.application.reflectionStatus = reflectionStatus;
         }
 
     }
