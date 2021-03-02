@@ -2603,6 +2603,63 @@ public class WorkTimeReportService_New {
          */
         boolean nursTimezoneWorkUse = data.getFlowWorkSetting().getCommonSetting().getShortTimeWorkSet().isNursTimezoneWorkUse();
         cells.get("EJ" + (startIndex + 1)).setValue(nursTimezoneWorkUse ? "育児時間を減算する" : "育児時間を減算しない");
+        
+        // 15       タブグ:                医療
+        
+        List<WorkTimezoneMedicalSetDto> medicalSet = data.getFlowWorkSetting().getCommonSetting().getMedicalSet();
+        Optional<WorkTimezoneMedicalSetDto> medicalSetDay = medicalSet.stream()
+                .filter(x -> x.getWorkSystemAtr().equals(WorkSystemAtr.DAY_SHIFT.value)).findFirst();
+        Optional<WorkTimezoneMedicalSetDto> medicalSetNight = medicalSet.stream()
+                .filter(x -> x.getWorkSystemAtr().equals(WorkSystemAtr.NIGHT_SHIFT.value)).findFirst();
+        /*
+         * R5_204
+         * 医療.日勤申し送り時間
+         */
+        if (medicalSetDay.isPresent()) {
+            Integer applicationTime = medicalSetDay.get().getApplicationTime();
+            cells.get("EK" + (startIndex + 1)).setValue(getInDayTimeWithFormat(applicationTime));
+        }
+        
+        /*
+         * R5_205
+         * 医療.夜勤申し送り時間
+         */
+        if (medicalSetNight.isPresent()) {
+            Integer applicationTime = medicalSetNight.get().getApplicationTime();
+            cells.get("EL" + (startIndex + 1)).setValue(getInDayTimeWithFormat(applicationTime));
+        }
+        
+        if (medicalSetDay.isPresent()) {
+            /*
+             * R5_206
+             * 医療.日勤勤務時間.丸め
+             */
+            Integer unitDay = medicalSetDay.get().getRoundingSet().getRoundingTime();
+            cells.get("EM" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitDay));
+            
+            /*
+             * R5_207
+             * 医療.日勤勤務時間.端数
+             */
+            Integer roundingDay = medicalSetDay.get().getRoundingSet().getRounding();
+            cells.get("EN" + (startIndex + 1)).setValue(getRoundingEnum(roundingDay));
+        }
+        
+        if (medicalSetNight.isPresent()) {
+            /*
+             * R5_208
+             * 医療.夜勤勤務時間.丸め
+             */
+            Integer unitNight = medicalSetNight.get().getRoundingSet().getRoundingTime();
+            cells.get("EO" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitNight));
+            
+            /*
+             * R5_209
+             * 医療.夜勤勤務時間.端数
+             */
+            Integer roundingNight = medicalSetNight.get().getRoundingSet().getRounding();
+            cells.get("EP" + (startIndex + 1)).setValue(getRoundingEnum(roundingNight));
+        }
     }
     
     /**
