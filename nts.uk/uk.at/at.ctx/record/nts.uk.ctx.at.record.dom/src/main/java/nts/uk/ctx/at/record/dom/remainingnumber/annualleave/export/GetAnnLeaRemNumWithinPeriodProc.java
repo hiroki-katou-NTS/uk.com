@@ -324,6 +324,10 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 				require, employeeId, aggrPeriod, mode,
 				isOverWriteOpt, forOverWriteListOpt);
 
+
+
+
+
 		for (val aggregatePeriodWork : aggregateWork){
 
 			// 年休の消滅・付与・消化
@@ -783,8 +787,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 
 			dividedDayMap.putIfAbsent(grantDate, new DividedDayEachProcess(grantDate));
 			dividedDayMap.get(grantDate).getGrantWork().setGrantAtr(true);
-//			dividedDayMap.get(grantDate).setNextAnnualLeaveGrant(Optional.of(nextAnnualLeaveGrant));
-
+			dividedDayMap.get(grantDate).getGrantWork().setAnnualLeaveGrant(Optional.of(nextAnnualLeaveGrant));
 		}
 
 		// 期間終了日翌日の「処理単位分割日」を取得・追加　→　フラグ設定
