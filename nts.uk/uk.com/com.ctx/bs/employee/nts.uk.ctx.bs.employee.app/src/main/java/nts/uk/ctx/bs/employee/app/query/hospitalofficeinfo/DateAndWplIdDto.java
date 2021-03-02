@@ -10,9 +10,4 @@ import nts.arc.time.GeneralDate;
 @Getter
 public class DateAndWplIdDto {
     private  String workplaceGroupId;
-    private String baseDate;
-
-    public GeneralDate toDate() {
-        return GeneralDate.fromString(baseDate, "yyyy/MM/dd");
-    }
 }

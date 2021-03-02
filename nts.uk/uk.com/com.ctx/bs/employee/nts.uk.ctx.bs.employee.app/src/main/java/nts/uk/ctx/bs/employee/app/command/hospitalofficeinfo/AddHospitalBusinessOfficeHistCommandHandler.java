@@ -17,7 +17,6 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import java.time.LocalTime;
 import java.util.Optional;
 
 /**
@@ -40,10 +39,8 @@ public class AddHospitalBusinessOfficeHistCommandHandler extends CommandHandler<
         Optional<NursingCareEstablishmentInfo> nursingCareEstInfo = Optional.empty();
 
         if (command.getClockHourMinuteStart() != null && command.getClockHourMinuteEnd() != null) {
-            LocalTime localTimeEnd = LocalTime.parse(command.getClockHourMinuteEnd());
-            LocalTime localTimeStart = LocalTime.parse(command.getClockHourMinuteStart());
-            ClockHourMinute clockHourMinuteStart = ClockHourMinute.hm(localTimeStart.getHour(), localTimeStart.getMinute());
-            ClockHourMinute clockHourMinuteEnd = ClockHourMinute.hm(localTimeEnd.getHour(), localTimeEnd.getMinute());
+            ClockHourMinute clockHourMinuteEnd = new ClockHourMinute(command.getClockHourMinuteEnd());
+            ClockHourMinute clockHourMinuteStart = new ClockHourMinute(command.getClockHourMinuteStart());
             ClockHourMinuteSpan clockHourMinuteSpan = ClockHourMinuteSpan.create(clockHourMinuteStart, clockHourMinuteEnd);
             shiftTime = Optional.of(clockHourMinuteSpan);
         }
