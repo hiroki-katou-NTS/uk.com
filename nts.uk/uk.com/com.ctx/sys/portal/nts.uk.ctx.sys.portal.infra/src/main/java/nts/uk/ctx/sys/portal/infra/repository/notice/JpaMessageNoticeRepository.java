@@ -181,7 +181,7 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 							.setParameter("sid", sid)
 							.getList();
 		} else {
-			String queryString = GET_MSG_REF_BY_PERIOD.replace("", " OR (m.destination = 1 AND n.pk.tgtInfoId = :wpId)");
+			String queryString = GET_MSG_REF_BY_PERIOD.replace(" OR (m.destination = 1 AND n.pk.tgtInfoId = :wpId)", "");
 			entities = this.queryProxy().query(queryString, SptdtInfoMessage.class)
 							.setParameter("cid", cid)
 							.setParameter("endDate", period.end())
