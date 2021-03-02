@@ -2660,6 +2660,15 @@ public class WorkTimeReportService_New {
             Integer roundingNight = medicalSetNight.get().getRoundingSet().getRounding();
             cells.get("EP" + (startIndex + 1)).setValue(getRoundingEnum(roundingNight));
         }
+        
+        // 16       タブグ:                0時跨ぎ
+        
+        /*
+         * R5_210
+         * ０時跨ぎ.0時跨ぎ計算
+         */
+        boolean zeroHStraddCalculateSet = data.getFlowWorkSetting().getCommonSetting().isZeroHStraddCalculateSet();
+        cells.get("EQ" + (startIndex + 1)).setValue(zeroHStraddCalculateSet ? "する" : "しない");
     }
     
     /**
