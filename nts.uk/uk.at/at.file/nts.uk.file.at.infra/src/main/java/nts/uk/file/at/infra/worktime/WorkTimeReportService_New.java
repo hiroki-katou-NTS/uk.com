@@ -2571,6 +2571,22 @@ public class WorkTimeReportService_New {
          */
         Integer roundingLateNight = data.getFlowWorkSetting().getCommonSetting().getLateNightTimeSet().getRoundingSetting().getRounding();
         cells.get("EF" + (startIndex + 1)).setValue(getRoundingEnum(roundingLateNight));
+        
+        // 13       タブグ:                臨時
+        
+        /*
+         * R5_200
+         * 臨時.臨時丸め
+         */
+        Integer unitExtrao = data.getFlowWorkSetting().getCommonSetting().getExtraordTimeSet().getTimeRoundingSet().getRoundingTime();
+        cells.get("EG" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitExtrao));
+        
+        /*
+         * R5_201
+         * 臨時.臨時端数
+         */
+        Integer roundingExtrao = data.getFlowWorkSetting().getCommonSetting().getExtraordTimeSet().getTimeRoundingSet().getRounding();
+        cells.get("EH" + (startIndex + 1)).setValue(getRoundingEnum(roundingExtrao));
     }
     
     /**
