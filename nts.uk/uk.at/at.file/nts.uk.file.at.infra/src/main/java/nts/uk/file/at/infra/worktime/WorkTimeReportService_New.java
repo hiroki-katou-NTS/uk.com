@@ -22,7 +22,6 @@ import nts.uk.ctx.at.shared.app.find.worktime.common.dto.OtherEmTimezoneLateEarl
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.OverTimeOfTimeZoneSetDto;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.PrioritySettingDto;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.RoundingSetDto;
-import nts.uk.ctx.at.shared.app.find.worktime.common.dto.StampBreakCalculationDto;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.StampReflectTimezoneDto;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.WorkTimezoneMedicalSetDto;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.WorkTimezoneOtherSubHolTimeSetDto;
@@ -38,7 +37,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.repository.BPSetti
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.CompensatoryOccurrenceDivision;
-import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.FontRearSection;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.LateEarlyAtr;
@@ -2667,8 +2665,18 @@ public class WorkTimeReportService_New {
          * R5_210
          * ０時跨ぎ.0時跨ぎ計算
          */
-        boolean zeroHStraddCalculateSet = data.getFlowWorkSetting().getCommonSetting().isZeroHStraddCalculateSet();
-        cells.get("EQ" + (startIndex + 1)).setValue(zeroHStraddCalculateSet ? "する" : "しない");
+        if (displayMode.equals(DisplayMode.DETAIL.value)) {
+            boolean zeroHStraddCalculateSet = data.getFlowWorkSetting().getCommonSetting().isZeroHStraddCalculateSet();
+            cells.get("EQ" + (startIndex + 1)).setValue(getUseAtrByBoolean(zeroHStraddCalculateSet));
+        }
+        
+        // 17       タブグ:                その地
+        /*
+         * R5_211
+         * その他.勤務種類が休暇の場合に就業時間を計算するか
+         */
+        Integer isCalculate = data.getFlowWorkSetting().getCommonSetting().getHolidayCalculation().getIsCalculate();
+        cells.get("ER" + (startIndex + 1)).setValue(getUseAtrByInteger(isCalculate));
     }
     
     /**
