@@ -2443,6 +2443,28 @@ public class WorkTimeReportService_New {
                 cells.get("DR" + (startIndex + 1)).setValue(includeWorkHour ? "○" : "-");
             }
         }
+        
+        // 10       タブグ:                加給
+        
+        /*
+         * R5_186
+         * 加給.コード
+         */
+        String raisingSalarySetCode = data.getFlowWorkSetting().getCommonSetting().getRaisingSalarySet();
+        cells.get("DS" + (startIndex + 1)).setValue(raisingSalarySetCode != null ? raisingSalarySetCode : "");
+        
+        /*
+         * R5_187
+         * 名称
+         */
+        if (raisingSalarySetCode != null) {
+            Optional<BonusPaySetting> bonusPaySettingOpt = this.bpSettingRepository
+                    .getBonusPaySetting(AppContexts.user().companyId(), new BonusPaySettingCode(raisingSalarySetCode));
+            if (bonusPaySettingOpt.isPresent()) {
+                String raisingSalaryName = bonusPaySettingOpt.get().getName().v();
+                cells.get("DT" + (startIndex + 1)).setValue(raisingSalaryName);
+            }
+        }
     }
     
     /**
