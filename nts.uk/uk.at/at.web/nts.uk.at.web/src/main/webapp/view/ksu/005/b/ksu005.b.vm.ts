@@ -203,8 +203,7 @@ module nts.uk.at.view.ksu005.b {
                 }
             });
             
-            self.selectedCode.subscribe((code: string) => {       
-                self.count = 0;         
+            self.selectedCode.subscribe((code: string) => { 
                 if (_.isEmpty(code)) {
                     self.clearData();
                 } else {
@@ -242,7 +241,7 @@ module nts.uk.at.view.ksu005.b {
                         }                        
     
                         datas.push(new ScreenItem(true, self.countNumberRow, data.personalInfo[0] != null ? data.personalInfo[0].toString() : null,
-                            data.attendanceItem[0] != null ? data.attendanceItem[0].toString() : null,
+                            data.additionalInfo[0] != null ? data.additionalInfo[0].toString() : null,
                             data.attendanceItem[0] != null ? data.attendanceItem[0].toString() : null));
                         for (let i = 1; i < maxLength; i++) {
                             self.countNumberRow = self.countNumberRow + 1;
@@ -250,7 +249,7 @@ module nts.uk.at.view.ksu005.b {
                                 self.isEnableAddBtn(false);
                             }
                             datas.push(new ScreenItem(false, self.countNumberRow, data.personalInfo[i] != null ? data.personalInfo[i].toString() : null,
-                                data.attendanceItem[i] != null ? data.attendanceItem[i].toString() : null,
+                                data.additionalInfo[i] != null ? data.additionalInfo[i].toString() : null,
                                 data.attendanceItem[i] != null ? data.attendanceItem[i].toString() : null));                                    
     
                         }
@@ -291,11 +290,7 @@ module nts.uk.at.view.ksu005.b {
                 self.$ajax(Paths.GET_SCHEDULE_TABLE_OUTPUT_SETTING_BY_CODE + "/" + code).done((data: IScheduleTableOutputSetting) => {
                     self.countNumberRow = 1;
                     if (!_.isNull(data) && !_.isEmpty(data)) {
-                        self.clearError();
-                        let personalInfoItemsSize = data.personalInfo.length;
-                        let additionalItemsSize = data.attendanceItem.length;
-                        let attendanceItemSize = data.attendanceItem.length;
-                        let maxLength = Math.max(personalInfoItemsSize, additionalItemsSize, attendanceItemSize);
+                        self.clearError();                       
                         let datas = [];
                         let tempSelected: Array<any> = [];
                         let tempSelectedCode: Array<any> = [];
