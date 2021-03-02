@@ -109,6 +109,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		breakChangeCore : any = [];
 		checkStartEndDis : boolean = true;
 		checkRetained : boolean = true;
+		
+		index045 : number = 0;
 		constructor(data: any) {
 			let self = this;
 			// get data from sc A
@@ -1268,6 +1270,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							
 						}
 						errorDialog({ messageId: error.messageId }).then(() => {
+							self.checkOpenDialog = false;
 							block.clear();
 							let cssWorkType: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(1)",
 								cssWorkTime: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (index + 2).toString() + ")" + " > td:nth-child(3)";
@@ -1275,6 +1278,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 							if (columnKey == "worktypeCode" && error.messageId != "Msg_29" && error.messageId != "Msg_591") {
 								$(cssWorkType).click();
 								$(cssWorkType).click();
+								
 							}
 							// nhập worktypeCode và show ra mess 29 thì focus vào work time code
 							if (((columnKey == "worktypeCode" && error.messageId == "Msg_29") || (columnKey == "worktypeCode" && error.messageId == "Msg_591")) && self.checkNeedTime != "OPTIONAL") {
@@ -2025,8 +2029,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						middleContentDeco.push(new CellColor("totalTime", self.lstEmpId[i].empId, "xseal"));
 						middleContentDeco.push(new CellColor("breaktime", self.lstEmpId[i].empId, "xseal"));
 					}
-					
-					
 
 					//self.checkDisByDate = true;
 					if (isConfirmed == 1) {
@@ -2052,8 +2054,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			leftmostColumns = [{
 				key: "empName",
 				icon: { for: "body", class: "icon-leftmost", width: "25px" },
-				headerText: getText('KSU003_20'), width: "160px", control: "link",
-				css: { whiteSpace: "pre" }
+				headerText: getText('KSU003_20'), width: "160px", control: "link"
 			}, {
 				key: "cert", headerText: getText('KSU003_21'), width: "40px", control: "button", handler: function(e: any) {
 					self.openKdl045Dialog(e.empId)
@@ -2065,13 +2066,32 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				rowHeight: "33px",
 				width: "200px"
 			};
+			
+			let checkLengthCode = 0;
+			
+			/*for (let i = 0; i < self.lstEmpId.length; i++) {
+				let dataLeft: any = _.filter(self.lstEmpId, (x: any) => { return x.empId === self.lstEmpId[i].empId });
+				const canvas = document.createElement('canvas');
+  				const context = canvas.getContext('2d');
+				if(context.measureText(dataLeft[0].code).width > checkLengthCode){
+					checkLengthCode = context.measureText(dataLeft[0].code).width;
+				}
+		}*/
+			
 
 			let leftmostDs = [], middleDs = [];
 			for (let i = 0; i < self.lstEmpId.length; i++) {
 				let dataLeft: any = _.filter(self.lstEmpId, (x: any) => { return x.empId === self.lstEmpId[i].empId }),
 					datafilter = _.filter(midData, (x: any) => { return x.empId === self.lstEmpId[i].empId }),
-					dataMid = datafilter[0],
-					eName: any = dataLeft[0].code + " " + dataLeft[0].name;
+					dataMid = datafilter[0], eName = "";
+				const canvas = document.createElement('canvas');
+  				const context = canvas.getContext('2d');
+				let space = ((checkLengthCode) - (context.measureText(dataLeft[0].code).width))/ (context.measureText(" ").width);
+			/*	if(context.measureText(dataLeft[0].code).width < checkLengthCode){
+					eName = dataLeft[0].code + Array(Math.round(space / 2)).fill('\xa0').join(" ") + dataLeft[0].name;
+				} else {*/
+					eName = dataLeft[0].code + " " + dataLeft[0].name;
+				//}
 				totalBreakTime = _.isNil(dataMid) ? "" : dataMid.breaktime;
 				let leftDSFilter = _.filter(leftDs, (x: any) => { return x.empId === self.lstEmpId[i].empId });
 				disableDSFilter = _.filter(disableDs, (x: any) => { return x.empId === self.lstEmpId[i].empId }); // list không dùng schedule
@@ -2686,14 +2706,13 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
             let dataReg = self.buidDataReg(updatedCells);
             service.regWorkSchedule(dataReg).done((rs : any) => {
-                console.log(rs);
+				block.clear();
                 if(rs.hasError == false){
 					if(type != 1){
 						 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
 							self.enableSave(false);
 							let $grid = $('div.ex-body-detail');
 							self.updateAfterSaveData($grid[0]).done(() => {
-								block.clear();
 							});
 						});
 					} else {
@@ -2737,7 +2756,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
             let self = this;
             let dataReg : any = [];
 			let groupData = _.groupBy(cellsGroup, 'rowIndex');
-                _.forEach(groupData, function(cells : any) {
+			if(cellsGroup.length > 0){
+				_.forEach(groupData, function(cells : any) {
                     if (cells.length > 0) {
 
                         let dataCell : any = {
@@ -2756,6 +2776,22 @@ module nts.uk.at.view.ksu003.a.viewmodel {
                         dataReg.push(dataCell);
                     }
                 });
+			} else {
+				 let dataCell : any = {
+                            sid: self.dataScreen003A().employeeInfo[self.index045].empId,
+                            ymd: self.dataScreen003A().employeeInfo[self.index045].workInfoDto.date,
+                            workTypeCd: self.dataScreen003A().employeeInfo[self.index045].workScheduleDto.workTypeCode,
+                            workTimeCd: self.dataScreen003A().employeeInfo[self.index045].workScheduleDto.workTimeCode,
+                            startTime : self.dataScreen003A().employeeInfo[self.index045].workScheduleDto.startTime1,
+                            endTime   : self.dataScreen003A().employeeInfo[self.index045].workScheduleDto.endTime1,
+							startTime2 : self.dataScreen003A().employeeInfo[self.index045].workScheduleDto.startTime2,
+                            endTime2   : self.dataScreen003A().employeeInfo[self.index045].workScheduleDto.endTime2,
+							listBreakTime : self.dataScreen003A().employeeInfo[self.index045].workScheduleDto.listBreakTimeZoneDto,
+							directAtr : self.dataScreen003A().employeeInfo[self.index045].workInfoDto.directAtr,
+							bounceAtr : self.dataScreen003A().employeeInfo[self.index045].workInfoDto.bounceAtr
+                        }
+                  dataReg.push(dataCell);
+			}
             console.log(dataReg);
             return dataReg;
         }
@@ -3345,7 +3381,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					checkCore = 1;
 				}
 				
-				if(coreTime.length > 0 && lstBrCoreEnd.length > 0 && param[1] >= lstBrCoreEnd[0].options.start){
+				if(coreTime.length > 0 && lstBrCoreEnd.length > 0 && param[1] <= lstBrCoreEnd[0].options.start){
 					endMinute = duration.create(coreTime[0].options.end * 5 + self.dispStart * 5).text;
 					endTime = coreTime[0].options.end * 5;
 					checkCore2 = 2;
@@ -3355,12 +3391,12 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					
 					if(type == "lgc"){
 						$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "startTime1", startMinute);
-						self.dataScreen003A().employeeInfo[i].workScheduleDto.startTime1 = startTime;
+						self.dataScreen003A().employeeInfo[i].workScheduleDto.startTime1 = startTime + self.dispStartHours * 60;
 					}
 					
 					if(type == "rgc"){
 						$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "startTime2", startMinute);
-						self.dataScreen003A().employeeInfo[i].workScheduleDto.startTime2 = startTime;
+						self.dataScreen003A().employeeInfo[i].workScheduleDto.startTime2 = startTime + self.dispStartHours * 60;
 					}
 					
 					if(lstBrCoreStart.length > 0){
@@ -3377,7 +3413,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 						ruler.gcChart[i][lstBrCoreStart[0].options.id].start = Math.floor(coreTime[0].options.start - self.dispStart * 12);
 					}
 					
-					if(indexBrStart == -1 && checkCore == 0){
+					if(indexBrStart == -1 && checkCore == 0 && lstBrCoreStart.length > 0){
 						indexAllBr = _.findIndex(self.allTimeBrk, (x : any) => { return x.options.id === lstBrCoreStart[0].options.id});
 						let indexNew = _.findIndex(self.dataScreen003A().employeeInfo[i].workScheduleDto.listBreakTimeZoneDto, 
 										(x : any) => { return self.allTimeBrk[indexAllBr].options.end === x.end / 5}); // làm tiếp
@@ -3389,12 +3425,12 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 					
 					if(type == "lgc"){
 						$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "endTime1", endMinute);
-						self.dataScreen003A().employeeInfo[i].workScheduleDto.endTime1 = endTime;
+						self.dataScreen003A().employeeInfo[i].workScheduleDto.endTime1 = endTime + self.dispStartHours * 60;
 					}
 					
 					if(type == "rgc"){
 						$("#extable-ksu003").exTable("cellValue", "middle", datafilter[0].empId, "endTime2", endMinute);
-						self.dataScreen003A().employeeInfo[i].workScheduleDto.endTime2 = endTime;
+						self.dataScreen003A().employeeInfo[i].workScheduleDto.endTime2 = endTime + self.dispStartHours * 60;
 					}
 					
 					if(lstBrCoreEnd.length > 0){
@@ -3409,14 +3445,13 @@ module nts.uk.at.view.ksu003.a.viewmodel {
                         self.allTimeBrk[indexAllBrks].options.end = coreTime[0].options.end;
                         ruler.gcChart[i][lstBrCoreEnd[0].options.id].end = Math.floor(coreTime[0].options.end - self.dispStart * 12);
 					}
-					if(indexBrEnd == -1 && checkCore2 == 2){
+					if(indexBrEnd == -1 && checkCore2 == 0 && lstBrCoreEnd.length > 0){
                         indexAllBrks = _.findIndex(self.allTimeBrk, (x : any) => { return x.options.id === lstBrCoreEnd[0].options.id});
                         let indexNew = _.findIndex(self.dataScreen003A().employeeInfo[i].workScheduleDto.listBreakTimeZoneDto, 
-                                        (x : any) => { return self.allTimeBrk[indexAllBrks].options.end === x.end / 5});
+                                        (x : any) => { return self.allTimeBrk[indexAllBrks].options.start === x.start / 5});
                         self.allTimeBrk[indexAllBrks].options.end = self.breakChangeCore[indexAllBrks].options.end;
                         self.dataScreen003A().employeeInfo[i].workScheduleDto.listBreakTimeZoneDto[indexNew].end = self.breakChangeCore[indexAllBrks].options.end * 5;
-                        ruler.gcChart[i][lstBrCoreEnd[0].options.id].end = Math.floor(self.allTimeBrk[indexAllBrks].options.end - self.dispStart * 12);
-                        ruler.extend(i, lstBrCoreEnd[0].options.id,Math.floor(self.allTimeBrk[indexAllBrks].options.end - self.dispStart * 12));
+                        ruler.extend(i, lstBrCoreEnd[0].options.id,null,Math.floor(self.allTimeBrk[indexAllBrks].options.end - self.dispStart * 12));
                     }
 					
 				}
@@ -3425,9 +3460,12 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		
 		gcDrop(e : any,  i : any, datafilter : any, type : string){
 			let param = e.detail, startMinute = 0, endMinute = 0, self = this;
-				if(self.dataScreen003A().employeeInfo[i].workScheduleDto.startTime1 == param[0] * 5) return;
+				if(self.dataScreen003A().employeeInfo[i].workScheduleDto.startTime1 == param[0] * 5 + self.dispStartHours * 60) return;
+				
+				if(param[0] * 5 == 0) return;
+				
 				if(type == "rgc"){
-					if(self.dataScreen003A().employeeInfo[i].workScheduleDto.startTime2 == param[0] * 5) return;
+					if(self.dataScreen003A().employeeInfo[i].workScheduleDto.startTime2 == param[0] * 5 + self.dispStartHours * 60) return;
 				}
 				if (self.checkDisByDate == false || self.dataScreen003A().employeeInfo[i].workInfoDto.isConfirmed == 1)
 					return;
@@ -3437,8 +3475,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				endMinute = duration.create(param[1] * 5 + self.dispStart * 5).text;
 				self.checkDragDrog = true;
 				
-				self.dataScreen003A().employeeInfo[i].workScheduleDto.startTime1 = param[0] * 5;
-				self.dataScreen003A().employeeInfo[i].workScheduleDto.endTime1 = param[1] * 5;
+				self.dataScreen003A().employeeInfo[i].workScheduleDto.startTime1 = param[0] * 5 + self.dispStartHours * 60;
+				self.dataScreen003A().employeeInfo[i].workScheduleDto.endTime1 = param[1] * 5 + self.dispStartHours * 60;
 				
 				let index = e.currentTarget.id.split("-")[0], lstGcShow = _.filter(self.lstAllChildShow, (x: any) => { return x.index === parseInt(index) });
 				
@@ -3479,6 +3517,14 @@ module nts.uk.at.view.ksu003.a.viewmodel {
                     $("#extable-ksu003").exTable("cellValue", "middle", self.dataScreen003A().employeeInfo[i].empId, "breaktime", totalBrk);
                 }
 
+				let lstShortTime = _.filter(self.lstAllChildShow, (x : any) => {return x.type == "SHORT"});
+				if(lstShortTime.length > 0){
+					let totalShortTime = 0;
+					for(let i = 0; i < lstShortTime.length; i ++){
+						totalShortTime += self.calcBreakTime({startTime : lstShortTime[i].start * 5, endTime : lstShortTime[i].end * 5}, 
+						{startTime : self.dataScreen003A().employeeInfo[i].workScheduleDto.startTime1, endTime : self.dataScreen003A().employeeInfo[i].workScheduleDto.endTime1});
+					}
+				}
 				self.checkTypeChange = [];
 		}
 		
@@ -3486,17 +3532,22 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			let self = this;
 			let idNew = indexBrks.length > 5 ? indexBrks : `lgc${i}_` + indexBrks;
 			let breakChange = _.filter(self.allTimeBrk, (x: any) => { return x.options.lineNo === i });
+			let indexAllBrk = _.findIndex(self.allTimeBrk, (x: any) => { return x.options.id === (idNew) });
 			breakChange = _.sortBy(breakChange, [function(o: any) { return o.options.start; }]);
 			let indexBrk = _.findIndex(breakChange, (x: any) => { return x.options.id === (idNew) });
 			
-			if(breakChange[indexBrk].options.start == b + self.dispStart && breakChange[indexBrk].options.end == e + self.dispStart){
+			if(breakChange[indexBrk].options.start == b && breakChange[indexBrk].options.end == e){
 				return;
 			} else {
 			self.enableSave(true);
 			breakChange[indexBrk].options.start = b;
 			breakChange[indexBrk].options.end = e;
-			self.dataScreen003A().employeeInfo[i].workScheduleDto.listBreakTimeZoneDto[indexBrk].start = b * 5 + self.dispStart * 5;
-			self.dataScreen003A().employeeInfo[i].workScheduleDto.listBreakTimeZoneDto[indexBrk].end = e * 5 + self.dispStart * 5;
+			self.dataScreen003A().employeeInfo[i].workScheduleDto.listBreakTimeZoneDto[indexBrk].start = b * 5 + self.dispStartHours * 60;
+			self.dataScreen003A().employeeInfo[i].workScheduleDto.listBreakTimeZoneDto[indexBrk].end = e * 5 + self.dispStartHours * 60;
+			self.allTimeBrk[indexBrk].options.start = b;
+			self.allTimeBrk[indexBrk].options.end = e;
+			self.breakChangeCore[indexBrk].options.start = b;
+			self.breakChangeCore[indexBrk].options.end = e;
 			
 			let totalBrk = "";
 			if($("#extable-ksu003").exTable('dataSource', 'middle').body[i].breaktime == $("#extable-ksu003").exTable('dataSource', 'middle').body[i].breaktime + " "){
@@ -4883,7 +4934,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		// open dialog kdl045
 		public openKdl045Dialog(empId: string) {
 			let self = this, lineNo = _.findIndex(self.lstEmpId, (x) => { return x.empId === empId; });
-			
+			self.index045 = lineNo;
 			if(self.checkOpenDialog == false) return;
 			
 			let cssWorkType: string = "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (lineNo + 2).toString() + ")" + " > td:nth-child(1)",

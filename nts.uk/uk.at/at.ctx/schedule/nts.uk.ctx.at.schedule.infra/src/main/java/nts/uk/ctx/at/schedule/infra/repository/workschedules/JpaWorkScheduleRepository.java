@@ -65,7 +65,8 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 			"DELETE FROM KscdtSchShortTimeTs a ",
 			"DELETE FROM KscdtSchBreakTs a ",
 			"DELETE FROM KscdtSchComeLate a ",
-			"DELETE FROM KscdtSchGoingOut a "
+			"DELETE FROM KscdtSchGoingOut a ",
+			"DELETE FROM KscdtSchLeaveEarly a "
 			);
 
 	@Override
@@ -253,8 +254,8 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 						boolean checkExist = false;
 						for (KscdtSchComeLate schComeLateOld : oldData.get().kscdtSchTime.kscdtSchComeLate) {
 							if(schComeLate.pk.workNo == schComeLateOld.pk.workNo
-									&& schComeLate.pk.sid == schComeLateOld.pk.sid
-									&& schComeLate.pk.ymd == schComeLateOld.pk.ymd
+									&& schComeLate.pk.sid.equals(schComeLateOld.pk.sid)
+									&& schComeLate.pk.ymd.equals(schComeLateOld.pk.ymd)
 									) {
 								schComeLateOld.useHourlyHdPaid = schComeLate.useHourlyHdPaid;
 								schComeLateOld.useHourlyHdCom = schComeLate.useHourlyHdCom;
@@ -277,8 +278,8 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 						boolean checkExist = false;
 						for (KscdtSchComeLate schComeLate : newData.kscdtSchTime.kscdtSchComeLate) {
 							if(schComeLate.pk.workNo == schComeLateOld.pk.workNo
-									&& schComeLate.pk.sid == schComeLateOld.pk.sid
-									&& schComeLate.pk.ymd == schComeLateOld.pk.ymd
+									&& schComeLate.pk.sid.equals(schComeLateOld.pk.sid)
+									&& schComeLate.pk.ymd.equals(schComeLateOld.pk.ymd)
 									) {
 								checkExist = true;
 								break;
@@ -314,8 +315,8 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 						boolean checkExist = false;
 						for (KscdtSchGoingOut schGoingOutOld : oldData.get().kscdtSchTime.kscdtSchGoingOut) {
 							if(schGoingOut.pk.reasonAtr == schGoingOutOld.pk.reasonAtr
-									&& schGoingOut.pk.sid == schGoingOutOld.pk.sid
-									&& schGoingOut.pk.ymd == schGoingOutOld.pk.ymd
+									&& schGoingOut.pk.sid.equals(schGoingOutOld.pk.sid)
+									&& schGoingOut.pk.ymd.equals(schGoingOutOld.pk.ymd)
 									) {
 								schGoingOutOld.useHourlyHdPaid = schGoingOut.useHourlyHdPaid;
 								schGoingOutOld.useHourlyHdCom = schGoingOut.useHourlyHdCom;
@@ -338,8 +339,8 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 						boolean checkExist = false;
 						for (KscdtSchGoingOut schGoingOut : newData.kscdtSchTime.kscdtSchGoingOut) {
 							if(schGoingOut.pk.reasonAtr == schGoingOutOld.pk.reasonAtr
-									&& schGoingOut.pk.sid == schGoingOutOld.pk.sid
-									&& schGoingOut.pk.ymd == schGoingOutOld.pk.ymd
+									&& schGoingOut.pk.sid.equals(schGoingOutOld.pk.sid)
+									&& schGoingOut.pk.ymd.equals(schGoingOutOld.pk.ymd)
 									) {
 								checkExist = true;
 								break;
@@ -375,8 +376,8 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 						boolean checkExist = false;
 						for (KscdtSchLeaveEarly schLeaveEarlyOld : oldData.get().kscdtSchTime.kscdtSchLeaveEarly) {
 							if(schLeaveEarly.pk.workNo == schLeaveEarlyOld.pk.workNo
-									&& schLeaveEarly.pk.sid == schLeaveEarlyOld.pk.sid
-									&& schLeaveEarly.pk.ymd == schLeaveEarlyOld.pk.ymd
+									&& schLeaveEarly.pk.sid.equals(schLeaveEarlyOld.pk.sid)
+									&& schLeaveEarly.pk.ymd.equals(schLeaveEarlyOld.pk.ymd)
 									) {
 								schLeaveEarlyOld.useHourlyHdPaid = schLeaveEarly.useHourlyHdPaid;
 								schLeaveEarlyOld.useHourlyHdCom = schLeaveEarly.useHourlyHdCom;
@@ -399,8 +400,8 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 						boolean checkExist = false;
 						for (KscdtSchLeaveEarly schLeaveEarly : newData.kscdtSchTime.kscdtSchLeaveEarly) {
 							if(schLeaveEarly.pk.workNo == schLeaveEarlyOld.pk.workNo
-									&& schLeaveEarly.pk.sid == schLeaveEarlyOld.pk.sid
-									&& schLeaveEarly.pk.ymd == schLeaveEarlyOld.pk.ymd
+									&& schLeaveEarly.pk.sid.equals(schLeaveEarlyOld.pk.sid)
+									&& schLeaveEarly.pk.ymd.equals(schLeaveEarlyOld.pk.ymd)
 									) {
 								checkExist = true;
 								break;
@@ -429,20 +430,63 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 				}
 			}
 			
-			// List<KscdtSchEditState> editStates;
+			// List<KscdtSchEditState> editStates;			
 			if (!oldData.get().editStates.isEmpty()) {
-				for (KscdtSchEditState y : newData.editStates) {
-					oldData.get().editStates.forEach(x -> {
-						if (y.pk.atdItemId == x.pk.atdItemId) {
-							x.cid = y.cid;
-							x.sditState = y.sditState;
+				// get list insert and update data exist
+				List<KscdtSchEditState> listInsert = new ArrayList<>();
+				for (KscdtSchEditState schState : newData.editStates) {
+					boolean checkExist = false;
+					for (KscdtSchEditState schStateOld : oldData.get().editStates) {
+						if(schState.pk.sid.equals(schStateOld.pk.sid)
+								&& schState.pk.ymd.equals(schStateOld.pk.ymd)
+								&& schState.pk.atdItemId == schStateOld.pk.atdItemId
+								) {
+							schStateOld.sditState = schState.sditState;
+							schStateOld.cid = schState.cid;
+							
+							checkExist = true;
 						}
-					});
+					}
+					
+					if(!checkExist) {
+						listInsert.add(schState);
+					}
 				}
+//				//get list remove
+//				List<KscdtSchEditState> listRemove = new ArrayList<>();
+//				for (KscdtSchEditState schStateOld : oldData.get().editStates) {
+//					boolean checkExist = false;
+//					for (KscdtSchEditState schState : newData.editStates) {
+//						if(schState.pk.sid == schStateOld.pk.sid
+//								&& schState.pk.ymd == schStateOld.pk.ymd
+//								&& schState.pk.atdItemId == schStateOld.pk.atdItemId
+//								) {
+//							checkExist = true;
+//							break;
+//						}
+//					}
+//					if(!checkExist) {
+//						listRemove.add(schStateOld);
+//					}
+//				}
+//				
+//				//remove
+//				if(listRemove.size() > 0) {
+//				String delete = "delete from KscdtSchEditState o " + " where o.pk.sid = :sid "
+//						+ " and o.pk.ymd = :ymd " + " and o.pk.atdItemId = :atdItemId";
+//				for(KscdtSchEditState sle : listRemove) {
+//					this.getEntityManager().createQuery(delete).setParameter("sid", sle.pk.sid)
+//					.setParameter("ymd", sle.pk.ymd)
+//					.setParameter("atdItemId", sle.pk.atdItemId).executeUpdate();
+//					}
+//				}
+				//add
+				for(KscdtSchEditState sle : listInsert) {
+					this.commandProxy().insert(sle);
+				}
+				
 			} else {
-				for (KscdtSchEditState y : newData.editStates) {
-					oldData.get().editStates.add(y);
-				}
+				oldData.get().editStates = newData.editStates;
 			}
 
 			// List<KscdtSchAtdLvwTime> atdLvwTimes;
