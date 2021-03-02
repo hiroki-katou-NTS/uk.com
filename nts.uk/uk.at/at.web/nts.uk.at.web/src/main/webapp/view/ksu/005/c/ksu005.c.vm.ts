@@ -43,15 +43,20 @@ module nts.uk.at.view.ksu005.c {
                 newCode : self.newCode(),
                 newName: self.newName()
 			}
+            if(self.newCode() == self.copySourceCode()){
+                self.$dialog.error({messageId: 'Msg_355'});
+                return;
+            }
             self.$blockui('invisible');  
             self.$ajax(Paths.COPY_SCHEDULE_TABLE_OUTPUT_SETTING, request).done(() => {
                 self.$dialog.info({messageId: "Msg_15"}).then(function() {
                     self.closeDialog();
                     setShare('dataShareKSU005c', self.newCode());
-                });                 
-
-            })
-            .always(() => {
+                });  
+            }).fail((res) => {
+                if(res.messageId == 'Msg_3')                    
+                    $('#outputSettingCopyCode').ntsError('set',{messageId: res.messageId});
+            }).always(() => {
                 self.$blockui('hide');
             });
             self.$blockui('hide');

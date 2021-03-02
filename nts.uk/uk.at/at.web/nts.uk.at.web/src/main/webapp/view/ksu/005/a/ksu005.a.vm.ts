@@ -42,7 +42,9 @@ module nts.uk.at.view.ksu005.a {
                             dataList.push(new ItemModel(item.code, item.name));
                         });
                         character.restore('characterKsu005a').done((obj: Characteristics) => {
-                            self.selectedCode(obj.code);
+                            if(obj){
+                                self.selectedCode(obj.code);
+                            }                            
                         })
                     } else if(data[0].isAttendance){ 
                             self.openDialog();                    
@@ -88,7 +90,7 @@ module nts.uk.at.view.ksu005.a {
                                 self.openDialog();
                             });
                         } else {
-                            self.$dialog.info({ messageId: 'Msg_1970' }).then(() => {                                
+                            self.$dialog.error({ messageId: 'Msg_1970' }).then(() => {                                
                                 self.closeDialog();
                             });
                         }

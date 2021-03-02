@@ -235,8 +235,8 @@ module nts.uk.at.view.ksu005.b {
                         
                         self.scheduleTableOutputSetting().isEnableCode(false);
                         self.isEnableAddBtn(data.shiftBackgroundColor == 0);
-                        if(self.isShiftBackgroundColor() != (data.shiftBackgroundColor ==1)){
-                            self.isReload(true);
+                        if(self.isShiftBackgroundColor() != (data.shiftBackgroundColor ==1)){                               
+                            self.isReload(true);            
                             self.isShiftBackgroundColor(data.shiftBackgroundColor == 1);
                         }                        
     
@@ -290,10 +290,16 @@ module nts.uk.at.view.ksu005.b {
                 self.$ajax(Paths.GET_SCHEDULE_TABLE_OUTPUT_SETTING_BY_CODE + "/" + code).done((data: IScheduleTableOutputSetting) => {
                     self.countNumberRow = 1;
                     if (!_.isNull(data) && !_.isEmpty(data)) {
-                        self.clearError();                       
+                        self.clearError();                    
+                        
+                        let personalInfoItemsSize = data.personalInfo.length;
+                        let additionalItemsSize = data.attendanceItem.length;
+                        let attendanceItemSize = data.attendanceItem.length;
+                        let maxLength = Math.max(personalInfoItemsSize, additionalItemsSize, attendanceItemSize);
                         let datas = [];
                         let tempSelected: Array<any> = [];
                         let tempSelectedCode: Array<any> = [];
+
 
                         self.scheduleTableOutputSetting().updateData(data);
                         self.scheduleTableOutputSetting().isEnableCode(false);
@@ -303,7 +309,7 @@ module nts.uk.at.view.ksu005.b {
                         datas.push(new ScreenItem(true, self.countNumberRow, data.personalInfo[0] != null ? data.personalInfo[0].toString() : null,
                             data.additionalInfo[0] != null ? data.additionalInfo[0].toString() : null,
                             data.attendanceItem[0] != null ? data.attendanceItem[0].toString() : null));
-
+                                                    
                         self.itemList(datas);
                         self.itemsSwap.removeAll();
                         self.currentCodeListSwap.removeAll();
@@ -347,23 +353,23 @@ module nts.uk.at.view.ksu005.b {
             self.selectedPerson([]);
         }
 
-        public registerOrUpdate(): void {
+        public registerOrUpdate(): void {        
             const self = this;            
             if (self.validateAll()) {
                 return;
             }
             if(self.condition1()) {
-                self.$dialog.info({messageId: 'Msg_1130'});
+                self.$dialog.error({messageId: 'Msg_1130'});
                 return;                                
             }
 
             if(self.condition2()) {
-                self.$dialog.info({messageId: 'Msg_1972'});
+                self.$dialog.error({messageId: 'Msg_1972'});
                 return;                                
             }
 
             if(self.condition3()) {
-                self.$dialog.info({messageId: 'Msg_1973'});
+                self.$dialog.error({messageId: 'Msg_1973'});
                 return;                                
             }
 
@@ -406,8 +412,8 @@ module nts.uk.at.view.ksu005.b {
                 self.$ajax(Paths.REGISTER_SCHEDULE_TABLE_OUTPUT_SETTING, command).done(() =>{
                     self.$dialog.info({messageId: 'Msg_15'}).then(() => {
                         self.selectedCode(command.code);
-                        self.reloadData(command.code);
-                    });                    
+                        self.reloadData(command.code);                        
+                    });  
                 }).fail((res) => {
                     if(res.messageId == 'Msg_3' || res.messageId == 'Msg_1971'){
                         self.selectedCode('');
@@ -419,7 +425,11 @@ module nts.uk.at.view.ksu005.b {
             } else {              
                 self.$ajax(Paths.UPDATE_SCHEDULE_TABLE_OUTPUT_SETTING, command).done(() =>{
                     self.selectedCode(command.code);
-                    self.reloadData(command.code);
+                    if(!command.shiftBackgroundColor || command.shiftBackgroundColor == self.scheduleTableOutputSetting().shiftBackgroundColor()){
+                        self.reloadData(command.code);
+                    } else {
+                        self.loadDetail(command.code, command.additionalColumn, self.isShiftBackgroundColor());
+                    } 
                     self.$dialog.info({messageId: "Msg_15"}).then(function() {
                         $('#outputSettingName').focus();
                     }); 
@@ -428,7 +438,7 @@ module nts.uk.at.view.ksu005.b {
                 }).always(() =>{
                     self.$blockui("hide");
                 });
-            }
+            }           
             self.$blockui("hide");
         }
 
