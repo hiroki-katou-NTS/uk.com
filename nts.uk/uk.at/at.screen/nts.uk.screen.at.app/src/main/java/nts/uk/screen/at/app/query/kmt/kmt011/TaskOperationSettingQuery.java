@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.app.query.scherec.taskmanagement.operationsetting;
+package nts.uk.screen.at.app.query.kmt.kmt011;
 
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.operationsetting.TaskOperationMethod;

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.app.query.scherec.taskmanagement.operationsetting;
+package nts.uk.screen.at.app.query.kmt.kmt011;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

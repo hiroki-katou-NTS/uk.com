@@ -1,8 +1,8 @@
-package nts.uk.ctx.at.shared.ws.scherec.taskmanagement.operationsetting;
+package nts.uk.screen.at.ws.kmt.kmt011;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.shared.app.query.scherec.taskmanagement.operationsetting.TaskOperationSettingDto;
-import nts.uk.ctx.at.shared.app.query.scherec.taskmanagement.operationsetting.TaskOperationSettingQuery;
+import nts.uk.screen.at.app.query.kmt.kmt011.TaskOperationSettingDto;
+import nts.uk.screen.at.app.query.kmt.kmt011.TaskOperationSettingQuery;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
