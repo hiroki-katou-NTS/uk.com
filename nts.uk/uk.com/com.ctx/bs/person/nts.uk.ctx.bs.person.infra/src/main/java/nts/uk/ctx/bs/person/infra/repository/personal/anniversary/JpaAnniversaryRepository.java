@@ -31,6 +31,10 @@ public class JpaAnniversaryRepository extends JpaRepository implements Anniversa
             + " OR("
             + " CAST(CONCAT('{:todayNextYear}',　a.ANNIVERSARY_DATE) AS datetime2) >= CAST('{:anniversary}' as datetime2)"
             + " AND CAST(CONCAT('{:todayNextYear}',a.ANNIVERSARY_DATE) AS datetime2) <= DATEADD(day,　a.NOTIFICATION_DAYS,　CAST('{:anniversary}' as datetime2))"
+            + " )"
+            + " OR("
+            + " CAST(CONCAT('{:todayYear}',　a.ANNIVERSARY_DATE) AS datetime2) <= CAST('{:anniversary}' as datetime2)"
+            + " AND DATEADD(year,　1,　CAST(a.READ_DATE as datetime2)) <= CAST('{:anniversary}' as datetime2)"
             + " )";
 
     //select by date period
