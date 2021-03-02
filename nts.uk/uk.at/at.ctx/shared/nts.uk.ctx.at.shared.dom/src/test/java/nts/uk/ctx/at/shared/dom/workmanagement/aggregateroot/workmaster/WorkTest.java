@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.workmanagement.workmaster;
+package nts.uk.ctx.at.shared.dom.workmanagement.aggregateroot.workmaster;
 
 import lombok.val;
 import mockit.Expectations;
@@ -9,8 +9,8 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.*;
-import nts.uk.ctx.at.shared.dom.workmanagement.workframe.WorkFrameUsageSetting;
 import nts.uk.shr.com.color.ColorCode;
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -96,7 +96,7 @@ public class WorkTest {
         val instance = Helper.createDomainTaskFrameNo01(require);
          GeneralDate date = GeneralDate.fromString("2021/02/01", Helper.DATE_FORMAT);
          val ep = instance.checkExpirationDate(date);
-        assertThat(ep).isTrue();
+        Assertions.assertThat(ep).isTrue();
     }
 
     /**
@@ -107,7 +107,7 @@ public class WorkTest {
         val instance = Helper.createDomainTaskFrameNo01(require);
          GeneralDate date = GeneralDate.fromString("2023/02/01", Helper.DATE_FORMAT);
          val ep = instance.checkExpirationDate(date);
-        assertThat(ep).isFalse();
+        Assertions.assertThat(ep).isFalse();
     }
 
     /**

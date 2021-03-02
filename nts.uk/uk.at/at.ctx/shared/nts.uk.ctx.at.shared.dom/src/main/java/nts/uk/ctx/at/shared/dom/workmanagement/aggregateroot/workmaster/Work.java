@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.workmanagement.workmaster;
+package nts.uk.ctx.at.shared.dom.workmanagement.aggregateroot.workmaster;
 
 import lombok.Getter;
 import nts.arc.error.BusinessException;

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.workmanagement.worknarrowingdown;
+package nts.uk.ctx.at.shared.dom.workmanagement.aggregateroot.worknarrowingdown;
 
 
 import lombok.Getter;

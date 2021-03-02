@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.workmanagement.operationsettings;
+package nts.uk.ctx.at.shared.dom.workmanagement.aggregateroot.operationsettings;
 
 
 import lombok.val;

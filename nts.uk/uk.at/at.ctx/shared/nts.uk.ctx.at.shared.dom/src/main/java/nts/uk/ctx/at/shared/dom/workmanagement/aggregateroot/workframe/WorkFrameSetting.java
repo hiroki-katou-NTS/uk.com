@@ -1,8 +1,7 @@
-package nts.uk.ctx.at.shared.dom.workmanagement.workframe;
+package nts.uk.ctx.at.shared.dom.workmanagement.aggregateroot.workframe;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 

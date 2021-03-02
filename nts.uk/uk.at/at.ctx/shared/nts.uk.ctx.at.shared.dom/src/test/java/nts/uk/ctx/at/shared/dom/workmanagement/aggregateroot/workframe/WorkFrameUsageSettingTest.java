@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.workmanagement.workframe;
+package nts.uk.ctx.at.shared.dom.workmanagement.aggregateroot.workframe;
 
 
 import lombok.val;
