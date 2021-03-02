@@ -16,13 +16,15 @@ public class PortalStampSettingsHelper {
 				new ButtonDisSet(new ButtonNameSet(new ColorCode("DUMMY"), new ButtonName("DUMMY")),
 						new ColorCode("DUMMY")),
 				new ButtonType(ReservationArt.CANCEL_RESERVATION, Optional.empty()), NotUseAtr.NOT_USE,
-				AudioType.GOOD_JOB));
+				AudioType.GOOD_JOB,
+				Optional.of(SupportWplSet.USE_THE_STAMPED_WORKPLACE)));
 		
 		lstBS.add(new ButtonSettings(new ButtonPositionNo(2),
 				new ButtonDisSet(new ButtonNameSet(new ColorCode("DUMMY"), new ButtonName("DUMMY")),
 						new ColorCode("DUMMY")),
 				new ButtonType(ReservationArt.CANCEL_RESERVATION, Optional.empty()), NotUseAtr.NOT_USE,
-				AudioType.GOOD_JOB));
+				AudioType.GOOD_JOB,
+				Optional.of(SupportWplSet.USE_THE_STAMPED_WORKPLACE)));
 
 		return new PortalStampSettings("000-0000000001",
 				new DisplaySettingsStampScreen(new CorrectionInterval(1),
@@ -36,7 +38,8 @@ public class PortalStampSettingsHelper {
 				new ButtonDisSet(new ButtonNameSet(new ColorCode("DUMMY"), new ButtonName("DUMMY")),
 						new ColorCode("DUMMY")),
 				new ButtonType(ReservationArt.CANCEL_RESERVATION, Optional.empty()), NotUseAtr.NOT_USE,
-				AudioType.GOOD_JOB);
+				AudioType.GOOD_JOB,
+				Optional.of(SupportWplSet.USE_THE_STAMPED_WORKPLACE));
 		
 		return Optional.of(buttonSettings);
 	}

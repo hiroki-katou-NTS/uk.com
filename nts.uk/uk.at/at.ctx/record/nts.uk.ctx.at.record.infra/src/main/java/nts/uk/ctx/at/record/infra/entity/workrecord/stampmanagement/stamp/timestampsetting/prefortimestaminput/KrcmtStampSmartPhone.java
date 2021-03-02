@@ -21,9 +21,10 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.DisplaySettingsStampScreen;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ResultDisplayTime;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingDateTimeColorOfStampScreen;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingsSmartphoneStamp;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.settingforsmartphone.SettingsSmartphoneStamp;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -80,6 +81,18 @@ public class KrcmtStampSmartPhone extends ContractUkJpaEntity implements Seriali
 	@Column(name = "BUTTON_EMPHASIS_ART")
 	public Boolean buttonEmphasisArt;
 	
+	/**
+	 * 	位置情報を利用する
+	 */
+	@Column(name = "LOCATION_INFO_USE")
+	public Integer locationInfoUse;
+	
+	/**
+	 * 	打刻エリア制限する							
+	 */
+	@Column(name = "AREA_LIMIT_ATR")
+	public Integer areaLimitAtr;
+	
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "krcmtStampSmartPhone", orphanRemoval = true)
 	public List<KrcmtStampPageLayout> listKrcmtStampPageLayout;
 
@@ -101,6 +114,8 @@ public class KrcmtStampSmartPhone extends ContractUkJpaEntity implements Seriali
 		this.backGroundColor = domain.getDisplaySettingsStampScreen().getSettingDateTimeColor().getBackGroundColor().v();
 		this.buttonEmphasisArt = domain.isButtonEmphasisArt();
 		this.listKrcmtStampPageLayout = domain.getPageLayoutSettings().stream().map(c->KrcmtStampPageLayout.toEntity(c, domain.getCid(), 3)).collect(Collectors.toList());
+		this.locationInfoUse = domain.getLocationInfoUse().value;
+		this.areaLimitAtr = domain.getAreaLimitAtr().value;
 	}
 	
 	public SettingsSmartphoneStamp toDomain() {
@@ -113,6 +128,8 @@ public class KrcmtStampSmartPhone extends ContractUkJpaEntity implements Seriali
 						new ColorCode(this.backGroundColor)),
 					new ResultDisplayTime(this.resultDisplayTime)),
 				this.listKrcmtStampPageLayout.stream().map(c->c.toDomain()).collect(Collectors.toList()), 
-				this.buttonEmphasisArt);
+				this.buttonEmphasisArt,
+				NotUseAtr.valueOf(this.locationInfoUse),
+				NotUseAtr.valueOf(this.areaLimitAtr));
 	}
 }

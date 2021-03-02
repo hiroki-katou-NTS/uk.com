@@ -34,6 +34,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ReservationArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ResultDisplayTime;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingDateTimeColorOfStampScreen;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SupportWplSet;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -119,7 +120,8 @@ public class EnterStampFromPortalServiceTest {
 				new ButtonDisSet(new ButtonNameSet(new ColorCode("DUMMY"), new ButtonName("DUMMY")), new ColorCode("DUMMY")), 
 				new ButtonType(ReservationArt.NONE, Optional.empty()),
 				NotUseAtr.USE,
-				AudioType.NONE));
+				AudioType.NONE,
+				Optional.of(SupportWplSet.USE_THE_STAMPED_WORKPLACE)));
 		
 		PortalStampSettings portalStampSettings = new PortalStampSettings("DUMMY", displaySettingsStamScreen, buttonSettings, true, true);
 		

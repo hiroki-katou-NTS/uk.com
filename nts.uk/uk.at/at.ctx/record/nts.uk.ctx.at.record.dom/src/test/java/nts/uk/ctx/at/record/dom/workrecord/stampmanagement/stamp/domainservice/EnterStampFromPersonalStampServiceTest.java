@@ -42,6 +42,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageName;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSettingPerson;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampingScreenSet;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SupportWplSet;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -125,19 +126,22 @@ public class EnterStampFromPersonalStampServiceTest {
 				new ButtonDisSet(new ButtonNameSet(new ColorCode("DUMMY"), new ButtonName("DUMMY")), new ColorCode("DUMMY")),
 				new ButtonType(ReservationArt.NONE , Optional.empty()),
 				NotUseAtr.USE,
-				AudioType.NONE));
+				AudioType.NONE,
+				Optional.of(SupportWplSet.USE_THE_STAMPED_WORKPLACE)));
 		
 		lstButtonSet.add(new ButtonSettings(new ButtonPositionNo(1),
 				new ButtonDisSet(new ButtonNameSet(new ColorCode("DUMMY"), new ButtonName("DUMMY")), new ColorCode("DUMMY")),
 				new ButtonType(ReservationArt.NONE , Optional.empty()),
 				NotUseAtr.USE,
-				AudioType.NONE));
+				AudioType.NONE,
+				Optional.of(SupportWplSet.USE_THE_STAMPED_WORKPLACE)));
 		
 		lstButtonSet.add(new ButtonSettings(new ButtonPositionNo(1),
 				new ButtonDisSet(new ButtonNameSet(new ColorCode("DUMMY"), new ButtonName("DUMMY")), new ColorCode("DUMMY")),
 				new ButtonType(ReservationArt.NONE , Optional.empty()),
 				NotUseAtr.USE,
-				AudioType.NONE));
+				AudioType.NONE,
+				Optional.of(SupportWplSet.USE_THE_STAMPED_WORKPLACE)));
 		
 		stampPageLayouts.add(new StampPageLayout(new PageNo(1), new StampPageName("DUMMY"),
 				new StampPageComment(new PageComment("DUMMY"), new ColorCode("DUMMY")), ButtonLayoutType.SMALL_8,

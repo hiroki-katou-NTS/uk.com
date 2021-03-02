@@ -29,8 +29,8 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecordRepo
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.EnterStampFromSmartPhoneService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampDataReflectResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.TimeStampInputResult;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingsSmartphoneStamp;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingsSmartphoneStampRepository;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.settingforsmartphone.SettingsSmartphoneStamp;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.settingforsmartphone.SettingsSmartphoneStampRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyImport622;
@@ -79,11 +79,11 @@ public class RegisterSmartPhoneStampCommandHandler
 		EnterStampFromSmartPhoneServiceImpl require = new EnterStampFromSmartPhoneServiceImpl(stampCardRepo,
 				stampCardEditRepo, companyAdapter, sysEmpPub, stampRecordRepo, stampDakokuRepo,
 				createDailyResultDomainSv, getSettingRepo);
-
+		
 		TimeStampInputResult stampRes = EnterStampFromSmartPhoneService.create(require,
 				new ContractCode(AppContexts.user().contractCode()), AppContexts.user().employeeId(),
 				cmd.getStampDatetime(), cmd.getStampButton().toDomainValue(),
-				Optional.ofNullable(cmd.getGeoCoordinate().toDomainValue()), cmd.getRefActualResult().toDomainValue());
+				Optional.ofNullable(cmd.getGeoCoordinate().toDomainValue()), cmd.getRefActualResult().toDomainValue(), AppContexts.user().companyId());
 		// 2.1:not 打刻入力結果 empty
 
 		if (stampRes != null) {
@@ -134,7 +134,7 @@ public class RegisterSmartPhoneStampCommandHandler
 
 		@Inject
 		private SettingsSmartphoneStampRepository getSettingRepo;
-
+		
 		@Override
 		public List<StampCard> getLstStampCardBySidAndContractCd(String sid) {
 			return this.stampCardRepo.getLstStampCardBySidAndContractCd(AppContexts.user().contractCode(), sid);
@@ -187,6 +187,11 @@ public class RegisterSmartPhoneStampCommandHandler
 		@Override
 		public Optional<SettingsSmartphoneStamp> getSmartphoneStampSetting() {
 			return this.getSettingRepo.get(AppContexts.user().companyId());
+		}
+
+		@Override
+		public Optional<SettingsSmartphoneStamp> getSettingsSmartphoneStamp(String cid) {
+			return getSettingRepo.get(cid);
 		}
 
 	}

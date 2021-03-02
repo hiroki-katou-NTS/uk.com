@@ -70,7 +70,7 @@ public class JpaStampUsageRepository extends JpaRepository implements SettingsUs
 				entity.nameSelection == 1 ? true : false,
 				entity.fingerAuthentication == 1 ? true : false, entity.ICCardStamp == 1 ? true : false,
 				entity.personStamp == 1 ? true : false, entity.portalStamp == 1 ? true : false,
-				entity.smartPhoneStamp == 1 ? true : false);
+				entity.smartPhoneStamp == 1 ? true : false, entity.ricohStamp == 1 ? true : false);
 	}
 
 }

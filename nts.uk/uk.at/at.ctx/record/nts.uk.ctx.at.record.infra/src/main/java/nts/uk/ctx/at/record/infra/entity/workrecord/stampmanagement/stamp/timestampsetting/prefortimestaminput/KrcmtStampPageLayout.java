@@ -24,6 +24,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageComment;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageLayout;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageName;
+import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.timestampsetting.prefortimestaminput.stampsettingofRICOHcopier.KrcmtStampRicoh;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
@@ -75,6 +76,13 @@ public class KrcmtStampPageLayout extends ContractUkJpaEntity{
     	@JoinColumn(name = "STAMP_MEANS", insertable = false, updatable = false)
     })
 	public KrcmtStampSmartPhone krcmtStampSmartPhone;
+	
+	@ManyToOne
+    @JoinColumns({
+    	@JoinColumn(name = "CID", insertable = false, updatable = false),
+    	@JoinColumn(name = "STAMP_MEANS", insertable = false, updatable = false)
+    })
+	public KrcmtStampRicoh krcmtStampRicoh;
 	
 	@Override
 	protected Object getKey() {

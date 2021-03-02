@@ -1,7 +1,7 @@
 /**
  * 
  */
-package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput;
+package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.settingforsmartphone;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,6 +11,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonSettings;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.DisplaySettingsStampScreen;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampButton;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageLayout;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * AR: スマホ打刻の打刻設定
@@ -33,7 +38,13 @@ public class SettingsSmartphoneStamp implements DomainAggregate{
 	private List<StampPageLayout> pageLayoutSettings;
 	
 	// 打刻ボタンを抑制する
-	private boolean buttonEmphasisArt;	
+	private boolean buttonEmphasisArt;
+	
+	// 	位置情報を利用する
+	private NotUseAtr locationInfoUse;
+	
+	// 	打刻エリア制限する
+	private NotUseAtr areaLimitAtr;
 	
 	// [1] ボタン詳細設定を取得する																							
 	public Optional<ButtonSettings> getDetailButtonSettings(StampButton stamButton) {

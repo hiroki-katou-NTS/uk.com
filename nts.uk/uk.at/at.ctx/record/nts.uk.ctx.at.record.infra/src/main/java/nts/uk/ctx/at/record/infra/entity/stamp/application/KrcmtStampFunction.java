@@ -57,6 +57,13 @@ public class KrcmtStampFunction  extends ContractUkJpaEntity implements Serializ
 	@Column(name = "MAP_ADDRESS")
 	public String mapAddress;
 	
+	/**
+	 * GoogleMap利用するか
+	 */
+	@Basic(optional = false)
+	@Column(name = "SUPPORT_USE_ART")
+	public int supportUseArt;
+	
 	@OneToMany(targetEntity = KrccpStampRecordDis.class, mappedBy = "krccpStampFunction", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JoinTable(name = "KRCMT_STAMP_RECORD_DIS")
 	public List<KrccpStampRecordDis> lstRecordDis;
