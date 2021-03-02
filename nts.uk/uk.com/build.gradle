@@ -202,8 +202,24 @@ subprojects {
 		
         compile group: 'nts.gul', name: 'nts.gul', version: version
         compile group: 'nts.arc', name: 'nts.arc', version: version
+		compile group: 'nts.tenantlocator.client', name:'nts.tenantlocator.client', version:version
+		compile group: 'nts.tenantlocator.common', name:'nts.tenantlocator.common', version:version
+		
+        
+        // OneLogin Java SAML Toolkit
+		compile group: 'com.onelogin', name: 'java-saml', version: '2.5.0'
+		compile group: 'com.onelogin', name: 'java-saml-core', version: '2.5.0'
+		
+		// SAMLに使用
+		compile group: 'commons-codec', name: 'commons-codec', version: '1.15'
+        compile group: 'xmlsec', name: 'xmlsec', version: '2.1.4'
+        
+        compile group: 'nts.jobdistributor', name: 'nts.jobdistributor.common', version: version
+        compile group: 'nts.jobdistributor', name: 'nts.jobdistributor.client', version: version
+        compile group: 'nts.jobdistributor', name: 'nts.jobdistributor.worker', version: version
 	}
 }
+
 //=============com.file�==========================================
 project (':com.file:nts.uk.file.com.ws') {
 	dependencies {
@@ -390,6 +406,39 @@ project (':com.ctx:sys:share:nts.uk.ctx.sys.shared.pubimp') {
 }
 //========================sys:shared �====================================
 
+//========================sys:tenant====================================
+project (':com.ctx:sys:tenant:nts.uk.ctx.sys.tenant.ws') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':com.ctx:sys:tenant:nts.uk.ctx.sys.tenant.app')
+	}
+}
+
+project (':com.ctx:sys:share:nts.uk.ctx.sys.shared.app') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':com.ctx:sys:share:nts.uk.ctx.sys.shared.dom')
+		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.dom')
+		compile project(':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.dom')
+	}
+}
+
+project (':com.ctx:sys:tenant:nts.uk.ctx.sys.tenant.dom') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.dom')
+		compile project(':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.dom')
+	}
+}
+
+project (':com.ctx:sys:tenant:nts.uk.ctx.sys.tenant.ac') {
+	dependencies {
+		compile project(':shr:nts.uk.shr.com')
+		compile project(':com.ctx:sys:tenant:nts.uk.ctx.sys.tenant.dom')
+	}
+}
+//========================sys:tenant====================================
+
 //========================sys:auth �====================================
 project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.ws') {
 	dependencies {
@@ -401,6 +450,7 @@ project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.ws') {
 project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.dom') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
+		compile project(':com.ctx:sys:share:nts.uk.ctx.sys.shared.dom')
 	}
 }
 
@@ -409,6 +459,7 @@ project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.app') {
 		compile project(':shr:nts.uk.shr.com')
 		compile project(':shr:nts.uk.shr.find')
 		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.dom')
+		compile project(':com.ctx:sys:share:nts.uk.ctx.sys.shared.dom')
 	}
 }
 
@@ -467,6 +518,7 @@ project (':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.ws') {
 project (':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.dom') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
+		compile project(':com.ctx:sys:share:nts.uk.ctx.sys.shared.dom')
 	}
 }
 
@@ -475,6 +527,7 @@ project (':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.app') {
 		compile project(':shr:nts.uk.shr.com')
 		compile project(':shr:nts.uk.shr.find')
 		compile project(':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.dom')
+		compile project(':com.ctx:sys:share:nts.uk.ctx.sys.shared.dom')
 	}
 }
 
@@ -1032,6 +1085,9 @@ project (':com.web:nts.uk.com.web') {
 		runtime group: 'org.apache.geronimo.javamail', name: 'geronimo-javamail_1.4_mail', version: '1.8.4'
 		
 		runtime group: 'com.googlecode.juniversalchardet', name: 'juniversalchardet', version: '1.0.3'
+		
+		// OneLogin java-samlに必要
+		runtime group: 'joda-time', name: 'joda-time', version: '2.10.6'
 
 		runtime project (':com.ctx:basic:nts.uk.ctx.basic.ac')
 		runtime project (':com.ctx:basic:nts.uk.ctx.basic.app')
@@ -1065,6 +1121,7 @@ project (':com.web:nts.uk.com.web') {
 		runtime project (':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.pubimp')
 		runtime project (':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.ws')
 
+		runtime project (':com.ctx:sys:share:nts.uk.ctx.sys.shared.ac')
 		runtime project (':com.ctx:sys:share:nts.uk.ctx.sys.shared.app')
 		runtime project (':com.ctx:sys:share:nts.uk.ctx.sys.shared.dom')
 		runtime project (':com.ctx:sys:share:nts.uk.ctx.sys.shared.infra')

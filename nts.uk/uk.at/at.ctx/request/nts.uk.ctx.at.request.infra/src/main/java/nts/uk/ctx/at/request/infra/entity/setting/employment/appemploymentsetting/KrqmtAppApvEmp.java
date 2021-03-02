@@ -13,7 +13,7 @@ import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.BreakOr
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.BusinessTripAppWorkType;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.TargetWorkTypeByApp;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 import org.apache.commons.lang3.BooleanUtils;
 
 import javax.persistence.*;

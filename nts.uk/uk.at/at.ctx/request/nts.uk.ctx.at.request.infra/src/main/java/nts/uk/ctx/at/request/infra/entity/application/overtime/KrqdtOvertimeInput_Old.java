@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KRQDT_OVERTIME_INPUT")
+@Table(name = "KRQDT_APP_OVERTIME_INPUT")
 public class KrqdtOvertimeInput_Old extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

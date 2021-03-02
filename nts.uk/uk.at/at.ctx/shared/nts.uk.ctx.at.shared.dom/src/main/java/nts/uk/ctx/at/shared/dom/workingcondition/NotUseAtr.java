@@ -67,6 +67,34 @@ public enum NotUseAtr {
 		// Not found.
 		return null;
 	}
+	
+	public static NotUseAtr valueOf(Boolean value) {
+		// Invalid object.
+		if (value == null) {
+			return null;
+		}
+		if (value) {
+			return NotUseAtr.USE;
+		} else {
+			return NotUseAtr.NOTUSE;
+		}
+	}
+	
+	/**
+	 * 使用するか判定する
+	 * @return　boolean
+	 */
+	public boolean isUse() {
+		return USE.equals(this);
+	}
+	
+	/**
+	 * 使用しないか判定する
+	 * @return　boolean
+	 */
+	public boolean isNotUse() {
+		return NOTUSE.equals(this);
+	}
 
 
 }

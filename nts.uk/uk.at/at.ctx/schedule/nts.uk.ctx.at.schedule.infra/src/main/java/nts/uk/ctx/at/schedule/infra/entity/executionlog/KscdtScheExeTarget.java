@@ -14,7 +14,7 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * The Class KscdtScheExeTarget.
@@ -25,7 +25,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name = "KSCDT_BATCH_TARGET_SYA")
-public class KscdtScheExeTarget extends UkJpaEntity implements Serializable {
+public class KscdtScheExeTarget extends ContractUkJpaEntity implements Serializable {
 
     /**
      * The Constant serialVersionUID.
@@ -45,12 +45,6 @@ public class KscdtScheExeTarget extends UkJpaEntity implements Serializable {
     @Column(name = "EXE_STATUS")
     private int exeStatus;
 
-    /**
-     * 契約コード
-     */
-    @Basic(optional = false)
-    @Column(name = "CONTRACT_CD")
-    private String contractCd;
     /**
      * The cid.
      */

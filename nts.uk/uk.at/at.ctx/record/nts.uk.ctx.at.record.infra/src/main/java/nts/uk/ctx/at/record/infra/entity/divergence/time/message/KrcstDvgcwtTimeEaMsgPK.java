@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * The primary key class for the KRCST_DVGCWT_TIME_EA_MSG database table.
+ * The primary key class for the KRCMT_DVGC_ERAL_MSG_BUS database table.
  * 
  */
 @Getter

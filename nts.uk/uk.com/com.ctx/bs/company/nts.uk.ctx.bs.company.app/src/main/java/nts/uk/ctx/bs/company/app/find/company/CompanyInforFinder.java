@@ -49,7 +49,7 @@ public class CompanyInforFinder {
 	 */
 	public List<CompanyInforDto> findAll(){
 		String contractCd = AppContexts.user().contractCode();
-		return this.comRep.findAll()
+		return this.comRep.findAll(contractCd)
 							.stream()
 							.map(x -> {
 								return new CompanyInforDto( x.getCompanyCode().v(), x.getCompanyName().v(),

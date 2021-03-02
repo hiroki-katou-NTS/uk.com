@@ -1,4 +1,4 @@
-module nts.uk.pr.view.ccg007.d {
+﻿module nts.uk.pr.view.ccg007.d {
     export module viewmodel {
         import SystemConfigDto = service.SystemConfigDto;
         import ContractDto = service.ContractDto;
@@ -70,7 +70,7 @@ module nts.uk.pr.view.ccg007.d {
                             //check ShowContract
                             if (showContractData.onpre) {
                                 nts.uk.characteristics.remove("contractInfo");
-                                nts.uk.characteristics.save("contractInfo", { contractCode: defaultContractCode, contractPassword: self.contractPassword() });
+                                nts.uk.characteristics.save("contractInfo", { contractCode:defaultContractCode, contractPassword: self.contractPassword() });
                                 self.contractCode(defaultContractCode);
                                 self.contractPassword(null);
                                 self.getEmployeeLoginSetting(defaultContractCode);
@@ -235,7 +235,31 @@ module nts.uk.pr.view.ccg007.d {
                 });
             }
 
-            private doSuccessLogin(messError) {
+            private SamlLogin() {
+                var self = this;
+                var samlData: any = {};
+                samlData.tenantCode = _.escape(self.contractCode());
+                samlData.tenantPassword = _.escape(self.contractPassword());
+                samlData.issueUrl = location.href;
+                samlData.requestUrl = "";
+                
+                blockUI.invisible();
+                service.samlLogin(samlData).done(authenticateInfo => {
+                    if(!nts.uk.util.isNullOrUndefined(authenticateInfo.errorMessage)&&!nts.uk.util.isNullOrEmpty(authenticateInfo.errorMessage)){
+                        nts.uk.ui.dialog.info({ messageId: authenticateInfo.errorMessage });
+                    }
+                    blockUI.clear();
+                    if(authenticateInfo.useSamlSso){
+                        // SSO運用している場合
+                        location.href = authenticateInfo.authenUrl;
+                    } else {
+                        // SSO運用していない場合
+                    }
+                })
+            }
+
+            
+            private doSuccessLogin(messError){
                 var self = this;
                 if (messError.showContract) {
                     self.openContractAuthDialog();
