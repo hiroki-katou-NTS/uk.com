@@ -2555,6 +2555,22 @@ public class WorkTimeReportService_New {
                 cells.get("ED" + (startIndex + 1)).setValue(getInDayTimeWithFormat(certainTime));
             }
         }
+        
+        // 12       タブグ:                深夜
+        
+        /*
+         * R5_198
+         * 深夜残業.深夜時間丸め
+         */
+        Integer unitLateNight = data.getFlowWorkSetting().getCommonSetting().getLateNightTimeSet().getRoundingSetting().getRoundingTime();
+        cells.get("EE" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitLateNight));
+        
+        /*
+         * R5_199
+         * 深夜残業.深夜時間端数
+         */
+        Integer roundingLateNight = data.getFlowWorkSetting().getCommonSetting().getLateNightTimeSet().getRoundingSetting().getRounding();
+        cells.get("EF" + (startIndex + 1)).setValue(getRoundingEnum(roundingLateNight));
     }
     
     /**
