@@ -29,6 +29,7 @@ import nts.uk.ctx.at.shared.app.find.worktime.common.dto.WorkTimezoneOtherSubHol
 import nts.uk.ctx.at.shared.app.find.worktime.dto.WorkTimeSettingInfoDto;
 import nts.uk.ctx.at.shared.app.find.worktime.fixedset.dto.FixHalfDayWorkTimezoneDto;
 import nts.uk.ctx.at.shared.app.find.worktime.flowset.dto.FlOTTimezoneDto;
+import nts.uk.ctx.at.shared.app.find.worktime.flowset.dto.FlWorkHdTimeZoneDto;
 import nts.uk.ctx.at.shared.app.find.worktime.predset.dto.TimezoneDto;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.common.usecls.ApplyAtr;
@@ -1936,6 +1937,77 @@ public class WorkTimeReportService_New {
                 Integer timeManagerSetAtr = data.getFlowWorkSetting().getRestSetting().getFlowRestSetting().getFlowRestSetting().getTimeManagerSetAtr();
                 cells.get("BR" + (startIndex + 1)).setValue(timeManagerSetAtr == 0 ? "休憩中の外出は外出を優先する" : "休憩中の外出は休憩を優先し、外出としては計上されない");
             }
+        }
+        
+        // 6        タブグ:                休出時間帯
+        
+        List<FlWorkHdTimeZoneDto> lstWorkTimezone = data.getFlowWorkSetting().getOffdayWorkTimezone().getLstWorkTimezone();
+        Collections.sort(lstWorkTimezone, new Comparator<FlWorkHdTimeZoneDto>() {
+            public int compare(FlWorkHdTimeZoneDto o1, FlWorkHdTimeZoneDto o2) {
+                return o1.getWorktimeNo().compareTo(o2.getWorktimeNo());
+            };
+        });
+        
+        for (int i = 0; i < lstOTTimezone.size(); i++) {
+            final int index = i;
+            
+            /*
+             * R5_129
+             * 休出時間帯.経過時間
+             */
+            Integer elapsedTime = lstWorkTimezone.get(i).getFlowTimeSetting().getElapsedTime();
+            cells.get("BS" + (startIndex + lstWorkTimezone.get(i).getWorktimeNo())).setValue(getInDayTimeWithFormat(elapsedTime));
+            
+            Optional<WorkdayoffFrameFindDto> workDayOffFrameInLegalBreak = otFrameFind.stream()
+                    .filter(x -> BigDecimal.valueOf(x.getWorkdayoffFrNo()) == lstWorkTimezone.get(index).getInLegalBreakFrameNo())
+                    .findFirst();
+            Optional<WorkdayoffFrameFindDto> workDayOffFrameOutLegalBreak = otFrameFind.stream()
+                    .filter(x -> BigDecimal.valueOf(x.getWorkdayoffFrNo()) == lstWorkTimezone.get(index).getOutLegalBreakFrameNo())
+                    .findFirst();
+            Optional<WorkdayoffFrameFindDto> workDayOffFrameoutLegalPubHD = otFrameFind.stream()
+                    .filter(x -> BigDecimal.valueOf(x.getWorkdayoffFrNo()) == lstWorkTimezone.get(index).getOutLegalPubHolFrameNo())
+                    .findFirst();
+            
+            /*
+             * R5_130
+             * 休出時間帯.法定内休出枠
+             */
+            if (workDayOffFrameInLegalBreak.isPresent()) {
+                cells.get("BT" + (startIndex + lstWorkTimezone.get(i).getWorktimeNo()))
+                .setValue(workDayOffFrameInLegalBreak.get().getWorkdayoffFrName());
+            }
+            
+            /*
+             * R5_131
+             * 休出時間帯.法定外休出枠
+             */
+            if (workDayOffFrameOutLegalBreak.isPresent()) {
+                cells.get("BU" + (startIndex + lstWorkTimezone.get(i).getWorktimeNo()))
+                .setValue(workDayOffFrameOutLegalBreak.get().getWorkdayoffFrName());
+            }
+            
+            /*
+             * R5_132
+             * 休出時間帯.法定外休出枠（祝日）
+             */
+            if (workDayOffFrameoutLegalPubHD.isPresent()) {
+                cells.get("BV" + (startIndex + lstWorkTimezone.get(i).getWorktimeNo()))
+                .setValue(workDayOffFrameoutLegalPubHD.get().getWorkdayoffFrName());
+            }
+            
+            /*
+             * R5_133
+             * 休出時間帯.丸め
+             */
+            Integer unitFlowSet = lstWorkTimezone.get(i).getFlowTimeSetting().getRounding().getRoundingTime();
+            cells.get("BW" + (startIndex + lstWorkTimezone.get(i).getWorktimeNo())).setValue(getRoundingTimeUnitEnum(unitFlowSet));
+            
+            /*
+             * R5_134
+             * 休出時間帯.端数
+             */
+            Integer roundingFlowSet = lstWorkTimezone.get(i).getFlowTimeSetting().getRounding().getRounding();
+            cells.get("BX" + (startIndex + lstWorkTimezone.get(i).getWorktimeNo())).setValue(getRoundingEnum(roundingFlowSet));
         }
     }
     
