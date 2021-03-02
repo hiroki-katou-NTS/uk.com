@@ -20,6 +20,7 @@ public class LeaveNumberInfo implements Cloneable {
 	/**
 	 * 付与数
 	 */
+	@Setter
 	protected LeaveGrantNumber grantNumber;
 
 	/**

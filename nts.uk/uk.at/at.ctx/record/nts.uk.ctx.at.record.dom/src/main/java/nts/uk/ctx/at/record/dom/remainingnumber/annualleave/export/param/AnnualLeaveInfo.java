@@ -32,6 +32,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.erroralarm.AnnualLeaveError;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveGrant;
+import nts.uk.ctx.at.shared.dom.yearholidaygrant.export.NextAnnualLeaveGrant;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveUsedNumber;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AttendanceRate;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
@@ -364,16 +365,18 @@ public class AnnualLeaveInfo implements Cloneable {
 		if (!aggregatePeriodWork.getGrantWork().isGrantAtr()) return aggrResult;
 
 		// 付与日から期限日を計算
-		if (!aggregatePeriodWork.getGrantWork().getSpecialLeaveGrant().isPresent()) return aggrResult;
-		val annualLeaveGrant = aggregatePeriodWork.getGrantWork().getSpecialLeaveGrant().get();
+		if (!aggregatePeriodWork.getGrantWork().getAnnualLeaveGrant().isPresent()) return aggrResult;
+		val annualLeaveGrant = aggregatePeriodWork.getGrantWork().getAnnualLeaveGrant().get();
 		val grantDate = annualLeaveGrant.getGrantDate();
 		//val deadline = this.annualPaidLeaveSet.calcDeadline(grantDate);
 		val deadline = annualLeaveGrant.getDeadLine();
 
 		// 付与日数を確認する
 		double grantDays = 0.0;
-		if (aggregatePeriodWork.getGrantWork().getSpecialLeaveGrant().isPresent()){
-			grantDays = aggregatePeriodWork.getGrantWork().getSpecialLeaveGrant().get().getGrantDays().v().doubleValue();
+		if (aggregatePeriodWork.getGrantWork().getAnnualLeaveGrant().isPresent()){
+			if ( aggregatePeriodWork.getGrantWork().getAnnualLeaveGrant().get().getGrantDays().isPresent() ) {
+				grantDays = aggregatePeriodWork.getGrantWork().getAnnualLeaveGrant().get().getGrantDays().get().v().doubleValue();
+			}
 		}
 
 		// 次回年休付与を確認する
@@ -381,30 +384,31 @@ public class AnnualLeaveInfo implements Cloneable {
 		Double deductedDays = null;
 		Double workingDays = null;
 		Double attendanceRate = 0.0;
-//		if (aggregatePeriodWork.getGrantWork().getSpecialLeaveGrant().isPresent()){
-//			val nextAnnLeaGrant = aggregatePeriodWork.getGrantWork().getSpecialLeaveGrant().get();
-//			if (nextAnnLeaGrant.getPrescribedDays().isPresent()){
-//				prescribedDays = nextAnnLeaGrant.getPrescribedDays().get().v();
-//			}
-//			if (nextAnnLeaGrant.getDeductedDays().isPresent()){
-//				deductedDays = nextAnnLeaGrant.getDeductedDays().get().v();
-//			}
-//			if (nextAnnLeaGrant.getWorkingDays().isPresent()){
-//				workingDays = nextAnnLeaGrant.getWorkingDays().get().v();
-//			}
-//			if (nextAnnLeaGrant.getAttendanceRate().isPresent()){
-//				attendanceRate = nextAnnLeaGrant.getAttendanceRate().get().v().doubleValue();
-//			}
-//		}
+
+		if (aggregatePeriodWork.getGrantWork().getAnnualLeaveGrant().isPresent()){
+			val nextAnnLeaGrant = aggregatePeriodWork.getGrantWork().getAnnualLeaveGrant().get();
+			if (nextAnnLeaGrant.getPrescribedDays().isPresent()){
+				prescribedDays = nextAnnLeaGrant.getPrescribedDays().get().v();
+			}
+			if (nextAnnLeaGrant.getDeductedDays().isPresent()){
+				deductedDays = nextAnnLeaGrant.getDeductedDays().get().v();
+			}
+			if (nextAnnLeaGrant.getWorkingDays().isPresent()){
+				workingDays = nextAnnLeaGrant.getWorkingDays().get().v();
+			}
+			if (nextAnnLeaGrant.getAttendanceRate().isPresent()){
+				attendanceRate = nextAnnLeaGrant.getAttendanceRate().get().v().doubleValue();
+			}
+		}
 
 		// 「年休付与残数データ」を作成する
 		val newRemainData = AnnualLeaveGrantRemainingData.createFromJavaType(
 				"", employeeId, grantDate, deadline,
 				LeaveExpirationStatus.AVAILABLE.value, GrantRemainRegisterType.MONTH_CLOSE.value,
-				grantDays, null,
-				0.0, null, null,
-				grantDays, null,
-				0.0,
+				grantDays, 0,
+				0.0, 0,
+				0.0, 0.0,
+				0, 0.0,
 				prescribedDays,
 				deductedDays,
 				workingDays);

@@ -783,7 +783,8 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 
 			dividedDayMap.putIfAbsent(grantDate, new DividedDayEachProcess(grantDate));
 			dividedDayMap.get(grantDate).getGrantWork().setGrantAtr(true);
-			//dividedDayMap.get(grantDate).setNextAnnualLeaveGrant(Optional.of(nextAnnualLeaveGrant));
+//			dividedDayMap.get(grantDate).setNextAnnualLeaveGrant(Optional.of(nextAnnualLeaveGrant));
+
 		}
 
 		// 期間終了日翌日の「処理単位分割日」を取得・追加　→　フラグ設定
@@ -837,7 +838,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		for( AggregatePeriodWork nowWork : aggregatePeriodWorks){
 			if ( nowWork.getGrantWork().isGrantAtr() ) // 付与のとき
 			{
-				nowWork.getGrantWork().getSpecialLeaveGrant().ifPresent(x -> {
+				nowWork.getGrantWork().getAnnualLeaveGrant().ifPresent(x -> {
 					x.setTimes(new GrantNum(grantNumber.get()));
 				});
 				grantNumber.incrementAndGet();

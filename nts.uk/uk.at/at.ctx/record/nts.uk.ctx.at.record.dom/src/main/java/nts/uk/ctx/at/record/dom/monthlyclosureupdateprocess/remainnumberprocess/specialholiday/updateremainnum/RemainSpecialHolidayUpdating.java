@@ -54,7 +54,7 @@ public class RemainSpecialHolidayUpdating {
 
 		// 特別休暇付与残数データの更新
 		// 特別休暇付与残数データ更新処理
-		List<SpecialLeaveGrantRemainingData> details = output.getAsOfPeriodEnd().getGrantRemainingDataList();
+		List<SpecialLeaveGrantRemainingData> details = output.getAsOfStartNextDayOfPeriodEnd().getGrantRemainingDataList();
 		for (SpecialLeaveGrantRemainingData detail : details){
 
 			String specialId = IdentifierUtil.randomUniqueId();
@@ -75,7 +75,8 @@ public class RemainSpecialHolidayUpdating {
 			Integer remainMinutes = info.getUsedNumber().getMinutes().isPresent() ? info.getUsedNumber().getMinutes().get().v() : 0;
 			double usedDays = info.getUsedNumber().getDays().v();
 			Integer usedMinutes = info.getUsedNumber().getMinutes().isPresent() ? info.getUsedNumber().getMinutes().get().v() : 0;
-			if(info.getRemainingNumber().getDays().v() < 0) {
+
+			if(info.getRemainingNumber().isShortageRemain()) {
 				//残数を0にする。
 				remainDays = 0.0;
 				remainMinutes = 0;
