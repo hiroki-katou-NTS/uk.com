@@ -159,6 +159,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 
 		//過去月集計モードを判断する
 		boolean isPastMonth = ym.greaterThanOrEqualTo(closureOfEmp.getClosureMonth().getProcessingYm()) ? false : true;
+		YearMonth tempYm = periodOutput == AFTER_1_YEAR ? YearMonth.of(period.start().year(), period.start().month()) : ym;
 		
 		//期間中の年休残数を取得 - 5
 		// 年月←INPUT．指定年 ------対象期間区分が１年経過時点の場合、年月←取得した期間．開始日の年月部分 
@@ -176,8 +177,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 					Optional.of(true),//集計開始日を締め開始日とする
 //					Optional.of(false), //不足分付与残数データ出力区分
 //					Optional.of(isPastMonth),//過去月集計モード
-					Optional.of(periodOutput == AFTER_1_YEAR 
-						? YearMonth.of(fromTo.get().start().year(), fromTo.get().start().month()) : ym)); //年月
+					Optional.of(tempYm)); //年月
 		if(!optAnnualLeaveRemain.isPresent()) {
 			getAnnualHolidayGrantInforDto.setAnnualHolidayGrantInfor(Optional.ofNullable(output));
 			return getAnnualHolidayGrantInforDto;
@@ -189,7 +189,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 				.collect(Collectors.toList()));
 		//指定年月の締め日を取得
 		List<ClosureHistory> closureHistories = closureOfEmp.getClosureHistories().stream()
-				.filter(x -> x.getStartYearMonth().lessThanOrEqualTo(ym) && x.getEndYearMonth().greaterThanOrEqualTo(ym))
+				.filter(x -> x.getStartYearMonth().lessThanOrEqualTo(tempYm) && x.getEndYearMonth().greaterThanOrEqualTo(tempYm))
 				.collect(Collectors.toList());
 		
 		//ダブルトラック開始日を取得する
