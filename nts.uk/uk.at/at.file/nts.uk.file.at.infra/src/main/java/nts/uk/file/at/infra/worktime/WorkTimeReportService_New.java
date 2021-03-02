@@ -2465,6 +2465,96 @@ public class WorkTimeReportService_New {
                 cells.get("DT" + (startIndex + 1)).setValue(raisingSalaryName);
             }
         }
+        
+        // 11       タブグ:                代休
+        
+        List<WorkTimezoneOtherSubHolTimeSetDto> subHolTimeSet = data.getFlowWorkSetting().getCommonSetting().getSubHolTimeSet();
+        Optional<WorkTimezoneOtherSubHolTimeSetDto> subHolTimeWorkDayOffSet = subHolTimeSet.stream()
+                .filter(x -> x.getOriginAtr().equals(CompensatoryOccurrenceDivision.WorkDayOffTime.value)).findFirst();
+        Optional<WorkTimezoneOtherSubHolTimeSetDto> subHolTimeOverTimeOffSet = subHolTimeSet.stream()
+                .filter(x -> x.getOriginAtr().equals(CompensatoryOccurrenceDivision.FromOverTime.value)).findFirst();
+        
+        if (displayMode.equals(DisplayMode.DETAIL.value)) {
+            if (subHolTimeWorkDayOffSet.isPresent()) {
+                /*
+                 * R5_41
+                 * 代休.代休発生に必要な時間.休日出勤
+                 */
+                boolean useDivision = subHolTimeWorkDayOffSet.get().getSubHolTimeSet().isUseDivision();
+                cells.get("DU" + (startIndex + 1)).setValue(useDivision ? "○" : "-");
+                
+                /*
+                 * R5_189
+                 * 代休.代休発生に必要な時間.時間
+                 */
+                Integer subHolTransferSetAtr = subHolTimeWorkDayOffSet.get().getSubHolTimeSet().getSubHolTransferSetAtr();
+                cells.get("DV" + (startIndex + 1)).setValue(subHolTransferSetAtr == 0 ? "指定時間" : "一定時間");
+            }
+        }
+        
+        if (subHolTimeWorkDayOffSet.isPresent()) {
+            /*
+             * R5_190
+             * 代休.代休発生に必要な時間.１日
+             */
+            Integer oneDayTime = subHolTimeWorkDayOffSet.get().getSubHolTimeSet().getDesignatedTime().getOneDayTime();
+            cells.get("DW" + (startIndex + 1)).setValue(getInDayTimeWithFormat(oneDayTime));
+            
+            /*
+             * R5_191
+             * 代休.代休発生に必要な時間.半日
+             */
+            Integer halfDayTime = subHolTimeWorkDayOffSet.get().getSubHolTimeSet().getDesignatedTime().getHalfDayTime();
+            cells.get("DX" + (startIndex + 1)).setValue(getInDayTimeWithFormat(halfDayTime));
+            
+            if (displayMode.equals(DisplayMode.DETAIL.value)) {
+                /*
+                 * R5_192
+                 * 代休.代休発生に必要な時間.一定時間
+                 */
+                Integer certainTime = subHolTimeWorkDayOffSet.get().getSubHolTimeSet().getCertainTime();
+                cells.get("DY" + (startIndex + 1)).setValue(getInDayTimeWithFormat(certainTime));
+            }
+        }
+        
+        if (displayMode.equals(DisplayMode.DETAIL.value)) {
+            if (subHolTimeOverTimeOffSet.isPresent()) {
+                /*
+                 * R5_42
+                 * 代休.代休発生に必要な時間.残業
+                 */
+                boolean useDivision = subHolTimeWorkDayOffSet.get().getSubHolTimeSet().isUseDivision();
+                cells.get("DZ" + (startIndex + 1)).setValue(useDivision ? "○" : "-");
+                
+                /*
+                 * R5_194
+                 * 代休.代休発生に必要な時間.時間
+                 */
+                Integer subHolTransferSetAtr = subHolTimeOverTimeOffSet.get().getSubHolTimeSet().getSubHolTransferSetAtr();
+                cells.get("EA" + (startIndex + 1)).setValue(subHolTransferSetAtr == 0 ? "指定時間" : "一定時間");
+                
+                /*
+                 * R5_195
+                 * 代休.代休発生に必要な時間.１日
+                 */
+                Integer oneDayTime = subHolTimeOverTimeOffSet.get().getSubHolTimeSet().getDesignatedTime().getOneDayTime();
+                cells.get("EB" + (startIndex + 1)).setValue(getInDayTimeWithFormat(oneDayTime));
+                
+                /*
+                 * R5_196
+                 * 代休.代休発生に必要な時間.半日
+                 */
+                Integer halfDayTime = subHolTimeOverTimeOffSet.get().getSubHolTimeSet().getDesignatedTime().getHalfDayTime();
+                cells.get("EC" + (startIndex + 1)).setValue(getInDayTimeWithFormat(halfDayTime));
+                
+                /*
+                 * R5_197
+                 * 代休.代休発生に必要な時間.一定時間
+                 */
+                Integer certainTime = subHolTimeOverTimeOffSet.get().getSubHolTimeSet().getCertainTime();
+                cells.get("ED" + (startIndex + 1)).setValue(getInDayTimeWithFormat(certainTime));
+            }
+        }
     }
     
     /**
