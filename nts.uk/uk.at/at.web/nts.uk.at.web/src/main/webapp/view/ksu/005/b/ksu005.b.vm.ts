@@ -239,6 +239,7 @@ module nts.uk.at.view.ksu005.b {
                             self.isReload(true);            
                             self.isShiftBackgroundColor(data.shiftBackgroundColor == 1);
                         }                        
+                        self.isEnableAttendanceItem(!self.isShiftBackgroundColor());
     
                         datas.push(new ScreenItem(true, self.countNumberRow, data.personalInfo[0] != null ? data.personalInfo[0].toString() : null,
                             data.additionalInfo[0] != null ? data.additionalInfo[0].toString() : null,
