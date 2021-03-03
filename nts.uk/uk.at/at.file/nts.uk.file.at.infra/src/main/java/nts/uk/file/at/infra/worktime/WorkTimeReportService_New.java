@@ -3539,6 +3539,69 @@ public class WorkTimeReportService_New {
             Integer rounding = lstWorkTimezone.get(i).getTimezone().getRounding().getRounding();
             cells.get("DB" + (startIndex + lstWorkTimezone.get(i).getWorkTimeNo())).setValue(getRoundingEnum(rounding));
         }
+        
+        // 7        タブグ:                休出休憩
+        
+        boolean fixRestTime = data.getFlexWorkSetting().getOffdayWorkTime().getRestTimezone().isFixRestTime();
+        
+        /*
+         * R6_176
+         * 休出休憩.休憩時間の固定
+         */
+        cells.get("DC" + (startIndex + 1)).setValue(getUseAtrByBoolean(fixRestTime));
+        
+        if (fixRestTime) {
+            List<DeductionTimeDto> timezones = data.getFlexWorkSetting().getOffdayWorkTime().getRestTimezone().getFixedRestTimezone().getTimezones();
+            for (int i = 0; i < timezones.size(); i++) {
+                /*
+                 * R6_177
+                 * 休出休憩.固定する.開始時間
+                 */
+                cells.get("DD" + ((startIndex + 1) + i)).setValue(getInDayTimeWithFormat(timezones.get(i).getStart()));
+                
+                /*
+                 * R6_178
+                 * 休出休憩.固定する.終了時間
+                 */
+                cells.get("DE" + ((startIndex + 1) + i)).setValue(getInDayTimeWithFormat(timezones.get(i).getEnd()));
+            }
+        } else {
+            List<FlowRestSettingDto> flowRestSets = data.getFlexWorkSetting().getOffdayWorkTime().getRestTimezone().getFlowRestTimezone().getFlowRestSets();
+            for (int i = 0; i < flowRestSets.size(); i++) {
+                /*
+                 * R6_179
+                 * 休出休憩.固定しない.経過時間
+                 */
+                cells.get("DF" + ((startIndex + 1) + i)).setValue(getInDayTimeWithFormat(flowRestSets.get(i).getFlowPassageTime()));
+                
+                /*
+                 * R6_180
+                 * 休出休憩.固定しない.休憩時間
+                 */
+                cells.get("DG" + ((startIndex + 1) + i)).setValue(getInDayTimeWithFormat(flowRestSets.get(i).getFlowRestTime()));
+            }
+            
+            /*
+             * R6_181
+             * 休出休憩.固定しない.以降は下記の時間で繰り返す
+             */
+            boolean useHereAfterRestSet = data.getFlexWorkSetting().getOffdayWorkTime().getRestTimezone().getFlowRestTimezone().isUseHereAfterRestSet();
+            cells.get("DG" + (startIndex + 7)).setValue(useHereAfterRestSet ? "○" : "-");
+            
+            /*
+             * R6_182
+             * 休出休憩.固定しない.経過時間
+             */
+            Integer flowPassageTime = data.getFlexWorkSetting().getOffdayWorkTime().getRestTimezone().getFlowRestTimezone().getHereAfterRestSet().getFlowPassageTime();
+            cells.get("DF" + (startIndex + 9)).setValue(getInDayTimeWithFormat(flowPassageTime));
+            
+            /*
+             * R6_183
+             * 休出休憩.固定しない.休憩時間
+             */
+            Integer flowRestTime = data.getFlexWorkSetting().getOffdayWorkTime().getRestTimezone().getFlowRestTimezone().getHereAfterRestSet().getFlowRestTime();
+            cells.get("DG" + (startIndex + 9)).setValue(getInDayTimeWithFormat(flowRestTime));
+        }
     }
     
     /**
