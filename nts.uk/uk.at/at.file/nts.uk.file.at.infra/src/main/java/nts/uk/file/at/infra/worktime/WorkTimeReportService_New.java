@@ -1431,57 +1431,60 @@ public class WorkTimeReportService_New {
         
         // 17       タブグ:                その地
         
-        /*
-         * R4_229
-         * その他.勤務種類が休暇の場合に就業時間を計算するか
-         */
-        Integer isCalculate = data.getFixedWorkSetting().getCommonSetting().getHolidayCalculation().getIsCalculate();
-        cells.get("FH" + (startIndex + 1)).setValue(getUseAtrByInteger(isCalculate));
-        
-        FixedWorkCalcSettingDto calculationSetting = data.getFixedWorkSetting().getCalculationSetting();
-        if (calculationSetting != null) {
+        boolean ootsuka = AppContexts.optionLicense().customize().ootsuka();
+        if (ootsuka) {
             /*
-             * R4_57
-             * その他.休暇加算時間を加算する場合に就業時間として加算するか.しない
+             * R4_229
+             * その他.勤務種類が休暇の場合に就業時間を計算するか
              */
-            Integer calcMethod = calculationSetting.getExceededPredAddVacationCalc().getCalcMethod();
-            cells.get("FI" + (startIndex + 1)).setValue(getUseAtrByInteger(calcMethod));
+            Integer isCalculate = data.getFixedWorkSetting().getCommonSetting().getHolidayCalculation().getIsCalculate();
+            cells.get("FH" + (startIndex + 1)).setValue(getUseAtrByInteger(isCalculate));
             
-            /*
-             * R4_231
-             * その他.休暇加算時間を加算する場合に就業時間として加算するか.残業枠
-             */
-            Integer otFrameNo = calculationSetting.getExceededPredAddVacationCalc().getOtFrameNo();
-            Optional<WorkdayoffFrameFindDto> otFrame = otFrameFind.stream().filter(x -> x.getWorkdayoffFrNo() == otFrameNo).findFirst();
-            if (otFrame.isPresent()) {
-                cells.get("FJ" + (startIndex + 1)).setValue(otFrame.get().getWorkdayoffFrName());
-            }
-            
-            /*
-             * R4_58
-             * その他.休憩未取得時に就業時間として計算するか
-             */
-            Integer calcMethodOt = calculationSetting.getOverTimeCalcNoBreak().getCalcMethod();
-            cells.get("FK" + (startIndex + 1)).setValue(getUseAtrByInteger(calcMethodOt));
-            
-            /*
-             * R4_232
-             * その他.休憩未取得時に就業時間として計算するか.法定内残業枠
-             */
-            Integer inLawOT = calculationSetting.getOverTimeCalcNoBreak().getInLawOT();
-            Optional<WorkdayoffFrameFindDto> otFrameInLaw = otFrameFind.stream().filter(x -> x.getWorkdayoffFrNo() == inLawOT).findFirst();
-            if (otFrameInLaw.isPresent()) {
-                cells.get("FL" + (startIndex + 1)).setValue(otFrameInLaw.get().getWorkdayoffFrName());
-            }
-            
-            /*
-             * R4_233
-             * その他.休憩未取得時に就業時間として計算するか.法定外残業枠
-             */
-            Integer notInLawOT = calculationSetting.getOverTimeCalcNoBreak().getInLawOT();
-            Optional<WorkdayoffFrameFindDto> otFrameNotInLaw = otFrameFind.stream().filter(x -> x.getWorkdayoffFrNo() == notInLawOT).findFirst();
-            if (otFrameNotInLaw.isPresent()) {
-                cells.get("FM" + (startIndex + 1)).setValue(otFrameNotInLaw.get().getWorkdayoffFrName());
+            FixedWorkCalcSettingDto calculationSetting = data.getFixedWorkSetting().getCalculationSetting();
+            if (calculationSetting != null) {
+                /*
+                 * R4_57
+                 * その他.休暇加算時間を加算する場合に就業時間として加算するか.しない
+                 */
+                Integer calcMethod = calculationSetting.getExceededPredAddVacationCalc().getCalcMethod();
+                cells.get("FI" + (startIndex + 1)).setValue(getUseAtrByInteger(calcMethod));
+                
+                /*
+                 * R4_231
+                 * その他.休暇加算時間を加算する場合に就業時間として加算するか.残業枠
+                 */
+                Integer otFrameNo = calculationSetting.getExceededPredAddVacationCalc().getOtFrameNo();
+                Optional<WorkdayoffFrameFindDto> otFrame = otFrameFind.stream().filter(x -> x.getWorkdayoffFrNo() == otFrameNo).findFirst();
+                if (otFrame.isPresent()) {
+                    cells.get("FJ" + (startIndex + 1)).setValue(otFrame.get().getWorkdayoffFrName());
+                }
+                
+                /*
+                 * R4_58
+                 * その他.休憩未取得時に就業時間として計算するか
+                 */
+                Integer calcMethodOt = calculationSetting.getOverTimeCalcNoBreak().getCalcMethod();
+                cells.get("FK" + (startIndex + 1)).setValue(getUseAtrByInteger(calcMethodOt));
+                
+                /*
+                 * R4_232
+                 * その他.休憩未取得時に就業時間として計算するか.法定内残業枠
+                 */
+                Integer inLawOT = calculationSetting.getOverTimeCalcNoBreak().getInLawOT();
+                Optional<WorkdayoffFrameFindDto> otFrameInLaw = otFrameFind.stream().filter(x -> x.getWorkdayoffFrNo() == inLawOT).findFirst();
+                if (otFrameInLaw.isPresent()) {
+                    cells.get("FL" + (startIndex + 1)).setValue(otFrameInLaw.get().getWorkdayoffFrName());
+                }
+                
+                /*
+                 * R4_233
+                 * その他.休憩未取得時に就業時間として計算するか.法定外残業枠
+                 */
+                Integer notInLawOT = calculationSetting.getOverTimeCalcNoBreak().getInLawOT();
+                Optional<WorkdayoffFrameFindDto> otFrameNotInLaw = otFrameFind.stream().filter(x -> x.getWorkdayoffFrNo() == notInLawOT).findFirst();
+                if (otFrameNotInLaw.isPresent()) {
+                    cells.get("FM" + (startIndex + 1)).setValue(otFrameNotInLaw.get().getWorkdayoffFrName());
+                }
             }
         }
     }
@@ -2672,12 +2675,16 @@ public class WorkTimeReportService_New {
         }
         
         // 17       タブグ:                その地
-        /*
-         * R5_211
-         * その他.勤務種類が休暇の場合に就業時間を計算するか
-         */
-        Integer isCalculate = data.getFlowWorkSetting().getCommonSetting().getHolidayCalculation().getIsCalculate();
-        cells.get("ER" + (startIndex + 1)).setValue(getUseAtrByInteger(isCalculate));
+        
+        boolean ootsuka = AppContexts.optionLicense().customize().ootsuka();
+        if (ootsuka) {
+            /*
+             * R5_211
+             * その他.勤務種類が休暇の場合に就業時間を計算するか
+             */
+            Integer isCalculate = data.getFlowWorkSetting().getCommonSetting().getHolidayCalculation().getIsCalculate();
+            cells.get("ER" + (startIndex + 1)).setValue(getUseAtrByInteger(isCalculate));
+        }
     }
     
     /**
@@ -4200,12 +4207,15 @@ public class WorkTimeReportService_New {
         
         // 17       タブグ:                その地
         
-        /*
-         * R6_253
-         * その他.勤務種類が休暇の場合に就業時間を計算するか
-         */
-        Integer isCalculate = data.getFlexWorkSetting().getCommonSetting().getHolidayCalculation().getIsCalculate();
-        cells.get("FW" + (startIndex + 1)).setValue(getUseAtrByInteger(isCalculate));
+        boolean ootsuka = AppContexts.optionLicense().customize().ootsuka();
+        if (ootsuka) {
+            /*
+             * R6_253
+             * その他.勤務種類が休暇の場合に就業時間を計算するか
+             */
+            Integer isCalculate = data.getFlexWorkSetting().getCommonSetting().getHolidayCalculation().getIsCalculate();
+            cells.get("FW" + (startIndex + 1)).setValue(getUseAtrByInteger(isCalculate));
+        }
     }
     
     /**
@@ -4447,16 +4457,16 @@ public class WorkTimeReportService_New {
                  * R6_258
                  * コアタイム内と外の外出時間を分けて集計する
                  */
-                boolean aggregateTime = true;
-                cells.get(startIndex, columnIndex).setValue(aggregateTime ? "○" : "-");
+                Integer aggregateTime = data.getFlexWorkSetting().getCoreTimeSetting().getGoOutCalc().getEspecialCalc();
+                cells.get(startIndex, columnIndex).setValue(aggregateTime == 1 ? "○" : "-");
                 columnIndex++;
                 
                 /*
                  * R6_259
                  * コアタイム内の外出時間を就業時間から控除する
                  */
-                boolean deductTime = true;
-                cells.get(startIndex, columnIndex).setValue(deductTime ? "○" : "-");
+                Integer deductTime = data.getFlexWorkSetting().getCoreTimeSetting().getGoOutCalc().getRemoveFromWorkTime();
+                cells.get(startIndex, columnIndex).setValue(deductTime == 1 ? "○" : "-");
                 columnIndex++;
             } else {
                 columnIndex += 2;
