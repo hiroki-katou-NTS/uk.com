@@ -3936,43 +3936,67 @@ public class WorkTimeReportService_New {
             cells.get("ER" + (startIndex + 1)).setValue(getRoundingEnum(roundingDel));
         }
         
-        /*
-         * R6_221
-         * 遅刻早退詳細設定.控除時間.遅刻早退時間を就業時間から控除する
-         */
-        boolean delFromEmTime = data.getFlexWorkSetting().getCommonSetting().getLateEarlySet().getCommonSet().isDelFromEmTime();
-        cells.get("ES" + (startIndex + 1)).setValue(delFromEmTime ? "○" : "-");
-        
-        if (otherLate.isPresent()) {
+        if (displayMode.equals(DisplayMode.DETAIL.value)) {
             /*
-             * R6_224
-             * 遅刻早退詳細設定.猶予時間.遅刻猶予時間
+             * R6_221
+             * 遅刻早退詳細設定.控除時間.遅刻早退時間を就業時間から控除する
              */
-            Integer graceTime = otherLate.get().getGraceTimeSet().getGraceTime();
-            cells.get("ET" + (startIndex + 1)).setValue(getInDayTimeWithFormat(graceTime));
+            boolean delFromEmTime = data.getFlexWorkSetting().getCommonSetting().getLateEarlySet().getCommonSet().isDelFromEmTime();
+            cells.get("ES" + (startIndex + 1)).setValue(delFromEmTime ? "○" : "-");
             
-            /*
-             * R6_225
-             * 遅刻早退詳細設定.猶予時間.遅刻猶予時間を就業時間に含める
-             */
-            boolean includeWorkingHour = otherLate.get().getGraceTimeSet().isIncludeWorkingHour();
-            cells.get("EU" + (startIndex + 1)).setValue(includeWorkingHour ? "○" : "-");
+            if (otherLate.isPresent()) {
+                /*
+                 * R6_224
+                 * 遅刻早退詳細設定.猶予時間.遅刻猶予時間
+                 */
+                Integer graceTime = otherLate.get().getGraceTimeSet().getGraceTime();
+                cells.get("ET" + (startIndex + 1)).setValue(getInDayTimeWithFormat(graceTime));
+                
+                /*
+                 * R6_225
+                 * 遅刻早退詳細設定.猶予時間.遅刻猶予時間を就業時間に含める
+                 */
+                boolean includeWorkingHour = otherLate.get().getGraceTimeSet().isIncludeWorkingHour();
+                cells.get("EU" + (startIndex + 1)).setValue(includeWorkingHour ? "○" : "-");
+            }
+            
+            if (otherEarly.isPresent()) {
+                /*
+                 * R6_226
+                 * 遅刻早退詳細設定.猶予時間.早退猶予時間
+                 */
+                Integer graceTime = otherEarly.get().getGraceTimeSet().getGraceTime();
+                cells.get("EV" + (startIndex + 1)).setValue(getInDayTimeWithFormat(graceTime));
+                
+                /*
+                 * R6_227
+                 * 遅刻早退詳細設定.猶予時間.早退猶予時間を就業時間に含める
+                 */
+                boolean includeWorkingHour = otherEarly.get().getGraceTimeSet().isIncludeWorkingHour();
+                cells.get("EW" + (startIndex + 1)).setValue(includeWorkingHour ? "○" : "-");
+            }
         }
         
-        if (otherEarly.isPresent()) {
-            /*
-             * R6_226
-             * 遅刻早退詳細設定.猶予時間.早退猶予時間
-             */
-            Integer graceTime = otherEarly.get().getGraceTimeSet().getGraceTime();
-            cells.get("EV" + (startIndex + 1)).setValue(getInDayTimeWithFormat(graceTime));
-            
-            /*
-             * R6_227
-             * 遅刻早退詳細設定.猶予時間.早退猶予時間を就業時間に含める
-             */
-            boolean includeWorkingHour = otherEarly.get().getGraceTimeSet().isIncludeWorkingHour();
-            cells.get("EW" + (startIndex + 1)).setValue(includeWorkingHour ? "○" : "-");
+        // 10       タブグ:                加給
+        
+        /*
+         * R6_228
+         * コード
+         */
+        String raisingSalarySetCode = data.getFlexWorkSetting().getCommonSetting().getRaisingSalarySet();
+        cells.get("EX" + (startIndex + 1)).setValue(raisingSalarySetCode != null ? raisingSalarySetCode : "");
+        
+        /*
+         * R6_229
+         * 名称
+         */
+        if (raisingSalarySetCode != null) {
+            Optional<BonusPaySetting> bonusPaySettingOpt = this.bpSettingRepository
+                    .getBonusPaySetting(AppContexts.user().companyId(), new BonusPaySettingCode(raisingSalarySetCode));
+            if (bonusPaySettingOpt.isPresent()) {
+                String raisingSalaryName = bonusPaySettingOpt.get().getName().v();
+                cells.get("EY" + (startIndex + 1)).setValue(raisingSalaryName);
+            }
         }
     }
     
