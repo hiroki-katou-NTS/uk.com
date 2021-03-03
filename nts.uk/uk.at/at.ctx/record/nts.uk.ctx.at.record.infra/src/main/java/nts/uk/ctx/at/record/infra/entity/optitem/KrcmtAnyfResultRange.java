@@ -24,8 +24,8 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KRCMT_CALC_RESULT_RANGE")
-public class KrcmtCalcResultRange extends ContractUkJpaEntity implements Serializable {
+@Table(name = "KRCMT_ANYF_RESULT_RANGE")
+public class KrcmtAnyfResultRange extends ContractUkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -105,7 +105,7 @@ public class KrcmtCalcResultRange extends ContractUkJpaEntity implements Seriali
 	/**
 	 * Instantiates a new krcst calc result range.
 	 */
-	public KrcmtCalcResultRange() {
+	public KrcmtAnyfResultRange() {
 	}
 
 	/**
@@ -114,7 +114,7 @@ public class KrcmtCalcResultRange extends ContractUkJpaEntity implements Seriali
 	 * @param krcstCalcResultRangePK
 	 *            the krcst calc result range PK
 	 */
-	public KrcmtCalcResultRange(KrcmtCalcResultRangePK krcstCalcResultRangePK) {
+	public KrcmtAnyfResultRange(KrcmtCalcResultRangePK krcstCalcResultRangePK) {
 		this.krcstCalcResultRangePK = krcstCalcResultRangePK;
 	}
 
@@ -137,10 +137,10 @@ public class KrcmtCalcResultRange extends ContractUkJpaEntity implements Seriali
 	 */
 	@Override
 	public boolean equals(Object object) {
-		if (!(object instanceof KrcmtCalcResultRange)) {
+		if (!(object instanceof KrcmtAnyfResultRange)) {
 			return false;
 		}
-		KrcmtCalcResultRange other = (KrcmtCalcResultRange) object;
+		KrcmtAnyfResultRange other = (KrcmtAnyfResultRange) object;
 		if ((this.krcstCalcResultRangePK == null && other.krcstCalcResultRangePK != null)
 				|| (this.krcstCalcResultRangePK != null
 						&& !this.krcstCalcResultRangePK.equals(other.krcstCalcResultRangePK))) {
