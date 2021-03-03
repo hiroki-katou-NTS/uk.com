@@ -60,6 +60,9 @@ module nts.uk.at.view.ksu005.b {
         scheduleTableOutputSetting: KnockoutObservable<ScheduleTableOutputSetting> = ko.observable(new ScheduleTableOutputSetting());        
         isReload :KnockoutObservable<boolean> = ko.observable(false);
 
+        // temp: KnockoutObservable<string> = ko.observable(""); 
+
+
         constructor() {            
             super();
             const self = this;                    
@@ -121,17 +124,17 @@ module nts.uk.at.view.ksu005.b {
                     return;
                 } else {
                     if(value){
-                        self.itemList.removeAll();
+                        // self.itemList.removeAll();
                         if(self.selectedCode()== ""){
                             self.initialData();
                         } else {
-                            self.loadDetail(self.selectedCode(), false, true);
+                            self.loadDetail(self.selectedCode(), self.scheduleTableOutputSetting().additionalColumn() == 1, true);
                         }
-                        
+                        self.isEnableDelBtn(false);
                         self.isEnableAttendanceItem(false);
                         self.isEnableAddBtn(false);
                     } else {                    
-                        self.loadDetail(self.selectedCode(), true, value);
+                        self.loadDetail(self.selectedCode(), self.scheduleTableOutputSetting().additionalColumn() == 1, false);
                         self.isEnableAttendanceItem(true);
                         self.isEnableAddBtn(true);
                     }
@@ -279,65 +282,101 @@ module nts.uk.at.view.ksu005.b {
                     }
                 }).always(() => {
                     self.$blockui("hide");
-                })
+                })                
             }            
         }
 
-        loadDetail(code?: string, checkAddInfo?: boolean , checkShiftBgColor?: boolean): void {
+        loadDetail(code?: string, checkAddInfo?: boolean, checkShiftBgColor?: boolean): void {
             const self = this;
             self.checkAll(false);
-            if (code != null && !_.isEmpty(code)) {
-                self.$blockui("invisible");
-                self.$ajax(Paths.GET_SCHEDULE_TABLE_OUTPUT_SETTING_BY_CODE + "/" + code).done((data: IScheduleTableOutputSetting) => {
-                    self.countNumberRow = 1;
-                    if (!_.isNull(data) && !_.isEmpty(data)) {
-                        self.clearError();                    
-                        
-                        let personalInfoItemsSize = data.personalInfo.length;
-                        let additionalItemsSize = data.attendanceItem.length;
-                        let attendanceItemSize = data.attendanceItem.length;
-                        let maxLength = Math.max(personalInfoItemsSize, additionalItemsSize, attendanceItemSize);
-                        let datas = [];
-                        let tempSelected: Array<any> = [];
-                        let tempSelectedCode: Array<any> = [];
-
-
-                        // self.scheduleTableOutputSetting().updateData(data);
-                        self.scheduleTableOutputSetting().isEnableCode(false);
-                        self.isEnableAddBtn(checkAddInfo);
-                        self.isShiftBackgroundColor(checkShiftBgColor);
-
-                        datas.push(new ScreenItem(true, self.countNumberRow, data.personalInfo[0] != null ? data.personalInfo[0].toString() : null,
-                            data.additionalInfo[0] != null ? data.additionalInfo[0].toString() : null,
-                            data.attendanceItem[0] != null ? data.attendanceItem[0].toString() : null));
-                                                    
-                        self.itemList(datas);
-                        self.itemsSwap.removeAll();
-                        self.currentCodeListSwap.removeAll();
-                        self.itemsSwap((_.cloneDeep(self.workplaceCounterCategories())));
-
-                        _.each(data.workplaceCounterCategories, code => {
-                            _.each(self.itemsSwap(), y => {
-                                if (y.value == code) {
-                                    tempSelected.push(new SwapModel(y.value, y.name));
-                                    tempSelectedCode.push(y.value);
-                                }
-                            })
-                        });
-
-                        self.currentCodeListSwap(tempSelected);
-                        self.selectedCodeListSwap(tempSelectedCode);
-                        self.persons(self.personalCounterCategory());
-                        self.selectedPerson(data.personalCounterCategories);
-                        self.isEditing(true);
-                        self.enableDelete(true);
-                        $('#outputSettingName').focus();
-                    }
-                }).always(() => {
-                    self.$blockui("hide");
-                })
+            self.countNumberRow = 1;
+            self.clearError();
+            let datas: Array<any> = [];
+          
+            if(checkShiftBgColor) {
+                self.isEnableAddBtn(false);
+                self.isEnableDelBtn(false);
             }
+
+            checkAddInfo ? self.isEnableAdditionInfo(true) : self.isEnableAdditionInfo(false);
+            
+            datas.push(new ScreenItem(true, self.countNumberRow,
+                                self.personalInfoItems()[1].value,
+                                self.itemList()[0].additionInfo(),
+                                self.attendanceItems()[1].value));
+
+            self.itemList(datas);           
+            self.isEditing(true);
+            self.enableDelete(true);
+            $('#outputSettingName').focus();
         }
+        // loadDetail(code?: string, checkAddInfo?: boolean , checkShiftBgColor?: boolean): void {
+        //     const self = this;
+        //     self.checkAll(false);
+        //     if (code != null && !_.isEmpty(code)) {
+        //         self.$blockui("invisible");
+        //         self.$ajax(Paths.GET_SCHEDULE_TABLE_OUTPUT_SETTING_BY_CODE + "/" + code).done((data: IScheduleTableOutputSetting) => {
+        //             self.countNumberRow = 1;
+        //             if (!_.isNull(data) && !_.isEmpty(data)) {
+        //                 self.clearError();                    
+                        
+        //                 // let personalInfoItemsSize = data.personalInfo.length;
+        //                 // let additionalItemsSize = data.attendanceItem.length;
+        //                 // let attendanceItemSize = data.attendanceItem.length;
+        //                 // let attItem;
+        //                 let datas = [];
+        //                 let tempSelected: Array<any> = [];
+        //                 let tempSelectedCode: Array<any> = [];
+
+
+        //                 // self.scheduleTableOutputSetting().updateData(data);
+        //                 self.scheduleTableOutputSetting().isEnableCode(false);
+        //                 self.isEnableAddBtn(checkAddInfo);
+        //                 self.isShiftBackgroundColor(checkShiftBgColor);
+
+        //                 // datas.push(new ScreenItem(true, self.countNumberRow, data.personalInfo[0] != null ? data.personalInfo[0].toString() : null,
+        //                 //     data.additionalInfo[0] != null ? data.additionalInfo[0].toString() : null,
+        //                 //     data.attendanceItem[0] != null ? data.attendanceItem[0].toString() : null));
+        //                 // if(self.isShiftBackgroundColor()) {
+        //                 //     attItem = self.attendanceItems()[1].value;
+        //                 // } 
+        //                 // else {
+        //                 //     attItem = data.attendanceItem[0] != null ? data.attendanceItem[0].toString() : null
+        //                 // }                        
+        //                 if(self.itemList().length > 0) {
+        //                     self.temp(self.itemList()[0].additionInfo());
+        //                 } 
+        //                 datas.push(new ScreenItem(true, self.countNumberRow, data.personalInfo[0] != null ? data.personalInfo[0].toString() : null,
+        //                     self.temp() != "" ? self.temp(): data.additionalInfo[0].toString(),
+        //                     self.attendanceItems()[1].value));
+
+        //                 self.itemList(datas);
+        //                 self.itemsSwap.removeAll();
+        //                 self.currentCodeListSwap.removeAll();
+        //                 self.itemsSwap((_.cloneDeep(self.workplaceCounterCategories())));
+
+        //                 _.each(data.workplaceCounterCategories, code => {
+        //                     _.each(self.itemsSwap(), y => {
+        //                         if (y.value == code) {
+        //                             tempSelected.push(new SwapModel(y.value, y.name));
+        //                             tempSelectedCode.push(y.value);
+        //                         }
+        //                     })
+        //                 });
+
+        //                 self.currentCodeListSwap(tempSelected);
+        //                 self.selectedCodeListSwap(tempSelectedCode);
+        //                 self.persons(self.personalCounterCategory());
+        //                 self.selectedPerson(data.personalCounterCategories);
+        //                 self.isEditing(true);
+        //                 self.enableDelete(true);
+        //                 $('#outputSettingName').focus();
+        //             }
+        //         }).always(() => {
+        //             self.$blockui("hide");
+        //         })
+        //     }
+        // }
         initialData(): void {
             const self = this;
             let data = [];
@@ -537,6 +576,8 @@ module nts.uk.at.view.ksu005.b {
             let item: ScreenItem = new ScreenItem(false, self.countNumberRow);
             if(self.checkAll()){
                 item.checked(true);
+                self.checkOne(false);
+                self.isEnableDelBtn(true);
             } 
             self.itemList.push(item);
         }
