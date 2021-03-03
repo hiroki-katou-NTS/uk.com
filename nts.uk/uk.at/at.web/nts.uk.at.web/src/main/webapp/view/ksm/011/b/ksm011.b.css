@@ -1,0 +1,10 @@
+.tabpanel .contents-area {
+  padding: 25px;
+}
+
+.cell-left {
+  width: 100px;
+}
+.group .cell-left {
+  width: 120px;
+}

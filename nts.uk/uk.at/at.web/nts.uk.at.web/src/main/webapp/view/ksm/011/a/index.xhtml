@@ -1,47 +1,69 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
-	<body>
-		<ui:composition template="../../../../master/base.xhtml">
-			<ui:define name="htmlHead">
-        <com:scriptfile set="IGNITE" />			
-				<com:stylefile path="ksm011.a.css" />
-				<com:scriptfile path="ksm011.a.vm.js" />
-			</ui:define>
-			
-			<ui:define name="content">			
-				<div id="contents-area">
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:com="http://xmlns.jcp.org/jsf/component"
+  xmlns:h="http://xmlns.jcp.org/jsf/html"
+>
+  <body>
+    <ui:composition template="../../../../master/base.xhtml">
+      <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE" />
+        <com:stylefile path="ksm011.a.css" />
+        <com:scriptfile path="ksm011.a.vm.js" />
+      </ui:define>
+
+      <ui:define name="content">
+        <div id="contents-area">
           <div class="panel panel-frame caret-right pull-left">
-						<div class="panel-body">
-							<div class="row panel panel-gray-bg">背景色も枠線もなし</div>
-							<div class="row label">背景色も枠線もなし</div>
-							<div class="row button aret-bottom caret-inline">
-								<button class="caret-right caret-inline">背景色も</button>
-							</div>
-							<div class="row label">背景色も枠線もなし</div>
-							<div class="row button">
-								<button class="caret-right caret-inline">背景色も</button>
-							</div>
-						</div>
-					</div>
-					<div class="panel panel-frame pull-left">
-						<div class="panel-body">
-							<div class="row panel panel-gray-bg">背景色も枠線もなし</div>
-							<div class="row label">背景色も枠線もなし</div>
-							<div class="row button aret-bottom caret-inline">
-								<button class="caret-right caret-inline">背景色も</button>
-							</div>
-							<div class="row label">背景色も枠線もなし</div>
-							<div class="row button">
-								<button class="caret-right caret-inline">背景色も</button>
-							</div>
-						</div>
-					</div>
-				</div>
-			</ui:define>
-		</ui:composition>
-   	</body>
+            <div class="panel-body">
+              <div class="row panel panel-gray-bg">
+                <span data-bind="text: $i18n('KSM011_6')"></span>
+              </div>
+              <div class="row label">
+                <span data-bind="text: $i18n('KSM011_7')"></span>
+              </div>
+              <div class="row button caret-bottom">
+                <button tabindex="1" class="caret-right caret-inline" data-bind="click: gotoScreenB">
+                  <span data-bind="text: $i18n('KSM011_8')"></span>
+                </button>
+              </div>
+              <div class="row label">
+                <span data-bind="text: $i18n('KSM011_9')"></span>
+              </div>
+              <div class="row button">
+                <button tabindex="2" class="caret-right caret-inline" data-bind="click: gotoScreenC">
+                  <span data-bind="text: $i18n('KSM011_10')"></span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="panel panel-frame pull-left">
+            <div class="panel-body">
+              <div class="row panel panel-gray-bg">
+                <span data-bind="text: $i18n('KSM011_11')"></span>
+              </div>
+              <div class="row label">
+                <span data-bind="text: $i18n('KSM011_12')"></span>
+              </div>
+              <div class="row button caret-bottom">
+                <button tabindex="3" class="caret-right caret-inline" data-bind="click: gotoScreenD">
+                  <span data-bind="text: $i18n('KSM011_13')"></span>
+                </button>
+              </div>
+              <div class="row label">
+                <span data-bind="text: $i18n('KSM011_14')"></span>
+              </div>
+              <div class="row button">
+                <button tabindex="4" class="caret-right caret-inline" data-bind="click: gotoScreenE">
+                  <span data-bind="text: $i18n('KSM011_15')"></span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ui:define>
+    </ui:composition>
+  </body>
 </html>
