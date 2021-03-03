@@ -2707,11 +2707,11 @@ public class WorkTimeReportService_New {
         
         List<FlexHalfDayWorkTimeDto> lstHalfDayWorkTimezone = data.getFlexWorkSetting().getLstHalfDayWorkTimezone();
         Optional<FlexHalfDayWorkTimeDto> lstHalfDayWorkTimezoneOneDay = lstHalfDayWorkTimezone.stream()
-                .filter(x -> x.getAmpmAtr().equals(AmPmAtr.ONE_DAY)).findFirst();
+                .filter(x -> x.getAmpmAtr().equals(AmPmAtr.ONE_DAY.value)).findFirst();
         Optional<FlexHalfDayWorkTimeDto> lstHalfDayWorkTimezoneMorning = lstHalfDayWorkTimezone.stream()
-                .filter(x -> x.getAmpmAtr().equals(AmPmAtr.AM)).findFirst();
+                .filter(x -> x.getAmpmAtr().equals(AmPmAtr.AM.value)).findFirst();
         Optional<FlexHalfDayWorkTimeDto> lstHalfDayWorkTimezoneAfternoon = lstHalfDayWorkTimezone.stream()
-                .filter(x -> x.getAmpmAtr().equals(AmPmAtr.PM)).findFirst();
+                .filter(x -> x.getAmpmAtr().equals(AmPmAtr.PM.value)).findFirst();
         
         if (lstHalfDayWorkTimezoneOneDay.isPresent()) {
             List<EmTimeZoneSetDto> lstWorkingTimezone = lstHalfDayWorkTimezoneOneDay.get().getWorkTimezone().getLstWorkingTimezone();
@@ -2828,6 +2828,175 @@ public class WorkTimeReportService_New {
                      */
                     cells.get("AM" + (startIndex + lstWorkingTimezone.get(i).getEmploymentTimeFrameNo()))
                         .setValue(getRoundingEnum(lstWorkingTimezone.get(i).getTimezone().getRounding().getRounding()));
+                }
+            }
+        }
+        
+        // 3        タブグ:                残業時間帯
+        
+        boolean overTime = data.getFlexWorkSetting().getUseHalfDayShift().isOverTime();
+        
+        if (displayMode.equals(DisplayMode.DETAIL.value)) {
+            /*
+             * R6_261
+             * 残業時間帯.半日勤務を設定する
+             */
+            cells.get("AN" + (startIndex + 1)).setValue(getUseAtrByBoolean(overTime));
+        }
+        
+        List<WorkdayoffFrameFindDto> otFrameFind = this.finder.findAllUsed();
+        
+        if (lstHalfDayWorkTimezoneOneDay.isPresent()) {
+            List<OverTimeOfTimeZoneSetDto> lstOTTimezone = lstHalfDayWorkTimezoneOneDay.get().getWorkTimezone().getLstOTTimezone();
+            
+            for (int i = 0; i < lstOTTimezone.size(); i++) {
+                /*
+                 * R6_100
+                 * 残業時間帯.1日勤務用.開始時間
+                 */
+                cells.get("AO" + (startIndex + lstOTTimezone.get(i).getWorkTimezoneNo()))
+                    .setValue(getInDayTimeWithFormat(lstOTTimezone.get(i).getTimezone().getStart()));
+                
+                /*
+                 * R6_101
+                 * 残業時間帯.1日勤務用.終了時間
+                 */
+                cells.get("AP" + (startIndex + lstOTTimezone.get(i).getWorkTimezoneNo()))
+                    .setValue(getInDayTimeWithFormat(lstOTTimezone.get(i).getTimezone().getEnd()));
+                
+                /*
+                 * R6_102
+                 * 残業時間帯.1日勤務用.丸め
+                 */
+                cells.get("AQ" + (startIndex + lstOTTimezone.get(i).getWorkTimezoneNo()))
+                    .setValue(getRoundingTimeUnitEnum(lstOTTimezone.get(i).getTimezone().getRounding().getRoundingTime()));
+                
+                /*
+                 * R6_103
+                 * 残業時間帯.1日勤務用.端数
+                 */
+                cells.get("AR" + (startIndex + lstOTTimezone.get(i).getWorkTimezoneNo()))
+                    .setValue(getRoundingEnum(lstOTTimezone.get(i).getTimezone().getRounding().getRounding()));
+                
+                Integer otFrameNo = lstOTTimezone.get(i).getOtFrameNo();
+                Optional<WorkdayoffFrameFindDto> otFrameOpt = otFrameFind.stream().filter(x -> x.getWorkdayoffFrNo() == otFrameNo).findFirst();
+                if (otFrameOpt.isPresent()) {
+                    /*
+                     * R6_104
+                     * 残業時間帯.1日勤務用.残業枠
+                     */
+                    cells.get("AS" + (startIndex + lstOTTimezone.get(i).getWorkTimezoneNo())).setValue(otFrameOpt.get().getWorkdayoffFrName());
+                }
+                
+                /*
+                 * R6_105
+                 * 残業時間帯.1日勤務用.早出
+                 */
+                boolean earlyOTUse = lstOTTimezone.get(i).isEarlyOTUse();
+                cells.get("AT" + (startIndex + lstOTTimezone.get(i).getWorkTimezoneNo())).setValue(earlyOTUse ? "○" : "-");
+            }
+        }
+        
+        if (displayMode.equals(DisplayMode.DETAIL.value) && overTime) {
+            if (lstHalfDayWorkTimezoneMorning.isPresent()) {
+                List<OverTimeOfTimeZoneSetDto> lstOTTimezone = lstHalfDayWorkTimezoneMorning.get().getWorkTimezone().getLstOTTimezone();
+                
+                for (int i = 0; i < lstOTTimezone.size(); i++) {
+                    /*
+                     * R6_106
+                     * 残業時間帯.午前勤務用.開始時間
+                     */
+                    cells.get("AU" + (startIndex + lstOTTimezone.get(i).getWorkTimezoneNo()))
+                        .setValue(getInDayTimeWithFormat(lstOTTimezone.get(i).getTimezone().getStart()));
+                    
+                    /*
+                     * R6_107
+                     * 残業時間帯.午前勤務用.終了時間
+                     */
+                    cells.get("AV" + (startIndex + lstOTTimezone.get(i).getWorkTimezoneNo()))
+                        .setValue(getInDayTimeWithFormat(lstOTTimezone.get(i).getTimezone().getEnd()));
+                    
+                    /*
+                     * R6_108
+                     * 残業時間帯.午前勤務用.丸め
+                     */
+                    cells.get("AW" + (startIndex + lstOTTimezone.get(i).getWorkTimezoneNo()))
+                        .setValue(getRoundingTimeUnitEnum(lstOTTimezone.get(i).getTimezone().getRounding().getRoundingTime()));
+                    
+                    /*
+                     * R6_109
+                     * 残業時間帯.午前勤務用.端数
+                     */
+                    cells.get("AX" + (startIndex + lstOTTimezone.get(i).getWorkTimezoneNo()))
+                        .setValue(getRoundingEnum(lstOTTimezone.get(i).getTimezone().getRounding().getRounding()));
+                    
+                    Integer otFrameNo = lstOTTimezone.get(i).getOtFrameNo();
+                    Optional<WorkdayoffFrameFindDto> otFrameOpt = otFrameFind.stream().filter(x -> x.getWorkdayoffFrNo() == otFrameNo).findFirst();
+                    if (otFrameOpt.isPresent()) {
+                        /*
+                         * R6_110
+                         * 残業時間帯.午前勤務用.残業枠
+                         */
+                        cells.get("AY" + (startIndex + lstOTTimezone.get(i).getWorkTimezoneNo())).setValue(otFrameOpt.get().getWorkdayoffFrName());
+                    }
+                    
+                    /*
+                     * R6_111
+                     * 残業時間帯.午前勤務用.早出
+                     */
+                    boolean earlyOTUse = lstOTTimezone.get(i).isEarlyOTUse();
+                    cells.get("AZ" + (startIndex + lstOTTimezone.get(i).getWorkTimezoneNo())).setValue(earlyOTUse ? "○" : "-");
+                }
+            }
+            
+            if (lstHalfDayWorkTimezoneAfternoon.isPresent()) {
+                List<OverTimeOfTimeZoneSetDto> lstOTTimezone = lstHalfDayWorkTimezoneAfternoon.get().getWorkTimezone().getLstOTTimezone();
+                
+                for (int i = 0; i < lstOTTimezone.size(); i++) {
+                    /*
+                     * R6_112
+                     * 残業時間帯.午後勤務用.開始時間
+                     */
+                    cells.get("BA" + (startIndex + lstOTTimezone.get(i).getWorkTimezoneNo()))
+                        .setValue(getInDayTimeWithFormat(lstOTTimezone.get(i).getTimezone().getStart()));
+                    
+                    /*
+                     * R6_113
+                     * 残業時間帯.午後勤務用.終了時間
+                     */
+                    cells.get("BB" + (startIndex + lstOTTimezone.get(i).getWorkTimezoneNo()))
+                        .setValue(getInDayTimeWithFormat(lstOTTimezone.get(i).getTimezone().getEnd()));
+                    
+                    /*
+                     * R6_114
+                     * 残業時間帯.午後勤務用.丸め
+                     */
+                    cells.get("BC" + (startIndex + lstOTTimezone.get(i).getWorkTimezoneNo()))
+                        .setValue(getRoundingTimeUnitEnum(lstOTTimezone.get(i).getTimezone().getRounding().getRoundingTime()));
+                    
+                    /*
+                     * R6_115
+                     * 残業時間帯.午後勤務用.端数
+                     */
+                    cells.get("BD" + (startIndex + lstOTTimezone.get(i).getWorkTimezoneNo()))
+                        .setValue(getRoundingEnum(lstOTTimezone.get(i).getTimezone().getRounding().getRounding()));
+                    
+                    Integer otFrameNo = lstOTTimezone.get(i).getOtFrameNo();
+                    Optional<WorkdayoffFrameFindDto> otFrameOpt = otFrameFind.stream().filter(x -> x.getWorkdayoffFrNo() == otFrameNo).findFirst();
+                    if (otFrameOpt.isPresent()) {
+                        /*
+                         * R6_116
+                         * 残業時間帯.午後勤務用.残業枠
+                         */
+                        cells.get("BE" + (startIndex + lstOTTimezone.get(i).getWorkTimezoneNo())).setValue(otFrameOpt.get().getWorkdayoffFrName());
+                    }
+                    
+                    /*
+                     * R6_117
+                     * 残業時間帯.午後勤務用.早出
+                     */
+                    boolean earlyOTUse = lstOTTimezone.get(i).isEarlyOTUse();
+                    cells.get("BF" + (startIndex + lstOTTimezone.get(i).getWorkTimezoneNo())).setValue(earlyOTUse ? "○" : "-");
                 }
             }
         }
