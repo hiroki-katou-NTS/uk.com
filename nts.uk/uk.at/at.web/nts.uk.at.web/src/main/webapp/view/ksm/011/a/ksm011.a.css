@@ -1,0 +1,28 @@
+.panel-frame.caret-right::after {
+  border-left: solid 20px #97D155;
+  border-bottom: solid 60px transparent;
+  position: absolute;
+  right: -55px;
+  top: 100%;
+  width: 25px;
+  content: '';
+  z-index: 1000;
+  border-top: 0;
+  transform: translate(0, -50px);
+}
+
+.panel-frame.caret-right::before {
+  border-left: solid 20px #97D155;
+  border-top: solid 60px transparent;
+  position: absolute;
+  right: -55px;
+  top: 50%;
+  width: 25px;
+  content: '';
+  z-index: 1000;
+  transform: translate(0, -50%);
+}
+
+#contents-area .panel-frame:first-child {
+  margin-right: 50px;
+}
