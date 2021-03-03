@@ -4136,6 +4136,58 @@ public class WorkTimeReportService_New {
          */
         boolean nursTimezoneWorkUse = data.getFlexWorkSetting().getCommonSetting().getShortTimeWorkSet().isNursTimezoneWorkUse();
         cells.get("FO" + (startIndex + 1)).setValue(nursTimezoneWorkUse ? "育児時間を減算する" : "育児時間を減算しない");
+        
+        // 15       タブグ:                医療
+        
+        List<WorkTimezoneMedicalSetDto> medicalSet = data.getFlexWorkSetting().getCommonSetting().getMedicalSet();
+        Optional<WorkTimezoneMedicalSetDto> medicalDay = medicalSet.stream()
+                .filter(x -> x.getWorkSystemAtr().equals(WorkSystemAtr.DAY_SHIFT.value)).findFirst();
+        Optional<WorkTimezoneMedicalSetDto> medicalNight = medicalSet.stream()
+                .filter(x -> x.getWorkSystemAtr().equals(WorkSystemAtr.NIGHT_SHIFT.value)).findFirst();
+        
+        /*
+         * R6_246
+         * 医療.日勤申し送り時間
+         */
+        if (medicalDay.isPresent()) {
+            cells.get("FP" + (startIndex + 1)).setValue(getInDayTimeWithFormat(medicalDay.get().getApplicationTime()));
+        }
+        
+        /*
+         * R6_247
+         * 医療.夜勤申し送り時間
+         */
+        if (medicalNight.isPresent()) {
+            cells.get("FQ" + (startIndex + 1)).setValue(getInDayTimeWithFormat(medicalNight.get().getApplicationTime()));
+        }
+        
+        if (medicalDay.isPresent()) {
+            /*
+             * R6_248
+             * 医療.日勤勤務時間.丸め
+             */
+            cells.get("FR" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(medicalDay.get().getRoundingSet().getRoundingTime()));
+            
+            /*
+             * R6_249
+             * 医療.日勤勤務時間.端数
+             */
+            cells.get("FS" + (startIndex + 1)).setValue(getRoundingEnum(medicalDay.get().getRoundingSet().getRounding()));
+        }
+        
+        if (medicalNight.isPresent()) {
+            /*
+             * R6_250
+             * 医療.夜勤勤務時間.丸め
+             */
+            cells.get("FT" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(medicalNight.get().getRoundingSet().getRoundingTime()));
+            
+            /*
+             * R6_251
+             * 医療.夜勤勤務時間.端数
+             */
+            cells.get("FU" + (startIndex + 1)).setValue(getRoundingEnum(medicalNight.get().getRoundingSet().getRounding()));
+        }
     }
     
     /**
