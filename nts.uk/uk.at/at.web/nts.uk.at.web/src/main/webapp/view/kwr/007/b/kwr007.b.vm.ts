@@ -75,7 +75,7 @@ module nts.uk.at.view.kwr007.b {
       let msie = userAgent.match(/Trident.*rv\:11\./);
       if (!_.isNil(msie) && msie.index > -1) {
         vm.isIE(true);
-        vm.swapListHeight(340);
+        vm.swapListHeight(333);
       }
     }
 
@@ -173,6 +173,7 @@ module nts.uk.at.view.kwr007.b {
             vm.settingListItems.valueHasMutated();
             vm.isNewMode(false); //edit
           }
+          $('#KWR007_B53').focus();
         });
         vm.$blockui('hide');
       }).fail((error) => {

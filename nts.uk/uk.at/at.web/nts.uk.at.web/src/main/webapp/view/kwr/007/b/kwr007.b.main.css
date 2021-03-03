@@ -40,6 +40,7 @@
 }
 .kwr-007b .ui-iggrid .ui-iggrid-tablebody td {
   height: 22px;
+  display: table-cell;
 }
 .kwr-007b.ie .ui-iggrid .ui-iggrid-tablebody td {
   height: 23px;

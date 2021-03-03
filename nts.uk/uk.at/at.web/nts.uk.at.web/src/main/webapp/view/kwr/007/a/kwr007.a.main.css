@@ -77,7 +77,7 @@
   margin-right: 5px;
 }
 .kwr-007 .panel .switchButton-wrapper button {
-  width: 75px;
+  min-width: 75px;
 }
 
 .kwr-007 .panel .row-switch-button .ui-igcombo-wrapper {
