@@ -149,8 +149,8 @@ module nts.uk.at.view.ksu005.b {
                 if (value) {
                     for (let i = 1; i < temp.length; i++) {
                         temp[i].checked(true);
-                    }                        
-                    self.isEnableDelBtn(true);
+                    }      
+                    self.itemList().length > 1 ? self.isEnableDelBtn(true) : self.isEnableDelBtn(false);
                     self.itemList(temp);
                     self.checkOne(false);
                 } else {
@@ -302,7 +302,7 @@ module nts.uk.at.view.ksu005.b {
                         let tempSelectedCode: Array<any> = [];
 
 
-                        self.scheduleTableOutputSetting().updateData(data);
+                        // self.scheduleTableOutputSetting().updateData(data);
                         self.scheduleTableOutputSetting().isEnableCode(false);
                         self.isEnableAddBtn(checkAddInfo);
                         self.isShiftBackgroundColor(checkShiftBgColor);
@@ -534,7 +534,11 @@ module nts.uk.at.view.ksu005.b {
             if(self.countNumberRow >= 10) {
                 self.isEnableAddBtn(false);
             }
-            self.itemList.push(new ScreenItem(false, self.countNumberRow));    
+            let item: ScreenItem = new ScreenItem(false, self.countNumberRow);
+            if(self.checkAll()){
+                item.checked(true);
+            } 
+            self.itemList.push(item);
         }
         
         removeItem(){
