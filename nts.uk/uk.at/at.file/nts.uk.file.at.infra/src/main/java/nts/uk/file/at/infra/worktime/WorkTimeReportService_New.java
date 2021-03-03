@@ -4197,6 +4197,15 @@ public class WorkTimeReportService_New {
          */
         boolean zeroHStraddCalculateSet = data.getFlexWorkSetting().getCommonSetting().isZeroHStraddCalculateSet();
         cells.get("FV" + (startIndex + 1)).setValue(getUseAtrByBoolean(zeroHStraddCalculateSet));
+        
+        // 17       タブグ:                その地
+        
+        /*
+         * R6_253
+         * その他.勤務種類が休暇の場合に就業時間を計算するか
+         */
+        Integer isCalculate = data.getFlexWorkSetting().getCommonSetting().getHolidayCalculation().getIsCalculate();
+        cells.get("FW" + (startIndex + 1)).setValue(getUseAtrByInteger(isCalculate));
     }
     
     /**
