@@ -27,6 +27,7 @@ import nts.uk.ctx.at.shared.app.find.worktime.common.dto.WorkTimezoneMedicalSetD
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.WorkTimezoneOtherSubHolTimeSetDto;
 import nts.uk.ctx.at.shared.app.find.worktime.dto.WorkTimeSettingInfoDto;
 import nts.uk.ctx.at.shared.app.find.worktime.fixedset.dto.FixHalfDayWorkTimezoneDto;
+import nts.uk.ctx.at.shared.app.find.worktime.flexset.dto.FlexHalfDayWorkTimeDto;
 import nts.uk.ctx.at.shared.app.find.worktime.flowset.dto.FlOTTimezoneDto;
 import nts.uk.ctx.at.shared.app.find.worktime.flowset.dto.FlWorkHdTimeZoneDto;
 import nts.uk.ctx.at.shared.app.find.worktime.predset.dto.TimezoneDto;
@@ -2688,7 +2689,148 @@ public class WorkTimeReportService_New {
     public void insertDataOneLineFlex(WorkTimeSettingInfoDto data, Cells cells, int startIndex) {
         Integer displayMode = data.getDisplayMode().displayMode;
         
+        // 1        タブグ:                所定
+        
         this.printDataPrescribed(data, cells, startIndex, FLEX);
+        
+        // 2        タブグ:                勤務時間帯
+        
+        boolean workingTimes = data.getFlexWorkSetting().getUseHalfDayShift().isWorkingTimes();
+        
+        /*
+         * R6_260
+         * フレキシブルタイム.半日勤務を設定する
+         */
+        if (displayMode.equals(DisplayMode.DETAIL.value)) {
+            cells.get("AA" + (startIndex + 1)).setValue(getUseAtrByBoolean(workingTimes));
+        }
+        
+        List<FlexHalfDayWorkTimeDto> lstHalfDayWorkTimezone = data.getFlexWorkSetting().getLstHalfDayWorkTimezone();
+        Optional<FlexHalfDayWorkTimeDto> lstHalfDayWorkTimezoneOneDay = lstHalfDayWorkTimezone.stream()
+                .filter(x -> x.getAmpmAtr().equals(AmPmAtr.ONE_DAY)).findFirst();
+        Optional<FlexHalfDayWorkTimeDto> lstHalfDayWorkTimezoneMorning = lstHalfDayWorkTimezone.stream()
+                .filter(x -> x.getAmpmAtr().equals(AmPmAtr.AM)).findFirst();
+        Optional<FlexHalfDayWorkTimeDto> lstHalfDayWorkTimezoneAfternoon = lstHalfDayWorkTimezone.stream()
+                .filter(x -> x.getAmpmAtr().equals(AmPmAtr.PM)).findFirst();
+        
+        if (lstHalfDayWorkTimezoneOneDay.isPresent()) {
+            List<EmTimeZoneSetDto> lstWorkingTimezone = lstHalfDayWorkTimezoneOneDay.get().getWorkTimezone().getLstWorkingTimezone();
+            Collections.sort(lstWorkingTimezone, new Comparator<EmTimeZoneSetDto>() {
+                public int compare(EmTimeZoneSetDto o1, EmTimeZoneSetDto o2) {
+                    return o1.getEmploymentTimeFrameNo().compareTo(o2.getEmploymentTimeFrameNo());
+                };
+            });
+            
+            for (int i = 0; i < lstWorkingTimezone.size(); i++) {
+                /*
+                 * R6_88
+                 * フレキシブルタイム.1日勤務用.開始時間
+                 */
+                cells.get("AB" + (startIndex + lstWorkingTimezone.get(i).getEmploymentTimeFrameNo()))
+                    .setValue(getInDayTimeWithFormat(lstWorkingTimezone.get(i).getTimezone().getStart()));
+                    
+                /*
+                 * R6_89
+                 * フレキシブルタイム.1日勤務用.終了時間
+                 */
+                cells.get("AC" + (startIndex + lstWorkingTimezone.get(i).getEmploymentTimeFrameNo()))
+                    .setValue(getInDayTimeWithFormat(lstWorkingTimezone.get(i).getTimezone().getEnd()));
+                
+                /*
+                 * R6_90
+                 * フレキシブルタイム.1日勤務用.丸め
+                 */
+                cells.get("AD" + (startIndex + lstWorkingTimezone.get(i).getEmploymentTimeFrameNo()))
+                    .setValue(getRoundingTimeUnitEnum(lstWorkingTimezone.get(i).getTimezone().getRounding().getRoundingTime()));
+                
+                /*
+                 * R6_91
+                 * フレキシブルタイム.1日勤務用.端数
+                 */
+                cells.get("AE" + (startIndex + lstWorkingTimezone.get(i).getEmploymentTimeFrameNo()))
+                    .setValue(getRoundingEnum(lstWorkingTimezone.get(i).getTimezone().getRounding().getRounding()));
+            }
+        }
+        
+        if (displayMode.equals(DisplayMode.DETAIL.value) && workingTimes) {
+            if (lstHalfDayWorkTimezoneMorning.isPresent()) {
+                List<EmTimeZoneSetDto> lstWorkingTimezone = lstHalfDayWorkTimezoneMorning.get().getWorkTimezone().getLstWorkingTimezone();
+                Collections.sort(lstWorkingTimezone, new Comparator<EmTimeZoneSetDto>() {
+                    public int compare(EmTimeZoneSetDto o1, EmTimeZoneSetDto o2) {
+                        return o1.getEmploymentTimeFrameNo().compareTo(o2.getEmploymentTimeFrameNo());
+                    };
+                });
+                
+                for (int i = 0; i < lstWorkingTimezone.size(); i++) {
+                    /*
+                     * R6_92
+                     * フレキシブルタイム.午前勤務用.開始時間
+                     */
+                    cells.get("AF" + (startIndex + lstWorkingTimezone.get(i).getEmploymentTimeFrameNo()))
+                        .setValue(getInDayTimeWithFormat(lstWorkingTimezone.get(i).getTimezone().getStart()));
+                    
+                    /*
+                     * R6_93
+                     * フレキシブルタイム.午前勤務用.終了時間
+                     */
+                    cells.get("AG" + (startIndex + lstWorkingTimezone.get(i).getEmploymentTimeFrameNo()))
+                        .setValue(getInDayTimeWithFormat(lstWorkingTimezone.get(i).getTimezone().getEnd()));
+                    
+                    /*
+                     * R6_94
+                     * フレキシブルタイム.午前勤務用.丸め
+                     */
+                    cells.get("AH" + (startIndex + lstWorkingTimezone.get(i).getEmploymentTimeFrameNo()))
+                        .setValue(getRoundingTimeUnitEnum(lstWorkingTimezone.get(i).getTimezone().getRounding().getRoundingTime()));
+                    
+                    /*
+                     * R6_95
+                     * フレキシブルタイム.午前勤務用.端数
+                     */
+                    cells.get("AI" + (startIndex + lstWorkingTimezone.get(i).getEmploymentTimeFrameNo()))
+                        .setValue(getRoundingEnum(lstWorkingTimezone.get(i).getTimezone().getRounding().getRounding()));
+                }
+            }
+            
+            if (lstHalfDayWorkTimezoneAfternoon.isPresent()) {
+                List<EmTimeZoneSetDto> lstWorkingTimezone = lstHalfDayWorkTimezoneAfternoon.get().getWorkTimezone().getLstWorkingTimezone();
+                Collections.sort(lstWorkingTimezone, new Comparator<EmTimeZoneSetDto>() {
+                    public int compare(EmTimeZoneSetDto o1, EmTimeZoneSetDto o2) {
+                        return o1.getEmploymentTimeFrameNo().compareTo(o2.getEmploymentTimeFrameNo());
+                    };
+                });
+                
+                for (int i = 0; i < lstWorkingTimezone.size(); i++) {
+                    /*
+                     * R6_96
+                     * フレキシブルタイム.午後勤務用.開始時間
+                     */
+                    cells.get("AJ" + (startIndex + lstWorkingTimezone.get(i).getEmploymentTimeFrameNo()))
+                        .setValue(getInDayTimeWithFormat(lstWorkingTimezone.get(i).getTimezone().getStart()));
+                    
+                    /*
+                     * R6_97
+                     * フレキシブルタイム.午後勤務用.終了時間
+                     */
+                    cells.get("AK" + (startIndex + lstWorkingTimezone.get(i).getEmploymentTimeFrameNo()))
+                        .setValue(getInDayTimeWithFormat(lstWorkingTimezone.get(i).getTimezone().getEnd()));
+                    
+                    /*
+                     * R6_98
+                     * フレキシブルタイム.午後勤務用.丸め
+                     */
+                    cells.get("AL" + (startIndex + lstWorkingTimezone.get(i).getEmploymentTimeFrameNo()))
+                        .setValue(getRoundingTimeUnitEnum(lstWorkingTimezone.get(i).getTimezone().getRounding().getRoundingTime()));
+                    
+                    /*
+                     * R6_99
+                     * フレキシブルタイム.午後勤務用.端数
+                     */
+                    cells.get("AM" + (startIndex + lstWorkingTimezone.get(i).getEmploymentTimeFrameNo()))
+                        .setValue(getRoundingEnum(lstWorkingTimezone.get(i).getTimezone().getRounding().getRounding()));
+                }
+            }
+        }
     }
     
     /**
