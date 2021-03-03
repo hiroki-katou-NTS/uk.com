@@ -36,15 +36,15 @@ public class OneDayReflectStatusOutput {
 		this.statusWorkSchedule.setReflectStatus(stateWorkSchedule);
 	}
 
-	public ReflectionStatus createReflectStatus(GeneralDate date) {
-		return new ReflectionStatus(Arrays.asList(new ReflectionStatusOfDay(statusWorkRecord.getReflectStatus(),
-				statusWorkSchedule.getReflectStatus(), date,
+	public ReflectionStatusOfDay createReflectStatus(GeneralDate date) {
+		return new ReflectionStatusOfDay(statusWorkRecord.getReflectStatus(), statusWorkSchedule.getReflectStatus(),
+				date,
 				Optional.of(DailyAttendanceUpdateStatus.createNew(null, null,
 						statusWorkRecord.getReasonNotReflectWorkRecord() == null ? null
 								: statusWorkRecord.getReasonNotReflectWorkRecord().value,
 						statusWorkSchedule.getReasonNotReflectWorkSchedule() == null ? null
 								: statusWorkSchedule.getReasonNotReflectWorkSchedule().value)),
-				Optional.empty())));
+				Optional.empty());
 	}
 	
 	public boolean reflect() {

@@ -115,7 +115,13 @@ public class AppReflectManagerImpl implements AppReflectManager {
 				x.run();
 			});
 			resultAfterReflect.getKey().ifPresent(x -> {
-				appInfor.setReflectionStatus(x.createReflectStatus(loopDate));
+				appInfor.getReflectionStatus().getListReflectionStatusOfDay().replaceAll(y -> {
+					if(y.getTargetDate().equals(loopDate)) {
+						return x.createReflectStatus(loopDate);
+					}else {
+						return y;
+					}
+				});
 				appRepo.update(appInfor);
 				if (x.reflect()) {
 					lstDate.add(loopDate);
