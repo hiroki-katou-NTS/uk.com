@@ -88,7 +88,7 @@ public class TimeSpanForDailyCalc {
 	 * @return 含まれていればtrue
 	 */
 	public boolean contains(TimeWithDayAttr time) {
-		this.timeSpan.contains(this.timeSpan);
+//		this.timeSpan.contains(this.timeSpan);
 		return this.timeSpan.contains(time);
 	}
 	
