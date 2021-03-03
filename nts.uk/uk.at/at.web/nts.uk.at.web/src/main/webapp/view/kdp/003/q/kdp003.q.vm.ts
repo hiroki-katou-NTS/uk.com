@@ -1,198 +1,377 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.at.kdp003.q {
-    import MessageNotice = nts.uk.at.kdp003.p.MessageNotice;
-    import Role = nts.uk.at.kdp003.p.Role;
+	import Role = nts.uk.at.kdp003.p.Role;
 
-    const API = {
+	const API = {
 
-        //社員が作成するお知らせ登録の画面を表示する
-        INIT_SCREEN: 'sys/portal/notice/notificationCreatedByEmp',
+		//社員が作成するお知らせ登録の画面を表示する
+		START_SCREEN: 'sys/portal/notice/notificationCreatedByEmp',
 
-        //お知らせを登録する
-        REGISTER_NOTICE: 'sys/portal/notice/registerMessageNotice',
+		//お知らせを登録する
+		REGISTER_NOTICE: 'sys/portal/notice/registerMessageNotice',
 
-        //お知らせを更新する
-        UPDATE_NOTICE: 'sys/portal/notice/updateMessageNotice',
+		//お知らせを更新する
+		UPDATE_NOTICE: 'sys/portal/notice/updateMessageNotice',
 
-        //お知らせを削除する
-        DELETE_NOTICE: 'sys/portal/notice/deleteMessageNotice',
+		//お知らせを削除する
+		DELETE_NOTICE: 'sys/portal/notice/deleteMessageNotice',
 
-        //打刻入力の作成するお知らせ登録の画面を表示する
-        DISPLAY_NOTICE: 'at/record/stamp/notice/displayNoticeRegisterScreen',
+		//打刻入力のお知らせの職場を取得する
+		GET_WKP_BY_STAMP_NOTICE: 'at/record/stamp/notice/getWkpByStampNotice'
+	};
 
-        //打刻入力のお知らせの職場を取得する
-        GET_WKP_BY_STAMP_NOTICE: 'at/record/stamp/notice/getWkpByStampNotice'
-    };
+	const COMMA = '、';
 
-    const COMMA = '、';
-
-    @bean()
+	@bean()
 	export class ViewModel extends ko.ViewModel {
-        messageText: KnockoutObservable<string> = ko.observable('');
-        startDate: KnockoutObservable<string> = ko.observable('');
-		endDate: KnockoutObservable<string> = ko.observable('');
-		updateDate: KnockoutObservable<string> = ko.observable('更新日:');
-
-        destination: KnockoutObservable<number> = ko.observable(1);
-        dateValue: KnockoutObservable<DatePeriod> = ko.observable(new DatePeriod({
-            startDate: moment.utc().format('YYYY/MM/DD'),
+		messageText: KnockoutObservable<string> = ko.observable('');
+		destination: KnockoutObservable<number> = ko.observable(1);
+		dateValue: KnockoutObservable<DatePeriod> = ko.observable(new DatePeriod({
+			startDate: moment.utc().format('YYYY/MM/DD'),
 			endDate: moment.utc().format('YYYY/MM/DD')
-             }));
-        isNewMode: KnockoutObservable<boolean> = ko.observable(false);
-        isActiveDelete: KnockoutComputed<boolean> = ko.computed(() => !this.isNewMode());
-        assignAtr: KnockoutObservable<number> = ko.observable(0);
-        employeeReferenceRange: KnockoutObservable<number> = ko.observable(0);
+		}));
+		updateDate: KnockoutObservable<string> = ko.observable('');
+		isNewMode: KnockoutObservable<boolean> = ko.observable(false);
+		isActiveDelete: KnockoutComputed<boolean> = ko.computed(() => !this.isNewMode());
+		assignAtr: KnockoutObservable<number> = ko.observable(0);
+		employeeReferenceRange: KnockoutObservable<number> = ko.observable(0);
 
-        parentParam = new ParentParam();
-        isStartUpdateMode = false;
-        workPlaceIdList: KnockoutObservableArray<string> = ko.observableArray([]);
-        workPlaceName: KnockoutObservableArray<string> = ko.observableArray(['職場1', '職場2', '職場3', '職場4']);
-        workPlaceText: KnockoutComputed<string> = ko.computed(() => {
-            return this.workPlaceName().join(COMMA);
-          });
+		// ※Q1 ロール.参照範囲＝全社員　OR　部門・職場(配下含む）
+		isActiveWorkplaceBtn: KnockoutComputed<boolean> = ko.computed(() => this.employeeReferenceRange() === EmployeeReferenceRange.ALL_EMPLOYEE || this.employeeReferenceRange() === EmployeeReferenceRange.DEPARTMENT_AND_CHILD);
+		parentParam = new ParentParam();
+		isStartUpdateMode = false;
+		workPlaceIdList: KnockoutObservableArray<string> = ko.observableArray([]);
+		workPlaceName: KnockoutObservableArray<string> = ko.observableArray([]);
+		notificationCreated: KnockoutObservable<NotificationCreated> = ko.observable(null);
+		workPlaceText: KnockoutComputed<string> = ko.computed(() => {
+			return this.workPlaceName().join(COMMA);
+		});
+		workPlaceTxtRefer: KnockoutObservable<string> = ko.observable('');
+		startDateOfMsgUpdate = '';
 
-        created(parentParam: ParentParam) {
-            const vm = this;
-            vm.parentParam = parentParam;
-        }
+		created(parentParam: ParentParam) {
+			const vm = this;
+			vm.parentParam = parentParam;
+			vm.isNewMode(vm.parentParam.isNewMode);
+			vm.isStartUpdateMode = !vm.parentParam.isNewMode;
+			vm.employeeReferenceRange(parentParam.role.employeeReferenceRange);
+			vm.assignAtr(parentParam.role.assignAtr);
+			vm.onStartScreen();
+		}
 
-        mounted(){
-            const vm = this;
+		mounted() {
+			const vm = this;
 			$(document).ready(() => {
 				$('#message').focus();
 			});
-        }
+			vm.destination.subscribe(() => {
+				//if (vm.employeeReferenceRange() === EmployeeReferenceRange.DEPARTMENT_ONLY) {
+					if (!_.isNull(vm.notificationCreated().workplaceInfo)) {
+						const workplaceInfo = this.notificationCreated().workplaceInfo;
+						vm.workPlaceIdList([workplaceInfo.workplaceId]);
+						vm.workPlaceTxtRefer(`${workplaceInfo.workplaceCode} ${workplaceInfo.workplaceName}`);
+					}
+				//}
+			});
+		}
 
         /**
          * 起動する
          */
-        onStartScreen(){
-            const vm = this;
-            const param = {};
-            vm.$ajax(API.INIT_SCREEN).then(() => {
+		onStartScreen() {
+			const vm = this;
+			const param = vm.parentParam.messageNotice;
+			const msg = vm.isNewMode()
+				? null
+				: new MessageNotice({
+					creatorID: param.creatorID,
+					employeeIdSeen: param.employeeIdSeen,
+					endDate: moment.utc(param.endDate).toISOString(),
+					startDate: moment.utc(param.startDate).toISOString(),
+					inputDate: param.inputDate,
+					modifiedDate: param.modifiedDate,
+					notificationMessage: param.notificationMessage,
+					targetInformation: param.targetInformation
+				});
+			if (!vm.isNewMode() && msg !== null) {
+				vm.destination(msg.targetInformation.destination);
+				// Q3
+				vm.messageText(msg.notificationMessage);
+				// Q2_2
+				const period = new DatePeriod({
+					startDate: msg.startDate,
+					endDate: msg.endDate
+				});
+				vm.dateValue(period);
+				// Q2_3
+				const modifiedDate = moment.utc(msg.modifiedDate).format('YYYY/M/D HH:mm');
+				vm.updateDate(vm.$i18n('KDP003_68', [modifiedDate]));
+				vm.startDateOfMsgUpdate = msg.startDate;
+			}
 
-            });
-        }
+			if (vm.isNewMode()) {
+				vm.updateDate(vm.$i18n('KDP003_68', ['']));
+			}
+
+			const params: NotificationParams = new NotificationParams({
+				refeRange: vm.employeeReferenceRange(),
+				msg: msg
+			});
+			vm.$blockui('show');
+			this.$ajax('com', API.START_SCREEN, params)
+				.then((response: NotificationCreated) => {
+					if (!response) {
+						return;
+					}
+					vm.createNotice(response);
+				})
+				.fail(error => vm.$dialog.error(error))
+				.always(() => vm.$blockui('hide'));
+
+		}
+
+		createNotice(data: NotificationCreated) {
+			const vm = this;
+			vm.notificationCreated(data);
+
+			if (vm.isStartUpdateMode) {
+				vm.isStartUpdateMode = false;
+				const wkpList = vm.notificationCreated().targetWkps;
+				vm.workPlaceTxtRefer(_.map(wkpList, wkp => wkp.workplaceName).join(COMMA));
+				vm.workPlaceIdList(_.map(wkpList, wkp => wkp.workplaceId));
+			}
+		}
 
         /**
          * Q20_1：登録をクリックする
          */
-        onClickRegister(){
-            const vm = this;
-            const error: string = vm.checkBeforeRegister();
-            if (!_.isEmpty(error)) {
-              vm.$dialog.error({ messageId: error });
-              return;
-            }
-            if (vm.isNewMode()) {
-              vm.registerOnNewMode();
-            } else {
-              vm.registerOnUpdateMode();
-            }
-          }
+		onClickRegister() {
+			const vm = this;
+			const error: string = vm.checkBeforeRegister();
+			if (!_.isEmpty(error)) {
+				vm.$dialog.error({ messageId: error });
+				return;
+			}
+			if (vm.isNewMode()) {
+				vm.registerOnNewMode();
+			} else {
+				vm.registerOnUpdateMode();
+			}
+		}
 
         /**
          * Q1 登録前のチェックについて
          */
-        checkBeforeRegister(): string {
-            return '';
-        }
+		checkBeforeRegister(): string {
+			const vm = this;
+			if (_.isEmpty(vm.workPlaceIdList())) {
+				return 'Msg_1813';
+			}
+			if (moment.utc(vm.dateValue().startDate).isBefore(moment.utc().format('YYYY/MM/DD'))) {
+				if (vm.isNewMode()) {
+					return 'Msg_1834';
+				} else if (!moment.utc(vm.startDateOfMsgUpdate, 'YYYY/MM/DD').isSame(moment.utc(vm.dateValue().startDate, 'YYYY/MM/DD'))) {
+					return 'Msg_1834';
+				}
+			}
+		}
 
         /**
          * ※新規モードの場合
          */
-        registerOnNewMode() {
+		registerOnNewMode() {
+			const vm = this;
+			const message: MessageNotice = new MessageNotice({
+				creatorID: __viewContext.user.employeeId,
+				inputDate: moment.utc().toISOString(),
+				modifiedDate: moment.utc().toISOString(),
+				notificationMessage: vm.messageText(),
+				targetInformation: new TargetInformation({
+					destination: vm.destination(),
+					targetWpids: vm.isActiveWorkplaceBtn() ? vm.workPlaceIdList() : [],
+					targetSIDs: []
+				}),
+				startDate: moment.utc(vm.dateValue().startDate).toISOString(),
+				endDate: moment.utc(vm.dateValue().endDate).toISOString(),
+				employeeIdSeen: null
+			});
 
-        }
+			const command = {
+				creatorID: __viewContext.user.employeeId,
+				messageNotice: message
+			}
+			vm.$blockui('show');
+			vm.$ajax('com', API.REGISTER_NOTICE, command)
+				.then(() => {
+					vm.$dialog.info({ messageId: 'Msg_15' })
+						.then(() => this.$window.close({ isClose: false }))
+				})
+				.fail(error => vm.$dialog.error(error))
+				.always(() => vm.$blockui('hide'));
+		}
 
         /**
          * ※更新モードの場合
          */
-        registerOnUpdateMode() {
+		registerOnUpdateMode() {
+			const vm = this;
+			const oldMsg = vm.parentParam.messageNotice;
 
-        }
+			const message: MessageNotice = new MessageNotice({
+				creatorID: oldMsg.creatorID,
+				inputDate: oldMsg.inputDate,
+				modifiedDate: moment.utc().toISOString(),
+				notificationMessage: vm.messageText(),
+				targetInformation: new TargetInformation({
+					destination: vm.destination(),
+					targetWpids: vm.isActiveWorkplaceBtn() ? vm.workPlaceIdList() : [],
+					targetSIDs: []
+				}),
+				startDate: moment.utc(vm.dateValue().startDate).toISOString(),
+				endDate: moment.utc(vm.dateValue().endDate).toISOString(),
+			});
+
+			const command = {
+				sid: oldMsg.creatorID,
+				inputDate: oldMsg.inputDate,
+				messageNotice: message
+			}
+			vm.$blockui('show');
+			vm.$ajax('com', API.UPDATE_NOTICE, command)
+				.then(() => {
+					vm.$dialog.info({ messageId: 'Msg_15' })
+						.then(() => this.$window.close({ isClose: true }))
+				})
+				.fail(error => vm.$dialog.error(error))
+				.always(() => vm.$blockui('hide'));
+
+		}
 
         /**
          * Q20_2: 削除をクリックする
          */
-        onClickDelete() {
-
-        }
+		onClickDelete() {
+			const vm = this;
+			vm.$dialog.confirm({ messageId: 'Msg_18' }).then((result: 'no' | 'yes' | 'cancel') => {
+				if (result !== 'yes') {
+					return;
+				}
+				const messageNotice = vm.parentParam.messageNotice;
+				const command = {
+					creatorID: messageNotice.creatorID,
+					inputDate: messageNotice.inputDate
+				};
+				vm.$blockui('show');
+				vm.$ajax('com', API.DELETE_NOTICE, command)
+					.then(() => {
+						vm.$dialog.info({ messageId: 'Msg_16' })
+							.then(() => this.$window.close({ isClose: false }))
+					})
+					.always(() => vm.$blockui('hide'));
+			});
+		}
 
         /**
          * Q20_3：職場選択をクリックする
          */
-        openKDP003KDialog() {
-
-        }
+		openKDP003KDialog() {
+			const vm = this;
+			vm.$window.modal('at', '/view/kdp/003/k/index.xhtml', { multiSelect: true })
+				.then((selectedWP) => {
+					vm.workPlaceIdList(selectedWP.selectedId);
+				});
+		}
 
         /**
          * Q20_4: 戻る
          */
-        returnP() {
-            const vm = this;
+		returnP() {
+			const vm = this;
 			vm.$window.close();
-        }
+		}
 
-    }
-    enum DestinationClassification {
-        ALL = 0,
-        WORKPLACE = 1,
-        DEPARTMENT = 2
-      }
-    
-    enum StartMode {
-        WORKPLACE = 0,
-        DEPARTMENT = 1
-    }
-    
-    enum EmployeeReferenceRange {
-        ALL_EMPLOYEE = 0,
-        DEPARTMENT_AND_CHILD = 1,
-        DEPARTMENT_ONLY = 2,
-        ONLY_MYSELF = 3
-      }
+	}
+	enum DestinationClassification {
+		ALL = 0,
+		WORKPLACE = 1,
+		DEPARTMENT = 2
+	}
 
-    export interface WorkplaceInfo {
-        workplaceId: string; //職場ID
-        workplaceCode: string; //職場コード
-        workplaceName: string; //職場表示名
-    }
+	enum StartMode {
+		WORKPLACE = 0,
+		DEPARTMENT = 1
+	}
 
-    export class ParentParam {
-        isNewMode: boolean;
-        role: Role;
-        messageNotice: MessageNotice
-      }
+	enum EmployeeReferenceRange {
+		ALL_EMPLOYEE = 0,
+		DEPARTMENT_AND_CHILD = 1,
+		DEPARTMENT_ONLY = 2,
+		ONLY_MYSELF = 3
+	}
 
-    export class DatePeriod {
-        startDate: string;
-        endDate: string;
-    
-        constructor(init?: Partial<DatePeriod>) {
-          $.extend(this, init);
-        }
-      }
+	export interface WorkplaceInfo {
+		workplaceId: string; //職場ID
+		workplaceCode: string; //職場コード
+		workplaceName: string; //職場表示名
+	}
 
-    export class NotificationParams {
-        refeRange: number;
-        msg: MessageNotice;
-        constructor(init?: Partial<NotificationParams>) {
-          $.extend(this, init);
-        }
-      }
+	export class ParentParam {
+		isNewMode: boolean;
+		role: Role;
+		messageNotice: MessageNotice
+	}
 
-    export class WorkplaceInfo {
-        workplaceId: string;
-        workplaceCode: string;
-        workplaceName: string;
-      }
-    
-    export interface NotificationCreated {
-        workplaceInfo: WorkplaceInfo;
-        targetWkps: WorkplaceInfo[];
-        //targetEmps: EmployeeInfo[];
-      }
-    
+	export class DatePeriod {
+		startDate: string;
+		endDate: string;
+
+		constructor(init?: Partial<DatePeriod>) {
+			$.extend(this, init);
+		}
+	}
+
+	export class MessageNotice {
+		creatorID: string; //作成者ID
+		inputDate: string; //入力日
+		modifiedDate: string; //更新日
+		targetInformation: TargetInformation; //対象情報
+		startDate: any; //開始日
+		endDate: any; //終了日
+		employeeIdSeen: string[]; //対象情報
+		notificationMessage: string; //メッセージの内容
+
+		constructor(init?: Partial<MessageNotice>) {
+			$.extend(this, init);
+		}
+	}
+
+	export class NotificationParams {
+		refeRange: number;
+		msg: MessageNotice;
+		constructor(init?: Partial<NotificationParams>) {
+			$.extend(this, init);
+		}
+	}
+
+	export class WorkplaceInfo {
+		workplaceId: string;
+		workplaceCode: string;
+		workplaceName: string;
+	}
+
+	export class TargetInformation {
+		targetSIDs: string[];
+		targetWpids: string[];
+		destination: number;
+		constructor(init?: Partial<TargetInformation>) {
+			$.extend(this, init);
+		}
+	}
+
+	export interface NotificationCreated {
+		workplaceInfo: WorkplaceInfo;
+		targetWkps: WorkplaceInfo[];
+	}
+
 }
