@@ -572,7 +572,9 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
 					appDispInfoStartupDto: vm.appDispInfoStartupOutput()
                 }).done((success: any) => {
                     if (success) {
-                        vm.$dialog.info({ messageId: "Msg_15" });
+                        vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
+							return CommonProcess.handleMailResult(success, vm);
+						});
                     }
                 }).fail((fail: any) => {
                     if (fail) {

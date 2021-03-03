@@ -26,7 +26,7 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
         lateOrEarlyInfo3: KnockoutObservable<LateOrEarlyInfo>;
         lateOrEarlyInfo4: KnockoutObservable<LateOrEarlyInfo>;
         managementMultipleWorkCycles: KnockoutObservable<Boolean>;
-        isSendMail: KnockoutObservable<Boolean>;
+        isSendMail: KnockoutObservable<boolean>;
         isEnable1: KnockoutObservable<Boolean> = ko.observable(false);
         isEnable2: KnockoutObservable<Boolean> = ko.observable(false);
         isEnable3: KnockoutObservable<Boolean> = ko.observable(false);
@@ -744,21 +744,10 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                     appType: ko.toJS(vm.application().appType),
                     application: params,
                     infoOutput: ko.toJS(vm.arrivedLateLeaveEarlyInfo)
-                }).done((success: any) => {
+                }).then((success: any) => {
                     if (success) {
                         vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
-                            if (ko.toJS(vm.isSendMail)
-                                && !vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting.sendMailWhenRegister
-                                // && false
-                            ) {
-                                vm.$window.storage("KDL030_PARAM", {
-                                    appID: success.appID
-                                });
-                                nts.uk.ui.windows.sub.modal("/view/kdl/030/a/index.xhtml")
-                                    .onClosed(() => { location.reload() });
-                            };
-                        }).then(() => {
-                            window.location.reload();
+							CommonProcess.handleAfterRegister(success, vm.isSendMail(), vm);
                         });
                     }
                 }).fail((fail: any) => {

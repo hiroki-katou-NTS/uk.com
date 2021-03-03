@@ -13,13 +13,14 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 	import Kaf000AViewModel = nts.uk.at.view.kaf000.a.viewmodel.Kaf000AViewModel;
 	import AppInitParam = nts.uk.at.view.kaf000.shr.viewmodel.AppInitParam;
 	import formatTime = nts.uk.time.format.byId;
+	import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
 
 	@bean()
 	class Kaf005AViewModel extends Kaf000AViewModel {
 
 		appType: KnockoutObservable<number> = ko.observable(AppType.OVER_TIME_APPLICATION);
 		application: KnockoutObservable<Application>;
-		isSendMail: KnockoutObservable<Boolean>;
+		isSendMail: KnockoutObservable<boolean>;
 		isAgentMode: KnockoutObservable<boolean> = ko.observable(false);
 		overTimeWork: KnockoutObservableArray<OvertimeWork> = ko.observableArray([]);
 		workInfo: KnockoutObservable<WorkInfo> = ko.observable(null);
@@ -842,18 +843,11 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						// 残業申請の表示情報．申請表示情報．申請設定（基準日関係なし）．申請設定．申請種類別設定
 						commandRegister.appTypeSetting = appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting[0];
 						// đăng kí 
-						return vm.$ajax('at', API.register, commandRegister).then(() => {
+						return vm.$ajax('at', API.register, commandRegister).then((result: any) => {
 							return vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
-								window.location.reload();
-								return true;
+								CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm);
 							});
 						});
-					}
-				}).then((result) => {
-					if (result) {
-						// gửi mail sau khi đăng kí
-						// return vm.$ajax('at', API.sendMailAfterRegisterSample);
-						return true;
 					}
 				}).fail((failData) => {
 					// xử lý lỗi nghiệp vụ riêng

@@ -102,7 +102,7 @@ public class DetailAfterUpdateImpl implements DetailAfterUpdate {
 		// 送信先リストに項目がいるかチェックする ( Check if there is an item in the destination list )
 		if(!CollectionUtil.isEmpty(destinationList)){
 			// 送信先リストにメールを送信する ( Send mail to recipient list )
-			MailResult mailResult = otherCommonAlgorithm.sendMailApproverApprove(destinationList, application, "");
+			MailResult mailResult = otherCommonAlgorithm.sendMailApproverApprove(destinationList, application);
 			processResult.setAutoSuccessMail(mailResult.getSuccessList());
 			processResult.setAutoFailMail(mailResult.getFailList());
 			processResult.setAutoFailServer(mailResult.getFailServerList());

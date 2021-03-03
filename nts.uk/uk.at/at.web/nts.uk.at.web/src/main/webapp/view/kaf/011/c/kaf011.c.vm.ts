@@ -3,6 +3,7 @@ module nts.uk.at.view.kaf011.c.viewmodel {
    	import ajax = nts.uk.request.ajax;
 	import block = nts.uk.ui.block;
 	import dialog = nts.uk.ui.dialog;
+	import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
 	
 	export class KAF011C {
 		displayInforWhenStarting: any;

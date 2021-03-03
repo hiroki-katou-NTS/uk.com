@@ -259,9 +259,11 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             vm.$ajax(API.approve, command)
             .done((successData: any) => {
                 vm.$dialog.info({ messageId: "Msg_220" }).then(() => {
-                	let param = [successData.reflectAppId];
-                	nts.uk.request.ajax("at", API.reflectAppSingle, param);
-                    vm.loadData();
+					CommonProcess.handleMailResult(successData, vm).then(() => {
+						let param = [successData.reflectAppId];
+	                	nts.uk.request.ajax("at", API.reflectAppSingle, param);
+	                    vm.loadData();
+					});
                 });
             }).fail((res: any) => {
                 vm.handlerExecuteErrorMsg(res);
@@ -279,7 +281,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             .done((successData: any) => {
                 if(successData.processDone) {
                     vm.$dialog.info({ messageId: "Msg_222" }).then(() => {
-                        vm.loadData();
+						CommonProcess.handleMailResult(successData, vm).then(() => {
+		                    vm.loadData();
+						});
                     });
                 }
             }).fail((res: any) => {
@@ -298,7 +302,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 				if(successData) {
 					if(successData.processDone) {
 	                    vm.$dialog.info({ messageId: "Msg_221" }).then(() => {
-	                        vm.loadData();
+							CommonProcess.handleMailResult(successData, vm).then(() => {
+			                    vm.loadData();
+							});
 	                    });
 	                }
 				}
@@ -382,13 +388,15 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             }).done((successData: any) => {
 				if(successData) {
 					vm.$dialog.info({ messageId: "Msg_16" }).then(() => {
-						character.restore("AppListExtractCondition").then((obj: any) => {
-							let param = 0;
-							if(obj.appListAtr==1) {
-								param = 1;
-							}
-							vm.$jump("at", "/view/cmm/045/a/index.xhtml?a="+param);
-			            });
+						CommonProcess.handleMailResult(successData, vm).then(() => {
+		                    character.restore("AppListExtractCondition").then((obj: any) => {
+								let param = 0;
+								if(obj.appListAtr==1) {
+									param = 1;
+								}
+								vm.$jump("at", "/view/cmm/045/a/index.xhtml?a="+param);
+				            });
+						});
 	                });
 				}
             }).fail((res: any) => {

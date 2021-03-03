@@ -12,6 +12,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
     import PrintContentOfEachAppDto = nts.uk.at.view.kaf000.shr.viewmodel.PrintContentOfEachAppDto;
     import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
 	import formatTime = nts.uk.time.format.byId;
+	import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
 	const template= `
 	<div>
 	<div
@@ -393,17 +394,13 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					} else {
 						commandUpdate.appOverTime = applicationTemp;
 					}
-                	return vm.$ajax('at', API.update, commandUpdate).then(() => {
-						return vm.$dialog.info({ messageId: "Msg_15"}).then(() => {
-							return true;
-						});	
-					});
+                	return vm.$ajax('at', API.update, commandUpdate);
                 }
             }).then((result) => {
                 if(result) {
-					// gửi mail sau khi update
-					// return vm.$ajax('at', API.sendMailAfterUpdateSample);
-					return true;
+					return vm.$dialog.info({ messageId: "Msg_15"}).then(() => {
+						return CommonProcess.handleMailResult(result, vm);
+					});
 				}	
             }).then((result) => {
                 if(result) {

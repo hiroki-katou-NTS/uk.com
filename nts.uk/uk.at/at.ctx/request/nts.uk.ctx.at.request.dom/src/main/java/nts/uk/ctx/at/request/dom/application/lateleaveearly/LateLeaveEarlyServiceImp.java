@@ -602,16 +602,12 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 		// 2-2.新規画面登録時承認反映情報の整理
 		this.registerService.newScreenRegisterAtApproveInfoReflect(employeeId, application);
 
-		// TODO: 申請設定 domain has changed!
+		// 2-3.新規画面登録後の処理
 		AppTypeSetting appTypeSetting = infoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getApplicationSetting()
 				.getAppTypeSettings().stream().filter(x -> x.getAppType()==application.getAppType()).findAny().orElse(null);
-		if (appTypeSetting.isSendMailWhenRegister()) {
-			// 「新規登録時に自動でメールを送信する」がする(chọn auto send mail 「新規登録時に自動でメールを送信する」)
-			// TODO: 申請設定 domain has changed!
-			processResult = this.newAfterRegister.processAfterRegister(application.getAppID(),
-					appTypeSetting,
-					infoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().isMailServerSet());
-		}
+		processResult = this.newAfterRegister.processAfterRegister(application.getAppID(),
+				appTypeSetting,
+				infoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().isMailServerSet());
 
 		return processResult;
 	}
