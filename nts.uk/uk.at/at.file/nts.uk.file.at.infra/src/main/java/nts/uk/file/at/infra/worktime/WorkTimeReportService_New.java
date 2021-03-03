@@ -4188,6 +4188,15 @@ public class WorkTimeReportService_New {
              */
             cells.get("FU" + (startIndex + 1)).setValue(getRoundingEnum(medicalNight.get().getRoundingSet().getRounding()));
         }
+        
+        // 16       タブグ:                0時跨ぎ
+        
+        /*
+         * R6_252
+         * ０時跨ぎ.0時跨ぎ計算
+         */
+        boolean zeroHStraddCalculateSet = data.getFlexWorkSetting().getCommonSetting().isZeroHStraddCalculateSet();
+        cells.get("FV" + (startIndex + 1)).setValue(getUseAtrByBoolean(zeroHStraddCalculateSet));
     }
     
     /**
