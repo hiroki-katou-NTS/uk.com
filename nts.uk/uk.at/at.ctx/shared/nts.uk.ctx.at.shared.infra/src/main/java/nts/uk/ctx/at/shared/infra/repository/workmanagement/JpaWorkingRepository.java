@@ -1,15 +1,17 @@
 package nts.uk.ctx.at.shared.infra.repository.workmanagement;
 
 import lombok.val;
+import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.primitive.PrimitiveValueBase;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.*;
 import nts.uk.ctx.at.shared.dom.workmanagement.aggregateroot.workmaster.Work;
 import nts.uk.ctx.at.shared.dom.workmanagement.repo.workmaster.WorkingRepository;
 import nts.uk.ctx.at.shared.infra.entity.workmanagement.workmaster.KsrmtTaskChild;
-import nts.uk.ctx.at.shared.infra.entity.workmanagement.workmaster.KsrmtTaskChildPk;
 import nts.uk.ctx.at.shared.infra.entity.workmanagement.workmaster.KsrmtTaskMaster;
 import nts.uk.ctx.at.shared.infra.entity.workmanagement.workmaster.KsrmtTaskMasterPk;
 import nts.uk.ctx.at.shared.infra.entity.workmanagement.workmaster.metamode.KsrmtTaskChildPk_;
@@ -22,7 +24,6 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
-import javax.swing.text.html.parser.Entity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -75,42 +76,56 @@ public class JpaWorkingRepository extends JpaRepository implements WorkingReposi
         criteriaQuery.where(predicate);
         TypedQuery<KsrmtTaskMaster> query = em.createQuery(criteriaQuery);
         List<KsrmtTaskMaster> rs = query.getResultList();
-        return rs.stream().map(e -> new Work(
-                new TaskCode(e.getPk().CD),
-                new TaskFrameNo(e.getPk().FRAMENO),
-                new ExternalCooperationInfo(
-                        e.EXTCD1 != null ? Optional.of(new TaskExternalCode(e.EXTCD1)) : Optional.empty(),
-                        e.EXTCD2 != null ? Optional.of(new TaskExternalCode(e.EXTCD2)) : Optional.empty(),
-                        e.EXTCD3 != null ? Optional.of(new TaskExternalCode(e.EXTCD3)) : Optional.empty(),
-                        e.EXTCD4 != null ? Optional.of(new TaskExternalCode(e.EXTCD4)) : Optional.empty(),
-                        e.EXTCD5 != null ? Optional.of(new TaskExternalCode(e.EXTCD5)) : Optional.empty()
-                ),
-                e.getKsrmtTaskChildren().stream().map(i -> new TaskCode(i.pk.CD)).collect(Collectors.toList()),
-                new DatePeriod(e.EXPSTARTDATE, e.EXPENDDATE),
-                new TaskDisplayInfo(
-                        new TaskName(e.NAME),
-                        new TaskAbName(e.ABNAME),
-                        e.COLOR != null ? Optional.of(new ColorCode(e.COLOR)) : Optional.empty(),
-                        e.NOTE != null ? Optional.of(new TaskNote(e.NOTE)) : Optional.empty()
-
-                )
-
-        )).collect(Collectors.toList());
+        return getListWork(rs);
     }
 
     @Override
     public List<Work> getListWork(String cid, TaskFrameNo taskFrameNo) {
-        return null;
+        EntityManager em = this.getEntityManager();
+        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+        CriteriaQuery<KsrmtTaskMaster> criteriaQuery = criteriaBuilder.createQuery(KsrmtTaskMaster.class);
+        Root<KsrmtTaskMaster> root = criteriaQuery.from(KsrmtTaskMaster.class);
+        criteriaQuery.select(root);
+        List<Predicate> conditions = new ArrayList<>();
+        conditions.add(criteriaBuilder.equal(root.get(KsrmtTaskMaster_.pk).get(KsrmtTaskMasterPk_.CID), cid));
+        conditions.add(criteriaBuilder.equal(root.get(KsrmtTaskMaster_.pk).get(KsrmtTaskMasterPk_.FRAMENO), taskFrameNo.v()));
+        criteriaQuery.where(conditions.toArray(new Predicate[]{}));
+        TypedQuery<KsrmtTaskMaster> query = em.createQuery(criteriaQuery);
+        List<KsrmtTaskMaster> rs = query.getResultList();
+        return getListWork(rs);
     }
 
     @Override
     public Optional<Work> getOptionalWork(String cid, TaskFrameNo taskFrameNo, TaskCode code) {
-        return Optional.empty();
+        val entityOpt = this.queryProxy().find(new KsrmtTaskMasterPk(
+                cid,
+                taskFrameNo.v(),
+                code.v()
+        ), KsrmtTaskMaster.class);
+        return entityOpt.map(this::getListWork);
     }
 
     @Override
     public List<Work> getListWork(String cid, List<TaskFrameNo> taskFrameNos) {
-        return null;
+        EntityManager em = this.getEntityManager();
+        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+        CriteriaQuery<KsrmtTaskMaster> criteriaQuery = criteriaBuilder.createQuery(KsrmtTaskMaster.class);
+        Root<KsrmtTaskMaster> root = criteriaQuery.from(KsrmtTaskMaster.class);
+        criteriaQuery.select(root);
+
+        List<KsrmtTaskMaster> result = new ArrayList<>();
+
+        CollectionUtil.split(taskFrameNos, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, frameNos -> {
+            // Predicate where clause
+            List<Predicate> conditions = new ArrayList<>();
+            List<Integer> integerList = frameNos.stream().map(PrimitiveValueBase::v).collect(Collectors.toList());
+            conditions.add(criteriaBuilder.equal(root.get(KsrmtTaskMaster_.pk).get(KsrmtTaskMasterPk_.CID), cid));
+            conditions.add(root.get(KsrmtTaskMaster_.pk).get(KsrmtTaskMasterPk_.FRAMENO).in(integerList));
+            criteriaQuery.where(conditions.toArray(new Predicate[]{}));
+            TypedQuery<KsrmtTaskMaster> query = em.createQuery(criteriaQuery);
+            result.addAll(query.getResultList());
+        });
+        return getListWork(result);
     }
 
     @Override
@@ -142,5 +157,37 @@ public class JpaWorkingRepository extends JpaRepository implements WorkingReposi
     public boolean checkExit(String cid, TaskFrameNo taskFrameNo, TaskCode code) {
         return false;
     }
+
+
+    private List<Work> getListWork(List<KsrmtTaskMaster> masterList) {
+
+        return masterList.stream().map(this::getListWork).collect(Collectors.toList());
+    }
+
+    private Work getListWork(KsrmtTaskMaster e) {
+
+        return new Work(
+                new TaskCode(e.getPk().CD),
+                new TaskFrameNo(e.getPk().FRAMENO),
+                new ExternalCooperationInfo(
+                        e.EXTCD1 != null ? Optional.of(new TaskExternalCode(e.EXTCD1)) : Optional.empty(),
+                        e.EXTCD2 != null ? Optional.of(new TaskExternalCode(e.EXTCD2)) : Optional.empty(),
+                        e.EXTCD3 != null ? Optional.of(new TaskExternalCode(e.EXTCD3)) : Optional.empty(),
+                        e.EXTCD4 != null ? Optional.of(new TaskExternalCode(e.EXTCD4)) : Optional.empty(),
+                        e.EXTCD5 != null ? Optional.of(new TaskExternalCode(e.EXTCD5)) : Optional.empty()
+                ),
+                e.getKsrmtTaskChildren().stream().map(i -> new TaskCode(i.pk.CD)).collect(Collectors.toList()),
+                new DatePeriod(e.EXPSTARTDATE, e.EXPENDDATE),
+                new TaskDisplayInfo(
+                        new TaskName(e.NAME),
+                        new TaskAbName(e.ABNAME),
+                        e.COLOR != null ? Optional.of(new ColorCode(e.COLOR)) : Optional.empty(),
+                        e.NOTE != null ? Optional.of(new TaskNote(e.NOTE)) : Optional.empty()
+
+                )
+
+        );
+    }
+
 
 }
