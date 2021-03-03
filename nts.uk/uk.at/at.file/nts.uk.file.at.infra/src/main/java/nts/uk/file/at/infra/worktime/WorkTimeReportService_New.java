@@ -3081,7 +3081,7 @@ public class WorkTimeReportService_New {
         }
         
         if (displayMode.equals(DisplayMode.DETAIL.value)) {
-            List<StampReflectTimezoneDto> lstStampReflectTimezone = data.getFixedWorkSetting().getLstStampReflectTimezone();
+            List<StampReflectTimezoneDto> lstStampReflectTimezone = data.getFlexWorkSetting().getLstStampReflectTimezone();
             Optional<StampReflectTimezoneDto> lst1stGoWorkOpt = lstStampReflectTimezone.stream()
                 .filter(x -> (x.getWorkNo() == 1 && x.getClassification().equals(GoLeavingWorkAtr.GO_WORK.value)))
                 .findFirst();
