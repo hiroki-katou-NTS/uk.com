@@ -3,7 +3,10 @@
 module nts.uk.at.kdp003.p {
 
 	const API = {
-		GET_NOTICE: '/at/record/stamp/notice/getNoticeByStamping'
+		GET_NOTICE: '/at/record/stamp/notice/getNoticeByStamping',
+
+		//社員のお知らせの画面を表示する
+		GET_EMP_NOTICE: 'sys/portal/notice/getEmployeeNotification'
 	};
 
 	@bean()
@@ -11,94 +14,121 @@ module nts.uk.at.kdp003.p {
 		dateValue: KnockoutObservable<DatePeriod> = ko.observable(new DatePeriod({
 			startDate: moment.utc().format('YYYY/MM/DD'),
 			endDate: moment.utc().format('YYYY/MM/DD')
-		  }));
-	  
-		  itemList: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
-		  msgNotice: MessageNotice[] = [];
-		  role: Role = new Role();
+		}));
 
-		created(role: Role) {
+		itemList: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
+		msgNotice: MessageNotice[] = [];
+		role: KnockoutObservable<Role> = ko.observable(new Role());
+
+		created() {
 			const vm = this;
-			vm.role = role;
 			vm.searchMessage(null);
-		  }
+			vm.$blockui('show');
+			vm.$ajax('com', API.GET_EMP_NOTICE)
+				.then((response: EmployeeNotification) => {
+					if (response.role) {
+						vm.role(response.role);
+					}
+				})
+				.fail(error => vm.$dialog.error(error))
+				.always(() => vm.$blockui('hide'));
+		}
 
 		mounted() {
 			$('#P20_1').focus();
 		}
 
-		searchMessage(param: DatePeriod){
+		searchMessage(param: DatePeriod) {
 			const vm = this;
 			vm.$blockui('show');
 			vm.$ajax(API.GET_NOTICE, param).then((response: MessageNotice[]) => {
 				if (response) {
-				  vm.msgNotice = response;
-				  const itemList = _.map(response, msg => new ItemModel({
-					creatorID: msg.creatorID,
-					inputDate: msg.inputDate,
-					ymDisplay: moment.utc(msg.startDate, 'YYYYMMDD').format('M/D').toString()
-					  + ' ' + vm.$i18n('KDP003_67').toString() + ' '
-					  + moment.utc(msg.endDate, 'YYYYMMDD').format('M/D').toString(),
-					content: msg.notificationMessage
-				  }));
-				  vm.itemList(itemList);
+					vm.msgNotice = response;
+					const itemList = _.map(response, msg => new ItemModel({
+						creatorID: msg.creatorID,
+						inputDate: msg.inputDate,
+						ymDisplay: moment.utc(msg.startDate, 'YYYYMMDD').format('M/D').toString()
+							+ ' ' + vm.$i18n('KDP003_67').toString() + ' '
+							+ moment.utc(msg.endDate, 'YYYYMMDD').format('M/D').toString(),
+						content: msg.notificationMessage
+					}));
+					vm.itemList(itemList);
 				}
-			  })
+			})
 				.fail(error => this.$dialog.error(error))
 				.always(() => vm.$blockui('hide'));
 		}
 
-	onClickSearch() {
-		const vm = this;
-		vm.$errors().then((valid: boolean) => {
-		  if (!valid) {
-			return;
-		  }
-		});
+		onClickSearch() {
+			const vm = this;
+			vm.$errors().then((valid: boolean) => {
+				if (!valid) {
+					return;
+				}
+			});
+			const param: DatePeriod = new DatePeriod({
+				startDate: moment.utc(vm.dateValue().startDate).toISOString(),
+				endDate: moment.utc(vm.dateValue().endDate).toISOString()
+			});
+			
+			vm.searchMessage(param);
+		}
 
-	}
+		/**
+		 * P20_1:新規をクリックする
+		 */
+		openScreenQInNewMode() {
+			const vm = this;
+			vm.$window.modal('at', '/view/kdp/003/q/index.xhtml', {
+				isNewMode: true,
+				role: vm.role(),
+				messageNotice: null
+			})
+				.then(result => {
+					if (result && !result.isClose) {
+						vm.onClickSearch();
+					}
+				});
+		}
 
-	/**
-     * P20_1:新規をクリックする
-     */
-    openScreenCInNewMode(){
-		const vm = this;
-		vm.$window.modal('at', '/view/kdp/003/q/index.xhtml', {
-		  isNewMode: true,
-		  role: vm.role,
-		  messageNotice: null
-		})
-		  .then(result => {
-			if (result && !result.isClose) {
-			  vm.onClickSearch();
-			}
-		  });
-	}
+		/**
+		 * P4_2:対象のリンクラベルをクリックする
+		 */
+		onClickTargetLink(data: ItemModel) {
+			const vm = this;
+			vm.$window.modal('at', '/view/kdp/003/q/index.xhtml', {
+				isNewMode: false,
+				role: vm.role(),
+				messageNotice: vm.findMessage(data)
+			})
+				.then(() => {
+					vm.onClickSearch();
+				});
+		}
 
-	/**
-     * P4_2:対象のリンクラベルをクリックする
-     */
-    onClickTargetLink(data: ItemModel){
-		const vm = this;
-		vm.$window.modal('at', '/view/kdp/003/q/index.xhtml', {
-		  isNewMode: false,
-		  role: vm.role,
-		  messageNotice: vm.findMessage(data)
-		})
-		.then(() => {
-			vm.onClickSearch();
-		  });
-	}
+		findMessage(data: ItemModel): MessageNotice {
+			return _.find(this.msgNotice, m => m.creatorID === data.creatorID && m.inputDate === data.inputDate);
+		}
 
-	findMessage(data: ItemModel): MessageNotice {
-		return _.find(this.msgNotice, m => m.creatorID === data.creatorID && m.inputDate === data.inputDate);
-	  }
-
-	closeDialog() {
+		closeDialog() {
 			const vm = this;
 			vm.$window.close();
 		}
 
+	}
+
+	class EmployeeNotification {
+		msgNotices: MsgNotices[];
+		role: Role;
+		systemDate: string;
+	}
+
+	class MsgNotices {
+		message: MessageNotice;
+		creator: string;
+		dateDisplay: string;
+		flag: boolean;
+		messageDisplay: string;
 	}
 
 	export class Role {
@@ -108,42 +138,38 @@ module nts.uk.at.kdp003.p {
 		roleName: string;
 		assignAtr: number;
 		employeeReferenceRange: number;
-	  }
-	
+	}
+
 	export class DatePeriod {
 		startDate: string;
 		endDate: string;
-	
+
 		constructor(init?: Partial<DatePeriod>) {
 			$.extend(this, init);
 		}
-	  }
-	
+	}
+
 	export class ItemModel {
 		creatorID: string;
 		inputDate: string;
 		ymDisplay: string;
 		content: string;
-	
+
 		constructor(init?: Partial<ItemModel>) {
 			$.extend(this, init);
 		}
-	  }
-	
-	export class MessageNotice {
-		creatorID: string; //作成者ID
-		inputDate: string; //入力日
-		modifiedDate: string; //更新日
-		targetInformation: TargetInformation; //対象情報
-		startDate: any; //開始日
-		endDate: any; //終了日
-		employeeIdSeen: string[]; //対象情報
-		notificationMessage: string; //メッセージの内容
+	}
 
-		constructor(init?: Partial<MessageNotice>) {
-			$.extend(this, init);
-		  }
-	  }
+	class MessageNotice {
+		creatorID: string;
+		inputDate: string;
+		modifiedDate: string;
+		targetInformation: any;
+		startDate: any;
+		endDate: any;
+		employeeIdSeen: string[];
+		notificationMessage: string;
+	}
 
 	export class TargetInformation {
 		targetSIDs: string[];
@@ -152,6 +178,6 @@ module nts.uk.at.kdp003.p {
 		constructor(init?: Partial<TargetInformation>) {
 			$.extend(this, init);
 		}
-	  }
+	}
 
 }
