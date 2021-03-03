@@ -2837,7 +2837,7 @@ public class ProgramsManager {
             "/view/kdp/003/p/index.xhtml");
     public static final Program KDP003Q = new Program(WebAppId.AT, ProgramIdConsts.KDP003Q, "KDP003_59",
             "/view/kdp/003/q/index.xhtml");
-    public static final Program KDP003R = new Program(WebAppId.AT, ProgramIdConsts.KDP003Q, "KDP003_50",
+    public static final Program KDP003R = new Program(WebAppId.AT, ProgramIdConsts.KDP003R, "KDP003_50",
             "/view/kdp/003/r/index.xhtml");
 
     /**

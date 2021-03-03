@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:ui="http://java.sun.com/jsf/facelets"
+xmlns:com="http://xmlns.jcp.org/jsf/component"
+xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+    <ui:composition template="/master/dialog.xhtml">
+        <ui:define name="htmlHead">
+            <com:scriptfile set="IGNITE" />
+            <script>var dialogSize = { width: 550, height: 420 };</script>
+            
+            <com:stylefile path="./kdp003.r.style.css" />
+            <com:scriptfile path="./kdp003.r.vm.js" />
+        </ui:define>
+
+        <ui:define name="content">
+            <div id="contents-area" data-bind="attr: { class: stopColor}">
+                <!-- R5 利用停止前内容 -->
+                <div data-bind="visible: false">
+                    <com:ko-foreach bind="beforeStopNoticeList">
+                        <div class= "notice-label beforeStopNotice">
+                        	<div>#{i18n.getText('KDP003_91')}</div>
+                        	<div data-bind="text: notice"></div>
+                        </div>
+                    </com:ko-foreach>
+                </div>
+                <!-- R1 本部見内容 -->
+                <div data-bind="visible: false">
+                    <com:ko-foreach bind="headOfficeNoticeList">
+                        <div class= "notice-label headOfficeNotice">
+                        	<div>本部より： #{i18n.getText('KDP003_51')}11/20#{i18n.getText('KDP003_67')}11/30</div>
+                        	<div data-bind="text: notice"></div>
+                        </div>
+                    </com:ko-foreach>
+                </div>
+                <!-- R2 職場メッセージ -->
+                <div data-bind="visible: false">
+                    <com:ko-foreach bind="workplaceNoticeList">
+                        <div class= "notice-label workplaceNotice">
+                        	<div>店長より：#{i18n.getText('KDP003_52', ['0000001　社員管理者'])}#{i18n.getText('KDP003_51')}11/20#{i18n.getText('KDP003_67')}11/25</div>
+                        	<div data-bind="text: notice"></div>
+                        </div>
+                    </com:ko-foreach>
+                </div>
+                <!-- R6 利用停止中内容 -->
+                <div class= "stoppingNotice" data-bind="visible: true">
+                	<div>#{i18n.getText('KDP003_90')}</div>
+                	<div data-bind="text: stoppingNotice"></div>
+                </div>
+                
+            </div>
+            <div id="functions-area-bottom">
+                <!-- R6_1 停止中コメント -->
+                <label id="stopComment" data-bind="text: $i18n('KDP003_93'), visible: true"></label>
+				<!-- R20/R21 閉じる -->
+				<button tabindex="2" data-bind="click: closeDialog, i18n: 'KDP003_53'"></button>
+			</div>
+        </ui:define>
+    </ui:composition>
+</body>
+</html>
