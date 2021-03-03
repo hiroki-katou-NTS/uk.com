@@ -1197,6 +1197,7 @@ public class ProgramIdConsts {
 	public static final String KDP003P = "KDP003P";
 	public static final String KDP003Q = "KDP003Q";
 	public static final String KDP003R = "KDP003R";
+	public static final String KDP003M = "KDP003M";
 	
 	/** KDP004 */
 	public static final String KDP004A = "KDP004A";
