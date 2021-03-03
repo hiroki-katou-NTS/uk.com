@@ -4920,7 +4920,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 		 openKDL053(dataReg : any) {
             let self = this;
             let param = {
-                employeeIds: self.lstEmpId,                  // 社員の並び順
+                employeeIds: _.map(self.lstEmpId, (x: IEmpidName) => { return x.empId }),                  // 社員の並び順
                 isRegistered: dataReg.isRegistered == true ? 1 : 0,           // 登録されたか
                 errorRegistrationList: dataReg.listErrorInfo, // エラー内容リスト 
             }
