@@ -8,9 +8,7 @@ import nts.uk.ctx.at.shared.dom.workmanagement.aggregateroot.workmaster.Work;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,6 +28,17 @@ public class KsrmtTaskChild extends ContractUkJpaEntity implements Serializable 
         return pk;
     }
 
+    @ManyToOne
+    @JoinColumns({@JoinColumn(name = "CID", referencedColumnName = "CID",insertable = false, updatable = false),
+            @JoinColumn(name = "FRAME_NO", referencedColumnName = "FRAME_NO",insertable = false, updatable = false),
+            @JoinColumn(name = "CD", referencedColumnName = "CD",insertable = false, updatable = false)
+    })
+    private KsrmtTaskMaster ksrmtTaskMaster;
+
+    public KsrmtTaskChild(KsrmtTaskChildPk pk){
+        super();
+        this.pk = pk;
+    }
     public static List<KsrmtTaskChild> toEntitys(Work domain) {
         String CID = AppContexts.user().companyId();
         int FRAMENO = domain.getTaskFrameNo().v();

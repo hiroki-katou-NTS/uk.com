@@ -9,11 +9,9 @@ import nts.uk.ctx.at.shared.dom.workmanagement.aggregateroot.workmaster.Work;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
 
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -86,6 +84,28 @@ public class KsrmtTaskMaster extends ContractCompanyUkJpaEntity implements Seria
     @Column(name = "NOTE")
     public String NOTE;
 
+    @OneToMany(targetEntity = KsrmtTaskChild.class, cascade = CascadeType.ALL, mappedBy = "ksrmtTaskMaster", orphanRemoval = true, fetch = FetchType.LAZY)
+    @JoinTable(name = "KSRMT_TASK_CHILD")
+
+    public List<KsrmtTaskChild> ksrmtTaskChildren;
+
+    public KsrmtTaskMaster(KsrmtTaskMasterPk pk, String NAME, String ABNAME,
+                           GeneralDate EXPSTARTDATE, GeneralDate EXPENDDATE,
+                           String EXTCD1, String EXTCD2, String EXTCD3, String EXTCD4,
+                           String EXTCD5, String COLOR, String NOTE) {
+        this.pk = pk;
+        this.NAME = NAME;
+        this.ABNAME = ABNAME;
+        this.EXPSTARTDATE = EXPSTARTDATE;
+        this.EXPENDDATE = EXPENDDATE;
+        this.EXTCD1 = EXTCD1;
+        this.EXTCD2 = EXTCD2;
+        this.EXTCD3 = EXTCD3;
+        this.EXTCD4 = EXTCD4;
+        this.EXTCD5 = EXTCD5;
+        this.COLOR = COLOR;
+        this.NOTE = NOTE;
+    }
 
     public static KsrmtTaskMaster toEntity(Work domain) {
         return new KsrmtTaskMaster(

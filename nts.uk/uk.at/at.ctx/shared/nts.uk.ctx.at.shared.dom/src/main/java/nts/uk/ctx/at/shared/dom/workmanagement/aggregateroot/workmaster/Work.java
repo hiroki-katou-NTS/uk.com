@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.workmanagement.aggregateroot.workmaster;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
@@ -24,6 +25,7 @@ import java.util.Optional;
  * @author chinh.hm
  */
 @Getter
+@AllArgsConstructor
 public class Work extends AggregateRoot {
     // コード
     private final TaskCode code;
@@ -43,13 +45,15 @@ public class Work extends AggregateRoot {
     // 表示情報 : 作業表示情報
     private TaskDisplayInfo displayInfo;
 
-    public Work(Require require,
-                TaskFrameNo taskFrameNo,
-                TaskCode code,
-                DatePeriod expirationDate,
-                ExternalCooperationInfo cooperationInfo,
-                TaskDisplayInfo displayInfo,
-                List<TaskCode> childWorkList) {
+    public static Work create(Require require,
+                              TaskFrameNo taskFrameNo,
+                              TaskCode code,
+                              DatePeriod expirationDate,
+                              ExternalCooperationInfo cooperationInfo,
+                              TaskDisplayInfo displayInfo,
+                              List<TaskCode> childWorkList
+
+    ) {
         //	[inv-2]	case 「@作業枠NO」== 5 の場合、「@子作業一覧」はisEmpty
         if (taskFrameNo.v() == 5) {
             childWorkList = Collections.emptyList();
@@ -63,12 +67,7 @@ public class Work extends AggregateRoot {
                     Optional.empty(),
                     displayInfo.getTaskNote());
         }
-        this.code = code;
-        this.taskFrameNo = taskFrameNo;
-        this.expirationDate = expirationDate;
-        this.cooperationInfo = cooperationInfo;
-        this.displayInfo = displayInfo;
-        this.childWorkList = childWorkList;
+        return new Work(code, taskFrameNo, cooperationInfo, childWorkList, expirationDate, displayInfo);
 
     }
 

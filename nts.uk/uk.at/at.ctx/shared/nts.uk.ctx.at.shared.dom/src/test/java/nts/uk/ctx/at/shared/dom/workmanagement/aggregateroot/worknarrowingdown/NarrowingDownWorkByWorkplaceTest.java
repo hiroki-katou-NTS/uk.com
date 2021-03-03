@@ -27,7 +27,7 @@ public class NarrowingDownWorkByWorkplaceTest {
      */
     @Test
     public void testGetter() {
-        val instance = new NarrowingDownWorkByWorkplace(
+        val instance =  NarrowingDownWorkByWorkplace.create(
                 require,
                 Helper.wpl,
                 Helper.taskFrameNo,
@@ -38,7 +38,7 @@ public class NarrowingDownWorkByWorkplaceTest {
 
     @Test
     public void testChangeCodeList() {
-        val instance = new NarrowingDownWorkByWorkplace(
+        val instance =  NarrowingDownWorkByWorkplace.create(
                 require,
                 Helper.wpl,
                 Helper.taskFrameNo,
@@ -51,18 +51,8 @@ public class NarrowingDownWorkByWorkplaceTest {
     public static class Helper
 
     {
-        private static final String DATE_FORMAT = "yyyy/MM/dd";
         private static final String wpl = "wpl";
-        private static final TaskCode code = new TaskCode("CODE");
         private static final TaskFrameNo taskFrameNo = new TaskFrameNo(3);
-        private static final ExternalCooperationInfo cooperationInfo = new ExternalCooperationInfo(
-                Optional.of(new TaskExternalCode("externalCode1")),
-                Optional.of(new TaskExternalCode("externalCode2")),
-                Optional.of(new TaskExternalCode("externalCode3")),
-                Optional.of(new TaskExternalCode("externalCode4")),
-                Optional.of(new TaskExternalCode("externalCode5"))
-        );
-
         private static final List<TaskCode> childWorkList = Arrays.asList(
                 new TaskCode("CODE01"),
                 new TaskCode("CODE02"),

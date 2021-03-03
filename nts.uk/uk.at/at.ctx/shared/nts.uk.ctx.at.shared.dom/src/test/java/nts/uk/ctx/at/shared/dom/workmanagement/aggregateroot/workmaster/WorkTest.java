@@ -151,17 +151,17 @@ public class WorkTest {
 
         static Work createDomain(Work.Require require) {
 
-            return new Work(require, taskFrameNo, code, expirationDate, cooperationInfo, displayInfo, childWorkList);
+            return  Work.create(require, taskFrameNo, code, expirationDate, cooperationInfo, displayInfo, childWorkList);
         }
 
         static Work createDomainTaskFrameNo05(Work.Require require) {
             TaskFrameNo taskFrameNo = new TaskFrameNo(5);
-            return new Work(require, taskFrameNo, code, expirationDate, cooperationInfo, displayInfo, childWorkList);
+            return  Work.create(require, taskFrameNo, code, expirationDate, cooperationInfo, displayInfo, childWorkList);
         }
 
         static Work createDomainTaskFrameNo01(Work.Require require) {
             TaskFrameNo taskFrameNo = new TaskFrameNo(5);
-            return new Work(require, taskFrameNo, code, expirationDate, cooperationInfo, displayInfo, childWorkList);
+            return  Work.create(require, taskFrameNo, code, expirationDate, cooperationInfo, displayInfo, childWorkList);
         }
 
     }

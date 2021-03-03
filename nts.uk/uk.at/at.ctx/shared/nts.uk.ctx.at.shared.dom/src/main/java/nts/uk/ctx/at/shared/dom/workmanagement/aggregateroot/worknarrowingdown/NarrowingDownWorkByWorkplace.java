@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.workmanagement.aggregateroot.worknarrowingdown;
 
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
@@ -14,6 +15,7 @@ import java.util.List;
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared(勤務予定、勤務実績).作業管理.作業絞込.職場別作業の絞込.職場別作業の絞込
  */
 @Getter
+@AllArgsConstructor
 public class NarrowingDownWorkByWorkplace extends AggregateRoot {
     // 	職場ID
     private final String workPlaceId;
@@ -23,12 +25,13 @@ public class NarrowingDownWorkByWorkplace extends AggregateRoot {
     private List<TaskCode> taskCodeList;
     // 	[C-1] 絞込を作成する
 
-    public NarrowingDownWorkByWorkplace(Require require, String workPlaceId, TaskFrameNo taskFrameNo, List<TaskCode> taskCodeList) {
+    public static NarrowingDownWorkByWorkplace create(Require require, String workPlaceId, TaskFrameNo taskFrameNo, List<TaskCode> taskCodeList) {
         CheckExistenceMasterDomainService.checkExistenceWorkMaster(require,taskFrameNo, taskCodeList);
-
-        this.workPlaceId = workPlaceId;
-        this.taskCodeList = taskCodeList;
-        this.taskFrameNo = taskFrameNo;
+        return new NarrowingDownWorkByWorkplace(
+                workPlaceId,
+                taskFrameNo,
+                taskCodeList
+        );
 
     }
 
