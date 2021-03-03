@@ -3193,6 +3193,275 @@ public class WorkTimeReportService_New {
             Integer leaveWorkMinuteAgoCalculate = data.getFixedWorkSetting().getCommonSetting().getStampSet().getRoundingTime().getLeaveWorkMinuteAgoCalculate();
             cells.get("CZ" + (startIndex + 1)).setValue(leaveWorkMinuteAgoCalculate == 0 ? "-" : "○");
         }
+        
+        // 5        タブグ:                休憩時間帯
+        
+        boolean breakTime = data.getFlexWorkSetting().getUseHalfDayShift().isBreakTime();
+        boolean fixRestTimeOneDay = false;
+        
+        if (displayMode.equals(DisplayMode.DETAIL.value)) {
+            /*
+             * R6_262
+             * 休憩時間帯.半日勤務を設定する
+             */
+            cells.get("CA" + (startIndex + 1)).setValue(getUseAtrByBoolean(breakTime));
+        }
+        
+        if (lstHalfDayWorkTimezoneOneDay.isPresent()) {
+            fixRestTimeOneDay = lstHalfDayWorkTimezoneOneDay.get().getRestTimezone().isFixRestTime();
+            
+            /*
+             * R6_137
+             * 休憩時間帯.休憩時間の固定
+             */
+            cells.get("CB" + (startIndex + 1)).setValue(getUseAtrByBoolean(fixRestTimeOneDay));
+            
+            if (fixRestTimeOneDay) {
+                List<DeductionTimeDto> timezones = lstHalfDayWorkTimezoneOneDay.get().getRestTimezone().getFixedRestTimezone().getTimezones();
+                for (int i = 0; i < timezones.size(); i++) {
+                    /*
+                     * R6_138
+                     * 休憩時間帯.1日勤務用（固定する）.開始時間
+                     */
+                    cells.get("CC" + ((startIndex + 1) + i)).setValue(getInDayTimeWithFormat(timezones.get(i).getStart()));
+                    
+                    /*
+                     * R6_139
+                     * 休憩時間帯.1日勤務用（固定する）.終了時間
+                     */
+                    cells.get("CD" + ((startIndex + 1) + i)).setValue(getInDayTimeWithFormat(timezones.get(i).getEnd()));
+                }
+                
+            }
+        }
+        
+        if (displayMode.equals(DisplayMode.DETAIL.value)) {
+            if (lstHalfDayWorkTimezoneMorning.isPresent()) {
+                boolean fixRestTime = lstHalfDayWorkTimezoneMorning.get().getRestTimezone().isFixRestTime();
+                
+                if (fixRestTime) {
+                    List<DeductionTimeDto> timezones = lstHalfDayWorkTimezoneMorning.get().getRestTimezone().getFixedRestTimezone().getTimezones();
+                    for (int i = 0; i < timezones.size(); i++) {
+                        /*
+                         * R6_140
+                         * 休憩時間帯.午前勤務用.開始時間
+                         */
+                        cells.get("CE" + ((startIndex + 1) + i)).setValue(getInDayTimeWithFormat(timezones.get(i).getStart()));
+                        
+                        /*
+                         * R6_141
+                         * 休憩時間帯.午前勤務用.終了時間
+                         */
+                        cells.get("CF" + ((startIndex + 1) + i)).setValue(getInDayTimeWithFormat(timezones.get(i).getEnd()));
+                    }
+                }
+            }
+            
+            if (lstHalfDayWorkTimezoneAfternoon.isPresent()) {
+                boolean fixRestTime = lstHalfDayWorkTimezoneAfternoon.get().getRestTimezone().isFixRestTime();
+                
+                if (fixRestTime) {
+                    List<DeductionTimeDto> timezones = lstHalfDayWorkTimezoneAfternoon.get().getRestTimezone().getFixedRestTimezone().getTimezones();
+                    for (int i = 0; i < timezones.size(); i++) {
+                        /*
+                         * R6_142
+                         * 休憩時間帯.午後勤務用.開始時間
+                         */
+                        cells.get("CG" + ((startIndex + 1) + i)).setValue(getInDayTimeWithFormat(timezones.get(i).getStart()));
+                        
+                        /*
+                         * R6_143
+                         * 休憩時間帯.午後勤務用.終了時間
+                         */
+                        cells.get("CH" + ((startIndex + 1) + i)).setValue(getInDayTimeWithFormat(timezones.get(i).getEnd()));
+                    }
+                }
+            }
+        }
+        
+        if (lstHalfDayWorkTimezoneOneDay.isPresent()) {
+            boolean fixRestTime = lstHalfDayWorkTimezoneOneDay.get().getRestTimezone().isFixRestTime();
+            
+            if (!fixRestTime) {
+                List<FlowRestSettingDto> flowRestSets = lstHalfDayWorkTimezoneOneDay.get().getRestTimezone().getFlowRestTimezone().getFlowRestSets();
+                for (int i = 0; i < flowRestSets.size(); i++) {
+                    /*
+                     * R6_144
+                     * 休憩時間帯.1日勤務用（固定しない）.経過時間
+                     */
+                    cells.get("CI" + ((startIndex + 1) + i)).setValue(getInDayTimeWithFormat(flowRestSets.get(i).getFlowPassageTime()));
+                    
+                    /*
+                     * R6_145
+                     * 休憩時間帯.1日勤務用（固定しない）.休憩時間
+                     */
+                    cells.get("CJ" + ((startIndex + 1) + i)).setValue(getInDayTimeWithFormat(flowRestSets.get(i).getFlowRestTime()));
+                }
+                
+                /*
+                 * R6_146
+                 * 休憩時間帯.1日勤務用（固定しない）.以降は下記の時間で繰り返す
+                 */
+                cells.get("CJ" + (startIndex + 7))
+                .setValue(lstHalfDayWorkTimezoneOneDay.get().getRestTimezone().getFlowRestTimezone().isUseHereAfterRestSet() ? "○" : "-");
+                
+                
+                /*
+                 * R6_147
+                 * 休憩時間帯.1日勤務用（固定しない）.経過時間
+                 */
+                cells.get("CI" + (startIndex + 9))
+                .setValue(getInDayTimeWithFormat(lstHalfDayWorkTimezoneOneDay.get().getRestTimezone().getFlowRestTimezone().getHereAfterRestSet().getFlowPassageTime()));
+                
+                /*
+                 * R6_148
+                 * 休憩時間帯.1日勤務用（固定しない）.休憩時間
+                 */
+                cells.get("CJ" + (startIndex + 9))
+                .setValue(getInDayTimeWithFormat(lstHalfDayWorkTimezoneOneDay.get().getRestTimezone().getFlowRestTimezone().getHereAfterRestSet().getFlowRestTime()));
+            }
+        }
+        
+        if (displayMode.equals(DisplayMode.DETAIL.value) && breakTime && lstHalfDayWorkTimezoneMorning.isPresent()) {
+            boolean fixRestTime = lstHalfDayWorkTimezoneMorning.get().getRestTimezone().isFixRestTime();
+            
+            if (!fixRestTime) {
+                List<FlowRestSettingDto> flowRestSets = lstHalfDayWorkTimezoneMorning.get().getRestTimezone().getFlowRestTimezone().getFlowRestSets();
+                for (int i = 0; i < flowRestSets.size(); i++) {
+                    /*
+                     * R6_149
+                     * 休憩時間帯.午前勤務用.経過時間
+                     */
+                    cells.get("CK" + ((startIndex + 1) + i)).setValue(getInDayTimeWithFormat(flowRestSets.get(i).getFlowPassageTime()));
+                    
+                    /*
+                     * R6_150
+                     * 休憩時間帯.午前勤務用.休憩時間
+                     */
+                    cells.get("CL" + ((startIndex + 1) + i)).setValue(getInDayTimeWithFormat(flowRestSets.get(i).getFlowRestTime()));
+                }
+                
+                /*
+                 * R6_151
+                 * 休憩時間帯.午前勤務用.以降は下記の時間で繰り返す
+                 */
+                cells.get("CL" + (startIndex + 7))
+                .setValue(lstHalfDayWorkTimezoneMorning.get().getRestTimezone().getFlowRestTimezone().isUseHereAfterRestSet() ? "○" : "-");
+                
+                
+                /*
+                 * R6_152
+                 * 休憩時間帯.午前勤務用.経過時間
+                 */
+                cells.get("CK" + (startIndex + 9))
+                .setValue(getInDayTimeWithFormat(lstHalfDayWorkTimezoneMorning.get().getRestTimezone().getFlowRestTimezone().getHereAfterRestSet().getFlowPassageTime()));
+                
+                /*
+                 * R6_153
+                 * 休憩時間帯.午前勤務用.休憩時間
+                 */
+                cells.get("CL" + (startIndex + 9))
+                .setValue(getInDayTimeWithFormat(lstHalfDayWorkTimezoneMorning.get().getRestTimezone().getFlowRestTimezone().getHereAfterRestSet().getFlowRestTime()));
+            }
+        }
+        
+        if (displayMode.equals(DisplayMode.DETAIL.value) && breakTime && lstHalfDayWorkTimezoneAfternoon.isPresent()) {
+            boolean fixRestTime = lstHalfDayWorkTimezoneAfternoon.get().getRestTimezone().isFixRestTime();
+            
+            if (!fixRestTime) {
+                List<FlowRestSettingDto> flowRestSets = lstHalfDayWorkTimezoneAfternoon.get().getRestTimezone().getFlowRestTimezone().getFlowRestSets();
+                for (int i = 0; i < flowRestSets.size(); i++) {
+                    /*
+                     * R6_154
+                     * 休憩時間帯.午前勤務用.経過時間
+                     */
+                    cells.get("CM" + ((startIndex + 1) + i)).setValue(getInDayTimeWithFormat(flowRestSets.get(i).getFlowPassageTime()));
+                    
+                    /*
+                     * R6_155
+                     * 休憩時間帯.午前勤務用.休憩時間
+                     */
+                    cells.get("CN" + ((startIndex + 1) + i)).setValue(getInDayTimeWithFormat(flowRestSets.get(i).getFlowRestTime()));
+                }
+                
+                /*
+                 * R6_156
+                 * 休憩時間帯.午前勤務用.以降は下記の時間で繰り返す
+                 */
+                cells.get("CN" + (startIndex + 7))
+                .setValue(lstHalfDayWorkTimezoneAfternoon.get().getRestTimezone().getFlowRestTimezone().isUseHereAfterRestSet() ? "○" : "-");
+                
+                
+                /*
+                 * R6_157
+                 * 休憩時間帯.午前勤務用.経過時間
+                 */
+                cells.get("CM" + (startIndex + 9))
+                .setValue(getInDayTimeWithFormat(lstHalfDayWorkTimezoneAfternoon.get().getRestTimezone().getFlowRestTimezone().getHereAfterRestSet().getFlowPassageTime()));
+                
+                /*
+                 * R6_158
+                 * 休憩時間帯.午前勤務用.休憩時間
+                 */
+                cells.get("CN" + (startIndex + 9))
+                .setValue(getInDayTimeWithFormat(lstHalfDayWorkTimezoneAfternoon.get().getRestTimezone().getFlowRestTimezone().getHereAfterRestSet().getFlowRestTime()));
+            }
+        }
+        
+        if (displayMode.equals(DisplayMode.DETAIL.value)) {
+            /*
+             * R6_159
+             * 休憩計算設定.休憩中に退勤した場合の休憩時間の計算方法
+             */
+            Integer calculateMethod = data.getFlexWorkSetting().getRestSetting().getCommonRestSetting().getCalculateMethod();
+            cells.get("CO" + (startIndex + 1)).setValue(getCalculatedMethodAtr(calculateMethod));
+            
+            if (fixRestTimeOneDay) {
+                /*
+                 * R6_32
+                 * 固定休憩設定（休憩時間の固定する）.実績での休憩計算方法
+                 */
+                Integer calculateMethodFlowRest = data.getFlexWorkSetting().getRestSetting().getFlowRestSetting().getFlowFixedRestSetting().getCalculateMethod();
+                cells.get("CP" + (startIndex + 1)).setValue(getCalculateMethodFlowRest(calculateMethodFlowRest));
+                
+                /*
+                 * R6_163
+                 * 固定休憩設定（休憩時間の固定する）.私用外出を休憩として扱う
+                 */
+                boolean usePrivateGoOutRest = data.getFlexWorkSetting().getRestSetting().getFlowRestSetting().getFlowFixedRestSetting().getCalculateFromStamp().isUsePrivateGoOutRest();
+                cells.get("CQ" + (startIndex + 1)).setValue(usePrivateGoOutRest ? "○" : "-");
+                
+                /*
+                 * R6_164
+                 * 固定休憩設定（休憩時間の固定する）.組合外出を休憩として扱う
+                 */
+                boolean useAssoGoOutRest = data.getFlexWorkSetting().getRestSetting().getFlowRestSetting().getFlowFixedRestSetting().getCalculateFromStamp().isUseAssoGoOutRest();
+                cells.get("CR" + (startIndex + 1)).setValue(useAssoGoOutRest ? "○" : "-");
+            } else {
+                /*
+                 * R6_166
+                 * 流動休憩設定（休憩時間の固定しない）.流動休憩設定 外出を休憩として扱う
+                 */
+                Boolean useStamp = data.getFlexWorkSetting().getRestSetting().getFlowRestSetting().getFlowRestSetting().getUseStamp();
+                if (useStamp != null) {
+                    cells.get("CS" + (startIndex + 1)).setValue(useStamp ? "○" : "-");
+                }
+                
+                /*
+                 * R6_167
+                 * 流動休憩設定（休憩時間の固定しない）.外出の計上方法
+                 */
+                Integer useStampCalcMethod = data.getFlexWorkSetting().getRestSetting().getFlowRestSetting().getFlowRestSetting().getUseStampCalcMethod();
+                cells.get("CT" + (startIndex + 1)).setValue(useStampCalcMethod == 0 ? "外出として計上する" : "休憩として計上する");
+                
+                /*
+                 * R6_168
+                 * 流動休憩設定（休憩時間の固定しない）.時刻管理設定区分
+                 */
+                Integer timeManagerSetAtr = data.getFlexWorkSetting().getRestSetting().getFlowRestSetting().getFlowRestSetting().getTimeManagerSetAtr();
+                cells.get("CU" + (startIndex + 1)).setValue(timeManagerSetAtr == 0 ? "休憩中の外出は外出を優先する" : "休憩中の外出は休憩を優先し、外出としては計上されない");
+            }
+        }
     }
     
     /**
