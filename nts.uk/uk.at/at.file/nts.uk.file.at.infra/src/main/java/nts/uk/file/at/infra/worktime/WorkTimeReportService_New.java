@@ -4088,6 +4088,22 @@ public class WorkTimeReportService_New {
                 cells.get("FI" + (startIndex + 1)).setValue(getInDayTimeWithFormat(certainTime));
             }
         }
+        
+        // 12       タブグ:                深夜
+        
+        /*
+         * R6_240
+         * 深夜.深夜時間丸め
+         */
+        Integer unit = data.getFlexWorkSetting().getCommonSetting().getLateNightTimeSet().getRoundingSetting().getRoundingTime();
+        cells.get("FJ" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unit));
+        
+        /*
+         * R6_241
+         * 深夜.深夜時間端数
+         */
+        Integer rounding = data.getFlexWorkSetting().getCommonSetting().getLateNightTimeSet().getRoundingSetting().getRounding();
+        cells.get("FK" + (startIndex + 1)).setValue(getRoundingEnum(rounding));
     }
     
     /**
