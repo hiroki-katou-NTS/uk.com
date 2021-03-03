@@ -3462,6 +3462,83 @@ public class WorkTimeReportService_New {
                 cells.get("CU" + (startIndex + 1)).setValue(timeManagerSetAtr == 0 ? "休憩中の外出は外出を優先する" : "休憩中の外出は休憩を優先し、外出としては計上されない");
             }
         }
+        
+        // 6        タブグ:                休出時間帯
+        
+        List<HDWorkTimeSheetSettingDto> lstWorkTimezone = data.getFlexWorkSetting().getOffdayWorkTime().getLstWorkTimezone();
+        Collections.sort(lstWorkTimezone, new Comparator<HDWorkTimeSheetSettingDto>() {
+            public int compare(HDWorkTimeSheetSettingDto o1, HDWorkTimeSheetSettingDto o2) {
+                return o1.getWorkTimeNo().compareTo(o2.getWorkTimeNo());
+            };
+        });
+        
+        for (int i = 0; i < lstWorkTimezone.size(); i++) {
+            final int index = i;
+            
+            /*
+             * R6_169
+             * 休出時間帯.開始時間
+             */
+            cells.get("CV" + (startIndex + lstWorkTimezone.get(i).getWorkTimeNo())).setValue(getInDayTimeWithFormat(lstWorkTimezone.get(i).getTimezone().getStart()));
+            
+            /*
+             * R6_170
+             * 休出時間帯.終了時間
+             */
+            cells.get("CW" + (startIndex + lstWorkTimezone.get(i).getWorkTimeNo())).setValue(getInDayTimeWithFormat(lstWorkTimezone.get(i).getTimezone().getEnd()));
+            
+                Optional<WorkdayoffFrameFindDto> workDayOffFrameInLegalBreak = otFrameFind.stream()
+                        .filter(x -> BigDecimal.valueOf(x.getWorkdayoffFrNo()) == lstWorkTimezone.get(index).getInLegalBreakFrameNo())
+                        .findFirst();
+                Optional<WorkdayoffFrameFindDto> workDayOffFrameOutLegalBreak = otFrameFind.stream()
+                        .filter(x -> BigDecimal.valueOf(x.getWorkdayoffFrNo()) == lstWorkTimezone.get(index).getOutLegalBreakFrameNo())
+                        .findFirst();
+                Optional<WorkdayoffFrameFindDto> workDayOffFrameoutLegalPubHD = otFrameFind.stream()
+                        .filter(x -> BigDecimal.valueOf(x.getWorkdayoffFrNo()) == lstWorkTimezone.get(index).getOutLegalPubHDFrameNo())
+                        .findFirst();
+                
+                /*
+                 * R6_171
+                 * 休出時間帯.法定内休出枠
+                 */
+                if (workDayOffFrameInLegalBreak.isPresent()) {
+                    cells.get("CX" + (startIndex + lstWorkTimezone.get(i).getWorkTimeNo()))
+                        .setValue(workDayOffFrameInLegalBreak.get().getWorkdayoffFrName());
+                }
+                
+                /*
+                 * R6_172
+                 * 法定外休出枠.法定外休出枠
+                 */
+                if (workDayOffFrameOutLegalBreak.isPresent()) {
+                    cells.get("CY" + (startIndex + lstWorkTimezone.get(i).getWorkTimeNo()))
+                        .setValue(workDayOffFrameOutLegalBreak.get().getWorkdayoffFrName());
+                }
+                
+                /*
+                 * R6_173
+                 * 法定外休出枠.法定外休出枠（祝日）
+                 */
+                if (workDayOffFrameoutLegalPubHD.isPresent()) {
+                    cells.get("CZ" + (startIndex + lstWorkTimezone.get(i).getWorkTimeNo()))
+                        .setValue(workDayOffFrameoutLegalPubHD.get().getWorkdayoffFrName());
+                }
+                
+                
+            /*
+             * R6_174
+             * 法定外休出枠.丸め
+             */
+            Integer unit = lstWorkTimezone.get(i).getTimezone().getRounding().getRoundingTime();
+            cells.get("DA" + (startIndex + lstWorkTimezone.get(i).getWorkTimeNo())).setValue(getRoundingTimeUnitEnum(unit));
+            
+            /*
+             * R6_175
+             * 法定外休出枠.端数
+             */
+            Integer rounding = lstWorkTimezone.get(i).getTimezone().getRounding().getRounding();
+            cells.get("DB" + (startIndex + lstWorkTimezone.get(i).getWorkTimeNo())).setValue(getRoundingEnum(rounding));
+        }
     }
     
     /**
