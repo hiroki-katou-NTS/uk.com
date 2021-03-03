@@ -434,24 +434,26 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 			if (!oldData.get().editStates.isEmpty()) {
 				// get list insert and update data exist
 				List<KscdtSchEditState> listInsert = new ArrayList<>();
+				List<KscdtSchEditState> checkLst = new ArrayList<>();
 				for (KscdtSchEditState schState : newData.editStates) {
 					boolean checkExist = false;
-					for (KscdtSchEditState schStateOld : oldData.get().editStates) {
-						if(schState.pk.sid.equals(schStateOld.pk.sid)
-								&& schState.pk.ymd.equals(schStateOld.pk.ymd)
-								&& schState.pk.atdItemId == schStateOld.pk.atdItemId
+					oldData.get().editStates.forEach(x -> {
+						if(schState.pk.sid.equals(x.pk.sid)
+								&& schState.pk.ymd.equals(x.pk.ymd)
+								&& schState.pk.atdItemId == x.pk.atdItemId
 								) {
-							schStateOld.sditState = schState.sditState;
-							schStateOld.cid = schState.cid;
 							
-							checkExist = true;
-						}
-					}
-					
-					if(!checkExist) {
+							x.sditState = 9;
+							x.sditState = schState.sditState;
+							x.cid = schState.cid;
+							checkLst.add(x);
+						} 
+					});
+					if(checkLst.isEmpty()) {
 						listInsert.add(schState);
 					}
 				}
+				
 //				//get list remove
 //				List<KscdtSchEditState> listRemove = new ArrayList<>();
 //				for (KscdtSchEditState schStateOld : oldData.get().editStates) {
@@ -520,7 +522,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 							this.insertAtdLvwTimes(leavingWork, workSchedule.getEmployeeID(), workSchedule.getYmd(), cID);
 						}
 						// Delete work no 2 when new data just have work no 1
-						if(workSchedule.getOptTimeLeaving().get().getTimeLeavingWorks().size() < 2 && x.pk.workNo == 2) {
+						if(newData.atdLvwTimes.size() < 2 && x.pk.workNo == 2) {
 							
 							this.getEntityManager().createQuery(delete).setParameter("sid", x.pk.sid)
 									.setParameter("ymd", x.pk.ymd)

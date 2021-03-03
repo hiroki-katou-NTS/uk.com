@@ -120,7 +120,7 @@ public class GetFixedWorkInformation {
 			
 			// 1.4 勤務情報.就業時間帯コード.isPresent : 就業時間帯情報リストを取得する(会社ID, List<就業時間帯コード>) (New) : List<就業時間帯の設定>
 			List<WorkTimeSetting> timeSettings = new ArrayList<>();
-			if(x.getWorkTimeCode() != null) {
+			if((!x.getWorkTimeCode().isEmpty()) && (x.getWorkTimeCode() != null && x.getWorkTimeCode() != "")) {
 				timeSettings = hoursInformationQuery.getListWorkTimeSetting(cid, Arrays.asList(x.getWorkTimeCode()));
 			}
 			
