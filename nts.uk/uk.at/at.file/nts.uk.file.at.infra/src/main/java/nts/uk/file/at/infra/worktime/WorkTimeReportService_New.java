@@ -4104,6 +4104,22 @@ public class WorkTimeReportService_New {
          */
         Integer rounding = data.getFlexWorkSetting().getCommonSetting().getLateNightTimeSet().getRoundingSetting().getRounding();
         cells.get("FK" + (startIndex + 1)).setValue(getRoundingEnum(rounding));
+        
+        // 13       タブグ:                臨時
+        
+        /*
+         * R6_242
+         * 臨時.臨時丸め
+         */
+        Integer unitExtrao = data.getFlexWorkSetting().getCommonSetting().getExtraordTimeSet().getTimeRoundingSet().getRoundingTime();
+        cells.get("FL" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitExtrao));
+        
+        /*
+         * R6_243
+         * 臨時.臨時端数
+         */
+        Integer roundingExtrao = data.getFlexWorkSetting().getCommonSetting().getExtraordTimeSet().getTimeRoundingSet().getRounding();
+        cells.get("FM" + (startIndex + 1)).setValue(getRoundingEnum(roundingExtrao));
     }
     
     /**
