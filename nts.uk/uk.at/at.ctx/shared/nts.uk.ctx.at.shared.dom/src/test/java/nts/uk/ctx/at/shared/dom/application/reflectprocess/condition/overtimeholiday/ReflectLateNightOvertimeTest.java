@@ -36,8 +36,8 @@ public class ReflectLateNightOvertimeTest {
 	public void test1() {
 
 		ApplicationTimeShare applicationTimeShare = createAppTimeNightNull();// 残業深夜時間
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
-				1, true);
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
+				1);
 		dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()
 				.getExcessOfStatutoryTimeOfDaily().setExcessOfStatutoryMidNightTime(new ExcessOfStatutoryMidNightTime(
 						TimeDivergenceWithCalculation.defaultValue(), new AttendanceTime(1200)));// 法定外深夜時間.事前時間
@@ -67,8 +67,8 @@ public class ReflectLateNightOvertimeTest {
 	public void test2() {
 
 		ApplicationTimeShare applicationTimeShare = createAppTime(1222);// 残業深夜時間
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
-				1, true);
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
+				1);
 		dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()
 				.getExcessOfStatutoryTimeOfDaily().setExcessOfStatutoryMidNightTime(new ExcessOfStatutoryMidNightTime(
 						TimeDivergenceWithCalculation.defaultValue(), new AttendanceTime(1200)));// 法定外深夜時間.事前時間
@@ -98,8 +98,8 @@ public class ReflectLateNightOvertimeTest {
 	public void test3() {
 
 		ApplicationTimeShare applicationTimeShare = createAppTime(1222);// 残業深夜時間
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
-				1, true);
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
+				1);
 		dailyApp.getAttendanceTimeOfDailyPerformance().get().getActualWorkingTimeOfDaily().getTotalWorkingTime()
 				.getExcessOfStatutoryTimeOfDaily().setExcessOfStatutoryMidNightTime(new ExcessOfStatutoryMidNightTime(
 						TimeDivergenceWithCalculation.defaultValue(), new AttendanceTime(1200)));// 法定外深夜時間.事前時間

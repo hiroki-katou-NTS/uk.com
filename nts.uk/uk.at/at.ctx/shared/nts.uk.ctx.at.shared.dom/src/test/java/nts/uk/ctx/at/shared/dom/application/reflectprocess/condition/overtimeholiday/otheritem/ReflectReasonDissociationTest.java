@@ -25,8 +25,8 @@ public class ReflectReasonDissociationTest {
 	 */
 	@Test
 	public void test() {
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
-				1, true);// 「乖離時間NO」＝1, 乖離理由 = エンプティー
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
+				1);// 「乖離時間NO」＝1, 乖離理由 = エンプティー
 		val overTimeApp = ReflectApplicationHelper.createOverTimeReason("ReasonName", "ReasonCode", 1);// 「乖離時間NO」＝1
 
 		ReflectReasonDissociation.process(dailyApp, overTimeApp.getApplicationTime().getReasonDissociation());
@@ -52,8 +52,8 @@ public class ReflectReasonDissociationTest {
 	 */
 	@Test
 	public void test2() {
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
-				1, true);// 「乖離時間NO」＝1, 乖離理由 = エンプティー
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
+				1);// 「乖離時間NO」＝1, 乖離理由 = エンプティー
 		val overTimeApp = ReflectApplicationHelper.createOverTimeReason("ReasonName", "ReasonCode", 2);// 「乖離時間NO」＝2
 
 		ReflectReasonDissociation.process(dailyApp, overTimeApp.getApplicationTime().getReasonDissociation());

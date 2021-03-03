@@ -44,7 +44,7 @@ public class TranferOvertimeCompensatoryTest {
 	public void test(@Mocked CreateWorkMaxTimeZone createMaxTime, @Mocked SubstituteTransferProcess sub) {
 
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
-				.createRCWithTimeLeav(ScheduleRecordClassifi.SCHEDULE, 1, true);
+				.createRCWithTimeLeavFull(ScheduleRecordClassifi.SCHEDULE, 1);
 
 		new Expectations() {
 			{

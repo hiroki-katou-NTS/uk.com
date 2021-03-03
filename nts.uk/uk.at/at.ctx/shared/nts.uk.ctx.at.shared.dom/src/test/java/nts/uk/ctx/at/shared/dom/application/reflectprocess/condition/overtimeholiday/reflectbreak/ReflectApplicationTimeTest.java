@@ -30,8 +30,8 @@ public class ReflectApplicationTimeTest {
 	@Test
 	public void test1() {
 
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
-				0, true);
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
+				0);
 
 		val applicationTimes = ReflectApplicationHelper.createAppSettingShare(AttendanceTypeShare.NORMALOVERTIME, 195);//
 
@@ -58,8 +58,8 @@ public class ReflectApplicationTimeTest {
 	@Test
 	public void test2() {
 
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
-				0, true);
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
+				0);
 
 		val applicationTimes = ReflectApplicationHelper.createAppSettingShare(AttendanceTypeShare.BREAKTIME, 195);//
 
@@ -89,8 +89,8 @@ public class ReflectApplicationTimeTest {
 	@Test
 	public void test3() {
 
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
-				0, true);
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
+				0);
 
 		val applicationTimes = ReflectApplicationHelper.createAppSettingShare(AttendanceTypeShare.BONUSPAYTIME, 195);//
 
@@ -120,8 +120,8 @@ public class ReflectApplicationTimeTest {
 	@Test
 	public void test4() {
 
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
-				0, true);
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
+				0);
 
 		val applicationTimes = ReflectApplicationHelper.createAppSettingShare(AttendanceTypeShare.BONUSSPECIALDAYTIME, 195);//
 

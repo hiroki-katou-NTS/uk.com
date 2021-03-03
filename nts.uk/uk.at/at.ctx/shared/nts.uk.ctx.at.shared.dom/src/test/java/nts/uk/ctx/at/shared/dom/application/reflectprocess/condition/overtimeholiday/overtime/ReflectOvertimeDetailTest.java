@@ -28,8 +28,8 @@ public class ReflectOvertimeDetailTest {
 	 */
 	@Test
 	public void test1() {
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
-				1, true);// 残業枠NO= 1
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
+				1);// 残業枠NO= 1
 
 		val applicationTime = ReflectApplicationHelper.createAppSettingShare(1, AttendanceTypeShare.NORMALOVERTIME,
 				195);// 残業枠NO = 1
@@ -56,8 +56,8 @@ public class ReflectOvertimeDetailTest {
 	 */
 	@Test
 	public void test2() {
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
-				1, true);// 残業枠NO= 1
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
+				1);// 残業枠NO= 1
 
 		val applicationTime = ReflectApplicationHelper.createAppSettingShare(2, AttendanceTypeShare.NORMALOVERTIME,
 				195);// 残業枠NO = ２
@@ -84,7 +84,7 @@ public class ReflectOvertimeDetailTest {
 	@Test
 	public void test3() {
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
-				.createRCWithTimeLeav(ScheduleRecordClassifi.SCHEDULE, 1, true);// 残業枠NO= 1
+				.createRCWithTimeLeavFull(ScheduleRecordClassifi.SCHEDULE, 1);// 残業枠NO= 1
 
 		val applicationTime = ReflectApplicationHelper.createAppSettingShare(1, AttendanceTypeShare.NORMALOVERTIME,
 				195);// 残業枠NO = 1

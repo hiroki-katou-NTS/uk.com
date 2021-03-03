@@ -30,7 +30,7 @@ public class ReflectionOfBreakTest {
 		List<TimeZoneWithWorkNo> breakTimeOp = new ArrayList<>();
 		breakTimeOp.add(new TimeZoneWithWorkNo(1, 482, 1082));// NO1
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
-				.createRCWithTimeLeav(ScheduleRecordClassifi.SCHEDULE, 1, true);// 休憩時間帯(480, 1020)
+				.createRCWithTimeLeavFull(ScheduleRecordClassifi.SCHEDULE, 1);// 休憩時間帯(480, 1020)
 
 		ReflectionOfBreak.process(breakTimeOp, dailyApp);
 
@@ -55,7 +55,7 @@ public class ReflectionOfBreakTest {
 		List<TimeZoneWithWorkNo> breakTimeOp = new ArrayList<>();
 		breakTimeOp.add(new TimeZoneWithWorkNo(2, 482, 1082));// NO1
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
-				.createRCWithTimeLeav(ScheduleRecordClassifi.SCHEDULE, 1, true);// 休憩時間帯(480, 1020)
+				.createRCWithTimeLeavFull(ScheduleRecordClassifi.SCHEDULE, 1);// 休憩時間帯(480, 1020)
 
 		ReflectionOfBreak.process(breakTimeOp, dailyApp);
 

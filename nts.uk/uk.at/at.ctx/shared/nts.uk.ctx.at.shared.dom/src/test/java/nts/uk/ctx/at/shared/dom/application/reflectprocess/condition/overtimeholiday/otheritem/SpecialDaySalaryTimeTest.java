@@ -26,8 +26,8 @@ public class SpecialDaySalaryTimeTest {
 	 */
 	@Test
 	public void test1() {
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
-				1, true);// 残業枠NO= 1
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
+				1);// 残業枠NO= 1
 
 		val applicationTime = ReflectApplicationHelper.createAppSettingShare(1, AttendanceTypeShare.BONUSSPECIALDAYTIME,
 				195);// 残業枠NO = 1
@@ -53,8 +53,8 @@ public class SpecialDaySalaryTimeTest {
 	 */
 	@Test
 	public void test2() {
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
-				1, true);// 残業枠NO= 1
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
+				1);// 残業枠NO= 1
 
 		val applicationTime = ReflectApplicationHelper.createAppSettingShare(2, AttendanceTypeShare.BONUSSPECIALDAYTIME,
 				195);// 残業枠NO = 1

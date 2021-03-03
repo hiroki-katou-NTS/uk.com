@@ -42,7 +42,7 @@ public class RCReflectOvertimeAppTest {
 	public void test() {
 		AppOverTimeShare app = ReflectApplicationHelper.createOverTimeApp(111);// 合計外深夜時間
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
-				.createRCWithTimeLeav(ScheduleRecordClassifi.SCHEDULE, 1, true);
+				.createRCWithTimeLeavFull(ScheduleRecordClassifi.SCHEDULE, 1);
 		// AppReflectOtHdWork
 		AppReflectOtHdWork reflectOvertimeSet = reflectOvertimeSet(NotUseAtr.USE);
 
@@ -70,7 +70,7 @@ public class RCReflectOvertimeAppTest {
 	public void test2() {
 		AppOverTimeShare app = ReflectApplicationHelper.createOverTimeApp(111);// 合計外深夜時間
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
-				.createRCWithTimeLeav(ScheduleRecordClassifi.SCHEDULE, 1, true);
+				.createRCWithTimeLeavFull(ScheduleRecordClassifi.SCHEDULE, 1);
 		// AppReflectOtHdWork
 		AppReflectOtHdWork reflectOvertimeSet = reflectOvertimeSet(NotUseAtr.NOT_USE);
 

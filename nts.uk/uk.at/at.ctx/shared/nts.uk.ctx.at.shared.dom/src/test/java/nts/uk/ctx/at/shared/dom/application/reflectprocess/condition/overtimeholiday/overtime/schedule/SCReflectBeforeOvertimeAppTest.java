@@ -44,7 +44,7 @@ public class SCReflectBeforeOvertimeAppTest {
 	@Test
 	public void test1() {
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
-				.createRCWithTimeLeav(ScheduleRecordClassifi.SCHEDULE, 1, true);
+				.createRCWithTimeLeavFull(ScheduleRecordClassifi.SCHEDULE, 1);
 		List<Integer> lstResult = SCReflectBeforeOvertimeApp.process(require, createOverTimeApp(), dailyApp,
 				createReflectSetting(NotUseAtr.USE));
 
@@ -73,7 +73,7 @@ public class SCReflectBeforeOvertimeAppTest {
 	@Test
 	public void test2() {
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
-				.createRCWithTimeLeav(ScheduleRecordClassifi.SCHEDULE, 1, true);
+				.createRCWithTimeLeavFull(ScheduleRecordClassifi.SCHEDULE, 1);
 		List<Integer> lstResult = SCReflectBeforeOvertimeApp.process(require, createOverTimeApp(), dailyApp,
 				createReflectSetting(NotUseAtr.NOT_USE));
 

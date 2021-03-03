@@ -36,8 +36,8 @@ public class RCReflectAfterOvertimeAppTest {
 	public void test() {
 
 		val overTimeApp = ReflectApplicationHelper.createOverTimeAppWorkHours(481, 1021);// 時間帯
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
-				1, true);// 勤務情報 = ("001", "001")
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
+				1);// 勤務情報 = ("001", "001")
 		val reflectOvertimeBeforeSet = AfterOtWorkAppReflect.create(1, 0, 0, 0);//[出退勤を反映する] = する
 		RCReflectAfterOvertimeApp.process(require, cid, overTimeApp, dailyApp, reflectOvertimeBeforeSet);
 
@@ -64,8 +64,8 @@ public class RCReflectAfterOvertimeAppTest {
 	public void test2() {
 
 		val overTimeApp = ReflectApplicationHelper.createOverTimeAppWorkHours(481, 1021);// 時間帯
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
-				1, true);// 時間帯= (480, 1200)
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
+				1);// 時間帯= (480, 1200)
 		val reflectOvertimeBeforeSet = AfterOtWorkAppReflect.create(0, 0, 0, 0);//[出退勤を反映する] = しない
 		RCReflectAfterOvertimeApp.process(require, cid, overTimeApp, dailyApp, reflectOvertimeBeforeSet);
 

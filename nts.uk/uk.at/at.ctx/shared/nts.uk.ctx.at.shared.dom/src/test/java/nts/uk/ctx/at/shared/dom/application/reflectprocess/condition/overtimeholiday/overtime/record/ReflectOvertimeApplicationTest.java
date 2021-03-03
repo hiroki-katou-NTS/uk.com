@@ -44,8 +44,8 @@ public class ReflectOvertimeApplicationTest {
 	public void test1() {
 
 		val overTimeApp = ReflectApplicationHelper.createOverTimeAppNone();// 勤務情報 = ("003", "003")
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
-				1, true);// 勤務情報 = ("001", "001")
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
+				1);// 勤務情報 = ("001", "001")
 		// ①[実績の勤務情報へ反映する] = しない →反映しない
 		OtWorkAppReflect createOtWorkRfl = createOtWorkRfl(NotUseAtr.NOT_USE);
 		ReflectOvertimeApplication.process(require, cid, overTimeApp, dailyApp, createOtWorkRfl);
@@ -84,8 +84,8 @@ public class ReflectOvertimeApplicationTest {
 		val overTimeApp = ReflectApplicationHelper.createOverTimeAppBeforeAfter(PrePostAtrShare.PREDICT);// 勤務情報 =
 																											// ("003",
 																											// "003")
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
-				1, true);// 勤務情報 = ("001", "001")
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
+				1);// 勤務情報 = ("001", "001")
 		// [実績の勤務情報へ反映する] = しない
 		OtWorkAppReflect createOtWorkRfl = otWorkRflBeforeAfter(NotUseAtr.USE);// 残業申請.事前.勤務情報、出退勤を反映する
 		ReflectOvertimeApplication.process(require, cid, overTimeApp, dailyApp, createOtWorkRfl);
@@ -118,8 +118,8 @@ public class ReflectOvertimeApplicationTest {
 		val overTimeApp = ReflectApplicationHelper.createOverTimeAppBeforeAfter(PrePostAtrShare.POSTERIOR);// 勤務情報 =
 																											// ("003",
 																											// "003")
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
-				1, true);// 勤務情報 = ("001", "001")
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
+				1);// 勤務情報 = ("001", "001")
 		// [実績の勤務情報へ反映する] = しない
 		OtWorkAppReflect createOtWorkRfl = otWorkRflBeforeAfter(NotUseAtr.USE);// 残業申請.事前.勤務情報、出退勤を反映する
 		ReflectOvertimeApplication.process(require, cid, overTimeApp, dailyApp, createOtWorkRfl);
