@@ -4,6 +4,8 @@ package nts.uk.ctx.at.shared.infra.entity.workmanagement.operationsettings;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.workmanagement.aggregateroot.operationsettings.WorkOperationSetting;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 import javax.persistence.Column;
@@ -30,10 +32,18 @@ public class KsrmtTaskOperation extends ContractUkJpaEntity implements Serializa
      * 作業運用方法: 作業運用設定	->	作業運用方法
      */
     @Column(name = "OPE_ATR")
-    public String OPEATR;
+    public int OPEATR;
 
     @Override
     protected Object getKey() {
         return CID;
+    }
+
+
+    public static KsrmtTaskOperation toEntity(WorkOperationSetting domain) {
+        return new KsrmtTaskOperation(
+                AppContexts.user().companyId(),
+                domain.getWorkOperationMethod().value
+        );
     }
 }
