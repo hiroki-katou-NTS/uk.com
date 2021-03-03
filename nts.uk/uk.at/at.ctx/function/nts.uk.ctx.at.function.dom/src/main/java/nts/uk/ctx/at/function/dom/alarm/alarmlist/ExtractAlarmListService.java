@@ -208,6 +208,7 @@ public class ExtractAlarmListService {
 						alarmValue.setEmployeeCode(empInfo.getEmployeeCode());
 						alarmValue.setEmployeeID(empInfo.getEmployeeId());
 						alarmValue.setEmployeeName(empInfo.getPName());
+						alarmValue.setEndDate(z.getPeriodDate().getEndDate().isPresent() ? z.getPeriodDate().getEndDate().get().toString() : "");
 						lstExtractedAlarmData.add(alarmValue);
 						alarmValue.setGuid(IdentifierUtil.randomUniqueId());
 					}

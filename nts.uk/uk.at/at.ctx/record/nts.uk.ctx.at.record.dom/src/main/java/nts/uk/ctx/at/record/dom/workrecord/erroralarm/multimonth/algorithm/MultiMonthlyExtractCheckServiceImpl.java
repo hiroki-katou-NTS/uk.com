@@ -92,20 +92,18 @@ public class MultiMonthlyExtractCheckServiceImpl<V> implements MultiMonthlyExtra
 		for(MulMonthAlarmCheckCond anyCond : data.lstAnyCondCheck) {
 			lstCheckType.add(new AlarmListCheckInfor(String.valueOf(anyCond.getCondNo()), AlarmListCheckType.FreeCheck));
 			ErAlAttendanceItemCondition<?> erCondition = anyCond.getErAlAttendanceItemCondition();
-			if(erCondition == null) continue;
-			
+			if(erCondition == null) continue;			
 			//比較演算子
 			int compare = erCondition.getCompareSingleValue() == null ?
 					erCondition.getCompareRange().getCompareOperator().value :
 						erCondition.getCompareSingleValue().getCompareOpertor().value;
-			//複数月のチェック条件(平均)
-
 			for(String sid : lstSid) {
 				String startValue = erCondition.getCompareSingleValue() == null ?
 						erCondition.getCompareRange().getStartValue().toString() :
 						erCondition.getCompareSingleValue().getValue().toString();					
 				String endValue = erCondition.getCompareRange() == null ? null :
 						erCondition.getCompareRange().getEndValue().toString();
+				//複数月のチェック条件(平均)
 				float avg = 0;
 				//複数月のチェック条件(連続)
 				//int countTmp = 0;
@@ -116,7 +114,11 @@ public class MultiMonthlyExtractCheckServiceImpl<V> implements MultiMonthlyExtra
 				double checkedValue = 0;
 				String checkValue = "";
 				boolean checkAddAlarm = false;
+				String avgUnit = "";
 				if(lstSidOfMonthData == null || lstSidOfMonthData.isEmpty()) continue;
+				
+				List<Integer> lstAddSub = erCondition.getCountableTarget().getAddSubAttendanceItems().getAdditionAttendanceItems();
+				List<Integer> lstSubStr = erCondition.getCountableTarget().getAddSubAttendanceItems().getSubstractionAttendanceItems();
 				switch (anyCond.getTypeCheckItem()) {
 				//時間、回数、金額、日数
 				case TIME:
@@ -130,16 +132,18 @@ public class MultiMonthlyExtractCheckServiceImpl<V> implements MultiMonthlyExtra
 								if (item.isEmpty()) {
 									return new ArrayList<>();
 								}
-								return itemValues.stream().map(iv -> getValue(iv))
+								return itemValues.stream().filter(x -> item.contains(x.getItemId())).map(iv -> getValue(iv))
 										.collect(Collectors.toList());
 							});
-						checkedValue = erCondition.calculateTargetValue(item ->{
-							if(item.isEmpty()) {
-								return new ArrayList<>();
-							}
-							return itemValues.stream().map(iv -> getValue(iv))
-									.collect(Collectors.toList());
-						});
+						if(checkAddAlarm) {
+							checkedValue = erCondition.calculateTargetValue(item ->{
+								if(item.isEmpty()) {
+									return new ArrayList<>();
+								}
+								return itemValues.stream().filter(x -> item.contains(x.getItemId())).map(iv -> getValue(iv))
+										.collect(Collectors.toList());
+							});	
+						}
 					}
 					break;
 				//連続時間、連続回数、連続金額、連続日数
@@ -158,14 +162,14 @@ public class MultiMonthlyExtractCheckServiceImpl<V> implements MultiMonthlyExtra
 											if (item.isEmpty()) {
 												return new ArrayList<>();
 											}
-											return result.getItemValues().stream().map(iv -> getValue(iv))
+											return result.getItemValues().stream().filter(x -> item.contains(x.getItemId())).map(iv -> getValue(iv))
 													.collect(Collectors.toList());
-										});
+								});
+								countContinus = checkPerMonth ? countContinus + 1 : 0; 
 								if(countContinus >= anyCond.getContinuousMonths().get()){
 									checkAddAlarm = true;
 									checkedValue = countContinus;
 								}
-								countContinus = checkPerMonth ? countContinus++ : 0; 
 							}
 						}
 					}
@@ -179,16 +183,17 @@ public class MultiMonthlyExtractCheckServiceImpl<V> implements MultiMonthlyExtra
 					float sum = 0 ;
 					
 					for(MonthlyRecordValuesDto result :lstSidOfMonthData ){
-						List<ItemValue> listValue = result.getItemValues();
+						List<ItemValue> listValue = result.getItemValues().stream()
+								.filter(x -> lstAddSub.contains(x.getItemId()) || lstSubStr.contains(x.getItemId())).collect(Collectors.toList());
 						for (ItemValue itemValue : listValue) {
-							sum +=getValue(itemValue);
+							sum += getValue(itemValue);
 						}
 						
 					}	
 					avg = sum/mPeriod.yearMonthsBetween().size();
 					double av = avg;
 					BigDecimal bdAVG = new BigDecimal(avg);
-					bdAVG.setScale(2, RoundingMode.HALF_UP);
+					bdAVG = bdAVG.setScale(2, RoundingMode.HALF_UP);
 					/*checkAddAlarm = CompareDouble(bdAVG, new BigDecimal(startValue),
 							new BigDecimal(endValue),
 							compare);*/
@@ -200,7 +205,8 @@ public class MultiMonthlyExtractCheckServiceImpl<V> implements MultiMonthlyExtra
 						lstT.add(av);
 						return lstT;
 					});
-					
+					avgUnit = anyCond.getTypeCheckItem().nameId;
+					checkedValue = bdAVG.doubleValue();
 					break;
 				//該当月数時間、該当月数回数、該当月数金額、該当月数日数
 				case NUMBER_TIME:
@@ -215,7 +221,7 @@ public class MultiMonthlyExtractCheckServiceImpl<V> implements MultiMonthlyExtra
 							if (item.isEmpty()) {
 								return new ArrayList<>();
 							}
-							return result.getItemValues().stream().map(iv -> getValue(iv))
+							return result.getItemValues().stream().filter(x -> item.contains(x.getItemId())).map(iv -> getValue(iv))
 									.collect(Collectors.toList());
 						});
 						if(checkPerMonth) {
@@ -235,74 +241,91 @@ public class MultiMonthlyExtractCheckServiceImpl<V> implements MultiMonthlyExtra
 				} 
 				
 				if(checkAddAlarm) {
+					String txtUnit = getUnit(anyCond); 
+					
 					if(anyCond.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.TIME
 							|| anyCond.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.AVERAGE_TIME
 							|| anyCond.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.CONTINUOUS_TIME
 							|| anyCond.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.NUMBER_TIME) {
 						startValue = timeToString(Integer.valueOf(startValue));
 						endValue = endValue == null ? null : timeToString(Integer.valueOf(endValue));
-						checkValue = timeToString((int) checkedValue);
+						if(anyCond.getTypeCheckItem() != TypeCheckWorkRecordMultipleMonth.NUMBER_TIME) checkValue = timeToString((int) checkedValue);
 					}
-					
-					List<Integer> lstAddSub = erCondition.getCountableTarget().getAddSubAttendanceItems().getAdditionAttendanceItems();
-					List<Integer> lstSubStr = erCondition.getCountableTarget().getAddSubAttendanceItems().getSubstractionAttendanceItems();
 					
 					List<MonthlyAttendanceItemNameDto> addSubName = data.lstItemMond.stream().filter(x -> lstAddSub.contains(x.getAttendanceItemId()))
 							.collect(Collectors.toList());
 					List<MonthlyAttendanceItemNameDto> subStrName = data.lstItemMond.stream().filter(x -> lstSubStr.contains(x.getAttendanceItemId()))
 							.collect(Collectors.toList());
 					
-					String nameItem = getNameErrorAlarm(addSubName,	1, "");
-					nameItem = getNameErrorAlarm(subStrName, 0, nameItem);
+					String nameItem = getNameErrorAlarm(addSubName,	0, "");
+					nameItem = getNameErrorAlarm(subStrName, 1, nameItem);
 					String alarmDescription = "";
 					CompareOperatorText compareOperatorText = convertComparaToText.convertCompareType(
 							erCondition.getCompareSingleValue() != null 
 									? erCondition.getCompareSingleValue().getConditionType().value
 									: erCondition.getCompareRange().getCompareOperator().value);
 					
-					String periodYearMonth = mPeriod.start().lastGeneralDate().toString("yyyy/MM") + "～" + mPeriod.end().lastGeneralDate().toString("yyyy/MM");
 					if(anyCond.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.CONTINUOUS_AMOUNT
 							|| anyCond.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.CONTINUOUS_DAYS
 							|| anyCond.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.CONTINUOUS_TIME
 							|| anyCond.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.CONTINUOUS_TIMES) {
-						alarmDescription = TextResource.localize("KAL010_260", periodYearMonth, nameItem,
-								compareOperatorText.getCompareLeft(), startValue,
+						alarmDescription = TextResource.localize("KAL010_260",
+								nameItem,
+								compareOperatorText.getCompareLeft(),
+								startValue + txtUnit,
 								String.valueOf(anyCond.getContinuousMonths().get()));
-						checkValue = TextResource.localize("KAL010_289", nameItem, String.valueOf(checkedValue));
+						checkValue = TextResource.localize("KAL010_289", 
+								nameItem + compareOperatorText.getCompareLeft() + startValue + txtUnit, 
+								String.valueOf(checkedValue));
 					} else if (anyCond.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.NUMBER_AMOUNT
 							|| anyCond.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.NUMBER_DAYS
 							|| anyCond.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.NUMBER_TIME
 							|| anyCond.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.NUMBER_TIMES) {
-						alarmDescription = TextResource.localize("KAL010_270", periodYearMonth, nameItem,
-								compareOperatorText.getCompareLeft(), startValue,
-								lstYM.toString(), String.valueOf(anyCond.getNumbers().get()));
+						CompareOperatorText numberCompare = convertComparaToText.convertCompareType(anyCond.getCompaOperator().get().value);
+						alarmDescription = TextResource.localize("KAL010_270",								
+								anyCond.getTypeCheckItem().nameId +":"+ nameItem,
+								compareOperatorText.getCompareLeft(),
+								startValue + txtUnit,
+								numberCompare.getCompareLeft(),
+								String.valueOf(anyCond.getNumbers().get()));
 						checkValue = TextResource.localize("KAL010_290", lstYM.toString(), String.valueOf(checkedValue));
 					} else {
 						if(compare <= 5) {
-							alarmDescription = TextResource.localize("KAL010_254", periodYearMonth, nameItem,
-									compareOperatorText.getCompareLeft(), startValue);
+							alarmDescription = TextResource.localize("KAL010_254",
+									nameItem,
+									compareOperatorText.getCompareLeft(),
+									startValue + txtUnit);
 						} else {
 							if (compare > 5 && compare <= 7) {
-								alarmDescription = TextResource.localize("KAL010_255", periodYearMonth, startValue,
-										compareOperatorText.getCompareLeft(), nameItem,
-										compareOperatorText.getCompareright(), endValue);
+								alarmDescription = TextResource.localize("KAL010_255",
+										startValue + txtUnit,
+										compareOperatorText.getCompareLeft(),
+										nameItem,
+										compareOperatorText.getCompareright(),
+										endValue + txtUnit);
 							} else {
-								alarmDescription = TextResource.localize("KAL010_256", periodYearMonth, startValue,
-										compareOperatorText.getCompareLeft(), nameItem, nameItem,
-										compareOperatorText.getCompareright(), endValue);
+								alarmDescription = TextResource.localize("KAL010_256", 
+										startValue + txtUnit,
+										compareOperatorText.getCompareLeft(),
+										nameItem,
+										nameItem,
+										compareOperatorText.getCompareright(),
+										endValue + txtUnit);
 							}
 						}
 						checkValue = TextResource.localize("KAL010_284", nameItem, checkValue.isEmpty() ? String.valueOf(checkedValue) : checkValue);
-						if(anyCond.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.TIME) checkValue = checkValue + TextResource.localize("KAL010_285");
-						if(anyCond.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.TIMES) checkValue = checkValue + TextResource.localize("KAL010_286");
-						if(anyCond.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.AMOUNT) checkValue = checkValue + TextResource.localize("KAL010_287");
-						if(anyCond.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.DAYS) checkValue = checkValue + TextResource.localize("KAL010_288");
+						checkValue += txtUnit;
+						if(!avgUnit.isEmpty()) {
+							alarmDescription = avgUnit +": "+ alarmDescription;
+							checkValue = avgUnit + checkValue;
+						}
 					}
+					
 					GeneralDate startDate = GeneralDate.ymd(mPeriod.start().year() , mPeriod.start().month(), 1);
 					YearMonth endMonthTemp = mPeriod.end().addMonths(1);
 					GeneralDate endDateTemp = GeneralDate.ymd(endMonthTemp.year(), endMonthTemp.month(), 1);
 					GeneralDate enDate = endDateTemp.addDays(-1);
-					ExtractionAlarmPeriodDate pDate = new ExtractionAlarmPeriodDate(Optional.ofNullable(startDate), Optional.empty());
+					ExtractionAlarmPeriodDate pDate = new ExtractionAlarmPeriodDate(Optional.ofNullable(startDate), Optional.ofNullable(enDate));
 					String workplaceId = getWplByListSidAndPeriod.stream().filter(x -> x.getEmployeeId().equals(sid))
 							.collect(Collectors.toList()).get(0)
 							.getLstWkpIdAndPeriod().stream().filter(x -> x.getDatePeriod().start().beforeOrEquals(enDate) 
@@ -336,6 +359,39 @@ public class MultiMonthlyExtractCheckServiceImpl<V> implements MultiMonthlyExtra
 			}
 		}
 		
+	}
+	/**
+	 * 単位
+	 * @param anyCond
+	 * @return
+	 */
+	private String getUnit(MulMonthAlarmCheckCond anyCond) {
+		String txtUnit = "";
+		if(anyCond.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.TIME
+				|| anyCond.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.AVERAGE_TIME
+				|| anyCond.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.CONTINUOUS_TIME
+				|| anyCond.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.NUMBER_TIME) {
+			 txtUnit = TextResource.localize("KAL010_285");	
+		}
+		if(anyCond.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.TIMES
+				|| anyCond.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.AVERAGE_TIMES
+				|| anyCond.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.CONTINUOUS_TIMES
+				|| anyCond.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.NUMBER_TIMES) {
+			txtUnit = TextResource.localize("KAL010_286");
+		} 
+		if(anyCond.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.AMOUNT
+				|| anyCond.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.AVERAGE_AMOUNT
+				|| anyCond.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.CONTINUOUS_AMOUNT
+				|| anyCond.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.NUMBER_AMOUNT) {
+			txtUnit = TextResource.localize("KAL010_287");
+		} 
+		if(anyCond.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.DAYS
+				|| anyCond.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.AVERAGE_DAYS
+				|| anyCond.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.CONTINUOUS_DAYS
+				|| anyCond.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.NUMBER_DAYS) {
+			txtUnit = TextResource.localize("KAL010_288");
+		}
+		return txtUnit;
 	}
 	private String getNameErrorAlarm(List<MonthlyAttendanceItemNameDto> attendanceItemNames ,int type,String nameErrorAlarm){
 		if(!CollectionUtil.isEmpty(attendanceItemNames)) {
@@ -391,9 +447,9 @@ public class MultiMonthlyExtractCheckServiceImpl<V> implements MultiMonthlyExtra
 	}
 	
 	private Double getValue(ItemValue value) {
-		if(value.getValueType()==ValueType.DATE){
+		/*if(value.getValueType()==ValueType.DATE){
 			return 0d;
-		}
+		}*/
 		if (value.value() == null) {
 			return 0d;
 		}
