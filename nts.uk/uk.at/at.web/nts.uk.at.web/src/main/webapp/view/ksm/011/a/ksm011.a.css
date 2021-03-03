@@ -26,3 +26,10 @@
 #contents-area .panel-frame:first-child {
   margin-right: 50px;
 }
+
+button.caret-bottom:after, button.caret-top:after, 
+button.caret-left:after, button.caret-right:after {
+  background-color: #97D155;
+  transform: translate(0, -50%);
+  margin-top: inherit;
+}
