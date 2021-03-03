@@ -42,8 +42,6 @@ public class DeductionTotalTimeForFluidCalc {
 	/** 控除合計時間 */
 	private DeductionTotalTimeLocal deductionTotal;
 	
-	private int ajustTimeByBetweenWorkTimeSheets;
-	
 	public DeductionTotalTimeForFluidCalc(TimeWithDayAttr breakStartTime) {
 		this.breakStartTime = breakStartTime;
 		this.deductionTotal = new DeductionTotalTimeLocal(new AttendanceTime(0), new AttendanceTime(0));
@@ -53,7 +51,6 @@ public class DeductionTotalTimeForFluidCalc {
 		
 		this.breakStartTime = source.breakStartTime;
 		this.deductionTotal = source.deductionTotal;
-		this.ajustTimeByBetweenWorkTimeSheets = source.ajustTimeByBetweenWorkTimeSheets;
 	}
 	
 	/** 控除合計時間　（local） */
@@ -214,7 +211,7 @@ public class DeductionTotalTimeForFluidCalc {
 			Optional<TimeSheetOfDeductionItem> betweenWorkTimeSheets) {
 		
 		/** ○流動休憩開始時刻を計算 */
-		val breakPassageTime = flowBreakSet.getFlowPassageTime().addMinutes(deductionTotal.totalTime.valueAsMinutes() + this.ajustTimeByBetweenWorkTimeSheets);
+		val breakPassageTime = flowBreakSet.getFlowPassageTime().addMinutes(deductionTotal.totalTime.valueAsMinutes());
 		TimeWithDayAttr flowStartTime = dayStart.forwardByMinutes(breakPassageTime.valueAsMinutes());
 		
 		/** 流動休憩開始時刻が勤務間の後かを確認する */
@@ -232,7 +229,7 @@ public class DeductionTotalTimeForFluidCalc {
 		deductionTotal.totalTime = deductionTotal.totalTime.addMinutes(flowBreakSet.getFlowRestTime().valueAsMinutes());
 		
 		/** ○流動休憩作成情報を返す */
-		return new DeductionTotalTimeForFluidCalc(flowStartTime, deductionTotal, this.ajustTimeByBetweenWorkTimeSheets);
+		return new DeductionTotalTimeForFluidCalc(flowStartTime, deductionTotal);
 	}
 
 	/** △流動休憩開始時刻までの間にある外出を取得 */
