@@ -3602,6 +3602,267 @@ public class WorkTimeReportService_New {
             Integer flowRestTime = data.getFlexWorkSetting().getOffdayWorkTime().getRestTimezone().getFlowRestTimezone().getHereAfterRestSet().getFlowRestTime();
             cells.get("DG" + (startIndex + 9)).setValue(getInDayTimeWithFormat(flowRestTime));
         }
+        
+        // 8        タブグ:                外出
+        
+        /*
+         * R6_184
+         * 外出.外出丸め設定.同じ枠内での丸め設定
+         */
+        Integer setSameFrameRounding = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
+                .getTotalRoundingSet().getSetSameFrameRounding();
+        cells.get("DH" + (startIndex + 1)).setValue(getFrameRoundingAtr(setSameFrameRounding));
+        
+        /*
+         * R6_185
+         * 外出.外出丸め設定.枠を跨る場合の丸め設定
+         */
+        Integer frameStraddRoundingSet = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
+                .getTotalRoundingSet().getFrameStraddRoundingSet();
+        cells.get("DI" + (startIndex + 1)).setValue(getFrameRoundingAtr(frameStraddRoundingSet));
+        
+        /*
+         * R6_186
+         * 外出.私用・組合外出時間.就業時間帯
+         */
+        Integer roundingMethodWorkPriAppro = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
+                .getDiffTimezoneSetting().getWorkTimezone().getPrivateUnionGoOut()
+                .getApproTimeRoundingSetting().getRoundingMethod();
+        cells.get("DJ" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodWorkPriAppro));
+        
+        /*
+         * R6_187
+         * 外出.私用・組合外出時間.丸め設定
+         */
+        Integer unitWorkPriAppro = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
+                .getDiffTimezoneSetting().getWorkTimezone().getPrivateUnionGoOut()
+                .getApproTimeRoundingSetting().getRoundingSetting().getRoundingTime();
+        cells.get("DK" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitWorkPriAppro));
+        
+        /*
+         * R6_188
+         * 外出.私用・組合外出時間.丸め設定端数
+         */
+        Integer roundingWorkPriAppro = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
+                .getDiffTimezoneSetting().getWorkTimezone().getPrivateUnionGoOut()
+                .getApproTimeRoundingSetting().getRoundingSetting().getRounding();
+        cells.get("DL" + (startIndex + 1)).setValue(getRoundingEnum(roundingWorkPriAppro));
+        
+        /*
+         * R6_189
+         * 外出.私用・組合外出時間.残業時間帯
+         */
+        Integer roundingMethodOtPriAppro = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
+                .getDiffTimezoneSetting().getOttimezone().getPrivateUnionGoOut()
+                .getApproTimeRoundingSetting().getRoundingMethod();
+        cells.get("DM" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodOtPriAppro));
+        
+        /*
+         * R6_190
+         * 外出.私用・組合外出時間.丸め設定
+         */
+        Integer unitOtPriAppro = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
+                .getDiffTimezoneSetting().getOttimezone().getPrivateUnionGoOut()
+                .getApproTimeRoundingSetting().getRoundingSetting().getRoundingTime();
+        cells.get("DN" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitOtPriAppro));
+        
+        /*
+         * R6_191
+         * 外出.私用・組合外出時間.丸め設定端数
+         */
+        Integer roundingOtPriAppro = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
+                .getDiffTimezoneSetting().getOttimezone().getPrivateUnionGoOut()
+                .getApproTimeRoundingSetting().getRoundingSetting().getRounding();
+        cells.get("DO" + (startIndex + 1)).setValue(getRoundingEnum(roundingOtPriAppro));
+        
+        /*
+         * R6_192
+         * 外出.私用・組合外出時間.休出時間帯
+         */
+        Integer roundingMethodHdPriAppro = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
+                .getDiffTimezoneSetting().getPubHolWorkTimezone().getPrivateUnionGoOut()
+                .getApproTimeRoundingSetting().getRoundingMethod();
+        cells.get("DP" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodHdPriAppro));
+        
+        /*
+         * R6_193
+         * 外出.私用・組合外出時間.丸め設定
+         */
+        Integer unitHdPriAppro = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
+                .getDiffTimezoneSetting().getPubHolWorkTimezone().getPrivateUnionGoOut()
+                .getApproTimeRoundingSetting().getRoundingSetting().getRoundingTime();
+        cells.get("DQ" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitHdPriAppro));
+        
+        /*
+         * R6_194
+         * 外出.私用・組合外出時間.丸め設定端数
+         */
+        Integer roundingHdPriAppro = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
+                .getDiffTimezoneSetting().getPubHolWorkTimezone().getPrivateUnionGoOut()
+                .getApproTimeRoundingSetting().getRoundingSetting().getRounding();
+        cells.get("DR" + (startIndex + 1)).setValue(getRoundingEnum(roundingHdPriAppro));
+        
+        /*
+         * R6_195
+         * 外出.私用・組合外出控除時間.就業時間帯
+         */
+        Integer roundingMethodWorkPriDeduct = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
+                .getDiffTimezoneSetting().getWorkTimezone().getPrivateUnionGoOut()
+                .getDeductTimeRoundingSetting().getRoundingMethod();
+        cells.get("DS" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodWorkPriDeduct));
+        
+        /*
+         * R6_196
+         * 外出.私用・組合外出控除時間.丸め設定
+         */
+        Integer unitWorkPriDeduct = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
+                .getDiffTimezoneSetting().getWorkTimezone().getPrivateUnionGoOut()
+                .getDeductTimeRoundingSetting().getRoundingSetting().getRoundingTime();
+        cells.get("DT" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitWorkPriDeduct));
+        
+        /*
+         * R6_197
+         * 外出.私用・組合外出控除時間.丸め設定端数
+         */
+        Integer roundingWorkPriDeduct = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
+                .getDiffTimezoneSetting().getWorkTimezone().getPrivateUnionGoOut()
+                .getDeductTimeRoundingSetting().getRoundingSetting().getRounding();
+        cells.get("DU" + (startIndex + 1)).setValue(getRoundingEnum(roundingWorkPriDeduct));
+        
+        /*
+         * R6_198
+         * 外出.私用・組合外出控除時間.残業時間帯
+         */
+        Integer roundingMethodOtPriDeduct = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
+                .getDiffTimezoneSetting().getOttimezone().getPrivateUnionGoOut()
+                .getDeductTimeRoundingSetting().getRoundingMethod();
+        cells.get("DV" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodOtPriDeduct));
+        
+        /*
+         * R6_199
+         * 外出.私用・組合外出控除時間.丸め設定
+         */
+        Integer unitOtPriDeduct = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
+                .getDiffTimezoneSetting().getOttimezone().getPrivateUnionGoOut()
+                .getDeductTimeRoundingSetting().getRoundingSetting().getRoundingTime();
+        cells.get("DW" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitOtPriDeduct));
+        
+        /*
+         * R6_200
+         * 外出.私用・組合外出控除時間.丸め設定端数
+         */
+        Integer roundingOtPriDeduct = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
+                .getDiffTimezoneSetting().getOttimezone().getPrivateUnionGoOut()
+                .getDeductTimeRoundingSetting().getRoundingSetting().getRounding();
+        cells.get("DX" + (startIndex + 1)).setValue(getRoundingEnum(roundingOtPriDeduct));
+        
+        /*
+         * R6_201
+         * 外出.私用・組合外出控除時間.休出時間帯
+         */
+        Integer roundingMethodHdPriDeduct = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
+                .getDiffTimezoneSetting().getPubHolWorkTimezone().getPrivateUnionGoOut()
+                .getDeductTimeRoundingSetting().getRoundingMethod();
+        cells.get("DY" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodHdPriDeduct));
+        
+        /*
+         * R6_202
+         * 外出.私用・組合外出控除時間.丸め設定
+         */
+        Integer unitHdPriDeduct = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
+                .getDiffTimezoneSetting().getPubHolWorkTimezone().getPrivateUnionGoOut()
+                .getDeductTimeRoundingSetting().getRoundingSetting().getRoundingTime();
+        cells.get("DZ" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitHdPriDeduct));
+        
+        /*
+         * R6_203
+         * 外出.私用・組合外出控除時間.丸め設定端数
+         */
+        Integer roundingHdPriDeduct = data.getFixedWorkSetting().getCommonSetting().getGoOutSet()
+                .getDiffTimezoneSetting().getPubHolWorkTimezone().getPrivateUnionGoOut()
+                .getDeductTimeRoundingSetting().getRoundingSetting().getRounding();
+        cells.get("EA" + (startIndex + 1)).setValue(getRoundingEnum(roundingHdPriDeduct));
+        
+        /*
+         * R6_204
+         * 外出.公用・有償外出時間.就業時間帯
+         */
+        Integer roundingMethodWorkOfficalAppro = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
+                .getDiffTimezoneSetting().getWorkTimezone().getOfficalUseCompenGoOut()
+                .getApproTimeRoundingSetting().getRoundingMethod();
+        cells.get("EB" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodWorkOfficalAppro));
+        
+        /*
+         * R6_205
+         * 外出.公用・有償外出時間.丸め設定
+         */
+        Integer unitWOrkOfficalApro = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
+                .getDiffTimezoneSetting().getWorkTimezone().getOfficalUseCompenGoOut()
+                .getApproTimeRoundingSetting().getRoundingSetting().getRoundingTime();
+        cells.get("EC" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitWOrkOfficalApro));
+        
+        /*
+         * R6_206
+         * 外出.公用・有償外出時間.丸め設定端数
+         */
+        Integer roundingWorkOfficalAppro = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
+                .getDiffTimezoneSetting().getWorkTimezone().getOfficalUseCompenGoOut()
+                .getApproTimeRoundingSetting().getRoundingSetting().getRounding();
+        cells.get("ED" + (startIndex + 1)).setValue(getRoundingEnum(roundingWorkOfficalAppro));
+        
+        /*
+         * R6_207
+         * 外出.公用・有償外出時間.残業時間帯
+         */
+        Integer roundingMethodOtOfficalAppro = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
+                .getDiffTimezoneSetting().getOttimezone().getOfficalUseCompenGoOut()
+                .getApproTimeRoundingSetting().getRoundingMethod();
+        cells.get("EE" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodOtOfficalAppro));
+        
+        /*
+         * R6_208
+         * 外出.公用・有償外出時間.丸め設定
+         */
+        Integer unitOtOfficalAppro = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
+                .getDiffTimezoneSetting().getOttimezone().getOfficalUseCompenGoOut()
+                .getApproTimeRoundingSetting().getRoundingSetting().getRoundingTime();
+        cells.get("EF" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitOtOfficalAppro));
+        
+        /*
+         * R6_209
+         * 外出.公用・有償外出時間.丸め設定端数
+         */
+        Integer roundingOtOfficalAppro = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
+                .getDiffTimezoneSetting().getOttimezone().getOfficalUseCompenGoOut()
+                .getApproTimeRoundingSetting().getRoundingSetting().getRounding();
+        cells.get("EG" + (startIndex + 1)).setValue(getRoundingEnum(roundingOtOfficalAppro));
+        
+        /*
+         * R6_210
+         * 外出.公用・有償外出時間.休出時間帯
+         */
+        Integer roundingMethodHdOfficalAppro = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
+                .getDiffTimezoneSetting().getPubHolWorkTimezone().getOfficalUseCompenGoOut()
+                .getApproTimeRoundingSetting().getRoundingMethod();
+        cells.get("EH" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodHdOfficalAppro));
+        
+        /*
+         * R6_211
+         * 外出.公用・有償外出時間.丸め設定
+         */
+        Integer unitHdOfficalAppro = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
+                .getDiffTimezoneSetting().getPubHolWorkTimezone().getOfficalUseCompenGoOut()
+                .getApproTimeRoundingSetting().getRoundingSetting().getRoundingTime();
+        cells.get("EI" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitHdOfficalAppro));
+        
+        /*
+         * R6_212
+         * 外出.公用・有償外出時間.丸め設定端数
+         */
+        Integer roudingHdOfficalAppro = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
+                .getDiffTimezoneSetting().getPubHolWorkTimezone().getOfficalUseCompenGoOut()
+                .getApproTimeRoundingSetting().getRoundingSetting().getRounding();
+        cells.get("EJ" + (startIndex + 1)).setValue(getRoundingEnum(roudingHdOfficalAppro));
     }
     
     /**
