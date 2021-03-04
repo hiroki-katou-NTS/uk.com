@@ -23,7 +23,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseTime;
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
 public class InterimSpecialHolidayMng extends InterimRemain{
 
 	/** 特別休暇暫定ID */
@@ -40,6 +39,14 @@ public class InterimSpecialHolidayMng extends InterimRemain{
 
 	/**	特休使用 */
 	private Optional<UseDay> useDays;
+
+	/**
+	 * コンストラクタ
+	 */
+	public InterimSpecialHolidayMng() {
+		useTimes = Optional.empty();
+		useDays = Optional.empty();
+	}
 
 	/**
 	 * 親クラス（RemainAtr）の値をセット

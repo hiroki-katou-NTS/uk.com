@@ -115,7 +115,7 @@ public class CalcNextSpecialLeaveGrantDate {
 
 		// 付与日数情報を取得する
 		List<NextSpecialLeaveGrant> nextSpecialLeaveGrantList
-			= getSpecialLeaveGrantInfo(require, cacheCarrier, companyId, employeeId, spLeaveCD, period);
+			= getSpecialLeaveGrantInfo(require, cacheCarrier, companyId, employeeId, spLeaveCD, Optional.of(targetPeriod));
 
 		return nextSpecialLeaveGrantList;
 	}
@@ -463,7 +463,7 @@ public class CalcNextSpecialLeaveGrantDate {
 		GeneralDate grantDate = GeneralDate.localDate(grantDateOpt.get().localDate());
 
 		NextSpecialLeaveGrant nextSpecialLeaveGrant = new NextSpecialLeaveGrant();
-		
+
 		// ループ
 		while (true){
 
@@ -483,7 +483,7 @@ public class CalcNextSpecialLeaveGrantDate {
 
 				// 状態　＝　「利用可能」
 				if ( useCondition ){
-					
+
 					// 特別休暇基本情報を取得
 					Optional<SpecialLeaveBasicInfo> specialLeaveBasicInfoOpt
 						= require.specialLeaveBasicInfo(employeeId, spLeaveCD, UseAtr.USE);
@@ -1379,7 +1379,7 @@ public class CalcNextSpecialLeaveGrantDate {
 
 		if(!grantDaysInforByDates.getGrantDate().isPresent())
 			return new ArrayList<>();
-		
+
 		// 「特別休暇」を取得する
 		Optional<SpecialHoliday> specialHolidays = require.specialHoliday(companyId, spLeaveCD);
 		if ( specialHolidays.isPresent() ){

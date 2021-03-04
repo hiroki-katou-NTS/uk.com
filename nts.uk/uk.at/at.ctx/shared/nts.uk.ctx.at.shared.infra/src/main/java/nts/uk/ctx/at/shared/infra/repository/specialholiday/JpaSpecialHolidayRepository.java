@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.infra.repository.specialholiday;
 
+import static org.hamcrest.Matchers.empty;
+
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -71,20 +73,21 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 			+ "WHERE e.pk.companyId = :companyId "
 			+ "ORDER BY e.pk.specialHolidayCode ASC";
 
-	private final static String SELECT_SPHD_BY_CODE_QUERY = "SELECT sphd.CID, sphd.SPHD_CD, sphd.SPHD_NAME, sphd.SPHD_AUTO_GRANT, sphd.MEMO,"
-//			+ " sphd.GRANT_TIMING, gra.GRANT_MD, gra.GRANTED_DAYS,"
-			+ " sphd.CONTINUOUS_ACQUISITION, sphd.GRANT_TIMING, sphd.GRANT_DATE, gra.GRANTED_DAYS,"
+	private final static String SELECT_SPHD_BY_CODE_QUERY
+			= "SELECT sphd.CID, sphd.SPHD_CD, sphd.SPHD_NAME, sphd.SPHD_AUTO_GRANT, sphd.MEMO,"
+			+ " sphd.CONTINUOUS_ACQUISITION, sphd.GRANT_TIMING, sphd.GRANT_DATE, "
 			+ " pe.TIME_CSL_METHOD, gpe.PERIOD_START, gpe.PERIOD_END, pe.DEADLINE_MONTHS, pe.DEADLINE_YEARS, pe.LIMIT_CARRYOVER_DAYS,"
-			+ " re.RESTRICTION_CLS, re.AGE_LIMIT, re.GENDER_REST, re.REST_EMP, re.AGE_CRITERIA_CLS, re.AGE_BASE_DATE, re.AGE_LOWER_LIMIT, re.AGE_HIGHER_LIMIT, re.GENDER"
+			+ " re.RESTRICTION_CLS, re.AGE_LIMIT, re.GENDER_REST, re.REST_EMP, re.AGE_CRITERIA_CLS, re.AGE_BASE_DATE, re.AGE_LOWER_LIMIT, re.AGE_HIGHER_LIMIT, re.GENDER,"
+			+ " grantInfo.GRANT_MD, grantInfo.GRANTED_DAYS"
 			+ " FROM KSHMT_HDSP sphd"
-			+ " LEFT JOIN KSHMT_HDSP_GRANT gra"
-			+ " ON sphd.CID = gra.CID AND sphd.SPHD_CD = gra.SPHD_CD"
 			+ " LEFT JOIN KSHMT_HDSP_GRANT_DEADLINE pe"
 			+ " ON sphd.CID = pe.CID AND sphd.SPHD_CD = pe.SPHD_CD"
 			+ " LEFT JOIN KSHMT_HDSP_CONDITION re"
 			+ " ON sphd.CID = re.CID AND sphd.SPHD_CD = re.SPHD_CD"
 			+ " LEFT JOIN KSHMT_HDSP_GRANT_PERIOD gpe"
 			+ " ON sphd.CID = gpe.CID AND sphd.SPHD_CD = gpe.SPHD_CD "
+			+ " LEFT JOIN KSHMT_HDSP_GRANT grantInfo"
+			+ " ON sphd.CID = grantInfo.CID AND sphd.SPHD_CD = grantInfo.SPHD_CD "
 			+ " WHERE sphd.CID = ? AND sphd.SPHD_CD = ?"
 			+ " ORDER BY sphd.SPHD_CD";
 
@@ -193,19 +196,25 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		String companyId = c.getString("CID");
 		int specialHolidayCode = c.getInt("SPHD_CD");
 		String specialHolidayName = c.getString("SPHD_NAME");
-		int autoGrant = c.getInt("SPHD_AUTO_GRANT") != null ? c.getInt("SPHD_AUTO_GRANT") : 0;
+		int autoGrant = c.getInt("SPHD_AUTO_GRANT");
 		String memo = c.getString("MEMO");
-		int typeTime = c.getInt("GRANT_TIMING")!= null ? c.getInt("GRANT_TIMING") : 0;
-		int grantDate = c.getInt("GRANT_DATE") != null ? c.getInt("GRANT_DATE") : 0;
-//		boolean allowDisappear = c.getInt("ALLOW_DISAPPEAR") == 1 ? true : false;
-//		int interval = c.getInt("INTERVAL") != null ? c.getInt("INTERVAL") : 0;
-		int grantedDays = c.getInt("GRANTED_DAYS") != null ? c.getInt("GRANTED_DAYS") : 0;
-		int timeMethod = c.getInt("TIME_CSL_METHOD") != null ? c.getInt("TIME_CSL_METHOD") : 0;
+		int grantTiming = c.getInt("GRANT_TIMING");
+		Integer grantDate = c.getInt("GRANT_DATE");
+
+		//KSHMT_HDSP_GRANT
+		Integer grant_md = c.getInt("GRANT_MD");
+		Integer grantedDays = c.getInt("GRANTED_DAYS");
+
 		GeneralDate startDate = c.getGeneralDate("PERIOD_START");
 		GeneralDate endDate = c.getGeneralDate("PERIOD_END");
-		int deadlineMonths = c.getInt("DEADLINE_MONTHS") != null ? c.getInt("DEADLINE_MONTHS") : 0;
-		int deadlineYears = c.getInt("DEADLINE_YEARS") != null ? c.getInt("DEADLINE_YEARS") : 0;
-		int limitCarryoverDays = c.getInt("LIMIT_CARRYOVER_DAYS") != null ? c.getInt("LIMIT_CARRYOVER_DAYS") : 0;
+
+		Integer timeMethod = c.getInt("TIME_CSL_METHOD");
+		Integer deadlineMonths = c.getInt("DEADLINE_MONTHS");
+		Integer deadlineYears = c.getInt("DEADLINE_YEARS");
+		Integer limitCarryoverDays = c.getInt("LIMIT_CARRYOVER_DAYS") ;
+		Integer limit = 1;//DBに定義がない。蓄積上限日数.蓄積上限日数を制限する
+
+		//利用条件
 		int restrictionCls = c.getInt("RESTRICTION_CLS") != null ? c.getInt("RESTRICTION_CLS") : 0;
 		int ageLimit = c.getInt("AGE_LIMIT") != null ? c.getInt("AGE_LIMIT") : 0;
 		int genderRest = c.getInt("GENDER_REST") != null ? c.getInt("GENDER_REST") : 0;
@@ -221,44 +230,62 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		int gender = c.getInt("GENDER") != null ? c.getInt("GENDER") : 1;
 		int continuousAcquisition = c.getInt("CONTINUOUS_ACQUISITION");
 
-		FixGrantDate fixGrantDate = FixGrantDate.createFromJavaType(
-				companyId,
-				specialHolidayCode,
-				grantedDays,
-				timeMethod,
-				limitCarryoverDays,
-				GeneralDate.max(), // 要修正　expirationDate
-				1, // 要修正　grantMonth
-				1); // 要修正　grantDay
-//		GrantTime grantTime = GrantTime.createFromJavaType(fixGrantDate, null);
 
-		/** 期間 */
-		DatePeriod period = new DatePeriod(startDate, endDate); // 要確認 初期値
 
-		/** 期間付与 */
-		PeriodGrantDate periodGrantDate =
-			PeriodGrantDate.of(
+		Optional<GrantDeadline> grantPeriodic = Optional.empty();
+		Optional<FixGrantDate> fixGrantDate=Optional.empty();
+		Optional<PeriodGrantDate> periodGrantDate=Optional.empty();
+
+		switch(grantTiming) {
+			case 1://付与テーブルを参照して付与する
+				/*
+				 * 期限  = KSHMT_HDSP_GRANT_DEADLINE
+				 * */
+				grantPeriodic
+					= Optional.of(createGrantDeadline(timeMethod, deadlineMonths, deadlineYears, limit, limitCarryoverDays));
+				break;
+			case 2://指定日に付与する
+				/*
+				 * 付与日数 = KSHST_GRANT_REGULAR.GRANTED_DAYS(KSHMT_HDSP_GRANT)
+				 * 期限  = KSHMT_HDSP_GRANT_DEADLINE
+				 * 付与月日 = KSHST_GRANT_REGULAR.GRANTED_MD(KSHMT_HDSP_GRANT)
+				 * */
+				GrantDeadline deadline = createGrantDeadline(timeMethod, deadlineMonths, deadlineYears, limit, limitCarryoverDays);
+				fixGrantDate = Optional.of(FixGrantDate.createFromJavaType(
+						companyId,
+						specialHolidayCode,
+						grantedDays,
+						deadline,
+						grant_md));
+				break;
+			case 3://期間で付与する
+				/*
+				 * 期間=KSHMT_HDSP_GRANT_PERIOD
+				 * 付与日数=KSHMT_HDSP_GRANT_PERIOD
+				 * */
 				/** 期間 */
-				period
-				/** 付与日数 */
-				,RegularGrantDays.of(
-					/** 付与日数.付与日数 */
-					 new GrantedDays(grantedDays)
-				)
-			);
+				DatePeriod period = new DatePeriod(startDate, endDate); // 要確認 初期値
 
-		//AvailabilityPeriod availabilityPeriod = AvailabilityPeriod.createFromJavaType(startDate, endDate);
-		SpecialVacationDeadline expirationDate = SpecialVacationDeadline.createFromJavaType(deadlineMonths, deadlineYears);
-		GrantDeadline grantPeriodic = GrantDeadline.createFromJavaType(
-				timeMethod, limitCarryoverDays,
-				expirationDate.getMonths().v(), expirationDate.getYears().v());
+				/** 期間付与 */
+				periodGrantDate =Optional.of(
+					PeriodGrantDate.of(
+						/** 期間 */
+						period
+						/** 付与日数 */
+						,RegularGrantDays.of(
+							/** 付与日数.付与日数 */
+							 new GrantedDays(grantedDays)
+						)
+					));
+				break;
+		}
 
 		GrantRegular grantRegular = GrantRegular.of(
-				EnumAdaptor.valueOf(typeTime, TypeTime.class),
-				Optional.of(EnumAdaptor.valueOf(grantDate, GrantDate.class)),
-				Optional.of(fixGrantDate),
-				Optional.of(grantPeriodic),
-				Optional.of(periodGrantDate));
+				EnumAdaptor.valueOf(grantTiming, TypeTime.class),
+				grantDate != null ? Optional.of(EnumAdaptor.valueOf(grantDate, GrantDate.class)): Optional.empty(),
+				fixGrantDate,
+				grantPeriodic,
+				periodGrantDate);
 
 		AgeStandard ageStandard = AgeStandard.createFromJavaType(ageCriteriaCls, ageBaseDate);
 		AgeRange ageRange = AgeRange.createFromJavaType(ageLowerLimit, ageHigherLimit);
@@ -269,6 +296,24 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 				companyId, specialHolidayCode, specialHolidayName, grantRegular,
 				specialLeaveRestriction, new TargetItem(), autoGrant, memo,
 				continuousAcquisition == 0 ? NotUseAtr.NOT_USE : NotUseAtr.USE);
+	}
+
+	private GrantDeadline createGrantDeadline(
+			Integer timeMethod,
+			Integer deadlineMonths,
+			Integer deadlineYears,
+			Integer limit,
+			Integer limitCarryoverDays) {
+
+		Optional<SpecialVacationDeadline> expirationDate =Optional.empty();
+		if(timeMethod==1)
+			expirationDate = Optional.of(SpecialVacationDeadline.createFromJavaType(deadlineMonths, deadlineYears));
+
+		return GrantDeadline.createFromJavaType(
+				timeMethod,
+				expirationDate,
+				limit,
+				limitCarryoverDays);
 	}
 
 	private SpecialHoliday createSphdDomainFromEntity(Object[] c) {
