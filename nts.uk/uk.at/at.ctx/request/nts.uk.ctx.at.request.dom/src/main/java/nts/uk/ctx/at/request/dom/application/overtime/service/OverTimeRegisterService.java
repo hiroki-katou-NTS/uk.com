@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.request.dom.application.overtime.service;
 
 
+import java.util.List;
+
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
@@ -16,6 +18,22 @@ public interface OverTimeRegisterService {
 	 * @param mailServerSet
 	 */
 	public ProcessResult register(
+			String companyId,
+			AppOverTime appOverTime,
+			AppDispInfoStartupOutput appDispInfoStartupOutput,
+			Boolean mailServerSet,
+			AppTypeSetting appTypeSetting);
+	/**
+	 * Refactor5 残業申請の新規登録
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF005_残業申請.A：残業申請（新規登録）.アルゴリズム.残業申請の新規登録
+	 * @param companyId
+	 * @param appOverTime
+	 * @param appDispInfoStartupOutput
+	 * @param mailServerSet
+	 * @param appTypeSetting
+	 * @return
+	 */
+	public List<ProcessResult> registerMultiple(
 			String companyId,
 			AppOverTime appOverTime,
 			AppDispInfoStartupOutput appDispInfoStartupOutput,

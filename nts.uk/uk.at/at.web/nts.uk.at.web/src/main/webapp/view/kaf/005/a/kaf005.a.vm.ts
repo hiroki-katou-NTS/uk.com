@@ -305,6 +305,36 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 			}
 			return $.Deferred().resolve(true);
 		}
+		
+		handleConfirmMessageMap(mapMes: Map<string, Array<any>>, bussinessName: string): any {
+			const vm = this;
+			if (_.isEmpty(mapMes)) {
+				return $.Deferred().resolve(true);
+			}
+			let keys = Object.keys(mapMes);
+			let listMes = (mapMes as any)[keys[0]];
+			
+			
+			
+			if (_.isEmpty(listMes)) {
+				return $.Deferred().resolve(true);
+			}
+			let msg = listMes[0];
+			msg.paramLst.unshift(keys[0]); //add empName to top of array;
+			_.forEach(listMes, (item: any) => {
+				item.paramLst = [];
+				item.paramLst.push(bussinessName);
+			})
+			vm.handleConfirmMessage((listMes));
+			// return vm.$dialog.confirm({ messageId: msg.msgID, messageParams: msg.paramLst })
+			//	.then((value) => {
+			//		if (value === 'yes') {
+			//			return vm.handleConfirmMessage(_.drop(listMes));
+			//		} else {
+			//			return $.Deferred().resolve(false);
+			//		}
+			//	});
+		}
 
 		handleConfirmMessage(listMes: any): any {
 			const vm = this;
@@ -818,13 +848,18 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				.then((result) => {
 					// check trước khi đăng kí
 					if (result) {
-						return vm.$ajax('at', API.checkBefore, commandCheck);
+						return vm.$ajax('at', vm.mode() != MODE.MULTiPLE_AGENT ? API.checkBefore : API.checkBeforeMultiple, commandCheck);
 					}
-				}).then((result: CheckBeforeOutput) => {
+				}).then((result: any) => {
 					if (!_.isNil(result)) {
-						appOverTimeTemp = result.appOverTime;
-						// xử lý confirmMsg
-						return vm.handleConfirmMessage(result.confirmMsgOutputs);
+						if (vm.mode() != MODE.MULTiPLE_AGENT) {
+							appOverTimeTemp = result.appOverTime;
+							// xử lý confirmMsg
+							return vm.handleConfirmMessage(result.confirmMsgOutputs);
+						} else {
+							// xử lý confirmMsg
+							return vm.handleConfirmMessageMap(result.confirmMsgOutputMap, result.errorEmpBusinessName);
+						}
 					}
 				}).then((result) => {
 					if (result) {
@@ -842,7 +877,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						// 残業申請の表示情報．申請表示情報．申請設定（基準日関係なし）．申請設定．申請種類別設定
 						commandRegister.appTypeSetting = appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting[0];
 						// đăng kí 
-						return vm.$ajax('at', API.register, commandRegister).then(() => {
+						return vm.$ajax('at', vm.mode() != MODE.MULTiPLE_AGENT ? API.register : API.registerMultiple, commandRegister).then(() => {
 							return vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
 								window.location.reload();
 								return true;
@@ -2822,6 +2857,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		selectWorkInfo: 'at/request/application/overtime/selectWorkInfo',
 		checkBefore: 'at/request/application/overtime/checkBeforeRegister',
 		register: 'at/request/application/overtime/register',
+		checkBeforeMultiple: 'at/request/application/overtime/checkBeforeRegisterMultiple',
+		registerMultiple: 'at/request/application/overtime/registerMultiple',
 		calculate: 'at/request/application/overtime/calculate',
 		breakTimes: 'at/request/application/overtime/breakTimes'
 	}

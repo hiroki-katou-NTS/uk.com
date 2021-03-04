@@ -15,6 +15,7 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
+import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.CheckBeforeOutputMultiDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.CheckBeforeOutputDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.DetailOutputDto;
 import nts.uk.ctx.at.request.dom.application.AppReason;
@@ -238,6 +239,24 @@ public class AppOvertimeFinder {
 				displayInfoOverTime,
 				appOverTime);
 		return CheckBeforeOutputDto.fromDomain(output);
+	}
+	
+	public CheckBeforeOutputMultiDto checkErrorRegisterMultiple(ParamCheckBeforeRegister param) {
+		CheckBeforeOutputMultiDto output = null;
+		DisplayInfoOverTime displayInfoOverTime = param.displayInfoOverTime.toDomain();
+		Application application = param.appOverTime.application.toDomain();
+		AppOverTime appOverTime = param.appOverTime.toDomain();
+		if (appOverTime.getDetailOverTimeOp().isPresent()) {
+			appOverTime.getDetailOverTimeOp().get().setAppId(application.getAppID());
+		}
+		appOverTime.setApplication(application);
+		output = CheckBeforeOutputMultiDto.fromDomain(overtimeService.checkErrorRegisterMultiple(
+				param.require,
+				param.companyId,
+				displayInfoOverTime,
+				appOverTime));
+		return output;
+		
 	}
 	
 	public CheckBeforeOutputDto checkBeforeUpdate(ParamCheckBeforeUpdate param) {
