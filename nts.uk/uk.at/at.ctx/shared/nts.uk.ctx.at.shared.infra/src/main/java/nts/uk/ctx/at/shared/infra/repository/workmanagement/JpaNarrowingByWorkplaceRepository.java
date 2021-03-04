@@ -7,6 +7,7 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
+import nts.uk.ctx.at.shared.dom.workmanagement.aggregateroot.workmaster.Work;
 import nts.uk.ctx.at.shared.dom.workmanagement.aggregateroot.worknarrowingdown.NarrowingDownWorkByWorkplace;
 import nts.uk.ctx.at.shared.dom.workmanagement.repo.worknarrowingdown.NarrowingByWorkplaceRepository;
 import nts.uk.ctx.at.shared.infra.entity.workmanagement.worknarrowingdown.KsrmtTaskAssignWkp;
@@ -18,10 +19,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -120,6 +118,7 @@ public class JpaNarrowingByWorkplaceRepository extends JpaRepository implements 
         criteriaQuery.where(conditions.toArray(new Predicate[]{}));
         TypedQuery<KsrmtTaskAssignWkp> query = entityManager.createQuery(criteriaQuery);
         return this.toDomains(query.getResultList());
+
     }
 
     private List<NarrowingDownWorkByWorkplace> toDomains(List<KsrmtTaskAssignWkp> entitys) {
@@ -137,6 +136,7 @@ public class JpaNarrowingByWorkplaceRepository extends JpaRepository implements 
                 ));
             }
         });
+        rs.sort(Comparator.comparing(NarrowingDownWorkByWorkplace::getTaskFrameNo));
         return rs;
     }
 }

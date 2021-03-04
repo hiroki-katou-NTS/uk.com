@@ -72,12 +72,12 @@ public class Work extends AggregateRoot {
     }
 
     // 	[1] 有効期限内か
-    boolean checkExpirationDate(GeneralDate targetDate) {
+    public boolean  checkExpirationDate(GeneralDate targetDate) {
         return this.expirationDate.contains(targetDate);
     }
 
     // 	[2] 子作業設定を変更する
-    void changeChildWorkList(Require require, List<TaskCode> childWorkList) {
+    public void  changeChildWorkList(Require require, List<TaskCode> childWorkList) {
         if (this.taskFrameNo.v() == 5) {
             throw new BusinessException("Msg_2066");
         }

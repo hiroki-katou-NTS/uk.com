@@ -166,9 +166,7 @@ public class JpaWorkingRepository extends JpaRepository implements WorkingReposi
             result.addAll(query.getResultList());
 
         });
-        List<Work> works = getListWork(result);
-        works.sort(Comparator.comparing(Work::getCode));
-        return works;
+        return getListWork(result);
     }
 
     @Override
@@ -194,9 +192,7 @@ public class JpaWorkingRepository extends JpaRepository implements WorkingReposi
             result.addAll(query.getResultList());
 
         });
-        List<Work> works = getListWork(result);
-        works.sort(Comparator.comparing(Work::getCode));
-        return works;
+        return getListWork(result);
     }
 
     @Override
@@ -229,9 +225,7 @@ public class JpaWorkingRepository extends JpaRepository implements WorkingReposi
             result.addAll(query.getResultList());
 
         });
-        List<Work> works = getListWork(result);
-        works.sort(Comparator.comparing(Work::getCode));
-        return works;
+        return getListWork(result);
     }
 
     @Override
@@ -242,8 +236,7 @@ public class JpaWorkingRepository extends JpaRepository implements WorkingReposi
 
 
     private List<Work> getListWork(List<KsrmtTaskMaster> masterList) {
-
-        return masterList.stream().map(this::getListWork).collect(Collectors.toList());
+        return masterList.stream().map(this::getListWork).sorted(Comparator.comparing(Work::getCode)).collect(Collectors.toList());
     }
 
     private Work getListWork(KsrmtTaskMaster e) {
