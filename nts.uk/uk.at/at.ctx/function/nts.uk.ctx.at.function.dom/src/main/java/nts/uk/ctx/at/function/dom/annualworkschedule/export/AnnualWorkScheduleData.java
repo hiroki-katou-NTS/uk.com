@@ -18,7 +18,7 @@ import nts.uk.ctx.at.function.dom.annualworkschedule.CalculationFormulaOfItem;
 import nts.uk.ctx.at.function.dom.annualworkschedule.ItemsOutputToBookTable;
 import nts.uk.ctx.at.function.dom.annualworkschedule.enums.ValueOuputFormat;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeStatusOfMonthly;
 
 @Setter
@@ -446,7 +446,7 @@ public class AnnualWorkScheduleData {
 
 	public static AnnualWorkScheduleData fromAgreementTimeList(ItemsOutputToBookTable itemOut,
 			AgreTimeOfMonthlyImport agreTimeOfMonthlyImport,
-			List<AgreementTimeOfMonthly> agreementTimeResults,
+			List<AgreementTimeOfManagePeriod> agreementTimeResults,
 			List<AgreementTimeByPeriodImport> listExcesMonths,
 			YearMonth startYm,
 			Integer monthsExceeded,
@@ -466,13 +466,12 @@ public class AnnualWorkScheduleData {
 		}
 		annualWorkScheduleData.setCheck36MaximumAgreement(check36MaximumAgreement);
 		annualWorkScheduleData.setAgreementTime(true);
-//		listAgreementTimeBymonth.forEach(m -> {
-//			BigDecimal value = new BigDecimal(m.getAgreementTime().v());
-//			AgreementTimeStatusOfMonthly status = m.getStatus();
-//			ItemData item = new ItemData(value, status);
-//			annualWorkScheduleData.setMonthlyData(item,
-//					YearMonth.of(m.getStartMonth().year(), m.getStartMonth().month()));
-//		});
+		agreementTimeResults.forEach(m -> {
+			BigDecimal value = new BigDecimal(!check36MaximumAgreement ? m.getAgreementTime().getAgreementTime().v() : m.getLegalMaxTime().getAgreementTime().v());
+			AgreementTimeStatusOfMonthly statusEnum = m.getStatus();
+			ItemData item = new ItemData(value, statusEnum);
+			annualWorkScheduleData.setMonthlyData(item, YearMonth.of(m.getYm().year(), m.getYm().month()));
+		});
 		
 		if (agreTimeOfMonthlyImport != null) {
 			BigDecimal value = new BigDecimal(agreTimeOfMonthlyImport.getAgreementTime());

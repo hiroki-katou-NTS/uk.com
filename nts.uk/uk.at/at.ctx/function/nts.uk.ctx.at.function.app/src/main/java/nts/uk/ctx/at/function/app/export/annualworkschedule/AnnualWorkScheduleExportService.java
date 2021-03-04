@@ -70,16 +70,13 @@ import nts.uk.ctx.at.record.dom.monthly.agreement.export.AgreementExcessInfo;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetAgreementTimeOfMngPeriod;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetExcessTimesYear;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
-import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
 import nts.uk.ctx.at.record.dom.workrecord.export.WorkRecordExport;
 import nts.uk.ctx.at.record.dom.workrecord.export.dto.EmpAffInfoExport;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeYear;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.aggregate.MonthlyAttItemCanAggregateRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreMaxTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeStatusOfMonthly;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementOperationSetting;
 import nts.uk.shr.com.company.CompanyAdapter;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
@@ -100,8 +97,6 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 	private AgreementTimeByPeriodAdapter agreementTimeByPeriodAdapter;
 	@Inject
 	private JobTitleAdapter jobTitleAdapter;
-	@Inject
-	private AgreementOperationSettingRepository agreementOperationSettingRepository;
 	@Inject
 	private WorkRecordExport workRecordExport;
 	@Inject
@@ -371,9 +366,6 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 												   , Integer baseMonth) {
 		List<ItemsOutputToBookTable> outputAgreementTime36 = listItemOut.stream().filter(m -> m.getSortBy() <= 2).collect(Collectors.toList());
 
-		//ドメインモデル「36協定運用設定」を取得する
-		Optional<AgreementOperationSetting> agreementOperationSetting = agreementOperationSettingRepository.find(cid);
-
 		// ドメインモデル「集計可能な月次の勤怠項目」を取得する
 		List<Integer> atdCanbeAggregate = this.monthlyAttItemCanAggregateRepo.getMonthlyAtdItemCanAggregate(cid)
 																			 .stream()
@@ -423,7 +415,6 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 					, yearMonthPeriodRQL554
 					, baseMonth
 					, yearMonthPeriodRQL554.end()
-					, agreementOperationSetting.get()
 				)
 			);
 			empData.setAnnualWorkSchedule(annualWorkScheduleData);
@@ -464,8 +455,7 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 														  		 	, SettingOutputItemOfAnnualWorkSchedule setting
 														  		 	, YearMonthPeriod yearMonthPeriodRQL554
 														  		 	, Integer baseMonth
-																    , nts.arc.time.YearMonth startYm
-																    , AgreementOperationSetting agreementOperationSetting) {
+																    , nts.arc.time.YearMonth startYm) {
 		Map<String, AnnualWorkScheduleData> data = new HashMap<>();
 
         val require = requireService.createRequire();
@@ -480,16 +470,7 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 					yearMonthPeriod
 			));
 		}
-		
-		// 36協定時間の実績
-		List<AgreementTimeOfMonthly> agreementTimeResults = agreementTimeOfManagePeriods.stream()
-																						.map(t -> t.getAgreementTime())
-																						.collect(Collectors.toList());
-		
-		// 36協定上限時間の実績
-		List<AgreementTimeOfMonthly> maximumAgreementTime = agreementTimeOfManagePeriods.stream()
-																						.map(t -> t.getAgreementTime())
-																						.collect(Collectors.toList());
+
 		// 36協定複数月項目の作成 start
 		// 複数月表示をチェック
 		AgreementExcessInfo agreementExcessInfo = new AgreementExcessInfo();
@@ -552,8 +533,8 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 							AnnualWorkScheduleData.fromAgreementTimeList(
 									itemOut
 									, agreementTimeYearImport.get().getLimitTime()
-									, agreementTimeResults
-									, listAgreMaxAverageTime
+									, agreementTimeOfManagePeriods
+									, new ArrayList<>()
 									, YearMonth.of(startYm.year(), startYm.month())
 									, agreementExcessInfo.getExcessTimes()
 									, agreementExcessInfo.getRemainTimes()
@@ -570,7 +551,7 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 							AnnualWorkScheduleData.fromAgreementTimeList(
 									itemOut
 									, agreementTimeYearImport.get().getRecordTime()
-									, maximumAgreementTime
+									, agreementTimeOfManagePeriods
 									, listAgreMaxAverageTime
 									, YearMonth.of(startYm.year(), startYm.month())
 									, 0
