@@ -16,6 +16,7 @@
 			<com:stylefile path="../../share/kdp.main.css" />
 			<com:scriptfile path="../../share/kdpclock.vm.js" />
 			<com:scriptfile path="../../share/kdp-tabbutton.js" />
+			<com:scriptfile path="../../share/kdp-message-error.js" />
 
 			<com:stylefile path="./kdp003.a.style.css" />
 			<com:stylefile path="./components/stamp-employee-selection.css" />
@@ -58,6 +59,11 @@
 										marginBottom: 0
 									}"></div>
 						</com:ko-if>
+						<div class= "kdp-message-error" data-bind="component: {
+							name: 'kdp-message-error',
+							params:{
+							}
+						}"></div>
 						<com:ko-if bind="!!ko.unwrap($vm.message)">
 							<div class="not_used_label" data-bind="kdp-error: $vm.message"></div>
 						</com:ko-if>
