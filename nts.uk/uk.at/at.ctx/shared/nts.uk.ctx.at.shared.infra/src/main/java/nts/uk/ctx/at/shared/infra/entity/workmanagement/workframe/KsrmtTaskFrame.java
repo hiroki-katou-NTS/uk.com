@@ -3,6 +3,10 @@ package nts.uk.ctx.at.shared.infra.entity.workmanagement.workframe;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.workmanagement.aggregateroot.workframe.WorkFrameUsageSetting;
+import nts.uk.ctx.at.shared.infra.entity.workmanagement.worknarrowingdown.KsrmtTaskAssignWkp;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 import javax.persistence.Column;
@@ -16,6 +20,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Getter
 @Entity
+@Setter
 @Table(name = "KSRMT_TASK_FRAME")
 public class KsrmtTaskFrame extends ContractUkJpaEntity implements Serializable {
 
@@ -88,5 +93,30 @@ public class KsrmtTaskFrame extends ContractUkJpaEntity implements Serializable 
     @Override
     protected Object getKey() {
         return CID;
+    }
+
+
+    public static KsrmtTaskFrame toEntity(WorkFrameUsageSetting domain){
+        KsrmtTaskFrame entity = new KsrmtTaskFrame();
+        entity.setCID(AppContexts.user().companyId());
+        domain.getFrameSettingList().forEach(e->{
+            if(e.getTaskFrameNo().v() ==1 ){
+                entity.setFRAME1NAME(e.getWorkFrameName().v());
+                entity.setFRAME1USEATR( e.getUseAtr().value);
+            }else if(e.getTaskFrameNo().v() ==2 ){
+                entity.setFRAME2NAME(e.getWorkFrameName().v());
+                entity.setFRAME2USEATR( e.getUseAtr().value);
+            }else if(e.getTaskFrameNo().v() ==3 ){
+                entity.setFRAME3NAME(e.getWorkFrameName().v());
+                entity.setFRAME3USEATR( e.getUseAtr().value);
+            }else if(e.getTaskFrameNo().v() ==4 ){
+                entity.setFRAME4NAME(e.getWorkFrameName().v());
+                entity.setFRAME4USEATR( e.getUseAtr().value);
+            }else if(e.getTaskFrameNo().v() ==5 ){
+                entity.setFRAME5NAME(e.getWorkFrameName().v());
+                entity.setFRAME5USEATR( e.getUseAtr().value);
+            }
+        });
+        return entity;
     }
 }

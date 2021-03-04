@@ -3,12 +3,15 @@ package nts.uk.ctx.at.shared.infra.entity.workmanagement.worknarrowingdown;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.workmanagement.aggregateroot.worknarrowingdown.NarrowingDownWorkByWorkplace;
 import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @AllArgsConstructor
@@ -25,5 +28,16 @@ public class KsrmtTaskAssignWkp extends ContractCompanyUkJpaEntity implements Se
     @Override
     protected Object getKey() {
         return pk;
+    }
+
+    public static List<KsrmtTaskAssignWkp> toEntitys(NarrowingDownWorkByWorkplace domain) {
+        return domain.getTaskCodeList().stream().map(e -> new KsrmtTaskAssignWkp(
+                new KsrmtTaskAssignWkpPk(
+                        domain.getWorkPlaceId(),
+                        domain.getTaskFrameNo().v(),
+                        e.v()
+                )
+        )).collect(Collectors.toList());
+
     }
 }

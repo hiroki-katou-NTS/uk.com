@@ -4,6 +4,7 @@ package nts.uk.ctx.at.shared.infra.entity.workmanagement.workmaster;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.workmanagement.aggregateroot.workmaster.Work;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Setter
 @Entity
 @Table(name = "KSRMT_TASK_CHILD")
 public class KsrmtTaskChild extends ContractUkJpaEntity implements Serializable {

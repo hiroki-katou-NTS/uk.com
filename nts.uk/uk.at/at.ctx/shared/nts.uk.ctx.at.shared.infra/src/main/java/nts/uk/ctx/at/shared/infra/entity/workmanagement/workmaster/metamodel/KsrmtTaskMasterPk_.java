@@ -1,7 +1,6 @@
-package nts.uk.ctx.at.shared.infra.entity.workmanagement.workmaster.metamode;
+package nts.uk.ctx.at.shared.infra.entity.workmanagement.workmaster.metamodel;
 
 
-import nts.uk.ctx.at.shared.infra.entity.workmanagement.workmaster.KsrmtTaskChildPk;
 import nts.uk.ctx.at.shared.infra.entity.workmanagement.workmaster.KsrmtTaskMasterPk;
 
 import javax.persistence.metamodel.SingularAttribute;

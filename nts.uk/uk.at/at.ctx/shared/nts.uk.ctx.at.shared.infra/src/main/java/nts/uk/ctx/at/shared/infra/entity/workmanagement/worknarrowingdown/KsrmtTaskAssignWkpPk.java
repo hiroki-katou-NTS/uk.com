@@ -30,6 +30,6 @@ public class KsrmtTaskAssignWkpPk implements Serializable {
     /**
      * 	作業コード :職場別作業の絞込->作業一覧
      */
-    @Column(name = "TASKCD")
+    @Column(name = "TASK_CD")
     public String TASKCD;
 }

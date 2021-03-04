@@ -40,7 +40,7 @@ public interface NarrowingByWorkplaceRepository {
      * @param cid
      * @return
      */
-    List<NarrowingDownWorkByWorkplace> getListWork(String cid);
+    List<NarrowingDownWorkByWorkplace> getListWorkByCid(String cid);
 
 
     /**
@@ -65,10 +65,9 @@ public interface NarrowingByWorkplaceRepository {
      * 職場IDを指定して職場別作業の絞込をすべて取得する
      *
      * @param workPlaceId
-     * @param referenceDate
      * @return
      */
-    List<NarrowingDownWorkByWorkplace> getListWork(String workPlaceId, GeneralDate referenceDate);
+    List<NarrowingDownWorkByWorkplace> getListWorkByWpl(String workPlaceId);
 
 
 }

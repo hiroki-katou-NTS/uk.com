@@ -14,19 +14,17 @@ import nts.uk.ctx.at.shared.dom.workmanagement.repo.workmaster.WorkingRepository
 import nts.uk.ctx.at.shared.infra.entity.workmanagement.workmaster.KsrmtTaskChild;
 import nts.uk.ctx.at.shared.infra.entity.workmanagement.workmaster.KsrmtTaskMaster;
 import nts.uk.ctx.at.shared.infra.entity.workmanagement.workmaster.KsrmtTaskMasterPk;
-import nts.uk.ctx.at.shared.infra.entity.workmanagement.workmaster.metamode.KsrmtTaskChildPk_;
-import nts.uk.ctx.at.shared.infra.entity.workmanagement.workmaster.metamode.KsrmtTaskChild_;
-import nts.uk.ctx.at.shared.infra.entity.workmanagement.workmaster.metamode.KsrmtTaskMasterPk_;
-import nts.uk.ctx.at.shared.infra.entity.workmanagement.workmaster.metamode.KsrmtTaskMaster_;
+import nts.uk.ctx.at.shared.infra.entity.workmanagement.workmaster.metamodel.KsrmtTaskChildPk_;
+import nts.uk.ctx.at.shared.infra.entity.workmanagement.workmaster.metamodel.KsrmtTaskChild_;
+import nts.uk.ctx.at.shared.infra.entity.workmanagement.workmaster.metamodel.KsrmtTaskMasterPk_;
+import nts.uk.ctx.at.shared.infra.entity.workmanagement.workmaster.metamodel.KsrmtTaskMaster_;
 import nts.uk.shr.com.color.ColorCode;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -130,32 +128,116 @@ public class JpaWorkingRepository extends JpaRepository implements WorkingReposi
 
     @Override
     public List<Work> getListWork(String cid, GeneralDate referenceDate) {
-        return null;
+        EntityManager em = this.getEntityManager();
+        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+        CriteriaQuery<KsrmtTaskMaster> criteriaQuery = criteriaBuilder.createQuery(KsrmtTaskMaster.class);
+        Root<KsrmtTaskMaster> root = criteriaQuery.from(KsrmtTaskMaster.class);
+        criteriaQuery.select(root);
+        List<Predicate> conditions = new ArrayList<>();
+        conditions.add(criteriaBuilder.equal(root.get(KsrmtTaskMaster_.pk).get(KsrmtTaskMasterPk_.CID), cid));
+        conditions.add(criteriaBuilder.lessThanOrEqualTo(root.get(KsrmtTaskMaster_.EXPSTARTDATE), referenceDate));
+        conditions.add(criteriaBuilder.greaterThanOrEqualTo(root.get(KsrmtTaskMaster_.EXPENDDATE), referenceDate));
+        criteriaQuery.where(conditions.toArray(new Predicate[]{}));
+        TypedQuery<KsrmtTaskMaster> query = em.createQuery(criteriaQuery);
+        List<KsrmtTaskMaster> rs = query.getResultList();
+        return getListWork(rs);
     }
 
     @Override
     public List<Work> getListWork(String cid, GeneralDate referenceDate, List<TaskFrameNo> taskFrameNos) {
-        return null;
+        EntityManager em = this.getEntityManager();
+        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+        CriteriaQuery<KsrmtTaskMaster> criteriaQuery = criteriaBuilder.createQuery(KsrmtTaskMaster.class);
+        Root<KsrmtTaskMaster> root = criteriaQuery.from(KsrmtTaskMaster.class);
+        criteriaQuery.select(root);
+
+        List<KsrmtTaskMaster> result = new ArrayList<>();
+        CollectionUtil.split(taskFrameNos, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, frameNos -> {
+            // Predicate where clause
+            List<Predicate> conditions = new ArrayList<>();
+            conditions.add(criteriaBuilder.equal(root.get(KsrmtTaskMaster_.pk).get(KsrmtTaskMasterPk_.CID), cid));
+            conditions.add(criteriaBuilder.lessThanOrEqualTo(root.get(KsrmtTaskMaster_.EXPSTARTDATE), referenceDate));
+            conditions.add(criteriaBuilder.greaterThanOrEqualTo(root.get(KsrmtTaskMaster_.EXPENDDATE), referenceDate));
+
+            List<Integer> integerList = frameNos.stream().map(PrimitiveValueBase::v).collect(Collectors.toList());
+            conditions.add(root.get(KsrmtTaskMaster_.pk).get(KsrmtTaskMasterPk_.FRAMENO).in(integerList));
+            criteriaQuery.where(conditions.toArray(new Predicate[]{}));
+            TypedQuery<KsrmtTaskMaster> query = em.createQuery(criteriaQuery);
+            result.addAll(query.getResultList());
+
+        });
+        List<Work> works = getListWork(result);
+        works.sort(Comparator.comparing(Work::getCode));
+        return works;
     }
 
     @Override
     public List<Work> getListWork(String cid, GeneralDate referenceDate, TaskFrameNo taskFrameNo, List<TaskCode> codes) {
-        return null;
+        EntityManager em = this.getEntityManager();
+        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+        CriteriaQuery<KsrmtTaskMaster> criteriaQuery = criteriaBuilder.createQuery(KsrmtTaskMaster.class);
+        Root<KsrmtTaskMaster> root = criteriaQuery.from(KsrmtTaskMaster.class);
+        criteriaQuery.select(root);
+        List<KsrmtTaskMaster> result = new ArrayList<>();
+        CollectionUtil.split(codes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, code -> {
+            // Predicate where clause
+            List<Predicate> conditions = new ArrayList<>();
+            conditions.add(criteriaBuilder.equal(root.get(KsrmtTaskMaster_.pk).get(KsrmtTaskMasterPk_.CID), cid));
+            conditions.add(criteriaBuilder.lessThanOrEqualTo(root.get(KsrmtTaskMaster_.EXPSTARTDATE), referenceDate));
+            conditions.add(criteriaBuilder.greaterThanOrEqualTo(root.get(KsrmtTaskMaster_.EXPENDDATE), referenceDate));
+
+            List<String> stringListCodes = code.stream().map(PrimitiveValueBase::v).collect(Collectors.toList());
+            conditions.add(criteriaBuilder.equal(root.get(KsrmtTaskMaster_.pk).get(KsrmtTaskMasterPk_.FRAMENO), taskFrameNo.v()));
+            conditions.add(root.get(KsrmtTaskMaster_.pk).get(KsrmtTaskMasterPk_.CD).in(stringListCodes));
+            criteriaQuery.where(conditions.toArray(new Predicate[]{}));
+            TypedQuery<KsrmtTaskMaster> query = em.createQuery(criteriaQuery);
+            result.addAll(query.getResultList());
+
+        });
+        List<Work> works = getListWork(result);
+        works.sort(Comparator.comparing(Work::getCode));
+        return works;
     }
 
     @Override
     public List<Work> getListWork(String cid, TaskFrameNo taskFrameNo, TaskCode code) {
-        return null;
+        Optional<Work> optionalWork = this.getOptionalWork(cid, taskFrameNo, code);
+        if (!optionalWork.isPresent() || optionalWork.get().getChildWorkList().isEmpty())
+            return Collections.emptyList();
+        val listCode = optionalWork.get().getChildWorkList();
+        return this.getListWork(cid, taskFrameNo, listCode);
+
     }
 
     @Override
     public List<Work> getListWork(String cid, TaskFrameNo taskFrameNo, List<TaskCode> codes) {
-        return null;
+        EntityManager em = this.getEntityManager();
+        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+        CriteriaQuery<KsrmtTaskMaster> criteriaQuery = criteriaBuilder.createQuery(KsrmtTaskMaster.class);
+        Root<KsrmtTaskMaster> root = criteriaQuery.from(KsrmtTaskMaster.class);
+        criteriaQuery.select(root);
+        List<KsrmtTaskMaster> result = new ArrayList<>();
+        CollectionUtil.split(codes, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, code -> {
+            // Predicate where clause
+            List<Predicate> conditions = new ArrayList<>();
+            conditions.add(criteriaBuilder.equal(root.get(KsrmtTaskMaster_.pk).get(KsrmtTaskMasterPk_.CID), cid));
+            List<String> stringListCodes = code.stream().map(PrimitiveValueBase::v).collect(Collectors.toList());
+            conditions.add(criteriaBuilder.equal(root.get(KsrmtTaskMaster_.pk).get(KsrmtTaskMasterPk_.FRAMENO), taskFrameNo.v()));
+            conditions.add(root.get(KsrmtTaskMaster_.pk).get(KsrmtTaskMasterPk_.CD).in(stringListCodes));
+            criteriaQuery.where(conditions.toArray(new Predicate[]{}));
+            TypedQuery<KsrmtTaskMaster> query = em.createQuery(criteriaQuery);
+            result.addAll(query.getResultList());
+
+        });
+        List<Work> works = getListWork(result);
+        works.sort(Comparator.comparing(Work::getCode));
+        return works;
     }
 
     @Override
     public boolean checkExit(String cid, TaskFrameNo taskFrameNo, TaskCode code) {
-        return false;
+        val rs = this.getOptionalWork(cid, taskFrameNo, code);
+        return rs.isPresent();
     }
 
 
