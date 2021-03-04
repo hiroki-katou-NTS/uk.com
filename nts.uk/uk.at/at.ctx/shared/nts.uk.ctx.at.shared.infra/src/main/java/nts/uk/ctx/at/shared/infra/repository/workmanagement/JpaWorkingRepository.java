@@ -34,7 +34,7 @@ public class JpaWorkingRepository extends JpaRepository implements WorkingReposi
     @Override
     public void insert(Work work) {
         val entityMaster = KsrmtTaskMaster.toEntity(work);
-        val entityChilds = KsrmtTaskChild.toEntitys(work);
+        val entityChilds = KsrmtTaskChild.toEntittys(work);
         this.commandProxy().insert(entityMaster);
         this.commandProxy().insertAll(entityChilds);
     }
@@ -42,7 +42,7 @@ public class JpaWorkingRepository extends JpaRepository implements WorkingReposi
     @Override
     public void update(Work work) {
         val entityMaster = KsrmtTaskMaster.toEntity(work);
-        val entityChilds = KsrmtTaskChild.toEntitys(work);
+        val entityChilds = KsrmtTaskChild.toEntittys(work);
         this.commandProxy().update(entityMaster);
         this.commandProxy().updateAll(entityChilds);
     }

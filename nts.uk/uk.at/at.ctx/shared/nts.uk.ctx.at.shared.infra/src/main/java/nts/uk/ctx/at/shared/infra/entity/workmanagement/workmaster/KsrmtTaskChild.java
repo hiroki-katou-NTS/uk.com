@@ -41,7 +41,7 @@ public class KsrmtTaskChild extends ContractUkJpaEntity implements Serializable 
         super();
         this.pk = pk;
     }
-    public static List<KsrmtTaskChild> toEntitys(Work domain) {
+    public static List<KsrmtTaskChild> toEntittys(Work domain) {
         String CID = AppContexts.user().companyId();
         int FRAMENO = domain.getTaskFrameNo().v();
         String CD = domain.getCode().v();
