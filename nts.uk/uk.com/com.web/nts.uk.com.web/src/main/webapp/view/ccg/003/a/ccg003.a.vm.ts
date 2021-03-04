@@ -423,11 +423,21 @@ module nts.uk.com.view.ccg003.a {
       const endDate = moment.utc(vm.dateValue().endDate, 'YYYY/MM/DD');
       const systemDate = moment.utc(vm.systemDate(), 'YYYY/MM/DD');
       let anniversaryDate = moment.utc(`${startDate.year()}-${param.displayDate}`, 'YYYY-MM-DD');
+      // 条件：期間が「システム日～システム日」の場合
       if (startDate.isSame(systemDate) && endDate.isSame(systemDate)) {
+        // 1	システム日.月日　≦　個人の記念日.記念日(月日)
         if (startDate.isSameOrBefore(anniversaryDate)) {
           displayDate = anniversaryDate.locale('ja').format('M/D(dd)');
-        } else {
-          displayDate =  anniversaryDate.add(1, 'y') .locale('ja').format('M/D(dd)');
+        } else { // 2	システム日.月日　＞   個人の記念日.記念日(月日)
+          // システム日.年+「1年」＋個人の記念日.記念日(月日)
+          const anniversaryNextYear = moment.utc(`${systemDate.year() + 1}-${param.displayDate}`, 'YYYY-MM-DD');
+          if (systemDate.isSameOrBefore(anniversaryNextYear) && anniversaryNextYear.isSameOrBefore(systemDate.add(param.noticeDay, 'd'))) {
+            // システム日.年+「1年」＋個人の記念日.記念日(月日)
+            displayDate = anniversaryNextYear.locale('ja').format('M/D(dd)');
+          } else {
+            // システム日.年+個人の記念日.記念日(月日)
+            displayDate = anniversaryNextYear.subtract(1, 'y').locale('ja').format('M/D(dd)');
+          }
         }
       }
       // 条件：期間開始日、終了日がどちらかまたは共に「システム日」ではない場合

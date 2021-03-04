@@ -198,11 +198,21 @@ export class Ccgs03AComponent extends Vue {
     const endDate = moment.utc(moment.utc(vm.dateValue.end).format('YYYY/MM/DD'), 'YYYY/MM/DD');
     const systemDate = moment.utc(moment.utc(vm.systemDate, 'YYYY/M/D(dd)').format('YYYY/MM/DD'), 'YYYY/MM/DD');
     let anniversaryDate = moment.utc(moment.utc(`${startDate.year()}-${param.displayDate}`, 'YYYY-MM-DD').format('YYYY/MM/DD'), 'YYYY/MM/DD');
+    // 条件：期間が「システム日～システム日」の場合
     if (startDate.isSame(systemDate) && endDate.isSame(systemDate)) {
+      // 1	システム日.月日　≦　個人の記念日.記念日(月日)
       if (startDate.isSameOrBefore(anniversaryDate)) {
         displayDate = anniversaryDate.locale('ja').format('M/D(dd)');
-      } else {
-        displayDate =  anniversaryDate.add(1, 'y') .locale('ja').format('M/D(dd)');
+      } else { // 2	システム日.月日　＞   個人の記念日.記念日(月日)
+        // システム日.年+「1年」＋個人の記念日.記念日(月日)
+        const anniversaryNextYear = moment.utc(`${systemDate.year() + 1}-${param.displayDate}`, 'YYYY-MM-DD');
+        if (systemDate.isSameOrBefore(anniversaryNextYear) && anniversaryNextYear.isSameOrBefore(systemDate.add(param.noticeDay, 'd'))) {
+          // システム日.年+「1年」＋個人の記念日.記念日(月日)
+          displayDate = anniversaryNextYear.locale('ja').format('M/D(dd)');
+        } else {
+          // システム日.年+個人の記念日.記念日(月日)
+          displayDate = anniversaryNextYear.subtract(1, 'y').locale('ja').format('M/D(dd)');
+        }
       }
     }
     // 条件：期間開始日、終了日がどちらかまたは共に「システム日」ではない場合
