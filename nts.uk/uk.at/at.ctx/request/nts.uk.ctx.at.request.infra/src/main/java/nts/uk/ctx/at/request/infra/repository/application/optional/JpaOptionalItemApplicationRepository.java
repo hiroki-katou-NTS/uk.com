@@ -57,16 +57,16 @@ public class JpaOptionalItemApplicationRepository extends JpaRepository implemen
             krqdtApplication.setOpAppStandardReasonCD(application.getOpAppStandardReasonCD().isPresent() ? application.getOpAppStandardReasonCD().get().v() : null);
             this.commandProxy().update(applicationEntity.get());
         }
-        Map<Integer, KrqdtAppAnyv> entityMap = this.queryProxy().query(FIND_OPTIONAL_ITEM_ENTITY, KrqdtAppAnyv.class)
+        List<KrqdtAppAnyv> entityList = this.queryProxy().query(FIND_OPTIONAL_ITEM_ENTITY, KrqdtAppAnyv.class)
                 .setParameter("cId", cid)
                 .setParameter("appId", domain.getAppID())
-                .getList().stream().collect(Collectors.toMap(x -> x.getKrqdtAppAnyvPk().anyvNo, x -> x));
-        if (entityMap.size() > 0) {
-            this.remove(domain);
+                .getList();
+        if (entityList.size() > 0) {
+            this.commandProxy().removeAll(entityList);
             this.getEntityManager().flush();
-            this.save(domain);
         }
-
+        List<KrqdtAppAnyv> entities = toEntity(domain);
+        this.commandProxy().insertAll(entities);
     }
 
     @Override
