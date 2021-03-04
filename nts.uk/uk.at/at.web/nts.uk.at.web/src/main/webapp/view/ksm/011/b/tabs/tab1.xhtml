@@ -13,11 +13,11 @@
       ></a>
       <button
         class="proceed"
-        data-bind="text: $vm.$i18n('KSM011_18')"
+        data-bind="text: $vm.$i18n('KSM011_18'), click: registerRulesCompanyShiftTable"
       ></button>
     </div>
     <div class="contents-area">
-      <div class="table">
+      <div class="table mb-5">
         <div class="cell cell-left">
           <div
             data-bind="ntsFormLabel: { required: true}, text: $vm.$i18n('KSM011_19')"
@@ -31,19 +31,19 @@
             options: switchItems,
             optionsValue: 'code',
             optionsText: 'name',
-            value: publishing,
+            value: publicMethod,
             required: true,
             enable: true }"
           ></div>
         </div>
       </div>
-      <div class="table">
+      <div class="table mb-5">
         <div class="cell cell-left">
           <div
             data-bind="ntsFormLabel: { required: true}, text: $vm.$i18n('KSM011_23')"
           ></div>
         </div>
-        <div class="cell">
+        <div class="cell valign-center">
           <div
             class="cf"
             data-bind="ntsSwitchButton: {
@@ -61,37 +61,41 @@
           ></div>
           <hr />
           <div class="group">
-            <div class="table">
+            <div class="table mb-5">
               <div class="cell cell-left">
-                <div
-                  data-bind="ntsFormLabel: { required: false }, text: $vm.$i18n('KSM011_26')"
-                ></div>
+                <div class="normal"
+                  data-bind="ntsFormLabel: { required: false, constraint: 'HolidayAvailabilityMaxdays' }">
+                  <span data-bind="text: $vm.$i18n('KSM011_26')"></span>
+                </div>
               </div>
-              <div class="cell">
+              <div class="cell valign-center">
                 <input
-                  data-bind="ntsNumberEditor: { value: ko.observable(2),
-                  option: ko.mapping.fromJS(
-                    new nts.uk.ui.option.TextEditorOption({
-                      width: '30px',
-                      textalign: 'center'
-                    })
-                  )
-                }"
+                  data-bind="ntsNumberEditor: { 
+                    value: maxDesiredHolidays,
+                    enable: workRequest() === 1,
+                    constraint: 'HolidayAvailabilityMaxdays',
+                    option: ko.mapping.fromJS(
+                      new nts.uk.ui.option.TextEditorOption({
+                        width: '30px',
+                        textalign: 'center'
+                      })
+                    )
+                  }"
                 />
               </div>
             </div>
-            <div class="table">
+            <div class="table mb-5">
               <div class="cell cell-left">
                 <div
                   data-bind="ntsFormLabel: { required: false }, text: $vm.$i18n('KSM011_27')"
                 ></div>
                 <button
-                  data-bind="ntsHelpButton: {image: 'test-image.png', position: 'right top', enable: true }"
+                  data-bind="ntsHelpButton: {image: '/view/ksm/011/b/tabs/ba48.png', position: 'right top', enable: true }"
                 >
                   ?
                 </button>
               </div>
-              <div class="cell">
+              <div class="cell valign-center">
                 <div
                   id="combo-box"
                   data-bind="ntsComboBox: {
@@ -102,20 +106,20 @@
                   value: deadlineSelected,
                   optionsText: 'name',
                   editable: false,
-                  enable: true,
+                  enable: workRequest() === 1,
                   required: true,
                   selectFirstIfNull: true
                 }"
                 ></div>
               </div>
             </div>
-            <div class="table">
+            <div class="table mb-5">
               <div class="cell cell-left">
                 <div
                   data-bind="ntsFormLabel: { required: false }, text: $vm.$i18n('KSM011_28')"
                 ></div>
               </div>
-              <div class="cell">
+              <div class="cell valign-center">
                 <div
                   id="combo-box"
                   data-bind="ntsComboBox: {
@@ -126,7 +130,7 @@
                   value: deadlineWorkSelected,
                   optionsText: 'name',
                   editable: false,
-                  enable: true,
+                  enable: workRequest() === 1,
                   required: true,
                   selectFirstIfNull: true
                 }"
@@ -139,7 +143,7 @@
                   data-bind="ntsFormLabel: { required: false }, text: $vm.$i18n('KSM011_29')"
                 ></div>
               </div>
-              <div class="cell">
+              <div class="cell valign-center">
                 <div
                   class="cf"
                   data-bind="ntsSwitchButton: {
@@ -147,9 +151,9 @@
                   options: workRequestInput,
                   optionsValue: 'code',
                   optionsText: 'name',
-                  value: workRequestSelected,
+                  value: workRequestInputSelected,
                   required: true,
-                  enable: true }"
+                  enable: workRequest() === 1 }"
                 ></div>
               </div>
             </div>

@@ -5,6 +5,31 @@
 .cell-left {
   width: 100px;
 }
-.group .cell-left {
+.table .cell-left {
   width: 120px;
+}
+
+.table .group .cell-left {
+  width: 180px;
+} 
+.sidebar-content {
+  height: 100%;
+}
+
+.table .cell-left .form-label {
+  line-height: 37px;
+}
+.table.mb-5 {
+  margin-bottom: 10px;
+}
+.table .cell-left .form-label.normal {
+  line-height: normal;
+}
+
+.table .divi {
+  margin-top: 20px;
+}
+
+#kcp017 {
+  width: 400px;
 }

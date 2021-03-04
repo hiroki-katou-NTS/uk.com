@@ -7,10 +7,16 @@
   xmlns:h="http://xmlns.jcp.org/jsf/html"
 >
   <body>
-    <ui:composition template="../../../../master/dialogsidebar.xhtml">
+    <ui:composition template="../../../../master/sidebar.xhtml">
       <ui:define name="sidebar-head">
-        <com:scriptfile set="IGNITE" />
+				<com:ValidatorScript>
+					nts.uk.ctx.at.schedule.dom.shift.management.shifttable.HolidayAvailabilityMaxdays
+				</com:ValidatorScript>
+				<com:scriptfile set="IGNITE" />
         <com:stylefile path="ksm011.b.css" />
+
+				<com:scriptfile path="tabs/tab1.vm.js" />
+				<com:scriptfile path="tabs/tab2.vm.js" />
         <com:scriptfile path="ksm011.b.vm.js" />
       </ui:define>
 
@@ -22,7 +28,7 @@
               href="#tabpanel-1"
               role="tab-navigator"
               class="active"
-              data-bind="text: $vm.$i18n('Com_Company')"
+              data-bind="text: $vm.$i18n('Com_Company'), click: tabPanel1Click"
             ></a>
           </li>
           <li>
@@ -30,18 +36,18 @@
               data-id="1"
               href="#tabpanel-2"
               role="tab-navigator"
-              data-bind="text: $vm.$i18n('KSM011_18')"
+              data-bind="text: $vm.$i18n('KSM011_18'), click: tabPanel2Click"
             ></a>
           </li>
         </ul>
       </ui:define>
 
       <ui:define name="sidebar-content">
-        <div id="tabpanel-1" role="tabpanel" class="tabpanel">
+        <div id="tabpanel-1" role="tabpanel" class="tabpanel" data-bind="with: $vm.viewModelTab1">
 					<ui:include src="tabs/tab1.xhtml" />        
         </div>
-        <div id="tabpanel-2" role="tabpanel" class="tabpanel">
-         	<ui:include src="tabs/tab2.xhtml" /> 	          
+        <div id="tabpanel-2" role="tabpanel" class="tabpanel" data-bind="with: $vm.viewModelTab2">
+         	<ui:include src="tabs/tab2.xhtml" />
         </div>
       </ui:define>
     </ui:composition>
