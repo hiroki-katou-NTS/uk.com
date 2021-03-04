@@ -941,14 +941,36 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
         addCellRetaine(dataCellRetaine: any) {
             let self = this;
+            let startTime, endTime, workTypeCode, workTimeCode;
             let rowIndex = dataCellRetaine.originalEvent.detail.rowIndex;
             let columnKey = dataCellRetaine.originalEvent.detail.columnKey;
+            let innerIdx = dataCellRetaine.originalEvent.detail.innerIdx;
+            let dataSource = $("#extable").exTable('dataSource', 'detail').body;
+            let cellDataOnGrid = dataSource[rowIndex][columnKey];
+            workTypeCode = cellDataOnGrid.workTypeCode;
+            workTimeCode = cellDataOnGrid.workTimeCode;
+            console.log(cellDataOnGrid);
+            if (innerIdx == 3) {
+                endTime = dataCellRetaine.originalEvent.detail.value;
+                startTime = cellDataOnGrid.startTime;
+            } else if (innerIdx == 2) {
+                startTime = dataCellRetaine.originalEvent.detail.value;
+                endTime = cellDataOnGrid.endTime;
+            }
+            
+            let objRetaind = {rowIndex: rowIndex, columnKey: columnKey, startTime: startTime, endTime: endTime, workTypeCode: workTypeCode, workTimeCode: workTimeCode}
+            
             let exit = _.filter(self.listCellRetained, function(o) { return o.rowIndex == rowIndex && o.columnKey == columnKey; });
-            if (exit.length == 0) {
-                self.listCellRetained.push({ rowIndex: rowIndex, columnKey: columnKey });
+            if (exit.length > 0) {
+                _.remove(self.listCellRetained, function(e) {
+                    return e.rowIndex == rowIndex && e.columnKey == columnKey;
+                });
+                self.listCellRetained.push(objRetaind);
+            } else {
+                self.listCellRetained.push(objRetaind);
             }
         }
-
+        
         validTimeInEditMode(dataCellUpdated: any, userInfor: any, isRetaine: boolean) {
             let self = this;
             let strTime, endTime, workTypeCode, workTimeCode, rowIndex, columnKey;
@@ -972,8 +994,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     endTime = cellData.endTime;
                 }
             }
-
-
 
             let startTimeCal = nts.uk.time.minutesBased.duration.parseString(strTime).toValue();
             let endTimeCal = nts.uk.time.minutesBased.duration.parseString(endTime).toValue();
@@ -1964,7 +1984,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             });
             return dfd.promise();
         }
-        
+ 
         checkCellRetained(dataSave: any) {
             let self = this;
             if (self.listCellRetained.length == 0) {
@@ -1976,17 +1996,16 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let exit = _.filter(dataSave, function(o) { return o.rowIndex == cellRetaine.rowIndex && o.columnKey == cellRetaine.columnKey; });
                 if (exit.length == 0) {
                     let ymd = moment(cellRetaine.columnKey.slice(1)).format('YYYY/MM/DD');
-                    let cellDataOnGrid = dataSource[cellRetaine.rowIndex][cellRetaine.columnKey];
-                    
-                    let startTimeCal = cellDataOnGrid.startTime == '' ? '' : nts.uk.time.minutesBased.duration.parseString(cellDataOnGrid.startTime).toValue();
-                    let endTimeCal   = cellDataOnGrid.endTime   == '' ? '' : nts.uk.time.minutesBased.duration.parseString(cellDataOnGrid.endTime).toValue();
-                    
+ 
+                    let startTimeCal =  cellRetaine.startTime == '' ? '' : nts.uk.time.minutesBased.duration.parseString(cellRetaine.startTime).toValue();
+                    let endTimeCal   = cellRetaine.endTime  = '' ? '' : nts.uk.time.minutesBased.duration.parseString(cellRetaine.endTime).toValue();
+ 
                     dataSave.push({
                         sid: self.listSid()[cellRetaine.rowIndex],
                         ymd: ymd,
                         viewMode: 'time',
-                        workTypeCd: cellDataOnGrid.workTypeCode,
-                        workTimeCd: cellDataOnGrid.workTimeCode,
+                        workTypeCd:  cellRetaine.workTypeCode,
+                        workTimeCd:  cellRetaine.workTimeCode,
                         startTime: startTimeCal,
                         endTime: endTimeCal,
                         isChangeTime: true,
@@ -1996,7 +2015,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
             }
         }
-
+            
         // 6666 check truong hop mode time, worktype la required la khong co starttime or endtime
         validData(data: any, vMode : any) {
             let self = this;
