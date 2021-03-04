@@ -260,7 +260,7 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 		exportData.setEmployees(this.getEmployeeInfo(employees, employeeIds, endYmd));
 		HeaderData header = new HeaderData();
 		header.setPrintFormat(printFormat);
-		header.setMonthsInTotalDisplay(setOutItemsWoSc.getMonthsInTotalDisplay());
+		header.setMonthsInTotalDisplay(setOutItemsWoSc.isMultiMonthDisplay() ? setOutItemsWoSc.getMonthsInTotalDisplay() : Optional.empty());
 		header.setTitle(companyAdapter.getCurrentCompany().map(m -> m.getCompanyName()).orElse(""));
 
 		// B1_1 + B1_2
@@ -299,7 +299,7 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 		YearMonth startYmClone = YearMonth.of(startYm.getYear(), startYm.getMonthValue());
 		YearMonth endYmClone = YearMonth.of(endYm.getYear(), endYm.getMonthValue());
 		// 期間
-		if(setOutItemsWoSc.getMonthsInTotalDisplay().isPresent()) {
+		if (setOutItemsWoSc.isMultiMonthDisplay()) {
 			// set C2_3, C2_5
 			header.setMonthPeriodLabels(this.createMonthPeriodLabels(startYmClone, endYm, setOutItemsWoSc.getMonthsInTotalDisplay().get()));
 		}
@@ -323,6 +323,7 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 					, setOutItemsWoSc
 					, baseDate
 					, baseMonth
+					, startYm
 			);
 		} else {
 			// 年間勤務表(勤怠チェックリスト)を作成
@@ -363,7 +364,8 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 												   , Year fiscalYear
 												   , SettingOutputItemOfAnnualWorkSchedule setOutItemsWoSc
 												   , GeneralDate baseDate
-												   , Integer baseMonth) {
+												   , Integer baseMonth
+												   , YearMonth startYm) {
 		List<ItemsOutputToBookTable> outputAgreementTime36 = listItemOut.stream().filter(m -> m.getSortBy() <= 2).collect(Collectors.toList());
 
 		// ドメインモデル「集計可能な月次の勤怠項目」を取得する
@@ -414,7 +416,7 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 					, setOutItemsWoSc
 					, yearMonthPeriodRQL554
 					, baseMonth
-					, yearMonthPeriodRQL554.end()
+					, startYm
 				)
 			);
 			empData.setAnnualWorkSchedule(annualWorkScheduleData);
@@ -455,7 +457,7 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 														  		 	, SettingOutputItemOfAnnualWorkSchedule setting
 														  		 	, YearMonthPeriod yearMonthPeriodRQL554
 														  		 	, Integer baseMonth
-																    , nts.arc.time.YearMonth startYm) {
+																    , YearMonth startYm) {
 		Map<String, AnnualWorkScheduleData> data = new HashMap<>();
 
         val require = requireService.createRequire();
@@ -535,7 +537,7 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 									, agreementTimeYearImport.get().getLimitTime()
 									, agreementTimeOfManagePeriods
 									, new ArrayList<>()
-									, YearMonth.of(startYm.year(), startYm.month())
+									, startYm
 									, agreementExcessInfo.getExcessTimes()
 									, agreementExcessInfo.getRemainTimes()
 									, header
@@ -553,13 +555,13 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 									, agreementTimeYearImport.get().getRecordTime()
 									, agreementTimeOfManagePeriods
 									, listAgreMaxAverageTime
-									, YearMonth.of(startYm.year(), startYm.month())
+									, startYm
 									, 0
 									, 0
 									, header
 									, true
 									, agreementTimeYearImport.get().getStatus()
-							).calc(false)
+							).calc(true)
 					);
 				}
 			}
