@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.exio.dom.exi.execlog.ExacExeResultLog;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 外部受入実行結果ログ

@@ -1,11 +1,16 @@
+let moment: any = window['moment'];
+
 module nts.uk.com.view.cmf001.s.viewmodel {
     import close = nts.uk.ui.windows.close;
     import model = cmf001.share.model;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import alertError = nts.uk.ui.dialog.alertError;   
+    import block = nts.uk.ui.block; 
+    
     export class ScreenModel {
-        dateFrom: KnockoutObservable<string>;
-        dateTo: KnockoutObservable<string>;
+        dateFrom: KnockoutObservable<Date>;
+        dateTo: KnockoutObservable<Date>;
         conditionList: KnockoutObservableArray<model.ImExConditonSetting>;
         executeResultLogList: KnockoutObservableArray<model.ImExExecuteResultLog> = ko.observableArray([]);
         currentConditionCode: KnockoutObservable<string> = ko.observable('');
@@ -14,8 +19,8 @@ module nts.uk.com.view.cmf001.s.viewmodel {
         currentPage: KnockoutObservable<number> = ko.observable(1);
         constructor() {
             var self = this;
-            self.dateFrom = ko.observable('20000101');
-            self.dateTo = ko.observable('20000101');
+            self.dateFrom = ko.observable(moment().day(moment().day()-2).toDate());
+            self.dateTo = ko.observable(moment().day(moment().day()+1).toDate());
             self.conditionList = ko.observableArray([
                 new model.ImExConditonSetting('001', 'Import Setting 1'),
                 new model.ImExConditonSetting('002', 'Import Setting 2'),
@@ -46,8 +51,26 @@ module nts.uk.com.view.cmf001.s.viewmodel {
         start(): JQueryPromise<any> {
             let self = this;
             var dfd = $.Deferred();
-            dfd.resolve();
+
+            let time = {
+                start:  moment.utc(self.dateFrom()).format(),
+                end: moment.utc(self.dateTo()).format()
+            }
+            
+            service.getLogResultsList(time).done(function(data: Array<any>) {
+                if (data && data.length) {
+                    console.log(data);
+                } else {
+                }
+                dfd.resolve();
+            }).fail(function(error) {
+                alertError(error);
+                dfd.reject();
+            }).always(() => {
+                block.clear();
+            });
             return dfd.promise();
         }
+        
     }//end screenModel
 }//end module

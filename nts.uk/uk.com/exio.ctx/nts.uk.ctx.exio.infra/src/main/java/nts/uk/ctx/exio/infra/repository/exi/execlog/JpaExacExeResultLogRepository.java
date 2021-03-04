@@ -17,6 +17,8 @@ import nts.uk.ctx.exio.dom.exi.condset.SystemType;
 import nts.uk.ctx.exio.dom.exi.execlog.ExacExeResultLog;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 
 @Stateless
 public class JpaExacExeResultLogRepository extends JpaRepository implements ExacExeResultLogRepository
@@ -27,10 +29,19 @@ public class JpaExacExeResultLogRepository extends JpaRepository implements Exac
     		+ " AND  f.pk.conditionSetCd =:conditionSetCd"
     		+ " AND  f.pk.externalProcessId =:externalProcessId ";
     private static final String SELECT_BY_PROCESS_ID = SELECT_ALL_QUERY_STRING + " WHERE f.pk.externalProcessId =:externalProcessId";
+    
+    private static final String SELECT_BY_STAND_SYSTEM = SELECT_ALL_QUERY_STRING + " WHERE f.pk.cid =:cid AND f.standardAtr = 0 AND f.systemType in :listSystem "
+    		+ "AND f.processStartDatetime between :startDate and :endDate";
+    
+    
 
     @Override
-    public List<ExacExeResultLog> getAllExacExeResultLog(){
-        return this.queryProxy().query(SELECT_ALL_QUERY_STRING, OiodtExAcExecLog.class)
+    public List<ExacExeResultLog> getAllExacExeResultLog(String cid, List<Integer> listSystem, GeneralDateTime startDate, GeneralDateTime endDate){
+        return this.queryProxy().query(SELECT_BY_STAND_SYSTEM, OiodtExAcExecLog.class)
+        		.setParameter("cid", cid)
+                .setParameter("listSystem", listSystem)
+                .setParameter("startDate", startDate)
+                .setParameter("endDate", endDate)
                 .getList(item -> toDomain(item));
     }
 

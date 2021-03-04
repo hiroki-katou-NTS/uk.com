@@ -76,8 +76,8 @@ public class JpaAcceptCdConvertRepository extends JpaRepository implements Accep
 	private OiomtExAcCdConv toEntity(AcceptCdConvert domain) {
 		String contractCd = AppContexts.user().contractCode();
 		return new OiomtExAcCdConv(
-				new OiomtAcceptCdConvertPk(domain.getCid(), domain.getConvertCd().v()), domain.getConvertName().v(),
-				contractCd,
+				new OiomtAcceptCdConvertPk(domain.getCid(), domain.getConvertCd().v()), 
+				contractCd, domain.getConvertName().v(),
 				domain.getAcceptWithoutSetting().value, domain.getListConvertDetails().stream().map(itemDetail -> {
 					return new OiomtExAcCdConvDtl(
 							new OiomtCdConvertDetailsPk(itemDetail.getCid(), itemDetail.getConvertCd(),
