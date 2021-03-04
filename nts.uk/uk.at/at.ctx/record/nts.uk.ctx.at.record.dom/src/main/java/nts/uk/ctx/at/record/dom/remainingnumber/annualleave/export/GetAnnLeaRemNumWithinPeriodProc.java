@@ -613,8 +613,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 	//					期限日>=締め開始日
 	//					期限切れ状態=使用可能
 				grantRemainingDatas = require.annualLeaveGrantRemainingData(employeeId).stream()
-						.filter(c->c.getGrantDate().beforeOrEquals(closureStart)
-								&& c.getDeadline().afterOrEquals(closureStart)
+						.filter(c-> c.getDeadline().afterOrEquals(closureStart)
 								&& c.getExpirationStatus().IsAVAILABLE())
 						.map(c -> new AnnualLeaveGrantRemaining(c)).collect(Collectors.toList());
 

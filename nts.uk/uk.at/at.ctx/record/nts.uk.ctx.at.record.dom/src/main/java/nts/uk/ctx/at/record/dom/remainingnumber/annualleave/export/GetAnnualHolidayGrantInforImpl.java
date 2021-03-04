@@ -13,6 +13,7 @@ import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import lombok.val;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
@@ -62,9 +63,12 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 @Stateless
 public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfor{
-	
+	// 現在
+	private static final int NOW = 0;
 	// 1年経過時点
 	private static final int AFTER_1_YEAR = 1;
+	// １ 年以上前（過去）
+	private static final int PAST = 2;
 	// 以下
 	private static final int UNDER = 0;
 	// 以上
@@ -158,8 +162,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 		}
 
 		//過去月集計モードを判断する
-		boolean isPastMonth = ym.greaterThanOrEqualTo(closureOfEmp.getClosureMonth().getProcessingYm()) ? false : true;
-		YearMonth tempYm = periodOutput == AFTER_1_YEAR ? YearMonth.of(period.start().year(), period.start().month()) : ym;
+		boolean isPastMonth = this.determinePastMonth(periodOutput, ym, closureOfEmp);
 		
 		//期間中の年休残数を取得 - 5
 		// 年月←INPUT．指定年 ------対象期間区分が１年経過時点の場合、年月←取得した期間．開始日の年月部分 
@@ -174,10 +177,10 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 					Optional.of(true),//上書きフラグ
 					Optional.of(lstTmpAnnual), //上書き用の暫定年休管理データ
 					Optional.empty(),//前回の年休の集計結果
-					Optional.of(true),//集計開始日を締め開始日とする
+//					Optional.of(true),//集計開始日を締め開始日とする
 //					Optional.of(false), //不足分付与残数データ出力区分
-//					Optional.of(isPastMonth),//過去月集計モード
-					Optional.of(tempYm)); //年月
+					Optional.of(isPastMonth),//過去月集計モード
+					Optional.of(ymStartDateByClosure)); //年月
 		if(!optAnnualLeaveRemain.isPresent()) {
 			getAnnualHolidayGrantInforDto.setAnnualHolidayGrantInfor(Optional.ofNullable(output));
 			return getAnnualHolidayGrantInforDto;
@@ -189,7 +192,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 				.collect(Collectors.toList()));
 		//指定年月の締め日を取得
 		List<ClosureHistory> closureHistories = closureOfEmp.getClosureHistories().stream()
-				.filter(x -> x.getStartYearMonth().lessThanOrEqualTo(tempYm) && x.getEndYearMonth().greaterThanOrEqualTo(tempYm))
+				.filter(x -> x.getStartYearMonth().lessThanOrEqualTo(ymStartDateByClosure) && x.getEndYearMonth().greaterThanOrEqualTo(ymStartDateByClosure))
 				.collect(Collectors.toList());
 		
 		//ダブルトラック開始日を取得する
@@ -214,6 +217,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 				output.getLstGrantInfor().addAll(grantInforFormPeriod);
 			}
 		});
+		output.getLstGrantInfor().sort(Comparator.comparing(AnnualHolidayGrant::getYmd));
 
 		// 対象期間区分をチェックする
 		
@@ -394,22 +398,20 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 	@Override
 	public List<AnnualLeaveGrantRemainingData> lstRemainHistory(String sid,
 			List<AnnualLeaveGrantRemainingData> lstAnnRemainHis, GeneralDate ymd) {
-//		//付与時点の残数履歴データを取得
+		// 付与時点の残数履歴データを取得
 		List<AnnualLeaveTimeRemainingHistory> annTimeData = annTimeRemainHisRepo.findBySid(sid, ymd);
-		if(annTimeData.isEmpty()) {
+		if (annTimeData.isEmpty()) {
 			return lstAnnRemainHis;
 		}
-		
+
 		return annTimeData.stream()
-				.map(hist -> GetAnnualLeaveUsedNumberFromRemDataService
-				.getAnnualLeaveGrantRemainingData(
-						AppContexts.user().companyId(), sid, 
-						lstAnnRemainHis.stream().map(data -> (LeaveGrantRemainingData) data).collect(Collectors.toList()), 
-						hist.getDetails().getUsedNumber(), 
+				.map(hist -> GetAnnualLeaveUsedNumberFromRemDataService.getAnnualLeaveGrantRemainingData(
+						AppContexts.user().companyId(), sid,
+						lstAnnRemainHis.stream().map(data -> (LeaveGrantRemainingData) data)
+								.collect(Collectors.toList()),
+						hist.getDetails().getUsedNumber(),
 						new RequireImpl(workingConditionItemRepository, annualPaidLeaveSettingRepository)))
-				.flatMap(List::stream)
-				.map(data -> (AnnualLeaveGrantRemainingData) data)
-				.collect(Collectors.toList());
+				.flatMap(List::stream).map(data -> (AnnualLeaveGrantRemainingData) data).collect(Collectors.toList());
 	}
 
 	//前回付与日～INPUT．指定年月の間で期限が切れた付与情報を取得 - 7 
@@ -569,6 +571,24 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 			}
 		}
 		return false;
+	}
+	
+	/**
+	 * 過去月集計モードを判断する
+	 */
+	private boolean determinePastMonth(int periodOutput, YearMonth ym, Closure closure) {
+		switch (periodOutput) {
+		// 対象期間区分が現在の場合
+		case NOW:
+			return false;
+		// 対象期間区分が１年経過時点の場合
+		case AFTER_1_YEAR:
+			return true;
+		// 対象期間区分がnull or 過去の場合
+		case PAST:
+		default:
+			return ym.lessThan(closure.getClosureMonth().getProcessingYm());
+		}
 	}
 
 	@AllArgsConstructor
