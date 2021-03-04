@@ -35,7 +35,7 @@ public class GetLocationSetting {
 			return Collections.emptyList();
 		}
 		
-		return timeRecordSetFormatList.get().getLstTRSetFormat().stream().map(e -> new LocationSettingDto(e.getMajorNo().v(), e.getMajorClassification().v(), e.getSmallNo().v(), e.getSmallClassification().v(), e.getSettingValue().v(), e.getInputRange().v())).collect(Collectors.toList());
+		return timeRecordSetFormatList.get().getLstTRSetFormat().stream().map(e -> LocationSettingDto.toDto(e)).collect(Collectors.toList());
 	}
 
 }
