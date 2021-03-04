@@ -144,8 +144,9 @@ public class GetEmpWorkFixedWorkInfoSc {
 		// 6 .
 		workScheduleDto = new EmployeeWorkScheduleDto(startTime1, null, endTime1, 
 				null, startTime2, null, endTime2, null, 
-				listBreakTimeZoneDto, information.get(0).getWorkTypeCode().v(), null, 
-				null, information.get(0).getWorkTimeCode().v(), null);
+				listBreakTimeZoneDto, information.get(0).getWorkTypeCode().v(), null, null, 
+				information.get(0).getWorkTimeCodeNotNull().isPresent() ? information.get(0).getWorkTimeCode().v() : null, 
+				null);
 		infoDto = new EmpWorkFixedWorkInfoDto(null, workScheduleDto, fixedWorkInforDto);
 		return infoDto;
 	}

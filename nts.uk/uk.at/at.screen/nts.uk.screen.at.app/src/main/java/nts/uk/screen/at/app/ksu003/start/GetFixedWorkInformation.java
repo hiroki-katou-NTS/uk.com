@@ -128,7 +128,7 @@ public class GetFixedWorkInformation {
 			// 1.5 必須任意不要区分 == 任意	
 			 if(workTimeSetting == SetupType.OPTIONAL){
 				inforDto = new FixedWorkInforDto(
-						x.getWorkTimeCode()!= null ? timeSettings.get(0).getWorkTimeDisplayName().getWorkTimeAbName().v() : null, 
+						x.getWorkTimeCodeNotNull().isPresent() ? timeSettings.get(0).getWorkTimeDisplayName().getWorkTimeAbName().v() : null, 
 						null, null, new ArrayList<>(), null, null,
 						type.get().getAbbreviationName().v(), null, null, null, null, false, SetupType.OPTIONAL.name());
 				inforDtos.add(inforDto);
