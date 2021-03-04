@@ -39,7 +39,6 @@ public class RCReflectGroupApplyForLeaveApp {
 		boolean reflectWorkTime = false;
 		// [就業時間帯を反映する]をチェック
 		if (workAttendanceReflect.getReflectWorkHour() != ReflectWorkHourCondition.NOT_REFLECT) {
-			workChangeUse = NotUseAtr.NOT_USE;
 			// 変数[就業時間帯を反映する]に、[input. 就業時間帯を変更する]をセット
 			reflectWorkTime = workChangeUse == NotUseAtr.USE;
 		}

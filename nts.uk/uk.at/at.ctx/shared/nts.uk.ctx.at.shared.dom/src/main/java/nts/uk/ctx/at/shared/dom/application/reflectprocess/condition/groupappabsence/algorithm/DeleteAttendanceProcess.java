@@ -29,7 +29,7 @@ public class DeleteAttendanceProcess {
 
 		// 1日半日出勤・1日休日系の判定（休出判定あり）
 		Optional<WorkType> workType = require.getWorkType(workTypeCode.get().v());
-		if (workType.isPresent())
+		if (!workType.isPresent())
 			return new DailyAfterAppReflectResult(dailyApp, itemId);
 		AttendanceDayAttr dayAttr = workType.get().chechAttendanceDay();
 
