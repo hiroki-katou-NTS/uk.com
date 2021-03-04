@@ -6,7 +6,9 @@ import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
+ * @author hieunm
  * コアタイム内の外出計算
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared.就業規則.就業時間帯.フレックス勤務設定.コアタイム内の外出計算
  */
 @Getter
 @NoArgsConstructor
