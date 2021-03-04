@@ -16,7 +16,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  */
 @Entity
 @Table(name = "KSHDT_INTERIM_HDPAID")
-public class KrcdtInterimHdpaid extends ContractUkJpaEntity{
+public class KshdtInterimHdpaid extends ContractUkJpaEntity{
 	/**
 	 * 暫定年休管理データID
 	 */

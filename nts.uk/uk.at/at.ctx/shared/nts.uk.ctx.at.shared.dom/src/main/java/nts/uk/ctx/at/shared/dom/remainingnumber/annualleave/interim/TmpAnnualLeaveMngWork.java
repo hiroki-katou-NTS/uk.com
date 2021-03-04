@@ -5,7 +5,6 @@ import java.io.Serializable;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedNumber;
-import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
 
@@ -58,7 +57,12 @@ public class TmpAnnualLeaveMngWork implements Serializable {
 		domain.manageId = manageId;
 		domain.ymd = ymd;
 		domain.workTypeCode = workTypeCode;
-		domain.usedNumber.setDays(new LeaveUsedDayNumber(useDays.v()));
+//		domain.usedNumber=new AnnualLeaveUsedNumber();
+//		domain.usedNumber.setDays(new LeaveUsedDayNumber(useDays.v()));
+		domain.usedNumber=new AnnualLeaveUsedNumber(
+				useDays.v(),
+				0,
+				0.0);
 		domain.creatorAtr = creatorAtr;
 //		domain.remainAtr = remainAtr;
 		return domain;
@@ -78,7 +82,11 @@ public class TmpAnnualLeaveMngWork implements Serializable {
 		domain.ymd = tmpAnnLeaMng.getYmd();
 		domain.workTypeCode = tmpAnnLeaMng.getWorkTypeCode().v();
 		/** TODO: tmpAnnLeaMng.getUseNumber().getUsedDays > 1 -> error */
-		domain.usedNumber.setDays( new LeaveUsedDayNumber(tmpAnnLeaMng.getUseNumber().getUsedDays().map(c -> c.v()).orElse(0d) ));
+		domain.usedNumber=new AnnualLeaveUsedNumber(
+					tmpAnnLeaMng.getUseNumber().getUsedDays().map(c->c.v()).orElse(0.0),
+					tmpAnnLeaMng.getUseNumber().getUsedTime().map(c->c.v()).orElse(0),
+					0.0);
+//		domain.usedNumber.setDays( new LeaveUsedDayNumber(tmpAnnLeaMng.getUseNumber().getUsedDays().map(c -> c.v()).orElse(0d) ));
 		domain.creatorAtr = tmpAnnLeaMng.getCreatorAtr();
 //		domain.remainAtr = interimRemain.getRemainAtr();
 		return domain;

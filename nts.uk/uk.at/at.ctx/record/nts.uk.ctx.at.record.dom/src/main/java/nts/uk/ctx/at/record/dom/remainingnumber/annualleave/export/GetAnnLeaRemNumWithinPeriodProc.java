@@ -324,10 +324,6 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 				require, employeeId, aggrPeriod, mode,
 				isOverWriteOpt, forOverWriteListOpt);
 
-
-
-
-
 		for (val aggregatePeriodWork : aggregateWork){
 
 			// 年休の消滅・付与・消化
