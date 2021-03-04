@@ -1,6 +1,5 @@
 package nts.uk.screen.at.app.ksu003.start;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -43,7 +42,6 @@ import nts.uk.screen.at.app.ksu003.start.dto.FixedWorkInforDto;
 import nts.uk.screen.at.app.ksu003.start.dto.FixedWorkInformationDto;
 import nts.uk.screen.at.app.ksu003.start.dto.TimeOfDayDto;
 import nts.uk.screen.at.app.ksu003.start.dto.TimeZoneDto;
-import nts.uk.screen.at.app.ksu003.start.dto.WorkInforDto;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 
@@ -84,20 +82,20 @@ public class GetFixedWorkInformation {
 	@Inject
 	private GetWorkingHoursInformationQuery hoursInformationQuery;
 
-	public FixedWorkInformationDto getFixedWorkInfo(List<WorkInforDto> information) {
+	public FixedWorkInformationDto getFixedWorkInfo(List<WorkInformation> information) {
 		FixedWorkInformationDto fixedWorkInforDto = null;
 		List<FixedWorkInforDto> inforDtos = new ArrayList<>();
 		String cid = AppContexts.user().companyId();
 		BreakTimeKdl045Dto breakTime = null;
 		FixedWorkInforDto inforDto = null;
 		// 1 loop：勤務情報 in 勤務情報リスト
-		for (WorkInforDto x : information) {
+		for (WorkInformation x : information) {
 			// 1.1 get(ログイン会社ID、取得した勤務種類コード):勤務種類
-			Optional<WorkType> type = workTypeRepo.findByPK(cid, x.getWorkTypeCode());
+			Optional<WorkType> type = workTypeRepo.findByPK(cid, x.getWorkTypeCode().v());
 			
 			// 1.2 call 就業時間帯の必須チェック
 			SetupType workTimeSetting = basicScheduleService
-					.checkNeededOfWorkTimeSetting(x.getWorkTypeCode());
+					.checkNeededOfWorkTimeSetting(x.getWorkTypeCode().v());
 
 			List<ChangeableWorkingTimeZonePerNo> lstNo = new ArrayList<>();
 			WorkInformation workInformation = new WorkInformation(x.getWorkTypeCode(),
@@ -120,12 +118,12 @@ public class GetFixedWorkInformation {
 			
 			// 1.4 勤務情報.就業時間帯コード.isPresent : 就業時間帯情報リストを取得する(会社ID, List<就業時間帯コード>) (New) : List<就業時間帯の設定>
 			List<WorkTimeSetting> timeSettings = new ArrayList<>();
-			if((!x.getWorkTimeCode().isEmpty()) && (x.getWorkTimeCode() != null && x.getWorkTimeCode() != "")) {
-				timeSettings = hoursInformationQuery.getListWorkTimeSetting(cid, Arrays.asList(x.getWorkTimeCode()));
+			if(x.getWorkTimeCodeNotNull().isPresent()) {
+				timeSettings = hoursInformationQuery.getListWorkTimeSetting(cid, Arrays.asList(x.getWorkTimeCode().v()));
 			}
 			
 			if(timeSettings.isEmpty()) {
-				throw new RuntimeException("List<就業時間帯の設定> is empty");
+				throw new RuntimeException("SystemError : List<就業時間帯の設定> is empty");
 			}
 			// 1.5 必須任意不要区分 == 任意	
 			 if(workTimeSetting == SetupType.OPTIONAL){
@@ -158,7 +156,7 @@ public class GetFixedWorkInformation {
 
 					// List<勤務NOごとの変更可能な勤務時間帯>.isEmpty
 					if (lstNo.isEmpty()) {
-						throw new RuntimeException("List<勤務NOごとの変更可能な勤務時間帯> is empty");
+						throw new RuntimeException("SystemError : List<勤務NOごとの変更可能な勤務時間帯> is empty");
 					}
 
 					// 1.7.3 取得する(就業時間帯コード) : 就業時間帯の勤務形態 (勤務形態を取得する)
@@ -179,8 +177,7 @@ public class GetFixedWorkInformation {
 						// Optional<計算時間帯>
 						WorkSettingImpl settingImpl = new WorkSettingImpl(workTypeRepo, flexWorkSet, predetemineTimeSet);
 						Optional<TimeSpanForCalc> coreTime = GetTimezoneOfCoreTimeService.get(settingImpl,
-								new WorkTypeCode(information.get(0).getWorkTypeCode()),
-								new WorkTimeCode(information.get(0).getWorkTimeCode()));
+								x.getWorkTypeCode(), x.getWorkTimeCode());
 						if (coreTime.isPresent()) {
 							coreStartTime = coreTime.get().getStart().v();
 							coreEndTime = coreTime.get().getEnd().v();
@@ -192,7 +189,7 @@ public class GetFixedWorkInformation {
 					if (timeForm == WorkTimeForm.FIXED) {
 						// 1.7.5.1 就業時間帯の勤務形態 == 固定勤務 : get(会社ID, 就業時間帯コード):Optional<固定勤務設定>
 						Optional<FixedWorkSetting> fixedSet = fixedWorkSet.findByKey(cid,
-								information.get(0).getWorkTimeCode());
+								x.getWorkTimeCode().v());
 						// 1.7.5.2 固定勤務設定.isPresent : 指定した午前午後区分の残業時間帯を取得する(午前午後区分) : List<計算用時間帯>
 						if (fixedSet.isPresent()) {
 							List<TimeSpanForCalc> lstOver = fixedSet.get()

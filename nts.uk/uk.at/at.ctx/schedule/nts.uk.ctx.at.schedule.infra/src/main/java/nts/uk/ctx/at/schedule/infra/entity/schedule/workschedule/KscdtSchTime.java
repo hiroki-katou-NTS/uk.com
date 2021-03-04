@@ -501,20 +501,6 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 
 		TemporaryTimeOfDaily temporaryTime = new TemporaryTimeOfDaily(new ArrayList<>());
 		IntervalTimeOfDaily intervalTime = IntervalTimeOfDaily.of(new AttendanceClock(0), new AttendanceTime(0));
-		TotalWorkingTime totalWorkingTime = new TotalWorkingTime(new AttendanceTime(this.totalTime), new AttendanceTime(0),
-				new AttendanceTime(this.totalTimeAct), withinStatutoryTimeOfDaily, excessOfStatutoryTimeOfDaily,
-				new ArrayList<>(), new ArrayList<>(), breakTimeOfDaily, new ArrayList<>(), raiseSalaryTimeOfDailyPerfor,
-				new WorkTimes(this.count), temporaryTime, shotrTime, holidayOfDaily, new AttendanceTime(vacationAddTime), intervalTime);
-
-		// 乖離時間
-		DivergenceTimeOfDaily divTime = new DivergenceTimeOfDaily(new ArrayList<>());
-
-		// 割増時間
-		KscdtSchPremium kscdtSchPremium = new KscdtSchPremium();
-		PremiumTimeOfDailyPerformance premiumTime = new PremiumTimeOfDailyPerformance(kscdtSchPremium.toDomain(premiums));
-
-		ActualWorkingTimeOfDaily workingTimeOfDaily = new ActualWorkingTimeOfDaily(constraintDiffTime, constraintTime,
-				timeDiff, totalWorkingTime, divTime, premiumTime);
 		
 		//#114431
 		List<LateTimeOfDaily> lateTimeOfDaily = new ArrayList<>();
@@ -527,7 +513,6 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 					IntervalExemptionTime.defaultValue());// value default
 			lateTimeOfDaily.add(temp);
 		}
-		workingTimeOfDaily.getTotalWorkingTime().setLateTimeOfDaily(lateTimeOfDaily);
 		
 		List<OutingTimeOfDaily> lateOutingTimeOfDaily = new ArrayList<>();
 		for(KscdtSchGoingOut sgo : kscdtSchGoingOut) {
@@ -548,7 +533,6 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 					new ArrayList<>());// value default
 			lateOutingTimeOfDaily.add(temp);
 		}
-		workingTimeOfDaily.getTotalWorkingTime().setOutingTimeOfDailyPerformance(lateOutingTimeOfDaily);
 		
 		
 		List<LeaveEarlyTimeOfDaily> leaveEarlyTimeOfDaily = new ArrayList<>();
@@ -561,7 +545,21 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 					IntervalExemptionTime.defaultValue());// value default
 			leaveEarlyTimeOfDaily.add(temp);
 		}
-		workingTimeOfDaily.getTotalWorkingTime().setLeaveEarlyTimeOfDaily(leaveEarlyTimeOfDaily);
+		
+		TotalWorkingTime totalWorkingTime = new TotalWorkingTime(new AttendanceTime(this.totalTime), new AttendanceTime(0),
+				new AttendanceTime(this.totalTimeAct), withinStatutoryTimeOfDaily, excessOfStatutoryTimeOfDaily,
+				lateTimeOfDaily,leaveEarlyTimeOfDaily , breakTimeOfDaily, lateOutingTimeOfDaily, raiseSalaryTimeOfDailyPerfor,
+				new WorkTimes(this.count), temporaryTime, shotrTime, holidayOfDaily, new AttendanceTime(vacationAddTime), intervalTime);
+
+		// 乖離時間
+		DivergenceTimeOfDaily divTime = new DivergenceTimeOfDaily(new ArrayList<>());
+
+		// 割増時間
+		KscdtSchPremium kscdtSchPremium = new KscdtSchPremium();
+		PremiumTimeOfDailyPerformance premiumTime = new PremiumTimeOfDailyPerformance(kscdtSchPremium.toDomain(premiums));
+
+		ActualWorkingTimeOfDaily workingTimeOfDaily = new ActualWorkingTimeOfDaily(constraintDiffTime, constraintTime,
+				timeDiff, totalWorkingTime, divTime, premiumTime);
 		
 		return workingTimeOfDaily;
 	}
