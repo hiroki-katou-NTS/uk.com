@@ -60,9 +60,6 @@ module nts.uk.at.view.ksu005.b {
         scheduleTableOutputSetting: KnockoutObservable<ScheduleTableOutputSetting> = ko.observable(new ScheduleTableOutputSetting());        
         isReload :KnockoutObservable<boolean> = ko.observable(false);
 
-        // temp: KnockoutObservable<string> = ko.observable(""); 
-
-
         constructor() {            
             super();
             const self = this;                    
@@ -123,13 +120,8 @@ module nts.uk.at.view.ksu005.b {
                     self.isReload(false);
                     return;
                 } else {
-                    if(value){
-                        // self.itemList.removeAll();
-                        if(self.selectedCode()== ""){
-                            self.initialData();
-                        } else {
-                            self.loadDetail(self.selectedCode(), self.scheduleTableOutputSetting().additionalColumn() == 1, true);
-                        }
+                    if (value) {
+                        self.loadDetail(self.selectedCode(), self.scheduleTableOutputSetting().additionalColumn() == 1, true);
                         self.isEnableDelBtn(false);
                         self.isEnableAttendanceItem(false);
                         self.isEnableAddBtn(false);
@@ -297,7 +289,6 @@ module nts.uk.at.view.ksu005.b {
                 self.isEnableAddBtn(false);
                 self.isEnableDelBtn(false);
             }
-
             checkAddInfo ? self.isEnableAdditionInfo(true) : self.isEnableAdditionInfo(false);
             
             datas.push(new ScreenItem(true, self.countNumberRow,
@@ -305,9 +296,7 @@ module nts.uk.at.view.ksu005.b {
                                 self.itemList()[0].additionInfo(),
                                 self.attendanceItems()[1].value));
 
-            self.itemList(datas);           
-            self.isEditing(true);
-            self.enableDelete(true);
+            self.itemList(datas);  
             $('#outputSettingName').focus();
         }
         // loadDetail(code?: string, checkAddInfo?: boolean , checkShiftBgColor?: boolean): void {
