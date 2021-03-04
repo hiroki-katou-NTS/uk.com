@@ -465,7 +465,7 @@ public class JpaRegulationInfoEmployeeRepository extends JpaRepository implement
 		if (sortWorkplace) {
 			joinBuilder.append(" LEFT JOIN BSYMT_AFF_WORKPLACE_HIST wplHis ON employee.SID = wplHis.SID AND employee.CID = wplHis.CID")
 				   .append(" LEFT JOIN BSYMT_AFF_WPL_HIST_ITEM wplHisItem ON wplHis.HIST_ID = wplHisItem.HIST_ID")
-				   .append(" LEFT JOIN BSYMT_WKP_INFO wkpInfo ON wplHisItem.WORKPLACE_ID = wkpInfo.WKPID")
+				   .append(" LEFT JOIN BSYMT_WKP_INFO wkpInfo ON wplHisItem.WORKPLACE_ID = wkpInfo.WKP_ID")
 				   .append(" LEFT JOIN BSYMT_WKP_CONFIG_2 wkpconf ON wkpconf.WKP_HIST_ID = wkpInfo.WKP_HIST_ID AND wkpconf.CID = wkpInfo.CID");
 			whereBuilder.append(" AND rfDate BETWEEN wplHis.START_DATE AND wplHis.END_DATE")
 						.append(" AND rfDate BETWEEN wkpconf.START_DATE AND wkpconf.END_DATE");

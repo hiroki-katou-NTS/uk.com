@@ -10,14 +10,16 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.function.dom.adapter.actualmultiplemonth.MonthlyRecordValueImport;
+import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.AgreTimeOfMonthlyImport;
 import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.AgreementTimeByPeriodImport;
 import nts.uk.ctx.at.function.dom.annualworkschedule.CalculationFormulaOfItem;
 import nts.uk.ctx.at.function.dom.annualworkschedule.ItemsOutputToBookTable;
 import nts.uk.ctx.at.function.dom.annualworkschedule.enums.ValueOuputFormat;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeStatusOfMonthly;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.PeriodAtrOfAgreement;
 
 @Setter
 @Getter
@@ -443,62 +445,67 @@ public class AnnualWorkScheduleData {
 	}
 
 	public static AnnualWorkScheduleData fromAgreementTimeList(ItemsOutputToBookTable itemOut,
-			List<AgreementTimeByPeriodImport> listAgreementTimeBymonth,
-			List<AgreementTimeByPeriodImport> listAgreementTimeByYear,
-			List<AgreementTimeByPeriodImport> listExcesMonths, YearMonth startYm, Integer monthsExceeded,
-			Integer monthLimit, PeriodAtrOfAgreement periodAtr, List<String> header, boolean check36MaximumAgreement) {
+			AgreTimeOfMonthlyImport agreTimeOfMonthlyImport,
+			List<AgreementTimeOfMonthly> agreementTimeResults,
+			List<AgreementTimeByPeriodImport> listExcesMonths,
+			YearMonth startYm,
+			Integer monthsExceeded,
+			Integer monthLimit,
+			List<String> header,
+			boolean check36MaximumAgreement,
+			Integer status) {
 		
 		AnnualWorkScheduleData annualWorkScheduleData = new AnnualWorkScheduleData();
 		annualWorkScheduleData.setHeadingName(itemOut.getHeadingName().v());
 		annualWorkScheduleData.setValOutFormat(itemOut.getValOutFormat());
 		annualWorkScheduleData.setStartYm(startYm);
-		annualWorkScheduleData.calcNumMonthFromAgreement(listAgreementTimeBymonth);
+//		annualWorkScheduleData.calcNumMonthFromAgreement(listAgreementTimeBymonth);
 		if (!check36MaximumAgreement) {
 			annualWorkScheduleData.setMonthsExceeded(monthsExceeded);
 			annualWorkScheduleData.setMonthsRemaining(monthLimit - monthsExceeded);
 		}
 		annualWorkScheduleData.setCheck36MaximumAgreement(check36MaximumAgreement);
 		annualWorkScheduleData.setAgreementTime(true);
-		listAgreementTimeBymonth.forEach(m -> {
-			BigDecimal value = new BigDecimal(m.getAgreementTime().v());
-			AgreementTimeStatusOfMonthly status = m.getStatus();
-			ItemData item = new ItemData(value, status);
-			annualWorkScheduleData.setMonthlyData(item,
-					YearMonth.of(m.getStartMonth().year(), m.getStartMonth().month()));
-		});
+//		listAgreementTimeBymonth.forEach(m -> {
+//			BigDecimal value = new BigDecimal(m.getAgreementTime().v());
+//			AgreementTimeStatusOfMonthly status = m.getStatus();
+//			ItemData item = new ItemData(value, status);
+//			annualWorkScheduleData.setMonthlyData(item,
+//					YearMonth.of(m.getStartMonth().year(), m.getStartMonth().month()));
+//		});
 		
-		if(!listAgreementTimeByYear.isEmpty()){
-			AgreementTimeByPeriodImport agreementYear = listAgreementTimeByYear.get(0);
-			BigDecimal value = new BigDecimal(agreementYear.getAgreementTime().v());
-			AgreementTimeStatusOfMonthly status = agreementYear.getStatus();
-			ItemData item = new ItemData(value, status);
+		if (agreTimeOfMonthlyImport != null) {
+			BigDecimal value = new BigDecimal(agreTimeOfMonthlyImport.getAgreementTime());
+			AgreementTimeStatusOfMonthly statusEnum = EnumAdaptor.valueOf(status, AgreementTimeStatusOfMonthly.class);
+			ItemData item = new ItemData(value, statusEnum);
 			annualWorkScheduleData.setSum(item);
 		}
 
 		listExcesMonths = listExcesMonths.stream().sorted((excesMonth1, excesMonth2) -> Integer
 				.compare(excesMonth1.getStartMonth().v(), excesMonth2.getStartMonth().v()))
 				.collect(Collectors.toList());
-			for(int i = 0; i < header.size(); i++){
-				int monthValue = Integer.valueOf(header.get(i).split("～")[0]).intValue();
-				@SuppressWarnings("unused")
-				boolean mark = false;
-				for (AgreementTimeByPeriodImport m : listExcesMonths) {
-					if(monthValue == m.getStartMonth().month()){
-						BigDecimal value = new BigDecimal(m.getAgreementTime().v());
-						AgreementTimeStatusOfMonthly status = m.getStatus();
-						ItemData item = new ItemData(value, status);
-						annualWorkScheduleData.setPeriodMonthData(item, i+1);
-						mark = true;
-						break;
-					}
-				}
-				if(mark = false) {
-					ItemData item = new ItemData(null, AgreementTimeStatusOfMonthly.NORMAL);
-					annualWorkScheduleData.setPeriodMonthData(item, i+1);
-				}else {
-					mark = false;
+
+		for (int i = 0; i < header.size(); i++) {
+			int monthValue = Integer.valueOf(header.get(i).split("～")[0]).intValue();
+			@SuppressWarnings("unused")
+			boolean mark = false;
+			for (AgreementTimeByPeriodImport m : listExcesMonths) {
+				if (monthValue == m.getStartMonth().month()) {
+					BigDecimal value = new BigDecimal(m.getAgreementTime().v());
+					AgreementTimeStatusOfMonthly statusEnum = m.getStatus();
+					ItemData item = new ItemData(value, statusEnum);
+					annualWorkScheduleData.setPeriodMonthData(item, i + 1);
+					mark = true;
+					break;
 				}
 			}
+			if (mark = false) {
+				ItemData item = new ItemData(null, AgreementTimeStatusOfMonthly.NORMAL);
+				annualWorkScheduleData.setPeriodMonthData(item, i + 1);
+			} else {
+				mark = false;
+			}
+		}
 		return annualWorkScheduleData;
 	}
 	
@@ -507,10 +514,10 @@ public class AnnualWorkScheduleData {
 				.collect(Collectors.toList()).size();
 	}
 
-	private void calcNumMonthFromAgreement(List<AgreementTimeByPeriodImport> listAgreementTime) {
-		this.numMonth = listAgreementTime.stream().map(x -> x.getStartMonth().v()).distinct()
-				.collect(Collectors.toList()).size();
-	}
+//	private void calcNumMonthFromAgreement(List<AgreementTimeByPeriodImport> listAgreementTime) {
+//		this.numMonth = listAgreementTime.stream().map(x -> x.getStartMonth().v()).distinct()
+//				.collect(Collectors.toList()).size();
+//	}
 
 	public boolean hasItemData() {
 		if (this.month1st != null || this.month2nd != null || this.month3rd != null || this.month4th != null

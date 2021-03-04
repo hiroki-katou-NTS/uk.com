@@ -39,8 +39,6 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 
 	private static final String TEMPLATE_FILE = "report/年間勤務表.xlsx";
 
-	private static final String REPORT_FILE_NAME = "年間勤務表.xlsx";
-
 	private static final int MAX_EXPORT_ITEM = 10;
 	private static final int ROW_PER_PAGE = 26;
 	private static final int MAX_PAGE_PER_SHEET = 1000;
@@ -112,9 +110,12 @@ public class AnnualWorkScheduleExportGenerator extends AsposeCellsReportGenerato
 
 			// focus first sheet
 			wsc.setActiveSheetIndex(0);
+			// Get current date and format it
+			DateTimeFormatter jpFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss", Locale.JAPAN);
+			String currentFormattedDate = LocalDateTime.now().format(jpFormatter);
 
 			reportContext.processDesigner();
-			reportContext.saveAsExcel(this.createNewFile(fileContext, this.getReportName(REPORT_FILE_NAME)));
+			reportContext.saveAsExcel(this.createNewFile(fileContext, dataSource.getReportName() + "_" + currentFormattedDate + ".xlsx"));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

@@ -46,6 +46,7 @@ import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.AgreMaxAverageTimeMu
 import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.AgreementTimeByPeriodAdapter;
 import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.AgreementTimeByPeriodImport;
 import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.AgreementTimeYearImport;
+import nts.uk.ctx.at.function.dom.adapter.monthly.agreement.GetAgreementPeriodAdapter;
 import nts.uk.ctx.at.function.dom.adapter.standardtime.AgreementOperationSettingAdapter;
 import nts.uk.ctx.at.function.dom.adapter.standardtime.AgreementOperationSettingImport;
 import nts.uk.ctx.at.function.dom.adapter.standardtime.TimeOverLimitTypeImport;
@@ -76,6 +77,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeYear;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.aggregate.MonthlyAttItemCanAggregateRepository;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreMaxTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.setting.AgreementOperationSetting;
 import nts.uk.shr.com.company.CompanyAdapter;
@@ -110,6 +112,8 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 	private MonthlyAttItemCanAggregateRepository monthlyAttItemCanAggregateRepo;
 	@Inject
 	private ActualMultipleMonthAdapter actualMultipleMonthAdapter;
+	@Inject
+	private GetAgreementPeriodAdapter getAgreementPeriodAdapter;
 
 	public static final String YM_FORMATER = "uuuu/MM";
 	
@@ -138,8 +142,8 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 			startYm = this.getStartYearMonth(agreementSetObj, fiscalYear);
 			endYm = startYm.plusMonths(11);
 		} else {
-			startYm = YearMonth.parse(query.getStartYearMonth(), DateTimeFormatter.ofPattern("uuuu/MM"));
-			endYm = YearMonth.parse(query.getEndYearMonth(), DateTimeFormatter.ofPattern("uuuu/MM"));
+			startYm = YearMonth.parse(query.getStartYearMonth(), DateTimeFormatter.ofPattern("yyyyMM"));
+			endYm = YearMonth.parse(query.getEndYearMonth(), DateTimeFormatter.ofPattern("yyyyMM"));
 		}
 		// get ３６協定超過上限回数
 		if (agreementSetObj.isPresent()) {
@@ -323,6 +327,7 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 					, fiscalYear
 					, setOutItemsWoSc
 					, baseDate
+					, baseMonth
 			);
 		} else {
 			// 年間勤務表(勤怠チェックリスト)を作成
@@ -334,6 +339,7 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 		if (!exportData.hasDataItemOutput()) {
 			throw new BusinessException("Msg_885");
 		}
+		exportData.setReportName(setOutItemsWoSc.getName().v());
 		return exportData;
 	}
 
@@ -361,7 +367,8 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 												   , List<ItemsOutputToBookTable> listItemOut
 												   , Year fiscalYear
 												   , SettingOutputItemOfAnnualWorkSchedule setOutItemsWoSc
-												   , GeneralDate baseDate) {
+												   , GeneralDate baseDate
+												   , Integer baseMonth) {
 		List<ItemsOutputToBookTable> outputAgreementTime36 = listItemOut.stream().filter(m -> m.getSortBy() <= 2).collect(Collectors.toList());
 
 		//ドメインモデル「36協定運用設定」を取得する
@@ -373,7 +380,10 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 																			 .map(t -> t.v().intValue())
 																			 .collect(Collectors.toList());
 		//年度を指定して36協定期間を取得 - get RequestList554
-		Optional<DatePeriod> period = Optional.empty();
+		Optional<DatePeriod> period = this.getAgreementPeriodAdapter.byYear(
+				cid,
+				fiscalYear
+		);
 
 		if (!period.isPresent()) {
 			throw new BusinessException("Msg_1513");
@@ -408,6 +418,12 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 					, empId
 					, baseDate
 					, fiscalYear
+					, yearMonthPeriodRQL554.end().lastGeneralDate()
+					, setOutItemsWoSc
+					, yearMonthPeriodRQL554
+					, baseMonth
+					, yearMonthPeriodRQL554.end()
+					, agreementOperationSetting.get()
 				)
 			);
 			empData.setAnnualWorkSchedule(annualWorkScheduleData);
@@ -421,8 +437,6 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 								   , lstYearMonthPeriods
 								   , atdCanbeAggregate);
 
-			// 36協定複数月項目の作成
-			// TODO
 			
 		}
 		// 対象の社員IDをエラーリストに格納する
@@ -445,7 +459,13 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 																	, List<YearMonthPeriod> yearMonthPeriodRQ589
 																	, String employeeId
 																	, GeneralDate baseDate
-																	, Year non36Agreement) {
+																	, Year non36Agreement
+														  		 	, GeneralDate endDate
+														  		 	, SettingOutputItemOfAnnualWorkSchedule setting
+														  		 	, YearMonthPeriod yearMonthPeriodRQL554
+														  		 	, Integer baseMonth
+																    , nts.arc.time.YearMonth startYm
+																    , AgreementOperationSetting agreementOperationSetting) {
 		Map<String, AnnualWorkScheduleData> data = new HashMap<>();
 
         val require = requireService.createRequire();
@@ -460,95 +480,34 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 					yearMonthPeriod
 			));
 		}
-
-		// 出力するデータがある(có data xuất ra)
-		if (!agreementTimeOfManagePeriods.isEmpty()) {
-			// RequestList549
-			// 【36協定時間】と【36協定上限時間】の年間合計を取得する
-			Optional<AgreementTimeYearImport> agreementTimeYearImport = this.agreementTimeByPeriodAdapter.timeYear(
-					employeeId,
-					baseDate,
-					non36Agreement
-			);
-
-			// 画面の出力項目一覧の並び順に従う(1～2)
-			for (ItemsOutputToBookTable itemOut : lstItemsOut) {
-				// 並び順をチェック
-				if (itemOut.getSortBy() == 1 && itemOut.isUseClass()) {
-					// アルゴリズム「月平均の算出」を実行する
-//					data.put(itemOut.getItemOutCd().v(),
-//							AnnualWorkScheduleData.fromAgreementTimeList(
-//									itemOut
-//									, listAgreementTimeByMonth
-//									, listAgreementTimeByYear
-//									, listExcesMonths
-//									, startYm
-//									, monthsExceeded
-//									, monthLimit
-//									, periodAtr
-//									, header
-//									, false
-//							).calc(false)
-//					);
-				}
-
-				if (itemOut.getSortBy() == 2 && itemOut.isUseClass()) {
-					// アルゴリズム「月平均の算出」を実行する
-//					data.put(itemOut.getItemOutCd().v(),
-//							AnnualWorkScheduleData.fromAgreementTimeList(
-//									itemOut
-//									, listAgreementTimeByMonth
-//									, listAgreementTimeByYear
-//									, listExcesMonths
-//									, startYm
-//									, monthsExceeded
-//									, monthLimit
-//									, periodAtr
-//									, header
-//									, false
-//							).calc(true)
-//					);
-				}
-			}
-		}
-
-		return data;
-	}
-	
-	/**
-	 * 36協定複数月項目の作成
-	 * @param yearMonthPeriod 対象期間
-	 * @param employeeId 社員ID
-	 * @param outNumExceedTime36Agr 超過月数出力するか
-	 *            
-	 */
-	private Map<String, AnnualWorkScheduleData> create36AgreementTimeMultipleMonth(String employeeId
-														  		 	, SettingOutputItemOfAnnualWorkSchedule setting
-														  		 	, ItemsOutputToBookTable outputAgreementTime36
-														  		 	, Year fiscalYear
-														  		 	, YearMonthPeriod yearMonthPeriodRQL554
-														  		 	, List<String> header
-														  		 	, GeneralDate baseDate
-														  		 	, GeneralDate endDate
-														  		 	, Integer baseMonth) {
+		
+		// 36協定時間の実績
+		List<AgreementTimeOfMonthly> agreementTimeResults = agreementTimeOfManagePeriods.stream()
+																						.map(t -> t.getAgreementTime())
+																						.collect(Collectors.toList());
+		
+		// 36協定上限時間の実績
+		List<AgreementTimeOfMonthly> maximumAgreementTime = agreementTimeOfManagePeriods.stream()
+																						.map(t -> t.getAgreementTime())
+																						.collect(Collectors.toList());
+		// 36協定複数月項目の作成 start
 		// 複数月表示をチェック
-		Integer monthsExceeded = 0;
-		val require = requireService.createRequire();
+		AgreementExcessInfo agreementExcessInfo = new AgreementExcessInfo();
 
 		// 超過月数を出力するか
 		if (setting.isOutNumExceedTime36Agr()) {
-			// 年間超過回数と残数の取得
-			AgreementExcessInfo agreementExcessInfo = GetExcessTimesYear.getWithRemainTimes(require, employeeId, fiscalYear, baseDate);
+			// [RQ.555] 年間超過回数と残数の取得
+			agreementExcessInfo = GetExcessTimesYear.getWithRemainTimes(require, employeeId, non36Agreement, baseDate);
 		}
 
 		List<AgreementTimeByPeriodImport> listAgreMaxAverageTime = new ArrayList<>();
 		
 		// 複数月表示をチェック
 		if (setting.isMultiMonthDisplay()) {
-			//暦上の年月変換処理
+			// 暦上の年月変換処理
 			nts.arc.time.YearMonth specifiedYearMonth = this.converYearMonth(yearMonthPeriodRQL554, baseMonth);
 
-			//36協定上限時間の複数月平均を取得する
+			// 36協定上限時間の複数月平均を取得する
 			List<AgreMaxAverageTimeImport> listAgreMaxAverageTimeImport = this.createMonthlyAverage(
 					AppContexts.user().companyId(),
 					employeeId,
@@ -571,25 +530,63 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 				listAgreMaxAverageTime.add(item);
 			}
 		}
+		// 36協定複数月項目の作成 end
 
-		Map<String, AnnualWorkScheduleData> data = new HashMap<>();
-		// アルゴリズム「月平均の算出」を実行する
-//		data.put(outputAgreementTime36.getItemOutCd().v(), 
-//				AnnualWorkScheduleData.fromAgreementTimeList(
-//						outputAgreementTime36
-//						, listAgreementTimeByMonth
-//						, listAgreementTimeByYear
-//						, listAgreMaxAverageTime
-//						, startYm
-//						, monthsExceeded
-//						, monthLimit
-//						, periodAtr
-//						, header
-//						, true
-//				).calc(false));
+
+		// 出力するデータがある(có data xuất ra)
+		if (!agreementTimeOfManagePeriods.isEmpty()) {
+			// RequestList549
+			// 【36協定時間】と【36協定上限時間】の年間合計を取得する
+			Optional<AgreementTimeYearImport> agreementTimeYearImport = this.agreementTimeByPeriodAdapter.timeYear(
+					employeeId,
+					baseDate,
+					non36Agreement
+			);
+
+			// 画面の出力項目一覧の並び順に従う(1～2)
+			for (ItemsOutputToBookTable itemOut : lstItemsOut) {
+				// 並び順をチェック
+				if (itemOut.getSortBy() == 1 && itemOut.isUseClass()) {
+					// アルゴリズム「月平均の算出」を実行する
+					data.put(itemOut.getItemOutCd().v(),
+							AnnualWorkScheduleData.fromAgreementTimeList(
+									itemOut
+									, agreementTimeYearImport.get().getLimitTime()
+									, agreementTimeResults
+									, listAgreMaxAverageTime
+									, YearMonth.of(startYm.year(), startYm.month())
+									, agreementExcessInfo.getExcessTimes()
+									, agreementExcessInfo.getRemainTimes()
+									, header
+									, false
+									, agreementTimeYearImport.get().getStatus()
+							).calc(true)
+					);
+				}
+
+				if (itemOut.getSortBy() == 2 && itemOut.isUseClass()) {
+					// アルゴリズム「月平均の算出」を実行する
+					data.put(itemOut.getItemOutCd().v(),
+							AnnualWorkScheduleData.fromAgreementTimeList(
+									itemOut
+									, agreementTimeYearImport.get().getRecordTime()
+									, maximumAgreementTime
+									, listAgreMaxAverageTime
+									, YearMonth.of(startYm.year(), startYm.month())
+									, 0
+									, 0
+									, header
+									, true
+									, agreementTimeYearImport.get().getStatus()
+							).calc(false)
+					);
+				}
+			}
+		}
+
 		return data;
 	}
-	
+
 	/**
 	 * 36協定上限時間の複数月平均を取得する
 	 */
@@ -788,13 +785,13 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 		);
 
 		// すべての勤怠項目の取得データをチェックする
-		if (monthlyValue.get(employeeId).size() > 0) {
+		if (monthlyValue.get(employeeId) != null && monthlyValue.get(employeeId).size() > 0) {
 
 			// アルゴリズム「月平均の算出」を実行する
 			return AnnualWorkScheduleData.fromMonthlyAttendanceList(
 				itemOut,
 				monthlyValue.get(employeeId),
-				YearMonth.of(period.end().year(), period.end().month()),
+				YearMonth.of(period.start().year(), period.start().month()),
 				lstAtdCanBeAggregate
 			).calc(true);
 		}
