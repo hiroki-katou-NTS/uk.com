@@ -11,6 +11,8 @@ import javax.inject.Inject;
 
 import com.aspose.cells.Cells;
 
+import nts.uk.ctx.at.shared.app.find.ot.frame.OvertimeWorkFrameFindDto;
+import nts.uk.ctx.at.shared.app.find.ot.frame.OvertimeWorkFrameFinder;
 import nts.uk.ctx.at.shared.app.find.workdayoff.frame.WorkdayoffFrameFindDto;
 import nts.uk.ctx.at.shared.app.find.workdayoff.frame.WorkdayoffFrameFinder;
 import nts.uk.ctx.at.shared.app.find.worktime.common.dto.DeductionTimeDto;
@@ -31,6 +33,7 @@ import nts.uk.ctx.at.shared.app.find.worktime.flexset.dto.FlexHalfDayWorkTimeDto
 import nts.uk.ctx.at.shared.app.find.worktime.flowset.dto.FlOTTimezoneDto;
 import nts.uk.ctx.at.shared.app.find.worktime.flowset.dto.FlWorkHdTimeZoneDto;
 import nts.uk.ctx.at.shared.app.find.worktime.predset.dto.TimezoneDto;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.common.usecls.ApplyAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.primitives.BonusPaySettingCode;
@@ -65,6 +68,9 @@ public class WorkTimeReportService_New {
     
     @Inject
     private BPSettingRepository bpSettingRepository;
+    
+    @Inject
+    private OvertimeWorkFrameFinder overTimeFinder;
     
     /**
      * 勤務形態 通常
@@ -131,6 +137,7 @@ public class WorkTimeReportService_New {
         // 3        タブグ:                残業時間帯
         
         List<WorkdayoffFrameFindDto> otFrameFind = this.finder.findAllUsed();
+        List<OvertimeWorkFrameFindDto> overTimeLst = this.overTimeFinder.findAllUsed();
         
         Boolean useHalfDayShiftOverTime = data.getFixedWorkSetting().getUseHalfDayShift().isOverTime();
         Integer legalOTSetting = data.getFixedWorkSetting().getLegalOTSetting();
@@ -185,13 +192,13 @@ public class WorkTimeReportService_New {
                     .setValue(getRoundingEnum(lstOTTimezone.get(i).getTimezone().getRounding().getRounding()));
                     
                     Integer otFrameNo = fixHalfDayWorkOneDayOpt.get().getWorkTimezone().getLstOTTimezone().get(i).getOtFrameNo();
-                    Optional<WorkdayoffFrameFindDto> otFrameOpt = otFrameFind.stream().filter(x -> x.getWorkdayoffFrNo() == otFrameNo).findFirst();
+                    Optional<OvertimeWorkFrameFindDto> otFrameOpt = overTimeLst.stream().filter(x -> x.getOvertimeWorkFrNo() == otFrameNo).findFirst();
                     
                     /*
                      * R4_103
                      * 1日勤務用.残業枠
                      */
-                    cells.get("AJ" + (startIndex + 1)).setValue(otFrameOpt.isPresent() ? otFrameOpt.get().getTransferFrName() : "");
+                    cells.get("AJ" + (startIndex + 1)).setValue(otFrameOpt.isPresent() ? otFrameOpt.get().getOvertimeWorkFrName() : "");
                     
                     /*
                      * R4_104
@@ -259,13 +266,13 @@ public class WorkTimeReportService_New {
                         .setValue(getRoundingEnum(lstOTTimezone.get(i).getTimezone().getRounding().getRounding()));
                         
                         Integer otFrameNo = fixHalfDayWorkMorningOpt.get().getWorkTimezone().getLstOTTimezone().get(i).getOtFrameNo();
-                        Optional<WorkdayoffFrameFindDto> otFrameOpt = otFrameFind.stream().filter(x -> x.getWorkdayoffFrNo() == otFrameNo).findFirst();
+                        Optional<OvertimeWorkFrameFindDto> otFrameOpt = overTimeLst.stream().filter(x -> x.getOvertimeWorkFrNo() == otFrameNo).findFirst();
                         
                         /*
                          * R4_111
                          * 午前勤務用.残業枠
                          */
-                        cells.get("AR" + ((startIndex + 1) + i)).setValue(otFrameOpt.isPresent() ? otFrameOpt.get().getTransferFrName() : "");
+                        cells.get("AR" + ((startIndex + 1) + i)).setValue(otFrameOpt.isPresent() ? otFrameOpt.get().getOvertimeWorkFrName() : "");
                         
                         /*
                          * R4_112
@@ -331,13 +338,13 @@ public class WorkTimeReportService_New {
                         .setValue(getRoundingEnum(lstOTTimezone.get(i).getTimezone().getRounding().getRounding()));
                         
                         Integer otFrameNo = fixHalfDayWorkAfternoonOpt.get().getWorkTimezone().getLstOTTimezone().get(i).getOtFrameNo();
-                        Optional<WorkdayoffFrameFindDto> otFrameOpt = otFrameFind.stream().filter(x -> x.getWorkdayoffFrNo() == otFrameNo).findFirst();
+                        Optional<OvertimeWorkFrameFindDto> otFrameOpt = overTimeLst.stream().filter(x -> x.getOvertimeWorkFrNo() == otFrameNo).findFirst();
                         
                         /*
                          * R4_119
                          * 午後勤務用.残業枠
                          */
-                        cells.get("AZ" + ((startIndex + 1) + i)).setValue(otFrameOpt.isPresent() ? otFrameOpt.get().getTransferFrName() : "");
+                        cells.get("AZ" + ((startIndex + 1) + i)).setValue(otFrameOpt.isPresent() ? otFrameOpt.get().getOvertimeWorkFrName() : "");
                         
                         /*
                          * R4_120
@@ -403,13 +410,13 @@ public class WorkTimeReportService_New {
                     .setValue(getRoundingEnum(lstOTTimezone.get(i).getTimezone().getRounding().getRounding()));
                     
                     Integer otFrameNo = fixHalfDayWorkOneDayOpt.get().getWorkTimezone().getLstOTTimezone().get(i).getOtFrameNo();
-                    Optional<WorkdayoffFrameFindDto> otFrameOpt = otFrameFind.stream().filter(x -> x.getWorkdayoffFrNo() == otFrameNo).findFirst();
+                    Optional<OvertimeWorkFrameFindDto> otFrameOpt = overTimeLst.stream().filter(x -> x.getOvertimeWorkFrNo() == otFrameNo).findFirst();
                     
                     /*
                      * R4_103
                      * 1日勤務用.残業枠
                      */
-                    cells.get("AJ" + ((startIndex + 1) + i)).setValue(otFrameOpt.isPresent() ? otFrameOpt.get().getTransferFrName() : "");
+                    cells.get("AJ" + ((startIndex + 1) + i)).setValue(otFrameOpt.isPresent() ? otFrameOpt.get().getOvertimeWorkFrName() : "");
                     
                     /*
                      * R4_104
@@ -764,13 +771,13 @@ public class WorkTimeReportService_New {
             .setValue(getInDayTimeWithFormat(lstWorkTimezone.get(i).getTimezone().getEnd()));
             
             Optional<WorkdayoffFrameFindDto> workDayOffFrameInLegalBreak = otFrameFind.stream()
-                .filter(x -> BigDecimal.valueOf(x.getWorkdayoffFrNo()) == lstWorkTimezone.get(index).getInLegalBreakFrameNo())
+                .filter(x -> x.getWorkdayoffFrNo() == lstWorkTimezone.get(index).getInLegalBreakFrameNo().intValue())
                 .findFirst();
             Optional<WorkdayoffFrameFindDto> workDayOffFrameOutLegalBreak = otFrameFind.stream()
-                    .filter(x -> BigDecimal.valueOf(x.getWorkdayoffFrNo()) == lstWorkTimezone.get(index).getOutLegalBreakFrameNo())
+                    .filter(x -> x.getWorkdayoffFrNo() == lstWorkTimezone.get(index).getOutLegalBreakFrameNo().intValue())
                     .findFirst();
             Optional<WorkdayoffFrameFindDto> workDayOffFrameoutLegalPubHD = otFrameFind.stream()
-                    .filter(x -> BigDecimal.valueOf(x.getWorkdayoffFrNo()) == lstWorkTimezone.get(index).getOutLegalPubHDFrameNo())
+                    .filter(x -> x.getWorkdayoffFrNo() == lstWorkTimezone.get(index).getOutLegalPubHDFrameNo().intValue())
                     .findFirst();
             
             /*
@@ -1537,6 +1544,7 @@ public class WorkTimeReportService_New {
         // 3        タブグ:                残業時間帯
         
         List<WorkdayoffFrameFindDto> otFrameFind = this.finder.findAllUsed();
+        List<OvertimeWorkFrameFindDto> overTimeLst = this.overTimeFinder.findAllUsed();
         List<FlOTTimezoneDto> lstOTTimezone = data.getFlowWorkSetting().getHalfDayWorkTimezone().getWorkTimeZone().getLstOTTimezone();
         for (int i = 0; i < lstOTTimezone.size(); i++) {
             /*
@@ -1565,10 +1573,10 @@ public class WorkTimeReportService_New {
              * 残業時間帯.残業枠
              */
             BigDecimal otFrameNo = lstOTTimezone.get(i).getOtFrameNo();
-            Optional<WorkdayoffFrameFindDto> otFrame = otFrameFind.stream()
-                    .filter(x -> BigDecimal.valueOf(x.getWorkdayoffFrNo()) == otFrameNo).findFirst();
-            if (otFrame.isPresent()) {
-                cells.get("AF" + ((startIndex + 1) + i)).setValue(otFrame.get().getWorkdayoffFrName());
+            Optional<OvertimeWorkFrameFindDto> otFrameOpt = overTimeLst.stream()
+                    .filter(x -> x.getOvertimeWorkFrNo() == otFrameNo.intValue()).findFirst();
+            if (otFrameOpt.isPresent()) {
+                cells.get("AF" + ((startIndex + 1) + i)).setValue(otFrameOpt.get().getOvertimeWorkFrName());
             }
             
             if (displayMode.equals(DisplayMode.DETAIL.value)) {
@@ -1577,10 +1585,10 @@ public class WorkTimeReportService_New {
                  * 残業時間帯.法定内残業枠
                  */
                 BigDecimal inLegalOTFrameNo = lstOTTimezone.get(i).getInLegalOTFrameNo();
-                Optional<WorkdayoffFrameFindDto> legalOtFrame = otFrameFind.stream()
-                        .filter(x -> BigDecimal.valueOf(x.getWorkdayoffFrNo()) == inLegalOTFrameNo).findFirst();
+                Optional<OvertimeWorkFrameFindDto> legalOtFrame = overTimeLst.stream()
+                        .filter(x -> x.getOvertimeWorkFrNo() == inLegalOTFrameNo.intValue()).findFirst();
                 if (legalOtFrame.isPresent()) {
-                    cells.get("AG" +((startIndex + 1) + i)).setValue(legalOtFrame.get().getWorkdayoffFrName());
+                    cells.get("AG" +((startIndex + 1) + i)).setValue(legalOtFrame.get().getOvertimeWorkFrName());
                 }
                 
                 /*
@@ -1962,13 +1970,13 @@ public class WorkTimeReportService_New {
             cells.get("BS" + (startIndex + lstWorkTimezone.get(i).getWorktimeNo())).setValue(getInDayTimeWithFormat(elapsedTime));
             
             Optional<WorkdayoffFrameFindDto> workDayOffFrameInLegalBreak = otFrameFind.stream()
-                    .filter(x -> BigDecimal.valueOf(x.getWorkdayoffFrNo()) == lstWorkTimezone.get(index).getInLegalBreakFrameNo())
+                    .filter(x -> x.getWorkdayoffFrNo() == lstWorkTimezone.get(index).getInLegalBreakFrameNo().intValue())
                     .findFirst();
             Optional<WorkdayoffFrameFindDto> workDayOffFrameOutLegalBreak = otFrameFind.stream()
-                    .filter(x -> BigDecimal.valueOf(x.getWorkdayoffFrNo()) == lstWorkTimezone.get(index).getOutLegalBreakFrameNo())
+                    .filter(x -> x.getWorkdayoffFrNo() == lstWorkTimezone.get(index).getOutLegalBreakFrameNo().intValue())
                     .findFirst();
             Optional<WorkdayoffFrameFindDto> workDayOffFrameoutLegalPubHD = otFrameFind.stream()
-                    .filter(x -> BigDecimal.valueOf(x.getWorkdayoffFrNo()) == lstWorkTimezone.get(index).getOutLegalPubHolFrameNo())
+                    .filter(x -> x.getWorkdayoffFrNo() == lstWorkTimezone.get(index).getOutLegalPubHolFrameNo().intValue())
                     .findFirst();
             
             /*
@@ -2238,7 +2246,7 @@ public class WorkTimeReportService_New {
             Integer roundingMethodHdPriateDeduct = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getPubHolWorkTimezone().getPrivateUnionGoOut()
                     .getDeductTimeRoundingSetting().getRoundingMethod();
-            cells.get("CU" + (startIndex + 1)).setValue(roundingMethodHdPriateDeduct);
+            cells.get("CU" + (startIndex + 1)).setValue(getApproTimeRoundingAtr(roundingMethodHdPriateDeduct));
             
             /*
              * R5_161
@@ -2247,7 +2255,7 @@ public class WorkTimeReportService_New {
             Integer unitHdPrivateDeduct = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getPubHolWorkTimezone().getPrivateUnionGoOut()
                     .getDeductTimeRoundingSetting().getRoundingSetting().getRoundingTime();
-            cells.get("CV" + (startIndex + 1)).setValue(unitHdPrivateDeduct);
+            cells.get("CV" + (startIndex + 1)).setValue(getRoundingTimeUnitEnum(unitHdPrivateDeduct));
             
             /*
              * R5_162
@@ -2256,7 +2264,7 @@ public class WorkTimeReportService_New {
             Integer roundingHdPrivateDeduct = data.getFlowWorkSetting().getCommonSetting().getGoOutSet()
                     .getDiffTimezoneSetting().getPubHolWorkTimezone().getPrivateUnionGoOut()
                     .getDeductTimeRoundingSetting().getRoundingSetting().getRounding();
-            cells.get("CW" + (startIndex + 1)).setValue(roundingHdPrivateDeduct);
+            cells.get("CW" + (startIndex + 1)).setValue(getRoundingEnum(roundingHdPrivateDeduct));
             
             /*
              * R5_163
@@ -2852,6 +2860,7 @@ public class WorkTimeReportService_New {
         }
         
         List<WorkdayoffFrameFindDto> otFrameFind = this.finder.findAllUsed();
+        List<OvertimeWorkFrameFindDto> overTimeLst = this.overTimeFinder.findAllUsed();
         
         if (lstHalfDayWorkTimezoneOneDay.isPresent()) {
             List<OverTimeOfTimeZoneSetDto> lstOTTimezone = lstHalfDayWorkTimezoneOneDay.get().getWorkTimezone().getLstOTTimezone();
@@ -2886,13 +2895,14 @@ public class WorkTimeReportService_New {
                     .setValue(getRoundingEnum(lstOTTimezone.get(i).getTimezone().getRounding().getRounding()));
                 
                 Integer otFrameNo = lstOTTimezone.get(i).getOtFrameNo();
-                Optional<WorkdayoffFrameFindDto> otFrameOpt = otFrameFind.stream().filter(x -> x.getWorkdayoffFrNo() == otFrameNo).findFirst();
+                Optional<OvertimeWorkFrameFindDto> otFrameOpt = overTimeLst.stream()
+                        .filter(x -> x.getOvertimeWorkFrNo() == otFrameNo).findFirst();
                 if (otFrameOpt.isPresent()) {
                     /*
                      * R6_104
                      * 残業時間帯.1日勤務用.残業枠
                      */
-                    cells.get("AS" + (startIndex + lstOTTimezone.get(i).getWorkTimezoneNo())).setValue(otFrameOpt.get().getWorkdayoffFrName());
+                    cells.get("AS" + (startIndex + lstOTTimezone.get(i).getWorkTimezoneNo())).setValue(otFrameOpt.get().getOvertimeWorkFrName());
                 }
                 
                 /*
@@ -2938,13 +2948,14 @@ public class WorkTimeReportService_New {
                         .setValue(getRoundingEnum(lstOTTimezone.get(i).getTimezone().getRounding().getRounding()));
                     
                     Integer otFrameNo = lstOTTimezone.get(i).getOtFrameNo();
-                    Optional<WorkdayoffFrameFindDto> otFrameOpt = otFrameFind.stream().filter(x -> x.getWorkdayoffFrNo() == otFrameNo).findFirst();
+                    Optional<OvertimeWorkFrameFindDto> otFrameOpt = overTimeLst.stream()
+                            .filter(x -> x.getOvertimeWorkFrNo() == otFrameNo).findFirst();
                     if (otFrameOpt.isPresent()) {
                         /*
                          * R6_110
                          * 残業時間帯.午前勤務用.残業枠
                          */
-                        cells.get("AY" + (startIndex + lstOTTimezone.get(i).getWorkTimezoneNo())).setValue(otFrameOpt.get().getWorkdayoffFrName());
+                        cells.get("AY" + (startIndex + lstOTTimezone.get(i).getWorkTimezoneNo())).setValue(otFrameOpt.get().getOvertimeWorkFrName());
                     }
                     
                     /*
@@ -2989,13 +3000,14 @@ public class WorkTimeReportService_New {
                         .setValue(getRoundingEnum(lstOTTimezone.get(i).getTimezone().getRounding().getRounding()));
                     
                     Integer otFrameNo = lstOTTimezone.get(i).getOtFrameNo();
-                    Optional<WorkdayoffFrameFindDto> otFrameOpt = otFrameFind.stream().filter(x -> x.getWorkdayoffFrNo() == otFrameNo).findFirst();
+                    Optional<OvertimeWorkFrameFindDto> otFrameOpt = overTimeLst.stream()
+                            .filter(x -> x.getOvertimeWorkFrNo() == otFrameNo).findFirst();
                     if (otFrameOpt.isPresent()) {
                         /*
                          * R6_116
                          * 残業時間帯.午後勤務用.残業枠
                          */
-                        cells.get("BE" + (startIndex + lstOTTimezone.get(i).getWorkTimezoneNo())).setValue(otFrameOpt.get().getWorkdayoffFrName());
+                        cells.get("BE" + (startIndex + lstOTTimezone.get(i).getWorkTimezoneNo())).setValue(otFrameOpt.get().getOvertimeWorkFrName());
                     }
                     
                     /*
@@ -3035,12 +3047,12 @@ public class WorkTimeReportService_New {
             }
             
             /*
-             * R6.119
+             * R6_119
              * 打刻時間帯.優先設定.退勤
              */
             if (prioritySetLeaveWorkOpt.isPresent()) {
                 Integer priorityAtr = prioritySetLeaveWorkOpt.get().getPriorityAtr();
-                cells.get("BE" + (startIndex + 1)).setValue(priorityAtr.equals(MultiStampTimePiorityAtr.BEFORE_PIORITY.value) ? "前優先" : "後優先");
+                cells.get("BH" + (startIndex + 1)).setValue(priorityAtr.equals(MultiStampTimePiorityAtr.BEFORE_PIORITY.value) ? "前優先" : "後優先");
             }
         }
         
@@ -3190,15 +3202,15 @@ public class WorkTimeReportService_New {
              * R6_264
              * 打刻詳細設定.計算設定.退勤を1分前まで計算する
              */
-            Integer attendanceMinuteLaterCalculate = data.getFixedWorkSetting().getCommonSetting().getStampSet().getRoundingTime().getAttendanceMinuteLaterCalculate();
+            Integer attendanceMinuteLaterCalculate = data.getFlexWorkSetting().getCommonSetting().getStampSet().getRoundingTime().getAttendanceMinuteLaterCalculate();
             cells.get("BY" + (startIndex + 1)).setValue((attendanceMinuteLaterCalculate == 0) ? "-" : "○");
             
             /*
              * R6_265
              * 打刻詳細設定.計算設定.退勤を1分前まで計算する
              */
-            Integer leaveWorkMinuteAgoCalculate = data.getFixedWorkSetting().getCommonSetting().getStampSet().getRoundingTime().getLeaveWorkMinuteAgoCalculate();
-            cells.get("CZ" + (startIndex + 1)).setValue(leaveWorkMinuteAgoCalculate == 0 ? "-" : "○");
+            Integer leaveWorkMinuteAgoCalculate = data.getFlexWorkSetting().getCommonSetting().getStampSet().getRoundingTime().getLeaveWorkMinuteAgoCalculate();
+            cells.get("BZ" + (startIndex + 1)).setValue(leaveWorkMinuteAgoCalculate == 0 ? "-" : "○");
         }
         
         // 5        タブグ:                休憩時間帯
@@ -3495,13 +3507,13 @@ public class WorkTimeReportService_New {
             cells.get("CW" + (startIndex + lstWorkTimezone.get(i).getWorkTimeNo())).setValue(getInDayTimeWithFormat(lstWorkTimezone.get(i).getTimezone().getEnd()));
             
                 Optional<WorkdayoffFrameFindDto> workDayOffFrameInLegalBreak = otFrameFind.stream()
-                        .filter(x -> BigDecimal.valueOf(x.getWorkdayoffFrNo()) == lstWorkTimezone.get(index).getInLegalBreakFrameNo())
+                        .filter(x -> x.getWorkdayoffFrNo() == lstWorkTimezone.get(index).getInLegalBreakFrameNo().intValue())
                         .findFirst();
                 Optional<WorkdayoffFrameFindDto> workDayOffFrameOutLegalBreak = otFrameFind.stream()
-                        .filter(x -> BigDecimal.valueOf(x.getWorkdayoffFrNo()) == lstWorkTimezone.get(index).getOutLegalBreakFrameNo())
+                        .filter(x -> x.getWorkdayoffFrNo() == lstWorkTimezone.get(index).getOutLegalBreakFrameNo().intValue())
                         .findFirst();
                 Optional<WorkdayoffFrameFindDto> workDayOffFrameoutLegalPubHD = otFrameFind.stream()
-                        .filter(x -> BigDecimal.valueOf(x.getWorkdayoffFrNo()) == lstWorkTimezone.get(index).getOutLegalPubHDFrameNo())
+                        .filter(x -> x.getWorkdayoffFrNo() == lstWorkTimezone.get(index).getOutLegalPubHDFrameNo().intValue())
                         .findFirst();
                 
                 /*
@@ -3785,7 +3797,7 @@ public class WorkTimeReportService_New {
          * R6_203
          * 外出.私用・組合外出控除時間.丸め設定端数
          */
-        Integer roundingHdPriDeduct = data.getFixedWorkSetting().getCommonSetting().getGoOutSet()
+        Integer roundingHdPriDeduct = data.getFlexWorkSetting().getCommonSetting().getGoOutSet()
                 .getDiffTimezoneSetting().getPubHolWorkTimezone().getPrivateUnionGoOut()
                 .getDeductTimeRoundingSetting().getRoundingSetting().getRounding();
         cells.get("EA" + (startIndex + 1)).setValue(getRoundingEnum(roundingHdPriDeduct));
@@ -4338,10 +4350,10 @@ public class WorkTimeReportService_New {
          * 1日の範囲時間.時間
          */
         if (displayMode.equals(DisplayMode.DETAIL.value)) {
-            int rangeTimeOfDay = data.getPredseting().getRangeTimeDay();
+            int rangeTimeOfDay = new AttendanceTime(data.getPredseting().getRangeTimeDay()).hour();
             cells.get(startIndex, columnIndex).setValue(rangeTimeOfDay);
-            columnIndex++;
         }
+        columnIndex++;
         
         Optional<TimezoneDto> time = data.getPredseting().getPrescribedTimezoneSetting().getLstTimezone().stream()
                 .filter(x -> x.workNo == 1).findFirst();
@@ -4468,8 +4480,16 @@ public class WorkTimeReportService_New {
                 Integer deductTime = data.getFlexWorkSetting().getCoreTimeSetting().getGoOutCalc().getRemoveFromWorkTime();
                 cells.get(startIndex, columnIndex).setValue(deductTime == 1 ? "○" : "-");
                 columnIndex++;
+                
+                /*
+                 * R6_79
+                 * 最低勤務時間
+                 */
+                Integer minWorkTime = data.getFlexWorkSetting().getCoreTimeSetting().getMinWorkTime();
+                cells.get(startIndex, columnIndex).setValue(getInDayTimeWithFormat(minWorkTime));
+                columnIndex++;
             } else {
-                columnIndex += 2;
+                columnIndex += 3;
             }
         }
         
@@ -4542,7 +4562,7 @@ public class WorkTimeReportService_New {
              * R6_86
              * 休暇取得時加算時間.午前
              */
-            Integer morningAddTime = data.getPredseting().getPredTime().getPredTime().getOneDay();
+            Integer morningAddTime = data.getPredseting().getPredTime().getPredTime().getMorning();
             cells.get(startIndex, columnIndex).setValue(morningAddTime != null ? getInDayTimeWithFormat(morningAddTime) : "");
             columnIndex++;
             
@@ -4552,7 +4572,7 @@ public class WorkTimeReportService_New {
              * R6_87
              * 休暇取得時加算時間.午後
              */
-            Integer afternoonAddTime = data.getPredseting().getPredTime().getPredTime().getOneDay();
+            Integer afternoonAddTime = data.getPredseting().getPredTime().getPredTime().getAfternoon();
             cells.get(startIndex, columnIndex).setValue(afternoonAddTime != null ? getInDayTimeWithFormat(afternoonAddTime) : "");
             columnIndex++;
         }
@@ -4566,7 +4586,7 @@ public class WorkTimeReportService_New {
         if (time == null) {
             return "";
         }
-        return new TimeWithDayAttr(time).getInDayTimeWithFormat();
+        return new TimeWithDayAttr(time).getRawTimeWithFormat();
     }
     
     /**
@@ -4621,7 +4641,7 @@ public class WorkTimeReportService_New {
         }
         
         String[] roundingTimeUnitAtr = {"1分", "5分", "6分", "10分", "15分", "20分", "30分", "60分"};
-        for (int i = 1; i <= roundingTimeUnitAtr.length; i++) {
+        for (int i = 0; i < roundingTimeUnitAtr.length; i++) {
             if (roundingTimeUnit == i) {
                 return roundingTimeUnitAtr[i];
             }
