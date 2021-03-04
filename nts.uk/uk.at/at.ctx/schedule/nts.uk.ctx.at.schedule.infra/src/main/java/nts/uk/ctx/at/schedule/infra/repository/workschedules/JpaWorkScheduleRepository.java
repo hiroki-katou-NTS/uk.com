@@ -434,16 +434,12 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 			if (!oldData.get().editStates.isEmpty()) {
 				// get list insert and update data exist
 				List<KscdtSchEditState> listInsert = new ArrayList<>();
-				List<KscdtSchEditState> checkLst = new ArrayList<>();
 				for (KscdtSchEditState schState : newData.editStates) {
-					boolean checkExist = false;
+					List<KscdtSchEditState> checkLst = new ArrayList<>();
 					oldData.get().editStates.forEach(x -> {
 						if(schState.pk.sid.equals(x.pk.sid)
 								&& schState.pk.ymd.equals(x.pk.ymd)
-								&& schState.pk.atdItemId == x.pk.atdItemId
-								) {
-							
-							x.sditState = 9;
+								&& schState.pk.atdItemId == x.pk.atdItemId) {
 							x.sditState = schState.sditState;
 							x.cid = schState.cid;
 							checkLst.add(x);
@@ -453,35 +449,6 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 						listInsert.add(schState);
 					}
 				}
-				
-//				//get list remove
-//				List<KscdtSchEditState> listRemove = new ArrayList<>();
-//				for (KscdtSchEditState schStateOld : oldData.get().editStates) {
-//					boolean checkExist = false;
-//					for (KscdtSchEditState schState : newData.editStates) {
-//						if(schState.pk.sid == schStateOld.pk.sid
-//								&& schState.pk.ymd == schStateOld.pk.ymd
-//								&& schState.pk.atdItemId == schStateOld.pk.atdItemId
-//								) {
-//							checkExist = true;
-//							break;
-//						}
-//					}
-//					if(!checkExist) {
-//						listRemove.add(schStateOld);
-//					}
-//				}
-//				
-//				//remove
-//				if(listRemove.size() > 0) {
-//				String delete = "delete from KscdtSchEditState o " + " where o.pk.sid = :sid "
-//						+ " and o.pk.ymd = :ymd " + " and o.pk.atdItemId = :atdItemId";
-//				for(KscdtSchEditState sle : listRemove) {
-//					this.getEntityManager().createQuery(delete).setParameter("sid", sle.pk.sid)
-//					.setParameter("ymd", sle.pk.ymd)
-//					.setParameter("atdItemId", sle.pk.atdItemId).executeUpdate();
-//					}
-//				}
 				//add
 				for(KscdtSchEditState sle : listInsert) {
 					this.commandProxy().insert(sle);
