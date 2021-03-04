@@ -1096,38 +1096,25 @@ public class OvertimeServiceImpl implements OvertimeService {
 			Optional<Integer> endTimeSPR,
 			OvertimeAppSet overtimeAppSet,
 			List<WorkType> worktypes,
-			PrePostInitAtr prePost) {
-		DisplayInfoOverTime output = new DisplayInfoOverTime();
+			PrePostInitAtr prePost,
+			DisplayInfoOverTime displayInfoOverTime) {
 		// 「残業申請の表示情報」を更新する
-		output.setAppDispInfoStartup(appDispInfoStartupOutput);
-		// 勤務種類と就業時間帯を確認する
+		displayInfoOverTime.setAppDispInfoStartup(appDispInfoStartupOutput);
 		// 申請日変更時処理
-		InfoWithDateApplication infoWithDateApplication = commonAlgorithmOverTime.getInfoAppDate(
-				companyId,
-				dateOp,
-				startTimeSPR,
-				endTimeSPR,
-				worktypes,
-				appDispInfoStartupOutput,
-				overtimeAppSet);
-		// 「残業申請の表示情報」を更新する
-		output.setInfoWithDateApplicationOp(Optional.ofNullable(infoWithDateApplication));
-		
-		CalculationResult calculationResult = new CalculationResult();
-		output.setCalculationResultOp(Optional.of(calculationResult));
+		commonAlgorithmOverTime.changeApplicationDate(companyId, dateOp.orElse(null), displayInfoOverTime);
 		
 		WorkContent workContent = new WorkContent();
-		workContent.setWorkTypeCode(output.getInfoWithDateApplicationOp()
+		workContent.setWorkTypeCode(displayInfoOverTime.getInfoWithDateApplicationOp()
 										  .map(x -> x.getWorkTypeCD())
 										  .orElse(Optional.empty()));
 		workContent.setWorkTimeCode(
-				output.getInfoWithDateApplicationOp()
+				displayInfoOverTime.getInfoWithDateApplicationOp()
 				  .map(x -> x.getWorkTimeCD())
 				  .orElse(Optional.empty()));
 		List<TimeZone> timeZones = new ArrayList<TimeZone>();
 		List<BreakTimeSheet> breakTimes = new ArrayList<BreakTimeSheet>();
-		if (output.getInfoWithDateApplicationOp().isPresent()) {
-			Optional<WorkHours> workHours = output.getInfoWithDateApplicationOp().get().getWorkHours();
+		if (displayInfoOverTime.getInfoWithDateApplicationOp().isPresent()) {
+			Optional<WorkHours> workHours = displayInfoOverTime.getInfoWithDateApplicationOp().get().getWorkHours();
 			if (workHours.isPresent()) {
 				if (workHours.get().getStartTimeOp1().isPresent() || workHours.get().getEndTimeOp1().isPresent()) {
 					TimeZone timeZone = new TimeZone(
@@ -1142,7 +1129,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 					timeZones.add(timeZone);
 				}
 			}
-			Optional<BreakTimeZoneSetting> breakTime = output.getInfoWithDateApplicationOp().get().getBreakTime();
+			Optional<BreakTimeZoneSetting> breakTime = displayInfoOverTime.getInfoWithDateApplicationOp().get().getBreakTime();
 			if (breakTime.isPresent()) {
 				List<DeductionTime> breakTimeZones = breakTime.get().getTimeZones();
 				breakTimes = IntStream.range(1, (int) breakTimeZones.stream().count())
@@ -1163,23 +1150,23 @@ public class OvertimeServiceImpl implements OvertimeService {
 				dateOp,
 				prePost,
 				overtimeAppSet.getOvertimeLeaveAppCommonSet(),
-				output.getAppDispInfoStartup()
+				displayInfoOverTime.getAppDispInfoStartup()
 					.getAppDispInfoWithDateOutput()
 					.getOpPreAppContentDisplayLst()
 					.flatMap(x -> CollectionUtil.isEmpty(x) ? Optional.empty() : Optional.of(x.get(0)))
 					.flatMap(y -> y.getApOptional())
 					.map(z -> z.getApplicationTime())
 					.orElse(null),
-				output.getInfoWithDateApplicationOp()
+				displayInfoOverTime.getInfoWithDateApplicationOp()
 					.map(x -> x.getApplicationTime().orElse(null))
 					.orElse(null),
 				workContent,
 				overtimeAppSet
 				);
-		output.setCalculationResultOp(displayInfoOverTimeTemp.getCalculationResultOp());
-		output.setWorkdayoffFrames(displayInfoOverTimeTemp.getWorkdayoffFrames());
-		output.setCalculatedFlag(displayInfoOverTimeTemp.getCalculatedFlag());
-		return output;
+		displayInfoOverTime.setCalculationResultOp(displayInfoOverTimeTemp.getCalculationResultOp());
+		displayInfoOverTime.setWorkdayoffFrames(displayInfoOverTimeTemp.getWorkdayoffFrames());
+		displayInfoOverTime.setCalculatedFlag(displayInfoOverTimeTemp.getCalculatedFlag());
+		return displayInfoOverTime;
 	}
 
 
@@ -1322,18 +1309,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 		// 「残業申請の表示情報」を更新する
 		displayInfoOverTime.getAppDispInfoStartup().setAppDispInfoWithDateOutput(appDispInfoWithDateOutput);
 		// 申請日に関する情報を取得する
-		InfoWithDateApplication infoWithDateApplication = commonAlgorithmOverTime.getInfoAppDate(
-				companyId,
-				Optional.of(date),
-				Optional.empty(),
-				Optional.empty(),
-				displayInfoOverTime.getInfoBaseDateOutput().getWorktypes(),
-				displayInfoOverTime.getAppDispInfoStartup(),
-				displayInfoOverTime.getInfoNoBaseDate().getOverTimeAppSet());
-		
-		// 「残業申請の表示情報」を更新して返す
-		displayInfoOverTime.setInfoWithDateApplicationOp(Optional.of(infoWithDateApplication));
-		displayInfoOverTime.setCalculatedFlag(CalculatedFlag.UNCALCULATED);
+		commonAlgorithmOverTime.changeApplicationDate(companyId, date, displayInfoOverTime);
 		
 		return displayInfoOverTime;
 	}

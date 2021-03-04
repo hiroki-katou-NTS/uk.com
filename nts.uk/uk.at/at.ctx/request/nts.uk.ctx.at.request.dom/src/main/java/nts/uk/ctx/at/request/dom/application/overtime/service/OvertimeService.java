@@ -298,6 +298,7 @@ public interface OvertimeService {
 			PrePostInitAtr prePost
 			);
 	
+
 	/**
 	 * Refactor5 UKDesign.UniversalK.就業.KAF_申請.KAF005_残業申請.A：残業申請（新規登録）.ユースケース
 	 * @param companyId
@@ -309,6 +310,8 @@ public interface OvertimeService {
 	 * @param endTimeSPR
 	 * @param overtimeAppSet
 	 * @param worktypes
+	 * @param prePost
+	 * @param displayInfoOverTime
 	 * @return
 	 */
 	public DisplayInfoOverTime changeDate(
@@ -321,7 +324,8 @@ public interface OvertimeService {
 			Optional<Integer> endTimeSPR,
 			OvertimeAppSet overtimeAppSet,
 			List<WorkType> worktypes,
-			PrePostInitAtr prePost
+			PrePostInitAtr prePost,
+			DisplayInfoOverTime displayInfoOverTime
 			);
 	
 	// Mobile //

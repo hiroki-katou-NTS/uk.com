@@ -143,7 +143,7 @@ public class AppOvertimeFinder {
 		return DisplayInfoOverTimeDto.fromDomain(output);
 	}
 	public DisplayInfoOverTimeDto changeDate(ParamOverTimeChangeDate param) {
-		DisplayInfoOverTime output = new DisplayInfoOverTime();
+		DisplayInfoOverTime output = param.displayInfoOverTime.toDomain();
 		String companyId = param.companyId;
 		Optional<GeneralDate> dateOp = Optional.empty();
 		if (StringUtils.isNotBlank(param.dateOp)) {
@@ -168,9 +168,10 @@ public class AppOvertimeFinder {
 						.stream()
 						.map(x -> x.toDomain(param.companyId))
 						.collect(Collectors.toList()),
-				EnumAdaptor.valueOf(param.prePost, PrePostInitAtr.class)		
+				EnumAdaptor.valueOf(param.prePost, PrePostInitAtr.class),
+				output
 				);
-		return DisplayInfoOverTimeDto.fromDomainChangeDate(output);
+		return DisplayInfoOverTimeDto.fromDomain(output);
 	}
 	
 	public DisplayInfoOverTimeDto selectWorkInfo(ParamSelectWork param) {

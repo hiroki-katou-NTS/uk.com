@@ -446,16 +446,19 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				overTimeAppSet: self.dataSource.infoNoBaseDate.overTimeAppSet,
 				worktypes: self.dataSource.infoBaseDateOutput.worktypes,
 				prePost: prePost,
-				employeeId: self.isAgentMode() ? self.employeeIDLst[0] : self.$user.employeeId
+				employeeId: self.isAgentMode() ? self.employeeIDLst[0] : self.$user.employeeId,
+				displayInfoOverTime: self.dataSource
 			}
 			self.$ajax(API.changeDate, command)
 				.done((res: DisplayInfoOverTime) => {
-					self.dataSource.infoWithDateApplicationOp = res.infoWithDateApplicationOp;
-					self.dataSource.calculationResultOp = res.calculationResultOp;
-					self.dataSource.workdayoffFrames = res.workdayoffFrames;
-					self.dataSource.calculatedFlag = res.calculatedFlag;
-					self.dataSource.appDispInfoStartup = res.appDispInfoStartup;
+					self.dataSource = res;
 					self.createVisibleModel(self.dataSource);
+					// self.dataSource.infoWithDateApplicationOp = res.infoWithDateApplicationOp;
+					// self.dataSource.calculationResultOp = res.calculationResultOp;
+					// self.dataSource.workdayoffFrames = res.workdayoffFrames;
+					// self.dataSource.calculatedFlag = res.calculatedFlag;
+					// self.dataSource.appDispInfoStartup = res.appDispInfoStartup;
+					// self.createVisibleModel(self.dataSource);
 					self.bindOverTimeWorks(self.dataSource);
 					self.bindWorkInfo(self.dataSource, ACTION.CHANGE_DATE);
 					self.bindRestTime(self.dataSource);
@@ -3099,7 +3102,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 	export interface OvertimeAppSet {
 		companyID: string;
 		overtimeLeaveAppCommonSetting: any;
-		overtimeQuotaSet: Array<any>;
+		overTimeQuotaSettings: Array<any>;
 		applicationDetailSetting: any;
 	}
 	export interface AgreeOverTimeOutput {

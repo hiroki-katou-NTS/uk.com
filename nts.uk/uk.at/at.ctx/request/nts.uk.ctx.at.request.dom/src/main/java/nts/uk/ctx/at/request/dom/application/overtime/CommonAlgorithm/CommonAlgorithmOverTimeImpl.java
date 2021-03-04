@@ -49,6 +49,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.service.OverTimeContent;
 import nts.uk.ctx.at.request.dom.application.overtime.service.OvertimeService;
 import nts.uk.ctx.at.request.dom.application.overtime.service.SelectWorkOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.service.WorkHours;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.RecordDate;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.PrePostInitAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.FlexWorkAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSet;
@@ -321,8 +322,11 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 		// 指定社員の申請残業枠を取得する
 		QuotaOuput quotaOuput = this.getOvertimeQuotaSetUse(companyId, employeeId, date, overTimeAtr, overtimeAppSet);
 		output.setQuotaOutput(quotaOuput);
-		// 07_勤務種類取得
-		List<WorkType> worktypes = this.getWorkType(appEmploymentSettingOp);
+		List<WorkType> worktypes = Collections.emptyList();
+		if (overtimeAppSet.getApplicationDetailSetting().getTimeCalUse() == NotUseAtr.USE) {
+			// 07_勤務種類取得
+			worktypes = this.getWorkType(appEmploymentSettingOp);			
+		}
 		output.setWorktypes(worktypes);
 		// // INPUT．「就業時間帯の設定<List>」をチェックする
 		// if (workTime.isEmpty()) throw new BusinessException("Msg_1568");
@@ -735,8 +739,11 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 
 
 	@Override
-	public List<ConfirmMsgOutput> checkExcess(AppOverTime appOverTime, DisplayInfoOverTime displayInfoOverTime) {
+	public List<ConfirmMsgOutput> checkExcess(
+			AppOverTime appOverTime,
+			DisplayInfoOverTime displayInfoOverTime) {
 		List<ConfirmMsgOutput> output = new ArrayList<ConfirmMsgOutput>();
+		String sid = appOverTime.getApplication().getEmployeeID();
 		// INPUT．「残業申請」をチェックする
 		if (appOverTime.getPrePostAtr() != PrePostAtr.POSTERIOR) {
 			return Collections.emptyList();
@@ -780,13 +787,20 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 				// 取得した「事前申請・実績の超過状態．事前超過」をチェックする
 				if (overStateOutput.getAdvanceExcess().isAdvanceExcess()) {
 					// handle msg
-					output.add(new ConfirmMsgOutput("Msg_424", getContentMsg(displayInfoOverTime, overStateOutput.getAdvanceExcess(), ExcessState.EXCESS_ALARM)));
+					output.add(new ConfirmMsgOutput("Msg_424", getContentMsg(displayInfoOverTime, overStateOutput.getAdvanceExcess(), ExcessState.EXCESS_ALARM, sid)));
 				}
 				
 				
 			}
 			List<String> contentMsgs = new ArrayList<String>();
-			contentMsgs.add(displayInfoOverTime.getAppDispInfoStartup().getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getBussinessName());
+			contentMsgs.add(displayInfoOverTime.getAppDispInfoStartup()
+											   .getAppDispInfoNoDateOutput()
+											   .getEmployeeInfoLst()
+											   .stream()
+											   .filter(x -> x.equals(appOverTime.getApplication().getEmployeeID()))
+											   .findFirst()
+											   .map(x -> x.getBussinessName())
+											   .orElse(""));
 			contentMsgs.add(appOverTime.getApplication().getAppDate().getApplicationDate().toString());
 			// 取得した「事前申請・実績の超過状態．実績状態」をチェックする
 			if (overStateOutput.getAchivementStatus() == ExcessState.EXCESS_ERROR) {
@@ -801,14 +815,14 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 			} else {
 				// 取得した「事前申請・実績の超過状態．実績超過」をチェックする
 				if (overStateOutput.getAchivementExcess().isAdvanceExcessError()) {
-					List<String> contens1748 = getContentMsg(displayInfoOverTime, overStateOutput.getAchivementExcess(), ExcessState.EXCESS_ERROR);			
+					List<String> contens1748 = getContentMsg(displayInfoOverTime, overStateOutput.getAchivementExcess(), ExcessState.EXCESS_ERROR, sid);			
 					// エラーメッセージ（Msg_1748）を表示する
 					throw new BusinessException("Msg_1748", contens1748.toArray(new String[contentMsgs.size()]));
 				} else {
 					// 取得した「事前申請・実績の超過状態．実績超過」をチェックする
 					if (overStateOutput.getAchivementExcess().isAdvanceExcess()) {
 						// メッセージ（Msg_1747）をOUTPUT「確認メッセージリスト」に追加する
-						output.add(new ConfirmMsgOutput("Msg_1747", getContentMsg(displayInfoOverTime, overStateOutput.getAchivementExcess(), ExcessState.EXCESS_ALARM)));
+						output.add(new ConfirmMsgOutput("Msg_1747", getContentMsg(displayInfoOverTime, overStateOutput.getAchivementExcess(), ExcessState.EXCESS_ALARM, sid)));
 						
 					}
 					// OUTPUT「確認メッセージリスト」を返す
@@ -820,7 +834,11 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 		return output;
 	}
 
-	public List<String> getContentMsg(DisplayInfoOverTime displayInfoOverTime, OutDateApplication outDateApplication, ExcessState type) {
+	public List<String> getContentMsg(
+			DisplayInfoOverTime displayInfoOverTime,
+			OutDateApplication outDateApplication,
+			ExcessState type,
+			String sid) {
 		List<String> contentMsgs = new ArrayList<String>();
 		// ・申請時間の超過状態．申請時間．type = 残業時間　に超過アラームがある
 		List<Integer> lstFrameOverTime = outDateApplication.getExcessStateDetail()
@@ -884,7 +902,15 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 		String msgContent = contentMsgs.stream()
 									   .collect(Collectors.joining("、"));
 		contentMsgs.clear();
-		contentMsgs.add(displayInfoOverTime.getAppDispInfoStartup().getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getBussinessName());
+		contentMsgs.add(
+				displayInfoOverTime.getAppDispInfoStartup()
+				   .getAppDispInfoNoDateOutput()
+				   .getEmployeeInfoLst()
+				   .stream()
+				   .filter(x -> x.equals(sid))
+				   .findFirst()
+				   .map(x -> x.getBussinessName())
+				   .orElse(""));
 		contentMsgs.add(msgContent);
 		return contentMsgs;
 	}
@@ -1043,6 +1069,53 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 		output.setAppOverTime(appOverTime);
 		output.setConfirmMsgOutputs(confirmMsgOutputs);
 		return output;
+	}
+
+
+	@Override
+	public DisplayInfoOverTime changeApplicationDate(
+			String companyId,
+			GeneralDate date,
+			DisplayInfoOverTime displayInfoOverTime) {
+		AppDispInfoStartupOutput appDispInfoStartup = displayInfoOverTime.getAppDispInfoStartup();
+		// INPUT．「残業申請の表示情報．申請表示情報(基準日関係なし) ．申請承認設定．申請設定」．承認ルートの基準日をチェックする
+		if (appDispInfoStartup // 申請対象日時点
+						   .getAppDispInfoNoDateOutput()
+						   .getApplicationSetting()
+						   .getRecordDate() == RecordDate.APP_DATE) {
+			// 基準日に関する情報を取得する	
+			InfoBaseDateOutput infoBaseDateOutput = this.getInfoBaseDate(
+					companyId,
+					appDispInfoStartup.getAppDispInfoNoDateOutput()
+									  .getEmployeeInfoLst()
+									  .get(0)
+									  .getSid(),
+					appDispInfoStartup.getAppDispInfoWithDateOutput()
+									  .getBaseDate(),
+				    displayInfoOverTime.getOvertimeAppAtr(),
+				    appDispInfoStartup.getAppDispInfoWithDateOutput().getOpWorkTimeLst().orElse(Collections.emptyList()),
+				    appDispInfoStartup.getAppDispInfoWithDateOutput().getOpEmploymentSet(),
+				    displayInfoOverTime.getInfoNoBaseDate().getOverTimeAppSet());
+			
+			// 「残業申請の表示情報」を更新する
+			displayInfoOverTime.setInfoBaseDateOutput(infoBaseDateOutput);
+				
+		}
+		
+		// 申請日に関する情報を取得する
+		InfoWithDateApplication infoWithDateApplication = this.getInfoAppDate(
+				companyId,
+				Optional.ofNullable(date),
+				Optional.empty(),
+				Optional.empty(),
+				displayInfoOverTime.getInfoBaseDateOutput().getWorktypes(),
+				appDispInfoStartup,
+				displayInfoOverTime.getInfoNoBaseDate().getOverTimeAppSet());
+		
+		displayInfoOverTime.setInfoWithDateApplicationOp(Optional.ofNullable(infoWithDateApplication));
+		displayInfoOverTime.setCalculatedFlag(CalculatedFlag.UNCALCULATED);
+		
+		return displayInfoOverTime;
 	}
 	
 
