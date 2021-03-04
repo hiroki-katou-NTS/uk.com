@@ -34,14 +34,14 @@ module nts.uk.at.view.kdp.share {
         }
 
         .kdp-message-error .info-message {
-            background: #79E68B;
+            background: #66FF99;
             padding: 10px;
             font-weight: bold;
             margin:5px;
         }
 
         .kdp-message-error .warning-message {
-            background: #FEA400;
+            background: #F4B183;
             padding: 10px;
             font-weight: bold;
             margin:5px;
