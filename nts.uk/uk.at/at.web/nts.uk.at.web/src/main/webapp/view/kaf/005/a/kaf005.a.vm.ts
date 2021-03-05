@@ -13,13 +13,14 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 	import Kaf000AViewModel = nts.uk.at.view.kaf000.a.viewmodel.Kaf000AViewModel;
 	import AppInitParam = nts.uk.at.view.kaf000.shr.viewmodel.AppInitParam;
 	import formatTime = nts.uk.time.format.byId;
+	import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
 
 	@bean()
 	class Kaf005AViewModel extends Kaf000AViewModel {
 
 		appType: KnockoutObservable<number> = ko.observable(AppType.OVER_TIME_APPLICATION);
 		application: KnockoutObservable<Application>;
-		isSendMail: KnockoutObservable<Boolean>;
+		isSendMail: KnockoutObservable<boolean>;
 		isAgentMode: KnockoutObservable<boolean> = ko.observable(false);
 		overTimeWork: KnockoutObservableArray<OvertimeWork> = ko.observableArray([]);
 		workInfo: KnockoutObservable<WorkInfo> = ko.observable(null);
@@ -882,16 +883,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						// đăng kí 
 						return vm.$ajax('at', vm.mode() != MODE.MULTiPLE_AGENT ? API.register : API.registerMultiple, commandRegister).then(() => {
 							return vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
-								window.location.reload();
-								return true;
+								CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm);
 							});
 						});
-					}
-				}).then((result) => {
-					if (result) {
-						// gửi mail sau khi đăng kí
-						// return vm.$ajax('at', API.sendMailAfterRegisterSample);
-						return true;
 					}
 				}).fail((failData) => {
 					// xử lý lỗi nghiệp vụ riêng

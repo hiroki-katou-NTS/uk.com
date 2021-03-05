@@ -45,7 +45,7 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
         model: Model;
         dataFetch: KnockoutObservable<ModelDto> = ko.observable(null);
         mode: KnockoutObservable<String> = ko.observable('edit');
-        isSendMail: KnockoutObservable<Boolean>;
+        isSendMail: KnockoutObservable<boolean>;
 		isFromOther: boolean = false;
 
         created(params: AppInitParam) {
@@ -239,7 +239,7 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                 }).done(result => {
                     if (result != undefined) {
                         vm.$dialog.info( { messageId: "Msg_15" } ).then(() => {
-                            location.reload();
+                       		CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm);
                         });                
                     }
                 })

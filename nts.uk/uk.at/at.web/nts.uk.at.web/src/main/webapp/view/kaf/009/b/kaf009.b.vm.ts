@@ -3,6 +3,7 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
     import Model = nts.uk.at.view.kaf009_ref.shr.viewmodel.Model;
 	import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
 	import PrintContentOfEachAppDto = nts.uk.at.view.kaf000.shr.viewmodel.PrintContentOfEachAppDto;
+	import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
     const template = `
         <div>
     <div data-bind="component: { name: 'kaf000-b-component1',
@@ -246,7 +247,9 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
                 }).done(result => {
                     if (result != undefined) {
                         vm.$dialog.info( { messageId: "Msg_15" } ).then(() => {
-                        	ko.contextFor($('#contents-area')[0]).$vm.loadData();
+							CommonProcess.handleMailResult(result, vm).then(() => {
+								ko.contextFor($('#contents-area')[0]).$vm.loadData();	
+							});
                         });
                     }
                 }).fail(err => {

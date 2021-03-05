@@ -48,7 +48,7 @@ public class NewAfterRegisterImpl implements NewAfterRegister {
 		}
 		Application application = applicationRepository.findByID(appID).get();
 		// 承認者へ送る（新規登録、更新登録、承認）//Gửi đến người approve(đăng ký mới, đăng ký update, approve)
-		MailResult mailResult = otherCommonAlgorithm.sendMailApproverApprove(destinationList, application, "");
+		MailResult mailResult = otherCommonAlgorithm.sendMailApproverApprove(destinationList, application);
 		processResult.setAutoSuccessMail(mailResult.getSuccessList());
 		processResult.setAutoFailMail(mailResult.getFailList());
 		processResult.setAutoFailServer(mailResult.getFailServerList());

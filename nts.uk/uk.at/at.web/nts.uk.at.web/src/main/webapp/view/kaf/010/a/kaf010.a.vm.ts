@@ -14,7 +14,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 	import RestTime = nts.uk.at.view.kaf010.shr.time.viewmodel.RestTime;
 	import HolidayTime = nts.uk.at.view.kaf010.shr.time.viewmodel.HolidayTime;
 	import formatTime = nts.uk.time.format.byId;
-	
+	import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
 
 	@bean()
 	export class Kaf010ViewModel extends Kaf000AViewModel {
@@ -22,7 +22,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 		appType: KnockoutObservable<number> = ko.observable(AppType.HOLIDAY_WORK_APPLICATION);
 		isAgentMode : KnockoutObservable<boolean> = ko.observable(false);
 		application: KnockoutObservable<Application> = ko.observable(new Application(this.appType()));
-		isSendMail: KnockoutObservable<Boolean>;
+		isSendMail: KnockoutObservable<boolean>;
 		overTimeWork: KnockoutObservableArray<OvertimeWork> = ko.observableArray([]);
 		workInfo: KnockoutObservable<WorkInfo> = ko.observable(null);
 		overTime: KnockoutObservableArray<OverTime> = ko.observableArray([]);
@@ -493,18 +493,12 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 						};
 						return vm.$ajax('at', API.register, commandRegister).then(() => {
 							return vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
-								return true;
+								CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm);
 							});
 						});
 					}
 					
-				})
-				.done(result => {
-					if(result){
-						location.reload();
-					}
-				})
-				.fail((failData: any) => {
+				}).fail((failData: any) => {
 					// xử lý lỗi nghiệp vụ riêng
 					vm.handleErrorCustom(failData).then((result: any) => {
 						if (result) {
@@ -618,7 +612,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 						};
 						return vm.$ajax('at', API.registerMulti, commandRegister).then(() => {
 							return vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
-								return true;
+								CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm);
 							});
 						});
 					}

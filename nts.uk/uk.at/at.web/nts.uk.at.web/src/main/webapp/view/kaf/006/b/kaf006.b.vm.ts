@@ -4,6 +4,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
     import PrintContentOfEachAppDto = nts.uk.at.view.kaf000.shr.viewmodel.PrintContentOfEachAppDto;
     import WorkType = nts.uk.at.view.kaf006.shr.viewmodel.WorkType;
     import Kaf006ShrViewModel = nts.uk.at.view.kaf006.shr.viewmodel.Kaf006ShrViewModel;
+	import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
 
     @component({
         name: 'kaf006-b',
@@ -602,7 +603,7 @@ module nts.uk.at.view.kaf006_ref.b.viewmodel {
 			}).then((result) => {
 				if (result) {
 					return vm.$dialog.info({ messageId: "Msg_15"}).then(() => {
-						return true;
+						return CommonProcess.handleMailResult(result, vm);
 					});	
 				}
 			}).then((result) => {
