@@ -37,7 +37,9 @@ module nts.uk.at.view.kmt005.a.viewmodel {
                         setting.useAtr(true);
                     }
                 });
+                nts.uk.ui.errors.clearAll();
             });
+            $("#A2_2").focus();
         }
 
         getData() {
