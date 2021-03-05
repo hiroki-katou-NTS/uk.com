@@ -286,6 +286,10 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 if (self.isNewMode()) {
                     self.listStandardImportSetting.push(self.currentSetOutputSettingCode());
                     self.listStandardImportSetting_Sort();
+                } else {
+                    const updateIndex = _.findIndex(self.listStandardImportSetting(), item => item.layoutIdSelect === self.currentSetOutputSettingCode().layoutId());
+                    self.listStandardImportSetting()[updateIndex].name(self.currentSetOutputSettingCode().name());
+                    self.listStandardImportSetting()[updateIndex].displayName = self.currentSetOutputSettingCode().displayName;
                 }
                 info({ messageId: 'Msg_15' }).then(() => {
                     self.selectedLayoutId(self.currentSetOutputSettingCode().layoutId());
