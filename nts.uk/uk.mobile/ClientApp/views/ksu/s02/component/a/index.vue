@@ -22,7 +22,7 @@
                       <div><i v-click="openPrevMonth" class="fas fa-arrow-alt-circle-left"></i></div>
                       </td>
                       <td style="border: 0px solid #dee2e6 !important;">
-                        <div style="margin-top: -4px; width: 130px;">
+                        <div style="margin-top: -4px; width: 127px;">
                         <nts-year-month id="yearmonth-cmm"
                           v-bind:showTitle="false"
                           v-model="yearMonth"
@@ -53,22 +53,22 @@
                 <tbody>
                   <tr style="">
                     <td
-                      class="uk-bg-schedule-sunday"
-                      style="width: 51px; height: 18px;text-align: center; color:#FF0000;font-weight: bold;font-size: 2vh;"
+                      class="uk-bg-schedule-sunday header-css"
+                      style=" color:#FF0000;"
                     >
                       {{'KSUS02_3' | i18n}}
                     </td>
-                    <td class="uk-bg-disable" style="width: 51px; height: 18px;text-align: center; color:#404040;font-weight: bold;font-size: 2vh;">
+                    <td class="uk-bg-disable header-css" style=" color:#404040;">
                       {{'KSUS02_4' | i18n}}
                     </td>
-                    <td class="uk-bg-disable" style="width: 51px;text-align: center; color:#404040;font-weight: bold;font-size: 2vh;">{{'KSUS02_5' | i18n}}</td>
-                    <td class="uk-bg-disable" style="width: 51px;text-align: center; color:#404040;font-weight: bold;font-size: 2vh;">{{'KSUS02_6' | i18n}}</td>
-                    <td class="uk-bg-disable" style="width: 51px;text-align: center; color:#404040;font-weight: bold;font-size: 2vh;">{{'KSUS02_7' | i18n}}</td>
-                    <td class="uk-bg-disable" style="width: 51px;text-align: center; color:#404040;font-weight: bold;font-size: 2vh;">{{'KSUS02_8' | i18n}}</td>
+                    <td class="uk-bg-disable header-css" style="color:#404040;">{{'KSUS02_5' | i18n}}</td>
+                    <td class="uk-bg-disable header-css" style=" color:#404040;">{{'KSUS02_6' | i18n}}</td>
+                    <td class="uk-bg-disable header-css" style=" color:#404040;">{{'KSUS02_7' | i18n}}</td>
+                    <td class="uk-bg-disable header-css" style=" color:#404040;">{{'KSUS02_8' | i18n}}</td>
                     <td
                       id="d-1"
-                      class="uk-bg-schedule-saturday"
-                      style="width: 51px;text-align: center; color:#0000FF;font-weight: bold;font-size: 2vh;"
+                      class="uk-bg-schedule-saturday header-css"
+                      style="color:#0000FF;"
                     >
                       {{'KSUS02_9' | i18n}}
                     </td>
@@ -94,12 +94,12 @@
                                   style="
                                     border-radius: 0.25rem;
                                     font-size: 9px;
-                                    padding: 0;
+                                    padding: 2px;
                                     font-weight: bold;
                                     border: 1px solid #ced4da;
                                     text-align: center;
                                     margin-top: 3px;
-                                    height: 17px;
+                                    height: 20px;
                                   "
                                   >{{shift.shiftMasterName}}</span>
                               </div>
@@ -110,12 +110,12 @@
                                   style="
                                     border-radius: 0.25rem;
                                     font-size: 9px;
-                                    padding: 0;
+                                    padding: 2px;
                                     font-weight: bold;
                                     border: 1px solid #ced4da;
                                     text-align: center;
                                     margin-top: 2px;
-                                    height: 16px;
+                                    height: 20px;
                                   "
                                   >{{shift.shiftMasterName}}</span>
                               <span>{{'KSUS02_24' | i18n}}</span>
@@ -144,12 +144,12 @@
                                 style="
                                   border-radius: 0.25rem;
                                   font-size: 9px;
-                                  padding: 0;
+                                  padding: 2px;
                                   font-weight: bold;
                                   border: 1px solid #ced4da;
                                   text-align: center;
                                   margin-top: 3px;
-                                  height: 17px;
+                                  height: 20px;
                                 "
                                 >{{shift.shiftMasterName}}</span>
                             </div>
@@ -160,12 +160,12 @@
                                 style="
                                   border-radius: 0.25rem;
                                   font-size: 9px;
-                                  padding: 0;
+                                  padding: 2px;
                                   font-weight: bold;
                                   border: 1px solid #ced4da;
                                   text-align: center;
                                   margin-top: 2px;
-                                  height: 16px;
+                                  height: 20px;
                                 "
                                 >{{shift.shiftMasterName}}</span>
                             <span>{{'KSUS02_24' | i18n}}</span>
@@ -194,12 +194,12 @@
                                   style="
                                     border-radius: 0.25rem;
                                     font-size: 9px;
-                                    padding: 0;
+                                    padding: 2px;
                                     font-weight: bold;
                                     border: 1px solid #ced4da;
                                     text-align: center;
                                     margin-top: 3px;
-                                    height: 17px;
+                                    height: 20px;
                                   "
                                   >{{shift.shiftMasterName}}</span>
                               </div>
@@ -210,12 +210,12 @@
                                   style="
                                     border-radius: 0.25rem;
                                     font-size: 9px;
-                                    padding: 0;
+                                    padding: 2px;
                                     font-weight: bold;
                                     border: 1px solid #ced4da;
                                     text-align: center;
                                     margin-top: 2px;
-                                    height: 16px;
+                                    height: 20px;
                                   "
                                   >{{shift.shiftMasterName}}</span>
                               <span>{{'KSUS02_24' | i18n}}</span>
@@ -245,12 +245,12 @@
                                   style="
                                     border-radius: 0.25rem;
                                     font-size: 9px;
-                                    padding: 0;
+                                    padding: 2px;
                                     font-weight: bold;
                                     border: 1px solid #ced4da;
                                     text-align: center;
                                     margin-top: 3px;
-                                    height: 17px;
+                                    height: 20x;
                                   "
                                   >{{shift.shiftMasterName}}</span>
                               </div>
@@ -261,12 +261,12 @@
                                   style="
                                     border-radius: 0.25rem;
                                     font-size: 9px;
-                                    padding: 0;
+                                    padding: 2px;
                                     font-weight: bold;
                                     border: 1px solid #ced4da;
                                     text-align: center;
                                     margin-top: 2px;
-                                    height: 16px;
+                                    height: 20px;
                                   "
                                   >{{shift.shiftMasterName}}</span>
                               <span>{{'KSUS02_24' | i18n}}</span>
@@ -296,12 +296,12 @@
                                 style="
                                   border-radius: 0.25rem;
                                   font-size: 9px;
-                                  padding: 0;
+                                  padding: 2px;
                                   font-weight: bold;
                                   border: 1px solid #ced4da;
                                   text-align: center;
                                   margin-top: 3px;
-                                  height: 17px;
+                                  height: 20px;
                                 "
                                 >{{shift.shiftMasterName}}</span>
                             </div>
@@ -312,12 +312,12 @@
                                 style="
                                   border-radius: 0.25rem;
                                   font-size: 9px;
-                                  padding: 0;
+                                  padding: 2px;
                                   font-weight: bold;
                                   border: 1px solid #ced4da;
                                   text-align: center;
                                   margin-top: 2px;
-                                  height: 16px;
+                                  height: 20px;
                                 "
                                 >{{shift.shiftMasterName}}</span>
                             <span>{{'KSUS02_24' | i18n}}</span>
@@ -347,12 +347,12 @@
                                   style="
                                     border-radius: 0.25rem;
                                     font-size: 9px;
-                                    padding: 0;
+                                    padding: 2;
                                     font-weight: bold;
                                     border: 1px solid #ced4da;
                                     text-align: center;
                                     margin-top: 3px;
-                                    height: 17px;
+                                    height: 20px;
                                   "
                                   >{{shift.shiftMasterName}}</span>
                               </div>
@@ -363,12 +363,12 @@
                                   style="
                                     border-radius: 0.25rem;
                                     font-size: 9px;
-                                    padding: 0;
+                                    padding: 2px;
                                     font-weight: bold;
                                     border: 1px solid #ced4da;
                                     text-align: center;
                                     margin-top: 2px;
-                                    height: 16px;
+                                    height: 20px;
                                   "
                                   >{{shift.shiftMasterName}}</span>
                               <span>{{'KSUS02_24' | i18n}}</span>
@@ -446,14 +446,14 @@
             <div class="card-body" style="background-color: #f4fbfd">
               <div class="accordion">
                 <!-- 既に開きたいならshowを追加してください。 -->
-                <div class="card1 card show">
+                <div class="card1 card" v-click="showCard1"> 
                   <div class="card-header uk-bg-accordion">
                     <button class="btn btn-link" type="button">
                       <i class="far fa-star"></i>
                       <span class="small-header">{{'KSUS02_10' | i18n}}</span>
                     </button>
                   </div>
-                  <div class="collapse">
+                  <div v-show="showCheckboxs">
                     <div class="">
                       <div
                         id="only-shift"
