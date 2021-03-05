@@ -218,7 +218,9 @@ module nts.uk.at.view.kwr008.a {
                 if (self.selectAverage() && self.printFormat() == 1) {
                     data.curentMonth = self.curentMonth();  
                 }
-                data.setItemsOutputCd = self.selectedOutputItem();
+                data.setItemsOutputLayoutId = self.selectionType() === share.SelectionClassification.STANDARD 
+                                        ? self.selectedOutputItem()
+                                        : self.selectedOutputItemFree();
                 data.breakPage = self.selectedBreakPage().toString();
                 data.printFormat = self.printFormat();
                 data.employees = [];
@@ -645,7 +647,7 @@ module nts.uk.at.view.kwr008.a {
                 employees: Array<UnitModel>;
                 startYearMonth: string;
                 endYearMonth: string;
-                setItemsOutputCd: string;
+                setItemsOutputLayoutId: string;
                 breakPage: string;
                 fiscalYear: string = '';
                 printFormat: number = 0;

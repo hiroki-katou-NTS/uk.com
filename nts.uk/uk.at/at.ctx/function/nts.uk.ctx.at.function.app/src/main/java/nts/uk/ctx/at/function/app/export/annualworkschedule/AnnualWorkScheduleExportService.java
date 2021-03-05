@@ -147,7 +147,7 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 			monthLimit = TimeOverLimitTypeImport.ZERO_TIMES.value;
 		}
 		ExportData data = this.outputProcess(companyId
-										   , query.getSetItemsOutputCd()
+										   , query.getSetItemsOutputLayoutId()
 										   , fiscalYear
 										   , startYm
 										   , endYm

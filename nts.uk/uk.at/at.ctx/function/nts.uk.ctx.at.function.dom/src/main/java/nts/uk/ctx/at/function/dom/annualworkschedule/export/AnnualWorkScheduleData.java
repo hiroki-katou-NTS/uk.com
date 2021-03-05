@@ -20,6 +20,7 @@ import nts.uk.ctx.at.function.dom.annualworkschedule.enums.ValueOuputFormat;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeStatusOfMonthly;
+import nts.uk.shr.com.i18n.TextResource;
 
 @Setter
 @Getter
@@ -265,7 +266,7 @@ public class AnnualWorkScheduleData {
 		if (value == null) {
 			return "";
 		}
-		return "'" + value + "回";
+		return "'" + value + TextResource.localize("KWR008_76");
 	}
 
 	public String formatMonthPeriod1st() {
