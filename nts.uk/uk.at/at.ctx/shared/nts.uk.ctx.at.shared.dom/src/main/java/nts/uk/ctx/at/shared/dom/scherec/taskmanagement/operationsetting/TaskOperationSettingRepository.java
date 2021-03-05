@@ -4,4 +4,6 @@ import java.util.Optional;
 
 public interface TaskOperationSettingRepository {
     Optional<TaskOperationSetting> get(String companyId);
+    void insert(TaskOperationSetting setting);
+    void update(TaskOperationSetting setting);
 }
