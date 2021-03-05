@@ -299,73 +299,7 @@ module nts.uk.at.view.ksu005.b {
             self.itemList(datas);  
             $('#outputSettingName').focus();
         }
-        // loadDetail(code?: string, checkAddInfo?: boolean , checkShiftBgColor?: boolean): void {
-        //     const self = this;
-        //     self.checkAll(false);
-        //     if (code != null && !_.isEmpty(code)) {
-        //         self.$blockui("invisible");
-        //         self.$ajax(Paths.GET_SCHEDULE_TABLE_OUTPUT_SETTING_BY_CODE + "/" + code).done((data: IScheduleTableOutputSetting) => {
-        //             self.countNumberRow = 1;
-        //             if (!_.isNull(data) && !_.isEmpty(data)) {
-        //                 self.clearError();                    
-                        
-        //                 // let personalInfoItemsSize = data.personalInfo.length;
-        //                 // let additionalItemsSize = data.attendanceItem.length;
-        //                 // let attendanceItemSize = data.attendanceItem.length;
-        //                 // let attItem;
-        //                 let datas = [];
-        //                 let tempSelected: Array<any> = [];
-        //                 let tempSelectedCode: Array<any> = [];
-
-
-        //                 // self.scheduleTableOutputSetting().updateData(data);
-        //                 self.scheduleTableOutputSetting().isEnableCode(false);
-        //                 self.isEnableAddBtn(checkAddInfo);
-        //                 self.isShiftBackgroundColor(checkShiftBgColor);
-
-        //                 // datas.push(new ScreenItem(true, self.countNumberRow, data.personalInfo[0] != null ? data.personalInfo[0].toString() : null,
-        //                 //     data.additionalInfo[0] != null ? data.additionalInfo[0].toString() : null,
-        //                 //     data.attendanceItem[0] != null ? data.attendanceItem[0].toString() : null));
-        //                 // if(self.isShiftBackgroundColor()) {
-        //                 //     attItem = self.attendanceItems()[1].value;
-        //                 // } 
-        //                 // else {
-        //                 //     attItem = data.attendanceItem[0] != null ? data.attendanceItem[0].toString() : null
-        //                 // }                        
-        //                 if(self.itemList().length > 0) {
-        //                     self.temp(self.itemList()[0].additionInfo());
-        //                 } 
-        //                 datas.push(new ScreenItem(true, self.countNumberRow, data.personalInfo[0] != null ? data.personalInfo[0].toString() : null,
-        //                     self.temp() != "" ? self.temp(): data.additionalInfo[0].toString(),
-        //                     self.attendanceItems()[1].value));
-
-        //                 self.itemList(datas);
-        //                 self.itemsSwap.removeAll();
-        //                 self.currentCodeListSwap.removeAll();
-        //                 self.itemsSwap((_.cloneDeep(self.workplaceCounterCategories())));
-
-        //                 _.each(data.workplaceCounterCategories, code => {
-        //                     _.each(self.itemsSwap(), y => {
-        //                         if (y.value == code) {
-        //                             tempSelected.push(new SwapModel(y.value, y.name));
-        //                             tempSelectedCode.push(y.value);
-        //                         }
-        //                     })
-        //                 });
-
-        //                 self.currentCodeListSwap(tempSelected);
-        //                 self.selectedCodeListSwap(tempSelectedCode);
-        //                 self.persons(self.personalCounterCategory());
-        //                 self.selectedPerson(data.personalCounterCategories);
-        //                 self.isEditing(true);
-        //                 self.enableDelete(true);
-        //                 $('#outputSettingName').focus();
-        //             }
-        //         }).always(() => {
-        //             self.$blockui("hide");
-        //         })
-        //     }
-        // }
+       
         initialData(): void {
             const self = this;
             let data = [];
@@ -631,15 +565,6 @@ module nts.uk.at.view.ksu005.b {
         private condition2(): boolean {
             const self = this;
             let count: number = 0; 
-            // for (let i = 0; i < self.itemList().length - 1; i++) {
-            //     for (let j = i + 1; j < self.itemList().length; j++) {
-            //         if (self.itemList()[i].personalInfo() == self.itemList()[j].personalInfo() 
-            //             && self.itemList()[i].additionInfo() == self.itemList()[j].additionInfo()) {
-            //             count = count + 1;
-            //         }
-            //     }
-            // }           
-
             _.each(self.itemList(), x => {
                 if (parseInt(x.personalInfo()) == parseInt(x.additionInfo())) {
                     count = count + 1;
@@ -650,7 +575,6 @@ module nts.uk.at.view.ksu005.b {
             }
             return false;
         }
-
         
         private condition3(): boolean {
             const self = this;
@@ -775,19 +699,29 @@ module nts.uk.at.view.ksu005.b {
  
     }
     class ScheduleTableOutputSetting {
+        /** コード */
         code: KnockoutObservable<string> = ko.observable('');
+        /** 名称ド */
         name: KnockoutObservable<string> = ko.observable('');
+        /** 追加列情報 */
         additionalColumn: KnockoutObservable<number> = ko.observable();
+        /** シフト表利用 */
         shiftBackgroundColor: KnockoutObservable<number> = ko.observable();
+        /** 勤務情報 */
         dailyDataDisplay: KnockoutObservable<number> = ko.observable();
+        /** 個人情報 */
         personalInfo: KnockoutObservableArray<number> = ko.observableArray([]);
+        /** 追加列情報_1 */
         additionalInfo: KnockoutObservableArray<number> = ko.observableArray([]);
+        /** 表示項目_1 */
         attendanceItem: KnockoutObservableArray<number> = ko.observableArray([]);
 
         personalInfoItems: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
         additionalItems: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
 
+        /** 職場計出力設定名称 */
         workplaceCounterCategories: KnockoutObservableArray<number> = ko.observableArray([]);
+        /** 個人計出力設定名称 */
         personalCounterCtegories: KnockoutObservableArray<number> = ko.observableArray([]);
         listWkpCounterCategories : KnockoutObservableArray<any> =  ko.observableArray(__viewContext.enums.WorkplaceCounterCategory);
        
