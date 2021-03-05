@@ -14,6 +14,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.enums.EnumAdaptor;
@@ -1708,6 +1709,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 			throw businessException.get();
 		}
 		// 申請の矛盾チェック
+		String workType = appOverTime.getWorkInfoOp().flatMap(x -> Optional.ofNullable(x.getWorkTypeCode())).map(x -> x.v()).orElse(null);
+		GeneralDate date = appOverTime.getApplication().getAppDate().getApplicationDate();
 		commonAlgorithmImpl.appConflictCheck(
 				companyId,
 				displayInfoOverTime.getAppDispInfoStartup()
@@ -1717,8 +1720,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 				   .filter(x -> x.getSid().equals(appOverTime.getApplication().getEmployeeID()))
 				   .findFirst()
 				   .orElse(null),
-			    Arrays.asList(appOverTime.getApplication().getAppDate().getApplicationDate()), 
-    			Arrays.asList(appOverTime.getWorkInfoOp().flatMap(x -> Optional.ofNullable(x.getWorkTypeCode())).map(x -> x.v()).orElse(null)),
+				Optional.ofNullable(date).isPresent() ? Arrays.asList(date) : Collections.emptyList(), 
+    			StringUtils.isBlank(workType) ? Collections.emptyList() : Arrays.asList(workType),
 				displayInfoOverTime.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().orElse(Collections.emptyList()));
 		
 		
