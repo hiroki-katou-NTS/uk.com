@@ -37,16 +37,6 @@ public class StampRecord implements DomainAggregate {
 	@Getter
 	private final StampTypeDisplay stampTypeDisplay;
 
-	/**
-	 * [C-0] 打刻記録(契約コード, 打刻カード番号, 	日時, 表示する打刻区分, Optional<就業情報端末コード>)
-	 * @param contractCode
-	 * @param stampNumber
-	 * @param stampDateTime
-	 * @param stampTypeDisplay
-	 * @param empInfoTerCode
-	 */
-
-
 	public String retriveKey() {
 		return this.getStampNumber()+ this.getStampDateTime().toString();
 	}

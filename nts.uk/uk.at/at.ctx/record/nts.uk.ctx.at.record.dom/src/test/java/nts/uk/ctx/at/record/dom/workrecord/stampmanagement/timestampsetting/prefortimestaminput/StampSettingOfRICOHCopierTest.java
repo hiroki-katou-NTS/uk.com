@@ -54,9 +54,15 @@ public class StampSettingOfRICOHCopierTest {
 				buttonSettings);
 		
 		StampSettingOfRICOHCopier stampSettingOfRICOHCopier = StampSettingOfRICOHCopierHelper.CreateStampSettingOfRICOHCopier();
+		
+		assertThat(stampSettingOfRICOHCopier.getPageLayoutSettings().get(0).equals(pageLayoutSetting)).isFalse();
 		stampSettingOfRICOHCopier.updatePage(pageLayoutSetting);
+		assertThat(stampSettingOfRICOHCopier.getPageLayoutSettings().get(0).equals(pageLayoutSetting)).isTrue();
+		
 		stampSettingOfRICOHCopier.deletePage(new PageNo(1));
-		stampSettingOfRICOHCopier.addPage(pageLayoutSetting);		
-		assertThat(stampSettingOfRICOHCopier.getPageLayoutSettings()).isNotEmpty();
+		assertThat(stampSettingOfRICOHCopier.getPageLayoutSettings()).isEmpty();
+		
+		stampSettingOfRICOHCopier.addPage(pageLayoutSetting);
+		assertThat(stampSettingOfRICOHCopier.getPageLayoutSettings().get(0).equals(pageLayoutSetting)).isTrue();
 	}
 }
