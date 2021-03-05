@@ -554,36 +554,63 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 					}
 				}
 			}
+			// KscdtSchBreakTs
 			if (!oldData.get().breakTs.isEmpty()) {
-				oldData.get().breakTs.sort(Comparator.comparing(KscdtSchBreakTs::getBreakTsStart));
-				newData.breakTs.sort(Comparator.comparing(KscdtSchBreakTs::getBreakTsStart));
-				int sizeOld = oldData.get().breakTs.size();
-				int sizeNew = newData.breakTs.size();
-
-				if (sizeOld > sizeNew) {
-					// remove
-					for (int i = 0; i < sizeNew; i++) {
-						oldData.get().breakTs.get(i).cid = newData.breakTs.get(i).cid;
-						oldData.get().breakTs.get(i).breakTsStart = newData.breakTs.get(i).breakTsStart;
-						oldData.get().breakTs.get(i).breakTsEnd = newData.breakTs.get(i).breakTsEnd;
-					}
-					for (int i = sizeOld - 1; i >= sizeNew; i--) {
-						oldData.get().breakTs.remove(i);
-					}
-
-				} else {
-					for (int i = 0; i < sizeOld; i++) {
-						oldData.get().breakTs.get(i).cid = newData.breakTs.get(i).cid;
-						oldData.get().breakTs.get(i).breakTsStart = newData.breakTs.get(i).breakTsStart;
-						oldData.get().breakTs.get(i).breakTsEnd = newData.breakTs.get(i).breakTsEnd;
-					}
-					for (int i = sizeOld; i < sizeNew; i++) {
-						oldData.get().breakTs.add(newData.breakTs.get(i));
+				// get list insert and update data exist
+				List<KscdtSchBreakTs> listInsert = new ArrayList<>();
+				for (KscdtSchBreakTs schBrk : newData.breakTs) {
+					List<KscdtSchBreakTs> checkLst = new ArrayList<>();
+					oldData.get().breakTs.forEach(x -> {
+						if(schBrk.pk.sid.equals(x.pk.sid)
+								&& schBrk.pk.ymd.equals(x.pk.ymd)
+								&& schBrk.pk.frameNo == x.pk.frameNo) {
+							x.cid = schBrk.cid;
+							x.breakTsStart = schBrk.breakTsStart;
+							x.breakTsEnd = schBrk.breakTsEnd;
+							checkLst.add(x);
+						} 
+					});
+					if(checkLst.isEmpty()) {
+						listInsert.add(schBrk);
 					}
 				}
+				
+				//get list remove
+				List<KscdtSchBreakTs> listRemove = new ArrayList<>();
+				for (KscdtSchBreakTs schBrkTsOld : oldData.get().breakTs) {
+					boolean checkLst = false;
+					for (KscdtSchBreakTs schBrk : newData.breakTs) {
+						if(schBrk.pk.frameNo == schBrkTsOld.pk.frameNo
+								&& schBrk.pk.sid.equals(schBrkTsOld.pk.sid)
+								&& schBrk.pk.ymd.equals(schBrkTsOld.pk.ymd)
+								) {
+							checkLst = true;
+							break;
+						}
+					}
+					if(!checkLst) {
+						listRemove.add(schBrkTsOld);
+					}
+				}
+				
+				//remove
+				String delete = "delete from KscdtSchBreakTs o " + " where o.pk.sid = :sid "
+						+ " and o.pk.ymd = :ymd " + " and o.pk.frameNo = :frameNo";
+				for(KscdtSchBreakTs sle : listRemove) {
+					this.getEntityManager().createQuery(delete).setParameter("sid", sle.pk.sid)
+					.setParameter("ymd", sle.pk.ymd)
+					.setParameter("frameNo", sle.pk.frameNo).executeUpdate();
+				}
+				
+				//add
+				for(KscdtSchBreakTs sle : listInsert) {
+					this.commandProxy().insert(sle);
+				}
+				
 			} else {
 				oldData.get().breakTs = newData.breakTs;
 			}
+			
 			//#114431
 			if (!oldData.get().kscdtSchGoingOutTs.isEmpty()) {
 				oldData.get().kscdtSchGoingOutTs.sort(Comparator.comparing(KscdtSchGoingOutTs::getGoingOutClock));
