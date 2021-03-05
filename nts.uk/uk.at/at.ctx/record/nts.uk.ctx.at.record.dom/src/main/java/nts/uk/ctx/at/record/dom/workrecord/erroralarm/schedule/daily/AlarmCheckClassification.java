@@ -11,11 +11,11 @@ import nts.arc.enums.EnumAdaptor;
 @RequiredArgsConstructor
 public enum AlarmCheckClassification {
     /* エラー */
-    ERROR(1, "エラー"),
+    ERROR(0, "エラー"),
     /* アラーム */
-    ALARM(2, "アラーム"),
+    ALARM(1, "アラーム"),
     /* 抽出条件 */
-    EXTRACTION_CONDITION(3, "抽出条件");
+    EXTRACTION_CONDITION(2, "抽出条件");
 
     public final int value;
     public final String nameId;
