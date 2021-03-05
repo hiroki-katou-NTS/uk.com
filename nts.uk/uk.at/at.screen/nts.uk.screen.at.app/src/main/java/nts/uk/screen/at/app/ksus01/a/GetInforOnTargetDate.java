@@ -114,7 +114,7 @@ public class GetInforOnTargetDate {
 	
     final static String DATE_TIME_FORMAT = "yyyy/MM/dd";
     
-    public InforOnTargetDateDto handle(int desiredSubmissionStatus, int workHolidayAtr,String targetDate) {
+    public InforOnTargetDateDto handle(int desiredSubmissionStatus, int workHolidayAtr, String targetDate) {
 		
     	String companyId = AppContexts.user().companyId();
     	String sid = AppContexts.user().employeeId();
@@ -131,6 +131,7 @@ public class GetInforOnTargetDate {
     	List<AttendanceDto> listAttendaceDto = new ArrayList<AttendanceDto>();
     	List<String> listBusinessName = new ArrayList<String>();
     	String memo = "";
+    	int type = 0;
     	
     	
     	// [出勤休日区分＜＞休日]
@@ -177,10 +178,17 @@ public class GetInforOnTargetDate {
     			
     			// 5.1: [希望提出状態<>希望なし]: 表示情報を返す(require): 一日分の勤務希望の表示情報  <<get>>
     			WorkAvailabilityDisplayInfoOfOneDay workAvailabilityDisplayInfoOfOneDay = workAvailabilityOfOneDay.get().getDisplayInformation(requireWorkAvailability);
-    			List<String> shiftMaterCodes = workAvailabilityDisplayInfoOfOneDay.getDisplayInfo().getShiftList().entrySet().stream().map(e -> e.getKey().v()).collect(Collectors.toList());
     			
-    			// 6: get(会社ID, List<シフトマスタコード>): List<シフトマスタ>
-    			List<ShiftMaster> listShiftMaster = shiftMasterRepository.getByListShiftMaterCd2(companyId, shiftMaterCodes);
+    			type = workAvailabilityDisplayInfoOfOneDay.getDisplayInfo().getMethod().value;
+    			
+    			List<String> shiftMaterCodes = workAvailabilityDisplayInfoOfOneDay.getDisplayInfo().getShiftList().entrySet().stream().map(e -> e.getKey().v()).collect(Collectors.toList());
+    			List<ShiftMaster> listShiftMaster = new ArrayList<ShiftMaster>();
+    			
+    			// 6: [一日分の勤務希望の表示情報.表示情報.種類　＝＝シフト]:  get(会社ID, List<シフトマスタコード>): List<シフトマスタ>
+    			if (type == 1) {
+    				listShiftMaster = shiftMasterRepository.getByListShiftMaterCd2(companyId, shiftMaterCodes);
+    			}
+    			 
     			
     			listShiftMaster.forEach(e -> {
     				
@@ -204,7 +212,7 @@ public class GetInforOnTargetDate {
     		}
     	}
     	
-    	return new InforOnTargetDateDto(listBusinessName, listWorkInforAndTimeZone, memo, listAttendaceDto);
+    	return new InforOnTargetDateDto(listBusinessName, listWorkInforAndTimeZone, memo, listAttendaceDto, type);
     	
 	}
     
@@ -330,8 +338,10 @@ public class GetInforOnTargetDate {
 		@Override
 		public List<String> sortEmployee(List<String> lstmployeeId, Integer sysAtr, Integer sortOrderNo,
 				GeneralDate referenceDate, Integer nameType) {
-			List<String> data = regulInfoEmpAdap.sortEmployee(AppContexts.user().companyId(), lstmployeeId, sysAtr, sortOrderNo, nameType,
-                    GeneralDateTime.fromString(referenceDate.toString(DATE_TIME_FORMAT), DATE_TIME_FORMAT));
+			
+			GeneralDateTime time = GeneralDateTime.fromString(referenceDate.toString() + " " + "00:00", "yyyy/MM/dd HH:mm:ss");
+			
+			List<String> data = regulInfoEmpAdap.sortEmployee(AppContexts.user().companyId(), lstmployeeId, sysAtr, sortOrderNo, nameType, time);
             return data;
 		}
 

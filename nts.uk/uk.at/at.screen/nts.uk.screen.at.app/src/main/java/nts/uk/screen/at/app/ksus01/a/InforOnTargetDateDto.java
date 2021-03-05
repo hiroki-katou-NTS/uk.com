@@ -19,4 +19,6 @@ public class InforOnTargetDateDto {
 	private String memo;
 	
 	private List<AttendanceDto> listAttendaceDto;
+	
+	private int type;
 }
