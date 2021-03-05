@@ -134,8 +134,11 @@ public class RegisWorkScheduleCommandHandler<T> extends CommandHandlerWithResult
 			for (WorkScheduleSaveCommand<T> data : scheduleOfEmps) {
 				WorkInformation workInfo = new WorkInformation(data.workInfor.workTypeCd, data.workInfor.workTimeCd);
 				// step 1.1
-				ResultOfRegisteringWorkSchedule rsOfRegisteringWorkSchedule = CreateWorkSchedule.create(requireImpl, sid, data.ymd,
-						workInfo, data.breakTimeList, data.mapAttendIdWithTime);
+				ResultOfRegisteringWorkSchedule rsOfRegisteringWorkSchedule = CreateWorkSchedule.create(
+						requireImpl, sid, data.ymd,
+						workInfo,
+						false, // TODO VN team update
+						data.breakTimeList, data.mapAttendIdWithTime);
 				
 				lstRsOfRegisWorkSchedule.add(rsOfRegisteringWorkSchedule);
 			}

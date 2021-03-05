@@ -200,8 +200,9 @@ module nts.uk.at.view.ksm004.a {
                         // get new Data when treegrid Work Place key change
                         self.currentCalendarWorkPlace().key.subscribe(value => {
                             nts.uk.ui.block.invisible();
-                            let data: Array<any> = flat($('#tree-grid')['getDataList'](), 'childs');
-                            let item = _.find(data, m => m.workplaceId == value);
+                            let treeGridData = $('#tree-grid')['getDataList'](); 
+                            let data: Array<any> = flat(treeGridData, 'children');
+                            let item = _.find(data, m => m.id == value);
                             if (item) {
                                 self.currentCalendarWorkPlace().name(item.name);
                             } else {
