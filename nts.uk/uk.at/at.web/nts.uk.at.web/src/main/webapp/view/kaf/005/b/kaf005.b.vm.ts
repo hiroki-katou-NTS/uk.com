@@ -3206,7 +3206,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 	export interface OvertimeAppSet {
 		companyID: string;
 		overtimeLeaveAppCommonSetting: any;
-		overtimeQuotaSet: Array<any>;
+		overTimeQuotaSettings: Array<any>;
 		applicationDetailSetting: any;
 	}
 	export interface AgreeOverTimeOutput {
