@@ -6,25 +6,22 @@ package nts.uk.ctx.at.function.dom.adapter.application;
 public enum ReflectStateImport {
 
 	/** 未反映 */
-	NOT_REFLECTED(0, "未反映"),
+	NOTREFLECTED(0, "未反映"),
 	
 	/** 反映待ち */
-	WAIT_REFLECTION(1, "反映待ち"),
+	WAITREFLECTION(1, "反映待ち"),
 	
 	/** 反映済 */
 	REFLECTED(2, "反映済"),
 	
-	/** 取消待ち */
-	WAIT_CANCEL(3, "取消待ち"),
-	
 	/** 取消済 */
-	CANCELED(4, "取消済"),
+	CANCELED(3, "取消済"),
 	
 	/** 差し戻し */
-	REMAND(5, "差し戻し"),
+	REMAND(4, "差し戻し"),
 	
 	/** 否認 */
-	DENIAL(6, "否認");
+	DENIAL(5, "否認");
 	
 	public Integer value;
 	

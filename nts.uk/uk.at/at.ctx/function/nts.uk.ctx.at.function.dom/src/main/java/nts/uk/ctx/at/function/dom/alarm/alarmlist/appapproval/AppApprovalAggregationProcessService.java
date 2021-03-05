@@ -437,20 +437,20 @@ public class AppApprovalAggregationProcessService {
 			List<ResultOfEachCondition> lstResultCondition, DataCheck data) {
 		if(data.lstApp == null || data.lstApp.isEmpty()) return;
 		
-		ReflectStateImport refState = ReflectStateImport.WAIT_REFLECTION;
-		if(fixedExtractCond.getNo() == AppApprovalFixedCheckItem.NOT_APPROVED_COND_NOT_SATISFY) refState = ReflectStateImport.NOT_REFLECTED;
+		ReflectStateImport refState = ReflectStateImport.NOTREFLECTED;
+		if(fixedExtractCond.getNo() == AppApprovalFixedCheckItem.NOT_APPROVED_COND_NOT_SATISFY) refState = ReflectStateImport.NOTREFLECTED;
 		if(fixedExtractCond.getNo() == AppApprovalFixedCheckItem.DISAPPROVE) refState = ReflectStateImport.DENIAL;
-		if(fixedExtractCond.getNo() == AppApprovalFixedCheckItem.NOT_REFLECT) refState = ReflectStateImport.WAIT_REFLECTION;
+		if(fixedExtractCond.getNo() == AppApprovalFixedCheckItem.NOT_REFLECT) refState = ReflectStateImport.WAITREFLECTION;
 		AppApprovalFixedExtractItem item = data.lstExtractItem.stream().filter(x -> x.getNo().equals(fixedExtractCond.getNo()))
 				.collect(Collectors.toList()).get(0);
 		for(ApplicationStateImport a: data.lstApp) {
-			if(a.getReflectState() == refState.value) {
-				ExtractionAlarmPeriodDate pDate = new ExtractionAlarmPeriodDate(Optional.ofNullable(a.getAppDate()), Optional.empty());
-				setAlarmResult(fixedExtractCond,lstWplHist, lstResultCondition,
-						item, a.getEmployeeID(), period, pDate,
-						TextResource.localize("KAL010_523", a.getAppTypeName(), refState.name),
-						TextResource.localize("KAL010_529", a.getAppTypeName()));
-			}
+			if(a.getReflectState() != refState.value) continue;
+			
+			ExtractionAlarmPeriodDate pDate = new ExtractionAlarmPeriodDate(Optional.ofNullable(a.getAppDate()), Optional.empty());
+			setAlarmResult(fixedExtractCond,lstWplHist, lstResultCondition,
+					item, a.getEmployeeID(), period, pDate,
+					TextResource.localize("KAL010_523", a.getAppTypeName(), refState.name),
+					TextResource.localize("KAL010_529", a.getAppTypeName()));
 		}
 	}
 	/**
