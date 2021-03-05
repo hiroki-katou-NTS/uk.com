@@ -10,8 +10,8 @@ import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.tran.AtomTask;
-import nts.uk.cnv.dom.td.service.TableDesignImportService;
-import nts.uk.cnv.dom.td.tabledesign.TableDesign;
+import nts.uk.cnv.dom.td.service.DDLImportService;
+import nts.uk.cnv.dom.td.tabledesign.Snapshot;
 import nts.uk.cnv.dom.td.tabledesign.UkTableDesignRepository;
 
 @Stateless
@@ -29,8 +29,8 @@ public class UkTableDesignImportCommandHandler extends CommandHandler<UkTableDes
 		transaction.execute(() -> {
 			AtomTask at;
 			try {
-				at = TableDesignImportService.regist(
-						new nts.uk.cnv.dom.td.version.TableDesignVersion(command.getBranch(), command.getDate()),
+				at = DDLImportService.regist(
+						command.getBranch(), command.getDate(),
 						require, command.getCreateTableSql(), command.getCreateIndexSql(), command.getCommentSql(), command.getType());
 			} catch (JSQLParserException e) {
 				throw new BusinessException(new RawErrorMessage("SQL文解析に失敗しました：" + e.getCause().toString()));
@@ -40,12 +40,12 @@ public class UkTableDesignImportCommandHandler extends CommandHandler<UkTableDes
 	}
 
 	@RequiredArgsConstructor
-	private static class RequireImpl implements TableDesignImportService.Require {
+	private static class RequireImpl implements DDLImportService.Require {
 
 		private final UkTableDesignRepository tableDesignRepository;
 
 		@Override
-		public void regist(TableDesign tableDesign) {
+		public void regist(Snapshot tableDesign) {
 			boolean exists = tableDesignRepository.exists(tableDesign.getName());
 			if (exists) {
 				tableDesignRepository.update(tableDesign);

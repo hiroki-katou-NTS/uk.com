@@ -13,7 +13,7 @@ import nts.uk.cnv.dom.cnv.conversionsql.JoinAtr;
 import nts.uk.cnv.dom.cnv.conversionsql.OnSentence;
 import nts.uk.cnv.dom.cnv.conversionsql.RelationalOperator;
 import nts.uk.cnv.dom.cnv.conversionsql.SelectSentence;
-import nts.uk.cnv.dom.cnv.conversionsql.TableName;
+import nts.uk.cnv.dom.cnv.conversionsql.TableFullName;
 import nts.uk.cnv.dom.cnv.conversionsql.WhereSentence;
 import nts.uk.cnv.dom.cnv.service.ConversionInfo;
 
@@ -112,7 +112,7 @@ public class CodeToIdPattern extends ConversionPattern {
 			));
 
 		return new Join(
-				new TableName(
+				new TableFullName(
 					info.getTargetDatabaseName(),
 					info.getTargetSchema(),
 					this.codeToIdType.getTableName(),

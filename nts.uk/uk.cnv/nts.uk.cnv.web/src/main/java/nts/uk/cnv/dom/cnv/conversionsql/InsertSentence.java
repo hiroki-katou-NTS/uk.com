@@ -13,7 +13,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class InsertSentence {
 	/** テーブル名 **/
-	private TableName table;
+	private TableFullName table;
 	/** 列の式リスト **/
 	private List<ColumnExpression> expressions;
 

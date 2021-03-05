@@ -10,6 +10,7 @@ import nts.uk.cnv.dom.td.tabledefinetype.TableDefineType;
 public class ColumnDesign {
 	private int id;
 	private String name;
+	private String jpName;
 	private DataType type;
 	private int maxLength;
 	private int scale;

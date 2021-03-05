@@ -1,7 +1,7 @@
 package nts.uk.cnv.app.dto;
 
 import lombok.Value;
-import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 
 @Value
 public class GetUkColumnsParamDto {
@@ -11,11 +11,7 @@ public class GetUkColumnsParamDto {
 	private String branch;
 	private String date;
 
-	public GeneralDate getDate() {
-		return (this.date == null || this.date.isEmpty())
-				? GeneralDate.today()
-				: (this.date.contains("/"))
-					? GeneralDate.fromString(this.date,"yyyy/MM/dd")
-					: GeneralDate.fromString(this.date,"yyyy-MM-dd");
+	public GeneralDateTime getDateTime() {
+		return GeneralDateTime.now();
 	}
 }

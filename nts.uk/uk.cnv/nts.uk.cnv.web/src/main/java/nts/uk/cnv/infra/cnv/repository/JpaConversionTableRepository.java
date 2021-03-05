@@ -10,7 +10,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.cnv.dom.cnv.conversionsql.Join;
 import nts.uk.cnv.dom.cnv.conversionsql.JoinAtr;
-import nts.uk.cnv.dom.cnv.conversionsql.TableName;
+import nts.uk.cnv.dom.cnv.conversionsql.TableFullName;
 import nts.uk.cnv.dom.cnv.conversiontable.ConversionSource;
 import nts.uk.cnv.dom.cnv.conversiontable.ConversionTable;
 import nts.uk.cnv.dom.cnv.conversiontable.ConversionTableRepository;
@@ -98,7 +98,7 @@ public class JpaConversionTableRepository extends JpaRepository implements Conve
 		return entities.stream()
 				.map(entity -> entity.toDomain(
 						ConversionInfo.createDummry(),
-						new Join(new TableName("", "", "", ""), JoinAtr.Main, new ArrayList<>())))
+						new Join(new TableFullName("", "", "", ""), JoinAtr.Main, new ArrayList<>())))
 				.collect(Collectors.toList());
 	}
 

@@ -71,7 +71,7 @@ public class TableDesignWebService extends WebService{
 	@POST
 	@Path("getukcolumns")
 	public List<GetUkColumnsResultDto> getUkColumns(GetUkColumnsParamDto param) {
-		return tdService.getUkColumns(param.getCategory(), param.getTableId(), param.getRecordNo(), param.getBranch(), param.getDate());
+		return tdService.getUkColumns(param.getCategory(), param.getTableId(), param.getRecordNo(), param.getBranch(), param.getDateTime());
 	}
 
 	@POST

@@ -10,7 +10,7 @@ import nts.uk.cnv.dom.cnv.service.ConversionInfo;
 @AllArgsConstructor
 public class Join {
 	/** テーブル名 */
-	public TableName tableName;
+	public TableFullName tableName;
 	/** 結合区分 */
 	public JoinAtr joinAtr;
 	/** 結合条件 */

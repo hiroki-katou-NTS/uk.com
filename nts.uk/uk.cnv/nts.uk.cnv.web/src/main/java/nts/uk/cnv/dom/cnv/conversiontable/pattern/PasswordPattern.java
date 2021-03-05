@@ -10,7 +10,7 @@ import nts.uk.cnv.dom.cnv.conversionsql.Join;
 import nts.uk.cnv.dom.cnv.conversionsql.JoinAtr;
 import nts.uk.cnv.dom.cnv.conversionsql.OnSentence;
 import nts.uk.cnv.dom.cnv.conversionsql.SelectSentence;
-import nts.uk.cnv.dom.cnv.conversionsql.TableName;
+import nts.uk.cnv.dom.cnv.conversionsql.TableFullName;
 import nts.uk.cnv.dom.cnv.service.ConversionInfo;
 import nts.uk.cnv.dom.constants.Constants;
 
@@ -32,7 +32,7 @@ public class PasswordPattern extends ConversionPattern {
 		conversionSql.getFrom().addJoin(sourceJoin);
 
 		Join mappingTableJoin = new Join(
-				new TableName(info.getTargetDatabaseName(), info.getTargetSchema(), Constants.EncryptionTableName, Constants.EncryptionTableAlias),
+				new TableFullName(info.getTargetDatabaseName(), info.getTargetSchema(), Constants.EncryptionTableName, Constants.EncryptionTableAlias),
 				JoinAtr.InnerJoin,
 				Arrays.asList(new OnSentence(
 						new ColumnName(

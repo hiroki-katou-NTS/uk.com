@@ -9,7 +9,7 @@ import nts.uk.cnv.dom.cnv.conversionsql.Join;
 import nts.uk.cnv.dom.cnv.conversionsql.JoinAtr;
 import nts.uk.cnv.dom.cnv.conversionsql.OnSentence;
 import nts.uk.cnv.dom.cnv.conversionsql.RelationalOperator;
-import nts.uk.cnv.dom.cnv.conversionsql.TableName;
+import nts.uk.cnv.dom.cnv.conversionsql.TableFullName;
 import nts.uk.cnv.dom.cnv.service.ConversionInfo;
 import nts.uk.cnv.dom.td.tabledefinetype.databasetype.DatabaseType;
 
@@ -18,7 +18,7 @@ public class ConversionPatternFactory {
 	public static ConversionPattern create(ConversionPatternValue param) {
 		ConversionInfo info = new ConversionInfo(DatabaseType.sqlserver, "KINJIROU_ERP", "dbo", "KINJIROU_UK", "dbo", "000000000000");
 		Join join = new Join(
-				new TableName("KINJIROU_ERP", "dbo", param.getSourceTable(), "base"),
+				new TableFullName("KINJIROU_ERP", "dbo", param.getSourceTable(), "base"),
 				JoinAtr.Main, new ArrayList<>());
 
 		return create(info, join, param);
@@ -64,7 +64,7 @@ public class ConversionPatternFactory {
 
 				return new ParentJoinPattern(info, join,
 						new Join(
-								new TableName("KINJIROU_ERP", "dbo", param.getParentTable(), "parent"),
+								new TableFullName("KINJIROU_ERP", "dbo", param.getParentTable(), "parent"),
 								JoinAtr.InnerJoin,
 								onSentences),
 						param.getSourceColumn_parent());

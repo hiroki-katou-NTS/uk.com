@@ -13,7 +13,7 @@ import nts.uk.cnv.app.dto.FindConversionTableDto;
 import nts.uk.cnv.app.dto.FindConversionTableResult;
 import nts.uk.cnv.app.dto.GetCategoryTablesDto;
 import nts.uk.cnv.dom.cnv.conversionsql.ConversionSQL;
-import nts.uk.cnv.dom.cnv.conversionsql.TableName;
+import nts.uk.cnv.dom.cnv.conversionsql.TableFullName;
 import nts.uk.cnv.dom.cnv.conversionsql.WhereSentence;
 import nts.uk.cnv.dom.cnv.conversiontable.ConversionCategoryTableRepository;
 import nts.uk.cnv.dom.cnv.conversiontable.ConversionRecord;
@@ -98,7 +98,7 @@ public class ConversionTableService {
 		}
 
 		ConversionTable conversonTable = new ConversionTable(
-				new TableName(info.getTargetDatabaseName(), info.getSourceSchema(), dto.getTable(), ""),
+				new TableFullName(info.getTargetDatabaseName(), info.getSourceSchema(), dto.getTable(), ""),
 				whereList,
 				conversionMap
 			);

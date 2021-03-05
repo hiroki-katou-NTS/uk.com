@@ -1,7 +1,7 @@
 package nts.uk.cnv.app.dto;
 
 import lombok.Data;
-import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 
 @Data
 public class ExportToFileDto {
@@ -12,11 +12,7 @@ public class ExportToFileDto {
 	private String branch;
 	private String date;
 
-	public GeneralDate getDate() {
-		return (this.date == null || this.date.isEmpty())
-				? GeneralDate.today()
-				: (this.date.contains("/"))
-					? GeneralDate.fromString(this.date,"yyyy/MM/dd")
-					: GeneralDate.fromString(this.date,"yyyy-MM-dd");
+	public GeneralDateTime getDateTime() {
+		return GeneralDateTime.now();
 	}
 }

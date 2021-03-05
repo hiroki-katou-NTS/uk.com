@@ -9,7 +9,7 @@ import lombok.Getter;
 import nts.uk.cnv.dom.cnv.conversionsql.ConversionSQL;
 import nts.uk.cnv.dom.cnv.conversionsql.FromSentence;
 import nts.uk.cnv.dom.cnv.conversionsql.InsertSentence;
-import nts.uk.cnv.dom.cnv.conversionsql.TableName;
+import nts.uk.cnv.dom.cnv.conversionsql.TableFullName;
 import nts.uk.cnv.dom.cnv.conversionsql.WhereSentence;
 
 /**
@@ -19,7 +19,7 @@ import nts.uk.cnv.dom.cnv.conversionsql.WhereSentence;
 @Getter
 @AllArgsConstructor
 public class ConversionTable {
-	private TableName targetTableName;
+	private TableFullName targetTableName;
 
 	private List<WhereSentence> whereList;
 	private List<OneColumnConversion> conversionMap;

@@ -22,7 +22,7 @@ import nts.uk.cnv.dom.cnv.conversionsql.ColumnName;
 import nts.uk.cnv.dom.cnv.conversionsql.Join;
 import nts.uk.cnv.dom.cnv.conversionsql.JoinAtr;
 import nts.uk.cnv.dom.cnv.conversionsql.OnSentence;
-import nts.uk.cnv.dom.cnv.conversionsql.TableName;
+import nts.uk.cnv.dom.cnv.conversionsql.TableFullName;
 import nts.uk.cnv.dom.cnv.conversiontable.pattern.ConversionPattern;
 import nts.uk.cnv.dom.cnv.conversiontable.pattern.ParentJoinPattern;
 import nts.uk.cnv.dom.cnv.conversiontable.pattern.manager.ParentJoinPatternManager;
@@ -78,7 +78,7 @@ public class ScvmtConversionTypeParent extends JpaEntity implements Serializable
 				info,
 				sourceJoin,
 				new Join(
-					new TableName("", "", ParentJoinPatternManager.parentMappingTable, "parent_" + parentColumnName),
+					new TableFullName("", "", ParentJoinPatternManager.parentMappingTable, "parent_" + parentColumnName),
 					JoinAtr.OuterJoin,
 					on),
 				parentColumnName,

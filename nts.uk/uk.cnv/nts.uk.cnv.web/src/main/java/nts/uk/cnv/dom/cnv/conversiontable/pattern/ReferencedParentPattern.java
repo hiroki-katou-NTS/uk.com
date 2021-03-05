@@ -11,7 +11,7 @@ import nts.uk.cnv.dom.cnv.conversionsql.Join;
 import nts.uk.cnv.dom.cnv.conversionsql.JoinAtr;
 import nts.uk.cnv.dom.cnv.conversionsql.OnSentence;
 import nts.uk.cnv.dom.cnv.conversionsql.SelectSentence;
-import nts.uk.cnv.dom.cnv.conversionsql.TableName;
+import nts.uk.cnv.dom.cnv.conversionsql.TableFullName;
 import nts.uk.cnv.dom.cnv.conversiontable.pattern.manager.ParentJoinPatternManager;
 import nts.uk.cnv.dom.cnv.service.ConversionInfo;
 import nts.uk.cnv.dom.constants.Constants;
@@ -63,7 +63,7 @@ public class ReferencedParentPattern extends ConversionPattern {
 		}
 
 		return new Join (
-				new TableName(info.getTargetDatabaseName(), info.getTargetSchema(), ParentJoinPatternManager.parentMappingTable, alias),
+				new TableFullName(info.getTargetDatabaseName(), info.getTargetSchema(), ParentJoinPatternManager.parentMappingTable, alias),
 				JoinAtr.InnerJoin,
 				on
 			);

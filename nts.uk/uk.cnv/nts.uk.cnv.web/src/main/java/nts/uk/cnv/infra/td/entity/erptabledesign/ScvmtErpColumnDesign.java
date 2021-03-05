@@ -80,6 +80,7 @@ public class ScvmtErpColumnDesign extends JpaEntity implements Serializable {
 		return new ColumnDesign(
 				scvmtErpColumnDesignPk.id,
 				name,
+				"",
 				DataType.valueOf(dataType),
 				maxLength,
 				scale,

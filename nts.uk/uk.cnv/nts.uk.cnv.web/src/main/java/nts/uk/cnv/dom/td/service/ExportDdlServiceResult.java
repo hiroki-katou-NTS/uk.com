@@ -7,6 +7,4 @@ import lombok.Getter;
 @AllArgsConstructor
 public class ExportDdlServiceResult {
 	String ddl;
-	String branch;
-	String date;
 }

@@ -3,7 +3,7 @@ package nts.uk.cnv.screen.app.query.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,7 +14,7 @@ public class Cnv001BLoadParamDto {
 	public String getBranch() {
 		return "";
 	}
-	public GeneralDate getDate() {
-		return GeneralDate.today();
+	public GeneralDateTime getDateTime() {
+		return GeneralDateTime.now();
 	}
 }

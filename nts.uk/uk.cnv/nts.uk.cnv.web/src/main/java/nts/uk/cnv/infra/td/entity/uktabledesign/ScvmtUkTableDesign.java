@@ -23,7 +23,6 @@ import nts.arc.time.GeneralDateTime;
 import nts.uk.cnv.dom.td.tabledesign.ColumnDesign;
 import nts.uk.cnv.dom.td.tabledesign.Indexes;
 import nts.uk.cnv.dom.td.tabledesign.TableDesign;
-import nts.uk.cnv.dom.td.version.TableDesignVersion;
 
 @Getter
 @Entity
@@ -80,11 +79,12 @@ public class ScvmtUkTableDesign extends JpaEntity implements Serializable {
 					 index.pk.getName(),
 					 index.type,
 					 index.clustered,
+					 index.unique,
 					 colmns,
 					 params
 			));
 		}
 
-		return new TableDesign(new TableDesignVersion(pk.getBranch(), pk.getDate()), name, pk.getTableId(), comment, createDate, updateDate, cols, idxs);
+		return new TableDesign(name, pk.getTableId(), comment, createDate, updateDate, cols, idxs);
 	}
 }

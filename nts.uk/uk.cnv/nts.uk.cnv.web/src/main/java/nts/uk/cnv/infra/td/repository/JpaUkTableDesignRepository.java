@@ -8,10 +8,11 @@ import java.util.stream.Collectors;
 
 import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.cnv.app.dto.GetUkTablesResultDto;
 import nts.uk.cnv.dom.td.tabledesign.ColumnDesign;
 import nts.uk.cnv.dom.td.tabledesign.Indexes;
+import nts.uk.cnv.dom.td.tabledesign.Snapshot;
 import nts.uk.cnv.dom.td.tabledesign.TableDesign;
 import nts.uk.cnv.dom.td.tabledesign.UkTableDesignRepository;
 import nts.uk.cnv.infra.td.entity.uktabledesign.ScvmtUkColumnDesign;
@@ -26,12 +27,12 @@ import nts.uk.cnv.infra.td.entity.uktabledesign.ScvmtUkTableDesignPk;
 public class JpaUkTableDesignRepository extends JpaRepository implements UkTableDesignRepository {
 
 	@Override
-	public void insert(TableDesign tableDesign) {
+	public void insert(Snapshot tableDesign) {
 		this.commandProxy().insert(toEntity(tableDesign));
 	}
 
 	@Override
-	public void update(TableDesign tableDesign) {
+	public void update(Snapshot tableDesign) {
 		ScvmtUkTableDesign tergetEntity = toEntity(tableDesign);
 		Optional<ScvmtUkTableDesign> before = this.queryProxy().find(
 				tergetEntity.pk, ScvmtUkTableDesign.class);
@@ -52,7 +53,7 @@ public class JpaUkTableDesignRepository extends JpaRepository implements UkTable
 		return (result.size() > 0);
 	}
 
-	private ScvmtUkTableDesign toEntity(TableDesign tableDesign) {
+	private ScvmtUkTableDesign toEntity(Snapshot tableDesign) {
 		List<ScvmtUkColumnDesign> columns = tableDesign.getColumns().stream()
 				.map(cd -> toEntity(tableDesign, cd))
 				.collect(Collectors.toList());
@@ -63,8 +64,8 @@ public class JpaUkTableDesignRepository extends JpaRepository implements UkTable
 				.map(col -> new ScvmtUkIndexColumns(
 						new ScvmtUkIndexColumnsPk(
 								tableDesign.getId(),
-								tableDesign.getVer().getFeature(),
-								tableDesign.getVer().getDate(),
+								tableDesign.getFeature().v(),
+								tableDesign.getTime(),
 								idx.getName(),
 								idx.getColmns().indexOf(col),
 								col),
@@ -74,10 +75,11 @@ public class JpaUkTableDesignRepository extends JpaRepository implements UkTable
 
 			indexes.add(new ScvmtUkIndexDesign(
 					new ScvmtUkIndexDesignPk(
-							tableDesign.getId(), tableDesign.getVer().getFeature(), tableDesign.getVer().getDate(), idx.getName()),
+							tableDesign.getId(), tableDesign.getFeature().v(), tableDesign.getTime(), idx.getName()),
 					idx.getConstraintType(),
 					String.join(",", idx.getParams()),
 					idx.getClustered(),
+					idx.getUnique(),
 					indexcolumns,
 					null
 			));
@@ -86,22 +88,22 @@ public class JpaUkTableDesignRepository extends JpaRepository implements UkTable
 		return new ScvmtUkTableDesign(
 				new ScvmtUkTableDesignPk(
 					tableDesign.getId(),
-					tableDesign.getVer().getFeature(),
-					tableDesign.getVer().getDate()),
+					tableDesign.getFeature().v(),
+					tableDesign.getTime()),
 				tableDesign.getName(),
-				tableDesign.getComment(),
+				tableDesign.getJpName(),
 				tableDesign.getCreateDate(),
 				tableDesign.getUpdateDate(),
 				columns,
 				indexes);
 	}
 
-	private ScvmtUkColumnDesign toEntity(TableDesign tableDesign, ColumnDesign columnDesign) {
+	private ScvmtUkColumnDesign toEntity(Snapshot tableDesign, ColumnDesign columnDesign) {
 		return new ScvmtUkColumnDesign(
 					new ScvmtUkColumnDesignPk(
 							tableDesign.getId(),
-							tableDesign.getVer().getFeature(),
-							tableDesign.getVer().getDate(),
+							tableDesign.getFeature().v(),
+							tableDesign.getTime(),
 							columnDesign.getId()),
 					columnDesign.getName(),
 					columnDesign.getType().toString(),
@@ -121,26 +123,26 @@ public class JpaUkTableDesignRepository extends JpaRepository implements UkTable
 
 	@Override
 	@SneakyThrows
-	public Optional<TableDesign> findByKey(String tableId, String branch, GeneralDate date) {
+	public Optional<TableDesign> findByKey(String tableId, String branch, GeneralDateTime date) {
 		Optional<ScvmtUkTableDesign> result = find(tableId, branch, date);
 		return Optional.of(result.get().toDomain());
 	}
 
-	private Optional<ScvmtUkTableDesign> find(String tableId, String branch, GeneralDate date) {
+	private Optional<ScvmtUkTableDesign> find(String tableId, String branch, GeneralDateTime date) {
 		return this.queryProxy().find(
 				new ScvmtUkTableDesignPk(tableId, branch, date),
 				ScvmtUkTableDesign.class);
 	}
 
 	@Override
-	public List<GetUkTablesResultDto> getAllTableList(String branch, GeneralDate date) {
+	public List<GetUkTablesResultDto> getAllTableList(String branch, GeneralDateTime date) {
 		return getAll(branch, date).stream()
 			.map(td -> new GetUkTablesResultDto(td.getId(), td.getName()))
 			.collect(Collectors.toList());
 	}
 
 	@Override
-	public List<TableDesign> getAll(String branch, GeneralDate date) {
+	public List<TableDesign> getAll(String branch, GeneralDateTime date) {
 		String sql;
 		List<ScvmtUkTableDesign> list;
 		if (branch != null && !branch.isEmpty()) {

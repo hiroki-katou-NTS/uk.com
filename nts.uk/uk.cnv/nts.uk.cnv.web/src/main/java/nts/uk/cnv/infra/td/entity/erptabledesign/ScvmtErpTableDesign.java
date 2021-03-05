@@ -19,11 +19,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.JpaEntity;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.cnv.dom.td.tabledesign.ColumnDesign;
 import nts.uk.cnv.dom.td.tabledesign.TableDesign;
-import nts.uk.cnv.dom.td.version.TableDesignVersion;
 
 @Getter
 @Entity
@@ -64,6 +62,6 @@ public class ScvmtErpTableDesign extends JpaEntity implements Serializable {
 				.map(col -> col.toDomain())
 				.collect(Collectors.toList());
 
-		return new TableDesign(new TableDesignVersion("erp", GeneralDate.max()), tableId, name, comment, createDate, updateDate, cols, new ArrayList<>());
+		return new TableDesign(tableId, name, comment, createDate, updateDate, cols, new ArrayList<>());
 	}
 }

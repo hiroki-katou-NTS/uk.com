@@ -8,7 +8,7 @@ import javax.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,7 +25,7 @@ public class ScvmtUkIndexDesignPk implements Serializable {
 	private String branch;
 
 	@Column(name = "DATE")
-	private GeneralDate date;
+	private GeneralDateTime date;
 
 	@Column(name = "NAME")
 	private String name;

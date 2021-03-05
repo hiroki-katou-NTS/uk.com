@@ -20,7 +20,7 @@ import nts.uk.cnv.dom.cnv.conversionsql.InsertSentence;
 import nts.uk.cnv.dom.cnv.conversionsql.Join;
 import nts.uk.cnv.dom.cnv.conversionsql.JoinAtr;
 import nts.uk.cnv.dom.cnv.conversionsql.SelectSentence;
-import nts.uk.cnv.dom.cnv.conversionsql.TableName;
+import nts.uk.cnv.dom.cnv.conversionsql.TableFullName;
 import nts.uk.cnv.dom.cnv.conversiontable.ConversionTable;
 import nts.uk.cnv.dom.cnv.conversiontable.OneColumnConversion;
 import nts.uk.cnv.dom.cnv.conversiontable.pattern.ParentJoinPattern;
@@ -77,7 +77,7 @@ public class ParentJoinPatternManager {
 				);
 		}
 
-		TableName mappingTableName = new TableName(
+		TableFullName mappingTableName = new TableFullName(
 				info.getTargetDatabaseName(),
 				info.getTargetSchema(),
 				parentMappingTable,
@@ -165,7 +165,7 @@ public class ParentJoinPatternManager {
 
 	public static String createTable(ConversionInfo info) {
 
-		TableName mappingTableName = new TableName(
+		TableFullName mappingTableName = new TableFullName(
 				info.getTargetDatabaseName(),
 				info.getTargetSchema(),
 				parentMappingTable,
@@ -195,7 +195,7 @@ public class ParentJoinPatternManager {
 	}
 
 	public static String dropTable(ConversionInfo info) {
-		TableName mappingTableName = new TableName(
+		TableFullName mappingTableName = new TableFullName(
 				info.getTargetDatabaseName(),
 				info.getTargetSchema(),
 				parentMappingTable,

@@ -21,7 +21,7 @@ import nts.uk.cnv.dom.cnv.conversionsql.ColumnExpression;
 import nts.uk.cnv.dom.cnv.conversionsql.ColumnName;
 import nts.uk.cnv.dom.cnv.conversionsql.Join;
 import nts.uk.cnv.dom.cnv.conversionsql.RelationalOperator;
-import nts.uk.cnv.dom.cnv.conversionsql.TableName;
+import nts.uk.cnv.dom.cnv.conversionsql.TableFullName;
 import nts.uk.cnv.dom.cnv.conversionsql.WhereSentence;
 import nts.uk.cnv.dom.cnv.conversiontable.ConversionTable;
 import nts.uk.cnv.dom.cnv.conversiontable.OneColumnConversion;
@@ -109,7 +109,7 @@ public class ScvmtConversionTable extends JpaEntity implements Serializable  {
 		List<WhereSentence> where = createWhereSentence(info, sourceCondition);
 
 		return new ConversionTable(
-					new TableName(info.getTargetDatabaseName(), info.getTargetSchema(), pk.getTargetTableName(), "base"),
+					new TableFullName(info.getTargetDatabaseName(), info.getTargetSchema(), pk.getTargetTableName(), "base"),
 					where,
 					columns
 				);

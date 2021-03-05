@@ -22,7 +22,7 @@ import javax.inject.Inject;
 import lombok.RequiredArgsConstructor;
 import nts.arc.error.BusinessException;
 import nts.arc.task.tran.TransactionService;
-import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.cnv.app.command.ErpTableDesignImportCommand;
 import nts.uk.cnv.app.command.ErpTableDesignImportCommandHandler;
 import nts.uk.cnv.app.command.UkTableDesignImportCommand;
@@ -73,7 +73,7 @@ public class TableDesignerService {
 		RequireImpl require = new RequireImpl(ukTableDesignRepository);
 
 		return exportDdlService.exportDdl(
-				require, params.getTableName(), params.getType(), params.isWithComment(), params.getBranch(), params.getDate());
+				require, params.getTableName(), params.getType(), params.isWithComment(), params.getBranch(), params.getDateTime());
 	}
 //
 //	private GeneralDate dateConvert(String dateString) {
@@ -91,12 +91,12 @@ public class TableDesignerService {
 		private final UkTableDesignRepository tableDesignRepository;
 
 		@Override
-		public Optional<TableDesign> find(String tableId, String branch, GeneralDate date) {
+		public Optional<TableDesign> find(String tableId, String branch, GeneralDateTime date) {
 			return tableDesignRepository.findByKey(tableId, branch, date);
 		}
 
 		@Override
-		public List<TableDesign> findAll(String branch, GeneralDate date) {
+		public List<TableDesign> findAll(String branch, GeneralDateTime date) {
 			return tableDesignRepository.getAll(branch, date);
 		}
 	}
@@ -185,7 +185,7 @@ public class TableDesignerService {
 		}
 
 		if (params.isOneFile()) {
-			exportOneFile(params, require, folder, params.getBranch(), params.getDate());
+			exportOneFile(params, require, folder, params.getBranch(), params.getDateTime());
 		}
 		else {
 			exportMultipleFile(params, require, folder);
@@ -195,7 +195,7 @@ public class TableDesignerService {
 	}
 
 	private void exportMultipleFile(ExportToFileDto params, RequireImpl require, File folder) {
-		List<GetUkTablesResultDto> tableList = ukTableDesignRepository.getAllTableList(params.getBranch(), params.getDate());
+		List<GetUkTablesResultDto> tableList = ukTableDesignRepository.getAllTableList(params.getBranch(), params.getDateTime());
 
 		int total = 1;
 		for (GetUkTablesResultDto table : tableList) {
@@ -208,7 +208,7 @@ public class TableDesignerService {
 						params.getType(),
 						params.isWithComment(),
 						params.getBranch(),
-						params.getDate());
+						params.getDateTime());
 
 				String ddl = result.getDdl();
 
@@ -229,7 +229,7 @@ public class TableDesignerService {
 		return;
 	};
 
-	private void exportOneFile(ExportToFileDto params, RequireImpl require, File folder, String branch, GeneralDate date) {
+	private void exportOneFile(ExportToFileDto params, RequireImpl require, File folder, String branch, GeneralDateTime date) {
 		String fileName = folder.isFile()
 			? folder.getAbsolutePath()
 			: folder.getPath() + "\\" + "all.sql";
@@ -395,14 +395,14 @@ public class TableDesignerService {
 
 	public List<GetUkTablesResultDto> getUkTables(GetUkTablesParamsDto params) {
 
-		return ukTableDesignRepository.getAllTableList(params.getBranch(), params.getDate());
+		return ukTableDesignRepository.getAllTableList(params.getBranch(), params.getDateTime());
 	}
 
 	public List<String> getErpTables() {
 		return erpTableDesignRepository.getAllTableList();
 	}
 
-	public List<GetUkColumnsResultDto> getUkColumns(String category, String tableId, int recordNo, String branch, GeneralDate date) {
+	public List<GetUkColumnsResultDto> getUkColumns(String category, String tableId, int recordNo, String branch, GeneralDateTime date) {
 		String id = tableId.replace("\"", "");
 		TableDesign td = ukTableDesignRepository.findByKey(id, branch, date)
 				.orElseThrow(RuntimeException::new);

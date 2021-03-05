@@ -2,23 +2,22 @@ package nts.uk.cnv.dom.td.tabledesign;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.cnv.dom.constants.Constants;
-import nts.uk.cnv.dom.td.alterationlog.AlterationLog;
+import nts.uk.cnv.dom.td.alteration.Alteration;
 import nts.uk.cnv.dom.td.tabledefinetype.TableDefineType;
-import nts.uk.cnv.dom.td.version.TableDesignVersion;
 
 @AllArgsConstructor
 @Getter
 public class TableDesign implements Cloneable {
-	private TableDesignVersion ver;
-	private String name;
 	private String id;
-	private String comment;
+	private String name;
+	private String jpName;
 	private GeneralDateTime createDate;
 	private GeneralDateTime updateDate;
 
@@ -33,13 +32,19 @@ public class TableDesign implements Cloneable {
 		return createTableSql(defineType, true, true);
 	}
 
-	public TableDesign applyAlteration(List<AlterationLog> altarationLogs) {
-		TableDesign newTd = this.clone();
-		altarationLogs.stream().forEach(log ->{
+	/**
+	 * 変更を適用する
+	 * @param altarations 適用する変更履歴のリスト
+	 * @return 適用後のテーブル定義。テーブルが削除された場合はempty
+	 */
+	public Optional<TableDesign> applyAlteration(List<Alteration> altarations) {
+		TableDesignBuilder builder = new TableDesignBuilder(this);
 
+		altarations.stream().forEach(alt ->{
+			alt.apply(builder);
 		});
 
-		return newTd;
+		return builder.build();
 	}
 
 	private String createTableSql(TableDefineType define, boolean withComment, boolean withRLS) {
@@ -64,7 +69,7 @@ public class TableDesign implements Cloneable {
 		if(withComment) {
 			List<String> commentList = new ArrayList<>();
 
-			commentList.add(define.tableCommentDdl(name, comment));
+			commentList.add(define.tableCommentDdl(name, jpName));
 
 			this.columns.stream()
 				.forEach(col -> commentList.add(define.columnCommentDdl(name, col.getName(), col.getComment())));
@@ -116,28 +121,28 @@ public class TableDesign implements Cloneable {
 				.anyMatch(con -> con == true);
 	}
 
-	@Override
-	public TableDesign clone() {
-		List<ColumnDesign> newColumns = new ArrayList<>();
-		columns.stream().forEach(col -> {
-			newColumns.add(col);
-		});
-
-		List<Indexes> newIndexes = new ArrayList<>();
-		indexes.stream().forEach(idx -> {
-			newIndexes.add(idx);
-		});
-
-		return new TableDesign(
-				this.ver.clone(),
-				name,
-				id,
-				comment,
-				GeneralDateTime.ymdhms(createDate.year(), createDate.month(), createDate.day(), createDate.hours(), createDate.minutes(), createDate.seconds()),
-				GeneralDateTime.ymdhms(updateDate.year(), updateDate.month(), updateDate.day(), updateDate.hours(), updateDate.minutes(), updateDate.seconds()),
-				newColumns,
-				newIndexes
-			);
-
-	}
+//	@Override
+//	public TableDesign clone() {
+//		List<ColumnDesign> newColumns = new ArrayList<>();
+//		columns.stream().forEach(col -> {
+//			newColumns.add(col);
+//		});
+//
+//		List<Indexes> newIndexes = new ArrayList<>();
+//		indexes.stream().forEach(idx -> {
+//			newIndexes.add(idx);
+//		});
+//
+//		return new TableDesign(
+//				this.ver.clone(),
+//				name,
+//				id,
+//				comment,
+//				GeneralDateTime.ymdhms(createDate.year(), createDate.month(), createDate.day(), createDate.hours(), createDate.minutes(), createDate.seconds()),
+//				GeneralDateTime.ymdhms(updateDate.year(), updateDate.month(), updateDate.day(), updateDate.hours(), updateDate.minutes(), updateDate.seconds()),
+//				newColumns,
+//				newIndexes
+//			);
+//
+//	}
 }

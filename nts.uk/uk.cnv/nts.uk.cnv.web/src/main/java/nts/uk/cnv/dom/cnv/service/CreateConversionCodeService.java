@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.cnv.dom.cnv.conversionsql.TableName;
+import nts.uk.cnv.dom.cnv.conversionsql.TableFullName;
 import nts.uk.cnv.dom.cnv.conversiontable.ConversionRecord;
 import nts.uk.cnv.dom.cnv.conversiontable.ConversionSource;
 import nts.uk.cnv.dom.cnv.conversiontable.ConversionTable;
@@ -160,9 +160,9 @@ public class CreateConversionCodeService {
 		sb.append("\r\n");
 
 		// 会社IDの変換テーブルの作成
-		TableName mappingTable = new TableName(
+		TableFullName mappingTable = new TableFullName(
 				info.getTargetDatabaseName(), info.getTargetSchema(), Constants.CidMappingTableName, "");
-		TableName source = new TableName(
+		TableFullName source = new TableFullName(
 				info.getSourceDatabaseName(), info.getSourceSchema(), Constants.kyotukaisya_m, "");
 
 		sb.append("CREATE TABLE " + mappingTable.fullName() + "(\r\n");
@@ -204,7 +204,7 @@ public class CreateConversionCodeService {
 		StringBuilder sb = new StringBuilder();
 
 		// 会社IDの変換テーブルの削除
-		TableName mappingTable = new TableName(
+		TableFullName mappingTable = new TableFullName(
 				info.getTargetDatabaseName(), info.getTargetSchema(), Constants.CidMappingTableName, "");
 		sb.append("DROP TABLE " + mappingTable.fullName() + "\r\n");
 		sb.append("\r\n");

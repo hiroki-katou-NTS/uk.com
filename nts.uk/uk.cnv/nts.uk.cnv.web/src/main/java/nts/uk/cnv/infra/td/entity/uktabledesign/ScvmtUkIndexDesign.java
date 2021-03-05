@@ -40,6 +40,9 @@ public class ScvmtUkIndexDesign extends JpaEntity implements Serializable {
 	@Column(name = "IS_CLUSTERED")
 	public boolean clustered;
 
+	@Column(name = "IS_UNIQUE")
+	public boolean unique;
+
 	@OrderBy(value = "pk.id asc")
 	@OneToMany(targetEntity = ScvmtUkIndexColumns.class, mappedBy = "indexdesign", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(name = "SCVMT_UK_COLUMN_DESIGN")

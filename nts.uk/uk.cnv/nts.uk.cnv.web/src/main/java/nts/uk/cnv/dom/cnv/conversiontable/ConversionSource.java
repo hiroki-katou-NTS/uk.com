@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.cnv.dom.cnv.conversionsql.Join;
 import nts.uk.cnv.dom.cnv.conversionsql.JoinAtr;
-import nts.uk.cnv.dom.cnv.conversionsql.TableName;
+import nts.uk.cnv.dom.cnv.conversionsql.TableFullName;
 import nts.uk.cnv.dom.cnv.service.ConversionInfo;
 import nts.uk.cnv.dom.constants.Constants;
 
@@ -22,7 +22,7 @@ public class ConversionSource {
 
 	public Join getJoin(ConversionInfo info) {
 		return new Join(
-						new TableName(
+						new TableFullName(
 							info.getSourceDatabaseName(),
 							info.getSourceSchema(),
 							this.sourceTableName,

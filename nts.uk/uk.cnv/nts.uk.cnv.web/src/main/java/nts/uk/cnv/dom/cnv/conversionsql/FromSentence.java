@@ -19,7 +19,7 @@ import nts.uk.cnv.dom.cnv.service.ConversionInfo;
 @Getter
 public class FromSentence {
 	/** 基準テーブル **/
-	private Optional<TableName> baseTable;
+	private Optional<TableFullName> baseTable;
 	/** 結合テーブル **/
 	private List<Join> joinTables;
 

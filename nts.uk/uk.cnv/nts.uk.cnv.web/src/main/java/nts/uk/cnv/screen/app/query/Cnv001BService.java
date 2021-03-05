@@ -26,7 +26,7 @@ public class Cnv001BService {
 				.map(cate -> cate.getTablename())
 				.collect(Collectors.toList());
 
-		List<String> tables = ukTableDesignRepository.getAllTableList(param.getBranch(), param.getDate()).stream()
+		List<String> tables = ukTableDesignRepository.getAllTableList(param.getBranch(), param.getDateTime()).stream()
 				.map(tb -> tb.getTableName())
 				.collect(Collectors.toList());
 

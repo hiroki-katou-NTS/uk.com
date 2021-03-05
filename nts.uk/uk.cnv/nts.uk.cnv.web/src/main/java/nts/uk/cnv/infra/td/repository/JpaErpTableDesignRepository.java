@@ -45,7 +45,7 @@ public class JpaErpTableDesignRepository extends JpaRepository implements ErpTab
 		return new ScvmtErpTableDesign(
 				tableDesign.getId(),
 				tableDesign.getName(),
-				tableDesign.getComment(),
+				tableDesign.getJpName(),
 				tableDesign.getCreateDate(),
 				tableDesign.getUpdateDate(),
 				columns);
