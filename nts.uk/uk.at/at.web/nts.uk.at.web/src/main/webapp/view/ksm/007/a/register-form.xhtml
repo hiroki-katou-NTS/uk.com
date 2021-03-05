@@ -67,12 +67,12 @@
         <button
           class="small"
           data-bind="click: openDialogScreenB, 
-          enable: registerForm().selectedWkpType() !== 0"
+          enable: registerForm().selectedWkpType() !== 0 &amp;&amp; !isModeNew()"
         >
           #{i18n.getText('KSM007_47')}
         </button>
       </div>      
-      <div class="cell" data-bind="if: registerForm().selectedWkpType() !== 0">
+      <div class="cell" data-bind="if: registerForm().selectedWkpType() !== 0 &amp;&amp; !isModeNew()">
         <div class="table">
           <div
             class="cell"

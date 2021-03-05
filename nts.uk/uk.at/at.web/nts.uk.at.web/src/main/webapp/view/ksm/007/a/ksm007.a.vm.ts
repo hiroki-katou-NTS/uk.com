@@ -13,6 +13,7 @@ module nts.uk.at.view.ksm007.a {
         currentNames: KnockoutObservable<any> = ko.observable([]);
         workplaceGroupList: KnockoutObservable<any> = ko.observable([]);
         registerForm: RegisterForm = ko.observable(new RegisterForm());
+        isModeNew: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor() {
 
@@ -33,6 +34,9 @@ module nts.uk.at.view.ksm007.a {
 
             self.currentIds.subscribe((val) => {            
                 if (val && val.length > 0) {
+                    
+                    self.isModeNew(false); //edit
+
                     service.getNightShiftInfor({ workplaceGroupId: val }).done((data) => {
                         if( data) {
                             if (data.clockHourMinuteStart) {
@@ -77,7 +81,7 @@ module nts.uk.at.view.ksm007.a {
             });
 
             if (self.workplaceGroupList().length === 0) {
-                self.createNew();
+                self.createNew();                
             }
 
         }
@@ -222,6 +226,8 @@ module nts.uk.at.view.ksm007.a {
         createNew() {
             let self = this;
             self.registerForm().clearData();
+            self.currentIds(null);
+            self.isModeNew(true);
             $('#requiredCode').focus();
             self.currentIds([]);
         }

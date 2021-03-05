@@ -30,6 +30,7 @@ module nts.uk.at.view.ksm007.c {
 
     mounted() {
       const vm = this;
+      $('#startDate').focus();
     }
 
     closeDialog() {
@@ -63,6 +64,7 @@ module nts.uk.at.view.ksm007.c {
         };
       }
 
+      
       vm.$blockui('grayout');
       vm.$ajax('com', url, params).done(() => {
         vm.$dialog.info({ messageId: 'Msg_15'}).then(() => {
@@ -95,6 +97,9 @@ module nts.uk.at.view.ksm007.c {
         let limitDate = moment(vm.inputScreenD().startDateLimit).add(+1, 'days').format(FORMAT_DAY);
         vm.beginStartDate(limitDate);
       }
+
+      $('#startDate').focus();
+
     }
   }
 }
