@@ -1193,8 +1193,12 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			};
 			
 			service.changeWorkType(targetOrgDto).done((data: any) => {
-				if(!_.isNil(data))
-				self.workTypeName = (data.workTypeName == null || data.workTypeName == "") ? $("#extable-ksu003").exTable('dataSource', 'middle').body[index].worktypeCode + getText('KSU003_54') : data.workTypeName;
+				if(!_.isNil(data)){
+					self.workTypeName = (data.workTypeName == null || data.workTypeName == "") ? $("#extable-ksu003").exTable('dataSource', 'middle').body[index].worktypeCode + getText('KSU003_54') : data.workTypeName;
+				} else {
+					self.workTypeName = "";
+				}
+				
 				$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktypeName", self.workTypeName);
 			})
 			
@@ -2757,9 +2761,15 @@ module nts.uk.at.view.ksu003.a.viewmodel {
             let self = this;
             let dataReg : any = [];
 			let groupData = _.groupBy(cellsGroup, 'rowIndex');
+			let isBreakByHand = false;
 			if(cellsGroup.length > 0){
 				_.forEach(groupData, function(cells : any) {
                     if (cells.length > 0) {
+				let cssbreakTime: string = self.dataScreen003A().targetInfor == 1 ? "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (cells[0].rowIndex + 2).toString() + ")" + " > td:nth-child(10)" :
+				"#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (cells[0].rowIndex + 2).toString() + ")" + " > td:nth-child(8)";
+				if($(cssbreakTime).css("background-color") != "rgb(255,255,255)"){
+					isBreakByHand = true;
+				}
 
                         let dataCell : any = {
                             sid: self.dataScreen003A().employeeInfo[cells[0].rowIndex].empId,
@@ -2772,12 +2782,18 @@ module nts.uk.at.view.ksu003.a.viewmodel {
                             endTime2   : self.dataScreen003A().employeeInfo[cells[0].rowIndex].workScheduleDto.endTime2,
 							listBreakTime : self.dataScreen003A().employeeInfo[cells[0].rowIndex].workScheduleDto.listBreakTimeZoneDto,
 							directAtr : self.dataScreen003A().employeeInfo[cells[0].rowIndex].workInfoDto.directAtr,
-							bounceAtr : self.dataScreen003A().employeeInfo[cells[0].rowIndex].workInfoDto.bounceAtr
+							bounceAtr : self.dataScreen003A().employeeInfo[cells[0].rowIndex].workInfoDto.bounceAtr,
+							isBreakByHand : isBreakByHand
                         }
                         dataReg.push(dataCell);
                     }
                 });
 			} else {
+				let cssbreakTime: string = self.dataScreen003A().targetInfor == 1 ? "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (self.index045 + 2).toString() + ")" + " > td:nth-child(10)" :
+				"#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (self.index045 + 2).toString() + ")" + " > td:nth-child(8)";
+				if($(cssbreakTime).css("background-color") != "rgb(255,255,255)"){
+					isBreakByHand = true;
+				}
 				 let dataCell : any = {
                             sid: self.dataScreen003A().employeeInfo[self.index045].empId,
                             ymd: self.dataScreen003A().employeeInfo[self.index045].workInfoDto.date,
@@ -2789,7 +2805,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
                             endTime2   : self.dataScreen003A().employeeInfo[self.index045].workScheduleDto.endTime2,
 							listBreakTime : self.dataScreen003A().employeeInfo[self.index045].workScheduleDto.listBreakTimeZoneDto,
 							directAtr : self.dataScreen003A().employeeInfo[self.index045].workInfoDto.directAtr,
-							bounceAtr : self.dataScreen003A().employeeInfo[self.index045].workInfoDto.bounceAtr
+							bounceAtr : self.dataScreen003A().employeeInfo[self.index045].workInfoDto.bounceAtr,
+							isBreakByHand : isBreakByHand
                         }
                   dataReg.push(dataCell);
 			}
