@@ -12,6 +12,7 @@
 			<com:stylefile path="../../share/kdp.main.css" />
 			<com:scriptfile path="../../share/kdpbutton.vm.js" />
 			<com:scriptfile path="../../share/kdpclock.vm.js" />
+			<com:scriptfile path="../../share/kdp-message-error.js" />
 			<com:stylefile path="kdp005.a.main.css" />
 			<com:scriptfile path="kdp005.a.model.js" />
 			<com:scriptfile path="kdp005.a.vm.js" />
@@ -54,6 +55,11 @@
 						</div>
 						<ui:include src="stamp-tab.xhtml" />
 					</div>
+					<div class= "kdp-message-error" data-bind="component: {
+							name: 'kdp-message-error',
+							params:{
+							}
+						}"></div>
 					<div style="padding: 0 10px 10px 80px; min-width: 66vmin;" data-bind="ifnot:isUsed">
 						<span class=" not_used_label label " data-bind="text:errorMessage"></span>
 					</div>
