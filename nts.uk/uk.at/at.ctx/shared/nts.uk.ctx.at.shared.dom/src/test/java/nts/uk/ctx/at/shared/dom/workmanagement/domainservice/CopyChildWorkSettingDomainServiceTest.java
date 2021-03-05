@@ -4,6 +4,7 @@ package nts.uk.ctx.at.shared.dom.workmanagement.domainservice;
 import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
+import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.testing.assertion.NtsAssert;
@@ -67,6 +68,13 @@ public class CopyChildWorkSettingDomainServiceTest {
     public void testCopySuccess() {
         val listRs = Helper.createDomains(Helper.codeList);
         val copySourceSetting = Helper.createDomain();
+
+        new Verifications(){
+            {
+                require.update((Work) any);
+                times = 0;
+            }
+        };
         new Expectations(AppContexts.class, Work.class) {
             {
                 AppContexts.user().companyId();
@@ -80,18 +88,20 @@ public class CopyChildWorkSettingDomainServiceTest {
 
                 listRs.get(0).changeChildWorkList(require, Helper.childWorkList);
 
+                listRs.get(1).changeChildWorkList(require, Helper.childWorkList);
+                listRs.get(2).changeChildWorkList(require, Helper.childWorkList);
+
             }
         };
-
-
-            NtsAssert.atomTask(
-                    () -> CopyChildWorkSettingDomainService.doCopy(require, Helper.taskFrameNo
-                            , Helper.code, Helper.childWorkList),
-                    any -> require.update(any.get()));
-
-
-
-
+        AtomTask persist = CopyChildWorkSettingDomainService.doCopy(require, Helper.taskFrameNo
+                , Helper.code, Helper.childWorkList);
+        persist.run();
+        new Verifications() {
+            {
+                require.update((Work) any);
+                times = 3;
+            }
+        };
 
     }
 
@@ -118,7 +128,9 @@ public class CopyChildWorkSettingDomainServiceTest {
         );
 
         private static final List<TaskCode> codeList = Arrays.asList(
-                new TaskCode("CODE001")
+                new TaskCode("CODE001"),
+                new TaskCode("CODE002"),
+                new TaskCode("CODE003")
 
         );
         private static final GeneralDate startDate = GeneralDate.fromString("2021/01/01", DATE_FORMAT);
