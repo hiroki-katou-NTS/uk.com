@@ -18,6 +18,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.time
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.worktime.common.MultiStampTimePiorityAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.PrioritySetting;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -41,7 +43,7 @@ public class ReflectOneEntranceAndExit {
 	 * @param stamp
 	 * @param ymd  処理中の年月日
 	 */
-	public Optional<WorkStamp> reflect(Optional<WorkStamp> workStamp,Stamp stamp,GeneralDate ymd) {
+	public Optional<WorkStamp> reflect(Optional<WorkStamp> workStamp,Stamp stamp,GeneralDate ymd,PrioritySetting prioritySetting) {
 		String cid = AppContexts.user().companyId();
 		//データがあるかどうか確認する
 		if(!workStamp.isPresent() || !workStamp.get().getTimeDay().getTimeWithDay().isPresent()) {
@@ -55,10 +57,22 @@ public class ReflectOneEntranceAndExit {
 			//時刻を変更してもいいか判断する
 			boolean check = reflectAttendanceClock.isCanChangeTime(cid, workStamp, reasonTimeChangeNew);
 			if(check) {
-				//ドメインに反映する
-				return Optional.of(reflectOnDomain.reflect(workStamp.get(), stamp, ymd));
+				if(checkPriority(TimeWithDayAttr.convertToTimeWithDayAttr(ymd,
+						stamp.getStampDateTime().toDate(), stamp.getStampDateTime().clockHourMinute().v())
+						.valueAsMinutes(), workStamp.get().getTimeDay().getTimeWithDay().get().valueAsMinutes(),
+						prioritySetting.getPriorityAtr())) {
+					//ドメインに反映する
+					return Optional.of(reflectOnDomain.reflect(workStamp.get(), stamp, ymd));
+				}
 			}
 		}
 		return workStamp;
+	}
+	
+	public boolean checkPriority(int stampingTime, int comparisonTime, MultiStampTimePiorityAtr piorityAtr) {
+		if (piorityAtr == MultiStampTimePiorityAtr.AFTER_PIORITY) {
+			return stampingTime >= comparisonTime;
+		}
+		return stampingTime <= comparisonTime;
 	}
 }
