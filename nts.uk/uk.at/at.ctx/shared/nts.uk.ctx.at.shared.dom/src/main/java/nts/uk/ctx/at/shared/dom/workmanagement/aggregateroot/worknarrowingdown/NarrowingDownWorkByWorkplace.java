@@ -34,7 +34,7 @@ public class NarrowingDownWorkByWorkplace extends AggregateRoot {
         );
 
     }
-
+    // 	[1] 変更する
     public void changeCodeList(Require require, List<TaskCode> taskCodeList) {
         CheckExistenceMasterDomainService.checkExistenceWorkMaster(require,taskFrameNo, taskCodeList);
         this.taskCodeList = taskCodeList;

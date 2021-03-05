@@ -6,6 +6,7 @@ import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
 import nts.uk.ctx.at.shared.dom.workmanagement.aggregateroot.workmaster.Work;
+import nts.uk.ctx.at.shared.dom.workmanagement.aggregateroot.worknarrowingdown.NarrowingDownWorkByWorkplace;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
@@ -14,70 +15,59 @@ import java.util.Optional;
 
 /**
  * DomainService: 絞込設定を複写する
+ * Responsibility: 職場別作業の絞込を別の職場に複写する
  *
  * @author chinh.hm
  */
 @Stateless
 public class CopyRefinementSettingDomainService {
-    /**
-     * 説明:紐づける子作業の設定を別の作業に複写する
-     *
-     * @param require
-     * @param taskFrameNo
-     * @param copySource
-     * @param copyDestinationList
-     * @return
-     */
-    public static AtomTask doCopy(Require require, TaskFrameNo taskFrameNo,
-                                  TaskCode copySource, List<TaskCode> copyDestinationList) {
-        if (copyDestinationList.isEmpty()) {
-            throw new BusinessException("Msg_365");
-        }
-        val cid = AppContexts.user().companyId();
-        val copySourceSettingOpt = require.getOptionalWork(cid, taskFrameNo, copySource);
-        if (!copySourceSettingOpt.isPresent()) {
+    public static AtomTask doCopy(Require require,
+                                  String copySourceWplId, String copyDestinationWplId) {
+        val copySourceSettings = require.getListWorkByWpl(copySourceWplId);
+        if (copySourceSettings.isEmpty()) {
             throw new BusinessException("Msg_1185");
         }
-        val copySourceSetting = copySourceSettingOpt.get();
-        val copyDestinationSetting = require.getListWork(cid, taskFrameNo, copyDestinationList);
-
+        val registeredList = require.getListWorkByWpl(copyDestinationWplId);
         return AtomTask.of(() -> {
-            copyDestinationSetting.forEach(e -> {
-                e.changeChildWorkList(require, copySourceSetting.getChildWorkList());
-                require.update(e);
+            registeredList.forEach(e -> {
+                require.delete(copyDestinationWplId, e.getTaskFrameNo());
+            });
+            copySourceSettings.forEach(e -> {
+                val newSetting = NarrowingDownWorkByWorkplace.create(require, copyDestinationWplId,
+                        e.getTaskFrameNo(), e.getTaskCodeList());
+                require.insert(newSetting);
+
             });
         });
     }
 
-    public interface Require extends Work.Require {
+    public interface Require extends NarrowingDownWorkByWorkplace.Require {
         /**
-         * [R-1] 複写元の作業を取得する
-         * 作業Repository.Get(会社ID,作業枠NO,コード)
+         * [R-1] 絞込設定を取得する
+         * 職場別作業の絞込Repository.get*(職場ID)
          *
-         * @param cid
-         * @param taskFrameNo
-         * @param code
+         * @param workPlaceId
          * @return
          */
-        Optional<Work> getOptionalWork(String cid, TaskFrameNo taskFrameNo, TaskCode code);
+        List<NarrowingDownWorkByWorkplace> getListWorkByWpl(String workPlaceId);
 
         /**
-         * [R-2] 複写先設定を取得する
-         * 作業Repository.Get(会社ID,作業枠NO,作業コードリスト)
+         * [R-2] 追加する
+         * 職場別作業の絞込Repository.Insert(職場別作業の絞込)
          *
-         * @param cid
+         * @param narrowing
+         */
+        void insert(NarrowingDownWorkByWorkplace narrowing);
+
+        /**
+         * [R-3] 削除する
+         * 職場別作業の絞込Repository.Delete (職場ID, 作業枠NO)
+         *
+         * @param workPlaceId
          * @param taskFrameNo
-         * @param codes
-         * @return
          */
-        List<Work> getListWork(String cid, TaskFrameNo taskFrameNo, List<TaskCode> codes);
+        void delete(String workPlaceId, TaskFrameNo taskFrameNo);
 
-        /**
-         * [R-3] 更新する
-         * 作業Repository.Update(作業)
-         *
-         * @param work
-         */
-        void update(Work work);
+
     }
 }
