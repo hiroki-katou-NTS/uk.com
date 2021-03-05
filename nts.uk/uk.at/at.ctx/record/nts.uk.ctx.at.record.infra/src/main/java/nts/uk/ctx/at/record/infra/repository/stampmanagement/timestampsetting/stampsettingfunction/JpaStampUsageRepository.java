@@ -61,6 +61,7 @@ public class JpaStampUsageRepository extends JpaRepository implements SettingsUs
 		entity.personStamp = domain.isIndivition() ? 1 : 0;
 		entity.portalStamp = domain.isPortal() ? 1 : 0;
 		entity.smartPhoneStamp = domain.isSmart_phone() ? 1 : 0;
+		entity.ricohStamp = domain.isRicohStamp() ? 1 : 0;
 		
 		return entity;
 	}
