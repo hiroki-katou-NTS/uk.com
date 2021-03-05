@@ -193,6 +193,13 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 		val require = requireService.createRequire();
 		val cacheCarrier = new CacheCarrier();
 
+		//特別休暇暫定データに、親ドメインの情報を更新する。　※暫定データの作成処理がまだ対応中のため、親ドメインと子ドメインが別々になっているので。
+		for(InterimSpecialHolidayMng specialData : specialHolidayData) {
+			InterimRemain remain
+				= interimSpecial.stream().filter(c->c.getRemainManaID()==specialData.getSpecialHolidayId()).findFirst().get();
+			specialData.setParentValue(remain);
+		}
+
 		//○ドメインモデル「特別休暇」を取得する
 		List<SpecialHoliday> lstSpecial = holidayRepo.findByCompanyId(param.getCid());
 		List<EmployeeMonthlyPerError> lstOutput = new ArrayList<>();
@@ -207,7 +214,6 @@ public class TimeOffRemainErrorInforImpl implements TimeOffRemainErrorInfor{
 					x.getSpecialHolidayCode().v(),
 					false,
 					true,
-					interimSpecial,
 					specialHolidayData
 					);
 			//マイナスなしを含めた期間内の特別休暇残を集計する

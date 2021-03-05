@@ -314,107 +314,26 @@ public class SpecialLeaveInfo implements Cloneable {
 		if (!aggregatePeriodWork.getGrantWork().isGrantAtr()) return aggrResult;
 
 		/** 特別休暇を付与する */
-		val specialLeaveInfo = grantSpecialHoliday(require, companyId, employeeId, aggregatePeriodWork, specialLeaveCode);
+		grantSpecialHoliday(require, companyId, employeeId, aggregatePeriodWork, specialLeaveCode);
 
 		/** 特別休暇情報残数を更新 */
-		specialLeaveInfo.updateRemainingNumber(aggregatePeriodWork.getGrantPeriodAtr() == GrantPeriodAtr.AFTER_GRANT);
+		this.updateRemainingNumber(aggregatePeriodWork.getGrantPeriodAtr() == GrantPeriodAtr.AFTER_GRANT);
 
 		/** 「特別休暇情報(付与時点)」に「特別休暇情報」を追加 */
 		if ( !aggrResult.getAsOfGrant().isPresent() ){
 			aggrResult.setAsOfGrant(Optional.of(new ArrayList<SpecialLeaveInfo>()));
 		}
-		aggrResult.getAsOfGrant().get().add(specialLeaveInfo);
+		aggrResult.getAsOfGrant().get().add(this.clone());
 
 		/** 「特別休暇の集計結果」を返す */
 		return aggrResult;
-
-//
-//
-//
-//		// 付与日から期限日を計算
-//		if (!aggregatePeriodWork.getSpecialLeaveGrant().isPresent()) return aggrResult;
-//		val annualLeaveGrant = aggregatePeriodWork.getSpecialLeaveGrant().get();
-//		val grantDate = annualLeaveGrant.getGrantDate();
-//		//val deadline = this.annualPaidLeaveSet.calcDeadline(grantDate);
-//		val deadline = annualLeaveGrant.getDeadLine();
-//
-//		// 付与日数を確認する
-//		double grantDays = 0.0;
-//		if (aggregatePeriodWork.getSpecialLeaveGrant().isPresent()){
-//			grantDays = aggregatePeriodWork.getSpecialLeaveGrant().get().getGrantDays().v().doubleValue();
-//		}
-//
-//		// 次回特休付与を確認する
-//		Double prescribedDays = null;
-//		Double deductedDays = null;
-//		Double workingDays = null;
-//		Double attendanceRate = 0.0;
-//		if (aggregatePeriodWork.getSpecialLeaveGrant().isPresent()){
-//			val nextAnnLeaGrant = aggregatePeriodWork.getSpecialLeaveGrant().get();
-//			if (nextAnnLeaGrant.getPrescribedDays().isPresent()){
-//				prescribedDays = nextAnnLeaGrant.getPrescribedDays().get().v();
-//			}
-//			if (nextAnnLeaGrant.getDeductedDays().isPresent()){
-//				deductedDays = nextAnnLeaGrant.getDeductedDays().get().v();
-//			}
-//			if (nextAnnLeaGrant.getWorkingDays().isPresent()){
-//				workingDays = nextAnnLeaGrant.getWorkingDays().get().v();
-//			}
-//			if (nextAnnLeaGrant.getAttendanceRate().isPresent()){
-//				attendanceRate = nextAnnLeaGrant.getAttendanceRate().get().v().doubleValue();
-//			}
-//		}
-//
-////		// 「特休付与残数データ」を作成する
-////		val newRemainData = new SpecialLeaveGrantRemaining(SpecialLeaveGrantRemainingData.createFromJavaType(
-////				"",
-////				companyId, employeeId, grantDate, deadline,
-////				LeaveExpirationStatus.AVAILABLE.value, GrantRemainRegisterType.MONTH_CLOSE.value,
-////				grantDays, null,
-////				0.0, null, null,
-////				grantDays, null,
-////				0.0,
-////				prescribedDays,
-////				deductedDays,
-////				workingDays));
-////		newRemainData.setDummyAtr(false);
-////
-////		// 作成した「特休付与残数データ」を付与残数データリストに追加
-////		this.grantRemainingList.add(newRemainData);
-//
-////		// 付与後フラグ　←　true
-////		this.afterGrantAtr = true;
-//
-//		// 特休情報．付与情報に付与時の情報をセット
-//		double oldGrantDays = 0.0;
-//		if (this.grantInfo.isPresent()){
-//			oldGrantDays = this.grantInfo.get().getGrantDays().v().doubleValue();
-//		}
-//		this.grantInfo = Optional.of(SpecialLeaveGrant.of(
-//				new SpecialLeaveGrantDayNumber(oldGrantDays + grantDays),
-//				new YearlyDays(workingDays == null ? 0.0 : workingDays),
-//				new YearlyDays(prescribedDays == null ? 0.0 : prescribedDays),
-//				new YearlyDays(deductedDays == null ? 0.0 : deductedDays),
-//				new MonthlyDays(0.0),
-//				new MonthlyDays(0.0),
-//				new AttendanceRate(attendanceRate)));
-//
-//		// 特休情報残数を更新
-//		this.updateRemainingNumber(aggregatePeriodWork.isAfterGrant());
-//
-//		// 「特休情報（付与時点）」に「特休情報」を追加
-//		if (!aggrResult.getAsOfGrant().isPresent()) aggrResult.setAsOfGrant(Optional.of(new ArrayList<>()));
-//		aggrResult.getAsOfGrant().get().add(this.clone());
-//
-//		// 「特休の集計結果」を返す
-//		return aggrResult;
 	}
 
 	/** 特別休暇を付与する */
 	private SpecialLeaveInfo grantSpecialHoliday(SpecialLeaveManagementService.RequireM5 require, String companyId,
 			String employeeId, SpecialLeaveAggregatePeriodWork aggregatePeriodWork, int specialLeaveCode) {
+
 		// 特別休暇を付与する
-		SpecialLeaveInfo specialLeaveInfo = new SpecialLeaveInfo();
 
 		// 特別休暇付与残数データを作成する --------------------------
 
@@ -433,13 +352,16 @@ public class SpecialLeaveInfo implements Cloneable {
 					LeaveExpirationStatus.AVAILABLE.value,
 					GrantRemainRegisterType.MONTH_CLOSE.value,
 					aggregatePeriodWork.getGrantWork().getSpecialLeaveGrant().get().getGrantDays().v(), // 付与日数
-					aggregatePeriodWork.getGrantWork().getSpecialLeaveGrant().get().getTimes().v(),
+					0,
 					0.0, 0,
-					0.0, 0.0, 0, 0.0, specialLeaveCode);
+					0.0,
+					aggregatePeriodWork.getGrantWork().getSpecialLeaveGrant().get().getGrantDays().v(), // 付与日数
+					0,
+					0.0, specialLeaveCode);
 
 
 			// 作成した「特休付与残数データ」を付与残数データリストに追加
-			specialLeaveInfo.grantRemainingDataList.add(newRemainData);
+			this.grantRemainingDataList.add(newRemainData);
 		}
 
 		// 付与上限まで調整 --------------------------
@@ -468,7 +390,7 @@ public class SpecialLeaveInfo implements Cloneable {
 				LeaveRemainingNumber leaveRemainingNumber = new LeaveRemainingNumber();
 
 				// 特別休暇付与残数データ.明細.残数の合計を取得
-				specialLeaveInfo.getGrantRemainingDataList().forEach(c->{
+				this.getGrantRemainingDataList().forEach(c->{
 					leaveRemainingNumber.add(c.getDetails().getRemainingNumber());
 				});
 
@@ -479,7 +401,7 @@ public class SpecialLeaveInfo implements Cloneable {
 				if ( diff > 0 ){
 
 					// 付与日でソート
-					List<SpecialLeaveGrantRemainingData> list = specialLeaveInfo.getGrantRemainingDataList().stream()
+					List<SpecialLeaveGrantRemainingData> list = this.getGrantRemainingDataList().stream()
 						.sorted((a,b)->a.getGrantDate().compareTo(b.getGrantDate()))
 						.collect(Collectors.toList());
 
@@ -501,13 +423,14 @@ public class SpecialLeaveInfo implements Cloneable {
 								new LeaveRemainingNumber(daysDiff, time));
 
 						// 付与残数データ.使用数.上限超過消滅日数←　付与残数データ.使用数.上限超過消滅日数　＋　差分
-						specialLeaveGrantRemainingData.getDetails().getUsedNumber().setLeaveOverLimitNumber(
-								Optional.of(new LeaveOverNumber(daysDiff, 0))); // oooooo
+						specialLeaveGrantRemainingData.getDetails().getUsedNumber().getLeaveOverLimitNumber().get()
+								.add(new LeaveOverNumber(daysDiff, time));
+
 					}
 				}
 			}
 		}
-		return specialLeaveInfo;
+		return this;
 	}
 
 	/**

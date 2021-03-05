@@ -20,7 +20,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremain
  */
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
 public class SpecialLeaveRemainingNumber {
 
@@ -33,6 +32,11 @@ public class SpecialLeaveRemainingNumber {
 	/** 明細 */
 	private List<SpecialLeaveRemainingDetail> details;
 
+	public SpecialLeaveRemainingNumber() {
+		this.dayNumberOfRemain=new DayNumberOfRemain(0.0);
+		this.timeOfRemain=Optional.empty();
+		this.details=new ArrayList<>();
+	}
 
 	private SpecialLeaveRemainingNumber(BigDecimal days, Integer minutes) {
 		this.dayNumberOfRemain = new DayNumberOfRemain(days== null? 0.0d: days.doubleValue());

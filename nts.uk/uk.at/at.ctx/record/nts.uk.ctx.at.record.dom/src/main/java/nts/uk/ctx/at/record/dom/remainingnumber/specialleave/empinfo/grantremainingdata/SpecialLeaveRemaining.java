@@ -139,7 +139,7 @@ public class SpecialLeaveRemaining implements Cloneable {
 		// パラメータ「特別休暇残数．合計残日数」と「特別休暇残数．合計残時間」をチェック
 
 		// 合計残日数<0　or 合計残時間 < 0
-		double remainDays = specialLeaveUseNumber.getUseDays().map(x -> x.v()).orElse(0.0);
+		double remainDays = specialLeaveRemainingNumber.getDayNumberOfRemain().v();
 		int remainTimes = 0;
 		if ( specialLeaveRemainingNumber.getTimeOfRemain().isPresent() ){
 			remainTimes = specialLeaveRemainingNumber.getTimeOfRemain().get().v();

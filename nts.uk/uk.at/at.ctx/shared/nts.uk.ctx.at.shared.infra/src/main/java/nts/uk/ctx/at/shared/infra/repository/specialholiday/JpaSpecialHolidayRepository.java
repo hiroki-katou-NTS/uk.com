@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.shared.infra.repository.specialholiday;
 
-import static org.hamcrest.Matchers.empty;
-
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -212,7 +210,6 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		Integer deadlineMonths = c.getInt("DEADLINE_MONTHS");
 		Integer deadlineYears = c.getInt("DEADLINE_YEARS");
 		Integer limitCarryoverDays = c.getInt("LIMIT_CARRYOVER_DAYS") ;
-		Integer limit = 1;//DBに定義がない。蓄積上限日数.蓄積上限日数を制限する
 
 		//利用条件
 		int restrictionCls = c.getInt("RESTRICTION_CLS") != null ? c.getInt("RESTRICTION_CLS") : 0;
@@ -236,13 +233,13 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		Optional<FixGrantDate> fixGrantDate=Optional.empty();
 		Optional<PeriodGrantDate> periodGrantDate=Optional.empty();
 
-		switch(grantTiming) {
+		switch(grantTiming) { // TypeTime
 			case 1://付与テーブルを参照して付与する
 				/*
 				 * 期限  = KSHMT_HDSP_GRANT_DEADLINE
 				 * */
 				grantPeriodic
-					= Optional.of(createGrantDeadline(timeMethod, deadlineMonths, deadlineYears, limit, limitCarryoverDays));
+					= Optional.of(createGrantDeadline(timeMethod, deadlineMonths, deadlineYears, limitCarryoverDays));
 				break;
 			case 2://指定日に付与する
 				/*
@@ -250,7 +247,7 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 				 * 期限  = KSHMT_HDSP_GRANT_DEADLINE
 				 * 付与月日 = KSHST_GRANT_REGULAR.GRANTED_MD(KSHMT_HDSP_GRANT)
 				 * */
-				GrantDeadline deadline = createGrantDeadline(timeMethod, deadlineMonths, deadlineYears, limit, limitCarryoverDays);
+				GrantDeadline deadline = createGrantDeadline(timeMethod, deadlineMonths, deadlineYears, limitCarryoverDays);
 				fixGrantDate = Optional.of(FixGrantDate.createFromJavaType(
 						companyId,
 						specialHolidayCode,
@@ -302,7 +299,6 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 			Integer timeMethod,
 			Integer deadlineMonths,
 			Integer deadlineYears,
-			Integer limit,
 			Integer limitCarryoverDays) {
 
 		Optional<SpecialVacationDeadline> expirationDate =Optional.empty();
@@ -312,7 +308,6 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		return GrantDeadline.createFromJavaType(
 				timeMethod,
 				expirationDate,
-				limit,
 				limitCarryoverDays);
 	}
 
