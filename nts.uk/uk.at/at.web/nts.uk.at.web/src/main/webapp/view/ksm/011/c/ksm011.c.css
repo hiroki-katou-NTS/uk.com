@@ -31,3 +31,11 @@
 .table .divi {
   margin-top: 20px;
 }
+
+span.limited-label {
+  border: solid 1px #999;
+  border-radius: 4px;
+  width: 250px;
+  padding: 6px 10px;
+  margin-left: 5px;
+}

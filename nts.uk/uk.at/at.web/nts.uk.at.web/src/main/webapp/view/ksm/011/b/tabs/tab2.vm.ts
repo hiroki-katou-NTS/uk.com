@@ -16,8 +16,8 @@ module nts.uk.at.view.ksm011.b.tabs.tab2 {
     daysList: KnockoutObservableArray<any>;
     workRequestInput: KnockoutObservableArray<any>;
     workRequestInputSelected: KnockoutObservable<number> = ko.observable(1); 
-    deadlineSelected: KnockoutObservable<number> = ko.observable(1); 
-    deadlineWorkSelected: KnockoutObservable<number> = ko.observable(1); 
+    deadlineSelected: KnockoutObservable<number> = ko.observable(0); 
+    deadlineWorkSelected: KnockoutObservable<number> = ko.observable(0); 
 
     constructor(params: any) {
       super();
