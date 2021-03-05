@@ -191,5 +191,56 @@ public class ReflectDataStampDailyServiceTest {
 		assertThat(optional.isPresent()).isFalse();
 		assertThat(optional).isEmpty();
 	}
+	
+	@Test
+	public void test_isTrue() {
+		
+		errorMessageInfos.add(error);
+		Stamp stamp = StampHelper.getStampDefaultIsTrue();
+		
+		OutputCreateDailyOneDay outputCreateDailyOneDay2 = new OutputCreateDailyOneDay(errorMessageInfos,
+				new IntegrationOfDaily(employeeId,
+						date,
+						new WorkInfoOfDailyAttendance(),
+						null,
+						null,
+						null,
+						null,
+						null,
+						null,
+						null,
+						null,
+						null,
+						null,
+						null,
+						null,
+						null,
+						null,
+						null,
+						null),
+				new ArrayList<>());
+		
+		new Expectations() {
+			{
+				require.createDailyResult(cid,
+						employeeId,
+						date,
+						ExecutionTypeDaily.CREATE,
+						EmbossingExecutionFlag.ALL,
+						null,
+						null,
+						null);
+				
+				result = outputCreateDailyOneDay2;
+				
+			}
+		};
+
+		Optional<GeneralDate> optional = ReflectDataStampDailyService.getJudgment(require, cid, employeeId, stamp);
+
+		assertThat(optional.isPresent()).isTrue();
+		GeneralDate date = GeneralDate.today().addDays(-2);
+		assertThat(optional.get()).isEqualTo(date);
+	}
 
 }
