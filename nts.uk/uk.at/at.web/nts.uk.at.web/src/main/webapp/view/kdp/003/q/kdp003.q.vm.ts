@@ -55,8 +55,8 @@ module nts.uk.at.kdp003.q {
 			vm.parentParam = parentParam;
 			vm.isNewMode(vm.parentParam.isNewMode);
 			vm.isStartUpdateMode = !vm.parentParam.isNewMode;
-			vm.employeeReferenceRange(parentParam.role.employeeReferenceRange);
-			vm.assignAtr(parentParam.role.assignAtr);
+			vm.employeeReferenceRange(parentParam.role ? parentParam.role.employeeReferenceRange : 0);
+			vm.assignAtr(parentParam.role ? parentParam.role.assignAtr : 0);
 			vm.onStartScreen();
 		}
 

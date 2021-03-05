@@ -38,6 +38,27 @@
 }
 
 .btn-footer{
-	margin: 0 20px;
+	margin: 0 35px;
 	padding: 0 20px;
 }
+
+.left {
+	float: left;
+}
+
+.right {
+	float: right;
+}
+
+.ml-30 {
+	margin-left: 73px !important;
+}
+
+.mr-30 {
+	margin-right: 73px !important;
+}
+
+.ml-15 {
+	margin-left: 15px !important;
+}
+ 
