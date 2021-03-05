@@ -19,12 +19,12 @@ module nts.uk.at.view.kdp.share {
             <div class="title">
                 <div data-bind="i18n: '店長より：'"></div>
                 <div>
-                    <i data-bind="ntsIcon: { no: 160, width: 30, height: 30 }"></i>
+                    <i data-bind="ntsIcon: { no: 160, width: 30, height: 30 }, click: openPDialog"></i>
                 </div>
             </div>
             <div class="content" data-bind="i18n: warningMessage"></div>
             <div>
-                <i data-bind="ntsIcon: { no: 161, width: 30, height: 30 }"></i>
+                <i data-bind="ntsIcon: { no: 161, width: 30, height: 30 }, click: openRDialog"></i>
             </div>
         </div>
     </div>
@@ -93,5 +93,15 @@ module nts.uk.at.view.kdp.share {
 
         mounted() {
         }
+
+		openPDialog(){
+			const vm = this;
+			vm.$window.modal('at', '/view/kdp/003/p/index.xhtml');
+		}
+
+        openRDialog(){
+			const vm = this;
+			vm.$window.modal('at', '/view/kdp/003/r/index.xhtml');
+		}
     }
 }
