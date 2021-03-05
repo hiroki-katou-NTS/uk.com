@@ -1,23 +1,42 @@
 module nts.uk.at.view.kmf004.d.viewmodel {
     import isNullOrEmpty = nts.uk.text.isNullOrEmpty;
     export class ScreenModel {
+        // smt
         grantDates: KnockoutObservableArray<GrantDateTbl>;
+        // D2_3
         lstGrantDate: KnockoutObservableArray<GrantDateItem>;
+        // D2_3
         columns: KnockoutObservableArray<any>;
+        // D2_3
         selectedCode: KnockoutObservable<string>;
+        // D3_5
         grantDateCode: KnockoutObservable<string>;
+        // D3_7
         grantDateName: KnockoutObservable<string>;
+        // D3_8
         provisionCheck: KnockoutObservable<boolean>;
+        // D4_3
         items: KnockoutObservableArray<Item>;
+        // D4_7, D4_8
+        enableElapsedYears: KnockoutObservable<boolean> = ko.observable(false);
+        // D1_3
         editMode: KnockoutObservable<boolean>;
+        
         fixedAssignCheck: KnockoutObservable<boolean>;
+        // D5_3
         numberOfDays: KnockoutObservable<number>;
         sphdCode: any;
+        // D3_6
         codeEnable: KnockoutObservable<boolean>;
+        // D5_5, D5_3, 
         numberOfDaysEnable: KnockoutObservable<boolean>;
+        // D5_5, D5_3
         daysReq: KnockoutObservable<boolean>;
+        // D1_1
         newModeEnable: KnockoutObservable<boolean>;
         isDelete: KnockoutObservable<boolean>;
+        // D5_1
+        grantCls: KnockoutObservable<boolean> = ko.observable(false);
         
         provisionActive: KnockoutObservable<boolean> = ko.observable(true);
 
@@ -100,7 +119,16 @@ module nts.uk.at.view.kmf004.d.viewmodel {
                     // clear all error
                     nts.uk.ui.errors.clearAll();
                 }
-            });  
+            }); 
+            
+            self.provisionCheck.subscribe((val) => {
+                if(val == true){
+                    self.enableElapsedYears(true);
+                } else {
+                    self.enableElapsedYears(false);
+                }
+
+            });
         }
 
         /** get data when start dialog **/

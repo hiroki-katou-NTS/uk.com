@@ -313,7 +313,7 @@
 														</div></td>
 													<td>
 														<button id="A10_9" tabindex="20" class="cell"
-															data-bind="click : openDialogD, enable: enableMethod0Content">#{i18n.getText('KMF004_23')}</button>
+															data-bind="click : openDialogD, enable: dialogDEnable">#{i18n.getText('KMF004_23')}</button>
 													</td>
 												</tr>
 												<tr>
@@ -365,7 +365,7 @@
 																		optionsValue: 'id',
 																		optionsText: 'name',
 																		value: selectedTimeMethod,
-																		enable: true }"></div>
+																		enable: enableTimeMethods }"></div>
 										</td>
 									</tr>
 								</table>
@@ -412,12 +412,12 @@
 								<div id="A12_16" tabindex="26"
 									style="margin-left: 35px; display: inline-block; width: 150px;"
 									data-bind="ntsCheckBox: { 
-																checked: true,
-																enable: true,
+																checked: limitedDaysCkb,
+																enable: enableLimitedDaysCkb,
 																text: '#{i18n.getText('KMF004_180')}'
 															}">
 								</div>
-								<div id="A12_7" style="display: inline-block; margin-right: 20px;">#{i18n.getText('KMF004_32')}</div>
+								<div id="A12_7" style="display: inline-block; margin-right: 20px;">#{i18n.getText('KMF004_181')}</div>
 								<!--A12_8-->
 								<input tabindex="27" id="limitedDays" class="limited-days" style="margin-bottom: -10px;"
 									data-bind="ntsNumberEditor: {
@@ -428,7 +428,7 @@
 																				unitID: 'DAYS',
 																				width: '70'
 																			}),
-																			enable: limitedDaysEnable }" />
+																			enable: enablelimitedDays }" />
 							</div>
 						</div>
 						<div class="tab-content-3">

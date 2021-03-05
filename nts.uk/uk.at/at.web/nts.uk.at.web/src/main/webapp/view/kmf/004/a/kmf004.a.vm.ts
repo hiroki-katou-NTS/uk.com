@@ -1,92 +1,177 @@
 module nts.uk.at.view.kmf004.a.viewmodel {
     export class ScreenModel {
+        // A2_2
         sphdList: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
         columns: KnockoutObservableArray<any> = ko.observableArray([
             { headerText: nts.uk.resource.getText('KMF004_5'), key: 'specialHolidayCode', width: 100 },
             { headerText: nts.uk.resource.getText('KMF004_6'), key: 'specialHolidayName', width: 150, formatter: _.escape }
         ]);
+        // A2_2
         currentCode: KnockoutObservable<any> = ko.observable();
+        // A3_2
         specialHolidayCode: KnockoutObservable<string> = ko.observable("");
+        // A1_3
         isEnable: KnockoutObservable<boolean> = ko.observable(true);
+        // A3_2
         isDisable: KnockoutObservable<boolean> = ko.observable(true);
+
         editMode: KnockoutObservable<boolean> = ko.observable(false);
+        // A6_2
         autoGrants: KnockoutObservableArray<any> = ko.observableArray([
                 { code: 0, name: nts.uk.resource.getText('KAF008_55') },
                 { code: 1, name: nts.uk.resource.getText('KAF008_54') }
             ]);
+        // A6_2
         autoGrant: KnockoutObservable<boolean> = ko.observable(1);
+        // A3_3
         specialHolidayName: KnockoutObservable<string> = ko.observable("");
+        // A5_2
         targetItemsName: KnockoutObservable<string> = ko.observable("");
+        // A7_2
         memo: KnockoutObservable<string> = ko.observable("");
+        // A8_1
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
+        // A8_1
         selectedTab: KnockoutObservable<string>;
         //    grantDateOptions: KnockoutObservableArray<any>;
+        // remove
         selectedGrantDate: any;
+        // A10_2
         methods: KnockoutObservableArray<any>;
+        // A10_3
         method1: KnockoutObservable<any>;
+        // A10_14, A10_8, A10_12
         enableMethod1Content: KnockoutObservable<boolean> = ko.observable(true);
+        // A10_18
         mGrantDates: KnockoutObservableArray<any>;
+        // A10_12
         mGrantDate0: KnockoutObservable<any>;
+        // A10_12, A10_13
         enableGrantDate0Content: KnockoutObservable<boolean> = ko.observable(true);
+        // A10_13
         monthDay: KnockoutObservable<number>;
+        // A10_13
         enableMonthday: KnockoutObservable<boolean>;
+        // A10_23, A10_15
         referDates: KnockoutObservableArray<any>;
+        // A10_23, A10_15
         selectedReferDate: KnockoutObservable<number>;
+        // A10_14
         mGrantDate1: KnockoutObservable<any>;
+        // A10_15
         enableGrantDate1Content: KnockoutObservable<boolean> = ko.observable(false);
+        // A10_12, A10_14
         selectedMGrantDate: KnockoutObservable<number>;
+        // A10_11
         method2: KnockoutObservable<any>;
+        // A12_12, A12_12, A10_21
         enableMethod2Content: KnockoutObservable<boolean> = ko.observable(false);
+        // A10_4
         method0: KnockoutObservable<any>;
+        // A10_23, A10_9
         enableMethod0Content: KnockoutObservable<boolean> = ko.observable(false);
+        // A10_2
         selectedMethod: KnockoutObservable<number>;
+        // remove
         allowDisappear: KnockoutObservable<boolean>;
+        // remove
         years: KnockoutObservable<number>;
+        // A10_8
         days: KnockoutObservable<number>;
+        // A10_9
         dialogDEnable: KnockoutObservable<boolean> = ko.observable(false);
+        // remove
         yearEnable: KnockoutObservable<boolean> = ko.observable(true);
+        // remove
         dayEnable: KnockoutObservable<boolean> = ko.observable(true);
+        // A12_2
         timeMethods: KnockoutObservableArray<any>;
+        // A12_2
+        enableTimeMethods: KnockoutObservable<boolean> = ko.observable(true);
+        // A12_2
         selectedTimeMethod: KnockoutObservable<number>;
+        // A12_16
+        enableLimitedDaysCkb: KnockoutObservable<boolean> = ko.observable(true);
+        // A12_16
+        limitedDaysCkb: KnockoutObservable<boolean> = ko.observable(false);
+        // A12_8
         limitedDays: KnockoutObservable<number>;
-        limitedDaysEnable: KnockoutObservable<boolean>;
+        // A12_8
+        enablelimitedDays: KnockoutObservable<boolean>;
+        // A12_10
         expYears: KnockoutObservable<number>;
+        // A12_10
         expYearEnable: KnockoutObservable<boolean>;
+        // A12_11
         expMonth: KnockoutObservable<number>;
+        // A12_11
         expMonthEnable: KnockoutObservable<boolean>;
+        // A12_12, A12_14
         startDateEnable: KnockoutObservable<boolean>;
+        // same as startDateEnable 
         endDateEnable: KnockoutObservable<boolean>;
+        // A16_1
         genderSelected: KnockoutObservable<boolean>;
+        // A17_1
         empSelected: KnockoutObservable<boolean>;
+        // A18_1
         clsSelected: KnockoutObservable<boolean>;
+        // A15_1
         ageSelected: KnockoutObservable<boolean>;
+        // A16_2
         genderOptions: KnockoutObservableArray<any>;
+        // A16_2
         genderOptionEnable: KnockoutObservable<boolean>;
+        // A16_2
         selectedGender: any;
+        // A17_2
         empLst: KnockoutObservableArray<any> = ko.observableArray([]);
+        // A18_2
         clsLst: KnockoutObservableArray<any> = ko.observableArray([]);
+        // A17_2
         empLstEnable: KnockoutObservable<boolean>;
+        // A18_2
         clsLstEnable: KnockoutObservable<boolean>;
+        // A15_2
         startAge: KnockoutObservable<number>;
+        // A15_2
         startAgeEnable: KnockoutObservable<boolean>;
+        // A15_4
         endAge: KnockoutObservable<number>;
+        // A15_4
         endAgeEnable: KnockoutObservable<boolean>;
+        // A15_10
         ageCriteriaCls: KnockoutObservableArray<Items>;
+        // A15_10
         selectedAgeCriteria: KnockoutObservable<string>;
+        // A15_10
         ageCriteriaClsEnable: KnockoutObservable<boolean>;
+        // A15_12
         ageBaseDate: KnockoutObservable<string> = ko.observable("");
+        // A15_12
         ageBaseDateEnable: KnockoutObservable<boolean>;
+        // smt
         selectedTargetItems: any;
+        // smt
         targetItems: KnockoutObservableArray<any> = ko.observableArray([]);
+        // A17_2
         cdl002Name: KnockoutObservable<String> = ko.observableArray([]);
+        // A18_2
         cdl003Name: KnockoutObservable<String> = ko.observableArray([]);
         yearReq: KnockoutObservable<boolean> = ko.observable(true);
+        // A10_8
         dayReq: KnockoutObservable<boolean> = ko.observable(true);
+        // A1_1
         newModeEnable: KnockoutObservable<boolean> = ko.observable(true);
+        // A15_2, A15_12, A15_4
         ageBaseDateReq: KnockoutObservable<boolean>;
+        // A15_12
         ageBaseDateDefaultValue: KnockoutObservable<boolean>;
+        // smt
         dateRange: KnockoutObservableArray<any> = ko.observable({});
+        // A12_12
         startYM: KnockoutObservable<number> = ko.observable();
+        // A12_14
         endYM: KnockoutObservable<number> = ko.observable();
 
         constructor() {
@@ -94,11 +179,11 @@ module nts.uk.at.view.kmf004.a.viewmodel {
 
             self.specialHolidayCode.subscribe(function(value) {
                 let isNewValue = _.find(self.sphdList(), ['specialHolidayCode', value]) ? false : true;
-                if (!isNewValue && self.selectedMethod() == 1) {
-                    self.dialogDEnable(true);
-                } else {
-                    self.dialogDEnable(false);
-                }
+                // if (!isNewValue && self.selectedMethod() == 1) {
+                //     self.dialogDEnable(true);
+                // } else {
+                //     self.dialogDEnable(false);
+                // }
             });
 
             self.currentCode.subscribe(function(value) {
@@ -192,53 +277,60 @@ module nts.uk.at.view.kmf004.a.viewmodel {
 
             self.selectedMethod.subscribe(function(value) {
                 nts.uk.ui.errors.clearAll();
-                if(value == undefined){
-                    self.selectedMethod(1);
-                    self.enableMethod1Content(true);
-                    self.selectedMGrantDate(0);
-                    self.enableGrantDate0Content(true);
-                    setTimeout(() => {
-                        $('#A10_3').focus();
-                    }, 27);
-                }
-                if (value == 1) {
-                    self.yearEnable(true);
-                    self.dayEnable(true);
-                    self.enableMethod1Content(true);
-                    self.dialogDEnable(false);
-                    self.yearReq(true);
-                    self.dayReq(true); 
-                    if(self.selectedGrantDate() == 1){
-                        self.enableGrantDate1Content(true);
-                    } else {
-                        self.enableGrantDate0Content(true);
-                    }               
-                    self.selectedMGrantDate.subscribe((mGrantDate) => {
-                        nts.uk.ui.errors.clearAll();
-                        if(mGrantDate == undefined){
-                            self.selectedMGrantDate(0);
-                            self.enableGrantDate0Content(true);
-                            setTimeout(() => {
-                                $('#A10_12').focus();
-                            }, 27);
-                        }
-                        if(mGrantDate == 0){
-                            self.enableGrantDate0Content(true);
-                            self.enableGrantDate1Content(false);
-                        } else if(mGrantDate == 1){
-                            self.enableGrantDate0Content(false);
-                            self.enableGrantDate1Content(true);
-                        }
-                    });
 
-                } else if(value == 2) {
-                    self.enableMethod2Content(true);
-                    self.enableMethod1Content(false);
-                    self.enableGrantDate0Content(false);
-                    self.enableGrantDate1Content(false);
-                    self.enableMethod0Content(false);
-                } 
-                else if(value == 0) {
+                switch(value) {
+                    case undefined:
+                        self.selectedMethod(1);
+                        setTimeout(() => {
+                            $('#A10_3').focus();
+                        }, 27);
+                        break;
+                    case 1:
+                        self.yearEnable(true);
+                        self.dayEnable(true);
+                        self.enableMethod1Content(true);
+                        self.enableMethod0Content(false);
+                        self.dialogDEnable(false);
+                        self.enableMethod2Content(false);
+                        self.enableLimitedDaysCkb(true);
+                        self.enablelimitedDays(true);
+                        self.enableTimeMethods(true);
+                        self.yearReq(true);
+                        self.dayReq(true); 
+                        if(self.selectedMGrantDate() == 1){
+                            self.enableGrantDate1Content(true);
+                        } else {
+                            self.enableGrantDate0Content(true);
+                        }               
+                        self.selectedMGrantDate.subscribe((mGrantDate) => {
+                            nts.uk.ui.errors.clearAll();
+                            if(mGrantDate == undefined){
+                                self.selectedMGrantDate(0);
+                                self.enableGrantDate0Content(true);
+                                setTimeout(() => {
+                                    $('#A10_12').focus();
+                                }, 27);
+                            }
+                            if(mGrantDate == 0){
+                                self.enableGrantDate0Content(true);
+                                self.enableGrantDate1Content(false);
+                            } else if(mGrantDate == 1){
+                                self.enableGrantDate0Content(false);
+                                self.enableGrantDate1Content(true);
+                            }
+                        });
+                        break;
+                    case 2:
+                        self.enableMethod2Content(true);
+                        self.enableMethod1Content(false);
+                        self.enableGrantDate0Content(false);
+                        self.dialogDEnable(false);
+                        self.enableGrantDate1Content(false);
+                        self.enableMethod0Content(false);
+                        self.enableTimeMethods(false);
+                        self.enableLimitedDaysCkb(false);
+                        break;
+                    case 0:
                     self.years("");
                     self.days("");
                     self.yearEnable(false);
@@ -248,6 +340,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                     self.enableGrantDate0Content(false);
                     self.enableGrantDate1Content(false);
                     self.enableMethod2Content(false);
+                    self.enableLimitedDaysCkb(true);
+                    self.enableTimeMethods(true);
                     self.yearReq(false);
                     self.dayReq(false);
 
@@ -256,9 +350,18 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                     } else {
                         self.dialogDEnable(true);
                     }
+
                 }
             });
 
+            self.limitedDaysCkb.subscribe((val) => {
+                if(val == true){
+                    self.enablelimitedDays(true);
+                } else {
+                    self.enablelimitedDays(false);
+                }
+
+            });
             self.timeMethods = ko.observableArray([
                 new BoxModel(0, nts.uk.resource.getText('KMF004_28')),
                 new BoxModel(1, nts.uk.resource.getText('KMF004_29')),
@@ -268,7 +371,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.selectedTimeMethod = ko.observable(0);
 
             self.limitedDays = ko.observable();
-            self.limitedDaysEnable = ko.observable(true);
+            self.enablelimitedDays = ko.observable(false);
             self.expYears = ko.observable();
             self.expYearEnable = ko.observable(false);
             self.expMonth = ko.observable();
@@ -282,7 +385,6 @@ module nts.uk.at.view.kmf004.a.viewmodel {
 
                 switch (value) {
                     case 0:
-                        self.limitedDaysEnable(true);
                         self.expYearEnable(false);
                         self.expMonthEnable(false);
                         self.startDateEnable(false);
@@ -293,7 +395,6 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         self.endYM();
                         break;
                     case 1:
-                        self.limitedDaysEnable(false);
                         self.expYearEnable(true);
                         self.expMonthEnable(true);
                         self.startDateEnable(false);
@@ -303,7 +404,6 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         self.endYM();
                         break;
                     case 2:
-                        self.limitedDaysEnable(false);
                         self.expYearEnable(false);
                         self.expMonthEnable(false);
                         self.startDateEnable(false);
@@ -314,16 +414,15 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         self.startYM();
                         self.endYM();
                         break;
-                    case 3:
-                        self.limitedDaysEnable(false);
-                        self.expYearEnable(false);
-                        self.expMonthEnable(false);
-                        self.startDateEnable(true);
-                        self.endDateEnable(true);
-                        self.limitedDays('');
-                        self.expYears('');
-                        self.expMonth('');
-                        break;
+                    // case 3:
+                    //     self.expYearEnable(false);
+                    //     self.expMonthEnable(false);
+                    //     self.startDateEnable(true);
+                    //     self.endDateEnable(true);
+                    //     self.limitedDays('');
+                    //     self.expYears('');
+                    //     self.expMonth('');
+                    //     break;
                 }
             });
 
@@ -790,6 +889,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             }
 
             if (!self.editMode()) {
+
                 service.add(dataItem).done(function(errors) {
                     _.forEach(errors, function(err) {
                         if (err === "Msg_3") {

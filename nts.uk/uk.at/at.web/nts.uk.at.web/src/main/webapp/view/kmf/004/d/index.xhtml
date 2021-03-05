@@ -31,18 +31,18 @@
 		<ui:define name="content">
 			<!-- BEGIN FUNCTION AREA-->
 			<div id="functions-area">
-				<!-- E1_1: Button New -->
+				<!-- D1_1: Button New -->
 				<button id="btn_001" class="button separate-button fix-button"
 					data-bind="enable: newModeEnable, click: newMode">#{i18n.getText('KMF004_1')}</button>
-				<!-- E1_2: Button Registration -->
+				<!-- D1_2: Button Registration -->
 				<button id="btn_002"
 					class="button proceed separate-button fix-button"
 					data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('KMF004_2')}</button>
-				<!-- E1_3: Button Delete -->
+				<!-- D1_3: Button Delete -->
 				<button id="btn_004"
 					class="button danger separate-button fix-button"
 					data-bind="enable: editMode, click: remove">#{i18n.getText('KMF004_3')}</button>
-				<!-- E1_1: Button Close -->
+				<!-- D1_1: Button Close -->
 				<button id="btn_005" class="separate-button fix-button"
 					data-bind="click: closeDialog">#{i18n.getText('KMF004_57')}</button>
 
@@ -52,7 +52,7 @@
 			<div id="content-area" class="contents-area cf">
 				<div id="left-content" class="bg-green caret-right caret-background">
 					<div style="margin-top: 20px; margin-left: 20px">
-						<!-- E2_3: List -->
+						<!-- D2_3: List -->
 						<table id="lstGrantDate"
 							data-bind="ntsGridList: {								
 						height: 362,
@@ -116,6 +116,7 @@
                                             value: years, 
                                             constraint: 'GrantedYears',
                                             name: '#[KMF004_66]',
+											enable: $parent.enableElapsedYears,
                                             option: ko.mapping.fromJS({
                                                 unitID: 'YEARS',
                                                 width: '50'
@@ -126,6 +127,7 @@
                                             value: months, 
                                             constraint: 'SpecialVacationMonths',
                                             name: '#[KMF004_67]',
+											enable: $parent.enableElapsedYears,
                                             option: ko.mapping.fromJS({
                                                 unitID: 'MONTHS',
                                                 width: '60'
