@@ -54,8 +54,8 @@ import nts.uk.ctx.at.function.dom.annualworkschedule.CalculationFormulaOfItem;
 import nts.uk.ctx.at.function.dom.annualworkschedule.Employee;
 import nts.uk.ctx.at.function.dom.annualworkschedule.ItemsOutputToBookTable;
 import nts.uk.ctx.at.function.dom.annualworkschedule.SettingOutputItemOfAnnualWorkSchedule;
-import nts.uk.ctx.at.function.dom.annualworkschedule.enums.MonthsInTotalDisplay;
 import nts.uk.ctx.at.function.dom.annualworkschedule.enums.PageBreakIndicator;
+import nts.uk.ctx.at.function.dom.annualworkschedule.enums.TotalAverageDisplay;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.AnnualWorkScheduleData;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.AnnualWorkScheduleGenerator;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.EmployeeData;
@@ -298,11 +298,7 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 		}
 		YearMonth startYmClone = YearMonth.of(startYm.getYear(), startYm.getMonthValue());
 		YearMonth endYmClone = YearMonth.of(endYm.getYear(), endYm.getMonthValue());
-		// 期間
-		if (setOutItemsWoSc.isMultiMonthDisplay()) {
-			// set C2_3, C2_5
-			header.setMonthPeriodLabels(this.createMonthPeriodLabels(startYmClone, endYm, setOutItemsWoSc.getMonthsInTotalDisplay().get()));
-		}
+
 		// set C1_2
 		header.setMonths(this.createMonthLabels(startYmClone, endYmClone));
 		exportData.setHeader(header);
@@ -404,7 +400,8 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 
 			// アルゴリズム「36協定明細項目の作成」
 			annualWorkScheduleData.putAll(this.create36AgreementTime(
-					outputAgreementTime36
+					exportData
+					, outputAgreementTime36
 					, exportData.getHeader() == null
 							? new ArrayList<>()
 							: (exportData.getHeader().getMonthPeriodLabels() == null ? new ArrayList<>() : exportData.getHeader().getMonthPeriodLabels())
@@ -447,7 +444,8 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 	 * @param non36Agreement 	   		 年度(36協定年度)
 	 * @return the map
 	 */
-	private Map<String, AnnualWorkScheduleData> create36AgreementTime(List<ItemsOutputToBookTable> lstItemsOut
+	private Map<String, AnnualWorkScheduleData> create36AgreementTime(ExportData exportData
+																	, List<ItemsOutputToBookTable> lstItemsOut
 																	, List<String> header
 																	, List<YearMonthPeriod> yearMonthPeriodRQ589
 																	, String employeeId
@@ -497,6 +495,9 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 					endDate,
 					specifiedYearMonth
 			);
+			
+			// for header
+			List<String> periodLable = new ArrayList<>();
 			for (AgreMaxAverageTimeImport agreMaxAverage: listAgreMaxAverageTimeImport) {
 				AgreementTimeByPeriodImport item = new AgreementTimeByPeriodImport(
 						agreMaxAverage.getPeriod().start()
@@ -511,6 +512,16 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 								: AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR
 				);
 				listAgreMaxAverageTime.add(item);
+				periodLable.add(agreMaxAverage.getPeriod().start().month() + "～" +  agreMaxAverage.getPeriod().end().month());
+			}
+			
+			if (setting.isMultiMonthDisplay()
+			 && setting.getTotalAverageDisplay().isPresent()
+			 && setting.getTotalAverageDisplay().get() == TotalAverageDisplay.AVERAGE) {
+				HeaderData headerData = exportData.getHeader();
+				headerData.setMonthPeriodLabels(periodLable);
+				headerData.setMaximumAgreementTime(true);
+				exportData.setHeader(headerData);
 			}
 		}
 		// 36協定複数月項目の作成 end
@@ -548,6 +559,7 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 				}
 
 				if (itemOut.getSortBy() == 2 && itemOut.isUseClass()) {
+					
 					// アルゴリズム「月平均の算出」を実行する
 					data.put(itemOut.getItemOutCd().v(),
 							AnnualWorkScheduleData.fromAgreementTimeList(
@@ -849,32 +861,6 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 			i++;
 		}
 		return months;
-	}
-
-	/**
-	 * Create C2_3, C2_5, C2_7
-	 * @param startYm
-	 * @param endYm
-	 * @param outputAgreementTime
-	 * @return
-	 */
-	private List<String> createMonthPeriodLabels(YearMonth startYm, YearMonth endYm,
-			MonthsInTotalDisplay monthsInTotalDisplay) {
-		int distances = 0;
-		if (MonthsInTotalDisplay.TWO_MONTH.equals(monthsInTotalDisplay))
-			distances = 2;
-		else if (MonthsInTotalDisplay.THREE_MONTH.equals(monthsInTotalDisplay))
-			distances = 3;
-		if (distances == 0)
-			return null;
-		List<String> monthPeriodLabels = new ArrayList<>();
-		YearMonth periodStart = startYm;
-		while (periodStart.isBefore(endYm)) {
-			YearMonth periodEnd = periodStart.plusMonths(distances - 1);
-			monthPeriodLabels.add(periodStart.getMonthValue() + "～" + periodEnd.getMonthValue());
-			periodStart = periodStart.plusMonths(distances);
-		}
-		return monthPeriodLabels;
 	}
 	
 	/**
