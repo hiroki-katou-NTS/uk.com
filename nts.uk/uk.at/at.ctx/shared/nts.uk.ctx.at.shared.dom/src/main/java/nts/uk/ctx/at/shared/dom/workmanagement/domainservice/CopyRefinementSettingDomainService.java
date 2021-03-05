@@ -28,7 +28,7 @@ public class CopyRefinementSettingDomainService {
      * @param copyDestinationList
      * @return
      */
-    public static AtomTask toCopy(Require require, TaskFrameNo taskFrameNo,
+    public static AtomTask doCopy(Require require, TaskFrameNo taskFrameNo,
                                   TaskCode copySource, List<TaskCode> copyDestinationList) {
         if (copyDestinationList.isEmpty()) {
             throw new BusinessException("Msg_365");
