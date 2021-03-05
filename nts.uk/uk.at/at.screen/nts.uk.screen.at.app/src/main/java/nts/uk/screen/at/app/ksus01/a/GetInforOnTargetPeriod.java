@@ -83,14 +83,35 @@ public class GetInforOnTargetPeriod {
 	@Inject
 	private PublicHolidayRepository publicHolidayRepository;
 	
+	@Inject
+	private ShiftMasterRepository shiftMasterRepository;
+	
+	@Inject
+	private WorkTimeSettingRepository workTimeSettingRepository;
+	
+	@Inject
+	private BasicScheduleService basicScheduleService;
+	
+	@Inject
+	private FixedWorkSettingRepository fixedWorkSettingRepository;
+	
+	@Inject
+	private FlowWorkSettingRepository flowWorkSettingRepository;
+	
+	@Inject
+	private FlexWorkSettingRepository flexWorkSettingRepository;
+	
+	@Inject
+	private PredetemineTimeSettingRepository predetemineTimeSettingRepository;
+	
 	final static String DATE_TIME_FORMAT = "yyyy/MM/dd";
 	
 	public InforOnTargetPeriodDto handle(InforOnTargetPeriodInput input) {
 		
 		String empId = AppContexts.user().employeeId();
 		String companyId = AppContexts.user().companyId();
-		GetStatusSubmissionWishesRequireImpl getStatusSubmissionWishesRequire = new GetStatusSubmissionWishesRequireImpl(workAvailabilityOfOneDayRepository);
-		GetCombinationrAndWorkHolidayAtrRequireImpl getComAndWorkHolidayAtrRequire = new GetCombinationrAndWorkHolidayAtrRequireImpl(companyId, shiftMasterRepo, workTypeRepo);
+		GetStatusSubmissionWishesRequireImpl getStatusSubmissionWishesRequire = new GetStatusSubmissionWishesRequireImpl(companyId, workAvailabilityOfOneDayRepository, shiftMasterRepository, workTypeRepo, workTimeSettingRepository, basicScheduleService, fixedWorkSettingRepository, flowWorkSettingRepository, flexWorkSettingRepository, predetemineTimeSettingRepository);
+		GetCombinationrAndWorkHolidayAtrRequireImpl getComAndWorkHolidayAtrRequire = new GetCombinationrAndWorkHolidayAtrRequireImpl(companyId, shiftMasterRepo, workTypeRepo, workTimeSettingRepository, basicScheduleService, fixedWorkSettingRepository, flowWorkSettingRepository, flexWorkSettingRepository, predetemineTimeSettingRepository);
 		
 		if (!(input.getDesiredPeriodWork().getStart().length() > 0) || !(input.getDesiredPeriodWork().getEnd().length() > 0)) {
 			return new InforOnTargetPeriodDto();
@@ -183,10 +204,14 @@ public class GetInforOnTargetPeriod {
 	private static class GetCombinationrAndWorkHolidayAtrRequireImpl implements GetCombinationrAndWorkHolidayAtrService.Require {
 		
 		private String companyId;
-		
 		private ShiftMasterRepository shiftMasterRepo;
-		
 		private WorkTypeRepository workTypeRepo;
+		private WorkTimeSettingRepository workTimeSettingRepository;
+		private BasicScheduleService basicScheduleService;
+		private FixedWorkSettingRepository fixedWorkSettingRepository;
+		private FlowWorkSettingRepository flowWorkSettingRepository;
+		private FlexWorkSettingRepository flexWorkSettingRepository;
+		private PredetemineTimeSettingRepository predetemineTimeSettingRepository;
 		
 		@Override
 		public Optional<WorkType> getWorkType(String workTypeCd) {
@@ -195,38 +220,56 @@ public class GetInforOnTargetPeriod {
 
 		@Override
 		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
-			// TODO Auto-generated method stub
-			return null;
+			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
 		}
 
 		@Override
 		public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
-			// TODO Auto-generated method stub
-			return null;
+			return basicScheduleService.checkNeededOfWorkTimeSetting(workTypeCode);
 		}
 
 		@Override
 		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
-			// TODO Auto-generated method stub
-			return null;
+			Optional<FixedWorkSetting> fixedWorkSetting = fixedWorkSettingRepository.findByKey(companyId, code.v());
+			
+			if (fixedWorkSetting.isPresent()) {
+				return fixedWorkSetting.get();
+			}
+			
+			return new FixedWorkSetting();
 		}
 
 		@Override
 		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
-			// TODO Auto-generated method stub
-			return null;
+			Optional<FlowWorkSetting> flowWorkSetting = flowWorkSettingRepository.find(companyId, code.v());
+			
+			if (flowWorkSetting.isPresent()) {
+				return flowWorkSetting.get();
+			}
+			
+			return new FlowWorkSetting();
 		}
 
 		@Override
 		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
-			// TODO Auto-generated method stub
-			return null;
+			Optional<FlexWorkSetting> flexWorkSetting = flexWorkSettingRepository.find(companyId, code.v());
+			
+			if (flexWorkSetting.isPresent()) {
+				return flexWorkSetting.get();
+			}
+			
+			return new FlexWorkSetting();
 		}
 
 		@Override
 		public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
-			// TODO Auto-generated method stub
-			return null;
+			Optional<PredetemineTimeSetting> predetemineTimeSetting = predetemineTimeSettingRepository.findByWorkTimeCode(companyId, wktmCd.v());
+			
+			if (predetemineTimeSetting.isPresent()) {
+				return predetemineTimeSetting.get();
+			}
+			
+			return new PredetemineTimeSetting();
 		}
 
 		@Override
@@ -238,68 +281,91 @@ public class GetInforOnTargetPeriod {
 		public List<ShiftMaster> getByListWorkInfo(String companyId, List<WorkInformation> lstWorkInformation) {
 			return shiftMasterRepo.get(companyId, lstWorkInformation);
 		}
-		
 	}
 	
 	
 	@AllArgsConstructor
 	private static class GetStatusSubmissionWishesRequireImpl implements GetStatusSubmissionWishes.Require {
 
+		private String companyId;
 		private WorkAvailabilityOfOneDayRepository workAvailabilityOfOneDayRepository;
+		private ShiftMasterRepository shiftMasterRepository;
+		private WorkTypeRepository workTypeRepo;
+		private WorkTimeSettingRepository workTimeSettingRepository;
+		private BasicScheduleService basicScheduleService;
+		private FixedWorkSettingRepository fixedWorkSettingRepository;
+		private FlowWorkSettingRepository flowWorkSettingRepository;
+		private FlexWorkSettingRepository flexWorkSettingRepository;
+		private PredetemineTimeSettingRepository predetemineTimeSettingRepository;
 		
 		@Override
 		public Optional<WorkType> getWorkType(String workTypeCd) {
-			// TODO Auto-generated method stub
-			return null;
+			return workTypeRepo.findByPK(companyId, workTypeCd);
 		}
 
 		@Override
 		public Optional<WorkTimeSetting> getWorkTime(String workTimeCode) {
-			// TODO Auto-generated method stub
-			return null;
+			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
 		}
 
 		@Override
 		public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
-			// TODO Auto-generated method stub
-			return null;
+			return basicScheduleService.checkNeededOfWorkTimeSetting(workTypeCode);
 		}
 
 		@Override
 		public FixedWorkSetting getWorkSettingForFixedWork(WorkTimeCode code) {
-			// TODO Auto-generated method stub
-			return null;
+			Optional<FixedWorkSetting> fixedWorkSetting = fixedWorkSettingRepository.findByKey(companyId, code.v());
+			
+			if (fixedWorkSetting.isPresent()) {
+				return fixedWorkSetting.get();
+			}
+			
+			return new FixedWorkSetting();
 		}
 
 		@Override
 		public FlowWorkSetting getWorkSettingForFlowWork(WorkTimeCode code) {
-			// TODO Auto-generated method stub
-			return null;
+			Optional<FlowWorkSetting> flowWorkSetting = flowWorkSettingRepository.find(companyId, code.v());
+			
+			if (flowWorkSetting.isPresent()) {
+				return flowWorkSetting.get();
+			}
+			
+			return new FlowWorkSetting();
 		}
 
 		@Override
 		public FlexWorkSetting getWorkSettingForFlexWork(WorkTimeCode code) {
-			// TODO Auto-generated method stub
-			return null;
+			Optional<FlexWorkSetting> flexWorkSetting = flexWorkSettingRepository.find(companyId, code.v());
+			
+			if (flexWorkSetting.isPresent()) {
+				return flexWorkSetting.get();
+			}
+			
+			return new FlexWorkSetting();
 		}
 
 		@Override
 		public PredetemineTimeSetting getPredetermineTimeSetting(WorkTimeCode wktmCd) {
-			// TODO Auto-generated method stub
-			return null;
+			Optional<PredetemineTimeSetting> predetemineTimeSetting = predetemineTimeSettingRepository.findByWorkTimeCode(companyId, wktmCd.v());
+			
+			if (predetemineTimeSetting.isPresent()) {
+				return predetemineTimeSetting.get();
+			}
+			
+			return new PredetemineTimeSetting();
 		}
 
 		@Override
 		public Optional<ShiftMaster> getShiftMasterByWorkInformation(WorkTypeCode workTypeCode,
 				WorkTimeCode workTimeCode) {
-			// TODO Auto-generated method stub
-			return null;
+			return shiftMasterRepository.getByWorkTypeAndWorkTime(companyId, workTypeCode.v(), workTimeCode.v());
 		}
 
 		@Override
 		public List<ShiftMaster> getShiftMaster(List<ShiftMasterCode> shiftMasterCodeList) {
-			// TODO Auto-generated method stub
-			return null;
+			return shiftMasterRepository.getByListShiftMaterCd2(companyId, shiftMasterCodeList.stream().map(e -> e.v()).collect(Collectors.toList()));
 		}
 
 		@Override
