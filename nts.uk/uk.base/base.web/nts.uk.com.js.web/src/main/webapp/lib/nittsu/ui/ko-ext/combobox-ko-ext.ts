@@ -222,7 +222,7 @@ module nts.uk.ui.koExtentions {
                                 'background-color': 'transparent'
                             })
                             .find('.ui-igcombo-buttonicon')
-                            .text('▼')
+                            .html('▼')
                             .css({
                                 'right': '0px',
                                 'font-size': '0.85rem',
@@ -374,15 +374,7 @@ module nts.uk.ui.koExtentions {
                 })
                 .trigger(CHANGED, [DATA, options])
                 .trigger(CHANGED, [TAB_INDEX, $element.attr(TAB_INDEX) || 0])
-                .addClass('ntsControl')
-                .on('blur', () => { $element.css('box-shadow', ''); })
-                .on('focus', () => {
-                    $element
-                        .css({
-                            'outline': 'none',
-                            'box-shadow': '0 0 1px 1px #0096f2'
-                        });
-                });
+                .addClass('ntsControl');
         }
 
         update = (element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext) => {

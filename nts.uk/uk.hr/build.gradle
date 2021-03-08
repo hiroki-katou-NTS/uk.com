@@ -23,11 +23,6 @@ buildscript {
 		classpath "com.bmuschko:gradle-cargo-plugin:2.2.1"
 		
 		classpath "de.aaschmid.gradle.plugins:gradle-cpd-plugin:0.5"
-		
-		// compile typescript to js  plugin
-		classpath "com.moowork.gradle:gradle-node-plugin:1.2.0"
-		
-		classpath "de.richsource.gradle.plugins:typescript-gradle-plugin:1.8.0"
 	}
 }
 
@@ -85,7 +80,11 @@ subprojects {
 		compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.5'
 		
 		// Lombok
-		compile group: 'org.projectlombok', name: 'lombok', version: '1.16.18'
+		compileOnly 'org.projectlombok:lombok:1.16.18'
+		annotationProcessor 'org.projectlombok:lombok:1.16.18'
+		
+		testCompileOnly 'org.projectlombok:lombok:1.16.18'
+		testAnnotationProcessor 'org.projectlombok:lombok:1.16.18'
 		
 		// JUnit
 		testCompile group: 'junit', name: 'junit', version: '4.12'
@@ -436,8 +435,6 @@ project (':hr.file:nts.uk.file.hr.infra') {
 //=====================nts.uk.hr.web=============================
 project (':hr.web:nts.uk.hr.web') {
 	apply plugin: 'war'
-	apply plugin: 'com.moowork.node'
-	apply plugin: 'de.richsource.gradle.plugins.typescript'
 	
 	war {
 		exclude '**/*.ts'
@@ -679,23 +676,14 @@ project (':hr.web:nts.uk.hr.web') {
 		runtime group: 'at.aggregation', name: 'nts.uk.ctx.at.aggregation.pubimp', version: version
 	}	
 	
-	task tsc(type: de.richsource.gradle.plugins.typescript.CompileTypeScript) {
-		target = "ES5"
-		noLib = true
-		watch = false
-		sourcemap = !project.hasProperty('sourceMap') || sourceMap == 'true'
-		include '**/*.ts'
-		source = new File('src/main/webapp/view')
-		outputDir = new File('src/main/webapp/view')
+	task tsc(type: Exec) {
+		commandLine 'cmd', '/c', 'tsc'
+		ignoreExitValue true
 	}
 	
-	task tscw(type: de.richsource.gradle.plugins.typescript.CompileTypeScript) {
-		target = "ES5"
-		noLib = true
-		watch = true
-		sourcemap = !project.hasProperty('sourceMap') || sourceMap == 'true'
-		include '**/*.ts'
-		source = new File('src/main/webapp/view')
-		outputDir = new File('src/main/webapp/view')
+	task tscw(type: Exec) {
+		commandLine 'cmd', '/c', 'tsc'
+		args '--watch'
+		ignoreExitValue true
 	}
 }

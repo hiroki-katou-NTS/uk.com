@@ -1,0 +1,88 @@
+div.ntsLabel,
+label.ntsLabel,
+div.form-label,
+label.form-label {
+    outline: none;
+	position: relative;
+	display: inline-block;
+	padding-right: 8px;
+	
+	&>span.text {
+		color: #C6C6D1;
+		font-size: 12px;
+		line-height: 32px;
+		font-weight: 500;
+		display: inline-block;
+
+		&::after {
+			content: '*';
+			top: -3px;
+			color: #f00;
+			display: none;
+			position: absolute;
+		}
+	}
+
+	&>svg {
+		display: none;
+		margin-left: 16px;
+	}
+
+	&.required {
+		&>span.text {
+			position: relative;
+
+			&::after {
+				display: inline;
+			}
+		}
+	}
+
+	&.has-constraint {
+		&>svg {
+			display: inline;
+		}
+	}
+}
+
+body {
+	&>div.constraint {
+		position: fixed;
+		white-space: nowrap;
+		background-color: #FBFCFF;
+		border: 1px solid #DCDDE4;
+		border-radius: 2px;
+		box-sizing: border-box;
+
+		&>span {    
+			font-size: 12px;
+			line-height: 24px;
+			padding: 0 10px;
+			display: block;
+			position: relative;
+
+			&::after {
+				content: '';
+				display: block;
+				width: 8px;
+				height: 8px;
+				background-color: #FBFCFF;
+				border: 1px solid #DCDDE4;
+				transform: rotate(45deg);
+				position: absolute;
+				border-top: 0;
+				border-left: 0;
+				bottom: -5px;
+				left: calc(50% - 8px);
+			}
+		}
+	}
+}
+
+.constraint-label {
+	display: block;
+	margin-top: 1px;
+	font-size: $bfs * 1.4;
+	font-weight: normal;
+	color: #777777;
+}
