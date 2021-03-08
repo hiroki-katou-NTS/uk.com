@@ -67,7 +67,9 @@ module nts.uk.at.view.kal003.share.model {
         mulMonCheckCond: KnockoutObservable<MulMonCheckCond> = ko.observable(new MulMonCheckCond([]));
         annualHolidayAlCon: KnockoutObservable<AnnualHolidayAlarmCondition> = ko.observable(new AnnualHolidayAlarmCondition(null, null));
         masterCheckAlarmCheckCondition: KnockoutObservable<MasterCheckCondition> = ko.observable(new MasterCheckCondition([]));
-
+        // schedule
+        scheFixCondDay: KnockoutObservable<ScheFixCondDay> = ko.observable(new ScheFixCondDay([]));
+        
         constructor(code: string, name: string, category: ItemModel, availableRoles: Array<string>, targetCondition: AlarmCheckTargetCondition) {
             this.code = ko.observable(code);
             this.name = ko.observable(name);
@@ -2628,5 +2630,12 @@ module nts.uk.at.view.kal003.share.model {
         }
     }
     //MinhVV Multiple Month end
-
+    
+    export class ScheFixCondDay {
+        sheFixItemDays: KnockoutObservableArray<FixedConditionWorkRecord>;
+        
+        constructor(sheFixItemDays: KnockoutObservableArray<FixedConditionWorkRecord>) {
+            this.sheFixItemDays = ko.observableArray(sheFixItemDays);
+        }
+    }
 }

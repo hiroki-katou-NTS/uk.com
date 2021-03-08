@@ -31,6 +31,7 @@
         <com:stylefile path="schedule/kal003.a.schedule.main.css" />
         <com:scriptfile path="schedule/kal003.a.schedule.checkconditions.js"/><!-- check conditions -->
         <com:scriptfile path="schedule/kal003.a.schedule.checkconditions.fixed.js" /><!-- fixed check conditions -->        
+        <com:scriptfile path="schedule/uniquecheckcondition/kal003.a.schedule.uniquecheckcondition.js" /><!-- unique check conditions -->      
 
         <com:stylefile path="kal003.a.style.css" />
         <com:scriptfile path="kal003.a.service.js" />
@@ -280,7 +281,14 @@
                       }
                     }"
                   ></div>
-                </div>                
+                </div>
+                
+                <div class="tab-content-15" data-bind="with: tabScheUniqueCheckCondition">
+                  <ui:include
+                    src="schedule/uniquecheckcondition/uniquecheckcondition.xhtml"
+                  />
+                </div>
+                                
               </div>
             </div>
           </div>

@@ -28,7 +28,7 @@ public class KfndtScheCondDayLink extends UkJpaEntity {
     @Column(name = "CATEGORY")
     public int ctg;
     @OneToOne
-    @JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
+    @JoinColumns({
             @JoinColumn(name = "CATEGORY", referencedColumnName = "CATEGORY", insertable = false, updatable = false),
             @JoinColumn(name = "AL_CHECK_COND_CATE_CD", referencedColumnName = "CD", insertable = false, updatable = false) })
     public KfnmtAlarmCheckConditionCategory condition;
@@ -40,5 +40,13 @@ public class KfndtScheCondDayLink extends UkJpaEntity {
 
     public KfndtScheCondDayLink toDomain(){
         return new KfndtScheCondDayLink();
+    }
+    
+    public static KfndtScheCondDayLink toEntity(String erAlCheckId, String ctgCode, int categoryCode) {
+    	KfndtScheCondDayLink entity = new KfndtScheCondDayLink();
+    	entity.eralCheckId = erAlCheckId;
+    	entity.ctgCd = ctgCode;
+    	entity.ctg = categoryCode;
+    	return entity;
     }
 }

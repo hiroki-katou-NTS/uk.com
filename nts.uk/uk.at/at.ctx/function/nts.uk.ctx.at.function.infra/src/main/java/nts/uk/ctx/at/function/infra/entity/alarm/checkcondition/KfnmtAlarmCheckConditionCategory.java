@@ -16,6 +16,7 @@ import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.schedaily.ScheduleDailyAlarmCheckCond;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionCode;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckTargetCondition;
@@ -42,6 +43,7 @@ import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.daily.KrcmtDaily
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.fourweekfourdayoff.KfnmtAlarmCheck4W4D;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.monthly.KfnmtMonAlarmCheckCon;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.multimonth.KfnmtMulMonAlarmCond;
+import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.schedule.KfndtScheCondDayLink;
 import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
@@ -102,6 +104,9 @@ public class KfnmtAlarmCheckConditionCategory extends ContractUkJpaEntity implem
 	
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "condition", orphanRemoval = true)
 	public KfnmtAlCheckSubConAg alCheckSubConAg;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "condition", orphanRemoval = true)
+	public List<KfndtScheCondDayLink> scheduleCondDayLinks;
 
 	@Override
 	protected Object getKey() {
@@ -112,7 +117,8 @@ public class KfnmtAlarmCheckConditionCategory extends ContractUkJpaEntity implem
 			KfnmtAlarmCheckTargetCondition targetCondition,
 			List<KfnmtAlarmCheckConditionCategoryRole> listAvailableRole, KrcmtDailyAlarmCondition dailyAlarmCondition,
 			KfnmtAlarmCheck4W4D schedule4W4DAlarmCondition, KfnmtMonAlarmCheckCon kfnmtMonAlarmCheckCon,
-			List<Kfnmt36AgreeCondErr> listCondErr, List<Kfnmt36AgreeCondOt> listCondOt, KfnmtMulMonAlarmCond mulMonAlarmCond, KfnmtAlCheckConAg alCheckConAg, KfnmtAlCheckSubConAg alCheckSubConAg) {
+			List<Kfnmt36AgreeCondErr> listCondErr, List<Kfnmt36AgreeCondOt> listCondOt, KfnmtMulMonAlarmCond mulMonAlarmCond, KfnmtAlCheckConAg alCheckConAg, KfnmtAlCheckSubConAg alCheckSubConAg,
+			List<KfndtScheCondDayLink> scheduleCondDayLinks) {
 		super();
 		this.pk = new KfnmtAlarmCheckConditionCategoryPk(companyId, category, code);
 		this.name = name;
@@ -127,6 +133,7 @@ public class KfnmtAlarmCheckConditionCategory extends ContractUkJpaEntity implem
 		this.mulMonAlarmCond = mulMonAlarmCond;
 		this.alCheckConAg = alCheckConAg;
 		this.alCheckSubConAg = alCheckSubConAg;
+		this.scheduleCondDayLinks = scheduleCondDayLinks;
 	}
 	/**
 	 * convert from entity to domain 
@@ -178,6 +185,10 @@ public class KfnmtAlarmCheckConditionCategory extends ContractUkJpaEntity implem
 							entity.alCheckConAg == null ? null : entity.alCheckConAg.toDomain(),
 							entity.alCheckSubConAg == null ? null : entity.alCheckSubConAg.toDomain());
 			break;
+		case SCHEDULE_DAILY:
+			List<String> eralCheckIds = entity.scheduleCondDayLinks.stream().map(item -> item.eralCheckId).collect(Collectors.toList());
+			extractionCondition = new ScheduleDailyAlarmCheckCond(null, eralCheckIds);
+			break;
 		default:
 			break;
 		}
@@ -201,6 +212,13 @@ public class KfnmtAlarmCheckConditionCategory extends ContractUkJpaEntity implem
 	}
 
 	public static KfnmtAlarmCheckConditionCategory fromDomain(AlarmCheckConditionByCategory domain) {
+		List<KfndtScheCondDayLink> scheduleCondDayLinks = null;
+		if (domain.getCategory() == AlarmCategory.SCHEDULE_DAILY && (ScheduleDailyAlarmCheckCond) domain.getExtractionCondition() != null) {
+			scheduleCondDayLinks = ((ScheduleDailyAlarmCheckCond) domain.getExtractionCondition()).getListFixedItem().stream()
+				.map(item-> KfndtScheCondDayLink.toEntity(item, domain.getCode().v(), domain.getCategory().value))
+				.collect(Collectors.toList());
+		}
+		
 		return new KfnmtAlarmCheckConditionCategory(domain.getCompanyId(), domain.getCategory().value,
 				domain.getCode().v(), domain.getName().v(),
 				new KfnmtAlarmCheckTargetCondition(domain.getExtractTargetCondition().getId(),
@@ -263,7 +281,8 @@ public class KfnmtAlarmCheckConditionCategory extends ContractUkJpaEntity implem
 			    && ((AnnualHolidayAlarmCondition) domain.getExtractionCondition()).getAlarmCheckSubConAgr() != null
 				? KfnmtAlCheckSubConAg.toEntity(domain.getCompanyId(), domain.getCode().v(),
 						domain.getCategory().value, ((AnnualHolidayAlarmCondition) domain.getExtractionCondition()).getAlarmCheckSubConAgr())
-				: null
+				: null,
+				scheduleCondDayLinks
 		);
 	}
 

@@ -31,6 +31,7 @@ import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraItemMo
 import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraItemMonFunImport;
 import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraMonFunAdapter;
 import nts.uk.ctx.at.function.dom.adapter.multimonth.MultiMonthFucAdapter;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.schedaily.ScheduleDailyAlarmCheckCond;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategoryRepository;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.agree36.AgreeCondOt;
@@ -58,6 +59,8 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.MulMonAlarmCon
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.doevent.MulMonCheckCondDomainEventDto;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.MasterCheckFixedExtractConditionRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.MasterCheckFixedExtractItemRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.FixedExtractSDailyConRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.FixedExtractionSDailyCon;
 import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -126,6 +129,9 @@ public class AlarmCheckConditionByCategoryFinder {
 	
 	@Inject
 	private MasterCheckFixedExtractItemRepository fixedMasterCheckItemRepo;
+	
+	@Inject
+	private FixedExtractSDailyConRepository scheFixedCondDayRepo;
 
 	public List<AlarmCheckConditionByCategoryDto> getAllData(int category) {
 		String companyId = AppContexts.user().companyId();
@@ -155,7 +161,7 @@ public class AlarmCheckConditionByCategoryFinder {
 								category, code, 0, Period.One_Month.value, ErrorAlarm.Upper.value, ""));
 
 			}
-		}
+		} 
 		Optional<AlarmCheckConditionByCategory> opt = conditionRepo.find(companyId, category, code);
 		if (opt.isPresent()) {
 			return fromDomain(opt.get());
@@ -363,6 +369,23 @@ public class AlarmCheckConditionByCategoryFinder {
 				}
 			}
 		}
+		
+		// schedule daily
+		ScheFixCondDayDto scheFixConditionDay = null;
+		if (domain.getCategory() == AlarmCategory.SCHEDULE_DAILY && domain.getExtractionCondition() != null) {
+			ScheduleDailyAlarmCheckCond condition = (ScheduleDailyAlarmCheckCond) domain.getExtractionCondition();
+			List<String> listFixedItem = condition.getListFixedItem();
+			String contractCode = AppContexts.user().contractCode();
+			String companyId = AppContexts.user().companyId();
+			List<FixedConditionWorkRecordDto> scheFixCondDays = new ArrayList<>();
+			// get list KscdtScheFixCondDay by listFixedItemId
+			if (listFixedItem.size() > 0) {
+				scheFixCondDays = scheFixedCondDayRepo.getScheFixCondDay(contractCode, companyId, listFixedItem)
+						.stream().map(item -> schedFixCondDayToDto(item)).collect(Collectors.toList());
+			}
+			 
+			scheFixConditionDay = new ScheFixCondDayDto(scheFixCondDays);
+		}
 
 		return new AlarmCheckConditionByCategoryDto(domain.getCode().v(), domain.getName().v(),
 				domain.getCategory().value,
@@ -385,11 +408,22 @@ public class AlarmCheckConditionByCategoryFinder {
 				new AlarmChkCondAgree36Dto(listCondError, listCondOt),
 				new MulMonAlarmCheckConDto(mulMonCheckCondDomainEventDtos, listEralCheckMulMonIDOld),
 				annualHolidayAlConDto,
-				new MasterCheckAlarmCheckConditionDto(listMasterCheckFixedCon));
+				new MasterCheckAlarmCheckConditionDto(listMasterCheckFixedCon),
+				scheFixConditionDay);
 	}
 
 	private AlarmCheckConditionByCategoryDto minValueFromDomain(AlarmCheckConditionByCategory domain) {
 		return new AlarmCheckConditionByCategoryDto(domain.getCode().v(), domain.getName().v(),
-				domain.getCategory().value, null, null, 0, null, null, null, null, null, null, null);
+				domain.getCategory().value, null, null, 0, null, null, null, null, null, null, null, null);
+	}
+	
+	private FixedConditionWorkRecordDto schedFixCondDayToDto(FixedExtractionSDailyCon domain) {
+		FixedConditionWorkRecordDto dto = new FixedConditionWorkRecordDto();
+		dto.setDailyAlarmConID(domain.getErrorAlarmWorkplaceId());
+		dto.setFixConWorkRecordNo(domain.getFixedCheckDayItems().value);
+		dto.setEralarmAtr(1); //TODO
+		dto.setMessage(domain.getMessageDisp().get().v());
+		dto.setUseAtr(domain.isUseAtr());
+		return dto;
 	}
 }
