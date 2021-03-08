@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -21,5 +22,10 @@ public class FixedManagementDataMonth {
 
 	// 確定振休管理データ
 	private List<SubstitutionOfHDManagementData> substitutionHDMagData;
+	
+	public FixedManagementDataMonth() {
+		this.compenDayOffMagData = new ArrayList<>();
+		this.substitutionHDMagData = new ArrayList<>();
+	}
 
 }

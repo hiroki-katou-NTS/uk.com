@@ -11,12 +11,12 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.UnbalanceCompensation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataDaysAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataHours;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataRemainUnit;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffDetail;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.UnOffSetOfDayOff;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.UnUserOfBreak;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.UnbalanceVacation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
 import nts.uk.shr.com.context.AppContexts;
@@ -30,7 +30,7 @@ public class RemainCompensatoryHolidayUpdating {
 
 	// 代休残数更新
 	public static AtomTask updateRemainCompensatoryHoliday(RequireM5 require,  
-			List<BreakDayOffDetail> lstDetailData, 
+			List<AccumulationAbsenceDetail> lstDetailData, 
 			AggrPeriodEachActualClosure period, String empId) {
 		
 		String companyId = AppContexts.user().companyId();
@@ -72,7 +72,7 @@ public class RemainCompensatoryHolidayUpdating {
 
 	// 休出管理データの更新
 	private static AtomTask updateLeaveMngData(RequireM2 require,
-			String companyId, List<BreakDayOffDetail> lstDetailData) {
+			String companyId, List<AccumulationAbsenceDetail> lstDetailData) {
 		
 		List<AtomTask> atomTask = new ArrayList<>();
 		
@@ -86,35 +86,36 @@ public class RemainCompensatoryHolidayUpdating {
 		if (CollectionUtil.isEmpty(lstDetailData))
 			return AtomTask.bundle(atomTask);
 		
-		for (BreakDayOffDetail data : lstDetailData) {
-			Optional<UnUserOfBreak> optUnUserOfBreak = data.getUnUserOfBreak();
-			if (!optUnUserOfBreak.isPresent())
-				continue;
-			
-			UnUserOfBreak unUserOfBreak = optUnUserOfBreak.get();
-			Optional<LeaveManagementData> optLeaveMngData = require.leaveManagementData(unUserOfBreak.getBreakId());
+		for (AccumulationAbsenceDetail data : lstDetailData) {
+			//BreakDayOffDetail
+			UnbalanceVacation unUserOfBreak = (UnbalanceVacation)data;
+			Optional<LeaveManagementData> optLeaveMngData = require.leaveManagementData(unUserOfBreak.getManageId());
 			if (optLeaveMngData.isPresent()) {
 				// update
 				LeaveManagementData leaveMng = new LeaveManagementData(optLeaveMngData.get().getID(),
 						optLeaveMngData.get().getCID(), optLeaveMngData.get().getSID(),
-						optLeaveMngData.get().getComDayOffDate(), unUserOfBreak.getExpirationDate(),
-						new ManagementDataDaysAtr(unUserOfBreak.getOccurrenceDays()),
-						new ManagementDataHours(unUserOfBreak.getOccurrenceTimes()),
-						new ManagementDataRemainUnit(unUserOfBreak.getUnUsedDays()),
-						new ManagementDataHours(unUserOfBreak.getUnUsedTimes()), unUserOfBreak.getDigestionAtr(),
-						new AttendanceTime(unUserOfBreak.getOnedayTime()),
-						new AttendanceTime(unUserOfBreak.getHaftDayTime()), unUserOfBreak.getDisappearanceDate());
+						optLeaveMngData.get().getComDayOffDate(), unUserOfBreak.getDeadline(),
+						new ManagementDataDaysAtr(unUserOfBreak.getNumberOccurren().getDay().v()),
+						new ManagementDataHours(unUserOfBreak.getNumberOccurren().getTime().map(x -> x.v()).orElse(0)),
+						new ManagementDataRemainUnit(unUserOfBreak.getUnbalanceNumber().getDay().v()),
+						new ManagementDataHours(unUserOfBreak.getUnbalanceNumber().getTime().map(x -> x.v()).orElse(0)), 
+						unUserOfBreak.getDigestionCate(),
+						new AttendanceTime(unUserOfBreak.getTimeOneDay().v()),
+						new AttendanceTime(unUserOfBreak.getTimeHalfDay().v()), 
+						unUserOfBreak.getExtinctionDate());
 				atomTask.add(AtomTask.of(() -> require.updateLeaveManagementData(leaveMng)));
 			} else {
 				// insert
-				LeaveManagementData leaveMng = new LeaveManagementData(unUserOfBreak.getBreakId(), companyId,
-						data.getSid(), data.getYmdData(), unUserOfBreak.getExpirationDate(),
-						new ManagementDataDaysAtr(unUserOfBreak.getOccurrenceDays()),
-						new ManagementDataHours(unUserOfBreak.getOccurrenceTimes()),
-						new ManagementDataRemainUnit(unUserOfBreak.getUnUsedDays()),
-						new ManagementDataHours(unUserOfBreak.getUnUsedTimes()), unUserOfBreak.getDigestionAtr(),
-						new AttendanceTime(unUserOfBreak.getOnedayTime()),
-						new AttendanceTime(unUserOfBreak.getHaftDayTime()), unUserOfBreak.getDisappearanceDate());
+				LeaveManagementData leaveMng = new LeaveManagementData(unUserOfBreak.getManageId(), companyId,
+						data.getEmployeeId(), data.getDateOccur(), unUserOfBreak.getDeadline(),
+						new ManagementDataDaysAtr(unUserOfBreak.getNumberOccurren().getDay().v()),
+						new ManagementDataHours(unUserOfBreak.getNumberOccurren().getTime().map(x -> x.v()).orElse(0)),
+						new ManagementDataRemainUnit(unUserOfBreak.getUnbalanceNumber().getDay().v()),
+						new ManagementDataHours(unUserOfBreak.getUnbalanceNumber().getTime().map(x -> x.v()).orElse(0)), 
+						unUserOfBreak.getDigestionCate(),
+						new AttendanceTime(unUserOfBreak.getTimeOneDay().v()),
+						new AttendanceTime(unUserOfBreak.getTimeHalfDay().v()), 
+						unUserOfBreak.getExtinctionDate());
 				atomTask.add(AtomTask.of(() -> require.createLeaveManagementData(leaveMng)));
 			}
 		}
@@ -124,7 +125,7 @@ public class RemainCompensatoryHolidayUpdating {
 
 	// 代休管理データの更新
 	private static AtomTask updateCompensatoryDayData(RequireM1 require, 
-			String companyId, List<BreakDayOffDetail> lstDetailData) {
+			String companyId, List<AccumulationAbsenceDetail> lstDetailData) {
 		List<AtomTask> atomTask = new ArrayList<>();
 		
 		if (CollectionUtil.isEmpty(lstDetailData))
@@ -136,33 +137,29 @@ public class RemainCompensatoryHolidayUpdating {
 		
 		if (CollectionUtil.isEmpty(lstDetailData))
 			return AtomTask.bundle(atomTask);
-		
-		for (BreakDayOffDetail data : lstDetailData) {
-			Optional<UnOffSetOfDayOff> optUnOffsetOfDayoff = data.getUnOffsetOfDayoff();
-			if (!optUnOffsetOfDayoff.isPresent())
-				continue;
-			UnOffSetOfDayOff unOffsetOfDayoff = optUnOffsetOfDayoff.get();
+		for (AccumulationAbsenceDetail data : lstDetailData) {
+			UnbalanceCompensation unOffsetOfDayoff = (UnbalanceCompensation)data;
 			Optional<CompensatoryDayOffManaData> optCompensatoryData = require
-					.compensatoryDayOffManaData(unOffsetOfDayoff.getDayOffId());
+					.compensatoryDayOffManaData(unOffsetOfDayoff.getManageId());
 			
 			if (optCompensatoryData.isPresent()) {
 				// update
 				CompensatoryDayOffManaData compDayOffData = new CompensatoryDayOffManaData(
 						optCompensatoryData.get().getComDayOffID(), optCompensatoryData.get().getSID(),
 						optCompensatoryData.get().getCID(), optCompensatoryData.get().getDayOffDate(),
-						new ManagementDataDaysAtr(unOffsetOfDayoff.getRequiredDay()),
-						new ManagementDataHours(unOffsetOfDayoff.getRequiredTime()),
-						new ManagementDataRemainUnit(unOffsetOfDayoff.getUnOffsetDay()),
-						new ManagementDataHours(unOffsetOfDayoff.getUnOffsetTimes()));
+						new ManagementDataDaysAtr(unOffsetOfDayoff.getNumberOccurren().getDay().v()),
+						new ManagementDataHours(unOffsetOfDayoff.getNumberOccurren().getTime().map(x -> x.v()).orElse(0)),
+						new ManagementDataRemainUnit(unOffsetOfDayoff.getUnbalanceNumber().getDay().v()),
+						new ManagementDataHours(unOffsetOfDayoff.getUnbalanceNumber().getTime().map(x -> x.v()).orElse(0)));
 				atomTask.add(AtomTask.of(() -> require.updateCompensatoryDayOffManaData(compDayOffData)));
 			} else {
 				// insert
 				CompensatoryDayOffManaData compDayOffData = new CompensatoryDayOffManaData(
-						unOffsetOfDayoff.getDayOffId(), data.getSid(), companyId, data.getYmdData(),
-						new ManagementDataDaysAtr(unOffsetOfDayoff.getRequiredDay()),
-						new ManagementDataHours(unOffsetOfDayoff.getRequiredTime()),
-						new ManagementDataRemainUnit(unOffsetOfDayoff.getUnOffsetDay()),
-						new ManagementDataHours(unOffsetOfDayoff.getUnOffsetTimes()));
+						unOffsetOfDayoff.getManageId(), unOffsetOfDayoff.getEmployeeId(), companyId, unOffsetOfDayoff.getDateOccur(),
+						new ManagementDataDaysAtr(unOffsetOfDayoff.getNumberOccurren().getDay().v()),
+						new ManagementDataHours(unOffsetOfDayoff.getNumberOccurren().getTime().map(x -> x.v()).orElse(0)),
+						new ManagementDataRemainUnit(unOffsetOfDayoff.getUnbalanceNumber().getDay().v()),
+						new ManagementDataHours(unOffsetOfDayoff.getUnbalanceNumber().getTime().map(x -> x.v()).orElse(0)));
 				atomTask.add(AtomTask.of(() -> require.createCompensatoryDayOffManaData(compDayOffData)));
 			}
 		}
