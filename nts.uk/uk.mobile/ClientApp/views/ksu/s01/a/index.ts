@@ -57,12 +57,50 @@ export class KSUS01AComponent extends Vue {
 
         let diffMonth = moment(self.yearMonth, 'YYYY/MM/DD').diff(moment(self.yearMonthOldVal, 'YYYY/MM/DD'), 'months');
 
-        self.startDate = moment(self.startDate, 'YYYY/MM/DD').add(diffMonth, 'months').format('YYYY/MM/DD');
-        self.endDate = moment(self.endDate, 'YYYY/MM/DD').add(diffMonth, 'months').format('YYYY/MM/DD');
+        // self.startDate = moment(self.startDate, 'YYYY/MM/DD').add(diffMonth, 'months').format('YYYY/MM/DD');
+        // self.endDate = moment(self.endDate, 'YYYY/MM/DD').add(diffMonth, 'months').format('YYYY/MM/DD');
         self.yearMonthOldVal = self.yearMonth;
-        
+
+        let dataResult = self.getDatePeriodDto(self.startDate, self.endDate, diffMonth, 1);
+        self.startDate = dataResult.startDate;
+        self.endDate = dataResult.endDate;
+
         self.showDetail(false);
         self.getInforOnTargetPeriod();
+    }
+
+    public getDatePeriodDto(startDate: string, endDate: string, monthChange: number,shiftWorkUnit: number) {
+        let startD = '';
+        let startE = '';
+        let yearMonth = startD.substring(0, 4) + startD.substring(5, 7);
+        if (shiftWorkUnit == 1) { //mode month
+            if (parseInt(startDate.substring(8, 10)) == 1) {
+                startD = moment(startDate).add(monthChange, 'M').format('YYYY/MM/DD').toString();
+                let lastDate = new Date(parseInt(startD.substring(0, 4)), parseInt(startD.substring(5, 7)), 0).getDate();
+                startE = startD.substring(0, 8) + lastDate;
+            } else {
+                startD = moment(startDate).add(monthChange, 'M').format('YYYY/MM/DD').toString();
+                startE = moment(endDate).add(monthChange, 'M').format('YYYY/MM/DD').toString();
+                yearMonth = moment(yearMonth, 'YYYYMM').add(1, 'M').format('YYYYMM');
+                let lastDate = new Date(parseInt(yearMonth.substring(0, 4)), parseInt(yearMonth.substring(4, 6)), 0).getDate();
+                let endNextMonth = new Date(yearMonth.substring(0, 4) + '/' + yearMonth.substring(4, 6) + '/' + lastDate);
+                let date = new Date(startE);
+                if (date < endNextMonth) {
+                    startE = startE.substring(0, 8) + '/' + lastDate;
+                }
+            }
+        } else { //mode week
+            startD = moment(startDate).add(monthChange, 'M').format('YYYY/MM/DD').toString();
+            startE = moment(startD).add(6, 'days').format('YYYY/MM/DD').toString();
+            
+        }
+        
+        let dataResult = {
+            startDate: startD,
+            endDate: startE
+        };
+
+        return dataResult;
     }
 
     public created() {
