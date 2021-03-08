@@ -53,7 +53,9 @@ public class BreakTimeSheetGetter {
 		val cid = AppContexts.user().companyId();
 		
 		val workType = require.workType(cid, domainDaily.getWorkInformation().getRecordInfo().getWorkTypeCode().v()).orElse(null);
-		
+		if (workType == null) {
+			return new ArrayList<>();
+		}
 		/** 出勤系か判定する */
 		if (workType.getAttendanceHolidayAttr() == AttendanceHolidayAttr.HOLIDAY) {
 			

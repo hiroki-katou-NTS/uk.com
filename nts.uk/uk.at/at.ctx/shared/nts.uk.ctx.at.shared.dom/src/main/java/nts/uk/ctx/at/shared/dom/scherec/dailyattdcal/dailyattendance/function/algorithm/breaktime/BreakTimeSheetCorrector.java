@@ -25,7 +25,9 @@ public class BreakTimeSheetCorrector {
 		val cid = AppContexts.user().companyId();
 		
 		val workType = require.workType(cid, dailyRecord.getWorkInformation().getRecordInfo().getWorkTypeCode().v()).orElse(null);
-		
+		if (workType == null) {
+			return;
+		}
 		/** 出勤系か判定する */
 		if (workType.getAttendanceHolidayAttr() == AttendanceHolidayAttr.HOLIDAY) {
 			
@@ -36,9 +38,13 @@ public class BreakTimeSheetCorrector {
 		
 		/** 勤務情報が固定休憩かの確認 */
 		val isFixedBreak = isFixedBreakTime(require, cid, workType, dailyRecord);
+		if (isFixedBreak == BreakTimeType.CANT_CHECK) {
+			
+			return;
+		}
 		
 		/** [変更状態.勤務情報]をチェック */
-		if (isFixedBreak && !fixedBreakCorrect) {
+		if (isFixedBreak == BreakTimeType.FIXED_BREAK && !fixedBreakCorrect) {
 			
 			return;
 		}
@@ -75,17 +81,21 @@ public class BreakTimeSheetCorrector {
 	}
 	
 	/** 勤務情報が固定休憩かの確認 */
-	private static boolean isFixedBreakTime(RequireM1 require, String cid,
+	private static BreakTimeType isFixedBreakTime(RequireM1 require, String cid,
 			WorkType workType, IntegrationOfDaily dailyRecord) {
 		
 		/** 就業時間帯コード */
 		val wtc = dailyRecord.getWorkInformation().getRecordInfo().getWorkTimeCodeNotNull().map(c -> c.v()).orElse(null);
+		if (wtc == null) {
+			
+			return BreakTimeType.CANT_CHECK;
+		}
 		val workTimeSet = require.workTimeSetting(cid, wtc).orElse(null);
 		
 		/**　勤務情報の就業時間帯が固定勤務かをチェックする　*/
 		if(workTimeSet.getWorkTimeDivision().getWorkTimeMethodSet() == WorkTimeMethodSet.FIXED_WORK) {
 
-			return true;
+			return BreakTimeType.FIXED_BREAK;
 		}
 		
 		/** 勤務情報の勤務種類の[勤務種類の分類]が休日出勤かをチェック */
@@ -98,14 +108,21 @@ public class BreakTimeSheetCorrector {
 			restTimeZone = require.flowWorkSetting(cid, wtc).map(c -> c.getFlowWorkRestTimezone(workType)).orElse(null);
 			break;
 		default:
-			return true;
+			return BreakTimeType.CANT_CHECK;
 		}
 		
 		if (restTimeZone == null) {
-			return true;
+			return BreakTimeType.CANT_CHECK;
 		}
 		
-		return restTimeZone.isFixRestTime() ? true : false;
+		return restTimeZone.isFixRestTime() ? BreakTimeType.FIXED_BREAK : BreakTimeType.NO_FIX_BREAK;
+	}
+	
+	private static enum BreakTimeType {
+		
+		FIXED_BREAK,
+		NO_FIX_BREAK,
+		CANT_CHECK;
 	}
 	
 	public static interface RequireM1 extends BreakTimeSheetGetter.RequireM1 {
