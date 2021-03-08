@@ -5,10 +5,10 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
-import nts.uk.ctx.at.shared.dom.taskmanagement.aggregateroot.taskframe.TaskFrameName;
-import nts.uk.ctx.at.shared.dom.taskmanagement.aggregateroot.taskframe.TaskFrameSetting;
-import nts.uk.ctx.at.shared.dom.taskmanagement.aggregateroot.taskframe.TaskFrameUsageSetting;
-import nts.uk.ctx.at.shared.dom.taskmanagement.repo.taskframe.TaskFrameUsageSettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameName;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameSetting;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameUsageSetting;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.repo.taskframe.TaskFrameUsageSettingRepository;
 import nts.uk.ctx.at.shared.infra.entity.taskmanagement.taskframe.KsrmtTaskFrame;
 
 import javax.ejb.Stateless;

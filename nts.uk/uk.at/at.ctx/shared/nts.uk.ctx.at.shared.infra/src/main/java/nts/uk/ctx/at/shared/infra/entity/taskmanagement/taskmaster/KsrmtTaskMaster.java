@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.taskmanagement.aggregateroot.taskmaster.Tasks;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
 
@@ -109,7 +109,7 @@ public class KsrmtTaskMaster extends ContractCompanyUkJpaEntity implements Seria
         this.NOTE = NOTE;
     }
 
-    public static KsrmtTaskMaster toEntity(Tasks domain) {
+    public static KsrmtTaskMaster toEntity(Task domain) {
         return new KsrmtTaskMaster(
                 new KsrmtTaskMasterPk(
                         AppContexts.user().companyId(),

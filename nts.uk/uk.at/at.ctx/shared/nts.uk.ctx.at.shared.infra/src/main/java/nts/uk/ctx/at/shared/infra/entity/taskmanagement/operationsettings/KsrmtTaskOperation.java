@@ -4,7 +4,7 @@ package nts.uk.ctx.at.shared.infra.entity.taskmanagement.operationsettings;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.taskmanagement.aggregateroot.operationsettings.TaskOperationSetting;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.operationsettings.TaskOperationSetting;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
