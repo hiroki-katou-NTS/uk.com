@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.taskmanagement.aggregateroot.taskmaster.Tasks;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
@@ -41,11 +41,11 @@ public class KsrmtTaskChild extends ContractUkJpaEntity implements Serializable 
         super();
         this.pk = pk;
     }
-    public static List<KsrmtTaskChild> toEntittys(Tasks domain) {
+    public static List<KsrmtTaskChild> toEntittys(Task domain) {
         String CID = AppContexts.user().companyId();
         int FRAMENO = domain.getTaskFrameNo().v();
         String CD = domain.getCode().v();
-        return domain.getChildWorkList().stream().map(e -> new KsrmtTaskChild(
+        return domain.getChildTaskList().stream().map(e -> new KsrmtTaskChild(
                 new KsrmtTaskChildPk(
                         CID,
                         FRAMENO,

@@ -3,9 +3,9 @@ package nts.uk.ctx.at.shared.infra.repository.taskmanagement;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.taskmanagement.aggregateroot.operationsettings.TaskOperationMethod;
-import nts.uk.ctx.at.shared.dom.taskmanagement.aggregateroot.operationsettings.TaskOperationSetting;
-import nts.uk.ctx.at.shared.dom.taskmanagement.repo.operationsettings.TaskOperationSettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.operationsettings.TaskOperationMethod;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.operationsettings.TaskOperationSetting;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.repo.operationsettings.TaskOperationSettingRepository;
 import nts.uk.ctx.at.shared.infra.entity.taskmanagement.operationsettings.KsrmtTaskOperation;
 
 import javax.ejb.Stateless;

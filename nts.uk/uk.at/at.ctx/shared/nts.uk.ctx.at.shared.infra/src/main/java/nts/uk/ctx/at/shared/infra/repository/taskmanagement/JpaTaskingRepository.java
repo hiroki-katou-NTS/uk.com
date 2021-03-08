@@ -9,8 +9,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.*;
-import nts.uk.ctx.at.shared.dom.taskmanagement.aggregateroot.taskmaster.Tasks;
-import nts.uk.ctx.at.shared.dom.taskmanagement.repo.taskmaster.TaskingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.repo.taskmaster.TaskingRepository;
 import nts.uk.ctx.at.shared.infra.entity.taskmanagement.taskmaster.KsrmtTaskChild;
 import nts.uk.ctx.at.shared.infra.entity.taskmanagement.taskmaster.KsrmtTaskMaster;
 import nts.uk.ctx.at.shared.infra.entity.taskmanagement.taskmaster.KsrmtTaskMasterPk;
@@ -32,17 +31,17 @@ import java.util.stream.Collectors;
 public class JpaTaskingRepository extends JpaRepository implements TaskingRepository {
 
     @Override
-    public void insert(Tasks work) {
-        val entityMaster = KsrmtTaskMaster.toEntity(work);
-        val entityChilds = KsrmtTaskChild.toEntittys(work);
+    public void insert(Task task) {
+        val entityMaster = KsrmtTaskMaster.toEntity(task);
+        val entityChilds = KsrmtTaskChild.toEntittys(task);
         this.commandProxy().insert(entityMaster);
         this.commandProxy().insertAll(entityChilds);
     }
 
     @Override
-    public void update(Tasks work) {
-        val entityMaster = KsrmtTaskMaster.toEntity(work);
-        val entityChilds = KsrmtTaskChild.toEntittys(work);
+    public void update(Task task) {
+        val entityMaster = KsrmtTaskMaster.toEntity(task);
+        val entityChilds = KsrmtTaskChild.toEntittys(task);
         this.commandProxy().update(entityMaster);
         this.commandProxy().updateAll(entityChilds);
     }
@@ -64,7 +63,7 @@ public class JpaTaskingRepository extends JpaRepository implements TaskingReposi
     }
 
     @Override
-    public List<Tasks> getListTask(String cid) {
+    public List<Task> getListTask(String cid) {
         EntityManager em = this.getEntityManager();
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<KsrmtTaskMaster> criteriaQuery = criteriaBuilder.createQuery(KsrmtTaskMaster.class);
@@ -78,7 +77,7 @@ public class JpaTaskingRepository extends JpaRepository implements TaskingReposi
     }
 
     @Override
-    public List<Tasks> getListTask(String cid, TaskFrameNo taskFrameNo) {
+    public List<Task> getListTask(String cid, TaskFrameNo taskFrameNo) {
         EntityManager em = this.getEntityManager();
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<KsrmtTaskMaster> criteriaQuery = criteriaBuilder.createQuery(KsrmtTaskMaster.class);
@@ -94,7 +93,7 @@ public class JpaTaskingRepository extends JpaRepository implements TaskingReposi
     }
 
     @Override
-    public Optional<Tasks> getOptionalTask(String cid, TaskFrameNo taskFrameNo, TaskCode code) {
+    public Optional<Task> getOptionalTask(String cid, TaskFrameNo taskFrameNo, TaskCode code) {
         val entityOpt = this.queryProxy().find(new KsrmtTaskMasterPk(
                 cid,
                 taskFrameNo.v(),
@@ -104,7 +103,7 @@ public class JpaTaskingRepository extends JpaRepository implements TaskingReposi
     }
 
     @Override
-    public List<Tasks> getListTask(String cid, List<TaskFrameNo> taskFrameNos) {
+    public List<Task> getListTask(String cid, List<TaskFrameNo> taskFrameNos) {
         EntityManager em = this.getEntityManager();
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<KsrmtTaskMaster> criteriaQuery = criteriaBuilder.createQuery(KsrmtTaskMaster.class);
@@ -127,7 +126,7 @@ public class JpaTaskingRepository extends JpaRepository implements TaskingReposi
     }
 
     @Override
-    public List<Tasks> getListTask(String cid, GeneralDate referenceDate) {
+    public List<Task> getListTask(String cid, GeneralDate referenceDate) {
         EntityManager em = this.getEntityManager();
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<KsrmtTaskMaster> criteriaQuery = criteriaBuilder.createQuery(KsrmtTaskMaster.class);
@@ -144,7 +143,7 @@ public class JpaTaskingRepository extends JpaRepository implements TaskingReposi
     }
 
     @Override
-    public List<Tasks> getListTask(String cid, GeneralDate referenceDate, List<TaskFrameNo> taskFrameNos) {
+    public List<Task> getListTask(String cid, GeneralDate referenceDate, List<TaskFrameNo> taskFrameNos) {
         EntityManager em = this.getEntityManager();
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<KsrmtTaskMaster> criteriaQuery = criteriaBuilder.createQuery(KsrmtTaskMaster.class);
@@ -170,7 +169,7 @@ public class JpaTaskingRepository extends JpaRepository implements TaskingReposi
     }
 
     @Override
-    public List<Tasks> getListTask(String cid, GeneralDate referenceDate, TaskFrameNo taskFrameNo, List<TaskCode> codes) {
+    public List<Task> getListTask(String cid, GeneralDate referenceDate, TaskFrameNo taskFrameNo, List<TaskCode> codes) {
         EntityManager em = this.getEntityManager();
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<KsrmtTaskMaster> criteriaQuery = criteriaBuilder.createQuery(KsrmtTaskMaster.class);
@@ -196,8 +195,8 @@ public class JpaTaskingRepository extends JpaRepository implements TaskingReposi
     }
 
     @Override
-    public List<Tasks> getListTask(String cid, TaskFrameNo taskFrameNo, TaskCode code) {
-        Optional<Tasks> optionalTask = this.getOptionalTask(cid, taskFrameNo, code);
+    public List<Task> getListTask(String cid, TaskFrameNo taskFrameNo, TaskCode code) {
+        Optional<Task> optionalTask = this.getOptionalTask(cid, taskFrameNo, code);
         if (!optionalTask.isPresent() || optionalTask.get().getChildTaskList().isEmpty())
             return Collections.emptyList();
         val listCode = optionalTask.get().getChildTaskList();
@@ -206,7 +205,7 @@ public class JpaTaskingRepository extends JpaRepository implements TaskingReposi
     }
 
     @Override
-    public List<Tasks> getListTask(String cid, TaskFrameNo taskFrameNo, List<TaskCode> codes) {
+    public List<Task> getListTask(String cid, TaskFrameNo taskFrameNo, List<TaskCode> codes) {
         EntityManager em = this.getEntityManager();
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<KsrmtTaskMaster> criteriaQuery = criteriaBuilder.createQuery(KsrmtTaskMaster.class);
@@ -235,13 +234,13 @@ public class JpaTaskingRepository extends JpaRepository implements TaskingReposi
     }
 
 
-    private List<Tasks> getListTask(List<KsrmtTaskMaster> masterList) {
-        return masterList.stream().map(this::getListTask).sorted(Comparator.comparing(Tasks::getCode)).collect(Collectors.toList());
+    private List<Task> getListTask(List<KsrmtTaskMaster> masterList) {
+        return masterList.stream().map(this::getListTask).sorted(Comparator.comparing(Task::getCode)).collect(Collectors.toList());
     }
 
-    private Tasks getListTask(KsrmtTaskMaster e) {
+    private Task getListTask(KsrmtTaskMaster e) {
 
-        return new Tasks(
+        return new Task(
                 new TaskCode(e.getPk().CD),
                 new TaskFrameNo(e.getPk().FRAMENO),
                 new ExternalCooperationInfo(

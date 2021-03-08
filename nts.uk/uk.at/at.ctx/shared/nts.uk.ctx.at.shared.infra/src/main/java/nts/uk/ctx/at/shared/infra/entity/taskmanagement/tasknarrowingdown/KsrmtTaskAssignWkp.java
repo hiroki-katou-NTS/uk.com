@@ -3,7 +3,7 @@ package nts.uk.ctx.at.shared.infra.entity.taskmanagement.tasknarrowingdown;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.taskmanagement.aggregateroot.tasknarrowingdown.NarrowingDownTaskByWorkplace;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.tasknarrowingdown.NarrowingDownTaskByWorkplace;
 import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
 
 import javax.persistence.EmbeddedId;
