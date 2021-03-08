@@ -3,7 +3,7 @@ package nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.schedule;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtAlarmCheckConditionCategory;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
 
@@ -14,7 +14,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "KFNDT_SCHE_COND_DAY_LINK")
-public class KfndtScheCondDayLink extends ContractUkJpaEntity {
+public class KfndtScheCondDayLink extends UkJpaEntity {
 
     @Id
     @Column(name = "ERAL_CHECK_ID")
