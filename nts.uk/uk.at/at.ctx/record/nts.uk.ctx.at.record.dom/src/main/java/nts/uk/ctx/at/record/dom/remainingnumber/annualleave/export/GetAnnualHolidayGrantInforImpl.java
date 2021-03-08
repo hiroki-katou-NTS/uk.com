@@ -129,7 +129,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 		}
 		// 取得した期間
 		DatePeriod period = optPeriod.get();
-		AnnualHolidayGrantInfor output = new AnnualHolidayGrantInfor(new ArrayList<>(),fromTo.orElse(period),period.end().addDays(1), sid, Optional.of(ymd));
+		AnnualHolidayGrantInfor output = new AnnualHolidayGrantInfor(new ArrayList<>(),period,period.end().addDays(1), sid, Optional.of(ymd));
 		// 社員に対応する処理締めを取得する
 		Closure closureOfEmp = ClosureService.getClosureDataByEmployee(require, cacheCarrier, sid, ymd);
 		// 指定月の締め開始日を取得 - 3 4
@@ -403,7 +403,7 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 		if (annTimeData.isEmpty()) {
 			return lstAnnRemainHis;
 		}
-
+		// 付与残数データから使用数を消化する	
 		return annTimeData.stream()
 				.map(hist -> GetAnnualLeaveUsedNumberFromRemDataService.getAnnualLeaveGrantRemainingData(
 						AppContexts.user().companyId(), sid,
@@ -418,59 +418,29 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 	@Override
 	public List<AnnualHolidayGrant> grantInforFormPeriod(String sid, YearMonth ym,  ClosureId closureID,
 			ClosureDate closureDate, DatePeriod period, boolean isPastMonth) {
-		List<AnnualHolidayGrant> lstOutput = new ArrayList<>();
+		List<AnnualLeaveGrantRemainingData> lstAnnLeaRem = new ArrayList<>();
 		//INPUT．過去月集計モードを確認
-		if(isPastMonth) {
-			//ドメインモデル「年休付与残数履歴データ」を取得
-			List<AnnualLeaveRemainingHistory> lstHisAnnInfo = annualRepo.getInfoByExpStatus(sid, ym, closureID, closureDate,
-					LeaveExpirationStatus.EXPIRED, period);
-			lstHisAnnInfo.stream().forEach(x -> {
-				AnnualHolidayGrant data = new AnnualHolidayGrant(x.getGrantDate(),
-						x.getDetails().getGrantNumber().getDays().v(),
-						x.getDetails().getUsedNumber().getDays().v(),
-						x.getDeadline(),
-						x.getDetails().getRemainingNumber().getDays().v(),
-						x.getDetails().getGrantNumber().getMinutes().orElse(new LeaveGrantTime(0)),
-						x.getDetails().getUsedNumber().getMinutes().orElse(new LeaveUsedTime(0)),
-						x.getDetails().getRemainingNumber().getMinutes().orElse(new LeaveRemainingTime(0)));
-				lstOutput.add(data);
-			});
-
+		if (isPastMonth) {
+			// ドメインモデル「年休付与残数履歴データ」を取得
+			lstAnnLeaRem = annualRepo
+					.getInfoByExpStatus(sid, ym, closureID, closureDate, LeaveExpirationStatus.EXPIRED, period)
+					.stream()
+					.map(AnnualLeaveGrantRemainingData::createFromHistory)
+					.sorted(Comparator.comparing(AnnualLeaveGrantRemainingData::getGrantDate))
+					.collect(Collectors.toList());
 		} else {
-			//ドメインモデル「年休付与残数データ」を取得
-			List<AnnualLeaveGrantRemainingData> lstAnnLeaRem = annLeaRemRepo.findByExpStatus(sid, LeaveExpirationStatus.EXPIRED, period);
-			lstAnnLeaRem.stream().forEach(x -> {
-				AnnualHolidayGrant data = new AnnualHolidayGrant(x.getGrantDate(),
-						x.getDetails().getGrantNumber().getDays().v(),
-						x.getDetails().getUsedNumber().getDays().v(),
-						x.getDeadline(),
-						x.getDetails().getRemainingNumber().getDays().v(),
-						x.getDetails().getGrantNumber().getMinutes().orElse(new LeaveGrantTime(0)),
-						x.getDetails().getUsedNumber().getMinutes().orElse(new LeaveUsedTime(0)),
-						x.getDetails().getRemainingNumber().getMinutes().orElse(new LeaveRemainingTime(0)));
-				lstOutput.add(data);
-			});
-			
-			// 指定月時点の使用数を計算指定月時点の使用数を計算 - 6 
-			List<AnnualLeaveGrantRemainingData> lstAnnRemainHis = this.lstRemainHistory(sid, lstAnnLeaRem, period.start());
-			// Loại bỏ bug trùng lặp
-			lstAnnRemainHis.removeAll(lstAnnLeaRem);
-			// 取得した年休付与残数データをOUTPUTのクラスに移送
-			lstAnnRemainHis.stream().forEach(x -> {
-				AnnualHolidayGrant data = new AnnualHolidayGrant(x.getGrantDate(),
-						x.getDetails().getGrantNumber().getDays().v(),
-						x.getDetails().getUsedNumber().getDays().v(),
-						x.getDeadline(),
-						x.getDetails().getRemainingNumber().getDays().v(),
-						x.getDetails().getGrantNumber().getMinutes().orElse(new LeaveGrantTime(0)),
-						x.getDetails().getUsedNumber().getMinutes().orElse(new LeaveUsedTime(0)),
-						x.getDetails().getRemainingNumber().getMinutes().orElse(new LeaveRemainingTime(0)));
-				lstOutput.add(data);
-			});
-			
+			// ドメインモデル「年休付与残数データ」を取得
+			lstAnnLeaRem = annLeaRemRepo.findByExpStatus(sid, LeaveExpirationStatus.EXPIRED, period)
+					.stream()
+					.sorted(Comparator.comparing(AnnualLeaveGrantRemainingData::getGrantDate))
+					.collect(Collectors.toList());
 		}
-
-		return lstOutput;
+		// 指定月時点の使用数を計算指定月時点の使用数を計算 - 6
+		List<AnnualLeaveGrantRemainingData> lstAnnRemainHis = this.lstRemainHistory(sid, lstAnnLeaRem, period.start());
+		// Loại bỏ bug trùng lặp
+//		lstAnnRemainHis.removeAll(lstAnnLeaRem);
+		// 取得した年休付与残数データをOUTPUTのクラスに移送
+		return lstAnnRemainHis.stream().map(AnnualHolidayGrant::fromData).collect(Collectors.toList());
 	}
 	
 	/**

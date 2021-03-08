@@ -765,6 +765,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 	private boolean setRowStyle(Cells cells, int newRow, int totalLine, boolean isBlueBackground, 
 			boolean isManageTime, boolean isPrintingTime) {
 		Style style = new Style();
+		// In case of printing date section
 		if (!isPrintingTime) {
 			for (int i = totalLine; i > 0; i--) {
 				for (int j = 0; j < MAX_COL; j++) {
@@ -796,6 +797,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 				}
 			}
 		} else { 
+			// In case of printing time section
 			for (int i = totalLine; i > 0; i--) {
 				for (int j = 0; j < MAX_COL; j++) {
 					Cell cell = cells.get(newRow - i, j);
@@ -816,7 +818,7 @@ public class AsposeOutputYearHolidayManagementGenerator extends AsposeCellsRepor
 				}
 				if (i == 1) {
 					isBlueBackground = false;
-				} else if (i % 2 !=0 && i != totalLine) {
+				} else if ((totalLine - i) % 2 !=0 && i != totalLine) {
 					isBlueBackground = !isBlueBackground;
 				}
 				
