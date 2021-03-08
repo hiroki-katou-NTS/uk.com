@@ -13,7 +13,7 @@ module nts.uk.at.view.kmt09.a {
   @bean()
   class ViewModel extends ko.ViewModel {
 
-    selectedWorkCode: KnockoutObservable<string> = ko.observable(null);
+    selectedWorkCode: KnockoutObservable<number> = ko.observable(null);
     currentCode: KnockoutObservable<string> = ko.observable(null);
     registrationWorkList: KnockoutObservableArray<WorkItem> = ko.observableArray([]);
     currentCodeList: KnockoutObservableArray<any> = ko.observableArray(null);
@@ -199,9 +199,16 @@ module nts.uk.at.view.kmt09.a {
       const vm = this;
 
       vm.workList = ko.observableArray([
-        { code: '001', name: '作業 1' },
-        { code: '002', name: '作業 2' },
-        { code: '003', name: '作業 3' },
+        { code: 1, name: '雇用' },
+        { code: 2, name: '分類' },
+        { code: 3, name: '職位' },
+        { code: 4, name: '職場' },
+        { code: 5, name: '部門' },
+        { code: 6, name: '職場個人' },
+        { code: 7, name: '部門個人' },
+        { code: 8, name: 'ロール' },
+        { code: 9, name: '勤務種別' },
+        { code: 10, name: '作業' },
       ])
     }
 
@@ -244,6 +251,7 @@ module nts.uk.at.view.kmt09.a {
       })
 
       let params = {
+        targetType: vm.selectedWorkCode(),//作業
         isMultiple: true, //選択モード single or multiple
         showExpireDate: true, //表示モード	show/hide expire date
         referenceDate: moment().format('YYYY/MM/DD'), //システム日付        
@@ -281,7 +289,7 @@ module nts.uk.at.view.kmt09.a {
       const vm = this;
 
       let selectionCodeList: Array<string> = [];
-      _.forEach(vm.model().listOfRefinedItems(), (x) => {
+      _.forEach(vm.registrationWorkList(), (x) => {
         selectionCodeList.push(x.code);
       })
 
@@ -291,17 +299,20 @@ module nts.uk.at.view.kmt09.a {
         targetType: vm.selectedWorkCode(),
         itemListSetting: selectionCodeList,
         baseDate: moment('YYYY/MM/DD').toDate(),
-        roleType:  0 //SYSTEM_MANAGER
+        roleType:  0, //SYSTEM_MANAGER
+        workFrameNoSelection: vm.selectedWorkCode()
       };
 
       nts.uk.ui.windows.setShared("CDL023Input", params);
       // open dialog
-      nts.uk.ui.windows.sub.modal('com','view/cdl/023/a/index.xhtml').onClosed(() => {
-        // show data respond
-        let lstSelection: Array<string> = nts.uk.ui.windows.getShared("CDL023Output");
+      nts.uk.ui.windows.sub.modal('com','view/cdl/023/a/index.xhtml').onClosed(() => {        
+        let lstSelection: Array<string> = nts.uk.ui.windows.getShared("CDL023Output");        
+        vm.getCloneWorkTimeSetting(lstSelection, vm.currentCode());
       });
-      // check has close dialog
-      //nts.uk.ui.windows.setShared("CDL023Cancel", true);
+    }
+
+    getCloneWorkTimeSetting(dataTarget: Array<string>, dataSource: string) {
+      console.log(dataTarget);
     }
 
     goback() {
@@ -386,7 +397,9 @@ module nts.uk.at.view.kmt09.a {
     // ロール
     ROLE = 8,
     // 勤務種別
-    WORK_TYPE = 9
+    WORK_TYPE = 9,
+    //
+    WORK = 10
   }
 
   interface IObjectDuplication {
@@ -395,7 +408,7 @@ module nts.uk.at.view.kmt09.a {
     targetType: string | number;
     itemListSetting: Array<string>;
     baseDate?: Date; // needed when target type: 職場 or 部門 or 職場個人 or 部門個人
-    roleType?: number; // needed when target type: ロール
+    roleType?: number; // needed when target type: ロール,
+    workFrameNoSelection?: number //ver6
   }
-
 }

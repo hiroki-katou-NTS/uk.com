@@ -23,6 +23,8 @@ module nts.uk.com.view.cdl023.a.viewmodel {
 
         roleType: number;
 
+        workFrameNoSelection: number;
+
         constructor() {
             let self = this;
 
@@ -57,7 +59,8 @@ module nts.uk.com.view.cdl023.a.viewmodel {
             self.itemListSetting = object.itemListSetting;
             self.baseDate = object.baseDate;
             self.roleType = object.roleType;
-
+            self.workFrameNoSelection = !!object.workFrameNoSelection ? object.workFrameNoSelection : null; //ver6
+            
             dfd.resolve();
             return dfd.promise();
         }
@@ -236,6 +239,22 @@ module nts.uk.com.view.cdl023.a.viewmodel {
                     // set data share
                     shareData.codeList = listToDialog;
                     break;
+
+                case TargetType.WORK:
+                    screenUrl = '/view/kdl/012/index.xhtml';
+                    keyInput = 'KDL012';
+                    keyOutput = 'currentCodeList';
+                    keyCancel = 'KDL012Cancel';
+
+                    // set data share
+                    //shareData.codeList = listToDialog;
+                    shareData.isMultiple = true; //選択モード single or multiple
+                    shareData.showExpireDate = true; //表示モード	show/hide expire date
+                    shareData.referenceDate = self.baseDate; //システム日付        
+                    shareData.workFrameNoSelection = self.workFrameNoSelection;//作業枠NO選択        
+                    shareData.selectionCodeList = listToDialog; //初期選択コードリスト
+
+                    break;
                 default:
                     nts.uk.ui.dialog.alert("Target type not found.");
                     return;
@@ -243,9 +262,11 @@ module nts.uk.com.view.cdl023.a.viewmodel {
 
             // share data
             setShared(keyInput, shareData);
-
+            
+						let atOrcom = !!shareData.workFrameNoSelection ? 'at' : 'com';
+							
             // open dialog
-            nts.uk.ui.windows.sub.modal(screenUrl).onClosed(() => {
+            nts.uk.ui.windows.sub.modal(atOrcom, screenUrl).onClosed(() => {
 
                 // check close dialog
                 if (getShared(keyCancel)) {
@@ -303,7 +324,8 @@ module nts.uk.com.view.cdl023.a.viewmodel {
 
         // 勤務種別
         static WORK_TYPE = 9;
-
+        //作業
+        static  WORK = 10; //ver 6
     }
 
     /**
