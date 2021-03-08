@@ -19,12 +19,14 @@ module nts.uk.at.view.kdp.share {
             <div class="title">
                 <div data-bind="i18n: '店長より：'"></div>
                 <div>
-                    <i data-bind="ntsIcon: { no: 160, width: 30, height: 30 }, click: openPDialog"></i>
+                    <button class="icon" data-bind="ntsIcon: { no: 160, width: 30, height: 30 }">
+                    </button>
                 </div>
             </div>
             <div class="content" data-bind="i18n: warningMessage"></div>
             <div>
-                <i data-bind="ntsIcon: { no: 161, width: 30, height: 30 }, click: openRDialog"></i>
+                <button class="icon" data-bind="ntsIcon: { no: 161, width: 30, height: 30 }">
+                </button>
             </div>
         </div>
     </div>
@@ -72,6 +74,12 @@ module nts.uk.at.view.kdp.share {
         .kdp-message-error .error .title {
             box-sizing: border-box;
             float: left;
+        }
+
+        .kdp-message-error .warning-message .icon {
+            border: none;
+            background-color: transparent;
+            box-shadow: 0 0px rgb(0 0 0 / 40%);
         }
         
     </style>
