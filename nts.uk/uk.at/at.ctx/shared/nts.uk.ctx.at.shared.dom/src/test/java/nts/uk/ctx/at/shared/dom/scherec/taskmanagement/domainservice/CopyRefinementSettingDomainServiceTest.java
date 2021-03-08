@@ -10,8 +10,7 @@ import nts.arc.task.tran.AtomTask;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
-import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.tasknarrowingdown.NarrowingDownTaskByWorkplace;
-import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.tasknarrowingdown.NarrowingDownTaskByWorkplaceTest;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskassign.taskassignworkplace.NarrowingDownTaskByWorkplace;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
