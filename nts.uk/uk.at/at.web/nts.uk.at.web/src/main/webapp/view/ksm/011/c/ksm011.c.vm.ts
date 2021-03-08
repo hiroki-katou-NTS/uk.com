@@ -15,7 +15,7 @@ module nts.uk.at.view.ksm011.c {
     flexTime: KnockoutObservable<number> = ko.observable(0);
     workTypeControl: KnockoutObservable<number> = ko.observable(1);
     achievementDisplay: KnockoutObservable<number> = ko.observable(1);
-    workTypeList: KnockoutObservableArray<number> = ko.observableArray([]);
+    workTypeList: KnockoutObservableArray<string> = ko.observableArray([]);
     workTypeListText: KnockoutObservable<string> = ko.observable('勤務種類リスト + 勤務種類リスト + 勤務種類リスト');
 
     selectedCode: KnockoutObservable<string>;
@@ -72,7 +72,7 @@ module nts.uk.at.view.ksm011.c {
         });
 
         vm.workTypeListText(_.join(strLstName, ' + '));
-        vm.selectedCode(_.join(strLstCode, ','));
+        //vm.workTypeList(strLstCode);
       });
     }
 
@@ -94,6 +94,14 @@ module nts.uk.at.view.ksm011.c {
 
     saveData() {
       const vm = this;
+
+      if( vm.workTypeList().length <= 0 && vm.workTypeControl() === 1) {
+        vm.$dialog.error({ messageId: 'Msg_1690', messageParams: [vm.$i18n('KSM011_47')]}).then(() => {
+          $('#KSM011_C3_6').focus();
+        });
+        return;
+      }
+
       let params = {
         regularWork: vm.regularWork(),
         flexTime: vm.flexTime(),
@@ -104,12 +112,18 @@ module nts.uk.at.view.ksm011.c {
         //vm.selectableCode(data.selectableCode);
       };
 
-      vm.$ajax(PATH.getSetting).done((data) => {
+      /* vm.$ajax(PATH.saveData, params).done((data) => {
         if( data ) {
-         
+          vm.$dialog.info({ messageId: 'Msg_15'}).then(() => {
+          return;
+          });
         }
-      });
-    }
+      }).fail(error => {
+        vm.$dialog.info({ messageId: error.messageId}).then(() => {
+          return;
+          });
+      });  */
 
+    }   
   }
 }

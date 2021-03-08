@@ -9,6 +9,7 @@
 }
 .table .cell-left {
   width: 120px;
+  padding-left: 15px;
 }
 
 .table .group .cell-left {

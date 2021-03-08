@@ -10,26 +10,30 @@ module nts.uk.at.view.ksm011.d {
 
     switchItems: KnockoutObservableArray<any>;
     switchItems1: KnockoutObservableArray<any>;
-    regularWork: KnockoutObservable<number> = ko.observable(1);
-    fluidWork: KnockoutObservable<number> = ko.observable(0);
-    flexTime: KnockoutObservable<number> = ko.observable(0);
-    workTypeControl: KnockoutObservable<number> = ko.observable(1);
-    achievementDisplay: KnockoutObservable<number> = ko.observable(1);
-    workTypeList: KnockoutObservableArray<number> = ko.observableArray([]);
-    workTypeListText: KnockoutObservable<string> = ko.observable('勤務種類リスト + 勤務種類リスト + 勤務種類リスト');
+    completionMethod: KnockoutObservableArray<any>;
+    conditionWorkSchedule: KnockoutObservableArray<any>;
+
+    targetDate: KnockoutObservable<number> = ko.observable(1);
+    deadline: KnockoutObservable<number> = ko.observable(0);
+    completionFunction: KnockoutObservable<number> = ko.observable(1);    
+    alarmCheck: KnockoutObservable<number> = ko.observable(1);
+    confirm: KnockoutObservable<number> = ko.observable(0);
+    alarmConditionList: KnockoutObservableArray<string> = ko.observableArray([]);
+    alarmConditionListText: KnockoutObservable<string> = ko.observable('勤務種類リスト + 勤務種類リスト + 勤務種類リスト');
 
     selectedCode: KnockoutObservable<string>;
     selectableCode: KnockoutObservable<string>;
 
     daysList: KnockoutObservableArray<any>= ko.observableArray([]);
-    deadlineSelected: KnockoutObservable<number> = ko.observable(0);
     workDisplay: KnockoutObservable<number> = ko.observable(0);
-    abbreviationDisplay: KnockoutObservable<number> = ko.observable(0);
-    shiftDisplay: KnockoutObservable<number> = ko.observable(0);
-    lastDayDisplay: KnockoutObservable<number> = ko.observable(0);
+    abbreviationDisplay: KnockoutObservable<number> = ko.observable(1);
+    shiftDisplay: KnockoutObservable<number> = ko.observable(1);
+    lastDayDisplay: KnockoutObservable<number> = ko.observable(1);
     _28DayCycle: KnockoutObservable<number> = ko.observable(0);
-    displayByDate: KnockoutObservable<number> = ko.observable(0);
-    
+    displayByDate: KnockoutObservable<number> = ko.observable(1);
+    completionExecutionMethod: KnockoutObservable<number> = ko.observable(1);
+    personalInforDisplay: KnockoutObservableArray<string> = ko.observableArray([]);
+
     constructor(params: any) {
       super();
       const vm = this;
@@ -43,7 +47,19 @@ module nts.uk.at.view.ksm011.d {
         { code: 1, name: vm.$i18n('KSM011_21') },
         { code: 0, name: vm.$i18n('KSM011_22') }
       ]);
-
+      
+      vm.completionMethod = ko.observableArray([
+        { code: 0, name: vm.$i18n('KSM011_80') },
+        { code: 1, name: vm.$i18n('KSM011_81') }
+      ]);
+      
+      vm.conditionWorkSchedule = ko.observableArray([
+        { code: CWSchedule.INSURANCE_STATUS, name: vm.$i18n('CWSchedule_Insurance_Status') },
+        { code: CWSchedule.TEAM, name: vm.$i18n('CWSchedule_Team') },
+        { code: CWSchedule.RANK, name: vm.$i18n('CWSchedule_Rank') },
+        { code: CWSchedule.QUALIFICATION, name: vm.$i18n('CWSchedule_Qualification') },
+        { code: CWSchedule.LICENSE_ATR, name: vm.$i18n('CWSchedule_License') }     
+      ]);
       //vm.getSetting();
       vm.getDayList();
     }
@@ -54,35 +70,18 @@ module nts.uk.at.view.ksm011.d {
 
     mounted() {
       const vm = this;
+      $('#KSM011_D24').focus();
     }
 
     list(str: string):Array<string>{
       return _.split(str, ',');
     }
 
-    openDialogKDl002() {
+    openDialogScreenF() {
       const vm = this;
-      let lstselectedCode = vm.list(vm.selectedCode());
-      let lstselectableCode = vm.list(vm.selectableCode());
-      nts.uk.ui.windows.setShared('KDL002_Multiple', true, true);
-      //all possible items
-      nts.uk.ui.windows.setShared('KDL002_AllItemObj', lstselectableCode, true);
-      nts.uk.ui.windows.setShared('kdl002isSelection', true);
-      //selected items
-      nts.uk.ui.windows.setShared('KDL002_SelectedItemId', lstselectedCode, true);
-      nts.uk.ui.windows.sub.modal('/view/kdl/002/a/index.xhtml', { title: '乖離時間の登録＞対象項目', }).onClosed(function (): any {
-        var lst = nts.uk.ui.windows.getShared('KDL002_SelectedNewItem');
-        vm.selectedCode();
-        let strLstCode: Array<string> = [],
-            strLstName: Array<string> = [];
-        
-            _.each(lst, (item, index: number) => {
-          strLstCode.push(item.code);          
-          strLstName.push(item.name);          
-        });
 
-        vm.workTypeListText(_.join(strLstName, ' + '));
-        vm.selectedCode(_.join(strLstCode, ','));
+      vm.$window.modal('/view/ksm/011/f/index.xhtml').then((data) => {
+        
       });
     }
 
@@ -91,34 +90,53 @@ module nts.uk.at.view.ksm011.d {
 
       vm.$ajax(PATH.getSetting).done((data) => {
         if( data ) {
-          vm.regularWork(data.regularWork);
+         /*  vm.regularWork(data.regularWork);
           vm.flexTime(data.flexTime);
           vm.fluidWork(data.fluidWork);
           vm.workTypeControl(data.workTypeControl);
           vm.achievementDisplay(data.achievementDisplay);
-          //vm.selectedCode(data.selectableCode);
-          //vm.selectableCode(data.selectableCode);
+          vm.selectedCode(data.selectableCode);
+          vm.selectableCode(data.selectableCode);*/
         }
       });
     }
 
     saveData() {
       const vm = this;
+
+      if( vm.workDisplay() === 0 || vm.shiftDisplay() === 0 || vm.abbreviationDisplay() === 0) {
+        vm.$dialog.error({ messageId: 'Msg_2125'}).then(() => {});
+        return;
+      }
+
+      if( vm.alarmCheck() === 1 && vm.alarmConditionList().length <= 0) {
+        vm.$dialog.error({ messageId: 'Msg_1690', messageParams: [vm.$i18n('KSM011_87')]}).then(() => {
+          $('#KSM011_D6_14').focus();
+        });
+        return;
+      }
+
       let params = {
-        regularWork: vm.regularWork(),
+       /*  regularWork: vm.regularWork(),
         flexTime: vm.flexTime(),
         fluidWork: vm.fluidWork(),
         workTypeControl: vm.workTypeControl(),
-        achievementDisplay: vm.achievementDisplay()
+        achievementDisplay: vm.achievementDisplay() */
         //vm.selectedCode(data.selectableCode);
         //vm.selectableCode(data.selectableCode);
       };
 
-      vm.$ajax(PATH.getSetting).done((data) => {
+     /*  vm.$ajax(PATH.saveData, params).done((data) => {
         if( data ) {
-         
+          vm.$dialog.info({ messageId: 'Msg_15'}).then(() => {
+          return;
+          });
         }
-      });
+      }).fail(error => {
+        vm.$dialog.info({ messageId: error.messageId}).then(() => {
+          return;
+          });
+      }); */
     }
 
     getDayList(){
@@ -132,4 +150,20 @@ module nts.uk.at.view.ksm011.d {
       vm.daysList(days);
     }
   }
+
+  //勤務予定の条件区分（ランク、チーム、介護区分のみ）
+  export enum CWSchedule { //Condition Word Schedule
+    // 	0:保険加入状況	
+    INSURANCE_STATUS = 0, //(0, "保険加入状況"),  CWSchedule_Insurance_Status
+    // 	1:チーム		
+    TEAM = 1, //(1, "チーム"),    CWSchedule_Team
+    //  2:ランク	 
+    RANK = 2, //(2, "ランク"), CWSchedule_Rank
+    
+    // 3:資格		 
+    QUALIFICATION = 3,// (3, "資格"), CWSchedule_Qualification
+    
+    // 4:免許区分 
+    LICENSE_ATR = 4 //(4, "免許区分"); CWSchedule_License
+  }  
 }

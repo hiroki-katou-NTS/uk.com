@@ -1,45 +1,47 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
-	<body>
-		<ui:composition template="../../../../master/base.xhtml">
-			<ui:define name="htmlHead">
-        <com:scriptfile set="IGNITE" />			
-				<com:stylefile path="ksm011.c.css" />
-				<com:scriptfile path="ksm011.c.vm.js" />
-			</ui:define>
-			
-			<ui:define name="content">
-				<div id="functions-area">
-					<a
-						class="goback" tabindex="1"
-						data-bind="ntsLinkButton: { jump: '/view/ksm/011/a/index.xhtml' }, text: $vm.$i18n('KSM011_17')"
-					></a>
-					<button
-						class="proceed" tabindex="2"
-						data-bind="text: $vm.$i18n('KSM011_18'), click: saveData"
-					></button>
-				</div>
-				<div id="contents-area">
-					<div class="group">
-						<div
-							class="divi"
-							data-bind="text: $vm.$i18n('KSM011_35')"
-						></div>
-						<hr />
-						<div class="table mb-5">
-							<div class="cell cell-left">
-								<div
-									data-bind="ntsFormLabel: { required: true}, text: $vm.$i18n('KSM011_36')"
-								></div>
-							</div>
-							<div class="cell">
-								<div
-									class="cf" tabindex="3"
-									data-bind="ntsSwitchButton: {
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:com="http://xmlns.jcp.org/jsf/component"
+  xmlns:h="http://xmlns.jcp.org/jsf/html"
+>
+  <body>
+    <ui:composition template="../../../../master/base.xhtml">
+      <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE" />
+        <com:stylefile path="ksm011.c.css" />
+        <com:scriptfile path="ksm011.c.vm.js" />
+      </ui:define>
+
+      <ui:define name="content">
+        <div id="functions-area">
+          <a
+            class="goback"
+            tabindex="1"
+            data-bind="ntsLinkButton: { jump: '/view/ksm/011/a/index.xhtml' }, text: $vm.$i18n('KSM011_17')"
+          ></a>
+          <button
+            class="proceed"
+            tabindex="2"
+            data-bind="text: $vm.$i18n('KSM011_18'), click: saveData"
+          ></button>
+        </div>
+        <div id="contents-area">
+          <div class="group">
+            <div class="divi" data-bind="text: $vm.$i18n('KSM011_35')"></div>
+            <hr />
+            <div class="table mb-5">
+              <div class="cell cell-left">
+                <div
+                  data-bind="ntsFormLabel: { required: true}, text: $vm.$i18n('KSM011_36')"
+                ></div>
+              </div>
+              <div class="cell">
+                <div
+                  class="cf"
+                  tabindex="3"
+                  data-bind="ntsSwitchButton: {
 									name: '#[KSM011_36]',
 									options: switchItems,
 									optionsValue: 'code',
@@ -47,19 +49,20 @@
 									value: regularWork,
 									required: true,
 									enable: true }"
-								></div>
-							</div>
-						</div>
-						<div class="table mb-5">
-							<div class="cell cell-left">
-								<div
-									data-bind="ntsFormLabel: { required: true}, text: $vm.$i18n('KSM011_40')"
-								></div>
-							</div>
-							<div class="cell">
-								<div
-									class="cf" tabindex="4"
-									data-bind="ntsSwitchButton: {
+                ></div>
+              </div>
+            </div>
+            <div class="table mb-5">
+              <div class="cell cell-left">
+                <div
+                  data-bind="ntsFormLabel: { required: true}, text: $vm.$i18n('KSM011_40')"
+                ></div>
+              </div>
+              <div class="cell">
+                <div
+                  class="cf"
+                  tabindex="4"
+                  data-bind="ntsSwitchButton: {
 									name: '#[KSM011_40]',
 									options: switchItems,
 									optionsValue: 'code',
@@ -67,19 +70,20 @@
 									value: fluidWork,
 									required: true,
 									enable: true }"
-								></div>
-							</div>
-						</div>
-						<div class="table mb-5">
-							<div class="cell cell-left">
-								<div
-									data-bind="ntsFormLabel: { required: true}, text: $vm.$i18n('KSM011_42')"
-								></div>
-							</div>
-							<div class="cell">
-								<div
-									class="cf" tabindex="5"
-									data-bind="ntsSwitchButton: {
+                ></div>
+              </div>
+            </div>
+            <div class="table mb-5">
+              <div class="cell cell-left">
+                <div
+                  data-bind="ntsFormLabel: { required: true}, text: $vm.$i18n('KSM011_42')"
+                ></div>
+              </div>
+              <div class="cell">
+                <div
+                  class="cf"
+                  tabindex="5"
+                  data-bind="ntsSwitchButton: {
 									name: '#[KSM011_42]',
 									options: switchItems,
 									optionsValue: 'code',
@@ -87,26 +91,25 @@
 									value: flexTime,
 									required: true,
 									enable: true }"
-								></div>
-							</div>
-						</div>
-					</div>
-					<div class="group">
-						<div
-							class="divi"
-							data-bind="text: $vm.$i18n('KSM011_44')"
-						></div>
-						<hr />						
-						<div class="table mb-5">
-							<div class="cell cell-left">
-								<div
-									data-bind="ntsFormLabel: { required: true}, text: $vm.$i18n('KSM011_45')"
-								></div>
-							</div>
-							<div class="cell"><!-- C33, C34 -->
-								<div
-									class="cf" tabindex="6"
-									data-bind="ntsSwitchButton: {
+                ></div>
+              </div>
+            </div>
+          </div>
+          <div class="group">
+            <div class="divi" data-bind="text: $vm.$i18n('KSM011_44')"></div>
+            <hr />
+            <div class="table mb-5">
+              <div class="cell cell-left">
+                <div
+                  data-bind="ntsFormLabel: { required: true}, text: $vm.$i18n('KSM011_45')"
+                ></div>
+              </div>
+              <div class="cell">
+                <!-- C33, C34 -->
+                <div
+                  class="cf"
+                  tabindex="6"
+                  data-bind="ntsSwitchButton: {
 									name: '#[KSM011_40]',
 									options: switchItems1,
 									optionsValue: 'code',
@@ -114,43 +117,53 @@
 									value: workTypeControl,
 									required: true,
 									enable: true }"
-								></div>
-							</div>
-						</div>
-						<div class="table mb-5">
-							<div class="cell cell-left">
-								<div
-									data-bind="ntsFormLabel: { required: true}, text: $vm.$i18n('KSM011_47')"
-								></div>
-							</div>
-							<div class="cell"><!-- C36, C37 -->
-								<div class="table">
-									<div class="cell">
-										<button tabindex="7" data-bind="text: $vm.$i18n('KSM011_48'), enable: workTypeControl() === 1"></button>										
-									</div>
-									<div class="cell valign-center">
-										<span id="KSM011_48" class="limited-label" data-bind="text: workTypeListText, enable: workTypeControl() === 1">f</span>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="group">
-						<div
-							class="divi"
-							data-bind="text: $vm.$i18n('KSM011_50')"
-						></div>
-						<hr />
-						<div class="table mb-5">
-							<div class="cell cell-left">
-								<div
-									data-bind="ntsFormLabel: { required: true}, text: $vm.$i18n('KSM011_51')"
-								></div>
-							</div>
-							<div class="cell"><!-- C43, C44 -->
-								<div
-									class="cf" tabindex="8"
-									data-bind="ntsSwitchButton: {
+                ></div>
+              </div>
+            </div>
+            <div class="table mb-5">
+              <div class="cell cell-left">
+                <div
+                  data-bind="ntsFormLabel: { required: true}, text: $vm.$i18n('KSM011_47')"
+                ></div>
+              </div>
+              <div class="cell">
+                <!-- C36, C37 -->
+                <div class="table">
+                  <div class="cell">
+                    <button
+                      id="KSM011_C3_6"
+                      tabindex="7"
+                      data-bind="text: $vm.$i18n('KSM011_48'), 
+											enable: workTypeControl() === 1, click: openDialogKDl002"
+                    ></button>
+                  </div>
+                  <div class="cell valign-center">
+                    <span
+                      id="KSM011_48"
+                      class="limited-label"
+                      data-bind="text: workTypeListText, enable: workTypeControl() === 1"
+                      >f</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="group">
+            <div class="divi" data-bind="text: $vm.$i18n('KSM011_50')"></div>
+            <hr />
+            <div class="table mb-5">
+              <div class="cell cell-left">
+                <div
+                  data-bind="ntsFormLabel: { required: true}, text: $vm.$i18n('KSM011_51')"
+                ></div>
+              </div>
+              <div class="cell">
+                <!-- C43, C44 -->
+                <div
+                  class="cf"
+                  tabindex="8"
+                  data-bind="ntsSwitchButton: {
 									name: '#[KSM011_51]',
 									options: switchItems1,
 									optionsValue: 'code',
@@ -158,12 +171,12 @@
 									value: achievementDisplay,
 									required: true,
 									enable: true }"
-								></div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</ui:define>
-		</ui:composition>
-   	</body>
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ui:define>
+    </ui:composition>
+  </body>
 </html>
