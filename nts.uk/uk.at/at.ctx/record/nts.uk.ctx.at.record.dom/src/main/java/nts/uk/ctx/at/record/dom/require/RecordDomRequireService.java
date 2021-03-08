@@ -664,7 +664,7 @@ public class RecordDomRequireService {
 	@Inject
 	private SuperHD60HConMedRepository superHD60HConMedRepo;
 	@Inject
-	protected ElapseYearRepository ElapseYearRepository;
+	protected ElapseYearRepository elapseYearRepository;
 	@Inject
 	private SyCompanyRecordAdapter syCompanyRecordAdapter;
 	@Inject
@@ -759,7 +759,7 @@ public class RecordDomRequireService {
 				lockStatusService, verticalTotalMethodOfMonthlyRepo, stampCardRepo,
 				bentoReservationRepo, bentoMenuRepo, integrationOfDailyGetter,
 				weekRuleManagementRepo, sharedAffWorkPlaceHisAdapter, getProcessingDate,
-				roleOfOpenPeriodRepo, ElapseYearRepository, syCompanyRecordAdapter,
+				roleOfOpenPeriodRepo, elapseYearRepository, syCompanyRecordAdapter,
 				snapshotAdapter, superHD60HConMedRepo, monthlyAggregationRemainingNumber);
 	}
 
@@ -2655,6 +2655,12 @@ public class RecordDomRequireService {
 		public Optional<ElapseYear> elapseYear(String companyId, int specialHolidayCode) {
 
 			return this.elapseYearRepository.findByCode(new CompanyId(companyId), new SpecialHolidayCode(specialHolidayCode));
+		}
+
+		@Override
+		public List<GrantDateTbl> grantDateTbl(String companyId, int specialHolidayCode) {
+
+			return this.grantDateTblRepo.findBySphdCd(companyId, specialHolidayCode);
 		}
 
 		@Override

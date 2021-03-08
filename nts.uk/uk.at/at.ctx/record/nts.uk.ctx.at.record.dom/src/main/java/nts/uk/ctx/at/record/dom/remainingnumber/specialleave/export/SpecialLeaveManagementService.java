@@ -58,9 +58,6 @@ public class SpecialLeaveManagementService {
 		// 特別休暇の集計結果情報
 		InPeriodOfSpecialLeaveResultInfor outputData = new InPeriodOfSpecialLeaveResultInfor();
 
-		// ooooo 要確認
-		require.specialHoliday(param.getCid(), param.getSpecialLeaveCode());
-
 		// 「休暇の集計期間から入社前、退職後を除く」を実行する
 		DatePeriod aggrPeriod = ConfirmLeavePeriod.sumPeriod(require, cacheCarrier, param.getComplileDate(), param.getSid());
 				if (aggrPeriod == null) return outputData;

@@ -18,21 +18,21 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KSHMT_HDSP_ELAPSED_YEARS_TBL")
-public class KshstElapseYearsTbl extends UkJpaEntity implements Serializable {
+public class KshmtHdspElapsedYearsTbl extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	/* 主キー */
 	@EmbeddedId
-	public KshstElapseYearsTblPK pk;
-	
+	public KshmtHdspElapsedYearsTblPK pk;
+
 	/* 経過年数 */
 	@Column(name = "ELAPSED_YEARS")
 	public int elapsedYears;
-	
+
 	/* 経過月数 */
 	@Column(name = "ELAPSED_MONTHS")
 	public int elapsedMonths;
-	
+
 	@Override
 	protected Object getKey() {
 		return pk;
@@ -40,11 +40,11 @@ public class KshstElapseYearsTbl extends UkJpaEntity implements Serializable {
 
 	/**
 	 * コンストラクタ
-	 * @param pk 
+	 * @param pk
 	 * @param elapsedYears 経過年数
 	 * @param elapsedMonths 経過月数
 	 */
-	public KshstElapseYearsTbl(KshstElapseYearsTblPK pk, int elapsedYears, int elapsedMonths) {		
+	public KshmtHdspElapsedYearsTbl(KshmtHdspElapsedYearsTblPK pk, int elapsedYears, int elapsedMonths) {
 		this.pk = pk;
 		this.elapsedYears = elapsedYears;
 		this.elapsedMonths = elapsedMonths;

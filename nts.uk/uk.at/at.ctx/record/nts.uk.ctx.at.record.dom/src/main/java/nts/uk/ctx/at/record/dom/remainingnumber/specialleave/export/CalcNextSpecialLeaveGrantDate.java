@@ -860,41 +860,48 @@ public class CalcNextSpecialLeaveGrantDate {
 			SpecialLeaveBasicInfo basicInfor,
 			SpecialHoliday speHoliday) {
 
-		// ドメインモデル「特別休暇付与経過年数テーブル」を取得する ooooo 要require対応
-		List<ElapseYear> elapseYearList = new ArrayList<ElapseYear>();
-
+		// ドメインモデル「特別休暇付与経過年数テーブル」を取得する
 		List<NextSpecialLeaveGrant> lstOutput = new ArrayList<>();
 		GeneralDate outputDate = null;
 
-		if ( elapseYearList.isEmpty() ){ // 取得できなかった場合
+		Optional<ElapseYear> elapseYearOpt = require.elapseYear(cid, spLeaveCD);
+
+		if ( !elapseYearOpt.isPresent() ){ // 取得できなかった場合
 			return new GrantDaysInforByDates(Optional.ofNullable(outputDate), lstOutput);
 		}
-		ElapseYear elapseYear = elapseYearList.get(0);
+		ElapseYear elapseYear = elapseYearOpt.get();
 
-		// ドメインモデル「特別休暇付与日数テーブル」を取得する ooooo 要require対応
-		// 【条件】
-		// ・会社ID：パラメータ「会社ID」
-		// ・特別休暇コード：パラメータ「特別休暇コード」
-		List<GrantDateTbl> grantDateTblList = new ArrayList<GrantDateTbl>();
+		// 付与テーブルコード
+		String grantTableCD = "";
 
 		// ◆特別休暇基本情報．適用設定≠所定の条件を適用する　の場合
 		// 取得している「特別休暇基本情報．付与設定．付与テーブルコード」　
 		if(basicInfor.getApplicationSet() != SpecialLeaveAppSetting.PRESCRIBED
 				&& basicInfor.getGrantSetting().getGrantTable().isPresent()) {
 
-			grantDateTblList = grantDateTblList.stream()
-				.filter(c->c.getGrantDateCode().v().equals(speHoliday.getSpecialHolidayCode().v()))
-				.collect(Collectors.toList());
+			grantTableCD = basicInfor.getGrantSetting().getGrantTable().get().v();
 		}
 		// ◆特別休暇基本情報．適用設定＝所定の条件を適用する　の場合
 		// 規定のテーブルとする＝TRUE
 		else {
+			List<GrantDateTbl> grantDateTblList = require.grantDateTbl(cid, spLeaveCD);
+
 			grantDateTblList = grantDateTblList.stream()
-					.filter(c->c.isSpecified())
+					.filter(c->c.isSpecified()) // 規定のテーブルとする
 					.collect(Collectors.toList());
+
+			if ( grantDateTblList.isEmpty() ){ // 取得できなかった場合
+				return new GrantDaysInforByDates(Optional.ofNullable(outputDate), lstOutput);
+			}
+			grantTableCD = grantDateTblList.get(0).getGrantDateCode().v();
 		}
 
-		if ( grantDateTblList.isEmpty() ){ // 取得できなかった場合
+		// ドメインモデル「特別休暇付与日数テーブル」を取得する
+		// 【条件】
+		// ・会社ID：パラメータ「会社ID」
+		// ・特別休暇コード：パラメータ「特別休暇コード」
+		Optional<GrantDateTbl> gantDateTblOpt = require.grantDateTbl(cid, spLeaveCD, grantTableCD);
+		if ( !gantDateTblOpt.isPresent()) {
 			return new GrantDaysInforByDates(Optional.ofNullable(outputDate), lstOutput);
 		}
 
@@ -903,7 +910,7 @@ public class CalcNextSpecialLeaveGrantDate {
 			return new GrantDaysInforByDates(Optional.ofNullable(outputDate), lstOutput);
 		}
 
-		GrantDateTbl grantDateTbl = grantDateTblList.get(0);
+		GrantDateTbl grantDateTbl = gantDateTblOpt.get();
 
 		// 経過年数に対する付与日数
 		List<GrantElapseYearMonth> grantElapseYearMonthList
