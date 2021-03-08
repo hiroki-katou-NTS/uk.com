@@ -75,7 +75,7 @@ public class RCCreateDailyAfterApplicationeReflect {
 		case EARLY_LEAVE_CANCEL_APPLICATION:
 			// 9: 遅刻早退取消申請
 			itemIds.addAll(((LateEarlyCancelReflect) domainSetReflect).reflect((ArrivedLateLeaveEarlyShare) application,
-					dailyApp));
+					dailyApp).getLstItemId());
 			break;
 		case COMPLEMENT_LEAVE_APPLICATION:
 			// TODO: [input. 申請.振休振出申請種類]をチェック

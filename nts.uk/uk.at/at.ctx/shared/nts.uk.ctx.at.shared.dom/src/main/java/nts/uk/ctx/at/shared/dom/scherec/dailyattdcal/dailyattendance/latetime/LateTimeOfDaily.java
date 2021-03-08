@@ -62,6 +62,9 @@ public class LateTimeOfDaily {
 	private TimevacationUseTimeOfDaily timePaidUseTime;
 	//インターバル時間
 	private IntervalExemptionTime exemptionTime;
+	//遅刻報告したのでアラームにしない
+	@Setter
+	private boolean doNotSetAlarm;
 	
 	public LateTimeOfDaily(TimeWithCalculation lateTime, TimeWithCalculation lateDeductionTime, WorkNo workNo,
 			TimevacationUseTimeOfDaily timePaidUseTime, IntervalExemptionTime exemptionTime) {		
@@ -70,6 +73,7 @@ public class LateTimeOfDaily {
 		this.workNo = workNo;
 		this.timePaidUseTime = timePaidUseTime;
 		this.exemptionTime = exemptionTime;
+		this.doNotSetAlarm = false;
 	}	
 
 	/**
