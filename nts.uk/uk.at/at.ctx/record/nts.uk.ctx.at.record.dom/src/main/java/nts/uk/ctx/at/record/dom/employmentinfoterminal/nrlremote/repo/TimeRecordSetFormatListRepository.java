@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.TimeRecordSetFormatList;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.nrlremote.VariableName;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 
 public interface TimeRecordSetFormatListRepository {
@@ -20,4 +21,7 @@ public interface TimeRecordSetFormatListRepository {
 	
 	// 	[4]取得する
 	List<TimeRecordSetFormatList> get(ContractCode contractCode, List<EmpInfoTerminalCode> listEmpInfoTerCode);
+	
+	// 	[5]取得する
+	List<TimeRecordSetFormatList> get(ContractCode contractCode, EmpInfoTerminalCode empInfoTercode, List<VariableName> listVariableName);
 }
