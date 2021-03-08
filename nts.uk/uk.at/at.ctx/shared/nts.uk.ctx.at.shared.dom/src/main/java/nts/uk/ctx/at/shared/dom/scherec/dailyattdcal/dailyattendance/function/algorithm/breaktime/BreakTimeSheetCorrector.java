@@ -115,14 +115,15 @@ public class BreakTimeSheetCorrector {
 			return BreakTimeType.CANT_CHECK;
 		}
 		
-		return restTimeZone.isFixRestTime() ? BreakTimeType.FIXED_BREAK : BreakTimeType.NO_FIX_BREAK;
+		return restTimeZone.isFixRestTime() ? BreakTimeType.FIXED_BREAK : BreakTimeType.FLOW_BREAK;
 	}
 	
+	/** 休憩種類 */
 	private static enum BreakTimeType {
 		
-		FIXED_BREAK,
-		NO_FIX_BREAK,
-		CANT_CHECK;
+		FIXED_BREAK, /** 固定休憩 */
+		FLOW_BREAK, /** 流動休憩 */
+		CANT_CHECK; /** 確認できない */
 	}
 	
 	public static interface RequireM1 extends BreakTimeSheetGetter.RequireM1 {
