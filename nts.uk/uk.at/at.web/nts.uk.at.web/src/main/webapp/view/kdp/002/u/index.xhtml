@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+    <ui:composition template="/master/dialog.xhtml">
+        <ui:define name="htmlHead">
+
+            <com:scriptfile set="IGNITE" />
+
+            <script>var dialogSize = { width: 530, height: 600 };</script>
+            <com:stylefile path="./kdp002.u.style.css" />
+            <com:scriptfile path="./kdp002.u.vm.js" />
+
+        </ui:define>
+        <ui:define name="content">
+            <div id="contents-area">
+                <div class="view-u">
+                    <div class="colum-1">
+                        <i data-bind="ntsIcon: { no: 175, width: 30, height: 30 }"></i>
+                    </div>
+                    <div class="colum-2" data-bind="foreach: $vm.model">
+                        <div class="box-content">
+                            <span class="content" data-bind="i18n: $data.message"></span>
+                            <div class="content">
+                                <span>URL: </span>
+                                <span data-bind="i18n: $data.URL"></span>
+                            </div>
+                            <div class="content">
+                                <span>記載者: </span>
+                                <span data-bind="i18n: $data.author"></span>
+                            </div>
+                            <div class="content">
+                                <span>表示期間: </span>
+                                <span data-bind="i18n: $data.time"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="functions-area-bottom">
+				<div style="margin-bottom: 6px;
+					text-align: left;
+					margin-left: 25px;" 
+				class="noti-close-dialog" data-bind="i18n: 'KDP002_104'"></div>
+				<button data-bind="i18n: 'KDP002_105'"></button>
+            </div>
+        </ui:define>
+    </ui:composition>
+</body>
+
+</html>

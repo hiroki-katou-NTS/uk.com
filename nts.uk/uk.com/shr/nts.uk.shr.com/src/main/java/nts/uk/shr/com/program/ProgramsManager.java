@@ -3477,6 +3477,8 @@ public class ProgramsManager {
             "/view/kdp/002/c/index.xhtml");
     public static final Program KDP002T = new Program(WebAppId.AT, ProgramIdConsts.KDP002T, "KDP002_23",
             "/view/kdp/002/t/index.xhtml");
+    public static final Program KDP002U = new Program(WebAppId.AT, ProgramIdConsts.KDP002U, "KDP002_24",
+            "/view/kdp/002/u/index.xhtml");
 
 
     /**
