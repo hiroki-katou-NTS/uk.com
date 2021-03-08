@@ -250,6 +250,18 @@ export class SideMenuBar extends Vue {
     public created() {
         dom.registerEventHandler(window, 'resize', resize);
     }
+    
+    public mounted() {
+        const vm = this;
+
+        vm.$auth
+            .token
+            .then((c: string | null) => {
+                if (c) {
+                    SideMenu.reload();
+                }
+            });
+    }
 
     public destroyed() {
         dom.removeEventHandler(window, 'resize', resize);

@@ -22,9 +22,12 @@ public class BackupContentDto {
 	
 	private String inputRange;
 	
+	// grid primary key
+	private String key;
+	
 	public static BackupContentDto toDto(TimeRecordSetFormat domain) {
 		return new BackupContentDto(domain.getMajorNo().v(), domain.getMajorClassification().v(),
 									domain.getSmallNo().v(), domain.getSmallClassification().v(),
-									domain.getSettingValue().v(), domain.getInputRange().v());
+									domain.getSettingValue().v(), domain.getInputRange().v(), domain.getMajorClassification().v() + domain.getSmallClassification().v());
 	}
 }
