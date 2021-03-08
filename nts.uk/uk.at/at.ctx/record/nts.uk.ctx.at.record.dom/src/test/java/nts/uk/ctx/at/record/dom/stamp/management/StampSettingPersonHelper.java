@@ -33,6 +33,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSettingPerson;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampingScreenSet;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SupportWplSet;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -104,7 +105,8 @@ public class StampSettingPersonHelper {
 					ButtonSet.DUMMY, 
 					Type.DUMMY, 
 					EnumAdaptor.valueOf(0, NotUseAtr.class),
-					EnumAdaptor.valueOf(0, AudioType.class));
+					EnumAdaptor.valueOf(0, AudioType.class),
+					Optional.of(SupportWplSet.USE_THE_STAMPED_WORKPLACE));
 		}
 		
 		public static class ButtonSet {
@@ -143,7 +145,8 @@ public class StampSettingPersonHelper {
 				ButtonSet.DUMMY, 
 				Type.DUMMY,
 				EnumAdaptor.valueOf(0, NotUseAtr.class), 
-				EnumAdaptor.valueOf(0, AudioType.class)));
+				EnumAdaptor.valueOf(0, AudioType.class),
+				Optional.of(SupportWplSet.USE_THE_STAMPED_WORKPLACE)));
 
 		lstStampPage.add(new StampPageLayout(
 				new PageNo(1), 
@@ -200,7 +203,8 @@ public class StampSettingPersonHelper {
 				ButtonSet.DUMMY, 
 				Type.DUMMY,
 				EnumAdaptor.valueOf(0, NotUseAtr.class), 
-				EnumAdaptor.valueOf(0, AudioType.class)));
+				EnumAdaptor.valueOf(0, AudioType.class),
+				Optional.of(SupportWplSet.USE_THE_STAMPED_WORKPLACE)));
 		
 		lst.add(new StampPageLayout(new PageNo(1),
 				new StampPageName("DUMMY"),
@@ -222,7 +226,8 @@ public class StampSettingPersonHelper {
 				ButtonSet.DUMMY, 
 				Type.DUMMY,
 				EnumAdaptor.valueOf(0, NotUseAtr.class), 
-				EnumAdaptor.valueOf(0, AudioType.class)));
+				EnumAdaptor.valueOf(0, AudioType.class),
+				Optional.of(SupportWplSet.USE_THE_STAMPED_WORKPLACE)));
 		StampPageLayout pageLayout = new StampPageLayout(
 				new PageNo(pageNo), 
 				new StampPageName("NEW_DUMMY2"),
@@ -241,13 +246,15 @@ public class StampSettingPersonHelper {
 				new ButtonDisSet(new ButtonNameSet(new ColorCode("DUMMY"), new ButtonName("DUMMY")), new ColorCode("DUMMY")),
 				new ButtonType(ReservationArt.RESERVATION, null),
 				NotUseAtr.USE,
-				AudioType.GOOD_MORNING));
+				AudioType.GOOD_MORNING,
+				Optional.of(SupportWplSet.USE_THE_STAMPED_WORKPLACE)));
 		
 		lstBS.add(new ButtonSettings(new ButtonPositionNo(2),
 				new ButtonDisSet(new ButtonNameSet(new ColorCode("DUMMY"), new ButtonName("DUMMY")), new ColorCode("DUMMY")),
 				new ButtonType(ReservationArt.RESERVATION, null),
 				NotUseAtr.USE,
-				AudioType.GOOD_MORNING));
+				AudioType.GOOD_MORNING,
+				Optional.of(SupportWplSet.USE_THE_STAMPED_WORKPLACE)));
 		
 		return lstBS;
 	}

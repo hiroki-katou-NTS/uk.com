@@ -21,13 +21,14 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettingsRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ResultDisplayTime;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingDateTimeColorOfStampScreen;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingsSmartphoneStamp;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingsSmartphoneStampRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampPageLayout;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunal;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunalRepository;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.settingforsmartphone.SettingsSmartphoneStamp;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.settingforsmartphone.SettingsSmartphoneStampRepository;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
 public class TimeStampInputSettingsCommandHandler {
@@ -83,7 +84,7 @@ public class TimeStampInputSettingsCommandHandler {
 			commonDomain.get().setGooglemap(command.getGoogleMap() == 1);
 			commonSettingsStampInputRepo.update(commonDomain.get());
 		} else {
-//			commonSettingsStampInputRepo.insert(new CommonSettingsStampInput(companyId, new ArrayList<String>(), command.getGoogleMap() == 1, Optional.empty()));
+			commonSettingsStampInputRepo.insert(new CommonSettingsStampInput(companyId, command.getGoogleMap() == 1, Optional.empty(), NotUseAtr.NOT_USE));
 		}
 	}
 	
@@ -104,9 +105,10 @@ public class TimeStampInputSettingsCommandHandler {
 					new CorrectionInterval(10), 
 					new SettingDateTimeColorOfStampScreen(new ColorCode("#ffffff"), new ColorCode("#0033cc")), 
 					new ResultDisplayTime(3));
-			SettingsSmartphoneStamp setting = new SettingsSmartphoneStamp(companyId, displaySettingsStampScreen, Arrays.asList(command.toDomain()), false);
+			SettingsSmartphoneStamp setting = new SettingsSmartphoneStamp(companyId, displaySettingsStampScreen, Arrays.asList(command.toDomain()), false, NotUseAtr.NOT_USE, NotUseAtr.NOT_USE);
 			settingsSmartphoneStampRepo.save(setting);
-//			commonSettingsStampInputRepo.insert(new CommonSettingsStampInput(companyId, new ArrayList<String>(), false, Optional.empty()));
+
+			commonSettingsStampInputRepo.insert(new CommonSettingsStampInput(companyId, false, Optional.empty(), NotUseAtr.NOT_USE));
 		}
 	}
 	

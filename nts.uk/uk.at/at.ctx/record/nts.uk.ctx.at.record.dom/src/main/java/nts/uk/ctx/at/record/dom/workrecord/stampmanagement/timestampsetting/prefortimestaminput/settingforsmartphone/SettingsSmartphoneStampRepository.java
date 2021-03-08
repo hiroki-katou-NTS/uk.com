@@ -1,7 +1,7 @@
 /**
  * 
  */
-package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput;
+package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.settingforsmartphone;
 
 import java.util.Optional;
 
@@ -14,7 +14,7 @@ public interface SettingsSmartphoneStampRepository {
 
 	/**
 	 * [1]  insert(スマホ打刻の打刻設定)
-	 * @param SettingsSmartphoneStamp
+	 * @param StampSettingOfRICOHCopier
 	 */
 	public void insert(SettingsSmartphoneStamp settingsSmartphoneStamp);
 

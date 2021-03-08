@@ -29,6 +29,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ReservationArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SetPreClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SupportWplSet;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.shr.com.context.AppContexts;
@@ -111,6 +112,14 @@ private static final long serialVersionUID = 1L;
 	@Column(name ="AUDIO_TYPE")
 	public int aidioType;
 	
+	/**
+	 * 応援職場設定方法
+	 * 0:打刻職場を利用
+	 * 1:打刻時に選択
+	 */
+	@Column(name ="SUPPORT_WPL_SET")
+	public Integer supportWplSet;
+	
 	@ManyToOne
     @PrimaryKeyJoinColumns({
     	@PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
@@ -138,7 +147,7 @@ private static final long serialVersionUID = 1L;
 	
 	public KrcmtStampLayoutDetail(KrcmtStampLayoutDetailPk pk, int useArt, String buttonName, int reservationArt,
 			Integer changeClockArt, Integer changeCalArt, Integer setPreClockArt, Integer changeHalfDay, Integer goOutArt,
-			String textColor, String backGroundColor, int aidioType) {
+			String textColor, String backGroundColor, int aidioType, Integer supportWplSet) {
 		super();
 		this.pk = pk;
 		this.useArt = useArt;
@@ -152,6 +161,7 @@ private static final long serialVersionUID = 1L;
 		this.textColor = textColor;
 		this.backGroundColor = backGroundColor;
 		this.aidioType = aidioType;
+		this.supportWplSet = supportWplSet;
 	}
 	
 	public ButtonSettings toDomain(){
@@ -178,7 +188,8 @@ private static final long serialVersionUID = 1L;
 						new ColorCode(this.backGroundColor)),buttonType 
 				,
 				EnumAdaptor.valueOf(this.useArt, NotUseAtr.class), 
-				EnumAdaptor.valueOf(this.aidioType, AudioType.class));
+				EnumAdaptor.valueOf(this.aidioType, AudioType.class),
+				Optional.ofNullable(this.supportWplSet == null? null: SupportWplSet.valueOf(this.supportWplSet)));
 	}
 	
 //<<<<<<< HEAD:nts.uk/uk.at/at.ctx/record/nts.uk.ctx.at.record.infra/src/main/java/nts/uk/ctx/at/record/infra/entity/workrecord/stampmanagement/stamp/timestampsetting/prefortimestaminput/KrcmtStampLayoutDetail.java
@@ -240,6 +251,7 @@ private static final long serialVersionUID = 1L;
 				, goOutArt
 				, settings.getButtonDisSet().getButtonNameSet().getTextColor().v()
 				,settings.getButtonDisSet().getBackGroundColor().v()
-				, settings.getAudioType().value);
+				, settings.getAudioType().value
+				, settings.getSupportWplSet().map(c->c.value).orElse(null));
 	}
 }
