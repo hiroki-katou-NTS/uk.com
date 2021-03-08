@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.ac.record.agreement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -11,10 +12,12 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.uk.ctx.at.record.pub.monthly.agreement.export.AgreMaxAverageTimeMultiExport;
 import nts.uk.ctx.at.record.pub.monthly.agreement.export.AgreementTimeBreakdownExport;
 import nts.uk.ctx.at.record.pub.monthly.agreement.export.AgreementTimeExport;
 import nts.uk.ctx.at.record.pub.monthly.agreement.export.AgreementTimeOfManagePeriodExport;
 import nts.uk.ctx.at.record.pub.monthly.agreement.export.AgreementTimeOfMonthlyExport;
+import nts.uk.ctx.at.record.pub.monthly.agreement.export.AgreementTimeYearExport;
 import nts.uk.ctx.at.record.pub.monthlyprocess.agreement.GetAgreementTimePub;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreeTimeYearImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeAdapter;
@@ -25,16 +28,22 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeYear;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreMaxAverageTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreMaxAverageTimeMulti;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreMaxTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreTimeYearStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeBreakdown;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeOfYear;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeYear;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.ScheRecAtr;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthErrorAlarmTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.AgreementOneYearTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.OneYearErrorAlarmTime;
+import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.oneyear.OneYearTime;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
 @Stateless
@@ -186,10 +195,42 @@ public class AgreementTimeAdapterImpl implements AgreementTimeAdapter {
 	public AgreementTimeImport getAverageAndYear(String companyId, String employeeId, YearMonth averageMonth,
 			GeneralDate criteria, ScheRecAtr scheRecAtr) {
 		AgreementTimeExport agreementTimeExport = getAgreementTimePub.getAverageAndYear(companyId, employeeId, averageMonth, criteria, scheRecAtr);
-//		return new AgreementTimeImport(
-//				agreementTimeExport.getAgreementTimeYear().orElseGet(null), 
-//				agreementTimeExport.getAgreMaxAverageTimeMulti().orElse(null));
-		return null;
+		AgreementTimeYear agreementTimeYear = new AgreementTimeYear();
+		AgreMaxAverageTimeMulti agreMaxAverageTimeMulti = new AgreMaxAverageTimeMulti();
+		if(agreementTimeExport.getAgreementTimeYear().isPresent()) {
+			AgreementTimeYearExport agreementTimeYearExport = agreementTimeExport.getAgreementTimeYear().get();
+			agreementTimeYear = AgreementTimeYear.of(
+					AgreementTimeOfYear.of(
+							new AgreementOneYearTime(agreementTimeYearExport.getLimitTime().getAgreementTime()),
+							OneYearTime.of(
+									OneYearErrorAlarmTime.of(
+											new AgreementOneYearTime(agreementTimeYearExport.getLimitTime().getThreshold().getErrorTime()),
+											new AgreementOneYearTime(agreementTimeYearExport.getLimitTime().getThreshold().getAlarmTime())),
+									new AgreementOneYearTime(agreementTimeYearExport.getLimitTime().getThreshold().getUpperLimit()))),
+					AgreementTimeOfYear.of(
+							new AgreementOneYearTime(agreementTimeYearExport.getRecordTime().getAgreementTime()),
+							OneYearTime.of(
+									OneYearErrorAlarmTime.of(
+											new AgreementOneYearTime(agreementTimeYearExport.getRecordTime().getThreshold().getErrorTime()),
+											new AgreementOneYearTime(agreementTimeYearExport.getRecordTime().getThreshold().getAlarmTime())), 
+									new AgreementOneYearTime(agreementTimeYearExport.getRecordTime().getThreshold().getUpperLimit()))), 
+					EnumAdaptor.valueOf(agreementTimeYearExport.getStatus(), AgreementTimeStatusOfMonthly.class));
+		}
+		if(agreementTimeExport.getAgreMaxAverageTimeMulti().isPresent()) {
+			AgreMaxAverageTimeMultiExport agreMaxAverageTimeMultiExport = agreementTimeExport.getAgreMaxAverageTimeMulti().get();
+			agreMaxAverageTimeMulti = AgreMaxAverageTimeMulti.of(
+					OneMonthErrorAlarmTime.of(
+							new AgreementOneMonthTime(agreMaxAverageTimeMultiExport.getErrorTime()),
+							new AgreementOneMonthTime(agreMaxAverageTimeMultiExport.getAlarmTime())),
+					agreMaxAverageTimeMultiExport.getAverageTimes().stream()
+							.map(x -> AgreMaxAverageTime.of(
+									x.getPeriod(),
+									new AttendanceTimeYear(x.getTotalTime()),
+									new AttendanceTimeMonth(x.getAverageTime()),
+									EnumAdaptor.valueOf(x.getStatus(), AgreMaxTimeStatusOfMonthly.class)))
+							.collect(Collectors.toList()));
+		}
+		return new AgreementTimeImport(agreementTimeYear, agreMaxAverageTimeMulti);
 	}
 
 }
