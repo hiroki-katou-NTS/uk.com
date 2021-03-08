@@ -22,7 +22,7 @@ public class KfndtScheCondMonthLink extends ContractUkJpaEntity {
 
     /* チェック条件コード */
     @Column(name = "AL_CHECK_COND_CATE_CD")
-    public boolean ctgCd;
+    public String ctgCd;
 
     /* カテゴリ */
     @Column(name = "CATEGORY")
