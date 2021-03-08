@@ -2,11 +2,8 @@ package nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskassign.taskassignemp
 
 import lombok.val;
 import nts.arc.testing.assertion.NtsAssert;
-import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.operationsetting.TaskOperationMethod;
-import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.operationsetting.TaskOperationSetting;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
-import nts.uk.shr.com.context.AppContexts;
 import org.junit.Test;
 
 public class TaskAssignEmployeeTest {

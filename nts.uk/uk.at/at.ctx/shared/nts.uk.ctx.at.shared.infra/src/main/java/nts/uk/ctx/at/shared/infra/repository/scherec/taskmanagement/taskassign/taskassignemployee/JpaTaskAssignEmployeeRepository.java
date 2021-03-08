@@ -2,7 +2,7 @@ package nts.uk.ctx.at.shared.infra.repository.scherec.taskmanagement.taskassign.
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskassign.taskassignemployee.TaskAssignEmployee;
-import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskassign.taskassignemployee.TaskAssignEmployeeRepository;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.repo.taskassign.taskassingemployee.TaskAssignEmployeeRepository;
 import nts.uk.ctx.at.shared.infra.entity.scherec.taskmanagement.taskassign.taskassignemployee.KsrmtTaskAssignSya;
 import nts.uk.ctx.at.shared.infra.entity.scherec.taskmanagement.taskassign.taskassignemployee.KsrmtTaskAssignSyaPk;
 

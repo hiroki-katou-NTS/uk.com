@@ -4,7 +4,7 @@ import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
-import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.tasknarrowingdown.NarrowingDownTaskByWorkplace;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskassign.taskassignworkplace.NarrowingDownTaskByWorkplace;
 
 import javax.ejb.Stateless;
 import java.util.List;

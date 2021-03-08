@@ -1,10 +1,10 @@
 package nts.uk.ctx.at.shared.app.command.scherec.taskmanagement.taskframe;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameSetting;
-import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameUsageSetting;
-import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameUsageSettingRepository;
+import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.*;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
@@ -23,9 +23,9 @@ public class RegisterTaskFrameUsageSettingCommandHandler extends CommandHandler<
         String companyId = AppContexts.user().companyId();
         List<TaskFrameSettingCommand> settings = commandHandlerContext.getCommand();
         TaskFrameUsageSetting domain = new TaskFrameUsageSetting(settings.stream().map(i -> new TaskFrameSetting(
-                i.getFrameNo(),
-                i.getFrameName(),
-                i.isUseAtr() ? 1 : 0
+                new TaskFrameNo(i.getFrameNo()),
+                new TaskFrameName(i.getFrameName()),
+                EnumAdaptor.valueOf(i.isUseAtr() ? 1 : 0, UseAtr.class)
         )).collect(Collectors.toList()));
         Optional<TaskFrameUsageSetting> setting = repo.get(companyId);
         if (setting.isPresent()) {

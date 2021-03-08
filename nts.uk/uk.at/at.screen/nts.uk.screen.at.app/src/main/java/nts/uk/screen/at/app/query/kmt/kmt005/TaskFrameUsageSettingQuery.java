@@ -1,9 +1,9 @@
 package nts.uk.screen.at.app.query.kmt.kmt005;
 
 import nts.arc.error.BusinessException;
-import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.operationsetting.TaskOperationMethod;
-import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.operationsetting.TaskOperationSetting;
-import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.operationsetting.TaskOperationSettingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.operationsettings.TaskOperationMethod;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.operationsettings.TaskOperationSetting;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.repo.operationsettings.TaskOperationSettingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameUsageSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -24,12 +24,12 @@ public class TaskFrameUsageSettingQuery {
 
     public List<TaskFrameSettingDto> get() {
         String companyId = AppContexts.user().companyId();
-        Optional<TaskOperationSetting> operationSetting = operationSettingRepo.get(companyId);
+        Optional<TaskOperationSetting> operationSetting = operationSettingRepo.getTasksOperationSetting(companyId);
         if (!operationSetting.isPresent() || operationSetting.get().getTaskOperationMethod() == TaskOperationMethod.DO_NOT_USE)
             throw new BusinessException("Msg_2122");
         if (operationSetting.get().getTaskOperationMethod() == TaskOperationMethod.USE_ON_SCHEDULE)
             throw new BusinessException("Msg_2114", "KMT001_1");
-        return repo.get(companyId).map(i -> i.getFrameSettings().stream().map(setting -> new TaskFrameSettingDto(
+        return repo.get(companyId).map(i -> i.getFrameSettingList().stream().map(setting -> new TaskFrameSettingDto(
                 setting.getTaskFrameNo().v(),
                 setting.getTaskFrameName().v(),
                 setting.getUseAtr().value
