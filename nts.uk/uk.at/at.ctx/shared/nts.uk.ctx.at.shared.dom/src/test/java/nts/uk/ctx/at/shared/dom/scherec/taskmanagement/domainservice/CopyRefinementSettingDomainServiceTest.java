@@ -11,9 +11,11 @@ import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.TaskCode;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.tasknarrowingdown.NarrowingDownTaskByWorkplace;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.tasknarrowingdown.NarrowingDownTaskByWorkplaceTest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -44,36 +46,49 @@ public class CopyRefinementSettingDomainServiceTest {
      */
     @Test
     public void testCaseSuccess() {
-//        val taskNo = Helper.taskFrameNo;
-//        val taskList = Helper.childWorkList;
-//        new Expectations() {{
-//            require.getListWorkByWpl("copySourceWplId");
-//            result = Helper.createDomainNarrowing(Helper.codeList);
-//
-//            require.getListWorkByWpl("copyDestinationWplId");
-//            result = Helper.createDomainNarrowing(Helper.codeList);
-//
-//            CheckExistenceMasterDomainService.checkExistenceTaskMaster(require, taskNo, taskList);
-//
-//        }};
-//
-//        AtomTask atomTask = CopyRefinementSettingDomainService.doCopy(require,
-//                "copySourceWplId", "copyDestinationWplId");
-//        atomTask.run();
-//        new Verifications() {
-//            {
-//                require.delete((String) any, (TaskFrameNo) any);
-//                times = 3;
-//
-//            }
-//        };
+        val taskNo1 = new TaskFrameNo(1);
+        val taskNo2 = new TaskFrameNo(2);
+        val taskNo3 = new TaskFrameNo(3);
+        val childs = Helper.childWorkList;
+        List<NarrowingDownTaskByWorkplace>  byWorkplaces = new ArrayList<>();
+        byWorkplaces.add(new NarrowingDownTaskByWorkplace("copySourceWplId",taskNo1,childs));
+        byWorkplaces.add(new NarrowingDownTaskByWorkplace("copySourceWplId",taskNo2,childs));
+        byWorkplaces.add(new NarrowingDownTaskByWorkplace("copySourceWplId",taskNo3,childs));
+
+        new Expectations(CheckExistenceMasterDomainService.class) {{
+            require.getListWorkByWpl("copySourceWplId");
+            result = byWorkplaces;
+
+            require.getListWorkByWpl("copyDestinationWplId");
+            result = byWorkplaces;
+
+            CheckExistenceMasterDomainService.checkExistenceTaskMaster(require,taskNo1 ,childs );
+
+            CheckExistenceMasterDomainService.checkExistenceTaskMaster(require,taskNo2, childs);
+
+            CheckExistenceMasterDomainService.checkExistenceTaskMaster(require,taskNo3, childs);
+
+        }};
+
+        AtomTask atomTask = CopyRefinementSettingDomainService.doCopy(require,
+                "copySourceWplId", "copyDestinationWplId");
+        atomTask.run();
+
+        new Verifications() {
+            {
+                require.insert((NarrowingDownTaskByWorkplace) any);
+                times = 3;
+
+                require.delete((String) any, (TaskFrameNo) any);
+                times = 3;
+
+            }
+        };
     }
 
     public static class Helper
 
     {
-        private static final String DATE_FORMAT = "yyyy/MM/dd";
-        private static final TaskCode code = new TaskCode("CODE");
         private static final TaskFrameNo taskFrameNo = new TaskFrameNo(3);
         private static final List<TaskCode> childWorkList = Arrays.asList(
                 new TaskCode("CODE01"),

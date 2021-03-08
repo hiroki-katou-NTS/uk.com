@@ -3,8 +3,6 @@ package nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.personallaborcondition.UseAtr;
-import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameName;
-import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 
 /**
  * 作業枠設定

@@ -75,7 +75,6 @@ public class CheckExistenceMasterDomainServiceTest {
 
     {
         private static final String DATE_FORMAT = "yyyy/MM/dd";
-        private static final TaskCode code = new TaskCode("CODE");
         private static final TaskFrameNo taskFrameNo = new TaskFrameNo(3);
         private static final ExternalCooperationInfo cooperationInfo = new ExternalCooperationInfo(
                 Optional.of(new TaskExternalCode("externalCode1")),
@@ -110,68 +109,6 @@ public class CheckExistenceMasterDomainServiceTest {
                 Optional.of(new TaskNote("TaskNote"))
 
         );
-
-        static List<TaskFrameSetting> frameSettingList() {
-            return Arrays.asList(
-                    new TaskFrameSetting(
-                            new TaskFrameNo(1),
-                            new TaskFrameName("Name01"),
-                            UseAtr.USE
-                    ),
-                    new TaskFrameSetting(
-                            new TaskFrameNo(5),
-                            new TaskFrameName("Name05"),
-                            UseAtr.NOTUSE
-
-                    ), new TaskFrameSetting(
-                            new TaskFrameNo(3),
-                            new TaskFrameName("Name03"),
-                            UseAtr.USE
-
-                    ), new TaskFrameSetting(
-                            new TaskFrameNo(4),
-                            new TaskFrameName("Name04"),
-                            UseAtr.USE
-
-                    ), new TaskFrameSetting(
-                            new TaskFrameNo(2),
-                            new TaskFrameName("Name02"),
-                            UseAtr.USE
-
-                    )
-            );
-        }
-
-        static List<TaskFrameSetting> frameSettingList02() {
-            return Arrays.asList(
-                    new TaskFrameSetting(
-                            new TaskFrameNo(1),
-                            new TaskFrameName("Name01"),
-                            UseAtr.USE
-                    ),
-                    new TaskFrameSetting(
-                            new TaskFrameNo(5),
-                            new TaskFrameName("Name05"),
-                            UseAtr.USE
-
-                    ), new TaskFrameSetting(
-                            new TaskFrameNo(3),
-                            new TaskFrameName("Name03"),
-                            UseAtr.USE
-
-                    ), new TaskFrameSetting(
-                            new TaskFrameNo(4),
-                            new TaskFrameName("Name04"),
-                            UseAtr.USE
-
-                    ), new TaskFrameSetting(
-                            new TaskFrameNo(2),
-                            new TaskFrameName("Name02"),
-                            UseAtr.USE
-
-                    )
-            );
-        }
 
         static List<Task> createDomain(List<TaskCode> codes) {
             return codes.stream().map(e -> new Task(e, new TaskFrameNo(5),
