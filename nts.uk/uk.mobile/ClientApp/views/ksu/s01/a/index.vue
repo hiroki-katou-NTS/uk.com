@@ -26,8 +26,7 @@
                     v-on:click="backCurrentMonth()"
                     class="uk-bg-green"
                 >
-                    <!-- {{ "KSUS01_2" | i18n }} -->
-                    今月<!-- huytodo -->
+                    {{ "KSUS01_2" | i18n }}
                     <i class="fas fa-undo" style="margin-left: 2vw;"></i>
                 </span>
                 <!-- A1_1_5 -->
