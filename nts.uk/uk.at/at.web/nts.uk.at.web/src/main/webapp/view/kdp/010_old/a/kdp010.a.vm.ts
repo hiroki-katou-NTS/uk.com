@@ -1,4 +1,4 @@
-module nts.uk.at.view.kdp010.a {
+module nts.uk.at.view.kdp010.aOld {
     import getText = nts.uk.resource.getText;
     import block = nts.uk.ui.block;
     import info = nts.uk.ui.dialog.info;

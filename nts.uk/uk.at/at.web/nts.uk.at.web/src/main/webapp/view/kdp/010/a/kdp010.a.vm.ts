@@ -1,43 +1,42 @@
-module nts.uk.at.view.kaf022.x {
+module nts.uk.at.view.kdp010.a {
+    import getText = nts.uk.resource.getText;
+    import alert = nts.uk.ui.dialog.alert;
+    import block = nts.uk.ui.block;
+    import confirm = nts.uk.ui.dialog.confirm;
+    import href = nts.uk.request.jump;
+    import modal = nts.uk.ui.windows.sub.modal;
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
     export module viewmodel {
+	
         export class ScreenModel {
+	
+			constructor(){
+				
+			};
 
             public openGDialog(): void {
                 nts.uk.ui.windows.sub.modal("/view/kdp/010/g/index.xhtml").onClosed(() => {
-                       
+                	if(getShared("KDP010G")){
+						setShared("KDP010G", false);
+						//reLoad
+					}
                 });
             }
 
-            public goToEmploymentSettings(): void {
-                nts.uk.request.jump("/view/kaf/022/c/index.xhtml");
+            public goToBScreen(): void {
+                nts.uk.request.jump("/view/kdp/010/b/index.xhtml");
             }
 
             public goToWorkplaceSettings(): void {
                 nts.uk.request.jump("/view/kaf/022/d/index.xhtml");
             }
 
-            exportExcel() {
-                const self = this;
-                let __viewContext: any = window["__viewContext"] || {};
-                nts.uk.ui.block.grayout();
-                let program = nts.uk.ui._viewModel.kiban.programName().split(" ");
-                let domainType = "KAF022" + nts.uk.resource.getText("KAF022_768");
-
-                nts.uk.request.exportFile('/masterlist/report/print', {
-                    domainId: "PreparationBeforeApply",
-                    domainType: domainType,
-                    languageId: __viewContext.user.selectedLanguage.basicLanguageId,
-                    reportType: 0,
-                    data: null
-                }).done(() => {
-                    console.log("Export done!");
-                }).fail(function(error) {
-                    nts.uk.ui.dialog.alertError(error);
-                }).always(function() {
-                    nts.uk.ui.block.clear();
-                });
-            }
-
         }
     }
+
+    __viewContext.ready(function() {
+        var screenModel = new viewmodel.ScreenModel();
+        __viewContext.bind(screenModel);    
+    });
 }
