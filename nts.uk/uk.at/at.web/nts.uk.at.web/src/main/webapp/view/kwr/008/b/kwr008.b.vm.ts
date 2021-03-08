@@ -79,6 +79,10 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 block.invisible();
                 if (layoutId) {
                     service.findByLayoutId(layoutId).then((res: any) => {
+                        self.outputItem([]);
+                        for (var i = 1; i <= 11; i++) {
+                            self.outputItem.push(new ItemsOutputToBookTable(i, null, false, '', 0));
+                        }
                         self.currentSetOutputSettingCode(new SetOutputItemOfAnnualWorkSchDto(res));
                         self.currentSetOutputSettingCode().listItemsOutput().forEach((item, index) => {
                             self.outputItem()[item.sortBy() - 1].updateData(
@@ -404,7 +408,7 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             attendanceItemTransfer.itemNameLine.displayFlag = true;
             attendanceItemTransfer.itemNameLine.displayInputCategory = 2;
             attendanceItemTransfer.columnIndex = 0;
-            attendanceItemTransfer.exportAtr = 0;
+            attendanceItemTransfer.exportAtr = 2;
             attendanceItemTransfer.attribute.attributeList = _.map(vm.valOutFormat(), (item) => new model.AttendaceType(item.code, item.name));
 
             let selectedLst: any[] = [];
