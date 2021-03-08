@@ -28,6 +28,7 @@ module nts.uk.at.view.kaf004_ref.shr.b.viewmodel {
                                 <span>
                                     <input data-bind="ntsTimeWithDayEditor: {
                                 name: $i18n('KAF004_64'),
+                                required: true,
                                 value: $parent.workManagement.workTime,
                                 option: {timeWithDay: true, width: '90'},
                                 constraint: 'TimeWithDayAttr',
@@ -63,6 +64,7 @@ module nts.uk.at.view.kaf004_ref.shr.b.viewmodel {
                                 <span>
                                     <input data-bind="ntsTimeWithDayEditor: {
                                 name: $i18n('KAF004_65'),
+                                required: true,
                                 value: $parent.workManagement.leaveTime,
                                 option: {timeWithDay: true, width: '90'},
                                 constraint: 'TimeWithDayAttr',
