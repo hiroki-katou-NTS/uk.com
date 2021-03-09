@@ -12,7 +12,7 @@ module nts.uk.at.view.kdl053 {
         hasError: KnockoutObservable<boolean> = ko.observable(true);
         registrationErrorList: KnockoutObservable<any> = ko.observable([]);
         registrationErrorListCsv: KnockoutObservable<any> = ko.observable([]);
-        constructor(params: any) {
+        constructor(private params: any) {
             super();
             const self = this;
             self.loadScheduleRegisterErr(); 
@@ -28,12 +28,23 @@ module nts.uk.at.view.kdl053 {
 
         loadScheduleRegisterErr(): void {
             const self = this;
-            let data = getShared('dataShareDialogKDL053');           
-            let errorRegistrationListTmp = data.errorRegistrationList;
-            let employeeIds = data.employeeIds;
+            let errorRegistrationListTmp: any;
+            let employeeIds: any;
             let errorRegistrationList: any = [], errorRegistrationListCsv: any =[];
             let countNo: number = 1;
+            let data: any;
+            
+            if (getShared('dataShareDialogKDL053')) {
+                data = getShared('dataShareDialogKDL053');
+            } else if (self.params) {
+                data = self.params
+            }
 
+            if (_.isNull(data) || _.isEmpty(data)) {
+                self.closeDialog();
+            }
+            errorRegistrationListTmp = data.errorRegistrationList;
+            employeeIds = data.employeeIds;  
             _.each(employeeIds, id =>{      
                 let temp: any = [];
                 _.each(errorRegistrationListTmp, err => {                   
