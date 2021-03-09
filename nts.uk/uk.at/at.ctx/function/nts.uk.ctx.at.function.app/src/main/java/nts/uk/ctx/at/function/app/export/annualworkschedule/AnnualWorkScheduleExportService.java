@@ -494,8 +494,8 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 					employeeId,
 					endDate,
 					specifiedYearMonth
-			);
-			
+			).stream().sorted((a, b) -> a.getPeriod().start().compareTo(b.getPeriod().start())).collect(Collectors.toList());
+
 			// for header
 			List<String> periodLable = new ArrayList<>();
 			for (AgreMaxAverageTimeImport agreMaxAverage: listAgreMaxAverageTimeImport) {
