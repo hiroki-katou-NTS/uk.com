@@ -59,7 +59,7 @@ module nts.uk.at.view.kmt005.a.viewmodel {
                 }
             }).fail(error => {
                 self.$dialog.error(error).then(() => {
-                    if (error.businessException) {
+                    if (error.businessException && (error.messageId == "Msg_2122" || error.messageId == "Msg_2114")) {
                         nts.uk.request.jumpToTopPage();
                     }
                 });
@@ -80,7 +80,7 @@ module nts.uk.at.view.kmt005.a.viewmodel {
                     }).fail((error: any) => {
                         self.$dialog.error(error);
                     }).always(() => {
-                        self.$blockui("hide")
+                        self.$blockui("hide");
                     });
                 }
             });
