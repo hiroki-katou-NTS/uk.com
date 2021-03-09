@@ -140,7 +140,7 @@ public class CalculationRangeOfOneDay {
 												Collections.emptyList(),
 												Collections.emptyList(),
 												Collections.emptyList(),
-												Optional.empty(),
+												MidNightTimeSheetForCalcList.createEmpty(),
 												Collections.emptyList(),
 												Optional.empty(),
 												Optional.empty()
@@ -290,7 +290,7 @@ public class CalculationRangeOfOneDay {
 																									Collections.emptyList(), 
 																									Collections.emptyList(), 
 																									Collections.emptyList(), 
-																									Optional.empty(), 
+																									MidNightTimeSheetForCalcList.createEmpty(), 
 																									Collections.emptyList(), 
 																									Optional.empty(), 
 																									Optional.empty())),
@@ -1065,7 +1065,7 @@ public class CalculationRangeOfOneDay {
 				new ArrayList<>(),
 				new ArrayList<>(),
 				new ArrayList<>(),
-				Optional.empty(),
+				MidNightTimeSheetForCalcList.createEmpty(),
 				new ArrayList<>(),
 				Optional.empty(),
 				Optional.empty());
