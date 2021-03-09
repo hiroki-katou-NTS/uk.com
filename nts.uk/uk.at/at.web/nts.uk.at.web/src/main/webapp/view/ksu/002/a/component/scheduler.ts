@@ -377,7 +377,7 @@ module nts.uk.ui.at.ksu002.a {
         const MSG_439 = 'Msg_439';
         const MSG_1811 = 'Msg_1811';
         const MSG_1772 = 'Msg_1772';
-        const MSG_2058 = 'MSG_2058';
+        const MSG_2058 = 'Msg_2058';
         const VALIDATE = 'validate';
         const COMPONENT_NAME = 'scheduler-data-info';
 
