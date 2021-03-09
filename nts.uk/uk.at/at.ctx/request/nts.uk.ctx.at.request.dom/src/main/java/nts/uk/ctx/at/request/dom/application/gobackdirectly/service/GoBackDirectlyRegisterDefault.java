@@ -671,20 +671,14 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 //				application.getEmployeeID(), listDates);
 
 		
-		if (inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput().isMailServerSet()) {
-			// アルゴリズム「2-3.新規画面登録後の処理」を実行する
-			// TODO: 申請設定 domain has changed!
-			AppTypeSetting appTypeSetting = inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings()
-					.stream().filter(x -> x.getAppType()==application.getAppType()).findAny().get();
-			return newAfterRegister.processAfterRegister(
-					application.getAppID(), 
-					appTypeSetting,
-					inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput().isMailServerSet());
-		}	
-		ProcessResult processResult = new ProcessResult();
-		processResult.setProcessDone(true);
-		processResult.setAppID(application.getAppID());
-		return processResult;
+		// アルゴリズム「2-3.新規画面登録後の処理」を実行する
+		AppTypeSetting appTypeSetting = inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings()
+				.stream().filter(x -> x.getAppType()==application.getAppType()).findAny().get();
+		return newAfterRegister.processAfterRegister(
+				Arrays.asList(application.getAppID()), 
+				appTypeSetting,
+				inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput().isMailServerSet(),
+				false);
 
 	}
 	@Override

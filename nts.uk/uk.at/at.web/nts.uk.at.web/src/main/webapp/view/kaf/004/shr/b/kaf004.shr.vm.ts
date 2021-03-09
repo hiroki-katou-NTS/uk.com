@@ -28,10 +28,11 @@ module nts.uk.at.view.kaf004_ref.shr.b.viewmodel {
                                 <span>
                                     <input data-bind="ntsTimeWithDayEditor: {
                                 name: $i18n('KAF004_64'),
+                                required: true,
                                 value: $parent.workManagement.workTime,
                                 option: {timeWithDay: true, width: '90'},
                                 constraint: 'TimeWithDayAttr',
-                                enable: ko.toJS($parent.condition8(1))
+                                enable: ko.toJS($parent.application().prePostAtr() && !$parent.delete1() && ($parent.outputMode() === 1))
                             }" />
                                 </span>
                                 <!-- A6_5 -->
@@ -40,14 +41,14 @@ module nts.uk.at.view.kaf004_ref.shr.b.viewmodel {
                             <td class="padding-5">
                                 <!-- A6_6 -->
                                 <span class="label"
-                                    data-bind="text: $i18n('KAF004_56'), visible: ko.toJS($parent.condition10Display(1)) && ko.toJS($parent.condition9())"></span>
+                                    data-bind="text: $i18n('KAF004_56'), visible: ko.toJS($parent.condition9())"></span>
 
                                 <!-- A6_7 -->
                                 <span data-bind="ntsCheckBox: {
-                                checked: $parent.lateOrEarlyInfo1().isCheck,
+                                checked: $parent.delete1,
                                 text: $i18n('KAF004_57'),
-                                enable: ko.toJS($parent.condition10Activation(1))
-                                }, visible: ko.toJS($parent.condition10Display(1)) && ko.toJS($parent.condition9())"></span>
+                                enable: $parent.outputMode() === 1
+                                }, visible: ko.toJS($parent.condition9())"></span>
                             </td>
                         </tr>
                         <tr>
@@ -63,10 +64,11 @@ module nts.uk.at.view.kaf004_ref.shr.b.viewmodel {
                                 <span>
                                     <input data-bind="ntsTimeWithDayEditor: {
                                 name: $i18n('KAF004_65'),
+                                required: true,
                                 value: $parent.workManagement.leaveTime,
                                 option: {timeWithDay: true, width: '90'},
                                 constraint: 'TimeWithDayAttr',
-                                enable: ko.toJS($parent.condition8(2))
+                                enable: ko.toJS($parent.application().prePostAtr() && !$parent.delete2() && ($parent.outputMode() === 1))
                             }" />
                                 </span>
 
@@ -76,14 +78,14 @@ module nts.uk.at.view.kaf004_ref.shr.b.viewmodel {
                             <td class="padding-5">
                                 <!-- A6_12 -->
                                 <span class="label"
-                                    data-bind="text: $i18n('KAF004_56'), visible: ko.toJS($parent.condition10Display(2)) && ko.toJS($parent.condition9())"></span>
+                                    data-bind="text: $i18n('KAF004_56'), visible: ko.toJS($parent.condition9())"></span>
 
                                 <!-- A6_13 -->
                                 <span data-bind="ntsCheckBox: {
-                                checked: $parent.lateOrEarlyInfo2().isCheck,
+                                checked: $parent.delete2,
                                 text: $i18n('KAF004_58'),
-                                enable: ko.toJS($parent.condition10Activation(2))
-                                }, visible: ko.toJS($parent.condition10Display(2)) && ko.toJS($parent.condition9())"></span>
+                                enable: $parent.outputMode() === 1
+                                }, visible: ko.toJS($parent.condition9())"></span>
                             </td>
                         </tr>
                         <tr data-bind="visible: ko.toJS($parent.condition2())">
@@ -99,11 +101,11 @@ module nts.uk.at.view.kaf004_ref.shr.b.viewmodel {
                                 <!-- A6_16 -->
                                 <span>
                                     <input data-bind="ntsTimeWithDayEditor: {
-                                name: $i18n('KAF004_68'),
+                                name: $i18n('KAF004_66'),
                                 value: $parent.workManagement.workTime2,
                                 option: {timeWithDay: true, width: '90'},
                                 constraint: 'TimeWithDayAttr',
-                                enable: ko.toJS($parent.condition8(3))
+                                enable: ko.toJS($parent.application().prePostAtr() && !$parent.delete3() && ($parent.outputMode() === 1))
                             }" />
                                 </span>
 
@@ -113,14 +115,14 @@ module nts.uk.at.view.kaf004_ref.shr.b.viewmodel {
                             <td class="padding-5">
                                 <!-- A6_18 -->
                                 <span class="label"
-                                    data-bind="text: $i18n('KAF004_56'), visible:ko.toJS($parent.condition2_9_10(3))"></span>
+                                    data-bind="text: $i18n('KAF004_56'), visible: $parent.condition2() && $parent.condition9()"></span>
 
                                 <!-- A6_19 -->
                                 <span data-bind="ntsCheckBox: {
-                                checked: $parent.lateOrEarlyInfo3().isCheck,
+                                checked: $parent.delete3,
                                 text: $i18n('KAF004_60'),
-                                enable: ko.toJS($parent.condition10Activation(3))
-                                }, visible: ko.toJS($parent.condition2_9_10(3))"></span>
+                                enable: $parent.outputMode() === 1
+                                }, visible: $parent.condition2() && $parent.condition9()"></span>
                             </td>
                         </tr>
                         <tr data-bind="visible: ko.toJS($parent.condition2())">
@@ -139,7 +141,7 @@ module nts.uk.at.view.kaf004_ref.shr.b.viewmodel {
                                 value: $parent.workManagement.leaveTime2,
                                 option: {timeWithDay: true, width: '90'},
                                 constraint: 'TimeWithDayAttr',
-                                enable: ko.toJS($parent.condition8(4))
+                                enable: ko.toJS($parent.application().prePostAtr() && !$parent.delete4() && ($parent.outputMode() === 1))
                             }" />
                                 </span>
 
@@ -149,14 +151,14 @@ module nts.uk.at.view.kaf004_ref.shr.b.viewmodel {
                             <td class="padding-5">
                                 <!-- A6_24 -->
                                 <span class="label"
-                                    data-bind="text: $i18n('KAF004_56'), visible: ko.toJS($parent.condition2_9_10(4))"></span>
+                                    data-bind="text: $i18n('KAF004_56'), visible: $parent.condition2() && $parent.condition9()"></span>
 
                                 <!-- A6_25 -->
                                 <span data-bind="ntsCheckBox: {
-                                checked: $parent.lateOrEarlyInfo4().isCheck,
+                                checked: $parent.delete4,
                                 text: $i18n('KAF004_61'),
-                                enable: ko.toJS($parent.condition10Activation(4))
-                                }, visible: ko.toJS($parent.condition2_9_10(4))"></span>
+                                enable: $parent.outputMode() === 1
+                                }, visible: $parent.condition2() && $parent.condition9()"></span>
                             </td>
                         </tr>
                     </tbody>

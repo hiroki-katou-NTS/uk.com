@@ -11,6 +11,7 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 	import RestTime = nts.uk.at.view.kaf010.shr.time.viewmodel.RestTime;
 	import HolidayTime = nts.uk.at.view.kaf010.shr.time.viewmodel.HolidayTime;
 	import formatTime = nts.uk.time.format.byId;
+	import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
 	// import ItemModel = nts.uk.at.view.kaf010.shr.footer.viewmodel.ItemModel;
 	// import MessageInfo = nts.uk.at.view.kaf010.shr.footer.viewmodel.MessageInfo;
 	// import OverTime = nts.uk.at.view.kaf010.shr.time.viewmodel.OverTime;
@@ -345,9 +346,9 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 							appHolidayWork: appHolidayWork,
 							appDispInfoStartupDto: vm.dataSource.appDispInfoStartupOutput, 
 						};
-						return vm.$ajax('at', API.update, commandUpdate).then(() => {
+						return vm.$ajax('at', API.update, commandUpdate).then((successData) => {
 							return vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
-								return true;
+								return CommonProcess.handleMailResult(successData, vm);
 							});
 						});
 					}

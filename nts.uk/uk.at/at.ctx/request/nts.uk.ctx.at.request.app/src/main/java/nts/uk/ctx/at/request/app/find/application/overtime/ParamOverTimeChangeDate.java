@@ -4,8 +4,8 @@ import java.util.Collections;
 import java.util.List;
 
 import nts.uk.ctx.at.request.app.command.application.common.AppDispInfoStartupCmd;
+import nts.uk.ctx.at.request.app.command.application.overtime.DisplayInfoOverTimeCommand;
 import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSetCommand;
-import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
 import nts.uk.ctx.at.shared.app.command.worktype.WorkTypeCommandBase;
 
 public class ParamOverTimeChangeDate {
@@ -29,6 +29,8 @@ public class ParamOverTimeChangeDate {
 	public List<WorkTypeCommandBase> worktypes = Collections.emptyList();
 	
 	public Integer prePost;
+	
+	public DisplayInfoOverTimeCommand displayInfoOverTime;
 	
 	
 }

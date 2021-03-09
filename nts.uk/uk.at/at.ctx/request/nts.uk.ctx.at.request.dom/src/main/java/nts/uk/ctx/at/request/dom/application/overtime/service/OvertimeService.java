@@ -1,16 +1,17 @@
 package nts.uk.ctx.at.request.dom.application.overtime.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.CheckBeforeOutputMulti;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime_Old;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
@@ -95,7 +96,9 @@ public interface OvertimeService {
 			OvertimeLeaveAppCommonSet overtimeLeaveAppCommonSet,
 			ApplicationTime advanceApplicationTime, 
 			ApplicationTime achieveApplicationTime,
-			WorkContent workContent);
+			WorkContent workContent,
+			OvertimeAppSet overtimeAppSet
+			);
 	/**
 	 * Refactor5 19_計算処理
 	 * UKDesign.UniversalK.就業.KAF_申請.KAF005_残業申請.A：残業申請（新規登録）.アルゴリズム.19_計算処理
@@ -117,7 +120,8 @@ public interface OvertimeService {
 			OvertimeLeaveAppCommonSet overtimeLeaveAppCommonSet,
 			ApplicationTime advanceApplicationTime, 
 			ApplicationTime achieveApplicationTime,
-			WorkContent workContent);
+			WorkContent workContent,
+			OvertimeAppSet overtimeAppSet);
 	
 	/**
 	 * Refactor5 01_初期起動の処理
@@ -195,6 +199,22 @@ public interface OvertimeService {
 			AppOverTime appOverTime
 			);
 	/**
+	 * Refactor5 登録前のエラーチェック(複数人版)
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF005_残業申請.A：残業申請（新規登録）.アルゴリズム.登録前のエラーチェック(複数人版)
+	 * @param require
+	 * @param companyId
+	 * @param displayInfoOverTime
+	 * @param appOverTime
+	 * @return
+	 */
+	public CheckBeforeOutputMulti checkErrorRegisterMultiple(
+			Boolean require,
+			String companyId,
+			DisplayInfoOverTime displayInfoOverTime,
+			AppOverTime appOverTime
+			);
+	
+	/**
 	 * Refactor5 01_詳細画面起動の処理
 	 * UKDesign.UniversalK.就業.KAF_申請.KAF005_残業申請.B：残業申請（詳細・照会）.アルゴリズム.01_詳細画面起動の処理
 	 * @param companyId
@@ -202,7 +222,7 @@ public interface OvertimeService {
 	 * @param appDispInfoStartupOutput
 	 * @return
 	 */
-	public DetailOutput  getDetailData(
+	public DetailOutput getDetailData(
 			String companyId,
 			String appId,
 			AppDispInfoStartupOutput appDispInfoStartupOutput);
@@ -278,6 +298,7 @@ public interface OvertimeService {
 			PrePostInitAtr prePost
 			);
 	
+
 	/**
 	 * Refactor5 UKDesign.UniversalK.就業.KAF_申請.KAF005_残業申請.A：残業申請（新規登録）.ユースケース
 	 * @param companyId
@@ -289,6 +310,8 @@ public interface OvertimeService {
 	 * @param endTimeSPR
 	 * @param overtimeAppSet
 	 * @param worktypes
+	 * @param prePost
+	 * @param displayInfoOverTime
 	 * @return
 	 */
 	public DisplayInfoOverTime changeDate(
@@ -301,7 +324,8 @@ public interface OvertimeService {
 			Optional<Integer> endTimeSPR,
 			OvertimeAppSet overtimeAppSet,
 			List<WorkType> worktypes,
-			PrePostInitAtr prePost
+			PrePostInitAtr prePost,
+			DisplayInfoOverTime displayInfoOverTime
 			);
 	
 	// Mobile //
@@ -401,5 +425,54 @@ public interface OvertimeService {
 			String employeeId,
 			Optional<GeneralDate> dateOp
 			);
+	/**
+	 * Refactor5 個別登録前チェッ処理（複数人版）
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF005_残業申請.A：残業申請（新規登録）.アルゴリズム.個別登録前チェッ処理（複数人版）
+	 * @param companyId
+	 * @param appOverTime
+	 * @param displayInfoOverTime
+	 * @return
+	 */
+	public Map<String, List<ConfirmMsgOutput>> checkIndividualMultiple(
+			String companyId,
+			AppOverTime appOverTime,
+			DisplayInfoOverTime displayInfoOverTime
+			);
+	/**
+	 * Refactor5 残業申請の共通部分をチェックする
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF005_残業申請.A：残業申請（新規登録）.アルゴリズム.個別登録前チェッ処理（複数人版）.残業申請の共通部分をチェックする
+	 * @param appOverTime
+	 * @param displayInfoOverTime
+	 */
+	public void checkCommonOverTime(
+			AppOverTime appOverTime,
+			DisplayInfoOverTime displayInfoOverTime
+			);
 	
+	/**
+	 * Refactor5 申請対象者の情報を再取得する
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF005_残業申請.A：残業申請（新規登録）.アルゴリズム.個別登録前チェッ処理（複数人版）.申請対象者の情報を再取得する
+	 * @param companyId
+	 * @param appOverTime
+	 * @param displayInfoOverTime
+	 * @return
+	 */
+	public DisplayInfoOverTime reacquireInfoEmploy(
+			String companyId,
+			AppOverTime appOverTime,
+			DisplayInfoOverTime displayInfoOverTime
+			);
+	
+	/**
+	 * Refactor5 申請者ごとの申請内容をチェックする
+	 * UKDesign.UniversalK.就業.KAF_申請.KAF005_残業申請.A：残業申請（新規登録）.アルゴリズム.個別登録前チェッ処理（複数人版）.申請者ごとの申請内容をチェックする
+	 * @param companyId
+	 * @param appOverTime
+	 * @param displayInfoOverTime
+	 * @return
+	 */
+	public List<ConfirmMsgOutput> checkEachEmployee(
+			String companyId,
+			AppOverTime appOverTime,
+			DisplayInfoOverTime displayInfoOverTime);
 }

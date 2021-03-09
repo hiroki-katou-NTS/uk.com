@@ -7,6 +7,7 @@ import Application = nts.uk.at.view.kaf000.shr.viewmodel.Application;
 import ApplicationDto = nts.uk.at.view.kaf006.shr.viewmodel.ApplicationDto;
 import WorkType = nts.uk.at.view.kaf006.shr.viewmodel.WorkType;
 import Kaf006ShrViewModel = nts.uk.at.view.kaf006.shr.viewmodel.Kaf006ShrViewModel;
+import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
 
 module nts.uk.at.view.kaf006_ref.a.viewmodel {
 
@@ -14,7 +15,7 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
     export class Kaf006AViewModel extends Kaf000AViewModel {
         appType: KnockoutObservable<number> = ko.observable(AppType.ABSENCE_APPLICATION);
         isAgentMode: KnockoutObservable<boolean> = ko.observable(false);
-        isSendMail: KnockoutObservable<Boolean> = ko.observable(false);
+        isSendMail: KnockoutObservable<boolean> = ko.observable(false);
         application: KnockoutObservable<Application> = ko.observable(new Application(this.appType()));
         data: any = null;
         hdAppSet: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -730,16 +731,9 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
 			}).done((result) => {
 				if (result) {
 					return vm.$dialog.info({ messageId: "Msg_15"}).then(() => {
-						window.location.reload();
-						return true;
+						return CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm);
 					});	
 				}
-			}).then((result) => {
-				if(result) {
-					// gửi mail sau khi đăng kí
-					// return vm.$ajax('at', API.sendMailAfterRegisterSample);
-					return true;
-				}	
 			}).fail((failData) => {
 				// xử lý lỗi nghiệp vụ riêng
 				vm.handleErrorCustom(failData).then((result: any) => {
