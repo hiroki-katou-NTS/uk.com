@@ -259,8 +259,7 @@ module nts.uk.at.view.knr002.e {
                 blockUI.invisible();
                 service.getBackup(vm.selectedCode())
                 .done(() => {
-                    vm.loadInitData();
-                    nts.uk.ui.dialog.info({ messageId: "Msg_2141"})
+                    nts.uk.ui.dialog.info({ messageId: "Msg_2141"}).then(() => vm.loadInitData());
                 })
                 .fail((err: any) => nts.uk.ui.dialog.error({ messageId: err.messageId }))
                 .always(() => blockUI.clear());
@@ -268,7 +267,6 @@ module nts.uk.at.view.knr002.e {
 
             public restoreHandle() {
                 const vm = this;
-
                 let shareData = vm.bakGridData()[vm.selectedRow()];
                 if (shareData.backupDate.length === 0) {
                     nts.uk.ui.dialog.error({ messageId: 'Msg_2022' });
@@ -279,8 +277,7 @@ module nts.uk.at.view.knr002.e {
                     let isCancel = getShared('KNR002E_cancel');
                     
                     if (!isCancel) {
-                        vm.loadInitData();
-                        nts.uk.ui.dialog.info({ messageId: "Msg_2142"});
+                        nts.uk.ui.dialog.info({ messageId: "Msg_2142"}).then(() => vm.loadInitData());
                     }
                 });
             }
