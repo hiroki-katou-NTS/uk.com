@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -42,8 +43,12 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualHol
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpAnnualLeaveMngWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemainingData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveGrantDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveGrantNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveGrantTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingTime;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
@@ -204,7 +209,9 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 		if(!lstAnnRemainHis.isEmpty()) {
 			List<AnnualHolidayGrant> lstAnnHolidayGrant = lstAnnRemainHis.stream()
 					.map(AnnualHolidayGrant::fromData).collect(Collectors.toList());
-			output.setLstGrantInfor(lstAnnHolidayGrant.stream().sorted(Comparator.comparing(AnnualHolidayGrant::getYmd))
+			output.setLstGrantInfor(lstAnnHolidayGrant.stream()
+					.filter(data -> Objects.nonNull(data.getYmd()))
+					.sorted(Comparator.comparing(AnnualHolidayGrant::getYmd))
 					.collect(Collectors.toList()));
 		}	
 		
@@ -403,15 +410,37 @@ public class GetAnnualHolidayGrantInforImpl implements GetAnnualHolidayGrantInfo
 		if (annTimeData.isEmpty()) {
 			return lstAnnRemainHis;
 		}
-		// 付与残数データから使用数を消化する	
-		return annTimeData.stream()
-				.map(hist -> GetAnnualLeaveUsedNumberFromRemDataService.getAnnualLeaveGrantRemainingData(
-						AppContexts.user().companyId(), sid,
-						lstAnnRemainHis.stream().map(data -> (LeaveGrantRemainingData) data)
-								.collect(Collectors.toList()),
-						hist.getDetails().getUsedNumber(),
-						new RequireImpl(workingConditionItemRepository, annualPaidLeaveSettingRepository)))
-				.flatMap(List::stream).map(data -> (AnnualLeaveGrantRemainingData) data).collect(Collectors.toList());
+		// 以下の条件で取得したドメインの中で一番大きな付与処理日を持つドメインを全て取得する。
+		Map<DatePeriod, AnnualLeaveTimeRemainingHistory> histMap = annTimeData.stream()
+				.collect(Collectors.groupingBy(hist -> new DatePeriod(hist.getGrantDate(), hist.getDeadline())))
+				.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream()
+						.max(Comparator.comparing(AnnualLeaveTimeRemainingHistory::getGrantProcessDate)).orElse(null)));
+		// 付与残数データから使用数を消化する
+		return lstAnnRemainHis.stream().map(data -> {
+			AnnualLeaveTimeRemainingHistory tmp = histMap.get(new DatePeriod(data.getGrantDate(), data.getDeadline()));
+			if (tmp == null) {
+				return data;
+			}
+			LeaveGrantRemainingData result = GetAnnualLeaveUsedNumberFromRemDataService
+					.getAnnualLeaveGrantRemainingData(AppContexts.user().companyId(), sid,
+							Arrays.asList((LeaveGrantRemainingData) data), tmp.getDetails().getUsedNumber(),
+							new RequireImpl(workingConditionItemRepository, annualPaidLeaveSettingRepository))
+					.get(0);
+			// 付与数、使用数から付与時点の使用数を減算する。
+			data.getDetails().getGrantNumber()
+					.setDays(new LeaveGrantDayNumber(data.getDetails().getGrantNumber().getDays().v()
+							- result.getDetails().getUsedNumber().getDays().v()));
+			data.getDetails().getGrantNumber().setMinutes(
+					data.getDetails().getGrantNumber().getMinutes().map(m -> m.addMinutes(result.getDetails()
+							.getUsedNumber().getMinutes().map(LeaveUsedTime::valueAsMinutes).orElse(0))));
+			data.getDetails().getUsedNumber()
+					.setDays(new LeaveUsedDayNumber(data.getDetails().getUsedNumber().getDays().v()
+							- result.getDetails().getUsedNumber().getDays().v()));
+			data.getDetails().getUsedNumber()
+					.setMinutes(data.getDetails().getUsedNumber().getMinutes().map(m -> m.addMinutes(result.getDetails()
+							.getUsedNumber().getMinutes().map(LeaveUsedTime::valueAsMinutes).orElse(0))));
+			return data;
+		}).map(data -> (AnnualLeaveGrantRemainingData) data).collect(Collectors.toList());
 	}
 
 	//前回付与日～INPUT．指定年月の間で期限が切れた付与情報を取得 - 7 
