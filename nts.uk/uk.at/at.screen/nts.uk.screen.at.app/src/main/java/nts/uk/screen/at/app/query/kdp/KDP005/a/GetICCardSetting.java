@@ -8,7 +8,7 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.StampResultDisplayDto;
 import nts.uk.ctx.at.record.dom.stamp.application.StampResultDisplayRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetCommunalRepository;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.stampsettingfunction.NoticeSetRepository;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.stampinputfunctionsettings.notificationmessagesettings.NoticeSetRepository;
 import nts.uk.screen.at.app.query.kdp.kdp004.a.NoticeSetDto;
 import nts.uk.screen.at.app.query.kdp.kdp004.a.StampSetCommunalDto;
 import nts.uk.shr.com.context.AppContexts;

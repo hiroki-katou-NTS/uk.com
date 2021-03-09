@@ -2,7 +2,7 @@ package nts.uk.screen.at.app.query.kdp.kdp004.a;
 
 import lombok.Data;
 import nts.uk.ctx.at.record.app.find.stamp.management.ColorSettingDto;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.stampsettingfunction.NoticeSet;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.stampinputfunctionsettings.notificationmessagesettings.NoticeSet;
 
 /**
  * お知らせメッセージ設定
@@ -13,9 +13,6 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.stam
 @Data
 public class NoticeSetDto {
 	
-	/** 会社ID */
-	private String cid;
-
 	/** 会社メッセージ色 */
 	private ColorSettingDto comMsgColor;
 
@@ -35,15 +32,14 @@ public class NoticeSetDto {
 	private int displayAtr;
 
 	public NoticeSetDto(NoticeSet domain) {
-		this.cid = domain.getCid();
-		this.comMsgColor = new ColorSettingDto(domain.getCmpMsgColor().getTextColor().v(),
-				domain.getCmpMsgColor().getBackGroundColor().v());
-		this.companyTitle = domain.getCmpTitle().v();
-		this.personMsgColor = new ColorSettingDto(domain.getPersonMsgColor().getTextColor().v(),
-				domain.getPersonMsgColor().getBackGroundColor().v());
-		this.wkpMsgColor = new ColorSettingDto(domain.getWkpMsgColor().getTextColor().v(),
-				domain.getWkpMsgColor().getBackGroundColor().v());
-		this.wkpTitle = domain.getWkpTitle().v();
+		this.comMsgColor = new ColorSettingDto(domain.getCompanyColor().getTextColor().v(),
+				domain.getCompanyColor().getBackGroundColor().v());
+		this.companyTitle = domain.getCompanyTitle().v();
+		this.personMsgColor = new ColorSettingDto(domain.getPersonalColor().getTextColor().v(),
+				domain.getPersonalColor().getBackGroundColor().v());
+		this.wkpMsgColor = new ColorSettingDto(domain.getWorkplaceColor().getTextColor().v(),
+				domain.getWorkplaceColor().getBackGroundColor().v());
+		this.wkpTitle = domain.getWorkplaceTitle().v();
 		this.displayAtr = domain.getDisplayAtr().value;
 	}
 
