@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.request.app.command.application.overtime;
 
-import java.util.List;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -15,13 +13,13 @@ import nts.uk.ctx.at.request.dom.application.overtime.service.OverTimeRegisterSe
 
 @Stateless
 @Transactional
-public class RegisterCommandHandlerMultiple extends CommandHandlerWithResult<RegisterCommand, List<ProcessResult>> {
+public class RegisterCommandHandlerMultiple extends CommandHandlerWithResult<RegisterCommand, ProcessResult> {
 	
 	@Inject
 	private OverTimeRegisterService overTimeRegisterService;
 	
 	@Override
-	protected List<ProcessResult> handle(CommandHandlerContext<RegisterCommand> context) {
+	protected ProcessResult handle(CommandHandlerContext<RegisterCommand> context) {
 		RegisterCommand param = context.getCommand();
 		Application application = param.appOverTime.application.toDomain();
 		AppOverTime appOverTime = param.appOverTime.toDomain();

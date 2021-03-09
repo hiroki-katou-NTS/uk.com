@@ -675,9 +675,10 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		AppTypeSetting appTypeSetting = inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings()
 				.stream().filter(x -> x.getAppType()==application.getAppType()).findAny().get();
 		return newAfterRegister.processAfterRegister(
-				application.getAppID(), 
+				Arrays.asList(application.getAppID()), 
 				appTypeSetting,
-				inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput().isMailServerSet());
+				inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput().isMailServerSet(),
+				false);
 
 	}
 	@Override

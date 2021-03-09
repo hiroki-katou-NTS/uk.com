@@ -881,9 +881,9 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						// 残業申請の表示情報．申請表示情報．申請設定（基準日関係なし）．申請設定．申請種類別設定
 						commandRegister.appTypeSetting = appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting[0];
 						// đăng kí 
-						return vm.$ajax('at', vm.mode() != MODE.MULTiPLE_AGENT ? API.register : API.registerMultiple, commandRegister).then(() => {
+						return vm.$ajax('at', vm.mode() != MODE.MULTiPLE_AGENT ? API.register : API.registerMultiple, commandRegister).then((successData) => {
 							return vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
-								CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm);
+								CommonProcess.handleAfterRegister(successData, vm.isSendMail(), vm);
 							});
 						});
 					}

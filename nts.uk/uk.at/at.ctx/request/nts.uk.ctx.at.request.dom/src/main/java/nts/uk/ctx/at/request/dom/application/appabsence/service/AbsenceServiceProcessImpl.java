@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -118,7 +117,6 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.Sixt
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.SubstitutionHolidayOutput;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingCategory;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.nursingleave.NursingLeaveSettingRepository;
@@ -1774,7 +1772,11 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 //        this.interimRemainData.registerDateChange(companyId, applyForLeave.getApplication().getEmployeeID(), listDates);
         
         // アルゴリズム「新規画面登録後の処理」を実行する
-        ProcessResult result = this.afterRegisterService.processAfterRegister(applyForLeave.getApplication().getAppID(), appTypeSetting, mailServerSet);
+        ProcessResult result = this.afterRegisterService.processAfterRegister(
+        		Arrays.asList(applyForLeave.getApplication().getAppID()), 
+        		appTypeSetting, 
+        		mailServerSet,
+        		false);
         
         return result;
     }

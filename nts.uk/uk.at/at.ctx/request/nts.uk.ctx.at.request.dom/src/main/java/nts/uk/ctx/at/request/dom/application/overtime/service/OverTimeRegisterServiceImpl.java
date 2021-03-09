@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.overtime.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -62,9 +63,10 @@ public class OverTimeRegisterServiceImpl implements OverTimeRegisterService {
 		
 		// 2-3.新規画面登録後の処理を実行 #112628
 		return newAfterRegister.processAfterRegister(
-				application.getAppID(), 
+				Arrays.asList(application.getAppID()), 
 				appTypeSetting,
-				mailServerSet);
+				mailServerSet,
+				false);
 	}
 
 	@Override
@@ -112,7 +114,7 @@ public class OverTimeRegisterServiceImpl implements OverTimeRegisterService {
 	}
 
 	@Override
-	public List<ProcessResult> registerMultiple(
+	public ProcessResult registerMultiple(
 			String companyId,
 			AppOverTime appOverTime,
 			AppDispInfoStartupOutput appDispInfoStartupOutput,
@@ -140,21 +142,13 @@ public class OverTimeRegisterServiceImpl implements OverTimeRegisterService {
 			// 暫定データの登録(pendding)
 		}
 		// List＜申請ID＞をループする
-		List<ProcessResult> processResultList = new ArrayList<ProcessResult>();
-		for (String id : guidS) {
-			
-			// 2-3.新規画面登録後の処理を実行 #112628
-			ProcessResult processResult = newAfterRegister.processAfterRegister(
-				id, 
-				appTypeSetting,
-				mailServerSet);
-			processResultList.add(processResult);
-		}
-		
-		
-		
-		
-		return processResultList;
+		// 2-3.新規画面登録後の処理を実行 #112628
+		ProcessResult processResult = newAfterRegister.processAfterRegister(
+			guidS, 
+			appTypeSetting,
+			mailServerSet,
+			true);
+		return processResult;
 	}
 	
 

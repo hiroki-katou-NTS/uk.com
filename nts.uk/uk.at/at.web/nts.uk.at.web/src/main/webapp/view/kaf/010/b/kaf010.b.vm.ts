@@ -346,9 +346,9 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 							appHolidayWork: appHolidayWork,
 							appDispInfoStartupDto: vm.dataSource.appDispInfoStartupOutput, 
 						};
-						return vm.$ajax('at', API.update, commandUpdate).then(() => {
+						return vm.$ajax('at', API.update, commandUpdate).then((successData) => {
 							return vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
-								return CommonProcess.handleMailResult(result, vm);
+								return CommonProcess.handleMailResult(successData, vm);
 							});
 						});
 					}

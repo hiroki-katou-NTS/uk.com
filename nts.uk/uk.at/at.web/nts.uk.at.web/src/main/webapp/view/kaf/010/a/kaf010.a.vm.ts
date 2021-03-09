@@ -491,9 +491,9 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 							appHdWorkDispInfo: vm.dataSource, 
 							appTypeSetting : vm.dataSource.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting[0],
 						};
-						return vm.$ajax('at', API.register, commandRegister).then(() => {
+						return vm.$ajax('at', API.register, commandRegister).then((successData) => {
 							return vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
-								CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm);
+								CommonProcess.handleAfterRegister(successData, vm.isSendMail(), vm);
 							});
 						});
 					}
@@ -610,9 +610,9 @@ module nts.uk.at.view.kaf010.a.viewmodel {
 							appOvertimeDetailMap: {} as Map<string, any>,
 							appTypeSetting : vm.dataSource.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting[0],
 						};
-						return vm.$ajax('at', API.registerMulti, commandRegister).then(() => {
+						return vm.$ajax('at', API.registerMulti, commandRegister).then((successData) => {
 							return vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
-								CommonProcess.handleAfterRegister(result, vm.isSendMail(), vm);
+								CommonProcess.handleAfterRegister(successData, vm.isSendMail(), vm);
 							});
 						});
 					}

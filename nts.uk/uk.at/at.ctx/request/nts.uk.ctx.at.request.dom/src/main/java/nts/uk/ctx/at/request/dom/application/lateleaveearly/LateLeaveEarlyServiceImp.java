@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.lateleaveearly;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -450,7 +451,7 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 		String employeeId = AppContexts.user().employeeId();
 		ProcessResult processResult = new ProcessResult();
 		processResult.setProcessDone(true);
-		processResult.setAppID(application.getAppID());
+		processResult.setAppIDLst(Arrays.asList(application.getAppID()));
 
 		// ドメインモデル「遅刻早退取消申請」の新規登録する (đăng ký mới domain 「遅刻早退取消申請」)
 		this.registerDomain(application, infoOutput);
@@ -462,9 +463,10 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 		// 2-3.新規画面登録後の処理
 		AppTypeSetting appTypeSetting = infoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getApplicationSetting()
 				.getAppTypeSettings().stream().filter(x -> x.getAppType()==application.getAppType()).findAny().orElse(null);
-		processResult = this.newAfterRegister.processAfterRegister(application.getAppID(),
+		processResult = this.newAfterRegister.processAfterRegister(Arrays.asList(application.getAppID()),
 				appTypeSetting,
-				infoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().isMailServerSet());
+				infoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().isMailServerSet(),
+				false);
 
 		return processResult;
 	}

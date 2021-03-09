@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.app.command.application.businesstrip;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -119,9 +120,10 @@ public class AddBusinessTripCommandHandler extends CommandHandlerWithResult<AddB
 
 	    // 2-3.新規画面登録後の処理
 	    return this.newAfterRegister.processAfterRegister(
-	            application.getAppID(),
+	            Arrays.asList(application.getAppID()),
 	            appTypeSet.get(),
-	            businessTripInfoOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput().isMailServerSet());
+	            businessTripInfoOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput().isMailServerSet(),
+	            false);
     }
 
 }

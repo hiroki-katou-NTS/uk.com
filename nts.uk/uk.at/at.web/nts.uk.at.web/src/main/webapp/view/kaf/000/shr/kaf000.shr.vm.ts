@@ -368,7 +368,7 @@ module nts.uk.at.view.kaf000.shr.viewmodel {
 					location.reload();		
 				});
 			} else if(isSendMail) {
-				let command = {appID: result.appID};
+				let command = {appID: result.appIDLst[0]};
                 nts.uk.ui.windows.setShared("KDL030_PARAM", command);
                 nts.uk.ui.windows.sub.modal("/view/kdl/030/a/index.xhtml").onClosed(() => {
                     location.reload();

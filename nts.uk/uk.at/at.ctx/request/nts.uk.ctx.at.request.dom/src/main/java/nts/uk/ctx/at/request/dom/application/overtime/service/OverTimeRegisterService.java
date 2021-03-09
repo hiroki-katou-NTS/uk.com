@@ -1,8 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.overtime.service;
 
 
-import java.util.List;
-
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
@@ -33,7 +31,7 @@ public interface OverTimeRegisterService {
 	 * @param appTypeSetting
 	 * @return
 	 */
-	public List<ProcessResult> registerMultiple(
+	public ProcessResult registerMultiple(
 			String companyId,
 			AppOverTime appOverTime,
 			AppDispInfoStartupOutput appDispInfoStartupOutput,

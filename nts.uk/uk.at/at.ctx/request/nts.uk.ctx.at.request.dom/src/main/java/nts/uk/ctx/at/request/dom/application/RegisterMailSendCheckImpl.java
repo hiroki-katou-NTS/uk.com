@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.request.dom.application;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -56,7 +56,7 @@ public class RegisterMailSendCheckImpl implements RegisterMailSendCheck {
 			processResult.setAutoFailMail(mailResult.getFailList());
 			processResult.setAutoFailServer(mailResult.getFailServerList());
 		}
-		processResult.setAppID(application.getAppID());
+		processResult.setAppIDLst(Arrays.asList(application.getAppID()));
 		return processResult;
 	}
 }

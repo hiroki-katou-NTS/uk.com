@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.app.command.application.common;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -74,7 +75,7 @@ public class DeleteAppHandler extends CommandHandlerWithResult<AppDetailBehavior
 		if(application.getAppType()==ApplicationType.HOLIDAY_WORK_APPLICATION){
 			holidayService.deleteHdChange(appID);
 		}
-		processResult.setAppID(appID);
+		processResult.setAppIDLst(Arrays.asList(appID));
 		return processResult;
 	}
 }

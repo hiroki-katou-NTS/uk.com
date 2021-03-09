@@ -14,7 +14,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appl
 public class ApplicationAlgorithmImpl implements ApplicationAlgorithm {
 
 	@Override
-	public SendMailAtr checkAutoSendMailRegister(String appID, AppTypeSetting appTypeSetting, boolean mailServerSet) {
+	public SendMailAtr checkAutoSendMailRegister(AppTypeSetting appTypeSetting, boolean mailServerSet) {
 		// INPUT．メールサーバ設定済区分をチェックする(check INPUT．メールサーバ設定済区分 ) 
 		if(!mailServerSet) {
 			// 「メール送信区分」　＝＝「送信しない」

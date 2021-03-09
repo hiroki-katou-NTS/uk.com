@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.stamp;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -72,9 +73,10 @@ public class AppCommonDomainServiceRegisterImp implements AppCommonDomainService
 		AppTypeSetting appTypeSetting = appStampOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings()
 				.stream().filter(x -> x.getAppType()==application.getAppType()).findAny().orElse(null);
 		return newAfterRegister.processAfterRegister(
-				application.getAppID(),
+				Arrays.asList(application.getAppID()),
 				appTypeSetting,
-				appStampOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().isMailServerSet());
+				appStampOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().isMailServerSet(),
+				false);
 
 	}
 	@Override

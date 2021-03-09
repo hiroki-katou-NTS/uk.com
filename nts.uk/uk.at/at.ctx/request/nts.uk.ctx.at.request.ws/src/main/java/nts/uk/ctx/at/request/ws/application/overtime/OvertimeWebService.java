@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.request.ws.application.overtime;
 
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -98,7 +96,7 @@ public class OvertimeWebService extends WebService {
 	
 	@POST
 	@Path("registerMultiple")
-	public List<ProcessResult> registerMultiple(RegisterCommand command) {
+	public ProcessResult registerMultiple(RegisterCommand command) {
 		return registerCommandHandlerMultiple.handle(command);
 	}
 	
