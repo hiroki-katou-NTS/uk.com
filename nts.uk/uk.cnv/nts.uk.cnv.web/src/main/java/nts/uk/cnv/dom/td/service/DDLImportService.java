@@ -27,6 +27,7 @@ import nts.uk.cnv.dom.td.tabledefinetype.TableDefineType;
 import nts.uk.cnv.dom.td.tabledefinetype.UkDataType;
 import nts.uk.cnv.dom.td.tabledefinetype.databasetype.DatabaseType;
 import nts.uk.cnv.dom.td.tabledesign.ColumnDesign;
+import nts.uk.cnv.dom.td.tabledesign.DefineColumnType;
 import nts.uk.cnv.dom.td.tabledesign.Indexes;
 import nts.uk.cnv.dom.td.tabledesign.Snapshot;
 import nts.uk.cnv.dom.td.tabledesign.TableDesign;
@@ -41,7 +42,7 @@ public class DDLImportService {
 	 * @param type SQL文がどのRDBMSかを指定する
 	 * @throws JSQLParserException
 	 */
-	public static AtomTask regist(String branch, GeneralDate date, Require require, String createTable, String createIndexes, String comment, String type) throws JSQLParserException {
+	public static AtomTask regist(String feature, GeneralDate date, Require require, String createTable, String createIndexes, String comment, String type) throws JSQLParserException {
 		TableDefineType typeDefine;
 		if("uk".equals(type)) {
 			typeDefine = new UkDataType();
@@ -49,7 +50,7 @@ public class DDLImportService {
 		else {
 			typeDefine = DatabaseType.valueOf(type).spec();
 		}
-		Snapshot tableDesign = ddlToDomain(branch, date, createTable, createIndexes, comment, typeDefine);
+		Snapshot tableDesign = ddlToDomain(feature, date, createTable, createIndexes, comment, typeDefine);
 
 		return AtomTask.of(() -> {
 			require.regist(tableDesign);
@@ -57,7 +58,7 @@ public class DDLImportService {
 	}
 
 	private static Snapshot ddlToDomain(
-		String branch, GeneralDate date,
+		String feature, GeneralDate date,
 		String createTable, String createIndexes, String comment, TableDefineType typeDefine) throws JSQLParserException {
 		CCJSqlParserManager pm = new CCJSqlParserManager();
 
@@ -94,14 +95,14 @@ public class DDLImportService {
 		if (createTableSt instanceof CreateTable) {
 			return new Snapshot(
 					"", GeneralDateTime.now(),
-					toDomain(branch, date, (CreateTable) createTableSt, indexes, typeDefine, comment, indexClusteredMap, indexUniqueMap, isClusteredPK));
+					toDomain(feature, date, (CreateTable) createTableSt, indexes, typeDefine, comment, indexClusteredMap, indexUniqueMap, isClusteredPK));
 		}
 
 		throw new JSQLParserException();
 	}
 
 	private static TableDesign toDomain(
-			String branch, GeneralDate date,
+			String feature, GeneralDate date,
 			CreateTable statement, List<CreateIndex> createIndex, TableDefineType typeDefine,
 			String comment, Map<String, Boolean> indexClusteredMap, Map<String, Boolean> indexUniqueMap, boolean isClusteredPK) {
 		GeneralDateTime now = GeneralDateTime.now();
@@ -148,7 +149,7 @@ public class DDLImportService {
 				? commentMap.get(table.getName())
 				: "";
 
-		TableDesign result = new TableDesign(table.getName(), table.getName(), tableComment, now, now, columns, indexes);
+		TableDesign result = new TableDesign(table.getName(), table.getName(), tableComment, columns, indexes);
 		return result;
 	}
 
@@ -225,15 +226,19 @@ public class DDLImportService {
 				id,
 				col.getColumnName(),
 				col.getColumnName(),
-				type,
-				maxLength, scale, nullable,
+				new DefineColumnType(
+						type,
+						maxLength,
+						scale,
+						nullable,
+						defaultValue,
+						check),
 				pk.containsKey(col.getColumnName()),
 				pk.containsKey(col.getColumnName()) ? pk.get(col.getColumnName()) : 0,
 				uk.containsKey(col.getColumnName()),
 				uk.containsKey(col.getColumnName()) ? uk.get(col.getColumnName()) : 0,
-				defaultValue,
 				columnComment,
-				check
+				id
 		);
 	}
 

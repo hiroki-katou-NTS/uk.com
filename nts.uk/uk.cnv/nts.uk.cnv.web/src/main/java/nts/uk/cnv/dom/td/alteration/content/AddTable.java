@@ -1,5 +1,7 @@
 package nts.uk.cnv.dom.td.alteration.content;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import lombok.EqualsAndHashCode;
@@ -16,8 +18,8 @@ public class AddTable extends AlterationContent {
 		this.tableDesign = tableDesign;
 	}
 
-	public static AlterationContent create(Optional<TableDesign> base, Optional<TableDesign> altered) {
-		return new AddTable(altered.get());
+	public static List<AlterationContent> create(Optional<TableDesign> base, Optional<TableDesign> altered) {
+		return Arrays.asList(new AddTable(altered.get()));
 	}
 
 	public static boolean applicable(Optional<TableDesign> base, Optional<TableDesign> altered) {

@@ -10,10 +10,8 @@ import nts.arc.time.GeneralDateTime;
 @Data
 public class Cnv001BLoadParamDto {
 	String category;
+	String feature;
 
-	public String getBranch() {
-		return "";
-	}
 	public GeneralDateTime getDateTime() {
 		return GeneralDateTime.now();
 	}

@@ -1,5 +1,7 @@
 package nts.uk.cnv.dom.td.alteration.content;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import lombok.EqualsAndHashCode;
@@ -19,13 +21,34 @@ public class AddColumn extends AlterationContent {
 		this.column = column;
 	}
 
-	public static AlterationContent create(Optional<TableDesign> base, Optional<TableDesign> altered) {
-		// TODO:
-		return null;
+	public static List<AlterationContent> create(Optional<TableDesign> base, Optional<TableDesign> altered) {
+		List<AlterationContent> result = new ArrayList<>();
+		for(int i=0; i<altered.get().getColumns().size(); i++) {
+			ColumnDesign alterdCol = altered.get().getColumns().get(i);
+			Optional<ColumnDesign> baseCol = base.get().getColumns().stream()
+					.filter(col -> col.getName().equals(alterdCol.getName()))
+					.findFirst();
+			if(!baseCol.isPresent()) {
+				result.add(new AddColumn(alterdCol.getName(), alterdCol));
+			}
+		}
+		return result;
 	}
 
 	public static boolean applicable(Optional<TableDesign> base, Optional<TableDesign> altered) {
-		// TODO:
+		if(!base.isPresent() || !altered.isPresent()) {
+			return false;
+		}
+
+		for(int i=0; i<altered.get().getColumns().size(); i++) {
+			ColumnDesign alterdCol = altered.get().getColumns().get(i);
+			Optional<ColumnDesign> baseCol = base.get().getColumns().stream()
+					.filter(col -> col.getName().equals(alterdCol.getName()))
+					.findFirst();
+			if(!baseCol.isPresent()) {
+				return true;
+			}
+		}
 		return false;
 	}
 

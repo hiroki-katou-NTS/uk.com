@@ -8,6 +8,7 @@ import javax.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDateTime;
 
 @Getter
 @AllArgsConstructor
@@ -19,6 +20,12 @@ public class ScvmtErpColumnDesignPk implements Serializable {
 
 	@Column(name = "TABLE_ID")
 	public String tableId;
+
+	@Column(name = "FEATURE_ID")
+	private String featureId;
+
+	@Column(name = "DATETIME")
+	private GeneralDateTime datetime;
 
 	@Column(name = "ID")
 	public int id;

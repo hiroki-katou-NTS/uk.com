@@ -22,6 +22,8 @@ public class ColumnDesignBuilder {
 
 	private String check;
 
+	private int dispOrder;
+
 	public ColumnDesignBuilder(ColumnDesign base) {
 		this.id = base.getId();
 		this.name = base.getName();
@@ -37,6 +39,7 @@ public class ColumnDesignBuilder {
 		this.defaultValue = base.getDefaultValue();
 		this.comment = base.getComment();
 		this.check = base.getCheck();
+		this.dispOrder = base.getDispOrder();
 	}
 
 	public ColumnDesign build() {
@@ -44,17 +47,19 @@ public class ColumnDesignBuilder {
 				this.id,
 				this.name,
 				this.jpName,
-				this.type,
-				this.maxLength,
-				this.scale,
-				this.nullable,
+				new DefineColumnType(
+						this.type,
+						this.maxLength,
+						this.scale,
+						this.nullable,
+						this.defaultValue,
+						this.check),
 				this.primaryKey,
 				this.primaryKeySeq,
 				this.uniqueKey,
 				this.uniqueKeySeq,
-				this.defaultValue,
 				this.comment,
-				this.check);
+				this.dispOrder);
 	}
 
 	public ColumnDesignBuilder name(String name) {

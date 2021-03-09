@@ -9,23 +9,26 @@ import java.util.stream.Collectors;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.cnv.dom.td.tabledesign.ColumnDesign;
 import nts.uk.cnv.dom.td.tabledesign.ErpTableDesignRepository;
+import nts.uk.cnv.dom.td.tabledesign.Snapshot;
 import nts.uk.cnv.dom.td.tabledesign.TableDesign;
 import nts.uk.cnv.infra.td.entity.erptabledesign.ScvmtErpColumnDesign;
 import nts.uk.cnv.infra.td.entity.erptabledesign.ScvmtErpColumnDesignPk;
 import nts.uk.cnv.infra.td.entity.erptabledesign.ScvmtErpTableDesign;
+import nts.uk.cnv.infra.td.entity.erptabledesign.ScvmtErpTableDesignPk;
 
 public class JpaErpTableDesignRepository extends JpaRepository implements ErpTableDesignRepository {
 
 	@Override
-	public void insert(TableDesign tableDesign) {
-		this.commandProxy().insert(toEntity(tableDesign));
+	public void insert(Snapshot ss) {
+		this.commandProxy().insert(toEntity(ss));
 	}
 
 	@Override
-	public void update(TableDesign tableDesign) {
-		this.commandProxy().update(toEntity(tableDesign));
+	public void update(Snapshot ss) {
+		this.commandProxy().update(toEntity(ss));
 	}
 
 	@Override
@@ -37,24 +40,27 @@ public class JpaErpTableDesignRepository extends JpaRepository implements ErpTab
 		return result.isPresent();
 	}
 
-	private ScvmtErpTableDesign toEntity(TableDesign tableDesign) {
-		List<ScvmtErpColumnDesign> columns = tableDesign.getColumns().stream()
-				.map(cd -> toEntity(tableDesign.getId(), cd))
+	private ScvmtErpTableDesign toEntity(Snapshot ss) {
+		List<ScvmtErpColumnDesign> columns = ss.getColumns().stream()
+				.map(cd -> toEntity(ss.getId(), ss.getFeatureId(), ss.getDatetime(), cd))
 				.collect(Collectors.toList());
 
 		return new ScvmtErpTableDesign(
-				tableDesign.getId(),
-				tableDesign.getName(),
-				tableDesign.getJpName(),
-				tableDesign.getCreateDate(),
-				tableDesign.getUpdateDate(),
+				new ScvmtErpTableDesignPk(
+						ss.getId(),
+						ss.getFeatureId(),
+						ss.getDatetime()
+					),
+				ss.getName(),
+				ss.getJpName(),
 				columns);
 	}
 
-	private ScvmtErpColumnDesign toEntity(String tableId, ColumnDesign columnDesign) {
+	private ScvmtErpColumnDesign toEntity(String tableId, String featureId, GeneralDateTime datetime, ColumnDesign columnDesign) {
 		return new ScvmtErpColumnDesign(
-					new ScvmtErpColumnDesignPk(tableId, columnDesign.getId()),
+					new ScvmtErpColumnDesignPk(tableId, featureId, datetime, columnDesign.getId()),
 					columnDesign.getName(),
+					columnDesign.getJpName(),
 					columnDesign.getType().toString(),
 					columnDesign.getMaxLength(),
 					columnDesign.getScale(),
@@ -66,6 +72,7 @@ public class JpaErpTableDesignRepository extends JpaRepository implements ErpTab
 					columnDesign.getDefaultValue(),
 					columnDesign.getComment(),
 					columnDesign.getCheck(),
+					columnDesign.getDispOrder(),
 					null
 				);
 	}
@@ -78,7 +85,7 @@ public class JpaErpTableDesignRepository extends JpaRepository implements ErpTab
 				.getSingle();
 		if(!parent.isPresent()) return Optional.empty();
 
-		Optional<ScvmtErpTableDesign> result = this.queryProxy().find(parent.get().getTableId(), ScvmtErpTableDesign.class);
+		Optional<ScvmtErpTableDesign> result = this.queryProxy().find(parent.get().getPk(), ScvmtErpTableDesign.class);
 		if(!parent.isPresent()) return Optional.empty();
 
 		return Optional.of(result.get().toDomain());

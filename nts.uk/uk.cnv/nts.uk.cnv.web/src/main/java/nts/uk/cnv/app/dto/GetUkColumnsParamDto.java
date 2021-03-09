@@ -8,7 +8,7 @@ public class GetUkColumnsParamDto {
 	String category;
 	String tableId;
 	int recordNo;
-	private String branch;
+	private String feature;
 	private String date;
 
 	public GeneralDateTime getDateTime() {

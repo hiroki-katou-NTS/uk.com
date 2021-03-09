@@ -7,7 +7,6 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-import nts.arc.time.GeneralDateTime;
 import nts.uk.cnv.dom.td.tabledefinetype.DataType;
 import nts.uk.cnv.dom.td.tabledefinetype.DatabaseSpec;
 import nts.uk.cnv.dom.td.tabledefinetype.databasetype.DatabaseType;
@@ -92,16 +91,14 @@ public class TableDesignTest {
 	private TableDesign createDummy() {
 		List<ColumnDesign> cols = new ArrayList<>();
 		List<Indexes> indexes = new ArrayList<>();
-		cols.add(new ColumnDesign(0, "[COLUMN_NAME_1]", "", DataType.INT, 1, 0, false, true, 1, false, 0,
-				"", "[COLUMN_COMMENT]", "[CHECK]"));
-		cols.add(new ColumnDesign(0, "[COLUMN_NAME_2]", "", DataType.INT, 1, 0, false, true, 1, false, 0,
-				"", "[COLUMN_COMMENT]", "[CHECK]"));
+		DefineColumnType type = new DefineColumnType(DataType.INT, 1, 0, false, "[COLUMN_COMMENT]", "[CHECK]");
+		cols.add(new ColumnDesign(0, "[COLUMN_NAME_1]", "", type, true, 1, false, 0, "", 0));
+		cols.add(new ColumnDesign(1, "[COLUMN_NAME_2]", "", type, true, 1, false, 0, "", 1));
 		indexes.add(Indexes.createPk(new TableName("TABLE_NAME"), Arrays.asList("[COLUMN_NAME_1]"), true));
 		indexes.add(Indexes.createIndex("[INDEX_NAME]", Arrays.asList("[COLUMN_NAME_2]"), false, false));
 
 		return new TableDesign(
 					"[TABLE_ID]", "[TABLE_NAME]", "[TABLE_JPNAME]",
-					GeneralDateTime.now(), GeneralDateTime.now(),
 					cols,
 					indexes);
 	}

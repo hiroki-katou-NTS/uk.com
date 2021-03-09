@@ -7,7 +7,7 @@ import nts.arc.time.GeneralDate;
 public class ImportFromFileDto {
 	String path;
 	String type;
-	String branch;
+	String feature;
 	String date;
 
 	public GeneralDate getDate() {

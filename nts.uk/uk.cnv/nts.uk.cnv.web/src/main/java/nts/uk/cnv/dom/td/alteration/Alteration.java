@@ -20,6 +20,7 @@ public class Alteration {
 	AlterationMetaData metaData;
 	List<AlterationContent> contents;
 
+	/** 変更内容が空のおるたを作る **/
 	public static Alteration createEmpty(String tableName, AlterationMetaData metaData) {
 		return new Alteration(tableName, metaData, new ArrayList<>());
 	}

@@ -1,5 +1,7 @@
 package nts.uk.cnv.dom.td.alteration.content;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import lombok.EqualsAndHashCode;
@@ -18,13 +20,11 @@ public class ChangeColumnName extends AlterationContent {
 		this.afterName = afterName;
 	}
 
-	public static AlterationContent create(Optional<TableDesign> base, Optional<TableDesign> altered) {
-		// TODO:
-		return null;
+	public static List<AlterationContent> create(Optional<TableDesign> base, Optional<TableDesign> altered) {
+		return new ArrayList<>();
 	}
 
 	public static boolean applicable(Optional<TableDesign> base, Optional<TableDesign> altered) {
-		// TODO:
 		return false;
 	}
 

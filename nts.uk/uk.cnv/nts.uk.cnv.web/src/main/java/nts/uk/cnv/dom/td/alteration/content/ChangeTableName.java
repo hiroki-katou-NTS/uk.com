@@ -1,5 +1,7 @@
 package nts.uk.cnv.dom.td.alteration.content;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import lombok.EqualsAndHashCode;
@@ -16,14 +18,12 @@ public class ChangeTableName extends AlterationContent {
 		this.tableName = tableName;
 	}
 
-	public static AlterationContent create(Optional<TableDesign> base, Optional<TableDesign> altered) {
-		// TODO:
-		return null;
+	public static List<AlterationContent> create(Optional<TableDesign> base, Optional<TableDesign> altered) {
+		return Arrays.asList(new ChangeTableName(altered.get().getName()));
 	}
 
 	public static boolean applicable(Optional<TableDesign> base, Optional<TableDesign> altered) {
-		// TODO:
-		return false;
+		return (base.isPresent() && altered.isPresent() && !base.get().getName().equals(altered.get().getName()));
 	}
 
 	@Override

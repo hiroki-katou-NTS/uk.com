@@ -19,7 +19,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.JpaEntity;
-import nts.arc.time.GeneralDateTime;
 import nts.uk.cnv.dom.td.tabledesign.ColumnDesign;
 import nts.uk.cnv.dom.td.tabledesign.Indexes;
 import nts.uk.cnv.dom.td.tabledesign.TableDesign;
@@ -38,16 +37,10 @@ public class ScvmtUkTableDesign extends JpaEntity implements Serializable {
 	@Column(name = "NAME")
 	private String name;
 
-	@Column(name = "COMMENT")
-	private String comment;
+	@Column(name = "JPNAME")
+	private String jpName;
 
-	@Column(name = "CREATE_DATE")
-	private GeneralDateTime createDate;
-
-	@Column(name = "UPDATE_DATE")
-	public GeneralDateTime updateDate;
-
-	@OrderBy(value = "scvmtUkColumnDesignPk.id asc")
+	@OrderBy(value = "dispOrder asc")
 	@OneToMany(targetEntity = ScvmtUkColumnDesign.class, mappedBy = "tabledesign", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(name = "SCVMT_UK_COLUMN_DESIGN")
 	private List<ScvmtUkColumnDesign> columns;
@@ -85,6 +78,6 @@ public class ScvmtUkTableDesign extends JpaEntity implements Serializable {
 			));
 		}
 
-		return new TableDesign(name, pk.getTableId(), comment, createDate, updateDate, cols, idxs);
+		return new TableDesign(pk.getTableId(), name, jpName, cols, idxs);
 	}
 }

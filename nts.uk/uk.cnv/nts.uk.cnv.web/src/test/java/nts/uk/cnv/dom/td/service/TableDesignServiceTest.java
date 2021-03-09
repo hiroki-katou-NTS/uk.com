@@ -19,10 +19,10 @@ import nts.arc.time.GeneralDateTime;
 import nts.uk.cnv.dom.td.alteration.Alteration;
 import nts.uk.cnv.dom.td.alteration.AlterationMetaData;
 import nts.uk.cnv.dom.td.alteration.AlterationType;
-import nts.uk.cnv.dom.td.alteration.Feature;
 import nts.uk.cnv.dom.td.alteration.content.ChangeTableName;
 import nts.uk.cnv.dom.td.tabledefinetype.DataType;
 import nts.uk.cnv.dom.td.tabledesign.ColumnDesign;
+import nts.uk.cnv.dom.td.tabledesign.DefineColumnType;
 import nts.uk.cnv.dom.td.tabledesign.Indexes;
 import nts.uk.cnv.dom.td.tabledesign.Snapshot;
 import nts.uk.cnv.dom.td.tabledesign.TableDesign;
@@ -40,11 +40,11 @@ public class TableDesignServiceTest {
 	@Tested
 	private TableDesignService target;
 
-	private final String feature = "root";
+	private final String featureId = "root";
 	private final String userName = "ai_muto";
 	private final String tableName = "KRCDT_FOO_BAR";
 	private final AlterationMetaData meta = new AlterationMetaData(
-			new Feature(feature),
+			featureId,
 			userName,
 			"おるたこめんと"
 		);
@@ -54,10 +54,10 @@ public class TableDesignServiceTest {
 
 		Optional<TableDesign> base = createNewstSnapshot();
 		Alteration alt = Alteration.createEmpty(tableName, meta);
-		alt.getContents().add(AlterationType.TABLE_CREATE.createContent(Optional.empty(), base));
+		alt.getContents().addAll(AlterationType.TABLE_CREATE.createContent(Optional.empty(), base));
 
 		new Expectations() {{
-			require.getNewest((Feature) any);
+			require.getNewest((String) featureId);
 			result = Optional.empty();
 
 			require.getMetaData();
@@ -83,7 +83,7 @@ public class TableDesignServiceTest {
 		Optional<TableDesign> altered = createAltered(base, alt);
 
 		new Expectations() {{
-			require.getNewest((Feature) any);
+			require.getNewest((String) featureId);
 			result = createNewstSnapshot();
 
 			require.getMetaData();
@@ -117,14 +117,15 @@ public class TableDesignServiceTest {
 	private TableDesign createDummy() {
 		List<ColumnDesign> cols = new ArrayList<>();
 		List<Indexes> indexes = new ArrayList<>();
-		cols.add(new ColumnDesign(0, "SID", "社員ID", DataType.CHAR, 36, 0, false, true, 1, false, 0, "", "", ""));
-		cols.add(new ColumnDesign(1, "YMD", "年月日", DataType.DATE, 0, 0, false, true, 2, false, 0, "", "", ""));
+		DefineColumnType sidType = new DefineColumnType(DataType.CHAR, 36, 0, false, "", "");
+		DefineColumnType ymdType = new DefineColumnType(DataType.DATE, 0, 0, false, "", "");
+		cols.add(new ColumnDesign(0, "SID", "社員ID", sidType, true, 1, false, 0, "", 0));
+		cols.add(new ColumnDesign(1, "YMD", "年月日", ymdType, true, 2, false, 0, "", 1));
 		indexes.add(Indexes.createPk(new TableName(tableName), Arrays.asList("SID", "YMD"), true));
 		indexes.add(Indexes.createIndex("KRCDI_FOO_BAR", Arrays.asList("SID", "YMD"), false, false));
 
 		return new TableDesign(
 			"KRCDT_FOO_BAR", "KRCDT_FOO_BAR", "",
-			GeneralDateTime.now(), GeneralDateTime.now(),
 			cols,
 			indexes);
 	}

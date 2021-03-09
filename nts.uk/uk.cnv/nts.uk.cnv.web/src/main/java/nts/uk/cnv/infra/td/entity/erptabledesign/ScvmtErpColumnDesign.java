@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.JpaEntity;
 import nts.uk.cnv.dom.td.tabledefinetype.DataType;
 import nts.uk.cnv.dom.td.tabledesign.ColumnDesign;
+import nts.uk.cnv.dom.td.tabledesign.DefineColumnType;
 
 @Getter
 @Entity
@@ -31,6 +32,9 @@ public class ScvmtErpColumnDesign extends JpaEntity implements Serializable {
 
 	@Column(name = "NAME")
 	public String name;
+
+	@Column(name = "JPNAME")
+	public String jpName;
 
 	@Column(name = "DATA_TYPE")
 	private String dataType;
@@ -65,9 +69,14 @@ public class ScvmtErpColumnDesign extends JpaEntity implements Serializable {
 	@Column(name = "CHECK_CONSTRAINT")
 	private String check;
 
+	@Column(name = "DISPORDER")
+	private int dispOrder;
+
 	@ManyToOne
     @PrimaryKeyJoinColumns({
-    	@PrimaryKeyJoinColumn(name = "TABLE_ID", referencedColumnName = "TABLE_ID")
+    	@PrimaryKeyJoinColumn(name = "TABLE_ID", referencedColumnName = "TABLE_ID"),
+    	@PrimaryKeyJoinColumn(name = "FEATURE_ID", referencedColumnName = "FEATURE_ID"),
+    	@PrimaryKeyJoinColumn(name = "DATETIME", referencedColumnName = "DATETIME")
     })
 	public ScvmtErpTableDesign tabledesign;
 
@@ -80,18 +89,20 @@ public class ScvmtErpColumnDesign extends JpaEntity implements Serializable {
 		return new ColumnDesign(
 				scvmtErpColumnDesignPk.id,
 				name,
-				"",
-				DataType.valueOf(dataType),
-				maxLength,
-				scale,
-				(nullable == 1),
+				jpName,
+				new DefineColumnType(
+						DataType.valueOf(dataType),
+						maxLength,
+						scale,
+						(nullable == 1),
+						defaultValue,
+						check),
 				(primaryKey == 1),
 				primaryKeySeq,
 				(uniqueKey == 1),
 				uniqueKeySeq,
-				defaultValue,
 				comment,
-				check);
+				dispOrder);
 	}
 
 }

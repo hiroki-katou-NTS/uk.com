@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.arc.time.GeneralDateTime;
 import nts.uk.cnv.dom.constants.Constants;
 import nts.uk.cnv.dom.td.alteration.Alteration;
 import nts.uk.cnv.dom.td.tabledefinetype.TableDefineType;
@@ -18,8 +17,6 @@ public class TableDesign implements Cloneable {
 	private String id;
 	private String name;
 	private String jpName;
-	private GeneralDateTime createDate;
-	private GeneralDateTime updateDate;
 
 	private List<ColumnDesign> columns;
 	private List<Indexes> indexes;

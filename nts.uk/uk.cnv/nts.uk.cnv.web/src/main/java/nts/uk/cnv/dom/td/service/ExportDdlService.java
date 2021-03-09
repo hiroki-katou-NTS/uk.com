@@ -17,8 +17,8 @@ import nts.uk.cnv.dom.td.tabledesign.TableDesign;
 @Stateless
 public class ExportDdlService {
 
-	public String exportDdlAll(Require require, String type, boolean withComment, String branch, GeneralDateTime date) {
-		List<TableDesign> tableDesigns = require.findAll(branch, date);
+	public String exportDdlAll(Require require, String type, boolean withComment, String feature, GeneralDateTime date) {
+		List<TableDesign> tableDesigns = require.findAll(feature, date);
 
 		List<String> sql = tableDesigns.stream()
 				.map(td -> exportDdl(require, td, type, withComment).getDdl())
@@ -27,8 +27,8 @@ public class ExportDdlService {
 		return String.join("\r\n", sql);
 	}
 
-	public ExportDdlServiceResult exportDdl(Require require, String tableId, String type, boolean withComment, String branch, GeneralDateTime date) {
-		Optional<TableDesign> tableDesign = require.find(tableId, branch, date);
+	public ExportDdlServiceResult exportDdl(Require require, String tableId, String type, boolean withComment, String feature, GeneralDateTime date) {
+		Optional<TableDesign> tableDesign = require.find(tableId, feature, date);
 		if(!tableDesign.isPresent()) {
 			throw new BusinessException(new RawErrorMessage("定義が見つかりません：" + tableId));
 		}
@@ -58,8 +58,8 @@ public class ExportDdlService {
 	}
 
 	public interface Require {
-		List<TableDesign> findAll(String branch, GeneralDateTime date);
-		Optional<TableDesign> find(String tablename, String branch, GeneralDateTime date);
+		List<TableDesign> findAll(String feature, GeneralDateTime date);
+		Optional<TableDesign> find(String tablename, String feature, GeneralDateTime date);
 
 	}
 }

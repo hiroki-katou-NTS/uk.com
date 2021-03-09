@@ -12,14 +12,14 @@ import nts.gul.text.IdentifierUtil;
 @EqualsAndHashCode
 public class AlterationMetaData {
 	String alterID;
-	Feature feature;
+	String featureId;
 	GeneralDateTime time;
 	String userName;
 	String comment;
 
-	public AlterationMetaData(Feature feature, String userName, String comment) {
+	public AlterationMetaData(String featureId, String userName, String comment) {
 		this.alterID = IdentifierUtil.randomUniqueId();
-		this.feature = feature;
+		this.featureId = featureId;
 		this.time = GeneralDateTime.now();
 		this.userName = userName;
 		this.comment = comment;

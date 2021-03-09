@@ -30,7 +30,7 @@ public class UkTableDesignImportCommandHandler extends CommandHandler<UkTableDes
 			AtomTask at;
 			try {
 				at = DDLImportService.regist(
-						command.getBranch(), command.getDate(),
+						command.getFeature(), command.getDate(),
 						require, command.getCreateTableSql(), command.getCreateIndexSql(), command.getCommentSql(), command.getType());
 			} catch (JSQLParserException e) {
 				throw new BusinessException(new RawErrorMessage("SQL文解析に失敗しました：" + e.getCause().toString()));

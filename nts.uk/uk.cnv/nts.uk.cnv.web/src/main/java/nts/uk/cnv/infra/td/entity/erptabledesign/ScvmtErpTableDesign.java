@@ -7,9 +7,9 @@ import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
@@ -19,8 +19,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.JpaEntity;
-import nts.arc.time.GeneralDateTime;
 import nts.uk.cnv.dom.td.tabledesign.ColumnDesign;
+import nts.uk.cnv.dom.td.tabledesign.Snapshot;
 import nts.uk.cnv.dom.td.tabledesign.TableDesign;
 
 @Getter
@@ -31,37 +31,34 @@ import nts.uk.cnv.dom.td.tabledesign.TableDesign;
 public class ScvmtErpTableDesign extends JpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@Id
-	@Column(name = "TABLE_ID")
-	private String tableId;
+	@EmbeddedId
+	public ScvmtErpTableDesignPk pk;
 
 	@Column(name = "NAME")
 	private String name;
 
-	@Column(name = "COMMENT")
-	private String comment;
+	@Column(name = "JPNAME")
+	private String jpName;
 
-	@Column(name = "CREATE_DATE")
-	private GeneralDateTime createDate;
-
-	@Column(name = "UPDATE_DATE")
-	public GeneralDateTime updateDate;
-
-	@OrderBy(value = "scvmtErpColumnDesignPk.id asc")
+	@OrderBy(value = "dispOrder asc")
 	@OneToMany(targetEntity = ScvmtErpColumnDesign.class, mappedBy = "tabledesign", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(name = "SCVMT_ERP_COLUMN_DESIGN")
 	private List<ScvmtErpColumnDesign> columns;
 
 	@Override
 	protected Object getKey() {
-		return name;
+		return pk;
 	}
 
-	public TableDesign toDomain() {
+	public Snapshot toDomain() {
 		List<ColumnDesign> cols = columns.stream()
 				.map(col -> col.toDomain())
 				.collect(Collectors.toList());
 
-		return new TableDesign(tableId, name, comment, createDate, updateDate, cols, new ArrayList<>());
+		return new Snapshot(
+					pk.getFeatureId(),
+					pk.getDatetime(),
+					new TableDesign(pk.getTableId(), name, jpName, cols, new ArrayList<>())
+				);
 	}
 }

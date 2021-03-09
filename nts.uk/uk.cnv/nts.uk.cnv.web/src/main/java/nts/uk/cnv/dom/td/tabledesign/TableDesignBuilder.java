@@ -9,38 +9,25 @@ import java.util.Optional;
 import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
-import nts.arc.time.GeneralDateTime;
 import nts.uk.cnv.dom.td.tabledefinetype.DataType;
 
 public class TableDesignBuilder {
 	private String id;
 	private String name;
 	private String jpName;
-	private GeneralDateTime createDate;
-	private GeneralDateTime updateDate;
 
-	//private List<ColumnDesign> columns;
 	private List<Indexes> indexes;
 
 	public Map<String, ColumnDesignBuilder> colmnBuilder;
 
 	public boolean isRemoved;
 
-//	private TableDesignBuilder() {
-//		this.isRemoved = true;
-//	}
-
 	public TableDesignBuilder(TableDesign base) {
 		this.id = base.getId();
 		this.name = base.getName();
 		this.jpName = base.getJpName();
-		this.createDate = GeneralDateTime.localDateTime(base.getCreateDate().localDateTime());
-		this.updateDate = GeneralDateTime.localDateTime(base.getUpdateDate().localDateTime());
-
-		//this.columns = new ArrayList<>();
 		this.colmnBuilder = new HashMap<>();
 		base.getColumns().stream().forEach(col -> {
-			//this.columns.add(col);
 			colmnBuilder.put(col.getName(), new ColumnDesignBuilder(col));
 		});
 
@@ -68,8 +55,6 @@ public class TableDesignBuilder {
 				this.id,
 				this.name,
 				this.jpName,
-				this.createDate,
-				this.updateDate,
 				newColumns,
 				newIndexes
 			));
@@ -95,24 +80,6 @@ public class TableDesignBuilder {
 		checkBeforeChangeTable();
 
 		this.jpName = jpName;
-		return this;
-	}
-
-//	public TableDesignBuilder id(String id) {
-//		this.id = id;
-//		return this;
-//	}
-
-	public TableDesignBuilder createDate(GeneralDateTime createDate) {
-		checkBeforeChangeTable();
-
-		this.createDate = createDate;
-		return this;
-	}
-
-	public TableDesignBuilder updateDate(GeneralDateTime updateDate) {
-		checkBeforeChangeTable();
-		this.updateDate = updateDate;
 		return this;
 	}
 
@@ -201,16 +168,6 @@ public class TableDesignBuilder {
 		return this;
 	}
 
-//	public TableDesignBuilder columnPk(String columnName, boolean isPrimaryKey, int seq) {
-//		this.colmnBuilder.get(columnName).pk(isPrimaryKey, seq);
-//		return this;
-//	}
-
-//	public TableDesignBuilder columnUk(String columnName, boolean isUniqueKey, int seq) {
-//		this.colmnBuilder.get(columnName).uk(isUniqueKey, seq);
-//		return this;
-//	}
-
 	public TableDesignBuilder columnDefaultValue(String columnName, String defaultValue) {
 		this.colmnBuilder.get(columnName).defaultValue(defaultValue);
 		return this;
@@ -232,13 +189,6 @@ public class TableDesignBuilder {
 		this.colmnBuilder.remove(columnName);
 		return this;
 	}
-
-//	public TableDesignBuilder indexes(List<Indexes> indexes) {
-//		this.indexes = new ArrayList<Indexes>();
-//		indexes.stream().forEach(idx -> this.indexes.add(idx));
-//		return this;
-//	}
-
 
 	private void checkBeforeChangeTable() {
 		if (this.isRemoved) {

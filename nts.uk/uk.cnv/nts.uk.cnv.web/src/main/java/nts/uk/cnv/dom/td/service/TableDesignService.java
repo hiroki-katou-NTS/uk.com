@@ -8,7 +8,6 @@ import javax.inject.Inject;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.cnv.dom.td.alteration.Alteration;
 import nts.uk.cnv.dom.td.alteration.AlterationMetaData;
-import nts.uk.cnv.dom.td.alteration.Feature;
 import nts.uk.cnv.dom.td.tabledesign.TableDesign;
 
 @Stateless
@@ -23,7 +22,7 @@ public class TableDesignService {
 			Optional<TableDesign> altered) {
 
 		AlterationMetaData meta = require.getMetaData();
-		Optional<TableDesign> newest = require.getNewest(meta.getFeature());
+		Optional<TableDesign> newest = require.getNewest(meta.getFeatureId());
 		Alteration alt = factory.create(tableName, meta, newest, altered);
 
 		return AtomTask.of(() ->{
@@ -33,7 +32,7 @@ public class TableDesignService {
 
 	public interface Require {
 		/** 最新のスナップショットを取得 */
-		Optional<TableDesign> getNewest(Feature feature);
+		Optional<TableDesign> getNewest(String featureId);
 		AlterationMetaData getMetaData();
 		void add(Alteration alt);
 	}

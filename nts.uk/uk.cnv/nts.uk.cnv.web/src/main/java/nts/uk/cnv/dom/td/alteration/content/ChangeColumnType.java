@@ -1,10 +1,13 @@
 package nts.uk.cnv.dom.td.alteration.content;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import lombok.EqualsAndHashCode;
 import nts.uk.cnv.dom.td.alteration.AlterationType;
-import nts.uk.cnv.dom.td.tabledefinetype.DefineColumnType;
+import nts.uk.cnv.dom.td.tabledesign.ColumnDesign;
+import nts.uk.cnv.dom.td.tabledesign.DefineColumnType;
 import nts.uk.cnv.dom.td.tabledesign.TableDesign;
 import nts.uk.cnv.dom.td.tabledesign.TableDesignBuilder;
 
@@ -19,13 +22,42 @@ public class ChangeColumnType extends AlterationContent {
 		this.afterType = afterType;
 	}
 
-	public static AlterationContent create(Optional<TableDesign> base, Optional<TableDesign> altered) {
-		// TODO:
-		return null;
+	public static List<AlterationContent> create(Optional<TableDesign> base, Optional<TableDesign> altered) {
+		List<AlterationContent> result = new ArrayList<>();
+		for(int i=0; i<altered.get().getColumns().size(); i++) {
+			ColumnDesign alterdCol = altered.get().getColumns().get(i);
+			Optional<ColumnDesign> baseCol = base.get().getColumns().stream()
+					.filter(col -> col.getName().equals(alterdCol.getName()))
+					.findFirst();
+			if(baseCol.isPresent() && diff(baseCol.get(), alterdCol)) {
+				result.add(new ChangeColumnType(
+						baseCol.get().getName(),
+						new DefineColumnType(
+							alterdCol.getType(),
+							alterdCol.getMaxLength(),
+							alterdCol.getScale(),
+							alterdCol.isNullable(),
+							alterdCol.getDefaultValue(),
+							alterdCol.getCheck()
+						)));
+			}
+		}
+		return result;
 	}
 
 	public static boolean applicable(Optional<TableDesign> base, Optional<TableDesign> altered) {
-		// TODO:
+		if(!base.isPresent() || !altered.isPresent()) {
+			return false;
+		}
+		for(int i=0; i<altered.get().getColumns().size(); i++) {
+			ColumnDesign alterdCol = altered.get().getColumns().get(i);
+			Optional<ColumnDesign> baseCol = base.get().getColumns().stream()
+					.filter(col -> col.getName().equals(alterdCol.getName()))
+					.findFirst();
+			if(baseCol.isPresent() && diff(baseCol.get(), alterdCol)) {
+				return true;
+			}
+		}
 		return false;
 	}
 
@@ -37,5 +69,14 @@ public class ChangeColumnType extends AlterationContent {
 				this.afterType.getLength(),
 				this.afterType.getScale(),
 				this.afterType.isNullable());
+	}
+
+	private static boolean diff(ColumnDesign baseCol, ColumnDesign alterdCol) {
+		return !baseCol.getType().equals(alterdCol.getType()) ||
+				baseCol.getMaxLength() != alterdCol.getMaxLength() ||
+				baseCol.getScale() != alterdCol.getScale() ||
+				baseCol.isNullable() != alterdCol.isNullable() ||
+				!baseCol.getDefaultValue().equals(alterdCol.getDefaultValue()) ||
+				!baseCol.getCheck().equals(alterdCol.getCheck());
 	}
 }

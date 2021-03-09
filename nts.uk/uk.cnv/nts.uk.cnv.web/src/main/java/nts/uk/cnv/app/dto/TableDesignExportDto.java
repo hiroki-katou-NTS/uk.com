@@ -12,7 +12,7 @@ public class TableDesignExportDto {
 	String tableName;
 	String type;
 	boolean withComment;
-	private String branch;
+	private String feature;
 	private String date;
 
 	public GeneralDateTime getDateTime() {

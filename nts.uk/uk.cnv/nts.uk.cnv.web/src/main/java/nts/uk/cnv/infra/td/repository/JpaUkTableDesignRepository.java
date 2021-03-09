@@ -60,14 +60,14 @@ public class JpaUkTableDesignRepository extends JpaRepository implements UkTable
 
 		List<ScvmtUkIndexDesign> indexes = new ArrayList<>();
 		for (Indexes idx: tableDesign.getIndexes()) {
-			List<ScvmtUkIndexColumns> indexcolumns = idx.getColmns().stream()
+			List<ScvmtUkIndexColumns> indexcolumns = idx.getColumns().stream()
 				.map(col -> new ScvmtUkIndexColumns(
 						new ScvmtUkIndexColumnsPk(
 								tableDesign.getId(),
-								tableDesign.getFeature().v(),
-								tableDesign.getTime(),
+								tableDesign.getFeatureId(),
+								tableDesign.getDatetime(),
 								idx.getName(),
-								idx.getColmns().indexOf(col),
+								idx.getColumns().indexOf(col),
 								col),
 						null)
 					)
@@ -75,11 +75,11 @@ public class JpaUkTableDesignRepository extends JpaRepository implements UkTable
 
 			indexes.add(new ScvmtUkIndexDesign(
 					new ScvmtUkIndexDesignPk(
-							tableDesign.getId(), tableDesign.getFeature().v(), tableDesign.getTime(), idx.getName()),
+							tableDesign.getId(), tableDesign.getFeatureId(), tableDesign.getDatetime(), idx.getName()),
 					idx.getConstraintType(),
 					String.join(",", idx.getParams()),
-					idx.getClustered(),
-					idx.getUnique(),
+					idx.isClustered(),
+					idx.isUnique(),
 					indexcolumns,
 					null
 			));
@@ -88,12 +88,10 @@ public class JpaUkTableDesignRepository extends JpaRepository implements UkTable
 		return new ScvmtUkTableDesign(
 				new ScvmtUkTableDesignPk(
 					tableDesign.getId(),
-					tableDesign.getFeature().v(),
-					tableDesign.getTime()),
+					tableDesign.getFeatureId(),
+					tableDesign.getDatetime()),
 				tableDesign.getName(),
 				tableDesign.getJpName(),
-				tableDesign.getCreateDate(),
-				tableDesign.getUpdateDate(),
 				columns,
 				indexes);
 	}
@@ -102,10 +100,11 @@ public class JpaUkTableDesignRepository extends JpaRepository implements UkTable
 		return new ScvmtUkColumnDesign(
 					new ScvmtUkColumnDesignPk(
 							tableDesign.getId(),
-							tableDesign.getFeature().v(),
-							tableDesign.getTime(),
+							tableDesign.getFeatureId(),
+							tableDesign.getDatetime(),
 							columnDesign.getId()),
 					columnDesign.getName(),
+					columnDesign.getJpName(),
 					columnDesign.getType().toString(),
 					columnDesign.getMaxLength(),
 					columnDesign.getScale(),
@@ -117,40 +116,41 @@ public class JpaUkTableDesignRepository extends JpaRepository implements UkTable
 					columnDesign.getDefaultValue(),
 					columnDesign.getComment(),
 					columnDesign.getCheck(),
+					columnDesign.getDispOrder(),
 					null
 				);
 	}
 
 	@Override
 	@SneakyThrows
-	public Optional<TableDesign> findByKey(String tableId, String branch, GeneralDateTime date) {
-		Optional<ScvmtUkTableDesign> result = find(tableId, branch, date);
+	public Optional<TableDesign> findByKey(String tableId, String feature, GeneralDateTime date) {
+		Optional<ScvmtUkTableDesign> result = find(tableId, feature, date);
 		return Optional.of(result.get().toDomain());
 	}
 
-	private Optional<ScvmtUkTableDesign> find(String tableId, String branch, GeneralDateTime date) {
+	private Optional<ScvmtUkTableDesign> find(String tableId, String feature, GeneralDateTime date) {
 		return this.queryProxy().find(
-				new ScvmtUkTableDesignPk(tableId, branch, date),
+				new ScvmtUkTableDesignPk(tableId, feature, date),
 				ScvmtUkTableDesign.class);
 	}
 
 	@Override
-	public List<GetUkTablesResultDto> getAllTableList(String branch, GeneralDateTime date) {
-		return getAll(branch, date).stream()
+	public List<GetUkTablesResultDto> getAllTableList(String feature, GeneralDateTime date) {
+		return getAll(feature, date).stream()
 			.map(td -> new GetUkTablesResultDto(td.getId(), td.getName()))
 			.collect(Collectors.toList());
 	}
 
 	@Override
-	public List<TableDesign> getAll(String branch, GeneralDateTime date) {
+	public List<TableDesign> getAll(String feature, GeneralDateTime date) {
 		String sql;
 		List<ScvmtUkTableDesign> list;
-		if (branch != null && !branch.isEmpty()) {
+		if (feature != null && !feature.isEmpty()) {
 			sql = "SELECT td FROM ScvmtUkTableDesign td"
-				+ " WHERE td.pk.branch = :branch"
+				+ " WHERE td.pk.feature = :feature"
 				+ " AND   td.pk.date = :date";
 			list = this.queryProxy().query(sql, ScvmtUkTableDesign.class)
-					.setParameter("branch", branch)
+					.setParameter("feature", feature)
 					.setParameter("date", date)
 					.getList();
 		}
@@ -176,7 +176,7 @@ public class JpaUkTableDesignRepository extends JpaRepository implements UkTable
 	public List<TableDesign> getByTableName(String tablename) {
 		String sql = "SELECT td FROM ScvmtUkTableDesign td "
 				+ " WHERE td.name = :name"
-				+ " ORDER BY td.pk.branch, td.pk.date DESC";
+				+ " ORDER BY td.pk.feature, td.pk.date DESC";
 		List<TableDesign> result = this.queryProxy().query(sql, ScvmtUkTableDesign.class)
 				.setParameter("name", tablename)
 				.getList(rec -> rec.toDomain());

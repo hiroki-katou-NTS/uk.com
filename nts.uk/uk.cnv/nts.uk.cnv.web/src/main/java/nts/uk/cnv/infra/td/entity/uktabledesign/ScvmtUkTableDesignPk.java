@@ -21,10 +21,10 @@ public class ScvmtUkTableDesignPk implements Serializable {
 	@Column(name = "TABLE_ID")
 	private String tableId;
 
-	@Column(name = "BRANCH")
-	private String branch;
+	@Column(name = "FEATURE_ID")
+	private String featureId;
 
-	@Column(name = "DATE")
-	private GeneralDateTime date;
+	@Column(name = "DATETIME")
+	private GeneralDateTime datetime;
 
 }

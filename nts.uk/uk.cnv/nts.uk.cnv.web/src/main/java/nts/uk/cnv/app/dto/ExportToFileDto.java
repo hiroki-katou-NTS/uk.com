@@ -9,7 +9,7 @@ public class ExportToFileDto {
 	String type;
 	boolean withComment;
 	boolean oneFile;
-	private String branch;
+	private String feature;
 	private String date;
 
 	public GeneralDateTime getDateTime() {

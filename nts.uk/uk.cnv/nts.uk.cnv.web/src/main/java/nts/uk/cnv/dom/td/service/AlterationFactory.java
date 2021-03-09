@@ -31,7 +31,7 @@ public class AlterationFactory {
 		Arrays.stream(AlterationType.values())
 			.forEach(type -> {
 				if(type.applicable(base, altered)) {
-					result.getContents().add(type.createContent(base, altered));
+					result.getContents().addAll(type.createContent(base, altered));
 				}
 			});
 

@@ -5,8 +5,8 @@ import java.util.Optional;
 
 public interface ErpTableDesignRepository {
 
-	void insert(TableDesign tableDesign);
-	void update(TableDesign tableDesign);
+	void insert(Snapshot ss);
+	void update(Snapshot ss);
 	boolean exists(String tableName);
 
 	Optional<TableDesign> find(String tablename);

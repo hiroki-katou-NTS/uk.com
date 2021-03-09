@@ -10,7 +10,7 @@ public class UkTableDesignImportCommand {
 	private String createIndexSql;
 	private String commentSql;
 	private String type;
-	private String branch;
+	private String feature;
 	private String date;
 
 	public GeneralDate getDate() {

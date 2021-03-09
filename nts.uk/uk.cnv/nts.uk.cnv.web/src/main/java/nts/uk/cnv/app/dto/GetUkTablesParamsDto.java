@@ -9,7 +9,7 @@ import nts.arc.time.GeneralDateTime;
 @AllArgsConstructor
 @Data
 public class GetUkTablesParamsDto {
-	private String branch;
+	private String feature;
 	private String date;
 
 	public GeneralDateTime getDateTime() {

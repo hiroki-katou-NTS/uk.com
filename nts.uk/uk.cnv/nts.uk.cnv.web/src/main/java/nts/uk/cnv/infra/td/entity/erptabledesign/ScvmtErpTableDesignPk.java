@@ -1,4 +1,4 @@
-package nts.uk.cnv.infra.td.entity.uktabledesign;
+package nts.uk.cnv.infra.td.entity.erptabledesign;
 
 import java.io.Serializable;
 
@@ -10,24 +10,21 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDateTime;
 
-@Getter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
+@Getter
 @Embeddable
-public class ScvmtUkColumnDesignPk implements Serializable {
+public class ScvmtErpTableDesignPk implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@Column(name = "TABLE_ID")
-	public String tableId;
+	private String tableId;
 
 	@Column(name = "FEATURE_ID")
 	private String featureId;
 
 	@Column(name = "DATETIME")
 	private GeneralDateTime datetime;
-
-	@Column(name = "ID")
-	public int id;
 
 }
