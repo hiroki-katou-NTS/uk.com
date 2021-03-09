@@ -10,7 +10,7 @@ import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimateTargetClassification;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.numberofday.EstimateNumberOfDaySetMemento;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.numberofday.MonthlyEstimateNumberOfDay;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.numberofday.YearlyEstimateNumberOfDay;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstDaysEmpSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstDaysEmp;
 import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstDaysEmpSetPK;
 
 /**
@@ -19,14 +19,14 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstDay
 public class JpaEmpEstDaysSetMemento implements EstimateNumberOfDaySetMemento {
 	
 	/** The estimate days employment. */
-	private KscmtEstDaysEmpSet estimateDaysEmployment;
+	private KscmtEstDaysEmp estimateDaysEmployment;
 	
 	/**
 	 * Instantiates a new jpa Employment estimate number of day set memento.
 	 *
 	 * @param estimateDaysEmployment the estimate days Employment
 	 */
-	public JpaEmpEstDaysSetMemento(KscmtEstDaysEmpSet estimateDaysEmployment) {
+	public JpaEmpEstDaysSetMemento(KscmtEstDaysEmp estimateDaysEmployment) {
 		if(estimateDaysEmployment.getKscmtEstDaysEmpSetPK() == null){
 			estimateDaysEmployment.setKscmtEstDaysEmpSetPK(new KscmtEstDaysEmpSetPK());
 		}

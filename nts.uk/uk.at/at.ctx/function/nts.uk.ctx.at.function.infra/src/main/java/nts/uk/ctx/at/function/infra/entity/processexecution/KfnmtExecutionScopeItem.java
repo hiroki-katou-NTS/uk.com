@@ -1,15 +1,15 @@
 package nts.uk.ctx.at.function.infra.entity.processexecution;
 
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name="KFNMT_EXEC_SCOPE_ITEM")
+@Table(name="KFNMT_AUTOEXEC_SCOPE_ITEM")
 @NoArgsConstructor
-public class KfnmtExecutionScopeItem extends UkJpaEntity implements Serializable{
+public class KfnmtExecutionScopeItem extends ContractUkJpaEntity implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 
@@ -23,7 +23,7 @@ public class KfnmtExecutionScopeItem extends UkJpaEntity implements Serializable
 	@JoinColumns({
 		@JoinColumn(name="CID", referencedColumnName="CID", insertable = false, updatable = false),
 		@JoinColumn(name="EXEC_ITEM_CD", referencedColumnName="EXEC_ITEM_CD", insertable = false, updatable = false)})
-	public KfnmtExecutionScope execScope;
+	public KfnmtAutoexecScope execScope;
 
 	/**
 	 * Gets primary key.

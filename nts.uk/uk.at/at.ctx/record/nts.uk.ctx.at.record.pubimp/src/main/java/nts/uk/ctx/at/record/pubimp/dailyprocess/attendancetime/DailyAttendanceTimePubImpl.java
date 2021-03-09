@@ -92,15 +92,8 @@ public class DailyAttendanceTimePubImpl implements DailyAttendanceTimePub{
 	 */
 	private List<IntegrationOfDaily> calcDailyAttendanceTime(DailyAttendanceTimePubImport imp) {
 
-		if(imp.getEmployeeid() == null || imp.getYmd() == null || imp.getLstTimeZone().isEmpty() || imp.getWorkTypeCode() == null)
+		if(imp.getEmployeeid() == null || imp.getYmd() == null || imp.getTimeZoneMap().isEmpty() || imp.getWorkTypeCode() == null)
 			return Collections.emptyList();
-		
-		//時間帯の作成
-		Map<Integer, TimeZone> timeZoneMap = new HashMap<Integer, TimeZone>();
-		for(int i = 0;i<imp.getLstTimeZone().size();i++) {
-			TimeZone timeZone = imp.getLstTimeZone().get(i);
-			timeZoneMap.put(i+1, timeZone);
-		}
 		
 		//休憩時間帯の作成
 		List<BreakTimeSheet> breakTimeSheets = new ArrayList<>();
@@ -174,7 +167,7 @@ public class DailyAttendanceTimePubImpl implements DailyAttendanceTimePub{
                 new PrevisionalForImp(
                         imp.getEmployeeid(),
                         imp.getYmd(),
-                        timeZoneMap,
+                        imp.getTimeZoneMap(),
                         imp.getWorkTypeCode(),
                         imp.getWorkTimeCode(),
                         breakTimeSheets,

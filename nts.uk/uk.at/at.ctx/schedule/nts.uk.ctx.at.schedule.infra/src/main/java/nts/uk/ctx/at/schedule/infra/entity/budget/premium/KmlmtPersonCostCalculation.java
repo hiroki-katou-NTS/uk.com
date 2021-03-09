@@ -3,7 +3,7 @@ package nts.uk.ctx.at.schedule.infra.entity.budget.premium;
 
 import lombok.*;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostCalculation;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -14,10 +14,10 @@ import java.io.Serializable;
 @Getter
 @Setter
 @Entity
-@Table(name = "KMLMT_COST_CALC_SET")
+@Table(name = "KSCMT_PER_COST_CALC")
 @AllArgsConstructor
 @NoArgsConstructor
-public class KmlmtPersonCostCalculation extends UkJpaEntity implements Serializable {
+public class KmlmtPersonCostCalculation extends ContractUkJpaEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

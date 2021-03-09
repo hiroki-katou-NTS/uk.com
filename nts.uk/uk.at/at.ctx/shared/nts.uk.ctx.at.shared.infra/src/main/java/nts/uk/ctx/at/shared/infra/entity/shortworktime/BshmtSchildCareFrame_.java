@@ -10,9 +10,9 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class BshmtSchildCareFrame_.
  */
-@StaticMetamodel(BshmtSchildCareFrame.class)
+@StaticMetamodel(KshmtShorttimeTs.class)
 public class BshmtSchildCareFrame_ {
 
 	/** The bshmt schild care frame PK. */
-	public static SingularAttribute<BshmtSchildCareFrame, BshmtSchildCareFramePK> bshmtSchildCareFramePK;
+	public static SingularAttribute<KshmtShorttimeTs, BshmtSchildCareFramePK> bshmtSchildCareFramePK;
 }
