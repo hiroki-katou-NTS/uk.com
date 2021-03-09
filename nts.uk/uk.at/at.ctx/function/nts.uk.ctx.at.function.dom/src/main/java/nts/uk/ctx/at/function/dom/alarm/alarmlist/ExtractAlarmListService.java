@@ -75,7 +75,7 @@ public class ExtractAlarmListService {
 
 	}
 	/**
-	 * アラームリストを出力する
+	 * アラームリストを出力する (削除する予定）
 	 * @param listEmployee
 	 * @param periodByCategory
 	 * @param eralCate

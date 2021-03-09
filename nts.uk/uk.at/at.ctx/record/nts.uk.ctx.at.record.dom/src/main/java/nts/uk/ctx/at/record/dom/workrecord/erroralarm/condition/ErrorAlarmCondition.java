@@ -449,8 +449,10 @@ public class ErrorAlarmCondition extends AggregateRoot {
 	 */
 	public List<WorkTypeCode> getWorkType() {
 		if (workTypeCondition.getComparePlanAndActual().value != FilterByCompare.SELECTED.value) {
+			if(((PlanActualWorkType)workTypeCondition).getWorkTypeActual() == null || ((PlanActualWorkType)workTypeCondition).isUse() == false) return new ArrayList<>();
 			return ((PlanActualWorkType)workTypeCondition).getWorkTypeActual().getLstWorkType();
 		} else if(workTypeCondition.getComparePlanAndActual().value != FilterByCompare.NOT_SELECTED.value) {
+			if(((SingleWorkType)workTypeCondition).getTargetWorkType() == null) return new ArrayList<>();
 			return ((SingleWorkType)workTypeCondition).getTargetWorkType().getLstWorkType();
 		}else {
 			return new ArrayList<>();
