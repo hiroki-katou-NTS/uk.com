@@ -1,5 +1,5 @@
 .top-panel {
-	padding: 10px 0 20px 10px;
+	padding: 10px;
 }
 
 .top-panel>div:first-child {
@@ -24,11 +24,6 @@
 	margin-left: 30px;
 }
 
-.footer-content {
-	padding-top: 40px;
-	text-align: center;
-}
-
 #master-wrapper div#contents-area{
 	padding: 0 !important;
 }
@@ -38,7 +33,7 @@
 }
 
 .btn-footer{
-	margin: 0 35px;
+	margin: 10px 35px;
 	padding: 0 20px;
 }
 

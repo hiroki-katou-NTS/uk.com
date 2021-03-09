@@ -14,7 +14,7 @@
 			<script type='text/javascript'>
 				var dialogSize = {
 					width : 610,
-					height : 360
+					height : 450
 				};
 			</script>
 
@@ -39,9 +39,9 @@
 							name: '#[KDP003_60]',
 							maxRange: 'none'}"></div>
 					<!-- Q2_3 更新日 -->
-					<div id="update-date">
+					<!-- <div id="update-date"> -->
 						<label id="lbl-update-date" data-bind="text: updateDate"></label>
-					</div>
+					<!-- </div> -->
 				</div>
 				<!-- Q3メッセージ -->
 				<div id="txt-area-notice">
@@ -62,18 +62,18 @@
 				<!-- Q4_2 対象職場 -->
 				<span data-bind="text: workPlaceTxtRefer"></span>
 			</div>
-			<div id="functions-area-bottom" style="border-top: none;">
+			<div id="functions-area-bottom">
 				<!-- Q20_1 登録 -->
-				<button tabindex="3" class="btn-footer proceed normal left  ml-30"
+				<button tabindex="3" class="btn-footer proceed normal left"
 					data-bind="click: onClickRegister, i18n: 'KDP003_63'"></button>
 				<!-- Q20_2 削除 -->
-				<button tabindex="4" class="btn-footer danger normal ml-15"
+				<button tabindex="4" class="btn-footer danger normal	"
 					data-bind="click: onClickDelete, i18n: 'KDP003_64', enable: isActiveDelete"></button>
 				<!-- Q20_3 職場選択 -->
 				<button tabindex="5" class="btn-footer normal"
 					data-bind="click: openKDP003KDialog, i18n: 'KDP003_65', enable: isActiveWorkplaceBtn, visible: isActiveWorkplaceBtn"></button>
 				<!-- Q20_4 戻る -->
-				<button tabindex="6" class="btn-footer normal right  mr-30"
+				<button tabindex="6" class="btn-footer normal right"
 					data-bind="click: returnP, i18n: 'KDP003_66'"></button>
 			</div>
 		</ui:define>
