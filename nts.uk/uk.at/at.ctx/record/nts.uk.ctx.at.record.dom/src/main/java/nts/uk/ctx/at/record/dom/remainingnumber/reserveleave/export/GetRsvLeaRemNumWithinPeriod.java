@@ -111,13 +111,13 @@ public class GetRsvLeaRemNumWithinPeriod {
 
 		// 積立年休付与残数データ　取得
 		List<ReserveLeaveGrantRemainingData> rsvGrantRemainingDatas = new ArrayList<>();
-		if (monthlyCalcDailys.isPresent()){
-			rsvGrantRemainingDatas = monthlyCalcDailys.get().getRsvGrantRemainingDatas();
-		}
-		else {
+//		if (monthlyCalcDailys.isPresent()){
+//			rsvGrantRemainingDatas = monthlyCalcDailys.get().getRsvGrantRemainingDatas();
+//		}
+//		else {
 			rsvGrantRemainingDatas =
 					require.reserveLeaveGrantRemainingData(employeeId, null);
-		}
+//		}
 
 		// 集計開始日時点の積立年休情報を作成
 		ReserveLeaveInfo reserveLeaveInfo = createInfoAsOfPeriodStart(

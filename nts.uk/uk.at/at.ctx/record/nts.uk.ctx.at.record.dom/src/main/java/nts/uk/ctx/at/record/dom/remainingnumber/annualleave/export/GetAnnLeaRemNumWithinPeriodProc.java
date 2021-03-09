@@ -21,6 +21,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrRes
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggregatePeriodWork;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.DividedDayEachProcess;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.GrantPeriodAtr;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveInfo;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
@@ -802,7 +803,8 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		aggregatePeriodWorks.add(startWork);
 
 		// 付与後フラグ
-		boolean isAfterGrant = false;
+		/**付与前か付与後か */
+		GrantPeriodAtr grantPeriodAtr = GrantPeriodAtr.BEFORE_GRANT;
 
 		for (int index = 0; index < dividedDayList.size(); index++){
 			val nowDividedDay = dividedDayList.get(index);
@@ -810,25 +812,20 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 			if (index + 1 < dividedDayList.size()) nextDividedDay = dividedDayList.get(index + 1);
 
 			// 付与フラグをチェック
-			if (nowDividedDay.getGrantWork().isGrantAtr()) isAfterGrant = true;
+			if (nowDividedDay.getGrantWork().isGrantAtr()) {
+				grantPeriodAtr = GrantPeriodAtr.AFTER_GRANT;
+			}
 
 			// 年休集計期間WORKを作成し、Listに追加
 			GeneralDate workPeriodEnd = nextDayOfPeriodEnd;
 			if (nextDividedDay != null) workPeriodEnd = nextDividedDay.getYmd().addDays(-1);
 
-//			AggregatePeriodWork nowWork = AggregatePeriodWork.of(
-//					new DatePeriod(nowDividedDay.getYmd(), workPeriodEnd),
-//					false,
-//					nowDividedDay.isNextDayAfterPeriodEnd(),
-//					nowDividedDay.isGrantAtr(),
-//					isAfterGrant,
-//					nowDividedDay.isLapsedAtr(),
-//					nowDividedDay.getNextAnnualLeaveGrant());
 			AggregatePeriodWork nowWork = new AggregatePeriodWork(new DatePeriod(nowDividedDay.getYmd(), workPeriodEnd),
 					nowDividedDay.getLapsedWork(),
 					nowDividedDay.getGrantWork(),
 					nowDividedDay.getEndDay(),
-					nowDividedDay.getGrantPeriodAtr());
+					grantPeriodAtr);
+
 			aggregatePeriodWorks.add(nowWork);
 		}
 
