@@ -70,10 +70,13 @@ module nts.uk.at.view.kdl053.test {
 
 			openDialog(): void {
 				let self = this;
-				let request: any = {};				
+				let request: any = {};		
 				let errorRegistrationList: any = [];
 				let employeeIds: any = [];
 				
+				const vm = new ko.ViewModel();
+				
+
 				request.isRegistered = self.selectedId();				
 				employeeIds =  _.split(self.employeeIdList(), ','),
 				request.employeeIds = employeeIds;
@@ -82,8 +85,10 @@ module nts.uk.at.view.kdl053.test {
 					errorRegistrationList.push(self.errorRegistrations()[id]);
 				})
 				request.errorRegistrationList = errorRegistrationList;
-				setShare('dataShareDialogKDL053', request);
-				self.currentScreen = nts.uk.ui.windows.sub.modal('/view/kdl/053/index.xhtml');
+				// setShare('dataShareDialogKDL053', request);
+				// self.currentScreen = nts.uk.ui.windows.sub.modal('/view/kdl/053/a/index.xhtml');
+				vm.$window.modal('at', '/view/kdl/053/a/index.xhtml', request);
+				
 			}
 		}	
 		class ItemModel {
