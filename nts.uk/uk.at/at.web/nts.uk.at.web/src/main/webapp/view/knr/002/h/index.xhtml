@@ -26,18 +26,24 @@
 			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
 		</ui:define>
 		<ui:define name="content">
+			<div id="functions-area">
+				<button class="proceed" id="H6_1" tabindex="4"
+					data-bind="click: enter">#{i18n.getText('KNR002_185')}</button>
+				<button id="H6_2" tabindex="5" data-bind="click: cancel_Dialog">#{i18n.getText('KNR002_186')}</button>
+			</div>
 			<div id="contents-area">
+
 				<div class="div_line">
 					<div id="H2_1" style="margin-left: 83px;"
 						data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KNR002_180')}</div>
 					<div id="H2_2" style="margin-left: 399px;"
 						data-bind="ntsFormLabel: { required: false }">#{i18n.getText('KNR002_181')}</div>
 				</div>
-				<div class="div_line">
-					<!--The component container-->
-					<div id="ccgcomponent"></div>
-					<!-- The Returned Data from CCG001 -->
 
+				<!--The component container-->
+				<div id="ccgcomponent"></div>
+				<!-- The Returned Data from CCG001 -->
+				<div class="div_line">
 					<div id="swap-list" style="margin-left: 75px;" tabindex="1"
 						data-bind="ntsSwapList: {
 							showSearchBox: { showLeft : true, showRight: true},
@@ -58,11 +64,7 @@
 						}">
 					</div>
 				</div>
-			</div>
-			<div id="functions-area-bottom">
-				<button class="proceed" id="H6_1" tabindex="4"
-					data-bind="click: enter">#{i18n.getText('KNR002_185')}</button>
-				<button id="H6_2" tabindex="5" data-bind="click: cancel_Dialog">#{i18n.getText('KNR002_186')}</button>
+
 			</div>
 		</ui:define>
 	</ui:composition>
