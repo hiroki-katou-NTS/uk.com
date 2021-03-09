@@ -86,10 +86,10 @@ module nts.uk.at.view.kdp010.b {
                 });
             }
             
-            openGDialog() {
+            openHDialog() {
                 let self = this;
                 nts.uk.ui.windows.setShared('STAMP_MEANS', 0);
-                nts.uk.ui.windows.sub.modal("/view/kdp/010/g/index.xhtml").onClosed(() => {
+                nts.uk.ui.windows.sub.modal("/view/kdp/010/h/index.xhtml").onClosed(() => {
                     self.checkSetStampPageLayout();   
                 });
             }

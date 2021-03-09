@@ -1,10 +1,17 @@
-module nts.uk.at.view.kdp010.io {
+module nts.uk.at.view.kdp010.j {
     import getText = nts.uk.resource.getText;
     import block = nts.uk.ui.block;
     import info = nts.uk.ui.dialog.info;
     import error = nts.uk.ui.dialog.error;
     import confirm = nts.uk.ui.dialog.confirm;
+	import ajax = nts.uk.request.ajax;
+	
 	export module viewmodel {
+		const paths: any = {
+	        getData: "at/record/stamp/timestampinputsetting/smartphonepagelayoutsettings/get",
+	        save: "at/record/stamp/timestampinputsetting/smartphonepagelayoutsettings/save",
+	        del: "at/record/stamp/timestampinputsetting/smartphonepagelayoutsettings/del"
+	    }
 		export class ScreenModel {
             stampPageLayout = ko.observable(new StampPageLayout());
             isDel = ko.observable(false);
@@ -16,7 +23,7 @@ module nts.uk.at.view.kdp010.io {
                 let dfd = $.Deferred();
                 block.grayout();
                 let param = {pageNo:1};
-                service.getData(param).done(function(data) {
+                ajax("at", paths.getData, param).done(function(data: any) {
 //                    console.log(data);
                     if (data) {
                         self.stampPageLayout().update(data);
@@ -26,7 +33,7 @@ module nts.uk.at.view.kdp010.io {
                         $('#pageComment').focus();
                     });
                     dfd.resolve();
-                }).fail(function (res) {
+                }).fail(function (res: any) {
                     error({ messageId: res.messageId });
                 }).always(function () {
                     block.clear();
@@ -40,14 +47,14 @@ module nts.uk.at.view.kdp010.io {
                     return;
                 }else{
                     block.grayout();
-                    service.save(ko.toJS(self.stampPageLayout())).done(function() {
+                    ajax("at", paths.save, ko.toJS(self.stampPageLayout())).done(function() {
                         self.isDel(true);
                         info({ messageId: "Msg_15" }).then(()=>{
                             $(document).ready(function() {
                                 $('#pageComment').focus();
                             });    
                         });
-                    }).fail(function (res) {
+                    }).fail(function (res: any) {
                         error({ messageId: res.messageId }).then(()=>{
                             $(document).ready(function() {
                                 $('#pageComment').focus();
@@ -63,7 +70,7 @@ module nts.uk.at.view.kdp010.io {
 				let self = this;
                 confirm({ messageId: 'Msg_18' }).ifYes(function() {
                     block.grayout();
-                    service.del().done(function() {
+                    ajax("at", paths.del).done(function() {
                         self.stampPageLayout(new StampPageLayout());
                         self.isDel(false);
                         info({ messageId: "Msg_16" }).then(()=>{
@@ -71,7 +78,7 @@ module nts.uk.at.view.kdp010.io {
                                 $('#pageComment').focus();
                             });    
                         });
-                    }).fail(function (res) {
+                    }).fail(function (res: any) {
                         error({ messageId: res.messageId });
                     }).always(function () {
                         block.clear();
@@ -136,7 +143,7 @@ module nts.uk.at.view.kdp010.io {
                     buttonPositionNo: buttonPositionNo
                 }
                 nts.uk.ui.windows.setShared('KDP010_G', dataI);
-                nts.uk.ui.windows.sub.modal("/view/kdp/010/h/index.xhtml").onClosed(() => {
+                nts.uk.ui.windows.sub.modal("/view/kdp/010/i/index.xhtml").onClosed(() => {
                     let data = nts.uk.ui.windows.getShared('KDP010_H');
                     if (data) {
                         _.forEach(data.dataShare.lstButtonSet, (item) => {
@@ -231,4 +238,10 @@ module nts.uk.at.view.kdp010.io {
             }
         }
     }
+	__viewContext.ready(function() {
+        var screenModel = new viewmodel.ScreenModel();
+        screenModel.startPage().done(function() {
+            __viewContext.bind(screenModel);
+        });   
+    });
 }

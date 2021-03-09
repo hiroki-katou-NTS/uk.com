@@ -19,11 +19,10 @@
 			<com:scriptfile path="kdp010.b.vm.js" />
 		</ui:define>
 
-		<!-- Side Bar -->
 		<ui:define name="content">
 			<div id="functions-area">
 				<a class="goback" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KDP010_144')}</a>
-				<button data-bind="">#{i18n.getText('KDP010_10')}</button>
+				<button data-bind="click: save, enable: $root.errors.isEmpty">#{i18n.getText('KDP010_10')}</button>
 			</div>
 			<div id="contents-area">
 				<div class="label-top">
@@ -99,7 +98,7 @@
 					<tr>
 						<td>
 							<div class="row-label">
-								<button tabindex="9" data-bind="click:openGDialog" class="stamp-btn">#{i18n.getText('KDP010_51')}</button>
+								<button tabindex="9" data-bind="click:openHDialog" class="stamp-btn">#{i18n.getText('KDP010_51')}</button>
 								<com:ko-if bind = "stampSetCommunal.lstStampPageLayout().length > 0">
 									<label style="color: #0033cc; margin-left: 10px">#{i18n.getText('KDP010_52')}</label>
 								</com:ko-if>

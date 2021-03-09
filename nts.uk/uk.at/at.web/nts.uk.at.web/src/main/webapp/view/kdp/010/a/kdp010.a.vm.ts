@@ -8,12 +8,10 @@ module nts.uk.at.view.kdp010.a {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     export module viewmodel {
-	
+		
         export class ScreenModel {
 	
-			constructor(){
-				
-			};
+			constructor(){};
 
             public openGDialog(): void {
                 nts.uk.ui.windows.sub.modal("/view/kdp/010/g/index.xhtml").onClosed(() => {
@@ -28,10 +26,21 @@ module nts.uk.at.view.kdp010.a {
                 nts.uk.request.jump("/view/kdp/010/b/index.xhtml");
             }
 
-            public goToWorkplaceSettings(): void {
-                nts.uk.request.jump("/view/kaf/022/d/index.xhtml");
+			public goToCScreen(): void {
+                nts.uk.request.jump("/view/kdp/010/c/index.xhtml");
             }
 
+            public goToDScreen(): void {
+                nts.uk.request.jump("/view/kdp/010/d/index.xhtml");
+            }
+
+			public goToEScreen(): void {
+                nts.uk.request.jump("/view/kdp/010/e/index.xhtml");
+            }
+
+			public goToFScreen(): void {
+                nts.uk.request.jump("/view/kdp/010/f/index.xhtml");
+            }
         }
     }
 
