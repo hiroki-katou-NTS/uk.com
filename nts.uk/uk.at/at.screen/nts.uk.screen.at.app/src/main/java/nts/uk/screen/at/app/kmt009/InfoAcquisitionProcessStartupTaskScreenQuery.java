@@ -35,15 +35,12 @@ public class InfoAcquisitionProcessStartupTaskScreenQuery {
         //1. 取得する(会社ID)
         val optOperationSetting = operationSettingQuery.getTasksOperationSetting(cid);
         //2. not 作業運用設定.isPresent.
-        if (!optOperationSetting.isPresent())
+        if (!optOperationSetting.isPresent() || optOperationSetting.get().getTaskOperationMethod() == TaskOperationMethod.DO_NOT_USE)
             throw new BusinessException("Msg_2122");
         val operationSetting = optOperationSetting.get();
         //3. 作業運用設定.作業運用方法 == 利用しない
         //4. 作業運用設定.作業運用方法 <> 実績で利用
-        if (operationSetting.getTaskOperationMethod().value == TaskOperationMethod.DO_NOT_USE.value) {
-            throw new BusinessException("Msg_2122");
-        } else if (operationSetting.getTaskOperationMethod().value != TaskOperationMethod.USED_IN_ACHIEVENTS.value) {
-
+        if (operationSetting.getTaskOperationMethod().value != TaskOperationMethod.USED_IN_ACHIEVENTS.value) {
             throw new BusinessException("Msg_2122");
         }
         //5.取得(会社ID)
