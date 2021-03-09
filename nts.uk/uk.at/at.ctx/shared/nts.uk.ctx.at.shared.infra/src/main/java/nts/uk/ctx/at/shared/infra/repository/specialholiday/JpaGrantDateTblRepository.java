@@ -18,15 +18,9 @@ import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateCode;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTbl;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTblRepository;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantElapseYearMonth;
-<<<<<<< HEAD
-import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantinformation.KshstGrantDateElapseYearsTbl;
-import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantinformation.KshstGrantDateElapseYearsTblPK;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantinformation.KshmtHdspGrantTbl;
-=======
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantinformation.KshmtHdspElapsedGrantDaysTbl;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantinformation.KshmtHdspElapsedGrantDaysTblPK;
-import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantinformation.KshstGrantDateTbl;
->>>>>>> 13d0d6d5b03... 特休付与処理修正３（付与テーブル）
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantinformation.KshstGrantDateTblPK;
 import nts.uk.shr.com.context.AppContexts;
 
