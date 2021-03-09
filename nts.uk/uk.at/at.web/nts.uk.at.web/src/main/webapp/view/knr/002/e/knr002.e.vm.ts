@@ -280,8 +280,8 @@ module nts.uk.at.view.knr002.e {
                     
                     if (!isCancel) {
                         vm.loadInitData();
+                        nts.uk.ui.dialog.info({ messageId: "Msg_2142"});
                     }
-                    nts.uk.ui.dialog.info({ messageId: "Msg_2142"});
                 });
             }
 
