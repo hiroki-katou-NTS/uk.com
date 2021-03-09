@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.app.service.workrecord.erroralarm.recordcheck;
+package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,13 +15,10 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.auth.dom.employmentrole.EmployeeReferenceRange;
-import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
-import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordWorkFinder;
-import nts.uk.ctx.at.record.app.find.dailyperform.affiliationInfor.dto.AffiliationInforOfDailyPerforDto;
-import nts.uk.ctx.at.record.app.service.workrecord.erroralarm.recordcheck.result.ContinuousHolidayCheckResult;
 import nts.uk.ctx.at.record.dom.adapter.query.employee.EmployeeSearchInfoDto;
 import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQuery;
 import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQueryAdapter;
@@ -38,11 +35,11 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktype.PlanAct
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktype.SingleWorkType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.otkcustomize.ContinuousHolCheckSet;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.otkcustomize.repo.ContinuousHolCheckSetRepo;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.ClassificationCode;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.AttendanceItemUtil;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordShareFinder;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.service.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
-import nts.uk.ctx.at.shared.dom.workrule.businesstype.BusinessTypeCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -55,7 +52,7 @@ public class ErAlWorkRecordCheckService {
 	private RegulationInfoEmployeeQueryAdapter employeeSearch;
 
 	@Inject
-	private DailyRecordWorkFinder fullFinder;
+	private DailyRecordShareFinder fullFinder;
 
 	@Inject
 	private ErrorAlarmWorkRecordRepository errorRecordRepo;
@@ -71,6 +68,9 @@ public class ErAlWorkRecordCheckService {
 	
 	@Inject
 	private WorkRecordExtraConRepository workRecordExtraRepo;
+	
+	@Inject
+	private AttendanceItemConvertFactory convertFactory;
 
 	public List<RegulationInfoEmployeeQueryR> filterEmployees(GeneralDate workingDate, Collection<String> employeeIds,
 			ErrorAlarmCondition checkCondition) {
@@ -112,7 +112,7 @@ public class ErAlWorkRecordCheckService {
 	}
 	
 	public Map<String, Boolean> check(GeneralDate workingDate, Collection<String> employeeIds,
-			ErrorAlarmCondition checkCondition, List<DailyRecordDto> record) {
+			ErrorAlarmCondition checkCondition, List<IntegrationOfDaily> record) {
 //		List<String> filted = this.filterEmployees(workingDate, employeeIds, checkCondition).stream()
 //				.map(e -> e.getEmployeeId()).collect(Collectors.toList());
 
@@ -121,14 +121,14 @@ public class ErAlWorkRecordCheckService {
 		}
 		/** 社員に一致する日別実績を取得する */
 		if(record == null || record.isEmpty()){
-			record = fullFinder.find(new ArrayList<>(employeeIds), new DatePeriod(workingDate, workingDate));	
+			record = fullFinder.findByListEmployeeId(new ArrayList<>(employeeIds), new DatePeriod(workingDate, workingDate));	
 		}
 
 		if (record.isEmpty()) {
 			return toEmptyResultMap();
 		}
 
-		return record.stream().collect(Collectors.toMap(c -> c.employeeId(), c -> {
+		return record.stream().collect(Collectors.toMap(c -> c.getEmployeeId(), c -> {
 			return checkErrorAlarmCondition(c, checkCondition);
 		}));
 	}
@@ -175,10 +175,11 @@ public class ErAlWorkRecordCheckService {
 	 * @param EACheckID
 	 * @return
 	 */
+	
 	public List<ErrorRecord> checkWithRecord(DatePeriod workingDate, Collection<String> employeeIds,
 			List<String> EACheckID) {
 		//日別実績
-		List<DailyRecordDto> record = fullFinder.find(new ArrayList<>(employeeIds), workingDate);
+		List<IntegrationOfDaily> record = fullFinder.findByListEmployeeId(new ArrayList<>(employeeIds), workingDate);
 			
 		if(record.isEmpty()){
 			return toEmptyResultList();
@@ -205,34 +206,34 @@ public class ErAlWorkRecordCheckService {
 					if(condition.getWorkTypeCondition() instanceof SingleWorkType) {
 						SingleWorkType wtConCheck = (SingleWorkType) condition.getWorkTypeCondition();
 						switch (wtConCheck.getComparePlanAndActual().value) {
-						case 0:/** 全て */
+						case 0://** 全て *//*
 							break;
-						case 1:/** 選択 */
+						case 1://** 選択 *//*
 							currentRecord.removeIf(cr -> !wtConCheck.getTargetWorkType()
 									.getLstWorkType()
-									.contains(new WorkTypeCode(cr.getWorkInfo().getActualWorkInfo().getWorkTypeCode())));
+									.contains(new WorkTypeCode(cr.getWorkInformation().getRecordInfo().getWorkTypeCode().v())));
 							break;
-						case 2:/** 選択以外 */
+						case 2://** 選択以外 *//*
 							currentRecord.removeIf(cr -> wtConCheck.getTargetWorkType()
 									.getLstWorkType()
-									.contains(new WorkTypeCode(cr.getWorkInfo().getActualWorkInfo().getWorkTypeCode())));
+									.contains(new WorkTypeCode(cr.getWorkInformation().getRecordInfo().getWorkTypeCode().v())));
 							break;
 						}
 					} else {
 						//勤務種類（予実）
 						PlanActualWorkType wtConCheck = (PlanActualWorkType) condition.getWorkTypeCondition();
 						switch (wtConCheck.getComparePlanAndActual().value) {
-						case 0:/** 全て */
+						case 0://** 全て *//*
 							break;
-						case 1:/** 選択 */
+						case 1://** 選択 *//*
 							currentRecord.removeIf(cr -> !wtConCheck.getWorkTypePlan()
 									.getLstWorkType()
-									.contains(new WorkTypeCode(cr.getWorkInfo().getActualWorkInfo().getWorkTypeCode())));
+									.contains(new WorkTypeCode(cr.getWorkInformation().getRecordInfo().getWorkTypeCode().v())));
 							break;
-						case 2:/** 選択以外 */
+						case 2://** 選択以外 *//*
 							currentRecord.removeIf(cr -> wtConCheck.getWorkTypePlan()
 									.getLstWorkType()
-									.contains(new WorkTypeCode(cr.getWorkInfo().getActualWorkInfo().getWorkTypeCode())));
+									.contains(new WorkTypeCode(cr.getWorkInformation().getRecordInfo().getWorkTypeCode().v())));
 							break;
 						}
 					}
@@ -249,14 +250,14 @@ public class ErAlWorkRecordCheckService {
 	}
 
 	private List<ErrorRecord> checkWithPeriod(DatePeriod workingDate, Collection<String> employeeIds,
-			List<DailyRecordDto> record, List<ErrorAlarmCondition> checkConditions, 
-			BiFunction<List<DailyRecordDto>, ErrorAlarmCondition, ErrorAlarmCondition> beforeCheck) {
+			List<IntegrationOfDaily> record, List<ErrorAlarmCondition> checkConditions, 
+			BiFunction<List<IntegrationOfDaily>, ErrorAlarmCondition, ErrorAlarmCondition> beforeCheck) {
 		return checkConditions.stream().map(c -> {
-			List<DailyRecordDto> cdRecords = new ArrayList<>(record);
+			List<IntegrationOfDaily> cdRecords = new ArrayList<>(record);
 			ErrorAlarmCondition checkCondition = beforeCheck.apply(cdRecords, c);
 			List<ErrorRecord> errors = new ArrayList<>();
 			workingDate.datesBetween().stream().forEach(current -> {
-				List<DailyRecordDto> currentRecords = cdRecords.stream().filter(r -> r.workingDate().equals(current)).collect(Collectors.toList());
+				List<IntegrationOfDaily> currentRecords = cdRecords.stream().filter(r -> r.getYmd().equals(current)).collect(Collectors.toList());
 				if (!currentRecords.isEmpty()) {
 					errors.addAll(finalCheck(current, checkCondition, currentRecords, employeeIds));
 				}
@@ -268,7 +269,7 @@ public class ErAlWorkRecordCheckService {
 	
 	
 	public List<ErrorRecord> checkWithRecord(GeneralDate workingDate, Collection<String> employeeIds,
-			ErrorAlarmCondition checkCondition, List<DailyRecordDto> record) {
+			ErrorAlarmCondition checkCondition, List<IntegrationOfDaily> record) {
 //		List<String> filted = this.filterAllEmployees(workingDate, employeeIds, checkCondition);
 
 		if (employeeIds.isEmpty()) {
@@ -277,26 +278,26 @@ public class ErAlWorkRecordCheckService {
 		return finalCheck(workingDate, checkCondition, record, employeeIds);
 	}
 	
-	private boolean canCheck(AffiliationInforOfDailyPerforDto affiliation, AlCheckTargetCondition checkCondition){
+	private boolean canCheck(AffiliationInforOfDailyAttd affiliation, AlCheckTargetCondition checkCondition){
 		if(isTrue(checkCondition.getFilterByBusinessType())){
-			if(!affiliation.isHaveData() || !checkCondition.getLstBusinessTypeCode()
-					.contains(affiliation.getBusinessTypeCode() == null ? null 
-							: new BusinessTypeCode(affiliation.getBusinessTypeCode()))){
+			if(affiliation == null || !checkCondition.getLstBusinessTypeCode()
+					.contains(!affiliation.getBusinessTypeCode().isPresent() ? null 
+							: affiliation.getBusinessTypeCode().get())){
 				return false;
 			}
 		}
 		if(isTrue(checkCondition.getFilterByEmployment())){
-			if(!checkCondition.getLstEmploymentCode().contains(new EmploymentCode(affiliation.getEmploymentCode()))){
+			if(!checkCondition.getLstEmploymentCode().contains(affiliation.getEmploymentCode())){
 				return false;
 			}
 		}
 		if(isTrue(checkCondition.getFilterByClassification())){
-			if(!checkCondition.getLstClassificationCode().contains(new ClassificationCode(affiliation.getClassificationCode()))){
+			if(!checkCondition.getLstClassificationCode().contains(affiliation.getClsCode())){
 				return false;
 			}
 		}
 		if(isTrue(checkCondition.getFilterByJobTitle())){
-			if(!checkCondition.getLstJobTitleId().contains(affiliation.getJobId())){
+			if(!checkCondition.getLstJobTitleId().contains(affiliation.getJobTitleID())){
 				return false;
 			}
 		}
@@ -308,9 +309,9 @@ public class ErAlWorkRecordCheckService {
 	}
 
 	private List<ErrorRecord> finalCheck(GeneralDate workingDate, ErrorAlarmCondition checkCondition,
-			List<DailyRecordDto> record, Collection<String> filted) {
+			List<IntegrationOfDaily> record, Collection<String> filted) {
 		/** 社員に一致する日別実績を取得する */
-		List<DailyRecordDto> cRecord = record.stream().filter(c -> filted.contains(c.employeeId())).collect(Collectors.toList());
+		List<IntegrationOfDaily> cRecord = record.stream().filter(c -> filted.contains(c.getEmployeeId())).collect(Collectors.toList());
 
 		if (cRecord.isEmpty()) {
 			return toEmptyResultList();
@@ -320,12 +321,12 @@ public class ErAlWorkRecordCheckService {
 			if(checkCondition.getCheckTargetCondtion() == null){
 				return null;
 			}
-			if(!canCheck(c.getAffiliationInfo(), checkCondition.getCheckTargetCondtion())){
+			if(!canCheck(c.getAffiliationInfor(), checkCondition.getCheckTargetCondtion())){
 				return null;
 			}
 			ResultCheckWith result = checkErrorAlarmConditionAndResult(c, checkCondition);
 			if(result.isCheck()){
-				ErrorRecord errorRecord = new ErrorRecord(workingDate, c.employeeId(), checkCondition.getErrorAlarmCheckID()); 
+				ErrorRecord errorRecord = new ErrorRecord(workingDate, c.getEmployeeId(), checkCondition.getErrorAlarmCheckID()); 
 				errorRecord.setCheckedValue(result.getResult());
 				return errorRecord;
 			}
@@ -477,48 +478,62 @@ public class ErAlWorkRecordCheckService {
 		return subWorkInfos.stream().sorted((s1, s2) -> s2.getYmd().compareTo(s1.getYmd())).collect(Collectors.toList());
 	}
 
-	private boolean checkErrorAlarmCondition(DailyRecordDto record, ErrorAlarmCondition condition) {
+	private boolean checkErrorAlarmCondition(IntegrationOfDaily record, ErrorAlarmCondition condition) {
 		if(condition.getCheckTargetCondtion() == null){
 			return false;
 		}
-		if(!canCheck(record.getAffiliationInfo(), condition.getCheckTargetCondtion())){
+		if(!canCheck(record.getAffiliationInfor(), condition.getCheckTargetCondtion())){
 			return false;
 		}
-		WorkInfoOfDailyPerformance workInfo = new WorkInfoOfDailyPerformance(record.employeeId(), record.getDate(), record.getWorkInfo().toDomain(record.employeeId(), record.getDate()));
 		
-		return condition.checkWith(workInfo, record.getSnapshot().map(c -> c.toDomain(null, null)), item -> {
+		val converter = convertFactory.createDailyConverter();
+		
+		WorkInfoOfDailyPerformance workInfo = new WorkInfoOfDailyPerformance(record.getEmployeeId(),
+				record.getYmd(),
+				record.getWorkInformation());
+		
+		return condition.checkWith(workInfo, record.getSnapshot().map(c -> c), item -> {
 			if (item.isEmpty()) {
 				return new ArrayList<>();
 			}
 			
-			return AttendanceItemUtil.toItemValues(record, item).stream().map(iv -> getValue(iv))
+			converter.setData(record);
+			
+			return converter.convert(item).stream().map(iv -> getValue(iv))
 					.collect(Collectors.toList());
 		});
 	}
-	private ResultCheckWith checkErrorAlarmConditionAndResult(DailyRecordDto record, ErrorAlarmCondition condition) {
+	private ResultCheckWith checkErrorAlarmConditionAndResult(IntegrationOfDaily record, ErrorAlarmCondition condition) {
 		if(condition.getCheckTargetCondtion() == null){
 			return new ResultCheckWith(false,null);
 		}
-		if(!canCheck(record.getAffiliationInfo(), condition.getCheckTargetCondtion())){
+		if(!canCheck(record.getAffiliationInfor(), condition.getCheckTargetCondtion())){
 			return new ResultCheckWith(false,null);
 		}
-		WorkInfoOfDailyPerformance workInfo =new WorkInfoOfDailyPerformance(record.employeeId(), record.getDate(), record.getWorkInfo().toDomain(record.employeeId(), record.getDate()));
+		val converter = convertFactory.createDailyConverter();
+		
+		WorkInfoOfDailyPerformance workInfo =new WorkInfoOfDailyPerformance(record.getEmployeeId(), record.getYmd(), record.getWorkInformation());
+		
 		List<Double> listData = condition.getAtdItemCondition().getGroup1().getLstErAlAtdItemCon().stream().map(c->c.sumCheckTarget(item ->{
 			if (item.isEmpty()) {
 				return new ArrayList<>();
 			}
-			return AttendanceItemUtil.toItemValues(record, item).stream().map(iv -> getValue(iv))
+			converter.setData(record);
+			
+			return converter.convert(item).stream().map(iv -> getValue(iv))
 					.collect(Collectors.toList());
 		})).filter(v -> v != null).collect(Collectors.toList());
 		
-		return new ResultCheckWith(condition.checkWith(workInfo, record.getSnapshot().map(c -> c.toDomain(null, null)), item -> {
+		return new ResultCheckWith(condition.checkWith(workInfo, record.getSnapshot(), item -> {
 			if (item.isEmpty()) {
 				return new ArrayList<>();
 			}
+
+			converter.setData(record);
 			
-			return AttendanceItemUtil.toItemValues(record, item).stream().map(iv -> getValue(iv))
+			return converter.convert(item).stream().map(iv -> getValue(iv))
 					.collect(Collectors.toList());
-		}),listData.isEmpty()?null:listData.get(0).toString());
+		}), listData.isEmpty() ? null : listData.get(0).toString());
 	}
 	
 
