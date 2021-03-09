@@ -19,10 +19,36 @@
     <div class="contents-area">
       <div class="pull-left">
         <div id="kcp017">
-          KCP017
+          <div data-bind="ntsPanel:{ direction: 'right', showIcon: true, visible: true}">
+            <div class="mt-5">
+              <div class="table">
+                <div class="cell valign-center" 
+                  data-bind="ntsFormLabel: { required: false}, text: $vm.$i18n('KSM011_19')"></div>
+                <div class="cell">
+                  <div
+                    class="cf"
+                    data-bind="ntsSwitchButton: {
+                    name: '#[KSM011_19]',
+                    options: switchItems,
+                    optionsValue: 'code',
+                    optionsText: 'name',
+                    value: replaceThisVar,
+                    required: true,
+                    enable: true }"
+                  ></div>
+                </div>
+              </div>
+              <hr />
+            </div>
+            <div id="tree-grid"></div>
+          </div>
         </div>
       </div>
-      <div class="pull-left">
+      <div class="pull-left">      
+        <div class="divi">
+          <span data-bind="text: replaceThisName"></span>:<span data-bind="text: workplaceName"></span>
+        </div>
+        <hr />
         <div class="table  mb-5">
           <div class="cell cell-left">
             <div

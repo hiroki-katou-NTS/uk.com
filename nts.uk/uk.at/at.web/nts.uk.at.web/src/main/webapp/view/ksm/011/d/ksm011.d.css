@@ -57,6 +57,7 @@
   border-radius: 4px;
   padding: 6px 10px;
   margin-left: 5px;
+  min-height: 20px;
 }
 .ntsMoveDataArea {
   padding: 0 5px;

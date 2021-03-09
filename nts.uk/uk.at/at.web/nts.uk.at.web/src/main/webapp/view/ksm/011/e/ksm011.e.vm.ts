@@ -4,12 +4,22 @@ module nts.uk.at.view.ksm011.e {
   import ccg = nts.uk.com.view.ccg025.a;
   import model = nts.uk.com.view.ccg025.a.component.model;
 
+  import ccg026 = nts.uk.com.view.ccg026;
+  import ROLE_TYPE = ccg026.component.ROLE_TYPE;
+  import IPermision = ccg026.component.IPermision;
+
+
+  const fetch = {
+    getRoleInfor: '',
+    saveRoleSetting: '',
+  };
+  
   @bean()
   class ViewModel extends ko.ViewModel {
     switchItems: KnockoutObservableArray<any>;
     tabs: KnockoutObservableArray<NtsTabPanelModel>;
     selectedTab: KnockoutObservable<string>;
-    basicFunctionControl: KnockoutObservable<number> = ko.observable(1);
+    basicFunctionControl: KnockoutObservable<number> = ko.observable(0);
     daysList: KnockoutObservableArray<any> = ko.observableArray([]);
     dateSelected: KnockoutObservable<number> = ko.observable(0);
 
@@ -17,6 +27,16 @@ module nts.uk.at.view.ksm011.e {
     componentViewmodel: ccg.component.viewmodel.ComponentModel;
     listRole: KnockoutObservableArray<model.Role> = ko.observableArray([]);
     roleName: KnockoutObservable<string> = ko.observable(null);
+
+    //ccg026    
+    roleId: KnockoutObservable<string> = ko.observable(null);// role id    
+    roleType: KnockoutObservable<ROLE_TYPE> = ko.observable(ROLE_TYPE.COMPANY_MANAGER);
+    roleType1: KnockoutObservable<ROLE_TYPE> = ko.observable(ROLE_TYPE.PERSONAL_INFO);
+    roleType2: KnockoutObservable<ROLE_TYPE> = ko.observable(ROLE_TYPE.PERSONAL_INFO);
+    
+    permissionCommon : KnockoutObservableArray<IPermision> = ko.observableArray([]);
+    permissionByWorkplace : KnockoutObservableArray<IPermision> = ko.observableArray([]);
+    permissionByIndividual : KnockoutObservableArray<IPermision> = ko.observableArray([]);
 
     constructor(params: any) {
       super();
@@ -36,17 +56,7 @@ module nts.uk.at.view.ksm011.e {
 
       vm.getDayList();
 
-      vm.componentViewmodel = new nts.uk.com.view.ccg025.a.component.viewmodel.ComponentModel({
-        roleType: 3,
-        multiple: false,
-        isAlreadySetting: false
-      });
-
-      vm.getDataCCG025().done(() => { });
-      vm.componentViewmodel.currentCode.subscribe((roleId) => {
-        if (vm.listRole().length <= 0) vm.listRole(vm.componentViewmodel.listRole());
-        vm.findRole(roleId);
-      });
+      vm.initialCCG025026();
 
     }
 
@@ -84,12 +94,59 @@ module nts.uk.at.view.ksm011.e {
     }
 
     findRole(roleId?: string) {
-
       const vm = this;
 
       let role = _.find(vm.listRole(), (x) => { return x.roleId === roleId; });
       if (role) vm.roleName(role.roleName);
     }
 
+    
+    initialCCG025026() {
+
+      const vm = this;
+      //ccg025
+      vm.componentViewmodel = new ccg.component.viewmodel.ComponentModel({
+        roleType: 3,
+        multiple: false,
+        isAlreadySetting: false
+      });
+
+      vm.getDataCCG025().done(() => { });
+      vm.componentViewmodel.currentCode.subscribe((roleId) => {
+        if (vm.listRole().length <= 0) vm.listRole(vm.componentViewmodel.listRole());
+
+        vm.roleId(roleId);
+        vm.findRole(roleId);
+      });
+
+      vm.roleId.subscribe((newRoleId) => {
+        //vm.getRoleInfor(newRoleId);
+      });       
+    }
+
+    changeDataCommon = (data: Array<IPermision>) => {
+      const vm = this;
+      vm.permissionCommon(data);
+      console.log(data);
+    }
+
+    changeDataByWorkplace = (data: Array<IPermision>) => {
+      const vm = this;
+      vm.permissionByWorkplace(data);
+      console.log(data);
+    }
+
+    changeDataByIndividual = (data: Array<IPermision>) => {
+      const vm = this;
+      vm.permissionByIndividual(data);
+      console.log(data);
+    }
+
+    getRoleInfor(roleId?: string) {
+      const vm = this;
+      vm.$ajax(fetch.saveRoleSetting, { roleId: roleId}).done(() => {
+
+      });
+    }
   }
 }

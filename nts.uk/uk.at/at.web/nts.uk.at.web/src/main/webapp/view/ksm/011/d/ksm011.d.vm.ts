@@ -19,7 +19,7 @@ module nts.uk.at.view.ksm011.d {
     alarmCheck: KnockoutObservable<number> = ko.observable(1);
     confirm: KnockoutObservable<number> = ko.observable(0);
     alarmConditionList: KnockoutObservableArray<string> = ko.observableArray([]);
-    alarmConditionListText: KnockoutObservable<string> = ko.observable('勤務種類リスト + 勤務種類リスト + 勤務種類リスト');
+    alarmConditionListText: KnockoutObservable<string> = ko.observable(null);
 
     selectedCode: KnockoutObservable<string>;
     selectableCode: KnockoutObservable<string>;
@@ -80,8 +80,20 @@ module nts.uk.at.view.ksm011.d {
     openDialogScreenF() {
       const vm = this;
 
-      vm.$window.modal('/view/ksm/011/f/index.xhtml').then((data) => {
-        
+      vm.$window.modal('/view/ksm/011/f/index.xhtml').then((data) => {        
+        vm.$blockui('show');        
+        if( data ) {
+          let conditionListText: Array<any> = [];
+          vm.alarmConditionListText(null);
+          _.forEach(data.listItemsSelected, (x) => {
+            vm.alarmConditionList.push(x.code);            
+            conditionListText.push(x.name);
+          })
+
+          vm.alarmConditionListText(_.join(conditionListText, ' + '));
+          vm.$blockui('hide');
+        } else 
+          vm.$blockui('hide');
       });
     }
 

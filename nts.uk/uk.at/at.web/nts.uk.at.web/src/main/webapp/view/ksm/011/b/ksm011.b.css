@@ -31,9 +31,21 @@
 }
 
 #kcp017 {
-  width: 400px;
+  max-width: 500px;
+}
+
+#kcp017 .panel.ntsPanel {
+  padding: 20px 0 0;
 }
 
 .comboBox {
   width: 70px;
+}
+
+.mt-5 {
+  margin: 0 20px;
+  margin-bottom: -25px;
+}
+.mt-5 .table .cell:first-child {
+  width: 60%;
 }

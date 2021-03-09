@@ -1,78 +1,122 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
-	<body>
-		<ui:composition template="../../../../master/base.xhtml">
-			<ui:define name="htmlHead">
-        <com:scriptfile set="IGNITE" />			
-
-				<com:stylefile path="/view/ccg/025/component/component.css" of="/nts.uk.com.web" />
-				<com:scriptfile path="/view/ccg/025/component/component.service.js" of="/nts.uk.com.web" />
-				<com:scriptfile path="/view/ccg/025/component/component.vm.js" of="/nts.uk.com.web" />
-				
-				<com:stylefile path="/view/ccg/026/component/component.css" of="/nts.uk.com.web" />
-				<com:scriptfile path="/view/ccg/026/component/component.service.js" of="/nts.uk.com.web" />
-				<com:scriptfile path="/view/ccg/026/component/component.vm.js" of="/nts.uk.com.web" />				
-				<com:scriptfile path="/view/ccg/026/component.js" of="/nts.uk.com.web" />
-
-				<com:stylefile path="ksm011.e.css" />
-				<com:scriptfile path="ksm011.e.vm.js" />
-			</ui:define>
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:com="http://xmlns.jcp.org/jsf/component"
+  xmlns:h="http://xmlns.jcp.org/jsf/html"
+>
+  <body>
+    <ui:composition template="../../../../master/base.xhtml">
+      <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE" />
 			
-			<ui:define name="content">
-				<div id="functions-area">
-					<a
-						class="goback"
-						tabindex="1"
-						data-bind="ntsLinkButton: { jump: '/view/ksm/011/a/index.xhtml' }, text: $vm.$i18n('KSM011_17')"
-					></a>
-					<button
-						class="proceed"
-						tabindex="2"
-						data-bind="text: $vm.$i18n('KSM011_18'), click: saveData"
-					></button>
-				</div>
-				<div id="contents-area">
-          <div class="pull-left">					
-						<div data-bind="ntsPanel:{width: '350px', height: '400px', direction: 'right', showIcon: true, visible: true}">
-							<div class="ccg025" id="ccg025" data-bind="with: componentViewmodel">														
-								<com:load path="/nts.uk.com.web/view/ccg/025/component/index.xhtml"></com:load>							
+        <com:stylefile
+          path="/view/ccg/025/component/component.css"
+          of="/nts.uk.com.web"
+        />
+        <com:scriptfile
+          path="/view/ccg/025/component/component.service.js"
+          of="/nts.uk.com.web"
+        />
+        <com:scriptfile
+          path="/view/ccg/025/component/component.vm.js"
+          of="/nts.uk.com.web"
+        />
+
+        <com:stylefile
+          path="/view/ccg/026/component/component.css"
+          of="/nts.uk.com.web"
+        />      
+        <com:scriptfile
+          path="/view/ccg/026/component.js"
+          of="/nts.uk.com.web"
+        />
+
+        <com:stylefile path="ksm011.e.css" />
+        <com:scriptfile path="ksm011.e.vm.js" />
+      </ui:define>
+
+      <ui:define name="content">
+        <div id="functions-area">
+          <a
+            class="goback"
+            tabindex="1"
+            data-bind="ntsLinkButton: { jump: '/view/ksm/011/a/index.xhtml' }, text: $vm.$i18n('KSM011_17')"
+          ></a>
+          <button
+            class="proceed"
+            tabindex="2"
+            data-bind="text: $vm.$i18n('KSM011_18'), click: saveData"
+          ></button>
+        </div>
+        <div id="contents-area" class="ksm-011">
+          <div class="pull-left">
+            <div class="nts-panel"
+              data-bind="ntsPanel:{ width: '330px', height: '380px', direction: 'right', showIcon: true, visible: true }"
+            >
+              <div
+                class="ccg025"
+                id="ccg025"
+                data-bind="with: componentViewmodel"
+              >
+                <com:load
+                  path="/nts.uk.com.web/view/ccg/025/component/index.xhtml"
+                ></com:load>
+              </div>
+            </div>
+          </div>
+          <div class="pull-left">
+            <div class="title">
+              <span data-bind="text: roleName"></span>
+            </div>
+            <hr />
+            <div
+              id="tab-panel"
+              data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}"
+            >
+              <div class="tab-content-1">
+								<ccg026-component params="{
+									roleId: roleId,
+									roleType: roleType,
+									changeData: changeDataCommon,
+									maxRow: 2
+								}"></ccg026-component>
+              </div>
+              <div class="tab-content-2">
+								<ccg026-component params="{
+									roleId: roleId,
+									roleType: roleType1,
+									changeData: changeDataByWorkplace,
+									maxRow: 12
+								}"></ccg026-component>
 							</div>
-						</div>
-					</div>
-					<div class="pull-left">
-						<div class="title">
-							<span data-bind="text: roleName"></span>
-						</div>
-						<hr />
-						<div id="tab-panel" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
-							<div class="tab-content-1">
-								<div class="ccg0026"></div>
+              <div class="tab-content-3">
+								<ccg026-component params="{
+									roleId: roleId,
+									roleType: roleType2,
+									changeData: changeDataByIndividual,
+									maxRow: 2
+								}"></ccg026-component>
 							</div>
-							<div class="tab-content-2">
-								<span>Tab Content 2</span><br/>
-							</div>
-							<div class="tab-content-3">
-								<span>Tab Content 3</span><br/>
-							</div>						
-						</div>
-						<div class="divi">
-							<div class="title">
-								<span data-bind="text: $vm.$i18n('KSM011_99')"></span>
-							</div>
-							<hr />
-							<div class="table">
-								<div class="cell valign-top">
-									<div data-bind="ntsFormLabel: { required: true }, text: $vm.$i18n('KSM011_100')"></div>
-								</div>
-								<div class="cell">
-									<div
-										class="cf" id="KSM011_D24"
-										tabindex="6"
-										data-bind="ntsSwitchButton: {
+            </div>
+            <div class="divi">
+              <div class="title">
+                <span data-bind="text: $vm.$i18n('KSM011_99')"></span>
+              </div>
+              <hr />
+              <div class="table">
+                <div class="cell valign-top">
+                  <div
+                    data-bind="ntsFormLabel: { required: true }, text: $vm.$i18n('KSM011_100')"
+                  ></div>
+                </div>
+                <div class="cell">
+                  <div
+                    class="cf"
+                    id="KSM011_D24"
+                    tabindex="6"
+                    data-bind="ntsSwitchButton: {
 										name: '#[KSM011_100]',
 										options: switchItems,
 										optionsValue: 'code',
@@ -80,17 +124,17 @@
 										value: basicFunctionControl,
 										required: true,
 										enable: true }"
-									></div>
-									<div class="table mt-5">
-										<div class="cell valign-center">
-											<label data-bind="text: $vm.$i18n('KSM011_100')"></label>
-										</div>
-										<div class="cell valign-center">
-											<div
-													tabindex="7"
-													id="combo-box"
-													class="comboBox"
-													data-bind="ntsComboBox: {
+                  ></div>
+                  <div class="table mt-5">
+                    <div class="cell valign-center">
+                      <label data-bind="text: $vm.$i18n('KSM011_100')"></label>
+                    </div>
+                    <div class="cell valign-center">
+                      <div
+                        tabindex="7"
+                        id="combo-box"
+                        class="comboBox"
+                        data-bind="ntsComboBox: {
 													name: '#[KSM011_103]',
 													options: daysList,
 													optionsValue: 'day',
@@ -102,18 +146,18 @@
 													required: true,
 													selectFirstIfNull: true
 												}"
-												></div>
-										</div>
-										<div class="cell valign-center">
-											<span data-bind="text: $vm.$i18n('KSM011_104')"></span>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</ui:define>
-		</ui:composition>
-   	</body>
+                      ></div>
+                    </div>
+                    <div class="cell valign-center">
+                      <span data-bind="text: $vm.$i18n('KSM011_104')"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ui:define>
+    </ui:composition>
+  </body>
 </html>
