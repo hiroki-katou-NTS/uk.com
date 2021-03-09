@@ -326,7 +326,7 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 				item.paramLst = [];
 				item.paramLst.push(bussinessName);
 			})
-			vm.handleConfirmMessage((listMes));
+			return vm.handleConfirmMessage((listMes));
 			// return vm.$dialog.confirm({ messageId: msg.msgID, messageParams: msg.paramLst })
 			//	.then((value) => {
 			//		if (value === 'yes') {
