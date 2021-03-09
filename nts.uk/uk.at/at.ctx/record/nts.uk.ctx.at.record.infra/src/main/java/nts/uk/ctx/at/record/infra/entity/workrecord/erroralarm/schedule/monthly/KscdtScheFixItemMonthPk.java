@@ -13,9 +13,6 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Embeddable
 public class KscdtScheFixItemMonthPk implements Serializable {
-    /* 会社ID */
-    @Column(name = "CID")
-    public String cid;
     /* NO */
     @Column(name = "ITEM_NO")
     public int No;
