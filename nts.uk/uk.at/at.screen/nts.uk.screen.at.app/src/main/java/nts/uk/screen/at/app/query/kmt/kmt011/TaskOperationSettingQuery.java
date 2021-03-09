@@ -7,10 +7,13 @@ import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.repo.operationsettings.Ta
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import java.util.Optional;
 
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class TaskOperationSettingQuery {
     @Inject
     private TaskOperationSettingRepository repo;
@@ -21,7 +24,7 @@ public class TaskOperationSettingQuery {
         if (!setting.isPresent() || setting.get().getTaskOperationMethod() == TaskOperationMethod.DO_NOT_USE)
             throw new BusinessException("Msg_2122");
         if (setting.get().getTaskOperationMethod() == TaskOperationMethod.USE_ON_SCHEDULE)
-            throw new BusinessException("Msg_2114", "KMT001_1");
+            throw new BusinessException("Msg_2114", "KMT011_1");
         return new TaskOperationSettingDto(setting.get().getTaskOperationMethod().value);
     }
 }

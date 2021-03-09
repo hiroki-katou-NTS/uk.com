@@ -35,7 +35,10 @@ public class JpaTaskAssignEmployeeRepository extends JpaRepository implements Ta
                 .setParameter("taskFrameNo", taskFrameNo)
                 .setParameter("taskCode", taskCode)
                 .getList();
-        if (!entities.isEmpty()) this.commandProxy().removeAll(entities);
+        if (!entities.isEmpty()) {
+            this.commandProxy().removeAll(entities);
+            this.getEntityManager().flush();
+        }
     }
 
     @Override
