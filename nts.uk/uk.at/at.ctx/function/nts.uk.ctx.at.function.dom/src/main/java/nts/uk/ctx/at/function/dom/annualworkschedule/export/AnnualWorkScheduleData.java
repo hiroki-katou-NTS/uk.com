@@ -460,7 +460,7 @@ public class AnnualWorkScheduleData {
 		annualWorkScheduleData.setHeadingName(itemOut.getHeadingName().v());
 		annualWorkScheduleData.setValOutFormat(itemOut.getValOutFormat());
 		annualWorkScheduleData.setStartYm(startYm);
-//		annualWorkScheduleData.calcNumMonthFromAgreement(listAgreementTimeBymonth);
+		annualWorkScheduleData.calcNumMonthFromAgreement(agreementTimeResults);
 		if (!check36MaximumAgreement) {
 			annualWorkScheduleData.setMonthsExceeded(monthsExceeded);
 			annualWorkScheduleData.setMonthsRemaining(monthLimit - monthsExceeded);
@@ -514,10 +514,9 @@ public class AnnualWorkScheduleData {
 				.collect(Collectors.toList()).size();
 	}
 
-//	private void calcNumMonthFromAgreement(List<AgreementTimeByPeriodImport> listAgreementTime) {
-//		this.numMonth = listAgreementTime.stream().map(x -> x.getStartMonth().v()).distinct()
-//				.collect(Collectors.toList()).size();
-//	}
+	private void calcNumMonthFromAgreement(List<AgreementTimeOfManagePeriod> agreementTimeResults) {
+		this.numMonth = agreementTimeResults.stream().map(x -> x.getYm().v()).distinct().collect(Collectors.toList()).size();
+	}
 
 	public boolean hasItemData() {
 		if (this.month1st != null || this.month2nd != null || this.month3rd != null || this.month4th != null

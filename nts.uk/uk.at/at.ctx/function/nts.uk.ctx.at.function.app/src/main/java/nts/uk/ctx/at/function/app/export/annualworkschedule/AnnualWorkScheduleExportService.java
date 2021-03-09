@@ -545,7 +545,7 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 					data.put(itemOut.getItemOutCd().v(),
 							AnnualWorkScheduleData.fromAgreementTimeList(
 									itemOut
-									, agreementTimeYearImport.get().getLimitTime()
+									, agreementTimeYearImport.isPresent() ? agreementTimeYearImport.get().getLimitTime() : null
 									, agreementTimeOfManagePeriods
 									, new ArrayList<>()
 									, startYm
@@ -564,7 +564,7 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 					data.put(itemOut.getItemOutCd().v(),
 							AnnualWorkScheduleData.fromAgreementTimeList(
 									itemOut
-									, agreementTimeYearImport.get().getRecordTime()
+									, agreementTimeYearImport.isPresent() ? agreementTimeYearImport.get().getRecordTime() : null
 									, agreementTimeOfManagePeriods
 									, listAgreMaxAverageTime
 									, startYm
