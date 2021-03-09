@@ -11,7 +11,6 @@ import nts.arc.error.BusinessException;
 import nts.gul.util.OptionalUtil;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanDuplication;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.workrule.BreakTimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZonePerNo;
@@ -19,6 +18,7 @@ import nts.uk.ctx.at.shared.dom.worktime.WorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.*;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeAggregateRoot;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.HalfDayWorkSet;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
@@ -343,14 +343,14 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 
 		// コアタイムを使用しない⇒開始/終了が同じ
 		if ( !this.coreTimeSetting.isUseTimeSheet() ) {
-			return Arrays.asList(ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd(new WorkNo(1).toAttendance(), wkTimePossibles));
+			return Arrays.asList(ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd(new WorkNo(1), wkTimePossibles));
 		}
 
 		// コアタイムを使用する⇒コアタイムの開始/終了で分割する
 		val coreTime = this.getCoreTimeByAmPmForCalc(require, ampmAtr).get();
 		val startTime = new TimeSpanForCalc(wkTimePossibles.getStart(), coreTime.getStart());
 		val endTime = new TimeSpanForCalc(coreTime.getEnd(), wkTimePossibles.getEnd());
-		return Arrays.asList(ChangeableWorkingTimeZonePerNo.create(new WorkNo(1).toAttendance(), startTime, endTime));
+		return Arrays.asList(ChangeableWorkingTimeZonePerNo.create(new WorkNo(1), startTime, endTime));
 
 	}
 
@@ -378,7 +378,7 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable,
 		}
 
 		return Arrays.asList(ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd(
-				new WorkNo(1).toAttendance(), workOnDayOffTime));
+				new WorkNo(1), workOnDayOffTime));
 	}
 
 

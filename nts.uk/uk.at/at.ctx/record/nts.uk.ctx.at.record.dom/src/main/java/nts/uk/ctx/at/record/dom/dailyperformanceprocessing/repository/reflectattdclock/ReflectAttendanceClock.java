@@ -31,18 +31,14 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.time
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.getcommonset.GetCommonSet;
-import nts.uk.ctx.at.shared.dom.worktime.common.FontRearSection;
-import nts.uk.ctx.at.shared.dom.worktime.common.InstantRounding;
 import nts.uk.ctx.at.shared.dom.worktime.common.MultiStampTimePiorityAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.PrioritySetting;
-import nts.uk.ctx.at.shared.dom.worktime.common.RoundingSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampPiorityAtr;
-import nts.uk.ctx.at.shared.dom.worktime.common.Superiority;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSet;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 

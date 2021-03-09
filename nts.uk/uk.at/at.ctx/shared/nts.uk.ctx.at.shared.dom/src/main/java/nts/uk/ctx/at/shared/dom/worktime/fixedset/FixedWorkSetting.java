@@ -4,30 +4,50 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.fixedset;
 
-import lombok.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import org.apache.commons.lang3.tuple.ImmutablePair;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanDuplication;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.workrule.BreakTimeZone;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZone;
 import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZonePerNo;
 import nts.uk.ctx.at.shared.dom.worktime.WorkSetting;
-import nts.uk.ctx.at.shared.dom.worktime.common.*;
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.CommonRestSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.EmTimezoneNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
+import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimezoneOfFixedRestTimeSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeAggregateRoot;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.HalfDayWorkSet;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * 固定勤務設定
@@ -372,7 +392,7 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 			.map( index -> {
 				val forStart = this.getStartOfChangeableWorkingTimeZone(index, workings, overtimes);
 				val forEnd = this.getEndOfChangeableWorkingTimeZone(index, workings, overtimes);
-				return ChangeableWorkingTimeZonePerNo.create((new WorkNo(index + 1)).toAttendance(), forStart, forEnd);
+				return ChangeableWorkingTimeZonePerNo.create(new WorkNo(index + 1), forStart, forEnd);
 			}).collect(Collectors.toList());
 
 	}
@@ -473,9 +493,9 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 		}
 
 		// 変更可能な時間帯リストを作る
-		val timezones = new ArrayList<>(Arrays.asList(ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd((new WorkNo(1)).toAttendance(), workOnDayOff)));
+		val timezones = new ArrayList<>(Arrays.asList(ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd((new WorkNo(1)), workOnDayOff)));
 		if (predTimeStg.isUseShiftTwo()) {
-			timezones.add(ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd((new WorkNo(2)).toAttendance(), workOnDayOff));
+			timezones.add(ChangeableWorkingTimeZonePerNo.createAsStartEqualsEnd((new WorkNo(2)), workOnDayOff));
 		}
 
 		return timezones;
