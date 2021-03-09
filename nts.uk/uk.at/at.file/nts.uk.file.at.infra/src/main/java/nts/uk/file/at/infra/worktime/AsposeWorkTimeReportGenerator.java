@@ -31,7 +31,7 @@ public class AsposeWorkTimeReportGenerator extends AsposeCellsReportGenerator im
 	private static final int WORK_TIME_FLEX_NUM_ROW = 10;
 	
 	@Inject
-	private WorkTimeReportService_New reportService;
+	private WorkTimeReportService reportService;
 
 	@Override
 	public void generate(FileGeneratorContext generatorContext, WorkTimeReportDatasource dataSource) {

@@ -58,7 +58,7 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
-public class WorkTimeReportService_New {
+public class WorkTimeReportService {
     private final int NORMAL = 0;
     private final int FLOW = 1;
     private final int FLEX = 2;
