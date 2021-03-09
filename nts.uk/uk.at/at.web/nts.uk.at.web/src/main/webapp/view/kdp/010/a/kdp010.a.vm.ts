@@ -26,6 +26,10 @@ module nts.uk.at.view.kdp010.a {
                 nts.uk.request.jump("/view/kdp/010/b/index.xhtml");
             }
 
+			public goToKScreen(): void {
+                nts.uk.request.jump("/view/kdp/010/k/index.xhtml");
+            }
+
 			public goToCScreen(): void {
                 nts.uk.request.jump("/view/kdp/010/c/index.xhtml");
             }
