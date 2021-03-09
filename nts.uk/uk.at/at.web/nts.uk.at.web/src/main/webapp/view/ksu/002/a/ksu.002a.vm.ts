@@ -637,8 +637,15 @@ module nts.uk.ui.at.ksu002.a {
 								if (!info.listErrorInfo.length) {
 									return vm.$dialog.info({ messageId: 'Msg_15' }).then(() => vm.schedules.reset(true));
 								} else {
+									const { listErrorInfo, registered } = info;
+									const params = {
+										errorRegistrationList: listErrorInfo,
+										employeeIds: [sid],
+										isRegistered: Number(registered)
+									};
+
 									// call KDL053
-									return vm.$window.modal('at', '/view/kdl/053/a/index.xhtml', info);
+									return vm.$window.modal('at', '/view/kdl/053/a/index.xhtml', params);
 								}
 							})
 							// reload data
@@ -712,7 +719,7 @@ module nts.uk.ui.at.ksu002.a {
 		sid: string;
 		scd: string;
 		empName: string;
-		date: Date;
+		date: Date | string;
 		attendanceItemId: number | null;
 		errorMessage: string;
 	}
