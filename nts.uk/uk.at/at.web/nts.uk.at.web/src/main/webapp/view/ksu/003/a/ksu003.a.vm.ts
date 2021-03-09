@@ -3176,8 +3176,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								canSlide: slide,
 								fixed: "Both",
 								followParent: follow,
-								resizeFinished: (b: any, e: any, p: any) => {
-								},
 								dropFinished: (b: any, e: any) => {
 									self.dropBreakTime(i, indexBrks, b, e, slide, fixedString, `lgc${i}_` + indexBrks);
 								}
@@ -3214,8 +3212,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									limitEndMin: isConfirmed == 1 ? endTime1 - dispStart : timeRange.start - dispStart,
 									limitEndMax: isConfirmed == 1 ? endTime1 - dispStart : timeRange.end - dispStart,
 									zIndex: 1001,
-									resizeFinished: (b: any, e: any, p: any) => {
-									},
+									followParent: follow,
 									dropFinished: (b: any, e: any) => {
 										self.dropBreakTime(i, indexBrks, b, e, slide, fixedString, `rgc${i}_` + indexBrkr);
 									},
@@ -3732,11 +3729,20 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				}
 			}
 			
-			if(type == "BreakTime" || type == "Changeable" || type == "Flex"){
-				canSlide = self.checkDisByDate == false ? false : true;
-			} 
+			if(type == "Fixed"){
+				canSlide = false;
+			}
 			
-			if(type == "CoreTime" || type == "ShortTime" || type == "HolidayTime" || type == "OT"){
+			if(type == "Changeable"){
+				canSlide = self.checkDisByDate == false ? false : true;
+				bePassedThrough = false;
+			}
+			
+			if(type == "Flex"){
+				canSlide = self.checkDisByDate == false ? false : true;
+			}  
+			
+			if(type == "CoreTime" || type == "ShortTime" || type == "HolidayTime"){
 				pin = true;
 				fixed = "Both";
 			}
@@ -3750,10 +3756,17 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				}
 				bePassedThrough = false;
 				roundEdge = true;
+				fixed = "Both";
+				rollup = true;
+				pin = true;
+				canSlide = self.checkDisByDate == false ? false : true;
 			} 
 			
-			if(type == "BreakTime" || type == "OT"){
+			if(type == "OT"){
 				rollup = true;
+				pin = true;
+				fixed = "Both";
+				followParent = true;
 			}
 			
 			
@@ -4954,7 +4967,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
                 errorRegistrationList: dataReg.listErrorInfo, // エラー内容リスト 
             }
             setShared('dataShareDialogKDL053', param);
-            nts.uk.ui.windows.sub.modal('/view/kdl/053/index.xhtml').onClosed(function(): any {
+            nts.uk.ui.windows.sub.modal('/view/kdl/053/a/index.xhtml').onClosed(function(): any {
                 console.log('closed');
             });
            block.clear();
