@@ -1,7 +1,5 @@
 package nts.uk.screen.at.app.kmt009;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.val;
 import nts.arc.primitive.PrimitiveValueBase;
 import nts.uk.ctx.at.shared.app.query.task.GetTaskListOfSpecifiedWorkFrameNoQuery;
@@ -21,7 +19,7 @@ import java.util.stream.Collectors;
  * @author chinh.hm
  */
 @Stateless
-public class AcquiresSpecWorkAndSubNarrowInfoScreenQuery {
+public class AcquiresSpecTaskAndSubNarrowInfoScreenQuery {
     @Inject
     GetsTheChildTaskOfTheSpecifiedTask getsTheChildTask;
 
@@ -35,18 +33,7 @@ public class AcquiresSpecWorkAndSubNarrowInfoScreenQuery {
         return new TaskDtos(
                 getTaskDto(listTask),
                 getTaskDto(listChild)
-
-
         );
-    }
-
-    @AllArgsConstructor
-    @Getter
-    class TaskDtos {
-        //・作業リスト：List<作業>
-        private List<TaskDto> listTask;
-        //・子作業リスト：List<作業>             
-        private List<TaskDto> listChildTask;
     }
 
     private List<TaskDto> getTaskDto(List<Task> taskList) {
@@ -55,11 +42,16 @@ public class AcquiresSpecWorkAndSubNarrowInfoScreenQuery {
                         e.getCode().v(),
                         e.getTaskFrameNo().v(),
                         new ExternalCooperationInfoDto(
-                                e.getCooperationInfo().getExternalCode1().isPresent() ? e.getCooperationInfo().getExternalCode1().get().v() : null,
-                                e.getCooperationInfo().getExternalCode2().isPresent() ? e.getCooperationInfo().getExternalCode2().get().v() : null,
-                                e.getCooperationInfo().getExternalCode3().isPresent() ? e.getCooperationInfo().getExternalCode3().get().v() : null,
-                                e.getCooperationInfo().getExternalCode4().isPresent() ? e.getCooperationInfo().getExternalCode4().get().v() : null,
-                                e.getCooperationInfo().getExternalCode5().isPresent() ? e.getCooperationInfo().getExternalCode5().get().v() : null
+                                e.getCooperationInfo().getExternalCode1().isPresent() ? e.getCooperationInfo()
+                                        .getExternalCode1().get().v() : null,
+                                e.getCooperationInfo().getExternalCode2().isPresent() ? e.getCooperationInfo()
+                                        .getExternalCode2().get().v() : null,
+                                e.getCooperationInfo().getExternalCode3().isPresent() ? e.getCooperationInfo()
+                                        .getExternalCode3().get().v() : null,
+                                e.getCooperationInfo().getExternalCode4().isPresent() ? e.getCooperationInfo()
+                                        .getExternalCode4().get().v() : null,
+                                e.getCooperationInfo().getExternalCode5().isPresent() ? e.getCooperationInfo()
+                                        .getExternalCode5().get().v() : null
                         ),
                         e.getChildTaskList().stream().map(PrimitiveValueBase::v).collect(Collectors.toList()),
                         e.getExpirationDate().start(),
@@ -67,8 +59,10 @@ public class AcquiresSpecWorkAndSubNarrowInfoScreenQuery {
                         new TaskDisplayInfoDto(
                                 e.getDisplayInfo().getTaskName().v(),
                                 e.getDisplayInfo().getTaskAbName().v(),
-                                e.getDisplayInfo().getColor().isPresent() ? e.getDisplayInfo().getColor().get().v() : null,
-                                e.getDisplayInfo().getTaskNote().isPresent() ? e.getDisplayInfo().getTaskNote().get().v() : null
+                                e.getDisplayInfo().getColor().isPresent() ? e.getDisplayInfo().getColor()
+                                        .get().v() : null,
+                                e.getDisplayInfo().getTaskNote().isPresent() ? e.getDisplayInfo().getTaskNote()
+                                        .get().v() : null
                         )
                 )
         ).collect(Collectors.toList());
