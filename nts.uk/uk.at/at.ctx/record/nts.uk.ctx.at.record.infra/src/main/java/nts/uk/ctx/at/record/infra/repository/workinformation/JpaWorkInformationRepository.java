@@ -299,7 +299,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 						}
 						// Insert work no 2 when old data just have work no 1
 						if(stNew.getWorkNo().v() == 2 && data.scheduleTimes.size() < 2) {
-							this.commandProxy().insert(new KrcdtWorkScheduleTime(
+							this.commandProxy().insert(new KrcdtDayTsAtdSche(
 								new KrcdtWorkScheduleTimePK(domain.getEmployeeId(), domain.getYmd(),
 										stNew.getWorkNo().v()),
 								stNew.getAttendance().valueAsMinutes(), stNew.getLeaveWork().valueAsMinutes()));
@@ -307,7 +307,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 						// Delete work no 2 when new data just have work no 1
 						if(domain.getWorkInformation().getScheduleTimeSheets().size() < 2 && stOld.krcdtWorkScheduleTimePK.workNo == 2) {
 							data.scheduleTimes.removeIf(x -> x.krcdtWorkScheduleTimePK.workNo == 2);
-							this.commandProxy().remove(KrcdtWorkScheduleTime.class, new KrcdtWorkScheduleTimePK(domain.getEmployeeId(), domain.getYmd(),
+							this.commandProxy().remove(KrcdtDayTsAtdSche.class, new KrcdtWorkScheduleTimePK(domain.getEmployeeId(), domain.getYmd(),
 									stNew.getWorkNo().v()));
 						}
 						
