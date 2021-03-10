@@ -19,7 +19,8 @@ import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.RegisterWorkScheduleInputComm
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
- * 
+ * CM: 登録処理
+ * UKDesign.UniversalK.就業.KSU_スケジュール.KSU002_個人スケジュール修正(個人別).A:メイン画面.メニュー別OCD.登録処理
  * @author chungnt
  *
  */
@@ -48,7 +49,7 @@ public class RegisterWorkSceduleCommandHandler extends CommandHandlerWithResult<
 			
 			WorkInformationDto wif = new WorkInformationDto(m.getWorkTypeCode(), m.getWorkTimeCode());
 
-			return new WorkScheduleSaveCommand<TimeWithDayAttr>(sid, m.getDate(), wif, map, new ArrayList<>());
+			return new WorkScheduleSaveCommand<TimeWithDayAttr>(sid, m.getDate(), wif, map, new ArrayList<>(), false);
 		}).collect(Collectors.toList());
 		
 		
