@@ -203,7 +203,7 @@
 
 .tbody-border
 {
-  border-bottom: 1px solid #dee2e6;
+  border-bottom: 2px solid #dee2e6;
 }
 
 .large-button{
@@ -425,6 +425,7 @@ body { font-family: "Meiryo UI"; }
   color: black;
 }
 .input-group-transparent:not(.input-group-search){
+  height: 32px;
   background-color: #E0F59E !important;
 }
 .input-group.input-group-transparent .form-control{
@@ -498,4 +499,15 @@ font-size:5px;
   height: 0;
   vertical-align: middle;
   font-size: 1em;
+}
+
+.table-bordered th, .table-bordered td{
+  border: 2px solid #dee2e6;
+}
+
+.fa-calendar-alt{
+  font-weight: bold;
+}
+#yearmonth-cmm input{
+  font-weight: bold;
 }

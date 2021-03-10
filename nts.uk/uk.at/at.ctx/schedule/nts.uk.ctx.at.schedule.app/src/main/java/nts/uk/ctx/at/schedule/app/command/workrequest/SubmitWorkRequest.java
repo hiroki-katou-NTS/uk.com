@@ -108,18 +108,22 @@ public class SubmitWorkRequest extends CommandHandler<SubmitWorkRequestCmd> {
 		// 1:
 		List<WorkAvailabilityOfOneDay> listDomain = new ArrayList<>();
 		for (DataOneDateScreenKsuS02 oneDay : command.getListData()) {
-			WorkAvailabilityOfOneDay domain = WorkAvailabilityOfOneDay
-					.create(requireWorkAvailabilityOfOneDay, employeeId,
-							GeneralDate.fromString(oneDay.getDate(), "yyyy/MM/dd"),
-							new WorkAvailabilityMemo(oneDay.getMemo()),
-							AssignmentMethod.of(oneDay.getAssignmentMethod()), oneDay
-									.getNameList().stream().map(c -> new ShiftMasterCode(c)).collect(Collectors
-											.toList()),
-							oneDay.getTimeZoneList().stream()
-									.map(c -> new TimeSpanForCalc(new TimeWithDayAttr(c.getStartTime()),
-											new TimeWithDayAttr(c.getEndTime())))
-									.collect(Collectors.toList()));
-			listDomain.add(domain);
+			List<ShiftMasterCode> listShift = oneDay
+					.getNameList().stream().map(c -> new ShiftMasterCode(c)).collect(Collectors
+							.toList());
+			if(!(oneDay.getAssignmentMethod()==AssignmentMethod.SHIFT.value && listShift.isEmpty())) {
+				WorkAvailabilityOfOneDay domain = WorkAvailabilityOfOneDay
+						.create(requireWorkAvailabilityOfOneDay, employeeId,
+								GeneralDate.fromString(oneDay.getDate(), "yyyy/MM/dd"),
+								new WorkAvailabilityMemo(oneDay.getMemo()),
+								AssignmentMethod.of(oneDay.getAssignmentMethod()), 
+								listShift,
+								oneDay.getTimeZoneList().stream()
+										.map(c -> new TimeSpanForCalc(new TimeWithDayAttr(c.getStartTime()),
+												new TimeWithDayAttr(c.getEndTime())))
+										.collect(Collectors.toList()));
+				listDomain.add(domain);
+			}
 		}
 		RegisterWorkAvailability.Require requireRegisterWorkAvailability = new RequireRegisterWorkAvailabilityImpl(
 				shiftTableRuleForOrganizationRepo, shiftTableRuleForCompanyRepo, empAffiliationInforAdapter,
@@ -344,6 +348,11 @@ public class SubmitWorkRequest extends CommandHandler<SubmitWorkRequestCmd> {
 		@Override
 		public boolean shiftMasterIsExist(ShiftMasterCode shiftMasterCode) {
 			return shiftMasterRepo.checkExistsByCd(companyId, shiftMasterCode.v());
+		}
+
+		@Override
+		public boolean existWorkAvailabilityOfOneDay(String sid, GeneralDate date) {
+			return workAvailabilityOfOneDayRepo.exists(sid, date);
 		}
 
 	}

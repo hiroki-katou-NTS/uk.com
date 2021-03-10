@@ -176,7 +176,7 @@
 }
 
 .tbody-border {
-  border-bottom: 1px solid #dee2e6;
+  border-bottom: 2px solid #dee2e6;
 }
 
 .large-button {
@@ -392,6 +392,7 @@ body {
 }
 
 .input-group-transparent:not(.input-group-search) {
+  height: 32px;
   background-color: #E0F59E !important;
 }
 
@@ -445,6 +446,7 @@ body {
   border-bottom: #ccc solid 1px;
   padding-bottom: 10px;
   font-size: 10px;
+  padding-left: 30px;
 }
 
 .form-check-2 {
@@ -455,4 +457,14 @@ body {
 
 .uk-bg-choice-row:hover {
   background-color: #CEE6FF !important;
+}
+.table-bordered th, .table-bordered td{
+  border: 2px solid #dee2e6;
+}
+
+.fa-calendar-alt{
+  font-weight: bold;
+}
+#yearmonth-cmm input{
+  font-weight: bold;
 }

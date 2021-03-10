@@ -5,7 +5,6 @@ import * as $ from 'jquery';
 
 @component({
     // name: 'calendarAComponent',
-    route: '/ksu/s02/a',
     style: require('./main.scss'),
     template: require('./index.vue'),
     resource: require('./resources.json'),
@@ -78,6 +77,7 @@ export class CalendarAComponent extends Vue {
 
     @Watch('yearMonth')
     public changeYearMonth(yearMonth: any) {
+        $($(document.body)[0]).find('td.cell-focus').removeClass('cell-focus');
         if (yearMonth == null) {
             return;
         }
@@ -85,13 +85,13 @@ export class CalendarAComponent extends Vue {
         self.closePopup();
         let year = parseInt((yearMonth / 100).toString());
         let month = yearMonth % 100;
-        if (year > new Date().getFullYear() || year == new Date().getFullYear() && month >= (new Date().getMonth() + 1)) {
+        if (year > new Date().getFullYear() || year == new Date().getFullYear() && month > (new Date().getMonth() + 1)) {
             self.isCurrentMonth = true;
         } else {
             self.isCurrentMonth = false;
         }
-
-        let monthChange = month - parseInt(self.startDate.substring(5, 7));
+        let yearChange = year - parseInt(self.startDate.substring(0, 4));
+        let monthChange = month - parseInt(self.startDate.substring(5, 7)) + yearChange * 12;
         let data = self.getDatePeriodDto(self.startDate,self.endDate, monthChange,self.dataStartPage.shiftWorkUnit);
         self.startDate = data.startDate;
         self.endDate = data.endDate;
@@ -126,7 +126,8 @@ export class CalendarAComponent extends Vue {
     public cellFocus(el) {
         let self = this;
         self.showPopup = true;
-
+        //close Memo area
+        self.showMemoArea = true;  
         //clear and set color focus
         $($(document.body)[0]).find('td.cell-focus').removeClass('cell-focus');
         let id = $(el).attr('id') != null ? $(el).attr('id') : el.currentTarget.id;
@@ -593,6 +594,7 @@ export class CalendarAComponent extends Vue {
         }
         self.listShiftMasterInfo = self.dataStartPage.listShiftInforData;
         let startDate = new Date(self.dataStartPage.startWork);
+        let startDateClone = new Date(startDate.getTime());
         if (parseInt(moment(new Date()).format('YYYYMM')) < parseInt(moment(startDate, 'YYYYMM').format('YYYYMM'))) {
             self.yearMonth = moment(startDate, 'YYYYMM').format('YYYYMM');
         }
@@ -633,15 +635,20 @@ export class CalendarAComponent extends Vue {
                 classDisplayToDay = 'class=\"uk-bg-schedule-focus\"';
                 console.log(moment().format('YYYY/MM/DD'));
             }
-            let dateDisplayD = (date.getDate() == 1 && date.getMonth() > startDate.getMonth()) ?
+            let dateDisplayD = (date.getDate() == 1 && ((date.getMonth() > startDateClone.getMonth()) || (date.getMonth() == 0 && startDateClone.getMonth() == 11))) ?
                 (date.getMonth() + 1).toString() + '/' +
                 date.getDate().toString() : date.getDate().toString();
-            if (date.getDay() == 0) {
-                dateDisplayD = '<span style =\"color: red;\" ' + classDisplayToDay + '>' + dateDisplayD + '</span>';
-            } else if (date.getDay() == 6) {
-                dateDisplayD = '<span style =\"color: blue;\" ' + classDisplayToDay + '>' + dateDisplayD + '</span>';
+            let isHoliday = _.find(self.dataStartPage.listDateIsHoliday, function (o) { return o == moment(date).format('YYYY/MM/DD'); });
+            if (isHoliday != null) {
+                dateDisplayD = '<span style =\"color: #FF0000;\" ' + classDisplayToDay + '>' + dateDisplayD + '</span>';
             } else {
-                dateDisplayD = '<span ' + classDisplayToDay + '>' + dateDisplayD + '</span>';
+                if (date.getDay() == 0) {
+                    dateDisplayD = '<span style =\"color: #FF0000;\" ' + classDisplayToDay + '>' + dateDisplayD + '</span>';
+                } else if (date.getDay() == 6) {
+                    dateDisplayD = '<span style =\"color: #0000FF;\" ' + classDisplayToDay + '>' + dateDisplayD + '</span>';
+                } else {
+                    dateDisplayD = '<span ' + classDisplayToDay + '>' + dateDisplayD + '</span>';
+                }
             }
 
             let checkMemo = false;
@@ -686,15 +693,20 @@ export class CalendarAComponent extends Vue {
                     classDisplayToDay = 'class=\"uk-bg-schedule-focus\"';
                     console.log(moment().format('YYYY/MM/DD'));
                 }
-                let dateDisplayD = (date.getDate() == 1 && date.getMonth() > startDate.getMonth()) ?
+                let dateDisplayD = (date.getDate() == 1 && ((date.getMonth() > startDateClone.getMonth()) || (date.getMonth() == 0 && startDateClone.getMonth() == 11))) ?
                     (date.getMonth() + 1).toString() + '/' +
                     date.getDate().toString() : date.getDate().toString();
-                if (date.getDay() == 0) {
-                    dateDisplayD = '<span style =\"color: red;\" ' + classDisplayToDay + '>' + dateDisplayD + '</span>';
-                } else if (date.getDay() == 6) {
-                    dateDisplayD = '<span style =\"color: blue;\" ' + classDisplayToDay + '>' + dateDisplayD + '</span>';
+                let isHoliday = _.find(self.dataStartPage.listDateIsHoliday, function (o) { return o == moment(date).format('YYYY/MM/DD'); });
+                if (isHoliday != null) {
+                    dateDisplayD = '<span style =\"color: #FF0000;\" ' + classDisplayToDay + '>' + dateDisplayD + '</span>';
                 } else {
-                    dateDisplayD = '<span ' + classDisplayToDay + '>' + dateDisplayD + '</span>';
+                    if (date.getDay() == 0) {
+                        dateDisplayD = '<span style =\"color: #FF0000;\" ' + classDisplayToDay + '>' + dateDisplayD + '</span>';
+                    } else if (date.getDay() == 6) {
+                        dateDisplayD = '<span style =\"color: #0000FF;\" ' + classDisplayToDay + '>' + dateDisplayD + '</span>';
+                    } else {
+                        dateDisplayD = '<span ' + classDisplayToDay + '>' + dateDisplayD + '</span>';
+                    }
                 }
                 let dataDisplay: DataDisplay = {
                     id: 'd' + numberStartDisplay,
@@ -800,7 +812,7 @@ export class CalendarAComponent extends Vue {
             }
         } else { //mode week
             startD = moment(startDate).add(monthChange, 'M').format('YYYY/MM/DD').toString();
-            startE = moment(startD).add(7, 'days').format('YYYY/MM/DD').toString();
+            startE = moment(startD).add(6, 'days').format('YYYY/MM/DD').toString();
             
         }
         
@@ -890,6 +902,8 @@ export interface FirstInformationDto {
     displayInfoListWorkOneDay: Array<WorkAvailabilityOfOneDayDto>;//一日分の勤務希望の表示情報リスト
 
     listShiftInfor: Array<ShiftMasterAndWorkInfoScheTime>;//シフト情報リスト
+
+    listDateIsHoliday: Array<string>;
 
 }
 

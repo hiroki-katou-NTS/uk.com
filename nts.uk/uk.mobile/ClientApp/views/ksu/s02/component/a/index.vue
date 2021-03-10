@@ -22,8 +22,8 @@
                       <div><i v-click="openPrevMonth" class="fas fa-arrow-alt-circle-left"></i></div>
                       </td>
                       <td style="border: 0px solid #dee2e6 !important;">
-                        <div style="margin-top: -6px; width: 130px;">
-                        <nts-year-month
+                        <div style="margin-top: -4px; width: 130px;">
+                        <nts-year-month id="yearmonth-cmm"
                           v-bind:showTitle="false"
                           v-model="yearMonth"
                           name="対象月"
@@ -54,21 +54,21 @@
                   <tr style="">
                     <td
                       class="uk-bg-schedule-sunday"
-                      style="width: 51px; height: 18px;text-align: center;"
+                      style="width: 51px; height: 18px;text-align: center; color:#FF0000;font-weight: bold;font-size: 2vh;"
                     >
                       {{'KSUS02_3' | i18n}}
                     </td>
-                    <td class="uk-bg-disable" style="width: 51px; height: 18px;text-align: center;">
+                    <td class="uk-bg-disable" style="width: 51px; height: 18px;text-align: center; color:#404040;font-weight: bold;font-size: 2vh;">
                       {{'KSUS02_4' | i18n}}
                     </td>
-                    <td class="uk-bg-disable" style="width: 51px;text-align: center;">{{'KSUS02_5' | i18n}}</td>
-                    <td class="uk-bg-disable" style="width: 51px;text-align: center;">{{'KSUS02_6' | i18n}}</td>
-                    <td class="uk-bg-disable" style="width: 51px;text-align: center;">{{'KSUS02_7' | i18n}}</td>
-                    <td class="uk-bg-disable" style="width: 51px;text-align: center;">{{'KSUS02_8' | i18n}}</td>
+                    <td class="uk-bg-disable" style="width: 51px;text-align: center; color:#404040;font-weight: bold;font-size: 2vh;">{{'KSUS02_5' | i18n}}</td>
+                    <td class="uk-bg-disable" style="width: 51px;text-align: center; color:#404040;font-weight: bold;font-size: 2vh;">{{'KSUS02_6' | i18n}}</td>
+                    <td class="uk-bg-disable" style="width: 51px;text-align: center; color:#404040;font-weight: bold;font-size: 2vh;">{{'KSUS02_7' | i18n}}</td>
+                    <td class="uk-bg-disable" style="width: 51px;text-align: center; color:#404040;font-weight: bold;font-size: 2vh;">{{'KSUS02_8' | i18n}}</td>
                     <td
                       id="d-1"
                       class="uk-bg-schedule-saturday"
-                      style="width: 51px;text-align: center;"
+                      style="width: 51px;text-align: center; color:#0000FF;font-weight: bold;font-size: 2vh;"
                     >
                       {{'KSUS02_9' | i18n}}
                     </td>
@@ -76,12 +76,12 @@
                   <tr>
                     <td v-for="(item, index) in listDataDisplay.slice(0,7)" v-bind:key="index"  v-on="{ click: item.disable || !item.canUpdateCell? () =>{}: cellFocus }"
                       :id="item.id"
-                      :class="item.disable ? 'uk-bg-white-smoke w-51' : 'w-51'"
+                      :class="item.disable ? 'uk-bg-white-smoke w-51' : !item.canUpdateCell ? 'uk-bg-silver w-51': 'w-51'"
                     >
                       <div v-if="item.disable == true" >
-                        <div class="uk-bg-white-smoke" style="height: 80px;font-size: 10px; float: left; width: 100%;" ></div>
+                        <div class="uk-bg-white-smoke" style="height: 80px;font-size: 10.5px; float: left; width: 100%;" ></div>
                       </div>
-                      <div v-else style="height: 80px;font-size: 10px; float: left; width: 100%;"  class="table-block-day">
+                      <div v-else style="height: 80px;font-size: 10.5px; float: left; width: 100%;"  class="table-block-day">
                           <div id="header">
                             <span v-html="item.dateDisplay"></span>
                             <span id = "memo-area" v-if="item.showMemo == true" ><i class="far fa-sticky-note memo-css"></i></span>
@@ -118,7 +118,7 @@
                                     height: 16px;
                                   "
                                   >{{shift.shiftMasterName}}</span>
-                              <span>。。。</span>
+                              <span>{{'KSUS02_24' | i18n}}</span>
                             </div>
                           </div>
                       </div>
@@ -127,11 +127,11 @@
                   <tr class="swipeCalendar">
                     <td v-for="(item, index) in listDataDisplay.slice(7,14)" v-bind:key="index"  v-on="{ click: item.disable || !item.canUpdateCell? () =>{}: cellFocus }"
                       :id="item.id"
-                      :class="item.disable ? 'uk-bg-white-smoke w-51' : 'w-51'"
+                      :class="item.disable ? 'uk-bg-white-smoke w-51' : !item.canUpdateCell ? 'uk-bg-silver w-51': 'w-51'"
                     >
-                      <div v-if="item.disable == true" class="uk-bg-white-smoke" style="height: 80px;font-size: 10px; float: left;" ></div>
+                      <div v-if="item.disable == true" class="uk-bg-white-smoke" style="height: 80px;font-size: 10.5px; float: left;" ></div>
                     
-                      <div v-else class="table-block-day" style="height: 80px;font-size: 10px; float: left;">
+                      <div v-else class="table-block-day" style="height: 80px;font-size: 10.5px; float: left;">
                         <div id="header">
                           <span v-html="item.dateDisplay"></span>
                           <span id = "memo-area" v-if="item.showMemo == true" ><i class="far fa-sticky-note memo-css"></i></span>
@@ -168,7 +168,7 @@
                                   height: 16px;
                                 "
                                 >{{shift.shiftMasterName}}</span>
-                            <span>。。。</span>
+                            <span>{{'KSUS02_24' | i18n}}</span>
                           </div>
                         </div>
                       </div>
@@ -177,11 +177,11 @@
                   <tr>
                     <td v-for="(item, index) in listDataDisplay.slice(14,21)" v-bind:key="index"  v-on="{ click: item.disable || !item.canUpdateCell? () =>{}: cellFocus }"
                       :id="item.id"
-                      :class="item.disable ? 'uk-bg-white-smoke w-51' : 'w-51'"
+                      :class="item.disable ? 'uk-bg-white-smoke w-51' : !item.canUpdateCell ? 'uk-bg-silver w-51': 'w-51'"
                     >
-                        <div v-if="item.disable == true" class="uk-bg-white-smoke" style="height: 80px;font-size: 10px; float: left;" ></div>
+                        <div v-if="item.disable == true" class="uk-bg-white-smoke" style="height: 80px;font-size: 10.5px; float: left;" ></div>
                      
-                        <div v-else class="table-block-day" style="height: 80px;font-size: 10px; float: left;">
+                        <div v-else class="table-block-day" style="height: 80px;font-size: 10.5px; float: left;">
                           <div id="header">
                             <span v-html="item.dateDisplay"></span>
                             <span id = "memo-area" v-if="item.showMemo == true" ><i class="far fa-sticky-note memo-css"></i></span>
@@ -218,7 +218,7 @@
                                     height: 16px;
                                   "
                                   >{{shift.shiftMasterName}}</span>
-                              <span>。。。</span>
+                              <span>{{'KSUS02_24' | i18n}}</span>
                             </div>
                           </div>
                         </div>
@@ -227,12 +227,12 @@
                   <tr>
                     <td v-for="(item, index) in listDataDisplay.slice(21,28)" v-bind:key="index"  v-on="{ click: item.disable || !item.canUpdateCell? () =>{}: cellFocus }"
                       :id="item.id"
-                      :class="item.disable ? 'uk-bg-white-smoke w-51' : 'w-51'"
+                      :class="item.disable ? 'uk-bg-white-smoke w-51' : !item.canUpdateCell ? 'uk-bg-silver w-51': 'w-51'"
                     >
                       <div v-if="item.disable == true" >
-                        <div class="uk-bg-white-smoke" style="height: 80px;font-size: 10px; float: left;" ></div>
+                        <div class="uk-bg-white-smoke" style="height: 80px;font-size: 10.5px; float: left;" ></div>
                       </div>
-                        <div v-else class="table-block-day" style="height: 80px;font-size: 10px; float: left;">
+                        <div v-else class="table-block-day" style="height: 80px;font-size: 10.5px; float: left;">
                           <div id="header">
                             <span v-html="item.dateDisplay"></span>
                             <span id = "memo-area" v-if="item.showMemo == true" ><i class="far fa-sticky-note memo-css"></i></span>
@@ -269,7 +269,7 @@
                                     height: 16px;
                                   "
                                   >{{shift.shiftMasterName}}</span>
-                              <span>。。。</span>
+                              <span>{{'KSUS02_24' | i18n}}</span>
                             </div>
                           </div>
                         </div>
@@ -278,12 +278,12 @@
                   <tr>
                     <td v-for="(item, index) in listDataDisplay.slice(28,35)" v-bind:key="index"  v-on="{ click: item.disable || !item.canUpdateCell? () =>{}: cellFocus }"
                       :id="item.id"
-                      :class="item.disable ? 'uk-bg-white-smoke w-51' : 'w-51'"
+                      :class="item.disable ? 'uk-bg-white-smoke w-51' : !item.canUpdateCell ? 'uk-bg-silver w-51': 'w-51'"
                     >
                       <div v-if="item.disable == true" >
-                        <div class="uk-bg-white-smoke" style="height: 80px;font-size: 10px; float: left;" ></div>
+                        <div class="uk-bg-white-smoke" style="height: 80px;font-size: 10.5px; float: left;" ></div>
                       </div>
-                      <div v-else class="table-block-day" style="height: 80px;font-size: 10px; float: left;">
+                      <div v-else class="table-block-day" style="height: 80px;font-size: 10.5px; float: left;">
                         <div id="header">
                           <span v-html="item.dateDisplay"></span>
                           <span id = "memo-area" v-if="item.showMemo == true" ><i class="far fa-sticky-note memo-css"></i></span>
@@ -320,7 +320,7 @@
                                   height: 16px;
                                 "
                                 >{{shift.shiftMasterName}}</span>
-                            <span>。。。</span>
+                            <span>{{'KSUS02_24' | i18n}}</span>
                           </div>
                         </div>
                       </div>
@@ -329,12 +329,12 @@
                   <tr>
                     <td style="border-bottom: 2px solid #dee2e6;" v-for="(item, index) in listDataDisplay.slice(35,42)" v-bind:key="index"  v-on="{ click: item.disable || !item.canUpdateCell? () =>{}: cellFocus }"
                       :id="item.id"
-                      :class="item.disable ? 'uk-bg-white-smoke w-51' : 'w-51'"
+                      :class="item.disable ? 'uk-bg-white-smoke w-51' : !item.canUpdateCell ? 'uk-bg-silver w-51': 'w-51'"
                     >
                       <div v-if="item.disable == true" >
-                        <div class="uk-bg-white-smoke" style="height: 80px;font-size: 10px; float: left;" ></div>
+                        <div class="uk-bg-white-smoke" style="height: 80px;font-size: 10.5px; float: left;" ></div>
                       </div>
-                        <div v-else class="table-block-day" style="height: 80px;font-size: 10px; float: left;">
+                        <div v-else class="table-block-day" style="height: 80px;font-size: 10.5px; float: left;">
                           <div id="header">
                             <span v-html="item.dateDisplay"></span>
                             <span id = "memo-area" v-if="item.showMemo == true" ><i class="far fa-sticky-note memo-css"></i></span>
@@ -371,7 +371,7 @@
                                     height: 16px;
                                   "
                                   >{{shift.shiftMasterName}}</span>
-                              <span>。。。</span>
+                              <span>{{'KSUS02_24' | i18n}}</span>
                             </div>
                           </div>
                         </div>
@@ -454,10 +454,9 @@
                     </button>
                   </div>
                   <div class="collapse">
-                    <div class="card-body">
+                    <div class="">
                       <div
                         id="only-shift"
-                        class="form-control"
                         style="
                           height: 200px;
                           top: 60px;
@@ -491,8 +490,9 @@
                         <div v-else>
                             <div v-for="(option, k) in nameListInforCurrent" 
                               v-bind:key="k" 
+                              style="float: left;font-size: 12px;" class="form-check-2"
                               >
-                                <div style="float: left;font-size: 12px;" class="form-check-2" > <span
+                                <span
                                 v-bind:style="{  backgroundColor: option.shiftMaster.colorSmartphone, color: option.shiftMaster.colorText }"
                                   class="form-control select-el"
                                   style="
@@ -508,7 +508,8 @@
                                     text-align: center;
                                   "
                                   >{{option.shiftMaster.shiftMasterName}}</span>
-                                  <span style="float: left;margin-top: 6px;"> &nbsp;&nbsp;  {{option.shiftMaster.workTime1}} &nbsp;&nbsp; {{option.shiftMaster.workTime2}}</span></div>
+                                  <span style="float: left;margin-top: 6px;"> &nbsp;&nbsp;  {{option.shiftMaster.workTime1}} &nbsp;&nbsp; {{option.shiftMaster.workTime2}}</span>
+                                  
                             </div>
                           </div>
                       </div> 
@@ -533,7 +534,7 @@
                       ></i>
                     </button>
                   </div>
-                  <div class="" v-show="showMemoArea">
+                  <div class="" style="height:60px;" v-show="showMemoArea">
                     <div class="card-body">
                       <div>
                         <div>
@@ -550,7 +551,7 @@
                               style="
                                 margin-top: 0px;
                                 margin-bottom: 0px;
-                                height: 80px;
+                                height: 80px; 
                               "
                             ></textarea>
                           </div>
