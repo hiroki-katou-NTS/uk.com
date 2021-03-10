@@ -295,11 +295,7 @@ module nts.uk.ui.at.ksu002.a {
 					owner: vm
 				}),
 			};
-            dataSourcesWtime.subscribe(function(newValue) {
-                let stg = JSON.parse(localStorage.getItem("nts.uk.characteristics." + c.KSU_USER_DATA));
-                vm.workTimeData.selected(stg.wtimec);
-            })
-        
+
 			selectedWtype
 				.subscribe((wtypec) => {
 					const wtyped = ko.unwrap(dataSourcesWtype);
@@ -387,28 +383,25 @@ module nts.uk.ui.at.ksu002.a {
 			vm.$ajax('at', API.WTYPE)
 				.then((response: WorkTypeResponse[]) => {
 					vm.workTypeData
-                        .dataSources(response.map((m) => ({
+						.dataSources(response.map((m) => ({
 							...m.workTypeDto,
 							style: m.workStyle,
 							type: m.workTimeSetting,
 							memo: vm.$i18n(m.workTypeDto.memo)
-						})
-                    ));
-                      let stg = JSON.parse(localStorage.getItem("nts.uk.characteristics." + c.KSU_USER_DATA));
-                    vm.workTypeData.selected(stg.wtypec);
+						})));
+				})
+				.then(() => vm.$window.storage(c.KSU_USER_DATA))
+				.then((stg: undefined | c.StorageData) => {
+					if (stg) {
+						if (stg.wtypec) {
+							vm.workTypeData.selected(stg.wtypec);
+						}
+
+						if (stg.wtimec) {
+							vm.workTimeData.selected(stg.wtimec);
+						}
+					}
 				});
-//				.then(() => vm.$window.storage(c.KSU_USER_DATA))
-//				.then((stg: undefined | c.StorageData) => {
-//					if (stg) {
-//						if (stg.wtypec) {
-//							vm.workTypeData.selected(stg.wtypec);
-//						}
-//
-//						if (stg.wtimec) {
-//							vm.workTimeData.selected(stg.wtimec);
-//						}
-//					}
-//				});
 		}
 	}
 
