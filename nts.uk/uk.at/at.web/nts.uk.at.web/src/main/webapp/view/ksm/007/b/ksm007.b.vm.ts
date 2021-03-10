@@ -96,6 +96,7 @@ module nts.uk.at.view.ksm007.b {
           setShared('outputScreenB', { startDate: vm.nightShiftHours1(), endDate: vm.nightShiftHours2() });
           vm.isSave(true);
           vm.$blockui('hide');
+          $('#nightShiftHours1').focus();
         });
       }).fail((error) => {
         vm.$dialog.error({ messageId: error.messageId }).then(() => {
@@ -125,7 +126,7 @@ module nts.uk.at.view.ksm007.b {
         wpGroupId: vm.inputScreenB().wpGroupId,
         startTime: vm.nightShiftHours1(),
         endTime: vm.nightShiftHours2(),
-        nsOperationCls: vm.nightShiftOperation()
+        nsOperationCls: 0 //new mode
       };
 
       vm.$window.modal('/view/ksm/007/c/index.xhtml', params).done((data) => {

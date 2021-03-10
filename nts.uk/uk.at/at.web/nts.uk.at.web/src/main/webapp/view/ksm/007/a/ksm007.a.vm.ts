@@ -95,6 +95,8 @@ module nts.uk.at.view.ksm007.a {
         register() {
             let self = this;
             self.registerForm().trimData();
+            
+            let wpType = self.registerForm().selectedWkpType();
 
             $(".nts-input").trigger("validate");
 
@@ -109,7 +111,7 @@ module nts.uk.at.view.ksm007.a {
             if (self.registerForm().newMode()) {
                 service.registerWorkplaceGroup(self.registerForm().convertToCommand(null))
                     .done((res) => {
-                        self.checkWorkplaceGroupRegisterResult(res)
+                        self.checkWorkplaceGroupRegisterResult(res, wpType)
                             .done(() => {
                                 self.options.reloadData.valueHasMutated();
                                 self.options.currentIds(res.wkpgrpid);
@@ -122,7 +124,7 @@ module nts.uk.at.view.ksm007.a {
             } else {
                 service.updateWorkplaceGroup(self.registerForm().convertToCommand(self.currentIds()))
                     .done((res) => {
-                        self.checkWorkplaceGroupRegisterResult(res)
+                        self.checkWorkplaceGroupRegisterResult(res, -1)
                             .done(() => {
                                 self.options.reloadData.valueHasMutated();
                                 // self.options.currentIds(res.wkpGrId);
@@ -136,7 +138,9 @@ module nts.uk.at.view.ksm007.a {
             }
         }
 
-        checkWorkplaceGroupRegisterResult(res) {
+        checkWorkplaceGroupRegisterResult(res: any, wpType: number = 0) {
+            const vm = this;
+
             let dfd = $.Deferred();
             let resultProcess = res.replaceResult;
             let listWorkplaceInfo = res.listWorkplaceInfo;
@@ -157,7 +161,8 @@ module nts.uk.at.view.ksm007.a {
                 }
             }
             if (res.resProcessResult) {
-                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                let mgsId = ( wpType > 0 ) ? "Msg_2097" :  'Msg_15';
+                nts.uk.ui.dialog.info({ messageId: mgsId }).then(() => {
                     if (bundledErrors.length > 0) {
                         nts.uk.ui.dialog.bundledErrors({ errors: bundledErrors });
                     }
