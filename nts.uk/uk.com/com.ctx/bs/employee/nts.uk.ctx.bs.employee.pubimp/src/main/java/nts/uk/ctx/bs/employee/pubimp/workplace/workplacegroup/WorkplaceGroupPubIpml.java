@@ -213,7 +213,7 @@ public class WorkplaceGroupPubIpml implements WorkplaceGroupPublish {
 			if (AppContexts.user().roles().forAttendance() != null)
 				roleID = AppContexts.user().roles().forAttendance();
 			else if (AppContexts.user().roles().forCompanyAdmin() != null)
-				roleID = AppContexts.user().roles().forAttendance();
+				roleID = AppContexts.user().roles().forCompanyAdmin();
 			else if (AppContexts.user().roles().forGroupCompaniesAdmin() != null)
 				roleID = AppContexts.user().roles().forGroupCompaniesAdmin();
 			else if (AppContexts.user().roles().forOfficeHelper() != null)
