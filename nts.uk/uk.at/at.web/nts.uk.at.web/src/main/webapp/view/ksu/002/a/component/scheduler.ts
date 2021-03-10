@@ -885,9 +885,9 @@ module nts.uk.ui.at.ksu002.a {
                                                             const { endTime, startTime } = timeSpan;
 
                                                             if (startTime === endTime) {
-                                                                $begin.ntsError('set', { messageId: MSG_2058, messageParams: [vm.$i18n('KSU001_17'), twd(startTime).fullText] });
+                                                                $begin.ntsError('set', { messageId: MSG_2058, messageParams: [vm.$i18n('KSU001_54'), twd(startTime).fullText] });
                                                             } else {
-                                                                $begin.ntsError('set', { messageId: MSG_1772, messageParams: [vm.$i18n('KSU001_17'), twd(startTime).fullText, twd(endTime).fullText] });
+                                                                $begin.ntsError('set', { messageId: MSG_1772, messageParams: [vm.$i18n('KSU001_54'), twd(startTime).fullText, twd(endTime).fullText] });
                                                             }
                                                         }
                                                     }
@@ -903,9 +903,9 @@ module nts.uk.ui.at.ksu002.a {
                                                             const { endTime, startTime } = timeSpan;
 
                                                             if (startTime === endTime) {
-                                                                $finish.ntsError('set', { messageId: MSG_2058, messageParams: [vm.$i18n('KSU001_18'), twd(startTime).fullText] });
+                                                                $finish.ntsError('set', { messageId: MSG_2058, messageParams: [vm.$i18n('KSU001_55'), twd(startTime).fullText] });
                                                             } else {
-                                                                $finish.ntsError('set', { messageId: MSG_1772, messageParams: [vm.$i18n('KSU001_18'), twd(startTime).fullText, twd(endTime).fullText] });
+                                                                $finish.ntsError('set', { messageId: MSG_1772, messageParams: [vm.$i18n('KSU001_55'), twd(startTime).fullText, twd(endTime).fullText] });
                                                             }
                                                         }
                                                     }
