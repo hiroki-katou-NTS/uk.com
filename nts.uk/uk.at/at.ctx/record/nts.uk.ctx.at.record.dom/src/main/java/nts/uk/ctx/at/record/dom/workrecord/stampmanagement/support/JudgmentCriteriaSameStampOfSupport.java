@@ -26,6 +26,7 @@ public class JudgmentCriteriaSameStampOfSupport extends AggregateRoot {
 	// 最大応援回数
 	private final MaximumNumberOfSupport supportMaxFrame;
 	
+	// [C-1] 応援の同一打刻の判断基準を作成する	
 	public JudgmentCriteriaSameStampOfSupport(CompanyId cid,
 			RangeRegardedSupportStamp sameStampRanceInMinutes,MaximumNumberOfSupport supportMaxFrame) {
 		super();
@@ -47,4 +48,6 @@ public class JudgmentCriteriaSameStampOfSupport extends AggregateRoot {
 		
 		return new JudgmentCriteriaSameStampOfSupport(cid, sameStampRanceInMinutes, supportMaxFrame);
 	}
+	
+	
 }
