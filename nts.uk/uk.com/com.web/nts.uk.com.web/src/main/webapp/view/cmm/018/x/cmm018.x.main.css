@@ -61,7 +61,7 @@ button.caret-right:after {
     line-height: 25px;
     padding-right: 10px;
     padding-left: 10px;
-    white-space: break-spaces
+    white-space: pre-line;
 }
 .textFormat {
 	text-align: left;
@@ -69,7 +69,7 @@ button.caret-right:after {
     line-height: 25px;
     padding-right: 10px;
     padding-left: 10px;
-    white-space: break-spaces
+    white-space: pre-line
 }
 
 .textFormat2 {
@@ -78,7 +78,7 @@ button.caret-right:after {
     line-height: 25px;
     margin-right: 10px;
     margin-left: 10px;
-    white-space: break-spaces
+    white-space: pre-line
 }
 button:focus.caret-right:after {
 	color: #97D155;	
