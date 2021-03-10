@@ -2,9 +2,7 @@ package nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.weekly;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.layer.infra.data.entity.JpaEntity;
-import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtAlarmCheckConditionCategory;
-import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -16,11 +14,14 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "KFNDT_WEEK_COND_ALARM_LINK")
-public class KfndtWeekCondAlarmLink extends JpaEntity implements Serializable {
+public class KfndtWeekCondAlarmLink extends ContractUkJpaEntity implements Serializable {
 
     @EmbeddedId
     @Column(name = "ERAL_CHECK_ID")
     public KfndtWeekCondAlarmLinkPk pk;
+
+    @Column(name = "ERAL_CHECK_ID")
+    public String eralCheckId;
 
     @Override
     protected Object getKey() {

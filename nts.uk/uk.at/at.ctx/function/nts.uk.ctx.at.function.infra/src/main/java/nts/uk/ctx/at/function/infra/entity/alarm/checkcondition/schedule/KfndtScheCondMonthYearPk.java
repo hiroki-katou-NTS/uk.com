@@ -22,9 +22,6 @@ public class KfndtScheCondMonthYearPk implements Serializable {
     @Column(name = "CID")
     public String cid;
 
-    @Column(name = "ERAL_CHECK_ID")
-    public String eralCheckId;
-
     /* チェック条件コード */
     @Column(name = "AL_CHECK_COND_CATE_CD")
     public String ctgCd;
