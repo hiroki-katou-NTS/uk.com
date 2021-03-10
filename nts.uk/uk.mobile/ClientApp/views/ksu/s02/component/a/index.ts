@@ -68,6 +68,9 @@ export class CalendarAComponent extends Vue {
 
     public endDate: string = '';
 
+    public showCheckboxs = true;
+    public firstShow = true;
+
     public loadData() {
         let self = this;
         self.getData();
@@ -127,7 +130,7 @@ export class CalendarAComponent extends Vue {
         let self = this;
         self.showPopup = true;
         //close Memo area
-        self.showMemoArea = true;  
+        // self.showMemoArea = true;  
         //clear and set color focus
         $($(document.body)[0]).find('td.cell-focus').removeClass('cell-focus');
         let id = $(el).attr('id') != null ? $(el).attr('id') : el.currentTarget.id;
@@ -417,7 +420,7 @@ export class CalendarAComponent extends Vue {
         let id = +$($($(document.body)[0]).find('td.cell-focus')[0]).attr('id').slice(1) + el;
         //let id = + event.target.id.slice(1) + el;
 
-        if (id < -1 || id > (this.maxDataID + 7)) { return; }
+        if (id <= -1 || id > (this.maxDataID + 7)) { return; }
 
         let newTr, newFocusCell = null;
         if (id < this.idFirst) {
@@ -425,7 +428,12 @@ export class CalendarAComponent extends Vue {
             newFocusCell = $($(document.body)[0]).find('#d' + this.idFirst)[0];
         } else if (id >= this.maxDataID) {
             newTr = $($(document.body)[0]).find('#d' + (this.maxDataID - 1)).parent()[0].cloneNode(true) as HTMLElement;
-            newFocusCell = $($(document.body)[0]).find('#d' + (this.maxDataID - 1))[0];
+            let newTrs = $(newTr).find('#' + $($($(document.body)[0]).find('td.cell-focus')[0]).attr('id'));
+            if (newTrs.length == 0) {
+                newFocusCell = $($(document.body)[0]).find('#d' + (this.maxDataID - 1))[0];
+            } else {
+                return;
+            }
         } else {
             newTr = $($(document.body)[0]).find('#d' + id).parent()[0].cloneNode(true) as HTMLElement;
             newFocusCell = $($(document.body)[0]).find('#d' + id)[0];
@@ -470,18 +478,47 @@ export class CalendarAComponent extends Vue {
         let el3 = $($(document.body)[0]).find('#plus-minus');
         if (!self.isCurrentMonth) {
             self.showMemoArea = true;
+            self.showCheckboxs = true;
         } else {
+            if (self.firstShow) {
+                self.showCheckboxs = true;
+                self.showMemoArea = false;
+                self.firstShow = false;
+
+                return;
+            }
             if (!self.showMemoArea) {
                 self.showMemoArea = true;
+                self.showCheckboxs = false;
                 el3.removeClass('fa-plus-circle');
                 el3.addClass('fa-minus-circle');
             } else {
                 self.showMemoArea = false;
+                self.showCheckboxs = true;
                 el3.removeClass('fa-minus-circle');
                 el3.addClass('fa-plus-circle');
             }
         }
 
+    }
+
+    public showCard1() {
+        let el3 = $($(document.body)[0]).find('#plus-minus');
+        if (!this.isCurrentMonth) {
+            this.showCheckboxs = true;
+        } else {
+            if (this.showCheckboxs) {
+                this.showCheckboxs = false;
+                this.showMemoArea = true;
+                el3.removeClass('fa-plus-circle');
+                el3.addClass('fa-minus-circle');
+            } else {
+                this.showCheckboxs = true;
+                this.showMemoArea = false;
+                el3.removeClass('fa-minus-circle');
+                el3.addClass('fa-plus-circle');
+            }
+        }
     }
 
     public setMemo() {
