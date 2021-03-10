@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.app.service.workrecord.erroralarm.recordcheck.result;
+package nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.service;
 
 import java.util.HashMap;
 import java.util.Map;

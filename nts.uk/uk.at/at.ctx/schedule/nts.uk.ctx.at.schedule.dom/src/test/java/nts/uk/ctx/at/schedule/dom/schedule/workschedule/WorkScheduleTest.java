@@ -979,6 +979,7 @@ public class WorkScheduleTest {
 						tuple( WS_AttendanceItem.WorkTime.ID, EditStateSetting.REFLECT_APPLICATION),
 						tuple( WS_AttendanceItem.StartTime1.ID, EditStateSetting.HAND_CORRECTION_MYSELF),
 						tuple( WS_AttendanceItem.StartBreakTime1.ID, EditStateSetting.HAND_CORRECTION_MYSELF),
+						tuple( WS_AttendanceItem.EndBreakTime1.ID, EditStateSetting.HAND_CORRECTION_MYSELF),
 						tuple( WS_AttendanceItem.BreakTime.ID, EditStateSetting.HAND_CORRECTION_MYSELF)
 						);
 		} 
