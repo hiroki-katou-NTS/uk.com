@@ -23,18 +23,18 @@ public class RealAnnualLeave implements Cloneable {
 	private AnnualLeaveRemainingNumber remainingNumberBeforeGrant;
 	/** 残数付与後 */
 	private Optional<AnnualLeaveRemainingNumber> remainingNumberAfterGrant;
-	
+
 	/**
 	 * コンストラクタ
 	 */
 	public RealAnnualLeave(){
-		
+
 		this.usedNumber = new AnnualLeaveUsedNumber();
 		this.remainingNumber = new AnnualLeaveRemainingNumber();
 		this.remainingNumberBeforeGrant = new AnnualLeaveRemainingNumber();
 		this.remainingNumberAfterGrant = Optional.empty();
 	}
-	
+
 	/**
 	 * ファクトリー
 	 * @param usedNumber 使用数
@@ -48,7 +48,7 @@ public class RealAnnualLeave implements Cloneable {
 			AnnualLeaveRemainingNumber remainingNumber,
 			AnnualLeaveRemainingNumber remainingNumberBeforeGrant,
 			Optional<AnnualLeaveRemainingNumber> remainingNumberAfterGrant){
-		
+
 		RealAnnualLeave domain = new RealAnnualLeave();
 		domain.usedNumber = usedNumber;
 		domain.remainingNumber = remainingNumber;
@@ -56,7 +56,7 @@ public class RealAnnualLeave implements Cloneable {
 		domain.remainingNumberAfterGrant = remainingNumberAfterGrant;
 		return domain;
 	}
-	
+
 	@Override
 	public RealAnnualLeave clone() {
 		RealAnnualLeave cloned = new RealAnnualLeave();
@@ -73,7 +73,7 @@ public class RealAnnualLeave implements Cloneable {
 		}
 		return cloned;
 	}
-	
+
 	/**
 	 * 年休付与残数データから年休残数を作成
 	 * @param remainingDataList 年休付与残数データリスト
@@ -81,43 +81,32 @@ public class RealAnnualLeave implements Cloneable {
 	 */
 	public void createRemainingNumberFromGrantRemaining(
 			List<AnnualLeaveGrantRemaining> remainingDataList, boolean afterGrantAtr){
-		
+
 		// 年休付与残数データから残数を作成
 		this.remainingNumber.createRemainingNumberFromGrantRemaining(remainingDataList);
-		
+
 		// 「付与後フラグ」をチェック
 		if (afterGrantAtr){
-			
+
 			// 残数付与後　←　残数
 			this.remainingNumberAfterGrant = Optional.of(this.remainingNumber.clone());
 		}
 		else {
-			
+
 			// 残数付与前　←　残数
 			this.remainingNumberBeforeGrant = this.remainingNumber.clone();
 		}
 	}
-	
+
 	/**
 	 * 使用数を加算する
 	 * @param days 日数
 	 * @param afterGrantAtr 付与後フラグ
 	 */
 	public void addUsedNumber(double days, boolean afterGrantAtr){
-	
+
 		// 使用数．使用日数．使用日数に加算
-		this.usedNumber.getUsedDays().addUsedDays(days);
-		
-		// 「付与後フラグ」をチェック
-		if (afterGrantAtr){
-		
-			// 使用数．使用日数．使用日数付与後に加算
-			this.usedNumber.getUsedDays().addUsedDaysAfterGrant(days);
-		}
-		else {
-			
-			// 使用数．使用日数．使用日数付与前に加算
-			this.usedNumber.getUsedDays().addUsedDaysBeforeGrant(days);
-		}
+		this.usedNumber.addDays(days);
+
 	}
 }

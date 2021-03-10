@@ -29,8 +29,8 @@ public class HolidayOver60hInfoExport {
         domain.setRemainingNumber(remainingNumber.toDomain());
         List<HolidayOver60hGrantRemaining> grantRemainingList = this.grantRemainingList.stream().map(i -> {
             HolidayOver60hGrantRemaining tmp = new HolidayOver60hGrantRemaining();
-            tmp.setAnnLeavID(i.getAnnLeavID());
-            tmp.setCid(i.getCid());
+            tmp.setLeaveID(i.getLeaveID());
+//            tmp.setCid(i.getCid());
             tmp.setEmployeeId(i.getEmployeeId());
             tmp.setGrantDate(i.getGrantDate());
             tmp.setDeadline(i.getDeadline());

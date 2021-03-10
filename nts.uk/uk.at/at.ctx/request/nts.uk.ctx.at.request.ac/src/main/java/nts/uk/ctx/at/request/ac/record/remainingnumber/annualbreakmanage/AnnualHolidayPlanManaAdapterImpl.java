@@ -53,12 +53,13 @@ public class AnnualHolidayPlanManaAdapterImpl implements AnnualHolidayPlanManaAd
 				&& getCalByDate.getInterimDate().isPresent()) {		
 			//INPUT．暫定データ取得するフラグをチェックする
 			//ドメインモデル「暫定残数管理データ」を取得する
-			List<InterimRemain> getRemainBySidPriod = interimMng.getRemainBySidPriod(employeeId, getCalByDate.getInterimDate().get(), RemainType.ANNUAL);
-			getRemainBySidPriod = getRemainBySidPriod.stream().filter(x -> x.getRemainAtr() == RemainAtr.SINGLE)
-					.collect(Collectors.toList());
-			getRemainBySidPriod.stream().forEach(a -> {
-				Optional<TmpAnnualHolidayMng> getById = annualMng.getById(a.getRemainManaID());
-				if(getById.isPresent() && getById.get().getWorkTypeCode().equals(worktypeCode)) {
+			List<TmpAnnualHolidayMng> annualHolMng = annualMng.getBySidPeriod(employeeId, getCalByDate.getInterimDate().get());
+//			List<InterimRemain> getRemainBySidPriod = interimMng.getRemainBySidPriod(employeeId, getCalByDate.getInterimDate().get(), RemainType.ANNUAL);
+//			getRemainBySidPriod = getRemainBySidPriod.stream().filter(x -> x.getRemainAtr() == RemainAtr.SINGLE)
+//					.collect(Collectors.toList());
+			annualHolMng.stream().forEach(a -> {
+//				List<TmpAnnualHolidayMng> getById = annualMng.getBySidPeriod(employeeId, getCalByDate.getInterimDate().get());
+				if(a.getWorkTypeCode().equals(worktypeCode)) {
 					lstOutput.add(a.getYmd());
 				}
 			});

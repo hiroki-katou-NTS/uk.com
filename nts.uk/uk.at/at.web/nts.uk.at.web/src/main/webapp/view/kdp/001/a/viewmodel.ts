@@ -297,49 +297,51 @@ class KDP001AViewModel extends ko.ViewModel {
 
 	public openDialogB(dateParam, buttonDisNo) {
 
-		let vm = this;
-		nts.uk.ui.windows.setShared("resultDisplayTime", vm.resultDisplayTime());
+        const vm = this,
+            time = ko.unwrap<number>( vm.resultDisplayTime ),
+            { employeeCode, employeeId } = vm.$user,
+            info = { employeeCode, employeeId, mode: Mode.Personal } ;
+            
+		
+        vm.$window.shared( "resultDisplayTime", time )
+        .then(()=>   vm.$window.shared( "infoEmpToScreenB", info))
+        .then(()=>   vm.$window.modal('/view/kdp/002/b/index.xhtml'))
+        .then(()=>   { 
+            vm.$blockui("invisible");
+            vm.$ajax(requestUrl.getOmissionContents, { pageNo: DEFAULT_PAGE_NO, buttonDisNo: buttonDisNo , stampMeans: STAMP_MEANS_PORTAL}).then((res) => {
+                if (res && res.dailyAttdErrorInfos && res.dailyAttdErrorInfos.length > 0) {
 
-		nts.uk.ui.windows.setShared("infoEmpToScreenB", {
-			employeeId: vm.$user.employeeId,
-			employeeCode: vm.$user.employeeCode,
-			mode: Mode.Personal,
-		});
-		nts.uk.ui.windows.sub.modal('/view/kdp/002/b/index.xhtml').onClosed(function(): any {
-			vm.$blockui("invisible");
-			vm.$ajax(requestUrl.getOmissionContents, { pageNo: DEFAULT_PAGE_NO, buttonDisNo: buttonDisNo , stampMeans: STAMP_MEANS_PORTAL}).then((res) => {
-				if (res && res.dailyAttdErrorInfos && res.dailyAttdErrorInfos.length > 0) {
+                    vm.$window.storage('KDP010_2T', res);
 
-					vm.$window.storage('KDP010_2T', res);
+                    nts.uk.ui.windows.sub.modal('/view/kdp/002/t/index.xhtml').onClosed(function(): any {
 
-					nts.uk.ui.windows.sub.modal('/view/kdp/002/t/index.xhtml').onClosed(function(): any {
+                        vm.$window.shared('KDP010_T').then((returnData)=>{
+                            if (!returnData.isClose && returnData.errorDate) {
 
-						let returnData = nts.uk.ui.windows.getShared('KDP010_T');
-						if (!returnData.isClose && returnData.errorDate) {
+                                let transfer = returnData.btn.transfer;
+                                vm.$jump(returnData.btn.screen, transfer);
+                            }
 
-							let transfer = returnData.btn.transfer;
-							vm.$jump(returnData.btn.screen, transfer);
-						}
-
-						vm.reLoadStampDatas();
-						vm.getStampToSuppress();
-					});
-				} else {
-					vm.reLoadStampDatas();
-					vm.getStampToSuppress();
-				}
-			}).always(() => {
-				vm.$blockui("hide");
-			});
-		});
+                            vm.reLoadStampDatas();
+                            vm.getStampToSuppress();
+                        });
+                    });
+                } else {
+                    vm.reLoadStampDatas();
+                    vm.getStampToSuppress();
+                }
+            }).always(() => {
+                vm.$blockui("hide");
+            });
+        });
 	}
 
 	public openDialogC(dateParam, buttonDisNo) {
 		let vm = this;
 
-		nts.uk.ui.windows.setShared('KDP010_2C', vm.stampResultDisplay().displayItemId);
+		vm.$window.shared('KDP010_2C', vm.stampResultDisplay().displayItemId);
 
-		nts.uk.ui.windows.setShared("infoEmpToScreenC", {
+		vm.$window.shared("infoEmpToScreenC", {
 			employeeId: vm.$user.employeeId,
 			employeeCode: vm.$user.employeeCode,
 			mode: Mode.Personal,
@@ -354,15 +356,16 @@ class KDP001AViewModel extends ko.ViewModel {
 					vm.$window.storage('KDP010_2T', res);
 
 					nts.uk.ui.windows.sub.modal('/view/kdp/002/t/index.xhtml').onClosed(function(): any {
-						let returnData = nts.uk.ui.windows.getShared('KDP010_T');
-						if (!returnData.isClose && returnData.errorDate) {
+                        vm.$window.shared( 'KDP010_T' ).then( returnData =>{
+					        if (!returnData.isClose && returnData.errorDate) {
 
-							let transfer = returnData.btn.transfer;
-							vm.$jump(returnData.btn.screen, transfer);
-						}
+	                            let transfer = returnData.btn.transfer;
+	                            vm.$jump(returnData.btn.screen, transfer);
+	                        }
 
-						vm.reLoadStampDatas();
-						vm.getStampToSuppress();
+	                        vm.reLoadStampDatas();
+	                        vm.getStampToSuppress();
+					    });
 					});
 				} else {
 					vm.reLoadStampDatas();

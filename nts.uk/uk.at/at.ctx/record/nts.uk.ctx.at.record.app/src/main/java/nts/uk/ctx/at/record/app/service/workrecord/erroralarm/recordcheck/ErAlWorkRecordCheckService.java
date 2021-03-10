@@ -291,7 +291,7 @@ public class ErAlWorkRecordCheckService {
 			}
 		}
 		if(isTrue(checkCondition.getFilterByClassification())){
-			if(!checkCondition.getLstClassificationCode().contains(new ClassificationCode(affiliation.getClassificationCode()))){
+			if(!checkCondition.getLstClassificationCode().contains(new ClassificationCode(affiliation.getClsCode()))){
 				return false;
 			}
 		}
@@ -526,7 +526,7 @@ public class ErAlWorkRecordCheckService {
 		if (value.value() == null) {
 			return null;
 		}
-		return value.getValueType().isDouble() ? (Double) value.value()
+		return value.type().isDouble() ? (Double) value.value()
 												: Double.valueOf((Integer) value.value());
 	}
 

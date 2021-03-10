@@ -340,5 +340,5 @@ public class JpaAnnPaidLeaveRepository extends JpaRepository implements AnnPaidL
         return (Integer.parseInt(value)/60) +":"+(Integer.parseInt(value)%60 < 10? "0" + Integer.parseInt(value)%60 : Integer.parseInt(value)%60 );
     }
 
-	
+
 }

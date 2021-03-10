@@ -5,6 +5,7 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.ExcessOfStatutoryMidNightTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.ExcessOfStatutoryTimeOfDaily;
@@ -17,7 +18,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ExcessOfStatutoryTimeDailyPerformDto implements ItemConst {
+public class ExcessOfStatutoryTimeDailyPerformDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 所定外深夜時間: 所定外深夜時間 */
 	@AttendanceItemLayout(layout = LAYOUT_A, jpPropertyName = LATE_NIGHT)
@@ -72,4 +73,53 @@ public class ExcessOfStatutoryTimeDailyPerformDto implements ItemConst {
 	private static Integer getAttendanceTime(AttendanceTime domain) {
 		return domain == null ? 0 : domain.valueAsMinutes();
 	}
+
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+		case LATE_NIGHT:
+			return new ExcessOfStatutoryMidNightTimeDto();
+		case OVERTIME:
+			return new OverTimeWorkDailyPerformDto();
+		case HOLIDAY_WORK:
+			return new WorkHolidayTimeDailyPerformDto();
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.newInstanceOf(path);
+	}
+
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		switch (path) {
+		case LATE_NIGHT:
+			return Optional.ofNullable(excessOfStatutoryMidNightTime);
+		case OVERTIME:
+			return Optional.ofNullable(overTimeWork);
+		case HOLIDAY_WORK:
+			return Optional.ofNullable(workHolidayTime);
+		default:
+			break;
+		}
+		return AttendanceItemDataGate.super.get(path);
+	}
+
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		switch (path) {
+		case LATE_NIGHT:
+			excessOfStatutoryMidNightTime = (ExcessOfStatutoryMidNightTimeDto) value;
+			break;
+		case OVERTIME:
+			overTimeWork = (OverTimeWorkDailyPerformDto) value;
+			break;
+		case HOLIDAY_WORK:
+			workHolidayTime = (WorkHolidayTimeDailyPerformDto) value;
+			break;
+		default:
+			break;
+		}
+	}
+
+	
 }

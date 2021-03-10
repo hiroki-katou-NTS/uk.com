@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.val;
 import nts.arc.layer.dom.objecttype.DomainObject;
 import nts.uk.ctx.at.shared.dom.WorkInfoAndTimeZone;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
@@ -23,7 +25,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
  * 日別勤怠の勤務情報
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.shared(勤務予定、勤務実績).日の勤怠計算.日別勤怠.勤務情報.日別勤怠の勤務情報
  * @author tutk
- * 
+ *
  *
  */
 @Getter
@@ -47,11 +49,12 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 	//振休振出として扱う日数
 	@Setter
 	private Optional<NumberOfDaySuspension> numberDaySuspension = Optional.empty();
-	
+
 	//Ver
 	@Setter
 	@Getter
 	private long ver;
+	
 	
 	public WorkInfoOfDailyAttendance(WorkInformation workInfo,
 			CalculationState calculationState, NotUseAttribute goStraightAtr, NotUseAttribute backStraightAtr,
@@ -63,8 +66,9 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 		this.backStraightAtr = backStraightAtr;
 		this.dayOfWeek = dayOfWeek;
 		this.scheduleTimeSheets = scheduleTimeSheets;
+
 	}
-	
+
 	/**
 	 * [C-1] 作る
 	 * @param require
@@ -110,16 +114,16 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 	public void changeCalcState(CalculationState state) {
 		this.setCalculationState(state);
 	}
-	
+
 	/**
 	 * 指定された勤務回数の予定時間帯を取得する
-	 * 
+	 *
 	 * @param workNo
 	 * @return 予定時間帯
 	 */
 	public Optional<ScheduleTimeSheet> getScheduleTimeSheet(WorkNo workNo) {
 		return this.scheduleTimeSheets.stream()
-				.filter(ts -> ts.getWorkNo().equals(workNo)).findFirst();	
+				.filter(ts -> ts.getWorkNo().equals(workNo)).findFirst();
 	}
 
 	public void setGoStraightAtr(NotUseAttribute goStraightAtr) {
@@ -137,16 +141,16 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 	public void setDayOfWeek(DayOfWeek dayOfWeek) {
 		this.dayOfWeek = dayOfWeek;
 	}
-	
+
 	/**
-	 * [2] 出勤・休日系の判定																							
+	 * [2] 出勤・休日系の判定
 	 * @param require
 	 * @return
 	 */
 	public Optional<WorkStyle> getWorkStyle(Require require){
 		return this.recordInfo.getWorkStyle(require);
 	}
-	
+
 	// 勤務情報と始業終業を変更する
 	public void changeWorkSchedule(Require require, WorkInformation workInfo, boolean changeWorkType,
 			boolean changeWorkTime) {
@@ -171,12 +175,17 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 		timeZoneOpt.ifPresent(workInfoTimeZone -> {
 			List<TimeZone> lstTimeZone = workInfoTimeZone.getTimeZones().stream()
 					.sorted((x, y) -> x.getStart().v() - y.getStart().v()).collect(Collectors.toList());
-			this.getScheduleTimeSheets().forEach(x -> {
-				TimeZone timeZone = (lstTimeZone.size() <= (x.getWorkNo().v() - 1)) ? null
-						: lstTimeZone.get(x.getWorkNo().v() - 1);
-				if (timeZone != null) {
-					x.setAttendance(timeZone.getStart());
-					x.setLeaveWork(timeZone.getEnd());
+			
+			IntStream.range(0,  lstTimeZone.size()).forEach(i -> {
+				TimeZone timeZone = lstTimeZone.get(i);
+				val schedule = this.getScheduleTimeSheets().stream().filter(x -> (x.getWorkNo().v() - 1) == i)
+						.findFirst();
+				if (schedule.isPresent()) {
+					schedule.get().setAttendance(timeZone.getStart());
+					schedule.get().setLeaveWork(timeZone.getEnd());
+				} else {
+					this.getScheduleTimeSheets()
+							.add(new ScheduleTimeSheet(i + 1, timeZone.getStart().v(), timeZone.getEnd().v()));
 				}
 			});
 		});
@@ -190,8 +199,9 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 	public boolean isAttendanceRate(Require require) {
 		return this.recordInfo.isAttendanceRate(require);
 	}
-	public static interface Require extends WorkInformation.Require {
-		
-	}
 	
+	public static interface Require extends WorkInformation.Require {
+
+	}
+
 }

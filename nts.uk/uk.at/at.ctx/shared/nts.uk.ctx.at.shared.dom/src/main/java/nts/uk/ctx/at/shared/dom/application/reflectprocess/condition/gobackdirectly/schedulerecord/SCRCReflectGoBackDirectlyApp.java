@@ -45,8 +45,8 @@ public class SCRCReflectGoBackDirectlyApp {
 		}
 
 		// 直行直帰区分の反映
-		lstResult.addAll(ReflectDirectBounceClassifi.reflect(dailyApp, appGoback.getStraightDistinction(),
-				appGoback.getStraightLine()));
+		lstResult.addAll(ReflectDirectBounceClassifi.reflect(dailyApp, appGoback.getStraightLine(),
+				appGoback.getStraightDistinction()));
 		return lstResult;
 	}
 

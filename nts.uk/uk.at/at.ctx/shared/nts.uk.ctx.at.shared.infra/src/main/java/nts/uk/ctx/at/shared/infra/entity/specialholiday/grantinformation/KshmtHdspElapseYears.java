@@ -11,9 +11,8 @@ import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
- * 経過年数に対する付与日数
- * 
- * @author tanlv
+ * 特別休暇付与経過年数テーブル
+ * @author masaaki_jinno
  *
  */
 @NoArgsConstructor
@@ -21,33 +20,39 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Table(name = "KSHMT_HDSP_ELAPSE_YEARS")
 public class KshmtHdspElapseYears extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
+	
 	/* 主キー */
 	@EmbeddedId
 	public KshstElapseYearsPK pk;
 	
-	/* 特別休暇付与日数 */
-	@Column(name = "GRANTED_DAYS")
-	public int grantedDays;
+	/* テーブル以降の固定付与をおこなう */
+	@Column(name = "FIXED_ASSIGN")
+	public int fixedAssign;
 	
-	/* 経過年数.月数 */
-	@Column(name = "MONTHS")
-	public int months;
+	/* テーブル以降の付与周期　経過年数.年数 */
+	@Column(name = "CYCLE_YEARS")
+	public Integer cycleYears;
 	
-	/* 経過年数.年数 */
-	@Column(name = "YEARS")
-	public int years;
+	/* テーブル以降の付与周期　経過年数.月数 */
+	@Column(name = "CYCLE_MONTHS")
+	public Integer cycleMonths;
 	
 	@Override
 	protected Object getKey() {
-		// TODO Auto-generated method stub
 		return pk;
 	}
 
-	public KshmtHdspElapseYears(KshstElapseYearsPK pk, int grantedDays, int months, int years) {
-		
+	/**
+	 * コンストラクタ
+	 * @param pk
+	 * @param fixedAssign テーブル以降の固定付与をおこなう
+	 * @param years テーブル以降の付与周期　経過年数.年数
+	 * @param months テーブル以降の付与周期　経過年数.月数
+	 */
+	public KshmtHdspElapseYears(KshstElapseYearsPK pk, int fixedAssign, Integer years, Integer months) {		
 		this.pk = pk;
-		this.grantedDays = grantedDays;
-		this.months = months;
-		this.years = years;
+		this.fixedAssign = fixedAssign;
+		this.cycleYears = years;
+		this.cycleMonths = months;
 	}
 }

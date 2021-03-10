@@ -2,16 +2,20 @@ package nts.uk.ctx.at.record.app.find.monthly.root.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
+import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate.PropType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.WorkTimeOfMonthlyVT;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.worktime.actual.HolidayUsageOfMonthly;
@@ -32,7 +36,7 @@ import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.verticaltotal.wor
 @NoArgsConstructor
 @AllArgsConstructor
 /** 月別実績の勤務時間 */
-public class WorkTimeOfMonthlyDto implements ItemConst {
+public class WorkTimeOfMonthlyDto implements ItemConst, AttendanceItemDataGate {
 
 	/** 医療時間: 月別実績の医療時間 */
 	@AttendanceItemLayout(jpPropertyName = MEDICAL, layout = LAYOUT_A, listMaxLength = 2, listNoIndex = true, enumField = DEFAULT_ENUM_FIELD_NAME)
@@ -150,4 +154,180 @@ public class WorkTimeOfMonthlyDto implements ItemConst {
 	private AttendanceTimeMonthWithMinus toAttendanceTimeMonthWithMinus(Integer time) {
 		return new AttendanceTimeMonthWithMinus(time);
 	}
+
+	@Override
+	public Optional<ItemValue> valueOf(String path) {
+		switch (path) {
+		case PLAN_ACTUAL_DIFF:
+			return Optional.of(ItemValue.builder().value(budgetTimeVarience).valueType(ValueType.TIME));
+		case INTERVAL:
+			return Optional.of(ItemValue.builder().value(intervalTime).valueType(ValueType.TIME));
+		case (INTERVAL + DEDUCTION):
+			return Optional.of(ItemValue.builder().value(intervalExemptionTime).valueType(ValueType.TIME));
+		default:
+			return AttendanceItemDataGate.super.valueOf(path);
+		}
+	}
+
+	@Override
+	public AttendanceItemDataGate newInstanceOf(String path) {
+		switch (path) {
+		case MEDICAL:
+			return new MedicalTimeOfMonthlyDto();
+		case RAISING_SALARY:
+			return new BonusPayTimeOfMonthlyDto();
+		case GO_OUT:
+			return new GoOutOfMonthlyDto();
+		case PREMIUM:
+			return new PremiumTimeOfMonthlyDto();
+		case BREAK:
+			return new BreakTimeOfMonthlyDto();
+		case LATE_NIGHT:
+			return new MidnightTimeOfMonthlyDto();
+		case (LATE + LEAVE_EARLY):
+			return new LateLeaveEarlyOfMonthlyDto();
+		case ATTENDANCE_LEAVE_GATE:
+			return new AttendanceLeaveGateTimeOfMonthlyDto();
+		case RESERVATION:
+			return new ReservationOfMonthlyDto();
+		case DIVERGENCE:
+			return new DivergenceTimeOfMonthlyDto();
+		case TOPPAGE:
+			return new TopPageDisplayTimeOfMonthlyDto();
+		case (HOLIDAY + USAGE):
+			return new HolidayTimeOfMonthlyDto();
+		case LABOR:
+			return new LaborTimeMonthlyDto();
+		default:
+			return null;
+		}
+	}
+
+	@Override
+	public Optional<AttendanceItemDataGate> get(String path) {
+		switch (path) {
+		case GO_OUT:
+			return Optional.ofNullable(goout);
+		case PREMIUM:
+			return Optional.ofNullable(premiumTime);
+		case BREAK:
+			return Optional.ofNullable(breakTime);
+		case LATE_NIGHT:
+			return Optional.ofNullable(midNightTime);
+		case (LATE + LEAVE_EARLY):
+			return Optional.ofNullable(lateLeaveEarly);
+		case ATTENDANCE_LEAVE_GATE:
+			return Optional.ofNullable(attendanceLeave);
+		case RESERVATION:
+			return Optional.ofNullable(reservation);
+		case TOPPAGE:
+			return Optional.ofNullable(topPage);
+		case (HOLIDAY + USAGE):
+			return Optional.ofNullable(holidayUse);
+		case LABOR:
+			return Optional.ofNullable(laborTime);
+		default:
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public int size(String path) {
+		switch (path) {
+		case MEDICAL: 
+			return 2;
+		case RAISING_SALARY:
+		case DIVERGENCE:
+			return 10;
+		default:
+			return -1;
+		}
+	}
+
+	@Override
+	public PropType typeOf(String path) {
+		switch (path) {
+		case PLAN_ACTUAL_DIFF:
+		case INTERVAL:
+		case (INTERVAL + DEDUCTION):
+			return PropType.VALUE;
+		case MEDICAL: 
+			return PropType.ENUM_LIST;
+		case RAISING_SALARY:
+		case DIVERGENCE:
+			return PropType.IDX_LIST;
+		default:
+			return PropType.OBJECT;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T extends AttendanceItemDataGate> List<T> gets(String path) {
+		switch (path) {
+		case MEDICAL: 
+			return (List<T>) medical;
+		case RAISING_SALARY:
+			return (List<T>) bonus;
+		case DIVERGENCE:
+			return (List<T>) divergenceTimes;
+		default:
+			return new ArrayList<>();
+		}
+	}
+
+	@Override
+	public void set(String path, ItemValue value) {
+		switch (path) {
+		case PLAN_ACTUAL_DIFF:
+			budgetTimeVarience = value.valueOrDefault(0);
+		case INTERVAL:
+			intervalTime = value.valueOrDefault(0);
+		case (INTERVAL + DEDUCTION):
+			intervalExemptionTime = value.valueOrDefault(0);
+		default:
+		}
+	}
+
+	@Override
+	public void set(String path, AttendanceItemDataGate value) {
+		switch (path) {
+		case GO_OUT:
+			goout = (GoOutOfMonthlyDto) value; break;
+		case PREMIUM:
+			(premiumTime) = (PremiumTimeOfMonthlyDto) value; break;
+		case BREAK:
+			(breakTime) = (BreakTimeOfMonthlyDto) value; break;
+		case LATE_NIGHT:
+			(midNightTime) = (MidnightTimeOfMonthlyDto) value; break;
+		case (LATE + LEAVE_EARLY):
+			(lateLeaveEarly) = (LateLeaveEarlyOfMonthlyDto) value; break;
+		case ATTENDANCE_LEAVE_GATE:
+			(attendanceLeave) = (AttendanceLeaveGateTimeOfMonthlyDto) value; break;
+		case RESERVATION:
+			(reservation) = (ReservationOfMonthlyDto) value; break;
+		case TOPPAGE:
+			(topPage) = (TopPageDisplayTimeOfMonthlyDto) value; break;
+		case (HOLIDAY + USAGE):
+			(holidayUse) = (HolidayUseMonthlyDto) value; break;
+		case LABOR:
+			(laborTime) = (LaborTimeMonthlyDto) value; break;
+		default:
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T extends AttendanceItemDataGate> void set(String path, List<T> value) {
+		switch (path) {
+		case MEDICAL: 
+			medical = (List<MedicalTimeOfMonthlyDto>) value; break;
+		case RAISING_SALARY:
+			bonus = (List<BonusPayTimeOfMonthlyDto>) value; break;
+		case DIVERGENCE:
+			divergenceTimes = (List<DivergenceTimeOfMonthlyDto>) value; break;
+		default:
+		}
+	}
+
 }

@@ -707,7 +707,7 @@ public class OvertimeServiceImpl implements OvertimeService {
 				}
 				List<EmployeeDailyPerError> employeeDailyPerErrorLst = new ArrayList<>();
 				for(SystemFixedErrorAlarm fixedErrorAlarmCode : fixedErrorAlarmCodeLst) {
-					employeeDailyPerErrorLst.addAll(opIntegrationOfDaily.get().getDeclareErrorList(fixedErrorAlarmCode));
+//					employeeDailyPerErrorLst.addAll(opIntegrationOfDaily.get().getDeclareErrorList(fixedErrorAlarmCode));
 				}
 				if(!CollectionUtil.isEmpty(employeeDailyPerErrorLst)) {
 					if(employeeDailyPerErrorLst.get(0).getErrorAlarmMessage().isPresent()) {

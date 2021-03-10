@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal;
 /**
  * @author ThanhNX
  *
- *         就業情報端末の機種類
+ *         就業情報端末の機種
  */
 public enum ModelEmpInfoTer {
 
