@@ -449,7 +449,7 @@ public class AlarmCheckConditionByCategoryFinder {
 				.sortOrder(domain.getSortOrder())
 				.isUse(domain.isUse())
 				.name(domain.getName().v())
-				.errorAlarmMessage(domain.getErrorAlarmMessage() != NULL ? domain.getErrorAlarmMessage().get().v() : "")
+				.errorAlarmMessage(domain.getErrorAlarmMessage() != null ? domain.getErrorAlarmMessage().get().v() : "")
 				.build();
 	}
 }
