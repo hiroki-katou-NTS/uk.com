@@ -28,6 +28,6 @@ public class ScvmtErpColumnDesignPk implements Serializable {
 	private GeneralDateTime datetime;
 
 	@Column(name = "ID")
-	public int id;
+	public String id;
 
 }

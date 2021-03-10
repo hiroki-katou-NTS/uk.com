@@ -22,6 +22,7 @@ import net.sf.jsqlparser.statement.create.table.Index;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.cnv.dom.td.tabledefinetype.DataType;
 import nts.uk.cnv.dom.td.tabledefinetype.TableDefineType;
 import nts.uk.cnv.dom.td.tabledefinetype.UkDataType;
@@ -71,7 +72,6 @@ public class DDLImportService {
 
 		List<CreateIndex> indexes = new ArrayList<>();
 		Map<String, Boolean> indexClusteredMap = new HashMap<>();
-		Map<String, Boolean> indexUniqueMap = new HashMap<>();
 		if(createIndexes != null && !createIndexes.isEmpty()) {
 			for (String ci : createIndexes.split(";")) {
 
@@ -79,15 +79,10 @@ public class DDLImportService {
 				if(ci.toUpperCase().contains(" CLUSTERED ")) {
 					isClusteredIndex = true;
 				}
-				boolean unique = false;
-				if(ci.toUpperCase().contains(" UNIQUE ")) {
-					unique = true;
-				}
 				String formatedIndex = ci.replace("NONCLUSTERED", "").replace("CLUSTERED", "");
 
 				CreateIndex idx =(CreateIndex) pm.parse(new StringReader(formatedIndex));
 				indexClusteredMap.put(idx.getIndex().getName(), isClusteredIndex);
-				indexUniqueMap.put(idx.getIndex().getName(), unique);
 				indexes.add(idx);
 			}
 		}
@@ -95,7 +90,7 @@ public class DDLImportService {
 		if (createTableSt instanceof CreateTable) {
 			return new Snapshot(
 					"", GeneralDateTime.now(),
-					toDomain(feature, date, (CreateTable) createTableSt, indexes, typeDefine, comment, indexClusteredMap, indexUniqueMap, isClusteredPK));
+					toDomain(feature, date, (CreateTable) createTableSt, indexes, typeDefine, comment, indexClusteredMap, isClusteredPK));
 		}
 
 		throw new JSQLParserException();
@@ -104,8 +99,7 @@ public class DDLImportService {
 	private static TableDesign toDomain(
 			String feature, GeneralDate date,
 			CreateTable statement, List<CreateIndex> createIndex, TableDefineType typeDefine,
-			String comment, Map<String, Boolean> indexClusteredMap, Map<String, Boolean> indexUniqueMap, boolean isClusteredPK) {
-		GeneralDateTime now = GeneralDateTime.now();
+			String comment, Map<String, Boolean> indexClusteredMap, boolean isClusteredPK) {
 
 		List<Indexes> indexes = new ArrayList<>();
 		Map<String, Integer> pk = new LinkedHashMap<>();
@@ -119,8 +113,7 @@ public class DDLImportService {
 						.map(idx -> Indexes.createIndex(
 								idx.getIndex().getName(),
 								idx.getIndex().getColumnsNames(),
-								indexClusteredMap.get(idx.getIndex().getName()),
-								indexUniqueMap.get(idx.getIndex().getName()))
+								indexClusteredMap.get(idx.getIndex().getName()))
 						).collect(Collectors.toList())
 			);
 		}
@@ -223,7 +216,7 @@ public class DDLImportService {
 		}
 
 		return new ColumnDesign(
-				id,
+				IdentifierUtil.randomUniqueId(),
 				col.getColumnName(),
 				col.getColumnName(),
 				new DefineColumnType(
@@ -282,7 +275,6 @@ public class DDLImportService {
 		for (Iterator<Index> indexDef =  statement.getIndexes().iterator(); indexDef.hasNext();) {
 			Index index = (Index) indexDef.next();
 			boolean clustered = false;
-			String type = "";
 			Indexes idx = null;
 			if(index.getType().equals("PRIMARY KEY")) {
 				int seq = 1;

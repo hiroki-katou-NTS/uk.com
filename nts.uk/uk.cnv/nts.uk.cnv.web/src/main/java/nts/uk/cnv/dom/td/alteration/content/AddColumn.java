@@ -12,12 +12,12 @@ import nts.uk.cnv.dom.td.tabledesign.TableDesignBuilder;
 
 @EqualsAndHashCode(callSuper= false)
 public class AddColumn extends AlterationContent {
-	private final String columnName;
+	private final String columnId;
 	private final ColumnDesign column;
 
-	public AddColumn(String columnName, ColumnDesign column) {
+	public AddColumn(String columnId, ColumnDesign column) {
 		super(AlterationType.COLUMN_ADD);
-		this.columnName = columnName;
+		this.columnId = columnId;
 		this.column = column;
 	}
 
@@ -26,10 +26,10 @@ public class AddColumn extends AlterationContent {
 		for(int i=0; i<altered.get().getColumns().size(); i++) {
 			ColumnDesign alterdCol = altered.get().getColumns().get(i);
 			Optional<ColumnDesign> baseCol = base.get().getColumns().stream()
-					.filter(col -> col.getName().equals(alterdCol.getName()))
+					.filter(col -> col.getId().equals(alterdCol.getId()))
 					.findFirst();
 			if(!baseCol.isPresent()) {
-				result.add(new AddColumn(alterdCol.getName(), alterdCol));
+				result.add(new AddColumn(alterdCol.getId(), alterdCol));
 			}
 		}
 		return result;
@@ -43,7 +43,7 @@ public class AddColumn extends AlterationContent {
 		for(int i=0; i<altered.get().getColumns().size(); i++) {
 			ColumnDesign alterdCol = altered.get().getColumns().get(i);
 			Optional<ColumnDesign> baseCol = base.get().getColumns().stream()
-					.filter(col -> col.getName().equals(alterdCol.getName()))
+					.filter(col -> col.getId().equals(alterdCol.getId()))
 					.findFirst();
 			if(!baseCol.isPresent()) {
 				return true;
@@ -55,7 +55,7 @@ public class AddColumn extends AlterationContent {
 	@Override
 	public TableDesignBuilder apply(TableDesignBuilder builder) {
 		return builder.addColumn(
-				this.columnName,
+				this.columnId,
 				this.column);
 	}
 }

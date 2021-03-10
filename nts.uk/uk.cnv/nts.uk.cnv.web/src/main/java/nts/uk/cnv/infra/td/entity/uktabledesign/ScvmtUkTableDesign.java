@@ -72,7 +72,6 @@ public class ScvmtUkTableDesign extends JpaEntity implements Serializable {
 					 index.pk.getName(),
 					 index.type,
 					 index.clustered,
-					 index.unique,
 					 colmns,
 					 params
 			));

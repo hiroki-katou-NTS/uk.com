@@ -20,6 +20,7 @@ import nts.uk.cnv.dom.td.alteration.AlterationType;
 import nts.uk.cnv.dom.td.alteration.content.AddColumn;
 import nts.uk.cnv.dom.td.alteration.content.ChangeColumnComment;
 import nts.uk.cnv.dom.td.alteration.content.ChangeColumnJpName;
+import nts.uk.cnv.dom.td.alteration.content.ChangeColumnName;
 import nts.uk.cnv.dom.td.alteration.content.ChangeColumnType;
 import nts.uk.cnv.dom.td.alteration.content.ChangeIndex;
 import nts.uk.cnv.dom.td.alteration.content.ChangePK;
@@ -122,14 +123,14 @@ public class AlterationFactoryTest {
 
 	@Test
 	public void test_ChangeIndex() {
-		alt.getContents().add(new ChangeIndex("KRCDI_FOO_BAR", Arrays.asList("SID", "YMD", "ITEM_CD"), false, true));
+		alt.getContents().add(new ChangeIndex("KRCDI_FOO_BAR", Arrays.asList("SID", "YMD", "ITEM_CD"), true));
 		Optional<TableDesign> alterd = createAltered(base, alt);
 
 		Assert.assertTrue(alterd.isPresent());
 		Optional<Indexes> index = alterd.get().getIndexes().stream()
 				.filter(idx -> idx.getName().equals("KRCDI_FOO_BAR"))
 				.findFirst();
-		Assert.assertTrue(index.isPresent() && index.get().isUnique());
+		Assert.assertTrue(index.isPresent() && index.get().isClustered());
 
 		val result = factory.create(tableName, meta, base, alterd);
 
@@ -151,13 +152,13 @@ public class AlterationFactoryTest {
 	@Test
 	public void test_addColumn() {
 		DefineColumnType type = new DefineColumnType(DataType.BOOL, 0, 0, false, "", "");
-		ColumnDesign newColumn = new ColumnDesign(3, "COMFIRM_ATR", "確認区分", type, false, 0, false, 0, "", 3);
-		alt.getContents().add(new AddColumn("COMFIRM_ATR", newColumn));
+		ColumnDesign newColumn = new ColumnDesign("3", "COMFIRM_ATR", "確認区分", type, false, 0, false, 0, "", 3);
+		alt.getContents().add(new AddColumn("3", newColumn));
 		Optional<TableDesign> alterd = createAltered(base, alt);
 
 		Assert.assertTrue(alterd.isPresent());
 		Optional<ColumnDesign> column = alterd.get().getColumns().stream()
-				.filter(col -> col.getName().equals("COMFIRM_ATR"))
+				.filter(col -> col.getId().equals("3"))
 				.findFirst();
 		Assert.assertTrue(column.isPresent() && column.get().equals(newColumn));
 
@@ -170,12 +171,12 @@ public class AlterationFactoryTest {
 	public void test_changeColumnType() {
 		DefineColumnType coltype = new DefineColumnType(
 				DataType.CHAR, 4, 0, false, "", "");
-		alt.getContents().add(new ChangeColumnType("ITEM_CD", coltype));
+		alt.getContents().add(new ChangeColumnType("2", coltype));
 		Optional<TableDesign> alterd = createAltered(base, alt);
 
 		Assert.assertTrue(alterd.isPresent());
 		Optional<ColumnDesign> column = alterd.get().getColumns().stream()
-				.filter(col -> col.getName().equals("ITEM_CD"))
+				.filter(col -> col.getId().equals("2"))
 				.findFirst();
 		Assert.assertTrue(column.isPresent());
 
@@ -195,12 +196,28 @@ public class AlterationFactoryTest {
 
 	@Test
 	public void test_changeColumnName() {
-		alt.getContents().add(new ChangeColumnJpName("ITEM_CD", "★項目コード★"));
+		alt.getContents().add(new ChangeColumnName("2", "ITEM_CODE"));
 		Optional<TableDesign> alterd = createAltered(base, alt);
 
 		Assert.assertTrue(alterd.isPresent());
 		Optional<ColumnDesign> column = alterd.get().getColumns().stream()
-				.filter(col -> col.getName().equals("ITEM_CD"))
+				.filter(col -> col.getId().equals("2"))
+				.findFirst();
+		Assert.assertTrue(column.isPresent() && column.get().getName().equals("ITEM_CODE"));
+
+		val result = factory.create(tableName, meta, base, alterd);
+
+		Assert.assertEquals(result, alt);
+	}
+
+	@Test
+	public void test_changeColumnJpName() {
+		alt.getContents().add(new ChangeColumnJpName("2", "★項目コード★"));
+		Optional<TableDesign> alterd = createAltered(base, alt);
+
+		Assert.assertTrue(alterd.isPresent());
+		Optional<ColumnDesign> column = alterd.get().getColumns().stream()
+				.filter(col -> col.getId().equals("2"))
 				.findFirst();
 		Assert.assertTrue(column.isPresent() && column.get().getJpName().equals("★項目コード★"));
 
@@ -211,12 +228,12 @@ public class AlterationFactoryTest {
 
 	@Test
 	public void test_changeColumnComment() {
-		alt.getContents().add(new ChangeColumnComment("ITEM_CD", "こめんと"));
+		alt.getContents().add(new ChangeColumnComment("2", "こめんと"));
 		Optional<TableDesign> alterd = createAltered(base, alt);
 
 		Assert.assertTrue(alterd.isPresent());
 		Optional<ColumnDesign> column = alterd.get().getColumns().stream()
-				.filter(col -> col.getName().equals("ITEM_CD"))
+				.filter(col -> col.getId().equals("2"))
 				.findFirst();
 		Assert.assertTrue(column.isPresent() && column.get().getComment().equals("こめんと"));
 
@@ -227,12 +244,12 @@ public class AlterationFactoryTest {
 
 	@Test
 	public void test_delColumn() {
-		alt.getContents().add(new RemoveColumn("ITEM_CD"));
+		alt.getContents().add(new RemoveColumn("2"));
 		Optional<TableDesign> alterd = createAltered(base, alt);
 
 		Assert.assertTrue(alterd.isPresent());
 		Optional<ColumnDesign> column = alterd.get().getColumns().stream()
-				.filter(col -> col.getName().equals("ITEM_CD"))
+				.filter(col -> col.getId().equals("2"))
 				.findFirst();
 		Assert.assertFalse(column.isPresent());
 
@@ -260,11 +277,11 @@ public class AlterationFactoryTest {
 		DefineColumnType sidType = new DefineColumnType(DataType.CHAR, 36, 0, false, "", "");
 		DefineColumnType ymdType = new DefineColumnType(DataType.DATE, 0, 0, false, "", "");
 		DefineColumnType itemCdType = new DefineColumnType(DataType.CHAR, 0, 0, false, "", "");
-		cols.add(new ColumnDesign(0, "SID", "社員ID", sidType, true, 1, false, 0, "", 0));
-		cols.add(new ColumnDesign(1, "YMD", "年月日", ymdType, true, 2, false, 0, "", 1));
-		cols.add(new ColumnDesign(2, "ITEM_CD", "項目コード", itemCdType, false, 0, false, 0, "", 2));
+		cols.add(new ColumnDesign("0", "SID", "社員ID", sidType, true, 1, false, 0, "", 0));
+		cols.add(new ColumnDesign("1", "YMD", "年月日", ymdType, true, 2, false, 0, "", 1));
+		cols.add(new ColumnDesign("2", "ITEM_CD", "項目コード", itemCdType, false, 0, false, 0, "", 2));
 		indexes.add(Indexes.createPk(new TableName(tableName), Arrays.asList("SID", "YMD"), true));
-		indexes.add(Indexes.createIndex("KRCDI_FOO_BAR", Arrays.asList("SID", "YMD"), false, false));
+		indexes.add(Indexes.createIndex("KRCDI_FOO_BAR", Arrays.asList("SID", "YMD"), false));
 
 		return new TableDesign(
 			tableName, tableName, "ほげほげ",

@@ -3,7 +3,7 @@ package nts.uk.cnv.dom.td.tabledesign;
 import nts.uk.cnv.dom.td.tabledefinetype.DataType;
 
 public class ColumnDesignBuilder {
-	private int id;
+	private String id;
 	private String name;
 	private String jpName;
 	private DataType type;

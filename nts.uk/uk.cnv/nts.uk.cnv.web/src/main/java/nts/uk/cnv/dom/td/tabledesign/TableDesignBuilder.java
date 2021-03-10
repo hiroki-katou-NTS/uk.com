@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.uk.cnv.dom.td.tabledefinetype.DataType;
@@ -18,7 +17,8 @@ public class TableDesignBuilder {
 
 	private List<Indexes> indexes;
 
-	public Map<String, ColumnDesignBuilder> colmnBuilder;
+	public Map<String, ColumnDesignBuilder> columnBuilder;
+	public Map<String, String> columnName;
 
 	public boolean isRemoved;
 
@@ -26,9 +26,11 @@ public class TableDesignBuilder {
 		this.id = base.getId();
 		this.name = base.getName();
 		this.jpName = base.getJpName();
-		this.colmnBuilder = new HashMap<>();
+		this.columnBuilder = new HashMap<>();
+		this.columnName = new HashMap<>();
 		base.getColumns().stream().forEach(col -> {
-			colmnBuilder.put(col.getName(), new ColumnDesignBuilder(col));
+			columnBuilder.put(col.getId(), new ColumnDesignBuilder(col));
+			columnName.put(col.getId(), col.getName());
 		});
 
 		this.indexes = new ArrayList<Indexes>();
@@ -42,8 +44,8 @@ public class TableDesignBuilder {
 		if (this.isRemoved) return Optional.empty();
 
 		List<ColumnDesign> newColumns = new ArrayList<>();
-		this.colmnBuilder.keySet().stream().forEach(col -> {
-			newColumns.add(colmnBuilder.get(col).build());
+		this.columnBuilder.keySet().stream().forEach(col -> {
+			newColumns.add(columnBuilder.get(col).build());
 		});
 
 		List<Indexes> newIndexes = new ArrayList<>();
@@ -93,11 +95,16 @@ public class TableDesignBuilder {
 				columnNames,
 				clustred
 			));
-		this.colmnBuilder.keySet().forEach(columnName->{
-			this.colmnBuilder.get(columnName).pk(false, 0);
+		this.columnBuilder.keySet().forEach(columnId->{
+			this.columnBuilder.get(columnId).pk(false, 0);
 		});
 		columnNames.stream().forEach(columnName -> {
-			this.colmnBuilder.get(columnName).pk(true, columnNames.indexOf(columnName));
+			String columnId = this.columnName.entrySet().stream()
+				.filter(e -> columnName.endsWith(e.getValue()))
+				.map(e -> e.getKey())
+				.findFirst()
+				.get();
+			this.columnBuilder.get(columnId).pk(true, columnNames.indexOf(columnName));
 		});
 		return this;
 	}
@@ -112,16 +119,21 @@ public class TableDesignBuilder {
 				columnNames,
 				clustred
 			));
-		this.colmnBuilder.keySet().forEach(columnName->{
-			this.colmnBuilder.get(columnName).uk(false, 0);
+		this.columnBuilder.keySet().forEach(columnId->{
+			this.columnBuilder.get(columnId).uk(false, 0);
 		});
 		columnNames.stream().forEach(columnName -> {
-			this.colmnBuilder.get(columnName).uk(true, columnNames.indexOf(columnName));
+			String columnId = this.columnName.entrySet().stream()
+					.filter(e -> columnName.endsWith(e.getValue()))
+					.map(e -> e.getKey())
+					.findFirst()
+					.get();
+			this.columnBuilder.get(columnId).uk(true, columnNames.indexOf(columnName));
 		});
 		return this;
 	}
 
-	public TableDesignBuilder index(String indexName, List<String> columnNames, boolean clustred, boolean unique) {
+	public TableDesignBuilder index(String indexName, List<String> columnNames, boolean clustred) {
 		checkBeforeChangeTable();
 
 		this.indexes.removeIf(idx -> idx.isIndex() && idx.getName().equals(indexName));
@@ -129,64 +141,59 @@ public class TableDesignBuilder {
 			Indexes.createIndex(
 				indexName,
 				columnNames,
-				clustred,
-				unique
+				clustred
 			));
 		return this;
 	}
 
-	public TableDesignBuilder addColumn(String columnName, ColumnDesign column) {
+	public TableDesignBuilder addColumn(String columnId, ColumnDesign column) {
 		checkBeforeChangeTable();
-		if(this.colmnBuilder.containsKey(columnName)) {
-			throw new BusinessException(new RawErrorMessage(this.name + "テーブルの" + columnName + "列はすでに存在しているため追加できません。"));
+		if(this.columnName.containsValue(column.getName())) {
+			throw new BusinessException(new RawErrorMessage(this.name + "テーブルの" + column.getName() + "列はすでに存在しているため追加できません。"));
 		}
 
-		this.colmnBuilder.put(columnName, new ColumnDesignBuilder(column));
+		this.columnBuilder.put(columnId, new ColumnDesignBuilder(column));
+		this.columnName.put(columnId, column.getName());
 		return this;
 	}
 
-	public TableDesignBuilder columnName(String name, String afterName) {
-		checkBeforeChangeColumn(name);
+	public TableDesignBuilder columnName(String columnId, String afterName) {
+		checkBeforeChangeColumn(columnId);
 
-		if(this.colmnBuilder.containsKey(afterName)) {
+		if(this.columnName.containsValue(afterName)) {
 			throw new BusinessException(new RawErrorMessage(this.name + "テーブルの" + afterName + "列はすでに存在しているため変更できません。"));
 		}
 
-		val builder = this.colmnBuilder.get(name).name(afterName);
-		this.colmnBuilder.remove(name);
-		this.colmnBuilder.put(afterName, builder);
+		this.columnBuilder.get(columnId).name(afterName);
+		this.columnName.put(columnId, afterName);
 		return this;
 	}
 
-	public TableDesignBuilder columnJpName(String columnName, String jpName) {
-		this.colmnBuilder.get(columnName).jpName(jpName);
+	public TableDesignBuilder columnJpName(String columnId, String jpName) {
+		checkBeforeChangeColumn(columnId);
+
+		this.columnBuilder.get(columnId).jpName(jpName);
 		return this;
 	}
 
-	public TableDesignBuilder columnType(String columnName, DataType type, int maxLength, int scale, boolean nullable) {
-		this.colmnBuilder.get(columnName).type(type, maxLength, scale, nullable);
+	public TableDesignBuilder columnType(String columnId, DataType type, int maxLength, int scale, boolean nullable) {
+		checkBeforeChangeColumn(columnId);
+
+		this.columnBuilder.get(columnId).type(type, maxLength, scale, nullable);
 		return this;
 	}
 
-	public TableDesignBuilder columnDefaultValue(String columnName, String defaultValue) {
-		this.colmnBuilder.get(columnName).defaultValue(defaultValue);
+	public TableDesignBuilder columnComment(String columnId, String comment) {
+		checkBeforeChangeColumn(columnId);
+
+		this.columnBuilder.get(columnId).comment(comment);
 		return this;
 	}
 
-	public TableDesignBuilder columnComment(String columnName, String comment) {
-		this.colmnBuilder.get(columnName).comment(comment);
-		return this;
-	}
-
-	public TableDesignBuilder check(String columnName, String check) {
-		this.colmnBuilder.get(columnName).check(check);
-		return this;
-	}
-
-	public TableDesignBuilder removeColumn(String columnName) {
+	public TableDesignBuilder removeColumn(String columnId) {
 		checkBeforeChangeTable();
 
-		this.colmnBuilder.remove(columnName);
+		this.columnBuilder.remove(columnId);
 		return this;
 	}
 
@@ -196,11 +203,11 @@ public class TableDesignBuilder {
 		}
 	}
 
-	private void checkBeforeChangeColumn(String name) {
+	private void checkBeforeChangeColumn(String columnId) {
 		checkBeforeChangeTable();
 
-		if(colmnBuilder.containsKey(name)) {
-			throw new BusinessException(new RawErrorMessage(this.name + "テーブルの" + name + "列は存在しないため操作できません。"));
+		if(!columnBuilder.containsKey(columnId)) {
+			throw new BusinessException(new RawErrorMessage("対象の列が見つからないため操作できません。テーブル：" + this.name + "　列：" + columnId));
 		}
 	}
 }

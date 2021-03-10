@@ -12,11 +12,11 @@ import nts.uk.cnv.dom.td.tabledesign.TableDesignBuilder;
 
 @EqualsAndHashCode(callSuper= false)
 public class RemoveColumn extends AlterationContent {
-	private final String columnName;
+	private final String columnId;
 
-	public RemoveColumn(String columnName) {
+	public RemoveColumn(String columnId) {
 		super(AlterationType.COLUMN_DELETE);
-		this.columnName = columnName;
+		this.columnId = columnId;
 	}
 
 	public static List<AlterationContent> create(Optional<TableDesign> base, Optional<TableDesign> altered) {
@@ -24,10 +24,10 @@ public class RemoveColumn extends AlterationContent {
 		for(int i=0; i<base.get().getColumns().size(); i++) {
 			ColumnDesign baseCol = base.get().getColumns().get(i);
 			Optional<ColumnDesign> alteredCol = altered.get().getColumns().stream()
-					.filter(col -> col.getName().equals(baseCol.getName()))
+					.filter(col -> col.getId().equals(baseCol.getId()))
 					.findFirst();
 			if(!alteredCol.isPresent()) {
-				retult.add(new RemoveColumn(baseCol.getName()));
+				retult.add(new RemoveColumn(baseCol.getId()));
 			}
 		}
 		return retult;
@@ -41,7 +41,7 @@ public class RemoveColumn extends AlterationContent {
 		for(int i=0; i<base.get().getColumns().size(); i++) {
 			ColumnDesign baseCol = base.get().getColumns().get(i);
 			Optional<ColumnDesign> alteredCol = altered.get().getColumns().stream()
-					.filter(col -> col.getName().equals(baseCol.getName()))
+					.filter(col -> col.getId().equals(baseCol.getId()))
 					.findFirst();
 			if(!alteredCol.isPresent()) {
 				return true;
@@ -53,6 +53,6 @@ public class RemoveColumn extends AlterationContent {
 	@Override
 	public TableDesignBuilder apply(TableDesignBuilder builder) {
 		return builder.removeColumn(
-				this.columnName);
+				this.columnId);
 	}
 }

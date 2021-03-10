@@ -12,7 +12,6 @@ public class Indexes {
 	private String name;
 	private String constraintType;
 	private boolean clustered;
-	private boolean unique;
 	private List<String> columns;
 	private List<String> params;
 
@@ -21,7 +20,6 @@ public class Indexes {
 				tableName.pkName(),
 				"PRIMARY KEY",
 				clustred,
-				true,
 				columns,
 				new ArrayList<>());
 	}
@@ -31,17 +29,15 @@ public class Indexes {
 				name,
 				"UNIQUE KEY",
 				clustred,
-				true,
 				columns,
 				new ArrayList<>());
 	}
 
-	public static Indexes createIndex(String name, List<String> columns, boolean clustred, boolean unique) {
+	public static Indexes createIndex(String name, List<String> columns, boolean clustred) {
 		return new Indexes(
 				name,
 				"INDEX",
 				clustred,
-				unique,
 				columns,
 				new ArrayList<>());
 	}
@@ -75,7 +71,6 @@ public class Indexes {
 		result = prime * result + ((constraintType == null) ? 0 : constraintType.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((params == null) ? 0 : params.hashCode());
-		result = prime * result + (unique ? 0 : 1);
 		return result;
 	}
 
@@ -118,8 +113,6 @@ public class Indexes {
 			if (other.params != null)
 				return false;
 		} else if (!params.equals(other.params))
-			return false;
-		if (unique != other.unique)
 			return false;
 		return true;
 	}

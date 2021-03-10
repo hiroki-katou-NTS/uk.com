@@ -8,7 +8,7 @@ import nts.uk.cnv.dom.td.tabledefinetype.TableDefineType;
 @AllArgsConstructor
 @Getter
 public class ColumnDesign {
-	private int id;
+	private String id;
 	private String name;
 	private String jpName;
 
@@ -75,7 +75,7 @@ public class ColumnDesign {
 		result = prime * result + ((type.checkConstaint == null) ? 0 : type.checkConstaint.hashCode());
 		result = prime * result + ((comment == null) ? 0 : comment.hashCode());
 		result = prime * result + ((type.defaultValue == null) ? 0 : type.defaultValue.hashCode());
-		result = prime * result + id;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((jpName == null) ? 0 : jpName.hashCode());
 		result = prime * result + type.length;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
@@ -114,7 +114,10 @@ public class ColumnDesign {
 				return false;
 		} else if (!type.defaultValue.equals(other.type.defaultValue))
 			return false;
-		if (id != other.id)
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
 			return false;
 		if (jpName == null) {
 			if (other.jpName != null)

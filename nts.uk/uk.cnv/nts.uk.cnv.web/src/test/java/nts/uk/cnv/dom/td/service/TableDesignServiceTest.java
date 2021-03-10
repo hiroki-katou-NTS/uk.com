@@ -119,10 +119,10 @@ public class TableDesignServiceTest {
 		List<Indexes> indexes = new ArrayList<>();
 		DefineColumnType sidType = new DefineColumnType(DataType.CHAR, 36, 0, false, "", "");
 		DefineColumnType ymdType = new DefineColumnType(DataType.DATE, 0, 0, false, "", "");
-		cols.add(new ColumnDesign(0, "SID", "社員ID", sidType, true, 1, false, 0, "", 0));
-		cols.add(new ColumnDesign(1, "YMD", "年月日", ymdType, true, 2, false, 0, "", 1));
+		cols.add(new ColumnDesign("0", "SID", "社員ID", sidType, true, 1, false, 0, "", 0));
+		cols.add(new ColumnDesign("1", "YMD", "年月日", ymdType, true, 2, false, 0, "", 1));
 		indexes.add(Indexes.createPk(new TableName(tableName), Arrays.asList("SID", "YMD"), true));
-		indexes.add(Indexes.createIndex("KRCDI_FOO_BAR", Arrays.asList("SID", "YMD"), false, false));
+		indexes.add(Indexes.createIndex("KRCDI_FOO_BAR", Arrays.asList("SID", "YMD"), false));
 
 		return new TableDesign(
 			"KRCDT_FOO_BAR", "KRCDT_FOO_BAR", "",

@@ -6,7 +6,7 @@ import lombok.Data;
 @AllArgsConstructor
 @Data
 public class GetUkColumnsResultDto {
-	int id;
+	String id;
 	String columnName;
 	String dataType;
 	boolean existsConvertTable;

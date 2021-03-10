@@ -6,7 +6,7 @@ import lombok.Data;
 @AllArgsConstructor
 @Data
 public class GetErpColumnsResultDto {
-	int id;
+	String id;
 	String columnName;
 	String dataType;
 }

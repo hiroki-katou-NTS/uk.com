@@ -79,7 +79,6 @@ public class JpaUkTableDesignRepository extends JpaRepository implements UkTable
 					idx.getConstraintType(),
 					String.join(",", idx.getParams()),
 					idx.isClustered(),
-					idx.isUnique(),
 					indexcolumns,
 					null
 			));

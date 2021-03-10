@@ -16,14 +16,12 @@ public class ChangeIndex extends AlterationContent {
 	private final String indexName;
 	private final List<String> columnNames;
 	private final boolean clustred;
-	private final boolean unique;
 
-	public ChangeIndex(String indexName, List<String> columnNames, boolean clustred, boolean unique) {
+	public ChangeIndex(String indexName, List<String> columnNames, boolean clustred) {
 		super(AlterationType.INDEX_CHANGE);
 		this.indexName = indexName;
 		this.columnNames = columnNames;
 		this.clustred = clustred;
-		this.unique = unique;
 	}
 
 	public static List<AlterationContent> create(Optional<TableDesign> base, Optional<TableDesign> altered) {
@@ -39,7 +37,7 @@ public class ChangeIndex extends AlterationContent {
 			Indexes baseIdx = baseIndexes.get(i);
 			Indexes alterdIdx = alteredIndexes.get(i);
 			if(!baseIdx.equals(alterdIdx)) {
-				result.add(new ChangeIndex(alterdIdx.getName(), alterdIdx.getColumns(), alterdIdx.isClustered(), alterdIdx.isUnique()));
+				result.add(new ChangeIndex(alterdIdx.getName(), alterdIdx.getColumns(), alterdIdx.isClustered()));
 			}
 		}
 
@@ -75,6 +73,6 @@ public class ChangeIndex extends AlterationContent {
 
 	@Override
 	public TableDesignBuilder apply(TableDesignBuilder builder) {
-		return builder.index(this.indexName, this.columnNames, this.clustred, this.unique);
+		return builder.index(this.indexName, this.columnNames, this.clustred);
 	}
 }

@@ -13,12 +13,12 @@ import nts.uk.cnv.dom.td.tabledesign.TableDesignBuilder;
 
 @EqualsAndHashCode(callSuper= false)
 public class ChangeColumnType extends AlterationContent {
-	private final String columnName;
+	private final String columnId;
 	private final DefineColumnType afterType;
 
-	public ChangeColumnType(String columnName, DefineColumnType afterType) {
+	public ChangeColumnType(String columnId, DefineColumnType afterType) {
 		super(AlterationType.COLUMN_TYPE_CHANGE);
-		this.columnName = columnName;
+		this.columnId = columnId;
 		this.afterType = afterType;
 	}
 
@@ -27,11 +27,11 @@ public class ChangeColumnType extends AlterationContent {
 		for(int i=0; i<altered.get().getColumns().size(); i++) {
 			ColumnDesign alterdCol = altered.get().getColumns().get(i);
 			Optional<ColumnDesign> baseCol = base.get().getColumns().stream()
-					.filter(col -> col.getName().equals(alterdCol.getName()))
+					.filter(col -> col.getId().equals(alterdCol.getId()))
 					.findFirst();
 			if(baseCol.isPresent() && diff(baseCol.get(), alterdCol)) {
 				result.add(new ChangeColumnType(
-						baseCol.get().getName(),
+						baseCol.get().getId(),
 						new DefineColumnType(
 							alterdCol.getType(),
 							alterdCol.getMaxLength(),
@@ -52,7 +52,7 @@ public class ChangeColumnType extends AlterationContent {
 		for(int i=0; i<altered.get().getColumns().size(); i++) {
 			ColumnDesign alterdCol = altered.get().getColumns().get(i);
 			Optional<ColumnDesign> baseCol = base.get().getColumns().stream()
-					.filter(col -> col.getName().equals(alterdCol.getName()))
+					.filter(col -> col.getId().equals(alterdCol.getId()))
 					.findFirst();
 			if(baseCol.isPresent() && diff(baseCol.get(), alterdCol)) {
 				return true;
@@ -64,7 +64,7 @@ public class ChangeColumnType extends AlterationContent {
 	@Override
 	public TableDesignBuilder apply(TableDesignBuilder builder) {
 		return builder.columnType(
-				this.columnName,
+				this.columnId,
 				this.afterType.getType(),
 				this.afterType.getLength(),
 				this.afterType.getScale(),

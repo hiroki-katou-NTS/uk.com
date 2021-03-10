@@ -57,12 +57,6 @@ public enum AlterationType {
 	COLUMN_COMMENT_CHANGE(
 			ChangeColumnComment::create,
 			ChangeColumnComment::applicable),
-//	COLUMN_CONTAINT_CHANGE(
-//			ChangeColumnContaint::create,
-//			ChangeColumnContaint::applicable),
-//	COLUMN_DEFAULT_VALUE_CHANGE(
-//			ChangeDefaultValue::create,
-//			ChangeDefaultValue::applicable),
 	COLUMN_DELETE(
 			RemoveColumn::create,
 			RemoveColumn::applicable);

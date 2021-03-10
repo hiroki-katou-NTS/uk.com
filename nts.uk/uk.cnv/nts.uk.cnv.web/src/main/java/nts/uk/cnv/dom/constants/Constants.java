@@ -49,23 +49,23 @@ public final class Constants {
 
     /** 固定列 **/
 	public static final List<ColumnDesign> FixColumns = Collections.unmodifiableList( new ArrayList<ColumnDesign>() {{
-		add (new ColumnDesign(1, "INS_DATE", "",
+		add (new ColumnDesign("1", "INS_DATE", "",
 				new DefineColumnType(DataType.DATETIME, 0, 0, true, "", ""), false, 0, false, 0, "", 1));
-		add (new ColumnDesign(2, "INS_CCD", "",
+		add (new ColumnDesign("2", "INS_CCD", "",
 				new DefineColumnType(DataType.CHAR, 4, 0, true, "", ""), false, 0, false, 0, "", 2));
-		add (new ColumnDesign(3, "INS_SCD", "",
+		add (new ColumnDesign("3", "INS_SCD", "",
 				new DefineColumnType(DataType.CHAR, 12, 0, true, "", ""), false, 0, false, 0, "", 3));
-		add (new ColumnDesign(4, "INS_PG", "",
+		add (new ColumnDesign("4", "INS_PG", "",
 				new DefineColumnType(DataType.CHAR, 14, 0, true, "", ""), false, 0, false, 0, "", 4));
-		add (new ColumnDesign(5, "UPD_DATE", "",
+		add (new ColumnDesign("5", "UPD_DATE", "",
 				new DefineColumnType(DataType.DATETIME, 0, 0, true, "", ""), false, 0, false, 0, "", 5));
-		add (new ColumnDesign(6, "UPD_CCD", "",
+		add (new ColumnDesign("6", "UPD_CCD", "",
 				new DefineColumnType(DataType.CHAR, 4, 0, true, "", ""), false, 0, false, 0, "", 6));
-		add (new ColumnDesign(7, "UPD_SCD", "",
+		add (new ColumnDesign("7", "UPD_SCD", "",
 				new DefineColumnType(DataType.CHAR, 12, 0, true, "", ""), false, 0, false, 0, "", 7));
-		add (new ColumnDesign(8, "UPD_PG", "",
+		add (new ColumnDesign("8", "UPD_PG", "",
 				new DefineColumnType(DataType.CHAR, 14, 0, true, "", ""), false, 0, false, 0, "", 8));
-		add (new ColumnDesign(9, "EXCLUS_VER", "",
+		add (new ColumnDesign("9", "EXCLUS_VER", "",
 				new DefineColumnType(DataType.INT, 8, 0, false, "", ""), false, 0, false, 0, "0", 9));
 	}} );
 
