@@ -16,40 +16,45 @@
         <div id="functions-area">
             <a tabindex="1" class="goback" data-bind="ntsLinkButton: { action: goback }, text: $vm.$i18n('KMT005_2'), visible: displayGoback"/>
             <button tabindex="2" class="proceed" data-bind="text: $vm.$i18n('KMT014_2'), click: register, enable: $root.errors.isEmpty" />
-            <button tabindex="3" class="danger" data-bind="text: $vm.$i18n('KMT014_3'), click: deleteSetting" />
+            <button tabindex="3" class="danger" data-bind="text: $vm.$i18n('KMT014_3'), click: deleteSetting, enable: updateMode" />
         </div>
         <div id="contents-area" class="fixed-flex-layout">
             <div class="fixed-flex-layout-left">
-                <div data-bind="ntsPanel:{width: '450px', height: '420px', direction: 'right', showIcon: true, visible: true}">
+                <div data-bind="ntsPanel:{width: '450px', height: '460px', direction: 'right', showIcon: true, visible: true}">
                     <div class="control-group valign-center">
                         <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMT014_4')}</div>
-                        <div data-bind="ntsDatePicker: { value: date, name: $i18n('KMT014_5') }"/>
-                        <button data-bind="text: $vm.$i18n('KMT014_6'), click: changeDate" />
+                        <div tabindex="4" data-bind="ntsDatePicker: { value: date, name: $i18n('KMT014_5') }"/>
+                        <button tabindex="5" data-bind="text: $vm.$i18n('KMT014_6'), click: changeDate" />
                     </div>
-                    <div style="width: 427px" data-bind="ntsSearchBox: {
-                                                        searchMode: 'filter',
-                                                        targetKey: 'taskCode',
-                                                        comId: 'task-list',
-	                                                    items: taskList,
-	                                                    selected: taskCode,
-	                                                    selectedKey: 'taskCode',
-	                                                    fields: ['taskName', 'taskCode'],
-	                                                    mode: 'igGrid'
-                                                    }" />
-                    <table id="task-list" data-bind="ntsGridList: {
-                                                        name: $i18n('KMT014_7'),
-                                                        options: taskList,
-                                                        optionsValue: 'taskCode',
-                                                        columns: [
-                                                            { headerText: $i18n('KMT014_8'), prop: 'taskCode', width: 180, formatter: _.escape },
-                                                            { headerText: $i18n('KMT014_9'), prop: 'taskName', width: 190, formatter: _.escape },
-                                                            { headerText: $i18n('KMT014_10'), prop: 'alreadySet', width: 55, columnCssClass: 'text-center', formatter: iconFormater }
-                                                        ],
-                                                        multiple: false,
-                                                        value: taskCode,
-                                                        height: 312
-                                                    }"/>
+                    <div tabindex="6"
+                         style="width: 427px"
+                         data-bind="ntsSearchBox: {
+                                        searchMode: 'filter',
+                                        targetKey: 'taskCode',
+                                        comId: 'task-list',
+                                        items: taskList,
+                                        selected: taskCode,
+                                        selectedKey: 'taskCode',
+                                        fields: ['taskName', 'taskCode'],
+                                        mode: 'igGrid'
+                                    }" />
+                    <table tabindex="7"
+                           id="task-list"
+                           data-bind="ntsGridList: {
+                                        name: $i18n('KMT014_7'),
+                                        options: taskList,
+                                        optionsValue: 'taskCode',
+                                        columns: [
+                                            { headerText: $i18n('KMT014_8'), prop: 'taskCode', width: 180, formatter: _.escape },
+                                            { headerText: $i18n('KMT014_9'), prop: 'taskName', width: 190, formatter: _.escape },
+                                            { headerText: $i18n('KMT014_10'), prop: 'alreadySet', width: 55, columnCssClass: 'text-center' }
+                                        ],
+                                        multiple: false,
+                                        value: taskCode,
+                                        height: 360
+                                    }"/>
                 </div>
+                <div style="height: 20px"/>
             </div>
             <div class="fixed-flex-layout-right">
                 <div class="control-group valign-center">
@@ -63,16 +68,18 @@
                 <div class="control-group valign-center">
                     <div data-bind="ntsFormLabel: {}">#{i18n.getText('KMT014_13')}</div>
                     <span data-bind="text: startDate"/>
-                    <span>#{i18n.getText('KMT014_15')}</span>
+                    <span data-bind="visible: startDate() != null">#{i18n.getText('KMT014_15')}</span>
                     <span data-bind="text: endDate"/>
                 </div>
                 <div class="control-group valign-center">
                     <div data-bind="ntsFormLabel: {}">#{i18n.getText('KMT014_14')}</div>
-                    <button data-bind="text: $vm.$i18n('KMT014_16'), click: openCDL009" id="A6_2" />
-                    <button data-bind="text: $vm.$i18n('KMT014_17'), enable: selectedEmployees().length > 0, click: removeEmployee" class="danger" />
+                    <button tabindex="8" data-bind="text: $vm.$i18n('KMT014_16'), enable: !!taskCode(), click: openCDL009" id="A6_2" />
+                    <button tabindex="9" data-bind="text: $vm.$i18n('KMT014_17'), enable: selectedEmployees().length > 0, click: removeEmployee" class="danger" />
                 </div>
                 <div class="control-group">
-                    <div id="employee-list" style="padding-left: 100px;"/>
+                    <div style="padding-left: 100px;">
+                        <div tabindex="10" id="employee-list"/>
+                    </div>
                 </div>
             </div>
         </div>

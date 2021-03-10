@@ -39,6 +39,16 @@ public class TaskAssignEmployeeWebService extends WebService {
         return Collections.emptyList();
     }
 
+    @Path("findAlreadySet")
+    @POST
+    public List<String> getAlreadySet(Map<String, String> params) {
+        if (params != null) {
+            int taskFrameNo = Integer.parseInt(params.get("taskFrameNo"));
+            return finder.getAlreadySetList(taskFrameNo);
+        }
+        return Collections.emptyList();
+    }
+
     @Path("register")
     @POST
     public void register(TaskAssignEmployeeCommand command) {

@@ -20,12 +20,12 @@ public class RegisterTaskAssignEmployeeCommandHandler extends CommandHandler<Tas
         String companyId = AppContexts.user().companyId();
         TaskAssignEmployeeCommand command = commandHandlerContext.getCommand();
         repository.delete(companyId, command.getTaskFrameNo(), command.getTaskCode());
-        transaction.parallel(command.getEmployeeIds(), empId -> AtomTask.of(() -> {
+        command.getEmployeeIds().forEach(empId -> {
             repository.insert(new TaskAssignEmployee(
                     empId,
                     command.getTaskFrameNo(),
                     command.getTaskCode()
             ));
-        }));
+        });
     }
 }
