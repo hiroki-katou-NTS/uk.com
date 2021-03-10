@@ -108,8 +108,11 @@ public class WorkScheduleTest {
 		
 	}
 	
+	/**
+	 * 休日の場合
+	 */
 	@Test
-	public void testCreate(
+	public void testCreate_withDayOff(
 			@Injectable WorkInformation workInformation,
 			@Mocked AffiliationInforOfDailyAttd affInfo,
 			@Mocked WorkInfoOfDailyAttendance workInfo,
@@ -120,6 +123,9 @@ public class WorkScheduleTest {
 			
 			workInformation.checkNormalCondition(require);
 			result = true;
+			
+			workInformation.isAttendanceRate(require);
+			result = false;
 			
 		}};
 		
@@ -132,10 +138,45 @@ public class WorkScheduleTest {
 		assertThat ( result.getLstEditState() ).isEmpty();
 		assertThat ( result.getOptAttendanceTime() ).isEmpty();
 		assertThat ( result.getOptSortTimeWork() ).isEmpty();
-		
-		// TODO affInfo, workInfo, timeLeavingをどうやってテストすればいいなのまだ微妙
 		assertThat ( result.getAffInfo() ).isEqualTo( affInfo );
 		assertThat ( result.getWorkInfo() ).isEqualTo( workInfo );
+		// day off 休日
+		assertThat ( result.getOptTimeLeaving() ).isEmpty();
+		
+	}
+	
+	/**
+	 * 出勤の場合
+	 */
+	@Test
+	public void testCreate_withAttendanceDay(
+			@Injectable WorkInformation workInformation,
+			@Mocked AffiliationInforOfDailyAttd affInfo,
+			@Mocked WorkInfoOfDailyAttendance workInfo,
+			@Mocked TimeLeavingOfDailyAttd timeLeaving
+			) {
+		
+		new Expectations() {{
+			
+			workInformation.checkNormalCondition(require);
+			result = true;
+			
+			workInformation.isAttendanceRate(require);
+			result = true;
+		}};
+		
+		WorkSchedule result = WorkSchedule.create(require, "empId", GeneralDate.ymd(2020, 11, 1), workInformation);
+		
+		assertThat( result.getEmployeeID() ).isEqualTo( "empId" );
+		assertThat ( result.getYmd() ).isEqualTo( GeneralDate.ymd(2020, 11, 1) );
+		assertThat ( result.getConfirmedATR() ).isEqualTo( ConfirmedATR.UNSETTLED );
+		assertThat ( result.getLstBreakTime().getBreakTimeSheets() ).isEmpty();
+		assertThat ( result.getLstEditState() ).isEmpty();
+		assertThat ( result.getOptAttendanceTime() ).isEmpty();
+		assertThat ( result.getOptSortTimeWork() ).isEmpty();
+		assertThat ( result.getAffInfo() ).isEqualTo( affInfo );
+		assertThat ( result.getWorkInfo() ).isEqualTo( workInfo );
+		// attendance day 出勤
 		assertThat ( result.getOptTimeLeaving().get() ).isEqualTo( timeLeaving );
 		
 	}
