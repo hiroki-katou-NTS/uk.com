@@ -19,12 +19,15 @@
     }
 
     #year-month-component input {
-        background-color: #E0F59E;
         box-shadow: none;
         border: none;   
         border-radius: 0;
         font-weight: bold;
         font-size: 3.5vw;
+    }
+
+    #year-month-component .input-group {
+        background-color: #E0F59E;
     }
 
     #year-month-component .input-group-text {
