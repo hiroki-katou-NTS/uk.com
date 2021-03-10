@@ -8,7 +8,7 @@ import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -20,10 +20,16 @@ import java.util.List;
 @Setter
 @Entity
 @Table(name = "KSRMT_TASK_MASTER")
-public class KsrmtTaskMaster extends ContractCompanyUkJpaEntity implements Serializable {
+public class KsrmtTaskMaster extends UkJpaEntity implements Serializable {
 
     @EmbeddedId
     public KsrmtTaskMasterPk pk;
+
+    /**
+     * 作業名称 : 作業.表示情報	->名称
+     */
+    @Column(name = "CONTRACT_CD")
+    public String CONTRACTCD;
 
     /**
      * 作業名称 : 作業.表示情報	->名称
@@ -91,7 +97,8 @@ public class KsrmtTaskMaster extends ContractCompanyUkJpaEntity implements Seria
 
     public List<KsrmtTaskChild> ksrmtTaskChildren;
 
-    public KsrmtTaskMaster(KsrmtTaskMasterPk pk, String NAME, String ABNAME,
+    public KsrmtTaskMaster(KsrmtTaskMasterPk pk,
+                           String NAME, String ABNAME,
                            GeneralDate EXPSTARTDATE, GeneralDate EXPENDDATE,
                            String EXTCD1, String EXTCD2, String EXTCD3, String EXTCD4,
                            String EXTCD5, String COLOR, String NOTE) {
@@ -107,12 +114,14 @@ public class KsrmtTaskMaster extends ContractCompanyUkJpaEntity implements Seria
         this.EXTCD5 = EXTCD5;
         this.COLOR = COLOR;
         this.NOTE = NOTE;
+        this.CONTRACTCD = AppContexts.user().contractCode();
     }
 
     public static KsrmtTaskMaster toEntity(Task domain) {
+        String CID = AppContexts.user().companyId();
         return new KsrmtTaskMaster(
                 new KsrmtTaskMasterPk(
-                        AppContexts.user().companyId(),
+                        CID,
                         domain.getTaskFrameNo().v(),
                         domain.getCode().v()
                 ),
