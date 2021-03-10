@@ -8,65 +8,51 @@
         </h4>
       </div>
     </div>
-    <div class="row ml-1 title uk-text-over-time">
-      <label>{{ "KDPS01_26" | i18n }}</label>
-    </div>
-    <div class="col-12 value">
-      <label>{{ screenData.employeeCode }} {{ screenData.employeeName }}</label>
-    </div>
-
-    <div class="row ml-1 title uk-text-over-time">
-      <label>{{ "KDPS01_27" | i18n }}</label>
-    </div>
-    <div class="row  value">
-      <label
-        class="col-7"
+     <div style="text-align: center;" >
+      <div
         v-bind:style="{
           color: getTextColor(screenData.date)
         }"
-        style="padding-left:30px"
-        >{{ screenData.date | date("YYYY/MM/DD") }}</label
+        >{{ screenData.date | date("YYYY/MM/DD") }}</div
       >
-      <label
-        class="col-5 px-0 stamp-time font-weight-bold "
-        style="line-height: 1.5rem;"
-        >{{ screenData.date | date("HH:mm") }}</label
+      <div
+        class="stamp-time font-weight-bold"
+        style="line-height: 2.5rem;"
+        >{{ screenData.date | date("HH:mm") }}</div
       >
+      <div>
+        <div class="d-inline-block" ></div>
+        <label
+          class="stamp-text font-weight-bold"
+          style="line-height: 3rem; color:#0033cc;"
+          >{{ screenData.stampAtr }}</label
+        >
+        </div>
+    </div>
+    <div class="col-12 value" style="padding-top: 20px; padding-bottom: 40px;">
+      <label>{{ screenData.employeeCode }} {{ screenData.employeeName }}</label>
+      <div>{{ screenData.localtion }}</div>
     </div>
 
-    <div class="row ml-1 title uk-text-over-time">
-      <label>{{ "KDPS01_28" | i18n }}</label>
-    </div>
-    <div class="row">
-      <div class="col-7 d-inline-block"></div>
-      <label
-        class="col-5 px-0 stamp-text font-weight-bold"
-        style="line-height: 1.5rem; color:#0033cc;"
-        >{{ screenData.stampAtr }}</label
-      >
-    </div>
-    <div class="row ml-1 title uk-text-over-time">
-      <label>{{ "KDPS01_29" | i18n }}</label>
-    </div>
-    <div class="col-12 value">
-      <label>{{ screenData.stampCard }}</label>
-    </div>
+     <label class="font-weight-bold col-12 value"> {{ "KDPS01_67" | i18n }}</label>
 
-    <div class="row ml-1 title uk-text-over-time">
-      <label>{{ "KDPS01_30" | i18n }}</label>
-    </div>
-    <div class="col-12 value">
-      <label>{{ screenData.localtion }}</label>
+    <div class="col-12 value" style="padding-bottom: 40px;">
+      <img tabindex="2" v-bind:src="'/nts.uk.mobile.web/dist/resources/185.png'" height="50" width="50"/>
+      <img tabindex="3" v-bind:src="'/nts.uk.mobile.web/dist/resources/186.png'" height="50" width="50"/> 
+      <img tabindex="4" v-bind:src="'/nts.uk.mobile.web/dist/resources/187.png'" height="50" width="50"/> 
+      <img tabindex="5" v-bind:src="'/nts.uk.mobile.web/dist/resources/188.png'" height="50" width="50"/> 
+      <img tabindex="6" v-bind:src="'/nts.uk.mobile.web/dist/resources/189.png'" height="50" width="50"/> 
     </div>
 
     <div class="col-12 value" v-if="params.resultDisplayTime > 0">
       <label class="cd-time font-weight-bold mr-2">{{
         params.resultDisplayTime
       }}</label>
-      <label> {{ "KDPS01_36" | i18n }}</label>
+      <label class="font-weight-bold">{{ "KDPS01_36" | i18n }}</label>
     </div>
     <div>
       <button
+        tabindex="1"
         v-focus
         type="button"
         v-on:click="$close"
