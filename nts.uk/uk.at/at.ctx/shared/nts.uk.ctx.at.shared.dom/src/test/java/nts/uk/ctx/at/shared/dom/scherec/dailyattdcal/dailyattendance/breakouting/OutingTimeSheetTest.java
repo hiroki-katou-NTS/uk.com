@@ -189,8 +189,6 @@ public class OutingTimeSheetTest {
 			return new OutingTimeSheet(
 					new OutingFrameNo(1)
 					, goOut
-					, new AttendanceTime(1600)
-					, new AttendanceTime(1700)
 					, GoingOutReason.PRIVATE
 					, comeBack);
 		}

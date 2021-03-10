@@ -31,15 +31,11 @@ public class OutingTimeZoneDto implements ItemConst, AttendanceItemDataGate {
 	@AttendanceItemLayout(layout = LAYOUT_C, jpPropertyName = REASON)
 	@AttendanceItemValue(type = ValueType.ATTR)
 	private int reason;
-	
-	private int outTimeCalc;
-	
-	private int outTIme;
 
 	@Override
 	protected OutingTimeZoneDto clone() {
 		return new OutingTimeZoneDto(no, outing == null ? null : outing.clone(), 
-				comeBack == null ? null : comeBack.clone(), reason, outTimeCalc, outTIme);
+				comeBack == null ? null : comeBack.clone(), reason);
 	}
 	
 	public GoingOutReason reason() {

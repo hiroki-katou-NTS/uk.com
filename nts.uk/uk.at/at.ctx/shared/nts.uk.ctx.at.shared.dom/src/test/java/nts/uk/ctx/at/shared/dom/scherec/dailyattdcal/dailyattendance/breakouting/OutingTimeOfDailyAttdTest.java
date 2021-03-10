@@ -141,8 +141,6 @@ public class OutingTimeOfDailyAttdTest {
 			return new OutingTimeSheet(
 					new OutingFrameNo(1)
 					, Optional.of(goOut)
-					, new AttendanceTime(1600)
-					, new AttendanceTime(1700)
 					, reason
 					, Optional.of(comeBack));
 		}

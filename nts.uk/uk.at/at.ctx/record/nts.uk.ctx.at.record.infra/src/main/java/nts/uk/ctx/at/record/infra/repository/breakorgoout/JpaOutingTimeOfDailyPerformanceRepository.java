@@ -157,13 +157,11 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 
 				String insertTableSQL = "INSERT INTO KRCDT_DAY_TS_GOOUT ( SID , YMD , OUTING_FRAME_NO , OUT_STAMP_TIME  , OUT_STAMP_PLACE_CODE , OUT_STAMP_SOURCE_INFO , "
 						+ " BACK_STAMP_TIME  , BACK_STAMP_PLACE_CODE , "
-						+ " BACK_STAMP_SOURCE_INFO , OUTING_TIME_CALCULATION , "
-						+ " OUTING_TIME , OUTING_REASON ) " + "VALUES( '" + outing.getEmployeeId() + "' , '"
+						+ " BACK_STAMP_SOURCE_INFO ,"
+						+ " OUTING_REASON ) " + "VALUES( '" + outing.getEmployeeId() + "' , '"
 						+ outing.getYmd() + "' , " + outingTimeSheet.getOutingFrameNo().v() + " , " 
 						+ outStampTime + " , "  + outStampLocationCode + " , " + outStampSource + ", "
 						+ backStampTime + " , " + backStampLocationCode + " , " + backStampSource + ", "
-						+ outingTimeSheet.getOutingTimeCalculation().valueAsMinutes() + " , "
-						+ outingTimeSheet.getOutingTime().valueAsMinutes() + " , "
 						+ outingTimeSheet.getReasonForGoOut().value + " )";
 				statementI.executeUpdate(JDBCUtil.toInsertWithCommonField(insertTableSQL));
 			}
@@ -220,8 +218,6 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 	private void setEntityValue(OutingTimeSheet domain, KrcdtDaiOutingTime krcdtDaiOutingTime) {
 		setBackMainStamp(domain.getComeBack().orElse(null), krcdtDaiOutingTime);
 		krcdtDaiOutingTime.outingReason = domain.getReasonForGoOut().value;
-		krcdtDaiOutingTime.outingTime = domain.getOutingTime().v();
-		krcdtDaiOutingTime.outingTimeCalculation = domain.getOutingTimeCalculation().v();
 		setGoOutMainStamp(domain.getGoOut().orElse(null), krcdtDaiOutingTime);
 	}
 
@@ -320,10 +316,8 @@ public class JpaOutingTimeOfDailyPerformanceRepository extends JpaRepository
 						: null);
 
 		GoingOutReason reasonForGoOut = EnumAdaptor.valueOf(x.outingReason, GoingOutReason.class);
-		AttendanceTime outingTimeCalculation = new AttendanceTime(x.outingTimeCalculation);
-		AttendanceTime outingTime = new AttendanceTime(x.outingTime);
 		OutingTimeSheet outingTimeSheet = new OutingTimeSheet(new OutingFrameNo(x.krcdtDaiOutingTimePK.outingFrameNo),
-				Optional.ofNullable(outStamp), outingTimeCalculation, outingTime, reasonForGoOut, Optional.ofNullable(backStamp));
+				Optional.ofNullable(outStamp), reasonForGoOut, Optional.ofNullable(backStamp));
 		return outingTimeSheet;
 	}
 

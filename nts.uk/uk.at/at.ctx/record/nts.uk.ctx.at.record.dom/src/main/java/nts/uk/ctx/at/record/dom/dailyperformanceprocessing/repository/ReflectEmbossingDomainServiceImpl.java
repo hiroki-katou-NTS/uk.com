@@ -1650,7 +1650,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 				});
 			} else {
 				lstOutingTimeSheet = new ArrayList<OutingTimeSheet>();
-				lstOutingTimeSheet.add(new OutingTimeSheet(null, Optional.empty(), null, null, null, Optional.empty()));
+				lstOutingTimeSheet.add(new OutingTimeSheet(null, Optional.empty(), null, Optional.empty()));
 
 				outDailyPer = new OutingTimeOfDailyPerformance(employeeId, date, lstOutingTimeSheet);
 			}
@@ -1690,7 +1690,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 			if (outingTimeSize < outingManager) {
 				for (int i = 0; i < outingManager - outingTimeSize; i++) {
 					lstOutingTimeSheet
-							.add(new OutingTimeSheet(null, Optional.empty(), null, null, null, Optional.empty()));
+							.add(new OutingTimeSheet(null, Optional.empty(), null, Optional.empty()));
 				}
 			} else if (outingTimeSize > outingManager) {
 				for (int i = 0; i < outingTimeSize - outingManager; i++) {
@@ -1711,8 +1711,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 						OutingTimeSheet newOutingTimeSheet = putInDataComeBack(companyId, WorkInfo, attendanceClass,
 								stamps, x, processTimeOutput, o); // ok
 						lstOutingTimeSheet.get(i).setProperty(newOutingTimeSheet.getOutingFrameNo(),
-								newOutingTimeSheet.getGoOut(), newOutingTimeSheet.getOutingTimeCalculation(),
-								newOutingTimeSheet.getOutingTime(), newOutingTimeSheet.getReasonForGoOut(),
+								newOutingTimeSheet.getGoOut(), newOutingTimeSheet.getReasonForGoOut(),
 								newOutingTimeSheet.getComeBack());
 						newOutingTimeSheets = revomeEmptyOutingTimeSheets(lstOutingTimeSheet);
 						isBreak = true;
@@ -1737,8 +1736,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 							OutingTimeSheet newOutingTimeSheet = putDataComeBackForActualAndStamp(companyId, WorkInfo,
 									attendanceClass, stamps, x, processTimeOutput, o);
 							lstOutingTimeSheet.get(i).setProperty(newOutingTimeSheet.getOutingFrameNo(),
-									newOutingTimeSheet.getGoOut(), newOutingTimeSheet.getOutingTimeCalculation(),
-									newOutingTimeSheet.getOutingTime(), newOutingTimeSheet.getReasonForGoOut(),
+									newOutingTimeSheet.getGoOut(), newOutingTimeSheet.getReasonForGoOut(),
 									newOutingTimeSheet.getComeBack());
 							newOutingTimeSheets = revomeEmptyOutingTimeSheets(lstOutingTimeSheet);
 							isBreak = true;
@@ -1793,8 +1791,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 				});
 			} else {
 				lstOutingTimeSheet = new ArrayList<OutingTimeSheet>();
-				lstOutingTimeSheet.add(new OutingTimeSheet(null, Optional.empty(), new AttendanceTime(0),
-						new AttendanceTime(0), null, Optional.empty()));
+				lstOutingTimeSheet.add(new OutingTimeSheet(null, Optional.empty(),
+						null, Optional.empty()));
 				outDailyPer = new OutingTimeOfDailyPerformance(employeeId, date, lstOutingTimeSheet);
 			}
 		} else {
@@ -1836,7 +1834,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 			if (outingTimeSize < outingManager) {
 				for (int i = 0; i < outingManager - outingTimeSize; i++) {
 					lstOutingTimeSheet
-							.add(new OutingTimeSheet(null, Optional.empty(), null, null, null, Optional.empty()));
+							.add(new OutingTimeSheet(null, Optional.empty(), null, Optional.empty()));
 				}
 			} else if (outingTimeSize > outingManager) {
 				for (int i = 0; i < outingTimeSize - outingManager; i++) {
@@ -1857,8 +1855,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 						OutingTimeSheet newOutingTimeSheet = putInDataActualStamp(companyId, WorkInfo, attendanceClass,
 								stamps, x, processTimeOutput, o);
 						lstOutingTimeSheet.get(i).setProperty(newOutingTimeSheet.getOutingFrameNo(),
-								newOutingTimeSheet.getGoOut(), newOutingTimeSheet.getOutingTimeCalculation(),
-								newOutingTimeSheet.getOutingTime(), newOutingTimeSheet.getReasonForGoOut(),
+								newOutingTimeSheet.getGoOut(), newOutingTimeSheet.getReasonForGoOut(),
 								newOutingTimeSheet.getComeBack());
 						// 7.1.2 Xóa những cái trống trong list
 						newOutingTimeSheets = revomeEmptyOutingTimeSheets(lstOutingTimeSheet);
@@ -1874,8 +1871,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 						OutingTimeSheet newOutingTimeSheet = putDataInGoOut(companyId, WorkInfo, attendanceClass,
 								stamps, x, processTimeOutput, o);
 						lstOutingTimeSheet.get(i).setProperty(newOutingTimeSheet.getOutingFrameNo(),
-								newOutingTimeSheet.getGoOut(), newOutingTimeSheet.getOutingTimeCalculation(),
-								newOutingTimeSheet.getOutingTime(), newOutingTimeSheet.getReasonForGoOut(),
+								newOutingTimeSheet.getGoOut(), newOutingTimeSheet.getReasonForGoOut(),
 								newOutingTimeSheet.getComeBack());
 						newOutingTimeSheets = revomeEmptyOutingTimeSheets(lstOutingTimeSheet);
 						isBreak = true;
@@ -1887,8 +1883,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 							OutingTimeSheet newOutingTimeSheet = putDataInGoOut(companyId, WorkInfo, attendanceClass,
 									stamps, x, processTimeOutput, o);
 							lstOutingTimeSheet.get(i).setProperty(newOutingTimeSheet.getOutingFrameNo(),
-									newOutingTimeSheet.getGoOut(), newOutingTimeSheet.getOutingTimeCalculation(),
-									newOutingTimeSheet.getOutingTime(), newOutingTimeSheet.getReasonForGoOut(),
+									newOutingTimeSheet.getGoOut(), newOutingTimeSheet.getReasonForGoOut(),
 									newOutingTimeSheet.getComeBack());
 							newOutingTimeSheets = revomeEmptyOutingTimeSheets(lstOutingTimeSheet);
 							isBreak = true;
@@ -2007,12 +2002,10 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 			if (j < 10) {
 				OutingFrameNo outingFrameNo = new OutingFrameNo(j + 1);
 				newOutingTimeSheets.add(new OutingTimeSheet(outingFrameNo, outingTimeSheet.getGoOut(),
-						outingTimeSheet.getOutingTimeCalculation(), outingTimeSheet.getOutingTime(),
 						outingTimeSheet.getReasonForGoOut(), outingTimeSheet.getComeBack()));
 			} else {
 				OutingFrameNo outingFrameNo = new OutingFrameNo(j % 10 + 1);
 				newOutingTimeSheets.add(new OutingTimeSheet(outingFrameNo, outingTimeSheet.getGoOut(),
-						outingTimeSheet.getOutingTimeCalculation(), outingTimeSheet.getOutingTime(),
 						outingTimeSheet.getReasonForGoOut(), outingTimeSheet.getComeBack()));
 			}
 		}
@@ -2083,7 +2076,6 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 				break;
 			}
 			return new OutingTimeSheet(o.getOutingFrameNo(), Optional.ofNullable(newActualStamp),
-					o.getOutingTimeCalculation(), o.getOutingTime(),
 					x.getType().getGoOutArt().isPresent() ? EnumAdaptor.valueOf(x.getType().getGoOutArt().get().value, GoingOutReason.class) : null, o.getComeBack());
 
 		}
@@ -2094,7 +2086,6 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		stamps.add(stamp);
 		return new OutingTimeSheet(o.getOutingFrameNo(), Optional.ofNullable(
 				(o.getGoOut() != null && o.getGoOut().isPresent()) ? o.getGoOut().get() : null),
-				o.getOutingTimeCalculation(), o.getOutingTime(),
 				x.getType().getGoOutArt().isPresent() ? EnumAdaptor.valueOf(x.getType().getGoOutArt().get().value, GoingOutReason.class) : null, o.getComeBack());
 
 	}
@@ -2164,8 +2155,8 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 			}
 
 
-			return new OutingTimeSheet(o.getOutingFrameNo(), o.getGoOut(), o.getOutingTimeCalculation(),
-					o.getOutingTime(), x.getType().getGoOutArt().isPresent() ? EnumAdaptor.valueOf(x.getType().getGoOutArt().get().value, GoingOutReason.class) : null,
+			return new OutingTimeSheet(o.getOutingFrameNo(), o.getGoOut(),
+					x.getType().getGoOutArt().isPresent() ? EnumAdaptor.valueOf(x.getType().getGoOutArt().get().value, GoingOutReason.class) : null,
 					Optional.ofNullable(newActualStamp));
 
 		}
@@ -2184,8 +2175,6 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		return new OutingTimeSheet(
 				o.getOutingFrameNo(), o
 						.getGoOut(),
-				o.getOutingTimeCalculation(), o
-						.getOutingTime(),
 						x.getType().getGoOutArt().isPresent() ? EnumAdaptor.valueOf(x.getType().getGoOutArt().get().value, GoingOutReason.class) : null,
 				Optional.ofNullable((o.getComeBack() != null && o.getComeBack().isPresent())
 										? o.getComeBack().get() : null));
@@ -2267,7 +2256,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		stamps.add(stamp);
 
 
-		return new OutingTimeSheet(o.getOutingFrameNo(), o.getGoOut(), o.getOutingTimeCalculation(), o.getOutingTime(),
+		return new OutingTimeSheet(o.getOutingFrameNo(), o.getGoOut(),
 				x.getType().getGoOutArt().isPresent() ? EnumAdaptor.valueOf(x.getType().getGoOutArt().get().value, GoingOutReason.class) : null,
 				Optional.ofNullable(newActualStamp));
 	}
@@ -2347,7 +2336,6 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 
 		return new OutingTimeSheet(o.getOutingFrameNo(),
 				Optional.ofNullable( newActualStamp),
-				o.getOutingTimeCalculation(), o.getOutingTime(),
 				x.getType().getGoOutArt().isPresent() ? EnumAdaptor.valueOf(x.getType().getGoOutArt().get().value, GoingOutReason.class) : null, o.getComeBack());
 
 	}

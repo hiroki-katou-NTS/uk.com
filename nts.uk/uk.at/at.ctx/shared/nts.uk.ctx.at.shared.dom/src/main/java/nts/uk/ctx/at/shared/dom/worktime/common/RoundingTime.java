@@ -207,8 +207,6 @@ public class RoundingTime {
 			newOutingTimeSheets.add(new OutingTimeSheet(
 					outingTimeSheet.getOutingFrameNo(),
 					newGoOutStamp,
-					outingTimeSheet.getOutingTimeCalculation(),
-					outingTimeSheet.getOutingTime(),
 					outingTimeSheet.getReasonForGoOut(),
 					newComeBackStamp));
 

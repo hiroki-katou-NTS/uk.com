@@ -127,8 +127,6 @@ public class DailyAttendanceTimePubImpl implements DailyAttendanceTimePub{
 									new ReasonTimeChange(TimeChangeMeans.REAL_STAMP, Optional.empty()),
 									impOutingTimeSheets.get(frameNo - 1).getTimeZone().getStart()),
 							Optional.empty())),
-					AttendanceTime.ZERO,
-					AttendanceTime.ZERO,
 					impOutingTimeSheets.get(frameNo - 1).getGoingOutReason(),
 					Optional.of(new WorkStamp(
 							new WorkTimeInformation(

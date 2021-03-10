@@ -110,7 +110,7 @@ public class GetReflectOutGoFrameNumberTest {
 										new TimeWithDayAttr(startTime)),
 								Optional.empty())
 						),
-				new AttendanceTime(600), new AttendanceTime(600), GoingOutReason.PUBLIC,
+				GoingOutReason.PUBLIC,
 				Optional.of(new WorkStamp(
 								new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, null),
 										new TimeWithDayAttr(endTime)),

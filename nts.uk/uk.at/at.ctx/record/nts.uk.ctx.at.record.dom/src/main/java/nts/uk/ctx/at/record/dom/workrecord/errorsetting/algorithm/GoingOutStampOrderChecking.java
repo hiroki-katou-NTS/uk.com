@@ -74,11 +74,9 @@ public class GoingOutStampOrderChecking {
 			int outingFrameNo = 1;
 			for (OutingTimeSheet item : newOutingTimeSheets) {
 				Optional<WorkStamp> goOut = item.getGoOut();
-				AttendanceTime outingTimeCalculation = item.getOutingTimeCalculation();
-				AttendanceTime outingTime = item.getOutingTime();
 				GoingOutReason reasonForGoOut = item.getReasonForGoOut();
 				Optional<WorkStamp> comeBack = item.getComeBack();
-				item = new OutingTimeSheet(new OutingFrameNo(outingFrameNo), goOut, outingTimeCalculation, outingTime,
+				item = new OutingTimeSheet(new OutingFrameNo(outingFrameNo), goOut,
 						reasonForGoOut, comeBack);
 				outingFrameNo++;
 			}

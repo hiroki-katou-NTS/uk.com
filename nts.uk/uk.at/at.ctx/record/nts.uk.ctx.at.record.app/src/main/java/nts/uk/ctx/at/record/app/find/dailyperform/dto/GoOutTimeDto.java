@@ -30,11 +30,6 @@ public class GoOutTimeDto implements ItemConst, AttendanceItemDataGate {
 	@AttendanceItemLayout(layout = LAYOUT_B, jpPropertyName = GO_OUT)
 	private TimeStampDto outing;
 
-	/** 外出時間: 勤怠時間 */
-	private Integer outingTime;
-	
-	private Integer outingTimeCalc;
-
 	/** 外出枠NO: 外出枠NO */
 	private int no;
 
@@ -81,8 +76,6 @@ public class GoOutTimeDto implements ItemConst, AttendanceItemDataGate {
 		return domain == null ? null : new GoOutTimeDto(
 										TimeStampDto.createTimeStamp(domain.getComeBack().orElse(null)),
 										TimeStampDto.createTimeStamp(domain.getGoOut().orElse(null)),
-										domain.getOutingTime() == null ? null : domain.getOutingTime().valueAsMinutes(), 
-										domain.getOutingTimeCalculation() == null ? null : domain.getOutingTimeCalculation().valueAsMinutes(), 
 										domain.getOutingFrameNo().v(), 
 										domain.getReasonForGoOut().value);
 	}
@@ -91,15 +84,13 @@ public class GoOutTimeDto implements ItemConst, AttendanceItemDataGate {
 	public GoOutTimeDto clone() {
 		return new GoOutTimeDto(comeBack == null ? null : comeBack.clone(),
 								outing == null ? null : outing.clone(),
-								outingTime, outingTimeCalc, no, outingReason);
+								no, outingReason);
 	}
 	
 	public OutingTimeSheet toDomain(){
 		return new OutingTimeSheet(
 				new OutingFrameNo(no),
 				outing == null ? Optional.empty() : Optional.ofNullable(TimeStampDto.toDomain(outing)),
-				outingTimeCalc == null ? AttendanceTime.ZERO : new AttendanceTime(outingTimeCalc),
-				outingTime == null ? AttendanceTime.ZERO : new AttendanceTime(outingTime), 
 				reason(), 
 				comeBack == null ? Optional.empty() : Optional.ofNullable(TimeStampDto.toDomain(comeBack)));
 	}

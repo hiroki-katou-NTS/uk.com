@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting;
 
 import java.util.ArrayList;
-//import java.util.Collections;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
@@ -9,7 +8,6 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 import nts.gul.util.value.Finally;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
@@ -42,16 +40,6 @@ public class OutingTimeSheet extends DomainObject {
 	private Optional<WorkStamp> goOut;
 	
 	/*
-	 * 計算時間
-	 */
-	private AttendanceTime outingTimeCalculation;
-	
-	/*
-	 * 外出時間
-	 */
-	private AttendanceTime outingTime;
-	
-	/*
 	 * 外出理由
 	 */
 	private GoingOutReason reasonForGoOut;
@@ -59,12 +47,10 @@ public class OutingTimeSheet extends DomainObject {
 	// 戻り: 勤怠打刻
 	private Optional<WorkStamp> comeBack;
 
-	public void setProperty(OutingFrameNo outingFrameNo, Optional<WorkStamp> goOut, AttendanceTime outingTimeCalculation,
-			AttendanceTime outingTime,  GoingOutReason reasonForGoOut, Optional<WorkStamp> comeBack) {
+	public void setProperty(OutingFrameNo outingFrameNo, Optional<WorkStamp> goOut,
+			GoingOutReason reasonForGoOut, Optional<WorkStamp> comeBack) {
 		this.outingFrameNo = outingFrameNo;
 		this.goOut = goOut;
-		this.outingTimeCalculation = outingTimeCalculation;
-		this.outingTime = outingTime;
 		this.reasonForGoOut = reasonForGoOut;
 		this.comeBack = comeBack;
 		

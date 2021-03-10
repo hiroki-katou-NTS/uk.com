@@ -81,8 +81,6 @@ public class ReflectGoingOutAndReturn {
 			OutingTimeSheet timeSheet = new OutingTimeSheet(new OutingFrameNo(
 					tf.getFrameNo()),
 					tf.getStart().isPresent()?tf.getStart().get().getStamp():Optional.empty(),
-					AttendanceTime.ZERO,
-					AttendanceTime.ZERO,
 					tf.getGoOutReason().isPresent() ? tf.getGoOutReason().get()  : null,
 					tf.getEnd().isPresent()?tf.getEnd().get().getStamp():Optional.empty());
 			outingTimeSheets.add(timeSheet);

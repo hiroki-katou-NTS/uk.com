@@ -49,12 +49,6 @@ public class KrcdtDaiOutingTime extends ContractUkJpaEntity implements Serializa
 	@Column(name = "BACK_STAMP_SOURCE_INFO")
 	public Integer backStampSourceInfo;
 
-	@Column(name = "OUTING_TIME_CALCULATION")
-	public Integer outingTimeCalculation;
-
-	@Column(name = "OUTING_TIME")
-	public Integer outingTime;
-
 	@Column(name = "OUTING_REASON")
 	public Integer outingReason;
 
@@ -77,8 +71,6 @@ public class KrcdtDaiOutingTime extends ContractUkJpaEntity implements Serializa
 				backStamp == null || !backStamp.getLocationCode().isPresent() ? null : backStamp.getLocationCode().get().v(),
 				backStamp == null ? null : backStamp.getTimeDay().getReasonTimeChange().getTimeChangeMeans().value,
 						
-				outingTime.getOutingTimeCalculation().valueAsMinutes(), 
-				outingTime.getOutingTime().valueAsMinutes(),
 				outingTime.getReasonForGoOut().value);
 	}
 }

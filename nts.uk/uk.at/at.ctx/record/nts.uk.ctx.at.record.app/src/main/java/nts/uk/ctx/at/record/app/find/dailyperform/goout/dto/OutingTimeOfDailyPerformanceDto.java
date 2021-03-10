@@ -54,9 +54,7 @@ public class OutingTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 							c.getOutingFrameNo().v(),
 							TimeStampDto.createTimeStamp(c.getGoOut() != null ? c.getGoOut().orElse(null) : null),
 							TimeStampDto.createTimeStamp(c.getComeBack() != null ? c.getComeBack().orElse(null) : null),
-							c.getReasonForGoOut() == null ? 0 : c.getReasonForGoOut().value, 
-							c.getOutingTimeCalculation() == null ? 0 : c.getOutingTimeCalculation().valueAsMinutes(),
-							c.getOutingTime() == null ? 0 : c.getOutingTime().valueAsMinutes())));
+							c.getReasonForGoOut() == null ? 0 : c.getReasonForGoOut().value)));
 			dto.exsistData();
 		}
 		return dto;
@@ -71,9 +69,7 @@ public class OutingTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 							c.getOutingFrameNo().v(),
 							TimeStampDto.createTimeStamp(c.getGoOut() != null ? c.getGoOut().orElse(null) : null),
 							TimeStampDto.createTimeStamp(c.getComeBack() != null ? c.getComeBack().orElse(null) : null),
-							c.getReasonForGoOut() == null ? 0 : c.getReasonForGoOut().value, 
-							c.getOutingTimeCalculation() == null ? 0 : c.getOutingTimeCalculation().valueAsMinutes(),
-							c.getOutingTime() == null ? 0 : c.getOutingTime().valueAsMinutes())));
+							c.getReasonForGoOut() == null ? 0 : c.getReasonForGoOut().value)));
 			dto.exsistData();
 		}
 		return dto;
@@ -119,7 +115,6 @@ public class OutingTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 		}
 		OutingTimeOfDailyPerformance domain =  new OutingTimeOfDailyPerformance(emp, date, ConvertHelper.mapTo(timeZone, (c) -> 
 											new OutingTimeSheet(new OutingFrameNo(c.getNo()), createTimeActual(c.getOuting()),
-													new AttendanceTime(c.getOutTimeCalc()), new AttendanceTime(c.getOutTIme()),
 													c.reason(), createTimeActual(c.getComeBack()))));
 		return domain.getOutingTime();
 	}

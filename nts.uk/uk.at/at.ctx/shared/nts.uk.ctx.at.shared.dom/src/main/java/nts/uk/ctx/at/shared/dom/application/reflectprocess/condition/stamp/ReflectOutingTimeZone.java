@@ -74,7 +74,6 @@ public class ReflectOutingTimeZone {
 									new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.APPLICATION, null),
 											data.getTimeOfDay()),
 									data.getWorkLocationCd())),
-							null, null,
 							data.getAppStampGoOutAtr().map(x -> GoingOutReason.valueOf(x.value)).orElse(null),
 							Optional.empty()),
 					lstItemId);
@@ -84,7 +83,7 @@ public class ReflectOutingTimeZone {
 							CancelAppStamp.createItemId(90, data.getDestinationTimeApp().getEngraveFrameNo(), 7)));
 			return Pair.of(new OutingTimeSheet(
 					new OutingFrameNo(data.getDestinationTimeApp().getEngraveFrameNo().intValue()), Optional.empty(),
-					null, null, data.getAppStampGoOutAtr().map(x -> GoingOutReason.valueOf(x.value)).orElse(null),
+					data.getAppStampGoOutAtr().map(x -> GoingOutReason.valueOf(x.value)).orElse(null),
 					Optional.of(new WorkStamp(
 									new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.APPLICATION, null),
 											data.getTimeOfDay()),
