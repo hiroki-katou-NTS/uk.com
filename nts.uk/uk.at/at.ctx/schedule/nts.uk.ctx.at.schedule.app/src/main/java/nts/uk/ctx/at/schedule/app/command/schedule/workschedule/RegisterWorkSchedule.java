@@ -67,7 +67,7 @@ public class RegisterWorkSchedule<T> {
 					mapAttendIdWithTime.put(31, startTime);
 					mapAttendIdWithTime.put(34, endTime);
 				} 
-				WorkScheduleSaveCommand<T> ws = new WorkScheduleSaveCommand(wsCmd.sid, ymd, workInfor, mapAttendIdWithTime, new ArrayList<>());
+				WorkScheduleSaveCommand<T> ws = new WorkScheduleSaveCommand(wsCmd.sid, ymd, workInfor, mapAttendIdWithTime, new ArrayList<>(), false);
 				rs.add(ws);
 			}
 		}

@@ -1193,8 +1193,12 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 			};
 			
 			service.changeWorkType(targetOrgDto).done((data: any) => {
-				if(!_.isNil(data))
-				self.workTypeName = (data.workTypeName == null || data.workTypeName == "") ? $("#extable-ksu003").exTable('dataSource', 'middle').body[index].worktypeCode + getText('KSU003_54') : data.workTypeName;
+				if(!_.isNil(data)){
+					self.workTypeName = (data.workTypeName == null || data.workTypeName == "") ? $("#extable-ksu003").exTable('dataSource', 'middle').body[index].worktypeCode + getText('KSU003_54') : data.workTypeName;
+				} else {
+					self.workTypeName = "";
+				}
+				
 				$("#extable-ksu003").exTable("cellValue", "middle", empId, "worktypeName", self.workTypeName);
 			})
 			
@@ -2595,6 +2599,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 
 						});
 						self.checkRetained = true;
+						recharge(dataCell.detail);
 						return;
 					}
 				
@@ -2757,9 +2762,15 @@ module nts.uk.at.view.ksu003.a.viewmodel {
             let self = this;
             let dataReg : any = [];
 			let groupData = _.groupBy(cellsGroup, 'rowIndex');
+			let isBreakByHand = false;
 			if(cellsGroup.length > 0){
 				_.forEach(groupData, function(cells : any) {
                     if (cells.length > 0) {
+				let cssbreakTime: string = self.dataScreen003A().targetInfor == 1 ? "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (cells[0].rowIndex + 2).toString() + ")" + " > td:nth-child(10)" :
+				"#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (cells[0].rowIndex + 2).toString() + ")" + " > td:nth-child(8)";
+				if($(cssbreakTime).css("background-color") != "rgb(255,255,255)"){
+					isBreakByHand = true;
+				}
 
                         let dataCell : any = {
                             sid: self.dataScreen003A().employeeInfo[cells[0].rowIndex].empId,
@@ -2772,12 +2783,18 @@ module nts.uk.at.view.ksu003.a.viewmodel {
                             endTime2   : self.dataScreen003A().employeeInfo[cells[0].rowIndex].workScheduleDto.endTime2,
 							listBreakTime : self.dataScreen003A().employeeInfo[cells[0].rowIndex].workScheduleDto.listBreakTimeZoneDto,
 							directAtr : self.dataScreen003A().employeeInfo[cells[0].rowIndex].workInfoDto.directAtr,
-							bounceAtr : self.dataScreen003A().employeeInfo[cells[0].rowIndex].workInfoDto.bounceAtr
+							bounceAtr : self.dataScreen003A().employeeInfo[cells[0].rowIndex].workInfoDto.bounceAtr,
+							isBreakByHand : isBreakByHand
                         }
                         dataReg.push(dataCell);
                     }
                 });
 			} else {
+				let cssbreakTime: string = self.dataScreen003A().targetInfor == 1 ? "#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (self.index045 + 2).toString() + ")" + " > td:nth-child(10)" :
+				"#extable-ksu003 > .ex-body-middle > table > tbody tr:nth-child" + "(" + (self.index045 + 2).toString() + ")" + " > td:nth-child(8)";
+				if($(cssbreakTime).css("background-color") != "rgb(255,255,255)"){
+					isBreakByHand = true;
+				}
 				 let dataCell : any = {
                             sid: self.dataScreen003A().employeeInfo[self.index045].empId,
                             ymd: self.dataScreen003A().employeeInfo[self.index045].workInfoDto.date,
@@ -2789,7 +2806,8 @@ module nts.uk.at.view.ksu003.a.viewmodel {
                             endTime2   : self.dataScreen003A().employeeInfo[self.index045].workScheduleDto.endTime2,
 							listBreakTime : self.dataScreen003A().employeeInfo[self.index045].workScheduleDto.listBreakTimeZoneDto,
 							directAtr : self.dataScreen003A().employeeInfo[self.index045].workInfoDto.directAtr,
-							bounceAtr : self.dataScreen003A().employeeInfo[self.index045].workInfoDto.bounceAtr
+							bounceAtr : self.dataScreen003A().employeeInfo[self.index045].workInfoDto.bounceAtr,
+							isBreakByHand : isBreakByHand
                         }
                   dataReg.push(dataCell);
 			}
@@ -3159,8 +3177,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 								canSlide: slide,
 								fixed: "Both",
 								followParent: follow,
-								resizeFinished: (b: any, e: any, p: any) => {
-								},
 								dropFinished: (b: any, e: any) => {
 									self.dropBreakTime(i, indexBrks, b, e, slide, fixedString, `lgc${i}_` + indexBrks);
 								}
@@ -3197,8 +3213,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 									limitEndMin: isConfirmed == 1 ? endTime1 - dispStart : timeRange.start - dispStart,
 									limitEndMax: isConfirmed == 1 ? endTime1 - dispStart : timeRange.end - dispStart,
 									zIndex: 1001,
-									resizeFinished: (b: any, e: any, p: any) => {
-									},
+									followParent: follow,
 									dropFinished: (b: any, e: any) => {
 										self.dropBreakTime(i, indexBrks, b, e, slide, fixedString, `rgc${i}_` + indexBrkr);
 									},
@@ -3715,11 +3730,20 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				}
 			}
 			
-			if(type == "BreakTime" || type == "Changeable" || type == "Flex"){
-				canSlide = self.checkDisByDate == false ? false : true;
-			} 
+			if(type == "Fixed"){
+				canSlide = false;
+			}
 			
-			if(type == "CoreTime" || type == "ShortTime" || type == "HolidayTime" || type == "OT"){
+			if(type == "Changeable"){
+				canSlide = self.checkDisByDate == false ? false : true;
+				bePassedThrough = false;
+			}
+			
+			if(type == "Flex"){
+				canSlide = self.checkDisByDate == false ? false : true;
+			}  
+			
+			if(type == "CoreTime" || type == "ShortTime" || type == "HolidayTime"){
 				pin = true;
 				fixed = "Both";
 			}
@@ -3733,10 +3757,17 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				}
 				bePassedThrough = false;
 				roundEdge = true;
+				fixed = "Both";
+				rollup = true;
+				pin = true;
+				canSlide = self.checkDisByDate == false ? false : true;
 			} 
 			
-			if(type == "BreakTime" || type == "OT"){
+			if(type == "OT"){
 				rollup = true;
+				pin = true;
+				fixed = "Both";
+				followParent = true;
 			}
 			
 			
@@ -4937,7 +4968,7 @@ module nts.uk.at.view.ksu003.a.viewmodel {
                 errorRegistrationList: dataReg.listErrorInfo, // エラー内容リスト 
             }
             setShared('dataShareDialogKDL053', param);
-            nts.uk.ui.windows.sub.modal('/view/kdl/053/index.xhtml').onClosed(function(): any {
+            nts.uk.ui.windows.sub.modal('/view/kdl/053/a/index.xhtml').onClosed(function(): any {
                 console.log('closed');
             });
            block.clear();

@@ -28,6 +28,8 @@ public class WorkScheduleSaveCommand<T> {
 	public List<TimeSpanForCalc> breakTimeList;
 	// ksu001 sử dụng
 	public String shiftCode;
+	//休憩時間帯が手修正か
+	public boolean isBreakByHand;
 	
 	public WorkScheduleSaveCommand(String sid, GeneralDate ymd, String shiftCode) {
 		super();
@@ -37,13 +39,14 @@ public class WorkScheduleSaveCommand<T> {
 	}
 
 	public WorkScheduleSaveCommand(String sid, GeneralDate ymd, WorkInformationDto workInfor,
-			Map<Integer, T> mapAttendIdWithTime, List<TimeSpanForCalc> breakTimeList) {
+			Map<Integer, T> mapAttendIdWithTime, List<TimeSpanForCalc> breakTimeList, boolean isBreakByHand) {
 		super();
 		this.sid = sid;
 		this.ymd = ymd;
 		this.workInfor = workInfor;
 		this.mapAttendIdWithTime = mapAttendIdWithTime;
 		this.breakTimeList = breakTimeList;
+		this.isBreakByHand = isBreakByHand;
 	}
 	
 }
