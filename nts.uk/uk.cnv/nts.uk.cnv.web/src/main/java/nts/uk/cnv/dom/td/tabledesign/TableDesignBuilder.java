@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
@@ -88,6 +89,13 @@ public class TableDesignBuilder {
 	public TableDesignBuilder pk(List<String> columnNames, boolean clustred) {
 		checkBeforeChangeTable();
 
+		List<String> unMatchColumn = columnNames.stream()
+			.filter(colName -> !this.columnName.values().contains(colName))
+			.collect(Collectors.toList());
+		if(unMatchColumn.size() > 0) {
+			throw new BusinessException(new RawErrorMessage(this.name + "テーブルに" + String.join(",", unMatchColumn) + "列が存在しないため主キーを変更できません。"));
+		}
+
 		this.indexes.removeIf(idx -> idx.isPK());
 		this.indexes.add(
 			Indexes.createPk(
@@ -111,6 +119,14 @@ public class TableDesignBuilder {
 
 	public TableDesignBuilder uk(String ukName, List<String> columnNames, boolean clustred) {
 		checkBeforeChangeTable();
+
+		List<String> unMatchColumn = columnNames.stream()
+			.filter(colName -> !this.columnName.values().contains(colName))
+			.collect(Collectors.toList());
+		if(unMatchColumn.size() > 0) {
+			throw new BusinessException(new RawErrorMessage(
+					this.name + "テーブルに" + String.join(",", unMatchColumn) + "列が存在しないため一意キー" + ukName + "を変更できません。"));
+		}
 
 		this.indexes.removeIf(idx -> idx.isUK() && idx.getName().equals(ukName));
 		this.indexes.add(
@@ -192,6 +208,26 @@ public class TableDesignBuilder {
 
 	public TableDesignBuilder removeColumn(String columnId) {
 		checkBeforeChangeTable();
+
+		String colName = this.columnName.get(columnId);
+		Optional<Indexes> pk = this.indexes.stream()
+				.filter(idx -> idx.isPK() && idx.getColumns().contains(colName))
+				.findFirst();
+		if(pk.isPresent()) {
+			throw new BusinessException(new RawErrorMessage(colName + "は主キーため削除できません。"));
+		}
+		Optional<Indexes> uk = this.indexes.stream()
+				.filter(idx -> idx.isPK() && idx.getColumns().contains(colName))
+				.findFirst();
+		if(uk.isPresent()) {
+			throw new BusinessException(new RawErrorMessage(colName + "は一意キー" + uk.get().getName() +"に含まれるため削除できません。"));
+		}
+		Optional<Indexes> index = this.indexes.stream()
+				.filter(idx -> idx.isIndex() && idx.getColumns().contains(colName))
+				.findFirst();
+		if(index.isPresent()) {
+			throw new BusinessException(new RawErrorMessage(colName + "はインデックス" + index.get().getName() + "に含まれるため削除できません。"));
+		}
 
 		this.columnBuilder.remove(columnId);
 		return this;
