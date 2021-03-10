@@ -77,7 +77,6 @@ public class JpaUkTableDesignRepository extends JpaRepository implements UkTable
 					new ScvmtUkIndexDesignPk(
 							tableDesign.getId(), tableDesign.getFeatureId(), tableDesign.getDatetime(), idx.getName()),
 					idx.getConstraintType(),
-					String.join(",", idx.getParams()),
 					idx.isClustered(),
 					indexcolumns,
 					null

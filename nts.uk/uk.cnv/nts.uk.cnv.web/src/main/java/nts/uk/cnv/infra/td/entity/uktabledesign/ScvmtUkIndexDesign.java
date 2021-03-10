@@ -34,9 +34,6 @@ public class ScvmtUkIndexDesign extends JpaEntity implements Serializable {
 	@Column(name = "TYPE")
 	public String type;
 
-	@Column(name = "PARAMS")
-	public String params;
-
 	@Column(name = "IS_CLUSTERED")
 	public boolean clustered;
 

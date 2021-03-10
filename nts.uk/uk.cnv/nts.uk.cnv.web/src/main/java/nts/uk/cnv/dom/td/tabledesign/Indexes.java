@@ -1,6 +1,5 @@
 package nts.uk.cnv.dom.td.tabledesign;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -13,15 +12,13 @@ public class Indexes {
 	private String constraintType;
 	private boolean clustered;
 	private List<String> columns;
-	private List<String> params;
 
 	public static Indexes createPk(TableName tableName, List<String> columns, boolean clustred) {
 		return new Indexes(
 				tableName.pkName(),
 				"PRIMARY KEY",
 				clustred,
-				columns,
-				new ArrayList<>());
+				columns);
 	}
 
 	public static Indexes createUk(String name, List<String> columns, boolean clustred) {
@@ -29,8 +26,7 @@ public class Indexes {
 				name,
 				"UNIQUE KEY",
 				clustred,
-				columns,
-				new ArrayList<>());
+				columns);
 	}
 
 	public static Indexes createIndex(String name, List<String> columns, boolean clustred) {
@@ -38,8 +34,7 @@ public class Indexes {
 				name,
 				"INDEX",
 				clustred,
-				columns,
-				new ArrayList<>());
+				columns);
 	}
 
 	public boolean isPK() {
@@ -70,7 +65,6 @@ public class Indexes {
 		result = prime * result + ((columns == null) ? 0 : columns.hashCode());
 		result = prime * result + ((constraintType == null) ? 0 : constraintType.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((params == null) ? 0 : params.hashCode());
 		return result;
 	}
 
@@ -108,11 +102,6 @@ public class Indexes {
 			if (other.name != null)
 				return false;
 		} else if (!name.equals(other.name))
-			return false;
-		if (params == null) {
-			if (other.params != null)
-				return false;
-		} else if (!params.equals(other.params))
 			return false;
 		return true;
 	}

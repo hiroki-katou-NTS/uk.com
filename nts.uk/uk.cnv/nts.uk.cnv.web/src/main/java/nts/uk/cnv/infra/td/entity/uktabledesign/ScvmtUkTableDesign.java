@@ -64,16 +64,11 @@ public class ScvmtUkTableDesign extends JpaEntity implements Serializable {
 			 List<String> colmns = index.columns.stream()
 				.map(col -> col.pk.getColumnName())
 				.collect(Collectors.toList());
-			 List<String> params = new ArrayList<>();
-			 for (String p : index.params.split(",")) {
-				 params.add(p);
-			 }
 			 idxs.add(new Indexes(
 					 index.pk.getName(),
 					 index.type,
 					 index.clustered,
-					 colmns,
-					 params
+					 colmns
 			));
 		}
 
