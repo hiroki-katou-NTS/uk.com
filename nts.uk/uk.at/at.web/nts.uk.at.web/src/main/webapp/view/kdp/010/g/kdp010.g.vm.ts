@@ -3,8 +3,9 @@ module nts.uk.at.view.kdp010.g {
     import info = nts.uk.ui.dialog.info;
     import error = nts.uk.ui.dialog.error;
 	import ajax = nts.uk.request.ajax;
+	import setShared = nts.uk.ui.windows.setShared;
 	
-    module viewmodel {
+    export module viewmodel {
 		const paths: any = {
 	        getData: "at/record/stamp/timestampinputsetting/settingsusingembossing/get",
 	        save: "at/record/stamp/timestampinputsetting/settingsusingembossing/save"
@@ -16,7 +17,7 @@ module nts.uk.at.view.kdp010.g {
                 let self = this;
                 let dfd = $.Deferred();
                 block.grayout();
-                nts.uk.request.ajax("at", paths.getData).done(function(data: any) {
+                ajax("at", paths.getData).done(function(data: any) {
                     if (data) {
                         self.settingsUsingEmbossing.update(data);
                     }
@@ -34,8 +35,9 @@ module nts.uk.at.view.kdp010.g {
             save(){
                 let self = this;
                 block.grayout();
-                ajax("at", ko.toJS(self.settingsUsingEmbossing)).done(function() {
-                    info({ messageId: "Msg_15"}).then(()=>{
+                ajax("at", paths.save, ko.toJS(self.settingsUsingEmbossing)).done(function() {
+                    setShared("KDP010G", true);
+					info({ messageId: "Msg_15"}).then(()=>{
 						self.closeDialog();
 					});
                 }).fail(function (res: any) {
@@ -57,6 +59,7 @@ module nts.uk.at.view.kdp010.g {
             indivition: KnockoutObservable<boolean> = ko.observable(false);
             portal: KnockoutObservable<boolean> = ko.observable(false);
             smart_phone: KnockoutObservable<boolean> = ko.observable(false);
+			ricohStamp: KnockoutObservable<boolean> = ko.observable(false);
             constructor(){}
             update(data?:any){
                 let self = this;
@@ -67,15 +70,9 @@ module nts.uk.at.view.kdp010.g {
                     self.indivition(data.indivition);
                     self.portal(data.portal);
                     self.smart_phone(data.smart_phone);
+					self.ricohStamp(data.ricohStamp);
                 }
             }
         }
     }
-	
-	__viewContext.ready(function() {
-        var screenModel = new viewmodel.ScreenModel();
-		screenModel.start().done(() => {
-			__viewContext.bind(screenModel);	
-		});
-    });    
 }

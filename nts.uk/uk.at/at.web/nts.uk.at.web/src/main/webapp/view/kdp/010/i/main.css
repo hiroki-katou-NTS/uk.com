@@ -1,37 +1,56 @@
-#functions-area button.danger{
+#combobox1 {
+	margin-left: -274px;
+}
+
+#first-color-picker,#second-color-picker, #date-time-label, #correc-label1, #combobox1, #stamping-his-label, #stamping-his-radio {
+	margin-top: 10px;
+}
+
+#stamping-his-label{
+	margin-left:30px;
+}
+
+#combobox1{
+    width: 140px;
+}
+
+#correc-text{
+    width: 114px;
+}
+
+#correc-text{
+	margin-left: 93px;
+	margin-top: -33px;
+}
+
+#highlight-radio{
+	margin-left: 3px;
+}
+
+#first-color-picker{
+	margin-left: 23px;
+}
+
+#second-color-picker{
+	margin-left: 37px;
+}
+
+#correc-label{
+	margin-top: 9px;
+}
+
+#contents-area{
 	margin-left: 20px;
-    margin-right: 5px;
 }
 
-.contents-area .row{
-    margin: 15px 10px 15px 30px;
+.box{
+	margin-left: 6px !important;
 }
 
-.contents-area .row textarea{
-	width: 300px;
-	height: 105px;
+.ui-igcombo-list{
+	max-height: 210px  !important;
+	max-width: 140px !important;
 }
-
-.contents-area .row .form-label{
-	vertical-align: top;
-    width: 130px;
-}
-
-.contents-area .title label{
-	margin-left: 30px;
-}
-
-.buton-setting{
-    display: inline-block;
-    margin-top: 28px;
-}
-
-.buton-setting td{
-    width: 110px;
-}
-
-.buton-setting button{
-    width: 90px;
-    height: 50px;
-    margin: 10px 20px 10px 0;
+.sp-container{
+	left: 37px !important;
 }
