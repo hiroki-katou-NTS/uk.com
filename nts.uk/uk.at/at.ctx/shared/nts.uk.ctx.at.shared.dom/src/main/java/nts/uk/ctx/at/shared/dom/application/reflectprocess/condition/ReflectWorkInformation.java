@@ -13,9 +13,11 @@ import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.SCCreateDailyAfterApplicationeReflect.DailyAfterAppReflectResult;
+import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.stamp.CancelAppStamp;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.workchange.ReflectAttendance;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.workchange.schedule.SCReflectWorkChangeApp.WorkInfoDto;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
 
@@ -73,20 +75,45 @@ public class ReflectWorkInformation {
 	//予定に出退勤の反映
 	private static DailyAfterAppReflectResult reflectAttLeavSchedule(Require require, ScheduleRecordClassifi clasifi,
 			DailyRecordOfApplication dailyApp) {
+		List<Integer> lstItemId = new ArrayList<>();
 		//所定時間帯を取得する
 		Optional<WorkInfoAndTimeZone> timeZoneOpt = dailyApp.getWorkInformation().getRecordInfo()
 				.getWorkInfoAndTimeZone(require);
-		if (!timeZoneOpt.isPresent())
+		if (!timeZoneOpt.isPresent()) {
+			// 勤務時刻情報．時刻をクリアー
+			dailyApp.getAttendanceLeave().ifPresent(attLeav -> {
+				attLeav.getTimeLeavingWorks().forEach(data -> {
+					// 出勤
+					data.getAttendanceStamp().ifPresent(att -> {
+						att.getStamp().ifPresent(st -> {
+							st.getTimeDay().setTimeWithDay(Optional.empty());
+							st.getTimeDay().getReasonTimeChange().setTimeChangeMeans(TimeChangeMeans.APPLICATION);
+							lstItemId.add(CancelAppStamp.createItemId(31, data.getWorkNo().v(), 10));
+						});
+					});
+					
+					// 退勤
+					data.getLeaveStamp().ifPresent(att -> {
+						att.getStamp().ifPresent(st -> {
+							st.getTimeDay().setTimeWithDay(Optional.empty());
+							st.getTimeDay().getReasonTimeChange().setTimeChangeMeans(TimeChangeMeans.APPLICATION);
+							lstItemId.add(CancelAppStamp.createItemId(34, data.getWorkNo().v(), 10));
+						});
+					});
+					
+				});
+			});
 			return new DailyAfterAppReflectResult(dailyApp, new ArrayList<Integer>());
-
+		}
+		
 		List<TimeZoneWithWorkNo> timeZoneWithWorkNoLst = IntStream.range(0,timeZoneOpt.get().getTimeZones().size()).boxed().map(indx -> {
 			TimeZone timeZone = timeZoneOpt.get().getTimeZones().get(indx);
 			return new TimeZoneWithWorkNo(indx+1, timeZone.getStart().v(), timeZone.getEnd().v());
 		}).collect(Collectors.toList());
 		
 		//出退勤の反映
-		val lstItemId = ReflectAttendance.reflect(timeZoneWithWorkNoLst, clasifi, dailyApp, Optional.of(true),
-				Optional.of(true));
+		lstItemId.addAll(ReflectAttendance.reflect(timeZoneWithWorkNoLst, clasifi, dailyApp, Optional.of(true),
+				Optional.of(true)));
 		return new DailyAfterAppReflectResult(dailyApp, lstItemId);
 	}
 	
