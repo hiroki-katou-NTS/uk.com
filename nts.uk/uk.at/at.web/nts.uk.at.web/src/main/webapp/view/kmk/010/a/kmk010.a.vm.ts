@@ -70,6 +70,7 @@ module nts.uk.at.view.kmk010.a {
                     service.findAllOvertimeRoundingSub().done(function(lstRoundingSub) {
                         self.lstRoundingSub = lstRoundingSub;
                         //self.updateSelectUnitRounding(self.superHD60HConMedModel.roundingTime());
+                        self.outsideOTSettingModel.roundingUnit.valueHasMutated();
                     });
                 });
                 
