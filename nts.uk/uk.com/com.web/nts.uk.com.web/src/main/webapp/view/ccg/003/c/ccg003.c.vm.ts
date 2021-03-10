@@ -36,7 +36,9 @@ module nts.uk.com.view.ccg003.c {
     employeeReferenceRange: KnockoutObservable<number> = ko.observable(0);
     // ※C6
     isVisibleDestination: KnockoutComputed<boolean> = ko.computed(() =>
-      this.isNewMode() || moment.utc(this.dateValue().startDate, 'YYYY/MM/DD').isBefore(moment.utc(new Date(), 'YYYY/MM/DD')));
+      this.isNewMode()
+      || moment.utc(moment.utc(this.dateValue().startDate, 'YYYY/MM/DD').format('YYYY/MM/DD'))
+        .isAfter(moment.utc(moment.utc().format('YYYY/MM/DD'))));
     // ※C1
     isVisibleAllEmployees: KnockoutComputed<boolean> = ko.computed(() => this.assignAtr() === 0);
     // ※C2
@@ -295,8 +297,8 @@ module nts.uk.com.view.ccg003.c {
         notificationMessage: vm.messageText(),
         targetInformation: new TargetInformation({
           destination: vm.destination(),
-          targetWpids: vm.isActiveWorkplaceBtn() ? vm.workPlaceIdList() : [],
-          targetSIDs: vm.isActiveEmployeeBtn() ? vm.employeeInfoId() : []
+          targetWpids: this.destination() === DestinationClassification.WORKPLACE ? vm.workPlaceIdList() : [],
+          targetSIDs: this.destination() === DestinationClassification.DEPARTMENT ? vm.employeeInfoId() : []
         }),
         startDate: moment.utc(vm.dateValue().startDate).toISOString(),
         endDate: moment.utc(vm.dateValue().endDate).toISOString(),
@@ -331,8 +333,8 @@ module nts.uk.com.view.ccg003.c {
         notificationMessage: vm.messageText(),
         targetInformation: new TargetInformation({
           destination: vm.destination(),
-          targetWpids: vm.isActiveWorkplaceBtn() ? vm.workPlaceIdList() : [],
-          targetSIDs: vm.isActiveEmployeeBtn() ? vm.employeeInfoId() : []
+          targetWpids: this.destination() === DestinationClassification.WORKPLACE ? vm.workPlaceIdList() : [],
+          targetSIDs: this.destination() === DestinationClassification.DEPARTMENT ? vm.employeeInfoId() : []
         }),
         startDate: moment.utc(vm.dateValue().startDate).toISOString(),
         endDate: moment.utc(vm.dateValue().endDate).toISOString(),

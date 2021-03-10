@@ -64,7 +64,7 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 			, "LEFT JOIN SPTDT_INFO_MESSAGE_TGT N ON M.INPUT_DATE = N.INPUT_DATE AND M.SID = N.SID"
 			, "LEFT JOIN SPTDT_INFO_MESSAGE_READ S ON M.INPUT_DATE = S.INPUT_DATE AND M.SID = S.SID"
 			, "AND S.READ_SID = '{:SID}'"
-			, "WHERE M.CID = '{:CID}' AND M.START_DATE <= GETDATE() AND M.END_DATE >= GETDATE()"
+			, "WHERE M.CID = '{:CID}' AND M.START_DATE <= CONVERT(date, GETDATE()) AND M.END_DATE >= CONVERT(date, GETDATE())"
 			, "AND (M.DESTINATION_ATR = 0 or (M.DESTINATION_ATR = 1 and N.TGT_INFO_ID = '{:WKPID}')"
 			, "OR (M.DESTINATION_ATR = 2 AND N.TGT_INFO_ID = '{:SID}'))"
 			, ") A"
@@ -181,7 +181,7 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 							.setParameter("sid", sid)
 							.getList();
 		} else {
-			String queryString = GET_MSG_REF_BY_PERIOD.replace("", " OR (m.destination = 1 AND n.pk.tgtInfoId = :wpId)");
+			String queryString = GET_MSG_REF_BY_PERIOD.replace(" OR (m.destination = 1 AND n.pk.tgtInfoId = :wpId)", "");
 			entities = this.queryProxy().query(queryString, SptdtInfoMessage.class)
 							.setParameter("cid", cid)
 							.setParameter("endDate", period.end())
@@ -208,14 +208,14 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 					SptdtInfoMessage entity = new SptdtInfoMessage();
 					SptdtInfoMessagePK entityPk = new SptdtInfoMessagePK();
 					entityPk.setSid(item[11].toString());
-					entityPk.setInputDate(GeneralDateTime.fromString(item[12].toString(), "yyyy-MM-dd HH:mm:ss.S"));
+					entityPk.setInputDate(GeneralDateTime.fromString(item[12].toString().substring(0, 21), "yyyy-MM-dd HH:mm:ss.S"));
 					entity.setPk(entityPk);
 					entity.setVersion(Long.parseLong(item[8].toString()));
 					entity.setContractCd(item[9].toString());
 					entity.setCompanyId(item[10].toString());
-					entity.setStartDate(GeneralDate.fromString(item[13].toString(), "yyyy-MM-dd hh:mm:ss.S"));
-					entity.setEndDate(GeneralDate.fromString(item[14].toString(), "yyyy-MM-dd hh:mm:ss.S"));
-					entity.setUpdateDate(GeneralDateTime.fromString(item[15].toString(), "yyyy-MM-dd HH:mm:ss.S"));
+					entity.setStartDate(GeneralDate.fromString(item[13].toString().substring(0, 21), "yyyy-MM-dd hh:mm:ss.S"));
+					entity.setEndDate(GeneralDate.fromString(item[14].toString().substring(0, 21), "yyyy-MM-dd hh:mm:ss.S"));
+					entity.setUpdateDate(GeneralDateTime.fromString(item[15].toString().substring(0, 21), "yyyy-MM-dd HH:mm:ss.S"));
 					entity.setMessage(item[16].toString());
 					entity.setDestination(Integer.parseInt(item[17].toString()));
 					MessageNotice domain = new MessageNotice();
