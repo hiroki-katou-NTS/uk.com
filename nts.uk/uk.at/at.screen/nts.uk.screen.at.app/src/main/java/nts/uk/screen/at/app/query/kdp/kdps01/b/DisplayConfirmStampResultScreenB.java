@@ -85,10 +85,11 @@ public class DisplayConfirmStampResultScreenB {
 				.map(x -> x.getStamp()
 						.stream()
 						.findFirst()
-						.map(stamp -> stamp.getRefActualResults().getWorkLocationCD()
-								.map(workLoc -> workLoc != null ? workLoc.v()
-										: null)
-								.orElse(null))
+						.map(stamp -> stamp.getRefActualResults().getWorkInforStamp()
+							.map(wInfo -> wInfo.getWorkLocationCD()
+									.map(workLoc -> workLoc != null ? workLoc.v() : null)
+									.orElse(null))
+							.orElse(null))
 						.orElse(null))
 				.orElse(null);
 		

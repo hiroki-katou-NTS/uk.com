@@ -26,10 +26,13 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampTypeDisplay;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.WorkInformationStamp;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.SupportCardNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonType;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ReservationArt;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.OvertimeDeclaration;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 
 /**
@@ -118,9 +121,13 @@ public class EmpInfoTerminal implements DomainAggregate {
 	// [1] 打刻
 	public Pair<Stamp, StampRecord> createStamp(StampReceptionData recept) {
 		// 実績への反映内容
+		
+		WorkInformationStamp workInformationStamp = new WorkInformationStamp(null, null,
+				createStampInfo.getWorkLocationCd().isPresent() ? createStampInfo.getWorkLocationCd().get() : null, 
+				recept.getSupportCode().isEmpty() ? null : new SupportCardNumber(Integer.valueOf(recept.getSupportCode())));	
+		
 		RefectActualResult refActualResults = new RefectActualResult(
-				recept.getSupportCode().isEmpty() ? null : recept.getSupportCode(),
-				createStampInfo.getWorkLocationCd().orElse(null),
+				workInformationStamp,
 				(recept.getLeavingCategory().equals(LeaveCategory.GO_OUT.value)
 						|| recept.getLeavingCategory().equals(LeaveCategory.RETURN.value)
 						|| recept.getShift().isEmpty()) ? null : new WorkTimeCode(recept.getShift()),

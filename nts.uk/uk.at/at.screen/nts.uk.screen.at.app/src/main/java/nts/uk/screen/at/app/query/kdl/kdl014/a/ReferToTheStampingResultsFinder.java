@@ -123,7 +123,9 @@ public class ReferToTheStampingResultsFinder {
 		
 		List<Stamp> listStamp = listStampInfoDisp.stream().flatMap(m -> m.getStamp().stream()).collect(Collectors.toList());
 		
-		List<WorkLocationCD> listWorkLocation = listStamp.stream().filter(m->m.getRefActualResults().getWorkLocationCD().isPresent()).map(m->m.getRefActualResults().getWorkLocationCD().get()).collect(Collectors.toList());
+		List<Stamp> listStampFilter = listStamp.stream().filter(m -> m.getRefActualResults().getWorkInforStamp().isPresent()).collect(Collectors.toList());
+		
+		List<WorkLocationCD> listWorkLocation = listStampFilter.stream().filter(m->m.getRefActualResults().getWorkInforStamp().get().getWorkLocationCD().isPresent()).map(m->m.getRefActualResults().getWorkInforStamp().get().getWorkLocationCD().get()).collect(Collectors.toList());
 
 		List<String> listWorkLocationCode = listWorkLocation.stream().map(m->m.v()).distinct().collect(Collectors.toList());
 		
@@ -160,10 +162,10 @@ public class ReferToTheStampingResultsFinder {
 						
 						Optional<WorkLocation> wl = Optional.empty();
 						
-						if (st.getRefActualResults().getWorkLocationCD().isPresent()) {
+						if (st.getRefActualResults().getWorkInforStamp().isPresent() && st.getRefActualResults().getWorkInforStamp().get().getWorkLocationCD().isPresent()) {
 							wl = workLocationList.stream()
 									.filter(c -> c.getWorkLocationCD().v()
-											.equals(st.getRefActualResults().getWorkLocationCD().get().v()))
+											.equals(st.getRefActualResults().getWorkInforStamp().get().getWorkLocationCD().get().v()))
 									.findFirst();
 						}
 						

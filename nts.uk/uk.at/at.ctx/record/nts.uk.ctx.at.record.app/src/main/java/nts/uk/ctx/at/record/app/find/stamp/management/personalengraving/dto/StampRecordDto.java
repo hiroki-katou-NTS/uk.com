@@ -96,9 +96,9 @@ public class StampRecordDto {
 			this.changeCalArt = type.getChangeCalArt().value;
 
 			RefectActualResult raResult = stamp.getRefActualResults();
-			this.cardNumberSupport = raResult.getCardNumberSupport().isPresent() ? raResult.getCardNumberSupport().get()
+			this.cardNumberSupport = (raResult.getWorkInforStamp().isPresent() && raResult.getWorkInforStamp().get().getCardNumberSupport().isPresent()) ? raResult.getWorkInforStamp().get().getCardNumberSupport().get().toString()
 					: null;
-			this.workLocationCD = raResult.getWorkLocationCD().isPresent() ? raResult.getWorkLocationCD().get().v()
+			this.workLocationCD = (raResult.getWorkInforStamp().isPresent() && raResult.getWorkInforStamp().get().getWorkLocationCD().isPresent()) ? raResult.getWorkInforStamp().get().getWorkLocationCD().get().v()
 					: null;
 			this.workTimeCode = raResult.getWorkTimeCode().isPresent() ? raResult.getWorkTimeCode().get().v() : null;
 			if (raResult.getOvertimeDeclaration().isPresent()) {
@@ -154,9 +154,9 @@ public class StampRecordDto {
 			this.changeCalArt = type.getChangeCalArt().value;
 
 			RefectActualResult raResult = stamp.getRefActualResults();
-			this.cardNumberSupport = raResult.getCardNumberSupport().isPresent() ? raResult.getCardNumberSupport().get()
+			this.cardNumberSupport = (raResult.getWorkInforStamp().isPresent() && raResult.getWorkInforStamp().get().getCardNumberSupport().isPresent()) ? raResult.getWorkInforStamp().get().getCardNumberSupport().get().toString()
 					: null;
-			this.workLocationCD = raResult.getWorkLocationCD().isPresent() ? raResult.getWorkLocationCD().get().v()
+			this.workLocationCD = (raResult.getWorkInforStamp().isPresent() && raResult.getWorkInforStamp().get().getWorkLocationCD().isPresent()) ? raResult.getWorkInforStamp().get().getWorkLocationCD().get().v()
 					: null;
 			this.workTimeCode = raResult.getWorkTimeCode().isPresent() ? raResult.getWorkTimeCode().get().v() : null;
 			if (raResult.getOvertimeDeclaration().isPresent()) {

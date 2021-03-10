@@ -22,6 +22,8 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Relieve;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampLocationInfor;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.WorkInformationStamp;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.SupportCardNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeCalArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SetPreClockArt;
@@ -114,7 +116,7 @@ public class KrcdtStamp extends UkJpaEntity implements Serializable {
 	 */
 	@Basic(optional = true)
 	@Column(name = "SUPPORT_CARD")
-	public String suportCard;
+	public Integer suportCard;
 
 	/**
 	 * 打刻場所コード
@@ -178,11 +180,11 @@ public class KrcdtStamp extends UkJpaEntity implements Serializable {
 		this.changeHalfDay = stamp.getType().isChangeHalfDay();
 		this.goOutArt = stamp.getType().getGoOutArt().isPresent() ? stamp.getType().getGoOutArt().get().value : null;
 		this.reflectedAtr = stamp.isReflectedCategory();
-		this.suportCard = stamp.getRefActualResults().getCardNumberSupport().isPresent()
-				? stamp.getRefActualResults().getCardNumberSupport().get()
+		this.suportCard = (stamp.getRefActualResults().getWorkInforStamp().isPresent() && stamp.getRefActualResults().getWorkInforStamp().get().getCardNumberSupport().isPresent())
+				? stamp.getRefActualResults().getWorkInforStamp().get().getCardNumberSupport().get().v()
 				: null;
-		this.stampPlace = stamp.getRefActualResults().getWorkLocationCD().isPresent()
-				? stamp.getRefActualResults().getWorkLocationCD().get().v()
+		this.stampPlace = (stamp.getRefActualResults().getWorkInforStamp().isPresent() && stamp.getRefActualResults().getWorkInforStamp().get().getWorkLocationCD().isPresent())
+				? stamp.getRefActualResults().getWorkInforStamp().get().getWorkLocationCD().get().v()
 				: null;
 		this.workTime = stamp.getRefActualResults().getWorkTimeCode().isPresent()
 				? stamp.getRefActualResults().getWorkTimeCode().get().v()
@@ -216,9 +218,11 @@ public class KrcdtStamp extends UkJpaEntity implements Serializable {
 		OvertimeDeclaration overtime = this.overTime == null ? null
 				: new OvertimeDeclaration(new AttendanceTime(this.overTime),
 						new AttendanceTime(this.lateNightOverTime));
-						
-		val refectActualResult = new RefectActualResult(this.suportCard,
-				this.stampPlace == null ? null : new WorkLocationCD(this.stampPlace),
+		WorkInformationStamp workInformationStamp = new WorkInformationStamp(null, null,
+				this.stampPlace == null ? null : new WorkLocationCD(this.stampPlace), 
+				this.suportCard == null ? null : new SupportCardNumber(this.suportCard));				
+		
+		val refectActualResult = new RefectActualResult(workInformationStamp,
 				this.workTime == null ? null : new WorkTimeCode(this.workTime),
 				overtime );
 		

@@ -10,6 +10,7 @@ import nts.gul.location.GeoCoordinate;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.SupportCardNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeCalArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SetPreClockArt;
@@ -39,9 +40,9 @@ public class StampHelper {
 						SetPreClockArt.valueOf(0), 
 						ChangeClockArt.valueOf(0),
 						ChangeCalArt.valueOf(0)),
-				new RefectActualResult(
-						"cardNumberSupport", 
+				new RefectActualResult(new WorkInformationStamp(null, null,
 						new WorkLocationCD("workLocationCD"), 
+						new SupportCardNumber(9999)),
 						new WorkTimeCode("workTimeCode"), 
 						new OvertimeDeclaration(
 								new AttendanceTime(0),
@@ -66,8 +67,9 @@ public class StampHelper {
 						changeClockArt,
 						ChangeCalArt.valueOf(0)),
 				new RefectActualResult(
-						"cardNumberSupport", 
-						new WorkLocationCD("workLocationCD"), 
+						new WorkInformationStamp(null, null,
+								new WorkLocationCD("workLocationCD"), 
+								new SupportCardNumber(9999)), 
 						new WorkTimeCode("workTimeCode"), 
 						new OvertimeDeclaration(
 								new AttendanceTime(1),
@@ -87,7 +89,9 @@ public class StampHelper {
 				new Relieve(AuthcMethod.valueOf(0), StampMeans.valueOf(0)),
 				new StampType(false, GoingOutReason.valueOf(0), SetPreClockArt.valueOf(0), ChangeClockArt.valueOf(0),
 						ChangeCalArt.valueOf(0)),
-				new RefectActualResult("cardNumberSupport", new WorkLocationCD("workLocationCD"),
+				new RefectActualResult(new WorkInformationStamp(null, null,
+						new WorkLocationCD("workLocationCD"), 
+						new SupportCardNumber(9999)),
 						new WorkTimeCode("workTimeCode"),
 						new OvertimeDeclaration(new AttendanceTime(0), new AttendanceTime(0))),
 				false,Optional.ofNullable(
@@ -98,7 +102,9 @@ public class StampHelper {
 				new Relieve(AuthcMethod.valueOf(0), StampMeans.valueOf(0)),
 				new StampType(false, GoingOutReason.valueOf(0), SetPreClockArt.valueOf(0), ChangeClockArt.valueOf(0),
 						ChangeCalArt.valueOf(0)),
-				new RefectActualResult("cardNumberSupport", new WorkLocationCD("workLocationCD"),
+				new RefectActualResult(new WorkInformationStamp(null, null,
+						new WorkLocationCD("workLocationCD"), 
+						new SupportCardNumber(9999)),
 						new WorkTimeCode("workTimeCode"),
 						new OvertimeDeclaration(new AttendanceTime(0), new AttendanceTime(0))),
 				false,Optional.ofNullable(
@@ -128,7 +134,9 @@ public class StampHelper {
 	}
 	
 	public static RefectActualResult getRefectActualResultDefault() {
-		return new RefectActualResult("cardNumberSupport", new WorkLocationCD("workLocationCD"),
+		return new RefectActualResult(new WorkInformationStamp(null, null,
+				new WorkLocationCD("workLocationCD"), 
+				new SupportCardNumber(9999)),
 				new WorkTimeCode("workTimeCode"),
 				getOvertimeDeclarationDefault());
 	}

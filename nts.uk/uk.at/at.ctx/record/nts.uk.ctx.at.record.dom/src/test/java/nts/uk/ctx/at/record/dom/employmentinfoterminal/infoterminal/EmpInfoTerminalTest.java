@@ -236,8 +236,8 @@ public class EmpInfoTerminalTest {
 		assertThat(resultActual.getRelieve().getAuthcMethod()).isEqualTo(recordExpect.getRelieve().getAuthcMethod());
 		assertThat(resultActual.getRelieve().getStampMeans()).isEqualTo(recordExpect.getRelieve().getStampMeans());
 
-		assertThat(resultActual.getRefActualResults().getCardNumberSupport())
-				.isEqualTo(recordExpect.getRefActualResults().getCardNumberSupport());
+		assertThat(resultActual.getRefActualResults().getWorkInforStamp().get().getCardNumberSupport())
+				.isEqualTo(recordExpect.getRefActualResults().getWorkInforStamp().get().getCardNumberSupport());
 		if (!resultActual.getRefActualResults().getOvertimeDeclaration().isPresent()) {
 			assertThat(resultActual.getRefActualResults().getOvertimeDeclaration())
 					.isEqualTo(recordExpect.getRefActualResults().getOvertimeDeclaration());
@@ -247,8 +247,8 @@ public class EmpInfoTerminalTest {
 							recordExpect.getRefActualResults().getOvertimeDeclaration().get().getOverLateNightTime());
 		}
 
-		assertThat(resultActual.getRefActualResults().getWorkLocationCD().orElse(null))
-				.isEqualTo(recordExpect.getRefActualResults().getWorkLocationCD().orElse(null));
+		assertThat(resultActual.getRefActualResults().getWorkInforStamp().get().getWorkLocationCD().orElse(null))
+				.isEqualTo(recordExpect.getRefActualResults().getWorkInforStamp().get().getWorkLocationCD().orElse(null));
 		assertThat(resultActual.getRefActualResults().getWorkTimeCode())
 				.isEqualTo(recordExpect.getRefActualResults().getWorkTimeCode());
 
