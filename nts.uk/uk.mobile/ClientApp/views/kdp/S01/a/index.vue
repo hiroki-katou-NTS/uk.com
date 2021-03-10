@@ -1,38 +1,33 @@
 <template>
   <div class="mx-n3">
     <div
-      class="pl-3 pt-2 pr-2"
-      v-bind:style="{
-        'background-color':
-          setting.displaySettingsStampScreen.settingDateTimeColor
-            .backgroundColor,
-        color: setting.displaySettingsStampScreen.settingDateTimeColor.textColor
-      }"
-    >
-      <div class="font-weight-bold clearfix">
-        <span id="date">
-          {{ $dt.now | date("YYYY年 MM月 DD日（ddd）") }}
-        </span>
-        <button
-          v-on:click="openDialogS"
-          type="button"
-          class="float-right btn btn-success"
-        >
-          {{ "KDPS01_25" | i18n }}
-        </button>
-      </div>
-      <div class="pl-5 font-weight-bold">
-        <span id="time">{{ $dt.now | date("HH:mm") }}</span>
-      </div>
-    </div>
-
-    <div
-      class="p-2 text-break"
+      class="pl-3 text-break"
       v-bind:style="{
         color: setting.stampPageComment.commentColor
       }"
       v-html="textComment"
     ></div>
+    <div
+      class="pl-3 pt-2 pr-2"
+    >
+      <div class="clearfix" v-bind:style="{color: setting.displaySettingsStampScreen.settingDateTimeColor.textColor}">
+        <span id="date">
+          {{ $dt.now | date("YYYY年 MM月 DD日（ddd）") }}
+        </span>
+        <div>
+          <span id="time">{{ $dt.now | date("HH:mm") }}</span>
+          <span class="second">:{{ $dt.now | date("ss") }}</span>
+              <div
+          v-on:click="openDialogS"
+          type="text"
+          class="blue-link"
+        >
+          {{ "KDPS01_25" | i18n }}
+        </div>
+        </div>
+      </div>
+    </div>
+
     <div class="px-3">
       <div class="row">
         <div
@@ -50,6 +45,8 @@
             v-click:500="() => stampClick(button)"
             class="btn-block btn-stamp btn btn-secondary "
           >
+            <img v-bind:src="'/nts.uk.mobile.web/dist/resources/' + button.icon" height="80" width="80"/> 
+            <br>
             {{ button.buttonDisSet.buttonNameSet.buttonName }}
           </button>
         </div>

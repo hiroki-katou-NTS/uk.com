@@ -62,7 +62,9 @@ export module model {
 
         usrArt: number;
 
-        buttonType: IButtonTypeDto
+        buttonType: IButtonTypeDto;
+        
+        icon: string;
     }
 
     export interface IButtonTypeDto {

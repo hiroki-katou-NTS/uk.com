@@ -1,11 +1,41 @@
 .btn-stamp,
 .div-btn-stamp {
-  height: 90px;
+  height: 125px;
 }
 #date {
-  font-size: 0.7rem;
+  font-size: 1rem;
 }
 
 #time {
+  font-size: 3rem;
+}
+
+.second {
   font-size: 2rem;
+}
+
+.blue-link {
+  cursor: pointer;
+	color: rgb(37, 37, 238) !important;
+	text-decoration: underline;
+  padding-left: 18.2rem;
+  padding-bottom: 20px;
+}
+
+.blue-link:hover {
+	cursor: pointer;
+	color: rgb(0, 0, 255) !important;
+}
+
+.row {
+  margin: 0 !important;
+}
+
+.btn {
+  border-radius: 10px !important;
+}
+
+.px-2 {
+  padding-right: 5px !important;
+  padding-left: 5px !important;
 }

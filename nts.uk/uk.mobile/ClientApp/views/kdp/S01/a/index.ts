@@ -184,12 +184,29 @@ export class KdpS01AComponent extends Vue {
                         displayBackGroundColor: ''
                     },
                     usrArt: 1,
-                    buttonType: null
+                    buttonType: null,
+                    icon:''
                 };
-
 
             if (button) {
                 buttonSetting = button;
+
+                switch (buttonSetting.buttonPositionNo) {
+                    case ButtonType.GOING_TO_WORK:
+                        buttonSetting.icon = '205.png';
+                        break;
+                    case ButtonType.WORKING_OUT:
+                        buttonSetting.icon = '209.png';
+                        break;
+                    case ButtonType.GO_OUT:
+                        buttonSetting.icon = '212.png';
+                        break;
+                    case ButtonType.RETURN:
+                        buttonSetting.icon = '213.png';
+                        break;
+                    default:
+                        buttonSetting.icon = '';
+                }
             }
 
             vm.setBtnColor(buttonSetting, stampToSuppress);
