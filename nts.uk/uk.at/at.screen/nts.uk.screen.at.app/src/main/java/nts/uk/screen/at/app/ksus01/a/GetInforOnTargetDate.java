@@ -128,7 +128,7 @@ public class GetInforOnTargetDate {
     	
     	// dto
     	List<WorkInforAndTimeZoneByShiftMasterDto> listWorkInforAndTimeZone = new ArrayList<WorkInforAndTimeZoneByShiftMasterDto>();
-    	List<AttendanceDto> listAttendaceDto = new ArrayList<AttendanceDto>();
+    	List<AttendanceDto> listAttendanceDto = new ArrayList<AttendanceDto>();
     	List<String> listBusinessName = new ArrayList<String>();
     	String memo = "";
     	int type = 0;
@@ -160,7 +160,7 @@ public class GetInforOnTargetDate {
     			Optional<TimeLeavingOfDailyAttd> optTimeLeaving = workSchedule.get().getOptTimeLeaving();
     			
     			if (optTimeLeaving.isPresent()) {
-    				listAttendaceDto = optTimeLeaving.get().getTimeLeavingWorks().stream().map(e -> new AttendanceDto(e.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get().getInDayTimeWithFormat(), 
+    				listAttendanceDto = optTimeLeaving.get().getTimeLeavingWorks().stream().map(e -> new AttendanceDto(e.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get().getInDayTimeWithFormat(), 
     																												e.getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get().getInDayTimeWithFormat())).collect(Collectors.toList());
     			}
     		}
@@ -212,7 +212,7 @@ public class GetInforOnTargetDate {
     		}
     	}
     	
-    	return new InforOnTargetDateDto(listBusinessName, listWorkInforAndTimeZone, memo, listAttendaceDto, type);
+    	return new InforOnTargetDateDto(listBusinessName, listWorkInforAndTimeZone, memo, listAttendanceDto, type);
     	
 	}
     
@@ -339,7 +339,7 @@ public class GetInforOnTargetDate {
 		public List<String> sortEmployee(List<String> lstmployeeId, Integer sysAtr, Integer sortOrderNo,
 				GeneralDate referenceDate, Integer nameType) {
 			
-			GeneralDateTime time = GeneralDateTime.fromString(referenceDate.toString() + " " + "00:00", "yyyy/MM/dd HH:mm:ss");
+			GeneralDateTime time = GeneralDateTime.fromString(referenceDate.toString() + " " + "00:00:00", "yyyy/MM/dd HH:mm:ss");
 			
 			List<String> data = regulInfoEmpAdap.sortEmployee(AppContexts.user().companyId(), lstmployeeId, sysAtr, sortOrderNo, nameType, time);
             return data;
