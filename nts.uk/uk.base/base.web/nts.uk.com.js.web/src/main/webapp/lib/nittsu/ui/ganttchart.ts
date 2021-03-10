@@ -95,8 +95,8 @@ module nts.uk.ui.chart {
                         let sameLineChart: GanttChart = lineCharts[k];
                         return (sameLineChart.id !== chart.id && _.isNil(sameLineChart.parent) 
                                 && !sameLineChart.bePassedThrough
-                                && ((nearestLine > chart.start && pDec.end > sameLineChart.start && pDec.start < sameLineChart.start)
-                                || (nearestLine < chart.start && pDec.start < sameLineChart.end && pDec.end > sameLineChart.end)));
+                                && ((pDec.end > sameLineChart.start && pDec.end < sameLineChart.end) 
+                                    || (pDec.start > sameLineChart.start && pDec.start < sameLineChart.end)));
                     })) return;
                     
                     if (parentChart && ((diff > 0 && pDec.end > parentChart.end) || (diff < 0 && pDec.start < parentChart.start))) return;
