@@ -195,6 +195,9 @@ public class WorkScheduleTest {
 			
 			require.getLoginEmployeeId();
 			result = "empId";
+			
+			workInformation.isAttendanceRate(require);
+			result = true;
 		}};
 		
 		WorkSchedule result = WorkSchedule.createByHandCorrectionWithWorkInformation(
