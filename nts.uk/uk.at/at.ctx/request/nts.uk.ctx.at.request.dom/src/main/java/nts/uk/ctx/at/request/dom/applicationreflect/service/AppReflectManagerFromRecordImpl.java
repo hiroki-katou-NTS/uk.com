@@ -134,7 +134,7 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 			this.reflectAppOfAppDate(workId, sid, refAppResult, datePeriod);
 			return;
 		}
-		DatePeriod dateProcess = null;
+		DatePeriod dateProcess = datePeriod;
 		for(DatePeriod datePeriodCls : lstPeriodMag) {
 			/**
 			 * Input :      |*****************| 
@@ -143,7 +143,7 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 			 */
 			if (datePeriod.start().afterOrEquals(datePeriodCls.start())
 					&& datePeriod.end().beforeOrEquals(datePeriodCls.end())) {
-				continue;
+				break;
 			}
 			
 			/**
@@ -155,14 +155,6 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 				dateProcess = new DatePeriod(datePeriodCls.end().addDays(1), datePeriod.end());
 			}
 			
-			/**
-			 * Input :  |*****************|                                              |*****************| 
-			 * 
-			 * closure                                  |**********************|
-			 */
-			if (datePeriod.start().after(datePeriodCls.end()) || datePeriod.end().before(datePeriodCls.start())) {
-				dateProcess = datePeriod;
-			}
 		}
 		
 		this.reflectAppOfAppDate(workId, sid, refAppResult, dateProcess);
