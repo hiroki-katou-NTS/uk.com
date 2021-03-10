@@ -3,12 +3,12 @@ package nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.schedule.monthly
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.infra.data.entity.JpaEntity;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.AlarmCheckClassification;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.NameAlarmExtractCond;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.FixedCheckSMonItems;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.monthly.FixedExtractionSMonItems;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmMessage;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -23,7 +23,7 @@ import java.util.Optional;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name="KSCDT_SCHE_FIX_ITEM_MONTH")
-public class KscdtScheFixItemMonth extends ContractUkJpaEntity {
+public class KscdtScheFixItemMonth extends JpaEntity {
     @EmbeddedId
     public KscdtScheFixItemMonthPk pk;
 
