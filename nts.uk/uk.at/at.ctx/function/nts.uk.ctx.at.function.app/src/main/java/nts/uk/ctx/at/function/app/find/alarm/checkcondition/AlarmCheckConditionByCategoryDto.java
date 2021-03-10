@@ -44,4 +44,6 @@ public class AlarmCheckConditionByCategoryDto {
 	private MasterCheckAlarmCheckConditionDto masterCheckAlarmCheckConDto;
 	
 	private ScheFixCondDayDto scheFixCondDay;
+	
+	private ScheAnyCondDayDto scheAnyCondDay;
 }

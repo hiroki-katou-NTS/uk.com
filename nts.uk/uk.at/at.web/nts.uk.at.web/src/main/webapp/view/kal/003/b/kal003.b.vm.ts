@@ -18,6 +18,8 @@ module nts.uk.at.view.kal003.b.viewmodel {
         listCompareTypes: KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
         itemListTargetServiceType_BA1_2: KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
         itemListTargetSelectionRange_BA1_5: KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
+        listCheckTimeType: KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
+        listTimeZoneTargetRange: KnockoutObservableArray<model.EnumModel> = ko.observableArray([]);
         listAllWorkType: Array<string> = ([]);
         listAllAttdItem: Array<string> = ([]);
         listAllWorkingTime: Array<string> = ([]);
@@ -51,8 +53,11 @@ module nts.uk.at.view.kal003.b.viewmodel {
         //MinhVV 
         mulMonCheckCondSet: KnockoutObservable<sharemodel.MulMonCheckCondSet>;
         private setting: sharemodel.MulMonCheckCondSet;
-
-
+        
+        isPatternD: KnockoutObservable<boolean> = ko.observable(false);
+        isPatternG: KnockoutObservable<boolean> = ko.observable(false);
+        isPatternForContinuousWork: KnockoutObservable<boolean> = ko.observable(false);
+        isPatterForContinuousTimeZone: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor(isDoNothing) {
             let self = this;
@@ -188,6 +193,75 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     });
                     break;
                 }
+                case sharemodel.CATEGORY.SCHEDULE_DAILY:
+                    self.setting = $.extend({}, shareutils.getDefaultWorkRecordExtractingCondition(0), option.data);
+
+                    let workRecordExtractingCond = shareutils.convertTransferDataToWorkRecordExtractingCondition(self.setting);
+                    self.workRecordExtractingCondition = ko.observable(workRecordExtractingCond);
+                    // setting comparison value range
+
+                    self.comparisonRange = ko.observable(self.initComparisonValueRange());
+
+                    self.checkItemTemp = ko.observable(self.workRecordExtractingCondition().checkItem());
+                    
+                    self.controlShowPattern(self.workRecordExtractingCondition().checkItem());
+                    
+                    // change select item check
+                    self.workRecordExtractingCondition().checkItem.subscribe((itemCheck) => {
+                        errors.clearAll();
+                        
+                        self.controlShowPattern(itemCheck);
+                        
+                        self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().planLstWorkType([]);
+                        self.comparisonRange().minAmountOfMoneyValue(null);
+                        self.comparisonRange().maxAmountOfMoneyValue(null);
+                        self.comparisonRange().minTimeValue(null);
+                        self.comparisonRange().maxTimeValue(null);
+                        self.comparisonRange().minTimesValue(null);
+                        self.comparisonRange().maxTimesValue(null);
+                        self.comparisonRange().maxTimeWithinDayValue(null);
+                        self.comparisonRange().minTimeWithinDayValue(null);
+                        if ((itemCheck && itemCheck != undefined) || itemCheck === 0) {
+//                            self.initialScreen().then(function() {
+//                                self.settingEnableComparisonMaxValueField(false);
+//                                if ((self.checkItemTemp() || self.checkItemTemp() == 0) && self.checkItemTemp() != itemCheck) {
+//                                    setTimeout(function() { self.displayAttendanceItemSelections_BA2_3(""); }, 200);
+//
+//                                }
+//                            });
+                        }
+                        $(".nts-input").ntsError("clear");
+                    });
+                    self.comparisonRange().comparisonOperator.subscribe((operN) => {
+                        self.settingEnableComparisonMaxValueField(false);
+                        if (self.comparisonRange().comparisonOperator() > 5) {
+                            $(".nts-input").ntsError("clear");
+                            if (self.comparisonRange().comparisonOperator() == 7 || self.comparisonRange().comparisonOperator() == 9) {
+                                setTimeout(() => {
+                                    if (parseInt(self.comparisonRange().minValue()) > parseInt(self.comparisonRange().maxValue())) {
+                                        $('#endValue').ntsError('set', { messageId: "Msg_836" });
+                                    }
+                                }, 25);
+                            }
+                            if (self.comparisonRange().comparisonOperator() == 6 || self.comparisonRange().comparisonOperator() == 8) {
+                                setTimeout(() => {
+                                    if (parseInt(self.comparisonRange().minValue()) >= parseInt(self.comparisonRange().maxValue())) {
+                                        $('#endValue').ntsError('set', { messageId: "Msg_836" });
+                                    }
+                                }, 25);
+                            }
+                        } else {
+                            $(".nts-input").ntsError("clear");
+                        }
+                    });
+                    self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparePlanAndActual = ko.observable(self.setting.errorAlarmCondition.workTypeCondition.comparePlanAndActual);
+                    self.required_BA1_4 = ko.observable(self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparePlanAndActual() > 0);
+                    self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparePlanAndActual.subscribe((newV) => {
+                        self.required_BA1_4(newV > 0);
+                        $(".nts-input").ntsError("clear");
+                    }); 
+                    
+                    break;
                 default: break;
             }
 
@@ -218,6 +292,13 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 // MinhVV Edit
                 case sharemodel.CATEGORY.MULTIPLE_MONTHS:
                     $.when(self.getAllEnums(), self.initialMultiMonthScreen()).done(function() {
+                        dfd.resolve();
+                    }).fail(() => {
+                        dfd.reject();
+                    });
+                    break;
+                case sharemodel.CATEGORY.SCHEDULE_DAILY:
+                    $.when(self.getAllEnums(), self.getEnumSchedule()).done(function() {
                         dfd.resolve();
                     }).fail(() => {
                         dfd.reject();
@@ -424,6 +505,26 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 }).always(() => {
                     dfd.resolve();
                 });
+            return dfd.promise();
+        }
+        
+        /**
+         * Get enum for all category schedule: daily, monthly
+         */
+        private getEnumSchedule(): JQueryPromise<any> {
+            let self = this,
+                dfd = $.Deferred();
+            $.when(service.getEnumDaiCheckItemType(), service.getCheckTimeType(), service.getTimeZoneTargetRange()).done((
+                        listDaiCheckItemType: Array<model.EnumModel>, listCheckTimeType: Array<model.EnumModel>, listTimeZoneTargetRange: Array<model.EnumModel>) => {
+                self.listTypeCheckWorkRecords(self.getLocalizedNameForEnum(listDaiCheckItemType));
+                self.listCheckTimeType(self.getLocalizedNameForEnum(listCheckTimeType));
+                self.listTimeZoneTargetRange(self.getLocalizedNameForEnum(listTimeZoneTargetRange));
+                dfd.resolve();
+
+            }).always(() => {
+                dfd.resolve();
+            });
+            
             return dfd.promise();
         }
 
@@ -1487,6 +1588,77 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     , 0);
             }
             return comparisonValueRange;
+        }
+        
+        /**
+         * The control show/hide screen pattern when change チェック項目
+         */
+        private controlShowPattern(itemCheck): void {
+            let self = this;
+            switch(itemCheck) {
+                case 0:
+                    self.showPatternD();
+                    break;
+                case 1:
+                    self.showPatternG();
+                    break;
+                case 2:
+                    self.showPatternForContinuousWork();
+                    break;
+                case 3:
+                    self.showPatternForContinuousTimeZone();
+                    break;
+                default:
+                    self.resetPattern();
+                    break;    
+            }    
+        }
+        
+        /**
+         * Show screen pattern D
+         */
+        private showPatternD(): void {
+            let self = this;
+            self.resetPattern();
+            self.isPatternD(true);
+        }
+        
+        /**
+         * Show screen pattern G
+         */
+        private showPatternG(): void {
+            let self = this;
+            self.resetPattern();
+            self.isPatternG(true);
+        }
+        
+        /**
+         * For continuous work (連続勤務の場合)
+         */
+        private showPatternForContinuousWork(): void {
+            let self = this;
+            self.resetPattern();
+            self.isPatternForContinuousWork(true);
+        }
+        
+        /**
+         * For continuous time zones (連続時間帯の場合)
+         */
+        private showPatternForContinuousTimeZone(): void {
+            let self = this;
+            self.resetPattern();
+            self.isPatterForContinuousTimeZone(true);
+        }
+        
+        /**
+         * Hide all screen pattern
+         */
+        private resetPattern(): void {
+            let self = this;
+            self.isPatternD(false);
+            self.isPatternG(false);
+            self.isPatternForContinuousWork(false);
+            self.isPatterForContinuousTimeZone(false);
         }
     }
     //MinhVV Add

@@ -9,5 +9,6 @@ import nts.uk.ctx.at.function.app.find.alarm.checkcondition.FixedConditionWorkRe
 @Data
 @NoArgsConstructor
 public class ScheFixCondDayCommand {
+	private String erAlCheckLinkId;
 	private List<FixedConditionWorkRecordDto> sheFixItemDays;
 }

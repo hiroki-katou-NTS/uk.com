@@ -23,6 +23,7 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.appapproval.AppApprovalFi
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.MonAlarmCheckConEvent;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.MulMonAlarmCondEvent;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.MasterCheckFixedExtractConditionRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.ExtraCondScheDayRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.FixedExtractSDailyConRepository;
 import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 import nts.uk.shr.com.context.AppContexts;
@@ -73,6 +74,9 @@ public class DeleteAlarmCheckConditionByCategoryCommandHandler extends CommandHa
 	
 	@Inject
 	private FixedExtractSDailyConRepository fixedExtractSDailyConRepository;
+	
+	@Inject
+	private ExtraCondScheDayRepository extraCondScheDayRepository;
 	
 	@Override
 	protected void handle(CommandHandlerContext<AlarmCheckConditionByCategoryCommand> context) {
@@ -151,7 +155,14 @@ public class DeleteAlarmCheckConditionByCategoryCommandHandler extends CommandHa
 		if (command.getCategory() == AlarmCategory.SCHEDULE_DAILY.value) {
 			String contractCode = AppContexts.user().contractCode();
 			List<String> checkIds = command.getScheFixCondDay().getSheFixItemDays().stream().map(item -> item.getDailyAlarmConID()).collect(Collectors.toList());
-			this.fixedExtractSDailyConRepository.delete(contractCode, companyId, checkIds);
+			if (!checkIds.isEmpty()) {
+				this.fixedExtractSDailyConRepository.delete(contractCode, companyId, checkIds);
+			}
+			
+			List<String> checkAnyIds = command.getScheAnyCondDay().getScheAnyCondDays().stream().map(item -> item.getErrorAlarmCheckID()).collect(Collectors.toList());
+			if (!checkAnyIds.isEmpty()) {
+				this.extraCondScheDayRepository.delete(contractCode, companyId, checkAnyIds);
+			}
 		}
 		
 		conditionRepo.delete(companyId, command.getCategory(), command.getCode());

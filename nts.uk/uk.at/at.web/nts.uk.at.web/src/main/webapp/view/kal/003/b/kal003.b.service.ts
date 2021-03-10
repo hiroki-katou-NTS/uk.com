@@ -37,10 +37,12 @@ module nts.uk.at.view.kal003.b.service {
             getMonthlyOptItemByAtr: "at/record/attendanceitem/monthly/getattendcomparison/",
             
             //getname monthly
-            getNameMonthly  :"screen/at/correctionofdailyperformance/getNameMonthlyAttItem"
+            getNameMonthly  :"screen/at/correctionofdailyperformance/getNameMonthlyAttItem",
 
-            
-            
+            // schedule
+            getEnumDaiCheckItemType: "at/function/alarm/checkcondition/kal003b/getEnumDaiCheckItemType",
+            getCheckTimeType: "at/function/alarm/checkcondition/kal003b/getCheckTimeType",
+            getTimeZoneTargetRange: "at/function/alarm/checkcondition/kal003b/getTimeZoneTargetRange"
 
     }
     // MinhVV ADD
@@ -161,5 +163,16 @@ module nts.uk.at.view.kal003.b.service {
             return nts.uk.request.ajax(paths.getNameMonthly,listID);
         }
     
+    export function getEnumDaiCheckItemType() : JQueryPromise<any> {
+        return req_ajax(paths.getEnumDaiCheckItemType);
+    }
+    
+    export function getCheckTimeType() : JQueryPromise<any> {
+        return req_ajax(paths.getCheckTimeType);
+    }
+    
+    export function getTimeZoneTargetRange(): JQueryPromise<any> {
+        return req_ajax(paths.getTimeZoneTargetRange);
+    }
     
 }

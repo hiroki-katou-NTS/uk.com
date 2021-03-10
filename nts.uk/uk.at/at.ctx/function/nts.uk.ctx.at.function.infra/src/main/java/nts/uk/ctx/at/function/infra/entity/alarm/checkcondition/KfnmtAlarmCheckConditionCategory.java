@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.infra.entity.alarm.checkcondition;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,8 +15,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.apache.commons.lang3.StringUtils;
+
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.schedaily.AlarmType;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.schedaily.ScheduleDailyAlarmCheckCond;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionCode;
@@ -186,8 +190,14 @@ public class KfnmtAlarmCheckConditionCategory extends ContractUkJpaEntity implem
 							entity.alCheckSubConAg == null ? null : entity.alCheckSubConAg.toDomain());
 			break;
 		case SCHEDULE_DAILY:
-			List<String> eralCheckIds = entity.scheduleCondDayLinks.stream().map(item -> item.eralCheckId).collect(Collectors.toList());
-			extractionCondition = new ScheduleDailyAlarmCheckCond(null, eralCheckIds);
+			String listFixedItem = "";
+			String listOptionalItem = "";
+			if (entity.scheduleCondDayLinks.size() > 0) {
+				listFixedItem = entity.scheduleCondDayLinks.stream().filter(x -> x.pk.alarmType == AlarmType.UNIQUE_EXTRACTION.value).findFirst().get().eralCheckId;
+				listOptionalItem = entity.scheduleCondDayLinks.stream().filter(x -> x.pk.alarmType == AlarmType.ARBITRARY_EXTRACTION_CONDITIONS.value).findFirst().get().eralCheckId;
+			}
+			
+			extractionCondition = new ScheduleDailyAlarmCheckCond(listOptionalItem, listFixedItem);
 			break;
 		default:
 			break;
@@ -212,11 +222,21 @@ public class KfnmtAlarmCheckConditionCategory extends ContractUkJpaEntity implem
 	}
 
 	public static KfnmtAlarmCheckConditionCategory fromDomain(AlarmCheckConditionByCategory domain) {
-		List<KfndtScheCondDayLink> scheduleCondDayLinks = null;
+		List<KfndtScheCondDayLink> scheduleCondDayLinks = new ArrayList<>();
 		if (domain.getCategory() == AlarmCategory.SCHEDULE_DAILY && (ScheduleDailyAlarmCheckCond) domain.getExtractionCondition() != null) {
-			scheduleCondDayLinks = ((ScheduleDailyAlarmCheckCond) domain.getExtractionCondition()).getListFixedItem().stream()
-				.map(item-> KfndtScheCondDayLink.toEntity(item, domain.getCode().v(), domain.getCategory().value))
-				.collect(Collectors.toList());
+			ScheduleDailyAlarmCheckCond scheDailyAlarmCheckCondDomain = (ScheduleDailyAlarmCheckCond) domain.getExtractionCondition();
+			if (StringUtils.isNotEmpty(scheDailyAlarmCheckCondDomain.getListFixedItem())) {
+				scheduleCondDayLinks.add(KfndtScheCondDayLink.toEntity(
+						domain.getCompanyId(), scheDailyAlarmCheckCondDomain.getListFixedItem(),
+						domain.getCode().v(), domain.getCategory().value, 
+						AlarmType.UNIQUE_EXTRACTION.value));
+			}
+			if (StringUtils.isNotEmpty(scheDailyAlarmCheckCondDomain.getListOptionalItem())) {
+				scheduleCondDayLinks.add(KfndtScheCondDayLink.toEntity(
+						domain.getCompanyId(), scheDailyAlarmCheckCondDomain.getListOptionalItem(),
+						domain.getCode().v(), domain.getCategory().value, 
+						AlarmType.ARBITRARY_EXTRACTION_CONDITIONS.value));
+			}
 		}
 		
 		return new KfnmtAlarmCheckConditionCategory(domain.getCompanyId(), domain.getCategory().value,

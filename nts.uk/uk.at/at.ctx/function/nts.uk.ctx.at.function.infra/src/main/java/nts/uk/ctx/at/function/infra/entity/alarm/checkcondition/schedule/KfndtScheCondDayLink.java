@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.schedule;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.function.infra.entity.alarm.checkcondition.KfnmtAlarmCheckConditionCategory;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 import javax.persistence.*;
@@ -21,7 +22,18 @@ public class KfndtScheCondDayLink extends ContractUkJpaEntity implements Seriali
 
     @Column(name = "ERAL_CHECK_ID")
     public String eralCheckId;
-
+    
+    @OneToOne
+	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
+			@JoinColumn(name = "AL_CHECK_COND_CATE_CD", referencedColumnName = "CD", insertable = false, updatable = false),
+			@JoinColumn(name = "CATEGORY", referencedColumnName = "CATEGORY", insertable = false, updatable = false) })
+	public KfnmtAlarmCheckConditionCategory condition;
+    
+    public KfndtScheCondDayLink(KfndtScheCondDayLinkPk pk, String eralCheckId) {
+    	this.pk = pk;
+    	this.eralCheckId = eralCheckId;
+    }
+    
     @Override
     protected Object getKey() {
         return this.pk;
@@ -29,5 +41,11 @@ public class KfndtScheCondDayLink extends ContractUkJpaEntity implements Seriali
 
     public KfndtScheCondDayLink toDomain(){
         return new KfndtScheCondDayLink();
+    }
+    
+    public static KfndtScheCondDayLink toEntity(String companyId, String erAlCheckId, String ctgCode, int categoryCode, int alarmType) {
+    	KfndtScheCondDayLinkPk pk = new KfndtScheCondDayLinkPk(companyId, ctgCode, categoryCode, alarmType);
+    	KfndtScheCondDayLink entity = new KfndtScheCondDayLink(pk, erAlCheckId);
+    	return entity;
     }
 }

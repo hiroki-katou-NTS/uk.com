@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class JpaFixedExtractSDailyConRepository extends JpaRepository implements FixedExtractSDailyConRepository {
 	private static final String SELECT_BASIC = "SELECT a FROM KscdtScheFixCondDay a";
 	private static final String BY_CONTRACT_COMPANY = " WHERE a.pk.cid = :companyId AND a.contractCd = :contractCode";
-	private static final String BY_ERAL_CHECK_ID = " AND a.pk.cid = :companyId AND a.contractCd = :contractCode AND a.pk.checkId IN :eralCheckIds";
+	private static final String BY_ERAL_CHECK_ID = " AND a.pk.cid = :companyId AND a.contractCd = :contractCode AND a.pk.checkId = :eralCheckIds";
 	
     @Override
     public List<FixedExtractionSDailyItems> getAll() {
@@ -38,8 +38,7 @@ public class JpaFixedExtractSDailyConRepository extends JpaRepository implements
 	}
     
     @Override
-	public List<FixedExtractionSDailyCon> getScheFixCondDay(String contractCode, String companyId,
-			List<String> eralCheckIds) {
+	public List<FixedExtractionSDailyCon> getScheFixCondDay(String contractCode, String companyId, String eralCheckIds) {
     	List<KscdtScheFixCondDay> entities = this.queryProxy().query(SELECT_BASIC + BY_CONTRACT_COMPANY + BY_ERAL_CHECK_ID, KscdtScheFixCondDay.class)
 				.setParameter("contractCode", contractCode)
 				.setParameter("companyId", companyId)

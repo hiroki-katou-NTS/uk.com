@@ -8,6 +8,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.
 
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * スケジュール日次の任意抽出条件
  */
@@ -39,4 +41,25 @@ public class ExtractionCondScheduleDay extends AggregateRoot {
 
     // メッセージ
     private Optional<ErrorAlarmMessage> errorAlarmMessage;
+    
+    /**
+     * Create new domain
+     * @param errorAlarmId error alarm check id
+     * @param sortOrder sort
+     * @param isUse is use
+     * @param name name
+     * @param message error alarm message
+     * @return domain
+     */
+    public static ExtractionCondScheduleDay create(String errorAlarmId, int sortOrder, boolean isUse, String name, String message) {
+    	ExtractionCondScheduleDay domain = new ExtractionCondScheduleDay();
+    	domain.errorAlarmId = errorAlarmId;
+    	domain.sortOrder = sortOrder;
+    	domain.isUse = isUse;
+    	domain.name = new NameAlarmExtractCond(name);
+    	if (StringUtils.isNotEmpty(message)) {
+    		domain.errorAlarmMessage = Optional.of(new ErrorAlarmMessage(message));
+    	}
+    	return domain;
+    }
 }

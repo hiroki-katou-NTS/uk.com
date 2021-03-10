@@ -168,6 +168,7 @@ module nts.uk.at.view.kal003.a.tab {
                 }
                 let workRecordExtractingCondition = shareutils.getDefaultWorkRecordExtractingCondition(0);
                 workRecordExtractingCondition.rowId(self.listWorkRecordExtractingConditions().length + 1);
+                workRecordExtractingCondition.sortOrderBy = self.listWorkRecordExtractingConditions().length + 1;
 
                 self.listWorkRecordExtractingConditions.push(workRecordExtractingCondition);
                 self.currentRowSelected(self.listWorkRecordExtractingConditions().length);

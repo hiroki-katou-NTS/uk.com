@@ -24,11 +24,13 @@ import nts.uk.ctx.at.function.app.command.alarm.checkcondition.agree36.AgreeCond
 import nts.uk.ctx.at.function.app.find.alarm.checkcondition.AlarmCheckConditionByCategoryFinder;
 import nts.uk.ctx.at.function.app.find.alarm.checkcondition.AppApprovalFixedExtractConditionDto;
 import nts.uk.ctx.at.function.app.find.alarm.checkcondition.AppFixedConditionWorkRecordDto;
+import nts.uk.ctx.at.function.app.find.alarm.checkcondition.ExtractionCondScheduleDayDto;
 import nts.uk.ctx.at.function.app.find.alarm.checkcondition.FixedConditionWorkRecordDto;
 import nts.uk.ctx.at.function.app.find.alarm.mastercheck.MasterCheckFixedExtractConditionDto;
 import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapter;
 import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.WorkRecordExtraConAdapter;
+import nts.uk.ctx.at.function.dom.adapter.WorkRecordExtraConAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraMonFunAdapter;
 import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraMonFunImport;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.schedaily.ScheduleDailyAlarmCheckCond;
@@ -64,6 +66,8 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.ErrorAlarmMess
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.MasterCheckFixedCheckItem;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.MasterCheckFixedExtractCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.MasterCheckFixedExtractConditionRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.ExtraCondScheDayRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.ExtractionCondScheduleDay;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.FixedExtracSDailyItemsRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.FixedExtractSDailyConRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.FixedExtractionSDailyCon;
@@ -115,6 +119,9 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 	
 	@Inject
 	private FixedExtractSDailyConRepository fixedExtractSDailyConRepository;
+	
+	@Inject
+	private ExtraCondScheDayRepository extraCondScheDayRepository;
 	
 	@Override
 	protected void handle(CommandHandlerContext<AlarmCheckConditionByCategoryCommand> context) {
@@ -446,7 +453,12 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				fixedMasterCheckConditionRepo.persist(lstCondition);
 				break;
 			case SCHEDULE_DAILY:
-				saveScheduleFixCondDay(companyId, command.getScheFixCondDay().getSheFixItemDays(), false);
+				if (!command.getScheFixCondDay().getSheFixItemDays().isEmpty()) {
+					saveScheduleFixCondDay(companyId, command.getScheFixCondDay().getErAlCheckLinkId(), command.getScheFixCondDay().getSheFixItemDays(), false);
+				}
+				if (!command.getScheAnyCondDay().getScheAnyCondDays().isEmpty()) {
+					saveScheduleAnyCondDay(companyId, command.getScheAnyCondDay().getErAlCheckLinkId(), command.getScheAnyCondDay().getScheAnyCondDays());
+				}
 				break;
 			default:
 				break;
@@ -636,8 +648,12 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				fixedMasterCheckConditionRepo.persist(lstMasterCheck);
 				break;
 			case SCHEDULE_DAILY:
-				List<String> listFixedItem = saveScheduleFixCondDay(companyId, command.getScheFixCondDay().getSheFixItemDays(), true);
-				extractionCondition = new ScheduleDailyAlarmCheckCond(null, listFixedItem);
+				String eralCheckIdFixedItem = IdentifierUtil.randomUniqueId();
+				String eralCheckIdOptionalItem = IdentifierUtil.randomUniqueId();
+				
+				saveScheduleFixCondDay(companyId, eralCheckIdFixedItem, command.getScheFixCondDay().getSheFixItemDays(), true);
+				saveScheduleAnyCondDay(companyId, eralCheckIdOptionalItem, command.getScheAnyCondDay().getScheAnyCondDays());
+				extractionCondition = new ScheduleDailyAlarmCheckCond(eralCheckIdOptionalItem, eralCheckIdFixedItem);
 				break;
 			default:
 				break;
@@ -673,30 +689,47 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 	}
 	
 	/**
-	 * Schedule Daily
+	 * Schedule Daily with tab3
 	 * (process tab 固有のチェック条件)
 	 * @param sheFixItemDays
 	 */
-	private List<String> saveScheduleFixCondDay(String companyId, List<FixedConditionWorkRecordDto> sheFixItemDays, boolean isAdd) {
+	private void saveScheduleFixCondDay(String companyId, String eralCheckId, List<FixedConditionWorkRecordDto> sheFixItemDays, boolean isAdd) {
 		String contractCode = AppContexts.user().contractCode();
 		
-		List<String> listFixedItems = new ArrayList<>();
 		for(FixedConditionWorkRecordDto item: sheFixItemDays) {
-			String eralCheckId = item.getDailyAlarmConID();
 			FixedExtractionSDailyCon domain = FixedExtractionSDailyCon.create(
 					eralCheckId, item.getFixConWorkRecordNo(), item.getMessage(), item.isUseAtr());
 			if (isAdd) {
-				eralCheckId = IdentifierUtil.randomUniqueId();
 				domain = FixedExtractionSDailyCon.create(
 						eralCheckId, item.getFixConWorkRecordNo(), item.getMessage(), item.isUseAtr());
 				fixedExtractSDailyConRepository.add(contractCode, companyId, domain);
 			} else {
 				fixedExtractSDailyConRepository.update(contractCode, companyId, domain);
 			}
-			listFixedItems.add(eralCheckId);
 		}
+	}
+	
+	/**
+	 * Schedule daily with tab2
+	 * @param companyId
+	 * @param scheAnyCondDays
+	 * @return list of error alarm check id
+	 */
+	private void saveScheduleAnyCondDay(String companyId, String eralCheckId, List<WorkRecordExtraConAdapterDto> scheAnyCondDays) {
+		String contractCode = AppContexts.user().contractCode();
+		List<ExtractionCondScheduleDay> listOptionalItem = extraCondScheDayRepository.getScheAnyCondDay(contractCode, companyId, eralCheckId);
 		
-		return listFixedItems;
+		for(WorkRecordExtraConAdapterDto item: scheAnyCondDays) {
+			ExtractionCondScheduleDay domain = ExtractionCondScheduleDay.create(
+					eralCheckId, item.getSortOrderBy(), item.isUseAtr(), item.getNameWKRecord(), "");
+			if (!listOptionalItem.stream().anyMatch(x -> x.getErrorAlarmId() == eralCheckId && x.getSortOrder() == item.getSortOrderBy())) {
+				domain = ExtractionCondScheduleDay.create(
+						eralCheckId, item.getSortOrderBy(), item.isUseAtr(), item.getNameWKRecord(), "");
+				extraCondScheDayRepository.add(contractCode, companyId, domain);
+			} else {
+				extraCondScheDayRepository.update(contractCode, companyId, domain);
+			}
+		}
 	}
 
 }

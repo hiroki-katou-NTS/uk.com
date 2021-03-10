@@ -57,6 +57,8 @@ module nts.uk.at.view.kal003.a.viewmodel {
         tabScheduleFixedCheckConditions: KnockoutObservable<any> = ko.observable(null);
         // 固有のチェック条件
         tabScheUniqueCheckCondition: tab.ScheUniqueCheckConditionTab;
+        errAlFixedCheckId: KnockoutObservable<string> = ko.observable(null);
+        errAlOptionalCheckId: KnockoutObservable<string> = ko.observable(null);
 
         constructor() {
             super();
@@ -66,7 +68,7 @@ module nts.uk.at.view.kal003.a.viewmodel {
             self.tabs = ko.observableArray([
                 { id: 'tab-1', title: getText('KAL003_15'), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
                 { id: 'tab-2', title: getText('KAL003_51'), content: '.tab-content-2', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY }, this) },
-                { id: 'tab-3', title: getText('KAL003_16'), content: '.tab-content-3', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY || self.selectedCategory() == model.CATEGORY.SCHEDULE_4_WEEK || self.selectedCategory() == model.CATEGORY.MULTIPLE_MONTHS }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY || self.selectedCategory() == model.CATEGORY.SCHEDULE_4_WEEK || self.selectedCategory() == model.CATEGORY.MULTIPLE_MONTHS }, this) },
+                { id: 'tab-3', title: getText('KAL003_16'), content: '.tab-content-3', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY || self.selectedCategory() == model.CATEGORY.SCHEDULE_4_WEEK || self.selectedCategory() == model.CATEGORY.MULTIPLE_MONTHS || self.selectedCategory() == model.CATEGORY.SCHEDULE_DAILY }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY || self.selectedCategory() == model.CATEGORY.SCHEDULE_4_WEEK || self.selectedCategory() == model.CATEGORY.MULTIPLE_MONTHS || self.selectedCategory() == model.CATEGORY.SCHEDULE_DAILY }, this) },
                 { id: 'tab-4', title: getText('KAL003_67'), content: '.tab-content-4', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY}, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.DAILY}, this) },
                 { id: 'tab-5', title: getText('KAL003_67'), content: '.tab-content-5', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.MONTHLY }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.MONTHLY }, this) },
                 { id: 'tab-6', title: 'アラームリストのチェック条件', content: '.tab-content-6', enable: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.MONTHLY }, this), visible: ko.computed(() => { return self.selectedCategory() == model.CATEGORY.MONTHLY }, this) },
@@ -81,13 +83,11 @@ module nts.uk.at.view.kal003.a.viewmodel {
                 //02 スケジュール月次 - 3 tabs
                 {
                     id: 'tab-13', title: getText('KAL003_16'), content: '.tab-content-13', enable: ko.computed(() => {
-                        return self.selectedCategory() == model.CATEGORY.SCHEDULE_DAILY
-                            || self.selectedCategory() == model.CATEGORY.SCHEDULE_MONTHLY
+                        return self.selectedCategory() == model.CATEGORY.SCHEDULE_MONTHLY
                             || self.selectedCategory() == model.CATEGORY.SCHEDULE_YEAR
                             || self.selectedCategory() == model.CATEGORY.WEEKLY
                     }, this), visible: ko.computed(() => {
-                        return self.selectedCategory() == model.CATEGORY.SCHEDULE_DAILY
-                            || self.selectedCategory() == model.CATEGORY.SCHEDULE_MONTHLY
+                        return self.selectedCategory() == model.CATEGORY.SCHEDULE_MONTHLY
                             || self.selectedCategory() == model.CATEGORY.SCHEDULE_YEAR
                             || self.selectedCategory() == model.CATEGORY.WEEKLY
                     }, this)
@@ -431,6 +431,8 @@ module nts.uk.at.view.kal003.a.viewmodel {
                 if ($("#con_usage_obli_day").ntsError("hasError") || $("#A3_2").ntsError("hasError") || $("#A3_4").ntsError("hasError")) {
                     return;
                 }
+            } else if (data.category() == model.CATEGORY.SCHEDULE_DAILY) {
+                $("#check-condition-table .nts-editor.nts-input").trigger("validate");     
             }
 
 
@@ -520,7 +522,10 @@ module nts.uk.at.view.kal003.a.viewmodel {
             
             // schedule
             if (self.selectedCategory() == model.CATEGORY.SCHEDULE_DAILY) {
+                data.scheFixCondDay().erAlCheckLinkId(self.errAlFixedCheckId());
+                data.scheAnyCondDay().erAlCheckLinkId(self.errAlOptionalCheckId());
                 data.scheFixCondDay().sheFixItemDays(self.tabScheUniqueCheckCondition.listFixedConditionWorkRecord());
+                data.scheAnyCondDay().scheAnyCondDays(self.tabCheckCondition.listWorkRecordExtractingConditions());
             }
 
             let command: any = ko.toJS(data);
@@ -779,6 +784,12 @@ module nts.uk.at.view.kal003.a.viewmodel {
                         }
                         
                         if (item.category() == model.CATEGORY.SCHEDULE_DAILY) {
+                            // tab2
+                            self.tabCheckCondition.listWorkRecordExtractingConditions(item.dailyAlarmCheckCondition().listExtractConditionWorkRecork());
+                            self.errAlFixedCheckId(result.scheFixCondDay.erAlCheckLinkId);
+                            
+                            // tab3
+                            self.errAlOptionalCheckId(result.scheAnyCondDay.erAlCheckLinkId);
                             item.scheFixCondDay().sheFixItemDays(result.scheFixCondDay.sheFixItemDays);
                             self.tabScheUniqueCheckCondition.setListFixedConditionWorkRecord(item.scheFixCondDay().sheFixItemDays());
                         }

@@ -19,10 +19,10 @@ import lombok.Setter;
 public class ScheduleDailyAlarmCheckCond extends ExtractionCondition {
 
     // スケジュール日次の任意抽出条件
-    private List<String> listOptionalItem;
+    private String listOptionalItem;
 
     // スケジュール日次の固定抽出条件
-    private List<String> listFixedItem;
+    private String listFixedItem;
 
     @Override
     public void changeState(ExtractionCondition extractionCondition) {

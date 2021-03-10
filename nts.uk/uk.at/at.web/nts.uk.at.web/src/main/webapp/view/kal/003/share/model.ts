@@ -69,6 +69,7 @@ module nts.uk.at.view.kal003.share.model {
         masterCheckAlarmCheckCondition: KnockoutObservable<MasterCheckCondition> = ko.observable(new MasterCheckCondition([]));
         // schedule
         scheFixCondDay: KnockoutObservable<ScheFixCondDay> = ko.observable(new ScheFixCondDay([]));
+        scheAnyCondDay: KnockoutObservable<ScheFixCondDay> = ko.observable(new ScheAnyCondDay([]));
         
         constructor(code: string, name: string, category: ItemModel, availableRoles: Array<string>, targetCondition: AlarmCheckTargetCondition) {
             this.code = ko.observable(code);
@@ -2632,10 +2633,23 @@ module nts.uk.at.view.kal003.share.model {
     //MinhVV Multiple Month end
     
     export class ScheFixCondDay {
+        erAlCheckLinkId: KnockoutObservable<string>;
         sheFixItemDays: KnockoutObservableArray<FixedConditionWorkRecord>;
         
-        constructor(sheFixItemDays: KnockoutObservableArray<FixedConditionWorkRecord>) {
+        constructor(erAlCheckLinkId: string, sheFixItemDays: KnockoutObservableArray<FixedConditionWorkRecord>) {
+            this.erAlCheckLinkId = ko.observable(erAlCheckLinkId);
             this.sheFixItemDays = ko.observableArray(sheFixItemDays);
         }
     }
+    
+    export class ScheAnyCondDay {
+        erAlCheckLinkId: KnockoutObservable<string>;
+        scheAnyCondDays: KnockoutObservableArray<FixedConditionWorkRecord>;
+        
+        constructor(erAlCheckLinkId: string, scheAnyCondDays: KnockoutObservableArray<FixedConditionWorkRecord>) {
+            this.erAlCheckLinkId = ko.observable(erAlCheckLinkId);
+            this.scheAnyCondDays = ko.observableArray(scheAnyCondDays);
+        }  
+    } 
+    
 }

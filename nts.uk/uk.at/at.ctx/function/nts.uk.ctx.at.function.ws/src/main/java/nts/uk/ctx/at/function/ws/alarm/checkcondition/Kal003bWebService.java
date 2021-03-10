@@ -13,6 +13,9 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.TargetSelectionRange;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.TargetServiceType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.TypeCheckWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.TypeCheckWorkRecordMultipleMonth;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.CheckTimeType;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.DaiCheckItemType;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.TimeZoneTargetRange;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.LogicalOperator;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.RangeCompareType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.SingleValueCompareType;
@@ -118,4 +121,26 @@ public class Kal003bWebService extends WebService{
                 LogicalOperator.AND,
                 LogicalOperator.OR);
     }
+	
+	@POST
+	@Path("getEnumDaiCheckItemType")
+	public List<EnumConstant> getEunumDaiCheckItemType() {
+		return EnumAdaptor.convertToValueNameList(DaiCheckItemType.class,
+				DaiCheckItemType.TIME,
+				DaiCheckItemType.CONTINUOUS_TIME,
+				DaiCheckItemType.CONTINUOUS_WORK,
+				DaiCheckItemType.CONTINUOUS_TIMEZONE);
+	}
+	
+	@POST
+	@Path("getCheckTimeType")
+	public List<EnumConstant> getCheckTimeType() {
+		return EnumAdaptor.convertToValueNameList(CheckTimeType.class, CheckTimeType.RESERVATION_TIME);
+	}
+	
+	@POST
+	@Path("getTimeZoneTargetRange")
+	public List<EnumConstant> getTimeZoneTargetRange() {
+		return EnumAdaptor.convertToValueNameList(TimeZoneTargetRange.class, TimeZoneTargetRange.CHOICE, TimeZoneTargetRange.OTHER);
+	}
 }

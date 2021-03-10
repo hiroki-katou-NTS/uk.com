@@ -8,7 +8,8 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum CheckTimeType {
     // 予約時間
-    RESERVATION_TIME(0);
+    RESERVATION_TIME(0, "予約時間");
 
     public final int value;
+    public final String nameId;
 }

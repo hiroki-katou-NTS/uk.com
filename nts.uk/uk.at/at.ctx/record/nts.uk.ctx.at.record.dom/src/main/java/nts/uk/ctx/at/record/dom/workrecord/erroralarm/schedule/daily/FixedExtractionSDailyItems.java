@@ -33,5 +33,4 @@ public class FixedExtractionSDailyItems extends AggregateRoot {
      * 初期メッセージ
      */
     private Optional<ErrorAlarmMessage> initMsg;
-
 }

@@ -9,7 +9,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ScheFixCondDayDto {
+public class ScheAnyCondDayDto {
 	private String erAlCheckLinkId;
-	private List<FixedConditionWorkRecordDto> sheFixItemDays;
+	
+	private List<ExtractionCondScheduleDayDto> scheAnyItemDays;
 }

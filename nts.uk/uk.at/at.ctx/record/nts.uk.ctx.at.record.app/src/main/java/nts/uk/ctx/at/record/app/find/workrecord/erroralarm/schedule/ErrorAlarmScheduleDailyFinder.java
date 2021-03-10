@@ -33,11 +33,8 @@ public class ErrorAlarmScheduleDailyFinder {
 	 * Get スケジュール日次の固有抽出項目
 	 * @return list of schedule fixed item day
 	 */
-	public List<ScheFixItemDayDto> getScheFixItemDay() {
-		String contractCode = AppContexts.user().contractCode();
-		String companyCode = AppContexts.user().companyCode();
-		
-		return scheduleFixItemDayRepository.getScheFixItemDay(contractCode, companyCode).stream()
+	public List<ScheFixItemDayDto> getScheFixItemDay() {		
+		return scheduleFixItemDayRepository.getAll().stream()
 				.map(eral -> ScheFixItemDayDto.fromDomain(eral))
 				.collect(Collectors.toList());
 	}
