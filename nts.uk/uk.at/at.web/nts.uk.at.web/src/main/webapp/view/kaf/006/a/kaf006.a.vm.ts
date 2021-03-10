@@ -399,6 +399,9 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                                 let workTime1: any = _.filter(workTimeLst, {'workNo': 1})[0];
                                 vm.startTime1(workTime1.startTime);
                                 vm.endTime1(workTime1.endTime);
+                            } else {
+                                vm.startTime1(null);
+                                vm.endTime1(null);
                             }
                             if (_.filter(workTimeLst, {'workNo': 2}).length > 0) {
                                 let workTime2: any = _.filter(workTimeLst, {'workNo': 2})[0];
@@ -411,6 +414,8 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                                 }
                             } else {
                                 vm.isDispTime2ByWorkTime(false);
+                                vm.startTime2(null);
+                                vm.endTime2(null);
                             }
                         } else {
                             vm.startTime1(null);
@@ -476,6 +481,9 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                                 let workTime1: any = _.filter(workTimeLst, {'workNo': 1})[0];
                                 vm.startTime1(workTime1.startTime);
                                 vm.endTime1(workTime1.endTime);
+                            } else {
+                                vm.startTime1(null);
+                                vm.endTime1(null);
                             }
                             if (_.filter(workTimeLst, {'workNo': 2}).length > 0) {
                                 let workTime2: any = _.filter(workTimeLst, {'workNo': 2})[0];
@@ -488,6 +496,8 @@ module nts.uk.at.view.kaf006_ref.a.viewmodel {
                                 }
                             } else {
                                 vm.isDispTime2ByWorkTime(false);
+                                vm.startTime2(null);
+                                vm.endTime2(null);
                             }
                         }
                         return data;
