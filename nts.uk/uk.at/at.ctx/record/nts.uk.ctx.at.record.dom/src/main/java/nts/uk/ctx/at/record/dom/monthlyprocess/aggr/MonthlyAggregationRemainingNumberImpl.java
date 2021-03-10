@@ -126,7 +126,7 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 
 	public AggregateMonthlyRecordValue aggregation(CacheCarrier cacheCarrier, DatePeriod period,
 			String companyId, String employeeId, YearMonth yearMonth, ClosureId closureId,   ClosureDate closureDate,
-			MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets, 
+			MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets,
 			MonthlyCalculatingDailys monthlyCalculatingDailys,
 			InterimRemainMngMode interimRemainMngMode, boolean isCalcAttendanceRate) {
 
@@ -140,7 +140,7 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 		this.companySets = companySets;
 		this.employeeSets = employeeSets;
 		this.monthlyCalculatingDailys = monthlyCalculatingDailys;
-		
+
 		this.aggregateResult = new AggregateMonthlyRecordValue();
 
 		ConcurrentStopwatches.start("12405:暫定データ作成：");
@@ -489,7 +489,14 @@ public class MonthlyAggregationRemainingNumberImpl implements MonthlyAggregation
 					// (interimRemainMngMode == InterimRemainMngMode.MONTHLY),
 					// period.end(), specialLeaveCode, true,
 					(interimRemainMngMode == InterimRemainMngMode.MONTHLY), period.end(), specialLeaveCode, false,
-					this.isOverWriteRemain, interimMng, interimSpecialData);
+					this.isOverWriteRemain, interimSpecialData);
+
+			//特別休暇暫定データに、親ドメインの情報を更新する。　※暫定データの作成処理がまだ対応中のため、親ドメインと子ドメインが別々になっているので。
+			for(InterimSpecialHolidayMng specialData : interimSpecialData) {
+				InterimRemain remain
+					= interimMng.stream().filter(c->c.getRemainManaID()==specialData.getSpecialHolidayId()).findFirst().get();
+				specialData.setParentValue(remain);
+			}
 
 			//残数処理
 			InPeriodOfSpecialLeaveResultInfor aggrResult

@@ -26,14 +26,14 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.work.AppTimeType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.DigestionHourlyTimeType;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnualLeaveUsedNumber;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
-import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KrcdtInterimHdpaid;
+import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KshdtInterimHdpaid;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.annlea.KrcdtInterimHdpaidPK;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaTmpAnnualHolidayMngRepository extends JpaRepository implements TmpAnnualHolidayMngRepository{
 
-	private TmpAnnualHolidayMng toDomain(KrcdtInterimHdpaid x) {
+	private TmpAnnualHolidayMng toDomain(KshdtInterimHdpaid x) {
 		return toDomain(x.remainMngId, x.pk.sid, x.pk.ymd, x.creatorAtr, x.pk.timeDigestiveAtr,
 						x.pk.timeHdType, x.workTypeCode, x.useDays, x.useTime);
 	}
@@ -52,7 +52,7 @@ public class JpaTmpAnnualHolidayMngRepository extends JpaRepository implements T
 
 	@Override
 	public void deleteById(String mngId) {
-		this.getEntityManager().createQuery("DELETE FROM KrcdtInterimHdpaid a WHERE a.remainMngId = :id", KrcdtInterimHdpaid.class)
+		this.getEntityManager().createQuery("DELETE FROM KrcdtInterimHdpaid a WHERE a.remainMngId = :id", KshdtInterimHdpaid.class)
 			.setParameter("id", mngId).executeUpdate();
 
 	}
@@ -63,13 +63,13 @@ public class JpaTmpAnnualHolidayMngRepository extends JpaRepository implements T
 				dataMng.getSID(), dataMng.getYmd(), dataMng.getTimeBreakType().isHourlyTimeType() ? 1 : 0, 
 				dataMng.getTimeBreakType().getAppTimeType().map(c -> c.value).orElse(0));
 		
-		Optional<KrcdtInterimHdpaid> optTmpAnnualHolidayMng = this.queryProxy().find(pk, KrcdtInterimHdpaid.class);
+		Optional<KshdtInterimHdpaid> optTmpAnnualHolidayMng = this.queryProxy().find(pk, KshdtInterimHdpaid.class);
 		if(optTmpAnnualHolidayMng.isPresent()) {
-			KrcdtInterimHdpaid entity = optTmpAnnualHolidayMng.get();
+			KshdtInterimHdpaid entity = optTmpAnnualHolidayMng.get();
 			entity.update(dataMng);
 			this.commandProxy().update(entity);
 		} else {
-			KrcdtInterimHdpaid entity = new KrcdtInterimHdpaid();
+			KshdtInterimHdpaid entity = new KshdtInterimHdpaid();
 			entity.pk = pk;
 			entity.update(dataMng);
 			this.commandProxy().insert(entity);
@@ -99,7 +99,7 @@ public class JpaTmpAnnualHolidayMngRepository extends JpaRepository implements T
 	public void deleteSidPeriod(String sid, DatePeriod period) {
 		
 		this.getEntityManager().createQuery("DELETE FROM KrcdtInterimHdpaid a WHERE a.pk.sid = :id"
-					+ " AND a.pk.ymd <= :end AND a.pk.ymd >= :start", KrcdtInterimHdpaid.class)
+					+ " AND a.pk.ymd <= :end AND a.pk.ymd >= :start", KshdtInterimHdpaid.class)
 			.setParameter("id", sid)
 			.setParameter("start", period.start())
 			.setParameter("end", period.end())

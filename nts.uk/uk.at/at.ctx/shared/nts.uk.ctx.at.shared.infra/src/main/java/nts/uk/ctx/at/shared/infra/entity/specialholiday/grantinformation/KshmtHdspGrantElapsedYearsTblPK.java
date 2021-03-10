@@ -9,14 +9,14 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 /**
- * 特別休暇経過年数テーブル　PK
+ * 特別休暇付与経過年数テーブル PK
  * @author masaaki_jinno
  *
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class KshstElapseYearsTblPK implements Serializable {
+public class KshmtHdspGrantElapsedYearsTblPK implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/* 会社ID */
@@ -26,9 +26,5 @@ public class KshstElapseYearsTblPK implements Serializable {
 	/* 特別休暇コード */
 	@Column(name = "SPHD_CD")
 	public int specialHolidayCode;
-	
-	/* 付与回数 */
-	@Column(name = "GRANT_CNT")
-	public int grantCnt;
-}
 
+}

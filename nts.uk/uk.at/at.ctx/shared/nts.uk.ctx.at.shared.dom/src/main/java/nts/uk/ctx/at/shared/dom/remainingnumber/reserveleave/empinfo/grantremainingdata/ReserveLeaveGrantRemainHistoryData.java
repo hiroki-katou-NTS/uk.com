@@ -7,11 +7,12 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveNumberInfo;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 /**
- * 
+ *
  * @author HungTT - 積立年休付与残数履歴データ
  *
  */
@@ -33,7 +34,7 @@ public class ReserveLeaveGrantRemainHistoryData extends AggregateRoot {
 
 	// 締め日
 	private ClosureDate closureDate;
-	
+
 	/**
 	 * 付与日
 	 */
@@ -57,7 +58,8 @@ public class ReserveLeaveGrantRemainHistoryData extends AggregateRoot {
 	/**
 	 * 明細
 	 */
-	private ReserveLeaveNumberInfo details;
+//	private ReserveLeaveNumberInfo details;
+	private LeaveNumberInfo details;
 
 
 	public ReserveLeaveGrantRemainHistoryData(String employeeId, YearMonth yearMonth, Integer closureId, ClosureDate closureDate, GeneralDate grantDate, GeneralDate deadline,
@@ -72,6 +74,7 @@ public class ReserveLeaveGrantRemainHistoryData extends AggregateRoot {
 		this.deadline = deadline;
 		this.expirationStatus = EnumAdaptor.valueOf(expirationStatus, LeaveExpirationStatus.class);
 		this.registerType = EnumAdaptor.valueOf(registerType, GrantRemainRegisterType.class);
+		//this.details = new ReserveLeaveNumberInfo(grantDays, usedDays, overLimitDays, remainDays);
 		this.details = new ReserveLeaveNumberInfo(grantDays, usedDays, overLimitDays, remainDays);
 
 	}

@@ -25,6 +25,10 @@ public class AnnualLeaveUsedNumber extends LeaveUsedNumber{
 //	 */
 //	private Optional<AnnualLeaveUsedDayNumber> stowageDays;
 
+	public AnnualLeaveUsedNumber() {
+		super();
+	}
+
 	public AnnualLeaveUsedNumber(double days, Integer minutes, Double stowageDays) {
 		this.days = new AnnualLeaveUsedDayNumber(days);
 		this.minutes = minutes != null ? Optional.of(new AnnualLeaveUsedTime(minutes)) : Optional.empty();
@@ -35,5 +39,4 @@ public class AnnualLeaveUsedNumber extends LeaveUsedNumber{
 	public static AnnualLeaveUsedNumber createFromJavaType(double days, Integer minutes, Double stowageDays) {
 		return new AnnualLeaveUsedNumber(days, minutes, stowageDays);
 	}
-
 }

@@ -456,7 +456,7 @@ public class OptionalWidgetKtgFinder {
 								systemDate,
 								specialHoliday.getSpecialHolidayCode().v(),
 								false, false,
-								new ArrayList<>(), new ArrayList<>());
+								new ArrayList<>());
 						InPeriodOfSpecialLeaveResultInfor inPeriodOfSpecialLeave
 							= SpecialLeaveManagementService
 								.complileInPeriodOfSpecialLeave(require, cacheCarrier, param);

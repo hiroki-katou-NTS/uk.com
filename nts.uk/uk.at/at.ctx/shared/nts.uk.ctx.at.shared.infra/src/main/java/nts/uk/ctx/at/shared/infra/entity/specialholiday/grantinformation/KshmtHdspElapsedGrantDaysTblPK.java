@@ -22,7 +22,7 @@ import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantedDays;
 @AllArgsConstructor
 @Embeddable
 @NoArgsConstructor
-public class KshstGrantDateElapseYearsTblPK implements Serializable {
+public class KshmtHdspElapsedGrantDaysTblPK implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/* 会社ID */

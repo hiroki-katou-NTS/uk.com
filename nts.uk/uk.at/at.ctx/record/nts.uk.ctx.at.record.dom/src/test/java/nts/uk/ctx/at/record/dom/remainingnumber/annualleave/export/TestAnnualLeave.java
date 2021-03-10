@@ -61,7 +61,7 @@ public class TestAnnualLeave {
 	public void initialize(){
 
 		// Requireクラス　バイナリファイルからデータを読み込む
-		ｒequireM3 = new CalcAnnLeaAttendanceRateRequireM3Test();
+//		ｒequireM3 = new CalcAnnLeaAttendanceRateRequireM3Test();
 
 		// 上書き用の暫定年休管理データ
 		this.testDataForOverWriteListMap = TestDataForOverWriteList.build();

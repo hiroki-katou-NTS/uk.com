@@ -17,12 +17,12 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KSHMT_HDSP_ELAPSED_GRANT_DAYS_TBL")
-public class KshstGrantDateElapseYearsTbl extends UkJpaEntity implements Serializable {
+public class KshmtHdspElapsedGrantDaysTbl extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/* 主キー */
 	@EmbeddedId
-	public KshstGrantDateElapseYearsTblPK pk;
+	public KshmtHdspElapsedGrantDaysTblPK pk;
 
 	/* 付与日数 */
 	@Column(name = "GRANT_DAYS")
@@ -33,7 +33,7 @@ public class KshstGrantDateElapseYearsTbl extends UkJpaEntity implements Seriali
 		return pk;
 	}
 
-	public KshstGrantDateElapseYearsTbl(KshstGrantDateElapseYearsTblPK pk, int grantDays) {
+	public KshmtHdspElapsedGrantDaysTbl(KshmtHdspElapsedGrantDaysTblPK pk, int grantDays) {
 		this.pk = pk;
 		this.grantDays = grantDays;
 	}
