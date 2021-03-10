@@ -64,7 +64,7 @@ public class EstimateAmountList implements DomainValue {
 	 */
 	public Optional<EstimateAmountByCondition> getEstimateAmountByNo(EstimateAmountNo no) {
 		return this.estimatePrices.stream()
-					.filter( e -> e.getEstimateAmountNo().v() == no.v() )
+					.filter( e -> e.getEstimateAmountNo().equals( no ) )
 					.findFirst();
 	}
 
@@ -100,7 +100,7 @@ public class EstimateAmountList implements DomainValue {
 		val exceeded = sortedPrices.stream()
 				.filter( e -> e.getEstimateAmountNo().v() == (unexceeded.get().getEstimateAmountNo().v() - 1) )
 				.findFirst().get();
-		return StepOfEstimateAmount.create( require, exceeded, unexceeded.get() );
+		return StepOfEstimateAmount.createFromCondition( require, exceeded, unexceeded.get() );
 
 	}
 

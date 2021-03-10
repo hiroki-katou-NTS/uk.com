@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,6 +19,10 @@ import nts.arc.testing.assertion.NtsAssert;
 @RunWith(JMockit.class)
 public class EstimateAmountListTest {
 
+
+	@Injectable EstimateAmountList.Require require;
+
+
 	@Test
 	public void getters() {
 		val estimateAmount = EstimateAmountList.create(Arrays.asList(
@@ -29,6 +32,7 @@ public class EstimateAmountListTest {
 			));
 		NtsAssert.invokeGetters(estimateAmount);
 	}
+
 
 	/**
 	 * input: 	目安金額リスト.size() ＞ 5
@@ -154,25 +158,34 @@ public class EstimateAmountListTest {
 	public void test_getEstimateAmountByNo() {
 
 		// 目安金額リスト
-		val amountList = EstimateAmountList.create(
-				IntStream.rangeClosed( 1, 3 ).boxed()
-					.map( no -> new EstimateAmountByCondition( new EstimateAmountNo( no ), new EstimateAmount( no * 500 ) ) )
-					.collect(Collectors.toList())
-			);
+		val amountList = EstimateAmountList.create(Arrays.asList(
+				EstimateAmountHelper.createAmountPerFrame( 1,  500 )
+			,	EstimateAmountHelper.createAmountPerFrame( 2, 1000 )
+			,	EstimateAmountHelper.createAmountPerFrame( 3, 1500 )
+		));
 
-		// 該当枠Noあり
+
+		// 該当枠NOあり
 		{
-			val result = amountList.getEstimateAmountByNo( new EstimateAmountNo( 3 ) );
+			// 枠NO
+			val no = new EstimateAmountNo( 3 );
 
+			// Execute
+			val result = amountList.getEstimateAmountByNo( no );
+
+			// Assertion
 			assertThat( result ).isPresent();
-			assertThat( result.get().getEstimateAmountNo().v() ).isEqualTo( 3 );
-			assertThat( result.get().getEstimateAmount() ).isEqualTo( new EstimateAmount( 3 * 500 ) );
+			assertThat( result.get().getEstimateAmountNo() ).isEqualTo( no );
+			assertThat( result.get().getEstimateAmount() ).isEqualTo( new EstimateAmount( 1500 ) );
 		}
 
-		// 該当枠Noなし
+
+		// 該当枠NOなし
 		{
+			// Execute
 			val result = amountList.getEstimateAmountByNo( new EstimateAmountNo( 4 ) );
 
+			// Assertion
 			assertThat( result ).isEmpty();
 		}
 
@@ -184,8 +197,10 @@ public class EstimateAmountListTest {
 	 * @param require require
 	 */
 	@Test
-	public void test_getStepOfEstimateAmount(@Injectable EstimateAmountList.Require require) {
+	public void test_getStepOfEstimateAmount(@Injectable EstimateAmountList.Require req4test) {
 
+		// 目安金額の扱い
+		val handling = EstimateAmountHelper.createHandling(1);
 		// 目安金額リスト
 		val instance = EstimateAmountList.create(Arrays.asList(
 						EstimateAmountHelper.createAmountPerFrame( 1, 1000 )
@@ -193,15 +208,19 @@ public class EstimateAmountListTest {
 					,	EstimateAmountHelper.createAmountPerFrame( 3, 1500 )
 					,	EstimateAmountHelper.createAmountPerFrame( 4, 2000 )
 				));
+		// Mockup設定
+		EstimateAmountHelper.mockupRequireForStepOfEstimateAmount(require, handling);
+		EstimateAmountHelper.mockupRequireForStepOfEstimateAmount(req4test, handling);
+
+
 		// 期待値
 		@SuppressWarnings("serial")
 		val expected = new HashMap<Integer, StepOfEstimateAmount>() {{
-
-			put(  999, EstimateAmountHelper.createStep(require, 1,    0, Optional.of(1000)) );
-			put( 1200, EstimateAmountHelper.createStep(require, 3, 1200, Optional.of(1500)) );
-			put( 1549, EstimateAmountHelper.createStep(require, 4, 1500, Optional.of(2000)) );
-			put( 2974, EstimateAmountHelper.createStep(require, 4, 2000, Optional.empty()) );
-
+			// Key: 値, Value: 取得対象の『目安金額の段階』
+			put(  999, EstimateAmountHelper.createStep(req4test, 1,    0, Optional.of(1000)) );
+			put( 1200, EstimateAmountHelper.createStep(req4test, 3, 1200, Optional.of(1500)) );
+			put( 1549, EstimateAmountHelper.createStep(req4test, 4, 1500, Optional.of(2000)) );
+			put( 2974, EstimateAmountHelper.createStep(req4test, 4, 2000, Optional.empty()) );
 		}};
 
 

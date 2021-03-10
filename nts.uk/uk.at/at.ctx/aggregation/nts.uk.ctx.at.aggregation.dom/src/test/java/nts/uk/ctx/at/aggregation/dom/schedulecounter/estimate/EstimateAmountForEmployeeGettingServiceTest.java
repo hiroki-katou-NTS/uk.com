@@ -41,10 +41,10 @@ public class EstimateAmountForEmployeeGettingServiceTest {
 		new Expectations() {{
 			// 目安利用区分
 			require.getUsageSetting();
-			result = usageStg;
+			result = Optional.of(usageStg);
 			// 会社の目安金額
 			require.getEstimateAmountForCompany();
-			result = forCompany;
+			result = Optional.of(forCompany);
 		}};
 
 		// Execute
@@ -79,7 +79,7 @@ public class EstimateAmountForEmployeeGettingServiceTest {
 		new Expectations() {{
 			// 目安利用区分
 			require.getUsageSetting();
-			result = usageStg;
+			result = Optional.of(usageStg);
 			// 社員の雇用期間
 			require.getEmploymentHistory( (EmployeeId)any, (GeneralDate)any );
 			result = Optional.of(empHist);
@@ -87,7 +87,7 @@ public class EstimateAmountForEmployeeGettingServiceTest {
 			require.getEstimateAmountForEmployment( (EmploymentCode)any );
 			// 会社の目安金額
 			require.getEstimateAmountForCompany();
-			result = forCompany;
+			result = Optional.of(forCompany);
 		}};
 
 		// Execute
@@ -122,7 +122,7 @@ public class EstimateAmountForEmployeeGettingServiceTest {
 		new Expectations() {{
 			// 目安利用区分
 			require.getUsageSetting();
-			result = usageStg;
+			result = Optional.of(usageStg);
 			// 社員の雇用期間
 			require.getEmploymentHistory( (EmployeeId)any, (GeneralDate)any );
 			result = Optional.of(empHist);
@@ -156,7 +156,7 @@ public class EstimateAmountForEmployeeGettingServiceTest {
 		new Expectations() {{
 			// 目安利用区分
 			require.getUsageSetting();
-			result = usageStg;
+			result = Optional.of(usageStg);
 			// 社員の雇用期間
 			require.getEmploymentHistory( (EmployeeId)any, (GeneralDate)any );
 		}};

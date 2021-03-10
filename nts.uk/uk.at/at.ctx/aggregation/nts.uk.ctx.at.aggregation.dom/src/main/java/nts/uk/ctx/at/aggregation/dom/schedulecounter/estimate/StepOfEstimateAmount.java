@@ -47,7 +47,7 @@ public class StepOfEstimateAmount {
 		// ※『目安金額の扱い』は初期データのため常に存在する
 		val handling = require.getHandling().get();
 		val background = handling.getHandleFrameNoList().stream()
-								.filter( e -> e.getEstimateAmountNo().v() == no.v() )
+								.filter( e -> e.getEstimateAmountNo().equals( no ) )
 								.findFirst()
 									.map( o -> o.getBackgroundColor() );
 
@@ -62,7 +62,9 @@ public class StepOfEstimateAmount {
 	 * @param unexceeded 未超過の目安金額
 	 * @return 目安金額の段階
 	 */
-	public static StepOfEstimateAmount create(Require require, EstimateAmountByCondition exceeded, EstimateAmountByCondition unexceeded) {
+	public static StepOfEstimateAmount createFromCondition(Require require
+			, EstimateAmountByCondition exceeded, EstimateAmountByCondition unexceeded
+	) {
 
 		return StepOfEstimateAmount.create( require
 					, unexceeded.getEstimateAmountNo()

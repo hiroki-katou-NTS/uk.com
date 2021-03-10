@@ -124,7 +124,7 @@ public class StepOfEstimateAmountTest {
 		Helper.setHandling( require, 1 );
 
 		// Execute
-		val result = StepOfEstimateAmount.create( require
+		val result = StepOfEstimateAmount.createFromCondition( require
 				, EstimateAmountHelper.createAmountPerFrame( 3, 1800 )
 				, EstimateAmountHelper.createAmountPerFrame( 4, 2000 )
 			);
