@@ -19,6 +19,14 @@ module nts.uk.at.view.kdp010.e {
                 { id: 1, name: getText("KDP010_271") },
                 { id: 0, name: getText("KDP010_272") }
             ]);
+			displayStampListOption: KnockoutObservableArray<any> = ko.observableArray([
+                { id: 1, name: getText("KDP010_278") },
+                { id: 0, name: getText("KDP010_279") }
+            ]);
+			gooutUseAtrOption: KnockoutObservableArray<any> = ko.observableArray([
+                { id: 1, name: getText("KDP010_309") },
+                { id: 0, name: getText("KDP010_310") }
+            ]);
             goOutArtOption: KnockoutObservableArray<any> = ko.observableArray([
                 { id: 0, name: getText("KDP010_112") },
                 { id: 1, name: getText("KDP010_113") },

@@ -3,6 +3,7 @@ module nts.uk.at.view.kdp010.f {
 	import ajax = nts.uk.request.ajax;
 	import dialog = nts.uk.ui.dialog;
 	import windows = nts.uk.ui.windows;
+	import getText = nts.uk.resource.getText;
 	
 	module viewmodel {
 		const paths: any = {
@@ -18,29 +19,29 @@ module nts.uk.at.view.kdp010.f {
 			
 	        // E4_1, E4_2, E4_6, E4_7
 	        optionImprint: KnockoutObservableArray<any> = ko.observableArray([
-	            { id: 0, name: nts.uk.resource.getText("KDP010_59") },
-	            { id: 1, name: nts.uk.resource.getText("KDP010_60") }
+	            { id: 0, name: getText("KDP010_59") },
+	            { id: 1, name: getText("KDP010_60") }
 	        ]);
 	        selectedImprint: KnockoutObservable<number> = ko.observable(0);
-	        messageValueFirst: KnockoutObservable<string> = ko.observable(nts.uk.resource.getText("KDP010_130"));
+	        messageValueFirst: KnockoutObservable<string> = ko.observable(getText("KDP010_130"));
 	        firstColors: KnockoutObservable<string> = ko.observable('#000000');
 	
 	        // E5_1, E5_2, E5_6, E5_7
 	        optionHoliday: KnockoutObservableArray<any> = ko.observableArray([
-	            { id: 0, name: nts.uk.resource.getText("KDP010_59") },
-	            { id: 1, name: nts.uk.resource.getText("KDP010_60") }
+	            { id: 0, name: getText("KDP010_59") },
+	            { id: 1, name: getText("KDP010_60") }
 	        ]);
 	        selectedHoliday: KnockoutObservable<number> = ko.observable(0);
-	        messageValueSecond: KnockoutObservable<string> = ko.observable(nts.uk.resource.getText("KDP010_131"));
+	        messageValueSecond: KnockoutObservable<string> = ko.observable(getText("KDP010_131"));
 	        secondColors: KnockoutObservable<string> = ko.observable('#000000');
 	
 	        // E6_1, E6_2, E6_5, E6_6
 	        optionOvertime: KnockoutObservableArray<any> = ko.observableArray([
-	            { id: 0, name: nts.uk.resource.getText("KDP010_59") },
-	            { id: 1, name: nts.uk.resource.getText("KDP010_60") }
+	            { id: 0, name: getText("KDP010_59") },
+	            { id: 1, name: getText("KDP010_60") }
 	        ]);
 	        selectedOvertime: KnockoutObservable<number> = ko.observable(0);
-	        messageValueThird: KnockoutObservable<string> = ko.observable(nts.uk.resource.getText("KDP010_132"));
+	        messageValueThird: KnockoutObservable<string> = ko.observable(getText("KDP010_132"));
 	        thirdColors: KnockoutObservable<string> = ko.observable('#000000');
 	
 	        workTypeList: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -49,12 +50,33 @@ module nts.uk.at.view.kdp010.f {
 	
 	        // E31_2
 	        optionImp: KnockoutObservableArray<any> = ko.observableArray([
-	            { id: 0, name: nts.uk.resource.getText("KDP010_85") },
-	            { id: 1, name: nts.uk.resource.getText("KDP010_84") }
+	            { id: 0, name: getText("KDP010_85") },
+	            { id: 1, name: getText("KDP010_84") }
 	        ]);
 	        selectedImp: KnockoutObservable<number> = ko.observable(0);
 	        
 	        dataKdl: KnockoutObservableArray<any> = ko.observableArray([]);
+
+			//E11 - E20
+			supportUseArtOption: KnockoutObservableArray<any> = ko.observableArray([
+                { id: 0, name: getText("KDP010_317") },
+                { id: 1, name: getText("KDP010_316") }
+            ]);
+			supportUseArt: KnockoutObservable<number> = ko.observable(1);
+
+			displayAtrOption: KnockoutObservableArray<any> = ko.observableArray([
+                { id: 0, name: getText("KDP010_321") },
+                { id: 1, name: getText("KDP010_320") }
+            ]);	
+			displayAtr: KnockoutObservable<number> = ko.observable(0);	
+			
+			companyTitle: KnockoutObservable<string> = ko.observable(getText("KDP010_333"));
+			companyColor: ColorSetting = new ColorSetting();
+			
+			workplaceTitle: KnockoutObservable<string> = ko.observable(getText("KDP010_334"));
+			workplaceColor: ColorSetting = new ColorSetting();
+			
+			personalColor: ColorSetting = new ColorSetting({textColor:'#000000', backGroundColor:'#E2F0D9'});
 	        
 	        constructor() {
 	            let self = this;
@@ -385,6 +407,16 @@ module nts.uk.at.view.kdp010.f {
 	            this.displayItemId = param.displayItemId;
 	        }
 	    }
+
+		export class ColorSetting {
+			textColor: KnockoutObservable<string>;
+			backGroundColor: KnockoutObservable<string>;
+			constructor(param?: any) {
+				let self = this;
+				self.textColor = ko.observable(param?param.textColor:'#7F7F7F');
+				self.backGroundColor = ko.observable(param?param.backGroundColor:'#E2F0D9');
+			}
+		}
 	
 	    export interface IStampAttenDisplayCommand {
 	        displayItemId?: number;

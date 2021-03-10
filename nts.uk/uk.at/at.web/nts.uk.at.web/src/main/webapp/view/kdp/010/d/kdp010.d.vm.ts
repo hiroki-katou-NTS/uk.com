@@ -16,6 +16,14 @@ module nts.uk.at.view.kdp010.d {
                 { id: 1, name: getText("KDP010_241") },
                 { id: 0, name: getText("KDP010_242") }
             ]);
+			locationInfoUseOption: KnockoutObservableArray<any> = ko.observableArray([
+                { id: 1, name: getText("KDP010_245") },
+                { id: 0, name: getText("KDP010_246") }
+            ]);
+			areaLimitAtrOption: KnockoutObservableArray<any> = ko.observableArray([
+                { id: 1, name: getText("KDP010_249") },
+                { id: 0, name: getText("KDP010_248") }
+            ]);
             googleMapOption: KnockoutObservableArray<any> = ko.observableArray([
                 { id: 1, name: getText("KDP010_187") },
                 { id: 0, name: getText("KDP010_188") }

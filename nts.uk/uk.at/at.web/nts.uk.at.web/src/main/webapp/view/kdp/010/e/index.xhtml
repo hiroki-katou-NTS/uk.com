@@ -43,16 +43,17 @@
 							<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_193')}</div> 
 							<label>#{i18n.getText('KDP010_194')}</label>
 							<div class="colorpicker" data-bind="ntsColorPicker: {value: displaySettingsStampScreen.settingDateTimeColor.textColor, enable: true, width: 50, name:'#[KDP010_195]' }"></div> 
-							<label class="margin-left5">#{i18n.getText('KDP010_196')}</label>
-							<div class="colorpicker" data-bind="ntsColorPicker: {value: displaySettingsStampScreen.settingDateTimeColor.backgroundColor, enable: true, width: 50, name:'#[KDP010_197]' }"></div>
 						</td>
 					</tr>
 					<tr>
 						<td>
 							<div class="row-label" data-bind="ntsFormLabel: { required: true, constraint: 'ResultDisplayTime' }">#{i18n.getText('KDP010_198')}</div> 
-							<div class="inline-display row-data">
+							<div class="inline-display row-data vertical-align-top">
 								<input tabindex="4" data-bind="ntsNumberEditor: {name: '#[KDP010_199]',value: displaySettingsStampScreen.resultDisplayTime, constraint: 'ResultDisplayTime', required: true}" /> 
-								<label class="text-note">#{i18n.getText('KDP010_200')}</label>
+								<div class="inline-display">
+									<div class="text-note">#{i18n.getText('KDP010_200')}</div>
+									<div class="text-note">#{i18n.getText('KDP010_31')}</div>
+								</div>
 							</div>
 						</td>
 					</tr>
@@ -64,8 +65,17 @@
 					</tr>
 					<tr>
 						<td>
+							<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_277')}</div> 
+							<div tabindex="5" data-bind="ntsRadioBoxGroup: {options: $parent.displayStampListOption, optionsValue: 'id', optionsText: 'name', value: suppressStampBtn, enable: true }"></div>
+						</td>
+					</tr>
+					<tr>
+						<td>
 							<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_270')}</div> 
-							<div tabindex="6" data-bind="ntsRadioBoxGroup: {options: $parent.useTopMenuLinkOption, optionsValue: 'id', optionsText: 'name', value: useTopMenuLink, enable: true }"></div>
+							<div class="inline-display row-data vertical-align-top">
+								<div tabindex="6" data-bind="ntsRadioBoxGroup: {options: $parent.useTopMenuLinkOption, optionsValue: 'id', optionsText: 'name', value: useTopMenuLink, enable: true }"></div>
+								<div class="row-data">#{i18n.getText('KDP010_133')}</div>
+							</div>
 						</td>
 					</tr>
 				</table>
@@ -97,6 +107,13 @@
 							</div>
 						</td>
 					</tr>
+					<tr>
+						<td>
+							<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_308')}</div> 
+							<div tabindex="5" data-bind="ntsRadioBoxGroup: {options: $parent.gooutUseAtrOption, optionsValue: 'id', optionsText: 'name', value: suppressStampBtn, enable: true }"></div>
+						</td>
+					</tr>
+					
 					<tr data-bind="with: _.find(buttonSettings,['buttonPositionNo',3])">
 						<td>
 							<div class="row-label" data-bind="ntsFormLabel: { required: true, constraint: 'ButtonName' }">#{i18n.getText('KDP010_209')}</div>

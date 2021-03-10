@@ -42,16 +42,17 @@
 							<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_178')}</div> 
 							<label>#{i18n.getText('KDP010_179')}</label>
 							<div class="colorpicker" data-bind="ntsColorPicker: {value: textColor, enable: true, width: 50, name:'#[KDP010_180]' }"></div> 
-							<label class="margin-left5">#{i18n.getText('KDP010_181')}</label>
-							<div class="colorpicker" data-bind="ntsColorPicker: {value: backgroundColor, enable: true, width: 50, name:'#[KDP010_182]' }"></div>
 						</td>
 					</tr>
 					<tr data-bind="with: settingsSmartphoneStamp.displaySettingsStampScreen">
 						<td>
 							<div class="row-label" data-bind="ntsFormLabel: { required: true, constraint: 'ResultDisplayTime' }">#{i18n.getText('KDP010_183')}</div> 
-							<div class="inline-display row-data">
+							<div class="inline-display row-data vertical-align-top">
 								<input tabindex="4" data-bind="ntsNumberEditor: {name: '#[KDP010_184]',value: resultDisplayTime, constraint: 'ResultDisplayTime', required: true}" /> 
-								<label class="text-note">#{i18n.getText('KDP010_185')}</label>
+								<div class="inline-display">
+									<div class="text-note">#{i18n.getText('KDP010_185')}</div>
+									<div class="text-note">#{i18n.getText('KDP010_31')}</div>
+								</div>
 							</div>
 						</td>
 					</tr>
@@ -59,6 +60,18 @@
 						<td>
 							<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_240')}</div> 
 							<div tabindex="5" data-bind="ntsRadioBoxGroup: {options: $parent.buttonEmphasisArtOption, optionsValue: 'id', optionsText: 'name', value: buttonEmphasisArt, enable: true }"></div>
+						</td>
+					</tr>
+					<tr data-bind="with: settingsSmartphoneStamp">
+						<td>
+							<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_244')}</div> 
+							<div tabindex="5" data-bind="ntsRadioBoxGroup: {options: $parent.locationInfoUseOption, optionsValue: 'id', optionsText: 'name', value: buttonEmphasisArt, enable: true }"></div>
+						</td>
+					</tr>
+					<tr data-bind="with: settingsSmartphoneStamp">
+						<td>
+							<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_247')}</div> 
+							<div tabindex="5" data-bind="ntsRadioBoxGroup: {options: $parent.areaLimitAtrOption, optionsValue: 'id', optionsText: 'name', value: buttonEmphasisArt, enable: true }"></div>
 						</td>
 					</tr>
 					<tr>

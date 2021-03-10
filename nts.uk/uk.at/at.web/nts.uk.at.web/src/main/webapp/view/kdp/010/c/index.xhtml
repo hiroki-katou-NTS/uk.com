@@ -68,24 +68,21 @@
 							<!-- B6_3 -->
 							<div id="first-color-picker" class="colorpicker"
 								data-bind="ntsColorPicker: {value: letterColors, enable: true, width: 50, name:'#[KDP010_24]' }">
-							</div> <!-- B6_4 --> <label id="background-color">#{i18n.getText('KDP010_25')}</label>
-							<!-- B6_5 -->
-							<div id="second-color-picker" class="colorpicker"
-								data-bind="ntsColorPicker: {value: backgroundColors, enable: true, width: 50, name:'#[KDP010_26]' }">
-							</div>
+							</div> 
 						</td>
 					</tr>
 					<tr>
-						<td>
+						<td class="form-data">
 							<!-- B7_1 -->
-							<div id="stamp-result-label"
-								data-bind="ntsFormLabel: { required: true, constraint: 'ResultDisplayTime' }">#{i18n.getText('KDP010_27')}
-							</div> 
-							<div id = "stamp-texts-note" tabindex="5">
-							<!-- B7_2 --> <input class="nts-input" id="stamp-texts" 
-							data-bind="ntsNumberEditor: {name: '#[KDP010_28]',value: stampValue, constraint: 'ResultDisplayTime', required: true}" /> 
-							<!-- B7_3 -->
-							<label id="text-note">#{i18n.getText('KDP010_30')}</label>
+							<div id="stamp-result-label" data-bind="ntsFormLabel: { required: true, constraint: 'ResultDisplayTime' }">#{i18n.getText('KDP010_27')}</div> 
+							<div id = "stamp-texts-note" class=" vertical-align-top" tabindex="5">
+								<!-- B7_2 --> 
+								<input class="nts-input" id="stamp-texts" data-bind="ntsNumberEditor: {name: '#[KDP010_28]',value: stampValue, constraint: 'ResultDisplayTime', required: true}" /> 
+								<!-- B7_3 -->
+								<div class="inline-display">
+									<div class="text-note">#{i18n.getText('KDP010_30')}</div>
+									<div class="text-note">#{i18n.getText('KDP010_31')}</div>
+								</div>
 							</div>
 						</td>
 					</tr>

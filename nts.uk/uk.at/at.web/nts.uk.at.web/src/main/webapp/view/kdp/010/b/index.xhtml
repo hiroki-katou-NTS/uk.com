@@ -42,16 +42,17 @@
 							<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_153')}</div> 
 							<label>#{i18n.getText('KDP010_154')}</label>
 							<div class="colorpicker" data-bind="ntsColorPicker: {value: textColor, enable: true, width: 50, name:'#[KDP010_155]' }"></div> 
-							<label class="margin-left5">#{i18n.getText('KDP010_156')}</label>
-							<div class="colorpicker" data-bind="ntsColorPicker: {value: backgroundColor, enable: true, width: 50, name:'#[KDP010_157]' }"></div>
 						</td>
 					</tr>
 					<tr>
 						<td>
 							<div class="row-label" data-bind="ntsFormLabel: { required: true, constraint: 'ResultDisplayTime' }">#{i18n.getText('KDP010_158')}</div> 
-							<div class="inline-display row-data">
+							<div class="inline-display row-data vertical-align-top">
 								<input tabindex="4" data-bind="ntsNumberEditor: {name: '#[KDP010_159]',value: resultDisplayTime, constraint: 'ResultDisplayTime', required: true}" /> 
-								<label class="text-note">#{i18n.getText('KDP010_160')}</label>
+								<div class="inline-display">
+									<div class="text-note">#{i18n.getText('KDP010_160')}</div>
+									<div class="text-note">#{i18n.getText('KDP010_31')}</div>
+								</div>
 							</div>
 						</td>
 					</tr>

@@ -90,7 +90,7 @@
 	margin-right: 15px;
 }
 .form-data .ntsRadioBox:nth-child(1){
-	min-width: 200px;
+	min-width: 150px;
 	margin-right: 0;
 }
 .margin-left5{
@@ -100,8 +100,14 @@
 	min-width: 90px;
 }
 .option-authent .row-data{
-	margin-right: 100px;
+	margin-right: 60px;
 	margin-top: 14px;
+}
+.vertical-align-top .nts-editor-wrapped{
+	vertical-align: top;
+}
+.form-data .vertical-align-top .text-note{
+    margin: 7px 20px 10px;
 }
 
 
