@@ -971,8 +971,8 @@ public class CommonAlgorithmOverTimeImpl implements ICommonAlgorithmOverTime {
 				if (el.getTime36AgreementErrorAtr() == Time36AgreementErrorAtr.MAX_MONTH_AVERAGE_ERROR) {
 					throw new BusinessException(
 							"Msg_1538", 
-							this.convertTime_Short_HM(el.getOpYearMonthPeriod().map(x -> x.start().v()).orElse(0)),
-							this.convertTime_Short_HM(el.getOpYearMonthPeriod().map(x -> x.end().v()).orElse(0)),
+							el.getOpYearMonthPeriod().map(x -> x.start().year() + "/" + x.start().month()).orElse(""),
+							el.getOpYearMonthPeriod().map(x -> x.end().year() + "/" + x.end().month()).orElse(""),
 							this.convertTime_Short_HM(el.getAgreementTime()),
 							this.convertTime_Short_HM(el.getThreshold())
 							);
