@@ -38,8 +38,7 @@ public class ReflectionProcess {
 			return Pair.of(Optional.empty(), Optional.empty());
 
 		OneDayReflectStatusOutput result = new OneDayReflectStatusOutput();
-		result.setReflectStatusAll(reflectionStatusOfDay.getActualReflectStatus(),
-				reflectionStatusOfDay.getScheReflectStatus());
+		result.setReflectStatusAll(reflectionStatusOfDay.getScheReflectStatus(), reflectionStatusOfDay.getActualReflectStatus());
 
 		// 締めIDを取得する
 		Optional<ClosureEmployment> closureEmpOpt = require.findByEmploymentCD(companyId, empHist.getEmploymentCode());

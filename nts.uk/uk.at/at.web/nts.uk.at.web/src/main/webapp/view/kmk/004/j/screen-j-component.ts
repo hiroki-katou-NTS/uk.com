@@ -39,7 +39,7 @@ const j_template = `
 									}">
 							</div>
 							
-							<div style="width:605px;margin-top:15px; display: inline-block;" data-bind="component: {
+							<div style=" margin-top:15px; display: inline-block;" data-bind="component: {
 									name: 'monthly-working-hours',
 									params: {
 												screenData:screenData,
@@ -198,14 +198,14 @@ class ScreenJComponent extends ko.ViewModel {
 				/** Quick search tab options */
 				showAllReferableEmployee: true,
 				showOnlyMe: true,
-				showSameDepartment: true,
-				showSameDepartmentAndChild: true,
+				showSameDepartment: false,
+				showSameDepartmentAndChild: false,
 				showSameWorkplace: true,
 				showSameWorkplaceAndChild: true,
 
 				/** Advanced search properties */
 				showEmployment: true,
-				showDepartment: true,
+				showDepartment: false,
 				showWorkplace: true,
 				showClassification: true,
 				showJobTitle: true,
