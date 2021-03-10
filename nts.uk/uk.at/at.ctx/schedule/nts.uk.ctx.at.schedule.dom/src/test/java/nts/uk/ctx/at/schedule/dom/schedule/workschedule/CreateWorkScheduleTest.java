@@ -251,6 +251,7 @@ public class CreateWorkScheduleTest {
 					new ArrayList<>(), 
 					Optional.empty(), 
 					Optional.empty(), 
+					Optional.empty(),
 					Optional.empty());
 			
 			new MockUp<WorkSchedule>() {

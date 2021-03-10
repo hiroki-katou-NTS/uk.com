@@ -238,7 +238,8 @@ public class DeductionTimeSheet {
 																	deductionAtr,
 																	integrationOfWorkTime.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeMethodSet(),
 																	integrationOfWorkTime.getFlowWorkRestTimezone(todayWorkType),
-																	integrationOfWorkTime.getFlowWorkRestSettingDetail()))
+																	integrationOfWorkTime.getFlowWorkRestSettingDetail(),
+																	integrationOfWorkTime.getCommonSetting().getStampSet().getRoundingTime()))
 													.orElseGet(() -> new ArrayList<>());
 		sheetList.addAll(goOutDeduct);
 		
@@ -340,7 +341,8 @@ public class DeductionTimeSheet {
 					dedAtr,
 					integrationOfWorkTime.getWorkTimeSetting().getWorkTimeDivision().getWorkTimeMethodSet(),
 					integrationOfWorkTime.getFlowWorkRestTimezone(todayWorkType),
-					integrationOfWorkTime.getFlowWorkRestSettingDetail()));
+					integrationOfWorkTime.getFlowWorkRestSettingDetail(),
+					integrationOfWorkTime.getCommonSetting().getStampSet().getRoundingTime()));
 		}
 		
 		/* 短時間勤務時間帯を取得 */
