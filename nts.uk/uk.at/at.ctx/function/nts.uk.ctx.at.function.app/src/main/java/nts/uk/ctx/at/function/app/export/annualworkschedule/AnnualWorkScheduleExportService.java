@@ -323,7 +323,7 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 			);
 		} else {
 			// 年間勤務表(勤怠チェックリスト)を作成
-			this.createAnnualWorkScheduleAttendance(exportData, yearMonthPeriod, employeeIds, listItemOut, baseDate);
+			this.createAnnualWorkScheduleAttendance(exportData, yearMonthPeriod, employeeIds, listItemOut, baseDate, startYm);
 		}
 		// 社員を並び替える
 		this.sortEmployees(exportData, endYmd);
@@ -425,7 +425,8 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 								   , listItemOut.stream().filter(item -> item.getSortBy() > 2).collect(Collectors.toList())
 								   , baseDate
 								   , lstYearMonthPeriods
-								   , atdCanbeAggregate);
+								   , atdCanbeAggregate
+								   , startYm);
 
 			
 		}
@@ -617,7 +618,8 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 								   , List<ItemsOutputToBookTable> listItemOut
 								   , GeneralDate baseDate
 								   , List<YearMonthPeriod> yearMonthPeriods
-								   , List<Integer> atdIdCanBeAggregate) {
+								   , List<Integer> atdIdCanBeAggregate
+								   , YearMonth startYm) {
 		
 		// 画面の出力項目一覧の並び順に従う
 		for (ItemsOutputToBookTable itemsOutputToBookTable : listItemOut) {
@@ -639,6 +641,7 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 						, itemsOutputToBookTable
 						, yearMonthPeriod
 						, atdIdCanBeAggregate
+						, startYm
 					)
 				);
 			}
@@ -770,7 +773,8 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 	private AnnualWorkScheduleData createOptionalItem(String employeeId
 												    , ItemsOutputToBookTable itemOut
 												    , YearMonthPeriod period
-												    , List<Integer> lstAtdCanBeAggregate) {
+												    , List<Integer> lstAtdCanBeAggregate
+												    , YearMonth startYm) {
 
 		// [No.495]勤怠項目IDを指定して月別実績の値を取得（複数レコードは合算）
 		Map<String, List<MonthlyRecordValueImport>> monthlyValue = this.actualMultipleMonthAdapter.getActualMultipleMonth(
@@ -786,7 +790,7 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 			return AnnualWorkScheduleData.fromMonthlyAttendanceList(
 				itemOut,
 				monthlyValue.get(employeeId),
-				YearMonth.of(period.start().year(), period.start().month()),
+				startYm,
 				lstAtdCanBeAggregate
 			).calc(true);
 		}
@@ -808,7 +812,8 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 												  , YearMonthPeriod yearMonthPeriod
 												  , List<String> employeeIds
 												  , List<ItemsOutputToBookTable> listItemOut
-												  , GeneralDate baseDate) {
+												  , GeneralDate baseDate
+												  , YearMonth startYm) {
 		
 		// ドメインモデル「集計可能な月次の勤怠項目」を取得する
 		List<Integer> atdCanbeAggregate = this.monthlyAttItemCanAggregateRepo.getMonthlyAtdItemCanAggregate(AppContexts.user().companyId())
@@ -838,7 +843,8 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 								   , listItemOut.stream().filter(item -> item.getSortBy() > 2).collect(Collectors.toList())
 								   , baseDate
 								   , lstYearMonthPeriods
-								   , atdCanbeAggregate);
+								   , atdCanbeAggregate
+								   , startYm);
     		
 		}
 		

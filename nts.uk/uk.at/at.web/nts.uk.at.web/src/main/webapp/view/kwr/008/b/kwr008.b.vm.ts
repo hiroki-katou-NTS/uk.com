@@ -404,12 +404,16 @@ module nts.uk.at.view.kwr008.b.viewmodel {
             // 項目名行.名称 = B4_14
             attendanceItemTransfer.itemNameLine.name = dataNode.headingName();
             // 属性.選択済み = B4_16
-            attendanceItemTransfer.attribute.selected = Number(dataNode.valOutFormat());
+            attendanceItemTransfer.attribute.selected = vm.convertEnumToAtdAttribute(dataNode.valOutFormat().toString());
             attendanceItemTransfer.itemNameLine.displayFlag = true;
             attendanceItemTransfer.itemNameLine.displayInputCategory = 2;
             attendanceItemTransfer.columnIndex = 0;
             attendanceItemTransfer.exportAtr = 2;
-            attendanceItemTransfer.attribute.attributeList = _.map(vm.valOutFormat(), (item) => new model.AttendaceType(item.code, item.name));
+            attendanceItemTransfer.attribute.attributeList = _.map(vm.valOutFormat(), (item) => new model.AttendaceType(
+                    vm.convertEnumToAtdAttribute(item.code),
+                    item.name
+                )
+            );
 
             let selectedLst: any[] = [];
             if (!!dataNode.calculationExpression()) {
@@ -436,6 +440,21 @@ module nts.uk.at.view.kwr008.b.viewmodel {
                 }
                 vm.buildOutputItemByOper(resultData.attendanceId, index);
             });
+        }
+
+        convertEnumToAtdAttribute(code: string): number {
+            switch (code) {
+                case '0':
+                    return 4;
+                case '1':
+                    return 5;
+                case '2':
+                    return 6;
+                case '3':
+                    return 7;
+                default:
+                    return 4;
+            }
         }
 
         buildOutputItemByOper(lstItems: Array<any>, index: number) {

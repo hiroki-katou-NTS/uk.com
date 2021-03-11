@@ -233,10 +233,13 @@ module nts.uk.at.view.kwr008.a {
                 //ユーザ固有情報「年間勤務表（36チェックリスト）」を更新する
                 self.saveOutputConditionAnnualWorkSchedule(
                     new model.OutputConditionAnnualWorkScheduleChar(
-                        self.selectedOutputItem()
-                        , self.selectedBreakPage()
+                        self.selectedBreakPage()
                         , self.printFormat()
                         , self.excludeEmp()
+                        , self.selectionType()
+                        , self.selectionType() === share.SelectionClassification.STANDARD
+                            ? self.selectedOutputItem()
+                            : self.selectedOutputItemFree()
                     )
                 );
                 nts.uk.request.exportFile('at/function/annualworkschedule/export', data).done((res: any) => {
@@ -440,14 +443,24 @@ module nts.uk.at.view.kwr008.a {
                     restoreOutputConditionAnnualWorkSchedule = self.restoreOutputConditionAnnualWorkSchedule()
                             .done((data: model.OutputConditionAnnualWorkScheduleChar) => {
                                 if (data) {
-                                    self.selectedOutputItem(data.setItemsOutputCd);
                                     self.selectedBreakPage(data.breakPage);
                                     self.printFormat(data.printFormat);
                                     self.excludeEmp(data.excludeEmp);
-                                } else if (self.outputItem().length) {
+                                    self.selectionType(data.settingType || 0);
+                                    if (data.settingType === share.SelectionClassification.STANDARD) {
+                                        self.selectedOutputItem(data.layoutId);
+                                    } else {
+                                        self.selectedOutputItemFree(data.layoutId);
+                                    }
+                                } else if (self.selectionType() === share.SelectionClassification.STANDARD && self.outputItem().length) {
                                     self.selectedOutputItem(self.outputItem()[0].cd);
+                                } else if (self.selectionType() === share.SelectionClassification.FREE_SETTING && self.outputItemsFreeSetting().length) {
+                                    self.selectedOutputItemFree(self.outputItemsFreeSetting()[0].cd);
                                 }
                                 if (!self.outputItem().length) {
+                                    self.selectedOutputItem(null);
+                                }
+                                if (!self.outputItemsFreeSetting().length) {
                                     self.selectedOutputItem(null);
                                 }
                                 self.selectedOutputItem.valueHasMutated();
@@ -626,8 +639,6 @@ module nts.uk.at.view.kwr008.a {
             }
 
             export class OutputConditionAnnualWorkScheduleChar {
-                /** A4_2 定型選択 */
-                setItemsOutputCd: string;
                 /** A6_2 改頁選択 */
                 breakPage: number;
 
@@ -635,11 +646,20 @@ module nts.uk.at.view.kwr008.a {
 
                 excludeEmp: number;
 
-                constructor(setItemsOutputCd: string, breakPage: number, printFormat: number, excludeEmp: number) {
-                    this.setItemsOutputCd = setItemsOutputCd;
+                settingType: number;
+
+                layoutId: string;
+
+                constructor(breakPage: number
+                          , printFormat: number
+                          , excludeEmp: number
+                          , settingType: number
+                          , layoutId: string) {
                     this.breakPage = breakPage;
                     this.printFormat = printFormat;
                     this.excludeEmp = excludeEmp;
+                    this.settingType = settingType;
+                    this.layoutId = layoutId;
                 }
             }
 
