@@ -1,9 +1,5 @@
 #button-del {
-	margin-left: 10px !important;
-}
-
-#button-cancel {
-	margin-left: -20px !important;
+	margin: 0 10px !important;
 }
 
 #combobox, #combobox1 {
@@ -24,13 +20,13 @@
 }
 
 #correc-text {
-	margin-left: 37px !important;
+	margin-left: 47px !important;
 	width: 140px !important;
 }
 
 #comment-text {
 	width: 235px;
-    margin-left:-152px !important;
+    margin-left:-153px !important;
 }
 
 #right-area {
@@ -47,7 +43,7 @@
 }
 
 #first-color-picker {
-	margin-left: 8px  !important;
+	margin-left: 36px  !important;
 }
 
 #item-panel {

@@ -12,7 +12,6 @@
 			<com:stylefile path="main.css" />
 			<com:scriptfile path="kdp010.i.vm.js" />
 			<com:EnumScript>
-				<!-- nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.GoingOutReason -->
 				nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason
 				nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ContentsStampType
 				nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.AudioType
@@ -27,11 +26,12 @@
 				<table>
 					<tr>
 						<!-- H1_1 -->
-						<td><div id="highlight-label"
-								data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_107')}</div>
+						<td>
+							<div id="highlight-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_107')}</div>
+						</td>
+						<td>	
 							<!-- H1_2 -->
-							<div tabindex="1" id="highlight-radio"
-								data-bind="ntsRadioBoxGroup: {
+							<div tabindex="1" id="highlight-radio" data-bind="ntsRadioBoxGroup: {
 												name : '#[KDP010_107]',
 												options: optionHighlight,
 												optionsValue: 'id',
@@ -44,13 +44,11 @@
 					<tr>
 						<td>
 							<!-- H2_1 -->
-							<div id="correc-label1"
-								data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_110')}</div>
+							<div id="correc-label1" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_110')}</div>
 						</td>
 						<td>
 							<!-- H2_2 -->
-							<div tabindex="2" id="combobox1" class="cbx-days"
-								data-bind="ntsComboBox: {
+							<div tabindex="2" class="cbx-days" data-bind="ntsComboBox: {
 											naem: '#[KDP010_110]',
 											options: contentsStampType,
 											optionsValue: 'value',
@@ -66,11 +64,11 @@
 					<tr>
 						<td>
 							<!-- H3_1 -->
-							<div id="stamping-his-label"
-								data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_111')}</div>
+							<div id="stamping-his-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_111')}</div>
+						</td>
+						<td>
 							<!-- H3_2 -->
-							<div tabindex="3" id="stamping-his-radio"
-								data-bind="ntsRadioBoxGroup: {
+							<div tabindex="3" id="stamping-his-radio" data-bind="ntsRadioBoxGroup: {
 												name: '#[KDP010_111]',
 												options: optionStamping,
 												optionsValue: 'value',
@@ -82,20 +80,21 @@
 					<tr>
 						<td>
 							<!-- H4_1 -->
-							<div id="correc-label"
-								data-bind="ntsFormLabel: { required: true, constraint: 'ButtonName'}">#{i18n.getText('KDP010_116')}</div>
+							<div id="correc-label" data-bind="ntsFormLabel: { required: true, constraint: 'ButtonName'}">#{i18n.getText('KDP010_116')}</div>
+						</td>
+						<td>
 							<!-- H4_2 -->
 							<div tabindex="4" id="correc-text">
-								<input id="correc"
-									data-bind="ntsTextEditor: {name: '#[KDP010_116]',required: true, value: simpleValue, constraint: 'ButtonName', enable: selectedHighlight() == 1}" />
+								<input id="correc" data-bind="ntsTextEditor: {name: '#[KDP010_116]',required: true, value: simpleValue, constraint: 'ButtonName', enable: selectedHighlight() == 1}" />
 							</div>
 						</td>
 					</tr>
 					<tr>
 						<td>
 							<!-- H5_1 -->
-							<div id="date-time-label"
-								data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_118')}</div>
+							<div id="date-time-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_118')}</div>
+						</td>
+						<td>
 							<!-- H5_2 -->
 							<div tabindex="5" id="first-color-picker" class="colorpicker"
 								data-bind="ntsColorPicker: {value: letterColors, width: 50, name:'#[KDP010_118]', enable: selectedHighlight() == 1 }" />
@@ -105,8 +104,9 @@
 					<tr>
 						<td>
 							<!-- H6_1 -->
-							<div id="date-time-label"
-								data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_119')}</div>
+							<div id="date-time-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_119')}</div>
+						</td>
+						<td>
 							<!-- H6_2 -->
 							<div tabindex="6" id="second-color-picker" class="colorpicker"
 								data-bind="ntsColorPicker: {value: backgroundColors, width: 50, name:'#[KDP010_119]', enable: selectedHighlight() == 1 }" />
@@ -116,8 +116,7 @@
 						<tr>
 							<td>
 								<!-- H7_1 -->
-								<div id="correc-label1"
-									data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_122')}</div>
+								<div id="correc-label1" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_122')}</div>
 							</td>
 							<!-- H7_2 -->
 							<td>

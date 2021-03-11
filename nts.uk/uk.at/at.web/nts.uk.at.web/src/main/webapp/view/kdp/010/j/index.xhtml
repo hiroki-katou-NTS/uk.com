@@ -10,7 +10,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = {width: 535, height: 545 };</script>
+			<script>var dialogSize = {width: 535, height: 595 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="main.css" />
 			<com:scriptfile path="kdp010.j.vm.js" />
@@ -26,6 +26,10 @@
 				<button tabindex="3" data-bind="click: closeDialog">#{i18n.getText('KDP010_232')}</button>
 			</div>
 			<div class="contents-area" data-bind="with: stampPageLayout">
+				<div class="row">
+					<div class="form-label" />
+					<button tabindex="3" data-bind="">#{i18n.getText('KDP010_335')}</button>
+				</div>
 				<div class="row">
 					<div data-bind="ntsFormLabel: { required: false, constraint: 'PageComment'  }">#{i18n.getText('KDP010_233')}</div>
 					<textarea id="pageComment" tabindex="4" data-bind="ntsMultilineEditor: { name: '#[KDP010_233]',value: stampPageComment.pageComment, constraint: 'PageComment' }" />

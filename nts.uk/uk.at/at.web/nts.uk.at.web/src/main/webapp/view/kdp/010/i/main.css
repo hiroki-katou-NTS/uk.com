@@ -24,7 +24,8 @@
 }
 
 #highlight-radio{
-	margin-left: 3px;
+	margin-left: 20px;
+	display: inline-block;
 }
 
 #first-color-picker{

@@ -1,6 +1,5 @@
 #functions-area button.danger{
-	margin-left: 20px;
-    margin-right: 5px;
+	margin: 0 10px;
 }
 
 .contents-area .row{
@@ -23,7 +22,6 @@
 
 .buton-setting{
     display: inline-block;
-    margin-top: 28px;
 }
 
 .buton-setting td{

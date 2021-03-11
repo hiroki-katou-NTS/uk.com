@@ -10,7 +10,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 530, height: 580 };</script>
+			<script>var dialogSize = { width: 530, height: 606 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="/view/kdp/share/kdp.main.css" />
 			<com:stylefile path="main.css" />
@@ -26,12 +26,9 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button tabindex="1" id="button-add" class="proceed"
-					data-bind="click:registration">#{i18n.getText('KDP010_95')}</button>
-				<button tabindex="2" id="button-del" class="danger"
-					data-bind="click: deleteStamp, enable: isDel">#{i18n.getText('KDP010_96')}</button>
-				<button tabindex="3" id="button-cancel"
-					data-bind="click:closeDialog">#{i18n.getText('KDP010_128')}</button>
+				<button tabindex="1" id="button-add" class="proceed" data-bind="click:registration">#{i18n.getText('KDP010_95')}</button>
+				<button tabindex="2" id="button-del" class="danger" data-bind="click: deleteStamp, enable: isDel">#{i18n.getText('KDP010_96')}</button>
+				<button tabindex="3" data-bind="click:closeDialog">#{i18n.getText('KDP010_128')}</button>
 			</div>
 			<div id="contents-area">
 				<div id="left-area">
