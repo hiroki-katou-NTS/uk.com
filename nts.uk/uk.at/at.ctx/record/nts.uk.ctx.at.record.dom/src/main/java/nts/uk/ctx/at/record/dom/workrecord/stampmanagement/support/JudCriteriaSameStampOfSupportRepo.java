@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface JudCriteriaSameStampOfSupportRepo {
 
-	public JudgmentCriteriaSameStampOfSupport find(String cid);
+	public JudgmentCriteriaSameStampOfSupport get(String cid);
 	
 	public void update(List<JudgmentCriteriaSameStampOfSupport> domains);
 	

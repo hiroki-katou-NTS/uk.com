@@ -10,6 +10,8 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.JudCriteriaSameStampOfSupportRepo;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support.JudgmentCriteriaSameStampOfSupport;
+import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.support.KrcmtSupportCard;
+import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.support.KrcmtSupportCardPk;
 import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.support.KrcmtSupportStampSet;
 
 /**
@@ -20,7 +22,7 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.support.Krcm
 public class JudCriteriaSameStampOfSupportRepoImpl extends JpaRepository implements JudCriteriaSameStampOfSupportRepo{
 
 	@Override
-	public JudgmentCriteriaSameStampOfSupport find(String cid) {
+	public JudgmentCriteriaSameStampOfSupport get(String cid) {
 		
 		KrcmtSupportStampSet entity = queryProxy().query("SELECT o FROM KrcmtSupportStampSet o WHERE o.cid = :cid", KrcmtSupportStampSet.class)
 				.getSingleOrNull();
@@ -33,15 +35,24 @@ public class JudCriteriaSameStampOfSupportRepoImpl extends JpaRepository impleme
 
 	@Override
 	public void update(List<JudgmentCriteriaSameStampOfSupport> domains) {
-		domains.stream().map(c -> KrcmtSupportStampSet.convert(c)).forEach(e -> {
-			commandProxy().update(e);
+		domains.forEach(dm -> {
+			KrcmtSupportStampSet entiti = this.queryProxy().find(dm.getCid().toString(),KrcmtSupportStampSet.class).orElse(null);
+			if(entiti != null){
+				entiti.sameStampRanceInMinutes = dm.getSameStampRanceInMinutes().v();
+				entiti.supportMaxFrame = dm.getSupportMaxFrame().v();
+				commandProxy().update(entiti);
+			}
 		});
 	}
 
 	@Override
 	public void insert(List<JudgmentCriteriaSameStampOfSupport> domains) {
-		domains.stream().map(c -> KrcmtSupportStampSet.convert(c)).forEach(e -> {
-			commandProxy().insert(e);
+		domains.forEach(dm -> {
+			KrcmtSupportStampSet entiti = this.queryProxy().find(dm.getCid().toString(),KrcmtSupportStampSet.class).orElse(null);
+			if(entiti == null){
+				KrcmtSupportStampSet e = KrcmtSupportStampSet.convert(dm);
+				commandProxy().insert(e);
+			}
 		});
 	}
 
