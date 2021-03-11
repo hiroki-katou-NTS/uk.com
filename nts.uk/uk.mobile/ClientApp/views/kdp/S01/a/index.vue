@@ -1,32 +1,30 @@
 <template>
   <div class="mx-n3">
     <div
-      class="pl-3 text-break"
+      class="pl-5 text-break"
       v-bind:style="{
         color: setting.stampPageComment.commentColor
       }"
       v-html="textComment"
     ></div>
-    <div
-      class="pl-3 pt-2 pr-2"
-    >
+    <div class="pl-5 pt-2 pr-2">
       <div class="clearfix" v-bind:style="{color: setting.displaySettingsStampScreen.settingDateTimeColor.textColor}">
         <span id="date">
           {{ $dt.now | date("YYYY年 MM月 DD日（ddd）") }}
         </span>
-        <div>
+      </div>
+    </div>
+     <div class="pl-4" v-bind:style="{color: setting.displaySettingsStampScreen.settingDateTimeColor.textColor}">
           <span id="time">{{ $dt.now | date("HH:mm") }}</span>
           <span class="second">:{{ $dt.now | date("ss") }}</span>
-              <div
+      </div>
+        <div
           v-on:click="openDialogS"
           type="text"
-          class="blue-link"
+          class="pr-4 blue-link"
         >
           {{ "KDPS01_25" | i18n }}
         </div>
-        </div>
-      </div>
-    </div>
 
     <div class="px-3">
       <div class="row">
@@ -45,7 +43,7 @@
             v-click:500="() => stampClick(button)"
             class="btn-block btn-stamp btn btn-secondary "
           >
-            <img v-bind:src="'/nts.uk.mobile.web/dist/resources/' + button.icon" height="80" width="80"/> 
+            <img v-bind:src="'/nts.uk.mobile.web/dist/resources/' + button.icon" height="50" width="50"/> 
             <br>
             {{ button.buttonDisSet.buttonNameSet.buttonName }}
           </button>

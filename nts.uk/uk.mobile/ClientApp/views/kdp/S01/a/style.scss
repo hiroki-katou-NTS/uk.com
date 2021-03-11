@@ -3,11 +3,11 @@
   height: 125px;
 }
 #date {
-  font-size: 1rem;
+  font-size: 0.75rem;
 }
 
 #time {
-  font-size: 3rem;
+  font-size: 3.5rem;
 }
 
 .second {
@@ -18,7 +18,8 @@
   cursor: pointer;
 	color: rgb(37, 37, 238) !important;
 	text-decoration: underline;
-  padding-left: 18.2rem;
+  text-align: right;
+  padding-right: 10px;
   padding-bottom: 20px;
 }
 
@@ -38,4 +39,8 @@
 .px-2 {
   padding-right: 5px !important;
   padding-left: 5px !important;
+}
+
+.pt-2, .py-2 {
+  padding-top: 1.5rem !important;
 }
