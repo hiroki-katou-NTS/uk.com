@@ -418,18 +418,19 @@ body {
 }
 
 .memo-css {
+  padding-top : 3px;
   float: right;
 }
 
 .shiftcode {
   border-radius: 0.25rem;
   font-size: 9px;
-  padding: 0;
+  padding: 2px;
   font-weight: bold;
   border: 1px solid #ced4da;
   text-align: center;
   margin-top: 2px;
-  height: 16px;
+  height: 20px;
 }
 
 .disabled {
@@ -467,4 +468,11 @@ body {
 }
 #yearmonth-cmm input{
   font-weight: bold;
+}
+.header-css{
+  width: 51px;
+  font-weight: bold;
+  font-size: 2vh;
+  text-align: center;
+  height: 12px;
 }

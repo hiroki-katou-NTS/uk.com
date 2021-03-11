@@ -127,18 +127,38 @@ module nts.uk.at.view.ksu005.a {
  
     }
     class ScheduleTableOutputSetting {
+        /** コード */
         code: KnockoutObservable<string> = ko.observable('');
+
+        /** 名称ド */
         name: KnockoutObservable<string> = ko.observable('');
-        additionalColumn: KnockoutObservable<number> = ko.observable();
+
+        /** 追加列情報 */
+        additionalColumn: KnockoutObservable<number> = ko.observable();        
+
+        /** シフト表利用 */
+        shiftBackgroundColor: KnockoutObservable<number> = ko.observable();
+
+        /** 勤務情報 */
+        dailyDataDisplay: KnockoutObservable<number> = ko.observable();
+
+        /** 個人情報 */
+        personalInfo: KnockoutObservableArray<number> = ko.observableArray([]);
+
+        /** 追加列情報_1 */
+        additionalInfo: KnockoutObservableArray<number> = ko.observableArray([]);
+
+        /** 表示項目_1 */
+        attendanceItem: KnockoutObservableArray<number> = ko.observableArray([]);
+
+        /** 職場計出力設定名称 */
+        workplaceCounterCategories: KnockoutObservableArray<number> = ko.observableArray([]);
+        
+        /** 個人計出力設定名称 */
+        personalCounterCtegories: KnockoutObservableArray<number> = ko.observableArray([]);
+
         isAttendance: KnockoutObservable<boolean> = ko.observable(true);
         hasAttendance: KnockoutObservable<boolean> = ko.observable(true);
-        shiftBackgroundColor: KnockoutObservable<number> = ko.observable();
-        dailyDataDisplay: KnockoutObservable<number> = ko.observable();
-        personalInfo: KnockoutObservableArray<number> = ko.observableArray([]);
-        additionalInfo: KnockoutObservableArray<number> = ko.observableArray([]);
-        attendanceItem: KnockoutObservableArray<number> = ko.observableArray([]);
-        workplaceCounterCategories: KnockoutObservableArray<number> = ko.observableArray([]);
-        personalCounterCtegories: KnockoutObservableArray<number> = ko.observableArray([]);
         constructor(params?: IScheduleTableOutputSetting) {
             const self = this;
             if(params){

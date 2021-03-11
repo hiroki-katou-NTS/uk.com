@@ -28,7 +28,7 @@
                 </div>
               </td>
               <td style="border: 0px solid #dee2e6 !important">
-                <div style="margin-top: -4px; width: 130px">
+                <div style="margin-top: -4px; width: 127px">
                   <nts-year-month  id="yearmonth-cmm"
                     v-bind:showTitle="false"
                     v-model="yearMonth"
@@ -360,7 +360,7 @@
               "
               class="modal-body"
             >
-              <div class="card2 card show">
+              <div class="card2 card show" style="height: 166px;" >
                 <div class="card-header uk-bg-accordion">
                   <button
                     style="color: black"

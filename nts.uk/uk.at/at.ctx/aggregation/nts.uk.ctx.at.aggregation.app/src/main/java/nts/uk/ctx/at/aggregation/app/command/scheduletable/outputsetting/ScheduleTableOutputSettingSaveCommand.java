@@ -73,21 +73,6 @@ public class ScheduleTableOutputSettingSaveCommand {
 			listPersonalCounterCategorie.add(PersonalCounterCategory.of(x));
 		});
 
-//		details.add(
-//				OneRowOutputItem.create(
-//						Optional.ofNullable(command.getPersonalInfo().get(0) == -1
-//								? EnumAdaptor.valueOf(0, ScheduleTablePersonalInfoItem.class)
-//								: EnumAdaptor.valueOf(command.getPersonalInfo().get(0),
-//										ScheduleTablePersonalInfoItem.class)),
-//						Optional.ofNullable(command.getAdditionalInfo().get(0) == -1
-//								? EnumAdaptor.valueOf(0, ScheduleTablePersonalInfoItem.class)
-//								: EnumAdaptor.valueOf(command.getAdditionalInfo().get(0),
-//										ScheduleTablePersonalInfoItem.class)),
-//						Optional.ofNullable(command.getAttendanceItem().get(0) == -1
-//								? EnumAdaptor.valueOf(0, ScheduleTableAttendanceItem.class)
-//								: EnumAdaptor.valueOf(command.getAttendanceItem().get(0),
-//										ScheduleTableAttendanceItem.class))));
-		
 		details.add(
 				OneRowOutputItem.create(
 						Optional.ofNullable(command.getPersonalInfo().get(0) == -1
