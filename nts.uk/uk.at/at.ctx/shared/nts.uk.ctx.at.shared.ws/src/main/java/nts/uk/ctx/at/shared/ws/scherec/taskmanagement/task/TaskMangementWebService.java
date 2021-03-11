@@ -9,7 +9,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-@Path("at/shared/scherec/taskmanagement/task")
+@Path("at/shared/scherec/taskmanagement/task/kmt009")
 @Produces("application/json")
 public class TaskMangementWebService extends WebService {
 

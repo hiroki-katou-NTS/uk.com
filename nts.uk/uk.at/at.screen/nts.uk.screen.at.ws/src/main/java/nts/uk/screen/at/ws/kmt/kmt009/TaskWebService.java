@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
-@Path("at/shared/scherec/taskmanagement/task")
+@Path("at/shared/scherec/taskmanagement/task/kmt009")
 @Produces("application/json")
 public class TaskWebService extends WebService {
     @Inject

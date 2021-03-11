@@ -4,8 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskassign.taskassignworkplace.NarrowingDownTaskByWorkplace;
-import nts.uk.shr.infra.data.entity.ContractCompanyUkJpaEntity;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
+import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -19,11 +21,15 @@ import java.util.stream.Collectors;
 @Getter
 @Entity
 @Table(name = "KSRMT_TASK_ASSIGN_WKP")
-public class KsrmtTaskAssignWkp extends ContractCompanyUkJpaEntity implements Serializable {
+public class KsrmtTaskAssignWkp extends ContractUkJpaEntity implements Serializable {
 
     public static final long serialVersionUID = 1L;
+
     @EmbeddedId
     public KsrmtTaskAssignWkpPk pk;
+
+    @Column(name = "CID")
+    public String companyId;
 
     @Override
     protected Object getKey() {
@@ -36,7 +42,8 @@ public class KsrmtTaskAssignWkp extends ContractCompanyUkJpaEntity implements Se
                         domain.getWorkPlaceId(),
                         domain.getTaskFrameNo().v(),
                         e.v()
-                )
+                ),
+                AppContexts.user().companyId()
         )).collect(Collectors.toList());
 
     }
