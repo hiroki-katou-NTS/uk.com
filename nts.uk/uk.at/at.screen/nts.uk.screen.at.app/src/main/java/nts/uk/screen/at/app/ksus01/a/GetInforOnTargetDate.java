@@ -358,7 +358,7 @@ public class GetInforOnTargetDate {
 		@Override
 		public List<String> searchEmployee(RegulationInfoEmpQuery q, String roleId) {
 			EmployeeSearchQueryDto query = EmployeeSearchQueryDto.builder()
-                    .baseDate(GeneralDateTime.fromString(q.getBaseDate().toString(DATE_TIME_FORMAT), DATE_TIME_FORMAT))
+                    .baseDate(GeneralDateTime.fromString(q.getBaseDate().toString() + " " + "00:00:00", "yyyy/MM/dd HH:mm:ss"))
                     .referenceRange(q.getReferenceRange())
                     .systemType(q.getSystemType())
                     .filterByWorkplace(q.getFilterByWorkplace())

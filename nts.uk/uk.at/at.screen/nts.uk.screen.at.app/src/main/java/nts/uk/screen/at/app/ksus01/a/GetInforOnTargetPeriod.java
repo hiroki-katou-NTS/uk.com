@@ -1,12 +1,10 @@
 package nts.uk.screen.at.app.ksus01.a;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -14,10 +12,7 @@ import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.function.dom.adapter.RegulationInfoEmployeeAdapter;
-import nts.uk.ctx.at.schedule.dom.schedule.workschedule.GetWorkTogetherEmpOnDayBySpecEmpService;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHoliday;
@@ -31,10 +26,6 @@ import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.RegulationInfoEmpQuery;
-import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpAffiliationInforAdapter;
-import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.EmpOrganizationImport;
-import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.WorkplaceGroupAdapter;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.GetCombinationrAndWorkHolidayAtrService;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMaster;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
@@ -53,10 +44,6 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
-import nts.uk.ctx.sys.auth.dom.algorithm.AcquireUserIDFromEmpIDService;
-import nts.uk.query.pub.employee.EmployeeSearchQueryDto;
-import nts.uk.query.pub.employee.RegulationInfoEmployeeExport;
-import nts.uk.query.pub.employee.RegulationInfoEmployeePub;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -113,37 +100,33 @@ public class GetInforOnTargetPeriod {
 		GetStatusSubmissionWishesRequireImpl getStatusSubmissionWishesRequire = new GetStatusSubmissionWishesRequireImpl(companyId, workAvailabilityOfOneDayRepository, shiftMasterRepository, workTypeRepo, workTimeSettingRepository, basicScheduleService, fixedWorkSettingRepository, flowWorkSettingRepository, flexWorkSettingRepository, predetemineTimeSettingRepository);
 		GetCombinationrAndWorkHolidayAtrRequireImpl getComAndWorkHolidayAtrRequire = new GetCombinationrAndWorkHolidayAtrRequireImpl(companyId, shiftMasterRepo, workTypeRepo, workTimeSettingRepository, basicScheduleService, fixedWorkSettingRepository, flowWorkSettingRepository, flexWorkSettingRepository, predetemineTimeSettingRepository);
 		
-		if (!(input.getDesiredPeriodWork().getStart().length() > 0) || !(input.getDesiredPeriodWork().getEnd().length() > 0)) {
-			return new InforOnTargetPeriodDto();
-		}
-		
 		List<DesiredSubmissionStatusByDate> listDesiredSubmissionStatusByDate = new ArrayList<DesiredSubmissionStatusByDate>();
-		DatePeriod desiredPeriodWork = new DatePeriod(GeneralDate.fromString(input.getDesiredPeriodWork().getStart(), DATE_TIME_FORMAT), GeneralDate.fromString(input.getDesiredPeriodWork().getEnd(), DATE_TIME_FORMAT));
+		List<WorkSchedule> listWorkSchedule = new ArrayList<WorkSchedule>();
+		List<WorkInformation> lstWorkInformation = new ArrayList<WorkInformation>();
+		List<String> listEmpId = new ArrayList<String>();
 		
 		// 1: [Optional<勤務希望期間>．isPresent]: <call>()
-		for (GeneralDate currentStart = desiredPeriodWork.start();
-				currentStart.beforeOrEquals(desiredPeriodWork.end());
-				currentStart = currentStart.increase()) {
-			// 1.1: 取得する(require, 社員ID, 年月日): 希望提出状況
-			DesiredSubmissionStatus status = GetStatusSubmissionWishes.get(getStatusSubmissionWishesRequire, empId, currentStart);    
-			DesiredSubmissionStatusByDate item = new DesiredSubmissionStatusByDate(currentStart.toString(), status.value);
-			listDesiredSubmissionStatusByDate.add(item);
+		if (input.getDesiredPeriodWork().getStart().length() > 0 || input.getDesiredPeriodWork().getEnd().length() > 0) {
+			DatePeriod desiredPeriodWork = new DatePeriod(GeneralDate.fromString(input.getDesiredPeriodWork().getStart(), DATE_TIME_FORMAT), GeneralDate.fromString(input.getDesiredPeriodWork().getEnd(), DATE_TIME_FORMAT));
+			for (GeneralDate currentStart = desiredPeriodWork.start();
+					currentStart.beforeOrEquals(desiredPeriodWork.end());
+					currentStart = currentStart.increase()) {
+				// 1.1: 取得する(require, 社員ID, 年月日): 希望提出状況
+				DesiredSubmissionStatus status = GetStatusSubmissionWishes.get(getStatusSubmissionWishesRequire, empId, currentStart);    
+				DesiredSubmissionStatusByDate item = new DesiredSubmissionStatusByDate(currentStart.toString(), status.value);
+				listDesiredSubmissionStatusByDate.add(item);
+			}
 		}
-		
-		if (!(input.getScheduledWorkingPeriod().getStart().length() > 0) || !(input.getScheduledWorkingPeriod().getEnd().length() > 0)) {
-			return new InforOnTargetPeriodDto();
-		}
-		
-		DatePeriod scheduledWorkingPeriod = new DatePeriod(GeneralDate.fromString(input.getScheduledWorkingPeriod().getStart(), DATE_TIME_FORMAT), GeneralDate.fromString(input.getScheduledWorkingPeriod().getEnd(), DATE_TIME_FORMAT));
-		
-		List<String> listEmpId = new ArrayList<String>();
-		listEmpId.add(empId);
 		
 		// 2: [Optional<勤務予定期間>．isPresent]: <call>()
-		// 2.1:  勤務予定リストを取得する(社員ID、年月日):  勤務予定
-		List<WorkSchedule> listWorkSchedule = workScheduleRepository.getList(listEmpId, scheduledWorkingPeriod);
-		
-		List<WorkInformation> lstWorkInformation = listWorkSchedule.stream().map(e -> e.getWorkInfo().getRecordInfo()).collect(Collectors.toList());
+		if (input.getScheduledWorkingPeriod().getStart().length() > 0 || input.getScheduledWorkingPeriod().getEnd().length() > 0) {
+			DatePeriod scheduledWorkingPeriod = new DatePeriod(GeneralDate.fromString(input.getScheduledWorkingPeriod().getStart(), DATE_TIME_FORMAT), GeneralDate.fromString(input.getScheduledWorkingPeriod().getEnd(), DATE_TIME_FORMAT));
+			listEmpId.add(empId);
+			
+			// 2.1:  勤務予定リストを取得する(社員ID、年月日):  勤務予定
+			listWorkSchedule = workScheduleRepository.getList(listEmpId, scheduledWorkingPeriod);
+			lstWorkInformation = listWorkSchedule.stream().map(e -> e.getWorkInfo().getRecordInfo()).collect(Collectors.toList());
+		}
 		
 		// 3: 勤務情報で取得する(require, 会社ID, 勤務情報リスト): Map<シフトマスタ, Optional<出勤休日区分>>
 		Map<ShiftMaster, Optional<WorkStyle>> mapByWorkInfo = GetCombinationrAndWorkHolidayAtrService.getbyWorkInfo(getComAndWorkHolidayAtrRequire, companyId, lstWorkInformation);
