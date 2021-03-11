@@ -9,8 +9,8 @@ import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SupportFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.WorkingHoursUnitPrice;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PriceUnit;
 
 /** インセンティブ単価を取得する
  *  ※単価の取得方法が未確定の為、仮実装。
@@ -47,14 +47,14 @@ public class IncentiveUnitPriceService {
 	 * @param ouenWorkTimeSheets
 	 * @return
 	 */
-	public static Map<SupportFrameNo, PriceUnit> getIncentiveUnitPrice(
+	public static Map<SupportFrameNo, WorkingHoursUnitPrice> getIncentiveUnitPrice(
 			RequireAll require,
 			CacheCarrier cacheCarrier,
 			GeneralDate baseDate,
 			String companyId,
 			List<OuenWorkTimeSheetOfDailyAttendance> ouenWorkTimeSheets) {
 		
-		Map<SupportFrameNo, PriceUnit> unitPrices = new HashMap<>();
+		Map<SupportFrameNo, WorkingHoursUnitPrice> unitPrices = new HashMap<>();
 		
 		for(OuenWorkTimeSheetOfDailyAttendance timeSheet : ouenWorkTimeSheets) {
 			//作業別インセンティブ単価の設定を取得する

@@ -17,12 +17,13 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worklabor.f
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.declare.DeclareSet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.midnighttimezone.MidNightTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.PersonCostCalculation;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.service.HistAnPerCost;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.zerotime.ZeroTime;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.applicable.EmpCondition;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.Formula;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.calculation.disporder.FormulaDispOrder;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PersonCostCalculation;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.UsageUnitSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.workrule.specific.UpperLimitTotalWorkingHour;
@@ -73,7 +74,7 @@ public class ManagePerCompanySet {
 	
 	/** 人件費計算設定 */
 	@Setter
-	List<PersonCostCalculation> personnelCostSettings;
+	HistAnPerCost personnelCostSetting;
 
 	@Setter
 	Optional<UpperLimitTotalWorkingHour> upperControl;
@@ -107,7 +108,7 @@ public class ManagePerCompanySet {
 			List<FormulaDispOrder> formulaOrderList,
 			List<EmpCondition> empCondition,
 			Optional<ZeroTime> zeroTime,
-			List<PersonCostCalculation> personCostCalculations,
+			HistAnPerCost personCostCalculation,
 			Optional<UpperLimitTotalWorkingHour> upperControl,
 			Optional<UsageUnitSetting> usageSetting,
 			MidNightTimeSheet midNightTimeSheet,
@@ -128,7 +129,7 @@ public class ManagePerCompanySet {
 		this.formulaOrderList = formulaOrderList;
 		this.empCondition = empCondition;
 		this.zeroTime = zeroTime;
-		this.personnelCostSettings = personCostCalculations;
+		this.personnelCostSetting = personCostCalculation;
 		this.upperControl = upperControl;
 		this.usageSetting = usageSetting;
 		this.midNightTimeSheet = midNightTimeSheet;
@@ -136,17 +137,5 @@ public class ManagePerCompanySet {
 		this.deformLaborOT = deformLaborOT;
 		this.declareSet = declareSet;
 		this.overtimeFrameList = overtimeFrameList;
-	}
-	
-	/**
-	 * 人件費計算設定を取得する
-	 * @param baseDate 基準日
-	 * @return 人件費計算設定
-	 */
-	public Optional<PersonCostCalculation> getPersonCostCalculation(GeneralDate baseDate) {
-		return this.personnelCostSettings.stream()
-//ichioka見直し 要修正
-//			.filter(pcs -> pcs.getStartDate().afterOrEquals(baseDate) && pcs.getEndDate().beforeOrEquals(baseDate))
-			.findFirst();
 	}
 }

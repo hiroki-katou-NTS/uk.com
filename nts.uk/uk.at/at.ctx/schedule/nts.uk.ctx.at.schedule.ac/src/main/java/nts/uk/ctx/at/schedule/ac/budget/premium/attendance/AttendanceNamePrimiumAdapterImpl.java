@@ -7,8 +7,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.function.pub.dailyattendanceitemname.DailyAttendanceItemPub;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.service.AttendanceNamePriniumAdapter;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.service.AttendanceNamePriniumDto;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.service.AttendanceNamePriniumAdapter;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.service.AttendanceNamePriniumDto;
 @Stateless
 public class AttendanceNamePrimiumAdapterImpl implements AttendanceNamePriniumAdapter {
 	@Inject

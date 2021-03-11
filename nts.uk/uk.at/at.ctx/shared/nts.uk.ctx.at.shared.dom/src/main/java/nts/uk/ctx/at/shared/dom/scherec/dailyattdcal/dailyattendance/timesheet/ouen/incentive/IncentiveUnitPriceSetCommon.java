@@ -8,7 +8,7 @@ import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.work.WorkGroup;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PriceUnit;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.WorkingHoursUnitPrice;
 
 @Getter
 public abstract class IncentiveUnitPriceSetCommon extends AggregateRoot {
@@ -35,14 +35,14 @@ public abstract class IncentiveUnitPriceSetCommon extends AggregateRoot {
 	 * @param workGroup
 	 * @return
 	 */
-	public PriceUnit getIncentiveUnitPrice(WorkGroup workGroup, GeneralDate baseDate) {
+	public WorkingHoursUnitPrice getIncentiveUnitPrice(WorkGroup workGroup, GeneralDate baseDate) {
 		Optional<IncentiveUnitPriceSetEachWork> unitPriceSet = getUnitPriceSet(workGroup);
 		if(!unitPriceSet.isPresent())
-			return new PriceUnit(0);
+			return new WorkingHoursUnitPrice(0);
 			
 		Optional<IncentiveUnitPriceSetHis> unitPriceSetHis = unitPriceSet.get().getPriceSetHis(baseDate);
 		if(!unitPriceSetHis.isPresent())
-			return new PriceUnit(0);
+			return new WorkingHoursUnitPrice(0);
 		
 		return unitPriceSetHis.get().getPriceUnit();
 	}

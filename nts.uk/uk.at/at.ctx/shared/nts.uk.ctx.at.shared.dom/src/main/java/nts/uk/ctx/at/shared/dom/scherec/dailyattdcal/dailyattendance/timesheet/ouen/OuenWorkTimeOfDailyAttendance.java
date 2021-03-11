@@ -9,13 +9,10 @@ import nts.uk.ctx.at.shared.dom.common.amount.AttendanceAmountDaily;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calculationsettings.totalrestrainttime.CalculateOfTotalConstraintTime;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.deviationtime.DivergenceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManageReGetClass;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.PredetermineTimeSetForCalc;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.WorkingHoursUnitPrice;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.autocalsetting.BonusPayAutoCalcSet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PriceUnit;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
@@ -36,10 +33,10 @@ public class OuenWorkTimeOfDailyAttendance implements DomainObject {
 	private AttendanceAmountDaily amount;
 	
 	/** 単価: 単価 */
-	private PriceUnit priceUnit;
+	private WorkingHoursUnitPrice priceUnit;
 
 	private OuenWorkTimeOfDailyAttendance(SupportFrameNo workNo, OuenAttendanceTimeEachTimeSheet workTime,
-			OuenMovementTimeEachTimeSheet moveTime, AttendanceAmountDaily amount, PriceUnit priceUnit) {
+			OuenMovementTimeEachTimeSheet moveTime, AttendanceAmountDaily amount, WorkingHoursUnitPrice priceUnit) {
 		super();
 		this.workNo = workNo;
 		this.workTime = workTime;
@@ -50,7 +47,7 @@ public class OuenWorkTimeOfDailyAttendance implements DomainObject {
 	
 	public static OuenWorkTimeOfDailyAttendance create(SupportFrameNo workNo,
 			OuenAttendanceTimeEachTimeSheet workTime,
-			OuenMovementTimeEachTimeSheet moveTime, AttendanceAmountDaily amount, PriceUnit priceUnit) {
+			OuenMovementTimeEachTimeSheet moveTime, AttendanceAmountDaily amount, WorkingHoursUnitPrice priceUnit) {
 		
 		return new OuenWorkTimeOfDailyAttendance(workNo, workTime, moveTime, amount, priceUnit);
 	}
@@ -107,7 +104,7 @@ public class OuenWorkTimeOfDailyAttendance implements DomainObject {
 				processingTimeSheet);
 		
 		//単価を取得する
-		PriceUnit priceUnit = recordReGetClass.getPersonDailySetting().getIncentiveUnitPrice(processingTimeSheet.getWorkNo());
+		WorkingHoursUnitPrice priceUnit = recordReGetClass.getPersonDailySetting().getIncentiveUnitPrice(processingTimeSheet.getWorkNo());
 		
 		//金額を計算する
 		AttendanceAmountDaily amount = calcIncentiveAmount(
@@ -125,7 +122,7 @@ public class OuenWorkTimeOfDailyAttendance implements DomainObject {
 	 * @param outside 所定外時間
 	 * @return 金額
 	 */
-	private static AttendanceAmountDaily calcIncentiveAmount(PriceUnit priceUnit, AttendanceTime within, AttendanceTime outside) {
+	private static AttendanceAmountDaily calcIncentiveAmount(WorkingHoursUnitPrice priceUnit, AttendanceTime within, AttendanceTime outside) {
 		return new AttendanceAmountDaily(priceUnit.v() * (within.valueAsMinutes() + outside.valueAsMinutes()));
 	}
 }

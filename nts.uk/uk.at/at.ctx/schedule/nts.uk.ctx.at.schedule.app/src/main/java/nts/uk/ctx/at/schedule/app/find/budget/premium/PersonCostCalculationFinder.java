@@ -6,11 +6,11 @@ import nts.uk.ctx.at.schedule.app.command.budget.premium.command.PerCostRoundSet
 import nts.uk.ctx.at.schedule.app.command.budget.premium.command.PersonCostCalculationDto;
 import nts.uk.ctx.at.schedule.app.command.budget.premium.command.PremiumSettingDto;
 import nts.uk.ctx.at.schedule.app.find.budget.premium.dto.*;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.*;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.service.AttendanceNamePriniumAdapter;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.service.AttendanceNamePriniumDto;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.service.AttendanceTypePriServiceDto;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.service.AttendanceTypePrimiumAdapter;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.service.AttendanceNamePriniumAdapter;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.service.AttendanceNamePriniumDto;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.service.AttendanceTypePriServiceDto;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.service.AttendanceTypePrimiumAdapter;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.*;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 

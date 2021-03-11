@@ -7,9 +7,9 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PremiumItemLanguage;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PremiumItemLanguageRepository;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PremiumName;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.PremiumItemLanguage;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.PremiumItemLanguageRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.PremiumName;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless

@@ -31,7 +31,7 @@ public class AggregatePremiumTime implements Serializable{
 		
 		this.premiumTimeItemNo = premiumTimeItemNo;
 		this.time = new AttendanceTimeMonth(0);
-		this.amount = new AttendanceAmountMonth(0);
+		this.amount = new AttendanceAmountMonth(0L);
 	}
 	
 	/**
@@ -63,7 +63,7 @@ public class AggregatePremiumTime implements Serializable{
 	 * 金額に金額を加算する
 	 * @param minutes 分
 	 */
-	public void addAmount(int amount){
+	public void addAmount(long amount){
 		this.amount = this.amount.addAmount(amount);
 	}
 }

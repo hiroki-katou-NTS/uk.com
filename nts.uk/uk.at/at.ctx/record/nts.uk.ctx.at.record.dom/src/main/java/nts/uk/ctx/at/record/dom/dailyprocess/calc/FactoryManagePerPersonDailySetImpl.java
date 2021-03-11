@@ -31,10 +31,12 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.o
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.PredetermineTimeSetForCalc;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.employeeunitpricehistory.EmployeeUnitPriceHistoryItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.employeeunitpricehistory.EmployeeUnitPriceHistoryRepositoly;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.WorkingHoursUnitPrice;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.UsageUnitSetting;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.algorithm.DailyStatutoryLaborTime;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.DailyUnit;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PriceUnit;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -62,6 +64,10 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 	/* 休暇加算設定 */
 	@Inject
 	private HolidayAddtionRepository hollidayAdditonRepository;
+
+	/* 社員単価履歴 */
+	@Inject
+	private EmployeeUnitPriceHistoryRepositoly employeeUnitPriceHistoryRepositoly;
 	
 	@Inject
 	private RecordDomRequireService requireService;
@@ -116,8 +122,11 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 			PredetermineTimeSetForCalc predetermineTimeSetByPersonWeekDay = this.getPredByPersonInfo(
 					nowWorkingItem.getWorkCategory().getWeekdayTime().getWorkTimeCode().get(), shareContainer, workType);
 			
+			/*社員単価履歴*/
+			Optional<EmployeeUnitPriceHistoryItem> unitPrice = employeeUnitPriceHistoryRepositoly.get(daily.getEmployeeId(), daily.getYmd());
+			
 			/*インセンティブ単価*/
-			Map<SupportFrameNo, PriceUnit> incentiveUnitPrice = new HashMap<>();
+			Map<SupportFrameNo, WorkingHoursUnitPrice> incentiveUnitPrice = new HashMap<>();
 			incentiveUnitPrice = IncentiveUnitPriceService.getIncentiveUnitPrice(
 					requireService.createRequire(),
 					new CacheCarrier(),
@@ -132,6 +141,7 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 					addSetting,
 					bonusPaySetting,
 					predetermineTimeSetByPersonWeekDay,
+					unitPrice,
 					incentiveUnitPrice)
 				);
 		}

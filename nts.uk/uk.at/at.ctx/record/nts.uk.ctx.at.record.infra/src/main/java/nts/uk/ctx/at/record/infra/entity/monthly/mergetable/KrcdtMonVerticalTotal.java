@@ -837,34 +837,34 @@ public class KrcdtMonVerticalTotal extends ContractUkJpaEntity implements Serial
 	public int premiumTime10;
 	/** 割増金額1 */
 	@Column(name = "PREMIUM_AMOUNT_1")
-	public int premiumAmount1;
+	public long premiumAmount1;
 	/** 割増金額2 */
 	@Column(name = "PREMIUM_AMOUNT_2")
-	public int premiumAmount2;
+	public long premiumAmount2;
 	/** 割増金額3 */
 	@Column(name = "PREMIUM_AMOUNT_3")
-	public int premiumAmount3;
+	public long premiumAmount3;
 	/** 割増金額4 */
 	@Column(name = "PREMIUM_AMOUNT_4")
-	public int premiumAmount4;
+	public long premiumAmount4;
 	/** 割増金額5 */
 	@Column(name = "PREMIUM_AMOUNT_5")
-	public int premiumAmount5;
+	public long premiumAmount5;
 	/** 割増金額6 */
 	@Column(name = "PREMIUM_AMOUNT_6")
-	public int premiumAmount6;
+	public long premiumAmount6;
 	/** 割増金額7 */
 	@Column(name = "PREMIUM_AMOUNT_7")
-	public int premiumAmount7;
+	public long premiumAmount7;
 	/** 割増金額8 */
 	@Column(name = "PREMIUM_AMOUNT_8")
-	public int premiumAmount8;
+	public long premiumAmount8;
 	/** 割増金額9 */
 	@Column(name = "PREMIUM_AMOUNT_9")
-	public int premiumAmount9;
+	public long premiumAmount9;
 	/** 割増金額10 */
 	@Column(name = "PREMIUM_AMOUNT_10")
-	public int premiumAmount10;
+	public long premiumAmount10;
 
 	/** 休憩時間 */
 	@Column(name = "BREAK_TIME")

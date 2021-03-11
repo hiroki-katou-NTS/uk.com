@@ -6,10 +6,10 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PremiumItemLanguage;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PremiumItemLanguageRepository;
-import nts.uk.ctx.at.shared.infra.entity.scherec.dailyattdcal.premiumitem.KmnmtPremiumItemLanguage;
-import nts.uk.ctx.at.shared.infra.entity.scherec.dailyattdcal.premiumitem.KmnmtPremiumItemLanguagePK;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.PremiumItemLanguage;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.PremiumItemLanguageRepository;
+import nts.uk.ctx.at.shared.infra.entity.scherec.dailyattdcal.personcostcalc.premiumitem.KmnmtPremiumItemLanguage;
+import nts.uk.ctx.at.shared.infra.entity.scherec.dailyattdcal.personcostcalc.premiumitem.KmnmtPremiumItemLanguagePK;
 
 @Stateless
 public class JpaPremiumItemLanguageRepository extends JpaRepository implements PremiumItemLanguageRepository {

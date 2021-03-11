@@ -40,7 +40,7 @@ public class KrcdtAnpAggrPremTime extends ContractUkJpaEntity implements Seriali
 	public int premiumTime;
 	/** 割増金額 */
 	@Column(name = "PREMIUM_AMOUNT")
-	public int premiumAmount;
+	public long premiumAmount;
 
 	/** マッチング：任意期間別実績の勤怠時間 */
 	@ManyToOne

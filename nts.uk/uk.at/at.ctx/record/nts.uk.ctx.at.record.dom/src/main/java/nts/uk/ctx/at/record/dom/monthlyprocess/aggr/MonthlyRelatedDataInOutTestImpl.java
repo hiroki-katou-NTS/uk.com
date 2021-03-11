@@ -210,8 +210,8 @@ public class MonthlyRelatedDataInOutTestImpl implements MonthlyRelatedDataInOutT
 		if (randomVal >= 6) vGoOuts.put(GoingOutReason.PUBLIC, aggrGoOut02);
 		val vPremiumTime = vWorkTime.getPremiumTime();
 		val vPremiumTimeMap = vPremiumTime.getPremiumTime();
-		val aggrPremiumTime01 = AggregatePremiumTime.of(1, new AttendanceTimeMonth(3410 + randomVal), new AttendanceAmountMonth(0));
-		val aggrPremiumTime02 = AggregatePremiumTime.of(2, new AttendanceTimeMonth(3420 + randomVal), new AttendanceAmountMonth(0));
+		val aggrPremiumTime01 = AggregatePremiumTime.of(1, new AttendanceTimeMonth(3410 + randomVal), new AttendanceAmountMonth(0L));
+		val aggrPremiumTime02 = AggregatePremiumTime.of(2, new AttendanceTimeMonth(3420 + randomVal), new AttendanceAmountMonth(0L));
 		vPremiumTimeMap.put(1, aggrPremiumTime01);
 		if (randomVal >= 6) vPremiumTimeMap.put(2, aggrPremiumTime02);
 		val medicalTime = vWorkTime.getMedicalTime();

@@ -36,7 +36,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.declare.DeclareTimezoneResult;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.CheckExcessAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PersonCostCalculation;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.employeeunitpricehistory.EmployeeUnitPriceHistoryItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.PersonCostCalculation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
@@ -247,11 +248,12 @@ public class ActualWorkingTimeOfDaily {
 	}
 	
 	public static PremiumTimeOfDailyPerformance createPremiumTimeOfDailyPerformance(Optional<PersonCostCalculation> personCostCalculation,
-	 																				DailyRecordToAttendanceItemConverter dailyRecordDto) {
+	 																				DailyRecordToAttendanceItemConverter dailyRecordDto,
+	 																				Optional<EmployeeUnitPriceHistoryItem> unitPriceHistory) {
 		if(!personCostCalculation.isPresent()) {
 			return PremiumTimeOfDailyPerformance.createEmpty();
 		}
-		return PremiumTimeOfDailyPerformance.calcPremiumTime(personCostCalculation.get(), dailyRecordDto);
+		return PremiumTimeOfDailyPerformance.calcPremiumTime(dailyRecordDto, unitPriceHistory, personCostCalculation.get());
 	}
 	
 	/**
@@ -261,11 +263,12 @@ public class ActualWorkingTimeOfDaily {
 	 * @return 日別勤怠の割増時間
 	 */
 	public static PremiumTimeOfDailyPerformance createPremiumTimeOfDailyPerformanceForSupport(Optional<PersonCostCalculation> personCostCalculation,
-				DailyRecordToAttendanceItemConverter dailyRecordDto) {
+																								DailyRecordToAttendanceItemConverter dailyRecordDto,
+																								Optional<EmployeeUnitPriceHistoryItem> unitPriceHistory) {
 		if(!personCostCalculation.isPresent()) {
 			return PremiumTimeOfDailyPerformance.createEmpty();
 		}
-		return PremiumTimeOfDailyPerformance.calcPremiumTimeForSupport(personCostCalculation.get(), dailyRecordDto);
+		return PremiumTimeOfDailyPerformance.calcPremiumTimeForSupport(dailyRecordDto, unitPriceHistory, personCostCalculation.get());
 	}
 	
 	public static DivergenceTimeOfDaily createDivergenceTimeOfDaily(

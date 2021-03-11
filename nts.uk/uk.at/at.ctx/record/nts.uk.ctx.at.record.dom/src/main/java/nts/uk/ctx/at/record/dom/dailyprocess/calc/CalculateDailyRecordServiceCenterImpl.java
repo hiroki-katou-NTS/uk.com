@@ -45,8 +45,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattend
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PersonCostCalculationRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerPersonDailySet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.PersonCostCalculationRepository;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItem;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.optitem.applicable.EmpCondition;
@@ -396,7 +396,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 			companyCommonSetting.setShareContainer(shareContainer);
 		}
 		
-		companyCommonSetting.setPersonnelCostSettings(personCostCalculationRepository.findByCompanyID(comanyId));
+		companyCommonSetting.setPersonnelCostSetting(personCostCalculationRepository.getHistAnPerCost(comanyId));
 		
 		/***会社共通処理***/
 		List<ManageCalcStateAndResult> returnList = new ArrayList<>();

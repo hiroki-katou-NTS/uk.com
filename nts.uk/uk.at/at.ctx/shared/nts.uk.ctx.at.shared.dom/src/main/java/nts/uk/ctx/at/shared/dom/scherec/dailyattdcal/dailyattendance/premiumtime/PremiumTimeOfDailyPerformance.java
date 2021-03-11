@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.common.amount.AttendanceAmountDaily;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PersonCostCalculation;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PriceUnit;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.employeeunitpricehistory.EmployeeUnitPriceHistoryItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.PersonCostCalculation;
 
 /**
  * 日別勤怠の割増時間 (new)
@@ -55,36 +55,38 @@ public class PremiumTimeOfDailyPerformance {
 
 	/**
 	 * 日別勤怠の割増時間の計算
-	 * @param personCostCalculation 人件費計算設定
 	 * @param dailyRecordDto 日別勤怠コンバーター
+	 * @param unitPriceHistory 社員単価履歴
+	 * @param personCostCalculation 人件費計算設定
 	 * @return 日別勤怠の割増時間
 	 */
-	public static PremiumTimeOfDailyPerformance calcPremiumTime(PersonCostCalculation personCostCalculation,
-																DailyRecordToAttendanceItemConverter dailyRecordDto) {
-		//個人時間単価を取得する
-		//2020.8.24 ichioka ドメインが未確定の為、未実装。
-		PriceUnit priceUnit = new PriceUnit(0);
-		List<PremiumTime> times = personCostCalculation.getPremiumSettings().stream()
-			.map(pcc -> PremiumTime.create(dailyRecordDto, priceUnit, personCostCalculation.getRoundingSetting(), pcc))
-			.collect(Collectors.toList());
+	public static PremiumTimeOfDailyPerformance calcPremiumTime(
+			DailyRecordToAttendanceItemConverter dailyRecordDto,
+			Optional<EmployeeUnitPriceHistoryItem> unitPriceHistory,
+			PersonCostCalculation personCostCalculation) {
 
+		List<PremiumTime> times = personCostCalculation.getPremiumSettings().stream()
+				.map(pcc -> PremiumTime.create(dailyRecordDto, unitPriceHistory, personCostCalculation, pcc))
+				.collect(Collectors.toList());
+		
 		return new PremiumTimeOfDailyPerformance(times);
 	}
 	
 	/**
 	 * 日別勤怠の割増時間の計算（応援用）
-	 * @param personCostCalculation 人件費計算設定
 	 * @param dailyRecordDto 日別勤怠コンバーター
+	 * @param unitPriceHistory 社員単価履歴
+	 * @param personCostCalculation 人件費計算設定
 	 * @return 日別勤怠の割増時間
 	 */
-	public static PremiumTimeOfDailyPerformance calcPremiumTimeForSupport(PersonCostCalculation personCostCalculation,
-																		DailyRecordToAttendanceItemConverter dailyRecordDto) {
-		//個人時間単価を取得する
-		//2020.8.24 ichioka ドメインが未確定の為、未実装。
-		PriceUnit priceUnit = new PriceUnit(0);
+	public static PremiumTimeOfDailyPerformance calcPremiumTimeForSupport(
+			DailyRecordToAttendanceItemConverter dailyRecordDto,
+			Optional<EmployeeUnitPriceHistoryItem> unitPriceHistory,
+			PersonCostCalculation personCostCalculation) {
+		
 		//割増時間
 		List<PremiumTime> times = personCostCalculation.getPremiumSettings().stream()
-			.map(pcc -> PremiumTime.createForSupport(dailyRecordDto, priceUnit, personCostCalculation.getRoundingSetting(), pcc))
+			.map(pcc -> PremiumTime.createForSupport(dailyRecordDto, unitPriceHistory, personCostCalculation, pcc))
 			.collect(Collectors.toList());
 
 		return new PremiumTimeOfDailyPerformance(times);

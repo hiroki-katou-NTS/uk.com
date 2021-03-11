@@ -8,7 +8,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.personalfee.PersonalFee
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.personalfee.WorkSchedulePersonFeeGetMemento;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.personalfee.KscdtScheFee;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.personalfee.KscdtScheFeePK;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.ExtraTimeItemNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.ExtraTimeItemNo;
 
 /**
  * The Class JpaWorkSchedulePersonFeeGetMemento.

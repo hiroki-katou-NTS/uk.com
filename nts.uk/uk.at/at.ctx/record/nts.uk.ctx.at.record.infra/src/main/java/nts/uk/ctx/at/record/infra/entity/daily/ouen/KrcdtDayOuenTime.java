@@ -16,7 +16,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.common.amount.AttendanceAmountDaily;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PriceUnit;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.premiumtime.PremiumTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.MedicalCareTimeEachTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenAttendanceTimeEachTimeSheet;
@@ -24,6 +23,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.o
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenMovementTimeEachTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.MedicalCareTimeEachTimeSheet.FullTimeNightShiftAttr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.WorkingHoursUnitPrice;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
@@ -249,7 +249,7 @@ public class KrcdtDayOuenTime extends ContractUkJpaEntity implements Serializabl
 											movePremiumTime6, movePremiumTime7, movePremiumTime8, movePremiumTime9, movePremiumTime10,
 											0, 0, 0, 0, 0,0, 0, 0, 0, 0)),
 						new AttendanceAmountDaily(amount), 
-						new PriceUnit(priceUnit));
+						new WorkingHoursUnitPrice(priceUnit));
 	}
 	
 	public static List<PremiumTime> premiumTime(int no1, int no2, int no3, 

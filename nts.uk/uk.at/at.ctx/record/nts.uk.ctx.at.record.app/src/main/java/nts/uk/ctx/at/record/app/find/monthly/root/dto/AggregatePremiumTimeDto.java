@@ -29,17 +29,17 @@ public class AggregatePremiumTimeDto implements ItemConst, AttendanceItemDataGat
 	@AttendanceItemLayout(jpPropertyName = TIME, layout = LAYOUT_A)
 	private int time;
 
-	/** 金額: 勤怠月間時間 */
+	/** 金額: 勤怠月間金額 */
 	@AttendanceItemValue(type = ValueType.AMOUNT_NUM)
 	@AttendanceItemLayout(jpPropertyName = AMOUNT, layout = LAYOUT_B)
-	private int amount;
+	private long amount;
 	
 	public static AggregatePremiumTimeDto from (AggregatePremiumTime domain) {
 		AggregatePremiumTimeDto dto = new AggregatePremiumTimeDto();
 		if(domain != null) {
 			dto.setNo(domain.getPremiumTimeItemNo());
 			dto.setTime(domain.getTime() == null ? 0 : domain.getTime().valueAsMinutes());
-			dto.setAmount(domain.getAmount() == null ? 0 : domain.getAmount().v());
+			dto.setAmount(domain.getAmount() == null ? 0L : domain.getAmount().v());
 		}
 		return dto;
 	}
@@ -78,7 +78,7 @@ public class AggregatePremiumTimeDto implements ItemConst, AttendanceItemDataGat
 		case TIME:
 			time = value.valueOrDefault(0);
 		case AMOUNT:
-			amount = value.valueOrDefault(0);
+			amount = value.valueOrDefault(0L);
 		default:
 		}
 	}

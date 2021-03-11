@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate;
-import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemDataGate.PropType;
 import nts.uk.ctx.at.shared.dom.common.amount.AttendanceAmountDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.anno.AttendanceItemLayout;
@@ -15,9 +14,9 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.u
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenAttendanceTimeEachTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SupportFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.WorkingHoursUnitPrice;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenMovementTimeEachTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeOfDailyAttendance;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PriceUnit;
 
 /** 日別勤怠の応援作業時間 */
 @Data
@@ -52,7 +51,7 @@ public class OuenWorkTimeOfDailyAttendanceDto implements ItemConst, AttendanceIt
 				this.workTime == null ? OuenAttendanceTimeEachTimeSheet.createAllZero() : this.workTime.toDomain(),
 				this.moveTime == null ? OuenMovementTimeEachTimeSheet.createAllZero() : this.moveTime.toDomain(),
 				this.amount == null ? AttendanceAmountDaily.ZERO : new AttendanceAmountDaily(this.amount),
-				this.priceUnit == null ? PriceUnit.ZERO : new PriceUnit(this.priceUnit));
+				this.priceUnit == null ? WorkingHoursUnitPrice.ZERO : new WorkingHoursUnitPrice(this.priceUnit));
 	}
 	
 	public static OuenWorkTimeOfDailyAttendanceDto valueOf(OuenWorkTimeOfDailyAttendance domain) {

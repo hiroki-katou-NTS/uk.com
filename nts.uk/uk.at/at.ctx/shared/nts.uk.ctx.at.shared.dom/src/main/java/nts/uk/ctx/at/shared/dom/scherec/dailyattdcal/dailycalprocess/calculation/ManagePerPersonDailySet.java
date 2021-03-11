@@ -8,7 +8,8 @@ import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.timesheet.ouen.SupportFrameNo;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PriceUnit;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.employeeunitpricehistory.EmployeeUnitPriceHistoryItem;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.WorkingHoursUnitPrice;
 import nts.uk.ctx.at.shared.dom.scherec.statutory.worktime.week.DailyUnit;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 
@@ -33,8 +34,11 @@ public class ManagePerPersonDailySet {
 	/** 加給設定 */
 	private Optional<BonusPaySetting> bonusPaySetting;
 	
-	/** インセンティブ単価 <応援勤務枠No, 単価> */
-	private Map<SupportFrameNo, PriceUnit> incentiveUnitPrice = new HashMap<>();
+	/** 社員単価履歴 */
+	private Optional<EmployeeUnitPriceHistoryItem> unitPrice;
+	
+	/** インセンティブ単価 <応援勤務枠No, 社員時間単価> */
+	private Map<SupportFrameNo, WorkingHoursUnitPrice> incentiveUnitPrice = new HashMap<>();
 	
 	/** 平日時の所定時間設定
 	 *年休、欠勤の場合に実績に就業時間帯が埋まっていない時に使用する。
@@ -54,13 +58,15 @@ public class ManagePerPersonDailySet {
 			AddSetting addSetting,
 			Optional<BonusPaySetting> bonusPaySetting,
 			PredetermineTimeSetForCalc predetermineTimeSetByPersonWeekDay,
-			Map<SupportFrameNo, PriceUnit> incentiveUnitPrice) {
+			Optional<EmployeeUnitPriceHistoryItem> unitPrice,
+			Map<SupportFrameNo, WorkingHoursUnitPrice> incentiveUnitPrice) {
 		super();
 		this.personInfo = personInfo;
 		this.dailyUnit = dailyUnit;
 		this.addSetting = addSetting;
 		this.bonusPaySetting = bonusPaySetting;
 		this.predetermineTimeSetByPersonWeekDay = predetermineTimeSetByPersonWeekDay;
+		this.unitPrice = unitPrice;
 		this.incentiveUnitPrice = incentiveUnitPrice;
 	}
 	
@@ -69,7 +75,7 @@ public class ManagePerPersonDailySet {
 	 * @param no
 	 * @return インセンティブ単価
 	 */
-	public PriceUnit getIncentiveUnitPrice(SupportFrameNo no) {
-		return Optional.ofNullable(this.incentiveUnitPrice.get(no)).orElse(PriceUnit.ZERO);
+	public WorkingHoursUnitPrice getIncentiveUnitPrice(SupportFrameNo no) {
+		return Optional.ofNullable(this.incentiveUnitPrice.get(no)).orElse(WorkingHoursUnitPrice.ZERO);
 	}
 }

@@ -3,7 +3,7 @@ package nts.uk.ctx.at.schedule.app.find.budget.premium.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PremiumItemLanguage;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.PremiumItemLanguage;
 
 /**
  * 

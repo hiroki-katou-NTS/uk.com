@@ -12,7 +12,7 @@ import nts.uk.ctx.at.schedule.app.find.budget.premium.dto.PremiumItemDto;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.aggregateset.AggregateSetting;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.aggregateset.AggregateSettingRepository;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.premiumitem.PremiumItemRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.personcostcalc.premiumitem.PremiumItemRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**

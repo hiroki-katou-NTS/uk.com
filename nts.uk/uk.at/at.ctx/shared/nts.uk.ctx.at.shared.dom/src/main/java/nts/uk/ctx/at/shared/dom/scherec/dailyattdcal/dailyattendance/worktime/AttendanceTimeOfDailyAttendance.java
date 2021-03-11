@@ -440,8 +440,9 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 			// 割増時間の計算
 			PremiumTimeOfDailyPerformance premiumTimeOfDailyPerformance = ActualWorkingTimeOfDaily
 					.createPremiumTimeOfDailyPerformance(
-							companyCommonSetting.getPersonCostCalculation(targetDate),
-							forCalcDivergenceDto);
+							companyCommonSetting.getPersonnelCostSetting().get(targetDate),
+							forCalcDivergenceDto,
+							recordReGetClass.getPersonDailySetting().getUnitPrice());
 
 			val reCalcDivergence = ActualWorkingTimeOfDaily.createDivergenceTimeOfDaily(forCalcDivergenceDto,
 					divergenceTimeList, calcResultIntegrationOfDaily.getCalAttr(),
@@ -537,10 +538,11 @@ public class AttendanceTimeOfDailyAttendance implements DomainObject {
 		DailyRecordToAttendanceItemConverter forCalcDivergenceDto = converter.setData(calcResultIntegrationOfDaily);
 
 		// 割増時間の計算
-		PremiumTimeOfDailyPerformance premiumTimeOfDailyPerformance = 
+		PremiumTimeOfDailyPerformance premiumTimeOfDailyPerformance =
 				ActualWorkingTimeOfDaily.createPremiumTimeOfDailyPerformanceForSupport(
-						recordReGetClass.getCompanyCommonSetting().getPersonCostCalculation(recordReGetClass.getIntegrationOfDaily().getYmd()),
-						forCalcDivergenceDto);
+						recordReGetClass.getCompanyCommonSetting().getPersonnelCostSetting().get(recordReGetClass.getIntegrationOfDaily().getYmd()),
+						forCalcDivergenceDto,
+						recordReGetClass.getPersonDailySetting().getUnitPrice());
 		
 		// 乖離時間(AggregateRoot)取得
 		List<DivergenceTimeRoot> divergenceTimeList = recordReGetClass.getCompanyCommonSetting().getDivergenceTime();
