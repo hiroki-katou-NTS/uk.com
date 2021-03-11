@@ -127,9 +127,11 @@ public class GetScheduleOfWorkInfo002 {
 					Integer startTime = m.startTime;
 					Integer endTime = m.endTime;
 					
-					if (startTime == 0 && endTime == 0){
-						startTime = null;
-						endTime = null;
+					if (startTime != null && endTime != null) {
+						if (startTime == 0 && endTime == 0){
+							startTime = null;
+							endTime = null;
+						}
 					}
 					
 					
