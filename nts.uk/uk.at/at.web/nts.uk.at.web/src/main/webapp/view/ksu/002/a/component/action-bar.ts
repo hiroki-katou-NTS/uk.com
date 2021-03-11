@@ -97,7 +97,8 @@ module nts.uk.ui.at.ksu002.a {
 					disabled: $component.workTimeData.disabled,
 					tabindex: $$tabindex,
 					width: 520,
-					workplace-id: $component.data.workplaceId
+					workplace-id: $component.data.workplaceId,
+					check: ko.observable(true)
 				"></div>
 		</div>
 	</div>
