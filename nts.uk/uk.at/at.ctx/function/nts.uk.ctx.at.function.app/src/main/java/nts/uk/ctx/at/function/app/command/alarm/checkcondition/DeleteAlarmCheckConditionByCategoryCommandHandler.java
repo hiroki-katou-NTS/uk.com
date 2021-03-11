@@ -154,12 +154,12 @@ public class DeleteAlarmCheckConditionByCategoryCommandHandler extends CommandHa
 		
 		if (command.getCategory() == AlarmCategory.SCHEDULE_DAILY.value) {
 			String contractCode = AppContexts.user().contractCode();
-			List<String> checkIds = command.getScheFixCondDay().getSheFixItemDays().stream().map(item -> item.getDailyAlarmConID()).collect(Collectors.toList());
+			String checkIds = command.getScheFixCondDay().getErAlCheckLinkId();
 			if (!checkIds.isEmpty()) {
 				this.fixedExtractSDailyConRepository.delete(contractCode, companyId, checkIds);
 			}
 			
-			List<String> checkAnyIds = command.getScheAnyCondDay().getScheAnyCondDays().stream().map(item -> item.getErrorAlarmCheckID()).collect(Collectors.toList());
+			String checkAnyIds = command.getScheAnyCondDay().getErAlCheckLinkId();
 			if (!checkAnyIds.isEmpty()) {
 				this.extraCondScheDayRepository.delete(contractCode, companyId, checkAnyIds);
 			}

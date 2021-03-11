@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.function.dom.adapter.WorkRecordExtraConAdapterDto;
 
 @Data
 @NoArgsConstructor
@@ -12,5 +13,5 @@ import lombok.NoArgsConstructor;
 public class ScheAnyCondDayDto {
 	private String erAlCheckLinkId;
 	
-	private List<ExtractionCondScheduleDayDto> scheAnyItemDays;
+	private List<WorkRecordExtraConAdapterDto> scheAnyItemDays;
 }

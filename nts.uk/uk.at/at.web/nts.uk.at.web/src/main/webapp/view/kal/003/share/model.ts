@@ -2261,6 +2261,10 @@ module nts.uk.at.view.kal003.share.model {
         planLstWorkType: Array<string>;
         actualFilterAtr: boolean;
         actualLstWorkType: Array<string>;
+        comparisonOperator: KnockoutObservable<number>;
+        compareStartValue: KnockoutObservable<number>;
+        compareEndValue: KnockoutObservable<number>;
+        checkTimeType: KnockoutObservable<number>;
     }
 
     export class WorkTypeCondition {
@@ -2270,6 +2274,11 @@ module nts.uk.at.view.kal003.share.model {
         planLstWorkType: KnockoutObservableArray<string> = ko.observableArray([]);
         actualFilterAtr: boolean;
         actualLstWorkType: Array<string>;
+        comparisonOperator: KnockoutObservable<number> = ko.observable(0);
+        compareStartValue: KnockoutObservable<number> = ko.observable();
+        compareEndValue: KnockoutObservable<number> = ko.observable();
+        checkTimeType: KnockoutObservable<number> = ko.observable(0);
+        
         constructor(param: IWorkTypeCondition) {
             let self = this;
             self.useAtr = param && param.useAtr ? param.useAtr : false;
@@ -2278,6 +2287,10 @@ module nts.uk.at.view.kal003.share.model {
             self.planLstWorkType(param && param.planLstWorkType ? param.planLstWorkType : []);
             self.actualFilterAtr = param && param.actualFilterAtr ? param.actualFilterAtr : false;
             self.actualLstWorkType = param && param.actualLstWorkType ? param.actualLstWorkType : [];
+            self.comparisonOperator(param && param.comparisonOperator ? param.comparisonOperator : false);
+            self.compareStartValue(param && param.compareStartValue ? param.compareStartValue : "");
+            self.compareEndValue(param && param.compareEndValue ? param.compareEndValue : "");
+            self.checkTimeType(param && param.checkTimeType ? param.checkTimeType : 0);
         }
     }
 

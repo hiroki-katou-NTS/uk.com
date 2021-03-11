@@ -28,6 +28,7 @@ import nts.uk.ctx.at.function.dom.adapter.FixedConditionDataAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.PublicHolidaySettingAdapter;
 import nts.uk.ctx.at.function.dom.adapter.WorkRecordExtraConAdapter;
 import nts.uk.ctx.at.function.dom.adapter.WorkRecordExtraConAdapterDto;
+import nts.uk.ctx.at.function.dom.adapter.eralworkrecorddto.ErrorAlarmConAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.ExtraResultMonthlyFunAdapter;
 import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraItemMonFunAdapter;
 import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraItemMonFunImport;
@@ -392,7 +393,7 @@ public class AlarmCheckConditionByCategoryFinder {
 						.stream().map(item -> schedFixCondDayToDto(item)).collect(Collectors.toList());
 			}
 			
-			List<ExtractionCondScheduleDayDto> scheAnyCondDays = new ArrayList<>();
+			List<WorkRecordExtraConAdapterDto> scheAnyCondDays = new ArrayList<>();
 			String listOptionalItem = condition.getListOptionalItem();
 			if (listOptionalItem != null && StringUtils.isNotEmpty(listOptionalItem)) {
 				scheAnyCondDays = extraCondScheDayRepository.getScheAnyCondDay(contractCode, companyId, listOptionalItem)
@@ -443,13 +444,18 @@ public class AlarmCheckConditionByCategoryFinder {
 		return dto;
 	}
 	
-	private ExtractionCondScheduleDayDto schedAnyCondDayToDto(ExtractionCondScheduleDay domain) {
-		return ExtractionCondScheduleDayDto.builder()
-				.errorAlarmId(domain.getErrorAlarmId())
-				.sortOrder(domain.getSortOrder())
-				.isUse(domain.isUse())
-				.name(domain.getName().v())
-				.errorAlarmMessage(domain.getErrorAlarmMessage() != null ? domain.getErrorAlarmMessage().get().v() : "")
+	private WorkRecordExtraConAdapterDto schedAnyCondDayToDto(ExtractionCondScheduleDay domain) {
+		ErrorAlarmConAdapterDto errorAlarmCondition = ErrorAlarmConAdapterDto.builder()
+				.displayMessage(domain.getErrorAlarmMessage() != null ? domain.getErrorAlarmMessage().get().v() : "")
+				.build();
+		
+		return WorkRecordExtraConAdapterDto.builder()
+				.errorAlarmCheckID(domain.getErrorAlarmId())
+				.sortOrderBy(domain.getSortOrder())
+				.useAtr(domain.isUse())
+				.nameWKRecord(domain.getName().v())
+				.errorAlarmCondition(errorAlarmCondition)
+				.checkItem(domain.getCheckItemType().value)
 				.build();
 	}
 }

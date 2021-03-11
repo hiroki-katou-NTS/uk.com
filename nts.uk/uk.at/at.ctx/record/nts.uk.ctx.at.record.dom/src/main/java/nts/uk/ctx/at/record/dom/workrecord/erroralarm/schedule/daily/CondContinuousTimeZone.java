@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ContinuousPeriod;
 
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.List;
  * 連続時間帯の抽出条件
  */
 @AllArgsConstructor
+@Getter
 public class CondContinuousTimeZone implements  ScheduleCheckCond{
     // 対象とする就業時間帯
     private TimeZoneTargetRange targetWrkHrs;

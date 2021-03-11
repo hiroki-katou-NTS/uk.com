@@ -1598,7 +1598,7 @@
 	                                             options: $parent.listCheckTimeType,
 	                                             optionsValue: 'value',
 	                                             visibleItemsCount: 5,
-	                                             value: $parent.comparisonRange().comparisonOperator,
+	                                             value: errorAlarmCondition().workTypeCondition().checkTimeType,
 	                                             optionsText: 'localizedName',
 	                                             editable: false,
 	                                             enable: true,
@@ -1628,7 +1628,7 @@
                                             <!-- 時間, 連続時間の場合 -->
                                             <input class="startValue value-input needcheck" tabindex="6" style= "width : 70px! important" data-bind="ntsTimeEditor: {
 		                                          name: '#[KAL003_64]',
-		                                          value: $parent.comparisonRange().minTimeValue,
+		                                          value: $parent.comparisonRange().minValue,
 	                                              required: true,
 	                                              mode: 'time',
 	                                              inputFormat: 'time',
@@ -1637,11 +1637,14 @@
 		                                </td>
 		                                <td class="pad_left_5px">
 		                                	<!-- B2_7 回数 -->
-                                            <input class="endValue value-input needcheck"  tabindex="6" style = "width : 70px! important" data-bind="ntsNumberEditor: {
-			                                      name: '#[KAL003_64]',
-			                                      value: $parent.comparisonRange().maxTimesValue, 
-			                                      required: true,
-			                                      constraint: 'CheckedTimesValue'}" />
+			                                 <input class="startValue value-input needcheck" tabindex="6" style= "width : 70px! important" data-bind="ntsTimeEditor: {
+		                                          name: '#[KAL003_65]',
+		                                          value: $parent.comparisonRange().maxValue,
+	                                              required: $parent.enableComparisonMaxValue,
+			                                      enable: $parent.enableComparisonMaxValue(),
+	                                              mode: 'time',
+	                                              inputFormat: 'time',
+	                                              constraint: 'CheckedTimeDuration'}" /> 
 		                                </td>
 		                            </tr>
 	                            </tbody>
@@ -1744,7 +1747,7 @@
                                             <!-- 時間, 連続時間の場合 -->
                                             <input class="startValue value-input needcheck" tabindex="6" style= "width : 70px! important" data-bind="ntsTimeEditor: {
 		                                          name: '#[KAL003_64]',
-		                                          value: $parent.comparisonRange().minTimeValue,
+		                                          value: $parent.comparisonRange().minValue,
 	                                              required: true,
 	                                              mode: 'time',
 	                                              inputFormat: 'time',
@@ -1753,11 +1756,14 @@
 		                                </td>
 		                                <td class="pad_left_5px">
 		                                	<!-- B2_7 回数 -->
-                                            <input class="endValue value-input needcheck"  tabindex="6" style = "width : 70px! important" data-bind="ntsNumberEditor: {
-			                                      name: '#[KAL003_64]',
-			                                      value: $parent.comparisonRange().maxTimesValue, 
-			                                      required: true,
-			                                      constraint: 'CheckedTimesValue'}" />
+			                                 <input class="startValue value-input needcheck" tabindex="6" style= "width : 70px! important" data-bind="ntsTimeEditor: {
+		                                          name: '#[KAL003_65]',
+		                                          value: $parent.comparisonRange().maxValue,
+	                                              required: $parent.enableComparisonMaxValue,
+			                                      enable: $parent.enableComparisonMaxValue(),
+	                                              mode: 'time',
+	                                              inputFormat: 'time',
+	                                              constraint: 'CheckedTimeDuration'}" /> 
 		                                </td>
 		                            </tr>
 	                            </tbody>
@@ -1938,10 +1944,10 @@
 											<button id="btnSettingBA5_3" data-bind="click : function() {$parent.btnSettingBA5_2_click()}, enable: true">#{i18n.getText('KAL003_57')}</button>
 											<!-- BA5-4 -->
 											<input data-bind="ntsTextEditor: {
-								value: $parent.displayWorkingTimeSelections_BA5_3,
-								name : '#[KAL003_57]',
-								required: true,	                                       
-								readonly: true}" />
+												value: $parent.displayWorkingTimeSelections_BA5_3,
+												name : '#[KAL003_57]',
+												required: true,	                                       
+												readonly: true}" />
 										</div>
 									</td>
 								</tr>

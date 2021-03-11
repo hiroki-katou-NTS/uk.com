@@ -15,9 +15,12 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.condition.attenda
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmMessage;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.util.List;
 import java.util.Optional;
@@ -33,7 +36,8 @@ import static nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.DaiC
 @AllArgsConstructor
 @Table(name = "KSCDT_SCHE_ANY_COND_DAY")
 public class KscdtScheAnyCondDay extends ContractUkJpaEntity {
-    @EmbeddedId
+
+	@EmbeddedId
     public KscdtScheAnyCondDayPk pk;
 
     /* 名称 */
@@ -67,7 +71,27 @@ public class KscdtScheAnyCondDay extends ContractUkJpaEntity {
     /* メッセージ */
     @Column(name = "MESSAGE")
     public String message;
-
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "conditionDay", orphanRemoval = true)
+    public List<KscdtScheConDayWt> conditionDayWorkTypes;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "conditionDay", orphanRemoval = true)
+    public List<KscdtScheConDayWtime> conditionDayWorkTimes;
+    
+    public KscdtScheAnyCondDay(KscdtScheAnyCondDayPk pk, String condName, boolean useAtr, int checkType,
+			int wrkTypeCondAtr, Integer conPeriod, Integer timeCheckItem, Integer wrkTimeCondAtr, String message) {
+		super();
+		this.pk = pk;
+		this.condName = condName;
+		this.useAtr = useAtr;
+		this.checkType = checkType;
+		this.wrkTypeCondAtr = wrkTypeCondAtr;
+		this.conPeriod = conPeriod;
+		this.timeCheckItem = timeCheckItem;
+		this.wrkTimeCondAtr = wrkTimeCondAtr;
+		this.message = message;
+	}
+    
     @Override
     protected Object getKey() {
         return this.pk;
@@ -113,7 +137,13 @@ public class KscdtScheAnyCondDay extends ContractUkJpaEntity {
             default:
         }
 
-        val result = new ExtractionCondScheduleDay(pk.checkId,scheduleCheckCond,EnumAdaptor.valueOf(checkType,DaiCheckItemType.class),pk.sortBy,useAtr,new NameAlarmExtractCond(condName), EnumAdaptor.valueOf(wrkTypeCondAtr, RangeToCheck.class), Optional.ofNullable(message == null? null : new ErrorAlarmMessage(message)));
+        val result = new ExtractionCondScheduleDay(
+        		pk.checkId,scheduleCheckCond,
+        		EnumAdaptor.valueOf(checkType,DaiCheckItemType.class),
+        		pk.sortBy,useAtr,new NameAlarmExtractCond(condName), 
+        		EnumAdaptor.valueOf(wrkTypeCondAtr, RangeToCheck.class), 
+        		EnumAdaptor.valueOf(wrkTypeCondAtr, TimeZoneTargetRange.class), 
+        		Optional.ofNullable(message == null? null : new ErrorAlarmMessage(message)));
 
         return result;
     }

@@ -71,7 +71,7 @@ public class JpaFixedExtractSDailyConRepository extends JpaRepository implements
 	}
 	
 	@Override
-	public void delete(String contractCode, String companyId, List<String> erAlCheckIds) {
+	public void delete(String contractCode, String companyId, String erAlCheckIds) {
 		List<KscdtScheFixCondDay> entities = this.queryProxy().query(SELECT_BASIC + BY_CONTRACT_COMPANY + BY_ERAL_CHECK_ID, KscdtScheFixCondDay.class)
 				.setParameter("contractCode", contractCode)
 				.setParameter("companyId", companyId)

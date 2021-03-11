@@ -31,6 +31,8 @@ import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapter;
 import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.WorkRecordExtraConAdapter;
 import nts.uk.ctx.at.function.dom.adapter.WorkRecordExtraConAdapterDto;
+import nts.uk.ctx.at.function.dom.adapter.eralworkrecorddto.WorkTimeConAdapterDto;
+import nts.uk.ctx.at.function.dom.adapter.eralworkrecorddto.WorkTypeConAdapterDto;
 import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraMonFunAdapter;
 import nts.uk.ctx.at.function.dom.adapter.monthlycheckcondition.FixedExtraMonFunImport;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.schedaily.ScheduleDailyAlarmCheckCond;
@@ -62,15 +64,27 @@ import nts.uk.ctx.at.function.dom.alarm.checkcondition.monthly.dtoevent.ExtraRes
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.MulMonAlarmCond;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.MulMonAlarmCondEvent;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.multimonth.doevent.MulMonCheckCondDomainEventDto;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareRange;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareSingleValue;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.ErrorAlarmMessageMSTCHK;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.MasterCheckFixedCheckItem;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.MasterCheckFixedExtractCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.MasterCheckFixedExtractConditionRepository;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ContinuousPeriod;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.CheckTimeType;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.CondContinuousTime;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.CondContinuousTimeZone;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.CondContinuousWrkType;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.CondTime;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.DaiCheckItemType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.ExtraCondScheDayRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.ExtractionCondScheduleDay;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.FixedExtracSDailyItemsRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.FixedExtractSDailyConRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.FixedExtractionSDailyCon;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.RangeToCheck;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.TimeZoneTargetRange;
 import nts.uk.ctx.at.shared.dom.alarmList.AlarmCategory;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -720,11 +734,81 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 		List<ExtractionCondScheduleDay> listOptionalItem = extraCondScheDayRepository.getScheAnyCondDay(contractCode, companyId, eralCheckId);
 		
 		for(WorkRecordExtraConAdapterDto item: scheAnyCondDays) {
+			DaiCheckItemType dailyCheckItemType = EnumAdaptor.valueOf(item.getCheckItem(), DaiCheckItemType.class);
+			RangeToCheck rangeToCheck = RangeToCheck.ALL;
+			
 			ExtractionCondScheduleDay domain = ExtractionCondScheduleDay.create(
-					eralCheckId, item.getSortOrderBy(), item.isUseAtr(), item.getNameWKRecord(), "");
-			if (!listOptionalItem.stream().anyMatch(x -> x.getErrorAlarmId() == eralCheckId && x.getSortOrder() == item.getSortOrderBy())) {
-				domain = ExtractionCondScheduleDay.create(
-						eralCheckId, item.getSortOrderBy(), item.isUseAtr(), item.getNameWKRecord(), "");
+					eralCheckId, item.getSortOrderBy(), item.isUseAtr(), item.getNameWKRecord(),
+					item.getErrorAlarmCondition().getDisplayMessage(),
+					dailyCheckItemType,
+					rangeToCheck);
+			
+			if (dailyCheckItemType == DaiCheckItemType.TIME) {
+				WorkTypeConAdapterDto workTypeCondition = item.getErrorAlarmCondition().getWorkTypeCondition();
+				if (item.getErrorAlarmCondition().getWorkTypeCondition() != null) {
+					rangeToCheck = EnumAdaptor.valueOf(workTypeCondition.getComparePlanAndActual(), RangeToCheck.class);
+					domain.setTargetWrkType(rangeToCheck);
+				}
+				CheckTimeType checkTimeType = EnumAdaptor.valueOf(workTypeCondition.getCheckTimeType(), CheckTimeType.class);
+				if (workTypeCondition.getComparisonOperator() > 5) {
+					CompareRange checkedCondition = new CompareRange<>(workTypeCondition.getComparisonOperator());
+	                ((CompareRange) checkedCondition).setStartValue(workTypeCondition.getCompareStartValue());
+	                ((CompareRange) checkedCondition).setEndValue(workTypeCondition.getCompareEndValue());
+	                
+					CondTime time = new CondTime(checkedCondition, checkTimeType, workTypeCondition.getPlanLstWorkType());
+					domain.setScheduleCheckCond(time);
+				} else {
+					CompareSingleValue checkedCondition = new CompareSingleValue<>(workTypeCondition.getComparisonOperator(), ConditionType.FIXED_VALUE.value);
+					((CompareSingleValue)checkedCondition).setValue(workTypeCondition.getCompareStartValue());
+					CondTime time = new CondTime(checkedCondition, checkTimeType, workTypeCondition.getPlanLstWorkType());
+					domain.setScheduleCheckCond(time);
+				}
+			}
+			
+			if (dailyCheckItemType == DaiCheckItemType.CONTINUOUS_TIME) {
+				WorkTypeConAdapterDto workTypeCondition = item.getErrorAlarmCondition().getWorkTypeCondition();
+				if (item.getErrorAlarmCondition().getWorkTypeCondition() != null) {
+					rangeToCheck = EnumAdaptor.valueOf(workTypeCondition.getComparePlanAndActual(), RangeToCheck.class);
+					domain.setTargetWrkType(rangeToCheck);
+				}
+				CheckTimeType checkTimeType = EnumAdaptor.valueOf(workTypeCondition.getCheckTimeType(), CheckTimeType.class);
+				if (workTypeCondition.getComparisonOperator() > 5) {
+					CompareRange checkedCondition = new CompareRange<>(workTypeCondition.getComparisonOperator());
+	                ((CompareRange) checkedCondition).setStartValue(workTypeCondition.getCompareStartValue());
+	                ((CompareRange) checkedCondition).setEndValue(workTypeCondition.getCompareEndValue());
+	                
+	                CondContinuousTime continuousTime = new CondContinuousTime(checkedCondition, workTypeCondition.getPlanLstWorkType(), 
+	                		new ContinuousPeriod(item.getErrorAlarmCondition().getContinuousPeriod()));
+					domain.setScheduleCheckCond(continuousTime);
+				} else {
+					CompareSingleValue checkedCondition = new CompareSingleValue<>(workTypeCondition.getComparisonOperator(), ConditionType.FIXED_VALUE.value);
+					((CompareSingleValue)checkedCondition).setValue(workTypeCondition.getCompareStartValue());
+					CondContinuousTime continuousTime = new CondContinuousTime(checkedCondition, workTypeCondition.getPlanLstWorkType(), 
+							new ContinuousPeriod(item.getErrorAlarmCondition().getContinuousPeriod()));
+					domain.setScheduleCheckCond(continuousTime);
+				}
+			}
+			
+			if (dailyCheckItemType == DaiCheckItemType.CONTINUOUS_TIMEZONE) {
+				WorkTypeConAdapterDto workTypeCondition = item.getErrorAlarmCondition().getWorkTypeCondition();
+				WorkTimeConAdapterDto workTimeCondition = item.getErrorAlarmCondition().getWorkTimeCondition();
+				CondContinuousTimeZone continuousTimeZone = new CondContinuousTimeZone(
+						EnumAdaptor.valueOf(workTimeCondition.getComparePlanAndActual(), TimeZoneTargetRange.class), 
+						workTypeCondition.getPlanLstWorkType(),
+						workTimeCondition.getPlanLstWorkTime(), 
+						new ContinuousPeriod(item.getErrorAlarmCondition().getContinuousPeriod()));
+				domain.setScheduleCheckCond(continuousTimeZone);
+			}
+			
+			if (dailyCheckItemType == DaiCheckItemType.CONTINUOUS_WORK) {
+				WorkTypeConAdapterDto workTypeCondition = item.getErrorAlarmCondition().getWorkTypeCondition();
+				CondContinuousWrkType continuousWorkType = new CondContinuousWrkType(
+						workTypeCondition.getPlanLstWorkType(), 
+						new ContinuousPeriod(item.getErrorAlarmCondition().getContinuousPeriod()));
+				domain.setScheduleCheckCond(continuousWorkType);
+			}
+			
+			if (!listOptionalItem.stream().anyMatch(x -> x.getErrorAlarmId().equals(eralCheckId) && x.getSortOrder() == item.getSortOrderBy())) {
 				extraCondScheDayRepository.add(contractCode, companyId, domain);
 			} else {
 				extraCondScheDayRepository.update(contractCode, companyId, domain);

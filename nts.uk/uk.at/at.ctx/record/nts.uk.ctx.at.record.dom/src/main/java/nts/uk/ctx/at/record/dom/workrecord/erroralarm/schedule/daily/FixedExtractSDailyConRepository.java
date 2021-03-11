@@ -44,5 +44,5 @@ public interface FixedExtractSDailyConRepository {
      * @param companyId
      * @param erAlCheckIds
      */
-    void delete(String contractCode, String companyId, List<String> erAlCheckIds);
+    void delete(String contractCode, String companyId, String erAlCheckIds);
 }

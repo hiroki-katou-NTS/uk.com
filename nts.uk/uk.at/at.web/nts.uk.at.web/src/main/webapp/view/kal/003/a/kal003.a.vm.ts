@@ -785,13 +785,19 @@ module nts.uk.at.view.kal003.a.viewmodel {
                         
                         if (item.category() == model.CATEGORY.SCHEDULE_DAILY) {
                             // tab2
-                            self.tabCheckCondition.listWorkRecordExtractingConditions(item.dailyAlarmCheckCondition().listExtractConditionWorkRecork());
+                            let _checkList: Array<model.WorkRecordExtractingCondition> = _.map(result.scheAnyCondDay.scheAnyItemDays, (c: model.IWorkRecordExtractingCondition) => { return shareutils.convertTransferDataToWorkRecordExtractingCondition(c); });
+                            self.tabCheckCondition.listWorkRecordExtractingConditions(_checkList);
                             self.errAlFixedCheckId(result.scheFixCondDay.erAlCheckLinkId);
+                            item.scheAnyCondDay().scheAnyCondDays(_checkList);
+                            item.scheAnyCondDay().erAlCheckLinkId(result.scheAnyCondDay.erAlCheckLinkId);
                             
                             // tab3
                             self.errAlOptionalCheckId(result.scheAnyCondDay.erAlCheckLinkId);
                             item.scheFixCondDay().sheFixItemDays(result.scheFixCondDay.sheFixItemDays);
+                            item.scheFixCondDay().erAlCheckLinkId(result.scheFixCondDay.erAlCheckLinkId);
                             self.tabScheUniqueCheckCondition.setListFixedConditionWorkRecord(item.scheFixCondDay().sheFixItemDays());
+                            
+                            self.selectedAlarmCheckCondition(item);
                         }
 
                         self.screenMode(model.SCREEN_MODE.UPDATE);

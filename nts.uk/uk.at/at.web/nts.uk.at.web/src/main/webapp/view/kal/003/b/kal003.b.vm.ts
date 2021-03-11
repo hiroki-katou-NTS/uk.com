@@ -1402,6 +1402,21 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     }
                     break;
                 }
+                case sharemodel.CATEGORY.SCHEDULE_DAILY:
+                    self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparisonOperator(self.comparisonRange().comparisonOperator());
+                    self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().planLstWorkType(self.listAllWorkType);
+                    self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().compareStartValue(self.comparisonRange().minValue());
+                    self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().compareEndValue(self.comparisonRange().maxValue());
+                    self.workRecordExtractingCondition().errorAlarmCondition().alCheckTargetCondition().lstBusinessTypeCode = [];
+                    self.workRecordExtractingCondition().errorAlarmCondition().alCheckTargetCondition().lstClassificationCode = [];
+                    self.workRecordExtractingCondition().errorAlarmCondition().alCheckTargetCondition().lstEmploymentCode = [];
+                    self.workRecordExtractingCondition().errorAlarmCondition().alCheckTargetCondition().lstJobTitleId = [];
+
+                    let retData = ko.toJS(self.workRecordExtractingCondition());
+                    retData = shareutils.convertArrayOfWorkRecordExtractingConditionToJS(retData, self.workRecordExtractingCondition());
+                    windows.setShared('outputKal003b', retData);
+                    windows.close();
+                    break;
                 default: break;
             }
 
