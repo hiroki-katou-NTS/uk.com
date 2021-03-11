@@ -237,8 +237,9 @@ module nts.uk.at.view.kmk017.a {
           workplaceId: workPlace[0].id,
           workTimeCodes: workTimeCodes
         }).done((data) => {
+          vm.alreadySettingList.push({ workplaceId: workPlace[0].id, isAlreadySetting: true });          
           vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
-            vm.getWorkingHoursDetails(workPlace[0].id);
+            vm.multiSelectedId.valueHasMutated();
             vm.isNewMode(false);
           });
         })
@@ -306,13 +307,8 @@ module nts.uk.at.view.kmk017.a {
         } else {
           vm.isNewMode(true);
           vm.isEnableRegister(false);
-          //$('#single-tree-grid-kcp004_container').focus();
         }
-        /* if (vm.isNewMode())
-          //$('#kcp004').focusTreeGridComponent();
-          //$('#single-tree-grid-kcp004_container').focus();
-        else
-          $('.grid-list').focus(); */
+      
         vm.$blockui('hide');
       }).fail((error) => { console.log(error); }).always(() => vm.$blockui('hide'));
     }
