@@ -1018,14 +1018,17 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 						self.justChangeDate = false;
 						self.justSelectWork = false;
 						
+						
 						return self.getBreakTimes();
 					}
 					if (_.isNumber(workHours1.start()) && _.isNumber(workHours1.end())) {
-						if (!(self.workHoursTemp.start == workHours1.start() && self.workHoursTemp.end == workHours1.end())) {
-							return self.getBreakTimes();							
-						} else {
-							return;
-						}
+						// if (!(self.workHoursTemp.start == workHours1.start() && self.workHoursTemp.end == workHours1.end())) {
+						//		return self.getBreakTimes();							
+						// } else {
+						//	return;
+						// }
+						
+						return self.getBreakTimes();
 					}	
 				}, self).extend({notify: 'always', rateLimit: 500});
 				let workHours2 = {} as WorkHours;
@@ -2675,7 +2678,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
 		
 		getBreakTimes() {
 			const self = this;
-			self.$blockui("show")
+			self.$blockui("hide");
+			self.$blockui("show");
 			let command = {} as ParamBreakTime;
 			command.companyId = self.$user.companyId;
 			command.workTypeCode = self.workInfo().workType().code;
