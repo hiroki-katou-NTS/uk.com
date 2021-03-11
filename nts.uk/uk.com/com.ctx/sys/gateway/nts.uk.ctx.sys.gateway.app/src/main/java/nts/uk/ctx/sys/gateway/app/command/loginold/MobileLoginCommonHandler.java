@@ -56,7 +56,7 @@ public abstract class MobileLoginCommonHandler extends LoginBaseCommandHandler<M
 		// Get User by PersonalId
 		UserImportNew user = this.service.getUser(em.getPersonalId(), companyId, employeeCode);
 
-        LoginUserRoles roles = this.checkRole(user.getUserId(), companyId);
+        LoginUserRoles roles = this.checkRole(user.getUserId());
 		SystemSuspendOutput systemSuspendOutput = this.service.checkSystemStop(command, roles);
 
 		this.checkAccoutLock(user.getLoginId(), command.getContractCode(), user.getUserId(), companyId, command.isSignOn());
@@ -89,7 +89,7 @@ public abstract class MobileLoginCommonHandler extends LoginBaseCommandHandler<M
 			command.getRequest().changeSessionId();
 	        
 	        //ログインセッション作成 (Create login session)
-	        this.initSessionC(user, em, command.getCompanyCode(), roles);
+	        this.initSessionC(user, em, command.getCompanyCode());
 			
 			// アルゴリズム「ログイン記録」を実行する１
 			ParamLoginRecord param = new ParamLoginRecord(companyId, LoginMethod.NORMAL_LOGIN.value, LoginStatus.Success.value, null, em.getEmployeeId());
