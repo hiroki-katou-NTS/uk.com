@@ -8,6 +8,7 @@ import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -20,11 +21,15 @@ import java.util.stream.Collectors;
 @Setter
 @Entity
 @Table(name = "KSRMT_TASK_CHILD")
-public class KsrmtTaskChild extends ContractUkJpaEntity implements Serializable {
+public class KsrmtTaskChild extends UkJpaEntity implements Serializable {
 
     @EmbeddedId
     public KsrmtTaskChildPk pk;
-
+    /**
+     * 作業名称 : 作業.表示情報	->名称
+     */
+    @Column(name = "CONTRACT_CD")
+    public String CONTRACTCD;
     @Override
     protected Object getKey() {
         return pk;
@@ -38,8 +43,8 @@ public class KsrmtTaskChild extends ContractUkJpaEntity implements Serializable 
     private KsrmtTaskMaster ksrmtTaskMaster;
 
     public KsrmtTaskChild(KsrmtTaskChildPk pk){
-        super();
         this.pk = pk;
+        this.CONTRACTCD = AppContexts.user().contractCode();
     }
     public static List<KsrmtTaskChild> toEntittys(Task domain) {
         String CID = AppContexts.user().companyId();

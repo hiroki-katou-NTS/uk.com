@@ -7,7 +7,9 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Stateless
@@ -23,5 +25,11 @@ public class TaskAssignEmployeeFinder {
                 i.getTaskFrameNo().v(),
                 i.getTaskCode().v()
         )).collect(Collectors.toList());
+    }
+
+    public List<String> getAlreadySetList(int taskFrameNo) {
+        String companyId = AppContexts.user().companyId();
+        Set<String> taskCodes = repo.getAll(companyId, taskFrameNo).stream().map(i -> i.getTaskCode().v()).collect(Collectors.toSet());
+        return new ArrayList<>(taskCodes);
     }
 }

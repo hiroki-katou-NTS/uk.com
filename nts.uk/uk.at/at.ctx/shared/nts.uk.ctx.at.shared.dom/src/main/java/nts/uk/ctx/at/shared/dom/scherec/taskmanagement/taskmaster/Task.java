@@ -75,10 +75,11 @@ public class Task implements DomainAggregate {
 
     // 	[2] 子作業設定を変更する
     public void changeChildTaskList(Require require, List<TaskCode> childTaskList) {
-        if (this.taskFrameNo.v() == 5) {
+        if (this.taskFrameNo.v() != 5) {
+            CheckExistenceMasterDomainService.checkExistenceTaskMaster(require, new TaskFrameNo(taskFrameNo.v() + 1), childTaskList);
+        } else {
             throw new BusinessException("Msg_2066");
         }
-        CheckExistenceMasterDomainService.checkExistenceTaskMaster(require, new TaskFrameNo(taskFrameNo.v() + 1), childTaskList);
         this.childTaskList = childTaskList;
 
     }

@@ -7,9 +7,9 @@ import nts.arc.primitive.PrimitiveValueBase;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.repo.taskmaster.TaskingRepository;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskframe.TaskFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.*;
-import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.repo.taskmaster.TaskingRepository;
 import nts.uk.ctx.at.shared.infra.entity.scherec.taskmanagement.taskmaster.KsrmtTaskChild;
 import nts.uk.ctx.at.shared.infra.entity.scherec.taskmanagement.taskmaster.KsrmtTaskMaster;
 import nts.uk.ctx.at.shared.infra.entity.scherec.taskmanagement.taskmaster.KsrmtTaskMasterPk;
@@ -18,6 +18,7 @@ import nts.uk.ctx.at.shared.infra.entity.scherec.taskmanagement.taskmaster.metam
 import nts.uk.ctx.at.shared.infra.entity.scherec.taskmanagement.taskmaster.metamodel.KsrmtTaskMasterPk_;
 import nts.uk.ctx.at.shared.infra.entity.scherec.taskmanagement.taskmaster.metamodel.KsrmtTaskMaster_;
 import nts.uk.shr.com.color.ColorCode;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -35,6 +36,7 @@ public class JpaTaskingRepository extends JpaRepository implements TaskingReposi
         val entityMaster = KsrmtTaskMaster.toEntity(task);
         val entityChilds = KsrmtTaskChild.toEntittys(task);
         this.commandProxy().insert(entityMaster);
+        this.getEntityManager().flush();
         this.commandProxy().insertAll(entityChilds);
     }
 
@@ -43,6 +45,7 @@ public class JpaTaskingRepository extends JpaRepository implements TaskingReposi
         val entityMaster = KsrmtTaskMaster.toEntity(task);
         val entityChilds = KsrmtTaskChild.toEntittys(task);
         this.commandProxy().update(entityMaster);
+        this.getEntityManager().flush();
         this.commandProxy().updateAll(entityChilds);
     }
 
@@ -250,7 +253,7 @@ public class JpaTaskingRepository extends JpaRepository implements TaskingReposi
                         e.EXTCD4 != null ? Optional.of(new TaskExternalCode(e.EXTCD4)) : Optional.empty(),
                         e.EXTCD5 != null ? Optional.of(new TaskExternalCode(e.EXTCD5)) : Optional.empty()
                 ),
-                e.getKsrmtTaskChildren().stream().map(i -> new TaskCode(i.pk.CD)).collect(Collectors.toList()),
+                e.getKsrmtTaskChildren().stream().map(i -> new TaskCode(i.pk.getCHILDCD())).collect(Collectors.toList()),
                 new DatePeriod(e.EXPSTARTDATE, e.EXPENDDATE),
                 new TaskDisplayInfo(
                         new TaskName(e.NAME),
