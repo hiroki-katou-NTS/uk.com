@@ -629,29 +629,10 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		if (goBackDirectly.getIsChangedWork().isPresent()) {
 			c2 = goBackDirectly.getIsChangedWork().get() == NotUseAtr.NOT_USE;
 		}
-		if (c1 || c2 ) {
-//			反映する
-			AppDispInfoStartupOutput appDispInfoStartup = inforGoBackCommonDirectOutput.getAppDispInfoStartup();
-			Optional<List<ActualContentDisplay>> opActualContentDisplayLst = appDispInfoStartup.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst();
-			if (opActualContentDisplayLst.isPresent()) {
-				List<ActualContentDisplay> listActualContentDisplay = opActualContentDisplayLst.get();
-				if (!CollectionUtil.isEmpty(listActualContentDisplay)) {
-					ActualContentDisplay actualContentDisplay = listActualContentDisplay.get(0);
-					Optional<AchievementDetail> opAchievementDetail = actualContentDisplay.getOpAchievementDetail();
-					if (opAchievementDetail.isPresent()) {
-						AchievementDetail achievementDetail = opAchievementDetail.get();
-						if (StringUtils.isNotBlank(achievementDetail.getWorkTypeCD())) {
-							WorkTimeCode workTimeCode = null;
-							if (StringUtils.isNotBlank(achievementDetail.getWorkTimeCD())) {
-								workTimeCode = new WorkTimeCode(achievementDetail.getWorkTimeCD());
-							}
-							WorkInformation workInformation = new WorkInformation(new WorkTypeCode(achievementDetail.getWorkTypeCD()), workTimeCode);
-							Optional<WorkInformation> dataWork = Optional.of(workInformation);
-							goBackDirectly.setDataWork(dataWork);
-						}
-					}
-				}
-			}
+		if (c1 || c2 ) { // 「直行直帰申請.勤務情報」をクリアする
+			Optional<WorkInformation> dataWork = Optional.empty();
+			goBackDirectly.setDataWork(dataWork);
+
 		} 
 
 
@@ -693,29 +674,12 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		if (goBackDirectly.getIsChangedWork().isPresent()) {
 			c2 = goBackDirectly.getIsChangedWork().get() == NotUseAtr.NOT_USE;
 		}
-		if (c1 || c2 ) {
-			AppDispInfoStartupOutput appDispInfoStartup = inforGoBackCommonDirectOutput.getAppDispInfoStartup();
-			Optional<List<ActualContentDisplay>> opActualContentDisplayLst = appDispInfoStartup.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst();
-			if (opActualContentDisplayLst.isPresent()) {
-				List<ActualContentDisplay> listActualContentDisplay = opActualContentDisplayLst.get();
-				if (!CollectionUtil.isEmpty(listActualContentDisplay)) {
-					ActualContentDisplay actualContentDisplay = listActualContentDisplay.get(0);
-					Optional<AchievementDetail> opAchievementDetail = actualContentDisplay.getOpAchievementDetail();
-					if (opAchievementDetail.isPresent()) {
-						AchievementDetail achievementDetail = opAchievementDetail.get();
-						if (StringUtils.isNotBlank(achievementDetail.getWorkTypeCD())) {
-							WorkTimeCode workTimeCode = null;
-							if (StringUtils.isNotBlank(achievementDetail.getWorkTimeCD())) {
-								workTimeCode = new WorkTimeCode(achievementDetail.getWorkTimeCD());
-							}
-							WorkInformation workInformation = new WorkInformation(new WorkTypeCode(achievementDetail.getWorkTypeCD()), workTimeCode);
-							Optional<WorkInformation> dataWork = Optional.of(workInformation);
-							goBackDirectly.setDataWork(dataWork);
-						}
-					}
-				}
-			}
+		if (c1 || c2 ) { // 「直行直帰申請.勤務情報」をクリアする
+			Optional<WorkInformation> dataWork = Optional.empty();
+			goBackDirectly.setDataWork(dataWork);
+
 		} 
+
 		appRe.update(application);
 		// ドメインモデル「直行直帰申請」の更新する
 		// params is appId or application
