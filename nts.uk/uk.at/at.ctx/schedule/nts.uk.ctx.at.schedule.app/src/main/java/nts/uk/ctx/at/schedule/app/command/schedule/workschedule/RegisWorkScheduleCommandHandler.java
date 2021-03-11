@@ -137,7 +137,7 @@ public class RegisWorkScheduleCommandHandler<T> extends CommandHandlerWithResult
 				ResultOfRegisteringWorkSchedule rsOfRegisteringWorkSchedule = CreateWorkSchedule.create(
 						requireImpl, sid, data.ymd,
 						workInfo,
-						false, // TODO VN team update
+						data.isBreakByHand, // TODO VN team update
 						data.breakTimeList, data.mapAttendIdWithTime);
 				
 				lstRsOfRegisWorkSchedule.add(rsOfRegisteringWorkSchedule);

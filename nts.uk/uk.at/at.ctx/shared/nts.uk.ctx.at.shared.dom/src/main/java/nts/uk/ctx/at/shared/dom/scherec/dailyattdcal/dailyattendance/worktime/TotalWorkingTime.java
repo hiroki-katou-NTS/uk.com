@@ -146,7 +146,7 @@ public class TotalWorkingTime {
 	//日別実績の休憩時間
 	private BreakTimeOfDaily breakTimeOfDaily;
 	
-	//日別実績の外出時間	
+	//日別実績の外出時間
 	private List<OutingTimeOfDaily> outingTimeOfDailyPerformance;
 		
 	//加給時間
