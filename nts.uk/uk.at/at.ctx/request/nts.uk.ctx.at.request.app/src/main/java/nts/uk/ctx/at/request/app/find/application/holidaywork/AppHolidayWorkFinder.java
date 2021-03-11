@@ -119,7 +119,8 @@ public class AppHolidayWorkFinder {
 
 		WorkContent workContent = commonHolidayWorkAlgorithm.getWorkContent(appHdWorkDispInfoOutput.getHdWorkDispInfoWithDateOutput());
 
-		HolidayWorkCalculationResult calculationResult = holidayWorkService.calculate(companyId,
+		HolidayWorkCalculationResult calculationResult = holidayWorkService.calculate(
+				companyId,
 				appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(),
 				dateListOptional.isPresent()
 						? Optional.of(dateListOptional.get().get(0))
@@ -128,7 +129,8 @@ public class AppHolidayWorkFinder {
 				appHdWorkDispInfoOutput.getHolidayWorkAppSet().getOvertimeLeaveAppCommonSet(),
 				appHolidayWork.isPresent() ? appHolidayWork.get().getApplicationTime() : null,
 				appHdWorkDispInfoOutput.getHdWorkDispInfoWithDateOutput().getActualApplicationTime().orElse(null),
-				workContent);
+				workContent,
+				param.getIsAgent());
 		appHdWorkDispInfoOutput.setCalculationResult(Optional.ofNullable(calculationResult));
 
 		return AppHdWorkDispInfoDto.fromDomain(appHdWorkDispInfoOutput);
@@ -147,7 +149,8 @@ public class AppHolidayWorkFinder {
 				param.getOvertimeLeaveAppCommonSet() != null ? param.getOvertimeLeaveAppCommonSet().toDomain() : null,
 				param.getPreApplicationTime() != null ? param.getPreApplicationTime().toDomain() : null,
 				param.getActualApplicationTime() != null ? param.getActualApplicationTime().toDomain() : null,
-				param.getWorkContent() != null ? param.getWorkContent().toDomain() : null);
+				param.getWorkContent() != null ? param.getWorkContent().toDomain() : null,
+				param.getIsAgent());
 
 		return HolidayWorkCalculationResultDto.fromDomain(calculationResult);
 	}
@@ -158,9 +161,12 @@ public class AppHolidayWorkFinder {
 			dateList = param.getDateList().stream().map(date -> GeneralDate.fromString(date, PATTERN_DATE)).collect(Collectors.toList());
 		}
 		
-		AppHdWorkDispInfoOutput appHdWorkDispInfoOutput = holidayWorkService.changeAppDate(param.getCompanyId(), 
-				dateList, EnumAdaptor.valueOf(param.getApplicationType(), ApplicationType.class),
-				param.getAppHdWorkDispInfoDto().toDomain());
+		AppHdWorkDispInfoOutput appHdWorkDispInfoOutput = holidayWorkService.changeAppDate(
+				param.getCompanyId(), 
+				dateList,
+				EnumAdaptor.valueOf(param.getApplicationType(), ApplicationType.class),
+				param.getAppHdWorkDispInfoDto().toDomain(),
+				param.getIsAgent());
 		
 		return AppHdWorkDispInfoDto.fromDomain(appHdWorkDispInfoOutput);
 	}
@@ -205,14 +211,16 @@ public class AppHolidayWorkFinder {
 				.getOpPreAppContentDisplayLst().orElse(Collections.emptyList());
 		Optional<AppHolidayWork> appHolidayWork = !preAppContentDisplayList.isEmpty() ? preAppContentDisplayList.get(0).getAppHolidayWork() : Optional.empty();
 		
-		HolidayWorkCalculationResult calculationResult = holidayWorkService.calculate(param.getCompanyId(), 
+		HolidayWorkCalculationResult calculationResult = holidayWorkService.calculate(
+				param.getCompanyId(), 
 				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(), 
 				Optional.ofNullable(!param.getDateList().isEmpty() ? GeneralDate.fromString(param.getDateList().get(0), PATTERN_DATE) : null), 
 				appHdWorkDispInfoOutput.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getPrePostAtr(), 
 				appHdWorkDispInfoOutput.getHolidayWorkAppSet().getOvertimeLeaveAppCommonSet(), 
 				appHolidayWork.isPresent() ? appHolidayWork.get().getApplicationTime() : null, 
 				appHdWorkDispInfoOutput.getHdWorkDispInfoWithDateOutput().getActualApplicationTime().orElse(null), 
-				workContent);
+				workContent,
+				param.getIsAgent());
 		appHdWorkDispInfoOutput.setCalculationResult(Optional.ofNullable(calculationResult));
 		
 		return AppHdWorkDispInfoDto.fromDomain(appHdWorkDispInfoOutput);
@@ -386,7 +394,8 @@ public class AppHolidayWorkFinder {
 				appHolidayWork,
 				param.getMode(),
 				param.getEmployeeId(),
-				appDate);
+				appDate,
+				param.getIsAgent());
 		
 		return AppHdWorkDispInfoDto.fromDomain(appHdWorkDispInfoOutput);
 	}
