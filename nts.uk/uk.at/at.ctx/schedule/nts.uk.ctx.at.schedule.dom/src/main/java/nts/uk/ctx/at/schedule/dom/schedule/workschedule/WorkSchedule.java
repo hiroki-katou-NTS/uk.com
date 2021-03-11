@@ -500,6 +500,7 @@ public class WorkSchedule implements DomainAggregate {
 		if ( newBreakTimeList.isEmpty() ) {
 			updatedAttendanceItemList = new ArrayList<>(Arrays.asList( 
 					WS_AttendanceItem.StartBreakTime1, 
+					WS_AttendanceItem.EndBreakTime1,
 					WS_AttendanceItem.BreakTime) );
 		} else {
 			updatedAttendanceItemList = WS_AttendanceItem.getBreakTimeItemWithSize( newBreakTimeList.size() );
