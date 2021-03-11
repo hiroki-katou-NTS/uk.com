@@ -12,6 +12,7 @@
 			<com:stylefile path="../main.css" />
 			<com:stylefile path="main.css" />
 			<com:scriptfile path="kdp010.g.vm.js" />
+			<com:scriptfile path="kdp010.g.start.js" />
 		</ui:define>
 
 		<ui:define name="content">
@@ -33,7 +34,7 @@
 						<div tabindex="5" data-bind="ntsCheckBox: { checked: ic_card }">#{i18n.getText('KDP010_224')}</div>
 					</div>
 					<div class="check">	
-						<div tabindex="6" data-bind="ntsCheckBox: {  }">#{i18n.getText('KDP010_229')}</div>
+						<div tabindex="6" data-bind="ntsCheckBox: { checked: ricohStamp}">#{i18n.getText('KDP010_229')}</div>
 					</div>
 					<div class="label-middle margin-left5">
 						<label>#{i18n.getText('KDP010_225')}</label>

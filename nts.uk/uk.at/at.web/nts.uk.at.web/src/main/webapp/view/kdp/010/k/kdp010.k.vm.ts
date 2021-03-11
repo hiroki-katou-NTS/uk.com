@@ -1,4 +1,4 @@
-module nts.uk.at.view.kdp010.d {
+module nts.uk.at.view.kdp010.k {
     import getText = nts.uk.resource.getText;
     import block = nts.uk.ui.block;
     import info = nts.uk.ui.dialog.info;
@@ -15,14 +15,6 @@ module nts.uk.at.view.kdp010.d {
             buttonEmphasisArtOption: KnockoutObservableArray<any> = ko.observableArray([
                 { id: 1, name: getText("KDP010_241") },
                 { id: 0, name: getText("KDP010_242") }
-            ]);
-			locationInfoUseOption: KnockoutObservableArray<any> = ko.observableArray([
-                { id: 1, name: getText("KDP010_245") },
-                { id: 0, name: getText("KDP010_246") }
-            ]);
-			areaLimitAtrOption: KnockoutObservableArray<any> = ko.observableArray([
-                { id: 1, name: getText("KDP010_249") },
-                { id: 0, name: getText("KDP010_248") }
             ]);
             googleMapOption: KnockoutObservableArray<any> = ko.observableArray([
                 { id: 1, name: getText("KDP010_187") },
@@ -65,22 +57,11 @@ module nts.uk.at.view.kdp010.d {
             }
             
             save(){
-                let self = this;
-                block.grayout();
-                ajax(paths.save, ko.toJS(self.settingsSmartphoneStamp)).done(function() {
-                    info({ messageId: "Msg_15"});
-                }).fail(function (res: any) {
-                    error({ messageId: res.messageId });
-                }).always(function () {
-                    block.clear();
-                });
+                
             }
             
             openIDialog() {
-                let self = this;
-                nts.uk.ui.windows.sub.modal("/view/kdp/010/j/index.xhtml").onClosed(() => {
-                    self.checkSetStampPageLayout();
-                });
+                
             }
         }
         class SettingDateTimeClorOfStampScreen {
@@ -99,6 +80,7 @@ module nts.uk.at.view.kdp010.d {
         class DisplaySettingsStampScreen {
             serverCorrectionInterval: KnockoutObservable<number> = ko.observable(10);
             resultDisplayTime: KnockoutObservable<number> = ko.observable(3);
+			passWord: KnockoutObservable<string> = ko.observable('');
             settingDateTimeColor = new SettingDateTimeClorOfStampScreen();
             constructor(){}
             update(data?:any){

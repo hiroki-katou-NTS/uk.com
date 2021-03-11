@@ -1,4 +1,4 @@
-module nts.uk.at.view.kdp010.h {
+module nts.uk.at.view.kdp010.hOld {
 	export module viewmodel {
 		export class ScreenModel {
 
