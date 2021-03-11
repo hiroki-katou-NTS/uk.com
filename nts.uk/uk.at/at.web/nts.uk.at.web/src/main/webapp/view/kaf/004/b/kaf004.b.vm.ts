@@ -173,6 +173,24 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
 
             vm.cancalAppDispSet = params.lateEarlyCancelAppSet.cancelAtr !== 0;
             var achiveEarly = vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail;
+            var lateOrLeaveEarlies = params.arrivedLateLeaveEarly.lateOrLeaveEarlies;
+            var start1 = _.filter(lateOrLeaveEarlies, { 'workNo': 1, 'lateOrEarlyClassification': 0 });
+            var end1 = _.filter(lateOrLeaveEarlies, { 'workNo': 1, 'lateOrEarlyClassification': 1 });
+            var start2 = _.filter(lateOrLeaveEarlies, { 'workNo': 2, 'lateOrEarlyClassification': 0 });
+            var end2 = _.filter(lateOrLeaveEarlies, { 'workNo': 2, 'lateOrEarlyClassification': 1 });
+
+            if (start1.length > 0) {
+                vm.workManagement.workTime(start1[0].timeWithDayAttr);
+            }
+            if (end1.length > 0) {
+                vm.workManagement.leaveTime(end1[0].timeWithDayAttr);
+            }
+            if (start2.length > 0) {
+                vm.workManagement.workTime2(start2[0].timeWithDayAttr);
+            }
+            if (end2.length > 0) {
+                vm.workManagement.leaveTime2(end2[0].timeWithDayAttr);
+            }
 
             var check1 = _.filter(vm.arrivedLateLeaveEarlyInfo().arrivedLateLeaveEarly.lateCancelation, { 'workNo': 1, 'lateOrEarlyClassification': 0 });
             var check2 = _.filter(vm.arrivedLateLeaveEarlyInfo().arrivedLateLeaveEarly.lateCancelation, { 'workNo': 1, 'lateOrEarlyClassification': 1 });
