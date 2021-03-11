@@ -33,7 +33,7 @@
 						<td>
 							<div class="row-label" data-bind="ntsFormLabel: { required: true, constraint: 'CorrectionInterval' }">#{i18n.getText('KDP010_176')}</div>
 							<div class="inline-display row-data">
-								<input tabindex="3" class="nts-input" id="c-serverCorrectionInterval" data-bind="ntsNumberEditor: {name: '#[KDP010_177]',value: serverCorrectionInterval, constraint: 'CorrectionInterval', required: true}" />
+								<input tabindex="3" class="number-input" id="c-serverCorrectionInterval" data-bind="ntsNumberEditor: {name: '#[KDP010_177]',value: serverCorrectionInterval, constraint: 'CorrectionInterval', required: true}" />
 							</div>
 						</td>
 					</tr>
@@ -48,7 +48,7 @@
 						<td>
 							<div class="row-label" data-bind="ntsFormLabel: { required: true, constraint: 'ResultDisplayTime' }">#{i18n.getText('KDP010_183')}</div> 
 							<div class="inline-display row-data vertical-align-top">
-								<input tabindex="4" data-bind="ntsNumberEditor: {name: '#[KDP010_184]',value: resultDisplayTime, constraint: 'ResultDisplayTime', required: true}" /> 
+								<input tabindex="4" class="number-input" data-bind="ntsNumberEditor: {name: '#[KDP010_184]',value: resultDisplayTime, constraint: 'ResultDisplayTime', required: true}" /> 
 								<div class="inline-display">
 									<div class="text-note">#{i18n.getText('KDP010_185')}</div>
 									<div class="text-note">#{i18n.getText('KDP010_31')}</div>
@@ -59,19 +59,19 @@
 					<tr data-bind="with: settingsSmartphoneStamp">
 						<td>
 							<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_240')}</div> 
-							<div tabindex="5" data-bind="ntsRadioBoxGroup: {options: $parent.buttonEmphasisArtOption, optionsValue: 'id', optionsText: 'name', value: buttonEmphasisArt, enable: true }"></div>
+							<div tabindex="5" class="inline-display min-with-120" data-bind="ntsRadioBoxGroup: {options: $parent.buttonEmphasisArtOption, optionsValue: 'id', optionsText: 'name', value: buttonEmphasisArt, enable: true }"></div>
 						</td>
 					</tr>
 					<tr data-bind="with: settingsSmartphoneStamp">
 						<td>
 							<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_244')}</div> 
-							<div tabindex="5" data-bind="ntsRadioBoxGroup: {options: $parent.locationInfoUseOption, optionsValue: 'id', optionsText: 'name', value: buttonEmphasisArt, enable: true }"></div>
+							<div tabindex="5" class="inline-display min-with-120" data-bind="ntsRadioBoxGroup: {options: $parent.locationInfoUseOption, optionsValue: 'id', optionsText: 'name', value: buttonEmphasisArt, enable: true }"></div>
 						</td>
 					</tr>
 					<tr data-bind="with: settingsSmartphoneStamp">
 						<td>
 							<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_247')}</div> 
-							<div tabindex="5" data-bind="ntsRadioBoxGroup: {options: $parent.areaLimitAtrOption, optionsValue: 'id', optionsText: 'name', value: buttonEmphasisArt, enable: true }"></div>
+							<div tabindex="5" class="inline-display min-with-120" data-bind="ntsRadioBoxGroup: {options: $parent.areaLimitAtrOption, optionsValue: 'id', optionsText: 'name', value: buttonEmphasisArt, enable: true }"></div>
 						</td>
 					</tr>
 					<tr>
@@ -95,7 +95,7 @@
 					<tr>
 						<td>
 							<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_186')}</div> 
-							<div tabindex="7" data-bind="ntsRadioBoxGroup: {options: $parent.googleMapOption, optionsValue: 'id', optionsText: 'name', value: googleMap, enable: true }"></div>
+							<div tabindex="7" class="inline-display min-with-120" data-bind="ntsRadioBoxGroup: {options: $parent.googleMapOption, optionsValue: 'id', optionsText: 'name', value: googleMap, enable: true }"></div>
 						</td>
 					</tr>	
 				</table> 

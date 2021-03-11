@@ -34,7 +34,7 @@
 						<td>
 							<div class="row-label" data-bind="ntsFormLabel: { required: true, constraint: 'CorrectionInterval' }">#{i18n.getText('KDP010_296')}</div>
 							<div class="inline-display row-data">
-								<input tabindex="3" class="nts-input" id="c-serverCorrectionInterval" data-bind="ntsNumberEditor: {name: '#[KDP010_297]',value: serverCorrectionInterval, constraint: 'CorrectionInterval', required: true}" />
+								<input tabindex="3" class="number-input" id="c-serverCorrectionInterval" data-bind="ntsNumberEditor: {name: '#[KDP010_297]',value: serverCorrectionInterval, constraint: 'CorrectionInterval', required: true}" />
 							</div>
 						</td>
 					</tr>
@@ -49,7 +49,7 @@
 						<td>
 							<div class="row-label" data-bind="ntsFormLabel: { required: true, constraint: 'ResultDisplayTime' }">#{i18n.getText('KDP010_303')}</div> 
 							<div class="inline-display row-data">
-								<input tabindex="4" data-bind="ntsNumberEditor: {name: '#[KDP010_304]',value: resultDisplayTime, constraint: 'ResultDisplayTime', required: true}" /> 
+								<input tabindex="4" class="number-input" data-bind="ntsNumberEditor: {name: '#[KDP010_304]',value: resultDisplayTime, constraint: 'ResultDisplayTime', required: true}" /> 
 								<label class="text-note">#{i18n.getText('KDP010_305')}</label>
 							</div>
 						</td>

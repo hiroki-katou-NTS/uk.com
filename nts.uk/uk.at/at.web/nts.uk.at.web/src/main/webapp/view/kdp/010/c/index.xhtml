@@ -29,55 +29,50 @@
 					<label class="basic-label">#{i18n.getText('KDP010_12')}</label>
 				</div>
 				<!-- Item on Screen -->
-				<table class="basic-items">
+				<table class="basic-items form-data">
 					<tr>
 						<td>
 							<!-- B4_1 -->
-							<div id="correc-label"
-								data-bind="ntsFormLabel: { required: true, constraint: 'CorrectionInterval' }">#{i18n.getText('KDP010_15')}
+							<div class="row-label" data-bind="ntsFormLabel: { required: true, constraint: 'CorrectionInterval' }">#{i18n.getText('KDP010_15')}
 							</div>
-							<div id="correc-text-b">
+							<div class="inline-display">
 								<!-- B4_2 -->
-								<input id = "correc-input" tabindex="3" class="nts-input"
-									data-bind="ntsNumberEditor: {name: '#[KDP010_16]',value: correcValue, constraint: 'CorrectionInterval', required: true}" />
+								<input tabindex="3" class="number-input" data-bind="ntsNumberEditor: {name: '#[KDP010_16]',value: correcValue, constraint: 'CorrectionInterval', required: true}" />
 							</div>
 						</td>
 					</tr>
 					<tr>
 						<td>
 							<!-- B5_1 -->
-							<div id="stamping-his-label"
-								data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_18')}
+							<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_18')}
 							</div> <!-- B5_2 -->
-							<div id="stamping-his-radio" tabindex="4"
-								data-bind="ntsRadioBoxGroup: {
-													options: optionStamping,
-													optionsValue: 'id',
-													optionsText: 'name',
-													value: selectedStamping,
-													enable: true }">
+							<div class="inline-display" tabindex="4" data-bind="ntsRadioBoxGroup: {
+																					options: optionStamping,
+																					optionsValue: 'id',
+																					optionsText: 'name',
+																					value: selectedStamping,
+																					enable: true }">
 							</div>
 						</td>
 					</tr>
 					<tr>
 						<td>
 							<!-- B6_1 -->
-							<div id="date-time-label"
-								data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_22')}
-							</div> <!-- B6_2 --> <label id="letter-color">#{i18n.getText('KDP010_23')}</label>
+							<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_22')}</div> 
+							<!-- B6_2 --> 
+							<label>#{i18n.getText('KDP010_23')}</label>
 							<!-- B6_3 -->
-							<div id="first-color-picker" class="colorpicker"
-								data-bind="ntsColorPicker: {value: letterColors, enable: true, width: 50, name:'#[KDP010_24]' }">
+							<div class="colorpicker" data-bind="ntsColorPicker: {value: letterColors, enable: true, width: 50, name:'#[KDP010_24]' }">
 							</div> 
 						</td>
 					</tr>
 					<tr>
 						<td class="form-data">
 							<!-- B7_1 -->
-							<div id="stamp-result-label" data-bind="ntsFormLabel: { required: true, constraint: 'ResultDisplayTime' }">#{i18n.getText('KDP010_27')}</div> 
-							<div id = "stamp-texts-note" class=" vertical-align-top" tabindex="5">
+							<div class="row-label row-data" data-bind="ntsFormLabel: { required: true, constraint: 'ResultDisplayTime' }">#{i18n.getText('KDP010_27')}</div> 
+							<div class="inline-display vertical-align-top row-data" tabindex="5">
 								<!-- B7_2 --> 
-								<input class="nts-input" id="stamp-texts" data-bind="ntsNumberEditor: {name: '#[KDP010_28]',value: stampValue, constraint: 'ResultDisplayTime', required: true}" /> 
+								<input class="number-input" data-bind="ntsNumberEditor: {name: '#[KDP010_28]',value: stampValue, constraint: 'ResultDisplayTime', required: true}" /> 
 								<!-- B7_3 -->
 								<div class="inline-display">
 									<div class="text-note">#{i18n.getText('KDP010_30')}</div>
@@ -89,11 +84,9 @@
 					<tr>
 						<td>
 							<!-- B10_1 -->
-							<div id="highlight-label"
-								data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_38')}
+							<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_38')}
 							</div> <!-- B10_2 -->
-							<div id="highlight-radio" tabindex="6"
-								data-bind="ntsRadioBoxGroup: {
+							<div class="inline-display" tabindex="6" data-bind="ntsRadioBoxGroup: {
 													options: optionHighlight,
 													optionsValue: 'id',
 													optionsText: 'name',

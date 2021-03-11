@@ -53,19 +53,20 @@
 	width: 50px;
 }
 
-.nts-input{
-	width: 24px;
-}
-
 .label-top{
 	margin: 10px 30px;
 }
-.form-data .inline-display{
+.inline-display{
 	display: inline-block;
 }
 .display-none{
 	display: none;	
 }
+
+.number-input{
+	width: 24px;
+}
+
 .form-data td{
 	height: 50px;
 }
@@ -78,7 +79,7 @@
 }
 .form-data .row-data{
 	vertical-align: top;
-    margin-top: 15px;
+    margin-top: 10px;
 }
 .form-data .text-note{
     margin: 0 20px;
@@ -109,6 +110,9 @@
 .form-data .vertical-align-top .text-note{
     margin: 7px 20px 10px;
 }
+.radio-wrappers.min-with-120 label:nth-child(1){
+	min-width: 120px;
+}
 
 
 /* screen B */
@@ -132,8 +136,11 @@
 	height: 20px;
 }
 .screenE .reason .row-data{
-    margin-left: 244px;
+    margin-left: 252px;
     margin-top: 5px;
+}
+.screenE .reason .row-data .radio-wrappers {
+	margin-left: 20px;
 }
 .screenE .form-data .reason .ntsRadioBox:nth-child(1){
 	min-width: auto;

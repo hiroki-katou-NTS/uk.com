@@ -34,7 +34,7 @@
 						<td>
 							<div class="row-label" data-bind="ntsFormLabel: { required: true, constraint: 'CorrectionInterval' }">#{i18n.getText('KDP010_191')}</div>
 							<div class="inline-display row-data">
-								<input tabindex="3" id="d-serverCorrectionInterval" class="nts-input" data-bind="ntsNumberEditor: {name: '#[KDP010_192]',value: displaySettingsStampScreen.serverCorrectionInterval, constraint: 'CorrectionInterval', required: true}" />
+								<input tabindex="3" id="d-serverCorrectionInterval" class="number-input" data-bind="ntsNumberEditor: {name: '#[KDP010_192]',value: displaySettingsStampScreen.serverCorrectionInterval, constraint: 'CorrectionInterval', required: true}" />
 							</div>
 						</td>
 					</tr>
@@ -49,7 +49,7 @@
 						<td>
 							<div class="row-label" data-bind="ntsFormLabel: { required: true, constraint: 'ResultDisplayTime' }">#{i18n.getText('KDP010_198')}</div> 
 							<div class="inline-display row-data vertical-align-top">
-								<input tabindex="4" data-bind="ntsNumberEditor: {name: '#[KDP010_199]',value: displaySettingsStampScreen.resultDisplayTime, constraint: 'ResultDisplayTime', required: true}" /> 
+								<input tabindex="4" class="number-input" data-bind="ntsNumberEditor: {name: '#[KDP010_199]',value: displaySettingsStampScreen.resultDisplayTime, constraint: 'ResultDisplayTime', required: true}" /> 
 								<div class="inline-display">
 									<div class="text-note">#{i18n.getText('KDP010_200')}</div>
 									<div class="text-note">#{i18n.getText('KDP010_31')}</div>
@@ -60,20 +60,20 @@
 					<tr>
 						<td>
 							<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_201')}</div> 
-							<div tabindex="5" data-bind="ntsRadioBoxGroup: {options: $parent.suppressStampBtnOption, optionsValue: 'id', optionsText: 'name', value: suppressStampBtn, enable: true }"></div>
+							<div tabindex="5" class="inline-display min-with-120" data-bind="ntsRadioBoxGroup: {options: $parent.suppressStampBtnOption, optionsValue: 'id', optionsText: 'name', value: suppressStampBtn, enable: true }"></div>
 						</td>
 					</tr>
 					<tr>
 						<td>
 							<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_277')}</div> 
-							<div tabindex="5" data-bind="ntsRadioBoxGroup: {options: $parent.displayStampListOption, optionsValue: 'id', optionsText: 'name', value: suppressStampBtn, enable: true }"></div>
+							<div tabindex="5" class="inline-display min-with-120" data-bind="ntsRadioBoxGroup: {options: $parent.displayStampListOption, optionsValue: 'id', optionsText: 'name', value: suppressStampBtn, enable: true }"></div>
 						</td>
 					</tr>
 					<tr>
 						<td>
 							<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_270')}</div> 
 							<div class="inline-display row-data vertical-align-top">
-								<div tabindex="6" data-bind="ntsRadioBoxGroup: {options: $parent.useTopMenuLinkOption, optionsValue: 'id', optionsText: 'name', value: useTopMenuLink, enable: true }"></div>
+								<div tabindex="6" class="min-with-120" data-bind="ntsRadioBoxGroup: {options: $parent.useTopMenuLinkOption, optionsValue: 'id', optionsText: 'name', value: useTopMenuLink, enable: true }"></div>
 								<div class="row-data">#{i18n.getText('KDP010_133')}</div>
 							</div>
 						</td>
@@ -110,7 +110,7 @@
 					<tr>
 						<td>
 							<div class="row-label" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDP010_308')}</div> 
-							<div tabindex="5" data-bind="ntsRadioBoxGroup: {options: $parent.gooutUseAtrOption, optionsValue: 'id', optionsText: 'name', value: suppressStampBtn, enable: true }"></div>
+							<div tabindex="5" class="inline-display min-with-120" data-bind="ntsRadioBoxGroup: {options: $parent.gooutUseAtrOption, optionsValue: 'id', optionsText: 'name', value: suppressStampBtn, enable: true }"></div>
 						</td>
 					</tr>
 					
@@ -130,7 +130,7 @@
 						<td class="reason">
 							<div class="inline-display row-data">
 								<label>#{i18n.getText('KDP010_210')}</label>
-								<div tabindex="10" data-bind="ntsRadioBoxGroup: {options: $parent.goOutArtOption, optionsValue: 'id', optionsText: 'name', value: _.find(buttonSettings,['buttonPositionNo',3]).goOutArt, enable: true }"></div>
+								<div class="inline-display" tabindex="10" data-bind="ntsRadioBoxGroup: {options: $parent.goOutArtOption, optionsValue: 'id', optionsText: 'name', value: _.find(buttonSettings,['buttonPositionNo',3]).goOutArt, enable: true }"></div>
 							</div>
 						</td>
 					</tr>
