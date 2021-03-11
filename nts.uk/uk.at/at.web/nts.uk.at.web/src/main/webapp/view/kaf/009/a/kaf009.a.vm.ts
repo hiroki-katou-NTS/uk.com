@@ -50,6 +50,7 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
 
         created(params: AppInitParam) {
             const vm = this;
+            vm.$blockui("show");
 			if(!_.isNil(__viewContext.transferred.value)) {
 				vm.isFromOther = true;
 			}
@@ -74,7 +75,6 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
 					vm.isAgentMode(params.isAgentMode);
 				}
 			}
-            vm.$blockui("show");
             vm.loadData(empLst, dateLst, vm.appType())
             .then((loadDataFlag: any) => {
                 vm.application().appDate.subscribe(value => {
@@ -85,10 +85,10 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                 });
                 if(loadDataFlag) {
 					vm.application().employeeIDLst(empLst);
-                    let ApplicantEmployeeID: null,
-                        ApplicantList: null,
-                        appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput),
-                        command = { ApplicantEmployeeID, ApplicantList, appDispInfoStartupOutput };
+					let command = {} as ParamStart;
+					command.appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput);
+                    command.sids = _.isEmpty(empLst) ? [vm.$user.employeeId] : empLst;
+					command.dates = _.isEmpty(dateLst) ? [] : dateLst;
 
                     return vm.$ajax(API.startNew, command);
                 }
@@ -408,13 +408,13 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
     }
 
     export class ApplicationStatus {
-        //        反映しない
+        // 反映しない
         public static DO_NOT_REFLECT: number = 0;
-        //        反映する
+        // 反映する
         public static DO_REFLECT: number = 1;
-        //      申請時に決める(初期値：反映しない)
+        // 申請時に決める(初期値：反映しない)
         public static DO_NOT_REFLECT_1: number = 2;
-        //        申請時に決める(初期値：反映する)
+        // 申請時に決める(初期値：反映する)
         public static DO_REFLECT_1: number = 3;
     }
     export class ParamBeforeRegister {
@@ -425,5 +425,15 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
         inforGoBackCommonDirectDto: any;
 
     }
+	export interface ParamStart {
+		// ・会社ID
+		// companyId: string;
+		// ・申請者リスト
+		sids: Array<string>;
+		// ・申請対象日リスト
+		dates: Array<string>;
+		// ・申請表示情報　
+		appDispInfoStartupOutput: any;
+	}
 
 }
