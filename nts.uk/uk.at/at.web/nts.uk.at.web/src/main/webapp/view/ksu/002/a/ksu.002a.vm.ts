@@ -599,7 +599,10 @@ module nts.uk.ui.at.ksu002.a {
 		saveData() {
 			const vm = this;
 
-			vm.$validate()
+			// Remove validate all (accept error data in old cells)
+			// vm.$validate()
+			$.Deferred()
+				.resolve(true)
 				.then((valid: boolean) => {
 					if (valid) {
 						const sid = vm.$user.employeeId;
