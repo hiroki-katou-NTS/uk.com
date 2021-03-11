@@ -105,6 +105,8 @@ module nts.uk.at.view.kwr008.a {
             baseMonth: KnockoutObservable<number> = ko.observable(0);
             
             enableAuthority: KnockoutObservable<boolean> = ko.observable(false);
+
+            selectedRestore: string = '';
             
             constructor() {
                 var self = this;
@@ -138,6 +140,15 @@ module nts.uk.at.view.kwr008.a {
                     $.when(self.findAllStandardSetting(), self.findAllFreeSetting()).done(() => {
                         self.selectedOutputItem(_.isEmpty(self.outputItem()) ? null : self.outputItem()[0].layoutId);
                         self.selectedOutputItemFree(_.isEmpty(self.outputItemsFreeSetting()) ? null : self.outputItemsFreeSetting()[0].layoutId);
+                        
+                        // Restore selectedItem
+                        if (_.findIndex(self.outputItem(), item => item.layoutId === self.selectedRestore) >= 0) {
+                            self.selectedOutputItem(self.selectedRestore);
+                            self.selectedRestore = '';
+                        } else if (_.findIndex(self.outputItemsFreeSetting(), item => item.layoutId === self.selectedRestore) >= 0) {
+                            self.selectedOutputItemFree(self.selectedRestore);
+                            self.selectedRestore = '';
+                        }
                     });
                     if (self.selectAverage() && self.printFormat() === share.AnnualWorkSheetPrintingForm.AGREEMENT_CHECK_36) {
                         self.getCurentMonth();
@@ -447,11 +458,7 @@ module nts.uk.at.view.kwr008.a {
                                     self.printFormat(data.printFormat);
                                     self.excludeEmp(data.excludeEmp);
                                     self.selectionType(data.settingType || 0);
-                                    if (data.settingType === share.SelectionClassification.STANDARD) {
-                                        self.selectedOutputItem(data.layoutId);
-                                    } else {
-                                        self.selectedOutputItemFree(data.layoutId);
-                                    }
+                                    self.selectedRestore = data.layoutId;
                                 } else if (self.selectionType() === share.SelectionClassification.STANDARD && self.outputItem().length) {
                                     self.selectedOutputItem(self.outputItem()[0].cd);
                                 } else if (self.selectionType() === share.SelectionClassification.FREE_SETTING && self.outputItemsFreeSetting().length) {
