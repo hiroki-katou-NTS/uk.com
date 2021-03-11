@@ -92,3 +92,7 @@
 	content: "";
 	flex: 1;
 }
+
+#kaf000-a-component3 button.nts-switch-button {
+	width: 92px;
+}

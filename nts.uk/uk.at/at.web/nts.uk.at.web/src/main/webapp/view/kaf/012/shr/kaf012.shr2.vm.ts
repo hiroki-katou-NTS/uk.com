@@ -735,6 +735,21 @@ module nts.uk.at.view.kaf012.shr.viewmodel2 {
                 if (this.appTimeType() < 4) return false;
                 return _.isNumber(this.startTime());
             });
+
+            this.startTime.subscribe((value) => {
+                if (this.appTimeType() >= 4) {
+                    if (value <= this.endTime()) {
+                        $("#endTime-" + this.workNo).ntsError("clear");
+                    }
+                }
+            });
+            this.endTime.subscribe(value => {
+                if (this.appTimeType() >= 4) {
+                    if (value >= this.startTime()) {
+                        $("#endTime-" + this.workNo).ntsError("clear");
+                    }
+                }
+            });
         }
     }
 
