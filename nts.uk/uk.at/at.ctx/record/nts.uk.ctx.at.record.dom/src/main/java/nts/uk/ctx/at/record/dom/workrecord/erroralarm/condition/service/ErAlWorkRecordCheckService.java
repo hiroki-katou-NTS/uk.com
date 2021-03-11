@@ -23,6 +23,7 @@ import nts.uk.ctx.at.record.dom.adapter.query.employee.EmployeeSearchInfoDto;
 import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQuery;
 import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQueryAdapter;
 import nts.uk.ctx.at.record.dom.adapter.query.employee.RegulationInfoEmployeeQueryR;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.IntegrationOfDailyGetter;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmConditionRepository;
@@ -35,7 +36,6 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktype.PlanAct
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktype.SingleWorkType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.otkcustomize.ContinuousHolCheckSet;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.otkcustomize.repo.ContinuousHolCheckSetRepo;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordShareFinder;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.service.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
@@ -52,7 +52,7 @@ public class ErAlWorkRecordCheckService {
 	private RegulationInfoEmployeeQueryAdapter employeeSearch;
 
 	@Inject
-	private DailyRecordShareFinder fullFinder;
+	private IntegrationOfDailyGetter fullFinder;
 
 	@Inject
 	private ErrorAlarmWorkRecordRepository errorRecordRepo;
@@ -121,7 +121,11 @@ public class ErAlWorkRecordCheckService {
 		}
 		/** 社員に一致する日別実績を取得する */
 		if(record == null || record.isEmpty()){
-			record = fullFinder.findByListEmployeeId(new ArrayList<>(employeeIds), new DatePeriod(workingDate, workingDate));	
+			for(String sid : employeeIds) {
+				List<IntegrationOfDaily> recordTmp = fullFinder.getIntegrationOfDaily(sid, new DatePeriod(workingDate, workingDate));
+				record.addAll(recordTmp);
+			}
+				
 		}
 
 		if (record.isEmpty()) {
@@ -179,8 +183,13 @@ public class ErAlWorkRecordCheckService {
 	public List<ErrorRecord> checkWithRecord(DatePeriod workingDate, Collection<String> employeeIds,
 			List<String> EACheckID) {
 		//日別実績
-		List<IntegrationOfDaily> record = fullFinder.findByListEmployeeId(new ArrayList<>(employeeIds), workingDate);
+		List<IntegrationOfDaily> record = new ArrayList<>();
+		for(String sid : employeeIds) {
+			List<IntegrationOfDaily> recordTmp = fullFinder.getIntegrationOfDaily(sid, workingDate);
+			record.addAll(recordTmp);
+		}
 			
+
 		if(record.isEmpty()){
 			return toEmptyResultList();
 		}
