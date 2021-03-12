@@ -1,50 +1,47 @@
-package nts.uk.screen.at.ws.kmt.kmt009;
+package nts.uk.screen.at.app.kmt010;
 
 import lombok.val;
-import nts.arc.layer.ws.WebService;
 import nts.arc.primitive.PrimitiveValueBase;
-import nts.uk.ctx.at.shared.app.query.task.GetsTheChildTaskOfTheSpecifiedTask;
-import nts.uk.screen.at.app.kmt009.*;
+import nts.uk.ctx.at.shared.app.query.task.SpecifyWplAndNarrowDownOfTaskByWplQuery;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.repo.taskmaster.TaskingRepository;
+import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskmaster.Task;
+import nts.uk.screen.at.app.kmt009.ExternalCooperationInfoDto;
+import nts.uk.screen.at.app.kmt009.TaskDisplayInfoDto;
+import nts.uk.screen.at.app.kmt009.TaskDto;
 import nts.uk.shr.com.context.AppContexts;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * ScreenQuery: 選択されている対象職場に登録されている作業情報を取得する
+ */
 
-@Path("at/shared/scherec/taskmanagement/task/kmt009")
-@Produces("application/json")
-public class TaskWebService extends WebService {
+@Stateless
+public class GetTaskInfoRegistSelectedTargetWplScreenQuery {
     @Inject
-    private AcquiresSpecTaskAndSubNarrowInfoScreenQuery acquiresSpecTaskAndSubNarrowInfoScreenQuery;
+    private SpecifyWplAndNarrowDownOfTaskByWplQuery taskByWplQuery;
 
     @Inject
-    private InfoAcquisitionProcessStartupTaskScreenQuery initScreenQuery;
+    private TaskingRepository taskingRepository;
 
-    @Inject
-    private GetsTheChildTaskOfTheSpecifiedTask getsTheChildTaskOfTheSpecifiedTask;
-    @POST
-    @Path("getlistinfoandlistchildtask")
-    public TaskDtos getTask(TaskParamDto param) {
-        return acquiresSpecTaskAndSubNarrowInfoScreenQuery.getTask(param.getFrameNo(), param.getCode());
-    }
-
-    @POST
-    @Path("init")
-    public TaskDtos getTask() {
-        return initScreenQuery.getDataStart();
-    }
-
-
-    @POST
-    @Path("getlistchild")
-    public List<TaskDto> getListTaskChild(TaskParamDto param) {
+    public Map<Integer, List<TaskDto>> getTaskSelected(String workPlaceId) {
+        Map<Integer, List<TaskDto>> rs = new HashMap<>();
+        val listNarrow = taskByWplQuery.getListWorkByWpl(workPlaceId);
         val cid = AppContexts.user().companyId();
-        val tk = getsTheChildTaskOfTheSpecifiedTask.getAllChildTask(cid,param.getFrameNo(),param.getCode());
-        return tk.stream().map(e ->
+        listNarrow.forEach(e -> {
+            List<Task> listTask = taskingRepository.getListTask(cid,
+                    e.getTaskFrameNo(), e.getTaskCodeList());
+            rs.put(e.getTaskFrameNo().v(), getTaskDto(listTask));
+        });
+        return rs;
+    }
+    private List<TaskDto> getTaskDto(List<Task> taskList) {
+        return taskList.stream().map(e ->
                 new TaskDto(
                         e.getCode().v(),
                         e.getTaskFrameNo().v(),

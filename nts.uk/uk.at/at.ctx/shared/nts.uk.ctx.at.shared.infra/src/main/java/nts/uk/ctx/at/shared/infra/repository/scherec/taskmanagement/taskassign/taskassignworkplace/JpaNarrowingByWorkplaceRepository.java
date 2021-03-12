@@ -55,7 +55,6 @@ public class JpaNarrowingByWorkplaceRepository extends JpaRepository implements 
         CriteriaQuery<KsrmtTaskAssignWkp> criteriaQuery = criteriaBuilder.createQuery(KsrmtTaskAssignWkp.class);
         Root<KsrmtTaskAssignWkp> root = criteriaQuery.from(KsrmtTaskAssignWkp.class);
         criteriaQuery.select(root);
-
         Predicate predicate = criteriaBuilder.equal(root.get(KsrmtTaskAssignWkp_.companyId), cid);
         criteriaQuery.where(predicate);
         TypedQuery<KsrmtTaskAssignWkp> query = entityManager.createQuery(criteriaQuery);
