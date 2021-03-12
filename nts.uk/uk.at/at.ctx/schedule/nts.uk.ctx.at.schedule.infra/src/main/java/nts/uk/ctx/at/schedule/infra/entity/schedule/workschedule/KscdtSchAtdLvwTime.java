@@ -39,9 +39,26 @@ public class KscdtSchAtdLvwTime extends ContractUkJpaEntity {
 	@Column(name = "ATD_CLOCK")
 	public int atdClock;
 	
+	/** 出勤時時間休暇 開始時刻 */
+	@Column(name = "ATD_HOURLY_HD_TS_START")
+	public Integer atdHourlyHDTSStart;
+	
+	/** 出勤時時間休暇 終了時刻 */
+	@Column(name = "ATD_HOURLY_HD_TS_END")
+	public Integer atdHourlyHDTSEnd;
+	
 	/** 退勤時刻**/
-	@Column(name = "LWK_CLOCK")
+	@Column(name = "LVW_CLOCK")
 	public int lwkClock;
+	
+	/** 退勤時時間休暇 開始時刻 */
+	@Column(name = "LVW_HOURLY_HD_TS_START")
+	public Integer lvwHourlyHDTSStart;
+	
+	/** 退勤時時間休暇 終了時刻 */
+	@Column(name = "LVW_HOURLY_HD_TS_END")
+	public Integer lvwHourlyHDTSEnd;
+	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "SID", referencedColumnName = "SID"),
@@ -69,9 +86,31 @@ public class KscdtSchAtdLvwTime extends ContractUkJpaEntity {
 				}
 			}
 		}
+		Integer atdHourlyHDTSStart  = null;
+		Integer atdHourlyHDTSEnd  = null;
+		if(leavingWork.getAttendanceStamp().isPresent()) {
+			if(leavingWork.getAttendanceStamp().get().getTimeVacation().isPresent()) {
+				atdHourlyHDTSStart = leavingWork.getAttendanceStamp().get().getTimeVacation().get().start();
+				atdHourlyHDTSEnd = leavingWork.getAttendanceStamp().get().getTimeVacation().get().end();
+			}
+		}
+		Integer lvwHourlyHDTSStart  = null;
+		Integer lvwHourlyHDTSEnd  = null;
+		if(leavingWork.getLeaveStamp().isPresent()) {
+			if(leavingWork.getLeaveStamp().get().getTimeVacation().isPresent()) {
+				lvwHourlyHDTSStart = leavingWork.getLeaveStamp().get().getTimeVacation().get().start();
+				lvwHourlyHDTSEnd = leavingWork.getLeaveStamp().get().getTimeVacation().get().end();
+			}
+		}
+		
 		return new KscdtSchAtdLvwTime(pk, cID, 
 				timeWithDayAtt == null ? 0 : timeWithDayAtt.v(),
-				timeWithDayLea == null ? 0 :timeWithDayLea.v());
+				atdHourlyHDTSStart,
+				atdHourlyHDTSEnd,
+				timeWithDayLea == null ? 0 :timeWithDayLea.v(),
+				lvwHourlyHDTSStart,
+				lvwHourlyHDTSEnd
+				);
 	}
 	
 	@Override
@@ -80,11 +119,18 @@ public class KscdtSchAtdLvwTime extends ContractUkJpaEntity {
 		return this.pk;
 	}
 
-	public KscdtSchAtdLvwTime(KscdtSchAtdLvwTimePK pk, String cid, int atdClock, int lwkClock) {
+
+	public KscdtSchAtdLvwTime(KscdtSchAtdLvwTimePK pk, String cid, int atdClock, Integer atdHourlyHDTSStart,
+			Integer atdHourlyHDTSEnd, int lwkClock, Integer lvwHourlyHDTSStart, Integer lvwHourlyHDTSEnd) {
 		super();
 		this.pk = pk;
 		this.cid = cid;
 		this.atdClock = atdClock;
+		this.atdHourlyHDTSStart = atdHourlyHDTSStart;
+		this.atdHourlyHDTSEnd = atdHourlyHDTSEnd;
 		this.lwkClock = lwkClock;
+		this.lvwHourlyHDTSStart = lvwHourlyHDTSStart;
+		this.lvwHourlyHDTSEnd = lvwHourlyHDTSEnd;
 	}
+	
 }

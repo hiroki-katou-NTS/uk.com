@@ -26,7 +26,7 @@ module nts.uk.at.view.kaf004_ref.shr.a.viewmodel {
                                     value: $vm.workManagement.workTime,
                                     option: {timeWithDay: true, width: '90'},
                                     constraint: 'TimeWithDayAttr',
-                                    enable: !$vm.isEnable1()
+                                    enable: $vm.application().prePostAtr() && !$vm.delete1()
                                 }" />
                                 </span>
 
@@ -35,14 +35,13 @@ module nts.uk.at.view.kaf004_ref.shr.a.viewmodel {
                             </td>
                             <td class="padding-5">
                                 <!-- A6_6 -->
-                                <span class="label" data-bind="text: $i18n('KAF004_56'), visible: $vm.condition8_10(1)"></span>
+                                <span class="label" data-bind="text: $i18n('KAF004_56'), visible: $vm.condition8()"></span>
 
                                 <!-- A6_7 -->
                                 <span data-bind="ntsCheckBox: {
-                                    checked: $vm.lateOrEarlyInfo1().isCheck,
+                                    checked: $vm.delete1,
                                     text: $i18n('KAF004_57'),
-                                    enable: $vm.condition10Activation(1)
-                                }, visible: $vm.condition8_10(1)"></span>
+                                }, visible: $vm.condition8()"></span>
                             </td>
                         </tr>
                         <tr>
@@ -61,7 +60,7 @@ module nts.uk.at.view.kaf004_ref.shr.a.viewmodel {
                                     value: $vm.workManagement.leaveTime,
                                     option: {timeWithDay: true, width: '90'},
                                     constraint: 'TimeWithDayAttr',
-                                    enable: !$vm.isEnable2()
+                                    enable: $vm.application().prePostAtr() && !$vm.delete2()
                                 }" />
                                 </span>
 
@@ -70,14 +69,13 @@ module nts.uk.at.view.kaf004_ref.shr.a.viewmodel {
                             </td>
                             <td class="padding-5">
                                 <!-- A6_12 -->
-                                <span class="label" data-bind="text: $i18n('KAF004_56'), visible: $vm.condition8_10(2)"></span>
+                                <span class="label" data-bind="text: $i18n('KAF004_56'), visible: $vm.condition8()"></span>
 
                                 <!-- A6_13 -->
                                 <span data-bind="ntsCheckBox: {
-                                    checked: $vm.lateOrEarlyInfo2().isCheck,
+                                    checked: $vm.delete2,
                                     text: $i18n('KAF004_58'),
-                                    enable: $vm.condition10Activation(2)
-                                    }, visible: $vm.condition8_10(2)"></span>
+                                    }, visible: $vm.condition8()"></span>
                             </td>
                         </tr>
                         <tr data-bind="visible: $vm.condition2()">
@@ -96,7 +94,7 @@ module nts.uk.at.view.kaf004_ref.shr.a.viewmodel {
                                     value: $vm.workManagement.workTime2,
                                     option: {timeWithDay: true, width: '90'},
                                     constraint: 'TimeWithDayAttr',
-                                    enable: !$vm.isEnable3()
+                                    enable: $vm.application().prePostAtr() && !$vm.delete3()
                                 }" />
                                 </span>
 
@@ -105,14 +103,13 @@ module nts.uk.at.view.kaf004_ref.shr.a.viewmodel {
                             </td>
                             <td class="padding-5">
                                 <!-- A6_18 -->
-                                <span class="label" data-bind="text: $i18n('KAF004_56'), visible: $vm.condition2_8_10(3)"></span>
+                                <span class="label" data-bind="text: $i18n('KAF004_56'), visible: $vm.condition2() && $vm.condition8()"></span>
 
                                 <!-- A6_19 -->
                                 <span data-bind="ntsCheckBox: {
-                                    checked: $vm.lateOrEarlyInfo3().isCheck,
+                                    checked: $vm.delete3,
                                     text: $i18n('KAF004_60'),
-                                    enable: $vm.condition10Activation(3)
-                                    }, visible: $vm.condition2_8_10(3)"></span>
+                                    }, visible: $vm.condition2() && $vm.condition8()"></span>
                             </td>
                         </tr>
                         <tr data-bind="visible: $vm.condition2()">
@@ -131,7 +128,7 @@ module nts.uk.at.view.kaf004_ref.shr.a.viewmodel {
                                     value: $vm.workManagement.leaveTime2,
                                     option: {timeWithDay: true, width: '90'},
                                     constraint: 'TimeWithDayAttr',
-                                    enable: !$vm.isEnable4()
+                                    enable: $vm.application().prePostAtr() && !$vm.delete4()
                                 }" />
                                 </span>
 
@@ -140,14 +137,13 @@ module nts.uk.at.view.kaf004_ref.shr.a.viewmodel {
                             </td>
                             <td class="padding-5">
                                 <!-- A6_24 -->
-                            <span class="label" data-bind="text: $i18n('KAF004_56'), visible: $vm.condition2_8_10(4)"></span>
+                            <span class="label" data-bind="text: $i18n('KAF004_56'), visible: $vm.condition2() && $vm.condition8()"></span>
 
                             <!-- A6_25 -->
                             <span data-bind="ntsCheckBox: {
-                                    checked: $vm.lateOrEarlyInfo4().isCheck,
+                                    checked: $vm.delete4,
                                     text: $i18n('KAF004_61'),
-                                    enable: $vm.condition10Activation(4)
-                                    }, visible: $vm.condition2_8_10(4)"></span>
+                                    }, visible: $vm.condition2() && $vm.condition8()"></span>
                             </td>
                         </tr>
                     </table>

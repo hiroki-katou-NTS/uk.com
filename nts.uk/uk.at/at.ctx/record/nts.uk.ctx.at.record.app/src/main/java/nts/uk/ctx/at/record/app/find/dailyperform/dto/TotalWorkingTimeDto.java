@@ -192,7 +192,7 @@ public class TotalWorkingTimeDto implements ItemConst {
 	public TotalWorkingTime toDomain() {
 		TotalWorkingTime total = new TotalWorkingTime(toAttendanceTime(totalWorkingTime), toAttendanceTime(totalCalcTime),
 				toAttendanceTime(actualTime), withinStatutoryTime == null ? WithinStatutoryTimeOfDaily.defaultValue() : withinStatutoryTime.toDomain(),
-				excessOfStatutoryTime == null ? null : excessOfStatutoryTime.toDomain(),
+				excessOfStatutoryTime == null ? ExcessOfStatutoryTimeDailyPerformDto.defaultDomain() : excessOfStatutoryTime.toDomain(),
 				ConvertHelper.mapTo(lateTime, (c) -> new LateTimeOfDaily(
 											createTimeWithCalc(c.getLateTime()),
 											createTimeWithCalc(c.getLateDeductionTime()), new WorkNo(c.getNo()),

@@ -26,7 +26,7 @@ public class JpaWorkMonthlySettingReportRepository extends JpaRepository impleme
 			.append(" AND a.YMD_K >= ?startYm AND a.YMD_K <= ?endYm ")
 			.append(" LEFT JOIN KSHMT_WKTP c ON c.CID = a.CID AND c.CD = a.WORK_TYPE_CD")
 			.append(" LEFT JOIN KSHMT_WT b ON b.CID = a.CID AND b.WORKTIME_CD =  a.WORKING_CD")
-			.append(" LEFT JOIN KSCMT_EVENT_COM a1 ON a1.CID = a.CID AND a1.YMD_K =  a.YMD_K")
+			.append(" LEFT JOIN KSCMT_EVENT_CMP a1 ON a1.CID = a.CID AND a1.YMD =  a.YMD_K")
 			.append(" WHERE d.CID = ?companyId ")
 			.append(" ORDER BY d.M_PATTERN_CD ASC, a.YMD_K ASC"))
 			.toString();
@@ -99,6 +99,7 @@ public class JpaWorkMonthlySettingReportRepository extends JpaRepository impleme
 			date = Optional.ofNullable(GeneralDate.fromString(timeStamp, "yyyy-MM-dd hh:mm:ss.s"));
 		}
 		StringBuffer workSetNameBuf = new StringBuffer();
+		
 		
 		String workTypeCD = (String) object[3];
 		String workingTypeName = (String) object[4];
