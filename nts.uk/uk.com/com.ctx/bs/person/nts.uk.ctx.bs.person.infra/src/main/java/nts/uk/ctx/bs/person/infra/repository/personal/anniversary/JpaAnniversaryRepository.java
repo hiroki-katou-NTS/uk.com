@@ -31,6 +31,10 @@ public class JpaAnniversaryRepository extends JpaRepository implements Anniversa
             + " OR("
             + " CAST(CONCAT('{:todayNextYear}',　a.ANNIVERSARY_DATE) AS datetime2) >= CAST('{:anniversary}' as datetime2)"
             + " AND CAST(CONCAT('{:todayNextYear}',a.ANNIVERSARY_DATE) AS datetime2) <= DATEADD(day,　a.NOTIFICATION_DAYS,　CAST('{:anniversary}' as datetime2))"
+            + " )"
+            + " OR("
+            + " CAST(CONCAT('{:todayYear}',　a.ANNIVERSARY_DATE) AS datetime2) <= CAST('{:anniversary}' as datetime2)"
+            + " AND DATEADD(year,　1,　CAST(a.READ_DATE as datetime2)) <= CAST('{:anniversary}' as datetime2)"
             + " )";
 
     //select by date period
@@ -164,7 +168,7 @@ public class JpaAnniversaryRepository extends JpaRepository implements Anniversa
                     entity.setAnniversaryTitle(item[12].toString());
                     entity.setNotificationMessage(item[13].toString());
                     entity.setNoticeDay(Integer.parseInt(item[14].toString()));
-                    entity.setSeenDate(GeneralDate.fromString(item[15].toString(), "yyyy-MM-dd hh:mm:ss.S"));
+                    entity.setSeenDate(GeneralDate.fromString(item[15].toString().substring(0, 21), "yyyy-MM-dd hh:mm:ss.S"));
                     //create domain
                     AnniversaryNotice domain = new AnniversaryNotice();
                     domain.getMemento(entity);

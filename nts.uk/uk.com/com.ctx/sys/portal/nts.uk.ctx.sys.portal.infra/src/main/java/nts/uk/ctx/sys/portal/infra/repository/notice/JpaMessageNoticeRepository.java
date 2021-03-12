@@ -64,7 +64,7 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 			, "LEFT JOIN SPTDT_INFO_MESSAGE_TGT N ON M.INPUT_DATE = N.INPUT_DATE AND M.SID = N.SID"
 			, "LEFT JOIN SPTDT_INFO_MESSAGE_READ S ON M.INPUT_DATE = S.INPUT_DATE AND M.SID = S.SID"
 			, "AND S.READ_SID = '{:SID}'"
-			, "WHERE M.CID = '{:CID}' AND M.START_DATE <= CONVERT(date, GETDATE()) AND M.END_DATE >= CONVERT(date, GETDATE())"
+			, "WHERE M.CID = '{:CID}' AND M.START_DATE <= '{:CURRENTDATE}' AND M.END_DATE >= '{:CURRENTDATE}'"
 			, "AND (M.DESTINATION_ATR = 0 or (M.DESTINATION_ATR = 1 and N.TGT_INFO_ID = '{:WKPID}')"
 			, "OR (M.DESTINATION_ATR = 2 AND N.TGT_INFO_ID = '{:SID}'))"
 			, ") A"
@@ -199,7 +199,8 @@ public class JpaMessageNoticeRepository extends JpaRepository implements Message
 		String query = NATIVE_GET_NEW_MSG_FOR_DAY
 				.replace("{:CID}", cid)
 				.replace("{:SID}", sid)
-				.replace("{:WKPID}", wpId.orElse(null));
+				.replace("{:WKPID}", wpId.orElse(""))
+				.replace("{:CURRENTDATE}", GeneralDate.today().toString());
 		
 		@SuppressWarnings("unchecked")
 		List<Object[]> resultList = getEntityManager().createNativeQuery(query).getResultList();
