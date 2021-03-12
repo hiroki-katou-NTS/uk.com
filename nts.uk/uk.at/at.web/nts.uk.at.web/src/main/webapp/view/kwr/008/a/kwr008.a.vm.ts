@@ -470,8 +470,10 @@ module nts.uk.at.view.kwr008.a {
                                 if (!self.outputItemsFreeSetting().length) {
                                     self.selectedOutputItem(null);
                                 }
-                                self.selectedOutputItem.valueHasMutated();
-                                self.printFormat.valueHasMutated();
+                                if (self.printFormat() === share.AnnualWorkSheetPrintingForm.TIME_CHECK_LIST) {
+                                    self.selectedOutputItem.valueHasMutated();
+                                    self.printFormat.valueHasMutated();
+                                }
                             });
                 });
 
