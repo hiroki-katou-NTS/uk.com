@@ -14,21 +14,37 @@ import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkRestTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flowset.FlowWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.context.AppContexts;
 
 public class BreakTimeSheetCorrector {
 
 	public static void correct(RequireM1 require, IntegrationOfDaily dailyRecord, boolean fixedBreakCorrect) {
+
+		val cid = AppContexts.user().companyId();
+		
+		val workType = require.workType(cid, dailyRecord.getWorkInformation().getRecordInfo().getWorkTypeCode().v()).orElse(null);
+		if (workType == null) {
+			return;
+		}
+		/** 出勤系か判定する */
+		if (workType.getAttendanceHolidayAttr() == AttendanceHolidayAttr.HOLIDAY) {
+			
+			/** 休憩をクレアする */
+			dailyRecord.setBreakTime(new BreakTimeOfDailyAttd());
+			return;
+		}
 		
 		/** 勤務情報が固定休憩かの確認 */
-		val isFixedBreak = isFixedBreakTime(require, dailyRecord);
-		if(isFixedBreak == BreakTimeFixState.NO_MASTER) {
+		val isFixedBreak = isFixedBreakTime(require, cid, workType, dailyRecord);
+		if (isFixedBreak == BreakTimeType.CANT_CHECK) {
+			
 			return;
 		}
 		
 		/** [変更状態.勤務情報]をチェック */
-		if (isFixedBreak == BreakTimeFixState.FIXED && !fixedBreakCorrect) {
+		if (isFixedBreak == BreakTimeType.FIXED_BREAK && !fixedBreakCorrect) {
 			
 			return;
 		}
@@ -65,30 +81,21 @@ public class BreakTimeSheetCorrector {
 	}
 	
 	/** 勤務情報が固定休憩かの確認 */
-	private static BreakTimeFixState isFixedBreakTime(RequireM1 require, IntegrationOfDaily dailyRecord) {
+	private static BreakTimeType isFixedBreakTime(RequireM1 require, String cid,
+			WorkType workType, IntegrationOfDaily dailyRecord) {
 		
 		/** 就業時間帯コード */
 		val wtc = dailyRecord.getWorkInformation().getRecordInfo().getWorkTimeCodeNotNull().map(c -> c.v()).orElse(null);
-		if(wtc == null) {
-			return BreakTimeFixState.NO_MASTER;
+		if (wtc == null) {
+			
+			return BreakTimeType.CANT_CHECK;
 		}
-		
-		val cid = AppContexts.user().companyId();
-		
 		val workTimeSet = require.workTimeSetting(cid, wtc).orElse(null);
-		if(workTimeSet == null) {
-			return BreakTimeFixState.NO_MASTER;
-		}
 		
 		/**　勤務情報の就業時間帯が固定勤務かをチェックする　*/
 		if(workTimeSet.getWorkTimeDivision().getWorkTimeMethodSet() == WorkTimeMethodSet.FIXED_WORK) {
 
-			return BreakTimeFixState.FIXED;
-		}
-		
-		val workType = require.workType(cid, dailyRecord.getWorkInformation().getRecordInfo().getWorkTypeCode().v()).orElse(null);
-		if(workType == null) {
-			return BreakTimeFixState.NO_MASTER;
+			return BreakTimeType.FIXED_BREAK;
 		}
 		
 		/** 勤務情報の勤務種類の[勤務種類の分類]が休日出勤かをチェック */
@@ -101,20 +108,22 @@ public class BreakTimeSheetCorrector {
 			restTimeZone = require.flowWorkSetting(cid, wtc).map(c -> c.getFlowWorkRestTimezone(workType)).orElse(null);
 			break;
 		default:
-			return BreakTimeFixState.NO_MASTER;
+			return BreakTimeType.CANT_CHECK;
 		}
 		
 		if (restTimeZone == null) {
-			return BreakTimeFixState.NO_MASTER;
+			return BreakTimeType.CANT_CHECK;
 		}
 		
-		return restTimeZone.isFixRestTime() ? BreakTimeFixState.FIXED : BreakTimeFixState.NO_FIXED;
+		return restTimeZone.isFixRestTime() ? BreakTimeType.FIXED_BREAK : BreakTimeType.FLOW_BREAK;
 	}
 	
-	private static enum BreakTimeFixState {
-		NO_MASTER,
-		FIXED,
-		NO_FIXED;
+	/** 休憩種類 */
+	private static enum BreakTimeType {
+		
+		FIXED_BREAK, /** 固定休憩 */
+		FLOW_BREAK, /** 流動休憩 */
+		CANT_CHECK; /** 確認できない */
 	}
 	
 	public static interface RequireM1 extends BreakTimeSheetGetter.RequireM1 {

@@ -197,10 +197,10 @@ public class HolidayShipmentMobileWS extends WebService {
 				EnumAdaptor.valueOf(displayInforWhenStarting.holidayManage, ManageDistinct.class),
 				appDispInfoStartup.getAppDispInfoNoDateOutput().getApplicationSetting());
 			if(abs.isPresent()) {
-				processResult.setAppID(abs.get().getAppID());
+				processResult.setAppIDLst(Arrays.asList(abs.get().getAppID()));
 			}
 			if(rec.isPresent()) {
-				processResult.setAppID(rec.get().getAppID());
+				processResult.setAppIDLst(Arrays.asList(rec.get().getAppID()));
 			}
 		} else {
 			// 振休振出申請の更新登録
@@ -224,10 +224,10 @@ public class HolidayShipmentMobileWS extends WebService {
 					CollectionUtil.isEmpty(command.getAbsWorkMngLst()) ? new ArrayList<>() : command.getAbsWorkMngLst().stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
 					appDispInfoStartup);
 			if(abs.isPresent()) {
-				processResult.setAppID(abs.get().getAppID());
+				processResult.setAppIDLst(Arrays.asList(abs.get().getAppID()));
 			}
 			if(rec.isPresent()) {
-				processResult.setAppID(rec.get().getAppID());
+				processResult.setAppIDLst(Arrays.asList(rec.get().getAppID()));
 			}
 		}
 		return processResult;
