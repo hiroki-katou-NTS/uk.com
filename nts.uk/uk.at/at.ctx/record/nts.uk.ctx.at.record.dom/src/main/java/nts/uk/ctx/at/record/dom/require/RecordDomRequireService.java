@@ -684,6 +684,8 @@ public class RecordDomRequireService {
 	private LeaveComDayOffManaRepository leaveComDayOffManaRepo;
 	@Inject
 	private PayoutSubofHDManaRepository payoutSubofHDManaRepo;
+	@Inject
+	private InterimRemainRepository interimRemainRepository;
 
 	public static interface Require extends RemainNumberTempRequireService.Require, GetAnnAndRsvRemNumWithinPeriod.RequireM2,
 		CalcAnnLeaAttendanceRate.RequireM3, GetClosurePeriod.RequireM1, GetClosureStartForEmployee.RequireM1,
@@ -2788,6 +2790,11 @@ public class RecordDomRequireService {
 		@Override
 		public Optional<Closure> closure(String companyId, int closureId) {
 			return closureRepo.findById(companyId, closureId);
+		}
+
+		@Override
+		public List<InterimRemain> interimRemains(String employeeId, DatePeriod dateData, RemainType remainType) {
+			return interimRemainRepository.getRemainBySidPriod(employeeId, dateData, remainType);
 		}
 
 	}

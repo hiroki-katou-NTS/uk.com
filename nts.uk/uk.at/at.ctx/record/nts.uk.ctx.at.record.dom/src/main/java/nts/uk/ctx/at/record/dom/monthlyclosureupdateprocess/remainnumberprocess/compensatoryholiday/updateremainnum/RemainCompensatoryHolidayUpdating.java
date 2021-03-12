@@ -138,7 +138,7 @@ public class RemainCompensatoryHolidayUpdating {
 		if (CollectionUtil.isEmpty(lstDetailData))
 			return AtomTask.bundle(atomTask);
 		for (AccumulationAbsenceDetail data : lstDetailData) {
-			UnbalanceCompensation unOffsetOfDayoff = (UnbalanceCompensation)data;
+			AccumulationAbsenceDetail unOffsetOfDayoff = data;
 			Optional<CompensatoryDayOffManaData> optCompensatoryData = require
 					.compensatoryDayOffManaData(unOffsetOfDayoff.getManageId());
 			

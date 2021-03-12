@@ -63,8 +63,6 @@ import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidayRemainingInfor
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidaysRemainingEmployee;
 import nts.uk.ctx.at.function.dom.holidaysremaining.report.HolidaysRemainingReportGenerator;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecMngInPeriodParamInput;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.NumberCompensatoryLeavePeriodProcess;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.NumberCompensatoryLeavePeriodQuery;
@@ -497,13 +495,14 @@ public class HolidaysRemainingReportHandler extends ExportService<HolidaysRemain
 				listStatusOfHoliday = hdRemainMer.getResult260();
 			}
 			DatePeriod periodDate =new DatePeriod(GeneralDate.ymd(currentMonth.year(), currentMonth.month(), 1), GeneralDate.ymd(currentMonth.year(), currentMonth.month(), 1).addMonths(1).addDays(-1));
-			AbsRecMngInPeriodParamInput param = new AbsRecMngInPeriodParamInput(cId, employeeId, periodDate, closureInforOpt.get().getPeriod().end(), 
+			val param = new AbsRecMngInPeriodRefactParamInput(cId, employeeId, periodDate, closureInforOpt.get().getPeriod().end(), 
 					false, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), Optional.empty()
 					, Optional.empty()
-					, Optional.empty());
-			AbsRecRemainMngOfInPeriod remainMng = AbsenceReruitmentMngInPeriodQuery
-					.getAbsRecMngInPeriod(absenceReruitmentMngInPeriodQueryRequire, cacheCarrier, param);
-			currentHolidayRemainLeft = new CurrentHolidayRemainImported(currentMonth, remainMng.getCarryForwardDays(),remainMng.getOccurrenceDays(),remainMng.getUseDays(),remainMng.getUnDigestedDays(),remainMng.getRemainDays());
+					, Optional.empty(), new FixedManagementDataMonth());
+			CompenLeaveAggrResult remainMng = NumberCompensatoryLeavePeriodQuery.process(numberCompensatoryLeavePeriodProcess.createRequire(), param);
+			currentHolidayRemainLeft = new CurrentHolidayRemainImported(currentMonth, remainMng.getCarryoverDay().v(),
+					remainMng.getOccurrenceDay().v(), remainMng.getDayUse().v(), remainMng.getUnusedDay().v(),
+					remainMng.getRemainDay().v());
 		}
 		// hoatt
 		Map<Integer, SpecialVacationImported> mapSpecVaca = new HashMap<>();

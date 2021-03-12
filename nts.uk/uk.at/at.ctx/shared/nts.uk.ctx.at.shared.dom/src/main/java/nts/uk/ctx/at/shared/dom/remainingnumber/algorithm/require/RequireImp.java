@@ -19,7 +19,6 @@ import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyDto;
 import nts.uk.ctx.at.shared.dom.adapter.workplace.SharedAffWorkPlaceHisAdapter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbasMngRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
@@ -28,7 +27,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBr
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataManagementAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementDataRepository;
@@ -312,43 +310,6 @@ public class RequireImp implements RemainNumberTempRequireService.Require {
 	@Override
 	public Optional<ComSubstVacation> comSubstVacation(String companyId) {
 		return comSubstVacationRepo.findById(companyId);
-	}
-
-	@Override
-	public Optional<InterimAbsMng> interimAbsMng(String absId) {
-		return interimRecAbasMngRepo.getAbsById(absId);
-	}
-
-	@Override
-	public List<InterimRecAbsMng> interimRecAbsMng(String interimId, boolean isRec, DataManagementAtr mngAtr) {
-		return interimRecAbasMngRepo.getRecOrAbsMng(interimId, isRec, mngAtr);
-	}
-
-	@Override
-	public Optional<InterimRecMng> interimRecMng(String recId) {
-		return interimRecAbasMngRepo.getReruitmentById(recId);
-	}
-
-	@Override
-	public List<SubstitutionOfHDManagementData> substitutionOfHDManagementData(String cid, String sid,
-			GeneralDate ymd, double unOffseDays) {
-		return substitutionOfHDManaDataRepo.getByYmdUnOffset(cid, sid, ymd, unOffseDays);
-	}
-
-	@Override
-	public List<PayoutManagementData> payoutManagementData(String cid, String sid, GeneralDate ymd,
-			double unUse, DigestionAtr state) {
-		return payoutManagementDataRepo.getByUnUseState(cid, sid, ymd, unUse, state);
-	}
-
-	@Override
-	public List<InterimRemain> interimRemains(String employeeId, DatePeriod dateData, RemainType remainType) {
-		return interimRemainRepo.getRemainBySidPriod(employeeId, dateData, remainType);
-	}
-
-	@Override
-	public CompanyDto firstMonth(CacheCarrier cacheCarrier, String companyId) {
-		return companyAdapter.getFirstMonthRequire(cacheCarrier, companyId);
 	}
 
 	@Override

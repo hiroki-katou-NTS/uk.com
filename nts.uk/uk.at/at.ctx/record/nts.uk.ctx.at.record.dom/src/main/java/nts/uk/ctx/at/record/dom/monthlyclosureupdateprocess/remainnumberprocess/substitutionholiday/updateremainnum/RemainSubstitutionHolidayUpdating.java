@@ -16,7 +16,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.HolidayAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataDaysAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataRemainUnit;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.UnbalanceVacation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManagementData;
 import nts.uk.shr.com.context.AppContexts;
@@ -136,7 +135,7 @@ public class RemainSubstitutionHolidayUpdating {
 			return atomTasks;
 		
 		for (AccumulationAbsenceDetail data : lstAbsRecMng) {
-			UnbalanceVacation unOffsetOfAb = (UnbalanceVacation)data;
+			AccumulationAbsenceDetail unOffsetOfAb = data;
 			Optional<SubstitutionOfHDManagementData> optSubData = require
 						.substitutionOfHDManagementData(unOffsetOfAb.getManageId());
 			if (optSubData.isPresent()) {
