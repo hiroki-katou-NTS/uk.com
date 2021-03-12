@@ -31,7 +31,7 @@ module nts.uk.at.view.kaf004_ref.shr.b.viewmodel {
                                 value: $parent.workManagement.workTime,
                                 option: {timeWithDay: true, width: '90'},
                                 constraint: 'TimeWithDayAttr',
-                                enable: ko.toJS($parent.application().prePostAtr() && !$parent.delete1() && ($parent.outputMode() === 1))
+                                enable: ko.toJS(!$parent.delete1() && ($parent.outputMode() === 1))
                             }" />
                                 </span>
                                 <!-- A6_5 -->
@@ -40,14 +40,14 @@ module nts.uk.at.view.kaf004_ref.shr.b.viewmodel {
                             <td class="padding-5">
                                 <!-- A6_6 -->
                                 <span class="label"
-                                    data-bind="text: $i18n('KAF004_56'), visible: ko.toJS($parent.condition9())"></span>
+                                    data-bind="text: $i18n('KAF004_56'), visible: $parent.condition9()"></span>
 
                                 <!-- A6_7 -->
                                 <span data-bind="ntsCheckBox: {
                                 checked: $parent.delete1,
                                 text: $i18n('KAF004_57'),
                                 enable: $parent.outputMode() === 1
-                                }, visible: ko.toJS($parent.condition9())"></span>
+                                }, visible: $parent.condition9()"></span>
                             </td>
                         </tr>
                         <tr>
@@ -66,7 +66,7 @@ module nts.uk.at.view.kaf004_ref.shr.b.viewmodel {
                                 value: $parent.workManagement.leaveTime,
                                 option: {timeWithDay: true, width: '90'},
                                 constraint: 'TimeWithDayAttr',
-                                enable: ko.toJS($parent.application().prePostAtr() && !$parent.delete2() && ($parent.outputMode() === 1))
+                                enable: ko.toJS(!$parent.delete2() && ($parent.outputMode() === 1))
                             }" />
                                 </span>
 
@@ -76,14 +76,14 @@ module nts.uk.at.view.kaf004_ref.shr.b.viewmodel {
                             <td class="padding-5">
                                 <!-- A6_12 -->
                                 <span class="label"
-                                    data-bind="text: $i18n('KAF004_56'), visible: ko.toJS($parent.condition9())"></span>
+                                    data-bind="text: $i18n('KAF004_56'), visible: $parent.condition9()"></span>
 
                                 <!-- A6_13 -->
                                 <span data-bind="ntsCheckBox: {
                                 checked: $parent.delete2,
                                 text: $i18n('KAF004_58'),
                                 enable: $parent.outputMode() === 1
-                                }, visible: ko.toJS($parent.condition9())"></span>
+                                }, visible: $parent.condition9()"></span>
                             </td>
                         </tr>
                         <tr data-bind="visible: ko.toJS($parent.condition2())">
@@ -103,7 +103,7 @@ module nts.uk.at.view.kaf004_ref.shr.b.viewmodel {
                                 value: $parent.workManagement.workTime2,
                                 option: {timeWithDay: true, width: '90'},
                                 constraint: 'TimeWithDayAttr',
-                                enable: ko.toJS($parent.application().prePostAtr() && !$parent.delete3() && ($parent.outputMode() === 1))
+                                enable: ko.toJS(!$parent.delete3() && ($parent.outputMode() === 1))
                             }" />
                                 </span>
 
@@ -139,7 +139,7 @@ module nts.uk.at.view.kaf004_ref.shr.b.viewmodel {
                                 value: $parent.workManagement.leaveTime2,
                                 option: {timeWithDay: true, width: '90'},
                                 constraint: 'TimeWithDayAttr',
-                                enable: ko.toJS($parent.application().prePostAtr() && !$parent.delete4() && ($parent.outputMode() === 1))
+                                enable: ko.toJS(!$parent.delete4() && ($parent.outputMode() === 1))
                             }" />
                                 </span>
 
