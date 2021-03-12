@@ -2060,6 +2060,8 @@ public class ProgramsManager {
             "/view/kmk/013/p/index.xhtml");
     public static final Program KMK013Q = new Program(WebAppId.AT, ProgramIdConsts.KMK013Q, "KMK013_421",
             "/view/kmk/013/q/index.xhtml");
+    public static final Program KMK013R = new Program(WebAppId.AT, ProgramIdConsts.KMK013R, "KMK013_518",
+            "/view/kmk/013/r/index.xhtml");
 
     /** KAF020 */
     public static final Program KAF020A = new Program(WebAppId.AT, ProgramIdConsts.KAF020A, "KAF020_1",

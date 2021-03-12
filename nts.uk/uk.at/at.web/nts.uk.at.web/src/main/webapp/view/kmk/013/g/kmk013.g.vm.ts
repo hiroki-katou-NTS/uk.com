@@ -26,6 +26,9 @@ module nts.uk.at.view.kmk013.g {
             initValueReasonGoOut: KnockoutObservable<number>;
 
             entranceExitUse: KnockoutObservable<number>;
+
+            tempMaxUsageRequired: KnockoutObservable<boolean>;
+            goOutMaxUsageRequired: KnockoutObservable<boolean>;
             
             constructor() {
                 const self = this;
@@ -67,6 +70,13 @@ module nts.uk.at.view.kmk013.g {
                 self.initValueReasonGoOut = ko.observable(0);
 
                 self.entranceExitUse = ko.observable(0);
+
+                self.tempMaxUsageRequired = ko.computed(() => {
+                    return self.tempWorkSet() == 1;
+                });
+                self.goOutMaxUsageRequired = ko.computed(() => {
+                    return self.goOutUsage() == 1;
+                });
             }
 
             // Start Page
@@ -137,23 +147,10 @@ module nts.uk.at.view.kmk013.g {
                         if (value == 0) {
                             $('#tempmaxuse').ntsError('clear');
                             $('#temptime').ntsError('clear');
-                        } else {
-                            $('#tempmaxuse').trigger('validate');
-                            $('#temptime').trigger('validate');
                         }
                     });
                     self.goOutUsage.subscribe(value => {
                         if (value == 0) {
-                            $('#gooutmaxuse').ntsError('clear');
-                        } else {
-                            if (!nts.uk.ntsNumber.isNumber(self.goOutMaxUsage()))
-                                $('#gooutmaxuse').ntsError('set', {messageId:"MsgB_1", messageParams: [nts.uk.resource.getText('KMK013_291')]});
-                        }
-                    });
-                    self.goOutMaxUsage.subscribe(value => {
-                        if (self.goOutUsage() == 1 && !nts.uk.ntsNumber.isNumber(value)) {
-                            $('#gooutmaxuse').ntsError('set', {messageId:"MsgB_1", messageParams: [nts.uk.resource.getText('KMK013_291')]});
-                        } else {
                             $('#gooutmaxuse').ntsError('clear');
                         }
                     });
@@ -164,8 +161,6 @@ module nts.uk.at.view.kmk013.g {
             saveData(): void {
                 const self = this;
                 $('.nts-input').trigger('validate');
-                if (self.goOutUsage() == 1 && !nts.uk.ntsNumber.isNumber(self.goOutMaxUsage()))
-                    $('#gooutmaxuse').ntsError('set', {messageId:"MsgB_1", messageParams: [nts.uk.resource.getText('KMK013_291')]});
                 if (nts.uk.ui.errors.hasError()) {
                     return;
                 }

@@ -60,6 +60,10 @@ module nts.uk.at.view.kmk013.b_ref {
                 new BoxModel(0, nts.uk.resource.getText('KMK013_521')),
                 new BoxModel(1, nts.uk.resource.getText('KMK013_522'))
             ]);
+            itemsB7_7: KnockoutObservableArray<any> = ko.observableArray([
+                new BoxModel(0, nts.uk.resource.getText('KMK013_532')),
+                new BoxModel(1, nts.uk.resource.getText('KMK013_533'))
+            ]);
             selectedB54: KnockoutObservable<number> = ko.observable(0);
             enableB54: KnockoutObservable<boolean> = ko.observable(true);
 
@@ -910,32 +914,20 @@ module nts.uk.at.view.kmk013.b_ref {
             }
 
             validate() {
-
-                let check = true;
-
-                let self = this;
-                if (self.selectedB74() == 1 && self.enableB74()) {
-                    if (!self.screenBCheckTime(self.checkedB510(), self.checkedB59(), self.checkedB710(), self.checkedB79())) {
-                        check = false;
-                    }
+                const self = this;
+                if (!self.screenBCheckTime(self.checkedB510(), self.checkedB59(), self.checkedB710(), self.checkedB79(), self.enableB510(), self.enableB59(), self.enableB710(), self.enableB79())) {
+                    return false;
                 }
-                if (self.selectedB104() == 1 && self.enableB104()) {
-                    if (!self.screenBCheckTime(self.checkedB810(), self.checkedB89(), self.checkedB1010(), self.checkedB109())) {
-                        check = false;
-                    }
+                if (!self.screenBCheckTime(self.checkedB810(), self.checkedB89(), self.checkedB1010(), self.checkedB109(), self.enableB810(), self.enableB89(), self.enableB1010(), self.enableB109())) {
+                    return false;
                 }
-                if (self.selectedB134() == 1 && self.enableB134()) {
-                    if (!self.screenBCheckTime(self.checkedB1110(), self.checkedB119(), self.checkedB1310(), self.checkedB139())) {
-                        check = false;
-                    }
+                if (!self.screenBCheckTime(self.checkedB1110(), self.checkedB119(), self.checkedB1310(), self.checkedB139(), self.enableB1110(), self.enableB119(), self.enableB1310(), self.enableB139())) {
+                    return false;
                 }
-                if (self.selectedB164() == 1 && self.enableB164()) {
-                    if (!self.screenBCheckTime(self.checkedB1410(), self.checkedB149(), self.checkedB1610(), self.checkedB169())) {
-                        check = false;
-                    }
+                if (!self.screenBCheckTime(self.checkedB1410(), self.checkedB149(), self.checkedB1610(), self.checkedB169(), self.enableB1410(), self.enableB149(), self.enableB1610(), self.enableB169())) {
+                    return false;
                 }
-
-                return check;
+                return true;
             }
 
             /*
@@ -944,13 +936,19 @@ module nts.uk.at.view.kmk013.b_ref {
             screenBCheckTime(intervalTime: boolean,
                              deductLaveAndEarly: boolean,
                              intervalTime2: boolean,
-                             deductLaveAndEarly2: boolean) {
+                             deductLaveAndEarly2: boolean,
+                             enableIntervalTime: boolean,
+                             enableDeductLateAndEarly: boolean,
+                             enableIntervalTime2: boolean,
+                             enableDeductLateAndEarly2: boolean) {
                 // a）「遅刻・早退を控除する」＝☑チェックありで、「インターバル免除時間」＝□チェックなしの場合、
-                if (!intervalTime && deductLaveAndEarly) {
-                    return false;
+                if (enableIntervalTime && enableDeductLateAndEarly) {
+                    if (!intervalTime && deductLaveAndEarly) {
+                        return false;
+                    }
                 }
                 // b）割増時間のみ、「遅刻・早退を控除する」＝☑チェックありで、「インターバル免除時間」＝□チェックなしの場合、
-                if (intervalTime && deductLaveAndEarly) {
+                if (enableIntervalTime2 && enableDeductLateAndEarly2) {
                     if (!intervalTime2 && deductLaveAndEarly2) {
                         return false;
                     }

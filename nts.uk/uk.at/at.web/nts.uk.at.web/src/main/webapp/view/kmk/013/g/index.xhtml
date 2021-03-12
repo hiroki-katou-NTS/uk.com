@@ -75,8 +75,8 @@
 											value: tempMaxUsage,
 											constraint: 'MaxUsage',
 											option: {unitID: 'TIMES'},
-											enable: tempWorkSet() == 1,
-											required: true}"/>
+											enable: tempMaxUsageRequired,
+											required: tempMaxUsageRequired}"/>
 					<span class="label">#{i18n.getText('KMK013_349')}</span>
 					<input id="temptime" style="width: 44px;"
 						   data-bind="ntsTimeEditor: {
@@ -85,8 +85,8 @@
 											value: timeTreatTemporarySame,
 											inputFormat: 'time',
 											mode: 'time',
-											enable: tempWorkSet() == 1,
-											required: true}"/>
+											enable: tempMaxUsageRequired,
+											required: tempMaxUsageRequired}"/>
 				</div>
 				<div class="control-group valign-center">
 					<div style="width: 143px;" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK013_487')}</div>
@@ -137,8 +137,8 @@
 											value: goOutMaxUsage,
 											constraint: 'MaxGoOut',
 											option: {unitID: 'TIMES'},
-											enable: goOutUsage() == 1,
-											required: goOutUsage() == 1 }"/>
+											enable: goOutMaxUsageRequired,
+											required: goOutMaxUsageRequired }"/>
 					<span class="label">#{i18n.getText('KMK013_292')}</span>
 					<div style="width: 92px;"
 						 data-bind="ntsComboBox: {

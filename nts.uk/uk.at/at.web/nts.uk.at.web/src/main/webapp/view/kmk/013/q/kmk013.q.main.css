@@ -12,6 +12,10 @@
 	width: 120px;
 }
 
+.bg-header {
+	background-color: #CFF1A5;
+}
+
 .overtimeListQ5_1 tr > td:nth-child(2){
 	background-color: #CFF1A5;
 	width: 60px;
