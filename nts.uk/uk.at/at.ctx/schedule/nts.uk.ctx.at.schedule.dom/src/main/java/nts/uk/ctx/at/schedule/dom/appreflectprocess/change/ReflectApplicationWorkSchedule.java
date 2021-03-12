@@ -40,7 +40,7 @@ import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enu
  */
 public class ReflectApplicationWorkSchedule {
 
-	public static Pair<ReflectStatusResultShare, AtomTask> process(Require require, String companyId,  ExecutionType type, ApplicationShare application,
+	public static Pair<ReflectStatusResultShare, AtomTask> process(Require require, String companyId,  ApplicationShare application,
 			GeneralDate date, ReflectStatusResultShare reflectStatus, int preAppWorkScheReflectAttr) {
 		// 勤務予定から日別実績(work）を取得する
 		WorkSchedule workSchedule = require.get(application.getEmployeeID(), date).orElse(null);

@@ -98,4 +98,12 @@ public class JpaClosureStatusManagementRepository extends JpaRepository implemen
 		return result;
 	}
 
+	@Override
+	public List<ClosureStatusManagement> getAllByEmpId(String employeeId) {
+		String sql = "SELECT a FROM KrcdtClosureSttMng a WHERE a.pk.employeeId = :employeeId ORDER BY a.end DESC";
+		List<KrcdtClosureSttMng> lstEntity = this.queryProxy().query(sql, KrcdtClosureSttMng.class)
+				.setParameter("employeeId", employeeId).getList();
+		return lstEntity.stream().map(x -> x.toDomain()).collect(Collectors.toList());
+	}
+
 }

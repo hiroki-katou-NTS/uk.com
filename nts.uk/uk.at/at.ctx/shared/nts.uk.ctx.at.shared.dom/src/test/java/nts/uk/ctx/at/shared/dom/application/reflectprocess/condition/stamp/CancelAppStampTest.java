@@ -114,8 +114,8 @@ public class CancelAppStampTest {
 				StartEndClassificationShare.START, // 開始終了区分
 				1);// 打刻枠No
 
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
-				1, true);
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
+				1);
 
 		List<Integer> actualResult = CancelAppStamp.process(dailyApp, listDestinationTimeApp);
 
@@ -142,7 +142,7 @@ public class CancelAppStampTest {
 				1);// 打刻枠No
 
 		DailyRecordOfApplication dailyApp2 = ReflectApplicationHelper
-				.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD, 1, true);
+				.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD, 1);
 
 		List<Integer> actualResult2 = CancelAppStamp.process(dailyApp2, listDestinationTimeApp2);
 
@@ -183,8 +183,8 @@ public class CancelAppStampTest {
 				StartEndClassificationShare.START, // 開始終了区分
 				1);// 打刻枠No
 
-		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD,
-				1, true);
+		DailyRecordOfApplication dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD,
+				1);
 
 		List<Integer> actualResult = CancelAppStamp.process(dailyApp, listDestinationTimeApp);
 
@@ -212,7 +212,7 @@ public class CancelAppStampTest {
 				1);// 打刻枠No
 
 		DailyRecordOfApplication dailyApp2 = ReflectApplicationHelper
-				.createRCWithTimeLeav(ScheduleRecordClassifi.RECORD, 1, true);
+				.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD, 1);
 
 		List<Integer> actualResult2 = CancelAppStamp.process(dailyApp2, listDestinationTimeApp2);
 

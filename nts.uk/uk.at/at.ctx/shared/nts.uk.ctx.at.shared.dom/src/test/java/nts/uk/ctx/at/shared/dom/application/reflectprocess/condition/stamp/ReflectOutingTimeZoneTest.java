@@ -35,7 +35,7 @@ public class ReflectOutingTimeZoneTest {
 	public void testUpdateGoOut() {
 
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
-				.createRCWithTimeLeav(ScheduleRecordClassifi.SCHEDULE, 1, true);// 打刻NO= 1
+				.createRCWithTimeLeavFull(ScheduleRecordClassifi.SCHEDULE, 1);// 打刻NO= 1
 
 		List<TimeStampAppShare> listTimeStampApp = ReflectApplicationHelper
 				.createlstTimeStamp(StartEndClassificationShare.START, 
@@ -72,7 +72,7 @@ public class ReflectOutingTimeZoneTest {
 	@Test
 	public void testCreateGoOut() {
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
-				.createRCWithTimeLeav(ScheduleRecordClassifi.SCHEDULE, 1, true);// 打刻NO= 1
+				.createRCWithTimeLeavFull(ScheduleRecordClassifi.SCHEDULE, 1);// 打刻NO= 1
 
 		List<TimeStampAppShare> listTimeStampApp = ReflectApplicationHelper
 				.createlstTimeStamp(StartEndClassificationShare.START, 
@@ -110,7 +110,7 @@ public class ReflectOutingTimeZoneTest {
 	@Test
 	public void testUpdateGoback() {
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
-				.createRCWithTimeLeav(ScheduleRecordClassifi.SCHEDULE, 1, true);// 打刻NO= 1
+				.createRCWithTimeLeavFull(ScheduleRecordClassifi.SCHEDULE, 1);// 打刻NO= 1
 
 		List<TimeStampAppShare> listTimeStampApp = ReflectApplicationHelper
 				.createlstTimeStamp(StartEndClassificationShare.END, 
@@ -147,7 +147,7 @@ public class ReflectOutingTimeZoneTest {
 	public void testCreateGoback() {
 
 		DailyRecordOfApplication dailyApp = ReflectApplicationHelper
-				.createRCWithTimeLeav(ScheduleRecordClassifi.SCHEDULE, 1, true);// 打刻NO= 1
+				.createRCWithTimeLeavFull(ScheduleRecordClassifi.SCHEDULE, 1);// 打刻NO= 1
 
 		List<TimeStampAppShare> listTimeStampApp = ReflectApplicationHelper
 				.createlstTimeStamp(StartEndClassificationShare.END, 
