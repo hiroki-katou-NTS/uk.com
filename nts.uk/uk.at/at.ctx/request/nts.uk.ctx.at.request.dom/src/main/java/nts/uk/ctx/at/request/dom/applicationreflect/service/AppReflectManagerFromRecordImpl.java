@@ -130,10 +130,6 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 		// ドメインモデル「締め状態管理」を取得する
 		List<DatePeriod> lstPeriodMag = closureStatusManagementRepository.getAllByEmpId(sid).stream()
 				.map(x -> x.getPeriod()).sorted((x, y) -> x.end().compareTo(y.end())).collect(Collectors.toList());
-		if(lstPeriodMag.isEmpty()) {
-			this.reflectAppOfAppDate(workId, sid, refAppResult, datePeriod);
-			return;
-		}
 		DatePeriod dateProcess = datePeriod;
 		for(DatePeriod datePeriodCls : lstPeriodMag) {
 			/**
@@ -143,7 +139,7 @@ public class AppReflectManagerFromRecordImpl implements AppReflectManagerFromRec
 			 */
 			if (datePeriod.start().afterOrEquals(datePeriodCls.start())
 					&& datePeriod.end().beforeOrEquals(datePeriodCls.end())) {
-				break;
+				return;
 			}
 			
 			/**
