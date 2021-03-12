@@ -1,8 +1,10 @@
 package nts.uk.ctx.at.shared.app.query.task;
 
 
+import lombok.val;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.repo.taskassign.taskassingworkplace.NarrowingByWorkplaceRepository;
 import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskassign.taskassignworkplace.NarrowingDownTaskByWorkplace;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -17,6 +19,7 @@ public class SpecifyWplAndNarrowDownOfTaskByWplQuery {
     private NarrowingByWorkplaceRepository repository;
 
     public List<NarrowingDownTaskByWorkplace> getListWorkByWpl(String workPlaceId) {
-        return repository.getListWorkByWpl(workPlaceId);
+        val cid = AppContexts.user().companyId();
+        return repository.getListWorkByWpl(cid,workPlaceId);
     }
 }
