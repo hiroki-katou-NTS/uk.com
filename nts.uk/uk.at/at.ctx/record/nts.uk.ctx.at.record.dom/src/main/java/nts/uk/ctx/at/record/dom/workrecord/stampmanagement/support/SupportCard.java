@@ -5,8 +5,6 @@ package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 
 /**
  * AR: 応援カード 
@@ -17,15 +15,15 @@ import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 public class SupportCard extends AggregateRoot {
 
 	// 会社ID
-	private final CompanyId cid;
+	private final String cid;
 
 	// カード番号
 	private final SupportCardNumber supportCardNumber;
 
 	// 	職場ID
-	private WorkplaceId workplaceId;
+	private String workplaceId;
 
-	public SupportCard(CompanyId cid, SupportCardNumber supportCardNumber, WorkplaceId workplaceId) {
+	public SupportCard(String cid, SupportCardNumber supportCardNumber, String workplaceId) {
 		super();
 		this.cid = cid;
 		this.supportCardNumber = supportCardNumber;
@@ -34,9 +32,9 @@ public class SupportCard extends AggregateRoot {
 	
 	public SupportCard(String cid, int supportCardNumber, String workplaceId) {
 		super();
-		this.cid = new CompanyId(cid);
+		this.cid = cid;
 		this.supportCardNumber = new SupportCardNumber(supportCardNumber);
-		this.workplaceId = new WorkplaceId(workplaceId);
+		this.workplaceId = workplaceId;
 	}
 	
 	public static SupportCard create(String cid, int supportCardNumber, String workplaceId) {
