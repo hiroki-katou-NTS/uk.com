@@ -314,7 +314,7 @@ public class WorkInfoOfDailyAttendanceTest {
 	private WorkInfoOfDailyAttendance create(List<ScheduleTimeSheet> scheduleTimeSheets) {
 		return new WorkInfoOfDailyAttendance(new WorkInformation("001", "001"),
 				CalculationState.No_Calculated, NotUseAttribute.Not_use, NotUseAttribute.Not_use, DayOfWeek.FRIDAY,
-				new ArrayList<>());
+				scheduleTimeSheets);
 	}
 	
 	private WorkInfoOfDailyAttendance create(String workTypeCode, String workTimeCode) {
