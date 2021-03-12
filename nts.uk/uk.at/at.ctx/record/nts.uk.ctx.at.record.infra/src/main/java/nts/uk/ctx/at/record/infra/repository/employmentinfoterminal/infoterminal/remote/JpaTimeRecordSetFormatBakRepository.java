@@ -145,7 +145,7 @@ public class JpaTimeRecordSetFormatBakRepository extends JpaRepository implement
 								new VariableName(x.pk.variableName),
 								EnumAdaptor.valueOf(x.inputType, NrlRemoteInputType.class),
 								new NumberOfDigits(x.numberDigist))
-						.settingValue(new SettingValue(x.currentValue))
+						.settingValue(new SettingValue(x.settingValue))
 						.inputRange(new NrlRemoteInputRange(x.inputRange))
 						.rebootFlg(x.reboot == 1 ? true : false)
 						.majorNo(new MajorNoClassification(x.majorNo))

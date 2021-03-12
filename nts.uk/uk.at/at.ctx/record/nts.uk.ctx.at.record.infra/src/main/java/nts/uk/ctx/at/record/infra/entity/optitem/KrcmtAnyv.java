@@ -76,7 +76,7 @@ public class KrcmtAnyv extends ContractUkJpaEntity implements Serializable {
 	@OneToOne(optional = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
 			@PrimaryKeyJoinColumn(name = "OPTIONAL_ITEM_NO", referencedColumnName = "OPTIONAL_ITEM_NO") })
-	public KrcmtCalcResultRange krcstCalcResultRange;
+	public KrcmtAnyfResultRange krcstCalcResultRange;
 	
 	/**
 	 * Instantiates a new krcst optional item.
