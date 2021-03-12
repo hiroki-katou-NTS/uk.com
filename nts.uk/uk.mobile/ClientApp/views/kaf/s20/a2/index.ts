@@ -357,12 +357,7 @@ export class KafS20A2Component extends KafS00ShrComponent {
             vm.$emit('nextToStep3', res);
         }).catch((error) => {
             vm.$mask('hide');
-            //show Msg_1691,1692,1693
-            if (error.messageId == 'Msg_1691' || error.messageId == 'Msg_1692' || error.messageId == 'Msg_1693') {
-                vm.$modal.warn({ messageId: error.messageId, messageParams: error.parameterIds[0] });
-            } else {
-                vm.handleErrorMessage(error);
-            }
+            vm.handleErrorMessage(error);
         });
 
     }
@@ -402,12 +397,7 @@ export class KafS20A2Component extends KafS00ShrComponent {
             vm.$emit('nextToStep3', res);
         }).catch((error: any) => {
             vm.$mask('hide');
-            //show Msg_1691,1692,1693
-            if (error.messageId == 'Msg_1691' || error.messageId == 'Msg_1692' || error.messageId == 'Msg_1693') {
-                vm.$modal.warn({ messageId: error.messageId, messageParams: error.parameterIds[0] });
-            } else {
-                vm.handleErrorMessage(error);
-            }
+            vm.handleErrorMessage(error);
         });
     }
 
@@ -415,27 +405,23 @@ export class KafS20A2Component extends KafS00ShrComponent {
     public handleErrorMessage(res: any) {
         const vm = this;
         vm.$mask('hide');
-        if (res.messageId) {
-            return vm.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
+        if (_.isArray(res.errors)) {
+            res.errors.forEach((error) => {
+                document.querySelector('.item-' + error.parameterIds[1] + ' input').classList.add('is-invalid');
+                document.querySelector('.item-' + error.parameterIds[1] + ' .invalid-feedback').innerHTML = '<span>' + error.errorMessage + '</span>';
+            });
         } else {
-
-            // if (_.isArray(res.errors)) {
-            //     return vm.$modal.error({ messageId: res.errors[0].messageId, messageParams: res.parameterIds });
-            // } else {
-            //     return vm.$modal.error({ messageId: res.errors[0].messageId, messageParams: res.parameterIds });
-            // }
+            return vm.$modal.error(res);
         }
     }
 
     public handleKaf00BChangePrePost(prePost) {
         const vm = this;
-
         vm.application.prePostAtr = prePost;
     }
 
     public handleKaf00BChangeDate(changeDate) {
         const vm = this;
-
         vm.application.opAppStartDate = vm.$dt.date(changeDate.startDate, 'YYYY/MM/DD');
         vm.application.opAppEndDate = vm.$dt.date(changeDate.endDate, 'YYYY/MM/DD');
         vm.application.appDate = vm.$dt.date(changeDate.startDate, 'YYYY/MM/DD');
@@ -443,13 +429,11 @@ export class KafS20A2Component extends KafS00ShrComponent {
 
     public handleKaf00CChangeAppReason(appReason) {
         const vm = this;
-
         vm.application.opAppReason = appReason;
     }
 
     public handleKaf00CChangeReasonCD(appReasonCD) {
         const vm = this;
-
         vm.application.opAppStandardReasonCD = appReasonCD;
     }
 }

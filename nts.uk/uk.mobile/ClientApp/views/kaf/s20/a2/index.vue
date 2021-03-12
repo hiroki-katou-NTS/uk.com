@@ -122,7 +122,8 @@
           <!-- A2_6_4_1 -->
           <div class="position-relative mt-2">
             <nts-time-editor
-              v-model="optionalItemApplication[index].time"
+              v-bind:class="'item-' + item.optionalItemNo"
+              v-model="item.time"
               v-if="item.optionalItemAtr == 0"
               v-bind:show-title="false"
               v-bind:record-id="index"
@@ -130,14 +131,16 @@
               v-bind:columns="{ input: 'col-10' }"
             />
             <nts-number-editor
-              v-model="optionalItemApplication[index].number"
+              v-bind:class="'item-' + item.optionalItemNo"
+              v-model="item.number"
               v-if="item.optionalItemAtr == 1"
               v-bind:show-title="false"
               v-bind:record-id="index"
               v-bind:columns="{ input: 'col-10' }"
             />
             <nts-number-editor
-              v-model="optionalItemApplication[index].amount"
+              v-bind:class="'item-' + item.optionalItemNo"
+              v-model="item.amount"
               v-if="item.optionalItemAtr == 2"
               v-bind:show-title="false"
               v-bind:record-id="index"
