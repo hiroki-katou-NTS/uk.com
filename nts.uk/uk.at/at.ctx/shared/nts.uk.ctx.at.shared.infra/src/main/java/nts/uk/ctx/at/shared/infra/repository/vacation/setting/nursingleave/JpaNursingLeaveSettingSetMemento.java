@@ -96,8 +96,17 @@ public class JpaNursingLeaveSettingSetMemento implements NursingLeaveSettingSetM
      */
     @Override
     public void setMaxPersonSetting(MaxPersonSetting maxPersonSetting) {
+    	if(maxPersonSetting.getNursingNumberLeaveDay() != null){
     	this.entityNursing.setNursingNumLeaveDay(maxPersonSetting.getNursingNumberLeaveDay().v());
-    	this.entityNursing.setNursingNumLeaveDay2(maxPersonSetting.getNursingNumberLeaveDay2().v());
+    	}else{
+    	this.entityNursing.setNursingNumLeaveDay(0);	
+    	}
+    	if(maxPersonSetting.getNursingNumberLeaveDay2() != null){
+    		this.entityNursing.setNursingNumLeaveDay2(maxPersonSetting.getNursingNumberLeaveDay2().v());	
+    	}
+    	else{
+    	this.entityNursing.setNursingNumLeaveDay2(0);
+    	}
     }
 
 	@Override
