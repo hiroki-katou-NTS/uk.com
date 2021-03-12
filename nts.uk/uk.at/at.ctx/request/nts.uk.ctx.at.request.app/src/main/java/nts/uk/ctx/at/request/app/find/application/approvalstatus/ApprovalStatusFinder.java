@@ -46,12 +46,12 @@ import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.Appro
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttAppOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApprovalSttByEmpListOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ApproverOutput;
+import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.ConfirmWorkplaceInfoOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.DisplayWorkplace;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.SendMailResultOutput;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnApprovalSendMail;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.UnConfrSendMailParam;
 import nts.uk.ctx.at.request.dom.application.approvalstatus.service.output.WorkplaceInfor;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeEmailImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalBehaviorAtrImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailholidayinstruction.Content;
@@ -744,7 +744,8 @@ public class ApprovalStatusFinder {
 		return ApprSttConfirmEmpMonthDayDto.fromDomain(apprSttConfirmEmpMonthDay);
 	}
 	
-	public List<EmployeeEmailImport> getEmploymentConfirmInfo(String wkpID) {
-		return appSttService.getEmploymentConfirmInfo(wkpID);
+	public ConfirmWorkplaceInfoOutput getEmploymentConfirmInfo(String wkpID, String roleID) {
+		String loginID = AppContexts.user().employeeId();
+		return appSttService.getEmploymentConfirmInfo(wkpID, loginID, roleID);
 	}
 }

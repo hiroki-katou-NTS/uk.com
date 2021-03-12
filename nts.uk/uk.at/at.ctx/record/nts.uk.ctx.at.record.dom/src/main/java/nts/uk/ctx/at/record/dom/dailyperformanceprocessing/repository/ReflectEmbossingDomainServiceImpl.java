@@ -55,7 +55,6 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.time
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.AttendanceLeavingGate;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.LogOnInfo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.PCLogOnNo;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.StampReflectRangeOutput;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.StampReflectTimezoneOutput;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.TimeZoneOutput;
@@ -72,6 +71,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.Superiority;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSet;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
@@ -828,7 +828,7 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 			} else {
 				ArrayList<AttendanceLeavingGate> attendanceLeavingGates = new ArrayList<AttendanceLeavingGate>();
 				attendanceLeavingGates.add(new AttendanceLeavingGate(
-						new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(worktNo), null, null));
+						new WorkNo(worktNo), null, null));
 				attendanceLeavingGateOfDaily = new AttendanceLeavingGateOfDaily(employeeId, date,
 						attendanceLeavingGates);
 				indexAttendanceLeavingGate = 0;
@@ -895,10 +895,10 @@ public class ReflectEmbossingDomainServiceImpl implements ReflectEmbossingDomain
 		if (indexAttendanceLeavingGate == -1) {
 			if ("入門".equals(inOrOutClass)) {
 				attendanceLeavingGates.add(new AttendanceLeavingGate(
-						new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(worktNo), inorOutStamp, null));
+						new WorkNo(worktNo), inorOutStamp, null));
 			} else {
 				attendanceLeavingGates.add(new AttendanceLeavingGate(
-						new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(worktNo), null, inorOutStamp));
+						new WorkNo(worktNo), null, inorOutStamp));
 			}
 			return attendanceLeavingGateOfDaily;
 		}

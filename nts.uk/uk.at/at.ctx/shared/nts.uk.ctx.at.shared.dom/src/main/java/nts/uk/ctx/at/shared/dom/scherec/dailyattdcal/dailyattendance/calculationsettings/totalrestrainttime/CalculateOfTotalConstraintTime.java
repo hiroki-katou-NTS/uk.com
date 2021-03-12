@@ -14,8 +14,8 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancet
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.AttendanceLeavingGateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.PCLogOnInfoOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.PCLogOnNo;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**

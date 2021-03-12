@@ -787,8 +787,12 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 	}
 	
 	@Override
-	public Optional<WkpCdNameExport> findByWkpId(String wkpId) {	
-		WorkplaceInfo optWorkplaceInfo = workplaceInformationRepository.findByWkpId(wkpId).get(0);
+	public Optional<WkpCdNameExport> findByWkpId(String wkpId) {
+		List<WorkplaceInfo> workplaceInfoLst = workplaceInformationRepository.findByWkpId(wkpId);
+		if(CollectionUtil.isEmpty(workplaceInfoLst)) {
+			return Optional.empty();
+		}
+		WorkplaceInfo optWorkplaceInfo = workplaceInfoLst.get(0);
 		return Optional.of(WkpCdNameExport.builder().wkpCode(optWorkplaceInfo.getWorkplaceCode().v())
 				.wkpName(optWorkplaceInfo.getWorkplaceName().v()).build());
 	}
