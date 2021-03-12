@@ -1,14 +1,20 @@
 module nts.uk.at.view.kdp010.i {
 	export module viewmodel {
 		export class ScreenModel {
-
 			// H1_2
 			optionHighlight: KnockoutObservableArray<any> = ko.observableArray([
 				{ id: 1, name: nts.uk.resource.getText("KDP010_108") },
 				{ id: 0, name: nts.uk.resource.getText("KDP010_109") }
 			]);
+			
 			selectedHighlight: KnockoutObservable<number> = ko.observable(1);
-
+			
+			supportWplSetOption: KnockoutObservableArray<any> = ko.observableArray([
+				{ id: 1, name: nts.uk.resource.getText("KDP010_341") },
+				{ id: 0, name: nts.uk.resource.getText("KDP010_342") }
+			]);
+			supportWplSet: KnockoutObservable<number> = ko.observable(1);
+			
 			// H2_2
 			contentsStampType: KnockoutObservableArray<any> = ko.observableArray(__viewContext.enums.ContentsStampType);
 			selectedDay: KnockoutObservable<number> = ko.observable(1);
