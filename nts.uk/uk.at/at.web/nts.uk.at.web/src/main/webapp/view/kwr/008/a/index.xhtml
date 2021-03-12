@@ -183,7 +183,7 @@
 									<td class="pt-7">
 											<!-- A4_2 -->
 											<div
-												id="outputItem"
+												id="outputItemFreeSetting"
 												tabindex="5"
 												data-bind="ntsComboBox: {
 													name: '#{i18n.getText('KWR008_73')}',
@@ -254,17 +254,16 @@
 						<div
 							data-bind="visible: selectAverage() &amp;&amp; printFormat() == 1"
 							class="valign-center">
-							<div data-bind="ntsFormLabel: { required:false }">#{i18n.getText('KWR008_67')}</div>
+							<div data-bind="ntsFormLabel: { required:selectAverage }">#{i18n.getText('KWR008_67')}</div>
 							<div data-bind="with: standardMonth" class="date-range-picker">
 								<input
 									id="C11_2"
 									tabindex="12"
-									data-bind="ntsTextEditor:{
+									data-bind="ntsNumberEditor:{
 										name: '#{i18n.getText('KWR008_67')}',
-										required: true,
+										required: required,
 										value: $parent.curentMonth,
 										option: option,
-										required: required,
 										constraint: 'Month'
 									}"
 									style="width: 35px;"/>

@@ -173,6 +173,7 @@ module nts.uk.at.view.kwr008.a {
                     if (self.selectAverage() && self.printFormat() === share.AnnualWorkSheetPrintingForm.AGREEMENT_CHECK_36) {
                         self.getCurentMonth();
                     }
+                    nts.uk.ui.errors.clearAll();
                 });
 
                 self.selectedEmployeeCode = ko.observableArray([]);
@@ -502,11 +503,28 @@ module nts.uk.at.view.kwr008.a {
             }
             public validate(): boolean {
                 let self = this;
-                if (self.printFormat() == 0) {
+                if (self.printFormat() === 0) {
                     $('#period .ntsDatepicker').trigger('validate');
                 } else {
-                    $('.nts-input').trigger('validate');
+                    // $('.nts-input').trigger('validate');
                     $('#A9_2').trigger('validate');
+                }
+                if (self.selectionType() === share.SelectionClassification.STANDARD) {
+                    $('#outputItem').trigger('validate');
+                    if (!self.selectedOutputItemFree()) {
+                        error({ messageId: "Msg_1783"});
+                        return;
+                    }
+                }
+                if (self.selectionType() === share.SelectionClassification.FREE_SETTING) {
+                    $('#outputItemFreeSetting').trigger('validate');
+                    if (!self.selectedOutputItem()) {
+                        error({ messageId: "Msg_1784"});
+                        return;
+                    }
+                }
+                if (self.selectAverage()) {
+                    $('#C11_2').trigger('validate');
                 }
                 $('#outputItem').trigger('validate');
                 return nts.uk.ui.errors.hasError();
