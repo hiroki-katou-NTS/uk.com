@@ -26,6 +26,8 @@ module nts.uk.ui.at.ksu002.a {
         value: {
             begin: string | number | null;
             finish: string | number | null;
+            required: WORKTIME_SETTING;
+            validate: boolean;
         };
         state: StateEdit<EDIT_STATE>;
         comfirmed: boolean;
