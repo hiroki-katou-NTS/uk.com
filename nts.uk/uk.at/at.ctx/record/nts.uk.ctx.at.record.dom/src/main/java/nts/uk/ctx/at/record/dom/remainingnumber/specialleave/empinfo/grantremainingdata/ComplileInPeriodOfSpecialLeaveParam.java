@@ -44,11 +44,7 @@ public class ComplileInPeriodOfSpecialLeaveParam {
 	/**上書きフラグ	 */
 	private boolean overwriteFlg;
 	/**	上書き用の暫定管理データ */
-	private List<InterimRemain> remainData;
-	/**
-	 * 特別休暇暫定データ
-	 */
-	List<InterimSpecialHolidayMng> interimSpecialData;
+	private List<InterimSpecialHolidayMng> interimSpecialData;
 //	/**
 //	 * 前回の特別休暇の集計結果情報
 //	 */

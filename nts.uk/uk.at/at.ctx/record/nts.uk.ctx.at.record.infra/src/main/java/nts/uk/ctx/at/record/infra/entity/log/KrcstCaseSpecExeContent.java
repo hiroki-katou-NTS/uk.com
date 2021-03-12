@@ -20,12 +20,12 @@ import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.CaseSpecExeContent;
 //import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCST_CASE_SPEC_EXE_CONT")
-public class KrcstCaseSpecExeContent extends UkJpaEntity implements Serializable {
+@Table(name = "KRCMT_EXEC_CASE")
+public class KrcstCaseSpecExeContent extends ContractUkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -45,7 +45,7 @@ public class KrcstCaseSpecExeContent extends UkJpaEntity implements Serializable
 	public String monthlyAggSetInforID;
 	
 	@OneToOne(mappedBy="caseSpecExeContentMonthly", cascade = CascadeType.ALL, optional = true)
-	@JoinTable(name = "KRCST_CAL_EXE_SET_INFO", joinColumns = {
+	@JoinTable(name = "KRCMT_EXEC_CASE_DETAIL", joinColumns = {
 		@JoinColumn(name="MONTHLY_AGG_SET_INFOR_ID", referencedColumnName="CAL_EXECUTION_SET_INFO_ID", insertable = false, updatable = false, nullable=true)
 	})
 	public KrcdtCalExeSetInfor monthlyAggSetInfor;
@@ -54,7 +54,7 @@ public class KrcstCaseSpecExeContent extends UkJpaEntity implements Serializable
 	public String refApprovalSetInfoID;
 	
 	@OneToOne(mappedBy="caseSpecExeContentRef", cascade = CascadeType.ALL, optional = true)
-	@JoinTable(name = "KRCST_CAL_EXE_SET_INFO", joinColumns = {
+	@JoinTable(name = "KRCMT_EXEC_CASE_DETAIL", joinColumns = {
 			@JoinColumn(name="REF_APPROVAL_SET_INFO_ID", referencedColumnName="CAL_EXECUTION_SET_INFO_ID", insertable = false, updatable = false, nullable=true)
 	})
 	public KrcdtCalExeSetInfor refApprovalSetInfo;
@@ -63,7 +63,7 @@ public class KrcstCaseSpecExeContent extends UkJpaEntity implements Serializable
 	public String dailyCalSetInfoID;
 	
 	@OneToOne(mappedBy="caseSpecExeContentCal", cascade = CascadeType.ALL, optional = true)
-	@JoinTable(name = "KRCST_CAL_EXE_SET_INFO", joinColumns = {
+	@JoinTable(name = "KRCMT_EXEC_CASE_DETAIL", joinColumns = {
 			@JoinColumn(name="DAILY_CAL_SET_INFO_ID", referencedColumnName="CAL_EXECUTION_SET_INFO_ID", insertable = false, updatable = false, nullable=true)
 	})
 	public KrcdtCalExeSetInfor dailyCalSetInfo;
@@ -72,7 +72,7 @@ public class KrcstCaseSpecExeContent extends UkJpaEntity implements Serializable
 	public String dailyCreatSetInforID;
 	
 	@OneToOne(mappedBy="caseSpecExeContentCreat", cascade = CascadeType.ALL, optional = true)
-	@JoinTable(name = "KRCST_CAL_EXE_SET_INFO", joinColumns = {
+	@JoinTable(name = "KRCMT_EXEC_CASE_DETAIL", joinColumns = {
 			@JoinColumn(name="DAILY_CREAT_SET_INFO_ID", referencedColumnName="CAL_EXECUTION_SET_INFO_ID", insertable = false, updatable = false, nullable=true)
 	})
 	public KrcdtCalExeSetInfor dailyCreatSetInfor;

@@ -383,13 +383,55 @@ module cmm045.a.viewmodel {
             if (self.mode() == 0) {
                 character.restore('TableColumnWidth0' + __viewContext.user.companyId + __viewContext.user.employeeId).then((obj) => {
                     if(obj !== undefined) {
-                        if(contentWidth !== obj.width.appContent) {
+						let detailsWidth = obj.width.details,
+							applicantNameWidth = obj.width.applicantName,
+							appTypeWidth = obj.width.appType,
+							prePostAtrWidth = obj.width.prePostAtr,
+							appDateWidth = obj.width.appDate,
+							contentWidth = obj.width.appContent,
+							inputDateWidth = obj.width.inputDate,
+							reflectionStatusWidth = obj.width.reflectionStatus,
+							opApprovalStatusInquiryWidth = obj.width.opApprovalStatusInquiry;
+						let oldWidth = {
+							'details': detailsWidth,
+							'applicantName': applicantNameWidth,
+							'appType': appTypeWidth,
+							'prePostAtr': prePostAtrWidth,
+							'appDate': appDateWidth,
+							'appContent': contentWidth,
+							'inputDate': inputDateWidth,
+							'reflectionStatus': reflectionStatusWidth,
+							'opApprovalStatusInquiry': opApprovalStatusInquiryWidth
+						};
+                        if(JSON.stringify(self.columnWidth.width) !== JSON.stringify(oldWidth)) {
                             character.save('TableColumnWidth0' + __viewContext.user.companyId + __viewContext.user.employeeId, self.columnWidth).then(() => {
                                 nts.uk.ui.dialog.info({ messageId: "Msg_357" });
                             });
                         }
                     } else {
-                        if(contentWidth !== 340) {
+						let widthAuto = window.innerWidth - 90 > 880 ? window.innerWidth - 129 : 845,
+							detailsWidth = 55,
+							applicantNameWidth = 120,
+							appTypeWidth = 90,
+							prePostAtrWidth = 65,
+							appDateWidth = 155,
+							contentWidth = 340,
+							inputDateWidth = 120,
+							reflectionStatusWidth = 75,
+							opApprovalStatusInquiryWidth = 95;
+							contentWidth = widthAuto - 55 - 120 - 90 - 65- 155 - 120 - 75 - 95 - 5;
+						let oldWidth = {
+							'details': detailsWidth,
+							'applicantName': applicantNameWidth,
+							'appType': appTypeWidth,
+							'prePostAtr': prePostAtrWidth,
+							'appDate': appDateWidth,
+							'appContent': contentWidth,
+							'inputDate': inputDateWidth,
+							'reflectionStatus': reflectionStatusWidth,
+							'opApprovalStatusInquiry': opApprovalStatusInquiryWidth
+						};
+                        if(JSON.stringify(self.columnWidth.width) !== JSON.stringify(oldWidth)) {
                             character.save('TableColumnWidth0' + __viewContext.user.companyId + __viewContext.user.employeeId, self.columnWidth).then(() => {
                                 nts.uk.ui.dialog.info({ messageId: "Msg_357" });
                             });
@@ -399,13 +441,59 @@ module cmm045.a.viewmodel {
             } else {
                 character.restore('TableColumnWidth1' + __viewContext.user.companyId + __viewContext.user.employeeId).then((obj) => {
                     if(obj !== undefined) {
-                        if(contentWidth !== obj.width.appContent) {
+						let checkWidth = obj.width.check,
+							detailsWidth = obj.width.details,
+							applicantNameWidth = obj.width.applicantName,
+							appTypeWidth = obj.width.appType,
+							prePostAtrWidth = obj.width.prePostAtr,
+							appDateWidth = obj.width.appDate,
+							contentWidth = obj.width.appContent,
+							inputDateWidth = obj.width.inputDate,
+							reflectionStatusWidth = obj.width.reflectionStatus,
+							opApprovalStatusInquiryWidth = obj.width.opApprovalStatusInquiry;
+						let oldWidth = {
+							'check': checkWidth,
+							'details': detailsWidth,
+							'applicantName': applicantNameWidth,
+							'appType': appTypeWidth,
+							'prePostAtr': prePostAtrWidth,
+							'appDate': appDateWidth,
+							'appContent': contentWidth,
+							'inputDate': inputDateWidth,
+							'reflectionStatus': reflectionStatusWidth,
+							'opApprovalStatusInquiry': opApprovalStatusInquiryWidth
+						};
+                        if(JSON.stringify(self.columnWidth.width) !== JSON.stringify(oldWidth)) {
                             character.save('TableColumnWidth1' + __viewContext.user.companyId + __viewContext.user.employeeId, self.columnWidth).then(() => {
                                 nts.uk.ui.dialog.info({ messageId: "Msg_357" });
                             });
                         }
                     } else {
-                        if(contentWidth !== 340) {
+						let widthAuto = window.innerWidth - 90 > 965 ? window.innerWidth - 134 : 920,
+							checkWidth = 35,
+							detailsWidth = 55,
+							applicantNameWidth = 120,
+							appTypeWidth = 90,
+							prePostAtrWidth = 65,
+							appDateWidth = 157,
+							contentWidth = 340,
+							inputDateWidth = 120,
+							reflectionStatusWidth = 75,
+							opApprovalStatusInquiryWidth = 95;
+							contentWidth = widthAuto - 35 - 55 - 120 - 90 - 65- 157 - 120 - 75 - 95 - 5;
+						let oldWidth = {
+							'check': checkWidth,
+							'details': detailsWidth,
+							'applicantName': applicantNameWidth,
+							'appType': appTypeWidth,
+							'prePostAtr': prePostAtrWidth,
+							'appDate': appDateWidth,
+							'appContent': contentWidth,
+							'inputDate': inputDateWidth,
+							'reflectionStatus': reflectionStatusWidth,
+							'opApprovalStatusInquiry': opApprovalStatusInquiryWidth
+						};
+                        if(JSON.stringify(self.columnWidth.width) !== JSON.stringify(oldWidth)) {
                             character.save('TableColumnWidth1' + __viewContext.user.companyId + __viewContext.user.employeeId, self.columnWidth).then(() => {
                                 nts.uk.ui.dialog.info({ messageId: "Msg_357" });
                             });
@@ -1072,7 +1160,7 @@ module cmm045.a.viewmodel {
                         } else {
 							let linkAppDate = null;
 							if(item.appType==10) {
-								if(item.opComplementLeaveApp.complementLeaveFlg==1) {
+								if(!_.isNull(item.opComplementLeaveApp.complementLeaveFlg)) {
 									linkAppDate = moment(item.opComplementLeaveApp.linkAppDate).format("M/D(ddd)");
 								}	
 							}
@@ -1145,7 +1233,7 @@ module cmm045.a.viewmodel {
                 let time = moment(item[key]).format("M/D(ddd) H:mm");
 				let isSyncApp = false;
 				if(item.appType==10) {
-					if(item.opComplementLeaveApp.complementLeaveFlg==1) {
+					if(!_.isNull(item.opComplementLeaveApp.complementLeaveFlg)) {
 						isSyncApp = true;	
 					}
 				}
@@ -1158,7 +1246,7 @@ module cmm045.a.viewmodel {
 				let statusStr = _.escape(getText(item[key]));
 				let isSyncApp = false;
 				if(item.appType==10) {
-					if(item.opComplementLeaveApp.complementLeaveFlg==1) {
+					if(!_.isNull(item.opComplementLeaveApp.complementLeaveFlg)) {
 						isSyncApp = true;	
 					}
 				}

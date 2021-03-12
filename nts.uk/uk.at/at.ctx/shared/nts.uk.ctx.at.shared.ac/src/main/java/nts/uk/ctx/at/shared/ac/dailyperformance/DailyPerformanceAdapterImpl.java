@@ -29,10 +29,6 @@ public class DailyPerformanceAdapterImpl implements DailyPerformanceAdapter {
 	@Inject
 	private IntermediateDataPub intermediateDataPub;
 	
-	@Override
-	public boolean checkDataApproveed(GeneralDate startDate, GeneralDate endDate, String approverID, Integer rootType,String companyID) {
-		return approvalRootStatePub.checkDataApproveed(startDate, endDate, approverID, rootType, companyID);}
-	
 	public List<ApproveRootStatusForEmpImport> getApprovalByListEmplAndListApprovalRecordDate(List<GeneralDate> approvalRecordDates, List<String> employeeID,Integer rootType){
 		return approvalRootStatePub.getApprovalByListEmplAndListApprovalRecordDate(approvalRecordDates, employeeID, rootType).stream().map(item ->{
 			return new ApproveRootStatusForEmpImport(item.getEmployeeID(), item.getAppDate(), item.getApprovalStatus().value);

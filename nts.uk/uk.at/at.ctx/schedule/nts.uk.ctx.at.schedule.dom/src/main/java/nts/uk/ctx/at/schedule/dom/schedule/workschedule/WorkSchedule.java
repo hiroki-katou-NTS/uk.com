@@ -87,30 +87,6 @@ public class WorkSchedule implements DomainAggregate {
 	private Optional<OutingTimeOfDailyAttd> outingTime;
 
 	/**
-	 * TODO 勤務予定に外出時間帯を追加、あとで直す！！
-	 * 外出時間帯を追加したことによってコンパイルエラーが発生するため、
-	 * 一旦仮で外出時間帯以外を受け付けるコンストラクタを用意。
-	 */
-	public WorkSchedule(String sid, GeneralDate date, ConfirmedATR confirmedAtr, 
-			WorkInfoOfDailyAttendance workInfo, AffiliationInforOfDailyAttd affInfo, 
-			BreakTimeOfDailyAttd breakTime, List<EditStateOfDailyAttd> editState, 
-			Optional<TimeLeavingOfDailyAttd> timeLeaving, Optional<AttendanceTimeOfDailyAttendance> attendanceTime,
-			Optional<ShortTimeOfDailyAttd> sortTimeWork) {
-
-		this.employeeID = sid;
-		this.ymd = date;
-		this.confirmedATR = confirmedAtr;
-		this.workInfo = workInfo;
-		this.affInfo = affInfo;
-		this.lstBreakTime = breakTime;
-		this.lstEditState = editState;
-		this.optTimeLeaving = timeLeaving;
-		this.optAttendanceTime = attendanceTime;
-		this.optSortTimeWork = sortTimeWork;
-		this.outingTime = Optional.empty();
-	}
-	
-	/**
 	 * 作る
 	 * @param require
 	 * @param employeeId 社員ID
@@ -126,7 +102,7 @@ public class WorkSchedule implements DomainAggregate {
 			){
 		
 		if (! workInformation.checkNormalCondition(require) ) {
-			throw new BusinessException("Msg_430");
+			throw new BusinessException("Msg_2119");
 		}
 			
 		return new WorkSchedule(
@@ -146,6 +122,7 @@ public class WorkSchedule implements DomainAggregate {
 				Optional.of(TimeLeavingOfDailyAttd.createByPredetermineZone(
 						require, 
 						workInformation)), 
+				Optional.empty(), 
 				Optional.empty(), 
 				Optional.empty());
 	}
@@ -298,7 +275,6 @@ public class WorkSchedule implements DomainAggregate {
 		}
 
 	}
-	
 	/**
 	 * 値を手修正で変更
 	 * @param require
@@ -495,11 +471,18 @@ public class WorkSchedule implements DomainAggregate {
 		
 		// update EditState of BreakTime(1...size)
 		this.lstEditState.removeIf( editState -> WS_AttendanceItem.isBreakTime( editState.getAttendanceItemId() ) );
-		List<WS_AttendanceItem> updatedAttendanceItemList = WS_AttendanceItem.getBreakTimeItemWithSize( newBreakTimeList.size() );
+		
+		List<WS_AttendanceItem> updatedAttendanceItemList;
+		if ( newBreakTimeList.isEmpty() ) {
+			updatedAttendanceItemList = new ArrayList<>(Arrays.asList( 
+					WS_AttendanceItem.StartBreakTime1, 
+					WS_AttendanceItem.BreakTime) );
+		} else {
+			updatedAttendanceItemList = WS_AttendanceItem.getBreakTimeItemWithSize( newBreakTimeList.size() );
+			updatedAttendanceItemList.add(WS_AttendanceItem.BreakTime);
+		}
 		updatedAttendanceItemList.forEach( item -> this.lstEditState.add(
 				EditStateOfDailyAttd.createByHandCorrection(require, item.ID, this.employeeID)));
-		// update EditState of BreakTime 休憩時間
-		this.lstEditState.add(EditStateOfDailyAttd.createByHandCorrection(require, WS_AttendanceItem.BreakTime.ID, this.employeeID));
 	}
 	
 	public static interface Require extends 

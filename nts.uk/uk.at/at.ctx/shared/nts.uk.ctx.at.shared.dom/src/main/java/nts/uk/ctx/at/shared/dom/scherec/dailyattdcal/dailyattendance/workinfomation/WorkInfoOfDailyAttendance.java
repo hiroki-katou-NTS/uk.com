@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.val;
 import nts.arc.layer.dom.objecttype.DomainObject;
 import nts.uk.ctx.at.shared.dom.WorkInfoAndTimeZone;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
@@ -173,12 +175,17 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 		timeZoneOpt.ifPresent(workInfoTimeZone -> {
 			List<TimeZone> lstTimeZone = workInfoTimeZone.getTimeZones().stream()
 					.sorted((x, y) -> x.getStart().v() - y.getStart().v()).collect(Collectors.toList());
-			this.getScheduleTimeSheets().forEach(x -> {
-				TimeZone timeZone = (lstTimeZone.size() <= (x.getWorkNo().v() - 1)) ? null
-						: lstTimeZone.get(x.getWorkNo().v() - 1);
-				if (timeZone != null) {
-					x.setAttendance(timeZone.getStart());
-					x.setLeaveWork(timeZone.getEnd());
+			
+			IntStream.range(0,  lstTimeZone.size()).forEach(i -> {
+				TimeZone timeZone = lstTimeZone.get(i);
+				val schedule = this.getScheduleTimeSheets().stream().filter(x -> (x.getWorkNo().v() - 1) == i)
+						.findFirst();
+				if (schedule.isPresent()) {
+					schedule.get().setAttendance(timeZone.getStart());
+					schedule.get().setLeaveWork(timeZone.getEnd());
+				} else {
+					this.getScheduleTimeSheets()
+							.add(new ScheduleTimeSheet(i + 1, timeZone.getStart().v(), timeZone.getEnd().v()));
 				}
 			});
 		});

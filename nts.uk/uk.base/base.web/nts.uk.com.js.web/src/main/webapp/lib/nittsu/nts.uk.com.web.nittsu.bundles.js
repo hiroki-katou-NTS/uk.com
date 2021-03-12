@@ -6263,44 +6263,27 @@ var nts;
              */
             var block;
             (function (block) {
-                function invisible() {
-                    var rect = calcRect();
-                    $.blockUI({
-                        message: null,
-                        overlayCSS: { opacity: 0 },
-                        css: {
-                            width: rect.width,
-                            left: rect.left
-                        }
-                    });
-                }
-                block.invisible = invisible;
-                function grayout() {
-                    var rect = calcRect();
-                    $.blockUI({
-                        message: '<div class="block-ui-message">' + toBeResource.plzWait + '</div>',
-                        fadeIn: 200,
-                        css: {
-                            width: rect.width,
-                            left: rect.left
-                        }
-                    });
-                }
-                block.grayout = grayout;
-                function clear() {
-                    $.unblockUI({
-                        fadeOut: 200
-                    });
+                function clear(el) {
+                    if (el === void 0) { el = document.body; }
+                    var fadeOut = 200;
+                    $(el).unblock({ fadeOut: fadeOut });
                 }
                 block.clear = clear;
-                function calcRect() {
-                    var width = 220;
-                    var left = ($(window).width() - width) / 2;
-                    return {
-                        width: width,
-                        left: left
-                    };
+                function grayout(el) {
+                    if (el === void 0) { el = document.body; }
+                    var fadeIn = 200;
+                    var message = toBeResource.plzWait;
+                    var css = { width: '220px', 'line-height': '32px' };
+                    $(el).block({ message: message, fadeIn: fadeIn, css: css });
                 }
+                block.grayout = grayout;
+                function invisible(el) {
+                    if (el === void 0) { el = document.body; }
+                    var message = null;
+                    var overlayCSS = { opacity: 0 };
+                    $(el).block({ message: message, overlayCSS: overlayCSS });
+                }
+                block.invisible = invisible;
             })(block = ui.block || (ui.block = {}));
             var DirtyChecker = /** @class */ (function () {
                 function DirtyChecker(targetViewModelObservable) {
@@ -6799,7 +6782,7 @@ var nts;
                 }
                 windows.setShared = setShared;
                 function getSelf() {
-                    return windows.container.windows[windows.selfId];
+                    return windows.selfId ? windows.container.windows[windows.selfId] : this;
                 }
                 windows.getSelf = getSelf;
                 function close(windowId) {
@@ -49449,6 +49432,7 @@ var nts;
             var bindings;
             (function (bindings) {
                 var P_URL = 'https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js';
+                var M_URL = 'https://cdnjs.cloudflare.com/ajax/libs/markdown-it/12.0.4/markdown-it.min.js';
                 var PrettyPrintBindingHandler = /** @class */ (function () {
                     function PrettyPrintBindingHandler() {
                     }
@@ -49487,6 +49471,7 @@ var nts;
                             element.innerHTML = prettyPrintOne(_.escape(html), lang, false);
                             element.classList.add('prettyprint');
                         });
+                        element.removeAttribute('data-bind');
                         return { controlsDescendantBindings: true };
                     };
                     PrettyPrintBindingHandler = __decorate([
@@ -49497,6 +49482,69 @@ var nts;
                     return PrettyPrintBindingHandler;
                 }());
                 bindings.PrettyPrintBindingHandler = PrettyPrintBindingHandler;
+                var MarkdownBindingHandler = /** @class */ (function () {
+                    function MarkdownBindingHandler() {
+                    }
+                    MarkdownBindingHandler.prototype.init = function (element, valueAccessor, allValueAccessor) {
+                        var contents = valueAccessor() || element.innerHTML;
+                        $.Deferred()
+                            .resolve()
+                            .then(function () {
+                            var PR = _.get(window, 'PR');
+                            if (!PR) {
+                                var st = $('<style>', {
+                                    type: 'text/css',
+                                    rel: 'stylesheet',
+                                    html: "\n                            .prettyprint {\n                                box-sizing: border-box;\n                                background: #f5f5f5;\n                                max-width: 100%;\n                                padding: 5px !important;\n                                margin: 10px 0;\n                                border: none !important;\n                                overflow: auto;\n                                border-radius: 5px;\n                            }\n                            .prettyprint,\n                            .prettyprint * {\n                                font-family: Consolas;\n                            }".trim().replace(/\s{1,}/g, ' ')
+                                });
+                                st.appendTo(document.head);
+                                return $.getScript(P_URL);
+                            }
+                            return PR;
+                        })
+                            .then(function () {
+                            var markdownit = _.get(window, 'markdownit');
+                            if (!markdownit) {
+                                return $.getScript(M_URL);
+                            }
+                            return markdownit;
+                        })
+                            .then(function () {
+                            var prettyPrintOne = PR.prettyPrintOne;
+                            return markdownit({
+                                highlight: function (str, lng) {
+                                    return prettyPrintOne(_.escape(str), lng, false);
+                                }
+                            });
+                        })
+                            .then(function (md) {
+                            if (!contents.match(/\.md$/)) {
+                                return md.render(contents);
+                            }
+                            else {
+                                return $.get(contents).then(function (ctx) { return md.render(ctx); });
+                            }
+                        })
+                            .then(function (html) {
+                            element.innerHTML = html;
+                            element.classList.add('markdown-content');
+                            element
+                                .querySelectorAll('pre')
+                                .forEach(function (e) { return e.classList.add('prettyprint'); });
+                        });
+                        element.removeAttribute('data-bind');
+                        return { controlsDescendantBindings: true };
+                    };
+                    MarkdownBindingHandler = __decorate([
+                        handler({
+                            bindingName: 'markdown',
+                            validatable: true,
+                            virtual: false
+                        })
+                    ], MarkdownBindingHandler);
+                    return MarkdownBindingHandler;
+                }());
+                bindings.MarkdownBindingHandler = MarkdownBindingHandler;
             })(bindings = ui.bindings || (ui.bindings = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -50059,6 +50107,180 @@ var nts;
                 ko.bindingHandlers['ntsTreeDragAndDrop'] = new NtsTreeDragAndDropBindingHandler();
             })(koExtentions = ui_34.koExtentions || (ui_34.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var knockout;
+        (function (knockout) {
+            var binding;
+            (function (binding) {
+                var widget;
+                (function (widget_1) {
+                    var WidgetBindingHandler = /** @class */ (function () {
+                        function WidgetBindingHandler() {
+                        }
+                        WidgetBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                            if (element.tagName !== 'DIV') {
+                                element.innerText = 'Please use [div] tag as container of widget';
+                                return;
+                            }
+                            var accessor = valueAccessor();
+                            ko.computed({
+                                read: function () {
+                                    element.innerHTML = '';
+                                    ko.cleanNode(element);
+                                    var component = ko.unwrap(accessor);
+                                    ko.applyBindingsToNode(element, { component: component }, bindingContext);
+                                },
+                                disposeWhenNodeIsRemoved: element
+                            });
+                            element.removeAttribute('data-bind');
+                            element.classList.add('widget-container');
+                            return { controlsDescendantBindings: true };
+                        };
+                        WidgetBindingHandler = __decorate([
+                            handler({
+                                bindingName: 'widget',
+                                validatable: true,
+                                virtual: false
+                            })
+                        ], WidgetBindingHandler);
+                        return WidgetBindingHandler;
+                    }());
+                    widget_1.WidgetBindingHandler = WidgetBindingHandler;
+                    var WidgetResizeContentBindingHandler = /** @class */ (function () {
+                        function WidgetResizeContentBindingHandler() {
+                        }
+                        WidgetResizeContentBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                            var $el = $(element);
+                            var widget = viewModel.widget;
+                            var WG_SIZE = 'WIDGET_SIZE';
+                            var mkv = new ko.ViewModel();
+                            var minHeight = valueAccessor();
+                            var key = ko.unwrap(widget);
+                            var src = allBindingsAccessor.get('src');
+                            var def = allBindingsAccessor.get('default');
+                            if (def) {
+                                element.style.maxHeight = def + "px";
+                            }
+                            if (element.tagName !== 'DIV') {
+                                element.innerText = 'Please use [div] tag with [widget-content] binding';
+                                return { controlsDescendantBindings: false };
+                            }
+                            ko.computed({
+                                read: function () {
+                                    var mh = ko.unwrap(minHeight);
+                                    if (!mh) {
+                                        element.style.minHeight = '';
+                                    }
+                                    else {
+                                        element.style.minHeight = ko.unwrap(mh) + "px";
+                                    }
+                                },
+                                disposeWhenNodeIsRemoved: element
+                            });
+                            if (src) {
+                                element.innerHTML = '';
+                                var frame = document.createElement('iframe');
+                                frame.src = src;
+                                element.appendChild(frame);
+                            }
+                            $el
+                                .removeAttr('data-bind')
+                                .addClass('widget-content')
+                                .resizable({
+                                handles: 's',
+                                start: function () {
+                                    // clear max height if resize by enduser
+                                    element.style.maxHeight = '';
+                                },
+                                stop: function () {
+                                    var offsetHeight = element.offsetHeight;
+                                    if (key) {
+                                        mkv
+                                            .$window
+                                            .storage(WG_SIZE)
+                                            .then(function (size) { return size || {}; })
+                                            .then(function (size) {
+                                            size[key] = {
+                                                set: true,
+                                                value: offsetHeight + 'px'
+                                            };
+                                            mkv.$window.storage(WG_SIZE, size);
+                                        });
+                                    }
+                                },
+                                resize: function () { return $el.trigger('wg.resize'); }
+                            })
+                                .on('wg.resize', function () {
+                                var scr = $el.find('div').first();
+                                var ctn = $el.closest('.widget-container');
+                                if (scr) {
+                                    var _a = scr.get(0), offsetHeight = _a.offsetHeight, scrollHeight = _a.scrollHeight;
+                                    if (offsetHeight < scrollHeight) {
+                                        ctn.addClass('has-scroll');
+                                    }
+                                    else {
+                                        ctn.removeClass('has-scroll');
+                                    }
+                                }
+                                else {
+                                    ctn.removeClass('has-scroll');
+                                }
+                            })
+                                .find('.ui-resizable-s')
+                                // support quick toggle widget height
+                                .on('dblclick', function () {
+                                var fx = element.style.height;
+                                mkv
+                                    .$window
+                                    .storage(WG_SIZE)
+                                    .then(function (size) { return size || {}; })
+                                    .then(function (size) {
+                                    var height = size[key] || { value: '' };
+                                    var value = height.value;
+                                    if (fx) {
+                                        element.style.height = '';
+                                    }
+                                    else {
+                                        element.style.height = value;
+                                    }
+                                    size[key] = { set: !fx, value: value };
+                                    mkv.$window.storage(WG_SIZE, size);
+                                })
+                                    .always(function () { return $el.trigger('wg.resize'); });
+                            });
+                            if (widget) {
+                                mkv
+                                    .$window
+                                    .storage(WG_SIZE)
+                                    .then(function (size) {
+                                    if (size) {
+                                        var height = size[key];
+                                        if (height && height.set) {
+                                            element.style.height = height.value;
+                                        }
+                                    }
+                                });
+                            }
+                            return { controlsDescendantBindings: false };
+                        };
+                        WidgetResizeContentBindingHandler = __decorate([
+                            handler({
+                                bindingName: 'widget-content',
+                                validatable: true,
+                                virtual: false
+                            })
+                        ], WidgetResizeContentBindingHandler);
+                        return WidgetResizeContentBindingHandler;
+                    }());
+                    widget_1.WidgetResizeContentBindingHandler = WidgetResizeContentBindingHandler;
+                })(widget = binding.widget || (binding.widget = {}));
+            })(binding = knockout.binding || (knockout.binding = {}));
+        })(knockout = uk.knockout || (uk.knockout = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
 /// <reference path="../reference.ts"/>
@@ -50725,7 +50947,9 @@ var nts;
                 });
                 // Hàm blockui được wrapper lại để gọi cho thống nhất
                 BaseViewModel.prototype.$blockui = function $blockui(act) {
-                    return $.Deferred().resolve()
+                    var vm = this;
+                    return $.Deferred()
+                        .resolve(true)
                         .then(function () {
                         switch (act) {
                             default:
@@ -50739,6 +50963,15 @@ var nts;
                                 break;
                             case 'grayout':
                                 block.grayout();
+                                break;
+                            case 'clearView':
+                                block.clear(vm.$el);
+                                break;
+                            case 'grayoutView':
+                                block.grayout(vm.$el);
+                                break;
+                            case 'invisibleView':
+                                block.invisible(vm.$el);
                                 break;
                         }
                     });

@@ -62,16 +62,21 @@ public class GrantDeadline extends DomainObject {
 	 */
 	public static GrantDeadline createFromJavaType(
 			int timeSpecifyMethod,
-			int year,
-			int month,
-			int limitCarryoverDays) {
+			Optional<SpecialVacationDeadline> deadline,
+			Integer limitCarryoverDays) {
+
+		Optional<LimitAccumulationDays> accumulationDays = Optional.empty();
+		Optional<LimitCarryoverDays> carryOverDays = Optional.empty();
+		if(limitCarryoverDays != null)
+			carryOverDays = Optional.of(new LimitCarryoverDays(limitCarryoverDays));
+
+		if(timeSpecifyMethod==0 && limitCarryoverDays != null)
+			accumulationDays = Optional.of(new LimitAccumulationDays(true, carryOverDays));
 
 		return new GrantDeadline(
 				EnumAdaptor.valueOf(timeSpecifyMethod, TimeLimitSpecification.class),
-				Optional.of(SpecialVacationDeadline.createFromJavaType(month, year)),
-				Optional.of(new LimitAccumulationDays(
-					true, Optional.of(new LimitCarryoverDays(limitCarryoverDays))))
-				);
+				deadline,
+				accumulationDays);
 
 	}
 }

@@ -61,7 +61,7 @@ public class CorrectWorkSchedule {
 				integrationOfDaily.getYmd(), workSchedule.getConfirmedATR(), integrationOfDaily.getWorkInformation(),
 				integrationOfDaily.getAffiliationInfor(), integrationOfDaily.getBreakTime(),
 				integrationOfDaily.getEditState(), integrationOfDaily.getAttendanceLeave(),
-				integrationOfDaily.getAttendanceTimeOfDailyPerformance(), integrationOfDaily.getShortTime());
+				integrationOfDaily.getAttendanceTimeOfDailyPerformance(), integrationOfDaily.getShortTime(),integrationOfDaily.getOutingTime());
 		
 		return workSchedules;
 		

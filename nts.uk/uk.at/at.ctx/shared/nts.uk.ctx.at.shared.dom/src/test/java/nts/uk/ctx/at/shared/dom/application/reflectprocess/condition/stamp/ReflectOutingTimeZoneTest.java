@@ -47,13 +47,13 @@ public class ReflectOutingTimeZoneTest {
 
 		assertThat(actualResult).isEqualTo(Arrays.asList(87, 88));
 
-		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(0).getGoOut().get().getStamp().get()
+		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(0).getGoOut().get()
 				.getTimeDay().getTimeWithDay().get().v()).isEqualTo(800);//時刻
 		
-		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(0).getGoOut().get().getStamp().get()
+		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(0).getGoOut().get()
 				.getTimeDay().getReasonTimeChange().getTimeChangeMeans()).isEqualTo(TimeChangeMeans.APPLICATION);//時刻変更手段
 		
-		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(0).getGoOut().get().getStamp().get()
+		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(0).getGoOut().get()
 				.getLocationCode().get().v()).isEqualTo("0002");//場所コード
 
 	}
@@ -86,13 +86,13 @@ public class ReflectOutingTimeZoneTest {
 
 		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(1).getOutingFrameNo().v()).isEqualTo(2);//外出枠NO
 		
-		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(1).getGoOut().get().getStamp().get()
+		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(1).getGoOut().get()
 				.getTimeDay().getTimeWithDay().get().v()).isEqualTo(800);//時刻
 		
-		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(1).getGoOut().get().getStamp().get()
+		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(1).getGoOut().get()
 				.getTimeDay().getReasonTimeChange().getTimeChangeMeans()).isEqualTo(TimeChangeMeans.APPLICATION);//時刻変更手段
 		
-		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(1).getGoOut().get().getStamp().get()
+		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(1).getGoOut().get()
 				.getLocationCode().get().v()).isEqualTo("0002");//場所コード
 	}
 
@@ -122,13 +122,13 @@ public class ReflectOutingTimeZoneTest {
 
 		assertThat(actualResult).isEqualTo(Arrays.asList(91, 90));
 
-		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(0).getComeBack().get().getStamp().get()
+		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(0).getComeBack().get()
 				.getTimeDay().getTimeWithDay().get().v()).isEqualTo(1111);//時刻
 		
-		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(0).getComeBack().get().getStamp().get()
+		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(0).getComeBack().get()
 				.getTimeDay().getReasonTimeChange().getTimeChangeMeans()).isEqualTo(TimeChangeMeans.APPLICATION);//時刻変更手段
 		
-		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(0).getComeBack().get().getStamp().get()
+		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(0).getComeBack().get()
 				.getLocationCode().get().v()).isEqualTo("0002");//場所コード
 	}
 
@@ -161,13 +161,13 @@ public class ReflectOutingTimeZoneTest {
 
 		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(1).getOutingFrameNo().v()).isEqualTo(2);//外出枠NO
 		
-		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(1).getComeBack().get().getStamp().get()
+		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(1).getComeBack().get()
 				.getTimeDay().getTimeWithDay().get().v()).isEqualTo(1111);//時刻
 		
-		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(1).getComeBack().get().getStamp().get()
+		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(1).getComeBack().get()
 				.getTimeDay().getReasonTimeChange().getTimeChangeMeans()).isEqualTo(TimeChangeMeans.APPLICATION);//時刻変更手段
 		
-		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(1).getComeBack().get().getStamp().get()
+		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(1).getComeBack().get()
 				.getLocationCode().get().v()).isEqualTo("0002");//場所コード
 	}
 

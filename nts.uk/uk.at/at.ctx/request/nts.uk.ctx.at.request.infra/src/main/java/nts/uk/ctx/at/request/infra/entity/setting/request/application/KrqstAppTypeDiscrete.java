@@ -10,13 +10,13 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "KRQST_APP_TYPE_DISCRETE")
-public class KrqstAppTypeDiscrete extends UkJpaEntity {
+public class KrqstAppTypeDiscrete extends ContractUkJpaEntity {
 
 	@EmbeddedId
 	public KrqstAppTypeDiscretePK krqstAppTypeDiscretePK;

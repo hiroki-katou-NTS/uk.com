@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * The primary key class for the KRCST_DVGC_ATTENDANCE database table.
+ * The primary key class for the KRCMT_DVGC_ATTENDANCE database table.
  * 
  */
 @Getter
@@ -26,7 +26,7 @@ public class KrcstDvgcAttendancePK implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/** The no. */
-	@Column(name = "[NO]")
+	@Column(name = "NO")
 	private Integer no;
 
 	/** The cid. */

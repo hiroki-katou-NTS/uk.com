@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import lombok.val;
@@ -27,11 +28,13 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.affiliation
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakFrameNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.BreakTimeGoOutTimes;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTotalTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
@@ -86,7 +89,7 @@ public class WorkScheduleTest {
 	public void getters() {
 		WorkSchedule data = new WorkSchedule("employeeID",
 				GeneralDate.today(), ConfirmedATR.CONFIRMED, null, null, new BreakTimeOfDailyAttd(),
-				new ArrayList<>(), Optional.empty(), Optional.empty(), Optional.empty());
+				new ArrayList<>(), Optional.empty(), Optional.empty(), Optional.empty(),Optional.empty());
 		NtsAssert.invokeGetters(data);
 	}
 	
@@ -100,7 +103,7 @@ public class WorkScheduleTest {
 			
 		}};
 		
-		NtsAssert.businessException("Msg_430", 
+		NtsAssert.businessException("Msg_2119", 
 				() -> WorkSchedule.create(require, "empId", GeneralDate.ymd(2020, 11, 1), workInformation));
 		
 	}
@@ -929,61 +932,98 @@ public class WorkScheduleTest {
 		
 	}
 	
-	@Test
-	public void testHandCorrectBreakTimeList(
-			@Injectable BreakTimeOfDailyAttd breakTime) {
+	public static class TestHandCorrectBreakTimeList {
 		
-		List<EditStateOfDailyAttd> editStateList = new ArrayList<>( Arrays.asList(
-				new EditStateOfDailyAttd(WS_AttendanceItem.WorkTime.ID, EditStateSetting.REFLECT_APPLICATION),
-				new EditStateOfDailyAttd(WS_AttendanceItem.StartTime1.ID, EditStateSetting.HAND_CORRECTION_MYSELF),
-				new EditStateOfDailyAttd(WS_AttendanceItem.StartBreakTime1.ID, EditStateSetting.HAND_CORRECTION_MYSELF),
-				new EditStateOfDailyAttd(WS_AttendanceItem.EndBreakTime2.ID, EditStateSetting.HAND_CORRECTION_OTHER),
-				new EditStateOfDailyAttd(WS_AttendanceItem.StartBreakTime5.ID, EditStateSetting.REFLECT_APPLICATION)
-				));
+		@Injectable
+		WorkSchedule.Require require;
 		
-		WorkSchedule workSchedule = Helper.createWithParams(breakTime, editStateList);
+		private WorkSchedule workSchedule;
 		
-		new Expectations() {{
-			require.getLoginEmployeeId();
-			result = workSchedule.getEmployeeID();
-		}};
+		@Before
+		public void init() {
+			
+			BreakTimeOfDailyAttd breakTime = new BreakTimeOfDailyAttd(new ArrayList<>(Arrays.asList(
+					new BreakTimeSheet(new BreakFrameNo(1), TimeWithDayAttr.hourMinute(12, 0), TimeWithDayAttr.hourMinute(13, 0))
+					)));
+			
+			List<EditStateOfDailyAttd> editStateList = new ArrayList<>( Arrays.asList(
+					new EditStateOfDailyAttd(WS_AttendanceItem.WorkTime.ID, EditStateSetting.REFLECT_APPLICATION),
+					new EditStateOfDailyAttd(WS_AttendanceItem.StartTime1.ID, EditStateSetting.HAND_CORRECTION_MYSELF),
+					new EditStateOfDailyAttd(WS_AttendanceItem.StartBreakTime1.ID, EditStateSetting.HAND_CORRECTION_MYSELF),
+					new EditStateOfDailyAttd(WS_AttendanceItem.EndBreakTime2.ID, EditStateSetting.HAND_CORRECTION_OTHER),
+					new EditStateOfDailyAttd(WS_AttendanceItem.StartBreakTime5.ID, EditStateSetting.REFLECT_APPLICATION),
+					new EditStateOfDailyAttd(WS_AttendanceItem.BreakTime.ID, EditStateSetting.HAND_CORRECTION_MYSELF)
+					));
+			
+			workSchedule = Helper.createWithParams(breakTime, editStateList);
+			
+			new Expectations() {{
+				require.getLoginEmployeeId();
+				result = workSchedule.getEmployeeID();
+			}};
+		}
 		
-		// Act
-		workSchedule.handCorrectBreakTimeList(require, Arrays.asList(
-				new TimeSpanForCalc(new TimeWithDayAttr(300), new TimeWithDayAttr(400)),
-				new TimeSpanForCalc(new TimeWithDayAttr(100), new TimeWithDayAttr(200)),
-				new TimeSpanForCalc(new TimeWithDayAttr(500), new TimeWithDayAttr(600))
-				));
+		@Test
+		public void testHandCorrectBreakTimeList_inputEmpty() {
+
+			// Act
+			workSchedule.handCorrectBreakTimeList(require, new ArrayList<>() );
+			
+			assertThat(workSchedule.getLstBreakTime().getBreakTimeSheets()).isEmpty();
+			
+			assertThat( workSchedule.getLstEditState())
+				.extracting( 
+						d -> d.getAttendanceItemId(),
+						d -> d.getEditStateSetting() )
+				.containsExactly(
+						tuple( WS_AttendanceItem.WorkTime.ID, EditStateSetting.REFLECT_APPLICATION),
+						tuple( WS_AttendanceItem.StartTime1.ID, EditStateSetting.HAND_CORRECTION_MYSELF),
+						tuple( WS_AttendanceItem.StartBreakTime1.ID, EditStateSetting.HAND_CORRECTION_MYSELF),
+						tuple( WS_AttendanceItem.BreakTime.ID, EditStateSetting.HAND_CORRECTION_MYSELF)
+						);
+		} 
 		
-		assertThat(workSchedule.getLstBreakTime().getBreakTimeSheets())
-			.extracting( 
-					d -> d.getBreakFrameNo().v(),
-					d -> d.getStartTime().v(),
-					d -> d.getEndTime().v() )
-			.containsExactly(
-					tuple( 1, 100, 200),
-					tuple( 2, 300, 400),
-					tuple( 3, 500, 600)
-					);
 		
-		assertThat( workSchedule.getLstEditState())
-			.extracting( 
-					d -> d.getAttendanceItemId(),
-					d -> d.getEditStateSetting() )
-			.containsExactly(
-					tuple( WS_AttendanceItem.WorkTime.ID, EditStateSetting.REFLECT_APPLICATION),
-					tuple( WS_AttendanceItem.StartTime1.ID, EditStateSetting.HAND_CORRECTION_MYSELF),
-					// 休憩時刻　１～３
-					tuple( WS_AttendanceItem.StartBreakTime1.ID, EditStateSetting.HAND_CORRECTION_MYSELF),
-					tuple( WS_AttendanceItem.EndBreakTime1.ID, EditStateSetting.HAND_CORRECTION_MYSELF),
-					tuple( WS_AttendanceItem.StartBreakTime2.ID, EditStateSetting.HAND_CORRECTION_MYSELF),
-					tuple( WS_AttendanceItem.EndBreakTime2.ID, EditStateSetting.HAND_CORRECTION_MYSELF),
-					tuple( WS_AttendanceItem.StartBreakTime3.ID, EditStateSetting.HAND_CORRECTION_MYSELF),
-					tuple( WS_AttendanceItem.EndBreakTime3.ID, EditStateSetting.HAND_CORRECTION_MYSELF),
-					// 休憩時間
-					tuple( WS_AttendanceItem.BreakTime.ID, EditStateSetting.HAND_CORRECTION_MYSELF)
-					);
-	} 
+		@Test
+		public void testHandCorrectBreakTimeList_inputNotEmpty() {
+			
+			// Act
+			workSchedule.handCorrectBreakTimeList(require, Arrays.asList(
+					new TimeSpanForCalc(new TimeWithDayAttr(300), new TimeWithDayAttr(400)),
+					new TimeSpanForCalc(new TimeWithDayAttr(100), new TimeWithDayAttr(200)),
+					new TimeSpanForCalc(new TimeWithDayAttr(500), new TimeWithDayAttr(600))
+					));
+			
+			assertThat(workSchedule.getLstBreakTime().getBreakTimeSheets())
+				.extracting( 
+						d -> d.getBreakFrameNo().v(),
+						d -> d.getStartTime().v(),
+						d -> d.getEndTime().v() )
+				.containsExactly(
+						tuple( 1, 100, 200),
+						tuple( 2, 300, 400),
+						tuple( 3, 500, 600)
+						);
+			
+			assertThat( workSchedule.getLstEditState())
+				.extracting( 
+						d -> d.getAttendanceItemId(),
+						d -> d.getEditStateSetting() )
+				.containsExactly(
+						tuple( WS_AttendanceItem.WorkTime.ID, EditStateSetting.REFLECT_APPLICATION),
+						tuple( WS_AttendanceItem.StartTime1.ID, EditStateSetting.HAND_CORRECTION_MYSELF),
+						// 休憩時刻　１～３
+						tuple( WS_AttendanceItem.StartBreakTime1.ID, EditStateSetting.HAND_CORRECTION_MYSELF),
+						tuple( WS_AttendanceItem.EndBreakTime1.ID, EditStateSetting.HAND_CORRECTION_MYSELF),
+						tuple( WS_AttendanceItem.StartBreakTime2.ID, EditStateSetting.HAND_CORRECTION_MYSELF),
+						tuple( WS_AttendanceItem.EndBreakTime2.ID, EditStateSetting.HAND_CORRECTION_MYSELF),
+						tuple( WS_AttendanceItem.StartBreakTime3.ID, EditStateSetting.HAND_CORRECTION_MYSELF),
+						tuple( WS_AttendanceItem.EndBreakTime3.ID, EditStateSetting.HAND_CORRECTION_MYSELF),
+						// 休憩時間
+						tuple( WS_AttendanceItem.BreakTime.ID, EditStateSetting.HAND_CORRECTION_MYSELF)
+						);
+		} 
+	}
 	
 	static class Helper {
 		

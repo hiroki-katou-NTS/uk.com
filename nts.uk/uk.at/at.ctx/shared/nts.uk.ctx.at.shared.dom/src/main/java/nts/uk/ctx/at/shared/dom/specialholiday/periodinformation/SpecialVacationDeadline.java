@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * 特別休暇の有効期限
- * 
+ *
  * @author tanlv
  *
  */
@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class SpecialVacationDeadline {
 	/** 月数 */
 	private SpecialVacationMonths months;
-	
+
 	/** 年数 */
 	private SpecialVacationYears years;
 

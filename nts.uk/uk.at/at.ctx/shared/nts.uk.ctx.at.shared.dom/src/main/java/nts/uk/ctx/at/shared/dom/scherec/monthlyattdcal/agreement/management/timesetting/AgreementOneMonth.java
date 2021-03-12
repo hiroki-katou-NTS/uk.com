@@ -1,16 +1,15 @@
 package nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.timesetting;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.val;
-import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.ExcessState;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.AgreementOneMonthTime;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthErrorAlarmTime;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.agreement.management.onemonth.OneMonthTime;
-import org.apache.commons.lang3.tuple.Pair;
 
 /** 36協定1ヶ月 */
 @AllArgsConstructor
@@ -28,8 +27,7 @@ public class AgreementOneMonth {
 	}
 	
 	/** エラーチェック */
-	public AgreementTimeStatusOfMonthly check(AttendanceTimeMonth agreementTarget,
-			AttendanceTimeMonth legalLimitTarget) {
+	public AgreementTimeStatusOfMonthly check(AttendanceTimeMonth agreementTarget, AttendanceTimeMonth legalLimitTarget) {
 		/** エラーチェック */
 		val legalState = this.specConditionLimit.check(legalLimitTarget);
 		

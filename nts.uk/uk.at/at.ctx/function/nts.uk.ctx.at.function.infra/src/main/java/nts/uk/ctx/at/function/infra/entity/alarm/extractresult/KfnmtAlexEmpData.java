@@ -8,13 +8,13 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "KFNMT_ALEX_EMP_DATA")
-public class KfnmtAlexEmpData extends UkJpaEntity {
+public class KfnmtAlexEmpData extends ContractUkJpaEntity {
 
 	@EmbeddedId
 	public KfnmtAlexEmpDataPK pk;

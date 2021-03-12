@@ -98,6 +98,15 @@ public class LeaveGrantRemainingData extends AggregateRoot {
 			return domain;
 	}
 
+	public void setAllValue(LeaveGrantRemainingData a) {
+		this.employeeId = a.employeeId;
+		this.grantDate = a.grantDate;
+		this.deadline = a.deadline;
+		this.expirationStatus = a.expirationStatus;
+		this.registerType = a.registerType;
+		this.details = a.details.clone();
+	}
+
 	/**
 	 * ファクトリー
 	 * @param cid 会社ID
@@ -138,6 +147,7 @@ public class LeaveGrantRemainingData extends AggregateRoot {
 	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
 	 * @param date　年月日
+	 * @param dummyDataList　ダミーデータリスト
 	 */
 	public static void digest(
 			LeaveRemainingNumber.RequireM3 require,
@@ -146,7 +156,8 @@ public class LeaveGrantRemainingData extends AggregateRoot {
 			LeaveUsedNumber leaveUsedNumber,
 			String companyId,
 			String employeeId,
-			GeneralDate date){
+			GeneralDate date,
+			Optional<List<LeaveGrantRemainingData>> dummyDataListOpt){
 
 		// 取得した「付与残数」でループ
 		for (val targetRemainingData : targetRemainingDatas){
@@ -172,7 +183,7 @@ public class LeaveGrantRemainingData extends AggregateRoot {
 			// 消化できなかった休暇使用数をもとに、付与残数ダミーデータを作成する
 
 			// 「年休付与残数データ」を作成する
-			val dummyRemainData = new LeaveGrantRemaining();
+			val dummyRemainData = new LeaveGrantRemainingData();
 
 			dummyRemainData.setLeaveID("");
 			// 社員ID←パラメータ「社員ID」
@@ -213,13 +224,20 @@ public class LeaveGrantRemainingData extends AggregateRoot {
 
 			dummyRemainData.setDetails(leaveNumberInfo);
 
-//			年休不足ダミーフラグ←true
-			dummyRemainData.setDummyAtr(true);
-
 			// 付与残数データに追加
-			targetRemainingDatas.add(dummyRemainData);
-
+//			targetRemainingDatas.add(dummyRemainData);
+			if ( dummyDataListOpt.isPresent() ) {
+				dummyDataListOpt.get().add(dummyRemainData);
+			}
+			else{
+				targetRemainingDatas.add(dummyRemainData);
+			}
 		}
+	}
+
+	/** 残数不足のときにはtrueを返す */
+	public boolean isShortageRemain() {
+		return details.isShortageRemain();
 	}
 
 	@Override

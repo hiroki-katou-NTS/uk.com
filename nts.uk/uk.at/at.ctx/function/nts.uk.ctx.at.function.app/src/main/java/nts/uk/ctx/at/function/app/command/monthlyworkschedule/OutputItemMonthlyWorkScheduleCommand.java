@@ -127,7 +127,7 @@ public class OutputItemMonthlyWorkScheduleCommand implements OutputItemMonthlyWo
 	}
 
 	@Override
-	public String getEmployeeID() {
+	public String getSid() {
 		return this.employeeID;
 	}
 

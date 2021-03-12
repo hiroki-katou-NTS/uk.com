@@ -107,7 +107,7 @@ public class InPeriodOfSpecialLeaveResultInfor {
 	 * @param remainNoMinus 特別休暇の集計結果
 	 * @return 特別休暇月別残数データ
 	 */
-	
+
 //	/**
 //	 * 実特別休暇
 //	 */
@@ -164,10 +164,10 @@ public class InPeriodOfSpecialLeaveResultInfor {
 
 		// 特別休暇月別残数データ.特別休暇←特別休暇情報（期間終了日の期間終了日時点）.残数.特別休暇(マイナスなし)
 		domain.setSpecialLeave(specialLeavResult.getAsOfPeriodEnd().getRemainingNumber().getSpecialLeaveNoMinus());
-		
+
 		//特別休暇月別残数データ.実特別休暇←特別休暇情報（期間終了日の期間終了日時点）.残数.特別休暇(マイナスあり)
 		domain.setActualSpecial(specialLeavResult.getAsOfPeriodEnd().getRemainingNumber().getSpecialLeaveWithMinus());
-		
+
 		//特別休暇月別残数データ.未消化数　←　特別休暇情報（期間終了日の翌日開始時点）．残数．未消化数
 		domain.setUnDegestionNumber(
 				specialLeavResult.getAsOfStartNextDayOfPeriodEnd().getRemainingNumber().getSpecialLeaveUndigestNumber()
@@ -181,7 +181,7 @@ public class InPeriodOfSpecialLeaveResultInfor {
 			domain.setGrantAtr(true);
 			// 特別休暇情報（期間終了日の翌日開始時点）．付与残数データ．付与日がINPUT．期間．開始＋１日～INPUT．期間．終了日＋１の付与残数データ．明細．付与数．日数
 			DatePeriod periodTemp = new DatePeriod(period.start().addDays(1), period.end().addDays(1));
-			double grantUseDay = specialLeavResult.getAsOfStartNextDayOfPeriodEnd().getGrantRemainingList().stream()
+			double grantUseDay = specialLeavResult.getAsOfStartNextDayOfPeriodEnd().getGrantRemainingDataList().stream()
 					.filter(x -> x.getGrantDate().beforeOrEquals(periodTemp.end())
 							&& x.getGrantDate().afterOrEquals(periodTemp.start())).mapToDouble(x -> x.getDetails().getGrantNumber().getDays().v()).sum();
 			domain.setGrantDays(Optional.of(new SpecialLeaveGrantUseDay(grantUseDay)));
@@ -193,6 +193,36 @@ public class InPeriodOfSpecialLeaveResultInfor {
 		}
 
 		return domain;
+	}
+
+	/**
+	 * 特別休暇不足分として作成した特別休暇付与データを削除する
+	 */
+	public void deleteShortageRemainData() {
+
+		// 特別休暇情報(期間終了日時点)の不足分特別休暇残数データを削除
+		asOfPeriodEnd.deleteDummy();
+
+		// 特別休暇情報(期間終了日の翌日開始時点)の不足分付与残数データを削除
+		asOfStartNextDayOfPeriodEnd.deleteDummy();
+
+		// 特別休暇の集計結果．特別休暇情報(付与時点)を取得
+		if ( asOfGrant.isPresent() ){
+			// 取得した特別休暇情報(付与時点)でループ
+			asOfGrant.get().forEach(info->{
+				// 特別休暇情報(付与時点)の不足分付与残数データを削除
+				info.deleteDummy();
+			});
+		}
+
+		// 特別休暇の集計結果．特別休暇情報(消滅時点)を取得
+		if ( lapsed.isPresent() ){
+			// 取得した特別休暇情報(付与時点)でループ
+			lapsed.get().forEach(info->{
+				// 付与残数データから特別休暇不足分の特別休暇付与残数を削除
+				info.deleteDummy();
+			});
+		}
 	}
 
 }

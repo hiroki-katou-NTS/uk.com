@@ -3,10 +3,10 @@ package nts.uk.ctx.at.record.pub.remainnumber.holidayover60h.export;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.remainingnumber.holidayover60h.export.param.HolidayOver60hGrantRemaining;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveNumberInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.holidayover60h.empinfo.grantremainingdata.HolidayOver60hGrantRemainingData;
 
 /**
  * 60H超休付与残数
@@ -16,10 +16,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
 @Getter
 @Setter
 public class HolidayOver60hGrantRemainingExport{
-
-	/** 60H超休不足ダミーフラグ */
-	@Setter
-	private Boolean dummyAtr = false;
 
 	/**
 	 * ID
@@ -64,22 +60,21 @@ public class HolidayOver60hGrantRemainingExport{
 
 	/**
 	   * ドメインから変換
-	 * @param holidayOver60hGrantRemaining
+	 * @param holidayOver60hGrantRemainingData
 	 * @return
 	 */
-	static public HolidayOver60hGrantRemainingExport of(
-			HolidayOver60hGrantRemaining holidayOver60hGrantRemaining) {
+	static public HolidayOver60hGrantRemainingExport fromDomain(
+			HolidayOver60hGrantRemainingData holidayOver60hGrantRemainingData) {
 
 		HolidayOver60hGrantRemainingExport export = new HolidayOver60hGrantRemainingExport();
 
-		export.leaveID = holidayOver60hGrantRemaining.getLeaveID();
-		export.employeeId = holidayOver60hGrantRemaining.getEmployeeId();
-		export.grantDate = holidayOver60hGrantRemaining.getGrantDate();
-		export.deadline = holidayOver60hGrantRemaining.getDeadline();
-		export.expirationStatus = holidayOver60hGrantRemaining.getExpirationStatus();
-		export.registerType = holidayOver60hGrantRemaining.getRegisterType();
-		export.details = holidayOver60hGrantRemaining.getDetails().clone();
-		export.dummyAtr = holidayOver60hGrantRemaining.isDummyAtr();
+		export.leaveID = holidayOver60hGrantRemainingData.getLeaveID();
+		export.employeeId = holidayOver60hGrantRemainingData.getEmployeeId();
+		export.grantDate = holidayOver60hGrantRemainingData.getGrantDate();
+		export.deadline = holidayOver60hGrantRemainingData.getDeadline();
+		export.expirationStatus = holidayOver60hGrantRemainingData.getExpirationStatus();
+		export.registerType = holidayOver60hGrantRemainingData.getRegisterType();
+		export.details = holidayOver60hGrantRemainingData.getDetails().clone();
 
 		return export;
 	}
@@ -89,10 +84,10 @@ public class HolidayOver60hGrantRemainingExport{
 	 * @param holidayOver60hGrantRemainingExport
 	 * @return
 	 */
-	static public HolidayOver60hGrantRemaining toDomain(
+	static public HolidayOver60hGrantRemainingData toDomain(
 			HolidayOver60hGrantRemainingExport holidayOver60hGrantRemainingExport) {
 
-		HolidayOver60hGrantRemaining domain = new HolidayOver60hGrantRemaining();
+		HolidayOver60hGrantRemainingData domain = new HolidayOver60hGrantRemainingData();
 
 		domain.setLeaveID(holidayOver60hGrantRemainingExport.getLeaveID());
 		domain.setEmployeeId(holidayOver60hGrantRemainingExport.getEmployeeId());
@@ -101,7 +96,6 @@ public class HolidayOver60hGrantRemainingExport{
 		domain.setExpirationStatus(holidayOver60hGrantRemainingExport.getExpirationStatus());
 		domain.setRegisterType(holidayOver60hGrantRemainingExport.getRegisterType());
 		domain.setDetails(holidayOver60hGrantRemainingExport.getDetails());
-		domain.setDummyAtr(holidayOver60hGrantRemainingExport.dummyAtr);
 
 		return domain;
 	}

@@ -35,7 +35,7 @@ public class JpaPublicHolidaySettingRepository extends JpaRepository implements 
 	public List<PublicHolidaySetting> findByCIDToList(String companyId) {
 //		Optional<KshmtHdPublicMgt> optKshmtPublicHdSet = this.queryProxy().find(companyId, KshmtHdPublicMgt.class);
 //		if (optKshmtPublicHdSet.isPresent()) {
-//			return this.queryProxy().find(companyId, KshmtPublicHdSet.class).map(e -> this.toListDomain(e)).get();
+//			return this.queryProxy().find(companyId, KshmtHdpubSet.class).map(e -> this.toListDomain(e)).get();
 //		}
 		return new ArrayList<>();
 	}
@@ -95,7 +95,7 @@ public class JpaPublicHolidaySettingRepository extends JpaRepository implements 
 	}
 
 	
-//	private List<PublicHolidaySetting> toListDomain(KshmtPublicHdSet entity){
+//	private List<PublicHolidaySetting> toListDomain(KshmtHdpubSet entity){
 //		List<PublicHolidaySetting> lstDomain = new ArrayList<>();
 //		PublicHolidaySetting domain = new PublicHolidaySetting(new JpaPublicHolidaySettingGetMemento(entity), 0);
 //		PublicHolidaySetting domainGrantDate = new PublicHolidaySetting(new JpaPublicHolidaySettingGetMemento(entity), 1);

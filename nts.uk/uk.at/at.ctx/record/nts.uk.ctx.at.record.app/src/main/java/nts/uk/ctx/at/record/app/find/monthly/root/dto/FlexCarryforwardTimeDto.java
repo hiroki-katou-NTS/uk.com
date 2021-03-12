@@ -35,13 +35,16 @@ public class FlexCarryforwardTimeDto implements ItemConst, AttendanceItemDataGat
 	@AttendanceItemValue(type = ValueType.TIME)
 	@AttendanceItemLayout(jpPropertyName = SHORTAGE, layout = LAYOUT_C)
 	private int flexCarryforwardShortageTime;
+	
+	/** フレックス繰越不可時間 */
+	private int flexNotCarryforwardTime;
 
 	public FlexCarryforwardTime toDomain() {
 		return FlexCarryforwardTime.of(
 						new AttendanceTimeMonthWithMinus(flexCarryforwardTime),
 						new AttendanceTimeMonth(flexCarryforwardWorkTime),
 						new AttendanceTimeMonth(flexCarryforwardShortageTime),
-						new AttendanceTimeMonth(0));
+						new AttendanceTimeMonth(flexNotCarryforwardTime));
 	}
 	
 	public static FlexCarryforwardTimeDto from(FlexCarryforwardTime domain) {
@@ -50,6 +53,7 @@ public class FlexCarryforwardTimeDto implements ItemConst, AttendanceItemDataGat
 			dto.setFlexCarryforwardShortageTime(from(domain.getFlexCarryforwardShortageTime()));
 			dto.setFlexCarryforwardTime(from(domain.getFlexCarryforwardTime()));
 			dto.setFlexCarryforwardWorkTime(from(domain.getFlexCarryforwardWorkTime()));
+			dto.setFlexNotCarryforwardTime(from(domain.getFlexNotCarryforwardTime()));
 		}
 		return dto;
 	}
@@ -71,6 +75,8 @@ public class FlexCarryforwardTimeDto implements ItemConst, AttendanceItemDataGat
 			return Optional.of(ItemValue.builder().value(flexCarryforwardTime).valueType(ValueType.TIME));
 		case SHORTAGE:
 			return Optional.of(ItemValue.builder().value(flexCarryforwardShortageTime).valueType(ValueType.TIME));
+		case NO + SHORTAGE:
+			return Optional.of(ItemValue.builder().value(flexNotCarryforwardTime).valueType(ValueType.TIME));
 		default:
 			return Optional.empty();
 		}
@@ -82,6 +88,7 @@ public class FlexCarryforwardTimeDto implements ItemConst, AttendanceItemDataGat
 		case WORKING_TIME:
 		case TIME:
 		case SHORTAGE:
+		case NO + SHORTAGE:
 			return PropType.VALUE;
 		default:
 			return PropType.OBJECT;
@@ -99,6 +106,9 @@ public class FlexCarryforwardTimeDto implements ItemConst, AttendanceItemDataGat
 			break;
 		case SHORTAGE:
 			flexCarryforwardShortageTime = value.valueOrDefault(0);
+			break;
+		case NO + SHORTAGE:
+			flexNotCarryforwardTime = value.valueOrDefault(0);
 			break;
 		default:
 		}

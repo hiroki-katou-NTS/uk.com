@@ -131,7 +131,7 @@ public class GetTheNumberOfVacationsLeft {
 					GeneralDate.today(),
 					specialHoliday.getSpecialHolidayCode().v(),
 					false, false,
-					new ArrayList<>(), new ArrayList<>());
+					new ArrayList<>());
 			InPeriodOfSpecialLeaveResultInfor inPeriodOfSpecialLeave = SpecialLeaveManagementService
 					.complileInPeriodOfSpecialLeave(requireService.createRequire(), new CacheCarrier(), param);
 
