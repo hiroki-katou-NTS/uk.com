@@ -97,8 +97,11 @@ public class KscdtScheAnyCondDay extends ContractUkJpaEntity {
         return this.pk;
     }
 
-    public ExtractionCondScheduleDay toDomain(List<KscdtScheConDayWt> wrkType, List<KscdtScheConDayWtime> wtime, KrcstErAlCompareSingle single, KrcstErAlSingleFixed singleFixed, KrcstErAlCompareRange range){
+    public ExtractionCondScheduleDay toDomain(KrcstErAlCompareSingle single, KrcstErAlSingleFixed singleFixed, KrcstErAlCompareRange range){
         ScheduleCheckCond scheduleCheckCond = null;
+        List<KscdtScheConDayWt> wrkType = this.conditionDayWorkTypes;
+        List<KscdtScheConDayWtime> wtime = this.conditionDayWorkTimes;
+        
         switch (EnumAdaptor.valueOf(checkType,DaiCheckItemType.class)){
 
             case CONTINUOUS_TIME:
@@ -112,7 +115,10 @@ public class KscdtScheAnyCondDay extends ContractUkJpaEntity {
                     ((CompareRange) checkedCondition).setStartValue(range.startValue);
                     ((CompareRange) checkedCondition).setEndValue(range.endValue);
                 }
-                scheduleCheckCond = new CondContinuousTime(checkedCondition,wrkType.stream().map(i->i.pk.wrkTypeCd).collect(Collectors.toList()),new ContinuousPeriod(conPeriod));
+                scheduleCheckCond = new CondContinuousTime(
+                		checkedCondition, 
+                		EnumAdaptor.valueOf(timeCheckItem,CheckTimeType.class), 
+                		wrkType.stream().map(i->i.pk.wrkTypeCd).collect(Collectors.toList()),new ContinuousPeriod(conPeriod));
                 break;
             case TIME:
                 // 時間のチェック条件
@@ -124,11 +130,17 @@ public class KscdtScheAnyCondDay extends ContractUkJpaEntity {
                     ((CompareRange) checkedCondition).setStartValue(range.startValue);
                     ((CompareRange) checkedCondition).setEndValue(range.endValue);
                 }
-                scheduleCheckCond = new CondTime(checkedCondition,EnumAdaptor.valueOf(timeCheckItem,CheckTimeType.class),wrkType.stream().map(i->i.pk.wrkTypeCd).collect(Collectors.toList()));
+                scheduleCheckCond = new CondTime(
+                		checkedCondition,
+                		EnumAdaptor.valueOf(timeCheckItem,CheckTimeType.class),
+                		wrkType.stream().map(i->i.pk.wrkTypeCd).collect(Collectors.toList()));
                 break;
             case CONTINUOUS_TIMEZONE:
                 // 連続時間帯の抽出条件
-                scheduleCheckCond = new CondContinuousTimeZone(EnumAdaptor.valueOf(wrkTimeCondAtr, TimeZoneTargetRange.class),wrkType.stream().map(i->i.pk.wrkTypeCd).collect(Collectors.toList()),wtime.stream().map(i->i.pk.wrkTimeCd).collect(Collectors.toList()), new ContinuousPeriod(conPeriod));
+                scheduleCheckCond = new CondContinuousTimeZone(
+                		EnumAdaptor.valueOf(wrkTimeCondAtr, TimeZoneTargetRange.class),
+                		wrkType.stream().map(i->i.pk.wrkTypeCd).collect(Collectors.toList()),
+                		wtime.stream().map(i->i.pk.wrkTimeCd).collect(Collectors.toList()), new ContinuousPeriod(conPeriod));
                 break;
             case CONTINUOUS_WORK:
                 // 連続勤務種類の抽出条件
@@ -142,7 +154,7 @@ public class KscdtScheAnyCondDay extends ContractUkJpaEntity {
         		EnumAdaptor.valueOf(checkType,DaiCheckItemType.class),
         		pk.sortBy,useAtr,new NameAlarmExtractCond(condName), 
         		EnumAdaptor.valueOf(wrkTypeCondAtr, RangeToCheck.class), 
-        		EnumAdaptor.valueOf(wrkTypeCondAtr, TimeZoneTargetRange.class), 
+        		wrkTimeCondAtr != null ? EnumAdaptor.valueOf(wrkTimeCondAtr, TimeZoneTargetRange.class) : null, 
         		Optional.ofNullable(message == null? null : new ErrorAlarmMessage(message)));
 
         return result;

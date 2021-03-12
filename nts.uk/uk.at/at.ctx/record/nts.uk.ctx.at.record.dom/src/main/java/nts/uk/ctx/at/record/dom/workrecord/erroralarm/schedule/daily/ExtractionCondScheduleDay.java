@@ -70,5 +70,5 @@ public class ExtractionCondScheduleDay extends AggregateRoot {
     	domain.checkItemType = checkType;
     	domain.targetWrkType = targetWrkType;
     	return domain;
-    }
+    }    
 }

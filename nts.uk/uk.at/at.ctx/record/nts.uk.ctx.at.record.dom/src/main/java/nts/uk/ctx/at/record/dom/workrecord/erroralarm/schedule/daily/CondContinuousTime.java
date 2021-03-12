@@ -15,6 +15,10 @@ import java.util.List;
 public class CondContinuousTime implements  ScheduleCheckCond{
     //チェック条件
     private CheckedCondition checkedCondition;
+    
+    // チェック種類
+    private CheckTimeType checkTimeType;
+    
     // 勤務種類コード
     private List<String> wrkTypeCds;
 

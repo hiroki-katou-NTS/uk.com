@@ -1628,13 +1628,15 @@ module nts.uk.at.view.kal003.share.model {
             self.useAtr = ko.computed(function() {
                 return self.useCheckSwitch() == '1' ? true : false;
             });
-
-            self.checkItem.subscribe((v) => {
-                self.errorAlarmCondition().atdItemCondition().group1(kal003utils.getDefaultAttdItemGroup3Item());
-                self.errorAlarmCondition().atdItemCondition().group2(kal003utils.getDefaultAttdItemGroup3Item());
-                self.errorAlarmCondition().atdItemCondition().group2UseAtr(false);
-                self.errorAlarmCondition().atdItemCondition().operatorBetweenGroups(0);
-            });
+            
+            if (self.errorAlarmCondition().atdItemCondition) {
+                self.checkItem.subscribe((v) => {
+                    self.errorAlarmCondition().atdItemCondition().group1(kal003utils.getDefaultAttdItemGroup3Item());
+                    self.errorAlarmCondition().atdItemCondition().group2(kal003utils.getDefaultAttdItemGroup3Item());
+                    self.errorAlarmCondition().atdItemCondition().group2UseAtr(false);
+                    self.errorAlarmCondition().atdItemCondition().operatorBetweenGroups(0);
+                });
+            }
         }
     }
 
@@ -2287,7 +2289,7 @@ module nts.uk.at.view.kal003.share.model {
             self.planLstWorkType(param && param.planLstWorkType ? param.planLstWorkType : []);
             self.actualFilterAtr = param && param.actualFilterAtr ? param.actualFilterAtr : false;
             self.actualLstWorkType = param && param.actualLstWorkType ? param.actualLstWorkType : [];
-            self.comparisonOperator(param && param.comparisonOperator ? param.comparisonOperator : false);
+            self.comparisonOperator(param && param.comparisonOperator ? param.comparisonOperator : 0);
             self.compareStartValue(param && param.compareStartValue ? param.compareStartValue : "");
             self.compareEndValue(param && param.compareEndValue ? param.compareEndValue : "");
             self.checkTimeType(param && param.checkTimeType ? param.checkTimeType : 0);

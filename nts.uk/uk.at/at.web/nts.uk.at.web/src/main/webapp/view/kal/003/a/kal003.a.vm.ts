@@ -638,6 +638,10 @@ module nts.uk.at.view.kal003.a.viewmodel {
                     if (self.selectedAlarmCheckCondition().category() == model.CATEGORY.APPLICATION_APPROVAL) {
                         self.tabAppFixCondition.listFixedConditionWorkRecord([]);
                     }
+                    
+                    if (self.selectedAlarmCheckCondition().category() == model.CATEGORY.SCHEDULE_DAILY) {
+                        self.tabCheckCondition.listWorkRecordExtractingConditions([]);
+                    }
 
                     self.selectCategoryFromDialog(true);
                     if (self.selectedCategory() != output)

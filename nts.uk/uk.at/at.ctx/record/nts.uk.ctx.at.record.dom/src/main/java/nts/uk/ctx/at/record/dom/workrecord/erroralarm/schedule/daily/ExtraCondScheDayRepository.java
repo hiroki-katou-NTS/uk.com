@@ -45,4 +45,13 @@ public interface ExtraCondScheDayRepository {
      * @param erAlCheckIds list of error alarm check id
      */
     void delete(String contractCode, String companyId, String erAlCheckIds);
+    
+    /**
+     * Delete schedule any condition day
+     * @param contractCode contract code
+     * @param companyId company id
+     * @param erAlCheckIds list of error alarm check id
+     * @param alarmNo error alarm no (sort by field)
+     */
+    void delete(String contractCode, String companyId, String erAlCheckIds, int alarmNo);
 }

@@ -9,8 +9,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.StringUtils;
-
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
@@ -23,8 +21,6 @@ import nts.uk.ctx.at.function.app.command.alarm.checkcondition.agree36.AgreeCond
 import nts.uk.ctx.at.function.app.command.alarm.checkcondition.agree36.AgreeConditionErrorCommand;
 import nts.uk.ctx.at.function.app.find.alarm.checkcondition.AlarmCheckConditionByCategoryFinder;
 import nts.uk.ctx.at.function.app.find.alarm.checkcondition.AppApprovalFixedExtractConditionDto;
-import nts.uk.ctx.at.function.app.find.alarm.checkcondition.AppFixedConditionWorkRecordDto;
-import nts.uk.ctx.at.function.app.find.alarm.checkcondition.ExtractionCondScheduleDayDto;
 import nts.uk.ctx.at.function.app.find.alarm.checkcondition.FixedConditionWorkRecordDto;
 import nts.uk.ctx.at.function.app.find.alarm.mastercheck.MasterCheckFixedExtractConditionDto;
 import nts.uk.ctx.at.function.dom.adapter.FixedConWorkRecordAdapter;
@@ -80,7 +76,6 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.CondTime;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.DaiCheckItemType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.ExtraCondScheDayRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.ExtractionCondScheduleDay;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.FixedExtracSDailyItemsRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.FixedExtractSDailyConRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.FixedExtractionSDailyCon;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.schedule.daily.RangeToCheck;
@@ -777,13 +772,16 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 	                ((CompareRange) checkedCondition).setStartValue(workTypeCondition.getCompareStartValue());
 	                ((CompareRange) checkedCondition).setEndValue(workTypeCondition.getCompareEndValue());
 	                
-	                CondContinuousTime continuousTime = new CondContinuousTime(checkedCondition, workTypeCondition.getPlanLstWorkType(), 
+	                CondContinuousTime continuousTime = new CondContinuousTime(checkedCondition, checkTimeType,
+	                		workTypeCondition.getPlanLstWorkType(),
 	                		new ContinuousPeriod(item.getErrorAlarmCondition().getContinuousPeriod()));
 					domain.setScheduleCheckCond(continuousTime);
 				} else {
 					CompareSingleValue checkedCondition = new CompareSingleValue<>(workTypeCondition.getComparisonOperator(), ConditionType.FIXED_VALUE.value);
 					((CompareSingleValue)checkedCondition).setValue(workTypeCondition.getCompareStartValue());
-					CondContinuousTime continuousTime = new CondContinuousTime(checkedCondition, workTypeCondition.getPlanLstWorkType(), 
+					CondContinuousTime continuousTime = new CondContinuousTime(checkedCondition,
+							checkTimeType,
+							workTypeCondition.getPlanLstWorkType(),
 							new ContinuousPeriod(item.getErrorAlarmCondition().getContinuousPeriod()));
 					domain.setScheduleCheckCond(continuousTime);
 				}
@@ -795,7 +793,7 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				CondContinuousTimeZone continuousTimeZone = new CondContinuousTimeZone(
 						EnumAdaptor.valueOf(workTimeCondition.getComparePlanAndActual(), TimeZoneTargetRange.class), 
 						workTypeCondition.getPlanLstWorkType(),
-						workTimeCondition.getPlanLstWorkTime(), 
+						workTimeCondition.getPlanLstWorkTime(),
 						new ContinuousPeriod(item.getErrorAlarmCondition().getContinuousPeriod()));
 				domain.setScheduleCheckCond(continuousTimeZone);
 			}
@@ -812,6 +810,13 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				extraCondScheDayRepository.add(contractCode, companyId, domain);
 			} else {
 				extraCondScheDayRepository.update(contractCode, companyId, domain);
+			}
+		}
+		
+		// sync again item when user remove in list
+		for(ExtractionCondScheduleDay item: listOptionalItem) {
+			if (!scheAnyCondDays.stream().anyMatch(x -> item.getErrorAlarmId().equals(eralCheckId) && item.getSortOrder() == x.getSortOrderBy())) {
+				extraCondScheDayRepository.delete(contractCode, companyId, eralCheckId, item.getSortOrder());
 			}
 		}
 	}

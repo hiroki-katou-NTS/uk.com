@@ -194,73 +194,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     break;
                 }
                 case sharemodel.CATEGORY.SCHEDULE_DAILY:
-                    self.setting = $.extend({}, shareutils.getDefaultWorkRecordExtractingCondition(0), option.data);
-
-                    let workRecordExtractingCond = shareutils.convertTransferDataToWorkRecordExtractingCondition(self.setting);
-                    self.workRecordExtractingCondition = ko.observable(workRecordExtractingCond);
-                    // setting comparison value range
-
-                    self.comparisonRange = ko.observable(self.initComparisonValueRange());
-
-                    self.checkItemTemp = ko.observable(self.workRecordExtractingCondition().checkItem());
-                    
-                    self.controlShowPattern(self.workRecordExtractingCondition().checkItem());
-                    
-                    // change select item check
-                    self.workRecordExtractingCondition().checkItem.subscribe((itemCheck) => {
-                        errors.clearAll();
-                        
-                        self.controlShowPattern(itemCheck);
-                        
-                        self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().planLstWorkType([]);
-                        self.comparisonRange().minAmountOfMoneyValue(null);
-                        self.comparisonRange().maxAmountOfMoneyValue(null);
-                        self.comparisonRange().minTimeValue(null);
-                        self.comparisonRange().maxTimeValue(null);
-                        self.comparisonRange().minTimesValue(null);
-                        self.comparisonRange().maxTimesValue(null);
-                        self.comparisonRange().maxTimeWithinDayValue(null);
-                        self.comparisonRange().minTimeWithinDayValue(null);
-                        if ((itemCheck && itemCheck != undefined) || itemCheck === 0) {
-//                            self.initialScreen().then(function() {
-//                                self.settingEnableComparisonMaxValueField(false);
-//                                if ((self.checkItemTemp() || self.checkItemTemp() == 0) && self.checkItemTemp() != itemCheck) {
-//                                    setTimeout(function() { self.displayAttendanceItemSelections_BA2_3(""); }, 200);
-//
-//                                }
-//                            });
-                        }
-                        $(".nts-input").ntsError("clear");
-                    });
-                    self.comparisonRange().comparisonOperator.subscribe((operN) => {
-                        self.settingEnableComparisonMaxValueField(false);
-                        if (self.comparisonRange().comparisonOperator() > 5) {
-                            $(".nts-input").ntsError("clear");
-                            if (self.comparisonRange().comparisonOperator() == 7 || self.comparisonRange().comparisonOperator() == 9) {
-                                setTimeout(() => {
-                                    if (parseInt(self.comparisonRange().minValue()) > parseInt(self.comparisonRange().maxValue())) {
-                                        $('#endValue').ntsError('set', { messageId: "Msg_836" });
-                                    }
-                                }, 25);
-                            }
-                            if (self.comparisonRange().comparisonOperator() == 6 || self.comparisonRange().comparisonOperator() == 8) {
-                                setTimeout(() => {
-                                    if (parseInt(self.comparisonRange().minValue()) >= parseInt(self.comparisonRange().maxValue())) {
-                                        $('#endValue').ntsError('set', { messageId: "Msg_836" });
-                                    }
-                                }, 25);
-                            }
-                        } else {
-                            $(".nts-input").ntsError("clear");
-                        }
-                    });
-                    self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparePlanAndActual = ko.observable(self.setting.errorAlarmCondition.workTypeCondition.comparePlanAndActual);
-                    self.required_BA1_4 = ko.observable(self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparePlanAndActual() > 0);
-                    self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparePlanAndActual.subscribe((newV) => {
-                        self.required_BA1_4(newV > 0);
-                        $(".nts-input").ntsError("clear");
-                    }); 
-                    
+                    self.processScheduleDaily(option);                    
                     break;
                 default: break;
             }
@@ -412,6 +346,15 @@ module nts.uk.at.view.kal003.b.viewmodel {
         }
         private initComparisonValueRange(): model.ComparisonValueRange {
             let self = this;
+            
+            if (self.category() == sharemodel.CATEGORY.SCHEDULE_DAILY) {
+                return new model.ComparisonValueRange(
+                    self.workRecordExtractingCondition().checkItem
+                    , self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparisonOperator
+                    , self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().compareStartValue()
+                    , self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().compareEndValue());
+            }
+
             let erAlAtdItemCondition = self.workRecordExtractingCondition().errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon()[0];
 
             let comparisonValueRange;
@@ -1407,10 +1350,20 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().planLstWorkType(self.listAllWorkType);
                     self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().compareStartValue(self.comparisonRange().minValue());
                     self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().compareEndValue(self.comparisonRange().maxValue());
-                    self.workRecordExtractingCondition().errorAlarmCondition().alCheckTargetCondition().lstBusinessTypeCode = [];
-                    self.workRecordExtractingCondition().errorAlarmCondition().alCheckTargetCondition().lstClassificationCode = [];
-                    self.workRecordExtractingCondition().errorAlarmCondition().alCheckTargetCondition().lstEmploymentCode = [];
-                    self.workRecordExtractingCondition().errorAlarmCondition().alCheckTargetCondition().lstJobTitleId = [];
+                    let alchecktargetcondition = {
+                        filterByBusinessType: false,
+                        filterByJobTitle: false,
+                        filterByEmployment: false,
+                        filterByClassification: false,
+                        lstBusinessTypeCode: [],
+                        lstJobTitleId: [],
+                        lstEmploymentCode: [],
+                        lstClassificationCode: [],    
+                    };
+                    if (self.workRecordExtractingCondition().errorAlarmCondition().alCheckTargetCondition == null) {
+                        self.workRecordExtractingCondition().errorAlarmCondition().alCheckTargetCondition = ko.observable();
+                    }
+                    self.workRecordExtractingCondition().errorAlarmCondition().alCheckTargetCondition(alchecktargetcondition);
 
                     let retData = ko.toJS(self.workRecordExtractingCondition());
                     retData = shareutils.convertArrayOfWorkRecordExtractingConditionToJS(retData, self.workRecordExtractingCondition());
@@ -1603,6 +1556,76 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     , 0);
             }
             return comparisonValueRange;
+        }
+        
+        /**
+         * Process with category is schedule daily
+         */
+        private processScheduleDaily(option): void {
+            let self = this;
+            
+            self.setting = $.extend({}, shareutils.getDefaultWorkRecordExtractingCondition(0), option.data);
+
+            let workRecordExtractingCond = shareutils.convertTransferDataToWorkRecordExtractingCondition(self.setting);
+            self.workRecordExtractingCondition = ko.observable(workRecordExtractingCond);
+            // setting comparison value range
+    
+            self.comparisonRange = ko.observable(self.initComparisonValueRange());
+    
+            self.checkItemTemp = ko.observable(self.workRecordExtractingCondition().checkItem());
+            
+            self.controlShowPattern(self.workRecordExtractingCondition().checkItem());
+            
+            self.settingEnableComparisonMaxValueField(false);
+            
+            // change select item check
+            self.workRecordExtractingCondition().checkItem.subscribe((itemCheck) => {
+                errors.clearAll();
+                
+                self.controlShowPattern(itemCheck);
+                
+                self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().planLstWorkType([]);
+                self.comparisonRange().minAmountOfMoneyValue(null);
+                self.comparisonRange().maxAmountOfMoneyValue(null);
+                self.comparisonRange().minTimeValue(null);
+                self.comparisonRange().maxTimeValue(null);
+                self.comparisonRange().minTimesValue(null);
+                self.comparisonRange().maxTimesValue(null);
+                self.comparisonRange().maxTimeWithinDayValue(null);
+                self.comparisonRange().minTimeWithinDayValue(null);
+    
+                $(".nts-input").ntsError("clear");
+            });
+            self.comparisonRange().comparisonOperator.subscribe((operN) => {
+                self.settingEnableComparisonMaxValueField(false);
+                if (self.comparisonRange().comparisonOperator() > 5) {
+                    $(".nts-input").ntsError("clear");
+                    if (self.comparisonRange().comparisonOperator() == 7 || self.comparisonRange().comparisonOperator() == 9) {
+                        setTimeout(() => {
+                            if (parseInt(self.comparisonRange().minValue()) > parseInt(self.comparisonRange().maxValue())) {
+                                $('#endValue').ntsError('set', { messageId: "Msg_836" }); //TODO warning, ids overlap too much in html
+                                $('.endValue').ntsError('set', { messageId: "Msg_836" });
+                            }
+                        }, 25);
+                    }
+                    if (self.comparisonRange().comparisonOperator() == 6 || self.comparisonRange().comparisonOperator() == 8) {
+                        setTimeout(() => {
+                            if (parseInt(self.comparisonRange().minValue()) >= parseInt(self.comparisonRange().maxValue())) {
+                                $('#endValue').ntsError('set', { messageId: "Msg_836" }); //TODO warning, ids overlap too much in html
+                                $('.endValue').ntsError('set', { messageId: "Msg_836" });
+                            }
+                        }, 25);
+                    }
+                } else {
+                    $(".nts-input").ntsError("clear");
+                }
+            });
+            self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparePlanAndActual = ko.observable(self.setting.errorAlarmCondition.workTypeCondition.comparePlanAndActual);
+            self.required_BA1_4 = ko.observable(self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparePlanAndActual() > 0);
+            self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparePlanAndActual.subscribe((newV) => {
+                self.required_BA1_4(newV > 0);
+                $(".nts-input").ntsError("clear");
+            });     
         }
         
         /**
