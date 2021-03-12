@@ -602,7 +602,8 @@ module nts.uk.ui.at.ksu002.a {
 			// Remove validate all (accept error data in old cells)
 			// vm.$validate()
 			$.Deferred()
-				.resolve(true)
+				// get valid flag from kiban viewmodel
+				.resolve(vm.$validate.valid())
 				.then((valid: boolean) => {
 					if (valid) {
 						const sid = vm.$user.employeeId;
