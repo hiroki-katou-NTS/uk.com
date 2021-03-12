@@ -149,17 +149,35 @@ module nts.uk.at.kal011.a {
 
         triggerError(checkCond: CheckCondition) {
             const vm = this;
-            checkCond.isChecked.subscribe((value: boolean) => {
-                if (value) {
+            checkCond.isChecked.subscribe((value: boolean) => {\
+                
+                let getCheckedList = _.filter(vm.conditions(), (condition: CheckCondition) => {
+                    return condition.isChecked() === true;
+                });
+
+                nts.uk.ui.errors.clearAll();
+                vm.$errors("clear").then((valid: boolean) => {                    
+                    _.each(getCheckedList, (condition: CheckCondition, index) => {                     
+                        if( condition.isChecked ) {
+                            $("#" + condition.index + " .ntsStartDatePicker").trigger('validate');
+                            $("#" + condition.index + " .ntsEndDatePicker").trigger('validate');
+                        } else {
+                            vm.$validate("#" + condition.index + " .ntsStartDatePicker");
+                            vm.$validate("#" + condition.index + " .ntsEndDatePicker");        
+                        }
+                    });     
+                });      
+                
+                /* if (value) {
                     vm.$validate("#" + checkCond.index);
                     vm.$validate("#" + checkCond.index + " .ntsStartDatePicker");
                     vm.$validate("#" + checkCond.index + " .ntsEndDatePicker");
-                } else {
+                } else {                    
                     vm.$errors("clear", "#" + checkCond.index);
                     vm.$errors("clear", "#" + checkCond.index + " .ntsStartDatePicker");
                     vm.$errors("clear", "#" + checkCond.index + " .ntsEndDatePicker");
-                }
-            })
+                } */
+            });
         }
 
         checkBoxAllOrNot(condition: CheckCondition) {

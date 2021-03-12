@@ -138,7 +138,8 @@ module nts.uk.at.kal011.c {
             };
             vm.$ajax(PATH_API.sendEmail, command).done((data) => {
                 if (data.length > 0) {
-                    info({ message: data });
+                    //info({ message: data });
+                    info({message: data, messageId: 'Msg_965'});
                 } else {
                     vm.$dialog.info({messageId: "Msg_207"})
                         .then(() => {
