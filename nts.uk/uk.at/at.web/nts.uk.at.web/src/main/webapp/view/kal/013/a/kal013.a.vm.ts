@@ -130,6 +130,8 @@ module nts.uk.at.view.kal013.a {
             vm.selectedAlarmCode(null);
             vm.actualFixedItems(vm.fixedItems());
             vm.actualFixedItems.valueHasMutated();
+            //vm.uniqueConditions().alarmListItem.removeAll();
+            vm.checkConditions().checkConditionsList.removeAll();
             $('#code').focus();
         }
 
