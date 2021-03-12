@@ -36,6 +36,7 @@ import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtDayTsAtdSche;
 import nts.uk.ctx.at.record.infra.entity.workinformation.KrcdtWorkScheduleTimePK;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
@@ -282,14 +283,36 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 								c.getAttendance().valueAsMinutes(), c.getLeaveWork().valueAsMinutes()))
 						.collect(Collectors.toList());
 			} else {
-				data.scheduleTimes.stream().forEach(st -> {
-					domain.getWorkInformation().getScheduleTimeSheets().stream()
-							.filter(dst -> dst.getWorkNo().v() == st.krcdtWorkScheduleTimePK.workNo).findFirst()
-							.ifPresent(dst -> {
-								st.attendance = dst.getAttendance().valueAsMinutes();
-								st.leaveWork = dst.getLeaveWork().valueAsMinutes();
-							});
-				});
+//				data.scheduleTimes.stream().forEach(st -> {
+//					domain.getWorkInformation().getScheduleTimeSheets().stream()
+//							.filter(dst -> dst.getWorkNo().v() == st.krcdtWorkScheduleTimePK.workNo).findFirst()
+//							.ifPresent(dst -> {
+//								st.attendance = dst.getAttendance().valueAsMinutes();
+//								st.leaveWork = dst.getLeaveWork().valueAsMinutes();
+//							});
+//				});
+				for(ScheduleTimeSheet stNew : domain.getWorkInformation().getScheduleTimeSheets()) {
+					data.scheduleTimes.stream().forEach(stOld -> {
+						if(stOld.krcdtWorkScheduleTimePK.workNo == stNew.getWorkNo().v()) {
+							stOld.attendance = stNew.getAttendance().valueAsMinutes();
+							stOld.leaveWork = stNew.getLeaveWork().valueAsMinutes();
+						}
+						// Insert work no 2 when old data just have work no 1
+						if(stNew.getWorkNo().v() == 2 && data.scheduleTimes.size() < 2) {
+							this.commandProxy().insert(new KrcdtDayTsAtdSche(
+								new KrcdtWorkScheduleTimePK(domain.getEmployeeId(), domain.getYmd(),
+										stNew.getWorkNo().v()),
+								stNew.getAttendance().valueAsMinutes(), stNew.getLeaveWork().valueAsMinutes()));
+						}
+						// Delete work no 2 when new data just have work no 1
+						if(domain.getWorkInformation().getScheduleTimeSheets().size() < 2 && stOld.krcdtWorkScheduleTimePK.workNo == 2) {
+							data.scheduleTimes.removeIf(x -> x.krcdtWorkScheduleTimePK.workNo == 2);
+							this.commandProxy().remove(KrcdtDayTsAtdSche.class, new KrcdtWorkScheduleTimePK(domain.getEmployeeId(), domain.getYmd(),
+									stNew.getWorkNo().v()));
+						}
+						
+					});
+				}
 			}   
 			List<KrcdtDayTsAtdSche> schedules = new ArrayList<>();
 			try (PreparedStatement stmtSche = this.connection().prepareStatement(

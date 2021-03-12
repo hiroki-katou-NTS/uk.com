@@ -489,7 +489,7 @@ module nts.uk.at.view.ksu003.a.model {
 		fixBreakTime: any; //休憩時間帯を固定にする (0:false 1:true)
 		workType: number;//勤務タイプ : WorkTimeForm
 		isHoliday: boolean;// 休日か : SetupType
-		isNeedWorkTime: string;// 就業時間帯が不要 : 
+		isNeedWorkTime: string;// 就業時間帯が不要 : 必須任意不要区分
 	}
 	
 	export class FixedWork {
@@ -517,7 +517,7 @@ module nts.uk.at.view.ksu003.a.model {
 		fixBreakTime: any; //休憩時間帯を固定にする (0:false 1:true)
 		workType: number;//勤務タイプ : WorkTimeForm
 		isHoliday: boolean; // 休日か : SetupType
-		isNeedWorkTime: string; 
+		isNeedWorkTime: string; // 就業時間帯が不要 : 必須任意不要区分
 		constructor(param: IFixedWorkInforDto) {
 			let self = this;
 			self.workTimeName = param.workTimeName;

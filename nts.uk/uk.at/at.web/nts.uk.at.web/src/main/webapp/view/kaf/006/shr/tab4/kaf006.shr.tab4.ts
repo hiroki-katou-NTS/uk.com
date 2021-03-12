@@ -37,7 +37,7 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
                                 options: {
                                     timeWithDay: true,
                                     width: '120'
-                                }, enable: $parent.condition30() && $parent.updateMode()
+                                }, enable: $parent.isChangeWorkHour() && $parent.condition30() && $parent.updateMode()
                             }" />
                             <span data-bind="text: $i18n('KAF006_47')"></span>
                             <input style="width: 120px;" data-bind="ntsTimeWithDayEditor: {
@@ -47,7 +47,7 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
                                 options: {
                                     timeWithDay: true,
                                     width: '120'
-                                }, enable: $parent.condition30() && $parent.updateMode()
+                                }, enable: $parent.isChangeWorkHour() && $parent.condition30() && $parent.updateMode()
                             }" />
                         </div>
                     </div>
@@ -63,7 +63,7 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
                                 options: {
                                     timeWithDay: true,
                                     width: '120'
-                                }, enable: $parent.condition30() && $parent.updateMode()
+                                }, enable: $parent.isChangeWorkHour() && $parent.condition30() && $parent.updateMode()
                             }" />
                             <span data-bind="text: $i18n('KAF006_47')"></span>
                             <input style="width: 120px;" data-bind="ntsTimeWithDayEditor: {
@@ -73,7 +73,7 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
                                 options: {
                                     timeWithDay: true,
                                     width: '120'
-                                }, enable: $parent.condition30() && $parent.updateMode()
+                                }, enable: $parent.isChangeWorkHour() && $parent.condition30() && $parent.updateMode()
                             }" />
                         </div>
                     </div>

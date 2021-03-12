@@ -972,7 +972,7 @@ module nts.uk.at.view.kmk002.a {
                     dto.usageAtr = self.usageAtr();
                     dto.optionalItemName = self.optionalItemName();
                     dto.optionalItemAtr = self.optionalItemAtr();
-                    dto.unit = self.optionalItemAtr() === 0 ? nts.uk.resource.getText('KMK002_120') : self.unit();
+                    dto.unit = self.unit();
                     dto.calAtr = self.selectedClac();
                     dto.note = self.note();
                     dto.description = self.description();
@@ -1005,7 +1005,7 @@ module nts.uk.at.view.kmk002.a {
                 dto.empConditionAtr = self.empConditionAtr();
                 dto.performanceAtr = self.performanceAtr();
                 dto.calcResultRange = self.calcResultRange.toDto(self.optionalItemDtoStash.calcResultRange);
-                dto.unit = self.optionalItemAtr() === 0 ? nts.uk.resource.getText('KMK002_120') : self.unit();
+                dto.unit = self.unit();
                 dto.formulas = self.calcFormulas().map(item => item.toDto());
                 dto.calAtr = self.selectedClac();
                 dto.note = self.note();
@@ -1030,7 +1030,7 @@ module nts.uk.at.view.kmk002.a {
                 self.usageAtr(dto.usageAtr);
                 self.empConditionAtr(dto.empConditionAtr);
                 self.performanceAtr(dto.performanceAtr);
-                self.unit(self.optionalItemAtr() === 0 ? '' : dto.unit);
+                self.unit(dto.unit);
                 self.calcResultRange.fromDto(dto.calcResultRange);
                 self.selectedClac(dto.calAtr);
                 self.note(dto.note);

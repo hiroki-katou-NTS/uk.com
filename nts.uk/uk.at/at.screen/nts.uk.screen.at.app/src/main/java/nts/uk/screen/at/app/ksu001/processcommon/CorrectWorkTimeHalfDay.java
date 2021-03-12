@@ -24,7 +24,6 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -42,8 +41,6 @@ public class CorrectWorkTimeHalfDay {
 	@Inject
 	private WorkTimeSettingRepository workTimeSettingRepository;
 	@Inject
-	private WorkTimeSettingService workTimeSettingService;
-	@Inject
 	private BasicScheduleService basicScheduleService;
 	@Inject
 	private FixedWorkSettingRepository fixedWorkSet;
@@ -56,16 +53,14 @@ public class CorrectWorkTimeHalfDay {
 	
 	public WorkInfoAndTimeZone handle(CorrectWorkTimeHalfDayParam param) {
 		// step 1 
-		WorkInformation workInformation = new WorkInformation(param.worktypeCode, param.worktimeCode);
+		WorkInformation workInformation = new WorkInformation(param.workTypeCode, param.workTimeCode);
 				
 		// step 2 call 勤務情報と補正済み所定時間帯を取得する(Require)
 		RequireWorkInforImpl requireWorkInforImpl = new RequireWorkInforImpl(workTypeRepo, workTimeSettingRepository,
-				workTimeSettingService, basicScheduleService, fixedWorkSet, flowWorkSet, flexWorkSet,
-				predetemineTimeSet);
+				basicScheduleService, fixedWorkSet, flowWorkSet, flexWorkSet, predetemineTimeSet);
 		Optional<WorkInfoAndTimeZone> rs = workInformation.getWorkInfoAndTimeZone(requireWorkInforImpl);
 		
 		return rs.isPresent() ? rs.get() : null;
-		
 	}
 	
 	@AllArgsConstructor
@@ -77,8 +72,6 @@ public class CorrectWorkTimeHalfDay {
 		private WorkTypeRepository workTypeRepo;
 		@Inject
 		private WorkTimeSettingRepository workTimeSettingRepository;
-		@Inject
-		private WorkTimeSettingService workTimeSettingService;
 		@Inject
 		private BasicScheduleService basicScheduleService;
 		@Inject

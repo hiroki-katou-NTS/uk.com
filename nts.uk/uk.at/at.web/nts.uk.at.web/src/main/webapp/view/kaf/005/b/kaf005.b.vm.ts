@@ -12,6 +12,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
     import PrintContentOfEachAppDto = nts.uk.at.view.kaf000.shr.viewmodel.PrintContentOfEachAppDto;
     import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
 	import formatTime = nts.uk.time.format.byId;
+	import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
 	const template= `
 	<div>
 	<div
@@ -135,7 +136,12 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 		
 		// display mode edit, or view =0 (false)
 		outputMode: KnockoutObservable<Boolean> = ko.observable(true);
-
+		
+		
+		workHoursTemp: any;
+		restTemp: Array<any>;
+	
+		justSelectWork: boolean = false;
         created(
             params: {
                 appType: any,
@@ -191,6 +197,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					vm.bindOverTime(vm.dataSource, 0);
 					vm.bindMessageInfo(vm.dataSource);
 					vm.assginTimeTemp();
+					vm.assignWorkHourAndRest();
 					// assign mode can be editd or displayed
 					vm.outputMode(vm.dataSource.appDispInfoStartup.appDetailScreenInfo.outputMode == 1);
 					if (vm.isStart) {
@@ -230,11 +237,35 @@ module nts.uk.at.view.kafsample.b.viewmodel {
             }
         }
 
+		assignWorkHourAndRest(isChangeDate?: boolean) {
+			const self = this;
+			
+			self.restTemp = ko.toJS(self.restTime);
+			if (!isChangeDate) {
+				self.workHoursTemp = ko.toJS(self.workInfo().workHours1);				
+			}
+		}
+
 		public handleEditInputTime(timeTemp: Array<any>) {
 			const self = this;
 			let isEqual = _.differenceWith(timeTemp, self.createTimeTemp(), _.isEqual);
 			
 			return isEqual.length > 0;
+		}
+		// detect editting breaktime
+		isEditBreakTime(restTime: Array<RestTime>, restTimeTemp: Array<any>) {
+			let result = false;
+			_.forEach(restTime, (el) => {
+				_.forEach(restTimeTemp, (item) => {
+					if (el.frameNo == item.frameNo) {
+						if(el.start() != item.start || el.end() != item.end) {
+							result = true;
+						}
+					}
+				})
+			});
+			
+			return result;
 		}
 
         // event update cần gọi lại ở button của view cha
@@ -246,6 +277,11 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 			// handle when edit input time
 			
 			if (vm.handleEditInputTime(vm.timeTemp)) {
+				vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED;
+			}
+			
+			// handle when edit rest time
+			if (vm.isEditBreakTime(vm.restTime(), vm.restTemp)) {
 				vm.dataSource.calculatedFlag = CalculatedFlag.UNCALCULATED;
 			}
             let dfd = $.Deferred();
@@ -276,13 +312,13 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					let end2 = vm.workInfo().workHours2.end();
 					
 					// ・開始時刻1 > 終了時刻1　の場合エラーメッセージ(Msg_307)を表示する
-					if (start1 > end1) {
+					if (start1 > end1 && vm.visibleModel.c7()) {
 						vm.$errors('#inpStartTime1', 'Msg_307');
 						vm.$errors('#inpEndTime1', 'Msg_307');
 						return false;
 					}
 					// ・開始時刻2 > 終了時刻2　の場合エラーメッセージ(Msg_307)を表示する
-					if (inpStartTime2 && inpEndTime2 && _.isNumber(start2) && _.isNumber(end2)) {
+					if (inpStartTime2 && inpEndTime2 && _.isNumber(start2) && _.isNumber(end2) && vm.visibleModel.c29()) {
 						if (start2 > end2) {
 							vm.$errors('#inpStartTime2', 'Msg_307');
 							vm.$errors('#inpEndTime2', 'Msg_307');
@@ -291,7 +327,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					}
 					
 					// ・終了時刻1 > 開始時刻2　の場合エラーメッセージ(Msg_581)を表示する
-					if (_.isNumber(start2) && inpStartTime2) {
+					if (_.isNumber(start2) && inpStartTime2 && vm.visibleModel.c29()) {
 						if (start2 < end1) {
 							vm.$errors('#inpEndTime1', 'Msg_581');
 							vm.$errors('#inpStartTime2', 'Msg_581');
@@ -299,7 +335,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 						}
 					}
 					// ・開始時刻2、終了時刻2　の片方しか入力してない場合エラーメッセージ(Msg_307)を表示する
-					if (inpStartTime2 && inpEndTime2) {
+					if (inpStartTime2 && inpEndTime2 && vm.visibleModel.c7()) {
 						if (!(_.isNumber(start2) && _.isNumber(end2))) {
 							if (!_.isNumber(start2) && _.isNumber(end2)) {
 								vm.$errors('#inpStartTime2', 'Msg_307');
@@ -312,6 +348,18 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 							
 						}
 					}
+					
+					// wokr type or worktime null
+					if (vm.visibleModel.c7()) {
+						if ((_.isNil(vm.workInfo().workType().code) || vm.workInfo().workType().code == '') 
+						|| (_.isNil(vm.workInfo().workTime().code) || vm.workInfo().workTime().code == '')
+						) {
+							$('.workSelect').focus();
+							return false;			
+						}
+						
+					}
+						
 					return true;						
 				}
 			})
@@ -346,17 +394,13 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					} else {
 						commandUpdate.appOverTime = applicationTemp;
 					}
-                	return vm.$ajax('at', API.update, commandUpdate).then(() => {
-						return vm.$dialog.info({ messageId: "Msg_15"}).then(() => {
-							return true;
-						});	
-					});
+                	return vm.$ajax('at', API.update, commandUpdate);
                 }
             }).then((result) => {
                 if(result) {
-					// gửi mail sau khi update
-					// return vm.$ajax('at', API.sendMailAfterUpdateSample);
-					return true;
+					return vm.$dialog.info({ messageId: "Msg_15"}).then(() => {
+						return CommonProcess.handleMailResult(result, vm);
+					});
 				}	
             }).then((result) => {
                 if(result) {
@@ -637,7 +681,9 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 				item.reasonCode = vm.messageInfos()[0].selectedCode();
 				item.reason = vm.messageInfos()[0].valueInput();
 				item.diviationTime = 1;
-				applicationTime.reasonDissociation.push(item);
+				if ((!_.isNil(item.reasonCode) && item.reasonCode != '') || (!_.isNil(item.reason) && item.reason != '')) {
+					applicationTime.reasonDissociation.push(item);					
+				}
 			}
 			
 			if (vm.visibleModel.c12_1() || vm.visibleModel.c12_2()) {
@@ -647,7 +693,9 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 				item.reasonCode = vm.messageInfos()[1].selectedCode();
 				item.reason = vm.messageInfos()[1].valueInput();
 				item.diviationTime = 2;
-				applicationTime.reasonDissociation.push(item);
+				if ((!_.isNil(item.reasonCode) && item.reasonCode != '') || (!_.isNil(item.reason) && item.reason != '')) {
+					applicationTime.reasonDissociation.push(item);					
+				}
 			}
 
 
@@ -667,7 +715,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 		bindOverTimeWorks(res: DisplayInfoOverTime) {
 			const self = this;
 			if (_.isNil(_.get(res, 'infoNoBaseDate.agreeOverTimeOutput'))) {
-				self.visibleModel.c6(false);
+				// self.visibleModel.c6(false);
 				return;	
 			}
 			let overTimeWorks = [];
@@ -687,6 +735,33 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					item.limitTime = ko.observable(timeLimit);
 					item.actualTime = ko.observable(timeActual);
 				}
+				const currentTimeMonth = res.infoNoBaseDate.agreeOverTimeOutput.currentTimeMonth;
+				// 正常
+				if (currentTimeMonth.status == AgreementTimeStatusOfMonthly.NORMAL) {
+					
+				// 限度アラーム時間超過	
+				} else if (currentTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM) {
+					item.backgroundColor(COLOR_36.alarm);
+					item.textColor(COLOR_36.alarm_character);
+				// 限度エラー時間超過	
+				} else if (currentTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR) {
+					item.backgroundColor(COLOR_36.error);
+					item.textColor(COLOR_36.error_letter);
+				// 正常（特例あり）	
+				} else if (currentTimeMonth.status == AgreementTimeStatusOfMonthly.NORMAL_SPECIAL) {
+					
+				} else if (currentTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM_SP) {
+					item.backgroundColor(COLOR_36.exceptions);
+				} else if (currentTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP) {
+					item.backgroundColor(COLOR_36.exceptions);
+				} else if (currentTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM) {
+					item.backgroundColor(COLOR_36.alarm);
+					item.textColor(COLOR_36.alarm_character);
+				} else if (currentTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR) {
+					item.backgroundColor(COLOR_36.error);
+					item.textColor(COLOR_36.error_letter);
+				}
+				
 				
 				overTimeWorks.push(item);
 			}
@@ -706,6 +781,33 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					item.limitTime = ko.observable(timeLimit);
 					item.actualTime = ko.observable(timeActual);
 				}
+				
+				const nextTimeMonth = res.infoNoBaseDate.agreeOverTimeOutput.nextTimeMonth;
+				// 正常
+				if (nextTimeMonth.status == AgreementTimeStatusOfMonthly.NORMAL) {
+					
+				// 限度アラーム時間超過	
+				} else if (nextTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM) {
+					item.backgroundColor(COLOR_36.alarm);
+					item.textColor(COLOR_36.alarm_character);
+				// 限度エラー時間超過	
+				} else if (nextTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR) {
+					item.backgroundColor(COLOR_36.error);
+					item.textColor(COLOR_36.error_letter);
+				// 正常（特例あり）	
+				} else if (nextTimeMonth.status == AgreementTimeStatusOfMonthly.NORMAL_SPECIAL) {
+					
+				} else if (nextTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM_SP) {
+					item.backgroundColor(COLOR_36.exceptions);
+				} else if (nextTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP) {
+					item.backgroundColor(COLOR_36.exceptions);
+				} else if (nextTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM) {
+					item.backgroundColor(COLOR_36.alarm);
+					item.textColor(COLOR_36.alarm_character);
+				} else if (nextTimeMonth.status == AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR) {
+					item.backgroundColor(COLOR_36.error);
+					item.textColor(COLOR_36.error_letter);
+				}
 				overTimeWorks.push(item);
 			}
 			self.overTimeWork(overTimeWorks);
@@ -719,15 +821,29 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 				let workType = {} as Work;
 				let workTime = {} as Work;
 				let workHours1 = {} as WorkHours;
-				workHours1.start = ko.observable(null).extend({notify: 'always', rateLimit: 500});
-				workHours1.end = ko.observable(null).extend({notify: 'always', rateLimit: 500});
+				workHours1.start = ko.observable(null).extend({notify: 'always', rateLimit: 200});
+				workHours1.end = ko.observable(null).extend({notify: 'always', rateLimit: 200});
 				ko.computed(() => {
-					if (_.isNumber(workHours1.start()) && _.isNumber(workHours1.end()) && !self.isBindFirstBreakTime) {
+					if (self.justSelectWork) {
+						
+						self.justSelectWork = false;
+						
 						return self.getBreakTimes();
-					} else if (_.isNumber(workHours1.start()) && _.isNumber(workHours1.end()) && self.isBindFirstBreakTime) {
+					}
+					if (_.isNumber(workHours1.start()) && _.isNumber(workHours1.end()) && !self.isBindFirstBreakTime) {
+						if (!(self.workHoursTemp.start == workHours1.start() && self.workHoursTemp.end == workHours1.end())) {
+							return self.getBreakTimes();							
+						} else {
+							return;
+						}
+					} 
+					//else if (_.isNumber(workHours1.start()) && _.isNumber(workHours1.end()) && self.isBindFirstBreakTime) {
+					//	self.isBindFirstBreakTime = false;
+					// }	
+					else {
 						self.isBindFirstBreakTime = false;
-					}	
-				}, self).extend({notify: 'always', rateLimit: 500});
+					}
+				}, self).extend({notify: 'always', rateLimit: 200});
 				let workHours2 = {} as WorkHours;
 				workHours2.start = ko.observable(null);
 				workHours2.end = ko.observable(null);
@@ -740,6 +856,11 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 				return;
 			}
 			
+			// next app , so clear text
+			self.workInfo().workHours1.start(null);
+			self.workInfo().workHours1.end(null);
+			self.workInfo().workHours2.start(null);
+			self.workInfo().workHours2.end(null);
 			
 			// bind data when action 
 			if (!self.isStart) {
@@ -759,7 +880,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 							workType.name = self.$i18n('KAF005_345');
 						}
 					} else {
-						workType.name = self.$i18n('KAF_005_345');
+						workType.name = self.$i18n('KAF005_345');
 					}
 					workTime.code = infoWithDateApplication.workTimeCD;
 					if (!_.isNil(workTime.code)) {
@@ -771,7 +892,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 							workTime.name = self.$i18n('KAF005_345');
 						}
 					} else {
-						workTime.name = self.$i18n('KAF_005_345');
+						workTime.name = self.$i18n('KAF005_345');
 					}
 					
 					// not change in select work type 
@@ -789,6 +910,15 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 							workHours2.end(workHoursDto.endTimeOp2);						
 						}
 					} else {
+						
+						if (mode == ACTION.CHANGE_DATE) {
+							workHours1.start(null);
+							workHours1.end(null);
+							if (self.visibleModel.c29()) {
+								workHours2.start(null);
+								workHours2.end(null);						
+							}
+						}
 						if (mode == ACTION.CHANGE_WORK) {
 							workHours1.start(null);
 							workHours1.end(null);
@@ -1025,6 +1155,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 		
 		createRestTime(restTime: KnockoutObservableArray<RestTime>) {
 			const self = this;
+			
 			let restTimeArray = [];
 			let length = 10;
 			for (let i = 1; i < length + 1; i++) {
@@ -1091,10 +1222,15 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 					let workType = {} as Work;
 					workType.code = childData.selectedWorkTypeCode;
 					workType.name = childData.selectedWorkTypeName;
-					self.workInfo().workType(workType);
 					let workTime = {} as Work;
                     workTime.code = childData.selectedWorkTimeCode;
 					workTime.name = childData.selectedWorkTimeName;
+					if (workType.code == self.workInfo().workType().code
+					 	&& workTime.code == self.workInfo().workTime().code) {
+												
+						return;
+					}
+					self.workInfo().workType(workType);
 					self.workInfo().workTime(workTime);
 					let prePost = self.application().prePostAtr();
 					if (self.appDispInfoStartupOutput().appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr != 1) {
@@ -1123,10 +1259,12 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 						
 								self.bindOverTimeWorks(self.dataSource);
 								self.bindWorkInfo(self.dataSource, ACTION.CHANGE_WORK);
+								self.justSelectWork = true;
 								self.bindRestTime(self.dataSource, 1);
 								self.bindHolidayTime(self.dataSource, 1);
 								self.bindOverTime(self.dataSource, 1);
 								self.assginTimeTemp();
+								self.dataSource.calculatedFlag = res.calculatedFlag;
 							}
 						})
 						.fail(res => {
@@ -1150,6 +1288,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 			self.$blockui("show");
 			console.log('calculate');
 			let command = {} as ParamCalculationCMD;
+			command.overtimeAppSetCommand = self.dataSource.infoNoBaseDate.overTimeAppSet;
 			command.companyId = self.$user.companyId;
 			command.employeeId = self.$user.employeeId;
 			command.dateOp = ko.toJS(self.application).appDate;
@@ -1225,6 +1364,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 						self.bindOverTime(self.dataSource, 1);
 						self.bindHolidayTime(self.dataSource, 1);
 						self.assginTimeTemp();
+						self.assignWorkHourAndRest();
 					}
 				})
 				.fail((res: any) => {
@@ -2523,7 +2663,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 		
 		getBreakTimes() {
 			const self = this;
-			self.$blockui("show");
+			self.$blockui("show")
 			let command = {} as ParamBreakTime;
 			command.companyId = self.$user.companyId;
 			command.workTypeCode = self.workInfo().workType().code;
@@ -2551,6 +2691,14 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 								item.end(null);
 							});
 						}
+						
+						self.dataSource.calculatedFlag = res.calculatedFlag;
+						self.assignWorkHourAndRest();
+					} else {
+						_.forEach(self.restTime(), (item: RestTime) => {
+								item.start(null);
+								item.end(null);
+						});
 					}
 				})
 				.fail((res: any) => {
@@ -2562,7 +2710,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 						}
 					});
 				})
-				.always(() => self.$blockui('hide'));
+				.always(() => self.$blockui("hide"));
 		}
 		
 		
@@ -2577,10 +2725,10 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 			visibleModel.c2(c2);
 			// 
 			let c6 = true;
-			if (_.isNil(_.get(res, 'infoNoBaseDate.agreeOverTimeOutput'))) {
+			if (_.isNil(_.get(res, 'infoNoBaseDate.overTimeAppSet.overtimeLeaveAppCommonSetting.extratimeDisplayAtr'))) {
 				self.visibleModel.c6(false);
 			} else {
-				visibleModel.c6(c6);				
+				self.visibleModel.c6(c6 && (_.get(res, 'infoNoBaseDate.overTimeAppSet.overtimeLeaveAppCommonSetting.extratimeDisplayAtr') == NotUseAtr.USE));				
 			}
 			// 「残業申請の表示情報．基準日に関係しない情報．残業申請設定．申請詳細設定．時刻計算利用区分」= する
 			let c7 = res.infoNoBaseDate.overTimeAppSet.applicationDetailSetting.timeCalUse == NotUseAtr.USE
@@ -2828,7 +2976,20 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 			// 事前超過
 			bgC4: '#ffc0cb'
 			
-		}
+	}
+	const COLOR_36 = {
+		// 36協定エラー
+		error: '#FD4D4D',
+		// 36協定アラーム
+		alarm: '#F6F636',
+		// 36協定特例
+		exceptions: '#eb9152',
+		// 36協定エラー文字
+		error_letter: '#ffffff',
+		// 36協定アラーム文字
+		alarm_character: '#ff0000'
+		
+	}
 	export enum MODE {
 		VIEW,
 		EDIT
@@ -2896,6 +3057,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 		advanceApplicationTime: ApplicationTime;
 		achieveApplicationTime: ApplicationTime;
 		workContent: WorkContent;
+		overtimeAppSetCommand: OvertimeAppSet;
 	}
 	export interface DisplayInfoOverTime {
 		infoBaseDateOutput: InfoBaseDateOutput;
@@ -2968,6 +3130,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 	}
 	export interface BreakTimeZoneSetting {
 		timeZones?: Array<TimeZone>;
+		calculatedFlag: CalculatedFlag;
 	}
 	export interface TimeZone {
 		frameNo: number;
@@ -3043,7 +3206,7 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 	export interface OvertimeAppSet {
 		companyID: string;
 		overtimeLeaveAppCommonSetting: any;
-		overtimeQuotaSet: Array<any>;
+		overTimeQuotaSettings: Array<any>;
 		applicationDetailSetting: any;
 	}
 	export interface AgreeOverTimeOutput {
@@ -3278,6 +3441,26 @@ module nts.uk.at.view.kafsample.b.viewmodel {
 	enum ACTION {
 		CHANGE_DATE,
 		CHANGE_WORK,
+	}
+	enum AgreementTimeStatusOfMonthly {
+		/** 正常 */
+		NORMAL,
+		/** 限度エラー時間超過 */
+		EXCESS_LIMIT_ERROR,
+		/** 限度アラーム時間超過 */
+		EXCESS_LIMIT_ALARM,
+		/** 特例限度エラー時間超過 */
+		EXCESS_EXCEPTION_LIMIT_ERROR,
+		/** 特例限度アラーム時間超過 */
+		EXCESS_EXCEPTION_LIMIT_ALARM,
+		/** 正常（特例あり） */
+		NORMAL_SPECIAL,
+		/** 限度エラー時間超過（特例あり） */
+		EXCESS_LIMIT_ERROR_SP,
+		/** 限度アラーム時間超過（特例あり） */
+		EXCESS_LIMIT_ALARM_SP,
+		/** 特別条項の上限時間超過 */
+		EXCESS_BG_GRAY
 	}
 
 }

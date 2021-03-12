@@ -15,6 +15,7 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
+import nts.uk.ctx.at.request.app.find.application.holidaywork.dto.CheckBeforeOutputMultiDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.CheckBeforeOutputDto;
 import nts.uk.ctx.at.request.app.find.application.overtime.dto.DetailOutputDto;
 import nts.uk.ctx.at.request.dom.application.AppReason;
@@ -142,7 +143,7 @@ public class AppOvertimeFinder {
 		return DisplayInfoOverTimeDto.fromDomain(output);
 	}
 	public DisplayInfoOverTimeDto changeDate(ParamOverTimeChangeDate param) {
-		DisplayInfoOverTime output = new DisplayInfoOverTime();
+		DisplayInfoOverTime output = param.displayInfoOverTime.toDomain();
 		String companyId = param.companyId;
 		Optional<GeneralDate> dateOp = Optional.empty();
 		if (StringUtils.isNotBlank(param.dateOp)) {
@@ -167,9 +168,10 @@ public class AppOvertimeFinder {
 						.stream()
 						.map(x -> x.toDomain(param.companyId))
 						.collect(Collectors.toList()),
-				EnumAdaptor.valueOf(param.prePost, PrePostInitAtr.class)		
+				EnumAdaptor.valueOf(param.prePost, PrePostInitAtr.class),
+				output
 				);
-		return DisplayInfoOverTimeDto.fromDomainChangeDate(output);
+		return DisplayInfoOverTimeDto.fromDomain(output);
 	}
 	
 	public DisplayInfoOverTimeDto selectWorkInfo(ParamSelectWork param) {
@@ -188,8 +190,8 @@ public class AppOvertimeFinder {
 				param.companyId,
 				param.employeeId,
 				dateOp,
-				new WorkTypeCode(param.workType),
-				new WorkTimeCode(param.workTime),
+				Optional.ofNullable(param.workType).map(x -> new WorkTypeCode(x)).orElse(null),
+				Optional.ofNullable(param.workTime).map(x -> new WorkTimeCode(x)).orElse(null),
 				startTimeSPR,
 				endTimeSPR,
 				param.appDispInfoStartupDto.toDomain(),
@@ -215,7 +217,9 @@ public class AppOvertimeFinder {
 				param.overtimeLeaveAppCommonSet.toDomain(),
 				param.advanceApplicationTime == null ? null : param.advanceApplicationTime.toDomain(),
 				param.achieveApplicationTime == null ? null : param.achieveApplicationTime.toDomain(),
-				param.workContent.toDomain());
+				param.workContent.toDomain(),
+				param.overtimeAppSetCommand.toDomain(companyId)
+				);
 		
 		
 		return DisplayInfoOverTimeDto.fromDomainCalculation(output);
@@ -236,6 +240,24 @@ public class AppOvertimeFinder {
 				displayInfoOverTime,
 				appOverTime);
 		return CheckBeforeOutputDto.fromDomain(output);
+	}
+	
+	public CheckBeforeOutputMultiDto checkErrorRegisterMultiple(ParamCheckBeforeRegister param) {
+		CheckBeforeOutputMultiDto output = null;
+		DisplayInfoOverTime displayInfoOverTime = param.displayInfoOverTime.toDomain();
+		Application application = param.appOverTime.application.toDomain();
+		AppOverTime appOverTime = param.appOverTime.toDomain();
+		if (appOverTime.getDetailOverTimeOp().isPresent()) {
+			appOverTime.getDetailOverTimeOp().get().setAppId(application.getAppID());
+		}
+		appOverTime.setApplication(application);
+		output = CheckBeforeOutputMultiDto.fromDomain(overtimeService.checkErrorRegisterMultiple(
+				param.require,
+				param.companyId,
+				displayInfoOverTime,
+				appOverTime));
+		return output;
+		
 	}
 	
 	public CheckBeforeOutputDto checkBeforeUpdate(ParamCheckBeforeUpdate param) {
@@ -261,16 +283,21 @@ public class AppOvertimeFinder {
 	}
 	
 	public BreakTimeZoneSettingDto getBreakTime(ParamBreakTime param) {
-		return BreakTimeZoneSettingDto.fromDomain(commonAlgorithmOverTime.selectWorkTypeAndTime(
-				param.companyId,
-				new WorkTypeCode(param.workTypeCode),
-				new WorkTimeCode(param.workTimeCode),
-				param.startTime == null ? Optional.empty() : Optional.of(new TimeWithDayAttr(param.startTime)),
-				param.endTime == null ? Optional.empty() : Optional.of(new TimeWithDayAttr(param.endTime)),
-				CollectionUtil.isEmpty(param.actualContentDisplayDtos) ? Optional.empty() : 
-					(param.actualContentDisplayDtos.get(0).getOpAchievementDetail() == null ?
-							Optional.empty() : Optional.ofNullable(param.actualContentDisplayDtos.get(0).getOpAchievementDetail().toDomain()))
-				));
+		if (!StringUtils.isBlank(param.workTypeCode) && !StringUtils.isBlank(param.workTimeCode)) {
+			return BreakTimeZoneSettingDto.fromDomain(commonAlgorithmOverTime.selectWorkTypeAndTime(
+					param.companyId,
+					Optional.ofNullable(param.workTypeCode).map(x -> new WorkTypeCode(x)).orElse(null),
+					Optional.ofNullable(param.workTimeCode).map(x -> new WorkTimeCode(x)).orElse(null),
+					param.startTime == null ? Optional.empty() : Optional.of(new TimeWithDayAttr(param.startTime)),
+							param.endTime == null ? Optional.empty() : Optional.of(new TimeWithDayAttr(param.endTime)),
+									CollectionUtil.isEmpty(param.actualContentDisplayDtos) ? Optional.empty() : 
+										(param.actualContentDisplayDtos.get(0).getOpAchievementDetail() == null ?
+												Optional.empty() : Optional.ofNullable(param.actualContentDisplayDtos.get(0).getOpAchievementDetail().toDomain()))
+					));
+			
+		} else {
+			return null;
+		}
 	}	
 	/**
 	 * フレックス時間を表示するかチェック
