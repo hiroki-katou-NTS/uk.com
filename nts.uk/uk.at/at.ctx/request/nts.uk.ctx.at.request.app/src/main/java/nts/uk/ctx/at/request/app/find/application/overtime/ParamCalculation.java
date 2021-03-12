@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.app.command.application.overtime.ApplicationTimeCommand;
 import nts.uk.ctx.at.request.app.command.application.overtime.WorkContentCommand;
+import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSetCommand;
 import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeLeaveAppCommonSetCommand;
 
 @AllArgsConstructor
@@ -25,4 +26,6 @@ public class ParamCalculation {
 	public ApplicationTimeCommand achieveApplicationTime;
 	
 	public WorkContentCommand workContent;
+	
+	public OvertimeAppSetCommand overtimeAppSetCommand;
 }

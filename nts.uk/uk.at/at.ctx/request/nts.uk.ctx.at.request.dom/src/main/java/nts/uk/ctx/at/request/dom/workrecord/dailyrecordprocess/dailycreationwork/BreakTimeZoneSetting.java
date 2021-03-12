@@ -6,6 +6,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.request.dom.application.holidayworktime.service.dto.CalculatedFlag;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 
 /**
@@ -21,4 +22,10 @@ import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 public class BreakTimeZoneSetting {
 	// 時間帯
 	private List<DeductionTime> timeZones = Collections.emptyList();
+	
+	private CalculatedFlag calculatedFlag = CalculatedFlag.UNCALCULATED;
+	
+	public BreakTimeZoneSetting(List<DeductionTime> timeZones) {
+		this.timeZones = timeZones;
+	}
 }
