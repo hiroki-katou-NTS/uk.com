@@ -81,9 +81,6 @@ public class WorkInformationStamp implements DomainValue {
 		
 		// 就業情報端末で場所と職場を取得する
 		result =  getWorkInformationWithEmploymentInfoTerminal(empInfoTerminalRepo);
-		if(result.getWorkplaceID().isPresent() && result.getWorkLocationCD().isPresent()){
-			return result;
-		}
 		
 		// 応援カード情報で職場IDを補正する
 		correctWorkplaceIdWithSupportCardInformation(supportCardRepo, result, cid);
