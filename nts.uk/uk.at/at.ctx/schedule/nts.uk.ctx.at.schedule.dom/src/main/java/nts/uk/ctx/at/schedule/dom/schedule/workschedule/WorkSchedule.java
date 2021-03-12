@@ -128,6 +128,12 @@ public class WorkSchedule implements DomainAggregate {
 		if (! workInformation.checkNormalCondition(require) ) {
 			throw new BusinessException("Msg_2119");
 		}
+		
+		Optional<TimeLeavingOfDailyAttd> optTimeLeaving = Optional.empty();
+		if ( workInformation.isAttendanceRate(require) ) {
+			optTimeLeaving = Optional.of(
+					TimeLeavingOfDailyAttd.createByPredetermineZone(require, workInformation) );
+		}
 			
 		return new WorkSchedule(
 				employeeId, 
@@ -143,9 +149,7 @@ public class WorkSchedule implements DomainAggregate {
 				AffiliationInforOfDailyAttd.create(require, employeeId, date), 
 				new BreakTimeOfDailyAttd(),
 				new ArrayList<>(), 
-				Optional.of(TimeLeavingOfDailyAttd.createByPredetermineZone(
-						require, 
-						workInformation)), 
+				optTimeLeaving, 
 				Optional.empty(), 
 				Optional.empty());
 	}
@@ -495,11 +499,19 @@ public class WorkSchedule implements DomainAggregate {
 		
 		// update EditState of BreakTime(1...size)
 		this.lstEditState.removeIf( editState -> WS_AttendanceItem.isBreakTime( editState.getAttendanceItemId() ) );
-		List<WS_AttendanceItem> updatedAttendanceItemList = WS_AttendanceItem.getBreakTimeItemWithSize( newBreakTimeList.size() );
+		
+		List<WS_AttendanceItem> updatedAttendanceItemList;
+		if ( newBreakTimeList.isEmpty() ) {
+			updatedAttendanceItemList = new ArrayList<>(Arrays.asList( 
+					WS_AttendanceItem.StartBreakTime1, 
+					WS_AttendanceItem.EndBreakTime1,
+					WS_AttendanceItem.BreakTime) );
+		} else {
+			updatedAttendanceItemList = WS_AttendanceItem.getBreakTimeItemWithSize( newBreakTimeList.size() );
+			updatedAttendanceItemList.add(WS_AttendanceItem.BreakTime);
+		}
 		updatedAttendanceItemList.forEach( item -> this.lstEditState.add(
 				EditStateOfDailyAttd.createByHandCorrection(require, item.ID, this.employeeID)));
-		// update EditState of BreakTime 休憩時間
-		this.lstEditState.add(EditStateOfDailyAttd.createByHandCorrection(require, WS_AttendanceItem.BreakTime.ID, this.employeeID));
 	}
 	
 	public static interface Require extends 

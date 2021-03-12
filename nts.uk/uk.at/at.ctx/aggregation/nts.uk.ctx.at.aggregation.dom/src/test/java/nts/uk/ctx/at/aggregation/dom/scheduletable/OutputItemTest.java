@@ -65,7 +65,7 @@ public class OutputItemTest {
 								// 9
 								OneRowOutputItem.create(Optional.empty(), Optional.empty(), Optional.of(ScheduleTableAttendanceItem.ACTUAL_WORKING_HOURS)),
 								// 10
-								OneRowOutputItem.create(Optional.empty(), Optional.empty(), Optional.of(ScheduleTableAttendanceItem.LEGAL_OVERTIME))
+								OneRowOutputItem.create(Optional.empty(), Optional.empty(), Optional.of(ScheduleTableAttendanceItem.DAY_WORKING_HOURS))
 								))
 		); 
 		

@@ -604,6 +604,9 @@ public class ProgramsManager {
             "/view/kdl/020/a/multi.xhtml");
     public static final Program KDL048 = new Program(WebAppId.AT, ProgramIdConsts.KDL048, "KDL048_1",
             "/view/kdl/048/index.xhtml");
+    
+    public static final Program KDL049A = new Program(WebAppId.AT, ProgramIdConsts.KDL049A, "KDL049_1",
+            "/view/kdl/049/a/index.xhtml");
 
     public static final Program KDL035A = new Program(WebAppId.AT, ProgramIdConsts.KDL035A, "KDL035_13",
             "/view/kdl/035/a/index.xhtml");
@@ -946,6 +949,24 @@ public class ProgramsManager {
      */
     public static final Program KSU003A = new Program(WebAppId.AT, ProgramIdConsts.KSU003A, "KSU003_1",
             "/view/ksu/003/a/index.xhtml");
+    
+    /**
+     * KSU005A
+     */
+    public static final Program KSU005A = new Program(WebAppId.AT, ProgramIdConsts.KSU005A, "KSU005_1",
+            "/view/ksu/005/a/index.xhtml");
+    
+    /**
+     * KSU005B
+     */
+    public static final Program KSU005B = new Program(WebAppId.AT, ProgramIdConsts.KSU005B, "KSU005_2",
+            "/view/ksu/005/b/index.xhtml");
+    
+    /**
+     * KSU005C
+     */
+    public static final Program KSU005C = new Program(WebAppId.AT, ProgramIdConsts.KSU005C, "KSU005_3",
+            "/view/ksu/005/c/index.xhtml");
 
     /**
      * KML002A
@@ -3069,6 +3090,11 @@ public class ProgramsManager {
             "/ksu/s01/b");
 
     /**
+     * KSUS02
+     */
+    public static final Program KSUS02A = new Program(WebAppId.MOBI, ProgramIdConsts.KSUS02A, "KSUS02_23",
+            "/ksu/s02");
+    /**
      * CPS013
      */
     public static final Program CPS013A = new Program(WebAppId.COM, ProgramIdConsts.CPS013A, "CPS013_34",
@@ -3516,6 +3542,11 @@ public class ProgramsManager {
             ProgramIdConsts.KDL051A,
             "KDL051_1",
             "/view/kdl/051/single.xhtml");
+	/**
+	 * KDL053
+	 */
+	public static final Program KDL053 = new Program(WebAppId.AT, ProgramIdConsts.KDL053, "KDL053_1",
+            "/view/kdl/053/a/index.xhtml");
 
     /**
      * CMM024

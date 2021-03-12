@@ -85,7 +85,7 @@ public class RegisterWorkScheduleKsu003<T> {
 				}
 				List<TimeSpanForCalc> breakTimeList = wsCmd.listBreakTime.stream().map(i -> new TimeSpanForCalc(new TimeWithDayAttr(i.getStart()), new TimeWithDayAttr(i.getEnd())))
 				.collect(Collectors.toList());
-				WorkScheduleSaveCommand<T> ws = new WorkScheduleSaveCommand(wsCmd.sid, ymd, workInfor, mapAttendIdWithTime, breakTimeList, null);
+				WorkScheduleSaveCommand<T> ws = new WorkScheduleSaveCommand(wsCmd.sid, ymd, workInfor, mapAttendIdWithTime, breakTimeList, null, wsCmd.isBreakByHand());
 				rs.add(ws);
 			}
 		

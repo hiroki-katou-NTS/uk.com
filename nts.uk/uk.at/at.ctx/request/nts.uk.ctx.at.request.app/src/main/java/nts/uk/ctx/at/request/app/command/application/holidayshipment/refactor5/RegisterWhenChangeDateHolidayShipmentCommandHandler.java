@@ -21,6 +21,7 @@ import nts.uk.ctx.at.request.app.find.application.holidayshipment.refactor5.dto.
 import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.recruitmentapp.RecruitmentApp;
@@ -67,14 +68,16 @@ public class RegisterWhenChangeDateHolidayShipmentCommandHandler {
 	/**
 	 * @name 登録する
 	 */
-	public String register(DisplayInforWhenStarting command, GeneralDate appDateNew, String appReason, Integer appStandardReasonCD){
+	public ProcessResult register(DisplayInforWhenStarting command, GeneralDate appDateNew, String appReason, Integer appStandardReasonCD){
 		String companyId = AppContexts.user().companyId();
 		
 		AbsenceLeaveApp absNew = this.errorCheckWhenChangingHolidays(companyId, command, appDateNew, appReason, appStandardReasonCD);
 		
-		this.registerProcess(companyId, command, absNew);
+		ProcessResult processResult = this.registerProcess(companyId, command, absNew);
 		
-		return absNew.getAppID();
+		processResult.setAppIDLst(Arrays.asList(absNew.getAppID()));
+		
+		return processResult;
 	}
 	
 	/**
@@ -124,7 +127,7 @@ public class RegisterWhenChangeDateHolidayShipmentCommandHandler {
 	 * @param displayInforWhenStarting 振休振出申請起動時の表示情報
 	 * @param absNew 振休申請_NEW：申請
 	 */
-	public void registerProcess(String companyId, DisplayInforWhenStarting displayInforWhenStarting, AbsenceLeaveApp absNew) {
+	public ProcessResult registerProcess(String companyId, DisplayInforWhenStarting displayInforWhenStarting, AbsenceLeaveApp absNew) {
 		//ドメイン「振休申請」を1件更新する
 		Optional<AbsenceLeaveApp> absOld = absenceLeaveAppRepository.findByAppId(displayInforWhenStarting.abs.application.getAppID());
 		if(absOld.isPresent()) {
@@ -151,7 +154,7 @@ public class RegisterWhenChangeDateHolidayShipmentCommandHandler {
 		recNew.ifPresent(c->c.applicationInsert = new ApplicationInsertCmd(c.application.toDomain()));
 		
 		//振休振出申請（新規）登録処理
-		saveHolidayShipmentCommandHandlerRef5.registrationApplicationProcess(companyId, Optional.of(absNew), Optional.ofNullable(recNew.map(c->c.toDomainInsertRec()).orElse(null)), 
+		return saveHolidayShipmentCommandHandlerRef5.registrationApplicationProcess(companyId, Optional.of(absNew), Optional.ofNullable(recNew.map(c->c.toDomainInsertRec()).orElse(null)), 
 				displayInforWhenStarting.appDispInfoStartup.getAppDispInfoWithDateOutput().toDomain().getBaseDate(), 
 				displayInforWhenStarting.appDispInfoStartup.getAppDispInfoNoDateOutput().isMailServerSet(), 
 				displayInforWhenStarting.appDispInfoStartup.toDomain().getAppDetailScreenInfo().map(c->c.getApprovalLst()).orElse(new ArrayList<>()), 

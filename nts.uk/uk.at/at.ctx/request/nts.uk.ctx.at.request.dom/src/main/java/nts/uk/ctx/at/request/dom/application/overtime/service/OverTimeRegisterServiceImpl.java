@@ -1,13 +1,18 @@
 package nts.uk.ctx.at.request.dom.application.overtime.service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
@@ -58,9 +63,10 @@ public class OverTimeRegisterServiceImpl implements OverTimeRegisterService {
 		
 		// 2-3.新規画面登録後の処理を実行 #112628
 		return newAfterRegister.processAfterRegister(
-				application.getAppID(), 
+				Arrays.asList(application.getAppID()), 
 				appTypeSetting,
-				mailServerSet);
+				mailServerSet,
+				false);
 	}
 
 	@Override
@@ -105,6 +111,44 @@ public class OverTimeRegisterServiceImpl implements OverTimeRegisterService {
 					appOverTime,
 					appDispInfoStartupOutput);
 		}
+	}
+
+	@Override
+	public ProcessResult registerMultiple(
+			String companyId,
+			AppOverTime appOverTime,
+			AppDispInfoStartupOutput appDispInfoStartupOutput,
+			Boolean mailServerSet,
+			AppTypeSetting appTypeSetting) {
+		List<String> guidS = new ArrayList<>();
+		
+		for (EmployeeInfoImport el : appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getEmployeeInfoLst()) {
+			String sid = el.getSid();
+			// INPUT「残業申請」の内容を置き替える
+			String UID = IdentifierUtil.randomUniqueId();
+			// List＜申請ID＞に作成した申請IDを追加
+			guidS.add(UID);
+			// 04_新規登録処理
+			Application application = appOverTime.getApplication();
+			application.setAppID(UID);
+			application.setEmployeeID(sid);
+			appOverTime.setApplication(application);
+			// 登録処理を実行
+			appRepository.insertApp(application,
+					appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpListApprovalPhaseState().orElse(Collections.emptyList()));
+			registerService.newScreenRegisterAtApproveInfoReflect(application.getEmployeeID(), application);
+			appOverTimeRepository.add(appOverTime);
+			
+			// 暫定データの登録(pendding)
+		}
+		// List＜申請ID＞をループする
+		// 2-3.新規画面登録後の処理を実行 #112628
+		ProcessResult processResult = newAfterRegister.processAfterRegister(
+			guidS, 
+			appTypeSetting,
+			mailServerSet,
+			true);
+		return processResult;
 	}
 	
 

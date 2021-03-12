@@ -29,7 +29,7 @@ public class RegisterSettingInfoCommandHandler extends CommandHandler<RegisterSe
 		String companyId = AppContexts.user().companyId();
 
 		Optional<StandardWidget> standardWigetOpt = this.widgetRepo
-				.findByWidgetType(StandardWidgetType.APPLICATION_STATUS.value, AppContexts.user().companyId());
+				.findByWidgetTypeAndCompanyId(StandardWidgetType.APPLICATION_STATUS, AppContexts.user().companyId());
 		
 		if (standardWigetOpt.isPresent()) {
 			this.widgetRepo.updateAppStatus(cmd.toDomain(companyId));
