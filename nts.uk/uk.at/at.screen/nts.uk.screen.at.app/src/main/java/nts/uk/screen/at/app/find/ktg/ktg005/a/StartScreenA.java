@@ -76,7 +76,10 @@ public class StartScreenA {
 		DeadlineLimitCurrentMonth deadLine = new DeadlineLimitCurrentMonth(false);
 		NumberOfAppDto number = new NumberOfAppDto();
 		String topPagePartName = null ;
-		if (standardWidgetOpt.isPresent()) {
+		if (!standardWidgetOpt.isPresent()) {
+			// 「申請件数の実行結果」に初期値をセットする
+			return new ExecutionResultNumberOfApplicationDto();
+		}
 
 			StandardWidget standardWidget = standardWidgetOpt.get();
 			applicationStatusDetailedSettings = standardWidget.getAppStatusDetailedSettingList();
@@ -125,7 +128,7 @@ public class StartScreenA {
 							employeeId);
 				}
 			}
-		}
+		
 		// ログイン者が担当者か判断する
 
 		boolean isEmployeeCharge = roleExportRepo.getWhetherLoginerCharge(AppContexts.user().roles())
