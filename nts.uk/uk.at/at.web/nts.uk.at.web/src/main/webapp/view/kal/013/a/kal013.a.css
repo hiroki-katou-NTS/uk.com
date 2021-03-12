@@ -25,7 +25,10 @@
 .current-alarm .row > div {
   width: 150px;
 }
-
+.current-alarm .row > div:nth-child(3),
+.current-alarm .row > div:first-child {
+  width: 80px;
+}
 .category-name {
   flex: 2;
 }

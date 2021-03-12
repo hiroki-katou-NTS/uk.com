@@ -91,7 +91,10 @@ module nts.uk.at.kal014.c {
         initModalData(modalData: any) {
             const vm = this;
             vm.strSelected(modalData.extractionDaily.strSpecify)
-            vm.endSelected(modalData.extractionDaily.endSpecify)
+            //vm.strSelected.valueHasMutated();            
+            vm.endSelected(modalData.extractionDaily.endSpecify)            
+            //vm.endSelected.valueHasMutated();
+            //update
             vm.modalDTO.categoryId(modalData.alarmCategory);
             vm.modalDTO.categoryName(modalData.alarmCtgName);
             vm.modalDTO.startMonth(modalData.extractionDaily.strMonth);
@@ -100,8 +103,8 @@ module nts.uk.at.kal014.c {
             vm.modalDTO.numberOfDayFromEnd(modalData.extractionDaily.endDay);
             vm.modalDTO.beforeAndAfterStart(modalData.extractionDaily.strPreviousDay);
             vm.modalDTO.beforeAndAfterEnd(modalData.extractionDaily.endPreviousDay);
-            vm.strSelected.valueHasMutated();
-            vm.endSelected.valueHasMutated();
+            //vm.strSelected.valueHasMutated();
+            //vm.endSelected.valueHasMutated();            
         }
 
         /**
