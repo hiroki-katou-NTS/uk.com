@@ -800,7 +800,7 @@ class FixTableBindingHandler implements KnockoutBindingHandler {
                             }
                         }
                         if (error) {
-                          //  current.ntsError('set', {messageId:'Msg_515',messageParams:[nts.uk.resource.getText('KDL045_26')]});
+                             current.ntsError('set', {messageId:'Msg_515',messageParams:[nts.uk.resource.getText('KDL045_26')]});
                         } else {
                             current.ntsError('clear');
                         }
