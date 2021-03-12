@@ -50,9 +50,9 @@ public class AttendanceTimeTotalizationServiceTest {
 				);
 		// 値リスト
 		val values = Arrays.asList(
-						AttendanceTimeOfDailyAttendanceHelper.createWithTime( 480,  94 )
-					,	AttendanceTimeOfDailyAttendanceHelper.createWithTime( 400,   0 )
-					,	AttendanceTimeOfDailyAttendanceHelper.createWithTime( 450, 153 )
+						IntegrationOfDailyHelperInScheRec.AtdTimeHelper.createWithTime( 480,  94 )
+					,	IntegrationOfDailyHelperInScheRec.AtdTimeHelper.createWithTime( 400,   0 )
+					,	IntegrationOfDailyHelperInScheRec.AtdTimeHelper.createWithTime( 450, 153 )
 				);
 
 

@@ -102,7 +102,7 @@ public class EstimateAmountHelper {
 	 * @param require require
 	 * @param handling 目安金額の扱い
 	 */
-	public static void mockupRequireForStepOfEstimateAmount(EstimateAmountList.Require require, HandingOfEstimateAmount handling) {
+	public static void mockupRequireForStepOfEstimateAmount(StepOfEstimateAmount.Require require, HandingOfEstimateAmount handling) {
 
 		// 目安金額関連 Mockup設定
 		new Expectations() {{

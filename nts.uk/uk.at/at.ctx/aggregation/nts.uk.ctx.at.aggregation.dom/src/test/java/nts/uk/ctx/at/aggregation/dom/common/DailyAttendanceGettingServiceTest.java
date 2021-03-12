@@ -10,23 +10,25 @@ import java.util.stream.IntStream;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Verifications;
+import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
-import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.IntegrationOfDailyHelper;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 
 /**
  * Test for DailyAttendanceGettingService
  * @author kumiko_otake
  */
+@RunWith(JMockit.class)
 public class DailyAttendanceGettingServiceTest {
 
 	@Injectable DailyAttendanceGettingService.Require require;
@@ -105,7 +107,7 @@ public class DailyAttendanceGettingServiceTest {
 	 */
 	@Test
 	public void test_get_onlySchedule() {
-
+		IntegrationOfDailyHelperInAggregation.AtdTimeHelper.createWithTime(0, 0);
 		// 予定リスト
 		val scheList = IntStream.rangeClosed( 1, 15 ).boxed()
 				.map( day -> DlyAtdServiceHelper.createDlyAtdList( "EmpId", GeneralDate.ymd( 2021,  2, day ), ScheRecAtr.SCHEDULE ) )
@@ -189,7 +191,7 @@ public class DailyAttendanceGettingServiceTest {
 				);
 
 		// 期待値：予定・実績
-		val empIdsHasData = empIds.stream().filter( e -> !e.equals(IntegrationOfDailyHelper.createEmpId(5)) ).collect(Collectors.toList());
+		val empIdsHasData = empIds.stream().filter( e -> !e.equals(IntegrationOfDailyHelperInAggregation.createEmpId(5)) ).collect(Collectors.toList());
 		@SuppressWarnings("serial")
 		val expectedOnly = new HashMap<ScheRecGettingAtr, List<IntegrationOfDaily>>() {{
 			// 予定：1日～15日

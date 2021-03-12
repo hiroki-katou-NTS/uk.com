@@ -43,7 +43,7 @@ public class AggregationUnitOfLaborCostsTest {
 
 
 		// 日別勤怠の勤怠時間
-		val dailyAttendance = AttendanceTimeOfDailyAttendanceHelper.createWithAmount(
+		val dailyAttendance = IntegrationOfDailyHelperInScheRec.AtdTimeHelper.createWithAmount(
 						expected.get(AggregationUnitOfLaborCosts.WITHIN).intValue()
 					,	expected.get(AggregationUnitOfLaborCosts.EXTRA).intValue()
 				);

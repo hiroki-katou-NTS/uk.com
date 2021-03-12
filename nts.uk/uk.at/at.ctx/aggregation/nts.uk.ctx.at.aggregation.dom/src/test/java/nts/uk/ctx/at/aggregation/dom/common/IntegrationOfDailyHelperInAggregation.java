@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily;
+package nts.uk.ctx.at.aggregation.dom.common;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -40,7 +40,12 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.To
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.dom.workrule.businesstype.BusinessTypeCode;
 
-public class IntegrationOfDailyHelper {
+/**
+ * [予実集計]日別勤怠(Work)に関するHelper
+ * ※集計処理に特化しています
+ * @author kumiko_otake
+ */
+public class IntegrationOfDailyHelperInAggregation {
 
 	@Injectable private static WorkInfoOfDailyAttendance workInfo = new WorkInfoOfDailyAttendance();
 	@Injectable private static BreakTimeOfDailyAttd breakTime = new BreakTimeOfDailyAttd();
@@ -119,7 +124,7 @@ public class IntegrationOfDailyHelper {
 	 * @return 日別勤怠(Work)
 	 */
 	public static IntegrationOfDaily createDummy(String employeeId, GeneralDate ymd) {
-		return IntegrationOfDailyHelper.create( employeeId, ymd, workInfo, AffInfoHelper.createDummuy(), breakTime );
+		return IntegrationOfDailyHelperInAggregation.create( employeeId, ymd, workInfo, AffInfoHelper.createDummuy(), breakTime );
 	}
 
 	/**
@@ -130,7 +135,7 @@ public class IntegrationOfDailyHelper {
 	 * @return 日別勤怠(Work)
 	 */
 	public static IntegrationOfDaily createWithAffInfo(String employeeId, GeneralDate ymd, AffiliationInforOfDailyAttd affInfo) {
-		return IntegrationOfDailyHelper.create( employeeId, ymd, workInfo, affInfo, breakTime );
+		return IntegrationOfDailyHelperInAggregation.create( employeeId, ymd, workInfo, affInfo, breakTime );
 	}
 
 
@@ -227,11 +232,11 @@ public class IntegrationOfDailyHelper {
 						,	new ActualWorkingTimeOfDaily(
 									atdTime, constTime, atdTime
 								,	new TotalWorkingTime(
-												atdTime, atdTime, atdTime, AttendanceTimeOfDailyAttendanceHelper.createWithinOfDaily(withinTime, withinAmount), excess
+												atdTime, atdTime, atdTime, AtdTimeHelper.createWithinOfDaily(withinTime, withinAmount), excess
 											,	Collections.emptyList(), Collections.emptyList(), breakTime, Collections.emptyList()
 											,	raise, workTimes, temporaly, shorttime, holiday, interval
 										)
-								, divTime, AttendanceTimeOfDailyAttendanceHelper.createPremiumOfDaily(premiumTime, premiumAmount) )
+								, divTime, AtdTimeHelper.createPremiumOfDaily(premiumTime, premiumAmount) )
 						,	stay, budget, unEmploy
 					);
 		}
@@ -243,8 +248,7 @@ public class IntegrationOfDailyHelper {
 		 * @return 日別勤怠の勤怠時間
 		 */
 		public static AttendanceTimeOfDailyAttendance createWithTime(int within, int premium) {
-			return AttendanceTimeOfDailyAttendanceHelper
-					.createWithTimeAndAmount( within, 0, premium, 0 );
+			return AtdTimeHelper.createWithTimeAndAmount( within, 0, premium, 0 );
 		}
 
 		/**
@@ -254,8 +258,7 @@ public class IntegrationOfDailyHelper {
 		 * @return 日別勤怠の勤怠時間
 		 */
 		public static AttendanceTimeOfDailyAttendance createWithAmount(int within, int premium) {
-			return AttendanceTimeOfDailyAttendanceHelper
-					.createWithTimeAndAmount( 480, within, 0, premium );
+			return AtdTimeHelper.createWithTimeAndAmount( 480, within, 0, premium );
 		}
 
 		/**
@@ -269,9 +272,9 @@ public class IntegrationOfDailyHelper {
 			val within = new WithinStatutoryTimeOfDaily(atdTime, atdTime, atdTime, withinMidnite);
 
 			// 就業時間
-			AttendanceTimeOfDailyAttendanceHelper.setValue( within , "workTime", new AttendanceTime( time ) );
+			IntegrationOfDailyHelperInAggregation.setValue( within , "workTime", new AttendanceTime( time ) );
 			// 就業時間金額
-			AttendanceTimeOfDailyAttendanceHelper.setValue( within , "withinWorkTimeAmount", new AttendanceAmountDaily( amount ) );
+			IntegrationOfDailyHelperInAggregation.setValue( within , "withinWorkTimeAmount", new AttendanceAmountDaily( amount ) );
 
 			return within;
 
@@ -289,9 +292,9 @@ public class IntegrationOfDailyHelper {
 			val premium = new PremiumTimeOfDailyPerformance(Collections.emptyList());
 
 			// 割増労働時間合計
-			AttendanceTimeOfDailyAttendanceHelper.setValue( premium , "totalWorkingTime", new AttendanceTime( time ) );
+			IntegrationOfDailyHelperInAggregation.setValue( premium , "totalWorkingTime", new AttendanceTime( time ) );
 			// 割増金額合計
-			AttendanceTimeOfDailyAttendanceHelper.setValue( premium , "totalAmount", new AttendanceAmountDaily( amount ) );
+			IntegrationOfDailyHelperInAggregation.setValue( premium , "totalAmount", new AttendanceAmountDaily( amount ) );
 
 
 			return premium;

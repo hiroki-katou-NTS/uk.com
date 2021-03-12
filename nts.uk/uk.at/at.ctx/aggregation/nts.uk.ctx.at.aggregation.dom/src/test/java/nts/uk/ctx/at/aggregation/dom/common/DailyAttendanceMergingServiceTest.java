@@ -21,7 +21,6 @@ import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.util.OptionalUtil;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
-import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.IntegrationOfDailyHelper;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 
 /**
@@ -48,12 +47,12 @@ public class DailyAttendanceMergingServiceTest {
 					// 2日日	予定：なし / 実績：あり / 期待値：実績
 					// 3日日★	予定：なし / 実績：なし / 期待値：Empty
 					// 4日日	予定：あり / 実績：あり / 期待値：予定
-					val empId = IntegrationOfDailyHelper.createEmpId(1);
+					val empId = IntegrationOfDailyHelperInAggregation.createEmpId(1);
 					addAll(Arrays.asList(
-							new Expected.ExpectedValue( empId, IntegrationOfDailyHelper.createDate(11), true,	false,	Optional.of(ScheRecAtr.SCHEDULE) )
-						,	new Expected.ExpectedValue( empId, IntegrationOfDailyHelper.createDate(12), false,	true,	Optional.of(ScheRecAtr.RECORD) )
-						,	new Expected.ExpectedValue( empId, IntegrationOfDailyHelper.createDate(13), false,	false,	Optional.empty() )
-						,	new Expected.ExpectedValue( empId, IntegrationOfDailyHelper.createDate(14), true,	true,	Optional.of(ScheRecAtr.SCHEDULE) )
+							new Expected.ExpectedValue( empId, IntegrationOfDailyHelperInAggregation.createDate(11), true,	false,	Optional.of(ScheRecAtr.SCHEDULE) )
+						,	new Expected.ExpectedValue( empId, IntegrationOfDailyHelperInAggregation.createDate(12), false,	true,	Optional.of(ScheRecAtr.RECORD) )
+						,	new Expected.ExpectedValue( empId, IntegrationOfDailyHelperInAggregation.createDate(13), false,	false,	Optional.empty() )
+						,	new Expected.ExpectedValue( empId, IntegrationOfDailyHelperInAggregation.createDate(14), true,	true,	Optional.of(ScheRecAtr.SCHEDULE) )
 					));
 				}
 				// 社員ID[2]
@@ -62,12 +61,12 @@ public class DailyAttendanceMergingServiceTest {
 					// 2日日	予定：なし / 実績：なし / 期待値：Empty
 					// 3日日★	予定：あり / 実績：あり / 期待値：予定
 					// 4日日	予定：あり / 実績：なし / 期待値：予定
-					val empId = IntegrationOfDailyHelper.createEmpId(2);
+					val empId = IntegrationOfDailyHelperInAggregation.createEmpId(2);
 					addAll(Arrays.asList(
-							new Expected.ExpectedValue( empId, IntegrationOfDailyHelper.createDate(11), false,	true,	Optional.of(ScheRecAtr.RECORD) )
-						,	new Expected.ExpectedValue( empId, IntegrationOfDailyHelper.createDate(12), false,	false,	Optional.empty() )
-						,	new Expected.ExpectedValue( empId, IntegrationOfDailyHelper.createDate(13), true,	true,	Optional.of(ScheRecAtr.SCHEDULE) )
-						,	new Expected.ExpectedValue( empId, IntegrationOfDailyHelper.createDate(14), true,	false,	Optional.of(ScheRecAtr.SCHEDULE) )
+							new Expected.ExpectedValue( empId, IntegrationOfDailyHelperInAggregation.createDate(11), false,	true,	Optional.of(ScheRecAtr.RECORD) )
+						,	new Expected.ExpectedValue( empId, IntegrationOfDailyHelperInAggregation.createDate(12), false,	false,	Optional.empty() )
+						,	new Expected.ExpectedValue( empId, IntegrationOfDailyHelperInAggregation.createDate(13), true,	true,	Optional.of(ScheRecAtr.SCHEDULE) )
+						,	new Expected.ExpectedValue( empId, IntegrationOfDailyHelperInAggregation.createDate(14), true,	false,	Optional.of(ScheRecAtr.SCHEDULE) )
 					));
 				}
 				// 社員ID[3]
@@ -76,12 +75,12 @@ public class DailyAttendanceMergingServiceTest {
 					// 2日日	予定：あり / 実績：あり / 期待値：実績
 					// 3日日★	予定：あり / 実績：なし / 期待値：予定
 					// 4日日	予定：なし / 実績：あり / 期待値：Empty
-					val empId = IntegrationOfDailyHelper.createEmpId(3);
+					val empId = IntegrationOfDailyHelperInAggregation.createEmpId(3);
 					addAll(Arrays.asList(
-							new Expected.ExpectedValue( empId, IntegrationOfDailyHelper.createDate(11), false,	false,	Optional.empty() )
-						,	new Expected.ExpectedValue( empId, IntegrationOfDailyHelper.createDate(12), true,	true,	Optional.of(ScheRecAtr.RECORD) )
-						,	new Expected.ExpectedValue( empId, IntegrationOfDailyHelper.createDate(13), true,	false,	Optional.of(ScheRecAtr.SCHEDULE) )
-						,	new Expected.ExpectedValue( empId, IntegrationOfDailyHelper.createDate(14), false,	true,	Optional.empty() )
+							new Expected.ExpectedValue( empId, IntegrationOfDailyHelperInAggregation.createDate(11), false,	false,	Optional.empty() )
+						,	new Expected.ExpectedValue( empId, IntegrationOfDailyHelperInAggregation.createDate(12), true,	true,	Optional.of(ScheRecAtr.RECORD) )
+						,	new Expected.ExpectedValue( empId, IntegrationOfDailyHelperInAggregation.createDate(13), true,	false,	Optional.of(ScheRecAtr.SCHEDULE) )
+						,	new Expected.ExpectedValue( empId, IntegrationOfDailyHelperInAggregation.createDate(14), false,	true,	Optional.empty() )
 					));
 				}
 				// 社員ID[4]
@@ -90,12 +89,12 @@ public class DailyAttendanceMergingServiceTest {
 					// 2日日	予定：あり / 実績：なし / 期待値：予定
 					// 3日日★	予定：なし / 実績：あり / 期待値：Empty
 					// 4日日	予定：なし / 実績：なし / 期待値：Empty
-					val empId = IntegrationOfDailyHelper.createEmpId(4);
+					val empId = IntegrationOfDailyHelperInAggregation.createEmpId(4);
 					addAll(Arrays.asList(
-							new Expected.ExpectedValue( empId, IntegrationOfDailyHelper.createDate(11), true,	true,	Optional.of(ScheRecAtr.RECORD) )
-						,	new Expected.ExpectedValue( empId, IntegrationOfDailyHelper.createDate(12), true,	false,	Optional.of(ScheRecAtr.SCHEDULE) )
-						,	new Expected.ExpectedValue( empId, IntegrationOfDailyHelper.createDate(13), false,	true,	Optional.empty() )
-						,	new Expected.ExpectedValue( empId, IntegrationOfDailyHelper.createDate(14), false,	false,	Optional.empty() )
+							new Expected.ExpectedValue( empId, IntegrationOfDailyHelperInAggregation.createDate(11), true,	true,	Optional.of(ScheRecAtr.RECORD) )
+						,	new Expected.ExpectedValue( empId, IntegrationOfDailyHelperInAggregation.createDate(12), true,	false,	Optional.of(ScheRecAtr.SCHEDULE) )
+						,	new Expected.ExpectedValue( empId, IntegrationOfDailyHelperInAggregation.createDate(13), false,	true,	Optional.empty() )
+						,	new Expected.ExpectedValue( empId, IntegrationOfDailyHelperInAggregation.createDate(14), false,	false,	Optional.empty() )
 					));
 				}
 				// 社員ID[5]
@@ -104,12 +103,12 @@ public class DailyAttendanceMergingServiceTest {
 					// 2日日	予定：なし / 実績：なし / 期待値：Empty
 					// 3日日★	予定：なし / 実績：なし / 期待値：Empty
 					// 4日日	予定：なし / 実績：なし / 期待値：Empty
-					val empId = IntegrationOfDailyHelper.createEmpId(5);
+					val empId = IntegrationOfDailyHelperInAggregation.createEmpId(5);
 					addAll(Arrays.asList(
-							new Expected.ExpectedValue( empId, IntegrationOfDailyHelper.createDate(11), false,	false,	Optional.empty() )
-						,	new Expected.ExpectedValue( empId, IntegrationOfDailyHelper.createDate(12), false,	false,	Optional.empty() )
-						,	new Expected.ExpectedValue( empId, IntegrationOfDailyHelper.createDate(13), false,	true,	Optional.empty() )
-						,	new Expected.ExpectedValue( empId, IntegrationOfDailyHelper.createDate(14), false,	false,	Optional.empty() )
+							new Expected.ExpectedValue( empId, IntegrationOfDailyHelperInAggregation.createDate(11), false,	false,	Optional.empty() )
+						,	new Expected.ExpectedValue( empId, IntegrationOfDailyHelperInAggregation.createDate(12), false,	false,	Optional.empty() )
+						,	new Expected.ExpectedValue( empId, IntegrationOfDailyHelperInAggregation.createDate(13), false,	true,	Optional.empty() )
+						,	new Expected.ExpectedValue( empId, IntegrationOfDailyHelperInAggregation.createDate(14), false,	false,	Optional.empty() )
 					));
 				}
 			}} );
@@ -390,11 +389,11 @@ public class DailyAttendanceMergingServiceTest {
 					// 1日目(Empty)	予定：なし / 実績：なし / 期待値：Empty
 					// 2日目(予定)	予定：あり / 実績：なし / 期待値：予定
 					// 3日目(実績)	予定：なし / 実績：あり / 期待値：実績
-					val empId = IntegrationOfDailyHelper.createEmpId(1);
+					val empId = IntegrationOfDailyHelperInAggregation.createEmpId(1);
 					addAll(Arrays.asList(
-							new Expected.ExpectedValue( empId, IntegrationOfDailyHelper.createDate(1), false,	false,	Optional.empty())
-						,	new Expected.ExpectedValue( empId, IntegrationOfDailyHelper.createDate(2), true,		false,	Optional.of( ScheRecAtr.SCHEDULE ))
-						,	new Expected.ExpectedValue( empId, IntegrationOfDailyHelper.createDate(3), false,	true,	Optional.of( ScheRecAtr.RECORD ))
+							new Expected.ExpectedValue( empId, IntegrationOfDailyHelperInAggregation.createDate(1), false,	false,	Optional.empty())
+						,	new Expected.ExpectedValue( empId, IntegrationOfDailyHelperInAggregation.createDate(2), true,		false,	Optional.of( ScheRecAtr.SCHEDULE ))
+						,	new Expected.ExpectedValue( empId, IntegrationOfDailyHelperInAggregation.createDate(3), false,	true,	Optional.of( ScheRecAtr.RECORD ))
 					));
 				}
 				// 社員ID[2]
@@ -402,11 +401,11 @@ public class DailyAttendanceMergingServiceTest {
 					// 1日目(Empty)	予定：あり / 実績：なし / 期待値：Empty
 					// 2日目(予定)	予定：なし / 実績：あり / 期待値：Empty
 					// 3日目(実績)	予定：あり / 実績：あり / 期待値：実績
-					val empId = IntegrationOfDailyHelper.createEmpId(2);
+					val empId = IntegrationOfDailyHelperInAggregation.createEmpId(2);
 					addAll(Arrays.asList(
-							new Expected.ExpectedValue( empId, IntegrationOfDailyHelper.createDate(1), true,		false,	Optional.empty())
-						,	new Expected.ExpectedValue( empId, IntegrationOfDailyHelper.createDate(2), false,	true,	Optional.empty())
-						,	new Expected.ExpectedValue( empId, IntegrationOfDailyHelper.createDate(3), true,		true,	Optional.of( ScheRecAtr.RECORD ))
+							new Expected.ExpectedValue( empId, IntegrationOfDailyHelperInAggregation.createDate(1), true,		false,	Optional.empty())
+						,	new Expected.ExpectedValue( empId, IntegrationOfDailyHelperInAggregation.createDate(2), false,	true,	Optional.empty())
+						,	new Expected.ExpectedValue( empId, IntegrationOfDailyHelperInAggregation.createDate(3), true,		true,	Optional.of( ScheRecAtr.RECORD ))
 					));
 				}
 				// 社員ID[3]
@@ -414,11 +413,11 @@ public class DailyAttendanceMergingServiceTest {
 					// 1日目(Empty)	予定：なし / 実績：あり / 期待値：Empty
 					// 2日目(予定)	予定：あり / 実績：あり / 期待値：予定
 					// 3日目(実績)	予定：なし / 実績：なし / 期待値：Empty
-					val empId = IntegrationOfDailyHelper.createEmpId(3);
+					val empId = IntegrationOfDailyHelperInAggregation.createEmpId(3);
 					addAll(Arrays.asList(
-							new Expected.ExpectedValue( empId, IntegrationOfDailyHelper.createDate(1), false,	true,	Optional.empty())
-						,	new Expected.ExpectedValue( empId, IntegrationOfDailyHelper.createDate(2), true,		true,	Optional.of( ScheRecAtr.SCHEDULE ))
-						,	new Expected.ExpectedValue( empId, IntegrationOfDailyHelper.createDate(3), false,	false,	Optional.empty())
+							new Expected.ExpectedValue( empId, IntegrationOfDailyHelperInAggregation.createDate(1), false,	true,	Optional.empty())
+						,	new Expected.ExpectedValue( empId, IntegrationOfDailyHelperInAggregation.createDate(2), true,		true,	Optional.of( ScheRecAtr.SCHEDULE ))
+						,	new Expected.ExpectedValue( empId, IntegrationOfDailyHelperInAggregation.createDate(3), false,	false,	Optional.empty())
 					));
 				}
 				// 社員ID[4]
@@ -426,11 +425,11 @@ public class DailyAttendanceMergingServiceTest {
 					// 1日目(Empty)	予定：あり / 実績：あり / 期待値：Empty
 					// 2日目(予定)	予定：なし / 実績：なし / 期待値：Empty
 					// 3日目(実績)	予定：あり / 実績：なし / 期待値：Empty
-					val empId = IntegrationOfDailyHelper.createEmpId(4);
+					val empId = IntegrationOfDailyHelperInAggregation.createEmpId(4);
 					addAll(Arrays.asList(
-							new Expected.ExpectedValue( empId, IntegrationOfDailyHelper.createDate(1), true,		true,	Optional.empty())
-						,	new Expected.ExpectedValue( empId, IntegrationOfDailyHelper.createDate(2), false,	false,	Optional.empty())
-						,	new Expected.ExpectedValue( empId, IntegrationOfDailyHelper.createDate(3), true,		false,	Optional.empty())
+							new Expected.ExpectedValue( empId, IntegrationOfDailyHelperInAggregation.createDate(1), true,		true,	Optional.empty())
+						,	new Expected.ExpectedValue( empId, IntegrationOfDailyHelperInAggregation.createDate(2), false,	false,	Optional.empty())
+						,	new Expected.ExpectedValue( empId, IntegrationOfDailyHelperInAggregation.createDate(3), true,		false,	Optional.empty())
 					));
 				}
 			}} );
@@ -443,9 +442,9 @@ public class DailyAttendanceMergingServiceTest {
 			// 1日目：Empty
 			// 2日目：予定
 			// 3日目：実績
-			put( IntegrationOfDailyHelper.createDate(1), Optional.empty() );
-			put( IntegrationOfDailyHelper.createDate(2), Optional.of(ScheRecAtr.SCHEDULE) );
-			put( IntegrationOfDailyHelper.createDate(3), Optional.of(ScheRecAtr.RECORD) );
+			put( IntegrationOfDailyHelperInAggregation.createDate(1), Optional.empty() );
+			put( IntegrationOfDailyHelperInAggregation.createDate(2), Optional.of(ScheRecAtr.SCHEDULE) );
+			put( IntegrationOfDailyHelperInAggregation.createDate(3), Optional.of(ScheRecAtr.RECORD) );
 		}};
 
 

@@ -45,7 +45,7 @@ public class AttendanceTimesForAggregationTest {
 
 
 		// 日別勤怠の勤怠時間
-		val dailyAttendance = AttendanceTimeOfDailyAttendanceHelper.createWithTime(
+		val dailyAttendance = IntegrationOfDailyHelperInScheRec.AtdTimeHelper.createWithTime(
 						expected.get(AttendanceTimesForAggregation.WORKING_WITHIN).intValue()
 					,	expected.get(AttendanceTimesForAggregation.WORKING_EXTRA).intValue()
 				);

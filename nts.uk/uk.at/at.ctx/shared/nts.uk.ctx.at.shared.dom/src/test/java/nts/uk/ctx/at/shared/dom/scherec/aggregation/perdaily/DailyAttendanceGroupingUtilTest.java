@@ -54,7 +54,7 @@ public class DailyAttendanceGroupingUtilTest {
 		}}.entrySet().stream()
 				.flatMap( entry -> entry.getValue().boxed()
 							.map( day -> {
-								val dlyAtd = IntegrationOfDailyHelper.createDummy(
+								IntegrationOfDaily dlyAtd = IntegrationOfDailyHelperInScheRec.createDummy(
 														String.format("EmpId#%d", entry.getKey())
 													,	GeneralDate.ymd( 2021, 1, day )
 												);

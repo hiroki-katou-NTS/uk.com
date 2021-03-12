@@ -7,7 +7,6 @@ import java.util.stream.IntStream;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
-import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.IntegrationOfDailyHelper;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 
 class DlyAtdServiceHelper {
@@ -20,8 +19,8 @@ class DlyAtdServiceHelper {
 	 */
 	public static DatePeriod createPeriod(int start, int end) {
 		return new DatePeriod(
-						IntegrationOfDailyHelper.createDate(start)
-					,	IntegrationOfDailyHelper.createDate(end)
+						IntegrationOfDailyHelperInAggregation.createDate(start)
+					,	IntegrationOfDailyHelperInAggregation.createDate(end)
 				);
 	}
 
@@ -41,7 +40,7 @@ class DlyAtdServiceHelper {
 	 */
 	public static List<EmployeeId> createDummyEmpIds(int start, int end) {
 		return IntStream.rangeClosed( start, end ).boxed()
-				.map( IntegrationOfDailyHelper::createEmpId )
+				.map( IntegrationOfDailyHelperInAggregation::createEmpId )
 				.collect(Collectors.toList());
 	}
 
@@ -54,8 +53,8 @@ class DlyAtdServiceHelper {
 	 */
 	public static IntegrationOfDaily createDlyAtdList(String empId, GeneralDate ymd, ScheRecAtr atr) {
 
-		return IntegrationOfDailyHelper.createWithAffInfo(empId,  ymd
-				, IntegrationOfDailyHelper.AffInfoHelper.createWithRequired("EmpCd", "JTId", "WkpId", String.format( "%s-%d", atr,  ymd.day()) ));
+		return IntegrationOfDailyHelperInAggregation.createWithAffInfo(empId,  ymd
+				, IntegrationOfDailyHelperInAggregation.AffInfoHelper.createWithRequired("EmpCd", "JTId", "WkpId", String.format( "%s-%d", atr,  ymd.day()) ));
 
 	}
 

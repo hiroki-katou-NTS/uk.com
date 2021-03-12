@@ -33,9 +33,9 @@ public class LaborCostsTotalizationServiceTest {
 		val targets = Arrays.asList(AggregationUnitOfLaborCosts.values());
 		// 値リスト
 		val values = Arrays.asList(
-						AttendanceTimeOfDailyAttendanceHelper.createWithAmount( 48791,  3995 )
-					,	AttendanceTimeOfDailyAttendanceHelper.createWithAmount( 65539, 12163 )
-					,	AttendanceTimeOfDailyAttendanceHelper.createWithAmount( 16162,  2185 )
+						IntegrationOfDailyHelperInScheRec.AtdTimeHelper.createWithAmount( 48791,  3995 )
+					,	IntegrationOfDailyHelperInScheRec.AtdTimeHelper.createWithAmount( 65539, 12163 )
+					,	IntegrationOfDailyHelperInScheRec.AtdTimeHelper.createWithAmount( 16162,  2185 )
 				);
 
 		// Execute
@@ -68,9 +68,9 @@ public class LaborCostsTotalizationServiceTest {
 		val targets = Arrays.asList(AggregationUnitOfLaborCosts.values());
 		// 値リスト
 		val values = Arrays.asList(
-						AttendanceTimeOfDailyAttendanceHelper.createWithAmount( 1289,  291 )
-					,	AttendanceTimeOfDailyAttendanceHelper.createWithAmount(  863,  209 )
-					,	AttendanceTimeOfDailyAttendanceHelper.createWithAmount(  960,   29 )
+						IntegrationOfDailyHelperInScheRec.AtdTimeHelper.createWithAmount( 1289,  291 )
+					,	IntegrationOfDailyHelperInScheRec.AtdTimeHelper.createWithAmount(  863,  209 )
+					,	IntegrationOfDailyHelperInScheRec.AtdTimeHelper.createWithAmount(  960,   29 )
 				);
 
 		// Execute

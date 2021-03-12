@@ -27,13 +27,13 @@ import nts.arc.time.calendar.OneMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.util.value.MutableValue;
 import nts.uk.ctx.at.aggregation.dom.common.DailyAttendanceGettingService;
+import nts.uk.ctx.at.aggregation.dom.common.IntegrationOfDailyHelperInAggregation;
 import nts.uk.ctx.at.aggregation.dom.common.ScheRecGettingAtr;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.estimate.EstimateAmount;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.estimate.EstimateAmountHelper;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.estimate.EstimateAmountList;
 import nts.uk.ctx.at.aggregation.dom.schedulecounter.estimate.StepOfEstimateAmount;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
-import nts.uk.ctx.at.shared.dom.scherec.aggregation.perdaily.IntegrationOfDailyHelper;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 
 /**
@@ -79,7 +79,7 @@ public class EstimatedSalaryAggregationServiceTest {
 		// 社員[1]	日付：2021/01/16 金額：252
 		// ※15日締め -> 合計：574
 		// ※16日締め -> 合計：665
-		val empId = IntegrationOfDailyHelper.createEmpId(1);
+		val empId = IntegrationOfDailyHelperInAggregation.createEmpId(1);
 		val list = Arrays.asList(
 							Helper.createDailyAttendance( empId, period15.start(),	161 )
 						,	Helper.createDailyAttendance( empId, period16.start(),	162 )
@@ -309,21 +309,21 @@ public class EstimatedSalaryAggregationServiceTest {
 				// 金額 1日目 16,728 / 2日目 16,129 / 3日目 12,174
 				// 合計 45,031
 				{
-					val empId = IntegrationOfDailyHelper.createEmpId(1);
+					val empId = IntegrationOfDailyHelperInAggregation.createEmpId(1);
 					put( empId, Helper.createDailyAttendanceMap(empId, 16728, 16129, 12174 ) );
 				}
 				// 社員[2]
 				// 金額 1日目  6,894 / 2日目 23,303
 				// 合計 30,197
 				{
-					val empId = IntegrationOfDailyHelper.createEmpId(2);
+					val empId = IntegrationOfDailyHelperInAggregation.createEmpId(2);
 					put( empId, Helper.createDailyAttendanceMap(empId, 6894, 23303 ) );
 				}
 				// 社員[3]
 				// 金額 1日目 17,943 / 2日目 13,266 / 3日目  6,857 / 4日目 19,225 / 5日目 16,119
 				// 合計 73,410
 				{
-					val empId = IntegrationOfDailyHelper.createEmpId(3);
+					val empId = IntegrationOfDailyHelperInAggregation.createEmpId(3);
 					put( empId, Helper.createDailyAttendanceMap(empId, 17943, 13266,  6857, 19225, 16119 ) );
 				}
 			}};
@@ -359,9 +359,9 @@ public class EstimatedSalaryAggregationServiceTest {
 		 */
 		public static IntegrationOfDaily createDailyAttendance(EmployeeId empId, GeneralDate date, int totalAmount) {
 
-			val dlyAtd = IntegrationOfDailyHelper.createDummy( empId.v(), date );
+			val dlyAtd = IntegrationOfDailyHelperInAggregation.createDummy( empId.v(), date );
 			dlyAtd.setAttendanceTimeOfDailyPerformance(
-						Optional.of( IntegrationOfDailyHelper.AtdTimeHelper.createWithAmount( totalAmount, 0 )
+						Optional.of( IntegrationOfDailyHelperInAggregation.AtdTimeHelper.createWithAmount( totalAmount, 0 )
 					));
 			return dlyAtd;
 
@@ -377,7 +377,7 @@ public class EstimatedSalaryAggregationServiceTest {
 			val day = new AtomicInteger(1);
 			return IntStream.of( totalAmounts ).boxed()
 					.collect(Collectors.toMap(
-							amount -> Helper.createDailyAttendance(empId, IntegrationOfDailyHelper.createDate(day.getAndIncrement()), amount)
+							amount -> Helper.createDailyAttendance(empId, IntegrationOfDailyHelperInAggregation.createDate(day.getAndIncrement()), amount)
 						,	amount -> amount
 					));
 		}

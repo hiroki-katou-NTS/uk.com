@@ -6,10 +6,11 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import lombok.val;
-import mockit.Expectations;
 import mockit.Injectable;
+import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.shr.com.color.ColorCode;
 
@@ -17,6 +18,7 @@ import nts.uk.shr.com.color.ColorCode;
  * Test for StepOfEstimateAmount
  * @author kumiko_otake
  */
+@RunWith(JMockit.class)
 public class StepOfEstimateAmountTest {
 
 	@Injectable StepOfEstimateAmount.Require require;
@@ -24,8 +26,8 @@ public class StepOfEstimateAmountTest {
 
 	@Test
 	public void test_getters() {
+		EstimateAmountHelper.mockupRequireForStepOfEstimateAmount(require, EstimateAmountHelper.createHandling(1));
 		val instance = EstimateAmountHelper.createStep(require, 3, 1200, Optional.of(1500));
-		assertThat( instance.getNo().v() ).isEqualTo( 3 );
 		NtsAssert.invokeGetters( instance );
 	}
 
@@ -38,7 +40,10 @@ public class StepOfEstimateAmountTest {
 	public void test_create_with_eachParams_complete() {
 
 		// 目安金額の扱い：1, 3, 4 のみ
-		Helper.setHandling( require, 1, 3, 4 );
+		EstimateAmountHelper.mockupRequireForStepOfEstimateAmount(
+					require
+				,	EstimateAmountHelper.createHandling(1, 3, 4)
+			);
 
 
 		// 目安枠NO=3
@@ -86,7 +91,10 @@ public class StepOfEstimateAmountTest {
 	public void test_create_with_eachParams_error() {
 
 		// 目安金額の扱い
-		Helper.setHandling( require, 1 );
+		EstimateAmountHelper.mockupRequireForStepOfEstimateAmount(
+				require
+			,	EstimateAmountHelper.createHandling(1)
+		);
 		// 目安金額
 		val amountValue = new AtomicInteger( 1000 );
 
@@ -121,7 +129,10 @@ public class StepOfEstimateAmountTest {
 	public void test_create_with_byCondition() {
 
 		// 目安金額の扱い
-		Helper.setHandling( require, 1 );
+		EstimateAmountHelper.mockupRequireForStepOfEstimateAmount(
+				require
+			,	EstimateAmountHelper.createHandling(1)
+		);
 
 		// Execute
 		val result = StepOfEstimateAmount.createFromCondition( require
@@ -147,7 +158,10 @@ public class StepOfEstimateAmountTest {
 	public void test_createWithoutExceeded() {
 
 		// 目安金額の扱い
-		Helper.setHandling( require, 3 );
+		EstimateAmountHelper.mockupRequireForStepOfEstimateAmount(
+				require
+			,	EstimateAmountHelper.createHandling(3)
+		);
 
 		// Execute
 		val result = StepOfEstimateAmount.createWithoutExceeded( require
@@ -171,7 +185,10 @@ public class StepOfEstimateAmountTest {
 	public void test_createWithoutUnexceeded() {
 
 		// 目安金額の扱い
-		Helper.setHandling( require, 3 );
+		EstimateAmountHelper.mockupRequireForStepOfEstimateAmount(
+				require
+			,	EstimateAmountHelper.createHandling(3)
+		);
 
 		// Execute
 		val result = StepOfEstimateAmount.createWithoutUnexceeded( require
@@ -195,7 +212,10 @@ public class StepOfEstimateAmountTest {
 	public void test_getStandardAmount_isExceedAll_uneceededIsPresent() {
 
 		// 目安金額の扱い
-		Helper.setHandling( require, 3 );
+		EstimateAmountHelper.mockupRequireForStepOfEstimateAmount(
+				require
+			,	EstimateAmountHelper.createHandling(3)
+		);
 
 		// 目安金額の段階
 		val instance = StepOfEstimateAmount.create( require
@@ -218,7 +238,10 @@ public class StepOfEstimateAmountTest {
 	public void test_getStandardAmount_isExceedAll_uneceededIsEmpty() {
 
 		// 目安金額の扱い
-		Helper.setHandling( require, 3 );
+		EstimateAmountHelper.mockupRequireForStepOfEstimateAmount(
+				require
+			,	EstimateAmountHelper.createHandling(3)
+		);
 
 		// 目安金額の段階
 		val instance = StepOfEstimateAmount.create( require
@@ -233,24 +256,4 @@ public class StepOfEstimateAmountTest {
 
 	}
 
-
-	public static class Helper {
-
-		/**
-		 * Requireに目安金額の扱いを設定する
-		 * @param require
-		 * @param frameNo
-		 */
-		public static <T extends StepOfEstimateAmount.Require> void setHandling(T require, int...frameNo) {
-
-			val handling = EstimateAmountHelper.createHandling(frameNo);
-
-			new Expectations() {{
-				require.getHandling();
-				result = handling;
-			}};
-
-		}
-
-	}
 }
