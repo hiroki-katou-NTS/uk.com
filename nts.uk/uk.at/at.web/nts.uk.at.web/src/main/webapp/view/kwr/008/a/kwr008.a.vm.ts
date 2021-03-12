@@ -445,6 +445,7 @@ module nts.uk.at.view.kwr008.a {
                     if (data) {
                         self.startDateString(data.startYearMonth);
                         self.endDateString(data.endYearMonth);
+                        self.fiscalYear(moment.utc(data.startYearMonth, 'YYYYMM').get('year').toString());
                     }
                 });
 
