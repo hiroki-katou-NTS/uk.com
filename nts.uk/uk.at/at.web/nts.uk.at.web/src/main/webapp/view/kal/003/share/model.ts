@@ -2266,7 +2266,7 @@ module nts.uk.at.view.kal003.share.model {
         planFilterAtr: boolean;
         planLstWorkType: KnockoutObservableArray<string> = ko.observableArray([]);
         actualFilterAtr: boolean;
-        actualLstWorkType: Array<string>;
+        actualLstWorkType: KnockoutObservableArray<string> = ko.observableArray([]);
         constructor(param: IWorkTypeCondition) {
             let self = this;
             self.useAtr = param && param.useAtr ? param.useAtr : false;
@@ -2274,7 +2274,7 @@ module nts.uk.at.view.kal003.share.model {
             self.planFilterAtr = param && param.planFilterAtr ? param.planFilterAtr : false;
             self.planLstWorkType(param && param.planLstWorkType ? param.planLstWorkType : []);
             self.actualFilterAtr = param && param.actualFilterAtr ? param.actualFilterAtr : false;
-            self.actualLstWorkType = param && param.actualLstWorkType ? param.actualLstWorkType : [];
+            self.actualLstWorkType(param && param.actualLstWorkType ? param.actualLstWorkType : []);
         }
     }
 

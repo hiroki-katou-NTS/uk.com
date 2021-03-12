@@ -2,13 +2,8 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.multimonth.algorithm;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -16,17 +11,14 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.monthly.TimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.monthly.mergetable.RemainMergeRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.algorithm.DataCheckAlarmListService;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CheckedCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.CompareSingleValue;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.ErAlAttendanceItemCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.CompareOperatorText;
@@ -35,7 +27,6 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConvertCompareTypeTo
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.TypeCheckWorkRecordMultipleMonth;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.WorkPlaceHistImportAl;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.algorithm.MonthlyRecordValuesDto;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.checkremainnumber.CheckOperatorType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.multimonth.MulMonAlarmCheckCondRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.multimonth.MulMonthAlarmCheckCond;
 import nts.uk.ctx.at.shared.dom.adapter.attendanceitemname.AttendanceItemNameAdapter;
@@ -45,25 +36,7 @@ import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckType;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionAlarmPeriodDate;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionResultDetail;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.service.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ValueType;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.AttendanceTimeOfMonthlyRepository;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.affiliation.AffiliationInfoOfMonthly;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.affiliation.AffiliationInfoOfMonthlyRepository;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.anyitem.AnyItemOfMonthly;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.anyitem.AnyItemOfMonthlyRepository;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.absenceleave.AbsenceLeaveRemainData;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.absenceleave.AbsenceLeaveRemainDataRepository;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.annualleave.AnnLeaRemNumEachMonthRepository;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.dayoff.MonthlyDayoffRemainData;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.dayoff.MonthlyDayoffRemainDataRepository;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.reserveleave.RsvLeaRemNumEachMonthRepository;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialHolidayRemainData;
-import nts.uk.ctx.at.shared.dom.scherec.monthlyattdcal.monthly.vacation.specialholiday.SpecialHolidayRemainDataRepository;
 import nts.uk.shr.com.i18n.TextResource;
 @Stateless
 public class MultiMonthlyExtractCheckServiceImpl<V> implements MultiMonthlyExtractCheckService{
@@ -247,9 +220,9 @@ public class MultiMonthlyExtractCheckServiceImpl<V> implements MultiMonthlyExtra
 							|| anyCond.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.AVERAGE_TIME
 							|| anyCond.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.CONTINUOUS_TIME
 							|| anyCond.getTypeCheckItem() == TypeCheckWorkRecordMultipleMonth.NUMBER_TIME) {
-						startValue = timeToString(Integer.valueOf(startValue));
-						endValue = endValue == null ? null : timeToString(Integer.valueOf(endValue));
-						if(anyCond.getTypeCheckItem() != TypeCheckWorkRecordMultipleMonth.NUMBER_TIME) checkValue = timeToString((int) checkedValue);
+						startValue = dataCheckAlarm.timeToString(Integer.valueOf(startValue));
+						endValue = endValue == null ? null : dataCheckAlarm.timeToString(Integer.valueOf(endValue));
+						if(anyCond.getTypeCheckItem() != TypeCheckWorkRecordMultipleMonth.NUMBER_TIME) checkValue = dataCheckAlarm.timeToString((int) checkedValue);
 					}
 					
 					List<MonthlyAttendanceItemNameDto> addSubName = data.lstItemMond.stream().filter(x -> lstAddSub.contains(x.getAttendanceItemId()))
@@ -257,8 +230,8 @@ public class MultiMonthlyExtractCheckServiceImpl<V> implements MultiMonthlyExtra
 					List<MonthlyAttendanceItemNameDto> subStrName = data.lstItemMond.stream().filter(x -> lstSubStr.contains(x.getAttendanceItemId()))
 							.collect(Collectors.toList());
 					
-					String nameItem = getNameErrorAlarm(addSubName,	0, "");
-					nameItem = getNameErrorAlarm(subStrName, 1, nameItem);
+					String nameItem = dataCheckAlarm.getNameErrorAlarm(addSubName,	0, "");
+					nameItem = dataCheckAlarm.getNameErrorAlarm(subStrName, 1, nameItem);
 					String alarmDescription = "";
 					CompareOperatorText compareOperatorText = convertComparaToText.convertCompareType(
 							erCondition.getCompareSingleValue() != null 
@@ -393,21 +366,7 @@ public class MultiMonthlyExtractCheckServiceImpl<V> implements MultiMonthlyExtra
 		}
 		return txtUnit;
 	}
-	private String getNameErrorAlarm(List<MonthlyAttendanceItemNameDto> attendanceItemNames ,int type,String nameErrorAlarm){
-		if(!CollectionUtil.isEmpty(attendanceItemNames)) {
-			
-			for(int i=0; i< attendanceItemNames.size(); i++) {
-				String beforeOperator = "";
-				String operator = (i == (attendanceItemNames.size() - 1)) ? "" : type == 1 ? " - " : " + ";
-				
-				if (!"".equals(nameErrorAlarm) || type == 1) {
-					beforeOperator = (i == 0) ? type == 1 ? " - " : " + " : "";
-				}
-                nameErrorAlarm += beforeOperator + attendanceItemNames.get(i).getAttendanceItemName() + operator;
-			}
-		}		
-		return nameErrorAlarm;
-	}
+
 	private boolean CompareDouble(BigDecimal value, BigDecimal valueAgreementStart, BigDecimal valueAgreementEnd,
 			int compare) {
 		boolean check = false;
@@ -438,12 +397,6 @@ public class MultiMonthlyExtractCheckServiceImpl<V> implements MultiMonthlyExtra
 			break;
 		}
 		return check;
-	}
-	private String timeToString(int value ){
-		if(value%60<10){
-			return  String.valueOf(value/60)+":0"+  String.valueOf(value%60);
-		}
-		return String.valueOf(value/60)+":"+  String.valueOf(value%60);
 	}
 	
 	private Double getValue(ItemValue value) {
