@@ -791,11 +791,11 @@ public class RegisterAlarmCheckCondtionByCategoryCommandHandler
 				WorkTypeConAdapterDto workTypeCondition = item.getErrorAlarmCondition().getWorkTypeCondition();
 				WorkTimeConAdapterDto workTimeCondition = item.getErrorAlarmCondition().getWorkTimeCondition();
 				CondContinuousTimeZone continuousTimeZone = new CondContinuousTimeZone(
-						EnumAdaptor.valueOf(workTimeCondition.getComparePlanAndActual(), TimeZoneTargetRange.class), 
 						workTypeCondition.getPlanLstWorkType(),
 						workTimeCondition.getPlanLstWorkTime(),
 						new ContinuousPeriod(item.getErrorAlarmCondition().getContinuousPeriod()));
 				domain.setScheduleCheckCond(continuousTimeZone);
+				domain.setTimeZoneTargetRange(EnumAdaptor.valueOf(workTimeCondition.getComparePlanAndActual(), TimeZoneTargetRange.class));
 			}
 			
 			if (dailyCheckItemType == DaiCheckItemType.CONTINUOUS_WORK) {

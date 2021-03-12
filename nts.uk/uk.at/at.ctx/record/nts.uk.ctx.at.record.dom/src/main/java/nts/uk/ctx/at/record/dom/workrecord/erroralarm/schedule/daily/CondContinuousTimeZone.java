@@ -12,8 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 public class CondContinuousTimeZone implements  ScheduleCheckCond{
-    // 対象とする就業時間帯
-    private TimeZoneTargetRange targetWrkHrs;
+
     // 勤務種類コード
     private List<String> wrkTypeCds;
 

@@ -138,7 +138,6 @@ public class KscdtScheAnyCondDay extends ContractUkJpaEntity {
             case CONTINUOUS_TIMEZONE:
                 // 連続時間帯の抽出条件
                 scheduleCheckCond = new CondContinuousTimeZone(
-                		EnumAdaptor.valueOf(wrkTimeCondAtr, TimeZoneTargetRange.class),
                 		wrkType.stream().map(i->i.pk.wrkTypeCd).collect(Collectors.toList()),
                 		wtime.stream().map(i->i.pk.wrkTimeCd).collect(Collectors.toList()), new ContinuousPeriod(conPeriod));
                 break;
