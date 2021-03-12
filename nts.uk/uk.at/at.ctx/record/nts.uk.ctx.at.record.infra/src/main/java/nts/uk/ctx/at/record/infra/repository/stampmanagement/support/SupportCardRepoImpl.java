@@ -4,6 +4,7 @@
 package nts.uk.ctx.at.record.infra.repository.stampmanagement.support;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
@@ -21,13 +22,13 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.support.Krcm
 public class SupportCardRepoImpl extends JpaRepository implements SupportCardRepo{
 
 	@Override
-	public SupportCard get(String cid, int supportCardNo) {
+	public Optional<SupportCard> get(String cid, int supportCardNo) {
 		KrcmtSupportCard entiti = this.queryProxy().find(new KrcmtSupportCardPk(cid, supportCardNo ),KrcmtSupportCard.class).orElse(null);
 		if(entiti == null)
-			return null;
+			return Optional.empty();
 		
 		SupportCard dm = toDomain(entiti);
-		return dm;
+		return Optional.of(dm);
 	}
 	
 	@Override

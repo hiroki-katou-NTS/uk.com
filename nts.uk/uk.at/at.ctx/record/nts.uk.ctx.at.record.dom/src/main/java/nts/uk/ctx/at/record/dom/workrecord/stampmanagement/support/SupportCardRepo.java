@@ -4,6 +4,7 @@
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.support;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 応援カードRepo
@@ -12,7 +13,7 @@ import java.util.List;
  */
 public interface SupportCardRepo {
 
-	public SupportCard get(String cid, int supportCardNo);
+	public Optional<SupportCard> get(String cid, int supportCardNo);
 
 	public void update(List<SupportCard> domains);
 
