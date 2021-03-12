@@ -179,17 +179,33 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
             vm.applicationTest.opAppStandardReasonCD = application.opAppStandardReasonCD;
             vm.applicationTest.opReversionReason = application.opReversionReason;
 			if (vm.model) {
-                let isCondition1 = vm.model.checkbox3() == true && !vm.model.workTypeCode() && (vm.dataFetch().goBackReflect().reflectApplication === 3 || vm.dataFetch().goBackReflect().reflectApplication === 2);
-				let isCondition2 = vm.model.checkbox3() == null && !vm.model.workTypeCode() && vm.dataFetch().goBackReflect().reflectApplication === 1;
-                if (isCondition1 || isCondition2) {
-                   // $('#workSelect').focus();
-					let el = document.getElementById('workSelect');
-	                if (el) {
-	                    el.focus();                                                    
-	                }
-                    return;
+				/*
+				
+					let isCondition1 = 
+						!_.isNil(vm.model.checkbox3())
+						&& _.isNil(vm.model.workTypeCode())
+					 	&& (vm.dataFetch().goBackReflect().reflectApplication === ApplicationStatus.DO_REFLECT_1 || vm.dataFetch().goBackReflect().reflectApplication === ApplicationStatus.DO_NOT_REFLECT_1);
+					
+					
+					let isCondition2 = 
+							_.isNil(vm.model.checkbox3())
+							&& _.isNil(vm.model.workTypeCode()) 
+							&& vm.dataFetch().goBackReflect().reflectApplication === ApplicationStatus.DO_REFLECT;
+							
+				
+				 */
+				const isDisplayMsg2150 = 
+					((!_.isNil(vm.model.checkbox3()) ? vm.model.checkbox3() : false) // ②「勤務を変更する」がチェックしている
+					|| vm.dataFetch().goBackReflect().reflectApplication === ApplicationStatus.DO_REFLECT) // ①直行直帰申請の反映.勤務情報を反映する　＝　反映する
+                	&& _.isNil(vm.model.workTypeCode())
+
+				if (isDisplayMsg2150) {
+					
+					vm.$dialog.error({messageId: 'Msg_2150'});
+					
+                    return vm.$validate().then(() => false);
                 } 
-			}
+            }
             let model = ko.toJS( vm.model );
             let goBackApp = new GoBackApplication(
                 model.checkbox1 ? 1 : 0,
@@ -321,7 +337,7 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
     }
     export class GoBackReflect {
         companyId: string;
-        reflectApplication: number;
+        reflectApplication: ApplicationStatus;
     }
     export class ModelDto {
 
@@ -363,6 +379,17 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
         checkRegister: "at/request/application/gobackdirectly/checkBeforeRegisterNew",
         updateApplication: "at/request/application/gobackdirectly/updateNewKAF009",
         getDetail: "at/request/application/gobackdirectly/getDetail"
+    }
+
+	export class ApplicationStatus {
+        // 反映しない
+        public static DO_NOT_REFLECT: number = 0;
+        // 反映する
+        public static DO_REFLECT: number = 1;
+        // 申請時に決める(初期値：反映しない)
+        public static DO_NOT_REFLECT_1: number = 2;
+        // 申請時に決める(初期値：反映する)
+        public static DO_REFLECT_1: number = 3;
     }
 
 }
