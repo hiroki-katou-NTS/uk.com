@@ -29,8 +29,7 @@ public class GetArgDisplayAtr {
 
 	// 4.36協定申請の承認すべきデータの取得
 	public Boolean get(List<ApprovedAppStatusDetailedSetting> approvedAppStatusDetailedSettingList,
-			List<ClosureIdPresentClosingPeriod> closingPeriods, String employeeId, String companyId, Integer yearMonth,
-			int closureId) {
+			List<ClosureIdPresentClosingPeriod> closingPeriods, String employeeId, String companyId, int closureId) {
 		
 		ApprovedAppStatusDetailedSetting argPerformanceDataSetting = approvedAppStatusDetailedSettingList.stream()
 				.filter(a -> a.getItem().value == ApprovedApplicationStatusItem.AGREEMENT_APPLICATION_DATA.value)

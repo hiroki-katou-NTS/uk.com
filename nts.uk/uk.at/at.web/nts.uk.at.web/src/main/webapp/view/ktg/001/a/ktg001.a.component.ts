@@ -51,7 +51,7 @@ module nts.uk.ui.ktg001.a {
     }
 
     interface IParam {
-        ym: number, //表示期間
+        //ym: number, //表示期間
         closureId: number //締めID
     }
 
@@ -183,6 +183,7 @@ module nts.uk.ui.ktg001.a {
             if (this.params.currentOrNextMonth === undefined) {
                 this.params.currentOrNextMonth = 1;
             }
+
         }
 
         mounted() {

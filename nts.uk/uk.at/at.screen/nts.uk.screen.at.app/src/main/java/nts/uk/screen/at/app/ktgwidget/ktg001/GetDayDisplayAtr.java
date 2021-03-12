@@ -30,7 +30,7 @@ public class GetDayDisplayAtr {
 
 	// 日別実績の承認すべきデータの取得
 	public Boolean get(List<ApprovedAppStatusDetailedSetting> approvedAppStatusDetailedSettingList,
-			List<ClosureIdPresentClosingPeriod> closingPeriods, String employeeId, String companyId, Integer yearMonth, int closureId) {
+			List<ClosureIdPresentClosingPeriod> closingPeriods, String employeeId, String companyId, int closureId) {
 
 		ApprovedAppStatusDetailedSetting dailyPerformanceDataSetting = approvedAppStatusDetailedSettingList.stream()
 				.filter(a -> a.getItem().value == ApprovedApplicationStatusItem.DAILY_PERFORMANCE_DATA.value)
@@ -40,9 +40,18 @@ public class GetDayDisplayAtr {
 			return false;
 
 		} else {
+			/*
+			 * 利用する締め日を全てチェック対象とする 
+			 * ※ユーザ固有情報のトップページ表示年月.締めIDをチェックして、Falseなら他の締めのチェックを行う
+			 * ※結果がTrueとなった締めID、年月を保持する 日別/月別それぞれで保持
+			 */
+			ClosureIdPresentClosingPeriod closingPeriod = closingPeriods.stream().filter(f -> f.getClosureId().equals(closureId))
+					.findAny().get();
+			
+			Integer yearMonth = closingPeriod.getCurrentClosingPeriod().getProcessingYm().v();
 
 			// トップページの設定により対象年月と締めIDを取得する
-			CheckTarget checkTarget = checkTargetFinder.getCheckTarget(closingPeriods, closureId, yearMonth);
+			CheckTarget checkTarget = checkTargetFinder.getCheckTarget(closingPeriod, closureId, yearMonth);
 
 			// 承認すべき日の実績があるかチェックする
 			return checkTrackRecordApprovalDay.checkTrackRecordApprovalDayNew(companyId, employeeId, checkTarget);

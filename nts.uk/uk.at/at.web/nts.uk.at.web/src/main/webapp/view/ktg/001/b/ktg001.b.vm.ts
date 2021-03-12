@@ -68,10 +68,14 @@ module nts.uk.at.view.ktg001.b {
 				vm.monRowVisible(approvalProcessingUse.useMonthApproverConfirm);
 				vm.aggrRowVisible(agreementOperationSetting.specicalConditionApplicationUse);
 				
+				vm.appChecked(true);
+				vm.dayChecked(approvalProcessingUse.useDayApproverConfirm);
+				vm.monChecked(approvalProcessingUse.useMonthApproverConfirm);
+				
 				if (data.approvedDataExecutionResultDto) {
 					let approvedDataExecution = data.approvedDataExecutionResultDto;
 
-					vm.title(approvedDataExecution.topPagePartName);
+					vm.title(approvedDataExecution.topPagePartName == null ? vm.$i18n('KTG001_12') : approvedDataExecution.topPagePartName);
 
 					if(approvedDataExecution.approvedAppStatusDetailedSettings) {
 							approvedDataExecution.approvedAppStatusDetailedSettings.forEach(s => {
