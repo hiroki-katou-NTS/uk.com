@@ -284,8 +284,15 @@ public class ReflectAttendanceClock {
 			if (workTimezoneCommonSet.isPresent()) {
 				return workTimezoneCommonSet.get().getStampSet();
 			}
+			throw new RuntimeException("Not exist 就業時間帯の打刻設定1");
 		}
-		throw new RuntimeException("Not exist 就業時間帯の打刻設定"); 
+		Optional<WorkTimezoneCommonSet> workTimezoneCommonSet = GetCommonSet.workTimezoneCommonSet(
+				requireService.createRequire(), cid, workTimeCode.get().v());
+		if (workTimezoneCommonSet.isPresent()) {
+			return workTimezoneCommonSet.get().getStampSet();
+		}
+			
+		throw new RuntimeException("Not exist 就業時間帯の打刻設定2"); 
 	}
 	
 	private PrioritySetting getPrioritySetting(WorkTimezoneStampSet stampSet, StampPiorityAtr stampPiorityAtr) {

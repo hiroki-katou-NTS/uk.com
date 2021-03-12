@@ -214,7 +214,9 @@ module nts.fixedtablekdl045 {
                     //$("#kkkk *").prop('disabled',true);
                     $('#kkkk').find('button').attr('disabled', 'disabled');
                 } else{
-                   $('#btn-add').removeAttr("disabled");
+                    if(self.isEnaleAddButton()){
+                        $('#btn-add').removeAttr("disabled");
+                    }
                 }   
             });
             
