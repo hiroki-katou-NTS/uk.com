@@ -22,7 +22,7 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
         appDispInfoStartupOutput: any;
         managementMultipleWorkCycles: KnockoutObservable<Boolean>;
         isSendMail: KnockoutObservable<boolean>;
-        cancalAppDispSet: boolean = true;
+        cancalAppDispSet: KnockoutObservable<boolean> = ko.observable(true);
         delete1: KnockoutObservable<boolean> = ko.observable(false);
         delete2: KnockoutObservable<boolean> = ko.observable(false);
         delete3: KnockoutObservable<boolean> = ko.observable(false);
@@ -79,7 +79,7 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                     }
                 }).then((successData: any) => {
                     if (successData) {
-                        vm.cancalAppDispSet = successData.lateEarlyCancelAppSet.cancelAtr !== 0;
+                        vm.cancalAppDispSet(successData.lateEarlyCancelAppSet.cancelAtr !== 0);
                         vm.cancelAtr = ko.observable(successData.lateEarlyCancelAppSet.cancelAtr);
 
                         if (this.cancelAtr() == 2) {
@@ -445,7 +445,7 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
         // ※8
         public condition8() {
             // 事前事後区分に「事後」に選択している場合　（事後モード）
-            return ko.toJS(this.application().prePostAtr) === 1 && this.cancalAppDispSet;
+            return this.application().prePostAtr() === 1 && this.cancalAppDispSet();
         }
 
         public showConfirmResult(messages: Array<any>, vm: any) {
