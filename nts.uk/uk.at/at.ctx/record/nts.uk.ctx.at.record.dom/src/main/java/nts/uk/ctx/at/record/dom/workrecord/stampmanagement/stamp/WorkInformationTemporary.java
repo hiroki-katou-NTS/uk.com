@@ -5,7 +5,7 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 
 /**
@@ -16,13 +16,12 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.time
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Setter
 public class WorkInformationTemporary {
 
 	// 職場ID
-	@Getter
 	private  Optional<String> workplaceID;
 
 	// 場所コード
-	@Getter
 	private  Optional<WorkLocationCD> workLocationCD;
 }
