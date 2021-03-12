@@ -43,13 +43,13 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavet
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.LateTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.CalculationState;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktime.predset.WorkNo;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -678,14 +678,14 @@ public class WorkScheduleTest {
 			result = Arrays.asList( lateTime1, lateTime2 );
 			
 			lateTime1.getWorkNo();
-			result = new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(1);
+			result = new WorkNo(1);
 			lateTime2.getWorkNo();
-			result = new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(2);
+			result = new WorkNo(2);
 			
-			timeLeaving.getStartTimeVacations(new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(1));
+			timeLeaving.getStartTimeVacations(new WorkNo(1));
 			// result = empty
 			
-			timeLeaving.getStartTimeVacations(new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(2));
+			timeLeaving.getStartTimeVacations(new WorkNo(2));
 			result = Optional.of(new TimeSpanForCalc(
 									new TimeWithDayAttr(100),
 									new TimeWithDayAttr(200)));
@@ -730,16 +730,16 @@ public class WorkScheduleTest {
 			result = Arrays.asList( lateTime1, lateTime2 );
 			
 			lateTime1.getWorkNo();
-			result = new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(1);
+			result = new WorkNo(1);
 			lateTime2.getWorkNo();
-			result = new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(2);
+			result = new WorkNo(2);
 			
-			timeLeaving.getStartTimeVacations(new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(1));
+			timeLeaving.getStartTimeVacations(new WorkNo(1));
 			result = Optional.of(new TimeSpanForCalc(
 					new TimeWithDayAttr(100),
 					new TimeWithDayAttr(200)));
 			
-			timeLeaving.getStartTimeVacations(new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(2));
+			timeLeaving.getStartTimeVacations(new WorkNo(2));
 			result = Optional.of(new TimeSpanForCalc(
 									new TimeWithDayAttr(300),
 									new TimeWithDayAttr(400)));
@@ -794,13 +794,13 @@ public class WorkScheduleTest {
 			result = Arrays.asList( earlyTime1, earlyTime2 );
 			
 			earlyTime1.getWorkNo();
-			result = new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(1);
+			result = new WorkNo(1);
 			earlyTime2.getWorkNo();
-			result = new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(2);
+			result = new WorkNo(2);
 			
-			timeLeaving.getEndTimeVacations(new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(1));
+			timeLeaving.getEndTimeVacations(new WorkNo(1));
 			// result = empty
-			timeLeaving.getEndTimeVacations(new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(2));
+			timeLeaving.getEndTimeVacations(new WorkNo(2));
 			result = Optional.of(new TimeSpanForCalc(
 									new TimeWithDayAttr(100),
 									new TimeWithDayAttr(200)));
@@ -842,16 +842,16 @@ public class WorkScheduleTest {
 			result = Arrays.asList( earlyTime1, earlyTime2 );
 			
 			earlyTime1.getWorkNo();
-			result = new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(1);
+			result = new WorkNo(1);
 			earlyTime2.getWorkNo();
-			result = new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(2);
+			result = new WorkNo(2);
 			
-			timeLeaving.getEndTimeVacations(new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(1));
+			timeLeaving.getEndTimeVacations(new WorkNo(1));
 			result = Optional.of(new TimeSpanForCalc(
 									new TimeWithDayAttr(100),
 									new TimeWithDayAttr(200)));
 			
-			timeLeaving.getEndTimeVacations(new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo(2));
+			timeLeaving.getEndTimeVacations(new WorkNo(2));
 			result = Optional.of(new TimeSpanForCalc(
 									new TimeWithDayAttr(300),
 									new TimeWithDayAttr(400)));
