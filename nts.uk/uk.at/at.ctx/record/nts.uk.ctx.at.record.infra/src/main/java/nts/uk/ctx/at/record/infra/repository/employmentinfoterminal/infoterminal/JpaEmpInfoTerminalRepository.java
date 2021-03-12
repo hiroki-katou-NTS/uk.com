@@ -26,7 +26,6 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.repo.EmpInfo
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
 import nts.uk.ctx.at.record.infra.entity.employmentinfoterminal.infoterminal.KrcmtTimeRecorder;
 import nts.uk.ctx.at.record.infra.entity.employmentinfoterminal.infoterminal.KrcmtTimeRecorderPK;
-import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.workrule.goingout.GoingOutReason;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -85,7 +84,7 @@ public class JpaEmpInfoTerminalRepository extends JpaRepository implements EmpIn
 												: GoingOutReason.valueOf(entity.reasonGoOut))),
 								new ConvertEmbossCategory(NotUseAtr.valueOf(entity.replaceLeave),NotUseAtr.valueOf(entity.replaceSupport)),
 								Optional.ofNullable(entity.workLocationCode == null ? null : new WorkLocationCD(entity.workLocationCode)),
-								Optional.ofNullable(entity.workPlaceId == null ? null : new WorkplaceId(entity.workPlaceId))))
+								Optional.ofNullable(entity.workPlaceId == null ? null : entity.workPlaceId)))
 						.modelEmpInfoTer(ModelEmpInfoTer.valueOf(entity.type))
 						.intervalTime(new MonitorIntervalTime(entity.inverterTime))
 						.empInfoTerMemo(Optional.ofNullable(entity.memo).map(x -> new EmpInfoTerMemo(x)))
@@ -128,7 +127,7 @@ public class JpaEmpInfoTerminalRepository extends JpaRepository implements EmpIn
 				domain.getCreateStampInfo().getConvertEmbCate().getOutSupport().value,
 				domain.getIntervalTime().v().intValue(),
 				domain.getEmpInfoTerMemo().isPresent() ? domain.getEmpInfoTerMemo().get().v() : null,
-				domain.getCreateStampInfo().getWorkPlaceId().isPresent() ? domain.getCreateStampInfo().getWorkPlaceId().get().v() : null);
+				domain.getCreateStampInfo().getWorkPlaceId().isPresent() ? domain.getCreateStampInfo().getWorkPlaceId().get() : null);
 	}
 	
 	@Override
