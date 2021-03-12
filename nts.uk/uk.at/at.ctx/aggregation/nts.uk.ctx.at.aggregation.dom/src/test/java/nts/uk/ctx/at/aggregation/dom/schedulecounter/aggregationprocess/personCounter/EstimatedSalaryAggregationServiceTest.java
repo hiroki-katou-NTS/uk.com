@@ -75,8 +75,8 @@ public class EstimatedSalaryAggregationServiceTest {
 		// 日別勤怠リスト
 		// 社員[1]	日付：2021/01/16 金額：161
 		// 社員[1]	日付：2021/01/17 金額：162
-		// 社員[1]	日付：2021/01/15 金額：251
-		// 社員[1]	日付：2021/01/16 金額：252
+		// 社員[1]	日付：2021/02/15 金額：251
+		// 社員[1]	日付：2021/02/16 金額：252
 		// ※15日締め -> 合計：574
 		// ※16日締め -> 合計：665
 		val empId = IntegrationOfDailyHelperInAggregation.createEmpId(1);
@@ -302,6 +302,10 @@ public class EstimatedSalaryAggregationServiceTest {
 
 	private static class Helper {
 
+		/**
+		 * テストデータのもととなる日別勤怠Mapを取得する
+		 * @return
+		 */
 		@SuppressWarnings("serial")
 		public static Map<EmployeeId, Map<IntegrationOfDaily, Integer>> getDataMap() {
 			return new HashMap<EmployeeId, Map<IntegrationOfDaily, Integer>>() {{
@@ -329,6 +333,11 @@ public class EstimatedSalaryAggregationServiceTest {
 			}};
 		}
 
+		/**
+		 * 日別勤怠Mapから想定給与額リストを取得する
+		 * @param seeds 日別勤怠Map
+		 * @return
+		 */
 		public static Map<EmployeeId, BigDecimal> getEstimatedSalaries(Map<EmployeeId, Map<IntegrationOfDaily, Integer>> seeds) {
 
 			return seeds.entrySet().stream()
@@ -342,6 +351,11 @@ public class EstimatedSalaryAggregationServiceTest {
 							} ) );
 		}
 
+		/**
+		 * 日別勤怠Mapから日別勤怠リストを取得する
+		 * @param seeds 日別勤怠Map
+		 * @return
+		 */
 		public static List<IntegrationOfDaily> getDailyAttendance(Map<EmployeeId, Map<IntegrationOfDaily, Integer>> seeds) {
 			return seeds.entrySet().stream()
 					.flatMap( e -> e.getValue().keySet().stream() )
