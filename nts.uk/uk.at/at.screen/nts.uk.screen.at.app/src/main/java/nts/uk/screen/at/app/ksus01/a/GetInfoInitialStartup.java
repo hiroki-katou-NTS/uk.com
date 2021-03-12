@@ -33,7 +33,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  *
  */
 @Stateless
-public class GetInforInitialStartup {
+public class GetInfoInitialStartup {
 	
 	@Inject
 	private EmpAffiliationInforAdapter empAffiliationInforAdapter;

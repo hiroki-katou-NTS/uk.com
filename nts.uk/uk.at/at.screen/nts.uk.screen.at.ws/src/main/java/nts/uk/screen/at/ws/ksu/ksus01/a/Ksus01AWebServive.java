@@ -6,7 +6,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import nts.uk.screen.at.app.ksus01.a.GetInforInitialStartup;
+import nts.uk.screen.at.app.ksus01.a.GetInfoInitialStartup;
 import nts.uk.screen.at.app.ksus01.a.GetInforOnTargetDate;
 import nts.uk.screen.at.app.ksus01.a.GetInforOnTargetPeriod;
 import nts.uk.screen.at.app.ksus01.a.InforOnTargetDateInput;
@@ -26,7 +26,7 @@ import nts.uk.screen.at.app.ksus01.a.InitInformationDto;
 public class Ksus01AWebServive {
 	
 	@Inject
-	private GetInforInitialStartup getInforInitialStartup;
+	private GetInfoInitialStartup getInforInitialStartup;
 	
 	@Inject
 	private GetInforOnTargetPeriod getInforOnTargetPeriod;
