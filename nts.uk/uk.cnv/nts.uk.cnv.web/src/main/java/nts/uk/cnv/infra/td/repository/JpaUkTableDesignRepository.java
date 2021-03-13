@@ -8,8 +8,7 @@ import java.util.stream.Collectors;
 
 import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.time.GeneralDateTime;
-import nts.uk.cnv.app.dto.GetUkTablesResultDto;
+import nts.uk.cnv.app.cnv.dto.GetUkTablesResultDto;
 import nts.uk.cnv.dom.td.tabledesign.ColumnDesign;
 import nts.uk.cnv.dom.td.tabledesign.Indexes;
 import nts.uk.cnv.dom.td.tabledesign.Snapshot;
@@ -64,8 +63,8 @@ public class JpaUkTableDesignRepository extends JpaRepository implements UkTable
 				.map(col -> new ScvmtUkIndexColumns(
 						new ScvmtUkIndexColumnsPk(
 								tableDesign.getId(),
-								tableDesign.getFeatureId(),
-								tableDesign.getDatetime(),
+								tableDesign.getSnapshotId(),
+								tableDesign.getEventId(),
 								idx.getName(),
 								idx.getColumns().indexOf(col),
 								col),
@@ -75,7 +74,7 @@ public class JpaUkTableDesignRepository extends JpaRepository implements UkTable
 
 			indexes.add(new ScvmtUkIndexDesign(
 					new ScvmtUkIndexDesignPk(
-							tableDesign.getId(), tableDesign.getFeatureId(), tableDesign.getDatetime(), idx.getName()),
+							tableDesign.getId(), tableDesign.getSnapshotId(), tableDesign.getEventId(), idx.getName()),
 					idx.getConstraintType(),
 					idx.isClustered(),
 					indexcolumns,
@@ -86,8 +85,8 @@ public class JpaUkTableDesignRepository extends JpaRepository implements UkTable
 		return new ScvmtUkTableDesign(
 				new ScvmtUkTableDesignPk(
 					tableDesign.getId(),
-					tableDesign.getFeatureId(),
-					tableDesign.getDatetime()),
+					tableDesign.getSnapshotId(),
+					tableDesign.getEventId()),
 				tableDesign.getName(),
 				tableDesign.getJpName(),
 				columns,
@@ -98,8 +97,8 @@ public class JpaUkTableDesignRepository extends JpaRepository implements UkTable
 		return new ScvmtUkColumnDesign(
 					new ScvmtUkColumnDesignPk(
 							tableDesign.getId(),
-							tableDesign.getFeatureId(),
-							tableDesign.getDatetime(),
+							tableDesign.getSnapshotId(),
+							tableDesign.getEventId(),
 							columnDesign.getId()),
 					columnDesign.getName(),
 					columnDesign.getJpName(),
@@ -107,10 +106,6 @@ public class JpaUkTableDesignRepository extends JpaRepository implements UkTable
 					columnDesign.getMaxLength(),
 					columnDesign.getScale(),
 					(columnDesign.isNullable() ? 1 : 0),
-					(columnDesign.isPrimaryKey() ? 1 : 0),
-					columnDesign.getPrimaryKeySeq(),
-					(columnDesign.isUniqueKey() ? 1 : 0),
-					columnDesign.getUniqueKeySeq(),
 					columnDesign.getDefaultValue(),
 					columnDesign.getComment(),
 					columnDesign.getCheck(),
@@ -121,42 +116,42 @@ public class JpaUkTableDesignRepository extends JpaRepository implements UkTable
 
 	@Override
 	@SneakyThrows
-	public Optional<TableDesign> findByKey(String tableId, String feature, GeneralDateTime date) {
-		Optional<ScvmtUkTableDesign> result = find(tableId, feature, date);
+	public Optional<TableDesign> findByKey(String tableId, String feature, String eventId) {
+		Optional<ScvmtUkTableDesign> result = find(tableId, feature, eventId);
 		return Optional.of(result.get().toDomain());
 	}
 
-	private Optional<ScvmtUkTableDesign> find(String tableId, String feature, GeneralDateTime date) {
+	private Optional<ScvmtUkTableDesign> find(String tableId, String feature, String eventId) {
 		return this.queryProxy().find(
-				new ScvmtUkTableDesignPk(tableId, feature, date),
+				new ScvmtUkTableDesignPk(tableId, feature, eventId),
 				ScvmtUkTableDesign.class);
 	}
 
 	@Override
-	public List<GetUkTablesResultDto> getAllTableList(String feature, GeneralDateTime date) {
-		return getAll(feature, date).stream()
+	public List<GetUkTablesResultDto> getAllTableList(String feature, String eventId) {
+		return getAll(feature, eventId).stream()
 			.map(td -> new GetUkTablesResultDto(td.getId(), td.getName()))
 			.collect(Collectors.toList());
 	}
 
 	@Override
-	public List<TableDesign> getAll(String feature, GeneralDateTime date) {
+	public List<TableDesign> getAll(String feature, String eventId) {
 		String sql;
 		List<ScvmtUkTableDesign> list;
 		if (feature != null && !feature.isEmpty()) {
 			sql = "SELECT td FROM ScvmtUkTableDesign td"
 				+ " WHERE td.pk.feature = :feature"
-				+ " AND   td.pk.date = :date";
+				+ " AND   td.pk.eventId = :eventId";
 			list = this.queryProxy().query(sql, ScvmtUkTableDesign.class)
 					.setParameter("feature", feature)
-					.setParameter("date", date)
+					.setParameter("eventId", eventId)
 					.getList();
 		}
 		else {
 			sql = "SELECT td FROM ScvmtUkTableDesign td"
-				+ " WHERE td.pk.date = :date";
+				+ " WHERE td.pk.eventId = :eventId";
 			list = this.queryProxy().query(sql, ScvmtUkTableDesign.class)
-					.setParameter("date", date)
+					.setParameter("eventId", eventId)
 					.getList();
 		}
 
@@ -180,5 +175,11 @@ public class JpaUkTableDesignRepository extends JpaRepository implements UkTable
 				.getList(rec -> rec.toDomain());
 
 		return result;
+	}
+
+	@Override
+	public String getNewestSsEventId(String featureId) {
+		// TODO 自動生成されたメソッド・スタブ
+		return "00000000";
 	}
 }

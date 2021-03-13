@@ -14,11 +14,6 @@ public class ColumnDesign {
 
 	private DefineColumnType type;
 
-	private boolean primaryKey;
-	private int primaryKeySeq;
-	private boolean uniqueKey;
-	private int uniqueKeySeq;
-
 	private String comment;
 
 	private int dispOrder;
@@ -80,12 +75,8 @@ public class ColumnDesign {
 		result = prime * result + type.length;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + (type.nullable ? 1231 : 1237);
-		result = prime * result + (primaryKey ? 1231 : 1237);
-		result = prime * result + primaryKeySeq;
 		result = prime * result + type.scale;
 		result = prime * result + ((type.type == null) ? 0 : type.type.hashCode());
-		result = prime * result + (uniqueKey ? 1231 : 1237);
-		result = prime * result + uniqueKeySeq;
 		result = prime * result + dispOrder;
 		return result;
 	}
@@ -133,17 +124,9 @@ public class ColumnDesign {
 			return false;
 		if (type.nullable != other.type.nullable)
 			return false;
-		if (primaryKey != other.primaryKey)
-			return false;
-		if (primaryKeySeq != other.primaryKeySeq)
-			return false;
 		if (type.scale != other.type.scale)
 			return false;
 		if (!type.equals(other.type))
-			return false;
-		if (uniqueKey != other.uniqueKey)
-			return false;
-		if (uniqueKeySeq != other.uniqueKeySeq)
 			return false;
 		if (dispOrder != other.dispOrder)
 			return false;

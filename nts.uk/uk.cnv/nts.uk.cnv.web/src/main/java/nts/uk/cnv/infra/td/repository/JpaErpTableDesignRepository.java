@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
-import nts.arc.time.GeneralDateTime;
 import nts.uk.cnv.dom.td.tabledesign.ColumnDesign;
 import nts.uk.cnv.dom.td.tabledesign.ErpTableDesignRepository;
 import nts.uk.cnv.dom.td.tabledesign.Snapshot;
@@ -42,33 +41,29 @@ public class JpaErpTableDesignRepository extends JpaRepository implements ErpTab
 
 	private ScvmtErpTableDesign toEntity(Snapshot ss) {
 		List<ScvmtErpColumnDesign> columns = ss.getColumns().stream()
-				.map(cd -> toEntity(ss.getId(), ss.getFeatureId(), ss.getDatetime(), cd))
+				.map(cd -> toEntity(ss.getId(), ss.getSnapshotId(), ss.getEventId(), cd))
 				.collect(Collectors.toList());
 
 		return new ScvmtErpTableDesign(
 				new ScvmtErpTableDesignPk(
 						ss.getId(),
-						ss.getFeatureId(),
-						ss.getDatetime()
+						ss.getSnapshotId(),
+						ss.getEventId()
 					),
 				ss.getName(),
 				ss.getJpName(),
 				columns);
 	}
 
-	private ScvmtErpColumnDesign toEntity(String tableId, String featureId, GeneralDateTime datetime, ColumnDesign columnDesign) {
+	private ScvmtErpColumnDesign toEntity(String tableId, String featureId, String eventId, ColumnDesign columnDesign) {
 		return new ScvmtErpColumnDesign(
-					new ScvmtErpColumnDesignPk(tableId, featureId, datetime, columnDesign.getId()),
+					new ScvmtErpColumnDesignPk(tableId, featureId, eventId, columnDesign.getId()),
 					columnDesign.getName(),
 					columnDesign.getJpName(),
 					columnDesign.getType().toString(),
 					columnDesign.getMaxLength(),
 					columnDesign.getScale(),
 					(columnDesign.isNullable() ? 1 : 0),
-					(columnDesign.isPrimaryKey() ? 1 : 0),
-					columnDesign.getPrimaryKeySeq(),
-					(columnDesign.isUniqueKey() ? 1 : 0),
-					columnDesign.getUniqueKeySeq(),
 					columnDesign.getDefaultValue(),
 					columnDesign.getComment(),
 					columnDesign.getCheck(),

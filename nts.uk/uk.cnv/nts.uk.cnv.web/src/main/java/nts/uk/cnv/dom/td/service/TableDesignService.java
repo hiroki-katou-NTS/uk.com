@@ -18,12 +18,12 @@ public class TableDesignService {
 
 	public AtomTask alter(
 			Require require,
-			String tableName,
+			String tableId,
+			AlterationMetaData meta,
 			Optional<TableDesign> altered) {
 
-		AlterationMetaData meta = require.getMetaData();
-		Optional<TableDesign> newest = require.getNewest(meta.getFeatureId());
-		Alteration alt = factory.create(tableName, meta, newest, altered);
+		Optional<TableDesign> newest = require.getNewest(tableId);
+		Alteration alt = factory.create(tableId, meta, newest, altered);
 
 		return AtomTask.of(() ->{
 			require.add(alt);
@@ -32,8 +32,7 @@ public class TableDesignService {
 
 	public interface Require {
 		/** 最新のスナップショットを取得 */
-		Optional<TableDesign> getNewest(String featureId);
-		AlterationMetaData getMetaData();
+		Optional<TableDesign> getNewest(String tableId);
 		void add(Alteration alt);
 	}
 }

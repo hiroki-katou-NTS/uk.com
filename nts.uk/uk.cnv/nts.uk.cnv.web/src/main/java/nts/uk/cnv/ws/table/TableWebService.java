@@ -1,16 +1,19 @@
 package nts.uk.cnv.ws.table;
 
-import static java.util.stream.Collectors.*;
-
 import java.util.Arrays;
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import nts.uk.cnv.app.td.command.TableDefinitionRegistCommand;
+import nts.uk.cnv.app.td.command.TableDefinitionRegistCommandHandler;
+import nts.uk.cnv.app.td.service.TableDesignerService;
 import nts.uk.cnv.dom.td.tabledefinetype.DataType;
 import nts.uk.cnv.ws.table.column.ColumnDefinitionDto;
 import nts.uk.cnv.ws.table.column.ColumnTypeDefinitionDto;
@@ -19,22 +22,18 @@ import nts.uk.cnv.ws.table.column.ColumnTypeDefinitionDto;
 @Produces(MediaType.APPLICATION_JSON)
 public class TableWebService {
 
+	@Inject
+	TableDesignerService tdService;
+
+	@Inject
+	TableDefinitionRegistCommandHandler handler;
+
 	@GET
 	@Path("list")
 	public List<TableInfoDto> list() {
-		return Arrays.asList(
-				"BCMMT_COMPANY",
-				"BSYMT_JOB_HIST",
-				"KFNMT_ALEX_DATA",
-				"KSCDT_AVAILABILITY",
-				"KSCMT_ALCHK_CONSECUTIVE_WKTM_ORG_DTL",
-				"KSHMT_MON_ITEM_CONTROL",
-				"SPTDT_INFO_MESSAGE_TGT"
-				).stream()
-				.map(name -> new TableInfoDto("", name, ""))
-				.collect(toList());
+		return tdService.getProspect();
 	}
-	
+
 	@GET
 	@Path("{name}")
 	public TableDefinitionDto definition(@PathParam("name") String name) {
@@ -53,5 +52,11 @@ public class TableWebService {
 						"")
 				);
 		return new TableDefinitionDto(new TableInfoDto("", name, ""), columns);
+	}
+
+	@POST
+	@Path("regist")
+	public void regist(TableDefinitionRegistCommand command) {
+		handler.handle(command);
 	}
 }

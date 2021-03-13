@@ -138,12 +138,12 @@ public class SqlServerSpec implements DatabaseSpec{
 	}
 
 	@Override
-	public String tableCommentDdl(String tableName, String comment) {
-		if(comment == null || comment.isEmpty()) return "";
+	public String tableCommentDdl(String tableName, String jpName) {
+		if(jpName == null || jpName.isEmpty()) return "";
 
 		return "EXEC sys.sp_addextendedproperty "
 				+ " @name=N'MS_Description'\r\n"
-				+ ",@value=N'" + comment + "'\r\n"
+				+ ",@value=N'" + jpName + "'\r\n"
 				+ ",@level0type=N'SCHEMA'\r\n"
 				+ ",@level0name=N'dbo'\r\n"
 				+ ",@level1type=N'TABLE'\r\n"
@@ -151,12 +151,12 @@ public class SqlServerSpec implements DatabaseSpec{
 	}
 
 	@Override
-	public String columnCommentDdl(String tableName, String columnName, String comment) {
-		if(comment == null || comment.isEmpty()) return "";
+	public String columnCommentDdl(String tableName, String columnName, String jpName) {
+		if(jpName == null || jpName.isEmpty()) return "";
 
 		return "EXEC sys.sp_addextendedproperty "
 				+ " @name=N'MS_Description'\r\n"
-				+ ",@value=N'" + comment + "'\r\n"
+				+ ",@value=N'" + jpName + "'\r\n"
 				+ ",@level0type=N'SCHEMA'\r\n"
 				+ ",@level0name=N'dbo'\r\n"
 				+ ",@level1type=N'TABLE'\r\n"

@@ -4,7 +4,6 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -20,8 +19,6 @@ import net.sf.jsqlparser.statement.create.table.ColumnDefinition;
 import net.sf.jsqlparser.statement.create.table.CreateTable;
 import net.sf.jsqlparser.statement.create.table.Index;
 import nts.arc.task.tran.AtomTask;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.cnv.dom.td.tabledefinetype.DataType;
 import nts.uk.cnv.dom.td.tabledefinetype.TableDefineType;
@@ -38,28 +35,35 @@ import nts.uk.cnv.dom.td.tabledesign.TableName;
 public class DDLImportService {
 	/**
 	 * @param require
+	 * @param snapshotId スナップショットID
 	 * @param createTable create table文を指定する. 列のデータ型はDB設計規約の「Name for layout」を参照すること
 	 * @param createIndex テーブルに所属するcreate index文を指定する.
+	 * @param comment コメントDLL
 	 * @param type SQL文がどのRDBMSかを指定する
 	 * @throws JSQLParserException
 	 */
-	public static AtomTask regist(String feature, GeneralDate date, Require require, String createTable, String createIndexes, String comment, String type) throws JSQLParserException {
+	public static AtomTask regist(Require require, String snapshotId, String createTable, String createIndexes, String comment, String type) throws JSQLParserException {
 		TableDefineType typeDefine;
+
+		// TODO:
+		String eventId = "";
 		if("uk".equals(type)) {
 			typeDefine = new UkDataType();
 		}
 		else {
 			typeDefine = DatabaseType.valueOf(type).spec();
 		}
-		Snapshot tableDesign = ddlToDomain(feature, date, createTable, createIndexes, comment, typeDefine);
+		Snapshot ss = new Snapshot(
+				snapshotId,
+				eventId,
+				ddlToDomain(createTable, createIndexes, comment, typeDefine));
 
 		return AtomTask.of(() -> {
-			require.regist(tableDesign);
+			require.regist(ss);
 		});
 	}
 
-	private static Snapshot ddlToDomain(
-		String feature, GeneralDate date,
+	private static TableDesign ddlToDomain(
 		String createTable, String createIndexes, String comment, TableDefineType typeDefine) throws JSQLParserException {
 		CCJSqlParserManager pm = new CCJSqlParserManager();
 
@@ -88,24 +92,19 @@ public class DDLImportService {
 		}
 
 		if (createTableSt instanceof CreateTable) {
-			return new Snapshot(
-					"", GeneralDateTime.now(),
-					toDomain(feature, date, (CreateTable) createTableSt, indexes, typeDefine, comment, indexClusteredMap, isClusteredPK));
+			return toDomain((CreateTable) createTableSt, indexes, typeDefine, comment, indexClusteredMap, isClusteredPK);
 		}
 
 		throw new JSQLParserException();
 	}
 
 	private static TableDesign toDomain(
-			String feature, GeneralDate date,
 			CreateTable statement, List<CreateIndex> createIndex, TableDefineType typeDefine,
 			String comment, Map<String, Boolean> indexClusteredMap, boolean isClusteredPK) {
 
 		List<Indexes> indexes = new ArrayList<>();
-		Map<String, Integer> pk = new LinkedHashMap<>();
-		Map<String, Integer> uk = new LinkedHashMap<>();
 		if (statement.getIndexes() != null) {
-			analyzeIndex(new TableName(statement.getTable().getName()),statement, indexes, pk, uk, isClusteredPK);
+			analyzeIndex(new TableName(statement.getTable().getName()),statement, indexes, isClusteredPK);
 		}
 		if (!createIndex.isEmpty()) {
 			indexes.addAll(
@@ -129,7 +128,7 @@ public class DDLImportService {
 				continue;
 			}
 
-			ColumnDesign newItem = createColumnDesign(commentMap, typeDefine, pk, uk, col, id);
+			ColumnDesign newItem = createColumnDesign(commentMap, typeDefine, col, id);
 
 			columns.add(newItem);
 			id++;
@@ -147,7 +146,7 @@ public class DDLImportService {
 	}
 
 	private static ColumnDesign createColumnDesign(Map<String, String> commentMap, TableDefineType typeDefine,
-			Map<String, Integer> pk, Map<String, Integer> uk, ColumnDefinition col, int id) {
+			ColumnDefinition col, int id) {
 		String columnComment =
 				commentMap.containsKey(col.getColumnName())
 				? commentMap.get(col.getColumnName())
@@ -226,10 +225,6 @@ public class DDLImportService {
 						nullable,
 						defaultValue,
 						check),
-				pk.containsKey(col.getColumnName()),
-				pk.containsKey(col.getColumnName()) ? pk.get(col.getColumnName()) : 0,
-				uk.containsKey(col.getColumnName()),
-				uk.containsKey(col.getColumnName()) ? uk.get(col.getColumnName()) : 0,
 				columnComment,
 				id
 		);
@@ -271,17 +266,12 @@ public class DDLImportService {
 				);
 	}
 
-	private static void analyzeIndex(TableName tableName, CreateTable statement, List<Indexes> indexes, Map<String, Integer> pk, Map<String, Integer> uk, boolean isClusteredPK) {
+	private static void analyzeIndex(TableName tableName, CreateTable statement, List<Indexes> indexes, boolean isClusteredPK) {
 		for (Iterator<Index> indexDef =  statement.getIndexes().iterator(); indexDef.hasNext();) {
 			Index index = (Index) indexDef.next();
 			boolean clustered = false;
 			Indexes idx = null;
 			if(index.getType().equals("PRIMARY KEY")) {
-				int seq = 1;
-				for(Object colName : index.getColumnsNames()){
-					pk.put((String)colName, seq);
-					seq++;
-				}
 				clustered = isClusteredPK;
 
 				idx = Indexes.createPk(
@@ -291,12 +281,6 @@ public class DDLImportService {
 				);
 			}
 			else if(index.getType().equals("UNIQUE KEY")) {
-				int seq = 1;
-				for(Object colName : index.getColumnsNames()){
-					uk.put((String)colName, seq);
-					seq++;
-				}
-
 				idx = Indexes.createUk(
 						index.getName(),
 						index.getColumnsNames(),

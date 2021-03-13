@@ -8,18 +8,16 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.cnv.app.command.UkTableDesignImportCommand;
-import nts.uk.cnv.app.command.UkTableDesignImportCommandHandler;
-import nts.uk.cnv.app.dto.ExportToFileDto;
-import nts.uk.cnv.app.dto.GetErpColumnsResultDto;
-import nts.uk.cnv.app.dto.GetUkColumnsParamDto;
-import nts.uk.cnv.app.dto.GetUkColumnsResultDto;
-import nts.uk.cnv.app.dto.GetUkTablesParamsDto;
-import nts.uk.cnv.app.dto.GetUkTablesResultDto;
-import nts.uk.cnv.app.dto.ImportFromFileDto;
-import nts.uk.cnv.app.dto.ImportFromFileResult;
-import nts.uk.cnv.app.dto.TableDesignExportDto;
-import nts.uk.cnv.app.service.TableDesignerService;
+import nts.uk.cnv.app.cnv.command.UkTableDesignImportCommand;
+import nts.uk.cnv.app.cnv.command.UkTableDesignImportCommandHandler;
+import nts.uk.cnv.app.cnv.dto.ExportToFileDto;
+import nts.uk.cnv.app.cnv.dto.GetErpColumnsResultDto;
+import nts.uk.cnv.app.cnv.dto.GetUkColumnsParamDto;
+import nts.uk.cnv.app.cnv.dto.GetUkColumnsResultDto;
+import nts.uk.cnv.app.cnv.dto.ImportFromFileDto;
+import nts.uk.cnv.app.cnv.dto.ImportFromFileResult;
+import nts.uk.cnv.app.cnv.dto.TableDesignExportDto;
+import nts.uk.cnv.app.td.service.TableDesignerService;
 import nts.uk.cnv.dom.td.service.ExportDdlServiceResult;
 
 @Path("cnv/tabledesign")
@@ -63,15 +61,9 @@ public class TableDesignWebService extends WebService{
 	}
 
 	@POST
-	@Path("getuktables")
-	public List<GetUkTablesResultDto> getUkTables(GetUkTablesParamsDto param) {
-		return tdService.getUkTables(param);
-	}
-
-	@POST
 	@Path("getukcolumns")
 	public List<GetUkColumnsResultDto> getUkColumns(GetUkColumnsParamDto param) {
-		return tdService.getUkColumns(param.getCategory(), param.getTableId(), param.getRecordNo(), param.getFeature(), param.getDateTime());
+		return tdService.getUkColumns(param.getCategory(), param.getTableId(), param.getRecordNo(), param.getFeature());
 	}
 
 	@POST

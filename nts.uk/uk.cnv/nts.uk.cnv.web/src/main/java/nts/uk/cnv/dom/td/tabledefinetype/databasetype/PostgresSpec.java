@@ -127,17 +127,17 @@ public class PostgresSpec implements DatabaseSpec{
 	}
 
 	@Override
-	public String tableCommentDdl(String tableName, String comment) {
-		if(comment == null || comment.isEmpty()) return "";
+	public String tableCommentDdl(String tableName, String jpName) {
+		if(jpName == null || jpName.isEmpty()) return "";
 
-		return "COMMENT ON TABLE " + tableName + " IS '" + comment + "';";
+		return "COMMENT ON TABLE " + tableName + " IS '" + jpName + "';";
 	}
 
 	@Override
-	public String columnCommentDdl(String tableName, String columnName, String comment) {
-		if(comment == null || comment.isEmpty()) return "";
+	public String columnCommentDdl(String tableName, String columnName, String jpName) {
+		if(jpName == null || jpName.isEmpty()) return "";
 
-		return "COMMENT ON COLUMN " + tableName + "." + columnName + " IS '" + comment + "';";
+		return "COMMENT ON COLUMN " + tableName + "." + columnName + " IS '" + jpName + "';";
 	}
 
 	@Override

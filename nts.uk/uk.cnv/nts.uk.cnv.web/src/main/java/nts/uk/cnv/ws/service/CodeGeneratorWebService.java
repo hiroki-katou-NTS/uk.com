@@ -6,8 +6,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.cnv.app.dto.CodeGeneratorExcecuteDto;
-import nts.uk.cnv.app.service.CodeGenerator;
+import nts.uk.cnv.app.cnv.dto.CodeGeneratorExcecuteDto;
+import nts.uk.cnv.app.cnv.service.CodeGenerator;
 import nts.uk.cnv.dom.cnv.service.ConversionInfo;
 import nts.uk.cnv.dom.td.tabledefinetype.databasetype.DatabaseType;
 

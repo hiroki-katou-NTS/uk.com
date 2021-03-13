@@ -26,7 +26,10 @@ public class Cnv001BService {
 				.map(cate -> cate.getTablename())
 				.collect(Collectors.toList());
 
-		List<String> tables = ukTableDesignRepository.getAllTableList(param.getFeature(), param.getDateTime()).stream()
+		// TODO:
+		String eventId = "";
+
+		List<String> tables = ukTableDesignRepository.getAllTableList(param.getFeature(), eventId).stream()
 				.map(tb -> tb.getTableName())
 				.collect(Collectors.toList());
 

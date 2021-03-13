@@ -56,8 +56,8 @@ public class ScvmtErpTableDesign extends JpaEntity implements Serializable {
 				.collect(Collectors.toList());
 
 		return new Snapshot(
-					pk.getFeatureId(),
-					pk.getDatetime(),
+					pk.getSnapshotId(),
+					pk.getEventId(),
 					new TableDesign(pk.getTableId(), name, jpName, cols, new ArrayList<>())
 				);
 	}

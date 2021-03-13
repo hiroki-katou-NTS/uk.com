@@ -16,10 +16,10 @@ import nts.uk.cnv.dom.td.tabledesign.TableDesign;
 public class AlterationFactory {
 
 	public Alteration create(
-			String tableName, AlterationMetaData meta,
+			String tableId, AlterationMetaData meta,
 			Optional<TableDesign> base, Optional<TableDesign> altered) {
 
-		Alteration result = Alteration.createEmpty(tableName, meta);
+		Alteration result = Alteration.createEmpty(tableId, meta);
 		if(!base.isPresent() && !altered.isPresent()) {
 			return result;
 		}

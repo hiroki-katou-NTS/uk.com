@@ -13,7 +13,6 @@ import org.junit.runner.RunWith;
 import lombok.val;
 import mockit.Tested;
 import mockit.integration.junit4.JMockit;
-import nts.arc.time.GeneralDateTime;
 import nts.uk.cnv.dom.td.alteration.Alteration;
 import nts.uk.cnv.dom.td.alteration.AlterationMetaData;
 import nts.uk.cnv.dom.td.alteration.AlterationType;
@@ -66,7 +65,7 @@ public class AlterationFactoryTest {
 
 		val result = factory.create(tableName, meta, Optional.empty(), base);
 
-		Assert.assertEquals(result, alt);
+		Assert.assertTrue(result.equalsExcludingId(alt));
 	}
 
 	@Test
@@ -76,7 +75,7 @@ public class AlterationFactoryTest {
 
 		val result = factory.create(tableName, meta, base, alterd);
 
-		Assert.assertEquals(result, alt);
+		Assert.assertTrue(result.equalsExcludingId(alt));
 	}
 
 	@Test
@@ -86,7 +85,7 @@ public class AlterationFactoryTest {
 
 		val result = factory.create(tableName, meta, base, alterd);
 
-		Assert.assertEquals(result, alt);
+		Assert.assertTrue(result.equalsExcludingId(alt));
 	}
 
 	@Test
@@ -95,14 +94,14 @@ public class AlterationFactoryTest {
 		Optional<TableDesign> alterd = createAltered(base, alt);
 
 		Assert.assertTrue(alterd.isPresent());
-		Optional<ColumnDesign> cd = alterd.get().getColumns().stream()
-				.filter(c -> c.getName().equals("ITEM_CD"))
+		Optional<Indexes> pk = alterd.get().getIndexes().stream()
+				.filter(idx -> idx.isPK())
 				.findFirst();
-		Assert.assertTrue(cd.isPresent() && cd.get().isPrimaryKey());
+		Assert.assertTrue(pk.isPresent() && pk.get().getColumns().contains("ITEM_CD"));
 
 		val result = factory.create(tableName, meta, base, alterd);
 
-		Assert.assertEquals(result, alt);
+		Assert.assertTrue(result.equalsExcludingId(alt));
 	}
 
 	@Test
@@ -111,14 +110,14 @@ public class AlterationFactoryTest {
 		Optional<TableDesign> alterd = createAltered(base, alt);
 
 		Assert.assertTrue(alterd.isPresent());
-		Optional<ColumnDesign> cd = alterd.get().getColumns().stream()
-				.filter(c -> c.getName().equals("ITEM_CD"))
+		Optional<Indexes> uk = alterd.get().getIndexes().stream()
+				.filter(idx -> idx.isUK())
 				.findFirst();
-		Assert.assertTrue(cd.isPresent() && cd.get().isUniqueKey());
+		Assert.assertTrue(uk.isPresent() && uk.get().getColumns().contains("ITEM_CD"));
 
 		val result = factory.create(tableName, meta, base, alterd);
 
-		Assert.assertEquals(result, alt);
+		Assert.assertTrue(result.equalsExcludingId(alt));
 	}
 
 	@Test
@@ -134,25 +133,25 @@ public class AlterationFactoryTest {
 
 		val result = factory.create(tableName, meta, base, alterd);
 
-		Assert.assertEquals(result, alt);
+		Assert.assertTrue(result.equalsExcludingId(alt));
 	}
 
 	@Test
 	public void test_RemoveTable() {
-		alt.getContents().add(new RemoveTable(tableName));
+		alt.getContents().add(new RemoveTable());
 		Optional<TableDesign> alterd = createAltered(base, alt);
 
 		Assert.assertFalse(alterd.isPresent());
 
 		val result = factory.create(tableName, meta, base, alterd);
 
-		Assert.assertEquals(result, alt);
+		Assert.assertTrue(result.equalsExcludingId(alt));
 	}
 
 	@Test
 	public void test_addColumn() {
 		DefineColumnType type = new DefineColumnType(DataType.BOOL, 0, 0, false, "", "");
-		ColumnDesign newColumn = new ColumnDesign("3", "COMFIRM_ATR", "確認区分", type, false, 0, false, 0, "", 3);
+		ColumnDesign newColumn = new ColumnDesign("3", "COMFIRM_ATR", "確認区分", type, "", 3);
 		alt.getContents().add(new AddColumn("3", newColumn));
 		Optional<TableDesign> alterd = createAltered(base, alt);
 
@@ -164,7 +163,7 @@ public class AlterationFactoryTest {
 
 		val result = factory.create(tableName, meta, base, alterd);
 
-		Assert.assertEquals(result, alt);
+		Assert.assertTrue(result.equalsExcludingId(alt));
 	}
 
 	@Test
@@ -191,7 +190,7 @@ public class AlterationFactoryTest {
 
 		val result = factory.create(tableName, meta, base, alterd);
 
-		Assert.assertEquals(result, alt);
+		Assert.assertTrue(result.equalsExcludingId(alt));
 	}
 
 	@Test
@@ -207,7 +206,7 @@ public class AlterationFactoryTest {
 
 		val result = factory.create(tableName, meta, base, alterd);
 
-		Assert.assertEquals(result, alt);
+		Assert.assertTrue(result.equalsExcludingId(alt));
 	}
 
 	@Test
@@ -223,7 +222,7 @@ public class AlterationFactoryTest {
 
 		val result = factory.create(tableName, meta, base, alterd);
 
-		Assert.assertEquals(result, alt);
+		Assert.assertTrue(result.equalsExcludingId(alt));
 	}
 
 	@Test
@@ -239,7 +238,7 @@ public class AlterationFactoryTest {
 
 		val result = factory.create(tableName, meta, base, alterd);
 
-		Assert.assertEquals(result, alt);
+		Assert.assertTrue(result.equalsExcludingId(alt));
 	}
 
 	@Test
@@ -255,14 +254,14 @@ public class AlterationFactoryTest {
 
 		val result = factory.create(tableName, meta, base, alterd);
 
-		Assert.assertEquals(result, alt);
+		Assert.assertTrue(result.equalsExcludingId(alt));
 	}
 
 	private Optional<TableDesign> createNewstSnapshot() {
 		return Optional.of(
 				new Snapshot(
 					"root",
-					GeneralDateTime.ymdhms(2021, 2, 26, 15, 30, 0),
+					"createfeature",
 					createDummy()
 				));
 	}
@@ -277,9 +276,9 @@ public class AlterationFactoryTest {
 		DefineColumnType sidType = new DefineColumnType(DataType.CHAR, 36, 0, false, "", "");
 		DefineColumnType ymdType = new DefineColumnType(DataType.DATE, 0, 0, false, "", "");
 		DefineColumnType itemCdType = new DefineColumnType(DataType.CHAR, 0, 0, false, "", "");
-		cols.add(new ColumnDesign("0", "SID", "社員ID", sidType, true, 1, false, 0, "", 0));
-		cols.add(new ColumnDesign("1", "YMD", "年月日", ymdType, true, 2, false, 0, "", 1));
-		cols.add(new ColumnDesign("2", "ITEM_CD", "項目コード", itemCdType, false, 0, false, 0, "", 2));
+		cols.add(new ColumnDesign("0", "SID", "社員ID", sidType, "", 0));
+		cols.add(new ColumnDesign("1", "YMD", "年月日", ymdType, "", 1));
+		cols.add(new ColumnDesign("2", "ITEM_CD", "項目コード", itemCdType, "", 2));
 		indexes.add(Indexes.createPk(new TableName(tableName), Arrays.asList("SID", "YMD"), true));
 		indexes.add(Indexes.createIndex("KRCDI_FOO_BAR", Arrays.asList("SID", "YMD"), false));
 

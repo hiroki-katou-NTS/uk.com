@@ -21,7 +21,14 @@ public class TableDesignBuilder {
 	public Map<String, ColumnDesignBuilder> columnBuilder;
 	public Map<String, String> columnName;
 
-	public boolean isRemoved;
+	public boolean isEmpty;
+
+	public TableDesignBuilder() {
+		this.indexes = new ArrayList<Indexes>();
+		this.columnBuilder = new HashMap<>();
+		this.columnName = new HashMap<>();
+		this.isEmpty = true;
+	}
 
 	public TableDesignBuilder(TableDesign base) {
 		this.id = base.getId();
@@ -37,12 +44,12 @@ public class TableDesignBuilder {
 		this.indexes = new ArrayList<Indexes>();
 		base.getIndexes().stream().forEach(idx -> this.indexes.add(idx));
 
-		this.isRemoved = false;
+		this.isEmpty = false;
 	}
 
 	public Optional<TableDesign> build() {
 
-		if (this.isRemoved) return Optional.empty();
+		if (this.isEmpty) return Optional.empty();
 
 		List<ColumnDesign> newColumns = new ArrayList<>();
 		this.columnBuilder.keySet().stream().forEach(col -> {
@@ -67,8 +74,8 @@ public class TableDesignBuilder {
 		return new TableDesignBuilder(base);
 	}
 
-	public TableDesignBuilder remove(String tableName) {
-		this.isRemoved = true;
+	public TableDesignBuilder remove() {
+		this.isEmpty = true;
 		return this;
 	}
 
@@ -103,17 +110,6 @@ public class TableDesignBuilder {
 				columnNames,
 				clustred
 			));
-		this.columnBuilder.keySet().forEach(columnId->{
-			this.columnBuilder.get(columnId).pk(false, 0);
-		});
-		columnNames.stream().forEach(columnName -> {
-			String columnId = this.columnName.entrySet().stream()
-				.filter(e -> columnName.endsWith(e.getValue()))
-				.map(e -> e.getKey())
-				.findFirst()
-				.get();
-			this.columnBuilder.get(columnId).pk(true, columnNames.indexOf(columnName));
-		});
 		return this;
 	}
 
@@ -135,17 +131,6 @@ public class TableDesignBuilder {
 				columnNames,
 				clustred
 			));
-		this.columnBuilder.keySet().forEach(columnId->{
-			this.columnBuilder.get(columnId).uk(false, 0);
-		});
-		columnNames.stream().forEach(columnName -> {
-			String columnId = this.columnName.entrySet().stream()
-					.filter(e -> columnName.endsWith(e.getValue()))
-					.map(e -> e.getKey())
-					.findFirst()
-					.get();
-			this.columnBuilder.get(columnId).uk(true, columnNames.indexOf(columnName));
-		});
 		return this;
 	}
 
@@ -234,7 +219,7 @@ public class TableDesignBuilder {
 	}
 
 	private void checkBeforeChangeTable() {
-		if (this.isRemoved) {
+		if (this.isEmpty) {
 			throw new BusinessException(new RawErrorMessage(this.name + "は存在しないため操作できません。"));
 		}
 	}

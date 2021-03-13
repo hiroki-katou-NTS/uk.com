@@ -30,18 +30,6 @@ public enum AlterationType {
 	TABLE_JPNAME_CHANGE(
 			ChangeTableJpName::create,
 			ChangeTableJpName::applicable),
-	PRIMARY_KEY_CHANGE(
-			ChangePK::create,
-			ChangePK::applicable),
-	UNIQUE_KEY_CHANGE(
-			ChangeUK::create,
-			ChangeUK::applicable),
-	INDEX_CHANGE(
-			ChangeIndex::create,
-			ChangeIndex::applicable),
-	TABLE_DROP(
-			RemoveTable::create,
-			RemoveTable::applicable),
 	COLUMN_ADD(
 			AddColumn::create,
 			AddColumn::applicable),
@@ -59,7 +47,19 @@ public enum AlterationType {
 			ChangeColumnComment::applicable),
 	COLUMN_DELETE(
 			RemoveColumn::create,
-			RemoveColumn::applicable);
+			RemoveColumn::applicable),
+	PRIMARY_KEY_CHANGE(
+			ChangePK::create,
+			ChangePK::applicable),
+	UNIQUE_KEY_CHANGE(
+			ChangeUK::create,
+			ChangeUK::applicable),
+	INDEX_CHANGE(
+			ChangeIndex::create,
+			ChangeIndex::applicable),
+	TABLE_DROP(
+			RemoveTable::create,
+			RemoveTable::applicable);
 
 	private BiFunction<Optional<TableDesign>, Optional<TableDesign>, List<AlterationContent>> content;
 	private BiFunction<Optional<TableDesign>, Optional<TableDesign>, Boolean> applicable;
@@ -76,5 +76,12 @@ public enum AlterationType {
 
 	public boolean applicable(Optional<TableDesign> base, Optional<TableDesign> altered) {
 		return this.applicable.apply(base, altered);
+	}
+
+	public boolean isAffectTableList() {
+		return (	this == AlterationType.TABLE_CREATE ||
+					this == AlterationType.TABLE_NAME_CHANGE ||
+					this == AlterationType.TABLE_JPNAME_CHANGE ||
+					this == AlterationType.TABLE_DROP );
 	}
 }

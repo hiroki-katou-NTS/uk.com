@@ -48,18 +48,6 @@ public class ScvmtUkColumnDesign extends JpaEntity implements Serializable {
 	@Column(name = "NULLABLE")
 	private int nullable;
 
-	@Column(name = "PRIMARY_KEY")
-	private int primaryKey;
-
-	@Column(name = "PRIMARY_KEY_SEQ")
-	private int primaryKeySeq;
-
-	@Column(name = "UNIQUE_KEY")
-	private int uniqueKey;
-
-	@Column(name = "UNIQUE_KEY_SEQ")
-	private int uniqueKeySeq;
-
 	@Column(name = "DEFAULT_VALUE")
 	private String defaultValue;
 
@@ -75,8 +63,8 @@ public class ScvmtUkColumnDesign extends JpaEntity implements Serializable {
 	@ManyToOne
     @PrimaryKeyJoinColumns({
     	@PrimaryKeyJoinColumn(name = "TABLE_ID", referencedColumnName = "TABLE_ID"),
-    	@PrimaryKeyJoinColumn(name = "FEATURE_ID", referencedColumnName = "FEATURE_ID"),
-    	@PrimaryKeyJoinColumn(name = "DATETIME", referencedColumnName = "DATETIME"),
+    	@PrimaryKeyJoinColumn(name = "SNAPSHOT_ID", referencedColumnName = "SNAPSHOT_ID"),
+    	@PrimaryKeyJoinColumn(name = "EVENT_ID", referencedColumnName = "EVENT_ID"),
     })
 	public ScvmtUkTableDesign tabledesign;
 
@@ -97,10 +85,6 @@ public class ScvmtUkColumnDesign extends JpaEntity implements Serializable {
 						(nullable == 1),
 						defaultValue,
 						check),
-				(primaryKey == 1),
-				primaryKeySeq,
-				(uniqueKey == 1),
-				uniqueKeySeq,
 				comment,
 				dispOrder);
 	}

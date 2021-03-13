@@ -6,24 +6,24 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.cnv.app.command.DeleteConversionRecordCommand;
-import nts.uk.cnv.app.command.DeleteConversionRecordCommandHandler;
-import nts.uk.cnv.app.command.DeleteConversionSourceCommandHandler;
-import nts.uk.cnv.app.command.RegistConversionCategoryCommand;
-import nts.uk.cnv.app.command.RegistConversionCategoryCommandHandler;
-import nts.uk.cnv.app.command.RegistConversionRecordCommand;
-import nts.uk.cnv.app.command.RegistConversionRecordCommandHandler;
-import nts.uk.cnv.app.command.RegistConversionSourceCommand;
-import nts.uk.cnv.app.command.RegistConversionSourceCommandHandler;
-import nts.uk.cnv.app.command.RegistConversionTableCommand;
-import nts.uk.cnv.app.command.RegistConversionTableCommandHandler;
-import nts.uk.cnv.app.command.SwapConversionRecordCommand;
-import nts.uk.cnv.app.command.SwapConversionRecordCommandHandler;
-import nts.uk.cnv.app.dto.AddSourceResult;
-import nts.uk.cnv.app.dto.FindConversionTableDto;
-import nts.uk.cnv.app.dto.FindConversionTableResult;
-import nts.uk.cnv.app.dto.GetCategoryTablesDto;
-import nts.uk.cnv.app.service.ConversionTableService;
+import nts.uk.cnv.app.cnv.command.DeleteConversionRecordCommand;
+import nts.uk.cnv.app.cnv.command.DeleteConversionRecordCommandHandler;
+import nts.uk.cnv.app.cnv.command.DeleteConversionSourceCommandHandler;
+import nts.uk.cnv.app.cnv.command.RegistConversionCategoryCommand;
+import nts.uk.cnv.app.cnv.command.RegistConversionCategoryCommandHandler;
+import nts.uk.cnv.app.cnv.command.RegistConversionRecordCommand;
+import nts.uk.cnv.app.cnv.command.RegistConversionRecordCommandHandler;
+import nts.uk.cnv.app.cnv.command.RegistConversionSourceCommand;
+import nts.uk.cnv.app.cnv.command.RegistConversionSourceCommandHandler;
+import nts.uk.cnv.app.cnv.command.RegistConversionTableCommand;
+import nts.uk.cnv.app.cnv.command.RegistConversionTableCommandHandler;
+import nts.uk.cnv.app.cnv.command.SwapConversionRecordCommand;
+import nts.uk.cnv.app.cnv.command.SwapConversionRecordCommandHandler;
+import nts.uk.cnv.app.cnv.dto.AddSourceResult;
+import nts.uk.cnv.app.cnv.dto.FindConversionTableDto;
+import nts.uk.cnv.app.cnv.dto.FindConversionTableResult;
+import nts.uk.cnv.app.cnv.dto.GetCategoryTablesDto;
+import nts.uk.cnv.app.cnv.service.ConversionTableService;
 
 @Path("cnv/conversiontable")
 @Produces("application/json")

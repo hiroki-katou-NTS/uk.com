@@ -12,11 +12,6 @@ public class ColumnDesignBuilder {
 
 	private boolean nullable;
 
-	private boolean primaryKey;
-	private int primaryKeySeq;
-	private boolean uniqueKey;
-	private int uniqueKeySeq;
-
 	private String defaultValue;
 	private String comment;
 
@@ -32,10 +27,6 @@ public class ColumnDesignBuilder {
 		this.maxLength = base.getMaxLength();
 		this.scale = base.getScale();
 		this.nullable = base.isNullable();
-		this.primaryKey = base.isPrimaryKey();
-		this.primaryKeySeq = base.getPrimaryKeySeq();
-		this.uniqueKey = base.isUniqueKey();
-		this.uniqueKeySeq = base.getUniqueKeySeq();
 		this.defaultValue = base.getDefaultValue();
 		this.comment = base.getComment();
 		this.check = base.getCheck();
@@ -54,10 +45,6 @@ public class ColumnDesignBuilder {
 						this.nullable,
 						this.defaultValue,
 						this.check),
-				this.primaryKey,
-				this.primaryKeySeq,
-				this.uniqueKey,
-				this.uniqueKeySeq,
 				this.comment,
 				this.dispOrder);
 	}
@@ -77,18 +64,6 @@ public class ColumnDesignBuilder {
 		this.maxLength = maxLength;
 		this.scale = scale;
 		this.nullable = nullable;
-		return this;
-	}
-
-	public ColumnDesignBuilder pk(boolean isPrimaryKey, int seq) {
-		this.primaryKey = isPrimaryKey;
-		this.primaryKeySeq = seq;
-		return this;
-	}
-
-	public ColumnDesignBuilder uk(boolean isUniqueKey, int seq) {
-		this.uniqueKey = isUniqueKey;
-		this.uniqueKeySeq = seq;
 		return this;
 	}
 
