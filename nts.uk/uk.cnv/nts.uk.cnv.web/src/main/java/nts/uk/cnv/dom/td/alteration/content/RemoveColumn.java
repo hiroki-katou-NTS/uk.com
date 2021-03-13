@@ -6,9 +6,9 @@ import java.util.Optional;
 
 import lombok.EqualsAndHashCode;
 import nts.uk.cnv.dom.td.alteration.AlterationType;
-import nts.uk.cnv.dom.td.tabledesign.ColumnDesign;
-import nts.uk.cnv.dom.td.tabledesign.TableDesign;
-import nts.uk.cnv.dom.td.tabledesign.TableDesignBuilder;
+import nts.uk.cnv.dom.td.schema.prospect.TableProspectBuilder;
+import nts.uk.cnv.dom.td.schema.tabledesign.ColumnDesign;
+import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
 
 @EqualsAndHashCode(callSuper= false)
 public class RemoveColumn extends AlterationContent {
@@ -19,7 +19,7 @@ public class RemoveColumn extends AlterationContent {
 		this.columnId = columnId;
 	}
 
-	public static List<AlterationContent> create(Optional<TableDesign> base, Optional<TableDesign> altered) {
+	public static List<AlterationContent> create(Optional<? extends TableDesign> base, Optional<TableDesign> altered) {
 		List<AlterationContent> retult = new ArrayList<>();
 		for(int i=0; i<base.get().getColumns().size(); i++) {
 			ColumnDesign baseCol = base.get().getColumns().get(i);
@@ -33,7 +33,7 @@ public class RemoveColumn extends AlterationContent {
 		return retult;
 	}
 
-	public static boolean applicable(Optional<TableDesign> base, Optional<TableDesign> altered) {
+	public static boolean applicable(Optional<? extends TableDesign> base, Optional<TableDesign> altered) {
 		if(!base.isPresent() || !altered.isPresent()) {
 			return false;
 		}
@@ -51,8 +51,9 @@ public class RemoveColumn extends AlterationContent {
 	}
 
 	@Override
-	public TableDesignBuilder apply(TableDesignBuilder builder) {
+	public TableProspectBuilder apply(String alterationId, TableProspectBuilder builder) {
 		return builder.removeColumn(
+				alterationId,
 				this.columnId);
 	}
 }

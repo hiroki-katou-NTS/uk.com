@@ -15,14 +15,16 @@ import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.cnv.dom.td.alteration.Alteration;
+import nts.uk.cnv.dom.td.alteration.AlterationFactory;
 import nts.uk.cnv.dom.td.alteration.AlterationMetaData;
+import nts.uk.cnv.dom.td.alteration.TableDesignService;
+import nts.uk.cnv.dom.td.schema.snapshot.Snapshot;
+import nts.uk.cnv.dom.td.schema.tabledesign.ColumnDesign;
+import nts.uk.cnv.dom.td.schema.tabledesign.DefineColumnType;
+import nts.uk.cnv.dom.td.schema.tabledesign.Indexes;
+import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
+import nts.uk.cnv.dom.td.schema.tabledesign.TableName;
 import nts.uk.cnv.dom.td.tabledefinetype.DataType;
-import nts.uk.cnv.dom.td.tabledesign.ColumnDesign;
-import nts.uk.cnv.dom.td.tabledesign.DefineColumnType;
-import nts.uk.cnv.dom.td.tabledesign.Indexes;
-import nts.uk.cnv.dom.td.tabledesign.Snapshot;
-import nts.uk.cnv.dom.td.tabledesign.TableDesign;
-import nts.uk.cnv.dom.td.tabledesign.TableName;
 
 @RunWith(JMockit.class)
 public class TableDesignServiceTest {
@@ -99,8 +101,8 @@ public class TableDesignServiceTest {
 				));
 	}
 
-	private Optional<TableDesign> createAltered(Optional<TableDesign> base, Alteration alt) {
-		TableDesign altered = base.get().applyAlteration(Arrays.asList(alt))
+	private Optional<TableDesign> createAltered(Snapshot ss, Alteration alt) {
+		TableDesign altered = ss.createTableProspect(Arrays.asList(alt))
 				.orElseThrow(() -> new BusinessException(new RawErrorMessage("変更がありません")));
 		return Optional.of(altered);
 	}

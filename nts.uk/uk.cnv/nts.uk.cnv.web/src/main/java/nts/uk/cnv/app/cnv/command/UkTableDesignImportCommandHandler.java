@@ -10,9 +10,9 @@ import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.tran.AtomTask;
+import nts.uk.cnv.dom.td.schema.snapshot.Snapshot;
+import nts.uk.cnv.dom.td.schema.tabledesign.UkTableDesignRepository;
 import nts.uk.cnv.dom.td.service.DDLImportService;
-import nts.uk.cnv.dom.td.tabledesign.Snapshot;
-import nts.uk.cnv.dom.td.tabledesign.UkTableDesignRepository;
 
 @Stateless
 public class UkTableDesignImportCommandHandler extends CommandHandler<UkTableDesignImportCommand> {

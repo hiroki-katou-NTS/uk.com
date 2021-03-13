@@ -7,6 +7,11 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
+import nts.uk.cnv.dom.td.schema.tabledesign.ColumnDesign;
+import nts.uk.cnv.dom.td.schema.tabledesign.DefineColumnType;
+import nts.uk.cnv.dom.td.schema.tabledesign.Indexes;
+import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
+import nts.uk.cnv.dom.td.schema.tabledesign.TableName;
 import nts.uk.cnv.dom.td.tabledefinetype.DataType;
 import nts.uk.cnv.dom.td.tabledefinetype.DatabaseSpec;
 import nts.uk.cnv.dom.td.tabledefinetype.databasetype.DatabaseType;

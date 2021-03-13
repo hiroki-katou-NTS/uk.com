@@ -6,10 +6,10 @@ import java.util.Optional;
 
 import lombok.EqualsAndHashCode;
 import nts.uk.cnv.dom.td.alteration.AlterationType;
-import nts.uk.cnv.dom.td.tabledesign.ColumnDesign;
-import nts.uk.cnv.dom.td.tabledesign.DefineColumnType;
-import nts.uk.cnv.dom.td.tabledesign.TableDesign;
-import nts.uk.cnv.dom.td.tabledesign.TableDesignBuilder;
+import nts.uk.cnv.dom.td.schema.prospect.TableProspectBuilder;
+import nts.uk.cnv.dom.td.schema.tabledesign.ColumnDesign;
+import nts.uk.cnv.dom.td.schema.tabledesign.DefineColumnType;
+import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
 
 @EqualsAndHashCode(callSuper= false)
 public class ChangeColumnType extends AlterationContent {
@@ -22,7 +22,7 @@ public class ChangeColumnType extends AlterationContent {
 		this.afterType = afterType;
 	}
 
-	public static List<AlterationContent> create(Optional<TableDesign> base, Optional<TableDesign> altered) {
+	public static List<AlterationContent> create(Optional<? extends TableDesign> base, Optional<TableDesign> altered) {
 		List<AlterationContent> result = new ArrayList<>();
 		for(int i=0; i<altered.get().getColumns().size(); i++) {
 			ColumnDesign alterdCol = altered.get().getColumns().get(i);
@@ -45,7 +45,7 @@ public class ChangeColumnType extends AlterationContent {
 		return result;
 	}
 
-	public static boolean applicable(Optional<TableDesign> base, Optional<TableDesign> altered) {
+	public static boolean applicable(Optional<? extends TableDesign> base, Optional<TableDesign> altered) {
 		if(!base.isPresent() || !altered.isPresent()) {
 			return false;
 		}
@@ -62,8 +62,9 @@ public class ChangeColumnType extends AlterationContent {
 	}
 
 	@Override
-	public TableDesignBuilder apply(TableDesignBuilder builder) {
+	public TableProspectBuilder apply(String alterationId, TableProspectBuilder builder) {
 		return builder.columnType(
+				alterationId,
 				this.columnId,
 				this.afterType.getType(),
 				this.afterType.getLength(),

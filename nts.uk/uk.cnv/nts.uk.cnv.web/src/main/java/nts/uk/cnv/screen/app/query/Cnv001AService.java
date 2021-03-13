@@ -8,7 +8,7 @@ import javax.inject.Inject;
 
 import nts.uk.cnv.dom.cnv.conversiontable.ConversionRecordRepository;
 import nts.uk.cnv.dom.cnv.conversiontable.ConversionSourcesRepository;
-import nts.uk.cnv.dom.td.tabledesign.ErpTableDesignRepository;
+import nts.uk.cnv.dom.td.schema.tabledesign.ErpTableDesignRepository;
 import nts.uk.cnv.screen.app.query.dto.Cnv001ALoadDataDto;
 import nts.uk.cnv.screen.app.query.dto.RecordDto;
 import nts.uk.cnv.screen.app.query.dto.SourceDto;;

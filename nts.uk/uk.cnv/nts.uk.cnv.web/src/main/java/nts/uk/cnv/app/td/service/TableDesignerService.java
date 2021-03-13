@@ -39,15 +39,16 @@ import nts.uk.cnv.dom.cnv.conversiontable.ConversionTableRepository;
 import nts.uk.cnv.dom.cnv.conversiontable.OneColumnConversion;
 import nts.uk.cnv.dom.td.alteration.Alteration;
 import nts.uk.cnv.dom.td.alteration.AlterationRepository;
+import nts.uk.cnv.dom.td.schema.prospect.TableProspect;
+import nts.uk.cnv.dom.td.schema.prospect.TableProspectBuilder;
+import nts.uk.cnv.dom.td.schema.snapshot.SnapshotRepository;
+import nts.uk.cnv.dom.td.schema.tabledesign.ErpTableDesignRepository;
+import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
+import nts.uk.cnv.dom.td.schema.tabledesign.UkTableDesignRepository;
 import nts.uk.cnv.dom.td.service.ExportDdlService;
 import nts.uk.cnv.dom.td.service.ExportDdlServiceResult;
 import nts.uk.cnv.dom.td.tabledefinetype.UkDataType;
 import nts.uk.cnv.dom.td.tabledefinetype.databasetype.SqlServerSpec;
-import nts.uk.cnv.dom.td.tabledesign.ErpTableDesignRepository;
-import nts.uk.cnv.dom.td.tabledesign.SnapshotRepository;
-import nts.uk.cnv.dom.td.tabledesign.TableDesign;
-import nts.uk.cnv.dom.td.tabledesign.TableDesignBuilder;
-import nts.uk.cnv.dom.td.tabledesign.UkTableDesignRepository;
 import nts.uk.cnv.ws.table.TableInfoDto;
 
 @Stateless
@@ -415,14 +416,14 @@ public class TableDesignerService {
 
 		altarations.keySet().stream()
 			.forEach(tableId -> {
-				TableDesignBuilder builder = tableDesignList.containsKey(tableId)
-						? new TableDesignBuilder(tableDesignList.get(tableId))
-						: new TableDesignBuilder();
+				TableProspectBuilder builder = tableDesignList.containsKey(tableId)
+						? new TableProspectBuilder(tableDesignList.get(tableId))
+						: new TableProspectBuilder();
 				altarations.get(tableId).stream()
 					.forEach(alt -> {
 						alt.apply(builder);
 					});
-				Optional<TableDesign> alterd = builder.build();
+				Optional<TableProspect> alterd = builder.build();
 				if(alterd.isPresent()) {
 					tableDesignList.put(tableId, alterd.get());
 				}

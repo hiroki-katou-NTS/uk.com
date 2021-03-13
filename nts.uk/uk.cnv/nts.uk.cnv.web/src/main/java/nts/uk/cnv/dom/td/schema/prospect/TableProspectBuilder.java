@@ -1,4 +1,4 @@
-package nts.uk.cnv.dom.td.tabledesign;
+package nts.uk.cnv.dom.td.schema.prospect;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,9 +9,13 @@ import java.util.stream.Collectors;
 
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
+import nts.uk.cnv.dom.td.schema.tabledesign.ColumnDesign;
+import nts.uk.cnv.dom.td.schema.tabledesign.Indexes;
+import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
+import nts.uk.cnv.dom.td.schema.tabledesign.TableName;
 import nts.uk.cnv.dom.td.tabledefinetype.DataType;
 
-public class TableDesignBuilder {
+public class TableProspectBuilder {
 	private String id;
 	private String name;
 	private String jpName;
@@ -23,14 +27,17 @@ public class TableDesignBuilder {
 
 	public boolean isEmpty;
 
-	public TableDesignBuilder() {
+	// 最後に適用されたalterationId
+	public String alterationId = "";
+
+	public TableProspectBuilder() {
 		this.indexes = new ArrayList<Indexes>();
 		this.columnBuilder = new HashMap<>();
 		this.columnName = new HashMap<>();
 		this.isEmpty = true;
 	}
 
-	public TableDesignBuilder(TableDesign base) {
+	public TableProspectBuilder(TableDesign base) {
 		this.id = base.getId();
 		this.name = base.getName();
 		this.jpName = base.getJpName();
@@ -47,7 +54,7 @@ public class TableDesignBuilder {
 		this.isEmpty = false;
 	}
 
-	public Optional<TableDesign> build() {
+	public Optional<TableProspect> build() {
 
 		if (this.isEmpty) return Optional.empty();
 
@@ -61,40 +68,50 @@ public class TableDesignBuilder {
 			newIndexes.add(idx);
 		});
 
-		return Optional.of(new TableDesign(
-				this.id,
-				this.name,
-				this.jpName,
-				newColumns,
-				newIndexes
-			));
+		return Optional.of(
+				new TableProspect(
+					alterationId,
+					new TableDesign(
+						this.id,
+						this.name,
+						this.jpName,
+						newColumns,
+						newIndexes)
+				)
+			);
 	}
 
-	public TableDesignBuilder add(TableDesign base) {
-		return new TableDesignBuilder(base);
+	public TableProspectBuilder add(String alterationId, TableDesign base) {
+		this.alterationId = alterationId;
+		this.isEmpty = false;
+		return new TableProspectBuilder(base);
 	}
 
-	public TableDesignBuilder remove() {
+	public TableProspectBuilder remove(String alterationId) {
+		this.alterationId = alterationId;
 		this.isEmpty = true;
 		return this;
 	}
 
-	public TableDesignBuilder tableName(String name) {
+	public TableProspectBuilder tableName(String alterationId, String name) {
 		checkBeforeChangeTable();
+		this.alterationId = alterationId;
 
 		this.name = name;
 		return this;
 	}
 
-	public TableDesignBuilder jpName(String jpName) {
+	public TableProspectBuilder jpName(String alterationId, String jpName) {
 		checkBeforeChangeTable();
+		this.alterationId = alterationId;
 
 		this.jpName = jpName;
 		return this;
 	}
 
-	public TableDesignBuilder pk(List<String> columnNames, boolean clustred) {
+	public TableProspectBuilder pk(String alterationId, List<String> columnNames, boolean clustred) {
 		checkBeforeChangeTable();
+		this.alterationId = alterationId;
 
 		List<String> unMatchColumn = columnNames.stream()
 			.filter(colName -> !this.columnName.values().contains(colName))
@@ -113,8 +130,9 @@ public class TableDesignBuilder {
 		return this;
 	}
 
-	public TableDesignBuilder uk(String ukName, List<String> columnNames, boolean clustred) {
+	public TableProspectBuilder uk(String alterationId, String ukName, List<String> columnNames, boolean clustred) {
 		checkBeforeChangeTable();
+		this.alterationId = alterationId;
 
 		List<String> unMatchColumn = columnNames.stream()
 			.filter(colName -> !this.columnName.values().contains(colName))
@@ -134,8 +152,9 @@ public class TableDesignBuilder {
 		return this;
 	}
 
-	public TableDesignBuilder index(String indexName, List<String> columnNames, boolean clustred) {
+	public TableProspectBuilder index(String alterationId, String indexName, List<String> columnNames, boolean clustred) {
 		checkBeforeChangeTable();
+		this.alterationId = alterationId;
 
 		this.indexes.removeIf(idx -> idx.isIndex() && idx.getName().equals(indexName));
 		this.indexes.add(
@@ -147,8 +166,10 @@ public class TableDesignBuilder {
 		return this;
 	}
 
-	public TableDesignBuilder addColumn(String columnId, ColumnDesign column) {
+	public TableProspectBuilder addColumn(String alterationId, String columnId, ColumnDesign column) {
 		checkBeforeChangeTable();
+		this.alterationId = alterationId;
+
 		if(this.columnName.containsValue(column.getName())) {
 			throw new BusinessException(new RawErrorMessage(this.name + "テーブルの" + column.getName() + "列はすでに存在しているため追加できません。"));
 		}
@@ -158,8 +179,9 @@ public class TableDesignBuilder {
 		return this;
 	}
 
-	public TableDesignBuilder columnName(String columnId, String afterName) {
+	public TableProspectBuilder columnName(String alterationId, String columnId, String afterName) {
 		checkBeforeChangeColumn(columnId);
+		this.alterationId = alterationId;
 
 		if(this.columnName.containsValue(afterName)) {
 			throw new BusinessException(new RawErrorMessage(this.name + "テーブルの" + afterName + "列はすでに存在しているため変更できません。"));
@@ -170,29 +192,33 @@ public class TableDesignBuilder {
 		return this;
 	}
 
-	public TableDesignBuilder columnJpName(String columnId, String jpName) {
+	public TableProspectBuilder columnJpName(String alterationId, String columnId, String jpName) {
 		checkBeforeChangeColumn(columnId);
+		this.alterationId = alterationId;
 
 		this.columnBuilder.get(columnId).jpName(jpName);
 		return this;
 	}
 
-	public TableDesignBuilder columnType(String columnId, DataType type, int maxLength, int scale, boolean nullable) {
+	public TableProspectBuilder columnType(String alterationId, String columnId, DataType type, int maxLength, int scale, boolean nullable) {
 		checkBeforeChangeColumn(columnId);
+		this.alterationId = alterationId;
 
 		this.columnBuilder.get(columnId).type(type, maxLength, scale, nullable);
 		return this;
 	}
 
-	public TableDesignBuilder columnComment(String columnId, String comment) {
+	public TableProspectBuilder columnComment(String alterationId, String columnId, String comment) {
 		checkBeforeChangeColumn(columnId);
+		this.alterationId = alterationId;
 
 		this.columnBuilder.get(columnId).comment(comment);
 		return this;
 	}
 
-	public TableDesignBuilder removeColumn(String columnId) {
+	public TableProspectBuilder removeColumn(String alterationId, String columnId) {
 		checkBeforeChangeTable();
+		this.alterationId = alterationId;
 
 		String colName = this.columnName.get(columnId);
 		Optional<Indexes> pk = this.indexes.stream()

@@ -7,9 +7,9 @@ import java.util.stream.Collectors;
 
 import lombok.EqualsAndHashCode;
 import nts.uk.cnv.dom.td.alteration.AlterationType;
-import nts.uk.cnv.dom.td.tabledesign.Indexes;
-import nts.uk.cnv.dom.td.tabledesign.TableDesign;
-import nts.uk.cnv.dom.td.tabledesign.TableDesignBuilder;
+import nts.uk.cnv.dom.td.schema.prospect.TableProspectBuilder;
+import nts.uk.cnv.dom.td.schema.tabledesign.Indexes;
+import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
 
 @EqualsAndHashCode(callSuper= false)
 public class ChangeUK extends AlterationContent {
@@ -24,13 +24,13 @@ public class ChangeUK extends AlterationContent {
 		this.clustred = clustred;
 	}
 
-	public static List<AlterationContent> create(Optional<TableDesign> base, Optional<TableDesign> altered) {
+	public static List<AlterationContent> create(Optional<? extends TableDesign> base, Optional<TableDesign> altered) {
 		Indexes uk = altered.get().getIndexes().stream()
 			.filter(idx -> idx.isUK()).findFirst().get();
 		return Arrays.asList(new ChangeUK(uk.getName(), uk.getColumns(), uk.isClustered()));
 	}
 
-	public static boolean applicable(Optional<TableDesign> base, Optional<TableDesign> altered) {
+	public static boolean applicable(Optional<? extends TableDesign> base, Optional<TableDesign> altered) {
 		if(!base.isPresent() || !altered.isPresent()) {
 			return false;
 		}
@@ -58,7 +58,7 @@ public class ChangeUK extends AlterationContent {
 	}
 
 	@Override
-	public TableDesignBuilder apply(TableDesignBuilder builder) {
-		return builder.uk(this.name, this.columnNames, this.clustred);
+	public TableProspectBuilder apply(String alterationId, TableProspectBuilder builder) {
+		return builder.uk(alterationId, this.name, this.columnNames, this.clustred);
 	}
 }

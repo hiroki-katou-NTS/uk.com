@@ -8,10 +8,10 @@ import javax.ejb.Stateless;
 
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
+import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
 import nts.uk.cnv.dom.td.tabledefinetype.TableDefineType;
 import nts.uk.cnv.dom.td.tabledefinetype.UkDataType;
 import nts.uk.cnv.dom.td.tabledefinetype.databasetype.DatabaseType;
-import nts.uk.cnv.dom.td.tabledesign.TableDesign;
 
 @Stateless
 public class ExportDdlService {

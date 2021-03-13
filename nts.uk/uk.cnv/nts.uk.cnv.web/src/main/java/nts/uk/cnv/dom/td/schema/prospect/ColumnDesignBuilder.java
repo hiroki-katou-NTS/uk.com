@@ -1,5 +1,7 @@
-package nts.uk.cnv.dom.td.tabledesign;
+package nts.uk.cnv.dom.td.schema.prospect;
 
+import nts.uk.cnv.dom.td.schema.tabledesign.ColumnDesign;
+import nts.uk.cnv.dom.td.schema.tabledesign.DefineColumnType;
 import nts.uk.cnv.dom.td.tabledefinetype.DataType;
 
 public class ColumnDesignBuilder {

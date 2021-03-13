@@ -1,14 +1,12 @@
-package nts.uk.cnv.dom.td.tabledesign;
+package nts.uk.cnv.dom.td.schema.tabledesign;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.cnv.dom.constants.Constants;
-import nts.uk.cnv.dom.td.alteration.Alteration;
 import nts.uk.cnv.dom.td.tabledefinetype.TableDefineType;
 
 @AllArgsConstructor
@@ -29,20 +27,20 @@ public class TableDesign implements Cloneable {
 		return createTableSql(defineType, true, true);
 	}
 
-	/**
-	 * 変更を適用する
-	 * @param altarations 適用する変更履歴のリスト
-	 * @return 適用後のテーブル定義。テーブルが削除された場合はempty
-	 */
-	public Optional<TableDesign> applyAlteration(List<Alteration> altarations) {
-		TableDesignBuilder builder = new TableDesignBuilder(this);
-
-		altarations.stream().forEach(alt ->{
-			alt.apply(builder);
-		});
-
-		return builder.build();
-	}
+//	/**
+//	 * 変更を適用する
+//	 * @param altarations 適用する変更履歴のリスト
+//	 * @return 適用後のテーブル定義。テーブルが削除された場合はempty
+//	 */
+//	public Optional<TableProspect> applyAlteration(List<Alteration> altarations) {
+//		TableProspectBuilder builder = new TableProspectBuilder(this);
+//
+//		altarations.stream().forEach(alt ->{
+//			alt.apply(builder);
+//		});
+//
+//		return builder.build();
+//	}
 
 	private String createTableSql(TableDefineType define, boolean withComment, boolean withRLS) {
 

@@ -1,4 +1,4 @@
-package nts.uk.cnv.dom.td.tabledesign;
+package nts.uk.cnv.dom.td.schema.tabledesign;
 
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;

@@ -9,10 +9,10 @@ import java.util.stream.Collectors;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
-import nts.uk.cnv.dom.td.tabledesign.ColumnDesign;
-import nts.uk.cnv.dom.td.tabledesign.ErpTableDesignRepository;
-import nts.uk.cnv.dom.td.tabledesign.Snapshot;
-import nts.uk.cnv.dom.td.tabledesign.TableDesign;
+import nts.uk.cnv.dom.td.schema.snapshot.Snapshot;
+import nts.uk.cnv.dom.td.schema.tabledesign.ColumnDesign;
+import nts.uk.cnv.dom.td.schema.tabledesign.ErpTableDesignRepository;
+import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
 import nts.uk.cnv.infra.td.entity.erptabledesign.ScvmtErpColumnDesign;
 import nts.uk.cnv.infra.td.entity.erptabledesign.ScvmtErpColumnDesignPk;
 import nts.uk.cnv.infra.td.entity.erptabledesign.ScvmtErpTableDesign;

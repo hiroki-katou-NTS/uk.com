@@ -6,9 +6,9 @@ import java.util.Optional;
 
 import lombok.EqualsAndHashCode;
 import nts.uk.cnv.dom.td.alteration.AlterationType;
-import nts.uk.cnv.dom.td.tabledesign.Indexes;
-import nts.uk.cnv.dom.td.tabledesign.TableDesign;
-import nts.uk.cnv.dom.td.tabledesign.TableDesignBuilder;
+import nts.uk.cnv.dom.td.schema.prospect.TableProspectBuilder;
+import nts.uk.cnv.dom.td.schema.tabledesign.Indexes;
+import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
 
 @EqualsAndHashCode(callSuper= false)
 public class ChangePK extends AlterationContent {
@@ -21,13 +21,13 @@ public class ChangePK extends AlterationContent {
 		this.clustred = clustred;
 	}
 
-	public static List<AlterationContent> create(Optional<TableDesign> base, Optional<TableDesign> altered) {
+	public static List<AlterationContent> create(Optional<? extends TableDesign> base, Optional<TableDesign> altered) {
 		Indexes pk = altered.get().getIndexes().stream()
 			.filter(idx -> idx.isPK()).findFirst().get();
 		return Arrays.asList(new ChangePK(pk.getColumns(), pk.isClustered()));
 	}
 
-	public static boolean applicable(Optional<TableDesign> base, Optional<TableDesign> altered) {
+	public static boolean applicable(Optional<? extends TableDesign> base, Optional<TableDesign> altered) {
 		if(!base.isPresent() || !altered.isPresent()) {
 			return false;
 		}
@@ -46,7 +46,7 @@ public class ChangePK extends AlterationContent {
 	}
 
 	@Override
-	public TableDesignBuilder apply(TableDesignBuilder builder) {
-		return builder.pk(this.columnNames, this.clustred);
+	public TableProspectBuilder apply(String alterationId, TableProspectBuilder builder) {
+		return builder.pk(alterationId, this.columnNames, this.clustred);
 	}
 }

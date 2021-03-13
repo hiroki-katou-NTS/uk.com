@@ -8,7 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.cnv.dom.td.alteration.content.AlterationContent;
-import nts.uk.cnv.dom.td.tabledesign.TableDesignBuilder;
+import nts.uk.cnv.dom.td.schema.prospect.TableProspectBuilder;
 
 /**
  * 変更
@@ -31,9 +31,9 @@ public class Alteration implements Comparable<Alteration>{
 				new ArrayList<>());
 	}
 
-	public void apply(TableDesignBuilder builder) {
+	public void apply(TableProspectBuilder builder) {
 		contents.stream().forEach(c -> {
-			c.apply(builder);
+			c.apply(this.alterId, builder);
 		});
 	}
 

@@ -16,12 +16,12 @@ import nts.arc.task.tran.AtomTask;
 import nts.uk.cnv.dom.td.alteration.Alteration;
 import nts.uk.cnv.dom.td.alteration.AlterationMetaData;
 import nts.uk.cnv.dom.td.alteration.AlterationRepository;
-import nts.uk.cnv.dom.td.service.TableDesignService;
-import nts.uk.cnv.dom.td.tabledesign.ColumnDesign;
-import nts.uk.cnv.dom.td.tabledesign.DefineColumnType;
-import nts.uk.cnv.dom.td.tabledesign.SnapshotRepository;
-import nts.uk.cnv.dom.td.tabledesign.TableDesign;
-import nts.uk.cnv.dom.td.tabledesign.TableDesignBuilder;
+import nts.uk.cnv.dom.td.alteration.TableDesignService;
+import nts.uk.cnv.dom.td.schema.snapshot.Snapshot;
+import nts.uk.cnv.dom.td.schema.snapshot.SnapshotRepository;
+import nts.uk.cnv.dom.td.schema.tabledesign.ColumnDesign;
+import nts.uk.cnv.dom.td.schema.tabledesign.DefineColumnType;
+import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
 
 @Stateless
 public class TableDefinitionRegistCommandHandler extends CommandHandler<TableDefinitionRegistCommand> {
@@ -92,18 +92,13 @@ public class TableDefinitionRegistCommandHandler extends CommandHandler<TableDef
 		private final SnapshotRepository snapshotRepo;
 
 		@Override
-		public Optional<TableDesign> getNewest(String tableId) {
-			Optional<TableDesign> ss =snapshotRepo.getNewest(tableId);
-			List<Alteration> alterationList = alterationRepo.getUnaccepted(tableId);
-			TableDesignBuilder builder = ss.isPresent()
-					? new TableDesignBuilder(ss.get())
-					: new TableDesignBuilder();
+		public Snapshot getNewestSnapshot(String tableId) {
+			return snapshotRepo.getNewest(tableId);
+		}
 
-			alterationList.stream().forEach(alt ->{
-				alt.apply(builder);
-			});
-
-			return builder.build();
+		@Override
+		public List<Alteration> getUnaccepted(String tableId) {
+			return alterationRepo.getUnaccepted(tableId);
 		}
 
 		@Override

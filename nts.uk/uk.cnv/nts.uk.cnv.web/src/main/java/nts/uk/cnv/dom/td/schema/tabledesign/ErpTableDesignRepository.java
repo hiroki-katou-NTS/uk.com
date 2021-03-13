@@ -1,7 +1,9 @@
-package nts.uk.cnv.dom.td.tabledesign;
+package nts.uk.cnv.dom.td.schema.tabledesign;
 
 import java.util.List;
 import java.util.Optional;
+
+import nts.uk.cnv.dom.td.schema.snapshot.Snapshot;
 
 public interface ErpTableDesignRepository {
 
