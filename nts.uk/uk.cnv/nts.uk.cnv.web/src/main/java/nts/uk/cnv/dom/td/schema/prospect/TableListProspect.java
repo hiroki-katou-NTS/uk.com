@@ -2,13 +2,19 @@ package nts.uk.cnv.dom.td.schema.prospect;
 
 import java.util.List;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Value;
+import nts.uk.cnv.dom.td.schema.TableIdentity;
 
-@Getter
-@AllArgsConstructor
+/**
+ * テーブル一覧のプロスペクト
+ */
+@Value
 public class TableListProspect {
-	String alterationId;
-	List<TableListItem> tableList;
+	
+	/** 最後に適用したorutaのID */
+	String lastAlterId;
+	
+	/** テーブルリスト */
+	List<TableIdentity> tables;
 
 }

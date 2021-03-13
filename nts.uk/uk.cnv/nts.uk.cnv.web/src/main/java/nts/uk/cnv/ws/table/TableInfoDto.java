@@ -10,5 +10,4 @@ public class TableInfoDto {
 
 	String id;
 	String name;
-	String nameJp;
 }

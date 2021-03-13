@@ -408,8 +408,9 @@ public class TableDesignerService {
 	}
 
 	public List<TableInfoDto> getProspect() {
-		Map<String, TableDesign> tableDesignList = ssRepo.getNewestAll().stream()
-				.collect(Collectors.toMap(td -> td.getId(), td -> td));
+//		Map<String, TableDesign> tableDesignList = ssRepo.getNewestAll().stream()
+//				.collect(Collectors.toMap(td -> td.getId(), td -> td));
+		Map<String, TableDesign> tableDesignList = null;
 		// テーブル追加・削除・テーブル名変更のおるたのみ抽出
 		Map<String, List<Alteration>> altarations = alterationRepo.getTableListChange().stream()
 				.collect(Collectors.groupingBy(alt -> alt.getTableId()));
@@ -435,8 +436,7 @@ public class TableDesignerService {
 		return tableDesignList.entrySet().stream()
 				.map(es -> new TableInfoDto(
 						es.getValue().getId(),
-						es.getValue().getName(),
-						es.getValue().getJpName()))
+						es.getValue().getName()))
 				.collect(toList());
 	}
 

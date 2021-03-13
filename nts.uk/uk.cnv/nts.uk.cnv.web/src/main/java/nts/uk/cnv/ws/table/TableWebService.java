@@ -13,7 +13,9 @@ import javax.ws.rs.core.MediaType;
 
 import nts.uk.cnv.app.td.command.TableDefinitionRegistCommand;
 import nts.uk.cnv.app.td.command.TableDefinitionRegistCommandHandler;
+import nts.uk.cnv.app.td.schema.prospect.TableListProspectQuery;
 import nts.uk.cnv.app.td.service.TableDesignerService;
+import nts.uk.cnv.dom.td.schema.prospect.TableListProspect;
 import nts.uk.cnv.dom.td.tabledefinetype.DataType;
 import nts.uk.cnv.ws.table.column.ColumnDefinitionDto;
 import nts.uk.cnv.ws.table.column.ColumnTypeDefinitionDto;
@@ -27,11 +29,14 @@ public class TableWebService {
 
 	@Inject
 	TableDefinitionRegistCommandHandler handler;
+	
+	@Inject
+	TableListProspectQuery tableListProspect;
 
 	@GET
 	@Path("list")
-	public List<TableInfoDto> list() {
-		return tdService.getProspect();
+	public TableListProspect list() {
+		return tableListProspect.get();
 	}
 
 	@GET
@@ -51,7 +56,7 @@ public class TableWebService {
 						new ColumnTypeDefinitionDto(true, DataType.VARCHAR, 17, 0, "", ""),
 						"")
 				);
-		return new TableDefinitionDto(new TableInfoDto("", name, ""), columns);
+		return new TableDefinitionDto(new TableInfoDto("", name), columns);
 	}
 
 	@POST

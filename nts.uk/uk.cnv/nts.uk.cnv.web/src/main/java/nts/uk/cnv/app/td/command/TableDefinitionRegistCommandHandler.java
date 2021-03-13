@@ -79,7 +79,7 @@ public class TableDefinitionRegistCommandHandler extends CommandHandler<TableDef
 		TableDesign td = new TableDesign(
 				tableInfo.getId(),
 				tableInfo.getName(),
-				tableInfo.getNameJp(),
+				"",
 				cds,
 				new ArrayList<>()
 			);
@@ -93,7 +93,8 @@ public class TableDefinitionRegistCommandHandler extends CommandHandler<TableDef
 
 		@Override
 		public Snapshot getNewestSnapshot(String tableId) {
-			return snapshotRepo.getNewest(tableId);
+			return null;
+			//return snapshotRepo.getNewest(tableId);
 		}
 
 		@Override

@@ -1,40 +1,45 @@
 package nts.uk.cnv.infra.td.repository;
 
-import java.util.List;
+import java.util.Optional;
 
+import javax.ejb.Stateless;
+
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.cnv.dom.td.schema.snapshot.Snapshot;
+import nts.arc.time.GeneralDateTime;
+import nts.uk.cnv.dom.td.schema.TableIdentity;
+import nts.uk.cnv.dom.td.schema.snapshot.SchemaSnapshot;
 import nts.uk.cnv.dom.td.schema.snapshot.SnapshotRepository;
-import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
+import nts.uk.cnv.dom.td.schema.snapshot.TableListSnapshot;
 
+@Stateless
 public class JpaSnapshotRepository extends JpaRepository implements SnapshotRepository {
 
 	@Override
-	public Snapshot getNewest(String tableId) {
-//		String sql = "SELECT td FROM ScvmtUkTableDesign td"
-//			+ " WHERE td.pk.tableId = :tableId"
-//			+ " ORDER BY td.";
-//		list = this.queryProxy().query(sql, ScvmtUkTableDesign.class)
-//				.setParameter("tableId", tableId)
-//				.getList(td -> td.toDomain());
-//
-//
-//		Map<String, List<ScvmtUkTableDesign>> map = list.stream()
-//				.collect(Collectors.groupingBy(rec -> rec.pk.getTableId()));
-//
-//		List<TableDesign> result = map.values().stream()
-//			.map(rec -> rec.stream().findFirst().get().toDomain())
-//			.collect(Collectors.toList());
-//
-//		return result;
-		// TODO 自動生成されたメソッド・スタブ
-		return new Snapshot();
+	public Optional<SchemaSnapshot> getSchemaLatest() {
+		
+		val schema = new SchemaSnapshot(
+				"B8167B60-BFF3-47CD-9013-2A11DD6A8A02",
+				GeneralDateTime.ymdhms(2021, 1, 7, 0, 0, 0),
+				"");
+		
+		return Optional.of(schema);
 	}
 
 	@Override
-	public List<TableDesign> getNewestAll() {
-		// TODO 自動生成されたメソッド・スタブ
-		return null;
+	public TableListSnapshot getTableList(String snapshotId) {
+
+		String sql = "select * from SCVMT_UK_TABLE_DESIGN"
+				+ " where SNAPSHOT_ID = @ssid";
+		
+		val tables = this.jdbcProxy()
+				.query(sql)
+				.paramString("ssid", snapshotId)
+				.getList(rec -> new TableIdentity(
+						rec.getString("TABLE_ID"),
+						rec.getString("NAME")));
+		
+		return new TableListSnapshot(snapshotId, tables);
 	}
 
 }
