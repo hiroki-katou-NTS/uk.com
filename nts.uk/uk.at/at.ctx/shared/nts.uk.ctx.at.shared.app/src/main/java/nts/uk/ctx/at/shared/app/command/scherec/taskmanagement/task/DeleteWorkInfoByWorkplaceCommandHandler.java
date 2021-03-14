@@ -19,7 +19,7 @@ public class DeleteWorkInfoByWorkplaceCommandHandler extends CommandHandler<Dele
     @Override
     protected void handle(CommandHandlerContext<DeleteWorkInfoByWorkplaceCommand> commandHandlerContext) {
         val command = commandHandlerContext.getCommand();
-        val cid = command.getCompanyId()!=null?command.getCompanyId(): AppContexts.user().companyId();
-        narrowingRepository.delete(cid,command.getWorkplaceId());
+        val cid = AppContexts.user().companyId();
+        narrowingRepository.delete(cid,command.getWorkPlaceId());
     }
 }

@@ -40,7 +40,7 @@ public class ChangeWorkInfoByWorkplaceCommandHandler extends CommandHandler<Chan
             val item = mapFrameAndCode.getOrDefault(e, Collections.emptyList());
             List<TaskCode> taskCodeList = item.stream().map(TaskCode::new).collect(Collectors.toList());
             val taskFrameNo = new TaskFrameNo(e);
-            val wplId = command.getWorkplaceId();
+            val wplId = command.getWorkPlaceId();
             if (item.isEmpty()) {
                 narrowingRepository.delete(cid,wplId, taskFrameNo);
             } else {

@@ -7,10 +7,7 @@ import nts.uk.ctx.at.shared.dom.scherec.taskmanagement.taskassign.taskassignwork
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,6 +31,11 @@ public class KsrmtTaskAssignWkp extends ContractUkJpaEntity implements Serializa
     @Override
     protected Object getKey() {
         return pk;
+    }
+
+    @PreUpdate
+    private void setUpdateContractInfo() {
+        this.contractCd = AppContexts.user().contractCode();
     }
 
     public static List<KsrmtTaskAssignWkp> toEntitys(NarrowingDownTaskByWorkplace domain) {

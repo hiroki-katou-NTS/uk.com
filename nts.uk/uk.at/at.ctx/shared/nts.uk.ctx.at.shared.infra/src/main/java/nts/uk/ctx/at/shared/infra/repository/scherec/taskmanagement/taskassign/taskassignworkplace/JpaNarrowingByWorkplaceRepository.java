@@ -60,6 +60,7 @@ public class JpaNarrowingByWorkplaceRepository extends JpaRepository implements 
         condition.add(criteriaBuilder.equal(root.get(KsrmtTaskAssignWkp_.companyId), cid));
         criteriaQuery.where(condition.toArray(new Predicate[]{}));
         entityManager.createQuery(criteriaQuery).executeUpdate();
+
     }
 
     @Override

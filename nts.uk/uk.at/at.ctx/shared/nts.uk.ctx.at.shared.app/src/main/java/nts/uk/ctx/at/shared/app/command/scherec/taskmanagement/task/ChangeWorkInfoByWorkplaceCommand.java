@@ -10,11 +10,8 @@ import java.util.Map;
 @AllArgsConstructor
 @Getter
 public class ChangeWorkInfoByWorkplaceCommand {
-
-    // 会社ID
-    private String companyId;
     // 職場ID:
-    private String workplaceId;
+    private String workPlaceId;
     // Map<作業枠NO,List<作業コード>>
     private Map<Integer, List<String>> mapFrameAndCode;
 }
