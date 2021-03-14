@@ -294,6 +294,11 @@ module nts.uk.at.view.kal003.a.viewmodel {
                     }
                 });
             }
+            
+            if (self.selectedCategory() == model.CATEGORY.SCHEDULE_DAILY) {
+                self.tabCheckCondition.listWorkRecordExtractingConditions([]);
+                self.tabScheUniqueCheckCondition.setListFixedConditionWorkRecord([]);
+            }
 
             //ver 2
 
@@ -432,7 +437,10 @@ module nts.uk.at.view.kal003.a.viewmodel {
                     return;
                 }
             } else if (data.category() == model.CATEGORY.SCHEDULE_DAILY) {
-                $("#check-condition-table .nts-editor.nts-input").trigger("validate");     
+                $("#check-condition-table .nts-editor.nts-input").trigger("validate");
+                if ($(".nameAlarmDailyM").ntsError("hasError")) {
+                    return;
+                }
             }
 
 
@@ -639,8 +647,10 @@ module nts.uk.at.view.kal003.a.viewmodel {
                         self.tabAppFixCondition.listFixedConditionWorkRecord([]);
                     }
                     
-                    if (self.selectedAlarmCheckCondition().category() == model.CATEGORY.SCHEDULE_DAILY) {
+                    // reset form
+                    if (output == model.CATEGORY.SCHEDULE_DAILY) {
                         self.tabCheckCondition.listWorkRecordExtractingConditions([]);
+                        self.tabScheUniqueCheckCondition.setListFixedConditionWorkRecord([]);
                     }
 
                     self.selectCategoryFromDialog(true);

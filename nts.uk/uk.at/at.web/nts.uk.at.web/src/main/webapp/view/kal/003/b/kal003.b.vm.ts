@@ -1347,7 +1347,6 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 }
                 case sharemodel.CATEGORY.SCHEDULE_DAILY:
                     self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().comparisonOperator(self.comparisonRange().comparisonOperator());
-                    self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().planLstWorkType(self.listAllWorkType);
                     self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().compareStartValue(self.comparisonRange().minValue());
                     self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().compareEndValue(self.comparisonRange().maxValue());
                     let alchecktargetcondition = {
@@ -1578,6 +1577,8 @@ module nts.uk.at.view.kal003.b.viewmodel {
             
             self.settingEnableComparisonMaxValueField(false);
             
+            self.initialScheduleDaily();
+            
             // change select item check
             self.workRecordExtractingCondition().checkItem.subscribe((itemCheck) => {
                 errors.clearAll();
@@ -1585,6 +1586,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 self.controlShowPattern(itemCheck);
                 
                 self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().planLstWorkType([]);
+                self.workRecordExtractingCondition().errorAlarmCondition().workTimeCondition().planLstWorkTime([]);
                 self.comparisonRange().minAmountOfMoneyValue(null);
                 self.comparisonRange().maxAmountOfMoneyValue(null);
                 self.comparisonRange().minTimeValue(null);
@@ -1593,7 +1595,14 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 self.comparisonRange().maxTimesValue(null);
                 self.comparisonRange().maxTimeWithinDayValue(null);
                 self.comparisonRange().minTimeWithinDayValue(null);
-    
+                if ((itemCheck && itemCheck != undefined) || itemCheck === 0) {
+                    self.initialScheduleDaily().then(function() {
+                        self.settingEnableComparisonMaxValueField(false);
+                        if ((self.checkItemTemp() || self.checkItemTemp() == 0) && self.checkItemTemp() != itemCheck) {
+                            setTimeout(function() { self.displayAttendanceItemSelections_BA2_3(""); }, 200);
+                        }
+                    });
+                }
                 $(".nts-input").ntsError("clear");
             });
             self.comparisonRange().comparisonOperator.subscribe((operN) => {
@@ -1626,6 +1635,29 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 self.required_BA1_4(newV > 0);
                 $(".nts-input").ntsError("clear");
             });     
+        }
+        
+        private initialScheduleDaily(): JQueryPromise<any> {
+            let self = this,
+                dfd = $.Deferred();
+            switch (self.workRecordExtractingCondition().checkItem()) {
+                case 0:          //時間
+                    self.initialWorkTypes(dfd);
+                    break;
+                case 1:   //連続時間
+                    self.initialWorkTypes(dfd);
+                    break;
+                case 2:   //連続時間帯
+                    self.initialWorkTypes(dfd);
+                    break;
+                case 3: //連続勤務
+                    self.initialDailyItemChkCountinuousTimeZone(dfd);
+                    break;
+                default:
+                    break;
+            }
+            dfd.resolve();
+            return dfd.promise();
         }
         
         /**

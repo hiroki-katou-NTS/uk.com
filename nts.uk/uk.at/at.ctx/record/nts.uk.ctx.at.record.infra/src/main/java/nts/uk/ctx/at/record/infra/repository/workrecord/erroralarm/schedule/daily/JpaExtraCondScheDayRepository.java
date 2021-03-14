@@ -44,6 +44,11 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 	private static final String BY_CONTRACT_COMPANY = " WHERE a.pk.cid = :companyId AND a.contractCd = :contractCode";
 	private static final String BY_ERAL_CHECK_ID = " AND a.pk.cid = :companyId AND a.contractCd = :contractCode AND a.pk.checkId = :eralCheckIds";
 	private static final String ORDER_BY_NO = " ORDER BY a.pk.sortBy";
+	private static final String SELECT_WT = "SELECT a FROM KscdtScheConDayWt a WHERE a.pk.cid = :companyId AND a.pk.checkId = :checkId AND a.pk.No = :no";
+	private static final String SELECT_WTime = "SELECT a FROM KscdtScheConDayWtime a WHERE a.pk.cid = :companyId AND a.pk.checkId = :checkId AND a.pk.No = :no";
+	private static final String SELECT_COMPARE_RANGE = "SELECT a FROM KrcstErAlCompareRange a WHERE a.krcstEralCompareRangePK.conditionGroupId = :checkId";
+	private static final String SELECT_COMPARE_RANGE_SINGLE = "SELECT a FROM KrcstErAlCompareSingle a WHERE a.krcstEralCompareSinglePK.conditionGroupId = :checkId";
+	private static final String SELECT_COMPARE_RANGE_SINGLE_FIXED = "SELECT a FROM KrcstErAlSingleFixed a WHERE a.krcstEralSingleFixedPK.conditionGroupId = :checkId";
 	
     @Override
     public List<ExtractionCondScheduleDay> getAll(String cid) {
@@ -208,14 +213,18 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 		}
 		entity.checkType = domain.getCheckItemType().value;
 		entity.wrkTypeCondAtr = domain.getTargetWrkType().value;
-		entity.wrkTimeCondAtr = domain.getTimeZoneTargetRange() != null ? domain.getTimeZoneTargetRange().value : null;		
-
+		entity.wrkTimeCondAtr = domain.getTimeZoneTargetRange() != null ? domain.getTimeZoneTargetRange().value : null;
+		
+		// remove work type
+		removeWorkTypes(companyId, domain.getErrorAlarmId(), domain.getSortOrder());
+		
 		// 勤務種類 - pattern D
 		if (DaiCheckItemType.TIME == domain.getCheckItemType()) {
 			// pattern D
 			CondTime time = (CondTime)domain.getScheduleCheckCond();
 			
 			// 
+			removeWorkTypes(companyId, domain.getErrorAlarmId(), domain.getSortOrder());
 			List<KscdtScheConDayWt> condWorkType = time.getWrkTypeCds().stream()
 					.map(code -> new KscdtScheConDayWt(new KscdtScheCondDayWtPk(companyId, domain.getErrorAlarmId(), domain.getSortOrder(), code)))
 					.collect(Collectors.toList());
@@ -348,6 +357,9 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 			
 			entity.conPeriod = continuousTimeZone.getPeriod().v();
 			
+			// remove work time
+			removeWorkTimes(companyId, domain.getErrorAlarmId(), domain.getSortOrder());
+			
 			// work type
 			List<KscdtScheConDayWt> condWorkType = continuousTimeZone.getWrkTypeCds().stream()
 					.map(code -> new KscdtScheConDayWt(new KscdtScheCondDayWtPk(companyId, domain.getErrorAlarmId(), domain.getSortOrder(), code)))
@@ -401,6 +413,21 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 
 	@Override
 	public void delete(String contractCode, String companyId, String erAlCheckIds) {
+		List<KrcstErAlCompareRange> ranges = this.queryProxy().query(SELECT_COMPARE_RANGE, KrcstErAlCompareRange.class)
+				.setParameter("checkId", erAlCheckIds)
+				.getList();
+		this.commandProxy().removeAll(ranges);
+		
+		List<KrcstErAlCompareSingle> singleRanges = this.queryProxy().query(SELECT_COMPARE_RANGE_SINGLE, KrcstErAlCompareSingle.class)
+				.setParameter("checkId", erAlCheckIds)
+				.getList();
+		this.commandProxy().removeAll(singleRanges);
+		
+		List<KrcstErAlSingleFixed> singleRangeFixeds = this.queryProxy().query(SELECT_COMPARE_RANGE_SINGLE_FIXED, KrcstErAlSingleFixed.class)
+				.setParameter("checkId", erAlCheckIds)
+				.getList();
+		this.commandProxy().removeAll(singleRangeFixeds);
+		
 		List<KscdtScheAnyCondDay> entities = this.queryProxy().query(SELECT_BASIC + BY_CONTRACT_COMPANY + BY_ERAL_CHECK_ID, KscdtScheAnyCondDay.class)
 				.setParameter("contractCode", contractCode)
 				.setParameter("companyId", companyId)
@@ -416,11 +443,46 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 		this.commandProxy().remove(entityOpt.get());
 	}
 	
+	/**
+	 * Insert or update entity
+	 * @param entity
+	 * @param isUpdate
+	 */
 	private void saveOrUpdate(Object entity, boolean isUpdate) {
 		if (isUpdate) {
 			this.commandProxy().update(entity);
 		} else {
 			this.commandProxy().insert(entity);
 		}
+	}
+	
+	/**
+	 * Remove all work type by no
+	 * @param companyId
+	 * @param checkId
+	 * @param no
+	 */
+	private void removeWorkTypes(String companyId, String checkId, int no) {
+		List<KscdtScheConDayWt> workTypes = this.queryProxy().query(SELECT_WT, KscdtScheConDayWt.class)
+				.setParameter("companyId", companyId)
+				.setParameter("checkId", checkId)
+				.setParameter("no", no)
+				.getList();
+		this.commandProxy().removeAll(workTypes);
+	}
+	
+	/**
+	 * Remove all work time by no
+	 * @param companyId
+	 * @param checkId
+	 * @param no
+	 */
+	private void removeWorkTimes(String companyId, String checkId, int no) {
+		List<KscdtScheConDayWtime> workTimes = this.queryProxy().query(SELECT_WTime, KscdtScheConDayWtime.class)
+				.setParameter("companyId", companyId)
+				.setParameter("checkId", checkId)
+				.setParameter("no", no)
+				.getList();
+		this.commandProxy().removeAll(workTimes);
 	}
 }
