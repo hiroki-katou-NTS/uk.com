@@ -2,8 +2,12 @@
 	margin: 0 10px !important;
 }
 
-#combobox, #combobox1 {
+#combobox1 {
 	margin-top: 2px;
+}
+
+#combobox {
+	margin-top: 7px;
 }
 
 #correc-label1 {
