@@ -21,6 +21,7 @@ public class TableDesignService {
 
 	public AtomTask alter(
 			Require require,
+			String featureId,
 			String tableId,
 			AlterationMetaData meta,
 			Optional<TableDesign> altered) {
@@ -30,7 +31,7 @@ public class TableDesignService {
 
 		Optional<TableProspect> tableProspect = ss.apply(alterationList);
 
-		Alteration alt = factory.create(tableId, meta, tableProspect, altered)
+		Alteration alt = factory.create(featureId, tableId, meta, tableProspect, altered)
 				.orElseThrow(() -> new BusinessException(new RawErrorMessage("")));
 
 		return AtomTask.of(() ->{

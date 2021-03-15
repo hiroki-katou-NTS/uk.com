@@ -43,7 +43,6 @@ public class TableDesignServiceTest {
 	private final String userName = "ai_muto";
 	private final String tableName = "KRCDT_FOO_BAR";
 	private final AlterationMetaData meta = new AlterationMetaData(
-			featureId,
 			userName,
 			"おるたこめんと"
 		);

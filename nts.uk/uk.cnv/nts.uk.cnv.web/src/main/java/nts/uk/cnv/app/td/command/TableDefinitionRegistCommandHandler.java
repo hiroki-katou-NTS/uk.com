@@ -42,7 +42,6 @@ public class TableDefinitionRegistCommandHandler extends CommandHandler<TableDef
 		TableDesign td = createTd(columns, tableInfo);
 
 		AlterationMetaData meta = new AlterationMetaData(
-				command.getFeatureId(),
 				command.getUserName(),
 				command.getComment());
 
@@ -50,6 +49,7 @@ public class TableDefinitionRegistCommandHandler extends CommandHandler<TableDef
 		transaction.execute(() -> {
 			AtomTask at = tdService.alter(
 					require,
+					command.getFeatureId(),
 					td.getId(),
 					meta,
 					Optional.of(td));

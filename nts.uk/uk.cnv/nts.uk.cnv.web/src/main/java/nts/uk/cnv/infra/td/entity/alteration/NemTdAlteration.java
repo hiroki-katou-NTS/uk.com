@@ -103,10 +103,10 @@ public class NemTdAlteration extends JpaEntity implements Serializable {
 
 		return new Alteration(
 				alterationId,
+				featureId,
+				time,
 				tableId,
 				new AlterationMetaData(
-					featureId,
-					time,
 					userName,
 					comment),
 				contents
