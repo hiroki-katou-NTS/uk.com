@@ -5324,7 +5324,6 @@ module nts.uk.at.view.ksu003.a.viewmodel {
 				});
 			}
 			self.check045003 = true;
-			block.clear();
 			$(".xcell").removeClass("x-error");
 		}
 		

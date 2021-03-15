@@ -53,7 +53,7 @@ public class CorrectWorkTimeHalfDay {
 	
 	public WorkInfoAndTimeZone handle(CorrectWorkTimeHalfDayParam param) {
 		// step 1 
-		WorkInformation workInformation = new WorkInformation(param.worktypeCode, param.worktimeCode);
+		WorkInformation workInformation = new WorkInformation(param.workTypeCode, param.workTimeCode);
 				
 		// step 2 call 勤務情報と補正済み所定時間帯を取得する(Require)
 		RequireWorkInforImpl requireWorkInforImpl = new RequireWorkInforImpl(workTypeRepo, workTimeSettingRepository,
