@@ -6,6 +6,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import nts.arc.time.GeneralDateTime;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.cnv.dom.td.alteration.content.AlterationContent;
 import nts.uk.cnv.dom.td.schema.prospect.TableProspectBuilder;
@@ -18,14 +19,18 @@ import nts.uk.cnv.dom.td.schema.prospect.TableProspectBuilder;
 @EqualsAndHashCode
 public class Alteration implements Comparable<Alteration>{
 	String alterId;
+	String featureId;
+	GeneralDateTime time;
 	String tableId;
 	AlterationMetaData metaData;
 	List<AlterationContent> contents;
 
 	/** 変更内容が空のおるたを作る **/
-	public static Alteration createEmpty(String tableId, AlterationMetaData metaData) {
+	public static Alteration createEmpty(String featureId, String tableId, AlterationMetaData metaData) {
 		return new Alteration(
 				IdentifierUtil.randomUniqueId(),
+				featureId,
+				GeneralDateTime.now(),
 				tableId,
 				metaData,
 				new ArrayList<>());
@@ -39,7 +44,7 @@ public class Alteration implements Comparable<Alteration>{
 
 	@Override
 	public int compareTo(Alteration other) {
-		return this.metaData.time.compareTo(other.metaData.time);
+		return this.time.compareTo(other.time);
 	}
 
 	/**

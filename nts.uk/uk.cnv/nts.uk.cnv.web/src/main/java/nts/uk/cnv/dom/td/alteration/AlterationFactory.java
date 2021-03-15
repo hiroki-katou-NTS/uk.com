@@ -13,14 +13,14 @@ import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
 public class AlterationFactory {
 
 	public Optional<Alteration> create(
-			String tableId, AlterationMetaData meta,
+			String featureId, String tableId, AlterationMetaData meta,
 			Optional<? extends TableDesign> base, Optional<TableDesign> altered) {
 
 		if(base.equals(altered)) {
 			return Optional.empty();
 		}
 
-		Alteration result = Alteration.createEmpty(tableId, meta);
+		Alteration result = Alteration.createEmpty(featureId, tableId, meta);
 		Arrays.stream(AlterationType.values())
 			.filter(type -> type.applicable(base, altered))
 			.forEach(type -> {

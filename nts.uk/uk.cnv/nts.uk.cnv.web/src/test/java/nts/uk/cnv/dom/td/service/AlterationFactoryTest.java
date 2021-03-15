@@ -48,7 +48,6 @@ public class AlterationFactoryTest {
 	private final String userName = "ai_muto";
 	private final String tableName = "KRCDT_FOO_BAR";
 	private final AlterationMetaData meta = new AlterationMetaData(
-			featureId,
 			userName,
 			"おるたこめんと"
 		);
@@ -61,7 +60,7 @@ public class AlterationFactoryTest {
 	public void initialize() {
 		ss = createSnapshot();
 		base = Optional.of((TableDesign) ss);
-		alt = Alteration.createEmpty(tableName, meta);
+		alt = Alteration.createEmpty(featureId, tableName, meta);
 	}
 
 	@Test
@@ -70,7 +69,7 @@ public class AlterationFactoryTest {
 		val alterd = Optional.of((TableDesign) ss);
 		alt.getContents().addAll(AlterationType.TABLE_CREATE.createContent(empty, alterd));
 
-		val result = factory.create(tableName, meta, Optional.empty(), alterd);
+		val result = factory.create(featureId, tableName, meta, Optional.empty(), alterd);
 
 		Assert.assertTrue(result.isPresent());
 		Assert.assertTrue(result.get().equalsExcludingId(alt));
@@ -81,7 +80,7 @@ public class AlterationFactoryTest {
 		alt.getContents().add(new ChangeTableName("KRCDT_BAZ_QUX"));
 		Optional<TableDesign> alterd = createAltered(ss, alt);
 
-		val result = factory.create(tableName, meta, base, alterd);
+		val result = factory.create(featureId, tableName, meta, base, alterd);
 
 		Assert.assertTrue(result.isPresent());
 		Assert.assertTrue(result.get().equalsExcludingId(alt));
@@ -92,7 +91,7 @@ public class AlterationFactoryTest {
 		alt.getContents().add(new ChangeTableJpName("ふがふが"));
 		Optional<TableDesign> alterd = createAltered(ss, alt);
 
-		val result = factory.create(tableName, meta, base, alterd);
+		val result = factory.create(featureId, tableName, meta, base, alterd);
 
 		Assert.assertTrue(result.isPresent());
 		Assert.assertTrue(result.get().equalsExcludingId(alt));
@@ -109,7 +108,7 @@ public class AlterationFactoryTest {
 				.findFirst();
 		Assert.assertTrue(pk.isPresent() && pk.get().getColumns().contains("ITEM_CD"));
 
-		val result = factory.create(tableName, meta, base, alterd);
+		val result = factory.create(featureId, tableName, meta, base, alterd);
 
 		Assert.assertTrue(result.isPresent());
 		Assert.assertTrue(result.get().equalsExcludingId(alt));
@@ -126,7 +125,7 @@ public class AlterationFactoryTest {
 				.findFirst();
 		Assert.assertTrue(uk.isPresent() && uk.get().getColumns().contains("ITEM_CD"));
 
-		val result = factory.create(tableName, meta, base, alterd);
+		val result = factory.create(featureId, tableName, meta, base, alterd);
 
 		Assert.assertTrue(result.isPresent());
 		Assert.assertTrue(result.get().equalsExcludingId(alt));
@@ -143,7 +142,7 @@ public class AlterationFactoryTest {
 				.findFirst();
 		Assert.assertTrue(index.isPresent() && index.get().isClustered());
 
-		val result = factory.create(tableName, meta, base, alterd);
+		val result = factory.create(featureId, tableName, meta, base, alterd);
 
 		Assert.assertTrue(result.isPresent());
 		Assert.assertTrue(result.get().equalsExcludingId(alt));
@@ -156,7 +155,7 @@ public class AlterationFactoryTest {
 
 		Assert.assertFalse(alterd.isPresent());
 
-		val result = factory.create(tableName, meta, base, alterd);
+		val result = factory.create(featureId, tableName, meta, base, alterd);
 
 		Assert.assertTrue(result.isPresent());
 		Assert.assertTrue(result.get().equalsExcludingId(alt));
@@ -175,7 +174,7 @@ public class AlterationFactoryTest {
 				.findFirst();
 		Assert.assertTrue(column.isPresent() && column.get().equals(newColumn));
 
-		val result = factory.create(tableName, meta, base, alterd);
+		val result = factory.create(featureId, tableName, meta, base, alterd);
 
 		Assert.assertTrue(result.isPresent());
 		Assert.assertTrue(result.get().equalsExcludingId(alt));
@@ -203,7 +202,7 @@ public class AlterationFactoryTest {
 				column.get().getCheck());
 		Assert.assertEquals(resultColtype, coltype);
 
-		val result = factory.create(tableName, meta, base, alterd);
+		val result = factory.create(featureId, tableName, meta, base, alterd);
 
 		Assert.assertTrue(result.isPresent());
 		Assert.assertTrue(result.get().equalsExcludingId(alt));
@@ -220,7 +219,7 @@ public class AlterationFactoryTest {
 				.findFirst();
 		Assert.assertTrue(column.isPresent() && column.get().getName().equals("ITEM_CODE"));
 
-		val result = factory.create(tableName, meta, base, alterd);
+		val result = factory.create(featureId, tableName, meta, base, alterd);
 
 		Assert.assertTrue(result.isPresent());
 		Assert.assertTrue(result.get().equalsExcludingId(alt));
@@ -237,7 +236,7 @@ public class AlterationFactoryTest {
 				.findFirst();
 		Assert.assertTrue(column.isPresent() && column.get().getJpName().equals("★項目コード★"));
 
-		val result = factory.create(tableName, meta, base, alterd);
+		val result = factory.create(featureId, tableName, meta, base, alterd);
 
 		Assert.assertTrue(result.isPresent());
 		Assert.assertTrue(result.get().equalsExcludingId(alt));
@@ -254,7 +253,7 @@ public class AlterationFactoryTest {
 				.findFirst();
 		Assert.assertTrue(column.isPresent() && column.get().getComment().equals("こめんと"));
 
-		val result = factory.create(tableName, meta, base, alterd);
+		val result = factory.create(featureId, tableName, meta, base, alterd);
 
 		Assert.assertTrue(result.isPresent());
 		Assert.assertTrue(result.get().equalsExcludingId(alt));
@@ -271,7 +270,7 @@ public class AlterationFactoryTest {
 				.findFirst();
 		Assert.assertFalse(column.isPresent());
 
-		val result = factory.create(tableName, meta, base, alterd);
+		val result = factory.create(featureId, tableName, meta, base, alterd);
 
 		Assert.assertTrue(result.get().equalsExcludingId(alt));
 	}
