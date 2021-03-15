@@ -1,4 +1,4 @@
-package nts.uk.cnv.dom.td.alteration.content;
+package nts.uk.cnv.dom.td.alteration.content.column;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,10 +6,11 @@ import java.util.Optional;
 
 import lombok.EqualsAndHashCode;
 import nts.uk.cnv.dom.td.alteration.AlterationType;
+import nts.uk.cnv.dom.td.alteration.content.AlterationContent;
 import nts.uk.cnv.dom.td.schema.prospect.definition.TableProspectBuilder;
-import nts.uk.cnv.dom.td.schema.tabledesign.ColumnDesign;
-import nts.uk.cnv.dom.td.schema.tabledesign.DefineColumnType;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
+import nts.uk.cnv.dom.td.schema.tabledesign.column.ColumnDesign;
+import nts.uk.cnv.dom.td.schema.tabledesign.column.DefineColumnType;
 
 @EqualsAndHashCode(callSuper= false)
 public class ChangeColumnType extends AlterationContent {
@@ -33,12 +34,12 @@ public class ChangeColumnType extends AlterationContent {
 				result.add(new ChangeColumnType(
 						baseCol.get().getId(),
 						new DefineColumnType(
-							alterdCol.getType(),
-							alterdCol.getMaxLength(),
-							alterdCol.getScale(),
-							alterdCol.isNullable(),
-							alterdCol.getDefaultValue(),
-							alterdCol.getCheck()
+							alterdCol.getType().getDataType(),
+							alterdCol.getType().getLength(),
+							alterdCol.getType().getScale(),
+							alterdCol.getType().isNullable(),
+							alterdCol.getType().getDefaultValue(),
+							alterdCol.getType().getCheckConstaint()
 						)));
 			}
 		}
@@ -66,18 +67,18 @@ public class ChangeColumnType extends AlterationContent {
 		return builder.columnType(
 				alterationId,
 				this.columnId,
-				this.afterType.getType(),
+				this.afterType.getDataType(),
 				this.afterType.getLength(),
 				this.afterType.getScale(),
 				this.afterType.isNullable());
 	}
 
 	private static boolean diff(ColumnDesign baseCol, ColumnDesign alterdCol) {
-		return !baseCol.getType().equals(alterdCol.getType()) ||
-				baseCol.getMaxLength() != alterdCol.getMaxLength() ||
-				baseCol.getScale() != alterdCol.getScale() ||
-				baseCol.isNullable() != alterdCol.isNullable() ||
-				!baseCol.getDefaultValue().equals(alterdCol.getDefaultValue()) ||
-				!baseCol.getCheck().equals(alterdCol.getCheck());
+		return !baseCol.getType().getDataType().equals(alterdCol.getType().getDataType()) ||
+				baseCol.getType().getLength() != alterdCol.getType().getLength() ||
+				baseCol.getType().getScale() != alterdCol.getType().getScale() ||
+				baseCol.getType().isNullable() != alterdCol.getType().isNullable() ||
+				!baseCol.getType().getDefaultValue().equals(alterdCol.getType().getDefaultValue()) ||
+				!baseCol.getType().getCheckConstaint().equals(alterdCol.getType().getCheckConstaint());
 	}
 }

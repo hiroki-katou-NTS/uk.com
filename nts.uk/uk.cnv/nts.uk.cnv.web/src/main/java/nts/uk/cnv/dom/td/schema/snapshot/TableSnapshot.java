@@ -13,18 +13,10 @@ import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
 public class TableSnapshot extends TableDesign {
 	/** スナップショットID */
 	String snapshotId;
-	
-	/**
-	 * 永続化されたスナップショットが存在しない状態でも、「テーブル作成」のorutaを流し込む必要があるため、
-	 * それを受け入れる「空のTableSnapshot」が必要。
-	 * この場合、このemptyフィールドがtrueになり、snapshotIdはnullとなる。
-	 */
-	boolean empty;
 
 	public TableSnapshot(String snapshotId, TableDesign domain) {
 		super(domain);
 		this.snapshotId = snapshotId;
-		this.empty = false;
 	}
 	
 	public static TableSnapshot empty() {
@@ -38,9 +30,7 @@ public class TableSnapshot extends TableDesign {
 	 */
 	public Optional<TableProspect> apply(List<Alteration> altarations) {
 
-		TableProspectBuilder builder = this.empty
-			? new TableProspectBuilder()
-			: new TableProspectBuilder(this);
+		TableProspectBuilder builder = new TableProspectBuilder(this);
 
 		altarations.stream().forEach(alt ->{
 			alt.apply(builder);

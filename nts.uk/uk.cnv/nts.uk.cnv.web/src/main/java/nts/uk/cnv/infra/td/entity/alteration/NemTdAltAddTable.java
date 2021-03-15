@@ -23,9 +23,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.JpaEntity;
 import nts.uk.cnv.dom.td.alteration.content.AddTable;
-import nts.uk.cnv.dom.td.schema.tabledesign.ColumnDesign;
 import nts.uk.cnv.dom.td.schema.tabledesign.Indexes;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
+import nts.uk.cnv.dom.td.schema.tabledesign.column.ColumnDesign;
+import nts.uk.cnv.dom.td.schema.tabledesign.constraint.TableConstraints;
 
 @Getter
 @Entity
@@ -77,7 +78,7 @@ public class NemTdAltAddTable extends JpaEntity implements Serializable {
 			));
 		}
 
-		return new AddTable(new TableDesign(tableId, name, jpName, cols, idxs));
+		return new AddTable(new TableDesign(tableId, name, jpName, cols, TableConstraints.empty()));
 	}
 
 	@Override

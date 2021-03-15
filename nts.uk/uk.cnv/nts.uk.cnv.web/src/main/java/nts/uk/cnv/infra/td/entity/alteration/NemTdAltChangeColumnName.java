@@ -14,7 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.JpaEntity;
-import nts.uk.cnv.dom.td.alteration.content.ChangeColumnName;
+import nts.uk.cnv.dom.td.alteration.content.column.ChangeColumnName;
 
 @Getter
 @Entity

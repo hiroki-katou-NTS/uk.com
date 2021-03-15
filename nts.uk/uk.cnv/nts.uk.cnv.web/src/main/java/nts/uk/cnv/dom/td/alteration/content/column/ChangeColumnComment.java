@@ -1,4 +1,4 @@
-package nts.uk.cnv.dom.td.alteration.content;
+package nts.uk.cnv.dom.td.alteration.content.column;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,30 +6,32 @@ import java.util.Optional;
 
 import lombok.EqualsAndHashCode;
 import nts.uk.cnv.dom.td.alteration.AlterationType;
+import nts.uk.cnv.dom.td.alteration.content.AlterationContent;
 import nts.uk.cnv.dom.td.schema.prospect.definition.TableProspectBuilder;
-import nts.uk.cnv.dom.td.schema.tabledesign.ColumnDesign;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
+import nts.uk.cnv.dom.td.schema.tabledesign.column.ColumnDesign;
 
 @EqualsAndHashCode(callSuper= false)
-public class AddColumn extends AlterationContent {
+public class ChangeColumnComment extends AlterationContent {
 	private final String columnId;
-	private final ColumnDesign column;
+	private final String comment;
 
-	public AddColumn(String columnId, ColumnDesign column) {
-		super(AlterationType.COLUMN_ADD);
+	public ChangeColumnComment(String columnId, String comment) {
+		super(AlterationType.COLUMN_COMMENT_CHANGE);
 		this.columnId = columnId;
-		this.column = column;
+		this.comment = comment;
 	}
 
 	public static List<AlterationContent> create(Optional<? extends TableDesign> base, Optional<TableDesign> altered) {
 		List<AlterationContent> result = new ArrayList<>();
 		for(int i=0; i<altered.get().getColumns().size(); i++) {
 			ColumnDesign alterdCol = altered.get().getColumns().get(i);
-			Optional<ColumnDesign> baseCol = base.get().getColumns().stream()
+			ColumnDesign baseCol = base.get().getColumns().stream()
 					.filter(col -> col.getId().equals(alterdCol.getId()))
-					.findFirst();
-			if(!baseCol.isPresent()) {
-				result.add(new AddColumn(alterdCol.getId(), alterdCol));
+					.findFirst()
+					.get();
+			if(!baseCol.getComment().equals(alterdCol.getComment())) {
+				result.add(new ChangeColumnComment(baseCol.getId(), alterdCol.getComment()));
 			}
 		}
 		return result;
@@ -39,13 +41,12 @@ public class AddColumn extends AlterationContent {
 		if(!base.isPresent() || !altered.isPresent()) {
 			return false;
 		}
-
 		for(int i=0; i<altered.get().getColumns().size(); i++) {
 			ColumnDesign alterdCol = altered.get().getColumns().get(i);
 			Optional<ColumnDesign> baseCol = base.get().getColumns().stream()
 					.filter(col -> col.getId().equals(alterdCol.getId()))
 					.findFirst();
-			if(!baseCol.isPresent()) {
+			if(baseCol.isPresent() && !baseCol.get().getComment().equals(alterdCol.getComment())) {
 				return true;
 			}
 		}
@@ -54,9 +55,9 @@ public class AddColumn extends AlterationContent {
 
 	@Override
 	public TableProspectBuilder apply(String alterationId, TableProspectBuilder builder) {
-		return builder.addColumn(
+		return builder.columnComment(
 				alterationId,
 				this.columnId,
-				this.column);
+				this.comment);
 	}
 }

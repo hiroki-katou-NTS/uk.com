@@ -18,7 +18,7 @@ import nts.uk.cnv.app.td.schema.prospect.TableProspectQuery;
 import nts.uk.cnv.app.td.service.TableDesignerService;
 import nts.uk.cnv.dom.td.schema.prospect.definition.TableProspect;
 import nts.uk.cnv.dom.td.schema.prospect.list.TableListProspect;
-import nts.uk.cnv.dom.td.tabledefinetype.DataType;
+import nts.uk.cnv.dom.td.schema.tabledesign.column.DataType;
 import nts.uk.cnv.ws.table.column.ColumnDefinitionDto;
 import nts.uk.cnv.ws.table.column.ColumnTypeDefinitionDto;
 

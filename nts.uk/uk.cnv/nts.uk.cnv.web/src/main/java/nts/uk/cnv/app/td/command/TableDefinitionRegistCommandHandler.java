@@ -19,9 +19,10 @@ import nts.uk.cnv.dom.td.alteration.AlterationRepository;
 import nts.uk.cnv.dom.td.alteration.TableDesignService;
 import nts.uk.cnv.dom.td.schema.snapshot.TableSnapshot;
 import nts.uk.cnv.dom.td.schema.snapshot.SnapshotRepository;
-import nts.uk.cnv.dom.td.schema.tabledesign.ColumnDesign;
-import nts.uk.cnv.dom.td.schema.tabledesign.DefineColumnType;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
+import nts.uk.cnv.dom.td.schema.tabledesign.column.ColumnDesign;
+import nts.uk.cnv.dom.td.schema.tabledesign.column.DefineColumnType;
+import nts.uk.cnv.dom.td.schema.tabledesign.constraint.TableConstraints;
 
 @Stateless
 public class TableDefinitionRegistCommandHandler extends CommandHandler<TableDefinitionRegistCommand> {
@@ -81,7 +82,7 @@ public class TableDefinitionRegistCommandHandler extends CommandHandler<TableDef
 				tableInfo.getName(),
 				"",
 				cds,
-				new ArrayList<>()
+				TableConstraints.empty()
 			);
 		return td;
 	}

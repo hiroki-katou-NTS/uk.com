@@ -25,7 +25,7 @@ import nts.uk.cnv.dom.cnv.conversiontable.ConversionTable;
 import nts.uk.cnv.dom.cnv.conversiontable.OneColumnConversion;
 import nts.uk.cnv.dom.cnv.conversiontable.pattern.ParentJoinPattern;
 import nts.uk.cnv.dom.cnv.service.ConversionInfo;
-import nts.uk.cnv.dom.td.tabledefinetype.DataType;
+import nts.uk.cnv.dom.td.schema.tabledesign.column.DataType;
 
 @Stateless
 public class ParentJoinPatternManager {

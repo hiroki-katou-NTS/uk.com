@@ -1,8 +1,8 @@
 package nts.uk.cnv.dom.td.schema.prospect.definition;
 
-import nts.uk.cnv.dom.td.schema.tabledesign.ColumnDesign;
-import nts.uk.cnv.dom.td.schema.tabledesign.DefineColumnType;
-import nts.uk.cnv.dom.td.tabledefinetype.DataType;
+import nts.uk.cnv.dom.td.schema.tabledesign.column.ColumnDesign;
+import nts.uk.cnv.dom.td.schema.tabledesign.column.DataType;
+import nts.uk.cnv.dom.td.schema.tabledesign.column.DefineColumnType;
 
 public class ColumnDesignBuilder {
 	private String id;
@@ -25,13 +25,13 @@ public class ColumnDesignBuilder {
 		this.id = base.getId();
 		this.name = base.getName();
 		this.jpName = base.getJpName();
-		this.type = base.getType();
-		this.maxLength = base.getMaxLength();
-		this.scale = base.getScale();
-		this.nullable = base.isNullable();
-		this.defaultValue = base.getDefaultValue();
+		this.type = base.getType().getDataType();
+		this.maxLength = base.getType().getLength();
+		this.scale = base.getType().getScale();
+		this.nullable = base.getType().isNullable();
+		this.defaultValue = base.getType().getDefaultValue();
 		this.comment = base.getComment();
-		this.check = base.getCheck();
+		this.check = base.getType().getCheckConstaint();
 		this.dispOrder = base.getDispOrder();
 	}
 

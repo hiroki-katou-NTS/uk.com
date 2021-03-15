@@ -4,7 +4,7 @@ import java.util.List;
 
 import lombok.NoArgsConstructor;
 import nts.uk.cnv.dom.constants.Constants;
-import nts.uk.cnv.dom.td.tabledefinetype.DataType;
+import nts.uk.cnv.dom.td.schema.tabledesign.column.DataType;
 import nts.uk.cnv.dom.td.tabledefinetype.DatabaseSpec;
 
 @NoArgsConstructor

@@ -12,10 +12,10 @@ import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.cnv.app.cnv.dto.GetUkTablesResultDto;
 import nts.uk.cnv.dom.td.schema.snapshot.TableSnapshot;
-import nts.uk.cnv.dom.td.schema.tabledesign.ColumnDesign;
 import nts.uk.cnv.dom.td.schema.tabledesign.Indexes;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
 import nts.uk.cnv.dom.td.schema.tabledesign.UkTableDesignRepository;
+import nts.uk.cnv.dom.td.schema.tabledesign.column.ColumnDesign;
 import nts.uk.cnv.infra.td.entity.uktabledesign.ScvmtUkColumnDesign;
 import nts.uk.cnv.infra.td.entity.uktabledesign.ScvmtUkColumnDesignPk;
 import nts.uk.cnv.infra.td.entity.uktabledesign.ScvmtUkIndexColumns;
@@ -61,29 +61,29 @@ public class JpaUkTableDesignRepository extends JpaRepository implements UkTable
 				.collect(Collectors.toList());
 
 		List<ScvmtUkIndexDesign> indexes = new ArrayList<>();
-		for (Indexes idx: tableDesign.getIndexes()) {
-			List<ScvmtUkIndexColumns> indexcolumns = idx.getColumns().stream()
-				.map(col -> new ScvmtUkIndexColumns(
-						new ScvmtUkIndexColumnsPk(
-								tableDesign.getId(),
-								tableDesign.getSnapshotId(),
-								"",
-								idx.getName(),
-								idx.getColumns().indexOf(col),
-								col),
-						null)
-					)
-				.collect(Collectors.toList());
-
-			indexes.add(new ScvmtUkIndexDesign(
-					new ScvmtUkIndexDesignPk(
-							tableDesign.getId(), tableDesign.getSnapshotId(), "", idx.getName()),
-					idx.getConstraintType(),
-					idx.isClustered(),
-					indexcolumns,
-					null
-			));
-		}
+//		for (Indexes idx: tableDesign.getIndexes()) {
+//			List<ScvmtUkIndexColumns> indexcolumns = idx.getColumns().stream()
+//				.map(col -> new ScvmtUkIndexColumns(
+//						new ScvmtUkIndexColumnsPk(
+//								tableDesign.getId(),
+//								tableDesign.getSnapshotId(),
+//								"",
+//								idx.getName(),
+//								idx.getColumns().indexOf(col),
+//								col),
+//						null)
+//					)
+//				.collect(Collectors.toList());
+//
+//			indexes.add(new ScvmtUkIndexDesign(
+//					new ScvmtUkIndexDesignPk(
+//							tableDesign.getId(), tableDesign.getSnapshotId(), "", idx.getName()),
+//					idx.getConstraintType(),
+//					idx.isClustered(),
+//					indexcolumns,
+//					null
+//			));
+//		}
 
 		return new ScvmtUkTableDesign(
 				new ScvmtUkTableDesignPk(
@@ -105,13 +105,13 @@ public class JpaUkTableDesignRepository extends JpaRepository implements UkTable
 							columnDesign.getId()),
 					columnDesign.getName(),
 					columnDesign.getJpName(),
-					columnDesign.getType().toString(),
-					columnDesign.getMaxLength(),
-					columnDesign.getScale(),
-					(columnDesign.isNullable() ? 1 : 0),
-					columnDesign.getDefaultValue(),
+					columnDesign.getType().getDataType().toString(),
+					columnDesign.getType().getLength(),
+					columnDesign.getType().getScale(),
+					(columnDesign.getType().isNullable() ? 1 : 0),
+					columnDesign.getType().getDefaultValue(),
 					columnDesign.getComment(),
-					columnDesign.getCheck(),
+					columnDesign.getType().getCheckConstaint(),
 					columnDesign.getDispOrder(),
 					null
 				);

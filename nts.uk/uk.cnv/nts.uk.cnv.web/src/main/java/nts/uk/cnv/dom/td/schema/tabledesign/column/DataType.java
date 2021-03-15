@@ -1,4 +1,4 @@
-package nts.uk.cnv.dom.td.tabledefinetype;
+package nts.uk.cnv.dom.td.schema.tabledesign.column;
 
 public enum DataType {
 	BOOL,

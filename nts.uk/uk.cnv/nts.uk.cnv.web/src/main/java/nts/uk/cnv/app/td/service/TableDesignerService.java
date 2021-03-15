@@ -419,7 +419,7 @@ public class TableDesignerService {
 			.forEach(tableId -> {
 				TableProspectBuilder builder = tableDesignList.containsKey(tableId)
 						? new TableProspectBuilder(tableDesignList.get(tableId))
-						: new TableProspectBuilder();
+						: TableProspectBuilder.empty();
 				altarations.get(tableId).stream()
 					.forEach(alt -> {
 						alt.apply(builder);
@@ -462,7 +462,7 @@ public class TableDesignerService {
 					return new GetUkColumnsResultDto(
 						col.getId(),
 						col.getName(),
-						dataType.dataType(col.getType(), col.getMaxLength(), col.getScale()),
+						dataType.dataType(col.getType().getDataType(), col.getType().getLength(), col.getType().getScale()),
 						exists
 					);
 				})
@@ -480,7 +480,7 @@ public class TableDesignerService {
 				.map(col -> new GetErpColumnsResultDto(
 						col.getId(),
 						col.getName(),
-						spec.dataType(col.getType(), col.getMaxLength(), col.getScale())
+						spec.dataType(col.getType().getDataType(), col.getType().getLength(), col.getType().getScale())
 					))
 				.collect(Collectors.toList());
 	}

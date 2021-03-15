@@ -19,9 +19,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.JpaEntity;
-import nts.uk.cnv.dom.td.schema.tabledesign.ColumnDesign;
 import nts.uk.cnv.dom.td.schema.tabledesign.Indexes;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
+import nts.uk.cnv.dom.td.schema.tabledesign.column.ColumnDesign;
+import nts.uk.cnv.dom.td.schema.tabledesign.constraint.TableConstraints;
 
 @Getter
 @Entity
@@ -72,6 +73,6 @@ public class ScvmtUkTableDesign extends JpaEntity implements Serializable {
 			));
 		}
 
-		return new TableDesign(pk.getTableId(), name, jpName, cols, idxs);
+		return new TableDesign(pk.getTableId(), name, jpName, cols, TableConstraints.empty());
 	}
 }

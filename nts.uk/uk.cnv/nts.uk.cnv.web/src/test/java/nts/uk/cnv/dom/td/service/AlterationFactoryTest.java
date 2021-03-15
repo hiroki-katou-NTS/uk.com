@@ -17,26 +17,28 @@ import nts.uk.cnv.dom.td.alteration.Alteration;
 import nts.uk.cnv.dom.td.alteration.AlterationFactory;
 import nts.uk.cnv.dom.td.alteration.AlterationMetaData;
 import nts.uk.cnv.dom.td.alteration.AlterationType;
-import nts.uk.cnv.dom.td.alteration.content.AddColumn;
-import nts.uk.cnv.dom.td.alteration.content.ChangeColumnComment;
-import nts.uk.cnv.dom.td.alteration.content.ChangeColumnJpName;
-import nts.uk.cnv.dom.td.alteration.content.ChangeColumnName;
-import nts.uk.cnv.dom.td.alteration.content.ChangeColumnType;
-import nts.uk.cnv.dom.td.alteration.content.ChangeIndex;
-import nts.uk.cnv.dom.td.alteration.content.ChangePK;
 import nts.uk.cnv.dom.td.alteration.content.ChangeTableJpName;
 import nts.uk.cnv.dom.td.alteration.content.ChangeTableName;
-import nts.uk.cnv.dom.td.alteration.content.ChangeUK;
-import nts.uk.cnv.dom.td.alteration.content.RemoveColumn;
 import nts.uk.cnv.dom.td.alteration.content.RemoveTable;
+import nts.uk.cnv.dom.td.alteration.content.column.AddColumn;
+import nts.uk.cnv.dom.td.alteration.content.column.ChangeColumnComment;
+import nts.uk.cnv.dom.td.alteration.content.column.ChangeColumnJpName;
+import nts.uk.cnv.dom.td.alteration.content.column.ChangeColumnName;
+import nts.uk.cnv.dom.td.alteration.content.column.ChangeColumnType;
+import nts.uk.cnv.dom.td.alteration.content.column.RemoveColumn;
+import nts.uk.cnv.dom.td.alteration.content.constraint.ChangeIndex;
+import nts.uk.cnv.dom.td.alteration.content.constraint.ChangePK;
+import nts.uk.cnv.dom.td.alteration.content.constraint.ChangeUnique;
 import nts.uk.cnv.dom.td.schema.prospect.definition.TableProspect;
 import nts.uk.cnv.dom.td.schema.snapshot.TableSnapshot;
-import nts.uk.cnv.dom.td.schema.tabledesign.ColumnDesign;
-import nts.uk.cnv.dom.td.schema.tabledesign.DefineColumnType;
-import nts.uk.cnv.dom.td.schema.tabledesign.Indexes;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
-import nts.uk.cnv.dom.td.schema.tabledesign.TableName;
-import nts.uk.cnv.dom.td.tabledefinetype.DataType;
+import nts.uk.cnv.dom.td.schema.tabledesign.column.ColumnDesign;
+import nts.uk.cnv.dom.td.schema.tabledesign.column.DataType;
+import nts.uk.cnv.dom.td.schema.tabledesign.column.DefineColumnType;
+import nts.uk.cnv.dom.td.schema.tabledesign.constraint.PrimaryKey;
+import nts.uk.cnv.dom.td.schema.tabledesign.constraint.TableConstraints;
+import nts.uk.cnv.dom.td.schema.tabledesign.constraint.TableIndex;
+import nts.uk.cnv.dom.td.schema.tabledesign.constraint.UniqueConstraint;
 
 @RunWith(JMockit.class)
 public class AlterationFactoryTest {
@@ -99,14 +101,12 @@ public class AlterationFactoryTest {
 
 	@Test
 	public void test_ChangePK() {
-		alt.getContents().add(new ChangePK(Arrays.asList("SID", "YMD", "ITEM_CD"), false));
+		alt.getContents().add(new ChangePK(Arrays.asList("0", "1", "2"), false));
 		Optional<TableDesign> alterd = createAltered(ss, alt);
 
 		Assert.assertTrue(alterd.isPresent());
-		Optional<Indexes> pk = alterd.get().getIndexes().stream()
-				.filter(idx -> idx.isPK())
-				.findFirst();
-		Assert.assertTrue(pk.isPresent() && pk.get().getColumns().contains("ITEM_CD"));
+		val pk = alterd.get().getConstraints().getPrimaryKey();
+		Assert.assertTrue(pk.getColumnIds().contains("2"));
 
 		val result = factory.create(featureId, tableName, meta, base, alterd);
 
@@ -115,15 +115,13 @@ public class AlterationFactoryTest {
 	}
 
 	@Test
-	public void test_ChangeUK() {
-		alt.getContents().add(new ChangeUK("KRCDU_FOO_BAR", Arrays.asList("SID", "YMD", "ITEM_CD"), false));
+	public void test_ChangeUnique() {
+		alt.getContents().add(new ChangeUnique("UK1", Arrays.asList("0", "1", "2"), false));
 		Optional<TableDesign> alterd = createAltered(ss, alt);
 
 		Assert.assertTrue(alterd.isPresent());
-		Optional<Indexes> uk = alterd.get().getIndexes().stream()
-				.filter(idx -> idx.isUK())
-				.findFirst();
-		Assert.assertTrue(uk.isPresent() && uk.get().getColumns().contains("ITEM_CD"));
+		val uk = alterd.get().getConstraints().getUniqueConstraints().get(0);
+		Assert.assertTrue(uk.getColumnIds().contains("2"));
 
 		val result = factory.create(featureId, tableName, meta, base, alterd);
 
@@ -133,14 +131,12 @@ public class AlterationFactoryTest {
 
 	@Test
 	public void test_ChangeIndex() {
-		alt.getContents().add(new ChangeIndex("KRCDI_FOO_BAR", Arrays.asList("SID", "YMD", "ITEM_CD"), true));
+		alt.getContents().add(new ChangeIndex("IX1", Arrays.asList("0", "1", "2"), true));
 		Optional<TableDesign> alterd = createAltered(ss, alt);
 
 		Assert.assertTrue(alterd.isPresent());
-		Optional<Indexes> index = alterd.get().getIndexes().stream()
-				.filter(idx -> idx.getName().equals("KRCDI_FOO_BAR"))
-				.findFirst();
-		Assert.assertTrue(index.isPresent() && index.get().isClustered());
+		val index = alterd.get().getConstraints().getIndexes().get(0);
+		Assert.assertTrue(index.getColumnIds().contains("2"));
 
 		val result = factory.create(featureId, tableName, meta, base, alterd);
 
@@ -193,13 +189,7 @@ public class AlterationFactoryTest {
 				.findFirst();
 		Assert.assertTrue(column.isPresent());
 
-		DefineColumnType resultColtype = new DefineColumnType(
-				column.get().getType(),
-				column.get().getMaxLength(),
-				column.get().getScale(),
-				column.get().isNullable(),
-				column.get().getDefaultValue(),
-				column.get().getCheck());
+		DefineColumnType resultColtype = new DefineColumnType(column.get().getType());
 		Assert.assertEquals(resultColtype, coltype);
 
 		val result = factory.create(featureId, tableName, meta, base, alterd);
@@ -291,19 +281,25 @@ public class AlterationFactoryTest {
 
 	private TableDesign createDummy() {
 		List<ColumnDesign> cols = new ArrayList<>();
-		List<Indexes> indexes = new ArrayList<>();
 		DefineColumnType sidType = new DefineColumnType(DataType.CHAR, 36, 0, false, "", "");
 		DefineColumnType ymdType = new DefineColumnType(DataType.DATE, 0, 0, false, "", "");
 		DefineColumnType itemCdType = new DefineColumnType(DataType.CHAR, 0, 0, false, "", "");
 		cols.add(new ColumnDesign("0", "SID", "社員ID", sidType, "", 0));
 		cols.add(new ColumnDesign("1", "YMD", "年月日", ymdType, "", 1));
 		cols.add(new ColumnDesign("2", "ITEM_CD", "項目コード", itemCdType, "", 2));
-		indexes.add(Indexes.createPk(new TableName(tableName), Arrays.asList("SID", "YMD"), true));
-		indexes.add(Indexes.createIndex("KRCDI_FOO_BAR", Arrays.asList("SID", "YMD"), false));
-
+		
 		return new TableDesign(
 			tableName, tableName, "ほげほげ",
 			cols,
-			indexes);
+			createTableConstraints());
+	}
+	
+	private static TableConstraints createTableConstraints() {
+		
+		val pk = new PrimaryKey(Arrays.asList("SID", "YMD"), true);
+		val unique = Arrays.asList(new UniqueConstraint("UK1", Arrays.asList("SID", "YMD"), false));
+		val index = Arrays.asList(new TableIndex("IX1", Arrays.asList("SID", "YMD"), false));
+		
+		return new TableConstraints(pk, unique, index);
 	}
 }

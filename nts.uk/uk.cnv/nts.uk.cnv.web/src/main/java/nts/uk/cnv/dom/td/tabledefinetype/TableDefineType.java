@@ -1,5 +1,7 @@
 package nts.uk.cnv.dom.td.tabledefinetype;
 
+import nts.uk.cnv.dom.td.schema.tabledesign.column.DataType;
+
 public interface TableDefineType {
 	// 型
 	public String dataType(DataType type, Integer... length);

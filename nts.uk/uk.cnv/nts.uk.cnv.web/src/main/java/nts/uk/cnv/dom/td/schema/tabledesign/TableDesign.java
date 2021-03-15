@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.cnv.dom.constants.Constants;
+import nts.uk.cnv.dom.td.schema.tabledesign.column.ColumnDesign;
+import nts.uk.cnv.dom.td.schema.tabledesign.constraint.TableConstraints;
 import nts.uk.cnv.dom.td.tabledefinetype.TableDefineType;
 
 @AllArgsConstructor
@@ -18,14 +20,14 @@ public class TableDesign implements Cloneable {
 	private String jpName;
 
 	private List<ColumnDesign> columns;
-	private List<Indexes> indexes;
+	private TableConstraints constraints;
 	
 	public TableDesign(TableDesign source) {
 		id = source.id;
 		name = source.name;
 		jpName = source.jpName;
 		columns = source.columns;
-		indexes = source.indexes;
+		constraints = source.constraints;
 	}
 	
 	public static TableDesign empty() {
@@ -34,7 +36,7 @@ public class TableDesign implements Cloneable {
 				null,
 				null,
 				Collections.emptyList(),
-				Collections.emptyList());
+				TableConstraints.empty());
 	}
 
 	public String createSimpleTableSql(TableDefineType defineType) {
@@ -62,21 +64,22 @@ public class TableDesign implements Cloneable {
 
 	private String createTableSql(TableDefineType define, boolean withComment, boolean withRLS) {
 
-		String tableContaint = indexes.stream().anyMatch(idx -> !idx.isIndex())
-				? ",\r\n" + tableContaint()
-				: "";
+//		String tableContaint = indexes.stream().anyMatch(idx -> !idx.isIndex())
+//				? ",\r\n" + tableContaint()
+//				: "";
+		String tableContaint = "";
 
 		String index = "";
-		List<Indexes> indexList = indexes.stream().filter(idx -> idx.isIndex()).collect(Collectors.toList());
-		if(!indexList.isEmpty())
-		{
-			index = String.join(
-				";\r\n",
-				indexList.stream()
-				.map(idx -> idx.getCreateDdl(name))
-				.collect(Collectors.toList()));
-			index = index + ";\r\n";
-		}
+//		List<Indexes> indexList = indexes.stream().filter(idx -> idx.isIndex()).collect(Collectors.toList());
+//		if(!indexList.isEmpty())
+//		{
+//			index = String.join(
+//				";\r\n",
+//				indexList.stream()
+//				.map(idx -> idx.getCreateDdl(name))
+//				.collect(Collectors.toList()));
+//			index = index + ";\r\n";
+//		}
 
 		String comments = "";
 		if(withComment) {
@@ -106,13 +109,14 @@ public class TableDesign implements Cloneable {
 	}
 
 	private String tableContaint() {
-		return String.join(
-					",\r\n",
-					indexes.stream()
-						.filter(idx -> !idx.isIndex())
-						.map(idx -> idx.getTableContaintDdl())
-						.collect(Collectors.toList())
-				) + "\r\n";
+//		return String.join(
+//					",\r\n",
+//					indexes.stream()
+//						.filter(idx -> !idx.isIndex())
+//						.map(idx -> idx.getTableContaintDdl())
+//						.collect(Collectors.toList())
+//				) + "\r\n";
+		return "";
 	}
 
 	private String columnContaint(TableDefineType datatypedefine) {

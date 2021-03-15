@@ -21,7 +21,7 @@ public class OrderCommandHandler extends CommandHandlerWithResult<OrderCommand, 
 	@Inject
 	private AlterationRepository alterationRepo;
 
-	@Inject
+	//@Inject
 	private OrderEventRepository orderEventRepo;
 
 	@Inject
