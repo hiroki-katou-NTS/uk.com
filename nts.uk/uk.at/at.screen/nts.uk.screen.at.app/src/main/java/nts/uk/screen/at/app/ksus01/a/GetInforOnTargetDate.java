@@ -131,7 +131,7 @@ public class GetInforOnTargetDate {
     	List<AttendanceDto> listAttendanceDto = new ArrayList<AttendanceDto>();
     	List<String> listBusinessName = new ArrayList<String>();
     	String memo = "";
-    	int type = 0;
+    	Integer type = null;
     	
     	
     	// [出勤休日区分＜＞休日]

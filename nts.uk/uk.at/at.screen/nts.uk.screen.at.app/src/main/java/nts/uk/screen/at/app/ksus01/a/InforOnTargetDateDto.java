@@ -20,5 +20,5 @@ public class InforOnTargetDateDto {
 	
 	private List<AttendanceDto> listAttendanceDto;
 	
-	private int type;
+	private Integer type;
 }

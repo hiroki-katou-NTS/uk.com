@@ -157,9 +157,25 @@
                 <!-- A4_11 -->
                 <span style="color: #999">{{ "KSUS01_12" | i18n }}</span>
             </div>
-            <div v-if="detailCell && detailCell.displayData.listWorkDesire.length == 0" class="detail-spacing detail-indent">
+            <div v-if="workDesireInputMode == null" class="detail-spacing detail-indent">
                 <div>
                     <span style="font-weight: bold;">{{ "KSUS01_22" | i18n }}</span>
+                </div>
+            </div>
+            <!-- <div v-else-if="detailCell && detailCell.displayData.listWorkDesire.length == 0" class="detail-spacing detail-indent">
+                <div>
+                    <span style="font-weight: bold;">{{ "KSUS01_22" | i18n }}</span>
+                </div>
+            </div> -->
+            <div v-else-if="workDesireInputMode == 0">
+                <div class="detail-spacing detail-indent" >
+                    <span
+                        style="padding: 0.25em 1em; font-weight: bold; border-radius: 0.25rem; display: inline-block;"
+                        class="uk-bg-schedule-sunday">
+                        <span style="margin: 0" class="uk-text-red">
+                            {{ "KSUS01_14" | i18n }}
+                        </span>
+                    </span>
                 </div>
             </div>
             <div v-else-if="workDesireInputMode == 1">
@@ -194,17 +210,6 @@
                             {{timeZone.start}}~{{timeZone.end}}
                         </span>
                     </div>
-                </div>
-            </div>
-            <div v-else-if="workDesireInputMode == 0">
-                <div class="detail-spacing detail-indent" >
-                    <span
-                        style="padding: 0.25em 1em; font-weight: bold; border-radius: 0.25rem; display: inline-block;"
-                        class="uk-bg-schedule-sunday">
-                        <span style="margin: 0" class="uk-text-red">
-                            {{ "KSUS01_14" | i18n }}
-                        </span>
-                    </span>
                 </div>
             </div>
             <div class="detail-spacing">
