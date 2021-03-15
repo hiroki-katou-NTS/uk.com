@@ -201,7 +201,7 @@ module nts.uk.at.view.kal003.a.tab {
                 }
                 let workRecordExtractingCondition = self.listWorkRecordExtractingConditions()[rowId() - 1];
                 if (workRecordExtractingCondition) {
-                    if (_.isEmpty(workRecordExtractingCondition.errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon())) {
+                    if (workRecordExtractingCondition.errorAlarmCondition().atdItemCondition() != null && _.isEmpty(workRecordExtractingCondition.errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon())) {
                         workRecordExtractingCondition.errorAlarmCondition().atdItemCondition().group1().lstErAlAtdItemCon([shareutils.getDefaultCondition(0), shareutils.getDefaultCondition(1), shareutils.getDefaultCondition(2)]);
                     }
                     self.showDialogKal003B(workRecordExtractingCondition, rowId());
