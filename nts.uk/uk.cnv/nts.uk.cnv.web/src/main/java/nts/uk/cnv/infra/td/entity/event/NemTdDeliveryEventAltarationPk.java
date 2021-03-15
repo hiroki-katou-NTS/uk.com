@@ -7,9 +7,11 @@ import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Embeddable
+@NoArgsConstructor
 @AllArgsConstructor
 public class NemTdDeliveryEventAltarationPk implements Serializable {
 	private static final long serialVersionUID = 1L;
