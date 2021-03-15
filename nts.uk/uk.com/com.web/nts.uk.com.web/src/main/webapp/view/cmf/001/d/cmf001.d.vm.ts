@@ -682,7 +682,13 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                 self.stdCondSet().characterCode(self.selectedEncoding());
                 let command = {conditionSetting: ko.toJS(self.stdCondSet), listItem: ko.toJS(self.listAcceptItem), conditionSetCd: self.stdCondSetCd(), system: self.system()};
                 service.registerData(command).done(() => {
-                    self.enableCategory(false);
+                    
+                    if(self.listAcceptItem().length>0){
+                        self.enableCategory(false);
+                    }else{
+                        self.enableCategory(true);
+                    }
+
                     info({ messageId: "Msg_15" });
                 }).fail(function(error) {
                     alertError(error);
