@@ -27,6 +27,9 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.sys.dto.OutGoingMail
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.application.IApplicationContentService;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.MailSenderResult;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSetting;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispName;
 import nts.uk.ctx.at.request.dom.setting.company.displayname.AppDispNameRepository;
 import nts.uk.ctx.at.request.dom.setting.company.mailsetting.mailcontenturlsetting.UrlEmbedded;
@@ -78,6 +81,9 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 	
 	@Inject
 	private AppDispNameRepository repoAppDispName;
+	
+	@Inject
+	private ApplicationSettingRepository applicationSettingRepository;
 	/**
 	 * 11-2.詳細画面差し戻し後の処理
 	 */
@@ -97,18 +103,22 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 			String reSname = employeeAdapter.getEmployeeName(AppContexts.user().employeeId());
 			String remandReason = GeneralDate.today().toString() + "　" + reSname + "⇒" + destination + "：" + "\n" + remandCm.getRemandReason();
 			application.setOpReversionReason(Optional.of(new ReasonForReversion(remandReason)));
-//			AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingRepository
-//					.getAppTypeDiscreteSettingByAppType(companyID, application.getAppType().value).get();
+			Optional<AppTypeSetting> opAppTypeSetting = Optional.empty();
+			Optional<ApplicationSetting> opApplicationSetting = applicationSettingRepository.findByCompanyId(companyID);
+			if(opApplicationSetting.isPresent()) {
+				opAppTypeSetting = opApplicationSetting.get().getAppTypeSettings().stream()
+						.filter(x -> x.getAppType()==application.getAppType()).findAny();
+			}
 			MailSenderResult mailResult = new MailSenderResult(new ArrayList<>(), new ArrayList<>());
 			if (order != null) {// 差し戻し先が承認者の場合
 				//Imported（承認申請）「差し戻しする（承認者まで）」-(Imported（approvalApplication）「trả về（đến  approver）」)
 				//RequestList482
 				List<String> employeeList = approvalRootStateAdapter.doRemandForApprover(companyID, appID, order);
 				//承認処理時に自動でメールを送信するが　trueの場合(check sendMailWhenApprove trong domain Applicationsetting)
-//				if (appTypeDiscreteSetting.getSendMailWhenApprovalFlg().equals(AppCanAtr.CAN)) {
-//					//「申請種類別設定」．新規登録時に自動でメールを送信するがtrue
-//					mailResult = this.getMailSenderResult(application, employeeList, remandReason, isSendMail);
-//				}
+				if(opAppTypeSetting.map(x -> x.isSendMailWhenApproval()).orElse(false)) {
+					//「申請種類別設定」．新規登録時に自動でメールを送信するがtrue
+					mailResult = this.getMailSenderResult(application, employeeList, remandReason, isSendMail);
+				}
 			} else {// 差し戻し先が申請本人の場合
 				//Imported（承認申請）「差し戻しする（本人まで）」-(Trả về bản thân người làm đơn)
 				//RequestList No.480
@@ -123,10 +133,10 @@ public class DetailAfterRemandImpl implements DetailAfterRemand {
 					reflectionStatusOfDay.setScheReflectStatus(ReflectedState.REMAND);
 				}
 				//ドメインモデル「申請種類別設定」．承認処理時に自動でメールを送信するをチェックする-(Check 「申請種類別設定」．Tự động gửi mail khi approve)
-//				if (appTypeDiscreteSetting.getSendMailWhenApprovalFlg().equals(AppCanAtr.CAN)) {
-//					//申請者本人にメール送信する-(Send mail đến bản thân người làm đơn)
-//					mailResult = this.getMailSenderResult(application, Arrays.asList(application.getEmployeeID()), remandReason, isSendMail);
-//				}
+				if(opAppTypeSetting.map(x -> x.isSendMailWhenApproval()).orElse(false)) {
+					//申請者本人にメール送信する-(Send mail đến bản thân người làm đơn)
+					mailResult = this.getMailSenderResult(application, Arrays.asList(application.getEmployeeID()), remandReason, isSendMail);
+				}
 			}
 			successList.addAll(mailResult.getSuccessList());
 			errorList.addAll(mailResult.getErrorList());

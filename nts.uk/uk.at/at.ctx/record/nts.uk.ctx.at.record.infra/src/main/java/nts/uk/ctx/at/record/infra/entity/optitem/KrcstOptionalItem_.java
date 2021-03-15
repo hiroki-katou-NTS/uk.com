@@ -32,7 +32,7 @@ public class KrcstOptionalItem_ {
 	public static volatile SingularAttribute<KrcmtAnyv, Integer> empConditionAtr;
 	
 	/** The krcst calc result range. */
-	public static volatile SingularAttribute<KrcmtAnyv, KrcmtCalcResultRange> krcstCalcResultRange;
+	public static volatile SingularAttribute<KrcmtAnyv, KrcmtAnyfResultRange> krcstCalcResultRange;
 
 
 }

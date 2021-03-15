@@ -56,4 +56,9 @@ public class ParamCalculationHolidayWork {
 	 * 勤務内容
 	 */
 	private WorkContentCommand workContent;
+	
+	/**
+	 * 複数人代行申請か
+	 */
+	private Boolean isAgent;
 }

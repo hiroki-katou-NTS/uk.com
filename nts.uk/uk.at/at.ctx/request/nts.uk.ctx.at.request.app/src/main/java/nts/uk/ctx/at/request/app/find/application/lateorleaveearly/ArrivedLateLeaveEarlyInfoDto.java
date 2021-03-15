@@ -1,8 +1,6 @@
 package nts.uk.ctx.at.request.app.find.application.lateorleaveearly;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,7 +12,7 @@ import nts.uk.ctx.at.request.dom.application.lateorleaveearly.ArrivedLateLeaveEa
 @AllArgsConstructor
 public class ArrivedLateLeaveEarlyInfoDto {
 //	取り消す初期情報
-	private List<LateOrEarlyInfoDto> earlyInfos;
+//	private List<LateOrEarlyInfoDto> earlyInfos;
 	// now, this is not completed so do not use it
 //	申請表示情報
 	private AppDispInfoStartupDto appDispInfoStartupOutput;
@@ -28,7 +26,6 @@ public class ArrivedLateLeaveEarlyInfoDto {
 	public static ArrivedLateLeaveEarlyInfoDto convertDto(ArrivedLateLeaveEarlyInfoOutput value) {
 		
 		return new ArrivedLateLeaveEarlyInfoDto(
-				value.getEarlyInfos().stream().map(item -> LateOrEarlyInfoDto.convertDto(item)).collect(Collectors.toList()),
 				AppDispInfoStartupDto.fromDomain(value.getAppDispInfoStartupOutput()),
 				LateEarlyCancelAppSetDto.fromDomain(value.getLateEarlyCancelAppSet()),
 				value.getInfo().isPresent() ? value.getInfo().get() : null,
@@ -37,7 +34,6 @@ public class ArrivedLateLeaveEarlyInfoDto {
 	
 	public ArrivedLateLeaveEarlyInfoOutput toDomain() {
 		return new ArrivedLateLeaveEarlyInfoOutput(
-				this.earlyInfos.stream().map(x -> x.toDomain()).collect(Collectors.toList()),
 				this.appDispInfoStartupOutput.toDomain(),
 				this.lateEarlyCancelAppSet == null ? null : this.lateEarlyCancelAppSet.toDomain(),
 				this.info == null ? Optional.empty() : Optional.of(this.info),

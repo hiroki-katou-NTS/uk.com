@@ -197,10 +197,9 @@ public class TimeLeaveApplicationFinder {
                 baseDate,
                 achievementDetailDto.getWorkTypeCD(),
                 achievementDetailDto.getWorkTimeCD(),
-                lstTimeZone.stream().map(i -> new TimeZone(
-                        i.getStartTime() == null ? null : new TimeWithDayAttr(i.getStartTime()),
-                        i.getEndTime() == null ? null : new TimeWithDayAttr(i.getEndTime())
-                )).collect(Collectors.toList()),
+                lstTimeZone.stream()
+                        .filter(i -> i.getStartTime() != null && i.getEndTime() != null)
+                        .collect(Collectors.toMap(TimeZoneDto::getWorkNo, i -> new TimeZone(new TimeWithDayAttr(i.getStartTime()), new TimeWithDayAttr(i.getEndTime())))),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 lstOutingTimeZone.stream().map(i -> new OutingTimeZoneExport(
