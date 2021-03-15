@@ -171,16 +171,20 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 			entity.conPeriod = continuousTimeZone.getPeriod().v();
 			
 			// work type
-			List<KscdtScheConDayWt> condWorkType = continuousTimeZone.getWrkTypeCds().stream()
-					.map(code -> new KscdtScheConDayWt(new KscdtScheCondDayWtPk(companyId, domain.getErrorAlarmId(), domain.getSortOrder(), code)))
-					.collect(Collectors.toList());
-			entity.conditionDayWorkTypes = condWorkType;
+			if (continuousTimeZone.getWrkTypeCds() != null && !continuousTimeZone.getWrkTypeCds().isEmpty()) {
+				List<KscdtScheConDayWt> condWorkType = continuousTimeZone.getWrkTypeCds().stream()
+						.map(code -> new KscdtScheConDayWt(new KscdtScheCondDayWtPk(companyId, domain.getErrorAlarmId(), domain.getSortOrder(), code)))
+						.collect(Collectors.toList());
+				entity.conditionDayWorkTypes = condWorkType;
+			}
 			
 			// work time
-			List<KscdtScheConDayWtime> condWorkTime = continuousTimeZone.getWrkTimeCds().stream()
-					.map(code -> new KscdtScheConDayWtime(new KscdtScheCondDayWtimePk(companyId, domain.getErrorAlarmId(), domain.getSortOrder(), code)))
-					.collect(Collectors.toList());
-			entity.conditionDayWorkTimes = condWorkTime;
+			if (continuousTimeZone.getWrkTypeCds() != null && !continuousTimeZone.getWrkTimeCds().isEmpty()) {
+				List<KscdtScheConDayWtime> condWorkTime = continuousTimeZone.getWrkTimeCds().stream()
+						.map(code -> new KscdtScheConDayWtime(new KscdtScheCondDayWtimePk(companyId, domain.getErrorAlarmId(), domain.getSortOrder(), code)))
+						.collect(Collectors.toList());
+				entity.conditionDayWorkTimes = condWorkTime;
+			}
 		}
 		
 		// 連続勤務の場合
@@ -298,16 +302,22 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 			entity.conPeriod = continuousTimeZone.getPeriod().v();
 			
 			// work type
-			List<KscdtScheConDayWt> condWorkType = continuousTimeZone.getWrkTypeCds().stream()
-					.map(code -> new KscdtScheConDayWt(new KscdtScheCondDayWtPk(companyId, domain.getErrorAlarmId(), domain.getSortOrder(), code)))
-					.collect(Collectors.toList());
-			entity.conditionDayWorkTypes = condWorkType;
+			if (continuousTimeZone.getWrkTypeCds() != null && !continuousTimeZone.getWrkTypeCds().isEmpty()) {
+				List<KscdtScheConDayWt> condWorkType = continuousTimeZone.getWrkTypeCds().stream()
+						.map(code -> new KscdtScheConDayWt(new KscdtScheCondDayWtPk(companyId, domain.getErrorAlarmId(), domain.getSortOrder(), code)))
+						.collect(Collectors.toList());
+	//			entity.conditionDayWorkTypes = condWorkType;
+				this.commandProxy().insertAll(condWorkType);
+			}
 			
 			// work time
-			List<KscdtScheConDayWtime> condWorkTime = continuousTimeZone.getWrkTimeCds().stream()
-					.map(code -> new KscdtScheConDayWtime(new KscdtScheCondDayWtimePk(companyId, domain.getErrorAlarmId(), domain.getSortOrder(), code)))
-					.collect(Collectors.toList());
-			entity.conditionDayWorkTimes = condWorkTime;
+			if (continuousTimeZone.getWrkTypeCds() != null && !continuousTimeZone.getWrkTimeCds().isEmpty()) {
+				List<KscdtScheConDayWtime> condWorkTime = continuousTimeZone.getWrkTimeCds().stream()
+						.map(code -> new KscdtScheConDayWtime(new KscdtScheCondDayWtimePk(companyId, domain.getErrorAlarmId(), domain.getSortOrder(), code)))
+						.collect(Collectors.toList());
+	//			entity.conditionDayWorkTimes = condWorkTime;
+				this.commandProxy().insertAll(condWorkTime);
+			}
 		}
 		
 		// 連続勤務の場合
