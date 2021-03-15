@@ -77,7 +77,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     self.workRecordExtractingCondition().checkItem.subscribe((itemCheck) => {
                         errors.clearAll();
                         //fix bug 100145
-                        self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().actualLstWorkType([]);
+                        self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition().planLstWorkType([]);
                         self.comparisonRange().minAmountOfMoneyValue(null);
                         self.comparisonRange().maxAmountOfMoneyValue(null);
                         self.comparisonRange().minTimeValue(null);
@@ -690,7 +690,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 }
 
                 // get Name of selected work type.
-                let wkTypeSelected = workTypeCondition.actualLstWorkType();
+                let wkTypeSelected = workTypeCondition.planLstWorkType();
                 if (wkTypeSelected && wkTypeSelected.length > 0) {
                     service.findWorkTypeByCodes(wkTypeSelected).then((listWrkTypes) => {
                         let names: string = self.buildItemName(listWrkTypes);
@@ -796,7 +796,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                 workTypeCondition = self.workRecordExtractingCondition().errorAlarmCondition().workTypeCondition();
 
             block.invisible();
-            let lstSelectedCode = workTypeCondition.actualLstWorkType();
+            let lstSelectedCode = workTypeCondition.planLstWorkType();
             windows.setShared("KDL002_Multiple", true);
             //all possible items
             windows.setShared("KDL002_AllItemObj", self.listAllWorkType);
@@ -810,7 +810,7 @@ module nts.uk.at.view.kal003.b.viewmodel {
                     let listItems: Array<any> = windows.getShared("KDL002_SelectedNewItem");
                     if (listItems != null && listItems != undefined) {
                         let listCodes: Array<string> = self.getListCode(listItems);
-                        workTypeCondition.actualLstWorkType(listCodes);
+                        workTypeCondition.planLstWorkType(listCodes);
                         // get name
                         let names: string = self.buildItemName(listItems);
                         self.displayWorkTypeSelections_BA1_4(names);

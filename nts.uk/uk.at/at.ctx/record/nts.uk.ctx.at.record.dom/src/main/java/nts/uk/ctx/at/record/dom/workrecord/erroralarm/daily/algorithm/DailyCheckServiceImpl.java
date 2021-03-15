@@ -3,7 +3,6 @@ package nts.uk.ctx.at.record.dom.workrecord.erroralarm.daily.algorithm;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -12,7 +11,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
@@ -24,7 +22,6 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.finddata.IFindDataDCR
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck.DailyRecordCreateErrorAlermService;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
-import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmConditionRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
@@ -35,18 +32,18 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.FixedConditionWorkRecordRe
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.WorkRecordFixedCheckItem;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.algorithm.DataCheckAlarmListService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.ErrorAlarmCondition;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkCheckResult;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkRecordExtraConRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.WorkRecordExtractingCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.attendanceitem.ErAlAttendanceItemCondition;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.service.ErAlWorkRecordCheckService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.service.ErAlWorkRecordCheckService.ErrorRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktype.PlanActualWorkType;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.worktype.SingleWorkType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.daily.DailyCheckService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.CompareOperatorText;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionAtr;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConvertCompareTypeToText;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.FilterByCompare;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.TypeCheckWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.StatusOfEmployeeAdapterAl;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.WorkPlaceHistImportAl;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.mastercheck.algorithm.WorkPlaceIdAndPeriodImportAl;
@@ -63,13 +60,10 @@ import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.AlarmListCheckType;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionAlarmPeriodDate;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ExtractionResultDetail;
 import nts.uk.ctx.at.shared.dom.alarmList.extractionResult.ResultOfEachCondition;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordShareFinder;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordConverter;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.snapshot.SnapShot;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
@@ -80,6 +74,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.i18n.TextResource;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
 public class DailyCheckServiceImpl implements DailyCheckService{
@@ -422,8 +417,11 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 			int compare = erCondition.getCompareSingleValue() == null ?
 					erCondition.getCompareRange().getCompareOperator().value :
 						erCondition.getCompareSingleValue().getCompareOpertor().value;
-			List<Integer> lstAddSub = erCondition.getCountableTarget().getAddSubAttendanceItems().getAdditionAttendanceItems();
-			List<Integer> lstSubStr = erCondition.getCountableTarget().getAddSubAttendanceItems().getSubstractionAttendanceItems();
+			List<Integer> lstAddSub = erCondition.getCountableTarget() != null ? erCondition.getCountableTarget().getAddSubAttendanceItems().getAdditionAttendanceItems()
+					: Arrays.asList(erCondition.getUncountableTarget().getAttendanceItem());
+			List<Integer> lstSubStr = erCondition.getCountableTarget() != null ? erCondition.getCountableTarget().getAddSubAttendanceItems().getSubstractionAttendanceItems()
+					: new ArrayList<>();
+						
 			List<MonthlyAttendanceItemNameDto> addSubName = lstItemDay.stream().filter(x -> lstAddSub.contains(x.getAttendanceItemId()))
 					.collect(Collectors.toList());
 			List<MonthlyAttendanceItemNameDto> subStrName = lstItemDay.stream().filter(x -> lstSubStr.contains(x.getAttendanceItemId()))
@@ -437,26 +435,47 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 			String startValue = erCondition.getCompareSingleValue() == null ?
 					erCondition.getCompareRange().getStartValue().toString() : erCondition.getCompareSingleValue().getValue().toString();
 			String endValue = erCondition.getCompareRange() == null ? null : erCondition.getCompareRange().getEndValue().toString();
-			if(extCond.getCheckItem() == TypeCheckWorkRecord.TIME
-					|| extCond.getCheckItem() == TypeCheckWorkRecord.CONTINUOUS_TIME) {
+			if(erCondition.getConditionAtr() == ConditionAtr.TIME_DURATION) {
 				startValue = dataCheckSevice.timeToString((Double.valueOf(startValue).intValue()));
 				endValue = endValue == null ? null : dataCheckSevice.timeToString((Double.valueOf(endValue).intValue()));
-				alMes.setAlarmTarget(nameItem + ": " + dataCheckSevice.timeToString((Double.valueOf(mapCheck.get(0).getCheckedValue()).intValue())));
+				alMes.setAlarmTarget(alMes.getAlarmTarget() + "," + nameItem + ": " + dataCheckSevice.timeToString((Double.valueOf(mapCheck.get(0).getCheckedValue()).intValue())));
+			} else if (erCondition.getConditionAtr() == ConditionAtr.TIME_WITH_DAY) {
+				TimeWithDayAttr startTimeDay = new TimeWithDayAttr(Double.valueOf(startValue).intValue());
+				startValue = startTimeDay.getInDayTimeWithFormat();
+				TimeWithDayAttr endTimeDay = endValue == null ? null : new TimeWithDayAttr(Double.valueOf(endValue).intValue());
+				endValue = endValue == null ? null : endTimeDay.getInDayTimeWithFormat();
+				TimeWithDayAttr targetV =  new TimeWithDayAttr(Double.valueOf(mapCheck.get(0).getCheckedValue()).intValue());
+				alMes.setAlarmTarget(alMes.getAlarmTarget() + "," + nameItem + ": " + targetV.getInDayTimeWithFormat());
 			} else {
-				alMes.setAlarmTarget(nameItem + ": " + mapCheck.get(0).getCheckedValue());
+				alMes.setAlarmTarget(alMes.getAlarmTarget() + "," + nameItem + ": " + mapCheck.get(0).getCheckedValue());
 			}
+			if(alMes.getAlarmTarget().substring(0,1).equals(",")) {
+				alMes.setAlarmTarget(alMes.getAlarmTarget().substring(1));	
+			}
+			
 			if(compare <= 5) {
-				alMes.setAttendentName(alMes.getAttendentName() + nameItem + compareOperatorText.getCompareLeft() + startValue);
+				alMes.setAttendentName(alMes.getAttendentName()  + "," + nameItem + compareOperatorText.getCompareLeft() + startValue);
 			} else {
 				if (compare > 5 && compare <= 7) {
-					alMes.setAttendentName(alMes.getAttendentName() +  startValue + compareOperatorText.getCompareLeft() + nameItem
+					alMes.setAttendentName(alMes.getAttendentName()  + "," +   startValue + compareOperatorText.getCompareLeft() + nameItem
 							+ compareOperatorText.getCompareright() + endValue);
 				} else {
-					alMes.setAttendentName(alMes.getAttendentName() +  startValue + compareOperatorText.getCompareLeft() + nameItem
+					alMes.setAttendentName(alMes.getAttendentName()  + "," +   startValue + compareOperatorText.getCompareLeft() + nameItem
 							+ ", " + nameItem + compareOperatorText.getCompareright() + endValue);
 				}
 			}
-			PlanActualWorkType plan = (PlanActualWorkType) errorAlarm.getWorkTypeCondition();
+			if(alMes.getAttendentName().substring(0,1).equals(",")) {
+				alMes.setAttendentName(alMes.getAttendentName().substring(1));	
+			}
+			List<WorkTypeCode> lstWorkType = new ArrayList<>();
+			if(errorAlarm.getWorkTypeCondition().getComparePlanAndActual() != FilterByCompare.SELECTED) {
+				PlanActualWorkType plan = (PlanActualWorkType) errorAlarm.getWorkTypeCondition();
+				lstWorkType = plan.getWorkTypePlan().getLstWorkType();
+			} else {
+				SingleWorkType wtypeConditionDomain = (SingleWorkType) errorAlarm.getWorkTypeCondition();
+				lstWorkType = wtypeConditionDomain.getTargetWorkType().getLstWorkType();
+			}
+			
 			
 			if(errorAlarm.getWorkTypeCondition().getComparePlanAndActual() == FilterByCompare.ALL) {
 				alMes.setWorkTypeName(TextResource.localize("KAL010_133"));
@@ -466,119 +485,20 @@ public class DailyCheckServiceImpl implements DailyCheckService{
 				alMes.setWorkTypeName(TextResource.localize("KAL010_134"));
 			}
 			
-			if(!plan.getWorkTypePlan().getLstWorkType().isEmpty()) {
-				for(int i = 0; i < plan.getWorkTypePlan().getLstWorkType().size(); i++) {
-					WorkTypeCode wt = plan.getWorkTypePlan().getLstWorkType().get(i);
+			if(!lstWorkType.isEmpty()) {
+				for(int i = 0; i < lstWorkType.size(); i++) {
+					WorkTypeCode wt = lstWorkType.get(i);
 					Optional<WorkType> optWt = lstWkType.stream().filter(x -> x.getWorkTypeCode().equals(wt))
 							.findFirst();
 					if(optWt.isPresent()) alMes.setWtName(alMes.getWtName() + ", " + optWt.get().getName().v());
 				}
 				alMes.setWtName(alMes.getWtName().substring(2));
+			} else {
+				alMes.setWorkTypeName(TextResource.localize("KAL010_133"));
 			}
 			
 		}
 	}
-	
-	/**
-	 * 実績をチェックする
-	 */
-	private OutputCheckResult CheckAchievement(GeneralDate day, String sid, IntegrationOfDaily integra,
-			WorkRecordExtractingCondition workRecord, List<ErrorAlarmCondition> errorAlarm,
-			List<ErrorAlarmWorkRecord> listError, String wid) {
-		List<AlarmListCheckInfor> listChkInfor = new ArrayList<>();
-		List<ResultOfEachCondition> listResult = new ArrayList<>();
-		
-		// 時間、回数、時刻、金額の場合
-		if(workRecord.getCheckItem() == TypeCheckWorkRecord.TIME || workRecord.getCheckItem() == TypeCheckWorkRecord.TIMES
-				|| workRecord.getCheckItem() == TypeCheckWorkRecord.TIME_OF_DAY 
-				|| workRecord.getCheckItem() == TypeCheckWorkRecord.AMOUNT_OF_MONEY) {
-			
-			
-			for(ErrorAlarmCondition alarmCon: errorAlarm) {
-				
-				Optional<ErrorAlarmWorkRecord> errAlarmWk = listError.stream().filter(x -> x.getErrorAlarmCheckID()
-						.equals(alarmCon.getErrorAlarmCheckID())).findFirst();
-				
-				// 勤務種類をチェックする
-				WorkCheckResult checkResult = alarmCon.getWorkTypeCondition().checkWorkType(new WorkInfoOfDailyPerformance(integra.getEmployeeId(), integra.getYmd(), integra.getWorkInformation()), 
-																Optional.ofNullable(SnapShot.of(integra.getWorkInformation().getRecordInfo(), new AttendanceTime(0))));
-				
-				if(checkResult != WorkCheckResult.ERROR) {
-					
-					// 勤怠項目をチェックする
-					WorkCheckResult result = alarmCon.getAtdItemCondition().check(item -> {
-
-						List<ItemValue> lstItemValue = dailyRecordConverter.createDailyConverter().setData(integra)
-								.convert(item);
-						return lstItemValue.stream().map(iv -> getValue(iv)).collect(Collectors.toList());
-
-					});
-					
-					if(result == WorkCheckResult.ERROR) {
-						
-						// チェック結果を生成する
-						List<ExtractionResultDetail> extractResult = new ArrayList<>();
-
-						extractResult.add(new ExtractionResultDetail(sid,
-												new ExtractionAlarmPeriodDate(Optional.ofNullable(day),
-																				Optional.empty()), 
-												workRecord.getNameWKRecord().v(), alarmCon.getDisplayMessage().v(), 
-												GeneralDateTime.now(), Optional.ofNullable(wid), Optional.empty(), Optional.empty()));
-						listResult.add(new ResultOfEachCondition(EnumAdaptor.valueOf(1, AlarmListCheckType.class), String.valueOf(errAlarmWk.get().getRemarkColumnNo()), 
-								extractResult));
-					}
-				}
-				
-				listChkInfor.add(new AlarmListCheckInfor(String.valueOf(errAlarmWk.get().getRemarkColumnNo()), 
-															EnumAdaptor.valueOf(1, AlarmListCheckType.class)));
-			}
-
-		}
-		
-		// 複合条件の場合
-		else if(workRecord.getCheckItem() == TypeCheckWorkRecord.CONTINUOUS_CONDITION) {
-			
-			for(ErrorAlarmCondition alarmCon: errorAlarm) {
-				
-				Optional<ErrorAlarmWorkRecord> errAlarmWk = listError.stream().filter(x -> x.getErrorAlarmCheckID()
-						.equals(alarmCon.getErrorAlarmCheckID())).findFirst();
-				
-				// 勤怠項目をチェックする
-				WorkCheckResult result = alarmCon.getAtdItemCondition().check(item -> {
-	
-					List<ItemValue> lstItemValue = dailyRecordConverter.createDailyConverter().setData(integra)
-							.convert(item);
-					return lstItemValue.stream().map(iv -> getValue(iv)).collect(Collectors.toList());
-	
-				});
-				
-				if(result == WorkCheckResult.ERROR) {
-					// チェック結果を生成する
-					List<ExtractionResultDetail> extractResult = new ArrayList<>();
-
-					extractResult.add(new ExtractionResultDetail(sid,
-											new ExtractionAlarmPeriodDate(Optional.ofNullable(day),
-																			Optional.empty()), 
-											workRecord.getNameWKRecord().v(), alarmCon.getDisplayMessage().v(), 
-											GeneralDateTime.now(), Optional.ofNullable(wid), Optional.empty(), Optional.empty()));
-					listResult.add(new ResultOfEachCondition(EnumAdaptor.valueOf(1, AlarmListCheckType.class), String.valueOf(errAlarmWk.get().getRemarkColumnNo()), 
-							extractResult));					
-				}
-				listChkInfor.add(new AlarmListCheckInfor(String.valueOf(errAlarmWk.get().getRemarkColumnNo()), 
-															EnumAdaptor.valueOf(1, AlarmListCheckType.class)));
-			}
-		}
-		return new OutputCheckResult(listResult, listChkInfor);
-	}
-	
-	private Double getValue(ItemValue value) {
-		if (value.value() == null) {
-			return null;
-		}
-		return value.getValueType().isDouble() ? (Double) value.value()
-												: Double.valueOf((Integer) value.value());
-	}
-	
 	
 	/**
 	 * 日別実績のエラーアラームのアラーム値を生成する
