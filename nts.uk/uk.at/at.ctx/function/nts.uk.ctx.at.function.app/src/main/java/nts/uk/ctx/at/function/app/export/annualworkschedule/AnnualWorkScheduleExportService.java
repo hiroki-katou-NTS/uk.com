@@ -266,7 +266,9 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 		// B1_1 + B1_2
 		String periodStr = startYm.until(endYm, ChronoUnit.MONTHS) == 0
 						 ? startYm.format(DateTimeFormatter.ofPattern(YM_FORMATER))
-						 : startYm.format(DateTimeFormatter.ofPattern(YM_FORMATER)) + "～" + endYm.format(DateTimeFormatter.ofPattern(YM_FORMATER));
+						 : startYm.format(DateTimeFormatter.ofPattern(YM_FORMATER))
+						 	+ TextResource.localize("KWR008_75")
+						 	+ endYm.format(DateTimeFormatter.ofPattern(YM_FORMATER));
 		header.setPeriod(TextResource.localize("KWR008_41") + " " + periodStr);
 
 		List<ItemsOutputToBookTable> listItemOut = setOutItemsWoSc.getListItemsOutput().stream().filter(item -> item.isUseClass()) // ドメインモデル「帳表に出力する項目．使用区分」をチェックする
