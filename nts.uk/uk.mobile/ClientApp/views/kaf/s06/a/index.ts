@@ -924,7 +924,7 @@ export class KafS06AComponent extends KafS00ShrComponent {
                 
                 // đăng kí 
                 return vm.$http.post('at', vm.modeNew ? API.insert : API.update, vm.modeNew ? command : commandUpdate).then((res: any) => {
-                    vm.$goto('kafs06a1', { mode: vm.modeNew ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.data.appID });
+                    vm.$goto('kafs06a1', { mode: vm.modeNew ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.data.appIDLst[0] });
                 });
             }
         }).then((result: any) => {
