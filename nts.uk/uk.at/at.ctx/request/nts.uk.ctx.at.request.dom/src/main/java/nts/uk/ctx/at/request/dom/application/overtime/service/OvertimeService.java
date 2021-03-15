@@ -86,6 +86,7 @@ public interface OvertimeService {
 	 * @param advanceApplicationTime
 	 * @param achieveApplicationTime
 	 * @param workContent
+	 * @param agent
 	 * @return 残業申請の表示情報
 	 */
 	public DisplayInfoOverTime calculate(
@@ -97,7 +98,8 @@ public interface OvertimeService {
 			ApplicationTime advanceApplicationTime, 
 			ApplicationTime achieveApplicationTime,
 			WorkContent workContent,
-			OvertimeAppSet overtimeAppSet
+			OvertimeAppSet overtimeAppSet,
+			Boolean agent
 			);
 	/**
 	 * Refactor5 19_計算処理
@@ -121,7 +123,8 @@ public interface OvertimeService {
 			ApplicationTime advanceApplicationTime, 
 			ApplicationTime achieveApplicationTime,
 			WorkContent workContent,
-			OvertimeAppSet overtimeAppSet);
+			OvertimeAppSet overtimeAppSet,
+			Boolean agent);
 	
 	/**
 	 * Refactor5 01_初期起動の処理
@@ -138,7 +141,7 @@ public interface OvertimeService {
 			AppDispInfoStartupOutput appDispInfoStartupOutput,
 			Optional<Integer> startTimeSPR,
 			Optional<Integer> endTimeSPR,
-			Boolean isProxy
+			Boolean agent
 			);
 	
 	/**
@@ -272,7 +275,7 @@ public interface OvertimeService {
 			AppDispInfoStartupOutput appDispInfoStartupOutput,
 			Optional<Integer> startTimeSPR,
 			Optional<Integer> endTimeSPR,
-			Boolean isProxy
+			Boolean agent
 			);
 	/**
 	 * Refactor5 UKDesign.UniversalK.就業.KAF_申請.KAF005_残業申請.A：残業申請（新規登録）.ユースケース
@@ -295,7 +298,8 @@ public interface OvertimeService {
 			Optional<Integer> endTimeSPR,
 			AppDispInfoStartupOutput appDispInfoStartupOutput,
 			OvertimeAppSet overtimeAppSet,
-			PrePostInitAtr prePost
+			PrePostInitAtr prePost,
+			Boolean agent
 			);
 	
 
@@ -325,7 +329,8 @@ public interface OvertimeService {
 			OvertimeAppSet overtimeAppSet,
 			List<WorkType> worktypes,
 			PrePostInitAtr prePost,
-			DisplayInfoOverTime displayInfoOverTime
+			DisplayInfoOverTime displayInfoOverTime,
+			Boolean agent
 			);
 	
 	// Mobile //
@@ -349,7 +354,8 @@ public interface OvertimeService {
 			Optional<DisplayInfoOverTime> disOptional,
 			Optional<AppOverTime> appOptional,
 			AppDispInfoStartupOutput appDispInfoStartupOutput,
-			OvertimeAppAtr overtimeAppAtr);
+			OvertimeAppAtr overtimeAppAtr,
+			Boolean agent);
 	/**
 	 * Refactor5 UKDesign.UniversalK.就業.KAF_申請.KAFS05_残業申請(スマホ).A：残業申請(新規).アルゴリズム.申請日を変更する
 	 * 申請日を変更する
@@ -423,7 +429,8 @@ public interface OvertimeService {
 			AppOverTime appOverTime,
 			Boolean mode,
 			String employeeId,
-			Optional<GeneralDate> dateOp
+			Optional<GeneralDate> dateOp,
+			Boolean agent
 			);
 	/**
 	 * Refactor5 個別登録前チェッ処理（複数人版）
