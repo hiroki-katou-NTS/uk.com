@@ -44,8 +44,6 @@ import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
 import nts.uk.ctx.sys.auth.dom.role.RoleType;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
 import nts.uk.ctx.sys.auth.dom.roleset.RoleSetRepository;
-import nts.uk.ctx.sys.auth.dom.user.User;
-import nts.uk.ctx.sys.auth.dom.user.UserRepository;
 import nts.uk.ctx.sys.auth.dom.wkpmanager.EmpInfoAdapter;
 import nts.uk.ctx.sys.auth.dom.wkpmanager.WorkplaceManager;
 import nts.uk.ctx.sys.auth.dom.wkpmanager.WorkplaceManagerRepository;
@@ -60,6 +58,8 @@ import nts.uk.ctx.sys.auth.pub.role.RoleExportRepo;
 import nts.uk.ctx.sys.auth.pub.user.UserExport;
 import nts.uk.ctx.sys.auth.pub.user.UserPublisher;
 import nts.uk.ctx.sys.auth.pub.workplace.WorkplaceListPub;
+import nts.uk.ctx.sys.shared.dom.user.User;
+import nts.uk.ctx.sys.shared.dom.user.UserRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -461,7 +461,7 @@ public class EmployeePublisherImpl implements EmployeePublisher {
 		// 重複するものを排除した「Map<職場ID、社員ID>」を返す
 		return mapWkpIdAndSid1;
 	}
-	
+
 	@AllArgsConstructor
 	private static class RequireRQ653Impl implements EmployeePublisher.RequireRQ653 {
 		

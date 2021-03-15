@@ -4,6 +4,10 @@ module nts.uk.ui.at.ksu002.a {
 	import c = nts.uk.ui.calendar;
 	import k = nts.uk.ui.at.kcp013.shared;
 
+	const AB_API = {
+		CR_WT_HD: '/screen/ksu/ksu002/correctWorkTimeHalfDay'
+	};
+
 	const template = `
 	<div class="btn-action">
 		<div class="cf">
@@ -93,7 +97,8 @@ module nts.uk.ui.at.ksu002.a {
 					disabled: $component.workTimeData.disabled,
 					tabindex: $$tabindex,
 					width: 520,
-					workplace-id: $component.data.workplaceId
+					workplace-id: $component.data.workplaceId,
+					check: ko.observable(true)
 				"></div>
 		</div>
 	</div>
@@ -290,7 +295,7 @@ module nts.uk.ui.at.ksu002.a {
 						const wplace = ko.unwrap(data.workplaceId);
 						const wtype = _.find(wtyped, w => w.workTypeCode === wtypec);
 
-						return vm.data.mode() === 'edit' || !wplace || !wtype || wtype.type === WORKTYPE_SETTING.NOT_REQUIRED;
+						return vm.data.mode() === 'edit' || !wplace || !wtype || wtype.type === WORKTIME_SETTING.NOT_REQUIRED; // || wtype.style === WORK_STYLE.HOLIDAY;
 					},
 					owner: vm
 				}),
@@ -301,7 +306,7 @@ module nts.uk.ui.at.ksu002.a {
 					const wtyped = ko.unwrap(dataSourcesWtype);
 					const wtype = _.find(wtyped, w => w.workTypeCode === wtypec);
 
-					if (wtype && wtype.type === WORKTYPE_SETTING.NOT_REQUIRED) {
+					if (wtype && wtype.type === WORKTIME_SETTING.NOT_REQUIRED) {
 						vm.$window
 							.storage(c.KSU_USER_DATA)
 							.then((stg: undefined | c.StorageData) => {
@@ -340,34 +345,52 @@ module nts.uk.ui.at.ksu002.a {
 						} else {
 							const noD = ['none', 'deferred'].indexOf(wtimec) > -1;
 
-							vm.$window
-								.storage(c.KSU_USER_DATA)
-								.then((v: undefined | c.StorageData) => {
-									if (v === undefined) {
-										vm.$window.storage(c.KSU_USER_DATA, { wtypec, wtimec });
-									} else {
-										const { fdate } = v;
+							$.Deferred()
+								.resolve(wtype.style)
+								.then((wt: WORK_STYLE) => {
+									// 勤務種類の出勤休日区分 == 午前出勤系 or 午後出勤系
+									if ([WORK_STYLE.MORNING, WORK_STYLE.AFTERNOON].indexOf(wt) !== -1) {
+										const workTypeCode = wtypec;
+										const workTimeCode = noD ? null : wtimec;
+										const command = { workTimeCode, workTypeCode };
 
-										vm.$window.storage(c.KSU_USER_DATA, { fdate, wtypec, wtimec });
+										return vm.$blockui('invisible')
+											.then(() => vm.$ajax('at', AB_API.CR_WT_HD, command));
 									}
-								});
 
-							data.selected({
-								wtype: {
-									code: wtypec,
-									name: wtype.abbName,
-									type: wtype.type,
-									style: wtype.style
-								},
-								wtime: {
-									code: hwt ? wtimec : null,
-									name: hwt ? wtime.nameAb : null,
-									value: {
-										begin: !hwt || noD || wtype.style === WORK_STYLE.HOLIDAY ? null : wtime.tzStart1,
-										finish: !hwt || noD || wtype.style === WORK_STYLE.HOLIDAY ? null : wtime.tzEnd1
-									}
-								}
-							});
+									return null;
+								})
+								.then((wtp: WorkTimePassedValue) => {
+									vm.$window
+										.storage(c.KSU_USER_DATA)
+										.then((v: undefined | c.StorageData) => {
+											if (v === undefined) {
+												vm.$window.storage(c.KSU_USER_DATA, { wtypec, wtimec });
+											} else {
+												const { fdate } = v;
+
+												vm.$window.storage(c.KSU_USER_DATA, { fdate, wtypec, wtimec });
+											}
+										});
+
+									data.selected({
+										wtype: {
+											code: wtypec,
+											name: wtype.abbName,
+											type: wtype.type,
+											style: wtype.style
+										},
+										wtime: {
+											code: hwt ? wtimec : null,
+											name: hwt ? wtime.nameAb : null,
+											value: {
+												begin: !hwt || noD || wtype.style === WORK_STYLE.HOLIDAY ? null : (wtp ? wtp.startTime : wtime.tzStart1),
+												finish: !hwt || noD || wtype.style === WORK_STYLE.HOLIDAY ? null : (wtp ? wtp.endTime : wtime.tzEnd1)
+											}
+										}
+									});
+								})
+								.always(() => vm.$blockui('clear'));
 						}
 					}
 				},
@@ -402,11 +425,30 @@ module nts.uk.ui.at.ksu002.a {
 						}
 					}
 				});
+
+			$(window)
+				// undo, redo by hot key
+				.on('zur.keydown', (__: JQueryEventObject, evt2: JQueryEventObject) => {
+					if (evt2 && evt2.ctrlKey) {
+						if (evt2.keyCode === 90) {
+							// $('.action-bar button.btn-undo').trigger('click');
+						} else if (evt2.keyCode === 89) {
+							// $('.action-bar button.btn-redo').trigger('click');
+						}
+					}
+				})
+				.on('keydown', (evt) => $(window).trigger('zur.keydown', [evt]));
+		}
+
+		destroyed() {
+			$(window).off('zur.keydown');
 		}
 	}
 
 	export type EDIT_MODE = 'edit' | 'copy';
 	export type WTIME_CODE = 'none' | 'deferred' | string;
+
+	type WorkTimePassedValue = { startTime: number | null; endTime: number | null; } | null;
 
 	interface Parameter {
 		selected: KnockoutObservable<null | WorkData>;
@@ -422,7 +464,7 @@ module nts.uk.ui.at.ksu002.a {
 
 	interface WorkTypeResponse {
 		workStyle: WORK_STYLE;
-		workTimeSetting: WORKTYPE_SETTING;
+		workTimeSetting: WORKTIME_SETTING;
 		workTypeDto: WorkType;
 	}
 
@@ -435,11 +477,11 @@ module nts.uk.ui.at.ksu002.a {
 
 	interface WorkTypeModel extends WorkType {
 		style: WORK_STYLE;
-		type: WORKTYPE_SETTING;
+		type: WORKTIME_SETTING;
 		memo: string;
 	}
 
-	export enum WORKTYPE_SETTING {
+	export enum WORKTIME_SETTING {
 		REQUIRED = 0,
 		OPTIONAL = 1,
 		NOT_REQUIRED = 2
@@ -450,7 +492,7 @@ module nts.uk.ui.at.ksu002.a {
 			code: string;
 			name: string;
 			style: WORK_STYLE;
-			type: WORKTYPE_SETTING;
+			type: WORKTIME_SETTING;
 		};
 		wtime: {
 			code: WTIME_CODE;

@@ -25,7 +25,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalite
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemTimes;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemValue;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * 任意項目
@@ -35,16 +35,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "KRCDT_DAY_ANYITEMVALUE_MERGE")
-@NamedStoredProcedureQuery(name = "SSPR_DAIKYUZAN_PRC", procedureName = "SSPR_DAIKYUZAN_PRC", parameters = {
-		@StoredProcedureParameter(name = "CID", mode = ParameterMode.IN, type = String.class),
-		@StoredProcedureParameter(name = "SID", mode = ParameterMode.IN, type = String.class),
-		@StoredProcedureParameter(name = "YMD", mode = ParameterMode.IN, type = Date.class),
-		@StoredProcedureParameter(name = "WorkTypeCode", mode = ParameterMode.IN, type = String.class),
-		@StoredProcedureParameter(name = "WorkTimeCode", mode = ParameterMode.IN, type = String.class),
-		@StoredProcedureParameter(name = "HoliWorkTimes", mode = ParameterMode.IN, type = Integer.class) },
-		resultClasses = Integer.class)
-public class KrcdtDayAnyItemValueMerge extends UkJpaEntity implements Serializable {
+@Table(name = "KRCDT_DAY_TIME_ANYITEM")
+public class KrcdtDayAnyItemValueMerge extends ContractUkJpaEntity implements Serializable {
 
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;

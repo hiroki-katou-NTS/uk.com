@@ -10,7 +10,6 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.imprint.reflect.ReflectEntranceAndExit;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.imprint.reflectondomain.ReflectionInformation;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.reflectattdclock.ReflectStampOuput;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.attendancetime.reflectleavingwork.CheckRangeReflectLeavingWork;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.attendancetime.reflectwork.CheckRangeReflectAttd;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.attendancetime.reflectwork.OutputCheckRangeReflectAttd;
@@ -19,6 +18,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.StampReflectRangeOutput;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneStampSet;
 
 /**
  * 枠反映する (new_2020) in 入退門反映する
@@ -47,7 +47,7 @@ public class ReflectFrameEntranceAndExit {
 	 * @param integrationOfDaily
 	 */
 	public List<ReflectionInformation> reflect(List<ReflectionInformation> listReflectionInformation, Stamp stamp,
-			StampReflectRangeOutput stampReflectRangeOutput, IntegrationOfDaily integrationOfDaily) {
+			StampReflectRangeOutput stampReflectRangeOutput, IntegrationOfDaily integrationOfDaily,WorkTimezoneStampSet workTimezoneStampSet) {
 		// 反映範囲か確認する
 		OutputCheckRangeReflectAttd outputCheckRangeReflectAttd = OutputCheckRangeReflectAttd.OUT_OF_RANGE;
 		if(stamp.getType().getChangeClockArt() == ChangeClockArt.BRARK || 
@@ -68,7 +68,7 @@ public class ReflectFrameEntranceAndExit {
 					.filter(x -> x.getFrameNo() == 1).findFirst();
 			// 反映する
 			Optional<WorkStamp> wt1 = reflectEntranceAndExit.reflect(reflectionInformation1, stamp,
-					integrationOfDaily.getYmd());
+					integrationOfDaily.getYmd(),workTimezoneStampSet);
 			
 			if(stamp.getType().getChangeClockArt() == ChangeClockArt.BRARK ||   //退門ORPCログオフの場合
 					   stamp.getType().getChangeClockArt() == ChangeClockArt.PC_LOG_OFF ) {
@@ -94,7 +94,7 @@ public class ReflectFrameEntranceAndExit {
 					.filter(x -> x.getFrameNo() == 2).findFirst();
 			// 反映する
 			Optional<WorkStamp> wt2 = reflectEntranceAndExit.reflect(reflectionInformation2, stamp,
-					integrationOfDaily.getYmd());
+					integrationOfDaily.getYmd(),workTimezoneStampSet);
 			if(stamp.getType().getChangeClockArt() == ChangeClockArt.BRARK ||   //退門ORPCログオフの場合
 					   stamp.getType().getChangeClockArt() == ChangeClockArt.PC_LOG_OFF ) {
 				if (reflectionInformation2.isPresent()) {
