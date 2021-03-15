@@ -58,10 +58,10 @@ module nts.uk.at.view.ksm007.c {
       };
 
       vm.$ajax('com', PATH.saveData, params).done(() => {
-        vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
+        //vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
           vm.$window.close({ isSave: true });
           vm.$blockui('hide');
-        });
+        //});
       }).fail((error) => {
         vm.$dialog.error({ messageId: error.messageId }).then(() => {
           vm.$blockui('hide');
