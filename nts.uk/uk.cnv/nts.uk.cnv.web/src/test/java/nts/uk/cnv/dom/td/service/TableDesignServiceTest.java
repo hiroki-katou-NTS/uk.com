@@ -18,7 +18,7 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.cnv.dom.td.alteration.Alteration;
 import nts.uk.cnv.dom.td.alteration.AlterationFactory;
 import nts.uk.cnv.dom.td.alteration.AlterationMetaData;
-import nts.uk.cnv.dom.td.alteration.TableDesignService;
+import nts.uk.cnv.dom.td.alteration.SaveAlteration;
 import nts.uk.cnv.dom.td.schema.snapshot.TableSnapshot;
 import nts.uk.cnv.dom.td.schema.tabledesign.Indexes;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
@@ -35,13 +35,13 @@ import nts.uk.cnv.dom.td.schema.tabledesign.constraint.UniqueConstraint;
 public class TableDesignServiceTest {
 
 	@Injectable
-	private TableDesignService.Require require;
+	private SaveAlteration.Require require;
 
 	@Injectable
 	private AlterationFactory factory;
 
 	@Tested
-	private TableDesignService target;
+	private SaveAlteration target;
 
 	private final String featureId = "root";
 	private final String tableId = IdentifierUtil.randomUniqueId();

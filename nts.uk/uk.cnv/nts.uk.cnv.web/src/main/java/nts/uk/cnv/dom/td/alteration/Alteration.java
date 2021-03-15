@@ -1,39 +1,71 @@
 package nts.uk.cnv.dom.td.alteration;
 
+import static java.util.stream.Collectors.*;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.val;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.cnv.dom.td.alteration.content.AlterationContent;
 import nts.uk.cnv.dom.td.schema.prospect.definition.TableProspectBuilder;
+import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
 
 /**
- * 変更
+ * oruta
  */
 @AllArgsConstructor
 @Getter
 @EqualsAndHashCode
-public class Alteration implements Comparable<Alteration>{
+public class Alteration implements Comparable<Alteration> {
+	
+	/** oruta ID */
 	String alterId;
+	
+	/** Feature ID */
 	String featureId;
-	GeneralDateTime time;
+	
+	/** 作成日時 */
+	GeneralDateTime createdAt;
+	
+	/** テーブルID */
 	String tableId;
+	
+	/** メタ情報 */
 	AlterationMetaData metaData;
+	
+	/** 内容 */
 	List<AlterationContent> contents;
 
-	/** 変更内容が空のおるたを作る **/
-	public static Alteration createEmpty(String featureId, String tableId, AlterationMetaData metaData) {
-		return new Alteration(
+	public static Optional<Alteration> create(
+			String featureId,
+			String tableId,
+			AlterationMetaData meta,
+			Optional<? extends TableDesign> base,
+			Optional<TableDesign> altered) {
+
+		if (base.equals(altered)) {
+			return Optional.empty();
+		}
+
+		val contents = Arrays.stream(AlterationType.values())
+			.filter(type -> type.applicable(base, altered))
+			.flatMap(type -> type.createContent(base, altered).stream())
+			.collect(toList());
+
+		return Optional.of(new Alteration(
 				IdentifierUtil.randomUniqueId(),
 				featureId,
 				GeneralDateTime.now(),
 				tableId,
-				metaData,
-				new ArrayList<>());
+				meta,
+				contents));
 	}
 
 	public void apply(TableProspectBuilder builder) {
@@ -44,7 +76,7 @@ public class Alteration implements Comparable<Alteration>{
 
 	@Override
 	public int compareTo(Alteration other) {
-		return this.time.compareTo(other.time);
+		return this.createdAt.compareTo(other.createdAt);
 	}
 
 	/**
