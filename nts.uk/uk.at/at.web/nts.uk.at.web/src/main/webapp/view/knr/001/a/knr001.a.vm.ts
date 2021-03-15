@@ -258,7 +258,8 @@ module nts.uk.at.view.knr001.a {
                 
                 dialog.confirm({messageId:"Msg_18"})
                     .ifYes(() => {
-                        var index = self.empInfoTerminalList().indexOf(self.empInfoTerminalList().find(empInfoTer => delCode == empInfoTer.empInfoTerCode));
+                        //  var index = self.empInfoTerminalList().indexOf(self.empInfoTerminalList().find(empInfoTer => delCode == empInfoTer.empInfoTerCode));
+                        var index = _.indexOf(self.empInfoTerminalList().map(e => e.empInfoTerCode), delCode);
                         let command = {
                             empInfoTerCode: delCode
                         };
