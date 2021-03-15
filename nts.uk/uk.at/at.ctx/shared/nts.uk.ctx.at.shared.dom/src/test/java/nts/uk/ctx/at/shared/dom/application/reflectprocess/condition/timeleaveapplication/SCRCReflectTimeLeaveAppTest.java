@@ -161,8 +161,8 @@ public class SCRCReflectTimeLeaveAppTest {
         reflectTimeLeav = setting(AppTimeType.PRIVATE);//時間休暇の反映先.私用外出 = する
 		lstResult = SCRCReflectTimeLeaveApp.reflect(appTimeLeav, dailyApp, reflectTimeLeav);
 		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(0).getReasonForGoOut()).isEqualTo(GoingOutReason.PRIVATE);
-		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(0).getGoOut().get().getStamp().get().getTimeDay().getTimeWithDay().get().v()).isEqualTo(488);
-		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(0).getComeBack().get().getStamp().get().getTimeDay().getTimeWithDay().get().v()).isEqualTo(1088);
+		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(0).getGoOut().get().getTimeDay().getTimeWithDay().get().v()).isEqualTo(488);
+		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(0).getComeBack().get().getTimeDay().getTimeWithDay().get().v()).isEqualTo(1088);
         assertThat(lstResult).isEqualTo(Arrays.asList(88, 91, 86));//外出時刻1,戻り時刻1,外出区分1
 
 		// 私用外出を反映しない
@@ -189,8 +189,8 @@ public class SCRCReflectTimeLeaveAppTest {
         reflectTimeLeav = setting(AppTimeType.UNION);//時間休暇の反映先.私用外出 = する
 		lstResult = SCRCReflectTimeLeaveApp.reflect(appTimeLeav, dailyApp, reflectTimeLeav);
 		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(0).getReasonForGoOut()).isEqualTo(GoingOutReason.UNION);
-		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(0).getGoOut().get().getStamp().get().getTimeDay().getTimeWithDay().get().v()).isEqualTo(488);
-		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(0).getComeBack().get().getStamp().get().getTimeDay().getTimeWithDay().get().v()).isEqualTo(1088);
+		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(0).getGoOut().get().getTimeDay().getTimeWithDay().get().v()).isEqualTo(488);
+		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets().get(0).getComeBack().get().getTimeDay().getTimeWithDay().get().v()).isEqualTo(1088);
         assertThat(lstResult).isEqualTo(Arrays.asList(88, 91, 86));//外出時刻1,戻り時刻1,外出区分1
 
 		// 組合外出を反映しない

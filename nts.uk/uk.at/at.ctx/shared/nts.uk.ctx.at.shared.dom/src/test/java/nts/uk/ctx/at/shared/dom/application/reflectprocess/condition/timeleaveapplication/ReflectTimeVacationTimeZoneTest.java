@@ -131,16 +131,16 @@ public class ReflectTimeVacationTimeZoneTest {
 		List<Integer> lstResult = ReflectTimeVacationTimeZone.process(AppTimeType.PRIVATE, timeZoneWithWorkNoLst,
 				dailyApp);// 私用外出
 		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets()).extracting(x -> x.getOutingFrameNo().v(),
-				x -> x.getGoOut().get().getStamp().get().getTimeDay().getTimeWithDay().get().v(),
-				x -> x.getComeBack().get().getStamp().get().getTimeDay().getTimeWithDay().get().v(),
+				x -> x.getGoOut().get().getTimeDay().getTimeWithDay().get().v(),
+				x -> x.getComeBack().get().getTimeDay().getTimeWithDay().get().v(),
 				x -> x.getReasonForGoOut()).contains(Tuple.tuple(1, 481, 1081, GoingOutReason.PRIVATE));
 		assertThat(lstResult).isEqualTo(Arrays.asList(88, 91, 86));
 
 		dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD, 1);
 		lstResult = ReflectTimeVacationTimeZone.process(AppTimeType.UNION, timeZoneWithWorkNoLst, dailyApp);// 組合外出
 		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets()).extracting(x -> x.getOutingFrameNo().v(),
-				x -> x.getGoOut().get().getStamp().get().getTimeDay().getTimeWithDay().get().v(),
-				x -> x.getComeBack().get().getStamp().get().getTimeDay().getTimeWithDay().get().v(),
+				x -> x.getGoOut().get().getTimeDay().getTimeWithDay().get().v(),
+				x -> x.getComeBack().get().getTimeDay().getTimeWithDay().get().v(),
 				x -> x.getReasonForGoOut()).contains(Tuple.tuple(1, 481, 1081, GoingOutReason.UNION));
 		assertThat(lstResult).isEqualTo(Arrays.asList(88, 91, 86));
 
@@ -149,8 +149,8 @@ public class ReflectTimeVacationTimeZoneTest {
 		timeZoneWithWorkNoLst = Arrays.asList(new TimeZoneWithWorkNo(2, 481, 1081));
 		lstResult = ReflectTimeVacationTimeZone.process(AppTimeType.PRIVATE, timeZoneWithWorkNoLst, dailyApp);// 私用外出
 		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets()).extracting(x -> x.getOutingFrameNo().v(),
-				x -> x.getGoOut().get().getStamp().get().getTimeDay().getTimeWithDay().get().v(),
-				x -> x.getComeBack().get().getStamp().get().getTimeDay().getTimeWithDay().get().v(),
+				x -> x.getGoOut().get().getTimeDay().getTimeWithDay().get().v(),
+				x -> x.getComeBack().get().getTimeDay().getTimeWithDay().get().v(),
 				x -> x.getReasonForGoOut()).contains(Tuple.tuple(1, 480, 480, GoingOutReason.PUBLIC),
 						Tuple.tuple(2, 481, 1081, GoingOutReason.PRIVATE));
 		assertThat(lstResult).isEqualTo(Arrays.asList(95, 98, 93));
@@ -158,8 +158,8 @@ public class ReflectTimeVacationTimeZoneTest {
 		dailyApp = ReflectApplicationHelper.createRCWithTimeLeavFull(ScheduleRecordClassifi.RECORD, 1);
 		lstResult = ReflectTimeVacationTimeZone.process(AppTimeType.UNION, timeZoneWithWorkNoLst, dailyApp);// 組合外出
 		assertThat(dailyApp.getOutingTime().get().getOutingTimeSheets()).extracting(x -> x.getOutingFrameNo().v(),
-				x -> x.getGoOut().get().getStamp().get().getTimeDay().getTimeWithDay().get().v(),
-				x -> x.getComeBack().get().getStamp().get().getTimeDay().getTimeWithDay().get().v(),
+				x -> x.getGoOut().get().getTimeDay().getTimeWithDay().get().v(),
+				x -> x.getComeBack().get().getTimeDay().getTimeWithDay().get().v(),
 				x -> x.getReasonForGoOut()).contains(Tuple.tuple(1, 480, 480, GoingOutReason.PUBLIC),
 						Tuple.tuple(2, 481, 1081, GoingOutReason.UNION));
 		assertThat(lstResult).isEqualTo(Arrays.asList(95, 98, 93));
