@@ -29,6 +29,8 @@ module nts.uk.com.view.cmf001.b.viewmodel {
         selectedStandardImportSetting: KnockoutObservable<model.StandardAcceptanceConditionSetting>;
         transitData: any;
         init: KnockoutObservable<boolean> = ko.observable(true);
+        system = getShared('ShareSystem');
+        
         constructor(data?: any) {
             var self = this;
             if (data) self.transitData = data;

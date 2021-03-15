@@ -9,4 +9,5 @@ module nts.uk.com.view.cmf001.s.service {
     export function getLogResultsList(time : any): JQueryPromise<any> {
         return ajax("com", paths.getLogResultsList, time);
     }
+    
 }

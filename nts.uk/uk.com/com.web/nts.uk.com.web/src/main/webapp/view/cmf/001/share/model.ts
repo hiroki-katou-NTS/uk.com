@@ -518,39 +518,45 @@ module nts.uk.com.view.cmf001.share.model {
 
     //screen S
     export class ImExConditonSetting {
-        conditionCode: KnockoutObservable<string>;
-        conditionName: KnockoutObservable<string>;
+//        conditionCode: KnockoutObservable<string>;
+//        conditionName: KnockoutObservable<string>;
         dispConditionCode: string;
         dispConditionName: string;
 
         constructor(condCode: string, condName: string) {
-            this.conditionCode = ko.observable(condCode);
-            this.conditionName = ko.observable(condName);
+//            this.conditionCode = ko.observable(condCode);
+//            this.conditionName = ko.observable(condName);
             this.dispConditionCode = condCode;
             this.dispConditionName = condName;
         }
-
     }
 
     export class ImExExecuteResultLog {
-        executorId: KnockoutObservable<string>;
-        executorName: KnockoutObservable<string>;
-        processStartDateTime: KnockoutObservable<string>;
-        executeForm: KnockoutObservable<string>;
-        targetCount: KnockoutObservable<string>;
-        errorCount: KnockoutObservable<string>;
-        fileName: KnockoutObservable<string>;
-        processId: KnockoutObservable<string>;
-
-        constructor(executorId: string, executorName: string, processStartDateTime: string, executeForm: string, targetCount: string, errorCount: string, fileName: string, processId: string) {
-            this.executorId = ko.observable(executorId);
-            this.executorName = ko.observable(executorName);
-            this.processStartDateTime = ko.observable(processStartDateTime);
-            this.executeForm = ko.observable(executeForm);
-            this.targetCount = ko.observable(targetCount);
-            this.errorCount = ko.observable(errorCount);
-            this.fileName = ko.observable(fileName);
-            this.processId = ko.observable(processId);
+        displayNo: number;
+        companyCd: string;
+        userCodeName: string;
+        processStartDatetime: string;
+        // 0: 自動実行 1: 手動実行
+        executeForm: string;
+        targetCount: number;
+        errorCount: number;
+        fileName: string;
+        externalProcessId: string;
+        dispConditionName: string;
+        
+        constructor(displayNo: number, companyCd: string, userCode: string, userName: string, processStartDatetime: string,
+                    executeForm: string, targetCount: number, errorCount: number, fileName: string, 
+                    externalProcessId: string, dispConditionName: string) {
+            this.displayNo = displayNo
+            this.companyCd = companyCd;
+            this.userCodeName = userCode + "　　" + userName;
+            this.processStartDatetime = processStartDatetime;
+            this.executeForm = executeForm;
+            this.targetCount = targetCount;
+            this.errorCount = errorCount;
+            this.fileName = fileName;
+            this.externalProcessId = externalProcessId;
+            this.dispConditionName = dispConditionName;
         }
 
     }

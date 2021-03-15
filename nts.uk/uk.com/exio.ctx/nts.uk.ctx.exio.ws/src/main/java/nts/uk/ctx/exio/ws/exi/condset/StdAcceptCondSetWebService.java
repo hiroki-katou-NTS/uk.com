@@ -75,7 +75,7 @@ public class StdAcceptCondSetWebService extends WebService {
 	public void registerStandardCondition(StdAcceptCondSetCommand command) {
 		if (command.getAction() == 0) {
 			this.addStdAccCondSetHandler.handle(command);
-		} else {
+		}else {
 			this.updateStdAccCondSetHandler.handle(command);
 		}
 	}

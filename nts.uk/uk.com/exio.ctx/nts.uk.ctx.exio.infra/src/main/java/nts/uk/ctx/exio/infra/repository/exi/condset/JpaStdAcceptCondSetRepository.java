@@ -41,10 +41,17 @@ public class JpaStdAcceptCondSetRepository extends JpaRepository implements StdA
 			+ " WHERE c.stdAcceptCondSetPk.cid = :companyId "
 			+ " AND c.stdAcceptCondSetPk.conditionSetCd = :conditionSetCd"
 			+ " ORDER BY c.stdAcceptCondSetPk.conditionSetCd";
+	
 	private static final String SELECT_ALL_BY_SYS = "SELECT c FROM OiomtExAcCond c "
 			+ "WHERE c.stdAcceptCondSetPk.cid = :companyId "
 			+ " AND c.systemType = :systemType"
 			+ " ORDER BY c.stdAcceptCondSetPk.conditionSetCd";
+	
+	private static final String SELECT_ALL_BY_LSSYS = "SELECT c FROM OiomtExAcCond c "
+			+ "WHERE c.stdAcceptCondSetPk.cid = :companyId "
+			+ " AND c.systemType IN :lsSystemType"
+			+ " ORDER BY c.stdAcceptCondSetPk.conditionSetCd";
+	
 	/**
 	 * Finds all standard acceptance condition settings by company id.
 	 *
@@ -195,6 +202,25 @@ public class JpaStdAcceptCondSetRepository extends JpaRepository implements StdA
 				.setParameter("companyId", cid)
 				.setParameter("systemType", sysType)
 				.getList(entity -> toDomain(entity));
+	}
+
+	@Override
+	public List<StdAcceptCondSet> getStdAcceptCondSetByListSys(String cid, List<Integer> sysType) {
+		return this.queryProxy().query(SELECT_ALL_BY_LSSYS, OiomtExAcCond.class)
+				.setParameter("companyId", cid)
+				.setParameter("lsSystemType", sysType)
+				.getList(entity -> toDomain(entity));
+	}
+
+	@Override
+	public void updateSystem(String cid, String conditionSetCd, int system) {
+		Optional<OiomtExAcCond> updateStdAcceptCondSetSys = this.queryProxy().find(new OiomtStdAcceptCondSetPk(cid, conditionSetCd),
+				OiomtExAcCond.class);
+		
+		if(updateStdAcceptCondSetSys.isPresent()) {
+			updateStdAcceptCondSetSys.get().setSystemType(system);
+			this.commandProxy().update(updateStdAcceptCondSetSys.get());
+		}
 	}
 
 }

@@ -12,7 +12,13 @@ module nts.uk.com.view.cmf001.d.service {
         getNumberOfLine: "exio/exi/csvimport/getNumberOfLine/{0}/{1}",
         getRecord: "exio/exi/csvimport/getRecord/{0}/{1}/{2}/{3}",
         getSystemType: "exio/exi/condset/getSysType",
+        // update system
+        registerStdData: "exio/exi/condset/registerStd",
     }
+    // update system
+    export function registerStdData(data: any): JQueryPromise<any> {
+        return ajax("com", paths.registerStdData, data);
+    };
 
     export function getAllData(condCode: string): JQueryPromise<any> {
         let _path = format(paths.getAllData, condCode);

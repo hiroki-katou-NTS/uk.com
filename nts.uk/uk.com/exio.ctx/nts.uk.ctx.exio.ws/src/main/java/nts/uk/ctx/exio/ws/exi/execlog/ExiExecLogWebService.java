@@ -20,6 +20,7 @@ import nts.uk.ctx.exio.app.find.exi.execlog.ExacErrorLogDto;
 import nts.uk.ctx.exio.app.find.exi.execlog.ExacErrorLogFinder;
 import nts.uk.ctx.exio.app.find.exi.execlog.ExacExeResultLogDto;
 import nts.uk.ctx.exio.app.find.exi.execlog.ExacExeResultLogFinder;
+import nts.uk.ctx.exio.app.find.exi.execlog.ExacExeResultLogNameDto;
 import nts.uk.ctx.exio.app.find.exi.execlog.ExiExecLogExportService;
 
 /**
@@ -51,9 +52,8 @@ public class ExiExecLogWebService extends WebService {
 	
 	@Path("getLogResultsList")
 	@POST
-	public List<ExacExeResultLogDto> getLogResultsList(TimeInput time) {
-		return this.exacExeResultLogFinder.getAllExacExeResultLog(time.getStart(),
-				time.getEnd());
+	public List<ExacExeResultLogNameDto> getLogResultsList(TimeInput time) {
+		return this.exacExeResultLogFinder.getAllExacExeResultLog(time.getStart(), time.getEnd());
 	}
 	
 	

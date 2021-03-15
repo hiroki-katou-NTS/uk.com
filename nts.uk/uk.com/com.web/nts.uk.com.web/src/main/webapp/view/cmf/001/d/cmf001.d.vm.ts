@@ -680,7 +680,7 @@ module nts.uk.com.view.cmf001.d.viewmodel {
                 if (self.stdCondSet().categoryId() == null)
                     self.stdCondSet().categoryId(self.selectedCategory());
                 self.stdCondSet().characterCode(self.selectedEncoding());
-                let command = {conditionSetting: ko.toJS(self.stdCondSet), listItem: ko.toJS(self.listAcceptItem)};
+                let command = {conditionSetting: ko.toJS(self.stdCondSet), listItem: ko.toJS(self.listAcceptItem), conditionSetCd: self.stdCondSetCd(), system: self.system()};
                 service.registerData(command).done(() => {
                     self.enableCategory(false);
                     info({ messageId: "Msg_15" });

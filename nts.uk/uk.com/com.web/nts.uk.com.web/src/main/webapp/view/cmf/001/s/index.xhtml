@@ -54,12 +54,19 @@
 								</table>
 							</div>
 							<div class="pull-left">
-								<button id="S2_16" class="x-large" tabindex="3">#{i18n.getText('CMF001_540')}</button>
+								<button id="S2_16" class="x-large" tabindex="3" data-bind = "click: filter">#{i18n.getText('CMF001_540')}</button>
 							</div>
 						</div>
 					</div>
 				</div>
-				<div id="S3_1" class="div_line" tabindex="4">
+
+				<div class="div-line" style="margin-top: 10px; margin-left: 20px;">
+					<div class="compact-grid">
+						<div id="S3_1"></div>
+					</div>
+				</div>
+
+				<!-- 				<div id="S3_1" class="div_line" tabindex="4">
 					<table id="fixed-table">
 						<colgroup>
 							<col width="40px" />
@@ -107,7 +114,7 @@
 						<div class="label current-page" data-bind="text: currentPage" />
 						<div class="label">#{i18n.getText('CMF001_556')}</div>
 					</div>
-				</div>
+				</div> -->
 			</div>
 		</ui:define>
 	</ui:composition>
