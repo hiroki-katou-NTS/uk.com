@@ -29,8 +29,8 @@ import nts.uk.cnv.dom.td.alteration.content.ChangeTableName;
 import nts.uk.cnv.dom.td.alteration.content.ChangeUK;
 import nts.uk.cnv.dom.td.alteration.content.RemoveColumn;
 import nts.uk.cnv.dom.td.alteration.content.RemoveTable;
-import nts.uk.cnv.dom.td.schema.prospect.TableProspect;
-import nts.uk.cnv.dom.td.schema.snapshot.Snapshot;
+import nts.uk.cnv.dom.td.schema.prospect.definition.TableProspect;
+import nts.uk.cnv.dom.td.schema.snapshot.TableSnapshot;
 import nts.uk.cnv.dom.td.schema.tabledesign.ColumnDesign;
 import nts.uk.cnv.dom.td.schema.tabledesign.DefineColumnType;
 import nts.uk.cnv.dom.td.schema.tabledesign.Indexes;
@@ -53,7 +53,7 @@ public class AlterationFactoryTest {
 			"おるたこめんと"
 		);
 
-	Snapshot ss;
+	TableSnapshot ss;
 	Optional<TableDesign> base;
 	Alteration alt;
 
@@ -66,7 +66,7 @@ public class AlterationFactoryTest {
 
 	@Test
 	public void test_AddTable() {
-		Optional<TableProspect> empty = new Snapshot().createTableProspect(new ArrayList<>());
+		Optional<TableProspect> empty = TableSnapshot.empty().apply(new ArrayList<>());
 		val alterd = Optional.of((TableDesign) ss);
 		alt.getContents().addAll(AlterationType.TABLE_CREATE.createContent(empty, alterd));
 
@@ -276,16 +276,15 @@ public class AlterationFactoryTest {
 		Assert.assertTrue(result.get().equalsExcludingId(alt));
 	}
 
-	private Snapshot createSnapshot() {
-		return new Snapshot(
+	private TableSnapshot createSnapshot() {
+		return new TableSnapshot(
 					"root",
-					"",
 					createDummy()
 				);
 	}
 
-	private Optional<TableDesign> createAltered(Snapshot base, Alteration alt) {
-		Optional<TableProspect> altered = base.createTableProspect(Arrays.asList(alt));
+	private Optional<TableDesign> createAltered(TableSnapshot base, Alteration alt) {
+		Optional<TableProspect> altered = base.apply(Arrays.asList(alt));
 		return altered.isPresent()
 				? Optional.of((TableDesign)altered.get())
 				: Optional.empty();

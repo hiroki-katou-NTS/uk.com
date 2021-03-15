@@ -1,6 +1,7 @@
 package nts.uk.cnv.dom.td.schema.tabledesign;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,6 +19,23 @@ public class TableDesign implements Cloneable {
 
 	private List<ColumnDesign> columns;
 	private List<Indexes> indexes;
+	
+	public TableDesign(TableDesign source) {
+		id = source.id;
+		name = source.name;
+		jpName = source.jpName;
+		columns = source.columns;
+		indexes = source.indexes;
+	}
+	
+	public static TableDesign empty() {
+		return new TableDesign(
+				null,
+				null,
+				null,
+				Collections.emptyList(),
+				Collections.emptyList());
+	}
 
 	public String createSimpleTableSql(TableDefineType defineType) {
 		return createTableSql(defineType, false, false);

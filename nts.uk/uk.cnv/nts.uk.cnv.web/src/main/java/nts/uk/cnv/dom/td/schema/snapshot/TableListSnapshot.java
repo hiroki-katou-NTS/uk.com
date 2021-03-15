@@ -8,7 +8,7 @@ import lombok.Value;
 import lombok.val;
 import nts.uk.cnv.dom.td.alteration.schema.SchemaAlteration;
 import nts.uk.cnv.dom.td.schema.TableIdentity;
-import nts.uk.cnv.dom.td.schema.prospect.TableListProspect;
+import nts.uk.cnv.dom.td.schema.prospect.list.TableListProspect;
 
 /**
  * テーブル一覧のスナップショット

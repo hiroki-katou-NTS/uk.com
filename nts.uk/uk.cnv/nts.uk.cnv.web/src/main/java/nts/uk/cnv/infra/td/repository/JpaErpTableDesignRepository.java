@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
-import nts.uk.cnv.dom.td.schema.snapshot.Snapshot;
+import nts.uk.cnv.dom.td.schema.snapshot.TableSnapshot;
 import nts.uk.cnv.dom.td.schema.tabledesign.ColumnDesign;
 import nts.uk.cnv.dom.td.schema.tabledesign.ErpTableDesignRepository;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
@@ -21,12 +21,12 @@ import nts.uk.cnv.infra.td.entity.erptabledesign.ScvmtErpTableDesignPk;
 public class JpaErpTableDesignRepository extends JpaRepository implements ErpTableDesignRepository {
 
 	@Override
-	public void insert(Snapshot ss) {
+	public void insert(TableSnapshot ss) {
 		this.commandProxy().insert(toEntity(ss));
 	}
 
 	@Override
-	public void update(Snapshot ss) {
+	public void update(TableSnapshot ss) {
 		this.commandProxy().update(toEntity(ss));
 	}
 
@@ -39,16 +39,16 @@ public class JpaErpTableDesignRepository extends JpaRepository implements ErpTab
 		return result.isPresent();
 	}
 
-	private ScvmtErpTableDesign toEntity(Snapshot ss) {
+	private ScvmtErpTableDesign toEntity(TableSnapshot ss) {
 		List<ScvmtErpColumnDesign> columns = ss.getColumns().stream()
-				.map(cd -> toEntity(ss.getId(), ss.getSnapshotId(), ss.getEventId(), cd))
+				.map(cd -> toEntity(ss.getId(), ss.getSnapshotId(), "", cd))
 				.collect(Collectors.toList());
 
 		return new ScvmtErpTableDesign(
 				new ScvmtErpTableDesignPk(
 						ss.getId(),
 						ss.getSnapshotId(),
-						ss.getEventId()
+						""
 					),
 				ss.getName(),
 				ss.getJpName(),

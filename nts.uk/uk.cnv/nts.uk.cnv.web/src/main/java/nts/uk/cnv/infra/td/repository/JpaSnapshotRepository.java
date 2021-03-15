@@ -3,6 +3,7 @@ package nts.uk.cnv.infra.td.repository;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -11,10 +12,16 @@ import nts.uk.cnv.dom.td.schema.TableIdentity;
 import nts.uk.cnv.dom.td.schema.snapshot.SchemaSnapshot;
 import nts.uk.cnv.dom.td.schema.snapshot.SnapshotRepository;
 import nts.uk.cnv.dom.td.schema.snapshot.TableListSnapshot;
+import nts.uk.cnv.dom.td.schema.snapshot.TableSnapshot;
+import nts.uk.cnv.dom.td.schema.tabledesign.UkTableDesignRepository;
 
 @Stateless
 public class JpaSnapshotRepository extends JpaRepository implements SnapshotRepository {
 
+	// 仮実装用
+	@Inject
+	UkTableDesignRepository tableRepo;
+	
 	@Override
 	public Optional<SchemaSnapshot> getSchemaLatest() {
 		
@@ -40,6 +47,13 @@ public class JpaSnapshotRepository extends JpaRepository implements SnapshotRepo
 						rec.getString("NAME")));
 		
 		return new TableListSnapshot(snapshotId, tables);
+	}
+
+	@Override
+	public Optional<TableSnapshot> getTable(String snapshotId, String tableId) {
+		
+		return tableRepo.findByKey(tableId, snapshotId, "00000000")
+				.map(td -> new TableSnapshot(snapshotId, td));
 	}
 
 }

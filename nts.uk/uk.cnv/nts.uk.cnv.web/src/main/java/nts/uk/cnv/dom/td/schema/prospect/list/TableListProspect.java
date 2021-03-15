@@ -1,4 +1,4 @@
-package nts.uk.cnv.dom.td.schema.prospect;
+package nts.uk.cnv.dom.td.schema.prospect.list;
 
 import java.util.List;
 

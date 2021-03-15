@@ -9,8 +9,8 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.task.tran.AtomTask;
-import nts.uk.cnv.dom.td.schema.prospect.TableProspect;
-import nts.uk.cnv.dom.td.schema.snapshot.Snapshot;
+import nts.uk.cnv.dom.td.schema.prospect.definition.TableProspect;
+import nts.uk.cnv.dom.td.schema.snapshot.TableSnapshot;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
 
 @Stateless
@@ -25,10 +25,10 @@ public class TableDesignService {
 			AlterationMetaData meta,
 			Optional<TableDesign> altered) {
 
-		Snapshot ss = require.getNewestSnapshot(tableId);
+		TableSnapshot ss = require.getNewestSnapshot(tableId);
 		List<Alteration> alterationList = require.getUnaccepted(tableId);
 
-		Optional<TableProspect> tableProspect = ss.createTableProspect(alterationList);
+		Optional<TableProspect> tableProspect = ss.apply(alterationList);
 
 		Alteration alt = factory.create(tableId, meta, tableProspect, altered)
 				.orElseThrow(() -> new BusinessException(new RawErrorMessage("")));
@@ -39,7 +39,7 @@ public class TableDesignService {
 	}
 
 	public interface Require {
-		Snapshot getNewestSnapshot(String tableId);
+		TableSnapshot getNewestSnapshot(String tableId);
 		List<Alteration> getUnaccepted(String tableId);
 		void add(Alteration alt);
 	}

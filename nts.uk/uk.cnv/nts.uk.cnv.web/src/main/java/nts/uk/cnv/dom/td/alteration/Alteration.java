@@ -8,7 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.cnv.dom.td.alteration.content.AlterationContent;
-import nts.uk.cnv.dom.td.schema.prospect.TableProspectBuilder;
+import nts.uk.cnv.dom.td.schema.prospect.definition.TableProspectBuilder;
 
 /**
  * 変更

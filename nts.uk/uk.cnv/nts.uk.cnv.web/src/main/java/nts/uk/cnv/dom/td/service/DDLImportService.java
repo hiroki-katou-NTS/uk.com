@@ -20,7 +20,7 @@ import net.sf.jsqlparser.statement.create.table.CreateTable;
 import net.sf.jsqlparser.statement.create.table.Index;
 import nts.arc.task.tran.AtomTask;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.cnv.dom.td.schema.snapshot.Snapshot;
+import nts.uk.cnv.dom.td.schema.snapshot.TableSnapshot;
 import nts.uk.cnv.dom.td.schema.tabledesign.ColumnDesign;
 import nts.uk.cnv.dom.td.schema.tabledesign.DefineColumnType;
 import nts.uk.cnv.dom.td.schema.tabledesign.Indexes;
@@ -45,17 +45,14 @@ public class DDLImportService {
 	public static AtomTask regist(Require require, String snapshotId, String createTable, String createIndexes, String comment, String type) throws JSQLParserException {
 		TableDefineType typeDefine;
 
-		// TODO:
-		String eventId = "";
 		if("uk".equals(type)) {
 			typeDefine = new UkDataType();
 		}
 		else {
 			typeDefine = DatabaseType.valueOf(type).spec();
 		}
-		Snapshot ss = new Snapshot(
+		TableSnapshot ss = new TableSnapshot(
 				snapshotId,
-				eventId,
 				ddlToDomain(createTable, createIndexes, comment, typeDefine));
 
 		return AtomTask.of(() -> {
@@ -293,7 +290,7 @@ public class DDLImportService {
 
 	public interface Require {
 
-		void regist(Snapshot tableDesign);
+		void regist(TableSnapshot tableDesign);
 
 	}
 }

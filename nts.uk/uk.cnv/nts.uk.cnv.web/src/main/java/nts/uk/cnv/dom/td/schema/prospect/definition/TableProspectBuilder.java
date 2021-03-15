@@ -1,4 +1,4 @@
-package nts.uk.cnv.dom.td.schema.prospect;
+package nts.uk.cnv.dom.td.schema.prospect.definition;
 
 import java.util.ArrayList;
 import java.util.HashMap;

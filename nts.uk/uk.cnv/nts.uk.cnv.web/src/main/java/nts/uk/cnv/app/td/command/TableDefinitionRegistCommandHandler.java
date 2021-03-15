@@ -17,7 +17,7 @@ import nts.uk.cnv.dom.td.alteration.Alteration;
 import nts.uk.cnv.dom.td.alteration.AlterationMetaData;
 import nts.uk.cnv.dom.td.alteration.AlterationRepository;
 import nts.uk.cnv.dom.td.alteration.TableDesignService;
-import nts.uk.cnv.dom.td.schema.snapshot.Snapshot;
+import nts.uk.cnv.dom.td.schema.snapshot.TableSnapshot;
 import nts.uk.cnv.dom.td.schema.snapshot.SnapshotRepository;
 import nts.uk.cnv.dom.td.schema.tabledesign.ColumnDesign;
 import nts.uk.cnv.dom.td.schema.tabledesign.DefineColumnType;
@@ -92,7 +92,7 @@ public class TableDefinitionRegistCommandHandler extends CommandHandler<TableDef
 		private final SnapshotRepository snapshotRepo;
 
 		@Override
-		public Snapshot getNewestSnapshot(String tableId) {
+		public TableSnapshot getNewestSnapshot(String tableId) {
 			return null;
 			//return snapshotRepo.getNewest(tableId);
 		}

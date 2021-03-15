@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 import lombok.EqualsAndHashCode;
 import nts.uk.cnv.dom.td.alteration.AlterationType;
-import nts.uk.cnv.dom.td.schema.prospect.TableProspectBuilder;
+import nts.uk.cnv.dom.td.schema.prospect.definition.TableProspectBuilder;
 import nts.uk.cnv.dom.td.schema.tabledesign.Indexes;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
 

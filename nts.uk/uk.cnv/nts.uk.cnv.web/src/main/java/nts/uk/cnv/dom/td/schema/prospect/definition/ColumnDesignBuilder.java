@@ -1,4 +1,4 @@
-package nts.uk.cnv.dom.td.schema.prospect;
+package nts.uk.cnv.dom.td.schema.prospect.definition;
 
 import nts.uk.cnv.dom.td.schema.tabledesign.ColumnDesign;
 import nts.uk.cnv.dom.td.schema.tabledesign.DefineColumnType;

@@ -1,4 +1,4 @@
-package nts.uk.cnv.dom.td.schema.prospect;
+package nts.uk.cnv.dom.td.schema.prospect.definition;
 
 import lombok.Getter;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
@@ -12,16 +12,14 @@ import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
  */
 @Getter
 public class TableProspect extends TableDesign {
-	/** 最後に適用したおるたのalterationId **/
-	private String alterationId;
+	
+	/** 最後に適用したorutaのID **/
+	private String lastAlterId;
 
-	public TableProspect(String alterationId, TableDesign tableDesign) {
-		super(
-				tableDesign.getId(),
-				tableDesign.getName(),
-				tableDesign.getJpName(),
-				tableDesign.getColumns(),
-				tableDesign.getIndexes());
+	public TableProspect(String lastAlterId, TableDesign tableDesign) {
+		super(tableDesign);
+		
+		this.lastAlterId = lastAlterId;
 	}
 
 }

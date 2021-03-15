@@ -10,7 +10,7 @@ import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.tran.AtomTask;
-import nts.uk.cnv.dom.td.schema.snapshot.Snapshot;
+import nts.uk.cnv.dom.td.schema.snapshot.TableSnapshot;
 import nts.uk.cnv.dom.td.schema.tabledesign.UkTableDesignRepository;
 import nts.uk.cnv.dom.td.service.DDLImportService;
 
@@ -45,7 +45,7 @@ public class UkTableDesignImportCommandHandler extends CommandHandler<UkTableDes
 		private final UkTableDesignRepository tableDesignRepository;
 
 		@Override
-		public void regist(Snapshot tableDesign) {
+		public void regist(TableSnapshot tableDesign) {
 			boolean exists = tableDesignRepository.exists(tableDesign.getName());
 			if (exists) {
 				tableDesignRepository.update(tableDesign);

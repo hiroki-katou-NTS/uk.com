@@ -11,29 +11,30 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.val;
-import nts.uk.cnv.dom.td.alteration.schema.SchemaAlteration;
+import nts.uk.cnv.dom.td.alteration.Alteration;
 import nts.uk.cnv.dom.td.devstatus.DevelopmentStatus;
-import nts.uk.cnv.dom.td.schema.prospect.list.GenerateTableListProspect;
-import nts.uk.cnv.dom.td.schema.prospect.list.TableListProspect;
+import nts.uk.cnv.dom.td.schema.prospect.definition.GenerateTableProspect;
+import nts.uk.cnv.dom.td.schema.prospect.definition.TableProspect;
 import nts.uk.cnv.dom.td.schema.snapshot.SchemaSnapshot;
 import nts.uk.cnv.dom.td.schema.snapshot.SnapshotRepository;
-import nts.uk.cnv.dom.td.schema.snapshot.TableListSnapshot;
+import nts.uk.cnv.dom.td.schema.snapshot.TableSnapshot;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class TableListProspectQuery {
-	
+public class TableProspectQuery {
+
 	@Inject
 	SnapshotRepository snapshotRepo;
-
-	public TableListProspect get() {
+	
+	public Optional<TableProspect> get(String tableId) {
 		
 		val require = new RequireImpl();
 		
-		return GenerateTableListProspect.generate(require);
+		return GenerateTableProspect.generate(require, tableId);
+		
 	}
 	
-	private class RequireImpl implements GenerateTableListProspect.Require {
+	private class RequireImpl implements GenerateTableProspect.Require {
 
 		@Override
 		public Optional<SchemaSnapshot> getSchemaSnapshotLatest() {
@@ -41,15 +42,14 @@ public class TableListProspectQuery {
 		}
 
 		@Override
-		public TableListSnapshot getTableListSnapshot(String snapsohtId) {
-			return snapshotRepo.getTableList(snapsohtId);
+		public Optional<TableSnapshot> getTableSnapshot(String snapshotId, String tableId) {
+			return snapshotRepo.getTable(snapshotId, tableId);
 		}
 
 		@Override
-		public List<SchemaAlteration> getSchemaAlteration(Set<DevelopmentStatus> status) {
+		public List<Alteration> getAlterations(String tableId, Set<DevelopmentStatus> status) {
 			return Collections.emptyList();
 		}
-
 		
 	}
 }

@@ -7,5 +7,7 @@ public interface SnapshotRepository {
 	Optional<SchemaSnapshot> getSchemaLatest();
 	
 	TableListSnapshot getTableList(String snapshotId);
+	
+	Optional<TableSnapshot> getTable(String snapshotId, String tableId);
 
 }

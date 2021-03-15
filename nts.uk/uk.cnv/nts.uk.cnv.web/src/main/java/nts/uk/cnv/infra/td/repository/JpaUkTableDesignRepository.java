@@ -6,10 +6,12 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
+
 import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.cnv.app.cnv.dto.GetUkTablesResultDto;
-import nts.uk.cnv.dom.td.schema.snapshot.Snapshot;
+import nts.uk.cnv.dom.td.schema.snapshot.TableSnapshot;
 import nts.uk.cnv.dom.td.schema.tabledesign.ColumnDesign;
 import nts.uk.cnv.dom.td.schema.tabledesign.Indexes;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
@@ -23,15 +25,16 @@ import nts.uk.cnv.infra.td.entity.uktabledesign.ScvmtUkIndexDesignPk;
 import nts.uk.cnv.infra.td.entity.uktabledesign.ScvmtUkTableDesign;
 import nts.uk.cnv.infra.td.entity.uktabledesign.ScvmtUkTableDesignPk;
 
+@Stateless
 public class JpaUkTableDesignRepository extends JpaRepository implements UkTableDesignRepository {
 
 	@Override
-	public void insert(Snapshot tableDesign) {
+	public void insert(TableSnapshot tableDesign) {
 		this.commandProxy().insert(toEntity(tableDesign));
 	}
 
 	@Override
-	public void update(Snapshot tableDesign) {
+	public void update(TableSnapshot tableDesign) {
 		ScvmtUkTableDesign tergetEntity = toEntity(tableDesign);
 		Optional<ScvmtUkTableDesign> before = this.queryProxy().find(
 				tergetEntity.pk, ScvmtUkTableDesign.class);
@@ -52,7 +55,7 @@ public class JpaUkTableDesignRepository extends JpaRepository implements UkTable
 		return (result.size() > 0);
 	}
 
-	private ScvmtUkTableDesign toEntity(Snapshot tableDesign) {
+	private ScvmtUkTableDesign toEntity(TableSnapshot tableDesign) {
 		List<ScvmtUkColumnDesign> columns = tableDesign.getColumns().stream()
 				.map(cd -> toEntity(tableDesign, cd))
 				.collect(Collectors.toList());
@@ -64,7 +67,7 @@ public class JpaUkTableDesignRepository extends JpaRepository implements UkTable
 						new ScvmtUkIndexColumnsPk(
 								tableDesign.getId(),
 								tableDesign.getSnapshotId(),
-								tableDesign.getEventId(),
+								"",
 								idx.getName(),
 								idx.getColumns().indexOf(col),
 								col),
@@ -74,7 +77,7 @@ public class JpaUkTableDesignRepository extends JpaRepository implements UkTable
 
 			indexes.add(new ScvmtUkIndexDesign(
 					new ScvmtUkIndexDesignPk(
-							tableDesign.getId(), tableDesign.getSnapshotId(), tableDesign.getEventId(), idx.getName()),
+							tableDesign.getId(), tableDesign.getSnapshotId(), "", idx.getName()),
 					idx.getConstraintType(),
 					idx.isClustered(),
 					indexcolumns,
@@ -86,19 +89,19 @@ public class JpaUkTableDesignRepository extends JpaRepository implements UkTable
 				new ScvmtUkTableDesignPk(
 					tableDesign.getId(),
 					tableDesign.getSnapshotId(),
-					tableDesign.getEventId()),
+					""),
 				tableDesign.getName(),
 				tableDesign.getJpName(),
 				columns,
 				indexes);
 	}
 
-	private ScvmtUkColumnDesign toEntity(Snapshot tableDesign, ColumnDesign columnDesign) {
+	private ScvmtUkColumnDesign toEntity(TableSnapshot tableDesign, ColumnDesign columnDesign) {
 		return new ScvmtUkColumnDesign(
 					new ScvmtUkColumnDesignPk(
 							tableDesign.getId(),
 							tableDesign.getSnapshotId(),
-							tableDesign.getEventId(),
+							"",
 							columnDesign.getId()),
 					columnDesign.getName(),
 					columnDesign.getJpName(),
@@ -116,14 +119,14 @@ public class JpaUkTableDesignRepository extends JpaRepository implements UkTable
 
 	@Override
 	@SneakyThrows
-	public Optional<TableDesign> findByKey(String tableId, String feature, String eventId) {
-		Optional<ScvmtUkTableDesign> result = find(tableId, feature, eventId);
+	public Optional<TableDesign> findByKey(String tableId, String snapshotId, String eventId) {
+		Optional<ScvmtUkTableDesign> result = find(tableId, snapshotId, eventId);
 		return Optional.of(result.get().toDomain());
 	}
 
-	private Optional<ScvmtUkTableDesign> find(String tableId, String feature, String eventId) {
+	private Optional<ScvmtUkTableDesign> find(String tableId, String snapshotId, String eventId) {
 		return this.queryProxy().find(
-				new ScvmtUkTableDesignPk(tableId, feature, eventId),
+				new ScvmtUkTableDesignPk(tableId, snapshotId, eventId),
 				ScvmtUkTableDesign.class);
 	}
 

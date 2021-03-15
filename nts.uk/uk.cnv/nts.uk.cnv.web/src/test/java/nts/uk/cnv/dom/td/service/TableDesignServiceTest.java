@@ -18,7 +18,7 @@ import nts.uk.cnv.dom.td.alteration.Alteration;
 import nts.uk.cnv.dom.td.alteration.AlterationFactory;
 import nts.uk.cnv.dom.td.alteration.AlterationMetaData;
 import nts.uk.cnv.dom.td.alteration.TableDesignService;
-import nts.uk.cnv.dom.td.schema.snapshot.Snapshot;
+import nts.uk.cnv.dom.td.schema.snapshot.TableSnapshot;
 import nts.uk.cnv.dom.td.schema.tabledesign.ColumnDesign;
 import nts.uk.cnv.dom.td.schema.tabledesign.DefineColumnType;
 import nts.uk.cnv.dom.td.schema.tabledesign.Indexes;
@@ -94,15 +94,14 @@ public class TableDesignServiceTest {
 
 	private Optional<TableDesign> createNewstSnapshot() {
 		return Optional.of(
-				new Snapshot(
+				new TableSnapshot(
 					IdentifierUtil.randomUniqueId(),
-					"createfeature",
 					createDummy()
 				));
 	}
 
-	private Optional<TableDesign> createAltered(Snapshot ss, Alteration alt) {
-		TableDesign altered = ss.createTableProspect(Arrays.asList(alt))
+	private Optional<TableDesign> createAltered(TableSnapshot ss, Alteration alt) {
+		TableDesign altered = ss.apply(Arrays.asList(alt))
 				.orElseThrow(() -> new BusinessException(new RawErrorMessage("変更がありません")));
 		return Optional.of(altered);
 	}

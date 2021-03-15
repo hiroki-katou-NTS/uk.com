@@ -19,7 +19,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.JpaEntity;
-import nts.uk.cnv.dom.td.schema.snapshot.Snapshot;
+import nts.uk.cnv.dom.td.schema.snapshot.TableSnapshot;
 import nts.uk.cnv.dom.td.schema.tabledesign.ColumnDesign;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
 
@@ -50,14 +50,13 @@ public class ScvmtErpTableDesign extends JpaEntity implements Serializable {
 		return pk;
 	}
 
-	public Snapshot toDomain() {
+	public TableSnapshot toDomain() {
 		List<ColumnDesign> cols = columns.stream()
 				.map(col -> col.toDomain())
 				.collect(Collectors.toList());
 
-		return new Snapshot(
+		return new TableSnapshot(
 					pk.getSnapshotId(),
-					pk.getEventId(),
 					new TableDesign(pk.getTableId(), name, jpName, cols, new ArrayList<>())
 				);
 	}
