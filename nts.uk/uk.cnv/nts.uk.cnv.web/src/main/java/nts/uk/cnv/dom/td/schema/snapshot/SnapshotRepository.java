@@ -1,13 +1,13 @@
 package nts.uk.cnv.dom.td.schema.snapshot;
 
-import java.util.List;
-
-import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
+import java.util.Optional;
 
 public interface SnapshotRepository {
 
-	Snapshot getNewest(String tableId);
-
-	List<TableDesign> getNewestAll();
+	Optional<SchemaSnapshot> getSchemaLatest();
+	
+	TableListSnapshot getTableList(String snapshotId);
+	
+	Optional<TableSnapshot> getTable(String snapshotId, String tableId);
 
 }

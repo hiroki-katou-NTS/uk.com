@@ -16,17 +16,16 @@ import nts.arc.task.tran.AtomTask;
 import nts.uk.cnv.dom.td.alteration.Alteration;
 import nts.uk.cnv.dom.td.alteration.AlterationMetaData;
 import nts.uk.cnv.dom.td.alteration.AlterationRepository;
-import nts.uk.cnv.dom.td.alteration.TableDesignService;
-import nts.uk.cnv.dom.td.schema.snapshot.Snapshot;
+import nts.uk.cnv.dom.td.alteration.SaveAlteration;
+import nts.uk.cnv.dom.td.schema.snapshot.TableSnapshot;
 import nts.uk.cnv.dom.td.schema.snapshot.SnapshotRepository;
-import nts.uk.cnv.dom.td.schema.tabledesign.ColumnDesign;
-import nts.uk.cnv.dom.td.schema.tabledesign.DefineColumnType;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
+import nts.uk.cnv.dom.td.schema.tabledesign.column.ColumnDesign;
+import nts.uk.cnv.dom.td.schema.tabledesign.column.DefineColumnType;
+import nts.uk.cnv.dom.td.schema.tabledesign.constraint.TableConstraints;
 
 @Stateless
 public class TableDefinitionRegistCommandHandler extends CommandHandler<TableDefinitionRegistCommand> {
-	@Inject
-	private TableDesignService tdService;
 
 	@Inject
 	private AlterationRepository alterationRepo;
@@ -41,20 +40,19 @@ public class TableDefinitionRegistCommandHandler extends CommandHandler<TableDef
 		val tableInfo = command.getTd().getTableInfo();
 		TableDesign td = createTd(columns, tableInfo);
 
-		AlterationMetaData meta = new AlterationMetaData(
+		val meta = new AlterationMetaData(
 				command.getUserName(),
 				command.getComment());
 
-		RequireImpl require = new RequireImpl(alterationRepo, snapshotRepo);
-		transaction.execute(() -> {
-			AtomTask at = tdService.alter(
-					require,
-					command.getFeatureId(),
-					td.getId(),
-					meta,
-					Optional.of(td));
-			at.run();
-		});
+		val require = new RequireImpl(alterationRepo, snapshotRepo);
+		val saving = SaveAlteration.save(
+				require,
+				command.getFeatureId(),
+				tableInfo.getId(),
+				meta,
+				Optional.of(td));
+		
+		transaction.execute(saving);
 	}
 
 	private TableDesign createTd(final java.util.List<nts.uk.cnv.ws.table.column.ColumnDefinitionDto> columns,
@@ -79,21 +77,22 @@ public class TableDefinitionRegistCommandHandler extends CommandHandler<TableDef
 		TableDesign td = new TableDesign(
 				tableInfo.getId(),
 				tableInfo.getName(),
-				tableInfo.getNameJp(),
+				"",
 				cds,
-				new ArrayList<>()
+				TableConstraints.empty()
 			);
 		return td;
 	}
 
 	@RequiredArgsConstructor
-	private static class RequireImpl implements TableDesignService.Require {
+	private static class RequireImpl implements SaveAlteration.Require {
 		private final AlterationRepository alterationRepo;
 		private final SnapshotRepository snapshotRepo;
 
 		@Override
-		public Snapshot getNewestSnapshot(String tableId) {
-			return snapshotRepo.getNewest(tableId);
+		public TableSnapshot getNewestSnapshot(String tableId) {
+			return null;
+			//return snapshotRepo.getNewest(tableId);
 		}
 
 		@Override

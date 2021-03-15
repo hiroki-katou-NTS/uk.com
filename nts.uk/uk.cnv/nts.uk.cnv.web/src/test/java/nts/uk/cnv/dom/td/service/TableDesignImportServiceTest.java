@@ -10,7 +10,7 @@ import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import net.sf.jsqlparser.JSQLParserException;
 import nts.arc.task.tran.AtomTask;
-import nts.uk.cnv.dom.td.schema.snapshot.Snapshot;
+import nts.uk.cnv.dom.td.schema.snapshot.TableSnapshot;
 
 @RunWith(JMockit.class)
 public class TableDesignImportServiceTest {
@@ -21,7 +21,7 @@ public class TableDesignImportServiceTest {
 	@Test
 	public void test() {
 		new Expectations() {{
-			require.regist((Snapshot) any);
+			require.regist((TableSnapshot) any);
 		}};
 
 		String ddl = "CREATE TABLE BCMMT_COMPANY(\r\n" +

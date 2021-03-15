@@ -8,6 +8,7 @@ import java.util.Optional;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import lombok.val;
 import mockit.Injectable;
 import mockit.Tested;
 import mockit.integration.junit4.JMockit;
@@ -17,26 +18,30 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.cnv.dom.td.alteration.Alteration;
 import nts.uk.cnv.dom.td.alteration.AlterationFactory;
 import nts.uk.cnv.dom.td.alteration.AlterationMetaData;
-import nts.uk.cnv.dom.td.alteration.TableDesignService;
-import nts.uk.cnv.dom.td.schema.snapshot.Snapshot;
-import nts.uk.cnv.dom.td.schema.tabledesign.ColumnDesign;
-import nts.uk.cnv.dom.td.schema.tabledesign.DefineColumnType;
+import nts.uk.cnv.dom.td.alteration.SaveAlteration;
+import nts.uk.cnv.dom.td.schema.snapshot.TableSnapshot;
 import nts.uk.cnv.dom.td.schema.tabledesign.Indexes;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableName;
-import nts.uk.cnv.dom.td.tabledefinetype.DataType;
+import nts.uk.cnv.dom.td.schema.tabledesign.column.ColumnDesign;
+import nts.uk.cnv.dom.td.schema.tabledesign.column.DataType;
+import nts.uk.cnv.dom.td.schema.tabledesign.column.DefineColumnType;
+import nts.uk.cnv.dom.td.schema.tabledesign.constraint.PrimaryKey;
+import nts.uk.cnv.dom.td.schema.tabledesign.constraint.TableConstraints;
+import nts.uk.cnv.dom.td.schema.tabledesign.constraint.TableIndex;
+import nts.uk.cnv.dom.td.schema.tabledesign.constraint.UniqueConstraint;
 
 @RunWith(JMockit.class)
 public class TableDesignServiceTest {
 
 	@Injectable
-	private TableDesignService.Require require;
+	private SaveAlteration.Require require;
 
 	@Injectable
 	private AlterationFactory factory;
 
 	@Tested
-	private TableDesignService target;
+	private SaveAlteration target;
 
 	private final String featureId = "root";
 	private final String tableId = IdentifierUtil.randomUniqueId();
@@ -93,15 +98,14 @@ public class TableDesignServiceTest {
 
 	private Optional<TableDesign> createNewstSnapshot() {
 		return Optional.of(
-				new Snapshot(
+				new TableSnapshot(
 					IdentifierUtil.randomUniqueId(),
-					"createfeature",
 					createDummy()
 				));
 	}
 
-	private Optional<TableDesign> createAltered(Snapshot ss, Alteration alt) {
-		TableDesign altered = ss.createTableProspect(Arrays.asList(alt))
+	private Optional<TableDesign> createAltered(TableSnapshot ss, Alteration alt) {
+		TableDesign altered = ss.apply(Arrays.asList(alt))
 				.orElseThrow(() -> new BusinessException(new RawErrorMessage("変更がありません")));
 		return Optional.of(altered);
 	}
@@ -113,12 +117,19 @@ public class TableDesignServiceTest {
 		DefineColumnType ymdType = new DefineColumnType(DataType.DATE, 0, 0, false, "", "");
 		cols.add(new ColumnDesign("0", "SID", "社員ID", sidType, "", 0));
 		cols.add(new ColumnDesign("1", "YMD", "年月日", ymdType, "", 1));
-		indexes.add(Indexes.createPk(new TableName(tableName), Arrays.asList("SID", "YMD"), true));
-		indexes.add(Indexes.createIndex("KRCDI_FOO_BAR", Arrays.asList("SID", "YMD"), false));
 
 		return new TableDesign(
-			"KRCDT_FOO_BAR", "KRCDT_FOO_BAR", "",
+			tableName, tableName, "ほげほげ",
 			cols,
-			indexes);
+			createTableConstraints());
+	}
+	
+	private static TableConstraints createTableConstraints() {
+		
+		val pk = new PrimaryKey(Arrays.asList("SID", "YMD"), true);
+		val unique = Arrays.asList(new UniqueConstraint("UK1", Arrays.asList("SID", "YMD"), false));
+		val index = Arrays.asList(new TableIndex("IX1", Arrays.asList("SID", "YMD"), false));
+		
+		return new TableConstraints(pk, unique, index);
 	}
 }

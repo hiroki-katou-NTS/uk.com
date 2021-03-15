@@ -4,20 +4,20 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.BiFunction;
 
-import nts.uk.cnv.dom.td.alteration.content.AddColumn;
 import nts.uk.cnv.dom.td.alteration.content.AddTable;
 import nts.uk.cnv.dom.td.alteration.content.AlterationContent;
-import nts.uk.cnv.dom.td.alteration.content.ChangeColumnComment;
-import nts.uk.cnv.dom.td.alteration.content.ChangeColumnJpName;
-import nts.uk.cnv.dom.td.alteration.content.ChangeColumnName;
-import nts.uk.cnv.dom.td.alteration.content.ChangeColumnType;
-import nts.uk.cnv.dom.td.alteration.content.ChangeIndex;
-import nts.uk.cnv.dom.td.alteration.content.ChangePK;
 import nts.uk.cnv.dom.td.alteration.content.ChangeTableJpName;
 import nts.uk.cnv.dom.td.alteration.content.ChangeTableName;
-import nts.uk.cnv.dom.td.alteration.content.ChangeUK;
-import nts.uk.cnv.dom.td.alteration.content.RemoveColumn;
 import nts.uk.cnv.dom.td.alteration.content.RemoveTable;
+import nts.uk.cnv.dom.td.alteration.content.column.AddColumn;
+import nts.uk.cnv.dom.td.alteration.content.column.ChangeColumnComment;
+import nts.uk.cnv.dom.td.alteration.content.column.ChangeColumnJpName;
+import nts.uk.cnv.dom.td.alteration.content.column.ChangeColumnName;
+import nts.uk.cnv.dom.td.alteration.content.column.ChangeColumnType;
+import nts.uk.cnv.dom.td.alteration.content.column.RemoveColumn;
+import nts.uk.cnv.dom.td.alteration.content.constraint.ChangeIndex;
+import nts.uk.cnv.dom.td.alteration.content.constraint.ChangePK;
+import nts.uk.cnv.dom.td.alteration.content.constraint.ChangeUnique;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
 
 public enum AlterationType {
@@ -49,8 +49,8 @@ public enum AlterationType {
 			ChangePK::create,
 			ChangePK::applicable),
 	UNIQUE_KEY_CHANGE(
-			ChangeUK::create,
-			ChangeUK::applicable),
+			ChangeUnique::create,
+			ChangeUnique::applicable),
 	INDEX_CHANGE(
 			ChangeIndex::create,
 			ChangeIndex::applicable),

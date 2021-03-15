@@ -9,10 +9,10 @@ import java.util.stream.Collectors;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
-import nts.uk.cnv.dom.td.schema.snapshot.Snapshot;
-import nts.uk.cnv.dom.td.schema.tabledesign.ColumnDesign;
+import nts.uk.cnv.dom.td.schema.snapshot.TableSnapshot;
 import nts.uk.cnv.dom.td.schema.tabledesign.ErpTableDesignRepository;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
+import nts.uk.cnv.dom.td.schema.tabledesign.column.ColumnDesign;
 import nts.uk.cnv.infra.td.entity.erptabledesign.ScvmtErpColumnDesign;
 import nts.uk.cnv.infra.td.entity.erptabledesign.ScvmtErpColumnDesignPk;
 import nts.uk.cnv.infra.td.entity.erptabledesign.ScvmtErpTableDesign;
@@ -21,12 +21,12 @@ import nts.uk.cnv.infra.td.entity.erptabledesign.ScvmtErpTableDesignPk;
 public class JpaErpTableDesignRepository extends JpaRepository implements ErpTableDesignRepository {
 
 	@Override
-	public void insert(Snapshot ss) {
+	public void insert(TableSnapshot ss) {
 		this.commandProxy().insert(toEntity(ss));
 	}
 
 	@Override
-	public void update(Snapshot ss) {
+	public void update(TableSnapshot ss) {
 		this.commandProxy().update(toEntity(ss));
 	}
 
@@ -39,16 +39,16 @@ public class JpaErpTableDesignRepository extends JpaRepository implements ErpTab
 		return result.isPresent();
 	}
 
-	private ScvmtErpTableDesign toEntity(Snapshot ss) {
+	private ScvmtErpTableDesign toEntity(TableSnapshot ss) {
 		List<ScvmtErpColumnDesign> columns = ss.getColumns().stream()
-				.map(cd -> toEntity(ss.getId(), ss.getSnapshotId(), ss.getEventId(), cd))
+				.map(cd -> toEntity(ss.getId(), ss.getSnapshotId(), "", cd))
 				.collect(Collectors.toList());
 
 		return new ScvmtErpTableDesign(
 				new ScvmtErpTableDesignPk(
 						ss.getId(),
 						ss.getSnapshotId(),
-						ss.getEventId()
+						""
 					),
 				ss.getName(),
 				ss.getJpName(),
@@ -60,13 +60,13 @@ public class JpaErpTableDesignRepository extends JpaRepository implements ErpTab
 					new ScvmtErpColumnDesignPk(tableId, featureId, eventId, columnDesign.getId()),
 					columnDesign.getName(),
 					columnDesign.getJpName(),
-					columnDesign.getType().toString(),
-					columnDesign.getMaxLength(),
-					columnDesign.getScale(),
-					(columnDesign.isNullable() ? 1 : 0),
-					columnDesign.getDefaultValue(),
+					columnDesign.getType().getDataType().toString(),
+					columnDesign.getType().getLength(),
+					columnDesign.getType().getScale(),
+					(columnDesign.getType().isNullable() ? 1 : 0),
+					columnDesign.getType().getDefaultValue(),
 					columnDesign.getComment(),
-					columnDesign.getCheck(),
+					columnDesign.getType().getCheckConstaint(),
 					columnDesign.getDispOrder(),
 					null
 				);

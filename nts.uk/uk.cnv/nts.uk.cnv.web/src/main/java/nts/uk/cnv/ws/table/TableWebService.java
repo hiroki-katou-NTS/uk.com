@@ -13,8 +13,12 @@ import javax.ws.rs.core.MediaType;
 
 import nts.uk.cnv.app.td.command.TableDefinitionRegistCommand;
 import nts.uk.cnv.app.td.command.TableDefinitionRegistCommandHandler;
+import nts.uk.cnv.app.td.schema.prospect.TableListProspectQuery;
+import nts.uk.cnv.app.td.schema.prospect.TableProspectQuery;
 import nts.uk.cnv.app.td.service.TableDesignerService;
-import nts.uk.cnv.dom.td.tabledefinetype.DataType;
+import nts.uk.cnv.dom.td.schema.prospect.definition.TableProspect;
+import nts.uk.cnv.dom.td.schema.prospect.list.TableListProspect;
+import nts.uk.cnv.dom.td.schema.tabledesign.column.DataType;
 import nts.uk.cnv.ws.table.column.ColumnDefinitionDto;
 import nts.uk.cnv.ws.table.column.ColumnTypeDefinitionDto;
 
@@ -27,31 +31,23 @@ public class TableWebService {
 
 	@Inject
 	TableDefinitionRegistCommandHandler handler;
+	
+	@Inject
+	TableListProspectQuery tableListProspect;
+	
+	@Inject
+	TableProspectQuery tableProspect;
 
 	@GET
 	@Path("list")
-	public List<TableInfoDto> list() {
-		return tdService.getProspect();
+	public TableListProspect list() {
+		return tableListProspect.get();
 	}
 
 	@GET
-	@Path("{name}")
-	public TableDefinitionDto definition(@PathParam("name") String name) {
-		List<ColumnDefinitionDto> columns = Arrays.asList(
-				new ColumnDefinitionDto(
-						"",
-						"CONTRACT_CD",
-						"契約コード",
-						new ColumnTypeDefinitionDto(false, DataType.CHAR, 12, 0, "", ""),
-						"けいやく\nコード\nだよ"),
-				new ColumnDefinitionDto(
-						"",
-						"CID",
-						"会社コード",
-						new ColumnTypeDefinitionDto(true, DataType.VARCHAR, 17, 0, "", ""),
-						"")
-				);
-		return new TableDefinitionDto(new TableInfoDto("", name, ""), columns);
+	@Path("{tableId}")
+	public TableProspect definition(@PathParam("tableId") String tableId) {
+		return tableProspect.get(tableId).get();
 	}
 
 	@POST

@@ -39,8 +39,8 @@ import nts.uk.cnv.dom.cnv.conversiontable.ConversionTableRepository;
 import nts.uk.cnv.dom.cnv.conversiontable.OneColumnConversion;
 import nts.uk.cnv.dom.td.alteration.Alteration;
 import nts.uk.cnv.dom.td.alteration.AlterationRepository;
-import nts.uk.cnv.dom.td.schema.prospect.TableProspect;
-import nts.uk.cnv.dom.td.schema.prospect.TableProspectBuilder;
+import nts.uk.cnv.dom.td.schema.prospect.definition.TableProspect;
+import nts.uk.cnv.dom.td.schema.prospect.definition.TableProspectBuilder;
 import nts.uk.cnv.dom.td.schema.snapshot.SnapshotRepository;
 import nts.uk.cnv.dom.td.schema.tabledesign.ErpTableDesignRepository;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
@@ -408,8 +408,9 @@ public class TableDesignerService {
 	}
 
 	public List<TableInfoDto> getProspect() {
-		Map<String, TableDesign> tableDesignList = ssRepo.getNewestAll().stream()
-				.collect(Collectors.toMap(td -> td.getId(), td -> td));
+//		Map<String, TableDesign> tableDesignList = ssRepo.getNewestAll().stream()
+//				.collect(Collectors.toMap(td -> td.getId(), td -> td));
+		Map<String, TableDesign> tableDesignList = null;
 		// テーブル追加・削除・テーブル名変更のおるたのみ抽出
 		Map<String, List<Alteration>> altarations = alterationRepo.getTableListChange().stream()
 				.collect(Collectors.groupingBy(alt -> alt.getTableId()));
@@ -418,7 +419,7 @@ public class TableDesignerService {
 			.forEach(tableId -> {
 				TableProspectBuilder builder = tableDesignList.containsKey(tableId)
 						? new TableProspectBuilder(tableDesignList.get(tableId))
-						: new TableProspectBuilder();
+						: TableProspectBuilder.empty();
 				altarations.get(tableId).stream()
 					.forEach(alt -> {
 						alt.apply(builder);
@@ -435,8 +436,7 @@ public class TableDesignerService {
 		return tableDesignList.entrySet().stream()
 				.map(es -> new TableInfoDto(
 						es.getValue().getId(),
-						es.getValue().getName(),
-						es.getValue().getJpName()))
+						es.getValue().getName()))
 				.collect(toList());
 	}
 
@@ -462,7 +462,7 @@ public class TableDesignerService {
 					return new GetUkColumnsResultDto(
 						col.getId(),
 						col.getName(),
-						dataType.dataType(col.getType(), col.getMaxLength(), col.getScale()),
+						dataType.dataType(col.getType().getDataType(), col.getType().getLength(), col.getType().getScale()),
 						exists
 					);
 				})
@@ -480,7 +480,7 @@ public class TableDesignerService {
 				.map(col -> new GetErpColumnsResultDto(
 						col.getId(),
 						col.getName(),
-						spec.dataType(col.getType(), col.getMaxLength(), col.getScale())
+						spec.dataType(col.getType().getDataType(), col.getType().getLength(), col.getType().getScale())
 					))
 				.collect(Collectors.toList());
 	}

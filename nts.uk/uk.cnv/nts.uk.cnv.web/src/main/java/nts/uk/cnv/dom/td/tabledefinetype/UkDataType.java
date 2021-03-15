@@ -1,5 +1,7 @@
 package nts.uk.cnv.dom.td.tabledefinetype;
 
+import nts.uk.cnv.dom.td.schema.tabledesign.column.DataType;
+
 public class UkDataType implements TableDefineType {
 
 	public String dataType(DataType type, Integer... length) {

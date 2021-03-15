@@ -6,14 +6,16 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
+
 import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.cnv.app.cnv.dto.GetUkTablesResultDto;
-import nts.uk.cnv.dom.td.schema.snapshot.Snapshot;
-import nts.uk.cnv.dom.td.schema.tabledesign.ColumnDesign;
+import nts.uk.cnv.dom.td.schema.snapshot.TableSnapshot;
 import nts.uk.cnv.dom.td.schema.tabledesign.Indexes;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
 import nts.uk.cnv.dom.td.schema.tabledesign.UkTableDesignRepository;
+import nts.uk.cnv.dom.td.schema.tabledesign.column.ColumnDesign;
 import nts.uk.cnv.infra.td.entity.uktabledesign.ScvmtUkColumnDesign;
 import nts.uk.cnv.infra.td.entity.uktabledesign.ScvmtUkColumnDesignPk;
 import nts.uk.cnv.infra.td.entity.uktabledesign.ScvmtUkIndexColumns;
@@ -23,15 +25,16 @@ import nts.uk.cnv.infra.td.entity.uktabledesign.ScvmtUkIndexDesignPk;
 import nts.uk.cnv.infra.td.entity.uktabledesign.ScvmtUkTableDesign;
 import nts.uk.cnv.infra.td.entity.uktabledesign.ScvmtUkTableDesignPk;
 
+@Stateless
 public class JpaUkTableDesignRepository extends JpaRepository implements UkTableDesignRepository {
 
 	@Override
-	public void insert(Snapshot tableDesign) {
+	public void insert(TableSnapshot tableDesign) {
 		this.commandProxy().insert(toEntity(tableDesign));
 	}
 
 	@Override
-	public void update(Snapshot tableDesign) {
+	public void update(TableSnapshot tableDesign) {
 		ScvmtUkTableDesign tergetEntity = toEntity(tableDesign);
 		Optional<ScvmtUkTableDesign> before = this.queryProxy().find(
 				tergetEntity.pk, ScvmtUkTableDesign.class);
@@ -52,63 +55,63 @@ public class JpaUkTableDesignRepository extends JpaRepository implements UkTable
 		return (result.size() > 0);
 	}
 
-	private ScvmtUkTableDesign toEntity(Snapshot tableDesign) {
+	private ScvmtUkTableDesign toEntity(TableSnapshot tableDesign) {
 		List<ScvmtUkColumnDesign> columns = tableDesign.getColumns().stream()
 				.map(cd -> toEntity(tableDesign, cd))
 				.collect(Collectors.toList());
 
 		List<ScvmtUkIndexDesign> indexes = new ArrayList<>();
-		for (Indexes idx: tableDesign.getIndexes()) {
-			List<ScvmtUkIndexColumns> indexcolumns = idx.getColumns().stream()
-				.map(col -> new ScvmtUkIndexColumns(
-						new ScvmtUkIndexColumnsPk(
-								tableDesign.getId(),
-								tableDesign.getSnapshotId(),
-								tableDesign.getEventId(),
-								idx.getName(),
-								idx.getColumns().indexOf(col),
-								col),
-						null)
-					)
-				.collect(Collectors.toList());
-
-			indexes.add(new ScvmtUkIndexDesign(
-					new ScvmtUkIndexDesignPk(
-							tableDesign.getId(), tableDesign.getSnapshotId(), tableDesign.getEventId(), idx.getName()),
-					idx.getConstraintType(),
-					idx.isClustered(),
-					indexcolumns,
-					null
-			));
-		}
+//		for (Indexes idx: tableDesign.getIndexes()) {
+//			List<ScvmtUkIndexColumns> indexcolumns = idx.getColumns().stream()
+//				.map(col -> new ScvmtUkIndexColumns(
+//						new ScvmtUkIndexColumnsPk(
+//								tableDesign.getId(),
+//								tableDesign.getSnapshotId(),
+//								"",
+//								idx.getName(),
+//								idx.getColumns().indexOf(col),
+//								col),
+//						null)
+//					)
+//				.collect(Collectors.toList());
+//
+//			indexes.add(new ScvmtUkIndexDesign(
+//					new ScvmtUkIndexDesignPk(
+//							tableDesign.getId(), tableDesign.getSnapshotId(), "", idx.getName()),
+//					idx.getConstraintType(),
+//					idx.isClustered(),
+//					indexcolumns,
+//					null
+//			));
+//		}
 
 		return new ScvmtUkTableDesign(
 				new ScvmtUkTableDesignPk(
 					tableDesign.getId(),
 					tableDesign.getSnapshotId(),
-					tableDesign.getEventId()),
+					""),
 				tableDesign.getName(),
 				tableDesign.getJpName(),
 				columns,
 				indexes);
 	}
 
-	private ScvmtUkColumnDesign toEntity(Snapshot tableDesign, ColumnDesign columnDesign) {
+	private ScvmtUkColumnDesign toEntity(TableSnapshot tableDesign, ColumnDesign columnDesign) {
 		return new ScvmtUkColumnDesign(
 					new ScvmtUkColumnDesignPk(
 							tableDesign.getId(),
 							tableDesign.getSnapshotId(),
-							tableDesign.getEventId(),
+							"",
 							columnDesign.getId()),
 					columnDesign.getName(),
 					columnDesign.getJpName(),
-					columnDesign.getType().toString(),
-					columnDesign.getMaxLength(),
-					columnDesign.getScale(),
-					(columnDesign.isNullable() ? 1 : 0),
-					columnDesign.getDefaultValue(),
+					columnDesign.getType().getDataType().toString(),
+					columnDesign.getType().getLength(),
+					columnDesign.getType().getScale(),
+					(columnDesign.getType().isNullable() ? 1 : 0),
+					columnDesign.getType().getDefaultValue(),
 					columnDesign.getComment(),
-					columnDesign.getCheck(),
+					columnDesign.getType().getCheckConstaint(),
 					columnDesign.getDispOrder(),
 					null
 				);
@@ -116,14 +119,14 @@ public class JpaUkTableDesignRepository extends JpaRepository implements UkTable
 
 	@Override
 	@SneakyThrows
-	public Optional<TableDesign> findByKey(String tableId, String feature, String eventId) {
-		Optional<ScvmtUkTableDesign> result = find(tableId, feature, eventId);
+	public Optional<TableDesign> findByKey(String tableId, String snapshotId, String eventId) {
+		Optional<ScvmtUkTableDesign> result = find(tableId, snapshotId, eventId);
 		return Optional.of(result.get().toDomain());
 	}
 
-	private Optional<ScvmtUkTableDesign> find(String tableId, String feature, String eventId) {
+	private Optional<ScvmtUkTableDesign> find(String tableId, String snapshotId, String eventId) {
 		return this.queryProxy().find(
-				new ScvmtUkTableDesignPk(tableId, feature, eventId),
+				new ScvmtUkTableDesignPk(tableId, snapshotId, eventId),
 				ScvmtUkTableDesign.class);
 	}
 

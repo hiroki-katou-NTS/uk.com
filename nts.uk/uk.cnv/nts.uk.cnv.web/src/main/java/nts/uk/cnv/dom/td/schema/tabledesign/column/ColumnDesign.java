@@ -1,13 +1,12 @@
-package nts.uk.cnv.dom.td.schema.tabledesign;
+package nts.uk.cnv.dom.td.schema.tabledesign.column;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.cnv.dom.td.tabledefinetype.DataType;
 import nts.uk.cnv.dom.td.tabledefinetype.TableDefineType;
 
 @AllArgsConstructor
 @Getter
-public class ColumnDesign {
+public class ColumnDesign implements Comparable<ColumnDesign> {
 	private String id;
 	private String name;
 	private String jpName;
@@ -20,7 +19,7 @@ public class ColumnDesign {
 
 	public String getColumnContaintDdl(TableDefineType datatypedefine) {
 		return "\t" + this.name + " " +
-				datatypedefine.dataType(this.type.type, this.type.length, this.type.scale) +
+				datatypedefine.dataType(this.type.dataType, this.type.length, this.type.scale) +
 			(this.type.nullable ? " NULL" : " NOT NULL") +
 			(
 				this.type.defaultValue != null && !this.type.defaultValue.isEmpty()
@@ -29,32 +28,8 @@ public class ColumnDesign {
 			);
 	}
 
-	public DataType getType() {
-		return this.type.type;
-	}
-
-	public int getMaxLength() {
-		return this.type.length;
-	}
-
-	public int getScale() {
-		return this.type.scale;
-	}
-
-	public boolean isNullable() {
-		return this.type.nullable;
-	}
-
-	public String getDefaultValue() {
-		return this.type.defaultValue;
-	}
-
-	public String getCheck() {
-		return this.type.checkConstaint;
-	}
-
 	private String getDefaultValue(String value, TableDefineType datatypedefine) {
-		if (this.type.type != DataType.BOOL) return value;
+		if (this.type.dataType != DataType.BOOL) return value;
 
 		return datatypedefine.convertBoolDefault(value);
 	}
@@ -76,7 +51,7 @@ public class ColumnDesign {
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + (type.nullable ? 1231 : 1237);
 		result = prime * result + type.scale;
-		result = prime * result + ((type.type == null) ? 0 : type.type.hashCode());
+		result = prime * result + ((type.dataType == null) ? 0 : type.dataType.hashCode());
 		result = prime * result + dispOrder;
 		return result;
 	}
@@ -131,5 +106,10 @@ public class ColumnDesign {
 		if (dispOrder != other.dispOrder)
 			return false;
 		return true;
+	}
+
+	@Override
+	public int compareTo(ColumnDesign o) {
+		return dispOrder - o.getDispOrder();
 	}
 }

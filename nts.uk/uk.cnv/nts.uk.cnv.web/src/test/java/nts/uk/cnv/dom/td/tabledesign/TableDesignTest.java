@@ -2,17 +2,23 @@ package nts.uk.cnv.dom.td.tabledesign;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-import nts.uk.cnv.dom.td.schema.tabledesign.ColumnDesign;
-import nts.uk.cnv.dom.td.schema.tabledesign.DefineColumnType;
+import lombok.val;
 import nts.uk.cnv.dom.td.schema.tabledesign.Indexes;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableDesign;
 import nts.uk.cnv.dom.td.schema.tabledesign.TableName;
-import nts.uk.cnv.dom.td.tabledefinetype.DataType;
+import nts.uk.cnv.dom.td.schema.tabledesign.column.ColumnDesign;
+import nts.uk.cnv.dom.td.schema.tabledesign.column.DataType;
+import nts.uk.cnv.dom.td.schema.tabledesign.column.DefineColumnType;
+import nts.uk.cnv.dom.td.schema.tabledesign.constraint.PrimaryKey;
+import nts.uk.cnv.dom.td.schema.tabledesign.constraint.TableConstraints;
+import nts.uk.cnv.dom.td.schema.tabledesign.constraint.TableIndex;
+import nts.uk.cnv.dom.td.schema.tabledesign.constraint.UniqueConstraint;
 import nts.uk.cnv.dom.td.tabledefinetype.DatabaseSpec;
 import nts.uk.cnv.dom.td.tabledefinetype.databasetype.DatabaseType;
 
@@ -107,16 +113,21 @@ public class TableDesignTest {
 
 	private TableDesign createDummy() {
 		List<ColumnDesign> cols = new ArrayList<>();
-		List<Indexes> indexes = new ArrayList<>();
 		DefineColumnType type = new DefineColumnType(DataType.INT, 1, 0, false, "", "[CHECK]");
 		cols.add(new ColumnDesign("0", "[COLUMN_NAME_1]", "[JPNAME]", type, "", 0));
 		cols.add(new ColumnDesign("1", "[COLUMN_NAME_2]", "[JPNAME]", type, "", 1));
-		indexes.add(Indexes.createPk(new TableName("TABLE_NAME"), Arrays.asList("[COLUMN_NAME_1]"), true));
-		indexes.add(Indexes.createIndex("[INDEX_NAME]", Arrays.asList("[COLUMN_NAME_2]"), false));
 
 		return new TableDesign(
 					"[TABLE_ID]", "[TABLE_NAME]", "[TABLE_JPNAME]",
 					cols,
-					indexes);
+					createTableConstraints());
+	}
+	
+	private static TableConstraints createTableConstraints() {
+		
+		val pk = new PrimaryKey(Arrays.asList("[COLUMN_NAME_1]"), true);
+		val index = Arrays.asList(new TableIndex("[INDEX_NAME]", Arrays.asList("[COLUMN_NAME_2]"), false));
+		
+		return new TableConstraints(pk, Collections.emptyList(), index);
 	}
 }
