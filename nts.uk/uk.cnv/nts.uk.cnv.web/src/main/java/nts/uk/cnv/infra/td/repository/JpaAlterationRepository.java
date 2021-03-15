@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.cnv.dom.td.alteration.Alteration;
 import nts.uk.cnv.dom.td.alteration.AlterationRepository;
+import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
 import nts.uk.cnv.infra.td.entity.alteration.NemTdAlteration;
 import nts.uk.cnv.infra.td.entity.alteration.NemTdAlterationView;
 
@@ -41,6 +42,18 @@ public class JpaAlterationRepository extends JpaRepository implements Alteration
 	@Override
 	public void insert(Alteration alt) {
 		this.commandProxy().insert(NemTdAlteration.toEntity(alt));
+	}
+
+	@Override
+	public List<AlterationSummary> getAllUndeliveled(String featureId) {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
+	}
+
+	@Override
+	public List<AlterationSummary> getOlderUndeliveled(String alterId) {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
 	}
 
 }

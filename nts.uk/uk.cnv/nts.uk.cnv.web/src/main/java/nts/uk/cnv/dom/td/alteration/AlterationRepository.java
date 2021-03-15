@@ -2,6 +2,8 @@ package nts.uk.cnv.dom.td.alteration;
 
 import java.util.List;
 
+import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
+
 public interface AlterationRepository {
 
 	/**
@@ -18,5 +20,9 @@ public interface AlterationRepository {
 	List<Alteration> getUnaccepted(String tableId);
 
 	void insert(Alteration alt);
+
+	List<AlterationSummary> getAllUndeliveled(String featureId);
+
+	List<AlterationSummary> getOlderUndeliveled(String alterId);
 
 }

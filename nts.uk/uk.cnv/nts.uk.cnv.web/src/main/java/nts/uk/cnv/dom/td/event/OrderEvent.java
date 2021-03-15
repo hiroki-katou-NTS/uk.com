@@ -2,12 +2,10 @@ package nts.uk.cnv.dom.td.event;
 
 import java.util.List;
 
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.cnv.dom.td.event.EventIdProvider.ProvideOrderIdRequire;
 
 /**
  * 発注イベント
@@ -15,29 +13,24 @@ import nts.arc.time.GeneralDateTime;
  *
  */
 @Getter
-@Stateless
 public class OrderEvent implements Comparable<OrderEvent> {
 	private EventId eventId;
 	private GeneralDateTime datetime;
-	private String name;
-	private String userName;
+	private EventMetaData meta = new EventMetaData();
 	private List<String> alterationIds;
 
-	@Inject
-	private OrderEventRepository orderEventRepo;
 
 	private OrderEvent(EventId eventId, String name, String userName, List<String> alterationIds) {
 		this.eventId = eventId;
 		this.datetime = GeneralDateTime.now();
-		this.name = name;
-		this.userName = userName;
+		this.meta.name = name;
+		this.meta.userName = userName;
 		this.alterationIds = alterationIds;
 	}
 
-	public OrderEvent create(String name, String userName, List<String> alterationIds) {
-		RequireImpl require = new RequireImpl(orderEventRepo);
+	public static OrderEvent create(ProvideOrderIdRequire require, EventMetaData meta, List<String> alterationIds) {
 		EventId id = EventIdProvider.provideOrderId(require);
-		return new OrderEvent(id, name, userName, alterationIds);
+		return new OrderEvent(id, meta.name, meta.userName, alterationIds);
 	}
 
 	@RequiredArgsConstructor
