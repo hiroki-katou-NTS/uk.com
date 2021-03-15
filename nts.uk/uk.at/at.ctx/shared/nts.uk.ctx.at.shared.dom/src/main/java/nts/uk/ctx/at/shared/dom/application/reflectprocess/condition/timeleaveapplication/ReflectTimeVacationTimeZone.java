@@ -50,19 +50,17 @@ public class ReflectTimeVacationTimeZone {
 				// 時間帯を日別勤怠(work）の外出時間帯にセットする
 				dailyApp.getOutingTime().get().getOutingTimeSheets().stream()
 						.filter(x -> x.getOutingFrameNo().v() == workNo.getWorkNo().v()).map(x -> {
-							x.getGoOut().ifPresent(y -> y.getStamp().map(st -> {
-								st.getTimeDay().setTimeWithDay(Optional.of(workNo.getTimeZone().getStartTime()));
-								st.getTimeDay().getReasonTimeChange().setTimeChangeMeans(TimeChangeMeans.APPLICATION);
+							x.getGoOut().ifPresent(y -> {
+								y.getTimeDay().setTimeWithDay(Optional.of(workNo.getTimeZone().getStartTime()));
+								y.getTimeDay().getReasonTimeChange().setTimeChangeMeans(TimeChangeMeans.APPLICATION);
 								lstItemId.add(CancelAppStamp.createItemId(88, workNo.getWorkNo().v(), 7));
-								return st;
-							}));
+							});
 
-							x.getComeBack().ifPresent(y -> y.getStamp().map(st -> {
-								st.getTimeDay().setTimeWithDay(Optional.of(workNo.getTimeZone().getEndTime()));
-								st.getTimeDay().getReasonTimeChange().setTimeChangeMeans(TimeChangeMeans.APPLICATION);
+							x.getComeBack().ifPresent(y -> {
+								y.getTimeDay().setTimeWithDay(Optional.of(workNo.getTimeZone().getEndTime()));
+								y.getTimeDay().getReasonTimeChange().setTimeChangeMeans(TimeChangeMeans.APPLICATION);
 								lstItemId.add(CancelAppStamp.createItemId(91, workNo.getWorkNo().v(), 7));
-								return st;
-							}));
+							});
 							x.setReasonForGoOut(appTimeType == AppTimeType.PRIVATE ? GoingOutReason.PRIVATE : GoingOutReason.UNION);
 							lstItemId.add(CancelAppStamp.createItemId(86, workNo.getWorkNo().v(), 7));
 							return x;

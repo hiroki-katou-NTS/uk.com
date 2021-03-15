@@ -70,6 +70,8 @@ import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImage;
 import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImageRepository;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository;
+import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplication;
+import nts.uk.ctx.at.request.dom.application.timeleaveapplication.TimeLeaveApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeRepository;
 import nts.uk.ctx.at.request.dom.applicationreflect.algorithm.obtainappreflect.ObtainAppReflectResultProcess;
@@ -156,6 +158,8 @@ public class OvertimeServiceImpl implements OvertimeService {
 	private ApplicationRepository applicationRepository;
 	@Inject
 	private GetApplicationReflectionResultAdapter getApplicationReflectionResultAdapter;
+	@Inject
+	private TimeLeaveApplicationRepository timeLeaveApplicationRepo;
 	
 	@Override
 	public int checkOvertimeAtr(String url) {
@@ -767,6 +771,11 @@ public class OvertimeServiceImpl implements OvertimeService {
 			@Override
 			public Optional<AppRecordImage> findAppRecordImage(String companyId, String appID, Application app) {
 				return repoRecordImg.findByAppID(companyId, appID, app);
+			}
+
+			@Override
+			public Optional<TimeLeaveApplication> findTimeLeavById(String companyId, String appId) {
+				return timeLeaveApplicationRepo.findById(companyId, appId);
 			}
 		};
 	}
