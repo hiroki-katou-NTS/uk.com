@@ -21,20 +21,20 @@ public class KshdtInterimHdpaid extends ContractUkJpaEntity{
 	 * 暫定年休管理データID
 	 */
 	@EmbeddedId
-	public KrcdtInterimHdpaidPK pk;
+	public KshdtInterimHdpaidPK pk;
 
 	/**
-	 * 残数管理データID				
+	 * 残数管理データID
 	 */
 	@Column(name = "REMAIN_MNG_ID")
 	public String remainMngId;
-	
+
 	/**
 	 * 作成元区分
 	 */
 	@Column(name = "CREATOR_ATR")
 	public int creatorAtr;
-	
+
 	/**
 	 * 勤務種類コード
 	 */
@@ -46,9 +46,9 @@ public class KshdtInterimHdpaid extends ContractUkJpaEntity{
 	 */
 	@Column(name = "USED_DAYS")
 	public Double useDays;
-	
+
 	/**
-	 * 使用時間	
+	 * 使用時間
 	 */
 	@Column(name = "USED_TIME")
 	public Integer useTime;
@@ -65,6 +65,6 @@ public class KshdtInterimHdpaid extends ContractUkJpaEntity{
 		this.useDays = domain.getUseNumber().getUsedDays().map(c -> c.v()).orElse(null);
 		this.useTime = domain.getUseNumber().getUsedTime().map(c -> c.valueAsMinutes()).orElse(null);
 		this.workTypeCode = domain.getWorkTypeCode().v();
-		
+
 	}
 }

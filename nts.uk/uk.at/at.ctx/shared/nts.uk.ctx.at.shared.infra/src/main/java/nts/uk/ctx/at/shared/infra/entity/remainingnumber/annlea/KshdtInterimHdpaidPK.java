@@ -10,7 +10,7 @@ import nts.arc.time.GeneralDate;
 @AllArgsConstructor
 @Embeddable
 @NoArgsConstructor
-public class KrcdtInterimHdpaidPK {
+public class KshdtInterimHdpaidPK {
 	
 	/**
 	 * CID
