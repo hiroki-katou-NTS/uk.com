@@ -354,7 +354,7 @@ export class KSUS01AComponent extends Vue {
                     el.workScheduleStyle = self.setWorkScheduleStyle(el);
                     // el.workDesireStyle = self.setWorkDesireStyle(el);
 
-                    if (el.formatedDate == '1' && el.date > self.startDate) {
+                    if (el.formatedDate == '1') {
                         el.formatedDate = moment(el.date).format('M/D');
                     }
                     count++;
