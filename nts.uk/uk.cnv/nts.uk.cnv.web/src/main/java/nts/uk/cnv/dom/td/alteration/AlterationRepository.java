@@ -25,4 +25,8 @@ public interface AlterationRepository {
 
 	List<AlterationSummary> getOlderUndeliveled(String alterId);
 
+	List<AlterationSummary> getAllUnaccepted(String featureId);
+
+	List<AlterationSummary> getOlderUnaccepted(String alterId);
+
 }

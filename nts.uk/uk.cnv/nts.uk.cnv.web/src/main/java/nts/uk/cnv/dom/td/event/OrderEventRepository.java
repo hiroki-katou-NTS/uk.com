@@ -1,7 +1,9 @@
 package nts.uk.cnv.dom.td.event;
 
+import java.util.Optional;
+
 public interface OrderEventRepository {
-	String getNewestOrderId();
+	Optional<String> getNewestOrderId();
 
 	void regist(OrderEvent orderEvent);
 

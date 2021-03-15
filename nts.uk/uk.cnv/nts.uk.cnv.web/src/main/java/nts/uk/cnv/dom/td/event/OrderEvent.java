@@ -1,7 +1,9 @@
 package nts.uk.cnv.dom.td.event;
 
 import java.util.List;
+import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import nts.arc.time.GeneralDateTime;
@@ -13,24 +15,22 @@ import nts.uk.cnv.dom.td.event.EventIdProvider.ProvideOrderIdRequire;
  *
  */
 @Getter
+@AllArgsConstructor
 public class OrderEvent implements Comparable<OrderEvent> {
 	private EventId eventId;
 	private GeneralDateTime datetime;
-	private EventMetaData meta = new EventMetaData();
+	private EventMetaData meta;
 	private List<String> alterationIds;
-
-
-	private OrderEvent(EventId eventId, String name, String userName, List<String> alterationIds) {
-		this.eventId = eventId;
-		this.datetime = GeneralDateTime.now();
-		this.meta.name = name;
-		this.meta.userName = userName;
-		this.alterationIds = alterationIds;
-	}
 
 	public static OrderEvent create(ProvideOrderIdRequire require, EventMetaData meta, List<String> alterationIds) {
 		EventId id = EventIdProvider.provideOrderId(require);
-		return new OrderEvent(id, meta.name, meta.userName, alterationIds);
+		return new OrderEvent(
+				id,
+				GeneralDateTime.now(),
+				new EventMetaData(
+					meta.name,
+					meta.userName),
+				alterationIds);
 	}
 
 	@RequiredArgsConstructor
@@ -38,7 +38,7 @@ public class OrderEvent implements Comparable<OrderEvent> {
 		private final OrderEventRepository repository;
 
 		@Override
-		public String getNewestOrderId() {
+		public Optional<String> getNewestOrderId() {
 			return repository.getNewestOrderId();
 		}
 	}

@@ -12,27 +12,27 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.cnv.dom.td.alteration.AlterationRepository;
 import nts.uk.cnv.dom.td.alteration.summary.AlterationSummary;
-import nts.uk.cnv.dom.td.event.OrderEvent;
-import nts.uk.cnv.dom.td.event.OrderEventRepository;
-import nts.uk.cnv.dom.td.event.OrderService;
-import nts.uk.cnv.dom.td.event.OrderedResult;
+import nts.uk.cnv.dom.td.event.DeliveredResult;
+import nts.uk.cnv.dom.td.event.DeliveryEvent;
+import nts.uk.cnv.dom.td.event.DeliveryEventRepository;
+import nts.uk.cnv.dom.td.event.DeliveryService;
 
 @Stateless
-public class OrderCommandHandler extends CommandHandlerWithResult<OrderCommand, List<AlterationSummary>> {
+public class DeliveryCommandHandler extends CommandHandlerWithResult<DeliveryCommand, List<AlterationSummary>> {
 	@Inject
 	private AlterationRepository alterationRepo;
 
 	@Inject
-	private OrderEventRepository orderEventRepo;
+	private DeliveryEventRepository deliveryEventRepo;
 
 	@Inject
-	private OrderService service;
+	private DeliveryService service;
 
 	@Override
-	protected List<AlterationSummary> handle(CommandHandlerContext<OrderCommand> context) {
-		RequireImpl require = new RequireImpl(alterationRepo, orderEventRepo);
-		OrderCommand command = context.getCommand();
-		OrderedResult result = service.order(
+	protected List<AlterationSummary> handle(CommandHandlerContext<DeliveryCommand> context) {
+		RequireImpl require = new RequireImpl(alterationRepo, deliveryEventRepo);
+		DeliveryCommand command = context.getCommand();
+		DeliveredResult result = service.delivery(
 				require,
 				command.getFeatureId(),
 				command.getMeta(),
@@ -52,13 +52,13 @@ public class OrderCommandHandler extends CommandHandlerWithResult<OrderCommand, 
 	}
 
 	@RequiredArgsConstructor
-	private static class RequireImpl implements OrderService.Require {
+	private static class RequireImpl implements DeliveryService.Require {
 		private final AlterationRepository alterationRepo;
-		private final OrderEventRepository orderEventRepo;
+		private final DeliveryEventRepository deliveryEventRepo;
 
 		@Override
-		public Optional<String> getNewestOrderId() {
-			return orderEventRepo.getNewestOrderId();
+		public Optional<String> getNewestDeliveryId() {
+			return deliveryEventRepo.getNewestDeliveryId();
 		}
 		@Override
 		public List<AlterationSummary> getAllUndeliveled(String featureId) {
@@ -69,8 +69,8 @@ public class OrderCommandHandler extends CommandHandlerWithResult<OrderCommand, 
 			return alterationRepo.getOlderUndeliveled(alterId);
 		}
 		@Override
-		public void regist(OrderEvent orderEvent) {
-			orderEventRepo.regist(orderEvent);
+		public void regist(DeliveryEvent deliveryEvent) {
+			deliveryEventRepo.regist(deliveryEvent);
 		}
 
 	};
