@@ -55,11 +55,11 @@ public class CorrectWorkSchedule {
 		ChangeDailyAttendance changeAtt = new ChangeDailyAttendance(true, false, false, false, true);
 		integrationOfDaily = rule.process(integrationOfDaily, changeAtt);
 		
-		//勤務予定の出退勤を補正する
-		correctStampOfWorkSchedule(integrationOfDaily);
-		
 		//勤務予定情報を計算する
 		integrationOfDaily = this.calcWorkScheduleInfo(integrationOfDaily, employeeId, targetDate).get(0);
+
+		// 勤務予定の出退勤を補正する
+		correctStampOfWorkSchedule(integrationOfDaily);
 		
 		WorkSchedule workSchedules = new WorkSchedule(integrationOfDaily.getEmployeeId(),
 				integrationOfDaily.getYmd(), workSchedule.getConfirmedATR(), integrationOfDaily.getWorkInformation(),
