@@ -493,7 +493,6 @@ public class AlarmCheckConditionByCategoryFinder {
 		 			workTypeCondition.setComparisonOperator(compareRange.getCompareOpertor().value);
 		 			workTypeCondition.setCompareStartValue((Double)compareRange.getValue());
 		 		}
-		 		errorAlarmCondition.setWorkTypeCondition(workTypeCondition);
 		 		break;
 		 	case CONTINUOUS_TIME:
 		 		CondContinuousTime continuousTime = (CondContinuousTime)domain.getScheduleCheckCond();
@@ -514,7 +513,6 @@ public class AlarmCheckConditionByCategoryFinder {
 		 			workTypeCondition.setComparisonOperator(compareRange.getCompareOpertor().value);
 		 			workTypeCondition.setCompareStartValue((Double)compareRange.getValue());
 		 		}
-		 		errorAlarmCondition.setWorkTypeCondition(workTypeCondition);
 		 		errorAlarmCondition.setContinuousPeriod(continuousTime.getPeriod().v());
 		 		break;
 		 	case CONTINUOUS_TIMEZONE:
@@ -524,9 +522,6 @@ public class AlarmCheckConditionByCategoryFinder {
 	 			
 	 			workTimeCondition.setPlanLstWorkTime(continuousTimeZone.getWrkTimeCds());
 	 			workTimeCondition.setComparePlanAndActual(domain.getTimeZoneTargetRange().value);
-	 			
-		 		errorAlarmCondition.setWorkTypeCondition(workTypeCondition);
-		 		errorAlarmCondition.setWorkTimeCondition(workTimeCondition);
 		 		
 		 		errorAlarmCondition.setContinuousPeriod(continuousTimeZone.getPeriod().v());
 		 		break;
@@ -540,6 +535,8 @@ public class AlarmCheckConditionByCategoryFinder {
 		 		break;
 		 }
 		 
+		 errorAlarmCondition.setWorkTypeCondition(workTypeCondition);
+		 errorAlarmCondition.setWorkTimeCondition(workTimeCondition);		 
 		
 		 return WorkRecordExtraConAdapterDto.builder()
 				.errorAlarmCheckID(domain.getErrorAlarmId())
