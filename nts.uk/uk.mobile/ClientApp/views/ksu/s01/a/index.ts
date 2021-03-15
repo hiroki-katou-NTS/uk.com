@@ -395,7 +395,7 @@ export class KSUS01AComponent extends Vue {
 
                 detailWorkDesire.workDesireName = el.wishName;
                 detailWorkDesire.workDesireColor = el.color;
-                detailWorkDesire.workDesireAtr = el.workAtr;
+                detailWorkDesire.workDesireAtr = el.workStyle;
                 detailWorkDesire.workDesireTimeZone = el.timezones;
                 detailWorkDesire.workDesireStyle = self.setWorkDesireStyle(detailWorkDesire);
 
@@ -663,7 +663,7 @@ export interface InforOnTargetDateDto {
 export interface WorkInforAndTimeZoneByShiftMasterDto {
     wishName: string;
     timezones: Array<TimeZoneDto>;
-    workAtr: WorkHolidayAtr;
+    workStyle: WorkHolidayAtr;
     color: string;
 }
 
