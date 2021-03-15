@@ -56,4 +56,16 @@ public class JpaAlterationRepository extends JpaRepository implements Alteration
 		return null;
 	}
 
+	@Override
+	public List<AlterationSummary> getAllUnaccepted(String featureId) {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
+	}
+
+	@Override
+	public List<AlterationSummary> getOlderUnaccepted(String alterId) {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
+	}
+
 }

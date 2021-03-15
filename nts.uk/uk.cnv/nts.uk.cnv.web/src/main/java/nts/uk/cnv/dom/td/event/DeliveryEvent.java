@@ -1,13 +1,13 @@
 package nts.uk.cnv.dom.td.event;
 
 import java.util.List;
+import java.util.Optional;
 
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.cnv.dom.td.event.EventIdProvider.ProvideDeliveryIdRequire;
 
 /**
  * 納品イベント
@@ -15,28 +15,20 @@ import nts.arc.time.GeneralDateTime;
  *
  */
 @Getter
-@Stateless
-public class DeliveryEvent {
+@AllArgsConstructor
+public class DeliveryEvent implements Comparable<DeliveryEvent> {
 	private EventId eventId;
 	private GeneralDateTime datetime;
-	private String name;
-	private String userName;
+	private EventMetaData meta;
 	private List<String> alterationIds;
 
-	@Inject
-	private DeliveryEventRepository deliveryEventRepo;
-
-	private DeliveryEvent(EventId eventId, String name, String userName, List<String> alterationIds) {
-		this.eventId = eventId;
-		this.datetime = GeneralDateTime.now();
-		this.name = name;
-		this.alterationIds = alterationIds;
-	}
-
-	public DeliveryEvent create(String name, String userName, List<String> alterationIds) {
-		RequireImpl require = new RequireImpl(deliveryEventRepo);
+	public static DeliveryEvent create(ProvideDeliveryIdRequire require, EventMetaData meta, List<String> alterationIds) {
 		EventId id = EventIdProvider.provideDeliveryId(require);
-		return new DeliveryEvent(id, name, userName, alterationIds);
+		return new DeliveryEvent(
+				id,
+				GeneralDateTime.now(),
+				meta,
+				alterationIds);
 	}
 
 	@RequiredArgsConstructor
@@ -44,8 +36,13 @@ public class DeliveryEvent {
 		private final DeliveryEventRepository repository;
 
 		@Override
-		public String getNewestDeliveryId() {
+		public Optional<String> getNewestDeliveryId() {
 			return repository.getNewestDeliveryId();
 		}
+	}
+
+	@Override
+	public int compareTo(DeliveryEvent o) {
+		return this.datetime.compareTo(o.datetime);
 	}
 }

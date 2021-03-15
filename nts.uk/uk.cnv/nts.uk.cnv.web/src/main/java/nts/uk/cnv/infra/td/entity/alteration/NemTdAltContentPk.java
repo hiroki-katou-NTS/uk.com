@@ -10,7 +10,7 @@ public class NemTdAltContentPk implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Column(name = "ALTERATION_ID")
-	private String AlterationId;
+	private String alterationId;
 
 	@Column(name = "SEQ_NO")
 	private int seqNo;

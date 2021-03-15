@@ -6,11 +6,11 @@ import lombok.Value;
 import nts.uk.cnv.dom.td.event.EventMetaData;
 
 /**
- * 発注する
+ * 納品する
  * @param tableDefinition
  */
 @Value
-public class OrderCommand {
+public class DeliveryCommand {
 	private String featureId;
 	private EventMetaData meta;
 	private List<String> alterationIds;
