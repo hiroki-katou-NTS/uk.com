@@ -401,6 +401,7 @@ export class KafS05Component extends KafS00ShrComponent {
                 command.employeeIdOptional = vm.user.employeeId;
                 command.overtimeAppAtr = vm.overTimeClf;
                 command.appDispInfoStartupOutput = vm.appDispInfoStartupOutput;
+                command.agent = false;
 
                 if (vm.modeNew) {
                     return vm.$http.post('at', API.start, command);
@@ -454,7 +455,8 @@ export class KafS05Component extends KafS00ShrComponent {
         let command = {
             companyId: self.user.companyId,
             date,
-            displayInfoOverTime: self.model.displayInfoOverTime
+            displayInfoOverTime: self.model.displayInfoOverTime,
+            agent: false
         };
         self.$http.post('at',
             API.changeDate,
@@ -710,6 +712,7 @@ export class KafS05Component extends KafS00ShrComponent {
             command.employeeId = vm.user.employeeId;
             command.mode = vm.modeNew;
             command.displayInfoOverTime = vm.model.displayInfoOverTime;
+            command.agent = false;
             if (vm.modeNew) {
                 command.appOverTimeInsert = vm.model.appOverTime;
             } else {
@@ -940,6 +943,7 @@ export class KafS05Component extends KafS00ShrComponent {
                     command.workTimeCode = step1.workInfo.workTime.code;
                     command.actualContentDisplay = _.get(self.model.displayInfoOverTime, 'appDispInfoStartup.appDispInfoWithDateOutput.opActualContentDisplayLst[0]');
                     command.overtimeAppSet = self.model.displayInfoOverTime.infoNoBaseDate.overTimeAppSet;
+                    command.agent = false;
                     self.$mask('show');
 
                     return self.$http.post(
