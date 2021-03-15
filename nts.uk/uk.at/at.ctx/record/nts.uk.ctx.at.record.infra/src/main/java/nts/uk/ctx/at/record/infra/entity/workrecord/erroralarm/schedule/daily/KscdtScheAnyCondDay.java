@@ -72,10 +72,10 @@ public class KscdtScheAnyCondDay extends ContractUkJpaEntity {
     @Column(name = "MESSAGE")
     public String message;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "conditionDay", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.DETACH, mappedBy = "conditionDay", orphanRemoval = true)
     public List<KscdtScheConDayWt> conditionDayWorkTypes;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "conditionDay", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.DETACH, mappedBy = "conditionDay", orphanRemoval = true)
     public List<KscdtScheConDayWtime> conditionDayWorkTimes;
     
     public KscdtScheAnyCondDay(KscdtScheAnyCondDayPk pk, String condName, boolean useAtr, int checkType,

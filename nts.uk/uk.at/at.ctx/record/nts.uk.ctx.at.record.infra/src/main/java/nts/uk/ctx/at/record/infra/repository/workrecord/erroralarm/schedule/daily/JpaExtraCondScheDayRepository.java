@@ -32,6 +32,8 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.erroralarm.schedule.daily.Ks
 
 import javax.ejb.Stateless;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -98,10 +100,7 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 			CondTime time = (CondTime)domain.getScheduleCheckCond();
 			
 			// 
-			List<KscdtScheConDayWt> condWorkType = time.getWrkTypeCds().stream()
-					.map(code -> new KscdtScheConDayWt(new KscdtScheCondDayWtPk(companyId, domain.getErrorAlarmId(), domain.getSortOrder(), code)))
-					.collect(Collectors.toList());
-			entity.conditionDayWorkTypes = condWorkType;
+			updateWorkType(companyId, domain.getErrorAlarmId(), domain.getSortOrder(), time.getWrkTypeCds());
 			
 			// 
 			if (time.getCheckedCondition() instanceof CompareRange) {
@@ -111,19 +110,19 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 						compareRange.getCompareOperator().value,
 						((Double)compareRange.getStartValue()).doubleValue(),
 						((Double)compareRange.getEndValue()).doubleValue());
-				this.getEntityManager().persist(entityCompareRange);
+				this.commandProxy().insert(entityCompareRange);
 			} else {
 				CompareSingleValue compareSingleRange = (CompareSingleValue)time.getCheckedCondition();
 				KrcstErAlCompareSingle entityCompareRange = new KrcstErAlCompareSingle(
 						new KrcstErAlCompareSinglePK(domain.getErrorAlarmId(), domain.getSortOrder()),
 						compareSingleRange.getCompareOpertor().value,
 						compareSingleRange.getConditionType().value);
-				this.getEntityManager().persist(entityCompareRange);
+				this.commandProxy().insert(entityCompareRange);
 				
 				KrcstErAlSingleFixed erAlSingleFixed = new KrcstErAlSingleFixed(
 						new KrcstErAlSingleFixedPK(domain.getErrorAlarmId(), domain.getSortOrder()),
 						((Double)compareSingleRange.getValue()).doubleValue());
-				this.getEntityManager().persist(erAlSingleFixed);
+				this.commandProxy().insert(erAlSingleFixed);
 			}
 		}
 		
@@ -135,10 +134,7 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 			entity.conPeriod = continuousTime.getPeriod().v();
 			
 			// work type
-			List<KscdtScheConDayWt> condWorkType = continuousTime.getWrkTypeCds().stream()
-					.map(code -> new KscdtScheConDayWt(new KscdtScheCondDayWtPk(companyId, domain.getErrorAlarmId(), domain.getSortOrder(), code)))
-					.collect(Collectors.toList());
-			entity.conditionDayWorkTypes = condWorkType;
+			updateWorkType(companyId, domain.getErrorAlarmId(), domain.getSortOrder(), continuousTime.getWrkTypeCds());
 			
 			// 
 			if (continuousTime.getCheckedCondition() instanceof CompareRange) {
@@ -148,19 +144,19 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 						compareRange.getCompareOperator().value,
 						((Double)compareRange.getStartValue()).doubleValue(),
 						((Double)compareRange.getEndValue()).doubleValue());
-				this.getEntityManager().persist(entityCompareRange);
+				this.commandProxy().insert(entityCompareRange);
 			} else {
 				CompareSingleValue compareSingleRange = (CompareSingleValue)continuousTime.getCheckedCondition();
 				KrcstErAlCompareSingle entityCompareRange = new KrcstErAlCompareSingle(
 						new KrcstErAlCompareSinglePK(domain.getErrorAlarmId(), domain.getSortOrder()),
 						compareSingleRange.getCompareOpertor().value,
 						compareSingleRange.getConditionType().value);
-				this.getEntityManager().persist(entityCompareRange);
+				this.commandProxy().insert(entityCompareRange);
 				
 				KrcstErAlSingleFixed erAlSingleFixed = new KrcstErAlSingleFixed(
 						new KrcstErAlSingleFixedPK(domain.getErrorAlarmId(), domain.getSortOrder()),
 						((Double)compareSingleRange.getValue()).doubleValue());
-				this.getEntityManager().persist(erAlSingleFixed);
+				this.commandProxy().insert(erAlSingleFixed);
 			}
 		}
 		
@@ -172,18 +168,12 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 			
 			// work type
 			if (continuousTimeZone.getWrkTypeCds() != null && !continuousTimeZone.getWrkTypeCds().isEmpty()) {
-				List<KscdtScheConDayWt> condWorkType = continuousTimeZone.getWrkTypeCds().stream()
-						.map(code -> new KscdtScheConDayWt(new KscdtScheCondDayWtPk(companyId, domain.getErrorAlarmId(), domain.getSortOrder(), code)))
-						.collect(Collectors.toList());
-				entity.conditionDayWorkTypes = condWorkType;
+				updateWorkType(companyId, domain.getErrorAlarmId(), domain.getSortOrder(), continuousTimeZone.getWrkTypeCds());
 			}
 			
 			// work time
 			if (continuousTimeZone.getWrkTimeCds() != null && !continuousTimeZone.getWrkTimeCds().isEmpty()) {
-				List<KscdtScheConDayWtime> condWorkTime = continuousTimeZone.getWrkTimeCds().stream()
-						.map(code -> new KscdtScheConDayWtime(new KscdtScheCondDayWtimePk(companyId, domain.getErrorAlarmId(), domain.getSortOrder(), code)))
-						.collect(Collectors.toList());
-				entity.conditionDayWorkTimes = condWorkTime;
+				updateWorkTime(companyId, domain.getErrorAlarmId(), domain.getSortOrder(), continuousTimeZone.getWrkTimeCds());
 			}
 		}
 		
@@ -194,10 +184,7 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 			entity.conPeriod = continuousWorkType.getPeriod().v();
 			
 			// work type
-			List<KscdtScheConDayWt> condWorkType = continuousWorkType.getWrkTypeCds().stream()
-					.map(code -> new KscdtScheConDayWt(new KscdtScheCondDayWtPk(companyId, domain.getErrorAlarmId(), domain.getSortOrder(), code)))
-					.collect(Collectors.toList());
-			entity.conditionDayWorkTypes = condWorkType;
+			updateWorkType(companyId, domain.getErrorAlarmId(), domain.getSortOrder(), continuousWorkType.getWrkTypeCds());
 		}
 		
 				
@@ -218,11 +205,6 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 		entity.checkType = domain.getCheckItemType().value;
 		entity.wrkTypeCondAtr = domain.getTargetWrkType().value;
 		entity.wrkTimeCondAtr = domain.getTimeZoneTargetRange() != null ? domain.getTimeZoneTargetRange().value : null;
-		
-		// remove work type
-		removeWorkTypes(companyId, domain.getErrorAlarmId(), domain.getSortOrder());
-		// remove work time
-		removeWorkTimes(companyId, domain.getErrorAlarmId(), domain.getSortOrder());					
 					
 		// 勤務種類 - pattern D
 		if (DaiCheckItemType.TIME == domain.getCheckItemType()) {
@@ -231,68 +213,7 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 		
 		// pattern G
 		if (DaiCheckItemType.CONTINUOUS_TIME == domain.getCheckItemType()) {
-			CondContinuousTime continuousTime = (CondContinuousTime)domain.getScheduleCheckCond();
-			//
-			entity.conPeriod = continuousTime.getPeriod().v();
-			// 
-			List<KscdtScheConDayWt> condWorkType = continuousTime.getWrkTypeCds().stream()
-					.map(code -> new KscdtScheConDayWt(new KscdtScheCondDayWtPk(companyId, domain.getErrorAlarmId(), domain.getSortOrder(), code)))
-					.collect(Collectors.toList());
-			entity.conditionDayWorkTypes = condWorkType;
-			
-			// 
-			KrcstErAlCompareRangePK compareRangePK = new KrcstErAlCompareRangePK(domain.getErrorAlarmId(), domain.getSortOrder());
-			Optional<KrcstErAlCompareRange> entityCompareRangeOpt = this.queryProxy().find(compareRangePK, KrcstErAlCompareRange.class);
-			
-			KrcstErAlCompareSinglePK compareSinglePK = new KrcstErAlCompareSinglePK(domain.getErrorAlarmId(), domain.getSortOrder());
-			Optional<KrcstErAlCompareSingle> entityCompareRangeSingleOpt = this.queryProxy().find(compareSinglePK, KrcstErAlCompareSingle.class);
-			KrcstErAlSingleFixedPK singleFixedPK = new KrcstErAlSingleFixedPK(domain.getErrorAlarmId(), domain.getSortOrder());
-			Optional<KrcstErAlSingleFixed> erAlSingleFixedOpt = this.queryProxy().find(singleFixedPK, KrcstErAlSingleFixed.class);
-			
-			if (continuousTime.getCheckedCondition() instanceof CompareRange) {
-				CompareRange compareRange = (CompareRange)continuousTime.getCheckedCondition();
-				
-				KrcstErAlCompareRange entityCompareRange = new KrcstErAlCompareRange(compareRangePK);
-				if (entityCompareRangeOpt.isPresent()) {
-					entityCompareRange = entityCompareRangeOpt.get();
-				}
-				
-				entityCompareRange.compareAtr = compareRange.getCompareOperator().value;
-				entityCompareRange.startValue = ((Double)compareRange.getStartValue()).doubleValue();
-				entityCompareRange.endValue = ((Double)compareRange.getEndValue()).doubleValue();
-				saveOrUpdate(entityCompareRange, entityCompareRangeOpt.isPresent());
-				
-				// remove compare range single if exist
-				if (entityCompareRangeSingleOpt.isPresent()) {
-					this.commandProxy().remove(entityCompareRangeSingleOpt.get());
-				}
-				if (erAlSingleFixedOpt.isPresent()) {
-					this.commandProxy().remove(erAlSingleFixedOpt.get());
-				}
-			} else {
-				CompareSingleValue compareSingleRange = (CompareSingleValue)continuousTime.getCheckedCondition();
-				
-				KrcstErAlCompareSingle entityCompareRangeSingle = new KrcstErAlCompareSingle(compareSinglePK);
-				if (entityCompareRangeOpt.isPresent()) {
-					entityCompareRangeSingle = entityCompareRangeSingleOpt.get();
-				}
-				
-				entityCompareRangeSingle.compareAtr = compareSingleRange.getCompareOpertor().value;
-				saveOrUpdate(entityCompareRangeSingle, entityCompareRangeSingleOpt.isPresent());
-				
-				KrcstErAlSingleFixed erAlSingleFixed = new KrcstErAlSingleFixed(singleFixedPK);
-				if (entityCompareRangeOpt.isPresent()) {
-					erAlSingleFixed = erAlSingleFixedOpt.get();
-				}
-				
-				erAlSingleFixed.fixedValue = ((Double)compareSingleRange.getValue()).doubleValue();
-				saveOrUpdate(erAlSingleFixed, erAlSingleFixedOpt.isPresent());
-				
-				// remove compare range if exist
-				if (entityCompareRangeOpt.isPresent()) {
-					this.commandProxy().remove(entityCompareRangeOpt.get());
-				}
-			}
+			updateByCheckItemTypeContinuosTime(companyId, domain, entity);
 		}
 		
 		// 連続時間帯の場合
@@ -303,20 +224,12 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 			
 			// work type
 			if (continuousTimeZone.getWrkTypeCds() != null && !continuousTimeZone.getWrkTypeCds().isEmpty()) {
-				List<KscdtScheConDayWt> condWorkType = continuousTimeZone.getWrkTypeCds().stream()
-						.map(code -> new KscdtScheConDayWt(new KscdtScheCondDayWtPk(companyId, domain.getErrorAlarmId(), domain.getSortOrder(), code)))
-						.collect(Collectors.toList());
-	//			entity.conditionDayWorkTypes = condWorkType;
-				this.commandProxy().insertAll(condWorkType);
+				updateWorkType(companyId, domain.getErrorAlarmId(), domain.getSortOrder(), continuousTimeZone.getWrkTypeCds());
 			}
 			
 			// work time
 			if (continuousTimeZone.getWrkTimeCds() != null && !continuousTimeZone.getWrkTimeCds().isEmpty()) {
-				List<KscdtScheConDayWtime> condWorkTime = continuousTimeZone.getWrkTimeCds().stream()
-						.map(code -> new KscdtScheConDayWtime(new KscdtScheCondDayWtimePk(companyId, domain.getErrorAlarmId(), domain.getSortOrder(), code)))
-						.collect(Collectors.toList());
-	//			entity.conditionDayWorkTimes = condWorkTime;
-				this.commandProxy().insertAll(condWorkTime);
+				updateWorkTime(companyId, domain.getErrorAlarmId(), domain.getSortOrder(), continuousTimeZone.getWrkTimeCds());
 			}
 		}
 		
@@ -327,10 +240,7 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 			entity.conPeriod = continuousWorkType.getPeriod().v();
 			
 			// work type
-			List<KscdtScheConDayWt> condWorkType = continuousWorkType.getWrkTypeCds().stream()
-					.map(code -> new KscdtScheConDayWt(new KscdtScheCondDayWtPk(companyId, domain.getErrorAlarmId(), domain.getSortOrder(), code)))
-					.collect(Collectors.toList());
-			entity.conditionDayWorkTypes = condWorkType;
+			updateWorkType(companyId, domain.getErrorAlarmId(), domain.getSortOrder(), continuousWorkType.getWrkTypeCds());
 		}
 		
 		this.commandProxy().update(entity);
@@ -344,11 +254,7 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 		CondTime time = (CondTime)domain.getScheduleCheckCond();
 		
 		// 
-		removeWorkTypes(companyId, domain.getErrorAlarmId(), domain.getSortOrder());
-		List<KscdtScheConDayWt> condWorkType = time.getWrkTypeCds().stream()
-				.map(code -> new KscdtScheConDayWt(new KscdtScheCondDayWtPk(companyId, domain.getErrorAlarmId(), domain.getSortOrder(), code)))
-				.collect(Collectors.toList());
-		entity.conditionDayWorkTypes = condWorkType;
+		updateWorkType(companyId, domain.getErrorAlarmId(), domain.getSortOrder(), time.getWrkTypeCds());
 		
 		// 
 		KrcstErAlCompareRangePK compareRangePK = new KrcstErAlCompareRangePK(domain.getErrorAlarmId(), domain.getSortOrder());
@@ -405,6 +311,71 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 		}
 	}
 	
+	/**
+	 * The update for DaiCheckItemType=Time
+	 */
+	private void updateByCheckItemTypeContinuosTime(String companyId, ExtractionCondScheduleDay domain, KscdtScheAnyCondDay entity) {
+		CondContinuousTime continuousTime = (CondContinuousTime)domain.getScheduleCheckCond();
+		//
+		entity.conPeriod = continuousTime.getPeriod().v();
+		// 
+		updateWorkType(companyId, domain.getErrorAlarmId(), domain.getSortOrder(), continuousTime.getWrkTypeCds());
+		
+		// 
+		KrcstErAlCompareRangePK compareRangePK = new KrcstErAlCompareRangePK(domain.getErrorAlarmId(), domain.getSortOrder());
+		Optional<KrcstErAlCompareRange> entityCompareRangeOpt = this.queryProxy().find(compareRangePK, KrcstErAlCompareRange.class);
+		
+		KrcstErAlCompareSinglePK compareSinglePK = new KrcstErAlCompareSinglePK(domain.getErrorAlarmId(), domain.getSortOrder());
+		Optional<KrcstErAlCompareSingle> entityCompareRangeSingleOpt = this.queryProxy().find(compareSinglePK, KrcstErAlCompareSingle.class);
+		KrcstErAlSingleFixedPK singleFixedPK = new KrcstErAlSingleFixedPK(domain.getErrorAlarmId(), domain.getSortOrder());
+		Optional<KrcstErAlSingleFixed> erAlSingleFixedOpt = this.queryProxy().find(singleFixedPK, KrcstErAlSingleFixed.class);
+		
+		if (continuousTime.getCheckedCondition() instanceof CompareRange) {
+			CompareRange compareRange = (CompareRange)continuousTime.getCheckedCondition();
+			
+			KrcstErAlCompareRange entityCompareRange = new KrcstErAlCompareRange(compareRangePK);
+			if (entityCompareRangeOpt.isPresent()) {
+				entityCompareRange = entityCompareRangeOpt.get();
+			}
+			
+			entityCompareRange.compareAtr = compareRange.getCompareOperator().value;
+			entityCompareRange.startValue = ((Double)compareRange.getStartValue()).doubleValue();
+			entityCompareRange.endValue = ((Double)compareRange.getEndValue()).doubleValue();
+			saveOrUpdate(entityCompareRange, entityCompareRangeOpt.isPresent());
+			
+			// remove compare range single if exist
+			if (entityCompareRangeSingleOpt.isPresent()) {
+				this.commandProxy().remove(entityCompareRangeSingleOpt.get());
+			}
+			if (erAlSingleFixedOpt.isPresent()) {
+				this.commandProxy().remove(erAlSingleFixedOpt.get());
+			}
+		} else {
+			CompareSingleValue compareSingleRange = (CompareSingleValue)continuousTime.getCheckedCondition();
+			
+			KrcstErAlCompareSingle entityCompareRangeSingle = new KrcstErAlCompareSingle(compareSinglePK);
+			if (entityCompareRangeOpt.isPresent()) {
+				entityCompareRangeSingle = entityCompareRangeSingleOpt.get();
+			}
+			
+			entityCompareRangeSingle.compareAtr = compareSingleRange.getCompareOpertor().value;
+			saveOrUpdate(entityCompareRangeSingle, entityCompareRangeSingleOpt.isPresent());
+			
+			KrcstErAlSingleFixed erAlSingleFixed = new KrcstErAlSingleFixed(singleFixedPK);
+			if (entityCompareRangeOpt.isPresent()) {
+				erAlSingleFixed = erAlSingleFixedOpt.get();
+			}
+			
+			erAlSingleFixed.fixedValue = ((Double)compareSingleRange.getValue()).doubleValue();
+			saveOrUpdate(erAlSingleFixed, erAlSingleFixedOpt.isPresent());
+			
+			// remove compare range if exist
+			if (entityCompareRangeOpt.isPresent()) {
+				this.commandProxy().remove(entityCompareRangeOpt.get());
+			}
+		}
+	}
+	
 	private KscdtScheAnyCondDay fromDomain(String contractCode, String companyId, ExtractionCondScheduleDay domain) {
 		KscdtScheAnyCondDayPk pk = new KscdtScheAnyCondDayPk(companyId, domain.getErrorAlarmId(), domain.getSortOrder());
 		KscdtScheAnyCondDay entity = new KscdtScheAnyCondDay(
@@ -418,6 +389,54 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 		}
 		
 		return entity;
+	}
+	
+	private void updateWorkTime(String companyId, String checkId, int no, List<String> workTimeCodes) {
+		List<KscdtScheConDayWtime> workTimes = this.queryProxy().query(SELECT_WTime, KscdtScheConDayWtime.class)
+				.setParameter("companyId", companyId)
+				.setParameter("checkId", checkId)
+				.setParameter("no", no)
+				.getList();
+		
+		for (String code: workTimeCodes) {
+			if (StringUtils.isEmpty(code)) {
+				continue;
+			}
+			KscdtScheCondDayWtimePk key = new KscdtScheCondDayWtimePk(companyId, checkId, no, code);
+			if (!workTimes.stream().anyMatch(x -> x.pk.wrkTimeCd.equals(code))) {
+				this.commandProxy().insert( new KscdtScheConDayWtime(key));
+			}
+		}
+		
+		for (KscdtScheConDayWtime item: workTimes) {
+			if (!workTimeCodes.stream().anyMatch(x -> x.equals(item.pk.wrkTimeCd))) {
+				this.commandProxy().remove(item);
+			}
+		}
+	}
+	
+	private void updateWorkType(String companyId, String checkId, int no, List<String> workTypeCodes) {
+		List<KscdtScheConDayWt> workTimes = this.queryProxy().query(SELECT_WT, KscdtScheConDayWt.class)
+				.setParameter("companyId", companyId)
+				.setParameter("checkId", checkId)
+				.setParameter("no", no)
+				.getList();
+		
+		for (String code: workTypeCodes) {
+			if (StringUtils.isEmpty(code)) {
+				continue;
+			}
+			KscdtScheCondDayWtPk key = new KscdtScheCondDayWtPk(companyId, checkId, no, code);
+			if (!workTimes.stream().anyMatch(x -> x.pk.wrkTypeCd.equals(code))) {
+				this.commandProxy().insert( new KscdtScheConDayWt(key));
+			}
+		}
+		
+		for (KscdtScheConDayWt item: workTimes) {
+			if (!workTypeCodes.stream().anyMatch(x -> x.equals(item.pk.wrkTypeCd))) {
+				this.commandProxy().remove(item);
+			}
+		}
 	}
 
 	@Override
