@@ -179,7 +179,7 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 			}
 			
 			// work time
-			if (continuousTimeZone.getWrkTypeCds() != null && !continuousTimeZone.getWrkTimeCds().isEmpty()) {
+			if (continuousTimeZone.getWrkTimeCds() != null && !continuousTimeZone.getWrkTimeCds().isEmpty()) {
 				List<KscdtScheConDayWtime> condWorkTime = continuousTimeZone.getWrkTimeCds().stream()
 						.map(code -> new KscdtScheConDayWtime(new KscdtScheCondDayWtimePk(companyId, domain.getErrorAlarmId(), domain.getSortOrder(), code)))
 						.collect(Collectors.toList());
@@ -311,7 +311,7 @@ public class JpaExtraCondScheDayRepository extends JpaRepository implements Extr
 			}
 			
 			// work time
-			if (continuousTimeZone.getWrkTypeCds() != null && !continuousTimeZone.getWrkTimeCds().isEmpty()) {
+			if (continuousTimeZone.getWrkTimeCds() != null && !continuousTimeZone.getWrkTimeCds().isEmpty()) {
 				List<KscdtScheConDayWtime> condWorkTime = continuousTimeZone.getWrkTimeCds().stream()
 						.map(code -> new KscdtScheConDayWtime(new KscdtScheCondDayWtimePk(companyId, domain.getErrorAlarmId(), domain.getSortOrder(), code)))
 						.collect(Collectors.toList());
