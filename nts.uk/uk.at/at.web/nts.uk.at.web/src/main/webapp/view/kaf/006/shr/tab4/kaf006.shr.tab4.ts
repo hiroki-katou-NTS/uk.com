@@ -94,9 +94,9 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
                     <table data-bind="visible: $parent.leaveComDayOffManas().length > 0">
                         <thead>
                             <tr class="text-center bg-green">
-                                <th style="width: 100px;" class="py-10 table-border" data-bind="text: $i18n('KAF006_53')"></th>
-                                <th style="width: 100px;" class="py-10 table-border" data-bind="text: $i18n('KAF006_87')"></th>
-                                <th style="width: 100px;" class="py-10 table-border" data-bind="text: $i18n('KAF006_55')"></th>
+                                <th style="width: 110px;" class="py-10 table-border" data-bind="text: $i18n('KAF006_53')"></th>
+                                <th style="width: 110px;" class="py-10 table-border" data-bind="text: $i18n('KAF006_87')"></th>
+                                <th style="width: 110px;" class="py-10 table-border" data-bind="text: $i18n('KAF006_55')"></th>
                             </tr>
                         </thead>
                         <tbody data-bind="foreach: ko.toJS($parent.leaveComDayOffManas)">
@@ -125,9 +125,9 @@ module nts.uk.at.view.kaf006.shr.tab4.viewmodel {
                     <table data-bind="visible: $parent.payoutSubofHDManagements().length > 0" >
                         <thead>
                             <tr class="bg-green">
-                                <th style="width: 100px;" class="py-10 table-border" data-bind="text: $i18n('KAF006_52')"></th>
-                                <th style="width: 100px;" class="py-10 table-border" data-bind="text: $i18n('KAF006_95')"></th>
-                                <th style="width: 100px;" class="py-10 table-border" data-bind="text: $i18n('KAF006_55')"></th>
+                                <th style="width: 110px;" class="py-10 table-border" data-bind="text: $i18n('KAF006_52')"></th>
+                                <th style="width: 110px;" class="py-10 table-border" data-bind="text: $i18n('KAF006_95')"></th>
+                                <th style="width: 110px;" class="py-10 table-border" data-bind="text: $i18n('KAF006_55')"></th>
                             </tr>
                         </thead>
                         <tbody data-bind="foreach: ko.toJS($parent.payoutSubofHDManagements)">
