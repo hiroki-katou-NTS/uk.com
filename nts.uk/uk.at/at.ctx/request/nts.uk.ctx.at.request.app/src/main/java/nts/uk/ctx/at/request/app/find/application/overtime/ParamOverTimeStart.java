@@ -31,7 +31,7 @@ public class ParamOverTimeStart {
 	
 	public Integer endTimeSPR;
 	
-	public Boolean isProxy;
+	public Boolean agent;
 	
 	public String employeeId;
 	
