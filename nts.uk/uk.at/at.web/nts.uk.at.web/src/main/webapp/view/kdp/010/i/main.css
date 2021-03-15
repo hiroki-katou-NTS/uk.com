@@ -2,28 +2,6 @@
 	margin-left: 20px;
 }
 
-
-#highlight-radio{
-	margin-left: 20px;
-	display: inline-block;
-}
-
-#contents-area{
-	margin-left: 20px;
-}
-
-.box{
-	margin-left: 6px !important;
-}
-
-.ui-igcombo-list{
-	max-height: 210px  !important;
-	max-width: 140px !important;
-}
-.sp-container{
-	left: 37px !important;
-}
-
 .form-data tr td:nth-child(1) {
 	width: 110px;
 }

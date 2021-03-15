@@ -52,7 +52,7 @@ module nts.uk.at.view.kdp010.h {
 					self.getData(newValue);
 					self.checkLayout(true);
 					nts.uk.ui.errors.clearAll();
-				})
+				});
 
 				self.pageName.subscribe(function(codeChanged: string) {
 					self.pageName($.trim(self.pageName()));
@@ -68,7 +68,7 @@ module nts.uk.at.view.kdp010.h {
 					nts.uk.ui.block.clear();
 					 //}, 500);
 					
-				})
+				});
 			}
             /**
              * start page  
