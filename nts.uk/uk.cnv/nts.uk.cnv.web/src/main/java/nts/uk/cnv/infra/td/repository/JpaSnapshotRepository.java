@@ -7,7 +7,6 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.time.GeneralDateTime;
 import nts.uk.cnv.dom.td.schema.TableIdentity;
 import nts.uk.cnv.dom.td.schema.snapshot.SchemaSnapshot;
 import nts.uk.cnv.dom.td.schema.snapshot.SnapshotRepository;
@@ -25,12 +24,17 @@ public class JpaSnapshotRepository extends JpaRepository implements SnapshotRepo
 	@Override
 	public Optional<SchemaSnapshot> getSchemaLatest() {
 		
-		val schema = new SchemaSnapshot(
-				"B8167B60-BFF3-47CD-9013-2A11DD6A8A02",
-				GeneralDateTime.ymdhms(2021, 1, 7, 0, 0, 0),
-				"");
+		String sql = "select * from NEM_TD_SNAPSHOT_SCHEMA"
+				+ " order by GENERATED_AT desc";
 		
-		return Optional.of(schema);
+		return this.jdbcProxy()
+				.query(sql)
+				.getList(rec -> new SchemaSnapshot(
+						rec.getString("SNAPSHOT_ID"),
+						rec.getGeneralDateTime("GENERATED_AT"),
+						rec.getString("SOURCE_EVENT_ID")))
+				.stream()
+				.findFirst();
 	}
 
 	@Override
