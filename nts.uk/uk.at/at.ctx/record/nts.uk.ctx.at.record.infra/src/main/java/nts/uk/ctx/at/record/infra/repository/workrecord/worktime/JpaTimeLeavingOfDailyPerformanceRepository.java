@@ -45,6 +45,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.time
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.temporarytime.WorkNo;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 
@@ -189,6 +190,8 @@ public class JpaTimeLeavingOfDailyPerformanceRepository extends JpaRepository
 				krcdtTimeLeavingWork = new KrcdtDayTsAtdStmp();
 				krcdtTimeLeavingWork.krcdtTimeLeavingWorkPK = new KrcdtTimeLeavingWorkPK(domain.getEmployeeId(),
 						c.getWorkNo().v(), domain.getYmd(), 0);
+				// UPDATEではなく内部的にINSERTをする場合に落ちる問題があり、契約コードをセットすると直る為、追加
+				krcdtTimeLeavingWork.setContractCd(AppContexts.user().contractCode());
 			}
 			if (c.getAttendanceStamp().isPresent()) {
 				TimeActualStamp attendanceStamp = c.getAttendanceStamp().get();
