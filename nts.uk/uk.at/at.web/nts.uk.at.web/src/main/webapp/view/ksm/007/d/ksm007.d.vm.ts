@@ -94,7 +94,7 @@ module nts.uk.at.view.ksm007.c {
       if (params) {
         let beginStartDate = moment(params.startDate).format(FORMAT_DAY);//.add(+1, 'days')
         vm.startFromDate(beginStartDate);
-        let limitDate = moment(vm.inputScreenD().startDateLimit).add(+1, 'days').format(FORMAT_DAY);
+        let limitDate = moment(vm.inputScreenD().startDateLimit).format(FORMAT_DAY); //add(+1, 'days').
         vm.beginStartDate(limitDate);
       }
 

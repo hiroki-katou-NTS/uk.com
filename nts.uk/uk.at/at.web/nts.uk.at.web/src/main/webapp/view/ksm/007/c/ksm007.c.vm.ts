@@ -78,7 +78,8 @@ module nts.uk.at.view.ksm007.c {
       if (params && !_.isNil(params.lastItem) && !_.isNil(params.lastItem.startDate)) {
         beginStartDate = moment(params.lastItem.startDate).add(+1, 'days').format(FORMAT_DAY);        
       }
-      vm.startFromDate(beginStartDate);
+      //vm.startFromDate(beginStartDate);
+      vm.startFromDate(null);
       vm.beginStartDate(beginStartDate);
     }
   }
