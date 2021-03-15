@@ -163,7 +163,7 @@ public class GetInforOnTargetPeriod {
 				
 				if (check) {
 					
-					WorkScheduleDto workScheduleDto = new WorkScheduleDto(workSchedule.getYmd().toString(), new ShiftMasterDto(k.getDisplayInfor().getName().v(), k.getDisplayInfor().getColor().v()),
+					WorkScheduleDto workScheduleDto = new WorkScheduleDto(workSchedule.getYmd().toString(), new ShiftMasterDto(k.getDisplayInfor().getName().v(), k.getDisplayInfor().getColorSmartPhone().v()),
 																			v.isPresent() ? v.get().value : null, listAttendaceDto);
 					listWorkScheduleDto.add(workScheduleDto);
 					break;
