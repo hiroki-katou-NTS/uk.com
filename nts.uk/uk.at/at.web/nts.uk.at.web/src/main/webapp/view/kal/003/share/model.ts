@@ -68,8 +68,8 @@ module nts.uk.at.view.kal003.share.model {
         annualHolidayAlCon: KnockoutObservable<AnnualHolidayAlarmCondition> = ko.observable(new AnnualHolidayAlarmCondition(null, null));
         masterCheckAlarmCheckCondition: KnockoutObservable<MasterCheckCondition> = ko.observable(new MasterCheckCondition([]));
         // schedule
-        scheFixCondDay: KnockoutObservable<ScheFixCondDay> = ko.observable(new ScheFixCondDay([]));
-        scheAnyCondDay: KnockoutObservable<ScheFixCondDay> = ko.observable(new ScheAnyCondDay([]));
+        scheFixCondDay: KnockoutObservable<ScheFixCondDay> = ko.observable(new ScheFixCondDay("", []));
+        scheAnyCondDay: KnockoutObservable<ScheFixCondDay> = ko.observable(new ScheAnyCondDay("", []));
         
         constructor(code: string, name: string, category: ItemModel, availableRoles: Array<string>, targetCondition: AlarmCheckTargetCondition) {
             this.code = ko.observable(code);
