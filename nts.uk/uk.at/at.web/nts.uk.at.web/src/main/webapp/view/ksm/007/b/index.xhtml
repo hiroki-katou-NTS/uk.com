@@ -79,9 +79,10 @@
                   class="cell valign-center"
                   data-bind="ntsFormLabel: { required: true}, text: $i18n('KSM007_28')"
                 ></div>
+                <!-- B5_2 -->
                 <div class="cell valign-center">
                   <div
-                    class="cf"
+                    class="cf" tabindex="6"
                     data-bind="ntsSwitchButton: {
 										name: '#[KSM007_28]',
 										options: ko.observableArray([
@@ -104,8 +105,8 @@
                 ></div>
                 <div class="cell time-editor">
                   <div class="table">
-                    <div class="cell valign-center">
-                      <input id="nightShiftHours1" class="nightShiftHours"
+                    <div class="cell valign-center"><!-- B6_2 -->
+                      <input id="nightShiftHours1" class="nightShiftHours" tabindex="7"
                         data-bind="ntsTimeWithDayEditor: {
 													value: nightShiftHours1, 
 													inputFormat: 'time', 
@@ -117,8 +118,8 @@
                       />
                     </div>
                     <div class="cell valign-center" data-bind="text:$i18n('KSM007_33')"></div>
-                    <div class="cell valign-center">
-                      <input id="nightShiftHours2" class="nightShiftHours"
+                    <div class="cell valign-center"><!-- B6_4 -->
+                      <input id="nightShiftHours2" class="nightShiftHours" tabindex="8"
                         data-bind="ntsTimeWithDayEditor: {
 													value: nightShiftHours2, 
 													inputFormat: 'time', 
