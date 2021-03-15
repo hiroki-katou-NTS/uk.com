@@ -133,7 +133,7 @@ const WEB_APP_NAME = {
                 setHeaders({
                     'MOBILE': 'true',
                     'PG-Path': window.location.href,
-                    'X-CSRF-TOKEN': auth.token
+                    'X-CSRF-TOKEN': null //auth.token
                 });
 
                 if (opt.responseType) {
