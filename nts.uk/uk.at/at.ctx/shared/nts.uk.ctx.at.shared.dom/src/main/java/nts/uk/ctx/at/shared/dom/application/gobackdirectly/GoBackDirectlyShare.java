@@ -19,9 +19,9 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 @AllArgsConstructor
 public class GoBackDirectlyShare extends ApplicationShare {
 
-	// 直帰区分
-	private NotUseAtr straightDistinction;
 	// 直行区分
+	private NotUseAtr straightDistinction;
+	// 直帰区分
 	private NotUseAtr straightLine;
 	// 勤務を変更する
 	private Optional<NotUseAtr> isChangedWork = Optional.empty();

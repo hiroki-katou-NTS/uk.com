@@ -108,8 +108,7 @@ public class InterimAbsenceRecruitServiceImpl implements InterimAbsenceRecruitSe
 						employeeId,
 						targetWorkInfo.getYmd(),
 						CreateAtr.RECORD,
-						RemainType.PICKINGUP,
-						RemainAtr.SINGLE);
+						RemainType.PICKINGUP);
 				InterimRecMng recMng = new InterimRecMng(
 						recruitGuid,
 						GeneralDate.ymd(9999, 12, 31),
@@ -130,8 +129,7 @@ public class InterimAbsenceRecruitServiceImpl implements InterimAbsenceRecruitSe
 						employeeId,
 						targetWorkInfo.getYmd(),
 						CreateAtr.RECORD,
-						RemainType.PAUSE,
-						RemainAtr.SINGLE);
+						RemainType.PAUSE);
 				InterimAbsMng absMng = new InterimAbsMng(
 						absenceGuid,
 						new RequiredDay(absenceDays),

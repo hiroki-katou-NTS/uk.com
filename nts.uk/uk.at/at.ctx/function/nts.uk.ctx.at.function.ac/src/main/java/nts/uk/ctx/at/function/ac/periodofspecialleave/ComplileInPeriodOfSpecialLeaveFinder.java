@@ -16,6 +16,8 @@ import nts.uk.ctx.at.function.dom.adapter.periodofspecialleave.SpecialHolidayImp
 import nts.uk.ctx.at.function.dom.adapter.periodofspecialleave.SpecialVacationImported;
 import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.export.SpecialHolidayRemainDataOutput;
 import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.export.SpecialHolidayRemainDataSevice;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.InPeriodOfSpecialLeaveResultInfor;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.SpecialLeaveManagementService;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
@@ -23,11 +25,10 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepos
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfoRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.ComplileInPeriodOfSpecialLeaveParam;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InPeriodOfSpecialLeave;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveManagementService;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.empinfo.grantremainingdata.ComplileInPeriodOfSpecialLeaveParam;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTblRepository;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 
 @Stateless
 public class ComplileInPeriodOfSpecialLeaveFinder implements ComplileInPeriodOfSpecialLeaveAdapter {
@@ -35,32 +36,35 @@ public class ComplileInPeriodOfSpecialLeaveFinder implements ComplileInPeriodOfS
 	@Inject
 	private SpecialHolidayRemainDataSevice specialHolidayRemainDataSevice;
 
-	@Inject
-	private SpecialLeaveGrantRepository specialLeaveGrantRepo;
+//	@Inject
+//	private SpecialLeaveGrantRepository specialLeaveGrantRepo;
+//
+//	@Inject
+//	private ShareEmploymentAdapter shareEmploymentAdapter;
+//
+//	@Inject
+//	private EmpEmployeeAdapter empEmployeeAdapter;
+//
+//	@Inject
+//	private GrantDateTblRepository grantDateTblRepo;
+//
+//	@Inject
+//	private AnnLeaEmpBasicInfoRepository annLeaEmpBasicInfoRepo;
+//
+//	@Inject
+//	private SpecialHolidayRepository specialHolidayRepo;
+//
+//	@Inject
+//	private InterimSpecialHolidayMngRepository interimSpecialHolidayMngRepo;
+//
+//	@Inject
+//	private InterimRemainRepository interimRemainRepo;
+//
+//	@Inject
+//	private SpecialLeaveBasicInfoRepository specialLeaveBasicInfoRepo;
 
 	@Inject
-	private ShareEmploymentAdapter shareEmploymentAdapter; 
-
-	@Inject
-	private EmpEmployeeAdapter empEmployeeAdapter;
-
-	@Inject
-	private GrantDateTblRepository grantDateTblRepo;
-
-	@Inject
-	private AnnLeaEmpBasicInfoRepository annLeaEmpBasicInfoRepo;
-
-	@Inject
-	private SpecialHolidayRepository specialHolidayRepo;
-
-	@Inject
-	private InterimSpecialHolidayMngRepository interimSpecialHolidayMngRepo;
-
-	@Inject
-	private InterimRemainRepository interimRemainRepo;
-
-	@Inject
-	private SpecialLeaveBasicInfoRepository specialLeaveBasicInfoRepo;
+	private RecordDomRequireService recordDomRequireService;
 
 	@Override
 	public SpecialVacationImported complileInPeriodOfSpecialLeave(String cid, String sid, DatePeriod complileDate,
@@ -68,23 +72,50 @@ public class ComplileInPeriodOfSpecialLeaveFinder implements ComplileInPeriodOfS
 		// requestList273
 		ComplileInPeriodOfSpecialLeaveParam param = new ComplileInPeriodOfSpecialLeaveParam(cid, sid,
 				complileDate, mode, baseDate, specialLeaveCode, mngAtr,
-				false, new ArrayList<>(), new ArrayList<>(), Optional.empty());//TODO can them thong tin cho 3 bien nay
-		InPeriodOfSpecialLeave specialLeave = SpecialLeaveManagementService
+				false, new ArrayList<>());
+		InPeriodOfSpecialLeaveResultInfor specialLeave = SpecialLeaveManagementService
 				.complileInPeriodOfSpecialLeave(
-						SpecialLeaveManagementService.createRequireM5(specialLeaveGrantRepo, shareEmploymentAdapter, 
-								empEmployeeAdapter, grantDateTblRepo, annLeaEmpBasicInfoRepo, specialHolidayRepo, 
-								interimSpecialHolidayMngRepo, interimRemainRepo, specialLeaveBasicInfoRepo),
-						new CacheCarrier(), param)
-				.getAggSpecialLeaveResult();
+//						SpecialLeaveManagementService.createRequireM5(specialLeaveGrantRepo, shareEmploymentAdapter,
+//								empEmployeeAdapter, grantDateTblRepo, annLeaEmpBasicInfoRepo, specialHolidayRepo,
+//								interimSpecialHolidayMngRepo, interimRemainRepo, specialLeaveBasicInfoRepo),
+						recordDomRequireService.createRequire(),
+						new CacheCarrier(), param);
+//				.getAggSpecialLeaveResult();
 		if (specialLeave == null)
 			return null;
+
+		double use_before =  specialLeave.getAsOfPeriodEnd()
+				.getRemainingNumber().getSpecialLeaveWithMinus().getUsedNumberInfo()
+				.getUsedNumberBeforeGrant().getUseDays().map(x -> x.v()).orElse(0.0);
+
+		double remain_before =  specialLeave.getAsOfPeriodEnd()
+				.getRemainingNumber().getSpecialLeaveWithMinus().getRemainingNumberInfo()
+				.getRemainingNumberBeforeGrant().getDayNumberOfRemain().v();
+
+		double use_after = 0.0;
+		double remain_after = 0.0;
+		boolean existAfter = specialLeave.getAsOfPeriodEnd()
+				.getRemainingNumber().getSpecialLeaveWithMinus()
+				.getRemainingNumberInfo().getRemainingNumberAfterGrantOpt().isPresent();
+		if ( existAfter ) {
+//			remain_after = specialLeave.getAsOfPeriodEnd()
+//				.getRemainingNumber().getSpecialLeaveWithMinus()
+//				.getRemainingNumberInfo().getRemainingNumberAfterGrantOpt().get().getDayNumberOfRemain().v();
+			use_after = specialLeave.getAsOfPeriodEnd()
+					.getRemainingNumber().getSpecialLeaveWithMinus().getUsedNumberInfo()
+					.getUsedNumberAfterGrantOpt().get().getUseDays().map(x -> x.v()).orElse(0.0);
+			remain_after = specialLeave.getAsOfPeriodEnd()
+					.getRemainingNumber().getSpecialLeaveWithMinus().getRemainingNumberInfo()
+					.getRemainingNumberAfterGrantOpt().get().getDayNumberOfRemain().v();
+		}
+
 		return new SpecialVacationImported(
-				specialLeave.getRemainDays().getGrantDetailBefore().getGrantDays(), 
+				// 要修正 jinno　NO273
+				//specialLeave.getAsOfPeriodEnd().getRemainingNumber().getSpecialLeaveWithMinus().
 				0.0,
-				specialLeave.getRemainDays().getGrantDetailAfter().isPresent()
-						? specialLeave.getRemainDays().getGrantDetailAfter().get().getUseDays() : specialLeave.getRemainDays().getGrantDetailBefore().getUseDays(),
-				specialLeave.getRemainDays().getGrantDetailAfter().isPresent()
-						? specialLeave.getRemainDays().getGrantDetailAfter().get().getRemainDays(): specialLeave.getRemainDays().getGrantDetailBefore().getRemainDays(), 
+				0.0,
+				existAfter? use_after : use_before,
+				existAfter? remain_after : remain_before,
 				0.0, 0.0, 0.0, 0.0);
 	}
 
@@ -109,7 +140,7 @@ public class ComplileInPeriodOfSpecialLeaveFinder implements ComplileInPeriodOfS
 	@Override
 	public List<SpecialHolidayImported> getSpeHoliOfConfirmedMonthly(String sid, YearMonth startMonth,
 			YearMonth endMonth, List<Integer> listSpeCode) {
-		
+
 		// requestList263 with speCode
 				List<SpecialHolidayRemainDataOutput> lstSpeHoliOfConfirmedMonthly = specialHolidayRemainDataSevice
 						.getSpeHoliOfPeriodAndCodes(sid, startMonth, endMonth, listSpeCode);
@@ -147,5 +178,5 @@ public class ComplileInPeriodOfSpecialLeaveFinder implements ComplileInPeriodOfS
 //		});
 		return lstSpecHd;
 	}
-	
+
 }

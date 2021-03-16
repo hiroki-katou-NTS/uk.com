@@ -39,7 +39,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  *
  */
 @Getter
-public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem {
+public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem implements Cloneable {
 	//勤務間区分
 	//勤務間区分 2
 	private WorkingBreakTimeAtr workingBreakAtr;
@@ -831,5 +831,42 @@ public class TimeSheetOfDeductionItem extends TimeVacationOffSetItem {
 				  Optional.empty()
 				  );
 				
+	}
+	
+	public TimeSheetOfDeductionItem clone() {
+		TimeSheetOfDeductionItem clone = new TimeSheetOfDeductionItem(
+				this.timeSheet,
+				this.rounding,
+				this.recordedTimeSheet,
+				this.deductionTimeSheet,
+				this.workingBreakAtr,
+				this.goOutReason,
+				this.breakAtr,
+				this.shortTimeSheetAtr,
+				this.deductionAtr,
+				this.childCareAtr);
+		try {
+			clone.timeSheet = this.timeSheet.clone();
+			clone.rounding = this.rounding.clone();
+			clone.recordedTimeSheet = this.recordedTimeSheet.stream().map(r -> r.clone()).collect(Collectors.toList());
+			clone.deductionTimeSheet = this.deductionTimeSheet.stream().map(d -> d.clone()).collect(Collectors.toList());
+			
+			clone.deductionOffSetTime = this.deductionOffSetTime.map(d -> d.clone());
+			
+			clone.workingBreakAtr = WorkingBreakTimeAtr.valueOf(this.workingBreakAtr.toString());
+			clone.goOutReason = this.goOutReason.isPresent()
+					? Finally.of(GoingOutReason.valueOf(this.goOutReason.get().value))
+					: Finally.empty();
+			clone.breakAtr = this.breakAtr.isPresent()
+					? Finally.of(BreakClassification.valueOf(this.breakAtr.get().toString()))
+					: Finally.empty();
+			clone.shortTimeSheetAtr = this.shortTimeSheetAtr.map(s -> ShortTimeSheetAtr.valueOf(s.toString()));
+			clone.deductionAtr = DeductionClassification.valueOf(this.deductionAtr.toString());
+			clone.childCareAtr = this.childCareAtr.map(c -> ChildCareAtr.valueOf(c.value));
+		}
+		catch (Exception e) {
+			throw new RuntimeException("TimeSheetOfDeductionItem clone error.");
+		}
+		return clone;
 	}
 }
